@@ -1,79 +1,57 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 2/2] ASoC: sgtl5000: clean up
-	sgtl5000_enable_regulators()
-Date: Tue, 17 Dec 2013 21:58:09 +0800
-Message-ID: <20131217135804.GT6691@S2101-09.ap.freescale.net>
-References: <1386916983-27832-1-git-send-email-shawn.guo@linaro.org>
- <1386916983-27832-2-git-send-email-shawn.guo@linaro.org>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 RESEND 2/2] ASOC: tegra: fix AC97 clock handling
+Date: Tue, 17 Dec 2013 14:00:17 +0000
+Message-ID: <20131217140017.GI3185@sirena.org.uk>
+References: <1387277564-4774-1-git-send-email-dev@lynxeye.de>
+ <1387277564-4774-2-git-send-email-dev@lynxeye.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe002.messaging.microsoft.com [65.55.88.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CA4D265139
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2013 14:57:08 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Vbt/VEkUvOjXIgmy"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1386916983-27832-2-git-send-email-shawn.guo@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Xiubo Li <Li.Xiubo@freescale.com>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1387277564-4774-2-git-send-email-dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Cc: swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 13, 2013 at 02:43:03PM +0800, Shawn Guo wrote:
-> Function sgtl5000_enable_regulators() is somehow odd in handling the
-> optional external VDDD supply.  The driver can only enable this supply
-> on SGTL5000 chip before revision 0x11, and of course when this external
-> VDDD is present.  It currently does something like below.
-> 
-> 1. Check if regulator_bulk_get() on VDDA, VDDIO and VDDD will fail.  If
->    it fails, VDDD must be absent and it falls on internal LDO by calling
->    sgtl5000_replace_vddd_with_ldo().  Otherwise, VDDD is used.  And in
->    either case, regulator_bulk_enable() will be called to enable
->    3 supplies.
-> 
-> 2. In case that SGTL5000 revision is later than 0x11, even if external
->    VDDD is present, it has to roll back the 'enable' and 'get' calls
->    with regulator_bulk_disable() and regulator_bulk_free(), and starts
->    over again by calling sgtl5000_replace_vddd_with_ldo() and
->    regulator_bulk_enable().
-> 
-> Such back and forth calls sequence is complicated and unnecessary.
-> Also, since commit 4ddfebd (regulator: core: Provide a dummy regulator
-> with full constraints), regulator_bulk_get() will always succeeds
-> because of the dummy regulator.  Thus the VDDD detection is broken.
-> 
-> The patch changes the flow to something like the following, which should
-> be more reasonable and clear, and also fix the VDDD detection breakage.
-> 
-> 1. Check if we're running a chip before revision 0x11, on which an
->    external VDDD can possibly be an option.
-> 
-> 2. If it is an early revision, call regulator_get_optional() to detect
->    whether an external VDDD supply is available.
-> 
-> 3. If external VDDD is present, call sgtl5000_replace_vddd_with_ldo() to
->    update sgtl5000->supplies info.
-> 
-> 4. Drop regulator_bulk_get() call in sgtl5000_replace_vddd_with_ldo(),
->    and call it in sgtl5000_enable_regulators() no matter it's an
->    external VDDD or internal LDO.
-> 
-> 5. Call regulator_bulk_enable() to enable these 3 regulators.
-> 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 
-Mark,
+--Vbt/VEkUvOjXIgmy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Since what Xiubo is concerned by is another issue apart from this patch
-itself and being discussed, can you apply the patch?
+On Tue, Dec 17, 2013 at 11:52:44AM +0100, Lucas Stach wrote:
+> This corrects the Tegra AC97 clock handling to be in line with
+> the devicetree. Audio PLL is controlled by the machine driver, only
+> AC97 host controller clock remains to be independent.
 
-Shawn
+I don't understand this commit message at all I'm afraid.  What does it
+mean to "be in line with the devicetree" and what is the purpose of this
+change?
+
+I should also have mentioned on the previous patch: please use subject
+lines matching the subsystem.  You've got "ASOC" not "ASoC".
+
+--Vbt/VEkUvOjXIgmy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSsFjuAAoJELSic+t+oim9UhYP/0Ar2c1GSRl4TwrjBz5QTLMC
+usIE2kFq1vhtkxZcp1BoTBzCQuEmHopcIEXMlBF2AXf6Xq2fPKskAalKLlrw8PdY
+pe7RI8uKTLFh9h0qM8afDC3gjNDyuaCl+m0ttTfrq0vLTWkGaZOGK/E0OpPRohHn
+2DX2IFlU5UMuu6MrL4EpPOQbb3imQ2+q+1twwYfTLFRMgTgy9b5vje0ExO2GPyDl
+PNJ+zGDizW1/kH/zzlkackj8mlM0LT0rQDHE41DqlaJZgMG69dMAg7TDIeXeh9N1
+/ArsmnGmCnBUiEzJJ37f7Xdv+0eREhhCqBFCuho132ormQ47tex57RCp+Oy2lf3Z
+oIH778C2cGTJjWLDdpCvslW/eYsbeu0kXpdJ1wvTzvz7ZORaupEzGbXMCCTxq9tw
+iwp8Jdf0XBtNKRdjHiEN0xzs6XUj2M+ZeWOk7r6TnK5oceWGFKWEUGaSmIbyWjLn
+SoMT9/CWBcMUwoOIgOcdd9ToZyQb+6C8hm2z2GHCTv0PmecNeBhmnaMJDdl12poM
+kWoLp+Lxpm2nPxmKGcxu3aEgC9Gbul4vC4JyO0bITcFSjdFeSgOyrZaXfHC+6t1L
+s4xztLRhHfU4Crtt8o+zdvOMOqLl2rqZ3c65jHAl8HxxLlbhUO95uVTtRRtVQSy1
+fTQs/atPgwqtcNFz6sHn
+=VoqT
+-----END PGP SIGNATURE-----
+
+--Vbt/VEkUvOjXIgmy--
