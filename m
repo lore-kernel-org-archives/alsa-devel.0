@@ -1,71 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv3 5/7] ASoC: fsl: Add SGTL5000 based audio machine driver.
-Date: Wed, 18 Dec 2013 18:37:43 +0000
-Message-ID: <20131218183743.GG31886@sirena.org.uk>
-References: <1387250684-23406-1-git-send-email-Li.Xiubo@freescale.com>
- <1387250684-23406-6-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCH 2/2] ASoC: sgtl5000: clean up
+	sgtl5000_enable_regulators()
+Date: Wed, 18 Dec 2013 18:52:36 +0000
+Message-ID: <20131218185236.GI31886@sirena.org.uk>
+References: <1386916983-27832-1-git-send-email-shawn.guo@linaro.org>
+ <1386916983-27832-2-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lHGcFxmlz1yfXmOs"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1387250684-23406-6-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, timur@tabi.org, perex@perex.cz, r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============5129807047715689544=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E35C2617B6
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 19:52:39 +0100 (CET)
+In-Reply-To: <1386916983-27832-2-git-send-email-shawn.guo@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---lHGcFxmlz1yfXmOs
+--===============5129807047715689544==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SdaPbLtAangIkrMZ"
+Content-Disposition: inline
+
+
+--SdaPbLtAangIkrMZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 17, 2013 at 11:24:42AM +0800, Xiubo Li wrote:
+On Fri, Dec 13, 2013 at 02:43:03PM +0800, Shawn Guo wrote:
+> Function sgtl5000_enable_regulators() is somehow odd in handling the
+> optional external VDDD supply.  The driver can only enable this supply
+> on SGTL5000 chip before revision 0x11, and of course when this external
+> VDDD is present.  It currently does something like below.
 
-> This is the SGTL5000 codec based audio driver supported with both
-> playback and capture dai link implemention.
+Applied, thanks.
 
-> This implementation is only compatible with device tree definition.
-
-It looks like these cards should be supportable using the generic simple
-card bindings that Morimoto-san implemented, you can see these in -next
-as "ASoC: simple-card: add Device Tree support".  Can you check to see
-if that's the case?  If it is you'll still need Kconfig to enable
-building the SoC and CODEC drivers.
-=20
-> +menuconfig SND_FSL_SOC
-> +	tristate "SoC Audio for Freescale VF610 CPUs"
-> +	help
-> +	  Say Y or M if you want to add support for codecs attached to
-> +	  the VF610 CPUs.
-> +
-> +	  This will enable Freeacale SAI and SGTL5000 codec, and an extra
-> +	  TWR-AUDIO-SGTL sub-board is needed for SGTL5000.
-
-This should select the dmaengine helpers (and should really have been
-split out as part of the first patch).
-
---lHGcFxmlz1yfXmOs
+--SdaPbLtAangIkrMZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSsetzAAoJELSic+t+oim9cO4P/jg9yDHoYxa8Ua0LQThK0258
-o4E8uD798kNnlP43iOfu1L4RPemIoDTrRG3+y10hfOy8kZLHuevIhh/aohoGCJQc
-6yME+8z76rEtwO1qszQBFQSmZRCyhNp2X6RxuzQy9a5GVJ5gqA5etE+BCVYSTKeZ
-iKjE3CmVPjJusTFR8QnGFrTorFppl4sYAQoyXDCU5cWgbGp219mzvKlXBlMFDQ3d
-XI5Mh+qGPlagbvpCVku0JMWanwleWWyG0F2xehGW/hBhs+enzQLzSDiyigX5yjDh
-Nmih+WFK6gegEhqdTNocf0g1KQvVkop5LQdZM4GB0E953LYxurOgMFgAPX4Jpw2H
-2vSgxpI/kl1mOxBR9o9vnPEIAAkPuXo27cizJNCxuAjydXN6WwIUM8N3w+jFYLRZ
-whDio6RPSzGxPv9+3UqyQ/A5+t74+GffUsd/tOQaHIvR3NefJ92JngKYD0ecEEzi
-AAeYso9bkf1yErw1f6zJO/cU9T1WDajLBk2WuI8LZTAcPYWKHhlpAkj9veEfoCgU
-Asvjx+r8ETwqXfcBnxAKj5O131L/US5+u4KzT8n13glVjmKPwhxbhgzlKPJZEKfw
-kUzn9Rm5BQQ1whZa1b+r2+rU1pd7ps+SycYafGSDkfNYgh4QGMQ+3zoggQwYiEcp
-E8ZhAt8Q5Dy1MxiepDGY
-=dJju
+iQIcBAEBAgAGBQJSse7xAAoJELSic+t+oim9Bz4P/2fgTuKQXrdJDCVGjvzEKQ6w
+xPFC4D4vSiaT5N757fyT199x9AAt10ehdGPGmnkz2TWpV4SNpljjzSlvpUu6Mfh+
+ay3pMJAoL9JN8ZUe/PrJYzUPU+Y8PcfnvY6zBRIeZ9+OkXtyuOoLuBiYBa8cvxjf
+gRrAWVwVnHDUpAFoNzx5TEqIkc7wDwQnca0SsZRrbPOLv4L90L7tca38z7GVfrX+
+/xZw1knBJXYG9NdfgmfJu5rWfQdNNxdDJ3Rosm8TatNswQ97Z0YVHsr1tX6x1jvc
+YBQK/zhU+tMzLDVLO+zSfqT26a5CemUrF6ohnB5cP+9E/czNhTv8+cMT6U/FojRJ
+7I9cxcm0TON+KeOvb6XVzQgnQsd+FYIlSRJQjBPAEas8JJohOnz1KjjGfnZHuqAI
+lmuUPmbiTGXTXZCWnKtIIQO7LzjWenc7mDlk1Y48B0/ZbDqL0hru+SjmA16hc2Jg
+q7JqpQI3lGkrRk852R1Sdleff+fCqYdWiEDkLT2fsbHThM+rLG8KhR+Vz8TBcIQo
+3SbwziBa1kKKKuWbHcrgMg8UVewBQF0ocB+R+4kquXEHC25sjieYe6JCnGT+ovjj
+qkOgzpB0T16wbbyvB5VEhwSkk3otUvnTEknykh3OgOHFzRx4PtVkIqeBqA9c2Qxs
+tyaNmb2bBifATwPRZzBA
+=jjjG
 -----END PGP SIGNATURE-----
 
---lHGcFxmlz1yfXmOs--
+--SdaPbLtAangIkrMZ--
+
+--===============5129807047715689544==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5129807047715689544==--
