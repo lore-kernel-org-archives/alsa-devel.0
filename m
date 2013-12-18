@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH] ASoC: wm_adsp: Change ADSPs to be
- mixer widgets rather the PGAs
-Date: Wed, 18 Dec 2013 13:23:43 +0000
-Message-ID: <20131218132343.GP28455@sirena.org.uk>
-References: <1387364024-15708-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20131218112739.GH28455@sirena.org.uk>
- <20131218131436.GE11138@opensource.wolfsonmicro.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v3 9/9] ARM: DTS: imx5* imx6*, use imx51-ssi
+Date: Wed, 18 Dec 2013 21:58:30 +0800
+Message-ID: <20131218135826.GC7172@S2101-09.ap.freescale.net>
+References: <1387367865-26391-1-git-send-email-mpa@pengutronix.de>
+ <1387367865-26391-10-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0128291061189285661=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E7FF4261663
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 14:23:46 +0100 (CET)
-In-Reply-To: <20131218131436.GE11138@opensource.wolfsonmicro.com>
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB1BE261664
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 14:57:28 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1387367865-26391-10-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,68 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Dec 18, 2013 at 12:57:45PM +0100, Markus Pargmann wrote:
+> imx51-ssi and imx21-ssi are different IPs. imx51-ssi supports online
+> reconfiguration and needs this for correct interaction with SDMA. This
+> patch adds imx51-ssi before each imx21-ssi for all imx5/imx6 SoCs.
+> 
+> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+> ---
+>  arch/arm/boot/dts/imx51.dtsi   |  3 ++-
+>  arch/arm/boot/dts/imx53.dtsi   | 10 +++++++---
+>  arch/arm/boot/dts/imx6qdl.dtsi | 12 +++++++++---
+>  arch/arm/boot/dts/imx6sl.dtsi  | 12 +++++++++---
+>  4 files changed, 27 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/imx51.dtsi b/arch/arm/boot/dts/imx51.dtsi
+> index 4bcdd3a..1496421 100644
+> --- a/arch/arm/boot/dts/imx51.dtsi
+> +++ b/arch/arm/boot/dts/imx51.dtsi
+> @@ -155,7 +155,8 @@
+>  				};
+>  
+>  				ssi2: ssi@70014000 {
+> -					compatible = "fsl,imx51-ssi", "fsl,imx21-ssi";
+> +					compatible = "fsl,imx51-ssi",
+> +							"fsl,imx21-ssi";
 
---===============0128291061189285661==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qUZ+4mk6dr19Czgg"
-Content-Disposition: inline
+This is an unnecessary change.
 
+Shawn
 
---qUZ+4mk6dr19Czgg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Dec 18, 2013 at 01:14:36PM +0000, Charles Keepax wrote:
-> On Wed, Dec 18, 2013 at 11:27:39AM +0000, Mark Brown wrote:
-
-> > One of the issues here was trying to ensure that the DSP started up with
-> > its inputs stable so noise from them starting didn't propagage into the
-> > algorithm and confuse it.  The expecation with putting it as a PGA was
-> > that it would start with the outputs mute and do a digital unmute to
-> > bring them up.  Since everything is digital this should all be more
-> > robust than it would be for analogue.
-
-> Muting the output is a little tricky though as a graph walk will
-> be required to determine which output was connected, unless you
-> have any handy ideas I have not spotted? I will start having a
-> look to see what could be done on the muting front.
-
-Not the physical output, the DSP output into the rest of the device.  It
-would be very surprising if it powered up making noise.
-
---qUZ+4mk6dr19Czgg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSsaHcAAoJELSic+t+oim9RDsP/3lY+rG0EWz0rpEHBZO2QoeD
-PL91nllv1w+a3kWSbNHLDG+aCflzJFI1WoiwmBZETJkCV6LGrtv0BIgsV6hUpRwi
-0CCZZAjNL6NGk0DzqP4fVGpyyDejTVA6N6K3q5WWczuP7Ton0i1zVwu2JM39A59w
-K/ns4e08lijqpUoHFx45fFsQ+ienVG5Mb8lDtHtzPfuUDcbKXpenNaLxwKBVBaCu
-fLVOkxX7sjHn9D6HlRc3pr3hzfshoaMcdcrLWOTi+h/Ge6RfHel+FnVQLsjg42ez
-9m0Ze9at40Fa283mmWuspm9nmTBZsvQ7t8Qt38Tk0A7dJ6/7Yzyazze0zTi6t86W
-r+1yD4HrWIfzhAZqOP/cQcDBOGsNL/WQ1x0zV6qjsMPXuXYZdssQnsJRzwt6017e
-REmFVbCIEYyMOZ99CIwSk52pF0wDJsWak8Gq00ctisRkk+DqUqpaBLd8ATbHiMUO
-TRbzrC5kaapBVPKDqaJnMPbpJqnZFZlqCeQdaoXm36ZuQrP+bkHnyJzATRnfmlut
-ukPnAqpc4t3MMeVWP0SmZTuckO1XYnhAzNewhya/PTJAdQoe0UBqCrnDnxZHUNZn
-ySg11eTLYVXfgjYyE47SbOK7CQWpBDc2+PIaPjn3eMOWWPKJLKGiERSvY9p2B7S+
-70QTE7Wvk9Rb+DTSmrAo
-=mSHa
------END PGP SIGNATURE-----
-
---qUZ+4mk6dr19Czgg--
-
---===============0128291061189285661==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0128291061189285661==--
+>  					reg = <0x70014000 0x4000>;
+>  					interrupts = <30>;
+>  					clocks = <&clks 49>;
