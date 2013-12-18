@@ -1,53 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv3 4/7] Documentation: Add device tree bindings for
- Freescale SAI.
-Date: Wed, 18 Dec 2013 18:31:06 +0000
-Message-ID: <20131218183106.GF31886@sirena.org.uk>
+Subject: Re: [PATCHv3 5/7] ASoC: fsl: Add SGTL5000 based audio machine driver.
+Date: Wed, 18 Dec 2013 18:37:43 +0000
+Message-ID: <20131218183743.GG31886@sirena.org.uk>
 References: <1387250684-23406-1-git-send-email-Li.Xiubo@freescale.com>
- <1387250684-23406-5-git-send-email-Li.Xiubo@freescale.com>
+ <1387250684-23406-6-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="l+goss899txtYvYf"
+	protocol="application/pgp-signature"; boundary="lHGcFxmlz1yfXmOs"
 Return-path: <linux-doc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1387250684-23406-5-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <1387250684-23406-6-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-doc-owner@vger.kernel.org
 To: Xiubo Li <Li.Xiubo@freescale.com>
 Cc: lgirdwood@gmail.com, timur@tabi.org, perex@perex.cz, r64188@freescale.com, rob.herring@calxeda.com, pawel.moll@arm.com, mark.rutland@arm.com, swarren@wwwdotorg.org, ian.campbell@citrix.com, rob@landley.net, linux@arm.linux.org.uk, tiwai@suse.de, grant.likely@linaro.org, fabio.estevam@freescale.com, LW@KARO-electronics.de, oskar@scara.com, shawn.guo@linaro.org, b42378@freescale.com, b18965@freescale.com, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---l+goss899txtYvYf
+--lHGcFxmlz1yfXmOs
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 17, 2013 at 11:24:41AM +0800, Xiubo Li wrote:
+On Tue, Dec 17, 2013 at 11:24:42AM +0800, Xiubo Li wrote:
 
-> +	      big-endian_regs;
-> +	      big-endian_data;
+> This is the SGTL5000 codec based audio driver supported with both
+> playback and capture dai link implemention.
 
-I've applied this and fixed these two typos, thanks.
+> This implementation is only compatible with device tree definition.
 
---l+goss899txtYvYf
+It looks like these cards should be supportable using the generic simple
+card bindings that Morimoto-san implemented, you can see these in -next
+as "ASoC: simple-card: add Device Tree support".  Can you check to see
+if that's the case?  If it is you'll still need Kconfig to enable
+building the SoC and CODEC drivers.
+=20
+> +menuconfig SND_FSL_SOC
+> +	tristate "SoC Audio for Freescale VF610 CPUs"
+> +	help
+> +	  Say Y or M if you want to add support for codecs attached to
+> +	  the VF610 CPUs.
+> +
+> +	  This will enable Freeacale SAI and SGTL5000 codec, and an extra
+> +	  TWR-AUDIO-SGTL sub-board is needed for SGTL5000.
+
+This should select the dmaengine helpers (and should really have been
+split out as part of the first patch).
+
+--lHGcFxmlz1yfXmOs
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSsennAAoJELSic+t+oim99IQP/3BNIkRro1y+W29acaoe8U8t
-L62vvE1U6htu+XEcy/2mQJt86bwG7oz1Mh7/ApE/0zZ41nBq8hLOiFDol4rzW/kk
-AOSasrmEtHxfmjxSOHirsnM8katw29nWEJAN04ZzbHyiZfrPanpi9RrG+0gaEPAC
-GGuFKkK9bs+Q5S7MUlKOm4ENWXUvDHmEtaE6tPGCD2TJ7PgUCdrlI5xdhuEPUzbJ
-/o9AIHbeog7N61blhui+tn1HkZzPxnqRpByWSFIAb+PUEpP7doXzT52V57RN5D9z
-13LLZh1CH9pcrldZ3ext2+LuHbwIUV4QE//nXvDko3TZWew/ZA05nnMkvxeFHGPe
-NUJ5e/NqXGcCcTZjM9TBV+lcSEgVcm+t8LajLQFbm+l2CNin59CMUlIvHj1jYJbw
-NM8yPHeuTXTxIs0gWfU/N5jpRF60YJkngX5JEvj4kHFuIe5wXu2x3+aPSes91C8x
-YBiGHyZubdGYjr4t3uFbjIjRUR3NROCYXu19uSGIQHWo0lIEIevXjq8l3qw0udbb
-DuxvlQRYKbxP5/RtrmYWc7PitdoKRzKwXW+EULHALTAmwrAL8grKpuS4Xy36dteH
-5WHRWhSUzDs0VrpqRWQuI1Iy9MGUATwwY5tifOiamje74ec/as/Crm9Qymtpguzk
-S1N2v02gyvbuOVYqn5yI
-=NasZ
+iQIcBAEBAgAGBQJSsetzAAoJELSic+t+oim9cO4P/jg9yDHoYxa8Ua0LQThK0258
+o4E8uD798kNnlP43iOfu1L4RPemIoDTrRG3+y10hfOy8kZLHuevIhh/aohoGCJQc
+6yME+8z76rEtwO1qszQBFQSmZRCyhNp2X6RxuzQy9a5GVJ5gqA5etE+BCVYSTKeZ
+iKjE3CmVPjJusTFR8QnGFrTorFppl4sYAQoyXDCU5cWgbGp219mzvKlXBlMFDQ3d
+XI5Mh+qGPlagbvpCVku0JMWanwleWWyG0F2xehGW/hBhs+enzQLzSDiyigX5yjDh
+Nmih+WFK6gegEhqdTNocf0g1KQvVkop5LQdZM4GB0E953LYxurOgMFgAPX4Jpw2H
+2vSgxpI/kl1mOxBR9o9vnPEIAAkPuXo27cizJNCxuAjydXN6WwIUM8N3w+jFYLRZ
+whDio6RPSzGxPv9+3UqyQ/A5+t74+GffUsd/tOQaHIvR3NefJ92JngKYD0ecEEzi
+AAeYso9bkf1yErw1f6zJO/cU9T1WDajLBk2WuI8LZTAcPYWKHhlpAkj9veEfoCgU
+Asvjx+r8ETwqXfcBnxAKj5O131L/US5+u4KzT8n13glVjmKPwhxbhgzlKPJZEKfw
+kUzn9Rm5BQQ1whZa1b+r2+rU1pd7ps+SycYafGSDkfNYgh4QGMQ+3zoggQwYiEcp
+E8ZhAt8Q5Dy1MxiepDGY
+=dJju
 -----END PGP SIGNATURE-----
 
---l+goss899txtYvYf--
+--lHGcFxmlz1yfXmOs--
