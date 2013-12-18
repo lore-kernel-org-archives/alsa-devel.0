@@ -1,16 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Enable subwoofer on Dell Vostro
-	5460/5470
-Date: Fri, 20 Dec 2013 16:08:13 +0100
-Message-ID: <1387552093-6262-1-git-send-email-david.henningsson@canonical.com>
+From: Lv Zheng <lv.zheng@intel.com>
+Subject: [RFC PATCH 15/15] ACPI/thinkpad: Fix wrong
+	<acpi/acpi.h> inclusion in Thinkpad ACPI users.
+Date: Wed, 18 Dec 2013 17:07:21 +0800
+Message-ID: <f82182940fe88b1b6428eecc2df1cb1684f0ca80.1387336613.git.lv.zheng__25016.6282909506$1387552236$gmane$org@intel.com>
+References: <cover.1387336613.git.lv.zheng@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 6AAF3261AF4
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 16:08:14 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05DEE2651A3
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 10:07:37 +0100 (CET)
+In-Reply-To: <cover.1387336613.git.lv.zheng@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,115 +21,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1211920@bugs.launchpad.net, kailang@realtek.com, David Henningsson <david.henningsson@canonical.com>
+To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <len.brown@intel.com>
+Cc: alsa-devel@alsa-project.org, ibm-acpi-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, linux-kernel@vger.kernel.org, Lv Zheng <zetalog@gmail.com>, linux-acpi@vger.kernel.org, Lv Zheng <lv.zheng@intel.com>, platform-driver-x86@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In this case, there are two DACs, and DAC 0x03 is mono. In order
-to make headphones and front speaker use DAC 0x02, and subwoofer use
-DAC 0x03, we artificially cut the connection from nodes 0x14 and 0x15
-to node 0x03, so they can only use DAC 0x02.
+CONFIG_ACPI dependent code should include <linux/acpi.h> instead of
+directly including <acpi/acpi.h>.  This patch cleans up such wrong
+inclusions for Thinkpad ACPI users.
 
-In addition, the 5460 and 5470 differs in the sense that 5470 also
-needs a headset mic patch, whereas 5460 has individual detection for
-headphone and headset mic.
-
-BugLink: https://bugs.launchpad.net/bugs/1211920
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+Cc: Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+Cc: ibm-acpi-devel@lists.sourceforge.net
+Cc: platform-driver-x86@vger.kernel.org
+Signed-off-by: Lv Zheng <lv.zheng@intel.com>
 ---
+ drivers/platform/x86/thinkpad_acpi.c |    1 -
+ include/linux/thinkpad_acpi.h        |    2 ++
+ sound/pci/hda/patch_conexant.c       |    1 -
+ sound/pci/hda/patch_realtek.c        |    1 -
+ 4 files changed, 2 insertions(+), 3 deletions(-)
 
-I'm adding Kailang to cc on this one; hopefully he'll scream if this patch
-is doing anything dangerous, such as if there's a risk to blow up the subwoofer.
-
- sound/pci/hda/patch_realtek.c |   43 +++++++++++++++++++++++++++++++++++------
- 1 file changed, 37 insertions(+), 6 deletions(-)
-
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index defb6af..c114d7c 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -76,7 +76,6 @@
+ #include <linux/dmi.h>
+ #include <linux/jiffies.h>
+ #include <linux/workqueue.h>
+-#include <linux/acpi.h>
+ #include <linux/pci_ids.h>
+ #include <linux/thinkpad_acpi.h>
+ #include <sound/core.h>
+diff --git a/include/linux/thinkpad_acpi.h b/include/linux/thinkpad_acpi.h
+index 361de59..02928eb 100644
+--- a/include/linux/thinkpad_acpi.h
++++ b/include/linux/thinkpad_acpi.h
+@@ -1,6 +1,8 @@
+ #ifndef __THINKPAD_ACPI_H__
+ #define __THINKPAD_ACPI_H__
+ 
++#include <linux/acpi.h>
++
+ /* These two functions return 0 if success, or negative error code
+    (e g -ENODEV if no led present) */
+ 
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 3fbf288..c2da489 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -3243,7 +3243,6 @@ enum {
+ #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
+ 
+ #include <linux/thinkpad_acpi.h>
+-#include <acpi/acpi.h>
+ 
+ static int (*led_set_func)(int, bool);
+ 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index dfe4080..16c0caa 100644
+index 34de5dc..17306be 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -3770,10 +3770,14 @@ static void alc282_fixup_asus_tx300(struct hda_codec *codec,
- static void alc290_fixup_mono_speakers(struct hda_codec *codec,
- 				       const struct hda_fixup *fix, int action)
- {
--	if (action == HDA_FIXUP_ACT_PRE_PROBE)
--		/* Remove DAC node 0x03, as it seems to be
--		   giving mono output */
--		snd_hda_override_wcaps(codec, 0x03, 0);
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-+		/* DAC node 0x03 is giving mono output. We therefore want to
-+		   make sure 0x14 (front speaker) and 0x15 (headphones) use the
-+		   stereo DAC, while leaving 0x17 (bass speaker) for node 0x03. */
-+		hda_nid_t conn1[2] = { 0x0c };
-+		snd_hda_override_conn_list(codec, 0x14, 1, conn1);
-+		snd_hda_override_conn_list(codec, 0x15, 1, conn1);
-+	}
- }
- 
+@@ -3726,7 +3726,6 @@ static void alc290_fixup_mono_speakers(struct hda_codec *codec,
  #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
-@@ -3913,6 +3917,9 @@ enum {
- 	ALC282_FIXUP_ASUS_TX300,
- 	ALC283_FIXUP_INT_MIC,
- 	ALC290_FIXUP_MONO_SPEAKERS,
-+	ALC290_FIXUP_MONO_SPEAKERS_HSJACK,
-+	ALC290_FIXUP_SUBWOOFER,
-+	ALC290_FIXUP_SUBWOOFER_HSJACK,
- 	ALC269_FIXUP_THINKPAD_ACPI,
- 	ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC255_FIXUP_HEADSET_MODE,
-@@ -4235,9 +4242,31 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_LIMIT_INT_MIC_BOOST
- 	},
-+	[ALC290_FIXUP_SUBWOOFER_HSJACK] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x17, 0x90170112 }, /* subwoofer */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC290_FIXUP_MONO_SPEAKERS_HSJACK,
-+	},
-+	[ALC290_FIXUP_SUBWOOFER] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x17, 0x90170112 }, /* subwoofer */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC290_FIXUP_MONO_SPEAKERS,
-+	},
- 	[ALC290_FIXUP_MONO_SPEAKERS] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc290_fixup_mono_speakers,
-+	},
-+	[ALC290_FIXUP_MONO_SPEAKERS_HSJACK] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc290_fixup_mono_speakers,
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_DELL3_MIC_NO_PRESENCE,
- 	},
-@@ -4282,6 +4311,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x05cb, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05cc, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05cd, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x05da, "Dell Vostro 5460", ALC290_FIXUP_SUBWOOFER),
- 	SND_PCI_QUIRK(0x1028, 0x05de, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05e0, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05e9, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-@@ -4303,10 +4333,11 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0610, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0613, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0614, "Dell Inspiron 3135", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
--	SND_PCI_QUIRK(0x1028, 0x0616, "Dell Vostro 5470", ALC290_FIXUP_MONO_SPEAKERS),
-+	SND_PCI_QUIRK(0x1028, 0x0615, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
-+	SND_PCI_QUIRK(0x1028, 0x0616, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
- 	SND_PCI_QUIRK(0x1028, 0x061f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0629, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
--	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS),
-+	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS_HSJACK),
- 	SND_PCI_QUIRK(0x1028, 0x063e, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x063f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0640, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 
+ #include <linux/thinkpad_acpi.h>
+-#include <acpi/acpi.h>
+ 
+ static int (*led_set_func)(int, bool);
+ 
 -- 
-1.7.9.5
+1.7.10.4
