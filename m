@@ -1,15 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [RFC PATCH] ASoC: wm_adsp: Change ADSPs to be mixer
-	widgets rather the PGAs
-Date: Wed, 18 Dec 2013 10:53:44 +0000
-Message-ID: <1387364024-15708-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: mmp-pcm: config pcm slave via
+ generic dmaengine
+Date: Wed, 18 Dec 2013 11:03:18 +0000
+Message-ID: <20131218110318.GC28455@sirena.org.uk>
+References: <1387268544-31222-1-git-send-email-zhouqiao@marvell.com>
+ <20131217124954.GY3185@sirena.org.uk> <52B062EC.2050605@metafoo.de>
+ <52B138CE.3000800@marvell.com> <52B167F4.1080806@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4518263881101756446=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42AEB26163C
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 12:00:36 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10827261646
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 12:03:23 +0100 (CET)
+In-Reply-To: <52B167F4.1080806@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,45 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "haojian.zhuang@gmail.com" <haojian.zhuang@gmail.com>, Qiao Zhou <zhouqiao@marvell.com>, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-PGAs often control the output from a chip and if the DSP is also marked
-as a PGA it may be powered up after the output has been enabled. This
-patch changes the ADSP2 cores to be marked as snd_soc_dapm_mixer widgets
-so they are powered up before any PGAs.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
+--===============4518263881101756446==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="83Y2sXKo4f/n2njO"
+Content-Disposition: inline
 
-Hi,
 
-Was also considering if it would be worth adding an
-additional snd_soc_dapm_dsp id? That could sit between
-mixers and pgas, but I can't really see any obvious issue
-with treating the DSP as a mixer and it is a much simpler
-change. Although I am open to writing the other change if it
-is preferred?
+--83Y2sXKo4f/n2njO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Charles
+On Wed, Dec 18, 2013 at 10:16:36AM +0100, Lars-Peter Clausen wrote:
 
- sound/soc/codecs/wm_adsp.h |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> +#ifdef CONFIG_CPU_MMP2
+> +	/*
+> +	 * Temporary hack until we have a generic gen_pool lookup
+> +	 * infrastructure.
+> +	 */
+> +	if (!pool)
+> +		pool = sram_get_gpool("asram");
+> +#endif
 
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index d018dea..795a3b2 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -66,7 +66,7 @@ struct wm_adsp {
- 		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
- 
- #define WM_ADSP2(wname, num) \
--	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
-+	SND_SOC_DAPM_MIXER_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
- 		wm_adsp2_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
- 
- extern const struct snd_kcontrol_new wm_adsp1_fw_controls[];
--- 
-1.7.2.5
+I worry about what this'd do on a multiplatform kernel - it seems
+unlikely that someone has a pool with the same name but that sounds like
+famous last words.  Nothing in mainline does though so...
+
+--83Y2sXKo4f/n2njO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSsYDzAAoJELSic+t+oim9nugQAIdqXKJXqqWGBbDNbJ6Hx66X
+FvhNGRYdFp29ZhroAgeDogupeG/U7OC1SuwR6UEh8NqBRxh9Di9um+EzahLqxDPd
+d1VpryFZC83JaAuT8ABTP6YGF9xm16xQPV50zSHwW3X2SeEKPC3YnQelVipwTCy3
+3E+vfNTfQBtd/4lJMkQ7u8CyAoOc5bhE0buzSyow8WL/9U6RzzyTs31ten6QfwOL
+kxsrBpj9gMgqZFLIdfg6925HDTtCIq0rAzQ7KOGoUG8iv54PcB4YzIAB/l8txeg/
+FaBUAtwfU8zQndpf1AaA6JPwE6k6ARoZmSOdKbB1nbAS3fDPdvE5hcWYs/6R+U0/
+s9LWKYam/0J6pfEeFlccYmHcsKZkVGTqPLTBWkGJLOELh50bLFaOVXJIUbQuLWcS
+0vMH8vat27QTz3LRsGMVNAr6EG0sBtV4sHSPDB97zUvSVpW7XV91DDorW/S0Mjx5
+LJy1dwEPOGlnONYBeRQXyIDVL96C56DTBYsfVpnkmXVQiBN71bywzzlhZjPsCa6g
+Z+NP+dqEkfcjXkF19Ja9SQ7cZhutKegBX36mIy9z5WeG7qPN6g2t2qevdOM2dPSd
+g0DD2gCB/4xAzoaWvoT7YTcAdgPZknuoQjL5yp3qNCutUQt9DkcWmXs+eFQAuCBO
+5UVvJ8yDHVANUN8DT6aV
+=14XY
+-----END PGP SIGNATURE-----
+
+--83Y2sXKo4f/n2njO--
+
+--===============4518263881101756446==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4518263881101756446==--
