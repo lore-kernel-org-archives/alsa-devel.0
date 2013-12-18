@@ -1,49 +1,130 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: firewire-lib: Add support for AMDTP transmit stream and PCM
-	capture
-Date: Wed, 18 Dec 2013 20:57:17 +0900
-Message-ID: <52B18D9D.5020905@sakamocchi.jp>
-References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
-	<1385186884-8259-6-git-send-email-o-takashi@sakamocchi.jp>
-	<52936C65.9020602@ladisch.de>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH v3 8/9] ASoC: fsl-ssi: Drop ac97 specific
+	trigger function
+Date: Wed, 18 Dec 2013 12:57:44 +0100
+Message-ID: <1387367865-26391-9-git-send-email-mpa@pengutronix.de>
+References: <1387367865-26391-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <52936C65.9020602@ladisch.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <clemens@ladisch.de>, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 555962615EC
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 12:58:58 +0100 (CET)
+In-Reply-To: <1387367865-26391-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+The normal trigger function can now be used for AC97. Drop AC97 trigger
+function.
 
-(Nov 26 2013 00:27), Clemens Ladisch wrote:
-> It might be a good idea to completely drop S16 support.
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
+ sound/soc/fsl/fsl_ssi.c | 61 +++++++------------------------------------------
+ 1 file changed, 8 insertions(+), 53 deletions(-)
 
-As long as I investigated some resources given by Echo Audio, there are 
-no way to change PCM format in transmitted packet. This is the same for 
-some documents related to BeBoB.
-
-So I agree with this idea for Fireworks/BeBoB. But I don't know about 
-the other devices.
-
-
-Regards
-
-Takashi Sakamoto
-
-
-------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 26190f9..d38f1c1 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -793,6 +793,7 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(rtd->cpu_dai);
++	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -815,6 +816,12 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		return -EINVAL;
+ 	}
+ 
++	if (ssi_private->imx_ac97) {
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			write_ssi(CCSR_SSI_SOR_TX_CLR, &ssi->sor);
++		else
++			write_ssi(CCSR_SSI_SOR_RX_CLR, &ssi->sor);
++	}
+ 
+ 	return 0;
+ }
+@@ -859,58 +866,6 @@ static const struct snd_soc_component_driver fsl_ssi_component = {
+ 	.name		= "fsl-ssi",
+ };
+ 
+-/**
+- * fsl_ssi_ac97_trigger: start and stop the AC97 receive/transmit.
+- *
+- * This function is called by ALSA to start, stop, pause, and resume the
+- * transfer of data.
+- */
+-static int fsl_ssi_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
+-			   struct snd_soc_dai *dai)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(
+-			rtd->cpu_dai);
+-	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+-
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_TIE |
+-					CCSR_SSI_SIER_TFE0_EN);
+-		else
+-			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_RIE |
+-					CCSR_SSI_SIER_RFF0_EN);
+-		break;
+-
+-	case SNDRV_PCM_TRIGGER_STOP:
+-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_TIE |
+-					CCSR_SSI_SIER_TFE0_EN, 0);
+-		else
+-			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_RIE |
+-					CCSR_SSI_SIER_RFF0_EN, 0);
+-		break;
+-
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		write_ssi(CCSR_SSI_SOR_TX_CLR, &ssi->sor);
+-	else
+-		write_ssi(CCSR_SSI_SOR_RX_CLR, &ssi->sor);
+-
+-	return 0;
+-}
+-
+-static const struct snd_soc_dai_ops fsl_ssi_ac97_dai_ops = {
+-	.startup	= fsl_ssi_startup,
+-	.trigger	= fsl_ssi_ac97_trigger,
+-};
+-
+ static struct snd_soc_dai_driver fsl_ssi_ac97_dai = {
+ 	.ac97_control = 1,
+ 	.playback = {
+@@ -927,7 +882,7 @@ static struct snd_soc_dai_driver fsl_ssi_ac97_dai = {
+ 		.rates = SNDRV_PCM_RATE_48000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+-	.ops = &fsl_ssi_ac97_dai_ops,
++	.ops = &fsl_ssi_dai_ops,
+ };
+ 
+ 
+-- 
+1.8.5.1
