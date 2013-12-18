@@ -1,80 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2 1/2] ASoC: SPEAr: get rid of
- spear-pcm-audio struct device
-Date: Wed, 18 Dec 2013 18:55:34 +0000
-Message-ID: <20131218185534.GK31886@sirena.org.uk>
-References: <1386704125-28698-1-git-send-email-swarren@wwwdotorg.org>
+Subject: Re: [PATCH 3/5] MFD: twl6040: reg_defaults support for regmap
+Date: Wed, 18 Dec 2013 18:56:59 +0000
+Message-ID: <20131218185659.GL31886@sirena.org.uk>
+References: <1385733827-19831-1-git-send-email-peter.ujfalusi@ti.com>
+ <1385733827-19831-4-git-send-email-peter.ujfalusi@ti.com>
+ <20131129160032.GC26982@lee--X1>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6215648634026804700=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F6D02617B6
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 19:55:38 +0100 (CET)
-In-Reply-To: <1386704125-28698-1-git-send-email-swarren@wwwdotorg.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oOpJzULQ70+PGW7h"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20131129160032.GC26982@lee--X1>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6215648634026804700==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cN0A5YokcrYPGsSB"
-Content-Disposition: inline
-
-
---cN0A5YokcrYPGsSB
+--oOpJzULQ70+PGW7h
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 10, 2013 at 12:35:24PM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
->=20
-> Modify the SPEAr PCM driver so that it's a utility library that can be
-> registered on each DAI, rather than a separate struct device. This is
-> more in line with how many recent DT-converted platforms operate, and
-> avoids the need for yet another struct device.
+On Fri, Nov 29, 2013 at 04:00:32PM +0000, Lee Jones wrote:
 
-Applied both, thanks.
+> Mark, is an immutable branch required for this patch?
 
---cN0A5YokcrYPGsSB
+One is...  I think I did ask for one at the time but didn't hear
+anything back?
+
+--oOpJzULQ70+PGW7h
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSse+jAAoJELSic+t+oim9NY4P/ibD17PLC3u0hh5PZb4VGsB3
-B8JTyAXmFTW9MaH05OCce7DalWuCWSxEXBmBWdNgMd1ltM1IIQLqyBwYs6S8BncI
-iZUFdEnTz35LnCa65e5vQYpl6jjG8AjwPTpitVHxVfK0ieLDW2JU4OVeUm4JJuLg
-eMyqUCDRopgLdIcZYyIAfcpHEKr5kPEdAVgoOeBViQIbXvudsSfRJn+xIMO+Tv7s
-+haVZBVXQKNmjYowMM/cc0pG9l2xmOa0ILjpRk+uxnoAphQHn1brn8F00CXxpw0e
-K3PsYR8v8WrJIqUgYgKcrraVp8SbRNn+6b5bZILEfScI7UaEyRBgS+dwTyvGhbVz
-4fVQqIG/2mmDTsiIEwXVpEmVazzhJrsAxkhaU81YO/l/fu6mKFcuyITeNSAkQaCb
-DwtxQscFzERbtvHcEZnLzcF0lEJdI23hFJvdS+ziLT9OKSvgjMGiHlqpn013wr0Y
-mQdUTNunJQdp6BC1hWiAPpT/nNS/pVKH7pdreHWuOt6Nc0MMwqbwSciIE7Qq7gK9
-w3y1mNufcFjS8Pm1fLSZbygmdYCh49f0c2l3805gKkDcY/iXvSid2pXoXY2uJ7z9
-21+a2jaa0IKNqAQ8rg4qJY+8gizOK4w+oleuwAz3WfR/AdLI7J4JgLzKFgDLX8a0
-u2q+slxkaF6FSbfZY/Lv
-=M1eR
+iQIcBAEBAgAGBQJSse/4AAoJELSic+t+oim98NgQAJmka8H5Cp7lEn4C8x4QuxBE
+UACrYL7wu3tg34o6zwkMvt7Oz5MnqCXSB7gKO7u9wA9v9visnu+8T0HsekJwx7Sr
+DT0A1hf6fxTmCsEuiXf4fB+DjI6QUTqYALYf5lsIogFOdvn+3ohALsHd6IfUMgl9
+KBgUBFbXgJcmRfSXycMxBOYFQ2gQJFz0UhVxjhfbZ39hbwAKY2iM78kSM+Tk56eM
+YNG9j3CSQeCdIa0FFHiFT2Opd0Q4uOB270p/WXgfReJL2E+wSCvyZphGUP7/RdLC
+5mEic8XR79cc355vwx/+t7fIicLa1qns9Q3KKufgGsF/k2mf6ptLLZwk+NkWvV8z
+kIidu5QYAdQO49MYkYT6xqzL38E3gd1NCoMSMCvXOteQWAaGDWUq6XqS3Iw5PyTp
+7SmgFvAjTb4jxzxGiqOroZd2Eadsjly1HeaCiKpuM9i/KRVzbvADvzeAKR5Pyn00
+AMhUEZDPwA1KwCbg2+t4eHrHt85LE534jh1LQiB0EfOYvXX+3qaoGlfXXiYdi+jI
+m0/CX2tfKKI7BnkE4xSeZt6ItuWMpBcEC5Km/nj2TVX6rnzqGGvWhD9AUVZauut/
+GRnEybnTgfblfE6H6WYvOk6j02x1HvKo6QYL6lk+f9syp/b2JhItpXRWvChiPgLk
+dmYBD+c2npmGXRWbXS8w
+=LyON
 -----END PGP SIGNATURE-----
 
---cN0A5YokcrYPGsSB--
-
---===============6215648634026804700==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6215648634026804700==--
+--oOpJzULQ70+PGW7h--
