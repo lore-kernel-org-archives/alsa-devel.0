@@ -1,16 +1,15 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v3 3/9] ASoC: fsl-ssi: Add imx51-ssi and
-	of_device_id matching
-Date: Wed, 18 Dec 2013 12:57:39 +0100
-Message-ID: <1387367865-26391-4-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v3 9/9] ARM: DTS: imx5* imx6*, use imx51-ssi
+Date: Wed, 18 Dec 2013 12:57:45 +0100
+Message-ID: <1387367865-26391-10-git-send-email-mpa@pengutronix.de>
 References: <1387367865-26391-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 9A635261630
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 12:59:09 +0100 (CET)
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 8AF32265283
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 12:59:11 +0100 (CET)
 In-Reply-To: <1387367865-26391-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,100 +24,140 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur 
 Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-There is a small but significant difference between imx21-ssi and
-imx51-ssi and above. imx21-ssi does not allow online reconfiguration of
-some registers. They have to be configured at the beginning.
-
-imx51-ssi has to reconfigure the SSI unit while it is running. Otherwise
-it would not be possible to have two streams in parallel. The new SDMA
-unit in imx51 and above has to be configured before the first DMA
-request arrives. Therefor we need to setup TDMAE/RDMAE just before
-starting the stream.
-
-This patch introduces distinct imx51-ssi as compatible and adds
-of_device_id matching in the probe function.
+imx51-ssi and imx21-ssi are different IPs. imx51-ssi supports online
+reconfiguration and needs this for correct interaction with SDMA. This
+patch adds imx51-ssi before each imx21-ssi for all imx5/imx6 SoCs.
 
 Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 31 +++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+ arch/arm/boot/dts/imx51.dtsi   |  3 ++-
+ arch/arm/boot/dts/imx53.dtsi   | 10 +++++++---
+ arch/arm/boot/dts/imx6qdl.dtsi | 12 +++++++++---
+ arch/arm/boot/dts/imx6sl.dtsi  | 12 +++++++++---
+ 4 files changed, 27 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index e949ce5..a889df5 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -122,6 +122,13 @@ static inline void write_ssi_mask(u32 __iomem *addr, u32 clear, u32 set)
- 		CCSR_SSI_SIER_TUE0_EN | CCSR_SSI_SIER_TFRC_EN)
- #define FSLSSI_SISR_MASK (FSLSSI_SIER_DBG_RX_FLAGS | FSLSSI_SIER_DBG_TX_FLAGS)
+diff --git a/arch/arm/boot/dts/imx51.dtsi b/arch/arm/boot/dts/imx51.dtsi
+index 4bcdd3a..1496421 100644
+--- a/arch/arm/boot/dts/imx51.dtsi
++++ b/arch/arm/boot/dts/imx51.dtsi
+@@ -155,7 +155,8 @@
+ 				};
  
-+
-+enum fsl_ssi_type {
-+	FSL_SSI_MCP8610,
-+	FSL_SSI_MX21,
-+	FSL_SSI_MX51,
-+};
-+
- /**
-  * fsl_ssi_private: per-SSI private data
-  *
-@@ -184,6 +191,14 @@ struct fsl_ssi_private {
- 	char name[1];
- };
+ 				ssi2: ssi@70014000 {
+-					compatible = "fsl,imx51-ssi", "fsl,imx21-ssi";
++					compatible = "fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x70014000 0x4000>;
+ 					interrupts = <30>;
+ 					clocks = <&clks 49>;
+diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
+index 4307e80..034b8b0 100644
+--- a/arch/arm/boot/dts/imx53.dtsi
++++ b/arch/arm/boot/dts/imx53.dtsi
+@@ -149,7 +149,9 @@
+ 				};
  
-+static const struct of_device_id fsl_ssi_ids[] = {
-+	{ .compatible = "fsl,mpc8610-ssi", .data = (void *) FSL_SSI_MCP8610},
-+	{ .compatible = "fsl,imx51-ssi", .data = (void *) FSL_SSI_MX51},
-+	{ .compatible = "fsl,imx21-ssi", .data = (void *) FSL_SSI_MX21},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
-+
- /**
-  * fsl_ssi_isr: SSI interrupt handler
-  *
-@@ -863,6 +878,8 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	int ret = 0;
- 	struct device_attribute *dev_attr = NULL;
- 	struct device_node *np = pdev->dev.of_node;
-+	const struct of_device_id *of_id;
-+	enum fsl_ssi_type hw_type;
- 	const char *p, *sprop;
- 	const uint32_t *iprop;
- 	struct resource res;
-@@ -877,6 +894,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	if (!of_device_is_available(np))
- 		return -ENODEV;
+ 				ssi2: ssi@50014000 {
+-					compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
++					compatible = "fsl,imx53-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x50014000 0x4000>;
+ 					interrupts = <30>;
+ 					clocks = <&clks 49>;
+@@ -1049,7 +1051,8 @@
+ 			};
  
-+	of_id = of_match_device(fsl_ssi_ids, &pdev->dev);
-+	if (!of_id)
-+		return -EINVAL;
-+	hw_type = (enum fsl_ssi_type) of_id->data;
-+
- 	/* We only support the SSI in "I2S Slave" mode */
- 	sprop = of_get_property(np, "fsl,mode", NULL);
- 	if (!sprop) {
-@@ -953,7 +975,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
-                 /* Older 8610 DTs didn't have the fifo-depth property */
- 		ssi_private->fifo_depth = 8;
+ 			ssi1: ssi@63fcc000 {
+-				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
++				compatible = "fsl,imx53-ssi", "fsl,imx51-ssi",
++						"fsl,imx21-ssi";
+ 				reg = <0x63fcc000 0x4000>;
+ 				interrupts = <29>;
+ 				clocks = <&clks 48>;
+@@ -1076,7 +1079,8 @@
+ 			};
  
--	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx21-ssi")) {
-+	if (hw_type == FSL_SSI_MX21 || hw_type == FSL_SSI_MX51) {
- 		u32 dma_events[2];
- 		ssi_private->ssi_on_imx = true;
+ 			ssi3: ssi@63fe8000 {
+-				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
++				compatible = "fsl,imx53-ssi", "fsl,imx51-ssi",
++						"fsl,imx21-ssi";
+ 				reg = <0x63fe8000 0x4000>;
+ 				interrupts = <96>;
+ 				clocks = <&clks 50>;
+diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
+index 59154dc..c51440b 100644
+--- a/arch/arm/boot/dts/imx6qdl.dtsi
++++ b/arch/arm/boot/dts/imx6qdl.dtsi
+@@ -232,7 +232,9 @@
+ 				};
  
-@@ -1139,13 +1161,6 @@ static int fsl_ssi_remove(struct platform_device *pdev)
- 	return 0;
- }
+ 				ssi1: ssi@02028000 {
+-					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6q-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x02028000 0x4000>;
+ 					interrupts = <0 46 0x04>;
+ 					clocks = <&clks 178>;
+@@ -245,7 +247,9 @@
+ 				};
  
--static const struct of_device_id fsl_ssi_ids[] = {
--	{ .compatible = "fsl,mpc8610-ssi", },
--	{ .compatible = "fsl,imx21-ssi", },
--	{}
--};
--MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
--
- static struct platform_driver fsl_ssi_driver = {
- 	.driver = {
- 		.name = "fsl-ssi-dai",
+ 				ssi2: ssi@0202c000 {
+-					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6q-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x0202c000 0x4000>;
+ 					interrupts = <0 47 0x04>;
+ 					clocks = <&clks 179>;
+@@ -258,7 +262,9 @@
+ 				};
+ 
+ 				ssi3: ssi@02030000 {
+-					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6q-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x02030000 0x4000>;
+ 					interrupts = <0 48 0x04>;
+ 					clocks = <&clks 180>;
+diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
+index 28558f1..1e7b712 100644
+--- a/arch/arm/boot/dts/imx6sl.dtsi
++++ b/arch/arm/boot/dts/imx6sl.dtsi
+@@ -195,7 +195,9 @@
+ 				};
+ 
+ 				ssi1: ssi@02028000 {
+-					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6sl-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x02028000 0x4000>;
+ 					interrupts = <0 46 0x04>;
+ 					clocks = <&clks IMX6SL_CLK_SSI1>;
+@@ -207,7 +209,9 @@
+ 				};
+ 
+ 				ssi2: ssi@0202c000 {
+-					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6sl-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x0202c000 0x4000>;
+ 					interrupts = <0 47 0x04>;
+ 					clocks = <&clks IMX6SL_CLK_SSI2>;
+@@ -219,7 +223,9 @@
+ 				};
+ 
+ 				ssi3: ssi@02030000 {
+-					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6sl-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x02030000 0x4000>;
+ 					interrupts = <0 48 0x04>;
+ 					clocks = <&clks IMX6SL_CLK_SSI3>;
 -- 
 1.8.5.1
