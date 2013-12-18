@@ -1,81 +1,54 @@
-From: Lv Zheng <lv.zheng@intel.com>
-Subject: [RFC PATCH 15/15] ACPI/thinkpad: Fix wrong <acpi/acpi.h> inclusion in Thinkpad ACPI users.
-Date: Wed, 18 Dec 2013 17:07:21 +0800
-Message-ID: <f82182940fe88b1b6428eecc2df1cb1684f0ca80.1387336613.git.lv.zheng__47551.7181600027$1387358011$gmane$org@intel.com>
-References: <cover.1387336613.git.lv.zheng@intel.com>
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-In-Reply-To: <cover.1387336613.git.lv.zheng@intel.com>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <len.brown@intel.com>
-Cc: Lv Zheng <lv.zheng@intel.com>, Lv Zheng <zetalog@gmail.com>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, ibm-acpi-devel@lists.sourceforge.net, platform-driver-x86@vger.kernel.org
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Add Dell headset detection quirk for one
+ more laptop model
+Date: Wed, 18 Dec 2013 17:16:56 +0800
+Message-ID: <52B16808.3090504@canonical.com>
+References: <1387273183-11118-1-git-send-email-hui.wang@canonical.com> <52B01CC2.6040208@canonical.com> <52B0200A.6050400@canonical.com> <52B029DA.3030401@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <52B029DA.3030401@canonical.com>
+Sender: stable-owner@vger.kernel.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-CONFIG_ACPI dependent code should include <linux/acpi.h> instead of
-directly including <acpi/acpi.h>.  This patch cleans up such wrong
-inclusions for Thinkpad ACPI users.
+On 12/17/2013 06:39 PM, David Henningsson wrote:
+>>>> --- a/sound/pci/hda/patch_realtek.c
+>>>> >>>+++ b/sound/pci/hda/patch_realtek.c
+>>>> >>>@@ -4309,6 +4309,7 @@ static const struct snd_pci_quirk
+>>>> >>>alc269_fixup_tbl[] = {
+>>>> >>>       SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439",
+>>>> >>>ALC290_FIXUP_MONO_SPEAKERS),
+>>>> >>>       SND_PCI_QUIRK(0x1028, 0x063e, "Dell",
+>>>> >>>ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+>>>> >>>       SND_PCI_QUIRK(0x1028, 0x063f, "Dell",
+>>>> >>>ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+>>>> >>>+    SND_PCI_QUIRK(0x1028, 0x0640, "Dell",
+>>>> >>>ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+>>> >>Are you sure it shouldn't be ALC255_FIXUP_... in this line instead of
+>>> >>ALC269_FIXUP_... ?
+>> >I also had the same concern as yours yesterday, so i let ShawnWang
+>> >perform the test, he confirmed that adding "model=dell-headset-multi"
+>> >can solve this problem. Below is the irc log:
+>> >
+>> ><hwang4> shawnwang, Does adding "options snd-hda-intel
+>> >model=,dell-headset-multi" solve the problem on this machine (10280640)
+>> ><shawnwang> hwang4, yes
+>> ><hwang4> shawnwang, ok, got it, i will fix it.
+> Well, just because the alc269 model works does not mean that the alc255
+> model does not work. They are quite similar, with the only difference
+> being a few verbs set on initial boot. Maybe those verbs handle some
+> corner case that was not tested explicitly by Shawn.
+Shawn has done the test, according to his test result, both ALC255_FIXUP 
+and ALC269_FIXUP can fix headset detection bug, and furthermore he also 
+did the record and playback test for them, the result was same, no 
+matter we choose ALC255 or ALC269, the machine can correctly detect, 
+record and playback.
 
-Cc: Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
-Cc: ibm-acpi-devel@lists.sourceforge.net
-Cc: platform-driver-x86@vger.kernel.org
-Signed-off-by: Lv Zheng <lv.zheng@intel.com>
----
- drivers/platform/x86/thinkpad_acpi.c |    1 -
- include/linux/thinkpad_acpi.h        |    2 ++
- sound/pci/hda/patch_conexant.c       |    1 -
- sound/pci/hda/patch_realtek.c        |    1 -
- 4 files changed, 2 insertions(+), 3 deletions(-)
+Since the codec's vendor ID is 0x10ec0255, choosing ALC255_FIXUP is more 
+reasonable and safer.
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index defb6af..c114d7c 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -76,7 +76,6 @@
- #include <linux/dmi.h>
- #include <linux/jiffies.h>
- #include <linux/workqueue.h>
--#include <linux/acpi.h>
- #include <linux/pci_ids.h>
- #include <linux/thinkpad_acpi.h>
- #include <sound/core.h>
-diff --git a/include/linux/thinkpad_acpi.h b/include/linux/thinkpad_acpi.h
-index 361de59..02928eb 100644
---- a/include/linux/thinkpad_acpi.h
-+++ b/include/linux/thinkpad_acpi.h
-@@ -1,6 +1,8 @@
- #ifndef __THINKPAD_ACPI_H__
- #define __THINKPAD_ACPI_H__
- 
-+#include <linux/acpi.h>
-+
- /* These two functions return 0 if success, or negative error code
-    (e g -ENODEV if no led present) */
- 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 3fbf288..c2da489 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -3243,7 +3243,6 @@ enum {
- #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
- 
- #include <linux/thinkpad_acpi.h>
--#include <acpi/acpi.h>
- 
- static int (*led_set_func)(int, bool);
- 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 34de5dc..17306be 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3726,7 +3726,6 @@ static void alc290_fixup_mono_speakers(struct hda_codec *codec,
- #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
- 
- #include <linux/thinkpad_acpi.h>
--#include <acpi/acpi.h>
- 
- static int (*led_set_func)(int, bool);
- 
--- 
-1.7.10.4
+Regards,
+Hui.
