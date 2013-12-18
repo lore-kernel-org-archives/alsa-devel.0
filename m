@@ -1,50 +1,50 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8904: fix DSP mode B configuration
-Date: Wed, 18 Dec 2013 11:31:00 +0000
-Message-ID: <20131218113100.GJ28455@sirena.org.uk>
-References: <1387337183-16814-1-git-send-email-voice.shen@atmel.com>
+From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Subject: Re: [PATCH v2 RESEND 2/2] ASOC: tegra: fix AC97 clock handling
+Date: Wed, 18 Dec 2013 12:33:41 +0100
+Message-ID: <1387366421.1783.2.camel@tellur>
+References: <1387277564-4774-1-git-send-email-dev@lynxeye.de>
+	 <1387277564-4774-2-git-send-email-dev@lynxeye.de>
+	 <20131217140017.GI3185@sirena.org.uk> <1387291793.1783.3.camel@tellur>
+	 <20131217214352.GF28455@sirena.org.uk> <52B0CE33.7080605@wwwdotorg.org>
+	 <20131217222847.GK28455@sirena.org.uk> <52B0D152.2060504@wwwdotorg.org>
+	 <20131217223957.GO28455@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="56fysGXq5VVjE/ND"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1387337183-16814-1-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: patches@opensource.wolfsonmicro.com, ckeepax@opensource.wolfsonmicro.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20131217223957.GO28455-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Am Dienstag, den 17.12.2013, 22:39 +0000 schrieb Mark Brown:
+> On Tue, Dec 17, 2013 at 03:33:54PM -0700, Stephen Warren wrote:
+> > On 12/17/2013 03:28 PM, Mark Brown wrote:
+> 
+> > > How does doing this in the machine driver help here?  The machine driver
+> > > isn't going to be any more coordinated with other machine drivers than
+> > > the controller is.
+> 
+> > There would only be one machine driver loaded at a time. It should
+> > provide top-level control over all the audio paths in the Tegra audio
+> > subsystem.
+> 
+> OK, so that's not how everyone else has done these isolated
+> controllers...  to be honest I'm not convinced that this is something
+> worth worrying about for AC'97 - the clocking is fixed in the spec
+> unless you're being fancy and the chances of anyone being fancy are
+> minimal these days.  It's probably more likely to make life miserable
+> for people trying to get AC'97 working than anything else.
+> 
+Essentially the only Tegra machine driver using AC97 is providing a
+fixed clock. It's just a convention for all Tegra sound drivers to do
+the PLL handling in the machine driver, I'd say it just more confusing
+to do it another way just for this one corner case.
 
---56fysGXq5VVjE/ND
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> But like I say the big thing is a comprehensible changelog.
 
-On Wed, Dec 18, 2013 at 11:26:23AM +0800, Bo Shen wrote:
-> When wm8904 work in DSP mode B, we still need to configure it to
-> work in DSP mode. Or else, it will work in Right Justified mode.
+Ok, I'll resend with a better changelog.
 
-Applied, thanks.
-
---56fysGXq5VVjE/ND
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSsYdxAAoJELSic+t+oim9BIcP+wbKgeptx7SeE/AxeLaacdNi
-+KyQLa2slGXzxs7xNivXXJdHdjjapI4pe6olE+qw/yUvon47+prHKczw7XziF7+X
-6jCR28svh4yLZCxM0sd3+jVFtIYJl0IX9wmplbM2FLwn1m0VP05GhusYYpKuZW36
-nImGeiVa5WYdIuTvK9fYmyc4v+i/R1oWBkK9Xzi6ubJOIL29scNkS2M+XjLgxb0k
-X3Ee/HsU7eV8POHOHJTCe45ttPbMk00KZ2z7LdwwGZ9SOupDcHY4HEwhk0fLGDY2
-HCec8zRDRj76FcZLtQIbLdHZzPvFYhYJ4gz+im4VGYh6s/rXwNPH43NFVk/AW66H
-xbQuYjX4NDo4In5Nd6gSRSyUgpmPrQhj5uCOQ0YDlCCRsimiDpALxwVw6D6QBJd4
-mivwFx2gL/4PW3D5WSxhPqnYdEyRokn91xcZo8M72bYk0dng8l4KX7tVEgF1GtEO
-ewwnk36PQvj49J3NmAMN2/J7DDzq4cCOxxbb1LbQwLrZL1PNcdm0hJZhuyMnhtCe
-RDvkuDs8yu04syk8t0b5cngIIdpGTJAezk00PohV5pjgCVSim6QzvDRrAa1TujGG
-gEpSDmq/uDusv8TSi1apzmTdpvXCaI8484zxkx+Wyu+IGtwWV03VuBQA/yDfN8Ha
-G+SIEAx+qlc0g6cyeW2x
-=tPYQ
------END PGP SIGNATURE-----
-
---56fysGXq5VVjE/ND--
+Regards,
+Lucas
