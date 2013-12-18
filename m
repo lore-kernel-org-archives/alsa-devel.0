@@ -1,15 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: USB sound auto-suspend not working
-Date: Tue, 17 Dec 2013 23:07:00 +0000
-Message-ID: <20131217230700.GY28455@sirena.org.uk>
-References: <20131217225548.GA3029@xanatos>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH 2/2] ASoC: sgtl5000: clean up
+ sgtl5000_enable_regulators()
+Date: Wed, 18 Dec 2013 01:42:05 +0000
+Message-ID: <76dae1a423b24118b7c1eb51007d6f25@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1386916983-27832-1-git-send-email-shawn.guo@linaro.org>
+ <1386916983-27832-2-git-send-email-shawn.guo@linaro.org>
+ <20131217134342.GP6691@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4463183635325764462=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 730AB2610A7
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 00:07:04 +0100 (CET)
-In-Reply-To: <20131217225548.GA3029@xanatos>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1blp0185.outbound.protection.outlook.com [207.46.163.185])
+ by alsa0.perex.cz (Postfix) with ESMTP id F38D42610C1
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 02:42:09 +0100 (CET)
+In-Reply-To: <20131217134342.GP6691@S2101-09.ap.freescale.net>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,58 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sarah Sharp <sarah.a.sharp@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Oliver Neukum <oneukum@suse.de>, linux-usb@vger.kernel.org, alsa-devel@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>, Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4463183635325764462==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="F41/6/O0EvKTfNqT"
-Content-Disposition: inline
+> On Fri, Dec 13, 2013 at 02:43:03PM +0800, Shawn Guo wrote:
+> > Function sgtl5000_enable_regulators() is somehow odd in handling the
+> > optional external VDDD supply.  The driver can only enable this supply
+> > on SGTL5000 chip before revision 0x11, and of course when this
+> > external VDDD is present.  It currently does something like below.
+> >
+> > 1. Check if regulator_bulk_get() on VDDA, VDDIO and VDDD will fail.  If
+> >    it fails, VDDD must be absent and it falls on internal LDO by calling
+> >    sgtl5000_replace_vddd_with_ldo().  Otherwise, VDDD is used.  And in
+> >    either case, regulator_bulk_enable() will be called to enable
+> >    3 supplies.
+> >
+> > 2. In case that SGTL5000 revision is later than 0x11, even if external
+> >    VDDD is present, it has to roll back the 'enable' and 'get' calls
+> >    with regulator_bulk_disable() and regulator_bulk_free(), and starts
+> >    over again by calling sgtl5000_replace_vddd_with_ldo() and
+> >    regulator_bulk_enable().
+> >
+> > Such back and forth calls sequence is complicated and unnecessary.
+> > Also, since commit 4ddfebd (regulator: core: Provide a dummy regulator
+> > with full constraints), regulator_bulk_get() will always succeeds
+> > because of the dummy regulator.  Thus the VDDD detection is broken.
+> >
+> > The patch changes the flow to something like the following, which
+> > should be more reasonable and clear, and also fix the VDDD detection
+> breakage.
+> >
+> > 1. Check if we're running a chip before revision 0x11, on which an
+> >    external VDDD can possibly be an option.
+> >
+> > 2. If it is an early revision, call regulator_get_optional() to detect
+> >    whether an external VDDD supply is available.
+> >
+> > 3. If external VDDD is present, call sgtl5000_replace_vddd_with_ldo() to
+> >    update sgtl5000->supplies info.
+> >
+> > 4. Drop regulator_bulk_get() call in sgtl5000_replace_vddd_with_ldo(),
+> >    and call it in sgtl5000_enable_regulators() no matter it's an
+> >    external VDDD or internal LDO.
+> >
+> > 5. Call regulator_bulk_enable() to enable these 3 regulators.
+> >
+> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> 
+> Apart from that separate issue we're discussing, do you have any comment on
+> this patch itself?
 
+Hi Shawn,
 
---F41/6/O0EvKTfNqT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sorry for late.
 
-On Tue, Dec 17, 2013 at 02:55:48PM -0800, Sarah Sharp wrote:
+It's looks good to me.
 
-> I plugged in a USB speaker, and ran lsof to see which files were open
-> (output is attached).  AFAICT, only the USB sound device's control files
-> are open, and I don't have any midi files.
-
-The attachment seems to have gone AWOL (at least on the list)?
-
---F41/6/O0EvKTfNqT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSsNkRAAoJELSic+t+oim9HEAQAJN6GRGoaI/zSva+DVU/lnBX
-hCOM4pbH++p31UGZMxY7JMeMHy9oPnboOyTBfzRXQKmaQEClR/UoMLEM+tmlwj3o
-RNV2cZbpxswYEXgwZy77BGPJ6De2WMakJL46PKZ1nUqADSGPx9tH/6/XUeoHX76C
-mvT8mHEeXp+zcuP2frnvxGbqPcejOyjiQcU0OS86xk97bon2SO+YCTp931ChU3U1
-8Iw4t4iXAtq/keKr5X/ScMhaKB88b7a7cvEX5Lq48VFgQcyKwHnShoe1E02e5YPi
-yUjolB0Xr5+BGP1RWEVqsy2+ehjisL4HMHar2Q4kegF2HOfFQvoJW0lEKqIiOua4
-n/1AViXWffq1/l1/8r8yFI2WS98/KinZj5zgqrZtjmn6oxFtTMJs6sg3fmgMy8yb
-RGh+dFSYxKQ1GHzVeMT1AUlCnkPmbG7veJkMeG2SObcyhheeGp1nFHAkVnYiL13j
-vS27X24e4pzF1A4itmoK8IXnl/zts4Kyo97tq8nqi83buxkTppYSrOiMxyFPW0kt
-ksOopEqCheuZ6ppmeh4u2jiWqjXXOy9nJzDRBCHm+WB6PzFiCHSUrrOviVN6j2ES
-vY+9J7yrW8jNPR7nA460dPF7sWr7hFPcb7VpdQPaHOfV1DRAjldxbbYLvQCqJpdG
-OIAQ2ESsc2D7q2ubwzFL
-=Mjzx
------END PGP SIGNATURE-----
-
---F41/6/O0EvKTfNqT--
-
---===============4463183635325764462==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4463183635325764462==--
+--
+Xiubo
