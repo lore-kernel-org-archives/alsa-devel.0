@@ -1,53 +1,87 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/5] MFD: twl6040: reg_defaults support for regmap
-Date: Wed, 18 Dec 2013 18:56:59 +0000
-Message-ID: <20131218185659.GL31886@sirena.org.uk>
-References: <1385733827-19831-1-git-send-email-peter.ujfalusi@ti.com>
- <1385733827-19831-4-git-send-email-peter.ujfalusi@ti.com>
- <20131129160032.GC26982@lee--X1>
+Subject: Re: [RFC][PATCH v1] ASoC: fsl_ssi: Add DAI master mode
+ support for SSI on i.MX series
+Date: Wed, 18 Dec 2013 18:59:52 +0000
+Message-ID: <20131218185952.GM31886@sirena.org.uk>
+References: <1386845085-21682-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oOpJzULQ70+PGW7h"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20131129160032.GC26982@lee--X1>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
+Content-Type: multipart/mixed; boundary="===============7756293922803910144=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BC212619F4
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 19:59:58 +0100 (CET)
+In-Reply-To: <1386845085-21682-1-git-send-email-Guangyu.Chen@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, timur@tabi.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 
---oOpJzULQ70+PGW7h
+--===============7756293922803910144==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="37nyS7qXrnu4wN2o"
+Content-Disposition: inline
+
+
+--37nyS7qXrnu4wN2o
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Nov 29, 2013 at 04:00:32PM +0000, Lee Jones wrote:
+On Thu, Dec 12, 2013 at 06:44:45PM +0800, Nicolin Chen wrote:
 
-> Mark, is an immutable branch required for this patch?
+> +/**
+> + * fsl_ssi_set_dai_tdm_slot - set TDM slot number
+> + *
+> + * Note: This function can be only called when using SSI as DAI master
+> + */
+> +static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
+> +				u32 rx_mask, int slots, int slot_width)
+> +{
+> +	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
+> +	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+> +	u32 val;
 
-One is...  I think I did ask for one at the time but didn't hear
-anything back?
+I'm a bit concernred about what this is for and why it's required - is
+it something that machine drivers have to call and if it is shouldn't
+the driver be defaulting to a sensible configuration?
 
---oOpJzULQ70+PGW7h
+--37nyS7qXrnu4wN2o
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSse/4AAoJELSic+t+oim98NgQAJmka8H5Cp7lEn4C8x4QuxBE
-UACrYL7wu3tg34o6zwkMvt7Oz5MnqCXSB7gKO7u9wA9v9visnu+8T0HsekJwx7Sr
-DT0A1hf6fxTmCsEuiXf4fB+DjI6QUTqYALYf5lsIogFOdvn+3ohALsHd6IfUMgl9
-KBgUBFbXgJcmRfSXycMxBOYFQ2gQJFz0UhVxjhfbZ39hbwAKY2iM78kSM+Tk56eM
-YNG9j3CSQeCdIa0FFHiFT2Opd0Q4uOB270p/WXgfReJL2E+wSCvyZphGUP7/RdLC
-5mEic8XR79cc355vwx/+t7fIicLa1qns9Q3KKufgGsF/k2mf6ptLLZwk+NkWvV8z
-kIidu5QYAdQO49MYkYT6xqzL38E3gd1NCoMSMCvXOteQWAaGDWUq6XqS3Iw5PyTp
-7SmgFvAjTb4jxzxGiqOroZd2Eadsjly1HeaCiKpuM9i/KRVzbvADvzeAKR5Pyn00
-AMhUEZDPwA1KwCbg2+t4eHrHt85LE534jh1LQiB0EfOYvXX+3qaoGlfXXiYdi+jI
-m0/CX2tfKKI7BnkE4xSeZt6ItuWMpBcEC5Km/nj2TVX6rnzqGGvWhD9AUVZauut/
-GRnEybnTgfblfE6H6WYvOk6j02x1HvKo6QYL6lk+f9syp/b2JhItpXRWvChiPgLk
-dmYBD+c2npmGXRWbXS8w
-=LyON
+iQIcBAEBAgAGBQJSsfClAAoJELSic+t+oim9fmYQAIVcUuSYb9weiJKugFkgjdc1
+mqC7Hi3rTk0XMFWgz8Z7O7Q496xgGA7sCyfio85/N7m7/s/aMN0LNSH9e8OG/LKl
+jQGJ1owKUL7WW9i85DLZEanViki+IcPyNpQCwiPHz9G+6eEtq5MxAGVSRGmA33tb
+dHRX+La2yNdGlhUDYMKhJYHB+1rH1idTZ16H/LFNSqSh8JSWTMlcdLX8yyRYaVqM
+NDqQpn6iP5XpZPurgzccPXjQ7cVPjvwInZo2HYQZM1WGpSP1ANg7QmdnzG/HBRmE
+I+KRznTVzj2Qj3u5/xDzmP5TlnDcLTtlIjlDlA+2BS1QPeL01Kwz9hgQEhGQ3aKP
+dqdSnK6/hMBM0NSf5uKS0Sbi8mr5TMUOyxwCYhgqE9eICKIzp3muTEZM7rm2xYs9
+L4w+HRgNe18OuYPF3WC6C7FPRMLx4yfsgKoArX2fncik9lgcakMgxCe9QpIZDmts
+rBgHCbfI70S4EAOu2T/A28dKybLVVZAp3a9OUxd2xyWItriRCeM3+RU3RbxxrVyU
+iKeZW6GoCLQbzEv5EY+cd4oinbHfOJgiQ07WgbnekKPW80tn+TbJxXVcYMJGyrEk
+iehvp6LqdEavhIa9vZAmkPMTlaw+yxz2/rNDbQAXZ1w8QYfhQ/Kf0IJk8W2LwUrP
+Ls+8wfpxMGapqQHFZSgx
+=morP
 -----END PGP SIGNATURE-----
 
---oOpJzULQ70+PGW7h--
+--37nyS7qXrnu4wN2o--
+
+--===============7756293922803910144==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7756293922803910144==--
