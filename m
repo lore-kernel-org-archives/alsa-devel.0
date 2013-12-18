@@ -1,23 +1,22 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH] ASoC: wm_adsp: Change ADSPs to be
-	mixer widgets	rather the PGAs
-Date: Wed, 18 Dec 2013 17:05:21 +0000
-Message-ID: <20131218170521.GG11138@opensource.wolfsonmicro.com>
-References: <1387364024-15708-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20131218112739.GH28455@sirena.org.uk>
- <20131218131436.GE11138@opensource.wolfsonmicro.com>
- <20131218132343.GP28455@sirena.org.uk>
- <20131218141423.GF11138@opensource.wolfsonmicro.com>
- <20131218161902.GW28455@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 07/17] firewire-lib: give syt value to
+	handle_out_packet()
+Date: Wed, 18 Dec 2013 18:26:01 +0100
+Message-ID: <52B1DAA9.3070806@ladisch.de>
+References: <1385186884-8259-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1385186884-8259-8-git-send-email-o-takashi@sakamocchi.jp>
+ <52936C78.1050204@ladisch.de> <52B19532.8090208@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C628A261683
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 18:05:21 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20131218161902.GW28455@sirena.org.uk>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 7F877261683
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 18:27:03 +0100 (CET)
+Received: from compute2.internal (compute2.nyi.mail.srv.osa [10.202.2.42])
+ by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id AE9072102C
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 12:27:02 -0500 (EST)
+In-Reply-To: <52B19532.8090208@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,46 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 18, 2013 at 04:19:02PM +0000, Mark Brown wrote:
-> On Wed, Dec 18, 2013 at 02:14:23PM +0000, Charles Keepax wrote:
-> > On Wed, Dec 18, 2013 at 01:23:43PM +0000, Mark Brown wrote:
-> 
-> > > Not the physical output, the DSP output into the rest of the device.  It
-> > > would be very surprising if it powered up making noise.
-> 
-> > Regrettably, I don't believe there is a way to mute the output of
-> > the DSP. Muting the physical output does fix the issue.  I could
-> 
-> So the DSP powers up outputing stuff?  That seems like an interesting
-> design decision (it might need something to reset the buffers on power
-> down I guess).
+Takashi Sakamoto wrote:
+> (Dec 26 2013 00:27), Clemens Ladisch wrote:
+>> ... I'll review the other patches later.
+>
+> If you don't mind, I want to post updateed patches for firewire-lib/fireworks/bebob.
+> I didn't post them in one time because it's a lot (38 patches). But now they depends
+> each other (firewire-lib <-> each driver, asound.h/firewire.h <-> each drivers).
+>
+> Is it OK?
 
-It is not sure it is so much a design decision but there is an
-audible pop when the DSP core enable bit is set if it is
-connected to an unmuted output.
+Yes; go ahead.
 
-> 
-> > look at seperating out the physical power up of the core and
-> > starting the firmware to be seperate widgets, that might also
-> > fix the issue and would mean the firmware wouldn't run until the
-> > input signal was clean, but I am not sure if feels that neat a
-> > solution.
-> 
-> That sort of split is something I'd considered doing in the past anyway
-> - it would be beneficial to be able to overlap the DSP startup with
-> other activities so the delays while bringing up the outputs could be
-> happening while the DSPs are downloading firmware or the firmware is
-> starting up for example.  You could also overlap stuff with the RAM
-> startup if that's now taking longer.
 
-Ok this looks like a potentially viable solution, and I hadn't
-considered the potential benefits it could have to speed up the
-audio path bring up time, I shall have a bash at implementing it
-and see where I get to.
-
-Thanks,
-Charles
+Regards,
+Clemens
