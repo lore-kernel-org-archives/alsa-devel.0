@@ -1,87 +1,39 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [RFC PATCH] ALSA: hda - Explicitly keep codec powered
-	up in hdmi_present_sense
-Date: Wed, 18 Dec 2013 10:46:04 +0100
-Message-ID: <1387359964-3382-1-git-send-email-david.henningsson@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id E4B64261646
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2013 10:46:05 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [V2 PATCH] ALSA: hda - Add Dell headset detection quirk for one more laptop model
+Date: Wed, 18 Dec 2013 18:09:56 +0800
+Message-ID: <1387361396-10755-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
 To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-This should help us avoid the following mutex deadlock:
+On the Dell machines with codec whose Subsystem Id is 0x10280640,
+no external microphone can be detected when plugging a 3-ring headset.
+Using ALC255_FIXUP_DELL1_MIC_NO_PRESENCE can fix this problem.
 
-[] mutex_lock+0x2a/0x50
-[] hdmi_present_sense+0x53/0x3a0 [snd_hda_codec_hdmi]
-[] generic_hdmi_resume+0x5a/0x70 [snd_hda_codec_hdmi]
-[] hda_call_codec_resume+0xec/0x1d0 [snd_hda_codec]
-[] snd_hda_power_save+0x1e4/0x280 [snd_hda_codec]
-[] codec_exec_verb+0x5f/0x290 [snd_hda_codec]
-[] snd_hda_codec_read+0x5b/0x90 [snd_hda_codec]
-[] snd_hdmi_get_eld_size+0x1e/0x20 [snd_hda_codec_hdmi]
-[] snd_hdmi_get_eld+0x2c/0xd0 [snd_hda_codec_hdmi]
-[] hdmi_present_sense+0x9a/0x3a0 [snd_hda_codec_hdmi]
-[] hdmi_repoll_eld+0x34/0x50 [snd_hda_codec_hdmi]
+The codec (Vendor ID: 0x10ec0255) on the machine belongs to alc_269
+family.
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+BugLink: https://bugs.launchpad.net/bugs/1260303
+Cc: David Henningsson <david.henningsson@canonical.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/pci/hda/patch_hdmi.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-So; I came across the above stack trace when testing the latest daily HDA driver.
-It only happened once, and jack polling was enabled while testing, if that matters.
-
-As you can see, the hdmi_present_sense is called recursively, and my patch doesn't
-really fix that; it should only make the consequences less severe (because now
-the recursion would be in the very beginning, i e, at snd_hda_power_up).
-
-I first thought just unlocking the mutex before calling pin_get_eld could do,
-but not sure if we really want to do that. Nevertheless, I haven't done much
-of the power management work anyway, so I'd like you to double check it and potentially
-come up with better ideas if you have any.
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index f5060fc..977db17 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1496,11 +1496,14 @@ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- 	 * specification worked this way. Hence, we just ignore the data in
- 	 * the unsolicited response to avoid custom WARs.
- 	 */
--	int present = snd_hda_pin_sense(codec, pin_nid);
-+	int present;
- 	bool update_eld = false;
- 	bool eld_changed = false;
- 	bool ret;
- 
-+	snd_hda_power_up(codec);
-+	present = snd_hda_pin_sense(codec, pin_nid);
-+
- 	mutex_lock(&per_pin->lock);
- 	pin_eld->monitor_present = !!(present & AC_PINSENSE_PRESENCE);
- 	if (pin_eld->monitor_present)
-@@ -1573,6 +1576,7 @@ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- 		jack->block_report = !ret;
- 
- 	mutex_unlock(&per_pin->lock);
-+	snd_hda_power_down(codec);
- 	return ret;
- }
- 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 3578f11..5b96698 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4309,6 +4309,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS),
+ 	SND_PCI_QUIRK(0x1028, 0x063e, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x063f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x0640, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x15cc, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x15cd, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
 -- 
-1.7.9.5
+1.8.1.2
