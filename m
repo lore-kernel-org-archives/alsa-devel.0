@@ -1,16 +1,21 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH] ASoC: simple-card: Use
-	devm_snd_soc_register_card()
-Date: Thu, 19 Dec 2013 11:59:54 +0800
-Message-ID: <1387425594-32469-1-git-send-email-Li.Xiubo@freescale.com>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCHv3 5/7] ASoC: fsl: Add SGTL5000 based audio
+ machine driver.
+Date: Thu, 19 Dec 2013 05:19:26 +0000
+Message-ID: <f9a19c59bfaf4844bbeaca1aeb91e305@DM2PR03MB509.namprd03.prod.outlook.com>
+References: <1387250684-23406-1-git-send-email-Li.Xiubo@freescale.com>
+ <1387250684-23406-6-git-send-email-Li.Xiubo@freescale.com>
+ <20131218183743.GG31886@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe001.messaging.microsoft.com [65.55.88.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F2D82652C7
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 05:51:57 +0100 (CET)
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0236.outbound.protection.outlook.com [207.46.163.236])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCA642652C7
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 06:19:31 +0100 (CET)
+In-Reply-To: <20131218183743.GG31886@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,44 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, perex@perex.cz, tiwai@suse.de
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com
+To: Mark Brown <broonie@kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "timur@tabi.org" <timur@tabi.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Huan Wang <Huan.Wang@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "Jason.Jin@freescale.com" <Jason.Jin@freescale.com>, "oskar@scara.com" <os>
 List-Id: alsa-devel@alsa-project.org
 
-Makes the code slightly shorter.
+> On Tue, Dec 17, 2013 at 11:24:42AM +0800, Xiubo Li wrote:
+> 
+> > This is the SGTL5000 codec based audio driver supported with both
+> > playback and capture dai link implemention.
+> 
+> > This implementation is only compatible with device tree definition.
+> 
+> It looks like these cards should be supportable using the generic simple card
+> bindings that Morimoto-san implemented, you can see these in -next as "ASoC:
+> simple-card: add Device Tree support".  Can you check to see if that's the
+> case?  If it is you'll still need Kconfig to enable building the SoC and CODEC
+> drivers.
+> 
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
----
- sound/soc/generic/simple-card.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+Yes, almost, but maybe still need to do some adjust about it.
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 7a9b6b4..3d190d0 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -234,14 +234,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	cinfo->snd_card.num_links	= 1;
- 	cinfo->snd_card.dev		= &pdev->dev;
- 
--	return snd_soc_register_card(&cinfo->snd_card);
--}
--
--static int asoc_simple_card_remove(struct platform_device *pdev)
--{
--	struct asoc_simple_card_info *cinfo = pdev->dev.platform_data;
--
--	return snd_soc_unregister_card(&cinfo->snd_card);
-+	return devm_snd_soc_register_card(&pdev->dev, &cinfo->snd_card);
- }
- 
- static const struct of_device_id asoc_simple_of_match[] = {
-@@ -257,7 +250,6 @@ static struct platform_driver asoc_simple_card = {
- 		.of_match_table = asoc_simple_of_match,
- 	},
- 	.probe		= asoc_simple_card_probe,
--	.remove		= asoc_simple_card_remove,
- };
- 
- module_platform_driver(asoc_simple_card);
--- 
-1.8.4
+In this series of patches, the PATCH1~PATCH4 are about SAI only, and can be
+apart from VF610-twr sound driver, I will sent the SAI driver and VF610-twr
+sound driver separately. Could you apply the SAI's first if they are all fine?
+
+I will use the simpe-card driver for the VF610-twr later.
+
+> > +menuconfig SND_FSL_SOC
+> > +	tristate "SoC Audio for Freescale VF610 CPUs"
+> > +	help
+> > +	  Say Y or M if you want to add support for codecs attached to
+> > +	  the VF610 CPUs.
+> > +
+> > +	  This will enable Freeacale SAI and SGTL5000 codec, and an extra
+> > +	  TWR-AUDIO-SGTL sub-board is needed for SGTL5000.
+> 
+> This should select the dmaengine helpers (and should really have been split
+> out as part of the first patch).
+
+I will revise this.
+
+Best Regards,
+Xiubo
