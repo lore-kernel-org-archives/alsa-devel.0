@@ -1,60 +1,57 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/5] MFD: twl6040: reg_defaults support for regmap
-Date: Thu, 19 Dec 2013 18:31:34 +0000
-Message-ID: <20131219183134.GF31886@sirena.org.uk>
+Subject: Re: [PATCH 0/5] ASoC/MFD: twl6040: Remove codec driver local reg
+ cache
+Date: Thu, 19 Dec 2013 18:37:32 +0000
+Message-ID: <20131219183732.GG31886@sirena.org.uk>
 References: <1385733827-19831-1-git-send-email-peter.ujfalusi@ti.com>
- <1385733827-19831-4-git-send-email-peter.ujfalusi@ti.com>
- <20131129160032.GC26982@lee--X1>
- <20131218185659.GL31886@sirena.org.uk>
- <20131219090632.GA24932@lee--X1>
- <20131219105240.GU31886@sirena.org.uk>
- <20131219172036.GD16145@lee--X1>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="K/+MhuhYzqQJJ3Xj"
+	protocol="application/pgp-signature"; boundary="mOKeRhn3B7HglGBY"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20131219172036.GD16145@lee--X1>
+In-Reply-To: <1385733827-19831-1-git-send-email-peter.ujfalusi@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---K/+MhuhYzqQJJ3Xj
+--mOKeRhn3B7HglGBY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 19, 2013 at 05:20:36PM +0000, Lee Jones wrote:
-
-> for you to fetch changes up to c7f9129d22940720141d1f1e958a51142eff9d21:
+On Fri, Nov 29, 2013 at 04:03:42PM +0200, Peter Ujfalusi wrote:
+> Hi Mark,
 >=20
->   mfd: twl6040: reg_defaults support for regmap (2013-12-19 17:01:11 +000=
-0)
+> It was not straight forward task to remove the local reg cache from the t=
+wl6040
+> codec driver. I also needed to change the MFD part so it will take over t=
+he
+> caching of registers via regmap.
 
-Pulled now, thanks.
+Applied all, thanks.
 
---K/+MhuhYzqQJJ3Xj
+--mOKeRhn3B7HglGBY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSszuDAAoJELSic+t+oim98nYP/2OWHxSLYjsSpi48lpQ5s9nD
-gsnIxwgDMvx0x9H9fafixWaPwJegZrn62yxT49t0NukD9YxO5rR/kB73gX+p5xpP
-Xde+X7r0LVgG8koAYtazn3TzSNBv3WCMg3ZDvpkOhwgad+3cvu3x4QhHEagUXzA/
-8tqAIddzr+6ALCe9hElsZ9dzM/oDYE0AXZ1idw6jMZiI/j1QvuBKpilSzyvAd4O+
-Dlw6XOBzHqwsp+J+f5uhjNqeHF9iGiOXtFjegYm3XUOmyhtkvj0WcdeDF1bduDep
-togrAoUXePNGYWGUvtu0GKFHvwKK5B/r1MYX1CTMK6siwez345CAwg/hkEsr/sh4
-u7gMZLwI+SI7Q1B34lI9pBgW6Wo0vzaGsh2vyisi62P7UCx4olIsO4ZR7OKw01+X
-P7ahgvoYXlv7VDTBTcNffUx5xpq8OKFPE3WtgFaQ9JDcdvGLQZawbAePfEfpgLKl
-3FJ2XpfH9gPO9TerhlOCyeDavaYyCHB9s2Sivan9ySfrQrA7oe7Y6MwJJrSt16mr
-PBlloiRWCE1MBVeZtWFxx5pyFbBuYsqG5cywqQum+zoenrUy3Ax8AQ7jzWFcIYR4
-HW7qO6YhKEQi7GSHWisbIfzPUzyr06aNR9M8rQqarbpNyQjRVV7uUCfWLWoAbAKa
-aqkQCv924jMQOb95JbBe
-=3vF/
+iQIcBAEBAgAGBQJSszzpAAoJELSic+t+oim9UYYP/A9Bzq3h4vUIsLPR6BZFH+8z
+F9Z+sS97iNxgLIGXfeYKaRKwg3VejVVTvQBLder807XYA9SM3as1ngipY6Qz+rVW
+Z7yNdRwLSGPY3bUFkRU7VojNpd0m7WJs8KJNiiXuopV4os4ZMYo0FKXI1HchhvHq
+GmmnVUIqecPOLZp4BVEuC5IR4p2/O0DKhHp5TVXYdVc7A1Sk9zC4DoPrSdldV5qw
+RC6uYttLocV5hTLS787XAXDvjZBm5ZammKI9SOcsSEAUVy2eYY/eTlF7EqMsWcpq
+sd7dSIXxQ/MWdWbNfO4WGynInd+sesDvEi2X49K/+0HT+Y9vxflMTC1wfg/1WUJ6
+NhZvPjyVSuQW9/kepjRDxWxKKJRBTD2KYiGKdhLvdlPL3kzF1PEMtOa8YVh47St3
+YHWBkANyyoLqNvTfNaWhwQjFXChe2pEpa0t0mw8fOVx6vIOMudu1qN3voFJs88AR
+jwc7K9OLfS56R/rr8rMP4unusa+N9cd38taIViqjykGVKWDNolWDnim/qkDUPI2v
+syxg27l2oMR1vtNi6jggExJKvtMnifTDjXcqHsXwUrti5TA+Q2IOyOq206l24DSD
+kqs0j4248NTUsUP1iFoAoBsblVPfBwjQGTgiGF9SvdRMDg9t77qEFj9axVN82vnS
+gOEGH2XoDDxVgM9OCaND
+=nsBw
 -----END PGP SIGNATURE-----
 
---K/+MhuhYzqQJJ3Xj--
+--mOKeRhn3B7HglGBY--
