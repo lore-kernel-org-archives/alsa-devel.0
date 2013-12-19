@@ -1,45 +1,24 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 03/11] ASoC: ux500: Provide better checking for Device Tree and/or Platform Data
-Date: Thu, 19 Dec 2013 15:55:00 +0000
-Message-ID: <1387468508-12286-4-git-send-email-lee.jones@linaro.org>
-References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 00/10] ASoC: ARM: ux500: Better prepare for full Device Tree
+Date: Thu, 19 Dec 2013 15:54:57 +0000
+Message-ID: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: linus.walleij@linaro.org, broonie@kernel.org, alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>
+Cc: linus.walleij@linaro.org, broonie@kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-These drivers will not work without platform specific data, which is
-passed in via Device Tree or Platform Data. To avoid the chance of
-NULL pointer dereferencing and alike, let's ensure we have at least
-one of the methods in play before continuing.
+At this moment in time the Ux500 ASoC driver obtains its DMA information
+via AUXDATA platform data passing. To make the driver more independent
+we have to start extracting it from the Device Tree. This patch-set goes
+some way to ensure the ux500 Audio driver is ready for the switch over.
 
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- sound/soc/ux500/ux500_msp_dai.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-index c6fb5cc..bc042cc 100644
---- a/sound/soc/ux500/ux500_msp_dai.c
-+++ b/sound/soc/ux500/ux500_msp_dai.c
-@@ -771,10 +771,14 @@ static const struct snd_soc_component_driver ux500_msp_component = {
- static int ux500_msp_drv_probe(struct platform_device *pdev)
- {
- 	struct ux500_msp_i2s_drvdata *drvdata;
-+	struct msp_i2s_platform_data *pdata = pdev->dev.platform_data;
-+	struct device_node *np = pdev->dev.of_node;
- 	int ret = 0;
- 
--	dev_dbg(&pdev->dev, "%s: Enter (pdev->name = %s).\n", __func__,
--		pdev->name);
-+	if (!pdata && !np) {
-+		dev_err(&pdev->dev, "No platform data or Device Tree found\n");
-+		return -ENODEV;
-+	}
- 
- 	drvdata = devm_kzalloc(&pdev->dev,
- 				sizeof(struct ux500_msp_i2s_drvdata),
--- 
-1.8.3.2
+ arch/arm/mach-ux500/board-mop500-audio.c     |   8 +++----
+ include/linux/platform_data/asoc-ux500-msp.h |   9 +-------
+ sound/soc/codecs/ab8500-codec.c              |   4 ++--
+ sound/soc/ux500/mop500.c                     |   2 ++
+ sound/soc/ux500/ux500_msp_dai.c              | 146 +++++++++++++++++++++++++++++++++++++++++++++++--------------------------------------------------------------------
+ sound/soc/ux500/ux500_msp_i2s.c              |  56 ++++++++++++++++++++++++++++++++------------
+ sound/soc/ux500/ux500_msp_i2s.h              |   2 +-
+ sound/soc/ux500/ux500_pcm.c                  |  50 ++++++++++++++++++++++++++--------------
+ 8 files changed, 144 insertions(+), 133 deletions(-)
