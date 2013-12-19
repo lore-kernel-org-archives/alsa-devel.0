@@ -1,21 +1,18 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: Re: [PATCHv3 5/7] ASoC: fsl: Add SGTL5000 based audio
- machine driver.
-Date: Thu, 19 Dec 2013 05:19:26 +0000
-Message-ID: <f9a19c59bfaf4844bbeaca1aeb91e305@DM2PR03MB509.namprd03.prod.outlook.com>
-References: <1387250684-23406-1-git-send-email-Li.Xiubo@freescale.com>
- <1387250684-23406-6-git-send-email-Li.Xiubo@freescale.com>
- <20131218183743.GG31886@sirena.org.uk>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Don't be too specific for
+ conflicting boost ctl names
+Date: Thu, 19 Dec 2013 06:34:59 +0100
+Message-ID: <52B28583.3050909@canonical.com>
+References: <1387388362-1005-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0236.outbound.protection.outlook.com [207.46.163.236])
- by alsa0.perex.cz (Postfix) with ESMTP id CCA642652C7
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 06:19:31 +0100 (CET)
-In-Reply-To: <20131218183743.GG31886@sirena.org.uk>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id E0382261A7F
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 06:35:01 +0100 (CET)
+In-Reply-To: <1387388362-1005-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,45 +22,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "timur@tabi.org" <timur@tabi.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Huan Wang <Huan.Wang@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "Jason.Jin@freescale.com" <Jason.Jin@freescale.com>, "oskar@scara.com" <os>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> On Tue, Dec 17, 2013 at 11:24:42AM +0800, Xiubo Li wrote:
+On 12/18/2013 06:39 PM, Takashi Iwai wrote:
+> When a boost control influences on multiple input paths, we shouldn't
+> pick up the name string specific to one input but rather choose a more
+> generic name.  A problem seen often is that a single mic boost
+> controls both internal and external mics although the driver picks up
+> the very first name randomly like "Internal Mic Boost".  This should
+> have been "Mic Boost", instead.
 > 
-> > This is the SGTL5000 codec based audio driver supported with both
-> > playback and capture dai link implemention.
+> This patch tries to correct that behavior: when a boost control is
+> available, check whether it conflicts with other inputs.  If it does,
+> use a common string ("Mic", "Line") as long as possible, or take a
+> generic name "Input".
+
+Hrm. I thought today "Mic Boost" is quite common, and meaning the mic
+boost of the non-internal mic. So I agree there is a problem - and thank
+you for trying to fix it - but isn't this just changing one problem for
+another? Now we don't know if a "Mic Boost" control controls the
+internal mic or not.
+
 > 
-> > This implementation is only compatible with device tree definition.
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/hda_generic.c | 44 ++++++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 40 insertions(+), 4 deletions(-)
 > 
-> It looks like these cards should be supportable using the generic simple card
-> bindings that Morimoto-san implemented, you can see these in -next as "ASoC:
-> simple-card: add Device Tree support".  Can you check to see if that's the
-> case?  If it is you'll still need Kconfig to enable building the SoC and CODEC
-> drivers.
+> diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+> index 8cebdcfdcfdc..e3f934703aa2 100644
+> --- a/sound/pci/hda/hda_generic.c
+> +++ b/sound/pci/hda/hda_generic.c
+> @@ -3651,6 +3651,8 @@ static int parse_mic_boost(struct hda_codec *codec)
+>  	struct hda_gen_spec *spec = codec->spec;
+>  	struct auto_pin_cfg *cfg = &spec->autocfg;
+>  	struct hda_input_mux *imux = &spec->input_mux;
+> +	static const char *input_type_labels[3] = { "Mic", "Line", "Input" };
+> +	int input_type_idxs[3] = {};
+>  	int i;
+>  
+>  	if (!spec->num_adc_nids)
+> @@ -3659,7 +3661,9 @@ static int parse_mic_boost(struct hda_codec *codec)
+>  	for (i = 0; i < imux->num_items; i++) {
+>  		struct nid_path *path;
+>  		unsigned int val;
+> -		int idx;
+> +		int idx, type, j;
+> +		bool conflict;
+> +		const char *pfx;
+>  		char boost_label[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+>  
+>  		idx = imux->items[i].index;
+> @@ -3678,11 +3682,43 @@ static int parse_mic_boost(struct hda_codec *codec)
+>  		if (!val)
+>  			continue;
+>  
+> +		/* check whether conflicting with other input paths */
+> +		type = cfg->inputs[idx].type;
+> +		conflict = false;
+> +		for (j = i + 1; j < imux->num_items; j++) {
+> +			int idx_next = imux->items[i].index;
+> +			int type_next;
+> +			struct nid_path *path_next;
+> +			if (idx_next >= imux->num_items)
+> +				continue;
+> +			type_next = cfg->inputs[idx_next].type;
+> +			if (type_next > AUTO_PIN_LINE_IN)
+> +				continue;
+> +			path_next = get_input_path(codec, 0, j);
+> +			if (!path_next)
+> +				continue;
+> +			/* conflicting value? */
+> +			if (look_for_boost_amp(codec, path_next) == val) {
+> +				conflict = true;
+> +				if (type != type_next) {
+> +					type = 2; /* generic input */
+> +					break;
+> +				}
+> +			}
+> +		}
+> +
+>  		/* create a boost control */
+> +		if (!conflict) {
+> +			pfx = spec->input_labels[idx];
+> +			idx = spec->input_label_idxs[idx];
+> +		} else {
+> +			pfx = input_type_labels[type];
+> +			idx = input_type_idxs[type]++;
+> +		}
+> +
+>  		snprintf(boost_label, sizeof(boost_label),
+> -			 "%s Boost Volume", spec->input_labels[idx]);
+> -		if (!add_control(spec, HDA_CTL_WIDGET_VOL, boost_label,
+> -				 spec->input_label_idxs[idx], val))
+> +			 "%s Boost Volume", pfx);
+> +		if (!add_control(spec, HDA_CTL_WIDGET_VOL, boost_label, idx, val))
+>  			return -ENOMEM;
+>  
+>  		path->ctls[NID_PATH_BOOST_CTL] = val;
 > 
 
-Yes, almost, but maybe still need to do some adjust about it.
 
-In this series of patches, the PATCH1~PATCH4 are about SAI only, and can be
-apart from VF610-twr sound driver, I will sent the SAI driver and VF610-twr
-sound driver separately. Could you apply the SAI's first if they are all fine?
 
-I will use the simpe-card driver for the VF610-twr later.
-
-> > +menuconfig SND_FSL_SOC
-> > +	tristate "SoC Audio for Freescale VF610 CPUs"
-> > +	help
-> > +	  Say Y or M if you want to add support for codecs attached to
-> > +	  the VF610 CPUs.
-> > +
-> > +	  This will enable Freeacale SAI and SGTL5000 codec, and an extra
-> > +	  TWR-AUDIO-SGTL sub-board is needed for SGTL5000.
-> 
-> This should select the dmaengine helpers (and should really have been split
-> out as part of the first patch).
-
-I will revise this.
-
-Best Regards,
-Xiubo
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
