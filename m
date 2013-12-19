@@ -1,23 +1,22 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 02/11] ASoC: ab8500: Revert back to
-	find_next_bit()
-Date: Thu, 19 Dec 2013 16:48:24 +0000
-Message-ID: <20131219164824.GA16145@lee--X1>
-References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
- <1387468508-12286-3-git-send-email-lee.jones@linaro.org>
- <s5hd2kssu4g.wl%tiwai@suse.de>
+From: Dan McGhee <beesnees@grm.net>
+Subject: snd_hda_intel and Beats Audio
+Date: Thu, 19 Dec 2013 11:05:31 -0600
+Message-ID: <52B3275B.3070709@grm.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f171.google.com (mail-wi0-f171.google.com
- [209.85.212.171])
- by alsa0.perex.cz (Postfix) with ESMTP id ECF532654D0
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 17:48:32 +0100 (CET)
-Received: by mail-wi0-f171.google.com with SMTP id bz8so7151051wib.16
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 08:48:32 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <s5hd2kssu4g.wl%tiwai@suse.de>
+Received: from smtp650.redcondor.net (smtp650.redcondor.net [208.80.206.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47B652654B7
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 18:05:38 +0100 (CET)
+Received: from cgp.netins.net ([167.142.229.103])
+ by smtp650.redcondor.net ({9ef01f99-b982-4add-83fd-b7c41c74273c})
+ via TCP (outbound) with ESMTP id 20131219170536188
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 17:05:36 +0000
+Received: from [72.35.180.39] (account beesnees@grm.net HELO [192.168.1.8])
+ by cgpf2.cgp.netins.net (CommuniGate Pro SMTP 5.3.13)
+ with ESMTPA id 643631463 for alsa-devel@alsa-project.org;
+ Thu, 19 Dec 2013 11:05:31 -0600
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,50 +26,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linus.walleij@linaro.org, broonie@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PiA+IENvbW1pdCAnMTY2YTM0ZCBBU29DOiBhYjg1MDA6IEZpeCBpbnZhbGlkIGNhc3QgdG8gbG9u
-ZyBwb2ludGVyJwo+ID4gcmF0aGVyIGNhcmVsZXNzbHkgY29udmVydHMgZmluZF9uZXh0X2JpdCgp
-IHRvIGZscygpIChmaW5kIGxhc3QKPiA+IGJpdCBzZXQpLCB3aGljaCBhcmUgbm90IHRoZSBzYW1l
-Lgo+IAo+IERvZXMgaXQgYnJlYWsgb24gdGhlIHJlYWwgbWFjaGluZXM/CgpJdCBkb2VzLCB0aGF0
-J3MgaG93IEkgZm91bmQgdGhlIGJ1Zy4KCj4gZmxzKCkgYmVoYXZlcyBkaWZmZXJlbnRseSBmcm9t
-IGZpbmRfbmV4dF9iaXQoKSwgb2YgY291cnNlLCBidXQgaW4gdGhpcwo+IGNhc2UsIGl0IHNob3Vs
-ZCB3b3JrIHNhbWUgaW4gdGhlIGVuZCwgc2luY2UgdGhlcmUgYXJlIGF0IG1vc3QgdHdvCj4gYml0
-cy4KClVuZm9ydHVuYXRlbHkgaXQgZG9lc24ndCB3b3JrIGF0IGFsbC4gVGhpcyBwYXRjaCBicmlu
-Z3MgYXVkaW8gYmFjayB0bwphIHdvcmtpbmcgc3RhdGUuIEl0IHRvb2sgbWUgdGhlIGJlc3QgcGFy
-dCBvZiBhIGRheSB0byB0cmFjayBkb3duIHRoZQppc3N1ZS4gOigKCj4gPiBBbHRob3VnaCB0aGlz
-IGltcGxlbWVudGF0aW9uIG1heSBub3QgYmUgcG9ydGFibGUsIHRoZSBhbHRlcm5hdGl2ZQo+ID4g
-YnJlYWtzIGF1ZGlvIG9uIGFueXRoaW5nIHVzaW5nIHRoZSBBQjg1MDAgQ09ERUMsIHdoaWNoIGlz
-IGEgbXVjaAo+ID4gZ3JlYXRlciBldmlsLiBCZXNpZGVzLCB0aGlzIGRyaXZlciB3aWxsIG5ldmVy
-IHJ1biBvbiBhbnl0aGluZwo+ID4gZWxzZS4KPiA+IAo+ID4gQ2M6IFRha2FzaGkgSXdhaSA8dGl3
-YWlAc3VzZS5kZT4KPiA+IFNpZ25lZC1vZmYtYnk6IExlZSBKb25lcyA8bGVlLmpvbmVzQGxpbmFy
-by5vcmc+Cj4gPiAtLS0KPiA+ICBzb3VuZC9zb2MvY29kZWNzL2FiODUwMC1jb2RlYy5jIHwgNCAr
-Ky0tCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkK
-PiA+IAo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvYWI4NTAwLWNvZGVjLmMgYi9z
-b3VuZC9zb2MvY29kZWNzL2FiODUwMC1jb2RlYy5jCj4gPiBpbmRleCAxYWQ5MmNiLi41MWFlM2U5
-IDEwMDY0NAo+ID4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9hYjg1MDAtY29kZWMuYwo+ID4gKysr
-IGIvc291bmQvc29jL2NvZGVjcy9hYjg1MDAtY29kZWMuYwo+ID4gQEAgLTIzMjIsNyArMjMyMiw3
-IEBAIHN0YXRpYyBpbnQgYWI4NTAwX2NvZGVjX3NldF9kYWlfdGRtX3Nsb3Qoc3RydWN0IHNuZF9z
-b2NfZGFpICpkYWksCj4gPiAgCQlzbG90ID0gZmZzKHR4X21hc2spOwo+ID4gIAkJc25kX3NvY191
-cGRhdGVfYml0cyhjb2RlYywgQUI4NTAwX0RBU0xPVENPTkYxLCBtYXNrLCBzbG90KTsKPiA+ICAJ
-CXNuZF9zb2NfdXBkYXRlX2JpdHMoY29kZWMsIEFCODUwMF9EQVNMT1RDT05GMywgbWFzaywgc2xv
-dCk7Cj4gPiAtCQlzbG90ID0gZmxzKHR4X21hc2spOwo+ID4gKwkJc2xvdCA9IGZpbmRfbmV4dF9i
-aXQoKHVuc2lnbmVkIGxvbmcgKikmdHhfbWFzaywgMzIsIHNsb3QgKyAxKTsKPiA+ICAJCXNuZF9z
-b2NfdXBkYXRlX2JpdHMoY29kZWMsIEFCODUwMF9EQVNMT1RDT05GMiwgbWFzaywgc2xvdCk7Cj4g
-PiAgCQlzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBBQjg1MDBfREFTTE9UQ09ORjQsIG1hc2ss
-IHNsb3QpOwo+ID4gIAkJYnJlYWs7Cj4gPiBAQCAtMjM2NCw3ICsyMzY0LDcgQEAgc3RhdGljIGlu
-dCBhYjg1MDBfY29kZWNfc2V0X2RhaV90ZG1fc2xvdChzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSwK
-PiA+ICAJCQkJQUI4NTAwX0FEU0xPVFNFTChzbG90KSwKPiA+ICAJCQkJQUI4NTAwX01BU0tfU0xP
-VChzbG90KSwKPiA+ICAJCQkJQUI4NTAwX0FEU0xPVFNFTFhfQURfT1VUX1RPX1NMT1QoQUI4NTAw
-X0FEX09VVDMsIHNsb3QpKTsKPiA+IC0JCXNsb3QgPSBmbHMocnhfbWFzayk7Cj4gPiArCQlzbG90
-ID0gZmluZF9uZXh0X2JpdCgodW5zaWduZWQgbG9uZyAqKSZyeF9tYXNrLCAzMiwgc2xvdCArIDEp
-Owo+ID4gIAkJc25kX3NvY191cGRhdGVfYml0cyhjb2RlYywKPiA+ICAJCQkJQUI4NTAwX0FEU0xP
-VFNFTChzbG90KSwKPiA+ICAJCQkJQUI4NTAwX01BU0tfU0xPVChzbG90KSwKCi0tIApMZWUgSm9u
-ZXMKTGluYXJvIFNUTWljcm9lbGVjdHJvbmljcyBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3Jn
-IOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFj
-ZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+I have an HP Envy m6 Sleekbook model k010 with Beats Audio.  My system 
+is LFS-7.4 and BLFS-7.4.  I have subscribed to this list in order to get 
+the sound on my laptop working and also, hopefully, to provide you with 
+info on what might need to be done in the hda_intel driver.  If this 
+list is not the appropriate one in which to do this, I will be more than 
+happy to unsubscribe to it and get on the "users" list.
+
+In the hope that this situation is acceptable for this list--and please 
+let me know if it's not--let me continue.
+
+Except for video replay, sound and printing my build is complete.  I do 
+not have any other sound applications or "helpers" installed, 
+particularly PulseAudio, except gstreamer which is for dependencies.  
+I'm using xcfe4 desktop. In my troubleshooting and research I discovered 
+"hda-jack-retask."  I installed it and have been "poking around" for 
+awhile unsuccessfully.  I guess I just don't understand the "pin out."  
+This particular laptop has two speakers and a woofer.
+
+I ran "alsa-info.sh" and here is the section on the pins:
+
+> /sys/class/sound/hwC0D0/init_pin_configs:
+> 0x03 0x185600f0
+> 0x05 0x585600f0
+> 0x07 0x585600f0
+> 0x09 0x585600f0
+> 0x0b 0x585600f0
+> 0x0d 0x585600f0
+and
+
+> /sys/class/sound/hwC1D0/init_pin_configs:
+> 0x0a 0x03a11020
+> 0x0b 0x0321101f
+> 0x0c 0x40f000f0
+> 0x0d 0x92170110
+> 0x0e 0x40f000f0
+> 0x0f 0x40f000f0
+> 0x10 0x40f000f0
+> 0x11 0xd5a30130
+> 0x1f 0x40f000f0
+If you need the results of the whole script, I will run it again and 
+provide the link.
+
+I just don't understand the mapping for the pins to be able to 
+"override" them in hda-jack-retask.
+
+Here is more, I hope helpful info.
+
+Output from "speaker-test"--whether run as root or an unprivileged user:
+
+> speaker-test 1.0.27.2
+>
+> Playback device is default
+> Stream parameters are 48000Hz, S16_LE, 1 channels
+> Using 16 octaves of pink noise
+> Channels count (1) not available for playbacks: Invalid argument
+> Setting of hwparams failed: Invalid argument
+
+ From "aplay -L
+
+> null
+>     Discard all samples (playback) or generate zero samples (capture)
+> hdmi:CARD=HDMI,DEV=0
+>     HDA ATI HDMI, HDMI 0
+>     HDMI Audio Output
+> sysdefault:CARD=Generic
+>     HD-Audio Generic, 92HD91BXX Analog
+>     Default Audio Device
+> front:CARD=Generic,DEV=0
+>     HD-Audio Generic, 92HD91BXX Analog
+>     Front speakers
+> surround40:CARD=Generic,DEV=0
+>     HD-Audio Generic, 92HD91BXX Analog
+>     4.0 Surround output to Front and Rear speakers
+> surround41:CARD=Generic,DEV=0
+>     HD-Audio Generic, 92HD91BXX Analog
+>     4.1 Surround output to Front, Rear and Subwoofer speakers
+> surround50:CARD=Generic,DEV=0
+>     HD-Audio Generic, 92HD91BXX Analog
+>     5.0 Surround output to Front, Center and Rear speakers
+> surround51:CARD=Generic,DEV=0
+>     HD-Audio Generic, 92HD91BXX Analog
+>     5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+> surround71:CARD=Generic,DEV=0
+>     HD-Audio Generic, 92HD91BXX Analog
+>     7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+
+I will be grateful for any help.  Also, once again, if this list is not 
+the appropriate one, please let me know and I'll go to "users."
+
+Thanks,
+Dan
