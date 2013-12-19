@@ -1,69 +1,56 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 06/11] ASoC: ux500_pcm: Expect different saved DMA data when obtaining from DAI store
-Date: Thu, 19 Dec 2013 15:55:03 +0000
-Message-ID: <1387468508-12286-7-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 04/11] ASoC: Ux500: Match platform by device
+	node when booting Device Tree
+Date: Thu, 19 Dec 2013 15:55:01 +0000
+Message-ID: <1387468508-12286-5-git-send-email-lee.jones@linaro.org>
 References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f175.google.com (mail-wi0-f175.google.com
+ [209.85.212.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 777C22654AE
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 16:55:34 +0100 (CET)
+Received: by mail-wi0-f175.google.com with SMTP id hi5so7076347wib.2
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 07:55:34 -0800 (PST)
 In-Reply-To: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: linus.walleij@linaro.org, broonie@kernel.org, alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>
+Cc: linus.walleij@linaro.org, broonie@kernel.org, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In preparation for full Device Tree enablement we must differentiate
-between the two varying ways DMA data can be held in the DAI store. If
-we're booting with Device Tree the provided 'snd_dmaengine_dai_dma_data'
-data structure shall be used, whereas in order to avoid breaking legacy
-platform data we also need to be able to translate DMA data stored using
-the UX500 specific 'ux500_msp_dma_params' method.
+We're getting closer to fully enabling the Ux500 ASoC driver for Device
+Tree. When we switch over from using AUXDATA we'll need to match platform
+by only Device Tree nodes. In this patch we NULL out the platform_name,
+and supply nodes for each platform device.
 
-Once we move over to solely use Device Tree, we can enforce the use of
-'snd_dmaengine_dai_dma_data' and this code can be removed altogether.
-
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/ux500_pcm.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ sound/soc/ux500/mop500.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
-index 32d4572..8b53f22 100644
---- a/sound/soc/ux500/ux500_pcm.c
-+++ b/sound/soc/ux500/ux500_pcm.c
-@@ -108,10 +108,21 @@ static int ux500_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
- 		struct dma_slave_config *slave_config)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct ux500_msp_dma_params *dma_params;
-+	struct msp_i2s_platform_data *pdata = rtd->cpu_dai->dev->platform_data;
-+	struct snd_dmaengine_dai_dma_data *snd_dma_params;
-+	struct ux500_msp_dma_params *ste_dma_params;
-+	dma_addr_t dma_addr;
- 	int ret;
- 
--	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+	if (pdata) {
-+		ste_dma_params =
-+			snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+		dma_addr = ste_dma_params->tx_rx_addr;
-+	} else {
-+		snd_dma_params =
-+			snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+		dma_addr = snd_dma_params->addr;
-+	}
- 
- 	ret = snd_hwparams_to_dma_slave_config(substream, params, slave_config);
- 	if (ret)
-@@ -124,9 +135,9 @@ static int ux500_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
- 	slave_config->dst_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		slave_config->dst_addr = dma_params->tx_rx_addr;
-+		slave_config->dst_addr = dma_addr;
- 	else
--		slave_config->src_addr = dma_params->tx_rx_addr;
-+		slave_config->src_addr = dma_addr;
- 
- 	return 0;
- }
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index 178d1ba..b3b66aa 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -91,6 +91,8 @@ static int mop500_of_probe(struct platform_device *pdev,
+ 	for (i = 0; i < 2; i++) {
+ 		mop500_dai_links[i].cpu_of_node = msp_np[i];
+ 		mop500_dai_links[i].cpu_dai_name = NULL;
++		mop500_dai_links[i].platform_of_node = msp_np[i];
++		mop500_dai_links[i].platform_name = NULL;
+ 		mop500_dai_links[i].codec_of_node = codec_np;
+ 		mop500_dai_links[i].codec_name = NULL;
+ 	}
 -- 
 1.8.3.2
