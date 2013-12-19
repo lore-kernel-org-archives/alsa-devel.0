@@ -1,20 +1,21 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [RFC][PATCH v1] ASoC: fsl_ssi: Add DAI master mode
- support for SSI on i.MX series
-Date: Thu, 19 Dec 2013 10:14:25 +0800
-Message-ID: <20131219021423.GA10601@MrMyself>
-References: <1386845085-21682-1-git-send-email-Guangyu.Chen@freescale.com>
- <20131218185952.GM31886@sirena.org.uk>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCHv3 1/7] ALSA: Add SAI SoC Digital Audio
+	Interface driver.
+Date: Thu, 19 Dec 2013 03:16:44 +0000
+Message-ID: <00b7bf44664b4d9e8a7317d73f039cef@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1387250684-23406-1-git-send-email-Li.Xiubo@freescale.com>
+ <1387250684-23406-2-git-send-email-Li.Xiubo@freescale.com>
+ <20131218182731.GE31886@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe004.messaging.microsoft.com [213.199.154.207])
- by alsa0.perex.cz (Postfix) with ESMTP id 745C526529F
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 03:31:34 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20131218185952.GM31886@sirena.org.uk>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0237.outbound.protection.outlook.com [207.46.163.237])
+ by alsa0.perex.cz (Postfix) with ESMTP id C4DEB2652C7
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 04:16:48 +0100 (CET)
+In-Reply-To: <20131218182731.GE31886@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +26,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, timur@tabi.org, linuxppc-dev@lists.ozlabs.org
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "timur@tabi.org" <timur@tabi.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Huan Wang <Huan.Wang@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "Jason.Jin@freescale.com" <Jason.Jin@freescale.com>, "oskar@scara.com" <os>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 18, 2013 at 06:59:52PM +0000, Mark Brown wrote:
-> On Thu, Dec 12, 2013 at 06:44:45PM +0800, Nicolin Chen wrote:
+> On Tue, Dec 17, 2013 at 11:24:38AM +0800, Xiubo Li wrote:
 > 
-> > +/**
-> > + * fsl_ssi_set_dai_tdm_slot - set TDM slot number
-> > + *
-> > + * Note: This function can be only called when using SSI as DAI master
-> > + */
-> > +static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
-> > +				u32 rx_mask, int slots, int slot_width)
-> > +{
-> > +	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
-> > +	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
-> > +	u32 val;
+> > This adds Freescale SAI ASoC Audio support.
+> > This implementation is only compatible with device tree definition.
 > 
-> I'm a bit concernred about what this is for and why it's required - is
-> it something that machine drivers have to call and if it is shouldn't
-> the driver be defaulting to a sensible configuration?
+> This is mostly good, there are two small issues below but I've applied it
+> since they don't really affect the driver as a whole.  Please send followup
+> patches to fix the issues below.
+> 
+> > +static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai) {
+> > +	struct fsl_sai *sai = dev_get_drvdata(cpu_dai->dev);
+> > +
+> > +	cpu_dai->playback_dma_data = &sai->dma_params_tx;
+> > +	cpu_dai->capture_dma_data = &sai->dma_params_rx;
+> 
+> You should use snd_soc_dai_init_dma_data() for this.
+>
 
-SSI can control how many slots to generate and which slot to send data. Yes,
-the normal case, which should be defaulting to normal two slots I2S case, can
-be configured by SSI driver itself as you mentioned. I'll add it to startup().
+Yes, I will use it.
+ 
+> > +static int fsl_sai_dai_remove(struct snd_soc_dai *cpu_dai) {
+> > +	cpu_dai->playback_dma_data = NULL;
+> > +	cpu_dai->capture_dma_data = NULL;
+> > +
+> > +	snd_soc_dai_set_drvdata(cpu_dai, NULL);
+> > +
+> > +	return 0;
+> > +}
+> 
+> This is all unneeded and this function should be removed entirely.
 
-Then only those machine drivers using multiple slots (>2) need to call it.
+I will remove this and other unneeded functions like this.
 
-Thank you for the comments.
-Nicolin Chen
+Best Regards,
+Xiubo
