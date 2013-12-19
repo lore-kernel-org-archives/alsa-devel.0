@@ -1,19 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Don't be too specific for
- conflicting boost ctl names
-Date: Thu, 19 Dec 2013 12:46:13 +0100
-Message-ID: <52B2DC85.4020901@canonical.com>
-References: <1387388362-1005-1-git-send-email-tiwai@suse.de>
- <52B28583.3050909@canonical.com> <s5h1u19t7d0.wl%tiwai@suse.de>
+From: Eduard Gilmutdinov <edgilmutdinov@gmail.com>
+Subject: [PATCH] ALSA: usb-audio: Add support for Focusrite
+ Saffire 6 USB
+Date: Thu, 19 Dec 2013 18:14:31 +0600
+Message-ID: <CAFLJmH=62tZVcZHsYfJij0gAwKyafFY0H3H6ZZ1EXS8-TmWBBw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id CDAE0265357
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 12:46:13 +0100 (CET)
-In-Reply-To: <s5h1u19t7d0.wl%tiwai@suse.de>
+Received: from mail-wi0-f170.google.com (mail-wi0-f170.google.com
+ [209.85.212.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CD32265459
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 13:14:32 +0100 (CET)
+Received: by mail-wi0-f170.google.com with SMTP id hq4so6458906wib.1
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 04:14:31 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,47 +22,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: daniel@zonque.org
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/19/2013 12:20 PM, Takashi Iwai wrote:
-> At Thu, 19 Dec 2013 06:34:59 +0100,
-> David Henningsson wrote:
->>
->> On 12/18/2013 06:39 PM, Takashi Iwai wrote:
->>> When a boost control influences on multiple input paths, we shouldn't
->>> pick up the name string specific to one input but rather choose a more
->>> generic name.  A problem seen often is that a single mic boost
->>> controls both internal and external mics although the driver picks up
->>> the very first name randomly like "Internal Mic Boost".  This should
->>> have been "Mic Boost", instead.
->>>
->>> This patch tries to correct that behavior: when a boost control is
->>> available, check whether it conflicts with other inputs.  If it does,
->>> use a common string ("Mic", "Line") as long as possible, or take a
->>> generic name "Input".
->>
->> Hrm. I thought today "Mic Boost" is quite common, and meaning the mic
->> boost of the non-internal mic. So I agree there is a problem - and thank
->> you for trying to fix it - but isn't this just changing one problem for
->> another? Now we don't know if a "Mic Boost" control controls the
->> internal mic or not.
-> 
-> That's true, and the problem isn't new...
-> I'm fine to use a different name as a boost control used for multiple
-> mics, though.  Spell your wish.
+This patch add support for playback through external audio card
+Focusrite Saffire 6 USB. Capture and MIDI is not tested.
 
-If *all* inputs go through the boost, then just preferring "Capture
-Boost" or "Input Boost" over "Mic Boost" would do the trick. I e, just
-skip the logic that checks for all inputs being of the same type.
+Signed-off-by: Eduard Gilmutdinov <edgilmutdinov@gmail.com>
+---
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index f5f0595..158beb4 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2569,6 +2569,46 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+         .type = QUIRK_MIDI_NOVATION
+     }
+ },
++{
++    USB_DEVICE(0x1235, 0x0010),
++    .driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++        .vendor_name = "Focusrite",
++        .product_name = "Saffire 6 USB",
++        .ifnum = QUIRK_ANY_INTERFACE,
++        .type = QUIRK_COMPOSITE,
++        .data = (const struct snd_usb_audio_quirk[]) {
++            {
++                .ifnum = 0,
++                .type = QUIRK_AUDIO_FIXED_ENDPOINT,
++                .data = &(const struct audioformat) {
++                    .formats = SNDRV_PCM_FMTBIT_S24_3LE,
++                    .channels = 4,
++                    .iface = 0,
++                    .altsetting = 1,
++                    .altset_idx = 1,
++                    .attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++                    .endpoint = 0x01,
++                    .ep_attr = USB_ENDPOINT_XFER_ISOC,
++                    .rates = SNDRV_PCM_RATE_44100 |
++                         SNDRV_PCM_RATE_48000,
++                    .rate_min = 44100,
++                    .rate_max = 48000,
++                    .nr_rates = 2,
++                    .rate_table = (unsigned int[]) {
++                        44100, 48000
++                    }
++                }
++            },
++            {
++                .ifnum = 1,
++                .type = QUIRK_MIDI_RAW_BYTES
++            },
++            {
++                .ifnum = -1
++            }
++        }
++    }
++},
 
-The problem is when a boost controls two inputs but not the third. But
-since your code only looks through the input paths that go through the
-boost control and not the ones that don't, maybe we can save that
-problem for another day...
+ /* Access Music devices */
+ {
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 0df9ede..3ea9627 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -660,10 +660,11 @@ static int snd_usb_cm6206_boot_quirk(struct
+usb_device *dev)
+     return err;
+ }
 
+-/*
++/*
+  * Novation Twitch DJ controller
++ * Focusrite(Novation) Saffire 6 USB audio card
+  */
+-static int snd_usb_twitch_boot_quirk(struct usb_device *dev)
++static int snd_usb_novation_boot_quirk(struct usb_device *dev)
+ {
+     /* preemptively set up the device because otherwise the
+      * raw MIDI endpoints are not active */
+@@ -972,9 +973,9 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
+         /* Digidesign Mbox 2 */
+         return snd_usb_mbox2_boot_quirk(dev);
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+-    case USB_ID(0x1235, 0x0018):
+-        /* Focusrite Novation Twitch */
+-        return snd_usb_twitch_boot_quirk(dev);
++    case USB_ID(0x1235, 0x0010): /* Focusrite Novation Saffire 6 USB */
++    case USB_ID(0x1235, 0x0018): /* Focusrite Novation Twitch */
++        return snd_usb_novation_boot_quirk(dev);
+
+     case USB_ID(0x133e, 0x0815):
+         /* Access Music VirusTI Desktop */
