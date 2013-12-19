@@ -1,49 +1,82 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simple-card: Use devm_snd_soc_register_card()
-Date: Thu, 19 Dec 2013 10:23:37 +0000
-Message-ID: <20131219102337.GR31886@sirena.org.uk>
-References: <1387425594-32469-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCHv3 5/7] ASoC: fsl: Add SGTL5000 based audio machine driver.
+Date: Thu, 19 Dec 2013 10:25:21 +0000
+Message-ID: <20131219102521.GS31886@sirena.org.uk>
+References: <1387250684-23406-1-git-send-email-Li.Xiubo@freescale.com>
+ <1387250684-23406-6-git-send-email-Li.Xiubo@freescale.com>
+ <20131218183743.GG31886@sirena.org.uk>
+ <f9a19c59bfaf4844bbeaca1aeb91e305@DM2PR03MB509.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vvRocJ6whMXXNc9q"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1387425594-32469-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: perex@perex.cz, tiwai@suse.de, kuninori.morimoto.gx@renesas.com, fabio.estevam@freescale.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0975475668151318237=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <f9a19c59bfaf4844bbeaca1aeb91e305@DM2PR03MB509.namprd03.prod.outlook.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "timur@tabi.org" <timur@tabi.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Huan Wang <Huan.Wang@freescale.com>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ian.campbell@citrix.com" <ian.campbell@citrix.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "rob.herring@calxeda.com" <rob.herring@calxeda.com>, "Jason.Jin@freescale.com" <Jason.Jin@freescale.com>, "perex@perex.cz" <per>
 List-Id: alsa-devel@alsa-project.org
 
 
---vvRocJ6whMXXNc9q
+--===============0975475668151318237==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3ig5MTpp3LwprTX9"
+Content-Disposition: inline
+
+
+--3ig5MTpp3LwprTX9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 19, 2013 at 11:59:54AM +0800, Xiubo Li wrote:
-> Makes the code slightly shorter.
+On Thu, Dec 19, 2013 at 05:19:26AM +0000, Li.Xiubo@freescale.com wrote:
 
-Applied, thanks.
+> In this series of patches, the PATCH1~PATCH4 are about SAI only, and can be
+> apart from VF610-twr sound driver, I will sent the SAI driver and VF610-twr
+> sound driver separately. Could you apply the SAI's first if they are all fine?
 
---vvRocJ6whMXXNc9q
+What are you asking me to apply here?  I already applied your first
+patch as I said, is that not everything?
+
+--3ig5MTpp3LwprTX9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSssklAAoJELSic+t+oim95vUP/3+XE0m7EClFC2iz2idjAeZW
-VTUWF6a19t98jMnPTUnUeXmCCEyE54WeewzM26KVHHXim/a14GKqmxDzVEGw6deo
-prXDzLxDRuKAsQGXCzmAeKYtvQsbM7xxYDQH1N/eWDxQmYV0y14FNdTyo+1Frm55
-kIMUmbXl5WotHcn09LFjwfX1LxY+CVOhvJ6yIn6kW7HdoCAmyYoLiiNHXugZzURX
-0RIXQb7vVYUuw5JZqBeEHn1DEU1Yy3HDC+kQsr+keXa/eQk6AYN0CQ5jG7rvLaqZ
-e89EDOruMmyREm3h8PvX4rjWZzv+/O08QFgpz1anueaSNo4K3n+SG9WOAxjA1Xth
-ohI70pOiqDU11phmOlp4Jp6Tv0RzamlrYWMAZTgEd/tllNshT8s5yIjVXO/V7QC/
-tz66wbeuHDirr32CJl0V9sPBZHRvJYU7EpjH91jVyXDM7IUQf3wHaNmDjbu+aZA8
-a0sYASIqHEHlOLWuNo4rYZgKJwipf9DRBxBRXrZ0FA1pnSBQOAOhzmeAcl4E1SEo
-M97otwP5zmqNxdN8Mzzq75xx+nvTO3nWBnOxxsJwnWvhNSZKakJpGgZKirEKid39
-NoV/scVvVYYv75FzPJEcw9fp0bpL4EPghVPLrMBQJYfR9n6piIh3JnEjPXN5G4yu
-za2mOBcm4UFIHIs0+pv2
-=SUM/
+iQIcBAEBAgAGBQJSssmOAAoJELSic+t+oim9IUIQAIHC0z/+jn9FBL0PhHHBxbIX
+EzC6HLZcVf6q1mKLIGQ8AfJmQKrdYc3jeZ9F0yXyQ4Sqh9Jo0nhhhjNjzRI8CZfr
+wZAyebAPhxNzUiBz29k3UZR3+spkZjZlfM1gL73o6f9QNUTKBVhYRHeyhOnfo9+n
+2iRrw5bXy9T7gg0oRFSOiFCMPwNoNEhL4Kq84qFdT+Ptk2xjBIj1b/5qh5LTRZGf
+8p+6kdd++szKtgOS+bhW4AYmukBt5YwpTI1fA+TgN6vvIA/O31UnKcMWYSmwyWig
+tA5s4eF+PIKIrJ18uvgMbZAwBj9wyb+feGyPC9t4IUzy8Zt7lBoCdNXRTYb/JsQD
+MyWuNvBe6EldA2DuYF7rWmXUJhRxslIzSeplGC5DRELZjtfJsIN8l4FtKNqC9wDa
+b/EbNw9B5oBKBZYdpLOW0HN7bu5TNexRE/S9JR4crGv3M5pdBuGEBSQj2tbhuWzG
+R1Tw1ogtomN6kGs+hSVruk08CftJAtLR3C9gEVMsnmoEa9QidJkSyYUjTihAUX6P
+pueY0Akz8AUFqXzT21y4H7Gb8qnOZHObxmWcij0vkPMGyqko8Q6QA1rmd+iCsfQ5
+4pX9EW7IJeJ7zNuN+P4ouMLoq5P6q9WIuXZtmLoUlGFr7rs5DXocjfwf89nHu5aj
+VaDPSCfuymOK4KXQYaf+
+=o2sq
 -----END PGP SIGNATURE-----
 
---vvRocJ6whMXXNc9q--
+--3ig5MTpp3LwprTX9--
+
+
+--===============0975475668151318237==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============0975475668151318237==--
