@@ -1,16 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC][PATCH v1] ASoC: fsl_ssi: Add DAI master mode
- support for SSI on i.MX series
-Date: Thu, 19 Dec 2013 10:48:04 +0000
-Message-ID: <20131219104804.GT31886@sirena.org.uk>
-References: <1386845085-21682-1-git-send-email-Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH 3/5] MFD: twl6040: reg_defaults support for
+	regmap
+Date: Thu, 19 Dec 2013 10:52:40 +0000
+Message-ID: <20131219105240.GU31886@sirena.org.uk>
+References: <1385733827-19831-1-git-send-email-peter.ujfalusi@ti.com>
+ <1385733827-19831-4-git-send-email-peter.ujfalusi@ti.com>
+ <20131129160032.GC26982@lee--X1>
+ <20131218185659.GL31886@sirena.org.uk>
+ <20131219090632.GA24932@lee--X1>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8091669770579791213=="
+Content-Type: multipart/mixed; boundary="===============3083777368011824099=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 85CBB26530B
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 11:48:08 +0100 (CET)
-In-Reply-To: <1386845085-21682-1-git-send-email-Guangyu.Chen@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 82D7726530B
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 11:52:45 +0100 (CET)
+In-Reply-To: <20131219090632.GA24932@lee--X1>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,62 +24,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, timur@tabi.org, linuxppc-dev@lists.ozlabs.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8091669770579791213==
+--===============3083777368011824099==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QCC2I/2CckNfI+Tr"
+	protocol="application/pgp-signature"; boundary="fxBYc4U7HLIDBZ2G"
 Content-Disposition: inline
 
 
---QCC2I/2CckNfI+Tr
+--fxBYc4U7HLIDBZ2G
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 12, 2013 at 06:44:45PM +0800, Nicolin Chen wrote:
-> From: Nicolin Chen <b42378@freescale.com>
->=20
-> This patch adds three main functions for DAI master mode: set_dai_fmt(),
-> set_dai_sysclk() and set_dai_tdm_slot(), and one essential baud clock
-> accordingly. After appending this patch, the fsl_ssi driver on i.MX series
-> has the ability to derive LRCLK and BCLK from baud clock source so as to
-> support some audio Codecs which can only be used in slave mode.
+On Thu, Dec 19, 2013 at 09:06:32AM +0000, Lee Jones wrote:
 
-Applied, thanks.
+> What -rc are you currently based on?
 
---QCC2I/2CckNfI+Tr
+Using -rc1 makes life easier, it'll be a new branch.
+
+--fxBYc4U7HLIDBZ2G
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSss7hAAoJELSic+t+oim9EeYP/RDpWeDZFHzVsCBe66KpRKlH
-I8HCnRChRZz6dI10EheWrIEiYXWWZ9UkRsXXx6DphN+K5OniRU2ozogDZdewvaBj
-Y1eZk8Ho09gufRz7mWQNA+JLA6PfZ5nUWLQpIYYnv9kVDyQJ3EhGCK/izg+jVc+y
-uKVg6Lvz6DTPsWuHqNl6/Dc75y87XuAVjYiYH56X/louGm4Y//4BfFbUNqO8UxVT
-kJeUaOV2um/wiDfnuOjB3ojSiNq1AJXNWk9tl8/Jh0khXCIAj/6Zv7qeIZh9jaQI
-fZf1MVVSqWKnkAJKQhxVWLzy/GH7Abi+SHeSWMXcO9jhKdqqjt+kSis2QEFlayzV
-xuEyhLdtY3RWcyoZta4c+dySZY8IH0ahRDsbdByEcSLH1adP0vSu0/Th+Ynq7gAW
-YtK2VRoQI1z02CGP3JAWmW8hCDTOECUwMs/6TtmrcYMnrrajY8eF0kHv0ju7A3Ze
-1w0EfFOV67lTJEpWe/ruWfcbTFq+n3flvYO6TlgZA4tuS9PsYrPKJiN2YMui7+NH
-vfHjH0x8PcrT1P+UWKL+g621lhalxKvUTR/dyONRFG6seNGkHVrtKr61T27jSMXo
-Vmhvo4nxc1bubV0bsE7C3GRWdffa8dPPdgWBRsciJCqDEmK2R1vv0Xr4Ctt5xlVx
-6G520tJq91ENcWquOG/t
-=+6lW
+iQIcBAEBAgAGBQJSss/1AAoJELSic+t+oim99K4P/2hbYAZuVyOkdBEwl9VS7BM0
+1FUFaxz66a74a6T5NYLzR2fZj7pl4T1ghsys2Tarfu6UnXKpbgZRDFE9TLGYmDyb
+mEhP965Os65ZLKfkMDZo99XKL0fw+uitdeu+F5SjfjwpsGivj3H6PeG9mI8MKIAC
+KXFhW1++hXXXP5Lwxbnn+jnRLzwY54QgY7Ay+4W1ZfnIa5J1i1MPh22E19Bjq5dT
+P4e2UUgsmk96/G+ODeDmApe3s/jyUqM5cCCFMtoferXlp3QDLrtY/BcV1Cz7U1sP
+nRyaHMxPDDtCSB6CtuX5D2+Y6kw+T/IBLqOgMvdpQGQAEiHpxP+1xtyD2w1MgtBQ
+lv7RIzi0TDroc5osgwYoUl3AMXuWrLNUOQLEu5q7qyvhBafPxMtYYvBWeOWO4oyT
+1YayE9k3nM0Z02bRudMGutAG3IVKifR0abZcgzXr/ZsaKjdZUkNMwpMkLtSG4hMI
+cRfL0ZMMWFWSAuwHi9kEUouZ8a84MeWQ5qiMZNzgpLoG/O2VbO2ZDcDYHYWORTaO
+6yJcJWS5euSE9dHUi7L6uv+t2lzrsGBbll+jbIF6ZQKlqoHm0owYq5sFGhqeWAJT
+uOlUFkaR53vH9QLElqi4sNr/EWqO5T/tF3mZG8PZ+9gDoUdmw2+x+s8repVh0QKS
+7iqvi53uagK+KYy+fJ5d
+=zuLF
 -----END PGP SIGNATURE-----
 
---QCC2I/2CckNfI+Tr--
+--fxBYc4U7HLIDBZ2G--
 
---===============8091669770579791213==
+--===============3083777368011824099==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8091669770579791213==--
+--===============3083777368011824099==--
