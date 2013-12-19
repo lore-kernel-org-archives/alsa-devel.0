@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Add a quirk for Plantronics
-	Gamecom 780
-Date: Thu, 19 Dec 2013 14:35:04 +0100
-Message-ID: <1387460104-26626-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Add warning texts when codec
+	driver Kconfig doesn't match
+Date: Thu, 19 Dec 2013 15:15:00 +0100
+Message-ID: <1387462500-28217-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2EF8C265475
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 14:35:05 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 050BBABC7
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 13:35:05 +0000 (UTC)
+ by alsa0.perex.cz (Postfix) with ESMTP id A7B32265470
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 15:15:00 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 405E6AC10
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 14:15:00 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,78 +25,141 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Plantronics Gamecom 780 headset has a firmware problem, and when the
-FU 0x09 volume is changed, it results in either too loud or silence
-except for a very narrow range.  This patch provides a workaround,
-ignoring the node, initialize the volume in a sane value and keep
-untouched.
+When a Kconfig of a codec driver doesn't match with the controller
+(CONFIG_SND_HDA_INTEL), it'll result in the non-working automatic
+probing.  Unfortunately kbuild can't give such a restriction, but at
+least, it's possible to show a warning if such a condition is found.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=65251
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/mixer_maps.c | 10 ++++++++++
- sound/usb/quirks.c     | 14 ++++++++++++++
- 2 files changed, 24 insertions(+)
 
-diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index cc2dd1f0decb..32af6b741ef5 100644
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -322,6 +322,12 @@ static struct usbmix_name_map hercules_usb51_map[] = {
- 	{ 0 }				/* terminator */
- };
+This is a patch on top of the previous two patches for making HD-audio
+codec kconfigs to tristate.
+
+
+ sound/pci/hda/Kconfig | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+
+diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+index b0c0481c3339..0e53634dbbd8 100644
+--- a/sound/pci/hda/Kconfig
++++ b/sound/pci/hda/Kconfig
+@@ -93,6 +93,9 @@ config SND_HDA_CODEC_REALTEK
+ 	  Say Y or M here to include Realtek HD-audio codec support in
+ 	  snd-hda-intel driver, such as ALC880.
  
-+/* Plantronics Gamecom 780 has a broken volume control, better to disable it */
-+static struct usbmix_name_map gamecom780_map[] = {
-+	{ 9, NULL }, /* FU, speaker out */
-+	{}
-+};
++comment "Set to Y if you want auto-loading the codec driver"
++	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_REALTEK=m
 +
- /*
-  * Control map entries
-  */
-@@ -358,6 +364,10 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 		.id = USB_ID(0x046d, 0x09a4),
- 		.ignore_ctl_error = 1,
- 	},
-+	{	/* Plantronics GameCom 780 */
-+		.id = USB_ID(0x047f, 0xc010),
-+		.map = gamecom780_map,
-+	},
- 	{
- 		/* Hercules DJ Console (Windows Edition) */
- 		.id = USB_ID(0x06f8, 0xb000),
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 0df9ede99dfd..ede753685491 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -660,6 +660,18 @@ static int snd_usb_cm6206_boot_quirk(struct usb_device *dev)
- 	return err;
- }
+ config SND_HDA_CODEC_ANALOG
+ 	tristate "Build Analog Device HD-audio codec support"
+ 	select SND_HDA_GENERIC
+@@ -100,6 +103,9 @@ config SND_HDA_CODEC_ANALOG
+ 	  Say Y or M here to include Analog Device HD-audio codec support in
+ 	  snd-hda-intel driver, such as AD1986A.
  
-+/* quirk for Plantronics GameCom 780 with CM6302 chip */
-+static int snd_usb_gamecon780_boot_quirk(struct usb_device *dev)
-+{
-+	/* set the initial volume and don't change; other values are either
-+	 * too loud or silent due to firmware bug (bko#65251)
-+	 */
-+	u8 buf[2] = { 0x74, 0xdc };
-+	return snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC_SET_CUR,
-+			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
-+			UAC_FU_VOLUME << 8, 9 << 8, buf, 2);
-+}
++comment "Set to Y if you want auto-loading the codec driver"
++	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_ANALOG=m
 +
- /*
-  * Novation Twitch DJ controller
-  */
-@@ -986,6 +998,8 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
- 		return snd_usb_nativeinstruments_boot_quirk(dev);
- 	case USB_ID(0x0763, 0x2012):  /* M-Audio Fast Track Pro USB */
- 		return snd_usb_fasttrackpro_boot_quirk(dev);
-+	case USB_ID(0x047f, 0xc010): /* Plantronics Gamecom 780 */
-+		return snd_usb_gamecon780_boot_quirk(dev);
- 	}
+ config SND_HDA_CODEC_SIGMATEL
+ 	tristate "Build IDT/Sigmatel HD-audio codec support"
+ 	select SND_HDA_GENERIC
+@@ -107,6 +113,9 @@ config SND_HDA_CODEC_SIGMATEL
+ 	  Say Y or M here to include IDT (Sigmatel) HD-audio codec support in
+ 	  snd-hda-intel driver, such as STAC9200.
  
- 	return 0;
++comment "Set to Y if you want auto-loading the codec driver"
++	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_SIGMATEL=m
++
+ config SND_HDA_CODEC_VIA
+ 	tristate "Build VIA HD-audio codec support"
+ 	select SND_HDA_GENERIC
+@@ -114,6 +123,9 @@ config SND_HDA_CODEC_VIA
+ 	  Say Y or M here to include VIA HD-audio codec support in
+ 	  snd-hda-intel driver, such as VT1708.
+ 
++comment "Set to Y if you want auto-loading the codec driver"
++	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_VIA=m
++
+ config SND_HDA_CODEC_HDMI
+ 	tristate "Build HDMI/DisplayPort HD-audio codec support"
+ 	help
+@@ -121,6 +133,9 @@ config SND_HDA_CODEC_HDMI
+ 	  support in snd-hda-intel driver.  This includes all AMD/ATI,
+ 	  Intel and Nvidia HDMI/DisplayPort codecs.
+ 
++comment "Set to Y if you want auto-loading the codec driver"
++	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_HDMI=m
++
+ config SND_HDA_I915
+ 	bool
+ 	default y
+@@ -133,6 +148,9 @@ config SND_HDA_CODEC_CIRRUS
+ 	  Say Y or M here to include Cirrus Logic codec support in
+ 	  snd-hda-intel driver, such as CS4206.
+ 
++comment "Set to Y if you want auto-loading the codec driver"
++	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CIRRUS=m
++
+ config SND_HDA_CODEC_CONEXANT
+ 	tristate "Build Conexant HD-audio codec support"
+ 	select SND_HDA_GENERIC
+@@ -140,6 +158,9 @@ config SND_HDA_CODEC_CONEXANT
+ 	  Say Y or M here to include Conexant HD-audio codec support in
+ 	  snd-hda-intel driver, such as CX20549.
+ 
++comment "Set to Y if you want auto-loading the codec driver"
++	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CONEXANT=m
++
+ config SND_HDA_CODEC_CA0110
+ 	tristate "Build Creative CA0110-IBG codec support"
+ 	select SND_HDA_GENERIC
+@@ -147,12 +168,18 @@ config SND_HDA_CODEC_CA0110
+ 	  Say Y or M here to include Creative CA0110-IBG codec support in
+ 	  snd-hda-intel driver, found on some Creative X-Fi cards.
+ 
++comment "Set to Y if you want auto-loading the codec driver"
++	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CA0110=m
++
+ config SND_HDA_CODEC_CA0132
+ 	tristate "Build Creative CA0132 codec support"
+ 	help
+ 	  Say Y or M here to include Creative CA0132 codec support in
+ 	  snd-hda-intel driver.
+ 
++comment "Set to Y if you want auto-loading the codec driver"
++	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CA0132=m
++
+ config SND_HDA_CODEC_CA0132_DSP
+ 	bool "Support new DSP code for CA0132 codec"
+ 	depends on SND_HDA_CODEC_CA0132
+@@ -172,18 +199,27 @@ config SND_HDA_CODEC_CMEDIA
+ 	  Say Y or M here to include C-Media HD-audio codec support in
+ 	  snd-hda-intel driver, such as CMI9880.
+ 
++comment "Set to Y if you want auto-loading the codec driver"
++	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CMEDIA=m
++
+ config SND_HDA_CODEC_SI3054
+ 	tristate "Build Silicon Labs 3054 HD-modem codec support"
+ 	help
+ 	  Say Y or M here to include Silicon Labs 3054 HD-modem codec
+ 	  (and compatibles) support in snd-hda-intel driver.
+ 
++comment "Set to Y if you want auto-loading the codec driver"
++	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_SI3054=m
++
+ config SND_HDA_GENERIC
+ 	tristate "Enable generic HD-audio codec parser"
+ 	help
+ 	  Say Y or M here to enable the generic HD-audio codec parser
+ 	  in snd-hda-intel driver.
+ 
++comment "Set to Y if you want auto-loading the codec driver"
++	depends on SND_HDA_INTEL=y && SND_HDA_GENERIC=m
++
+ config SND_HDA_POWER_SAVE_DEFAULT
+ 	int "Default time-out for HD-audio power-save mode"
+ 	depends on PM
 -- 
 1.8.5
