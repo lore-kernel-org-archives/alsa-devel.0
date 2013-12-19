@@ -1,122 +1,58 @@
-From: Dan McGhee <beesnees@grm.net>
-Subject: snd_hda_intel and Beats Audio
-Date: Thu, 19 Dec 2013 11:05:31 -0600
-Message-ID: <52B3275B.3070709@grm.net>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 3/5] MFD: twl6040: reg_defaults support for regmap
+Date: Thu, 19 Dec 2013 17:20:36 +0000
+Message-ID: <20131219172036.GD16145@lee--X1>
+References: <1385733827-19831-1-git-send-email-peter.ujfalusi@ti.com>
+ <1385733827-19831-4-git-send-email-peter.ujfalusi@ti.com>
+ <20131129160032.GC26982@lee--X1>
+ <20131218185659.GL31886@sirena.org.uk>
+ <20131219090632.GA24932@lee--X1>
+ <20131219105240.GU31886@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp650.redcondor.net (smtp650.redcondor.net [208.80.206.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 47B652654B7
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 18:05:38 +0100 (CET)
-Received: from cgp.netins.net ([167.142.229.103])
- by smtp650.redcondor.net ({9ef01f99-b982-4add-83fd-b7c41c74273c})
- via TCP (outbound) with ESMTP id 20131219170536188
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 17:05:36 +0000
-Received: from [72.35.180.39] (account beesnees@grm.net HELO [192.168.1.8])
- by cgpf2.cgp.netins.net (CommuniGate Pro SMTP 5.3.13)
- with ESMTPA id 643631463 for alsa-devel@alsa-project.org;
- Thu, 19 Dec 2013 11:05:31 -0600
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20131219105240.GU31886@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-I have an HP Envy m6 Sleekbook model k010 with Beats Audio.  My system 
-is LFS-7.4 and BLFS-7.4.  I have subscribed to this list in order to get 
-the sound on my laptop working and also, hopefully, to provide you with 
-info on what might need to be done in the hda_intel driver.  If this 
-list is not the appropriate one in which to do this, I will be more than 
-happy to unsubscribe to it and get on the "users" list.
+Enjoy!
 
-In the hope that this situation is acceptable for this list--and please 
-let me know if it's not--let me continue.
+> > What -rc are you currently based on?
+>=20
+> Using -rc1 makes life easier, it'll be a new branch.
 
-Except for video replay, sound and printing my build is complete.  I do 
-not have any other sound applications or "helpers" installed, 
-particularly PulseAudio, except gstreamer which is for dependencies.  
-I'm using xcfe4 desktop. In my troubleshooting and research I discovered 
-"hda-jack-retask."  I installed it and have been "poking around" for 
-awhile unsuccessfully.  I guess I just don't understand the "pin out."  
-This particular laptop has two speakers and a woofer.
+The following changes since commit 6ce4eac1f600b34f2f7f58f9cd8f0503d79e=
+42ae:
 
-I ran "alsa-info.sh" and here is the section on the pins:
+  Linux 3.13-rc1 (2013-11-22 11:30:55 -0800)
 
-> /sys/class/sound/hwC0D0/init_pin_configs:
-> 0x03 0x185600f0
-> 0x05 0x585600f0
-> 0x07 0x585600f0
-> 0x09 0x585600f0
-> 0x0b 0x585600f0
-> 0x0d 0x585600f0
-and
+are available in the git repository at:
 
-> /sys/class/sound/hwC1D0/init_pin_configs:
-> 0x0a 0x03a11020
-> 0x0b 0x0321101f
-> 0x0c 0x40f000f0
-> 0x0d 0x92170110
-> 0x0e 0x40f000f0
-> 0x0f 0x40f000f0
-> 0x10 0x40f000f0
-> 0x11 0xd5a30130
-> 0x1f 0x40f000f0
-If you need the results of the whole script, I will run it again and 
-provide the link.
+  git://git.linaro.org/people/ljones/mfd.git tags/ib-asoc-3.14-1
 
-I just don't understand the mapping for the pins to be able to 
-"override" them in hda-jack-retask.
+for you to fetch changes up to c7f9129d22940720141d1f1e958a51142eff9d21=
+:
 
-Here is more, I hope helpful info.
+  mfd: twl6040: reg_defaults support for regmap (2013-12-19 17:01:11 +0=
+000)
 
-Output from "speaker-test"--whether run as root or an unprivileged user:
+----------------------------------------------------------------
+Immutable branch between ASoC and MFD - for v3.14 merge window
 
-> speaker-test 1.0.27.2
->
-> Playback device is default
-> Stream parameters are 48000Hz, S16_LE, 1 channels
-> Using 16 octaves of pink noise
-> Channels count (1) not available for playbacks: Invalid argument
-> Setting of hwparams failed: Invalid argument
+----------------------------------------------------------------
+Peter Ujfalusi (1):
+      mfd: twl6040: reg_defaults support for regmap
 
- From "aplay -L
+ drivers/mfd/twl6040.c | 92 +++++++++++++++++++++++++++++++++++++++++++=
+++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 89 insertions(+), 3 deletions(-)
 
-> null
->     Discard all samples (playback) or generate zero samples (capture)
-> hdmi:CARD=HDMI,DEV=0
->     HDA ATI HDMI, HDMI 0
->     HDMI Audio Output
-> sysdefault:CARD=Generic
->     HD-Audio Generic, 92HD91BXX Analog
->     Default Audio Device
-> front:CARD=Generic,DEV=0
->     HD-Audio Generic, 92HD91BXX Analog
->     Front speakers
-> surround40:CARD=Generic,DEV=0
->     HD-Audio Generic, 92HD91BXX Analog
->     4.0 Surround output to Front and Rear speakers
-> surround41:CARD=Generic,DEV=0
->     HD-Audio Generic, 92HD91BXX Analog
->     4.1 Surround output to Front, Rear and Subwoofer speakers
-> surround50:CARD=Generic,DEV=0
->     HD-Audio Generic, 92HD91BXX Analog
->     5.0 Surround output to Front, Center and Rear speakers
-> surround51:CARD=Generic,DEV=0
->     HD-Audio Generic, 92HD91BXX Analog
->     5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-> surround71:CARD=Generic,DEV=0
->     HD-Audio Generic, 92HD91BXX Analog
->     7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-
-I will be grateful for any help.  Also, once again, if this list is not 
-the appropriate one, please let me know and I'll go to "users."
-
-Thanks,
-Dan
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
