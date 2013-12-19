@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 09/11] ASoC: ux500_pcm: Take out pointless dev_dbg() call
-Date: Thu, 19 Dec 2013 15:55:06 +0000
-Message-ID: <1387468508-12286-10-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 11/11] ASoC: ux500: Dramatically reduce the size of the DAI driver data struct
+Date: Thu, 19 Dec 2013 15:55:08 +0000
+Message-ID: <1387468508-12286-12-git-send-email-lee.jones@linaro.org>
 References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
@@ -10,30 +10,130 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: linus.walleij@linaro.org, broonie@kernel.org, alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+We no longer have a means to differentiate between MSP devices at probe
+time, mainly because we don't really have to. So rather than have an over-
+sized static data structure in place, where the only difference between
+devices is the ID and name (which are unused), we'll just create one
+succinct, statically assigned and shared one instead.
+
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/ux500_pcm.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/ux500/ux500_msp_dai.c | 96 ++++++-----------------------------------
+ 1 file changed, 14 insertions(+), 82 deletions(-)
 
-diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
-index 8b53f22..3d1c342 100644
---- a/sound/soc/ux500/ux500_pcm.c
-+++ b/sound/soc/ux500/ux500_pcm.c
-@@ -65,14 +65,10 @@ static struct dma_chan *ux500_pcm_request_chan(struct snd_soc_pcm_runtime *rtd,
- 	struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_dai *dai = rtd->cpu_dai;
--	struct device *dev = dai->dev;
- 	u16 per_data_width, mem_data_width;
- 	struct stedma40_chan_cfg *dma_cfg;
- 	struct ux500_msp_dma_params *dma_params;
+diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
+index f4d607a..5f4807b 100644
+--- a/sound/soc/ux500/ux500_msp_dai.c
++++ b/sound/soc/ux500/ux500_msp_dai.c
+@@ -718,87 +718,19 @@ static struct snd_soc_dai_ops ux500_msp_dai_ops[] = {
+ 	}
+ };
  
--	dev_dbg(dev, "%s: MSP %d (%s): Enter.\n", __func__, dai->id,
--		snd_pcm_stream_str(substream));
--
- 	dma_params = snd_soc_dai_get_dma_data(dai, substream);
- 	dma_cfg = dma_params->dma_cfg;
+-static struct snd_soc_dai_driver ux500_msp_dai_drv[UX500_NBR_OF_DAI] = {
+-	{
+-		.name = "ux500-msp-i2s.0",
+-		.probe = ux500_msp_dai_probe,
+-		.id = 0,
+-		.suspend = NULL,
+-		.resume = NULL,
+-		.playback = {
+-			.channels_min = UX500_MSP_MIN_CHANNELS,
+-			.channels_max = UX500_MSP_MAX_CHANNELS,
+-			.rates = UX500_I2S_RATES,
+-			.formats = UX500_I2S_FORMATS,
+-		},
+-		.capture = {
+-			.channels_min = UX500_MSP_MIN_CHANNELS,
+-			.channels_max = UX500_MSP_MAX_CHANNELS,
+-			.rates = UX500_I2S_RATES,
+-			.formats = UX500_I2S_FORMATS,
+-		},
+-		.ops = ux500_msp_dai_ops,
+-	},
+-	{
+-		.name = "ux500-msp-i2s.1",
+-		.probe = ux500_msp_dai_probe,
+-		.id = 1,
+-		.suspend = NULL,
+-		.resume = NULL,
+-		.playback = {
+-			.channels_min = UX500_MSP_MIN_CHANNELS,
+-			.channels_max = UX500_MSP_MAX_CHANNELS,
+-			.rates = UX500_I2S_RATES,
+-			.formats = UX500_I2S_FORMATS,
+-		},
+-		.capture = {
+-			.channels_min = UX500_MSP_MIN_CHANNELS,
+-			.channels_max = UX500_MSP_MAX_CHANNELS,
+-			.rates = UX500_I2S_RATES,
+-			.formats = UX500_I2S_FORMATS,
+-		},
+-		.ops = ux500_msp_dai_ops,
+-	},
+-	{
+-		.name = "ux500-msp-i2s.2",
+-		.id = 2,
+-		.probe = ux500_msp_dai_probe,
+-		.suspend = NULL,
+-		.resume = NULL,
+-		.playback = {
+-			.channels_min = UX500_MSP_MIN_CHANNELS,
+-			.channels_max = UX500_MSP_MAX_CHANNELS,
+-			.rates = UX500_I2S_RATES,
+-			.formats = UX500_I2S_FORMATS,
+-		},
+-		.capture = {
+-			.channels_min = UX500_MSP_MIN_CHANNELS,
+-			.channels_max = UX500_MSP_MAX_CHANNELS,
+-			.rates = UX500_I2S_RATES,
+-			.formats = UX500_I2S_FORMATS,
+-		},
+-		.ops = ux500_msp_dai_ops,
+-	},
+-	{
+-		.name = "ux500-msp-i2s.3",
+-		.probe = ux500_msp_dai_probe,
+-		.id = 3,
+-		.suspend = NULL,
+-		.resume = NULL,
+-		.playback = {
+-			.channels_min = UX500_MSP_MIN_CHANNELS,
+-			.channels_max = UX500_MSP_MAX_CHANNELS,
+-			.rates = UX500_I2S_RATES,
+-			.formats = UX500_I2S_FORMATS,
+-		},
+-		.capture = {
+-			.channels_min = UX500_MSP_MIN_CHANNELS,
+-			.channels_max = UX500_MSP_MAX_CHANNELS,
+-			.rates = UX500_I2S_RATES,
+-			.formats = UX500_I2S_FORMATS,
+-		},
+-		.ops = ux500_msp_dai_ops,
+-	},
++static struct snd_soc_dai_driver ux500_msp_dai_drv = {
++	.probe                 = ux500_msp_dai_probe,
++	.suspend               = NULL,
++	.resume                = NULL,
++	.playback.channels_min = UX500_MSP_MIN_CHANNELS,
++	.playback.channels_max = UX500_MSP_MAX_CHANNELS,
++	.playback.rates        = UX500_I2S_RATES,
++	.playback.formats      = UX500_I2S_FORMATS,
++	.capture.channels_min  = UX500_MSP_MIN_CHANNELS,
++	.capture.channels_max  = UX500_MSP_MAX_CHANNELS,
++	.capture.rates         = UX500_I2S_RATES,
++	.capture.formats       = UX500_I2S_FORMATS,
++	.ops                   = ux500_msp_dai_ops,
+ };
  
+ static const struct snd_soc_component_driver ux500_msp_component = {
+@@ -868,7 +800,7 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(&pdev->dev, drvdata);
+ 
+ 	ret = snd_soc_register_component(&pdev->dev, &ux500_msp_component,
+-					 &ux500_msp_dai_drv[drvdata->msp->id], 1);
++					 &ux500_msp_dai_drv, 1);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "Error: %s: Failed to register MSP%d!\n",
+ 			__func__, drvdata->msp->id);
 -- 
 1.8.3.2
