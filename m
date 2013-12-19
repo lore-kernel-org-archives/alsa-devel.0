@@ -1,24 +1,14 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 3/5] MFD: twl6040: reg_defaults support for
-	regmap
-Date: Thu, 19 Dec 2013 09:06:32 +0000
-Message-ID: <20131219090632.GA24932@lee--X1>
-References: <1385733827-19831-1-git-send-email-peter.ujfalusi@ti.com>
- <1385733827-19831-4-git-send-email-peter.ujfalusi@ti.com>
- <20131129160032.GC26982@lee--X1>
- <20131218185659.GL31886@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] mfd: wm5110: Expose DRE control registers
+Date: Thu, 19 Dec 2013 09:11:01 +0000
+Message-ID: <1387444262-26456-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 28802261A8F
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 10:06:38 +0100 (CET)
-Received: by mail-wi0-f181.google.com with SMTP id hq4so1838505wib.2
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 01:06:37 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20131218185659.GL31886@sirena.org.uk>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AF2E9261A8F
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 10:18:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,19 +18,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: lee.jones@linaro.org
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAxOCBEZWMgMjAxMywgTWFyayBCcm93biB3cm90ZToKCj4gT24gRnJpLCBOb3YgMjks
-IDIwMTMgYXQgMDQ6MDA6MzJQTSArMDAwMCwgTGVlIEpvbmVzIHdyb3RlOgo+IAo+ID4gTWFyaywg
-aXMgYW4gaW1tdXRhYmxlIGJyYW5jaCByZXF1aXJlZCBmb3IgdGhpcyBwYXRjaD8KPiAKPiBPbmUg
-aXMuLi4gIEkgdGhpbmsgSSBkaWQgYXNrIGZvciBvbmUgYXQgdGhlIHRpbWUgYnV0IGRpZG4ndCBo
-ZWFyCj4gYW55dGhpbmcgYmFjaz8KCkkgbXVzdCBoYXZlIG1pc3NlZCB5b3VyIHJlcGx5LgoKV2hh
-dCAtcmMgYXJlIHlvdSBjdXJyZW50bHkgYmFzZWQgb24/CgotLSAKTGVlIEpvbmVzCkxpbmFybyBT
-VE1pY3JvZWxlY3Ryb25pY3MgTGFuZGluZyBUZWFtIExlYWQKTGluYXJvLm9yZyDilIIgT3BlbiBz
-b3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBMaW5hcm86IEZhY2Vib29rIHwgVHdp
-dHRlciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+Certain use-cases require the DRE to be disabled so expose registers
+necessary to control the DRE enables.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ drivers/mfd/wm5110-tables.c           |    2 ++
+ include/linux/mfd/arizona/registers.h |    4 ++++
+ 2 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mfd/wm5110-tables.c b/drivers/mfd/wm5110-tables.c
+index 338cfbe..abd6713 100644
+--- a/drivers/mfd/wm5110-tables.c
++++ b/drivers/mfd/wm5110-tables.c
+@@ -601,6 +601,7 @@ static const struct reg_default wm5110_reg_default[] = {
+ 	{ 0x0000043D, 0x0180 },    /* R1085  - DAC Digital Volume 6R */
+ 	{ 0x0000043E, 0x0080 },    /* R1086  - DAC Volume Limit 6R */
+ 	{ 0x0000043F, 0x0800 },    /* R1087  - Noise Gate Select 6R */
++	{ 0x00000440, 0x8FFF },    /* R1088  - DRE Enable */
+ 	{ 0x00000450, 0x0000 },    /* R1104  - DAC AEC Control 1 */
+ 	{ 0x00000458, 0x0000 },    /* R1112  - Noise Gate Control */
+ 	{ 0x00000480, 0x0040 },    /* R1152  - Class W ANC Threshold 1 */
+@@ -1631,6 +1632,7 @@ static bool wm5110_readable_register(struct device *dev, unsigned int reg)
+ 	case ARIZONA_DAC_DIGITAL_VOLUME_6R:
+ 	case ARIZONA_DAC_VOLUME_LIMIT_6R:
+ 	case ARIZONA_NOISE_GATE_SELECT_6R:
++	case ARIZONA_DRE_ENABLE:
+ 	case ARIZONA_DAC_AEC_CONTROL_1:
+ 	case ARIZONA_NOISE_GATE_CONTROL:
+ 	case ARIZONA_PDM_SPK1_CTRL_1:
+diff --git a/include/linux/mfd/arizona/registers.h b/include/linux/mfd/arizona/registers.h
+index 8987814..22916c0 100644
+--- a/include/linux/mfd/arizona/registers.h
++++ b/include/linux/mfd/arizona/registers.h
+@@ -3207,6 +3207,10 @@
+ /*
+  * R1088 (0x440) - DRE Enable
+  */
++#define ARIZONA_DRE3R_ENA                        0x0020  /* DRE3R_ENA */
++#define ARIZONA_DRE3R_ENA_MASK                   0x0020  /* DRE3R_ENA */
++#define ARIZONA_DRE3R_ENA_SHIFT                       5  /* DRE3R_ENA */
++#define ARIZONA_DRE3R_ENA_WIDTH                       1  /* DRE3R_ENA */
+ #define ARIZONA_DRE3L_ENA                        0x0010  /* DRE3L_ENA */
+ #define ARIZONA_DRE3L_ENA_MASK                   0x0010  /* DRE3L_ENA */
+ #define ARIZONA_DRE3L_ENA_SHIFT                       4  /* DRE3L_ENA */
+-- 
+1.7.2.5
