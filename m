@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] mfd: wm5110: Expose DRE control
-	registers
-Date: Thu, 19 Dec 2013 10:18:03 +0000
-Message-ID: <20131219101803.GP31886@sirena.org.uk>
-References: <1387444262-26456-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: wm5110: Add FSH for ISRCs
+Date: Thu, 19 Dec 2013 10:20:23 +0000
+Message-ID: <20131219102023.GQ31886@sirena.org.uk>
+References: <1387445413-28475-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7049587208214037636=="
+Content-Type: multipart/mixed; boundary="===============7690194072280412836=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id DD1B6261AA5
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 11:18:14 +0100 (CET)
-In-Reply-To: <1387444262-26456-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D64FC261AA5
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 11:20:25 +0100 (CET)
+In-Reply-To: <1387445413-28475-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, lee.jones@linaro.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7049587208214037636==
+--===============7690194072280412836==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WYfJCIN5rqlfy3K0"
+	protocol="application/pgp-signature"; boundary="xiprIVX1FSGBv8kC"
 Content-Disposition: inline
 
 
---WYfJCIN5rqlfy3K0
+--xiprIVX1FSGBv8kC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 19, 2013 at 09:11:01AM +0000, Charles Keepax wrote:
-> Certain use-cases require the DRE to be disabled so expose registers
-> necessary to control the DRE enables.
+On Thu, Dec 19, 2013 at 09:30:12AM +0000, Charles Keepax wrote:
+> Currently, the driver only supports configuration of the lower sample
+> rate (FSL) on the ISRCs. With the higher rate being fixed a SYSCLK, this
+> patch adds support for configuring the higher sample rate (FSH).
 
-Applied both, thanks.
+Applied both but you guys should really be doing some work to support
+this within the framework and propagate rates through the devices.
 
---WYfJCIN5rqlfy3K0
+--xiprIVX1FSGBv8kC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSssfYAAoJELSic+t+oim9PhYQAJPiTYAXK6Iq01O0YhzYf+oy
-XZrhhk/QZzEO68zqbwQ+DurSkk3gT8WoNNxqoXdkZxh2zsJBHxpffhmwZTIj1X4P
-mOKKvRIiteWK8N9tW8J4u61vDkmWMtHS0pJubjQbMzk/dy+Vp5Lbf4lF0u3g7Wl2
-Zx6w1sK9zZhhMQKhu5YNH2rqtmlmyI1g5SXsVvwvc76xhVCmWpZlPH2Oze9LKmSy
-cBV4P3xJpBRfDJ2YtOYOijkt5dv8X2rRGYiskZKxCmFyopFvuZn3gn4jMniQSg7d
-zbEpeeHUcTxCqenTh/c90oBfqVuhcneZ1tD8pn2bLmi4Kbm3xc6MnoGpE0GL83D5
-g63Gp23WfFWEvlmGliUn+b5V4YCP59+wVRT8dKSIZxnRnl3cmrVRIrbkQ2DwxAxn
-vznmsfvV1IHcp6GW2wWt6MXpXFeBKVJSvkvng5CUVrjEAB6gfdgqjistNT5+OnHy
-OqV053CADQSU96NhR9zAkxycr6YFtCs+30BIUvk04497qM1ju4piorDE0jwWFJgy
-zxG6FqcR4iPzc3jYPlPL4cZb1fgHtrALnP9ytmhn05Z8PN1dppt88XZo3z5lZWVe
-KWp+P5gw+DhNhAe3CksQ4ZZYzz/D7AXzxZjdqe3H9Q+lT/SqJKYdncb+4abgFwn3
-va6icxAUdyW9A95d4eXc
-=i15E
+iQIcBAEBAgAGBQJSsshkAAoJELSic+t+oim90GgP/0xGADYnSHhwi7Mzq1sj2CYY
+3BIYp63u+uVnjlU3+MSvNovHlLrp9sx7oi56nE0k/wSvGwRpYRVWWBx18n/JsiYB
+nS4qvSAhiuthRL1AMQr8qG2YxjZhOsBqbZeUcivVH9nicNPj4fcMtOTcyflL8t5H
+LLEw0euUrjXp3Hc0QCc99HJTFu9VAfw3BZqUbgPLQBE/h/Vxq5Tu3w+3lI76LyW6
+QgIlZ+TYhgqfnvtlYNI0THR3D9WV87I+zVmanqxjx37yKNHGMSzQ64FvdJr197bt
+NNL6XSaGTiEz2GpiLnlbB24OyIGqL8TJGJnBk89lQSvweP3A7VJm+iHlhqWjiu53
+DP44EsyK4lrsyOyksLRvOu2kaDbge4yRK4VuFo0Cxg0VofhfDNjEaMwHWobOf2tZ
+8vXKEgzGsprdu18OHTc5Qi2k7CeuqMZ66QNhnBH6xGxzsn1VDC+1b8FvWlFUv+6p
+QyR6Zwlqgcbr1WlanIT0Pu/py8eMJod66rxCpiD+XGVo+DDvQy1IeKdy7r8PGoGs
+FaApMvBs0Go44UIZHZtsZClGGObIg/sVbNnsNmqMokNJ1U6CTVaA1/s0Kh+djgAO
+KVK0uARQw/1ZghgIUzoLGbJyY+JZO0lKvmCfwbKgUevnPeCnu2utNsqJ2rE1t6f5
+1uMNPTLGqy/HBLSWAXML
+=/qT7
 -----END PGP SIGNATURE-----
 
---WYfJCIN5rqlfy3K0--
+--xiprIVX1FSGBv8kC--
 
---===============7049587208214037636==
+--===============7690194072280412836==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7049587208214037636==--
+--===============7690194072280412836==--
