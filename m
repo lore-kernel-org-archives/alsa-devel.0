@@ -1,141 +1,53 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [RFC PATCH 2/2] ASoC: wm_adsp: Start DSP booting
-	earlier in the DAPM process
-Date: Thu, 19 Dec 2013 15:48:05 +0000
-Message-ID: <1387468085-26176-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1387468085-26176-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0EE082654A4
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 16:55:12 +0100 (CET)
-In-Reply-To: <1387468085-26176-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+From: Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 05/11] ASoC: ux500_pcm: Stop pretending that we support varying address widths
+Date: Thu, 19 Dec 2013 15:55:02 +0000
+Message-ID: <1387468508-12286-6-git-send-email-lee.jones@linaro.org>
+References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linus.walleij@linaro.org, broonie@kernel.org, alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Move the start of booting the DSP to earlier in the DAPM process this
-allows us to overlap some of the processing with other components of the
-system being brought up.
+The Slave Config's addr_width attribute is populated by data_width of
+dma_cfg, which in turn is derived from dma_params' data_size attribute
+and that comes from the slot_width which is always 16 bits (2 Bytes).
+We're cutting out the middle man here and just setting the DMA Slave
+Config directly.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/codecs/arizona.h |   17 +++++++++--------
- sound/soc/codecs/wm_adsp.c |   24 +++++++++++++++++++++---
- sound/soc/codecs/wm_adsp.h |    5 +++++
- 3 files changed, 35 insertions(+), 11 deletions(-)
+ sound/soc/ux500/ux500_pcm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 6641f3d..bd1b9d2 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -166,20 +166,21 @@ extern int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Input 4")
- 
- #define ARIZONA_DSP_ROUTES(name) \
--	{ name, NULL, name " Aux 1" }, \
--	{ name, NULL, name " Aux 2" }, \
--	{ name, NULL, name " Aux 3" }, \
--	{ name, NULL, name " Aux 4" }, \
--	{ name, NULL, name " Aux 5" }, \
--	{ name, NULL, name " Aux 6" }, \
-+	{ name, NULL, name " Preloader"}, \
-+	{ name " Preloader", NULL, name " Aux 1" }, \
-+	{ name " Preloader", NULL, name " Aux 2" }, \
-+	{ name " Preloader", NULL, name " Aux 3" }, \
-+	{ name " Preloader", NULL, name " Aux 4" }, \
-+	{ name " Preloader", NULL, name " Aux 5" }, \
-+	{ name " Preloader", NULL, name " Aux 6" }, \
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 1"), \
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 2"), \
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 3"), \
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 4"), \
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 5"), \
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 6"), \
--	ARIZONA_MIXER_ROUTES(name, name "L"), \
--	ARIZONA_MIXER_ROUTES(name, name "R")
-+	ARIZONA_MIXER_ROUTES(name " Preloader", name "L"), \
-+	ARIZONA_MIXER_ROUTES(name " Preloader", name "R")
- 
- #define ARIZONA_RATE_ENUM_SIZE 4
- extern const char *arizona_rate_text[ARIZONA_RATE_ENUM_SIZE];
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 4475790..26de090 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1596,6 +1596,27 @@ err:
- 			   ADSP2_SYS_ENA | ADSP2_CORE_ENA | ADSP2_START, 0);
- }
- 
-+int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
-+		   struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
-+	struct wm_adsp *dsp = &dsps[w->shift];
-+
-+	dsp->card = codec->card;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		schedule_work(&dsp->boot_work);
-+		break;
-+	default:
-+		break;
-+	};
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(wm_adsp2_early_event);
-+
- int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event)
+diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+index ce554de..32d4572 100644
+--- a/sound/soc/ux500/ux500_pcm.c
++++ b/sound/soc/ux500/ux500_pcm.c
+@@ -109,20 +109,19 @@ static int ux500_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
  {
-@@ -1606,11 +1627,8 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 	struct wm_coeff_ctl *ctl;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct ux500_msp_dma_params *dma_params;
+-	struct stedma40_chan_cfg *dma_cfg;
  	int ret;
  
--	dsp->card = codec->card;
--
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
--		schedule_work(&dsp->boot_work);
- 		flush_work(&dsp->boot_work);
+ 	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+-	dma_cfg = dma_params->dma_cfg;
  
- 		if (!dsp->running)
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 20b6b4b..2b41694 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -68,6 +68,9 @@ struct wm_adsp {
- 		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
+ 	ret = snd_hwparams_to_dma_slave_config(substream, params, slave_config);
+ 	if (ret)
+ 		return ret;
  
- #define WM_ADSP2(wname, num) \
-+{	.id = snd_soc_dapm_dai_link, .name = wname " Preloader", \
-+	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_early_event, \
-+	.event_flags = SND_SOC_DAPM_PRE_PMU }, \
- 	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
- 		wm_adsp2_event, SND_SOC_DAPM_PRE_PMU | \
- 		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
-@@ -79,6 +82,8 @@ int wm_adsp1_init(struct wm_adsp *adsp);
- int wm_adsp2_init(struct wm_adsp *adsp, bool dvfs);
- int wm_adsp1_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event);
-+int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
-+			 struct snd_kcontrol *kcontrol, int event);
- int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event);
+ 	slave_config->dst_maxburst = 4;
+-	slave_config->dst_addr_width = dma_cfg->dst_info.data_width;
+ 	slave_config->src_maxburst = 4;
+-	slave_config->src_addr_width = dma_cfg->src_info.data_width;
++
++	slave_config->src_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++	slave_config->dst_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
  
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		slave_config->dst_addr = dma_params->tx_rx_addr;
 -- 
-1.7.2.5
+1.8.3.2
