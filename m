@@ -1,16 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Sample program for hwdep interface
-Date: Fri, 20 Dec 2013 23:46:15 +0900
-Message-ID: <52B45837.2080804@sakamocchi.jp>
-References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 06/19] ASoC: fsl: Don't set unused struct
+ snd_pcm_hardware fields
+Date: Fri, 20 Dec 2013 15:04:08 +0100
+Message-ID: <52B44E58.4080609@metafoo.de>
+References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
+ <1387545625-19240-6-git-send-email-lars@metafoo.de>
+ <52B45371.8020808@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 083B2265383
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 15:46:25 +0100 (CET)
-In-Reply-To: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from smtp-out-044.synserver.de (smtp-out-126.synserver.de
+ [212.40.185.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2E6D26534C
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 16:03:13 +0100 (CET)
+In-Reply-To: <52B45371.8020808@tabi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,251 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+To: Timur Tabi <timur@tabi.org>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is how to use hwdep interface for firewire devices.
-I hope FFADO developers read this.
+On 12/20/2013 03:25 PM, Timur Tabi wrote:
+> Lars-Peter Clausen wrote:
+>> The ASoC core assumes that the PCM component of the ASoC card transparently
+>> moves data around and does not impose any restrictions on the memory
+>> layout or
+>> the transfer speed. It ignores all fields from the snd_pcm_hardware struct
+>> for
+>> the PCM driver that are related to this. Setting these fields in the PCM
+>> driver
+>> might suggest otherwise though, so rather not set them.
+> 
+> Is this new?  There are formats that the codec and the SSI support that the
+> DMA controller does NOT support, like packed 24-bit samples.  How do we
+> ensure that we never get those?
 
-With hwdep interface, the program in user land can do:
-1.get firewire node infomation
-2.get notification when starting/stopping kernel streaming
-3.lock/unlock kernel streaming
+No, this is how it has always been. If there are restrictions imposed by the
+DMA controller we need to add support for expressing this inside the ASoC
+framework. But I think it will probably be more complex than just saying the
+DMA controller supports format A, B, C and the DAI controller supports
+format B, C, D and then just do the intersection of both. E.g. the DAI
+controller probably does not care whether the samples are packed or not if
+it only sees one sample at a time, while
 
-For jackd with FFADO backend, it's better to lock kernel streaming in 
-advance. Then snd-bebob/snd-fireworks can't interrupt FFADO streaming.
-
-And with snd-fireworks, the program can do:
-4.transmit command of EFW transaction
-5.receive response of EFW transaction
-
-4/5 is my complete solution for ticket #360.
-Make echo audiofire 8 and audiofire 12 work with recent firmwares
-http://subversion.ffado.org/ticket/360
-
-(I note 4 can be done via /dev/fw*. But I think 4 is easier.)
-
-If someone works for snd-dice to support valid devices, it may be useful 
-that the program get dice notification in the same way.
-(I have a little knowledgement about Dice.)
-
-I attach sample program (too rough...) to show how to use hwdep interface.
-
-
-Regards,
-Takashi Sakamoto
-
-
-====
-/* monitor.c: program to monitor the status of firewire sound devices */
-
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <endian.h>
-#include <time.h>
-#include <sys/ioctl.h>
-#include <sys/epoll.h>
-#include <souund/firewire.h>
-
-static struct snd_firewire_get_info hwdep_info;
-bool try_lock;
-bool fireworks = false;
-
-static void print_event_lock(struct snd_firewire_event_lock_status *msg, 
-int fd)
-{
-	printf("\nLock Status:\n");
-	printf("Status:\t%s\n", msg->status ? "Locked" : "Unlocked" );
-
-	if (try_lock) {
-		if (ioctl(fd, SNDRV_FIREWIRE_IOCTL_LOCK) < 0)
-			printf("lock failed\n");
-		printf("lock success\n");
-	}
-
-	return;
-}
-
-static void print_event_dice(struct snd_firewire_event_dice_notification 
-*msg)
-{
-	printf("\nDice Norification:\n");
-	printf("Notification: 0x%x\n", msg->notification);
-	return;
-}
-
-static void print_event_efw(struct snd_firewire_event_efw_response *evt, 
-int count)
-{
-	uint32_t *resp;
-	struct snd_efw_transaction *t;
-	unsigned int i, index, length, params;
-
-	resp = evt->response;
-	count /= 4;
-
-	index = 0;
-	while (count > 0) {
-		t = (struct snd_efw_transaction *)resp;
-		length = be32toh(t->length);
-
-		printf("\nEFW Response %d:\n", index++);
-		printf("Length:\t\t%d\n", be32toh(t->length));
-		printf("Version:\t%d\n", be32toh(t->version));
-		printf("Seqnum:\t\t%d\n", be32toh(t->seqnum));
-		printf("Category:\t%d\n", be32toh(t->category));
-		printf("Command:\t%d\n", be32toh(t->command));
-		printf("Status:\t\t%d\n", be32toh(t->status));
-
-		params = length - sizeof(struct snd_efw_transaction) / sizeof(uint32_t);
-		if (params > 0)
-			for (i = 0; i < params; i++)
-				printf("params[%d]:\t%08X\n", i, be32toh(t->params[i]));
-
-		resp += length;
-		count -= length * sizeof(uint32_t);
-	}
-}
-
-static int read_event(int fd)
-{
-	int count;
-	char buf[1024] = {0};
-	struct snd_firewire_event_common *event;
-
-	count = read(fd, buf, 1024);
-	if (count < 0)
-		return -1;
-
-	event = (struct snd_firewire_event_common *)buf;
-	if (event->type == SNDRV_FIREWIRE_EVENT_LOCK_STATUS)
-		print_event_lock((struct snd_firewire_event_lock_status *)buf, fd);
-	else if (event->type == SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION)
-		print_event_dice((struct snd_firewire_event_dice_notification *)buf);
-	else if (event->type == SNDRV_FIREWIRE_EVENT_EFW_RESPONSE)
-		print_event_efw((struct snd_firewire_event_efw_response *)buf, count);
-
-	return 0;
-}
-
-static int write_event(int fd)
-{
-	int count;
-	struct snd_efw_transaction *t;
-	char buf[1024] = {0};
-
-	t = (struct snd_efw_transaction *)buf;
-	t->length	= htobe32(6);
-	t->version	= htobe32(1);
-	t->seqnum	= htobe32(0);
-	t->category	= htobe32(3);
-	t->command	= htobe32(5);
-	t->status	= htobe32(0);
-
-	count = write(fd, buf, sizeof(struct snd_efw_transaction));
-	if (count < 0)
-		printf("err: %d\n", count);
-
-	return count;
-}
-
-#define EVENTS 10
-time_t cmd_deffer = 0;
-static int main_loop(int fd)
-{
-	int epfd, count, i, err;
-	time_t now;
-	struct epoll_event ev, events[EVENTS];
-
-	epfd = epoll_create(EVENTS);
-	if (epfd < 0) {
-		printf("error: %s\n", strerror(errno));
-		err = errno;
-		goto end;
-	}
-
-	memset(&ev, 0, sizeof(struct epoll_event));
-	ev.events = EPOLLIN;
-	ev.data.fd = fd;
-
-	if (fireworks)
-		ev.events |= EPOLLOUT;
-
-	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev) < 0)
-		return errno;
-
-	while (1) {
-		count = epoll_wait(epfd, events, EVENTS, 200);
-		if (count == 0)
-			continue;
-		else if (count < 0) {
-			err = errno;
-			break;
-		}
-
-		for (i = 0; i < count; i++) {
-			if (events[i].events & EPOLLOUT) {
-				if (time(&now) < 0)
-					break;
-				if (now > cmd_deffer) {
-					if (write_event(events[i].data.fd) < 0) {
-						err = errno;
-						break;
-					}
-					cmd_deffer = now + 3;
-				}
-			}
-			if (events[i].events & EPOLLIN) {
-				if (read_event(events[i].data.fd) < 0) {
-					err = errno;
-					break;
-				}
-			}
-		}
-	}
-end:
-	close(epfd);
-	return err;
-}
-
-int main(int argc, void *argv[])
-{
-	int fd, count, err;
-	char buf[1024] = {};
-	struct snd_firewire_event_common *event;
-
-	if (argc > 2)
-		try_lock = true;
-
-	fd = open(argv[1], O_RDWR);
-	if (fd < 0) {
-		printf("fail to open: %s\n", (char *)argv[1]);
-		return 1;
-	}
-
-	if (ioctl(fd, SNDRV_FIREWIRE_IOCTL_GET_INFO, &hwdep_info) < 0) {
-		printf("error: %s\n", strerror(errno));
-		return 1;
-	}
-
-	printf("Information of Firewire Sound Device\n");
-	printf("type: %d\n", hwdep_info.type);
-	printf("card: %d\n", hwdep_info.card);
-	printf("GUID: 0x%02x%02x%02x%02x%02x%02x%02x%02x\n",
-	       hwdep_info.guid[0], hwdep_info.guid[1], hwdep_info.guid[2],
-	       hwdep_info.guid[3], hwdep_info.guid[4], hwdep_info.guid[5],
-	       hwdep_info.guid[6], hwdep_info.guid[7] );
-	printf("Name: %s\n\n", hwdep_info.device_name);
-
-	if (hwdep_info.type == SNDRV_FIREWIRE_TYPE_FIREWORKS)
-		fireworks = true;
-
-	err = main_loop(fd);
-	close(fd);
-	return err;
-}
+- Lars
