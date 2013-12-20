@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 17/38] firewire-lib: Add quirks for Fireworks
-Date: Fri, 20 Dec 2013 22:14:08 +0900
-Message-ID: <1387545269-3875-18-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 14/38] firewire-lib: Add handling output connection by CMP
+Date: Fri, 20 Dec 2013 22:14:05 +0900
+Message-ID: <1387545269-3875-15-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,142 +20,191 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds three modifications for Echo Audio's Fireworks quirks.
-
-1.Making this module to support both TAG0 and TAG1
-In IEC 61883-1, each common isochronous packet (CIP) has 'tag' field in its
-packet header. The value is generally 0x01 (CIP header is included = TAG1).
-But Fireworks in 'IEC 61883 compliant' mode transmits 'no data' packet with
-0x00 (No CIP header is included = TAG0) but the packet includes CIP structure.
-To process 'presentation timestamp' for duplex streams synchronization
-correctly, this packets needs to be handled.
-
-2.Making this module to calculate data block size and not to check continuity
-One of Fireworks device, AudioFirePre8, always reports 8 data block size in
-in-packets and the data block counter is incremented by 8. But actual value is
-wrong.
-
-3.Making this module to have the numebr of first data blocks for MIDI messages
-in out-packet
-Fireworks can pick up MIDI messages in first 8 data blocks and ignore in other
-data blocks.
-
-I confirm these quirks in firmware version 4.8 to 5.8 for Windows. I didn't
-investigate for the other versions. But according to contact person in Echo
-Audio, there is no differences between firmwares installed by Windows or OS X.
+This patch adds some macros, codes with condition of direction and new functions
+to handle output connection. Once cmp_connection_init() is executed with its
+direction, CMP input and output connection can be handled by the same way.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 50 +++++++++++++++++++++++++-------------------------
- sound/firewire/amdtp.h |  2 ++
- 2 files changed, 27 insertions(+), 25 deletions(-)
+ sound/firewire/cmp.c | 113 +++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 104 insertions(+), 9 deletions(-)
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index fa943f2..7380967 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -89,6 +89,8 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
- 	s->sort_table = NULL;
- 	s->left_packets = NULL;
+diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
+index 1430fec..00b1b2d 100644
+--- a/sound/firewire/cmp.c
++++ b/sound/firewire/cmp.c
+@@ -29,6 +29,16 @@
+ #define PCR_CHANNEL_MASK	0x003f0000
+ #define PCR_CHANNEL_SHIFT	16
  
-+	s->blocks_for_midi = UINT_MAX;
++/* oPCR specific fields */
++#define OPCR_XSPEED_MASK	0x00C00000
++#define OPCR_XSPEED_SHIFT	22
++#define OPCR_SPEED_MASK		0x0000C000
++#define OPCR_SPEED_SHIFT	14
++#define OPCR_OVERHEAD_ID_MASK	0x00003C00
++#define OPCR_OVERHEAD_ID_SHIFT	10
++#define OPCR_PAYLOAD_MASK	0x000003FF
++#define OPCR_PAYLOAD_SHIFT	0
 +
+ enum bus_reset_handling {
+ 	ABORT_ON_BUS_RESET,
+ 	SUCCEED_ON_BUS_RESET,
+@@ -41,10 +51,30 @@ void cmp_error(struct cmp_connection *c, const char *fmt, ...)
+ 
+ 	va_start(va, fmt);
+ 	dev_err(&c->resources.unit->device, "%cPCR%u: %pV",
+-		'i', c->pcr_index, &(struct va_format){ fmt, &va });
++		(c->direction == CMP_INPUT) ? 'i' : 'o',
++		c->pcr_index, &(struct va_format){ fmt, &va });
+ 	va_end(va);
+ }
+ 
++static unsigned long long get_offset(struct cmp_connection *c, bool master)
++{
++	unsigned long long offset = CSR_REGISTER_BASE;
++
++	if (!master) {
++		if (c->direction == CMP_INPUT)
++			offset += CSR_IPCR(c->pcr_index);
++		else
++			offset += CSR_OPCR(c->pcr_index);
++	} else {
++		if (c->direction == CMP_INPUT)
++			offset += CSR_IMPR;
++		else
++			offset += CSR_OMPR;
++	}
++
++	return offset;
++}
++
+ static int pcr_modify(struct cmp_connection *c,
+ 		      __be32 (*modify)(struct cmp_connection *c, __be32 old),
+ 		      int (*check)(struct cmp_connection *c, __be32 pcr),
+@@ -60,8 +90,7 @@ static int pcr_modify(struct cmp_connection *c,
+ 
+ 		err = snd_fw_transaction(
+ 				c->resources.unit, TCODE_LOCK_COMPARE_SWAP,
+-				CSR_REGISTER_BASE + CSR_IPCR(c->pcr_index),
+-				buffer, 8,
++				get_offset(c, false), buffer, 8,
+ 				FW_FIXED_GENERATION | c->resources.generation);
+ 
+ 		if (err < 0) {
+@@ -102,8 +131,7 @@ int cmp_connection_init(struct cmp_connection *c,
+ 	int err;
+ 
+ 	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
+-				 CSR_REGISTER_BASE + CSR_IMPR,
+-				 &mpr_be, 4, 0);
++				 get_offset(c, true), &mpr_be, 4, 0);
+ 	if (err < 0)
+ 		return err;
+ 	mpr = be32_to_cpu(mpr_be);
+@@ -122,6 +150,7 @@ int cmp_connection_init(struct cmp_connection *c,
+ 	c->max_speed = (mpr & MPR_SPEED_MASK) >> MPR_SPEED_SHIFT;
+ 	if (c->max_speed == SCODE_BETA)
+ 		c->max_speed += (mpr & MPR_XSPEED_MASK) >> MPR_XSPEED_SHIFT;
++	c->direction = direction;
+ 
  	return 0;
  }
- EXPORT_SYMBOL(amdtp_stream_init);
-@@ -557,8 +559,14 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
- 		buffer[s->midi_position] = 0x00;
- 		b = (u8 *)&buffer[s->midi_position];
+@@ -151,6 +180,62 @@ static __be32 ipcr_set_modify(struct cmp_connection *c, __be32 ipcr)
+ 	return ipcr;
+ }
  
-+		/*
-+		 * NOTE:
-+		 * Fireworks ignores midi messages in more than first 8
-+		 * data blocks of an packet.
-+		 */
- 		port = (s->data_block_counter + f) % 8;
--		if ((s->midi[port] == NULL) ||
-+		if ((f >= s->blocks_for_midi) ||
-+		    (s->midi[port] == NULL) ||
- 		    (snd_rawmidi_transmit(s->midi[port], b + 1, 1) <= 0)) {
- 			b[0] = 0x80;
- 			b[1] = 0x00;	/* confirm to be zero */
-@@ -711,7 +719,7 @@ static void handle_in_packet(struct amdtp_stream *s,
- 			     __be32 *buffer)
++static int get_overhead_id(struct cmp_connection *c)
++{
++	int id;
++
++	/*
++	 * apply "oPCR overhead ID encoding"
++	 * the encoding table can convert up to 512.
++	 * here the value over 512 is converted as the same way as 512.
++	 */
++	for (id = 1; id < 16; id++) {
++		if (c->resources.bandwidth_overhead < (id << 5))
++			break;
++	}
++	if (id == 16)
++		id = 0;
++
++	return id;
++}
++
++static __be32 opcr_set_modify(struct cmp_connection *c, __be32 opcr)
++{
++	unsigned int spd, xspd;
++
++	/* generate speed and extended speed field value */
++	if (c->speed > SCODE_400) {
++		spd  = SCODE_800;
++		xspd = c->speed - SCODE_800;
++	} else {
++		spd = c->speed;
++		xspd = 0;
++	}
++
++	opcr &= ~cpu_to_be32(PCR_BCAST_CONN |
++			     PCR_P2P_CONN_MASK |
++			     OPCR_XSPEED_MASK |
++			     PCR_CHANNEL_MASK |
++			     OPCR_SPEED_MASK |
++			     OPCR_OVERHEAD_ID_MASK |
++			     OPCR_PAYLOAD_MASK);
++	opcr |= cpu_to_be32(1 << PCR_P2P_CONN_SHIFT);
++	opcr |= cpu_to_be32(xspd << OPCR_XSPEED_SHIFT);
++	opcr |= cpu_to_be32(c->resources.channel << PCR_CHANNEL_SHIFT);
++	opcr |= cpu_to_be32(spd << OPCR_SPEED_SHIFT);
++	opcr |= cpu_to_be32(get_overhead_id(c) << OPCR_OVERHEAD_ID_SHIFT);
++	/*
++	 * here zero is applied to payload field.
++	 * it means the maximum number of quadlets in an isochronous packet is
++	 * 1024 when spd is less than three, 1024 * 2 * xspd + 1 when spd is
++	 * equal to three. An arbitrary value can be set here but 0 is enough
++	 * for our purpose.
++	 */
++	opcr |= cpu_to_be32(0 << OPCR_PAYLOAD_SHIFT);
++
++	return opcr;
++}
++
+ static int pcr_set_check(struct cmp_connection *c, __be32 pcr)
  {
- 	u32 cip_header[2];
--	unsigned int data_block_quadlets, data_blocks, data_block_counter;
-+	unsigned int data_blocks;
- 	struct snd_pcm_substream *pcm;
- 
- 	cip_header[0] = be32_to_cpu(buffer[0]);
-@@ -736,27 +744,16 @@ static void handle_in_packet(struct amdtp_stream *s,
- 							AMDTP_FDF_NO_DATA))
- 		return;
- 
--	data_block_quadlets =
--			(cip_header[1] & AMDTP_DBS_MASK) >> AMDTP_DBS_SHIFT;
--	/* avoid division by zero */
--	if (data_block_quadlets == 0) {
--		dev_info_ratelimited(&s->unit->device,
--				 "Detect invalid value in dbs field: %08X\n",
--				 data_block_quadlets);
--		return;
--	}
--
--	data_blocks = (payload_quadlets - 2) / data_block_quadlets;
--	data_block_counter = cip_header[1] & AMDTP_DBC_MASK;
--
--	/* check packet continuity */
--	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
--	if (s->data_block_counter != data_block_counter) {
--		dev_info_ratelimited(&s->unit->device,
--				     "Detect uncontinuity of CIP packets\n");
--		s->data_block_counter = data_block_counter;
--		return;
--	}
-+	/*
-+	 * This module don't use the value of dbs and dbc beceause Echo
-+	 * AudioFirePre8 reports inappropriate value.
-+	 *
-+	 * This model always reports a fixed value "8" as data block size at
-+	 * any sampling rates but actually data block size is different.
-+	 * Additionally the value of data block count always incremented by
-+	 * "8" at any sampling rates but actually it's different.
-+	 */
-+	data_blocks = (payload_quadlets - 2) / s->data_block_quadlets;
- 
- 	buffer += 2;
- 
-@@ -1036,11 +1033,14 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 			goto err_context;
- 	} while (s->packet_index > 0);
- 
--	/* NOTE: TAG1 matches CIP. This just affects in stream */
-+	/*
-+	 * NOTE: TAG1 matches CIP. This just affects in stream.
-+	 * Fireworks transmits NODATA packets with TAG0.
-+	 */
- 	s->data_block_counter = 0;
- 	s->callbacked = false;
- 	err = fw_iso_context_start(s->context, -1, 0,
--				   FW_ISO_CONTEXT_MATCH_TAG1);
-+			FW_ISO_CONTEXT_MATCH_TAG0 | FW_ISO_CONTEXT_MATCH_TAG1);
+ 	if (pcr & cpu_to_be32(PCR_BCAST_CONN |
+@@ -196,8 +281,13 @@ retry_after_bus_reset:
  	if (err < 0)
- 		goto err_context;
+ 		goto err_mutex;
  
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index a6f50c7..c601aeb 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -113,6 +113,8 @@ struct amdtp_stream {
- 	bool pointer_flush;
+-	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+-			 ABORT_ON_BUS_RESET);
++	if (c->direction == CMP_OUTPUT)
++		err = pcr_modify(c, opcr_set_modify, pcr_set_check,
++				 ABORT_ON_BUS_RESET);
++	else
++		err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
++				 ABORT_ON_BUS_RESET);
++
+ 	if (err == -EAGAIN) {
+ 		fw_iso_resources_free(&c->resources);
+ 		goto retry_after_bus_reset;
+@@ -245,8 +335,13 @@ int cmp_connection_update(struct cmp_connection *c)
+ 	if (err < 0)
+ 		goto err_unconnect;
  
- 	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
-+	/* quirk: the first count of data blocks in an AMDTP packet for MIDI */
-+	unsigned int blocks_for_midi;
+-	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+-			 SUCCEED_ON_BUS_RESET);
++	if (c->direction == CMP_OUTPUT)
++		err = pcr_modify(c, opcr_set_modify, pcr_set_check,
++				 SUCCEED_ON_BUS_RESET);
++	else
++		err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
++				 SUCCEED_ON_BUS_RESET);
++
+ 	if (err < 0)
+ 		goto err_resources;
  
- 	bool callbacked;
- 	wait_queue_head_t callback_wait;
 -- 
 1.8.3.2
 
