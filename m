@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 10/19] ASoC: nuc900: Don't set unused struct
+Subject: [PATCH 11/19] ASoC: omap: Don't set unused struct
 	snd_pcm_hardware fields
-Date: Fri, 20 Dec 2013 14:20:16 +0100
-Message-ID: <1387545625-19240-10-git-send-email-lars@metafoo.de>
+Date: Fri, 20 Dec 2013 14:20:17 +0100
+Message-ID: <1387545625-19240-11-git-send-email-lars@metafoo.de>
 References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-044.synserver.de (smtp-out-122.synserver.de
  [212.40.185.122])
- by alsa0.perex.cz (Postfix) with ESMTP id A6554265684
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 15:19:41 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A4AA2265620
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 15:19:42 +0100 (CET)
 In-Reply-To: <1387545625-19240-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,7 +23,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Wan ZongShun <mcuos.com@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
 The ASoC core assumes that the PCM component of the ASoC card transparently
@@ -33,24 +33,24 @@ the PCM driver that are related to this. Setting these fields in the PCM driver
 might suggest otherwise though, so rather not set them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Wan ZongShun <mcuos.com@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
 ---
- sound/soc/nuc900/nuc900-pcm.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/omap/omap-pcm.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/nuc900/nuc900-pcm.c b/sound/soc/nuc900/nuc900-pcm.c
-index f588ee4..f434ed7 100644
---- a/sound/soc/nuc900/nuc900-pcm.c
-+++ b/sound/soc/nuc900/nuc900-pcm.c
-@@ -32,9 +32,6 @@ static const struct snd_pcm_hardware nuc900_pcm_hardware = {
- 					SNDRV_PCM_INFO_MMAP_VALID |
- 					SNDRV_PCM_INFO_PAUSE |
- 					SNDRV_PCM_INFO_RESUME,
--	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
--	.channels_min		= 1,
--	.channels_max		= 2,
- 	.buffer_bytes_max	= 4*1024,
- 	.period_bytes_min	= 1*1024,
- 	.period_bytes_max	= 4*1024,
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index b8fa986..07b8b7b 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -45,8 +45,6 @@ static const struct snd_pcm_hardware omap_pcm_hardware = {
+ 				  SNDRV_PCM_INFO_PAUSE |
+ 				  SNDRV_PCM_INFO_RESUME |
+ 				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+-	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
+-				  SNDRV_PCM_FMTBIT_S32_LE,
+ 	.period_bytes_min	= 32,
+ 	.period_bytes_max	= 64 * 1024,
+ 	.periods_min		= 2,
 -- 
 1.8.0
