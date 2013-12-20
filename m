@@ -1,75 +1,57 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Don't be too specific for
- conflicting boost ctl names
-Date: Fri, 20 Dec 2013 14:54:05 +0100
-Message-ID: <52B44BFD.5060005@canonical.com>
-References: <1387388362-1005-1-git-send-email-tiwai@suse.de>	<52B28583.3050909@canonical.com>	<s5h1u19t7d0.wl%tiwai@suse.de>	<52B2DC85.4020901@canonical.com>
- <CAN8cciZ2hX5VJ2D4LpwZBbw4HoQdUXhsCbSVNdAUeFy-AscL0A@mail.gmail.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 02/11] ASoC: ab8500: Revert back to find_next_bit()
+Date: Fri, 20 Dec 2013 14:02:11 +0000
+Message-ID: <20131220140211.GG3709@lee--X1>
+References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
+ <1387468508-12286-3-git-send-email-lee.jones@linaro.org>
+ <s5hd2kssu4g.wl%tiwai@suse.de>
+ <20131219164824.GA16145@lee--X1>
+ <s5hzjnwrbq2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id E19CF265616
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 14:54:05 +0100 (CET)
-In-Reply-To: <CAN8cciZ2hX5VJ2D4LpwZBbw4HoQdUXhsCbSVNdAUeFy-AscL0A@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hzjnwrbq2.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, broonie@kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/20/2013 02:36 PM, Raymond Yau wrote:
-> 
-> 
->     >>> When a boost control influences on multiple input paths, we
->     shouldn't
->     >>> pick up the name string specific to one input but rather choose
->     a more
->     >>> generic name.  A problem seen often is that a single mic boost
->     >>> controls both internal and external mics although the driver
->     picks up
->     >>> the very first name randomly like "Internal Mic Boost".  This should
->     >>> have been "Mic Boost", instead.
->     >>>
->     >>> This patch tries to correct that behavior: when a boost control is
->     >>> available, check whether it conflicts with other inputs.  If it
->     does,
->     >>> use a common string ("Mic", "Line") as long as possible, or take a
->     >>> generic name "Input".
->     >>
->     >> Hrm. I thought today "Mic Boost" is quite common, and meaning the mic
->     >> boost of the non-internal mic. So I agree there is a problem -
->     and thank
->     >> you for trying to fix it - but isn't this just changing one
->     problem for
->     >> another? Now we don't know if a "Mic Boost" control controls the
->     >> internal mic or not.
->     >
->     > That's true, and the problem isn't new...
->     > I'm fine to use a different name as a boost control used for multiple
->     > mics, though.  Spell your wish.
-> 
->     If *all* inputs go through the boost, then just preferring "Capture
->     Boost" or "Input Boost" over "Mic Boost" would do the trick. I e, just
->     skip the logic that checks for all inputs being of the same type.
-> 
-> 
-> not all inputs go through the boost,
-> 
-> only two mic share boost but line in, CD, aux, stereo mix don't
+> > > > Commit '166a34d ASoC: ab8500: Fix invalid cast to long pointer'
+> > > > rather carelessly converts find_next_bit() to fls() (find last
+> > > > bit set), which are not the same.
+> > >=20
+> > > Does it break on the real machines?
+> >=20
+> > It does, that's how I found the bug.
+> >=20
+> > > fls() behaves differently from find_next_bit(), of course, but in=
+ this
+> > > case, it should work same in the end, since there are at most two
+> > > bits.
+> >=20
+> > Unfortunately it doesn't work at all. This patch brings audio back =
+to
+> > a working state. It took me the best part of a day to track down th=
+e
+> > issue. :(
+>=20
+> Hmm, then isn't the original code rather buggy?
+>=20
+> Check the values set there by ffs(), fls() and the original
+> find_next_bit(), especially whether find_next_bit() gives a valid
+> value fitting with the mask bits.
 
-So what is your suggestion for a better and more consistent name?
+I wish I had the time to delve into exactly what's happening. All I
+can tell you is your patch broke audio and this one fixes it again. If
+you have time for a deep dive and produce a permanent solution I'd be
+much obliged and will of course test anything you send me. In the mean
+time, this patch should definitely be applied, as sound is crippled
+without it.=20
 
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
