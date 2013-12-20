@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 24/38] fireworks: Add hwdep interface
-Date: Fri, 20 Dec 2013 22:14:15 +0900
-Message-ID: <1387545269-3875-25-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 19/38] fireworks: Add transaction and some commands
+Date: Fri, 20 Dec 2013 22:14:10 +0900
+Message-ID: <1387545269-3875-20-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,471 +20,897 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This interface is designed for mixer/control application. To use hwdep
-interface, the application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+Fireworks uses own command and response. This commit adds functionality to
+transact and adds some commands required for sound card instance and kernel
+streaming.
+
+There are two ways to deliver substance of this transaction:
+1.AV/C vendor dependent command for command/response
+2.Async transaction to specific addresses for command/response
+
+By way 1, I confirm AudioFire12 cannot correctly response to some commands with
+firmware version 5.0 or later. This is also confirmed by FFADO. So this module
+implement way 2.
+
+The address for response gives an issue. When this driver allocate own callback
+function into the address, then no one can allocate its own callback function.
+This situation is not good for applications in user-land. Currently this commit
+don't solve this issue. This issue is solved in later commit.
+
+I note there is a command to change the address for response if the device
+supports. But this module uses default value. So users should not execute this
+command as long as hoping this module works correctly.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h                 |   3 +-
- include/uapi/sound/firewire.h               |   1 +
- sound/firewire/fireworks/Makefile           |   2 +-
- sound/firewire/fireworks/fireworks.c        |   5 +
- sound/firewire/fireworks/fireworks.h        |  12 ++
- sound/firewire/fireworks/fireworks_hwdep.c  | 197 ++++++++++++++++++++++++++++
- sound/firewire/fireworks/fireworks_midi.c   |  25 +++-
- sound/firewire/fireworks/fireworks_pcm.c    |  13 +-
- sound/firewire/fireworks/fireworks_stream.c |  39 ++++++
- 9 files changed, 291 insertions(+), 6 deletions(-)
- create mode 100644 sound/firewire/fireworks/fireworks_hwdep.c
+ sound/firewire/fireworks/Makefile                |   2 +-
+ sound/firewire/fireworks/fireworks.c             |  73 ++++-
+ sound/firewire/fireworks/fireworks.h             | 120 +++++++
+ sound/firewire/fireworks/fireworks_command.c     | 395 +++++++++++++++++++++++
+ sound/firewire/fireworks/fireworks_transaction.c | 191 +++++++++++
+ 5 files changed, 771 insertions(+), 10 deletions(-)
+ create mode 100644 sound/firewire/fireworks/fireworks_command.c
+ create mode 100644 sound/firewire/fireworks/fireworks_transaction.c
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 9fc6219..5dfbfdf 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -94,9 +94,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_HDA,		/* HD-audio */
- 	SNDRV_HWDEP_IFACE_USB_STREAM,	/* direct access to usb stream */
- 	SNDRV_HWDEP_IFACE_FW_DICE,	/* TC DICE FireWire device */
-+	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_DICE
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_FIREWORKS
- };
- 
- struct snd_hwdep_info {
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index 59f5961..ac4f7ea 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -34,6 +34,7 @@ union snd_firewire_event {
- #define SNDRV_FIREWIRE_IOCTL_UNLOCK    _IO('H', 0xfa)
- 
- #define SNDRV_FIREWIRE_TYPE_DICE	1
-+#define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
- /* Fireworks, AV/C, RME, MOTU, ... */
- 
- struct snd_firewire_get_info {
 diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-index d7ebf83..0c74408 100644
+index 99f6fc3..a6ce214 100644
 --- a/sound/firewire/fireworks/Makefile
 +++ b/sound/firewire/fireworks/Makefile
-@@ -1,4 +1,4 @@
- snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
- 		      fireworks_stream.o fireworks_proc.o fireworks_midi.o \
--		      fireworks_pcm.o fireworks.o
-+		      fireworks_pcm.o fireworks_hwdep.o fireworks.o
+@@ -1,2 +1,2 @@
+-snd-fireworks-objs := fireworks.o
++snd-fireworks-objs := fireworks_transaction.o fireworks_command.o fireworks.o
  obj-m += snd-fireworks.o
 diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index 82064de..65e68d7 100644
+index aa85056..d821176 100644
 --- a/sound/firewire/fireworks/fireworks.c
 +++ b/sound/firewire/fireworks/fireworks.c
-@@ -192,6 +192,7 @@ efw_probe(struct fw_unit *unit,
- 	efw->card_index = -1;
+@@ -59,6 +59,45 @@ static unsigned int devices_used;
+ /* unknown as product */
+ #define  MODEL_GIBSON_GOLDTOP		0x00afb9
+ 
++/* part of hardware capability flags */
++#define FLAG_RESP_ADDR_CHANGABLE	0
++
++static int
++get_hardware_info(struct snd_efw *efw)
++{
++	struct snd_efw_hwinfo *hwinfo;
++	char version[12] = {0};
++	int err;
++
++	hwinfo = kzalloc(sizeof(struct snd_efw_hwinfo), GFP_KERNEL);
++	if (hwinfo == NULL)
++		return -ENOMEM;
++
++	err = snd_efw_command_get_hwinfo(efw, hwinfo);
++	if (err < 0)
++		goto end;
++
++	/* firmware version for communication chipset */
++	err = sprintf(version, "%u.%u",
++		      (hwinfo->arm_version >> 24) & 0xff,
++		      (hwinfo->arm_version >> 16) & 0xff);
++
++	strcpy(efw->card->driver, "Fireworks");
++	strcpy(efw->card->shortname, hwinfo->model_name);
++	snprintf(efw->card->longname, sizeof(efw->card->longname),
++		 "%s %s v%s, GUID %08x%08x at %s, S%d",
++		 hwinfo->vendor_name, hwinfo->model_name, version,
++		 hwinfo->guid_hi, hwinfo->guid_lo,
++		 dev_name(&efw->unit->device), 100 << efw->device->max_speed);
++	strcpy(efw->card->mixername, hwinfo->model_name);
++
++	if (hwinfo->flags & BIT(FLAG_RESP_ADDR_CHANGABLE))
++		efw->resp_addr_changable = true;
++end:
++	kfree(hwinfo);
++	return err;
++}
++
+ static void
+ efw_card_free(struct snd_card *card)
+ {
+@@ -108,27 +147,31 @@ efw_probe(struct fw_unit *unit,
  	mutex_init(&efw->mutex);
  	spin_lock_init(&efw->lock);
-+	init_waitqueue_head(&efw->hwdep_wait);
  
- 	err = get_hardware_info(efw);
- 	if (err < 0)
-@@ -213,6 +214,10 @@ efw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
+-	strcpy(efw->card->driver, "Fireworks");
+-	strcpy(efw->card->shortname, "Fireworks");
+-	strcpy(efw->card->longname, "Fireworks");
+-	strcpy(efw->card->mixername, "Fireworks");
++	err = get_hardware_info(efw);
++	if (err < 0)
++		goto error;
  
-+	err = snd_efw_create_hwdep_device(efw);
+ 	snd_card_set_dev(card, &unit->device);
+ 	err = snd_card_register(card);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		goto end;
+-	}
 +	if (err < 0)
 +		goto error;
 +
- 	snd_card_set_dev(card, &unit->device);
- 	err = snd_card_register(card);
- 	if (err < 0)
+ 	dev_set_drvdata(&unit->device, efw);
+ 	devices_used |= BIT(card_index);
+ 	efw->card_index = card_index;
+ end:
+ 	mutex_unlock(&devices_mutex);
+ 	return err;
++error:
++	snd_card_free(card);
++	mutex_unlock(&devices_mutex);
++	return err;
+ }
+ 
+ static void efw_update(struct fw_unit *unit)
+ {
++	struct snd_efw *efw = dev_get_drvdata(&unit->device);
++	snd_efw_transaction_bus_reset(efw->unit);
+ 	return;
+ }
+ 
+@@ -172,11 +215,23 @@ static struct fw_driver efw_driver = {
+ 
+ static int __init snd_efw_init(void)
+ {
+-	return driver_register(&efw_driver.driver);
++	int err;
++
++	err = snd_efw_transaction_register();
++	if (err < 0)
++		goto end;
++
++	err = driver_register(&efw_driver.driver);
++	if (err < 0)
++		snd_efw_transaction_unregister();
++
++end:
++	return err;
+ }
+ 
+ static void __exit snd_efw_exit(void)
+ {
++	snd_efw_transaction_unregister();
+ 	driver_unregister(&efw_driver.driver);
+ 	mutex_destroy(&devices_mutex);
+ }
 diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 681111a..bbcc287 100644
+index 8cddef0..fae074c 100644
 --- a/sound/firewire/fireworks/fireworks.h
 +++ b/sound/firewire/fireworks/fireworks.h
-@@ -24,6 +24,8 @@
- #include <sound/info.h>
- #include <sound/rawmidi.h>
- #include <sound/pcm_params.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
+@@ -20,6 +20,19 @@
  
- #include "../packets-buffer.h"
- #include "../iso-resources.h"
-@@ -75,6 +77,11 @@ struct snd_efw {
- 	unsigned int phys_in_grp_count;
- 	struct snd_efw_phys_grp phys_out_grps[HWINFO_MAX_CAPS_GROUPS];
- 	struct snd_efw_phys_grp phys_in_grps[HWINFO_MAX_CAPS_GROUPS];
+ #include <sound/core.h>
+ #include <sound/initval.h>
++#include <sound/pcm.h>
 +
-+	/* for uapi */
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
++#include "../cmp.h"
++#include "../lib.h"
++
++#define SND_EFW_MUITIPLIER_MODES	3
++#define HWINFO_NAME_SIZE_BYTES		32
++#define HWINFO_MAX_CAPS_GROUPS		8
++
++struct snd_efw_phys_grp {
++	u8 type;	/* see enum snd_efw_grp_type */
++	u8 count;
++} __packed;
+ 
+ struct snd_efw {
+ 	struct snd_card *card;
+@@ -29,7 +42,114 @@ struct snd_efw {
+ 
+ 	struct mutex mutex;
+ 	spinlock_t lock;
++
++	/* for transaction */
++	u32 seqnum;
++	bool resp_addr_changable;
++};
++
++struct snd_efw_transaction {
++	u32 length;
++	u32 version;
++	u32 seqnum;
++	u32 category;
++	u32 command;
++	u32 status;
++	u32 params[0];
++};
++int snd_efw_transaction_run(struct fw_unit *unit,
++			    const void *cmd, unsigned int cmd_size,
++			    void *resp, unsigned int resp_size, u32 seqnum);
++int snd_efw_transaction_register(void);
++void snd_efw_transaction_unregister(void);
++void snd_efw_transaction_bus_reset(struct fw_unit *unit);
++
++struct snd_efw_hwinfo {
++	u32 flags;
++	u32 guid_hi;
++	u32 guid_lo;
++	u32 type;
++	u32 version;
++	char vendor_name[HWINFO_NAME_SIZE_BYTES];
++	char model_name[HWINFO_NAME_SIZE_BYTES];
++	u32 supported_clocks;
++	u32 amdtp_rx_pcm_channels;
++	u32 amdtp_tx_pcm_channels;
++	u32 phys_out;
++	u32 phys_in;
++	u32 phys_out_grp_count;
++	struct snd_efw_phys_grp phys_out_grps[HWINFO_MAX_CAPS_GROUPS];
++	u32 phys_in_grp_count;
++	struct snd_efw_phys_grp phys_in_grps[HWINFO_MAX_CAPS_GROUPS];
++	u32 midi_out_ports;
++	u32 midi_in_ports;
++	u32 max_sample_rate;
++	u32 min_sample_rate;
++	u32 dsp_version;
++	u32 arm_version;
++	u32 mixer_playback_channels;
++	u32 mixer_capture_channels;
++	u32 fpga_version;
++	u32 amdtp_rx_pcm_channels_2x;
++	u32 amdtp_tx_pcm_channels_2x;
++	u32 amdtp_rx_pcm_channels_4x;
++	u32 amdtp_tx_pcm_channels_4x;
++	u32 reserved[16];
++} __packed;
++enum snd_efw_grp_type {
++	SND_EFW_CH_TYPE_ANALOG			= 0,
++	SND_EFW_CH_TYPE_SPDIF			= 1,
++	SND_EFW_CH_TYPE_ADAT			= 2,
++	SND_EFW_CH_TYPE_SPDIF_OR_ADAT		= 3,
++	SND_EFW_CH_TYPE_ANALOG_MIRRORING	= 4,
++	SND_EFW_CH_TYPE_HEADPHONES		= 5,
++	SND_EFW_CH_TYPE_I2S			= 6,
++	SND_EFW_CH_TYPE_GUITAR			= 7,
++	SND_EFW_CH_TYPE_PIEZO_GUITAR		= 8,
++	SND_EFW_CH_TYPE_GUITAR_STRING		= 9,
++	SND_EFW_CH_TYPE_VIRTUAL			= 0x10000,
++	SND_EFW_CH_TYPE_DUMMY
++};
++struct snd_efw_phys_meters {
++	u32 status;	/* guitar state/midi signal/clock input detect */
++	u32 reserved0;
++	u32 reserved1;
++	u32 reserved2;
++	u32 reserved3;
++	u32 out_meters;
++	u32 in_meters;
++	u32 reserved4;
++	u32 reserved5;
++	u32 values[0];
++} __packed;
++enum snd_efw_clock_source {
++	SND_EFW_CLOCK_SOURCE_INTERNAL	= 0,
++	SND_EFW_CLOCK_SOURCE_SYTMATCH	= 1,
++	SND_EFW_CLOCK_SOURCE_WORDCLOCK	= 2,
++	SND_EFW_CLOCK_SOURCE_SPDIF	= 3,
++	SND_EFW_CLOCK_SOURCE_ADAT_1	= 4,
++	SND_EFW_CLOCK_SOURCE_ADAT_2	= 5,
++	SND_EFW_CLOCK_SOURCE_CONTINUOUS	= 6	/* internal variable clock */
++};
++enum snd_efw_transport_mode {
++	SND_EFW_TRANSPORT_MODE_WINDOWS	= 0,
++	SND_EFW_TRANSPORT_MODE_IEC61883	= 1,
  };
++int snd_efw_command_identify(struct snd_efw *efw);
++int snd_efw_command_set_resp_addr(struct snd_efw *efw,
++				  u16 addr_high, u32 addr_low);
++int snd_efw_command_set_tx_mode(struct snd_efw *efw, unsigned int mode);
++int snd_efw_command_get_hwinfo(struct snd_efw *efw,
++			       struct snd_efw_hwinfo *hwinfo);
++int snd_efw_command_get_phys_meters(struct snd_efw *efw,
++				    struct snd_efw_phys_meters *meters,
++				    unsigned int len);
++int snd_efw_command_get_clock_source(struct snd_efw *efw,
++				     enum snd_efw_clock_source *source);
++int snd_efw_command_set_clock_source(struct snd_efw *efw,
++				     enum snd_efw_clock_source source);
++int snd_efw_command_get_sampling_rate(struct snd_efw *efw, unsigned int *rate);
++int snd_efw_command_set_sampling_rate(struct snd_efw *efw, unsigned int rate);
  
- struct snd_efw_transaction {
-@@ -187,6 +194,9 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw,
- int snd_efw_stream_stop_duplex(struct snd_efw *efw);
- void snd_efw_stream_update_duplex(struct snd_efw *efw);
- void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
-+void snd_efw_stream_lock_changed(struct snd_efw *efw);
-+int snd_efw_stream_lock_try(struct snd_efw *efw);
-+void snd_efw_stream_lock_release(struct snd_efw *efw);
- 
- void snd_efw_proc_init(struct snd_efw *efw);
- 
-@@ -195,6 +205,8 @@ int snd_efw_create_midi_devices(struct snd_efw *efw);
- int snd_efw_create_pcm_devices(struct snd_efw *efw);
- int snd_efw_get_multiplier_mode(int sampling_rate);
- 
-+int snd_efw_create_hwdep_device(struct snd_efw *efw);
-+
  #define SND_EFW_DEV_ENTRY(vendor, model) \
  { \
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/fireworks/fireworks_hwdep.c b/sound/firewire/fireworks/fireworks_hwdep.c
+diff --git a/sound/firewire/fireworks/fireworks_command.c b/sound/firewire/fireworks/fireworks_command.c
 new file mode 100644
-index 0000000..4c28b6c
+index 0000000..9b19e3e
 --- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_hwdep.c
-@@ -0,0 +1,197 @@
++++ b/sound/firewire/fireworks/fireworks_command.c
+@@ -0,0 +1,395 @@
 +/*
-+ * fireworks_hwdep.c - a part of driver for Fireworks based devices
++ * fireworks_command.c - a part of driver for Fireworks based devices
 + *
-+ * Copyright (c) 2013 Takashi Sakamoto
++ * Copyright (c) 2013 Takashi Sakamoto <o-takashi@sakmocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "./fireworks.h"
++
++/*
++ * This driver uses transaction version 1 or later to use extended hardware
++ * information. Then too old devices are not available.
++ *
++ * Each commands are not required to have continuous sequence numbers. This
++ * number is just used to match command and response.
++ *
++ * This module support a part of commands. Please see FFADO if you want to see
++ * whole commands. But there are some commands which FFADO don't implement.
++ *
++ * Fireworks also supports AV/C general commands and AV/C Stream Format
++ * Information commands. But this module don't use them.
++ */
++
++#define EFW_TRANSACTION_SEQNUM_MAX	((u32)~0)
++
++/* for clock source and sampling rate */
++struct efc_clock {
++	u32 source;
++	u32 sampling_rate;
++	u32 index;
++};
++
++/* command categories */
++enum efc_category {
++	EFC_CAT_HWINFO		= 0,
++	EFC_CAT_TRANSPORT	= 2,
++	EFC_CAT_HWCTL		= 3,
++};
++
++/* hardware info category commands */
++enum efc_cmd_hwinfo {
++	EFC_CMD_HWINFO_GET_CAPS		= 0,
++	EFC_CMD_HWINFO_GET_POLLED	= 1,
++	EFC_CMD_HWINFO_SET_RESP_ADDR	= 2
++};
++
++enum efc_cmd_transport {
++	EFC_CMD_TRANSPORT_SET_TX_MODE	= 0
++};
++
++/* hardware control category commands */
++enum efc_cmd_hwctl {
++	EFC_CMD_HWCTL_SET_CLOCK		= 0,
++	EFC_CMD_HWCTL_GET_CLOCK		= 1,
++	EFC_CMD_HWCTL_IDENTIFY		= 5
++};
++
++/* return values in response */
++enum efr_status {
++	EFC_RETVAL_OK			= 0,
++	EFC_RETVAL_BAD			= 1,
++	EFC_RETVAL_BAD_COMMAND		= 2,
++	EFC_RETVAL_COMM_ERR		= 3,
++	EFC_RETVAL_BAD_QUAD_COUNT	= 4,
++	EFC_RETVAL_UNSUPPORTED		= 5,
++	EFC_RETVAL_1394_TIMEOUT		= 6,
++	EFC_RETVAL_DSP_TIMEOUT		= 7,
++	EFC_RETVAL_BAD_RATE		= 8,
++	EFC_RETVAL_BAD_CLOCK		= 9,
++	EFC_RETVAL_BAD_CHANNEL		= 10,
++	EFC_RETVAL_BAD_PAN		= 11,
++	EFC_RETVAL_FLASH_BUSY		= 12,
++	EFC_RETVAL_BAD_MIRROR		= 13,
++	EFC_RETVAL_BAD_LED		= 14,
++	EFC_RETVAL_BAD_PARAMETER	= 15,
++	EFC_RETVAL_INCOMPLETE		= 0x80000000
++};
++
++static const char *const efr_status_names[] = {
++	[EFC_RETVAL_OK]			= "OK",
++	[EFC_RETVAL_BAD]		= "bad",
++	[EFC_RETVAL_BAD_COMMAND]	= "bad command",
++	[EFC_RETVAL_COMM_ERR]		= "comm err",
++	[EFC_RETVAL_BAD_QUAD_COUNT]	= "bad quad count",
++	[EFC_RETVAL_UNSUPPORTED]	= "unsupported",
++	[EFC_RETVAL_1394_TIMEOUT]	= "1394 timeout",
++	[EFC_RETVAL_DSP_TIMEOUT]	= "DSP timeout",
++	[EFC_RETVAL_BAD_RATE]		= "bad rate",
++	[EFC_RETVAL_BAD_CLOCK]		= "bad clock",
++	[EFC_RETVAL_BAD_CHANNEL]	= "bad channel",
++	[EFC_RETVAL_BAD_PAN]		= "bad pan",
++	[EFC_RETVAL_FLASH_BUSY]		= "flash busy",
++	[EFC_RETVAL_BAD_MIRROR]		= "bad mirror",
++	[EFC_RETVAL_BAD_LED]		= "bad LED",
++	[EFC_RETVAL_BAD_PARAMETER]	= "bad parameter",
++	[EFC_RETVAL_BAD_PARAMETER + 1]	= "incomplete"
++};
++
++static int
++efw_transaction(struct snd_efw *efw, unsigned int category,
++		unsigned int command,
++		const __be32 *params, unsigned int param_quads,
++		const __be32 *resp, unsigned int resp_quads)
++{
++	struct snd_efw_transaction *header;
++	__be32 *buf;
++	u32 seqnum;
++	unsigned int i, buf_bytes, cmd_bytes;
++	int err;
++
++	/* calculate buffer size*/
++	buf_bytes = sizeof(struct snd_efw_transaction) +
++		    max(param_quads, resp_quads) * sizeof(u32);
++
++	/* keep buffer */
++	buf = kzalloc(buf_bytes, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	/* to keep consistency of sequence number */
++	spin_lock(&efw->lock);
++	if (efw->seqnum + 1 >= EFW_TRANSACTION_SEQNUM_MAX)
++		efw->seqnum = 0;
++	else
++		efw->seqnum += 2;
++	seqnum = efw->seqnum;
++	spin_unlock(&efw->lock);
++
++	/* fill transaction header fields */
++	cmd_bytes = sizeof(struct snd_efw_transaction) +
++		    param_quads * sizeof(u32);
++	header = (struct snd_efw_transaction *)buf;
++	header->length	 = cmd_bytes / sizeof(u32);
++	header->version	 = 1;
++	header->seqnum	 = seqnum;
++	header->category = category;
++	header->command	 = command;
++	header->status	 = 0;
++	for (i = 0; i < sizeof(struct snd_efw_transaction) / sizeof(u32); i++)
++		cpu_to_be32s(&buf[i]);
++
++	/* fill transaction command parameters */
++	for (i = 0; i < param_quads; i++)
++		header->params[i] = params[i];
++
++	err = snd_efw_transaction_run(efw->unit, buf, cmd_bytes,
++				      buf, buf_bytes, seqnum);
++	if (err < 0)
++		goto end;
++
++	/* check transaction header fields */
++	for (i = 0; i < sizeof(struct snd_efw_transaction) / sizeof(u32); i++)
++		be32_to_cpus(&buf[i]);
++	if ((header->version  < 1) ||
++	    (header->category != category) ||
++	    (header->command  != command) ||
++	    (header->status   != EFC_RETVAL_OK)) {
++		dev_err(&efw->unit->device, "EFC failed [%u/%u]: %s\n",
++			header->category, header->command,
++			efr_status_names[header->status]);
++		err = -EIO;
++		goto end;
++	}
++
++	/* fill transaction response parameters */
++	if (resp != NULL) {
++		memset((void *)resp, 0, resp_quads * sizeof(u32));
++		resp_quads = min_t(unsigned int, resp_quads,
++				   header->length -
++				    sizeof(struct snd_efw_transaction) /
++				    sizeof(u32));
++		memcpy((void *)resp, &buf[6], resp_quads * sizeof(u32));
++	}
++end:
++	kfree(buf);
++	return err;
++}
++
++/* just blink LEDs on the device */
++int snd_efw_command_identify(struct snd_efw *efw)
++{
++	return efw_transaction(efw, EFC_CAT_HWCTL,
++			       EFC_CMD_HWCTL_IDENTIFY,
++			       NULL, 0, NULL, 0);
++}
++
++/*
++ * The address in host system for EFC response is changable when the device
++ * supports. struct hwinfo.flags includes its flag. The default is
++ * INITIAL_MEMORY_SPACE_EFC_RESPONSE
++ */
++int snd_efw_command_set_resp_addr(struct snd_efw *efw,
++				  u16 addr_high, u32 addr_low)
++{
++	__be32 addr[2];
++
++	addr[0] = cpu_to_be32(addr_high);
++	addr[1] = cpu_to_be32(addr_low);
++
++	if (!efw->resp_addr_changable)
++		return -ENOSYS;
++
++	return efw_transaction(efw, EFC_CAT_HWCTL,
++			       EFC_CMD_HWINFO_SET_RESP_ADDR,
++			       addr, 2, NULL, 0);
++}
++
++/*
++ * This is for timestamp processing. In Windows mode, all 32bit fields of second
++ * CIP header in AMDTP transmit packet is used for 'presentation timestamp'. In
++ * 'no data' packet the value of this field is 0x90ffffff.
++ */
++int snd_efw_command_set_tx_mode(struct snd_efw *efw,
++				enum snd_efw_transport_mode mode)
++{
++	__be32 param = cpu_to_be32(mode);
++	return efw_transaction(efw, EFC_CAT_TRANSPORT,
++			       EFC_CMD_TRANSPORT_SET_TX_MODE,
++			       &param, 1, NULL, 0);
++}
++
++int snd_efw_command_get_hwinfo(struct snd_efw *efw,
++			       struct snd_efw_hwinfo *hwinfo)
++{
++	int err;
++
++	err  = efw_transaction(efw, EFC_CAT_HWINFO,
++			       EFC_CMD_HWINFO_GET_CAPS,
++			       NULL, 0, (__be32 *)hwinfo,
++			       sizeof(*hwinfo) / sizeof(u32));
++	if (err < 0)
++		goto end;
++
++	be32_to_cpus(&hwinfo->flags);
++	be32_to_cpus(&hwinfo->guid_hi);
++	be32_to_cpus(&hwinfo->guid_lo);
++	be32_to_cpus(&hwinfo->type);
++	be32_to_cpus(&hwinfo->version);
++	be32_to_cpus(&hwinfo->supported_clocks);
++	be32_to_cpus(&hwinfo->amdtp_rx_pcm_channels);
++	be32_to_cpus(&hwinfo->amdtp_tx_pcm_channels);
++	be32_to_cpus(&hwinfo->phys_out);
++	be32_to_cpus(&hwinfo->phys_in);
++	be32_to_cpus(&hwinfo->phys_out_grp_count);
++	be32_to_cpus(&hwinfo->phys_in_grp_count);
++	be32_to_cpus(&hwinfo->midi_out_ports);
++	be32_to_cpus(&hwinfo->midi_in_ports);
++	be32_to_cpus(&hwinfo->max_sample_rate);
++	be32_to_cpus(&hwinfo->min_sample_rate);
++	be32_to_cpus(&hwinfo->dsp_version);
++	be32_to_cpus(&hwinfo->arm_version);
++	be32_to_cpus(&hwinfo->mixer_playback_channels);
++	be32_to_cpus(&hwinfo->mixer_capture_channels);
++	be32_to_cpus(&hwinfo->fpga_version);
++	be32_to_cpus(&hwinfo->amdtp_rx_pcm_channels_2x);
++	be32_to_cpus(&hwinfo->amdtp_tx_pcm_channels_2x);
++	be32_to_cpus(&hwinfo->amdtp_rx_pcm_channels_4x);
++	be32_to_cpus(&hwinfo->amdtp_tx_pcm_channels_4x);
++
++	/* ensure terminated */
++	hwinfo->vendor_name[HWINFO_NAME_SIZE_BYTES - 1] = '\0';
++	hwinfo->model_name[HWINFO_NAME_SIZE_BYTES  - 1] = '\0';
++end:
++	return err;
++}
++
++int snd_efw_command_get_phys_meters(struct snd_efw *efw,
++				    struct snd_efw_phys_meters *meters,
++				    unsigned int len)
++{
++	__be32 *buf = (__be32 *)meters;
++	unsigned int i;
++	int err;
++
++	err = efw_transaction(efw, EFC_CAT_HWINFO,
++			      EFC_CMD_HWINFO_GET_POLLED,
++			      NULL, 0, (__be32 *)meters, len / sizeof(u32));
++	if (err >= 0)
++		for (i = 0; i < len / sizeof(u32); i++)
++			be32_to_cpus(&buf[i]);
++
++	return err;
++}
++
++static int
++command_get_clock(struct snd_efw *efw, struct efc_clock *clock)
++{
++	int err;
++
++	err = efw_transaction(efw, EFC_CAT_HWCTL,
++			      EFC_CMD_HWCTL_GET_CLOCK,
++			      NULL, 0,
++			      (__be32 *)clock,
++			      sizeof(struct efc_clock) / sizeof(u32));
++	if (err >= 0) {
++		be32_to_cpus(&clock->source);
++		be32_to_cpus(&clock->sampling_rate);
++		be32_to_cpus(&clock->index);
++	}
++
++	return err;
++}
++
++/* give UINT_MAX if set nothing */
++static int
++command_set_clock(struct snd_efw *efw,
++		  unsigned int source, unsigned int rate)
++{
++	struct efc_clock clock = {0};
++	int err;
++
++	/* check arguments */
++	if ((source == UINT_MAX) && (rate == UINT_MAX)) {
++		err = -EINVAL;
++		goto end;
++	}
++
++	/* get current status */
++	err = command_get_clock(efw, &clock);
++	if (err < 0)
++		goto end;
++
++	/* no need */
++	if ((clock.source == source) && (clock.sampling_rate == rate))
++		goto end;
++
++	/* set params */
++	if ((source != UINT_MAX) && (clock.source != source))
++		clock.source = source;
++	if ((rate != UINT_MAX) && (clock.sampling_rate != rate))
++		clock.sampling_rate = rate;
++	clock.index = 0;
++
++	cpu_to_be32s(&clock.source);
++	cpu_to_be32s(&clock.sampling_rate);
++	cpu_to_be32s(&clock.index);
++
++	err = efw_transaction(efw, EFC_CAT_HWCTL,
++			      EFC_CMD_HWCTL_SET_CLOCK,
++			      (__be32 *)&clock,
++			      sizeof(struct efc_clock) / sizeof(u32),
++			      NULL, 0);
++	if (err < 0)
++		goto end;
++
++	/*
++	 * With firmware version 5.8, just after changing clock state, these
++	 * parameters are not immediately retrieved by get command. In my
++	 * trial, there needs to be 100msec to get changed parameters.
++	 */
++	msleep(150);
++end:
++	return err;
++}
++
++int snd_efw_command_get_clock_source(struct snd_efw *efw,
++				     enum snd_efw_clock_source *source)
++{
++	int err;
++	struct efc_clock clock = {0};
++
++	err = command_get_clock(efw, &clock);
++	if (err >= 0)
++		*source = clock.source;
++
++	return err;
++}
++
++int snd_efw_command_set_clock_source(struct snd_efw *efw,
++				     enum snd_efw_clock_source source)
++{
++	return command_set_clock(efw, source, UINT_MAX);
++}
++
++int snd_efw_command_get_sampling_rate(struct snd_efw *efw,
++				      unsigned int *rate)
++{
++	int err;
++	struct efc_clock clock = {0};
++
++	err = command_get_clock(efw, &clock);
++	if (err >= 0)
++		*rate = clock.sampling_rate;
++
++	return err;
++}
++
++int
++snd_efw_command_set_sampling_rate(struct snd_efw *efw,
++				  unsigned int rate)
++{
++	return command_set_clock(efw, UINT_MAX, rate);
++}
++
+diff --git a/sound/firewire/fireworks/fireworks_transaction.c b/sound/firewire/fireworks/fireworks_transaction.c
+new file mode 100644
+index 0000000..c2f499e
+--- /dev/null
++++ b/sound/firewire/fireworks/fireworks_transaction.c
+@@ -0,0 +1,191 @@
++/*
++ * fireworks_transaction.c - a part of driver for Fireworks based devices
++ *
++ * Copyright (c) 2013 Takashi Sakamoto <o-takashi@sakmocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
 +/*
-+ * This codes have three functionalities.
++ * Fireworks have its own transaction. The transaction can be delivered by AV/C
++ * Vendor Specific command. But at least Windows driver and firmware version 5.5
++ * or later don't use it.
 + *
-+ * 1.get information about firewire node
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock streaming
++ * Transaction substance:
++ *  At first, 6 data exist. Following to the 6 data, parameters for each
++ *  commands exists. All of parameters are 32 bit alighed to big endian.
++ *   data[0]:	Length of transaction substance
++ *   data[1]:	Transaction version
++ *   data[2]:	Sequence number. This is incremented by the device
++ *   data[3]:	transaction category
++ *   data[4]:	transaction command
++ *   data[5]:	return value in response.
++ *   data[6-]:	parameters
++ *
++ * Transaction address:
++ *  command:	0xecc000000000
++ *  response:	0xecc080000000 (default)
++ *
++ * I note that the address for response can be changed by command. But this
++ * module uses the default address.
 + */
++#include "./fireworks.h"
 +
-+#include "fireworks.h"
++#define MEMORY_SPACE_EFW_COMMAND	0xecc000000000
++#define MEMORY_SPACE_EFW_RESPONSE	0xecc080000000
++/* this is for juju convinience? */
++#define MEMORY_SPACE_EFW_END		0xecc080000200
 +
-+static long
-+hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
-+	   loff_t *offset)
-+{
-+	struct snd_efw *efw = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+	union snd_firewire_event event;
++#define ERROR_RETRIES 3
++#define ERROR_DELAY_MS 5
++#define EFC_TIMEOUT_MS 125
 +
-+	spin_lock_irq(&efw->lock);
++static DEFINE_SPINLOCK(transaction_queues_lock);
++static LIST_HEAD(transaction_queues);
 +
-+	while (!efw->dev_lock_changed) {
-+		prepare_to_wait(&efw->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&efw->lock);
-+		schedule();
-+		finish_wait(&efw->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&efw->lock);
-+	}
-+
-+	memset(&event, 0, sizeof(event));
-+	if (efw->dev_lock_changed) {
-+		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+		event.lock_status.status = (efw->dev_lock_count > 0);
-+		efw->dev_lock_changed = false;
-+
-+		count = min_t(long, count, sizeof(event.lock_status));
-+	}
-+
-+	spin_unlock_irq(&efw->lock);
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static unsigned int
-+hwdep_poll(struct snd_hwdep *hwdep, struct file *file, poll_table *wait)
-+{
-+	struct snd_efw *efw = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &efw->hwdep_wait, wait);
-+
-+	spin_lock_irq(&efw->lock);
-+	if (efw->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&efw->lock);
-+
-+	return events;
-+}
-+
-+static int
-+hwdep_get_info(struct snd_efw *efw, void __user *arg)
-+{
-+	struct fw_device *dev = fw_parent_device(efw->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_FIREWORKS;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int
-+hwdep_lock(struct snd_efw *efw)
-+{
-+	int err;
-+
-+	spin_lock_irq(&efw->lock);
-+
-+	if (efw->dev_lock_count == 0) {
-+		efw->dev_lock_count = -1;
-+		err = 0;
-+	} else
-+		err = -EBUSY;
-+
-+	spin_unlock_irq(&efw->lock);
-+
-+	return err;
-+}
-+
-+static int
-+hwdep_unlock(struct snd_efw *efw)
-+{
-+	int err;
-+
-+	spin_lock_irq(&efw->lock);
-+
-+	if (efw->dev_lock_count == -1) {
-+		efw->dev_lock_count = 0;
-+		err = 0;
-+	} else
-+		err = -EBADFD;
-+
-+	spin_unlock_irq(&efw->lock);
-+
-+	return err;
-+}
-+
-+static int
-+hwdep_release(struct snd_hwdep *hwdep, struct file *file)
-+{
-+	struct snd_efw *efw = hwdep->private_data;
-+
-+	spin_lock_irq(&efw->lock);
-+	if (efw->dev_lock_count == -1)
-+		efw->dev_lock_count = 0;
-+	spin_unlock_irq(&efw->lock);
-+
-+	return 0;
-+}
-+
-+static int
-+hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+	    unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_efw *efw = hwdep->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(efw, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(efw);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(efw);
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
-+}
-+
-+#ifdef CONFIG_COMPAT
-+static int
-+hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+		   unsigned int cmd, unsigned long arg)
-+{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
-+
-+static const struct snd_hwdep_ops hwdep_ops = {
-+	.read		= hwdep_read,
-+	.release	= hwdep_release,
-+	.poll		= hwdep_poll,
-+	.ioctl		= hwdep_ioctl,
-+	.ioctl_compat	= hwdep_compat_ioctl,
++enum transaction_queue_state {
++	STATE_PENDING,
++	STATE_BUS_RESET,
++	STATE_COMPLETE
 +};
 +
-+int snd_efw_create_hwdep_device(struct snd_efw *efw)
-+{
-+	struct snd_hwdep *hwdep;
-+	int err;
++struct transaction_queue {
++	struct list_head list;
++	struct fw_unit *unit;
++	void *buf;
++	unsigned int size;
++	u32 seqnum;
++	enum transaction_queue_state state;
++	wait_queue_head_t wait;
++};
 +
-+	err = snd_hwdep_new(efw->card, "Fireworks", 0, &hwdep);
-+	if (err < 0)
-+		goto end;
-+	strcpy(hwdep->name, "Fireworks");
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_FIREWORKS;
-+	hwdep->ops = hwdep_ops;
-+	hwdep->private_data = efw;
-+	hwdep->exclusive = true;
-+end:
-+	return err;
++int snd_efw_transaction_run(struct fw_unit *unit,
++			    const void *cmd, unsigned int cmd_size,
++			    void *resp, unsigned int resp_size, u32 seqnum)
++{
++	struct transaction_queue t;
++	unsigned int tries;
++	int ret;
++
++	t.unit = unit;
++	t.buf = resp;
++	t.size = resp_size;
++	t.seqnum = seqnum + 1;
++	t.state = STATE_PENDING;
++	init_waitqueue_head(&t.wait);
++
++	spin_lock_irq(&transaction_queues_lock);
++	list_add_tail(&t.list, &transaction_queues);
++	spin_unlock_irq(&transaction_queues_lock);
++
++	tries = 0;
++	do {
++		ret = snd_fw_transaction(unit, TCODE_WRITE_BLOCK_REQUEST,
++					 MEMORY_SPACE_EFW_COMMAND,
++					 (void *)cmd, cmd_size, 0);
++		if (ret < 0)
++			break;
++
++		wait_event_timeout(t.wait, t.state != STATE_PENDING,
++				   msecs_to_jiffies(EFC_TIMEOUT_MS));
++
++		if (t.state == STATE_COMPLETE) {
++			ret = t.size;
++			break;
++		} else if (t.state == STATE_BUS_RESET) {
++			msleep(ERROR_DELAY_MS);
++		} else if (++tries >= ERROR_RETRIES) {
++			dev_err(&t.unit->device, "EFC command timed out\n");
++			ret = -EIO;
++			break;
++		}
++	} while (1);
++
++	spin_lock_irq(&transaction_queues_lock);
++	list_del(&t.list);
++	spin_unlock_irq(&transaction_queues_lock);
++
++	return ret;
 +}
 +
-diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
-index b22658d..5700801 100644
---- a/sound/firewire/fireworks/fireworks_midi.c
-+++ b/sound/firewire/fireworks/fireworks_midi.c
-@@ -11,19 +11,40 @@
- static int midi_capture_open(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_efw *efw = substream->rmidi->private_data;
--	return snd_efw_stream_start_duplex(efw, &efw->tx_stream, 0);
-+	int err;
-+
-+	err = snd_efw_stream_lock_try(efw);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_efw_stream_start_duplex(efw, &efw->tx_stream, 0);
-+	if (err < 0)
-+		snd_efw_stream_lock_release(efw);
-+end:
-+	return err;
- }
- 
- static int midi_playback_open(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_efw *efw = substream->rmidi->private_data;
--	return snd_efw_stream_start_duplex(efw, &efw->rx_stream, 0);
-+	int err;
-+
-+	err = snd_efw_stream_lock_try(efw);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_efw_stream_start_duplex(efw, &efw->rx_stream, 0);
-+	if (err < 0)
-+		snd_efw_stream_lock_release(efw);
-+end:
-+	return err;
- }
- 
- static int midi_close(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_efw *efw = substream->rmidi->private_data;
- 	snd_efw_stream_stop_duplex(efw);
-+	snd_efw_stream_lock_release(efw);
- 	return 0;
- }
- 
-diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
-index 094cdec..b622b43 100644
---- a/sound/firewire/fireworks/fireworks_pcm.c
-+++ b/sound/firewire/fireworks/fireworks_pcm.c
-@@ -270,10 +270,14 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	unsigned int clock_source;
- 	int err;
- 
--	err = pcm_init_hw_params(efw, substream);
-+	err = snd_efw_stream_lock_try(efw);
- 	if (err < 0)
- 		goto end;
- 
-+	err = pcm_init_hw_params(efw, substream);
-+	if (err < 0)
-+		goto err_locked;
-+
- 	err = snd_efw_command_get_clock_source(efw, &clock_source);
- 	if (err < 0)
- 		goto end;
-@@ -287,7 +291,7 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	    amdtp_stream_pcm_running(&efw->rx_stream)) {
- 		err = snd_efw_command_get_sampling_rate(efw, &sampling_rate);
- 		if (err < 0)
--			goto end;
-+			goto err_locked;
- 		substream->runtime->hw.rate_min = sampling_rate;
- 		substream->runtime->hw.rate_max = sampling_rate;
- 	}
-@@ -295,10 +299,15 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	snd_pcm_set_sync(substream);
- end:
- 	return err;
-+err_locked:
-+	snd_efw_stream_lock_release(efw);
-+	return err;
- }
- 
- static int pcm_close(struct snd_pcm_substream *substream)
- {
-+	struct snd_efw *efw = substream->private_data;
-+	snd_efw_stream_lock_release(efw);
- 	return 0;
- }
- 
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index 2fdc9a7..3bebb10 100644
---- a/sound/firewire/fireworks/fireworks_stream.c
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -313,3 +313,42 @@ void snd_efw_stream_destroy_duplex(struct snd_efw *efw)
- 	destroy_stream(efw, &efw->rx_stream);
- 	destroy_stream(efw, &efw->tx_stream);
- }
-+
-+void snd_efw_stream_lock_changed(struct snd_efw *efw)
++static void
++efw_response(struct fw_card *card, struct fw_request *request,
++	     int tcode, int destination, int source,
++	     int generation, unsigned long long offset,
++	     void *data, size_t length, void *callback_data)
 +{
-+	efw->dev_lock_changed = true;
-+	wake_up(&efw->hwdep_wait);
-+}
++	struct fw_device *device;
++	struct transaction_queue *t;
++	unsigned long flags;
++	int rcode;
++	u32 seqnum;
 +
-+int snd_efw_stream_lock_try(struct snd_efw *efw)
-+{
-+	int err;
-+
-+	spin_lock_irq(&efw->lock);
-+
-+	/* user land lock this */
-+	if (efw->dev_lock_count < 0) {
-+		err = -EBUSY;
++	rcode = RCODE_TYPE_ERROR;
++	if (length < sizeof(struct snd_efw_transaction)) {
++		rcode = RCODE_DATA_ERROR;
++		goto end;
++	} else if (offset != MEMORY_SPACE_EFW_RESPONSE) {
++		rcode = RCODE_ADDRESS_ERROR;
 +		goto end;
 +	}
 +
-+	/* this is the first time */
-+	if (efw->dev_lock_count++ == 0)
-+		snd_efw_stream_lock_changed(efw);
-+	err = 0;
++	seqnum = be32_to_cpu(((struct snd_efw_transaction *)data)->seqnum);
++
++	spin_lock_irqsave(&transaction_queues_lock, flags);
++	list_for_each_entry(t, &transaction_queues, list) {
++		device = fw_parent_device(t->unit);
++		if ((device->card != card) ||
++		    (device->generation != generation))
++			continue;
++		smp_rmb();	/* node_id vs. generation */
++		if (device->node_id != source)
++			continue;
++
++		if ((t->state == STATE_PENDING) && (t->seqnum == seqnum)) {
++			t->state = STATE_COMPLETE;
++			t->size = min_t(unsigned int, length, t->size);
++			memcpy(t->buf, data, t->size);
++			wake_up(&t->wait);
++			rcode = RCODE_COMPLETE;
++		}
++	}
++	spin_unlock_irqrestore(&transaction_queues_lock, flags);
 +end:
-+	spin_unlock_irq(&efw->lock);
-+	return err;
++	fw_send_response(card, request, rcode);
 +}
 +
-+void snd_efw_stream_lock_release(struct snd_efw *efw)
++void snd_efw_transaction_bus_reset(struct fw_unit *unit)
 +{
-+	spin_lock_irq(&efw->lock);
++	struct transaction_queue *t;
 +
-+	if (WARN_ON(efw->dev_lock_count <= 0))
-+		goto end;
-+	if (--efw->dev_lock_count == 0)
-+		snd_efw_stream_lock_changed(efw);
-+end:
-+	spin_unlock_irq(&efw->lock);
++	spin_lock_irq(&transaction_queues_lock);
++	list_for_each_entry(t, &transaction_queues, list) {
++		if ((t->unit == unit) &&
++		    (t->state == STATE_PENDING)) {
++			t->state = STATE_BUS_RESET;
++			wake_up(&t->wait);
++		}
++	}
++	spin_unlock_irq(&transaction_queues_lock);
++}
++
++static struct fw_address_handler resp_register_handler = {
++	.length = MEMORY_SPACE_EFW_END - MEMORY_SPACE_EFW_RESPONSE,
++	.address_callback = efw_response
++};
++
++int snd_efw_transaction_register(void)
++{
++	static const struct fw_address_region resp_register_region = {
++		.start	= MEMORY_SPACE_EFW_RESPONSE,
++		.end	= MEMORY_SPACE_EFW_END
++	};
++	return fw_core_add_address_handler(&resp_register_handler,
++					   &resp_register_region);
++}
++
++void snd_efw_transaction_unregister(void)
++{
++	WARN_ON(!list_empty(&transaction_queues));
++	fw_core_remove_address_handler(&resp_register_handler);
 +}
 -- 
 1.8.3.2
