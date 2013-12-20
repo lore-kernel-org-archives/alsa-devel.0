@@ -1,36 +1,47 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH] ASoC: simple-card: Add cpu_dai and codec_dai names NULL check
-Date: Fri, 20 Dec 2013 14:39:50 +0800
-Message-ID: <1387521591-15262-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCH] ASoC: soc-core: Fix the DAI name getting.
+Date: Fri, 20 Dec 2013 14:39:51 +0800
+Message-ID: <1387521591-15262-2-git-send-email-Li.Xiubo@freescale.com>
+References: <1387521591-15262-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1387521591-15262-1-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, perex@perex.cz, tiwai@suse.de, kuninori.morimoto.gx@renesas.com
 Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The name of cpu DAI maybe omitted, and then strlen() will lead
-kernel panic.
+>From "ASoC: make snd_soc_dai_link more symmetrical", can we see that
+the name of CPU DAI maybe omitted. If the DAI name is omitted, try to
+use the component name instead.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/generic/simple-card.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/soc-core.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 3d190d0..1d87db8 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -142,6 +142,9 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	if (ret < 0)
- 		return ret;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index a66783e..be88df5 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -4617,10 +4617,14 @@ int snd_soc_of_get_dai_name(struct device_node *of_node,
  
-+	if (!info->cpu_dai.name || !info->codec_dai.name)
-+		return -EINVAL;
+ 			if (id < 0 || id >= pos->num_dai) {
+ 				ret = -EINVAL;
+-			} else {
+-				*dai_name = pos->dai_drv[id].name;
+-				ret = 0;
++				break;
+ 			}
 +
- 	/* card name is created from CPU/CODEC dai name */
- 	name = devm_kzalloc(dev,
- 			    strlen(info->cpu_dai.name)   +
++			ret = 0;
++
++			*dai_name = pos->dai_drv[id].name;
++			if (!*dai_name)
++				*dai_name = pos->name;
+ 		}
+ 
+ 		break;
 -- 
 1.8.4
