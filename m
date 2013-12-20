@@ -1,7 +1,7 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
 Subject: [PATCH] ASoC: fsl-sai: Remove fsl_sai_remove()
-Date: Fri, 20 Dec 2013 11:32:14 +0800
-Message-ID: <1387510334-19866-1-git-send-email-Li.Xiubo@freescale.com>
+Date: Fri, 20 Dec 2013 12:17:38 +0800
+Message-ID: <1387513058-8314-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
