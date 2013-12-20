@@ -1,21 +1,21 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 06/19] ASoC: fsl: Don't set unused struct
- snd_pcm_hardware fields
-Date: Fri, 20 Dec 2013 19:16:34 +0100
-Message-ID: <52B48982.2000308@metafoo.de>
+Subject: Re: [PATCH 08/19] ASoC: kirkwood: Don't set unused
+ struct snd_pcm_hardware fields
+Date: Fri, 20 Dec 2013 19:29:43 +0100
+Message-ID: <52B48C97.8070208@metafoo.de>
 References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
- <1387545625-19240-6-git-send-email-lars@metafoo.de>
- <52B45371.8020808@tabi.org> <52B44E58.4080609@metafoo.de>
- <20131220182727.GA31886@sirena.org.uk>
+ <1387545625-19240-8-git-send-email-lars@metafoo.de>
+ <20131220190506.2adb7a52@armhf> <52B47BF9.9030408@metafoo.de>
+ <20131220201313.0fdf477e@armhf>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-044.synserver.de (smtp-out-137.synserver.de
  [212.40.185.137])
- by alsa0.perex.cz (Postfix) with ESMTP id AD590261B25
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 20:15:38 +0100 (CET)
-In-Reply-To: <20131220182727.GA31886@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D870261B25
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 20:28:41 +0100 (CET)
+In-Reply-To: <20131220201313.0fdf477e@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,55 +25,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/20/2013 07:27 PM, Mark Brown wrote:
-> On Fri, Dec 20, 2013 at 03:04:08PM +0100, Lars-Peter Clausen wrote:
->> On 12/20/2013 03:25 PM, Timur Tabi wrote:
+On 12/20/2013 08:13 PM, Jean-Francois Moine wrote:
+> On Fri, 20 Dec 2013 18:18:49 +0100
+> Lars-Peter Clausen <lars@metafoo.de> wrote:
 > 
->>> Is this new?  There are formats that the codec and the SSI support that the
->>> DMA controller does NOT support, like packed 24-bit samples.  How do we
->>> ensure that we never get those?
+>> On 12/20/2013 07:05 PM, Jean-Francois Moine wrote:
+>>> On Fri, 20 Dec 2013 14:20:14 +0100
+>>> Lars-Peter Clausen <lars@metafoo.de> wrote:
+>>>
+>>>> The ASoC core assumes that the PCM component of the ASoC card transparently
+>>>> moves data around and does not impose any restrictions on the memory layout or
+>>>> the transfer speed. It ignores all fields from the snd_pcm_hardware struct for
+>>>> the PCM driver that are related to this. Setting these fields in the PCM driver
+>>>> might suggest otherwise though, so rather not set them.
+>>>>
+>>>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+>>>> Cc: Jean-Francois Moine <moinejf@free.fr>
+>>>> ---
+>>>>  sound/soc/kirkwood/kirkwood-dma.c | 16 ----------------
+>>>>  1 file changed, 16 deletions(-)
+>>>>
+>>>> diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+>>>> index 4af1936..aac22fc 100644
+>>>> --- a/sound/soc/kirkwood/kirkwood-dma.c
+>>>> +++ b/sound/soc/kirkwood/kirkwood-dma.c
+>>> 	[snip]
+>>>> @@ -43,12 +33,6 @@ static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
+>>>>  		 SNDRV_PCM_INFO_MMAP_VALID |
+>>>>  		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>>>>  		 SNDRV_PCM_INFO_PAUSE),
+>>>> -	.formats		= KIRKWOOD_FORMATS,
+>>>> -	.rates			= KIRKWOOD_RATES,
+>>>> -	.rate_min		= 8000,
+>>>> -	.rate_max		= 384000,
+>>>> -	.channels_min		= 1,
+>>>> -	.channels_max		= 8,
+>>>>  	.buffer_bytes_max	= KIRKWOOD_SND_MAX_BUFFER_BYTES,
+>>>>  	.period_bytes_min	= KIRKWOOD_SND_MIN_PERIOD_BYTES,
+>>>>  	.period_bytes_max	= KIRKWOOD_SND_MAX_PERIOD_BYTES,
+>>>
+>>> Lars,
+>>>
+>>> You removed too many things. The 'formats' field is mandatory.
+>>
+>> No it is not. While snd_soc_set_runtime_hwparams() uses it it is later
+>> overwritten again in soc_pcm_init_runtime_hw().
 > 
->> No, this is how it has always been. If there are restrictions imposed by the
->> DMA controller we need to add support for expressing this inside the ASoC
->> framework. But I think it will probably be more complex than just saying the
->> DMA controller supports format A, B, C and the DAI controller supports
->> format B, C, D and then just do the intersection of both. E.g. the DAI
->> controller probably does not care whether the samples are packed or not if
->> it only sees one sample at a time, while
-> 
-> The most common pattern I've seen is that the DAIs expect to see whole
-> samples at a time get written into their FIFOs since the FIFOs tend to
-> be stored in samples rather than bytes. With that pattern it'd be a bit
-> cleaner to have them advertise sample sizes and transfer sizes and then
-> have the core work out that if you can for example do 24 bit samples
-> with four byte transfers and have a DMA controller that needs a 1:1
-> mapping between data read and written then we can't do packed format.
+> I have a DPCM system and soc_pcm_init_runtime_hw() is not called
+> (either 'dynamic' or 'no_pcm' is set in the DAI links).
 > 
 
-Yep. The other one I've seen is where the audio controller expects the DMA
-to pack samples, that are smaller than the bus width, to one bus width word.
-E.g. if the bus width is 32 and the sample width is 16 the DMA controller is
-supposed to write 2 samples at once.
-
-And then there might be different variations of the first one. Some
-controllers might expect narrow writes/reads while others might expect full
-bus width access with the upper bytes padded/discarded. But I think most
-controllers are fine with both.
-
-The audio controller should probably advertise what sample sizes it supports
-and how it expects them to be written/read. And the DMA controller then
-based on that list needs to figure out what kind of in memory
-representations of the audio data it can support.
-
-> I think in general we want to be moving the DAIs to a sample size based
-> interface and then mapping that onto the DMA controller when we connect
-> the DMA and CPU DAIs.  This would help with clarity on the CODEC side as
-> well.
-> 
-
-Yep, something similar should probably be done for format negotiation
-between DAI and CODEC.
+Ok, I see dpcm_set_fe_runtime() does things slightly different.
