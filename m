@@ -1,17 +1,22 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v4 4/9] ASoC: fsl-ssi: Fix interrupt stats for
-	imx
-Date: Fri, 20 Dec 2013 14:11:31 +0100
-Message-ID: <1387545096-2334-5-git-send-email-mpa@pengutronix.de>
-References: <1387545096-2334-1-git-send-email-mpa@pengutronix.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH] ALSA: hda - Don't be too specific for
+ conflicting boost ctl names
+Date: Fri, 20 Dec 2013 21:36:30 +0800
+Message-ID: <CAN8cciZ2hX5VJ2D4LpwZBbw4HoQdUXhsCbSVNdAUeFy-AscL0A@mail.gmail.com>
+References: <1387388362-1005-1-git-send-email-tiwai@suse.de>
+ <52B28583.3050909@canonical.com> <s5h1u19t7d0.wl%tiwai@suse.de>
+ <52B2DC85.4020901@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 7197F26566F
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 14:12:31 +0100 (CET)
-In-Reply-To: <1387545096-2334-1-git-send-email-mpa@pengutronix.de>
+Received: from mail-ie0-f174.google.com (mail-ie0-f174.google.com
+ [209.85.223.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3DAB265AB0
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 14:36:32 +0100 (CET)
+Received: by mail-ie0-f174.google.com with SMTP id at1so3040650iec.33
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 05:36:31 -0800 (PST)
+In-Reply-To: <52B2DC85.4020901@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,148 +26,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
-Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-irqs should only be requested/released with enabled DMA. Previously
-interrupt statistics where disabled for IMX Processors because of
-different writeable SISR bits.
+>>> When a boost control influences on multiple input paths, we shouldn't
+> >>> pick up the name string specific to one input but rather choose a more
+> >>> generic name.  A problem seen often is that a single mic boost
+> >>> controls both internal and external mics although the driver picks up
+> >>> the very first name randomly like "Internal Mic Boost".  This should
+> >>> have been "Mic Boost", instead.
+> >>>
+> >>> This patch tries to correct that behavior: when a boost control is
+> >>> available, check whether it conflicts with other inputs.  If it does,
+> >>> use a common string ("Mic", "Line") as long as possible, or take a
+> >>> generic name "Input".
+> >>
+> >> Hrm. I thought today "Mic Boost" is quite common, and meaning the mic
+> >> boost of the non-internal mic. So I agree there is a problem - and thank
+> >> you for trying to fix it - but isn't this just changing one problem for
+> >> another? Now we don't know if a "Mic Boost" control controls the
+> >> internal mic or not.
+> >
+> > That's true, and the problem isn't new...
+> > I'm fine to use a different name as a boost control used for multiple
+> > mics, though.  Spell your wish.
+>
+> If *all* inputs go through the boost, then just preferring "Capture
+> Boost" or "Input Boost" over "Mic Boost" would do the trick. I e, just
+> skip the logic that checks for all inputs being of the same type.
+>
 
-This patch introduces support for irqstats on imx processors again by
-creating a sisr writeback mask and introducing a imx35-ssi compatible.
+not all inputs go through the boost,
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
- sound/soc/fsl/fsl_ssi.c | 40 ++++++++++++++++++++++++++++++++--------
- 1 file changed, 32 insertions(+), 8 deletions(-)
+only two mic share boost but line in, CD, aux, stereo mix don't
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 39ad516..f37bcbe 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -127,6 +127,7 @@ static inline void write_ssi_mask(u32 __iomem *addr, u32 clear, u32 set)
- enum fsl_ssi_type {
- 	FSL_SSI_MCP8610,
- 	FSL_SSI_MX21,
-+	FSL_SSI_MX35,
- 	FSL_SSI_MX51,
- };
- 
-@@ -151,6 +152,7 @@ struct fsl_ssi_private {
- 	struct snd_soc_dai_driver cpu_dai_drv;
- 	struct platform_device *pdev;
- 
-+	enum fsl_ssi_type hw_type;
- 	bool new_binding;
- 	bool ssi_on_imx;
- 	bool imx_ac97;
-@@ -199,6 +201,7 @@ struct fsl_ssi_private {
- static const struct of_device_id fsl_ssi_ids[] = {
- 	{ .compatible = "fsl,mpc8610-ssi", .data = (void *) FSL_SSI_MCP8610},
- 	{ .compatible = "fsl,imx51-ssi", .data = (void *) FSL_SSI_MX51},
-+	{ .compatible = "fsl,imx35-ssi", .data = (void *) FSL_SSI_MX35},
- 	{ .compatible = "fsl,imx21-ssi", .data = (void *) FSL_SSI_MX21},
- 	{}
- };
-@@ -222,7 +225,26 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
- 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
- 	irqreturn_t ret = IRQ_NONE;
- 	__be32 sisr;
--	__be32 sisr2 = 0;
-+	__be32 sisr2;
-+	__be32 sisr_write_mask = 0;
-+
-+	switch (ssi_private->hw_type) {
-+	case FSL_SSI_MX21:
-+		sisr_write_mask = 0;
-+		break;
-+
-+	case FSL_SSI_MCP8610:
-+	case FSL_SSI_MX35:
-+		sisr_write_mask = CCSR_SSI_SISR_RFRC | CCSR_SSI_SISR_TFRC |
-+			CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
-+			CCSR_SSI_SISR_TUE0 | CCSR_SSI_SISR_TUE1;
-+		break;
-+
-+	case FSL_SSI_MX51:
-+		sisr_write_mask = CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
-+			CCSR_SSI_SISR_TUE0 | CCSR_SSI_SISR_TUE1;
-+		break;
-+	}
- 
- 	/* We got an interrupt, so read the status register to see what we
- 	   were interrupted for.  We mask it with the Interrupt Enable register
-@@ -232,13 +254,11 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
- 
- 	if (sisr & CCSR_SSI_SISR_RFRC) {
- 		ssi_private->stats.rfrc++;
--		sisr2 |= CCSR_SSI_SISR_RFRC;
- 		ret = IRQ_HANDLED;
- 	}
- 
- 	if (sisr & CCSR_SSI_SISR_TFRC) {
- 		ssi_private->stats.tfrc++;
--		sisr2 |= CCSR_SSI_SISR_TFRC;
- 		ret = IRQ_HANDLED;
- 	}
- 
-@@ -279,25 +299,21 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
- 
- 	if (sisr & CCSR_SSI_SISR_ROE1) {
- 		ssi_private->stats.roe1++;
--		sisr2 |= CCSR_SSI_SISR_ROE1;
- 		ret = IRQ_HANDLED;
- 	}
- 
- 	if (sisr & CCSR_SSI_SISR_ROE0) {
- 		ssi_private->stats.roe0++;
--		sisr2 |= CCSR_SSI_SISR_ROE0;
- 		ret = IRQ_HANDLED;
- 	}
- 
- 	if (sisr & CCSR_SSI_SISR_TUE1) {
- 		ssi_private->stats.tue1++;
--		sisr2 |= CCSR_SSI_SISR_TUE1;
- 		ret = IRQ_HANDLED;
- 	}
- 
- 	if (sisr & CCSR_SSI_SISR_TUE0) {
- 		ssi_private->stats.tue0++;
--		sisr2 |= CCSR_SSI_SISR_TUE0;
- 		ret = IRQ_HANDLED;
- 	}
- 
-@@ -341,6 +357,7 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
- 		ret = IRQ_HANDLED;
- 	}
- 
-+	sisr2 = sisr & sisr_write_mask;
- 	/* Clear the bits that we set */
- 	if (sisr2)
- 		write_ssi(sisr2, &ssi->sisr);
-@@ -1180,6 +1197,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 
- 	ssi_private->use_dma = !of_property_read_bool(np,
- 			"fsl,fiq-stream-filter");
-+	ssi_private->hw_type = hw_type;
- 
- 	if (ac97) {
- 		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_ac97_dai,
-@@ -1298,7 +1316,13 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 			dma_events[0], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
- 		imx_pcm_dma_params_init_data(&ssi_private->filter_data_rx,
- 			dma_events[1], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
--	} else if (ssi_private->use_dma) {
-+	}
-+
-+	/*
-+	 * Enable interrupts only for MCP8610 and MX51. The other MXs have
-+	 * different writeable interrupt status registers.
-+	 */
-+	if (ssi_private->use_dma) {
- 		/* The 'name' should not have any slashes in it. */
- 		ret = devm_request_irq(&pdev->dev, ssi_private->irq,
- 					fsl_ssi_isr, 0, ssi_private->name,
--- 
-1.8.5.1
+1)rear mic and front mic of desktop
+
+https://bugzilla.kernel.org/show_bug.cgi?id=66621
+
+2)internal mic and external mic of notebook
+
+https://bugzilla.kernel.org/show_bug.cgi?id=64971
+
+
+
+
+
+>> should "Boost Volume" change to "Boost Capture Volume" if loopback path
+not exist ?
+
+
+> If the loopback doesn't even exist, why to bother?
+
+mic boost appear in both playback view and capture view of alsamixer
+
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1002831
+
+CX20585 does not has any analog mixer for loopback mixing (no mic playback
+volume)
+the capabilties of "mic boost" should be cvolume instead of volume
+
+Simple mixer control 'Mic Boost',0
+Capabilities: volume
+Playback channels: Front Left - Front Right
+Capture channels: Front Left - Front Right
+Limits: 0 - 4 Front Left: 0 [0%] [0.00dB]
+Front Right: 0 [0%] [0.00dB]
