@@ -1,12 +1,11 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 02/38] firewire-lib: Add macros instead of fixed value for
-	AMDTP
-Date: Fri, 20 Dec 2013 22:13:53 +0900
-Message-ID: <1387545269-3875-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 06/38] firewire-lib: Add support for MIDI capture/playback
+Date: Fri, 20 Dec 2013 22:13:57 +0900
+Message-ID: <1387545269-3875-7-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
 In-Reply-To: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
@@ -21,57 +20,254 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCBhZGRzIHNvbWUgbWFjcm9zIGluc3RlYWQgb2YgZml4ZWQgdmFsdWUgZm9yIEFN
-RFRQIGluIElFQyA2MTg4My02LgpUaGVzZSBtYWNyb3Mgd2lsbCBhbHNvIGJlIHVzZWQgYnkgZm9s
-bG93ZWQgcGF0Y2hlcy4KClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNo
-aUBzYWthbW9jY2hpLmpwPgotLS0KIHNvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgfCAzMCArKysrKysr
-KysrKysrKysrKysrKysrKy0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCsp
-LCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgYi9z
-b3VuZC9maXJld2lyZS9hbWR0cC5jCmluZGV4IDE2ZmU4NTguLjM4MDEzZjkgMTAwNjQ0Ci0tLSBh
-L3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKKysrIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuYwpAQCAt
-MjAsMTIgKzIwLDI4IEBACiAKICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgyZTAwIC8q
-IDQ3OS4xNyDCtXMgKi8KIAorLyogaXNvY2hyb25vdXMgaGVhZGVyIHBhcmFtZXRlcnMgKi8KKyNk
-ZWZpbmUgSVNPX0RBVEFfTEVOR1RIX1NISUZUCTE2CiAjZGVmaW5lIFRBR19DSVAJCQkxCiAKKy8q
-IGNvbW1vbiBpc29jaHJvbm91cyBwYWNrZXQgaGVhZGVyIHBhcmFtZXRlcnMgKi8KICNkZWZpbmUg
-Q0lQX0VPSAkJCSgxdSA8PCAzMSkKKyNkZWZpbmUgQ0lQX0VPSF9NQVNLCQkweDgwMDAwMDAwCiAj
-ZGVmaW5lIENJUF9GTVRfQU0JCSgweDEwIDw8IDI0KQotI2RlZmluZSBBTURUUF9GREZfQU04MjQJ
-CSgwIDw8IDE5KQotI2RlZmluZSBBTURUUF9GREZfU0ZDX1NISUZUCTE2CisjZGVmaW5lIENJUF9G
-TVRfTUFTSwkJMHgzZjAwMDAwMAorI2RlZmluZSBDSVBfU1lUX01BU0sJCTB4MDAwMGZmZmYKKyNk
-ZWZpbmUgQ0lQX1NZVF9OT19JTkZPCQkweGZmZmYKKyNkZWZpbmUgQ0lQX0ZERl9NQVNLCQkweDAw
-ZmYwMDAwCisjZGVmaW5lIENJUF9GREZfU0ZDX1NISUZUCTE2CisKKy8qCisgKiBBdWRpbyBhbmQg
-TXVzaWMgdHJhbnNmZXIgcHJvdG9jb2wgc3BlY2lmaWMgcGFyYW1ldGVycworICogb25seSAiQ2xv
-Y2stYmFzZWQgcmF0ZSBjb250cm9sIG1vZGUiIGlzIHN1cHBvcnRlZAorICovCisjZGVmaW5lIEFN
-RFRQX0ZERl9BTTgyNAkJKDAgPDwgKENJUF9GREZfU0ZDX1NISUZUICsgMykpCisjZGVmaW5lIEFN
-RFRQX0RCU19NQVNLCQkweDAwZmYwMDAwCisjZGVmaW5lIEFNRFRQX0RCU19TSElGVAkJMTYKKyNk
-ZWZpbmUgQU1EVFBfREJDX01BU0sJCTB4MDAwMDAwZmYKIAogLyogVE9ETzogbWFrZSB0aGVzZSBj
-b25maWd1cmFibGUgKi8KICNkZWZpbmUgSU5URVJSVVBUX0lOVEVSVkFMCTE2CkBAIC0yODAsOSAr
-Mjk2LDkgQEAgc3RhdGljIHVuc2lnbmVkIGludCBjYWxjdWxhdGVfc3l0KHN0cnVjdCBhbWR0cF9z
-dHJlYW0gKnMsCiAJCXN5dCA9IChjeWNsZSArIHN5dF9vZmZzZXQgLyBUSUNLU19QRVJfQ1lDTEUp
-IDw8IDEyOwogCQlzeXQgKz0gc3l0X29mZnNldCAlIFRJQ0tTX1BFUl9DWUNMRTsKIAotCQlyZXR1
-cm4gc3l0ICYgMHhmZmZmOworCQlyZXR1cm4gc3l0ICYgQ0lQX1NZVF9NQVNLOwogCX0gZWxzZSB7
-Ci0JCXJldHVybiAweGZmZmY7IC8qIG5vIGluZm8gKi8KKwkJcmV0dXJuIENJUF9TWVRfTk9fSU5G
-TzsKIAl9CiB9CiAKQEAgLTQzOCwxNyArNDU0LDE3IEBAIHN0YXRpYyB2b2lkIHF1ZXVlX291dF9w
-YWNrZXQoc3RydWN0IGFtZHRwX3N0cmVhbSAqcywgdW5zaWduZWQgaW50IGN5Y2xlKQogCXN5dCA9
-IGNhbGN1bGF0ZV9zeXQocywgY3ljbGUpOwogCWlmICghKHMtPmZsYWdzICYgQ0lQX0JMT0NLSU5H
-KSkKIAkJZGF0YV9ibG9ja3MgPSBjYWxjdWxhdGVfZGF0YV9ibG9ja3Mocyk7Ci0JZWxzZSBpZiAo
-c3l0ICE9IDB4ZmZmZikKKwllbHNlIGlmIChzeXQgIT0gQ0lQX1NZVF9OT19JTkZPKQogCQlkYXRh
-X2Jsb2NrcyA9IHMtPnN5dF9pbnRlcnZhbDsKIAllbHNlCiAJCWRhdGFfYmxvY2tzID0gMDsKIAog
-CWJ1ZmZlciA9IHMtPmJ1ZmZlci5wYWNrZXRzW2luZGV4XS5idWZmZXI7CiAJYnVmZmVyWzBdID0g
-Y3B1X3RvX2JlMzIoQUNDRVNTX09OQ0Uocy0+c291cmNlX25vZGVfaWRfZmllbGQpIHwKLQkJCQko
-cy0+ZGF0YV9ibG9ja19xdWFkbGV0cyA8PCAxNikgfAorCQkJCShzLT5kYXRhX2Jsb2NrX3F1YWRs
-ZXRzIDw8IEFNRFRQX0RCU19TSElGVCkgfAogCQkJCXMtPmRhdGFfYmxvY2tfY291bnRlcik7CiAJ
-YnVmZmVyWzFdID0gY3B1X3RvX2JlMzIoQ0lQX0VPSCB8IENJUF9GTVRfQU0gfCBBTURUUF9GREZf
-QU04MjQgfAotCQkJCShzLT5zZmMgPDwgQU1EVFBfRkRGX1NGQ19TSElGVCkgfCBzeXQpOworCQkJ
-CShzLT5zZmMgPDwgQ0lQX0ZERl9TRkNfU0hJRlQpIHwgc3l0KTsKIAlidWZmZXIgKz0gMjsKIAog
-CXBjbSA9IEFDQ0VTU19PTkNFKHMtPnBjbSk7Ci0tIAoxLjguMy4yCgoKLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tClJhcGlkbHkgdHJvdWJsZXNob290IHByb2JsZW1zIGJlZm9yZSB0aGV5IGFmZmVjdCB5
-b3VyIGJ1c2luZXNzLiBNb3N0IElUIApvcmdhbml6YXRpb25zIGRvbid0IGhhdmUgYSBjbGVhciBw
-aWN0dXJlIG9mIGhvdyBhcHBsaWNhdGlvbiBwZXJmb3JtYW5jZSAKYWZmZWN0cyB0aGVpciByZXZl
-bnVlLiBXaXRoIEFwcER5bmFtaWNzLCB5b3UgZ2V0IDEwMCUgdmlzaWJpbGl0eSBpbnRvIHlvdXIg
-CkphdmEsLk5FVCwgJiBQSFAgYXBwbGljYXRpb24uIFN0YXJ0IHlvdXIgMTUtZGF5IEZSRUUgVFJJ
-QUwgb2YgQXBwRHluYW1pY3MgUHJvIQpodHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dh
-bXBhZC9jbGs/aWQ9ODQzNDk4MzEmaXU9LzQxNDAvb3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbWFpbGluZyBsaXN0IGxpbnV4MTM5NC1k
-ZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
-bGlzdHMvbGlzdGluZm8vbGludXgxMzk0LWRldmVsCg==
+For capturing/playbacking MIDI messages, this commit adds one MIDI conformant
+data channel. This channel supports 8 MPX-MIDI data streams then maximum number
+of supported MIDI ports is limited by 8.
+
+And this commit allows to set PCM format even if AMDTP stream already starts.
+I suppose the case that PCM data starts to be joined into AMDTP streams after
+AMDTP stream is already started for MIDI. To distinguish whether PCM or MIDI
+functionality starts AMDTP stream, this commit adds amdtp_stream_pcm_running()
+and amdtp_stream_midi_running(). I think this is better than reference-counter.
+
+IEC 61883-6 refers to AMEI/MMA RP-027 for implementation of MIDI conformant
+data. In the specification, 'MIDI1.0-2x/3x-SPEED' mode are described with
+'negotiation procedure' and 'encapsulation details'. But there is no
+specifications to define them. This module implement 'MIDI1.0-1x-SPEED' mode.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp.c | 79 +++++++++++++++++++++++++++++++++++++++++++-------
+ sound/firewire/amdtp.h | 45 ++++++++++++++++++++++++++++
+ 2 files changed, 114 insertions(+), 10 deletions(-)
+
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 4ebfd67..7ed8d49 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -12,6 +12,7 @@
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <sound/pcm.h>
++#include <sound/rawmidi.h>
+ #include "amdtp.h"
+ 
+ #define TICKS_PER_CYCLE		3072
+@@ -123,9 +124,12 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
+ 		[CIP_SFC_176400] = 176400,
+ 		[CIP_SFC_192000] = 192000,
+ 	};
+-	unsigned int sfc;
++	unsigned int sfc, midi_channels;
+ 
+-	if (WARN_ON(amdtp_stream_running(s)))
++	midi_channels = DIV_ROUND_UP(midi_ports, 8);
++
++	if (WARN_ON(amdtp_stream_running(s)) ||
++	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
+ 		return;
+ 
+ 	for (sfc = 0; sfc < CIP_SFC_COUNT; ++sfc)
+@@ -142,7 +146,7 @@ sfc_found:
+ 		pcm_channels *= 2;
+ 	}
+ 	s->sfc = sfc;
+-	s->data_block_quadlets = pcm_channels + DIV_ROUND_UP(midi_ports, 8);
++	s->data_block_quadlets = pcm_channels + midi_channels;
+ 	s->pcm_channels = pcm_channels;
+ 	s->midi_ports = midi_ports;
+ 
+@@ -200,7 +204,7 @@ static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
+ void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
+ 				 snd_pcm_format_t format)
+ {
+-	if (WARN_ON(amdtp_stream_running(s)))
++	if (WARN_ON(amdtp_stream_pcm_running(s)))
+ 		return;
+ 
+ 	switch (format) {
+@@ -505,11 +509,46 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
+ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 			    __be32 *buffer, unsigned int frames)
+ {
+-	unsigned int i;
++	unsigned int f, port;
++	u8 *b;
++
++	for (f = 0; f < frames; f++) {
++		buffer[s->pcm_channels + 1] = 0x00;
++		b = (u8 *)&buffer[s->pcm_channels + 1];
++
++		port = (s->data_block_counter + f) % 8;
++		if ((s->midi[port] == NULL) ||
++		    (snd_rawmidi_transmit(s->midi[port], b + 1, 1) <= 0)) {
++			b[0] = 0x80;
++			b[1] = 0x00;	/* confirm to be zero */
++		} else {
++			b[0] = 0x81;
++		}
++		buffer += s->data_block_quadlets;
++	}
++}
++
++static void amdtp_pull_midi(struct amdtp_stream *s,
++			    __be32 *buffer, unsigned int frames)
++{
++	unsigned int f, port;
++	int len;
++	u8 *b;
++
++	for (f = 0; f < frames; f++) {
++		port = (s->data_block_counter + f) % 8;
++		b = (u8 *)&buffer[s->pcm_channels + 1];
++
++		len = b[0] - 0x80;
++		if (len < 1 || 3 < len)
++			continue;
+ 
+-	for (i = 0; i < frames; ++i)
+-		buffer[s->pcm_channels + i * s->data_block_quadlets] =
+-						cpu_to_be32(0x80000000);
++		if (s->midi[port] == NULL)
++			continue;
++
++		snd_rawmidi_receive(s->midi[port], b + 1, len);
++		buffer += s->data_block_quadlets;
++	}
+ }
+ 
+ static void update_pcm_pointers(struct amdtp_stream *s,
+@@ -683,10 +722,14 @@ static void handle_in_packet(struct amdtp_stream *s,
+ 	buffer += 2;
+ 
+ 	pcm = ACCESS_ONCE(s->pcm);
+-	if (pcm) {
++	if (pcm)
+ 		s->transfer_samples(s, pcm, buffer, data_blocks);
++
++	if (s->midi_ports)
++		amdtp_pull_midi(s, buffer, data_blocks);
++
++	if (pcm)
+ 		update_pcm_pointers(s, pcm, data_blocks);
+-	}
+ }
+ 
+ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+@@ -916,3 +959,19 @@ void amdtp_stream_pcm_abort(struct amdtp_stream *s)
+ 	}
+ }
+ EXPORT_SYMBOL(amdtp_stream_pcm_abort);
++
++/**
++ * amdtp_stream_midi_running - check any MIDI streams are running or not
++ * @s: the AMDTP stream
++ *
++ * If this function returns true, any MIDI streams are running.
++ */
++bool amdtp_stream_midi_running(struct amdtp_stream *s)
++{
++	int i;
++	for (i = 0; i < AMDTP_MAX_CHANNELS_FOR_MIDI * 8; i++)
++		if (!IS_ERR_OR_NULL(s->midi[i]))
++			return true;
++	return false;
++}
++EXPORT_SYMBOL(amdtp_stream_midi_running);
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index 019134e..6e8081c 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -44,9 +44,21 @@ enum cip_sfc {
+ #define AMDTP_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
+ 					 SNDRV_PCM_FMTBIT_S32)
+ 
++
++/*
++ * AMDTP packet can include channels for MIDI conformant data.
++ * Each MIDI conformant data channel includes 8 MPX-MIDI data stream.
++ * Each MPX-MIDI data stream includes one data stream from/to MIDI ports.
++ *
++ * This module supports maximum 1 MIDI conformant data channels.
++ * Then this AMDTP packets can transfer maximum 8 MIDI data streams.
++ */
++#define AMDTP_MAX_CHANNELS_FOR_MIDI	1
++
+ struct fw_unit;
+ struct fw_iso_context;
+ struct snd_pcm_substream;
++struct snd_rawmidi_substream;
+ 
+ enum amdtp_stream_direction {
+ 	AMDTP_OUT_STREAM = 0,
+@@ -88,6 +100,8 @@ struct amdtp_stream {
+ 	unsigned int pcm_buffer_pointer;
+ 	unsigned int pcm_period_pointer;
+ 	bool pointer_flush;
++
++	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
+ };
+ 
+ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+@@ -124,6 +138,8 @@ static inline bool amdtp_stream_running(struct amdtp_stream *s)
+ 	return !IS_ERR(s->context);
+ }
+ 
++bool amdtp_stream_midi_running(struct amdtp_stream *s);
++
+ /**
+  * amdtp_streaming_error - check for streaming error
+  * @s: the AMDTP stream
+@@ -137,6 +153,17 @@ static inline bool amdtp_streaming_error(struct amdtp_stream *s)
+ }
+ 
+ /**
++ * amdtp_stream_pcm_running - check PCM stream is running or not
++ * @s: the AMDTP stream
++ *
++ * If this function returns true, PCM stream in the stream is running.
++ */
++static inline bool amdtp_stream_pcm_running(struct amdtp_stream *s)
++{
++	return !IS_ERR_OR_NULL(s->pcm);
++}
++
++/**
+  * amdtp_stream_pcm_trigger - start/stop playback from a PCM device
+  * @s: the AMDTP stream
+  * @pcm: the PCM device to be started, or %NULL to stop the current device
+@@ -151,6 +178,24 @@ static inline void amdtp_stream_pcm_trigger(struct amdtp_stream *s,
+ 	ACCESS_ONCE(s->pcm) = pcm;
+ }
+ 
++/**
++ * amdtp_stream_midi_trigger - start/stop playback/capture with a MIDI device
++ * @s: the AMDTP stream
++ * @port: index of MIDI port
++ * @midi: the MIDI device to be started, or %NULL to stop the current device
++ *
++ * Call this function on a running isochronous stream to enable the actual
++ * transmission of MIDI data.  This function should be called from the MIDI
++ * device's .trigger callback.
++ */
++static inline void amdtp_stream_midi_trigger(struct amdtp_stream *s,
++					     unsigned int port,
++					     struct snd_rawmidi_substream *midi)
++{
++	if (port < s->midi_ports)
++		ACCESS_ONCE(s->midi[port]) = midi;
++}
++
+ static inline bool cip_sfc_is_base_44100(enum cip_sfc sfc)
+ {
+ 	return sfc & 1;
+-- 
+1.8.3.2
+
+
+------------------------------------------------------------------------------
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
