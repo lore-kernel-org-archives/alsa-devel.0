@@ -1,12 +1,12 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/38] firewire-lib: Split some codes into functions to reuse
-	for both streams
-Date: Fri, 20 Dec 2013 22:13:55 +0900
-Message-ID: <1387545269-3875-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 02/38] firewire-lib: Add macros instead of fixed value for
+	AMDTP
+Date: Fri, 20 Dec 2013 22:13:53 +0900
+Message-ID: <1387545269-3875-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
 In-Reply-To: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
@@ -21,244 +21,57 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Some codes can be reused to handle in stream. This commit adds new functions.
-This commit also renames some functions to keep naming consistency.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp.c | 156 ++++++++++++++++++++++++++-----------------------
- 1 file changed, 82 insertions(+), 74 deletions(-)
-
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 95c5a15..ca79cb4 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -47,6 +47,8 @@
- #define INTERRUPT_INTERVAL	16
- #define QUEUE_LENGTH		48
- 
-+#define OUT_PACKET_HEADER_SIZE	0
-+
- static void pcm_period_tasklet(unsigned long data);
- 
- /**
-@@ -440,13 +442,74 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
- 						cpu_to_be32(0x80000000);
- }
- 
--static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
-+static void update_pcm_pointers(struct amdtp_stream *s,
-+				struct snd_pcm_substream *pcm,
-+				unsigned int frames)
-+{	unsigned int ptr;
-+
-+	if (s->dual_wire)
-+		frames *= 2;
-+
-+	ptr = s->pcm_buffer_pointer + frames;
-+	if (ptr >= pcm->runtime->buffer_size)
-+		ptr -= pcm->runtime->buffer_size;
-+	ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
-+
-+	s->pcm_period_pointer += frames;
-+	if (s->pcm_period_pointer >= pcm->runtime->period_size) {
-+		s->pcm_period_pointer -= pcm->runtime->period_size;
-+		s->pointer_flush = false;
-+		tasklet_hi_schedule(&s->period_tasklet);
-+	}
-+}
-+
-+static void pcm_period_tasklet(unsigned long data)
-+{
-+	struct amdtp_stream *s = (void *)data;
-+	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
-+
-+	if (pcm)
-+		snd_pcm_period_elapsed(pcm);
-+}
-+
-+static int queue_packet(struct amdtp_stream *s,
-+			unsigned int header_length,
-+			unsigned int payload_length, bool skip)
-+{
-+	struct fw_iso_packet p = {0};
-+	int err;
-+
-+	p.interrupt = IS_ALIGNED(s->packet_index + 1, INTERRUPT_INTERVAL);
-+	p.tag = TAG_CIP;
-+	p.header_length = header_length;
-+	p.payload_length = (!skip) ? payload_length : 0;
-+	p.skip = skip;
-+	err = fw_iso_context_queue(s->context, &p, &s->buffer.iso_buffer,
-+				   s->buffer.packets[s->packet_index].offset);
-+	if (err < 0) {
-+		dev_err(&s->unit->device, "queueing error: %d\n", err);
-+		s->packet_index = -1;
-+		goto end;
-+	}
-+
-+	if (++s->packet_index >= QUEUE_LENGTH)
-+		s->packet_index = 0;
-+end:
-+	return err;
-+}
-+
-+static inline int queue_out_packet(struct amdtp_stream *s,
-+				   unsigned int payload_length, bool skip)
-+{
-+	return queue_packet(s, OUT_PACKET_HEADER_SIZE,
-+			    payload_length, skip);
-+}
-+
-+static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
- {
- 	__be32 *buffer;
--	unsigned int index, data_blocks, syt, ptr;
-+	unsigned int index, data_blocks, syt, payload_length;
- 	struct snd_pcm_substream *pcm;
--	struct fw_iso_packet packet;
--	int err;
- 
- 	if (s->packet_index < 0)
- 		return;
-@@ -479,55 +542,19 @@ static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
- 
- 	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
- 
--	packet.payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
--	packet.interrupt = IS_ALIGNED(index + 1, INTERRUPT_INTERVAL);
--	packet.skip = 0;
--	packet.tag = TAG_CIP;
--	packet.sy = 0;
--	packet.header_length = 0;
--
--	err = fw_iso_context_queue(s->context, &packet, &s->buffer.iso_buffer,
--				   s->buffer.packets[index].offset);
--	if (err < 0) {
--		dev_err(&s->unit->device, "queueing error: %d\n", err);
--		s->packet_index = -1;
-+	payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
-+	if (queue_out_packet(s, payload_length, false) < 0) {
- 		amdtp_stream_pcm_abort(s);
- 		return;
- 	}
- 
--	if (++index >= QUEUE_LENGTH)
--		index = 0;
--	s->packet_index = index;
--
--	if (pcm) {
--		if (s->dual_wire)
--			data_blocks *= 2;
--
--		ptr = s->pcm_buffer_pointer + data_blocks;
--		if (ptr >= pcm->runtime->buffer_size)
--			ptr -= pcm->runtime->buffer_size;
--		ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
--
--		s->pcm_period_pointer += data_blocks;
--		if (s->pcm_period_pointer >= pcm->runtime->period_size) {
--			s->pcm_period_pointer -= pcm->runtime->period_size;
--			s->pointer_flush = false;
--			tasklet_hi_schedule(&s->period_tasklet);
--		}
--	}
--}
--
--static void pcm_period_tasklet(unsigned long data)
--{
--	struct amdtp_stream *s = (void *)data;
--	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
--
- 	if (pcm)
--		snd_pcm_period_elapsed(pcm);
-+		update_pcm_pointers(s, pcm, data_blocks);
- }
- 
--static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
--			size_t header_length, void *header, void *private_data)
-+static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
-+				size_t header_length, void *header,
-+				void *private_data)
- {
- 	struct amdtp_stream *s = private_data;
- 	unsigned int i, packets = header_length / 4;
-@@ -540,31 +567,10 @@ static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
- 	cycle += QUEUE_LENGTH - packets;
- 
- 	for (i = 0; i < packets; ++i)
--		queue_out_packet(s, ++cycle);
-+		handle_out_packet(s, ++cycle);
- 	fw_iso_context_queue_flush(s->context);
- }
- 
--static int queue_initial_skip_packets(struct amdtp_stream *s)
--{
--	struct fw_iso_packet skip_packet = {
--		.skip = 1,
--	};
--	unsigned int i;
--	int err;
--
--	for (i = 0; i < QUEUE_LENGTH; ++i) {
--		skip_packet.interrupt = IS_ALIGNED(s->packet_index + 1,
--						   INTERRUPT_INTERVAL);
--		err = fw_iso_context_queue(s->context, &skip_packet, NULL, 0);
--		if (err < 0)
--			return err;
--		if (++s->packet_index >= QUEUE_LENGTH)
--			s->packet_index = 0;
--	}
--
--	return 0;
--}
--
- /**
-  * amdtp_stream_start - start transferring packets
-  * @s: the AMDTP stream to start
-@@ -594,7 +600,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	mutex_lock(&s->mutex);
- 
- 	if (WARN_ON(amdtp_stream_running(s) ||
--		    (!s->pcm_channels && !s->midi_ports))) {
-+		    (s->data_block_quadlets < 1))) {
- 		err = -EBADFD;
- 		goto err_unlock;
- 	}
-@@ -612,7 +618,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
- 					   FW_ISO_CONTEXT_TRANSMIT,
- 					   channel, speed, 0,
--					   out_packet_callback, s);
-+					   out_stream_callback, s);
- 	if (IS_ERR(s->context)) {
- 		err = PTR_ERR(s->context);
- 		if (err == -EBUSY)
-@@ -624,11 +630,13 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	amdtp_stream_update(s);
- 
- 	s->packet_index = 0;
--	s->data_block_counter = 0;
--	err = queue_initial_skip_packets(s);
--	if (err < 0)
--		goto err_context;
-+	do {
-+		err = queue_out_packet(s, 0, true);
-+		if (err < 0)
-+			goto err_context;
-+	} while (s->packet_index > 0);
- 
-+	s->data_block_counter = 0;
- 	err = fw_iso_context_start(s->context, -1, 0, 0);
- 	if (err < 0)
- 		goto err_context;
--- 
-1.8.3.2
-
-
-------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+VGhpcyBwYXRjaCBhZGRzIHNvbWUgbWFjcm9zIGluc3RlYWQgb2YgZml4ZWQgdmFsdWUgZm9yIEFN
+RFRQIGluIElFQyA2MTg4My02LgpUaGVzZSBtYWNyb3Mgd2lsbCBhbHNvIGJlIHVzZWQgYnkgZm9s
+bG93ZWQgcGF0Y2hlcy4KClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNo
+aUBzYWthbW9jY2hpLmpwPgotLS0KIHNvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgfCAzMCArKysrKysr
+KysrKysrKysrKysrKysrKy0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCsp
+LCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgYi9z
+b3VuZC9maXJld2lyZS9hbWR0cC5jCmluZGV4IDE2ZmU4NTguLjM4MDEzZjkgMTAwNjQ0Ci0tLSBh
+L3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKKysrIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuYwpAQCAt
+MjAsMTIgKzIwLDI4IEBACiAKICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgyZTAwIC8q
+IDQ3OS4xNyDCtXMgKi8KIAorLyogaXNvY2hyb25vdXMgaGVhZGVyIHBhcmFtZXRlcnMgKi8KKyNk
+ZWZpbmUgSVNPX0RBVEFfTEVOR1RIX1NISUZUCTE2CiAjZGVmaW5lIFRBR19DSVAJCQkxCiAKKy8q
+IGNvbW1vbiBpc29jaHJvbm91cyBwYWNrZXQgaGVhZGVyIHBhcmFtZXRlcnMgKi8KICNkZWZpbmUg
+Q0lQX0VPSAkJCSgxdSA8PCAzMSkKKyNkZWZpbmUgQ0lQX0VPSF9NQVNLCQkweDgwMDAwMDAwCiAj
+ZGVmaW5lIENJUF9GTVRfQU0JCSgweDEwIDw8IDI0KQotI2RlZmluZSBBTURUUF9GREZfQU04MjQJ
+CSgwIDw8IDE5KQotI2RlZmluZSBBTURUUF9GREZfU0ZDX1NISUZUCTE2CisjZGVmaW5lIENJUF9G
+TVRfTUFTSwkJMHgzZjAwMDAwMAorI2RlZmluZSBDSVBfU1lUX01BU0sJCTB4MDAwMGZmZmYKKyNk
+ZWZpbmUgQ0lQX1NZVF9OT19JTkZPCQkweGZmZmYKKyNkZWZpbmUgQ0lQX0ZERl9NQVNLCQkweDAw
+ZmYwMDAwCisjZGVmaW5lIENJUF9GREZfU0ZDX1NISUZUCTE2CisKKy8qCisgKiBBdWRpbyBhbmQg
+TXVzaWMgdHJhbnNmZXIgcHJvdG9jb2wgc3BlY2lmaWMgcGFyYW1ldGVycworICogb25seSAiQ2xv
+Y2stYmFzZWQgcmF0ZSBjb250cm9sIG1vZGUiIGlzIHN1cHBvcnRlZAorICovCisjZGVmaW5lIEFN
+RFRQX0ZERl9BTTgyNAkJKDAgPDwgKENJUF9GREZfU0ZDX1NISUZUICsgMykpCisjZGVmaW5lIEFN
+RFRQX0RCU19NQVNLCQkweDAwZmYwMDAwCisjZGVmaW5lIEFNRFRQX0RCU19TSElGVAkJMTYKKyNk
+ZWZpbmUgQU1EVFBfREJDX01BU0sJCTB4MDAwMDAwZmYKIAogLyogVE9ETzogbWFrZSB0aGVzZSBj
+b25maWd1cmFibGUgKi8KICNkZWZpbmUgSU5URVJSVVBUX0lOVEVSVkFMCTE2CkBAIC0yODAsOSAr
+Mjk2LDkgQEAgc3RhdGljIHVuc2lnbmVkIGludCBjYWxjdWxhdGVfc3l0KHN0cnVjdCBhbWR0cF9z
+dHJlYW0gKnMsCiAJCXN5dCA9IChjeWNsZSArIHN5dF9vZmZzZXQgLyBUSUNLU19QRVJfQ1lDTEUp
+IDw8IDEyOwogCQlzeXQgKz0gc3l0X29mZnNldCAlIFRJQ0tTX1BFUl9DWUNMRTsKIAotCQlyZXR1
+cm4gc3l0ICYgMHhmZmZmOworCQlyZXR1cm4gc3l0ICYgQ0lQX1NZVF9NQVNLOwogCX0gZWxzZSB7
+Ci0JCXJldHVybiAweGZmZmY7IC8qIG5vIGluZm8gKi8KKwkJcmV0dXJuIENJUF9TWVRfTk9fSU5G
+TzsKIAl9CiB9CiAKQEAgLTQzOCwxNyArNDU0LDE3IEBAIHN0YXRpYyB2b2lkIHF1ZXVlX291dF9w
+YWNrZXQoc3RydWN0IGFtZHRwX3N0cmVhbSAqcywgdW5zaWduZWQgaW50IGN5Y2xlKQogCXN5dCA9
+IGNhbGN1bGF0ZV9zeXQocywgY3ljbGUpOwogCWlmICghKHMtPmZsYWdzICYgQ0lQX0JMT0NLSU5H
+KSkKIAkJZGF0YV9ibG9ja3MgPSBjYWxjdWxhdGVfZGF0YV9ibG9ja3Mocyk7Ci0JZWxzZSBpZiAo
+c3l0ICE9IDB4ZmZmZikKKwllbHNlIGlmIChzeXQgIT0gQ0lQX1NZVF9OT19JTkZPKQogCQlkYXRh
+X2Jsb2NrcyA9IHMtPnN5dF9pbnRlcnZhbDsKIAllbHNlCiAJCWRhdGFfYmxvY2tzID0gMDsKIAog
+CWJ1ZmZlciA9IHMtPmJ1ZmZlci5wYWNrZXRzW2luZGV4XS5idWZmZXI7CiAJYnVmZmVyWzBdID0g
+Y3B1X3RvX2JlMzIoQUNDRVNTX09OQ0Uocy0+c291cmNlX25vZGVfaWRfZmllbGQpIHwKLQkJCQko
+cy0+ZGF0YV9ibG9ja19xdWFkbGV0cyA8PCAxNikgfAorCQkJCShzLT5kYXRhX2Jsb2NrX3F1YWRs
+ZXRzIDw8IEFNRFRQX0RCU19TSElGVCkgfAogCQkJCXMtPmRhdGFfYmxvY2tfY291bnRlcik7CiAJ
+YnVmZmVyWzFdID0gY3B1X3RvX2JlMzIoQ0lQX0VPSCB8IENJUF9GTVRfQU0gfCBBTURUUF9GREZf
+QU04MjQgfAotCQkJCShzLT5zZmMgPDwgQU1EVFBfRkRGX1NGQ19TSElGVCkgfCBzeXQpOworCQkJ
+CShzLT5zZmMgPDwgQ0lQX0ZERl9TRkNfU0hJRlQpIHwgc3l0KTsKIAlidWZmZXIgKz0gMjsKIAog
+CXBjbSA9IEFDQ0VTU19PTkNFKHMtPnBjbSk7Ci0tIAoxLjguMy4yCgoKLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tClJhcGlkbHkgdHJvdWJsZXNob290IHByb2JsZW1zIGJlZm9yZSB0aGV5IGFmZmVjdCB5
+b3VyIGJ1c2luZXNzLiBNb3N0IElUIApvcmdhbml6YXRpb25zIGRvbid0IGhhdmUgYSBjbGVhciBw
+aWN0dXJlIG9mIGhvdyBhcHBsaWNhdGlvbiBwZXJmb3JtYW5jZSAKYWZmZWN0cyB0aGVpciByZXZl
+bnVlLiBXaXRoIEFwcER5bmFtaWNzLCB5b3UgZ2V0IDEwMCUgdmlzaWJpbGl0eSBpbnRvIHlvdXIg
+CkphdmEsLk5FVCwgJiBQSFAgYXBwbGljYXRpb24uIFN0YXJ0IHlvdXIgMTUtZGF5IEZSRUUgVFJJ
+QUwgb2YgQXBwRHluYW1pY3MgUHJvIQpodHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dh
+bXBhZC9jbGs/aWQ9ODQzNDk4MzEmaXU9LzQxNDAvb3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbWFpbGluZyBsaXN0IGxpbnV4MTM5NC1k
+ZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
+bGlzdHMvbGlzdGluZm8vbGludXgxMzk0LWRldmVsCg==
