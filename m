@@ -1,20 +1,16 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH v3 4/9] ASoC: fsl-ssi: Fix interrupt
-	mapping and release
-Date: Fri, 20 Dec 2013 11:31:52 +0100
-Message-ID: <20131220103152.GI23493@pengutronix.de>
-References: <1387367865-26391-1-git-send-email-mpa@pengutronix.de>
- <1387367865-26391-5-git-send-email-mpa@pengutronix.de>
- <20131220090527.GB15246@MrMyself>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH RFC v2 REPOST 0/8] Beaglebone-Black HDMI audio
+Date: Fri, 20 Dec 2013 12:36:56 +0200
+Message-ID: <cover.1387535299.git.jsarha@ti.com>
+References: <cover.1384862950.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 820F8265452
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 11:32:04 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20131220090527.GB15246@MrMyself>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7517265358
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 11:37:01 +0100 (CET)
+In-Reply-To: <cover.1384862950.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,66 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, bcousson@baylibre.com
+Cc: broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Nicolin,
+Changes since the first RFC version of the patches:
+- Drop out already applied: 
+  ASoC: hdmi-codec: Add SNDRV_PCM_FMTBIT_32_LE playback format
+- Change sound node's compatible property
+  form: "ti,am33xx-beaglebone-black" to "ti,am33xx-beaglebone-black-audio"
+- Some minor style issue fixes from TI internal review
 
-On Fri, Dec 20, 2013 at 05:05:28PM +0800, Nicolin Chen wrote:
-> Hi Markus,
-> 
-> On Wed, Dec 18, 2013 at 12:57:40PM +0100, Markus Pargmann wrote:
-> > irqs should only be requested/released with enabled DMA and not on MX21.
-> > MX21 has some special register write configurations, so we do not add
-> > support for statistics on mx21 for the moment.
-> > 
-> > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> > ---
-> >  sound/soc/fsl/fsl_ssi.c | 24 ++++++++++++++++++------
-> >  1 file changed, 18 insertions(+), 6 deletions(-)
-> > 
-> > @@ -227,13 +228,15 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
-> >  
-> >  	if (sisr & CCSR_SSI_SISR_RFRC) {
-> >  		ssi_private->stats.rfrc++;
-> > -		sisr2 |= CCSR_SSI_SISR_RFRC;
-> > +		if (ssi_private->hw_type != FSL_SSI_MX51)
-> > +			sisr2 |= CCSR_SSI_SISR_RFRC;
-> >  		ret = IRQ_HANDLED;
-> >  	}
-> >  
-> >  	if (sisr & CCSR_SSI_SISR_TFRC) {
-> >  		ssi_private->stats.tfrc++;
-> > -		sisr2 |= CCSR_SSI_SISR_TFRC;
-> > +		if (ssi_private->hw_type != FSL_SSI_MX51)
-> > +			sisr2 |= CCSR_SSI_SISR_TFRC;
-> 
-> I had a hard time on this part of modification because I just saw the commit
-> comments 'not on MX21' until I checked the RM of imx35, which should be same
-> as imx21 one: RFRC and RFRC became non-writeable since imx51. The should be
-> the reason here right?
+The patches have been rebased on top of:
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound topic/davinci
 
-mx21 has actually no writable bits in SISR at all, it's the same for
-imx27 and imx31. imx35 would actually work with the current
-fsl_ssi_isr().
+The associated dts change can be found here:
+http://www.spinics.net/lists/linux-omap/msg101072.html
 
-However I just realised that only imx35 has all 6 bits writeable right?
-So I added another hw_type MX35 to get irq stats working for all imx's.
+Best regards,
+Jyri
 
-> 
-> And just for curiosity, is there any wrong with this part, like causing SSI
-> mis-behavior?
+Jyri Sarha (8):
+  clk: add gpio controlled clock
+  ASoC: davinci-evm: Add named clock reference to DT bindings
+  ASoC: davinci-evm: HDMI audio support for TDA998x trough McASP I2S
+    bus
+  ASoC: hdmi-codec: Add devicetree binding with documentation
+  ASoC: davinci: HDMI audio build for AM33XX and TDA998x
+  drm/tilcdc: Add I2C HDMI audio config for tda998x
+  ARM: OMAP2+: omap2plus_defconfig: Enable tilcdc and TDA998X HDMI
+    support
+  ARM: OMAP2+: omap2plus_defconfig: Enable BeagleBone Black HDMI audio
+    support
 
-Yes it doesn't work for all SoCs:
-f0377086 ASoC: fsl: disable ssi irq for imx
-
-Thanks,
-
-Markus
+ .../devicetree/bindings/clock/gpio-clock.txt       |   21 ++
+ .../bindings/sound/davinci-evm-audio.txt           |   13 +-
+ Documentation/devicetree/bindings/sound/hdmi.txt   |   17 ++
+ arch/arm/configs/omap2plus_defconfig               |    5 +
+ drivers/clk/Makefile                               |    1 +
+ drivers/clk/clk-gpio.c                             |  210 ++++++++++++++++++
+ drivers/gpu/drm/tilcdc/tilcdc_slave.c              |   24 ++-
+ include/linux/clk-provider.h                       |   25 +++
+ sound/soc/codecs/hdmi.c                            |   10 +
+ sound/soc/davinci/Kconfig                          |   12 ++
+ sound/soc/davinci/Makefile                         |    1 +
+ sound/soc/davinci/davinci-evm.c                    |  227 +++++++++++++++++++-
+ 12 files changed, 559 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/gpio-clock.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/hdmi.txt
+ create mode 100644 drivers/clk/clk-gpio.c
 
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.7.9.5
