@@ -1,53 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv4 4/4] Documentation: Add device tree bindings for
- Freescale SAI.
-Date: Fri, 20 Dec 2013 11:53:28 +0000
-Message-ID: <20131220115328.GP31886@sirena.org.uk>
+Subject: Re: [PATCHv4 1/4] ALSA: Add SAI SoC Digital Audio
+	Interface driver.
+Date: Fri, 20 Dec 2013 11:55:54 +0000
+Message-ID: <20131220115554.GR31886@sirena.org.uk>
 References: <1387501387-2151-1-git-send-email-Li.Xiubo@freescale.com>
- <1387501387-2151-4-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5ltdm4mkXNgScZ66"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1387501387-2151-4-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4065777973151634231=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 60A6D2655E4
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 12:55:56 +0100 (CET)
+In-Reply-To: <1387501387-2151-1-git-send-email-Li.Xiubo@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Alison Wang <b18965@freescale.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---5ltdm4mkXNgScZ66
-Content-Type: text/plain; charset=us-ascii
+--===============4065777973151634231==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="GUWDakHTpZ9AxSMt"
 Content-Disposition: inline
 
-On Fri, Dec 20, 2013 at 09:03:07AM +0800, Xiubo Li wrote:
-> This adds the Document for Freescale SAI driver under
-> Documentation/devicetree/bindings/sound/.
 
-These have already been merged.  Please send incremental updates for
-anything you feel needs fixing.
+--GUWDakHTpZ9AxSMt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---5ltdm4mkXNgScZ66
+On Fri, Dec 20, 2013 at 09:03:04AM +0800, Xiubo Li wrote:
+> Fix the description of one comment.
+>=20
+> This adds Freescale SAI ASoC Audio support.
+> This implementation is only compatible with device tree definition.
+> Features:
+> o Supports playback/capture
+> o Supports 16/20/24 bit PCM
+> o Supports 8k~96k sample rates
+> o Supports master and slave mode.
+
+Again, this has already been applied.  If you think updates are needed
+please send incremental updates.
+
+--GUWDakHTpZ9AxSMt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJStC+1AAoJELSic+t+oim9yMwP/jI87OPDkO9OWhGImBFPban/
-tXyiM6Kyt39mZRdplEVFKbiyQO1eOobLfv/LKtPXsr9HP+xFN82Cob72nR45pqaK
-2R06oxbfGpDPLm7tsl8Lt4FRjsdONZq6PkvAquGSuh5VTLOHkEEfwVtuIg6Y3RFl
-ANi22fdPUIryLvWpKPzpS8G6PWuFeHxguu9Iay4RSCTS/bWxHoEfrqjhFH7OMCtz
-GdX3pb7Qe3Yry3uGEYwk1mlhLHR+594deYFJsoZjUX7rwmXQuKxrIqCG1bNezuj+
-+3QUk7rGu+p3f9foDI0YpD4AoAQL2UqD8yzgmvKuTQpDBJwA8mp0gn5aZxmxM/wX
-81YPVnRoBmHAwbN8Rajly4HsRFHDgsLsZ5kQAEDREVp/vCsMtcQKZWFwsRFrwWGu
-ixj/QQwr0I36Ij/QoAQqV2/6GyZPfsbnx0DUqvZY6yi6u/yvQ02p/cKVb9ru5/Yg
-POUim091pavX81DCKLG9SkwaItuUhCIs/M4KpoZomJQNUKsUCbxFfkWbKXITH04A
-wad/RW1MLh8296jpt3fcoWaoZV8ppPuMfjqssGQtxoBFUAAD+BFNUVuX2VCm5XCF
-CYArSLLuB0DNvpe7H03DJfLHVN5ZdmnjALB4gNGDzZ0KLFZvfAZLBL4Zl8IPOvlL
-WmhpVFwKgjLPfD45m1Xp
-=0ZjB
+iQIcBAEBAgAGBQJStDBHAAoJELSic+t+oim9uB8P/Albsla4jS5J6QmesSjtA9OT
+eqGhdaY+enJxp7ImmxJfK2N6vEYHXNqDwswimEVF9XOID5qW7Kqa+3glTip3PqNi
+1qgKX//Wn+lhO5mF3W+Ucv2zgsofTS4e+Qe1LMW0ec0PYSLqQQyEE6iy71e/X0mU
+6y5ZWlmDTVMNmiKTBY72xbLX9Xj0cyJBq3+MRjKnYwGLqjaPsjCAuDVF0inebgDk
+71HeddiR8HaYp11CV2dpGWlrjCx40n/6CCytdktY2Psby7MrIuX8vTpySPoOm2W9
+7UHigoGE9vVMuW+fFe11+SKYeFBOi5y4jx16qqoOhpTESS+Gip5kERMXe1pLjd7m
+sZGcWURrlltxstJHNAPIagHlUZx+3d/HNAemJzEBNbUDQ5KFhqqqfWKrSV+1ux79
+Yv69abF3cWsBjL0TOacYErBUflO6g6Y9bOBF7yEFWtbekfKyT0oLKtKkJG8wlsj2
+BpwWmbNNW6cfNvYw/eDxfkymTHKjYshe0vn6zoFSt9yLDRhcr8ex/hTrWYF9LAsW
+/umElS+S2kY56HaLCvizshI7xu2sRhghtugm1b6YNVuX/zfP8AJqSxQyO+j5AruM
+dDx9MFFJM2hHOmnvKJH3X5OxVUPjcSYTD1JTc0jLqnadTHHjbcfd4q3oJZb4sXgI
+bxAIx0s9TplEJ+NrS7rc
+=j9Pr
 -----END PGP SIGNATURE-----
 
---5ltdm4mkXNgScZ66--
+--GUWDakHTpZ9AxSMt--
+
+--===============4065777973151634231==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4065777973151634231==--
