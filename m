@@ -1,20 +1,20 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH v3 5/9] ASoC: fsl-ssi: Add offline_config
-	flag
-Date: Fri, 20 Dec 2013 11:08:53 +0100
-Message-ID: <20131220100853.GH23493@pengutronix.de>
+Subject: Re: [PATCH v3 4/9] ASoC: fsl-ssi: Fix interrupt
+	mapping and release
+Date: Fri, 20 Dec 2013 11:31:52 +0100
+Message-ID: <20131220103152.GI23493@pengutronix.de>
 References: <1387367865-26391-1-git-send-email-mpa@pengutronix.de>
- <1387367865-26391-6-git-send-email-mpa@pengutronix.de>
- <20131219131643.GA31886@sirena.org.uk>
+ <1387367865-26391-5-git-send-email-mpa@pengutronix.de>
+ <20131220090527.GB15246@MrMyself>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 2B92E265358
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 11:09:03 +0100 (CET)
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 820F8265452
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 11:32:04 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20131219131643.GA31886@sirena.org.uk>
+In-Reply-To: <20131220090527.GB15246@MrMyself>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,43 +24,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 19, 2013 at 01:16:43PM +0000, Mark Brown wrote:
-> On Wed, Dec 18, 2013 at 12:57:41PM +0100, Markus Pargmann wrote:
-> 
-> > +	/*
-> > +	 * imx51 and later SoCs have a slightly different IP that allows the
-> > +	 * SSI configuration while the SSI unit is running.
-> > +	 *
-> > +	 * More important, it is necessary on those SoCs to configure the
-> > +	 * sperate TX/RX DMA bits just before starting the stream
-> > +	 * (fsl_ssi_trigger). The SDMA unit has to be configured before fsl_ssi
-> > +	 * sends any DMA requests to the SDMA unit, otherwise it is not defined
-> > +	 * how the SDMA unit handles the DMA request.
-> > +	 *
-> > +	 * SDMA units are present on devices starting at imx35 but the imx35
-> > +	 * reference manual states that the DMA bits should not be changed
-> > +	 * while the SSI unit is running (SSIEN). So we support the necessary
-> > +	 * online configuration of fsl-ssi starting at imx51.
-> > +	 */
-> > +	if (hw_type != FSL_SSI_MX51)
-> > +		ssi_private->offline_config = true;
-> > +
-> 
-> This is really confusing.  I'd expect a switch statement here
-> enumerating the pre-i.MX51 hardware types otherwise if there's a new
-> variant added it'll do the wrong thing - the comment sounds like the
-> opposite of the test.
+Hi Nicolin,
 
-Fixed.
+On Fri, Dec 20, 2013 at 05:05:28PM +0800, Nicolin Chen wrote:
+> Hi Markus,
+> 
+> On Wed, Dec 18, 2013 at 12:57:40PM +0100, Markus Pargmann wrote:
+> > irqs should only be requested/released with enabled DMA and not on MX21.
+> > MX21 has some special register write configurations, so we do not add
+> > support for statistics on mx21 for the moment.
+> > 
+> > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+> > ---
+> >  sound/soc/fsl/fsl_ssi.c | 24 ++++++++++++++++++------
+> >  1 file changed, 18 insertions(+), 6 deletions(-)
+> > 
+> > @@ -227,13 +228,15 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
+> >  
+> >  	if (sisr & CCSR_SSI_SISR_RFRC) {
+> >  		ssi_private->stats.rfrc++;
+> > -		sisr2 |= CCSR_SSI_SISR_RFRC;
+> > +		if (ssi_private->hw_type != FSL_SSI_MX51)
+> > +			sisr2 |= CCSR_SSI_SISR_RFRC;
+> >  		ret = IRQ_HANDLED;
+> >  	}
+> >  
+> >  	if (sisr & CCSR_SSI_SISR_TFRC) {
+> >  		ssi_private->stats.tfrc++;
+> > -		sisr2 |= CCSR_SSI_SISR_TFRC;
+> > +		if (ssi_private->hw_type != FSL_SSI_MX51)
+> > +			sisr2 |= CCSR_SSI_SISR_TFRC;
+> 
+> I had a hard time on this part of modification because I just saw the commit
+> comments 'not on MX21' until I checked the RM of imx35, which should be same
+> as imx21 one: RFRC and RFRC became non-writeable since imx51. The should be
+> the reason here right?
+
+mx21 has actually no writable bits in SISR at all, it's the same for
+imx27 and imx31. imx35 would actually work with the current
+fsl_ssi_isr().
+
+However I just realised that only imx35 has all 6 bits writeable right?
+So I added another hw_type MX35 to get irq stats working for all imx's.
+
+> 
+> And just for curiosity, is there any wrong with this part, like causing SSI
+> mis-behavior?
+
+Yes it doesn't work for all SoCs:
+f0377086 ASoC: fsl: disable ssi irq for imx
 
 Thanks,
 
 Markus
-
 
 -- 
 Pengutronix e.K.                           |                             |
