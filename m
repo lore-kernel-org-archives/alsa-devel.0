@@ -1,22 +1,20 @@
 From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: Re: [PATCHv3 5/7] ASoC: fsl: Add SGTL5000 based audio
- machine driver.
-Date: Fri, 20 Dec 2013 02:37:46 +0000
-Message-ID: <7945c514f0a04a5a96d31ace69cea3a8@BY2PR03MB505.namprd03.prod.outlook.com>
+Subject: Re: [PATCHv3 4/7] Documentation: Add device tree
+ bindings for Freescale SAI.
+Date: Fri, 20 Dec 2013 02:42:39 +0000
+Message-ID: <7f4a9014cd6646e7b88e96b55f1c2b75@BY2PR03MB505.namprd03.prod.outlook.com>
 References: <1387250684-23406-1-git-send-email-Li.Xiubo@freescale.com>
- <1387250684-23406-6-git-send-email-Li.Xiubo@freescale.com>
- <20131218183743.GG31886@sirena.org.uk>
- <f9a19c59bfaf4844bbeaca1aeb91e305@DM2PR03MB509.namprd03.prod.outlook.com>
- <20131219102521.GS31886@sirena.org.uk>
+ <1387250684-23406-5-git-send-email-Li.Xiubo@freescale.com>
+ <20131218183106.GF31886@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0242.outbound.protection.outlook.com [207.46.163.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 03A3E26551B
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 03:37:50 +0100 (CET)
-In-Reply-To: <20131219102521.GS31886@sirena.org.uk>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1blp0181.outbound.protection.outlook.com [207.46.163.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7011D26551B
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 03:42:43 +0100 (CET)
+In-Reply-To: <20131218183106.GF31886@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,23 +31,19 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi Mark,
 
-> On Thu, Dec 19, 2013 at 05:19:26AM +0000, Li.Xiubo@freescale.com wrote:
+> On Tue, Dec 17, 2013 at 11:24:41AM +0800, Xiubo Li wrote:
 > 
-> > In this series of patches, the PATCH1~PATCH4 are about SAI only, and can be
-> > apart from VF610-twr sound driver, I will sent the SAI driver and VF610-twr
-> > sound driver separately. Could you apply the SAI's first if they are all
-> fine?
+> > +	      big-endian_regs;
+> > +	      big-endian_data;
 > 
-> What are you asking me to apply here?  I already applied your first
-> patch as I said, is that not everything?
+> I've applied this and fixed these two typos, thanks.
 
-Sorry for understanding.
+There is something wrong with my mails these days.
 
-Please ignore the series of patches for v4.
+I will revise this then.
 
-I will send the followed patch to fix that issues you have pointed.
+Thanks very much,
 
-Thanks,
 
 Best Regards,
 Xiubo
