@@ -1,115 +1,56 @@
-From: Eduard Gilmutdinov <edgilmutdinov@gmail.com>
-Subject: [PATCH] ALSA: usb-audio: Add support for Focusrite
-	Saffire 6 USB
-Date: Fri, 20 Dec 2013 14:06:58 +0600
-Message-ID: <1387526818-3080-1-git-send-email-edgilmutdinov@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f169.google.com (mail-lb0-f169.google.com
- [209.85.217.169])
- by alsa0.perex.cz (Postfix) with ESMTP id DA6E2265521
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 09:07:09 +0100 (CET)
-Received: by mail-lb0-f169.google.com with SMTP id u14so930092lbd.14
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 00:07:09 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: daniel@zonque.org
-Cc: alsa-devel@alsa-project.org
+From: Lv Zheng <lv.zheng@intel.com>
+Subject: [UPDATE RFC PATCH 15/15] ACPI/thinkpad: Fix wrong <acpi/acpi.h> inclusion in Thinkpad ACPI users.
+Date: Fri, 20 Dec 2013 16:30:42 +0800
+Message-ID: <b6ef94e61a18b87939cf9495a1c9212c1b7f5465.1387528106.git.lv.zheng@intel.com>
+References: <cover.1387336613.git.lv.zheng@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1387336613.git.lv.zheng@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <len.brown@intel.com>
+Cc: Lv Zheng <lv.zheng@intel.com>, Lv Zheng <zetalog@gmail.com>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, ibm-acpi-devel@lists.sourceforge.net, platform-driver-x86@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Eduard Gilmutdinov <edgilmutdinov@gmail.com>
----
- sound/usb/quirks-table.h | 40 ++++++++++++++++++++++++++++++++++++++++
- sound/usb/quirks.c       |  9 +++++----
- 2 files changed, 45 insertions(+), 4 deletions(-)
+CONFIG_ACPI dependent code should include <linux/acpi.h> instead of
+directly including <acpi/acpi.h>.  This patch cleans up such wrong
+inclusions for Thinkpad ACPI users.
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index f5f0595..3454780 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2569,6 +2569,46 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		.type = QUIRK_MIDI_NOVATION
- 	}
- },
-+{
-+	USB_DEVICE(0x1235, 0x0010),
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		.vendor_name = "Focusrite",
-+		.product_name = "Saffire 6 USB",
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 4,
-+					.iface = 0,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
-+					.endpoint = 0x01,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC,
-+					.rates = SNDRV_PCM_RATE_44100 |
-+						 SNDRV_PCM_RATE_48000,
-+					.rate_min = 44100,
-+					.rate_max = 48000,
-+					.nr_rates = 2,
-+					.rate_table = (unsigned int[]) {
-+						44100, 48000
-+					}
-+				}
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_MIDI_RAW_BYTES
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
+Cc: Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+Cc: ibm-acpi-devel@lists.sourceforge.net
+Cc: platform-driver-x86@vger.kernel.org
+Signed-off-by: Lv Zheng <lv.zheng@intel.com>
+---
+ sound/pci/hda/patch_conexant.c |    2 +-
+ sound/pci/hda/patch_realtek.c  |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 3fbf288..6df4c35 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -3243,7 +3243,7 @@ enum {
+ #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
  
- /* Access Music devices */
- {
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 0df9ede..e9a59e9 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -662,8 +662,9 @@ static int snd_usb_cm6206_boot_quirk(struct usb_device *dev)
+ #include <linux/thinkpad_acpi.h>
+-#include <acpi/acpi.h>
++#include <linux/acpi.h>
  
- /*
-  * Novation Twitch DJ controller
-+ * Focusrite Novation Saffire 6 USB audio card
-  */
--static int snd_usb_twitch_boot_quirk(struct usb_device *dev)
-+static int snd_usb_novation_boot_quirk(struct usb_device *dev)
- {
- 	/* preemptively set up the device because otherwise the
- 	 * raw MIDI endpoints are not active */
-@@ -972,9 +973,9 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
- 		/* Digidesign Mbox 2 */
- 		return snd_usb_mbox2_boot_quirk(dev);
+ static int (*led_set_func)(int, bool);
  
--	case USB_ID(0x1235, 0x0018):
--		/* Focusrite Novation Twitch */
--		return snd_usb_twitch_boot_quirk(dev);
-+	case USB_ID(0x1235, 0x0010): /* Focusrite Novation Saffire 6 USB */
-+	case USB_ID(0x1235, 0x0018): /* Focusrite Novation Twitch */
-+		return snd_usb_novation_boot_quirk(dev);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 34de5dc..5dca90e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3726,7 +3726,7 @@ static void alc290_fixup_mono_speakers(struct hda_codec *codec,
+ #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
  
- 	case USB_ID(0x133e, 0x0815):
- 		/* Access Music VirusTI Desktop */
+ #include <linux/thinkpad_acpi.h>
+-#include <acpi/acpi.h>
++#include <linux/acpi.h>
+ 
+ static int (*led_set_func)(int, bool);
+ 
 -- 
-1.8.5.2
+1.7.10
