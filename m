@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 06/19] ASoC: fsl: Don't set unused struct
- snd_pcm_hardware fields
-Date: Fri, 20 Dec 2013 18:27:27 +0000
-Message-ID: <20131220182727.GA31886@sirena.org.uk>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH 08/19] ASoC: kirkwood: Don't set unused
+ struct snd_pcm_hardware fields
+Date: Fri, 20 Dec 2013 20:13:13 +0100
+Message-ID: <20131220201313.0fdf477e@armhf>
 References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
- <1387545625-19240-6-git-send-email-lars@metafoo.de>
- <52B45371.8020808@tabi.org> <52B44E58.4080609@metafoo.de>
+ <1387545625-19240-8-git-send-email-lars@metafoo.de>
+ <20131220190506.2adb7a52@armhf> <52B47BF9.9030408@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4501637899605347224=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 25A0C2616FB
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 19:27:32 +0100 (CET)
-In-Reply-To: <52B44E58.4080609@metafoo.de>
+Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33473261B25
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 20:14:01 +0100 (CET)
+In-Reply-To: <52B47BF9.9030408@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,77 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4501637899605347224==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WnjMQ0y5QpAQNNgT"
-Content-Disposition: inline
-
-
---WnjMQ0y5QpAQNNgT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Dec 20, 2013 at 03:04:08PM +0100, Lars-Peter Clausen wrote:
-> On 12/20/2013 03:25 PM, Timur Tabi wrote:
-
-> > Is this new?  There are formats that the codec and the SSI support that the
-> > DMA controller does NOT support, like packed 24-bit samples.  How do we
-> > ensure that we never get those?
-
-> No, this is how it has always been. If there are restrictions imposed by the
-> DMA controller we need to add support for expressing this inside the ASoC
-> framework. But I think it will probably be more complex than just saying the
-> DMA controller supports format A, B, C and the DAI controller supports
-> format B, C, D and then just do the intersection of both. E.g. the DAI
-> controller probably does not care whether the samples are packed or not if
-> it only sees one sample at a time, while
-
-The most common pattern I've seen is that the DAIs expect to see whole
-samples at a time get written into their FIFOs since the FIFOs tend to
-be stored in samples rather than bytes.  With that pattern it'd be a bit
-cleaner to have them advertise sample sizes and transfer sizes and then
-have the core work out that if you can for example do 24 bit samples
-with four byte transfers and have a DMA controller that needs a 1:1
-mapping between data read and written then we can't do packed format.
-
-I think in general we want to be moving the DAIs to a sample size based
-interface and then mapping that onto the DMA controller when we connect
-the DMA and CPU DAIs.  This would help with clarity on the CODEC side as
-well.
-
---WnjMQ0y5QpAQNNgT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJStIwMAAoJELSic+t+oim9V+AP/i+N/5DYI0zUMb7lqhDff+EY
-ppn0n3Im8y3PeH14bNiyjEN3F3Cyd7Og39pleVTrPIxgT86NFs4KPkdRH29xTu0M
-xf2nm6wO/Ya+DZTBiF6tZRvQrzwpIiaYKySJFzJ0ru44YDqcObGm17IQzeIVcTXj
-0hIUf8oVoUYZSk4eng4xVt0bqTiDuNp/sC2C/KTY8MFtjS9Ee/I7uXxV+/hbaICA
-Bjl1qjN2NhWT0qUF7wy3uZDvEdNUPipfNzVEMXPqgCHeB4fc5L3UbqeIy5s0Tl8h
-d721oafzTYjGaDhL5ZmZPojFnhdJFtMXTISRjd/5hvv6sRqMOj/q2fBpd7hhbvhy
-17PFFio6J369XQvhY7mahyt4tWQ7Ebo2DClL4txd6Jx6Epg1MQQg4aGuceUzKZa2
-2O1W9LCTyq6l5Fnks2wjihDbsOWGHm/YgEuH6ahXqCgGaJEblcIkUZzY3AsLEI2P
-LV2iKSKjeludDO13BU22Ejf1ITJBuO/VJM7fHKIIKYonEQ2ygAZQpjzT6NxXrqks
-Pd+GqfF3rddMRdasXwVhWHQrwdYYaJozqD0va/kiwn6HAAulRtBssimhtiGP4Ncr
-jcLuy4F0QwrEfabSeevfJ9yODXT3IXFKpZxWQs+QJ8qQleFHhxr4F9rYsyTgeQLU
-abEBiMZrPYnedke/z8+p
-=sFbG
------END PGP SIGNATURE-----
-
---WnjMQ0y5QpAQNNgT--
-
---===============4501637899605347224==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4501637899605347224==--
+T24gRnJpLCAyMCBEZWMgMjAxMyAxODoxODo0OSArMDEwMApMYXJzLVBldGVyIENsYXVzZW4gPGxh
+cnNAbWV0YWZvby5kZT4gd3JvdGU6Cgo+IE9uIDEyLzIwLzIwMTMgMDc6MDUgUE0sIEplYW4tRnJh
+bmNvaXMgTW9pbmUgd3JvdGU6Cj4gPiBPbiBGcmksIDIwIERlYyAyMDEzIDE0OjIwOjE0ICswMTAw
+Cj4gPiBMYXJzLVBldGVyIENsYXVzZW4gPGxhcnNAbWV0YWZvby5kZT4gd3JvdGU6Cj4gPiAKPiA+
+PiBUaGUgQVNvQyBjb3JlIGFzc3VtZXMgdGhhdCB0aGUgUENNIGNvbXBvbmVudCBvZiB0aGUgQVNv
+QyBjYXJkIHRyYW5zcGFyZW50bHkKPiA+PiBtb3ZlcyBkYXRhIGFyb3VuZCBhbmQgZG9lcyBub3Qg
+aW1wb3NlIGFueSByZXN0cmljdGlvbnMgb24gdGhlIG1lbW9yeSBsYXlvdXQgb3IKPiA+PiB0aGUg
+dHJhbnNmZXIgc3BlZWQuIEl0IGlnbm9yZXMgYWxsIGZpZWxkcyBmcm9tIHRoZSBzbmRfcGNtX2hh
+cmR3YXJlIHN0cnVjdCBmb3IKPiA+PiB0aGUgUENNIGRyaXZlciB0aGF0IGFyZSByZWxhdGVkIHRv
+IHRoaXMuIFNldHRpbmcgdGhlc2UgZmllbGRzIGluIHRoZSBQQ00gZHJpdmVyCj4gPj4gbWlnaHQg
+c3VnZ2VzdCBvdGhlcndpc2UgdGhvdWdoLCBzbyByYXRoZXIgbm90IHNldCB0aGVtLgo+ID4+Cj4g
+Pj4gU2lnbmVkLW9mZi1ieTogTGFycy1QZXRlciBDbGF1c2VuIDxsYXJzQG1ldGFmb28uZGU+Cj4g
+Pj4gQ2M6IEplYW4tRnJhbmNvaXMgTW9pbmUgPG1vaW5lamZAZnJlZS5mcj4KPiA+PiAtLS0KPiA+
+PiAgc291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWRtYS5jIHwgMTYgLS0tLS0tLS0tLS0tLS0t
+LQo+ID4+ICAxIGZpbGUgY2hhbmdlZCwgMTYgZGVsZXRpb25zKC0pCj4gPj4KPiA+PiBkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWRtYS5jIGIvc291bmQvc29jL2tpcmt3
+b29kL2tpcmt3b29kLWRtYS5jCj4gPj4gaW5kZXggNGFmMTkzNi4uYWFjMjJmYyAxMDA2NDQKPiA+
+PiAtLS0gYS9zb3VuZC9zb2Mva2lya3dvb2Qva2lya3dvb2QtZG1hLmMKPiA+PiArKysgYi9zb3Vu
+ZC9zb2Mva2lya3dvb2Qva2lya3dvb2QtZG1hLmMKPiA+IAlbc25pcF0KPiA+PiBAQCAtNDMsMTIg
+KzMzLDYgQEAgc3RhdGljIHN0cnVjdCBzbmRfcGNtX2hhcmR3YXJlIGtpcmt3b29kX2RtYV9zbmRf
+aHcgPSB7Cj4gPj4gIAkJIFNORFJWX1BDTV9JTkZPX01NQVBfVkFMSUQgfAo+ID4+ICAJCSBTTkRS
+Vl9QQ01fSU5GT19CTE9DS19UUkFOU0ZFUiB8Cj4gPj4gIAkJIFNORFJWX1BDTV9JTkZPX1BBVVNF
+KSwKPiA+PiAtCS5mb3JtYXRzCQk9IEtJUktXT09EX0ZPUk1BVFMsCj4gPj4gLQkucmF0ZXMJCQk9
+IEtJUktXT09EX1JBVEVTLAo+ID4+IC0JLnJhdGVfbWluCQk9IDgwMDAsCj4gPj4gLQkucmF0ZV9t
+YXgJCT0gMzg0MDAwLAo+ID4+IC0JLmNoYW5uZWxzX21pbgkJPSAxLAo+ID4+IC0JLmNoYW5uZWxz
+X21heAkJPSA4LAo+ID4+ICAJLmJ1ZmZlcl9ieXRlc19tYXgJPSBLSVJLV09PRF9TTkRfTUFYX0JV
+RkZFUl9CWVRFUywKPiA+PiAgCS5wZXJpb2RfYnl0ZXNfbWluCT0gS0lSS1dPT0RfU05EX01JTl9Q
+RVJJT0RfQllURVMsCj4gPj4gIAkucGVyaW9kX2J5dGVzX21heAk9IEtJUktXT09EX1NORF9NQVhf
+UEVSSU9EX0JZVEVTLAo+ID4gCj4gPiBMYXJzLAo+ID4gCj4gPiBZb3UgcmVtb3ZlZCB0b28gbWFu
+eSB0aGluZ3MuIFRoZSAnZm9ybWF0cycgZmllbGQgaXMgbWFuZGF0b3J5Lgo+IAo+IE5vIGl0IGlz
+IG5vdC4gV2hpbGUgc25kX3NvY19zZXRfcnVudGltZV9od3BhcmFtcygpIHVzZXMgaXQgaXQgaXMg
+bGF0ZXIKPiBvdmVyd3JpdHRlbiBhZ2FpbiBpbiBzb2NfcGNtX2luaXRfcnVudGltZV9odygpLgoK
+SSBoYXZlIGEgRFBDTSBzeXN0ZW0gYW5kIHNvY19wY21faW5pdF9ydW50aW1lX2h3KCkgaXMgbm90
+IGNhbGxlZAooZWl0aGVyICdkeW5hbWljJyBvciAnbm9fcGNtJyBpcyBzZXQgaW4gdGhlIERBSSBs
+aW5rcykuCgotLSAKS2VuIGFyIGMnaGVudGHDsQl8CSAgICAgICoqIEJyZWl6aCBoYSBMaW51eCBh
+dGF2ISAqKgpKZWYJCXwJCWh0dHA6Ly9tb2luZWpmLmZyZWUuZnIvCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
