@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 23/38] fireworks: Add PCM interface
-Date: Fri, 20 Dec 2013 22:14:14 +0900
-Message-ID: <1387545269-3875-24-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 21/38] fireworks: Add proc interface for debugging purpose
+Date: Fri, 20 Dec 2013 22:14:12 +0900
+Message-ID: <1387545269-3875-22-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,548 +20,288 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a functionality to capture/playback PCM samples.
-
-When AMDTP stream is already running for PCM or the source of clock is not
-internal, available sampling rate is limited at current one.
+This commit adds proc interface to output infomation for debugging.
+ - firmware information
+ - sampling rate and clock source
+ - physical metering (linear value)
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/Makefile           |   2 +-
- sound/firewire/fireworks/fireworks.c        |   4 +
- sound/firewire/fireworks/fireworks.h        |   4 +
- sound/firewire/fireworks/fireworks_pcm.c    | 440 ++++++++++++++++++++++++++++
- sound/firewire/fireworks/fireworks_stream.c |  23 --
- 5 files changed, 449 insertions(+), 24 deletions(-)
- create mode 100644 sound/firewire/fireworks/fireworks_pcm.c
+ sound/firewire/fireworks/Makefile         |   2 +-
+ sound/firewire/fireworks/fireworks.c      |  12 ++
+ sound/firewire/fireworks/fireworks.h      |  11 ++
+ sound/firewire/fireworks/fireworks_proc.c | 187 ++++++++++++++++++++++++++++++
+ 4 files changed, 211 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/fireworks/fireworks_proc.c
 
 diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-index a2cecc6..d7ebf83 100644
+index 1bccb65..52bd15e 100644
 --- a/sound/firewire/fireworks/Makefile
 +++ b/sound/firewire/fireworks/Makefile
-@@ -1,4 +1,4 @@
+@@ -1,3 +1,3 @@
  snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
- 		      fireworks_stream.o fireworks_proc.o fireworks_midi.o \
--		      fireworks.o
-+		      fireworks_pcm.o fireworks.o
+-		      fireworks_stream.o fireworks.o
++		      fireworks_stream.o fireworks_proc.o fireworks.o
  obj-m += snd-fireworks.o
 diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index 454fa5e..82064de 100644
+index 49ffb1a..9c041eb 100644
 --- a/sound/firewire/fireworks/fireworks.c
 +++ b/sound/firewire/fireworks/fireworks.c
-@@ -209,6 +209,10 @@ efw_probe(struct fw_unit *unit,
- 			goto error;
- 	}
+@@ -129,6 +129,16 @@ get_hardware_info(struct snd_efw *efw)
+ 	efw->pcm_playback_channels[0] = hwinfo->amdtp_rx_pcm_channels;
+ 	efw->pcm_playback_channels[1] = hwinfo->amdtp_rx_pcm_channels_2x;
+ 	efw->pcm_playback_channels[2] = hwinfo->amdtp_rx_pcm_channels_4x;
++
++	/* hardware metering */
++	efw->phys_out = hwinfo->phys_out;
++	efw->phys_in = hwinfo->phys_in;
++	efw->phys_out_grp_count = hwinfo->phys_out_grp_count;
++	efw->phys_in_grp_count = hwinfo->phys_in_grp_count;
++	memcpy(&efw->phys_out_grps, hwinfo->phys_out_grps,
++	       sizeof(struct snd_efw_phys_grp) * HWINFO_MAX_CAPS_GROUPS);
++	memcpy(&efw->phys_in_grps, hwinfo->phys_in_grps,
++	       sizeof(struct snd_efw_phys_grp) * HWINFO_MAX_CAPS_GROUPS);
+ end:
+ 	kfree(hwinfo);
+ 	return err;
+@@ -191,6 +201,8 @@ efw_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
  
-+	err = snd_efw_create_pcm_devices(efw);
-+	if (err < 0)
-+		goto error;
++	snd_efw_proc_init(efw);
 +
  	snd_card_set_dev(card, &unit->device);
  	err = snd_card_register(card);
  	if (err < 0)
 diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 18a97b5..681111a 100644
+index 1b207bb..6f060f4 100644
 --- a/sound/firewire/fireworks/fireworks.h
 +++ b/sound/firewire/fireworks/fireworks.h
-@@ -23,6 +23,7 @@
+@@ -21,6 +21,7 @@
+ #include <sound/core.h>
+ #include <sound/initval.h>
  #include <sound/pcm.h>
- #include <sound/info.h>
- #include <sound/rawmidi.h>
-+#include <sound/pcm_params.h>
++#include <sound/info.h>
  
  #include "../packets-buffer.h"
  #include "../iso-resources.h"
-@@ -191,6 +192,9 @@ void snd_efw_proc_init(struct snd_efw *efw);
+@@ -64,6 +65,14 @@ struct snd_efw {
+ 	struct amdtp_stream rx_stream;
+ 	struct cmp_connection out_conn;
+ 	struct cmp_connection in_conn;
++
++	/* hardware metering parameters */
++	unsigned int phys_out;
++	unsigned int phys_in;
++	unsigned int phys_out_grp_count;
++	unsigned int phys_in_grp_count;
++	struct snd_efw_phys_grp phys_out_grps[HWINFO_MAX_CAPS_GROUPS];
++	struct snd_efw_phys_grp phys_in_grps[HWINFO_MAX_CAPS_GROUPS];
+ };
  
- int snd_efw_create_midi_devices(struct snd_efw *efw);
+ struct snd_efw_transaction {
+@@ -177,6 +186,8 @@ int snd_efw_stream_stop_duplex(struct snd_efw *efw);
+ void snd_efw_stream_update_duplex(struct snd_efw *efw);
+ void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
  
-+int snd_efw_create_pcm_devices(struct snd_efw *efw);
-+int snd_efw_get_multiplier_mode(int sampling_rate);
++void snd_efw_proc_init(struct snd_efw *efw);
 +
  #define SND_EFW_DEV_ENTRY(vendor, model) \
  { \
  	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
+diff --git a/sound/firewire/fireworks/fireworks_proc.c b/sound/firewire/fireworks/fireworks_proc.c
 new file mode 100644
-index 0000000..094cdec
+index 0000000..389a68b
 --- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_pcm.c
-@@ -0,0 +1,440 @@
++++ b/sound/firewire/fireworks/fireworks_proc.c
+@@ -0,0 +1,187 @@
 +/*
-+ * fireworks_pcm.c - a part of driver for Fireworks based devices
++ * fireworks_proc.c - a part of driver for Fireworks based devices
 + *
 + * Copyright (c) 2009-2010 Clemens Ladisch
 + * Copyright (c) 2013 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
++
 +#include "./fireworks.h"
++
++static inline const char*
++get_phys_name(struct snd_efw_phys_grp *grp)
++{
++	const char *ch_type[] = {
++		"Analog", "S/PDIF", "ADAT", "S/PDIF or ADAT",
++		"Mirroring", "Headphones", "I2S", "Guitar",
++		"Pirzo Guitar", "Guitar String", "Virtual", "Dummy"
++	};
++
++	if (grp->type < 10)
++		return ch_type[grp->type];
++	else if (grp->type == 0x10000)
++		return ch_type[10];
++	else
++		return ch_type[11];
++}
++
++static void
++proc_read_hwinfo(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
++{
++	struct snd_efw *efw = entry->private_data;
++	unsigned short i;
++	struct snd_efw_hwinfo hwinfo;
++
++	if (snd_efw_command_get_hwinfo(efw, &hwinfo) < 0)
++		goto end;
++
++	snd_iprintf(buffer, "guid_hi: 0x%X\n", hwinfo.guid_hi);
++	snd_iprintf(buffer, "guid_lo: 0x%X\n", hwinfo.guid_lo);
++	snd_iprintf(buffer, "type: 0x%X\n", hwinfo.type);
++	snd_iprintf(buffer, "version: 0x%X\n", hwinfo.version);
++	snd_iprintf(buffer, "vendor_name: %s\n", hwinfo.vendor_name);
++	snd_iprintf(buffer, "model_name: %s\n", hwinfo.model_name);
++
++	snd_iprintf(buffer, "dsp_version: 0x%X\n", hwinfo.dsp_version);
++	snd_iprintf(buffer, "arm_version: 0x%X\n", hwinfo.arm_version);
++	snd_iprintf(buffer, "fpga_version: 0x%X\n", hwinfo.fpga_version);
++
++	snd_iprintf(buffer, "flags: 0x%X\n", hwinfo.flags);
++
++	snd_iprintf(buffer, "max_sample_rate: 0x%X\n", hwinfo.max_sample_rate);
++	snd_iprintf(buffer, "min_sample_rate: 0x%X\n", hwinfo.min_sample_rate);
++	snd_iprintf(buffer, "supported_clock: 0x%X\n",
++		    hwinfo.supported_clocks);
++
++	snd_iprintf(buffer, "phys out: 0x%X\n", hwinfo.phys_out);
++	snd_iprintf(buffer, "phys in: 0x%X\n", hwinfo.phys_in);
++
++	snd_iprintf(buffer, "phys in grps: 0x%X\n", hwinfo.phys_in_grp_count);
++	for (i = 0; i < hwinfo.phys_in_grp_count; i++) {
++		snd_iprintf(buffer,
++			    "phys in grp[0x%d]: type 0x%d, count 0x%d\n",
++			    i, hwinfo.phys_out_grps[i].type,
++			    hwinfo.phys_out_grps[i].count);
++	}
++
++	snd_iprintf(buffer, "phys out grps: 0x%X\n", hwinfo.phys_out_grp_count);
++	for (i = 0; i < hwinfo.phys_out_grp_count; i++) {
++		snd_iprintf(buffer,
++			    "phys out grps[0x%d]: type 0x%d, count 0x%d\n",
++			    i, hwinfo.phys_out_grps[i].type,
++			    hwinfo.phys_out_grps[i].count);
++	}
++
++	snd_iprintf(buffer, "amdtp rx pcm channels 1x: 0x%X\n",
++		    hwinfo.amdtp_rx_pcm_channels);
++	snd_iprintf(buffer, "amdtp tx pcm channels 1x: 0x%X\n",
++		    hwinfo.amdtp_tx_pcm_channels);
++	snd_iprintf(buffer, "amdtp rx pcm channels 2x: 0x%X\n",
++		    hwinfo.amdtp_rx_pcm_channels_2x);
++	snd_iprintf(buffer, "amdtp tx pcm channels 2x: 0x%X\n",
++		    hwinfo.amdtp_tx_pcm_channels_2x);
++	snd_iprintf(buffer, "amdtp rx pcm channels 4x: 0x%X\n",
++		    hwinfo.amdtp_rx_pcm_channels_4x);
++	snd_iprintf(buffer, "amdtp tx pcm channels 4x: 0x%X\n",
++		    hwinfo.amdtp_tx_pcm_channels_4x);
++
++	snd_iprintf(buffer, "midi out ports: 0x%X\n", hwinfo.midi_out_ports);
++	snd_iprintf(buffer, "midi in ports: 0x%X\n", hwinfo.midi_in_ports);
++
++	snd_iprintf(buffer, "mixer playback channels: 0x%X\n",
++		    hwinfo.mixer_playback_channels);
++	snd_iprintf(buffer, "mixer capture channels: 0x%X\n",
++		    hwinfo.mixer_capture_channels);
++end:
++	return;
++}
++
++static void
++proc_read_clock(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
++{
++	struct snd_efw *efw = entry->private_data;
++	enum snd_efw_clock_source clock_source;
++	unsigned int sampling_rate;
++
++	if (snd_efw_command_get_clock_source(efw, &clock_source) < 0)
++		goto end;
++
++	if (snd_efw_command_get_sampling_rate(efw, &sampling_rate) < 0)
++		goto end;
++
++	snd_iprintf(buffer, "Clock Source: %d\n", clock_source);
++	snd_iprintf(buffer, "Sampling Rate: %d\n", sampling_rate);
++end:
++	return;
++}
 +
 +/*
 + * NOTE:
-+ * Fireworks changes its AMDTP channels for PCM data according to its sampling
-+ * rate. There are three modes. Here _XX is either _rx or _tx.
-+ *  0:  32.0- 48.0 kHz then snd_efw_hwinfo.amdtp_XX_pcm_channels applied
-+ *  1:  88.2- 96.0 kHz then snd_efw_hwinfo.amdtp_XX_pcm_channels_2x applied
-+ *  2: 176.4-192.0 kHz then snd_efw_hwinfo.amdtp_XX_pcm_channels_4x applied
-+ *
-+ * The number of PCM channels for analog input and output are always fixed but
-+ * the number of PCM channels for digital input and output are differed.
-+ *
-+ * Additionally, according to "AudioFire Owner's Manual Version 2.2", in some
-+ * model, the number of PCM channels for digital input has more restriction
-+ * depending on which digital interface is selected.
-+ *  - S/PDIF coaxial and optical	: use input 1-2
-+ *  - ADAT optical at 32.0-48.0 kHz	: use input 1-8
-+ *  - ADAT optical at 88.2-96.0 kHz	: use input 1-4 (S/MUX format)
-+ *
-+ * The data in AMDTP channels for blank PCM channels are zero.
++ *  dB = 20 * log10(linear / 0x01000000)
++ *  -144.0 dB when linear is 0
 + */
-+static unsigned int freq_table[] = {
-+	/* multiplier mode 0 */
-+	[0] = 32000,
-+	[1] = 44100,
-+	[2] = 48000,
-+	/* multiplier mode 1 */
-+	[3] = 88200,
-+	[4] = 96000,
-+	/* multiplier mode 2 */
-+	[5] = 176400,
-+	[6] = 192000,
-+};
-+
-+static inline int
-+get_multiplier_mode_with_index(int index)
++static void
++proc_read_phys_meters(struct snd_info_entry *entry,
++		      struct snd_info_buffer *buffer)
 +{
-+	return ((int)index - 1) / 2;
-+}
-+
-+int snd_efw_get_multiplier_mode(int sampling_rate)
-+{
-+	int i;
-+	for (i = 0; i < sizeof(freq_table); i++)
-+		if (freq_table[i] == sampling_rate)
-+			return get_multiplier_mode_with_index(i);
-+
-+	return -1;
-+}
-+
-+static int
-+hw_rule_rate(struct snd_pcm_hw_params *params,
-+	     struct snd_pcm_hw_rule *rule,
-+	     struct snd_efw *efw, unsigned int *channels)
-+{
-+	struct snd_interval *r =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	const struct snd_interval *c =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1
-+	};
-+	unsigned int rate_bit;
-+	int mode, i;
-+
-+	for (i = 0; i < ARRAY_SIZE(freq_table); i++) {
-+		/* skip unsupported sampling rate */
-+		rate_bit = snd_pcm_rate_to_rate_bit(freq_table[i]);
-+		if (!(efw->supported_sampling_rate & rate_bit))
-+			continue;
-+
-+		mode = get_multiplier_mode_with_index(i);
-+		if (!snd_interval_test(c, channels[mode]))
-+			continue;
-+
-+		t.min = min(t.min, freq_table[i]);
-+		t.max = max(t.max, freq_table[i]);
-+
-+	}
-+
-+	return snd_interval_refine(r, &t);
-+}
-+
-+static int
-+hw_rule_channels(struct snd_pcm_hw_params *params,
-+		 struct snd_pcm_hw_rule *rule,
-+		 struct snd_efw *efw, unsigned int *channels)
-+{
-+	struct snd_interval *c =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	const struct snd_interval *r =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1
-+	};
-+
-+	unsigned int rate_bit;
-+	int mode, i;
-+
-+	for (i = 0; i < ARRAY_SIZE(freq_table); i++) {
-+		/* skip unsupported sampling rate */
-+		rate_bit = snd_pcm_rate_to_rate_bit(freq_table[i]);
-+		if (!(efw->supported_sampling_rate & rate_bit))
-+			continue;
-+
-+		mode = get_multiplier_mode_with_index(i);
-+		if (!snd_interval_test(r, freq_table[i]))
-+			continue;
-+
-+		t.min = min(t.min, channels[mode]);
-+		t.max = max(t.max, channels[mode]);
-+
-+	}
-+
-+	return snd_interval_refine(c, &t);
-+}
-+
-+static int
-+hw_rule_capture_rate(struct snd_pcm_hw_params *params,
-+		     struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_efw *efw = rule->private;
-+	return hw_rule_rate(params, rule, efw,
-+				efw->pcm_capture_channels);
-+}
-+
-+static int
-+hw_rule_playback_rate(struct snd_pcm_hw_params *params,
-+		      struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_efw *efw = rule->private;
-+	return hw_rule_rate(params, rule, efw,
-+				efw->pcm_playback_channels);
-+}
-+
-+static int
-+hw_rule_capture_channels(struct snd_pcm_hw_params *params,
-+			 struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_efw *efw = rule->private;
-+	return hw_rule_channels(params, rule, efw,
-+				efw->pcm_capture_channels);
-+}
-+
-+static int
-+hw_rule_playback_channels(struct snd_pcm_hw_params *params,
-+			  struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_efw *efw = rule->private;
-+	return hw_rule_channels(params, rule, efw,
-+				efw->pcm_playback_channels);
-+}
-+
-+static int
-+pcm_init_hw_params(struct snd_efw *efw,
-+		   struct snd_pcm_substream *substream)
-+{
-+	unsigned int *pcm_channels;
-+	unsigned int rate_bit;
-+	int mode, i;
++	struct snd_efw *efw = entry->private_data;
++	struct snd_efw_phys_meters *meters;
++	unsigned int g, c, m, max, size;
++	const char *name;
++	u32 *linear;
 +	int err;
 +
-+	struct snd_pcm_hardware hardware = {
-+		.info = SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_BATCH |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_SYNC_START |
-+			SNDRV_PCM_INFO_FIFO_IN_FRAMES |
-+			SNDRV_PCM_INFO_JOINT_DUPLEX |
-+			/* for Open Sound System compatibility */
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_BLOCK_TRANSFER,
-+		.rates = efw->supported_sampling_rate,
-+		.rate_min = UINT_MAX,
-+		.rate_max = 0,
-+		.channels_min = UINT_MAX,
-+		.channels_max = 0,
-+		.buffer_bytes_max = 1024 * 1024 * 1024,
-+		.period_bytes_min = 256,
-+		.period_bytes_max = 1024 * 1024 * 1024 / 2,
-+		.periods_min = 2,
-+		.periods_max = 32,
-+		.fifo_size = 0,
-+	};
++	size = sizeof(struct snd_efw_phys_meters) +
++	       (efw->phys_in + efw->phys_out) * sizeof(u32);
++	meters = kzalloc(size, GFP_KERNEL);
++	if (meters == NULL)
++		return;
 +
-+	substream->runtime->hw = hardware;
-+	substream->runtime->delay = substream->runtime->hw.fifo_size;
++	err = snd_efw_command_get_phys_meters(efw, meters, size);
++	if (err < 0)
++		goto end;
 +
-+	/* add rule between channels and sampling rate */
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		substream->runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
-+		snd_pcm_hw_rule_add(substream->runtime, 0,
-+				SNDRV_PCM_HW_PARAM_CHANNELS,
-+				hw_rule_capture_channels, efw,
-+				SNDRV_PCM_HW_PARAM_RATE, -1);
-+		snd_pcm_hw_rule_add(substream->runtime, 0,
-+				SNDRV_PCM_HW_PARAM_RATE,
-+				hw_rule_capture_rate, efw,
-+				SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+		pcm_channels = efw->pcm_capture_channels;
-+	} else {
-+		substream->runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
-+		snd_pcm_hw_rule_add(substream->runtime, 0,
-+				SNDRV_PCM_HW_PARAM_CHANNELS,
-+				hw_rule_playback_channels, efw,
-+				SNDRV_PCM_HW_PARAM_RATE, -1);
-+		snd_pcm_hw_rule_add(substream->runtime, 0,
-+				SNDRV_PCM_HW_PARAM_RATE,
-+				hw_rule_playback_rate, efw,
-+				SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+		pcm_channels = efw->pcm_playback_channels;
++	snd_iprintf(buffer, "Physical Meters:\n");
++
++	m = 0;
++	max = min(efw->phys_out, meters->out_meters);
++	linear = meters->values;
++	snd_iprintf(buffer, " %d Outputs:\n", max);
++	for (g = 0; g < efw->phys_out_grp_count; g++) {
++		name = get_phys_name(&efw->phys_out_grps[g]);
++		for (c = 0; c < efw->phys_out_grps[g].count; c++) {
++			if (m < max)
++				snd_iprintf(buffer, "\t%s [%d]: %d\n",
++					    name, c, linear[m++]);
++		}
 +	}
 +
-+	/* limitation for min/max sampling rate */
-+	snd_pcm_limit_hw_rates(substream->runtime);
-+
-+	/* limitation for the number of channels */
-+	for (i = 0; i < ARRAY_SIZE(freq_table); i++) {
-+		/* skip unsupported sampling rate */
-+		rate_bit = snd_pcm_rate_to_rate_bit(freq_table[i]);
-+		if (!(efw->supported_sampling_rate & rate_bit))
-+			continue;
-+
-+		mode = get_multiplier_mode_with_index(i);
-+		if (pcm_channels[mode] == 0)
-+			continue;
-+		substream->runtime->hw.channels_min =
-+			min(substream->runtime->hw.channels_min,
-+				pcm_channels[mode]);
-+		substream->runtime->hw.channels_max =
-+			max(substream->runtime->hw.channels_max,
-+				pcm_channels[mode]);
++	m = 0;
++	max = min(efw->phys_in, meters->in_meters);
++	linear = meters->values + meters->out_meters;
++	snd_iprintf(buffer, " %d Inputs:\n", max);
++	for (g = 0; g < efw->phys_in_grp_count; g++) {
++		name = get_phys_name(&efw->phys_in_grps[g]);
++		for (c = 0; c < efw->phys_in_grps[g].count; c++)
++			if (m < max)
++				snd_iprintf(buffer, "\t%s [%d]: %d\n",
++					    name, c, linear[m++]);
 +	}
-+
-+	/* AM824 in IEC 61883-6 can deliver 24bit data */
-+	err = snd_pcm_hw_constraint_msbits(substream->runtime, 0, 32, 24);
-+	if (err < 0)
-+		goto end;
-+
-+	/*
-+	 * AMDTP functionality in firewire-lib require periods to be aligned to
-+	 * 16 bit, or 24bit inner 32bit.
-+	 */
-+	err = snd_pcm_hw_constraint_step(substream->runtime, 0,
-+				SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
-+	if (err < 0)
-+		goto end;
-+
-+	/* time for period constraint */
-+	err = snd_pcm_hw_constraint_minmax(substream->runtime,
-+					SNDRV_PCM_HW_PARAM_PERIOD_TIME,
-+					500, UINT_MAX);
 +end:
-+	return err;
++	kfree(meters);
++	return;
 +}
 +
-+static int pcm_open(struct snd_pcm_substream *substream)
++void snd_efw_proc_init(struct snd_efw *efw)
 +{
-+	struct snd_efw *efw = substream->private_data;
-+	int sampling_rate;
-+	unsigned int clock_source;
-+	int err;
++	struct snd_info_entry *entry;
 +
-+	err = pcm_init_hw_params(efw, substream);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_efw_command_get_clock_source(efw, &clock_source);
-+	if (err < 0)
-+		goto end;
-+
-+	/*
-+	 * When source of clock is not internal or any PCM streams are running,
-+	 * available sampling rate is limited at current sampling rate.
-+	 */
-+	if ((clock_source != SND_EFW_CLOCK_SOURCE_INTERNAL) ||
-+	    amdtp_stream_pcm_running(&efw->tx_stream) ||
-+	    amdtp_stream_pcm_running(&efw->rx_stream)) {
-+		err = snd_efw_command_get_sampling_rate(efw, &sampling_rate);
-+		if (err < 0)
-+			goto end;
-+		substream->runtime->hw.rate_min = sampling_rate;
-+		substream->runtime->hw.rate_max = sampling_rate;
-+	}
-+
-+	snd_pcm_set_sync(substream);
-+end:
-+	return err;
++	if (!snd_card_proc_new(efw->card, "#firmware", &entry))
++		snd_info_set_text_ops(entry, efw, proc_read_hwinfo);
++	if (!snd_card_proc_new(efw->card, "#clock", &entry))
++		snd_info_set_text_ops(entry, efw, proc_read_clock);
++	if (!snd_card_proc_new(efw->card, "#meters", &entry))
++		snd_info_set_text_ops(entry, efw, proc_read_phys_meters);
++	return;
 +}
-+
-+static int pcm_close(struct snd_pcm_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static int pcm_hw_params(struct snd_pcm_substream *substream,
-+			 struct snd_pcm_hw_params *hw_params)
-+{
-+	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+						params_buffer_bytes(hw_params));
-+}
-+
-+static int pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_efw *efw = substream->private_data;
-+
-+	snd_efw_stream_stop_duplex(efw);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int pcm_capture_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_efw *efw = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	err = snd_efw_stream_start_duplex(efw, &efw->tx_stream, runtime->rate);
-+	if (err < 0)
-+		goto end;
-+
-+	amdtp_stream_set_pcm_format(&efw->tx_stream, runtime->format);
-+	amdtp_stream_pcm_prepare(&efw->tx_stream);
-+end:
-+	return err;
-+}
-+static int pcm_playback_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_efw *efw = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	err = snd_efw_stream_start_duplex(efw, &efw->rx_stream, runtime->rate);
-+	if (err < 0)
-+		goto end;
-+
-+	amdtp_stream_set_pcm_format(&efw->rx_stream, runtime->format);
-+	amdtp_stream_pcm_prepare(&efw->rx_stream);
-+end:
-+	return err;
-+}
-+
-+static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_efw *efw = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&efw->tx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&efw->tx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_efw *efw = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&efw->rx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&efw->rx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_efw *efw = sbstrm->private_data;
-+	return amdtp_stream_pcm_pointer(&efw->tx_stream);
-+}
-+static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_efw *efw = sbstrm->private_data;
-+	return amdtp_stream_pcm_pointer(&efw->rx_stream);
-+}
-+
-+static struct snd_pcm_ops pcm_capture_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_hw_params,
-+	.hw_free	= pcm_hw_free,
-+	.prepare	= pcm_capture_prepare,
-+	.trigger	= pcm_capture_trigger,
-+	.pointer	= pcm_capture_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+};
-+
-+static struct snd_pcm_ops pcm_playback_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_hw_params,
-+	.hw_free	= pcm_hw_free,
-+	.prepare	= pcm_playback_prepare,
-+	.trigger	= pcm_playback_trigger,
-+	.pointer	= pcm_playback_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+	.mmap		= snd_pcm_lib_mmap_vmalloc,
-+};
-+
-+int snd_efw_create_pcm_devices(struct snd_efw *efw)
-+{
-+	struct snd_pcm *pcm;
-+	int err;
-+
-+	err = snd_pcm_new(efw->card, efw->card->driver, 0, 1, 1, &pcm);
-+	if (err < 0)
-+		goto end;
-+
-+	pcm->private_data = efw;
-+	snprintf(pcm->name, sizeof(pcm->name), "%s PCM", efw->card->shortname);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
-+
-+end:
-+	return err;
-+}
-+
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index 776243b..2fdc9a7 100644
---- a/sound/firewire/fireworks/fireworks_stream.c
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -7,29 +7,6 @@
-  */
- #include "./fireworks.h"
- 
--static unsigned int freq_table[] = {
--	/* multiplier mode 0 */
--	[0] = 32000,
--	[1] = 44100,
--	[2] = 48000,
--	/* multiplier mode 1 */
--	[3] = 88200,
--	[4] = 96000,
--	/* multiplier mode 2 */
--	[5] = 176400,
--	[6] = 192000,
--};
--
--int snd_efw_get_multiplier_mode(int sampling_rate)
--{
--	unsigned int i;
--	for (i = 0; i < sizeof(freq_table); i++)
--		if (freq_table[i] == sampling_rate)
--			return (i - 1) / 2;
--
--	return -1;
--}
--
- static int
- init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
- {
 -- 
 1.8.3.2
 
