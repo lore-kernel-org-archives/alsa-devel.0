@@ -1,30 +1,17 @@
-From: Giridhara  <giridharakn@gmail.com>
-Subject: Re:
-	=?utf-8?q?How_to_interrupt_snd=5Fpcm=5Fwritei_in_blo?=
-	=?utf-8?q?cking_mode=3F?=
-Date: Fri, 20 Dec 2013 10:58:16 +0000 (UTC)
-Message-ID: <loom.20131220T115337-922@post.gmane.org>
-References: <20050629180540.GA12922@brailcom.cz>
- <Pine.HPX.4.33n.0506301140550.15584-100000@studcom.urz.uni-halle.de>
- <s5h8y0s59vh.wl%tiwai@suse.de> <20050630184228.GA3755@brailcom.cz>
- <s5hacl74pvs.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCHv4 2/4] ARM: dts: Add Freescale SAI ALSA SoC
+ Digital Audio Interface node for VF610.
+Date: Fri, 20 Dec 2013 11:08:19 +0000
+Message-ID: <20131220110819.GM31886@sirena.org.uk>
+References: <1387501387-2151-1-git-send-email-Li.Xiubo@freescale.com>
+ <1387501387-2151-2-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6743032459991990575=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id D52812654CC
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 12:05:13 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Vtxt9-00012y-6M
- for alsa-devel@alsa-project.org; Fri, 20 Dec 2013 12:05:03 +0100
-Received: from 19963142252.honeywell.com ([199.63.142.252])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 12:05:03 +0100
-Received: from giridharakn by 19963142252.honeywell.com with local (Gmexim 0.1
- (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 12:05:03 +0100
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id C22F926554F
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 12:08:21 +0100 (CET)
+In-Reply-To: <1387501387-2151-2-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,83 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: Jingchang Lu <b35083@freescale.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
-
-Takashi Iwai <tiwai <at> suse.de> writes:
-
-> 
-> At Thu, 30 Jun 2005 20:42:28 +0200,
-> Hynek Hanke wrote:
-> > 
-> > > > Hynek Hanke wrote:
-> > > > > I'm running it in two separate threads. One does all the
-preparations and calls
-> > > > > snd_pcm_writei() in blocking mode. The other one then decides it
-wants to stop
-> > > > > playing, so it calls snd_pcm_drop(). This causes the device to
-switch from
-> > > > > state RUNNING to state SETUP, but the snd_pcm_writei() hangs
-forever and never
-> > > > > returns. Why is this so?
-> > > Well, but pcm_lib.c::snd_pcm_lib_write1() should check the state SETUP
-> > > and break the loop immediately.  Ditto for snd_pcm_lib_read1().
-> > > The quick hack is below.  Please give a shot.
-> > 
-> > I tried to apply the patch to the 2.6.11 kernel but after
-> > compilation/instalation, there is no difference. It still hangs.
-Logfiles say
-> > it was in the state RUNNING just before snd_pcm_drop() was called and
-got into
-> > state SETUP immediatelly after. The logfile from the other thread shows
-> > snd_pcm_writei() never returns (not even after the sound would surely be
-> > completed).
-> 
-> Hmm, then still something is missing.  I'll check on it later.
-> 
-> > So, what can I do? Do I really have to use the non-blocking mode or is this
-> > supposed to work (if I take care about all the other thread related issues
-> > myself)? My colleague is reporting it's working for him under some different
-> > configuration.
-> 
-> The non-blocking mode and poll() should work (hopefully :)
-> If not, let me know.
-> 
-> > Can I enable some debugging messages or something to help you to see what's
-> > wrong?
-> 
-> Check the code flow in snd_pcm_lib_write1().  You can see the places
-> my patch tried to fix.  Basically, the thread should be woken up and
-> get out of the loop.  But according to your report, it didn't work as
-> expected by some reason...
-> 
-> Takashi
-> 
-> -------------------------------------------------------
-> SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
-> from IBM. Find simple to follow Roadmaps, straightforward articles,
-> informative Webcasts and more! Get everything you need to get up to
-> speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
-> 
+--===============6743032459991990575==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="QUAc4O4i7jPlU8jt"
+Content-Disposition: inline
 
 
-Hello Takashi,
-We have the same problem. 
-snd_pcm_writei blocks when we switch between playback and record
-continuously for several times. 
+--QUAc4O4i7jPlU8jt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Is this issue is fixed in any kernel versions.
-I am running kernel version 2.6.31
-Alsa version 1.0.18
+On Fri, Dec 20, 2013 at 09:03:05AM +0800, Xiubo Li wrote:
+> This patch adds the SAI's edma mux Tx and Rx support.
 
-is it a issue of buffers we allocate using 
-snd_pcm_hw_params_set_period_size_near
+DTS changes should be merged via arm-soc.
 
-whats the way to calculate this value and how should be the ideal value. 
+--QUAc4O4i7jPlU8jt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-I appreciate any help/suggestions in this regard.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-Thanks and Regards,
-Giri 
+iQIcBAEBAgAGBQJStCUgAAoJELSic+t+oim9s0gP/1C8vzODEUzxaNYh4At1ajWc
+tfs6hx3Xyr8n2KE/+IVBfYdtAxNoOKDnc7FFiBgD4WjqXnMNuraArWZAzzAzC9Zy
+kO26Jj+w1TI5sfn6EI9bxOgWjeD+37QKIZaKF3hIDCUgETomf/59xXmOqJGTrJ6K
+7XNXqHbM+YAgIfFycCTJ2rBi1z8CppQigOAF03hQCYji5td7+jn1iVXfqYQeZfeo
+cjlgRakmqPcZMdk898+h1aq8vWdxU3pF4URP1F6j/cdoUbRSmFg7zAJa44wqfV1w
+Ku//TdbsD6a8xtpXYHtnsHA19byqYpuDwLE1Ag6m2qdcSR+zh8k5FHRUQAjd75bo
+ndmSTgV0woRMAtq0FWAlYdu2BIfj3TeD2enNv7Le3O0zWM8dz1zDYwehLe03rbye
+JRTPV0nKVJPh6Ni+NLPXxMPLL50f1byaQkhw1+5LXosFMNSV+KXhYPPa/SHnAZvd
+fmyvx+fZKKviO2QxKqFLjmflxBGSiFTxSUo3H+6xv/t6wgZVbiFUrunaKZmLklQW
+zeayiQ14Z89wuBVFlPFqTzd9bqJGp/FllbXkrxNiNNed3jWNhN1V/rtoNlFTbJYS
+/aavIYXhsoM8CQUhdewT94zKTsYv0Aa5y57olIsOfGCEc8RdmlkaD/Mnz36hlSd1
+9KrKcg8RkbS5JRyfu3Ta
+=j8tx
+-----END PGP SIGNATURE-----
+
+--QUAc4O4i7jPlU8jt--
+
+--===============6743032459991990575==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6743032459991990575==--
