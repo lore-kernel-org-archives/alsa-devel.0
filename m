@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 03/38] firewire-lib: Add 'direction' member to 'amdtp_stream'
-	structure
-Date: Fri, 20 Dec 2013 22:13:54 +0900
-Message-ID: <1387545269-3875-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 04/38] firewire-lib: Split some codes into functions to reuse
+	for both streams
+Date: Fri, 20 Dec 2013 22:13:55 +0900
+Message-ID: <1387545269-3875-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,99 +21,237 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds 'direction' member to amdtp_stream structure to indicate its
-direction. This patch also adds 'direction' argument to amdtp_stream_init()
-function to determine its direction.
-
-The amdtp_stream_init() function is exported and used by firewire-speakers and
-dice so this patch also affects them.
-
-This patch just add them. Actual implementation will be done by followed
-patches.
+Some codes can be reused to handle in stream. This commit adds new functions.
+This commit also renames some functions to keep naming consistency.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c    | 4 +++-
- sound/firewire/amdtp.h    | 7 +++++++
- sound/firewire/dice.c     | 2 +-
- sound/firewire/speakers.c | 3 ++-
- 4 files changed, 13 insertions(+), 3 deletions(-)
+ sound/firewire/amdtp.c | 156 ++++++++++++++++++++++++++-----------------------
+ 1 file changed, 82 insertions(+), 74 deletions(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 38013f9..95c5a15 100644
+index 95c5a15..ca79cb4 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -53,12 +53,14 @@ static void pcm_period_tasklet(unsigned long data);
-  * amdtp_stream_init - initialize an AMDTP stream structure
-  * @s: the AMDTP stream to initialize
-  * @unit: the target of the stream
-+ * @dir: the direction of stream
-  * @flags: the packet transmission method to use
-  */
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--		      enum cip_flags flags)
-+		      enum amdtp_stream_direction dir, enum cip_flags flags)
- {
- 	s->unit = fw_unit_get(unit);
-+	s->direction = dir;
- 	s->flags = flags;
- 	s->context = ERR_PTR(-1);
- 	mutex_init(&s->mutex);
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 60028c7..019134e 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -48,9 +48,15 @@ struct fw_unit;
- struct fw_iso_context;
- struct snd_pcm_substream;
+@@ -47,6 +47,8 @@
+ #define INTERRUPT_INTERVAL	16
+ #define QUEUE_LENGTH		48
  
-+enum amdtp_stream_direction {
-+	AMDTP_OUT_STREAM = 0,
-+	AMDTP_IN_STREAM
-+};
++#define OUT_PACKET_HEADER_SIZE	0
 +
- struct amdtp_stream {
- 	struct fw_unit *unit;
- 	enum cip_flags flags;
-+	enum amdtp_stream_direction direction;
- 	struct fw_iso_context *context;
- 	struct mutex mutex;
+ static void pcm_period_tasklet(unsigned long data);
  
-@@ -85,6 +91,7 @@ struct amdtp_stream {
- };
+ /**
+@@ -440,13 +442,74 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 						cpu_to_be32(0x80000000);
+ }
  
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
-+		      enum amdtp_stream_direction dir,
- 		      enum cip_flags flags);
- void amdtp_stream_destroy(struct amdtp_stream *s);
+-static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
++static void update_pcm_pointers(struct amdtp_stream *s,
++				struct snd_pcm_substream *pcm,
++				unsigned int frames)
++{	unsigned int ptr;
++
++	if (s->dual_wire)
++		frames *= 2;
++
++	ptr = s->pcm_buffer_pointer + frames;
++	if (ptr >= pcm->runtime->buffer_size)
++		ptr -= pcm->runtime->buffer_size;
++	ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
++
++	s->pcm_period_pointer += frames;
++	if (s->pcm_period_pointer >= pcm->runtime->period_size) {
++		s->pcm_period_pointer -= pcm->runtime->period_size;
++		s->pointer_flush = false;
++		tasklet_hi_schedule(&s->period_tasklet);
++	}
++}
++
++static void pcm_period_tasklet(unsigned long data)
++{
++	struct amdtp_stream *s = (void *)data;
++	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
++
++	if (pcm)
++		snd_pcm_period_elapsed(pcm);
++}
++
++static int queue_packet(struct amdtp_stream *s,
++			unsigned int header_length,
++			unsigned int payload_length, bool skip)
++{
++	struct fw_iso_packet p = {0};
++	int err;
++
++	p.interrupt = IS_ALIGNED(s->packet_index + 1, INTERRUPT_INTERVAL);
++	p.tag = TAG_CIP;
++	p.header_length = header_length;
++	p.payload_length = (!skip) ? payload_length : 0;
++	p.skip = skip;
++	err = fw_iso_context_queue(s->context, &p, &s->buffer.iso_buffer,
++				   s->buffer.packets[s->packet_index].offset);
++	if (err < 0) {
++		dev_err(&s->unit->device, "queueing error: %d\n", err);
++		s->packet_index = -1;
++		goto end;
++	}
++
++	if (++s->packet_index >= QUEUE_LENGTH)
++		s->packet_index = 0;
++end:
++	return err;
++}
++
++static inline int queue_out_packet(struct amdtp_stream *s,
++				   unsigned int payload_length, bool skip)
++{
++	return queue_packet(s, OUT_PACKET_HEADER_SIZE,
++			    payload_length, skip);
++}
++
++static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
+ {
+ 	__be32 *buffer;
+-	unsigned int index, data_blocks, syt, ptr;
++	unsigned int index, data_blocks, syt, payload_length;
+ 	struct snd_pcm_substream *pcm;
+-	struct fw_iso_packet packet;
+-	int err;
  
-diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index 88814cc..b4d50b0 100644
---- a/sound/firewire/dice.c
-+++ b/sound/firewire/dice.c
-@@ -1360,7 +1360,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 		goto err_owner;
- 	dice->resources.channels_mask = 0x00000000ffffffffuLL;
+ 	if (s->packet_index < 0)
+ 		return;
+@@ -479,55 +542,19 @@ static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
  
--	err = amdtp_stream_init(&dice->stream, unit,
-+	err = amdtp_stream_init(&dice->stream, unit, AMDTP_OUT_STREAM,
- 				CIP_BLOCKING | CIP_HI_DUALWIRE);
+ 	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
+ 
+-	packet.payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
+-	packet.interrupt = IS_ALIGNED(index + 1, INTERRUPT_INTERVAL);
+-	packet.skip = 0;
+-	packet.tag = TAG_CIP;
+-	packet.sy = 0;
+-	packet.header_length = 0;
+-
+-	err = fw_iso_context_queue(s->context, &packet, &s->buffer.iso_buffer,
+-				   s->buffer.packets[index].offset);
+-	if (err < 0) {
+-		dev_err(&s->unit->device, "queueing error: %d\n", err);
+-		s->packet_index = -1;
++	payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
++	if (queue_out_packet(s, payload_length, false) < 0) {
+ 		amdtp_stream_pcm_abort(s);
+ 		return;
+ 	}
+ 
+-	if (++index >= QUEUE_LENGTH)
+-		index = 0;
+-	s->packet_index = index;
+-
+-	if (pcm) {
+-		if (s->dual_wire)
+-			data_blocks *= 2;
+-
+-		ptr = s->pcm_buffer_pointer + data_blocks;
+-		if (ptr >= pcm->runtime->buffer_size)
+-			ptr -= pcm->runtime->buffer_size;
+-		ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
+-
+-		s->pcm_period_pointer += data_blocks;
+-		if (s->pcm_period_pointer >= pcm->runtime->period_size) {
+-			s->pcm_period_pointer -= pcm->runtime->period_size;
+-			s->pointer_flush = false;
+-			tasklet_hi_schedule(&s->period_tasklet);
+-		}
+-	}
+-}
+-
+-static void pcm_period_tasklet(unsigned long data)
+-{
+-	struct amdtp_stream *s = (void *)data;
+-	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
+-
+ 	if (pcm)
+-		snd_pcm_period_elapsed(pcm);
++		update_pcm_pointers(s, pcm, data_blocks);
+ }
+ 
+-static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
+-			size_t header_length, void *header, void *private_data)
++static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
++				size_t header_length, void *header,
++				void *private_data)
+ {
+ 	struct amdtp_stream *s = private_data;
+ 	unsigned int i, packets = header_length / 4;
+@@ -540,31 +567,10 @@ static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
+ 	cycle += QUEUE_LENGTH - packets;
+ 
+ 	for (i = 0; i < packets; ++i)
+-		queue_out_packet(s, ++cycle);
++		handle_out_packet(s, ++cycle);
+ 	fw_iso_context_queue_flush(s->context);
+ }
+ 
+-static int queue_initial_skip_packets(struct amdtp_stream *s)
+-{
+-	struct fw_iso_packet skip_packet = {
+-		.skip = 1,
+-	};
+-	unsigned int i;
+-	int err;
+-
+-	for (i = 0; i < QUEUE_LENGTH; ++i) {
+-		skip_packet.interrupt = IS_ALIGNED(s->packet_index + 1,
+-						   INTERRUPT_INTERVAL);
+-		err = fw_iso_context_queue(s->context, &skip_packet, NULL, 0);
+-		if (err < 0)
+-			return err;
+-		if (++s->packet_index >= QUEUE_LENGTH)
+-			s->packet_index = 0;
+-	}
+-
+-	return 0;
+-}
+-
+ /**
+  * amdtp_stream_start - start transferring packets
+  * @s: the AMDTP stream to start
+@@ -594,7 +600,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	mutex_lock(&s->mutex);
+ 
+ 	if (WARN_ON(amdtp_stream_running(s) ||
+-		    (!s->pcm_channels && !s->midi_ports))) {
++		    (s->data_block_quadlets < 1))) {
+ 		err = -EBADFD;
+ 		goto err_unlock;
+ 	}
+@@ -612,7 +618,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
+ 					   FW_ISO_CONTEXT_TRANSMIT,
+ 					   channel, speed, 0,
+-					   out_packet_callback, s);
++					   out_stream_callback, s);
+ 	if (IS_ERR(s->context)) {
+ 		err = PTR_ERR(s->context);
+ 		if (err == -EBUSY)
+@@ -624,11 +630,13 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	amdtp_stream_update(s);
+ 
+ 	s->packet_index = 0;
+-	s->data_block_counter = 0;
+-	err = queue_initial_skip_packets(s);
+-	if (err < 0)
+-		goto err_context;
++	do {
++		err = queue_out_packet(s, 0, true);
++		if (err < 0)
++			goto err_context;
++	} while (s->packet_index > 0);
+ 
++	s->data_block_counter = 0;
+ 	err = fw_iso_context_start(s->context, -1, 0, 0);
  	if (err < 0)
- 		goto err_resources;
-diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
-index fc11c0f..28147ef 100644
---- a/sound/firewire/speakers.c
-+++ b/sound/firewire/speakers.c
-@@ -684,7 +684,8 @@ static int fwspk_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto err_unit;
- 
--	err = amdtp_stream_init(&fwspk->stream, unit, CIP_NONBLOCKING);
-+	err = amdtp_stream_init(&fwspk->stream, unit, AMDTP_OUT_STREAM,
-+				CIP_NONBLOCKING);
- 	if (err < 0)
- 		goto err_connection;
- 
+ 		goto err_context;
 -- 
 1.8.3.2
 
