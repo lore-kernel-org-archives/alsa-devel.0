@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 18/38] fireworks: Add skelton for Fireworks based devices
-Date: Fri, 20 Dec 2013 22:14:09 +0900
-Message-ID: <1387545269-3875-19-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 09/38] firewire-lib: Add sort function for transmitted packet
+Date: Fri, 20 Dec 2013 22:14:00 +0900
+Message-ID: <1387545269-3875-10-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,314 +20,258 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a new driver with no functionality. This driver just
-creates/removes card instance according to callbacks.
+The aim of this commit is to assure the continuity of timestamp in in-packets
+transmitted by the device.
 
-Fireworks is a board module which Echo Audio produced. This module consists
-of three chipsets:
- - Communication chipset for IEEE1394 PHY/Link and IEC 61883-1/6
- - DSP or/and FPGA for signal processing
- - Flash Memory to store firmwares
+When callback of receive-context is processed, the parameters of in-packets are
+stored in sort table and sorted by its value of data block counter. The sort
+algorism works faster in ordered sequence than in messy sequence. This is
+convinient for this purpose because the sequence is assumed not to be so messy.
+After sorting, packets are processed except for a last few packets in sort
+table. These packets are stored in buffer once and used in next cycle.
 
-Current supported devices:
- - Mackie Onyx 400F/1200F
- - Echo AudioFire12/8(until 2009 July)
- - Echo AudioFire2/4/Pre8/8(since 2009 July)
- - Echo Fireworks 8/HDMI
- - Gibson Robot Interface pack/GoldTop
+Fireworks with firmware version 5.5 or former is a type of device which
+transmits packets with a bit disorder. For example,
+
+Index  Payload	CIP header 1  CIP header 2
+023    210      3F1100F8      900478E9
+024    002      3F1100F8      90FFFFFF
+025    210      3F110000      900490E9
+026    210      3F110008      9004A4E9
+027    210      3F110010      9004B8E9
+028    002      3F110010      90FFFFFF
+029    210      3F110020      9004E4E8 <-
+030    210      3F110018      9004D0E8 <-
+031    210      3F110028      9004F8E8
+032    002      3F110028      90FFFFFF
+033    210      3F110030      900410E8
+034    210      3F110038      900424E8
+035    210      3F110040      900438E8
+036    002      3F110040      90FFFFFF
+037    210      3F110050      900464E8 <-
+038    210      3F110048      900450E8 <-
+039    210      3F110058      900478E8
+040    002      3F110058      90FFFFFF
+041    210      3F110068      9004A4E8 <-
+042    210      3F110060      900490E8 <-
+043    210      3F110070      9004B8E8
+044    002      3F110070      90FFFFFF
+045    210      3F110080      9004E4E7 <-
+046    210      3F110078      9004D0E8 <-
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig               |  15 +++
- sound/firewire/Makefile              |   1 +
- sound/firewire/fireworks/Makefile    |   2 +
- sound/firewire/fireworks/fireworks.c | 185 +++++++++++++++++++++++++++++++++++
- sound/firewire/fireworks/fireworks.h |  42 ++++++++
- 5 files changed, 245 insertions(+)
- create mode 100644 sound/firewire/fireworks/Makefile
- create mode 100644 sound/firewire/fireworks/fireworks.c
- create mode 100644 sound/firewire/fireworks/fireworks.h
+ sound/firewire/amdtp.c | 130 +++++++++++++++++++++++++++++++++++++++++++------
+ sound/firewire/amdtp.h |   4 ++
+ 2 files changed, 119 insertions(+), 15 deletions(-)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index b3e274f..0b85ebd 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -61,4 +61,19 @@ config SND_SCS1X
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-scs1x.
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 03dd9b3..b17ec9b 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -45,6 +45,7 @@
+ #define AMDTP_DBS_MASK		0x00ff0000
+ #define AMDTP_DBS_SHIFT		16
+ #define AMDTP_DBC_MASK		0x000000ff
++#define DBC_THRESHOLD		(AMDTP_DBC_MASK / 2)
  
-+config SND_FIREWORKS
-+	tristate "Echo Fireworks board module support"
-+	select SND_FIREWIRE_LIB
-+	help
-+	  Say Y here to include support for FireWire devices based
-+	  on Echo Digital Audio Fireworks board:
-+	   * Mackie Onyx 400F/1200F
-+	   * Echo AudioFire12/8(until 2009 July)
-+	   * Echo AudioFire2/4/Pre8/8(since 2009 July)
-+	   * Echo Fireworks 8/HDMI
-+	   * Gibson Robot Interface Pack/GoldTop
+ /* TODO: make these configurable */
+ #define INTERRUPT_INTERVAL	16
+@@ -54,6 +55,13 @@
+ #define IN_PACKET_HEADER_SIZE	4
+ #define OUT_PACKET_HEADER_SIZE	0
+ 
++/* for re-ordering receive packets */
++struct sort_table {
++	unsigned int id;
++	unsigned int dbc;
++	unsigned int payload_size;
++};
 +
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called snd-fireworks.
+ static void pcm_period_tasklet(unsigned long data);
+ 
+ /**
+@@ -78,6 +86,9 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 	s->callbacked = false;
+ 	s->sync_slave = ERR_PTR(-1);
+ 
++	s->sort_table = NULL;
++	s->left_packets = NULL;
 +
- endif # SND_FIREWIRE
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index 5099550..5cd39dc 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -10,3 +10,4 @@ obj-$(CONFIG_SND_DICE) += snd-dice.o
- obj-$(CONFIG_SND_FIREWIRE_SPEAKERS) += snd-firewire-speakers.o
- obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
- obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
-+obj-$(CONFIG_SND_FIREWORKS) += fireworks/
-diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-new file mode 100644
-index 0000000..99f6fc3
---- /dev/null
-+++ b/sound/firewire/fireworks/Makefile
-@@ -0,0 +1,2 @@
-+snd-fireworks-objs := fireworks.o
-+obj-m += snd-fireworks.o
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-new file mode 100644
-index 0000000..aa85056
---- /dev/null
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -0,0 +1,185 @@
-+/*
-+ * fireworks.c - a part of driver for Fireworks based devices
-+ *
-+ * Copyright (c) 2009-2010 Clemens Ladisch
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+/*
-+ * Fireworks is a board module which Echo Audio produced. This module consists
-+ * of three chipsets:
-+ *  - Communication chipset for IEEE1394 PHY/Link and IEC 61883-1/6
-+ *  - DSP or/and FPGA for signal processing
-+ *  - Flash Memory to store firmwares
-+ */
-+
-+#include "fireworks.h"
-+
-+MODULE_DESCRIPTION("Echo Fireworks driver");
-+MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
-+MODULE_LICENSE("GPL v2");
-+
-+static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
-+static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
-+static bool enable[SNDRV_CARDS]	= SNDRV_DEFAULT_ENABLE_PNP;
-+
-+module_param_array(index, int, NULL, 0444);
-+MODULE_PARM_DESC(index, "card index");
-+module_param_array(id, charp, NULL, 0444);
-+MODULE_PARM_DESC(id, "ID string");
-+module_param_array(enable, bool, NULL, 0444);
-+MODULE_PARM_DESC(enable, "enable Fireworks sound card");
-+
-+static DEFINE_MUTEX(devices_mutex);
-+static unsigned int devices_used;
-+
-+#define VENDOR_LOUD			0x000ff2
-+#define  MODEL_MACKIE_400F		0x00400f
-+#define  MODEL_MACKIE_1200F		0x01200f
-+
-+#define VENDOR_ECHO			0x001486
-+#define  MODEL_ECHO_AUDIOFIRE_12	0x00af12
-+#define  MODEL_ECHO_AUDIOFIRE_12HD	0x0af12d
-+#define  MODEL_ECHO_AUDIOFIRE_12_APPLE	0x0af12a
-+/* This is applied for AudioFire8 (until 2009 July) */
-+#define  MODEL_ECHO_AUDIOFIRE_8		0x000af8
-+#define  MODEL_ECHO_AUDIOFIRE_2		0x000af2
-+#define  MODEL_ECHO_AUDIOFIRE_4		0x000af4
-+/* AudioFire9 is applied for AudioFire8(since 2009 July) and AudioFirePre8 */
-+#define  MODEL_ECHO_AUDIOFIRE_9		0x000af9
-+/* unknown as product */
-+#define  MODEL_ECHO_FIREWORKS_8		0x0000f8
-+#define  MODEL_ECHO_FIREWORKS_HDMI	0x00afd1
-+
-+#define VENDOR_GIBSON			0x00075b
-+/* for Robot Interface Pack of Dark Fire, Dusk Tiger, Les Paul Standard 2010 */
-+#define  MODEL_GIBSON_RIP		0x00afb2
-+/* unknown as product */
-+#define  MODEL_GIBSON_GOLDTOP		0x00afb9
-+
-+static void
-+efw_card_free(struct snd_card *card)
+ 	return 0;
+ }
+ EXPORT_SYMBOL(amdtp_stream_init);
+@@ -736,6 +747,44 @@ static void handle_in_packet(struct amdtp_stream *s,
+ 		update_pcm_pointers(s, pcm, data_blocks);
+ }
+ 
++#define SWAP(tbl, m, n) \
++	t = tbl[n].id; \
++	tbl[n].id = tbl[m].id; \
++	tbl[m].id = t; \
++	t = tbl[n].dbc; \
++	tbl[n].dbc = tbl[m].dbc; \
++	tbl[m].dbc = t; \
++	t = tbl[n].payload_size; \
++	tbl[n].payload_size = tbl[m].payload_size; \
++	tbl[m].payload_size = t;
++static void packet_sort(struct sort_table *tbl, unsigned int len)
 +{
-+	struct snd_efw *efw = card->private_data;
++	unsigned int i, j, k, t;
 +
-+	if (efw->card_index >= 0) {
-+		mutex_lock(&devices_mutex);
-+		devices_used &= ~BIT(efw->card_index);
-+		mutex_unlock(&devices_mutex);
-+	}
-+
-+	mutex_destroy(&efw->mutex);
-+
-+	return;
-+}
-+
-+static int
-+efw_probe(struct fw_unit *unit,
-+	  const struct ieee1394_device_id *entry)
-+{
-+	struct snd_card *card;
-+	struct snd_efw *efw;
-+	int card_index, err;
-+
-+	mutex_lock(&devices_mutex);
-+
-+	/* check registered cards */
-+	for (card_index = 0; card_index < SNDRV_CARDS; ++card_index)
-+		if (!(devices_used & BIT(card_index)) && enable[card_index])
++	i = 0;
++	do {
++		for (j = i + 1; j < len; j++) {
++			if (((tbl[i].dbc > tbl[j].dbc) &&
++			     (tbl[i].dbc - tbl[j].dbc < DBC_THRESHOLD))) {
++				SWAP(tbl, i, j);
++			} else if ((tbl[j].dbc > tbl[i].dbc) &&
++				   (tbl[j].dbc - tbl[i].dbc >
++							DBC_THRESHOLD)) {
++				for (k = i; k > 0; k--) {
++					if ((tbl[k].dbc > tbl[j].dbc) ||
++					    (tbl[j].dbc - tbl[k].dbc >
++							DBC_THRESHOLD)) {
++						SWAP(tbl, j, k);
++					}
++					break;
++				}
++			}
 +			break;
-+	if (card_index >= SNDRV_CARDS) {
-+		err = -ENOENT;
-+		goto end;
++		}
++		i = j;
++	} while (i < len);
++}
++
+ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 				size_t header_length, void *header,
+ 				void *private_data)
+@@ -762,30 +811,65 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 			       void *private_data)
+ {
+ 	struct amdtp_stream *s = private_data;
+-	unsigned int p, packets, syt, data_quadlets;
++	struct sort_table *entry, *tbl = s->sort_table;
++	unsigned int i, j, k, index, packets, syt, remain_packets;
+ 	__be32 *buffer, *headers = header;
+ 
+ 	/* The number of packets in buffer */
+ 	packets = header_length / IN_PACKET_HEADER_SIZE;
+ 
+-	for (p = 0; p < packets; p++) {
+-		buffer = s->buffer.packets[s->packet_index].buffer;
++	/* Store into sort table and sort. */
++	for (i = 0; i < packets; i++) {
++		entry = &tbl[s->remain_packets + i];
++		entry->id = i;
+ 
+-		/* The number of quadlets in this packet */
+-		data_quadlets =
+-			(be32_to_cpu(headers[p]) >> ISO_DATA_LENGTH_SHIFT) / 4;
++		index = s->packet_index + i;
++		if (index >= QUEUE_LENGTH)
++			index -= QUEUE_LENGTH;
++		buffer = s->buffer.packets[index].buffer;
++		entry->dbc = be32_to_cpu(buffer[0]) & AMDTP_DBC_MASK;
+ 
+-		/* Process sync slave stream */
+-		if ((s->flags & CIP_BLOCKING) &&
+-		    (s->flags & CIP_SYNC_TO_DEVICE) &&
+-		    s->sync_slave->callbacked) {
+-			syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
+-			handle_out_packet(s->sync_slave, syt);
+-		}
++		entry->payload_size = be32_to_cpu(headers[i]) >>
++				      ISO_DATA_LENGTH_SHIFT;
++	}
++	packet_sort(tbl, packets + s->remain_packets);
+ 
+-		/* handle each packet data */
+-		handle_in_packet(s, data_quadlets, buffer);
++	/*
++	 * for convinience, tbl[i].id >= QUEUE_LENGTH is a label to identify
++	 * previous packets in buffer.
++	 */
++	remain_packets = s->remain_packets;
++	s->remain_packets = packets / 4;
++	for (i = 0, j = 0, k = 0; i < remain_packets + packets; i++) {
++		if (tbl[i].id < QUEUE_LENGTH) {
++			index = s->packet_index + tbl[i].id;
++			if (index >= QUEUE_LENGTH)
++				index -= QUEUE_LENGTH;
++			buffer = s->buffer.packets[index].buffer;
++		} else
++			buffer = s->left_packets +
++				 amdtp_stream_get_max_payload(s) * j++;
++
++		if (i < remain_packets + packets - s->remain_packets) {
++			/* Process sync slave stream */
++			if ((s->flags & CIP_BLOCKING) &&
++			    (s->flags & CIP_SYNC_TO_DEVICE) &&
++			    s->sync_slave->callbacked) {
++				syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
++				handle_out_packet(s->sync_slave, syt);
++			}
++			handle_in_packet(s, tbl[i].payload_size / 4, buffer);
++		} else {
++			tbl[k].id = tbl[i].id + QUEUE_LENGTH;
++			tbl[k].dbc = tbl[i].dbc;
++			tbl[k].payload_size = tbl[i].payload_size;
++			memcpy(s->left_packets +
++					amdtp_stream_get_max_payload(s) * k++,
++			       buffer, tbl[i].payload_size);
++		}
++	}
+ 
++	for (i = 0; i < packets; i++) {
+ 		if (queue_in_packet(s) < 0) {
+ 			amdtp_stream_pcm_abort(s);
+ 			return;
+@@ -884,6 +968,17 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	if (err < 0)
+ 		goto err_unlock;
+ 
++	/* for sorting transmitted packets */
++	if (s->direction == AMDTP_IN_STREAM) {
++		s->remain_packets = 0;
++		s->sort_table = kzalloc(sizeof(struct sort_table) *
++					QUEUE_LENGTH, GFP_KERNEL);
++		if (s->sort_table == NULL)
++			return -ENOMEM;
++		s->left_packets = kzalloc(amdtp_stream_get_max_payload(s) *
++					  QUEUE_LENGTH / 4, GFP_KERNEL);
 +	}
 +
-+	err = snd_card_create(index[card_index], id[card_index],
-+			      THIS_MODULE, sizeof(struct snd_efw), &card);
-+	if (err < 0)
-+		goto end;
-+	card->private_free = efw_card_free;
+ 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
+ 					   type, channel, speed, header_size,
+ 					   amdtp_stream_callback, s);
+@@ -982,6 +1077,11 @@ void amdtp_stream_stop(struct amdtp_stream *s)
+ 	s->context = ERR_PTR(-1);
+ 	iso_packets_buffer_destroy(&s->buffer, s->unit);
+ 
++	if (s->sort_table != NULL)
++		kfree(s->sort_table);
++	if (s->left_packets != NULL)
++		kfree(s->left_packets);
 +
-+	efw = card->private_data;
-+	efw->card = card;
-+	efw->device = fw_parent_device(unit);
-+	efw->unit = unit;
-+	efw->card_index = -1;
-+	mutex_init(&efw->mutex);
-+	spin_lock_init(&efw->lock);
+ 	s->callbacked = false;
+ 
+ 	mutex_unlock(&s->mutex);
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index e5d5999..4f57c9e 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -109,6 +109,10 @@ struct amdtp_stream {
+ 	bool callbacked;
+ 	wait_queue_head_t callback_wait;
+ 	struct amdtp_stream *sync_slave;
 +
-+	strcpy(efw->card->driver, "Fireworks");
-+	strcpy(efw->card->shortname, "Fireworks");
-+	strcpy(efw->card->longname, "Fireworks");
-+	strcpy(efw->card->mixername, "Fireworks");
-+
-+	snd_card_set_dev(card, &unit->device);
-+	err = snd_card_register(card);
-+	if (err < 0) {
-+		snd_card_free(card);
-+		goto end;
-+	}
-+	dev_set_drvdata(&unit->device, efw);
-+	devices_used |= BIT(card_index);
-+	efw->card_index = card_index;
-+end:
-+	mutex_unlock(&devices_mutex);
-+	return err;
-+}
-+
-+static void efw_update(struct fw_unit *unit)
-+{
-+	return;
-+}
-+
-+static void efw_remove(struct fw_unit *unit)
-+{
-+	struct snd_efw *efw = dev_get_drvdata(&unit->device);
-+	snd_card_disconnect(efw->card);
-+	snd_card_free_when_closed(efw->card);
-+	return;
-+}
-+
-+static const struct ieee1394_device_id efw_id_table[] = {
-+	SND_EFW_DEV_ENTRY(VENDOR_LOUD, MODEL_MACKIE_400F),
-+	SND_EFW_DEV_ENTRY(VENDOR_LOUD, MODEL_MACKIE_1200F),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_8),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_12),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_12HD),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_12_APPLE),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_2),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_4),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_9),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_FIREWORKS_8),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_FIREWORKS_HDMI),
-+	SND_EFW_DEV_ENTRY(VENDOR_GIBSON, MODEL_GIBSON_RIP),
-+	SND_EFW_DEV_ENTRY(VENDOR_GIBSON, MODEL_GIBSON_GOLDTOP),
-+	{}
-+};
-+MODULE_DEVICE_TABLE(ieee1394, efw_id_table);
-+
-+static struct fw_driver efw_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "snd-fireworks",
-+		.bus = &fw_bus_type,
-+	},
-+	.probe    = efw_probe,
-+	.update   = efw_update,
-+	.remove   = efw_remove,
-+	.id_table = efw_id_table,
-+};
-+
-+static int __init snd_efw_init(void)
-+{
-+	return driver_register(&efw_driver.driver);
-+}
-+
-+static void __exit snd_efw_exit(void)
-+{
-+	driver_unregister(&efw_driver.driver);
-+	mutex_destroy(&devices_mutex);
-+}
-+
-+module_init(snd_efw_init);
-+module_exit(snd_efw_exit);
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-new file mode 100644
-index 0000000..8cddef0
---- /dev/null
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -0,0 +1,42 @@
-+/*
-+ * fireworks.h - a part of driver for Fireworks based devices
-+ *
-+ * Copyright (c) 2009-2010 Clemens Ladisch
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+#ifndef SOUND_FIREWORKS_H_INCLUDED
-+#define SOUND_FIREWORKS_H_INCLUDED
-+
-+#include <linux/compat.h>
-+#include <linux/device.h>
-+#include <linux/firewire.h>
-+#include <linux/firewire-constants.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/delay.h>
-+#include <linux/slab.h>
-+
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+
-+struct snd_efw {
-+	struct snd_card *card;
-+	struct fw_device *device;
-+	struct fw_unit *unit;
-+	int card_index;
-+
-+	struct mutex mutex;
-+	spinlock_t lock;
-+};
-+
-+#define SND_EFW_DEV_ENTRY(vendor, model) \
-+{ \
-+	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-+			  IEEE1394_MATCH_MODEL_ID, \
-+	.vendor_id	= vendor,\
-+	.model_id	= model \
-+}
-+
-+#endif
++	void *sort_table;
++	void *left_packets;
++	unsigned int remain_packets;
+ };
+ 
+ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
 -- 
 1.8.3.2
 
