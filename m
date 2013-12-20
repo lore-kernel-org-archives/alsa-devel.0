@@ -1,176 +1,270 @@
 From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH RFC v2 REPOST 2/8] ASoC: davinci-evm: Add named clock
- reference to DT bindings
-Date: Fri, 20 Dec 2013 12:38:27 +0200
-Message-ID: <c1ae738c9b6cd9f2e595eed1f4981378ded46925.1387535302.git.jsarha@ti.com>
+Subject: [PATCH RFC v2 REPOST 3/8] ASoC: davinci-evm: HDMI audio support for TDA998x trough McASP I2S bus
+Date: Fri, 20 Dec 2013 12:39:38 +0200
+Message-ID: <d3c3f645d39338df0ee9686cb030255ce36a249d.1387535302.git.jsarha@ti.com>
 References: <cover.1387535299.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
 In-Reply-To: <cover.1387535299.git.jsarha@ti.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Sender: linux-omap-owner@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, bcousson@baylibre.com
 Cc: broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The referenced clock is used to get codec clock rate and the clock is
-disabled and enabled in startup and shutdown snd_soc_ops call
-backs. The change is also documented in DT bindigs document.
+Add machine driver support for BeagleBone-Black and other boards with
+tilcdc support and NXP TDA998X HDMI transmitter connected to McASP
+port in I2S mode. The 44100 Hz sample-rate and it's multiples can not
+be supported on Beaglebone-Black because of limited clock-rate
+support. The only supported sample format is SNDRV_PCM_FORMAT_S32_LE.
+The 8 least significant bits are ignored.
 
 Signed-off-by: Jyri Sarha <jsarha@ti.com>
 cc: bcousson@baylibre.com
 ---
- .../bindings/sound/davinci-evm-audio.txt           |    9 ++-
- sound/soc/davinci/davinci-evm.c                    |   60 +++++++++++++++++++-
- 2 files changed, 66 insertions(+), 3 deletions(-)
+ .../bindings/sound/davinci-evm-audio.txt           |    4 +-
+ sound/soc/davinci/davinci-evm.c                    |  167 +++++++++++++++++++-
+ 2 files changed, 168 insertions(+), 3 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt b/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
-index 865178d..4aa00f6 100644
+index 4aa00f6..f1e1031 100644
 --- a/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
 +++ b/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
-@@ -5,12 +5,19 @@ Required properties:
+@@ -1,7 +1,9 @@
+ * Texas Instruments SoC audio setups with TLV320AIC3X Codec
+ 
+ Required properties:
+-- compatible : "ti,da830-evm-audio" : forDM365/DA8xx/OMAPL1x/AM33xx
++- compatible :
++  "ti,da830-evm-audio" : for DM365/DA8xx/OMAPL1x/AM33xx
++  "ti,am33xx-beaglebone-black-audio" : for Beaglebone-black HDMI audio
  - ti,model : The user-visible name of this sound complex.
  - ti,audio-codec : The phandle of the TLV320AIC3x audio codec
  - ti,mcasp-controller : The phandle of the McASP controller
--- ti,codec-clock-rate : The Codec Clock rate (in Hz) applied to the Codec
- - ti,audio-routing : A list of the connections between audio components.
-   Each entry is a pair of strings, the first being the connection's sink,
-   the second being the connection's source. Valid names for sources and
-   sinks are the codec's pins, and the jacks on the board:
- 
-+Optional properties:
-+- ti,codec-clock-rate : The Codec Clock rate (in Hz) applied to the Codec.
-+- clocks : Reference to the clock used as codec clock
-+- clock-names : The codec clock should be named "ti,codec-clock"
-+- Either codec-clock-rate or the codec-clock reference has to be defined. If
-+  the both are defined the driver attempts to set referenced clock to the
-+  defined rate and takes the rate from the clock reference.
-+
-   Board connectors:
- 
-   * Headphone Jack
 diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index 70ff377..b28c9fd 100644
+index b28c9fd..3d3138d 100644
 --- a/sound/soc/davinci/davinci-evm.c
 +++ b/sound/soc/davinci/davinci-evm.c
-@@ -17,6 +17,7 @@
- #include <linux/platform_data/edma.h>
- #include <linux/i2c.h>
- #include <linux/of_platform.h>
-+#include <linux/clk.h>
+@@ -21,6 +21,7 @@
  #include <sound/core.h>
  #include <sound/pcm.h>
  #include <sound/soc.h>
-@@ -30,9 +31,30 @@
- #include "davinci-i2s.h"
++#include <sound/pcm_params.h>
  
+ #include <asm/dma.h>
+ #include <asm/mach-types.h>
+@@ -33,8 +34,13 @@
  struct snd_soc_card_drvdata_davinci {
-+	struct clk *mclk;
+ 	struct clk *mclk;
  	unsigned sysclk;
++	struct snd_pcm_hw_constraint_list *rate_constraint;
  };
  
-+static int evm_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *soc_card = rtd->codec->card;
-+	struct clk *mclk = ((struct snd_soc_card_drvdata_davinci *)
-+			    snd_soc_card_get_drvdata(soc_card))->mclk;
++/* If changing sample format the tda998x configuration (REG_CTS_N) needs
++   to be changed. */
++#define TDA998X_SAMPLE_FORMAT SNDRV_PCM_FORMAT_S32_LE
 +
-+	return clk_prepare_enable(mclk);
-+}
-+
-+static void evm_shutdown(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *soc_card = rtd->codec->card;
-+	struct clk *mclk = ((struct snd_soc_card_drvdata_davinci *)
-+			    snd_soc_card_get_drvdata(soc_card))->mclk;
-+
-+	clk_disable_unprepare(mclk);
-+}
-+
- static int evm_hw_params(struct snd_pcm_substream *substream,
- 			 struct snd_pcm_hw_params *params)
+ static int evm_startup(struct snd_pcm_substream *substream)
  {
-@@ -59,6 +81,8 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+@@ -80,12 +86,80 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
  }
  
++static int evm_tda998x_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_card *soc_card = rtd->codec->card;
++	struct snd_soc_card_drvdata_davinci *drvdata =
++		(struct snd_soc_card_drvdata_davinci *)
++		snd_soc_card_get_drvdata(soc_card);
++	struct snd_mask *fmt = constrs_mask(&runtime->hw_constraints,
++					    SNDRV_PCM_HW_PARAM_FORMAT);
++	snd_mask_none(fmt);
++	snd_mask_set(fmt, TDA998X_SAMPLE_FORMAT);
++
++	runtime->hw.rate_min = drvdata->rate_constraint->list[0];
++	runtime->hw.rate_max = drvdata->rate_constraint->list[
++		drvdata->rate_constraint->count - 1];
++	runtime->hw.rates = SNDRV_PCM_RATE_KNOT;
++
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				   drvdata->rate_constraint);
++	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_CHANNELS,
++				     2, 2);
++
++	return evm_startup(substream);
++}
++
++static unsigned int evm_get_bclk(struct snd_pcm_hw_params *params)
++{
++	int sample_size = snd_pcm_format_width(params_format(params));
++	int rate = params_rate(params);
++	int channels = params_channels(params);
++
++	return sample_size * channels * rate;
++}
++
++static int evm_tda998x_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_codec *codec = rtd->codec;
++	struct snd_soc_card *soc_card = codec->card;
++	struct platform_device *pdev = to_platform_device(soc_card->dev);
++	unsigned int bclk_freq = evm_get_bclk(params);
++	unsigned sysclk = ((struct snd_soc_card_drvdata_davinci *)
++			   snd_soc_card_get_drvdata(soc_card))->sysclk;
++	int ret;
++
++	ret = snd_soc_dai_set_clkdiv(cpu_dai, 1, sysclk / bclk_freq);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "can't set CPU DAI clock divider %d\n",
++			ret);
++		return ret;
++	}
++
++	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, sysclk, SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		return ret;
++
++	return ret;
++}
++
  static struct snd_soc_ops evm_ops = {
-+	.startup = evm_startup,
-+	.shutdown = evm_shutdown,
+ 	.startup = evm_startup,
+ 	.shutdown = evm_shutdown,
  	.hw_params = evm_hw_params,
  };
  
-@@ -348,6 +372,7 @@ static int davinci_evm_probe(struct platform_device *pdev)
- 		of_match_device(of_match_ptr(davinci_evm_dt_ids), &pdev->dev);
- 	struct snd_soc_dai_link *dai = (struct snd_soc_dai_link *) match->data;
- 	struct snd_soc_card_drvdata_davinci *drvdata = NULL;
-+	struct clk *mclk;
- 	int ret = 0;
++static struct snd_soc_ops evm_tda998x_ops = {
++	.startup = evm_tda998x_startup,
++	.shutdown = evm_shutdown,
++	.hw_params = evm_tda998x_hw_params,
++};
++
+ /* davinci-evm machine dapm widgets */
+ static const struct snd_soc_dapm_widget aic3x_dapm_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+@@ -152,6 +226,81 @@ static int evm_aic3x_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
  
- 	evm_soc_card.dai_link = dai;
-@@ -367,13 +392,38 @@ static int davinci_evm_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	mclk = of_clk_get_by_name(np, "ti,codec-clock");
-+	if (PTR_ERR(mclk) == -EPROBE_DEFER) {
-+		return -EPROBE_DEFER;
-+	} else if (IS_ERR(mclk)) {
-+		dev_dbg(&pdev->dev, "Codec clock not found.\n");
-+		mclk = NULL;
++static unsigned int tda998x_hdmi_rates[] = {
++	32000,
++	44100,
++	48000,
++	88200,
++	96000,
++};
++
++static struct snd_pcm_hw_constraint_list *evm_tda998x_rate_constraint(
++	struct snd_soc_card *soc_card)
++{
++	struct platform_device *pdev = to_platform_device(soc_card->dev);
++	unsigned sysclk = ((struct snd_soc_card_drvdata_davinci *)
++			   snd_soc_card_get_drvdata(soc_card))->sysclk;
++	struct snd_pcm_hw_constraint_list *ret;
++	unsigned int *rates;
++	int i = 0, j = 0;
++
++	ret = devm_kzalloc(soc_card->dev, sizeof(*ret) +
++			   sizeof(tda998x_hdmi_rates), GFP_KERNEL);
++	if (!ret) {
++		dev_err(&pdev->dev, "Unable to allocate rate constraint!\n");
++		return NULL;
 +	}
 +
- 	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
- 	if (!drvdata)
- 		return -ENOMEM;
- 
-+	drvdata->mclk = mclk;
-+
- 	ret = of_property_read_u32(np, "ti,codec-clock-rate", &drvdata->sysclk);
--	if (ret < 0)
--		return -EINVAL;
-+
-+	if (ret < 0) {
-+		if (!drvdata->mclk) {
-+			dev_err(&pdev->dev,
-+				"No clock or clock rate defined.\n");
-+			return -EINVAL;
++	rates = (unsigned int *)&ret[1];
++	ret->list = rates;
++	ret->mask = 0;
++	for (; i < ARRAY_SIZE(tda998x_hdmi_rates); i++) {
++		unsigned int bclk_freq = tda998x_hdmi_rates[i] * 2 *
++			snd_pcm_format_width(TDA998X_SAMPLE_FORMAT);
++		if (sysclk % bclk_freq == 0) {
++			rates[j++] = tda998x_hdmi_rates[i];
++			dev_dbg(soc_card->dev, "Allowing rate %u\n",
++				tda998x_hdmi_rates[i]);
 +		}
-+		drvdata->sysclk = clk_get_rate(drvdata->mclk);
-+	} else if (drvdata->mclk) {
-+		unsigned int requestd_rate = drvdata->sysclk;
-+		clk_set_rate(drvdata->mclk, drvdata->sysclk);
-+		drvdata->sysclk = clk_get_rate(drvdata->mclk);
-+		if (drvdata->sysclk != requestd_rate)
-+			dev_warn(&pdev->dev,
-+				 "Could not get requested rate %u using %u.\n",
-+				 requestd_rate, drvdata->sysclk);
 +	}
- 
- 	snd_soc_card_set_drvdata(&evm_soc_card, drvdata);
- 	ret = devm_snd_soc_register_card(&pdev->dev, &evm_soc_card);
-@@ -387,6 +437,12 @@ static int davinci_evm_probe(struct platform_device *pdev)
- static int davinci_evm_remove(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	ret->count = j;
++	return ret;
++}
++
++static const struct snd_soc_dapm_widget tda998x_dapm_widgets[] = {
++	SND_SOC_DAPM_OUTPUT("HDMI Out"),
++};
++
++static int evm_tda998x_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dapm_context *dapm = &rtd->codec->dapm;
++	struct snd_soc_card *soc_card = rtd->codec->card;
 +	struct snd_soc_card_drvdata_davinci *drvdata =
 +		(struct snd_soc_card_drvdata_davinci *)
-+		snd_soc_card_get_drvdata(card);
++		snd_soc_card_get_drvdata(soc_card);
++	int ret;
 +
-+	if (drvdata->mclk)
-+		clk_put(drvdata->mclk);
++	ret = snd_soc_dai_set_clkdiv(cpu_dai, 0, 1);
++	if (ret < 0)
++		return ret;
++
++	drvdata->rate_constraint = evm_tda998x_rate_constraint(soc_card);
++
++	snd_soc_dapm_new_controls(dapm, tda998x_dapm_widgets,
++				  ARRAY_SIZE(tda998x_dapm_widgets));
++
++	ret = snd_soc_of_parse_audio_routing(soc_card, "ti,audio-routing");
++
++	/* not connected */
++	snd_soc_dapm_disable_pin(dapm, "RX");
++
++	/* always connected */
++	snd_soc_dapm_enable_pin(dapm, "HDMI Out");
++
++	return 0;
++}
++
+ /* davinci-evm digital audio interface glue - connects codec <--> CPU */
+ static struct snd_soc_dai_link dm6446_evm_dai = {
+ 	.name = "TLV320AIC3X",
+@@ -337,7 +486,7 @@ static struct snd_soc_card da850_snd_soc_card = {
+ #if defined(CONFIG_OF)
  
- 	snd_soc_unregister_card(card);
+ /*
+- * The struct is used as place holder. It will be completely
++ * The structs are used as place holders. They will be completely
+  * filled with data from dt node.
+  */
+ static struct snd_soc_dai_link evm_dai_tlv320aic3x = {
+@@ -350,10 +499,24 @@ static struct snd_soc_dai_link evm_dai_tlv320aic3x = {
+ 		   SND_SOC_DAIFMT_IB_NF,
+ };
  
++static struct snd_soc_dai_link evm_dai_tda998x_hdmi = {
++	.name		= "NXP TDA998x HDMI Chip",
++	.stream_name	= "HDMI",
++	.codec_dai_name	= "hdmi-hifi",
++	.ops		= &evm_tda998x_ops,
++	.init           = evm_tda998x_init,
++	.dai_fmt	= (SND_SOC_DAIFMT_CBS_CFS | SND_SOC_DAIFMT_I2S |
++			   SND_SOC_DAIFMT_IB_NF),
++};
++
+ static const struct of_device_id davinci_evm_dt_ids[] = {
+ 	{
+ 		.compatible = "ti,da830-evm-audio",
+-		.data = (void *) &evm_dai_tlv320aic3x,
++		.data = &evm_dai_tlv320aic3x,
++	},
++	{
++		.compatible = "ti,am33xx-beaglebone-black-audio",
++		.data = &evm_dai_tda998x_hdmi,
+ 	},
+ 	{ /* sentinel */ }
+ };
 -- 
 1.7.9.5
+
