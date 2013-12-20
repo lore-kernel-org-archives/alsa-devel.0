@@ -1,83 +1,80 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 1/2] ASoC: wm_adsp: Factor out ADSP2
-	boot proceedure
-Date: Thu, 19 Dec 2013 20:21:00 +0000
-Message-ID: <20131219202100.GK31886@sirena.org.uk>
-References: <1387468085-26176-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: "Zheng, Lv" <lv.zheng@intel.com>
+Subject: RE: [alsa-devel] [RFC PATCH 15/15] ACPI/thinkpad: Fix wrong
+ <acpi/acpi.h> inclusion in Thinkpad ACPI users.
+Date: Fri, 20 Dec 2013 00:28:02 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E8802499192@SHSMSX101.ccr.corp.intel.com>
+References: <cover.1387336613.git.lv.zheng@intel.com>
+	<f82182940fe88b1b6428eecc2df1cb1684f0ca80.1387336613.git.lv.zheng@intel.com>
+	<20131218114117.GB29631@khazad-dum.debian.net> <s5hd2kuux4o.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6478616596764166164=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A65C2654D4
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2013 21:21:05 +0100 (CET)
-In-Reply-To: <1387468085-26176-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <s5hd2kuux4o.wl%tiwai@suse.de>
+Content-Language: en-US
+Sender: linux-acpi-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc: "Brown, Len" <len.brown@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ibm-acpi-devel@lists.sourceforge.net" <ibm-acpi-devel@lists.sourceforge.net>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Lv Zheng <zetalog@gmail.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi, Takashi and Henrique
 
---===============6478616596764166164==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8tIZwPmdq+hd82jQ"
-Content-Disposition: inline
+Thanks for reviewing and commenting.
 
+> From: linux-acpi-owner@vger.kernel.org [mailto:linux-acpi-owner@vger.kernel.org] On Behalf Of Takashi Iwai
+> Sent: Wednesday, December 18, 2013 9:06 PM
+> 
+> At Wed, 18 Dec 2013 09:41:17 -0200,
+> Henrique de Moraes Holschuh wrote:
+> >
+> > On Wed, 18 Dec 2013, Lv Zheng wrote:
+> > > CONFIG_ACPI dependent code should include <linux/acpi.h> instead of
+> > > directly including <acpi/acpi.h>.  This patch cleans up such wrong
+> > > inclusions for Thinkpad ACPI users.
+> >
+> > ...
+> >
+> > >  drivers/platform/x86/thinkpad_acpi.c |    1 -
+> > >  include/linux/thinkpad_acpi.h        |    2 ++
+> > >  sound/pci/hda/patch_conexant.c       |    1 -
+> > >  sound/pci/hda/patch_realtek.c        |    1 -
+> >
+> > I'd prefer if you left the include outside of thinkpad_acpi.h, and just fix
+> > the include in the two ALSA users.
+> 
+> Agreed.
+> 
+> > We might add some extra stuff to thinkpad_acpi.h someday, and not everything
+> > thinkpad_acpi does that might be useful to export to other areas of the
+> > kernel would require acpi.h.
+> >
+> > Looking at patch_conexant and patch_realtek, it might be better to actually
+> > move the "am I running on a thinkpad" stuff they use acpi.h for into
+> > thinkpad_acpi, and provide a prototype for that in thinkpad_acpi.h.
+> 
+> True, but we don't want to bind with thinkpad_acpi before identified
+> that it's a thinkpad, so the code needs to be in hd-audio codec
+> driver.
+> 
 
---8tIZwPmdq+hd82jQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It looks to me like that there is a relationship between two Henrique's suggestions.
+His opinion is all ACPI stuff should be bound into thinkpad_acpi.c, that's why he suggested not to include <linux/acpi.h> in <linux/thinkpad_acpi.h>.
+So we might address both of them in order to follow.
 
-On Thu, Dec 19, 2013 at 03:48:04PM +0000, Charles Keepax wrote:
-> Move the ADSP2 boot proceedure into a work structure in preparation for
-> running it asynchronously with the rest of the audio path bring up.
+I'm not sure if your opinion is: the hd-audio codec driver's needs cannot be met by addressing the second comment.
+And I'm not the right person that is able to test such code restructuring work.
+The target of this patchset is cleaning up wrong <acpi/acpi.h> inclusions, so let me focus on the first comment.
 
-These look good at least for a first pass, though obviously the drivers
-need updating and you need to pick times to run the events.  I had been
-thinking about trying to do something to encourage things like firmware
-download to happen during other delays or trying to arrange to initiate
-things from the clock startup (this is one of the possible uses for the
-_WILL_PMU event) but both are future work things.
+Can I just update this patch with <acpi/acpi.h> inclusions replaced by <linux/acpi.h> inclusions?
 
-You probably want to explicitly schedule these for WQ_UNBOUND though I
-think that's the default.
+Thanks and best regards
+-Lv
 
---8tIZwPmdq+hd82jQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSs1UpAAoJELSic+t+oim918YP/Ay/BlURW16maK8R7DxXXReh
-dYeapNTMTXyjKIWLJuKRokykhRZz4mcCsAOzZi+CsVM6K+11wYS4h2pX5YYJK0X4
-iTmHcuDu8WuVOPqzJXoNhmV1LXzF4sKgpIwH8U21Cu7ZksRQk+lyKpZ8NCDxJ9+4
-5r1EeX9a2XB0TaVAQE6VQyaYz0Ph9y07wl0sOyMRnJF1z9nEqxHt7RE+v6QbUvUK
-jIzwBTnoFqJRxWGp0gpLNVdDu/Ecv6PcIZIEvuG5Qx+7tpm2FHWa1krQkkiX5sXJ
-kCPHXPHyyGO7ufJey/MhjAd4qicodTQBnuirizJzrO4zrztifG49pwH5eTT2AK/n
-ZKwJ2L7K5ZRe8uiCty5gSqSo1dRsyuoYRQxco1D6tyBw+51aT8DuxSpPtH2O2k4M
-CL9Jxw/IS143yMUZJrUXw3/Fvzw+gJeMqKfXcCoJ/llePBxtLqW54LcsNu8pgJtz
-Ce3wvnLkRAhS4aKWGMBw1w/FlMjRJmXjVWGKCGmEJHtHW3fxwJRRQDDhu6OmPa6s
-JfBl9W7oE+mF+fLg69P/p1HKgEQ5ku76f+sxOtuaeKZsyIFoX7imQz7w7VpCS6B1
-Y2uYCNiRUKaLF5vX5mKbXPMzkIMMtqIXfQYei0T8eeBvaKe3+PhTSt6QJYzMXmZE
-+NTPYsy1XjZrGp9WY2Xl
-=3oW4
------END PGP SIGNATURE-----
-
---8tIZwPmdq+hd82jQ--
-
---===============6478616596764166164==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6478616596764166164==--
+> 
+> thanks,
+> 
+> Takashi
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
