@@ -1,20 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 06/19] ASoC: fsl: Don't set unused struct
- snd_pcm_hardware fields
-Date: Fri, 20 Dec 2013 15:04:08 +0100
-Message-ID: <52B44E58.4080609@metafoo.de>
-References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
- <1387545625-19240-6-git-send-email-lars@metafoo.de>
- <52B45371.8020808@tabi.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Enable subwoofer on Dell Vostro
+	5460/5470
+Date: Fri, 20 Dec 2013 16:08:13 +0100
+Message-ID: <1387552093-6262-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-044.synserver.de (smtp-out-126.synserver.de
- [212.40.185.126])
- by alsa0.perex.cz (Postfix) with ESMTP id F2E6D26534C
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 16:03:13 +0100 (CET)
-In-Reply-To: <52B45371.8020808@tabi.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6AAF3261AF4
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 16:08:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,31 +20,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: 1211920@bugs.launchpad.net, kailang@realtek.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/20/2013 03:25 PM, Timur Tabi wrote:
-> Lars-Peter Clausen wrote:
->> The ASoC core assumes that the PCM component of the ASoC card transparently
->> moves data around and does not impose any restrictions on the memory
->> layout or
->> the transfer speed. It ignores all fields from the snd_pcm_hardware struct
->> for
->> the PCM driver that are related to this. Setting these fields in the PCM
->> driver
->> might suggest otherwise though, so rather not set them.
-> 
-> Is this new?  There are formats that the codec and the SSI support that the
-> DMA controller does NOT support, like packed 24-bit samples.  How do we
-> ensure that we never get those?
+In this case, there are two DACs, and DAC 0x03 is mono. In order
+to make headphones and front speaker use DAC 0x02, and subwoofer use
+DAC 0x03, we artificially cut the connection from nodes 0x14 and 0x15
+to node 0x03, so they can only use DAC 0x02.
 
-No, this is how it has always been. If there are restrictions imposed by the
-DMA controller we need to add support for expressing this inside the ASoC
-framework. But I think it will probably be more complex than just saying the
-DMA controller supports format A, B, C and the DAI controller supports
-format B, C, D and then just do the intersection of both. E.g. the DAI
-controller probably does not care whether the samples are packed or not if
-it only sees one sample at a time, while
+In addition, the 5460 and 5470 differs in the sense that 5470 also
+needs a headset mic patch, whereas 5460 has individual detection for
+headphone and headset mic.
 
-- Lars
+BugLink: https://bugs.launchpad.net/bugs/1211920
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+
+I'm adding Kailang to cc on this one; hopefully he'll scream if this patch
+is doing anything dangerous, such as if there's a risk to blow up the subwoofer.
+
+ sound/pci/hda/patch_realtek.c |   43 +++++++++++++++++++++++++++++++++++------
+ 1 file changed, 37 insertions(+), 6 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index dfe4080..16c0caa 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3770,10 +3770,14 @@ static void alc282_fixup_asus_tx300(struct hda_codec *codec,
+ static void alc290_fixup_mono_speakers(struct hda_codec *codec,
+ 				       const struct hda_fixup *fix, int action)
+ {
+-	if (action == HDA_FIXUP_ACT_PRE_PROBE)
+-		/* Remove DAC node 0x03, as it seems to be
+-		   giving mono output */
+-		snd_hda_override_wcaps(codec, 0x03, 0);
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		/* DAC node 0x03 is giving mono output. We therefore want to
++		   make sure 0x14 (front speaker) and 0x15 (headphones) use the
++		   stereo DAC, while leaving 0x17 (bass speaker) for node 0x03. */
++		hda_nid_t conn1[2] = { 0x0c };
++		snd_hda_override_conn_list(codec, 0x14, 1, conn1);
++		snd_hda_override_conn_list(codec, 0x15, 1, conn1);
++	}
+ }
+ 
+ #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
+@@ -3913,6 +3917,9 @@ enum {
+ 	ALC282_FIXUP_ASUS_TX300,
+ 	ALC283_FIXUP_INT_MIC,
+ 	ALC290_FIXUP_MONO_SPEAKERS,
++	ALC290_FIXUP_MONO_SPEAKERS_HSJACK,
++	ALC290_FIXUP_SUBWOOFER,
++	ALC290_FIXUP_SUBWOOFER_HSJACK,
+ 	ALC269_FIXUP_THINKPAD_ACPI,
+ 	ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	ALC255_FIXUP_HEADSET_MODE,
+@@ -4235,9 +4242,31 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_LIMIT_INT_MIC_BOOST
+ 	},
++	[ALC290_FIXUP_SUBWOOFER_HSJACK] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x17, 0x90170112 }, /* subwoofer */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC290_FIXUP_MONO_SPEAKERS_HSJACK,
++	},
++	[ALC290_FIXUP_SUBWOOFER] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x17, 0x90170112 }, /* subwoofer */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC290_FIXUP_MONO_SPEAKERS,
++	},
+ 	[ALC290_FIXUP_MONO_SPEAKERS] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc290_fixup_mono_speakers,
++	},
++	[ALC290_FIXUP_MONO_SPEAKERS_HSJACK] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc290_fixup_mono_speakers,
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_DELL3_MIC_NO_PRESENCE,
+ 	},
+@@ -4282,6 +4311,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x05cb, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05cc, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05cd, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x05da, "Dell Vostro 5460", ALC290_FIXUP_SUBWOOFER),
+ 	SND_PCI_QUIRK(0x1028, 0x05de, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05e0, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05e9, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+@@ -4303,10 +4333,11 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0610, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0613, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0614, "Dell Inspiron 3135", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1028, 0x0616, "Dell Vostro 5470", ALC290_FIXUP_MONO_SPEAKERS),
++	SND_PCI_QUIRK(0x1028, 0x0615, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
++	SND_PCI_QUIRK(0x1028, 0x0616, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
+ 	SND_PCI_QUIRK(0x1028, 0x061f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0629, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS),
++	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS_HSJACK),
+ 	SND_PCI_QUIRK(0x1028, 0x063e, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x063f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0640, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+-- 
+1.7.9.5
