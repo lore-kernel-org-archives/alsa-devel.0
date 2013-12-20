@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 27/38] bebob: Add commands and connections/streams management
-Date: Fri, 20 Dec 2013 22:14:18 +0900
-Message-ID: <1387545269-3875-28-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 37/38] bebob: Add support for M-Audio special Firewire series
+Date: Fri, 20 Dec 2013 22:14:28 +0900
+Message-ID: <1387545269-3875-38-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,1286 +20,696 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds management functionality for connections and streams.
-DM1000/BeBob uses CMP to manage connections and uses AMDTP for streams.
+This commit allows this driver to support some models which M-Audio produces
+with DM1000 but its firmware is special. They are:
+ - Firewire 1814
+ - ProjectMix I/O
 
-This commit also adds some BridgeCo's AV/C extension commands. There are many
-BridgeCo's AV/C extension commands but this commit adds below commands to get
-device's capability and status:
+They have heavily customized firmware. The usual operations can't be applied to
+them. For this reason, this commit adds some model specific members in 'struct
+snd_bebob' and model specific functions. Some parameters are write-only so this
+commit also adds control interface for them.
 
- 1.Extended Plug Info commands
-  - Plug Channel Position Specific Data
-  - Plug Type Specific Data
-  - Cluster(Section) Info Specific Data
-  - Plug Input Specific Data
- 2.Extended Stream Format Information commands
-  - Extended Stream Format Information Command - Single Request
+M-Audio special firmware quirks:
+ - Just after powering on, they wait to download firmware. This state is
+   changed when receiving cue. Then bus reset is generated and the device is
+   recognized as a different model with the uploaded firmware.
+ - They don't respond against BridgeCo AV/C extension commands. So drivers
+   can't get their stream formations and so on.
+ - They do not start to transmit packets only by establishing connection but
+   also by receiving SIGNAL FORMAT command.
+ - They can't handle frequent transactions. In this reason, this driver often
+   fail to handle them.
 
-For Extended Plug Info commands for Cluster Info Specific Data, I pick up
-'section' instead of 'cluster' from document to prevent from misunderstanding
-because 'cluster' is also used in IEC 61883-6.
+This module don't support to upload firmware.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/Makefile        |   2 +-
- sound/firewire/bebob/bebob.c         |  10 +
- sound/firewire/bebob/bebob.h         | 120 ++++++
- sound/firewire/bebob/bebob_command.c | 273 +++++++++++++
- sound/firewire/bebob/bebob_stream.c  | 773 +++++++++++++++++++++++++++++++++++
- 5 files changed, 1177 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/bebob/bebob_command.c
- create mode 100644 sound/firewire/bebob/bebob_stream.c
+ sound/firewire/Kconfig              |   1 +
+ sound/firewire/bebob/bebob.c        |  17 +-
+ sound/firewire/bebob/bebob.h        |  13 +
+ sound/firewire/bebob/bebob_maudio.c | 492 +++++++++++++++++++++++++++++++++++-
+ sound/firewire/bebob/bebob_stream.c |  22 +-
+ 5 files changed, 539 insertions(+), 6 deletions(-)
 
-diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-index c6f0141..5cece62 100644
---- a/sound/firewire/bebob/Makefile
-+++ b/sound/firewire/bebob/Makefile
-@@ -1,2 +1,2 @@
--snd-bebob-objs := bebob.o
-+snd-bebob-objs := bebob_command.o bebob_stream.o bebob.o
- obj-m += snd-bebob.o
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index d71faf6..1149997 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -111,6 +111,7 @@ config SND_BEBOB
+ 	  * Focusrite Saffire/Saffire LE/SaffirePro10 IO/SaffirePro26 IO
+ 	  * M-Audio Firewire410/AudioPhile/Solo
+ 	  * M-Audio Ozonic/NRV10/ProfireLightBridge
++	  * M-Audio Firewire 1814/ProjectMix IO
+ 
+           To compile this driver as a module, choose M here: the module
+           will be called snd-bebob.
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 83916ad..dbb897a 100644
+index 65554ef..65e856e 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -160,6 +160,14 @@ bebob_probe(struct fw_unit *unit,
+@@ -60,6 +60,8 @@ static unsigned int devices_used;
+ 
+ #define MODEL_FOCUSRITE_SAFFIRE_BOTH	0x00000000
+ #define MODEL_MAUDIO_AUDIOPHILE_BOTH	0x00010060
++#define MODEL_MAUDIO_FW1814		0x00010071
++#define MODEL_MAUDIO_PROJECTMIX		0x00010091
+ 
+ static int
+ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+@@ -212,7 +214,14 @@ bebob_probe(struct fw_unit *unit,
  	if (err < 0)
  		goto error;
  
-+	err = snd_bebob_stream_discover(bebob);
-+	if (err < 0)
-+		goto error;
-+
-+	err = snd_bebob_stream_init_duplex(bebob);
-+	if (err < 0)
-+		goto error;
-+
- 	snd_card_set_dev(card, &unit->device);
- 	err = snd_card_register(card);
- 	if (err < 0) {
-@@ -183,12 +191,14 @@ bebob_update(struct fw_unit *unit)
- {
- 	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
- 	fcp_bus_reset(bebob->unit);
-+	snd_bebob_stream_update_duplex(bebob);
- }
+-	err = snd_bebob_stream_discover(bebob);
++	if ((entry->vendor_id == VEN_MAUDIO1) &&
++	    (entry->model_id == MODEL_MAUDIO_FW1814))
++		err = snd_bebob_maudio_special_discover(bebob, true);
++	else if ((entry->vendor_id == VEN_MAUDIO1) &&
++		 (entry->model_id == MODEL_MAUDIO_PROJECTMIX))
++		err = snd_bebob_maudio_special_discover(bebob, false);
++	else
++		err = snd_bebob_stream_discover(bebob);
+ 	if (err < 0)
+ 		goto error;
  
- 
- static void bebob_remove(struct fw_unit *unit)
- {
- 	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
-+	snd_bebob_stream_destroy_duplex(bebob);
- 	snd_card_disconnect(bebob->card);
- 	snd_card_free_when_closed(bebob->card);
- }
+@@ -370,6 +379,12 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010081, &maudio_nrv10_spec),
+ 	/* M-Audio, ProFireLightbridge */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x000100a1, &spec_normal),
++	/* Firewire 1814 */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_FW1814,
++			    &maudio_special_spec),
++	/* M-Audio ProjectMix */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_PROJECTMIX,
++			    &maudio_special_spec),
+ 	/* Ids are unknown but able to be supported */
+ 	/*  Mackie, Digital X Bus x.200 */
+ 	/*  Mackie, Digital X Bus x.400 */
 diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index a321c43..125dbea 100644
+index c67d5e5..c65e7b3 100644
 --- a/sound/firewire/bebob/bebob.h
 +++ b/sound/firewire/bebob/bebob.h
-@@ -23,11 +23,25 @@
- 
- #include "../lib.h"
- #include "../fcp.h"
-+#include "../packets-buffer.h"
-+#include "../iso-resources.h"
-+#include "../amdtp.h"
-+#include "../cmp.h"
- 
- /* basic register addresses on DM1000 */
- #define BEBOB_ADDR_REG_INFO	0xffffc8020000
- #define BEBOB_ADDR_REG_REQ	0xffffc8021000
- 
-+struct snd_bebob;
+@@ -100,6 +100,16 @@ struct snd_bebob {
+ 	int dev_lock_count;
+ 	bool dev_lock_changed;
+ 	wait_queue_head_t hwdep_wait;
 +
-+#define SND_BEBOB_STRM_FMT_ENTRIES	9
-+struct snd_bebob_stream_formation {
-+	unsigned int pcm;
-+	unsigned int midi;
-+};
-+/* this is a lookup table for index of stream formations */
-+extern const unsigned int snd_bebob_rate_table[SND_BEBOB_STRM_FMT_ENTRIES];
-+
- struct snd_bebob {
- 	struct snd_card *card;
- 	struct fw_device *device;
-@@ -36,6 +50,21 @@ struct snd_bebob {
- 
- 	struct mutex mutex;
- 	spinlock_t lock;
-+
-+	unsigned int midi_input_ports;
-+	unsigned int midi_output_ports;
-+
-+	struct cmp_connection out_conn;
-+	struct amdtp_stream tx_stream;
-+	struct cmp_connection in_conn;
-+	struct amdtp_stream rx_stream;
-+
-+	struct snd_bebob_stream_formation
-+		tx_stream_formations[SND_BEBOB_STRM_FMT_ENTRIES];
-+	struct snd_bebob_stream_formation
-+		rx_stream_formations[SND_BEBOB_STRM_FMT_ENTRIES];
-+
-+	int sync_input_plug;
++	/* for M-Audio special devices */
++	bool maudio_special_quirk;
++	bool maudio_is1814;
++	unsigned int clk_src;
++	unsigned int dig_in_iface;
++	unsigned int dig_in_fmt;
++	unsigned int dig_out_fmt;
++	unsigned int clk_lock;
++	struct snd_ctl_elem_id *ctl_id_sync;
  };
  
  static inline int
-@@ -54,6 +83,97 @@ snd_bebob_read_quad(struct fw_unit *unit, u64 addr, u32 *buf)
- 				  (void *)buf, sizeof(u32), 0);
- }
+@@ -241,6 +251,9 @@ extern struct snd_bebob_spec maudio_solo_spec;
+ extern struct snd_bebob_spec maudio_ozonic_spec;
+ extern struct snd_bebob_spec maudio_nrv10_spec;
  
-+/*
-+ * AVC command extensions, AV/C Unit and Subunit, Revision 17
-+ * (Nov 2003, BridgeCo)
-+ */
-+#define	AVC_BRIDGECO_ADDR_BYTES	6
-+enum avc_bridgeco_plug_dir {
-+	AVC_BRIDGECO_PLUG_DIR_IN	= 0x00,
-+	AVC_BRIDGECO_PLUG_DIR_OUT	= 0x01
-+};
-+enum avc_bridgeco_plug_mode {
-+	AVC_BRIDGECO_PLUG_MODE_UNIT		= 0x00,
-+	AVC_BRIDGECO_PLUG_MODE_SUBUNIT		= 0x01,
-+	AVC_BRIDGECO_PLUG_MODE_FUNCTION_BLOCK	= 0x02
-+};
-+enum avc_bridgeco_plug_unit {
-+	AVC_BRIDGECO_PLUG_UNIT_ISOC	= 0x00,
-+	AVC_BRIDGECO_PLUG_UNIT_EXT	= 0x01,
-+	AVC_BRIDGECO_PLUG_UNIT_ASYNC	= 0x02
-+};
-+enum avc_bridgeco_plug_type {
-+	AVC_BRIDGECO_PLUG_TYPE_ISOC	= 0x00,
-+	AVC_BRIDGECO_PLUG_TYPE_ASYNC	= 0x01,
-+	AVC_BRIDGECO_PLUG_TYPE_MIDI	= 0x02,
-+	AVC_BRIDGECO_PLUG_TYPE_SYNC	= 0x03,
-+	AVC_BRIDGECO_PLUG_TYPE_ANA	= 0x04,
-+	AVC_BRIDGECO_PLUG_TYPE_DIG	= 0x05
-+};
-+static inline void
-+avc_bridgeco_fill_unit_addr(u8 buf[AVC_BRIDGECO_ADDR_BYTES],
-+			    enum avc_bridgeco_plug_dir dir,
-+			    enum avc_bridgeco_plug_unit unit,
-+			    unsigned int pid)
-+{
-+	buf[0] = 0xff;	/* Unit */
-+	buf[1] = dir;
-+	buf[2] = AVC_BRIDGECO_PLUG_MODE_UNIT;
-+	buf[3] = unit;
-+	buf[4] = 0xff & pid;
-+	buf[5] = 0xff;	/* reserved */
-+}
-+static inline void
-+avc_bridgeco_fill_subunit_addr(u8 buf[AVC_BRIDGECO_ADDR_BYTES],
-+			       unsigned int mode,
-+			       enum avc_bridgeco_plug_dir dir,
-+			       unsigned int pid)
-+{
-+	buf[0] = 0xff & mode;	/* Subunit */
-+	buf[1] = dir;
-+	buf[2] = AVC_BRIDGECO_PLUG_MODE_SUBUNIT;
-+	buf[3] = 0xff & pid;
-+	buf[4] = 0xff;	/* reserved */
-+	buf[5] = 0xff;	/* reserved */
-+}
-+int avc_bridgeco_get_plug_ch_pos(struct fw_unit *unit,
-+				 u8 add[AVC_BRIDGECO_ADDR_BYTES],
-+				 u8 *buf, unsigned int len);
-+int avc_bridgeco_get_plug_type(struct fw_unit *unit,
-+			       u8 addr[AVC_BRIDGECO_ADDR_BYTES],
-+			       enum avc_bridgeco_plug_type *type);
-+int avc_bridgeco_get_plug_section_type(struct fw_unit *unit,
-+				       u8 addr[AVC_BRIDGECO_ADDR_BYTES],
-+				       unsigned int section_id, u8 *ctype);
-+int avc_bridgeco_get_plug_input(struct fw_unit *unit,
-+				u8 addr[AVC_BRIDGECO_ADDR_BYTES],
-+				u8 input[7]);
-+int avc_bridgeco_get_plug_strm_fmt(struct fw_unit *unit,
-+				   u8 addr[AVC_BRIDGECO_ADDR_BYTES],
-+				   unsigned int entryid, u8 *buf,
-+				   unsigned int *len);
++extern struct snd_bebob_spec maudio_special_spec;
++int snd_bebob_maudio_special_discover(struct snd_bebob *bebob, bool is1814);
 +
-+int snd_bebob_get_rate(struct snd_bebob *bebob, unsigned int *rate,
-+		       enum avc_general_plug_dir dir);
-+int snd_bebob_set_rate(struct snd_bebob *bebob, unsigned int rate,
-+		       enum avc_general_plug_dir dir);
-+
-+/* for AMDTP streaming */
-+int snd_bebob_stream_get_rate(struct snd_bebob *bebob, unsigned int *rate);
-+int snd_bebob_stream_set_rate(struct snd_bebob *bebob, unsigned int rate);
-+int snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob,
-+					  bool *internal);
-+int snd_bebob_stream_discover(struct snd_bebob *bebob);
-+int snd_bebob_stream_map(struct snd_bebob *bebob,
-+			 struct amdtp_stream *stream);
-+int snd_bebob_stream_init_duplex(struct snd_bebob *bebob);
-+int snd_bebob_stream_start_duplex(struct snd_bebob *bebob,
-+				  struct amdtp_stream *stream,
-+				   unsigned int sampling_rate);
-+int snd_bebob_stream_stop_duplex(struct snd_bebob *bebob);
-+void snd_bebob_stream_update_duplex(struct snd_bebob *bebob);
-+void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob);
-+
- #define SND_BEBOB_DEV_ENTRY(vendor, model) \
+ #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
  { \
  	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/bebob/bebob_command.c b/sound/firewire/bebob/bebob_command.c
-new file mode 100644
-index 0000000..22a86d0
---- /dev/null
-+++ b/sound/firewire/bebob/bebob_command.c
-@@ -0,0 +1,273 @@
+diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
+index 715cf34..b941042 100644
+--- a/sound/firewire/bebob/bebob_maudio.c
++++ b/sound/firewire/bebob/bebob_maudio.c
+@@ -7,9 +7,10 @@
+  */
+ 
+ #include "./bebob.h"
++#include <sound/control.h>
+ 
+ /*
+- * Just powering on, Firewire 410/Audiophile wait to
++ * Just powering on, Firewire 410/Audiophile/1814 and ProjectMix I/O wait to
+  * download firmware blob. To enable these devices, drivers should upload
+  * firmware blob and send a command to initialize configuration to factory
+  * settings when completing uploading. Then these devices generate bus reset
+@@ -22,6 +23,12 @@
+  * Without streaming, the devices except for Firewire Audiophile can mix any
+  * input and output. For this reason, Audiophile cannot be used as standalone
+  * mixer.
++ *
++ * Firewire 1814 and ProjectMix I/O uses special firmware. It will be freezed
++ * when receiving any commands which the firmware can't understand. These
++ * devices utilize completely different system to control. It is some
++ * write-transaction directly into a certain address. All of addresses for mixer
++ * functionality is between 0xffc700700000 to 0xffc70070009c.
+  */
+ 
+ #define MAUDIO_SPECIFIC_ADDRESS	0xffc700000000
+@@ -29,6 +36,7 @@
+ #define METER_OFFSET		0x00600000
+ 
+ /* some device has sync info after metering data */
++#define METER_SIZE_SPECIAL	84	/* with sync info */
+ #define METER_SIZE_FW410	76	/* with sync info */
+ #define METER_SIZE_AUDIOPHILE	60	/* with sync info */
+ #define METER_SIZE_SOLO		52	/* with sync info */
+@@ -79,7 +87,466 @@ end:
+ 	return err;
+ }
+ 
+-/* Firewire 410 specific operation */
 +/*
-+ * bebob_command.c - driver for BeBoB based devices
-+ *
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
++ * dig_fmt: 0x00:S/PDIF, 0x01:ADAT
++ * clk_lock: 0x00:unlock, 0x01:lock
 + */
-+
-+#include "./bebob.h"
-+
-+#define BEBOB_COMMAND_MAX_TRIAL	3
-+#define BEBOB_COMMAND_WAIT_MSEC	100
-+
-+static inline void
-+avc_bridgeco_fill_command_base(u8 *buf, unsigned int ctype, unsigned int opcode,
-+			       unsigned int subfunction,
-+			       u8 addr[AVC_BRIDGECO_ADDR_BYTES])
-+{
-+	buf[0] = 0x7 & ctype;
-+	buf[1] = addr[0];
-+	buf[2] = 0xff & opcode;
-+	buf[3] = 0xff & subfunction;
-+	buf[4] = addr[1];
-+	buf[5] = addr[2];
-+	buf[6] = addr[3];
-+	buf[7] = addr[4];
-+	buf[8] = addr[5];
-+}
-+
-+int avc_bridgeco_get_plug_type(struct fw_unit *unit,
-+			       u8 addr[AVC_BRIDGECO_ADDR_BYTES],
-+			       enum avc_bridgeco_plug_type *type)
-+{
-+	u8 *buf;
-+	int err;
-+
-+	buf = kzalloc(12, GFP_KERNEL);
-+	if (buf == NULL)
-+		return -ENOMEM;
-+
-+	/* status for plug info with bridgeco extension */
-+	avc_bridgeco_fill_command_base(buf, 0x01, 0x02, 0xc0, addr);
-+	buf[9]  = 0x00;		/* info type is 'plug type' */
-+	buf[10] = 0xff;		/* plug type in response */
-+
-+	/* do transaction and check buf[1-7,9] are the same against command */
-+	err = fcp_avc_transaction(unit, buf, 12, buf, 12,
-+				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
-+				  BIT(6) | BIT(7) | BIT(9));
-+	if (err < 0)
-+		goto end;
-+	/* IMPLEMENTED/STABLE is OK */
-+	else if ((err < 6) || (buf[0] != 0x0c)) {
-+		err = -EIO;
-+		goto end;
-+	}
-+
-+	*type = buf[10];
-+	err = 0;
-+end:
-+	kfree(buf);
-+	return err;
-+}
-+
-+int avc_bridgeco_get_plug_ch_pos(struct fw_unit *unit,
-+				 u8 addr[AVC_BRIDGECO_ADDR_BYTES],
-+				 u8 *buf, unsigned int len)
-+{
-+	unsigned int trial;
-+	int err;
-+
-+	/* check given buffer */
-+	if ((buf == NULL) || (len < 256)) {
-+		err = -EINVAL;
-+		goto end;
-+	}
-+
-+	/* status for plug info with bridgeco extension */
-+	avc_bridgeco_fill_command_base(buf, 0x01, 0x02, 0xc0, addr);
-+
-+	/* info type is 'channel position' */
-+	buf[9] = 0x03;
-+
-+	/*
-+	 * NOTE:
-+	 * M-Audio Firewire 410 returns 0x09 (ACCEPTED) just after changing
-+	 * signal format even if this command asks STATE. This is not in
-+	 * AV/C command specification.
-+	 */
-+	for (trial = 0; trial < BEBOB_COMMAND_MAX_TRIAL; trial++) {
-+		/* do transaction and check buf[1-7,9] are the same */
-+		err = fcp_avc_transaction(unit, buf, 12, buf, 256,
-+					  BIT(1) | BIT(2) | BIT(3) | BIT(4) |
-+					  BIT(5) | BIT(6) | BIT(7) | BIT(9));
-+		if (err < 0)
-+			goto end;
-+		else if (err < 6) {
-+			err = -EIO;
-+			goto end;
-+		} else if (buf[0] == 0x0c)
-+			break;
-+		else if (trial < BEBOB_COMMAND_MAX_TRIAL)
-+			msleep(BEBOB_COMMAND_WAIT_MSEC);
-+		else {
-+			err = -EIO;
-+			goto end;
-+		}
-+	}
-+
-+	/* strip command header */
-+	memmove(buf, buf + 10, err - 10);
-+	err = 0;
-+end:
-+	return err;
-+}
-+
-+int avc_bridgeco_get_plug_section_type(struct fw_unit *unit,
-+				       u8 addr[AVC_BRIDGECO_ADDR_BYTES],
-+				       unsigned int section_id, u8 *type)
-+{
-+	u8 *buf;
-+	int err;
-+
-+	/* section info includes charactors but this module don't need it */
-+	buf = kzalloc(12, GFP_KERNEL);
-+	if (buf == NULL)
-+		return -ENOMEM;
-+
-+	/* status for plug info with bridgeco extension */
-+	avc_bridgeco_fill_command_base(buf, 0x01, 0x02, 0xc0, addr);
-+
-+	buf[9] = 0x07;		/* info type is 'section info' */
-+	buf[10] = 0xff & (section_id + 1);	/* section id */
-+	buf[11] = 0x00;		/* type in response */
-+
-+	/* do transaction and check buf[1-7,9,10] are the same */
-+	err = fcp_avc_transaction(unit, buf, 12, buf, 12,
-+				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
-+				  BIT(6) | BIT(7) | BIT(9) | BIT(10));
-+	if (err < 0)
-+		goto end;
-+	else if ((err < 12) && (buf[0] != 0x0c)) {
-+		err = -EIO;
-+		goto end;
-+	}
-+
-+	*type = buf[11];
-+	err = 0;
-+end:
-+	kfree(buf);
-+	return err;
-+}
-+
-+int avc_bridgeco_get_plug_input(struct fw_unit *unit,
-+				u8 addr[AVC_BRIDGECO_ADDR_BYTES], u8 input[7])
++static int
++special_clk_set_params(struct snd_bebob *bebob, unsigned int clk_src,
++		       unsigned int dig_in_fmt, unsigned int dig_out_fmt,
++		       unsigned int clk_lock)
 +{
 +	int err;
 +	u8 *buf;
 +
-+	buf = kzalloc(18, GFP_KERNEL);
++	if (amdtp_stream_running(&bebob->rx_stream) ||
++	    amdtp_stream_running(&bebob->tx_stream))
++		return -EBUSY;
++
++	buf = kmalloc(12, GFP_KERNEL);
 +	if (buf == NULL)
 +		return -ENOMEM;
 +
-+	/* status for plug info with bridgeco extension */
-+	avc_bridgeco_fill_command_base(buf, 0x01, 0x02, 0xc0, addr);
++	buf[0]  = 0x00;		/* CONTROL */
++	buf[1]  = 0xff;		/* UNIT */
++	buf[2]  = 0x00;		/* vendor dependent */
++	buf[3]  = 0x04;		/* company ID high */
++	buf[4]  = 0x00;		/* company ID middle */
++	buf[5]  = 0x04;		/* company ID low */
++	buf[6]  = 0xff & clk_src;	/* clock source */
++	buf[7]  = 0xff & dig_in_fmt;	/* input digital format */
++	buf[8]  = 0xff & dig_out_fmt;	/* output digital format */
++	buf[9]  = 0xff & clk_lock;	/* lock these settings */
++	buf[10] = 0x00;		/* padding  */
++	buf[11] = 0x00;		/* padding */
 +
-+	/* info type is 'Plug Input Specific Data' */
-+	buf[9] = 0x05;
-+
-+	/* do transaction and check buf[1-7] are the same */
-+	err = fcp_avc_transaction(unit, buf, 16, buf, 16,
-+				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
-+				  BIT(6) | BIT(7));
++	/* do transaction and check buf[1-9] are the same against command */
++	err = fcp_avc_transaction(bebob->unit, buf, 12, buf, 12,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) |
++				  BIT(5) | BIT(6) | BIT(7) | BIT(8) |
++				  BIT(9));
 +	if (err < 0)
 +		goto end;
-+	else if ((err < 18) && (buf[0] != 0x0c)) {
-+		err = -EIO;
-+		goto end;
-+	}
-+
-+	memcpy(input, buf + 10, 5);
-+end:
-+	kfree(buf);
-+	return err;
-+}
-+
-+int avc_bridgeco_get_plug_strm_fmt(struct fw_unit *unit,
-+				   u8 addr[AVC_BRIDGECO_ADDR_BYTES],
-+				   unsigned int entryid, u8 *buf,
-+				   unsigned int *len)
-+{
-+	int err;
-+
-+	/* check given buffer */
-+	if ((buf == NULL) || (*len < 12)) {
-+		err = -EINVAL;
-+		goto end;
-+	}
-+
-+	/* status for plug info with bridgeco extension */
-+	avc_bridgeco_fill_command_base(buf, 0x01, 0x2f, 0xc1, addr);
-+
-+	buf[9] = 0xff;			/* stream status in response */
-+	buf[10] = 0xff & entryid;	/* entry ID */
-+
-+	/* do transaction and check buf[1-7,10] are the same against command */
-+	err = fcp_avc_transaction(unit, buf, 12, buf, *len,
-+				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
-+				  BIT(6) | BIT(7) | BIT(10));
-+	if (err < 0)
-+		goto end;
-+	/* reach the end of entries */
-+	else if (buf[0] == 0x0a) {
-+		err = 0;
-+		*len = 0;
-+		goto end;
-+	} else if (buf[0] != 0x0c) {
-+		err = -EINVAL;
-+		goto end;
-+	/* the header of this command is 11 bytes */
-+	} else if (err < 12) {
-+		err = -EIO;
-+		goto end;
-+	} else if (buf[10] != entryid) {
-+		err = -EIO;
-+		goto end;
-+	}
-+
-+	/* strip command header */
-+	memmove(buf, buf + 11, err - 11);
-+	*len = err - 11;
-+	err = 0;
-+end:
-+	return err;
-+}
-+
-+int snd_bebob_get_rate(struct snd_bebob *bebob, unsigned int *rate,
-+		       enum avc_general_plug_dir dir)
-+{
-+	int err;
-+
-+	err = avc_general_get_sig_fmt(bebob->unit, rate, dir, 0);
-+	if (err < 0)
-+		goto end;
-+
-+	/* IMPLEMENTED/STABLE is OK */
-+	if (err != 0x0c) {
++	if ((err < 6) || (buf[0] != 0x09)) {
 +		dev_err(&bebob->unit->device,
-+			"failed to get sampling rate\n");
++			"failed to set clock params\n");
 +		err = -EIO;
-+	}
-+end:
-+	return err;
-+}
-+
-+int snd_bebob_set_rate(struct snd_bebob *bebob, unsigned int rate,
-+		       enum avc_general_plug_dir dir)
-+{
-+	int err;
-+
-+	err = avc_general_set_sig_fmt(bebob->unit, rate, dir, 0);
-+	if (err < 0)
 +		goto end;
-+
-+	/* ACCEPTED or INTERIM is OK */
-+	if ((err != 0x0f) && (err != 0x09)) {
-+		dev_err(&bebob->unit->device,
-+			"failed to set sampling rate\n");
-+		err = -EIO;
 +	}
++
++	bebob->clk_src		= buf[6];
++	bebob->dig_in_fmt	= buf[7];
++	bebob->dig_out_fmt	= buf[8];
++	bebob->clk_lock		= buf[9];
++
++	snd_ctl_notify(bebob->card, SNDRV_CTL_EVENT_MASK_VALUE,
++		       bebob->ctl_id_sync);
 +end:
++	kfree(buf);
 +	return err;
 +}
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-new file mode 100644
-index 0000000..7c604d8
---- /dev/null
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -0,0 +1,773 @@
-+/*
-+ * bebob_stream.c - a part of driver for BeBoB based devices
-+ *
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "./bebob.h"
-+
-+/*
-+ * NOTE;
-+ * For BeBoB streams, Both of input and output CMP connection is important.
-+ *
-+ * [Communication with Windows driver] According to logs of IEEE1394 packets,
-+ * all models seem to make both of connections when booting.
-+ *
-+ * [Actual behavior] In some devices, each CMP connection starts to
-+ * transmit/receive a corresponding stream. But in the others, both of CMP
-+ * connection needs to start transmitting stream. An example of the latter is
-+ * 'M-Audio Firewire 410'.
-+ */
-+
-+/* 128 is an arbitrary length but it seems to be enough */
-+#define FORMAT_MAXIMUM_LENGTH 128
-+
-+const unsigned int snd_bebob_rate_table[SND_BEBOB_STRM_FMT_ENTRIES] = {
-+	[0] = 22050,
-+	[1] = 24000,
-+	[2] = 32000,
-+	[3] = 44100,
-+	[4] = 48000,
-+	[5] = 88200,
-+	[6] = 96000,
-+	[7] = 176400,
-+	[8] = 192000,
-+};
-+
-+static unsigned int
-+get_formation_index(unsigned int rate)
++static void
++special_stream_formation_set(struct snd_bebob *bebob)
 +{
 +	unsigned int i;
 +
-+	for (i = 0; i < sizeof(snd_bebob_rate_table); i++) {
-+		if (snd_bebob_rate_table[i] == rate)
-+			return i;
-+	}
-+	return -1;
-+}
-+
-+int
-+snd_bebob_stream_get_rate(struct snd_bebob *bebob, unsigned int *curr_rate)
-+{
-+	unsigned int tx_rate, rx_rate;
-+	int err;
-+
-+	err = snd_bebob_get_rate(bebob, &tx_rate, AVC_GENERAL_PLUG_DIR_OUT);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_bebob_get_rate(bebob, &rx_rate, AVC_GENERAL_PLUG_DIR_IN);
-+	if (err < 0)
-+		goto end;
-+
-+	*curr_rate = rx_rate;
-+	if (rx_rate == tx_rate)
-+		goto end;
-+
-+	/* synchronize receive stream rate to transmit stream rate */
-+	err = snd_bebob_set_rate(bebob, rx_rate, AVC_GENERAL_PLUG_DIR_IN);
-+end:
-+	return err;
-+}
-+
-+int
-+snd_bebob_stream_set_rate(struct snd_bebob *bebob, unsigned int rate)
-+{
-+	int err;
-+
-+	/* TODO: move to strem_start? */
-+	err = snd_bebob_set_rate(bebob, rate, AVC_GENERAL_PLUG_DIR_OUT);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_bebob_set_rate(bebob, rate, AVC_GENERAL_PLUG_DIR_IN);
-+end:
-+	return err;
-+}
-+
-+int
-+snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
-+{
-+	u8 addr[AVC_BRIDGECO_ADDR_BYTES], input[7];
-+	int err = 0;
-+
-+	*internal = false;
-+
 +	/*
-+	 * 1.The device don't support for switching source of clock
-+	 *   then assumed to use internal clock always
++	 * the stream formation is different depending on digital interface
 +	 */
-+	if (bebob->sync_input_plug < 0) {
-+		*internal = true;
-+		goto end;
-+	}
-+
-+	/*
-+	 * 2.The device supports to switch source of clock by an usual way.
-+	 *   Let's check input for 'Music Sub Unit Sync Input' plug.
-+	 */
-+	avc_bridgeco_fill_subunit_addr(addr, 0x60, AVC_BRIDGECO_PLUG_DIR_IN,
-+				       bebob->sync_input_plug);
-+	err = avc_bridgeco_get_plug_input(bebob->unit, addr, input);
-+	if (err < 0)
-+		goto end;
-+
-+	/*
-+	 * If source of clock is internal CSR, Music Sub Unit Sync Input is
-+	 * a destination of Music Sub Unit Sync Output.
-+	 */
-+	*internal = ((input[0] == AVC_BRIDGECO_PLUG_DIR_OUT) &&
-+		     (input[1] == AVC_BRIDGECO_PLUG_MODE_SUBUNIT) &&
-+		     (input[2] == 0x0c) &&
-+		     (input[3] == 0x00));
-+end:
-+	return err;
-+}
-+
-+static unsigned int
-+map_stream(struct snd_bebob *bebob, struct amdtp_stream *s)
-+{
-+	unsigned int sec, sections, ch, channels;
-+	unsigned int pcm, midi, location;
-+	unsigned int stm_pos, sec_loc, pos;
-+	u8 *buf, addr[AVC_BRIDGECO_ADDR_BYTES], type;
-+	enum avc_bridgeco_plug_dir dir;
-+	int err;
-+
-+	/*
-+	 * The length of return value of this command cannot be expected. Here
-+	 * use the maximum length of FCP.
-+	 */
-+	buf = kzalloc(256, GFP_KERNEL);
-+	if (buf == NULL)
-+		return -ENOMEM;
-+
-+	if (s == &bebob->tx_stream)
-+		dir = AVC_BRIDGECO_PLUG_DIR_OUT;
-+	else
-+		dir = AVC_BRIDGECO_PLUG_DIR_IN;
-+
-+	avc_bridgeco_fill_unit_addr(addr, dir, AVC_BRIDGECO_PLUG_UNIT_ISOC, 0);
-+	err = avc_bridgeco_get_plug_ch_pos(bebob->unit, addr, buf, 256);
-+	if (err < 0)
-+		goto end;
-+	pos = 0;
-+
-+	/* positions in I/O buffer */
-+	pcm = 0;
-+	midi = 0;
-+
-+	/* the number of sections in AMDTP packet */
-+	sections = buf[pos++];
-+
-+	for (sec = 0; sec < sections; sec++) {
-+		/* type of this section */
-+		avc_bridgeco_fill_unit_addr(addr, dir,
-+					    AVC_BRIDGECO_PLUG_UNIT_ISOC, 0);
-+		err = avc_bridgeco_get_plug_section_type(bebob->unit, addr,
-+							 sec, &type);
-+		if (err < 0)
-+			goto end;
-+		/* NoType */
-+		if (type == 0xff) {
-+			err = -ENOSYS;
-+			goto end;
++	if (bebob->dig_in_fmt == 0x01) {
++		bebob->tx_stream_formations[3].pcm = 16;
++		bebob->tx_stream_formations[4].pcm = 16;
++		bebob->tx_stream_formations[5].pcm = 12;
++		bebob->tx_stream_formations[6].pcm = 12;
++		if (bebob->maudio_is1814) {
++			bebob->tx_stream_formations[7].pcm = 2;
++			bebob->tx_stream_formations[8].pcm = 2;
 +		}
-+
-+		/* the number of channels in this section */
-+		channels = buf[pos++];
-+
-+		for (ch = 0; ch < channels; ch++) {
-+			/* position of this channel in AMDTP packet */
-+			stm_pos = buf[pos++] - 1;
-+			/* location of this channel in this section */
-+			sec_loc = buf[pos++] - 1;
-+
-+			switch (type) {
-+			/* for MIDI conformant data channel */
-+			case 0x0a:
-+				location = midi + sec_loc;
-+				if (location >= AMDTP_MAX_CHANNELS_FOR_MIDI) {
-+					err = -ENOSYS;
-+					goto end;
-+				}
-+				s->midi_position = stm_pos;
-+				break;
-+			/* for PCM data channel */
-+			case 0x01:	/* Headphone */
-+			case 0x02:	/* Microphone */
-+			case 0x03:	/* Line */
-+			case 0x04:	/* SPDIF */
-+			case 0x05:	/* ADAT */
-+			case 0x06:	/* TDIF */
-+			case 0x07:	/* MADI */
-+			/* for undefined/changeable signal  */
-+			case 0x08:	/* Analog */
-+			case 0x09:	/* Digital */
-+			default:
-+				location = pcm + sec_loc;
-+				if (location >= AMDTP_MAX_CHANNELS_FOR_PCM) {
-+					err = -ENOSYS;
-+					goto end;
-+				}
-+				s->pcm_positions[location] = stm_pos;
-+				break;
-+			}
++	} else {
++		bebob->tx_stream_formations[3].pcm = 10;
++		bebob->tx_stream_formations[4].pcm = 10;
++		bebob->tx_stream_formations[5].pcm = 10;
++		bebob->tx_stream_formations[6].pcm = 10;
++		if (bebob->maudio_is1814) {
++			bebob->tx_stream_formations[7].pcm = 2;
++			bebob->tx_stream_formations[8].pcm = 2;
 +		}
-+
-+		if (type != 0x0a)
-+			pcm += channels;
-+		else
-+			midi += channels;
 +	}
-+end:
-+	kfree(buf);
-+	return err;
++
++	if (bebob->dig_out_fmt == 0x01) {
++		bebob->rx_stream_formations[3].pcm = 12;
++		bebob->rx_stream_formations[4].pcm = 12;
++		bebob->rx_stream_formations[5].pcm = 8;
++		bebob->rx_stream_formations[6].pcm = 8;
++		if (bebob->maudio_is1814) {
++			bebob->rx_stream_formations[7].pcm = 4;
++			bebob->rx_stream_formations[8].pcm = 4;
++		}
++	} else {
++		bebob->rx_stream_formations[3].pcm = 6;
++		bebob->rx_stream_formations[4].pcm = 6;
++		bebob->rx_stream_formations[5].pcm = 6;
++		bebob->rx_stream_formations[6].pcm = 6;
++		if (bebob->maudio_is1814) {
++			bebob->rx_stream_formations[7].pcm = 4;
++			bebob->rx_stream_formations[8].pcm = 4;
++		}
++	}
++
++	for (i = 3; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
++		bebob->tx_stream_formations[i].midi = 1;
++		bebob->rx_stream_formations[i].midi = 1;
++		if ((i > 7) && !bebob->maudio_is1814)
++			break;
++	}
 +}
 +
-+static int
-+init_both_connections(struct snd_bebob *bebob)
++static int snd_bebob_maudio_special_add_controls(struct snd_bebob *bebob);
++int
++snd_bebob_maudio_special_discover(struct snd_bebob *bebob, bool is1814)
 +{
 +	int err;
 +
-+	err = cmp_connection_init(&bebob->in_conn,
-+				  bebob->unit, CMP_INPUT, 0);
++	bebob->maudio_is1814 = is1814;
++
++	/* initialize these parameters because driver is not allowed to ask */
++	err = special_clk_set_params(bebob, 0x03, 0x00, 0x00, 0x00);
 +	if (err < 0)
-+		goto end;
++		dev_err(&bebob->unit->device,
++			"failed to initialize clock params\n");
 +
-+	err = cmp_connection_init(&bebob->out_conn,
-+				  bebob->unit, CMP_OUTPUT, 0);
++	err = avc_audio_get_selector(bebob->unit, 0x00, 0x04,
++				     &bebob->dig_in_iface);
 +	if (err < 0)
-+		cmp_connection_destroy(&bebob->in_conn);
-+end:
-+	return err;
-+}
++		dev_err(&bebob->unit->device,
++			"failed to get current dig iface.");
 +
-+static int
-+check_connection_used_by_others(struct snd_bebob *bebob,
-+				struct amdtp_stream *s, bool *used)
-+{
-+	struct cmp_connection *conn;
-+	int err;
-+
-+	if (s == &bebob->tx_stream)
-+		conn = &bebob->out_conn;
-+	else
-+		conn = &bebob->in_conn;
-+
-+	err = cmp_connection_check_used(conn, used);
-+	if (err >= 0)
-+		*used = (*used && !amdtp_stream_running(s));
-+
-+	return err;
-+}
-+
-+static int
-+make_both_connections(struct snd_bebob *bebob, unsigned int rate)
-+{
-+	int index, pcm_channels, midi_channels, err;
-+
-+	/* confirm params for both streams */
-+	index = get_formation_index(rate);
-+	pcm_channels = bebob->tx_stream_formations[index].pcm;
-+	midi_channels = bebob->tx_stream_formations[index].midi;
-+	amdtp_stream_set_parameters(&bebob->tx_stream,
-+				    rate, pcm_channels, midi_channels * 8);
-+	pcm_channels = bebob->rx_stream_formations[index].pcm;
-+	midi_channels = bebob->rx_stream_formations[index].midi;
-+	amdtp_stream_set_parameters(&bebob->rx_stream,
-+				    rate, pcm_channels, midi_channels * 8);
-+
-+	/* establish connections for both streams */
-+	err = cmp_connection_establish(&bebob->out_conn,
-+			amdtp_stream_get_max_payload(&bebob->tx_stream));
++	err = snd_bebob_maudio_special_add_controls(bebob);
 +	if (err < 0)
-+		goto end;
-+	err = cmp_connection_establish(&bebob->in_conn,
-+			amdtp_stream_get_max_payload(&bebob->rx_stream));
-+	if (err < 0)
-+		cmp_connection_break(&bebob->out_conn);
-+end:
-+	return err;
-+}
++		return -EIO;
 +
-+static void
-+break_both_connections(struct snd_bebob *bebob)
-+{
-+	cmp_connection_break(&bebob->in_conn);
-+	cmp_connection_break(&bebob->out_conn);
-+	return;
-+}
++	special_stream_formation_set(bebob);
 +
-+static void
-+destroy_both_connections(struct snd_bebob *bebob)
-+{
-+	break_both_connections(bebob);
++	if (bebob->maudio_is1814) {
++		bebob->midi_input_ports = 1;
++		bebob->midi_output_ports = 1;
++	} else {
++		bebob->midi_input_ports = 2;
++		bebob->midi_output_ports = 2;
++	}
 +
-+	cmp_connection_destroy(&bebob->in_conn);
-+	cmp_connection_destroy(&bebob->out_conn);
-+}
-+
-+static int
-+get_roles(struct snd_bebob *bebob, enum cip_flags *sync_mode,
-+	  struct amdtp_stream **master, struct amdtp_stream **slave)
-+{
-+	/* currently this module doesn't support SYT-Match mode */
-+	*sync_mode = CIP_SYNC_TO_DEVICE;
-+	*master = &bebob->tx_stream;
-+	*slave = &bebob->rx_stream;
++	bebob->maudio_special_quirk = true;
 +
 +	return 0;
 +}
 +
++/* Input plug shows actual rate. Output plug is needless for this purpose. */
++static int special_get_rate(struct snd_bebob *bebob, unsigned int *rate)
++{
++	return snd_bebob_get_rate(bebob, rate, AVC_GENERAL_PLUG_DIR_IN);
++}
++static int special_set_rate(struct snd_bebob *bebob, unsigned int rate)
++{
++	int err = snd_bebob_set_rate(bebob, rate, AVC_GENERAL_PLUG_DIR_OUT);
++	msleep(100);
++	if (err < 0)
++		goto end;
++
++	err = snd_bebob_set_rate(bebob, rate, AVC_GENERAL_PLUG_DIR_IN);
++	msleep(100);
++	if (err >= 0)
++		snd_ctl_notify(bebob->card, SNDRV_CTL_EVENT_MASK_VALUE,
++			       bebob->ctl_id_sync);
++end:
++	return err;
++}
++
++/* Clock source control for special firmware */
++static char *special_clk_labels[] = {
++	SND_BEBOB_CLOCK_INTERNAL " with Digital Mute", "Digital",
++	"Word Clock", SND_BEBOB_CLOCK_INTERNAL};
++static int special_clk_get(struct snd_bebob *bebob,
++			   unsigned int *id)
++{
++	*id = bebob->clk_src;
++	return 0;
++}
++static int special_clk_ctl_info(struct snd_kcontrol *kctl,
++				struct snd_ctl_elem_info *einf)
++{
++	einf->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	einf->count = 1;
++	einf->value.enumerated.items = ARRAY_SIZE(special_clk_labels);
++
++	if (einf->value.enumerated.item >= einf->value.enumerated.items)
++		einf->value.enumerated.item = einf->value.enumerated.items - 1;
++
++	strcpy(einf->value.enumerated.name,
++	       special_clk_labels[einf->value.enumerated.item]);
++
++	return 0;
++}
++static int special_clk_ctl_get(struct snd_kcontrol *kctl,
++			       struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++
++	spin_lock(&bebob->lock);
++	uval->value.enumerated.item[0] = bebob->clk_src;
++	spin_unlock(&bebob->lock);
++
++	return 0;
++}
++static int special_clk_ctl_put(struct snd_kcontrol *kctl,
++			       struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	int err, id, changed = 0;
++
++	id = uval->value.enumerated.item[0];
++	if (id >= ARRAY_SIZE(special_clk_labels))
++		return 0;
++
++	spin_lock(&bebob->lock);
++	err = special_clk_set_params(bebob, id,
++				     bebob->dig_in_fmt,
++				     bebob->dig_out_fmt,
++				     bebob->clk_lock);
++	changed = (err >= 0);
++	spin_unlock(&bebob->lock);
++
++	return changed;
++}
++static struct snd_kcontrol_new special_clk_ctl = {
++	.name	= "Clock Source",
++	.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
++	.access	= SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.info	= special_clk_ctl_info,
++	.get	= special_clk_ctl_get,
++	.put	= special_clk_ctl_put
++};
++
++/* Clock synchronization control for special firmware */
++static int special_sync_ctl_info(struct snd_kcontrol *kctl,
++				 struct snd_ctl_elem_info *einf)
++{
++	einf->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++	einf->count = 1;
++	einf->value.integer.min = 0;
++	einf->value.integer.max = 1;
++
++	return 0;
++}
++static int special_sync_ctl_get(struct snd_kcontrol *kctl,
++				struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	int err;
++	bool synced = 0;
++
++	mutex_lock(&bebob->mutex);
++	err = check_clk_sync(bebob, METER_SIZE_SPECIAL, &synced);
++	if (err >= 0)
++		uval->value.integer.value[0] = synced;
++	mutex_unlock(&bebob->mutex);
++
++	return 0;
++}
++static struct snd_kcontrol_new special_sync_ctl = {
++	.name	= "Sync Status",
++	.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
++	.access	= SNDRV_CTL_ELEM_ACCESS_READ,
++	.info	= special_sync_ctl_info,
++	.get	= special_sync_ctl_get,
++};
++
++/* Digital interface control for special firmware */
++static char *special_dig_iface_labels[] = {
++	"S/PDIF Optical", "S/PDIF Coaxial", "ADAT Optical"
++};
++static int special_dig_in_iface_ctl_info(struct snd_kcontrol *kctl,
++					 struct snd_ctl_elem_info *einf)
++{
++	einf->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	einf->count = 1;
++	einf->value.enumerated.items = ARRAY_SIZE(special_dig_iface_labels);
++
++	if (einf->value.enumerated.item >= einf->value.enumerated.items)
++		einf->value.enumerated.item = einf->value.enumerated.items - 1;
++
++	strcpy(einf->value.enumerated.name,
++	       special_dig_iface_labels[einf->value.enumerated.item]);
++
++	return 0;
++}
++static int special_dig_in_iface_ctl_get(struct snd_kcontrol *kctl,
++					struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	int val;
++
++	/* encoded id for user value */
++	val = (bebob->dig_in_fmt << 1) | (bebob->dig_in_iface & 0x01);
++
++	/* for ADAT Optical */
++	if (val > 2)
++		val = 2;
++
++	uval->value.enumerated.item[0] = val;
++
++	return 0;
++}
++static int special_dig_in_iface_ctl_set(struct snd_kcontrol *kctl,
++					struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	unsigned int id, dig_in_fmt, dig_in_iface;
++	int err;
++
++	id = uval->value.enumerated.item[0];
++
++	/* decode user value */
++	dig_in_fmt = (id >> 1) & 0x01;
++	dig_in_iface = id & 0x01;
++
++	err = special_clk_set_params(bebob, bebob->clk_src, dig_in_fmt,
++				     bebob->dig_out_fmt, bebob->clk_lock);
++	if ((err < 0) || (bebob->dig_in_fmt > 0)) /* ADAT */
++		goto end;
++
++	err = avc_audio_set_selector(bebob->unit, 0x00, 0x04, dig_in_iface);
++	if (err < 0)
++		goto end;
++
++	bebob->dig_in_iface = dig_in_iface;
++end:
++	special_stream_formation_set(bebob);
++	return err;
++}
++static struct snd_kcontrol_new special_dig_in_iface_ctl = {
++	.name	= "Digital Input Interface",
++	.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
++	.access	= SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.info	= special_dig_in_iface_ctl_info,
++	.get	= special_dig_in_iface_ctl_get,
++	.put	= special_dig_in_iface_ctl_set
++};
++
++static int special_dig_out_iface_ctl_info(struct snd_kcontrol *kctl,
++					  struct snd_ctl_elem_info *einf)
++{
++	einf->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	einf->count = 1;
++	einf->value.enumerated.items = ARRAY_SIZE(special_dig_iface_labels) - 1;
++
++	if (einf->value.enumerated.item >= einf->value.enumerated.items)
++		einf->value.enumerated.item = einf->value.enumerated.items - 1;
++
++	strcpy(einf->value.enumerated.name,
++	       special_dig_iface_labels[einf->value.enumerated.item + 1]);
++
++	return 0;
++}
++static int special_dig_out_iface_ctl_get(struct snd_kcontrol *kctl,
++					 struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	uval->value.enumerated.item[0] = bebob->dig_out_fmt;
++	return 0;
++}
++static int special_dig_out_iface_ctl_set(struct snd_kcontrol *kctl,
++					 struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	unsigned int id;
++	int err;
++
++	id = uval->value.enumerated.item[0];
++
++	err = special_clk_set_params(bebob, bebob->clk_src, bebob->dig_in_fmt,
++				     id, bebob->clk_lock);
++	if (err >= 0)
++		special_stream_formation_set(bebob);
++
++	return err;
++}
++static struct snd_kcontrol_new special_dig_out_iface_ctl = {
++	.name	= "Digital Output Interface",
++	.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
++	.access	= SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.info	= special_dig_out_iface_ctl_info,
++	.get	= special_dig_out_iface_ctl_get,
++	.put	= special_dig_out_iface_ctl_set
++};
++
++static int snd_bebob_maudio_special_add_controls(struct snd_bebob *bebob)
++{
++	struct snd_kcontrol *kctl;
++	int err;
++
++	kctl = snd_ctl_new1(&special_clk_ctl, bebob);
++	err = snd_ctl_add(bebob->card, kctl);
++	if (err < 0)
++		goto end;
++
++	kctl = snd_ctl_new1(&special_sync_ctl, bebob);
++	err = snd_ctl_add(bebob->card, kctl);
++	if (err < 0)
++		goto end;
++	bebob->ctl_id_sync = &kctl->id;
++
++	kctl = snd_ctl_new1(&special_dig_in_iface_ctl, bebob);
++	err = snd_ctl_add(bebob->card, kctl);
++	if (err < 0)
++		goto end;
++
++	kctl = snd_ctl_new1(&special_dig_out_iface_ctl, bebob);
++	err = snd_ctl_add(bebob->card, kctl);
++end:
++	return err;
++}
++
++/* Hardware metering for special firmware */
++static char *special_meter_labels[] = {
++	ANA_IN, ANA_IN, ANA_IN, ANA_IN,
++	SPDIF_IN,
++	ADAT_IN, ADAT_IN, ADAT_IN, ADAT_IN,
++	ANA_OUT, ANA_OUT,
++	SPDIF_OUT,
++	ADAT_OUT, ADAT_OUT, ADAT_OUT, ADAT_OUT,
++	HP_OUT, HP_OUT,
++	AUX_OUT
++};
 +static int
-+start_stream(struct snd_bebob *bebob, struct amdtp_stream *stream,
-+	     unsigned int rate)
++special_meter_get(struct snd_bebob *bebob, u32 *target, unsigned int size)
 +{
-+	struct cmp_connection *conn;
-+	int err = 0;
-+
-+	/* already running */
-+	if (amdtp_stream_running(stream))
-+		goto end;
-+
-+	if (stream == &bebob->rx_stream)
-+		conn = &bebob->in_conn;
-+	else
-+		conn = &bebob->out_conn;
-+
-+	/* channel mapping */
-+	err = map_stream(bebob, stream);
-+	if (err < 0)
-+		goto end;
-+
-+	/* start amdtp stream */
-+	err = amdtp_stream_start(stream,
-+				 conn->resources.channel,
-+				 conn->speed);
-+end:
-+	return err;
-+}
-+
-+int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
-+{
++	u16 *buf;
++	unsigned int i, c, channels;
 +	int err;
 +
-+	err = init_both_connections(bebob);
-+	if (err < 0)
-+		goto end;
++	channels = ARRAY_SIZE(special_meter_labels) * 2;
++	if (size < channels * sizeof(u32))
++		return -EINVAL;
 +
-+	err = amdtp_stream_init(&bebob->tx_stream, bebob->unit,
-+				AMDTP_IN_STREAM, CIP_BLOCKING);
-+	if (err < 0) {
-+		destroy_both_connections(bebob);
-+		goto end;
-+	}
-+
-+	err = amdtp_stream_init(&bebob->rx_stream, bebob->unit,
-+				AMDTP_OUT_STREAM, CIP_BLOCKING);
-+	if (err < 0) {
-+		amdtp_stream_destroy(&bebob->tx_stream);
-+		destroy_both_connections(bebob);
-+	}
-+end:
-+	return err;
-+}
-+
-+int snd_bebob_stream_start_duplex(struct snd_bebob *bebob,
-+				  struct amdtp_stream *request,
-+				  unsigned int rate)
-+{
-+	struct amdtp_stream *master, *slave;
-+	enum cip_flags sync_mode;
-+	unsigned int curr_rate;
-+	bool slave_flag, used;
-+	int err;
-+
-+	mutex_lock(&bebob->mutex);
-+
-+	err = get_roles(bebob, &sync_mode, &master, &slave);
-+	if (err < 0)
-+		goto end;
-+
-+	if ((request == slave) || amdtp_stream_running(slave))
-+		slave_flag = true;
-+	else
-+		slave_flag = false;
-+
-+	/*
-+	 * Considering JACK/FFADO streaming:
-+	 * TODO: This can be removed hwdep functionality becomes popular.
-+	 */
-+	err = check_connection_used_by_others(bebob, master, &used);
-+	if (err < 0)
-+		goto end;
-+	if (used) {
-+		dev_err(&bebob->unit->device,
-+			"connections established by others: %d\n",
-+			used);
-+		err = -EBUSY;
-+		goto end;
-+	}
-+
-+	/* get current rate */
-+	err = snd_bebob_stream_get_rate(bebob, &curr_rate);
-+	if (err < 0)
-+		goto end;
-+	if (rate == 0)
-+		rate = curr_rate;
-+
-+	/* change sampling rate if needed */
-+	if (rate != curr_rate) {
-+		/* slave is just for MIDI stream */
-+		if (amdtp_stream_running(slave) &&
-+		    !amdtp_stream_pcm_running(slave))
-+			amdtp_stream_stop(slave);
-+
-+		/* master is just for MIDI stream */
-+		if (amdtp_stream_running(master) &&
-+		    !amdtp_stream_pcm_running(master)) {
-+			amdtp_stream_stop(master);
-+			break_both_connections(bebob);
-+		}
-+	}
-+
-+	/* master should be always running */
-+	if (!amdtp_stream_running(master)) {
-+		amdtp_stream_set_sync(sync_mode, master, slave);
-+
-+		/*
-+		 * NOTE:
-+		 * If establishing connections at first, Yamaha GO46
-+		 * (and maybe Terratec X24) don't generate sound.
-+		 */
-+		err = snd_bebob_stream_set_rate(bebob, rate);
-+		if (err < 0)
-+			goto end;
-+
-+		err = make_both_connections(bebob, rate);
-+		if (err < 0)
-+			goto end;
-+
-+		err = start_stream(bebob, master, rate);
-+		if (err < 0) {
-+			dev_err(&bebob->unit->device,
-+				"fail to run AMDTP master stream:%d\n", err);
-+			break_both_connections(bebob);
-+			goto end;
-+		}
-+
-+		/* wait first callback */
-+		if (!amdtp_stream_wait_callback(master)) {
-+			amdtp_stream_stop(master);
-+			break_both_connections(bebob);
-+			err = -ETIMEDOUT;
-+			goto end;
-+		}
-+	}
-+
-+	/* start slave if needed */
-+	if (slave_flag && !amdtp_stream_running(slave)) {
-+		err = start_stream(bebob, slave, rate);
-+		if (err < 0) {
-+			dev_err(&bebob->unit->device,
-+				"fail to run AMDTP slave stream:%d\n", err);
-+			amdtp_stream_stop(master);
-+			break_both_connections(bebob);
-+			goto end;
-+		}
-+
-+		/* wait first callback */
-+		if (!amdtp_stream_wait_callback(slave)) {
-+			amdtp_stream_stop(slave);
-+			amdtp_stream_stop(master);
-+			break_both_connections(bebob);
-+			err = -ETIMEDOUT;
-+			goto end;
-+		}
-+	}
-+end:
-+	mutex_unlock(&bebob->mutex);
-+	return err;
-+}
-+
-+int snd_bebob_stream_stop_duplex(struct snd_bebob *bebob)
-+{
-+	struct amdtp_stream *master, *slave;
-+	enum cip_flags sync_mode;
-+	int err;
-+
-+	mutex_lock(&bebob->mutex);
-+
-+	err = get_roles(bebob, &sync_mode, &master, &slave);
-+	if (err < 0)
-+		goto end;
-+
-+	if (amdtp_stream_pcm_running(slave) ||
-+	    amdtp_stream_midi_running(slave))
-+		goto end;
-+
-+	amdtp_stream_stop(slave);
-+
-+	if (amdtp_stream_pcm_running(master) ||
-+	    amdtp_stream_midi_running(master))
-+		goto end;
-+
-+	amdtp_stream_stop(master);
-+	break_both_connections(bebob);
-+end:
-+	mutex_unlock(&bebob->mutex);
-+	return err;
-+}
-+
-+void snd_bebob_stream_update_duplex(struct snd_bebob *bebob)
-+{
-+	if ((cmp_connection_update(&bebob->in_conn) > 0) ||
-+	    (cmp_connection_update(&bebob->out_conn) > 0)) {
-+		mutex_lock(&bebob->mutex);
-+		amdtp_stream_pcm_abort(&bebob->rx_stream);
-+		amdtp_stream_pcm_abort(&bebob->tx_stream);
-+		break_both_connections(bebob);
-+		mutex_unlock(&bebob->mutex);
-+	}
-+
-+	amdtp_stream_update(&bebob->rx_stream);
-+	amdtp_stream_update(&bebob->tx_stream);
-+}
-+
-+void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob)
-+{
-+	mutex_lock(&bebob->mutex);
-+
-+	if (amdtp_stream_pcm_running(&bebob->rx_stream))
-+		amdtp_stream_pcm_abort(&bebob->rx_stream);
-+	if (amdtp_stream_pcm_running(&bebob->tx_stream))
-+		amdtp_stream_pcm_abort(&bebob->tx_stream);
-+
-+	amdtp_stream_stop(&bebob->rx_stream);
-+	amdtp_stream_stop(&bebob->tx_stream);
-+	destroy_both_connections(bebob);
-+
-+	mutex_unlock(&bebob->mutex);
-+}
-+
-+static void
-+set_stream_formation(u8 *buf, unsigned int len,
-+		     struct snd_bebob_stream_formation *formation)
-+{
-+	unsigned int e, channels, format;
-+
-+	for (e = 0; e < buf[4]; e++) {
-+		channels = buf[5 + e * 2];
-+		format = buf[6 + e * 2];
-+
-+		switch (format) {
-+		/* PCM for IEC 60958-3 */
-+		case 0x00:
-+		/* PCM for Multi bit linear audio (raw) */
-+		case 0x06:
-+			formation->pcm += channels;
-+			break;
-+		/* MIDI comformant (MMA/AMEI RP-027) */
-+		case 0x0d:
-+			formation->midi += channels;
-+			break;
-+		/* PCM for Multi bit linear audio (DVD-audio) */
-+		case 0x07:
-+		/* IEC 61937-3 to 7 */
-+		case 0x01:
-+		case 0x02:
-+		case 0x03:
-+		case 0x04:
-+		case 0x05:
-+		/* High precision multi bit linear audio */
-+		case 0x0c:
-+		/* Don't care */
-+		case 0xff:
-+		default:
-+			break;	/* not supported */
-+		}
-+	}
-+
-+	return;
-+}
-+
-+static int
-+fill_stream_formations(struct snd_bebob *bebob, enum avc_bridgeco_plug_dir dir,
-+		       unsigned short pid)
-+{
-+	static const unsigned int freq_table[] = {
-+		[0x00] = 0,	/*  22050 */
-+		[0x01] = 1,	/*  24000 */
-+		[0x02] = 2,	/*  32000 */
-+		[0x03] = 3,	/*  44100 */
-+		[0x04] = 4,	/*  48000 */
-+		[0x05] = 6,	/*  96000 */
-+		[0x06] = 7,	/* 176400 */
-+		[0x07] = 8,	/* 192000 */
-+		[0x0a] = 5	/*  88200 */
-+	};
-+
-+	u8 *buf;
-+	struct snd_bebob_stream_formation *formations;
-+	unsigned int i, index, len, eid;
-+	u8 addr[AVC_BRIDGECO_ADDR_BYTES];
-+	int err;
-+
-+	buf = kmalloc(FORMAT_MAXIMUM_LENGTH, GFP_KERNEL);
++	/* omit last 4 bytes because it's clock info. */
++	buf = kmalloc(METER_SIZE_SPECIAL - 4, GFP_KERNEL);
 +	if (buf == NULL)
 +		return -ENOMEM;
 +
-+	if (dir == AVC_BRIDGECO_PLUG_DIR_IN)
-+		formations = bebob->rx_stream_formations;
-+	else
-+		formations = bebob->tx_stream_formations;
++	err = get_meter(bebob, (void *)buf, METER_SIZE_SPECIAL - 4);
++	if (err < 0)
++		goto end;
 +
-+	for (eid = 0, index = 0; eid < SND_BEBOB_STRM_FMT_ENTRIES; eid++) {
-+		len = FORMAT_MAXIMUM_LENGTH;
-+
-+		memset(buf, 0, len);
-+		avc_bridgeco_fill_unit_addr(addr, dir,
-+					    AVC_BRIDGECO_PLUG_UNIT_ISOC, pid);
-+		err = avc_bridgeco_get_plug_strm_fmt(bebob->unit, addr,
-+						     eid, buf, &len);
-+		if (err < 0)
-+			goto end;
-+		else if (len < 3)
-+			break;
-+		/*
-+		 * this module can support a hierarchy combination that:
-+		 *  Root:	Audio and Music (0x90)
-+		 *  Level 1:	AM824 Compound  (0x40)
-+		 */
-+		else if ((buf[0] != 0x90) || (buf[1] != 0x40))
-+			break;
-+
-+		/* check sampling rate */
-+		index = -1;
-+		for (i = 0; i < sizeof(freq_table); i++) {
-+			if (i == buf[2])
-+				index = freq_table[i];
-+		}
-+		if (index < 0)
-+			break;
-+
-+		/* parse and set stream formation */
-+		set_stream_formation(buf, len, &formations[index]);
-+	}
++	/* some channels are not used, and format is u16 */
++	i = 0;
++	for (c = 2; c < channels + 2; c++)
++		target[i++] = be16_to_cpu(buf[c]) << 16;
 +end:
 +	kfree(buf);
 +	return err;
 +}
 +
-+static int
-+seek_msu_sync_input_plug(struct snd_bebob *bebob)
-+{
-+	u8 plugs[AVC_PLUG_INFO_BUF_COUNT], addr[AVC_BRIDGECO_ADDR_BYTES];
-+	unsigned int i, type;
-+	int err;
++/* Firewire 410 specific operations */
+ static char *fw410_meter_labels[] = {
+ 	ANA_IN, DIG_IN,
+ 	ANA_OUT, ANA_OUT, ANA_OUT, ANA_OUT, DIG_OUT,
+@@ -230,6 +697,27 @@ end:
+ 	return err;
+ }
+ 
++/* for special customized devices */
++static struct snd_bebob_rate_spec special_rate_spec = {
++	.get	= &special_get_rate,
++	.set	= &special_set_rate,
++};
++static struct snd_bebob_clock_spec special_clk_spec = {
++	.num	= ARRAY_SIZE(special_clk_labels),
++	.labels	= special_clk_labels,
++	.get	= &special_clk_get,
++};
++static struct snd_bebob_meter_spec special_meter_spec = {
++	.num	= ARRAY_SIZE(special_meter_labels),
++	.labels	= special_meter_labels,
++	.get	= &special_meter_get
++};
++struct snd_bebob_spec maudio_special_spec = {
++	.clock	= &special_clk_spec,
++	.rate	= &special_rate_spec,
++	.meter	= &special_meter_spec
++};
 +
-+	/* get information about Music Sub Unit */
-+	err = avc_general_get_plug_info(bebob->unit, 0x0c, 0x00, 0x00, plugs);
-+	if (err < 0)
-+		goto end;
-+
-+	/* seek destination plugs for 'MSU sync input' */
-+	bebob->sync_input_plug = -1;
-+	for (i = 0; i < plugs[0]; i++) {
-+		avc_bridgeco_fill_subunit_addr(addr, 0x60,
-+					       AVC_BRIDGECO_PLUG_DIR_IN, i);
-+		err = avc_bridgeco_get_plug_type(bebob->unit, addr, &type);
-+		if (err < 0)
-+			goto end;
-+
-+		if (type == AVC_BRIDGECO_PLUG_TYPE_SYNC)
-+			bebob->sync_input_plug = i;
-+	}
-+end:
-+	return err;
-+}
-+
-+/* In this function, 2 means input and output */
-+int snd_bebob_stream_discover(struct snd_bebob *bebob)
-+{
-+	u8 plugs[AVC_PLUG_INFO_BUF_COUNT], addr[AVC_BRIDGECO_ADDR_BYTES];
-+	enum avc_bridgeco_plug_type type;
-+	unsigned int i;
-+	int err;
-+
-+	/* the number of plugs for isoc in/out, ext in/out  */
-+	err = avc_general_get_plug_info(bebob->unit, 0x1f, 0x07, 0x00, plugs);
-+	if (err < 0)
-+		goto end;
-+
-+	/*
-+	 * This module supports one ISOC input plug and one ISOC output plug
-+	 * then ignores the others.
-+	 */
-+	if (plugs[0] == 0) {
-+		err = -EIO;
-+		goto end;
-+	}
-+	avc_bridgeco_fill_unit_addr(addr, AVC_BRIDGECO_PLUG_DIR_IN,
-+				    AVC_BRIDGECO_PLUG_UNIT_ISOC, 0);
-+	err = avc_bridgeco_get_plug_type(bebob->unit, addr, &type);
-+	if (err < 0)
-+		goto end;
-+	else if (type != AVC_BRIDGECO_PLUG_TYPE_ISOC) {
-+		err = -EIO;
-+		goto end;
-+	}
-+
-+	if (plugs[1] == 0) {
-+		err = -EIO;
-+		goto end;
-+	}
-+	avc_bridgeco_fill_unit_addr(addr, AVC_BRIDGECO_PLUG_DIR_OUT,
-+				    AVC_BRIDGECO_PLUG_UNIT_ISOC, 0);
-+	err = avc_bridgeco_get_plug_type(bebob->unit, addr, &type);
-+	if (err < 0)
-+		goto end;
-+	else if (type != AVC_BRIDGECO_PLUG_TYPE_ISOC) {
-+		err = -EIO;
-+		goto end;
-+	}
-+
-+	/* store formations */
-+	for (i = 0; i < 2; i++) {
-+		err = fill_stream_formations(bebob, i, 0);
+ /* Firewire 410 specification */
+ static struct snd_bebob_rate_spec usual_rate_spec = {
+ 	.get	= &snd_bebob_stream_get_rate,
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 5865fed..9a5bd58 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -361,9 +361,11 @@ start_stream(struct snd_bebob *bebob, struct amdtp_stream *stream,
+ 		conn = &bebob->out_conn;
+ 
+ 	/* channel mapping */
+-	err = map_stream(bebob, stream);
+-	if (err < 0)
+-		goto end;
++	if (!bebob->maudio_special_quirk) {
++		err = map_stream(bebob, stream);
 +		if (err < 0)
 +			goto end;
 +	}
+ 
+ 	/* start amdtp stream */
+ 	err = amdtp_stream_start(stream,
+@@ -482,6 +484,20 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob,
+ 			goto end;
+ 		}
+ 
++		/*
++		 * NOTE:
++		 * The firmware customized by M-Audio uses this cue to start
++		 * transmit stream. This is not usual way.
++		 */
++		if (bebob->maudio_special_quirk) {
++			err = rate_spec->set(bebob, rate);
++			if (err < 0) {
++				amdtp_stream_stop(master);
++				break_both_connections(bebob);
++				goto end;
++			}
++		}
 +
-+	/* count external input plugs for MIDI */
-+	bebob->midi_input_ports = 0;
-+	for (i = 0; i < plugs[2]; i++) {
-+		avc_bridgeco_fill_unit_addr(addr, AVC_BRIDGECO_PLUG_DIR_IN,
-+					    AVC_BRIDGECO_PLUG_UNIT_EXT, i);
-+		err = avc_bridgeco_get_plug_type(bebob->unit, addr, &type);
-+		if (err < 0)
-+			goto end;
-+		else if (type == AVC_BRIDGECO_PLUG_TYPE_MIDI)
-+			bebob->midi_input_ports++;
-+	}
-+
-+	/* count external output plugs for MIDI */
-+	bebob->midi_output_ports = 0;
-+	for (i = 0; i < plugs[3]; i++) {
-+		avc_bridgeco_fill_unit_addr(addr, AVC_BRIDGECO_PLUG_DIR_OUT,
-+					    AVC_BRIDGECO_PLUG_UNIT_EXT, i);
-+		err = avc_bridgeco_get_plug_type(bebob->unit, addr, &type);
-+		if (err < 0)
-+			goto end;
-+		else if (type == AVC_BRIDGECO_PLUG_TYPE_MIDI)
-+			bebob->midi_output_ports++;
-+	}
-+
-+	/* for check source of clock later */
-+	err = seek_msu_sync_input_plug(bebob);
-+end:
-+	return err;
-+}
+ 		/* wait first callback */
+ 		if (!amdtp_stream_wait_callback(master)) {
+ 			amdtp_stream_stop(master);
 -- 
 1.8.3.2
 
