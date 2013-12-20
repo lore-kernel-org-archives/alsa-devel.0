@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 05/19] ASoC: ep93xx: Don't set unused struct
+Subject: [PATCH 09/19] ASoC: mxs: Don't set unused struct
 	snd_pcm_hardware fields
-Date: Fri, 20 Dec 2013 14:20:11 +0100
-Message-ID: <1387545625-19240-5-git-send-email-lars@metafoo.de>
+Date: Fri, 20 Dec 2013 14:20:15 +0100
+Message-ID: <1387545625-19240-9-git-send-email-lars@metafoo.de>
 References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-044.synserver.de (smtp-out-122.synserver.de
  [212.40.185.122])
- by alsa0.perex.cz (Postfix) with ESMTP id 67C7726565B
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 15:19:36 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F3B9265616
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 15:19:40 +0100 (CET)
 In-Reply-To: <1387545625-19240-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,7 +23,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: H Hartley Sweeten <hsweeten@visionengravers.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Ryan Mallon <rmallon@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 The ASoC core assumes that the PCM component of the ASoC card transparently
@@ -33,31 +33,27 @@ the PCM driver that are related to this. Setting these fields in the PCM driver
 might suggest otherwise though, so rather not set them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Ryan Mallon <rmallon@gmail.com>
-Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
+Cc: Shawn Guo <shawn.guo@linaro.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/cirrus/ep93xx-pcm.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ sound/soc/mxs/mxs-pcm.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/sound/soc/cirrus/ep93xx-pcm.c b/sound/soc/cirrus/ep93xx-pcm.c
-index ca6698d..5f66447 100644
---- a/sound/soc/cirrus/ep93xx-pcm.c
-+++ b/sound/soc/cirrus/ep93xx-pcm.c
-@@ -30,15 +30,6 @@ static const struct snd_pcm_hardware ep93xx_pcm_hardware = {
- 				   SNDRV_PCM_INFO_MMAP_VALID	|
- 				   SNDRV_PCM_INFO_INTERLEAVED	|
- 				   SNDRV_PCM_INFO_BLOCK_TRANSFER),
--				   
--	.rates			= SNDRV_PCM_RATE_8000_192000,
--	.rate_min		= SNDRV_PCM_RATE_8000,
--	.rate_max		= SNDRV_PCM_RATE_192000,
--	
--	.formats		= (SNDRV_PCM_FMTBIT_S16_LE |
--				   SNDRV_PCM_FMTBIT_S24_LE |
--				   SNDRV_PCM_FMTBIT_S32_LE),
--	
- 	.buffer_bytes_max	= 131072,
+diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
+index 04a6b0d..2e0863a 100644
+--- a/sound/soc/mxs/mxs-pcm.c
++++ b/sound/soc/mxs/mxs-pcm.c
+@@ -36,11 +36,6 @@ static const struct snd_pcm_hardware snd_mxs_hardware = {
+ 				  SNDRV_PCM_INFO_RESUME |
+ 				  SNDRV_PCM_INFO_INTERLEAVED |
+ 				  SNDRV_PCM_INFO_HALF_DUPLEX,
+-	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
+-				  SNDRV_PCM_FMTBIT_S20_3LE |
+-				  SNDRV_PCM_FMTBIT_S24_LE,
+-	.channels_min		= 2,
+-	.channels_max		= 2,
  	.period_bytes_min	= 32,
- 	.period_bytes_max	= 32768,
+ 	.period_bytes_max	= 8192,
+ 	.periods_min		= 1,
 -- 
 1.8.0
