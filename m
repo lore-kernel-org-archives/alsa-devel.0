@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 26/38] bebob: Add skelton for BeBoB based devices
-Date: Fri, 20 Dec 2013 22:14:17 +0900
-Message-ID: <1387545269-3875-27-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 32/38] bebob: Prepare for device specific operations
+Date: Fri, 20 Dec 2013 22:14:23 +0900
+Message-ID: <1387545269-3875-33-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,463 +20,511 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit add a new driver for BeBoB based devices with no functionality. This
-driver just create/remove card instance according to callbacks.
+This commit is for some devices which have its own operations or quirks.
 
-BeBoB is 'BridgeCo enhanced Breakout Box'. This is installed to firewire
-devices with DM1000/1000E/1100/1500 chipset. It gives common way for host
-system to handle BeBoB based devices.
+Many functionality should be implemented in user land. Then this commit adds
+functionality related to stream such as sampling frequency or clock source. For
+help to debug, this commit adds the functionality to get metering information
+if it's available.
 
-Current supported devices:
- - Edirol FA-66/FA-101
- - PreSonus FIREBOX/FIREPOD/Inspire1394
- - BridgeCo RDAudio1/Audio5
- - Mackie Onyx 820/1220/1620/1640 (Firewire I/O Card)
- - Mackie d.2 (Firewire Option)
- - Stanton FinalScratch 2 (ScratchAmp)
- - Tascam  IF-FW DM
- - Apogee Rosetta 200/Rosetta 400 (X-FireWire card)
- - Apogee DA-16X/AD-16X/DD-16X (X-FireWire card)
- - ESI Quotafire610
- - AcousticReality eARMasterOne
- - CME MatrixKFW
- - Phonic HB12/12 MkII/12 Universal
- - Phonic HB18/18 MkII/18 Universal
- - Phonic HB24/24 MkII/24 Universal
- - Phonic FireFly 202/302
- - Lynx Aurora 8/16 (LT-FW)
- - ICON FireXon
- - PrismSound Orpheus/ADA-8XR
-
-Devices possible to be supported if identifying IDs:
- - Mackie Digital X Bus x.200/400
- - CME UF400e
- - Infrasonic DewX/Windy6
- - Rolf Spuler Firewire Guitar
+To help these functionalities, this commit adds some AV/C commands defined in
+'AV/C Audio Subunit Specification (1394TA).
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig        |  29 +++++
- sound/firewire/Makefile       |   1 +
- sound/firewire/bebob/Makefile |   2 +
- sound/firewire/bebob/bebob.c  | 279 ++++++++++++++++++++++++++++++++++++++++++
- sound/firewire/bebob/bebob.h  |  65 ++++++++++
- 5 files changed, 376 insertions(+)
- create mode 100644 sound/firewire/bebob/Makefile
- create mode 100644 sound/firewire/bebob/bebob.c
- create mode 100644 sound/firewire/bebob/bebob.h
+ sound/firewire/bebob/Makefile        |  3 +-
+ sound/firewire/bebob/bebob.c         | 60 +++++++++++++++++----------
+ sound/firewire/bebob/bebob.h         | 33 ++++++++++++++-
+ sound/firewire/bebob/bebob_command.c | 79 ++++++++++++++++++++++++++++++++++++
+ sound/firewire/bebob/bebob_pcm.c     |  3 +-
+ sound/firewire/bebob/bebob_proc.c    | 61 +++++++++++++++++++++++++---
+ sound/firewire/bebob/bebob_stream.c  | 26 +++++++++---
+ 7 files changed, 229 insertions(+), 36 deletions(-)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 0b85ebd..a2bf0cf 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -76,4 +76,33 @@ config SND_FIREWORKS
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-fireworks.
- 
-+config SND_BEBOB
-+	tristate "BridgeCo DM1000/1500 with BeBoB firmware"
-+	select SND_FIREWIRE_LIB
-+        help
-+	 Say Y here to include support for FireWire devices based
-+	 on BridgeCo DM1000/1500 with BeBoB firmware:
-+	  * Edirol FA-66/FA-101
-+	  * PreSonus FIREBOX/FIREPOD/Inspire1394
-+	  * BridgeCo RDAudio1/Audio5
-+	  * Mackie Onyx 820/1220/1620/1640 (Firewire I/O Card)
-+	  * Mackie d.2 (Firewire Option)
-+	  * Stanton FinalScratch 2 (ScratchAmp)
-+	  * Tascam  IF-FW/DM
-+	  * Apogee Rosetta 200/400 (X-FireWire card)
-+	  * Apogee DA/AD/DD-16X (X-FireWire card)
-+	  * ESI Quotafire610
-+	  * AcousticReality eARMasterOne
-+	  * CME MatrixKFW
-+	  * Phonic HB 12/12 MkII/12 Universal
-+	  * Phonic HB 18/18 MkII/18 Universal
-+	  * Phonic HB 24/24 MkII/24 Universal
-+	  * Phonic FireFly 202/302
-+	  * Lynx Aurora 8/16 (LT-FW)
-+	  * ICON FireXon
-+	  * PrismSound Orpheus/ADA-8XR
-+
-+          To compile this driver as a module, choose M here: the module
-+          will be called snd-bebob.
-+
- endif # SND_FIREWIRE
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index 5cd39dc..fad8d49 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -11,3 +11,4 @@ obj-$(CONFIG_SND_FIREWIRE_SPEAKERS) += snd-firewire-speakers.o
- obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
- obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
- obj-$(CONFIG_SND_FIREWORKS) += fireworks/
-+obj-$(CONFIG_SND_BEBOB) += bebob/
 diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-new file mode 100644
-index 0000000..c6f0141
---- /dev/null
+index 7808777..e4b08e3 100644
+--- a/sound/firewire/bebob/Makefile
 +++ b/sound/firewire/bebob/Makefile
-@@ -0,0 +1,2 @@
-+snd-bebob-objs := bebob.o
-+obj-m += snd-bebob.o
+@@ -1,4 +1,3 @@
+ snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
+-		  bebob_pcm.o bebob_hwdep.o \
+-		  bebob.o
++		  bebob_pcm.o bebob_hwdep.o bebob.o
+ obj-m += snd-bebob.o
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-new file mode 100644
-index 0000000..83916ad
---- /dev/null
+index 881bd1d..4ce8121 100644
+--- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -0,0 +1,279 @@
-+/*
-+ * bebob.c - a part of driver for BeBoB based devices
-+ *
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
+@@ -128,6 +128,7 @@ bebob_probe(struct fw_unit *unit,
+ {
+ 	struct snd_card *card;
+ 	struct snd_bebob *bebob;
++	const struct snd_bebob_spec *spec;
+ 	unsigned int card_index;
+ 	int err;
+ 
+@@ -142,6 +143,12 @@ bebob_probe(struct fw_unit *unit,
+ 		goto end;
+ 	}
+ 
++	spec = (const struct snd_bebob_spec *)entry->driver_data;
++	if (spec == NULL) {
++		err = -ENOSYS;
++		goto end;
++	}
 +
-+/*
-+ * BeBoB is 'BridgeCo enhanced Breakout Box'. This is installed to firewire
-+ * devices with DM1000/1000E/1100/1500 chipset. It gives common way for host
-+ * system to handle BeBoB based devices.
-+ */
+ 	err = snd_card_create(index[card_index], id[card_index],
+ 			THIS_MODULE, sizeof(struct snd_bebob), &card);
+ 	if (err < 0)
+@@ -153,6 +160,7 @@ bebob_probe(struct fw_unit *unit,
+ 	bebob->device = fw_parent_device(unit);
+ 	bebob->unit = unit;
+ 	bebob->card_index = -1;
++	bebob->spec = spec;
+ 	mutex_init(&bebob->mutex);
+ 	spin_lock_init(&bebob->lock);
+ 	init_waitqueue_head(&bebob->hwdep_wait);
+@@ -221,52 +229,62 @@ static void bebob_remove(struct fw_unit *unit)
+ 	snd_card_free_when_closed(bebob->card);
+ }
+ 
++struct snd_bebob_rate_spec normal_rate_spec = {
++	.get	= &snd_bebob_stream_get_rate,
++	.set	= &snd_bebob_stream_set_rate
++};
++static const struct snd_bebob_spec spec_normal = {
++	.clock	= NULL,
++	.rate	= &normal_rate_spec,
++	.meter	= NULL
++};
 +
-+#include "bebob.h"
+ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	/* Edirol, FA-66 */
+-	SND_BEBOB_DEV_ENTRY(VEN_EDIROL, 0x00010049),
++	SND_BEBOB_DEV_ENTRY(VEN_EDIROL, 0x00010049, &spec_normal),
+ 	/* Edirol, FA-101 */
+-	SND_BEBOB_DEV_ENTRY(VEN_EDIROL, 0x00010048),
++	SND_BEBOB_DEV_ENTRY(VEN_EDIROL, 0x00010048, &spec_normal),
+ 	/* Presonus, FIREBOX */
+-	SND_BEBOB_DEV_ENTRY(VEN_PRESONUS, 0x00010000),
++	SND_BEBOB_DEV_ENTRY(VEN_PRESONUS, 0x00010000, &spec_normal),
+ 	/* PreSonus, FIREPOD */
+-	SND_BEBOB_DEV_ENTRY(VEN_PRESONUS, 0x00010066),
++	SND_BEBOB_DEV_ENTRY(VEN_PRESONUS, 0x00010066, &spec_normal),
+ 	/* PreSonus, Inspire1394 */
+-	SND_BEBOB_DEV_ENTRY(VEN_PRESONUS, 0x00010001),
++	SND_BEBOB_DEV_ENTRY(VEN_PRESONUS, 0x00010001, &spec_normal),
+ 	/* BridgeCo, RDAudio1 */
+-	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010048),
++	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010048, &spec_normal),
+ 	/* BridgeCo, Audio5 */
+-	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010049),
++	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010049, &spec_normal),
+ 	/* Mackie, Onyx 820/1220/1620/1640 (Firewire I/O Card) */
+-	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010065),
+-	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010067),
++	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010065, &spec_normal),
++	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010067, &spec_normal),
+ 	/* Mackie, d.2 (Firewire Option) */
+-	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010067),
++	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010067, &spec_normal),
+ 	/* Stanton, ScratchAmp */
+-	SND_BEBOB_DEV_ENTRY(VEN_STANTON, 0x00000001),
++	SND_BEBOB_DEV_ENTRY(VEN_STANTON, 0x00000001, &spec_normal),
+ 	/* Tascam, IF-FW DM */
+-	SND_BEBOB_DEV_ENTRY(VEN_TASCAM, 0x00010067),
++	SND_BEBOB_DEV_ENTRY(VEN_TASCAM, 0x00010067, &spec_normal),
+ 	/* ApogeeElectronics, Rosetta 200/400 (X-FireWire card) */
+ 	/* ApogeeElectronics, DA/AD/DD-16X (X-FireWire card) */
+-	SND_BEBOB_DEV_ENTRY(VEN_APOGEE, 0x00010048),
++	SND_BEBOB_DEV_ENTRY(VEN_APOGEE, 0x00010048, &spec_normal),
+ 	/* ESI, Quatafire610 */
+-	SND_BEBOB_DEV_ENTRY(VEN_ESI, 0x00010064),
++	SND_BEBOB_DEV_ENTRY(VEN_ESI, 0x00010064, &spec_normal),
+ 	/* AcousticReality, eARMasterOne */
+-	SND_BEBOB_DEV_ENTRY(VEN_ACOUSTIC, 0x00000002),
++	SND_BEBOB_DEV_ENTRY(VEN_ACOUSTIC, 0x00000002, &spec_normal),
+ 	/* CME, MatrixKFW */
+-	SND_BEBOB_DEV_ENTRY(VEN_CME, 0x00030000),
++	SND_BEBOB_DEV_ENTRY(VEN_CME, 0x00030000, &spec_normal),
+ 	/* Phonic, HB 12/12 MkII/12 Universal */
+ 	/* Phonic, HB 18/18 MkII/18 Universal */
+ 	/* Phonic, HB 24/24 MkII/24 Universal */
+ 	/* Phonic, FireFly 202/302 */
+-	SND_BEBOB_DEV_ENTRY(VEN_PHONIC, 0x00000000),
++	SND_BEBOB_DEV_ENTRY(VEN_PHONIC, 0x00000000, &spec_normal),
+ 	/* Lynx, Aurora 8/16 (LT-FW) */
+-	SND_BEBOB_DEV_ENTRY(VEN_LYNX, 0x00000001),
++	SND_BEBOB_DEV_ENTRY(VEN_LYNX, 0x00000001, &spec_normal),
+ 	/* ICON, FireXon */
+-	SND_BEBOB_DEV_ENTRY(VEN_ICON, 0x00000001),
++	SND_BEBOB_DEV_ENTRY(VEN_ICON, 0x00000001, &spec_normal),
+ 	/* PrismSound, Orpheus */
+-	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x00010048),
++	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x00010048, &spec_normal),
+ 	/* PrismSound, ADA-8XR */
+-	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x0000ada8),
++	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x0000ada8, &spec_normal),
+ 	/* Ids are unknown but able to be supported */
+ 	/*  Mackie, Digital X Bus x.200 */
+ 	/*  Mackie, Digital X Bus x.400 */
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index d06f3f3..7ff89fa 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -48,6 +48,28 @@ struct snd_bebob_stream_formation {
+ /* this is a lookup table for index of stream formations */
+ extern const unsigned int snd_bebob_rate_table[SND_BEBOB_STRM_FMT_ENTRIES];
+ 
++/* device specific operations */
++#define SND_BEBOB_CLOCK_INTERNAL	"Internal"
++struct snd_bebob_clock_spec {
++	unsigned int num;
++	char **labels;
++	int (*get)(struct snd_bebob *bebob, unsigned int *id);
++};
++struct snd_bebob_rate_spec {
++	int (*get)(struct snd_bebob *bebob, unsigned int *rate);
++	int (*set)(struct snd_bebob *bebob, unsigned int rate);
++};
++struct snd_bebob_meter_spec {
++	unsigned int num;
++	char **labels;
++	int (*get)(struct snd_bebob *bebob, u32 *target, unsigned int size);
++};
++struct snd_bebob_spec {
++	struct snd_bebob_clock_spec *clock;
++	struct snd_bebob_rate_spec *rate;
++	struct snd_bebob_meter_spec *meter;
++};
 +
-+MODULE_DESCRIPTION("BridgeCo BeBoB driver");
-+MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
-+MODULE_LICENSE("GPL v2");
+ struct snd_bebob {
+ 	struct snd_card *card;
+ 	struct fw_device *device;
+@@ -57,6 +79,8 @@ struct snd_bebob {
+ 	struct mutex mutex;
+ 	spinlock_t lock;
+ 
++	const struct snd_bebob_spec *spec;
 +
-+static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
-+static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
-+static bool enable[SNDRV_CARDS]	= SNDRV_DEFAULT_ENABLE_PNP;
+ 	unsigned int midi_input_ports;
+ 	unsigned int midi_output_ports;
+ 
+@@ -94,6 +118,12 @@ snd_bebob_read_quad(struct fw_unit *unit, u64 addr, u32 *buf)
+ 				  (void *)buf, sizeof(u32), 0);
+ }
+ 
++/* AV/C Audio Subunit Specification 1.0 (Oct 2000, 1394TA) */
++int avc_audio_set_selector(struct fw_unit *unit, unsigned int subunit_id,
++			   unsigned int fb_id, unsigned int num);
++int avc_audio_get_selector(struct fw_unit *unit, unsigned  int subunit_id,
++			   unsigned int fb_id, unsigned int *num);
 +
-+module_param_array(index, int, NULL, 0444);
-+MODULE_PARM_DESC(index, "card index");
-+module_param_array(id, charp, NULL, 0444);
-+MODULE_PARM_DESC(id, "ID string");
-+module_param_array(enable, bool, NULL, 0444);
-+MODULE_PARM_DESC(enable, "enable BeBoB sound card");
-+
-+static DEFINE_MUTEX(devices_mutex);
-+static unsigned int devices_used;
-+
-+/* Offsets from information register. */
-+#define INFO_OFFSET_GUID		0x10
-+#define INFO_OFFSET_HW_MODEL_ID		0x18
-+#define INFO_OFFSET_HW_MODEL_REVISION	0x1c
-+
-+#define VEN_EDIROL	0x000040ab
-+#define VEN_PRESONUS	0x00000a92
-+#define VEN_BRIDGECO	0x000007f5
-+#define VEN_MACKIE	0x0000000f
-+#define VEN_STANTON	0x00001260
-+#define VEN_TASCAM	0x0000022e
-+#define VEN_BEHRINGER	0x00001564
-+#define VEN_APOGEE	0x000003db
-+#define VEN_ESI		0x00000f1b
-+#define VEN_ACOUSTIC	0x00000002
-+#define VEN_CME		0x0000000a
-+#define VEN_PHONIC	0x00001496
-+#define VEN_LYNX	0x000019e5
-+#define VEN_ICON	0x00001a9e
-+#define VEN_PRISMSOUND	0x00001198
-+
-+static int
-+name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+ /*
+  * AVC command extensions, AV/C Unit and Subunit, Revision 17
+  * (Nov 2003, BridgeCo)
+@@ -197,12 +227,13 @@ int snd_bebob_create_pcm_devices(struct snd_bebob *bebob);
+ 
+ int snd_bebob_create_hwdep_device(struct snd_bebob *bebob);
+ 
+-#define SND_BEBOB_DEV_ENTRY(vendor, model) \
++#define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
+ { \
+ 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
+ 			  IEEE1394_MATCH_MODEL_ID, \
+ 	.vendor_id	= vendor, \
+ 	.model_id	= model, \
++	.driver_data	= (kernel_ulong_t)data \
+ }
+ 
+ #endif
+diff --git a/sound/firewire/bebob/bebob_command.c b/sound/firewire/bebob/bebob_command.c
+index 22a86d0..c63c6d8 100644
+--- a/sound/firewire/bebob/bebob_command.c
++++ b/sound/firewire/bebob/bebob_command.c
+@@ -11,6 +11,85 @@
+ #define BEBOB_COMMAND_MAX_TRIAL	3
+ #define BEBOB_COMMAND_WAIT_MSEC	100
+ 
++int avc_audio_set_selector(struct fw_unit *unit, unsigned int subunit_id,
++			   unsigned int fb_id, unsigned int num)
 +{
-+	char vendor[24] = {0};
-+	char model[24] = {0};
-+	u32 id;
-+	u32 data[2] = {0};
-+	u32 revision;
++	u8 *buf;
 +	int err;
 +
-+	/* get vendor name from root directory */
-+	err = fw_csr_string(bebob->device->config_rom + 5, CSR_VENDOR,
-+			    vendor, sizeof(vendor));
++	buf = kzalloc(12, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	buf[0]  = 0x00;		/* AV/C CONTROL */
++	buf[1]  = 0x08 | (0x07 & subunit_id);	/* AUDIO SUBUNIT ID */
++	buf[2]  = 0xb8;		/* FUNCTION BLOCK  */
++	buf[3]  = 0x80;		/* type is 'selector'*/
++	buf[4]  = 0xff & fb_id;	/* function block id */
++	buf[5]  = 0x10;		/* control attribute is CURRENT */
++	buf[6]  = 0x02;		/* selector length is 2 */
++	buf[7]  = 0xff & num;	/* input function block plug number */
++	buf[8]  = 0x01;		/* control selector is SELECTOR_CONTROL */
++
++	/* do transaction and check buf[1-8] are the same against command */
++	err = fcp_avc_transaction(unit, buf, 12, buf, 12,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
++				  BIT(6) | BIT(7) | BIT(8));
 +	if (err < 0)
 +		goto end;
-+
-+	/* get model name from unit directory */
-+	err = fw_csr_string(bebob->unit->directory, CSR_MODEL,
-+			    model, sizeof(model));
-+	if (err < 0)
++	if ((err < 6) || (buf[0] != 0x09)) {
++		dev_err(&unit->device,
++			"failed to set selector %d: 0x%02X\n",
++			fb_id, buf[0]);
++		err = -EIO;
 +		goto end;
-+
-+	/* get hardware id */
-+	err = snd_bebob_read_quad(bebob->unit, INFO_OFFSET_HW_MODEL_ID,
-+				  &id);
-+	if (err < 0)
-+		goto end;
-+
-+	/* get hardware revision */
-+	err = snd_bebob_read_quad(bebob->unit, INFO_OFFSET_HW_MODEL_REVISION,
-+				  &revision);
-+	if (err < 0)
-+		goto end;
-+
-+	/* get GUID */
-+	err = snd_bebob_read_block(bebob->unit, INFO_OFFSET_GUID,
-+				   data, sizeof(data));
-+	if (err < 0)
-+		goto end;
-+
-+	strcpy(bebob->card->driver, "BeBoB");
-+	strcpy(bebob->card->shortname, model);
-+	snprintf(bebob->card->longname, sizeof(bebob->card->longname),
-+		 "%s %s (id:%d, rev:%d), GUID %08x%08x at %s, S%d",
-+		 vendor, model, id, revision,
-+		 data[0], data[1],
-+		 dev_name(&bebob->unit->device),
-+		 100 << bebob->device->max_speed);
-+	strcpy(bebob->card->mixername, model);
++	}
 +end:
++	kfree(buf);
 +	return err;
 +}
 +
-+static void
-+bebob_card_free(struct snd_card *card)
++int avc_audio_get_selector(struct fw_unit *unit, unsigned int subunit_id,
++			   unsigned int fb_id, unsigned int *num)
 +{
-+	struct snd_bebob *bebob = card->private_data;
++	u8 *buf;
++	int err;
 +
-+	if (bebob->card_index >= 0) {
-+		mutex_lock(&devices_mutex);
-+		devices_used &= ~BIT(bebob->card_index);
-+		mutex_unlock(&devices_mutex);
++	buf = kzalloc(12, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	buf[0]  = 0x01;		/* AV/C STATUS */
++	buf[1]  = 0x08 | (0x07 & subunit_id);	/* AUDIO SUBUNIT ID */
++	buf[2]  = 0xb8;		/* FUNCTION BLOCK */
++	buf[3]  = 0x80;		/* type is 'selector'*/
++	buf[4]  = 0xff & fb_id;	/* function block id */
++	buf[5]  = 0x10;		/* control attribute is CURRENT */
++	buf[6]  = 0x02;		/* selector length is 2 */
++	buf[7]  = 0xff;		/* input function block plug number */
++	buf[8]  = 0x01;		/* control selector is SELECTOR_CONTROL */
++
++	/* do transaction and check buf[1-6,8] are the same against command */
++	err = fcp_avc_transaction(unit, buf, 12, buf, 12,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
++				  BIT(6) | BIT(8));
++	if (err < 0)
++		goto end;
++	if ((err < 6) || (buf[0] != 0x0c)) {
++		dev_err(&unit->device,
++			"failed to get selector %d: 0x%02X\n",
++			fb_id, buf[0]);
++		err = -EIO;
++		goto end;
 +	}
 +
-+	mutex_destroy(&bebob->mutex);
++	*num = buf[7];
++	err = 0;
++end:
++	kfree(buf);
++	return err;
++}
 +
+ static inline void
+ avc_bridgeco_fill_command_base(u8 *buf, unsigned int ctype, unsigned int opcode,
+ 			       unsigned int subfunction,
+diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
+index 525c4ac..83f2225 100644
+--- a/sound/firewire/bebob/bebob_pcm.c
++++ b/sound/firewire/bebob/bebob_pcm.c
+@@ -235,6 +235,7 @@ static int
+ pcm_open(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_bebob *bebob = substream->private_data;
++	struct snd_bebob_rate_spec *spec = bebob->spec->rate;
+ 	unsigned int sampling_rate;
+ 	bool internal;
+ 	int err;
+@@ -258,7 +259,7 @@ pcm_open(struct snd_pcm_substream *substream)
+ 	if (!internal ||
+ 	    amdtp_stream_pcm_running(&bebob->tx_stream) ||
+ 	    amdtp_stream_pcm_running(&bebob->rx_stream)) {
+-		err = snd_bebob_stream_get_rate(bebob, &sampling_rate);
++		err = spec->get(bebob, &sampling_rate);
+ 		if (err < 0)
+ 			goto err_locked;
+ 
+diff --git a/sound/firewire/bebob/bebob_proc.c b/sound/firewire/bebob/bebob_proc.c
+index 40099a5..b8ad4b8 100644
+--- a/sound/firewire/bebob/bebob_proc.c
++++ b/sound/firewire/bebob/bebob_proc.c
+@@ -72,6 +72,42 @@ end:
+ }
+ 
+ static void
++proc_read_meters(struct snd_info_entry *entry,
++		 struct snd_info_buffer *buffer)
++{
++	struct snd_bebob *bebob = entry->private_data;
++	struct snd_bebob_meter_spec *spec = bebob->spec->meter;
++	u32 *buf;
++	unsigned int i, c, channels, size;
++	int err;
++
++	if (spec == NULL)
++		return;
++
++	channels = spec->num * 2;
++	size = channels * sizeof(u32);
++	buf = kmalloc(size, GFP_KERNEL);
++	if (buf == NULL)
++		return;
++
++	err = spec->get(bebob, buf, size);
++	if (err < 0)
++		goto end;
++
++	for (i = 0, c = 1; i < channels; i++) {
++		snd_iprintf(buffer, "%s %d:\t%d\n",
++			    spec->labels[i / 2], c++, buf[i]);
++		if ((i + 1 < channels - 1) &&
++		    (strcmp(spec->labels[i / 2],
++			    spec->labels[(i + 1) / 2]) != 0))
++			c = 1;
++	}
++end:
++	kfree(buf);
 +	return;
 +}
 +
-+static int
-+bebob_probe(struct fw_unit *unit,
-+	    const struct ieee1394_device_id *entry)
-+{
-+	struct snd_card *card;
-+	struct snd_bebob *bebob;
-+	unsigned int card_index;
-+	int err;
-+
-+	mutex_lock(&devices_mutex);
-+
-+	for (card_index = 0; card_index < SNDRV_CARDS; card_index++) {
-+		if (!(devices_used & BIT(card_index)) && enable[card_index])
-+			break;
-+	}
-+	if (card_index >= SNDRV_CARDS) {
-+		err = -ENOENT;
-+		goto end;
-+	}
-+
-+	err = snd_card_create(index[card_index], id[card_index],
-+			THIS_MODULE, sizeof(struct snd_bebob), &card);
-+	if (err < 0)
-+		goto end;
-+	card->private_free = bebob_card_free;
-+
-+	bebob = card->private_data;
-+	bebob->card = card;
-+	bebob->device = fw_parent_device(unit);
-+	bebob->unit = unit;
-+	bebob->card_index = -1;
-+	mutex_init(&bebob->mutex);
-+	spin_lock_init(&bebob->lock);
-+
-+	err = name_device(bebob, entry->vendor_id);
-+	if (err < 0)
-+		goto error;
-+
-+	snd_card_set_dev(card, &unit->device);
-+	err = snd_card_register(card);
-+	if (err < 0) {
-+		snd_card_free(card);
-+		goto error;
-+	}
-+	dev_set_drvdata(&unit->device, bebob);
-+	devices_used |= BIT(card_index);
-+	bebob->card_index = card_index;
-+end:
-+	mutex_unlock(&devices_mutex);
-+	return err;
-+error:
-+	snd_card_free(card);
-+	mutex_unlock(&devices_mutex);
-+	return err;
-+}
-+
 +static void
-+bebob_update(struct fw_unit *unit)
-+{
-+	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
-+	fcp_bus_reset(bebob->unit);
-+}
+ proc_read_formation(struct snd_info_entry *entry,
+ 		struct snd_info_buffer *buffer)
+ {
+@@ -105,18 +141,26 @@ proc_read_clock(struct snd_info_entry *entry,
+ 		struct snd_info_buffer *buffer)
+ {
+ 	struct snd_bebob *bebob = entry->private_data;
++	struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
+ 	unsigned int rate;
+ 	bool internal;
++	unsigned int id;
+ 
+ 	if (snd_bebob_stream_get_rate(bebob, &rate) < 0)
+ 		return;
+-	if (snd_bebob_stream_check_internal_clock(bebob, &internal) < 0)
+-		return;
+-
+-	snd_iprintf(buffer, "Clock Source: %s (MSU-dest: %d)",
+-		    (internal) ? "Internal" : "External",
+-		    bebob->sync_input_plug);
+ 	snd_iprintf(buffer, "Sampling rate: %d\n", rate);
 +
++	if (!clk_spec) {
++		if (snd_bebob_stream_check_internal_clock(bebob, &internal) < 0)
++			return;
++		snd_iprintf(buffer, "Clock Source: %s (MSU-dest: %d)\n",
++			    (internal) ? "Internal" : "External",
++			    bebob->sync_input_plug);
++	} else {
++		if (clk_spec->get(bebob, &id) < 0)
++			return;
++		snd_iprintf(buffer, "Clock Source: %s\n", clk_spec->labels[id]);
++	}
+ }
+ 
+ void snd_bebob_proc_init(struct snd_bebob *bebob)
+@@ -132,5 +176,10 @@ void snd_bebob_proc_init(struct snd_bebob *bebob)
+ 	if (!snd_card_proc_new(bebob->card, "#clock", &entry))
+ 		snd_info_set_text_ops(entry, bebob, proc_read_clock);
+ 
++	if (bebob->spec->meter != NULL) {
++		if (!snd_card_proc_new(bebob->card, "#meter", &entry))
++			snd_info_set_text_ops(entry, bebob, proc_read_meters);
++	}
 +
-+static void bebob_remove(struct fw_unit *unit)
-+{
-+	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
-+	snd_card_disconnect(bebob->card);
-+	snd_card_free_when_closed(bebob->card);
-+}
+ 	return;
+ }
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 533d49a..76be74b 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -90,13 +90,26 @@ end:
+ int
+ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+ {
++	struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
+ 	u8 addr[AVC_BRIDGECO_ADDR_BYTES], input[7];
++	unsigned int id;
+ 	int err = 0;
+ 
+ 	*internal = false;
+ 
++	/* 1.The device has its own operation to switch source of clock */
++	if (clk_spec) {
++		err = clk_spec->get(bebob, &id);
++		if (err < 0)
++			goto end;
++		if (strncmp(clk_spec->labels[id], SND_BEBOB_CLOCK_INTERNAL,
++			    strlen(SND_BEBOB_CLOCK_INTERNAL)) == 0)
++			*internal = true;
++		goto end;
++	}
 +
-+static const struct ieee1394_device_id bebob_id_table[] = {
-+	/* Edirol, FA-66 */
-+	SND_BEBOB_DEV_ENTRY(VEN_EDIROL, 0x00010049),
-+	/* Edirol, FA-101 */
-+	SND_BEBOB_DEV_ENTRY(VEN_EDIROL, 0x00010048),
-+	/* Presonus, FIREBOX */
-+	SND_BEBOB_DEV_ENTRY(VEN_PRESONUS, 0x00010000),
-+	/* PreSonus, FIREPOD */
-+	SND_BEBOB_DEV_ENTRY(VEN_PRESONUS, 0x00010066),
-+	/* PreSonus, Inspire1394 */
-+	SND_BEBOB_DEV_ENTRY(VEN_PRESONUS, 0x00010001),
-+	/* BridgeCo, RDAudio1 */
-+	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010048),
-+	/* BridgeCo, Audio5 */
-+	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010049),
-+	/* Mackie, Onyx 820/1220/1620/1640 (Firewire I/O Card) */
-+	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010065),
-+	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010067),
-+	/* Mackie, d.2 (Firewire Option) */
-+	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010067),
-+	/* Stanton, ScratchAmp */
-+	SND_BEBOB_DEV_ENTRY(VEN_STANTON, 0x00000001),
-+	/* Tascam, IF-FW DM */
-+	SND_BEBOB_DEV_ENTRY(VEN_TASCAM, 0x00010067),
-+	/* ApogeeElectronics, Rosetta 200/400 (X-FireWire card) */
-+	/* ApogeeElectronics, DA/AD/DD-16X (X-FireWire card) */
-+	SND_BEBOB_DEV_ENTRY(VEN_APOGEE, 0x00010048),
-+	/* ESI, Quatafire610 */
-+	SND_BEBOB_DEV_ENTRY(VEN_ESI, 0x00010064),
-+	/* AcousticReality, eARMasterOne */
-+	SND_BEBOB_DEV_ENTRY(VEN_ACOUSTIC, 0x00000002),
-+	/* CME, MatrixKFW */
-+	SND_BEBOB_DEV_ENTRY(VEN_CME, 0x00030000),
-+	/* Phonic, HB 12/12 MkII/12 Universal */
-+	/* Phonic, HB 18/18 MkII/18 Universal */
-+	/* Phonic, HB 24/24 MkII/24 Universal */
-+	/* Phonic, FireFly 202/302 */
-+	SND_BEBOB_DEV_ENTRY(VEN_PHONIC, 0x00000000),
-+	/* Lynx, Aurora 8/16 (LT-FW) */
-+	SND_BEBOB_DEV_ENTRY(VEN_LYNX, 0x00000001),
-+	/* ICON, FireXon */
-+	SND_BEBOB_DEV_ENTRY(VEN_ICON, 0x00000001),
-+	/* PrismSound, Orpheus */
-+	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x00010048),
-+	/* PrismSound, ADA-8XR */
-+	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x0000ada8),
-+	/* Ids are unknown but able to be supported */
-+	/*  Mackie, Digital X Bus x.200 */
-+	/*  Mackie, Digital X Bus x.400 */
-+	/*  CME, UF400e */
-+	/*  Infrasonic, DewX */
-+	/*  Infrasonic, Windy6 */
-+	/*  Rolf Spuler, Firewire Guitar */
-+	{}
-+};
-+MODULE_DEVICE_TABLE(ieee1394, bebob_id_table);
-+
-+static struct fw_driver bebob_driver = {
-+	.driver = {
-+		.owner	= THIS_MODULE,
-+		.name	= "snd-bebob",
-+		.bus	= &fw_bus_type,
-+	},
-+	.probe    = bebob_probe,
-+	.update	  = bebob_update,
-+	.remove   = bebob_remove,
-+	.id_table = bebob_id_table,
-+};
-+
-+static int __init
-+snd_bebob_init(void)
-+{
-+	return driver_register(&bebob_driver.driver);
-+}
-+
-+static void __exit
-+snd_bebob_exit(void)
-+{
-+	driver_unregister(&bebob_driver.driver);
-+	mutex_destroy(&devices_mutex);
-+}
-+
-+module_init(snd_bebob_init);
-+module_exit(snd_bebob_exit);
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-new file mode 100644
-index 0000000..a321c43
---- /dev/null
-+++ b/sound/firewire/bebob/bebob.h
-@@ -0,0 +1,65 @@
-+/*
-+ * bebob.h - a part of driver for BeBoB based devices
-+ *
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#ifndef SOUND_BEBOB_H_INCLUDED
-+#define SOUND_BEBOB_H_INCLUDED
-+
-+#include <linux/compat.h>
-+#include <linux/device.h>
-+#include <linux/firewire.h>
-+#include <linux/firewire-constants.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/delay.h>
-+#include <linux/slab.h>
-+
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+
-+#include "../lib.h"
-+#include "../fcp.h"
-+
-+/* basic register addresses on DM1000 */
-+#define BEBOB_ADDR_REG_INFO	0xffffc8020000
-+#define BEBOB_ADDR_REG_REQ	0xffffc8021000
-+
-+struct snd_bebob {
-+	struct snd_card *card;
-+	struct fw_device *device;
-+	struct fw_unit *unit;
-+	int card_index;
-+
-+	struct mutex mutex;
-+	spinlock_t lock;
-+};
-+
-+static inline int
-+snd_bebob_read_block(struct fw_unit *unit, u64 addr, void *buf, int size)
-+{
-+	return snd_fw_transaction(unit, TCODE_READ_BLOCK_REQUEST,
-+				  BEBOB_ADDR_REG_INFO + addr,
-+				  buf, size, 0);
-+}
-+
-+static inline int
-+snd_bebob_read_quad(struct fw_unit *unit, u64 addr, u32 *buf)
-+{
-+	return snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
-+				  BEBOB_ADDR_REG_INFO + addr,
-+				  (void *)buf, sizeof(u32), 0);
-+}
-+
-+#define SND_BEBOB_DEV_ENTRY(vendor, model) \
-+{ \
-+	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-+			  IEEE1394_MATCH_MODEL_ID, \
-+	.vendor_id	= vendor, \
-+	.model_id	= model, \
-+}
-+
-+#endif
+ 	/*
+-	 * 1.The device don't support for switching source of clock
++	 * 2.The device don't support for switching source of clock
+ 	 *   then assumed to use internal clock always
+ 	 */
+ 	if (bebob->sync_input_plug < 0) {
+@@ -105,7 +118,7 @@ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+ 	}
+ 
+ 	/*
+-	 * 2.The device supports to switch source of clock by an usual way.
++	 * 3.The device supports to switch source of clock by an usual way.
+ 	 *   Let's check input for 'Music Sub Unit Sync Input' plug.
+ 	 */
+ 	avc_bridgeco_fill_subunit_addr(addr, 0x60, AVC_BRIDGECO_PLUG_DIR_IN,
+@@ -380,6 +393,7 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob,
+ 				  struct amdtp_stream *request,
+ 				  unsigned int rate)
+ {
++	struct snd_bebob_rate_spec *rate_spec = bebob->spec->rate;
+ 	struct amdtp_stream *master, *slave;
+ 	enum cip_flags sync_mode;
+ 	unsigned int curr_rate;
+@@ -413,7 +427,7 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob,
+ 	}
+ 
+ 	/* get current rate */
+-	err = snd_bebob_stream_get_rate(bebob, &curr_rate);
++	err = rate_spec->get(bebob, &curr_rate);
+ 	if (err < 0)
+ 		goto end;
+ 	if (rate == 0)
+@@ -443,7 +457,7 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob,
+ 		 * If establishing connections at first, Yamaha GO46
+ 		 * (and maybe Terratec X24) don't generate sound.
+ 		 */
+-		err = snd_bebob_stream_set_rate(bebob, rate);
++		err = rate_spec->set(bebob, rate);
+ 		if (err < 0)
+ 			goto end;
+ 
+@@ -694,6 +708,7 @@ end:
+ int snd_bebob_stream_discover(struct snd_bebob *bebob)
+ {
+ 	u8 plugs[AVC_PLUG_INFO_BUF_COUNT], addr[AVC_BRIDGECO_ADDR_BYTES];
++	struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
+ 	enum avc_bridgeco_plug_type type;
+ 	unsigned int i;
+ 	int err;
+@@ -767,7 +782,8 @@ int snd_bebob_stream_discover(struct snd_bebob *bebob)
+ 	}
+ 
+ 	/* for check source of clock later */
+-	err = seek_msu_sync_input_plug(bebob);
++	if (!clk_spec)
++		err = seek_msu_sync_input_plug(bebob);
+ end:
+ 	return err;
+ }
 -- 
 1.8.3.2
 
