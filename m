@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 07/19] ASoC: intel: Don't set unused struct
+Subject: [PATCH 04/19] ASoC: davinci: Don't set unused struct
 	snd_pcm_hardware fields
-Date: Fri, 20 Dec 2013 14:20:13 +0100
-Message-ID: <1387545625-19240-7-git-send-email-lars@metafoo.de>
+Date: Fri, 20 Dec 2013 14:20:10 +0100
+Message-ID: <1387545625-19240-4-git-send-email-lars@metafoo.de>
 References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-044.synserver.de (smtp-out-122.synserver.de
  [212.40.185.122])
- by alsa0.perex.cz (Postfix) with ESMTP id 71A2C265667
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 15:19:38 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 854FF265636
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 15:19:35 +0100 (CET)
 In-Reply-To: <1387545625-19240-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,7 +23,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@linux.intel.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Olof Johansson <olof@lixom.net>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 The ASoC core assumes that the PCM component of the ASoC card transparently
@@ -33,47 +33,62 @@ the PCM driver that are related to this. Setting these fields in the PCM driver
 might suggest otherwise though, so rather not set them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Olof Johansson <olof@lixom.net>
 ---
- sound/soc/intel/sst_platform.c | 10 ----------
- sound/soc/intel/sst_platform.h |  4 ----
- 2 files changed, 14 deletions(-)
+ sound/soc/davinci/davinci-pcm.c | 28 ----------------------------
+ 1 file changed, 28 deletions(-)
 
-diff --git a/sound/soc/intel/sst_platform.c b/sound/soc/intel/sst_platform.c
-index b6b5eb6..f465a81 100644
---- a/sound/soc/intel/sst_platform.c
-+++ b/sound/soc/intel/sst_platform.c
-@@ -89,16 +89,6 @@ static struct snd_pcm_hardware sst_platform_pcm_hw = {
- 			SNDRV_PCM_INFO_MMAP_VALID |
- 			SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 			SNDRV_PCM_INFO_SYNC_START),
--	.formats = (SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_U16 |
--			SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_U24 |
--			SNDRV_PCM_FMTBIT_S32 | SNDRV_PCM_FMTBIT_U32),
--	.rates = (SNDRV_PCM_RATE_8000|
--			SNDRV_PCM_RATE_44100 |
--			SNDRV_PCM_RATE_48000),
--	.rate_min = SST_MIN_RATE,
--	.rate_max = SST_MAX_RATE,
--	.channels_min =	SST_MIN_CHANNEL,
--	.channels_max =	SST_MAX_CHANNEL,
- 	.buffer_bytes_max = SST_MAX_BUFFER,
- 	.period_bytes_min = SST_MIN_PERIOD_BYTES,
- 	.period_bytes_max = SST_MAX_PERIOD_BYTES,
-diff --git a/sound/soc/intel/sst_platform.h b/sound/soc/intel/sst_platform.h
-index cacc906..bee64fb 100644
---- a/sound/soc/intel/sst_platform.h
-+++ b/sound/soc/intel/sst_platform.h
-@@ -33,10 +33,6 @@
- #define SST_STEREO		2
- #define SST_MAX_CAP		5
+diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+index fb5d107..14145cd 100644
+--- a/sound/soc/davinci/davinci-pcm.c
++++ b/sound/soc/davinci/davinci-pcm.c
+@@ -46,33 +46,11 @@ static void print_buf_info(int slot, char *name)
+ }
+ #endif
  
--#define SST_MIN_RATE		8000
--#define SST_MAX_RATE		48000
--#define SST_MIN_CHANNEL		1
--#define SST_MAX_CHANNEL		5
- #define SST_MAX_BUFFER		(800*1024)
- #define SST_MIN_BUFFER		(800*1024)
- #define SST_MIN_PERIOD_BYTES	32
+-#define DAVINCI_PCM_FMTBITS	(\
+-				SNDRV_PCM_FMTBIT_S8	|\
+-				SNDRV_PCM_FMTBIT_U8	|\
+-				SNDRV_PCM_FMTBIT_S16_LE	|\
+-				SNDRV_PCM_FMTBIT_S16_BE	|\
+-				SNDRV_PCM_FMTBIT_U16_LE	|\
+-				SNDRV_PCM_FMTBIT_U16_BE	|\
+-				SNDRV_PCM_FMTBIT_S24_LE	|\
+-				SNDRV_PCM_FMTBIT_S24_BE	|\
+-				SNDRV_PCM_FMTBIT_U24_LE	|\
+-				SNDRV_PCM_FMTBIT_U24_BE	|\
+-				SNDRV_PCM_FMTBIT_S32_LE	|\
+-				SNDRV_PCM_FMTBIT_S32_BE	|\
+-				SNDRV_PCM_FMTBIT_U32_LE	|\
+-				SNDRV_PCM_FMTBIT_U32_BE)
+-
+ static struct snd_pcm_hardware pcm_hardware_playback = {
+ 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+ 		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME|
+ 		 SNDRV_PCM_INFO_BATCH),
+-	.formats = DAVINCI_PCM_FMTBITS,
+-	.rates = SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATE_KNOT,
+-	.rate_min = 8000,
+-	.rate_max = 192000,
+-	.channels_min = 2,
+-	.channels_max = 384,
+ 	.buffer_bytes_max = 128 * 1024,
+ 	.period_bytes_min = 32,
+ 	.period_bytes_max = 8 * 1024,
+@@ -86,12 +64,6 @@ static struct snd_pcm_hardware pcm_hardware_capture = {
+ 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+ 		 SNDRV_PCM_INFO_PAUSE |
+ 		 SNDRV_PCM_INFO_BATCH),
+-	.formats = DAVINCI_PCM_FMTBITS,
+-	.rates = SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATE_KNOT,
+-	.rate_min = 8000,
+-	.rate_max = 192000,
+-	.channels_min = 2,
+-	.channels_max = 384,
+ 	.buffer_bytes_max = 128 * 1024,
+ 	.period_bytes_min = 32,
+ 	.period_bytes_max = 8 * 1024,
 -- 
 1.8.0
