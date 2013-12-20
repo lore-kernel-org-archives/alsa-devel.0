@@ -1,18 +1,18 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: [PATCH 6/6] ASoC: fsl_sai: Sort local variable in
-	general way
-Date: Fri, 20 Dec 2013 16:41:05 +0800
-Message-ID: <ccf261aa9dfd3d1ea2b5d5e86d2e7854e622a94f.1387528048.git.Guangyu.Chen@freescale.com>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH 0/6] ASoC: fsl_sai: Fix some minor issues
+Date: Fri, 20 Dec 2013 09:12:12 +0000
+Message-ID: <df8812c5abf049e6a3bfdb7f8e9cbee7@BY2PR03MB505.namprd03.prod.outlook.com>
 References: <cover.1387528048.git.Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe002.messaging.microsoft.com [65.55.88.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 448192655F7
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 09:40:54 +0100 (CET)
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2lp0203.outbound.protection.outlook.com [207.46.163.203])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3251D265340
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 10:12:32 +0100 (CET)
 In-Reply-To: <cover.1387528048.git.Guangyu.Chen@freescale.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,93 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, linux@arm.linux.org.uk
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, timur@tabi.org, lgirdwood@gmail.com, Li.Xiubo@freescale.com
+To: "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "broonie@kernel.org" <broonie@kernel.org>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@tabi.org" <timur@tabi.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Generally we would write code for local variable like:
-static new_func()
-{
-	struct xxx *yyy;
-	...
-	int ret;
-}
+Hi Nicolin,
 
-But this driver only follows this pattern for some functions, not all.
-Thus this patch sorts the local variable in the general way.
+Thanks very much for you work.
 
-Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
----
- sound/soc/fsl/fsl_sai.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+They are all look good to me.
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index ba59015..73a11c8 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -53,8 +53,8 @@ static inline void sai_writel(struct fsl_sai *sai,
- static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
- 		int clk_id, unsigned int freq, int fsl_dir)
- {
--	u32 val_cr2, reg_cr2;
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
-+	u32 val_cr2, reg_cr2;
- 
- 	if (fsl_dir == FSL_FMT_TRANSMITTER)
- 		reg_cr2 = FSL_SAI_TCR2;
-@@ -90,8 +90,8 @@ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
- static int fsl_sai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 		int clk_id, unsigned int freq, int dir)
- {
--	int ret;
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
-+	int ret;
- 
- 	if (dir == SND_SOC_CLOCK_IN)
- 		return 0;
-@@ -128,8 +128,8 @@ err_clk:
- static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
- 				unsigned int fmt, int fsl_dir)
- {
--	u32 val_cr2, val_cr3, val_cr4, reg_cr2, reg_cr3, reg_cr4;
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
-+	u32 val_cr2, val_cr3, val_cr4, reg_cr2, reg_cr3, reg_cr4;
- 
- 	if (fsl_dir == FSL_FMT_TRANSMITTER) {
- 		reg_cr2 = FSL_SAI_TCR2;
-@@ -207,8 +207,8 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
- 
- static int fsl_sai_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- {
--	int ret;
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
-+	int ret;
- 
- 	ret = clk_prepare_enable(sai->clk);
- 	if (ret)
-@@ -236,9 +236,9 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params,
- 		struct snd_soc_dai *cpu_dai)
- {
-+	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
- 	u32 val_cr4, val_cr5, val_mr, reg_cr4, reg_cr5, reg_mr;
- 	unsigned int channels = params_channels(params);
--	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
- 	u32 word_width = snd_pcm_format_width(params_format(params));
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-@@ -394,10 +394,10 @@ static const struct snd_soc_component_driver fsl_component = {
- 
- static int fsl_sai_probe(struct platform_device *pdev)
- {
--	int ret;
-+	struct device_node *np = pdev->dev.of_node;
- 	struct fsl_sai *sai;
- 	struct resource *res;
--	struct device_node *np = pdev->dev.of_node;
-+	int ret;
- 
- 	sai = devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
- 	if (!sai)
--- 
-1.8.4
+Reviewed-by: Xiubo Li <Li.Xiubo@freescale.com>
+
+Best regards,
+Xiubo
+
+
+
+
+> This series patches fix some minor issues in the new fsl_sai driver.
+> 
+> @Mark Brown
+> I's so busy these days that I couldn't send these, which should have been
+> review comments, in time. So some of them might be too minor to become a
+> meaningful patch but I still sent them to see if you would like to apply.
+> 
+> Thank you.
+> 
+> Nicolin Chen (6):
+>   ASoC: fsl_sai: Keep symmetry for clk_enable() and clk_disable()
+>   ASoC: fsl_sai: Use snd_pcm_format_width()
+>   ASoC: fsl_sai: Drop useless channels check in hw_params()
+>   ASoC: fsl_sai: Drop useless ret in startup()
+>   ASoC: fsl_sai: Make dev_err information neater
+>   ASoC: fsl_sai: Sort local variable in general way
+> 
+>  sound/soc/fsl/fsl_sai.c | 71 ++++++++++++++++--------------------------------
+> -
+>  1 file changed, 23 insertions(+), 48 deletions(-)
+> 
+> --
+> 1.8.4
+> 
