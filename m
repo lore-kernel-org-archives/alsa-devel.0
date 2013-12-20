@@ -1,18 +1,16 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv4 4/4] Documentation: Add device tree bindings
-	for Freescale SAI.
-Date: Fri, 20 Dec 2013 09:03:07 +0800
-Message-ID: <1387501387-2151-4-git-send-email-Li.Xiubo@freescale.com>
-References: <1387501387-2151-1-git-send-email-Li.Xiubo@freescale.com>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: [PATCHv4 0/4] ALSA: Add Freescale SAI driver
+Date: Fri, 20 Dec 2013 01:59:22 +0000
+Message-ID: <be7389c0f2eb414dbd7f28ac27515640@BY2PR03MB505.namprd03.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db8outboundpool.messaging.microsoft.com
- (mail-db8lp0189.outbound.messaging.microsoft.com [213.199.154.189])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A82626551E
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 02:55:23 +0100 (CET)
-In-Reply-To: <1387501387-2151-1-git-send-email-Li.Xiubo@freescale.com>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1blp0186.outbound.protection.outlook.com [207.46.163.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE2F5265506
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 02:59:26 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,64 +20,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-This adds the Document for Freescale SAI driver under
-Documentation/devicetree/bindings/sound/.
+This patch series is mostly Freescale's SAI SoC Digital Audio Interface
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
----
- .../devicetree/bindings/sound/fsl-sai.txt          | 40 ++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/fsl-sai.txt
+driver implementation. And the implementation is only compatible with
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-new file mode 100644
-index 0000000..ca49ad1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-@@ -0,0 +1,40 @@
-+Freescale Synchronous Audio Interface (SAI).
-+
-+The SAI is based on I2S module that used communicating with audio codecs,
-+which provides a synchronous audio interface that supports fullduplex
-+serial interfaces with frame synchronization such as I2S, AC97, TDM, and
-+codec/DSP interfaces.
-+
-+
-+Required properties:
-+- compatible: Compatible list, contains "fsl,vf610-sai".
-+- reg: Offset and length of the register set for the device.
-+- clocks: Must contain an entry for each entry in clock-names.
-+- clock-names : Must include the "sai" entry.
-+- dmas : Generic dma devicetree binding as described in
-+  Documentation/devicetree/bindings/dma/dma.txt.
-+- dma-names : Two dmas have to be defined, "tx" and "rx".
-+- pinctrl-names: Must contain a "default" entry.
-+- pinctrl-NNN: One property must exist for each entry in pinctrl-names.
-+  See ../pinctrl/pinctrl-bindings.txt for details of the property values.
-+- big-endian-regs: If this property is absent, the little endian mode will
-+  be in use as default, or the big endian mode will be in use for all the
-+  device registers.
-+- big-endian-data: If this property is absent, the little endian mode will
-+  be in use as default, or the big endian mode will be in use for all the
-+  fifo data.
-+
-+Example:
-+sai2: sai@40031000 {
-+	      compatible = "fsl,vf610-sai";
-+	      reg = <0x40031000 0x1000>;
-+	      pinctrl-names = "default";
-+	      pinctrl-0 = <&pinctrl_sai2_1>;
-+	      clocks = <&clks VF610_CLK_SAI2>;
-+	      clock-names = "sai";
-+	      dma-names = "tx", "rx";
-+	      dmas = <&edma0 0 VF610_EDMA_MUXID0_SAI2_TX>,
-+		   <&edma0 0 VF610_EDMA_MUXID0_SAI2_RX>;
-+	      big-endian_regs;
-+	      big-endian_data;
-+};
--- 
-1.8.4
+device tree definition.
+
+
+
+This patch series is based on linux-next and has been tested on Vybrid
+
+VF610 Tower board using device tree.
+
+
+
+Changed in v4:
+
+- Remove the uneeded function fsl_sai_dai_remove().
+
+- Use snd_soc_dai_init_dma_data().
+
+- Adjust the Konfig file.
+
+
+
+Changed in v3:
+
+- Add big-endian mode support.
+
+- Revise some commit comments, coding styles,etc.
+
+- Keep header files ordered by alphabet,etc.
+
+- Add MODULE_ALIAS("platform:fsl-sai") for SAI driver.
+
+- Rename the files to be in a same pattern with the existed ones.
+
+- Remove some not useful functions or code.
+
+- Only enable the clock while the device is in active use.
+
+- Revise one error message according to Bill.
+
+
+
+Changed in v2:
+
+- Use default settings for the generic dmaengine PCM driver.
+
+- Separate receive and transmit setting in most functions, but some couldn't for the HW limitation.
+
+- Drop some not reduntant code.
+
+- Use devm_snd_soc_register_component() instead of snd_soc_register_component().
+
+- Use devm_snd_soc_register_card() instead of devm_snd_soc_register_card().
+
+- Adjust the code sentences sequence.
+
+- Make the namespacing consistent.
+
+- Rename CONFIG_SND_SOC_FSL_SGTL5000 to CONFIG_SND_SOC_FSL_SGTL5000_VF610.
+
+- Drop some meaningless lines.
+
+- Rename the binding document file.
+
+
+
+Added in v1:
+
+- Add SAI SoC Digital Audio Interface driver.
+
+- Add Freescale SAI ALSA SoC Digital Audio Interface node for VF610.
+
+- Enables SAI ALSA SoC DAI device for Vybrid VF610 TOWER board.
+
+- Add device tree bindings for Freescale SAI.
+
+- Revise the bugs about the sgt15000 codec.
+
+- Add SGT15000 based audio machine driver.
+
+- Enable SGT15000 codec based audio driver node for VF610.
+
+- Add device tree bindings for Freescale VF610 sound.
