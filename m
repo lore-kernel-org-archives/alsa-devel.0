@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 31/38] bebob: Add hwdep interface
-Date: Fri, 20 Dec 2013 22:14:22 +0900
-Message-ID: <1387545269-3875-32-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 36/38] bebob: Add support for M-Audio usual Firewire series
+Date: Fri, 20 Dec 2013 22:14:27 +0900
+Message-ID: <1387545269-3875-37-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,494 +20,504 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This interface is designed for mixer/control application. To use hwdep
-interface, the application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+This commit allows this driver to support some models which M-Audio produces
+with DM1000/DM1000E with usual firmware. They are:
+ - Firewire 410
+ - Firewire AudioPhile
+ - Firewire Solo
+ - Ozonic
+ - NRV10
+ - FirewireLightBridge
+
+According to person of BridgeCo, Some models are produced with 'Pre-BeBoB'. This
+means that these products were released before BeBoB was officially produced. So
+these models have some quirks.
+
+M-Audio usual firmware quirks:
+ - Just after powering on, 'Firewire 410' waits to download firmware. This
+   state is changed when receiving cue. Then bus reset is generated and the
+   device is recognized as a different model with the uploaded firmware.
+ - 'Firewire Audiophile' also waits to download firmware but its
+   vendor id/model id is the same as the one after loading firmware.
+ - The information of channel mapping for MIDI conformant data channel is
+   invalid against BridgeCo specification.
+
+This commit adds some codes for these quirks but don't support to upload
+firmware.
+
+This commit also adds specific operations to get metering information. The
+metering information also includes status of clock synchronization if the model
+supports to switch source of clock.
+
+The specification of FirewireLightBridge is unknown. So in this time, normal
+operations are applied for this model.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h         |   3 +-
- include/uapi/sound/firewire.h       |   1 +
- sound/firewire/Kconfig              |   1 +
+ sound/firewire/Kconfig              |   2 +
  sound/firewire/bebob/Makefile       |   2 +-
- sound/firewire/bebob/bebob.c        |   5 +
- sound/firewire/bebob/bebob.h        |  13 +++
- sound/firewire/bebob/bebob_hwdep.c  | 197 ++++++++++++++++++++++++++++++++++++
- sound/firewire/bebob/bebob_midi.c   |  28 ++++-
- sound/firewire/bebob/bebob_pcm.c    |  16 ++-
- sound/firewire/bebob/bebob_stream.c |  39 +++++++
- 10 files changed, 296 insertions(+), 9 deletions(-)
- create mode 100644 sound/firewire/bebob/bebob_hwdep.c
+ sound/firewire/bebob/bebob.c        |  45 +++++-
+ sound/firewire/bebob/bebob.h        |   5 +
+ sound/firewire/bebob/bebob_maudio.c | 295 ++++++++++++++++++++++++++++++++++++
+ sound/firewire/bebob/bebob_stream.c |   9 ++
+ 6 files changed, 355 insertions(+), 3 deletions(-)
+ create mode 100644 sound/firewire/bebob/bebob_maudio.c
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 5dfbfdf..2249483 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -95,9 +95,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_USB_STREAM,	/* direct access to usb stream */
- 	SNDRV_HWDEP_IFACE_FW_DICE,	/* TC DICE FireWire device */
- 	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
-+	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_FIREWORKS
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_BEBOB
- };
- 
- struct snd_hwdep_info {
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index 910ed34..77a594d 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -53,6 +53,7 @@ union snd_firewire_event {
- 
- #define SNDRV_FIREWIRE_TYPE_DICE	1
- #define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
-+#define SNDRV_FIREWIRE_TYPE_BEBOB	3
- /* Fireworks, AV/C, RME, MOTU, ... */
- 
- struct snd_firewire_get_info {
 diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 3da4b60..304f49e 100644
+index 608547c..d71faf6 100644
 --- a/sound/firewire/Kconfig
 +++ b/sound/firewire/Kconfig
-@@ -81,6 +81,7 @@ config SND_BEBOB
- 	select SND_FIREWIRE_LIB
- 	select SND_RAWMIDI
- 	select SND_PCM
-+	select SND_HWDEP
-         help
- 	 Say Y here to include support for FireWire devices based
- 	 on BridgeCo DM1000/1500 with BeBoB firmware:
+@@ -109,6 +109,8 @@ config SND_BEBOB
+ 	  * Terratec Aureon 7.1 Firewire
+ 	  * Yamaha GO44/GO46
+ 	  * Focusrite Saffire/Saffire LE/SaffirePro10 IO/SaffirePro26 IO
++	  * M-Audio Firewire410/AudioPhile/Solo
++	  * M-Audio Ozonic/NRV10/ProfireLightBridge
+ 
+           To compile this driver as a module, choose M here: the module
+           will be called snd-bebob.
 diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-index 533718a..7808777 100644
+index 6565420..6cf470c 100644
 --- a/sound/firewire/bebob/Makefile
 +++ b/sound/firewire/bebob/Makefile
 @@ -1,4 +1,4 @@
  snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
--		  bebob_pcm.o \
-+		  bebob_pcm.o bebob_hwdep.o \
- 		  bebob.o
+ 		  bebob_pcm.o bebob_hwdep.o bebob_terratec.o bebob_yamaha.o \
+-		  bebob_focusrite.o bebob.o
++		  bebob_focusrite.o bebob_maudio.o bebob.o
  obj-m += snd-bebob.o
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index f7c8a73..881bd1d 100644
+index d02686e..65554ef 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -155,6 +155,7 @@ bebob_probe(struct fw_unit *unit,
- 	bebob->card_index = -1;
- 	mutex_init(&bebob->mutex);
- 	spin_lock_init(&bebob->lock);
-+	init_waitqueue_head(&bebob->hwdep_wait);
+@@ -55,8 +55,11 @@ static unsigned int devices_used;
+ #define VEN_TERRATEC	0x00000aac
+ #define VEN_YAMAHA	0x0000a0de
+ #define VEN_FOCUSRITE	0x0000130e
++#define VEN_MAUDIO1	0x00000d6c
++#define VEN_MAUDIO2	0x000007f5
  
- 	err = name_device(bebob, entry->vendor_id);
- 	if (err < 0)
-@@ -181,6 +182,10 @@ bebob_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
+ #define MODEL_FOCUSRITE_SAFFIRE_BOTH	0x00000000
++#define MODEL_MAUDIO_AUDIOPHILE_BOTH	0x00010060
  
-+	err = snd_bebob_create_hwdep_device(bebob);
-+	if (err < 0)
-+		goto error;
+ static int
+ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+@@ -141,6 +144,17 @@ get_saffire_spec(struct fw_unit *unit)
+ 		return &saffire_spec;
+ }
+ 
++static bool
++check_audiophile_booted(struct fw_unit *unit)
++{
++	char name[24] = {0};
 +
- 	snd_card_set_dev(card, &unit->device);
- 	err = snd_card_register(card);
- 	if (err < 0) {
++	if (fw_csr_string(unit->directory, CSR_MODEL, name, sizeof(name)) < 0)
++		return false;
++
++	return strncmp(name, "FW Audiophile Bootloader", 15) != 0;
++}
++
+ static int
+ bebob_probe(struct fw_unit *unit,
+ 	    const struct ieee1394_device_id *entry)
+@@ -163,10 +177,16 @@ bebob_probe(struct fw_unit *unit,
+ 	}
+ 
+ 	if ((entry->vendor_id == VEN_FOCUSRITE) &&
+-	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH))
++	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH)) {
+ 		spec = get_saffire_spec(unit);
+-	else
++	} else if ((entry->vendor_id == VEN_MAUDIO1) &&
++		   (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
++		   !check_audiophile_booted(unit)) {
++			err = 0;
++			goto end;
++	} else {
+ 		spec = (const struct snd_bebob_spec *)entry->driver_data;
++	}
+ 	if (spec == NULL) {
+ 		err = -ENOSYS;
+ 		goto end;
+@@ -239,6 +259,10 @@ static void
+ bebob_update(struct fw_unit *unit)
+ {
+ 	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
++
++	if (bebob == NULL)
++		return;
++
+ 	fcp_bus_reset(bebob->unit);
+ 	snd_bebob_stream_update_duplex(bebob);
+ }
+@@ -247,6 +271,10 @@ bebob_update(struct fw_unit *unit)
+ static void bebob_remove(struct fw_unit *unit)
+ {
+ 	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
++
++	if (bebob == NULL)
++		return;
++
+ 	snd_bebob_stream_destroy_duplex(bebob);
+ 	snd_card_disconnect(bebob->card);
+ 	snd_card_free_when_closed(bebob->card);
+@@ -329,6 +357,19 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	/* Focusrite, Saffire(no label and LE) */
+ 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
+ 			    &saffire_spec),
++	/* M-Audio, Firewire 410 */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010046, &maudio_fw410_spec),
++	/* M-Audio, Firewire Audiophile */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_AUDIOPHILE_BOTH,
++			    &maudio_audiophile_spec),
++	/* M-Audio, Firewire Solo */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010062, &maudio_solo_spec),
++	/* M-Audio, Ozonic */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x0000000a, &maudio_ozonic_spec),
++	/* M-Audio NRV10 */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010081, &maudio_nrv10_spec),
++	/* M-Audio, ProFireLightbridge */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x000100a1, &spec_normal),
+ 	/* Ids are unknown but able to be supported */
+ 	/*  Mackie, Digital X Bus x.200 */
+ 	/*  Mackie, Digital X Bus x.400 */
 diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index c16230e..d06f3f3 100644
+index 7dc5e55..c67d5e5 100644
 --- a/sound/firewire/bebob/bebob.h
 +++ b/sound/firewire/bebob/bebob.h
-@@ -24,6 +24,8 @@
- #include <sound/rawmidi.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
+@@ -235,6 +235,11 @@ extern struct snd_bebob_spec saffirepro_26_spec;
+ extern struct snd_bebob_spec saffirepro_10_spec;
+ extern struct snd_bebob_spec saffire_le_spec;
+ extern struct snd_bebob_spec saffire_spec;
++extern struct snd_bebob_spec maudio_fw410_spec;
++extern struct snd_bebob_spec maudio_audiophile_spec;
++extern struct snd_bebob_spec maudio_solo_spec;
++extern struct snd_bebob_spec maudio_ozonic_spec;
++extern struct snd_bebob_spec maudio_nrv10_spec;
  
- #include "../lib.h"
- #include "../fcp.h"
-@@ -69,6 +71,11 @@ struct snd_bebob {
- 		rx_stream_formations[SND_BEBOB_STRM_FMT_ENTRIES];
- 
- 	int sync_input_plug;
-+
-+	/* for uapi */
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
- };
- 
- static inline int
-@@ -178,12 +185,18 @@ int snd_bebob_stream_stop_duplex(struct snd_bebob *bebob);
- void snd_bebob_stream_update_duplex(struct snd_bebob *bebob);
- void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob);
- 
-+void snd_bebob_stream_lock_changed(struct snd_bebob *bebob);
-+int snd_bebob_stream_lock_try(struct snd_bebob *bebob);
-+void snd_bebob_stream_lock_release(struct snd_bebob *bebob);
-+
- void snd_bebob_proc_init(struct snd_bebob *bebob);
- 
- int snd_bebob_create_midi_devices(struct snd_bebob *bebob);
- 
- int snd_bebob_create_pcm_devices(struct snd_bebob *bebob);
- 
-+int snd_bebob_create_hwdep_device(struct snd_bebob *bebob);
-+
- #define SND_BEBOB_DEV_ENTRY(vendor, model) \
+ #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
  { \
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/bebob/bebob_hwdep.c b/sound/firewire/bebob/bebob_hwdep.c
+diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
 new file mode 100644
-index 0000000..54937c0
+index 0000000..715cf34
 --- /dev/null
-+++ b/sound/firewire/bebob/bebob_hwdep.c
-@@ -0,0 +1,197 @@
++++ b/sound/firewire/bebob/bebob_maudio.c
+@@ -0,0 +1,295 @@
 +/*
-+ * bebob_hwdep.c - a part of driver for BeBoB based devices
++ * bebob_maudio.c - a part of driver for BeBoB based devices
 + *
 + * Copyright (c) 2013 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
++#include "./bebob.h"
++
 +/*
-+ * This codes give three functionality.
++ * Just powering on, Firewire 410/Audiophile wait to
++ * download firmware blob. To enable these devices, drivers should upload
++ * firmware blob and send a command to initialize configuration to factory
++ * settings when completing uploading. Then these devices generate bus reset
++ * and are recognized as new devices with the firmware.
 + *
-+ * 1.get firewire node infomation
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock stream
++ * For streaming, both of output and input streams are needed for Firewire 410
++ * and Ozonic. The single stream is OK for the other devices even if the clock
++ * source is not SYT-Match (I note no devices use SYT-Match).
++ *
++ * Without streaming, the devices except for Firewire Audiophile can mix any
++ * input and output. For this reason, Audiophile cannot be used as standalone
++ * mixer.
 + */
 +
-+#include "bebob.h"
++#define MAUDIO_SPECIFIC_ADDRESS	0xffc700000000
 +
-+static long
-+hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
-+	   loff_t *offset)
++#define METER_OFFSET		0x00600000
++
++/* some device has sync info after metering data */
++#define METER_SIZE_FW410	76	/* with sync info */
++#define METER_SIZE_AUDIOPHILE	60	/* with sync info */
++#define METER_SIZE_SOLO		52	/* with sync info */
++#define METER_SIZE_OZONIC	48
++#define METER_SIZE_NRV10	80
++
++/* labels for metering */
++#define ANA_IN		"Analog In"
++#define ANA_OUT		"Analog Out"
++#define DIG_IN		"Digital In"
++#define SPDIF_IN	"S/PDIF In"
++#define ADAT_IN		"ADAT In"
++#define DIG_OUT		"Digital Out"
++#define SPDIF_OUT	"S/PDIF Out"
++#define ADAT_OUT	"ADAT Out"
++#define STRM_IN		"Stream In"
++#define AUX_OUT		"Aux Out"
++#define HP_OUT		"HP Out"
++/* for NRV */
++#define UNKNOWN_METER	"Unknown"
++
++static inline int
++get_meter(struct snd_bebob *bebob, void *buf, unsigned int size)
 +{
-+	struct snd_bebob *bebob = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+	union snd_firewire_event event;
-+
-+	spin_lock_irq(&bebob->lock);
-+
-+	while (!bebob->dev_lock_changed) {
-+		prepare_to_wait(&bebob->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&bebob->lock);
-+		schedule();
-+		finish_wait(&bebob->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&bebob->lock);
-+	}
-+
-+	memset(&event, 0, sizeof(event));
-+	if (bebob->dev_lock_changed) {
-+		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+		event.lock_status.status = (bebob->dev_lock_count > 0);
-+		bebob->dev_lock_changed = false;
-+
-+		count = min_t(long, count, sizeof(event.lock_status));
-+	}
-+
-+	spin_unlock_irq(&bebob->lock);
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static unsigned int
-+hwdep_poll(struct snd_hwdep *hwdep, struct file *file, poll_table *wait)
-+{
-+	struct snd_bebob *bebob = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &bebob->hwdep_wait, wait);
-+
-+	spin_lock_irq(&bebob->lock);
-+	if (bebob->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&bebob->lock);
-+
-+	return events;
++	return snd_fw_transaction(bebob->unit, TCODE_READ_BLOCK_REQUEST,
++				  MAUDIO_SPECIFIC_ADDRESS + METER_OFFSET,
++				  buf, size, 0);
 +}
 +
 +static int
-+hwdep_get_info(struct snd_bebob *bebob, void __user *arg)
-+{
-+	struct fw_device *dev = fw_parent_device(bebob->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_BEBOB;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int
-+hwdep_lock(struct snd_bebob *bebob)
++check_clk_sync(struct snd_bebob *bebob, unsigned int size, bool *sync)
 +{
 +	int err;
++	u8 *buf;
 +
-+	spin_lock_irq(&bebob->lock);
++	buf = kmalloc(size, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
 +
-+	if (bebob->dev_lock_count == 0) {
-+		bebob->dev_lock_count = -1;
-+		err = 0;
-+	} else
-+		err = -EBUSY;
++	err = get_meter(bebob, buf, size);
++	if (err < 0)
++		goto end;
 +
-+	spin_unlock_irq(&bebob->lock);
-+
++	/* if synced, this value is the same of SFC of FDF in CIP header */
++	*sync = (buf[size - 2] != 0xff);
++end:
++	kfree(buf);
 +	return err;
 +}
 +
++/* Firewire 410 specific operation */
++static char *fw410_meter_labels[] = {
++	ANA_IN, DIG_IN,
++	ANA_OUT, ANA_OUT, ANA_OUT, ANA_OUT, DIG_OUT,
++	HP_OUT
++};
 +static int
-+hwdep_unlock(struct snd_bebob *bebob)
++fw410_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
 +{
++
++	unsigned int c, channels;
 +	int err;
 +
-+	spin_lock_irq(&bebob->lock);
++	/* last 4 bytes are omitted because it's clock info. */
++	channels = ARRAY_SIZE(fw410_meter_labels) * 2;
++	if (size < channels * sizeof(u32))
++		return -EINVAL;
 +
-+	if (bebob->dev_lock_count == -1) {
-+		bebob->dev_lock_count = 0;
-+		err = 0;
-+	} else
-+		err = -EBADFD;
++	err = get_meter(bebob, (void *)buf, size);
++	if (err < 0)
++		goto end;
 +
-+	spin_unlock_irq(&bebob->lock);
-+
++	for (c = 0; c < channels; c++)
++		be32_to_cpus(&buf[c]);
++end:
 +	return err;
 +}
 +
++/* Firewire Audiophile specific operation */
++static char *audiophile_meter_labels[] = {
++	ANA_IN, DIG_IN,
++	ANA_OUT, ANA_OUT, DIG_OUT,
++	HP_OUT, AUX_OUT,
++};
 +static int
-+hwdep_release(struct snd_hwdep *hwdep, struct file *file)
++audiophile_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
 +{
-+	struct snd_bebob *bebob = hwdep->private_data;
++	unsigned int c, channels;
++	int err;
 +
-+	spin_lock_irq(&bebob->lock);
-+	if (bebob->dev_lock_count == -1)
-+		bebob->dev_lock_count = 0;
-+	spin_unlock_irq(&bebob->lock);
++	/* last 4 bytes are omitted because it's clock info. */
++	channels = ARRAY_SIZE(audiophile_meter_labels) * 2;
++	if (size < channels * sizeof(u32))
++		return -EINVAL;
 +
-+	return 0;
++	err = get_meter(bebob, (void *)buf, size);
++	if (err < 0)
++		goto end;
++
++	for (c = 0; c < channels; c++)
++		be32_to_cpus(&buf[c]);
++end:
++	return err;
 +}
 +
++/* Firewire Solo specific operation */
++static char *solo_meter_labels[] = {
++	ANA_IN, DIG_IN,
++	STRM_IN, STRM_IN,
++	ANA_OUT, DIG_OUT
++};
 +static int
-+hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+	    unsigned int cmd, unsigned long arg)
++solo_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
 +{
-+	struct snd_bebob *bebob = hwdep->private_data;
++	unsigned int c;
++	int err;
++	u32 tmp;
 +
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(bebob, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(bebob);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(bebob);
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
++	/* last 4 bytes are omitted because it's clock info. */
++	if (size < ARRAY_SIZE(solo_meter_labels) * 2 * sizeof(u32))
++		return -EINVAL;
++
++	err = get_meter(bebob, (void *)buf, size);
++	if (err < 0)
++		goto end;
++
++	c = 0;
++	do
++		buf[c] = be32_to_cpu(buf[c]);
++	while (++c < 4);
++
++	/* swap stream channels because inverted */
++	tmp = be32_to_cpu(buf[c]);
++	buf[c] = be32_to_cpu(buf[c + 2]);
++	buf[c + 2] = tmp;
++	tmp = be32_to_cpu(buf[c + 1]);
++	buf[c + 1] = be32_to_cpu(buf[c + 3]);
++	buf[c + 3] = tmp;
++
++	c += 4;
++	do
++		be32_to_cpus(&buf[c]);
++	while (++c < 12);
++end:
++	return err;
 +}
 +
-+#ifdef CONFIG_COMPAT
++/* Ozonic specific operation */
++static char *ozonic_meter_labels[] = {
++	ANA_IN, ANA_IN,
++	STRM_IN, STRM_IN,
++	ANA_OUT, ANA_OUT
++};
 +static int
-+hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+		   unsigned int cmd, unsigned long arg)
++ozonic_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
 +{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
++	unsigned int c, channels;
++	int err;
 +
-+static const struct snd_hwdep_ops hwdep_ops = {
-+	.read		= hwdep_read,
-+	.release	= hwdep_release,
-+	.poll		= hwdep_poll,
-+	.ioctl		= hwdep_ioctl,
-+	.ioctl_compat	= hwdep_compat_ioctl,
++	channels = ARRAY_SIZE(ozonic_meter_labels) * 2;
++	if (size < channels * sizeof(u32))
++		return -EINVAL;
++
++	err = get_meter(bebob, (void *)buf, size);
++	if (err < 0)
++		goto end;
++
++	for (c = 0; c < channels; c++)
++		be32_to_cpus(&buf[c]);
++end:
++	return err;
++}
++
++/* NRV10 specific operation */
++/* TODO: need testers. these positions are based on my assumption */
++static char *nrv10_meter_labels[] = {
++	ANA_IN, ANA_IN, ANA_IN, ANA_IN,
++	DIG_IN,
++	ANA_OUT, ANA_OUT, ANA_OUT, ANA_OUT,
++	DIG_IN
++};
++static int
++nrv10_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
++{
++	unsigned int c, channels;
++	int err;
++
++	channels = ARRAY_SIZE(nrv10_meter_labels) * 2;
++	if (size < channels * sizeof(u32))
++		return -EINVAL;
++
++	err = get_meter(bebob, (void *)buf, size);
++	if (err < 0)
++		goto end;
++
++	for (c = 0; c < channels; c++)
++		be32_to_cpus(&buf[c]);
++end:
++	return err;
++}
++
++/* Firewire 410 specification */
++static struct snd_bebob_rate_spec usual_rate_spec = {
++	.get	= &snd_bebob_stream_get_rate,
++	.set	= &snd_bebob_stream_set_rate,
++};
++static struct snd_bebob_meter_spec fw410_meter_spec = {
++	.num	= ARRAY_SIZE(fw410_meter_labels),
++	.labels	= fw410_meter_labels,
++	.get	= &fw410_meter_get
++};
++struct snd_bebob_spec maudio_fw410_spec = {
++	.clock	= NULL,
++	.rate	= &usual_rate_spec,
++	.meter	= &fw410_meter_spec
 +};
 +
-+int snd_bebob_create_hwdep_device(struct snd_bebob *bebob)
-+{
-+	struct snd_hwdep *hwdep;
-+	int err;
++/* Firewire Audiophile specification */
++static struct snd_bebob_meter_spec audiophile_meter_spec = {
++	.num	= ARRAY_SIZE(audiophile_meter_labels),
++	.labels	= audiophile_meter_labels,
++	.get	= &audiophile_meter_get
++};
++struct snd_bebob_spec maudio_audiophile_spec = {
++	.clock	= NULL,
++	.rate	= &usual_rate_spec,
++	.meter	= &audiophile_meter_spec
++};
 +
-+	err = snd_hwdep_new(bebob->card, "BeBoB", 0, &hwdep);
-+	if (err < 0)
-+		goto end;
-+	strcpy(hwdep->name, "BeBoB");
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_BEBOB;
-+	hwdep->ops = hwdep_ops;
-+	hwdep->private_data = bebob;
-+	hwdep->exclusive = true;
-+end:
-+	return err;
-+}
++/* Firewire Solo specification */
++static struct snd_bebob_meter_spec solo_meter_spec = {
++	.num	= ARRAY_SIZE(solo_meter_labels),
++	.labels	= solo_meter_labels,
++	.get	= &solo_meter_get
++};
++struct snd_bebob_spec maudio_solo_spec = {
++	.clock	= NULL,
++	.rate	= &usual_rate_spec,
++	.meter	= &solo_meter_spec
++};
 +
-diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
-index 36ef88b..446c5c9 100644
---- a/sound/firewire/bebob/bebob_midi.c
-+++ b/sound/firewire/bebob/bebob_midi.c
-@@ -11,19 +11,41 @@
- static int midi_capture_open(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_bebob *bebob = substream->rmidi->private_data;
--	return snd_bebob_stream_start_duplex(bebob, &bebob->tx_stream, 0);
-+	int err;
++/* Ozonic specification */
++static struct snd_bebob_meter_spec ozonic_meter_spec = {
++	.num	= ARRAY_SIZE(ozonic_meter_labels),
++	.labels	= ozonic_meter_labels,
++	.get	= &ozonic_meter_get
++};
++struct snd_bebob_spec maudio_ozonic_spec = {
++	.clock	= NULL,
++	.rate	= &usual_rate_spec,
++	.meter	= &ozonic_meter_spec
++};
 +
-+	err = snd_bebob_stream_lock_try(bebob);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_bebob_stream_start_duplex(bebob, &bebob->tx_stream, 0);
-+	if (err < 0)
-+		snd_bebob_stream_lock_release(bebob);
-+end:
-+	return err;
- }
- 
- static int midi_playback_open(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_bebob *bebob = substream->rmidi->private_data;
--	return snd_bebob_stream_start_duplex(bebob, &bebob->rx_stream, 0);
-+	int err;
-+
-+	err = snd_bebob_stream_lock_try(bebob);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_bebob_stream_start_duplex(bebob, &bebob->rx_stream, 0);
-+	if (err < 0)
-+		snd_bebob_stream_lock_release(bebob);
-+end:
-+	return err;
- }
- 
- static int midi_close(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_bebob *bebob = substream->rmidi->private_data;
--	return snd_bebob_stream_stop_duplex(bebob);
-+	snd_bebob_stream_stop_duplex(bebob);
-+	snd_bebob_stream_lock_release(bebob);
-+	return 0;
- }
- 
- static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
-diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
-index f6a2b5b..525c4ac 100644
---- a/sound/firewire/bebob/bebob_pcm.c
-+++ b/sound/firewire/bebob/bebob_pcm.c
-@@ -239,13 +239,17 @@ pcm_open(struct snd_pcm_substream *substream)
- 	bool internal;
- 	int err;
- 
--	err = pcm_init_hw_params(bebob, substream);
-+	err = snd_bebob_stream_lock_try(bebob);
- 	if (err < 0)
- 		goto end;
- 
-+	err = pcm_init_hw_params(bebob, substream);
-+	if (err < 0)
-+		goto err_locked;
-+
- 	err = snd_bebob_stream_check_internal_clock(bebob, &internal);
- 	if (err < 0)
--		goto end;
-+		goto err_locked;
- 
- 	/*
- 	 * When source of clock is internal or any PCM stream are running,
-@@ -256,21 +260,25 @@ pcm_open(struct snd_pcm_substream *substream)
- 	    amdtp_stream_pcm_running(&bebob->rx_stream)) {
- 		err = snd_bebob_stream_get_rate(bebob, &sampling_rate);
- 		if (err < 0)
--			goto end;
-+			goto err_locked;
- 
- 		substream->runtime->hw.rate_min = sampling_rate;
- 		substream->runtime->hw.rate_max = sampling_rate;
- 	}
- 
- 	snd_pcm_set_sync(substream);
--
- end:
- 	return err;
-+err_locked:
-+	snd_bebob_stream_lock_release(bebob);
-+	return err;
- }
- 
- static int
- pcm_close(struct snd_pcm_substream *substream)
- {
-+	struct snd_bebob *bebob = substream->private_data;
-+	snd_bebob_stream_lock_release(bebob);
- 	return 0;
- }
- 
++/* NRV10 specification */
++static struct snd_bebob_meter_spec nrv10_meter_spec = {
++	.num	= ARRAY_SIZE(nrv10_meter_labels),
++	.labels	= nrv10_meter_labels,
++	.get	= &nrv10_meter_get
++};
++struct snd_bebob_spec maudio_nrv10_spec = {
++	.clock	= NULL,
++	.rate	= &usual_rate_spec,
++	.meter	= &nrv10_meter_spec
++};
 diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index 7c604d8..533d49a 100644
+index 76be74b..5865fed 100644
 --- a/sound/firewire/bebob/bebob_stream.c
 +++ b/sound/firewire/bebob/bebob_stream.c
-@@ -771,3 +771,42 @@ int snd_bebob_stream_discover(struct snd_bebob *bebob)
- end:
- 	return err;
- }
+@@ -198,6 +198,15 @@ map_stream(struct snd_bebob *bebob, struct amdtp_stream *s)
+ 			/* location of this channel in this section */
+ 			sec_loc = buf[pos++] - 1;
+ 
++			/*
++			 * Basically the number of location is within the
++			 * number of channels in this section. But some models
++			 * of M-Audio don't follow this. Its location for MIDI
++			 * is the position of MIDI channels in AMDTP packet.
++			 */
++			if (sec_loc >= channels)
++				sec_loc = ch;
 +
-+void snd_bebob_stream_lock_changed(struct snd_bebob *bebob)
-+{
-+	bebob->dev_lock_changed = true;
-+	wake_up(&bebob->hwdep_wait);
-+}
-+
-+int snd_bebob_stream_lock_try(struct snd_bebob *bebob)
-+{
-+	int err;
-+
-+	spin_lock_irq(&bebob->lock);
-+
-+	/* user land lock this */
-+	if (bebob->dev_lock_count < 0) {
-+		err = -EBUSY;
-+		goto end;
-+	}
-+
-+	/* this is the first time */
-+	if (bebob->dev_lock_count++ == 0)
-+		snd_bebob_stream_lock_changed(bebob);
-+	err = 0;
-+end:
-+	spin_unlock_irq(&bebob->lock);
-+	return err;
-+}
-+
-+void snd_bebob_stream_lock_release(struct snd_bebob *bebob)
-+{
-+	spin_lock_irq(&bebob->lock);
-+
-+	if (WARN_ON(bebob->dev_lock_count <= 0))
-+		goto end;
-+	if (--bebob->dev_lock_count == 0)
-+		snd_bebob_stream_lock_changed(bebob);
-+end:
-+	spin_unlock_irq(&bebob->lock);
-+}
+ 			switch (type) {
+ 			/* for MIDI conformant data channel */
+ 			case 0x0a:
 -- 
 1.8.3.2
 
