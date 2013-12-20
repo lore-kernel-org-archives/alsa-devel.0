@@ -1,340 +1,192 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 11/38] firewire-lib: Add support for channel mapping
-Date: Fri, 20 Dec 2013 22:14:02 +0900
-Message-ID: <1387545269-3875-12-git-send-email-o-takashi@sakamocchi.jp>
-References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH v4 6/9] ASoC: fsl-ssi: Add configuration helper
+	functions
+Date: Fri, 20 Dec 2013 14:11:33 +0100
+Message-ID: <1387545096-2334-7-git-send-email-mpa@pengutronix.de>
+References: <1387545096-2334-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4932526564B
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 14:12:27 +0100 (CET)
+In-Reply-To: <1387545096-2334-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Some devices arrange the position of PCM/MIDI data in AMDTP packet. This commit
-allows drivers to set channel mapping.
+This patch adds a struct 'fsl_ssi_rxtx_reg_val' which holds register
+values necessary to enable rx/tx. Based on those preset register values,
+the added configuration functions will cleanly enable/disable different
+parts of the SSI IP while supporting online/offline configuration.
+Different operating modes can be setup directly as different register
+values in fsl_ssi_reg_val.
 
-To be simple, the mapping table is an array with fixed length. Then the number
-of channels for PCM is restricted by 64 channels.
+These functions and structs will help to cleanup and simplify the
+trigger function to support many different IP versions (online/offline
+configuration) and different operating modes.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/firewire/amdtp.c | 122 +++++++++++++++++++++++++++++--------------------
- sound/firewire/amdtp.h |   8 ++++
- 2 files changed, 80 insertions(+), 50 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 122 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 122 insertions(+)
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 00d4485..832bf27 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -141,11 +141,12 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
- 		[CIP_SFC_176400] = 176400,
- 		[CIP_SFC_192000] = 192000,
- 	};
--	unsigned int sfc, midi_channels;
-+	unsigned int i, sfc, midi_channels;
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 2f25525..70bb466 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -131,6 +131,18 @@ enum fsl_ssi_type {
+ 	FSL_SSI_MX51,
+ };
  
- 	midi_channels = DIV_ROUND_UP(midi_ports, 8);
- 
--	if (WARN_ON(amdtp_stream_running(s)) ||
-+	if (WARN_ON(amdtp_stream_running(s)) |
-+	    WARN_ON(pcm_channels > AMDTP_MAX_CHANNELS_FOR_PCM) |
- 	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
- 		return;
- 
-@@ -160,11 +161,12 @@ sfc_found:
- 	if (s->dual_wire) {
- 		sfc -= 2;
- 		rate /= 2;
--		pcm_channels *= 2;
-+		s->pcm_channels = pcm_channels * 2;
-+	} else {
-+		s->pcm_channels = pcm_channels;
- 	}
- 	s->sfc = sfc;
--	s->data_block_quadlets = pcm_channels + midi_channels;
--	s->pcm_channels = pcm_channels;
-+	s->data_block_quadlets = s->pcm_channels + midi_channels;
- 	s->midi_ports = midi_ports;
- 
- 	s->syt_interval = amdtp_syt_intervals[sfc];
-@@ -174,6 +176,11 @@ sfc_found:
- 	if (s->flags & CIP_BLOCKING)
- 		/* additional buffering needed to adjust for no-data packets */
- 		s->transfer_delay += TICKS_PER_SECOND * s->syt_interval / rate;
++struct fsl_ssi_reg_val {
++	u32 sier;
++	u32 srcr;
++	u32 stcr;
++	u32 scr;
++};
 +
-+	/* init the position map for PCM and MIDI channels */
-+	for (i = 0; i < pcm_channels; i++)
-+		s->pcm_positions[i] = i;
-+	s->midi_position = s->pcm_channels;
- }
- EXPORT_SYMBOL(amdtp_stream_set_parameters);
++struct fsl_ssi_rxtx_reg_val {
++	struct fsl_ssi_reg_val rx;
++	struct fsl_ssi_reg_val tx;
++};
++
+ /**
+  * fsl_ssi_private: per-SSI private data
+  *
+@@ -169,6 +181,8 @@ struct fsl_ssi_private {
+ 	struct imx_dma_data filter_data_tx;
+ 	struct imx_dma_data filter_data_rx;
+ 	struct imx_pcm_fiq_params fiq_params;
++	/* Register values for rx/tx configuration */
++	struct fsl_ssi_rxtx_reg_val rxtx_reg_val;
  
-@@ -352,22 +359,20 @@ static void amdtp_write_s32(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
- {
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, frame_step, i, c;
-+	unsigned int remaining_frames, i, c;
- 	const u32 *src;
+ 	struct {
+ 		unsigned int rfrc;
+@@ -462,6 +476,114 @@ static void fsl_ssi_debugfs_remove(struct fsl_ssi_private *ssi_private)
  
--	channels = s->pcm_channels;
- 	src = (void *)runtime->dma_area +
- 			frames_to_bytes(runtime, s->pcm_buffer_pointer);
- 	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--	frame_step = s->data_block_quadlets - channels;
+ #endif /* IS_ENABLED(CONFIG_DEBUG_FS) */
  
- 	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
-+		for (c = 0; c < s->pcm_channels; ++c) {
-+			buffer[s->pcm_positions[c]] =
-+					cpu_to_be32((*src >> 8) | 0x40000000);
- 			src++;
--			buffer++;
- 		}
--		buffer += frame_step;
-+		buffer += s->data_block_quadlets;
- 		if (--remaining_frames == 0)
- 			src = (void *)runtime->dma_area;
- 	}
-@@ -378,22 +383,20 @@ static void amdtp_write_s16(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
- {
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, frame_step, i, c;
-+	unsigned int remaining_frames, i, c;
- 	const u16 *src;
- 
--	channels = s->pcm_channels;
- 	src = (void *)runtime->dma_area +
- 			frames_to_bytes(runtime, s->pcm_buffer_pointer);
- 	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--	frame_step = s->data_block_quadlets - channels;
- 
- 	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
-+		for (c = 0; c < s->pcm_channels; ++c) {
-+			buffer[s->pcm_positions[c]] =
-+					cpu_to_be32((*src << 8) | 0x40000000);
- 			src++;
--			buffer++;
- 		}
--		buffer += frame_step;
-+		buffer += s->data_block_quadlets;
- 		if (--remaining_frames == 0)
- 			src = (void *)runtime->dma_area;
- 	}
-@@ -404,29 +407,29 @@ static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
- 				     __be32 *buffer, unsigned int frames)
- {
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, frame_adjust_1, frame_adjust_2, i, c;
-+	unsigned int channels, remaining_frames, i, c;
- 	const u32 *src;
- 
--	channels = s->pcm_channels;
- 	src = (void *)runtime->dma_area +
--			s->pcm_buffer_pointer * (runtime->frame_bits / 8);
--	frame_adjust_1 = channels - 1;
--	frame_adjust_2 = 1 - (s->data_block_quadlets - channels);
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+	channels = s->pcm_channels / 2;
- 
--	channels /= 2;
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
-+			buffer[s->pcm_positions[c] * 2] =
-+					cpu_to_be32((*src >> 8) | 0x40000000);
- 			src++;
--			buffer += 2;
- 		}
--		buffer -= frame_adjust_1;
-+		buffer += 1;
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
-+			buffer[s->pcm_positions[c] * 2] =
-+					cpu_to_be32((*src >> 8) | 0x40000000);
- 			src++;
--			buffer += 2;
- 		}
--		buffer -= frame_adjust_2;
-+		buffer += s->data_block_quadlets - 1;
-+		if (--remaining_frames == 0)
-+			src = (void *)runtime->dma_area;
- 	}
- }
- 
-@@ -435,29 +438,29 @@ static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
- 				     __be32 *buffer, unsigned int frames)
- {
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, frame_adjust_1, frame_adjust_2, i, c;
-+	unsigned int channels, remaining_frames, i, c;
- 	const u16 *src;
- 
--	channels = s->pcm_channels;
- 	src = (void *)runtime->dma_area +
--			s->pcm_buffer_pointer * (runtime->frame_bits / 8);
--	frame_adjust_1 = channels - 1;
--	frame_adjust_2 = 1 - (s->data_block_quadlets - channels);
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+	channels = s->pcm_channels / 2;
- 
--	channels /= 2;
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
-+			buffer[s->pcm_positions[c] * 2] =
-+					cpu_to_be32((*src << 8) | 0x40000000);
- 			src++;
--			buffer += 2;
- 		}
--		buffer -= frame_adjust_1;
-+		buffer += 1;
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
-+			buffer[s->pcm_positions[c] * 2] =
-+					cpu_to_be32((*src << 8) | 0x40000000);
- 			src++;
--			buffer += 2;
- 		}
--		buffer -= frame_adjust_2;
-+		buffer += s->data_block_quadlets - 1;
-+		if (--remaining_frames == 0)
-+			src = (void *)runtime->dma_area;
- 	}
- }
- 
-@@ -475,7 +478,7 @@ static void amdtp_read_s32(struct amdtp_stream *s,
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < s->pcm_channels; ++c) {
--			*dst = be32_to_cpu(buffer[c]) << 8;
-+			*dst = be32_to_cpu(buffer[s->pcm_positions[c]]) << 8;
- 			dst++;
- 		}
- 		buffer += s->data_block_quadlets;
-@@ -499,12 +502,14 @@ static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
--			*dst = be32_to_cpu(buffer[c * 2]) << 8;
-+			*dst =
-+			     be32_to_cpu(buffer[s->pcm_positions[c] * 2]) << 8;
- 			dst++;
- 		}
- 		buffer += 1;
- 		for (c = 0; c < channels; ++c) {
--			*dst = be32_to_cpu(buffer[c * 2]) << 8;
-+			*dst =
-+			     be32_to_cpu(buffer[s->pcm_positions[c] * 2]) << 8;
- 			dst++;
- 		}
- 		buffer += s->data_block_quadlets - 1;
-@@ -520,11 +525,26 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < s->pcm_channels; ++c)
--			buffer[c] = cpu_to_be32(0x40000000);
-+			buffer[s->pcm_positions[c]] = cpu_to_be32(0x40000000);
- 		buffer += s->data_block_quadlets;
- 	}
- }
- 
-+static void amdtp_fill_pcm_silence_dualwire(struct amdtp_stream *s,
-+					   __be32 *buffer, unsigned int frames)
++/*
++ * Enable/Disable all rx/tx config flags at once.
++ */
++static void fsl_ssi_rxtx_config(struct fsl_ssi_private *ssi_private,
++		bool enable)
 +{
-+	unsigned int i, c, channels;
++	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
++	struct fsl_ssi_rxtx_reg_val *vals = &ssi_private->rxtx_reg_val;
 +
-+	channels = s->pcm_channels / 2;
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			buffer[s->pcm_positions[c] * 2] =
-+			buffer[s->pcm_positions[c] * 2 + 1] =
-+						cpu_to_be32(0x40000000);
-+		}
-+		buffer += s->data_block_quadlets;
++	if (enable) {
++		write_ssi_mask(&ssi->sier, 0, vals->rx.sier | vals->tx.sier);
++		write_ssi_mask(&ssi->srcr, 0, vals->rx.srcr | vals->tx.srcr);
++		write_ssi_mask(&ssi->stcr, 0, vals->rx.stcr | vals->tx.stcr);
++	} else {
++		write_ssi_mask(&ssi->srcr, vals->rx.srcr | vals->tx.srcr, 0);
++		write_ssi_mask(&ssi->stcr, vals->rx.stcr | vals->tx.stcr, 0);
++		write_ssi_mask(&ssi->sier, vals->rx.sier | vals->tx.sier, 0);
 +	}
 +}
- static void amdtp_fill_midi(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
- {
-@@ -532,8 +552,8 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
- 	u8 *b;
- 
- 	for (f = 0; f < frames; f++) {
--		buffer[s->pcm_channels + 1] = 0x00;
--		b = (u8 *)&buffer[s->pcm_channels + 1];
-+		buffer[s->midi_position] = 0x00;
-+		b = (u8 *)&buffer[s->midi_position];
- 
- 		port = (s->data_block_counter + f) % 8;
- 		if ((s->midi[port] == NULL) ||
-@@ -556,7 +576,7 @@ static void amdtp_pull_midi(struct amdtp_stream *s,
- 
- 	for (f = 0; f < frames; f++) {
- 		port = (s->data_block_counter + f) % 8;
--		b = (u8 *)&buffer[s->pcm_channels + 1];
-+		b = (u8 *)&buffer[s->midi_position];
- 
- 		len = b[0] - 0x80;
- 		if (len < 1 || 3 < len)
-@@ -665,6 +685,8 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
- 	pcm = ACCESS_ONCE(s->pcm);
- 	if (pcm)
- 		s->transfer_samples(s, pcm, buffer, data_blocks);
-+	else if (s->dual_wire)
-+		amdtp_fill_pcm_silence_dualwire(s, buffer, data_blocks);
- 	else
- 		amdtp_fill_pcm_silence(s, buffer, data_blocks);
- 	if (s->midi_ports)
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 4f57c9e..240de9d 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -49,6 +49,12 @@ enum cip_sfc {
- 
- 
- /*
-+ * This module supports maximum 64 PCM channels for one PCM stream
-+ * This is for our convinience.
-+ */
-+#define AMDTP_MAX_CHANNELS_FOR_PCM	64
 +
 +/*
-  * AMDTP packet can include channels for MIDI conformant data.
-  * Each MIDI conformant data channel includes 8 MPX-MIDI data stream.
-  * Each MPX-MIDI data stream includes one data stream from/to MIDI ports.
-@@ -83,6 +89,8 @@ struct amdtp_stream {
- 	void (*transfer_samples)(struct amdtp_stream *s,
- 				 struct snd_pcm_substream *pcm,
- 				 __be32 *buffer, unsigned int frames);
-+	u8 pcm_positions[AMDTP_MAX_CHANNELS_FOR_PCM];
-+	u8 midi_position;
- 
- 	unsigned int syt_interval;
- 	unsigned int transfer_delay;
++ * Enable/Disable a ssi configuration. You have to pass either
++ * ssi_private->rxtx_reg_val.rx or tx as vals parameter.
++ */
++static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
++		struct fsl_ssi_reg_val *vals)
++{
++	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
++	struct fsl_ssi_reg_val *avals;
++	u32 scr_val = read_ssi(&ssi->scr);
++	int nr_active_streams = !!(scr_val & CCSR_SSI_SCR_TE) +
++				!!(scr_val & CCSR_SSI_SCR_RE);
++
++	/* Find the other direction values rx or tx which we do not want to
++	 * modify */
++	if (&ssi_private->rxtx_reg_val.rx == vals)
++		avals = &ssi_private->rxtx_reg_val.tx;
++	else
++		avals = &ssi_private->rxtx_reg_val.rx;
++
++	/* If vals should be disabled, start with disabling the unit */
++	if (!enable) {
++		u32 scr = vals->scr & (vals->scr ^ avals->scr);
++		write_ssi_mask(&ssi->scr, scr, 0);
++	}
++
++	/*
++	 * We are running on a SoC which does not support online SSI
++	 * reconfiguration, so we have to enable all necessary flags at once
++	 * even if we do not use them later (capture and playback configuration)
++	 */
++	if (ssi_private->offline_config) {
++		if ((enable && !nr_active_streams) ||
++				(!enable && nr_active_streams == 1))
++			fsl_ssi_rxtx_config(ssi_private, enable);
++
++		goto config_done;
++	}
++
++	/*
++	 * Configure single direction units while the SSI unit is running
++	 * (online configuration)
++	 */
++	if (enable) {
++		write_ssi_mask(&ssi->sier, 0, vals->sier);
++		write_ssi_mask(&ssi->srcr, 0, vals->srcr);
++		write_ssi_mask(&ssi->stcr, 0, vals->stcr);
++	} else {
++		u32 sier;
++		u32 srcr;
++		u32 stcr;
++
++		/*
++		 * Disabling the necessary flags for one of rx/tx while the
++		 * other stream is active is a little bit more difficult. We
++		 * have to disable only those flags that differ between both
++		 * streams (rx XOR tx) and that are set in the stream that is
++		 * disabled now. Otherwise we could alter flags of the other
++		 * stream
++		 */
++
++		/* These assignments are simply vals without bits set in avals*/
++		sier = vals->sier & (vals->sier ^ avals->sier);
++		srcr = vals->srcr & (vals->srcr ^ avals->srcr);
++		stcr = vals->stcr & (vals->stcr ^ avals->stcr);
++
++		write_ssi_mask(&ssi->srcr, srcr, 0);
++		write_ssi_mask(&ssi->stcr, stcr, 0);
++		write_ssi_mask(&ssi->sier, sier, 0);
++	}
++
++config_done:
++	/* Enabling of subunits is done after configuration */
++	if (enable)
++		write_ssi_mask(&ssi->scr, 0, vals->scr);
++}
++
++
++static void fsl_ssi_rx_config(struct fsl_ssi_private *ssi_private, bool enable)
++{
++	fsl_ssi_config(ssi_private, enable, &ssi_private->rxtx_reg_val.rx);
++}
++
++static void fsl_ssi_tx_config(struct fsl_ssi_private *ssi_private, bool enable)
++{
++	fsl_ssi_config(ssi_private, enable, &ssi_private->rxtx_reg_val.tx);
++}
++
+ static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
+ {
+ 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
 -- 
-1.8.3.2
-
-
-------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+1.8.5.1
