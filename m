@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 33/38] bebob: Add support for Terratec PHASE,
-	EWS series and Aureon
-Date: Fri, 20 Dec 2013 22:14:24 +0900
-Message-ID: <1387545269-3875-34-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 38/38] bebob: Send a cue to load firmware for M-Audio Firewire
+	series
+Date: Fri, 20 Dec 2013 22:14:29 +0900
+Message-ID: <1387545269-3875-39-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,171 +21,190 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit allows this driver to support all of models which Terratec produced
-with DM1000/BeBoB. They are:
- - PHASE 24 FW
- - PHASE X24 FW
- - PHASE 88 Rack FW
- - EWS MIC2
- - EWS MIC4
- - Aureon 7.1 Firewire
+This commit is optional. The purpose of this commit is to help testers.
 
-For Phase series, this commit adds a Terratec specific operation. To get source
-of clock. AV/C Audio Subunit command is used.
+Just powering on, these devices below wait to download firmware.
+ - Firewire Audiophile
+ - Firewire 410
+ - Firewire 1814
+ - ProjectMix I/O
 
-For EWS series and Aureon, this module uses normal operations.
+But firmware version 5058 or later, flash memory in the device stores the
+firmware. So this driver can enable these devices by sending a certain cue to
+load the firmware. To reading these codes, this cue is a kind of Bootloader
+Commands. The role of this cue is to initialize configuration to factory
+settings.
+
+I think this functionality should be implemented in user-land. FFADO already
+have 'ffado-bridgeco-downloader' to take the device to download firmware. To
+read these codes, this cue is a kind of Bootloader Commands. The role of this
+cue is to initialize configuration to factory settings
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig                |  3 ++
- sound/firewire/bebob/Makefile         |  2 +-
- sound/firewire/bebob/bebob.c          | 11 ++++++
- sound/firewire/bebob/bebob.h          |  4 +++
- sound/firewire/bebob/bebob_terratec.c | 68 +++++++++++++++++++++++++++++++++++
- 5 files changed, 87 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/bebob/bebob_terratec.c
+ sound/firewire/bebob/bebob.c        | 23 ++++++++-----
+ sound/firewire/bebob/bebob.h        |  2 ++
+ sound/firewire/bebob/bebob_maudio.c | 69 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 85 insertions(+), 9 deletions(-)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 304f49e..34615e5 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -104,6 +104,9 @@ config SND_BEBOB
- 	  * Lynx Aurora 8/16 (LT-FW)
- 	  * ICON FireXon
- 	  * PrismSound Orpheus/ADA-8XR
-+	  * TerraTec PHASE 24 FW/PHASE X24 FW/PHASE 88 Rack FW
-+	  * Terratec EWS MIC2/EWS MIC4
-+	  * Terratec Aureon 7.1 Firewire
- 
-           To compile this driver as a module, choose M here: the module
-           will be called snd-bebob.
-diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-index e4b08e3..cb38dd1 100644
---- a/sound/firewire/bebob/Makefile
-+++ b/sound/firewire/bebob/Makefile
-@@ -1,3 +1,3 @@
- snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
--		  bebob_pcm.o bebob_hwdep.o bebob.o
-+		  bebob_pcm.o bebob_hwdep.o bebob_terratec.o bebob.o
- obj-m += snd-bebob.o
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 4ce8121..f0a4ecb 100644
+index 65e856e..6952b80 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -52,6 +52,7 @@ static unsigned int devices_used;
- #define VEN_LYNX	0x000019e5
- #define VEN_ICON	0x00001a9e
- #define VEN_PRISMSOUND	0x00001198
-+#define VEN_TERRATEC	0x00000aac
+@@ -179,18 +179,21 @@ bebob_probe(struct fw_unit *unit,
+ 	}
  
- static int
- name_device(struct snd_bebob *bebob, unsigned int vendor_id)
-@@ -285,6 +286,16 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x00010048, &spec_normal),
- 	/* PrismSound, ADA-8XR */
- 	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x0000ada8, &spec_normal),
-+	/* TerraTec Electronic GmbH, PHASE 88 Rack FW */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000003, &phase88_rack_spec),
-+	/* TerraTec Electronic GmbH, PHASE 24 FW */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000004, &phase24_series_spec),
-+	/* TerraTec Electronic GmbH, Phase X24 FW */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000007, &phase24_series_spec),
-+	/* TerraTec Electronic GmbH, EWS MIC2/MIC8 */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000005, &spec_normal),
-+	/* Terratec Electronic GmbH, Aureon 7.1 Firewire */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000002, &spec_normal),
- 	/* Ids are unknown but able to be supported */
- 	/*  Mackie, Digital X Bus x.200 */
- 	/*  Mackie, Digital X Bus x.400 */
+ 	if ((entry->vendor_id == VEN_FOCUSRITE) &&
+-	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH)) {
++	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH))
+ 		spec = get_saffire_spec(unit);
+-	} else if ((entry->vendor_id == VEN_MAUDIO1) &&
+-		   (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
+-		   !check_audiophile_booted(unit)) {
+-			err = 0;
+-			goto end;
+-	} else {
++	else if ((entry->vendor_id == VEN_MAUDIO1) &&
++		 (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
++		 !check_audiophile_booted(unit))
++		spec = NULL;
++	else
+ 		spec = (const struct snd_bebob_spec *)entry->driver_data;
+-	}
++
+ 	if (spec == NULL) {
+-		err = -ENOSYS;
++		if ((entry->vendor_id == VEN_MAUDIO1) ||
++		    (entry->vendor_id == VEN_MAUDIO2))
++			err = snd_bebob_maudio_load_firmware(unit);
++		else
++			err = -ENOSYS;
+ 		goto end;
+ 	}
+ 
+@@ -367,6 +370,7 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
+ 			    &saffire_spec),
+ 	/* M-Audio, Firewire 410 */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010058, NULL),	/* bootloader */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010046, &maudio_fw410_spec),
+ 	/* M-Audio, Firewire Audiophile */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_AUDIOPHILE_BOTH,
+@@ -380,6 +384,7 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	/* M-Audio, ProFireLightbridge */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x000100a1, &spec_normal),
+ 	/* Firewire 1814 */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010070, NULL),	/* bootloader */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_FW1814,
+ 			    &maudio_special_spec),
+ 	/* M-Audio ProjectMix */
 diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 7ff89fa..1cb171b 100644
+index c65e7b3..de7f398 100644
 --- a/sound/firewire/bebob/bebob.h
 +++ b/sound/firewire/bebob/bebob.h
-@@ -227,6 +227,10 @@ int snd_bebob_create_pcm_devices(struct snd_bebob *bebob);
+@@ -254,6 +254,8 @@ extern struct snd_bebob_spec maudio_nrv10_spec;
+ extern struct snd_bebob_spec maudio_special_spec;
+ int snd_bebob_maudio_special_discover(struct snd_bebob *bebob, bool is1814);
  
- int snd_bebob_create_hwdep_device(struct snd_bebob *bebob);
- 
-+/* model specific operations */
-+extern struct snd_bebob_spec phase88_rack_spec;
-+extern struct snd_bebob_spec phase24_series_spec;
++int snd_bebob_maudio_load_firmware(struct fw_unit *unit);
 +
  #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
  { \
  	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
-new file mode 100644
-index 0000000..9c2cebf
---- /dev/null
-+++ b/sound/firewire/bebob/bebob_terratec.c
-@@ -0,0 +1,68 @@
+diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
+index b941042..96e949f 100644
+--- a/sound/firewire/bebob/bebob_maudio.c
++++ b/sound/firewire/bebob/bebob_maudio.c
+@@ -16,6 +16,15 @@
+  * settings when completing uploading. Then these devices generate bus reset
+  * and are recognized as new devices with the firmware.
+  *
++ * But with firmware version 5058 or later, the firmware is stored to flash
++ * memory in the device and drivers can tell DM1000 to load the firmware by
++ * sending a cue. This cue must be sent one time.
++ *
++ * If the firmware blobs are in alsa-firmware package, this driver can support
++ * these devices with any firmware versions. (Then this driver need codes to
++ * upload the firmware blob.) But for this, the license of firmware blob needs
++ * to be considered.
++ *
+  * For streaming, both of output and input streams are needed for Firewire 410
+  * and Ozonic. The single stream is OK for the other devices even if the clock
+  * source is not SYT-Match (I note no devices use SYT-Match).
+@@ -31,6 +40,20 @@
+  * functionality is between 0xffc700700000 to 0xffc70070009c.
+  */
+ 
++/* Offset from information register */
++#define INFO_OFFSET_SW_DATE	0x20
++
++/* Bootloader Protocol Version 1 */
++#define MAUDIO_BOOTLOADER_CUE1	0x00000001
 +/*
-+ * bebob_terratec.c - a part of driver for BeBoB based devices
-+ *
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
++ * Initializing configuration to factory settings (= 0x1101), (swapped in line),
++ * Command code is zero (= 0x00),
++ * the number of operands is zero (= 0x00)(at least significant byte)
 + */
++#define MAUDIO_BOOTLOADER_CUE2	0x01110000
++/* padding */
++#define MAUDIO_BOOTLOADER_CUE3	0x00000000
 +
-+#include "./bebob.h"
-+
-+static char *phase88_rack_clk_src_labels[] = {
-+	SND_BEBOB_CLOCK_INTERNAL, "Digital In", "Word Clock"
-+};
-+static int
-+phase88_rack_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
+ #define MAUDIO_SPECIFIC_ADDRESS	0xffc700000000
+ 
+ #define METER_OFFSET		0x00600000
+@@ -58,6 +81,52 @@
+ /* for NRV */
+ #define UNKNOWN_METER	"Unknown"
+ 
++/*
++ * For some M-Audio devices, this module just send cue to load firmware. After
++ * loading, the device generates bus reset and newly detected.
++ *
++ * If we make any transactions to load firmware, the operation may failed.
++ */
++int snd_bebob_maudio_load_firmware(struct fw_unit *unit)
 +{
-+	unsigned int enable_ext, enable_word;
-+	int err;
++	struct fw_device *device = fw_parent_device(unit);
++	int err, rcode;
++	u64 date;
++	__be32 cues[3] = {
++		MAUDIO_BOOTLOADER_CUE1,
++		MAUDIO_BOOTLOADER_CUE2,
++		MAUDIO_BOOTLOADER_CUE3
++	};
 +
-+	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_ext);
++	/* check date of software used to build */
++	err = snd_bebob_read_block(unit, INFO_OFFSET_SW_DATE,
++				   &date, sizeof(u64));
 +	if (err < 0)
 +		goto end;
-+	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_word);
-+	if (err < 0)
++	/*
++	 * firmware version 5058 or later has date later than "20070401", but
++	 * 'date' is not null-terminated.
++	 */
++	if (date < 0x3230303730343031) {
++		dev_err(&unit->device,
++			"Use firmware version 5058 or later\n");
++		err = -ENOSYS;
 +		goto end;
++	}
 +
-+	*id = (enable_ext & 0x01) || ((enable_word & 0x01) << 1);
++	rcode = fw_run_transaction(device->card, TCODE_WRITE_BLOCK_REQUEST,
++				   device->node_id, device->generation,
++				   device->max_speed, BEBOB_ADDR_REG_REQ,
++				   cues, sizeof(cues));
++	if (rcode != RCODE_COMPLETE) {
++		dev_err(&unit->device,
++			"Failed to send a cue to load firmware\n");
++		err = -EIO;
++	}
 +end:
 +	return err;
 +}
 +
-+static char *phase24_series_clk_src_labels[] = {
-+	SND_BEBOB_CLOCK_INTERNAL, "Digital In"
-+};
-+static int
-+phase24_series_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
-+{
-+	return avc_audio_get_selector(bebob->unit, 0, 4, id);
-+}
-+
-+struct snd_bebob_rate_spec phase_series_rate_spec = {
-+	.get	= &snd_bebob_stream_get_rate,
-+	.set	= &snd_bebob_stream_set_rate,
-+};
-+
-+/* PHASE 88 Rack FW */
-+struct snd_bebob_clock_spec phase88_rack_clk = {
-+	.num	= ARRAY_SIZE(phase88_rack_clk_src_labels),
-+	.labels	= phase88_rack_clk_src_labels,
-+	.get	= &phase88_rack_clk_src_get,
-+};
-+struct snd_bebob_spec phase88_rack_spec = {
-+	.clock	= &phase88_rack_clk,
-+	.rate	= &phase_series_rate_spec,
-+	.meter	= NULL
-+};
-+
-+/* 'PHASE 24 FW' and 'PHASE X24 FW' */
-+struct snd_bebob_clock_spec phase24_series_clk = {
-+	.num	= ARRAY_SIZE(phase24_series_clk_src_labels),
-+	.labels	= phase24_series_clk_src_labels,
-+	.get	= &phase24_series_clk_src_get,
-+};
-+struct snd_bebob_spec phase24_series_spec = {
-+	.clock	= &phase24_series_clk,
-+	.rate	= &phase_series_rate_spec,
-+	.meter	= NULL
-+};
+ static inline int
+ get_meter(struct snd_bebob *bebob, void *buf, unsigned int size)
+ {
 -- 
 1.8.3.2
 
