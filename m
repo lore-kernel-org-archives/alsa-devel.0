@@ -1,57 +1,66 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 02/11] ASoC: ab8500: Revert back to find_next_bit()
-Date: Fri, 20 Dec 2013 14:02:11 +0000
-Message-ID: <20131220140211.GG3709@lee--X1>
-References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
- <1387468508-12286-3-git-send-email-lee.jones@linaro.org>
- <s5hd2kssu4g.wl%tiwai@suse.de>
- <20131219164824.GA16145@lee--X1>
- <s5hzjnwrbq2.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 01/19] ASoC: atmel: Don't set unused struct
+	snd_pcm_hardware fields
+Date: Fri, 20 Dec 2013 14:20:07 +0100
+Message-ID: <1387545625-19240-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hzjnwrbq2.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, broonie@kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-044.synserver.de (smtp-out-122.synserver.de
+ [212.40.185.122])
+ by alsa0.perex.cz (Postfix) with ESMTP id 102AF265616
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 15:19:33 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Nicolas Ferre <nicolas.ferre@atmel.com>, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> > > > Commit '166a34d ASoC: ab8500: Fix invalid cast to long pointer'
-> > > > rather carelessly converts find_next_bit() to fls() (find last
-> > > > bit set), which are not the same.
-> > >=20
-> > > Does it break on the real machines?
-> >=20
-> > It does, that's how I found the bug.
-> >=20
-> > > fls() behaves differently from find_next_bit(), of course, but in=
- this
-> > > case, it should work same in the end, since there are at most two
-> > > bits.
-> >=20
-> > Unfortunately it doesn't work at all. This patch brings audio back =
-to
-> > a working state. It took me the best part of a day to track down th=
-e
-> > issue. :(
->=20
-> Hmm, then isn't the original code rather buggy?
->=20
-> Check the values set there by ffs(), fls() and the original
-> find_next_bit(), especially whether find_next_bit() gives a valid
-> value fitting with the mask bits.
+The ASoC core assumes that the PCM component of the ASoC card transparently
+moves data around and does not impose any restrictions on the memory layout or
+the transfer speed. It ignores all fields from the snd_pcm_hardware struct for
+the PCM driver that are related to this. Setting these fields in the PCM driver
+might suggest otherwise though, so rather not set them.
 
-I wish I had the time to delve into exactly what's happening. All I
-can tell you is your patch broke audio and this one fixes it again. If
-you have time for a deep dive and produce a permanent solution I'd be
-much obliged and will of course test anything you send me. In the mean
-time, this patch should definitely be applied, as sound is crippled
-without it.=20
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Bo Shen <voice.shen@atmel.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+---
+ sound/soc/atmel/atmel-pcm-dma.c | 1 -
+ sound/soc/atmel/atmel-pcm-pdc.c | 1 -
+ 2 files changed, 2 deletions(-)
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
+index 06082e5..b79a2a8 100644
+--- a/sound/soc/atmel/atmel-pcm-dma.c
++++ b/sound/soc/atmel/atmel-pcm-dma.c
+@@ -50,7 +50,6 @@ static const struct snd_pcm_hardware atmel_pcm_dma_hardware = {
+ 				  SNDRV_PCM_INFO_INTERLEAVED |
+ 				  SNDRV_PCM_INFO_RESUME |
+ 				  SNDRV_PCM_INFO_PAUSE,
+-	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
+ 	.period_bytes_min	= 256,		/* lighting DMA overhead */
+ 	.period_bytes_max	= 2 * 0xffff,	/* if 2 bytes format */
+ 	.periods_min		= 8,
+diff --git a/sound/soc/atmel/atmel-pcm-pdc.c b/sound/soc/atmel/atmel-pcm-pdc.c
+index 054ea4d..33ec592 100644
+--- a/sound/soc/atmel/atmel-pcm-pdc.c
++++ b/sound/soc/atmel/atmel-pcm-pdc.c
+@@ -58,7 +58,6 @@ static const struct snd_pcm_hardware atmel_pcm_hardware = {
+ 				  SNDRV_PCM_INFO_MMAP_VALID |
+ 				  SNDRV_PCM_INFO_INTERLEAVED |
+ 				  SNDRV_PCM_INFO_PAUSE,
+-	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
+ 	.period_bytes_min	= 32,
+ 	.period_bytes_max	= 8192,
+ 	.periods_min		= 2,
+-- 
+1.8.0
