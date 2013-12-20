@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 21/38] fireworks: Add proc interface for debugging purpose
-Date: Fri, 20 Dec 2013 22:14:12 +0900
-Message-ID: <1387545269-3875-22-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 33/38] bebob: Add support for Terratec PHASE,
+	EWS series and Aureon
+Date: Fri, 20 Dec 2013 22:14:24 +0900
+Message-ID: <1387545269-3875-34-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,288 +21,171 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds proc interface to output infomation for debugging.
- - firmware information
- - sampling rate and clock source
- - physical metering (linear value)
+This commit allows this driver to support all of models which Terratec produced
+with DM1000/BeBoB. They are:
+ - PHASE 24 FW
+ - PHASE X24 FW
+ - PHASE 88 Rack FW
+ - EWS MIC2
+ - EWS MIC4
+ - Aureon 7.1 Firewire
+
+For Phase series, this commit adds a Terratec specific operation. To get source
+of clock. AV/C Audio Subunit command is used.
+
+For EWS series and Aureon, this module uses normal operations.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/Makefile         |   2 +-
- sound/firewire/fireworks/fireworks.c      |  12 ++
- sound/firewire/fireworks/fireworks.h      |  11 ++
- sound/firewire/fireworks/fireworks_proc.c | 187 ++++++++++++++++++++++++++++++
- 4 files changed, 211 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/fireworks/fireworks_proc.c
+ sound/firewire/Kconfig                |  3 ++
+ sound/firewire/bebob/Makefile         |  2 +-
+ sound/firewire/bebob/bebob.c          | 11 ++++++
+ sound/firewire/bebob/bebob.h          |  4 +++
+ sound/firewire/bebob/bebob_terratec.c | 68 +++++++++++++++++++++++++++++++++++
+ 5 files changed, 87 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/bebob/bebob_terratec.c
 
-diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-index 1bccb65..52bd15e 100644
---- a/sound/firewire/fireworks/Makefile
-+++ b/sound/firewire/fireworks/Makefile
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 304f49e..34615e5 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -104,6 +104,9 @@ config SND_BEBOB
+ 	  * Lynx Aurora 8/16 (LT-FW)
+ 	  * ICON FireXon
+ 	  * PrismSound Orpheus/ADA-8XR
++	  * TerraTec PHASE 24 FW/PHASE X24 FW/PHASE 88 Rack FW
++	  * Terratec EWS MIC2/EWS MIC4
++	  * Terratec Aureon 7.1 Firewire
+ 
+           To compile this driver as a module, choose M here: the module
+           will be called snd-bebob.
+diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
+index e4b08e3..cb38dd1 100644
+--- a/sound/firewire/bebob/Makefile
++++ b/sound/firewire/bebob/Makefile
 @@ -1,3 +1,3 @@
- snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
--		      fireworks_stream.o fireworks.o
-+		      fireworks_stream.o fireworks_proc.o fireworks.o
- obj-m += snd-fireworks.o
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index 49ffb1a..9c041eb 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -129,6 +129,16 @@ get_hardware_info(struct snd_efw *efw)
- 	efw->pcm_playback_channels[0] = hwinfo->amdtp_rx_pcm_channels;
- 	efw->pcm_playback_channels[1] = hwinfo->amdtp_rx_pcm_channels_2x;
- 	efw->pcm_playback_channels[2] = hwinfo->amdtp_rx_pcm_channels_4x;
-+
-+	/* hardware metering */
-+	efw->phys_out = hwinfo->phys_out;
-+	efw->phys_in = hwinfo->phys_in;
-+	efw->phys_out_grp_count = hwinfo->phys_out_grp_count;
-+	efw->phys_in_grp_count = hwinfo->phys_in_grp_count;
-+	memcpy(&efw->phys_out_grps, hwinfo->phys_out_grps,
-+	       sizeof(struct snd_efw_phys_grp) * HWINFO_MAX_CAPS_GROUPS);
-+	memcpy(&efw->phys_in_grps, hwinfo->phys_in_grps,
-+	       sizeof(struct snd_efw_phys_grp) * HWINFO_MAX_CAPS_GROUPS);
- end:
- 	kfree(hwinfo);
- 	return err;
-@@ -191,6 +201,8 @@ efw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
+ snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
+-		  bebob_pcm.o bebob_hwdep.o bebob.o
++		  bebob_pcm.o bebob_hwdep.o bebob_terratec.o bebob.o
+ obj-m += snd-bebob.o
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 4ce8121..f0a4ecb 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -52,6 +52,7 @@ static unsigned int devices_used;
+ #define VEN_LYNX	0x000019e5
+ #define VEN_ICON	0x00001a9e
+ #define VEN_PRISMSOUND	0x00001198
++#define VEN_TERRATEC	0x00000aac
  
-+	snd_efw_proc_init(efw);
-+
- 	snd_card_set_dev(card, &unit->device);
- 	err = snd_card_register(card);
- 	if (err < 0)
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 1b207bb..6f060f4 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -21,6 +21,7 @@
- #include <sound/core.h>
- #include <sound/initval.h>
- #include <sound/pcm.h>
-+#include <sound/info.h>
+ static int
+ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+@@ -285,6 +286,16 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x00010048, &spec_normal),
+ 	/* PrismSound, ADA-8XR */
+ 	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x0000ada8, &spec_normal),
++	/* TerraTec Electronic GmbH, PHASE 88 Rack FW */
++	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000003, &phase88_rack_spec),
++	/* TerraTec Electronic GmbH, PHASE 24 FW */
++	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000004, &phase24_series_spec),
++	/* TerraTec Electronic GmbH, Phase X24 FW */
++	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000007, &phase24_series_spec),
++	/* TerraTec Electronic GmbH, EWS MIC2/MIC8 */
++	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000005, &spec_normal),
++	/* Terratec Electronic GmbH, Aureon 7.1 Firewire */
++	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000002, &spec_normal),
+ 	/* Ids are unknown but able to be supported */
+ 	/*  Mackie, Digital X Bus x.200 */
+ 	/*  Mackie, Digital X Bus x.400 */
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index 7ff89fa..1cb171b 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -227,6 +227,10 @@ int snd_bebob_create_pcm_devices(struct snd_bebob *bebob);
  
- #include "../packets-buffer.h"
- #include "../iso-resources.h"
-@@ -64,6 +65,14 @@ struct snd_efw {
- 	struct amdtp_stream rx_stream;
- 	struct cmp_connection out_conn;
- 	struct cmp_connection in_conn;
-+
-+	/* hardware metering parameters */
-+	unsigned int phys_out;
-+	unsigned int phys_in;
-+	unsigned int phys_out_grp_count;
-+	unsigned int phys_in_grp_count;
-+	struct snd_efw_phys_grp phys_out_grps[HWINFO_MAX_CAPS_GROUPS];
-+	struct snd_efw_phys_grp phys_in_grps[HWINFO_MAX_CAPS_GROUPS];
- };
+ int snd_bebob_create_hwdep_device(struct snd_bebob *bebob);
  
- struct snd_efw_transaction {
-@@ -177,6 +186,8 @@ int snd_efw_stream_stop_duplex(struct snd_efw *efw);
- void snd_efw_stream_update_duplex(struct snd_efw *efw);
- void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
- 
-+void snd_efw_proc_init(struct snd_efw *efw);
++/* model specific operations */
++extern struct snd_bebob_spec phase88_rack_spec;
++extern struct snd_bebob_spec phase24_series_spec;
 +
- #define SND_EFW_DEV_ENTRY(vendor, model) \
+ #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
  { \
  	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/fireworks/fireworks_proc.c b/sound/firewire/fireworks/fireworks_proc.c
+diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
 new file mode 100644
-index 0000000..389a68b
+index 0000000..9c2cebf
 --- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_proc.c
-@@ -0,0 +1,187 @@
++++ b/sound/firewire/bebob/bebob_terratec.c
+@@ -0,0 +1,68 @@
 +/*
-+ * fireworks_proc.c - a part of driver for Fireworks based devices
++ * bebob_terratec.c - a part of driver for BeBoB based devices
 + *
-+ * Copyright (c) 2009-2010 Clemens Ladisch
 + * Copyright (c) 2013 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "./fireworks.h"
++#include "./bebob.h"
 +
-+static inline const char*
-+get_phys_name(struct snd_efw_phys_grp *grp)
++static char *phase88_rack_clk_src_labels[] = {
++	SND_BEBOB_CLOCK_INTERNAL, "Digital In", "Word Clock"
++};
++static int
++phase88_rack_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
 +{
-+	const char *ch_type[] = {
-+		"Analog", "S/PDIF", "ADAT", "S/PDIF or ADAT",
-+		"Mirroring", "Headphones", "I2S", "Guitar",
-+		"Pirzo Guitar", "Guitar String", "Virtual", "Dummy"
-+	};
-+
-+	if (grp->type < 10)
-+		return ch_type[grp->type];
-+	else if (grp->type == 0x10000)
-+		return ch_type[10];
-+	else
-+		return ch_type[11];
-+}
-+
-+static void
-+proc_read_hwinfo(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
-+{
-+	struct snd_efw *efw = entry->private_data;
-+	unsigned short i;
-+	struct snd_efw_hwinfo hwinfo;
-+
-+	if (snd_efw_command_get_hwinfo(efw, &hwinfo) < 0)
-+		goto end;
-+
-+	snd_iprintf(buffer, "guid_hi: 0x%X\n", hwinfo.guid_hi);
-+	snd_iprintf(buffer, "guid_lo: 0x%X\n", hwinfo.guid_lo);
-+	snd_iprintf(buffer, "type: 0x%X\n", hwinfo.type);
-+	snd_iprintf(buffer, "version: 0x%X\n", hwinfo.version);
-+	snd_iprintf(buffer, "vendor_name: %s\n", hwinfo.vendor_name);
-+	snd_iprintf(buffer, "model_name: %s\n", hwinfo.model_name);
-+
-+	snd_iprintf(buffer, "dsp_version: 0x%X\n", hwinfo.dsp_version);
-+	snd_iprintf(buffer, "arm_version: 0x%X\n", hwinfo.arm_version);
-+	snd_iprintf(buffer, "fpga_version: 0x%X\n", hwinfo.fpga_version);
-+
-+	snd_iprintf(buffer, "flags: 0x%X\n", hwinfo.flags);
-+
-+	snd_iprintf(buffer, "max_sample_rate: 0x%X\n", hwinfo.max_sample_rate);
-+	snd_iprintf(buffer, "min_sample_rate: 0x%X\n", hwinfo.min_sample_rate);
-+	snd_iprintf(buffer, "supported_clock: 0x%X\n",
-+		    hwinfo.supported_clocks);
-+
-+	snd_iprintf(buffer, "phys out: 0x%X\n", hwinfo.phys_out);
-+	snd_iprintf(buffer, "phys in: 0x%X\n", hwinfo.phys_in);
-+
-+	snd_iprintf(buffer, "phys in grps: 0x%X\n", hwinfo.phys_in_grp_count);
-+	for (i = 0; i < hwinfo.phys_in_grp_count; i++) {
-+		snd_iprintf(buffer,
-+			    "phys in grp[0x%d]: type 0x%d, count 0x%d\n",
-+			    i, hwinfo.phys_out_grps[i].type,
-+			    hwinfo.phys_out_grps[i].count);
-+	}
-+
-+	snd_iprintf(buffer, "phys out grps: 0x%X\n", hwinfo.phys_out_grp_count);
-+	for (i = 0; i < hwinfo.phys_out_grp_count; i++) {
-+		snd_iprintf(buffer,
-+			    "phys out grps[0x%d]: type 0x%d, count 0x%d\n",
-+			    i, hwinfo.phys_out_grps[i].type,
-+			    hwinfo.phys_out_grps[i].count);
-+	}
-+
-+	snd_iprintf(buffer, "amdtp rx pcm channels 1x: 0x%X\n",
-+		    hwinfo.amdtp_rx_pcm_channels);
-+	snd_iprintf(buffer, "amdtp tx pcm channels 1x: 0x%X\n",
-+		    hwinfo.amdtp_tx_pcm_channels);
-+	snd_iprintf(buffer, "amdtp rx pcm channels 2x: 0x%X\n",
-+		    hwinfo.amdtp_rx_pcm_channels_2x);
-+	snd_iprintf(buffer, "amdtp tx pcm channels 2x: 0x%X\n",
-+		    hwinfo.amdtp_tx_pcm_channels_2x);
-+	snd_iprintf(buffer, "amdtp rx pcm channels 4x: 0x%X\n",
-+		    hwinfo.amdtp_rx_pcm_channels_4x);
-+	snd_iprintf(buffer, "amdtp tx pcm channels 4x: 0x%X\n",
-+		    hwinfo.amdtp_tx_pcm_channels_4x);
-+
-+	snd_iprintf(buffer, "midi out ports: 0x%X\n", hwinfo.midi_out_ports);
-+	snd_iprintf(buffer, "midi in ports: 0x%X\n", hwinfo.midi_in_ports);
-+
-+	snd_iprintf(buffer, "mixer playback channels: 0x%X\n",
-+		    hwinfo.mixer_playback_channels);
-+	snd_iprintf(buffer, "mixer capture channels: 0x%X\n",
-+		    hwinfo.mixer_capture_channels);
-+end:
-+	return;
-+}
-+
-+static void
-+proc_read_clock(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
-+{
-+	struct snd_efw *efw = entry->private_data;
-+	enum snd_efw_clock_source clock_source;
-+	unsigned int sampling_rate;
-+
-+	if (snd_efw_command_get_clock_source(efw, &clock_source) < 0)
-+		goto end;
-+
-+	if (snd_efw_command_get_sampling_rate(efw, &sampling_rate) < 0)
-+		goto end;
-+
-+	snd_iprintf(buffer, "Clock Source: %d\n", clock_source);
-+	snd_iprintf(buffer, "Sampling Rate: %d\n", sampling_rate);
-+end:
-+	return;
-+}
-+
-+/*
-+ * NOTE:
-+ *  dB = 20 * log10(linear / 0x01000000)
-+ *  -144.0 dB when linear is 0
-+ */
-+static void
-+proc_read_phys_meters(struct snd_info_entry *entry,
-+		      struct snd_info_buffer *buffer)
-+{
-+	struct snd_efw *efw = entry->private_data;
-+	struct snd_efw_phys_meters *meters;
-+	unsigned int g, c, m, max, size;
-+	const char *name;
-+	u32 *linear;
++	unsigned int enable_ext, enable_word;
 +	int err;
 +
-+	size = sizeof(struct snd_efw_phys_meters) +
-+	       (efw->phys_in + efw->phys_out) * sizeof(u32);
-+	meters = kzalloc(size, GFP_KERNEL);
-+	if (meters == NULL)
-+		return;
-+
-+	err = snd_efw_command_get_phys_meters(efw, meters, size);
++	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_ext);
++	if (err < 0)
++		goto end;
++	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_word);
 +	if (err < 0)
 +		goto end;
 +
-+	snd_iprintf(buffer, "Physical Meters:\n");
-+
-+	m = 0;
-+	max = min(efw->phys_out, meters->out_meters);
-+	linear = meters->values;
-+	snd_iprintf(buffer, " %d Outputs:\n", max);
-+	for (g = 0; g < efw->phys_out_grp_count; g++) {
-+		name = get_phys_name(&efw->phys_out_grps[g]);
-+		for (c = 0; c < efw->phys_out_grps[g].count; c++) {
-+			if (m < max)
-+				snd_iprintf(buffer, "\t%s [%d]: %d\n",
-+					    name, c, linear[m++]);
-+		}
-+	}
-+
-+	m = 0;
-+	max = min(efw->phys_in, meters->in_meters);
-+	linear = meters->values + meters->out_meters;
-+	snd_iprintf(buffer, " %d Inputs:\n", max);
-+	for (g = 0; g < efw->phys_in_grp_count; g++) {
-+		name = get_phys_name(&efw->phys_in_grps[g]);
-+		for (c = 0; c < efw->phys_in_grps[g].count; c++)
-+			if (m < max)
-+				snd_iprintf(buffer, "\t%s [%d]: %d\n",
-+					    name, c, linear[m++]);
-+	}
++	*id = (enable_ext & 0x01) || ((enable_word & 0x01) << 1);
 +end:
-+	kfree(meters);
-+	return;
++	return err;
 +}
 +
-+void snd_efw_proc_init(struct snd_efw *efw)
++static char *phase24_series_clk_src_labels[] = {
++	SND_BEBOB_CLOCK_INTERNAL, "Digital In"
++};
++static int
++phase24_series_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
 +{
-+	struct snd_info_entry *entry;
-+
-+	if (!snd_card_proc_new(efw->card, "#firmware", &entry))
-+		snd_info_set_text_ops(entry, efw, proc_read_hwinfo);
-+	if (!snd_card_proc_new(efw->card, "#clock", &entry))
-+		snd_info_set_text_ops(entry, efw, proc_read_clock);
-+	if (!snd_card_proc_new(efw->card, "#meters", &entry))
-+		snd_info_set_text_ops(entry, efw, proc_read_phys_meters);
-+	return;
++	return avc_audio_get_selector(bebob->unit, 0, 4, id);
 +}
++
++struct snd_bebob_rate_spec phase_series_rate_spec = {
++	.get	= &snd_bebob_stream_get_rate,
++	.set	= &snd_bebob_stream_set_rate,
++};
++
++/* PHASE 88 Rack FW */
++struct snd_bebob_clock_spec phase88_rack_clk = {
++	.num	= ARRAY_SIZE(phase88_rack_clk_src_labels),
++	.labels	= phase88_rack_clk_src_labels,
++	.get	= &phase88_rack_clk_src_get,
++};
++struct snd_bebob_spec phase88_rack_spec = {
++	.clock	= &phase88_rack_clk,
++	.rate	= &phase_series_rate_spec,
++	.meter	= NULL
++};
++
++/* 'PHASE 24 FW' and 'PHASE X24 FW' */
++struct snd_bebob_clock_spec phase24_series_clk = {
++	.num	= ARRAY_SIZE(phase24_series_clk_src_labels),
++	.labels	= phase24_series_clk_src_labels,
++	.get	= &phase24_series_clk_src_get,
++};
++struct snd_bebob_spec phase24_series_spec = {
++	.clock	= &phase24_series_clk,
++	.rate	= &phase_series_rate_spec,
++	.meter	= NULL
++};
 -- 
 1.8.3.2
 
