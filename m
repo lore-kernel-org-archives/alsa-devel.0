@@ -1,18 +1,20 @@
-From: Jean-Francois Moine <moinejf@free.fr>
+From: Lars-Peter Clausen <lars@metafoo.de>
 Subject: Re: [PATCH 08/19] ASoC: kirkwood: Don't set unused
  struct snd_pcm_hardware fields
-Date: Fri, 20 Dec 2013 19:05:06 +0100
-Message-ID: <20131220190506.2adb7a52@armhf>
+Date: Fri, 20 Dec 2013 18:18:49 +0100
+Message-ID: <52B47BF9.9030408@metafoo.de>
 References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
  <1387545625-19240-8-git-send-email-lars@metafoo.de>
+ <20131220190506.2adb7a52@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
- by alsa0.perex.cz (Postfix) with ESMTP id DDFFE2616FB
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 19:05:57 +0100 (CET)
-In-Reply-To: <1387545625-19240-8-git-send-email-lars@metafoo.de>
+Received: from smtp-out-044.synserver.de (smtp-out-132.synserver.de
+ [212.40.185.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80D492616FB
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 19:23:30 +0100 (CET)
+In-Reply-To: <20131220190506.2adb7a52@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,37 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
+To: Jean-Francois Moine <moinejf@free.fr>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMCBEZWMgMjAxMyAxNDoyMDoxNCArMDEwMApMYXJzLVBldGVyIENsYXVzZW4gPGxh
-cnNAbWV0YWZvby5kZT4gd3JvdGU6Cgo+IFRoZSBBU29DIGNvcmUgYXNzdW1lcyB0aGF0IHRoZSBQ
-Q00gY29tcG9uZW50IG9mIHRoZSBBU29DIGNhcmQgdHJhbnNwYXJlbnRseQo+IG1vdmVzIGRhdGEg
-YXJvdW5kIGFuZCBkb2VzIG5vdCBpbXBvc2UgYW55IHJlc3RyaWN0aW9ucyBvbiB0aGUgbWVtb3J5
-IGxheW91dCBvcgo+IHRoZSB0cmFuc2ZlciBzcGVlZC4gSXQgaWdub3JlcyBhbGwgZmllbGRzIGZy
-b20gdGhlIHNuZF9wY21faGFyZHdhcmUgc3RydWN0IGZvcgo+IHRoZSBQQ00gZHJpdmVyIHRoYXQg
-YXJlIHJlbGF0ZWQgdG8gdGhpcy4gU2V0dGluZyB0aGVzZSBmaWVsZHMgaW4gdGhlIFBDTSBkcml2
-ZXIKPiBtaWdodCBzdWdnZXN0IG90aGVyd2lzZSB0aG91Z2gsIHNvIHJhdGhlciBub3Qgc2V0IHRo
-ZW0uCj4gCj4gU2lnbmVkLW9mZi1ieTogTGFycy1QZXRlciBDbGF1c2VuIDxsYXJzQG1ldGFmb28u
-ZGU+Cj4gQ2M6IEplYW4tRnJhbmNvaXMgTW9pbmUgPG1vaW5lamZAZnJlZS5mcj4KPiAtLS0KPiAg
-c291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWRtYS5jIHwgMTYgLS0tLS0tLS0tLS0tLS0tLQo+
-ICAxIGZpbGUgY2hhbmdlZCwgMTYgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3NvdW5k
-L3NvYy9raXJrd29vZC9raXJrd29vZC1kbWEuYyBiL3NvdW5kL3NvYy9raXJrd29vZC9raXJrd29v
-ZC1kbWEuYwo+IGluZGV4IDRhZjE5MzYuLmFhYzIyZmMgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29j
-L2tpcmt3b29kL2tpcmt3b29kLWRtYS5jCj4gKysrIGIvc291bmQvc29jL2tpcmt3b29kL2tpcmt3
-b29kLWRtYS5jCglbc25pcF0KPiBAQCAtNDMsMTIgKzMzLDYgQEAgc3RhdGljIHN0cnVjdCBzbmRf
-cGNtX2hhcmR3YXJlIGtpcmt3b29kX2RtYV9zbmRfaHcgPSB7Cj4gIAkJIFNORFJWX1BDTV9JTkZP
-X01NQVBfVkFMSUQgfAo+ICAJCSBTTkRSVl9QQ01fSU5GT19CTE9DS19UUkFOU0ZFUiB8Cj4gIAkJ
-IFNORFJWX1BDTV9JTkZPX1BBVVNFKSwKPiAtCS5mb3JtYXRzCQk9IEtJUktXT09EX0ZPUk1BVFMs
-Cj4gLQkucmF0ZXMJCQk9IEtJUktXT09EX1JBVEVTLAo+IC0JLnJhdGVfbWluCQk9IDgwMDAsCj4g
-LQkucmF0ZV9tYXgJCT0gMzg0MDAwLAo+IC0JLmNoYW5uZWxzX21pbgkJPSAxLAo+IC0JLmNoYW5u
-ZWxzX21heAkJPSA4LAo+ICAJLmJ1ZmZlcl9ieXRlc19tYXgJPSBLSVJLV09PRF9TTkRfTUFYX0JV
-RkZFUl9CWVRFUywKPiAgCS5wZXJpb2RfYnl0ZXNfbWluCT0gS0lSS1dPT0RfU05EX01JTl9QRVJJ
-T0RfQllURVMsCj4gIAkucGVyaW9kX2J5dGVzX21heAk9IEtJUktXT09EX1NORF9NQVhfUEVSSU9E
-X0JZVEVTLAoKTGFycywKCllvdSByZW1vdmVkIHRvbyBtYW55IHRoaW5ncy4gVGhlICdmb3JtYXRz
-JyBmaWVsZCBpcyBtYW5kYXRvcnkuCgotLSAKS2VuIGFyIGMnaGVudGHDsQl8CSAgICAgICoqIEJy
-ZWl6aCBoYSBMaW51eCBhdGF2ISAqKgpKZWYJCXwJCWh0dHA6Ly9tb2luZWpmLmZyZWUuZnIvCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 12/20/2013 07:05 PM, Jean-Francois Moine wrote:
+> On Fri, 20 Dec 2013 14:20:14 +0100
+> Lars-Peter Clausen <lars@metafoo.de> wrote:
+> 
+>> The ASoC core assumes that the PCM component of the ASoC card transparently
+>> moves data around and does not impose any restrictions on the memory layout or
+>> the transfer speed. It ignores all fields from the snd_pcm_hardware struct for
+>> the PCM driver that are related to this. Setting these fields in the PCM driver
+>> might suggest otherwise though, so rather not set them.
+>>
+>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+>> Cc: Jean-Francois Moine <moinejf@free.fr>
+>> ---
+>>  sound/soc/kirkwood/kirkwood-dma.c | 16 ----------------
+>>  1 file changed, 16 deletions(-)
+>>
+>> diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+>> index 4af1936..aac22fc 100644
+>> --- a/sound/soc/kirkwood/kirkwood-dma.c
+>> +++ b/sound/soc/kirkwood/kirkwood-dma.c
+> 	[snip]
+>> @@ -43,12 +33,6 @@ static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
+>>  		 SNDRV_PCM_INFO_MMAP_VALID |
+>>  		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>>  		 SNDRV_PCM_INFO_PAUSE),
+>> -	.formats		= KIRKWOOD_FORMATS,
+>> -	.rates			= KIRKWOOD_RATES,
+>> -	.rate_min		= 8000,
+>> -	.rate_max		= 384000,
+>> -	.channels_min		= 1,
+>> -	.channels_max		= 8,
+>>  	.buffer_bytes_max	= KIRKWOOD_SND_MAX_BUFFER_BYTES,
+>>  	.period_bytes_min	= KIRKWOOD_SND_MIN_PERIOD_BYTES,
+>>  	.period_bytes_max	= KIRKWOOD_SND_MAX_PERIOD_BYTES,
+> 
+> Lars,
+> 
+> You removed too many things. The 'formats' field is mandatory.
+
+No it is not. While snd_soc_set_runtime_hwparams() uses it it is later
+overwritten again in soc_pcm_init_runtime_hw().
+
+- Lars
