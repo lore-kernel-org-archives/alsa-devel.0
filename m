@@ -1,15 +1,18 @@
 From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: [PATCH 0/6] ASoC: fsl_sai: Fix some minor issues
-Date: Fri, 20 Dec 2013 16:39:46 +0800
-Message-ID: <cover.1387528048.git.Guangyu.Chen@freescale.com>
+Subject: [PATCH 1/6] ASoC: fsl_sai: Keep symmetry for
+	clk_enable() and clk_disable()
+Date: Fri, 20 Dec 2013 16:41:00 +0800
+Message-ID: <b5eeb6facf2573f53bebd486b383ecf29e20c15b.1387528048.git.Guangyu.Chen@freescale.com>
+References: <cover.1387528048.git.Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E838265383
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 09:39:49 +0100 (CET)
+Received: from tx2outboundpool.messaging.microsoft.com
+ (tx2ehsobe001.messaging.microsoft.com [65.55.88.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39A0D265383
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 09:40:39 +0100 (CET)
+In-Reply-To: <cover.1387528048.git.Guangyu.Chen@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,25 +26,67 @@ To: broonie@kernel.org, linux@arm.linux.org.uk
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, timur@tabi.org, lgirdwood@gmail.com, Li.Xiubo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-This series patches fix some minor issues in the new fsl_sai driver.
+There are two functions haven't clk_disable_unprepare() if having error.
+Thus fix them.
 
-@Mark Brown
-I's so busy these days that I couldn't send these, which should have been
-review comments, in time. So some of them might be too minor to become a
-meaningful patch but I still sent them to see if you would like to apply.
+Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+---
+ sound/soc/fsl/fsl_sai.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-Thank you.
-
-Nicolin Chen (6):
-  ASoC: fsl_sai: Keep symmetry for clk_enable() and clk_disable()
-  ASoC: fsl_sai: Use snd_pcm_format_width()
-  ASoC: fsl_sai: Drop useless channels check in hw_params()
-  ASoC: fsl_sai: Drop useless ret in startup()
-  ASoC: fsl_sai: Make dev_err information neater
-  ASoC: fsl_sai: Sort local variable in general way
-
- sound/soc/fsl/fsl_sai.c | 71 ++++++++++++++++---------------------------------
- 1 file changed, 23 insertions(+), 48 deletions(-)
-
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 50a797e..e3e8aa1 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -111,7 +111,7 @@ static int fsl_sai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 		dev_err(cpu_dai->dev,
+ 				"Cannot set SAI's transmitter sysclk: %d\n",
+ 				ret);
+-		return ret;
++		goto err_clk;
+ 	}
+ 
+ 	ret = fsl_sai_set_dai_sysclk_tr(cpu_dai, clk_id, freq,
+@@ -120,12 +120,13 @@ static int fsl_sai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 		dev_err(cpu_dai->dev,
+ 				"Cannot set SAI's receiver sysclk: %d\n",
+ 				ret);
+-		return ret;
++		goto err_clk;
+ 	}
+ 
++err_clk:
+ 	clk_disable_unprepare(sai->clk);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
+@@ -222,7 +223,7 @@ static int fsl_sai_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ 		dev_err(cpu_dai->dev,
+ 				"Cannot set SAI's transmitter format: %d\n",
+ 				ret);
+-		return ret;
++		goto err_clk;
+ 	}
+ 
+ 	ret = fsl_sai_set_dai_fmt_tr(cpu_dai, fmt, FSL_FMT_RECEIVER);
+@@ -230,12 +231,13 @@ static int fsl_sai_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ 		dev_err(cpu_dai->dev,
+ 				"Cannot set SAI's receiver format: %d\n",
+ 				ret);
+-		return ret;
++		goto err_clk;
+ 	}
+ 
++err_clk:
+ 	clk_disable_unprepare(sai->clk);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
 -- 
 1.8.4
