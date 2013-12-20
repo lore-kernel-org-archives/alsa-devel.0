@@ -1,55 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Add resource managed devm_snd_soc_register_codec()
-Date: Fri, 20 Dec 2013 11:52:01 +0000
-Message-ID: <20131220115201.GO31886@sirena.org.uk>
-References: <1387533407-15623-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCHv4 4/4] Documentation: Add device tree bindings for
+ Freescale SAI.
+Date: Fri, 20 Dec 2013 11:53:28 +0000
+Message-ID: <20131220115328.GP31886@sirena.org.uk>
+References: <1387501387-2151-1-git-send-email-Li.Xiubo@freescale.com>
+ <1387501387-2151-4-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oDT6ON1uLKeoILhE"
+	protocol="application/pgp-signature"; boundary="5ltdm4mkXNgScZ66"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1387533407-15623-1-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <1387501387-2151-4-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---oDT6ON1uLKeoILhE
+--5ltdm4mkXNgScZ66
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Dec 20, 2013 at 05:56:47PM +0800, Xiubo Li wrote:
-> Adds a resource managed version of snd_soc_register_codec() which makes
-> it possible to simplify the remove function as well as the error path
-> for codec drivers.
+On Fri, Dec 20, 2013 at 09:03:07AM +0800, Xiubo Li wrote:
+> This adds the Document for Freescale SAI driver under
+> Documentation/devicetree/bindings/sound/.
 
-The reason this has not been added is that the goal is to merge CODEC
-and component so rather than churn all the CODEC drivers to add this and
-then churn them again to convert to components it'd be better to add the
-component registration we could do the conversion and then update all
-the drivers only once.  That's not actually happened yet though...
+These have already been merged.  Please send incremental updates for
+anything you feel needs fixing.
 
---oDT6ON1uLKeoILhE
+--5ltdm4mkXNgScZ66
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJStC9eAAoJELSic+t+oim9N28P/0Y+fc1hjKNYyk0ZAtNHVWt+
-9gt/HoeP8QNzmvQhfKmmlCv6+HAsgmkKAIQH3xj/7Gt517lKjUV13v5foI7CzvSk
-vYYIL7Deob84cj88kDk8RkXkd+qkuB76hD7UOdf/r3mzsaxYwzNNLz+BFlmTpMSV
-hpxCqk8Zy4JszaThlYLHa0X5bLHdik9IA+mFwA4xQCzcVHYZ9hfivYuMH6rg/qB6
-Pa6PcJUdTLwSQO+XpM+YtAn2fPD9x4I3DWctxPYM8Cw+9c378qctDhpCGWDr2Ihn
-EHRPq2eai3IJoobmX9to+R4faqhhlU0vHVjz70PW9TsUnCq5ZU1+pdmFtmIMtzzJ
-+myPCAeZghjQ41iCfsGquZfp+QCrM44p/YvYg41O9wc2L+U0eZcj6uoBW+fBHrEz
-1vaMFfFdUToEHqzftoiuE6AOzZPV612q7G0O+EuG4zKeFMWDM6C9aWQskzdep9Kp
-zQNaPGWAVo+Ih+lXj8BVrdwiFL2vXVGXeje3bwnC011vs0WQRByIND7evLW5KLoC
-5FVtNRHLtJvluwwSUvdyEp5Cl9UzDviI41JkIqik9jCJYflw55werBtb/kDny+uN
-psyM6d+1FwwIaXfPpHohx/l0xhiUxNyQkEZezKlSVvKA7nS/2ZNr+6hocL1AV/+B
-eLHEQEj7YwSTdJ7B+JUn
-=wEXn
+iQIcBAEBAgAGBQJStC+1AAoJELSic+t+oim9yMwP/jI87OPDkO9OWhGImBFPban/
+tXyiM6Kyt39mZRdplEVFKbiyQO1eOobLfv/LKtPXsr9HP+xFN82Cob72nR45pqaK
+2R06oxbfGpDPLm7tsl8Lt4FRjsdONZq6PkvAquGSuh5VTLOHkEEfwVtuIg6Y3RFl
+ANi22fdPUIryLvWpKPzpS8G6PWuFeHxguu9Iay4RSCTS/bWxHoEfrqjhFH7OMCtz
+GdX3pb7Qe3Yry3uGEYwk1mlhLHR+594deYFJsoZjUX7rwmXQuKxrIqCG1bNezuj+
++3QUk7rGu+p3f9foDI0YpD4AoAQL2UqD8yzgmvKuTQpDBJwA8mp0gn5aZxmxM/wX
+81YPVnRoBmHAwbN8Rajly4HsRFHDgsLsZ5kQAEDREVp/vCsMtcQKZWFwsRFrwWGu
+ixj/QQwr0I36Ij/QoAQqV2/6GyZPfsbnx0DUqvZY6yi6u/yvQ02p/cKVb9ru5/Yg
+POUim091pavX81DCKLG9SkwaItuUhCIs/M4KpoZomJQNUKsUCbxFfkWbKXITH04A
+wad/RW1MLh8296jpt3fcoWaoZV8ppPuMfjqssGQtxoBFUAAD+BFNUVuX2VCm5XCF
+CYArSLLuB0DNvpe7H03DJfLHVN5ZdmnjALB4gNGDzZ0KLFZvfAZLBL4Zl8IPOvlL
+WmhpVFwKgjLPfD45m1Xp
+=0ZjB
 -----END PGP SIGNATURE-----
 
---oDT6ON1uLKeoILhE--
+--5ltdm4mkXNgScZ66--
