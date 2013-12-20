@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/38] firewire-lib: Add handling output connection by CMP
-Date: Fri, 20 Dec 2013 22:14:05 +0900
-Message-ID: <1387545269-3875-15-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 22/38] fireworks: Add MIDI interface
+Date: Fri, 20 Dec 2013 22:14:13 +0900
+Message-ID: <1387545269-3875-23-git-send-email-o-takashi@sakamocchi.jp>
 References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,191 +20,219 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds some macros, codes with condition of direction and new functions
-to handle output connection. Once cmp_connection_init() is executed with its
-direction, CMP input and output connection can be handled by the same way.
+This commit adds a functionality to capture/playback MIDI messages.
+
+When no AMDTP streams are running, this module starts AMDTP stream at current
+sampling rate for MIDI stream.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/cmp.c | 113 +++++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 104 insertions(+), 9 deletions(-)
+ sound/firewire/fireworks/Makefile         |   3 +-
+ sound/firewire/fireworks/fireworks.c      |   6 ++
+ sound/firewire/fireworks/fireworks.h      |   3 +
+ sound/firewire/fireworks/fireworks_midi.c | 145 ++++++++++++++++++++++++++++++
+ 4 files changed, 156 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/fireworks/fireworks_midi.c
 
-diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
-index 1430fec..00b1b2d 100644
---- a/sound/firewire/cmp.c
-+++ b/sound/firewire/cmp.c
-@@ -29,6 +29,16 @@
- #define PCR_CHANNEL_MASK	0x003f0000
- #define PCR_CHANNEL_SHIFT	16
+diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
+index 52bd15e..a2cecc6 100644
+--- a/sound/firewire/fireworks/Makefile
++++ b/sound/firewire/fireworks/Makefile
+@@ -1,3 +1,4 @@
+ snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
+-		      fireworks_stream.o fireworks_proc.o fireworks.o
++		      fireworks_stream.o fireworks_proc.o fireworks_midi.o \
++		      fireworks.o
+ obj-m += snd-fireworks.o
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index 9c041eb..454fa5e 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -203,6 +203,12 @@ efw_probe(struct fw_unit *unit,
  
-+/* oPCR specific fields */
-+#define OPCR_XSPEED_MASK	0x00C00000
-+#define OPCR_XSPEED_SHIFT	22
-+#define OPCR_SPEED_MASK		0x0000C000
-+#define OPCR_SPEED_SHIFT	14
-+#define OPCR_OVERHEAD_ID_MASK	0x00003C00
-+#define OPCR_OVERHEAD_ID_SHIFT	10
-+#define OPCR_PAYLOAD_MASK	0x000003FF
-+#define OPCR_PAYLOAD_SHIFT	0
-+
- enum bus_reset_handling {
- 	ABORT_ON_BUS_RESET,
- 	SUCCEED_ON_BUS_RESET,
-@@ -41,10 +51,30 @@ void cmp_error(struct cmp_connection *c, const char *fmt, ...)
+ 	snd_efw_proc_init(efw);
  
- 	va_start(va, fmt);
- 	dev_err(&c->resources.unit->device, "%cPCR%u: %pV",
--		'i', c->pcr_index, &(struct va_format){ fmt, &va });
-+		(c->direction == CMP_INPUT) ? 'i' : 'o',
-+		c->pcr_index, &(struct va_format){ fmt, &va });
- 	va_end(va);
- }
- 
-+static unsigned long long get_offset(struct cmp_connection *c, bool master)
-+{
-+	unsigned long long offset = CSR_REGISTER_BASE;
-+
-+	if (!master) {
-+		if (c->direction == CMP_INPUT)
-+			offset += CSR_IPCR(c->pcr_index);
-+		else
-+			offset += CSR_OPCR(c->pcr_index);
-+	} else {
-+		if (c->direction == CMP_INPUT)
-+			offset += CSR_IMPR;
-+		else
-+			offset += CSR_OMPR;
++	if (efw->midi_out_ports || efw->midi_in_ports) {
++		err = snd_efw_create_midi_devices(efw);
++		if (err < 0)
++			goto error;
 +	}
 +
-+	return offset;
-+}
-+
- static int pcr_modify(struct cmp_connection *c,
- 		      __be32 (*modify)(struct cmp_connection *c, __be32 old),
- 		      int (*check)(struct cmp_connection *c, __be32 pcr),
-@@ -60,8 +90,7 @@ static int pcr_modify(struct cmp_connection *c,
- 
- 		err = snd_fw_transaction(
- 				c->resources.unit, TCODE_LOCK_COMPARE_SWAP,
--				CSR_REGISTER_BASE + CSR_IPCR(c->pcr_index),
--				buffer, 8,
-+				get_offset(c, false), buffer, 8,
- 				FW_FIXED_GENERATION | c->resources.generation);
- 
- 		if (err < 0) {
-@@ -102,8 +131,7 @@ int cmp_connection_init(struct cmp_connection *c,
- 	int err;
- 
- 	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
--				 CSR_REGISTER_BASE + CSR_IMPR,
--				 &mpr_be, 4, 0);
-+				 get_offset(c, true), &mpr_be, 4, 0);
+ 	snd_card_set_dev(card, &unit->device);
+ 	err = snd_card_register(card);
  	if (err < 0)
- 		return err;
- 	mpr = be32_to_cpu(mpr_be);
-@@ -122,6 +150,7 @@ int cmp_connection_init(struct cmp_connection *c,
- 	c->max_speed = (mpr & MPR_SPEED_MASK) >> MPR_SPEED_SHIFT;
- 	if (c->max_speed == SCODE_BETA)
- 		c->max_speed += (mpr & MPR_XSPEED_MASK) >> MPR_XSPEED_SHIFT;
-+	c->direction = direction;
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index 6f060f4..18a97b5 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -22,6 +22,7 @@
+ #include <sound/initval.h>
+ #include <sound/pcm.h>
+ #include <sound/info.h>
++#include <sound/rawmidi.h>
  
- 	return 0;
- }
-@@ -151,6 +180,62 @@ static __be32 ipcr_set_modify(struct cmp_connection *c, __be32 ipcr)
- 	return ipcr;
- }
+ #include "../packets-buffer.h"
+ #include "../iso-resources.h"
+@@ -188,6 +189,8 @@ void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
  
-+static int get_overhead_id(struct cmp_connection *c)
+ void snd_efw_proc_init(struct snd_efw *efw);
+ 
++int snd_efw_create_midi_devices(struct snd_efw *efw);
++
+ #define SND_EFW_DEV_ENTRY(vendor, model) \
+ { \
+ 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
+diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
+new file mode 100644
+index 0000000..b22658d
+--- /dev/null
++++ b/sound/firewire/fireworks/fireworks_midi.c
+@@ -0,0 +1,145 @@
++/*
++ * fireworks_midi.c - a part of driver for Fireworks based devices
++ *
++ * Copyright (c) 2009-2010 Clemens Ladisch
++ * Copyright (c) 2013 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++#include "fireworks.h"
++
++static int midi_capture_open(struct snd_rawmidi_substream *substream)
 +{
-+	int id;
-+
-+	/*
-+	 * apply "oPCR overhead ID encoding"
-+	 * the encoding table can convert up to 512.
-+	 * here the value over 512 is converted as the same way as 512.
-+	 */
-+	for (id = 1; id < 16; id++) {
-+		if (c->resources.bandwidth_overhead < (id << 5))
-+			break;
-+	}
-+	if (id == 16)
-+		id = 0;
-+
-+	return id;
++	struct snd_efw *efw = substream->rmidi->private_data;
++	return snd_efw_stream_start_duplex(efw, &efw->tx_stream, 0);
 +}
 +
-+static __be32 opcr_set_modify(struct cmp_connection *c, __be32 opcr)
++static int midi_playback_open(struct snd_rawmidi_substream *substream)
 +{
-+	unsigned int spd, xspd;
-+
-+	/* generate speed and extended speed field value */
-+	if (c->speed > SCODE_400) {
-+		spd  = SCODE_800;
-+		xspd = c->speed - SCODE_800;
-+	} else {
-+		spd = c->speed;
-+		xspd = 0;
-+	}
-+
-+	opcr &= ~cpu_to_be32(PCR_BCAST_CONN |
-+			     PCR_P2P_CONN_MASK |
-+			     OPCR_XSPEED_MASK |
-+			     PCR_CHANNEL_MASK |
-+			     OPCR_SPEED_MASK |
-+			     OPCR_OVERHEAD_ID_MASK |
-+			     OPCR_PAYLOAD_MASK);
-+	opcr |= cpu_to_be32(1 << PCR_P2P_CONN_SHIFT);
-+	opcr |= cpu_to_be32(xspd << OPCR_XSPEED_SHIFT);
-+	opcr |= cpu_to_be32(c->resources.channel << PCR_CHANNEL_SHIFT);
-+	opcr |= cpu_to_be32(spd << OPCR_SPEED_SHIFT);
-+	opcr |= cpu_to_be32(get_overhead_id(c) << OPCR_OVERHEAD_ID_SHIFT);
-+	/*
-+	 * here zero is applied to payload field.
-+	 * it means the maximum number of quadlets in an isochronous packet is
-+	 * 1024 when spd is less than three, 1024 * 2 * xspd + 1 when spd is
-+	 * equal to three. An arbitrary value can be set here but 0 is enough
-+	 * for our purpose.
-+	 */
-+	opcr |= cpu_to_be32(0 << OPCR_PAYLOAD_SHIFT);
-+
-+	return opcr;
++	struct snd_efw *efw = substream->rmidi->private_data;
++	return snd_efw_stream_start_duplex(efw, &efw->rx_stream, 0);
 +}
 +
- static int pcr_set_check(struct cmp_connection *c, __be32 pcr)
- {
- 	if (pcr & cpu_to_be32(PCR_BCAST_CONN |
-@@ -196,8 +281,13 @@ retry_after_bus_reset:
- 	if (err < 0)
- 		goto err_mutex;
- 
--	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
--			 ABORT_ON_BUS_RESET);
-+	if (c->direction == CMP_OUTPUT)
-+		err = pcr_modify(c, opcr_set_modify, pcr_set_check,
-+				 ABORT_ON_BUS_RESET);
++static int midi_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_efw *efw = substream->rmidi->private_data;
++	snd_efw_stream_stop_duplex(efw);
++	return 0;
++}
++
++static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_efw *efw = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&efw->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&efw->tx_stream,
++					  substrm->number, substrm);
 +	else
-+		err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
-+				 ABORT_ON_BUS_RESET);
++		amdtp_stream_midi_trigger(&efw->tx_stream,
++					  substrm->number, NULL);
 +
- 	if (err == -EAGAIN) {
- 		fw_iso_resources_free(&c->resources);
- 		goto retry_after_bus_reset;
-@@ -245,8 +335,13 @@ int cmp_connection_update(struct cmp_connection *c)
- 	if (err < 0)
- 		goto err_unconnect;
- 
--	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
--			 SUCCEED_ON_BUS_RESET);
-+	if (c->direction == CMP_OUTPUT)
-+		err = pcr_modify(c, opcr_set_modify, pcr_set_check,
-+				 SUCCEED_ON_BUS_RESET);
++	spin_unlock_irqrestore(&efw->lock, flags);
++
++	return;
++}
++
++static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_efw *efw = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&efw->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&efw->rx_stream,
++					  substrm->number, substrm);
 +	else
-+		err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
-+				 SUCCEED_ON_BUS_RESET);
++		amdtp_stream_midi_trigger(&efw->rx_stream,
++					  substrm->number, NULL);
 +
- 	if (err < 0)
- 		goto err_resources;
- 
++	spin_unlock_irqrestore(&efw->lock, flags);
++
++	return;
++}
++
++static struct snd_rawmidi_ops midi_capture_ops = {
++	.open		= midi_capture_open,
++	.close		= midi_close,
++	.trigger	= midi_capture_trigger,
++};
++
++static struct snd_rawmidi_ops midi_playback_ops = {
++	.open		= midi_playback_open,
++	.close		= midi_close,
++	.trigger	= midi_playback_trigger,
++};
++
++static void set_midi_substream_names(struct snd_efw *efw,
++				     struct snd_rawmidi_str *str)
++{
++	struct snd_rawmidi_substream *subs;
++
++	list_for_each_entry(subs, &str->substreams, list) {
++		snprintf(subs->name, sizeof(subs->name),
++			 "%s MIDI %d", efw->card->shortname, subs->number + 1);
++	}
++}
++
++int snd_efw_create_midi_devices(struct snd_efw *efw)
++{
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_str *str;
++	int err;
++
++	/* check the number of midi stream */
++	if ((efw->midi_in_ports > SND_EFW_MAX_MIDI_IN_PORTS) |
++	    (efw->midi_out_ports > SND_EFW_MAX_MIDI_OUT_PORTS))
++		return -EIO;
++
++	/* create midi ports */
++	err = snd_rawmidi_new(efw->card, efw->card->driver, 0,
++			      efw->midi_out_ports, efw->midi_in_ports,
++			      &rmidi);
++	if (err < 0)
++		return err;
++
++	snprintf(rmidi->name, sizeof(rmidi->name),
++			"%s MIDI", efw->card->shortname);
++	rmidi->private_data = efw;
++
++	if (efw->midi_in_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++					&midi_capture_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++
++		set_midi_substream_names(efw, str);
++	}
++
++	if (efw->midi_out_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
++					&midi_playback_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++
++		set_midi_substream_names(efw, str);
++
++		/*
++		 * Fireworks ignores MIDI messages in greater than first 8 data
++		 * blocks of an AMDTP packet.
++		 */
++		efw->rx_stream.blocks_for_midi = 8;
++	}
++
++	if ((efw->midi_out_ports > 0) && (efw->midi_in_ports > 0))
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
++
++	return 0;
++}
 -- 
 1.8.3.2
 
