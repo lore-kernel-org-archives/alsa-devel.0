@@ -1,19 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: snd_hda_intel and Beats Audio
-Date: Sat, 21 Dec 2013 14:46:09 +0800
-Message-ID: <CAN8cciYGa_Aj_6Ev2ZQ+fNUbbiYVSwq616c1yvEvrPZM8P0vGw@mail.gmail.com>
-References: <52B3275B.3070709@grm.net>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 1/1] ASoC: pcm1792a: Remove redundant
+	of_match_ptr helper
+Date: Sat, 21 Dec 2013 13:45:47 +0530
+Message-ID: <1387613747-22784-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f172.google.com (mail-ig0-f172.google.com
- [209.85.213.172])
- by alsa0.perex.cz (Postfix) with ESMTP id E6A392625E1
- for <alsa-devel@alsa-project.org>; Sat, 21 Dec 2013 07:46:10 +0100 (CET)
-Received: by mail-ig0-f172.google.com with SMTP id hl1so17022162igb.5
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 22:46:09 -0800 (PST)
-In-Reply-To: <52B3275B.3070709@grm.net>
+Received: from mail-pb0-f45.google.com (mail-pb0-f45.google.com
+ [209.85.160.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9269262600
+ for <alsa-devel@alsa-project.org>; Sat, 21 Dec 2013 09:19:05 +0100 (CET)
+Received: by mail-pb0-f45.google.com with SMTP id rp16so3546376pbb.4
+ for <alsa-devel@alsa-project.org>; Sat, 21 Dec 2013 00:19:04 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,52 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan McGhee <beesnees@grm.net>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: sachin.kamat@linaro.org, broonie@kernel.org, michael@amarulasolutions.com
 List-Id: alsa-devel@alsa-project.org
 
-2013/12/20 Dan McGhee <beesnees@grm.net>
+'pcm1792a_of_match' is always compiled in. Hence the
+helper macro is not needed.
 
-> I have an HP Envy m6 Sleekbook model k010 with Beats Audio.  My system is
-> LFS-7.4 and BLFS-7.4.
->
-> Except for video replay, sound and printing my build is complete.  I do
-> not have any other sound applications or "helpers" installed, particularly
-> PulseAudio, except gstreamer which is for dependencies.  I'm using xcfe4
-> desktop. In my troubleshooting and research I discovered "hda-jack-retask."
->  I installed it and have been "poking around" for awhile unsuccessfully.  I
-> guess I just don't understand the "pin out."  This particular laptop has
-> two speakers and a woofer.
->
-> I ran "alsa-info.sh" and here is the section on the pins:
->
->  /sys/class/sound/hwC0D0/init_pin_configs:
->> 0x03 0x185600f0      [Jack] Digital Out at Int HDMI
->> 0x05 0x585600f0
->> 0x07 0x585600f0
->> 0x09 0x585600f0
->> 0x0b 0x585600f0
->> 0x0d 0x585600f0
->>
-> and
->
->  /sys/class/sound/hwC1D0/init_pin_configs:
->> 0x0a 0x03a11020      [Jack] Mic at Ext Left
->> 0x0b 0x0321101f       [Jack] HP Out at Ext Left
->> 0x0c 0x40f000f0
->> 0x0d 0x92170110      [Fixed] Speaker at Int Front
->> 0x0e 0x40f000f0
->> 0x0f 0x40f000f0
->> 0x10 0x40f000f0
->> 0x11 0xd5a30130      [Both] Mic at Int Top
->> 0x1f 0x40f000f0
->>
->
-Try retask 0x10 (mono pin) as your subwoofer  0x92170111
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ sound/soc/codecs/pcm1792a.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Pin Default 0x92170111: [Fixed] Speaker at Int Front
-  Conn = Analog, Color = Unknown
-  DefAssociation  = 0x1, Sequence = 0x1, Misc = 0x1
-
-
-post the output of alsa-info.sh
+diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm1792a.c
+index 7146653a8e16..f4d9b769bcda 100644
+--- a/sound/soc/codecs/pcm1792a.c
++++ b/sound/soc/codecs/pcm1792a.c
+@@ -244,7 +244,7 @@ static struct spi_driver pcm1792a_codec_driver = {
+ 	.driver = {
+ 		.name = "pcm1792a",
+ 		.owner = THIS_MODULE,
+-		.of_match_table = of_match_ptr(pcm1792a_of_match),
++		.of_match_table = pcm1792a_of_match,
+ 	},
+ 	.id_table = pcm1792a_spi_ids,
+ 	.probe = pcm1792a_spi_probe,
+-- 
+1.7.9.5
