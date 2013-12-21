@@ -1,18 +1,18 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 1/1] ASoC: sam9x5_wm8731: Remove redundant
-	of_match_ptr helper
-Date: Sat, 21 Dec 2013 13:49:45 +0530
-Message-ID: <1387613985-23420-1-git-send-email-sachin.kamat@linaro.org>
+From: Jonathan Woithe <jwoithe@just42.net>
+Subject: Re: [FFADO-devel] Sample program for hwdep interface
+Date: Sat, 21 Dec 2013 20:41:23 +1030
+Message-ID: <20131221101123.GA17855@marvin.atrad.com.au>
+References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
+ <52B45837.2080804@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f175.google.com (mail-pd0-f175.google.com
- [209.85.192.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 9786E262600
- for <alsa-devel@alsa-project.org>; Sat, 21 Dec 2013 09:23:02 +0100 (CET)
-Received: by mail-pd0-f175.google.com with SMTP id w10so3446384pde.20
- for <alsa-devel@alsa-project.org>; Sat, 21 Dec 2013 00:23:01 -0800 (PST)
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id E370D262632
+ for <alsa-devel@alsa-project.org>; Sat, 21 Dec 2013 11:11:28 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <52B45837.2080804@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sachin.kamat@linaro.org, broonie@kernel.org, nicolas.ferre@atmel.com
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: jwoithe@just42.net, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-'sam9x5_wm8731_of_match' is always compiled in. Hence the
-helper macro is not needed.
+Hi Takashi
 
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
----
- sound/soc/atmel/sam9x5_wm8731.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[CC list trimmed to include just the lists]
 
-diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
-index 7d6a9055874b..59df542afc7d 100644
---- a/sound/soc/atmel/sam9x5_wm8731.c
-+++ b/sound/soc/atmel/sam9x5_wm8731.c
-@@ -195,7 +195,7 @@ static struct platform_driver sam9x5_wm8731_driver = {
- 	.driver = {
- 		.name = DRV_NAME,
- 		.owner = THIS_MODULE,
--		.of_match_table = of_match_ptr(sam9x5_wm8731_of_match),
-+		.of_match_table = sam9x5_wm8731_of_match,
- 	},
- 	.probe = sam9x5_wm8731_driver_probe,
- 	.remove = sam9x5_wm8731_driver_remove,
--- 
-1.7.9.5
+On Fri, Dec 20, 2013 at 11:46:15PM +0900, Takashi Sakamoto wrote:
+> This is how to use hwdep interface for firewire devices.
+> I hope FFADO developers read this.
+> 
+> With hwdep interface, the program in user land can do:
+> 1.get firewire node infomation
+> 2.get notification when starting/stopping kernel streaming
+> 3.lock/unlock kernel streaming
+
+1 could be useful.  2 and 3, while not essential, are nice to have.
+
+> For jackd with FFADO backend, it's better to lock kernel streaming in 
+> advance. Then snd-bebob/snd-fireworks can't interrupt FFADO streaming.
+
+If someone is using a kernel which has the streaming drivers for these
+devices there would be no reason at all for that person to run FFADO's
+streaming driver.  They would just use the ALSA jackd backend and be done
+with it.  So rather than having FFADO mess around with this locking I think
+it would be better in the long run for FFADO to determine whether there's
+kernel streaming support for the device in question and refuse to run if
+there is.
+
+> And with snd-fireworks, the program can do:
+> 4.transmit command of EFW transaction
+> 5.receive response of EFW transaction
+> 
+> 4/5 is my complete solution for ticket #360.
+> Make echo audiofire 8 and audiofire 12 work with recent firmwares
+> http://subversion.ffado.org/ticket/360
+
+I thought this ticket was more or less resolved.  How exactly does this
+program deal with ticket #360?  This ticket requires fixes within FFADO's
+mixer/control code (or so I thought).  Or is this program simply
+demonstrating what FFADO must do?
+
+Thanks for your ongoing work with these devices.
+
+Regards
+  jonathan
