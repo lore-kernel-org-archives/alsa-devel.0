@@ -1,21 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 08/19] ASoC: kirkwood: Don't set unused
- struct snd_pcm_hardware fields
-Date: Fri, 20 Dec 2013 19:29:43 +0100
-Message-ID: <52B48C97.8070208@metafoo.de>
-References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
- <1387545625-19240-8-git-send-email-lars@metafoo.de>
- <20131220190506.2adb7a52@armhf> <52B47BF9.9030408@metafoo.de>
- <20131220201313.0fdf477e@armhf>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: snd_hda_intel and Beats Audio
+Date: Sat, 21 Dec 2013 14:46:09 +0800
+Message-ID: <CAN8cciYGa_Aj_6Ev2ZQ+fNUbbiYVSwq616c1yvEvrPZM8P0vGw@mail.gmail.com>
+References: <52B3275B.3070709@grm.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-044.synserver.de (smtp-out-137.synserver.de
- [212.40.185.137])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D870261B25
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 20:28:41 +0100 (CET)
-In-Reply-To: <20131220201313.0fdf477e@armhf>
+Received: from mail-ig0-f172.google.com (mail-ig0-f172.google.com
+ [209.85.213.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6A392625E1
+ for <alsa-devel@alsa-project.org>; Sat, 21 Dec 2013 07:46:10 +0100 (CET)
+Received: by mail-ig0-f172.google.com with SMTP id hl1so17022162igb.5
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2013 22:46:09 -0800 (PST)
+In-Reply-To: <52B3275B.3070709@grm.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,58 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Dan McGhee <beesnees@grm.net>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/20/2013 08:13 PM, Jean-Francois Moine wrote:
-> On Fri, 20 Dec 2013 18:18:49 +0100
-> Lars-Peter Clausen <lars@metafoo.de> wrote:
-> 
->> On 12/20/2013 07:05 PM, Jean-Francois Moine wrote:
->>> On Fri, 20 Dec 2013 14:20:14 +0100
->>> Lars-Peter Clausen <lars@metafoo.de> wrote:
->>>
->>>> The ASoC core assumes that the PCM component of the ASoC card transparently
->>>> moves data around and does not impose any restrictions on the memory layout or
->>>> the transfer speed. It ignores all fields from the snd_pcm_hardware struct for
->>>> the PCM driver that are related to this. Setting these fields in the PCM driver
->>>> might suggest otherwise though, so rather not set them.
->>>>
->>>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->>>> Cc: Jean-Francois Moine <moinejf@free.fr>
->>>> ---
->>>>  sound/soc/kirkwood/kirkwood-dma.c | 16 ----------------
->>>>  1 file changed, 16 deletions(-)
->>>>
->>>> diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
->>>> index 4af1936..aac22fc 100644
->>>> --- a/sound/soc/kirkwood/kirkwood-dma.c
->>>> +++ b/sound/soc/kirkwood/kirkwood-dma.c
->>> 	[snip]
->>>> @@ -43,12 +33,6 @@ static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
->>>>  		 SNDRV_PCM_INFO_MMAP_VALID |
->>>>  		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
->>>>  		 SNDRV_PCM_INFO_PAUSE),
->>>> -	.formats		= KIRKWOOD_FORMATS,
->>>> -	.rates			= KIRKWOOD_RATES,
->>>> -	.rate_min		= 8000,
->>>> -	.rate_max		= 384000,
->>>> -	.channels_min		= 1,
->>>> -	.channels_max		= 8,
->>>>  	.buffer_bytes_max	= KIRKWOOD_SND_MAX_BUFFER_BYTES,
->>>>  	.period_bytes_min	= KIRKWOOD_SND_MIN_PERIOD_BYTES,
->>>>  	.period_bytes_max	= KIRKWOOD_SND_MAX_PERIOD_BYTES,
->>>
->>> Lars,
->>>
->>> You removed too many things. The 'formats' field is mandatory.
->>
->> No it is not. While snd_soc_set_runtime_hwparams() uses it it is later
->> overwritten again in soc_pcm_init_runtime_hw().
-> 
-> I have a DPCM system and soc_pcm_init_runtime_hw() is not called
-> (either 'dynamic' or 'no_pcm' is set in the DAI links).
-> 
+2013/12/20 Dan McGhee <beesnees@grm.net>
 
-Ok, I see dpcm_set_fe_runtime() does things slightly different.
+> I have an HP Envy m6 Sleekbook model k010 with Beats Audio.  My system is
+> LFS-7.4 and BLFS-7.4.
+>
+> Except for video replay, sound and printing my build is complete.  I do
+> not have any other sound applications or "helpers" installed, particularly
+> PulseAudio, except gstreamer which is for dependencies.  I'm using xcfe4
+> desktop. In my troubleshooting and research I discovered "hda-jack-retask."
+>  I installed it and have been "poking around" for awhile unsuccessfully.  I
+> guess I just don't understand the "pin out."  This particular laptop has
+> two speakers and a woofer.
+>
+> I ran "alsa-info.sh" and here is the section on the pins:
+>
+>  /sys/class/sound/hwC0D0/init_pin_configs:
+>> 0x03 0x185600f0      [Jack] Digital Out at Int HDMI
+>> 0x05 0x585600f0
+>> 0x07 0x585600f0
+>> 0x09 0x585600f0
+>> 0x0b 0x585600f0
+>> 0x0d 0x585600f0
+>>
+> and
+>
+>  /sys/class/sound/hwC1D0/init_pin_configs:
+>> 0x0a 0x03a11020      [Jack] Mic at Ext Left
+>> 0x0b 0x0321101f       [Jack] HP Out at Ext Left
+>> 0x0c 0x40f000f0
+>> 0x0d 0x92170110      [Fixed] Speaker at Int Front
+>> 0x0e 0x40f000f0
+>> 0x0f 0x40f000f0
+>> 0x10 0x40f000f0
+>> 0x11 0xd5a30130      [Both] Mic at Int Top
+>> 0x1f 0x40f000f0
+>>
+>
+Try retask 0x10 (mono pin) as your subwoofer  0x92170111
+
+Pin Default 0x92170111: [Fixed] Speaker at Int Front
+  Conn = Analog, Color = Unknown
+  DefAssociation  = 0x1, Sequence = 0x1, Misc = 0x1
+
+
+post the output of alsa-info.sh
