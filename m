@@ -1,16 +1,16 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: HD-Audio/HDMI: avoid missing start of audio stream on
- audio reconfiguation or after S3
-Date: Mon, 23 Dec 2013 09:25:21 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801448778@SHSMSX101.ccr.corp.intel.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: [PATCH] ASoC: imx-spdif: Use snd-soc-dummy CODEC
+	driver to link card
+Date: Mon, 23 Dec 2013 17:28:53 +0800
+Message-ID: <1387790933-29232-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id A097326072A
- for <alsa-devel@alsa-project.org>; Mon, 23 Dec 2013 10:25:36 +0100 (CET)
-Content-Language: en-US
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe004.messaging.microsoft.com [216.32.180.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id A60622607B6
+ for <alsa-devel@alsa-project.org>; Mon, 23 Dec 2013 10:28:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,118 +20,187 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, linux@arm.linux.org.uk
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGFrYXNoaSwNCg0KV2UgaG9wZSB0byBjb250aW51ZSBkaXNjdXNzaW5nIHRoZSB3b3JrYXJv
-dW5kIHRvIGF2b2lkIEhETUkgZGF0YSBtaXNzaW5nIHdoZW4gYXVkaW8gY29uZmlndXJhdGlvbiBj
-aGFuZ2VzIChlZy4gc3RlcmVvIC0+NS4xIGNoYW5uZWwpIG9yIGFmdGVyIFMzLg0KDQpUaGUgYmFz
-aWMgaWRlYSBpcyB0byBpbnNlcnQgc2lsZW50IGF1ZGlvIHN0cmVhbSBwbGF5YmFjayBvbiBhdWRp
-byBjb25maWd1cmF0aW9uIGNoYW5nZXMuDQpQbGVhc2Ugc2VlIHVwZGF0ZXMgYmVsb3cgLi4uDQoN
-Cj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVGFrYXNoaSBJd2FpIFttYWls
-dG86dGl3YWlAc3VzZS5kZV0NCj4gU2VudDogVGh1cnNkYXksIERlY2VtYmVyIDE5LCAyMDEzIDk6
-MjcgUE0NCj4gVG86IExpbiwgTWVuZ2RvbmcNCj4gQ2M6IFd1LCBGZW5nZ3Vhbmc7IExpLCBKb2Nl
-bHluOyBHaXJkd29vZCwgTGlhbSBSOyBDaGVoYWIsIEpvaG4NCj4gU3ViamVjdDogUmU6IENvdWxk
-IHlvdSBzaGFyZSBzb21lIGFkdmljZSB0byBjaGVjayBtaXNzaW5nIHN0YXJ0IG9mIGF1ZGlvDQo+
-IHN0cmVhbSBpbiBIRE1JIGF1ZGlvIHBsYXliYWNrPw0KPiANCj4gQXQgVGh1LCAxOSBEZWMgMjAx
-MyAxMjo0NTowMyArMDAwMCwNCj4gTGluLCBNZW5nZG9uZyB3cm90ZToNCj4gPg0KPiA+IE1hbnkg
-dGhhbmtzLCBUYWthc2hpIGFuZCBGZW5nZ3VhbmchDQo+ID4NCj4gPiBXaW5kb3dzIHRlYW0gbWV0
-IHNhbWUgaXNzdWUuIFRoZXkgYWxzbyBjb25maXJtZWQgdGhlIGxhdGVuY3kgZm9yDQo+IG1vbml0
-b3IvQVYgcmVjZWl2ZXIgdG8gcmVjb25maWd1cmUgYXVkaW8gc2V0dXAgaXMgbm90IGF2b2lkYWJs
-ZS4NCj4gPg0KPiA+IEFuZCB0aGVpciB3b3JrYXJvdW5kIGlzIHRvIHNlbmQgc2lsZW50IGF1ZGlv
-IGRhdGEgYWZ0ZXIgZWFjaCBzdHJlYW0NCj4gcmVjb25maWd1cmF0aW9uLCBiZWZvcmUgcGxheWlu
-ZyBiYWNrIHRoZSB2YWxpZCBhdWRpbyBzdHJlYW0uDQo+ID4NCj4gPiBEbyB5b3UgZmVlbCB0aGlz
-IHdvcmthcm91bmQgc2hvdWxkIGJlIGltcGxlbWVudGVkIGluIGRyaXZlciBvciBpbg0KPiB1c2Vy
-LXNwYWNlPw0KPiANCj4gSGFyZCB0byBzYXkuICBBbiBlYXNpZXIgZm9yIHVzIHdvdWxkIGJlIHVz
-ZXItc3BhY2UsIGJ1dCBpdCBjYW4gYmUgZG9uZSBpbg0KPiB0aGUgZHJpdmVyIChlLmcuIGluIHRo
-ZSBwcmVwYXJlIGNhbGxiYWNrKSwgdG9vLCBhbHRob3VnaCB0aGUgaW1wbGVtZW50YXRpb24NCj4g
-d291bGQgYmVjb21lIHRyaWNreS4gIFdlJ2QgbmVlZCBhIHN0YXRpYyBzaWxlbmNlIHBhZ2UgYW5k
-IHBsYXkgaXQgaW4NCj4gaGRhX2ludGVsLmMgYXMgYSBzcGVjaWFsIHJlcXVpcmVtZW50IGluIHRo
-ZSBwcmVwYXJlLCB0aGVuIHNldCB0aGUgQkxEIGJhY2sNCj4gdG8gdGhlIG5vcm1hbCBidWZmZXIg
-YXQgdGhlIGVuZCBvZiBhenhfcGNtX3ByZXBhcmUoKS4gIEEgYml0IGNvbXBsZXgsDQo+IGJ1dCBj
-ZXJ0YWlubHkgZG9hYmxlLg0KDQpGb3IgSW50ZWwgZGlzcGxheSBlbmdpbmUsIGluY2x1ZGluZyBI
-YXN3ZWxsL0l2eWJyaWRnL1NhbmRpYnJpZGdlLCBIVyBjYW4gZ2VuZXJhdGUgc2lsZW50IGF1ZGlv
-IGRhdGEgb24gZHJpdmVyIHJlcXVlc3QgZHVyaW5nIGEgbGluayB1bmRlcnJ1bi4NClNvIGZvciB0
-aGVzZSBwbGF0Zm9ybXMsIHdlIGNhbiANCi0gZW5hYmxlIHRoaXMgIkhXIGludGVybmFsIGZhYnJp
-Y2F0aW9uIiBmZWF0dXJlIGluIGk5MTUgZHJpdmVyLiBIVyBzdXBwb3J0ZWQgMzJrSHosIE4qNDQs
-MWtIeiwgTio0OGtIei4NCi0gYW5kIGFkZCBzcGVjaWZpZWQgc2xlZXAgYXQgdGhlIGVuZCBvZiBh
-enhfcGNtX3ByZXBhcmUoKSBvciBnZW5lcmljX2hkbWlfcGxheWJhY2tfcGNtX3ByZXBhcmUoKQ0K
-DQpUaGlzIGNhbiBhdm9pZCBhdWRpbyBkcml2ZXIgdG8gcHJlcGFyZSBzaWxlbnQgZGF0YSBhbmQg
-dHJhbnNtaXQgb3ZlciBIRC1BIGxpbmsuIElzIGl0IGRvYWJsZT8NCg0KPiA+IERvaW5nIHRoaXMg
-aW4gbWF5IGdlbmVyYXRlIGV4dHJhIGxhdGVuY3kgdG8gb3BlbiBhIHN0cmVhbS4gQW5kIHRoZQ0K
-PiBsZW5ndGggb2YgdGhlIHN0ZWFtIGRlcGVuZHMgb24gZXhwZXJpZW5jZS4NCj4gDQo+IFllcywg
-aXQncyBwdXJlbHkgZGVwZW5kaW5nIG9uIHRoZSByZWNlaXZlciBoYXJkd2FyZS4NCg0KQ2FuIHdl
-IGFkZCBhIGtlcm5lbCBwYXJhbWV0ZXIgdG8gc3BlY2lmeSB0aGUgbGVuZ3RoIG9mIHRoZSBzaWxl
-bnQgc3RyZWFtPw0KSXQgY291bGQgYmUgMCBieSBkZWZhdWx0LCBtZWFuaW5nIG5vIHNpbGVudCBz
-dHJlYW0gaW5zZXJ0aW9uIGFuZCB0aHVzIG5vIGV4dHJhIGxhdGVuY3kgZm9yIHBsYXliYWNrLg0K
-DQo+IA0KPiA+IEFuZCBzaWxlbnQgc3RyZWFtcyBpbiBkaWZmZXJlbnQgZm9ybWF0cyBuZWVkIHRv
-IGJlIHByZXBhcmVkIHNpbmNlIHRoZXJlDQo+IGNhbiBiZSB3cmFwcGVkIGNvbXByZXNzZWQgc3Ry
-ZWFtIGZvciBwbGF5YmFjay4NCj4gPiBTbyBJJ2QgbGlrZSBzdWNoIGEgd29ya2Fyb3VuZCBpbiBh
-dWRpbyBtaWRkbGV3YXJlIGluIHVzZXItc3BhY2UuDQo+IA0KPiBGb3IgdGhlIGNvbXByZXNzIGF1
-ZGlvLCBpdCdzIGEgYml0IGRpZmZlcmVudCBwcm9ibGVtLCBpbmRlZWQuDQoNCldlIG5lZWQgdG8g
-Y2hlY2sgd2hldGhlciBIVyBzdXBwb3J0cyBjb21wcmVzc2VkIGRhdGEgZm9ybWF0Lg0KQnV0IGF0
-IGxlYXN0IHdlIGNhbiBhcHBseSB0aGlzIGZlYXR1cmUgb24gUENNIGZvcm1hdC4NCg0KVGhhbmtz
-DQpNZW5nZG9uZw0KIA0KPiANCj4gVGFrYXNoaQ0KPiANCj4gPiBUaGFua3MNCj4gPiBNZW5nZG9u
-Zw0KPiA+DQo+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gRnJvbTogVGFr
-YXNoaSBJd2FpIFttYWlsdG86dGl3YWlAc3VzZS5kZV0NCj4gPiA+IFNlbnQ6IFRodXJzZGF5LCBE
-ZWNlbWJlciAxOSwgMjAxMyA3OjU1IFBNDQo+ID4gPiBUbzogV3UsIEZlbmdndWFuZw0KPiA+ID4g
-Q2M6IExpbiwgTWVuZ2Rvbmc7IExpLCBKb2NlbHluOyBHaXJkd29vZCwgTGlhbSBSOyBDaGVoYWIs
-IEpvaG4NCj4gPiA+IFN1YmplY3Q6IFJlOiBDb3VsZCB5b3Ugc2hhcmUgc29tZSBhZHZpY2UgdG8g
-Y2hlY2sgbWlzc2luZyBzdGFydCBvZg0KPiA+ID4gYXVkaW8gc3RyZWFtIGluIEhETUkgYXVkaW8g
-cGxheWJhY2s/DQo+ID4gPg0KPiA+ID4gQXQgVGh1LCAxOSBEZWMgMjAxMyAxNTozODo0MCArMDgw
-MCwNCj4gPiA+IEZlbmdndWFuZyBXdSB3cm90ZToNCj4gPiA+ID4NCj4gPiA+ID4gTWVuZ2Rvbmcs
-DQo+ID4gPiA+DQo+ID4gPiA+IE9uIFRodSwgRGVjIDE5LCAyMDEzIGF0IDAyOjMwOjMzUE0gKzA4
-MDAsIExpbiwgTWVuZ2Rvbmcgd3JvdGU6DQo+ID4gPiA+ID4gSGkgVGFrYXNoaS9GZW5nZ3VhbmcN
-Cj4gPiA+ID4gPg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBTb3JyeSB0byBpbnRl
-cnJ1cHQuIFdvdWxkIHlvdSBwbGVhc2Ugc2hhcmUgc29tZSBhZHZpY2UgdG8gY2hlY2sNCj4gPiA+
-ID4gPiBhIEhETUkgYXVkaW8gaXNzdWUgYmVsb3c/DQo+ID4gPiA+ID4NCj4gPiA+ID4gPg0KPiA+
-ID4gPiA+DQo+ID4gPiA+ID4gRm9yIEhETUkgYXVkaW8gcGxheWJhY2sgdW5kZXIgTGludXggb24g
-SGFzd2VsbC9WYWxsZXl2aWV3LCBzdGFydA0KPiA+ID4gPiA+IG9mIGFuIGF1ZGlvIHN0cmVhbSAo
-Mn40IHNlY29uZHMpIG1heSBiZSBtaXNzaW5nIGJlZm9yZSB3ZSBjYW4NCj4gPiA+ID4gPiBoZWFy
-IHRoZQ0KPiA+ID4gc291bmQsIGluIHR3byBjYXNlczoNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IC0g
-ICAgICAgICAgMV5zdCBwbGF5YmFjayBhZnRlciBTMy4gRmlyc3Qgc2V2ZXJhbCBzZWNvbmRzIG9m
-IGF1ZGlvDQo+ID4gPiBzdHJlYW0gY2FuIGJlDQo+ID4gPiA+ID4gbWlzc2luZyBmb3Igc29tZSBt
-b25pdG9yLCB3aGlsZSBvdGhlciBtb25pdG9yIGRvZXMgbm90IGhhdmUgdGhpcw0KPiA+ID4gaXNz
-dWUuDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiAtICAgICAgICAgIFN3aXRjaGluZyBmcm9tIHBsYXlp
-bmcgc3RlcmVvIFBDTSB0byA1LjEgY2hhbm5lbA0KPiBQQ00uDQo+ID4gPiBBYm91dCBmaXJzdCAy
-DQo+ID4gPiA+ID4gc2Vjb25kcyBvZiB0aGUgNS4xIGNoYW5uZWwgUENNIGNhbm5vdCBiZSBoZWFy
-ZCBmcm9tIHRoZSBBVg0KPiByZWNlaXZlci4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+DQo+ID4gPiA+
-ID4NCj4gPiA+ID4gPiBJdCBzZWVtcyBzb21lIG1vbml0b3IvQVYgcmVjZWl2ZXIgY2FuIGRyb3Ag
-YXVkaW8gZGF0YSBiZWZvcmUNCj4gPiA+ID4gPiBwbGF5aW5nIHNvdW5kLiBXZSB3b25kZXIgaWYg
-d2UgY291bGQgaW1wcm92ZSBpbiBhdWRpby9nZnggZHJpdmVyLg0KPiA+ID4gPiA+DQo+ID4gPiA+
-ID4gSGF2ZSB5b3UgZXZlciBtZXQgc2ltaWxhciBpc3N1ZSBvbiBwcmV2aW91cyBwbGF0Zm9ybXM/
-DQo+ID4gPiA+ID4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gV2XigJlsbCBiZSBh
-cHByZWNpYXRlZCBpZiB5b3UgY291bGQgc2hhcmUgdXMgc29tZSB0aXBzIHRvIGNoZWNrDQo+ID4g
-PiA+ID4gdGhpcw0KPiA+ID4gaXNzdWUuDQo+ID4gPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gSSBv
-bmNlIGZpeGVkIGEgc2ltaWxhciBpc3N1ZSwgaG9wZSBpdCdzIHVzZWZ1bCBpbmZvcm1hdGlvbiBm
-b3IgeW91Lg0KPiA+ID4gPg0KPiA+ID4gPiBjb21taXQgNTc3OTE5MWUwZWZkODUxZmIwZDU0Njk4
-YzEzY2I0ZjUzMjVjYWNhNg0KPiA+ID4gPiBBdXRob3I6ICAgICBXdSBGZW5nZ3VhbmcgPGZlbmdn
-dWFuZy53dUBpbnRlbC5jb20+DQo+ID4gPiA+IEF1dGhvckRhdGU6IFdlZCBOb3YgMTggMTI6Mzg6
-MDYgMjAwOSArMDgwMA0KPiA+ID4gPiBDb21taXQ6ICAgICBUYWthc2hpIEl3YWkgPHRpd2FpQHN1
-c2UuZGU+DQo+ID4gPiA+IENvbW1pdERhdGU6IFdlZCBOb3YgMTggMDc6NDY6MTkgMjAwOSArMDEw
-MA0KPiA+ID4gPg0KPiA+ID4gPiAgICAgQUxTQTogaW50ZWxoZG1pIC0gc3RpY2t5IHN0cmVhbSBp
-ZCBhbmQgZm9ybWF0DQo+ID4gPiA+DQo+ID4gPiA+ICAgICBXZSB0cmFja2VkIGRvd24gdGhlIGZp
-cnN0LTAuNXMtaGRtaS1hdWRpby1zYW1wbGVzLWxvc3QNCj4gcHJvYmxlbQ0KPiA+ID4gdG8gdGhl
-DQo+ID4gPiA+ICAgICBBQ19WRVJCX1NFVF9DSEFOTkVMX1NUUkVBTUlEIGNvbW1hbmQuIEl0IGlz
-IHN1c3BlY3RlZA0KPiB0aGF0DQo+ID4gPiBtYW55IEhETUkNCj4gPiA+ID4gICAgIHNpbmtzIG5l
-ZWQgc29tZSB0aW1lIHRvIGFkYXB0IHRvIHRoZSBuZXcgc3RhdGUuDQo+ID4gPiA+DQo+ID4gPiA+
-ICAgICBUaGUgd29ya2Fyb3VuZCBpcyB0byBhdm9pZCBjaGFuZ2luZyBzdHJlYW0gaWQvZm9ybWF0
-DQo+IHdoZW5ldmVyDQo+ID4gPiBwb3NzaWJsZS4NCj4gPiA+ID4gICAgIFByb3Bvc2VkIGJ5IERh
-dmlkLg0KPiA+ID4gPg0KPiA+ID4gPiAgICAgU2lnbmVkLW9mZi1ieTogRGF2aWQgSMOkcmRlbWFu
-IDxkYXZpZEBoYXJkZW1hbi5udT4NCj4gPiA+ID4gICAgIFNpZ25lZC1vZmYtYnk6IFd1IEZlbmdn
-dWFuZyA8ZmVuZ2d1YW5nLnd1QGludGVsLmNvbT4NCj4gPiA+ID4gICAgIFNpZ25lZC1vZmYtYnk6
-IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4NCj4gPiA+DQo+ID4gPiBZZWFoLCBzb3VuZHMg
-bGlrZSBhIHNpbWlsYXIgcHJvYmxlbS4NCj4gPiA+DQo+ID4gPiBJbiBnZW5lcmFsLCBzdWNoIGEg
-a2luZCBvZiBkcm9wIGlzIGR1ZSB0byB0aGUgcmVjZWl2ZXIgdHJ5aW5nIHRvDQo+ID4gPiBzeW5j
-aHJvbml6ZSB0aGUgc3RyZWFtIGF0IHRoZSBiZWdpbm5pbmcgb2YgdGhlIHBsYXliYWNrLiAgU28s
-IHRoZQ0KPiA+ID4gcGF0Y2ggYWJvdmUgZXNzZW50aWFsbHkga2VlcHMgdGhlIGF1ZGlvIHdpZGdl
-dCB1bnRvdWNoZWQgYXMgbG9uZyBhcw0KPiA+ID4gaXQncyBsZWZ0IHVuY2hhbmdlZC4gIEJ1dCwg
-YWZ0ZXIgUzMsIHRoaXMgY2FuJ3QgYmUgYXZvaWRlZC4gIERpdHRvDQo+ID4gPiBmb3IgY2hhbmdp
-bmcgZnJvbSBzdGVyZW8gdG8gNS4xLiAgSXQncyByZWNvbmZpZ3VyaW5nIHRoZSBhdWRpbyBzZXR1
-cA0KPiA+ID4gYml0cywgdGh1cyBpdCBoYXMgdG8gYmUgcmVzZXQuICBUaGF0IHNhaWQsIHRoZSBw
-cm9ibGVtIGlzIGxpa2VseQ0KPiB1bmF2b2lkYWJsZSBpbiBib3RoIHNpdHVhdGlvbnMuDQo+ID4g
-Pg0KPiA+ID4gT2YgY291cnNlLCBteSB3aWxlIGd1ZXNzIG1pZ2h0IGJlIHdyb25nLiAgSSdkIGFw
-cGx5IGhhcHBpbHkgYW55IGZpeA0KPiA+ID4gcGF0Y2hlcyA6KQ0KPiA+ID4NCj4gPiA+DQo+ID4g
-PiBUYWthc2hpDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+This is a quick fix for the below two issues when building spdif as modules.
+
+1) If modprobing modules in order: (Step 1) snd-soc-fsl-spdif -> (Step 2)
+snd-soc-imx-spdif -> (Step 3) snd-soc-spdif-tx/rx, we will fail to create
+imx-spdif card and dai link unless we rmmod snd-soc-imx-spdif and modprobe
+it again due to the execution platform_driver_unregister() in probe() when
+meeting -EPROBE_DEFER at Step 2.
+
+2) After "imx-spdif sound-spdif.17: dit-hifi <-> 2004000.spdif mapping ok",
+'rmmod snd-soc-imx-spdif' would cause kernel dump with warning:
+WARNING: CPU: 0 PID: 1301 at /home/rmk/git/linux-rmk/fs/sysfs/dir.c:915 sysfs_hash_and_remove+0x84/0x90()
+sysfs: can not remove 'dapm_widget', no directory
+This should be caused by disordered resourse releasing of the whole link.
+And trying to unregister the card and then CODEC dev can't fix this issue.
+
+Thus this patch just provides a simple fix to these two bugs by using the
+snd-soc-dummy in the core instead of seperate snd-soc-spdif-tx/rx so that
+there's no need to handle the registering and unregistering of CODEC or
+CODEC dai any more.
+
+Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+---
+ sound/soc/fsl/Kconfig     |  1 -
+ sound/soc/fsl/imx-spdif.c | 84 ++++++++++++-----------------------------------
+ 2 files changed, 21 insertions(+), 64 deletions(-)
+
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index bb4ab96..1c7b3b7 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -201,7 +201,6 @@ config SND_SOC_IMX_SPDIF
+ 	tristate "SoC Audio support for i.MX boards with S/PDIF"
+ 	select SND_SOC_IMX_PCM_DMA
+ 	select SND_SOC_FSL_SPDIF
+-	select SND_SOC_SPDIF
+ 	select REGMAP_MMIO
+ 	help
+ 	  SoC Audio support for i.MX boards with S/PDIF
+diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
+index 980dd1f..e1dc401 100644
+--- a/sound/soc/fsl/imx-spdif.c
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -14,17 +14,15 @@
+ #include <sound/soc.h>
+ 
+ struct imx_spdif_data {
+-	struct snd_soc_dai_link dai[2];
++	struct snd_soc_dai_link dai;
+ 	struct snd_soc_card card;
+-	struct platform_device *txdev;
+-	struct platform_device *rxdev;
+ };
+ 
+ static int imx_spdif_audio_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *spdif_np, *np = pdev->dev.of_node;
+ 	struct imx_spdif_data *data;
+-	int ret = 0, num_links = 0;
++	int ret = 0;
+ 
+ 	spdif_np = of_parse_phandle(np, "spdif-controller", 0);
+ 	if (!spdif_np) {
+@@ -39,69 +37,42 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
+ 		goto end;
+ 	}
+ 
+-	if (of_property_read_bool(np, "spdif-out")) {
+-		data->dai[num_links].name = "S/PDIF TX";
+-		data->dai[num_links].stream_name = "S/PDIF PCM Playback";
+-		data->dai[num_links].codec_dai_name = "dit-hifi";
+-		data->dai[num_links].codec_name = "spdif-dit";
+-		data->dai[num_links].cpu_of_node = spdif_np;
+-		data->dai[num_links].platform_of_node = spdif_np;
+-		num_links++;
+-
+-		data->txdev = platform_device_register_simple("spdif-dit", -1, NULL, 0);
+-		if (IS_ERR(data->txdev)) {
+-			ret = PTR_ERR(data->txdev);
+-			dev_err(&pdev->dev, "register dit failed: %d\n", ret);
+-			goto end;
+-		}
+-	}
++	data->dai.name = "S/PDIF PCM";
++	data->dai.stream_name = "S/PDIF PCM";
++	data->dai.codec_dai_name = "snd-soc-dummy-dai";
++	data->dai.codec_name = "snd-soc-dummy";
++	data->dai.cpu_of_node = spdif_np;
++	data->dai.platform_of_node = spdif_np;
++	data->dai.playback_only = true;
++	data->dai.capture_only = true;
+ 
+-	if (of_property_read_bool(np, "spdif-in")) {
+-		data->dai[num_links].name = "S/PDIF RX";
+-		data->dai[num_links].stream_name = "S/PDIF PCM Capture";
+-		data->dai[num_links].codec_dai_name = "dir-hifi";
+-		data->dai[num_links].codec_name = "spdif-dir";
+-		data->dai[num_links].cpu_of_node = spdif_np;
+-		data->dai[num_links].platform_of_node = spdif_np;
+-		num_links++;
+-
+-		data->rxdev = platform_device_register_simple("spdif-dir", -1, NULL, 0);
+-		if (IS_ERR(data->rxdev)) {
+-			ret = PTR_ERR(data->rxdev);
+-			dev_err(&pdev->dev, "register dir failed: %d\n", ret);
+-			goto error_dit;
+-		}
+-	}
++	if (of_property_read_bool(np, "spdif-out"))
++		data->dai.capture_only = false;
++
++	if (of_property_read_bool(np, "spdif-in"))
++		data->dai.playback_only = false;
+ 
+-	if (!num_links) {
++	if (data->dai.playback_only && data->dai.capture_only) {
+ 		dev_err(&pdev->dev, "no enabled S/PDIF DAI link\n");
+-		goto error_dir;
++		goto end;
+ 	}
+ 
+ 	data->card.dev = &pdev->dev;
+-	data->card.num_links = num_links;
+-	data->card.dai_link = data->dai;
++	data->card.dai_link = &data->dai;
++	data->card.num_links = 1;
+ 
+ 	ret = snd_soc_of_parse_card_name(&data->card, "model");
+ 	if (ret)
+-		goto error_dir;
++		goto end;
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed: %d\n", ret);
+-		goto error_dir;
++		goto end;
+ 	}
+ 
+ 	platform_set_drvdata(pdev, data);
+ 
+-	goto end;
+-
+-error_dir:
+-	if (data->rxdev)
+-		platform_device_unregister(data->rxdev);
+-error_dit:
+-	if (data->txdev)
+-		platform_device_unregister(data->txdev);
+ end:
+ 	if (spdif_np)
+ 		of_node_put(spdif_np);
+@@ -109,18 +80,6 @@ end:
+ 	return ret;
+ }
+ 
+-static int imx_spdif_audio_remove(struct platform_device *pdev)
+-{
+-	struct imx_spdif_data *data = platform_get_drvdata(pdev);
+-
+-	if (data->rxdev)
+-		platform_device_unregister(data->rxdev);
+-	if (data->txdev)
+-		platform_device_unregister(data->txdev);
+-
+-	return 0;
+-}
+-
+ static const struct of_device_id imx_spdif_dt_ids[] = {
+ 	{ .compatible = "fsl,imx-audio-spdif", },
+ 	{ /* sentinel */ }
+@@ -134,7 +93,6 @@ static struct platform_driver imx_spdif_driver = {
+ 		.of_match_table = imx_spdif_dt_ids,
+ 	},
+ 	.probe = imx_spdif_audio_probe,
+-	.remove = imx_spdif_audio_remove,
+ };
+ 
+ module_platform_driver(imx_spdif_driver);
+-- 
+1.8.4
