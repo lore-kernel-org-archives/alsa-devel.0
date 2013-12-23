@@ -1,14 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ALSA: Add params_width() helper
-Date: Mon, 23 Dec 2013 12:48:58 +0000
-Message-ID: <1387802938-28432-1-git-send-email-broonie@kernel.org>
+From: Guillaume Desclaux <guillaume@desclaux.fr>
+Subject: hda problem on Gigabyte GA-Z87X-UD3H motherboard
+Date: Mon, 23 Dec 2013 14:21:56 +0100
+Message-ID: <52B838F4.3030701@desclaux.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D9F922608B7
- for <alsa-devel@alsa-project.org>; Mon, 23 Dec 2013 13:49:06 +0100 (CET)
+Received: from mail01.one2net.net (mail5.one2net.net [5.39.67.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 680612608B7
+ for <alsa-devel@alsa-project.org>; Mon, 23 Dec 2013 14:21:58 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,39 +18,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+Hi,
 
-Add a helper for obtaining the width of a format directly from params
-since this is expected to become a common operation in ASoC.
+I've reported an issue with snd-hda-intel with my Gigabyte GA-Z87X-UD3H
+motherboard on Launchpad but it seems not the best place to that
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
+See :https://bugs.launchpad.net/bugs/1248116
 
-Just starting on the ASoC changes to use this; I'm not 100% sure on the
-lack of prefixing for the name but it's consistent with the other uses
-so...
+In "Volume control PulseAudio", I can see pulseaudio changing the audio
+output "Internal Audio Analogic Stereo". The port switch rapidly from
+"Analogic output" to "Analogic headphones" making a jerky sound.
 
- include/sound/pcm_params.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+You can find the trace.log file here :
 
-diff --git a/include/sound/pcm_params.h b/include/sound/pcm_params.h
-index 37ae12e..47b03b4 100644
---- a/include/sound/pcm_params.h
-+++ b/include/sound/pcm_params.h
-@@ -354,4 +354,10 @@ params_period_bytes(const struct snd_pcm_hw_params *p)
- 		params_channels(p)) / 8;
- }
- 
-+static inline unsigned int
-+params_width(const struct snd_pcm_hw_params *p)
-+{
-+	return snd_pcm_format_width(params_format(p));
-+}
-+
- #endif /* __SOUND_PCM_PARAMS_H */
--- 
-1.8.5.2
+https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/1248116/+attachment/3934401/+files/trace.log
+
+It seems that there are many hda_power_count
+
+1/ This problem appears with the front connector on the motherboard connected to a HDA front panel on the case (I've double-checked the connection)
+2/ The problem still appears when the front connector on the motherboard is not connected at all to the case !
+3/ This bug seems quite common with Gigabyte motherboard : If you search with Google "Gigabyte Z87X hda" you will find other descriptions of this same strange behavior :
+
+https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1242302
+https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1067434
+
+
+If I disable jack detection by specifying a hint for early patching (jack_detect = no), the sound is cristal clear !
+
+If there is anything I can do to help you understand what happens, don't hesitate to ask.
+
+Best regards
+
+Guillaume
