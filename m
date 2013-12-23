@@ -1,96 +1,64 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 04/19] ASoC: davinci: Don't set unused
- struct snd_pcm_hardware fields
-Date: Mon, 23 Dec 2013 09:04:54 +0200
-Message-ID: <52B7E096.3070501@ti.com>
-References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
- <1387545625-19240-4-git-send-email-lars@metafoo.de>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH] ASoC: simple-card: Add device's module clock selection.
+Date: Mon, 23 Dec 2013 15:25:38 +0800
+Message-ID: <1387783538-5318-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id E0B52260799
- for <alsa-devel@alsa-project.org>; Mon, 23 Dec 2013 08:04:57 +0100 (CET)
-In-Reply-To: <1387545625-19240-4-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Olof Johansson <olof@lixom.net>, alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de
+Cc: kuninori.morimoto.gx@renesas.com, Li.Xiubo@freescale.com, fabio.estevam@freescale.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/20/2013 03:20 PM, Lars-Peter Clausen wrote:
-> The ASoC core assumes that the PCM component of the ASoC card transparently
-> moves data around and does not impose any restrictions on the memory layout or
-> the transfer speed. It ignores all fields from the snd_pcm_hardware struct for
-> the PCM driver that are related to this. Setting these fields in the PCM driver
-> might suggest otherwise though, so rather not set them.
+Try to get the device's module clock if the dt has no clocks and
+system-clock-frequency properties.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+---
+ a.out                           |  0
+ sound/soc/generic/simple-card.c | 21 ++++++++++++++++++---
+ 2 files changed, 18 insertions(+), 3 deletions(-)
+ create mode 100644 a.out
 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: Olof Johansson <olof@lixom.net>
-> ---
->  sound/soc/davinci/davinci-pcm.c | 28 ----------------------------
->  1 file changed, 28 deletions(-)
-> 
-> diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-> index fb5d107..14145cd 100644
-> --- a/sound/soc/davinci/davinci-pcm.c
-> +++ b/sound/soc/davinci/davinci-pcm.c
-> @@ -46,33 +46,11 @@ static void print_buf_info(int slot, char *name)
->  }
->  #endif
->  
-> -#define DAVINCI_PCM_FMTBITS	(\
-> -				SNDRV_PCM_FMTBIT_S8	|\
-> -				SNDRV_PCM_FMTBIT_U8	|\
-> -				SNDRV_PCM_FMTBIT_S16_LE	|\
-> -				SNDRV_PCM_FMTBIT_S16_BE	|\
-> -				SNDRV_PCM_FMTBIT_U16_LE	|\
-> -				SNDRV_PCM_FMTBIT_U16_BE	|\
-> -				SNDRV_PCM_FMTBIT_S24_LE	|\
-> -				SNDRV_PCM_FMTBIT_S24_BE	|\
-> -				SNDRV_PCM_FMTBIT_U24_LE	|\
-> -				SNDRV_PCM_FMTBIT_U24_BE	|\
-> -				SNDRV_PCM_FMTBIT_S32_LE	|\
-> -				SNDRV_PCM_FMTBIT_S32_BE	|\
-> -				SNDRV_PCM_FMTBIT_U32_LE	|\
-> -				SNDRV_PCM_FMTBIT_U32_BE)
-> -
->  static struct snd_pcm_hardware pcm_hardware_playback = {
->  	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
->  		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
->  		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME|
->  		 SNDRV_PCM_INFO_BATCH),
-> -	.formats = DAVINCI_PCM_FMTBITS,
-> -	.rates = SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATE_KNOT,
-> -	.rate_min = 8000,
-> -	.rate_max = 192000,
-> -	.channels_min = 2,
-> -	.channels_max = 384,
->  	.buffer_bytes_max = 128 * 1024,
->  	.period_bytes_min = 32,
->  	.period_bytes_max = 8 * 1024,
-> @@ -86,12 +64,6 @@ static struct snd_pcm_hardware pcm_hardware_capture = {
->  		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
->  		 SNDRV_PCM_INFO_PAUSE |
->  		 SNDRV_PCM_INFO_BATCH),
-> -	.formats = DAVINCI_PCM_FMTBITS,
-> -	.rates = SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATE_KNOT,
-> -	.rate_min = 8000,
-> -	.rate_max = 192000,
-> -	.channels_min = 2,
-> -	.channels_max = 384,
->  	.buffer_bytes_max = 128 * 1024,
->  	.period_bytes_min = 32,
->  	.period_bytes_max = 8 * 1024,
-> 
+diff --git a/a.out b/a.out
+new file mode 100644
+index 0000000..e69de29
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 6ce9745..c0d92813 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -90,14 +90,29 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 	 * dai->sysclk come from
+ 	 *  "clocks = <&xxx>" (if system has common clock)
+ 	 *  or "system-clock-frequency = <xxx>"
++	 *  or device's module clock.
+ 	 */
+-	clk = of_clk_get(np, 0);
+-	if (IS_ERR(clk))
++	if (of_property_read_bool(np, "clocks")) {
++		clk = of_clk_get(np, 0);
++		if (IS_ERR(clk)) {
++			ret = PTR_ERR(clk);
++			goto parse_error;
++		}
++
++		dai->sysclk = clk_get_rate(clk);
++	} else if (of_property_read_bool(np, "system-clock-frequency")) {
+ 		of_property_read_u32(np,
+ 				     "system-clock-frequency",
+ 				     &dai->sysclk);
+-	else
++	} else {
++		clk = of_clk_get(*node, 0);
++		if (IS_ERR(clk)) {
++			ret = PTR_ERR(clk);
++			goto parse_error;
++		}
++
+ 		dai->sysclk = clk_get_rate(clk);
++	}
+ 
+ 	ret = 0;
+ 
+-- 
+1.8.4
