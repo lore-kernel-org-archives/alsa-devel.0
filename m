@@ -1,191 +1,123 @@
-From: "H.J. Lu" <hjl.tools@gmail.com>
-Subject: Re: [PATCH 1/2] Add __compat_aligned_s64 and __compat_aligned_u64
-Date: Wed, 25 Dec 2013 10:15:03 -0800
-Message-ID: <20131225181502.GA25627@gmail.com>
-References: <20131225171551.GA1798@gmail.com>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH] ASoC: fsl_sai: Fix one bug for hardware
+	limitation.
+Date: Thu, 26 Dec 2013 10:57:22 +0800
+Message-ID: <1388026642-1464-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="3V7upXqbjpZ4EhLz"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20131225171551.GA1798@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>, alan.cox@intel.com, Thomas Gleixner <tglx@linutronix.de>, tiwai@suse.de, perex@perex.cz, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id D260826171B
+ for <alsa-devel@alsa-project.org>; Thu, 26 Dec 2013 04:50:43 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, timur@tabi.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org, b47053@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
+This is maybe one bug or a limitation of the hardware that the {T,R}CR2's
+Synchronous Mode bits must be set as late as possible, or the SAI device
+maybe hanged up, and there has not any explaination about this limitation
+in the SAI Data Sheet.
 
---3V7upXqbjpZ4EhLz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Dec 25, 2013 at 09:15:51AM -0800, H.J. Lu wrote:
-> X32 uses the 32-bit compat layer for 32-bit kernel interface, which is
-> also used by ia32.  But long long is 4-byte aligned for ia32 and 8-byte
-> aligned for x32.  When the long long field in a system call struct has
-> different offsets between ia32 and x32 due to alignment padding, like
-> struct snd_ctl_elem_value in include/uapi/sound/asound.h, we need to
-> either add a special case for x32 or we can use 4-byte aligned long
-> long in the system call struct so that x32 can share the same compat
-> system cal with ia32.  This patch adds __compat_aligned_s64 and
-> __compat_aligned_u64 to include/uapi/asm-generic/int-ll64.h.  By
-> default, they are the same as __s64/__u64.  It does the following
-> things:
-> 
-> 1. Add default __compat_aligned_s64/__compat_aligned_u64 to
-> include/uapi/asm-generic/int-ll64.h.
-> 2. Add arch/x86/include/asm/types.h for kernel internal use, which is the
-> same as before, i.e., <asm-generic/types.h>.
-> 3. Change arch/x86/include/uapi/asm/types.h not to use the default
-> include/uapi/asm-generic/int-ll64.h.  Instead, it has a modified copy
-> of include/uapi/asm-generic/int-ll64.h with 4-byte aligned
-> __compat_aligned_s64 and __compat_aligned_u64 for x32 and ia32.
-> 
-> When building x86 kernel, nothing is changed.  The difference is
-> x32 can use 4-byte aligned long long for system calls so that it
-> can share the same 32-bit compat system call with ia32.
-> 
-> Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
-> ---
->  arch/x86/include/asm/types.h        |  6 ++++++
->  arch/x86/include/uapi/asm/types.h   | 35 ++++++++++++++++++++++++++++++++++-
->  include/uapi/asm-generic/int-ll64.h |  3 +++
->  3 files changed, 43 insertions(+), 1 deletion(-)
->  create mode 100644 arch/x86/include/asm/types.h
-...
-> diff --git a/arch/x86/include/uapi/asm/types.h b/arch/x86/include/uapi/asm/types.h
-> index 8e8c23f..7dac28b 100644
-> --- a/arch/x86/include/uapi/asm/types.h
-> +++ b/arch/x86/include/uapi/asm/types.h
-...
-> +#if defined(__i386__) || defined(__ILP32__)
-> +typedef s64 __attribute__((aligned(4))) __compat_aligned_s64;
-> +typedef u64 __attribute__((aligned(4))) __compat_aligned_u64;
-
-Here are 2 typos. They should be __s64 and __u64.
-
-> +#else
-> +typedef __s64 __compat_aligned_s64;
-> +typedef __u64 __compat_aligned_u64;
-> +#endif
-
-Here is the updated patch.
-
-H.J.
-
---3V7upXqbjpZ4EhLz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="0001-Add-__compat_aligned_s64-and-__compat_aligned_u64.patch"
-
->From 42181ac3158ae8d0303ded5614ccb04105fe9251 Mon Sep 17 00:00:00 2001
-From: "H.J. Lu" <hjl.tools@gmail.com>
-Date: Wed, 21 Aug 2013 12:35:56 -0700
-Subject: [PATCH 1/2] Add __compat_aligned_s64 and __compat_aligned_u64
-
-X32 uses the 32-bit compat layer for 32-bit kernel interface, which is
-also used by ia32.  But long long is 4-byte aligned for ia32 and 8-byte
-aligned for x32.  When the long long field in a system call struct has
-different offsets between ia32 and x32 due to alignment padding, like
-struct snd_ctl_elem_value in include/uapi/sound/asound.h, we need to
-either add a special case for x32 or we can use 4-byte aligned long
-long in the system call struct so that x32 can share the same compat
-system cal with ia32.  This patch adds __compat_aligned_s64 and
-__compat_aligned_u64 to include/uapi/asm-generic/int-ll64.h.  By
-default, they are the same as __s64/__u64.  It does the following
-things:
-
-1. Add default __compat_aligned_s64/__compat_aligned_u64 to
-include/uapi/asm-generic/int-ll64.h.
-2. Add arch/x86/include/asm/types.h for kernel internal use, which is the
-same as before, i.e., <asm-generic/types.h>.
-3. Change arch/x86/include/uapi/asm/types.h not to use the default
-include/uapi/asm-generic/int-ll64.h.  Instead, it has a modified copy
-of include/uapi/asm-generic/int-ll64.h with 4-byte aligned
-__compat_aligned_s64 and __compat_aligned_u64 for x32 and ia32.
-
-When building x86 kernel, nothing is changed.  The difference is
-x32 can use 4-byte aligned long long for system calls so that it
-can share the same 32-bit compat system call with ia32.
-
-Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- arch/x86/include/asm/types.h        |  6 ++++++
- arch/x86/include/uapi/asm/types.h   | 35 ++++++++++++++++++++++++++++++++++-
- include/uapi/asm-generic/int-ll64.h |  3 +++
- 3 files changed, 43 insertions(+), 1 deletion(-)
- create mode 100644 arch/x86/include/asm/types.h
+ sound/soc/fsl/fsl_sai.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/include/asm/types.h b/arch/x86/include/asm/types.h
-new file mode 100644
-index 0000000..8e8c23f
---- /dev/null
-+++ b/arch/x86/include/asm/types.h
-@@ -0,0 +1,6 @@
-+#ifndef _ASM_X86_TYPES_H
-+#define _ASM_X86_TYPES_H
-+
-+#include <asm-generic/types.h>
-+
-+#endif /* _ASM_X86_TYPES_H */
-diff --git a/arch/x86/include/uapi/asm/types.h b/arch/x86/include/uapi/asm/types.h
-index 8e8c23f..7d9c75a 100644
---- a/arch/x86/include/uapi/asm/types.h
-+++ b/arch/x86/include/uapi/asm/types.h
-@@ -1,6 +1,39 @@
- #ifndef _ASM_X86_TYPES_H
- #define _ASM_X86_TYPES_H
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index af80246..59228a10 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -62,6 +62,7 @@ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+ 		reg_cr2 = FSL_SAI_RCR2;
  
--#include <asm-generic/types.h>
-+#include <asm/bitsperlong.h>
+ 	val_cr2 = sai_readl(sai, sai->base + reg_cr2);
 +
-+#ifndef __ASSEMBLY__
-+/*
-+ * __xx is ok: it doesn't pollute the POSIX namespace. Use these in the
-+ * header files exported to user space
-+ */
+ 	switch (clk_id) {
+ 	case FSL_SAI_CLK_BUS:
+ 		val_cr2 &= ~FSL_SAI_CR2_MSEL_MASK;
+@@ -82,6 +83,7 @@ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+ 	default:
+ 		return -EINVAL;
+ 	}
 +
-+typedef __signed__ char __s8;
-+typedef unsigned char __u8;
-+
-+typedef __signed__ short __s16;
-+typedef unsigned short __u16;
-+
-+typedef __signed__ int __s32;
-+typedef unsigned int __u32;
-+
-+#ifdef __GNUC__
-+__extension__ typedef __signed__ long long __s64;
-+__extension__ typedef unsigned long long __u64;
-+#else
-+typedef __signed__ long long __s64;
-+typedef unsigned long long __u64;
-+#endif
-+
-+#if defined(__i386__) || defined(__ILP32__)
-+typedef __s64 __attribute__((aligned(4))) __compat_aligned_s64;
-+typedef __u64 __attribute__((aligned(4))) __compat_aligned_u64;
-+#else
-+typedef __s64 __compat_aligned_s64;
-+typedef __u64 __compat_aligned_u64;
-+#endif
-+
-+#endif /* __ASSEMBLY__ */
+ 	sai_writel(sai, val_cr2, sai->base + reg_cr2);
  
- #endif /* _ASM_X86_TYPES_H */
-diff --git a/include/uapi/asm-generic/int-ll64.h b/include/uapi/asm-generic/int-ll64.h
-index a8658b2..3306917 100644
---- a/include/uapi/asm-generic/int-ll64.h
-+++ b/include/uapi/asm-generic/int-ll64.h
-@@ -33,6 +33,9 @@ typedef __signed__ long long __s64;
- typedef unsigned long long __u64;
- #endif
+ 	return 0;
+@@ -138,14 +140,13 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
+ 	val_cr4 = sai_readl(sai, sai->base + reg_cr4);
  
-+typedef __s64 __compat_aligned_s64;
-+typedef __u64 __compat_aligned_u64;
+ 	if (sai->big_endian_data)
+-		val_cr4 |= FSL_SAI_CR4_MF;
+-	else
+ 		val_cr4 &= ~FSL_SAI_CR4_MF;
++	else
++		val_cr4 |= FSL_SAI_CR4_MF;
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+ 		val_cr4 |= FSL_SAI_CR4_FSE;
+-		val_cr4 |= FSL_SAI_CR4_FSP;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -185,9 +186,6 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (fsl_dir == FSL_FMT_RECEIVER)
+-		val_cr2 |= FSL_SAI_CR2_SYNC;
+-
+ 	sai_writel(sai, val_cr2, sai->base + reg_cr2);
+ 	sai_writel(sai, val_cr4, sai->base + reg_cr4);
+ 
+@@ -253,10 +251,11 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	val_cr5 |= FSL_SAI_CR5_WNW(word_width);
+ 	val_cr5 |= FSL_SAI_CR5_W0W(word_width);
+ 
++	val_cr5 &= ~FSL_SAI_CR5_FBT_MASK;
+ 	if (sai->big_endian_data)
+-		val_cr5 |= FSL_SAI_CR5_FBT(word_width - 1);
+-	else
+ 		val_cr5 |= FSL_SAI_CR5_FBT(0);
++	else
++		val_cr5 |= FSL_SAI_CR5_FBT(word_width - 1);
+ 
+ 	val_cr4 |= FSL_SAI_CR4_FRSZ(channels);
+ 	val_mr = ~0UL - ((1 << channels) - 1);
+@@ -327,8 +326,22 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *cpu_dai)
+ {
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
++	u32 val_cr2;
++	int ret;
 +
- #endif /* __ASSEMBLY__ */
++	ret = clk_prepare_enable(sai->clk);
++	if (ret)
++		return ret;
++
++	val_cr2 = sai_readl(sai, sai->base + FSL_SAI_TCR2);
++	val_cr2 &= ~FSL_SAI_CR2_SYNC;
++	sai_writel(sai, val_cr2, sai->base + FSL_SAI_TCR2);
  
+-	return clk_prepare_enable(sai->clk);
++	val_cr2 = sai_readl(sai, sai->base + FSL_SAI_RCR2);
++	val_cr2 |= FSL_SAI_CR2_SYNC;
++	sai_writel(sai, val_cr2, sai->base + FSL_SAI_RCR2);
++
++	return 0;
+ }
  
+ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
 -- 
-1.8.4.2
-
-
---3V7upXqbjpZ4EhLz--
+1.8.4
