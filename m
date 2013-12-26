@@ -1,123 +1,78 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH] ASoC: fsl_sai: Fix one bug for hardware
-	limitation.
-Date: Thu, 26 Dec 2013 10:57:22 +0800
-Message-ID: <1388026642-1464-1-git-send-email-Li.Xiubo@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
- by alsa0.perex.cz (Postfix) with ESMTP id D260826171B
- for <alsa-devel@alsa-project.org>; Thu, 26 Dec 2013 04:50:43 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, timur@tabi.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org, b47053@freescale.com
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 1/1] ASoC: Samsung: Trivial cleanups in header files
+Date: Thu, 26 Dec 2013 11:41:29 +0530
+Message-ID: <1388038289-8953-1-git-send-email-sachin.kamat@linaro.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-samsung-soc@vger.kernel.org, broonie@kernel.org, sachin.kamat@linaro.org, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-This is maybe one bug or a limitation of the hardware that the {T,R}CR2's
-Synchronous Mode bits must be set as late as possible, or the SAI device
-maybe hanged up, and there has not any explaination about this limitation
-in the SAI Data Sheet.
+commit 5d229ce569be ("ASoC: samsung: move plat/ headers to local directory")
+moved the header files but forgot to clean the pointers to their old locaton.
+Remove them now.
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/fsl/fsl_sai.c | 31 ++++++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 9 deletions(-)
+ sound/soc/samsung/regs-ac97.h |    9 ++++-----
+ sound/soc/samsung/regs-iis.h  |    9 ++++-----
+ 2 files changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index af80246..59228a10 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -62,6 +62,7 @@ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
- 		reg_cr2 = FSL_SAI_RCR2;
+diff --git a/sound/soc/samsung/regs-ac97.h b/sound/soc/samsung/regs-ac97.h
+index c3878f7acb83..a71be45bbffc 100644
+--- a/sound/soc/samsung/regs-ac97.h
++++ b/sound/soc/samsung/regs-ac97.h
+@@ -1,5 +1,4 @@
+-/* arch/arm/mach-s3c2410/include/mach/regs-ac97.h
+- *
++/*
+  * Copyright (c) 2006 Simtec Electronics <linux@simtec.co.uk>
+  *		http://www.simtec.co.uk/products/SWLINUX/
+  *
+@@ -10,8 +9,8 @@
+  * S3C2440 AC97 Controller
+ */
  
- 	val_cr2 = sai_readl(sai, sai->base + reg_cr2);
-+
- 	switch (clk_id) {
- 	case FSL_SAI_CLK_BUS:
- 		val_cr2 &= ~FSL_SAI_CR2_MSEL_MASK;
-@@ -82,6 +83,7 @@ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
- 	default:
- 		return -EINVAL;
- 	}
-+
- 	sai_writel(sai, val_cr2, sai->base + reg_cr2);
+-#ifndef __ASM_ARCH_REGS_AC97_H
+-#define __ASM_ARCH_REGS_AC97_H __FILE__
++#ifndef __SAMSUNG_REGS_AC97_H__
++#define __SAMSUNG_REGS_AC97_H__
  
- 	return 0;
-@@ -138,14 +140,13 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
- 	val_cr4 = sai_readl(sai, sai->base + reg_cr4);
+ #define S3C_AC97_GLBCTRL				(0x00)
  
- 	if (sai->big_endian_data)
--		val_cr4 |= FSL_SAI_CR4_MF;
--	else
- 		val_cr4 &= ~FSL_SAI_CR4_MF;
-+	else
-+		val_cr4 |= FSL_SAI_CR4_MF;
+@@ -64,4 +63,4 @@
+ #define S3C_AC97_PCM_DATA				(0x18)
+ #define S3C_AC97_MIC_DATA				(0x1C)
  
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
- 		val_cr4 |= FSL_SAI_CR4_FSE;
--		val_cr4 |= FSL_SAI_CR4_FSP;
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -185,9 +186,6 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
- 		return -EINVAL;
- 	}
+-#endif /* __ASM_ARCH_REGS_AC97_H */
++#endif /* __SAMSUNG_REGS_AC97_H__ */
+diff --git a/sound/soc/samsung/regs-iis.h b/sound/soc/samsung/regs-iis.h
+index a18d35e7a735..dc6cbbe9c4f0 100644
+--- a/sound/soc/samsung/regs-iis.h
++++ b/sound/soc/samsung/regs-iis.h
+@@ -1,5 +1,4 @@
+-/* arch/arm/plat-samsung/include/plat/regs-iis.h
+- *
++/*
+  * Copyright (c) 2003 Simtec Electronics <linux@simtec.co.uk>
+  *		      http://www.simtec.co.uk/products/SWLINUX/
+  *
+@@ -10,8 +9,8 @@
+  * S3C2410 IIS register definition
+ */
  
--	if (fsl_dir == FSL_FMT_RECEIVER)
--		val_cr2 |= FSL_SAI_CR2_SYNC;
--
- 	sai_writel(sai, val_cr2, sai->base + reg_cr2);
- 	sai_writel(sai, val_cr4, sai->base + reg_cr4);
+-#ifndef __ASM_ARCH_REGS_IIS_H
+-#define __ASM_ARCH_REGS_IIS_H
++#ifndef __SAMSUNG_REGS_IIS_H__
++#define __SAMSUNG_REGS_IIS_H__
  
-@@ -253,10 +251,11 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	val_cr5 |= FSL_SAI_CR5_WNW(word_width);
- 	val_cr5 |= FSL_SAI_CR5_W0W(word_width);
+ #define S3C2410_IISCON			(0x00)
  
-+	val_cr5 &= ~FSL_SAI_CR5_FBT_MASK;
- 	if (sai->big_endian_data)
--		val_cr5 |= FSL_SAI_CR5_FBT(word_width - 1);
--	else
- 		val_cr5 |= FSL_SAI_CR5_FBT(0);
-+	else
-+		val_cr5 |= FSL_SAI_CR5_FBT(word_width - 1);
+@@ -67,4 +66,4 @@
  
- 	val_cr4 |= FSL_SAI_CR4_FRSZ(channels);
- 	val_mr = ~0UL - ((1 << channels) - 1);
-@@ -327,8 +326,22 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *cpu_dai)
- {
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
-+	u32 val_cr2;
-+	int ret;
-+
-+	ret = clk_prepare_enable(sai->clk);
-+	if (ret)
-+		return ret;
-+
-+	val_cr2 = sai_readl(sai, sai->base + FSL_SAI_TCR2);
-+	val_cr2 &= ~FSL_SAI_CR2_SYNC;
-+	sai_writel(sai, val_cr2, sai->base + FSL_SAI_TCR2);
+ #define S3C2410_IISFIFO			(0x10)
  
--	return clk_prepare_enable(sai->clk);
-+	val_cr2 = sai_readl(sai, sai->base + FSL_SAI_RCR2);
-+	val_cr2 |= FSL_SAI_CR2_SYNC;
-+	sai_writel(sai, val_cr2, sai->base + FSL_SAI_RCR2);
-+
-+	return 0;
- }
- 
- static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
+-#endif /* __ASM_ARCH_REGS_IIS_H */
++#endif /* __SAMSUNG_REGS_IIS_H__ */
 -- 
-1.8.4
+1.7.9.5
