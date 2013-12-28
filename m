@@ -1,48 +1,48 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [PATCHv4 2/4] ARM: dts: Add Freescale SAI ALSA SoC Digital
- Audio Interface node for VF610.
-Date: Fri, 27 Dec 2013 09:08:13 +0000
-Message-ID: <4d5402daa3384da795fdb895531e32a6@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1387501387-2151-1-git-send-email-Li.Xiubo@freescale.com>
- <1387501387-2151-2-git-send-email-Li.Xiubo@freescale.com>
- <20131227085322.GA3367@S2101-09.ap.freescale.net>
+From: "Christopher K." <c.krooss@gmail.com>
+Subject: Conexant CX20588 in Acer 3830TG fix for internal mic
+	amps
+Date: Sat, 28 Dec 2013 23:56:52 +0100
+Message-ID: <CAHQjNr_=Vc29MqGD4Nygw7LZEobtTq==fs8_6=gL50Y7Y9j+Sw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20131227085322.GA3367@S2101-09.ap.freescale.net>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jingchang Lu <jingchang.lu@freescale.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qe0-f43.google.com (mail-qe0-f43.google.com
+ [209.85.128.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7371E2610B4
+ for <alsa-devel@alsa-project.org>; Sat, 28 Dec 2013 23:56:53 +0100 (CET)
+Received: by mail-qe0-f43.google.com with SMTP id jy17so10152696qeb.16
+ for <alsa-devel@alsa-project.org>; Sat, 28 Dec 2013 14:56:52 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shawn,
+Hi,
 
-> > diff --git a/arch/arm/boot/dts/vf610.dtsi b/arch/arm/boot/dts/vf610.dtsi
-> > index e84d84c..2d6ddd0 100644
-> > --- a/arch/arm/boot/dts/vf610.dtsi
-> > +++ b/arch/arm/boot/dts/vf610.dtsi
-> > @@ -166,6 +166,9 @@
-> >  				interrupts = <0 86 0x04>;
-> >  				clocks = <&clks VF610_CLK_SAI2>;
-> >  				clock-names = "sai";
-> > +				dma-names = "tx", "rx";
-> > +				dmas = <&edma0 0 VF610_EDMA_MUXID0_SAI2_TX>,
-> > +					<&edma0 0 VF610_EDMA_MUXID0_SAI2_RX>;
-> 
-> Where are these VF610_EDMA_MUXID0_* macros defined?  I cannot find them
-> in my tree.
->
+the internal mic in my notebook does not work (has never worked with
+pulse) with the default driver settings. Setting Node 0x23 (internal
+mic boost volume) from
 
-Sorry, this is depended on the eDMA driver, which is still doing the upstream
-work by another colleague.
+Amp-In vals: [0x03 0x03]
+to
+Amp-In vals: [0x02 0x00]
 
-I will let you know if the eDMA driver has been merged in.
+makes it work in Skype and shows peaks in pulseaudio.
+I have no idea what these numbers represent, but apparently it doesn't
+work if they're the same.
+Is there any way to figure out what this does and which settings are correct?
 
+Info: http://www.alsa-project.org/db/?f=be2d83a353d47586ac2197fdb56d2085eec61b3f
 
-Thanks,
+Any help would be greatly appreciated.
 
-Best Regards,
-Xiubo
- 
+Regards,
+Chris
