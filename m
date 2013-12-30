@@ -1,51 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: Samsung: Trivial cleanups in header files
-Date: Mon, 30 Dec 2013 12:04:13 +0000
-Message-ID: <20131230120413.GO31886@sirena.org.uk>
-References: <1388038289-8953-1-git-send-email-sachin.kamat@linaro.org>
+Subject: Re: [PATCH] ASoC: simple-card: cleanup
+ asoc_simple_card_parse_of() code
+Date: Mon, 30 Dec 2013 12:11:13 +0000
+Message-ID: <20131230121113.GQ31886@sirena.org.uk>
+References: <1388114078-24517-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jASSyw8pZdwiLt00"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1388038289-8953-1-git-send-email-sachin.kamat@linaro.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, patches@linaro.org
+Content-Type: multipart/mixed; boundary="===============2861136680174085355=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9201261687
+ for <alsa-devel@alsa-project.org>; Mon, 30 Dec 2013 13:11:21 +0100 (CET)
+In-Reply-To: <1388114078-24517-1-git-send-email-Li.Xiubo@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---jASSyw8pZdwiLt00
+--===============2861136680174085355==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7kZSb73GAX5WIGXJ"
+Content-Disposition: inline
+
+
+--7kZSb73GAX5WIGXJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 26, 2013 at 11:41:29AM +0530, Sachin Kamat wrote:
-> commit 5d229ce569be ("ASoC: samsung: move plat/ headers to local directory")
-> moved the header files but forgot to clean the pointers to their old locaton.
-> Remove them now.
+On Fri, Dec 27, 2013 at 11:14:38AM +0800, Xiubo Li wrote:
+> Since there is only one common format via "simple-audio-card,format"
+> for simple card driver(CPU & CODEC DAI), there is no need to do the
+> INV mask.
 
-Applied, thanks.
+I don't understand this change, how is the fact that the CPU and CODEC
+DAI share a common format related to using the inversion?  The inversion
+specifies the format relative to the spec rather than relative to the
+other end of the link and for any DAI link the two devices should be
+using the same format.
 
---jASSyw8pZdwiLt00
+--7kZSb73GAX5WIGXJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSwWE6AAoJELSic+t+oim9vpcP/003H0C11lePECd/vIJAK/W1
-WLGQG5hu0nKoqsHj6024u9cRT9xzxRoTVj5lxYKwkDVx/X98iGVi2Zzgz1a4ULo0
-W2mNYqo9PDTQFfhQSvuFpYZHqUHZfB/YiILLwOwXRRqUiypYh5KXr3iu9jE8MMGr
-Xp4BjeDW+KSRvu5/ZP0rcGZnZ5O8DVxdDktHG22CShk0s+xN1TY0F9LbNYSFeQok
-kfSHu9D4gyYO30cHHlyjiiecnn6J7lM9sxpUMN0g0raRFuCc931608lWVcr9s1Cg
-nwPSqYcirCXMoPlvc3y7P6lUXEK9wQj8iEPNFBg5Ny7pM8zGBGkweIP502GkoddK
-ELwsie28vl9U0rVKZl6EuRU+i/GrTtxO9L43sz8KlRWPK1bMOSlZsBTQa+A6LPNF
-4udKmL/Um0AZBL/2dEc9XvvtSxJXDNvrhqPRlRXQJuyM/+hJSN6CdwPoFQNLc05e
-fUTvbzFTDoD2h6oWqXcH/r6WTkO47F0H9CvfBOFdJqDhq34q4TyyrxW5fdVJ2kgl
-V3r6UA1X8PgETx2i6duCGINgNf139cRh6oSXfbui5NqD2aITW831+BeQ2aXUoSwj
-ebdui6AWXTT69XDLA9mB8XXABMNpDdRXkFJzMOce+CglhxEZZtekgJy9DO+gt+zb
-uQdxN5LGJAmQgcEfTc9P
-=wnjW
+iQIcBAEBAgAGBQJSwWLeAAoJELSic+t+oim9WKIP/1XtQFsll2slTSVJhHOZlfGX
+mXuVyqQHcrWbG76GLL0sMorItGaqW/SWHY37hFJv5HZ8t4yOq9dYrmJplypFuN8V
+/ebUDhg1WpHCXudIaiGxA2BeikoykUZLn60s2+tNidqdRzzd/Mny6zjMWtS4yy6d
+SlREyzTml00FeNboab7dlOaT7Vs3q1uikCLZCp/GExiAkzWDqhgJcROI+TlM59MB
+dFI4A00WcaDhWSebE0zG1896NPKkqiFIJ/YUJVbdO4HATB+YY4sO/LPz2CTOfU0K
+EI5VPRyCOC0XkoAZ94Teqd0yyIkBe2y99iGGHnhFUWMvSZO3ylcN/GP23MkLisAn
+xauIxI+vjTQaIX87KDy/5LLywiBMaOabt/6+yqeTqF089r0FmCPz+ZUmXt2ADHgw
+qPpusu9mIdKaFQzyjjPrn1KPa+C74H325/eSbD9PXB03NgyY8Bhizu5vM9VH8j0l
+Lp8q2qMrzpLasnksx+mDQ38InX47YE8ojgh32bC4wsNQZn+2DtCiFtNZLkcxYU3b
+7oy8DEb8La3jtPHJXO60Fe0XcHiTPJGRhi+jtSlbROoPJqIiWyQCKT7VfTSaIMDk
+Q0E8enRblptjV5GVQq0cql1ofdAu84HiOGxtI8J/GcNqDa6C6sSTTdjihBn06WRk
+MvuZMjD4wFvVLICNOVV1
+=OZB0
 -----END PGP SIGNATURE-----
 
---jASSyw8pZdwiLt00--
+--7kZSb73GAX5WIGXJ--
+
+--===============2861136680174085355==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2861136680174085355==--
