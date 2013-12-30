@@ -1,21 +1,17 @@
-From: Adam Williamson <awilliam@redhat.com>
-Subject: Re: Unsupported Valley View 'LPE' adapter?
-Date: Sun, 29 Dec 2013 18:23:12 -0800
-Message-ID: <1388370192.15622.8.camel@adam.happyassassin.net>
-References: <1385840039.2566.12.camel@adam.happyassassin.net>
- <529A5C6A.70604@ladisch.de>
- <1385865517.2566.36.camel@adam.happyassassin.net>
- <20131202063216.GJ8834@intel.com>
- <1386035807.2566.145.camel@adam.happyassassin.net>
- <1388369981.15622.7.camel@adam.happyassassin.net>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH] ASoC: mcbsp: Trivial cleanup in asoc-ti-mcbsp.h
+Date: Mon, 30 Dec 2013 10:37:48 +0530
+Message-ID: <1388380068-31424-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 03800261B16
- for <alsa-devel@alsa-project.org>; Mon, 30 Dec 2013 03:23:16 +0100 (CET)
-In-Reply-To: <1388369981.15622.7.camel@adam.happyassassin.net>
+Received: from mail-pa0-f49.google.com (mail-pa0-f49.google.com
+ [209.85.220.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 60391261680
+ for <alsa-devel@alsa-project.org>; Mon, 30 Dec 2013 06:11:25 +0100 (CET)
+Received: by mail-pa0-f49.google.com with SMTP id kx10so11245044pab.22
+ for <alsa-devel@alsa-project.org>; Sun, 29 Dec 2013 21:11:24 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,46 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>, Clemens Ladisch <clemens@ladisch.de>, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: sachin.kamat@linaro.org, broonie@kernel.org, trivial@kernel.org, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2013-12-29 at 18:19 -0800, Adam Williamson wrote:
-> On Mon, 2013-12-02 at 17:56 -0800, Adam Williamson wrote:
-> 
-> > > > > Only Intel knows.
-> > 
-> > > I think Liam or Jarkko might have something for you...
-> > 
-> > Hope so! Thanks for the reply and the redirect.
-> > 
-> > > > > > Is there any info I can provide to help?
-> > > > > 
-> > > > > "lspci -vv -d 8086:0f28"?
-> > > > 
-> > > > OK, will get that for you shortly. Thanks for the info.
-> > 
-> > I'm just about to build a new test image which I'm throwing a couple of
-> > kernel patches for other bugs into, I'll grab this lspci output while
-> > I'm testing that.
-> 
-> So I got time today to poke at this device again, and here's something:
-> it's not actually a PCI device at all, I missed that. Neither lspci
-> (Linux) nor pcitree (Windows) shows a PCI device with ID 8086:0f28. It
-> must be connected some other way, SDIO or something. So, I don't know
-> how to get more info on it, really.
-> 
-> I'll file a bug on this device with all the details I have attached, for
-> now, I guess.
+Commit 2203747c9771 ("ARM: omap: move platform_data definitions")
+moved the file to the current location but forgot to remove the pointer
+to its previous location. Clean it up. While at it also change the header
+file protection macros appropriately.
 
-...or, since the bug tracker is apparently down, I guess I can't. What's
-the next step? Just wait and see if I hear from someone with an
-@intel.com ? :/
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ include/linux/platform_data/asoc-ti-mcbsp.h |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-I honestly wasn't expecting it to be THIS difficult to get almost
-anything working on a vlv tablet :(
+diff --git a/include/linux/platform_data/asoc-ti-mcbsp.h b/include/linux/platform_data/asoc-ti-mcbsp.h
+index c78d90b28b19..3c73c045f8da 100644
+--- a/include/linux/platform_data/asoc-ti-mcbsp.h
++++ b/include/linux/platform_data/asoc-ti-mcbsp.h
+@@ -1,6 +1,4 @@
+ /*
+- * arch/arm/plat-omap/include/mach/mcbsp.h
+- *
+  * Defines for Multi-Channel Buffered Serial Port
+  *
+  * Copyright (C) 2002 RidgeRun, Inc.
+@@ -21,8 +19,8 @@
+  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  *
+  */
+-#ifndef __ASM_ARCH_OMAP_MCBSP_H
+-#define __ASM_ARCH_OMAP_MCBSP_H
++#ifndef __ASOC_TI_MCBSP_H
++#define __ASOC_TI_MCBSP_H
+ 
+ #include <linux/spinlock.h>
+ #include <linux/clk.h>
 -- 
-Adam Williamson
-Fedora QA Community Monkey
-IRC: adamw | Twitter: AdamW_Fedora | XMPP: adamw AT happyassassin . net
-http://www.happyassassin.net
+1.7.9.5
