@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_sai: Add disable operation for
- the corresponding data channel.
-Date: Mon, 30 Dec 2013 12:17:19 +0000
-Message-ID: <20131230121719.GS31886@sirena.org.uk>
-References: <1387946404-24029-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCH 19/19] ASoC: soc-utils: Don't set unused
+ struct snd_pcm_hardware fields
+Date: Mon, 30 Dec 2013 13:56:25 +0000
+Message-ID: <20131230135625.GE31886@sirena.org.uk>
+References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
+ <1387545625-19240-19-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2867471156462092933=="
+Content-Type: multipart/mixed; boundary="===============0494776402978084227=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id CFE01261684
- for <alsa-devel@alsa-project.org>; Mon, 30 Dec 2013 13:17:23 +0100 (CET)
-In-Reply-To: <1387946404-24029-1-git-send-email-Li.Xiubo@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B167D261684
+ for <alsa-devel@alsa-project.org>; Mon, 30 Dec 2013 14:56:28 +0100 (CET)
+In-Reply-To: <1387545625-19240-19-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, timur@tabi.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org, b47053@freescale.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2867471156462092933==
+--===============0494776402978084227==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hrnpeiJmytOBrElT"
+	protocol="application/pgp-signature"; boundary="ou2/pFdZC1wHLsdF"
 Content-Disposition: inline
 
 
---hrnpeiJmytOBrElT
+--ou2/pFdZC1wHLsdF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Dec 25, 2013 at 12:40:04PM +0800, Xiubo Li wrote:
-> Enables/Disables the corresponding data channel for tx/rx operation.
-> A channel must be enabled before its FIFO is accessed, and then disable
-> it when tx/rx is stopped or idle.
+On Fri, Dec 20, 2013 at 02:20:25PM +0100, Lars-Peter Clausen wrote:
+> The ASoC core assumes that the PCM component of the ASoC card transparently
+> moves data around and does not impose any restrictions on the memory layout or
+> the transfer speed. It ignores all fields from the snd_pcm_hardware struct for
+> the PCM driver that are related to this. Setting these fields in the PCM driver
+> might suggest otherwise though, so rather not set them.
 
 Applied, thanks.
 
---hrnpeiJmytOBrElT
+--ou2/pFdZC1wHLsdF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSwWRLAAoJELSic+t+oim9NzQQAJpEERFX5Z3sFpwFOVOrKEod
-cCJ1SIGqsgSvp5ENbyyx4ujl2jJQBFbMD4chbFa7UbWjXvjrxbkPrwG+uk7jQlCo
-f1ECZDZR8+ajt6aWmY9dnXX6nca+XUDVnYetfIvBJWUqeSpjQ31DAiEe0GKXf3gL
-BNFZmT/jOXYu2aV34amlSWp/IfZ25UTCbx19YjW9DqoJdijtXV/k42gqqd5jPjlN
-nHnh/FUwnr9k+Jg0CnJR3/QBErd5NU55JVAu++0XF/7jtfcLeiTHyFQBH50fXS8+
-qtV+KyGRlhudDZngx/Qj04V686Mf6PDKl/LYslBwqNXI7ode5xIBgjy5nRih7htL
-V68OE7sPxIHPw+ISFqznhFPCWd2Egj1fzOfBRGfbxdq9vxYkgGpxA5kW3H/VvRlK
-CbhOeEM+QygOycH8iAn60wzM6VvmgPZapBunLP5PelQVHkLsKOCqWPAf0OFKJoLN
-DNXE80FALerXiHmFZ/+DSBAwsLZjz+QCE7NL0F48Z8E0eVQZNbwHin6ILwx9dLZJ
-iFZb8SM7UwX0XnpO9LHfO2ECdspRjpESONZbEJxEW4FJrF+c2mQiRsvGykGMH+fG
-dma6QSlrQQ5YrbiwijWVQw3UYvfblXliOQapYniGeXFJ/rBAkadyAi18IguzexvK
-QV5XaaKc/kEYfAn4VgJ/
-=AgdD
+iQIcBAEBAgAGBQJSwXuGAAoJELSic+t+oim9dm8P/0ElkZackozsqUDfjR1gCKxp
+Q8MqGr/1DJe1BGJeoBvUWFFPDSsf/U/uHRuzF+yq/QHppCXJ8EV/wCpv+K0HaUep
+4taDbo+3zkIychfRiNeYcpoY5T4vyytW8a67eeRNkyDhjXkeZaKB4d3HmjLZRzwZ
+mjJ2tkrPnalEi9VsAK1VcqMUXKMrqf7C2KvtByDGNhVSs/eQMV2SngjlPsc8iGQC
+4dBh9Uxf223JEvpQls1E0TCuvhrjyn9KoVX72eNwxo+G8todg7iLwGKuf4fXBfWa
+/VcF5tN3/3xC/RAfX+dpeMkJbKBcMaz521vYlkcNxuA48nvChI+qF/LFFf4YsAE0
+30nXJIT5Ydaz1S+Xah0RGETwysuE554Z3kaysAt7kVHeQrlbeGjXUBLUq5v4XaQx
+GLXNzER9JxBI1NhqkwnPIEmBGEEFCEz/2mNpWQeb89P/pPGHbgr1nXKyQgkvURDi
+n9hU5/SGzqBB8m4rh3pSo4kpwVqtCA+VGIyVGTGAaFMFYfMwNmKSid+StQtc7cXI
+QtfsBXXHgptOvYIuIp0A8zPeXYP79zHMQUAz9fhamlNqxiBAd6xUq/vG+fIX946F
+fcEqOiVX19wmw0e6q23XD8zAIXeK3nuslUGJ0fA2amozltJlF6gWBo73cvm3NStC
+QgTsqo3qOmMy2QTr8IRL
+=N8O5
 -----END PGP SIGNATURE-----
 
---hrnpeiJmytOBrElT--
+--ou2/pFdZC1wHLsdF--
 
---===============2867471156462092933==
+--===============0494776402978084227==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2867471156462092933==--
+--===============0494776402978084227==--
