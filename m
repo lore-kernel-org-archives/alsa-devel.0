@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: mcbsp: Trivial cleanup in
-	asoc-ti-mcbsp.h
-Date: Mon, 30 Dec 2013 11:50:11 +0000
-Message-ID: <20131230115011.GH31886@sirena.org.uk>
-References: <1388380068-31424-1-git-send-email-sachin.kamat@linaro.org>
+Subject: Re: [PATCH] ASoC: fsl_sai: Move the global registers
+ setting to _dai_probe()
+Date: Mon, 30 Dec 2013 12:01:10 +0000
+Message-ID: <20131230120110.GL31886@sirena.org.uk>
+References: <1387941614-7629-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2596998223393505445=="
+Content-Type: multipart/mixed; boundary="===============2324273431496331311=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E5222261684
- for <alsa-devel@alsa-project.org>; Mon, 30 Dec 2013 12:50:14 +0100 (CET)
-In-Reply-To: <1388380068-31424-1-git-send-email-sachin.kamat@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 22EC3261684
+ for <alsa-devel@alsa-project.org>; Mon, 30 Dec 2013 13:01:16 +0100 (CET)
+In-Reply-To: <1387941614-7629-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: alsa-devel@alsa-project.org, trivial@kernel.org, patches@linaro.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, timur@tabi.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org, b47053@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2596998223393505445==
+--===============2324273431496331311==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9jVH9MMcXWLfwoO6"
+	protocol="application/pgp-signature"; boundary="ura8jf0QYTXVPAoa"
 Content-Disposition: inline
 
 
---9jVH9MMcXWLfwoO6
+--ura8jf0QYTXVPAoa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 30, 2013 at 10:37:48AM +0530, Sachin Kamat wrote:
-> Commit 2203747c9771 ("ARM: omap: move platform_data definitions")
-> moved the file to the current location but forgot to remove the pointer
-> to its previous location. Clean it up. While at it also change the header
-> file protection macros appropriately.
+On Wed, Dec 25, 2013 at 11:20:14AM +0800, Xiubo Li wrote:
+> Because we cannot make sure which one of _dai_fmt() and _dai_sysclk()
+> will be firstly called. So move the RCSR/TCSR and TCR1/RCR1's
+> initialization to _dai_probe(), and this can make sure that before any
+> of {T,R}CR{1~5} register to be set the RCSR/TCSR's RE/TE bit has been
+> cleared for the hareware limitation.
 
 Applied, thanks.
 
---9jVH9MMcXWLfwoO6
+--ura8jf0QYTXVPAoa
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSwV3wAAoJELSic+t+oim99p8P/3pzOa+MRQ+m3/rrXAE78xyK
-fapuiFHo2ZB3sKF5Cd0Gzbv0HZRO9SJaQQl91FfdmD95UwItxNMa4kLTcP2sZNth
-ohWR4af6mRFY7nHTaWkbM/UysuTeol9UxGwFDrpkEZIi1nda7GzuenomiP1eC5/b
-q3N5gDzeBkJk4szVEf2Hc8D2SPHrBlOVPHPrTinIfdQJN/NrlULPw5GalZeklRUi
-Cu6TcYflvssM49cmCYB7s84S3ltRtkeM1b8kyv7a/aUZj5AFBSTeeLPRmGt7I6Yk
-P7haZDJXbBOg3J35KjSnDFzET1/8t3sqm5/di+9AnD3Q2Pdawh7R4GjI2MQ9Yyc3
-s05SybRu24QZyBKZuxwPK46HGk76mraDASdpqP80usd7LuvQ7NxBUDguwEN4kBKt
-GxrumF+ul+cu6lXkbQvQWQXF9TotmnSeyeVhc84GfY36kYsTkYnQHOvYCx2KhM/u
-qg3JWYycwxTTCCvSWEb2D/o8zapQAevJGDDm8GeJgubLZpOzN4PpPXSLsvxBh3Hj
-r1MduAqZj1fotz0/lby3MvhO31emW4CAuiyOn2RopNgZ9glh2+zllmNvm7KbCR6k
-PXpbAfucmKDcEQpLdaHrnAYPKj4bAaXQOQANVOv0B7BkipFQyDxdRXstvT7n9f4C
-3iA7x2PAgVHkxNsRGiPS
-=rghN
+iQIcBAEBAgAGBQJSwWCCAAoJELSic+t+oim9knYQAJakvpQs+x5MjjUuQY1oeO0R
+Hwqc7Zp7YJQ8M3ZK5Q0sGKi4k75gejtmQseR50fKNeiGHJJ6zaq+yyjRdhlS/gzB
+WZtq2e/vgwmYZlTLOERUq5jbCfHJXgUH+vTGTLQAC2lCh15mZC3U4WA7may9TYE1
+DjVMusxDd13EiLg9nHfnKVbEE2EMQR6xDafe0YJaOpWvq4boZlG6umKEzTZI/Vfo
+lu2fkUS4ldZX5kPdiNUfV76U7m9yPD3sE0S3IDuc56DTK4+eZUdwyBYoQatb09Oy
+coMVxivHXC4kAQ7R9kQ5woPqcRZRgGSi0HpRyDdyUV06e2G/4EC4dIT6Vz5LSAJF
+qDUpITDyvRj/J91CqvxLJ+f+JpQqfz1x0f8Of/gmydO36spTWWBlTCzLRQRWT3u4
+IV2OA86XEGAsDOMeemjS0n3QOQM7cxUeo2+10Vr9oe5eFh4+KGH7QEXfmCr4Mjp2
+hf/KXt02+1FIv+URSSsmsFkblnIkXi4gMCuez4oigm5zZ57/1M5XbMqVHrmHEM+D
+y3sO05mq3Qln0RwA25IXheK6GzrAL49C4ltdOmlzA3VeWg2g3SaNdQUQhLqpOcNo
+oLfYehd6kHxR0YYVZoHcQdH/LHz7zCIMYnXtfQTsZScu3ahzpykvj+4kw4KBmIwj
+4e+NNMxxHpsUYvyqlwX/
+=hQAc
 -----END PGP SIGNATURE-----
 
---9jVH9MMcXWLfwoO6--
+--ura8jf0QYTXVPAoa--
 
---===============2596998223393505445==
+--===============2324273431496331311==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2596998223393505445==--
+--===============2324273431496331311==--
