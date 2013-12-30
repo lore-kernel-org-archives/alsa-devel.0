@@ -1,20 +1,21 @@
 From: Adam Williamson <awilliam@redhat.com>
 Subject: Re: Unsupported Valley View 'LPE' adapter?
-Date: Sun, 29 Dec 2013 18:19:41 -0800
-Message-ID: <1388369981.15622.7.camel@adam.happyassassin.net>
+Date: Sun, 29 Dec 2013 18:23:12 -0800
+Message-ID: <1388370192.15622.8.camel@adam.happyassassin.net>
 References: <1385840039.2566.12.camel@adam.happyassassin.net>
  <529A5C6A.70604@ladisch.de>
  <1385865517.2566.36.camel@adam.happyassassin.net>
  <20131202063216.GJ8834@intel.com>
  <1386035807.2566.145.camel@adam.happyassassin.net>
+ <1388369981.15622.7.camel@adam.happyassassin.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id D1373261B16
- for <alsa-devel@alsa-project.org>; Mon, 30 Dec 2013 03:19:47 +0100 (CET)
-In-Reply-To: <1386035807.2566.145.camel@adam.happyassassin.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id 03800261B16
+ for <alsa-devel@alsa-project.org>; Mon, 30 Dec 2013 03:23:16 +0100 (CET)
+In-Reply-To: <1388369981.15622.7.camel@adam.happyassassin.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,32 +29,40 @@ To: Vinod Koul <vinod.koul@intel.com>
 Cc: alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>, Clemens Ladisch <clemens@ladisch.de>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2013-12-02 at 17:56 -0800, Adam Williamson wrote:
-
-> > > > Only Intel knows.
+On Sun, 2013-12-29 at 18:19 -0800, Adam Williamson wrote:
+> On Mon, 2013-12-02 at 17:56 -0800, Adam Williamson wrote:
 > 
-> > I think Liam or Jarkko might have something for you...
-> 
-> Hope so! Thanks for the reply and the redirect.
-> 
-> > > > > Is there any info I can provide to help?
+> > > > > Only Intel knows.
+> > 
+> > > I think Liam or Jarkko might have something for you...
+> > 
+> > Hope so! Thanks for the reply and the redirect.
+> > 
+> > > > > > Is there any info I can provide to help?
+> > > > > 
+> > > > > "lspci -vv -d 8086:0f28"?
 > > > > 
-> > > > "lspci -vv -d 8086:0f28"?
-> > > 
-> > > OK, will get that for you shortly. Thanks for the info.
+> > > > OK, will get that for you shortly. Thanks for the info.
+> > 
+> > I'm just about to build a new test image which I'm throwing a couple of
+> > kernel patches for other bugs into, I'll grab this lspci output while
+> > I'm testing that.
 > 
-> I'm just about to build a new test image which I'm throwing a couple of
-> kernel patches for other bugs into, I'll grab this lspci output while
-> I'm testing that.
+> So I got time today to poke at this device again, and here's something:
+> it's not actually a PCI device at all, I missed that. Neither lspci
+> (Linux) nor pcitree (Windows) shows a PCI device with ID 8086:0f28. It
+> must be connected some other way, SDIO or something. So, I don't know
+> how to get more info on it, really.
+> 
+> I'll file a bug on this device with all the details I have attached, for
+> now, I guess.
 
-So I got time today to poke at this device again, and here's something:
-it's not actually a PCI device at all, I missed that. Neither lspci
-(Linux) nor pcitree (Windows) shows a PCI device with ID 8086:0f28. It
-must be connected some other way, SDIO or something. So, I don't know
-how to get more info on it, really.
+...or, since the bug tracker is apparently down, I guess I can't. What's
+the next step? Just wait and see if I hear from someone with an
+@intel.com ? :/
 
-I'll file a bug on this device with all the details I have attached, for
-now, I guess.
+I honestly wasn't expecting it to be THIS difficult to get almost
+anything working on a vlv tablet :(
 -- 
 Adam Williamson
 Fedora QA Community Monkey
