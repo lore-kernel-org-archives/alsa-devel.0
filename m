@@ -1,50 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_sai: fix the endianess for SAI fifo data.
-Date: Tue, 31 Dec 2013 12:24:01 +0000
-Message-ID: <20131231122401.GO31886@sirena.org.uk>
-References: <1388475202-24946-1-git-send-email-Li.Xiubo@freescale.com>
- <1388475202-24946-2-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [Patch v2 2/2] ASoC: atmel: sam9x5_wm8731: remove
+ platform_set_drvdata
+Date: Tue, 31 Dec 2013 12:27:26 +0000
+Message-ID: <20131231122726.GP31886@sirena.org.uk>
+References: <1385546710-11308-1-git-send-email-voice.shen@atmel.com>
+ <1385546710-11308-2-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MCBkylF/aX/f/TlX"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="H5oeNUPfJ0vte6JU"
+Return-path: <linux-sound-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1388475202-24946-2-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1385546710-11308-2-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, richard.genoud@gmail.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---MCBkylF/aX/f/TlX
+--H5oeNUPfJ0vte6JU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Dec 31, 2013 at 03:33:22PM +0800, Xiubo Li wrote:
-> Revert the SAI's endianess for fifo data to/from DMA engine.
+On Wed, Nov 27, 2013 at 06:05:10PM +0800, Bo Shen wrote:
+> When call snd_soc_register_card, it will set driver data to this
+> device through dev_set_drvdata, then in driver, no need to call
+> platform_set_drvdata again, so remove it.
 
 Applied, thanks.
 
---MCBkylF/aX/f/TlX
+--H5oeNUPfJ0vte6JU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSwrddAAoJELSic+t+oim9yl4P/0JrSx4Ym9KA4Ke2Q0YiLuiu
-XMr+l2DgTRdMWa6cJpqD2rAM9S9mre7UzRCUKKCbYb/DUZawwZSr/im6+K5xa3J1
-gLnOdPvOH1dWWzL57mOGE1TUw+You5sKi0olk+Cg1t2u/qfr20ImAHFzNxiSVIs2
-pvr5XviFTRmnRH6nk7OUGWg83lHExPrcGvE27PhBY6GJ/75MxgCrJVhEjNt7xjfM
-o7e+ZOK31C12uT+bMfgj3jtxolVF8C45wkMH9NEWATaCD1v2POyQijkURrPtwOVu
-/zfXkYX+1ByQTzxZo2KZdiwKakqfQOEGDGVYPlz96uDIe2uwj7DMgfBM6uEPphSX
-oxK0CI0rFtcpX7m9E2d2i38vf/BDI8k3ZYJj7zZV8Jfy/nNQKqR2/5i+kY0YdsA/
-40gfh2TBZwiOHutoc30Zb5+ss8bTkGQYEeCgw9U+b1DrY03esoaWPPFM/ztyTp62
-PWoG3e/GLFYhzBPhOkwuab7nOdn4h4A95AsFCzGNisy9Mnho0MK3ALhn13Gqixxu
-KWyVs74tFozIlYFzjp/kOJ5g6VKXIEJwldCt9X5UkAegeg6Jps5peMoHyYnFURP7
-dvLmUltFp2GSTVxVyewrVwBbRtPybfIMMKgLMxyVXeXvXmh87msH/6gV7b3lwEgN
-dvf6h/nYDAtQNiAeE65J
-=iJK2
+iQIcBAEBAgAGBQJSwrgrAAoJELSic+t+oim9QxYP/R/3ZyBjRVNGdReUVmSJultC
+vF3bNDvAdYrqx/L4S01Qnnw7RuZe42SWc+XMLhEkOWuVBxogYSiF9nxiUkOkW0aH
+nol/luQIrHYXDS/pvG9XLGnku0FdNEKanwM5UDESV2LQBAkzGJpksHyK0K+MEAbo
+pDnN19TUA+KLVLZnuBEPpLrlrSVThxpHrcQst+HwjcdGL6ekxR8mjYkuIdVYI6pl
+bHGEKb2M2OheoJ0egepzpsi2xG8MQtbKnJuVzUGQCes0wPCnVEgJ1q1nGL6l7HvT
+ZAySgYcnVTuXpYATjE0CdNhlK6TrRgGKAZwvLwczfTZ0KavtvfF+BiFmdtlWAvxF
+yVwhAhCIvWl73Yy+2hrM0MnZXZNcDQfRJtBMyv5EM3Al/cdLF9gj/lpzjagRY7I5
+HMfHxhY2RtBmvSjrk2NnT4PAQMauuMarzkT1IVGodnbV44TsPhWFiRmkRZvSonkA
+7H/ZP330rd5PTxMP0Bbom57odMemMQdl6shd3u6HALJwOVqouWO6JvTwmlVHWjNl
+koVRuMWTLG2rqvi7b3tbLfusNfzv65T9vblph0GmU4dENDOV/Uxoh+WKEo7NkVvX
+NcQj6qngKqEODUCP0lULkQgENM0Jqc8FtLKpzsWowEIrGry9tnHWjjItUl9uERqq
+/qDt5nlWhGC3ur65vI8e
+=XQZp
 -----END PGP SIGNATURE-----
 
---MCBkylF/aX/f/TlX--
+--H5oeNUPfJ0vte6JU--
