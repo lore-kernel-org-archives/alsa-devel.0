@@ -1,18 +1,16 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH] ASoC: generic: add generic compound card
- with DT support
-Date: Tue, 31 Dec 2013 13:36:10 +0100
-Message-ID: <20131231133610.2d14bc29@armhf>
-References: <20131231113138.102044cf@armhf>
- <20131231115927.GK31886@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: simple-card: Add DAPM routes parse
+	from device tree
+Date: Tue, 31 Dec 2013 12:38:57 +0000
+Message-ID: <20131231123857.GS31886@sirena.org.uk>
+References: <1387774621-23968-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3244679558155326937=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 90F0126171B
- for <alsa-devel@alsa-project.org>; Tue, 31 Dec 2013 13:37:06 +0100 (CET)
-In-Reply-To: <20131231115927.GK31886@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D82D426171B
+ for <alsa-devel@alsa-project.org>; Tue, 31 Dec 2013 13:39:01 +0100 (CET)
+In-Reply-To: <1387774621-23968-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, linux-doc@vger.kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, rob@landley.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAzMSBEZWMgMjAxMyAxMTo1OToyNyArMDAwMApNYXJrIEJyb3duIDxicm9vbmllQGtl
-cm5lbC5vcmc+IHdyb3RlOgoKPiA+IFRoaXMgY29kZSB3YXMgZmlyc3QgZGV2ZWxvcHBlZCBvbiB0
-aGUgZ2VuZXJpYyBzaW1wbGUgY2FyZCwgYnV0IGl0cwo+ID4gcmVjZW50IERUIGV4dGVuc2lvbiBj
-YW5ub3QgYmUgZWFzaWx5IGV4dGVuZGVkIGFnYWluIHRvIHN1cHBvcnQgY29tcG91bmQKPiA+IGNh
-cmRzIGFzIHRoZSBvbmUgaW4gdGhlIEN1Ym94LiAgCj4gCj4gSXQgd291bGQgaGF2ZSBiZWVuIHVz
-ZWZ1bCB0byBoYXZlIHByb3ZpZGVkIHRoYXQgZmVlZGJhY2sgYXQgdGhlIHRpbWUKPiByYXRoZXIg
-dGhhbiB3YWl0aW5nIHVudGlsIGFmdGVyIGl0IGhhZCBiZWVuIG1lcmdlZCAtIGl0IHdhcyBpbiBy
-ZXZpZXcKPiBmb3IgbG9uZyBlbm91Z2guICBJdCB3b3VsZCBhbHNvIGJlIGdvb2QgdG8gYXJ0aWN1
-bGF0ZSB0aGUgaXNzdWVzIHdpdGgKPiB0aGUgYmluZGluZyByYXRoZXIgdGhhbiBzaW1wbHkgc3Rh
-dGluZyB0aGV5IGV4aXN0LCBhbmQgdG8gY29uc2lkZXIKPiBhZGRpbmcgYSBzZWNvbmQgYmluZGlu
-ZyB0byB0aGUgZXhpc3RpbmcgZ2VuZXJpYyBjYXJkIHJhdGhlciB0aGFuIGFkZGluZwo+IGEgdG90
-YWxseSBuZXcgY2FyZC4KClNvcnJ5LCBJIHNwZW50IGEgbG90IG9mIHRpbWUgb24gRFBDTSwgYW5k
-IEkgd2FzIG5vdCB5ZXQgcmVhZHkgdG8gcHJvcG9zZQpzb21ldGhpbmcgd2hlbiB5b3UgYWNjZXB0
-ZWQgS3VuaW5vcmkncyBwYXRjaC4KCj4gUGxlYXNlIGFsc28gcmVtZW1iZXIgdGhhdCBhbGwgRFQg
-cGF0Y2hlcyBuZWVkIHRvIGJlIHJldmlld2VkIGJ5IHRoZSBEVAo+IHBlb3BsZSwgeW91J3ZlIG5v
-dCBDQ2VkIGVpdGhlciB0aGVtIG9yIHRoZSBsaXN0Lgo+IAo+ID4gKyAgLSBmcm9udC1lbmQgb3Ig
-YmFjay1lbmQ6IHByZXNlbnQgaWYgdGhlIERBSSBsaW5rIGRlc2NyaWJlcyByZXNwLgo+ID4gKwkJ
-YSBmcm9udC1lbmQgQ1BVIERBSSBvciBhIGJhY2stZW5kIENPREVDIERBSSAgCj4gCj4gVGhlc2Ug
-YXJlIExpbnV4LWludGVybmFsIGNvbmNlcHRzIHdoaWNoIHNob3VsZG4ndCBhcHBlYXIgaW4gYSBE
-VCBiaW5kaW5nCj4gb3IgYXQgdGhlIHZlcnkgbGVhc3QgbmVlZCBkZWZpbml0aW9uLiAgT25lIHRo
-aW5nIHRvIGNvbnNpZGVyIGhlcmUgaXMKPiB0aGF0IHRoZXNlIHRoaW5ncyBhcmUgYWxsIGFib3V0
-IHRoZSBpbnRlcm5hbHMgb2YgYSBTb0MgYW5kIHlvdSdkCj4gdGhlcmVmb3JlIGV4cGVjdCB0aGF0
-IHRoZXkgd291bGQgYmUgZGVmaW5lZCBzZXBhcmF0ZWx5IGZyb20gdGhlIGNhcmQgc28KPiBhcyB0
-byBhdm9pZCBoYXZpbmcgdG8gcmVwbGljYXRlIGluZm9ybWF0aW9uIGluIGV2ZXJ5IGNhcmQgdXNp
-bmcgYSBnaXZlbgo+IFNvQy4KCkRvIHlvdSBtZWFuIHRoYXQsIGFzIERQQ00gY2Fubm90IGJlIGlu
-IHRoZSBEVCwgdGhlcmUgc2hvdWxkIGJlIGEKc3BlY2lmaWMgZHJpdmVyIGZvciB0aGUgQ3Vib3gg
-YXVkaW8gY2FyZCAoTWFydmVsbCBBcm1hZGEgNTEwICsgTlhQIEhETUkKdHJhbnNtaXR0ZXIpPwoK
-LS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioK
-SmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============3244679558155326937==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oaK9NA/DDdTag9m3"
+Content-Disposition: inline
+
+
+--oaK9NA/DDdTag9m3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Dec 23, 2013 at 12:57:01PM +0800, Xiubo Li wrote:
+> Parses a simple DAPM route table from device tree.
+
+I've applied this on the basis that it's using a generic feature and
+won't do any harm but given that no off-CODEC widgets are defined I do
+have to wonder when it'll actually be useful.
+
+--oaK9NA/DDdTag9m3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSwrreAAoJELSic+t+oim96zAP/2Rd5TlnLTCgfSk+Aa4T8Hlz
+vYom7mbtQsNgsVxZKqAcZ7sKBv8tqfhuTNPYBbAH7QGRIc8+b5yPQJzPAG/Nz7kk
+JKhQbiVRAkp7CXKEakYz3mXPFAIgj3gMoqefEXCez+2YpYOMKGQ3nXBhJ03rT9Jo
+AynqWX2+AB1eWDZIk1xJ/X6fYdV/fBeRxd9ECSaUafJEjm7bcgEp09nCZ47IbptF
+g1+AbMCTy41b6i2cF8uwRKwIlJ8m0B0toLm92xbP4IONXApjAx63bRMPtCQHrPHK
+Lw1yZtTiC9urWYP4QeX6r4AJPtVc9UiVbl8B0UWnnYOKWfkb5fnPKEgVMDIOa9Pi
+ytnMmvxwjDnBmlokO/TpYNMZ8SKeq5gOw0IJdP/tUfvRPHPRQUcY1u2LpCnXrnKH
+lHUXZ3qBF+Rt0WfkX8zD5X36mXXCx+1amLqUM/iMEWLeOqzACCsGNJb0f+YdSRIR
+lmb3CZnncSfCd53Jh5hjLlWWiEG6jNfELMoD+3NVL6x3qT6rqOTtYMscV6SRFJ9+
+PC688GZR+f5tsrJdFkTBZYSxpQQup0+JfDe+BrG1yC549+mrApNNBgOqcVpKhdQZ
+k/KGaLPwjNQUJVsKQwsbfQJ1ATRHnmpDyt4KBlnbW9lA352eP4T1uRu2u/BShsBX
+MOJ4Jilia7yLyhn+ys1x
+=bNO0
+-----END PGP SIGNATURE-----
+
+--oaK9NA/DDdTag9m3--
+
+--===============3244679558155326937==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3244679558155326937==--
