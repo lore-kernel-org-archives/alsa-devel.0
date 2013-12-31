@@ -1,67 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: make snd_soc_dai_link more symmetrical
-Date: Tue, 31 Dec 2013 16:55:33 +0000
-Message-ID: <20131231165533.GK31886@sirena.org.uk>
-References: <20131212185917.7ed6b21f@armhf>
+Subject: Re: [PATCH] ASoC: simple-card: Add device's module
+	clock selection.
+Date: Tue, 31 Dec 2013 16:59:47 +0000
+Message-ID: <20131231165947.GL31886@sirena.org.uk>
+References: <1387783538-5318-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QRMPWTMRwp+GIPe+"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20131212185917.7ed6b21f@armhf>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0362333701458662172=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id F163026030E
+ for <alsa-devel@alsa-project.org>; Tue, 31 Dec 2013 17:59:51 +0100 (CET)
+In-Reply-To: <1387783538-5318-1-git-send-email-Li.Xiubo@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---QRMPWTMRwp+GIPe+
+--===============0362333701458662172==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jZUYryPdXB7p5neD"
+Content-Disposition: inline
+
+
+--jZUYryPdXB7p5neD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 12, 2013 at 06:59:17PM +0100, Jean-Francois Moine wrote:
+On Mon, Dec 23, 2013 at 03:25:38PM +0800, Xiubo Li wrote:
+> Try to get the device's module clock if the dt has no clocks and
+> system-clock-frequency properties.
 
-> This patch renders optional the CODEC name / OF node on sound card register,
-> as it is done for the CPU side, in the case the CODEC DAI name is unique.
+Applied, thanks.
 
-> This simplifies the definition of CODECs with multiple DAIs, especially
-> in DTs, while keeping compatibility.
-
-So, this is similar to one of the comments I made on the DT patch you
-sent today: you're saying that this makes things better but you're not
-saying why it makes things better.  I've been sitting on this partly
-because I've been wanting to sit down and try to work out what the
-benefit is.  This information should be readily avaiable and omiting it
-seems like it will make things more fragile.
-
-If anything I'd expect DT to want to move towards specifying things by
-CODEC plus optional DAI index rather than anything else, that's the more
-common pattern for DT based things (really phandle plus index) and it's
-what the current generic card is doing.
-
-It's possible there is a benefit I'm just not seeing but you'll need to
-tell me.
-
---QRMPWTMRwp+GIPe+
+--jZUYryPdXB7p5neD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSwvcCAAoJELSic+t+oim9XPMP/RX538KEOYqY3kQDVf+jJs2Z
-cshNr+zpexjgcyjcvF6xuMJ4AqU13Ci4U8y99M2jDgvlX7MXUP4g5m1dNxwgMV7q
-pYJ8GlqvpcVc46Y59t15QTZx2kL9Sp++bM2vABl63RBFOf9tCfVYI0OTfzqpjRXI
-m2LJP6+G6N1LqSQOQYMWlf+GYnluZ/yKGI3MWqKeSZ8zFRcxfeaKHTk6Dn7FkBBI
-xwyZSzrRX/mW5EBbhMyfTrhYaZxtjcvphiIHwNKMUNPYxM3ZjW0I7+mgLfmQJKL5
-fKOMpStR+lbiNfp1383jWn+5u8IZN1jZZlMoNWW/vsXA7WmKCcOh55WKZ5r2r9gG
-rShNpGOE/MVn4sccGeQyJh7CmOpeTXqg2IgrLli4Z8xlkHprV8uSTtsOV9YRm693
-i9vn1X1VD2rpJ2fqjyJ5d/Lva7BYyRQiw50+GLt+59k7p/sV4/y3pMXaWoRAyT9N
-1IO8+b+HinAVTtc/3CBj6qnpPkuQTrBg0i1QsIWp5WiDTKIapi3ljrmrAgBOskis
-0Mr/PSwkl0Bu4N6Wx4llS03y6+3lbwjSKTM/ARnZNoLI+Sl7r0GlUewWI6clcqq0
-irgrSin+2EIIWIrMwdJJYTtdXJQkUaJ36V7hU0AZXYDI0pnoPX+fpjiJecD800fQ
-oF6rGAA2d1OO3ObiwJy6
-=EW/c
+iQIcBAEBAgAGBQJSwvgAAAoJELSic+t+oim971gP/iNO4EQCaDJNOubtELWS/Sy8
+g8GaK49gHiS3Nv/rAkz+UvHSf5rWjOjIXjHHkf5iT79yg4SkHieIayA/rX3Pdii2
+pPGbjrt6QRi1CvbkS0/RPH1SrtHdvtaybPynP9wnREgTHS0NhaOfiiPTIZggA3Ix
+U6qEf5ev0dGzrqYG7uT5FTFlD0YpH5m6QVdUkvrPxF3Ukxjq147AlYKaZjGoRPgY
+TyuD/om3oHCEj3hIcVyL/YBO75pkrZN+iAVXNTRt1gHX7YoYhPg7uy7zHClASsWb
+W16lOG2Tg1A8WNvloFDZ+09YlvMLK5GS/k5ve5n9qtgYuS39g7JbetyB6ScVl+MX
+y1zn3BAYoTfdCpr8M4X36kEsBOsGg6h3a2aIBJST67omzck4HwREHAvPh37d3eTe
+6llP3rlbS4WNEPdsKXrFjEj+RI+pSysdn6DddqUQwFR4u/cXMQRo54lRdXAl45qt
+doB+/7trt/gDCo7AmIYGGOcHlkG8OcddHZs7xBV81u5MMb1dZyVAW5RPt9rKlYIZ
+qXBjlnXUulhrJC+mCjz+UM7ZqSyYLhZ5o/diKcJIg35GT79908C8qlLEfdWPQkt6
+ItPUe8h74HSRtUS+wq225RKv8qsorLtIO3ILf61s++dMYpLah10BkW8qeYIFJE7h
+BR/VTtmrj0XuLtpinqYY
+=LoFk
 -----END PGP SIGNATURE-----
 
---QRMPWTMRwp+GIPe+--
+--jZUYryPdXB7p5neD--
+
+--===============0362333701458662172==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0362333701458662172==--
