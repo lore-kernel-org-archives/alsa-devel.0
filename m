@@ -1,53 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Patch v2 2/2] ASoC: atmel: sam9x5_wm8731: remove
- platform_set_drvdata
-Date: Tue, 31 Dec 2013 12:27:26 +0000
-Message-ID: <20131231122726.GP31886@sirena.org.uk>
-References: <1385546710-11308-1-git-send-email-voice.shen@atmel.com>
- <1385546710-11308-2-git-send-email-voice.shen@atmel.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH] ASoC: generic: add generic compound card
+ with DT support
+Date: Tue, 31 Dec 2013 13:36:10 +0100
+Message-ID: <20131231133610.2d14bc29@armhf>
+References: <20131231113138.102044cf@armhf>
+ <20131231115927.GK31886@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="H5oeNUPfJ0vte6JU"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1385546710-11308-2-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, richard.genoud@gmail.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90F0126171B
+ for <alsa-devel@alsa-project.org>; Tue, 31 Dec 2013 13:37:06 +0100 (CET)
+In-Reply-To: <20131231115927.GK31886@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
---H5oeNUPfJ0vte6JU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Nov 27, 2013 at 06:05:10PM +0800, Bo Shen wrote:
-> When call snd_soc_register_card, it will set driver data to this
-> device through dev_set_drvdata, then in driver, no need to call
-> platform_set_drvdata again, so remove it.
-
-Applied, thanks.
-
---H5oeNUPfJ0vte6JU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSwrgrAAoJELSic+t+oim9QxYP/R/3ZyBjRVNGdReUVmSJultC
-vF3bNDvAdYrqx/L4S01Qnnw7RuZe42SWc+XMLhEkOWuVBxogYSiF9nxiUkOkW0aH
-nol/luQIrHYXDS/pvG9XLGnku0FdNEKanwM5UDESV2LQBAkzGJpksHyK0K+MEAbo
-pDnN19TUA+KLVLZnuBEPpLrlrSVThxpHrcQst+HwjcdGL6ekxR8mjYkuIdVYI6pl
-bHGEKb2M2OheoJ0egepzpsi2xG8MQtbKnJuVzUGQCes0wPCnVEgJ1q1nGL6l7HvT
-ZAySgYcnVTuXpYATjE0CdNhlK6TrRgGKAZwvLwczfTZ0KavtvfF+BiFmdtlWAvxF
-yVwhAhCIvWl73Yy+2hrM0MnZXZNcDQfRJtBMyv5EM3Al/cdLF9gj/lpzjagRY7I5
-HMfHxhY2RtBmvSjrk2NnT4PAQMauuMarzkT1IVGodnbV44TsPhWFiRmkRZvSonkA
-7H/ZP330rd5PTxMP0Bbom57odMemMQdl6shd3u6HALJwOVqouWO6JvTwmlVHWjNl
-koVRuMWTLG2rqvi7b3tbLfusNfzv65T9vblph0GmU4dENDOV/Uxoh+WKEo7NkVvX
-NcQj6qngKqEODUCP0lULkQgENM0Jqc8FtLKpzsWowEIrGry9tnHWjjItUl9uERqq
-/qDt5nlWhGC3ur65vI8e
-=XQZp
------END PGP SIGNATURE-----
-
---H5oeNUPfJ0vte6JU--
+T24gVHVlLCAzMSBEZWMgMjAxMyAxMTo1OToyNyArMDAwMApNYXJrIEJyb3duIDxicm9vbmllQGtl
+cm5lbC5vcmc+IHdyb3RlOgoKPiA+IFRoaXMgY29kZSB3YXMgZmlyc3QgZGV2ZWxvcHBlZCBvbiB0
+aGUgZ2VuZXJpYyBzaW1wbGUgY2FyZCwgYnV0IGl0cwo+ID4gcmVjZW50IERUIGV4dGVuc2lvbiBj
+YW5ub3QgYmUgZWFzaWx5IGV4dGVuZGVkIGFnYWluIHRvIHN1cHBvcnQgY29tcG91bmQKPiA+IGNh
+cmRzIGFzIHRoZSBvbmUgaW4gdGhlIEN1Ym94LiAgCj4gCj4gSXQgd291bGQgaGF2ZSBiZWVuIHVz
+ZWZ1bCB0byBoYXZlIHByb3ZpZGVkIHRoYXQgZmVlZGJhY2sgYXQgdGhlIHRpbWUKPiByYXRoZXIg
+dGhhbiB3YWl0aW5nIHVudGlsIGFmdGVyIGl0IGhhZCBiZWVuIG1lcmdlZCAtIGl0IHdhcyBpbiBy
+ZXZpZXcKPiBmb3IgbG9uZyBlbm91Z2guICBJdCB3b3VsZCBhbHNvIGJlIGdvb2QgdG8gYXJ0aWN1
+bGF0ZSB0aGUgaXNzdWVzIHdpdGgKPiB0aGUgYmluZGluZyByYXRoZXIgdGhhbiBzaW1wbHkgc3Rh
+dGluZyB0aGV5IGV4aXN0LCBhbmQgdG8gY29uc2lkZXIKPiBhZGRpbmcgYSBzZWNvbmQgYmluZGlu
+ZyB0byB0aGUgZXhpc3RpbmcgZ2VuZXJpYyBjYXJkIHJhdGhlciB0aGFuIGFkZGluZwo+IGEgdG90
+YWxseSBuZXcgY2FyZC4KClNvcnJ5LCBJIHNwZW50IGEgbG90IG9mIHRpbWUgb24gRFBDTSwgYW5k
+IEkgd2FzIG5vdCB5ZXQgcmVhZHkgdG8gcHJvcG9zZQpzb21ldGhpbmcgd2hlbiB5b3UgYWNjZXB0
+ZWQgS3VuaW5vcmkncyBwYXRjaC4KCj4gUGxlYXNlIGFsc28gcmVtZW1iZXIgdGhhdCBhbGwgRFQg
+cGF0Y2hlcyBuZWVkIHRvIGJlIHJldmlld2VkIGJ5IHRoZSBEVAo+IHBlb3BsZSwgeW91J3ZlIG5v
+dCBDQ2VkIGVpdGhlciB0aGVtIG9yIHRoZSBsaXN0Lgo+IAo+ID4gKyAgLSBmcm9udC1lbmQgb3Ig
+YmFjay1lbmQ6IHByZXNlbnQgaWYgdGhlIERBSSBsaW5rIGRlc2NyaWJlcyByZXNwLgo+ID4gKwkJ
+YSBmcm9udC1lbmQgQ1BVIERBSSBvciBhIGJhY2stZW5kIENPREVDIERBSSAgCj4gCj4gVGhlc2Ug
+YXJlIExpbnV4LWludGVybmFsIGNvbmNlcHRzIHdoaWNoIHNob3VsZG4ndCBhcHBlYXIgaW4gYSBE
+VCBiaW5kaW5nCj4gb3IgYXQgdGhlIHZlcnkgbGVhc3QgbmVlZCBkZWZpbml0aW9uLiAgT25lIHRo
+aW5nIHRvIGNvbnNpZGVyIGhlcmUgaXMKPiB0aGF0IHRoZXNlIHRoaW5ncyBhcmUgYWxsIGFib3V0
+IHRoZSBpbnRlcm5hbHMgb2YgYSBTb0MgYW5kIHlvdSdkCj4gdGhlcmVmb3JlIGV4cGVjdCB0aGF0
+IHRoZXkgd291bGQgYmUgZGVmaW5lZCBzZXBhcmF0ZWx5IGZyb20gdGhlIGNhcmQgc28KPiBhcyB0
+byBhdm9pZCBoYXZpbmcgdG8gcmVwbGljYXRlIGluZm9ybWF0aW9uIGluIGV2ZXJ5IGNhcmQgdXNp
+bmcgYSBnaXZlbgo+IFNvQy4KCkRvIHlvdSBtZWFuIHRoYXQsIGFzIERQQ00gY2Fubm90IGJlIGlu
+IHRoZSBEVCwgdGhlcmUgc2hvdWxkIGJlIGEKc3BlY2lmaWMgZHJpdmVyIGZvciB0aGUgQ3Vib3gg
+YXVkaW8gY2FyZCAoTWFydmVsbCBBcm1hZGEgNTEwICsgTlhQIEhETUkKdHJhbnNtaXR0ZXIpPwoK
+LS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioK
+SmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
