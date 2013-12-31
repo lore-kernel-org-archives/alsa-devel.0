@@ -1,77 +1,67 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: imx-spdif: Use snd-soc-dummy CODEC
- driver to link card
-Date: Tue, 31 Dec 2013 16:34:22 +0000
-Message-ID: <20131231163422.GJ31886@sirena.org.uk>
-References: <1387790933-29232-1-git-send-email-Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH] ASoC: make snd_soc_dai_link more symmetrical
+Date: Tue, 31 Dec 2013 16:55:33 +0000
+Message-ID: <20131231165533.GK31886@sirena.org.uk>
+References: <20131212185917.7ed6b21f@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8386031984260151099=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B0DB9260307
- for <alsa-devel@alsa-project.org>; Tue, 31 Dec 2013 17:34:26 +0100 (CET)
-In-Reply-To: <1387790933-29232-1-git-send-email-Guangyu.Chen@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux@arm.linux.org.uk, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="QRMPWTMRwp+GIPe+"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20131212185917.7ed6b21f@armhf>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8386031984260151099==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kJQbLzJV/QPBkXzU"
-Content-Disposition: inline
-
-
---kJQbLzJV/QPBkXzU
+--QRMPWTMRwp+GIPe+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 23, 2013 at 05:28:53PM +0800, Nicolin Chen wrote:
-> This is a quick fix for the below two issues when building spdif as modules.
+On Thu, Dec 12, 2013 at 06:59:17PM +0100, Jean-Francois Moine wrote:
 
-Good thinking - this is a smart way of dealing with the issue.  It'll
-mean that we don't have the application specific constraints but those
-could be added back in the driver later or we could do an explicit
-S/PDIF CODEC in the same style as dummy.  Applied, thanks.
+> This patch renders optional the CODEC name / OF node on sound card register,
+> as it is done for the CPU side, in the case the CODEC DAI name is unique.
 
---kJQbLzJV/QPBkXzU
+> This simplifies the definition of CODECs with multiple DAIs, especially
+> in DTs, while keeping compatibility.
+
+So, this is similar to one of the comments I made on the DT patch you
+sent today: you're saying that this makes things better but you're not
+saying why it makes things better.  I've been sitting on this partly
+because I've been wanting to sit down and try to work out what the
+benefit is.  This information should be readily avaiable and omiting it
+seems like it will make things more fragile.
+
+If anything I'd expect DT to want to move towards specifying things by
+CODEC plus optional DAI index rather than anything else, that's the more
+common pattern for DT based things (really phandle plus index) and it's
+what the current generic card is doing.
+
+It's possible there is a benefit I'm just not seeing but you'll need to
+tell me.
+
+--QRMPWTMRwp+GIPe+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSwvIKAAoJELSic+t+oim9vWgP/2KDtjLV1j68l7xROw3ytx1T
-yzvcHl2vwytfrICXJv8h6ecc+5QTazmbIzpz7ALJu7MOXdH6uE/n+oIDdiiaUoDw
-Pn5fBPuPWfAdejtJpdXpX/O6UVLRILTk74r03nRnWopdJZRBl8LQ6bob/T5NPTf3
-OSmx8PbrlZOGr0hqXuFAS8xqcf2VhWc1wYES7tUP/8dVr/qtuwLaLtGtMQ5CTgTf
-Fx41kx1Aoi/TDWsO9BL+Vb7rSECPjeCY9ayY9nF068PqBsYQfdgLHAkyLCLnZaAe
-q8vqgJIyxtvsrMZgXlV8mFCloRl9zllg2t3bKoKlJYD4UzqoWJsFys07oZKb8XFF
-Ski0sv8vzMy9vnfKyfjxn8iQiBzTSteT79861icIHvWF/xjkjEJ5seVs2wbfHael
-m4ayx+Hg4VsctHCf9PjzmYet7oopDHCIif03asJWQRr7XW/vjKKd6PFFQoy6l++x
-jn2geh7Z0NjMyowH5cTi+m+vWDM1KHsIPRUyHP8So7W0Uwit0QFjfdsb4Gbxd3gT
-0fcJTu6YtYT1P+E2TKAQqwT4eMWXoWpo30JTWafBoZvaaG5zg2TKuLyKfnU0L1Qd
-imiloEIYnl4iO20OPQGsv6Aal697hAeMlpy8Y6Wgip72nGrLQoUHlKL5LrqdlpAI
-HrKfxunDWR+PoCGIEO+K
-=Mlds
+iQIcBAEBAgAGBQJSwvcCAAoJELSic+t+oim9XPMP/RX538KEOYqY3kQDVf+jJs2Z
+cshNr+zpexjgcyjcvF6xuMJ4AqU13Ci4U8y99M2jDgvlX7MXUP4g5m1dNxwgMV7q
+pYJ8GlqvpcVc46Y59t15QTZx2kL9Sp++bM2vABl63RBFOf9tCfVYI0OTfzqpjRXI
+m2LJP6+G6N1LqSQOQYMWlf+GYnluZ/yKGI3MWqKeSZ8zFRcxfeaKHTk6Dn7FkBBI
+xwyZSzrRX/mW5EBbhMyfTrhYaZxtjcvphiIHwNKMUNPYxM3ZjW0I7+mgLfmQJKL5
+fKOMpStR+lbiNfp1383jWn+5u8IZN1jZZlMoNWW/vsXA7WmKCcOh55WKZ5r2r9gG
+rShNpGOE/MVn4sccGeQyJh7CmOpeTXqg2IgrLli4Z8xlkHprV8uSTtsOV9YRm693
+i9vn1X1VD2rpJ2fqjyJ5d/Lva7BYyRQiw50+GLt+59k7p/sV4/y3pMXaWoRAyT9N
+1IO8+b+HinAVTtc/3CBj6qnpPkuQTrBg0i1QsIWp5WiDTKIapi3ljrmrAgBOskis
+0Mr/PSwkl0Bu4N6Wx4llS03y6+3lbwjSKTM/ARnZNoLI+Sl7r0GlUewWI6clcqq0
+irgrSin+2EIIWIrMwdJJYTtdXJQkUaJ36V7hU0AZXYDI0pnoPX+fpjiJecD800fQ
+oF6rGAA2d1OO3ObiwJy6
+=EW/c
 -----END PGP SIGNATURE-----
 
---kJQbLzJV/QPBkXzU--
-
---===============8386031984260151099==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8386031984260151099==--
+--QRMPWTMRwp+GIPe+--
