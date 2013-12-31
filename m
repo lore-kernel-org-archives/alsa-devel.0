@@ -1,15 +1,20 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH 08/19] ASoC: kirkwood: Don't set unused
- struct snd_pcm_hardware fields
-Date: Mon, 30 Dec 2013 20:42:09 +0100
-Message-ID: <20131230204209.109eca01@armhf>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH] ASoC: simple-card: cleanup
+ asoc_simple_card_parse_of() code
+Date: Tue, 31 Dec 2013 01:35:39 +0000
+Message-ID: <73b462c3a3b14a47a95142694ed5c8cc@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1388114078-24517-1-git-send-email-Li.Xiubo@freescale.com>
+ <20131230121113.GQ31886@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
- by alsa0.perex.cz (Postfix) with ESMTP id CD0862625EF
- for <alsa-devel@alsa-project.org>; Mon, 30 Dec 2013 20:43:06 +0100 (CET)
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1blp0187.outbound.protection.outlook.com [207.46.163.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3EAB264EAA
+ for <alsa-devel@alsa-project.org>; Tue, 31 Dec 2013 02:35:43 +0100 (CET)
+In-Reply-To: <20131230121113.GQ31886@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,67 +24,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-PiBPbiAxMi8yMC8yMDEzIDA4OjEzIFBNLCBKZWFuLUZyYW5jb2lzIE1vaW5lIHdyb3RlOgo+ID4g
-T24gRnJpLCAyMCBEZWMgMjAxMyAxODoxODo0OSArMDEwMAo+ID4gTGFycy1QZXRlciBDbGF1c2Vu
-IDxsYXJzQG1ldGFmb28uZGU+IHdyb3RlOgo+ID4gICAKPiA+PiBPbiAxMi8yMC8yMDEzIDA3OjA1
-IFBNLCBKZWFuLUZyYW5jb2lzIE1vaW5lIHdyb3RlOiAgCj4gPj4+PiBkaWZmIC0tZ2l0IGEvc291
-bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWRtYS5jIGIvc291bmQvc29jL2tpcmt3b29kL2tpcmt3
-b29kLWRtYS5jCj4gPj4+PiBpbmRleCA0YWYxOTM2Li5hYWMyMmZjIDEwMDY0NAo+ID4+Pj4gLS0t
-IGEvc291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLWRtYS5jCj4gPj4+PiArKysgYi9zb3VuZC9z
-b2Mva2lya3dvb2Qva2lya3dvb2QtZG1hLmMgIAo+ID4+PiAJW3NuaXBdICAKPiA+Pj4+IEBAIC00
-MywxMiArMzMsNiBAQCBzdGF0aWMgc3RydWN0IHNuZF9wY21faGFyZHdhcmUga2lya3dvb2RfZG1h
-X3NuZF9odyA9IHsKPiA+Pj4+ICAJCSBTTkRSVl9QQ01fSU5GT19NTUFQX1ZBTElEIHwKPiA+Pj4+
-ICAJCSBTTkRSVl9QQ01fSU5GT19CTE9DS19UUkFOU0ZFUiB8Cj4gPj4+PiAgCQkgU05EUlZfUENN
-X0lORk9fUEFVU0UpLAo+ID4+Pj4gLQkuZm9ybWF0cwkJPSBLSVJLV09PRF9GT1JNQVRTLAo+ID4+
-Pj4gLQkucmF0ZXMJCQk9IEtJUktXT09EX1JBVEVTLAo+ID4+Pj4gLQkucmF0ZV9taW4JCT0gODAw
-MCwKPiA+Pj4+IC0JLnJhdGVfbWF4CQk9IDM4NDAwMCwKPiA+Pj4+IC0JLmNoYW5uZWxzX21pbgkJ
-PSAxLAo+ID4+Pj4gLQkuY2hhbm5lbHNfbWF4CQk9IDgsCj4gPj4+PiAgCS5idWZmZXJfYnl0ZXNf
-bWF4CT0gS0lSS1dPT0RfU05EX01BWF9CVUZGRVJfQllURVMsCj4gPj4+PiAgCS5wZXJpb2RfYnl0
-ZXNfbWluCT0gS0lSS1dPT0RfU05EX01JTl9QRVJJT0RfQllURVMsCj4gPj4+PiAgCS5wZXJpb2Rf
-Ynl0ZXNfbWF4CT0gS0lSS1dPT0RfU05EX01BWF9QRVJJT0RfQllURVMsICAKPiA+Pj4KPiA+Pj4g
-TGFycywKPiA+Pj4KPiA+Pj4gWW91IHJlbW92ZWQgdG9vIG1hbnkgdGhpbmdzLiBUaGUgJ2Zvcm1h
-dHMnIGZpZWxkIGlzIG1hbmRhdG9yeS4gIAo+ID4+Cj4gPj4gTm8gaXQgaXMgbm90LiBXaGlsZSBz
-bmRfc29jX3NldF9ydW50aW1lX2h3cGFyYW1zKCkgdXNlcyBpdCBpdCBpcyBsYXRlcgo+ID4+IG92
-ZXJ3cml0dGVuIGFnYWluIGluIHNvY19wY21faW5pdF9ydW50aW1lX2h3KCkuICAKPiA+IAo+ID4g
-SSBoYXZlIGEgRFBDTSBzeXN0ZW0gYW5kIHNvY19wY21faW5pdF9ydW50aW1lX2h3KCkgaXMgbm90
-IGNhbGxlZAo+ID4gKGVpdGhlciAnZHluYW1pYycgb3IgJ25vX3BjbScgaXMgc2V0IGluIHRoZSBE
-QUkgbGlua3MpLgo+IAo+IE9rLCBJIHNlZSBkcGNtX3NldF9mZV9ydW50aW1lKCkgZG9lcyB0aGlu
-Z3Mgc2xpZ2h0bHkgZGlmZmVyZW50LgoKV2VsbCwgSSBhZHZhbmNlZCBhIGJpdCB3aXRoIERQQ00s
-IGFuZCBJIGhhdmUgYSBwcm9ibGVtIHdpdGggdGhpcyBmaWVsZC4KCkluIHRoZSBkcml2ZXIsIHRo
-ZSBmcm9udC1lbmQgREFJIGlzIHRoZSBhdWRpbyBjb250cm9sbGVyIGFuZCB0aGUKYmFjay1lbmRz
-IERBSXMgYXJlIHRoZSBIRE1JIGFuZCBTUERJRiBvdXRwdXRzLiBUaGVzZSBiYWNrLWVuZCBEQUlz
-CmhhdmUgZGlmZmVyZW50IHJhdGVzIGFuZCBmb3JtYXRzLCBhcyBoYXZlIHRoZSBhdWRpbyBjb250
-cm9sbGVyIG91dHB1dHMKKEkyUyBhbmQgU1BESUYpLiBTbywgSSB1c2VkIGludGVybWVkaWF0ZSBE
-QUlzIHdoaWNoIHJlcHJlc2VudCB0aGUgYXVkaW8KY29udHJvbGxlciBvdXRwdXRzLCBhbmQgdGhl
-eSBhcmUgZGVzY3JpYmVkIGluIHRoZSBEQUkgbGlua3M6CgpsaW5rIDAgKEZFKTogYXVkaW8gY29u
-dHJvbGxlciA8LT4gZHVtbXkgREFJCmxpbmsgMSAoQkUpOiBpMnMgYXVkaW8gY29udHJvbGxlciBv
-dXRwdXQgPC0+IEhETUkgb3V0cHV0CmxpbmsgMiAoQkUpOiBzcGRpZiBhdWRpbyBjb250cm9sbGVy
-IG91dHB1dCA8LT4gSERNSSBvdXRwdXQKbGluayAzIChCRSk6IHNwZGlmIGF1ZGlvIGNvbnRyb2xs
-ZXIgb3V0cHV0IDwtPiBTUERJRiBvdXRwdXQKCldpdGhvdXQgYW55IHBhdGNoIGluIHRoZSBjb3Jl
-LCB0aGUgcmF0ZXMgYW5kIGZvcm1hdHMgYXJlIGFsd2F5cyB0aGUKcmF0ZXMgYW5kIGZvcm1hdHMg
-b2YgdGhlIGF1ZGlvIGNvbnRyb2xsZXIgKEZFKS4gVGhpcyBpcyBkdWUgdG8gdGhlCidnb3RvIGR5
-bmFtaWMnIGluIHNvY19wY21fb3BlbigpOiBhcyB0aGUgYmFjay1lbmRzIGFyZSBsaW5rZWQgdG8g
-cmVhbApEQUlzLCB0aGUgcmF0ZSBhbmQgZm9ybWF0IGNvbnN0cmFpbnRzIG11c3QgYmUgY2hlY2tl
-ZC4gU28sIGFzIGEKdGVtcG9yYXJ5IHBhdGNoLCBJIHJlcGxhY2VkOgoKCWlmIChydGQtPmRhaV9s
-aW5rLT5keW5hbWljIHx8IHJ0ZC0+ZGFpX2xpbmstPm5vX3BjbSkKCQlnb3RvIGR5bmFtaWM7CmJ5
-OgoJaWYgKHJ0ZC0+ZGFpX2xpbmstPmR5bmFtaWMpCgkJZ290byBkeW5hbWljOwoKKGluZGVlZCwg
-dGhpcyB3aWxsIG5vdCB3b3JrIGlmIHRoZSBiYWNrLWVuZCBpcyBsaW5rZWQgdG8gdGhlIGR1bW15
-IERBSSkKCmFuZCwgSSBnZXQgdGhlIGNvcnJlY3QgcmF0ZXMgYW5kIGZvcm1hdHMgaW4gdGhlIHJ1
-bnRpbWUgaGFyZHdhcmUKcGFyYW1ldGVycy4gQnV0IHRoZXNlIHZhbHVlcyBhcmUgbG9zdDoKCi0g
-b24gRE1BIG9wZW4gKEZFIHBjbSBvcGVuKSwgd2hlbiB0aGUgZHJpdmVyIGNhbGxzCiAgc25kX3Nv
-Y19zZXRfcnVudGltZV9od3BhcmFtcygpIChsb3NzIG9mIHRoZSBmb3JtYXRzKSwgYW5kCgotIG9u
-IGRwY21fc2V0X2ZlX3J1bnRpbWUoKSBjYWxsIChsb3NzIG9mIHRoZSByYXRlcykuCgpUaGUgZmly
-c3QgcHJvYmxlbSBjYW4gYmUgZml4ZWQgaW4gdGhlIGF1ZGlvIGNvbnRyb2xsZXIgYnkgYSBoYWNr
-LApzYXZpbmcgL3Jlc3RvcmluZyB0aGUgZm9ybWF0cyBvbiBjYWxsaW5nIHNuZF9zb2Nfc2V0X3J1
-bnRpbWVfaHdwYXJhbXMoKSwKYW5kIHRoZSBzZWNvbmQgcHJvYmxlbSBpcyBlYXNpbHkgZml4ZWQg
-bW92aW5nIGRwY21fc2V0X2ZlX3J1bnRpbWUoKSBhdAp0aGUgYmVnaW5uaW5nIG9mIGRwY21fZmVf
-ZGFpX3N0YXJ0dXAoKS4gQXJlIHRoZXNlIGdvb2Qgc29sdXRpb25zPwoKLS0gCktlbiBhciBjJ2hl
-bnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8v
-bW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+Hi Mark and all,
+
+Merry Christmas.
+
+
+> Subject: Re: [PATCH] ASoC: simple-card: cleanup asoc_simple_card_parse_of()
+> code
+> 
+> On Fri, Dec 27, 2013 at 11:14:38AM +0800, Xiubo Li wrote:
+> > Since there is only one common format via "simple-audio-card,format"
+> > for simple card driver(CPU & CODEC DAI), there is no need to do the
+> > INV mask.
+> 
+> I don't understand this change, how is the fact that the CPU and CODEC
+> DAI share a common format related to using the inversion?  The inversion
+> specifies the format relative to the spec rather than relative to the
+> other end of the link and for any DAI link the two devices should be
+> using the same format.
+
+Sorry, sorry for confusion.
+
+>From the "Documentation/devicetree/bindings/sound/simple-card.txt":
+------
+ Optional properties:
+ 
+ - simple-audio-card,format     : CPU/CODEC common audio format.
+                                  "i2s", "right_j", "left_j" , "dsp_a"
+                                  "dsp_b", "ac97", "pdm", "msb", "lsb"
+------
+There is only one common daifmt properties in simple-card parent dt node, and
+its bits mask is SND_SOC_DAIFMT_FORMAT_MASK.
+
+And also in the same binding documents:
+------
+Optional CPU/CODEC subnodes properties:
+
+- format                  : CPU/CODEC specific audio format if needed.
+                            see simple-audio-card,format
+- frame-master            : bool property. add this if subnode is frame master
+- bitclock-master         : bool property. add this if subnode is bitclock master
+- bitclock-inversion      : bool property. add this if subnode has clock inversion
+- frame-inversion         : bool property. add this if subnode has frame inversion
+- clocks / system-clock-frequency
+			       : specify subnode's clock if needed.
+                            it can be specified via "clocks" if system has
+                            clock node (= common clock), or "system-clock-frequency"
+                            (if system doens't support common clock)
+------
+
+And in "sound/soc/generic/simple-card.c", function : asoc_simple_card_parse_of()
+-----
+	......
+
+        /* get CPU/CODEC common format via simple-audio-card,format */
+        info->daifmt = snd_soc_of_parse_daifmt(node, "simple-audio-card,") &
+                (SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_INV_MASK);
+
+	......
+
+		ret = asoc_simple_card_sub_parse_of(cpu, ...);
+
+		...
+
+		ret = asoc_simple_card_sub_parse_of(codec, ...);
+
+	......
+-----
+The SND_SOC_DAIFMT_INV_MASK bits mask should be for "bitclock-master" and
+"frame-inversion" in subnodes' daifmt parsing if need, or why shouldn't
+SND_SOC_DAIFMT_CLOCK_MASK be here like SND_SOC_DAIFMT_INV_MASK ?
+
+IMO, the SND_SOC_DAIFMT_INV_MASK bits mask here maybe a little confused.
+
+Certainly, these two and other subnode properties can also be common properties
+like "[prefix]format" for other drivers.
+
+It's the limitation of snd_soc_of_parse_daifmt() that the simple-card driver must
+do the mask(except SND_SOC_DAIFMT_MASTER_MASK, because it default value is not zero)
+operation. 
+
+Or should we change "bitclock-master" and "frame-master" as one string property
+like "[prefix]master = XXX", and set the default value as zero like others. And then
+we can remove all the bits mask operations in simple-card and other drivers.
+If need, I will send this patch of this.
+         
+
+Thanks,
+
+--
+Best Regards,
+Xiubo
