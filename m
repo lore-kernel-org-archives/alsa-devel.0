@@ -1,18 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Jean-Francois Moine <moinejf@free.fr>
 Subject: Re: [PATCH] ASoC: generic: add generic compound card
  with DT support
-Date: Wed, 01 Jan 2014 20:05:05 +0100
-Message-ID: <52C466E1.3030302@metafoo.de>
+Date: Wed, 1 Jan 2014 21:08:14 +0100
+Message-ID: <20140101210814.31e3f3a9@armhf>
 References: <20131231113138.102044cf@armhf>
+	<52C466E1.3030302@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-079.synserver.de (smtp-out-181.synserver.de
- [212.40.185.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 515D02610B3
- for <alsa-devel@alsa-project.org>; Wed,  1 Jan 2014 20:04:51 +0100 (CET)
-In-Reply-To: <20131231113138.102044cf@armhf>
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3452726109F
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jan 2014 21:09:07 +0100 (CET)
+In-Reply-To: <52C466E1.3030302@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,85 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
+To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/31/2013 11:31 AM, Jean-Francois Moine wrote:
-> Some audio cards are built from different hardware components.
-> When such compound cards don't need specific code, this driver creates
-> them with the required DAI links and routes from a DT.
-> 
-> Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
-> ---
-> This code was first developped on the generic simple card, but its
-> recent DT extension cannot be easily extended again to support compound
-> cards as the one in the Cubox.
-> Note also that the example relies on a proposed patch of mine aiming to
-> render the codec name / OF node optional in DAI links
-> (http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/070082.html).
-> ---
->  .../devicetree/bindings/sound/compound-card.txt |  95 ++++++++++++
->  sound/soc/generic/Kconfig                       |   6 +
->  sound/soc/generic/Makefile                      |   2 +
->  sound/soc/generic/compound-card.c               | 247 +++++++++++++++++++++++++
->  4 file changed, 350 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/compound-card.txt b/Documentation/devicetree/bindings/sound/compound-card.txt
-> new file mode 100644
-> index 0000000..554a796
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/compound-card.txt
-> @@ -0,0 +1,95 @@
-> +Device-Tree bindings for compound audio card
-> +
-> +Compound audio card describes the links between the different parts
-> +of an audio card built from different hardware components.
-> +
-> +Required properties:
-> +  - compatible: should be "compound-audio-card"
-> +  - audio-controller: phandle of the audio controller
-> +
-> +Optional properties:
-> +  - routes: list of couple of strings (sink, source)
-> +
-> +Required subnodes:
-> +  - link: DAI link subnode
-> +	At least one link must be specified.
-> +
-> +Required link subnode properties:
-> +  - link-name: names of the DAI link and of the stream
-> +  - cpu-dai-name: name of the CPU or CODEC DAI
-> +		An empty string indicates that the CPU DAI is
-> +		the same as the audio controller.
-> +  - codec-dai-name: name of the CODEC DAI
-> +
-> +Optional link subnode properties:
-> +  - audio-codec or codec-name: phandle or name of the CODEC
-> +		in case the codec-dai-name is not unique
-> +  - format: DAI format. One of:
-> +		"i2s", "right_j", "left_j" , "dsp_a"
-> +		"dsp_b", "ac97", "pdm", "msb", "lsb"
-> +  - front-end or back-end: present if the DAI link describes resp.
-> +		a front-end CPU DAI or a back-end CODEC DAI
-> +  - playback or capture: present if the DAI link is used for
-> +		playback or capture only
-
-
-As Mark also said, this binding definitely leaks way too much internals of
-the current ASoC implementation. In my opinion the way forward for ASoC is
-to stop to distinguish between different types of components. This is on one
-hand CODECS and CPU-DAIs and on the other hand also front-end and beck-end
-DAIs. The first steps in this direction have already been take by the start
-of the component-fication, but its still a long way to go. Exposing those
-concepts via the devicetree will only make it harder to get rid of them
-later. The bindings for a compound card should essentially describe which
-components are involved and how the fabric between and around them looks
-like. If the type of the component is needed in the ASoC implementation it
-should be possible to auto-discover it. Also I think we want to align the
-devicetree bindings with what the media people have been doing[1]. Audio and
-video are not that different in this regard and there will also be boards
-where the audio and video fabric will be intermingled  (e.g. like on your
-board with HDMI).
-
-- Lars
+T24gV2VkLCAwMSBKYW4gMjAxNCAyMDowNTowNSArMDEwMApMYXJzLVBldGVyIENsYXVzZW4gPGxh
+cnNAbWV0YWZvby5kZT4gd3JvdGU6Cgo+IEFzIE1hcmsgYWxzbyBzYWlkLCB0aGlzIGJpbmRpbmcg
+ZGVmaW5pdGVseSBsZWFrcyB3YXkgdG9vIG11Y2ggaW50ZXJuYWxzIG9mCj4gdGhlIGN1cnJlbnQg
+QVNvQyBpbXBsZW1lbnRhdGlvbi4gSW4gbXkgb3BpbmlvbiB0aGUgd2F5IGZvcndhcmQgZm9yIEFT
+b0MgaXMKPiB0byBzdG9wIHRvIGRpc3Rpbmd1aXNoIGJldHdlZW4gZGlmZmVyZW50IHR5cGVzIG9m
+IGNvbXBvbmVudHMuIFRoaXMgaXMgb24gb25lCj4gaGFuZCBDT0RFQ1MgYW5kIENQVS1EQUlzIGFu
+ZCBvbiB0aGUgb3RoZXIgaGFuZCBhbHNvIGZyb250LWVuZCBhbmQgYmVjay1lbmQKPiBEQUlzLiBU
+aGUgZmlyc3Qgc3RlcHMgaW4gdGhpcyBkaXJlY3Rpb24gaGF2ZSBhbHJlYWR5IGJlZW4gdGFrZSBi
+eSB0aGUgc3RhcnQKPiBvZiB0aGUgY29tcG9uZW50LWZpY2F0aW9uLCBidXQgaXRzIHN0aWxsIGEg
+bG9uZyB3YXkgdG8gZ28uIEV4cG9zaW5nIHRob3NlCj4gY29uY2VwdHMgdmlhIHRoZSBkZXZpY2V0
+cmVlIHdpbGwgb25seSBtYWtlIGl0IGhhcmRlciB0byBnZXQgcmlkIG9mIHRoZW0KPiBsYXRlci4g
+VGhlIGJpbmRpbmdzIGZvciBhIGNvbXBvdW5kIGNhcmQgc2hvdWxkIGVzc2VudGlhbGx5IGRlc2Ny
+aWJlIHdoaWNoCj4gY29tcG9uZW50cyBhcmUgaW52b2x2ZWQgYW5kIGhvdyB0aGUgZmFicmljIGJl
+dHdlZW4gYW5kIGFyb3VuZCB0aGVtIGxvb2tzCj4gbGlrZS4gSWYgdGhlIHR5cGUgb2YgdGhlIGNv
+bXBvbmVudCBpcyBuZWVkZWQgaW4gdGhlIEFTb0MgaW1wbGVtZW50YXRpb24gaXQKPiBzaG91bGQg
+YmUgcG9zc2libGUgdG8gYXV0by1kaXNjb3ZlciBpdC4gQWxzbyBJIHRoaW5rIHdlIHdhbnQgdG8g
+YWxpZ24gdGhlCj4gZGV2aWNldHJlZSBiaW5kaW5ncyB3aXRoIHdoYXQgdGhlIG1lZGlhIHBlb3Bs
+ZSBoYXZlIGJlZW4gZG9pbmdbMV0uCgooeW91IGZvcmdvdCB0aGUgWzFdIHJlZmVyZW5jZSkKCj4g
+QXVkaW8gYW5kCj4gdmlkZW8gYXJlIG5vdCB0aGF0IGRpZmZlcmVudCBpbiB0aGlzIHJlZ2FyZCBh
+bmQgdGhlcmUgd2lsbCBhbHNvIGJlIGJvYXJkcwo+IHdoZXJlIHRoZSBhdWRpbyBhbmQgdmlkZW8g
+ZmFicmljIHdpbGwgYmUgaW50ZXJtaW5nbGVkICAoZS5nLiBsaWtlIG9uIHlvdXIKPiBib2FyZCB3
+aXRoIEhETUkpLgoKSSBmb3VuZCBhIHdheSB0byBkaXNjb3ZlciB0aGUgREFJIGxpbmsgdHlwZXMg
+Zm9yIG15IHN5c3RlbTogd2hlbiBzaW1wbGUKREFQTSwgdGhlIGtpcmt3b29kIENQVSBEQUlzIGhh
+dmUgYW4gSUQgIT0gMC4gRm9yIHRoZSBDdWJveCwgdGhlIENQVSBEQUkKb2YgdGhlIGZpcnN0IGxp
+bmsgKHN5c3RlbSBwbGF5YmFjaykgaGFzIHRoZSBJRCAwLCBzbyBJIGNhbiBtb3ZlIHRvIERQQ00K
+c2V0dGluZyB0aGUgJ2R5bmFtaWMnIGFuZCAnbm9fcGNtJyBmbGFncyBpbiB0aGUgREFJIGxpbmtz
+IGF0IHNuZApwbGF0Zm9ybSBwcm9iZSB0aW1lLgoKVGhlbiwgYWZ0ZXIgc29tZSBleHRlbnNpb25z
+IG9mIHRoZSBzaW1wbGUtY2FyZCwgdGhlIERUIHdvdWxkIGxvb2sgbGlrZQoobm90IHRlc3RlZCB5
+ZXQpOgoKCXNvdW5kIHsKCQljb21wYXRpYmxlID0gInNpbXBsZS1hdWRpby1jYXJkIjsKCQlzaW1w
+bGUtYXVkaW8tcm91dGluZyA9CgkJCSJIRE1JIEkyUyBQbGF5YmFjayIsCSJTeXN0ZW0gUGxheWJh
+Y2siLAoJCQkiSERNSSBTUERJRiBQbGF5YmFjayIsCSJTeXN0ZW0gUGxheWJhY2siLAoJCQkiU1BE
+SUYgUGxheWJhY2siLAkiU3lzdGVtIFBsYXliYWNrIiwKCgkJCSJoZG1pLW91dC1pMnMiLAkJIkhE
+TUkgSTJTIFBsYXliYWNrIiwKCQkJImhkbWktb3V0LXNwZGlmIiwJIkhETUkgU1BESUYgUGxheWJh
+Y2siLAoJCQkic3BkaWYtb3V0IiwJCSJTUERJRiBQbGF5YmFjayI7CgoJCXNpbXBsZS1hdWRpby1j
+YXJkLGNwdUAwIHsKCQkJbGluay1uYW1lID0gIlN5c3RlbSBhdWRpbyI7CS8qIGV4dGVuc2lvbiAq
+LwoJCQlzb3VuZC1kYWkgPSA8JmF1ZGlvMSAwPjsKCQkJcGxheWJhY2s7CQkJLyogZXh0ZW5zaW9u
+ICovCgkJCWZvcm1hdCA9ICJpMnMiOwoJCX07CgkJc2ltcGxlLWF1ZGlvLWNhcmQsY29kZWNAMCB7
+CgkJCXNvdW5kLWRhaS1uYW1lID0gInNuZC1zb2MtZHVtbXktZGFpIjsKCQl9OwoKCQkJCQkJCS8q
+IG11bHRpLWxpbmtzIGV4dGVuc2lvbiAqLwoJCXNpbXBsZS1hdWRpby1jYXJkLGNwdUAxIHsKCQkJ
+bGluay1uYW1lID0gImhkbWktaTJzIjsKCQkJcGxhdGZvcm0tbmFtZSA9ICJzbmQtc29jLWR1bW15
+IjsgLyogZXh0ZW5zaW9uICovCgkJCXNvdW5kLWRhaSA9IDwmYXVkaW8xIDE+OwoJCQlwbGF5YmFj
+azsKCQl9OwoJCXNpbXBsZS1hdWRpby1jYXJkLGNvZGVjQDEgewoJCQlzb3VuZC1kYWkgPSA8Jmhk
+bWlfY29kZWMgMD47CgkJfTsKCgkJc2ltcGxlLWF1ZGlvLWNhcmQsY3B1QDIgewoJCQlsaW5rLW5h
+bWUgPSAiaGRtaS1zcGRpZiI7CgkJCXBsYXRmb3JtLW5hbWUgPSAic25kLXNvYy1kdW1teSI7CgkJ
+CXNvdW5kLWRhaSA9IDwmYXVkaW8xIDI+OwoJCQlwbGF5YmFjazsKCQl9OwoJCXNpbXBsZS1hdWRp
+by1jYXJkLGNvZGVjQDIgewoJCQlzb3VuZC1kYWkgPSA8JmhkbWlfY29kZWMgMT47CgkJfTsKCgkJ
+c2ltcGxlLWF1ZGlvLWNhcmQsY3B1QDMgewoJCQlsaW5rLW5hbWUgPSAic3BkaWYiOwoJCQlwbGF0
+Zm9ybS1uYW1lID0gInNuZC1zb2MtZHVtbXkiOwoJCQlzb3VuZC1kYWkgPSA8JmF1ZGlvMSAxPjsK
+CQkJcGxheWJhY2s7CgkJfTsKCQlzaW1wbGUtYXVkaW8tY2FyZCxjb2RlY0AzIHsKCQkJc291bmQt
+ZGFpID0gPCZzcGRpZl9jb2RlYz47CgkJfTsKCX07CgpNYXkgSSBnbyB0byB0aGlzIGRpcmVjdGlv
+bj8KCi0tIApLZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYh
+ICoqCkplZgkJfAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
