@@ -1,18 +1,18 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH] ASoC: generic: add generic compound card
- with DT support
-Date: Wed, 1 Jan 2014 21:08:14 +0100
-Message-ID: <20140101210814.31e3f3a9@armhf>
-References: <20131231113138.102044cf@armhf>
-	<52C466E1.3030302@metafoo.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 08/19] ASoC: kirkwood: Don't set unused
+ struct snd_pcm_hardware fields
+Date: Wed, 01 Jan 2014 21:10:15 +0100
+Message-ID: <52C47627.9080709@metafoo.de>
+References: <20131230204209.109eca01@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
- by alsa0.perex.cz (Postfix) with ESMTP id 3452726109F
- for <alsa-devel@alsa-project.org>; Wed,  1 Jan 2014 21:09:07 +0100 (CET)
-In-Reply-To: <52C466E1.3030302@metafoo.de>
+Received: from smtp-out-079.synserver.de (smtp-out-181.synserver.de
+ [212.40.185.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65D2A2610C5
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jan 2014 21:10:01 +0100 (CET)
+In-Reply-To: <20131230204209.109eca01@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +22,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAwMSBKYW4gMjAxNCAyMDowNTowNSArMDEwMApMYXJzLVBldGVyIENsYXVzZW4gPGxh
-cnNAbWV0YWZvby5kZT4gd3JvdGU6Cgo+IEFzIE1hcmsgYWxzbyBzYWlkLCB0aGlzIGJpbmRpbmcg
-ZGVmaW5pdGVseSBsZWFrcyB3YXkgdG9vIG11Y2ggaW50ZXJuYWxzIG9mCj4gdGhlIGN1cnJlbnQg
-QVNvQyBpbXBsZW1lbnRhdGlvbi4gSW4gbXkgb3BpbmlvbiB0aGUgd2F5IGZvcndhcmQgZm9yIEFT
-b0MgaXMKPiB0byBzdG9wIHRvIGRpc3Rpbmd1aXNoIGJldHdlZW4gZGlmZmVyZW50IHR5cGVzIG9m
-IGNvbXBvbmVudHMuIFRoaXMgaXMgb24gb25lCj4gaGFuZCBDT0RFQ1MgYW5kIENQVS1EQUlzIGFu
-ZCBvbiB0aGUgb3RoZXIgaGFuZCBhbHNvIGZyb250LWVuZCBhbmQgYmVjay1lbmQKPiBEQUlzLiBU
-aGUgZmlyc3Qgc3RlcHMgaW4gdGhpcyBkaXJlY3Rpb24gaGF2ZSBhbHJlYWR5IGJlZW4gdGFrZSBi
-eSB0aGUgc3RhcnQKPiBvZiB0aGUgY29tcG9uZW50LWZpY2F0aW9uLCBidXQgaXRzIHN0aWxsIGEg
-bG9uZyB3YXkgdG8gZ28uIEV4cG9zaW5nIHRob3NlCj4gY29uY2VwdHMgdmlhIHRoZSBkZXZpY2V0
-cmVlIHdpbGwgb25seSBtYWtlIGl0IGhhcmRlciB0byBnZXQgcmlkIG9mIHRoZW0KPiBsYXRlci4g
-VGhlIGJpbmRpbmdzIGZvciBhIGNvbXBvdW5kIGNhcmQgc2hvdWxkIGVzc2VudGlhbGx5IGRlc2Ny
-aWJlIHdoaWNoCj4gY29tcG9uZW50cyBhcmUgaW52b2x2ZWQgYW5kIGhvdyB0aGUgZmFicmljIGJl
-dHdlZW4gYW5kIGFyb3VuZCB0aGVtIGxvb2tzCj4gbGlrZS4gSWYgdGhlIHR5cGUgb2YgdGhlIGNv
-bXBvbmVudCBpcyBuZWVkZWQgaW4gdGhlIEFTb0MgaW1wbGVtZW50YXRpb24gaXQKPiBzaG91bGQg
-YmUgcG9zc2libGUgdG8gYXV0by1kaXNjb3ZlciBpdC4gQWxzbyBJIHRoaW5rIHdlIHdhbnQgdG8g
-YWxpZ24gdGhlCj4gZGV2aWNldHJlZSBiaW5kaW5ncyB3aXRoIHdoYXQgdGhlIG1lZGlhIHBlb3Bs
-ZSBoYXZlIGJlZW4gZG9pbmdbMV0uCgooeW91IGZvcmdvdCB0aGUgWzFdIHJlZmVyZW5jZSkKCj4g
-QXVkaW8gYW5kCj4gdmlkZW8gYXJlIG5vdCB0aGF0IGRpZmZlcmVudCBpbiB0aGlzIHJlZ2FyZCBh
-bmQgdGhlcmUgd2lsbCBhbHNvIGJlIGJvYXJkcwo+IHdoZXJlIHRoZSBhdWRpbyBhbmQgdmlkZW8g
-ZmFicmljIHdpbGwgYmUgaW50ZXJtaW5nbGVkICAoZS5nLiBsaWtlIG9uIHlvdXIKPiBib2FyZCB3
-aXRoIEhETUkpLgoKSSBmb3VuZCBhIHdheSB0byBkaXNjb3ZlciB0aGUgREFJIGxpbmsgdHlwZXMg
-Zm9yIG15IHN5c3RlbTogd2hlbiBzaW1wbGUKREFQTSwgdGhlIGtpcmt3b29kIENQVSBEQUlzIGhh
-dmUgYW4gSUQgIT0gMC4gRm9yIHRoZSBDdWJveCwgdGhlIENQVSBEQUkKb2YgdGhlIGZpcnN0IGxp
-bmsgKHN5c3RlbSBwbGF5YmFjaykgaGFzIHRoZSBJRCAwLCBzbyBJIGNhbiBtb3ZlIHRvIERQQ00K
-c2V0dGluZyB0aGUgJ2R5bmFtaWMnIGFuZCAnbm9fcGNtJyBmbGFncyBpbiB0aGUgREFJIGxpbmtz
-IGF0IHNuZApwbGF0Zm9ybSBwcm9iZSB0aW1lLgoKVGhlbiwgYWZ0ZXIgc29tZSBleHRlbnNpb25z
-IG9mIHRoZSBzaW1wbGUtY2FyZCwgdGhlIERUIHdvdWxkIGxvb2sgbGlrZQoobm90IHRlc3RlZCB5
-ZXQpOgoKCXNvdW5kIHsKCQljb21wYXRpYmxlID0gInNpbXBsZS1hdWRpby1jYXJkIjsKCQlzaW1w
-bGUtYXVkaW8tcm91dGluZyA9CgkJCSJIRE1JIEkyUyBQbGF5YmFjayIsCSJTeXN0ZW0gUGxheWJh
-Y2siLAoJCQkiSERNSSBTUERJRiBQbGF5YmFjayIsCSJTeXN0ZW0gUGxheWJhY2siLAoJCQkiU1BE
-SUYgUGxheWJhY2siLAkiU3lzdGVtIFBsYXliYWNrIiwKCgkJCSJoZG1pLW91dC1pMnMiLAkJIkhE
-TUkgSTJTIFBsYXliYWNrIiwKCQkJImhkbWktb3V0LXNwZGlmIiwJIkhETUkgU1BESUYgUGxheWJh
-Y2siLAoJCQkic3BkaWYtb3V0IiwJCSJTUERJRiBQbGF5YmFjayI7CgoJCXNpbXBsZS1hdWRpby1j
-YXJkLGNwdUAwIHsKCQkJbGluay1uYW1lID0gIlN5c3RlbSBhdWRpbyI7CS8qIGV4dGVuc2lvbiAq
-LwoJCQlzb3VuZC1kYWkgPSA8JmF1ZGlvMSAwPjsKCQkJcGxheWJhY2s7CQkJLyogZXh0ZW5zaW9u
-ICovCgkJCWZvcm1hdCA9ICJpMnMiOwoJCX07CgkJc2ltcGxlLWF1ZGlvLWNhcmQsY29kZWNAMCB7
-CgkJCXNvdW5kLWRhaS1uYW1lID0gInNuZC1zb2MtZHVtbXktZGFpIjsKCQl9OwoKCQkJCQkJCS8q
-IG11bHRpLWxpbmtzIGV4dGVuc2lvbiAqLwoJCXNpbXBsZS1hdWRpby1jYXJkLGNwdUAxIHsKCQkJ
-bGluay1uYW1lID0gImhkbWktaTJzIjsKCQkJcGxhdGZvcm0tbmFtZSA9ICJzbmQtc29jLWR1bW15
-IjsgLyogZXh0ZW5zaW9uICovCgkJCXNvdW5kLWRhaSA9IDwmYXVkaW8xIDE+OwoJCQlwbGF5YmFj
-azsKCQl9OwoJCXNpbXBsZS1hdWRpby1jYXJkLGNvZGVjQDEgewoJCQlzb3VuZC1kYWkgPSA8Jmhk
-bWlfY29kZWMgMD47CgkJfTsKCgkJc2ltcGxlLWF1ZGlvLWNhcmQsY3B1QDIgewoJCQlsaW5rLW5h
-bWUgPSAiaGRtaS1zcGRpZiI7CgkJCXBsYXRmb3JtLW5hbWUgPSAic25kLXNvYy1kdW1teSI7CgkJ
-CXNvdW5kLWRhaSA9IDwmYXVkaW8xIDI+OwoJCQlwbGF5YmFjazsKCQl9OwoJCXNpbXBsZS1hdWRp
-by1jYXJkLGNvZGVjQDIgewoJCQlzb3VuZC1kYWkgPSA8JmhkbWlfY29kZWMgMT47CgkJfTsKCgkJ
-c2ltcGxlLWF1ZGlvLWNhcmQsY3B1QDMgewoJCQlsaW5rLW5hbWUgPSAic3BkaWYiOwoJCQlwbGF0
-Zm9ybS1uYW1lID0gInNuZC1zb2MtZHVtbXkiOwoJCQlzb3VuZC1kYWkgPSA8JmF1ZGlvMSAxPjsK
-CQkJcGxheWJhY2s7CgkJfTsKCQlzaW1wbGUtYXVkaW8tY2FyZCxjb2RlY0AzIHsKCQkJc291bmQt
-ZGFpID0gPCZzcGRpZl9jb2RlYz47CgkJfTsKCX07CgpNYXkgSSBnbyB0byB0aGlzIGRpcmVjdGlv
-bj8KCi0tIApLZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYh
-ICoqCkplZgkJfAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 12/30/2013 08:42 PM, Jean-Francois Moine wrote:
+>> On 12/20/2013 08:13 PM, Jean-Francois Moine wrote:
+>>> On Fri, 20 Dec 2013 18:18:49 +0100
+>>> Lars-Peter Clausen <lars@metafoo.de> wrote:
+>>>   
+>>>> On 12/20/2013 07:05 PM, Jean-Francois Moine wrote:  
+>>>>>> diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+>>>>>> index 4af1936..aac22fc 100644
+>>>>>> --- a/sound/soc/kirkwood/kirkwood-dma.c
+>>>>>> +++ b/sound/soc/kirkwood/kirkwood-dma.c  
+>>>>> 	[snip]  
+>>>>>> @@ -43,12 +33,6 @@ static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
+>>>>>>  		 SNDRV_PCM_INFO_MMAP_VALID |
+>>>>>>  		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>>>>>>  		 SNDRV_PCM_INFO_PAUSE),
+>>>>>> -	.formats		= KIRKWOOD_FORMATS,
+>>>>>> -	.rates			= KIRKWOOD_RATES,
+>>>>>> -	.rate_min		= 8000,
+>>>>>> -	.rate_max		= 384000,
+>>>>>> -	.channels_min		= 1,
+>>>>>> -	.channels_max		= 8,
+>>>>>>  	.buffer_bytes_max	= KIRKWOOD_SND_MAX_BUFFER_BYTES,
+>>>>>>  	.period_bytes_min	= KIRKWOOD_SND_MIN_PERIOD_BYTES,
+>>>>>>  	.period_bytes_max	= KIRKWOOD_SND_MAX_PERIOD_BYTES,  
+>>>>>
+>>>>> Lars,
+>>>>>
+>>>>> You removed too many things. The 'formats' field is mandatory.  
+>>>>
+>>>> No it is not. While snd_soc_set_runtime_hwparams() uses it it is later
+>>>> overwritten again in soc_pcm_init_runtime_hw().  
+>>>
+>>> I have a DPCM system and soc_pcm_init_runtime_hw() is not called
+>>> (either 'dynamic' or 'no_pcm' is set in the DAI links).
+>>
+>> Ok, I see dpcm_set_fe_runtime() does things slightly different.
+> 
+> Well, I advanced a bit with DPCM, and I have a problem with this field.
+> 
+> In the driver, the front-end DAI is the audio controller and the
+> back-ends DAIs are the HDMI and SPDIF outputs. These back-end DAIs
+> have different rates and formats, as have the audio controller outputs
+> (I2S and SPDIF). So, I used intermediate DAIs which represent the audio
+> controller outputs, and they are described in the DAI links:
+> 
+> link 0 (FE): audio controller <-> dummy DAI
+> link 1 (BE): i2s audio controller output <-> HDMI output
+> link 2 (BE): spdif audio controller output <-> HDMI output
+> link 3 (BE): spdif audio controller output <-> SPDIF output
+> 
+> Without any patch in the core, the rates and formats are always the
+> rates and formats of the audio controller (FE). This is due to the
+> 'goto dynamic' in soc_pcm_open(): as the back-ends are linked to real
+> DAIs, the rate and format constraints must be checked. So, as a
+> temporary patch, I replaced:
+> 
+> 	if (rtd->dai_link->dynamic || rtd->dai_link->no_pcm)
+> 		goto dynamic;
+> by:
+> 	if (rtd->dai_link->dynamic)
+> 		goto dynamic;
+> 
+> (indeed, this will not work if the back-end is linked to the dummy DAI)
+> 
+> and, I get the correct rates and formats in the runtime hardware
+> parameters. But these values are lost:
+> 
+> - on DMA open (FE pcm open), when the driver calls
+>   snd_soc_set_runtime_hwparams() (loss of the formats), and
+> 
+> - on dpcm_set_fe_runtime() call (loss of the rates).
+> 
+> The first problem can be fixed in the audio controller by a hack,
+> saving /restoring the formats on calling snd_soc_set_runtime_hwparams(),
+> and the second problem is easily fixed moving dpcm_set_fe_runtime() at
+> the beginning of dpcm_fe_dai_startup(). Are these good solutions?
+
+This seems all to be very hackish. We clearly need to fix that DPCM only
+considers the constraints of the FE DAI though.
+
+The digital domain of a sound card can be thought of as a pipeline which
+mostly operates on one sample at a time. The samples have two main
+parameters, the frequency with which they are generated and their width.
+Certain components in the pipeline have constraints on which parameters they
+can work with. There are also components which can change the parameters,
+e.g. a samplerate converter can change the frequency or a DAI might be able
+to change the width. What we are interested in is for which parameters on
+the PCM side are we able to build up a pipeline that satisfies all
+constraints of all the components in the pipeline. I think this can be done
+by walking the DAPM graph and collect the constraints associated with the
+components in the path (The graph walking only has to be done when
+components are added or removed). E.g. build up a list of all the the DAIs
+that are reachable from a PCM and then use the constraints of those DAIs for
+the PCM.
+
+For starters we probably do not want support components which can change the
+parameters for the sample stream. This is currently not supported in ASoC at
+all and adding it will makes things more complex. But it should be kept in
+mind, so it can be added in the next iteration. When calculating the
+constraints we should probably also consider all possible paths and not only
+active paths, since otherwise you'll run into problems if you want to change
+the active path at runtime and the new configuration has more restrictive
+constraints.
+
+While we are at it we should probably also reduce the separation between
+DPCM and clasic PCM as clasic PCM is just a special case (static routes) of
+DPCM.
+
+- Lars
