@@ -1,36 +1,52 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: generic: add generic compound card
- with DT support
-Date: Wed, 01 Jan 2014 21:11:23 +0100
-Message-ID: <52C4766B.8080000@metafoo.de>
-References: <20131231113138.102044cf@armhf> <52C466E1.3030302@metafoo.de> <20140101210814.31e3f3a9@armhf>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH] ASoC: simple-card: Add device's module
+ clock selection.
+Date: Thu, 2 Jan 2014 02:34:36 +0000
+Message-ID: <f605f6aeace742c8b0ed69c565649a8d@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1387783538-5318-1-git-send-email-Li.Xiubo@freescale.com>
+ <52C405DD.1080006@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140101210814.31e3f3a9@armhf>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2lp0209.outbound.protection.outlook.com [207.46.163.209])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0835626163C
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2014 03:34:48 +0100 (CET)
+In-Reply-To: <52C405DD.1080006@metafoo.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/01/2014 09:08 PM, Jean-Francois Moine wrote:
-> On Wed, 01 Jan 2014 20:05:05 +0100
-> Lars-Peter Clausen <lars@metafoo.de> wrote:
-> 
->> As Mark also said, this binding definitely leaks way too much internals of
->> the current ASoC implementation. In my opinion the way forward for ASoC is
->> to stop to distinguish between different types of components. This is on one
->> hand CODECS and CPU-DAIs and on the other hand also front-end and beck-end
->> DAIs. The first steps in this direction have already been take by the start
->> of the component-fication, but its still a long way to go. Exposing those
->> concepts via the devicetree will only make it harder to get rid of them
->> later. The bindings for a compound card should essentially describe which
->> components are involved and how the fabric between and around them looks
->> like. If the type of the component is needed in the ASoC implementation it
->> should be possible to auto-discover it. Also I think we want to align the
->> devicetree bindings with what the media people have been doing[1].
-> 
-> (you forgot the [1] reference)
 
-http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/media/video-interfaces.txt
+> Subject: Re: [alsa-devel] [PATCH] ASoC: simple-card: Add device's module clock
+> selection.
+> 
+> On 12/23/2013 08:25 AM, Xiubo Li wrote:
+> > diff --git a/a.out b/a.out
+> > new file mode 100644
+> > index 0000000..e69de29
+> 
+> This patch did add a empty a.out file in the toplevel folder.
+> 
+> - Lars
+> 
+
+Yes, sorry, my mistake.
+
+Thanks very much
+
+--
+Best regards,
+Xiubo
+ 
