@@ -1,70 +1,133 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: generic: add generic compound card
- with DT support
-Date: Thu, 2 Jan 2014 11:56:18 +0000
-Message-ID: <20140102115618.GW31886@sirena.org.uk>
-References: <20131231113138.102044cf@armhf>
- <52C466E1.3030302@metafoo.de>
- <20140101210814.31e3f3a9@armhf>
- <52C4766B.8080000@metafoo.de>
- <20140102102647.6efec89d@armhf>
- <20140102111056.GT31886@sirena.org.uk>
- <20140102124331.2bcfc172@armhf>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH,
+	RFC 23/30] oss: msnd_pinnacle: avoid interruptible_sleep_on_timeout
+Date: Thu,  2 Jan 2014 13:07:47 +0100
+Message-ID: <1388664474-1710039-24-git-send-email-arnd@arndb.de>
+References: <1388664474-1710039-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YYdWNcbn0Z2BHBmW"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140102124331.2bcfc172@armhf>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDCB6261685
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2014 13:08:33 +0100 (CET)
+In-Reply-To: <1388664474-1710039-1-git-send-email-arnd@arndb.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Andrew Veliath <andrewtv@usa.net>, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
+We want to remove all sleep_on variants from the kernel because they are
+racy. In case of the pinnacle driver, we can replace
+interruptible_sleep_on_timeout with wait_event_interruptible_timeout
+by changing the meaning of a few flags used in the driver so they
+are cleared at wakeup time, which is a somewhat more appropriate
+way to do the same, although probably still racy.
 
---YYdWNcbn0Z2BHBmW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Andrew Veliath <andrewtv@usa.net>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/oss/msnd_pinnacle.c | 31 ++++++++++++++++++-------------
+ 1 file changed, 18 insertions(+), 13 deletions(-)
 
-On Thu, Jan 02, 2014 at 12:43:31PM +0100, Jean-Francois Moine wrote:
-> Mark Brown <broonie@kernel.org> wrote:
-
-> > I think we want an explicit object in the card representing the DAIs.
-> > This will both be useful for making it easy to find the configuration
-> > for the link and will be more extensible for the cases where multiple
-> > devices are connected, you can't just assume there's just two.
-
-> I don't see the problem: the 'port' is the DAI. The associated
-> endpoints give the DAI links and the routing information.
-
-> As the DT definition has been done for video, some properties may be
-> added at will for audio.
-
-> What kind of object were you thinking of?
-
-Like I say multiple devices on the same link - if you're just listing a
-single remote device there can't be more than one.
-
---YYdWNcbn0Z2BHBmW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSxVPfAAoJELSic+t+oim9XDoP/RnDe4d0oID/uL+K2ANKtwxj
-EkN4CLzODsli33xTcZiqW9MrHHOi9ai88eU21OjCcXW2Tht4ylj1S5VH4gXp4VM1
-lCTPtHBHQRzwV37bekrYX1VCbtYKe7cXwr44XXtHc/uRctR1NJ4HSLgXGQArJGth
-rpVRwVLdnZUc7WTVvZZO+cFbmaNOVVyuzlvgVOGpEPvLS1lPNMbJLdZJ30PBdYQT
-A6SsR0w4635gvw3EYClede7oNySScNJSQ+CMqPUJ80l+kRe8mGibMWqNsZyh7n6B
-ov76Ur3HqIxSMrHKuxMMCP/7BGxcWAUmvVDONk2XQ1LwnYgdB5ayc/y61eESl/ul
-vK57L/5ucJ8D8fWZIgoplfd/mujQij5XxIZPxhz+2Oc9lhNfOXAH7g9dK6hr9M+S
-mwlvZWAayQ2Y5vXfRCUwkWUT6bTDVBAOYiu9tFKUNQfOruPSvX2ZTFSZWINPp7Sl
-CFuFbkVR9I1INhzBZMx8qXB3cvdfDHGbe8U4Rp8OJjjjB0CG/4nkZ2LI3RSOQ6Cl
-Ms24j8bss7oU/xnwSf9XjUX1p8+veN8nwnq66hDyyl0dBZrHByPKCbMUzOQWLwIR
-Zm1WBPtma2Td57k6pscF2Qqj2xF3g60v6zEbQ98t/FF3ehejCRBS2L47VgOJ3BDC
-JnFVnQ884dMnjQD5oInm
-=BkPE
------END PGP SIGNATURE-----
-
---YYdWNcbn0Z2BHBmW--
+diff --git a/sound/oss/msnd_pinnacle.c b/sound/oss/msnd_pinnacle.c
+index 11ff7c5..c23f9f9 100644
+--- a/sound/oss/msnd_pinnacle.c
++++ b/sound/oss/msnd_pinnacle.c
+@@ -664,12 +664,15 @@ static long dev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 
+ static void dsp_write_flush(void)
+ {
++	int timeout = get_play_delay_jiffies(dev.DAPF.len);
++
+ 	if (!(dev.mode & FMODE_WRITE) || !test_bit(F_WRITING, &dev.flags))
+ 		return;
+ 	set_bit(F_WRITEFLUSH, &dev.flags);
+-	interruptible_sleep_on_timeout(
+-		&dev.writeflush,
+-		get_play_delay_jiffies(dev.DAPF.len));
++	wait_event_interruptible_timeout(
++		dev.writeflush,
++		!test_bit(F_WRITEFLUSH, &dev.flags),
++		timeout);
+ 	clear_bit(F_WRITEFLUSH, &dev.flags);
+ 	if (!signal_pending(current)) {
+ 		current->state = TASK_INTERRUPTIBLE;
+@@ -897,6 +900,7 @@ static int dsp_read(char __user *buf, size_t len)
+ {
+ 	int count = len;
+ 	char *page = (char *)__get_free_page(GFP_KERNEL);
++	int timeout = get_rec_delay_jiffies(DAR_BUFF_SIZE);
+ 
+ 	if (!page)
+ 		return -ENOMEM;
+@@ -936,11 +940,11 @@ static int dsp_read(char __user *buf, size_t len)
+ 
+ 		if (count > 0) {
+ 			set_bit(F_READBLOCK, &dev.flags);
+-			if (!interruptible_sleep_on_timeout(
+-				&dev.readblock,
+-				get_rec_delay_jiffies(DAR_BUFF_SIZE)))
++			if (wait_event_interruptible_timeout(
++					dev.readblock,
++					test_bit(F_READBLOCK, &dev.flags),
++					timeout) <= 0)
+ 				clear_bit(F_READING, &dev.flags);
+-			clear_bit(F_READBLOCK, &dev.flags);
+ 			if (signal_pending(current)) {
+ 				free_page((unsigned long)page);
+ 				return -EINTR;
+@@ -955,6 +959,7 @@ static int dsp_write(const char __user *buf, size_t len)
+ {
+ 	int count = len;
+ 	char *page = (char *)__get_free_page(GFP_KERNEL);
++	int timeout = get_play_delay_jiffies(DAP_BUFF_SIZE);
+ 
+ 	if (!page)
+ 		return -ENOMEM;
+@@ -995,10 +1000,10 @@ static int dsp_write(const char __user *buf, size_t len)
+ 
+ 		if (count > 0) {
+ 			set_bit(F_WRITEBLOCK, &dev.flags);
+-			interruptible_sleep_on_timeout(
+-				&dev.writeblock,
+-				get_play_delay_jiffies(DAP_BUFF_SIZE));
+-			clear_bit(F_WRITEBLOCK, &dev.flags);
++			wait_event_interruptible_timeout(
++				dev.writeblock,
++				test_bit(F_WRITEBLOCK, &dev.flags),
++				timeout);
+ 			if (signal_pending(current)) {
+ 				free_page((unsigned long)page);
+ 				return -EINTR;
+@@ -1044,7 +1049,7 @@ static __inline__ void eval_dsp_msg(register WORD wMessage)
+ 			clear_bit(F_WRITING, &dev.flags);
+ 		}
+ 
+-		if (test_bit(F_WRITEBLOCK, &dev.flags))
++		if (test_and_clear_bit(F_WRITEBLOCK, &dev.flags))
+ 			wake_up_interruptible(&dev.writeblock);
+ 		break;
+ 
+@@ -1055,7 +1060,7 @@ static __inline__ void eval_dsp_msg(register WORD wMessage)
+ 
+ 		pack_DARQ_to_DARF(dev.last_recbank);
+ 
+-		if (test_bit(F_READBLOCK, &dev.flags))
++		if (test_and_clear_bit(F_READBLOCK, &dev.flags))
+ 			wake_up_interruptible(&dev.readblock);
+ 		break;
+ 
+-- 
+1.8.3.2
