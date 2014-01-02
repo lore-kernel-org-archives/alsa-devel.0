@@ -1,133 +1,154 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH,
-	RFC 23/30] oss: msnd_pinnacle: avoid interruptible_sleep_on_timeout
-Date: Thu,  2 Jan 2014 13:07:47 +0100
-Message-ID: <1388664474-1710039-24-git-send-email-arnd@arndb.de>
-References: <1388664474-1710039-1-git-send-email-arnd@arndb.de>
+Subject: [PATCH, RFC 00/30] sleep_on removal
+Date: Thu,  2 Jan 2014 13:07:24 +0100
+Message-ID: <1388664474-1710039-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.10])
- by alsa0.perex.cz (Postfix) with ESMTP id BDCB6261685
- for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2014 13:08:33 +0100 (CET)
-In-Reply-To: <1388664474-1710039-1-git-send-email-arnd@arndb.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: driverdev-devel-bounces@linuxdriverproject.org
 To: linux-kernel@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Andrew Veliath <andrewtv@usa.net>, Arnd Bergmann <arnd@arndb.de>
+Cc: akpm@osdl.org, alsa-devel@alsa-project.org, peterz@infradead.org, perex@perex.cz, hverkuil@xs4all.nl, jslaby@suse.cz, mingo@kernel.org, chas@cmf.nrl.navy.mil, linux-scsi@vger.kernel.org, linux-atm-general@lists.sourceforge.net, tiwai@suse.de, geert@linux-m68k.org, linux-media@vger.kernel.org, devel@driverdev.osuosl.org, Arnd Bergmann <arnd@arndb.de>, axboe@kernel.dk, isdn@linux-pingi.de, linux-cris-kernel@axis.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, robinmholt@gmail.com, JBottomley@parallels.com, netdev@vger.kernel.org, davem@davemloft.net, m.chehab@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-We want to remove all sleep_on variants from the kernel because they are
-racy. In case of the pinnacle driver, we can replace
-interruptible_sleep_on_timeout with wait_event_interruptible_timeout
-by changing the meaning of a few flags used in the driver so they
-are cleared at wakeup time, which is a somewhat more appropriate
-way to do the same, although probably still racy.
+The functions sleep_on, sleep_on_timeout, interruptible_sleep_on
+and interruptible_sleep_on_timeout have been deprecated for as
+long as I can remember, and a number of people have contributed
+patches in the past to remove them from various drivers.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Andrew Veliath <andrewtv@usa.net>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
----
- sound/oss/msnd_pinnacle.c | 31 ++++++++++++++++++-------------
- 1 file changed, 18 insertions(+), 13 deletions(-)
+This has recently popped up again and I decided to spend some
+of my time on tracking down the last users and kill it for good.
+The work is somewhat related to the BKL removal I did a couple
+of years ago, since most of these drivers were using the BKL
+in a way that actually made the sleep_on function safe to call.
+As the BKL was converted into mutexes, the semantics changed
+slightly and typically opened up a race between checking
+a condition and going to sleep.
 
-diff --git a/sound/oss/msnd_pinnacle.c b/sound/oss/msnd_pinnacle.c
-index 11ff7c5..c23f9f9 100644
---- a/sound/oss/msnd_pinnacle.c
-+++ b/sound/oss/msnd_pinnacle.c
-@@ -664,12 +664,15 @@ static long dev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 
- static void dsp_write_flush(void)
- {
-+	int timeout = get_play_delay_jiffies(dev.DAPF.len);
-+
- 	if (!(dev.mode & FMODE_WRITE) || !test_bit(F_WRITING, &dev.flags))
- 		return;
- 	set_bit(F_WRITEFLUSH, &dev.flags);
--	interruptible_sleep_on_timeout(
--		&dev.writeflush,
--		get_play_delay_jiffies(dev.DAPF.len));
-+	wait_event_interruptible_timeout(
-+		dev.writeflush,
-+		!test_bit(F_WRITEFLUSH, &dev.flags),
-+		timeout);
- 	clear_bit(F_WRITEFLUSH, &dev.flags);
- 	if (!signal_pending(current)) {
- 		current->state = TASK_INTERRUPTIBLE;
-@@ -897,6 +900,7 @@ static int dsp_read(char __user *buf, size_t len)
- {
- 	int count = len;
- 	char *page = (char *)__get_free_page(GFP_KERNEL);
-+	int timeout = get_rec_delay_jiffies(DAR_BUFF_SIZE);
- 
- 	if (!page)
- 		return -ENOMEM;
-@@ -936,11 +940,11 @@ static int dsp_read(char __user *buf, size_t len)
- 
- 		if (count > 0) {
- 			set_bit(F_READBLOCK, &dev.flags);
--			if (!interruptible_sleep_on_timeout(
--				&dev.readblock,
--				get_rec_delay_jiffies(DAR_BUFF_SIZE)))
-+			if (wait_event_interruptible_timeout(
-+					dev.readblock,
-+					test_bit(F_READBLOCK, &dev.flags),
-+					timeout) <= 0)
- 				clear_bit(F_READING, &dev.flags);
--			clear_bit(F_READBLOCK, &dev.flags);
- 			if (signal_pending(current)) {
- 				free_page((unsigned long)page);
- 				return -EINTR;
-@@ -955,6 +959,7 @@ static int dsp_write(const char __user *buf, size_t len)
- {
- 	int count = len;
- 	char *page = (char *)__get_free_page(GFP_KERNEL);
-+	int timeout = get_play_delay_jiffies(DAP_BUFF_SIZE);
- 
- 	if (!page)
- 		return -ENOMEM;
-@@ -995,10 +1000,10 @@ static int dsp_write(const char __user *buf, size_t len)
- 
- 		if (count > 0) {
- 			set_bit(F_WRITEBLOCK, &dev.flags);
--			interruptible_sleep_on_timeout(
--				&dev.writeblock,
--				get_play_delay_jiffies(DAP_BUFF_SIZE));
--			clear_bit(F_WRITEBLOCK, &dev.flags);
-+			wait_event_interruptible_timeout(
-+				dev.writeblock,
-+				test_bit(F_WRITEBLOCK, &dev.flags),
-+				timeout);
- 			if (signal_pending(current)) {
- 				free_page((unsigned long)page);
- 				return -EINTR;
-@@ -1044,7 +1049,7 @@ static __inline__ void eval_dsp_msg(register WORD wMessage)
- 			clear_bit(F_WRITING, &dev.flags);
- 		}
- 
--		if (test_bit(F_WRITEBLOCK, &dev.flags))
-+		if (test_and_clear_bit(F_WRITEBLOCK, &dev.flags))
- 			wake_up_interruptible(&dev.writeblock);
- 		break;
- 
-@@ -1055,7 +1060,7 @@ static __inline__ void eval_dsp_msg(register WORD wMessage)
- 
- 		pack_DARQ_to_DARF(dev.last_recbank);
- 
--		if (test_bit(F_READBLOCK, &dev.flags))
-+		if (test_and_clear_bit(F_READBLOCK, &dev.flags))
- 			wake_up_interruptible(&dev.readblock);
- 		break;
- 
+I don't have any of the hardware that I'm sending the patches
+for, so it would be great if someone could test them before
+they get applied. Otherwise please review very carefully.
+
+I'm definitely happy for any patches to go into maintainer
+trees right away. Obviously the final patch cannot go in
+until everything else gets merged first and I suspect there
+will be a series of patches for maintainerless drivers that
+will go along with it.
+
+	Arnd
+
+Arnd Bergmann (30):
+  ataflop: fix sleep_on races
+  scsi: atari_scsi: fix sleep_on race
+  DAC960: remove sleep_on usage
+  swim3: fix interruptible_sleep_on race
+  [media] omap_vout: avoid sleep_on race
+  [media] usbvision: remove bogus sleep_on_timeout
+  [media] radio-cadet: avoid interruptible_sleep_on race
+  [media] arv: fix sleep_on race
+  staging: serqt_usb2: don't use sleep_on
+  staging: gdm72xx: fix interruptible_sleep_on race
+  staging: panel: fix interruptible_sleep_on race
+  parport: fix interruptible_sleep_on race
+  cris: sync_serial: remove interruptible_sleep_on
+  tty/amiserial: avoid interruptible_sleep_on
+  usbserial: stop using interruptible_sleep_on
+  tty: synclink: avoid sleep_on race
+  atm: nicstar: remove interruptible_sleep_on_timeout
+  atm: firestream: fix interruptible_sleep_on race
+  isdn: pcbit: fix interruptible_sleep_on race
+  isdn: hisax/elsa: fix sleep_on race in elsa FSM
+  isdn: divert, hysdn: fix interruptible_sleep_on race
+  isdn: fix multiple sleep_on races
+  oss: msnd_pinnacle: avoid interruptible_sleep_on_timeout
+  oss: midibuf: fix sleep_on races
+  oss: vwsnd: avoid interruptible_sleep_on
+  oss: dmasound: kill SLEEP() macro to avoid race
+  oss: remove last sleep_on users
+  sgi-xp: open-code interruptible_sleep_on_timeout
+  char: nwbutton: open-code interruptible_sleep_on
+  sched: remove sleep_on() and friends
+
+ Documentation/DocBook/kernel-hacking.tmpl    | 10 ------
+ arch/cris/arch-v10/drivers/sync_serial.c     |  4 ++-
+ arch/cris/arch-v32/drivers/sync_serial.c     |  4 ++-
+ drivers/atm/firestream.c                     |  4 +--
+ drivers/atm/nicstar.c                        | 13 ++++----
+ drivers/block/DAC960.c                       | 34 +++++++++----------
+ drivers/block/ataflop.c                      | 16 ++++-----
+ drivers/block/swim3.c                        | 18 ++++++----
+ drivers/char/nwbutton.c                      |  5 ++-
+ drivers/char/pcmcia/synclink_cs.c            |  4 +--
+ drivers/isdn/divert/divert_procfs.c          |  7 ++--
+ drivers/isdn/hisax/elsa.c                    |  9 +++--
+ drivers/isdn/hisax/elsa_ser.c                |  3 +-
+ drivers/isdn/hysdn/hysdn_proclog.c           |  7 ++--
+ drivers/isdn/i4l/isdn_common.c               | 13 +++++---
+ drivers/isdn/pcbit/drv.c                     |  6 ++--
+ drivers/media/platform/arv.c                 |  4 +--
+ drivers/media/platform/omap/omap_vout_vrfb.c |  3 +-
+ drivers/media/radio/radio-cadet.c            | 12 +++++--
+ drivers/media/usb/usbvision/usbvision.h      |  4 +--
+ drivers/misc/sgi-xp/xpc_channel.c            |  5 ++-
+ drivers/parport/share.c                      |  3 +-
+ drivers/scsi/atari_scsi.c                    | 12 +++++--
+ drivers/staging/gdm72xx/gdm_usb.c            |  5 +--
+ drivers/staging/panel/panel.c                |  4 +--
+ drivers/staging/serqt_usb2/serqt_usb2.c      | 17 ++++------
+ drivers/tty/amiserial.c                      | 26 ++++++++++-----
+ drivers/tty/synclink.c                       |  4 +--
+ drivers/tty/synclink_gt.c                    |  4 +--
+ drivers/tty/synclinkmp.c                     |  4 +--
+ drivers/usb/serial/ch341.c                   | 29 +++++++++++-----
+ drivers/usb/serial/cypress_m8.c              | 49 ++++++++++++++++++----------
+ drivers/usb/serial/f81232.c                  | 29 +++++++++++-----
+ drivers/usb/serial/pl2303.c                  | 29 +++++++++++-----
+ include/linux/wait.h                         | 11 -------
+ kernel/sched/core.c                          | 46 --------------------------
+ sound/oss/dmabuf.c                           | 14 ++++----
+ sound/oss/dmasound/dmasound.h                |  1 -
+ sound/oss/dmasound/dmasound_core.c           | 28 +++++++++++-----
+ sound/oss/midibuf.c                          | 18 +++++-----
+ sound/oss/msnd_pinnacle.c                    | 31 ++++++++++--------
+ sound/oss/sequencer.c                        | 16 ++++-----
+ sound/oss/sleep.h                            | 18 ++++++++++
+ sound/oss/swarm_cs4297a.c                    | 14 ++++----
+ sound/oss/vwsnd.c                            | 14 +++++---
+ 45 files changed, 334 insertions(+), 277 deletions(-)
+ create mode 100644 sound/oss/sleep.h
+
 -- 
 1.8.3.2
+
+Cc: akpm@osdl.org
+Cc: chas@cmf.nrl.navy.mil
+Cc: davem@davemloft.net
+Cc: geert@linux-m68k.org
+Cc: gregkh@linuxfoundation.org
+Cc: hverkuil@xs4all.nl
+Cc: mingo@kernel.org
+Cc: JBottomley@parallels.com
+Cc: perex@perex.cz
+Cc: axboe@kernel.dk
+Cc: jslaby@suse.cz
+Cc: isdn@linux-pingi.de
+Cc: m.chehab@samsung.com
+Cc: peterz@infradead.org
+Cc: robinmholt@gmail.com
+Cc: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
+Cc: devel@driverdev.osuosl.org
+Cc: linux-atm-general@lists.sourceforge.net
+Cc: linux-cris-kernel@axis.com
+Cc: linux-media@vger.kernel.org
+Cc: linux-scsi@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Cc: netdev@vger.kernel.org
