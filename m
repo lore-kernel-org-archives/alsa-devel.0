@@ -1,99 +1,83 @@
-From: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
-Subject: Re: [PATCHv9] dmaengine: Add support for BCM2835
-Date: Thu, 02 Jan 2014 19:03:34 +0100
-Message-ID: <1964639.FVztRK0HBK@wuerfel>
-References: <52C5A6A3.8000405@koalo.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: generic: add generic compound card
+ with DT support
+Date: Thu, 2 Jan 2014 18:35:53 +0000
+Message-ID: <20140102183553.GG31886@sirena.org.uk>
+References: <52C466E1.3030302@metafoo.de>
+ <20140101210814.31e3f3a9@armhf>
+ <52C4766B.8080000@metafoo.de>
+ <20140102102647.6efec89d@armhf>
+ <20140102111056.GT31886@sirena.org.uk>
+ <20140102124331.2bcfc172@armhf>
+ <20140102115618.GW31886@sirena.org.uk>
+ <20140102134437.1e39da55@armhf>
+ <20140102131045.GZ31886@sirena.org.uk>
+ <20140102185055.76eb576e@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="rrTeYcb7ueXzDtg5"
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <52C5A6A3.8000405-oZ8rN/sblLk@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20140102185055.76eb576e@armhf>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Andy Shevchenko <andriy.shevchenko-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 02 January 2014 18:49:23 Florian Meier wrote:
-> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
-> Currently it only supports cyclic DMA.
 
-Looks very nice. Just a few details I noticed:
+--rrTeYcb7ueXzDtg5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +#if defined(CONFIG_OF)
-> +static const struct of_device_id bcm2835_dma_of_match[] = {
-> +	{ .compatible = "brcm,bcm2835-dma", },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, bcm2835_dma_of_match);
-> +#endif
+On Thu, Jan 02, 2014 at 06:50:55PM +0100, Jean-Francois Moine wrote:
 
-I doubt we are going to see non-DT versions of this driver, so the #ifdef
-can just get removed here.
+> No, the 'endpoint' <=> 'remote-endpoint' is a point to point relation.
+> Even if the sources and sinks are not explicitly defined, the way
+> the stream flows is easy to find: the main source is always in the
+> 'audio-controller' node
 
-> +static struct dma_chan *bcm2835_dma_xlate(struct of_phandle_args *spec,
-> +					   struct of_dma *ofdma)
-> +{
-> +	struct bcm2835_dmadev *d = ofdma->of_dma_data;
-> +	struct dma_chan *chan, *candidate;
-> +
-> +retry:
-> +	candidate = NULL;
-> +
-> +	/*
-> +	 * Walk the list of channels registered with the current instance and
-> +	 * find one that is currently unused.
-> +	 */
-> +	list_for_each_entry(chan, &d->ddev.channels, device_node)
-> +		if (chan->client_count == 0) {
-> +			candidate = chan;
-> +			break;
-> +		}
-> +
-> +	if (!candidate)
-> +		return NULL;
-> +
-> +	/*
-> +	 * dma_get_slave_channel will return NULL if we lost a race between
-> +	 * the lookup and the reservation.
-> +	 */
-> +	chan = dma_get_slave_channel(candidate);
-> +
-> +	if (!chan)
-> +		goto retry;
-> +
-> +	/* Set DREQ from param */
-> +	to_bcm2835_dma_chan(chan)->dreq = spec->args[0];
-> +
-> +	return chan;
-> +}
+But the links in question aren't point to point links and may be
+bidirectional...
 
-This can now be simplified using the dma_get_any_slave_channel() interface
-taht Stephen Warren introduced.
+> Usually, the devices don't have to know to which other device they are
+> connected, and, yes, the reverse pointer sink to source is not useful.
 
-> +
-> +	if (!pdev->dev.dma_mask)
-> +		pdev->dev.dma_mask = &pdev->dev.coherent_dma_mask;
-> +
-> +	rc = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
-> +	if (rc)
-> +		return rc;
-> +	dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
+This may be the case for the systems you've looked at but other designs
+are quite common.
 
-dma_set_mask_and_coherent()
+> But the way (link) the audio stream comes from may be important to
+> know. This is the case for the HDMI CODEC which must tell the HDMI
+> transmitter from which hardware port(s) ('reg') it may get the audio
+> stream. That's why, the HDMI encoder has two endpoints in its audio
+> port, each endpoint being a different CODEC DAI.
 
-> +	if (pdev->dev.of_node) {
-> +		/* Device-tree DMA controller registration */
-> +		rc = of_dma_controller_register(pdev->dev.of_node,
-> +				bcm2835_dma_xlate, od);
-> +		if (rc) {
-> +			dev_err(&pdev->dev, "Failed to register DMA controller\n");
-> +			goto err_no_dma;
-> +		}
-> +	}
+Obviously if there are multiple DAIs on a device then it needs to be
+possible to represent them separately but that seems orthogonal to the
+rest of the discussion (and resolved already)?
 
-If pdev->dev.of_node isn't set, you didn't get here, so the if() can be removed.
+--rrTeYcb7ueXzDtg5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-	Arnd
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSxbGGAAoJELSic+t+oim9ON0P+gNywqD27n9koJRU7uqcOyLP
+AsSKs29GSD0iVzSZ+bovw90olKw1uQK5sfufL7697Wb7iB8LGuNnoNBenbCGKNBl
+llUWgZYHFB7FHO47DkKBKXGCPrhCfoVG+C/DKyAicS83onoHt098TUMhU+gt0dWH
+d696KKLrDXBpypk39kG7C53eHBNYrX2ZgAFOBKiMEJVezGvQVFzQ4HmOddqFcDd2
+sNyuA1YEDgqIICeOCyhmyze45WWfX/0kCL4uWGI8rBUwfEtjExmxdWueX5loKaYX
+o4bx56BwJSecQm3N7F8d1v07OK8qj5zfCSjT1GPFvol5vW9DfywviYJx/GZJlGot
+c8E4Og50pJXGyEW/+MvV++/YlWrCPRI1ciEFCBRoWuzX56GGh1mMGelAL403Zl8/
++YSxniTRf60CLptoQmw3l3Kw71viaOrh8zw1anawYV0VnGwncDMxJf2oEMZ2jXXK
+Vrq2CY3ndmL7ku50v1sJh4oVbaXKSdbO985vfHqMdR2Qs41kHPX8oDhgjkXpcOZ9
+pbIJQlQFbzy7FzU9/+EVsSOuxvdtDKt2bg+BBlnesg3ABbFVGStPS/fNoGVf8geX
+Ch6V1RWM3pvH8FoB8R7LYYP6nc5oipWWkxWS4KkSSvrlQw/AruEEm5Vsvky6kq6q
+T/byhsoSHiE2JBZr52eY
+=O2JJ
+-----END PGP SIGNATURE-----
+
+--rrTeYcb7ueXzDtg5--
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
