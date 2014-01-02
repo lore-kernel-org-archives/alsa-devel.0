@@ -1,33 +1,49 @@
-From: Guillaume Desclaux <guillaume@desclaux.fr>
-Subject: Re: hda problem on Gigabyte GA-Z87X-UD3H motherboard
-Date: Thu, 02 Jan 2014 12:43:52 +0100
-Message-ID: <52C550F8.6030202@desclaux.fr>
-References: <52B838F4.3030701@desclaux.fr>
- <CAN8cciYaQaYCzT4NPnfE3OC4Fk78kndEPOmnOuhPBG4K9_MTGQ@mail.gmail.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [alsa-devel] [PATCH] ASoC: generic: add generic compound card
+ with DT support
+Date: Thu, 2 Jan 2014 12:43:31 +0100
+Message-ID: <20140102124331.2bcfc172@armhf>
+References: <20131231113138.102044cf@armhf>
+	<52C466E1.3030302@metafoo.de>
+	<20140101210814.31e3f3a9@armhf>
+	<52C4766B.8080000@metafoo.de>
+	<20140102102647.6efec89d@armhf>
+	<20140102111056.GT31886@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail01.one2net.net (mail5.one2net.net [5.39.67.68])
- by alsa0.perex.cz (Postfix) with ESMTP id B034526171F
- for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2014 12:43:54 +0100 (CET)
-In-Reply-To: <CAN8cciYaQaYCzT4NPnfE3OC4Fk78kndEPOmnOuhPBG4K9_MTGQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140102111056.GT31886@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This motherboard uses ALC898 with a DRV632 which is a Texas Instruments 
-Line driver/AMP. This line driver/AMP only works on the front panel 
-headphone output and you must use the internal header to get it.
+On Thu, 2 Jan 2014 11:10:56 +0000
+Mark Brown <broonie@kernel.org> wrote:
 
-Maybe it's the source of this strange behavior ?
+> On Thu, Jan 02, 2014 at 10:26:47AM +0100, Jean-Francois Moine wrote:
+>=20
+> > 		/* audio */
+> > 		port@1 {
+> > 			hdmi_i2s_audio: endpoint@0 {
+> > 				reg =3D <0x03>;
+> > 				remote-endpoint =3D <&audio_hdmi_i2s>;
+> > 			};
+>=20
+> I think we want an explicit object in the card representing the DAIs.
+> This will both be useful for making it easy to find the configuration
+> for the link and will be more extensible for the cases where multiple
+> devices are connected, you can't just assume there's just two.
 
-I don't know if it's helpful for you...
+I don't see the problem: the 'port' is the DAI. The associated
+endpoints give the DAI links and the routing information.
+
+As the DT definition has been done for video, some properties may be
+added at will for audio.
+
+What kind of object were you thinking of?
+
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
