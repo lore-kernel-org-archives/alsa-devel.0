@@ -1,76 +1,141 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: Re: [PATCH] ASoC: simple-card: cleanup
- asoc_simple_card_parse_of() code
-Date: Thu, 2 Jan 2014 09:26:50 +0000
-Message-ID: <f91162146c844cf79694b1b3880fd926@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1388114078-24517-1-git-send-email-Li.Xiubo@freescale.com>
- <20131230121113.GQ31886@sirena.org.uk>
- <4c44077c52604d0b85c4babb59268eb7@BY2PR03MB505.namprd03.prod.outlook.com>
- <20131231122036.GM31886@sirena.org.uk>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [alsa-devel] [PATCH] ASoC: generic: add generic compound card
+ with DT support
+Date: Thu, 2 Jan 2014 10:26:47 +0100
+Message-ID: <20140102102647.6efec89d@armhf>
+References: <20131231113138.102044cf@armhf>
+	<52C466E1.3030302@metafoo.de>
+	<20140101210814.31e3f3a9@armhf>
+	<52C4766B.8080000@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1blp0190.outbound.protection.outlook.com [207.46.163.190])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B6D4261651
- for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2014 10:26:56 +0100 (CET)
-In-Reply-To: <20131231122036.GM31886@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <52C4766B.8080000@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 01 Jan 2014 21:11:23 +0100
+Lars-Peter Clausen <lars@metafoo.de> wrote:
 
-> Subject: Re: [PATCH] ASoC: simple-card: cleanup asoc_simple_card_parse_of()
-> code
-> 
-> On Tue, Dec 31, 2013 at 03:27:53AM +0000, Li.Xiubo@freescale.com wrote:
-> 
-> > Also, for most of the devices of the same DAI link, they use the same DAI
-> > formats, but I have found some drivers like : "sound/soc/pxa/magician.c"
-> > and "sound/soc/s6000/s6105-ipcam.c", etc, may have different DAI format
-> > settings for some reasons(maybe some formats are the CPU/Codec devices
-> > default setting that it needn't set it here or others).
-> 
-> The ipcam still has that?  
+> On 01/01/2014 09:08 PM, Jean-Francois Moine wrote:
+> > On Wed, 01 Jan 2014 20:05:05 +0100
+> > Lars-Peter Clausen <lars@metafoo.de> wrote:
+> >=20
+> >> As Mark also said, this binding definitely leaks way too much inte=
+rnals of
+> >> the current ASoC implementation. In my opinion the way forward for=
+ ASoC is
+> >> to stop to distinguish between different types of components. This=
+ is on one
+> >> hand CODECS and CPU-DAIs and on the other hand also front-end and =
+beck-end
+> >> DAIs. The first steps in this direction have already been take by =
+the start
+> >> of the component-fication, but its still a long way to go. Exposin=
+g those
+> >> concepts via the devicetree will only make it harder to get rid of=
+ them
+> >> later. The bindings for a compound card should essentially describ=
+e which
+> >> components are involved and how the fabric between and around them=
+ looks
+> >> like. If the type of the component is needed in the ASoC implement=
+ation it
+> >> should be possible to auto-discover it. Also I think we want to al=
+ign the
+> >> devicetree bindings with what the media people have been doing[1].
+> >=20
+> > (you forgot the [1] reference)
+>=20
+> http://lxr.free-electrons.com/source/Documentation/devicetree/binding=
+s/media/video-interfaces.txt
 
-	-----------
-        /* set codec DAI configuration */
-        ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-                                             SND_SOC_DAIFMT_CBM_CFM);
-        if (ret < 0)
-                return ret;
+I see the idea. So here is a proposal of DT for the Cubox (audio + vide=
+o)
+which should work without too many difficulties.
 
-        /* set cpu DAI configuration */
-        ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBM_CFM |
-                                           SND_SOC_DAIFMT_NB_NF);
-        if (ret < 0)
-                return ret;
-	----------
+/* video / audio transmitter */
 
- ... ?
+	tda998x: hdmi-encoder {
+		compatible =3D "nxp,tda998x";
+		...
 
-> 
-> > I think maybe this is also the reason why the simple-card has common DAI
-> > format and CPU/CODEC private DAI formats at the same time.
-> 
-> I'd really want to see a real use case that actually was a simple card.
+		/* video */
+		port@0 {
+			tda998x_0: endpoint {
+				reg =3D <0x230145>;
+				remote-endpoint =3D <&lcd0_0>;
+			};
+		};
 
-I'm also still trying.
+		/* audio */
+		port@1 {
+			hdmi_i2s_audio: endpoint@0 {
+				reg =3D <0x03>;
+				remote-endpoint =3D <&audio_hdmi_i2s>;
+			};
+			hdmi_spdif_audio: endpoint@1 {
+				reg =3D <0x04>;
+				remote-endpoint =3D <&audio_hdmi_spdif>;
+			};
+		};
+	};
 
+	toslink: spdif {
+		compatible =3D "linux,spdif-dit";
+		port {
+			spdif_audio: endpoint {
+				remote-endpoint =3D <&audio_spdif>;
+			};
+		};
+	};
 
-Thanks,
+/* video */
 
---
-Best Regards,
-Xiubo
+	lcd0: video-controller {
+		compatible =3D "marvell,dove-lcd";
+		...
+		port {
+			lcd0_0: endpoint {
+				remote-endpoint =3D <&tda998x_0>;
+			};
+		};
+	};
+
+	video {
+		compatible =3D "media-video";
+		video-controller =3D <&lcd0>;
+	};
+
+/* audio */
+
+	audio1: audio-controller {
+		compatible =3D "marvell,dove-audio";
+		...
+		port@0 {
+			audio_hdmi_i2s: endpoint {
+				remote-endpoint =3D <&hdmi_i2s_audio>;
+			};
+		};
+
+		port@1 {
+			audio_hdmi_spdif: endpoint@0 {
+				remote-endpoint =3D <&hdmi_spdif_audio>;
+			};
+			audio_spdif: endpoint@1 {
+				remote-endpoint =3D <&spdif_audio>;
+			};
+		};
+	};
+
+	sound {
+		compatible =3D "media-audio";
+		audio-controller =3D <&audio1>;
+	};
+
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
