@@ -1,17 +1,16 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH,
-	RFC 25/30] oss: vwsnd: avoid interruptible_sleep_on
-Date: Thu,  2 Jan 2014 13:07:49 +0100
-Message-ID: <1388664474-1710039-26-git-send-email-arnd@arndb.de>
+Subject: [PATCH, RFC 24/30] oss: midibuf: fix sleep_on races
+Date: Thu,  2 Jan 2014 13:07:48 +0100
+Message-ID: <1388664474-1710039-25-git-send-email-arnd@arndb.de>
 References: <1388664474-1710039-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from moutng.kundenserver.de (moutng.kundenserver.de
- [212.227.126.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 28B412616C9
- for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2014 13:08:36 +0100 (CET)
+ [212.227.126.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6EA726172B
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2014 13:08:39 +0100 (CET)
 In-Reply-To: <1388664474-1710039-1-git-send-email-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,62 +25,68 @@ To: linux-kernel@vger.kernel.org
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-Interruptible_sleep_on is racy and we want to remove it. This replaces
-the use in the vwsnd driver with an open-coded prepare_to_wait
-loop that fixes the race between concurrent open() and close() calls,
-and also drops the global mutex while waiting here, which restores
-the original behavior that was changed during the BKL removal.
+sleep_on is known to be racy and going away because of this. All instances
+of interruptible_sleep_on and interruptible_sleep_on_timeout in the midibuf
+driver can trivially be replaced with wait_event_interruptible and
+wait_event_interruptible_timeout.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 ---
- sound/oss/vwsnd.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ sound/oss/midibuf.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/oss/vwsnd.c b/sound/oss/vwsnd.c
-index 4bbcc0f..a077e9c 100644
---- a/sound/oss/vwsnd.c
-+++ b/sound/oss/vwsnd.c
-@@ -2921,6 +2921,7 @@ static int vwsnd_audio_open(struct inode *inode, struct file *file)
- 	vwsnd_dev_t *devc;
- 	int minor = iminor(inode);
- 	int sw_samplefmt;
-+	DEFINE_WAIT(wait);
+diff --git a/sound/oss/midibuf.c b/sound/oss/midibuf.c
+index 8cdb2cf..79615cf 100644
+--- a/sound/oss/midibuf.c
++++ b/sound/oss/midibuf.c
+@@ -86,9 +86,8 @@ static void drain_midi_queue(int dev)
+ 	 */
  
- 	DBGE("(inode=0x%p, file=0x%p)\n", inode, file);
+ 	if (midi_devs[dev]->buffer_status != NULL)
+-		while (!signal_pending(current) && midi_devs[dev]->buffer_status(dev)) 
+-			interruptible_sleep_on_timeout(&midi_sleeper[dev],
+-						       HZ/10);
++		wait_event_interruptible_timeout(midi_sleeper[dev],
++				!midi_devs[dev]->buffer_status(dev), HZ/10);
+ }
  
-@@ -2937,21 +2938,26 @@ static int vwsnd_audio_open(struct inode *inode, struct file *file)
- 	}
+ static void midi_input_intr(int dev, unsigned char data)
+@@ -233,8 +232,8 @@ void MIDIbuf_release(int dev, struct file *file)
+ 							   * devices
+ 							 */
  
- 	mutex_lock(&devc->open_mutex);
--	while (devc->open_mode & file->f_mode) {
-+	while (1) {
-+		prepare_to_wait(&devc->open_wait, &wait, TASK_INTERRUPTIBLE);
-+		if (!(devc->open_mode & file->f_mode))
-+			break;
-+
- 		mutex_unlock(&devc->open_mutex);
-+		mutex_unlock(&vwsnd_mutex);
- 		if (file->f_flags & O_NONBLOCK) {
- 			DEC_USE_COUNT;
--			mutex_unlock(&vwsnd_mutex);
- 			return -EBUSY;
- 		}
--		interruptible_sleep_on(&devc->open_wait);
-+		schedule();
- 		if (signal_pending(current)) {
- 			DEC_USE_COUNT;
--			mutex_unlock(&vwsnd_mutex);
- 			return -ERESTARTSYS;
- 		}
-+		mutex_lock(&vwsnd_mutex);
- 		mutex_lock(&devc->open_mutex);
- 	}
-+	finish_wait(&devc->open_wait, &wait);
- 	devc->open_mode |= file->f_mode & (FMODE_READ | FMODE_WRITE);
- 	mutex_unlock(&devc->open_mutex);
+-		while (!signal_pending(current) && DATA_AVAIL(midi_out_buf[dev]))
+-			  interruptible_sleep_on(&midi_sleeper[dev]);
++		wait_event_interruptible(midi_sleeper[dev],
++					 !DATA_AVAIL(midi_out_buf[dev]));
+ 		/*
+ 		 *	Sync
+ 		 */
+@@ -282,8 +281,8 @@ int MIDIbuf_write(int dev, struct file *file, const char __user *buf, int count)
+ 				goto out;
+ 			}
  
+-			interruptible_sleep_on(&midi_sleeper[dev]);
+-			if (signal_pending(current)) 
++			if (wait_event_interruptible(midi_sleeper[dev],
++						SPACE_AVAIL(midi_out_buf[dev])))
+ 			{
+ 				c = -EINTR;
+ 				goto out;
+@@ -325,8 +324,9 @@ int MIDIbuf_read(int dev, struct file *file, char __user *buf, int count)
+  			c = -EAGAIN;
+ 			goto out;
+  		}
+-		interruptible_sleep_on_timeout(&input_sleeper[dev],
+-					       parms[dev].prech_timeout);
++		wait_event_interruptible_timeout(input_sleeper[dev],
++						 DATA_AVAIL(midi_in_buf[dev]),
++					         parms[dev].prech_timeout);
+ 
+ 		if (signal_pending(current))
+ 			c = -EINTR;	/* The user is getting restless */
 -- 
 1.8.3.2
