@@ -1,84 +1,668 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: generic: add generic compound card
- with DT support
-Date: Thu, 2 Jan 2014 18:35:53 +0000
-Message-ID: <20140102183553.GG31886@sirena.org.uk>
-References: <52C466E1.3030302@metafoo.de>
- <20140101210814.31e3f3a9@armhf>
- <52C4766B.8080000@metafoo.de>
- <20140102102647.6efec89d@armhf>
- <20140102111056.GT31886@sirena.org.uk>
- <20140102124331.2bcfc172@armhf>
- <20140102115618.GW31886@sirena.org.uk>
- <20140102134437.1e39da55@armhf>
- <20140102131045.GZ31886@sirena.org.uk>
- <20140102185055.76eb576e@armhf>
+From: Mark Brown <broonie@kernel.org>
+Subject: ASoC updates for v3.14
+Date: Thu, 2 Jan 2014 18:42:04 +0000
+Message-ID: <20140102184204.GH31886@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rrTeYcb7ueXzDtg5"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20140102185055.76eb576e@armhf>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============7390784704907751668=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8212A2608E8
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2014 19:42:08 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---rrTeYcb7ueXzDtg5
-Content-Type: text/plain; charset=us-ascii
+--===============7390784704907751668==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LDD4nbZpSQFEjkKT"
 Content-Disposition: inline
 
-On Thu, Jan 02, 2014 at 06:50:55PM +0100, Jean-Francois Moine wrote:
 
-> No, the 'endpoint' <=> 'remote-endpoint' is a point to point relation.
-> Even if the sources and sinks are not explicitly defined, the way
-> the stream flows is easy to find: the main source is always in the
-> 'audio-controller' node
+--LDD4nbZpSQFEjkKT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But the links in question aren't point to point links and may be
-bidirectional...
+The following changes since commit 802eee95bde72fd0cd0f3a5b2098375a487d1eda:
 
-> Usually, the devices don't have to know to which other device they are
-> connected, and, yes, the reverse pointer sink to source is not useful.
+  Linux 3.13-rc6 (2013-12-29 16:01:33 -0800)
 
-This may be the case for the systems you've looked at but other designs
-are quite common.
+are available in the git repository at:
 
-> But the way (link) the audio stream comes from may be important to
-> know. This is the case for the HDMI CODEC which must tell the HDMI
-> transmitter from which hardware port(s) ('reg') it may get the audio
-> stream. That's why, the HDMI encoder has two endpoints in its audio
-> port, each endpoint being a different CODEC DAI.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc=
+-v3.14
 
-Obviously if there are multiple DAIs on a device then it needs to be
-possible to represent them separately but that seems orthogonal to the
-rest of the discussion (and resolved already)?
+for you to fetch changes up to 2cde51fbd0f310c8a2c5f977e665c0ac3945b46d:
 
---rrTeYcb7ueXzDtg5
+  Merge remote-tracking branches 'asoc/topic/ad1836', 'asoc/topic/ad193x', =
+'asoc/topic/adav80x', 'asoc/topic/adsp', 'asoc/topic/ak4641', 'asoc/topic/a=
+k4642', 'asoc/topic/arizona', 'asoc/topic/atmel', 'asoc/topic/au1x', 'asoc/=
+topic/axi', 'asoc/topic/bcm2835', 'asoc/topic/blackfin', 'asoc/topic/cs4271=
+', 'asoc/topic/cs42l52', 'asoc/topic/da7210', 'asoc/topic/davinci', 'asoc/t=
+opic/ep93xx', 'asoc/topic/fsl', 'asoc/topic/fsl-mxs', 'asoc/topic/generic',=
+ 'asoc/topic/hdmi', 'asoc/topic/jack', 'asoc/topic/jz4740', 'asoc/topic/max=
+98090', 'asoc/topic/mxs', 'asoc/topic/omap', 'asoc/topic/pxa', 'asoc/topic/=
+rcar', 'asoc/topic/s6000', 'asoc/topic/sai', 'asoc/topic/samsung', 'asoc/to=
+pic/sgtl5000', 'asoc/topic/spear', 'asoc/topic/ssm2518', 'asoc/topic/ssm260=
+2', 'asoc/topic/tegra', 'asoc/topic/tlv320aic3x', 'asoc/topic/twl6040', 'as=
+oc/topic/txx9', 'asoc/topic/uda1380', 'asoc/topic/width', 'asoc/topic/wm851=
+0', 'asoc/topic/wm8523', 'asoc/topic/wm8580', 'asoc/topic/wm8711', 'asoc/to=
+pic/wm8728', 'asoc/topic/wm8731', 'asoc/topic/wm8741', 'asoc/topic/wm8750',=
+ 'asoc/topic/wm8753', 'asoc/topic/wm8776', 'asoc/topic/wm8804', 'asoc/topic=
+/wm8900', 'asoc/topic/wm8901', 'asoc/topic/wm8940', 'asoc/topic/wm8962', 'a=
+soc/topic/wm8974', 'asoc/topic/wm8985', 'asoc/topic/wm8988', 'asoc/topic/wm=
+8990', 'asoc/topic/wm8991', 'asoc/topic/wm8994', 'asoc/topic/wm8995', 'asoc=
+/topic/wm9081' and 'asoc/topic/x86' into asoc-next (2014-01-02 13:01:55 +00=
+00)
+
+I see I missed from the tag that we also got a driver for the Freescale
+SAI controller.
+
+----------------------------------------------------------------
+
+ASoC: Updates  for v3.14
+
+Not a lot going on framework wise, partly due to Christmas at least in
+the case of the work I've been doing, but there's been quite a lot of
+cleanup activity going on and the usual trickle of new drivers:
+
+ - Update to the generic DMA code to support deferred probe and managed
+   resources.
+ - New drivers for BCM2835 (used in Raspberry Pi), Tegra with MAX98090
+   and Analog Devices AXI I2S and S/PDIF controller IPs.
+ - Device tree support for the simple card, max98090 and cs42l52.
+ - Conversion of the Samsung drivers to native dmaengine, making them
+   multiplatform compatible and hopefully helping keep them more modern
+   and up to date.
+ - More regmap conversions, including a very welcome one for twl6040
+   from Peter Ujfalusi.
+ - A big overhaul of the DaVinci drivers also from Peter Ujfalusi.
+
+----------------------------------------------------------------
+Bo Shen (1):
+      ASoC: atmel: sam9x5_wm8731: remove platform_set_drvdata
+
+Brian Austin (4):
+      ASoC: cs42l52: Reorganize MICA/B Config and Select
+      ASoC: cs42l52: Make MICA/B mixer dependent on mic config
+      ASoC: cs42l52: Add devicetree support for CS42L52
+      ASoC: dt: binding: sound cs42l52 driver
+
+Charles Keepax (10):
+      mfd: wm5110: Make DSP memories readable
+      ASoC: wm5110: Expose input high pass filter controls
+      ASoC: wm5110: Add basic support for ISRCs
+      mfd: wm5110: Give new AIF2 registers defaults and mark as readable
+      ASoC: wm_adsp: Stop region iteration when the desired region is found
+      ASoC: wm_adsp: Remove duplicate info message for DSP RAM ready
+      mfd: wm5110: Expose DRE control registers
+      ASoC: wm5110: Expose switch controls for DRE
+      ASoC: wm5110: Add FSH for ISRCs
+      ASoC: wm5110: Add support for ASRC RATE 1
+
+Dan Carpenter (1):
+      ASoC: rcar: some dubious one-bit signed bitfields
+
+Fabio Estevam (29):
+      ASoC: ad193x: Use IS_ENABLED() macro
+      ASoC: adav80x: Use IS_ENABLED() macro
+      ASoC: ak4642: Use IS_ENABLED() macro
+      ASoC: uda1380: Use IS_ENABLED() macro
+      ASoC: wm8510: Use IS_ENABLED() macro
+      ASoC: wm8523: Use IS_ENABLED() macro
+      ASoC: wm8580: Use IS_ENABLED() macro
+      ASoC: wm8711: Use IS_ENABLED() macro
+      ASoC: wm8728: Use IS_ENABLED() macro
+      ASoC: wm8962: Use IS_ENABLED() macro
+      ASoC: wm8995: Use IS_ENABLED() macro
+      ASoC: soc-io: Use IS_ENABLED() macro
+      ASoC: cs4271: Use IS_ENABLED() macro
+      ASoC: da7210: Use IS_ENABLED() macro
+      ASoC: ssm2602: Use IS_ENABLED() macro
+      ASoC: wm8731: Use IS_ENABLED() macro
+      ASoC: wm8741: Use IS_ENABLED() macro
+      ASoC: wm8750: Use IS_ENABLED() macro
+      ASoC: wm8753: Use IS_ENABLED() macro
+      ASoC: wm8776: Use IS_ENABLED() macro
+      ASoC: wm8804: Use IS_ENABLED() macro
+      ASoC: wm8900: Use IS_ENABLED() macro
+      ASoC: wm8985: Use IS_ENABLED() macro
+      ASoC: wm8988: Use IS_ENABLED() macro
+      AsoC: wm9081: Use IS_ENABLED() macro
+      ASoC: wm9081: Use IS_ENABLED() macro
+      ASoC: cs42l52: Use IS_ENABLED() macro
+      ASoC: imx-spdif: Remove error message upon devm_kzalloc() failure
+      ASoC: imx-ssi: Check the return value from clk_prepare_enable()
+
+Fengguang Wu (2):
+      ASoC: axi-spdif: Use devm_ioremap_resource() instead of devm_request_=
+and_ioremap()
+      ASoC: axi-spdif: Use devm_ioremap_resource() instead of devm_request_=
+and_ioremap()
+
+Florian Meier (1):
+      ASoC: Add support for BCM2835
+
+Jan Weitzel (1):
+      ASoC: tlv320aic3x: no mono controls 3007 model
+
+Jarkko Nikula (1):
+      ASoC: Rename mid-x86 directory to intel
+
+Jyri Sarha (2):
+      ASoC: hdmi-codec: Add SNDRV_PCM_FMTBIT_32_LE playback format
+      ASoC: hdmi-codec: Add devicetree binding with documentation
+
+Kuninori Morimoto (21):
+      ASoC: rcar: rename GEN2_SRU to GEN2_SCU
+      ASoC: rcar: remove unused register settings
+      ASoC: rcar: separate regmap init common field
+      ASoC: rcar: add rsnd_is_accessible_reg()
+      ASoC: rcar: remove .path_init/exit from rsnd_gen_ops
+      ASoC: rcar: remove rcar_gen_ops
+      ASoC: rcar: add Gen2 sound support
+      ASoC: simple-card: add Device Tree support
+      ASoC: rcar: use devm_clk_get() instead of clk_get()
+      ASoC: rsnd: gen: fixup Gen2 channel size
+      ASoC: fsi: remove original filter from fsi_dma_probe()
+      ASoC: rsnd: add rsnd_adg_set_ssi_clk() and cleanup adg
+      ASoC: rsnd: tidyup ssi comment
+      ASoC: rsnd: tidyup register naming
+      ASoC: rsnd: make sure variable name for 44.1kHz/48kHz
+      ASoC: rsnd: route setting is needed only Gen1
+      ASoC: rsnd: add rsnd_scu_transfer_start()
+      ASoC: rsnd: INT_ENABLE is needed only Gen2
+      ASoC: rsnd: scu cleanup: add rsnd_scu_rate_ctrl()
+      ASoC: rsnd: tidyup rsnd_ssi_master_clk_start() parameter
+      ASoC: rsnd: add SRC (Sampling Rate Converter) support
+
+Lars-Peter Clausen (26):
+      ASoC: Add resource managed snd_dmaengine_pcm_register()
+      ASoC: spear: Use devm_snd_dmaengine_pcm_register
+      ASoC: generic-dmaengine-pcm: Set BATCH flag when residue reporting is=
+ not supported
+      ASoC: Set SNDRV_PCM_INFO_JOINT_DUPLEX for PCMs with symmetry constrai=
+nts
+      ASoC: bcm2835-i2s: Use devm_snd_dmaengine_pcm_register()
+      ASoC: ep93xx: Use devm_snd_dmaengine_pcm_register()
+      ASoC: fsl: Use devm_snd_dmaengine_pcm_register()
+      ASoC: mxs: Use devm_snd_dmaengine_pcm_register()
+      ASoC: ssm2602: Use core for applying symmetry constraints
+      ASoC: jz4740-i2s: Use managed resources
+      ASoC: jz4740: Use the generic dmaengine PCM driver
+      dt: Add bindings documentation for the ADI AXI-I2S controller
+      ASoC: Add support for the Analog Devices AXI-I2S core
+      dt: Add bindings documentation for the ADI AXI-SPDIF audio controller
+      ASoC: Add support for the Analog Devices AXI-SPDIF driver
+      ASoC: au1x: Don't set unused struct snd_pcm_hardware fields
+      ASoC: tegra: Don't set unused struct snd_pcm_hardware fields
+      ASoC: blackfin: Don't set unused struct snd_pcm_hardware fields
+      ASoC: davinci: Don't set unused struct snd_pcm_hardware fields
+      ASoC: s6000: Don't set unused struct snd_pcm_hardware fields
+      ASoC: omap: Don't set unused struct snd_pcm_hardware fields
+      ASoC: soc-utils: Don't set unused struct snd_pcm_hardware fields
+      ASoC: samsung: Don't set unused struct snd_pcm_hardware fields
+      ASoC: txx9: Don't set unused struct snd_pcm_hardware fields
+      ASoC: mmp: Don't set unused struct snd_pcm_hardware fields
+      ASoC: ep93xx: Don't set unused struct snd_pcm_hardware fields
+
+Lucas Stach (1):
+      ASoC: tegra: Tweak matching of AC97 components
+
+Mark Brown (45):
+      Merge tag 'ib-asoc-1' of git://git.linaro.org/people/ljones/mfd into =
+asoc-arizona
+      ASoC: wm8940: Convert to table based control and DAPM init
+      ASoC: wm8940: Convert to direct regmap API usage
+      ASoC: wm8974: Convert to direct regmap API usage
+      ASoC: wm8991: Use a supply to manage input power
+      ASoC: wm8991: Convert to table based control and widget init
+      ASoC: wm8991: Convert to direct regmap API usage
+      ASoC: wm8991: Move basic initialisation to I2C level probe
+      ASoC: wm8991: Verify device ID during probe()
+      ASoC: ak4641: Convert to direct regmap API usage
+      Merge tag 'v3.13-rc1' into asoc-arizona
+      ASoC: wm5110: Hook up ADSP2 cores
+      ASoC: wm8990: Convet to module_i2c_driver()
+      ASoC: wm8990: Convert to table based control and DAPM init
+      ASoC: wm8990: Use supplies to manage input power
+      ASoC: wm8990: Convert to direct regmap API usage
+      ASoC: cs42l52: Fix build
+      Merge remote-tracking branch 'asoc/topic/dma' into asoc-bcm2835
+      Merge remote-tracking branch 'asoc/topic/dma' into asoc-fsl
+      ASoC: ak4642: Convert to table based control init
+      ASoC: ak4642: Convert to direct regmap API usage
+      ASoC: ak4642: Convert to module_i2c_driver()
+      Merge remote-tracking branch 'asoc/topic/symmetry' into asoc-fsl
+      Merge remote-tracking branch 'asoc/topic/symmetry' into asoc-ssm2602
+      Merge remote-tracking branch 'asoc/topic/symmetry' into asoc-core
+      ASoC: adsp: Use async writes where possible
+      Merge tag 's3c64xx-dmaengine' of git://git.kernel.org/.../broonie/mis=
+c into asoc-samsung
+      Merge remote-tracking branch 'asoc/fix/dma' into asoc-dma
+      Merge branch 'topic/defer_probe' of git://git.infradead.org/users/vko=
+ul/slave-dma into asoc-dma
+      ASoC: samsung: Provide helper for DMA init
+      ASoC: samsung: Use ASoC dmaengine code where possible
+      ASoC: arizona: Use async writes
+      ASoC: wm5102: Use async writes
+      ASoC: wm5110: Use async writes
+      ASoC: wm8997: Use async writes
+      ASoC: fsl/mxs: Remove unnecessarily gendered language
+      Merge tag 'ib-asoc-3.14-1' of git://git.linaro.org/people/ljones/mfd =
+into asoc-twl6040
+      ALSA: Add params_width() helpers
+      ASoC: ad1836: Reject unsupported bit sizes
+      Merge remote-tracking branch 'asoc/fix/fsl' into asoc-linus
+      Merge remote-tracking branch 'asoc/topic/core' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/dapm' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/dma' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/dt' into asoc-next
+      Merge remote-tracking branches 'asoc/topic/ad1836', 'asoc/topic/ad193=
+x', 'asoc/topic/adav80x', 'asoc/topic/adsp', 'asoc/topic/ak4641', 'asoc/top=
+ic/ak4642', 'asoc/topic/arizona', 'asoc/topic/atmel', 'asoc/topic/au1x', 'a=
+soc/topic/axi', 'asoc/topic/bcm2835', 'asoc/topic/blackfin', 'asoc/topic/cs=
+4271', 'asoc/topic/cs42l52', 'asoc/topic/da7210', 'asoc/topic/davinci', 'as=
+oc/topic/ep93xx', 'asoc/topic/fsl', 'asoc/topic/fsl-mxs', 'asoc/topic/gener=
+ic', 'asoc/topic/hdmi', 'asoc/topic/jack', 'asoc/topic/jz4740', 'asoc/topic=
+/max98090', 'asoc/topic/mxs', 'asoc/topic/omap', 'asoc/topic/pxa', 'asoc/to=
+pic/rcar', 'asoc/topic/s6000', 'asoc/topic/sai', 'asoc/topic/samsung', 'aso=
+c/topic/sgtl5000', 'asoc/topic/spear', 'asoc/topic/ssm2518', 'asoc/topic/ss=
+m2602', 'asoc/topic/tegra', 'asoc/topic/tlv320aic3x', 'asoc/topic/twl6040',=
+ 'asoc/topic/txx9', 'asoc/topic/uda1380', 'asoc/topic/width', 'asoc/topic/w=
+m8510', 'asoc/topic/wm8523', 'asoc/topic/wm8580', 'asoc/topic/wm8711', 'aso=
+c/topic/wm8728', 'asoc/topic/wm8731', 'asoc/topic/wm8741', 'asoc/topic/wm87=
+50', 'asoc/topic/wm8753', 'asoc/topic/wm8776', 'asoc/topic/wm8804', 'asoc/t=
+opic/wm8900', 'asoc/topic/wm8901', 'asoc/topic/wm8940', 'asoc/topic/wm8962'=
+, 'asoc/topic/wm8974', 'asoc/topic/wm8985', 'asoc/topic/wm8988', 'asoc/topi=
+c/wm8990', 'asoc/topic/wm8991', 'asoc/topic/wm8994', 'asoc/topic/wm8995', '=
+asoc/topic/wm9081' and 'asoc/topic/x86' into asoc-next
+
+Markus Pargmann (1):
+      ASoC: fsl-ssi: Move ac97 specific setup to seperate function
+
+Matthew Garrett (1):
+      ASoC: fsl/mxs: Remove unnecessarily gendered language
+
+Nenghua Cao (1):
+      ASoC: dapm: update DPCM runtime when mixer/mux changes
+
+Nicolin Chen (13):
+      ASoC: soc-pcm: add symmetry for channels and sample bits
+      ASoC: soc-pcm: move DAIs parameters cleaning into hw_free()
+      ASoC: fsl_ssi: Add monaural audio support for non-ac97 interface
+      ASoC: fsl_ssi: Implement symmetric_channels and symmetric_samplebits
+      ASoC: soc-pcm: Drop the redundant snd_soc_dai_digital_mute() in soc_p=
+cm_close()
+      ASoC: fsl_ssi: Add DAI master mode support for SSI on i.MX series
+      ASoC: fsl_sai: Keep symmetry for clk_enable() and clk_disable()
+      ASoC: fsl_sai: Use snd_pcm_format_width()
+      ASoC: fsl_sai: Drop useless channels check in hw_params()
+      ASoC: fsl_sai: Drop useless ret in startup()
+      ASoC: fsl_sai: Make dev_err information neater
+      ASoC: fsl_sai: Sort local variable in general way
+      ASoC: imx-spdif: Use snd-soc-dummy CODEC driver to link card
+
+Oskar Schirmer (1):
+      ASoC: fsl: imx-ssi: omit ssi counter to avoid harm in unbalanced situ=
+ation
+
+Peter Ujfalusi (26):
+      ASoC: davinci: Kconfig: Remove help section for SND_DAVINCI_SOC
+      ASoC: davinci: Kconfig/Makefile: Generic EVM machine driver related c=
+leanup
+      ASoC: davinci: kconfig: Prepare for AM43xx support
+      ASoC: davinci-evm: Do not include davinci-mcasp.h
+      ASoC: davinci-evm: Switch to use .dai_fmt of snd_soc_dai_link(s)
+      ASoC: davinci-mcasp: Move DAVINCI_MCASP_RATE from header to source fi=
+le
+      ASoC: davinci-mcasp: Remove unused DAVINCI_MCASP_I2S/DIT_DAI defines
+      ASoC: davinci-mcasp: Correct dai driver struct initialization for 2nd=
+ dai
+      ASoC: davinci-mcasp: Move register definitions to header file
+      ASoC: davinci-mcasp: Move private struct definition to source file
+      ASoC: davinci-mcasp: Remove unused DAVINCI_MCASP_NUM_SERIALIZER define
+      ASoC: davinci-mcasp: Do not inline the mcasp_set_ctl_reg function
+      ASoC: davinci-mcasp: Rename private struct and it's users (dev -> mca=
+sp)
+      ASoC: davinci-mcasp: Be consistent with the use of base in davinci_mc=
+asp_set_dai_fmt
+      ASoC: davinci-mcasp: Simplify FIFO configuration code
+      ASoC: davinci-mcasp: Data source (bus) selection support
+      ASoC: davinci-mcasp: Fix synchronous master receive mode
+      ASoC: davinci-mcasp: Support for McASP version found in DRA7xx
+      ASoC: davinci-mcasp: Change IO functions parameter list
+      ASoC: davinci-mcasp: Correct am33xx snd_platform_data name
+      ASoC: davinci-mcasp: Support for fck reparenting
+      mfd: twl6040: reg_defaults support for regmap
+      ASoC: twl6040: Rename twl6040_is_path_unmuted -> twl6040_can_write_to=
+_chip
+      ASoC: twl6040: Custom caching for sensitive DL1/2 path registers
+      ASoC: twl6040: Remove register restore functionality
+      ASoC: twl6040: Remove self managed local reg_cache support
+
+Qiao Zhou (1):
+      ASoC: mmp-pcm: config pcm slave via generic dmaengine
+
+Richard Fitzgerald (1):
+      ASoC: wm5110: Add extra AIF2 channels
+
+Sachin Kamat (2):
+      ASoC: mcbsp: Trivial cleanup in asoc-ti-mcbsp.h
+      ASoC: samsung: Trivial cleanups in header files
+
+Shawn Guo (2):
+      ASoC: sgtl5000: read chip revision for once
+      ASoC: sgtl5000: clean up sgtl5000_enable_regulators()
+
+Stephen Warren (11):
+      ASoC: tegra: add tegra+MAX98090 machine driver
+      ASoC: max98090: add DT binding document for MAX98090 CODEC
+      ASoC: restructure dmaengine_pcm_request_chan_of()
+      ASoC: dmaengine: add custom DMA config to snd_dmaengine_pcm_config
+      dma: add channel request API that supports deferred probe
+      ASoC: dmaengine: support deferred probe for DMA channels
+      ASoC: dmaengine: fix deferred probe detection
+      ASoC: ep93xx: get rid of ep93xx-pcm-audio struct device
+      ASoC: ep93xx: remove custom DMA alloc compat function
+      ASoC: SPEAr: get rid of spear-pcm-audio struct device
+      ASoC: SPEAr: remove custom DMA alloc compat function
+
+Takashi Iwai (2):
+      ASoC: Fix build without CONFIG_GPIOLIB
+      ASoC: ssm2518: Fix off-by-one error by ffs()
+
+Tomasz Figa (6):
+      spi: s3c64xx: Do not require legacy DMA API in case of S3C64XX
+      ARM: s3c64xx: Add support for DMA using generic amba-pl08x driver
+      clk: samsung: s3c64xx: Add aliases for DMA clocks
+      ARM: s3c64xx: Remove legacy DMA driver
+      clk: samsung: s3c64xx: Remove clock aliases of old DMA driver
+      spi: s3c64xx: Always select S3C64XX_PL080 when ARCH_S3C64XX is enabled
+
+Victor Kamensky (1):
+      ASoC: omap: mcbsp, mcpdm, dmic: raw read and write endian fix
+
+Wei Yongjun (1):
+      ASoC: tegra20-ac97: add missing clk_disable_unprepare() on error path
+
+Xiubo Li (16):
+      ASoC: dmaengine: Add config parameter NULL check.
+      ASoC: Add SAI SoC Digital Audio Interface driver.
+      ASoC: fsl-sai: Add device tree bindings for Freescale SAI.
+      ASoC: simple-card: Use devm_snd_soc_register_card()
+      ASoC: fsl-sai: Remove fsl_sai_remove()
+      ASoC: fsl-sai: Use devm_snd_dmaengine_pcm_register()
+      ASoC: fsl-sai: Use snd_soc_dai_init_dma_data()
+      ASoC: simple-card: Add cpu_dai and codec_dai names NULL check
+      ASoC: fsl_sai: Move the global registers setting to _dai_probe()
+      ASoC: fsl_sai: Add disable operation for the corresponding data chann=
+el.
+      ASoC: fsl_sai: Fix one bug for hardware limitation.
+      ASoC: fsl_sai: fix the endianess for SAI fifo data.
+      ASoC: simple-card: Add DAPM routes parse from device tree
+      ASoC: simple-card: Cleanup __asoc_simple_card_dai_init() ret check
+      ASoC: core: Fix the DAI name getting.
+      ASoC: simple-card: Add device's module clock selection.
+
+wangbiao (1):
+      ASoC: wm8994: Move DCS done IRQ request later
+
+ .../devicetree/bindings/sound/adi,axi-i2s.txt      |   31 +
+ .../devicetree/bindings/sound/adi,axi-spdif-tx.txt |   30 +
+ .../devicetree/bindings/sound/bcm2835-i2s.txt      |   25 +
+ .../devicetree/bindings/sound/cs42l52.txt          |   46 +
+ .../bindings/sound/davinci-mcasp-audio.txt         |    6 +-
+ .../devicetree/bindings/sound/fsl-sai.txt          |   40 +
+ Documentation/devicetree/bindings/sound/hdmi.txt   |   17 +
+ .../devicetree/bindings/sound/max98090.txt         |   43 +
+ .../bindings/sound/nvidia,tegra-audio-max98090.txt |   51 +
+ .../devicetree/bindings/sound/simple-card.txt      |   77 ++
+ arch/arm/Kconfig                                   |    1 +
+ arch/arm/mach-s3c64xx/Kconfig                      |    7 +-
+ arch/arm/mach-s3c64xx/Makefile                     |    2 +-
+ arch/arm/mach-s3c64xx/common.h                     |    5 +
+ arch/arm/mach-s3c64xx/dma.c                        |  762 ---------------
+ arch/arm/mach-s3c64xx/include/mach/dma.h           |  144 +--
+ arch/arm/mach-s3c64xx/pl080.c                      |  244 +++++
+ arch/arm/plat-samsung/devs.c                       |   10 +-
+ arch/arm/plat-samsung/dma-ops.c                    |    8 +-
+ drivers/clk/samsung/clk-s3c64xx.c                  |    4 +-
+ drivers/dma/dmaengine.c                            |   35 +-
+ drivers/dma/of-dma.c                               |   15 +-
+ drivers/mfd/twl6040.c                              |   92 +-
+ drivers/mfd/wm5110-tables.c                        |  139 ++-
+ drivers/spi/Kconfig                                |    2 +-
+ include/linux/dmaengine.h                          |    8 +
+ include/linux/mfd/arizona/registers.h              |  162 ++++
+ include/linux/platform_data/asoc-ti-mcbsp.h        |    6 +-
+ include/linux/platform_data/davinci_asp.h          |    1 +
+ include/sound/cs42l52.h                            |   14 +-
+ include/sound/dmaengine_pcm.h                      |   10 +
+ include/sound/pcm_params.h                         |   12 +
+ include/sound/rcar_snd.h                           |    3 +-
+ include/sound/soc-dai.h                            |    6 +
+ include/sound/soc.h                                |   17 +-
+ include/sound/spear_dma.h                          |    1 -
+ sound/soc/Kconfig                                  |    4 +-
+ sound/soc/Makefile                                 |    4 +-
+ sound/soc/adi/Kconfig                              |   21 +
+ sound/soc/adi/Makefile                             |    5 +
+ sound/soc/adi/axi-i2s.c                            |  277 ++++++
+ sound/soc/adi/axi-spdif.c                          |  272 ++++++
+ sound/soc/atmel/sam9x5_wm8731.c                    |    2 -
+ sound/soc/au1x/dbdma2.c                            |    9 -
+ sound/soc/au1x/dma.c                               |   14 -
+ sound/soc/bcm/Kconfig                              |   10 +
+ sound/soc/bcm/Makefile                             |    5 +
+ sound/soc/bcm/bcm2835-i2s.c                        |  879 +++++++++++++++++
+ sound/soc/blackfin/bf5xx-ac97-pcm.c                |    1 -
+ sound/soc/blackfin/bf5xx-i2s-pcm.c                 |    3 -
+ sound/soc/cirrus/edb93xx.c                         |    2 +-
+ sound/soc/cirrus/ep93xx-ac97.c                     |   20 +-
+ sound/soc/cirrus/ep93xx-i2s.c                      |   22 +-
+ sound/soc/cirrus/ep93xx-pcm.c                      |   48 +-
+ sound/soc/cirrus/ep93xx-pcm.h                      |   22 +
+ sound/soc/cirrus/simone.c                          |    2 +-
+ sound/soc/cirrus/snappercl15.c                     |    2 +-
+ sound/soc/codecs/Kconfig                           |    2 +
+ sound/soc/codecs/ad1836.c                          |    2 +
+ sound/soc/codecs/ad193x.c                          |    6 +-
+ sound/soc/codecs/adav80x.c                         |    6 +-
+ sound/soc/codecs/ak4641.c                          |   38 +-
+ sound/soc/codecs/ak4642.c                          |  138 ++-
+ sound/soc/codecs/arizona.c                         |  204 ++--
+ sound/soc/codecs/arizona.h                         |    5 +-
+ sound/soc/codecs/cs4271.c                          |    8 +-
+ sound/soc/codecs/cs42l52.c                         |  105 +-
+ sound/soc/codecs/da7210.c                          |    6 +-
+ sound/soc/codecs/hdmi.c                            |   12 +-
+ sound/soc/codecs/sgtl5000.c                        |   76 +-
+ sound/soc/codecs/ssm2518.c                         |    8 +-
+ sound/soc/codecs/ssm2602.c                         |   56 +-
+ sound/soc/codecs/tlv320aic3x.c                     |  126 ++-
+ sound/soc/codecs/twl6040.c                         |  227 ++---
+ sound/soc/codecs/uda1380.c                         |    6 +-
+ sound/soc/codecs/wm5102.c                          |    4 +-
+ sound/soc/codecs/wm5110.c                          |  379 +++++++-
+ sound/soc/codecs/wm8510.c                          |    6 +-
+ sound/soc/codecs/wm8523.c                          |    6 +-
+ sound/soc/codecs/wm8580.c                          |    6 +-
+ sound/soc/codecs/wm8711.c                          |    6 +-
+ sound/soc/codecs/wm8728.c                          |    6 +-
+ sound/soc/codecs/wm8731.c                          |    6 +-
+ sound/soc/codecs/wm8741.c                          |    6 +-
+ sound/soc/codecs/wm8750.c                          |    6 +-
+ sound/soc/codecs/wm8753.c                          |    6 +-
+ sound/soc/codecs/wm8776.c                          |    6 +-
+ sound/soc/codecs/wm8804.c                          |    6 +-
+ sound/soc/codecs/wm8900.c                          |    6 +-
+ sound/soc/codecs/wm8940.c                          |  221 +++--
+ sound/soc/codecs/wm8962.c                          |    4 +-
+ sound/soc/codecs/wm8974.c                          |   54 +-
+ sound/soc/codecs/wm8985.c                          |    6 +-
+ sound/soc/codecs/wm8988.c                          |    6 +-
+ sound/soc/codecs/wm8990.c                          |  258 ++---
+ sound/soc/codecs/wm8990.h                          |    9 -
+ sound/soc/codecs/wm8991.c                          |  293 +++---
+ sound/soc/codecs/wm8991.h                          |    9 -
+ sound/soc/codecs/wm8994.c                          |   11 +-
+ sound/soc/codecs/wm8995.c                          |    6 +-
+ sound/soc/codecs/wm8997.c                          |    4 +-
+ sound/soc/codecs/wm9081.c                          |    2 +-
+ sound/soc/codecs/wm_adsp.c                         |   20 +-
+ sound/soc/davinci/Kconfig                          |   29 +-
+ sound/soc/davinci/Makefile                         |    8 +-
+ sound/soc/davinci/davinci-evm.c                    |   48 +-
+ sound/soc/davinci/davinci-mcasp.c                  | 1016 +++++++++-------=
+----
+ sound/soc/davinci/davinci-mcasp.h                  |  304 +++++-
+ sound/soc/davinci/davinci-pcm.c                    |   28 -
+ sound/soc/fsl/Kconfig                              |    5 +-
+ sound/soc/fsl/Makefile                             |    4 +-
+ sound/soc/fsl/fsl_dma.c                            |    2 +-
+ sound/soc/fsl/fsl_sai.c                            |  460 +++++++++
+ sound/soc/fsl/fsl_sai.h                            |  114 +++
+ sound/soc/fsl/fsl_spdif.c                          |    8 -
+ sound/soc/fsl/fsl_ssi.c                            |  435 ++++++---
+ sound/soc/fsl/fsl_ssi.h                            |    2 +
+ sound/soc/fsl/imx-pcm-dma.c                        |    9 +-
+ sound/soc/fsl/imx-pcm.h                            |    5 -
+ sound/soc/fsl/imx-spdif.c                          |   85 +-
+ sound/soc/fsl/imx-ssi.c                            |   12 +-
+ sound/soc/fsl/imx-ssi.h                            |    1 -
+ sound/soc/generic/simple-card.c                    |  193 +++-
+ sound/soc/{mid-x86 =3D> intel}/Kconfig               |    0
+ sound/soc/{mid-x86 =3D> intel}/Makefile              |    0
+ sound/soc/{mid-x86 =3D> intel}/mfld_machine.c        |    0
+ sound/soc/{mid-x86 =3D> intel}/sst_dsp.h             |    0
+ sound/soc/{mid-x86 =3D> intel}/sst_platform.c        |    0
+ sound/soc/{mid-x86 =3D> intel}/sst_platform.h        |    0
+ sound/soc/jz4740/Kconfig                           |    1 +
+ sound/soc/jz4740/jz4740-i2s.c                      |  135 +--
+ sound/soc/jz4740/jz4740-pcm.c                      |  358 -------
+ sound/soc/jz4740/jz4740-pcm.h                      |   20 -
+ sound/soc/jz4740/qi_lb60.c                         |    2 +-
+ sound/soc/mxs/mxs-pcm.c                            |    8 +-
+ sound/soc/mxs/mxs-pcm.h                            |    1 -
+ sound/soc/mxs/mxs-saif.c                           |   18 +-
+ sound/soc/omap/mcbsp.c                             |   12 +-
+ sound/soc/omap/omap-dmic.c                         |    4 +-
+ sound/soc/omap/omap-mcpdm.c                        |    4 +-
+ sound/soc/omap/omap-pcm.c                          |    2 -
+ sound/soc/pxa/Kconfig                              |    2 +-
+ sound/soc/pxa/mmp-pcm.c                            |   24 +-
+ sound/soc/s6000/s6000-pcm.c                        |    7 -
+ sound/soc/samsung/Kconfig                          |   13 +-
+ sound/soc/samsung/Makefile                         |    6 +-
+ sound/soc/samsung/ac97.c                           |   51 +-
+ sound/soc/samsung/dma.c                            |   14 +-
+ sound/soc/samsung/dma.h                            |    6 +
+ sound/soc/samsung/dmaengine.c                      |   84 ++
+ sound/soc/samsung/i2s.c                            |    9 +-
+ sound/soc/samsung/idma.c                           |    8 -
+ sound/soc/samsung/pcm.c                            |   18 +-
+ sound/soc/samsung/regs-ac97.h                      |    9 +-
+ sound/soc/samsung/regs-iis.h                       |    9 +-
+ sound/soc/sh/fsi.c                                 |   36 +-
+ sound/soc/sh/rcar/adg.c                            |  151 ++-
+ sound/soc/sh/rcar/gen.c                            |  256 +++--
+ sound/soc/sh/rcar/rsnd.h                           |   46 +-
+ sound/soc/sh/rcar/scu.c                            |  181 +++-
+ sound/soc/sh/rcar/ssi.c                            |   19 +-
+ sound/soc/soc-core.c                               |   10 +-
+ sound/soc/soc-dapm.c                               |   28 +-
+ sound/soc/soc-devres.c                             |   41 +
+ sound/soc/soc-generic-dmaengine-pcm.c              |   56 +-
+ sound/soc/soc-io.c                                 |    4 +-
+ sound/soc/soc-pcm.c                                |  156 ++-
+ sound/soc/soc-utils.c                              |    4 -
+ sound/soc/spear/spdif_in.c                         |   17 +-
+ sound/soc/spear/spdif_out.c                        |   18 +-
+ sound/soc/spear/spear_pcm.c                        |   42 +-
+ sound/soc/spear/spear_pcm.h                        |   24 +
+ sound/soc/tegra/Kconfig                            |   10 +
+ sound/soc/tegra/Makefile                           |    2 +
+ sound/soc/tegra/tegra20_ac97.c                     |    6 +-
+ sound/soc/tegra/tegra_max98090.c                   |  275 ++++++
+ sound/soc/tegra/tegra_pcm.c                        |    3 -
+ sound/soc/tegra/tegra_wm9712.c                     |    1 -
+ sound/soc/txx9/txx9aclc.c                          |    5 -
+ 179 files changed, 7232 insertions(+), 3841 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,axi-spdif-t=
+x.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/bcm2835-i2s.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/cs42l52.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl-sai.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/hdmi.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/max98090.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-au=
+dio-max98090.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/simple-card.txt
+ delete mode 100644 arch/arm/mach-s3c64xx/dma.c
+ create mode 100644 arch/arm/mach-s3c64xx/pl080.c
+ create mode 100644 sound/soc/adi/Kconfig
+ create mode 100644 sound/soc/adi/Makefile
+ create mode 100644 sound/soc/adi/axi-i2s.c
+ create mode 100644 sound/soc/adi/axi-spdif.c
+ create mode 100644 sound/soc/bcm/Kconfig
+ create mode 100644 sound/soc/bcm/Makefile
+ create mode 100644 sound/soc/bcm/bcm2835-i2s.c
+ create mode 100644 sound/soc/cirrus/ep93xx-pcm.h
+ create mode 100644 sound/soc/fsl/fsl_sai.c
+ create mode 100644 sound/soc/fsl/fsl_sai.h
+ rename sound/soc/{mid-x86 =3D> intel}/Kconfig (100%)
+ rename sound/soc/{mid-x86 =3D> intel}/Makefile (100%)
+ rename sound/soc/{mid-x86 =3D> intel}/mfld_machine.c (100%)
+ rename sound/soc/{mid-x86 =3D> intel}/sst_dsp.h (100%)
+ rename sound/soc/{mid-x86 =3D> intel}/sst_platform.c (100%)
+ rename sound/soc/{mid-x86 =3D> intel}/sst_platform.h (100%)
+ delete mode 100644 sound/soc/jz4740/jz4740-pcm.c
+ delete mode 100644 sound/soc/jz4740/jz4740-pcm.h
+ create mode 100644 sound/soc/samsung/dmaengine.c
+ create mode 100644 sound/soc/spear/spear_pcm.h
+ create mode 100644 sound/soc/tegra/tegra_max98090.c
+
+--LDD4nbZpSQFEjkKT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSxbGGAAoJELSic+t+oim9ON0P+gNywqD27n9koJRU7uqcOyLP
-AsSKs29GSD0iVzSZ+bovw90olKw1uQK5sfufL7697Wb7iB8LGuNnoNBenbCGKNBl
-llUWgZYHFB7FHO47DkKBKXGCPrhCfoVG+C/DKyAicS83onoHt098TUMhU+gt0dWH
-d696KKLrDXBpypk39kG7C53eHBNYrX2ZgAFOBKiMEJVezGvQVFzQ4HmOddqFcDd2
-sNyuA1YEDgqIICeOCyhmyze45WWfX/0kCL4uWGI8rBUwfEtjExmxdWueX5loKaYX
-o4bx56BwJSecQm3N7F8d1v07OK8qj5zfCSjT1GPFvol5vW9DfywviYJx/GZJlGot
-c8E4Og50pJXGyEW/+MvV++/YlWrCPRI1ciEFCBRoWuzX56GGh1mMGelAL403Zl8/
-+YSxniTRf60CLptoQmw3l3Kw71viaOrh8zw1anawYV0VnGwncDMxJf2oEMZ2jXXK
-Vrq2CY3ndmL7ku50v1sJh4oVbaXKSdbO985vfHqMdR2Qs41kHPX8oDhgjkXpcOZ9
-pbIJQlQFbzy7FzU9/+EVsSOuxvdtDKt2bg+BBlnesg3ABbFVGStPS/fNoGVf8geX
-Ch6V1RWM3pvH8FoB8R7LYYP6nc5oipWWkxWS4KkSSvrlQw/AruEEm5Vsvky6kq6q
-T/byhsoSHiE2JBZr52eY
-=O2JJ
+iQIcBAEBAgAGBQJSxbL4AAoJELSic+t+oim9t+QP/2rL03JGA7s+bNVsJ4hOr8z+
+Jf4r4kEszXwNkfJ81Ll5nP9xYbR0bxfv9oEFcktjgy8tVUTYz2H2LUcxM5WzzuFh
+8Lk6hLoCH3quLacQSZkLo2HZvTWYei1MQr4nyRdZ9ksy+M97yEeReIum2VBRKQpU
+rwT5dwv6YikKUkZSE1+kfShROSHiXd1L4FZsWiW3LvtANiB5so5Ji7w0POupcTRq
+08fsrrs4udsWwAn81iw64RjAo+rTUa8VF+XrUVmroZ98QLIx1OgQojxq1NuymBCC
+w0HC1R6j76wYVVV3gqssUwJVXCg9pg9z050d2fCABw5by8pyGCLdf++N+KpOHjHY
+oreTOOmH1WoNM3yi2C89auJxadmH5jWdmLZwcVT4uMvj98m2AjsaaMabv76Pikep
+XXtUfJ0FLLYdQbUEkCSPjw553o0lI4Cjuqws0jQXVYA4WMGSlK0HQIEuS4laXsmT
+xBdfhji5O3ooEZI8nCeAdzf0NQSNOAhl/s428U6IS6Isry3TNTC/9vDAsjwJLCvr
+VFuGtPHl/sRcRGjNw2lH5igtdpImTZsP2yxZ5mK+HV+w7C2YgNAvHir1KRapgqyj
+wN+FFSl4lQpUOwHOMP7t2uSZg57MSCaZSB0c2Ue9heKC5wRfYRzvWJSFAHTAOUbg
+l5HL+GB+4vxG59Rsa4my
+=gSaG
 -----END PGP SIGNATURE-----
 
---rrTeYcb7ueXzDtg5--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--LDD4nbZpSQFEjkKT--
+
+--===============7390784704907751668==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7390784704907751668==--
