@@ -1,141 +1,67 @@
-From: Jean-Francois Moine <moinejf@free.fr>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 Subject: Re: [alsa-devel] [PATCH] ASoC: generic: add generic compound card
  with DT support
-Date: Thu, 2 Jan 2014 10:26:47 +0100
-Message-ID: <20140102102647.6efec89d@armhf>
+Date: Thu, 2 Jan 2014 11:10:56 +0000
+Message-ID: <20140102111056.GT31886@sirena.org.uk>
 References: <20131231113138.102044cf@armhf>
-	<52C466E1.3030302@metafoo.de>
-	<20140101210814.31e3f3a9@armhf>
-	<52C4766B.8080000@metafoo.de>
+ <52C466E1.3030302@metafoo.de>
+ <20140101210814.31e3f3a9@armhf>
+ <52C4766B.8080000@metafoo.de>
+ <20140102102647.6efec89d@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <52C4766B.8080000@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="80TIu+lzzbJOSSak"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20140102102647.6efec89d@armhf>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 01 Jan 2014 21:11:23 +0100
-Lars-Peter Clausen <lars@metafoo.de> wrote:
 
-> On 01/01/2014 09:08 PM, Jean-Francois Moine wrote:
-> > On Wed, 01 Jan 2014 20:05:05 +0100
-> > Lars-Peter Clausen <lars@metafoo.de> wrote:
-> >=20
-> >> As Mark also said, this binding definitely leaks way too much inte=
-rnals of
-> >> the current ASoC implementation. In my opinion the way forward for=
- ASoC is
-> >> to stop to distinguish between different types of components. This=
- is on one
-> >> hand CODECS and CPU-DAIs and on the other hand also front-end and =
-beck-end
-> >> DAIs. The first steps in this direction have already been take by =
-the start
-> >> of the component-fication, but its still a long way to go. Exposin=
-g those
-> >> concepts via the devicetree will only make it harder to get rid of=
- them
-> >> later. The bindings for a compound card should essentially describ=
-e which
-> >> components are involved and how the fabric between and around them=
- looks
-> >> like. If the type of the component is needed in the ASoC implement=
-ation it
-> >> should be possible to auto-discover it. Also I think we want to al=
-ign the
-> >> devicetree bindings with what the media people have been doing[1].
-> >=20
-> > (you forgot the [1] reference)
->=20
-> http://lxr.free-electrons.com/source/Documentation/devicetree/binding=
-s/media/video-interfaces.txt
+--80TIu+lzzbJOSSak
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I see the idea. So here is a proposal of DT for the Cubox (audio + vide=
-o)
-which should work without too many difficulties.
+On Thu, Jan 02, 2014 at 10:26:47AM +0100, Jean-Francois Moine wrote:
 
-/* video / audio transmitter */
+> 		/* audio */
+> 		port@1 {
+> 			hdmi_i2s_audio: endpoint@0 {
+> 				reg = <0x03>;
+> 				remote-endpoint = <&audio_hdmi_i2s>;
+> 			};
 
-	tda998x: hdmi-encoder {
-		compatible =3D "nxp,tda998x";
-		...
+I think we want an explicit object in the card representing the DAIs.
+This will both be useful for making it easy to find the configuration
+for the link and will be more extensible for the cases where multiple
+devices are connected, you can't just assume there's just two.
 
-		/* video */
-		port@0 {
-			tda998x_0: endpoint {
-				reg =3D <0x230145>;
-				remote-endpoint =3D <&lcd0_0>;
-			};
-		};
+--80TIu+lzzbJOSSak
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-		/* audio */
-		port@1 {
-			hdmi_i2s_audio: endpoint@0 {
-				reg =3D <0x03>;
-				remote-endpoint =3D <&audio_hdmi_i2s>;
-			};
-			hdmi_spdif_audio: endpoint@1 {
-				reg =3D <0x04>;
-				remote-endpoint =3D <&audio_hdmi_spdif>;
-			};
-		};
-	};
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-	toslink: spdif {
-		compatible =3D "linux,spdif-dit";
-		port {
-			spdif_audio: endpoint {
-				remote-endpoint =3D <&audio_spdif>;
-			};
-		};
-	};
+iQIcBAEBAgAGBQJSxUk9AAoJELSic+t+oim9ZoQP/32WdN9fvE4C0EOXvdX2OpIt
+yk7u8N6LPu9kRMHnCTtPkhLSFNLEHdV39TIABCnVXCPIwi/o+l2pJkkn/n5dvWqE
+XgLXaX7mhjuMZv46u/PDAonHu5uWLHk415WJ3pQHMHVQ/ppfO/wisLhVQuiIWRZg
+Ec6E59MuUmqiys81QsYvB1qaq/+FCdUjt0b7KcAPUa7Y2r+CL3wNeY4Vq6gSersi
+QitXbOCIl/53r6AN7bRSBIgKr0VcYXWXZfoXpaW8k2ivs+J6ELXJN3+qbSFEol48
+ybj1+WBRhMjFmQSrIysvJLgqOISCqasbiotWd5iYzc4FJUNvcYOHDXHJZcdHX2xO
+/DVmXXnG6KgBGPV6q2i8IY+IUXXyctC4MsxE07l0btSlfhgaAquZwxtNYUITWXXs
+0CW2XQ2X3JIYshTw1PPAjgIFbP29AplWlqmnkbHr9tfRzdrvJW8E7bjO3y0QzYnn
+KWSeofC1k7sZxDtZSQMZUm3RT+1ET28C4xRz5ZmA2gjwAFcbw5RQUYbbjz8UDkA+
+oDngL1z3Iw9hQjVaXC7ZSYBZXPDHb373xRT0tCheE5c0BNbiQVW4WQlOmLYRj5Og
+ippuvWmcWBKidQ7+Mha8/3R/Tiw96xTEWcr6YtdqnSNuKoZXLw9P8nE/VezrdpsP
+z0F6KWUMn4ITLNFYf2pQ
+=x2//
+-----END PGP SIGNATURE-----
 
-/* video */
-
-	lcd0: video-controller {
-		compatible =3D "marvell,dove-lcd";
-		...
-		port {
-			lcd0_0: endpoint {
-				remote-endpoint =3D <&tda998x_0>;
-			};
-		};
-	};
-
-	video {
-		compatible =3D "media-video";
-		video-controller =3D <&lcd0>;
-	};
-
-/* audio */
-
-	audio1: audio-controller {
-		compatible =3D "marvell,dove-audio";
-		...
-		port@0 {
-			audio_hdmi_i2s: endpoint {
-				remote-endpoint =3D <&hdmi_i2s_audio>;
-			};
-		};
-
-		port@1 {
-			audio_hdmi_spdif: endpoint@0 {
-				remote-endpoint =3D <&hdmi_spdif_audio>;
-			};
-			audio_spdif: endpoint@1 {
-				remote-endpoint =3D <&spdif_audio>;
-			};
-		};
-	};
-
-	sound {
-		compatible =3D "media-audio";
-		audio-controller =3D <&audio1>;
-	};
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+--80TIu+lzzbJOSSak--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
