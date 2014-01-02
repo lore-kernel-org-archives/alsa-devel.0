@@ -1,78 +1,100 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH] ASoC: generic: add generic compound card
- with DT support
-Date: Thu, 2 Jan 2014 18:50:55 +0100
-Message-ID: <20140102185055.76eb576e@armhf>
-References: <20131231113138.102044cf@armhf> <52C466E1.3030302@metafoo.de>
- <20140101210814.31e3f3a9@armhf> <52C4766B.8080000@metafoo.de>
- <20140102102647.6efec89d@armhf>
- <20140102111056.GT31886@sirena.org.uk>
- <20140102124331.2bcfc172@armhf>
- <20140102115618.GW31886@sirena.org.uk>
- <20140102134437.1e39da55@armhf>
- <20140102131045.GZ31886@sirena.org.uk>
+From: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
+Subject: Re: [PATCHv9] dmaengine: Add support for BCM2835
+Date: Thu, 02 Jan 2014 19:03:34 +0100
+Message-ID: <1964639.FVztRK0HBK@wuerfel>
+References: <52C5A6A3.8000405@koalo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F5FF2608E8
- for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2014 18:51:47 +0100 (CET)
-In-Reply-To: <20140102131045.GZ31886@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <52C5A6A3.8000405-oZ8rN/sblLk@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Andy Shevchenko <andriy.shevchenko-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAyIEphbiAyMDE0IDEzOjEwOjQ1ICswMDAwCk1hcmsgQnJvd24gPGJyb29uaWVAa2Vy
-bmVsLm9yZz4gd3JvdGU6Cgo+IE9uIFRodSwgSmFuIDAyLCAyMDE0IGF0IDAxOjQ0OjM3UE0gKzAx
-MDAsIEplYW4tRnJhbmNvaXMgTW9pbmUgd3JvdGU6Cj4gCj4gPiBJIHN0aWxsIGRvbid0IHVuZGVy
-c3RhbmQuIFRoZXJlIGlzIGFscmVhZHkgc3VjaCBjYXNlcyBpbiB0aGUgQ3Vib3g6Cj4gPiB0aGUg
-Uy9QRElGIG91dHB1dCBmcm9tIHRoZSBraXJrd29vZCBhdWRpbyBjb250cm9sbGVyIGlzIGNvbm5l
-Y3RlZCB0bwo+ID4gYm90aCB0aGUgSERNSSB0cmFuc21pdHRlciBhbmQgdGhlIFMvUERJRiBUT1NM
-SU5LLiBTbywgaW4gdGhlIGF1ZGlvCj4gPiBjb250cm9sbGVyLCB0aGUgcG9ydCBAMSBkZWZpbmVz
-IHRoZSBTL1BESUYgREFJIGFuZCB0aGUgZW5kcG9pbnRzIEAwIGFuZAo+ID4gQDEgcG9pbnQgdG8g
-dGhlIHJlbW90ZSBEQUlzLCBjcmVhdGluZyAyIHNuZCBEQUkgbGlua3M6Cj4gCj4gPiAJcG9ydEAx
-IHsKPiA+IAkJYXVkaW9faGRtaV9zcGRpZjogZW5kcG9pbnRAMCB7Cj4gPiAJCQlyZW1vdGUtZW5k
-cG9pbnQgPSA8JmhkbWlfc3BkaWZfYXVkaW8+Owo+ID4gCQl9Owo+ID4gCQlhdWRpb19zcGRpZjog
-ZW5kcG9pbnRAMSB7Cj4gPiAJCQlyZW1vdGUtZW5kcG9pbnQgPSA8JnNwZGlmX2F1ZGlvPjsKPiA+
-IAkJfTsKPiA+IAl9Owo+IAo+IE9oLCBzbyB0aGUgZW5kcG9pbnRzIGFyZSB2aXJ0dWFsIGFuZCB0
-aGF0J3Mgc3VwcG9zZWQgdG8gYmUgdGhyZWUgdGhpbmdzCj4gd2lyZWQgdG9nZXRoZXIgcmF0aGVy
-IHRoYW4gYSBzaW5nbGUgZGV2aWNlIHdpdGggbXVsdGlwbGUgbGlua3M/ICBUaGF0J3MKPiByZWFs
-bHkgbm90IHZlcnkgY2xlYXIgZnJvbSByZWFkaW5nIHRoZSBhYm92ZSBhbmQgc2VlbXMgY3VtYmVy
-c29tZSAtCj4gZXZlcnkgZGV2aWNlIHdpbGwgd2FudCB0byBleHBsaWNpdGx5IGlkZW50aWZ5IGV2
-ZXJ5IG90aGVyIGRldmljZSBvbiB0aGUKPiBsaW5rIGFuZCBhbnkgY29uZmlndXJhdGlvbiBpcyBn
-b2luZyB0byBlaXRoZXIgbmVlZCB0byBiZSByZXBsaWNhdGVkIG9uCj4gZXZlcnkgZGV2aWNlIG9y
-IHdlJ2xsIG5lZWQgdG8gY2hlY2sgbG90cyBvZiBwbGFjZXMgZm9yIHRoZSBjb25maWd1YXRpb24u
-Cj4gSXQgc2VlbXMgbGlrZSB0aGlzIHdpbGwgYmUgaGFyZCB0byB3b3JrIHdpdGguCgpObywgdGhl
-ICdlbmRwb2ludCcgPD0+ICdyZW1vdGUtZW5kcG9pbnQnIGlzIGEgcG9pbnQgdG8gcG9pbnQgcmVs
-YXRpb24uCkV2ZW4gaWYgdGhlIHNvdXJjZXMgYW5kIHNpbmtzIGFyZSBub3QgZXhwbGljaXRseSBk
-ZWZpbmVkLCB0aGUgd2F5CnRoZSBzdHJlYW0gZmxvd3MgaXMgZWFzeSB0byBmaW5kOiB0aGUgbWFp
-biBzb3VyY2UgaXMgYWx3YXlzIGluIHRoZQonYXVkaW8tY29udHJvbGxlcicgbm9kZQoKCXNvdW5k
-IHsKCQljb21wYXRpYmxlID0gIm1lZGlhLWF1ZGlvIjsKCQlhdWRpby1jb250cm9sbGVyID0gPCZh
-dWRpbzE+OwoJfTsKCmFuZCwgdGhlbiwgdGhlIGNvbnRyb2xsZXIgcG9ydHMgYXJlIHNvdXJjZXMg
-KENQVSBEQUlzKSBhbmQgdGhlCmFzc29jaWF0ZWQgcmVtb3RlIHBvcnRzIGFyZSBzaW5rcyAoQ09E
-RUMgREFJcykuCgpXaXRoIG1hbnkgbGV2ZWxzLCBvbmNlIHRoZSByZW1vdGUgKHNpbmspIHBvcnRz
-IGFyZSBpZGVudGlmaWVkLCBpbiB0aGUKZGV2aWNlcyB3aGVyZSBzdWNoIHNpbmtzIGV4aXN0LCB0
-aGUgcmVtYWluaW5nIHBvcnRzIGFyZSBzb3VyY2VzLgoKVXN1YWxseSwgdGhlIGRldmljZXMgZG9u
-J3QgaGF2ZSB0byBrbm93IHRvIHdoaWNoIG90aGVyIGRldmljZSB0aGV5IGFyZQpjb25uZWN0ZWQs
-IGFuZCwgeWVzLCB0aGUgcmV2ZXJzZSBwb2ludGVyIHNpbmsgdG8gc291cmNlIGlzIG5vdCB1c2Vm
-dWwuCgpCdXQgdGhlIHdheSAobGluaykgdGhlIGF1ZGlvIHN0cmVhbSBjb21lcyBmcm9tIG1heSBi
-ZSBpbXBvcnRhbnQgdG8Ka25vdy4gVGhpcyBpcyB0aGUgY2FzZSBmb3IgdGhlIEhETUkgQ09ERUMg
-d2hpY2ggbXVzdCB0ZWxsIHRoZSBIRE1JCnRyYW5zbWl0dGVyIGZyb20gd2hpY2ggaGFyZHdhcmUg
-cG9ydChzKSAoJ3JlZycpIGl0IG1heSBnZXQgdGhlIGF1ZGlvCnN0cmVhbS4gVGhhdCdzIHdoeSwg
-dGhlIEhETUkgZW5jb2RlciBoYXMgdHdvIGVuZHBvaW50cyBpbiBpdHMgYXVkaW8KcG9ydCwgZWFj
-aCBlbmRwb2ludCBiZWluZyBhIGRpZmZlcmVudCBDT0RFQyBEQUkuCgotLSAKS2VuIGFyIGMnaGVu
-dGHDsQl8CSAgICAgICoqIEJyZWl6aCBoYSBMaW51eCBhdGF2ISAqKgpKZWYJCXwJCWh0dHA6Ly9t
-b2luZWpmLmZyZWUuZnIvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+On Thursday 02 January 2014 18:49:23 Florian Meier wrote:
+> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
+> Currently it only supports cyclic DMA.
+
+Looks very nice. Just a few details I noticed:
+
+> +#if defined(CONFIG_OF)
+> +static const struct of_device_id bcm2835_dma_of_match[] = {
+> +	{ .compatible = "brcm,bcm2835-dma", },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, bcm2835_dma_of_match);
+> +#endif
+
+I doubt we are going to see non-DT versions of this driver, so the #ifdef
+can just get removed here.
+
+> +static struct dma_chan *bcm2835_dma_xlate(struct of_phandle_args *spec,
+> +					   struct of_dma *ofdma)
+> +{
+> +	struct bcm2835_dmadev *d = ofdma->of_dma_data;
+> +	struct dma_chan *chan, *candidate;
+> +
+> +retry:
+> +	candidate = NULL;
+> +
+> +	/*
+> +	 * Walk the list of channels registered with the current instance and
+> +	 * find one that is currently unused.
+> +	 */
+> +	list_for_each_entry(chan, &d->ddev.channels, device_node)
+> +		if (chan->client_count == 0) {
+> +			candidate = chan;
+> +			break;
+> +		}
+> +
+> +	if (!candidate)
+> +		return NULL;
+> +
+> +	/*
+> +	 * dma_get_slave_channel will return NULL if we lost a race between
+> +	 * the lookup and the reservation.
+> +	 */
+> +	chan = dma_get_slave_channel(candidate);
+> +
+> +	if (!chan)
+> +		goto retry;
+> +
+> +	/* Set DREQ from param */
+> +	to_bcm2835_dma_chan(chan)->dreq = spec->args[0];
+> +
+> +	return chan;
+> +}
+
+This can now be simplified using the dma_get_any_slave_channel() interface
+taht Stephen Warren introduced.
+
+> +
+> +	if (!pdev->dev.dma_mask)
+> +		pdev->dev.dma_mask = &pdev->dev.coherent_dma_mask;
+> +
+> +	rc = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+> +	if (rc)
+> +		return rc;
+> +	dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
+
+dma_set_mask_and_coherent()
+
+> +	if (pdev->dev.of_node) {
+> +		/* Device-tree DMA controller registration */
+> +		rc = of_dma_controller_register(pdev->dev.of_node,
+> +				bcm2835_dma_xlate, od);
+> +		if (rc) {
+> +			dev_err(&pdev->dev, "Failed to register DMA controller\n");
+> +			goto err_no_dma;
+> +		}
+> +	}
+
+If pdev->dev.of_node isn't set, you didn't get here, so the if() can be removed.
+
+	Arnd
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
