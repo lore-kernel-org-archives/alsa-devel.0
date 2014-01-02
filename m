@@ -1,16 +1,16 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH, RFC 24/30] oss: midibuf: fix sleep_on races
-Date: Thu,  2 Jan 2014 13:07:48 +0100
-Message-ID: <1388664474-1710039-25-git-send-email-arnd@arndb.de>
+Subject: [PATCH,
+	RFC 26/30] oss: dmasound: kill SLEEP() macro to avoid race
+Date: Thu,  2 Jan 2014 13:07:50 +0100
+Message-ID: <1388664474-1710039-27-git-send-email-arnd@arndb.de>
 References: <1388664474-1710039-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
- [212.227.126.186])
- by alsa0.perex.cz (Postfix) with ESMTP id D6EA726172B
- for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2014 13:08:39 +0100 (CET)
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id 662FF261685
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2014 13:08:41 +0100 (CET)
 In-Reply-To: <1388664474-1710039-1-git-send-email-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,68 +25,92 @@ To: linux-kernel@vger.kernel.org
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-sleep_on is known to be racy and going away because of this. All instances
-of interruptible_sleep_on and interruptible_sleep_on_timeout in the midibuf
-driver can trivially be replaced with wait_event_interruptible and
-wait_event_interruptible_timeout.
+The use of interruptible_sleep_on_timeout in the dmasound driver
+is questionable and we want to kill off all sleep_on variants.
+This replaces the calls with wait_event_interruptible_timeout
+where possible, to wait for a particular event instead of blocking
+in a racy way. In the sq_write function, the easiest solution is
+an open-coded prepare_to_wait loop.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 ---
- sound/oss/midibuf.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ sound/oss/dmasound/dmasound.h      |  1 -
+ sound/oss/dmasound/dmasound_core.c | 28 +++++++++++++++++++---------
+ 2 files changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/sound/oss/midibuf.c b/sound/oss/midibuf.c
-index 8cdb2cf..79615cf 100644
---- a/sound/oss/midibuf.c
-+++ b/sound/oss/midibuf.c
-@@ -86,9 +86,8 @@ static void drain_midi_queue(int dev)
- 	 */
+diff --git a/sound/oss/dmasound/dmasound.h b/sound/oss/dmasound/dmasound.h
+index 1308d8d..01019f0 100644
+--- a/sound/oss/dmasound/dmasound.h
++++ b/sound/oss/dmasound/dmasound.h
+@@ -239,7 +239,6 @@ struct sound_queue {
+     int busy, syncing, xruns, died;
+ };
  
- 	if (midi_devs[dev]->buffer_status != NULL)
--		while (!signal_pending(current) && midi_devs[dev]->buffer_status(dev)) 
--			interruptible_sleep_on_timeout(&midi_sleeper[dev],
--						       HZ/10);
-+		wait_event_interruptible_timeout(midi_sleeper[dev],
-+				!midi_devs[dev]->buffer_status(dev), HZ/10);
- }
+-#define SLEEP(queue)		interruptible_sleep_on_timeout(&queue, HZ)
+ #define WAKE_UP(queue)		(wake_up_interruptible(&queue))
  
- static void midi_input_intr(int dev, unsigned char data)
-@@ -233,8 +232,8 @@ void MIDIbuf_release(int dev, struct file *file)
- 							   * devices
- 							 */
+ extern struct sound_queue dmasound_write_sq;
+diff --git a/sound/oss/dmasound/dmasound_core.c b/sound/oss/dmasound/dmasound_core.c
+index bac43b5..f4ee85a 100644
+--- a/sound/oss/dmasound/dmasound_core.c
++++ b/sound/oss/dmasound/dmasound_core.c
+@@ -619,15 +619,27 @@ static ssize_t sq_write(struct file *file, const char __user *src, size_t uLeft,
+ 	}
  
--		while (!signal_pending(current) && DATA_AVAIL(midi_out_buf[dev]))
--			  interruptible_sleep_on(&midi_sleeper[dev]);
-+		wait_event_interruptible(midi_sleeper[dev],
-+					 !DATA_AVAIL(midi_out_buf[dev]));
- 		/*
- 		 *	Sync
- 		 */
-@@ -282,8 +281,8 @@ int MIDIbuf_write(int dev, struct file *file, const char __user *buf, int count)
- 				goto out;
- 			}
+ 	while (uLeft) {
++		DEFINE_WAIT(wait);
++
+ 		while (write_sq.count >= write_sq.max_active) {
++			prepare_to_wait(&write_sq.action_queue, &wait, TASK_INTERRUPTIBLE);
+ 			sq_play();
+-			if (write_sq.non_blocking)
++			if (write_sq.non_blocking) {
++				finish_wait(&write_sq.action_queue, &wait);
+ 				return uWritten > 0 ? uWritten : -EAGAIN;
+-			SLEEP(write_sq.action_queue);
+-			if (signal_pending(current))
++			}
++			if (write_sq.count < write_sq.max_active)
++				break;
++
++			schedule_timeout(HZ);
++			if (signal_pending(current)) {
++				finish_wait(&write_sq.action_queue, &wait);
+ 				return uWritten > 0 ? uWritten : -EINTR;
++			}
+ 		}
  
--			interruptible_sleep_on(&midi_sleeper[dev]);
--			if (signal_pending(current)) 
-+			if (wait_event_interruptible(midi_sleeper[dev],
-+						SPACE_AVAIL(midi_out_buf[dev])))
- 			{
- 				c = -EINTR;
- 				goto out;
-@@ -325,8 +324,9 @@ int MIDIbuf_read(int dev, struct file *file, char __user *buf, int count)
-  			c = -EAGAIN;
- 			goto out;
-  		}
--		interruptible_sleep_on_timeout(&input_sleeper[dev],
--					       parms[dev].prech_timeout);
-+		wait_event_interruptible_timeout(input_sleeper[dev],
-+						 DATA_AVAIL(midi_in_buf[dev]),
-+					         parms[dev].prech_timeout);
++		finish_wait(&write_sq.action_queue, &wait);
++
+ 		/* Here, we can avoid disabling the interrupt by first
+ 		 * copying and translating the data, and then updating
+ 		 * the write_sq variables. Until this is done, the interrupt
+@@ -707,11 +719,8 @@ static int sq_open2(struct sound_queue *sq, struct file *file, fmode_t mode,
+ 			if (file->f_flags & O_NONBLOCK)
+ 				return rc;
+ 			rc = -EINTR;
+-			while (sq->busy) {
+-				SLEEP(sq->open_queue);
+-				if (signal_pending(current))
+-					return rc;
+-			}
++			if (wait_event_interruptible(sq->open_queue, !sq->busy))
++				return rc;
+ 			rc = 0;
+ #else
+ 			/* OSS manual says we will return EBUSY regardless
+@@ -844,7 +853,8 @@ static int sq_fsync(void)
+ 	sq_play();	/* there may be an incomplete frame waiting */
  
- 		if (signal_pending(current))
- 			c = -EINTR;	/* The user is getting restless */
+ 	while (write_sq.active) {
+-		SLEEP(write_sq.sync_queue);
++		wait_event_interruptible_timeout(write_sq.sync_queue,
++						 !write_sq.active, HZ);
+ 		if (signal_pending(current)) {
+ 			/* While waiting for audio output to drain, an
+ 			 * interrupt occurred.  Stop audio output immediately
 -- 
 1.8.3.2
