@@ -1,41 +1,42 @@
 From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [alsa-devel] [PATCH] ASoC: simple-card: Add device's module
- clock selection.
-Date: Thu, 2 Jan 2014 02:43:31 +0000
-Message-ID: <402820fba5e0467dbfad02024ad8de81@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1387783538-5318-1-git-send-email-Li.Xiubo@freescale.com>
- <52C405DD.1080006@metafoo.de> <20140101122554.GN31886@sirena.org.uk>
+Subject: RE: [PATCH] ASoC: add snd_soc_of_parse_master_clkdir() for dt
+Date: Thu, 2 Jan 2014 02:57:22 +0000
+Message-ID: <0e22852f970e476cb02a446094e3f7c4@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1388477444-18745-1-git-send-email-Li.Xiubo@freescale.com>
+ <20131231120415.GL31886@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140101122554.GN31886@sirena.org.uk>
+In-Reply-To: <20131231120415.GL31886@sirena.org.uk>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark, Lars
 
-
-> Subject: Re: [alsa-devel] [PATCH] ASoC: simple-card: Add device's module clock
-> selection.
+> Subject: Re: [PATCH] ASoC: add snd_soc_of_parse_master_clkdir() for dt
 > 
-> On Wed, Jan 01, 2014 at 01:11:09PM +0100, Lars-Peter Clausen wrote:
-> > On 12/23/2013 08:25 AM, Xiubo Li wrote:
-> > > diff --git a/a.out b/a.out
-> > > new file mode 100644
-> > > index 0000000..e69de29
+> On Tue, Dec 31, 2013 at 04:10:44PM +0800, Xiubo Li wrote:
 > 
-> > This patch did add a empty a.out file in the toplevel folder.
+> > I'm not very sure whether this patch is need for dt.
 > 
-> Removed now.  This is one of several patches from Xiubo that have done
-> this - Xiubo, please check this.
+> It's not clear to me - it's not adding much on top of just passing the
+> full property string to _read_bool() directly really.
 >
 
-Yes, this had been removed by Mark already.
+This was just inherited from the _daifmt formats. Maybe this is not very
+correct here.
 
+> > For the CPU and CODEC devices' sysclk directions maybe different of
+> > the same DAI link.
+> 
+> Yes, this is common if one of them is generating the clock.
+
+I will use one full name for the next verion.
+
+ 
 Thanks,
 
 --
