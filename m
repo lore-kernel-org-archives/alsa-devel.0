@@ -1,7 +1,7 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 01/11] MFD: twl-core: Simplify IO wrapper functions by moving common code out
-Date: Fri, 3 Jan 2014 15:27:46 +0200
-Message-ID: <1388755676-16036-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 05/11] ASoC: twl4030: Remove check defaults functionality
+Date: Fri, 3 Jan 2014 15:27:50 +0200
+Message-ID: <1388755676-16036-6-git-send-email-peter.ujfalusi@ti.com>
 References: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,112 +12,66 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Samuel
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The new twl_get_regmap() function will return a pointer to the regmap needed
-for the given module.
-Since both read and write function were using the same code to do the lookup
-we can reuse this in both places to simplify the code.
+No need to keep the check defaults functionality anymore.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- drivers/mfd/twl-core.c | 58 +++++++++++++++++++++++++++-----------------------
- 1 file changed, 31 insertions(+), 27 deletions(-)
+ include/linux/i2c/twl.h    |  1 -
+ sound/soc/codecs/twl4030.c | 23 -----------------------
+ 2 files changed, 24 deletions(-)
 
-diff --git a/drivers/mfd/twl-core.c b/drivers/mfd/twl-core.c
-index 29473c2c95ae..c91cb4367b9b 100644
---- a/drivers/mfd/twl-core.c
-+++ b/drivers/mfd/twl-core.c
-@@ -302,35 +302,50 @@ unsigned int twl_rev(void)
- EXPORT_SYMBOL(twl_rev);
+diff --git a/include/linux/i2c/twl.h b/include/linux/i2c/twl.h
+index a09da0910339..2937a9472b94 100644
+--- a/include/linux/i2c/twl.h
++++ b/include/linux/i2c/twl.h
+@@ -670,7 +670,6 @@ struct twl4030_codec_data {
+ 	unsigned int digimic_delay; /* in ms */
+ 	unsigned int ramp_delay_value;
+ 	unsigned int offset_cncl_path;
+-	unsigned int check_defaults:1;
+ 	unsigned int reset_registers:1;
+ 	unsigned int hs_extmute:1;
+ 	int hs_extmute_gpio;
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 419108ae31de..7b732ab70d2c 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -268,25 +268,6 @@ static void twl4030_codec_enable(struct snd_soc_codec *codec, int enable)
+ 	udelay(10);
+ }
  
- /**
-- * twl_i2c_write - Writes a n bit register in TWL4030/TWL5030/TWL60X0
-+ * twl_get_regmap - Get the regmap associated with the given module
-  * @mod_no: module number
-- * @value: an array of num_bytes+1 containing data to write
-- * @reg: register address (just offset will do)
-- * @num_bytes: number of bytes to transfer
-  *
-- * Returns the result of operation - 0 is success
-+ * Returns the regmap pointer or NULL in case of failure.
-  */
--int twl_i2c_write(u8 mod_no, u8 *value, u8 reg, unsigned num_bytes)
-+static struct regmap *twl_get_regmap(u8 mod_no)
- {
--	int ret;
- 	int sid;
- 	struct twl_client *twl;
- 
- 	if (unlikely(!twl_priv || !twl_priv->ready)) {
- 		pr_err("%s: not initialized\n", DRIVER_NAME);
--		return -EPERM;
-+		return NULL;
- 	}
- 	if (unlikely(mod_no >= twl_get_last_module())) {
- 		pr_err("%s: invalid module number %d\n", DRIVER_NAME, mod_no);
--		return -EPERM;
-+		return NULL;
- 	}
- 
- 	sid = twl_priv->twl_map[mod_no].sid;
- 	twl = &twl_priv->twl_modules[sid];
- 
--	ret = regmap_bulk_write(twl->regmap,
--				twl_priv->twl_map[mod_no].base + reg, value,
--				num_bytes);
-+	return twl->regmap;
-+}
-+
-+/**
-+ * twl_i2c_write - Writes a n bit register in TWL4030/TWL5030/TWL60X0
-+ * @mod_no: module number
-+ * @value: an array of num_bytes+1 containing data to write
-+ * @reg: register address (just offset will do)
-+ * @num_bytes: number of bytes to transfer
-+ *
-+ * Returns the result of operation - 0 is success
-+ */
-+int twl_i2c_write(u8 mod_no, u8 *value, u8 reg, unsigned num_bytes)
-+{
-+	struct regmap *regmap = twl_get_regmap(mod_no);
-+	int ret;
-+
-+	if (!regmap)
-+		return -EPERM;
-+
-+	ret = regmap_bulk_write(regmap, twl_priv->twl_map[mod_no].base + reg,
-+				value, num_bytes);
- 
- 	if (ret)
- 		pr_err("%s: Write failed (mod %d, reg 0x%02x count %d)\n",
-@@ -351,25 +366,14 @@ EXPORT_SYMBOL(twl_i2c_write);
-  */
- int twl_i2c_read(u8 mod_no, u8 *value, u8 reg, unsigned num_bytes)
- {
-+	struct regmap *regmap = twl_get_regmap(mod_no);
- 	int ret;
--	int sid;
--	struct twl_client *twl;
- 
--	if (unlikely(!twl_priv || !twl_priv->ready)) {
--		pr_err("%s: not initialized\n", DRIVER_NAME);
--		return -EPERM;
--	}
--	if (unlikely(mod_no >= twl_get_last_module())) {
--		pr_err("%s: invalid module number %d\n", DRIVER_NAME, mod_no);
-+	if (!regmap)
- 		return -EPERM;
--	}
+-static inline void twl4030_check_defaults(struct snd_soc_codec *codec)
+-{
+-	int i, difference = 0;
+-	u8 val;
 -
--	sid = twl_priv->twl_map[mod_no].sid;
--	twl = &twl_priv->twl_modules[sid];
+-	dev_dbg(codec->dev, "Checking TWL audio default configuration\n");
+-	for (i = 1; i <= TWL4030_REG_MISC_SET_2; i++) {
+-		twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &val, i);
+-		if (val != twl4030_reg[i]) {
+-			difference++;
+-			dev_dbg(codec->dev,
+-				 "Reg 0x%02x: chip: 0x%02x driver: 0x%02x\n",
+-				 i, val, twl4030_reg[i]);
+-		}
+-	}
+-	dev_dbg(codec->dev, "Found %d non-matching registers. %s\n",
+-		 difference, difference ? "Not OK" : "OK");
+-}
+-
+ static inline void twl4030_reset_registers(struct snd_soc_codec *codec)
+ {
+ 	int i;
+@@ -378,10 +359,6 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
+ 		}
+ 	}
  
--	ret = regmap_bulk_read(twl->regmap,
--			       twl_priv->twl_map[mod_no].base + reg, value,
--			       num_bytes);
-+	ret = regmap_bulk_read(regmap, twl_priv->twl_map[mod_no].base + reg,
-+			       value, num_bytes);
- 
- 	if (ret)
- 		pr_err("%s: Read failed (mod %d, reg 0x%02x count %d)\n",
+-	/* Check defaults, if instructed before anything else */
+-	if (pdata && pdata->check_defaults)
+-		twl4030_check_defaults(codec);
+-
+ 	/* Reset registers, if no setup data or if instructed to do so */
+ 	if (!pdata || (pdata && pdata->reset_registers))
+ 		twl4030_reset_registers(codec);
 -- 
 1.8.5.2
