@@ -1,64 +1,89 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 07/11] ASoC: twl4030: Introduce local ctl register cache
-Date: Fri, 3 Jan 2014 15:27:52 +0200
-Message-ID: <1388755676-16036-8-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 02/11] MFD: twl-core: API to set the regcache
+	bypass for a given regmap in twl
+Date: Fri, 3 Jan 2014 15:27:47 +0200
+Message-ID: <1388755676-16036-3-git-send-email-peter.ujfalusi@ti.com>
 References: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8C59261A22
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2014 14:28:05 +0100 (CET)
 In-Reply-To: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Few registers need to be cached in the codec driver level. These registers
-should only be written when the path is active to avoid pop noise on the
-given path.
-This patch adds an array which covers the range where the sensitive registers
-are located and uppon loadinf the driver the ctl cache will be initialized.
+If the regcache is enabled on the regmap module drivers might need to access
+to HW register(s) in certain cases in cache bypass mode.
+As an example of this is the audio block's ANAMICL register. In normal
+operation the content can be cached but during initialization one bit from
+the register need to be monitored. With the twl_set_regcache_bypass() the
+client driver can switch regcache bypass on and off when it is needed so
+we can utilize the regcache for more registers.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl4030.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/mfd/twl-core.c  | 21 +++++++++++++++++++++
+ include/linux/i2c/twl.h |  3 +++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index ab2f22299db2..f88207712d3d 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -150,10 +150,22 @@ struct twl4030_priv {
- 	u8 earpiece_enabled;
- 	u8 predrivel_enabled, predriver_enabled;
- 	u8 carkitl_enabled, carkitr_enabled;
-+	u8 ctl_cache[TWL4030_REG_PRECKR_CTL - TWL4030_REG_EAR_CTL + 1];
+diff --git a/drivers/mfd/twl-core.c b/drivers/mfd/twl-core.c
+index c91cb4367b9b..f0abca79ff34 100644
+--- a/drivers/mfd/twl-core.c
++++ b/drivers/mfd/twl-core.c
+@@ -383,6 +383,27 @@ int twl_i2c_read(u8 mod_no, u8 *value, u8 reg, unsigned num_bytes)
+ }
+ EXPORT_SYMBOL(twl_i2c_read);
  
- 	struct twl4030_codec_data *pdata;
- };
- 
-+static void tw4030_init_ctl_cache(struct twl4030_priv *twl4030)
++/**
++ * twl_regcache_bypass - Configure the regcache bypass for the regmap associated
++ *			 with the module
++ * @mod_no: module number
++ * @enable: Regcache bypass state
++ *
++ * Returns 0 else failure.
++ */
++int twl_set_regcache_bypass(u8 mod_no, bool enable)
 +{
-+	int i;
-+	u8 byte;
++	struct regmap *regmap = twl_get_regmap(mod_no);
 +
-+	for (i = TWL4030_REG_EAR_CTL; i <= TWL4030_REG_PRECKR_CTL; i++) {
-+		twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &byte, i);
-+		twl4030->ctl_cache[i - TWL4030_REG_EAR_CTL] = byte;
-+	}
++	if (!regmap)
++		return -EPERM;
++
++	regcache_cache_bypass(regmap, enable);
++
++	return 0;
 +}
++EXPORT_SYMBOL(twl_set_regcache_bypass);
++
+ /*----------------------------------------------------------------------*/
+ 
+ /**
+diff --git a/include/linux/i2c/twl.h b/include/linux/i2c/twl.h
+index 673a3ce67f31..a09da0910339 100644
+--- a/include/linux/i2c/twl.h
++++ b/include/linux/i2c/twl.h
+@@ -175,6 +175,9 @@ static inline int twl_class_is_ ##class(void)	\
+ TWL_CLASS_IS(4030, TWL4030_CLASS_ID)
+ TWL_CLASS_IS(6030, TWL6030_CLASS_ID)
+ 
++/* Set the regcache bypass for the regmap associated with the nodule */
++int twl_set_regcache_bypass(u8 mod_no, bool enable);
 +
  /*
-  * read twl4030 register cache
+  * Read and write several 8-bit registers at once.
   */
-@@ -348,6 +360,9 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
- 		}
- 	}
- 
-+	/* Initialize the local ctl register cache */
-+	tw4030_init_ctl_cache(twl4030);
-+
- 	/* Refresh APLL_CTL register from HW */
- 	twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &byte,
- 			    TWL4030_REG_APLL_CTL);
 -- 
 1.8.5.2
