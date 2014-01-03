@@ -1,114 +1,80 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 04/11] ASoC: twl4030: Separate write condition
-	checking from I/O function
-Date: Fri, 3 Jan 2014 15:27:49 +0200
-Message-ID: <1388755676-16036-5-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 06/11] ASoC: twl4030: Remove reset registers functionality
+Date: Fri, 3 Jan 2014 15:27:51 +0200
+Message-ID: <1388755676-16036-7-git-send-email-peter.ujfalusi@ti.com>
 References: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 27ECE261A0E
- for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2014 14:28:10 +0100 (CET)
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Simplifies the code a bit and prepares it to the removal of local caching.
+The register states now tracked by the regmap implementation in the core which
+makes the reset registers functionality 'redundant' since we know the state
+of the registers now all the time.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl4030.c | 40 +++++++++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 17 deletions(-)
+ include/linux/i2c/twl.h    |  1 -
+ sound/soc/codecs/twl4030.c | 17 -----------------
+ 2 files changed, 18 deletions(-)
 
+diff --git a/include/linux/i2c/twl.h b/include/linux/i2c/twl.h
+index 2937a9472b94..ade1c06d4ceb 100644
+--- a/include/linux/i2c/twl.h
++++ b/include/linux/i2c/twl.h
+@@ -670,7 +670,6 @@ struct twl4030_codec_data {
+ 	unsigned int digimic_delay; /* in ms */
+ 	unsigned int ramp_delay_value;
+ 	unsigned int offset_cncl_path;
+-	unsigned int reset_registers:1;
+ 	unsigned int hs_extmute:1;
+ 	int hs_extmute_gpio;
+ };
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index dfc51bb425da..419108ae31de 100644
+index 7b732ab70d2c..ab2f22299db2 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -181,50 +181,56 @@ static inline void twl4030_write_reg_cache(struct snd_soc_codec *codec,
- 	cache[reg] = value;
+@@ -268,17 +268,6 @@ static void twl4030_codec_enable(struct snd_soc_codec *codec, int enable)
+ 	udelay(10);
  }
  
--/*
-- * write to the twl4030 register space
-- */
--static int twl4030_write(struct snd_soc_codec *codec,
--			unsigned int reg, unsigned int value)
-+static bool twl4030_can_write_to_chip(struct snd_soc_codec *codec,
-+				      unsigned int reg)
+-static inline void twl4030_reset_registers(struct snd_soc_codec *codec)
+-{
+-	int i;
+-
+-	/* set all audio section registers to reasonable defaults */
+-	for (i = TWL4030_REG_OPTION; i <= TWL4030_REG_MISC_SET_2; i++)
+-		if (i != TWL4030_REG_APLL_CTL)
+-			twl4030_write(codec, i, twl4030_reg[i]);
+-
+-}
+-
+ static void twl4030_setup_pdata_of(struct twl4030_codec_data *pdata,
+ 				   struct device_node *node)
  {
- 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
--	int write_to_reg = 0;
-+	bool write_to_reg = false;
- 
--	twl4030_write_reg_cache(codec, reg, value);
- 	/* Decide if the given register can be written */
- 	switch (reg) {
- 	case TWL4030_REG_EAR_CTL:
- 		if (twl4030->earpiece_enabled)
--			write_to_reg = 1;
-+			write_to_reg = true;
- 		break;
- 	case TWL4030_REG_PREDL_CTL:
- 		if (twl4030->predrivel_enabled)
--			write_to_reg = 1;
-+			write_to_reg = true;
- 		break;
- 	case TWL4030_REG_PREDR_CTL:
- 		if (twl4030->predriver_enabled)
--			write_to_reg = 1;
-+			write_to_reg = true;
- 		break;
- 	case TWL4030_REG_PRECKL_CTL:
- 		if (twl4030->carkitl_enabled)
--			write_to_reg = 1;
-+			write_to_reg = true;
- 		break;
- 	case TWL4030_REG_PRECKR_CTL:
- 		if (twl4030->carkitr_enabled)
--			write_to_reg = 1;
-+			write_to_reg = true;
- 		break;
- 	case TWL4030_REG_HS_GAIN_SET:
- 		if (twl4030->hsl_enabled || twl4030->hsr_enabled)
--			write_to_reg = 1;
-+			write_to_reg = true;
- 		break;
- 	default:
- 		/* All other register can be written */
--		write_to_reg = 1;
-+		write_to_reg = true;
- 		break;
+@@ -359,10 +348,6 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
+ 		}
  	}
--	if (write_to_reg)
--		return twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,
--					    value, reg);
-+
-+	return write_to_reg;
-+}
-+
-+/*
-+ * write to the twl4030 register space
-+ */
-+static int twl4030_write(struct snd_soc_codec *codec,
-+			 unsigned int reg, unsigned int value)
-+{
-+	twl4030_write_reg_cache(codec, reg, value);
-+	if (twl4030_can_write_to_chip(codec, reg))
-+		return twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE, value, reg);
  
- 	return 0;
- }
+-	/* Reset registers, if no setup data or if instructed to do so */
+-	if (!pdata || (pdata && pdata->reset_registers))
+-		twl4030_reset_registers(codec);
+-
+ 	/* Refresh APLL_CTL register from HW */
+ 	twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &byte,
+ 			    TWL4030_REG_APLL_CTL);
+@@ -2293,8 +2278,6 @@ static int twl4030_soc_remove(struct snd_soc_codec *codec)
+ 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+ 	struct twl4030_codec_data *pdata = twl4030->pdata;
+ 
+-	/* Reset registers to their chip default before leaving */
+-	twl4030_reset_registers(codec);
+ 	twl4030_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 
+ 	if (pdata && pdata->hs_extmute && gpio_is_valid(pdata->hs_extmute_gpio))
 -- 
 1.8.5.2
