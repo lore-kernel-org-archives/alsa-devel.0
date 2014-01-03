@@ -1,47 +1,42 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 2/3] ALSA: cs5535audio: use named constants for pci_power_t values
-Date: Fri,  3 Jan 2014 00:40:30 +0100
-Message-ID: <1388706031-22180-3-git-send-email-Julia.Lawall@lip6.fr>
-References: <1388706031-22180-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: [PATCH] ASoC: pcm: Fix lack of platform bespoke_trigger() call
+Date: Fri, 3 Jan 2014 09:19:18 +0100
+Message-ID: <20140103091918.7387cfb5@armhf>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1388706031-22180-1-git-send-email-Julia.Lawall@lip6.fr>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaya Kumar <jayakumar.alsa@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
+When the platform driver has no ops, the platform function
+bespoke_trigger() is no more called.
 
-The semantic patch that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
+The problem was introduced by the commit c5914b0aaea6494aaa9e415cbd32f8=
+b7eb604af0
+	"ASoC: pcm: Check for ops before deferencing them"
 
-// <smpl>
-@@
-expression pdev;
-@@
-
-pci_set_power_state(pdev,
-- 3
-+ PCI_D3hot
- )
-// </smpl>
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
+Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
 ---
- sound/pci/cs5535audio/cs5535audio.c |    2 +-
+ sound/soc/soc-pcm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/cs5535audio/cs5535audio.c b/sound/pci/cs5535audio/cs5535audio.c
-index 902bebd..c0d2835 100644
---- a/sound/pci/cs5535audio/cs5535audio.c
-+++ b/sound/pci/cs5535audio/cs5535audio.c
-@@ -253,7 +253,7 @@ static irqreturn_t snd_cs5535audio_interrupt(int irq, void *dev_id)
- static int snd_cs5535audio_free(struct cs5535audio *cs5535au)
- {
- 	synchronize_irq(cs5535au->irq);
--	pci_set_power_state(cs5535au->pci, 3);
-+	pci_set_power_state(cs5535au->pci, PCI_D3hot);
- 
- 	if (cs5535au->irq >= 0)
- 		free_irq(cs5535au->irq, cs5535au);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 891b9a9..df79101 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -672,7 +672,7 @@ static int soc_pcm_bespoke_trigger(struct snd_pcm_s=
+ubstream *substream,
+ 			return ret;
+ 	}
+=20
+-	if (platform->driver->ops && platform->driver->bespoke_trigger) {
++	if (platform->driver->bespoke_trigger) {
+ 		ret =3D platform->driver->bespoke_trigger(substream, cmd);
+ 		if (ret < 0)
+ 			return ret;
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
