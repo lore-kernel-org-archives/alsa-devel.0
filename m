@@ -1,58 +1,66 @@
-From: Arnd Bergmann <arnd@arndb.de>
+From: Florian Meier <florian.meier@koalo.de>
 Subject: Re: [PATCHv9] dmaengine: Add support for BCM2835
-Date: Sun, 5 Jan 2014 19:52:07 +0100
-Message-ID: <201401051952.07355.arnd@arndb.de>
+Date: Sun, 5 Jan 2014 20:05:10 +0100
+Message-ID: <CABDT8Wx-jRKQYS+pvPcy7OVBvy_qSkqZmvEMmagT7dFisKmpCQ@mail.gmail.com>
 References: <52C5A6A3.8000405@koalo.de> <201401051506.03481.arnd@arndb.de>
  <CABDT8WyUVbPu60qwMbAxKS=2m2akskybZQS3-+rehuUD+3oBXQ@mail.gmail.com>
+ <201401051952.07355.arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CABDT8WyUVbPu60qwMbAxKS=2m2akskybZQS3-+rehuUD+3oBXQ@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Florian Meier <florian.meier@koalo.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vb0-f42.google.com (mail-vb0-f42.google.com
+ [209.85.212.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id AACEA2610B1
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 20:05:15 +0100 (CET)
+Received: by mail-vb0-f42.google.com with SMTP id w5so8829586vbf.1
+ for <alsa-devel@alsa-project.org>; Sun, 05 Jan 2014 11:05:10 -0800 (PST)
+In-Reply-To: <201401051952.07355.arnd@arndb.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
 Cc: devicetree <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, dmaengine <dmaengine@vger.kernel.org>, Stephen Warren <swarren@nvidia.com>, Dan Williams <dan.j.williams@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 05 January 2014, Florian Meier wrote:
-> On 05.01.2014 15:06, Arnd Bergmann wrote:
-> >>
-> >> Sigh, the API is developing faster than I can keep track with updating
-> >> this patch. I hope some day I will be faster....
-> >> When Russell told me about the second one before, it hoped that I can
-> >> avoid merging different trees on my own, but it seems that you want me
-> >> to do that ;-)
-> >
-> > The dma_get_any_slave_channel() change is probably my fault. I suggested
-> > both the initial dma_get_slave_channel() API and this one because the
-> > original approach turned out too complicated. If dma_set_mask_and_coherent().
-> >
-> > I don't think you have to merge other trees, to get both APIs, they should
-> > already be part of the dma-slave tree that your patch would get merged
-> > into. If not, we can probably come up with a different solution. The
-> > dma_set_mask_and_coherent() suggestion is not as important as the
-> > dma_get_any_slave_channel() one, if you have to choose between them.
-> 
-> Both changes are in the slave-dma tree, but I need patches from the
-> bcm2835 tree and the asoc tree, too. Although, it shouldn't be too
-> complicated to merge them, I hope.
+On 05.01.2014 19:52, Arnd Bergmann wrote:
+> On Sunday 05 January 2014, Florian Meier wrote:
+>> On 05.01.2014 15:06, Arnd Bergmann wrote:
+>>>>
+>>>> Sigh, the API is developing faster than I can keep track with updating
+>>>> this patch. I hope some day I will be faster....
+>>>> When Russell told me about the second one before, it hoped that I can
+>>>> avoid merging different trees on my own, but it seems that you want me
+>>>> to do that ;-)
+>>>
+>>> The dma_get_any_slave_channel() change is probably my fault. I suggested
+>>> both the initial dma_get_slave_channel() API and this one because the
+>>> original approach turned out too complicated. If dma_set_mask_and_coherent().
+>>>
+>>> I don't think you have to merge other trees, to get both APIs, they should
+>>> already be part of the dma-slave tree that your patch would get merged
+>>> into. If not, we can probably come up with a different solution. The
+>>> dma_set_mask_and_coherent() suggestion is not as important as the
+>>> dma_get_any_slave_channel() one, if you have to choose between them.
+>>
+>> Both changes are in the slave-dma tree, but I need patches from the
+>> bcm2835 tree and the asoc tree, too. Although, it shouldn't be too
+>> complicated to merge them, I hope.
+>
+> Why do you need the bcm2835 and asoc changes? The addition of the
+> dmaengine driver should be self-contained as far as I can tell,
+> except that the audio driver won't work unless both are merged.
+>
+> This wouldn't be considered a strict dependency since you are not
+> breaking anything that used to work prior to the patches, and you
+> don't create a kernel version that doesn't build. Note that this
+> would be different if you had a dependency on a platform_data
+> definition.
 
-Why do you need the bcm2835 and asoc changes? The addition of the
-dmaengine driver should be self-contained as far as I can tell,
-except that the audio driver won't work unless both are merged.
-
-This wouldn't be considered a strict dependency since you are not
-breaking anything that used to work prior to the patches, and you
-don't create a kernel version that doesn't build. Note that this
-would be different if you had a dependency on a platform_data
-definition.
-
-	Arnd
+You are right! I just have to merge them for testing the driver.
