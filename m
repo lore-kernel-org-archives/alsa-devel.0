@@ -1,18 +1,15 @@
-From: =?ISO-8859-1?Q?Antonio_V=E1zquez_Blanco?=
- <antoniovazquezblanco@gmail.com>
-Subject: CA0132 Issues with Alienware
-Date: Fri, 3 Jan 2014 20:28:34 +0100
-Message-ID: <CALAp9RH10qCYkLztV0_E6mNs7LDhqfvL7fxTQpGacwm0J7beNw@mail.gmail.com>
+From: Alexander Shiyan <shc_work@mail.ru>
+Subject: [PATCH] ASoC: simple-card: Do not set cpu_dai.name for
+	snd_link in case DT
+Date: Sun,  5 Jan 2014 10:09:58 +0400
+Message-ID: <1388902199-29553-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qe0-f52.google.com (mail-qe0-f52.google.com
- [209.85.128.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 62878261A2F
- for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2014 20:28:35 +0100 (CET)
-Received: by mail-qe0-f52.google.com with SMTP id ne12so16109871qeb.39
- for <alsa-devel@alsa-project.org>; Fri, 03 Jan 2014 11:28:34 -0800 (PST)
+Received: from smtp22.mail.ru (smtp22.mail.ru [94.100.176.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 25C66261ACD
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 07:10:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,37 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Alexander Shiyan <shc_work@mail.ru>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Alsa developing members,
+Using cpu_dai.name for DT case will result driver cannot be
+initialized. For example, device have name "ssi@10010000" in the DT
+and this value is returning for us by snd_soc_of_get_dai_name()
+but actual registered name of device is "10010000.ssi".
 
-I'm sorry to contact you via this mailing list even if I don't know if it
-used for this, but I felt I had no other option when after various attempts
-I saw the bug tracker was down and various members of the project didn't
-answer my emails.
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ sound/soc/generic/simple-card.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-My computer has three jack ports on one side (Microphone, headphone and
-earphones). The problem is that Alsa currently doesn't have jack detection
-on earphones jack plug, so I'm stuck with using only left audio on the
-headphone jack.
-I would really like to be able to use earphones plug which in my hardware
-is node 0x0f. Although I know C programming I don't have the knowledge to
-do this myself.
-
-Thanks in advance.
-
-Your sincerely,
-Antonio V=E1zquez Blanco.
-
--- =
-
-If comunications require exchange of sensible data, please consider using my
-PGP public key<https://drive.google.com/file/d/0Bw0Vql7Olv4LMVlrVlJNMkVjUUU=
-/edit?usp=3Dsharing>for
-data encryption.
-
-Si la comunicaci=F3n requiere el intercambio de informaci=F3n sensible, por
-favor, considere usar mi clave PGP
-p=FAblica<https://drive.google.com/file/d/0Bw0Vql7Olv4LMVlrVlJNMkVjUUU/edit=
-?usp=3Dsharing>para
-encriptar los datos.
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 1d87db8..3a054c4 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -219,7 +219,8 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	 */
+ 	cinfo->snd_link.name		= cinfo->name;
+ 	cinfo->snd_link.stream_name	= cinfo->name;
+-	cinfo->snd_link.cpu_dai_name	= cinfo->cpu_dai.name;
++	if (!of_cpu)
++		cinfo->snd_link.cpu_dai_name = cinfo->cpu_dai.name;
+ 	cinfo->snd_link.platform_name	= cinfo->platform;
+ 	cinfo->snd_link.codec_name	= cinfo->codec;
+ 	cinfo->snd_link.codec_dai_name	= cinfo->codec_dai.name;
+-- 
+1.8.3.2
