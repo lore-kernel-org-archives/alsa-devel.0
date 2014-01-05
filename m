@@ -1,17 +1,17 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCHv9] dmaengine: Add support for BCM2835
-Date: Sun, 5 Jan 2014 15:06:03 +0100
-Message-ID: <201401051506.03481.arnd@arndb.de>
-References: <52C5A6A3.8000405@koalo.de> <1964639.FVztRK0HBK@wuerfel>
- <CABDT8WzhpH2yX=HD9wsx+bN17Qp0hLX45-VMF0a3RAiwWx7F4Q@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: Question on compress offload framework memory
+ corruption
+Date: Sun, 5 Jan 2014 19:34:38 +0530
+Message-ID: <20140105140438.GX16227@intel.com>
+References: <63ac7c9c1f4ac8d8ef0ed9587fd1cf5f.squirrel@www.codeaurora.org>
+ <20131219105508.GV31886@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1814629305303530528=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.9])
- by alsa0.perex.cz (Postfix) with ESMTP id D99EB260890
- for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 15:06:13 +0100 (CET)
-In-Reply-To: <CABDT8WzhpH2yX=HD9wsx+bN17Qp0hLX45-VMF0a3RAiwWx7F4Q@mail.gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id DAFFA2608B8
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 16:05:32 +0100 (CET)
+In-Reply-To: <20131219105508.GV31886@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,89 +21,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Florian Meier <florian.meier@koalo.de>
-Cc: devicetree <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, dmaengine <dmaengine@vger.kernel.org>, Stephen Warren <swarren@nvidia.com>, Dan Williams <dan.j.williams@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@kernel.org>, Liam <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, gsantosh@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 04 January 2014, Florian Meier wrote:
-> On 02.01.2014 19:03, Arnd Bergmann wrote:
-> > On Thursday 02 January 2014 18:49:23 Florian Meier wrote:
-> >> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
-> >> Currently it only supports cyclic DMA.
-> >
-> > Looks very nice. Just a few details I noticed:
-> >
-> >> +#if defined(CONFIG_OF)
-> >> +static const struct of_device_id bcm2835_dma_of_match[] = {
-> >> + { .compatible = "brcm,bcm2835-dma", },
-> >> + {},
-> >> +};
-> >> +MODULE_DEVICE_TABLE(of, bcm2835_dma_of_match);
-> >> +#endif
-> >
-> > I doubt we are going to see non-DT versions of this driver, so the #ifdef
-> > can just get removed here.
-> 
-> As already explained in previous versions of this patch thread, there is
-> a non-DT version in a downstream kernel and the more I make this patch
-> incompatible with non-DT, the harder it gets to upstream the remaining
-> stuff. I hope this is not something that blocks this driver from getting
-> accepted.
 
-In this case, that's certainly not an excuse unless you are worried about
-400 bytes of .rodata in one driver and there are no side-effects of having
-the device ID listed when it's not used. Even if it made a real difference
-to another project, you'd need a much better excuse -- if you are worried
-about compatibility between mainline and some downstream kernel, how about
-changing that downstream kernel to use DT?
+--===============1814629305303530528==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
+Content-Disposition: inline
 
-> > [...]
-> > This can now be simplified using the dma_get_any_slave_channel() interface
-> > taht Stephen Warren introduced.
-> > [...]
-> > dma_set_mask_and_coherent()
-> 
-> Sigh, the API is developing faster than I can keep track with updating
-> this patch. I hope some day I will be faster....
-> When Russell told me about the second one before, it hoped that I can
-> avoid merging different trees on my own, but it seems that you want me
-> to do that ;-)
 
-The dma_get_any_slave_channel() change is probably my fault. I suggested
-both the initial dma_get_slave_channel() API and this one because the
-original approach turned out too complicated. If dma_set_mask_and_coherent().
+--zhXaljGHf11kAtnf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't think you have to merge other trees, to get both APIs, they should
-already be part of the dma-slave tree that your patch would get merged
-into. If not, we can probably come up with a different solution. The
-dma_set_mask_and_coherent() suggestion is not as important as the
-dma_get_any_slave_channel() one, if you have to choose between them.
+On Thu, Dec 19, 2013 at 10:55:08AM +0000, Mark Brown wrote:
+> On Wed, Dec 18, 2013 at 01:17:51PM -0000, gsantosh@codeaurora.org wrote:
+> > Hi,
+> >=20
+> > I have following questions in the compressed offload framework API.
+> >=20
+> > static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+> > 					struct snd_compr_params *params)
+> > {
+> > ...
+> > 	hw_params =3D kzalloc(sizeof(*hw_params), GFP_KERNEL);
+> > 	if (hw_params =3D=3D NULL)
+> > 		return -ENOMEM;
+> > /*1st question is, what is the use of above allocated memory I do not s=
+ee
+> > this being used in this function*/
+>=20
+> The code you're quoting there isn't in mainline.  I've also added Vinod
+> to the CCs, you probably want to include him in any discussion of the
+> compressed API.
+That's right, this is from DPCM compressed updated done by Liam, so he is t=
+he
+best person to comment on this bit, and somehow his address in CC has gone =
+bad,
+i have added him in to list
 
-> >> + if (pdev->dev.of_node) {
-> >> + /* Device-tree DMA controller registration */
-> >> + rc = of_dma_controller_register(pdev->dev.of_node,
-> >> + bcm2835_dma_xlate, od);
-> >> + if (rc) {
-> >> + dev_err(&pdev->dev, "Failed to register DMA controller\n");
-> >> + goto err_no_dma;
-> >> + }
-> >> + }
-> >
-> > If pdev->dev.of_node isn't set, you didn't get here, so the if() can be removed.
-> 
-> Why not? (In the case of non-DT initialization)
+But yes looking at the source, i agree that two are interlinked.
+I guess we need to poupulate the hw_params and then use that to copy, that =
+would
+be the right thing to do here and yes this is not correct and not sure how =
+this
+is working...
 
-The code I quoted is right after these lines:
+--=20
+~Vinod
 
-+       /* Request DMA channel mask from device tree */
-+       if (of_property_read_u32(pdev->dev.of_node,
-+                       "brcm,dma-channel-mask",
-+                       &chans_available)) {
-+               dev_err(&pdev->dev, "Failed to get channel mask\n");
-+               rc = -EINVAL;
-+               goto err_no_dma;
-+       }
+--zhXaljGHf11kAtnf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-If DT is disabled or not used, you return -EINVAL here.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
 
-	Arnd
+iQIcBAEBAgAGBQJSyWZ2AAoJEHwUBw8lI4NHFfkP/1ljXZtVTnVvMlEnEg5mJcqw
+bPwMTiXNK/57yNvzxgWnyu58q/GaMUZcnMgORzCL4pTYHN7cC9QsZQOu8SMXEYgy
+V2H5lM6g6IDpAymgiKWiD4T4VF6wFBhtj8WWHaEXXGPG5PQX3Wfj+x4MJfEzA4kT
+wk9johHbc2GaLK/yOph14HMKLdimux6p7twxSUJclHcvqQ4lLPplLlK7+YtDsdBt
+im+iXWCp2LnAeRQ6bBL5NBzeYsJimi7bxYmRBGeocXGxqT4sjngTR4g7HIQebNR2
+Rjt8DsntzWI1bzDtkROcT6+p/oqnjRON4Iz1/gbx47bOK2WRm7ZSsqg2i01EaSyI
+gQ0KHFE/tgOt2yrk2ayymAFei+3luStpKyZNwrUXFYf5Fg1DDNv6OdOsOBWc9FiH
+gJ0+d0MlNVWINUo7b8sEnMGyhycACkH0J6JZk0a+BePA2bDY+bF6P8D8KJUDLgMj
+2IxTihdDdy1t/hdQoQnevW7DQQlTGJ3E326S6+Jil0zey+Yh/D9+jYrzxKx2ornv
+trwJvsxPUB7sKOSpmQXaXEv2LKkmjhWd+K/tvawWeiv9+DK+VJArwL72LUS3KlnX
+/0M5N123t21WDffyJOwenhcK+VrQNSdgqa12tUaZIj/G1mJ2qaGEU8dM6svcB+2C
+96YQ4nhsCQGA0s/F5h7b
+=YZSm
+-----END PGP SIGNATURE-----
+
+--zhXaljGHf11kAtnf--
+
+--===============1814629305303530528==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1814629305303530528==--
