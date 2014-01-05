@@ -1,16 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/8] oxfw: Add connections and streams
-	management
-Date: Sun,  5 Jan 2014 20:13:33 +0900
-Message-ID: <1388920417-5584-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 6/8] oxfw: Add MIDI interface
+Date: Sun,  5 Jan 2014 20:13:35 +0900
+Message-ID: <1388920417-5584-7-git-send-email-o-takashi@sakamocchi.jp>
 References: <1388920417-5584-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 54DDE260885
- for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 12:13:52 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 57F25261635
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 12:13:55 +0100 (CET)
 In-Reply-To: <1388920417-5584-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,525 +24,208 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds management functionality for connections and streams.
-OXFW970/971 use CMP to manage connections and uses AMDTP for streams.
+This commit adds a functionality to capture/playback MIDI messages.
 
-They transmits AMDTP stream in non-blocking mode. This stream has a quirk for
-'presentation timestamp'. The sequence of 'presentation timestamp' is invalid
-even if header of packet shows 'CIP header with SYT field'. So this driver
-can't reuse it for out-stream.
-
-In this reason, this driver keep to send correct 'presentation timestamp' in
-out-stream.
-
-And I note that its fluctuation of 'presentation timestamp' is less when
-out-stream exists (they receive AMDTP stream) than when no out-stream exists.
-
-no out-stream exists:
-Index	Payload	CIP_Header_0	CIP_Header_1
-38	14	00020092	900103D1
-39	12	00020098	900102FF
-40	12	0002009D	9001027F
-41	14	000200A2	90010396
-42	14	000200A8	900102E8
-43	12	000200AE	90010219
-44	14	000200B3	90010331
-45	12	000200B9	9001025F
-46	14	000200BE	90010376
-47	12	000200C4	900102A1
-00	12	000200C9	9001023E
-01	14	000200CE	90010358
-02	12	000200D4	90010289
-03	16	000200D9	900103A3
-04	12	000200E0	900102DD
-05	14	000200E5	900103F1
-06	12	000200EB	90010335
-07	12	000200F0	90010263
-08	14	000200F5	9001037C
-09	12	000200FB	900102AE
-
-out-stream exists:
-Index	Payload	CIP_Header_0	CIP_Header_1
-38	12	000200BD	900104A8
-39	14	000200C2	900104A8
-40	12	000200C8	900104AC
-41	14	000200CD	900104A9
-42	12	000200D3	900104B1
-43	14	000200D8	900104A8
-44	12	000200DE	900104AA
-45	14	000200E3	900104A9
-46	14	000200E9	900104AE
-47	12	000200EF	900104A8
-00	14	000200F4	900104AD
-01	12	000200FA	900104A7
-02	14	000200FF	900104A9
-03	12	00020005	900104A9
-04	14	0002000A	900104B1
-05	12	00020010	900104AA
-06	14	00020015	900104AD
-07	12	0002001B	900104A7
-08	14	00020020	900104AC
-09	12	00020026	900104A7
+When no AMDTP streams are running, this module starts AMDTP stream at current
+sampling rate for MIDI stream.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw.c        |  10 ++
- sound/firewire/oxfw/oxfw.h        |  18 ++
- sound/firewire/oxfw/oxfw_stream.c | 357 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 385 insertions(+)
+ sound/firewire/oxfw/Makefile    |   3 +-
+ sound/firewire/oxfw/oxfw.c      |   7 +++
+ sound/firewire/oxfw/oxfw.h      |   3 +
+ sound/firewire/oxfw/oxfw_midi.c | 135 ++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 147 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/oxfw/oxfw_midi.c
 
+diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
+index ab7865d..5430ec7 100644
+--- a/sound/firewire/oxfw/Makefile
++++ b/sound/firewire/oxfw/Makefile
+@@ -1,2 +1,3 @@
+-snd-oxfw-objs := oxfw_command.o oxfw_stream.o oxfw_proc.o oxfw.o
++snd-oxfw-objs := oxfw_command.o oxfw_stream.o oxfw_proc.o oxfw_midi.o \
++		 oxfw.o
+ obj-m += snd-oxfw.o
 diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index c030fc0..f8320af 100644
+index 8298cba..ee817cd 100644
 --- a/sound/firewire/oxfw/oxfw.c
 +++ b/sound/firewire/oxfw/oxfw.c
-@@ -134,6 +134,14 @@ oxfw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
+@@ -144,6 +144,13 @@ oxfw_probe(struct fw_unit *unit,
  
-+	err = snd_oxfw_stream_discover(oxfw);
-+	if (err < 0)
-+		goto error;
-+
-+	err = snd_oxfw_stream_init_duplex(oxfw);
-+	if (err < 0)
-+		goto error;
+ 	snd_oxfw_proc_init(oxfw);
+ 
++	if ((oxfw->midi_input_ports > 0) ||
++	    (oxfw->midi_output_ports > 0)) {
++		err = snd_oxfw_create_midi_devices(oxfw);
++		if (err < 0)
++			goto error;
++	}
 +
  	snd_card_set_dev(card, &unit->device);
  	err = snd_card_register(card);
  	if (err < 0) {
-@@ -158,6 +166,7 @@ oxfw_update(struct fw_unit *unit)
- 	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
- 
- 	fcp_bus_reset(oxfw->unit);
-+	snd_oxfw_stream_update_duplex(oxfw);
- }
- 
- static void
-@@ -165,6 +174,7 @@ oxfw_remove(struct fw_unit *unit)
- {
- 	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
- 
-+	snd_oxfw_stream_destroy_duplex(oxfw);
- 	snd_card_disconnect(oxfw->card);
- 	snd_card_free_when_closed(oxfw->card);
- }
 diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index e82717a..34ea0c8 100644
+index 7c02448e..523ac40 100644
 --- a/sound/firewire/oxfw/oxfw.h
 +++ b/sound/firewire/oxfw/oxfw.h
-@@ -24,6 +24,9 @@
+@@ -21,6 +21,7 @@
+ #include <sound/core.h>
+ #include <sound/initval.h>
+ #include <sound/info.h>
++#include <sound/rawmidi.h>
+ 
  #include "../lib.h"
  #include "../fcp.h"
- #include "../amdtp.h"
-+#include "../packets-buffer.h"
-+#include "../iso-resources.h"
-+#include "../cmp.h"
+@@ -109,6 +110,8 @@ int snd_oxfw_stream_discover(struct snd_oxfw *oxfw);
  
- #define	SND_OXFW_RATE_TABLE_ENTRIES	7
- struct snd_oxfw_stream_formation {
-@@ -49,6 +52,11 @@ struct snd_oxfw {
+ void snd_oxfw_proc_init(struct snd_oxfw *oxfw);
  
- 	unsigned int midi_input_ports;
- 	unsigned int midi_output_ports;
++int snd_oxfw_create_midi_devices(struct snd_oxfw *oxfw);
 +
-+	struct cmp_connection out_conn;
-+	struct amdtp_stream tx_stream;
-+	struct cmp_connection in_conn;
-+	struct amdtp_stream rx_stream;
- };
- 
- /* AV/C Stream Format Information Specification 1.1 (Apr 2005, 1394TA) */
-@@ -86,6 +94,16 @@ int snd_oxfw_set_rate(struct snd_oxfw *oxfw, unsigned int rate,
- 		      enum avc_general_plug_dir dir);
- 
- /* for AMDTP streaming */
-+int snd_oxfw_stream_get_rate(struct snd_oxfw *oxfw, unsigned int *rate);
-+int snd_oxfw_stream_set_rate(struct snd_oxfw *oxfw, unsigned int rate);
-+int snd_oxfw_stream_init_duplex(struct snd_oxfw *oxfw);
-+int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
-+				  struct amdtp_stream *stream,
-+				   unsigned int sampling_rate);
-+int snd_oxfw_stream_stop_duplex(struct snd_oxfw *oxfw);
-+void snd_oxfw_stream_update_duplex(struct snd_oxfw *oxfw);
-+void snd_oxfw_stream_destroy_duplex(struct snd_oxfw *oxfw);
-+
- int snd_oxfw_stream_discover(struct snd_oxfw *oxfw);
- 
  #define SND_OXFW_DEV_ENTRY(vendor, model) \
-diff --git a/sound/firewire/oxfw/oxfw_stream.c b/sound/firewire/oxfw/oxfw_stream.c
-index 60ad700..ad2dd86 100644
---- a/sound/firewire/oxfw/oxfw_stream.c
-+++ b/sound/firewire/oxfw/oxfw_stream.c
-@@ -17,6 +17,15 @@
-  * FORMAT INFORMATION' defined in 'AV/C Stream Format Information
-  * Specification 1.1 (Apr 2005, 1394TA)'. So this module uses an assumption
-  * that OXFW970 doesn't change its formation of channels in AMDTP stream.
+ { \
+ 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
+diff --git a/sound/firewire/oxfw/oxfw_midi.c b/sound/firewire/oxfw/oxfw_midi.c
+new file mode 100644
+index 0000000..41c14ec
+--- /dev/null
++++ b/sound/firewire/oxfw/oxfw_midi.c
+@@ -0,0 +1,135 @@
++/*
++ * oxfw_midi.c - a part of driver for OXFW970/971 based devices
 + *
-+ * They transmit packet following to 'CIP header with  SYT field' defined in
-+ * IEC 61883-1. But the sequence of value in SYT field is not compliant. So
-+ * this module doesn't use the value of SYT field in in-packets. Then this
-+ * module performs as a 'master of synchronization'. In this way, this module
-+ * hopes the device to pick up the value of SYT value in out-packet which
-+ * this module transmits. But the device seems not to use it for in-packet
-+ * which the device transmits. Concluding, it doesn't matter whether this
-+ * module perform as a master or slave.
-  */
- const unsigned int snd_oxfw_rate_table[SND_OXFW_RATE_TABLE_ENTRIES] = {
- 	[0] = 32000,
-@@ -42,6 +51,354 @@ static const unsigned int avc_stream_rate_table[] = {
- 	[6] = 0x07,
- };
- 
-+int snd_oxfw_stream_get_rate(struct snd_oxfw *oxfw, unsigned int *curr_rate)
++ * Copyright (c) 2013 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "oxfw.h"
++
++static int midi_capture_open(struct snd_rawmidi_substream *substream)
 +{
-+	unsigned int tx_rate, rx_rate;
-+	int err;
-+
-+	err = snd_oxfw_get_rate(oxfw, &tx_rate, AVC_GENERAL_PLUG_DIR_OUT);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_oxfw_get_rate(oxfw, &rx_rate, AVC_GENERAL_PLUG_DIR_IN);
-+	if (err < 0)
-+		goto end;
-+
-+	*curr_rate = rx_rate;
-+	if (rx_rate == tx_rate)
-+		goto end;
-+
-+	/* synchronize receive stream rate to transmit stream rate */
-+	err = snd_oxfw_set_rate(oxfw, rx_rate, AVC_GENERAL_PLUG_DIR_IN);
-+end:
-+	return err;
++	struct snd_oxfw *oxfw = substream->rmidi->private_data;
++	return snd_oxfw_stream_start_duplex(oxfw, &oxfw->tx_stream, 0);
 +}
 +
-+int snd_oxfw_stream_set_rate(struct snd_oxfw *oxfw, unsigned int rate)
++static int midi_playback_open(struct snd_rawmidi_substream *substream)
 +{
-+	int err;
-+
-+	err = snd_oxfw_set_rate(oxfw, rate, AVC_GENERAL_PLUG_DIR_OUT);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_oxfw_set_rate(oxfw, rate, AVC_GENERAL_PLUG_DIR_IN);
-+end:
-+	return err;
++	struct snd_oxfw *oxfw = substream->rmidi->private_data;
++	return snd_oxfw_stream_start_duplex(oxfw, &oxfw->rx_stream, 0);
 +}
 +
-+static int
-+check_connection_used_by_others(struct snd_oxfw *oxfw,
-+				struct amdtp_stream *s, bool *used)
++static int midi_close(struct snd_rawmidi_substream *substream)
 +{
-+	struct cmp_connection *conn;
-+	int err;
++	struct snd_oxfw *oxfw = substream->rmidi->private_data;
++	snd_oxfw_stream_stop_duplex(oxfw);
++	return 0;
++}
 +
-+	if (s == &oxfw->tx_stream)
-+		conn = &oxfw->out_conn;
++static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_oxfw *oxfw = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&oxfw->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&oxfw->tx_stream,
++					  substrm->number, substrm);
 +	else
-+		conn = &oxfw->in_conn;
++		amdtp_stream_midi_trigger(&oxfw->tx_stream,
++					  substrm->number, NULL);
 +
-+	err = cmp_connection_check_used(conn, used);
-+	if (err >= 0)
-+		*used = (*used && !amdtp_stream_running(s));
-+
-+	return err;
-+}
-+
-+static int
-+init_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
-+{
-+	struct cmp_connection *conn;
-+	enum cmp_direction c_dir;
-+	enum amdtp_stream_direction s_dir;
-+	int err;
-+
-+	if (stream == &oxfw->tx_stream) {
-+		conn = &oxfw->out_conn;
-+		c_dir = CMP_OUTPUT;
-+		s_dir = AMDTP_IN_STREAM;
-+	} else {
-+		conn = &oxfw->in_conn;
-+		c_dir = CMP_INPUT;
-+		s_dir = AMDTP_OUT_STREAM;
-+	}
-+
-+	err = cmp_connection_init(conn, oxfw->unit, c_dir, 0);
-+	if (err < 0)
-+		goto end;
-+
-+	err = amdtp_stream_init(stream, oxfw->unit, s_dir, CIP_NONBLOCKING);
-+	if (err < 0)
-+		cmp_connection_destroy(conn);
-+end:
-+	return err;
-+}
-+
-+
-+static void
-+stop_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
-+{
-+	if (amdtp_stream_running(stream))
-+		amdtp_stream_stop(stream);
-+
-+	if (stream == &oxfw->tx_stream)
-+		cmp_connection_break(&oxfw->out_conn);
-+	else
-+		cmp_connection_break(&oxfw->in_conn);
++	spin_unlock_irqrestore(&oxfw->lock, flags);
 +
 +	return;
 +}
 +
-+static int
-+start_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream,
-+	     unsigned int sampling_rate)
++static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
 +{
-+	struct cmp_connection *conn;
-+	unsigned int i, pcm_channels, midi_ports;
++	struct snd_oxfw *oxfw = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&oxfw->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&oxfw->rx_stream,
++					  substrm->number, substrm);
++	else
++		amdtp_stream_midi_trigger(&oxfw->rx_stream,
++					  substrm->number, NULL);
++
++	spin_unlock_irqrestore(&oxfw->lock, flags);
++
++	return;
++}
++
++static struct snd_rawmidi_ops midi_capture_ops = {
++	.open		= midi_capture_open,
++	.close		= midi_close,
++	.trigger	= midi_capture_trigger,
++};
++
++static struct snd_rawmidi_ops midi_playback_ops = {
++	.open		= midi_playback_open,
++	.close		= midi_close,
++	.trigger	= midi_playback_trigger,
++};
++
++static void set_midi_substream_names(struct snd_oxfw *oxfw,
++				     struct snd_rawmidi_str *str)
++{
++	struct snd_rawmidi_substream *subs;
++
++	list_for_each_entry(subs, &str->substreams, list) {
++		snprintf(subs->name, sizeof(subs->name),
++			 "%s MIDI %d",
++			 oxfw->card->shortname, subs->number + 1);
++	}
++}
++
++int snd_oxfw_create_midi_devices(struct snd_oxfw *oxfw)
++{
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_str *str;
 +	int err;
 +
-+	/* already running */
-+	if (amdtp_stream_running(stream)) {
-+		err = 0;
-+		goto end;
-+	}
-+
-+	for (i = 0; i < sizeof(snd_oxfw_rate_table); i++) {
-+		if (snd_oxfw_rate_table[i] == sampling_rate)
-+			break;
-+	}
-+	if (i == sizeof(snd_oxfw_rate_table)) {
-+		err = -EINVAL;
-+		goto end;
-+	}
-+
-+	/* set stream formation */
-+	if (stream == &oxfw->tx_stream) {
-+		conn = &oxfw->out_conn;
-+		pcm_channels = oxfw->tx_stream_formations[i].pcm;
-+		midi_ports = oxfw->tx_stream_formations[i].midi * 8;
-+	} else {
-+		conn = &oxfw->in_conn;
-+		pcm_channels = oxfw->rx_stream_formations[i].pcm;
-+		midi_ports = oxfw->rx_stream_formations[i].midi * 8;
-+	}
-+	amdtp_stream_set_parameters(stream, sampling_rate,
-+				    pcm_channels, midi_ports);
-+
-+	/*  establish connection via CMP */
-+	err = cmp_connection_establish(conn,
-+				amdtp_stream_get_max_payload(stream));
++	/* create midi ports */
++	err = snd_rawmidi_new(oxfw->card, oxfw->card->driver, 0,
++			      oxfw->midi_output_ports, oxfw->midi_input_ports,
++			      &rmidi);
 +	if (err < 0)
-+		goto end;
++		return err;
 +
-+	/* start amdtp stream */
-+	err = amdtp_stream_start(stream,
-+				 conn->resources.channel,
-+				 conn->speed);
-+	if (err < 0)
-+		stop_stream(oxfw, stream);
++	snprintf(rmidi->name, sizeof(rmidi->name),
++			"%s MIDI", oxfw->card->shortname);
++	rmidi->private_data = oxfw;
 +
-+	/* wait first callback */
-+	if (!amdtp_stream_wait_callback(stream)) {
-+		stop_stream(oxfw, stream);
-+		err = -ETIMEDOUT;
++	if (oxfw->midi_input_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++					&midi_capture_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++
++		set_midi_substream_names(oxfw, str);
 +	}
-+end:
-+	return err;
-+}
 +
-+static void
-+update_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
-+{
-+	struct cmp_connection *conn;
++	if (oxfw->midi_output_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
 +
-+	if (&oxfw->tx_stream == stream)
-+		conn = &oxfw->out_conn;
-+	else
-+		conn = &oxfw->in_conn;
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
++					&midi_playback_ops);
 +
-+	if (cmp_connection_update(conn) < 0) {
-+		amdtp_stream_pcm_abort(stream);
-+		mutex_lock(&oxfw->mutex);
-+		stop_stream(oxfw, stream);
-+		mutex_unlock(&oxfw->mutex);
-+		return;
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++
++		set_midi_substream_names(oxfw, str);
 +	}
-+	amdtp_stream_update(stream);
-+}
 +
-+static void
-+destroy_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
-+{
-+	stop_stream(oxfw, stream);
-+
-+	if (stream == &oxfw->tx_stream)
-+		cmp_connection_destroy(&oxfw->out_conn);
-+	else
-+		cmp_connection_destroy(&oxfw->in_conn);
-+}
-+
-+static int
-+get_roles(struct snd_oxfw *oxfw, enum cip_flags *sync_mode,
-+	  struct amdtp_stream **master, struct amdtp_stream **slave)
-+{
-+	/* It doesn't matter. So this module perform as a sync master */
-+	*sync_mode = 0x00;
-+	*master = &oxfw->rx_stream;
-+	*slave = &oxfw->tx_stream;
++	if ((oxfw->midi_output_ports > 0) && (oxfw->midi_input_ports > 0))
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
 +
 +	return 0;
 +}
-+
-+int snd_oxfw_stream_init_duplex(struct snd_oxfw *oxfw)
-+{
-+	int err;
-+
-+	err = init_stream(oxfw, &oxfw->tx_stream);
-+	if (err < 0)
-+		goto end;
-+
-+	err = init_stream(oxfw, &oxfw->rx_stream);
-+end:
-+	return err;
-+}
-+
-+int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
-+				  struct amdtp_stream *request,
-+				  unsigned int rate)
-+{
-+	struct amdtp_stream *master, *slave;
-+	enum cip_flags sync_mode;
-+	unsigned int curr_rate;
-+	bool slave_flag, used;
-+	int err;
-+
-+	mutex_lock(&oxfw->mutex);
-+
-+	err = get_roles(oxfw, &sync_mode, &master, &slave);
-+	if (err < 0)
-+		goto end;
-+
-+	if ((request == slave) || amdtp_stream_running(slave))
-+		slave_flag = true;
-+	else
-+		slave_flag = false;
-+
-+	/*
-+	 * Considering JACK/FFADO streaming:
-+	 * TODO: This can be removed hwdep functionality becomes popular.
-+	 */
-+	err = check_connection_used_by_others(oxfw, master, &used);
-+	if (err < 0)
-+		goto end;
-+	if (used) {
-+		dev_err(&oxfw->unit->device,
-+			"connections established by others: %d\n",
-+			used);
-+		err = -EBUSY;
-+		goto end;
-+	}
-+
-+	/* get current rate */
-+	err = snd_oxfw_stream_get_rate(oxfw, &curr_rate);
-+	if (err < 0)
-+		goto end;
-+	if (rate == 0)
-+		rate = curr_rate;
-+
-+	/* change sampling rate if needed */
-+	if (rate != curr_rate) {
-+		/* slave is just for MIDI stream */
-+		if (amdtp_stream_running(slave) &&
-+		    !amdtp_stream_pcm_running(slave))
-+			amdtp_stream_stop(slave);
-+
-+		/* master is just for MIDI stream */
-+		if (amdtp_stream_running(master) &&
-+		    !amdtp_stream_pcm_running(master))
-+			amdtp_stream_stop(master);
-+
-+		err = snd_oxfw_stream_set_rate(oxfw, rate);
-+		if (err < 0)
-+			goto end;
-+	}
-+
-+	/* master should be always running */
-+	if (!amdtp_stream_running(master)) {
-+		err = start_stream(oxfw, master, rate);
-+		if (err < 0) {
-+			dev_err(&oxfw->unit->device,
-+				"fail to run AMDTP master stream:%d\n", err);
-+			goto end;
-+		}
-+	}
-+
-+	/* start slave if needed */
-+	if (slave_flag && !amdtp_stream_running(slave)) {
-+		err = start_stream(oxfw, slave, rate);
-+		if (err < 0)
-+			dev_err(&oxfw->unit->device,
-+				"fail to run AMDTP slave stream:%d\n", err);
-+	}
-+end:
-+	mutex_unlock(&oxfw->mutex);
-+	return err;
-+}
-+
-+int snd_oxfw_stream_stop_duplex(struct snd_oxfw *oxfw)
-+{
-+	struct amdtp_stream *master, *slave;
-+	enum cip_flags sync_mode;
-+	int err;
-+
-+	mutex_lock(&oxfw->mutex);
-+
-+	err = get_roles(oxfw, &sync_mode, &master, &slave);
-+	if (err < 0)
-+		goto end;
-+
-+	if (amdtp_stream_pcm_running(slave) ||
-+	    amdtp_stream_midi_running(slave))
-+		goto end;
-+
-+	stop_stream(oxfw, slave);
-+
-+	if (amdtp_stream_pcm_running(master) ||
-+	    amdtp_stream_midi_running(master))
-+		goto end;
-+
-+	stop_stream(oxfw, master);
-+end:
-+	mutex_unlock(&oxfw->mutex);
-+	return err;
-+}
-+
-+void snd_oxfw_stream_update_duplex(struct snd_oxfw *oxfw)
-+{
-+	mutex_lock(&oxfw->mutex);
-+
-+	update_stream(oxfw, &oxfw->rx_stream);
-+	update_stream(oxfw, &oxfw->tx_stream);
-+
-+	mutex_unlock(&oxfw->mutex);
-+}
-+
-+void snd_oxfw_stream_destroy_duplex(struct snd_oxfw *oxfw)
-+{
-+	mutex_lock(&oxfw->mutex);
-+
-+	if (amdtp_stream_pcm_running(&oxfw->rx_stream))
-+		amdtp_stream_pcm_abort(&oxfw->rx_stream);
-+	if (amdtp_stream_pcm_running(&oxfw->tx_stream))
-+		amdtp_stream_pcm_abort(&oxfw->tx_stream);
-+
-+	destroy_stream(oxfw, &oxfw->rx_stream);
-+	destroy_stream(oxfw, &oxfw->tx_stream);
-+
-+	mutex_unlock(&oxfw->mutex);
-+}
-+
- /*
-  * See Table 6.16 - AM824 Stream Format
-  *     Figure 6.19 - format_information field for AM824 Compound
 -- 
 1.8.3.2
