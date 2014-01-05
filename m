@@ -1,124 +1,111 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Sample program for hwdep interface
-Date: Sun, 05 Jan 2014 20:18:35 +0900
-Message-ID: <52C93F8B.1010701@sakamocchi.jp>
-References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
-	<52B45837.2080804@sakamocchi.jp>
-	<20131221101123.GA17855@marvin.atrad.com.au>
+Subject: [RFC][PATCH 0/8] A new driver for OXFW970/971 based
+	devices
+Date: Sun,  5 Jan 2014 20:13:29 +0900
+Message-ID: <1388920417-5584-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20131221101123.GA17855@marvin.atrad.com.au>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Jonathan Woithe <jwoithe@just42.net>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D033265174
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 12:13:51 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Jonathan, Clemens,
+This series of patch is based on my previous series below:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/070424.html
 
-I'm sorry to be late for reply but I need to enjoy my year-end holidays 
-to refresh my brain.
+This series of patch add a new driver, snd-oxfw, for OXFW970/971 based devices.
+These chipsets are already supported by snd-firewire-speakers but this new
+driver aim to support recording equipment.
 
-(Dec 21 2013 19:11), Jonathan Woithe wrote:
- > I thought this ticket was more or less resolved.
+Current supported devices:
+ * Behringer F-Control Audio 202
+ * Mackie Onyx-i series (former model)
+ * Mackie Onyx Satellite
 
-I've just added a workaround for this ticket.
-My patch avoids buffer-over-run/assertion and apply some fallback.
-Then FFADO just looks to handle the models.
+Devices possible to be supported if identifying IDs:
+ * Mackie, d.2 pro
+ * Mackie, d.4 pro
+ * Mackie, U.420
+ * Mackie, U.420d
+ * Mackie, Tapco Link.Firewire
 
-(Dec 21 2013 19:11), Jonathan Woithe wrote:
- > This ticket requires fixes within FFADO's mixer/control code (or so I 
-thought).
+I worked with Behringer F-Control Audio 202. So I want someone to test with the other devices, especially about some quirks.
 
-Yes. And this ticket still affects FFADO's streaming functionality.
 
-(Dec 21 2013 19:11), Jonathan Woithe wrote:
- > How exactly does this program deal with ticket #360?
- > Or is this program simply demonstrating what FFADO must do?
+Clemens, would you gime me your opinions about issues below?
+And if you know something about this chipset, would you share the information?
 
-This program just demonstrates how to use hwdep interface.
+1.snd-firewire-speakers and snd-oxfw
+With this series of patches, ALSA has two drivers for the same chipsets.
+Merging these two drivers is a bit difficult because:
+ - snd-firewire-speakers has control interface but snd-oxfw don't
+ - snd-firewire-speakers don't support in-stream but snd-oxfw supports
 
-For Fireworks, via this interface, FFADO can use all of implemented 
-commands without failures. And it's my solution for this ticket.
+2.currently snd-oxfw works with streams in SYT-Match
+Due to invalid sequence of 'presentation timestamp' in transmitted packets.
+In detail, please see 4th patch.
 
-Here, I try to describe the detail related to this ticket[1].
-I should have mentioned the detail in ffado-devel but I got the whole 
-picture in the end of last year.
+3.assumption of channnel formation
+Some commands may not be implemented.
+In detail, please see 3rd patch.
 
-Cause:
-The bug is due to failure of some commands in some models.
-The commands are 'EfcGetClockCmd' and 'EfcPolledValuesCmd'.
-These commands are used to get device status.
-The bug appears in initializing process of FFADO.
-So this bug affects both streaming and mixer/control functionality.
+4.don't check source of clock
+All of supported devices (including can be) don't have the functionality to switch source of clock. So I want to omit this.
 
-Workaround:
-Using alternative way when failed.
-  - 'AV/C PLUG SIGNAL FORMAT' command to get sampling rate (applied at 
-r2240)
-  - 'AV/C SIGNAL SOURCE' command to get clock source (not applied)
-But disadvantages.
-  - No alternatives for 'EfcPolledValuesCmd'
-  - GenericAVC device class has a bug to switch sampling rate (I'm under 
-further investigation.)
+For issue 3 and 4, Descriptor mechanism in 'Enhancements to the AV/C General
+Specification 3.0 Version 1.1' may be a best solution but it costs much to implement against the number of available devices. I want to avoid this huge mechanism if possible.
 
-Fact:
-I actually confirmed these commands are failed in one of reported models.
-But these commands are success in unreported models.
-FFADO implementation of these commands is over 'AV/C VENDOR DEPENDENT' 
-command.
-So I tried these commands via specific addresses which Windows driver uses.
-Then I got always success in the models.
-
-Information:
-In the end of last year, I had a contact in Echo Audio.
-I asked the implementation of 'Echo Fireworks Command/Response' over 
-'AV/C vendor dependent' command.
-The person answered that some commands are not implemented on current 
-firmware for reported models.
-(I have no information for the reason.)
-The person also said that there are no differences between firmwares 
-installed by drivers of Windows/OS X.
-
-A solution:
-Using these addresses for command/response.
-
-An issue:
-Using an address range for response has an issue.
-The address range is an exclusive-resource in an system [2].
-
-In my opinion, considering ALSA/FFADO, it's better that such resource is 
-used
-in kernel-land driver and the driver gives an interface to use it for 
-user-land
-application.
-
-Of cource, there is another way, to use this resource just in
-one user-land application such as ffado-dbus-server.
-Then I need to make another way for kernel-land driver.
-(Maybe implementing alternative AV/C commands)
-
-[1] http://subversion.ffado.org/ticket/360
-[2] 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/070447.html
 
 Regards
 
-
 Takashi Sakamoto
 
+Takashi Sakamoto (8):
+  oxfw: Add skelton for OXFW970/971 based devices
+  oxfw: Read firmware version to name card
+  oxfw: Add some AV/C commands for channel formation of AMDTP stream
+  oxfw: Add connections and streams management
+  oxfw: Add proc interface for debugging purpose
+  oxfw: Add MIDI interface
+  oxfw: Add PCM interface
+  oxfw: Add hwdep interface
 
-------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
+ include/uapi/sound/asound.h        |   3 +-
+ include/uapi/sound/firewire.h      |   3 +-
+ sound/firewire/Kconfig             |  17 +
+ sound/firewire/Makefile            |   1 +
+ sound/firewire/oxfw/Makefile       |   3 +
+ sound/firewire/oxfw/oxfw.c         | 243 ++++++++++++++
+ sound/firewire/oxfw/oxfw.h         | 140 ++++++++
+ sound/firewire/oxfw/oxfw_command.c | 161 ++++++++++
+ sound/firewire/oxfw/oxfw_hwdep.c   | 197 ++++++++++++
+ sound/firewire/oxfw/oxfw_midi.c    | 156 +++++++++
+ sound/firewire/oxfw/oxfw_pcm.c     | 421 ++++++++++++++++++++++++
+ sound/firewire/oxfw/oxfw_proc.c    |  61 ++++
+ sound/firewire/oxfw/oxfw_stream.c  | 639 +++++++++++++++++++++++++++++++++++++
+ 13 files changed, 2043 insertions(+), 2 deletions(-)
+ create mode 100644 sound/firewire/oxfw/Makefile
+ create mode 100644 sound/firewire/oxfw/oxfw.c
+ create mode 100644 sound/firewire/oxfw/oxfw.h
+ create mode 100644 sound/firewire/oxfw/oxfw_command.c
+ create mode 100644 sound/firewire/oxfw/oxfw_hwdep.c
+ create mode 100644 sound/firewire/oxfw/oxfw_midi.c
+ create mode 100644 sound/firewire/oxfw/oxfw_pcm.c
+ create mode 100644 sound/firewire/oxfw/oxfw_proc.c
+ create mode 100644 sound/firewire/oxfw/oxfw_stream.c
+
+-- 
+1.8.3.2
