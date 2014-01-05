@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/8] oxfw: Add some AV/C commands for channel
-	formation of AMDTP stream
-Date: Sun,  5 Jan 2014 20:13:32 +0900
-Message-ID: <1388920417-5584-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/8] oxfw: Add connections and streams
+	management
+Date: Sun,  5 Jan 2014 20:13:33 +0900
+Message-ID: <1388920417-5584-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1388920417-5584-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A506265173
- for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 12:13:51 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 54DDE260885
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 12:13:52 +0100 (CET)
 In-Reply-To: <1388920417-5584-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,274 +25,525 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-T1hGVzk3MC85NzEgbWF5IHN1cHBvcnRzIEFWL0MgU3RyZWFtIEZvcm1hdCBJbmZvcm1hdGlvbiBT
-cGVjaWZpY2F0aW9uIDEuMQpXb3JraW5nIERyYWZ0IChBcHIgMjAwNSwgMTM5NFRBKS4gU28gdGhp
-cyBkcml2ZXIgdXNlcyAnRVhURU5ERUQgU1RSRUFNIEZPUk1BVApJTkZPUk1BVElPTicgY29tbWFu
-ZC4KClRoaXMgY29tbWFuZCBoYXMgdHdvIHN1YmZ1bmN0aW9ucywgU0lOR0xFIGFuZCBMSVNULiBU
-byB1c2UgU0lOR0xFIHN1YmZ1bmN0aW9uLApkcml2ZXJzIGNhbiBrbm93IGN1cnJlbnQgZm9ybWF0
-aW9uIG9mIEFNRFRQIHN0cmVhbS4gVG8gdXNlIExJU1Qgc3ViZnVuY3Rpb24sCmRyaXZlcnMgY2Fu
-IGtub3cgYWxsIG9mIGF2YWlsYWJsZSBmb3JtYXRpb25zIG9mIEFNRFRQIHN0cmVhbS4gQnV0IHRo
-ZXJlIGFyZQpzb21lIGRldmljZXMgd2hpY2ggZG9uJ3QgaW1wbGVtZW50IExJU1Qgc3ViZnVuY3Rp
-b24uCgpXaGVuIGRldmljZSBkb24ndCBpbXBsZW1lbnQgTElTVCBzdWJmdW5jdGlvbiwgdGhpcyBk
-cml2ZXIgYXNzdW1lIGZvcm1hdGlvbiBvZgpBTURUUCBzdHJlYW0uIFRoZSB3YXkgb2YgYXNzdW1w
-dGlvbiBpczoKMS5nZXR0aW5nIGN1cnJlbnQgZm9ybWF0aW9uIHdpdGggU0lOR0xFIHN1YmZ1bmN0
-aW9uCjIuY2hlY2tpbmcgYWxsIG9mIGF2YWlsYWJsZSBzYW1wbGluZyByYXRlCjMuYXBwbHlpbmcg
-Y3VycmVudCBmb3JtYXRpb24gZm9yIGFsbCBvZiBhdmFpbGFibGUgc2FtcGxpbmcgcmF0ZQoKSSBu
-b3RlIHRoYXQgdGhpcyBhc3N1bXB0aW9uIGlzIHRvbyBiYWQgd2hlbiB0aGUgZGV2aWNlIGRvbid0
-IGltcGxlbWVudCBMSVNUCnN1YmZ1bmN0aW9uIGFuZCBkaWZmZXJlbnQgZm9ybWF0aW9uIGZvciBB
-TURUUCBzdHJlYW1zIGF0IGV2ZXJ5IGF2YWlsYWJsZQpzYW1wbGluZyByYXRlcy4gSSBiZWxpZXZl
-IHRoaXMgaXMgcmFyZS4KClRoaXMgZHJpdmVyIGFsc28gdXNlcyBhbm90aGVyIGFzc3VtcHRpb24g
-Zm9yIGF2YWlsYWJsZSBNSURJIHBvcnRzLiBJZiBvbmUgb2YKZm9ybWF0aW9ucyBoYXMgTUlESSBj
-b25mb3JtYW50IGRhdGEgY2hhbm5lbCwgdGhlbiB0aGlzIGRyaXZlciBhc3N1bWUgdGhlIGRldmlj
-ZQpoYXMgb25lIE1JREkgcG9ydHMuIEkgYmVsaWV2ZSBpdCByYXJlIHRoYXQgZGV2aWNlIGhhcyBz
-ZXZlcmFsIE1JREkgcG9ydHMuCgpTaWduZWQtb2ZmLWJ5OiBUYWthc2hpIFNha2Ftb3RvIDxvLXRh
-a2FzaGlAc2FrYW1vY2NoaS5qcD4KLS0tCiBzb3VuZC9maXJld2lyZS9veGZ3L01ha2VmaWxlICAg
-ICAgIHwgICAyICstCiBzb3VuZC9maXJld2lyZS9veGZ3L294ZncuYyAgICAgICAgIHwgICA0ICst
-CiBzb3VuZC9maXJld2lyZS9veGZ3L294ZncuaCAgICAgICAgIHwgIDU1ICsrKysrKysrKwogc291
-bmQvZmlyZXdpcmUvb3hmdy9veGZ3X2NvbW1hbmQuYyB8IDE2MSArKysrKysrKysrKysrKysrKysr
-KysrKysKIHNvdW5kL2ZpcmV3aXJlL294Zncvb3hmd19zdHJlYW0uYyAgfCAyNDMgKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKwogNSBmaWxlcyBjaGFuZ2VkLCA0NjMgaW5zZXJ0
-aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9maXJld2ly
-ZS9veGZ3L294ZndfY29tbWFuZC5jCiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvZmlyZXdpcmUv
-b3hmdy9veGZ3X3N0cmVhbS5jCgpkaWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUvb3hmdy9NYWtl
-ZmlsZSBiL3NvdW5kL2ZpcmV3aXJlL294ZncvTWFrZWZpbGUKaW5kZXggOWNhNDljMC4uNWViM2Q4
-NyAxMDA2NDQKLS0tIGEvc291bmQvZmlyZXdpcmUvb3hmdy9NYWtlZmlsZQorKysgYi9zb3VuZC9m
-aXJld2lyZS9veGZ3L01ha2VmaWxlCkBAIC0xLDIgKzEsMiBAQAotc25kLW94Znctb2JqcyA6PSBv
-eGZ3Lm8KK3NuZC1veGZ3LW9ianMgOj0gb3hmd19jb21tYW5kLm8gb3hmd19zdHJlYW0ubyBveGZ3
-Lm8KIG9iai1tICs9IHNuZC1veGZ3Lm8KZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL294Zncv
-b3hmdy5jIGIvc291bmQvZmlyZXdpcmUvb3hmdy9veGZ3LmMKaW5kZXggZTkwYzUzYS4uYzAzMGZj
-MCAxMDA2NDQKLS0tIGEvc291bmQvZmlyZXdpcmUvb3hmdy9veGZ3LmMKKysrIGIvc291bmQvZmly
-ZXdpcmUvb3hmdy9veGZ3LmMKQEAgLTE1NSw3ICsxNTUsOSBAQCBlcnJvcjoKIHN0YXRpYyB2b2lk
-CiBveGZ3X3VwZGF0ZShzdHJ1Y3QgZndfdW5pdCAqdW5pdCkKIHsKLQlyZXR1cm47CisJc3RydWN0
-IHNuZF9veGZ3ICpveGZ3ID0gZGV2X2dldF9kcnZkYXRhKCZ1bml0LT5kZXZpY2UpOworCisJZmNw
-X2J1c19yZXNldChveGZ3LT51bml0KTsKIH0KIAogc3RhdGljIHZvaWQKZGlmZiAtLWdpdCBhL3Nv
-dW5kL2ZpcmV3aXJlL294Zncvb3hmdy5oIGIvc291bmQvZmlyZXdpcmUvb3hmdy9veGZ3LmgKaW5k
-ZXggZTc1ZWI3MC4uZTgyNzE3YSAxMDA2NDQKLS0tIGEvc291bmQvZmlyZXdpcmUvb3hmdy9veGZ3
-LmgKKysrIGIvc291bmQvZmlyZXdpcmUvb3hmdy9veGZ3LmgKQEAgLTIyLDYgKzIyLDE2IEBACiAj
-aW5jbHVkZSA8c291bmQvaW5pdHZhbC5oPgogCiAjaW5jbHVkZSAiLi4vbGliLmgiCisjaW5jbHVk
-ZSAiLi4vZmNwLmgiCisjaW5jbHVkZSAiLi4vYW1kdHAuaCIKKworI2RlZmluZQlTTkRfT1hGV19S
-QVRFX1RBQkxFX0VOVFJJRVMJNworc3RydWN0IHNuZF9veGZ3X3N0cmVhbV9mb3JtYXRpb24gewor
-CXVuc2lnbmVkIGludCBwY207CisJdW5zaWduZWQgaW50IG1pZGk7Cit9OworLyogdGhpcyBpcyBh
-IGxvb2t1cCB0YWJsZSBmb3IgaW5kZXggb2Ygc3RyZWFtIGZvcm1hdGlvbnMgKi8KK2V4dGVybiBj
-b25zdCB1bnNpZ25lZCBpbnQgc25kX294ZndfcmF0ZV90YWJsZVtTTkRfT1hGV19SQVRFX1RBQkxF
-X0VOVFJJRVNdOwogCiBzdHJ1Y3Qgc25kX294ZncgewogCXN0cnVjdCBzbmRfY2FyZCAqY2FyZDsK
-QEAgLTMxLDggKzQxLDUzIEBAIHN0cnVjdCBzbmRfb3hmdyB7CiAKIAlzdHJ1Y3QgbXV0ZXggbXV0
-ZXg7CiAJc3BpbmxvY2tfdCBsb2NrOworCisJc3RydWN0IHNuZF9veGZ3X3N0cmVhbV9mb3JtYXRp
-b24KKwkJdHhfc3RyZWFtX2Zvcm1hdGlvbnNbU05EX09YRldfUkFURV9UQUJMRV9FTlRSSUVTXTsK
-KwlzdHJ1Y3Qgc25kX294Zndfc3RyZWFtX2Zvcm1hdGlvbgorCQlyeF9zdHJlYW1fZm9ybWF0aW9u
-c1tTTkRfT1hGV19SQVRFX1RBQkxFX0VOVFJJRVNdOworCisJdW5zaWduZWQgaW50IG1pZGlfaW5w
-dXRfcG9ydHM7CisJdW5zaWduZWQgaW50IG1pZGlfb3V0cHV0X3BvcnRzOwogfTsKIAorLyogQVYv
-QyBTdHJlYW0gRm9ybWF0IEluZm9ybWF0aW9uIFNwZWNpZmljYXRpb24gMS4xIChBcHIgMjAwNSwg
-MTM5NFRBKSAqLworI2RlZmluZSBBVkNfR0VORVJJQ19GUkFNRV9NQVhJTVVNX0JZVEVTCTUxMgor
-aW50IGF2Y19zdHJlYW1fZ2V0X2Zvcm1hdChzdHJ1Y3QgZndfdW5pdCAqdW5pdCwKKwkJCSAgZW51
-bSBhdmNfZ2VuZXJhbF9wbHVnX2RpciBkaXIsIHVuc2lnbmVkIGludCBwaWQsCisJCQkgIHU4ICpi
-dWYsIHVuc2lnbmVkIGludCAqbGVuLAorCQkJICB1bnNpZ25lZCBpbnQgZWlkKTsKK3N0YXRpYyBp
-bmxpbmUgaW50CithdmNfc3RyZWFtX2dldF9mb3JtYXRfc2luZ2xlKHN0cnVjdCBmd191bml0ICp1
-bml0LAorCQkJICAgICBlbnVtIGF2Y19nZW5lcmFsX3BsdWdfZGlyIGRpciwgdW5zaWduZWQgaW50
-IHBpZCwKKwkJCSAgICAgdTggKmJ1ZiwgdW5zaWduZWQgaW50ICpsZW4pCit7CisJcmV0dXJuIGF2
-Y19zdHJlYW1fZ2V0X2Zvcm1hdCh1bml0LCBkaXIsIHBpZCwgYnVmLCBsZW4sIDB4ZmYpOworfQor
-c3RhdGljIGlubGluZSBpbnQKK2F2Y19zdHJlYW1fZ2V0X2Zvcm1hdF9saXN0KHN0cnVjdCBmd191
-bml0ICp1bml0LAorCQkJICAgZW51bSBhdmNfZ2VuZXJhbF9wbHVnX2RpciBkaXIsIHVuc2lnbmVk
-IGludCBwaWQsCisJCQkgICB1OCAqYnVmLCB1bnNpZ25lZCBpbnQgKmxlbiwKKwkJCSAgIHVuc2ln
-bmVkIGludCBlaWQpCit7CisJcmV0dXJuIGF2Y19zdHJlYW1fZ2V0X2Zvcm1hdCh1bml0LCBkaXIs
-IHBpZCwgYnVmLCBsZW4sIGVpZCk7Cit9CisKKy8qCisgKiBBVi9DIERpZ2l0YWwgSW50ZXJmYWNl
-IENvbW1hbmQgU2V0IEdlbmVyYWwgU3BlY2lmaWNhdGlvbiA0LjIKKyAqIChTZXAgMjAwNCwgMTM5
-NFRBKQorICovCitpbnQgYXZjX2dlbmVyYWxfaW5xdWlyeV9zaWdfZm10KHN0cnVjdCBmd191bml0
-ICp1bml0LCB1bnNpZ25lZCBpbnQgcmF0ZSwKKwkJCQllbnVtIGF2Y19nZW5lcmFsX3BsdWdfZGly
-IGRpciwKKwkJCQl1bnNpZ25lZCBzaG9ydCBwaWQpOworaW50IHNuZF9veGZ3X2dldF9yYXRlKHN0
-cnVjdCBzbmRfb3hmdyAqb3hmdywgdW5zaWduZWQgaW50ICpyYXRlLAorCQkgICAgICBlbnVtIGF2
-Y19nZW5lcmFsX3BsdWdfZGlyIGRpcik7CitpbnQgc25kX294Zndfc2V0X3JhdGUoc3RydWN0IHNu
-ZF9veGZ3ICpveGZ3LCB1bnNpZ25lZCBpbnQgcmF0ZSwKKwkJICAgICAgZW51bSBhdmNfZ2VuZXJh
-bF9wbHVnX2RpciBkaXIpOworCisvKiBmb3IgQU1EVFAgc3RyZWFtaW5nICovCitpbnQgc25kX294
-Zndfc3RyZWFtX2Rpc2NvdmVyKHN0cnVjdCBzbmRfb3hmdyAqb3hmdyk7CisKICNkZWZpbmUgU05E
-X09YRldfREVWX0VOVFJZKHZlbmRvciwgbW9kZWwpIFwKIHsgXAogCS5tYXRjaF9mbGFncwk9IElF
-RUUxMzk0X01BVENIX1ZFTkRPUl9JRCB8IFwKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL294
-Zncvb3hmd19jb21tYW5kLmMgYi9zb3VuZC9maXJld2lyZS9veGZ3L294ZndfY29tbWFuZC5jCm5l
-dyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAuLjUyNjUxOGYKLS0tIC9kZXYvbnVsbAor
-KysgYi9zb3VuZC9maXJld2lyZS9veGZ3L294ZndfY29tbWFuZC5jCkBAIC0wLDAgKzEsMTYxIEBA
-CisvKgorICogb3hmd19jb21tYW5kLmMgLSBkcml2ZXIgZm9yIE9YRlc5NzAvOTcxIGJhc2VkIGRl
-dmljZXMKKyAqCisgKiBDb3B5cmlnaHQgKGMpIDIwMTMgVGFrYXNoaSBTYWthbW90bworICoKKyAq
-IExpY2Vuc2VkIHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vu
-c2UsIHZlcnNpb24gMi4KKyAqLworCisjaW5jbHVkZSAiLi9veGZ3LmgiCisKK2ludCBhdmNfc3Ry
-ZWFtX2dldF9mb3JtYXQoc3RydWN0IGZ3X3VuaXQgKnVuaXQsCisJCQkgIGVudW0gYXZjX2dlbmVy
-YWxfcGx1Z19kaXIgZGlyLCB1bnNpZ25lZCBpbnQgcGlkLAorCQkJICB1OCAqYnVmLCB1bnNpZ25l
-ZCBpbnQgKmxlbiwKKwkJCSAgdW5zaWduZWQgaW50IGVpZCkKK3sKKwl1bnNpZ25lZCBpbnQgc3Vi
-ZnVuYzsKKwlpbnQgZXJyOworCisJLyogY2hlY2sgZ2l2ZW4gYnVmZmVyICovCisJaWYgKChidWYg
-PT0gTlVMTCkgfHwgKCpsZW4gPCAxMikpIHsKKwkJZXJyID0gLUVJTlZBTDsKKwkJZ290byBlbmQ7
-CisJfQorCisJaWYgKGVpZCA9PSAweGZmKQorCQlzdWJmdW5jID0gMHhjMDsJLyogU0lOR0xFICov
-CisJZWxzZQorCQlzdWJmdW5jID0gMHhjMTsJLyogTElTVCAqLworCisJYnVmWzBdID0gMHgwMTsJ
-CS8qIFNUQVRVUyAqLworCWJ1ZlsxXSA9IDB4ZmY7CQkvKiBVTklUICovCisJYnVmWzJdID0gMHhi
-ZjsJCS8qIEVYVEVOREVEIFNUUkVBTSBGT1JNQVQgSU5GT1JNQVRJT04gKi8KKwlidWZbM10gPSBz
-dWJmdW5jOwkvKiBTSU5HTEUgb3IgTElTVCAqLworCWJ1Zls0XSA9IGRpcjsJCS8qIFBsdWcgRGly
-ZWN0aW9uICovCisJYnVmWzVdID0gMHgwMDsJCS8qIFVuaXQgKi8KKwlidWZbNl0gPSAweDAwOwkJ
-LyogUENSIChJc29jaHJvbm91cyBQbHVnKSAqLworCWJ1Zls3XSA9IDB4ZmYgJiBwaWQ7CS8qIFBs
-dWcgSUQgKi8KKwlidWZbOF0gPSAweGZmOwkJLyogUGFkZGluZyAqLworCWJ1Zls5XSA9IDB4ZmY7
-CQkvKiBzdXBwb3J0IHN0YXR1cyBpbiByZXNwb25zZSAqLworCWJ1ZlsxMF0gPSAweGZmICYgZWlk
-OwkvKiBlbnRyeSBJRCAqLworCWJ1ZlsxMV0gPSAweGZmOwkJLyogcGFkZGluZyAqLworCisJLyog
-ZG8gdHJhbnNhY3Rpb24gYW5kIGNoZWNrIGJ1ZlsxLTddIGFyZSB0aGUgc2FtZSBhZ2FpbnN0IGNv
-bW1hbmQgKi8KKwllcnIgPSBmY3BfYXZjX3RyYW5zYWN0aW9uKHVuaXQsIGJ1ZiwgMTIsIGJ1Ziwg
-KmxlbiwKKwkJCQkgIEJJVCgxKSB8IEJJVCgyKSB8IEJJVCgzKSB8IEJJVCg0KSB8IEJJVCg1KSB8
-CisJCQkJICBCSVQoNikgfCBCSVQoNykpOworCWlmIChlcnIgPCAwKSB7CisJCWdvdG8gZW5kOwor
-CS8qIHJlYWNoIHRoZSBlbmQgb2YgZW50cmllcyAqLworCX0gZWxzZSBpZiAoYnVmWzBdID09IDB4
-MGEpIHsKKwkJZXJyID0gMDsKKwkJKmxlbiA9IDA7CisJCWdvdG8gZW5kOworCX0gZWxzZSBpZiAo
-YnVmWzBdICE9IDB4MGMpIHsKKwkJZXJyID0gLUVJTlZBTDsKKwkJZ290byBlbmQ7CisJLyogdGhl
-IGNvbnRlbnQgc3RhcnRzIGF0IDExdGggYnl0ZXMgKi8KKwl9IGVsc2UgaWYgKGVyciA8IDkpIHsK
-KwkJZXJyID0gLUVJTzsKKwkJZ290byBlbmQ7CisJfSBlbHNlIGlmICgoc3ViZnVuYyA9PSAweGMx
-KSAmJiAoYnVmWzEwXSAhPSBlaWQpKSB7CisJCWVyciA9IC1FSU87CisJCWdvdG8gZW5kOworCX0K
-KworCS8qIHN0cmlwICovCisJbWVtbW92ZShidWYsIGJ1ZiArIDEwLCBlcnIgLSAxMCk7CisJKmxl
-biA9IGVyciAtIDEwOworCWVyciA9IDA7CitlbmQ6CisJcmV0dXJuIGVycjsKK30KKworaW50IGF2
-Y19nZW5lcmFsX2lucXVpcnlfc2lnX2ZtdChzdHJ1Y3QgZndfdW5pdCAqdW5pdCwgdW5zaWduZWQg
-aW50IHJhdGUsCisJCQkJZW51bSBhdmNfZ2VuZXJhbF9wbHVnX2RpciBkaXIsCisJCQkJdW5zaWdu
-ZWQgc2hvcnQgcGlkKQoreworCXVuc2lnbmVkIGludCBzZmM7CisJdTggKmJ1ZjsKKwlpbnQgZXJy
-OworCisJZm9yIChzZmMgPSAwOyBzZmMgPCBDSVBfU0ZDX0NPVU5UOyBzZmMrKykgeworCQlpZiAo
-YW1kdHBfcmF0ZV90YWJsZVtzZmNdID09IHJhdGUpCisJCQlicmVhazsKKwl9CisJaWYgKHNmYyA9
-PSBDSVBfU0ZDX0NPVU5UKQorCQlyZXR1cm4gLUVJTlZBTDsKKworCWJ1ZiA9IGt6YWxsb2MoOCwg
-R0ZQX0tFUk5FTCk7CisJaWYgKGJ1ZiA9PSBOVUxMKQorCQlyZXR1cm4gLUVOT01FTTsKKworCWJ1
-ZlswXSA9IDB4MDI7CQkvKiBTUEVDSUZJQyBJTlFVSVJZICovCisJYnVmWzFdID0gMHhmZjsJCS8q
-IFVOSVQgKi8KKwlpZiAoZGlyID09IEFWQ19HRU5FUkFMX1BMVUdfRElSX0lOKQorCQlidWZbMl0g
-PSAweDE5OwkvKiBJTlBVVCBQTFVHIFNJR05BTCBGT1JNQVQgKi8KKwllbHNlCisJCWJ1ZlsyXSA9
-IDB4MTg7CS8qIE9VVFBVVCBQTFVHIFNJR05BTCBGT1JNQVQgKi8KKwlidWZbM10gPSAweGZmICYg
-cGlkOwkvKiBwbHVnIGlkICovCisJYnVmWzRdID0gMHg5MDsJCS8qIEVPSF8xLCBGb3JtXzEsIEZN
-VC4gQU04MjQgKi8KKwlidWZbNV0gPSAweDA3ICYgc2ZjOwkvKiBGREYtaGkuIEFNODI0LCBmcmVx
-dWVuY3kgKi8KKwlidWZbNl0gPSAweGZmOwkJLyogRkRGLW1pZC4gQU04MjQsIFNZVCBoaSAobm90
-IHVzZWQpKi8KKwlidWZbN10gPSAweGZmOwkJLyogRkRGLWxvdy4gQU04MjQsIFNZVCBsbyAobm90
-IHVzZWQpICovCisKKwkvKiBkbyB0cmFuc2FjdGlvbiBhbmQgY2hlY2sgYnVmWzEtNV0gYXJlIHRo
-ZSBzYW1lIGFnYWluc3QgY29tbWFuZCAqLworCWVyciA9IGZjcF9hdmNfdHJhbnNhY3Rpb24odW5p
-dCwgYnVmLCA4LCBidWYsIDgsCisJCQkJICBCSVQoMSkgfCBCSVQoMikgfCBCSVQoMykgfCBCSVQo
-NCkgfCBCSVQoNSkpOworCWlmIChlcnIgPCAwKQorCQlnb3RvIGVuZDsKKworCS8qIGNoZWNrIGxl
-bmd0aCAqLworCWlmIChlcnIgIT0gOCkgeworCQlkZXZfZXJyKCZ1bml0LT5kZXZpY2UsICJmYWls
-ZWQgdG8gaW5xdWlyeSBzYW1wbGUgcmF0ZVxuIik7CisJCWVyciA9IC1FSU87CisJCWdvdG8gZW5k
-OworCX0KKworCS8qIHJldHVybiByZXNwb25zZSBjb2RlICovCisJZXJyID0gYnVmWzBdOworZW5k
-OgorCWtmcmVlKGJ1Zik7CisJcmV0dXJuIGVycjsKK30KKworaW50IHNuZF9veGZ3X2dldF9yYXRl
-KHN0cnVjdCBzbmRfb3hmdyAqb3hmdywgdW5zaWduZWQgaW50ICpyYXRlLAorCQkgICAgICBlbnVt
-IGF2Y19nZW5lcmFsX3BsdWdfZGlyIGRpcikKK3sKKwlpbnQgZXJyOworCisJZXJyID0gYXZjX2dl
-bmVyYWxfZ2V0X3NpZ19mbXQob3hmdy0+dW5pdCwgcmF0ZSwgZGlyLCAwKTsKKwlpZiAoZXJyIDwg
-MCkKKwkJZ290byBlbmQ7CisKKwkvKiBJTVBMRU1FTlRFRC9TVEFCTEUgaXMgT0sgKi8KKwlpZiAo
-ZXJyICE9IDB4MGMpIHsKKwkJZGV2X2Vycigmb3hmdy0+dW5pdC0+ZGV2aWNlLAorCQkJImZhaWxl
-ZCB0byBnZXQgc2FtcGxpbmcgcmF0ZVxuIik7CisJCWVyciA9IC1FSU87CisJfQorZW5kOgorCXJl
-dHVybiBlcnI7Cit9CisKK2ludCBzbmRfb3hmd19zZXRfcmF0ZShzdHJ1Y3Qgc25kX294ZncgKm94
-ZncsIHVuc2lnbmVkIGludCByYXRlLAorCQkgICAgICAgZW51bSBhdmNfZ2VuZXJhbF9wbHVnX2Rp
-ciBkaXIpCit7CisJaW50IGVycjsKKworCWVyciA9IGF2Y19nZW5lcmFsX3NldF9zaWdfZm10KG94
-ZnctPnVuaXQsIHJhdGUsIGRpciwgMCk7CisJaWYgKGVyciA8IDApCisJCWdvdG8gZW5kOworCisJ
-LyogQUNDRVBURUQgb3IgSU5URVJJTSBpcyBPSyAqLworCWlmICgoZXJyICE9IDB4MGYpICYmIChl
-cnIgIT0gMHgwOSkpIHsKKwkJZGV2X2Vycigmb3hmdy0+dW5pdC0+ZGV2aWNlLAorCQkJImZhaWxl
-ZCB0byBzZXQgc2FtcGxpbmcgcmF0ZVxuIik7CisJCWVyciA9IC1FSU87CisJfQorZW5kOgorCXJl
-dHVybiBlcnI7Cit9CmRpZmYgLS1naXQgYS9zb3VuZC9maXJld2lyZS9veGZ3L294Zndfc3RyZWFt
-LmMgYi9zb3VuZC9maXJld2lyZS9veGZ3L294Zndfc3RyZWFtLmMKbmV3IGZpbGUgbW9kZSAxMDA2
-NDQKaW5kZXggMDAwMDAwMC4uNjBhZDcwMAotLS0gL2Rldi9udWxsCisrKyBiL3NvdW5kL2ZpcmV3
-aXJlL294Zncvb3hmd19zdHJlYW0uYwpAQCAtMCwwICsxLDI0MyBAQAorLyoKKyAqIG94Zndfc3Ry
-ZWFtLmMgLSBhIHBhcnQgb2YgZHJpdmVyIGZvciBPWEZXOTcwLzk3MSBiYXNlZCBkZXZpY2VzCisg
-KgorICogQ29weXJpZ2h0IChjKSAyMDEzIFRha2FzaGkgU2FrYW1vdG8KKyAqCisgKiBMaWNlbnNl
-ZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlLCB2ZXJz
-aW9uIDIuCisgKi8KKworI2luY2x1ZGUgIi4vb3hmdy5oIgorCisvKgorICogQWNjb3JkaW5nIHRv
-IHRoZWlyIGRhdGFzaGVldDoKKyAqICBPWEZXOTcwIDMyLjAvNDQuMS80OC4wLzk2LjAgS2h6LCA0
-IGF1ZGlvIGNoYW5uZWxzIEkvTworICogIE9YRlc5NzE6IDMyLjAvNDQuMS80OC4wLzg4LjIvOTYu
-MCBrSHosIDE2IGF1ZGlvIGNoYW5uZWxzIEkvTywgTUlESSBJL08KKyAqCisgKiBPWEZXOTcwIHNl
-ZW1zIG5vdCB0byBpbXBsZW1lbnQgJ0xJU1QnIHN1YmZ1bmN0aW9uIGZvciAnRVhURU5ERUQgU1RS
-RUFNCisgKiBGT1JNQVQgSU5GT1JNQVRJT04nIGRlZmluZWQgaW4gJ0FWL0MgU3RyZWFtIEZvcm1h
-dCBJbmZvcm1hdGlvbgorICogU3BlY2lmaWNhdGlvbiAxLjEgKEFwciAyMDA1LCAxMzk0VEEpJy4g
-U28gdGhpcyBtb2R1bGUgdXNlcyBhbiBhc3N1bXB0aW9uCisgKiB0aGF0IE9YRlc5NzAgZG9lc24n
-dCBjaGFuZ2UgaXRzIGZvcm1hdGlvbiBvZiBjaGFubmVscyBpbiBBTURUUCBzdHJlYW0uCisgKi8K
-K2NvbnN0IHVuc2lnbmVkIGludCBzbmRfb3hmd19yYXRlX3RhYmxlW1NORF9PWEZXX1JBVEVfVEFC
-TEVfRU5UUklFU10gPSB7CisJWzBdID0gMzIwMDAsCisJWzFdID0gNDQxMDAsCisJWzJdID0gNDgw
-MDAsCisJWzNdID0gODgyMDAsCisJWzRdID0gOTYwMDAsCisJWzVdID0gMTc2NDAwLAorCVs2XSA9
-IDE5MjAwMCwKK307CisKKy8qCisgKiBTZWUgVGFibGUgNS43IOKAkyBTYW1wbGluZyBmcmVxdWVu
-Y3kgZm9yIE11bHRpLWJpdCBBdWRpbworICogYXQgQVYvQyBTdHJlYW0gRm9ybWF0IEluZm9ybWF0
-aW9uIFNwZWNpZmljYXRpb24gMS4xIChBcHIgMjAwNSwgMTM5NFRBKQorICovCitzdGF0aWMgY29u
-c3QgdW5zaWduZWQgaW50IGF2Y19zdHJlYW1fcmF0ZV90YWJsZVtdID0geworCVswXSA9IDB4MDIs
-CisJWzFdID0gMHgwMywKKwlbMl0gPSAweDA0LAorCVszXSA9IDB4MGEsCisJWzRdID0gMHgwNSwK
-KwlbNV0gPSAweDA2LAorCVs2XSA9IDB4MDcsCit9OworCisvKgorICogU2VlIFRhYmxlIDYuMTYg
-LSBBTTgyNCBTdHJlYW0gRm9ybWF0CisgKiAgICAgRmlndXJlIDYuMTkgLSBmb3JtYXRfaW5mb3Jt
-YXRpb24gZmllbGQgZm9yIEFNODI0IENvbXBvdW5kCisgKiBhdCBBVi9DIFN0cmVhbSBGb3JtYXQg
-SW5mb3JtYXRpb24gU3BlY2lmaWNhdGlvbiAxLjEgKEFwciAyMDA1LCAxMzk0VEEpCisgKi8KK3N0
-YXRpYyBpbnQKK3BhcnNlX3N0cmVhbV9mb3JtYXRpb24odTggKmJ1ZiwgdW5zaWduZWQgaW50IGxl
-biwKKwkJICAgICAgIHN0cnVjdCBzbmRfb3hmd19zdHJlYW1fZm9ybWF0aW9uICpmb3JtYXRpb24s
-CisJCSAgICAgICB1bnNpZ25lZCBpbnQgKmluZGV4KQoreworCXVuc2lnbmVkIGludCBlLCBjaGFu
-bmVscywgZm9ybWF0OworCisJLyoKKwkgKiB0aGlzIG1vZHVsZSBjYW4gc3VwcG9ydCBhIGhpZXJh
-cmNoeSBjb21iaW5hdGlvbiB0aGF0OgorCSAqICBSb290OglBdWRpbyBhbmQgTXVzaWMgKDB4OTAp
-CisJICogIExldmVsIDE6CUFNODI0IENvbXBvdW5kICAoMHg0MCkKKwkgKi8KKwlpZiAoKGJ1Zlsw
-XSAhPSAweDkwKSB8fCAoYnVmWzFdICE9IDB4NDApKQorCQlyZXR1cm4gLUVOT1NZUzsKKworCS8q
-IGNoZWNrIHRoZSBzYW1wbGluZyByYXRlICovCisJZm9yICgqaW5kZXggPSAwOyAqaW5kZXggPCBz
-aXplb2YoYXZjX3N0cmVhbV9yYXRlX3RhYmxlKTsgKmluZGV4ICs9IDEpIHsKKwkJaWYgKGJ1Zlsy
-XSA9PSBhdmNfc3RyZWFtX3JhdGVfdGFibGVbKmluZGV4XSkKKwkJCWJyZWFrOworCX0KKwlpZiAo
-KmluZGV4ID09IHNpemVvZihhdmNfc3RyZWFtX3JhdGVfdGFibGUpKQorCQlyZXR1cm4gLUVOT1NZ
-UzsKKworCWZvciAoZSA9IDA7IGUgPCBidWZbNF07IGUrKykgeworCQljaGFubmVscyA9IGJ1Zls1
-ICsgZSAqIDJdOworCQlmb3JtYXQgPSBidWZbNiArIGUgKiAyXTsKKworCQlzd2l0Y2ggKGZvcm1h
-dCkgeworCQkvKiBJRUMgNjA5NTgtMyAqLworCQljYXNlIDB4MDA6CisJCS8qIE11bHRpIEJpdCBM
-aW5lYXIgQXVkaW8gKFJhdykgKi8KKwkJY2FzZSAweDA2OgorCQkJZm9ybWF0aW9uWyppbmRleF0u
-cGNtICs9IGNoYW5uZWxzOworCQkJYnJlYWs7CisJCS8qIE1JREkgY29tZm9ybWFudCAqLworCQlj
-YXNlIDB4MGQ6CisJCQlmb3JtYXRpb25bKmluZGV4XS5taWRpICs9IGNoYW5uZWxzOworCQkJYnJl
-YWs7CisJCS8qIE11bHRpIEJpdCBMaW5lYXIgQXVkaW8gKERWRC1hdWRpbykgKi8KKwkJY2FzZSAw
-eDA3OgorCQkvKiBJRUMgNjE5MzctMyB0byA3ICovCisJCWNhc2UgMHgwMToKKwkJY2FzZSAweDAy
-OgorCQljYXNlIDB4MDM6CisJCWNhc2UgMHgwNDoKKwkJY2FzZSAweDA1OgorCQkvKiBPbmUgQml0
-IEF1ZGlvICovCisJCWNhc2UgMHgwODoJLyogKFBsYWluKSBSYXcgKi8KKwkJY2FzZSAweDA5Ogkv
-KiAoUGxhaW4pIFNBQ0QgKi8KKwkJY2FzZSAweDBhOgkvKiAoRW5jb2RlZCkgUmF3ICovCisJCWNh
-c2UgMHgwYjoJLyogKEVOY29kZWQpIFNBQ0QgKi8KKwkJLyogSGlnaCBwcmVjaXNpb24gTXVsdGkt
-Yml0IExpbmVhciBBdWRpbyAqLworCQljYXNlIDB4MGM6CisJCS8qIFNNUFRFIFRpbWUtQ29kZSBj
-b25mb3JtYW50ICovCisJCWNhc2UgMHgwZToKKwkJLyogU2FtcGxlIENvdW50ICovCisJCWNhc2Ug
-MHgwZjoKKwkJLyogQW5jaWxpYXJ5IERhdGEgKi8KKwkJY2FzZSAweDEwOgorCQkvKiBTeW5jaHJv
-bml6YXRpb24gU3RyZWFtIChTdGVyZW8gUmF3IGF1ZGlvKSAqLworCQljYXNlIDB4NDA6CisJCS8q
-IERvbid0IGNhcmUgKi8KKwkJY2FzZSAweGZmOgorCQlkZWZhdWx0OgorCQkJYnJlYWs7CS8qIG5v
-dCBzdXBwb3J0ZWQgKi8KKwkJfQorCX0KKworCXJldHVybiAwOworfQorCitzdGF0aWMgaW50Cith
-c3N1bWVfc3RyZWFtX2Zvcm1hdGlvbnMoc3RydWN0IHNuZF9veGZ3ICpveGZ3LCBlbnVtIGF2Y19n
-ZW5lcmFsX3BsdWdfZGlyIGRpciwKKwkJCSB1bnNpZ25lZCBpbnQgcGlkLCB1OCAqYnVmLCB1bnNp
-Z25lZCBpbnQgKmxlbiwKKwkJCSBzdHJ1Y3Qgc25kX294Zndfc3RyZWFtX2Zvcm1hdGlvbiAqZm9y
-bWF0aW9ucykKK3sKKwl1bnNpZ25lZCBpbnQgaSwgcGNtX2NoYW5uZWxzLCBtaWRpX2NoYW5uZWxz
-OworCWludCBlcnI7CisKKwkvKiBnZXQgZm9ybWF0aW9uIGF0IGN1cnJlbnQgc2FtcGxpbmcgcmF0
-ZSAqLworCWVyciA9IGF2Y19zdHJlYW1fZ2V0X2Zvcm1hdF9zaW5nbGUob3hmdy0+dW5pdCwgZGly
-LCBwaWQsIGJ1ZiwgbGVuKTsKKwlpZiAoKGVyciA8IDApIHx8IChlcnIgPT0gMHg4MCkgLyogTk9U
-IElNUExFTUVOVEVEICovKQorCQlnb3RvIGVuZDsKKworCS8qIHBhcnNlIGFuZCBzZXQgc3RyZWFt
-IGZvcm1hdGlvbiAqLworCWVyciA9IHBhcnNlX3N0cmVhbV9mb3JtYXRpb24oYnVmLCAqbGVuLCBm
-b3JtYXRpb25zLCAmaSk7CisJaWYgKGVyciA8IDApCisJCWdvdG8gZW5kOworCisJcGNtX2NoYW5u
-ZWxzID0gZm9ybWF0aW9uc1tpXS5wY207CisJbWlkaV9jaGFubmVscyA9IGZvcm1hdGlvbnNbaV0u
-bWlkaTsKKworCS8qIGFwcGx5IHRoZSBmb3JtYXRpb24gZm9yIGVhY2ggYXZhaWxhYmxlIHNhbXBs
-aW5nIHJhdGUgKi8KKwlmb3IgKGkgPSAwOyBpIDwgU05EX09YRldfUkFURV9UQUJMRV9FTlRSSUVT
-OyBpKyspIHsKKwkJZXJyID0gYXZjX2dlbmVyYWxfaW5xdWlyeV9zaWdfZm10KG94ZnctPnVuaXQs
-CisJCQkJCQkgIHNuZF9veGZ3X3JhdGVfdGFibGVbaV0sCisJCQkJCQkgIGRpciwgcGlkKTsKKwkJ
-aWYgKChlcnIgPCAwKSB8fCAoZXJyID09IDB4MDgpIC8qIE5PVCBJTVBMRU1FTlRFRCAqLykKKwkJ
-CWNvbnRpbnVlOworCisJCWZvcm1hdGlvbnNbaV0ucGNtID0gcGNtX2NoYW5uZWxzOworCQlmb3Jt
-YXRpb25zW2ldLm1pZGkgPSBtaWRpX2NoYW5uZWxzOworCX0KK2VuZDoKKwlyZXR1cm4gZXJyOwor
-fQorCitzdGF0aWMgaW50CitmaWxsX3N0cmVhbV9mb3JtYXRpb25zKHN0cnVjdCBzbmRfb3hmdyAq
-b3hmdywgZW51bSBhdmNfZ2VuZXJhbF9wbHVnX2RpciBkaXIsCisJCSAgICAgICB1bnNpZ25lZCBz
-aG9ydCBwaWQpCit7CisJdTggKmJ1ZjsKKwlzdHJ1Y3Qgc25kX294Zndfc3RyZWFtX2Zvcm1hdGlv
-biAqZm9ybWF0aW9uczsKKwl1bnNpZ25lZCBpbnQgaSwgbGVuLCBlaWQ7CisJaW50IGVycjsKKwor
-CWJ1ZiA9IGttYWxsb2MoQVZDX0dFTkVSSUNfRlJBTUVfTUFYSU1VTV9CWVRFUywgR0ZQX0tFUk5F
-TCk7CisJaWYgKGJ1ZiA9PSBOVUxMKQorCQlyZXR1cm4gLUVOT01FTTsKKworCWlmIChkaXIgPT0g
-QVZDX0dFTkVSQUxfUExVR19ESVJfSU4pCisJCWZvcm1hdGlvbnMgPSBveGZ3LT5yeF9zdHJlYW1f
-Zm9ybWF0aW9uczsKKwllbHNlCisJCWZvcm1hdGlvbnMgPSBveGZ3LT50eF9zdHJlYW1fZm9ybWF0
-aW9uczsKKworCS8qIGluaXRpYWxpemUgcGFyYW1ldGVycyBoZXJlIGJlY2F1c2Ugb2YgY2hlY2tp
-bmcgaW1wbGVtZW50YXRpb24gKi8KKwllaWQgPSAwOworCWxlbiA9IEFWQ19HRU5FUklDX0ZSQU1F
-X01BWElNVU1fQllURVM7CisJbWVtc2V0KGJ1ZiwgMCwgbGVuKTsKKworCS8qIGdldCBmaXJzdCBl
-bnRyeSAqLworCWVyciA9IGF2Y19zdHJlYW1fZ2V0X2Zvcm1hdF9saXN0KG94ZnctPnVuaXQsIGRp
-ciwgMCwgYnVmLCAmbGVuLCBlaWQpOworCWlmICgoZXJyIDwgMCkgfHwgKGxlbiA8IDMpKSB7CisJ
-CS8qIExJU1Qgc3ViZnVuY3Rpb24gaXMgbm90IGltcGxlbWVudGVkICovCisJCWVyciA9IGFzc3Vt
-ZV9zdHJlYW1fZm9ybWF0aW9ucyhveGZ3LCBkaXIsIHBpZCwgYnVmLCAmbGVuLAorCQkJCQkgICAg
-ICAgZm9ybWF0aW9ucyk7CisJCWdvdG8gZW5kOworCX0KKworCS8qIExJU1Qgc3ViZnVuY3Rpb24g
-aXMgaW1wbGVtZW50ZWQgKi8KKwlkbyB7CisJCS8qIHBhcnNlIGFuZCBzZXQgc3RyZWFtIGZvcm1h
-dGlvbiAqLworCQllcnIgPSBwYXJzZV9zdHJlYW1fZm9ybWF0aW9uKGJ1ZiwgbGVuLCBmb3JtYXRp
-b25zLCAmaSk7CisJCWlmIChlcnIgPCAwKQorCQkJY29udGludWU7CisKKwkJLyogZ2V0IG5leHQg
-ZW50cnkgKi8KKwkJbGVuID0gQVZDX0dFTkVSSUNfRlJBTUVfTUFYSU1VTV9CWVRFUzsKKwkJbWVt
-c2V0KGJ1ZiwgMCwgbGVuKTsKKwkJZXJyID0gYXZjX3N0cmVhbV9nZXRfZm9ybWF0X2xpc3Qob3hm
-dy0+dW5pdCwgZGlyLCAwLAorCQkJCQkJIGJ1ZiwgJmxlbiwgKytlaWQpOworCQlpZiAoKGVyciA8
-IDApIHx8IChsZW4gPCAzKSkKKwkJCWJyZWFrOworCX0gd2hpbGUgKGVpZCA8IFNORF9PWEZXX1JB
-VEVfVEFCTEVfRU5UUklFUyk7CitlbmQ6CisJa2ZyZWUoYnVmKTsKKwlyZXR1cm4gZXJyOworfQor
-CitpbnQgc25kX294Zndfc3RyZWFtX2Rpc2NvdmVyKHN0cnVjdCBzbmRfb3hmdyAqb3hmdykKK3sK
-Kwl1OCBwbHVnc1tBVkNfUExVR19JTkZPX0JVRl9DT1VOVF07CisJdW5zaWduZWQgaW50IGk7CisJ
-aW50IGVycjsKKworCS8qIHRoZSBudW1iZXIgb2YgcGx1Z3MgZm9yIGlzb2MgaW4vb3V0LCBleHQg
-aW4vb3V0ICAqLworCWVyciA9IGF2Y19nZW5lcmFsX2dldF9wbHVnX2luZm8ob3hmdy0+dW5pdCwg
-MHgxZiwgMHgwNywgMHgwMCwgcGx1Z3MpOworCWlmIChlcnIgPCAwKQorCQlnb3RvIGVuZDsKKwlp
-ZiAoKHBsdWdzWzBdID09IDApIHx8IChwbHVnc1swXSA9PSAwKSkgeworCQllcnIgPSAtRUlPOwor
-CQlnb3RvIGVuZDsKKwl9CisKKwkvKiB1c2Ugb1BDUlswXSAqLworCWVyciA9IGZpbGxfc3RyZWFt
-X2Zvcm1hdGlvbnMob3hmdywgQVZDX0dFTkVSQUxfUExVR19ESVJfT1VULCAwKTsKKwlpZiAoZXJy
-IDwgMCkKKwkJZ290byBlbmQ7CisKKwkvKiB1c2UgaVBDUlswXSAqLworCWVyciA9IGZpbGxfc3Ry
-ZWFtX2Zvcm1hdGlvbnMob3hmdywgQVZDX0dFTkVSQUxfUExVR19ESVJfSU4sIDApOworCWlmIChl
-cnIgPCAwKQorCQlnb3RvIGVuZDsKKworCS8qIGlmIGl0cyBzdHJlYW0gaGFzIE1JREkgY29uZm9y
-bWFudCBkYXRhIGNoYW5uZWwsIGFkZCBvbmUgTUlESSBwb3J0ICovCisJZm9yIChpID0gMDsgaSA8
-IFNORF9PWEZXX1JBVEVfVEFCTEVfRU5UUklFUzsgaSsrKSB7CisJCWlmIChveGZ3LT50eF9zdHJl
-YW1fZm9ybWF0aW9uc1tpXS5taWRpID4gMCkKKwkJCW94ZnctPm1pZGlfaW5wdXRfcG9ydHMgPSAx
-OworCQllbHNlIGlmIChveGZ3LT5yeF9zdHJlYW1fZm9ybWF0aW9uc1tpXS5taWRpID4gMCkKKwkJ
-CW94ZnctPm1pZGlfb3V0cHV0X3BvcnRzID0gMTsKKwl9CitlbmQ6CisJcmV0dXJuIGVycjsKK30K
-LS0gCjEuOC4zLjIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+This commit adds management functionality for connections and streams.
+OXFW970/971 use CMP to manage connections and uses AMDTP for streams.
+
+They transmits AMDTP stream in non-blocking mode. This stream has a quirk for
+'presentation timestamp'. The sequence of 'presentation timestamp' is invalid
+even if header of packet shows 'CIP header with SYT field'. So this driver
+can't reuse it for out-stream.
+
+In this reason, this driver keep to send correct 'presentation timestamp' in
+out-stream.
+
+And I note that its fluctuation of 'presentation timestamp' is less when
+out-stream exists (they receive AMDTP stream) than when no out-stream exists.
+
+no out-stream exists:
+Index	Payload	CIP_Header_0	CIP_Header_1
+38	14	00020092	900103D1
+39	12	00020098	900102FF
+40	12	0002009D	9001027F
+41	14	000200A2	90010396
+42	14	000200A8	900102E8
+43	12	000200AE	90010219
+44	14	000200B3	90010331
+45	12	000200B9	9001025F
+46	14	000200BE	90010376
+47	12	000200C4	900102A1
+00	12	000200C9	9001023E
+01	14	000200CE	90010358
+02	12	000200D4	90010289
+03	16	000200D9	900103A3
+04	12	000200E0	900102DD
+05	14	000200E5	900103F1
+06	12	000200EB	90010335
+07	12	000200F0	90010263
+08	14	000200F5	9001037C
+09	12	000200FB	900102AE
+
+out-stream exists:
+Index	Payload	CIP_Header_0	CIP_Header_1
+38	12	000200BD	900104A8
+39	14	000200C2	900104A8
+40	12	000200C8	900104AC
+41	14	000200CD	900104A9
+42	12	000200D3	900104B1
+43	14	000200D8	900104A8
+44	12	000200DE	900104AA
+45	14	000200E3	900104A9
+46	14	000200E9	900104AE
+47	12	000200EF	900104A8
+00	14	000200F4	900104AD
+01	12	000200FA	900104A7
+02	14	000200FF	900104A9
+03	12	00020005	900104A9
+04	14	0002000A	900104B1
+05	12	00020010	900104AA
+06	14	00020015	900104AD
+07	12	0002001B	900104A7
+08	14	00020020	900104AC
+09	12	00020026	900104A7
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/oxfw/oxfw.c        |  10 ++
+ sound/firewire/oxfw/oxfw.h        |  18 ++
+ sound/firewire/oxfw/oxfw_stream.c | 357 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 385 insertions(+)
+
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index c030fc0..f8320af 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -134,6 +134,14 @@ oxfw_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
+ 
++	err = snd_oxfw_stream_discover(oxfw);
++	if (err < 0)
++		goto error;
++
++	err = snd_oxfw_stream_init_duplex(oxfw);
++	if (err < 0)
++		goto error;
++
+ 	snd_card_set_dev(card, &unit->device);
+ 	err = snd_card_register(card);
+ 	if (err < 0) {
+@@ -158,6 +166,7 @@ oxfw_update(struct fw_unit *unit)
+ 	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
+ 
+ 	fcp_bus_reset(oxfw->unit);
++	snd_oxfw_stream_update_duplex(oxfw);
+ }
+ 
+ static void
+@@ -165,6 +174,7 @@ oxfw_remove(struct fw_unit *unit)
+ {
+ 	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
+ 
++	snd_oxfw_stream_destroy_duplex(oxfw);
+ 	snd_card_disconnect(oxfw->card);
+ 	snd_card_free_when_closed(oxfw->card);
+ }
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index e82717a..34ea0c8 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -24,6 +24,9 @@
+ #include "../lib.h"
+ #include "../fcp.h"
+ #include "../amdtp.h"
++#include "../packets-buffer.h"
++#include "../iso-resources.h"
++#include "../cmp.h"
+ 
+ #define	SND_OXFW_RATE_TABLE_ENTRIES	7
+ struct snd_oxfw_stream_formation {
+@@ -49,6 +52,11 @@ struct snd_oxfw {
+ 
+ 	unsigned int midi_input_ports;
+ 	unsigned int midi_output_ports;
++
++	struct cmp_connection out_conn;
++	struct amdtp_stream tx_stream;
++	struct cmp_connection in_conn;
++	struct amdtp_stream rx_stream;
+ };
+ 
+ /* AV/C Stream Format Information Specification 1.1 (Apr 2005, 1394TA) */
+@@ -86,6 +94,16 @@ int snd_oxfw_set_rate(struct snd_oxfw *oxfw, unsigned int rate,
+ 		      enum avc_general_plug_dir dir);
+ 
+ /* for AMDTP streaming */
++int snd_oxfw_stream_get_rate(struct snd_oxfw *oxfw, unsigned int *rate);
++int snd_oxfw_stream_set_rate(struct snd_oxfw *oxfw, unsigned int rate);
++int snd_oxfw_stream_init_duplex(struct snd_oxfw *oxfw);
++int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
++				  struct amdtp_stream *stream,
++				   unsigned int sampling_rate);
++int snd_oxfw_stream_stop_duplex(struct snd_oxfw *oxfw);
++void snd_oxfw_stream_update_duplex(struct snd_oxfw *oxfw);
++void snd_oxfw_stream_destroy_duplex(struct snd_oxfw *oxfw);
++
+ int snd_oxfw_stream_discover(struct snd_oxfw *oxfw);
+ 
+ #define SND_OXFW_DEV_ENTRY(vendor, model) \
+diff --git a/sound/firewire/oxfw/oxfw_stream.c b/sound/firewire/oxfw/oxfw_stream.c
+index 60ad700..ad2dd86 100644
+--- a/sound/firewire/oxfw/oxfw_stream.c
++++ b/sound/firewire/oxfw/oxfw_stream.c
+@@ -17,6 +17,15 @@
+  * FORMAT INFORMATION' defined in 'AV/C Stream Format Information
+  * Specification 1.1 (Apr 2005, 1394TA)'. So this module uses an assumption
+  * that OXFW970 doesn't change its formation of channels in AMDTP stream.
++ *
++ * They transmit packet following to 'CIP header with  SYT field' defined in
++ * IEC 61883-1. But the sequence of value in SYT field is not compliant. So
++ * this module doesn't use the value of SYT field in in-packets. Then this
++ * module performs as a 'master of synchronization'. In this way, this module
++ * hopes the device to pick up the value of SYT value in out-packet which
++ * this module transmits. But the device seems not to use it for in-packet
++ * which the device transmits. Concluding, it doesn't matter whether this
++ * module perform as a master or slave.
+  */
+ const unsigned int snd_oxfw_rate_table[SND_OXFW_RATE_TABLE_ENTRIES] = {
+ 	[0] = 32000,
+@@ -42,6 +51,354 @@ static const unsigned int avc_stream_rate_table[] = {
+ 	[6] = 0x07,
+ };
+ 
++int snd_oxfw_stream_get_rate(struct snd_oxfw *oxfw, unsigned int *curr_rate)
++{
++	unsigned int tx_rate, rx_rate;
++	int err;
++
++	err = snd_oxfw_get_rate(oxfw, &tx_rate, AVC_GENERAL_PLUG_DIR_OUT);
++	if (err < 0)
++		goto end;
++
++	err = snd_oxfw_get_rate(oxfw, &rx_rate, AVC_GENERAL_PLUG_DIR_IN);
++	if (err < 0)
++		goto end;
++
++	*curr_rate = rx_rate;
++	if (rx_rate == tx_rate)
++		goto end;
++
++	/* synchronize receive stream rate to transmit stream rate */
++	err = snd_oxfw_set_rate(oxfw, rx_rate, AVC_GENERAL_PLUG_DIR_IN);
++end:
++	return err;
++}
++
++int snd_oxfw_stream_set_rate(struct snd_oxfw *oxfw, unsigned int rate)
++{
++	int err;
++
++	err = snd_oxfw_set_rate(oxfw, rate, AVC_GENERAL_PLUG_DIR_OUT);
++	if (err < 0)
++		goto end;
++
++	err = snd_oxfw_set_rate(oxfw, rate, AVC_GENERAL_PLUG_DIR_IN);
++end:
++	return err;
++}
++
++static int
++check_connection_used_by_others(struct snd_oxfw *oxfw,
++				struct amdtp_stream *s, bool *used)
++{
++	struct cmp_connection *conn;
++	int err;
++
++	if (s == &oxfw->tx_stream)
++		conn = &oxfw->out_conn;
++	else
++		conn = &oxfw->in_conn;
++
++	err = cmp_connection_check_used(conn, used);
++	if (err >= 0)
++		*used = (*used && !amdtp_stream_running(s));
++
++	return err;
++}
++
++static int
++init_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
++{
++	struct cmp_connection *conn;
++	enum cmp_direction c_dir;
++	enum amdtp_stream_direction s_dir;
++	int err;
++
++	if (stream == &oxfw->tx_stream) {
++		conn = &oxfw->out_conn;
++		c_dir = CMP_OUTPUT;
++		s_dir = AMDTP_IN_STREAM;
++	} else {
++		conn = &oxfw->in_conn;
++		c_dir = CMP_INPUT;
++		s_dir = AMDTP_OUT_STREAM;
++	}
++
++	err = cmp_connection_init(conn, oxfw->unit, c_dir, 0);
++	if (err < 0)
++		goto end;
++
++	err = amdtp_stream_init(stream, oxfw->unit, s_dir, CIP_NONBLOCKING);
++	if (err < 0)
++		cmp_connection_destroy(conn);
++end:
++	return err;
++}
++
++
++static void
++stop_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
++{
++	if (amdtp_stream_running(stream))
++		amdtp_stream_stop(stream);
++
++	if (stream == &oxfw->tx_stream)
++		cmp_connection_break(&oxfw->out_conn);
++	else
++		cmp_connection_break(&oxfw->in_conn);
++
++	return;
++}
++
++static int
++start_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream,
++	     unsigned int sampling_rate)
++{
++	struct cmp_connection *conn;
++	unsigned int i, pcm_channels, midi_ports;
++	int err;
++
++	/* already running */
++	if (amdtp_stream_running(stream)) {
++		err = 0;
++		goto end;
++	}
++
++	for (i = 0; i < sizeof(snd_oxfw_rate_table); i++) {
++		if (snd_oxfw_rate_table[i] == sampling_rate)
++			break;
++	}
++	if (i == sizeof(snd_oxfw_rate_table)) {
++		err = -EINVAL;
++		goto end;
++	}
++
++	/* set stream formation */
++	if (stream == &oxfw->tx_stream) {
++		conn = &oxfw->out_conn;
++		pcm_channels = oxfw->tx_stream_formations[i].pcm;
++		midi_ports = oxfw->tx_stream_formations[i].midi * 8;
++	} else {
++		conn = &oxfw->in_conn;
++		pcm_channels = oxfw->rx_stream_formations[i].pcm;
++		midi_ports = oxfw->rx_stream_formations[i].midi * 8;
++	}
++	amdtp_stream_set_parameters(stream, sampling_rate,
++				    pcm_channels, midi_ports);
++
++	/*  establish connection via CMP */
++	err = cmp_connection_establish(conn,
++				amdtp_stream_get_max_payload(stream));
++	if (err < 0)
++		goto end;
++
++	/* start amdtp stream */
++	err = amdtp_stream_start(stream,
++				 conn->resources.channel,
++				 conn->speed);
++	if (err < 0)
++		stop_stream(oxfw, stream);
++
++	/* wait first callback */
++	if (!amdtp_stream_wait_callback(stream)) {
++		stop_stream(oxfw, stream);
++		err = -ETIMEDOUT;
++	}
++end:
++	return err;
++}
++
++static void
++update_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
++{
++	struct cmp_connection *conn;
++
++	if (&oxfw->tx_stream == stream)
++		conn = &oxfw->out_conn;
++	else
++		conn = &oxfw->in_conn;
++
++	if (cmp_connection_update(conn) < 0) {
++		amdtp_stream_pcm_abort(stream);
++		mutex_lock(&oxfw->mutex);
++		stop_stream(oxfw, stream);
++		mutex_unlock(&oxfw->mutex);
++		return;
++	}
++	amdtp_stream_update(stream);
++}
++
++static void
++destroy_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
++{
++	stop_stream(oxfw, stream);
++
++	if (stream == &oxfw->tx_stream)
++		cmp_connection_destroy(&oxfw->out_conn);
++	else
++		cmp_connection_destroy(&oxfw->in_conn);
++}
++
++static int
++get_roles(struct snd_oxfw *oxfw, enum cip_flags *sync_mode,
++	  struct amdtp_stream **master, struct amdtp_stream **slave)
++{
++	/* It doesn't matter. So this module perform as a sync master */
++	*sync_mode = 0x00;
++	*master = &oxfw->rx_stream;
++	*slave = &oxfw->tx_stream;
++
++	return 0;
++}
++
++int snd_oxfw_stream_init_duplex(struct snd_oxfw *oxfw)
++{
++	int err;
++
++	err = init_stream(oxfw, &oxfw->tx_stream);
++	if (err < 0)
++		goto end;
++
++	err = init_stream(oxfw, &oxfw->rx_stream);
++end:
++	return err;
++}
++
++int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
++				  struct amdtp_stream *request,
++				  unsigned int rate)
++{
++	struct amdtp_stream *master, *slave;
++	enum cip_flags sync_mode;
++	unsigned int curr_rate;
++	bool slave_flag, used;
++	int err;
++
++	mutex_lock(&oxfw->mutex);
++
++	err = get_roles(oxfw, &sync_mode, &master, &slave);
++	if (err < 0)
++		goto end;
++
++	if ((request == slave) || amdtp_stream_running(slave))
++		slave_flag = true;
++	else
++		slave_flag = false;
++
++	/*
++	 * Considering JACK/FFADO streaming:
++	 * TODO: This can be removed hwdep functionality becomes popular.
++	 */
++	err = check_connection_used_by_others(oxfw, master, &used);
++	if (err < 0)
++		goto end;
++	if (used) {
++		dev_err(&oxfw->unit->device,
++			"connections established by others: %d\n",
++			used);
++		err = -EBUSY;
++		goto end;
++	}
++
++	/* get current rate */
++	err = snd_oxfw_stream_get_rate(oxfw, &curr_rate);
++	if (err < 0)
++		goto end;
++	if (rate == 0)
++		rate = curr_rate;
++
++	/* change sampling rate if needed */
++	if (rate != curr_rate) {
++		/* slave is just for MIDI stream */
++		if (amdtp_stream_running(slave) &&
++		    !amdtp_stream_pcm_running(slave))
++			amdtp_stream_stop(slave);
++
++		/* master is just for MIDI stream */
++		if (amdtp_stream_running(master) &&
++		    !amdtp_stream_pcm_running(master))
++			amdtp_stream_stop(master);
++
++		err = snd_oxfw_stream_set_rate(oxfw, rate);
++		if (err < 0)
++			goto end;
++	}
++
++	/* master should be always running */
++	if (!amdtp_stream_running(master)) {
++		err = start_stream(oxfw, master, rate);
++		if (err < 0) {
++			dev_err(&oxfw->unit->device,
++				"fail to run AMDTP master stream:%d\n", err);
++			goto end;
++		}
++	}
++
++	/* start slave if needed */
++	if (slave_flag && !amdtp_stream_running(slave)) {
++		err = start_stream(oxfw, slave, rate);
++		if (err < 0)
++			dev_err(&oxfw->unit->device,
++				"fail to run AMDTP slave stream:%d\n", err);
++	}
++end:
++	mutex_unlock(&oxfw->mutex);
++	return err;
++}
++
++int snd_oxfw_stream_stop_duplex(struct snd_oxfw *oxfw)
++{
++	struct amdtp_stream *master, *slave;
++	enum cip_flags sync_mode;
++	int err;
++
++	mutex_lock(&oxfw->mutex);
++
++	err = get_roles(oxfw, &sync_mode, &master, &slave);
++	if (err < 0)
++		goto end;
++
++	if (amdtp_stream_pcm_running(slave) ||
++	    amdtp_stream_midi_running(slave))
++		goto end;
++
++	stop_stream(oxfw, slave);
++
++	if (amdtp_stream_pcm_running(master) ||
++	    amdtp_stream_midi_running(master))
++		goto end;
++
++	stop_stream(oxfw, master);
++end:
++	mutex_unlock(&oxfw->mutex);
++	return err;
++}
++
++void snd_oxfw_stream_update_duplex(struct snd_oxfw *oxfw)
++{
++	mutex_lock(&oxfw->mutex);
++
++	update_stream(oxfw, &oxfw->rx_stream);
++	update_stream(oxfw, &oxfw->tx_stream);
++
++	mutex_unlock(&oxfw->mutex);
++}
++
++void snd_oxfw_stream_destroy_duplex(struct snd_oxfw *oxfw)
++{
++	mutex_lock(&oxfw->mutex);
++
++	if (amdtp_stream_pcm_running(&oxfw->rx_stream))
++		amdtp_stream_pcm_abort(&oxfw->rx_stream);
++	if (amdtp_stream_pcm_running(&oxfw->tx_stream))
++		amdtp_stream_pcm_abort(&oxfw->tx_stream);
++
++	destroy_stream(oxfw, &oxfw->rx_stream);
++	destroy_stream(oxfw, &oxfw->tx_stream);
++
++	mutex_unlock(&oxfw->mutex);
++}
++
+ /*
+  * See Table 6.16 - AM824 Stream Format
+  *     Figure 6.19 - format_information field for AM824 Compound
+-- 
+1.8.3.2
