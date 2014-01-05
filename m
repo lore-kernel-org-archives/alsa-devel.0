@@ -1,16 +1,16 @@
 From: Alexander Shiyan <shc_work@mail.ru>
-Subject: [PATCH 2/5] ASoC: mc13783: Use core error messages if
-	registration fails
-Date: Sun,  5 Jan 2014 11:38:32 +0400
-Message-ID: <1388907515-18975-2-git-send-email-shc_work@mail.ru>
+Subject: [PATCH 3/5] ASoC: mc13783: Drop fixed ADC & DAC ports
+	usage
+Date: Sun,  5 Jan 2014 11:38:33 +0400
+Message-ID: <1388907515-18975-3-git-send-email-shc_work@mail.ru>
 References: <1388907515-18975-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp42.i.mail.ru (smtp42.i.mail.ru [94.100.177.102])
- by alsa0.perex.cz (Postfix) with ESMTP id EBDFC261B1A
- for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 08:38:48 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BD57261B1B
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 08:38:49 +0100 (CET)
 In-Reply-To: <1388907515-18975-1-git-send-email-shc_work@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,29 +25,27 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
+There are no users of this driver without pdata, so stop using
+constant assignment of ADC and DAC ports.
+
 Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- sound/soc/codecs/mc13783.c | 8 --------
- 1 file changed, 8 deletions(-)
+ sound/soc/codecs/mc13783.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
-index 8ab9668..c2def5d 100644
+index c2def5d..997f708 100644
 --- a/sound/soc/codecs/mc13783.c
 +++ b/sound/soc/codecs/mc13783.c
-@@ -781,14 +781,6 @@ static int __init mc13783_codec_probe(struct platform_device *pdev)
- 		ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_mc13783,
- 			mc13783_dai_async, ARRAY_SIZE(mc13783_dai_async));
+@@ -770,8 +770,7 @@ static int __init mc13783_codec_probe(struct platform_device *pdev)
+ 		priv->adc_ssi_port = pdata->adc_ssi_port;
+ 		priv->dac_ssi_port = pdata->dac_ssi_port;
+ 	} else {
+-		priv->adc_ssi_port = MC13783_SSI1_PORT;
+-		priv->dac_ssi_port = MC13783_SSI2_PORT;
++		return -ENOSYS;
+ 	}
  
--	if (ret)
--		goto err_register_codec;
--
--	return 0;
--
--err_register_codec:
--	dev_err(&pdev->dev, "register codec failed with %d\n", ret);
--
- 	return ret;
- }
- 
+ 	if (priv->adc_ssi_port == priv->dac_ssi_port)
 -- 
 1.8.3.2
