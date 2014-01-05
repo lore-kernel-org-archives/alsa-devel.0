@@ -1,120 +1,549 @@
-From: Florian Meier <florian.meier@koalo.de>
-Subject: Re: [PATCHv9] dmaengine: Add support for BCM2835
-Date: Sun, 5 Jan 2014 16:06:39 +0100
-Message-ID: <CABDT8WyUVbPu60qwMbAxKS=2m2akskybZQS3-+rehuUD+3oBXQ@mail.gmail.com>
-References: <52C5A6A3.8000405@koalo.de>
-	<1964639.FVztRK0HBK@wuerfel>
-	<CABDT8WzhpH2yX=HD9wsx+bN17Qp0hLX45-VMF0a3RAiwWx7F4Q@mail.gmail.com>
-	<201401051506.03481.arnd@arndb.de>
+From: Federico Simoncelli <federico.simoncelli@gmail.com>
+Subject: [PATCH 1/2] usbtv: split core and video implementation
+Date: Sun,  5 Jan 2014 16:38:11 +0100
+Message-ID: <1388936292-8974-1-git-send-email-fsimonce@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <201401051506.03481.arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, devicetree <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, dmaengine <dmaengine@vger.kernel.org>, Stephen Warren <swarren@nvidia.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ee0-f49.google.com (mail-ee0-f49.google.com [74.125.83.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8D9C2608B8
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 16:38:24 +0100 (CET)
+Received: by mail-ee0-f49.google.com with SMTP id c41so7469377eek.8
+ for <alsa-devel@alsa-project.org>; Sun, 05 Jan 2014 07:38:24 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: lkundrak@v3.sk, Federico Simoncelli <fsimonce@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05.01.2014 15:06, Arnd Bergmann wrote:
-> On Saturday 04 January 2014, Florian Meier wrote:
->> On 02.01.2014 19:03, Arnd Bergmann wrote:
->>> On Thursday 02 January 2014 18:49:23 Florian Meier wrote:
->>>> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
->>>> Currently it only supports cyclic DMA.
->>>
->>> Looks very nice. Just a few details I noticed:
->>>
->>>> +#if defined(CONFIG_OF)
->>>> +static const struct of_device_id bcm2835_dma_of_match[] = {
->>>> + { .compatible = "brcm,bcm2835-dma", },
->>>> + {},
->>>> +};
->>>> +MODULE_DEVICE_TABLE(of, bcm2835_dma_of_match);
->>>> +#endif
->>>
->>> I doubt we are going to see non-DT versions of this driver, so the #ifdef
->>> can just get removed here.
->>
->> As already explained in previous versions of this patch thread, there is
->> a non-DT version in a downstream kernel and the more I make this patch
->> incompatible with non-DT, the harder it gets to upstream the remaining
->> stuff. I hope this is not something that blocks this driver from getting
->> accepted.
->
-> In this case, that's certainly not an excuse unless you are worried about
-> 400 bytes of .rodata in one driver and there are no side-effects of having
-> the device ID listed when it's not used.
+Signed-off-by: Federico Simoncelli <fsimonce@redhat.com>
+Reviewed-by: Lubomir Rintel <lkundrak@v3.sk>
+---
+ Makefile                 |   3 +
+ usbtv-core.c             | 136 +++++++++++++++++++++++++++++++++++++++
+ usbtv.c => usbtv-video.c | 163 +++--------------------------------------------
+ usbtv.h                  |  98 ++++++++++++++++++++++++++++
+ 4 files changed, 246 insertions(+), 154 deletions(-)
+ create mode 100644 usbtv-core.c
+ rename usbtv.c => usbtv-video.c (82%)
+ create mode 100644 usbtv.h
 
-You are right! I forgot that having these lines doesn't prevent non-DT
-initialization. I will change that.
-
-> Even if it made a real difference
-> to another project, you'd need a much better excuse -- if you are worried
-> about compatibility between mainline and some downstream kernel, how about
-> changing that downstream kernel to use DT?
-
-That is the future plan. Although, the current state is that there is
-a downstream kernel with lots of devicetree incompatible drivers and
-an upstream kernel with some missing important drivers. Therefore,
-since I want my drivers being tested by the community, they have to be
-non-DT compatible (or at least it should be easy to bring changes from
-the non-DT version to the DT version and vice versa).
-Anyway, in this case this introduces no problem as you have mentioned before.
-
->>> [...]
->>> This can now be simplified using the dma_get_any_slave_channel() interface
->>> taht Stephen Warren introduced.
->>> [...]
->>> dma_set_mask_and_coherent()
->>
->> Sigh, the API is developing faster than I can keep track with updating
->> this patch. I hope some day I will be faster....
->> When Russell told me about the second one before, it hoped that I can
->> avoid merging different trees on my own, but it seems that you want me
->> to do that ;-)
->
-> The dma_get_any_slave_channel() change is probably my fault. I suggested
-> both the initial dma_get_slave_channel() API and this one because the
-> original approach turned out too complicated. If dma_set_mask_and_coherent().
->
-> I don't think you have to merge other trees, to get both APIs, they should
-> already be part of the dma-slave tree that your patch would get merged
-> into. If not, we can probably come up with a different solution. The
-> dma_set_mask_and_coherent() suggestion is not as important as the
-> dma_get_any_slave_channel() one, if you have to choose between them.
-
-Both changes are in the slave-dma tree, but I need patches from the
-bcm2835 tree and the asoc tree, too. Although, it shouldn't be too
-complicated to merge them, I hope.
-
->>>> + if (pdev->dev.of_node) {
->>>> + /* Device-tree DMA controller registration */
->>>> + rc = of_dma_controller_register(pdev->dev.of_node,
->>>> + bcm2835_dma_xlate, od);
->>>> + if (rc) {
->>>> + dev_err(&pdev->dev, "Failed to register DMA controller\n");
->>>> + goto err_no_dma;
->>>> + }
->>>> + }
->>>
->>> If pdev->dev.of_node isn't set, you didn't get here, so the if() can be removed.
->>
->> Why not? (In the case of non-DT initialization)
->
-> The code I quoted is right after these lines:
->
-> +       /* Request DMA channel mask from device tree */
-> +       if (of_property_read_u32(pdev->dev.of_node,
-> +                       "brcm,dma-channel-mask",
-> +                       &chans_available)) {
-> +               dev_err(&pdev->dev, "Failed to get channel mask\n");
-> +               rc = -EINVAL;
-> +               goto err_no_dma;
-> +       }
->
-> If DT is disabled or not used, you return -EINVAL here.
-
-Stupid me, thank you!
-
-Greetings,
-Florian
+diff --git a/Makefile b/Makefile
+index 28b872f..775316a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1 +1,4 @@
++usbtv-y := usbtv-core.o \
++	usbtv-video.o
++
+ obj-$(CONFIG_VIDEO_USBTV) += usbtv.o
+diff --git a/usbtv-core.c b/usbtv-core.c
+new file mode 100644
+index 0000000..e89e48b
+--- /dev/null
++++ b/usbtv-core.c
+@@ -0,0 +1,136 @@
++/*
++ * Fushicai USBTV007 Video Grabber Driver
++ *
++ * Product web site:
++ * http://www.fushicai.com/products_detail/&productId=d05449ee-b690-42f9-a661-aa7353894bed.html
++ *
++ * Following LWN articles were very useful in construction of this driver:
++ * Video4Linux2 API series: http://lwn.net/Articles/203924/
++ * videobuf2 API explanation: http://lwn.net/Articles/447435/
++ * Thanks go to Jonathan Corbet for providing this quality documentation.
++ * He is awesome.
++ *
++ * Copyright (c) 2013 Lubomir Rintel
++ * All rights reserved.
++ * No physical hardware was harmed running Windows during the
++ * reverse-engineering activity
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions, and the following disclaimer,
++ *    without modification.
++ * 2. The name of the author may not be used to endorse or promote products
++ *    derived from this software without specific prior written permission.
++ *
++ * Alternatively, this software may be distributed under the terms of the
++ * GNU General Public License ("GPL").
++ */
++
++#include <linux/module.h>
++
++#include "usbtv.h"
++
++int usbtv_set_regs(struct usbtv *usbtv, const u16 regs[][2], int size)
++{
++	int ret;
++	int pipe = usb_rcvctrlpipe(usbtv->udev, 0);
++	int i;
++
++	for (i = 0; i < size; i++) {
++		u16 index = regs[i][0];
++		u16 value = regs[i][1];
++
++		ret = usb_control_msg(usbtv->udev, pipe, USBTV_REQUEST_REG,
++			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
++			value, index, NULL, 0, 0);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int usbtv_probe(struct usb_interface *intf,
++	const struct usb_device_id *id)
++{
++	int ret;
++	int size;
++	struct device *dev = &intf->dev;
++	struct usbtv *usbtv;
++
++	/* Checks that the device is what we think it is. */
++	if (intf->num_altsetting != 2)
++		return -ENODEV;
++	if (intf->altsetting[1].desc.bNumEndpoints != 4)
++		return -ENODEV;
++
++	/* Packet size is split into 11 bits of base size and count of
++	 * extra multiplies of it.*/
++	size = usb_endpoint_maxp(&intf->altsetting[1].endpoint[0].desc);
++	size = (size & 0x07ff) * (((size & 0x1800) >> 11) + 1);
++
++	/* Device structure */
++	usbtv = kzalloc(sizeof(struct usbtv), GFP_KERNEL);
++	if (usbtv == NULL)
++		return -ENOMEM;
++	usbtv->dev = dev;
++	usbtv->udev = usb_get_dev(interface_to_usbdev(intf));
++
++	usbtv->iso_size = size;
++
++	usb_set_intfdata(intf, usbtv);
++
++	ret = usbtv_video_init(usbtv);
++	if (ret < 0)
++		goto usbtv_video_fail;
++
++	/* for simplicity we exploit the v4l2_device reference counting */
++	v4l2_device_get(&usbtv->v4l2_dev);
++
++	dev_info(dev, "Fushicai USBTV007 Video Grabber\n");
++	return 0;
++
++usbtv_video_fail:
++	kfree(usbtv);
++
++	return ret;
++}
++
++static void usbtv_disconnect(struct usb_interface *intf)
++{
++	struct usbtv *usbtv = usb_get_intfdata(intf);
++	usb_set_intfdata(intf, NULL);
++
++	if (!usbtv)
++		return;
++
++	usbtv_video_free(usbtv);
++
++	usb_put_dev(usbtv->udev);
++	usbtv->udev = NULL;
++
++	/* the usbtv structure will be deallocated when v4l2 will be
++	   done using it */
++	v4l2_device_put(&usbtv->v4l2_dev);
++}
++
++struct usb_device_id usbtv_id_table[] = {
++	{ USB_DEVICE(0x1b71, 0x3002) },
++	{}
++};
++MODULE_DEVICE_TABLE(usb, usbtv_id_table);
++
++MODULE_AUTHOR("Lubomir Rintel");
++MODULE_DESCRIPTION("Fushicai USBTV007 Video Grabber Driver");
++MODULE_LICENSE("Dual BSD/GPL");
++
++struct usb_driver usbtv_usb_driver = {
++	.name = "usbtv",
++	.id_table = usbtv_id_table,
++	.probe = usbtv_probe,
++	.disconnect = usbtv_disconnect,
++};
++
++module_usb_driver(usbtv_usb_driver);
+diff --git a/usbtv.c b/usbtv-video.c
+similarity index 82%
+rename from usbtv.c
+rename to usbtv-video.c
+index 6222a4a..496bc2e 100644
+--- a/usbtv.c
++++ b/usbtv-video.c
+@@ -28,45 +28,10 @@
+  * GNU General Public License ("GPL").
+  */
+ 
+-#include <linux/init.h>
+-#include <linux/list.h>
+-#include <linux/module.h>
+-#include <linux/slab.h>
+-#include <linux/usb.h>
+-#include <linux/videodev2.h>
+-
+-#include <media/v4l2-device.h>
+ #include <media/v4l2-ioctl.h>
+ #include <media/videobuf2-core.h>
+-#include <media/videobuf2-vmalloc.h>
+-
+-/* Hardware. */
+-#define USBTV_VIDEO_ENDP	0x81
+-#define USBTV_BASE		0xc000
+-#define USBTV_REQUEST_REG	12
+-
+-/* Number of concurrent isochronous urbs submitted.
+- * Higher numbers was seen to overly saturate the USB bus. */
+-#define USBTV_ISOC_TRANSFERS	16
+-#define USBTV_ISOC_PACKETS	8
+-
+-#define USBTV_CHUNK_SIZE	256
+-#define USBTV_CHUNK		240
+-
+-/* Chunk header. */
+-#define USBTV_MAGIC_OK(chunk)	((be32_to_cpu(chunk[0]) & 0xff000000) \
+-							== 0x88000000)
+-#define USBTV_FRAME_ID(chunk)	((be32_to_cpu(chunk[0]) & 0x00ff0000) >> 16)
+-#define USBTV_ODD(chunk)	((be32_to_cpu(chunk[0]) & 0x0000f000) >> 15)
+-#define USBTV_CHUNK_NO(chunk)	(be32_to_cpu(chunk[0]) & 0x00000fff)
+-
+-#define USBTV_TV_STD  (V4L2_STD_525_60 | V4L2_STD_PAL)
+-
+-/* parameters for supported TV norms */
+-struct usbtv_norm_params {
+-	v4l2_std_id norm;
+-	int cap_width, cap_height;
+-};
++
++#include "usbtv.h"
+ 
+ static struct usbtv_norm_params norm_params[] = {
+ 	{
+@@ -81,43 +46,6 @@ static struct usbtv_norm_params norm_params[] = {
+ 	}
+ };
+ 
+-/* A single videobuf2 frame buffer. */
+-struct usbtv_buf {
+-	struct vb2_buffer vb;
+-	struct list_head list;
+-};
+-
+-/* Per-device structure. */
+-struct usbtv {
+-	struct device *dev;
+-	struct usb_device *udev;
+-	struct v4l2_device v4l2_dev;
+-	struct video_device vdev;
+-	struct vb2_queue vb2q;
+-	struct mutex v4l2_lock;
+-	struct mutex vb2q_lock;
+-
+-	/* List of videobuf2 buffers protected by a lock. */
+-	spinlock_t buflock;
+-	struct list_head bufs;
+-
+-	/* Number of currently processed frame, useful find
+-	 * out when a new one begins. */
+-	u32 frame_id;
+-	int chunks_done;
+-
+-	enum {
+-		USBTV_COMPOSITE_INPUT,
+-		USBTV_SVIDEO_INPUT,
+-	} input;
+-	v4l2_std_id norm;
+-	int width, height;
+-	int n_chunks;
+-	int iso_size;
+-	unsigned int sequence;
+-	struct urb *isoc_urbs[USBTV_ISOC_TRANSFERS];
+-};
+-
+ static int usbtv_configure_for_norm(struct usbtv *usbtv, v4l2_std_id norm)
+ {
+ 	int i, ret = 0;
+@@ -142,26 +70,6 @@ static int usbtv_configure_for_norm(struct usbtv *usbtv, v4l2_std_id norm)
+ 	return ret;
+ }
+ 
+-static int usbtv_set_regs(struct usbtv *usbtv, const u16 regs[][2], int size)
+-{
+-	int ret;
+-	int pipe = usb_rcvctrlpipe(usbtv->udev, 0);
+-	int i;
+-
+-	for (i = 0; i < size; i++) {
+-		u16 index = regs[i][0];
+-		u16 value = regs[i][1];
+-
+-		ret = usb_control_msg(usbtv->udev, pipe, USBTV_REQUEST_REG,
+-			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-			value, index, NULL, 0, 0);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
+-	return 0;
+-}
+-
+ static int usbtv_select_input(struct usbtv *usbtv, int input)
+ {
+ 	int ret;
+@@ -560,12 +468,6 @@ start_fail:
+ 	return ret;
+ }
+ 
+-struct usb_device_id usbtv_id_table[] = {
+-	{ USB_DEVICE(0x1b71, 0x3002) },
+-	{}
+-};
+-MODULE_DEVICE_TABLE(usb, usbtv_id_table);
+-
+ static int usbtv_querycap(struct file *file, void *priv,
+ 				struct v4l2_capability *cap)
+ {
+@@ -759,33 +661,9 @@ static void usbtv_release(struct v4l2_device *v4l2_dev)
+ 	kfree(usbtv);
+ }
+ 
+-static int usbtv_probe(struct usb_interface *intf,
+-	const struct usb_device_id *id)
++int usbtv_video_init(struct usbtv *usbtv)
+ {
+ 	int ret;
+-	int size;
+-	struct device *dev = &intf->dev;
+-	struct usbtv *usbtv;
+-
+-	/* Checks that the device is what we think it is. */
+-	if (intf->num_altsetting != 2)
+-		return -ENODEV;
+-	if (intf->altsetting[1].desc.bNumEndpoints != 4)
+-		return -ENODEV;
+-
+-	/* Packet size is split into 11 bits of base size and count of
+-	 * extra multiplies of it.*/
+-	size = usb_endpoint_maxp(&intf->altsetting[1].endpoint[0].desc);
+-	size = (size & 0x07ff) * (((size & 0x1800) >> 11) + 1);
+-
+-	/* Device structure */
+-	usbtv = kzalloc(sizeof(struct usbtv), GFP_KERNEL);
+-	if (usbtv == NULL)
+-		return -ENOMEM;
+-	usbtv->dev = dev;
+-	usbtv->udev = usb_get_dev(interface_to_usbdev(intf));
+-
+-	usbtv->iso_size = size;
+ 
+ 	(void)usbtv_configure_for_norm(usbtv, V4L2_STD_525_60);
+ 
+@@ -805,20 +683,18 @@ static int usbtv_probe(struct usb_interface *intf,
+ 	usbtv->vb2q.lock = &usbtv->vb2q_lock;
+ 	ret = vb2_queue_init(&usbtv->vb2q);
+ 	if (ret < 0) {
+-		dev_warn(dev, "Could not initialize videobuf2 queue\n");
+-		goto usbtv_fail;
++		dev_warn(usbtv->dev, "Could not initialize videobuf2 queue\n");
++		return ret;
+ 	}
+ 
+ 	/* v4l2 structure */
+ 	usbtv->v4l2_dev.release = usbtv_release;
+-	ret = v4l2_device_register(dev, &usbtv->v4l2_dev);
++	ret = v4l2_device_register(usbtv->dev, &usbtv->v4l2_dev);
+ 	if (ret < 0) {
+-		dev_warn(dev, "Could not register v4l2 device\n");
++		dev_warn(usbtv->dev, "Could not register v4l2 device\n");
+ 		goto v4l2_fail;
+ 	}
+ 
+-	usb_set_intfdata(intf, usbtv);
+-
+ 	/* Video structure */
+ 	strlcpy(usbtv->vdev.name, "usbtv", sizeof(usbtv->vdev.name));
+ 	usbtv->vdev.v4l2_dev = &usbtv->v4l2_dev;
+@@ -832,52 +708,31 @@ static int usbtv_probe(struct usb_interface *intf,
+ 	video_set_drvdata(&usbtv->vdev, usbtv);
+ 	ret = video_register_device(&usbtv->vdev, VFL_TYPE_GRABBER, -1);
+ 	if (ret < 0) {
+-		dev_warn(dev, "Could not register video device\n");
++		dev_warn(usbtv->dev, "Could not register video device\n");
+ 		goto vdev_fail;
+ 	}
+ 
+-	dev_info(dev, "Fushicai USBTV007 Video Grabber\n");
+ 	return 0;
+ 
+ vdev_fail:
+ 	v4l2_device_unregister(&usbtv->v4l2_dev);
+ v4l2_fail:
+ 	vb2_queue_release(&usbtv->vb2q);
+-usbtv_fail:
+-	kfree(usbtv);
+ 
+ 	return ret;
+ }
+ 
+-static void usbtv_disconnect(struct usb_interface *intf)
++void usbtv_video_free(struct usbtv *usbtv)
+ {
+-	struct usbtv *usbtv = usb_get_intfdata(intf);
+-
+ 	mutex_lock(&usbtv->vb2q_lock);
+ 	mutex_lock(&usbtv->v4l2_lock);
+ 
+ 	usbtv_stop(usbtv);
+-	usb_set_intfdata(intf, NULL);
+ 	video_unregister_device(&usbtv->vdev);
+ 	v4l2_device_disconnect(&usbtv->v4l2_dev);
+-	usb_put_dev(usbtv->udev);
+-	usbtv->udev = NULL;
+ 
+ 	mutex_unlock(&usbtv->v4l2_lock);
+ 	mutex_unlock(&usbtv->vb2q_lock);
+ 
+ 	v4l2_device_put(&usbtv->v4l2_dev);
+ }
+-
+-MODULE_AUTHOR("Lubomir Rintel");
+-MODULE_DESCRIPTION("Fushicai USBTV007 Video Grabber Driver");
+-MODULE_LICENSE("Dual BSD/GPL");
+-
+-struct usb_driver usbtv_usb_driver = {
+-	.name = "usbtv",
+-	.id_table = usbtv_id_table,
+-	.probe = usbtv_probe,
+-	.disconnect = usbtv_disconnect,
+-};
+-
+-module_usb_driver(usbtv_usb_driver);
+diff --git a/usbtv.h b/usbtv.h
+new file mode 100644
+index 0000000..536343d
+--- /dev/null
++++ b/usbtv.h
+@@ -0,0 +1,98 @@
++/*
++ * Fushicai USBTV007 Video Grabber Driver
++ *
++ * Copyright (c) 2013 Lubomir Rintel
++ * All rights reserved.
++ * No physical hardware was harmed running Windows during the
++ * reverse-engineering activity
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions, and the following disclaimer,
++ *    without modification.
++ * 2. The name of the author may not be used to endorse or promote products
++ *    derived from this software without specific prior written permission.
++ *
++ * Alternatively, this software may be distributed under the terms of the
++ * GNU General Public License ("GPL").
++ */
++
++#include <linux/slab.h>
++#include <linux/usb.h>
++
++#include <media/v4l2-device.h>
++#include <media/videobuf2-vmalloc.h>
++
++/* Hardware. */
++#define USBTV_VIDEO_ENDP	0x81
++#define USBTV_BASE		0xc000
++#define USBTV_REQUEST_REG	12
++
++/* Number of concurrent isochronous urbs submitted.
++ * Higher numbers was seen to overly saturate the USB bus. */
++#define USBTV_ISOC_TRANSFERS	16
++#define USBTV_ISOC_PACKETS	8
++
++#define USBTV_CHUNK_SIZE	256
++#define USBTV_CHUNK		240
++
++/* Chunk header. */
++#define USBTV_MAGIC_OK(chunk)	((be32_to_cpu(chunk[0]) & 0xff000000) \
++							== 0x88000000)
++#define USBTV_FRAME_ID(chunk)	((be32_to_cpu(chunk[0]) & 0x00ff0000) >> 16)
++#define USBTV_ODD(chunk)	((be32_to_cpu(chunk[0]) & 0x0000f000) >> 15)
++#define USBTV_CHUNK_NO(chunk)	(be32_to_cpu(chunk[0]) & 0x00000fff)
++
++#define USBTV_TV_STD  (V4L2_STD_525_60 | V4L2_STD_PAL)
++
++/* parameters for supported TV norms */
++struct usbtv_norm_params {
++	v4l2_std_id norm;
++	int cap_width, cap_height;
++};
++
++/* A single videobuf2 frame buffer. */
++struct usbtv_buf {
++	struct vb2_buffer vb;
++	struct list_head list;
++};
++
++/* Per-device structure. */
++struct usbtv {
++	struct device *dev;
++	struct usb_device *udev;
++
++	/* video */
++	struct v4l2_device v4l2_dev;
++	struct video_device vdev;
++	struct vb2_queue vb2q;
++	struct mutex v4l2_lock;
++	struct mutex vb2q_lock;
++
++	/* List of videobuf2 buffers protected by a lock. */
++	spinlock_t buflock;
++	struct list_head bufs;
++
++	/* Number of currently processed frame, useful find
++	 * out when a new one begins. */
++	u32 frame_id;
++	int chunks_done;
++
++	enum {
++		USBTV_COMPOSITE_INPUT,
++		USBTV_SVIDEO_INPUT,
++	} input;
++	v4l2_std_id norm;
++	int width, height;
++	int n_chunks;
++	int iso_size;
++	unsigned int sequence;
++	struct urb *isoc_urbs[USBTV_ISOC_TRANSFERS];
++};
++
++int usbtv_set_regs(struct usbtv *usbtv, const u16 regs[][2], int size);
++
++int usbtv_video_init(struct usbtv *usbtv);
++void usbtv_video_free(struct usbtv *usbtv);
+-- 
+1.8.4.2
