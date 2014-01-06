@@ -1,19 +1,18 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: searching volunteer to test Hoontech DSP24 to
-	check if the driver is realy working well
-Date: Sun, 5 Jan 2014 20:39:59 +0000
-Message-ID: <201401052039.59438.gineera@aspect135.co.uk>
-References: <loom.20140105T194353-495@post.gmane.org>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [PATCH 01/19] ASoC: atmel: Don't set unused struct
+ snd_pcm_hardware fields
+Date: Mon, 6 Jan 2014 11:01:15 +0800
+Message-ID: <52CA1C7B.3000900@atmel.com>
+References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
+ <52C84FC3.9010501@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.ip07ir2.opaltelecom.net (out1.ip07ir2.opaltelecom.net
- [62.24.128.243])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C869260886
- for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2014 21:36:48 +0100 (CET)
-In-Reply-To: <loom.20140105T194353-495@post.gmane.org>
-Content-Disposition: inline
+Received: from DVREDG02.corp.atmel.com (nasmtp01.atmel.com [192.199.1.246])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFD82261640
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 04:01:48 +0100 (CET)
+In-Reply-To: <52C84FC3.9010501@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,51 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: YvanM <funyvan@hotmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Yvan,
+Hi Lars,
 
-On Sunday 05 January 2014 19:16, YvanM wrote:
-> First please apologize if I'm in the wrong place.
-
-It is probably the best place.
-
-> I have a Hoontech DSP24
-> (http://fr.audiofanzine.com/carte-son-rack/hoontech/DSP24-+-ADDA2000-DSP200
->0-C-Port/), but I had problem to make it working.
-
-Are you talking here about the PCI card, 8-channel audio unit, not the ADAT 
-cards?  What problems are you having?
-
-I have one of the audio card/rack pairs, which has been working fine with Alsa 
-since years ago (not actually used recently).  In particular I have recorded 
-live 8-channels from a mixing desk, and later played back all 8 to analogue 
-mix-down.  I think the PC ran an updated Alsa-1.0.12 with a 2.4 linux kernel.  
-I was involved in a patch fixing the MIDI several years ago and there were 
-other users then, including a studio in Australia.  Maybe it broke more 
-recently (all my systems are quite old)?
-
->I don't use it so, if 
-> someone with knowledge wants to check if this soundcard is really
-> recognized, I can send it to him. After that, feel free to play with it,
-> improve the driver, or even sell it !
+On 01/05/2014 02:15 AM, Lars-Peter Clausen wrote:
+> On 12/20/2013 02:20 PM, Lars-Peter Clausen wrote:
+>> The ASoC core assumes that the PCM component of the ASoC card transparently
+>> moves data around and does not impose any restrictions on the memory layout or
+>> the transfer speed. It ignores all fields from the snd_pcm_hardware struct for
+>> the PCM driver that are related to this. Setting these fields in the PCM driver
+>> might suggest otherwise though, so rather not set them.
+>>
+>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+>> Cc: Bo Shen <voice.shen@atmel.com>
+>> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+>> ---
+>>   sound/soc/atmel/atmel-pcm-dma.c | 1 -
+>>   sound/soc/atmel/atmel-pcm-pdc.c | 1 -
+>>   2 files changed, 2 deletions(-)
+>>
+>> diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
+>> index 06082e5..b79a2a8 100644
+>> --- a/sound/soc/atmel/atmel-pcm-dma.c
+>> +++ b/sound/soc/atmel/atmel-pcm-dma.c
+>> @@ -50,7 +50,6 @@ static const struct snd_pcm_hardware atmel_pcm_dma_hardware = {
+>>   				  SNDRV_PCM_INFO_INTERLEAVED |
+>>   				  SNDRV_PCM_INFO_RESUME |
+>>   				  SNDRV_PCM_INFO_PAUSE,
+>> -	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
 >
-> The problem I had :
->   - spent 3 months to find on the Internet the following lines to had to
-> /etc/modprobe.d/alsa-base to make the card recognized :
->  stall snd-ice1712 /sbin/modprobe --ignore-install snd-ice1712 && {
-> /sbin/modprobe -Qb snd-ice1712 ; }
-> options snd-ice1712 model=dsp24
->   - impossible to have "normal" stereo : it seems that each logical canal
-> (right and left) is redirected to both right and left speaker.
+> Atmel is one of the few platforms where the formats specified for the DMA
+> controller are more restrictive than the formats specified for the DAI. As
+> the restrictions specified by the PCM part have been ignored so far I'm
+> wondering if this is a real restriction and things have only worked by
+> chance or whether the restriction should be removed?
 
-I've never done anything like that.  Is your system running Pulseaudio?  Which 
-distro/kernel are you using?
+This is not a real restriction for DMA, this can be removed. Only the 
+SSC have the restriction, and we check it in DAI driver.
 
-Others on this list may have more idea of the issues?
+For this patch,
+Acked-by: Bo Shen <voice.shen@atmel.com>
 
-Regards
+> - Lars
+>
 
-Alan
+Best Regards,
+Bo Shen
