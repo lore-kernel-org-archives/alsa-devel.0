@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 05/11] ASoC: intel: Don't set unused struct
-	snd_pcm_hardware fields
-Date: Mon,  6 Jan 2014 14:19:10 +0100
-Message-ID: <1389014356-7014-5-git-send-email-lars@metafoo.de>
+Subject: [PATCH v2 02/11] ASoC: dpcm: Allow PCMs to omit the
+	set of supported formats
+Date: Mon,  6 Jan 2014 14:19:07 +0100
+Message-ID: <1389014356-7014-2-git-send-email-lars@metafoo.de>
 References: <1389014356-7014-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-033.synserver.de (smtp-out-033.synserver.de
  [212.40.185.33])
- by alsa0.perex.cz (Postfix) with ESMTP id D9B782610B5
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 14:18:57 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 45F2126109E
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 14:18:55 +0100 (CET)
 In-Reply-To: <1389014356-7014-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,59 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@linux.intel.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-The ASoC core assumes that the PCM component of the ASoC card transparently
-moves data around and does not impose any restrictions on the memory layout or
-the transfer speed. It ignores all fields from the snd_pcm_hardware struct for
-the PCM driver that are related to this. Setting these fields in the PCM driver
-might suggest otherwise though, so rather not set them.
+Allow PCMs that do not impose any restrictions on the supported formats to set
+the formats field to 0, Instead of assuming that this means that the PCM does
+not support any formats (which doesn't make much sense), assume that it supports
+all formats. This brings the behavior of DPCM closer to that of non-DPCM.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>
 ---
-No changes since v1
+New in v2
 ---
- sound/soc/intel/sst_platform.c | 10 ----------
- sound/soc/intel/sst_platform.h |  4 ----
- 2 files changed, 14 deletions(-)
+ sound/soc/soc-pcm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/sst_platform.c b/sound/soc/intel/sst_platform.c
-index b6b5eb6..f465a81 100644
---- a/sound/soc/intel/sst_platform.c
-+++ b/sound/soc/intel/sst_platform.c
-@@ -89,16 +89,6 @@ static struct snd_pcm_hardware sst_platform_pcm_hw = {
- 			SNDRV_PCM_INFO_MMAP_VALID |
- 			SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 			SNDRV_PCM_INFO_SYNC_START),
--	.formats = (SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_U16 |
--			SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_U24 |
--			SNDRV_PCM_FMTBIT_S32 | SNDRV_PCM_FMTBIT_U32),
--	.rates = (SNDRV_PCM_RATE_8000|
--			SNDRV_PCM_RATE_44100 |
--			SNDRV_PCM_RATE_48000),
--	.rate_min = SST_MIN_RATE,
--	.rate_max = SST_MAX_RATE,
--	.channels_min =	SST_MIN_CHANNEL,
--	.channels_max =	SST_MAX_CHANNEL,
- 	.buffer_bytes_max = SST_MAX_BUFFER,
- 	.period_bytes_min = SST_MIN_PERIOD_BYTES,
- 	.period_bytes_max = SST_MAX_PERIOD_BYTES,
-diff --git a/sound/soc/intel/sst_platform.h b/sound/soc/intel/sst_platform.h
-index cacc906..bee64fb 100644
---- a/sound/soc/intel/sst_platform.h
-+++ b/sound/soc/intel/sst_platform.h
-@@ -33,10 +33,6 @@
- #define SST_STEREO		2
- #define SST_MAX_CAP		5
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 898149e..86b670e 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1242,7 +1242,10 @@ static void dpcm_init_runtime_hw(struct snd_pcm_runtime *runtime,
+ 	runtime->hw.rate_max = stream->rate_max;
+ 	runtime->hw.channels_min = stream->channels_min;
+ 	runtime->hw.channels_max = stream->channels_max;
+-	runtime->hw.formats &= stream->formats;
++	if (runtime->hw.formats)
++		runtime->hw.formats &= stream->formats;
++	else
++		runtime->hw.formats = stream->formats;
+ 	runtime->hw.rates = stream->rates;
+ }
  
--#define SST_MIN_RATE		8000
--#define SST_MAX_RATE		48000
--#define SST_MIN_CHANNEL		1
--#define SST_MAX_CHANNEL		5
- #define SST_MAX_BUFFER		(800*1024)
- #define SST_MIN_BUFFER		(800*1024)
- #define SST_MIN_PERIOD_BYTES	32
 -- 
 1.8.0
