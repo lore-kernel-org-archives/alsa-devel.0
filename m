@@ -1,44 +1,55 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 00/11] ASoC/MFD: twl4030 codec local register cache
- removal
-Date: Mon, 6 Jan 2014 16:10:01 +0000
-Message-ID: <20140106161001.GJ30156@lee--X1>
-References: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
- <20140106131920.GT31886@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: soc-core: add snd_soc_of_parse_master_clkdir()
+ for dt
+Date: Mon, 6 Jan 2014 16:17:30 +0000
+Message-ID: <20140106161730.GG31886@sirena.org.uk>
+References: <1388630905-1321-1-git-send-email-Li.Xiubo@freescale.com>
+ <23375d0ac7734f37be9928d6add885f7@BY2PR03MB505.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="307FGJNKNK2k8fNP"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140106131920.GT31886@sirena.org.uk>
+In-Reply-To: <23375d0ac7734f37be9928d6add885f7@BY2PR03MB505.namprd03.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 06 Jan 2014, Mark Brown wrote:
 
-> On Fri, Jan 03, 2014 at 03:27:45PM +0200, Peter Ujfalusi wrote:
-> > Hi,
-> >=20
-> > After the twl6040 codec, now it is time for the twl4030 codec drive=
-r to loose
-> > it's local reg cache and let the MFD core's regmap to take care of =
-the caching.
->=20
-> This all looks good to me - Lee/Samuel how do you want to handle this=
-,
-> are you OK with merging the MFD bits via ASoC or something else?
+--307FGJNKNK2k8fNP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Are you planning on taking this in for v3.14? Only we're on -rc7 alread=
-y.
+On Mon, Jan 06, 2014 at 05:41:59AM +0000, Li.Xiubo@freescale.com wrote:
 
-It also depends how closely knit the MFD changes are to the ASoC ones.
+> I would like to know the current status of this patch, and there are some
+> other patches that for simple-card are depended on this one.
 
-Are they completely dependant?=20
+You only sent this patch on Thursday during the middle of the holiday
+period, please allow a reasonable time for review - at least a week even
+without holidays.
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+--307FGJNKNK2k8fNP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSytcXAAoJELSic+t+oim93QkP/RaK6oPvnAYSmx0bdL+9Thvc
+CmGp0r8KI9fG2WUzCw+xxL8H3q8B+S8L3zG11JnMhEBgJFiyBU9bqYPU5jkg+APA
+DLl+YwDooJX/OpPB814bvsOGouw2Fu4w+Q+UIlkTNuxGjsFyArXnprj7CphgiqcX
+7Blkvi7beQuG0OKoR1HQ4k+79FH5cfU0vBeofCdrclGUa4PV0uch1BRR74lQWV1D
+MK3/aWEIEKUut9pQprdvD24ctXokxQ4mjvKwbVZxVcL70fP5Dv5wC3I4HoQqC5Lj
+G3lkZDuys9W5JzkrqPiXa+OSjk1s69Nyp1AzDGLLs8kqYSFHY9UzW7GxYDdJJbRC
+Cf2xfCnBjHKJ2kFgVFRoMse5nNmt+ivHdaRnUuz1eIwlPXq3Z9KutvtyuzhXo00M
+pcWWHcW0WxyQkReFzQhbSiJ6FZg6UHcRyJqune70KTNQGiE8Dm1iudm4yaoCu21u
+xz0b+KOSXJrxNjmulnGBRSeJsJSrjR6b0rOws6+Cx7l0jhltXE+GG/nL52xFkC7/
+4eRUB6WpfYA4NmkaCnDsiRO/wS7Zhm6V7UIGDkfyNnG5N9HoEQZxXl7P9w/7NNI9
+CJAjckUvWBTX8PLR9Al/NJfMpmJ9ODHZkIutOVEu6Mbk7a2mmcFxJtqNRb0+q1Yr
+BekHalmg7FLtB/cY1ZSg
+=9r8A
+-----END PGP SIGNATURE-----
+
+--307FGJNKNK2k8fNP--
