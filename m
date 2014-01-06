@@ -1,18 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 4/6] ASoC: generic-dmaengine-pcm: Check DMA
-	residue granularity
-Date: Mon,  6 Jan 2014 11:46:00 +0100
-Message-ID: <1389005162-5223-5-git-send-email-lars@metafoo.de>
-References: <1389005162-5223-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: imx: Allow using sound with DT
+	descriptions only
+Date: Mon, 6 Jan 2014 13:16:51 +0000
+Message-ID: <20140106131650.GS31886@sirena.org.uk>
+References: <1388903726-2053-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5589367605303153873=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-079.synserver.de (smtp-out-023.synserver.de
- [212.40.185.23])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D21426172B
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 11:45:51 +0100 (CET)
-In-Reply-To: <1389005162-5223-1-git-send-email-lars@metafoo.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13DBE2608D8
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 14:17:01 +0100 (CET)
+In-Reply-To: <1388903726-2053-1-git-send-email-shc_work@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,76 +21,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The dmaengine framework now exposes the granularity with which it is able to
-report the transfer residue for a specific DMA channel. Check the granularity in
-the generic dmaengine PCM driver and
-	a) Set the SNDRV_PCM_INFO_BATCH if the granularity is per period or worse.
-	b) Fallback to the (race condition prone) period counting if the driver does
-	not support any residue reporting.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
-Changes since v1:
-	* Add support for auto-detecting the NO_RESIDUE flag to the compat path
----
- sound/soc/soc-generic-dmaengine-pcm.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+--===============5589367605303153873==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="D7bibO5f9Mpud+NW"
+Content-Disposition: inline
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 4e2bed8..560a778 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -144,6 +144,8 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
- 	if (ret == 0) {
- 		if (dma_caps.cmd_pause)
- 			hw.info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
-+		if (dma_caps.residue_granularity <= DMA_RESIDUE_GRANULARITY_SEGMENT)
-+			hw.info |= SNDRV_PCM_INFO_BATCH;
- 	}
- 
- 	return snd_soc_set_runtime_hwparams(substream, &hw);
-@@ -187,6 +189,21 @@ static struct dma_chan *dmaengine_pcm_compat_request_channel(
- 						 dma_data->filter_data);
- }
- 
-+static bool dmaengine_pcm_can_report_residue(struct dma_chan *chan)
-+{
-+	struct dma_slave_caps dma_caps;
-+	int ret;
-+
-+	ret = dma_get_slave_caps(chan, &dma_caps);
-+	if (ret != 0)
-+		return true;
-+
-+	if (dma_caps.residue_granularity == DMA_RESIDUE_GRANULARITY_DESCRIPTOR)
-+		return false;
-+
-+	return true;
-+}
-+
- static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
-@@ -239,6 +256,16 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 				max_buffer_size);
- 		if (ret)
- 			goto err_free;
-+
-+		/*
-+		 * This will only return false if we know for sure that at least
-+		 * one channel does not support residue reporting. If the DMA
-+		 * driver does not implement the slave_caps API we rely having
-+		 * the NO_RESIDUE flag set manually in case residue reporting is
-+		 * not supported.
-+		 */
-+		if (!dmaengine_pcm_can_report_residue(pcm->chan[i]))
-+			pcm->flags |= SND_DMAENGINE_PCM_FLAG_NO_RESIDUE;
- 	}
- 
- 	return 0;
--- 
-1.8.0
+
+--D7bibO5f9Mpud+NW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Jan 05, 2014 at 10:35:26AM +0400, Alexander Shiyan wrote:
+
+> +config SND_SOC_IMX_DT
+> +	tristate "SoC Audio support for i.MX DT boards"
+> +	depends on OF
+> +	select SND_SOC_FSL_SSI
+> +	select SND_SOC_IMX_AUDMUX
+> +	select SND_SOC_IMX_PCM_DMA
+> +	help
+> +	  Say Y if you want to add support for SoC audio on an i.MX boards
+> +	  described in devicetree.
+> +
+
+Rather than adding a separate Kconfig option it seems better to just
+move these to being selected by SND_IMX_SOC and delete all the extra
+selects from the individual machine drivers - I don't think it's worth
+worrying about building the extra driver for S/PDIF only systems and
+it's easier for users to work out what they need to set.
+
+--D7bibO5f9Mpud+NW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSyqy/AAoJELSic+t+oim9NkUP/0h8GwVxp3CjJSwfZm9Rwvn/
+Im6ZAVOSMQQ5pXvqwwhpA0Aedqyzb4RSQhg26vkbA3bBAHsMruO7QwpYYVEcNsgn
+LkWvVo24LLutUXZjpe6f+z2arBLY47+3bx0dSzA5U4BG8Gktw4pRizNGperTkVGg
+V95eD6wdkFcfBL8SToL5lQ6V+nELlvBebalHRn+i27l96z063vhqd8StXJ4fTiDd
+nyYj921LRSNiNuXphem7fZuByJPdP7syTeWx54fDkxcOZAYbLrqkgR27OOyfzrwX
+PvS56BhoNozka9ucji2T65duiCS3myX+7PacsTuGePDcEV7OcZ1kKcd35UA5apgY
+7X8LODSrU7Y76xUWcy2/5kNZ4Ic6xILH8AlRxO9+3T1DcRde4bhz/IZbe23+PThe
+dQ+oHBzWS5T/eEfusTWPztvGrw8VaRxwBMWWpH1XsQNbnKsCrQPCnGdnnYfDpxmf
+nxHu2QtWqfOGU3m5LW6TCOfUa3svJlAv9eYjctHnNPD2mJMGgsCePDDm6qxV96Ls
+4RJn/LoYZSiE5BG2SVi+yD/0eEESbj30p+BYiIskGNqXufrn2Lj3JUs/x6MCs0Fz
+JHIhJN83uWS9bEnvzMWlhip9uVLruBvtX2bJRh6O8gl1CC08PwfPGdQ8tlHTv/Zs
+ZO4FOT/OSUOkXHagmC8M
+=0vdv
+-----END PGP SIGNATURE-----
+
+--D7bibO5f9Mpud+NW--
+
+--===============5589367605303153873==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5589367605303153873==--
