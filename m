@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 5/5] ASoC: sirf-inner: add mach driver
- for SiRFSoC internal codec
-Date: Mon, 6 Jan 2014 17:35:13 +0000
-Message-ID: <20140106173513.GO31886@sirena.org.uk>
-References: <1388729104-28643-1-git-send-email-rongjun.ying@csr.com>
- <1388729104-28643-6-git-send-email-rongjun.ying@csr.com>
+Subject: Re: [PATCH v2 01/11] ASoC: dpcm: Add helper function
+ for initializing runtime pcm
+Date: Mon, 6 Jan 2014 17:40:33 +0000
+Message-ID: <20140106174033.GP31886@sirena.org.uk>
+References: <1389014356-7014-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2727669458384766043=="
+Content-Type: multipart/mixed; boundary="===============0363692996463624084=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D097C261ACD
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 18:35:24 +0100 (CET)
-In-Reply-To: <1388729104-28643-6-git-send-email-rongjun.ying@csr.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3974B264FFB
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 18:40:41 +0100 (CET)
+In-Reply-To: <1389014356-7014-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: RongJun Ying <rjying@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Workgroup.linux@csr.com, Rongjun Ying <Rongjun.Ying@csr.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2727669458384766043==
+--===============0363692996463624084==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2j1mLUaeHP5SPh5F"
+	protocol="application/pgp-signature"; boundary="mT4yAvgikiid89S9"
 Content-Disposition: inline
 
 
---2j1mLUaeHP5SPh5F
+--mT4yAvgikiid89S9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jan 03, 2014 at 02:05:04PM +0800, RongJun Ying wrote:
+On Mon, Jan 06, 2014 at 02:19:06PM +0100, Lars-Peter Clausen wrote:
+> We have the same code for initializing the runtime pcm on both the playback and
+> the capture path. Factor this out into a common helper function.
 
-> +	struct sirf_inner_card *sinner_card = snd_soc_card_get_drvdata(card);
+Applied, thanks.
 
-I see where it comes from but "sinner" is a really odd abbrevation to
-use in a mostly English context.
-
-Otherwise this looks fine.
-
---2j1mLUaeHP5SPh5F
+--mT4yAvgikiid89S9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSyulNAAoJELSic+t+oim98iUP/RPlioSgSMO2KxQa8T3OoLZo
-FwVNA6Oac06fktmGUAv/f7jgjtVwC0fDB+dZFxiWTQZGfE5zA12Lbv08bPec/rNq
-MwmwjTJ04ui1MG4SlJYXis6Y6waCL4QS3Wr2uJ4U1AlOJchblEtqN+3dJQlbmBcJ
-Sg9C7BGffmt5sjuDOXhAA5lzMlhBkoERXDX8esVUOcpbaG9TYfA7aMPh6iay0nRG
-oej+evI3U/Ui4uCm7MeOjDXzLrfuKbrWBCKCK5XCRhbhs+elZdgZeVDx1+fgcDc+
-Ss4RnPre0nXD1ws5JZtHIlszI0jTRW9KY+nYjxc/aTMPTx/oJZGC46kF1Rcq9kSu
-6snBZ4MOqFXYEIjj81R3xROa7/UY3k2JNEM0ajZnqfRznX12vRd7kkUggm0mPiCr
-xsrkKSpgny0EmKyy3EaNk/kzAOYVH8isdDvpI+g/6vIdlmz0bgovVWcT/OTgWcyg
-5tx5oip/KL3CbdipQlLd604RQjA9f7I5gzm39ooSkSZF+isL3CLi4Xt1ftbxHCJk
-eGPg/8lgunmpjZq3fQq/aCyu5KYdMmO72ozw+NkNpkspqpZ+YC633xtacnOvQ5Sz
-LxJ0Gc6Mc7asq9W0cvG8cGEcXbMy8URdj7VA6m87wQ36/+NUdWkxsQFgjLXMmicM
-nwS+iHGUUTJUoETvTUzH
-=zNWj
+iQIcBAEBAgAGBQJSyuqOAAoJELSic+t+oim9QGEP/R31F4Dd/iuw5JLJHsGnVdtU
+dpxsEojY6Dt0ulDTmlK2FM8YYHVA+bmdtQuNCYTuQ6FUV/TZGnxubHpbzBASMoxW
+ecAy3wPUFRuYSxRyCPLkbsYAmA2NowHLIicD6Vm7ayzZBkac4ab3GKfH8BCdvWkd
+RmAaAubOxy3gM4k1vKfkIoMDy6meGYbrsotok2xLR5RGfKsZIs44bArxj9Fe1j7s
+YZBhr2gPhOQxxboK6G2UNMdXiFBBS2EtN4hx90TubK3B/bqFd0veDExGPAXA8va4
+ChqEba+0CxEK0ozRaAKDF8nolB9R/ACIFhxzQHkf+gHF+8xKt+thhAGLnXTuGwqG
+ZLdd8gwviRaIQTfXuJZKLkBlG9mE1WV1oez4W8yhF9Iw3T+kFhC/mddQhRL1egcI
+57IlFO5scXM5J3D5vdhCRT+KMrhShSHAAhIytH0JNFPgwmJnO5P1ZqBRJQiMmkyd
+ORqKuEoqN5nNwwFZu9AsnM2K16a0ZtQkVgGn2tvlpIepe6H6c9Ma5HtTLVEp9sK6
+C4pWYVvjUehkILrXsGEVYzRsgvF2w2eCmu/QLZv69gP5ssaffpFHs/kVnP8iWdNy
+B1Pl3IAUUbH+jCgguUfx8FQM88Pa6CX8tgwmoKFoYbE0AKNOEwjN2wwTuQPDfIom
+8pCDJnE+WjrHJbCrpYuG
+=h+5j
 -----END PGP SIGNATURE-----
 
---2j1mLUaeHP5SPh5F--
+--mT4yAvgikiid89S9--
 
---===============2727669458384766043==
+--===============0363692996463624084==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2727669458384766043==--
+--===============0363692996463624084==--
