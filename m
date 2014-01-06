@@ -1,18 +1,19 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [PATCH 01/19] ASoC: atmel: Don't set unused struct
- snd_pcm_hardware fields
-Date: Mon, 6 Jan 2014 11:01:15 +0800
-Message-ID: <52CA1C7B.3000900@atmel.com>
-References: <1387545625-19240-1-git-send-email-lars@metafoo.de>
- <52C84FC3.9010501@metafoo.de>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH] ASoC: simple-card: Add device's module
+	clock selection.
+Date: Mon, 6 Jan 2014 04:10:12 +0000
+Message-ID: <1d24a986cd5e43608100d32ef32ff656@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <20140104161956.79906baf@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DVREDG02.corp.atmel.com (nasmtp01.atmel.com [192.199.1.246])
- by alsa0.perex.cz (Postfix) with ESMTP id BFD82261640
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 04:01:48 +0100 (CET)
-In-Reply-To: <52C84FC3.9010501@metafoo.de>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1lp0155.outbound.protection.outlook.com [207.46.163.155])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39A6A26163C
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 05:10:16 +0100 (CET)
+In-Reply-To: <20140104161956.79906baf@armhf>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Jean-Francois Moine <moinejf@free.fr>, Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars,
 
-On 01/05/2014 02:15 AM, Lars-Peter Clausen wrote:
-> On 12/20/2013 02:20 PM, Lars-Peter Clausen wrote:
->> The ASoC core assumes that the PCM component of the ASoC card transparently
->> moves data around and does not impose any restrictions on the memory layout or
->> the transfer speed. It ignores all fields from the snd_pcm_hardware struct for
->> the PCM driver that are related to this. Setting these fields in the PCM driver
->> might suggest otherwise though, so rather not set them.
->>
->> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->> Cc: Bo Shen <voice.shen@atmel.com>
->> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
->> ---
->>   sound/soc/atmel/atmel-pcm-dma.c | 1 -
->>   sound/soc/atmel/atmel-pcm-pdc.c | 1 -
->>   2 files changed, 2 deletions(-)
->>
->> diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
->> index 06082e5..b79a2a8 100644
->> --- a/sound/soc/atmel/atmel-pcm-dma.c
->> +++ b/sound/soc/atmel/atmel-pcm-dma.c
->> @@ -50,7 +50,6 @@ static const struct snd_pcm_hardware atmel_pcm_dma_hardware = {
->>   				  SNDRV_PCM_INFO_INTERLEAVED |
->>   				  SNDRV_PCM_INFO_RESUME |
->>   				  SNDRV_PCM_INFO_PAUSE,
->> -	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
->
-> Atmel is one of the few platforms where the formats specified for the DMA
-> controller are more restrictive than the formats specified for the DAI. As
-> the restrictions specified by the PCM part have been ignored so far I'm
-> wondering if this is a real restriction and things have only worked by
-> chance or whether the restriction should be removed?
 
-This is not a real restriction for DMA, this can be removed. Only the 
-SSC have the restriction, and we check it in DAI driver.
+> Subject: Re: [PATCH] ASoC: simple-card: Add device's module clock selection.
+> 
+> Li,
+> 
+> I am trying to have many DAI links in the simple-card, but I get an
+> error on getting the device clock: only the dma device needs a clock
+> and the spdif codec has none. What was the purpose of this default
+> device clock?
+> 
 
-For this patch,
-Acked-by: Bo Shen <voice.shen@atmel.com>
+Yes, for spdif there is no need to do the CPU/CODEC DAI devices' sysclk setting,
+but for many others like SAI,SSI... need.
 
-> - Lars
->
+I will send another patch to fix this.
 
+Thanks,
+
+--
 Best Regards,
-Bo Shen
+Xiubo 
