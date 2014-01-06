@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 07/11] ASoC: mxs: Don't set unused struct
+Subject: [PATCH v2 10/11] ASoC: ux500: Don't set unused struct
 	snd_pcm_hardware fields
-Date: Mon,  6 Jan 2014 14:19:12 +0100
-Message-ID: <1389014356-7014-7-git-send-email-lars@metafoo.de>
+Date: Mon,  6 Jan 2014 14:19:15 +0100
+Message-ID: <1389014356-7014-10-git-send-email-lars@metafoo.de>
 References: <1389014356-7014-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-033.synserver.de (smtp-out-033.synserver.de
  [212.40.185.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 18833261A0F
+ by alsa0.perex.cz (Postfix) with ESMTP id 94099261A29
  for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 14:19:02 +0100 (CET)
 In-Reply-To: <1389014356-7014-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -23,7 +23,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 The ASoC core assumes that the PCM component of the ASoC card transparently
@@ -33,29 +33,45 @@ the PCM driver that are related to this. Setting these fields in the PCM driver
 might suggest otherwise though, so rather not set them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Shawn Guo <shawn.guo@linaro.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: Lee Jones <lee.jones@linaro.org>
 ---
 No changes since v1
 ---
- sound/soc/mxs/mxs-pcm.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/ux500/ux500_pcm.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
-diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
-index 04a6b0d..2e0863a 100644
---- a/sound/soc/mxs/mxs-pcm.c
-+++ b/sound/soc/mxs/mxs-pcm.c
-@@ -36,11 +36,6 @@ static const struct snd_pcm_hardware snd_mxs_hardware = {
- 				  SNDRV_PCM_INFO_RESUME |
- 				  SNDRV_PCM_INFO_INTERLEAVED |
- 				  SNDRV_PCM_INFO_HALF_DUPLEX,
--	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
--				  SNDRV_PCM_FMTBIT_S20_3LE |
--				  SNDRV_PCM_FMTBIT_S24_LE,
--	.channels_min		= 2,
--	.channels_max		= 2,
- 	.period_bytes_min	= 32,
- 	.period_bytes_max	= 8192,
- 	.periods_min		= 1,
+diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+index ce554de..fa71640 100644
+--- a/sound/soc/ux500/ux500_pcm.c
++++ b/sound/soc/ux500/ux500_pcm.c
+@@ -28,12 +28,6 @@
+ #include "ux500_msp_i2s.h"
+ #include "ux500_pcm.h"
+ 
+-#define UX500_PLATFORM_MIN_RATE 8000
+-#define UX500_PLATFORM_MAX_RATE 48000
+-
+-#define UX500_PLATFORM_MIN_CHANNELS 1
+-#define UX500_PLATFORM_MAX_CHANNELS 8
+-
+ #define UX500_PLATFORM_PERIODS_BYTES_MIN	128
+ #define UX500_PLATFORM_PERIODS_BYTES_MAX	(64 * PAGE_SIZE)
+ #define UX500_PLATFORM_PERIODS_MIN		2
+@@ -45,15 +39,6 @@ static const struct snd_pcm_hardware ux500_pcm_hw = {
+ 		SNDRV_PCM_INFO_MMAP |
+ 		SNDRV_PCM_INFO_RESUME |
+ 		SNDRV_PCM_INFO_PAUSE,
+-	.formats = SNDRV_PCM_FMTBIT_S16_LE |
+-		SNDRV_PCM_FMTBIT_U16_LE |
+-		SNDRV_PCM_FMTBIT_S16_BE |
+-		SNDRV_PCM_FMTBIT_U16_BE,
+-	.rates = SNDRV_PCM_RATE_KNOT,
+-	.rate_min = UX500_PLATFORM_MIN_RATE,
+-	.rate_max = UX500_PLATFORM_MAX_RATE,
+-	.channels_min = UX500_PLATFORM_MIN_CHANNELS,
+-	.channels_max = UX500_PLATFORM_MAX_CHANNELS,
+ 	.buffer_bytes_max = UX500_PLATFORM_BUFFER_BYTES_MAX,
+ 	.period_bytes_min = UX500_PLATFORM_PERIODS_BYTES_MIN,
+ 	.period_bytes_max = UX500_PLATFORM_PERIODS_BYTES_MAX,
 -- 
 1.8.0
