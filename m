@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_ssi: Fix printing return code on
-	clk error
-Date: Mon, 6 Jan 2014 13:20:11 +0000
-Message-ID: <20140106132011.GU31886@sirena.org.uk>
-References: <1388902876-29964-1-git-send-email-shc_work@mail.ru>
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Subject: Re:
+ =?utf-8?q?=5BPATCH=5D_ASoC=3A_imx=3A_Allow_using_sou?=
+ =?utf-8?q?nd_with_DT_descriptions_only?=
+Date: Mon, 06 Jan 2014 17:25:39 +0400
+Message-ID: <1389014739.377805031@f170.i.mail.ru>
+References: <1388903726-2053-1-git-send-email-shc_work@mail.ru>
+ <20140106131650.GS31886@sirena.org.uk>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8365167514676928371=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C6BF261A3A
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 14:20:19 +0100 (CET)
-In-Reply-To: <1388902876-29964-1-git-send-email-shc_work@mail.ru>
+Received: from f170.i.mail.ru (f170.i.mail.ru [94.100.178.89])
+ by alsa0.perex.cz (Postfix) with ESMTP id 778E3261A98
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 14:25:42 +0100 (CET)
+In-Reply-To: <20140106131650.GS31886@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Timur Tabi <timur@tabi.org>, linuxppc-dev@lists.ozlabs.org
+To: =?UTF-8?B?TWFyayBCcm93bg==?= <broonie@kernel.org>
+Cc: =?UTF-8?B?RmFiaW8gRXN0ZXZhbQ==?= <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, =?UTF-8?B?VGFrYXNoaSBJd2Fp?= <tiwai@suse.de>, =?UTF-8?B?Tmljb2xpbiBDaGVu?= <b42378@freescale.com>, =?UTF-8?B?TGlhbSBHaXJkd29vZA==?= <lgirdwood@gmail.com>, =?UTF-8?B?U2hhd24gR3Vv?= <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hello.
 
---===============8365167514676928371==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1LWTVVdiXNbbcmmS"
-Content-Disposition: inline
+> > +config SND_SOC_IMX_DT
+> > +	tristate "SoC Audio support for i.MX DT boards"
+> > +	depends on OF
+> > +	select SND_SOC_FSL_SSI
+> > +	select SND_SOC_IMX_AUDMUX
+> > +	select SND_SOC_IMX_PCM_DMA
+> > +	help
+> > +	  Say Y if you want to add support for SoC audio on an i.MX boards
+> > +	  described in devicetree.
+> > +
+> 
+> Rather than adding a separate Kconfig option it seems better to just
+> move these to being selected by SND_IMX_SOC and delete all the extra
+> selects from the individual machine drivers - I don't think it's worth
+> worrying about building the extra driver for S/PDIF only systems and
+> it's easier for users to work out what they need to set.
 
+OK, probably this will be better.
+Thanks.
 
---1LWTVVdiXNbbcmmS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sun, Jan 05, 2014 at 10:21:16AM +0400, Alexander Shiyan wrote:
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-
-Applied, thanks.
-
---1LWTVVdiXNbbcmmS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSyq2IAAoJELSic+t+oim9dHoQAIrbqUm5hS07DRcUV1Tyfgtz
-Ae0uQ7yeV+bPoFddNPzrj3PIXQlaE9kd5XpgWWRpWRBoXiGp2/9BWcXp9RFpwsV4
-PMoflSZZ5NCtUM7j/MrzJmnFDqmKgHAtocNKz0HvFIvUFIeXd085HmBTtre+bx3H
-oVl97LpHz3dkceQeYfSxJ7LEOTblxp1+6pfpZXwrvKEd2E6TI9Ui6EMAvCmSYXZz
-SNVIWW7P4YMvMf34mlQhkL17VrrDVZYdki8ISXcJq9Lu1D5W68JFPHeRvepVLk5S
-fvNn+/vH8i9d53KQAMaIRrjsOROWuhTvhXrcUpdEq5Q1iw7NsOEegkNNdsw/pRmE
-yD46rmuElLGsu3ZfGatdei6zK1xsq/lMgNQ4PPIPfxljdK2R/4eyNi5BfD472fK6
-r+5MmfzEYegn70WSKf1CvbhAOJoRgH3XYudcGSumZ3zf9yVu75yYpq4i1D3T3ma5
-2blgRo3SOjRmjpCHQ5ogobnp52PdkQW2R7I7+E/evkBD5tVKQZfWNvMvzeVp7EvM
-b7K6emd8h76oN5zTtTomoqlHDMq4fiFxUWDGpki5ZRPTi8A4+ahZtCWfAxb/qmsl
-EHYUrr64zmyAhrrMdEfvZ2AgWpubYgBu41W98HYWYETP30/YfaVl9hSFJP7qUk2h
-mVM8wVIkPJX6x8ZQ4QE6
-=Avcn
------END PGP SIGNATURE-----
-
---1LWTVVdiXNbbcmmS--
-
---===============8365167514676928371==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8365167514676928371==--
+---
