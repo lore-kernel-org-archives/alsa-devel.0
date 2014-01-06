@@ -1,87 +1,57 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 01/11] ASoC: dpcm: Add helper function for
-	initializing runtime pcm
-Date: Mon,  6 Jan 2014 14:19:06 +0100
-Message-ID: <1389014356-7014-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/11] ASoC/MFD: twl4030 codec local register cache
+ removal
+Date: Mon, 6 Jan 2014 13:19:20 +0000
+Message-ID: <20140106131920.GT31886@sirena.org.uk>
+References: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-033.synserver.de (smtp-out-033.synserver.de
- [212.40.185.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 975F62608EC
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 14:18:54 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="g7KorqjRHmzOu6H+"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-We have the same code for initializing the runtime pcm on both the playback and
-the capture path. Factor this out into a common helper function.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>
----
-New in v2
----
- sound/soc/soc-pcm.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+--g7KorqjRHmzOu6H+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 604e7e9..898149e 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1235,6 +1235,17 @@ unwind:
- 	return err;
- }
- 
-+static void dpcm_init_runtime_hw(struct snd_pcm_runtime *runtime,
-+	struct snd_soc_pcm_stream *stream)
-+{
-+	runtime->hw.rate_min = stream->rate_min;
-+	runtime->hw.rate_max = stream->rate_max;
-+	runtime->hw.channels_min = stream->channels_min;
-+	runtime->hw.channels_max = stream->channels_max;
-+	runtime->hw.formats &= stream->formats;
-+	runtime->hw.rates = stream->rates;
-+}
-+
- static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -1242,21 +1253,10 @@ static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai_driver *cpu_dai_drv = cpu_dai->driver;
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		runtime->hw.rate_min = cpu_dai_drv->playback.rate_min;
--		runtime->hw.rate_max = cpu_dai_drv->playback.rate_max;
--		runtime->hw.channels_min = cpu_dai_drv->playback.channels_min;
--		runtime->hw.channels_max = cpu_dai_drv->playback.channels_max;
--		runtime->hw.formats &= cpu_dai_drv->playback.formats;
--		runtime->hw.rates = cpu_dai_drv->playback.rates;
--	} else {
--		runtime->hw.rate_min = cpu_dai_drv->capture.rate_min;
--		runtime->hw.rate_max = cpu_dai_drv->capture.rate_max;
--		runtime->hw.channels_min = cpu_dai_drv->capture.channels_min;
--		runtime->hw.channels_max = cpu_dai_drv->capture.channels_max;
--		runtime->hw.formats &= cpu_dai_drv->capture.formats;
--		runtime->hw.rates = cpu_dai_drv->capture.rates;
--	}
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->playback);
-+	else
-+		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->capture);
- }
- 
- static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
--- 
-1.8.0
+On Fri, Jan 03, 2014 at 03:27:45PM +0200, Peter Ujfalusi wrote:
+> Hi,
+>=20
+> After the twl6040 codec, now it is time for the twl4030 codec driver to l=
+oose
+> it's local reg cache and let the MFD core's regmap to take care of the ca=
+ching.
+
+This all looks good to me - Lee/Samuel how do you want to handle this,
+are you OK with merging the MFD bits via ASoC or something else?
+
+--g7KorqjRHmzOu6H+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSyq1VAAoJELSic+t+oim96HwP/A50sejcUBNwZl8WSDw89jQu
+5u1XxAiEatnZ31RznZh8LUOQ1zDAk2SEuk3fBY3rZ7/9sYHS+FHhv1jP5JwFFwOu
+emfGMjcN58QT/EVkWALtMmT1M74378AFURkNnwxSKdE8Jofw5egd83vBJYBZ5+t+
+YSCOG6r97lVJp/JSCt+h/7NWLA7YTz68dk5sPJgALoSjHZ1eZvhM1+e6W0eRqv1L
+yjdCQDr/JQ6Xf/nTHvyApJRqZnYYgd3YadtQqFHo3ZtPyOAa2Mged8TNmx6PfmGZ
+E1Oe6kbs0EXy4L5kBtHQl7NGSlkKCLqxQbmPmmLnkYbb1/EeOHaPv2I5BLD2wf1n
+jubS2DVAaMyDdDfA4Ta2Dt2XI3v5xzeReG568/lAmPtAV96lrgG68kiUlOJCSYxo
+i0s7DaD15t3pw9HVe+YZsOAc8mUNU7AZwZ+IYMcbJ+BSOum+WzEkNA2amh2Ghf/f
+dyZKQW7Zm/QgRvnwlV3UZg//0KeLlGD9LnWlkKXWHFkLxNeUe23g6JphCqES8KfQ
+6sQp0CtIbzQrefUidYA5+GZiAWwRbEDVd4aFKnhQ2lnGWHWCw0PnpO+pEbwSJMc0
+KEGhYr7SvHSJc9VdA9QbFgKpupIULXq2KBHrRD+rXRdboSpEH8daHXdeAga6ft5n
+HDYoAkvaxc41gcwg6OF8
+=yvMg
+-----END PGP SIGNATURE-----
+
+--g7KorqjRHmzOu6H+--
