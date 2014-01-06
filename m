@@ -1,55 +1,61 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: mxs: Remove
-	SND_DMAENGINE_PCM_FLAG_NO_RESIDUE flag
-Date: Mon,  6 Jan 2014 17:19:22 +0100
-Message-ID: <1389025162-5601-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/11] ASoC/MFD: twl4030 codec local register cache
+ removal
+Date: Mon, 6 Jan 2014 16:31:58 +0000
+Message-ID: <20140106163158.GH31886@sirena.org.uk>
+References: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
+ <20140106131920.GT31886@sirena.org.uk>
+ <20140106161001.GJ30156@lee--X1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-033.synserver.de (smtp-out-033.synserver.de
- [212.40.185.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 48BD52610D1
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 17:19:04 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Markus Pargmann <mpa@pengutronix.de>, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kuZFCdxJs1xgWibf"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140106161001.GJ30156@lee--X1>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Since commit 7b11304 ("dma: mxs-dma: Report correct residue for cyclic DMA")
-the mxs dmaengine driver has support for residue reporting. So there is no need
-to specify the SND_DMAENGINE_PCM_FLAG_NO_RESIDUE flag anymore. This allows a
-finer grained resolution for the PCM pointer as well as avoids the race
-condition that can occur with the period counting that is used when the
-dmaengine driver does not support residue reporting.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
-I don't have the hardware, so only compiled tested. But I assume that residue
-reporting was added to the driver for exactly this.
----
- sound/soc/mxs/mxs-pcm.c | 1 -
- 1 file changed, 1 deletion(-)
+--kuZFCdxJs1xgWibf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
-index 04a6b0d..c05c057 100644
---- a/sound/soc/mxs/mxs-pcm.c
-+++ b/sound/soc/mxs/mxs-pcm.c
-@@ -57,7 +57,6 @@ static const struct snd_dmaengine_pcm_config mxs_dmaengine_pcm_config = {
- int mxs_pcm_platform_register(struct device *dev)
- {
- 	return devm_snd_dmaengine_pcm_register(dev, &mxs_dmaengine_pcm_config,
--		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
- 		SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX);
- }
- EXPORT_SYMBOL_GPL(mxs_pcm_platform_register);
--- 
-1.8.0
+On Mon, Jan 06, 2014 at 04:10:01PM +0000, Lee Jones wrote:
+
+> Are you planning on taking this in for v3.14? Only we're on -rc7 already.
+
+Yes.  It's a driver change and if it's buggy we've got a couple of
+months of integration to fix any issues.
+
+> It also depends how closely knit the MFD changes are to the ASoC ones.
+
+> Are they completely dependant?=20
+
+Yes, they're tied to each other.
+
+--kuZFCdxJs1xgWibf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSytp7AAoJELSic+t+oim9y3YP/0odtulVWmZAahBGny5LZWVn
++cg7eJsM4GfP5mUil9HMaEr5feOkaBPtgwxRubVaG33CfDqTG0GHORkBjcx/tthe
+7m+8m09rnhZLGWsw2o+SL7/Ogu+l4+7Ljv34iAKC4i/GrzmKn4y1rVd4s2WgpMyZ
+crpbDJTibaUI8df2v4HI0cupe5+m9HlDdkdNnHjDjH440siNErKG4pZid3aiMLO7
++PlTkdc3kYzepXKr8/wmEIuDno5TpIXPCDkGMZ0R41PesPhR9pxUH3WQxLO1RZco
+3hdOIelFeEJ6a3kIFmYp1Cow97DHCi6LK3XvaZW9fP1b0GpuoLdSr2RHhHsdeiR+
++6QDmdHkPXNcXNaRYUcSbKYcV2J46JsTJbtacM5Oc9OMWmkbCwcazYAcUqHqkUVR
+uLahdyaE6gZxR3SY68/2rOZl7AkhQuIWWijYoCMbMamqvjb8YnGy2vUCpFmTBg2n
+XqtTx7Bxhqwyw6c5QW1zZGcKxuMgvRXUVcAlj/318qtBwlFuJTw1dbHxw2P3ivvq
+yGuuY7YkOLWzxIGJ071IZgGKFlSpcucbOSVw4nvF7I9pti0/kbJNCdyD+brhxN7y
+ai/FOxGwZL35vPbWJvWpRQMmdiEELQhIPsq/57v/PFiDJOSI/6o13oXyVRhgBCxi
+YgMybhaYFZWpzYPKXoFp
+=agmE
+-----END PGP SIGNATURE-----
+
+--kuZFCdxJs1xgWibf--
