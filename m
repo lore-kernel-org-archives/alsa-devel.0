@@ -1,19 +1,15 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: Re: [PATCH] ASoC: simple-card: Add device's module
-	clock selection.
-Date: Mon, 6 Jan 2014 04:10:12 +0000
-Message-ID: <1d24a986cd5e43608100d32ef32ff656@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <20140104161956.79906baf@armhf>
+From: Olivier Langlois <olivier@trillion01.com>
+Subject: [PATCH] alsa-lib: minor typo in pcm doc
+Date: Sun,  5 Jan 2014 23:12:44 -0500
+Message-ID: <1388981564-30708-1-git-send-email-olivier@trillion01.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1lp0155.outbound.protection.outlook.com [207.46.163.155])
- by alsa0.perex.cz (Postfix) with ESMTP id 39A6A26163C
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 05:10:16 +0100 (CET)
-In-Reply-To: <20140104161956.79906baf@armhf>
-Content-Language: en-US
+Received: from alt-proxy1.mail.unifiedlayer.com
+ (alt-proxy1.mail.unifiedlayer.com [70.40.203.67])
+ by alsa0.perex.cz (Postfix) with SMTP id 65A0626163C
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 05:13:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,29 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>, Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Olivier Langlois <olivier@trillion01.com>
 List-Id: alsa-devel@alsa-project.org
 
+Added a missing 'f' in the word 'diferent'
 
+Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+---
+ src/pcm/pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Subject: Re: [PATCH] ASoC: simple-card: Add device's module clock selection.
-> 
-> Li,
-> 
-> I am trying to have many DAI links in the simple-card, but I get an
-> error on getting the device clock: only the dma device needs a clock
-> and the spdif codec has none. What was the purpose of this default
-> device clock?
-> 
-
-Yes, for spdif there is no need to do the CPU/CODEC DAI devices' sysclk setting,
-but for many others like SAI,SSI... need.
-
-I will send another patch to fix this.
-
-Thanks,
-
---
-Best Regards,
-Xiubo 
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index c54fa06..7e46014 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -105,7 +105,7 @@ The poll or select functions (see 'man 2 poll' or 'man 2 select' for further
+ details) allows to receive requests/events from the device while
+ an application is waiting on events from other sources (like keyboard, screen,
+ network etc.), too. \ref snd_pcm_poll_descriptors can be used to get file
+-descriptors to poll or select on (note that wait direction might be diferent
++descriptors to poll or select on (note that wait direction might be different
+ than expected - do not use only returned file descriptors, but handle
+ events member as well - see \ref snd_pcm_poll_descriptors function
+ description for more details and \ref snd_pcm_poll_descriptors_revents for
+-- 
+1.8.5.2
