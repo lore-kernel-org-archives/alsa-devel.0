@@ -1,57 +1,81 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/11] ASoC/MFD: twl4030 codec local register cache
- removal
-Date: Mon, 6 Jan 2014 13:19:20 +0000
-Message-ID: <20140106131920.GT31886@sirena.org.uk>
-References: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH v2 05/11] ASoC: intel: Don't set unused struct
+	snd_pcm_hardware fields
+Date: Mon,  6 Jan 2014 14:19:10 +0100
+Message-ID: <1389014356-7014-5-git-send-email-lars@metafoo.de>
+References: <1389014356-7014-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="g7KorqjRHmzOu6H+"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-033.synserver.de (smtp-out-033.synserver.de
+ [212.40.185.33])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9B782610B5
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 14:18:57 +0100 (CET)
+In-Reply-To: <1389014356-7014-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+The ASoC core assumes that the PCM component of the ASoC card transparently
+moves data around and does not impose any restrictions on the memory layout or
+the transfer speed. It ignores all fields from the snd_pcm_hardware struct for
+the PCM driver that are related to this. Setting these fields in the PCM driver
+might suggest otherwise though, so rather not set them.
 
---g7KorqjRHmzOu6H+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>
+---
+No changes since v1
+---
+ sound/soc/intel/sst_platform.c | 10 ----------
+ sound/soc/intel/sst_platform.h |  4 ----
+ 2 files changed, 14 deletions(-)
 
-On Fri, Jan 03, 2014 at 03:27:45PM +0200, Peter Ujfalusi wrote:
-> Hi,
->=20
-> After the twl6040 codec, now it is time for the twl4030 codec driver to l=
-oose
-> it's local reg cache and let the MFD core's regmap to take care of the ca=
-ching.
-
-This all looks good to me - Lee/Samuel how do you want to handle this,
-are you OK with merging the MFD bits via ASoC or something else?
-
---g7KorqjRHmzOu6H+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSyq1VAAoJELSic+t+oim96HwP/A50sejcUBNwZl8WSDw89jQu
-5u1XxAiEatnZ31RznZh8LUOQ1zDAk2SEuk3fBY3rZ7/9sYHS+FHhv1jP5JwFFwOu
-emfGMjcN58QT/EVkWALtMmT1M74378AFURkNnwxSKdE8Jofw5egd83vBJYBZ5+t+
-YSCOG6r97lVJp/JSCt+h/7NWLA7YTz68dk5sPJgALoSjHZ1eZvhM1+e6W0eRqv1L
-yjdCQDr/JQ6Xf/nTHvyApJRqZnYYgd3YadtQqFHo3ZtPyOAa2Mged8TNmx6PfmGZ
-E1Oe6kbs0EXy4L5kBtHQl7NGSlkKCLqxQbmPmmLnkYbb1/EeOHaPv2I5BLD2wf1n
-jubS2DVAaMyDdDfA4Ta2Dt2XI3v5xzeReG568/lAmPtAV96lrgG68kiUlOJCSYxo
-i0s7DaD15t3pw9HVe+YZsOAc8mUNU7AZwZ+IYMcbJ+BSOum+WzEkNA2amh2Ghf/f
-dyZKQW7Zm/QgRvnwlV3UZg//0KeLlGD9LnWlkKXWHFkLxNeUe23g6JphCqES8KfQ
-6sQp0CtIbzQrefUidYA5+GZiAWwRbEDVd4aFKnhQ2lnGWHWCw0PnpO+pEbwSJMc0
-KEGhYr7SvHSJc9VdA9QbFgKpupIULXq2KBHrRD+rXRdboSpEH8daHXdeAga6ft5n
-HDYoAkvaxc41gcwg6OF8
-=yvMg
------END PGP SIGNATURE-----
-
---g7KorqjRHmzOu6H+--
+diff --git a/sound/soc/intel/sst_platform.c b/sound/soc/intel/sst_platform.c
+index b6b5eb6..f465a81 100644
+--- a/sound/soc/intel/sst_platform.c
++++ b/sound/soc/intel/sst_platform.c
+@@ -89,16 +89,6 @@ static struct snd_pcm_hardware sst_platform_pcm_hw = {
+ 			SNDRV_PCM_INFO_MMAP_VALID |
+ 			SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 			SNDRV_PCM_INFO_SYNC_START),
+-	.formats = (SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_U16 |
+-			SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_U24 |
+-			SNDRV_PCM_FMTBIT_S32 | SNDRV_PCM_FMTBIT_U32),
+-	.rates = (SNDRV_PCM_RATE_8000|
+-			SNDRV_PCM_RATE_44100 |
+-			SNDRV_PCM_RATE_48000),
+-	.rate_min = SST_MIN_RATE,
+-	.rate_max = SST_MAX_RATE,
+-	.channels_min =	SST_MIN_CHANNEL,
+-	.channels_max =	SST_MAX_CHANNEL,
+ 	.buffer_bytes_max = SST_MAX_BUFFER,
+ 	.period_bytes_min = SST_MIN_PERIOD_BYTES,
+ 	.period_bytes_max = SST_MAX_PERIOD_BYTES,
+diff --git a/sound/soc/intel/sst_platform.h b/sound/soc/intel/sst_platform.h
+index cacc906..bee64fb 100644
+--- a/sound/soc/intel/sst_platform.h
++++ b/sound/soc/intel/sst_platform.h
+@@ -33,10 +33,6 @@
+ #define SST_STEREO		2
+ #define SST_MAX_CAP		5
+ 
+-#define SST_MIN_RATE		8000
+-#define SST_MAX_RATE		48000
+-#define SST_MIN_CHANNEL		1
+-#define SST_MAX_CHANNEL		5
+ #define SST_MAX_BUFFER		(800*1024)
+ #define SST_MIN_BUFFER		(800*1024)
+ #define SST_MIN_PERIOD_BYTES	32
+-- 
+1.8.0
