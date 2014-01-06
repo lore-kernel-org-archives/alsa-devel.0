@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 01/11] ASoC: dpcm: Add helper function
- for initializing runtime pcm
-Date: Mon, 6 Jan 2014 17:40:33 +0000
-Message-ID: <20140106174033.GP31886@sirena.org.uk>
+Subject: Re: [PATCH v2 02/11] ASoC: dpcm: Allow PCMs to omit
+ the set of supported formats
+Date: Mon, 6 Jan 2014 17:42:58 +0000
+Message-ID: <20140106174258.GQ31886@sirena.org.uk>
 References: <1389014356-7014-1-git-send-email-lars@metafoo.de>
+ <1389014356-7014-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0363692996463624084=="
+Content-Type: multipart/mixed; boundary="===============2519410064711237084=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3974B264FFB
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 18:40:41 +0100 (CET)
-In-Reply-To: <1389014356-7014-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 06D98265197
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 18:43:05 +0100 (CET)
+In-Reply-To: <1389014356-7014-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +27,53 @@ Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Liam Gir
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0363692996463624084==
+--===============2519410064711237084==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mT4yAvgikiid89S9"
+	protocol="application/pgp-signature"; boundary="8WfetLtxVmRwFcos"
 Content-Disposition: inline
 
 
---mT4yAvgikiid89S9
+--8WfetLtxVmRwFcos
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jan 06, 2014 at 02:19:06PM +0100, Lars-Peter Clausen wrote:
-> We have the same code for initializing the runtime pcm on both the playback and
-> the capture path. Factor this out into a common helper function.
+On Mon, Jan 06, 2014 at 02:19:07PM +0100, Lars-Peter Clausen wrote:
+> Allow PCMs that do not impose any restrictions on the supported formats to set
+> the formats field to 0, Instead of assuming that this means that the PCM does
+> not support any formats (which doesn't make much sense), assume that it supports
+> all formats. This brings the behavior of DPCM closer to that of non-DPCM.
 
 Applied, thanks.
 
---mT4yAvgikiid89S9
+--8WfetLtxVmRwFcos
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSyuqOAAoJELSic+t+oim9QGEP/R31F4Dd/iuw5JLJHsGnVdtU
-dpxsEojY6Dt0ulDTmlK2FM8YYHVA+bmdtQuNCYTuQ6FUV/TZGnxubHpbzBASMoxW
-ecAy3wPUFRuYSxRyCPLkbsYAmA2NowHLIicD6Vm7ayzZBkac4ab3GKfH8BCdvWkd
-RmAaAubOxy3gM4k1vKfkIoMDy6meGYbrsotok2xLR5RGfKsZIs44bArxj9Fe1j7s
-YZBhr2gPhOQxxboK6G2UNMdXiFBBS2EtN4hx90TubK3B/bqFd0veDExGPAXA8va4
-ChqEba+0CxEK0ozRaAKDF8nolB9R/ACIFhxzQHkf+gHF+8xKt+thhAGLnXTuGwqG
-ZLdd8gwviRaIQTfXuJZKLkBlG9mE1WV1oez4W8yhF9Iw3T+kFhC/mddQhRL1egcI
-57IlFO5scXM5J3D5vdhCRT+KMrhShSHAAhIytH0JNFPgwmJnO5P1ZqBRJQiMmkyd
-ORqKuEoqN5nNwwFZu9AsnM2K16a0ZtQkVgGn2tvlpIepe6H6c9Ma5HtTLVEp9sK6
-C4pWYVvjUehkILrXsGEVYzRsgvF2w2eCmu/QLZv69gP5ssaffpFHs/kVnP8iWdNy
-B1Pl3IAUUbH+jCgguUfx8FQM88Pa6CX8tgwmoKFoYbE0AKNOEwjN2wwTuQPDfIom
-8pCDJnE+WjrHJbCrpYuG
-=h+5j
+iQIcBAEBAgAGBQJSyusfAAoJELSic+t+oim9Z44P/RoR1XjA9lQpefGA/H+ayma+
+t1NsHwv/y8RhjOCewY7xaqCbiKx5Ek72/Tp4bL1wA/KXMEhUG6gZKPHL3w4S5vEh
+r7EuEq/VffI+asPJE8qTAyKj9JXJ3SCwknHdUZWbQOh7I02bECM4MaZvfWRuNCoi
+nQyZlS0uIhNW4C4E4BF2zJfWOVIwhw10nZgXoEcnR7zujsu9+r7yebaWRzrmiP1Y
+Dv2f1Ue36iSpkzdPDQDJkmjs3Gcn4Unjl942n0xlW6ULX/UJz208bl4rYFkl9y4p
+YhLiD0Z2mD7o3S1Rn1Rw031OvbXis1UT0fA9qhc7JuhSyynEAe2/61evVvgS7so4
+HzeuLuu/IMyXIUlvG7uqVC6o2mjd7P8GQMr+qvCDpyHyKsl9zmsimMuuuaNVPZhz
+btfQylIgyErKHYmvsedc7/avOnBfdu+/coCYMsiaWC7AOIhQd/H0LMcOuiuEWnjn
+oG7qcFP6Op6kLolyOyHBKsJgHeb7eH17NzKaEIPzBIaN2vCsdnw3CiN3LB0QUU8e
+pg6nX+76XvYK0k/VS9FU3kOQVtGQ/z7GUvarswTs9WSoNPgEdhTr6iVybVpkP2Pq
+AP+qDZo/BKlJ5BfWZ7HkIxLnI7UySRSKlG+I+TbMT17c7McfWdMz0kVUC7FA0wIK
+oRzciQnYuFT+9KlNW5cR
+=j8sa
 -----END PGP SIGNATURE-----
 
---mT4yAvgikiid89S9--
+--8WfetLtxVmRwFcos--
 
---===============0363692996463624084==
+--===============2519410064711237084==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0363692996463624084==--
+--===============2519410064711237084==--
