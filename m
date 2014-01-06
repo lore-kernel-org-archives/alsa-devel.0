@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 03/11] ASoC: atmel: Don't set unused struct
-	snd_pcm_hardware fields
-Date: Mon,  6 Jan 2014 14:19:08 +0100
-Message-ID: <1389014356-7014-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH v2 06/11] ASoC: kirkwood: Don't set unused
+	struct snd_pcm_hardware fields
+Date: Mon,  6 Jan 2014 14:19:11 +0100
+Message-ID: <1389014356-7014-6-git-send-email-lars@metafoo.de>
 References: <1389014356-7014-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-033.synserver.de (smtp-out-033.synserver.de
  [212.40.185.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 123E92610A6
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 14:18:56 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E51C82619F9
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 14:19:01 +0100 (CET)
 In-Reply-To: <1389014356-7014-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,7 +23,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 The ASoC core assumes that the PCM component of the ASoC card transparently
@@ -33,38 +33,46 @@ the PCM driver that are related to this. Setting these fields in the PCM driver
 might suggest otherwise though, so rather not set them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Bo Shen <voice.shen@atmel.com>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>
 ---
-No changes in v2
+No changes since v1
 ---
- sound/soc/atmel/atmel-pcm-dma.c | 1 -
- sound/soc/atmel/atmel-pcm-pdc.c | 1 -
- 2 files changed, 2 deletions(-)
+ sound/soc/kirkwood/kirkwood-dma.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
-index 06082e5..b79a2a8 100644
---- a/sound/soc/atmel/atmel-pcm-dma.c
-+++ b/sound/soc/atmel/atmel-pcm-dma.c
-@@ -50,7 +50,6 @@ static const struct snd_pcm_hardware atmel_pcm_dma_hardware = {
- 				  SNDRV_PCM_INFO_INTERLEAVED |
- 				  SNDRV_PCM_INFO_RESUME |
- 				  SNDRV_PCM_INFO_PAUSE,
--	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
- 	.period_bytes_min	= 256,		/* lighting DMA overhead */
- 	.period_bytes_max	= 2 * 0xffff,	/* if 2 bytes format */
- 	.periods_min		= 8,
-diff --git a/sound/soc/atmel/atmel-pcm-pdc.c b/sound/soc/atmel/atmel-pcm-pdc.c
-index 054ea4d..33ec592 100644
---- a/sound/soc/atmel/atmel-pcm-pdc.c
-+++ b/sound/soc/atmel/atmel-pcm-pdc.c
-@@ -58,7 +58,6 @@ static const struct snd_pcm_hardware atmel_pcm_hardware = {
- 				  SNDRV_PCM_INFO_MMAP_VALID |
- 				  SNDRV_PCM_INFO_INTERLEAVED |
- 				  SNDRV_PCM_INFO_PAUSE,
--	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
- 	.period_bytes_min	= 32,
- 	.period_bytes_max	= 8192,
- 	.periods_min		= 2,
+diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+index 4af1936..aac22fc 100644
+--- a/sound/soc/kirkwood/kirkwood-dma.c
++++ b/sound/soc/kirkwood/kirkwood-dma.c
+@@ -21,16 +21,6 @@
+ #include <sound/soc.h>
+ #include "kirkwood.h"
+ 
+-#define KIRKWOOD_RATES \
+-	(SNDRV_PCM_RATE_8000_192000 |		\
+-	 SNDRV_PCM_RATE_CONTINUOUS |		\
+-	 SNDRV_PCM_RATE_KNOT)
+-
+-#define KIRKWOOD_FORMATS \
+-	(SNDRV_PCM_FMTBIT_S16_LE | \
+-	 SNDRV_PCM_FMTBIT_S24_LE | \
+-	 SNDRV_PCM_FMTBIT_S32_LE)
+-
+ static struct kirkwood_dma_data *kirkwood_priv(struct snd_pcm_substream *subs)
+ {
+ 	struct snd_soc_pcm_runtime *soc_runtime = subs->private_data;
+@@ -43,12 +33,6 @@ static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
+ 		 SNDRV_PCM_INFO_MMAP_VALID |
+ 		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		 SNDRV_PCM_INFO_PAUSE),
+-	.formats		= KIRKWOOD_FORMATS,
+-	.rates			= KIRKWOOD_RATES,
+-	.rate_min		= 8000,
+-	.rate_max		= 384000,
+-	.channels_min		= 1,
+-	.channels_max		= 8,
+ 	.buffer_bytes_max	= KIRKWOOD_SND_MAX_BUFFER_BYTES,
+ 	.period_bytes_min	= KIRKWOOD_SND_MIN_PERIOD_BYTES,
+ 	.period_bytes_max	= KIRKWOOD_SND_MAX_PERIOD_BYTES,
 -- 
 1.8.0
