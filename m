@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 06/11] ASoC: kirkwood: Don't set unused
-	struct snd_pcm_hardware fields
-Date: Mon,  6 Jan 2014 14:19:11 +0100
-Message-ID: <1389014356-7014-6-git-send-email-lars@metafoo.de>
+Subject: [PATCH v2 09/11] ASoC: sh: Don't set unused struct
+	snd_pcm_hardware fields
+Date: Mon,  6 Jan 2014 14:19:14 +0100
+Message-ID: <1389014356-7014-9-git-send-email-lars@metafoo.de>
 References: <1389014356-7014-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-033.synserver.de (smtp-out-033.synserver.de
  [212.40.185.33])
- by alsa0.perex.cz (Postfix) with ESMTP id E51C82619F9
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 14:19:01 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E839261A0D
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 14:19:02 +0100 (CET)
 In-Reply-To: <1389014356-7014-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,7 +23,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The ASoC core assumes that the PCM component of the ASoC card transparently
@@ -33,46 +33,82 @@ the PCM driver that are related to this. Setting these fields in the PCM driver
 might suggest otherwise though, so rather not set them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
 No changes since v1
 ---
- sound/soc/kirkwood/kirkwood-dma.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ sound/soc/sh/dma-sh7760.c | 17 -----------------
+ sound/soc/sh/fsi.c        |  6 ------
+ sound/soc/sh/rcar/core.c  |  6 ------
+ 3 files changed, 29 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index 4af1936..aac22fc 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -21,16 +21,6 @@
- #include <sound/soc.h>
- #include "kirkwood.h"
+diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
+index 1a8b03e..c85f8eb 100644
+--- a/sound/soc/sh/dma-sh7760.c
++++ b/sound/soc/sh/dma-sh7760.c
+@@ -89,29 +89,12 @@ struct camelot_pcm {
+ #define DMABRG_PREALLOC_BUFFER		32 * 1024
+ #define DMABRG_PREALLOC_BUFFER_MAX	32 * 1024
  
--#define KIRKWOOD_RATES \
--	(SNDRV_PCM_RATE_8000_192000 |		\
--	 SNDRV_PCM_RATE_CONTINUOUS |		\
--	 SNDRV_PCM_RATE_KNOT)
+-/* support everything the SSI supports */
+-#define DMABRG_RATES	\
+-	SNDRV_PCM_RATE_8000_192000
 -
--#define KIRKWOOD_FORMATS \
--	(SNDRV_PCM_FMTBIT_S16_LE | \
--	 SNDRV_PCM_FMTBIT_S24_LE | \
--	 SNDRV_PCM_FMTBIT_S32_LE)
+-#define DMABRG_FMTS	\
+-	(SNDRV_PCM_FMTBIT_S8      | SNDRV_PCM_FMTBIT_U8      |	\
+-	 SNDRV_PCM_FMTBIT_S16_LE  | SNDRV_PCM_FMTBIT_U16_LE  |	\
+-	 SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_U20_3LE |	\
+-	 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_U24_3LE |	\
+-	 SNDRV_PCM_FMTBIT_S32_LE  | SNDRV_PCM_FMTBIT_U32_LE)
 -
- static struct kirkwood_dma_data *kirkwood_priv(struct snd_pcm_substream *subs)
- {
- 	struct snd_soc_pcm_runtime *soc_runtime = subs->private_data;
-@@ -43,12 +33,6 @@ static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
- 		 SNDRV_PCM_INFO_MMAP_VALID |
- 		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		 SNDRV_PCM_INFO_PAUSE),
--	.formats		= KIRKWOOD_FORMATS,
--	.rates			= KIRKWOOD_RATES,
+ static struct snd_pcm_hardware camelot_pcm_hardware = {
+ 	.info = (SNDRV_PCM_INFO_MMAP |
+ 		SNDRV_PCM_INFO_INTERLEAVED |
+ 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		SNDRV_PCM_INFO_MMAP_VALID |
+ 		SNDRV_PCM_INFO_BATCH),
+-	.formats =	DMABRG_FMTS,
+-	.rates =	DMABRG_RATES,
+-	.rate_min =		8000,
+-	.rate_max =		192000,
+-	.channels_min =		2,
+-	.channels_max =		8,		/* max of the SSI */
+ 	.buffer_bytes_max =	DMABRG_PERIOD_MAX,
+ 	.period_bytes_min =	DMABRG_PERIOD_MIN,
+ 	.period_bytes_max =	DMABRG_PERIOD_MAX / 2,
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index 6101055..1967f44 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -1787,12 +1787,6 @@ static struct snd_pcm_hardware fsi_pcm_hardware = {
+ 			SNDRV_PCM_INFO_MMAP		|
+ 			SNDRV_PCM_INFO_MMAP_VALID	|
+ 			SNDRV_PCM_INFO_PAUSE,
+-	.formats		= FSI_FMTS,
+-	.rates			= FSI_RATES,
 -	.rate_min		= 8000,
--	.rate_max		= 384000,
--	.channels_min		= 1,
--	.channels_max		= 8,
- 	.buffer_bytes_max	= KIRKWOOD_SND_MAX_BUFFER_BYTES,
- 	.period_bytes_min	= KIRKWOOD_SND_MIN_PERIOD_BYTES,
- 	.period_bytes_max	= KIRKWOOD_SND_MAX_PERIOD_BYTES,
+-	.rate_max		= 192000,
+-	.channels_min		= 2,
+-	.channels_max		= 2,
+ 	.buffer_bytes_max	= 64 * 1024,
+ 	.period_bytes_min	= 32,
+ 	.period_bytes_max	= 8192,
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index b3653d3..743de5e 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -628,12 +628,6 @@ static struct snd_pcm_hardware rsnd_pcm_hardware = {
+ 			SNDRV_PCM_INFO_MMAP		|
+ 			SNDRV_PCM_INFO_MMAP_VALID	|
+ 			SNDRV_PCM_INFO_PAUSE,
+-	.formats		= RSND_FMTS,
+-	.rates			= RSND_RATES,
+-	.rate_min		= 8000,
+-	.rate_max		= 192000,
+-	.channels_min		= 2,
+-	.channels_max		= 2,
+ 	.buffer_bytes_max	= 64 * 1024,
+ 	.period_bytes_min	= 32,
+ 	.period_bytes_max	= 8192,
 -- 
 1.8.0
