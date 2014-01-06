@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 3/6] ASoC: generic-dmaengine-pcm: Check
-	NO_RESIDUE flag at runtime
-Date: Mon,  6 Jan 2014 11:45:59 +0100
-Message-ID: <1389005162-5223-4-git-send-email-lars@metafoo.de>
+Subject: [PATCH v2 5/6] ASoC: axi-{spdif,
+	i2s}: Remove SND_DMAENGINE_PCM_FLAG_NO_RESIDUE flag
+Date: Mon,  6 Jan 2014 11:46:01 +0100
+Message-ID: <1389005162-5223-6-git-send-email-lars@metafoo.de>
 References: <1389005162-5223-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-079.synserver.de (smtp-out-023.synserver.de
  [212.40.185.23])
- by alsa0.perex.cz (Postfix) with ESMTP id 502F52616FA
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 11:45:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 47FBF2617B5
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2014 11:45:51 +0100 (CET)
 In-Reply-To: <1389005162-5223-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,95 +26,47 @@ To: Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>, 
 Cc: dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Currently we have two different snd_soc_platform_driver structs in the generic
-dmaengine PCM driver. One for dmaengine drivers that support residue reporting
-and one for those which do not. When registering the PCM component we check
-whether the NO_RESIDUE flag is set or not and use the corresponding
-snd_soc_platform_driver. This patch modifies the driver to only have one
-snd_soc_platform_driver struct where the pointer() callback checks the
-NO_RESIDUE flag at runtime. This allows us to set the NO_RESIDUE flag after the
-PCM component has been registered. This becomes necessary when querying whether
-the dmaengine driver supports residue reporting from the dmaengine driver itself
-since the DMA channel might only be requested after the PCM component has been
-registered.
+The pl330 driver properly reports that it does not have residue reporting
+support, which means the PCM dmaengine driver is able to figure this out on its
+own. So there is no need to set the flag manually. Removing the flag has the
+advantage that once the pl330 driver gains support for residue reporting it will
+automatically be used by the generic dmaengine PCM driver.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
 New in v2
 ---
- sound/soc/soc-generic-dmaengine-pcm.c | 39 ++++++++++++++---------------------
- 1 file changed, 15 insertions(+), 24 deletions(-)
+ sound/soc/adi/axi-i2s.c   | 3 +--
+ sound/soc/adi/axi-spdif.c | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 2a6c569..4e2bed8 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -248,6 +248,18 @@ err_free:
- 	return ret;
- }
- 
-+static snd_pcm_uframes_t dmaengine_pcm_pointer(
-+	struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
-+
-+	if (pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_RESIDUE)
-+		return snd_dmaengine_pcm_pointer_no_residue(substream);
-+	else
-+		return snd_dmaengine_pcm_pointer(substream);
-+}
-+
- static const struct snd_pcm_ops dmaengine_pcm_ops = {
- 	.open		= dmaengine_pcm_open,
- 	.close		= snd_dmaengine_pcm_close,
-@@ -255,7 +267,7 @@ static const struct snd_pcm_ops dmaengine_pcm_ops = {
- 	.hw_params	= dmaengine_pcm_hw_params,
- 	.hw_free	= snd_pcm_lib_free_pages,
- 	.trigger	= snd_dmaengine_pcm_trigger,
--	.pointer	= snd_dmaengine_pcm_pointer,
-+	.pointer	= dmaengine_pcm_pointer,
- };
- 
- static const struct snd_soc_platform_driver dmaengine_pcm_platform = {
-@@ -265,23 +277,6 @@ static const struct snd_soc_platform_driver dmaengine_pcm_platform = {
- 	.probe_order	= SND_SOC_COMP_ORDER_LATE,
- };
- 
--static const struct snd_pcm_ops dmaengine_no_residue_pcm_ops = {
--	.open		= dmaengine_pcm_open,
--	.close		= snd_dmaengine_pcm_close,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= dmaengine_pcm_hw_params,
--	.hw_free	= snd_pcm_lib_free_pages,
--	.trigger	= snd_dmaengine_pcm_trigger,
--	.pointer	= snd_dmaengine_pcm_pointer_no_residue,
--};
--
--static const struct snd_soc_platform_driver dmaengine_no_residue_pcm_platform = {
--	.ops		= &dmaengine_no_residue_pcm_ops,
--	.pcm_new	= dmaengine_pcm_new,
--	.pcm_free	= dmaengine_pcm_free,
--	.probe_order	= SND_SOC_COMP_ORDER_LATE,
--};
--
- static const char * const dmaengine_pcm_dma_channel_names[] = {
- 	[SNDRV_PCM_STREAM_PLAYBACK] = "tx",
- 	[SNDRV_PCM_STREAM_CAPTURE] = "rx",
-@@ -374,12 +369,8 @@ int snd_dmaengine_pcm_register(struct device *dev,
+diff --git a/sound/soc/adi/axi-i2s.c b/sound/soc/adi/axi-i2s.c
+index 7f91a86..6058c1f 100644
+--- a/sound/soc/adi/axi-i2s.c
++++ b/sound/soc/adi/axi-i2s.c
+@@ -236,8 +236,7 @@ static int axi_i2s_probe(struct platform_device *pdev)
  	if (ret)
- 		goto err_free_dma;
+ 		goto err_clk_disable;
  
--	if (flags & SND_DMAENGINE_PCM_FLAG_NO_RESIDUE)
--		ret = snd_soc_add_platform(dev, &pcm->platform,
--				&dmaengine_no_residue_pcm_platform);
--	else
--		ret = snd_soc_add_platform(dev, &pcm->platform,
--				&dmaengine_pcm_platform);
-+	ret = snd_soc_add_platform(dev, &pcm->platform,
-+		&dmaengine_pcm_platform);
+-	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL,
+-			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
  	if (ret)
- 		goto err_free_dma;
+ 		goto err_clk_disable;
+ 
+diff --git a/sound/soc/adi/axi-spdif.c b/sound/soc/adi/axi-spdif.c
+index 8db7a99..198e3a4 100644
+--- a/sound/soc/adi/axi-spdif.c
++++ b/sound/soc/adi/axi-spdif.c
+@@ -229,8 +229,7 @@ static int axi_spdif_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_clk_disable;
+ 
+-	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL,
+-			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+ 	if (ret)
+ 		goto err_clk_disable;
  
 -- 
 1.8.0
