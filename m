@@ -1,30 +1,39 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 00/10] ASoC: ARM: ux500: Better prepare for full Device Tree
-Date: Tue, 7 Jan 2014 15:06:22 +0100
-Message-ID: <CACRpkdYWbPH+MfYPen=phGL0Oik44+HaYjyqCP78YpMrRG6QYw@mail.gmail.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 01/11] ARM: ux500: Don't use enums for MSP IDs - for easy
+ DT conversion
+Date: Tue, 7 Jan 2014 14:11:54 +0000
+Message-ID: <20140107141154.GI3182@lee--X1>
 References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
-	<20131221142959.GH30815@sirena.org.uk>
+ <1387468508-12286-2-git-send-email-lee.jones@linaro.org>
+ <CACRpkda5bQ37OCtO17hj_tVrkAdTXA4-DzgBTaFmuswvb0h9fA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20131221142959.GH30815@sirena.org.uk>
+Content-Disposition: inline
+In-Reply-To: <CACRpkda5bQ37OCtO17hj_tVrkAdTXA4-DzgBTaFmuswvb0h9fA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Lee Jones <lee.jones@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Dec 21, 2013 at 3:29 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Thu, Dec 19, 2013 at 03:54:57PM +0000, Lee Jones wrote:
->> At this moment in time the Ux500 ASoC driver obtains its DMA information
->> via AUXDATA platform data passing. To make the driver more independent
->> we have to start extracting it from the Device Tree. This patch-set goes
->> some way to ensure the ux500 Audio driver is ready for the switch over.
->
-> This all looks good to me, I guess it's OK if I merge the ARM patch?
+On Tue, 07 Jan 2014, Linus Walleij wrote:
 
-Yes I ACKed it now.
+> On Thu, Dec 19, 2013 at 4:54 PM, Lee Jones <lee.jones@linaro.org> wro=
+te:
+>=20
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>=20
+> I guess it's best to merge this with the other ASoC patches
+> through Mark's tree?
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Sorry for slow response & thanks Mark.
+I'm happy with that, although I haven't heard from Mark for ages.
 
-Yours,
-Linus Walleij
+Mark, are you still tracking this?
+
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
