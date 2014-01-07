@@ -1,68 +1,81 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: soc-core: add snd_soc_of_parse_sysclk_id() for dt
-Date: Tue, 7 Jan 2014 16:24:47 +0000
-Message-ID: <20140107162447.GX31886@sirena.org.uk>
-References: <1388648057-28373-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCH] ASoC: simple-card: Do not set cpu_dai.name
+ for snd_link in case DT
+Date: Tue, 7 Jan 2014 16:48:43 +0000
+Message-ID: <20140107164843.GZ31886@sirena.org.uk>
+References: <1388902199-29553-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hWgijUzYZxhbjxYM"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1388648057-28373-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============2723277682350919727=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E4E72619D8
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 17:48:51 +0100 (CET)
+In-Reply-To: <1388902199-29553-1-git-send-email-shc_work@mail.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---hWgijUzYZxhbjxYM
+--===============2723277682350919727==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="rHaPbqt23PffNkT+"
+Content-Disposition: inline
+
+
+--rHaPbqt23PffNkT+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 02, 2014 at 03:34:17PM +0800, Xiubo Li wrote:
-> This patch adds snd_soc_of_parse_sysclk_id() and supports below
-> style on dt:
->=20
-> sysclk-id =3D <XXX>;
->=20
-> It's an optional property, If this property is absent the defualt
-> vaule 0 will be returned.
+On Sun, Jan 05, 2014 at 10:09:58AM +0400, Alexander Shiyan wrote:
+> Using cpu_dai.name for DT case will result driver cannot be
+> initialized. For example, device have name "ssi@10010000" in the DT
+> and this value is returning for us by snd_soc_of_get_dai_name()
+> but actual registered name of device is "10010000.ssi".
 
-The trick with this is defining what the clock should be.  Drivers would
-have to start defining their clock IDs and then at some point we end up
-reinventing the common clock API and bindings.  We really ought to be
-moving ASoC's clock handling over towards clk but there's issues with
-that given that the clock API is not available at all on some platforms
-and the common clock API isn't common.  This is rather a larger bit of
-work than I expect you want to do right now though...
+This doesn't seem like a great fix, it will break systems that register
+more than one DAI per device and won't help any other machine drivers
+using the lookup.  I'd have expected to fix either the registered name
+or the result of the lookup so that it can be used for matching.
 
-What's your use case for this - is it possible to make the driver you're
-looking at default to a clock that'll work for most systems?  That'd
-sidestep the need to say which clock.  Alternatively is the CODEC only
-likely to be used with systems supporting common clk in which case doing
-the sysclk configuration via the clk API might be the way forwards?
-
---hWgijUzYZxhbjxYM
+--rHaPbqt23PffNkT+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzCpLAAoJELSic+t+oim9ik4P/1oAu1w3mzG2SnxtSVkkNzx/
-DvcR9IQoQuvyB20Q3QLJbLla9CBW3ihGcWxSD6N5qZ8IElhoT3BPRvS9V6/JiKY2
-RJsjyWwor5/Myhm4Sq7gsmNlOah826YgyG5xgoyW4Dke0yJfmpAXBEVNfOjOerLh
-AoPao+DaajMIptjxdm5o+dhuPCefNc55hgV6LXd5cJb9KFuhUzrTfE/EVbrvGZUl
-hQ1sJYKPefp9BeX7bx4xuhYi4E7ak52F+gxAq9RKEz5OgAVQ0k31Q5t9gz6ko8Cc
-JG4OX83FRSBkliRtWyGujV4sTmMfVibwqwoV8d+xNP66szxlF+Ay4N3jZ9MrbvnQ
-sTlSMLuCymzqbQWc7XHItbe0y4VaV+/wA6ze0Bf8zJRs4PbBviRI8EJlR1/VrjBo
-j482bIhDFImg0f1yoGsoLg0iPu7Jhn+wkpJTnYvL+msxxCw5bo88lQimAltOptgX
-r1ZhyLp6NfkXO7e8USTsud+2ateI0fcXMngKNqJWxAfH5HCAac5i3voXGjOfLMmB
-xhXFX1W7VuFgVINiJw2gz8dY8W/5TQoUs9CPN5d2JamCir9lD+KXKCC39miaDAqu
-Vkwe/VccRdy0XVVzgg5yJBgfZ6vp4GOP0cH9JUyos6GQM+mIPKiBjr02gaizuTjL
-LBvOIwGGeuth4zKkW+dP
-=YwO5
+iQIcBAEBAgAGBQJSzC/oAAoJELSic+t+oim9fmsP/iqdP6FTNYIT4Ph8oGz3XI33
+6bEiOjHZ2DKRseHjXwA8jU00sV0jamuk28HNh3N5q6Wn/4aqI34hRUwRZzQJhjgg
+eGEnHqeNrDH8OQUjXzAWi8xhv4M6v9eurhb+745k3O+bgXKY/mVMJzuYrKYlscja
+87uO4AjELa1oxlg+8PWUTGKSrJHne6tiLNc8S7PpP2KL/S/rpGy3h+riaRaPTEuf
+SXigXtCG/4U9fBXaUUtDGxwU1ctXmTZxB9tjxsmyMoyAcKM1koH6tWnrpy6DLKQV
+P+fouDHBKEiBSwy7pIQXkYo4cfzdFNZDBhMRYmMdELxhRI0+HOQJ2Ee4Dt6S1aO7
+JeV78tjtsXAUVSibJob6ygnXHPOfQcA0lSsN0fsaUTrBtdjw2uf/FWSE17UtJbUz
+xSXXYPxN4c68V1BgbOogH54RMGon5Vk+wKJGt/H2ton1dtBe7maiiUbkyzoQdd+l
+cTyPojBik1sCtbKQy+6DgC42JVpQKag7fnHAIKmUEWk1FqV8PFBpyhc5csTboUIM
+OfZYV4cO9scVzbsEj/4joL3wYlQt8XsUJlB14EZXv8ztSrktzesoVR8N//1T7fUj
+4nJo6C8HDVb2a9RZCT+Gwl6vksNdsrGKuDtIB4CxWE/tChldWkLfZLKvcDrNc/2d
+5Oq9lUFGLaeK1Y4ceUbR
+=BD1I
 -----END PGP SIGNATURE-----
 
---hWgijUzYZxhbjxYM--
+--rHaPbqt23PffNkT+--
+
+--===============2723277682350919727==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2723277682350919727==--
