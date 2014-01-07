@@ -1,55 +1,49 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 11/11] ASoC: ux500: Dramatically reduce the size of the
- DAI driver data struct
-Date: Tue, 7 Jan 2014 15:39:39 +0000
-Message-ID: <20140107153939.GT31886@sirena.org.uk>
-References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
- <1387468508-12286-12-git-send-email-lee.jones@linaro.org>
+Subject: Re: [PATCH 1/2] ASoC: simple-card: fix the DAPM routes map parsing
+Date: Tue, 7 Jan 2014 15:43:29 +0000
+Message-ID: <20140107154329.GU31886@sirena.org.uk>
+References: <1389057222-16686-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MJkHxHECS1u22Flh"
+	protocol="application/pgp-signature"; boundary="2ZSvGCaIhjYEV086"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1387468508-12286-12-git-send-email-lee.jones@linaro.org>
+In-Reply-To: <1389057222-16686-1-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, alsa-devel@alsa-project.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---MJkHxHECS1u22Flh
+--2ZSvGCaIhjYEV086
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 19, 2013 at 03:55:08PM +0000, Lee Jones wrote:
-> We no longer have a means to differentiate between MSP devices at probe
-> time, mainly because we don't really have to. So rather than have an over-
-> sized static data structure in place, where the only difference between
-> devices is the ID and name (which are unused), we'll just create one
-> succinct, statically assigned and shared one instead.
+On Tue, Jan 07, 2014 at 09:13:42AM +0800, Xiubo Li wrote:
+> The simple-card's DAPM route maping is optional.
 
-Applied, thanks.
+Applied both, thanks.
 
---MJkHxHECS1u22Flh
+--2ZSvGCaIhjYEV086
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzB+4AAoJELSic+t+oim9kJgP/3sTy3+7R9m4wXGzN6ojrDVz
-M5AZSEIORZyDIXfQivKmoW87es1NXKynFB7KiWU1jC3QsJcD6cFhHc4D5wW/eaOU
-b+jAM7cWVV9/1KxmM5mj2I3POtc0bMZM7GItusH5E2RkgVswSz8KjeEFFBgdTwDy
-KkqToUrWQBU8ZBLl5Ru+/l+9Rh0n/yBo70Nn9Vf71RnQ8ue4xa2PVFCuaocKSII6
-s1DmkhoVUV1acF1k20QfMcOtTg1ydHQXV1WMVeTqX/pnWQ+JEhF3Upn6TBM1njz4
-peZk+hFKiWRa/D6JqDsxYLXT5/499wWXA8IXhvg+4pEU2T40ZA4rL6uk2RRqo4X8
-om558v9OIMWEkdO/HoPr7qHcAnm7zFC4Q3mDUU5J9Rf/7PamuHYQoxU8HGGL4fAn
-TZI3+kg+vvh4AoCi48HVD9YhNQXgdKF0KkSDiwYENeMJA8AbltBZJIRcn410a5HK
-kbPKppQrahRU5H2tZs5xTGS3zXAOwh+SwSlYR2JWNX3VphojYTluQOdhzXkTFSP+
-Z9m5mUYnJMsRow1RF5G7gWjEEkkLryKPnRSWpbu3yaqg8E3hmvcNCe67A6fooyse
-CTkkegLlckI67Tsu38x+vsd6Lp6oZ1S+TNgDNDaaxAGXiznDRu6x1I2RZrx+LepE
-G9iXELrb5Z+ckUoWRZ+U
-=1eVg
+iQIcBAEBAgAGBQJSzCCeAAoJELSic+t+oim98boQAIP47K4LnmefewL0oCUf+dfY
+swZZ1QJ/arGWFj8upNLBPUyg3hr8WR+QkVfT4CfFtn8mAKlrQFxG9jO3qVUjsZuG
+H3eLGh/B0bc4FsEZELSWaUgy9T+LUm7FMF7oGQVr4B41oIyXeCt4n+m0hxHExs9K
+G5zC6cKZVMrh7CbyJnbKJgzFxlIiIhz1sB2yQd18MucOnLyjgALU5UomKcSygwKH
+bpV1yTZ3Ml4tU+DDgVgCk2q2obXOdD09vPMIF8G+vOk/2ARX+hj6QLP9fw/Kx21v
+Rn4xBS4lyv803jPHpxn3hsAD1bmXUQC5Pc3zq0siZtQ2UhjO5cFmm+PPFAwP8sQt
+tSHBaX9xQB+/UmxU4pAqupRZ2X6n74/NHsTCl7dcaHt7TogC+YYngG6KJs8Plbfj
+/4vtIphsltRmEB0AGuqFP4APVOqW5Bur0v3KF3tgMCThBS5cU1XLGJH5rPvAGEzJ
+mtCcMNwKQBFDLlb4UeiF7UEqvl/XMl9part5Jxx4CbdnshJD1X2+LVj2HuENTAx8
+ffC6aPgPUTmAd/q9c67UiGSXmwE1Nzzj/MTTJTVHxO+z7lkJQGkOQJCZkd9mw8Bv
+98+SqKtpVGRg2iVzSaMn80IFnqwBG88Q9j+LrmpQOs1LYdzzdRPlWGkxiIEqp3nL
+Mg+J34Qf76zcpszRUUhs
+=O638
 -----END PGP SIGNATURE-----
 
---MJkHxHECS1u22Flh--
+--2ZSvGCaIhjYEV086--
