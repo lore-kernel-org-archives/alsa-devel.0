@@ -1,77 +1,35 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/6] dma: Indicate residue granularity
- in dma_slave_caps
-Date: Tue, 7 Jan 2014 17:36:18 +0000
-Message-ID: <20140107173618.GE31886@sirena.org.uk>
-References: <1389005162-5223-1-git-send-email-lars@metafoo.de>
+From: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Subject: Re: [PATCHv10] dmaengine: Add support for BCM2835
+Date: Tue, 07 Jan 2014 18:37:12 +0100
+Message-ID: <52CC3B48.7080100@koalo.de>
+References: <52CB0180.1040605@koalo.de> <20140107161547.GA16227@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7466806557851351583=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CF412650F2
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 18:36:28 +0100 (CET)
-In-Reply-To: <1389005162-5223-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20140107161547.GA16227-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Andy Shevchenko <andriy.shevchenko-b5Z7lJ3WibVrdx17CPfAsdBPR1lH4CV8@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-rpi-kernel <linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Thanks to you and to all who have looked at/corrected my patch!
+I learned a lot!
 
---===============7466806557851351583==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pSFoCIXqj85S4zjL"
-Content-Disposition: inline
-
-
---pSFoCIXqj85S4zjL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jan 06, 2014 at 11:45:56AM +0100, Lars-Peter Clausen wrote:
-> Here is an updated version of the DMA residue granularity patchset. As
-> discuessed last time it would be best if this could go through ASoC tree. It
-> needs some feedback from the DMA folks first though.
-
-I'm OK with the ASoC bits of this.
-
---pSFoCIXqj85S4zjL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSzDsPAAoJELSic+t+oim9640P/jfjacf87mzuG/h8mu+Z2VdR
-LIfZP0Pedp6O5S9Su1p/pvuc5X9ZivpVoIbnAHno8y279Y/bbOcupyJcZNe80GCh
-H3rt1i9m3t9o6E2GFk70rjMQ46gjtlVqzFjPmwVfNNV6jH11/pqQbuaSI3D5PJIu
-UrJ7dRpG9ZZxTPH09Wu4OGrByNHnCaNJFrUlhKgXW3BuHQACok0z4ObOTtjlMN1U
-GTW+IV/I/Qexbz77hyXRhKeKH33AsHu1ZjSjs3ERwPBsPWT1vE8WibKiRP6fnCGb
-ARW5hMuYWS2E6Ssi1DLP1r3HPzmh6OQVYmWc0pu6CDXuWZFNVfYiHwboybgHxUy4
-L2xs3tDCjTmDYs05qMNKsEJAX3s+XznEU82Zjx3y6aZfboYnMEdZbGSnsINovOoP
-j+jNvvUnrEn+8wv8BgzB2aCL3jrIwpSeeE38EUKTKgAJEvObUFLhCLu7iyXAR/zE
-DZ0FyZ4Fbx4VPzjMYAqTPi9m1tWIenb3jlHiIM57H74q70Mx5VonPrzRH9nB18vO
-IwAEY9ualW9OrwH+v5JOHm9VNk+XFjhRVQVGm+BTIEDbRKfvVsCezLawErP9rcZr
-BJ0DIW/tuQzlheHegn+Ogfa3nbAUXkdnT6vBMhAAKDeTC2jTNwauwDSVaY7aYt/0
-VpZ9XVb9guAKWN7e1KEv
-=rmQ8
------END PGP SIGNATURE-----
-
---pSFoCIXqj85S4zjL--
-
---===============7466806557851351583==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7466806557851351583==--
+On 01/07/2014 05:15 PM, Vinod Koul wrote:
+> On Mon, Jan 06, 2014 at 08:18:24PM +0100, Florian Meier wrote:
+>> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
+>> Currently it only supports cyclic DMA.
+> Applied, thanks
+> 
+> --
+> ~Vinod
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
