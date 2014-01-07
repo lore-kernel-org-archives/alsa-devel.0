@@ -1,8 +1,10 @@
 From: Federico Simoncelli <federico.simoncelli@gmail.com>
-Subject: [PATCH 1/2] usbtv: split core and video implementation
-Date: Tue,  7 Jan 2014 23:13:21 +0100
-Message-ID: <1389132802-31200-1-git-send-email-federico.simoncelli@gmail.com>
+Subject: [PATCH 2/2] usbtv: add audio support
+Date: Tue,  7 Jan 2014 23:13:22 +0100
+Message-ID: <1389132802-31200-2-git-send-email-federico.simoncelli@gmail.com>
+References: <1389132802-31200-1-git-send-email-federico.simoncelli@gmail.com>
 Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <1389132802-31200-1-git-send-email-federico.simoncelli@gmail.com>
 Sender: linux-media-owner@vger.kernel.org
 To: linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 Cc: m.chehab@samsung.com, lkundrak@v3.sk, hans.verkuil@cisco.com, Federico Simoncelli <fsimonce@redhat.com>
@@ -11,45 +13,40 @@ List-Id: alsa-devel@alsa-project.org
 From: Federico Simoncelli <fsimonce@redhat.com>
 
 Signed-off-by: Federico Simoncelli <fsimonce@redhat.com>
-Reviewed-by: Lubomir Rintel <lkundrak@v3.sk>
+Tested-by: Lubomir Rintel <lkundrak@v3.sk>
 ---
- drivers/media/usb/usbtv/Makefile                   |   3 +
- drivers/media/usb/usbtv/usbtv-core.c               | 136 +++++++++++++++++
- drivers/media/usb/usbtv/{usbtv.c => usbtv-video.c} | 163 ++-------------------
- drivers/media/usb/usbtv/usbtv.h                    |  98 +++++++++++++
- 4 files changed, 246 insertions(+), 154 deletions(-)
- create mode 100644 drivers/media/usb/usbtv/usbtv-core.c
- rename drivers/media/usb/usbtv/{usbtv.c => usbtv-video.c} (82%)
- create mode 100644 drivers/media/usb/usbtv/usbtv.h
+ drivers/media/usb/usbtv/Makefile      |   3 +-
+ drivers/media/usb/usbtv/usbtv-audio.c | 384 ++++++++++++++++++++++++++++++++++
+ drivers/media/usb/usbtv/usbtv-core.c  |  16 +-
+ drivers/media/usb/usbtv/usbtv-video.c |   9 +-
+ drivers/media/usb/usbtv/usbtv.h       |  21 +-
+ 5 files changed, 423 insertions(+), 10 deletions(-)
+ create mode 100644 drivers/media/usb/usbtv/usbtv-audio.c
 
 diff --git a/drivers/media/usb/usbtv/Makefile b/drivers/media/usb/usbtv/Makefile
-index 28b872f..775316a 100644
+index 775316a..f555cf8 100644
 --- a/drivers/media/usb/usbtv/Makefile
 +++ b/drivers/media/usb/usbtv/Makefile
-@@ -1 +1,4 @@
-+usbtv-y := usbtv-core.o \
-+	usbtv-video.o
-+
+@@ -1,4 +1,5 @@
+ usbtv-y := usbtv-core.o \
+-	usbtv-video.o
++	usbtv-video.o \
++	usbtv-audio.o
+ 
  obj-$(CONFIG_VIDEO_USBTV) += usbtv.o
-diff --git a/drivers/media/usb/usbtv/usbtv-core.c b/drivers/media/usb/usbtv/usbtv-core.c
+diff --git a/drivers/media/usb/usbtv/usbtv-audio.c b/drivers/media/usb/usbtv/usbtv-audio.c
 new file mode 100644
-index 0000000..e89e48b
+index 0000000..3acc52c
 --- /dev/null
-+++ b/drivers/media/usb/usbtv/usbtv-core.c
-@@ -0,0 +1,136 @@
++++ b/drivers/media/usb/usbtv/usbtv-audio.c
+@@ -0,0 +1,384 @@
 +/*
-+ * Fushicai USBTV007 Video Grabber Driver
++ * Fushicai USBTV007 Audio-Video Grabber Driver
 + *
 + * Product web site:
 + * http://www.fushicai.com/products_detail/&productId=d05449ee-b690-42f9-a661-aa7353894bed.html
 + *
-+ * Following LWN articles were very useful in construction of this driver:
-+ * Video4Linux2 API series: http://lwn.net/Articles/203924/
-+ * videobuf2 API explanation: http://lwn.net/Articles/447435/
-+ * Thanks go to Jonathan Corbet for providing this quality documentation.
-+ * He is awesome.
-+ *
-+ * Copyright (c) 2013 Lubomir Rintel
++ * Copyright (c) 2013 Federico Simoncelli
 + * All rights reserved.
 + * No physical hardware was harmed running Windows during the
 + * reverse-engineering activity
@@ -67,469 +64,523 @@ index 0000000..e89e48b
 + * GNU General Public License ("GPL").
 + */
 +
-+#include <linux/module.h>
++#include <sound/core.h>
++#include <sound/initval.h>
++#include <sound/ac97_codec.h>
++#include <sound/pcm_params.h>
 +
 +#include "usbtv.h"
 +
-+int usbtv_set_regs(struct usbtv *usbtv, const u16 regs[][2], int size)
++static struct snd_pcm_hardware snd_usbtv_digital_hw = {
++	.info = SNDRV_PCM_INFO_BATCH |
++		SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_INTERLEAVED |
++		SNDRV_PCM_INFO_BLOCK_TRANSFER |
++		SNDRV_PCM_INFO_MMAP_VALID,
++	.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	.rates = SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_KNOT,
++	.rate_min = 48000,
++	.rate_max = 48000,
++	.channels_min = 2,
++	.channels_max = 2,
++	.period_bytes_min = 64,
++	.period_bytes_max = 12544,
++	.periods_min = 2,
++	.periods_max = 98,
++	.buffer_bytes_max = 62720 * 8, /* value in usbaudio.c */
++};
++
++static int snd_usbtv_pcm_open(struct snd_pcm_substream *substream)
 +{
-+	int ret;
-+	int pipe = usb_rcvctrlpipe(usbtv->udev, 0);
-+	int i;
++	struct usbtv *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
 +
-+	for (i = 0; i < size; i++) {
-+		u16 index = regs[i][0];
-+		u16 value = regs[i][1];
++	chip->snd_substream = substream;
++	runtime->hw = snd_usbtv_digital_hw;
 +
-+		ret = usb_control_msg(usbtv->udev, pipe, USBTV_REQUEST_REG,
-+			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
-+			value, index, NULL, 0, 0);
-+		if (ret < 0)
-+			return ret;
++	return 0;
++}
++
++static int snd_usbtv_pcm_close(struct snd_pcm_substream *substream)
++{
++	struct usbtv *chip = snd_pcm_substream_chip(substream);
++
++	if (atomic_read(&chip->snd_stream)) {
++		atomic_set(&chip->snd_stream, 0);
++		schedule_work(&chip->snd_trigger);
 +	}
 +
 +	return 0;
 +}
 +
-+static int usbtv_probe(struct usb_interface *intf,
-+	const struct usb_device_id *id)
++static int snd_usbtv_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *hw_params)
 +{
-+	int ret;
-+	int size;
-+	struct device *dev = &intf->dev;
-+	struct usbtv *usbtv;
++	int rv;
++	struct usbtv *chip = snd_pcm_substream_chip(substream);
 +
-+	/* Checks that the device is what we think it is. */
-+	if (intf->num_altsetting != 2)
-+		return -ENODEV;
-+	if (intf->altsetting[1].desc.bNumEndpoints != 4)
-+		return -ENODEV;
++	rv = snd_pcm_lib_malloc_pages(substream,
++		params_buffer_bytes(hw_params));
 +
-+	/* Packet size is split into 11 bits of base size and count of
-+	 * extra multiplies of it.*/
-+	size = usb_endpoint_maxp(&intf->altsetting[1].endpoint[0].desc);
-+	size = (size & 0x07ff) * (((size & 0x1800) >> 11) + 1);
++	if (rv < 0) {
++		dev_warn(chip->dev, "pcm audio buffer allocation failure %i\n",
++			rv);
++		return rv;
++	}
 +
-+	/* Device structure */
-+	usbtv = kzalloc(sizeof(struct usbtv), GFP_KERNEL);
-+	if (usbtv == NULL)
-+		return -ENOMEM;
-+	usbtv->dev = dev;
-+	usbtv->udev = usb_get_dev(interface_to_usbdev(intf));
-+
-+	usbtv->iso_size = size;
-+
-+	usb_set_intfdata(intf, usbtv);
-+
-+	ret = usbtv_video_init(usbtv);
-+	if (ret < 0)
-+		goto usbtv_video_fail;
-+
-+	/* for simplicity we exploit the v4l2_device reference counting */
-+	v4l2_device_get(&usbtv->v4l2_dev);
-+
-+	dev_info(dev, "Fushicai USBTV007 Video Grabber\n");
 +	return 0;
-+
-+usbtv_video_fail:
-+	kfree(usbtv);
-+
-+	return ret;
 +}
 +
-+static void usbtv_disconnect(struct usb_interface *intf)
++static int snd_usbtv_hw_free(struct snd_pcm_substream *substream)
 +{
-+	struct usbtv *usbtv = usb_get_intfdata(intf);
-+	usb_set_intfdata(intf, NULL);
++	snd_pcm_lib_free_pages(substream);
++	return 0;
++}
 +
-+	if (!usbtv)
++static int snd_usbtv_prepare(struct snd_pcm_substream *substream)
++{
++	struct usbtv *chip = snd_pcm_substream_chip(substream);
++
++	chip->snd_buffer_pos = 0;
++	chip->snd_period_pos = 0;
++
++	return 0;
++}
++
++static void usbtv_audio_urb_received(struct urb *urb)
++{
++	struct usbtv *chip = urb->context;
++	struct snd_pcm_substream *substream = chip->snd_substream;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	size_t i, frame_bytes, chunk_length, buffer_pos, period_pos;
++	int period_elapsed;
++	void *urb_current;
++
++	switch (urb->status) {
++	case 0:
++	case -ETIMEDOUT:
++		break;
++	case -ENOENT:
++	case -EPROTO:
++	case -ECONNRESET:
++	case -ESHUTDOWN:
++		return;
++	default:
++		dev_warn(chip->dev, "unknown audio urb status %i\n",
++			urb->status);
++	}
++
++	if (!atomic_read(&chip->snd_stream))
 +		return;
 +
-+	usbtv_video_free(usbtv);
++	frame_bytes = runtime->frame_bits >> 3;
++	chunk_length = USBTV_CHUNK / frame_bytes;
 +
-+	usb_put_dev(usbtv->udev);
-+	usbtv->udev = NULL;
++	buffer_pos = chip->snd_buffer_pos;
++	period_pos = chip->snd_period_pos;
++	period_elapsed = 0;
 +
-+	/* the usbtv structure will be deallocated when v4l2 will be
-+	   done using it */
-+	v4l2_device_put(&usbtv->v4l2_dev);
++	for (i = 0; i < urb->actual_length; i += USBTV_CHUNK_SIZE) {
++		urb_current = urb->transfer_buffer + i + USBTV_AUDIO_HDRSIZE;
++
++		if (buffer_pos + chunk_length >= runtime->buffer_size) {
++			size_t cnt = (runtime->buffer_size - buffer_pos) *
++				frame_bytes;
++			memcpy(runtime->dma_area + buffer_pos * frame_bytes,
++				urb_current, cnt);
++			memcpy(runtime->dma_area, urb_current + cnt,
++				chunk_length * frame_bytes - cnt);
++		} else {
++			memcpy(runtime->dma_area + buffer_pos * frame_bytes,
++				urb_current, chunk_length * frame_bytes);
++		}
++
++		buffer_pos += chunk_length;
++		period_pos += chunk_length;
++
++		if (buffer_pos >= runtime->buffer_size)
++			buffer_pos -= runtime->buffer_size;
++
++		if (period_pos >= runtime->period_size) {
++			period_pos -= runtime->period_size;
++			period_elapsed = 1;
++		}
++	}
++
++	snd_pcm_stream_lock(substream);
++
++	chip->snd_buffer_pos = buffer_pos;
++	chip->snd_period_pos = period_pos;
++
++	snd_pcm_stream_unlock(substream);
++
++	if (period_elapsed)
++		snd_pcm_period_elapsed(substream);
++
++	usb_submit_urb(urb, GFP_ATOMIC);
 +}
 +
-+struct usb_device_id usbtv_id_table[] = {
-+	{ USB_DEVICE(0x1b71, 0x3002) },
-+	{}
++static int usbtv_audio_start(struct usbtv *chip)
++{
++	unsigned int pipe;
++	static const u16 setup[][2] = {
++		/* These seem to enable the device. */
++		{ USBTV_BASE + 0x0008, 0x0001 },
++		{ USBTV_BASE + 0x01d0, 0x00ff },
++		{ USBTV_BASE + 0x01d9, 0x0002 },
++
++		{ USBTV_BASE + 0x01da, 0x0013 },
++		{ USBTV_BASE + 0x01db, 0x0012 },
++		{ USBTV_BASE + 0x01e9, 0x0002 },
++		{ USBTV_BASE + 0x01ec, 0x006c },
++		{ USBTV_BASE + 0x0294, 0x0020 },
++		{ USBTV_BASE + 0x0255, 0x00cf },
++		{ USBTV_BASE + 0x0256, 0x0020 },
++		{ USBTV_BASE + 0x01eb, 0x0030 },
++		{ USBTV_BASE + 0x027d, 0x00a6 },
++		{ USBTV_BASE + 0x0280, 0x0011 },
++		{ USBTV_BASE + 0x0281, 0x0040 },
++		{ USBTV_BASE + 0x0282, 0x0011 },
++		{ USBTV_BASE + 0x0283, 0x0040 },
++		{ 0xf891, 0x0010 },
++
++		/* this sets the input from composite */
++		{ USBTV_BASE + 0x0284, 0x00aa },
++	};
++
++	chip->snd_bulk_urb = usb_alloc_urb(0, GFP_KERNEL);
++	if (chip->snd_bulk_urb == NULL)
++		goto err_alloc_urb;
++
++	pipe = usb_rcvbulkpipe(chip->udev, USBTV_AUDIO_ENDP);
++
++	chip->snd_bulk_urb->transfer_buffer = kzalloc(
++		USBTV_AUDIO_URBSIZE, GFP_KERNEL);
++	if (chip->snd_bulk_urb->transfer_buffer == NULL)
++		goto err_transfer_buffer;
++
++	usb_fill_bulk_urb(chip->snd_bulk_urb, chip->udev, pipe,
++		chip->snd_bulk_urb->transfer_buffer, USBTV_AUDIO_URBSIZE,
++		usbtv_audio_urb_received, chip);
++
++	/* starting the stream */
++	usbtv_set_regs(chip, setup, ARRAY_SIZE(setup));
++
++	usb_clear_halt(chip->udev, pipe);
++	usb_submit_urb(chip->snd_bulk_urb, GFP_ATOMIC);
++
++	return 0;
++
++err_transfer_buffer:
++	usb_free_urb(chip->snd_bulk_urb);
++	chip->snd_bulk_urb = NULL;
++
++err_alloc_urb:
++	return -ENOMEM;
++}
++
++static int usbtv_audio_stop(struct usbtv *chip)
++{
++	static const u16 setup[][2] = {
++	/* The original windows driver sometimes sends also:
++	 *   { USBTV_BASE + 0x00a2, 0x0013 }
++	 * but it seems useless and its real effects are untested at
++	 * the moment.
++	 */
++		{ USBTV_BASE + 0x027d, 0x0000 },
++		{ USBTV_BASE + 0x0280, 0x0010 },
++		{ USBTV_BASE + 0x0282, 0x0010 },
++	};
++
++	if (chip->snd_bulk_urb) {
++		usb_kill_urb(chip->snd_bulk_urb);
++		kfree(chip->snd_bulk_urb->transfer_buffer);
++		usb_free_urb(chip->snd_bulk_urb);
++		chip->snd_bulk_urb = NULL;
++	}
++
++	usbtv_set_regs(chip, setup, ARRAY_SIZE(setup));
++
++	return 0;
++}
++
++void usbtv_audio_suspend(struct usbtv *usbtv)
++{
++	if (atomic_read(&usbtv->snd_stream) && usbtv->snd_bulk_urb)
++		usb_kill_urb(usbtv->snd_bulk_urb);
++}
++
++void usbtv_audio_resume(struct usbtv *usbtv)
++{
++	if (atomic_read(&usbtv->snd_stream) && usbtv->snd_bulk_urb)
++		usb_submit_urb(usbtv->snd_bulk_urb, GFP_ATOMIC);
++}
++
++static void snd_usbtv_trigger(struct work_struct *work)
++{
++	struct usbtv *chip = container_of(work, struct usbtv, snd_trigger);
++
++	if (atomic_read(&chip->snd_stream))
++		usbtv_audio_start(chip);
++	else
++		usbtv_audio_stop(chip);
++}
++
++static int snd_usbtv_card_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct usbtv *chip = snd_pcm_substream_chip(substream);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		atomic_set(&chip->snd_stream, 1);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		atomic_set(&chip->snd_stream, 0);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	schedule_work(&chip->snd_trigger);
++
++	return 0;
++}
++
++static snd_pcm_uframes_t snd_usbtv_pointer(struct snd_pcm_substream *substream)
++{
++	struct usbtv *chip = snd_pcm_substream_chip(substream);
++	return chip->snd_buffer_pos;
++}
++
++static struct snd_pcm_ops snd_usbtv_pcm_ops = {
++	.open = snd_usbtv_pcm_open,
++	.close = snd_usbtv_pcm_close,
++	.ioctl = snd_pcm_lib_ioctl,
++	.hw_params = snd_usbtv_hw_params,
++	.hw_free = snd_usbtv_hw_free,
++	.prepare = snd_usbtv_prepare,
++	.trigger = snd_usbtv_card_trigger,
++	.pointer = snd_usbtv_pointer,
 +};
-+MODULE_DEVICE_TABLE(usb, usbtv_id_table);
 +
-+MODULE_AUTHOR("Lubomir Rintel");
-+MODULE_DESCRIPTION("Fushicai USBTV007 Video Grabber Driver");
-+MODULE_LICENSE("Dual BSD/GPL");
++int usbtv_audio_init(struct usbtv *usbtv)
++{
++	int rv;
++	struct snd_card *card;
++	struct snd_pcm *pcm;
 +
-+struct usb_driver usbtv_usb_driver = {
-+	.name = "usbtv",
-+	.id_table = usbtv_id_table,
-+	.probe = usbtv_probe,
-+	.disconnect = usbtv_disconnect,
-+};
++	INIT_WORK(&usbtv->snd_trigger, snd_usbtv_trigger);
++	atomic_set(&usbtv->snd_stream, 0);
 +
-+module_usb_driver(usbtv_usb_driver);
-diff --git a/drivers/media/usb/usbtv/usbtv.c b/drivers/media/usb/usbtv/usbtv-video.c
-similarity index 82%
-rename from drivers/media/usb/usbtv/usbtv.c
-rename to drivers/media/usb/usbtv/usbtv-video.c
-index 6222a4a..496bc2e 100644
---- a/drivers/media/usb/usbtv/usbtv.c
-+++ b/drivers/media/usb/usbtv/usbtv-video.c
-@@ -28,45 +28,10 @@
-  * GNU General Public License ("GPL").
-  */
- 
--#include <linux/init.h>
--#include <linux/list.h>
--#include <linux/module.h>
--#include <linux/slab.h>
--#include <linux/usb.h>
--#include <linux/videodev2.h>
--
--#include <media/v4l2-device.h>
- #include <media/v4l2-ioctl.h>
- #include <media/videobuf2-core.h>
--#include <media/videobuf2-vmalloc.h>
--
--/* Hardware. */
--#define USBTV_VIDEO_ENDP	0x81
--#define USBTV_BASE		0xc000
--#define USBTV_REQUEST_REG	12
--
--/* Number of concurrent isochronous urbs submitted.
-- * Higher numbers was seen to overly saturate the USB bus. */
--#define USBTV_ISOC_TRANSFERS	16
--#define USBTV_ISOC_PACKETS	8
--
--#define USBTV_CHUNK_SIZE	256
--#define USBTV_CHUNK		240
--
--/* Chunk header. */
--#define USBTV_MAGIC_OK(chunk)	((be32_to_cpu(chunk[0]) & 0xff000000) \
--							== 0x88000000)
--#define USBTV_FRAME_ID(chunk)	((be32_to_cpu(chunk[0]) & 0x00ff0000) >> 16)
--#define USBTV_ODD(chunk)	((be32_to_cpu(chunk[0]) & 0x0000f000) >> 15)
--#define USBTV_CHUNK_NO(chunk)	(be32_to_cpu(chunk[0]) & 0x00000fff)
--
--#define USBTV_TV_STD  (V4L2_STD_525_60 | V4L2_STD_PAL)
--
--/* parameters for supported TV norms */
--struct usbtv_norm_params {
--	v4l2_std_id norm;
--	int cap_width, cap_height;
--};
++	rv = snd_card_create(SNDRV_DEFAULT_IDX1, "usbtv", THIS_MODULE, 0,
++		&card);
++	if (rv < 0)
++		return rv;
 +
-+#include "usbtv.h"
++	strlcpy(card->driver, usbtv->dev->driver->name, sizeof(card->driver));
++	strlcpy(card->shortname, "usbtv", sizeof(card->shortname));
++	snprintf(card->longname, sizeof(card->longname),
++		"USBTV Audio at bus %d device %d", usbtv->udev->bus->busnum,
++		usbtv->udev->devnum);
++
++	snd_card_set_dev(card, usbtv->dev);
++
++	usbtv->snd = card;
++
++	rv = snd_pcm_new(card, "USBTV Audio", 0, 0, 1, &pcm);
++	if (rv < 0)
++		goto err;
++
++	strlcpy(pcm->name, "USBTV Audio Input", sizeof(pcm->name));
++	pcm->info_flags = 0;
++	pcm->private_data = usbtv;
++
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_usbtv_pcm_ops);
++	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
++		snd_dma_continuous_data(GFP_KERNEL), USBTV_AUDIO_BUFFER,
++		USBTV_AUDIO_BUFFER);
++
++	rv = snd_card_register(card);
++	if (rv)
++		goto err;
++
++	return 0;
++
++err:
++	usbtv->snd = NULL;
++	snd_card_free(card);
++
++	return rv;
++}
++
++void usbtv_audio_free(struct usbtv *usbtv)
++{
++	if (usbtv->snd && usbtv->udev) {
++		snd_card_free(usbtv->snd);
++		usbtv->snd = NULL;
++	}
++}
+diff --git a/drivers/media/usb/usbtv/usbtv-core.c b/drivers/media/usb/usbtv/usbtv-core.c
+index e89e48b..bdc920c 100644
+--- a/drivers/media/usb/usbtv/usbtv-core.c
++++ b/drivers/media/usb/usbtv/usbtv-core.c
+@@ -1,5 +1,5 @@
+ /*
+- * Fushicai USBTV007 Video Grabber Driver
++ * Fushicai USBTV007 Audio-Video Grabber Driver
+  *
+  * Product web site:
+  * http://www.fushicai.com/products_detail/&productId=d05449ee-b690-42f9-a661-aa7353894bed.html
+@@ -86,12 +86,19 @@ static int usbtv_probe(struct usb_interface *intf,
+ 	if (ret < 0)
+ 		goto usbtv_video_fail;
  
- static struct usbtv_norm_params norm_params[] = {
- 	{
-@@ -81,43 +46,6 @@ static struct usbtv_norm_params norm_params[] = {
- 	}
- };
- 
--/* A single videobuf2 frame buffer. */
--struct usbtv_buf {
--	struct vb2_buffer vb;
--	struct list_head list;
--};
--
--/* Per-device structure. */
--struct usbtv {
--	struct device *dev;
--	struct usb_device *udev;
--	struct v4l2_device v4l2_dev;
--	struct video_device vdev;
--	struct vb2_queue vb2q;
--	struct mutex v4l2_lock;
--	struct mutex vb2q_lock;
--
--	/* List of videobuf2 buffers protected by a lock. */
--	spinlock_t buflock;
--	struct list_head bufs;
--
--	/* Number of currently processed frame, useful find
--	 * out when a new one begins. */
--	u32 frame_id;
--	int chunks_done;
--
--	enum {
--		USBTV_COMPOSITE_INPUT,
--		USBTV_SVIDEO_INPUT,
--	} input;
--	v4l2_std_id norm;
--	int width, height;
--	int n_chunks;
--	int iso_size;
--	unsigned int sequence;
--	struct urb *isoc_urbs[USBTV_ISOC_TRANSFERS];
--};
--
- static int usbtv_configure_for_norm(struct usbtv *usbtv, v4l2_std_id norm)
- {
- 	int i, ret = 0;
-@@ -142,26 +70,6 @@ static int usbtv_configure_for_norm(struct usbtv *usbtv, v4l2_std_id norm)
- 	return ret;
- }
- 
--static int usbtv_set_regs(struct usbtv *usbtv, const u16 regs[][2], int size)
--{
--	int ret;
--	int pipe = usb_rcvctrlpipe(usbtv->udev, 0);
--	int i;
--
--	for (i = 0; i < size; i++) {
--		u16 index = regs[i][0];
--		u16 value = regs[i][1];
--
--		ret = usb_control_msg(usbtv->udev, pipe, USBTV_REQUEST_REG,
--			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--			value, index, NULL, 0, 0);
--		if (ret < 0)
--			return ret;
--	}
--
--	return 0;
--}
--
- static int usbtv_select_input(struct usbtv *usbtv, int input)
- {
- 	int ret;
-@@ -560,12 +468,6 @@ start_fail:
- 	return ret;
- }
- 
--struct usb_device_id usbtv_id_table[] = {
--	{ USB_DEVICE(0x1b71, 0x3002) },
--	{}
--};
--MODULE_DEVICE_TABLE(usb, usbtv_id_table);
--
- static int usbtv_querycap(struct file *file, void *priv,
- 				struct v4l2_capability *cap)
- {
-@@ -759,33 +661,9 @@ static void usbtv_release(struct v4l2_device *v4l2_dev)
- 	kfree(usbtv);
- }
- 
--static int usbtv_probe(struct usb_interface *intf,
--	const struct usb_device_id *id)
-+int usbtv_video_init(struct usbtv *usbtv)
- {
- 	int ret;
--	int size;
--	struct device *dev = &intf->dev;
--	struct usbtv *usbtv;
--
--	/* Checks that the device is what we think it is. */
--	if (intf->num_altsetting != 2)
--		return -ENODEV;
--	if (intf->altsetting[1].desc.bNumEndpoints != 4)
--		return -ENODEV;
--
--	/* Packet size is split into 11 bits of base size and count of
--	 * extra multiplies of it.*/
--	size = usb_endpoint_maxp(&intf->altsetting[1].endpoint[0].desc);
--	size = (size & 0x07ff) * (((size & 0x1800) >> 11) + 1);
--
--	/* Device structure */
--	usbtv = kzalloc(sizeof(struct usbtv), GFP_KERNEL);
--	if (usbtv == NULL)
--		return -ENOMEM;
--	usbtv->dev = dev;
--	usbtv->udev = usb_get_dev(interface_to_usbdev(intf));
--
--	usbtv->iso_size = size;
- 
- 	(void)usbtv_configure_for_norm(usbtv, V4L2_STD_525_60);
- 
-@@ -805,20 +683,18 @@ static int usbtv_probe(struct usb_interface *intf,
- 	usbtv->vb2q.lock = &usbtv->vb2q_lock;
- 	ret = vb2_queue_init(&usbtv->vb2q);
- 	if (ret < 0) {
--		dev_warn(dev, "Could not initialize videobuf2 queue\n");
--		goto usbtv_fail;
-+		dev_warn(usbtv->dev, "Could not initialize videobuf2 queue\n");
-+		return ret;
- 	}
- 
- 	/* v4l2 structure */
- 	usbtv->v4l2_dev.release = usbtv_release;
--	ret = v4l2_device_register(dev, &usbtv->v4l2_dev);
-+	ret = v4l2_device_register(usbtv->dev, &usbtv->v4l2_dev);
- 	if (ret < 0) {
--		dev_warn(dev, "Could not register v4l2 device\n");
-+		dev_warn(usbtv->dev, "Could not register v4l2 device\n");
- 		goto v4l2_fail;
- 	}
- 
--	usb_set_intfdata(intf, usbtv);
--
- 	/* Video structure */
- 	strlcpy(usbtv->vdev.name, "usbtv", sizeof(usbtv->vdev.name));
- 	usbtv->vdev.v4l2_dev = &usbtv->v4l2_dev;
-@@ -832,52 +708,31 @@ static int usbtv_probe(struct usb_interface *intf,
- 	video_set_drvdata(&usbtv->vdev, usbtv);
- 	ret = video_register_device(&usbtv->vdev, VFL_TYPE_GRABBER, -1);
- 	if (ret < 0) {
--		dev_warn(dev, "Could not register video device\n");
-+		dev_warn(usbtv->dev, "Could not register video device\n");
- 		goto vdev_fail;
- 	}
++	ret = usbtv_audio_init(usbtv);
++	if (ret < 0)
++		goto usbtv_audio_fail;
++
+ 	/* for simplicity we exploit the v4l2_device reference counting */
+ 	v4l2_device_get(&usbtv->v4l2_dev);
  
 -	dev_info(dev, "Fushicai USBTV007 Video Grabber\n");
++	dev_info(dev, "Fushicai USBTV007 Audio-Video Grabber\n");
  	return 0;
  
- vdev_fail:
- 	v4l2_device_unregister(&usbtv->v4l2_dev);
- v4l2_fail:
- 	vb2_queue_release(&usbtv->vb2q);
--usbtv_fail:
--	kfree(usbtv);
++usbtv_audio_fail:
++	usbtv_video_free(usbtv);
++
+ usbtv_video_fail:
+ 	kfree(usbtv);
  
- 	return ret;
- }
+@@ -106,6 +113,7 @@ static void usbtv_disconnect(struct usb_interface *intf)
+ 	if (!usbtv)
+ 		return;
  
--static void usbtv_disconnect(struct usb_interface *intf)
-+void usbtv_video_free(struct usbtv *usbtv)
- {
--	struct usbtv *usbtv = usb_get_intfdata(intf);
--
- 	mutex_lock(&usbtv->vb2q_lock);
- 	mutex_lock(&usbtv->v4l2_lock);
++	usbtv_audio_free(usbtv);
+ 	usbtv_video_free(usbtv);
  
- 	usbtv_stop(usbtv);
--	usb_set_intfdata(intf, NULL);
- 	video_unregister_device(&usbtv->vdev);
- 	v4l2_device_disconnect(&usbtv->v4l2_dev);
--	usb_put_dev(usbtv->udev);
--	usbtv->udev = NULL;
+ 	usb_put_dev(usbtv->udev);
+@@ -122,8 +130,8 @@ struct usb_device_id usbtv_id_table[] = {
+ };
+ MODULE_DEVICE_TABLE(usb, usbtv_id_table);
  
- 	mutex_unlock(&usbtv->v4l2_lock);
- 	mutex_unlock(&usbtv->vb2q_lock);
- 
- 	v4l2_device_put(&usbtv->v4l2_dev);
- }
--
 -MODULE_AUTHOR("Lubomir Rintel");
 -MODULE_DESCRIPTION("Fushicai USBTV007 Video Grabber Driver");
--MODULE_LICENSE("Dual BSD/GPL");
--
--struct usb_driver usbtv_usb_driver = {
--	.name = "usbtv",
--	.id_table = usbtv_id_table,
--	.probe = usbtv_probe,
--	.disconnect = usbtv_disconnect,
--};
--
--module_usb_driver(usbtv_usb_driver);
++MODULE_AUTHOR("Lubomir Rintel, Federico Simoncelli");
++MODULE_DESCRIPTION("Fushicai USBTV007 Audio-Video Grabber Driver");
+ MODULE_LICENSE("Dual BSD/GPL");
+ 
+ struct usb_driver usbtv_usb_driver = {
+diff --git a/drivers/media/usb/usbtv/usbtv-video.c b/drivers/media/usb/usbtv/usbtv-video.c
+index 496bc2e..da604fa 100644
+--- a/drivers/media/usb/usbtv/usbtv-video.c
++++ b/drivers/media/usb/usbtv/usbtv-video.c
+@@ -1,5 +1,5 @@
+ /*
+- * Fushicai USBTV007 Video Grabber Driver
++ * Fushicai USBTV007 Audio-Video Grabber Driver
+  *
+  * Product web site:
+  * http://www.fushicai.com/products_detail/&productId=d05449ee-b690-42f9-a661-aa7353894bed.html
+@@ -79,7 +79,6 @@ static int usbtv_select_input(struct usbtv *usbtv, int input)
+ 		{ USBTV_BASE + 0x011f, 0x00f2 },
+ 		{ USBTV_BASE + 0x0127, 0x0060 },
+ 		{ USBTV_BASE + 0x00ae, 0x0010 },
+-		{ USBTV_BASE + 0x0284, 0x00aa },
+ 		{ USBTV_BASE + 0x0239, 0x0060 },
+ 	};
+ 
+@@ -88,7 +87,6 @@ static int usbtv_select_input(struct usbtv *usbtv, int input)
+ 		{ USBTV_BASE + 0x011f, 0x00ff },
+ 		{ USBTV_BASE + 0x0127, 0x0060 },
+ 		{ USBTV_BASE + 0x00ae, 0x0030 },
+-		{ USBTV_BASE + 0x0284, 0x0088 },
+ 		{ USBTV_BASE + 0x0239, 0x0060 },
+ 	};
+ 
+@@ -225,7 +223,6 @@ static int usbtv_setup_capture(struct usbtv *usbtv)
+ 		{ USBTV_BASE + 0x0159, 0x0006 },
+ 		{ USBTV_BASE + 0x015d, 0x0000 },
+ 
+-		{ USBTV_BASE + 0x0284, 0x0088 },
+ 		{ USBTV_BASE + 0x0003, 0x0004 },
+ 		{ USBTV_BASE + 0x0100, 0x00d3 },
+ 		{ USBTV_BASE + 0x0115, 0x0015 },
+@@ -434,6 +431,8 @@ static int usbtv_start(struct usbtv *usbtv)
+ 	int i;
+ 	int ret;
+ 
++	usbtv_audio_suspend(usbtv);
++
+ 	ret = usb_set_interface(usbtv->udev, 0, 0);
+ 	if (ret < 0)
+ 		return ret;
+@@ -446,6 +445,8 @@ static int usbtv_start(struct usbtv *usbtv)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	usbtv_audio_resume(usbtv);
++
+ 	for (i = 0; i < USBTV_ISOC_TRANSFERS; i++) {
+ 		struct urb *ip;
+ 
 diff --git a/drivers/media/usb/usbtv/usbtv.h b/drivers/media/usb/usbtv/usbtv.h
-new file mode 100644
-index 0000000..536343d
---- /dev/null
+index 536343d..8cb69ea 100644
+--- a/drivers/media/usb/usbtv/usbtv.h
 +++ b/drivers/media/usb/usbtv/usbtv.h
-@@ -0,0 +1,98 @@
-+/*
-+ * Fushicai USBTV007 Video Grabber Driver
-+ *
-+ * Copyright (c) 2013 Lubomir Rintel
-+ * All rights reserved.
-+ * No physical hardware was harmed running Windows during the
-+ * reverse-engineering activity
-+ *
-+ * Redistribution and use in source and binary forms, with or without
-+ * modification, are permitted provided that the following conditions
-+ * are met:
-+ * 1. Redistributions of source code must retain the above copyright
-+ *    notice, this list of conditions, and the following disclaimer,
-+ *    without modification.
-+ * 2. The name of the author may not be used to endorse or promote products
-+ *    derived from this software without specific prior written permission.
-+ *
-+ * Alternatively, this software may be distributed under the terms of the
-+ * GNU General Public License ("GPL").
-+ */
+@@ -1,5 +1,5 @@
+ /*
+- * Fushicai USBTV007 Video Grabber Driver
++ * Fushicai USBTV007 Audio-Video Grabber Driver
+  *
+  * Copyright (c) 2013 Lubomir Rintel
+  * All rights reserved.
+@@ -27,6 +27,7 @@
+ 
+ /* Hardware. */
+ #define USBTV_VIDEO_ENDP	0x81
++#define USBTV_AUDIO_ENDP	0x83
+ #define USBTV_BASE		0xc000
+ #define USBTV_REQUEST_REG	12
+ 
+@@ -38,6 +39,10 @@
+ #define USBTV_CHUNK_SIZE	256
+ #define USBTV_CHUNK		240
+ 
++#define USBTV_AUDIO_URBSIZE	20480
++#define USBTV_AUDIO_HDRSIZE	4
++#define USBTV_AUDIO_BUFFER	65536
 +
-+#include <linux/slab.h>
-+#include <linux/usb.h>
+ /* Chunk header. */
+ #define USBTV_MAGIC_OK(chunk)	((be32_to_cpu(chunk[0]) & 0xff000000) \
+ 							== 0x88000000)
+@@ -90,9 +95,23 @@ struct usbtv {
+ 	int iso_size;
+ 	unsigned int sequence;
+ 	struct urb *isoc_urbs[USBTV_ISOC_TRANSFERS];
 +
-+#include <media/v4l2-device.h>
-+#include <media/videobuf2-vmalloc.h>
++	/* audio */
++	struct snd_card *snd;
++	struct snd_pcm_substream *snd_substream;
++	atomic_t snd_stream;
++	struct work_struct snd_trigger;
++	struct urb *snd_bulk_urb;
++	size_t snd_buffer_pos;
++	size_t snd_period_pos;
+ };
+ 
+ int usbtv_set_regs(struct usbtv *usbtv, const u16 regs[][2], int size);
+ 
+ int usbtv_video_init(struct usbtv *usbtv);
+ void usbtv_video_free(struct usbtv *usbtv);
 +
-+/* Hardware. */
-+#define USBTV_VIDEO_ENDP	0x81
-+#define USBTV_BASE		0xc000
-+#define USBTV_REQUEST_REG	12
-+
-+/* Number of concurrent isochronous urbs submitted.
-+ * Higher numbers was seen to overly saturate the USB bus. */
-+#define USBTV_ISOC_TRANSFERS	16
-+#define USBTV_ISOC_PACKETS	8
-+
-+#define USBTV_CHUNK_SIZE	256
-+#define USBTV_CHUNK		240
-+
-+/* Chunk header. */
-+#define USBTV_MAGIC_OK(chunk)	((be32_to_cpu(chunk[0]) & 0xff000000) \
-+							== 0x88000000)
-+#define USBTV_FRAME_ID(chunk)	((be32_to_cpu(chunk[0]) & 0x00ff0000) >> 16)
-+#define USBTV_ODD(chunk)	((be32_to_cpu(chunk[0]) & 0x0000f000) >> 15)
-+#define USBTV_CHUNK_NO(chunk)	(be32_to_cpu(chunk[0]) & 0x00000fff)
-+
-+#define USBTV_TV_STD  (V4L2_STD_525_60 | V4L2_STD_PAL)
-+
-+/* parameters for supported TV norms */
-+struct usbtv_norm_params {
-+	v4l2_std_id norm;
-+	int cap_width, cap_height;
-+};
-+
-+/* A single videobuf2 frame buffer. */
-+struct usbtv_buf {
-+	struct vb2_buffer vb;
-+	struct list_head list;
-+};
-+
-+/* Per-device structure. */
-+struct usbtv {
-+	struct device *dev;
-+	struct usb_device *udev;
-+
-+	/* video */
-+	struct v4l2_device v4l2_dev;
-+	struct video_device vdev;
-+	struct vb2_queue vb2q;
-+	struct mutex v4l2_lock;
-+	struct mutex vb2q_lock;
-+
-+	/* List of videobuf2 buffers protected by a lock. */
-+	spinlock_t buflock;
-+	struct list_head bufs;
-+
-+	/* Number of currently processed frame, useful find
-+	 * out when a new one begins. */
-+	u32 frame_id;
-+	int chunks_done;
-+
-+	enum {
-+		USBTV_COMPOSITE_INPUT,
-+		USBTV_SVIDEO_INPUT,
-+	} input;
-+	v4l2_std_id norm;
-+	int width, height;
-+	int n_chunks;
-+	int iso_size;
-+	unsigned int sequence;
-+	struct urb *isoc_urbs[USBTV_ISOC_TRANSFERS];
-+};
-+
-+int usbtv_set_regs(struct usbtv *usbtv, const u16 regs[][2], int size);
-+
-+int usbtv_video_init(struct usbtv *usbtv);
-+void usbtv_video_free(struct usbtv *usbtv);
++int usbtv_audio_init(struct usbtv *usbtv);
++void usbtv_audio_free(struct usbtv *usbtv);
++void usbtv_audio_suspend(struct usbtv *usbtv);
++void usbtv_audio_resume(struct usbtv *usbtv);
 -- 
 1.8.4.2
