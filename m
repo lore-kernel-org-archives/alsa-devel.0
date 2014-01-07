@@ -1,58 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/11] ARM: ux500: Don't use enums for MSP IDs - for easy
- DT conversion
-Date: Tue, 7 Jan 2014 14:19:16 +0000
-Message-ID: <20140107141916.GG31886@sirena.org.uk>
-References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
- <1387468508-12286-2-git-send-email-lee.jones@linaro.org>
- <CACRpkda5bQ37OCtO17hj_tVrkAdTXA4-DzgBTaFmuswvb0h9fA@mail.gmail.com>
- <20140107141154.GI3182@lee--X1>
+Subject: Re: [PATCH] ASoC: fsl: imx-wm8962: Grant hw_params()
+ permission to reprogram FLL
+Date: Tue, 7 Jan 2014 14:24:03 +0000
+Message-ID: <20140107142403.GH31886@sirena.org.uk>
+References: <1387967835-15423-1-git-send-email-Guangyu.Chen@freescale.com>
+ <CAGoOwPS4S_oHUAkCieAiKG5ordwHV1pCxTb-WiR3BRCO8gbKxw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DeaqLsaJcuYlI8Od"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140107141154.GI3182@lee--X1>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/mixed; boundary="===============8593535244888927779=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A60B2617B6
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 15:24:12 +0100 (CET)
+In-Reply-To: <CAGoOwPS4S_oHUAkCieAiKG5ordwHV1pCxTb-WiR3BRCO8gbKxw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicole Otsuka <nicoleotsuka@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <Guangyu.Chen@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---DeaqLsaJcuYlI8Od
+--===============8593535244888927779==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="q1TXz+zMSqs8/2DD"
+Content-Disposition: inline
+
+
+--q1TXz+zMSqs8/2DD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jan 07, 2014 at 02:11:54PM +0000, Lee Jones wrote:
+On Tue, Jan 07, 2014 at 01:57:45PM +0800, Nicole Otsuka wrote:
+> Ping
 
-> > Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Don't send contentless pings.
 
-> I'm happy with that, although I haven't heard from Mark for ages.
-
-> Mark, are you still tracking this?
-
-Yes, I've been waiting for both Linus and your testing of Takashi's fix.
-
---DeaqLsaJcuYlI8Od
+--q1TXz+zMSqs8/2DD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzAzgAAoJELSic+t+oim9Y50P/iSvBGJfJxBowlIRAECsFnZy
-CcOPtBFy6/H6G20Byfu34AsdrhNRKkjxe12bKLPND0avKYjTOj3u+fQp11ajNKSQ
-0EMKicSk/8Dwb8hG7gY9ZPUk8zLqMs9QyggWBO1yghFVxIwwYHKOjw8lSSaCJv9E
-9uaUinhqyVE22POjnUeoewP5ZWTgTYsK7eECl9N2dItldDF4aBRLJuvO3qNYbaCL
-3r8beUMzqCD/fOpxX7evFgTg1rbWdB5UAo9lVFfvxXRIQVvKZ+wxqRiLhk5A3jpJ
-g9qt6aSJJqacS17BF0te7Ub3Zt61ol2TRgiJL40cnizozBdVAl8rMamPRBjuvgIk
-ZjFn0+jGNsBEk4n1zozHvcZsGfhGqeVQN3WAsXj/ljqnQV9BtZki8KJP0OvFHSrx
-AdvzhT6VFgbAKw1tcAK77co5UnVO9kfbQ32stz7vhl2ft9SaNJDT78Twl3fl4vwv
-NaWJy9RSZhzzZ+J51247/gB3blX91nmNzmAvaBaU2Sp7dQBHEKoZ8Jepz7hJ0GLM
-20wJu97nythTlqXDgYwp+fa5Ue8SVwczckSNb25R4V9YX/4ERrZJdu6oO2JD0Fhz
-xvmKpV5vBRiebq31NmREP1UbWEROmJfVGx875bwoVtkGek4ngBoPKEN6aaQTZmte
-Hdme1BMwWmOIXqntk4T8
-=wguB
+iQIcBAEBAgAGBQJSzA4AAAoJELSic+t+oim9eVUP/1NPLqHMiP2zzadjeZSG/3ds
+HqdIJm1R/kbnzV/FZ5BamC9jKH3IJgxql6fPV4FRb+4A02Wrbv9wqNCdKtHDVSAx
+YTHkrayJd5hKiOIpKezSCwXWDNsPDZTuagGMcqUYo6hxZG8ESEUtj4hMheMPlkUh
+J2wFIi/iupQCjEOCoZlfqdwa17+LV4sizTg3xnOrWoeIWDJLp1A8lsrILysHPXxf
+AtLD3Eo8PsmTNFbvl7bPhFz6um1BwYPBm/MEI741zuMkHy5j3ErDk2+zbIP/yJZo
+/PnC7tKhfbiuLmvs7DpmuOte+xEdtSSQrLXjFeaAGAeJQ00mMLZtYGUziyWzfwGO
+Rm0hVX5gPD9rm1IHL7eeCiTaDWxx8vSqZ2ZFLyucDinD2oeJA9lnde2STTl3LwFl
+B1D+AzUCfGIQ+ftly53YeDq8EeWMSsvDx7Ek26nFQAbO8hBEuAfenIu1KCR84SDG
+yyZdqOZWCvX2KiXt8TYv2M1KCA+HCVV/zcHQ1gAhYB4O5zsphIRA1qnxG1BX2n6D
+grBN8XJA54HurDoJU112ZWsH3KGVI0PUCsNoncTKy+9HbXOeH1bYhYT6ZgSo4Ip2
+ueklR1BlqB5b5fVMhtMFYwEkBrSlTmK4qevA+YwlD2FCcwbN9xNteAj04CcIDdVa
+W2+Qm57NKgUFkMZ04TiH
+=Hvck
 -----END PGP SIGNATURE-----
 
---DeaqLsaJcuYlI8Od--
+--q1TXz+zMSqs8/2DD--
+
+--===============8593535244888927779==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8593535244888927779==--
