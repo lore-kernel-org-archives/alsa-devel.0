@@ -1,19 +1,22 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
+From: Fabio Estevam <festevam@gmail.com>
 Subject: Re: mx6: Audio does not work on linux-next 20140107
-Date: Tue, 7 Jan 2014 20:28:14 +0800
-Message-ID: <20140107122813.GA6750@MrMyself>
+Date: Tue, 7 Jan 2014 10:49:40 -0200
+Message-ID: <CAOMZO5AC5n-intSnUdnBJyYVO2O2BfPYMj_SwNP6jXD5qxVp9g@mail.gmail.com>
 References: <CAOMZO5C=TFczzz8CQj6N=N_Z=p26_73SJvSk5cmp9FPVxF+O=A@mail.gmail.com>
  <52CBEDFA.10603@metafoo.de>
  <CAOMZO5C18WJQKJPuK_Pwq=EW0UhFh=9wxc4M4QEGBscZCHim8g@mail.gmail.com>
+ <20140107122813.GA6750@MrMyself>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="Qxx1br4bt0+wmkIi"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DB1B2616F4
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 13:43:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5C18WJQKJPuK_Pwq=EW0UhFh=9wxc4M4QEGBscZCHim8g@mail.gmail.com>
+Received: from mail-ve0-f169.google.com (mail-ve0-f169.google.com
+ [209.85.128.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97A172616F4
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 13:49:41 +0100 (CET)
+Received: by mail-ve0-f169.google.com with SMTP id c14so64187vea.28
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jan 2014 04:49:40 -0800 (PST)
+In-Reply-To: <20140107122813.GA6750@MrMyself>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +26,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Nicolin Chen <b42378@freescale.com>, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
---Qxx1br4bt0+wmkIi
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
+On Tue, Jan 7, 2014 at 10:28 AM, Nicolin Chen
+<Guangyu.Chen@freescale.com> wrote:
+> On Tue, Jan 07, 2014 at 10:29:48AM -0200, Fabio Estevam wrote:
+>> Nicolin,
+>>
+>> On linux-next I am no longer able to play audio without the sdma
+>> firmware (ok, maybe we should handle this topic on another thread).
+>
+> I haven't tested the linux-next tree with my SabreSD recently. But..would that
+> be caused by the SDMA firmware version 2? Please try this patch to trick the
+> original sdma firmware and see if it's gonna work.
 
-On Tue, Jan 07, 2014 at 10:29:48AM -0200, Fabio Estevam wrote:
-> Nicolin,
-> 
-> On linux-next I am no longer able to play audio without the sdma
-> firmware (ok, maybe we should handle this topic on another thread).
+firmware/imx/sdma/sdma-imx6q.bin.ihex does not exist in mainline, so I
+can't apply your patch.
 
-I haven't tested the linux-next tree with my SabreSD recently. But..would that
-be caused by the SDMA firmware version 2? Please try this patch to trick the
-original sdma firmware and see if it's gonna work.
+Please send me your modified firmware offline and I can give it a try.
 
-Surely, I'll test on my side tomorrow.
+It would be really better if we could play audio without using any
+firmware as in 3.13-rc7.
 
-Thank you.
-Nicolin Chen
+Regards,
 
---Qxx1br4bt0+wmkIi
-Content-Type: text/x-diff; charset="us-ascii"
-Content-Disposition: attachment; filename="0002-firmware-imx-sdma-v2.patch"
-
->From d033e19003ee4e0e51b617a808cd068899f7fc01 Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <b42378@freescale.com>
-Date: Wed, 6 Nov 2013 15:06:50 +0800
-Subject: [PATCH 2/2] firmware: imx: sdma v2
-
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
- firmware/imx/sdma/sdma-imx6q.bin.ihex | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/firmware/imx/sdma/sdma-imx6q.bin.ihex b/firmware/imx/sdma/sdma-imx6q.bin.ihex
-index 2e561f0..ceb114b 100644
---- a/firmware/imx/sdma/sdma-imx6q.bin.ihex
-+++ b/firmware/imx/sdma/sdma-imx6q.bin.ihex
-@@ -1,4 +1,4 @@
--:1000000053444D4101000000010000001C000000AD
-+:1000000053444D4102000000010000001C000000AC
- :1000100026000000B40000007A0600008202000002
- :10002000FFFFFFFF00000000FFFFFFFFFFFFFFFFDC
- :10003000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD0
--- 
-1.8.4
-
-
---Qxx1br4bt0+wmkIi
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---Qxx1br4bt0+wmkIi--
+Fabio Estevam
