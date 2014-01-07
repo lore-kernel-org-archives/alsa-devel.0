@@ -1,49 +1,68 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: simple-card: fix the DAPM routes map parsing
-Date: Tue, 7 Jan 2014 15:43:29 +0000
-Message-ID: <20140107154329.GU31886@sirena.org.uk>
-References: <1389057222-16686-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCH] ASoC: soc-core: add snd_soc_of_parse_sysclk_id() for dt
+Date: Tue, 7 Jan 2014 16:24:47 +0000
+Message-ID: <20140107162447.GX31886@sirena.org.uk>
+References: <1388648057-28373-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2ZSvGCaIhjYEV086"
+	protocol="application/pgp-signature"; boundary="hWgijUzYZxhbjxYM"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1389057222-16686-1-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <1388648057-28373-1-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---2ZSvGCaIhjYEV086
+--hWgijUzYZxhbjxYM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 07, 2014 at 09:13:42AM +0800, Xiubo Li wrote:
-> The simple-card's DAPM route maping is optional.
+On Thu, Jan 02, 2014 at 03:34:17PM +0800, Xiubo Li wrote:
+> This patch adds snd_soc_of_parse_sysclk_id() and supports below
+> style on dt:
+>=20
+> sysclk-id =3D <XXX>;
+>=20
+> It's an optional property, If this property is absent the defualt
+> vaule 0 will be returned.
 
-Applied both, thanks.
+The trick with this is defining what the clock should be.  Drivers would
+have to start defining their clock IDs and then at some point we end up
+reinventing the common clock API and bindings.  We really ought to be
+moving ASoC's clock handling over towards clk but there's issues with
+that given that the clock API is not available at all on some platforms
+and the common clock API isn't common.  This is rather a larger bit of
+work than I expect you want to do right now though...
 
---2ZSvGCaIhjYEV086
+What's your use case for this - is it possible to make the driver you're
+looking at default to a clock that'll work for most systems?  That'd
+sidestep the need to say which clock.  Alternatively is the CODEC only
+likely to be used with systems supporting common clk in which case doing
+the sysclk configuration via the clk API might be the way forwards?
+
+--hWgijUzYZxhbjxYM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzCCeAAoJELSic+t+oim98boQAIP47K4LnmefewL0oCUf+dfY
-swZZ1QJ/arGWFj8upNLBPUyg3hr8WR+QkVfT4CfFtn8mAKlrQFxG9jO3qVUjsZuG
-H3eLGh/B0bc4FsEZELSWaUgy9T+LUm7FMF7oGQVr4B41oIyXeCt4n+m0hxHExs9K
-G5zC6cKZVMrh7CbyJnbKJgzFxlIiIhz1sB2yQd18MucOnLyjgALU5UomKcSygwKH
-bpV1yTZ3Ml4tU+DDgVgCk2q2obXOdD09vPMIF8G+vOk/2ARX+hj6QLP9fw/Kx21v
-Rn4xBS4lyv803jPHpxn3hsAD1bmXUQC5Pc3zq0siZtQ2UhjO5cFmm+PPFAwP8sQt
-tSHBaX9xQB+/UmxU4pAqupRZ2X6n74/NHsTCl7dcaHt7TogC+YYngG6KJs8Plbfj
-/4vtIphsltRmEB0AGuqFP4APVOqW5Bur0v3KF3tgMCThBS5cU1XLGJH5rPvAGEzJ
-mtCcMNwKQBFDLlb4UeiF7UEqvl/XMl9part5Jxx4CbdnshJD1X2+LVj2HuENTAx8
-ffC6aPgPUTmAd/q9c67UiGSXmwE1Nzzj/MTTJTVHxO+z7lkJQGkOQJCZkd9mw8Bv
-98+SqKtpVGRg2iVzSaMn80IFnqwBG88Q9j+LrmpQOs1LYdzzdRPlWGkxiIEqp3nL
-Mg+J34Qf76zcpszRUUhs
-=O638
+iQIcBAEBAgAGBQJSzCpLAAoJELSic+t+oim9ik4P/1oAu1w3mzG2SnxtSVkkNzx/
+DvcR9IQoQuvyB20Q3QLJbLla9CBW3ihGcWxSD6N5qZ8IElhoT3BPRvS9V6/JiKY2
+RJsjyWwor5/Myhm4Sq7gsmNlOah826YgyG5xgoyW4Dke0yJfmpAXBEVNfOjOerLh
+AoPao+DaajMIptjxdm5o+dhuPCefNc55hgV6LXd5cJb9KFuhUzrTfE/EVbrvGZUl
+hQ1sJYKPefp9BeX7bx4xuhYi4E7ak52F+gxAq9RKEz5OgAVQ0k31Q5t9gz6ko8Cc
+JG4OX83FRSBkliRtWyGujV4sTmMfVibwqwoV8d+xNP66szxlF+Ay4N3jZ9MrbvnQ
+sTlSMLuCymzqbQWc7XHItbe0y4VaV+/wA6ze0Bf8zJRs4PbBviRI8EJlR1/VrjBo
+j482bIhDFImg0f1yoGsoLg0iPu7Jhn+wkpJTnYvL+msxxCw5bo88lQimAltOptgX
+r1ZhyLp6NfkXO7e8USTsud+2ateI0fcXMngKNqJWxAfH5HCAac5i3voXGjOfLMmB
+xhXFX1W7VuFgVINiJw2gz8dY8W/5TQoUs9CPN5d2JamCir9lD+KXKCC39miaDAqu
+Vkwe/VccRdy0XVVzgg5yJBgfZ6vp4GOP0cH9JUyos6GQM+mIPKiBjr02gaizuTjL
+LBvOIwGGeuth4zKkW+dP
+=YwO5
 -----END PGP SIGNATURE-----
 
---2ZSvGCaIhjYEV086--
+--hWgijUzYZxhbjxYM--
