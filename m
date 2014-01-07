@@ -1,59 +1,47 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH 2/2] ASoC: simple-card: keep the property's name the same pattern
-Date: Tue, 7 Jan 2014 09:15:16 +0800
-Message-ID: <1389057316-16787-1-git-send-email-Li.Xiubo@freescale.com>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH v2] ASoC: soc-core: add
+ snd_soc_of_parse_master_clkdir() for dt
+Date: Tue, 7 Jan 2014 02:21:44 +0000
+Message-ID: <860c4aae7dfd464c8c5b56ec7abb1d9b@DM2PR03MB509.namprd03.prod.outlook.com>
+References: <1388630905-1321-1-git-send-email-Li.Xiubo@freescale.com>
+ <23375d0ac7734f37be9928d6add885f7@BY2PR03MB505.namprd03.prod.outlook.com>
+ <20140106161730.GG31886@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-doc-owner@vger.kernel.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0243.outbound.protection.outlook.com [207.46.163.243])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC7A7261A3D
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 03:21:48 +0100 (CET)
+In-Reply-To: <20140106161730.GG31886@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Even though we might not have rigor rule for the simple card property names,
-according to the existing ones, they are all in a same pattern:
-
-[simple-audio-card,]XXX;
-
-Rename simple-audio-routing to simple-audio-card,routing, and make the simple
-card's properties has one unified name.
-
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
----
- Documentation/devicetree/bindings/sound/simple-card.txt | 2 +-
- sound/soc/generic/simple-card.c                         | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index 2ee80c76..e9e20ec 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -11,7 +11,7 @@ Optional properties:
- - simple-audio-card,format		: CPU/CODEC common audio format.
- 					  "i2s", "right_j", "left_j" , "dsp_a"
- 					  "dsp_b", "ac97", "pdm", "msb", "lsb"
--- simple-audio-routing			: A list of the connections between audio components.
-+- simple-audio-card,routing		: A list of the connections between audio components.
- 					  Each entry is a pair of strings, the first being the
- 					  connection's sink, the second being the connection's
- 					  source.
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 33c816c..d007760 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -138,9 +138,9 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 		(SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_INV_MASK);
+Hi Mark,
  
- 	/* DAPM routes */
--	if (of_property_read_bool(node, "simple-audio-routing")) {
-+	if (of_property_read_bool(node, "simple-audio-card,routing")) {
- 		ret = snd_soc_of_parse_audio_routing(&info->snd_card,
--					"simple-audio-routing");
-+					"simple-audio-card,routing");
- 		if (ret)
- 			return ret;
- 	}
--- 
-1.8.4
+> You only sent this patch on Thursday during the middle of the holiday
+> period, please allow a reasonable time for review - at least a week even
+> without holidays.
+>
 
+Yes, Sorry.
 
+I was just a little hurry for we are having a holiday for New Year soon.
+
+Thanks,
+
+--
+Best Regards,
+Xiubo
