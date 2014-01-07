@@ -1,30 +1,54 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCHv10] dmaengine: Add support for BCM2835
-Date: Tue, 7 Jan 2014 16:37:02 +0100
-Message-ID: <201401071637.03135.arnd@arndb.de>
-References: <52CB0180.1040605@koalo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 04/11] ASoC: Ux500: Match platform by device node when
+ booting Device Tree
+Date: Tue, 7 Jan 2014 15:37:48 +0000
+Message-ID: <20140107153748.GM31886@sirena.org.uk>
+References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
+ <1387468508-12286-5-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <52CB0180.1040605@koalo.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Florian Meier <florian.meier@koalo.de>
-Cc: devicetree <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, dmaengine <dmaengine@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+6PFc4gFogXO4FO2"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1387468508-12286-5-git-send-email-lee.jones@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 06 January 2014, Florian Meier wrote:
-> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
-> Currently it only supports cyclic DMA.
-> 
-> Signed-off-by: Florian Meier <florian.meier@koalo.de>
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+--+6PFc4gFogXO4FO2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Dec 19, 2013 at 03:55:01PM +0000, Lee Jones wrote:
+> We're getting closer to fully enabling the Ux500 ASoC driver for Device
+> Tree. When we switch over from using AUXDATA we'll need to match platform
+> by only Device Tree nodes. In this patch we NULL out the platform_name,
+> and supply nodes for each platform device.
+
+Applied, thanks.
+
+--+6PFc4gFogXO4FO2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSzB9JAAoJELSic+t+oim9peoP/2pmEP6cEyVTq9a/ZVH2XRH3
+fmT/A2BQ2bVIAN4HpaMTYumz9mCctewznUZ/dje0vPcSQ0gYI0xOZc419FuGqJ+6
+i1jc+B99a3wEe7j6L6LbeAndR53LxBRRN4h7bwL+NId4NLnm6b7cZe3JE/5FQbZu
+oCfqwT90KTow+2RoK0B+cIWMd36oAV635jf7nn7yNcMm29txhWxEltK1oMe60r49
+3Y6XKG73LH5RpOUi+MEdXifxKKQov9CtSQjLts+bl02n5amnFRi4fo339u65KK9s
+hTgAti3eUAgwNPILk+2/81Ur/d6tGM0SGLoddZs+z8pcvRjcOM+SSXCAPS2wN2Gd
+Uh8dBwVw83is6Rn9QRiw/loI0Yj7RYORISH3H+1Pjm2pfFSmU7+duKBYzC1r07TP
+Q9PJm/3CLog1FITay2/3ASCQY2oLsOVDTDGuw0mxxNG1pj7kUmKkd7mZh/mz1RLR
+NpvTc9TAwO09tLnW+wN75mUNm5K45zOydUrdC0YOrxevk7ijo672XYuEq+FzeHyZ
+HezJp/5uwY5KmSajtNeotMgI1XoN7iRNrnAYLarnIRf3PbnhFDiLl2SIOvlBmpUx
+oRIGXgGhoauhawTvPIoLWSG+Skmrhh1CBTkYCEIaL38jY1kwgLlSnZIjSPeJvVi/
+GYMGV4KBgURXL8t09I3Z
+=FSVJ
+-----END PGP SIGNATURE-----
+
+--+6PFc4gFogXO4FO2--
