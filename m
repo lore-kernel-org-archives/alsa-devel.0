@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simple-card: Do not set cpu_dai.name
- for snd_link in case DT
-Date: Tue, 7 Jan 2014 16:48:43 +0000
-Message-ID: <20140107164843.GZ31886@sirena.org.uk>
-References: <1388902199-29553-1-git-send-email-shc_work@mail.ru>
+Subject: Re: [PATCH v2] ASoC: soc-core: add
+ snd_soc_of_parse_master_clkdir() for dt
+Date: Tue, 7 Jan 2014 17:05:38 +0000
+Message-ID: <20140107170538.GA31886@sirena.org.uk>
+References: <1388630905-1321-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2723277682350919727=="
+Content-Type: multipart/mixed; boundary="===============3877368268799898396=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E4E72619D8
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 17:48:51 +0100 (CET)
-In-Reply-To: <1388902199-29553-1-git-send-email-shc_work@mail.ru>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B594265002
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 18:05:51 +0100 (CET)
+In-Reply-To: <1388630905-1321-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: tiwai@suse.de, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2723277682350919727==
+--===============3877368268799898396==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rHaPbqt23PffNkT+"
+	protocol="application/pgp-signature"; boundary="r2/fuxH/oC33tddT"
 Content-Disposition: inline
 
 
---rHaPbqt23PffNkT+
+--r2/fuxH/oC33tddT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 05, 2014 at 10:09:58AM +0400, Alexander Shiyan wrote:
-> Using cpu_dai.name for DT case will result driver cannot be
-> initialized. For example, device have name "ssi@10010000" in the DT
-> and this value is returning for us by snd_soc_of_get_dai_name()
-> but actual registered name of device is "10010000.ssi".
+On Thu, Jan 02, 2014 at 10:48:25AM +0800, Xiubo Li wrote:
+> This patch adds snd_soc_of_parse_master_clkdir() and supports below
+> style on dt:
+>=20
+> master-clkdir-out;
+>=20
+> If this property is absent 0 will be returned, 1 otherwise.
+> 0 : SND_SOC_CLOCK_IN
+> 1 : SND_SOC_CLOCK_OUT
 
-This doesn't seem like a great fix, it will break systems that register
-more than one DAI per device and won't help any other machine drivers
-using the lookup.  I'd have expected to fix either the registered name
-or the result of the lookup so that it can be used for matching.
+This is mostly OK code wise, though it would be good to use those
+constants in the code.  However I'm still not sure about it being a good
+idea - it's similar issues to those with clock IDs but less strong.  Do
+you have a user in mind?
 
---rHaPbqt23PffNkT+
+--r2/fuxH/oC33tddT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzC/oAAoJELSic+t+oim9fmsP/iqdP6FTNYIT4Ph8oGz3XI33
-6bEiOjHZ2DKRseHjXwA8jU00sV0jamuk28HNh3N5q6Wn/4aqI34hRUwRZzQJhjgg
-eGEnHqeNrDH8OQUjXzAWi8xhv4M6v9eurhb+745k3O+bgXKY/mVMJzuYrKYlscja
-87uO4AjELa1oxlg+8PWUTGKSrJHne6tiLNc8S7PpP2KL/S/rpGy3h+riaRaPTEuf
-SXigXtCG/4U9fBXaUUtDGxwU1ctXmTZxB9tjxsmyMoyAcKM1koH6tWnrpy6DLKQV
-P+fouDHBKEiBSwy7pIQXkYo4cfzdFNZDBhMRYmMdELxhRI0+HOQJ2Ee4Dt6S1aO7
-JeV78tjtsXAUVSibJob6ygnXHPOfQcA0lSsN0fsaUTrBtdjw2uf/FWSE17UtJbUz
-xSXXYPxN4c68V1BgbOogH54RMGon5Vk+wKJGt/H2ton1dtBe7maiiUbkyzoQdd+l
-cTyPojBik1sCtbKQy+6DgC42JVpQKag7fnHAIKmUEWk1FqV8PFBpyhc5csTboUIM
-OfZYV4cO9scVzbsEj/4joL3wYlQt8XsUJlB14EZXv8ztSrktzesoVR8N//1T7fUj
-4nJo6C8HDVb2a9RZCT+Gwl6vksNdsrGKuDtIB4CxWE/tChldWkLfZLKvcDrNc/2d
-5Oq9lUFGLaeK1Y4ceUbR
-=BD1I
+iQIcBAEBAgAGBQJSzDPfAAoJELSic+t+oim9+AYP/3WOJVaFYod0qh226+S6Pea9
+BQTQJI+U3zMri6QgVsavf7M2ZwJUru6oxJTaafVMCuIK6JgHk1zhx5y0zEmLqBtX
+4rcpzohrcWfptvTSt6Z/x/r0oh78N5TtbPCnJ79SVjSXmF0F1WpAxjPfMfNW+NHS
++05T6+hVcwji2szsrsOoJ4zwA476KG4MkfxuR1wAJeMil8hKNLfDXwR6dujhxXp/
+lFIHT22/r51/3Wm6yXP5q3fakXWvmJYjrJ2PytzUj6vJPHWe9cHc2dllatfcyDDE
+Qzs1wGFo6yIoE0J7s92XcVCuDbVFrDWON6UnCX6pyKWwBgKa9HtYsBUOda0rxI4e
+91r9+zJZVHX93YSA2v54tWMjLSy7dnMYs8woIreILz0rzRDV1hQaxz+e/VMjCDdZ
+O6QbMFFY9LkiuGee+/HeB03EBpQZeI13vXz8B9kIP/O+UNOPWrCI1+8qZI/rOqEE
+EPFl3GlD/nB/yNHfinxFoiaTCMs5F3LMXM60HsYz0yV+D8XE/f2F2yqFuyjaHfQt
+otMINbH+ekaJTXxRX6m7fqL/6mqalfgr0SEeMTwYY1bnE6IPoWaLUVQyZSKZ+UGg
+//rHc2LucalRElmTj9XoCAgzxSLwcnFwRmuJk0z0NWi5kgib4FkQ2MAUS8BQwb4p
+roQaupCQzFTeVeUxgsY6
+=rA5V
 -----END PGP SIGNATURE-----
 
---rHaPbqt23PffNkT+--
+--r2/fuxH/oC33tddT--
 
---===============2723277682350919727==
+--===============3877368268799898396==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2723277682350919727==--
+--===============3877368268799898396==--
