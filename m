@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_ssi: Fixed wrong printf format
- identifier
-Date: Tue, 7 Jan 2014 11:11:43 +0000
-Message-ID: <20140107111143.GV31886@sirena.org.uk>
-References: <1389074690-21654-1-git-send-email-shc_work@mail.ru>
- <CAOMZO5AK3=d322K80a6Y16xWKFYy9dWJEupF6W8mqLxm0_=j8g@mail.gmail.com>
+Subject: Re: [PATCH 0/10] ASoC: rsnd: add SRC support
+Date: Tue, 7 Jan 2014 11:22:47 +0000
+Message-ID: <20140107112247.GY31886@sirena.org.uk>
+References: <87lhzgurtc.wl%kuninori.morimoto.gx@gmail.com>
+ <20131231133657.GC31886@sirena.org.uk>
+ <8761pxk79s.wl%kuninori.morimoto.gx@gmail.com>
+ <20140106152344.GX31886@sirena.org.uk>
+ <87wqic4p79.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5070337601713267917=="
+Content-Type: multipart/mixed; boundary="===============0215426321019195036=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EA61E261723
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 12:11:50 +0100 (CET)
-In-Reply-To: <CAOMZO5AK3=d322K80a6Y16xWKFYy9dWJEupF6W8mqLxm0_=j8g@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F9F52616CB
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 12:22:56 +0100 (CET)
+In-Reply-To: <87wqic4p79.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexander Shiyan <shc_work@mail.ru>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5070337601713267917==
+--===============0215426321019195036==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="l/rOZ+Iy8Lnw8x9T"
+	protocol="application/pgp-signature"; boundary="b4OUYJu3fgafNw5n"
 Content-Disposition: inline
 
 
---l/rOZ+Iy8Lnw8x9T
+--b4OUYJu3fgafNw5n
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jan 07, 2014 at 08:08:14AM -0200, Fabio Estevam wrote:
+On Mon, Jan 06, 2014 at 04:21:01PM -0800, Kuninori Morimoto wrote:
 
-> I have sent the same fix as well as I haven't seen your patch before I
-> submitted mine.
+> Hmm... OK I understood.
+> Do you think it is possible to get these out-of-tree codes
+> from somewhere/somehow ?
 
-I saw Fabio's patch first too.
+The Qualcomm stuff should be on codeaurora.org.  I'm not 100% sure where
+the latest code is for anything else - the Galaxy Nexus code from Google
+should have a version of the DPCM support too.
 
---l/rOZ+Iy8Lnw8x9T
+> If I could get sample code, and I finished my current task,
+> I will start DPCM support. is it OK ?
+
+Sure.
+
+--b4OUYJu3fgafNw5n
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSy+DrAAoJELSic+t+oim9dGgP/3VSCbG1JXmXstx77Z7ZT4vO
-7KVgCsMJEOh0q8mqU2Xd9qKern+kIgsYPawkqgFHaXBdIjHWnXslyuwlzB0haKPd
-Obtf9VL2wA9mvcCcMhF5SsQR6AtM66rKkRhn222u1VY6YuhXWl7zYeEpHNqGelKV
-LIeAMq8e8vzKm/xL57/vYV/WcDCMv3Jc0wtMfCohUnbZp0Ij7HDhCPGxvjTKN6DR
-1P+FfLJSuKMW/2R/C3i/NMvtMfkQjvajC4IJncrFXyPAcY1exRR4fo8djIYAbjha
-bAK2t38G76XIQ2ekvV+mUMDH1DFVbDglv6SI+yUooT67cYcreUUy+ok/c0JDQNh8
-9c3BKHEZedsxGEd1txJl6TVh6bC/AJw0ZMHj0fs8/ElwC7x+/CjjMBB+I0Au0J/i
-0r9sX1PkR4eFtDAcUh8ReXU6DFGg7cucy9P99HefdCRHAdbp8d4KYXEFERR/o/cK
-yFpTPtJfHyYGgafW+E4XA1yTqtvaiX0tDcfPnhwSSCRoXULaf7xxN4Icrnj2VHPd
-1n7d+TsCNybQ9F4cxc+EvrQqYqtLcSE33C5JNvkygMlCsHUjumeuUUUVer5yoB5I
-NC1FJ8hDz0+xM/7XtJz/eS6yDOQlvQiPjiSCUfNu4bJdtoHeEQrVC+tTci7id1wW
-sZzMqA5R+UiaFKz+Zvfr
-=30H7
+iQIcBAEBAgAGBQJSy+OEAAoJELSic+t+oim9YgQQAI4orbkTQ7muTjStgGzqUH9r
+ncGCycCtddp1P4TuUOeQ06zQa+TSdqnqipvmZ55pwDWVUCw1vsDd9pmfnAQ6SGJs
+dquNU8dOG8IRJO3o3D/evyUAhrWUCZmWPXLi8BeNAKaRJwAfpM0GatwjXrTx0wXH
+/DIb6jb8qoMixrhpgMMfswiI3WR/KJC/KB+TuvJAXBuFq8PZtcDYGfYfI9cAMATn
+TbHx/0fjBtoj70cqNPPkI4TbRmGXjQJkQaoyVgtj1wuDqqyUoelNu5wLrkGh/sDY
+uTY5zyKJant4H09t7AZ2EvYds+51yBoF2W4yy9bq8UZgExNwJq3+o7SG+b5oj4u/
+N2OOzrVZe36t2TxUtQAWWU22VsgeXEK5FGFUgY6+jwDqd4YQCPYTxgMbUmHLZVM5
+m9b1QTIyyfkpP6VJF18gjJ6fdPOzHndj08yohcUhHbAMsOmXfzpmhxzoPxo76+vT
+MG/wnn8SZ0KOL9+M3Pux3mJS/FL1pdrTEmm1VHbVdyhJBnM7q9snRpUkCcdU+EtN
+G05YGeBdSFJjYHO+jywRHP3o25OU5zEAhT7smvz87CyNBJk8k6ajf28vUnCpyMsg
+rdGagkeNebk9D3pJfkf79VT3LzVLzrJyFLkpp5cFWEn3evRUue//3FFD18M9XoLK
+EjuaqY7CyL4sJukvIEJx
+=R9Qe
 -----END PGP SIGNATURE-----
 
---l/rOZ+Iy8Lnw8x9T--
+--b4OUYJu3fgafNw5n--
 
---===============5070337601713267917==
+--===============0215426321019195036==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5070337601713267917==--
+--===============0215426321019195036==--
