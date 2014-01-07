@@ -1,21 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/5] ASoC: mc13783: Add devicetree support
-Date: Tue, 7 Jan 2014 11:08:12 +0000
-Message-ID: <20140107110812.GU31886@sirena.org.uk>
-References: <1388907515-18975-1-git-send-email-shc_work@mail.ru>
- <1388907515-18975-5-git-send-email-shc_work@mail.ru>
- <20140106132841.GV31886@sirena.org.uk>
- <1389015981.978548720@f170.i.mail.ru>
- <20140106151227.GW31886@sirena.org.uk>
- <20140107110053.1e353a58ac661c7c64860fe3@mail.ru>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Fixed wrong printf format
+ identifier
+Date: Tue, 7 Jan 2014 11:11:43 +0000
+Message-ID: <20140107111143.GV31886@sirena.org.uk>
+References: <1389074690-21654-1-git-send-email-shc_work@mail.ru>
+ <CAOMZO5AK3=d322K80a6Y16xWKFYy9dWJEupF6W8mqLxm0_=j8g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1409618163465274481=="
+Content-Type: multipart/mixed; boundary="===============5070337601713267917=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A704B2616FE
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 12:08:19 +0100 (CET)
-In-Reply-To: <20140107110053.1e353a58ac661c7c64860fe3@mail.ru>
+ by alsa0.perex.cz (Postfix) with ESMTP id EA61E261723
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 12:11:50 +0100 (CET)
+In-Reply-To: <CAOMZO5AK3=d322K80a6Y16xWKFYy9dWJEupF6W8mqLxm0_=j8g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,67 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexander Shiyan <shc_work@mail.ru>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1409618163465274481==
+--===============5070337601713267917==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xZUUYh/FQdxVAVy5"
+	protocol="application/pgp-signature"; boundary="l/rOZ+Iy8Lnw8x9T"
 Content-Disposition: inline
 
 
---xZUUYh/FQdxVAVy5
+--l/rOZ+Iy8Lnw8x9T
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jan 07, 2014 at 11:00:53AM +0400, Alexander Shiyan wrote:
+On Tue, Jan 07, 2014 at 08:08:14AM -0200, Fabio Estevam wrote:
 
-> So, we need codec phandle.
-> The codec is probed by MC13XXX MFD core, and codec pdev not contain
-> compatible string, but we should associate our codec with DT.
-> if ASoC core wants to use codec it will try to find it by of_node.
-> Maybe my opinion is wrong, fixme.
+> I have sent the same fix as well as I haven't seen your patch before I
+> submitted mine.
 
-The fact that we happen to use platform devices inside Linux to split
-the MFD between subsystems isn't something that should leak out into the
-device tree representation, this is a Linux implementation detail.  The
-card should be referencing the root node for the device in its binding.
+I saw Fabio's patch first too.
 
-You're also confusing the idea of using an of_node for something with
-putting it into the struct device; you should never need to modify
-what's in the struct device to use the device tree data.
-
---xZUUYh/FQdxVAVy5
+--l/rOZ+Iy8Lnw8x9T
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSy+AZAAoJELSic+t+oim91ZkQAIbQlZQBeKSsCbLKhnFPftsR
-Vn/oUOw5CpT5+StCPdA+zY6Y336gXWd5LFUV98mVjV3KdOijhPgmjgKorp5o7hBx
-qdtPEDJif051oZwDisMdbPMqCNA9p1KMJMtF9bK461ysfGajrag+G6kh9EUt/Q30
-jec69bgZqD4pmdOpv6OaEm1iwGx1u1hnc2T3UCFoW4q3Amw9ttFDPwr0wWVktupu
-DIsHZBg21/RIGHPZs60C33w6InogZEZcRztzcmr6FXuim1uX4q6AgNY/Vvt8RQ9w
-aKTn8B2D4t8aNeEIG/QjEkV4wQzp8NSnV8lZ6AE6igUvVHoZLCT7o2j9c/9qEMyr
-g2ZEhOiDH1/Cy0E19/PFrtw4e8rUy7CcU/uFMvcJLtAj7rEpk384t3otbviKxbV/
-NBjo8TspEeQQ+ev6fOgmrAUFK5we0cvmKQrP2i4fmT+7jD6waouSYVvpFoo7vt0m
-d15B4pBBB5RmZyxmyzEYS7r9wxAPQif7AvZLf7GWBFEN4W3tKEY8vMnM+96dypmW
-v1YgMimae2KBOWM/esjaP6imtjrPVWxEgqJeWlbtEFcCHB2dXJ5ZazOOb4Eqg5U7
-yRVsVr/fY5xrYmr56LlbepozhCoQ/qzqIinM9ANvGArewz5ktPViDZGC3lBHBmqZ
-UtFha+EdJ7D53E1BGsEY
-=d3Ux
+iQIcBAEBAgAGBQJSy+DrAAoJELSic+t+oim9dGgP/3VSCbG1JXmXstx77Z7ZT4vO
+7KVgCsMJEOh0q8mqU2Xd9qKern+kIgsYPawkqgFHaXBdIjHWnXslyuwlzB0haKPd
+Obtf9VL2wA9mvcCcMhF5SsQR6AtM66rKkRhn222u1VY6YuhXWl7zYeEpHNqGelKV
+LIeAMq8e8vzKm/xL57/vYV/WcDCMv3Jc0wtMfCohUnbZp0Ij7HDhCPGxvjTKN6DR
+1P+FfLJSuKMW/2R/C3i/NMvtMfkQjvajC4IJncrFXyPAcY1exRR4fo8djIYAbjha
+bAK2t38G76XIQ2ekvV+mUMDH1DFVbDglv6SI+yUooT67cYcreUUy+ok/c0JDQNh8
+9c3BKHEZedsxGEd1txJl6TVh6bC/AJw0ZMHj0fs8/ElwC7x+/CjjMBB+I0Au0J/i
+0r9sX1PkR4eFtDAcUh8ReXU6DFGg7cucy9P99HefdCRHAdbp8d4KYXEFERR/o/cK
+yFpTPtJfHyYGgafW+E4XA1yTqtvaiX0tDcfPnhwSSCRoXULaf7xxN4Icrnj2VHPd
+1n7d+TsCNybQ9F4cxc+EvrQqYqtLcSE33C5JNvkygMlCsHUjumeuUUUVer5yoB5I
+NC1FJ8hDz0+xM/7XtJz/eS6yDOQlvQiPjiSCUfNu4bJdtoHeEQrVC+tTci7id1wW
+sZzMqA5R+UiaFKz+Zvfr
+=30H7
 -----END PGP SIGNATURE-----
 
---xZUUYh/FQdxVAVy5--
+--l/rOZ+Iy8Lnw8x9T--
 
---===============1409618163465274481==
+--===============5070337601713267917==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1409618163465274481==--
+--===============5070337601713267917==--
