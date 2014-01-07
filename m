@@ -1,14 +1,20 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: ASoC: fix new build warning in fsl_ssi
-Date: Tue, 07 Jan 2014 13:09:48 +0100
-Message-ID: <3842933.k0ltEqM7B8@wuerfel>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: mx6: Audio does not work on linux-next 20140107
+Date: Tue, 7 Jan 2014 10:29:48 -0200
+Message-ID: <CAOMZO5C18WJQKJPuK_Pwq=EW0UhFh=9wxc4M4QEGBscZCHim8g@mail.gmail.com>
+References: <CAOMZO5C=TFczzz8CQj6N=N_Z=p26_73SJvSk5cmp9FPVxF+O=A@mail.gmail.com>
+ <52CBEDFA.10603@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.9])
- by alsa0.perex.cz (Postfix) with ESMTP id E324B2616CB
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 13:09:51 +0100 (CET)
+Received: from mail-vb0-f44.google.com (mail-vb0-f44.google.com
+ [209.85.212.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id C20C82616F4
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 13:29:50 +0100 (CET)
+Received: by mail-vb0-f44.google.com with SMTP id x8so48172vbf.17
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jan 2014 04:29:48 -0800 (PST)
+In-Reply-To: <52CBEDFA.10603@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,29 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Alexander Shiyan <shc_work@mail.ru>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Nicolin Chen <b42378@freescale.com>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 6873ee464a9f "ASoC: fsl_ssi: Fix printing return code on clk error"
-changed a warning message but got the format string wrong, resulting in
-a warning "sound/soc/fsl/fsl_ssi.c:1196:6: warning: format '%d' expects
-argument of type 'int', but argument 3 has type 'long int' [-Wformat=]".
+Hi Lars-Peter,
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-Please apply or fold into the original patch, whichever works for you.
+On Tue, Jan 7, 2014 at 10:07 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 3d74477a..c9d567c 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1192,7 +1192,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		 */
- 		ssi_private->baudclk = devm_clk_get(&pdev->dev, "baud");
- 		if (IS_ERR(ssi_private->baudclk))
--			dev_warn(&pdev->dev, "could not get baud clock: %d\n",
-+			dev_warn(&pdev->dev, "could not get baud clock: %ld\n",
- 				 PTR_ERR(ssi_private->baudclk));
- 		else
- 			clk_prepare_enable(ssi_private->baudclk);
+> We've had similar problems like this before. Typically this is caused by the
+> dmaengine driver calling the complete callback when it shouldn't. E.g. after
+> dmaegine_terminate_all() has already been called for the channel. There is
+> also unfortunately a small chance condition (which needs some extensions to
+> the dmaengine API before we can fix it). But the chance for this race
+> condition to occur is really small and has only been observed on a 4 (or 8,
+> not sure) core system so far. Is the problem reproducible in your case? Also
+
+Thanks for your comments. Yes, I get this issue on a mx6 quad all the
+time running linux-next, but not on a mx6solo.
+
+> do you have a know good kernel version?
+
+Tried it on 3.13-rc7 and it works fine.
+
+Nicolin,
+
+On linux-next I am no longer able to play audio without the sdma
+firmware (ok, maybe we should handle this topic on another thread).
+
+Regards,
+
+Fabio Estevam
