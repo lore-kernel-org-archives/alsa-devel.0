@@ -1,55 +1,56 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 05/11] ASoC: ux500_pcm: Stop pretending that we support
- varying address widths
-Date: Tue, 7 Jan 2014 15:38:04 +0000
-Message-ID: <20140107153804.GN31886@sirena.org.uk>
+Subject: Re: [PATCH 07/11] ASoC: ux500_pcm: Extend Device Tree support to
+ deal with DMA data
+Date: Tue, 7 Jan 2014 15:38:36 +0000
+Message-ID: <20140107153836.GP31886@sirena.org.uk>
 References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
- <1387468508-12286-6-git-send-email-lee.jones@linaro.org>
+ <1387468508-12286-8-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gyrD3n6DECm5G5Ux"
+	protocol="application/pgp-signature"; boundary="cVuSN1UEk1U5M3GR"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1387468508-12286-6-git-send-email-lee.jones@linaro.org>
+In-Reply-To: <1387468508-12286-8-git-send-email-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Lee Jones <lee.jones@linaro.org>
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---gyrD3n6DECm5G5Ux
+--cVuSN1UEk1U5M3GR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 19, 2013 at 03:55:02PM +0000, Lee Jones wrote:
-> The Slave Config's addr_width attribute is populated by data_width of
-> dma_cfg, which in turn is derived from dma_params' data_size attribute
-> and that comes from the slot_width which is always 16 bits (2 Bytes).
-> We're cutting out the middle man here and just setting the DMA Slave
-> Config directly.
+On Thu, Dec 19, 2013 at 03:55:04PM +0000, Lee Jones wrote:
+> Soon we will strip out pdata support from the Ux500 set of ASoC drivers.
+> When this happens it will have to supply a DMA slave_config to the
+> dmaengine. At the moment a great deal of this comes from pdata via
+> AUXDATA. We need to become independent of this soon. This patch starts
+> the process by allocating memory for the associated data structures and
+> fetches the MSP id used for const struct indexing.
 
 Applied, thanks.
 
---gyrD3n6DECm5G5Ux
+--cVuSN1UEk1U5M3GR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzB9YAAoJELSic+t+oim9wz0QAIwaSfP73x6pEoUIW1jU4ZlC
-WfirKyYB3jPelvWWOPEunimuigYHRvmlo5pYcD/9FY+PWf0T5cDIIEhLqjMnDJwh
-6qMIBv7OzVCxNLMNkVN5QdsF+GVY4vn9pS96y9ES7Gqf6KYdwvMRS2gnfQYLl9He
-+3/O3z+/dF137wyDpPN5kah72dwT1rEF7v3rhbryJnMeih8xUdb7vtvtJROk87C+
-wfPcsC7+1PdaiOj/Pj1JYproNjb/eO2o86XQHkT5VN2V5Wq3aghCw0kXyfTQKXqr
-Y5klc24WACqOtLrc8rRE9HojlO7RXegYTZEDDDhFGVS0j34kzPXsZEnCBDSyOWM0
-Xqk3uoEn/cFEX5jfLcmeK5lVZCtT7MD9q/SUakWefArqbuPgRpLVRWkg8FnP5c+e
-EnRA2FoTXjX6zsnN8i3F7KhwWldTFogxXSITTSfz3a2echS/SY+gPcjnqVrWA+5G
-Gge0pOAmdwFxrfQwAkxQsGhVojKk2L/3fzexyjBgSyfEfhLSRswPTqqdBi5FvANS
-HrMyh7+Nsz3ghcxtjey7PTdhjRZ8roVm4UjcG6rrBSmfjX8rWt4TfT/iT1mZ5Hat
-V8tlRmBiWmspUAHhxXgRWmXdHoRkCpoddPyUFQOsRV0yZlFoIw8f7cDy+jRp63ST
-8FOWJsdzZu3+qj9VYqZr
-=uo1m
+iQIcBAEBAgAGBQJSzB95AAoJELSic+t+oim9MXgP/0CH4m4LqjK0dIynkI9PxPzK
+lwzXYPsLCAnze2HSeQk0dXJohXESPBdtRi4uYrx3Dt1wrwqx4MFIF/1+g9eAcx3f
+d66oLBSHw6peMyLDjvf6OJoLgmwCYcctiZ8j9gNtKO6Ekf/VFoHPhypfRlHZOXfn
+ZXQvQL8nQ0An9x/Z6/BdjPgenNVNyDbyT2cAPi3qgo3B23K43mxSoAi2XHAkgXqh
+qHO8KXMlxNg9bbVcdv4S85sQAqFPDSOVpmkS+mZaDrw+HOlZA4EzUiO/XqJDCuuA
+Vhs0IQNIkNnKh56oT5cfh105Wx2VkgtUE5u4JdEH3gM4soxFWFCeWj21eBV5t1hN
+iWwil67LGshnLE4RzzGdV93fCg+lTE+bYEIZv9lYuSnw5l1HSatsUL4fVoZuGExy
+4wdFo427cRE3Ua0bg+Ke/tBhMqAbQiQfSHgmLvcLbf47LOFs+ULgR5KLVnybtEke
+PRfZ491ptCT6NwUkaWePWQwJc9QnFsmq5IfJCioeqLsJEROnvYBpBSOHZwEXn0Kg
+N+wpEtBzCHnKvFuzGpviHVweVT1Ofgyb5Xb/2tjBp4A2U9/c9RrSma+HY5JkZUDi
+2qlhsROroS9GDoSiBx7m6/v23e+V12Fwd530LvGTGniklGZS+AzB5xfK2qBmr5z7
+H16SwY84Mga6hocrwqAn
+=9c+d
 -----END PGP SIGNATURE-----
 
---gyrD3n6DECm5G5Ux--
+--cVuSN1UEk1U5M3GR--
