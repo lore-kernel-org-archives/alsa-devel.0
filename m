@@ -1,16 +1,15 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] ASoC: dpcm: Explicitly set BE DAI link
-	supported stream directions
-Date: Tue,  7 Jan 2014 17:51:42 +0000
-Message-ID: <1389117102-6488-2-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Docs: Update the Overview document
+Date: Tue, 7 Jan 2014 17:56:54 +0000
+Message-ID: <20140107175654.GH31886@sirena.org.uk>
 References: <1389117102-6488-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1004739714980006281=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F8AF2650C2
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 18:52:19 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1E6A261092
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 18:57:00 +0100 (CET)
 In-Reply-To: <1389117102-6488-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,54 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Some BE DAIs can be "dummy" (when the DSP is controlling the DAI) and as such
-wont have set a minimum number of playback or capture channels required for BE
-DAI registration (to establish supported stream directions).
 
-Force machine drivers to explicitly set whether they support playback and capture
-stream directions for every BE DAIs.
+--===============1004739714980006281==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PIQghzyGP/VWZ9uI"
+Content-Disposition: inline
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
- include/sound/soc.h | 4 ++++
- sound/soc/soc-pcm.c | 6 ++----
- 2 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 1cda7d3..0a600b8d 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -888,6 +888,10 @@ struct snd_soc_dai_link {
- 	/* This DAI link can route to other DAI links at runtime (Frontend)*/
- 	unsigned int dynamic:1;
- 
-+	/* DPCM capture and Playback support */
-+	unsigned int dpcm_capture:1;
-+	unsigned int dpcm_playback:1;
-+
- 	/* pmdown_time is ignored at stop */
- 	unsigned int ignore_pmdown_time:1;
- 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index feb0f28..9680d5f 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2133,10 +2133,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	int ret = 0, playback = 0, capture = 0;
- 
- 	if (rtd->dai_link->dynamic || rtd->dai_link->no_pcm) {
--		if (cpu_dai->driver->playback.channels_min)
--			playback = 1;
--		if (cpu_dai->driver->capture.channels_min)
--			capture = 1;
-+		playback = rtd->dai_link->dpcm_playback;
-+		capture = rtd->dai_link->dpcm_capture;
- 	} else {
- 		if (codec_dai->driver->playback.channels_min &&
- 		    cpu_dai->driver->playback.channels_min)
--- 
-1.8.3.2
+--PIQghzyGP/VWZ9uI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jan 07, 2014 at 05:51:41PM +0000, Liam Girdwood wrote:
+> Update the ASoC overview to bring it up to date with the current code base
+> and include multi-component.
+
+Applied, thanks.
+
+--PIQghzyGP/VWZ9uI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSzD/jAAoJELSic+t+oim9BQoP/jTSIkyZvrnMG1OW/RPNb9mA
+emqcmmkBm5NKM3ZXg4f9SvXu1//f3ZG0rIpXssKEaDhZUPbif2g1Xg5kDyVliPhE
+aSz5qUWOdzelfBg1dqs1evOvx8dVody0uEPjqrxGHFESn6uvIJXE6W3hQM8znllc
+ozvhI6PowICSGK6k1xnXQnjoeYfdLV8Muo74Nabtj+KGzyY363vdAuaYXdfC73wX
+DX1NYVbpKcUTTUmKFtSC7desTtQuTms+cZ58M96qt3FLwYENTGeP6ACAcpp3EsgM
+8XM9qfgRIZ/tGq10p2S/tEkH4rkd9zhhpkj2cd2TUMk9amCBm8blJHPDPxixYy5/
+fAuOf8ZBqUBrGzXAOSTciZp9XJARfyU2WIUBVzqwjqjRECzWIzCGWrvvCmkLtl3/
+xtZMyegg7CgjRfYFOiQrYGyN8kn7xlcc3F5YJtMMIpmDjgcWiCw8/s+FgIh6HsjA
+qeja0k9mBlrg65y/CUa/tgG7OXbe8h5KF38ODrtGGlJvXJAmJ6pye5ibmaIIdoCg
+H6l8y/RrqOgdct0ed0nYIaBinFAP9sPCLec0+eqFBCvR4R4nmc7zufMzFyyISROL
+/4rkknsnM42EBJhPpDv/5FC2NFRUsM4T0bN/0cie9TpAZzGyrzDw+lbBc92/p6f0
+G9lyZGsoY3Kov9mCh6iF
+=/How
+-----END PGP SIGNATURE-----
+
+--PIQghzyGP/VWZ9uI--
+
+--===============1004739714980006281==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1004739714980006281==--
