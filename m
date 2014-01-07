@@ -1,14 +1,17 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] ASoC: Docs: Update the Overview document
-Date: Tue,  7 Jan 2014 17:51:41 +0000
-Message-ID: <1389117102-6488-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] ASoC: dpcm: Explicitly set BE DAI link
+	supported stream directions
+Date: Tue,  7 Jan 2014 17:51:42 +0000
+Message-ID: <1389117102-6488-2-git-send-email-liam.r.girdwood@linux.intel.com>
+References: <1389117102-6488-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A9DE265087
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 18:52:16 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F8AF2650C2
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 18:52:19 +0100 (CET)
+In-Reply-To: <1389117102-6488-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +25,50 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Update the ASoC overview to bring it up to date with the current code base
-and include multi-component.
+Some BE DAIs can be "dummy" (when the DSP is controlling the DAI) and as such
+wont have set a minimum number of playback or capture channels required for BE
+DAI registration (to establish supported stream directions).
+
+Force machine drivers to explicitly set whether they support playback and capture
+stream directions for every BE DAIs.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- Documentation/sound/alsa/soc/overview.txt | 27 ++++++++++++++++++---------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+ include/sound/soc.h | 4 ++++
+ sound/soc/soc-pcm.c | 6 ++----
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/sound/alsa/soc/overview.txt b/Documentation/sound/alsa/soc/overview.txt
-index 138ac88..ff88f52 100644
---- a/Documentation/sound/alsa/soc/overview.txt
-+++ b/Documentation/sound/alsa/soc/overview.txt
-@@ -49,18 +49,23 @@ features :-
-   * Machine specific controls: Allow machines to add controls to the sound card
-     (e.g. volume control for speaker amplifier).
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 1cda7d3..0a600b8d 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -888,6 +888,10 @@ struct snd_soc_dai_link {
+ 	/* This DAI link can route to other DAI links at runtime (Frontend)*/
+ 	unsigned int dynamic:1;
  
--To achieve all this, ASoC basically splits an embedded audio system into 3
--components :-
-+To achieve all this, ASoC basically splits an embedded audio system into
-+multiple re-usable component drivers :-
- 
--  * Codec driver: The codec driver is platform independent and contains audio
--    controls, audio interface capabilities, codec DAPM definition and codec IO
--    functions.
-+  * Codec class drivers: The codec class driver is platform independent and
-+    contains audio controls, audio interface capabilities, codec DAPM
-+    definition and codec IO functions. This class extends to BT, FM and MODEM
-+    ICs if required. Codec class drivers should be generic code that can run
-+    on any architecture and machine.
- 
--  * Platform driver: The platform driver contains the audio DMA engine and audio
--    interface drivers (e.g. I2S, AC97, PCM) for that platform.
-+  * Platform class drivers: The platform class driver includes the audio DMA
-+    engine driver, digital audio interface (DAI) drivers (e.g. I2S, AC97, PCM)
-+    and any audio DSP drivers for that platform.
- 
--  * Machine driver: The machine driver handles any machine specific controls and
--    audio events (e.g. turning on an amp at start of playback).
-+  * Machine class driver: The machine driver class acts as the glue that
-+    decribes and binds the other component drivers together to form an ALSA
-+    "sound card device". It handles any machine specific controls and
-+    machine level audio events (e.g. turning on an amp at start of playback).
- 
- 
- Documentation
-@@ -84,3 +89,7 @@ machine.txt: Machine driver internals.
- pop_clicks.txt: How to minimise audio artifacts.
- 
- clocking.txt: ASoC clocking for best power performance.
++	/* DPCM capture and Playback support */
++	unsigned int dpcm_capture:1;
++	unsigned int dpcm_playback:1;
 +
-+jack.txt: ASoC jack detection.
-+
-+DPCM.txt: Dynamic PCM - Describes DPCM with DSP examples.
+ 	/* pmdown_time is ignored at stop */
+ 	unsigned int ignore_pmdown_time:1;
+ 
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index feb0f28..9680d5f 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2133,10 +2133,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	int ret = 0, playback = 0, capture = 0;
+ 
+ 	if (rtd->dai_link->dynamic || rtd->dai_link->no_pcm) {
+-		if (cpu_dai->driver->playback.channels_min)
+-			playback = 1;
+-		if (cpu_dai->driver->capture.channels_min)
+-			capture = 1;
++		playback = rtd->dai_link->dpcm_playback;
++		capture = rtd->dai_link->dpcm_capture;
+ 	} else {
+ 		if (codec_dai->driver->playback.channels_min &&
+ 		    cpu_dai->driver->playback.channels_min)
 -- 
 1.8.3.2
