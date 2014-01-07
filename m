@@ -1,54 +1,30 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 03/11] ASoC: ux500: Provide better checking for Device
- Tree and/or Platform Data
-Date: Tue, 7 Jan 2014 15:37:34 +0000
-Message-ID: <20140107153734.GL31886@sirena.org.uk>
-References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
- <1387468508-12286-4-git-send-email-lee.jones@linaro.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCHv10] dmaengine: Add support for BCM2835
+Date: Tue, 7 Jan 2014 16:37:02 +0100
+Message-ID: <201401071637.03135.arnd@arndb.de>
+References: <52CB0180.1040605@koalo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xZdiZ9E8vSzGEnb8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1387468508-12286-4-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <52CB0180.1040605@koalo.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Florian Meier <florian.meier@koalo.de>
+Cc: devicetree <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>, dmaengine <dmaengine@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Monday 06 January 2014, Florian Meier wrote:
+> Add support for DMA controller of BCM2835 as used in the Raspberry Pi.
+> Currently it only supports cyclic DMA.
+> 
+> Signed-off-by: Florian Meier <florian.meier@koalo.de>
 
---xZdiZ9E8vSzGEnb8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Dec 19, 2013 at 03:55:00PM +0000, Lee Jones wrote:
-> These drivers will not work without platform specific data, which is
-> passed in via Device Tree or Platform Data. To avoid the chance of
-> NULL pointer dereferencing and alike, let's ensure we have at least
-> one of the methods in play before continuing.
-
-Applied, thanks.
-
---xZdiZ9E8vSzGEnb8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSzB87AAoJELSic+t+oim9OVEQAIl1mJgu3QSNNwmZ4DwxyTsx
-ZKQejHjL8mzi/CxqiWl8/WsA+Yoh0rt+xLCt59SG6TgAHiRyhbvf2HWm9B+WA0Y8
-JTZ0Rl0G0Mkfo2uPeNBPw+O/cT9sPuXAlgYekapC0R7unV3HPmxVAg5j0TZOdQ9U
-KZSamey0429+cAH3UTkoHd4lRm36qy9KVjHpc0zR1wxiLvcMjRrULJ8lv8aIt9Qu
-WMLSXbmTMMOhwui5s0I5c8T+730J+OMkXnknccofvBzyVRp5dzaK6LItn5pXDiu8
-Il3sO12OmUnQ2HMgPfG7cOJd3OXUv91gNa9Fv+EWQFK21ZtNjFAn0VWIMuGK4v1l
-+hfgiTltY6Vwr/eCSdlIK5J3bV74fxKNuxxY7+xBA5z2ZWHYQQGJEpW1AIefJqAS
-yCrRvWFn+ea1AxYBEUJtdQZcZsBQTc69/U3Za7NL0D93UAFIRHPz2K41fXTu1lxP
-X9ZAl+u7gE4LwkbR/ARBsMiw7HmByeutxK0maIvj8GIKTHHtHHVqY2uHTHae0BJY
-n2KG4SMaYz9qjhiIF1EkLouqB+RIk9nJyutVWImlSAqx+SG9jrH2IX/R1u6YNoGG
-ywmaeh2ABumyYvIRA4gjf2CfrFd9+2SHOY7pt37ts4D8gvnBYKwKS1PxBaxrKl8W
-7FiNKy3eRi9jyu8b5syF
-=7XIr
------END PGP SIGNATURE-----
-
---xZdiZ9E8vSzGEnb8--
+Acked-by: Arnd Bergmann <arnd@arndb.de>
