@@ -1,18 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dpcm: Explicitly set BE DAI link
- supported stream directions
-Date: Tue, 7 Jan 2014 17:58:06 +0000
-Message-ID: <20140107175806.GI31886@sirena.org.uk>
-References: <1389117102-6488-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1389117102-6488-2-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Johan Esvelt <johan.esvelt@bluedelta.nl>
+Subject: exceprionally large value
+Date: Tue, 07 Jan 2014 20:27:32 +0100
+Message-ID: <1389122852.3405.6.camel@charles.fritz.box>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1618010499751669885=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 05B11261092
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 18:58:11 +0100 (CET)
-In-Reply-To: <1389117102-6488-2-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from mail-ee0-f45.google.com (mail-ee0-f45.google.com [74.125.83.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id C6CD82610A7
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 20:27:33 +0100 (CET)
+Received: by mail-ee0-f45.google.com with SMTP id d49so260296eek.18
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jan 2014 11:27:33 -0800 (PST)
+Received: from [192.168.11.150] (a82-161-42-179.adsl.xs4all.nl.
+ [82.161.42.179])
+ by mx.google.com with ESMTPSA id h3sm182811060eem.15.2014.01.07.11.27.32
+ for <alsa-devel@alsa-project.org>
+ (version=SSLv3 cipher=RC4-SHA bits=128/128);
+ Tue, 07 Jan 2014 11:27:33 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,64 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1618010499751669885==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DeJtexeFuKMt9/11"
-Content-Disposition: inline
+Hi,
+
+My PC crashed and these are the last 3 lines in /var/log/messages:
+
+-------------------------8<----------------------
+
+Jan  7 19:11:48 charles pulseaudio[2646]: alsa-util.c: snd_pcm_avail()
+returned a value that is exceptionally large: 416448 bytes (2360 ms).
+Jan  7 19:11:48 charles pulseaudio[2646]: alsa-util.c: Most likely this
+is a bug in the ALSA driver 'snd_emu10k1'. Please report this issue to
+the ALSA developers.
+Jan  7 19:11:48 charles pulseaudio[2646]: alJan  7 19:20:03 charles
+kernel: imklog 5.8.10, log source = /proc/kmsg started.
+
+-------------------------------8<-----------------
+
+I am running Centos 6.5:
+
+Linux version 2.6.32-358.18.1.el6.x86_64
+(mockbuild@c6b10.bsys.dev.centos.org) (gcc version 4.4.7 20120313 (Red
+Hat 4.4.7-3) (GCC) ) #1 SMP Wed Aug 28 17:19:38 UTC 2013
+
+What can I do to prevent this from happening again?
+
+Best regards,
 
 
---DeJtexeFuKMt9/11
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jan 07, 2014 at 05:51:42PM +0000, Liam Girdwood wrote:
-> Some BE DAIs can be "dummy" (when the DSP is controlling the DAI) and as =
-such
-> wont have set a minimum number of playback or capture channels required f=
-or BE
-> DAI registration (to establish supported stream directions).
->=20
-> Force machine drivers to explicitly set whether they support playback and=
- capture
-> stream directions for every BE DAIs.
-
-Applied, thanks!
-
---DeJtexeFuKMt9/11
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSzEArAAoJELSic+t+oim9Be0P/jFcVkY30ToARpJWJ3/7tz6N
-/nfhL1HtAApwkNz+E/6b6ByfNGdl++hL9eC6aEHPW97no7N0zXBt1X0iyETDR7ur
-6sJLsFdfrAnc0q9Fcs7ltCrUFlFlrDHII5/nu2G1OPclLh1B7C3oYQ0gxmhtHwmA
-o6DXHlrdZf+RKoRRqOLA56UPMjVJMR7QCopmf9kDb9x9hwrQXTUGvigM9HmUrHXO
-E41X4WV5vd228KsXkaCbA4DU6mxMcZQIp9rD38f0ovXs9socIZzg8A5MES+eWJIn
-ZTjiA6AQKORuAsIjQwhz6RpxXzDH52utSLIY4UdvM3xj0buzts2he5STdPzAAZfD
-iScqdvcr7adPq1RwVWIWm6Id/xpT8UhTgLFP/ROzBoUvEBlQybHvkh5/Ryszd78N
-rShNXf8fel0sl/D/Z7o9y0Z5gELKXmUMjEsbxyf7+jWEeYCEXHMaloJ4plkM8l6K
-p88osR2Wsyd/CQskfcJtIW5ha+0yrTIyqbqikH4lwljtW3O4/99rB62Zv+PYfR/m
-OPXC8u9ZWKWFeajS1PIwYMOCSnv0pitgl4bTTec3kh4zUHXDoxfKn5hjO9BnyAAf
-dB0Eh2SmlUE5RMax1Eap+6bxK0SFwT936dQjuUl9jbcLr5HwCQ5L3xWx40wrdaJ8
-pDrnFwU5jipR3txjc4rG
-=Vi0s
------END PGP SIGNATURE-----
-
---DeJtexeFuKMt9/11--
-
---===============1618010499751669885==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1618010499751669885==--
+Johan Esvelt
