@@ -1,19 +1,20 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: atmel-pcm-dma: Remove
- SND_DMAENGINE_PCM_FLAG_NO_RESIDUE flag
-Date: Tue, 07 Jan 2014 10:15:51 +0100
-Message-ID: <52CBC5C7.9090802@metafoo.de>
-References: <1389018629-11513-1-git-send-email-lars@metafoo.de>
- <52CBC359.7010906@atmel.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH 0/10] ASoC: rsnd: add SRC support
+Date: Tue, 7 Jan 2014 10:21:40 +0100
+Message-ID: <20140107102140.08be6cdd@armhf>
+References: <87lhzgurtc.wl%kuninori.morimoto.gx@gmail.com>
+ <20131231133657.GC31886@sirena.org.uk>
+ <8761pxk79s.wl%kuninori.morimoto.gx@gmail.com>
+ <20140106152344.GX31886@sirena.org.uk>
+ <87wqic4p79.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-033.synserver.de (smtp-out-127.synserver.de
- [212.40.185.127])
- by alsa0.perex.cz (Postfix) with ESMTP id B1E3C26167D
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 10:15:31 +0100 (CET)
-In-Reply-To: <52CBC359.7010906@atmel.com>
+Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9E6C26167D
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 10:22:27 +0100 (CET)
+In-Reply-To: <87wqic4p79.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,41 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: Elen Song <elen.song@atmel.com>, Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/07/2014 10:05 AM, Bo Shen wrote:
-> Hi Lars,
-> 
-> On 01/06/2014 10:30 PM, Lars-Peter Clausen wrote:
->> Since commit d48de6f1a ("DMA: AT91: Get residual bytes in dma buffer") the
->> at91-dma driver has support for residue reporting. So there is no need to
->> specify the SND_DMAENGINE_PCM_FLAG_NO_RESIDUE flag. This allows for a finer
->> grained resolution of the PCM pointer as well as avoids the race condition
->> that
->> can occur with the period counting that is used when the dmaengine driver
->> does
->> not support residue reporting.
->>
->> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->>
->> ---
->> I don't have the hardware, so only compile tested. It should work though
->> if the
->> residue calculation in the dma driver is implemented correctly.
->> ---
->>   sound/soc/atmel/atmel-pcm-dma.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> Thanks for your patch.
-> 
-> For the dma get residue code, we are improving it. So, I think we'd better
-> waiting the improvement done and after let this patch go into mainline.
-> 
-> What do you think?
-
-If the residue reporting in the dmaengine driver doesn't work properly yet
-we have to wait.
-
-- Lars
+T24gTW9uLCAwNiBKYW4gMjAxNCAxNjoyMTowMSAtMDgwMCAoUFNUKQpLdW5pbm9yaSBNb3JpbW90
+byA8a3VuaW5vcmkubW9yaW1vdG8uZ3hAZ21haWwuY29tPiB3cm90ZToKCj4gPiA+IFRoYW5rIHlv
+dSBmb3IgeW91ciBoZWxwLgo+ID4gPiBJIHNlZSwgSSB3aWxsIHN0YXJ0IG1vdmluZyBpdCwgYnV0
+IEkgbmVlZCBzYW1wbGUgY29kZSBmb3IgaXQuCj4gPiA+IFdobyBpcyB1c2luZyBEUENNID8KPiA+
+IAo+ID4gTm9ib2R5IGluIHRyZWUgdW5mb3J0dW5hdGVseS4gIFRoZSBUSSBPTUFQIGFuZCBRdWFs
+Y29tbSBwcm9kdWN0aW9uCj4gPiBrZXJuZWxzIHVzZSBpdCBhcyBkbyBzb21lIG9mIHRoZSBuZXdl
+ciBJbnRlbCBIYXN3ZWxsIGNoaXBzIGJ1dCBhbGwgb2YKPiA+IHRoYXQgaXMgb3V0IG9mIHRyZWUu
+ICBUaGVyZSdzIGFsc28gdGhlIHdvcmsgUnVzc2VsbCBoYXMgYmVlbiBkb2luZyBmb3IKPiA+IEtp
+cmt3b29kIGJ1dCBJIGRvbid0IHRoaW5rIGhlIHBvc3RlZCB0aGUgZmluaXNoZWQgdmVyc2lvbiB0
+byB0aGUgbGlzdAo+ID4geWV0IChoZSdzIHdhaXRpbmcgZm9yIHNvbWUgZml4ZXMgZnJvbSBMaWFt
+IHdoaWNoIHdpbGwgaG9wZWZ1bGx5IGNvbWUKPiA+IHNvb24pLgo+IAo+IEhtbS4uLiBPSyBJIHVu
+ZGVyc3Rvb2QuCj4gRG8geW91IHRoaW5rIGl0IGlzIHBvc3NpYmxlIHRvIGdldCB0aGVzZSBvdXQt
+b2YtdHJlZSBjb2Rlcwo+IGZyb20gc29tZXdoZXJlL3NvbWVob3cgPwo+IEkgY2FuIHdvcmsgZm9y
+IERQQ00gc3VwcG9ydCBmb3Igb3VyIGRyaXZlciwKPiBidXQgaXQgaXMgdmVyeSBkaWZmaWN1bHQg
+Zm9yIG1lIHdpdGhvdXQgc2FtcGxlIGNvZGUuLi4KPiAKPiBJZiBJIGNvdWxkIGdldCBzYW1wbGUg
+Y29kZSwgYW5kIEkgZmluaXNoZWQgbXkgY3VycmVudCB0YXNrLAo+IEkgd2lsbCBzdGFydCBEUENN
+IHN1cHBvcnQuIGlzIGl0IE9LID8KCkt1bmlub3JpLAoKTGFzdCBtb250aCBJIHRyaWVkIHRvIHVz
+ZSBEUENNIGluIHRoZSBDdWJveCAoa2lya3dvb2QgYXVkaW8gKyBueHAKdGRhOTk4eCBIRE1JIHRy
+YW5zbWl0dGVyIGFuZCBTL1BESUYpLCBhbmQsIGFzIHlvdXIgc2ltcGxlLWNhcmQgd2FzIG5vdApl
+YXN5IHRvIGV4dGVuZCwgSSBwcm9wb3NlZCBhbiBvdGhlciB3YXkgdG8gZGVzY3JpYmUgYSBEUENN
+IGF1ZGlvIHN5c3RlbQppbiBEVDoKCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlw
+ZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxMy1EZWNlbWJlci8wNzA1OTQuaHRtbAoKYW5kIGFsc286Cgpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTQt
+SmFudWFyeS8wNzA2MzQuaHRtbAoKSW4gZmFjdCwgRFBDTSBqdXN0IG5lZWRzIG1hbnkgREFJIGxp
+bmtzLCBhbmQgYSBmbGFnICdmcm9udC1lbmQnIC8KJ2JhY2stZW5kJzoKCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNC1KYW51YXJ5LzA3MDYy
+My5odG1sCgpBY3R1YWxseSwgSSBhZGRlZCBtYW55IERBSSBsaW5rcyB0byB5b3VyIHNpbXBsZS1j
+YXJkIGFuZCBJIGFtIHdhaXRpbmcKZm9yIFhpdWJvJ3MgcGF0Y2hlcyB0byBiZSBhcHBsaWVkIGJl
+Zm9yZSBwcm9wb3NpbmcgbWluZS4KClRoaXMgd2lsbCBtYWtlIHRoZSBDdWJveCBhdWRpbyBzeXN0
+ZW0gd29yayBieSBzZWxlY3RpbmcgdGhlIEkyUyBvcgpTL1BESUYgUENNLCBidXQgaXQgd2lsbCBu
+b3QgYmUgRFBDTS4gVGhlIHJlYXNvbiBpcyB0aGF0LCB3aXRoIHRoZQphY3R1YWwgRFBDTSwgdGhl
+IHNhbXBsZSByYXRlcyBhbmQgZm9ybWF0cyBhcmUgdGhlIG9uZXMgb2YgdGhlCmZyb250LWVuZCwg
+YW5kIG5vdCB0aGUgc3Vic2V0IG9mIHRoZSBvbmVzIG9mIHRoZSBEQUlzIGluIHRoZSBzb3VuZApy
+b3V0ZS4gSSBleHBsYWluZWQgdGhpcyBwcm9ibGVtIGluOgoKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDEzLURlY2VtYmVyLzA3MDU4NS5odG1s
+CgphbmQgaXQgYXBwZWFycyB0aGF0IHNvbWUgZGV2ZWxvcG1lbnQgaXMgbmVlZGVkIGluIHRoZSBz
+b3VuZCBjb3JlIHRvCmhhbmRsZSB0aGlzIEN1Ym94IGNhc2UuCgpDb21pbmcgYmFjayB0byBhIERQ
+Q00gZXhhbXBsZSwgYXBhcnQgZnJvbSBhZGRpbmcgdGhlICdmcm9udC1lbmQnIGFuZAonYmFjay1l
+bmQnIGZsYWdzIGluIHRoZSBEQUkgbGlua3MsIHRoZSBjaGFuZ2VzIHdlcmU6CgotIGFkZCB0aGUg
+Z2xvYmFsIHN5c3RlbSBwbGF5YmFjayBEQUkgaW4gdGhlIGF1ZGlvIGNvbnRyb2xsZXIuCgogIFRo
+aXMgREFJIGlzIHRoZSBhdWRpbyBlbnRyeSBwb2ludCAoZnJvbnQtZW5kKS4gT24gYXVkaW8gb3Bl
+biwgdGhlCiAgYmFjay1lbmQgREFJcyBhcmUgc2VhcmNoZWQgYW5kIHN0YXJ0ZWQgKHNuZF9wY21f
+b3BlbikuIElmIHRoZXJlIHdhcyBhCiAgcGxhdGZvcm0gZGVjbGFyZWQgaW4gdGhlIGFzc29jaWF0
+ZWQgREFJIGxpbmtzLCB0aGUgRE1BIG9wZW4gd291bGQgYmUKICBjYWxsZWQgbWFueSB0aW1lcywg
+c28KCi0gZG9uJ3Qgc2V0IGEgcGxhdGZvcm0gcG9pbnRlciBpbiB0aGUgYmFjay1lbmQgREFJIGxp
+bmtzLgoKVGhhdCdzIGFsbC4KCklmIHlvdSB3YW50IG1vcmUgaW5mb3JtYXRpb24sIEkgbWF5IHNl
+bmQgeW91IHRoZSBwYXRjaCBJIGRpZCBmb3IgRFBDTQppbiB0aGUgYXVkaW8gY29udHJvbGxlciAo
+a2lya3dvb2QtaTJzLmMpLgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAqKiBCcmVpemgg
+aGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZyLwpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
