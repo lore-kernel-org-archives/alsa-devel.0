@@ -1,54 +1,55 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 04/11] ASoC: Ux500: Match platform by device node when
- booting Device Tree
-Date: Tue, 7 Jan 2014 15:37:48 +0000
-Message-ID: <20140107153748.GM31886@sirena.org.uk>
+Subject: Re: [PATCH 05/11] ASoC: ux500_pcm: Stop pretending that we support
+ varying address widths
+Date: Tue, 7 Jan 2014 15:38:04 +0000
+Message-ID: <20140107153804.GN31886@sirena.org.uk>
 References: <1387468508-12286-1-git-send-email-lee.jones@linaro.org>
- <1387468508-12286-5-git-send-email-lee.jones@linaro.org>
+ <1387468508-12286-6-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+6PFc4gFogXO4FO2"
+	protocol="application/pgp-signature"; boundary="gyrD3n6DECm5G5Ux"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1387468508-12286-5-git-send-email-lee.jones@linaro.org>
+In-Reply-To: <1387468508-12286-6-git-send-email-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Lee Jones <lee.jones@linaro.org>
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---+6PFc4gFogXO4FO2
+--gyrD3n6DECm5G5Ux
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 19, 2013 at 03:55:01PM +0000, Lee Jones wrote:
-> We're getting closer to fully enabling the Ux500 ASoC driver for Device
-> Tree. When we switch over from using AUXDATA we'll need to match platform
-> by only Device Tree nodes. In this patch we NULL out the platform_name,
-> and supply nodes for each platform device.
+On Thu, Dec 19, 2013 at 03:55:02PM +0000, Lee Jones wrote:
+> The Slave Config's addr_width attribute is populated by data_width of
+> dma_cfg, which in turn is derived from dma_params' data_size attribute
+> and that comes from the slot_width which is always 16 bits (2 Bytes).
+> We're cutting out the middle man here and just setting the DMA Slave
+> Config directly.
 
 Applied, thanks.
 
---+6PFc4gFogXO4FO2
+--gyrD3n6DECm5G5Ux
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzB9JAAoJELSic+t+oim9peoP/2pmEP6cEyVTq9a/ZVH2XRH3
-fmT/A2BQ2bVIAN4HpaMTYumz9mCctewznUZ/dje0vPcSQ0gYI0xOZc419FuGqJ+6
-i1jc+B99a3wEe7j6L6LbeAndR53LxBRRN4h7bwL+NId4NLnm6b7cZe3JE/5FQbZu
-oCfqwT90KTow+2RoK0B+cIWMd36oAV635jf7nn7yNcMm29txhWxEltK1oMe60r49
-3Y6XKG73LH5RpOUi+MEdXifxKKQov9CtSQjLts+bl02n5amnFRi4fo339u65KK9s
-hTgAti3eUAgwNPILk+2/81Ur/d6tGM0SGLoddZs+z8pcvRjcOM+SSXCAPS2wN2Gd
-Uh8dBwVw83is6Rn9QRiw/loI0Yj7RYORISH3H+1Pjm2pfFSmU7+duKBYzC1r07TP
-Q9PJm/3CLog1FITay2/3ASCQY2oLsOVDTDGuw0mxxNG1pj7kUmKkd7mZh/mz1RLR
-NpvTc9TAwO09tLnW+wN75mUNm5K45zOydUrdC0YOrxevk7ijo672XYuEq+FzeHyZ
-HezJp/5uwY5KmSajtNeotMgI1XoN7iRNrnAYLarnIRf3PbnhFDiLl2SIOvlBmpUx
-oRIGXgGhoauhawTvPIoLWSG+Skmrhh1CBTkYCEIaL38jY1kwgLlSnZIjSPeJvVi/
-GYMGV4KBgURXL8t09I3Z
-=FSVJ
+iQIcBAEBAgAGBQJSzB9YAAoJELSic+t+oim9wz0QAIwaSfP73x6pEoUIW1jU4ZlC
+WfirKyYB3jPelvWWOPEunimuigYHRvmlo5pYcD/9FY+PWf0T5cDIIEhLqjMnDJwh
+6qMIBv7OzVCxNLMNkVN5QdsF+GVY4vn9pS96y9ES7Gqf6KYdwvMRS2gnfQYLl9He
++3/O3z+/dF137wyDpPN5kah72dwT1rEF7v3rhbryJnMeih8xUdb7vtvtJROk87C+
+wfPcsC7+1PdaiOj/Pj1JYproNjb/eO2o86XQHkT5VN2V5Wq3aghCw0kXyfTQKXqr
+Y5klc24WACqOtLrc8rRE9HojlO7RXegYTZEDDDhFGVS0j34kzPXsZEnCBDSyOWM0
+Xqk3uoEn/cFEX5jfLcmeK5lVZCtT7MD9q/SUakWefArqbuPgRpLVRWkg8FnP5c+e
+EnRA2FoTXjX6zsnN8i3F7KhwWldTFogxXSITTSfz3a2echS/SY+gPcjnqVrWA+5G
+Gge0pOAmdwFxrfQwAkxQsGhVojKk2L/3fzexyjBgSyfEfhLSRswPTqqdBi5FvANS
+HrMyh7+Nsz3ghcxtjey7PTdhjRZ8roVm4UjcG6rrBSmfjX8rWt4TfT/iT1mZ5Hat
+V8tlRmBiWmspUAHhxXgRWmXdHoRkCpoddPyUFQOsRV0yZlFoIw8f7cDy+jRp63ST
+8FOWJsdzZu3+qj9VYqZr
+=uo1m
 -----END PGP SIGNATURE-----
 
---+6PFc4gFogXO4FO2--
+--gyrD3n6DECm5G5Ux--
