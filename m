@@ -1,17 +1,14 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: mx6: Audio does not work on linux-next 20140107
-Date: Tue, 07 Jan 2014 13:07:22 +0100
-Message-ID: <52CBEDFA.10603@metafoo.de>
-References: <CAOMZO5C=TFczzz8CQj6N=N_Z=p26_73SJvSk5cmp9FPVxF+O=A@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: ASoC: fix new build warning in fsl_ssi
+Date: Tue, 07 Jan 2014 13:09:48 +0100
+Message-ID: <3842933.k0ltEqM7B8@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-033.synserver.de (smtp-out-149.synserver.de
- [212.40.185.149])
- by alsa0.perex.cz (Postfix) with ESMTP id B48392616CB
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 13:06:57 +0100 (CET)
-In-Reply-To: <CAOMZO5C=TFczzz8CQj6N=N_Z=p26_73SJvSk5cmp9FPVxF+O=A@mail.gmail.com>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id E324B2616CB
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2014 13:09:51 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,32 +18,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Nicolin Chen <b42378@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/07/2014 12:56 PM, Fabio Estevam wrote:
-[...]
-> Backtrace:
-> [<804aee5c>] (dmaengine_pcm_dma_complete) from [<802e6428>] (sdma_tasklet+0x128)
-> [<802e6300>] (sdma_tasklet) from [<8002c4b8>] (tasklet_action+0x90/0x148)
->  r10:808f64c0 r8:00000000 r7:8089cd24 r6:80894000 r5:00000000 r4:bfaa41b0
-[...]
-> 
-> I haven't started debugging it, but if this looks familiar to someone,
-> please let me know.
-> 
+Commit 6873ee464a9f "ASoC: fsl_ssi: Fix printing return code on clk error"
+changed a warning message but got the format string wrong, resulting in
+a warning "sound/soc/fsl/fsl_ssi.c:1196:6: warning: format '%d' expects
+argument of type 'int', but argument 3 has type 'long int' [-Wformat=]".
 
-We've had similar problems like this before. Typically this is caused by the
-dmaengine driver calling the complete callback when it shouldn't. E.g. after
-dmaegine_terminate_all() has already been called for the channel. There is
-also unfortunately a small chance condition (which needs some extensions to
-the dmaengine API before we can fix it). But the chance for this race
-condition to occur is really small and has only been observed on a 4 (or 8,
-not sure) core system so far. Is the problem reproducible in your case? Also
-do you have a know good kernel version?
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+Please apply or fold into the original patch, whichever works for you.
 
-> Regards,
-> 
-> Fabio Estevam
-> 
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 3d74477a..c9d567c 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1192,7 +1192,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		 */
+ 		ssi_private->baudclk = devm_clk_get(&pdev->dev, "baud");
+ 		if (IS_ERR(ssi_private->baudclk))
+-			dev_warn(&pdev->dev, "could not get baud clock: %d\n",
++			dev_warn(&pdev->dev, "could not get baud clock: %ld\n",
+ 				 PTR_ERR(ssi_private->baudclk));
+ 		else
+ 			clk_prepare_enable(ssi_private->baudclk);
