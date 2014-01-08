@@ -1,168 +1,126 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH 1/4] ASoC: simple-card: add simple audio card widgets support
-Date: Wed, 8 Jan 2014 15:02:33 +0800
-Message-ID: <1389164556-2728-1-git-send-email-Li.Xiubo@freescale.com>
+From: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Subject: [PATCH 3/4] ASoC: fsl: Add VF610 simple audio card widgets driver.
+Date: Wed, 8 Jan 2014 15:02:35 +0800
+Message-ID: <1389164556-2728-3-git-send-email-Li.Xiubo@freescale.com>
+References: <1389164556-2728-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-doc-owner@vger.kernel.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, kuninori.morimoto.gx@renesas.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1389164556-2728-1-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-For many audio cards there need to add some off-CODEC widgets, and this
-is hard to be supported by dts only, because maybe some widgets need one
-or more call backs, such as wevent.
+This is the SGTL5000 codec based off-CODEC widgets supports.
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+Signed-off-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 ---
- .../devicetree/bindings/sound/simple-card.txt      |  1 +
- include/sound/simple_card.h                        | 14 ++++
- sound/soc/generic/Makefile                         |  3 +-
- sound/soc/generic/simple-card-widgets.c            | 79 ++++++++++++++++++++++
- 4 files changed, 96 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/generic/simple-card-widgets.c
+ sound/soc/fsl/Kconfig                     | 25 ++++++++++++++++++
+ sound/soc/fsl/Makefile                    |  3 +++
+ sound/soc/fsl/snd-soc-simple-card-vf610.c | 44 +++++++++++++++++++++++++++++++
+ 3 files changed, 72 insertions(+)
+ create mode 100644 sound/soc/fsl/snd-soc-simple-card-vf610.c
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index e9e20ec..e626302 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -15,6 +15,7 @@ Optional properties:
- 					  Each entry is a pair of strings, the first being the
- 					  connection's sink, the second being the connection's
- 					  source.
-+- simple-sudio-card,widgets		: The name of the audio card off-CODEC widgets.
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 514c275..fc25d8a 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -216,3 +216,28 @@ config SND_SOC_IMX_MC13783
+ 	select SND_SOC_IMX_PCM_DMA
  
- Required subnodes:
- 
-diff --git a/include/sound/simple_card.h b/include/sound/simple_card.h
-index 6c74527..75574f8 100644
---- a/include/sound/simple_card.h
-+++ b/include/sound/simple_card.h
-@@ -12,8 +12,16 @@
- #ifndef __SIMPLE_CARD_H
- #define __SIMPLE_CARD_H
- 
-+#include <linux/of.h>
- #include <sound/soc.h>
- 
-+struct asoc_simple_card_widgets {
-+	const char *name;
-+	struct list_head list;
-+	const struct snd_soc_dapm_widget *widgets;
-+	unsigned int widgets_cnt;
-+};
+ endif # SND_IMX_SOC
 +
- struct asoc_simple_dai {
- 	const char *name;
- 	unsigned int fmt;
-@@ -35,4 +43,10 @@ struct asoc_simple_card_info {
- 	struct snd_soc_card snd_card;
- };
- 
-+struct asoc_simple_card_widgets *
-+asoc_simple_card_get_widgets(struct device_node *);
-+int asoc_simple_card_widgets_register(struct asoc_simple_card_widgets *);
-+void
-+asoc_simple_card_widgets_unregister(struct asoc_simple_card_widgets *);
++menuconfig SND_VF610_SOC
++       tristate "SoC Audio for Freescale VF610 CPUs"
++       select DMA_ENGINE
++       help
++         Say Y or M if you want to add support for codecs attached to
++         the VF610 CPUs.
 +
- #endif /* __SIMPLE_CARD_H */
-diff --git a/sound/soc/generic/Makefile b/sound/soc/generic/Makefile
-index 9c3b246..dbacd12 100644
---- a/sound/soc/generic/Makefile
-+++ b/sound/soc/generic/Makefile
-@@ -1,3 +1,4 @@
--snd-soc-simple-card-objs	:= simple-card.o
-+snd-soc-simple-card-objs	:= simple-card-widgets.o
-+snd-soc-simple-card-objs	+= simple-card.o
- 
- obj-$(CONFIG_SND_SIMPLE_CARD)	+= snd-soc-simple-card.o
-diff --git a/sound/soc/generic/simple-card-widgets.c b/sound/soc/generic/simple-card-widgets.c
++         This will enable Freeacale SAI and SGTL5000 codec, and an extra
++         TWR-AUDIO-SGTL sub-board is needed for SGTL5000.
++
++if SND_VF610_SOC
++
++config SND_SOC_VF610_SGTL5000
++       tristate "SoC Audio support for VF610 boards with SGTL5000"
++       depends on OF && I2C
++       select SND_SOC_FSL_SAI
++       select SND_SOC_SGTL5000
++       select SND_SIMPLE_CARD
++       help
++         Say Y if you want to add support for SoC audio on an VF610 board with
++         a SGTL5000 codec and a SAI.
++
++
++endif #SND_VF610_SOC
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index aaccbee..19690c5 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -58,3 +58,6 @@ obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
+ obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
+ obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
+ obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
++
++# Simple audio card widgets Support
++obj-$(CONFIG_SND_SOC_VF610_SGTL5000) += snd-soc-simple-card-vf610.o
+diff --git a/sound/soc/fsl/snd-soc-simple-card-vf610.c b/sound/soc/fsl/snd-soc-simple-card-vf610.c
 new file mode 100644
-index 0000000..6eb0c8c
+index 0000000..692561c
 --- /dev/null
-+++ b/sound/soc/generic/simple-card-widgets.c
-@@ -0,0 +1,79 @@
++++ b/sound/soc/fsl/snd-soc-simple-card-vf610.c
+@@ -0,0 +1,44 @@
 +/*
-+ * ASoC simple sound card widgets support
++ * ASoC VF610 SGTL5000 off-CODEC widgets support
 + *
 + * Copyright 2013 Freescale Semiconductor, Inc.
-+ * Xiubo Li <Li.Xiubo@freescale.com>
++ * Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 as
 + * published by the Free Software Foundation.
 + */
 +#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
 +#include <sound/simple_card.h>
++#include <sound/soc-dapm.h>
 +
-+static DEFINE_MUTEX(simple_widgets_mutex);
-+static LIST_HEAD(simple_widgets_list);
++static const struct snd_soc_dapm_widget vf610_sgtl5000_dapm_widgets[] = {
++	SND_SOC_DAPM_MIC("Mic Jack", NULL),
++	SND_SOC_DAPM_LINE("Line In Jack", NULL),
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_SPK("Line Out Jack", NULL),
++	SND_SOC_DAPM_SPK("Ext Spk", NULL),
++};
 +
-+void
-+asoc_simple_card_widgets_unregister(struct asoc_simple_card_widgets *comp)
++struct asoc_simple_card_widgets vf610_sgtl5000_widgets = {
++	.name = "vf610-sgtl5000",
++	.widgets = vf610_sgtl5000_dapm_widgets,
++	.widgets_cnt = ARRAY_SIZE(vf610_sgtl5000_dapm_widgets),
++};
++
++static int __init __vf610_sgtl5000_widgets_init(void)
 +{
-+	mutex_lock(&simple_widgets_mutex);
-+	list_del(&comp->list);
-+	mutex_unlock(&simple_widgets_mutex);
++	return asoc_simple_card_widgets_register(&vf610_sgtl5000_widgets);
 +}
-+EXPORT_SYMBOL_GPL(asoc_simple_card_widgets_unregister);
++module_init(__vf610_sgtl5000_widgets_init);
 +
-+int
-+asoc_simple_card_widgets_register(struct asoc_simple_card_widgets *comp)
++static void __exit __vf610_sgtl5000_widgets_exit(void)
 +{
-+	if (!comp) {
-+		pr_err("Simple Card: Failed to register widgets\n");
-+		return -EINVAL;
-+	}
-+
-+	mutex_lock(&simple_widgets_mutex);
-+	list_add(&comp->list, &simple_widgets_list);
-+	mutex_unlock(&simple_widgets_mutex);
-+
-+	return 0;
++	asoc_simple_card_widgets_unregister(&vf610_sgtl5000_widgets);
 +}
-+EXPORT_SYMBOL_GPL(asoc_simple_card_widgets_register);
-+
-+struct asoc_simple_card_widgets *
-+asoc_simple_card_get_widgets(struct device_node *np)
-+{
-+	struct asoc_simple_card_widgets *comp;
-+	const char *string;
-+	int ret;
-+
-+	if (!np)
-+		return ERR_PTR(-EINVAL);
-+
-+	if (!of_property_read_bool(np, "simple-audio-card,widgets"))
-+		return NULL;
-+
-+	ret = of_property_read_string(np, "simple-audio-card,widgets",
-+				      &string);
-+	if (ret < 0)
-+		return ERR_PTR(ret);
-+
-+	mutex_lock(&simple_widgets_mutex);
-+	list_for_each_entry(comp, &simple_widgets_list, list) {
-+		if (!strcmp(string, comp->name)) {
-+			mutex_unlock(&simple_widgets_mutex);
-+			return comp;
-+		}
-+
-+	}
-+	mutex_unlock(&simple_widgets_mutex);
-+
-+	return ERR_PTR(-EPROBE_DEFER);
-+}
-+EXPORT_SYMBOL_GPL(asoc_simple_card_get_widgets);
++module_exit(__vf610_sgtl5000_widgets_exit);
 +
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:asoc-simple-card-widgets");
++MODULE_ALIAS("platform:vf610-simple-card-widgets");
 +MODULE_DESCRIPTION("ASoC Simple Sound Card Widgets");
-+MODULE_AUTHOR("Xiubo Li <Li.Xiubo@freescale.com>");
++MODULE_AUTHOR("Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>");
 -- 
 1.8.4
 
 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
