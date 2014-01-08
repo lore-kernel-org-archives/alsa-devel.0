@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/5] ASoC: sirf: add sirf platform
- driver which provides DMA
-Date: Wed, 8 Jan 2014 12:25:25 +0000
-Message-ID: <20140108122525.GX31886@sirena.org.uk>
-References: <1388729104-28643-1-git-send-email-rongjun.ying@csr.com>
- <1388729104-28643-2-git-send-email-rongjun.ying@csr.com>
- <20140106170715.GK31886@sirena.org.uk>
- <86130EF012BDF348AA0D464A4F449478012AC86DD2@SHAASIEXM01.ASIA.ROOT.PRI>
+Subject: Re: [PATCH 00/11] ASoC/MFD: twl4030 codec local
+ register cache removal
+Date: Wed, 8 Jan 2014 12:48:39 +0000
+Message-ID: <20140108124839.GZ31886@sirena.org.uk>
+References: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
+ <20140108114232.GI19974@lee--X1>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9131042318563542720=="
+Content-Type: multipart/mixed; boundary="===============1157120025921098619=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B2900265184
- for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 13:25:36 +0100 (CET)
-In-Reply-To: <86130EF012BDF348AA0D464A4F449478012AC86DD2@SHAASIEXM01.ASIA.ROOT.PRI>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9691C26515C
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 13:48:53 +0100 (CET)
+In-Reply-To: <20140108114232.GI19974@lee--X1>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,63 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rongjun Ying <Rongjun.Ying@csr.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, DL-SHA-WorkGroupLinux <DL-SHA-WorkGroupLinux@internal.csr.com>, Liam Girdwood <lgirdwood@gmail.com>, RongJun Ying <rjying@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9131042318563542720==
+--===============1157120025921098619==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YoMA/30bvgA8rYEr"
+	protocol="application/pgp-signature"; boundary="MuDnMMoGCLJmcLvf"
 Content-Disposition: inline
 
 
---YoMA/30bvgA8rYEr
+--MuDnMMoGCLJmcLvf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 08, 2014 at 09:01:15AM +0000, Rongjun Ying wrote:
+On Wed, Jan 08, 2014 at 11:42:32AM +0000, Lee Jones wrote:
 
-> > module_platform_driver() if there is some real hardware here.
+> are available in the git repository at:
+>=20
+>   git://git.linaro.org/people/ljones/mfd.git tags/ib-asoc-3.14.2
+>=20
+> for you to fetch changes up to 9146070089cca0fa5c396f1a4d0b96d675004c04:
 
-> Do you mean to add pcm device into dts?
+Pulled, thanks.
 
-> pcm {
->    compatible = "sirf,pcm-audio";
-> }
+>  drivers/mfd/twl-core.c  | 190 ++++++++++++++++++++++++++++++++++++++++++=
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------=
+----------
+>  drivers/mfd/twl6040.c   |  92 ++++++++++++++++++++++++++++++++++++++++++=
+++++++++++++++++++--
 
-Only if this is an actual dedicated hardware block which as myself and
-Lars said doesn't seem to be the case.
+Wrapping seems broken here...
 
---YoMA/30bvgA8rYEr
+--MuDnMMoGCLJmcLvf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzUOxAAoJELSic+t+oim9MHIP/3+gHabE24iPkP3g5vN8OZta
-zZEGGn/fKnTasHedSHUtkGstMk4maDghaZP8a+o9r8hiZq6s0grP0pFEUpsfvWRU
-t4qs2hPbAZOEPca1rwxy/EZi443YJj7T4SkmnFip3q4WKP8Hmhkfim86WUjD/qUX
-k97KfzvX8DRCFdsJi3put/pbxwxOo91NRke0AHeCnvNV60wkXbf8g57tXJ83Lruq
-d3QoGXxMIprrhAi4K049nFSXsdiJuSS7ejEVGqkf9zeeKhMHg1ljz0gybLM49QAs
-Isk3tl7UlRJlFkoK3oe8N7hJE7IT0Jc6MAvF3rEfpddT85vkXk3MU9gfHs2/YkJX
-OlMttx2SP3QihlAkOGg86yEpWrG2il0/dSO/XKyrL7nB1hIpNLa4Htn9jeKU/F0P
-oi57ncophail3lAled3nDJtZXmxY9ssNbD8VfScePRLcB1XaJqe7IPByPCjkDZF/
-nKvBryNdm/L6sbrqq7qNAARvfeCdA99668GFI06MDw3KnWoauftRdmXyr142RG8E
-RLJFxnACgCfPjEsti/sHxj39dazDXUDdSaLNfn0Z5s50kq3wkmsHTFgufuCHmW0y
-qvITEVHp4waN3CilWRl+S7Obk3uk5ZP+qbkjRscS14rF97Po9b+jQHMlpj5oHMaE
-i6mI2AtyLCrMAnzi041T
-=etg6
+iQIcBAEBAgAGBQJSzUkkAAoJELSic+t+oim9Z/QP/ReAlQY7Wb/OrcOlgFANPGW0
+APtqhkZWChBFc0WX9PGI6Yh9iAWAgRAmCQ9vYcB6+FhTN+cxFBsxEOpy3oR7NT9w
+bxWcSmV6t70re9dLEL3Mc2QkD/Q+7UFcVnizxXahXqG3KimjSd/zYZST/a8iW0LO
+8GFz7UswkoB0B4wJ2uyh+eUZHeNIzJv7zFOFzy41Ul0vK3VWCwZg8DUvxam90mL1
+eQKQ5GNtTA4GDzqbptNIo2nEn3N5UL7qo5WHYDc+KTO6RCmEx+Fv2V21OHTgeJlA
+kUNVdCD00p1dphEmRDeBAKsVu3cyTMGisk6+fC09AaQRhrZNJHY4r3ESpIjhuPNA
+nOwMZOmnjNHAbOcHAnAGinGujbiWC0TfATwRdjArvTGLovwLrhzgr1HtK8T7q5RU
+GaEAqeTgMXm70gJ9SWq3cqVPRmtp66yiWza7ImFeUZKYd+LGVKWfc8ajWUE03g5a
+vd0gdrvNVb7uY/Ci2bXELHp5h7heUsCtGOM62L6kev4/N9CZHJ7aNjzO2wZEebNa
+OxgNpsrlhd/zTeZkb+SmwieTqS9fjbt9w+u9FVCjTlgWhfW4Oxx/eLUxSi0jLDll
+cpejHJgR0RQKK5oj/OitjLiPn/uVltI5nRmS3zZMT9oAMBty061Rng9vA6uE6Hgu
+oD2V1Yq4nTzzP6dluw0l
+=peWa
 -----END PGP SIGNATURE-----
 
---YoMA/30bvgA8rYEr--
+--MuDnMMoGCLJmcLvf--
 
---===============9131042318563542720==
+--===============1157120025921098619==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9131042318563542720==--
+--===============1157120025921098619==--
