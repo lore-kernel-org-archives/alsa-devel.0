@@ -1,17 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 2/2] ASoC: DAPM: Automatically connect DAI link
-	widgets in DAPM graph.
-Date: Wed,  8 Jan 2014 10:40:19 +0000
-Message-ID: <1389177619-2760-2-git-send-email-liam.r.girdwood@linux.intel.com>
-References: <1389177619-2760-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Split Thinkpad ACPI-related code
+Date: Wed,  8 Jan 2014 11:48:28 +0100
+Message-ID: <1389178108-11218-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 48B6226510B
- for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 11:40:33 +0100 (CET)
-In-Reply-To: <1389177619-2760-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F76826510B
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 11:48:29 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id DD595AC44
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 10:48:28 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,104 +21,358 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Connect the DAPM graph through each BE DAI link to the componnent(s) on the
-other side of the BE DAI link. This allows the graph to be walked on
-both sides of the link when graph changes are made.
+Both patch_realtek.c and patch_conexant.c contain the fairy same code
+snippet for supporting Thinkpad ACPI LED controls.  Split them into
+thinkpad_helper.c and include it from both places.  Although this
+isn't the best approach from the code size POV, the probability for
+coexistence of both Realtek and Conexant codecs on a single machine is
+pretty low, thus it'll end up with less memory footprint than
+splitting to yet another module.
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/soc-dapm.h |  1 +
- sound/soc/soc-core.c     |  1 +
- sound/soc/soc-dapm.c     | 49 ++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 51 insertions(+)
+ sound/pci/hda/patch_conexant.c  | 100 ++--------------------------------------
+ sound/pci/hda/patch_realtek.c   |  93 ++-----------------------------------
+ sound/pci/hda/thinkpad_helper.c |  99 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 105 insertions(+), 187 deletions(-)
+ create mode 100644 sound/pci/hda/thinkpad_helper.c
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 2037c45..a5de124 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -411,6 +411,7 @@ int snd_soc_dapm_new_controls(struct snd_soc_dapm_context *dapm,
- int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- 				 struct snd_soc_dai *dai);
- int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
-+void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card);
- int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 			 const struct snd_soc_pcm_stream *params,
- 			 struct snd_soc_dapm_widget *source,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 03c779e..a391665 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1728,6 +1728,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 6df4c35b48c5..4e0ec146553d 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -3240,102 +3240,8 @@ enum {
+ 	CXT_FIXUP_THINKPAD_ACPI,
+ };
+ 
+-#if IS_ENABLED(CONFIG_THINKPAD_ACPI)
+-
+-#include <linux/thinkpad_acpi.h>
+-#include <linux/acpi.h>
+-
+-static int (*led_set_func)(int, bool);
+-
+-static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void *context,
+-				 void **rv)
+-{
+-	bool *found = context;
+-	*found = true;
+-	return AE_OK;
+-}
+-
+-static bool is_thinkpad(struct hda_codec *codec)
+-{
+-	bool found = false;
+-	if (codec->subsystem_id >> 16 != 0x17aa)
+-		return false;
+-	if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb, &found, NULL)) && found)
+-		return true;
+-	found = false;
+-	return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb, &found, NULL)) && found;
+-}
+-
+-static void update_tpacpi_mute_led(void *private_data, int enabled)
+-{
+-	struct hda_codec *codec = private_data;
+-	struct conexant_spec *spec = codec->spec;
+-
+-	if (spec->dynamic_eapd)
+-		cx_auto_vmaster_hook(private_data, enabled);
+-
+-	if (led_set_func)
+-		led_set_func(TPACPI_LED_MUTE, !enabled);
+-}
+-
+-static void update_tpacpi_micmute_led(struct hda_codec *codec,
+-				      struct snd_ctl_elem_value *ucontrol)
+-{
+-	if (!ucontrol || !led_set_func)
+-		return;
+-	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0) {
+-		/* TODO: How do I verify if it's a mono or stereo here? */
+-		bool val = ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1];
+-		led_set_func(TPACPI_LED_MICMUTE, !val);
+-	}
+-}
+-
+-static void cxt_fixup_thinkpad_acpi(struct hda_codec *codec,
+-				  const struct hda_fixup *fix, int action)
+-{
+-	struct conexant_spec *spec = codec->spec;
+-
+-	bool removefunc = false;
+-
+-	if (action == HDA_FIXUP_ACT_PROBE) {
+-		if (!is_thinkpad(codec))
+-			return;
+-		if (!led_set_func)
+-			led_set_func = symbol_request(tpacpi_led_set);
+-		if (!led_set_func) {
+-			snd_printk(KERN_WARNING "Failed to find thinkpad-acpi symbol tpacpi_led_set\n");
+-			return;
+-		}
+-
+-		removefunc = true;
+-		if (led_set_func(TPACPI_LED_MUTE, false) >= 0) {
+-			spec->gen.vmaster_mute.hook = update_tpacpi_mute_led;
+-			removefunc = false;
+-		}
+-		if (led_set_func(TPACPI_LED_MICMUTE, false) >= 0) {
+-			if (spec->gen.num_adc_nids > 1)
+-				snd_printdd("Skipping micmute LED control due to several ADCs");
+-			else {
+-				spec->gen.cap_sync_hook = update_tpacpi_micmute_led;
+-				removefunc = false;
+-			}
+-		}
+-	}
+-
+-	if (led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
+-		symbol_put(tpacpi_led_set);
+-		led_set_func = NULL;
+-	}
+-}
+-
+-#else
+-
+-static void cxt_fixup_thinkpad_acpi(struct hda_codec *codec,
+-				  const struct hda_fixup *fix, int action)
+-{
+-}
+-
+-#endif
++/* for hda_fixup_thinkpad_acpi() */
++#include "thinkpad_helper.c"
+ 
+ static void cxt_fixup_stereo_dmic(struct hda_codec *codec,
+ 				  const struct hda_fixup *fix, int action)
+@@ -3492,7 +3398,7 @@ static const struct hda_fixup cxt_fixups[] = {
+ 	},
+ 	[CXT_FIXUP_THINKPAD_ACPI] = {
+ 		.type = HDA_FIXUP_FUNC,
+-		.v.func = cxt_fixup_thinkpad_acpi,
++		.v.func = hda_fixup_thinkpad_acpi,
+ 	},
+ };
+ 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 74b496b0d179..d35cf3dc6711 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3781,95 +3781,8 @@ static void alc290_fixup_mono_speakers(struct hda_codec *codec,
  	}
- 
- 	snd_soc_dapm_link_dai_widgets(card);
-+	snd_soc_dapm_connect_dai_link_widgets(card);
- 
- 	if (card->controls)
- 		snd_soc_add_card_controls(card, card->controls, card->num_controls);
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index dcade13..9176e6d 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3614,6 +3614,55 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
- 	return 0;
  }
  
-+void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card)
+-#if IS_ENABLED(CONFIG_THINKPAD_ACPI)
+-
+-#include <linux/thinkpad_acpi.h>
+-#include <linux/acpi.h>
+-
+-static int (*led_set_func)(int, bool);
+-
+-static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void *context,
+-				 void **rv)
+-{
+-	bool *found = context;
+-	*found = true;
+-	return AE_OK;
+-}
+-
+-static bool is_thinkpad(struct hda_codec *codec)
+-{
+-	bool found = false;
+-	if (codec->subsystem_id >> 16 != 0x17aa)
+-		return false;
+-	if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb, &found, NULL)) && found)
+-		return true;
+-	found = false;
+-	return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb, &found, NULL)) && found;
+-}
+-
+-static void update_tpacpi_mute_led(void *private_data, int enabled)
+-{
+-	if (led_set_func)
+-		led_set_func(TPACPI_LED_MUTE, !enabled);
+-}
+-
+-static void update_tpacpi_micmute_led(struct hda_codec *codec,
+-				      struct snd_ctl_elem_value *ucontrol)
+-{
+-	if (!ucontrol || !led_set_func)
+-		return;
+-	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0) {
+-		/* TODO: How do I verify if it's a mono or stereo here? */
+-		bool val = ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1];
+-		led_set_func(TPACPI_LED_MICMUTE, !val);
+-	}
+-}
+-
+-static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
+-				  const struct hda_fixup *fix, int action)
+-{
+-	struct alc_spec *spec = codec->spec;
+-	bool removefunc = false;
+-
+-	if (action == HDA_FIXUP_ACT_PROBE) {
+-		if (!is_thinkpad(codec))
+-			return;
+-		if (!led_set_func)
+-			led_set_func = symbol_request(tpacpi_led_set);
+-		if (!led_set_func) {
+-			snd_printk(KERN_WARNING "Failed to find thinkpad-acpi symbol tpacpi_led_set\n");
+-			return;
+-		}
+-
+-		removefunc = true;
+-		if (led_set_func(TPACPI_LED_MUTE, false) >= 0) {
+-			spec->gen.vmaster_mute.hook = update_tpacpi_mute_led;
+-			removefunc = false;
+-		}
+-		if (led_set_func(TPACPI_LED_MICMUTE, false) >= 0) {
+-			if (spec->gen.num_adc_nids > 1)
+-				snd_printdd("Skipping micmute LED control due to several ADCs");
+-			else {
+-				spec->gen.cap_sync_hook = update_tpacpi_micmute_led;
+-				removefunc = false;
+-			}
+-		}
+-	}
+-
+-	if (led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
+-		symbol_put(tpacpi_led_set);
+-		led_set_func = NULL;
+-	}
+-}
+-
+-#else
+-
+-static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
+-				  const struct hda_fixup *fix, int action)
+-{
+-}
+-
+-#endif
++/* for hda_fixup_thinkpad_acpi() */
++#include "thinkpad_helper.c"
+ 
+ enum {
+ 	ALC269_FIXUP_SONY_VAIO,
+@@ -4273,7 +4186,7 @@ static const struct hda_fixup alc269_fixups[] = {
+ 	},
+ 	[ALC269_FIXUP_THINKPAD_ACPI] = {
+ 		.type = HDA_FIXUP_FUNC,
+-		.v.func = alc_fixup_thinkpad_acpi,
++		.v.func = hda_fixup_thinkpad_acpi,
+ 	},
+ 	[ALC255_FIXUP_DELL1_MIC_NO_PRESENCE] = {
+ 		.type = HDA_FIXUP_PINS,
+diff --git a/sound/pci/hda/thinkpad_helper.c b/sound/pci/hda/thinkpad_helper.c
+new file mode 100644
+index 000000000000..8492b8a3ce47
+--- /dev/null
++++ b/sound/pci/hda/thinkpad_helper.c
+@@ -0,0 +1,99 @@
++/* Helper functions for Thinkpad LED control;
++ * to be included from codec driver
++ */
++
++#if IS_ENABLED(CONFIG_THINKPAD_ACPI)
++
++#include <linux/acpi.h>
++#include <linux/thinkpad_acpi.h>
++
++static int (*led_set_func)(int, bool);
++
++static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void *context,
++				 void **rv)
 +{
-+	struct snd_soc_pcm_runtime *rtd = card->rtd;
-+	struct snd_soc_dai *cpu_dai, *codec_dai;
-+	struct snd_soc_dapm_route r;
-+	int i;
++	bool *found = context;
++	*found = true;
++	return AE_OK;
++}
 +
-+	memset(&r, 0, sizeof(r));
++static bool is_thinkpad(struct hda_codec *codec)
++{
++	bool found = false;
++	if (codec->subsystem_id >> 16 != 0x17aa)
++		return false;
++	if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb, &found, NULL)) && found)
++		return true;
++	found = false;
++	return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb, &found, NULL)) && found;
++}
 +
-+	/* for each BE DAI link... */
-+	for (i = 0; i < card->num_rtd; i++) {
-+		rtd = &card->rtd[i];
-+		cpu_dai = rtd->cpu_dai;
-+		codec_dai = rtd->codec_dai;
++static void update_tpacpi_mute_led(void *private_data, int enabled)
++{
++	struct hda_codec *codec = private_data;
++	struct hda_gen_spec *spec = codec->spec;
 +
-+		/* dynamic FE links have no fixed DAI mapping */
-+		if (rtd->dai_link->dynamic)
-+			continue;
++	if (spec->vmaster_mute.hook)
++		spec->vmaster_mute.hook(private_data, enabled);
 +
-+		/* there is no point in connecting BE DAI links with dummies */
-+		if (snd_soc_dai_is_dummy(codec_dai) ||
-+			snd_soc_dai_is_dummy(cpu_dai))
-+			continue;
++	if (led_set_func)
++		led_set_func(TPACPI_LED_MUTE, !enabled);
++}
 +
-+		/* connect BE DAI playback if widgets are valid */
-+		if (codec_dai->playback_widget && cpu_dai->playback_widget) {
-+			r.source = cpu_dai->playback_widget->name;
-+			r.sink = codec_dai->playback_widget->name;
-+			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
-+				cpu_dai->codec->name, r.source,
-+				codec_dai->platform->name, r.sink);
-+
-+			snd_soc_dapm_add_route(&card->dapm, &r);
-+		}
-+
-+		/* connect BE DAI capture if widgets are valid */
-+		if (codec_dai->capture_widget && cpu_dai->capture_widget) {
-+			r.source = codec_dai->capture_widget->name;
-+			r.sink = cpu_dai->capture_widget->name;
-+			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
-+				codec_dai->codec->name, r.source,
-+				cpu_dai->platform->name, r.sink);
-+
-+			snd_soc_dapm_add_route(&card->dapm, &r);
-+		}
-+
++static void update_tpacpi_micmute_led(struct hda_codec *codec,
++				      struct snd_ctl_elem_value *ucontrol)
++{
++	if (!ucontrol || !led_set_func)
++		return;
++	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0) {
++		/* TODO: How do I verify if it's a mono or stereo here? */
++		bool val = ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1];
++		led_set_func(TPACPI_LED_MICMUTE, !val);
 +	}
 +}
 +
- static void soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
- 	int event)
- {
++static void hda_fixup_thinkpad_acpi(struct hda_codec *codec,
++				    const struct hda_fixup *fix, int action)
++{
++	struct hda_gen_spec *spec = codec->spec;
++	bool removefunc = false;
++
++	if (action == HDA_FIXUP_ACT_PROBE) {
++		if (!is_thinkpad(codec))
++			return;
++		if (!led_set_func)
++			led_set_func = symbol_request(tpacpi_led_set);
++		if (!led_set_func) {
++			snd_printk(KERN_WARNING "Failed to find thinkpad-acpi symbol tpacpi_led_set\n");
++			return;
++		}
++
++		removefunc = true;
++		if (led_set_func(TPACPI_LED_MUTE, false) >= 0) {
++			spec->vmaster_mute.hook = update_tpacpi_mute_led;
++			removefunc = false;
++		}
++		if (led_set_func(TPACPI_LED_MICMUTE, false) >= 0) {
++			if (spec->num_adc_nids > 1)
++				snd_printdd("Skipping micmute LED control due to several ADCs");
++			else {
++				spec->cap_sync_hook = update_tpacpi_micmute_led;
++				removefunc = false;
++			}
++		}
++	}
++
++	if (led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
++		symbol_put(tpacpi_led_set);
++		led_set_func = NULL;
++	}
++}
++
++#else /* CONFIG_THINKPAD_ACPI */
++
++static void hda_fixup_thinkpad_acpi(struct hda_codec *codec,
++				    const struct hda_fixup *fix, int action)
++{
++}
++
++#endif /* CONFIG_THINKPAD_ACPI */
 -- 
-1.8.3.2
+1.8.5.2
