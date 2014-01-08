@@ -1,94 +1,44 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: Re: snd-usb: "delay: estimated 0, actual 352"
-Date: Wed, 8 Jan 2014 21:43:02 +0100
-Message-ID: <20140108204302.GA1556@rhlx01.hs-esslingen.de>
-References: <s5hharbxlxf.wl%tiwai@suse.de>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH] ASoC: da9055: Partially fix device
+	registration
+Date: Wed, 8 Jan 2014 21:26:17 +0000
+Message-ID: <20140108212617.GA18611@lee--X1>
+References: <1389213535-10801-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f49.google.com (mail-wg0-f49.google.com [74.125.82.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C8AF265176
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 22:26:21 +0100 (CET)
+Received: by mail-wg0-f49.google.com with SMTP id x12so1976519wgg.28
+ for <alsa-devel@alsa-project.org>; Wed, 08 Jan 2014 13:26:21 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <s5hharbxlxf.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Markus Trippelsdorf <markus@trippelsdorf.de>, Daniel Mack <zonque@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <1389213535-10801-1-git-send-email-broonie@kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Samuel Ortiz <sameo@linux.intel.com>, Mark Brown <broonie@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Anthony Olech <anthony.olech.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I can very well believe that bogus triggering of this spewing message
-is now fixed by your patch (thanks!), but:
-
-I get the very same message here on OpenWrt's 3.10.24
-(verified to be properly containing your patch!),
-when playing usb-audio on TL-WDR3600 MIPS via MPD mp3 streaming, *and then*:
-
-Execute
-
-    modprobe zram num_devices=4
-
-    # Set disksize of 16MB for /dev/zram0
-    echo $((16*1024*1024)) > /sys/block/zram0/disksize
-
-    mkswap /dev/zram0
-
-    # For zram, use higher prio than for traditional swap devices.
-    swapon -p 100 /dev/zram0
-
-Executing these commands will cause the status/error message to
-loop again (when doing so manually, it's directly after having executed
-the swapon command).
-
-IOW: messages did not appear, then mkswap, then infinite loop, then run
-    mpd stop
-then they're gone again.
-
-Sample:
-
-[183532.990000] delay: estimated 240, actual 0
-[183533.000000] delay: estimated 240, actual 0
-[183533.010000] delay: estimated 432, actual 288
-[183533.020000] delay: estimated 528, actual 288
-[183533.020000] delay: estimated 528, actual 288
-[183533.030000] delay: estimated 288, actual 48
-[183533.040000] delay: estimated 288, actual 48
-[183533.050000] delay: estimated 432, actual 288
-[183533.050000] delay: estimated 576, actual 288
-[183533.060000] delay: estimated 528, actual 288
-
-
-My running theory is that that mkswap causes a rather insurmountable
-temporary lockup of relevant system processing resources,
-which causes audio handling to get out of lock-step, infinitely
-(*that* one really shouldn't happen, right!?),
-not to be resolved until finally playback gets stopped again.
-
-That message is discussed at
-"MPD filling kern.log with "delay: estimated 0, actual xxx""
-  http://www.raspberrypi.org/phpBB3/viewtopic.php?f=28&t=15204
-as well, but I don't know whether that one is pre- or post-patch ;)
-(as opposed to my case, which definitely is post-patch)
-
-
-Note also that I'm experiencing rather weirdly crackling sound when using
-    aplay /usr/share/sounds/alsa/Front_Center.wav
-, but only *every other time* that I'm executing this command.
-But in this aplay case this delay message does *not* get produced,
-so I suspect that that crackling is a different issue.
-
-Wellll... perhaps not quite:
-snd-usb-audio param nrpacks=1 (as favourably mentioned by the URL above)
-does solve both the mkswap looping error
-and the aplay crackling (and solves arec crackling / echoes / corruption, too!).
-However I guess that nrpacks=1 is not something that you would want to
-have in an optimally performing system...
-
-
-usb-audio running on a bus-powered USB2 hub connected to USB2 router port,
-with certain other devices producing activity (FTDI RS232, X10 lirc remote).
-
-Hmmmm (any interesting thoughts?),
-
-Andreas Mohr
-
--- 
-GNU/Linux. It's not the software that's free, it's you.
+PiBpbmRleCA5NTZhZmE0NDU5OTguLmUyOTM3OTdkZWQ2NiAxMDA2NDQKPiAtLS0gYS9pbmNsdWRl
+L2xpbnV4L21mZC9kYTkwNTUvY29yZS5oCj4gKysrIGIvaW5jbHVkZS9saW51eC9tZmQvZGE5MDU1
+L2NvcmUuaAo+IEBAIC00Miw3ICs0Miw3IEBAIHN0cnVjdCBkYTkwNTUgewo+ICAJc3RydWN0IHJl
+Z21hcCAqcmVnbWFwOwo+ICAJc3RydWN0IHJlZ21hcF9pcnFfY2hpcF9kYXRhICppcnFfZGF0YTsK
+PiAgCXN0cnVjdCBkZXZpY2UgKmRldjsKPiAtCXN0cnVjdCBpMmNfY2xpZW50ICppMmNfY2xpZW50
+Owo+ICsJc3RydWN0IGkyY19jbGllbnQgKmkyY19jbGllbnQsICpjb2RlYzsKCkknZCBwcmVmZXIg
+dGhpcyBvbiBpdHMgb3duIGluIGEgc3RydWN0IGRlY2xhcmF0aW9uLgoKQXBhcnQgZnJvbSB0aGF0
+IE1GRCBwYXJ0cyBsb29rIGdvb2QgdG8gbWUuCgpDYW4geW91IGNyZWF0ZSBhbiBJQiBmb3IgbWUg
+dG8gcHVsbCBmcm9tPwoKLS0gCkxlZSBKb25lcwpMaW5hcm8gU1RNaWNyb2VsZWN0cm9uaWNzIExh
+bmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBB
+Uk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
