@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: utils: Add internal call to
- determine if DAI is dummy.
-Date: Wed, 8 Jan 2014 12:08:37 +0000
-Message-ID: <20140108120837.GR31886@sirena.org.uk>
-References: <1389177619-2760-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH] Patched to allow fine-grained control of
+ PLL and clock dividers
+Date: Wed, 8 Jan 2014 12:13:31 +0000
+Message-ID: <20140108121331.GS31886@sirena.org.uk>
+References: <20140107223047.59BCAE395C@parallels-Parallels-Virtual-Platform>
+ <1389182888.2346.22.camel@loki>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1720051925578858667=="
+Content-Type: multipart/mixed; boundary="===============5002463528509682348=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A8D5265149
- for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 13:08:43 +0100 (CET)
-In-Reply-To: <1389177619-2760-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D440026513F
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 13:13:40 +0100 (CET)
+In-Reply-To: <1389182888.2346.22.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Daniel Matuschek <info@crazy-audio.com>, Dimitris Papastamos <Dimitris.Papastamos@Wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1720051925578858667==
+--===============5002463528509682348==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OGLwo6UH3inn357k"
+	protocol="application/pgp-signature"; boundary="Pe/zYa7ALBEfMxba"
 Content-Disposition: inline
 
 
---OGLwo6UH3inn357k
+--Pe/zYa7ALBEfMxba
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jan 08, 2014 at 10:40:18AM +0000, Liam Girdwood wrote:
-> Provide a quick way to tell if a DAI is a dummy DAI or a regular DAI.
-> This is for internal DAPM usage only and is used to determe whether to
-> insert a DAI link connection into the DAPM graph.
+On Wed, Jan 08, 2014 at 12:08:08PM +0000, Liam Girdwood wrote:
 
-Applied both, thanks (with the spelling fixed).
+> Please make sure you CC the maintainers on patch submission otherwise
+> they may miss the patch. Please also use the correct subject prefix too
+> e.g.
 
---OGLwo6UH3inn357k
+In general follow the process in SubmittingPatches.
+
+> > Changes:
+> > 1. allow the driver to accept S32_LE PCM streams
+> > 2. fine-grained control of the PLL generation
+
+These should be sent as two separate patches, each patch should only do
+one thing (as covered in SubmittingPatches).
+
+--Pe/zYa7ALBEfMxba
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzT/CAAoJELSic+t+oim9JQQP/i6l+S/0Ch2z13kVgy0oM8g8
-99RfCkpDl+QOmo4RFOfBOrwamRkcwy920o+mfU+0+AHH7ejx2ziQIcmwrfVuVKJP
-trcaN2WjLEYNJTf4U/kZ0nvK++Uj1EzTtuDkpN7rtawRzQtufvbBXJhOxpmd/nud
-N9mu/ito2mRBb98zpfwZXcUPRSakt2ylCgYLRGtQBiHRSUZuuzLU7UF+WLf1dCpf
-zRxgsTGbrWHXwa8D91nFVBsFoWZrOegdiyzyrzZiOYKDSOz6S8qwv2hM82Lodr85
-c2J3B4AQkYF5ZCz0sjkwq+skg6nZ7O0FfRYp6aI0mbuzkohloi10aFp8n9fpLDxT
-s5Y8xAvE41tzqcQjVlczaDCi9lrYAWeQfHyL6yLutkbEVVfjEpUlWogF/dymiuE+
-fFgX+E04m/APNEpLGmIEz7n0WTq3fn9Zl+eIp1CU+BKsV+giPsW6+x/oNWvAL5oH
-FigsO6s/bVCF4Ji1YGysVnQUuF0+1rAl4ds8Mb1yMgAVQpAG8rtwP7Mc2vO+zQfn
-eCVBxqwx1H7iUA15XS9zSwcVZJVfIQfFFQCCu51h410m55a9QVXWAXfONgXKJ3Xg
-VFbY3nnLrpgufhoEagCetf9NDAdQ4siMyRb9H0Ey9Npum+VdNftP5mJ8dJwZdYdT
-FuoMO3GRVgXTZT2qyyqO
-=HUNF
+iQIcBAEBAgAGBQJSzUDnAAoJELSic+t+oim9x8oP/iq6DYBiwMQCibfEtRl5DyEM
+Bgk96gjxNAWWCqGeiNtFcbhEPhhIPFBb4ET6DRL7ClXSr6b5ygjqL/4taL3AXAfA
+q8/8C8C3sRQ3n4rYNmuqG6MslR6MLdM75NkpbBOWelxfBZZZzd69rijdHS0R0J2W
+FBIMxxz5MTRTTE0HHPkl7oOG+6HBUvqfcQMBuEE8UFr8XdUZsEL8XHn3mLi6PBUW
+JXM3UmPMAVQhOJRoF0Mx8jFj7CmRD9s4MS1Zf9/vI1qe0qp82Y9Ml+5evI/zAzrE
+4SRnv0XZh4N8StpYnZtilaG6KHVtiIowMR4Qjgp2UD16tGORvBeTVosb13lMbyIA
+Uwv8fcjQgjV7nbq5aurM6PAIrg1ugX57encsOwS/jyDzkIovmDxyMQDvXmftcvZJ
+rrVzAfVTRcQnxj/2edJqR+6KdbMOdY4J62blas2T3cURNbEHBE/MfRInbiUN5vJz
+DTK2i3vrlWqGOYfv32DuRYbS8VfE1JFj7lVg+QUKo3pHp054gc00XkvgO0TawDSN
+Pyje6JMOJmNejZosND0sGsku8RTU8vSyHdFtfokBbjiTUzQW/N1oL8ryEgeoISqS
+F2J3FL4d8Ig5V3rENuuF3YT0yv7Eq2r5SDfnSiq+LxQ5rUTC3hu9fNpKGzELZK2y
+mvaO+f173vPcod4FYwXz
+=+Z1V
 -----END PGP SIGNATURE-----
 
---OGLwo6UH3inn357k--
+--Pe/zYa7ALBEfMxba--
 
---===============1720051925578858667==
+--===============5002463528509682348==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1720051925578858667==--
+--===============5002463528509682348==--
