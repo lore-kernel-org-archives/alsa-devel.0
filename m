@@ -1,92 +1,81 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: Fw: Isochronous transfer error on USB3
-Date: Wed, 8 Jan 2014 15:14:13 -0500 (EST)
-Message-ID: <Pine.LNX.4.44L0.1401081508210.1659-100000@iolanthe.rowland.org>
-References: <20140108164800.70ea4169@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: bcm: Remove obsoleted Kconfig
+ dependency
+Date: Wed, 8 Jan 2014 20:17:09 +0000
+Message-ID: <20140108201709.GA31886@sirena.org.uk>
+References: <1389173827-1554-1-git-send-email-tiwai@suse.de>
+ <20140108195947.GZ31886@sirena.org.uk>
+ <s5hbnzmp781.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20140108164800.70ea4169@samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <m.chehab@samsung.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, LMML <linux-media@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============6949284123153885911=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 789B5265010
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 21:17:17 +0100 (CET)
+In-Reply-To: <s5hbnzmp781.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Florian Meier <florian.meier@koalo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 8 Jan 2014, Mauro Carvalho Chehab wrote:
 
-> Hi Hans/Takashi,
-> 
-> I'm getting an weird behavior with em28xx, especially when the device
-> is connected into an audio port.
-> 
-> I'm using, on my tests, an em28xx HVR-950 device, using this tree:
-> 	http://git.linuxtv.org/mchehab/experimental.git/shortlog/refs/heads/em28xx-v4l2-v6
-> Where the alsa driver is at:
-> 	http://git.linuxtv.org/mchehab/experimental.git/blob/refs/heads/em28xx-v4l2-v6:/drivers/media/usb/em28xx/em28xx-audio.c
-> 
-> I'm testing it with xawtv3 (http://git.linuxtv.org/xawtv3.git). The
-> ALSA userspace code there is at:
-> 	http://git.linuxtv.org/xawtv3.git/blob/HEAD:/common/alsa_stream.c
-> 
-> What happens is that, when I require xawtv3 to use any latency lower 
-> than 65 ms, the audio doesn't work, as it gets lots of underruns per
-> second. 
-> 
-> FYI, em28xx works at a 48000 KHz sampling rate, and its PM capture Hw
-> is described as:
-> 
-> static struct snd_pcm_hardware snd_em28xx_hw_capture = {
-> 	.info = SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> 		SNDRV_PCM_INFO_MMAP           |
-> 		SNDRV_PCM_INFO_INTERLEAVED    |
-> 		SNDRV_PCM_INFO_BATCH	      |
-> 		SNDRV_PCM_INFO_MMAP_VALID,
-> 
-> 	.formats = SNDRV_PCM_FMTBIT_S16_LE,
-> 
-> 	.rates = SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_KNOT,
-> 
-> 	.rate_min = 48000,
-> 	.rate_max = 48000,
-> 	.channels_min = 2,
-> 	.channels_max = 2,
-> 	.buffer_bytes_max = 62720 * 8,	/* just about the value in usbaudio.c */
-> 	.period_bytes_min = 64,		/* 12544/2, */
-> 	.period_bytes_max = 12544,
-> 	.periods_min = 2,
-> 	.periods_max = 98,		/* 12544, */
-> };
-> 
-> On my tests, I experimentally discovered that the minimal latency to
-> avoid ALSA library underruns is:
-> 	- 65ms when using xHCI;
-> 	- 25ms when using EHCI.
-> 
-> Any latency lower than that causes lots of overruns. Very high
-> latency also causes overruns (but on a lower rate, as the period
-> is bigger).
-> 
-> I'm wandering if is there anything that could be done either at Kernel
-> side or at userspace side to automatically get some configuration that
-> works as-is, without requiring the user to play with the latency parameter
-> by hand.
-> 
-> The alsa-info data is enclosed.
-> 
-> Thank you!
-> Mauro
-> 
-> PS.: I'm still trying to understand why the minimal allowed latency is
-> different when using xHCI, but I suspect that it is because it uses a
-> different urb->interval than EHCI.
+--===============6949284123153885911==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pFDXS8NNqJ+7RGaN"
+Content-Disposition: inline
 
-You may be able to answer some of these questions by collecting usbmon 
-traces (see Documentation/usb/usbmon.txt).  That would help pinpoint 
-sources of latency and tell you the actual URB intervals.
 
-25 ms to avoid underruns seems pretty large.  Other people, using audio 
-only (no video), find that EHCI can work well with latencies as low as 
-2 ms or so.  (That's using 3.13-rc, which includes some changes in the 
-snd-usb-audio driver.)
+--pFDXS8NNqJ+7RGaN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Alan Stern
+On Wed, Jan 08, 2014 at 09:08:14PM +0100, Takashi Iwai wrote:
+
+> Maybe @linaro.org wasn't good for you?  It was the address deduced
+> from get_maintainers.pl.
+
+get_maintainers *should* also tell you to use @kernel.org, that's what's
+actually in MAINTAINERS (which should be preferred over git history, or
+both used) which is where I actually read upstream mail.
+
+--pFDXS8NNqJ+7RGaN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSzbJCAAoJELSic+t+oim9uqUQAJGqSPrw50FFBZqxS4o6fDb6
+hXFywCu0ebIJ+qR9pJbbigQAz6SK4hZk7/91dw/08Bf7MJyynTULeP/51KBh/evC
+4wbyINcv8nrY4TDHzJbij26lQ6WPP+lB7gOETpb6qv29/Nmyykp/tJ/OXH1i/M5a
+7lF9yeE+gGyTfCO564R2Hx2f4mpOlAkcHathoVxcz9Mcb0Wmz60uhE6z20R276wM
+DA4lHltsv4VKZp05Z2JqdQuuymudhqpxz+tgx0/p7CfNZQ1ij6eTpX+uUVGOH4NQ
+l+ciq6iIpE3SD3c3KDNDZplDIPSInqlUYWwN2HzPflPY2T9JzazaLBTskrKnJgah
+x1AFI086jGjjRS9zPgG5aFXRm9i1dfTS2nPJTwSoHqAZ9PJ+Pt+qMdWOEEYW9Jwm
+z+C/IpWpOzTamr5wl2OPcanCNmop45BNFCry/ErcSpatAzsoOaKY7rld/CqCxIf1
+glMkSwdJpZNscRN4LSx0BLndi5sKCoC2uGwha4DTF7fcSkIldJEFzOishWwYaR76
+tMbBARSJBSmuXFnJzyuCE95E51v9GdaFDb5xeWjjo3EUDiOW4TM0rMVl+ylG2KFD
+IxMEtp10ETRallpI4d94KpgQWOlvCGC0XRowqMkZI6iMmTXROlWE4dnUJpl5LHaz
+v2NMINJqApZMl6531CS6
+=8hAc
+-----END PGP SIGNATURE-----
+
+--pFDXS8NNqJ+7RGaN--
+
+--===============6949284123153885911==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6949284123153885911==--
