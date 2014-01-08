@@ -1,16 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: adau1701: Fix
-	ADAU1701_SEROCTL_WORD_LEN_16 constant
-Date: Wed,  8 Jan 2014 11:22:25 +0100
-Message-ID: <1389176545-10316-1-git-send-email-lars@metafoo.de>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 1/2] ASoC: utils: Add internal call to
+	determine if DAI is dummy.
+Date: Wed,  8 Jan 2014 10:40:18 +0000
+Message-ID: <1389177619-2760-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-033.synserver.de (smtp-out-079.synserver.de
- [212.40.185.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 1233826501D
- for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 11:22:01 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71A3F26510A
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 11:40:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,32 +19,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, stable@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The driver defines ADAU1701_SEROCTL_WORD_LEN_16 as 0x10 while it should be b10,
-so 0x2. This patch fixes it.
+Provide a quick way to tell if a DAI is a dummy DAI or a regular DAI.
+This is for internal DAPM usage only and is used to determe whether to
+insert a DAI link connection into the DAPM graph.
 
-Reported-by: Magnus Reftel <magnus.reftel@lockless.no>
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: stable@vger.kernel.org
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/codecs/adau1701.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/soc-dai.h | 2 ++
+ sound/soc/soc-utils.c   | 7 +++++++
+ 2 files changed, 9 insertions(+)
 
-diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-index ebff112..adee866 100644
---- a/sound/soc/codecs/adau1701.c
-+++ b/sound/soc/codecs/adau1701.c
-@@ -71,7 +71,7 @@
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 243d3b6..71f27c4 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -123,6 +123,8 @@ int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
+ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
+ 			     int direction);
  
- #define ADAU1701_SEROCTL_WORD_LEN_24	0x0000
- #define ADAU1701_SEROCTL_WORD_LEN_20	0x0001
--#define ADAU1701_SEROCTL_WORD_LEN_16	0x0010
-+#define ADAU1701_SEROCTL_WORD_LEN_16	0x0002
- #define ADAU1701_SEROCTL_WORD_LEN_MASK	0x0003
++int snd_soc_dai_is_dummy(struct snd_soc_dai *dai);
++
+ struct snd_soc_dai_ops {
+ 	/*
+ 	 * DAI clocking configuration, all optional.
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index 6ebdfd9..7f22ca3 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -119,6 +119,13 @@ static struct snd_soc_dai_driver dummy_dai = {
+ 	 },
+ };
  
- #define ADAU1701_AUXNPOW_VBPD		0x40
++int snd_soc_dai_is_dummy(struct snd_soc_dai *dai)
++{
++	if (dai->driver == &dummy_dai)
++		return 1;
++	return 0;
++}
++
+ static int snd_soc_dummy_probe(struct platform_device *pdev)
+ {
+ 	int ret;
 -- 
-1.8.0
+1.8.3.2
