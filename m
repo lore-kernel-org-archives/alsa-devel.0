@@ -1,60 +1,94 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4/4] ASoC: max9850: Use params_width() rather
-	than memory format
-Date: Wed,  8 Jan 2014 20:40:44 +0000
-Message-ID: <1389213644-11167-4-git-send-email-broonie@kernel.org>
-References: <1389213644-11167-1-git-send-email-broonie@kernel.org>
+From: Andreas Mohr <andi@lisas.de>
+Subject: Re: snd-usb: "delay: estimated 0, actual 352"
+Date: Wed, 8 Jan 2014 21:43:02 +0100
+Message-ID: <20140108204302.GA1556@rhlx01.hs-esslingen.de>
+References: <s5hharbxlxf.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C805265176
- for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 21:40:58 +0100 (CET)
-In-Reply-To: <1389213644-11167-1-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>, Liam Girdwood <lgirdwoog@dmail.com>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hharbxlxf.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Markus Trippelsdorf <markus@trippelsdorf.de>, Daniel Mack <zonque@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+Hi,
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/max9850.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I can very well believe that bogus triggering of this spewing message
+is now fixed by your patch (thanks!), but:
 
-diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
-index c5dd61785f8d..82757ebf0301 100644
---- a/sound/soc/codecs/max9850.c
-+++ b/sound/soc/codecs/max9850.c
-@@ -149,14 +149,14 @@ static int max9850_hw_params(struct snd_pcm_substream *substream,
- 	snd_soc_write(codec, MAX9850_LRCLK_MSB, (lrclk_div >> 8) & 0x7f);
- 	snd_soc_write(codec, MAX9850_LRCLK_LSB, lrclk_div & 0xff);
- 
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S16_LE:
-+	switch (params_width(params)) {
-+	case 16:
- 		da = 0;
- 		break;
--	case SNDRV_PCM_FORMAT_S20_3LE:
-+	case 20:
- 		da = 0x2;
- 		break;
--	case SNDRV_PCM_FORMAT_S24_LE:
-+	case 24:
- 		da = 0x3;
- 		break;
- 	default:
+I get the very same message here on OpenWrt's 3.10.24
+(verified to be properly containing your patch!),
+when playing usb-audio on TL-WDR3600 MIPS via MPD mp3 streaming, *and then*:
+
+Execute
+
+    modprobe zram num_devices=4
+
+    # Set disksize of 16MB for /dev/zram0
+    echo $((16*1024*1024)) > /sys/block/zram0/disksize
+
+    mkswap /dev/zram0
+
+    # For zram, use higher prio than for traditional swap devices.
+    swapon -p 100 /dev/zram0
+
+Executing these commands will cause the status/error message to
+loop again (when doing so manually, it's directly after having executed
+the swapon command).
+
+IOW: messages did not appear, then mkswap, then infinite loop, then run
+    mpd stop
+then they're gone again.
+
+Sample:
+
+[183532.990000] delay: estimated 240, actual 0
+[183533.000000] delay: estimated 240, actual 0
+[183533.010000] delay: estimated 432, actual 288
+[183533.020000] delay: estimated 528, actual 288
+[183533.020000] delay: estimated 528, actual 288
+[183533.030000] delay: estimated 288, actual 48
+[183533.040000] delay: estimated 288, actual 48
+[183533.050000] delay: estimated 432, actual 288
+[183533.050000] delay: estimated 576, actual 288
+[183533.060000] delay: estimated 528, actual 288
+
+
+My running theory is that that mkswap causes a rather insurmountable
+temporary lockup of relevant system processing resources,
+which causes audio handling to get out of lock-step, infinitely
+(*that* one really shouldn't happen, right!?),
+not to be resolved until finally playback gets stopped again.
+
+That message is discussed at
+"MPD filling kern.log with "delay: estimated 0, actual xxx""
+  http://www.raspberrypi.org/phpBB3/viewtopic.php?f=28&t=15204
+as well, but I don't know whether that one is pre- or post-patch ;)
+(as opposed to my case, which definitely is post-patch)
+
+
+Note also that I'm experiencing rather weirdly crackling sound when using
+    aplay /usr/share/sounds/alsa/Front_Center.wav
+, but only *every other time* that I'm executing this command.
+But in this aplay case this delay message does *not* get produced,
+so I suspect that that crackling is a different issue.
+
+Wellll... perhaps not quite:
+snd-usb-audio param nrpacks=1 (as favourably mentioned by the URL above)
+does solve both the mkswap looping error
+and the aplay crackling (and solves arec crackling / echoes / corruption, too!).
+However I guess that nrpacks=1 is not something that you would want to
+have in an optimally performing system...
+
+
+usb-audio running on a bus-powered USB2 hub connected to USB2 router port,
+with certain other devices producing activity (FTDI RS232, X10 lirc remote).
+
+Hmmmm (any interesting thoughts?),
+
+Andreas Mohr
+
 -- 
-1.8.5.2
+GNU/Linux. It's not the software that's free, it's you.
