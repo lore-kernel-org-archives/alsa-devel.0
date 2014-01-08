@@ -1,13 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 4/9] ASoC: fsl-ssi: Fix interrupt stats for imx
-Date: Wed, 8 Jan 2014 17:19:33 +0000
-Message-ID: <20140108171933.GO31886@sirena.org.uk>
+Subject: Re: [PATCH v4 0/9] ASoC: fsl-ssi: offline/online configuration and
+ cleanups
+Date: Wed, 8 Jan 2014 17:21:44 +0000
+Message-ID: <20140108172144.GP31886@sirena.org.uk>
 References: <1387545096-2334-1-git-send-email-mpa@pengutronix.de>
- <1387545096-2334-5-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5200393785269159128=="
+Content-Type: multipart/mixed; boundary="===============2439319640379758739=="
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1387545096-2334-5-git-send-email-mpa@pengutronix.de>
+In-Reply-To: <1387545096-2334-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -22,53 +22,54 @@ Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdw
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5200393785269159128==
+--===============2439319640379758739==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZTJzEv5kHkug0Uuv"
+	protocol="application/pgp-signature"; boundary="eAWylJs5fPgxl6k6"
 Content-Disposition: inline
 
 
---ZTJzEv5kHkug0Uuv
+--eAWylJs5fPgxl6k6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 20, 2013 at 02:11:31PM +0100, Markus Pargmann wrote:
-> irqs should only be requested/released with enabled DMA. Previously
-> interrupt statistics where disabled for IMX Processors because of
-> different writeable SISR bits.
+On Fri, Dec 20, 2013 at 02:11:27PM +0100, Markus Pargmann wrote:
+> Hi,
 >=20
-> This patch introduces support for irqstats on imx processors again by
-> creating a sisr writeback mask and introducing a imx35-ssi compatible.
+> This patch series fixes some fsl-ssi code that does not act exactly as it=
+ is
+> described in the reference manuals.
 
-A binding documentation update is needed for this too.
+I went ahead and applied all of the ASoC patches here however as I noted
+on a couple of patches the new compatible strings need documenting.  Can
+you please send a followup patch adding that?
 
---ZTJzEv5kHkug0Uuv
+--eAWylJs5fPgxl6k6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzYihAAoJELSic+t+oim9vfcP/jjO5MdV26azq1LaH7KQltci
-fWlY5753WoLh2eEHgjQuVSKykmi9o/2haeC2ag6X6D7q9rWnaN0Q1yj+0drhCYGg
-2iXfHkHpIK9K9Nixv15kjhAIaD42NJETt78zbzorp8fzVMRMt1Bhl2OvgmuO8K5Y
-DziJrs6VfV3k/cdUbvqSLm4aJ6wxOCAz3c2M9OBjH6zYiAJmnrPY4qe8nZ23HxUo
-ubLLXdm/nnOq8ITIznkP+LjGDlvm96Mago7o8Juv1mI2JjllrPKu3wHZ+IVYjpms
-P0jzKV3l4pqX7YinkUAdSiQ9fe4oeGK0FonX7APtJBNaPZWI+dfRmQq1eAbv7SgM
-wySQbyxWLWXQDbQirLkwJv0q2YBF3Tv+UxTNj+OQF1UZqjXVTe4JiexDbBdNxdJm
-crzjv0Hh9hTlPRP4EWrKGp/hEFKgG7hd9Jp658yoDYsSoknjis8zmzIg3Gt2ti1Z
-rq7cNybuQlEnmHaJT3ljednYPLnPxZ/zE67eSthR6b+VLz9mqewgvlc0Ghn15jHF
-Nn/ScwA7utWgB/K7YilxVT1w1UCiRBPG90oE9HhvlDvAjNMcFQIiO94Ut8vD96dY
-z6EJyfwVUxIGeeDlR0zDQYTWX0Dq3GRZZYvl0EaLKFi8m1tQhahMeABTaQao0t7y
-eH17tiTFb6/DrxPUP97i
-=qocf
+iQIbBAEBAgAGBQJSzYklAAoJELSic+t+oim9An8P+Og6wLHCPWktXG/EKNF9PFK4
++T74n76CE8jwbh+90MxCjDViz2URusKOyQ+O3zxzg0MmSozFbUuzV0z7qo0WPnDW
+hNuWmStHEQEm9mWTJKQrQGdWWPEXqYlJ398BT69uDitcZYlLnzGs7A0w5FZs0R6P
+WOr6+2JJSg1N6ZRYiBWBhG3/X/qRbqsrAb+w+WAyASm1sXHorUhV9UEC4fwrFlbL
+Ot3bk/QGXI7WvuHEuEKHkhtbLOrSYVicstl2WflGliYNoXMZICYvARsQaenbEXMG
+GsO9nldy1Oop6kkhHnGplf111B3sQPnI78aUKMhQaau5EkcAaSbWc6VnV2L5sNYe
+mHOHBvCtrlxL2hLOy4uuAMAG/FuB00VWPSIazHVA/QNDwGia2dsNgg/75Mn3NQpf
+Qm5JdyXnRxQOEfpvvGsNSH5cwrlKkJC+OaVu5V2cUOLj8AjOntLrsZgDlbrUgNH3
+QYPxbpPv37cLLOw2amRrZgSNtoRR036Ld1KsmetM2aZHaLZ44AYYmhQG+06q9LPS
+YJPAb9hPslEqrHrupzXBQTQY3NC1/woVCuLwCmPZzViuF2JBndve9FoAabbARb99
+UnWxuWZhoLf+6D4VXtJJGgaIF555L095+XaHrJNtSqzZMVP4a+I//Apeyo3NKCO1
+3RveSnAox4AMIwuZCFs=
+=RsB1
 -----END PGP SIGNATURE-----
 
---ZTJzEv5kHkug0Uuv--
+--eAWylJs5fPgxl6k6--
 
 
---===============5200393785269159128==
+--===============2439319640379758739==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -79,4 +80,4 @@ linux-arm-kernel mailing list
 linux-arm-kernel@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============5200393785269159128==--
+--===============2439319640379758739==--
