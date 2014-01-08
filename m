@@ -1,15 +1,23 @@
-From: Olivier Langlois <olivier@trillion01.com>
-Subject: [PATCH] alsa-utils: fix pcm_read() return value
-Date: Tue,  7 Jan 2014 23:18:17 -0500
-Message-ID: <1389154697-23849-1-git-send-email-olivier@trillion01.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: mx6: Audio does not work on linux-next 20140107
+Date: Wed, 8 Jan 2014 13:04:32 +0800
+Message-ID: <20140108050431.GD6750@MrMyself>
+References: <CAOMZO5C=TFczzz8CQj6N=N_Z=p26_73SJvSk5cmp9FPVxF+O=A@mail.gmail.com>
+ <52CBEDFA.10603@metafoo.de>
+ <CAOMZO5C18WJQKJPuK_Pwq=EW0UhFh=9wxc4M4QEGBscZCHim8g@mail.gmail.com>
+ <20140107122813.GA6750@MrMyself>
+ <CAOMZO5AC5n-intSnUdnBJyYVO2O2BfPYMj_SwNP6jXD5qxVp9g@mail.gmail.com>
+ <CAOMZO5DD-SXe9GKdvTEPccJe5rhR4zVNQF=Of1iUsbqrBtAXPg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from oproxy7-pub.mail.unifiedlayer.com
- (oproxy7-pub.mail.unifiedlayer.com [67.222.55.9])
- by alsa0.perex.cz (Postfix) with SMTP id 9094C2616FF
- for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 05:18:31 +0100 (CET)
+Received: from db8outboundpool.messaging.microsoft.com
+ (mail-db8lp0187.outbound.messaging.microsoft.com [213.199.154.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF8752616FF
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 06:15:15 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5DD-SXe9GKdvTEPccJe5rhR4zVNQF=Of1iUsbqrBtAXPg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,40 +27,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Olivier Langlois <olivier@trillion01.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Nicolin Chen <b42378@freescale.com>, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Because of the way the pcm_read() functions are currently used, returning
-rcount or result is equivalent but I feel it is more accurate to
-return 'result'.
+Hi Fabio,
 
-Signed-off-by: Olivier Langlois <olivier@trillion01.com>
----
- aplay/aplay.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Wed, Jan 08, 2014 at 01:50:45AM -0200, Fabio Estevam wrote:
+> In 3.12 and 3.13-rc we are able to play audio without using any SDMA
+> firmware, but it we are not longer able to do this now. Other than
+> that, people will have to use the exact 2.1 firmware version, so there
+> will be a regression in 3.14, right?
 
-diff --git a/aplay/aplay.c b/aplay/aplay.c
-index e0631c4..69e8bda 100644
---- a/aplay/aplay.c
-+++ b/aplay/aplay.c
-@@ -2039,7 +2039,7 @@ static ssize_t pcm_read(u_char *data, size_t rcount)
- 			data += r * bits_per_frame / 8;
- 		}
- 	}
--	return rcount;
-+	return result;
- }
+I think it is impossible to run SDMA without firmware, which stores all
+the scripts we need, including Audio's one. Although the upstream kernel
+doesn't have firmware, the reason why you were able to run audio playback
+is because you have the firmware in your rootfs. So since the driver's
+upgraded, it's plausible for us to upgrade the firmware as well. But I
+do agree the way we handle the old version while trying to use the new
+script isn't professional. Ideally we should switch the script to the
+old one if we find the firmware version is 1.1. But technically it's
+hard to achieve that since we assign the script in DT.
+
+So currently if people are gonna use 3.14, they might need to upgrade
+their firmware as you just tried to your rootfs.
  
- static ssize_t pcm_readv(u_char **data, unsigned int channels, size_t rcount)
-@@ -2084,7 +2084,7 @@ static ssize_t pcm_readv(u_char **data, unsigned int channels, size_t rcount)
- 			count -= r;
- 		}
- 	}
--	return rcount;
-+	return result;
- }
- 
- /*
--- 
-1.8.5.2
+> Couldn't we keep the 3.12/3.13 behaviour, ie, be able to play audio
+> without loading any SDMA firmware?
+
+There are two ways to keep it as the old one. First is patching the SDMA
+firmware patch, including v2, to upstream kernel. And the second is to
+revert the patch (ARM: dts: imx: use dual-fifo sdma script for ssi) so
+that the SSI driver and SDMA driver would continue to use the old single
+FIFO mode.
+
+I'll align this issue with Shawn first to see if there's a better solution.
+
+Thank you,
+Nicolin Chen
