@@ -1,98 +1,41 @@
-From: Daniel Matuschek <daniel@matuschek.net>
-Subject: [PATCH] ASoC: wm8804: Allow fine-grained control of the PLL
- generation
-Date: Wed, 8 Jan 2014 22:36:53 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1401082231260.4025@parallels-Parallels-Virtual-Platform>
+From: mengdong.lin@intel.com
+Subject: [PATCH 0/3] ALSA: hda - enable display audio for Intel
+	Broadwell
+Date: Wed,  8 Jan 2014 15:55:07 -0500
+Message-ID: <cover.1389214150.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Dimitris.Papastamos@Wolfsonmicro.com, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <rob.herring@calxeda.com>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id ACE9F2651FC
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 04:50:18 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-  WM8804 can run
-  with PLL frequencies of 256xfs and 128xfs for most sample
-  rates. At 192kHz only 128xfs is supported. The existing
-  driver selects 128xfs automatically for some lower samples
-  rates. By using the "pllid" argument of the "set_pll"
-  function is is now possible to control the behaviour. This
-  allows using 256xfs PLL frequency on all sample rates up to
-  96kHz. It should allow lower jitter and better signal
-  quality. When pllid=0, the behaviour of the driver does not
-  change.
+The following patches enable HDMI/DP audio for Intel Broadwell platform from
+audio driver side. Gfx driver just reuses Haswell audio enabling code.
 
----
-  sound/soc/codecs/wm8804.c |   18 +++++++++++++-----
-  sound/soc/codecs/wm8804.h |    7 +++++++
-  2 files changed, 20 insertions(+), 5 deletions(-)
+Mengdong Lin (3):
+  ALSA: hda - add device ID for Broadwell display audio controller
+  ALSA: hda - add codec ID for Broadwell display audio codec
+  ALSA: hda/hdmi - apply all Haswell fix-ups to Broadwell display codec
 
-diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
-index 1704b1e..e79c408 100644
---- a/sound/soc/codecs/wm8804.c
-+++ b/sound/soc/codecs/wm8804.c
-@@ -2,6 +2,8 @@
-   * wm8804.c  --  WM8804 S/PDIF transceiver driver
-   *
-   * Copyright 2010-11 Wolfson Microelectronics plc
-+ * patched by Daniel Matuschek <info@crazyaudio.com> to allow
-+ * fine-grained control of PLL
-   *
-   * Author: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-   *
-@@ -318,7 +320,7 @@ static struct {
+ sound/pci/hda/hda_intel.c  |  3 +++
+ sound/pci/hda/patch_hdmi.c | 17 +++++++++++------
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
-  #define FIXED_PLL_SIZE ((1ULL << 22) * 10)
-  static int pll_factors(struct pll_div *pll_div, unsigned int target,
--		       unsigned int source)
-+		       unsigned int source, int mclk_div)
-  {
-  	u64 Kpart;
-  	unsigned long int K, Ndiv, Nmod, tmp;
-@@ -332,9 +334,15 @@ static int pll_factors(struct pll_div *pll_div, unsigned int target,
-  		tmp = target * post_table[i].div;
-  		if (tmp >= 90000000 && tmp <= 100000000) {
-  			pll_div->freqmode = post_table[i].freqmode;
--			pll_div->mclkdiv = post_table[i].mclkdiv;
--			target *= post_table[i].div;
--			break;
-+			if ((mclk_div == WM8804_MCLKDIV_DONTCARE) ||
-+			    ((post_table[i].mclkdiv == 1) &&
-+				(mclk_div == WM8804_MCLKDIV_1)) ||
-+			    ((post_table[i].mclkdiv == 0) &&
-+				(mclk_div == WM8804_MCLKDIV_0))) {
-+				pll_div->mclkdiv = post_table[i].mclkdiv;
-+				target *= post_table[i].div;
-+				break;
-+			}
-  		}
-  	}
-
-@@ -388,7 +396,7 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
-  		int ret;
-  		struct pll_div pll_div;
-
--		ret = pll_factors(&pll_div, freq_out, freq_in);
-+		ret = pll_factors(&pll_div, freq_out, freq_in, pll_id);
-  		if (ret)
-  			return ret;
-
-diff --git a/sound/soc/codecs/wm8804.h b/sound/soc/codecs/wm8804.h
-index 8ec14f5..0365177 100644
---- a/sound/soc/codecs/wm8804.h
-+++ b/sound/soc/codecs/wm8804.h
-@@ -58,4 +58,11 @@
-
-  #define WM8804_CLKOUT_DIV			1
-
-+#define WM8804_MCLKDIV_DONTCARE			0
-+#define WM8804_MCLKDIV_0			1
-+#define WM8804_MCLKDIV_1			2
-+#define WM8804_PLL_MCLKDIV_DONTCARE		WM8804_MCLKDIV_DONTCARE
-+#define WM8804_PLL_MCLKDIV_0			WM8804_MCLKDIV_0
-+#define WM8804_PLL_MCLKDIV_1			WM8804_MCLKDIV_1
-+
-  #endif  /* _WM8804_H */
 -- 
-1.7.9.5
+1.8.1.2
