@@ -1,56 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/11] ASoC/MFD: twl4030 codec local register cache
- removal
-Date: Wed, 8 Jan 2014 12:49:38 +0000
-Message-ID: <20140108124938.GA31886@sirena.org.uk>
-References: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: ssm2602: add 16kHz sampling rate
+	support
+Date: Wed, 8 Jan 2014 12:51:29 +0000
+Message-ID: <20140108125129.GC31886@sirena.org.uk>
+References: <1389130481-25364-1-git-send-email-apr@cn-eng.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0QgrZH155mZgoxgw"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1388755676-16036-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4699008581907991601=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 381B626515C
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 13:51:36 +0100 (CET)
+In-Reply-To: <1389130481-25364-1-git-send-email-apr@cn-eng.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andreas Pretzsch <apr@cn-eng.de>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---0QgrZH155mZgoxgw
+--===============4699008581907991601==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="DqxOpcR7xL0oehj1"
+Content-Disposition: inline
+
+
+--DqxOpcR7xL0oehj1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 03, 2014 at 03:27:45PM +0200, Peter Ujfalusi wrote:
-> Hi,
->=20
-> After the twl6040 codec, now it is time for the twl4030 codec driver to l=
-oose
-> it's local reg cache and let the MFD core's regmap to take care of the ca=
-ching.
+On Tue, Jan 07, 2014 at 10:34:41PM +0100, Andreas Pretzsch wrote:
+> SSM260x also supports 16kHz with external master clocks of 12.000MHz,
+> 12.288MHz and 18.432MHz.
+> Add matching coefficients, update constraints and announced rates.
 
-Applied all, thanks.
+Applied, thanks.
 
---0QgrZH155mZgoxgw
+--DqxOpcR7xL0oehj1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzUlfAAoJELSic+t+oim9ZNwP/RJWs+IZRPqhOIZeqe4GDHhB
-c80HLhz0teCxgTRnc6vyaVG+EvKFTGkIxywiYsnaUlb35msP2LtY2gGCGmgVmnsT
-D24J6ZGmSAXztKPLgzutkG3FBYRTTJgV9lMubRwdmocGPTTrAxpn9KYVwrppv+T6
-R6hn33YFW3SuAHR+pnEhw1l3MQh9mDIQnyKVbwXaWX35cJfrAqzz4kD4gPAyM8HM
-yAaWnAsV1f7K7PqJkjBXCzROoPz1ZByT1/qUxeLLnTBqm1/puRmM+soiQoCpyUvp
-riC+rEXHgxzqqm2u2ulrLOYtev8IlUqbhuzeXxjnbK9KApnJ2sd1CffISrQCqIKS
-Mehm8C+bMFigmlefxFu88CGR3CPnSk78V0Ik7OqWg7s6g/birb9yu+2rXMujeC/X
-kgxPw1pyXH9qZ1dYy9ZolQyaZFiVxwCtPRPGBIecgPWuPI3O4pUtqtQ1yXKzCyFf
-8pD+1jjqrKWA9o2JF/da1W2V5vnqZr35e318huC3G5xhNK+U+LmqSHCjMenRtOD4
-VNjO6Uhp/pR1Y/dFih6tA1dKAOdB/ltHgq2TiGihaswnNRXBFEmLPEWYzKacEFwD
-ZALVzN/q8nz3NSxYkn2xAvoS1PxOdzEnsUg5+KMNMLeLy/h44zpUXfLY4rMGlFDM
-TWGyxX4dJqQI2JzE41Le
-=ZQxO
+iQIcBAEBAgAGBQJSzUnOAAoJELSic+t+oim9fq8P/iKSBNvVR4biBU6F13PLdwki
+DB8k8M6yg2Onpty3Z33fikuPn3IPuzyNASD0LVpFb4PLKTIFMBXU7CQ2PNry1jfK
+cgaHiFlJx1efes4CH85bkzYj6R4Py7JtAOG7K1qWK/jgqW5VP9j3vcb7SO8bhFES
+WZAETE1DqAGmywqohpEg6ncBbiUgHSs+mBEPyyTeSio3QWlCS2NAZu6I3AkuyKbe
+4Kh/BAp8VREjOGAyRY1u8+pYyRYj87X0VEZLxc4sEoC8fE0GKHDCr7QXbjXT8RyA
+4M9oOlT+IlxsNZ6m00rIjEoxnJKB58jrld0Zf5aJVe8d/rr3w20kK2R4iYPTNBlh
+3Wr4it/nqs6FI/ic5NZvQXuEum+osMTmdVITEM7J5UIM4SAWYRrS6DNrCTqw8XpT
+BLe11AiLdJl3A54e8DSjYcpPqLJrrBB62TaPpo+Zu7DtjDw5dKdzDoGl03gEjxJt
+u6OEGb6MajR0ZdOnoXGAg5pZU2rWpmD4kml9YrVETnxAiqNGiHalop5b6vUTNW5L
+cEjEWuGJM0kbNquJcfsJdnYSZ52wdMjtCEvF+qkStEXethK2Jz1JbuUL0WleDoL8
+6bd7GjbMFBYqu7oSgobXcUewBJE5dP3cxmGAmeo/4RNwC70+HcQTp46crqmyHFx3
+bRVwkZHnOVEjyFj/UZr8
+=h2qk
 -----END PGP SIGNATURE-----
 
---0QgrZH155mZgoxgw--
+--DqxOpcR7xL0oehj1--
+
+--===============4699008581907991601==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4699008581907991601==--
