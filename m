@@ -1,20 +1,18 @@
-From: Florian Meier <florian.meier@koalo.de>
-Subject: Re: [PATCH] ASoC: bcm: Remove obsoleted Kconfig
-	dependency
-Date: Wed, 08 Jan 2014 20:46:05 +0100
-Message-ID: <52CDAAFD.30303@koalo.de>
-References: <1389173827-1554-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 7/8] ASoC: da9055: Use params_width() rather
+	than memory format
+Date: Wed,  8 Jan 2014 19:52:02 +0000
+Message-ID: <1389210723-16535-7-git-send-email-broonie@kernel.org>
+References: <1389210723-16535-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f52.google.com (mail-bk0-f52.google.com
- [209.85.214.52])
- by alsa0.perex.cz (Postfix) with ESMTP id D5E42262607
- for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 20:46:07 +0100 (CET)
-Received: by mail-bk0-f52.google.com with SMTP id u14so822278bkz.39
- for <alsa-devel@alsa-project.org>; Wed, 08 Jan 2014 11:46:07 -0800 (PST)
-In-Reply-To: <1389173827-1554-1-git-send-email-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69D3326517C
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2014 20:55:09 +0100 (CET)
+In-Reply-To: <1389210723-16535-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,35 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@linaro.org>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Oh I forgot about removing that, thanks!
+From: Mark Brown <broonie@linaro.org>
 
-Acked-by: Florian Meier <florian.meier@koalo.de>
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/da9055.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-On 01/08/2014 10:37 AM, Takashi Iwai wrote:
-> CONFIG_SND_SOC_DMAENGINE_PCM was renamed to CONFIG_SND_DMAENGINE_PCM
-> recently.  And yet we don't have to select it since
-> CONFIG_SND_GENERIC_DMAENGINE_PCM selects the dependency by itself, so
-> just rip it off.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/soc/bcm/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/sound/soc/bcm/Kconfig b/sound/soc/bcm/Kconfig
-> index 3d82a29ce3a8..6a834e109f1d 100644
-> --- a/sound/soc/bcm/Kconfig
-> +++ b/sound/soc/bcm/Kconfig
-> @@ -1,7 +1,6 @@
->  config SND_BCM2835_SOC_I2S
->  	tristate "SoC Audio support for the Broadcom BCM2835 I2S module"
->  	depends on ARCH_BCM2835 || COMPILE_TEST
-> -	select SND_SOC_DMAENGINE_PCM
->  	select SND_SOC_GENERIC_DMAENGINE_PCM
->  	select REGMAP_MMIO
->  	help
-> 
+diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
+index fc9802d1281d..52b79a487ac7 100644
+--- a/sound/soc/codecs/da9055.c
++++ b/sound/soc/codecs/da9055.c
+@@ -1058,17 +1058,17 @@ static int da9055_hw_params(struct snd_pcm_substream *substream,
+ 	u8 aif_ctrl, fs;
+ 	u32 sysclk;
+ 
+-	switch (params_format(params)) {
+-	case SNDRV_PCM_FORMAT_S16_LE:
++	switch (params_width(params)) {
++	case 16:
+ 		aif_ctrl = DA9055_AIF_WORD_S16_LE;
+ 		break;
+-	case SNDRV_PCM_FORMAT_S20_3LE:
++	case 20:
+ 		aif_ctrl = DA9055_AIF_WORD_S20_3LE;
+ 		break;
+-	case SNDRV_PCM_FORMAT_S24_LE:
++	case 24:
+ 		aif_ctrl = DA9055_AIF_WORD_S24_LE;
+ 		break;
+-	case SNDRV_PCM_FORMAT_S32_LE:
++	case 32:
+ 		aif_ctrl = DA9055_AIF_WORD_S32_LE;
+ 		break;
+ 	default:
+-- 
+1.8.5.2
