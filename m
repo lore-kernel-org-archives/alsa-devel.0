@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: da9055: Partially fix device
-Date: Thu, 9 Jan 2014 12:13:53 +0000
-Message-ID: <20140109121353.GG31886@sirena.org.uk>
-References: <2E89032DDAA8B9408CB92943514A03376B7CC95A@SW-EX-MBX01.diasemi.com>
+Subject: Re: [PATCH] ASoC: add RT5670 CODEC driver
+Date: Thu, 9 Jan 2014 12:45:13 +0000
+Message-ID: <20140109124513.GI31886@sirena.org.uk>
+References: <1387195916-3106-1-git-send-email-bardliao@realtek.com>
+ <20131219122527.GX31886@sirena.org.uk>
+ <1121E117AD4ECE49880A389A396215BB939A951093@rtitmbs7.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6105971786459670424=="
+Content-Type: multipart/mixed; boundary="===============5707296309318770387=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E1C6265281
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 13:14:01 +0100 (CET)
-In-Reply-To: <2E89032DDAA8B9408CB92943514A03376B7CC95A@SW-EX-MBX01.diasemi.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DD0512652BE
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 13:45:21 +0100 (CET)
+In-Reply-To: <1121E117AD4ECE49880A389A396215BB939A951093@rtitmbs7.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,84 +22,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, "Opensource [Anthony Olech]" <anthony.olech.opensource@diasemi.com>
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6105971786459670424==
+--===============5707296309318770387==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="EfDWqPO3HfsSBlCI"
+	protocol="application/pgp-signature"; boundary="F6MtUtJ2CVOfiu0Z"
 Content-Disposition: inline
 
 
---EfDWqPO3HfsSBlCI
+--F6MtUtJ2CVOfiu0Z
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 09, 2014 at 11:30:42AM +0000, Opensource [Adam Thomson] wrote:
-> On Wed,  8 Jan 2014 20:38:55 +0000, Mark Brown wrote:
+On Thu, Jan 09, 2014 at 03:47:52PM +0800, Bard Liao wrote:
 
-Please fix the word wrapping in your mailer to something less than 80
-columns, I've reflowed for legibility.
+> > > +unsigned rt5670_pdm1_read(struct snd_soc_codec *codec, unsigned int
+> > > +reg) {
+> >=20
+> > > +EXPORT_SYMBOL(rt5670_pdm1_read);
 
-> > Since I don't know which I2C address to use for the CODEC a FIXME has been
-> > left in the MFD, this doesn't make anything any worse since the device has
-> > never been able to load in the first place.
+> > Why is this exported at all and why is it exported non-GPL?
 
-> What you're saying here is incorrect, as previously discussed at length in this thread:
+> If a pdm device connect to RT5670, it may need to be controlled by RT5670=
+'s pdm read/write commands.
+> I will export it with GPL.
 
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/066027.html
+Please provide more detail on this.  Why would a generic PDM device have
+specific hooks into this driver?
 
-> The two drivers did work together fine until someone in 3.12 changed
-> the PMIC I2C Id back to just 'da9055' and broke it again. Also, I
-> wanted to add a simple patch to tidy up
+> > > +	if (rt5670->pdata.asrc_en) {
+> > > +		snd_soc_dapm_new_controls(&codec->dapm, rt5670_asrc_widgets,
+> > > +				ARRAY_SIZE(rt5670_dapm_widgets));
+> > > +		snd_soc_dapm_add_routes(&codec->dapm, rt5670_asrc_routes,
+> > > +				ARRAY_SIZE(rt5670_dapm_routes));
+> > > +	}
 
-Hrm, you hadn't mentioned the rename in that thread.  I do note that the
-change was from KPIT Cummins who submitted the drivers for this chip for
-you guys and appear to be doing updates too...
+> > Why is this configured in platform data?
 
-> the I2C Id names and avoid this but you would not agree. The codec
-> part can be standalone and by doing what you've done here means that
-> customers would need to now add additional, unnecessary code to be
-> able to use just the codec driver.  This is not right to me.
+> Usually, we don't enable ASRC function.
+> But in some platforms, they will need to enable ASRC function to get cloc=
+k properly.
+> And I think this is not needed to configure in run time.
 
-No, users will not have to do any extra work - if anything they have to
-do marginally less with only registering one device.  As discussed this
-is the way Linux handles things (which is also the rationale in the
-changelog for the PMIC rename).  Looking at the changelogs I'd not be
-surprised if the rename was done due to the author getting caught out by
-the non-standard way the driver was done.
+That's not going to be true in the general case, for example systems
+that support both narrow band and wide band might switch between them.
 
---EfDWqPO3HfsSBlCI
+--F6MtUtJ2CVOfiu0Z
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzpJ+AAoJELSic+t+oim9RBoP/ifitj1erk+RpLI10lSGy7M8
-5DOXe2UKjpwXcI9ZX+48BpZpxaUBUXEpwMC7N/PynNRxa0918yog3FWWFzNI8/o3
-Ywp132ZDjrXyrsPyrERFMnohZtJOTTzJcS7wUhqrK7nNfO0oYnko4Am/mqFxRxcD
-mt49tdGHkWVVEjrT58a69UfaAupZVvZxcevZyXE1UkIm4JYZv0pxyUys9piIoD5m
-4/W+DOA5E3T9fBC4gjagPIcTbFhqB3RIP+/7jbPxDTlVhwZ1O0YqCFIVjM13R83m
-6GuuyNL3x/BL4NxAQBRSg3ebIA6FZ8sp7zVa8Ho5IPmhhIyZhOAvMs41Ubrptj6P
-d4gaFbCy1w7geALpB1tpBnfR0USBLFaVAnGB0PjnLwzh6HrvWagYid8l2WpeFExW
-dLYg6FJpS25uNZWzyc8m4cul0K0tSTDX/zmfwCbkFekW7XvcDkJL6xbYRqvxpFq3
-bO2TM/bDBCupKTQl1p2ZNk53SiHMkFKBd1nPaF6NfRLO2LZZ+iF+nsKAR8ivbrB0
-ksRejEcrN9WGOsm2C6GMhO2OokyVS+yawWVPCyA0nvszIKaJc52QUySWci4EDw+p
-IMikojNPB8haUzHyuK3AN0c6Q7pxbAkoLXpGX4UdqSMvyKW/hpQS/j7wU/zviZK2
-VEau+UIcvMxo6gUnB/0u
-=xR7Q
+iQIcBAEBAgAGBQJSzpnWAAoJELSic+t+oim9VkgP/RU01h4lcCPJ44GYRDHwRPWO
+wsQT5zNJjw0Rb4QqTXPKetkv2rhYuhf1qSSwPbKqX4SGsFneinIZn1PmSxK0MxzH
+CNM7USQDaqF5mjhI+sviE6n5zS8wU20o1hHdy73QxhyYa1PRik3k2oEpqJquWHPm
+ZS2rX2tYMXNVbPK0mexy1PNbHHceOVOIBd1JQdE9l4e71ndSHCXKX+KSozQYNgeb
+Y7vYkdrx4eK5JBSIuSsvl3X/6saFHNfqQm5elgCnt7opWOYHB/QEqQQzpbI74D1Y
+G0tyuTIBarGIffVBxm2/0AerBY6XcNxrb5w3JsZUHExes1P5o5mWD1TqAoSvG4yI
+Iy9u9/jqlQQazoRuj4b5sXl8DcY+5o+c1uHaS5aOQzWgozrT8+WGpC7auTV387rv
+OO2FUBFm+zAyODXiXKwLhkvBCTYh6m64CATkmoVYps5biLdIvl4N54/6yIy4zRtJ
+/ro1gReIYIVU58aQHF01e1dI8pROwbn0j57O+gmJKCjZ1jsfd3TvWiCyA6QR1QKA
+08a5Hnx3RshgDmVRZYqULdi/JaxBTTwomxt3YXmRwspZGIncGj0aXFlDPMvTB1XL
+G3n46Cihi6q1QbtYTNaApKvyfI9ocvVIZC+xufoxB1CR6DIvMVBj8jr2Q3bbqeeM
+F/lYEiIbcVHYWs/9hks9
+=qJk+
 -----END PGP SIGNATURE-----
 
---EfDWqPO3HfsSBlCI--
+--F6MtUtJ2CVOfiu0Z--
 
---===============6105971786459670424==
+--===============5707296309318770387==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6105971786459670424==--
+--===============5707296309318770387==--
