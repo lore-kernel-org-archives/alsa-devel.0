@@ -1,107 +1,67 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v2 28/28] drm/i2c: tda998x: add a CODEC interface
-Date: Thu, 9 Jan 2014 12:08:03 +0100
-Message-ID: <20140109120803.6c26b401@armhf>
+From: Mauro Carvalho Chehab <m.chehab-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [alsa-devel] Fw: Isochronous transfer error on USB3
+Date: Thu, 09 Jan 2014 09:29:57 -0200
+Message-ID: <20140109092957.58092c3f@samsung.com>
+References: <20140108164800.70ea4169@samsung.com> <52CE5B09.6070203@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces@lists.freedesktop.org
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-To: dri-devel@lists.freedesktop.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-reply-to: <52CE5B09.6070203-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Cc: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, LMML <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIFREQTk5OHggY2hpcHMgbWF5IGdldCBhdWRpbyBpbnB1dCBmcm9tIEkyUyBvciBTL1BESUYg
-YW5kIHRoaXMgaW5wdXQKaXMgZGVmaW5lZCBieSB0aGUgYXVkaW8gc3Vic3lzdGVtLgoKSW4gdGhl
-IG90aGVyIHdheSwgdGhlIGF1ZGlvIHN1YnN5c3RlbSBtYXkgbmVlZCB0byBrbm93IGlmIGF1ZGlv
-IG91dHB1dAptYXkgYmUgZG9uZSB0aHJvdWdoIHRoZSBIRE1JIGNvbm5lY3Rvci4KClRoaXMgcGF0
-Y2ggYWRkcyBhIENPREVDIGludGVyZmFjZSBmb3IgZXhjaGFuZ2VzIGJldHdlZW4gdGhlIEhETUkg
-dHJhbnNtaXR0ZXIgYW5kIHRoZSBhdWRpbyBzdWJzeXN0ZW0uCgpTaWduZWQtb2ZmLWJ5OiBKZWFu
-LUZyYW5jb2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Ci0tLQogZHJpdmVycy9ncHUvZHJtL2ky
-Yy90ZGE5OTh4X2Rydi5jICB8IDcwICsrKysrKysrKysrKysrKysrKysrLS0KIDEgZmlsZSBjaGFu
-Z2VkLCA2NSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvZ3B1L2RybS9pMmMvdGRhOTk4eF9kcnYuYyBiL2RyaXZlcnMvZ3B1L2RybS9pMmMvdGRhOTk4
-eF9kcnYuYwppbmRleCA2N2Q3NDUwLi41YTE4NmU0IDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9k
-cm0vaTJjL3RkYTk5OHhfZHJ2LmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL2kyYy90ZGE5OTh4X2Ry
-di5jCkBAIC00Miw3ICs0Miw4IEBAIHN0cnVjdCB0ZGE5OTh4X3ByaXYgewogCXU4IHZpcF9jbnRy
-bF8xOwogCXU4IHZpcF9jbnRybF8yOwogCi0JdTggYXVkaW9fdHlwZTsJCS8qIGF1ZGlvIHR5cGUg
-Ki8KKwl1OCBhdWRpb190eXBlOwkJLyogYXVkaW8gdHlwZSBhbmQgJ2FjdGl2ZScgZmxhZyAqLwor
-I2RlZmluZSBBVURJT19BQ1RJVkUgMHg4MAogCXU4IGF1ZGlvX2ZyYW1lWzZdOwogCXUzMiBhdWRp
-b19wb3J0OwogCkBAIC01MCw2ICs1MSw5IEBAIHN0cnVjdCB0ZGE5OTh4X3ByaXYgewogCXdhaXRf
-cXVldWVfaGVhZF90IHdxX2VkaWQ7CiAJdm9sYXRpbGUgaW50IHdxX2VkaWRfd2FpdDsKIAlzdHJ1
-Y3QgZHJtX2VuY29kZXIgKmVuY29kZXI7CisKKwlzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWM7
-CisJdm9pZCAoKmV2ZW50KShzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMsIGludCBhY3RpdmF0
-ZSk7CiB9OwogCiAjZGVmaW5lIHRvX3RkYTk5OHhfcHJpdih4KSAgKChzdHJ1Y3QgdGRhOTk4eF9w
-cml2ICopdG9fZW5jb2Rlcl9zbGF2ZSh4KS0+c2xhdmVfcHJpdikKQEAgLTczMSwxNCArNzM1LDE0
-IEBAIHRkYTk5OHhfY29uZmlndXJlX2F1ZGlvKHN0cnVjdCB0ZGE5OTh4X3ByaXYgKnByaXYsCiAK
-IAkvKiBTZXQgYXVkaW8gaW5wdXQgc291cmNlICovCiAJc3dpdGNoIChwcml2LT5hdWRpb190eXBl
-KSB7Ci0JY2FzZSBBRk1UX1NQRElGOgorCWNhc2UgQUZNVF9TUERJRiB8IEFVRElPX0FDVElWRToK
-IAkJcmVnX3dyaXRlKHByaXYsIFJFR19NVVhfQVAsIE1VWF9BUF9TRUxFQ1RfU1BESUYpOwogCQlj
-bGtzZWxfYWlwID0gQUlQX0NMS1NFTF9BSVAoU0VMX0FJUF9TUERJRik7CiAJCWNsa3NlbF9mcyA9
-IEFJUF9DTEtTRUxfRlMoQ1RTUkVGX0ZTNjRTUERJRik7CiAJCWN0c19uID0gQ1RTX05fTSgzKSB8
-IENUU19OX0soMyk7CiAJCWJyZWFrOwogCi0JY2FzZSBBRk1UX0kyUzoKKwljYXNlIEFGTVRfSTJT
-IHwgQVVESU9fQUNUSVZFOgogCQlyZWdfd3JpdGUocHJpdiwgUkVHX01VWF9BUCwgTVVYX0FQX1NF
-TEVDVF9JMlMpOwogCQljbGtzZWxfYWlwID0gQUlQX0NMS1NFTF9BSVAoU0VMX0FJUF9JMlMpOwog
-CQljbGtzZWxfZnMgPSBBSVBfQ0xLU0VMX0ZTKENUU1JFRl9BQ0xLKTsKQEAgLTgxMyw2ICs4MTcs
-NTggQEAgdGRhOTk4eF9jb25maWd1cmVfYXVkaW8oc3RydWN0IHRkYTk5OHhfcHJpdiAqcHJpdiwK
-IAl0ZGE5OTh4X3dyaXRlX2FpZihwcml2KTsKIH0KIAorLyogdGRhOTk4eCBjb2RlYyBpbnRlcmZh
-Y2UgKi8KK3ZvaWQgdGRhOTk4eF9hdWRpb19yZWdpc3RlcihzdHJ1Y3QgaTJjX2NsaWVudCAqY2xp
-ZW50LAorCQkJc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjLAorCQkJdm9pZCAoKmV2ZW50KShz
-dHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMsIGludCBhY3RpdmF0ZSkpCit7CisJc3RydWN0IHRk
-YTk5OHhfcHJpdiAqcHJpdiA9IGkyY19nZXRfY2xpZW50ZGF0YShjbGllbnQpOworCisJLyogbWVt
-b3JpemUgdGhlIGNvZGVjIGFuZCB0aGUgY2FsbGJhY2sgZnVuY3Rpb24gKi8KKwlwcml2LT5jb2Rl
-YyA9IGNvZGVjOworCXByaXYtPmV2ZW50ID0gZXZlbnQ7Cit9CitFWFBPUlRfU1lNQk9MX0dQTCh0
-ZGE5OTh4X2F1ZGlvX3JlZ2lzdGVyKTsKKwordm9pZCB0ZGE5OTh4X2F1ZGlvX3VwZGF0ZShzdHJ1
-Y3QgaTJjX2NsaWVudCAqY2xpZW50LAorCQkJaW50IHR5cGUsCisJCQl1MzIgcG9ydCkKK3sKKwlz
-dHJ1Y3QgdGRhOTk4eF9wcml2ICpwcml2ID0gaTJjX2dldF9jbGllbnRkYXRhKGNsaWVudCk7CisK
-KwkvKiBpZiB0aGUgYXVkaW8gb3V0cHV0IGlzIGFjdGl2ZSwgaXQgbWF5IGJlIGEgc2Vjb25kIHN0
-YXJ0IG9yIGEgc3RvcCAqLworCWlmICh0eXBlID09IDAgfHwgKHByaXYtPmF1ZGlvX3R5cGUgJiBB
-VURJT19BQ1RJVkUpKSB7CisJCWlmICh0eXBlID09IDApIHsKKwkJCXByaXYtPmF1ZGlvX3R5cGUg
-Jj0gfkFVRElPX0FDVElWRTsJLyogc3RvcCAqLworCQkJcmVnX3dyaXRlKHByaXYsIFJFR19FTkFf
-QVAsIDApOworCQl9CisJCXJldHVybjsKKwl9CisKKwlwcml2LT5hdWRpb19wb3J0ID0gcG9ydDsK
-KworCS8qIGRvbid0IHJlc3RhcnQgYXVkaW8gaWYgc2FtZSBpbnB1dCB0eXBlICovCisJaWYgKHR5
-cGUgPT0gcHJpdi0+YXVkaW9fdHlwZSkgeworCQlwcml2LT5hdWRpb190eXBlIHw9IEFVRElPX0FD
-VElWRTsKKwkJcmVnX3dyaXRlKHByaXYsIFJFR19FTkFfQVAsIHByaXYtPmF1ZGlvX3BvcnQpOwor
-CQlyZXR1cm47CisJfQorCisJcHJpdi0+YXVkaW9fdHlwZSA9IHR5cGUgfCBBVURJT19BQ1RJVkU7
-CisKKwl0ZGE5OTh4X2NvbmZpZ3VyZV9hdWRpbyhwcml2LCAmcHJpdi0+ZW5jb2Rlci0+Y3J0Yy0+
-aHdtb2RlKTsKK30KK0VYUE9SVF9TWU1CT0xfR1BMKHRkYTk5OHhfYXVkaW9fdXBkYXRlKTsKKwor
-Lyogc2VuZCBhbiBhdWRpbyBldmVudCB0byB0aGUgdGRhIGNvZGVjICovCitzdGF0aWMgdm9pZCBz
-ZW5kX2F1ZGlvX2V2ZW50KHN0cnVjdCB0ZGE5OTh4X3ByaXYgKnByaXYsCisJCQkJaW50IGV2ZW50
-KQoreworCWlmICghcHJpdi0+ZXZlbnQpCisJCXJldHVybjsKKwlwcml2LT5ldmVudChwcml2LT5j
-b2RlYywgZXZlbnQpOworfQorCiAvKiBEUk0gZW5jb2RlciBmdW5jdGlvbnMgKi8KIAogLyogdGhp
-cyBmdW5jdGlvbiBpcyBub3QgY2FsbGVkIHdoZW4gbm8gaW5mby0+cGxhdGZvcm0gKERUIHN1cHBv
-cnQpICovCkBAIC04NDAsNyArODk2LDcgQEAgdGRhOTk4eF9lbmNvZGVyX3NldF9jb25maWcoc3Ry
-dWN0IGRybV9lbmNvZGVyICplbmNvZGVyLCB2b2lkICpwYXJhbXMpCiAKIAlpZiAocC0+YXVkaW9f
-Y2ZnKSB7CiAJCXByaXYtPmF1ZGlvX3BvcnQgPSBwLT5hdWRpb19jZmc7Ci0JCXByaXYtPmF1ZGlv
-X3R5cGUgPSBwLT5hdWRpb19mb3JtYXQ7CisJCXByaXYtPmF1ZGlvX3R5cGUgPSBwLT5hdWRpb19m
-b3JtYXQgfCBBVURJT19BQ1RJVkU7CiAJfQogfQogCkBAIC0xMTA1LDkgKzExNjEsMTAgQEAgdGRh
-OTk4eF9lbmNvZGVyX21vZGVfc2V0KHN0cnVjdCBkcm1fZW5jb2RlciAqZW5jb2RlciwKIAogCQl0
-ZGE5OTh4X3dyaXRlX2F2aShwcml2LCBtb2RlKTsKIAotCQlpZiAocHJpdi0+YXVkaW9fdHlwZSkK
-KwkJaWYgKHByaXYtPmF1ZGlvX3R5cGUgJiBBVURJT19BQ1RJVkUpCiAJCQl0ZGE5OTh4X2NvbmZp
-Z3VyZV9hdWRpbyhwcml2LCBtb2RlKTsKIAl9CisJc2VuZF9hdWRpb19ldmVudChwcml2LCBwcml2
-LT5pc19oZG1pX3NpbmspOwogCiAJLyogbXVzdCBiZSBsYXN0IHJlZ2lzdGVyIHNldDogKi8KIAly
-ZWdfd3JpdGUocHJpdiwgUkVHX1RCR19DTlRSTF8wLCAwKTsKQEAgLTEyNjMsNiArMTMyMCw3IEBA
-IHRkYTk5OHhfZW5jb2Rlcl9nZXRfbW9kZXMoc3RydWN0IGRybV9lbmNvZGVyICplbmNvZGVyLAog
-CQlkcm1fbW9kZV9jb25uZWN0b3JfdXBkYXRlX2VkaWRfcHJvcGVydHkoY29ubmVjdG9yLCBlZGlk
-KTsKIAkJbiA9IGRybV9hZGRfZWRpZF9tb2Rlcyhjb25uZWN0b3IsIGVkaWQpOwogCQlwcml2LT5p
-c19oZG1pX3NpbmsgPSBkcm1fZGV0ZWN0X2hkbWlfbW9uaXRvcihlZGlkKTsKKwkJc2VuZF9hdWRp
-b19ldmVudChwcml2LCBwcml2LT5pc19oZG1pX3NpbmspOwogCQlrZnJlZShlZGlkKTsKIAl9CiAK
-QEAgLTEzNDksNiArMTQwNyw4IEBAIHRkYTk5OHhfZW5jb2Rlcl9pbml0KHN0cnVjdCBpMmNfY2xp
-ZW50ICpjbGllbnQsCiAJaWYgKCFwcml2KQogCQlyZXR1cm4gLUVOT01FTTsKIAorCWkyY19zZXRf
-Y2xpZW50ZGF0YShjbGllbnQsIHByaXYpOworCiAJcHJpdi0+dmlwX2NudHJsXzAgPSBWSVBfQ05U
-UkxfMF9TV0FQX0EoMikgfCBWSVBfQ05UUkxfMF9TV0FQX0IoMyk7CiAJcHJpdi0+dmlwX2NudHJs
-XzEgPSBWSVBfQ05UUkxfMV9TV0FQX0MoMCkgfCBWSVBfQ05UUkxfMV9TV0FQX0QoMSk7CiAJcHJp
-di0+dmlwX2NudHJsXzIgPSBWSVBfQ05UUkxfMl9TV0FQX0UoNCkgfCBWSVBfQ05UUkxfMl9TV0FQ
-X0YoNSk7Ci0tIApLZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0
-YXYhICoqCkplZgkJfAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmkt
-ZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+Em Thu, 09 Jan 2014 09:17:13 +0100
+Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org> escreveu:
+
+> Mauro Carvalho Chehab wrote:
+> > I'm getting an weird behavior with em28xx, especially when the device
+> > is connected into an audio port.
+> >
+> > 	http://git.linuxtv.org/mchehab/experimental.git/blob/refs/heads/em28xx-v4l2-v6:/drivers/media/usb/em28xx/em28xx-audio.c
+> >
+> > What happens is that, when I require xawtv3 to use any latency lower
+> > than 65 ms, the audio doesn't work, as it gets lots of underruns per
+> > second.
+> 
+> The driver uses five URBs with 64 frames each, so of course it
+> will not be able to properly handle periods smaller than that.
+> 
+> > FYI, em28xx works at a 48000 KHz sampling rate, and its PM capture Hw
+> > is described as:
+> >
+> > static struct snd_pcm_hardware snd_em28xx_hw_capture = {
+> > 	.info = SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> > 		SNDRV_PCM_INFO_MMAP           |
+> > 		SNDRV_PCM_INFO_INTERLEAVED    |
+> > 		SNDRV_PCM_INFO_BATCH	      |
+> > 		SNDRV_PCM_INFO_MMAP_VALID,
+> >
+> > 	.formats = SNDRV_PCM_FMTBIT_S16_LE,
+> >
+> > 	.rates = SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_KNOT,
+> 
+> This should be just SNDRV_PCM_RATE_48000.
+
+Ok.
+
+> 
+> > 	.period_bytes_min = 64,		/* 12544/2, */
+> 
+> This is wrong (if the driver doesn't install other constraints on the
+> period length, like the USB audio class driver does).
+
+Ok, how should it be estimated? Those values here were simply glued from
+the USB audio class driver a long time ago without a further analysis.
+
+I changed it to 188 (the minimum URB size I experimentally noticed with
+the current settings) and it is now working fine with both xHCI and EHCI.
+
+Regards,
+Mauro
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
