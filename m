@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: ad1836: Use params_width()
- rather than explicit memory format
-Date: Thu, 9 Jan 2014 14:00:08 +0000
-Message-ID: <20140109140008.GS31886@sirena.org.uk>
-References: <1389207089-23741-1-git-send-email-broonie@kernel.org>
- <52CE798F.3040201@metafoo.de>
+Subject: Re: [PATCH] ASoC: wm8804: Allow fine-grained control
+ of the PLL generation
+Date: Thu, 9 Jan 2014 14:20:03 +0000
+Message-ID: <20140109142003.GV31886@sirena.org.uk>
+References: <alpine.DEB.2.02.1401082231260.4025@parallels-Parallels-Virtual-Platform>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2745298240277795148=="
+Content-Type: multipart/mixed; boundary="===============0369415847702475342=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7374B261AB2
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 15:00:17 +0100 (CET)
-In-Reply-To: <52CE798F.3040201@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 76A0E261AB2
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 15:20:19 +0100 (CET)
+In-Reply-To: <alpine.DEB.2.02.1401082231260.4025@parallels-Parallels-Virtual-Platform>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +21,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Daniel Matuschek <daniel@matuschek.net>
+Cc: alsa-devel@alsa-project.org, Dimitris.Papastamos@Wolfsonmicro.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2745298240277795148==
+--===============0369415847702475342==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OTWLqIJUDNi0OpDw"
+	protocol="application/pgp-signature"; boundary="hrK/Uoh15cc91+7I"
 Content-Disposition: inline
 
 
---OTWLqIJUDNi0OpDw
+--hrK/Uoh15cc91+7I
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 09, 2014 at 11:27:27AM +0100, Lars-Peter Clausen wrote:
-> On 01/08/2014 07:51 PM, Mark Brown wrote:
-> > From: Mark Brown <broonie@linaro.org>
+On Wed, Jan 08, 2014 at 10:36:53PM +0100, Daniel Matuschek wrote:
+> Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
+>=20
+>  WM8804 can run
+>  with PLL frequencies of 256xfs and 128xfs for most sample
+>  rates. At 192kHz only 128xfs is supported. The existing
+>  driver selects 128xfs automatically for some lower samples
+>  rates. By using the "pllid" argument of the "set_pll"
+>  function is is now possible to control the behaviour. This
+>  allows using 256xfs PLL frequency on all sample rates up to
+>  96kHz. It should allow lower jitter and better signal
+>  quality. When pllid=3D0, the behaviour of the driver does not
+>  change.
 
-> It would have been nice to have a least a small explanation why this is a
-> better approach. It might not be immediately obvious to somebody reading the
-> log later on.
+Please put the signoff at the end of the commit log like
+SubmittingPatches says.  The formatting of the log message is also
+*very* odd, the first line is really short for some reason and
+everything is indented by a space.  In general your commit message
+shouldn't stand out from others when viewed with git log.
 
-OTOH it does get rather tiresome with repetitive changes - even where
-there's some notes generally the thing to do is look at the patch
-implementing the new API to figure out why it's better (not that this is
-much help here yet).
+>   * wm8804.c  --  WM8804 S/PDIF transceiver driver
+>   *
+>   * Copyright 2010-11 Wolfson Microelectronics plc
+> + * patched by Daniel Matuschek <info@crazyaudio.com> to allow
+> + * fine-grained control of PLL
 
---OTWLqIJUDNi0OpDw
+We have git history, we don't need changelogs in the driver too.  Adding
+a copyright statement would be OK (though most people don't bother).
+
+>  static int pll_factors(struct pll_div *pll_div, unsigned int target,
+> -		       unsigned int source)
+> +		       unsigned int source, int mclk_div)
+
+Here you call this mclk_div...
+
+> -			pll_div->mclkdiv =3D post_table[i].mclkdiv;
+> -			target *=3D post_table[i].div;
+> -			break;
+> +			if ((mclk_div =3D=3D WM8804_MCLKDIV_DONTCARE) ||
+> +			    ((post_table[i].mclkdiv =3D=3D 1) &&
+> +				(mclk_div =3D=3D WM8804_MCLKDIV_1)) ||
+> +			    ((post_table[i].mclkdiv =3D=3D 0) &&
+> +				(mclk_div =3D=3D WM8804_MCLKDIV_0))) {
+> +				pll_div->mclkdiv =3D post_table[i].mclkdiv;
+> +				target *=3D post_table[i].div;
+> +				break;
+> +			}
+
+This logic is really hard to read, it's five lines of if statement with
+multiple levels of brackets indented to the same level as the following
+statements.  I'd suggest either a series of if statements with continues
+or something like
+
+	if (mclk_div =3D=3D WM8804_MCLKDIV_DONTCARE ||
+	    mclk_div - 1 =3D=3D post_table[i].mclkdiv) {
+
+instead.
+
+> @@ -388,7 +396,7 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, in=
+t pll_id,
+>  		int ret;
+>  		struct pll_div pll_div;
+>=20
+> -		ret =3D pll_factors(&pll_div, freq_out, freq_in);
+> +		ret =3D pll_factors(&pll_div, freq_out, freq_in, pll_id);
+
+=2E..but here it's pll_id.
+
+> +#define WM8804_MCLKDIV_DONTCARE			0
+> +#define WM8804_MCLKDIV_0			1
+> +#define WM8804_MCLKDIV_1			2
+> +#define WM8804_PLL_MCLKDIV_DONTCARE		WM8804_MCLKDIV_DONTCARE
+> +#define WM8804_PLL_MCLKDIV_0			WM8804_MCLKDIV_0
+> +#define WM8804_PLL_MCLKDIV_1			WM8804_MCLKDIV_1
+
+Why are there two different sets of constants with the same values being
+added here, the _PLL versions don't seem to be referenced?
+
+--hrK/Uoh15cc91+7I
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzqtlAAoJELSic+t+oim91yAP/RGk/4BstkgoTjFp6fD0ikzy
-VW/JI+ir1rZmZ4gAB0a+UNrbLIaIuBcyt+4NpTkhJCrsJRy8gPABCyZqChwZqEmE
-B649vUyz3YTj/qMH8Pns/4rGudf4bSt6WoZkyHwTtfH2Ld10RB1QFOohaKVWViSJ
-WJtb6uG5UiHkBJvp2EQ3IqLaBH5nqKMPA/OLHw0HBxUzr/QPz2cZwaY+WG1Itl5n
-vZigASnlMXrrLF2236PWvQgNFMX3FeCXqUftRbK6N48iztwESAWIVjZmqqjVEoSl
-6SQiwDCw51Vgkp+eXxa1n49Wdi/VEdeTNGhQ2E+z7tVELNsX4myOSBR6kHXvdE2C
-WgmQhB8JjXOPvItXt9k0R94dIxoKKAki2AsCmlH8jUe9mfisBoFoUfnH2vSj0PRS
-/2L0Tepia3aLUTrhQ/Xky6eTdz16kRZBo+wyOqkoTshuhjKHebbOwOIYxJA+HJav
-db88KSnNY+w2L3rjZosZANT0epEDHl7A3tIdfkGzWqdXnoZn22y0tmDmR4KNMW17
-HWmGwMmb2Yn9cBd7QV1CEdGnBPtOEvo9Q1QN+NqEieKJlmpFnTseU6whyOxAPU/5
-2yjBCy6T2VkQRE9SaPF2HUHexXtCYT+eTjXkz9TkvsnXjKv5cFfdTzh3QMIex2gy
-9BXnhCNP5FOr7Gv79Lr8
-=jyrh
+iQIcBAEBAgAGBQJSzrAQAAoJELSic+t+oim9HC4P/3RkvOSr0bs3tSPB2RKtPMlS
+prtWS2dVLzOVww+dPXEgC2XozfILiOxSj7VH15RMvhNCg4vOYEj8At8u0xHwzC7A
+RYpQhAun8ZvC7SrNGzVHXULAWaQqBaTWeUApNg3T1whWeuNGU8OPz9YilLoDkiE8
+kaYsByvORVKsOb0fzgERMgMm1TMg21sFzHUkW1Udn3xh8NzqqJeP5s16oZZu4CdA
+j0LcI7SfzGBA5h0Y7bg1ojVh6bFxJfFnSK2DYoFdTei3CNwjQbXU7lL3r5/WjM0p
+8f4Hei1UDzqXkyjkUsf4J3c56s85gYbyy3hnPBhTCcksexFaE4y4phuuDUWPRE7a
+bDD9BIwnZPHOcLnUdjckr3HmmzkEALUcUrJQk7hapOC5WhKA/omJ6jnqLO8Yj5ju
++6t8/Y6jNVXlWJLQdBN9ZTaNABeop42b8xvfPlg31v/pvdI+W8ZQQ6L8EV8tK8c8
+dMRNo/v0UTvlijbOF83G1vMNQXtDJI3tYal3Nlj55trHZPudbvvJZ2hnPrAGAqlI
+tLt0F2WGt6wgnvRWEHRyf6ciqEWiV9nxQOrQjCwY7WdDqfgklT1860BWgvOo1ufz
+YRBzKcr8xL0u6grZxn3HZP/KQU0fi2GTzKg2LG6SSC+AEZ9ywi2ekRHhTbGxhhPu
+CV2A2k2bnBrqiJJm1wi7
+=Er8p
 -----END PGP SIGNATURE-----
 
---OTWLqIJUDNi0OpDw--
+--hrK/Uoh15cc91+7I--
 
---===============2745298240277795148==
+--===============0369415847702475342==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2745298240277795148==--
+--===============0369415847702475342==--
