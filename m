@@ -1,64 +1,48 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: [PATCH v2] ASoC: fsl_ssi: Set default slot number for
-	common cases
-Date: Thu, 9 Jan 2014 18:42:48 +0800
-Message-ID: <1389264168-13379-1-git-send-email-Guangyu.Chen@freescale.com>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH] ASoC: simple-card: fix the cinfo error check
+Date: Thu, 9 Jan 2014 17:49:40 +0800
+Message-ID: <1389260980-25579-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
- by alsa0.perex.cz (Postfix) with ESMTP id C93F4261B03
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 11:42:32 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, timur@tabi.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linuxppc-dev@lists.ozlabs.org, lgirdwood@gmail.com, festevam@gmail.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-For those platforms using DAI master mode like I2S, it's better to pre-set
-a default slot number so that there's no need for these common cases to set
-the slot number from its machine driver any more.
+If the dt is used and the cinfo is NULL, the -ENOMEM should be return.
 
-Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
+ sound/soc/generic/simple-card.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-Changelog
-v2:
- * Correct coding style for multi-line comment.
-
- sound/soc/fsl/fsl_ssi.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 94dedcb..aad2a1f 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -711,6 +711,17 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
- 	if (ssi_private->imx_ac97)
- 		fsl_ssi_setup_ac97(ssi_private);
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 51a4784..406e4ea 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -223,15 +223,17 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 					dev_err(dev, "parse error %d\n", ret);
+ 				return ret;
+ 			}
++		} else {
++			return -ENOMEM;
+ 		}
+ 	} else {
+ 		cinfo = pdev->dev.platform_data;
+-		cinfo->snd_card.dev = &pdev->dev;
+-	}
++		if (!cinfo) {
++			dev_err(dev, "no info for asoc-simple-card\n");
++			return -EINVAL;
++		}
  
-+	/*
-+	 * Set a default slot number so that there is no need for those common
-+	 * cases like I2S mode to call the extra set_tdm_slot() any more.
-+	 */
-+	if (!ssi_private->imx_ac97) {
-+		write_ssi_mask(&ssi->stccr, CCSR_SSI_SxCCR_DC_MASK,
-+				CCSR_SSI_SxCCR_DC(2));
-+		write_ssi_mask(&ssi->srccr, CCSR_SSI_SxCCR_DC_MASK,
-+				CCSR_SSI_SxCCR_DC(2));
-+	}
-+
- 	return 0;
- }
+-	if (!cinfo) {
+-		dev_err(dev, "no info for asoc-simple-card\n");
+-		return -EINVAL;
++		cinfo->snd_card.dev = &pdev->dev;
+ 	}
  
+ 	if (!cinfo->name	||
 -- 
 1.8.4
