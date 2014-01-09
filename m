@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH -next] ASoC: fsl-ssi: Add missing
- clk_disable_unprepare() on error in fsl_ssi_probe()
-Date: Thu, 9 Jan 2014 17:26:16 +0000
-Message-ID: <20140109172616.GE12858@sirena.org.uk>
-References: <CAPgLHd-wvDcOz1Ne69g3o4b=VS7jaPU5Gu4DBMq_tBCsY0xcew@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: fsl_ssi: Set default slot number
+ for common cases
+Date: Thu, 9 Jan 2014 17:34:34 +0000
+Message-ID: <20140109173434.GG12858@sirena.org.uk>
+References: <1389264168-13379-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6895788220663843955=="
+Content-Type: multipart/mixed; boundary="===============5430971727492495688=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B61C261AC4
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 18:26:32 +0100 (CET)
-In-Reply-To: <CAPgLHd-wvDcOz1Ne69g3o4b=VS7jaPU5Gu4DBMq_tBCsY0xcew@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D12B92652C5
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 18:34:43 +0100 (CET)
+In-Reply-To: <1389264168-13379-1-git-send-email-Guangyu.Chen@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, timur@tabi.org, yongjun_wei@trendmicro.com.cn, robh+dt@kernel.org, grant.likely@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, festevam@gmail.com, timur@tabi.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6895788220663843955==
+--===============5430971727492495688==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OZkY3AIuv2LYvjdk"
+	protocol="application/pgp-signature"; boundary="S5HS5MvDw4DmbRmb"
 Content-Disposition: inline
 
 
---OZkY3AIuv2LYvjdk
+--S5HS5MvDw4DmbRmb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 09, 2014 at 10:27:31PM +0800, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->=20
-> Add the missing clk_disable_unprepare() before return from
-> fsl_ssi_probe() in the request irq error handling case.
+On Thu, Jan 09, 2014 at 06:42:48PM +0800, Nicolin Chen wrote:
+> For those platforms using DAI master mode like I2S, it's better to pre-set
+> a default slot number so that there's no need for these common cases to set
+> the slot number from its machine driver any more.
 
-Applied, thanks.
+Applied, thanks - but note that this will mean anything that does want
+non-default TDM will need to set it every single time it runs rather
+than being able to do it once on init.  This might need revisiting if
+there are users doing that.
 
---OZkY3AIuv2LYvjdk
+--S5HS5MvDw4DmbRmb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSztu1AAoJELSic+t+oim9SboP/2N382yLVNGVIHJpJOstw04+
-CYdHYXBLq8W1jBEklDhyppTm5fXSYymPeWrgL7T5cBnF19ODkxvxHrSKal73Bus5
-zkk5uuo5ahn3YDsd1/a2OuhWDfD4Xya2/g8osgRaUvjbZbfanFpA+1N0kbNVgq7O
-w1uvF4VtuHs2BwYDX3I3KU7UGg7e8z37aw2XqhWk05wdYousZLI4+5JJ4c+giKI3
-sfJtyyIib0iSi5oZnIH3leoq9RsTDZS1E3uJvmtWUo5oboUtox0ZHAcEptgc/Icq
-q6MjiUdjtETDGHRCTqX3r8NAMpVQm9fq5bCydBy9f3CRrRorRapATA/jvN2J6tGo
-ZdxIGvwlnQETa3E/8MlrDQ8dUeEtk/xZmum6fVtDCp7FfQRHoMe+AkWGED99pdY8
-GaY2MdlY6iL5ljHwltUlyCbaHb1wa63Xq7XrocSueJKwWKjCnx+zgYZhjoikIfdR
-h7nMyTshUZhb/Et57a8jdTHtl3JNpT+MT8EO5d8Ly9oTAk3DsQKbOCUsZNQM6glz
-f0j9SbsH+gU8tKqPYnQD2xYMU65otncEY83Lqctrls6Q7OU4NKeoNSRjmb45xYfV
-11ZmHmBXkFOy6+Rayii7iH+9KpO7LQ3MCtv4eZ73TrGa3/IeCKIJpqcIihENZYXq
-nAZsMLbu1ceVAJM43ZtC
-=jglI
+iQIcBAEBAgAGBQJSzt2nAAoJELSic+t+oim9NU0P/3XfGECI6s/aDNI1DLXM17CY
+sR3EIh88G2eOlthFPcWg3e6KP2eTE8Dp1BflkAFmPjuw/njOQEyDRA//37dQk5NT
+oO731gFGisUjZJs+XyzsYqD1o/Uxtc/FPB0j22CWP50ljhbEo3whv+vK+OGW9V9P
+yYkY1/w+Gwc4SUV0pdILPgHP0iTJcrOunesxsQpl7XtWqezqmWZ+HzqV4G367ysx
+gp5bjl+oR+FjCClI3xN2Ig1wyz5sVntJzO8LWx8MoHQgbF9gPIN2XuGikAVc1I2g
+7pkjcNYUxDxDqeXcyaw65IGbD2F2WIyu0odqXV9zjetPEtWcxoXhYJEivTFBgMwc
+/S3b1JlLvQSjWsbtQfVFWweTEV17Oic12+VCHx/E4K81/0PTTxRVz6mCQjDUUa4C
+6ZWP7uPtuXax2IOhwhDpCgnUfU5BmJdItLldsgvkVpNTeqa1p1s7tClX1ovKyAXk
+kmuMWfvDiMgHv77nYTBy26sdocUTyu+5QeInBVQKh5NNygWo0emQk6V6T+fkdh0k
+qXaLdpnaWEaHTLGN/38F3vjagGmtF9KDSqQPzFbw0giCV1HHxkodWBhQ4KNMdNpm
+4+nMopqM95lKTGAmMB1OLMTSwRSxS+9OQ4N6h3X0nzFT+Nl1CUG+Do7a3EC/h5MF
+7ejmCnsIoOT7gWTt/DT+
+=N3wP
 -----END PGP SIGNATURE-----
 
---OZkY3AIuv2LYvjdk--
+--S5HS5MvDw4DmbRmb--
 
---===============6895788220663843955==
+--===============5430971727492495688==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6895788220663843955==--
+--===============5430971727492495688==--
