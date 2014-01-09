@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] fsl-ssi fixups
-Date: Thu, 9 Jan 2014 13:55:15 +0000
-Message-ID: <20140109135515.GR31886@sirena.org.uk>
-References: <20140108172144.GP31886@sirena.org.uk>
- <1389262571-12489-1-git-send-email-mpa@pengutronix.de>
+Subject: Re: [PATCH 1/5] ASoC: ad1836: Use params_width()
+ rather than explicit memory format
+Date: Thu, 9 Jan 2014 14:00:08 +0000
+Message-ID: <20140109140008.GS31886@sirena.org.uk>
+References: <1389207089-23741-1-git-send-email-broonie@kernel.org>
+ <52CE798F.3040201@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5499001624129178518=="
+Content-Type: multipart/mixed; boundary="===============2745298240277795148=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D8970261AB2
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 14:55:31 +0100 (CET)
-In-Reply-To: <1389262571-12489-1-git-send-email-mpa@pengutronix.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7374B261AB2
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 15:00:17 +0100 (CET)
+In-Reply-To: <52CE798F.3040201@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5499001624129178518==
+--===============2745298240277795148==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8dsoPdgpjMvQGQwr"
+	protocol="application/pgp-signature"; boundary="OTWLqIJUDNi0OpDw"
 Content-Disposition: inline
 
 
---8dsoPdgpjMvQGQwr
+--OTWLqIJUDNi0OpDw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 09, 2014 at 11:16:09AM +0100, Markus Pargmann wrote:
-> Hi,
->=20
-> Thanks, here are the two fixups for the series. The binding documentation=
- did
-> not contain a list of compatibles yet, so I added it.
+On Thu, Jan 09, 2014 at 11:27:27AM +0100, Lars-Peter Clausen wrote:
+> On 01/08/2014 07:51 PM, Mark Brown wrote:
+> > From: Mark Brown <broonie@linaro.org>
 
-Applied both, thanks.
+> It would have been nice to have a least a small explanation why this is a
+> better approach. It might not be immediately obvious to somebody reading the
+> log later on.
 
---8dsoPdgpjMvQGQwr
+OTOH it does get rather tiresome with repetitive changes - even where
+there's some notes generally the thing to do is look at the patch
+implementing the new API to figure out why it's better (not that this is
+much help here yet).
+
+--OTWLqIJUDNi0OpDw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzqpAAAoJELSic+t+oim9LBMP/A9OXo4n9TgQKx5VZPkyIpuy
-5l1tHznC2s3jXGry9n3vWexxu0HG56a09sejq2Vyx21oo5ltCwDxH97NQeiQ0GEr
-KzghhEml7SZmxxsKV7Zgl2SbUuog9JaPbpIiWtBPtCiv+LFdIOHaxPWgEuSRYZHF
-xBF/1S5Q3vZRNwntQ8EgIcCSIRXMx/8E2LKoHhc7sVzRtAJwYIOC/HdSiEE/J2t0
-EX0UnFEyZSgYTxBsBbdAZBEbSzBD42zkRO1B0I3Rt/vKA9n/ck84CDY+ejUIuXE4
-5ryN5luNPYW1VyKeU97ta3Ul7i695JfAGfykmH8Le8Sdh0FvlYPZLm2jxPesLirf
-eH8nAFZJ1uVSXwUX6pzMOc8pVa8EpqIXypOzvdm6N5SGfktXLAVcMh0JJD5FGykH
-J9AzH7YHOdEvbL/9HIfpWFHyal+rmsdHsWuYwrzhM2kQ1I7mIiIgWKvx7I41BoYu
-m0qKhvEfP8YtQFfipG5rTwEAhlV5Vkvoz7wo+I1TN/B+m062nlJvRmQPbstN9iQt
-Uj1oF2EMhxHMxqOmvzlON5d/taEq9Qo0XHDcEHoqk1vKsQhMQf0ua1eBcWdnChS1
-eBX3mKoYpJVYKzOiDNC/JfCxz5Hp+thAFsJFdXQRT4PIn/9DknvTi+OjMTyrLhXo
-tVWFLeHHc+VCaW8R5RF9
-=UWSH
+iQIcBAEBAgAGBQJSzqtlAAoJELSic+t+oim91yAP/RGk/4BstkgoTjFp6fD0ikzy
+VW/JI+ir1rZmZ4gAB0a+UNrbLIaIuBcyt+4NpTkhJCrsJRy8gPABCyZqChwZqEmE
+B649vUyz3YTj/qMH8Pns/4rGudf4bSt6WoZkyHwTtfH2Ld10RB1QFOohaKVWViSJ
+WJtb6uG5UiHkBJvp2EQ3IqLaBH5nqKMPA/OLHw0HBxUzr/QPz2cZwaY+WG1Itl5n
+vZigASnlMXrrLF2236PWvQgNFMX3FeCXqUftRbK6N48iztwESAWIVjZmqqjVEoSl
+6SQiwDCw51Vgkp+eXxa1n49Wdi/VEdeTNGhQ2E+z7tVELNsX4myOSBR6kHXvdE2C
+WgmQhB8JjXOPvItXt9k0R94dIxoKKAki2AsCmlH8jUe9mfisBoFoUfnH2vSj0PRS
+/2L0Tepia3aLUTrhQ/Xky6eTdz16kRZBo+wyOqkoTshuhjKHebbOwOIYxJA+HJav
+db88KSnNY+w2L3rjZosZANT0epEDHl7A3tIdfkGzWqdXnoZn22y0tmDmR4KNMW17
+HWmGwMmb2Yn9cBd7QV1CEdGnBPtOEvo9Q1QN+NqEieKJlmpFnTseU6whyOxAPU/5
+2yjBCy6T2VkQRE9SaPF2HUHexXtCYT+eTjXkz9TkvsnXjKv5cFfdTzh3QMIex2gy
+9BXnhCNP5FOr7Gv79Lr8
+=jyrh
 -----END PGP SIGNATURE-----
 
---8dsoPdgpjMvQGQwr--
+--OTWLqIJUDNi0OpDw--
 
---===============5499001624129178518==
+--===============2745298240277795148==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5499001624129178518==--
+--===============2745298240277795148==--
