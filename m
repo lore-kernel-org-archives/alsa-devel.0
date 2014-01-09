@@ -1,17 +1,21 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 2/2] ASoC: wm5110: Add controls for
-	headphone short circuit protection
-Date: Thu,  9 Jan 2014 14:29:25 +0000
-Message-ID: <1389277765-23914-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1389277765-23914-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
+From: Daniel Matuschek <daniel@matuschek.net>
+Subject: Re: [PATCH] ASoC: wm8804: Allow fine-grained control
+	of the PLL generation
+Date: Thu, 9 Jan 2014 16:29:13 +0100
+Message-ID: <9DF5D0F7-F5A7-4705-8ACB-286B49D668C1@matuschek.net>
+References: <alpine.DEB.2.02.1401082231260.4025@parallels-Parallels-Virtual-Platform>
+ <20140109142745.GB6110@opensource.wolfsonmicro.com>
+Mime-Version: 1.0 (Mac OS X Mail 7.1 \(1827\))
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42FD1261AEC
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 15:37:35 +0100 (CET)
-In-Reply-To: <1389277765-23914-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mail-ea0-f174.google.com (mail-ea0-f174.google.com
+ [209.85.215.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E4502652DC
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 16:29:17 +0100 (CET)
+Received: by mail-ea0-f174.google.com with SMTP id b10so1543841eae.33
+ for <alsa-devel@alsa-project.org>; Thu, 09 Jan 2014 07:29:16 -0800 (PST)
+In-Reply-To: <20140109142745.GB6110@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,35 +25,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lee.jones@linaro.org
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Dimitris.Papastamos@Wolfsonmicro.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>, Grant Likely <grant.likely@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add controls to enable/disable the headphone short circuit protection of
-the headphone outputs.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5110.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+On 09.01.2014, at 15:27, Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 9add6c7..eb526e3 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -267,6 +267,13 @@ ARIZONA_MIXER_CONTROLS("SPKDAT1R", ARIZONA_OUT5RMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("SPKDAT2L", ARIZONA_OUT6LMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("SPKDAT2R", ARIZONA_OUT6RMIX_INPUT_1_SOURCE),
- 
-+SOC_SINGLE("HPOUT1 SC Protect Switch", ARIZONA_HP1_SHORT_CIRCUIT_CTRL,
-+	   ARIZONA_HP1_SC_ENA_SHIFT, 1, 0),
-+SOC_SINGLE("HPOUT2 SC Protect Switch", ARIZONA_HP2_SHORT_CIRCUIT_CTRL,
-+	   ARIZONA_HP2_SC_ENA_SHIFT, 1, 0),
-+SOC_SINGLE("HPOUT3 SC Protect Switch", ARIZONA_HP3_SHORT_CIRCUIT_CTRL,
-+	   ARIZONA_HP3_SC_ENA_SHIFT, 1, 0),
-+
- SOC_DOUBLE_R("HPOUT1 Digital Switch", ARIZONA_DAC_DIGITAL_VOLUME_1L,
- 	     ARIZONA_DAC_DIGITAL_VOLUME_1R, ARIZONA_OUT1L_MUTE_SHIFT, 1, 1),
- SOC_DOUBLE_R("HPOUT2 Digital Switch", ARIZONA_DAC_DIGITAL_VOLUME_2L,
--- 
-1.7.2.5
+> On Wed, Jan 08, 2014 at 10:36:53PM +0100, Daniel Matuschek wrote:
+>> Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
+>> 
+> 
+> <snip>
+> 
+>> 			pll_div->freqmode = post_table[i].freqmode;
+>> -			pll_div->mclkdiv = post_table[i].mclkdiv;
+>> -			target *= post_table[i].div;
+>> -			break;
+>> +			if ((mclk_div == WM8804_MCLKDIV_DONTCARE) ||
+>> +			    ((post_table[i].mclkdiv == 1) &&
+>> +				(mclk_div == WM8804_MCLKDIV_1)) ||
+>> +			    ((post_table[i].mclkdiv == 0) &&
+>> +				(mclk_div == WM8804_MCLKDIV_0))) {
+> 
+> Would probably be nicer to update the post_table to use the new
+> defines and directly compare.
+
+Yes, this is an option.
+
+> 
+>> +				pll_div->mclkdiv = post_table[i].mclkdiv;
+>> +				target *= post_table[i].div;
+>> +				break;
+>> +			}
+>> 		}
+>> 	}
+>> 
+>> @@ -388,7 +396,7 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
+>> 		int ret;
+>> 		struct pll_div pll_div;
+>> 
+>> -		ret = pll_factors(&pll_div, freq_out, freq_in);
+>> +		ret = pll_factors(&pll_div, freq_out, freq_in, pll_id);
+> 
+> This does feel like a slight abuse of pll_id, it feels to me that
+> using the set_clkdiv callback would be a little more natural from
+> a user perspective.
+
+Good idea, I will move it to set_clkdiv.
+
+> 
+>> 		if (ret)
+>> 			return ret;
+>> 
+>> diff --git a/sound/soc/codecs/wm8804.h b/sound/soc/codecs/wm8804.h
+>> index 8ec14f5..0365177 100644
+>> --- a/sound/soc/codecs/wm8804.h
+>> +++ b/sound/soc/codecs/wm8804.h
+>> @@ -58,4 +58,11 @@
+>> 
+>> #define WM8804_CLKOUT_DIV			1
+>> 
+>> +#define WM8804_MCLKDIV_DONTCARE			0
+>> +#define WM8804_MCLKDIV_0			1
+>> +#define WM8804_MCLKDIV_1			2
+>> +#define WM8804_PLL_MCLKDIV_DONTCARE		WM8804_MCLKDIV_DONTCARE
+>> +#define WM8804_PLL_MCLKDIV_0			WM8804_MCLKDIV_0
+>> +#define WM8804_PLL_MCLKDIV_1			WM8804_MCLKDIV_1
+> 
+> Do we really need two copies of these?
+
+Not really ;-) I will remove the duplicates.
