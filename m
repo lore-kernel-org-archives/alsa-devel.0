@@ -1,20 +1,22 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
+From: Fabio Estevam <festevam@gmail.com>
 Subject: Re: [PATCH] ASoC: fsl_ssi: Set default slot number for
  common cases
-Date: Thu, 9 Jan 2014 18:34:54 +0800
-Message-ID: <20140109103453.GC14809@MrMyself>
+Date: Thu, 9 Jan 2014 08:40:58 -0200
+Message-ID: <CAOMZO5DTbZXE3zzWoVyuM98HcbRNqMOjfK_1VW7=hAKVijtMKQ@mail.gmail.com>
 References: <1389260514-11365-1-git-send-email-Guangyu.Chen@freescale.com>
  <CAOMZO5C8hGYehqJ6WFUKye8wENuAejT-YXggeYy7V+DQ2_OMHg@mail.gmail.com>
+ <20140109103453.GC14809@MrMyself>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe006.messaging.microsoft.com [213.199.154.209])
- by alsa0.perex.cz (Postfix) with ESMTP id A0B5B26515C
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 11:37:50 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5C8hGYehqJ6WFUKye8wENuAejT-YXggeYy7V+DQ2_OMHg@mail.gmail.com>
+Received: from mail-ve0-f171.google.com (mail-ve0-f171.google.com
+ [209.85.128.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EE1326515C
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 11:40:59 +0100 (CET)
+Received: by mail-ve0-f171.google.com with SMTP id pa12so2220743veb.30
+ for <alsa-devel@alsa-project.org>; Thu, 09 Jan 2014 02:40:58 -0800 (PST)
+In-Reply-To: <20140109103453.GC14809@MrMyself>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,43 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fabio,
+On Thu, Jan 9, 2014 at 8:34 AM, Nicolin Chen <Guangyu.Chen@freescale.com> wrote:
 
-On Thu, Jan 09, 2014 at 08:24:24AM -0200, Fabio Estevam wrote:
-> On Thu, Jan 9, 2014 at 7:41 AM, Nicolin Chen <Guangyu.Chen@freescale.com> wrote:
-> > For those platforms using DAI master mode like I2S, it's better to pre-set
-> > a default slot number so that there's no need for these common cases to set
-> > the slot number from its machine driver any more.
-> >
-> > Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
-> > ---
-> >  sound/soc/fsl/fsl_ssi.c | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> > index 94dedcb..57ab45b 100644
-> > --- a/sound/soc/fsl/fsl_ssi.c
-> > +++ b/sound/soc/fsl/fsl_ssi.c
-> > @@ -711,6 +711,16 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
-> >         if (ssi_private->imx_ac97)
-> >                 fsl_ssi_setup_ac97(ssi_private);
-> >
-> > +       /* Set a default slot number so that there is no need for those common
-> > +        * cases like I2S mode to call the extra set_tdm_slot() any more.
-> > +        */
-> 
-> Incorrect style for multi-line comment.
+> Is this for the initial line? The CodingStyle contains two types of multi-line
 
-Is this for the initial line? The CodingStyle contains two types of multi-line
-comment, one of which drops the initial line just like mine, even though it's
-saying 'For files in net/ and drivers/net/ the preferred style', so I thought
-it shouldn't be quite bother.
+Yes, correct.
 
-I don't mind to add it up though.
+> comment, one of which drops the initial line just like mine, even though it's
+> saying 'For files in net/ and drivers/net/ the preferred style', so I thought
+> it shouldn't be quite bother.
 
-Thank you,
-Nicolin
+Yes, net and drivers/net are different and checkpatch reports it accordingly.
+
+Regards,
+
+Fabio Estevam
