@@ -1,48 +1,57 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH 2/2] ASoC: fsl-ssi: Fix stats compile warning
-Date: Thu,  9 Jan 2014 11:16:11 +0100
-Message-ID: <1389262571-12489-3-git-send-email-mpa@pengutronix.de>
-References: <20140108172144.GP31886@sirena.org.uk>
- <1389262571-12489-1-git-send-email-mpa@pengutronix.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Set default slot number for
+ common cases
+Date: Thu, 9 Jan 2014 08:24:24 -0200
+Message-ID: <CAOMZO5C8hGYehqJ6WFUKye8wENuAejT-YXggeYy7V+DQ2_OMHg@mail.gmail.com>
+References: <1389260514-11365-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1389262571-12489-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
-Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ve0-f174.google.com (mail-ve0-f174.google.com
+ [209.85.128.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FF32265281
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 11:24:25 +0100 (CET)
+Received: by mail-ve0-f174.google.com with SMTP id pa12so2245501veb.33
+ for <alsa-devel@alsa-project.org>; Thu, 09 Jan 2014 02:24:24 -0800 (PST)
+In-Reply-To: <1389260514-11365-1-git-send-email-Guangyu.Chen@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-single_open requires a function with signature
-'int (*)(struct seq_file *, void *)'. This patch fixes the warning by
-fixing the wrong return type of fsl_ssi_stats_show.
+On Thu, Jan 9, 2014 at 7:41 AM, Nicolin Chen <Guangyu.Chen@freescale.com> wrote:
+> For those platforms using DAI master mode like I2S, it's better to pre-set
+> a default slot number so that there's no need for these common cases to set
+> the slot number from its machine driver any more.
+>
+> Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+> ---
+>  sound/soc/fsl/fsl_ssi.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 94dedcb..57ab45b 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -711,6 +711,16 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
+>         if (ssi_private->imx_ac97)
+>                 fsl_ssi_setup_ac97(ssi_private);
+>
+> +       /* Set a default slot number so that there is no need for those common
+> +        * cases like I2S mode to call the extra set_tdm_slot() any more.
+> +        */
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
- sound/soc/fsl/fsl_ssi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Incorrect style for multi-line comment.
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index e40bce1..cb4c2e0 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -391,7 +391,7 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
-  * Display the statistics for the current SSI device.  To avoid confusion,
-  * we only show those counts that are enabled.
-  */
--static ssize_t fsl_ssi_stats_show(struct seq_file *s, void *unused)
-+static int fsl_ssi_stats_show(struct seq_file *s, void *unused)
- {
- 	struct fsl_ssi_private *ssi_private = s->private;
- 
--- 
-1.8.5.2
+Regards,
+
+Fabio Estevam
