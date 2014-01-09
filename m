@@ -1,15 +1,16 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_adsp: Mark wm_adsp2_boot_work as
-	static
-Date: Thu,  9 Jan 2014 09:06:54 +0000
-Message-ID: <1389258414-7968-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: [PATCH] ASoC: fsl_ssi: Set default slot number for
+	common cases
+Date: Thu, 9 Jan 2014 17:41:54 +0800
+Message-ID: <1389260514-11365-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C469F2625D3
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 10:15:02 +0100 (CET)
+Received: from db9outboundpool.messaging.microsoft.com
+ (mail-db9lp0249.outbound.messaging.microsoft.com [213.199.154.249])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A1F926529D
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 10:41:20 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,27 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: broonie@kernel.org, timur@tabi.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+For those platforms using DAI master mode like I2S, it's better to pre-set
+a default slot number so that there's no need for these common cases to set
+the slot number from its machine driver any more.
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 41669ad..444626f 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1497,7 +1497,7 @@ static int wm_adsp2_ena(struct wm_adsp *dsp)
+Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+---
+ sound/soc/fsl/fsl_ssi.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 94dedcb..57ab45b 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -711,6 +711,16 @@ static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
+ 	if (ssi_private->imx_ac97)
+ 		fsl_ssi_setup_ac97(ssi_private);
+ 
++	/* Set a default slot number so that there is no need for those common
++	 * cases like I2S mode to call the extra set_tdm_slot() any more.
++	 */
++	if (!ssi_private->imx_ac97) {
++		write_ssi_mask(&ssi->stccr, CCSR_SSI_SxCCR_DC_MASK,
++				CCSR_SSI_SxCCR_DC(2));
++		write_ssi_mask(&ssi->srccr, CCSR_SSI_SxCCR_DC_MASK,
++				CCSR_SSI_SxCCR_DC(2));
++	}
++
  	return 0;
  }
  
--void wm_adsp2_boot_work(struct work_struct *work)
-+static void wm_adsp2_boot_work(struct work_struct *work)
- {
- 	struct wm_adsp *dsp = container_of(work,
- 					   struct wm_adsp,
 -- 
-1.7.2.5
+1.8.4
