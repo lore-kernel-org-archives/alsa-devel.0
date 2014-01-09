@@ -1,51 +1,75 @@
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH -next] ASoC: fsl-ssi: Add missing
- clk_disable_unprepare() on error in fsl_ssi_probe()
-Date: Thu, 9 Jan 2014 22:27:31 +0800
-Message-ID: <CAPgLHd-wvDcOz1Ne69g3o4b=VS7jaPU5Gu4DBMq_tBCsY0xcew@mail.gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: wm8804: Allow fine-grained control
+	of the PLL generation
+Date: Thu, 9 Jan 2014 14:27:45 +0000
+Message-ID: <20140109142745.GB6110@opensource.wolfsonmicro.com>
+References: <alpine.DEB.2.02.1401082231260.4025@parallels-Parallels-Virtual-Platform>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 86C0C261AB2
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 15:27:31 +0100 (CET)
-Received: by mail-bk0-f51.google.com with SMTP id 6so1146341bkj.38
- for <alsa-devel@alsa-project.org>; Thu, 09 Jan 2014 06:27:31 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: timur@tabi.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, robh+dt@kernel.org
-Cc: yongjun_wei@trendmicro.com.cn, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.02.1401082231260.4025@parallels-Parallels-Virtual-Platform>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Matuschek <daniel@matuschek.net>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Dimitris.Papastamos@Wolfsonmicro.com, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <rob.herring@calxeda.com>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+On Wed, Jan 08, 2014 at 10:36:53PM +0100, Daniel Matuschek wrote:
+> Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
+>
 
-Add the missing clk_disable_unprepare() before return from
-fsl_ssi_probe() in the request irq error handling case.
+<snip>
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- sound/soc/fsl/fsl_ssi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  			pll_div->freqmode = post_table[i].freqmode;
+> -			pll_div->mclkdiv = post_table[i].mclkdiv;
+> -			target *= post_table[i].div;
+> -			break;
+> +			if ((mclk_div == WM8804_MCLKDIV_DONTCARE) ||
+> +			    ((post_table[i].mclkdiv == 1) &&
+> +				(mclk_div == WM8804_MCLKDIV_1)) ||
+> +			    ((post_table[i].mclkdiv == 0) &&
+> +				(mclk_div == WM8804_MCLKDIV_0))) {
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index e18b4b3..4c6818d 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1464,7 +1464,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		if (ret < 0) {
- 			dev_err(&pdev->dev, "could not claim irq %u\n",
- 					ssi_private->irq);
--			goto error_irqmap;
-+			goto error_clk;
- 		}
- 	}
- 
+Would probably be nicer to update the post_table to use the new
+defines and directly compare.
+
+> +				pll_div->mclkdiv = post_table[i].mclkdiv;
+> +				target *= post_table[i].div;
+> +				break;
+> +			}
+>  		}
+>  	}
+>
+> @@ -388,7 +396,7 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
+>  		int ret;
+>  		struct pll_div pll_div;
+>
+> -		ret = pll_factors(&pll_div, freq_out, freq_in);
+> +		ret = pll_factors(&pll_div, freq_out, freq_in, pll_id);
+
+This does feel like a slight abuse of pll_id, it feels to me that
+using the set_clkdiv callback would be a little more natural from
+a user perspective.
+
+>  		if (ret)
+>  			return ret;
+>
+> diff --git a/sound/soc/codecs/wm8804.h b/sound/soc/codecs/wm8804.h
+> index 8ec14f5..0365177 100644
+> --- a/sound/soc/codecs/wm8804.h
+> +++ b/sound/soc/codecs/wm8804.h
+> @@ -58,4 +58,11 @@
+>
+>  #define WM8804_CLKOUT_DIV			1
+>
+> +#define WM8804_MCLKDIV_DONTCARE			0
+> +#define WM8804_MCLKDIV_0			1
+> +#define WM8804_MCLKDIV_1			2
+> +#define WM8804_PLL_MCLKDIV_DONTCARE		WM8804_MCLKDIV_DONTCARE
+> +#define WM8804_PLL_MCLKDIV_0			WM8804_MCLKDIV_0
+> +#define WM8804_PLL_MCLKDIV_1			WM8804_MCLKDIV_1
+
+Do we really need two copies of these?
+
+Thanks,
+Charles
