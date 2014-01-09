@@ -1,80 +1,57 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: fsl_ssi: Set default slot number
- for common cases
-Date: Thu, 9 Jan 2014 17:34:34 +0000
-Message-ID: <20140109173434.GG12858@sirena.org.uk>
-References: <1389264168-13379-1-git-send-email-Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH] ASoC: simple-card: fix a bug where cinfo will be NULL
+ before using it
+Date: Thu, 9 Jan 2014 17:37:39 +0000
+Message-ID: <20140109173739.GH12858@sirena.org.uk>
+References: <1389259148-20798-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5430971727492495688=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D12B92652C5
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 18:34:43 +0100 (CET)
-In-Reply-To: <1389264168-13379-1-git-send-email-Guangyu.Chen@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, festevam@gmail.com, timur@tabi.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0XhtP95kHFp3KGBe"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1389259148-20798-1-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5430971727492495688==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="S5HS5MvDw4DmbRmb"
-Content-Disposition: inline
-
-
---S5HS5MvDw4DmbRmb
+--0XhtP95kHFp3KGBe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jan 09, 2014 at 06:42:48PM +0800, Nicolin Chen wrote:
-> For those platforms using DAI master mode like I2S, it's better to pre-set
-> a default slot number so that there's no need for these common cases to set
-> the slot number from its machine driver any more.
+On Thu, Jan 09, 2014 at 05:19:08PM +0800, Xiubo Li wrote:
 
-Applied, thanks - but note that this will mean anything that does want
-non-default TDM will need to set it every single time it runs rather
-than being able to do it once on init.  This might need revisiting if
-there are users doing that.
+>  	} else {
+> -		cinfo->snd_card.dev = &pdev->dev;
+>  		cinfo = pdev->dev.platform_data;
+> +		cinfo->snd_card.dev = &pdev->dev;
+>  	}
 
---S5HS5MvDw4DmbRmb
+I've applied this since not crashing is good but it's a bug to be
+writing to the platform data at all, it should be constant.  If it needs
+to be written to a copy should be being used.
+
+--0XhtP95kHFp3KGBe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzt2nAAoJELSic+t+oim9NU0P/3XfGECI6s/aDNI1DLXM17CY
-sR3EIh88G2eOlthFPcWg3e6KP2eTE8Dp1BflkAFmPjuw/njOQEyDRA//37dQk5NT
-oO731gFGisUjZJs+XyzsYqD1o/Uxtc/FPB0j22CWP50ljhbEo3whv+vK+OGW9V9P
-yYkY1/w+Gwc4SUV0pdILPgHP0iTJcrOunesxsQpl7XtWqezqmWZ+HzqV4G367ysx
-gp5bjl+oR+FjCClI3xN2Ig1wyz5sVntJzO8LWx8MoHQgbF9gPIN2XuGikAVc1I2g
-7pkjcNYUxDxDqeXcyaw65IGbD2F2WIyu0odqXV9zjetPEtWcxoXhYJEivTFBgMwc
-/S3b1JlLvQSjWsbtQfVFWweTEV17Oic12+VCHx/E4K81/0PTTxRVz6mCQjDUUa4C
-6ZWP7uPtuXax2IOhwhDpCgnUfU5BmJdItLldsgvkVpNTeqa1p1s7tClX1ovKyAXk
-kmuMWfvDiMgHv77nYTBy26sdocUTyu+5QeInBVQKh5NNygWo0emQk6V6T+fkdh0k
-qXaLdpnaWEaHTLGN/38F3vjagGmtF9KDSqQPzFbw0giCV1HHxkodWBhQ4KNMdNpm
-4+nMopqM95lKTGAmMB1OLMTSwRSxS+9OQ4N6h3X0nzFT+Nl1CUG+Do7a3EC/h5MF
-7ejmCnsIoOT7gWTt/DT+
-=N3wP
+iQIcBAEBAgAGBQJSzt5gAAoJELSic+t+oim92CoP+gK3qK0bOZ9YnXacD/krxZnI
+RtNEDoaPM/1ijp39iTHIukMcA3Dx1DFkcUZeObdI1VLSBHmM8yeUuQ9lFr8l7y4r
+pdE+o1El7Xv0wIy7c+O0Q+PYOM4OHo4NksTAceJvicvKKow4hM5xyZKu92WV3g+Y
+ktQqKFOYQQAYcQJpjIgQEeLV8IJ0FI2djCrOzO8I/SLh1ht5KM37a6JWQvfghs+U
+qJSh0Y5eWz8YpS7vIZp48i6YgmZbmBiLOkK1GG6g7cvMVr1El/LlLSE/gFNQlTbT
+zK7L4Lud/yetu0eMgWKnQOdHPeSGNoUukSLVABLo9ry6Kq6pTf9YTn5kKEop8eko
+QLZs870Qt2f6RYGHzGVP7IpjA9dDdHVhFnW4yN98GODs7I4ztwJ3zjXelJE6j9nr
+pqBZjzkkdp6BP4gUXaVA18+PharMYEngHOzY4eL6OFj9rdEBoiian2NDEkJckpsV
+74HEMvUcSI47EtW8uB5AyqTrTeQaLnYpaLmEmemIqGrnhrr/GPKhMwPBvMjIIWro
++qoQ29oXqzLbdURQiqIsQt5UIfo/PpjmA3IVWy4s3EqGSNwu99+nWeUeFbf3EJ0l
+hIoTH/2pv6zHI/y+MOlP6bsRWluxI0ND1uzdkLI5dJk9MnujmWcHBXtYHZDbygm5
+Kyqec/2g760zy7zzZ+hz
+=N4gZ
 -----END PGP SIGNATURE-----
 
---S5HS5MvDw4DmbRmb--
-
---===============5430971727492495688==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5430971727492495688==--
+--0XhtP95kHFp3KGBe--
