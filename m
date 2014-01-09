@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: fsl_esai: Add ESAI CPU DAI driver
-Date: Thu, 9 Jan 2014 18:44:53 +0000
-Message-ID: <20140109184453.GP12858@sirena.org.uk>
-References: <1389265078-16256-1-git-send-email-Guangyu.Chen@freescale.com>
+From: Sarah Bessmer <aotos@fastmail.fm>
+Subject: [PATCH] ALSA: ctxfi - Work around emu20k1 glitch to
+ prevent buffered sound data loss
+Date: Thu, 9 Jan 2014 11:36:31 -0800
+Message-ID: <20140109113631.3e941cb1@willow>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4765765071980023580=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 95B1C261AC4
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 19:45:11 +0100 (CET)
-In-Reply-To: <1389265078-16256-1-git-send-email-Guangyu.Chen@freescale.com>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 5D69E2652E8
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 20:36:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,91 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, shawn.guo@linaro.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, tiwai@suse.de, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, timur@tabi.org, lgirdwood@gmail.com, robh+dt@kernel.org, rob@landley.net, galak@codeaurora.org, grant.likely@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+Occasionally, on playback stream ringbuffer wraparound, the EMU20K1
+hardware will momentarily return 0 instead of the proper current(loop)
+address. This patch handles that case, fixing the problem of playback
+position corruption and subsequent loss of buffered sound data, that
+occurs with some common buffering layout patterns(e.g. multiple
+simultaneous output streams with differently-sized or
+non-power-of-2-sized buffers).
 
---===============4765765071980023580==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="iq/fWD14IMVFWBCD"
-Content-Disposition: inline
+An alternate means of fixing the problem would be to read the ca
+register continuously, until two sequential reads return the same
+value; however, that would be a more invasive change, has performance
+implications, and isn't necessary unless there are also issues with the
+value not being updated atomically in regards to individual bits or
+something similar(which I have not encountered through light testing).
 
+I have no EMU20K2 hardware to confirm if the issue is present there,
+but even if it's not, this change shouldn't break anything that's not
+already broken.
 
---iq/fWD14IMVFWBCD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jan 09, 2014 at 06:57:58PM +0800, Nicolin Chen wrote:
-
-> +/**
-> + * This function configures the ratio between MCLK (HCK) and BCLK (SCK)
-> + * (For DAI Master Mode only)
-> + *
-> + * Note: Machine driver should calculate the ratio to call this function.
-> + * 	 Only effective after calling set_dai_sysclk() to set HCK direction.
-> + */
-> +static int fsl_esai_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
-
-Why does the machine driver have to do this by hand, being able to
-override is fine but having sensible defaults is easier?  Or does it
-actually do that and the comment just needs updating?
-
-> +	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_esai_component,
-> +					      &fsl_esai_dai, 1);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "failed to register DAI: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = imx_pcm_dma_init(pdev);
-> +	if (ret)
-> +		dev_err(&pdev->dev, "failed to init imx pcm dma: %d\n", ret);
-> +
-> +	/* Reset ESAI unit */
-> +	regmap_write(esai_priv->regmap, REG_ESAI_ECR, ESAI_ECR_ERST);
-> +
-> +	/*
-> +	 * We need to enable ESAI so as to access some of its registers.
-> +	 * Otherwise, we would fail to dump regmap from user space.
-> +	 */
-> +	regmap_write(esai_priv->regmap, REG_ESAI_ECR, ESAI_ECR_ESAIEN);
-
-I would expect to see the hardware initialisation before we start
-registering with the core otherwise the core might start trying to run
-prior to the hardware being initialised.
-
-Otherwise this looks good.
-
---iq/fWD14IMVFWBCD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSzu4iAAoJELSic+t+oim9DfcP/AzCOkPoLdopNt/3TZ3iqGKU
-Wx65nKrMmAquGqHyMGnGmdOXGs7w8RGp549sgu2Su3GgaIAOPvpipgLncIDRQBsi
-yM5QFrb9dG0DOhXhen64tF0/e+qdPLr1ux7hvv+8URxw6vnrLOU3w0fO8emAtzzE
-E5zOdO/ON6XYKCgVgJZg9Ctu3nEO4spl0TIEFlXPsurDN+O6CjFqJpbfRsScjDA1
-4Yl77NwMfk+3giDdPnXx5v6WZDVyt4FtxrEbMfnM1UPbLwer3xSEtWic3UKvx8Oy
-D1pHdHkbR7HXjY8GxODvTgsqvvk+jp9w+DiXuj6UD0rQWvyGXdAhJBt/Y6Imp+f/
-0zA6LtQbRj+EBDAiQpMU8CgwzAENgBfiX/6ZEMShu1qBOFbXfEbvVGyVH81pJ+1c
-zljl1BM4BAxc3hyaSJG1MnuF/ro7Qk4l+wzD/+HxyS19qrq/wjm9HWPFyxB7GBrC
-/10U78uGugU0PJ/1HarT7XukrB4a/pqLMFHMHTSYlhmdpfr5rvkTBu4RNK0jVETf
-EedHp81IwJU0NbGO4VFwrVauhvJv2IH4zxlQ4cPc6Wty28z8WMnYtax//bU5JiAU
-RBUoR6ubVoQ8T/20iDhLqMYBufHFMiuoCW7TJ+AlL5/nDVuqfHRst5gVHn/iJgfv
-SLcLY9/PKf7IgVNoqKqJ
-=JoHQ
------END PGP SIGNATURE-----
-
---iq/fWD14IMVFWBCD--
-
---===============4765765071980023580==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4765765071980023580==--
+Signed-off-by: Sarah Bessmer <aotos@fastmail.fm>
+Cc: Takashi Iwai <tiwai@suse.de>
+---
+--- linux-3.10.25/sound/pci/ctxfi/ctatc.c.orig	2014-01-09 10:12:00.000000000 -0800
++++ linux-3.10.25/sound/pci/ctxfi/ctatc.c	2014-01-09 10:32:42.000000000 -0800
+@@ -433,10 +433,15 @@ atc_pcm_playback_position(struct ct_atc
+ 
+ 	if (!src)
+ 		return 0;
+ 	position = src->ops->get_ca(src);
+ 
++	if(position < apcm->vm_block->addr) {
++		snd_printdd("ctxfi: bad ca - ca=0x%08x, vba=0x%08x, vbs=0x%08x\n", position, apcm->vm_block->addr, apcm->vm_block->size);
++		position = apcm->vm_block->addr;
++	}
++
+ 	size = apcm->vm_block->size;
+ 	max_cisz = src->multi * src->rsc.msr;
+ 	max_cisz = 128 * (max_cisz < 8 ? max_cisz : 8);
+ 
+ 	return (position + size - max_cisz - apcm->vm_block->addr) % size;
