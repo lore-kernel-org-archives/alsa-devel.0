@@ -1,18 +1,22 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 0/6] dma: Indicate residue granularity
- in dma_slave_caps
-Date: Thu, 9 Jan 2014 20:48:27 +0530
-Message-ID: <20140109151827.GJ16227@intel.com>
-References: <1389005162-5223-1-git-send-email-lars@metafoo.de>
+From: Trent Piepho <tpiepho@gmail.com>
+Subject: Re: [PATCH] ASoC: wm8804: Allow fine-grained control
+ of the PLL generation
+Date: Thu, 9 Jan 2014 09:14:07 -0800
+Message-ID: <CA+7tXijibZKUoeqeqpvOhgJg17OgpYR2Kv5S17TFdAKvaCjt3g@mail.gmail.com>
+References: <alpine.DEB.2.02.1401082231260.4025@parallels-Parallels-Virtual-Platform>
+ <20140109142745.GB6110@opensource.wolfsonmicro.com>
+ <9DF5D0F7-F5A7-4705-8ACB-286B49D668C1@matuschek.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 7AA7D261AA6
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 17:19:47 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1389005162-5223-1-git-send-email-lars@metafoo.de>
+Received: from mail-ie0-f176.google.com (mail-ie0-f176.google.com
+ [209.85.223.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5308A261AC4
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 18:14:09 +0100 (CET)
+Received: by mail-ie0-f176.google.com with SMTP id at1so3872106iec.35
+ for <alsa-devel@alsa-project.org>; Thu, 09 Jan 2014 09:14:08 -0800 (PST)
+In-Reply-To: <9DF5D0F7-F5A7-4705-8ACB-286B49D668C1@matuschek.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,94 +26,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>
+To: Daniel Matuschek <daniel@matuschek.net>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Dimitris.Papastamos@wolfsonmicro.com, Takashi Iwai <tiwai@suse.de>, devicetree-discuss@lists.ozlabs.org, patches@opensource.wolfsonmicro.com, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rob Herring <rob.herring@calxeda.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Grant Likely <grant.likely@linaro.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 06, 2014 at 11:45:56AM +0100, Lars-Peter Clausen wrote:
-> Here is an updated version of the DMA residue granularity patchset. As
-> discuessed last time it would be best if this could go through ASoC tree. It
-> needs some feedback from the DMA folks first though.
-> 
-> New in v2:
-> 	* Dropped byte level granularity as discussed during v1 review
-> 	* Added support for auto-detecting the NO_RESIDUE flag on the compat path in
->       the generic ASoC dmaengine PCM driver
-> 	* Updated a few ASoC drivers to take advantage of the new API
-Apart from cosmetic comments, the series looks fine to me. So if you guys want
-to merge this or update, am fine with either
+On Thu, Jan 9, 2014 at 7:29 AM, Daniel Matuschek <daniel@matuschek.net> wrote:
+> On 09.01.2014, at 15:27, Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
+>
+>> On Wed, Jan 08, 2014 at 10:36:53PM +0100, Daniel Matuschek wrote:
+>>> Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
+>>>
+>>
+>> <snip>
+>>
+>>>                      pll_div->freqmode = post_table[i].freqmode;
+>>> -                    pll_div->mclkdiv = post_table[i].mclkdiv;
+>>> -                    target *= post_table[i].div;
+>>> -                    break;
+>>> +                    if ((mclk_div == WM8804_MCLKDIV_DONTCARE) ||
+>>> +                        ((post_table[i].mclkdiv == 1) &&
+>>> +                            (mclk_div == WM8804_MCLKDIV_1)) ||
+>>> +                        ((post_table[i].mclkdiv == 0) &&
+>>> +                            (mclk_div == WM8804_MCLKDIV_0))) {
+>>
+>> Would probably be nicer to update the post_table to use the new
+>> defines and directly compare.
 
-so
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+How about giving the defines better names?  Like WM8804_MCLKDIV_256x
+for 0.  Assuming that's the value for 256x, I can't actually tell.
+Which is why the define name could be better.
 
---
-~Vinod
-> 
-> Updated original cover text from v1 below:
-> 
-> This patch series introduces a new field to the dma_slave_caps struct which
-> exposes the granularity with which the reported residue is updated, updates the
-> pl330 DMA driver to set this field and lets the generic dmaengine PCM audio
-> driver check that field.
-> 
-> The reason for introducing the field is that for audio we need to know the
-> granularity with which the reported residue is updated. The uncertainty of the
-> ALSA period pointer depends on the granularity of the reported residue. E.g. if
-> residue is only updated once every period this means that the position in the
-> buffer from/to which the hardware is currently reading/writing could be
-> anywhere between the reported PCM pointer and the reported PCM pointer plus one
-> period size (plus some extra margin for interrupt latency, etc). Certain
-> algorithms (e.g. pulseaudio's timer based scheduling) only work correctly if the
-> uncertainty of the PCM pointer is low enough. Exposing this information from the
-> DMA driver makes it possible for applications to switch to alternative modes of
-> operation which also work with a high granularity.
-> 
-> The patch series introduces four levels of granularity, which I think will cover
-> most DMA cores. I'd like some feedback though if anybody can think of a DMA
-> controller for which none of the levels would be correct. The four levels are:
-> 	* DESCRIPTOR: The DMA channel is only able to tell whether a descriptor has
-> 	  been completed or not, which means residue reporting is not supported by
-> 	  this channel. The residue field of the dma_tx_state field will always be
-> 	  0.
-> 	* SEGMENT: The DMA channel updates the residue field after each successfully
-> 	  completed segment of the transfer (For cyclic transfers this is after each
-> 	  period). This is typically implemented by having the hardware generate an
-> 	  interrupt after each transferred segment and then the driver updates the
-> 	  outstanding residue by the size of the segment. Another possibility is if
-> 	  the hardware supports SG and the segment descriptor has a field which gets
-> 	  set by the hardware after the segment has been completed. The driver then
-> 	  counts the number of segments which do not have the flag set to compute
-> 	  the residue.
-> 	* BURST: The DMA channel updates the residue field after each transferred
-> 	  burst. This is typically only supported if the hardware has a progress
-> 	  register of some sort (E.g. a register with the current read/write address
-> 	  or a register with the amount of bursts/beats/bytes that have been
-> 	  transferred or still need to be transferred).
-> 
->  - Lars
-> 
-> Lars-Peter Clausen (6):
->   dma: Indicate residue granularity in dma_slave_caps
->   dma: pl330: Set residue_granularity
->   ASoC: generic-dmaengine-pcm: Check NO_RESIDUE flag at runtime
->   ASoC: generic-dmaengine-pcm: Check DMA residue granularity
->   ASoC: axi-{spdif,i2s}: Drop NO_RESIDUE flag
->   ASoC: samsung: Remove NO_RESIDUE flag
-> 
->  drivers/dma/pl330.c                   |  1 +
->  include/linux/dmaengine.h             | 15 ++++++++
->  sound/soc/adi/axi-i2s.c               |  3 +-
->  sound/soc/adi/axi-spdif.c             |  3 +-
->  sound/soc/samsung/dmaengine.c         |  1 -
->  sound/soc/soc-generic-dmaengine-pcm.c | 66 ++++++++++++++++++++++-------------
->  6 files changed, 60 insertions(+), 29 deletions(-)
-> 
-> -- 
-> 1.8.0
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe dmaengine" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>> This does feel like a slight abuse of pll_id, it feels to me that
+>> using the set_clkdiv callback would be a little more natural from
+>> a user perspective.
+>
+> Good idea, I will move it to set_clkdiv.
 
--- 
+Why does it need to be an option?  If 256x is better, then why not
+always use it?  Maybe the code to select the divisor should be better?
+
+If we look at the post_table:
+static struct {
+        unsigned int div;
+        unsigned int freqmode;
+        unsigned int mclkdiv;
+} post_table[] = {
+        {  2,  0, 0 },
+        {  4,  0, 1 },
+        {  4,  1, 0 },
+        {  8,  1, 1 },
+        {  8,  2, 0 },
+        { 16,  2, 1 },
+        { 12,  3, 0 },
+        { 24,  3, 1 }
+};
+
+The code loops through that in order to find the first div that when
+multiplied by the target rate gives 90-100 MHz.  So if the first div=4
+in the table doesn't work, why would the second 4 work?  It looks like
+it's just doing unnecessary tries to re-reject the same divisor
+reached by different freqmode & mclkdiv combinations.
+
+Since it stops at the first divisor that works, won't it always use
+mclkdiv=1?  If mclkdiv=0 is better, why not just list those first/only
+in the table so they get used?
+
+BTW,
+        if ((K % 10) >= 5)
+                K += 5;
+        K /= 10;
+
+Worst Division With Rounding Ever.  And don't even get me started on
+the base 10 fixed point on a binary computer.
