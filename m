@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH -next] ASoC: wm_adsp: Fix sparse non static
-	symbol warning
-Date: Thu, 9 Jan 2014 15:31:58 +0000
-Message-ID: <20140109153158.GB12858@sirena.org.uk>
-References: <CAPgLHd_bNPEJmkjtmbeDrtmVMo5G7ELNCuyKuwT7Qa=weqh8kA@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 1/6] dma: Indicate residue granularity
+ in dma_slave_caps
+Date: Thu, 9 Jan 2014 20:38:33 +0530
+Message-ID: <20140109150832.GI16227@intel.com>
+References: <1389005162-5223-1-git-send-email-lars@metafoo.de>
+ <1389005162-5223-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8398235956070401691=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B15B2652BE
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 16:32:24 +0100 (CET)
-In-Reply-To: <CAPgLHd_bNPEJmkjtmbeDrtmVMo5G7ELNCuyKuwT7Qa=weqh8kA@mail.gmail.com>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B22A261AA6
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 17:09:51 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1389005162-5223-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +23,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, yongjun_wei@trendmicro.com.cn, ckeepax@opensource.wolfsonmicro.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jan 06, 2014 at 11:45:57AM +0100, Lars-Peter Clausen wrote:
+> This patch adds a new field to the dma_slave_caps struct which indicates the
+> granularity with which the driver is able to update the residue field of the
+> dma_tx_state struct. Making this information available to dmaengine users allows
+> them to make better decisions on how to operate. E.g. for audio certain features
+> like wakeup less operation or timer based scheduling only make sense and work
+> correctly if the reported residue is fine-grained enough.
+> 
+> Right now four different levels of granularity are supported:
+> 	* DESCRIPTOR: The DMA channel is only able to tell whether a descriptor has
+> 	  been completed or not, which means residue reporting is not supported by
+> 	  this channel. The residue field of the dma_tx_state field will always be
+> 	  0.
+> 	* SEGMENT: The DMA channel updates the residue field after each successfully
+> 	  completed segment of the transfer (For cyclic transfers this is after each
+> 	  period). This is typically implemented by having the hardware generate an
+> 	  interrupt after each transferred segment and then the drivers updates the
+> 	  outstanding residue by the size of the segment. Another possibility is if
+> 	  the hardware supports SG and the segment descriptor has a field which gets
+> 	  set after the segment has been completed. The driver then counts the
+> 	  number of segments without the flag set to compute the residue.
+> 	* BURST: The DMA channel updates the residue field after each transferred
+> 	  burst. This is typically only supported if the hardware has a progress
+> 	  register of some sort (E.g. a register with the current read/write address
+> 	  or a register with the amount of bursts/beats/bytes that have been
+> 	  transferred or still need to be transferred).
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+> Changes since v1:
+> 	* Drop BYTE granularity level as there has been consent that it is not
+> 	  really useful.
+> ---
+>  include/linux/dmaengine.h | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+> index ed92b30..74d5cb2 100644
+> --- a/include/linux/dmaengine.h
+> +++ b/include/linux/dmaengine.h
+> @@ -364,6 +364,19 @@ struct dma_slave_config {
+>  	unsigned int slave_id;
+>  };
+>  
+> +/**
+> + * enum dma_residue_granularity - Granularity of the reported transfer residue
+> + * @DMA_RESIDUE_GRANULATRITY_DESCRIPTOR: Residue reporting is not supported.
+> + * @DMA_RESIDUE_GRANULATRITY_SEGMENT: Residue is updated with each completed
+> + *  segment in the descriptor.
+> + * @DMA_RESIDUE_GRANULATRITY_BURST: Residue is updated with each transfered burst
+> + */
+> +enum dma_residue_granularity {
+> +	DMA_RESIDUE_GRANULARITY_DESCRIPTOR = 0,
+> +	DMA_RESIDUE_GRANULARITY_SEGMENT = 1,
+> +	DMA_RESIDUE_GRANULARITY_BURST = 2,
+This is too longish macro :) Cna we just have DMA_RESIDUE_XXXX. Do we really
+need granularity?
 
---===============8398235956070401691==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oLBj+sq0vYjzfsbl"
-Content-Disposition: inline
+Also segment is not too obvious, block is genrally used in DMA controllers for
+this, though not too relgious about it!
+
+Can you also add bit more detail in enum descriptions. Move a bit from patch
+description above :)
 
 
---oLBj+sq0vYjzfsbl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> +};
+> +
+>  /* struct dma_slave_caps - expose capabilities of a slave channel only
+>   *
+>   * @src_addr_widths: bit mask of src addr widths the channel supports
+> @@ -374,6 +387,7 @@ struct dma_slave_config {
+>   * 	should be checked by controller as well
+>   * @cmd_pause: true, if pause and thereby resume is supported
+>   * @cmd_terminate: true, if terminate cmd is supported
+> + * @residue_granularity: granularity of the reported transfer residue
+>   */
+>  struct dma_slave_caps {
+>  	u32 src_addr_widths;
+> @@ -381,6 +395,7 @@ struct dma_slave_caps {
+>  	u32 directions;
+>  	bool cmd_pause;
+>  	bool cmd_terminate;
+> +	enum dma_residue_granularity residue_granularity;
+enum dma_residue granularity; would be fine too...
 
-On Thu, Jan 09, 2014 at 10:22:35PM +0800, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->=20
-> Fixes the following sparse warning:
->=20
-> sound/soc/codecs/wm_adsp.c:1500:6: warning:
->  symbol 'wm_adsp2_boot_work' was not declared. Should it be static?
-
-This was already fixed.
-
---oLBj+sq0vYjzfsbl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSzsDqAAoJELSic+t+oim9exgP/iQ9Xe9j1HP4xJpmEeLXzoJF
-23gwcNlIwQjvnPYzYy5RJDvcp9/Q3tw+qtjDCAD5XG+/MY63GgJTdD4uivLd8i9g
-uGhjdi8IuJcZ/nijx0WRLZNQctgCXMDM5CSBV8gFh3x7MblrFLUv8b/0DZshyCan
-9tRh0IB2HgOsXPNOmA4kUnwICyk4++tC/TpauDMArH9CW0knifG5QxKxOiEIuORi
-MRtZQyV9Xf4Jar2ZEdD1Zje4KlV52GzHRyf0hUVfaZjX2pPi1jYRB41HgmeZ3f+3
-wQGDqoYdRJLyLocXhifLByDL4+hV3wbrix6ggExs/SZmetqEz6ORZHzbFWg2cTMs
-K4nIjar8E3/LUHi5XiD3ssrsE90VoNRfxqfPjmab2zTPYzOGDpAtJxe/kj8SmcNn
-R5eaDczoDHZggSvPOtTBQvN/bPToyg88oA1EqkKxpMpt4Dy8cnt+0iBiqEE3KzmT
-3ULOEcQug4i8r/BShvCkPsOU1WwIkK9zIlDBGDQju9bk6NyZgOv2VmR3gGt4iPIR
-Yml8bcgPI81EHVHFzcgUUJr5uXDevwmhCPIH3F33nJN3sUjMuBXI3okFWdsdYm20
-f1O9vjy+u9/2GayWHGRFNa5RVaXv43u4LwXYKlJMEZ5HkM7gQYzY8vbIYOhA75fr
-drV9pmHP+G2MwuDE/swf
-=6Bfz
------END PGP SIGNATURE-----
-
---oLBj+sq0vYjzfsbl--
-
---===============8398235956070401691==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8398235956070401691==--
+--
+~Vinod
