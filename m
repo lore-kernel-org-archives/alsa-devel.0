@@ -1,85 +1,92 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [PATCH 1/4] ASoC: simple-card: add simple audio card widgets
- support
-Date: Thu, 9 Jan 2014 07:43:39 +0000
-Message-ID: <978e195be6ae493584be24c6821a80ad@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1389164556-2728-1-git-send-email-Li.Xiubo@freescale.com>
- <20140108175940.GQ31886@sirena.org.uk>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: add RT5670 CODEC driver
+Date: Thu, 9 Jan 2014 15:47:52 +0800
+Message-ID: <1121E117AD4ECE49880A389A396215BB939A951093@rtitmbs7.realtek.com.tw>
+References: <1387195916-3106-1-git-send-email-bardliao@realtek.com>
+ <20131219122527.GX31886@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140108175940.GQ31886@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id C51F9261635
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 08:47:56 +0100 (CET)
+In-Reply-To: <20131219122527.GX31886@sirena.org.uk>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-> > For many audio cards there need to add some off-CODEC widgets, and this
-> > is hard to be supported by dts only, because maybe some widgets need one
-> > or more call backs, such as wevent.
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Thursday, December 19, 2013 8:25 PM
+> To: Bard Liao
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Flove; Oder Chiou
+> Subject: Re: [PATCH] ASoC: add RT5670 CODEC driver
 > 
-> The big question here would be why these widgets need to be added
->
-
-For instance, from the SGTL5000 codec Spec:
-----
-The analog input block contains a stereo line input and a microphone input
-with mic bias. Either input can be routed to the ADC. The line input can also
-be configured to bypass the CODEC and be routed directly to the headphone
-output.
-----
-And in the SGTL5000 codec driver there is one "Mic Bias" widget, and this
-should be routed to one off-CODEC widget, like "Mic Jack"(the microphone input).
-
-
-> the
-> default thing is that all inputs and outputs are enabled so it can't be
-> that and as you say callbacks are going to need to be added.
+> On Mon, Dec 16, 2013 at 08:11:56PM +0800, bardliao@realtek.com wrote:
+> > From: Bard Liao <bardliao@realtek.com>
 > 
+> This patch is far too big, it really needs to be split up into a patch series to
+> make it reviewable.  I'd suggest at least doing something like splitting it into
+> one patch adding the CODEC functionality and then a second patch adding the
+> DSP support.  Probably the header ought to be a separate patch too.
 
-Some drivers may need like this:
-----
-         SND_SOC_DAPM_PGA_E("Output Amp", SND_SOC_NOPM, 0, 0, NULL, 0,
-                         XXX_output_amp_event, SND_SOC_DAPM_PRE_PMU |
-                         SND_SOC_DAPM_POST_PMD),
-----
- ?
+I will send the audio function part first.
 
-
-
-> If this is used then it probably makes sense for the card to set the
-> fully routed flag since one possible use is to disable unconnected pins
-> on the CODEC.
+> > +unsigned rt5670_pdm1_read(struct snd_soc_codec *codec, unsigned int
+> > +reg) {
 > 
-> > +- simple-sudio-card,widgets		: The name of the audio card off-CODEC
-> widgets.
+> > +EXPORT_SYMBOL(rt5670_pdm1_read);
 > 
-> simple-audio-card.  This also needs more documentation about what is
-> supposed to be filled in here.
+> Why is this exported at all and why is it exported non-GPL?
+
+If a pdm device connect to RT5670, it may need to be controlled by RT5670's pdm read/write commands.
+I will export it with GPL.
+
+> > +static int rt5670_asrc_event(struct snd_soc_dapm_widget *w,
+> > +	struct snd_kcontrol *kcontrol, int event) {
+> > +
+> > +	switch (event) {
+> > +	case SND_SOC_DAPM_POST_PMU:
+> > +		snd_soc_write(w->codec, RT5670_ASRC_1, 0xffff);
+> > +		snd_soc_write(w->codec, RT5670_ASRC_2, 0x1221);
+> > +		snd_soc_write(w->codec, RT5670_ASRC_3, 0x0022);
+> > +		break;
+> > +	case SND_SOC_DAPM_PRE_PMD:
+> > +		snd_soc_write(w->codec, RT5670_ASRC_1, 0);
+> > +		snd_soc_write(w->codec, RT5670_ASRC_2, 0);
+> > +		snd_soc_write(w->codec, RT5670_ASRC_3, 0);
+> > +	default:
+> > +		return 0;
+> > +	}
 > 
+> This looks an awful lot like it might be writing some use case dependant
+> parameters...  since it's just uncommented magic numbers it's hard to tell
+> but there's no obvious configuration for the ASRC anywhere in the driver.
 
-Yes, if needed.
+I will add control to configure ASRC's parameters.
 
-> > +void
-> > +asoc_simple_card_widgets_unregister(struct asoc_simple_card_widgets *comp)
+> > +	if (rt5670->pdata.asrc_en) {
+> > +		snd_soc_dapm_new_controls(&codec->dapm, rt5670_asrc_widgets,
+> > +				ARRAY_SIZE(rt5670_dapm_widgets));
+> > +		snd_soc_dapm_add_routes(&codec->dapm, rt5670_asrc_routes,
+> > +				ARRAY_SIZE(rt5670_dapm_routes));
+> > +	}
 > 
-> We always use snd_soc.
-> 
-> One interesting thing here is that this is done separately to the card
-> itself.  Is there any actual dependency on the simple card, could this
-> be made into a generic library that any machine driver could use?  I can
-> see other machines being able to make use of this.
+> Why is this configured in platform data?
 
-No, has no dependency on the simple card.
+Usually, we don't enable ASRC function.
+But in some platforms, they will need to enable ASRC function to get clock properly.
+And I think this is not needed to configure in run time.
 
-
-
-
-Thanks,
-
---
-Best Regards,
-Xiubo
+Thanks.
