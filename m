@@ -1,16 +1,20 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH] ASoC: da9055: Partially fix device
-Date: Thu, 9 Jan 2014 11:30:42 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A03376B7CC95A@SW-EX-MBX01.diasemi.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Fw: Isochronous transfer error on USB3
+Date: Thu, 09 Jan 2014 13:10:08 +0100
+Message-ID: <52CE91A0.1010901@ladisch.de>
+References: <20140108164800.70ea4169@samsung.com>
+ <52CE5B09.6070203@ladisch.de> <20140109092957.58092c3f@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
- [195.245.231.137])
- by alsa0.perex.cz (Postfix) with ESMTP id E4D9E261A80
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 12:31:59 +0100 (CET)
-Content-Language: en-US
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 9D684265281
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 13:10:12 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+ by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 0181021411
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 07:10:11 -0500 (EST)
+In-Reply-To: <20140109092957.58092c3f@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,29 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "broonie@linaro.org" <broonie@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, "Opensource [Anthony Olech]" <anthony.olech.opensource@diasemi.com>
+To: Mauro Carvalho Chehab <m.chehab@samsung.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, LMML <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed,  8 Jan 2014 20:38:55 +0000, Mark Brown wrote:
+Mauro Carvalho Chehab wrote:
+> Clemens Ladisch <clemens@ladisch.de> escreveu:
+>> Mauro Carvalho Chehab wrote:
+>>> 	.period_bytes_min = 64,		/* 12544/2, */
+>>
+>> This is wrong (if the driver doesn't install other constraints on the
+>> period length, like the USB audio class driver does).
+>
+> Ok, how should it be estimated?
 
-> It has never been possible to even load the da9055 driver since both the
-> MFD and CODEC drivers register the I2C device "da9055". Fix this by using
-> the usual pattern for MFDs with multiple I2C addresses and having the CODEC
-> driver reference an I2C dummy registered by the MFD.
+This value specifies how fast the driver can report period interrupts,
+i.e., how often it can call snd_pcm_period_elapsed().  In other words,
+if the application configures the device for this minimum period size,
+but if it is possible for this amount of bytes to be transferred
+_without_ triggering an interrupt (by reaching the end of the URB), then
+this value was too low.
 
-> Since I don't know which I2C address to use for the CODEC a FIXME has been
-> left in the MFD, this doesn't make anything any worse since the device has
-> never been able to load in the first place.
+The em28xx driver uses a fixed URB size, so actual interrupts happen
+every 64 frames, so this value should be at least the number of bytes
+that can be transferred in 64 ms (assuming a full-speed device).
 
-What you're saying here is incorrect, as previously discussed at length in this thread:
+Because you do not know the exact number of samples that will be sent
+per frame, it is possible that the USB interrupt happens up to 63 ms
+after the point where the period interrupt should actually have
+happened.  This jitter could be reduced by using shorter URBs.
 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-September/066027.html
+In any case, this driver does not need the integer constraint on the
+period count.
 
-The two drivers did work together fine until someone in 3.12 changed the PMIC I2C Id
-back to just 'da9055' and broke it again. Also, I wanted to add a simple patch to tidy up
-the I2C Id names and avoid this but you would not agree. The codec part can be
-standalone and by doing what you've done here means that customers would need to
-now add additional, unnecessary code to be able to use just the codec driver.
-This is not right to me.
- 
+
+Regards,
+Clemens
