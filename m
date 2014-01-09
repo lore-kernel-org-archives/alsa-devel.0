@@ -1,57 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simple-card: fix a bug where cinfo will be NULL
- before using it
-Date: Thu, 9 Jan 2014 17:37:39 +0000
-Message-ID: <20140109173739.GH12858@sirena.org.uk>
-References: <1389259148-20798-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCH] ASoC: simple-card: fix the cinfo error check
+Date: Thu, 9 Jan 2014 17:38:43 +0000
+Message-ID: <20140109173843.GI12858@sirena.org.uk>
+References: <1389260980-25579-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0XhtP95kHFp3KGBe"
+	protocol="application/pgp-signature"; boundary="+PbGPm1eXpwOoWkI"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1389259148-20798-1-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <1389260980-25579-1-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Xiubo Li <Li.Xiubo@freescale.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---0XhtP95kHFp3KGBe
+--+PbGPm1eXpwOoWkI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 09, 2014 at 05:19:08PM +0800, Xiubo Li wrote:
+On Thu, Jan 09, 2014 at 05:49:40PM +0800, Xiubo Li wrote:
+> If the dt is used and the cinfo is NULL, the -ENOMEM should be return.
+>=20
+> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 
->  	} else {
-> -		cinfo->snd_card.dev = &pdev->dev;
->  		cinfo = pdev->dev.platform_data;
-> +		cinfo->snd_card.dev = &pdev->dev;
->  	}
+Applied, thanks.
 
-I've applied this since not crashing is good but it's a bug to be
-writing to the platform data at all, it should be constant.  If it needs
-to be written to a copy should be being used.
-
---0XhtP95kHFp3KGBe
+--+PbGPm1eXpwOoWkI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSzt5gAAoJELSic+t+oim92CoP+gK3qK0bOZ9YnXacD/krxZnI
-RtNEDoaPM/1ijp39iTHIukMcA3Dx1DFkcUZeObdI1VLSBHmM8yeUuQ9lFr8l7y4r
-pdE+o1El7Xv0wIy7c+O0Q+PYOM4OHo4NksTAceJvicvKKow4hM5xyZKu92WV3g+Y
-ktQqKFOYQQAYcQJpjIgQEeLV8IJ0FI2djCrOzO8I/SLh1ht5KM37a6JWQvfghs+U
-qJSh0Y5eWz8YpS7vIZp48i6YgmZbmBiLOkK1GG6g7cvMVr1El/LlLSE/gFNQlTbT
-zK7L4Lud/yetu0eMgWKnQOdHPeSGNoUukSLVABLo9ry6Kq6pTf9YTn5kKEop8eko
-QLZs870Qt2f6RYGHzGVP7IpjA9dDdHVhFnW4yN98GODs7I4ztwJ3zjXelJE6j9nr
-pqBZjzkkdp6BP4gUXaVA18+PharMYEngHOzY4eL6OFj9rdEBoiian2NDEkJckpsV
-74HEMvUcSI47EtW8uB5AyqTrTeQaLnYpaLmEmemIqGrnhrr/GPKhMwPBvMjIIWro
-+qoQ29oXqzLbdURQiqIsQt5UIfo/PpjmA3IVWy4s3EqGSNwu99+nWeUeFbf3EJ0l
-hIoTH/2pv6zHI/y+MOlP6bsRWluxI0ND1uzdkLI5dJk9MnujmWcHBXtYHZDbygm5
-Kyqec/2g760zy7zzZ+hz
-=N4gZ
+iQIcBAEBAgAGBQJSzt6gAAoJELSic+t+oim9UMEP/jInEtKqv1VNVtmMRoJoxVCB
+PcygOGo+mUSKLRHOESvUPmgX+r0FiEqDd3lY9wMc1YVCTyemSS9lnUl4z+zSofA0
+GRpzFLLTFm6pkBL65hNVqXLwZTaePn/Tv5A5tFE3TUCQHqihm56rRxjT/QkCIM80
+AtYL5mhk8eSu9T0BSEcyi5QxPzLSnZsgHEkCRB7QoMf9jCIkk/VX4dDLzSTSNLoJ
+MAWxFG4ttaggwaUW9OUiUPdWhlb9NQ/BY5ITzPNwtoCmX5RMYLUEByEhOAEGnMxs
+Px15+Xnc93mOsknaA7ehdc1p6NWYD3tRgzKJWTx/F1afJU7E2SzhZC3AOHhIRp/4
+2d22+tWwrlcjgmyQ6jvM57Q5FeKWb+q5Z77KajRPUon4vhWm2jbzFYipEiYXQUXv
+53pdRn/adPUsBHm7p9Py3DYe7n9f3AK06euO/Ek6JuTsaxojKZ6DX/QHnquTm5ni
+LHGQtJEsbBqpGh0rw6SH2My7NbMEUCeA7FDyNY/F8eK2Ehzkb/rsM9/hy7kixvbL
+OpHTwA+UnBoKfvgf4sTulhaIvopu6p/SuPlCr9kzhOcH7+L9qT6zKWrM/rS13r3V
+5DZdNWTIPP2a73aom/gRsfZxC17R2FYD3XgtmKPl5J4zCawc9ViZfF2mLDkICrh1
+Ij+IqJ+j4Eg4pz6qoN1G
+=x5f+
 -----END PGP SIGNATURE-----
 
---0XhtP95kHFp3KGBe--
+--+PbGPm1eXpwOoWkI--
