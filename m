@@ -1,21 +1,17 @@
-From: Daniel Matuschek <daniel@matuschek.net>
-Subject: Re: [PATCH] ASoC: wm8804: Allow fine-grained control
-	of the PLL generation
-Date: Thu, 9 Jan 2014 16:29:13 +0100
-Message-ID: <9DF5D0F7-F5A7-4705-8ACB-286B49D668C1@matuschek.net>
-References: <alpine.DEB.2.02.1401082231260.4025@parallels-Parallels-Virtual-Platform>
- <20140109142745.GB6110@opensource.wolfsonmicro.com>
-Mime-Version: 1.0 (Mac OS X Mail 7.1 \(1827\))
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH -next] ASoC: wm_adsp: Fix sparse non static
+	symbol warning
+Date: Thu, 9 Jan 2014 15:31:58 +0000
+Message-ID: <20140109153158.GB12858@sirena.org.uk>
+References: <CAPgLHd_bNPEJmkjtmbeDrtmVMo5G7ELNCuyKuwT7Qa=weqh8kA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============8398235956070401691=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f174.google.com (mail-ea0-f174.google.com
- [209.85.215.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E4502652DC
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 16:29:17 +0100 (CET)
-Received: by mail-ea0-f174.google.com with SMTP id b10so1543841eae.33
- for <alsa-devel@alsa-project.org>; Thu, 09 Jan 2014 07:29:16 -0800 (PST)
-In-Reply-To: <20140109142745.GB6110@opensource.wolfsonmicro.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B15B2652BE
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 16:32:24 +0100 (CET)
+In-Reply-To: <CAPgLHd_bNPEJmkjtmbeDrtmVMo5G7ELNCuyKuwT7Qa=weqh8kA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,74 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Dimitris.Papastamos@Wolfsonmicro.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@kernel.org>, Grant Likely <grant.likely@linaro.org>
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, yongjun_wei@trendmicro.com.cn, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
-On 09.01.2014, at 15:27, Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
+--===============8398235956070401691==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oLBj+sq0vYjzfsbl"
+Content-Disposition: inline
 
-> On Wed, Jan 08, 2014 at 10:36:53PM +0100, Daniel Matuschek wrote:
->> Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
->> 
-> 
-> <snip>
-> 
->> 			pll_div->freqmode = post_table[i].freqmode;
->> -			pll_div->mclkdiv = post_table[i].mclkdiv;
->> -			target *= post_table[i].div;
->> -			break;
->> +			if ((mclk_div == WM8804_MCLKDIV_DONTCARE) ||
->> +			    ((post_table[i].mclkdiv == 1) &&
->> +				(mclk_div == WM8804_MCLKDIV_1)) ||
->> +			    ((post_table[i].mclkdiv == 0) &&
->> +				(mclk_div == WM8804_MCLKDIV_0))) {
-> 
-> Would probably be nicer to update the post_table to use the new
-> defines and directly compare.
 
-Yes, this is an option.
+--oLBj+sq0vYjzfsbl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
->> +				pll_div->mclkdiv = post_table[i].mclkdiv;
->> +				target *= post_table[i].div;
->> +				break;
->> +			}
->> 		}
->> 	}
->> 
->> @@ -388,7 +396,7 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
->> 		int ret;
->> 		struct pll_div pll_div;
->> 
->> -		ret = pll_factors(&pll_div, freq_out, freq_in);
->> +		ret = pll_factors(&pll_div, freq_out, freq_in, pll_id);
-> 
-> This does feel like a slight abuse of pll_id, it feels to me that
-> using the set_clkdiv callback would be a little more natural from
-> a user perspective.
+On Thu, Jan 09, 2014 at 10:22:35PM +0800, Wei Yongjun wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>=20
+> Fixes the following sparse warning:
+>=20
+> sound/soc/codecs/wm_adsp.c:1500:6: warning:
+>  symbol 'wm_adsp2_boot_work' was not declared. Should it be static?
 
-Good idea, I will move it to set_clkdiv.
+This was already fixed.
 
-> 
->> 		if (ret)
->> 			return ret;
->> 
->> diff --git a/sound/soc/codecs/wm8804.h b/sound/soc/codecs/wm8804.h
->> index 8ec14f5..0365177 100644
->> --- a/sound/soc/codecs/wm8804.h
->> +++ b/sound/soc/codecs/wm8804.h
->> @@ -58,4 +58,11 @@
->> 
->> #define WM8804_CLKOUT_DIV			1
->> 
->> +#define WM8804_MCLKDIV_DONTCARE			0
->> +#define WM8804_MCLKDIV_0			1
->> +#define WM8804_MCLKDIV_1			2
->> +#define WM8804_PLL_MCLKDIV_DONTCARE		WM8804_MCLKDIV_DONTCARE
->> +#define WM8804_PLL_MCLKDIV_0			WM8804_MCLKDIV_0
->> +#define WM8804_PLL_MCLKDIV_1			WM8804_MCLKDIV_1
-> 
-> Do we really need two copies of these?
+--oLBj+sq0vYjzfsbl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Not really ;-) I will remove the duplicates.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSzsDqAAoJELSic+t+oim9exgP/iQ9Xe9j1HP4xJpmEeLXzoJF
+23gwcNlIwQjvnPYzYy5RJDvcp9/Q3tw+qtjDCAD5XG+/MY63GgJTdD4uivLd8i9g
+uGhjdi8IuJcZ/nijx0WRLZNQctgCXMDM5CSBV8gFh3x7MblrFLUv8b/0DZshyCan
+9tRh0IB2HgOsXPNOmA4kUnwICyk4++tC/TpauDMArH9CW0knifG5QxKxOiEIuORi
+MRtZQyV9Xf4Jar2ZEdD1Zje4KlV52GzHRyf0hUVfaZjX2pPi1jYRB41HgmeZ3f+3
+wQGDqoYdRJLyLocXhifLByDL4+hV3wbrix6ggExs/SZmetqEz6ORZHzbFWg2cTMs
+K4nIjar8E3/LUHi5XiD3ssrsE90VoNRfxqfPjmab2zTPYzOGDpAtJxe/kj8SmcNn
+R5eaDczoDHZggSvPOtTBQvN/bPToyg88oA1EqkKxpMpt4Dy8cnt+0iBiqEE3KzmT
+3ULOEcQug4i8r/BShvCkPsOU1WwIkK9zIlDBGDQju9bk6NyZgOv2VmR3gGt4iPIR
+Yml8bcgPI81EHVHFzcgUUJr5uXDevwmhCPIH3F33nJN3sUjMuBXI3okFWdsdYm20
+f1O9vjy+u9/2GayWHGRFNa5RVaXv43u4LwXYKlJMEZ5HkM7gQYzY8vbIYOhA75fr
+drV9pmHP+G2MwuDE/swf
+=6Bfz
+-----END PGP SIGNATURE-----
+
+--oLBj+sq0vYjzfsbl--
+
+--===============8398235956070401691==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8398235956070401691==--
