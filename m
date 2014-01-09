@@ -1,21 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: bcm: Remove obsoleted Kconfig
- dependency
-Date: Thu, 9 Jan 2014 10:32:01 +0000
-Message-ID: <20140109103201.GC31886@sirena.org.uk>
-References: <1389173827-1554-1-git-send-email-tiwai@suse.de>
- <20140108195947.GZ31886@sirena.org.uk>
- <s5hbnzmp781.wl%tiwai@suse.de>
- <20140108201709.GA31886@sirena.org.uk>
- <s5h8uuppt1u.wl%tiwai@suse.de>
+Subject: Re: [PATCH 2/8] ASoC: alc5632: Use params_width()
+ rather than memory format
+Date: Thu, 9 Jan 2014 10:33:16 +0000
+Message-ID: <20140109103316.GD31886@sirena.org.uk>
+References: <1389210723-16535-1-git-send-email-broonie@kernel.org>
+ <1389210723-16535-2-git-send-email-broonie@kernel.org>
+ <CALq1K=Kss-NUYB-mmhOjCbxSjhaRO62GpnY95rFMzruo35i=fw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9142323020652487032=="
+Content-Type: multipart/mixed; boundary="===============4476707263368730823=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 57BC826515C
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 11:32:10 +0100 (CET)
-In-Reply-To: <s5h8uuppt1u.wl%tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id C64F826515C
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2014 11:33:23 +0100 (CET)
+In-Reply-To: <CALq1K=Kss-NUYB-mmhOjCbxSjhaRO62GpnY95rFMzruo35i=fw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,75 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Florian Meier <florian.meier@koalo.de>
+To: Leon Romanovsky <leon@leon.nu>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9142323020652487032==
+--===============4476707263368730823==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KpzOdakGPe4Et1pG"
+	protocol="application/pgp-signature"; boundary="0u1Vgq3WS4iAcgZo"
 Content-Disposition: inline
 
 
---KpzOdakGPe4Et1pG
+--0u1Vgq3WS4iAcgZo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jan 09, 2014 at 07:29:01AM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+On Thu, Jan 09, 2014 at 06:55:17AM +0200, Leon Romanovsky wrote:
+> On Wed, Jan 8, 2014 at 9:51 PM, Mark Brown <broonie@kernel.org> wrote:
 
-> > get_maintainers *should* also tell you to use @kernel.org, that's what's
-> > actually in MAINTAINERS (which should be preferred over git history, or
-> > both used) which is where I actually read upstream mail.
+> > +       switch (params_width(params)) {
+> > +       case 16:
 
-> Then the problem is that you committed and signed off with linaro.org
-> address in git.  If you don't want receive any patches at this
+> May be the better way will be to use define here and not hard coded value?
 
-It's getting more common these days, companies want their address to end
-up in git but it's not so good for upstream mail for whatever reason
-(historically a lot of it has been Exchange related, though that's not
-the case for me).  It's more noticable for people applying patches than
-for people sending them.
+No, it really is actually a number of bits.
 
-> address, you should never use it for git.  As a Netiquette, one
-> shouldn't post a mail to multiple addresses if it's known for the same
-> person.
-
-Sure, but if you're going to use one I'd expect the MAINTAINERS address
-to win - I did have someone the other day using my Wolfson address still
-since they were going off signoffs and the thing they were working on
-wasn't that actively developed.
-
---KpzOdakGPe4Et1pG
+--0u1Vgq3WS4iAcgZo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSznqeAAoJELSic+t+oim9UakQAIpMRuiZk8JdXvdH3HN/m2ct
-k/ulMjBnsCDY8aOZlMAs2/w2jF4FWckYKAmY8QWQt7E34ztkbXsjnrc3JiqQ4JID
-L7t4PBXT6tLWwU6l157h+vBxGA5KZVn11IdRrXfwLcI4WHz0yTrtNFmNEtn4R1u0
-qXBj5OtfZWFExE3S9MvbBnok1F5KurMx/1qYmSRcvKldOJA1VRueZ1eFIRveU9eF
-PszeroDS7Jw/O9JqdGuUbzPvdOhi1TCdJ25eB2Lc2ynlZHmmzrUB9pT9A3DVEiBj
-QZI7QmSeTLrjeOJperKgVM1mufHaOIMXCFWOTlyTgQ9ABBijdrXtDrL1avWnMxU7
-WZ3AYip9vBulTm5wk5Ic7fQQQOdggnmiSOMm+N754eaYKptOWRb8BJaIgAGTS3kS
-O84ETr8d9PjORO2ElXVOGrC4WkyinATtm6xyzkKLiTSrNcJwnYiLt2AADW/olwQ8
-pRhouiVdCaq3nGxEV6lbV6IiJdsYCzRYKXRphmwmqwcIvuRsJHwbYMewg1Ev6Vbz
-81dH8St0EoGc515RZGDnFx0cjkkvTtFkowpDR5lRj6M+gQCrKfp/ddaIfDJCC7Px
-2SntYpEWxXkF2qlXDb73xCYZEInzcevfyS4cERpzFZslWAEnXddhEMdgJQ+4XfxO
-a+aVngkRKwKuU+ZrvTuu
-=ppOX
+iQIcBAEBAgAGBQJSznrpAAoJELSic+t+oim99RsP/RPpbcJQvRgHiudgwQDGAHyy
+ep3JPKhTDEBkJpH6W3LG4U8DNoYVbj2zLbZHzXBFfcjv0Q/YLiRv170hPnUT+J9P
+1gED3B6J9pUlPG9Mc1OIj9d/f8XoYcE8dKI5lA/GeCl4dgqnJrKyb6rcIzk1n2tX
+VxITnX3LHVzjuyqrNszHDcjrQfxnhCHchyEY05g8zMrC9G6O1cWGBurSWp6Yz4ym
+PX/i+l1lQSaG61Zj4C3+ST4nw6+zIEDpXTWK1erBMT0nfjnS0GPFXdGOa94mchRL
+Jx/crv+BKCjIRpYzaUKrBKqKCLtxk5iEe7kf7GESNH6eR8goiyn5aT7zKVaG//JL
+ypIdQS6ZU4cmfmXvu4rpYJZ7RF1//jm55oixFHStulw6fbIc24Shl+9akbBfmgeu
+0+VIa6BVvBbMZtVwtbxbc8ZCTiOVGj688Pcp+f4P3DayVhCSOWn3b50t3tfskkAg
+z4mls7Iw0W1Jz+1edgRxhKmya9c+v8bVvl1eFzJA4UArY5+cFVwRboIchrRZLal9
+1TeZRZzHWOwZ/JaZZHOlHBIscrSQmJOfBRKuD9DOb5VQdiJIEVu040Up4Cg0+TOL
+5RcCc1jACzpgiUjBq+I50q/xbf1C41Ig6gt3N4OsVu9OSk6sak795jaHUTpIswkH
+RjMsMKMAHP6hGjUkw+9J
+=dqVd
 -----END PGP SIGNATURE-----
 
---KpzOdakGPe4Et1pG--
+--0u1Vgq3WS4iAcgZo--
 
---===============9142323020652487032==
+--===============4476707263368730823==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9142323020652487032==--
+--===============4476707263368730823==--
