@@ -1,17 +1,21 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: PCM: Warn when buffer preallocation fails
-Date: Fri, 10 Jan 2014 13:06:00 +0100
-Message-ID: <1389355560-14472-1-git-send-email-tiwai@suse.de>
+From: Nenghua Cao <nhcao@marvell.com>
+Subject: Re: [PATCH] ASoC: dpcm: don't do hw_param when BE has
+ done	hw_param
+Date: Fri, 10 Jan 2014 20:22:59 +0800
+Message-ID: <52CFE623.7090403@marvell.com>
+References: <1389332195-15900-1-git-send-email-nhcao@marvell.com>
+ <s5htxdcxg0q.wl%tiwai@suse.de>	<52CFD7BE.5030907@marvell.com>
+ <1389354435.2293.32.camel@loki>	<52CFE0AE.1030606@marvell.com>
+ <s5hk3e8xcz2.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D533A260320
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2014 13:06:00 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DF385AC3C
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2014 12:06:00 +0000 (UTC)
+Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
+ [67.231.148.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1281B2602F3
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2014 13:19:42 +0100 (CET)
+In-Reply-To: <s5hk3e8xcz2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,44 +25,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The failures of buffer preallocations at driver initializations aren't
-critical but it's still helpful to inform, so that user can know that
-something doesn't work as expected.
+On 01/10/2014 08:01 PM, Takashi Iwai wrote:
+> At Fri, 10 Jan 2014 19:59:42 +0800,
+> Nenghua Cao wrote:
+>>
+>> On 01/10/2014 07:47 PM, Liam Girdwood wrote:
+>>> On Fri, 2014-01-10 at 19:21 +0800, Nenghua Cao wrote:
+>>>> On 01/10/2014 06:55 PM, Takashi Iwai wrote:
+>>>>> [Corrected mail addresses of both Mark and Liam]
+>>>>>
+>>>> Hi, Takashi:
+>>>> Thanks for correcting my mistake.
+>>>>> At Fri, 10 Jan 2014 13:36:35 +0800,
+>>>>> Nenghua Cao wrote:
+>>>>>>
+>>>>>> From: Nenghua Cao <nhcao@marvell.com>
+>>>>>>
+>>>>>>     It fixes the following case:
+>>>>>>     Two FEs connects the same BE; FE1 & BE path has been opened and hw_paramed.
+>>>>>> At this momment, FE2 & BE path is being opened and hw_paramed. The BE
+>>>>>> dai will do hw_param again even if it has done hw_param. It is not
+>>>>>> reasonable.
+>>>>>> FE1------------>BE
+>>>>>> FE2-------------^
+>>>>>
+>>>>> What happens if FE2 tries to set up an incompatible hw_params?
+>>>>> (Through a quick glance, it won't work properly well, too, though...)
+>>>>>
+>>>
+>>> The intention in this case would be for the DSP FE driver to determine
+>>> if it can perform format conversion or SRC to the running BE. If the DSP
+>>> cant do the conversion then it should fail.
+>>>
+>>>> If FE2 uses an incompatible param, it will make FE1 doesn't work. Maybe
+>>>> FE2 works well.
+>>>> If FE2 uses the same param, BE hw_param function will be called twice
+>>>> (This is the most happening case).
+>>>> So we can't get benefits from it.
+>>>
+>>> We shouldn't be calling the hw_params() on the BE when it's already
+>>> configured in this case. So this seems like a bug. However :-
+>>>
+>>> /* only allow hw_params() if no connected FEs are running */
+>>> 		if (!snd_soc_dpcm_can_be_params(fe, be, stream))
+>>> 			continue;
+>>>
+>>> 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
+>>> 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
+>>> 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE))
+>>> 			continue;
+>>>
+>>> We do do a test to check if any connected FEs are running (i.e.
+>>> triggered) prior to calling hw_params() on the BE. Can you confirm if
+>>> the FE was running in your case ?
+>>>
+>> Hi, Liam:
+>>    I am so glad to hear from you. In my case, FE1 has called hw_param,
+>> and before FE1 calls prepare/trigger function, the scheduler switches to
+>> do FE2 open, hw_param. So hw_param is called twice.
+> 
+> So basically the current implementation is racy about this.
+> 
+> OTOH, not calling hw_params twice is also buggy.  hw_params may be
+> called multiple times without hw_free for the same stream if user
+> wants to re-setup/update the parameters.  OSS emulation layer does it,
+> for example.
+>
+Hi, Takashi
 
-For example, the recent page allocator change triggered regressions,
-but developers didn't notice until recently because the driver didn't
-complain.
+  On current alsa framework, the hw_param can be called multiple time.
+Here, FE1 also can call do it. But here we should add constraint to
+avoid another FE call it due to FE1 has choose it priority.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_memory.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/sound/core/pcm_memory.c b/sound/core/pcm_memory.c
-index 01f8eafebda6..54debc07f5cb 100644
---- a/sound/core/pcm_memory.c
-+++ b/sound/core/pcm_memory.c
-@@ -51,6 +51,7 @@ static const size_t snd_minimum_buffer = 16384;
- static int preallocate_pcm_pages(struct snd_pcm_substream *substream, size_t size)
- {
- 	struct snd_dma_buffer *dmab = &substream->dma_buffer;
-+	size_t orig_size = size;
- 	int err;
- 
- 	do {
-@@ -63,6 +64,10 @@ static int preallocate_pcm_pages(struct snd_pcm_substream *substream, size_t siz
- 		size >>= 1;
- 	} while (size >= snd_minimum_buffer);
- 	dmab->bytes = 0; /* tell error */
-+	pr_warn("ALSA pcmC%dD%d%c,%d:%s: cannot preallocate for size %zu\n",
-+		substream->pcm->card->number, substream->pcm->device,
-+		substream->stream ? 'c' : 'p', substream->number,
-+		substream->pcm->name, orig_size);
- 	return 0;
- }
- 
--- 
-1.8.5.2
+> 
+> Takashi
+> 
+>>
+>>> Thanks
+>>>
+>>> Liam
+>>>
+>>>>>
+>>>>> Takashi
+>>>>>
+>>>>>>
+>>>>>> Signed-off-by: Nenghua Cao <nhcao@marvell.com>
+>>>>>> ---
+>>>>>>  sound/soc/soc-pcm.c |    1 -
+>>>>>>  1 files changed, 0 insertions(+), 1 deletions(-)
+>>>>>>
+>>>>>> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+>>>>>> index 891b9a9..ec07e37 100644
+>>>>>> --- a/sound/soc/soc-pcm.c
+>>>>>> +++ b/sound/soc/soc-pcm.c
+>>>>>> @@ -1339,7 +1339,6 @@ static int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
+>>>>>>  			continue;
+>>>>>>  
+>>>>>>  		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
+>>>>>> -		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
+>>>>>>  		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE))
+>>>>>>  			continue;
+>>>>>>  
+>>>>>> -- 
+>>>>>> 1.7.0.4
+>>>>>>
+>>>>>> _______________________________________________
+>>>>>> Alsa-devel mailing list
+>>>>>> Alsa-devel@alsa-project.org
+>>>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>>>>>
+>>>>
+>>>
+>>>
+>>>
+>>
