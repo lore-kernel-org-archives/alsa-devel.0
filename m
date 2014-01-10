@@ -1,64 +1,132 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH] ASoC: da9055: Partially fix device
-Date: Fri, 10 Jan 2014 18:32:38 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A03376B7CCB98@SW-EX-MBX01.diasemi.com>
-References: <2E89032DDAA8B9408CB92943514A03376B7CC95A@SW-EX-MBX01.diasemi.com>
- <20140109121353.GG31886@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A03376B7CC9BE@SW-EX-MBX01.diasemi.com>
- <20140109202446.GQ12858@sirena.org.uk>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: dpcm: don't do hw_param when BE has
+ done	hw_param
+Date: Fri, 10 Jan 2014 18:43:09 +0000
+Message-ID: <1389379389.2293.114.camel@loki>
+References: <1389332195-15900-1-git-send-email-nhcao@marvell.com>
+	 <s5htxdcxg0q.wl%tiwai@suse.de> <52CFD7BE.5030907@marvell.com>
+	 <1389354435.2293.32.camel@loki> <52CFE0AE.1030606@marvell.com>
+	 <s5hk3e8xcz2.wl%tiwai@suse.de> <1389356948.2293.55.camel@loki>
+	 <s5hd2k0x833.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
- [195.245.230.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 3CEED26158B
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2014 19:32:41 +0100 (CET)
-In-Reply-To: <20140109202446.GQ12858@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, "Opensource [Anthony Olech]" <anthony.olech.opensource@diasemi.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hd2k0x833.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Nenghua Cao <nhcao@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 9 Jan 2014 20:24:46 +0000, Mark Brown wrote:
+On Fri, 2014-01-10 at 14:46 +0100, Takashi Iwai wrote:
+> At Fri, 10 Jan 2014 12:29:08 +0000,
+> Liam Girdwood wrote:
+> > 
+> > On Fri, 2014-01-10 at 13:01 +0100, Takashi Iwai wrote:
+> > > At Fri, 10 Jan 2014 19:59:42 +0800,
+> > > Nenghua Cao wrote:
+> > > > 
+> > > > On 01/10/2014 07:47 PM, Liam Girdwood wrote:
+> > > > > On Fri, 2014-01-10 at 19:21 +0800, Nenghua Cao wrote:
+> > > > >> On 01/10/2014 06:55 PM, Takashi Iwai wrote:
+> > > > >>> [Corrected mail addresses of both Mark and Liam]
+> > > > >>>
+> > > > >> Hi, Takashi:
+> > > > >> Thanks for correcting my mistake.
+> > > > >>> At Fri, 10 Jan 2014 13:36:35 +0800,
+> > > > >>> Nenghua Cao wrote:
+> > > > >>>>
+> > > > >>>> From: Nenghua Cao <nhcao@marvell.com>
+> > > > >>>>
+> > > > >>>>     It fixes the following case:
+> > > > >>>>     Two FEs connects the same BE; FE1 & BE path has been opened and hw_paramed.
+> > > > >>>> At this momment, FE2 & BE path is being opened and hw_paramed. The BE
+> > > > >>>> dai will do hw_param again even if it has done hw_param. It is not
+> > > > >>>> reasonable.
+> > > > >>>> FE1------------>BE
+> > > > >>>> FE2-------------^
+> > > > >>>
+> > > > >>> What happens if FE2 tries to set up an incompatible hw_params?
+> > > > >>> (Through a quick glance, it won't work properly well, too, though...)
+> > > > >>>
+> > > > > 
+> > > > > The intention in this case would be for the DSP FE driver to determine
+> > > > > if it can perform format conversion or SRC to the running BE. If the DSP
+> > > > > cant do the conversion then it should fail.
+> > > > > 
+> > > > >> If FE2 uses an incompatible param, it will make FE1 doesn't work. Maybe
+> > > > >> FE2 works well.
+> > > > >> If FE2 uses the same param, BE hw_param function will be called twice
+> > > > >> (This is the most happening case).
+> > > > >> So we can't get benefits from it.
+> > > > > 
+> > > > > We shouldn't be calling the hw_params() on the BE when it's already
+> > > > > configured in this case. So this seems like a bug. However :-
+> > > > > 
+> > > > > /* only allow hw_params() if no connected FEs are running */
+> > > > > 		if (!snd_soc_dpcm_can_be_params(fe, be, stream))
+> > > > > 			continue;
+> > > > > 
+> > > > > 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
+> > > > > 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
+> > > > > 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE))
+> > > > > 			continue;
+> > > > > 
+> > > > > We do do a test to check if any connected FEs are running (i.e.
+> > > > > triggered) prior to calling hw_params() on the BE. Can you confirm if
+> > > > > the FE was running in your case ?
+> > > > > 
+> > > > Hi, Liam:
+> > > >    I am so glad to hear from you. In my case, FE1 has called hw_param,
+> > > > and before FE1 calls prepare/trigger function, the scheduler switches to
+> > > > do FE2 open, hw_param. So hw_param is called twice.
+> > > 
+> > > So basically the current implementation is racy about this.
+> > > 
+> > 
+> > This is a valid use case from the userspace perspective too. The BE in
+> > this case is a shared resource (whether userspace is aware or not) and
+> > I'd expect it to take the the last configured hw_params (in this case
+> > FE2 hw_params) before it is triggered.
+> 
+> Yes, it's how the current code works.  But, what if FE1 didn't know
+> that it's shared? (Actually how it can be informed explicitly?)
 
-> If you want to support any additional CODEC only devices with compatible
-> register maps that exist you just need to add something like less than a
-> hundred lines of mostly boilerplate code to do so in the ASoC driver.
-> It's hard to see any difference to devices that have both I2C and SPI or
-> both PCI and platform buses here.  Those devices should have separate
-> device ID entries anyway.
+It cant atm, although this is not a problem on Android. It can be fixed
+when we export the graph to userspace though.
 
-The point is here is that it's unnecessary what you're suggesting. You're
-basically adding more code to instantiate the Codec from the PMIC, removing the
-valid I2C code from the Codec driver, and then if a user/customer wants to use
-the Codec standalone then they need to add that code again. Agreed that new
-device Ids should be added in the future for new standalone variants, but that
-should not mean having to add all of the I2C boilerplate code again. It think
-it makes things unnecessarily messy, on top of the additional effort required.
+> FE1 will still try to feed data in wrong formats/rates/etc, won't it?
+> 
 
-> I do agree that the current situation is not great - this is intended to
-> try to move things forwards since mainline is currently broken for this
-> device and has been for a couple of releases now.  One of the things my
-> patch is trying to do is to get someone to tell us what we need to plug
-> into i2c_add_dummy() to make this work.  I had hoped that if I wrote the
-> code we could get this fixed but without documentation or something that
-> last bit can't be done, would that be possible?
+No, FE1 wont change it's params in this state. It will be up to the DSP
+driver to perform the conversion to then new formats or fail if the new
+format cannot be supported.
 
-Well, the truth is that there are default I2C addresses for both PMIC and Codec
-but as they are standalone devices, albeit in one package, both addresses can
-be changed. This is one more reason why I don't believe we should be taking your
-method of implementation here. If you just make sure PMIC and Codec drivers
-have unique Ids then the problem is solved. If you are worried about people
-changing this again in the future (although for the life of me I don't know
-why they would), then we can add a glaring comment to dissuade them, or point
-them at the codec driver.
+> At best, it should return an error when an incompatible hw_params
+> setup is done by FE2, IMO.  The re-setup by FE1 should be available
+> freely.  So, BE needs to remember who has set it up, then allows only
+> the further re-setup by that FE, for example.
+> 
+> > Fwiw, a similar topic came up the conference this year wrt compressed
+> > streams. The question was about configuring the BE format and rate
+> > directly from userspace. This should be possible without too much effort
+> > since the BE is essentially a PCM. e.g. from userspace
+> > 
+> > 1) configure FE1 hw_params
+> > 
+> > 2) configure FE2 hw_params
+> > 
+> > 3) optional - configure BE1 hw_params
+> > 
+> > If step 3 is not performed then the values from step2 are used.
+> 
+> I forgot about this discussion -- so how was the proposal to allow
+> BE's hw_params?  A new API, or a flag in hw_params?
+
+The intention was to use the existing alsa-lib/tinyalsa PCM hw_params
+APIs. The BE would just export itself to usespace as a PCM (but without
+the capability for direct playback/capture - just format, rate setting)
+
+Thanks
+
+Liam
