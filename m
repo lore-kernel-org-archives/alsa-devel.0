@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 12/13] speakers: Add support for
-	capture/playback MIDI messages
-Date: Sat, 11 Jan 2014 00:29:34 +0900
-Message-ID: <1389367775-21360-13-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 13/13] speakers: Add hwdep interface
+Date: Sat, 11 Jan 2014 00:29:35 +0900
+Message-ID: <1389367775-21360-14-git-send-email-o-takashi@sakamocchi.jp>
 References: <1388920417-5584-1-git-send-email-o-takashi@sakamocchi.jp>
  <1389367775-21360-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
@@ -10,8 +9,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CB4A2654E4
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2014 16:30:04 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 57EAF2654F6
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2014 16:30:05 +0100 (CET)
 In-Reply-To: <1389367775-21360-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,337 +25,381 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-I assume that 'if device formations of stream have MIDI conformant data
-channels, the device has one MIDI port'. With this assumption, the driver
-create MIDI devices.
-
-When no streams have already started, MIDI functionality starts stream
-with current sampling rate.
-
-When MIDI functionality have already starts some streams and PCM
-functionality is going to start streams at different sampling rate,
-this driver stops streams once and changes sampling rate, then restarts
-streams.
+This interface is designed for mixer/control application. To use hwdep
+interface, the application can get information about firewire node, can
+lock/unlock kernel streaming and can get notification at starting/stopping
+kernel streaming.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
+ include/uapi/sound/asound.h               |   3 +-
+ include/uapi/sound/firewire.h             |   3 +-
  sound/firewire/speakers/Makefile          |   2 +-
- sound/firewire/speakers/speakers.c        |   9 +-
- sound/firewire/speakers/speakers.h        |   7 ++
- sound/firewire/speakers/speakers_midi.c   | 150 ++++++++++++++++++++++++++++++
- sound/firewire/speakers/speakers_stream.c |  35 +++++++
- 5 files changed, 201 insertions(+), 2 deletions(-)
- create mode 100644 sound/firewire/speakers/speakers_midi.c
+ sound/firewire/speakers/speakers.c        |   5 +
+ sound/firewire/speakers/speakers.h        |  13 ++
+ sound/firewire/speakers/speakers_hwdep.c  | 195 ++++++++++++++++++++++++++++++
+ sound/firewire/speakers/speakers_stream.c |  39 ++++++
+ 7 files changed, 257 insertions(+), 3 deletions(-)
+ create mode 100644 sound/firewire/speakers/speakers_hwdep.c
 
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 2249483..5d6fa42 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -96,9 +96,10 @@ enum {
+ 	SNDRV_HWDEP_IFACE_FW_DICE,	/* TC DICE FireWire device */
+ 	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
+ 	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
++	SNDRV_HWDEP_IFACE_FW_FWSPK,	/* Oxford FW970/971 based devices */
+ 
+ 	/* Don't forget to change the following: */
+-	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_BEBOB
++	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_FWSPK
+ };
+ 
+ struct snd_hwdep_info {
+diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
+index d69c0b6..147349e 100644
+--- a/include/uapi/sound/firewire.h
++++ b/include/uapi/sound/firewire.h
+@@ -54,7 +54,8 @@ union snd_firewire_event {
+ #define SNDRV_FIREWIRE_TYPE_DICE	1
+ #define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
+ #define SNDRV_FIREWIRE_TYPE_BEBOB	3
+-/* AV/C, RME, MOTU, ... */
++#define SNDRV_FIREWIRE_TYPE_FWSPK	4
++/* RME, MOTU, ... */
+ 
+ struct snd_firewire_get_info {
+ 	unsigned int type; /* SNDRV_FIREWIRE_TYPE_xxx */
 diff --git a/sound/firewire/speakers/Makefile b/sound/firewire/speakers/Makefile
-index 86b2b6c..d98d4f7 100644
+index d98d4f7..b7b1e45 100644
 --- a/sound/firewire/speakers/Makefile
 +++ b/sound/firewire/speakers/Makefile
 @@ -1,3 +1,3 @@
  snd-firewire-speakers-objs := speakers_command.o speakers_stream.o speakers_pcm.o speakers_control.o \
--			      speakers_proc.o speakers.o
-+			      speakers_proc.o speakers_midi.o speakers.o
+-			      speakers_proc.o speakers_midi.o speakers.o
++			      speakers_proc.o speakers_midi.o speakers_hwdep.o speakers.o
  obj-m += snd-firewire-speakers.o
 diff --git a/sound/firewire/speakers/speakers.c b/sound/firewire/speakers/speakers.c
-index 76afce9..fd16e59 100644
+index fd16e59..4eff180 100644
 --- a/sound/firewire/speakers/speakers.c
 +++ b/sound/firewire/speakers/speakers.c
-@@ -115,6 +115,7 @@ static int fwspk_probe(struct fw_unit *unit,
- 	fwspk->unit = fw_unit_get(unit);	/* inc reference counter */
+@@ -116,6 +116,7 @@ static int fwspk_probe(struct fw_unit *unit,
  	fwspk->device_info = (const struct device_info *)id->driver_data;
  	mutex_init(&fwspk->mutex);
-+	spin_lock_init(&fwspk->lock);
+ 	spin_lock_init(&fwspk->lock);
++	init_waitqueue_head(&fwspk->hwdep_wait);
  
  	if (fwspk->device_info == &griffin_firewave)
  		err = firewave_stream_discover(fwspk);
-@@ -129,7 +130,7 @@ static int fwspk_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto err_card;
+@@ -152,6 +153,10 @@ static int fwspk_probe(struct fw_unit *unit,
+ 			goto err_card;
+ 	}
  
--	err = snd_fwspk_stream_init(fwspk);
-+	err = snd_fwspk_streams_init(fwspk);
- 	if (err < 0)
- 		goto err_card;
- 
-@@ -145,6 +146,12 @@ static int fwspk_probe(struct fw_unit *unit,
- 
- 	snd_fwspk_proc_init(fwspk);
- 
-+	if ((fwspk->midi_input_ports > 0) || (fwspk->midi_output_ports > 0)) {
-+		err = snd_fwspk_create_midi(fwspk);
-+		if (err < 0)
-+			goto err_card;
-+	}
++	err = snd_fwspk_create_hwdep(fwspk);
++	if (err < 0)
++		goto err_card;
 +
  	snd_card_set_dev(card, &unit->device);
  	err = snd_card_register(card);
  	if (err < 0)
 diff --git a/sound/firewire/speakers/speakers.h b/sound/firewire/speakers/speakers.h
-index 5d6c8e8..2c54946 100644
+index 2c54946..73eecb0 100644
 --- a/sound/firewire/speakers/speakers.h
 +++ b/sound/firewire/speakers/speakers.h
-@@ -19,6 +19,7 @@
- #include <sound/pcm.h>
+@@ -12,6 +12,7 @@
+ #include <linux/mod_devicetable.h>
+ #include <linux/mutex.h>
+ #include <linux/slab.h>
++#include <linux/compat.h>
+ 
+ #include <sound/control.h>
+ #include <sound/core.h>
+@@ -20,6 +21,8 @@
  #include <sound/pcm_params.h>
  #include <sound/info.h>
-+#include <sound/rawmidi.h>
+ #include <sound/rawmidi.h>
++#include <sound/firewire.h>
++#include <sound/hwdep.h>
  
  #include "../cmp.h"
  #include "../fcp.h"
-@@ -45,6 +46,7 @@ struct fwspk {
- 	struct fw_unit *unit;
- 	const struct device_info *device_info;
- 	struct mutex mutex;
-+	spinlock_t lock;
- 
- 	struct fwspk_stream_formation
- 		tx_stream_formations[FWSPK_STREAM_TABLE_ENTRIES];
-@@ -55,6 +57,9 @@ struct fwspk {
- 	struct amdtp_stream tx_stream;
- 	struct amdtp_stream rx_stream;
- 
-+	unsigned int midi_input_ports;
-+	unsigned int midi_output_ports;
-+
- 	bool mute;
+@@ -64,6 +67,10 @@ struct fwspk {
  	s16 volume[6];
  	s16 volume_min;
-@@ -118,3 +123,5 @@ int snd_fwspk_create_pcm(struct fwspk *fwspk);
- int snd_fwspk_create_mixer(struct fwspk *fwspk);
- 
- void snd_fwspk_proc_init(struct fwspk *fwspk);
+ 	s16 volume_max;
 +
-+int snd_fwspk_create_midi(struct fwspk *fwspk);
-diff --git a/sound/firewire/speakers/speakers_midi.c b/sound/firewire/speakers/speakers_midi.c
++	int dev_lock_count;
++	bool dev_lock_changed;
++	wait_queue_head_t hwdep_wait;
+ };
+ 
+ /* AV/C Stream Format Information Specification 1.1 (Apr 2005, 1394TA) */
+@@ -118,6 +125,10 @@ int firewave_stream_discover(struct fwspk *fwspk);
+ int lacie_speakers_stream_discover(struct fwspk *fwspk);
+ int snd_fwspk_stream_discover(struct fwspk *fwspk);
+ 
++void snd_fwspk_stream_lock_changed(struct fwspk *fwspk);
++int snd_fwspk_stream_lock_try(struct fwspk *fwspk);
++void snd_fwspk_stream_lock_release(struct fwspk *fwspk);
++
+ int snd_fwspk_create_pcm(struct fwspk *fwspk);
+ 
+ int snd_fwspk_create_mixer(struct fwspk *fwspk);
+@@ -125,3 +136,5 @@ int snd_fwspk_create_mixer(struct fwspk *fwspk);
+ void snd_fwspk_proc_init(struct fwspk *fwspk);
+ 
+ int snd_fwspk_create_midi(struct fwspk *fwspk);
++
++int snd_fwspk_create_hwdep(struct fwspk *fwspk);
+diff --git a/sound/firewire/speakers/speakers_hwdep.c b/sound/firewire/speakers/speakers_hwdep.c
 new file mode 100644
-index 0000000..83067a1
+index 0000000..eae7e184
 --- /dev/null
-+++ b/sound/firewire/speakers/speakers_midi.c
-@@ -0,0 +1,150 @@
++++ b/sound/firewire/speakers/speakers_hwdep.c
+@@ -0,0 +1,195 @@
 +/*
-+ * speakers_midi.c - a part of driver for OXFW970/971 based devices
++ * speakers_hwdep.c - a part of driver for OXFW970/971 based devices
 + *
 + * Copyright (c) 2013 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
++/*
++ * This codes give three functionality.
++ *
++ * 1.get firewire node infomation
++ * 2.get notification about starting/stopping stream
++ * 3.lock/unlock stream
++ */
++
 +#include "speakers.h"
 +
-+static int midi_capture_open(struct snd_rawmidi_substream *substream)
++static long
++hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
++	   loff_t *offset)
 +{
-+	struct fwspk *fwspk = substream->rmidi->private_data;
++	struct fwspk *fwspk = hwdep->private_data;
++	DEFINE_WAIT(wait);
++	union snd_firewire_event event;
 +
-+	return snd_fwspk_stream_start(fwspk, &fwspk->tx_stream, 0);
-+}
++	spin_lock_irq(&fwspk->lock);
 +
-+static int midi_playback_open(struct snd_rawmidi_substream *substream)
-+{
-+	struct fwspk *fwspk = substream->rmidi->private_data;
-+
-+	return snd_fwspk_stream_start(fwspk, &fwspk->rx_stream, 0);
-+}
-+
-+static int midi_capture_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct fwspk *fwspk = substream->rmidi->private_data;
-+
-+	if (amdtp_stream_running(&fwspk->rx_stream) &&
-+	    !amdtp_stream_pcm_running(&fwspk->tx_stream))
-+		snd_fwspk_stream_stop(fwspk, &fwspk->tx_stream);
-+	return 0;
-+}
-+
-+static int midi_playback_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct fwspk *fwspk = substream->rmidi->private_data;
-+
-+	if (amdtp_stream_running(&fwspk->rx_stream) &&
-+	    !amdtp_stream_pcm_running(&fwspk->rx_stream))
-+		snd_fwspk_stream_stop(fwspk, &fwspk->rx_stream);
-+	return 0;
-+}
-+
-+static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct fwspk *fwspk = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&fwspk->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&fwspk->tx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&fwspk->tx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&fwspk->lock, flags);
-+
-+	return;
-+}
-+
-+static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct fwspk *fwspk = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&fwspk->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&fwspk->rx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&fwspk->rx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&fwspk->lock, flags);
-+
-+	return;
-+}
-+
-+static struct snd_rawmidi_ops midi_capture_ops = {
-+	.open		= midi_capture_open,
-+	.close		= midi_capture_close,
-+	.trigger	= midi_capture_trigger,
-+};
-+
-+static struct snd_rawmidi_ops midi_playback_ops = {
-+	.open		= midi_playback_open,
-+	.close		= midi_playback_close,
-+	.trigger	= midi_playback_trigger,
-+};
-+
-+static void set_midi_substream_names(struct fwspk *fwspk,
-+				     struct snd_rawmidi_str *str)
-+{
-+	struct snd_rawmidi_substream *subs;
-+
-+	list_for_each_entry(subs, &str->substreams, list) {
-+		snprintf(subs->name, sizeof(subs->name),
-+			 "%s MIDI %d",
-+			 fwspk->card->shortname, subs->number + 1);
++	while (!fwspk->dev_lock_changed) {
++		prepare_to_wait(&fwspk->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
++		spin_unlock_irq(&fwspk->lock);
++		schedule();
++		finish_wait(&fwspk->hwdep_wait, &wait);
++		if (signal_pending(current))
++			return -ERESTARTSYS;
++		spin_lock_irq(&fwspk->lock);
 +	}
++
++	memset(&event, 0, sizeof(event));
++	if (fwspk->dev_lock_changed) {
++		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
++		event.lock_status.status = (fwspk->dev_lock_count > 0);
++		fwspk->dev_lock_changed = false;
++
++		count = min_t(long, count, sizeof(event.lock_status));
++	}
++
++	spin_unlock_irq(&fwspk->lock);
++
++	if (copy_to_user(buf, &event, count))
++		return -EFAULT;
++
++	return count;
 +}
 +
-+int snd_fwspk_create_midi(struct fwspk *fwspk)
++static unsigned int
++hwdep_poll(struct snd_hwdep *hwdep, struct file *file, poll_table *wait)
 +{
-+	struct snd_rawmidi *rmidi;
-+	struct snd_rawmidi_str *str;
++	struct fwspk *fwspk = hwdep->private_data;
++	unsigned int events;
++
++	poll_wait(file, &fwspk->hwdep_wait, wait);
++
++	spin_lock_irq(&fwspk->lock);
++	if (fwspk->dev_lock_changed)
++		events = POLLIN | POLLRDNORM;
++	else
++		events = 0;
++	spin_unlock_irq(&fwspk->lock);
++
++	return events;
++}
++
++static int
++hwdep_get_info(struct fwspk *fwspk, void __user *arg)
++{
++	struct fw_device *dev = fw_parent_device(fwspk->unit);
++	struct snd_firewire_get_info info;
++
++	memset(&info, 0, sizeof(info));
++	info.type = SNDRV_FIREWIRE_TYPE_FWSPK;
++	info.card = dev->card->index;
++	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
++	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
++	strlcpy(info.device_name, dev_name(&dev->device),
++		sizeof(info.device_name));
++
++	if (copy_to_user(arg, &info, sizeof(info)))
++		return -EFAULT;
++
++	return 0;
++}
++
++static int
++hwdep_lock(struct fwspk *fwspk)
++{
 +	int err;
 +
-+	/* create midi ports */
-+	err = snd_rawmidi_new(fwspk->card, fwspk->card->driver, 0,
-+			      fwspk->midi_output_ports, fwspk->midi_input_ports,
-+			      &rmidi);
-+	if (err < 0)
-+		return err;
++	spin_lock_irq(&fwspk->lock);
 +
-+	snprintf(rmidi->name, sizeof(rmidi->name),
-+		 "%s MIDI", fwspk->card->shortname);
-+	rmidi->private_data = fwspk;
++	if (fwspk->dev_lock_count == 0) {
++		fwspk->dev_lock_count = -1;
++		err = 0;
++	} else
++		err = -EBUSY;
 +
-+	if (fwspk->midi_input_ports > 0) {
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
++	spin_unlock_irq(&fwspk->lock);
 +
-+		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-+					&midi_capture_ops);
++	return err;
++}
 +
-+		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++static int
++hwdep_unlock(struct fwspk *fwspk)
++{
++	int err;
 +
-+		set_midi_substream_names(fwspk, str);
-+	}
++	spin_lock_irq(&fwspk->lock);
 +
-+	if (fwspk->midi_output_ports > 0) {
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
++	if (fwspk->dev_lock_count == -1) {
++		fwspk->dev_lock_count = 0;
++		err = 0;
++	} else
++		err = -EBADFD;
 +
-+		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
-+					&midi_playback_ops);
++	spin_unlock_irq(&fwspk->lock);
 +
-+		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++	return err;
++}
 +
-+		set_midi_substream_names(fwspk, str);
-+	}
++static int
++hwdep_release(struct snd_hwdep *hwdep, struct file *file)
++{
++	struct fwspk *fwspk = hwdep->private_data;
 +
-+	if ((fwspk->midi_output_ports > 0) && (fwspk->midi_input_ports > 0))
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
++	spin_lock_irq(&fwspk->lock);
++	if (fwspk->dev_lock_count == -1)
++		fwspk->dev_lock_count = 0;
++	spin_unlock_irq(&fwspk->lock);
 +
 +	return 0;
 +}
++
++static int
++hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
++	    unsigned int cmd, unsigned long arg)
++{
++	struct fwspk *fwspk = hwdep->private_data;
++
++	switch (cmd) {
++	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
++		return hwdep_get_info(fwspk, (void __user *)arg);
++	case SNDRV_FIREWIRE_IOCTL_LOCK:
++		return hwdep_lock(fwspk);
++	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
++		return hwdep_unlock(fwspk);
++	default:
++		return -ENOIOCTLCMD;
++	}
++}
++
++#ifdef CONFIG_COMPAT
++static int
++hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
++		   unsigned int cmd, unsigned long arg)
++{
++	return hwdep_ioctl(hwdep, file, cmd,
++			   (unsigned long)compat_ptr(arg));
++}
++#else
++#define hwdep_compat_ioctl NULL
++#endif
++
++int snd_fwspk_create_hwdep(struct fwspk *fwspk)
++{
++	static const struct snd_hwdep_ops hwdep_ops = {
++		.read		= hwdep_read,
++		.release	= hwdep_release,
++		.poll		= hwdep_poll,
++		.ioctl		= hwdep_ioctl,
++		.ioctl_compat	= hwdep_compat_ioctl,
++	};
++	struct snd_hwdep *hwdep;
++	int err;
++
++	err = snd_hwdep_new(fwspk->card, fwspk->card->driver, 0, &hwdep);
++	if (err < 0)
++		goto end;
++	strcpy(hwdep->name, fwspk->card->driver);
++	hwdep->iface = SNDRV_HWDEP_IFACE_FW_FWSPK;
++	hwdep->ops = hwdep_ops;
++	hwdep->private_data = fwspk;
++	hwdep->exclusive = true;
++end:
++	return err;
++}
 diff --git a/sound/firewire/speakers/speakers_stream.c b/sound/firewire/speakers/speakers_stream.c
-index b02b03c..2649f02 100644
+index 2649f02..cc91160 100644
 --- a/sound/firewire/speakers/speakers_stream.c
 +++ b/sound/firewire/speakers/speakers_stream.c
-@@ -110,6 +110,7 @@ int snd_fwspk_stream_start(struct fwspk *fwspk,
- 			   unsigned int rate)
- {
- 	unsigned int i, curr_rate, pcm_channels, midi_ports;
-+	struct amdtp_stream *opposite = NULL;
- 	struct cmp_connection *conn;
- 	enum avc_general_plug_dir dir;
- 	bool used;
-@@ -148,7 +149,21 @@ int snd_fwspk_stream_start(struct fwspk *fwspk,
- 		err = -EIO;
- 		goto end;
- 	}
-+	if (rate == 0)
-+		rate = curr_rate;
- 	if (curr_rate != rate) {
-+		/* in case that AMDTP streams includes just MIDI */
-+		if (amdtp_stream_running(&fwspk->tx_stream)) {
-+			snd_fwspk_stream_stop(fwspk, &fwspk->tx_stream);
-+			if (stream != &fwspk->tx_stream)
-+				opposite = &fwspk->tx_stream;
-+		}
-+		if (amdtp_stream_running(&fwspk->rx_stream)) {
-+			snd_fwspk_stream_stop(fwspk, &fwspk->rx_stream);
-+			if (stream != &fwspk->rx_stream)
-+				opposite = &fwspk->rx_stream;
-+		}
-+
- 		err = avc_general_set_sig_fmt(fwspk->unit, rate, dir, 0);
- 		if (err < 0)
- 			goto end;
-@@ -158,6 +173,17 @@ int snd_fwspk_stream_start(struct fwspk *fwspk,
- 			err = -EIO;
- 			goto end;
- 		}
-+
-+		/*
-+		 * NOTE:
-+		 * No matter for recursive call because this opposite stream
-+		 * will start at current sampling rate.
-+		 */
-+		if (opposite) {
-+			err = snd_fwspk_stream_start(fwspk, opposite, 0);
-+			if (err < 0)
-+				goto end;
-+		}
- 	}
- 
- 	/* set stream formation */
-@@ -420,6 +446,7 @@ end:
- int snd_fwspk_stream_discover(struct fwspk *fwspk)
- {
- 	u8 plugs[AVC_PLUG_INFO_BUF_COUNT];
-+	unsigned int i;
- 	int err;
- 
- 	/* the number of plugs for isoc in/out, ext in/out  */
-@@ -440,6 +467,14 @@ int snd_fwspk_stream_discover(struct fwspk *fwspk)
- 	err = fill_stream_formations(fwspk, AVC_GENERAL_PLUG_DIR_IN, 0);
- 	if (err < 0)
- 		goto end;
-+
-+	/* if its stream has MIDI conformant data channel, add one MIDI port */
-+	for (i = 0; i < FWSPK_STREAM_TABLE_ENTRIES; i++) {
-+		if (fwspk->tx_stream_formations[i].midi > 0)
-+			fwspk->midi_input_ports = 1;
-+		else if (fwspk->rx_stream_formations[i].midi > 0)
-+			fwspk->midi_output_ports = 1;
-+	}
+@@ -493,3 +493,42 @@ int snd_fwspk_streams_init(struct fwspk *fwspk)
  end:
  	return err;
  }
++
++void snd_fwspk_stream_lock_changed(struct fwspk *fwspk)
++{
++	fwspk->dev_lock_changed = true;
++	wake_up(&fwspk->hwdep_wait);
++}
++
++int snd_fwspk_stream_lock_try(struct fwspk *fwspk)
++{
++	int err;
++
++	spin_lock_irq(&fwspk->lock);
++
++	/* user land lock this */
++	if (fwspk->dev_lock_count < 0) {
++		err = -EBUSY;
++		goto end;
++	}
++
++	/* this is the first time */
++	if (fwspk->dev_lock_count++ == 0)
++		snd_fwspk_stream_lock_changed(fwspk);
++	err = 0;
++end:
++	spin_unlock_irq(&fwspk->lock);
++	return err;
++}
++
++void snd_fwspk_stream_lock_release(struct fwspk *fwspk)
++{
++	spin_lock_irq(&fwspk->lock);
++
++	if (WARN_ON(fwspk->dev_lock_count <= 0))
++		goto end;
++	if (--fwspk->dev_lock_count == 0)
++		snd_fwspk_stream_lock_changed(fwspk);
++end:
++	spin_unlock_irq(&fwspk->lock);
++}
 -- 
 1.8.3.2
