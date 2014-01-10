@@ -1,171 +1,50 @@
-From: Nenghua Cao <nhcao@marvell.com>
-Subject: Re: [PATCH] ASoC: dpcm: don't do hw_param when BE has
- done	hw_param
-Date: Fri, 10 Jan 2014 20:51:48 +0800
-Message-ID: <52CFECE4.90302@marvell.com>
-References: <1389332195-15900-1-git-send-email-nhcao@marvell.com>
- <s5htxdcxg0q.wl%tiwai@suse.de> <52CFD7BE.5030907@marvell.com>
- <1389354435.2293.32.camel@loki> <52CFE0AE.1030606@marvell.com>
- <s5hk3e8xcz2.wl%tiwai@suse.de> <1389356948.2293.55.camel@loki>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: fsl_esai: Add ESAI CPU DAI driver
+Date: Fri, 10 Jan 2014 12:52:31 +0000
+Message-ID: <20140110125231.GK29039@sirena.org.uk>
+References: <1389347646-20432-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com
- [67.231.156.173])
- by alsa0.perex.cz (Postfix) with ESMTP id BFB76260309
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2014 13:48:32 +0100 (CET)
-In-Reply-To: <1389356948.2293.55.camel@loki>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VJJoKLVEFXdmHQwR"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1389347646-20432-1-git-send-email-Guangyu.Chen@freescale.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: timur@tabi.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, shawn.guo@linaro.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/10/2014 08:29 PM, Liam Girdwood wrote:
-> On Fri, 2014-01-10 at 13:01 +0100, Takashi Iwai wrote:
->> At Fri, 10 Jan 2014 19:59:42 +0800,
->> Nenghua Cao wrote:
->>>
->>> On 01/10/2014 07:47 PM, Liam Girdwood wrote:
->>>> On Fri, 2014-01-10 at 19:21 +0800, Nenghua Cao wrote:
->>>>> On 01/10/2014 06:55 PM, Takashi Iwai wrote:
->>>>>> [Corrected mail addresses of both Mark and Liam]
->>>>>>
->>>>> Hi, Takashi:
->>>>> Thanks for correcting my mistake.
->>>>>> At Fri, 10 Jan 2014 13:36:35 +0800,
->>>>>> Nenghua Cao wrote:
->>>>>>>
->>>>>>> From: Nenghua Cao <nhcao@marvell.com>
->>>>>>>
->>>>>>>     It fixes the following case:
->>>>>>>     Two FEs connects the same BE; FE1 & BE path has been opened and hw_paramed.
->>>>>>> At this momment, FE2 & BE path is being opened and hw_paramed. The BE
->>>>>>> dai will do hw_param again even if it has done hw_param. It is not
->>>>>>> reasonable.
->>>>>>> FE1------------>BE
->>>>>>> FE2-------------^
->>>>>>
->>>>>> What happens if FE2 tries to set up an incompatible hw_params?
->>>>>> (Through a quick glance, it won't work properly well, too, though...)
->>>>>>
->>>>
->>>> The intention in this case would be for the DSP FE driver to determine
->>>> if it can perform format conversion or SRC to the running BE. If the DSP
->>>> cant do the conversion then it should fail.
->>>>
->>>>> If FE2 uses an incompatible param, it will make FE1 doesn't work. Maybe
->>>>> FE2 works well.
->>>>> If FE2 uses the same param, BE hw_param function will be called twice
->>>>> (This is the most happening case).
->>>>> So we can't get benefits from it.
->>>>
->>>> We shouldn't be calling the hw_params() on the BE when it's already
->>>> configured in this case. So this seems like a bug. However :-
->>>>
->>>> /* only allow hw_params() if no connected FEs are running */
->>>> 		if (!snd_soc_dpcm_can_be_params(fe, be, stream))
->>>> 			continue;
->>>>
->>>> 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
->>>> 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
->>>> 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE))
->>>> 			continue;
->>>>
->>>> We do do a test to check if any connected FEs are running (i.e.
->>>> triggered) prior to calling hw_params() on the BE. Can you confirm if
->>>> the FE was running in your case ?
->>>>
->>> Hi, Liam:
->>>    I am so glad to hear from you. In my case, FE1 has called hw_param,
->>> and before FE1 calls prepare/trigger function, the scheduler switches to
->>> do FE2 open, hw_param. So hw_param is called twice.
->>
->> So basically the current implementation is racy about this.
->>
-> 
-> This is a valid use case from the userspace perspective too. The BE in
-> this case is a shared resource (whether userspace is aware or not) and
-> I'd expect it to take the the last configured hw_params (in this case
-> FE2 hw_params) before it is triggered.
-> 
-> Fwiw, a similar topic came up the conference this year wrt compressed
-> streams. The question was about configuring the BE format and rate
-> directly from userspace. This should be possible without too much effort
-> since the BE is essentially a PCM. e.g. from userspace
-> 
-> 1) configure FE1 hw_params
-> 
-> 2) configure FE2 hw_params
-> 
-> 3) optional - configure BE1 hw_params
-> 
-> If step 3 is not performed then the values from step2 are used.
-> 
-It sounds good. I only have one concern. Even if the FE1 and FE2 use the
-same param, the hw_param may be called more times.
 
-Nenghua
->> OTOH, not calling hw_params twice is also buggy.  hw_params may be
->> called multiple times without hw_free for the same stream if user
->> wants to re-setup/update the parameters.  OSS emulation layer does it,
->> for example.
-> 
-> This is supported under DPCM unless the BE is triggered, but will always
-> take the last hw_params sent from userspace.
-> 
-> Liam
-> 
->>
->> Takashi
->>
->>>
->>>> Thanks
->>>>
->>>> Liam
->>>>
->>>>>>
->>>>>> Takashi
->>>>>>
->>>>>>>
->>>>>>> Signed-off-by: Nenghua Cao <nhcao@marvell.com>
->>>>>>> ---
->>>>>>>  sound/soc/soc-pcm.c |    1 -
->>>>>>>  1 files changed, 0 insertions(+), 1 deletions(-)
->>>>>>>
->>>>>>> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
->>>>>>> index 891b9a9..ec07e37 100644
->>>>>>> --- a/sound/soc/soc-pcm.c
->>>>>>> +++ b/sound/soc/soc-pcm.c
->>>>>>> @@ -1339,7 +1339,6 @@ static int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
->>>>>>>  			continue;
->>>>>>>  
->>>>>>>  		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
->>>>>>> -		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
->>>>>>>  		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE))
->>>>>>>  			continue;
->>>>>>>  
->>>>>>> -- 
->>>>>>> 1.7.0.4
->>>>>>>
->>>>>>> _______________________________________________
->>>>>>> Alsa-devel mailing list
->>>>>>> Alsa-devel@alsa-project.org
->>>>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>>>>>>
->>>>>
->>>>
->>>>
->>>>
->>>
-> 
-> 
-> 
+--VJJoKLVEFXdmHQwR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jan 10, 2014 at 05:54:06PM +0800, Nicolin Chen wrote:
+> This patch implements a device-tree-only CPU DAI driver for Freescale ESAI
+> controller that supports:
+
+Applied, thanks.
+
+--VJJoKLVEFXdmHQwR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSz+0LAAoJELSic+t+oim91akP/2mtB/1hNpiDcevh1qECfDrT
+EbvzZIEfN5bJQCjSsA1j4uv/2wz7u3teazfK1SmQHcBv7IF6McpQktdZD5KaP0LO
+sXmV3o6qCfm7ZflKt2fjU2CtnVO1/PFwxfdNhxG+BZ7n8IqwW7EF/Oyvg0a8FAbx
+jI9wxpur/hnqBbQGCi+g/NZ5RFouoH9EJ6W2YnSuCqMT/h/ifTX2gjf0GLlDJ/ip
+Q0fqFfwZPaxFJzUQrEHl7THfEr9MkZswgD6eY8a/bw9Nb5R3a6d1TsToFipco6Zl
+XedQyIBU33hgbq/l471+YH3RtNNQW2PTYP75+Aj1glQxxY0n1MplF7A06obKnBpe
+f9m2WD+6j1fVX0nQVsLXpdN5mcKTk1H0NumOWqi+CQpk9ZYivupXNoKDdq8pk+bX
+DRaQ0yGuheuPCr9BSnK20c1PRnPRwgpaqBfhbd4vZHiuIZFH+TMFz2q2w6IXnE4z
+NDuLj2oAy6BNGb0hCK9FVXXmHnGCKdXaugVoWkp8EG47D2DI2D4sU2Cx1Y/kzbot
+U54pvApJaKaADtFyAm2Z0t1GzCN1TgmAsJa4K1J/tF3S7/0IrD49XzGGQtPB5QP5
+3ZvYG9iemHZoEfJiPzhQQZRCHCO6WCEuLgqFRMk3p75ZAx3FYxdv3XCRH6FMgR11
+JA6UEdXSAb+Gl9OMKVLX
+=yaEU
+-----END PGP SIGNATURE-----
+
+--VJJoKLVEFXdmHQwR--
