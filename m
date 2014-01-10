@@ -1,42 +1,68 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH v2 00/13] speakers: Add support for
- capture/playback of PCM/MIDI
-Date: Sat, 11 Jan 2014 01:18:15 +0900
-Message-ID: <52D01D47.4030004@sakamocchi.jp>
-References: <1388920417-5584-1-git-send-email-o-takashi@sakamocchi.jp>
- <1389367775-21360-1-git-send-email-o-takashi@sakamocchi.jp>
- <52D01586.10806@ladisch.de> <s5hsisvx21s.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: fsl_esai: Add ESAI CPU DAI driver
+Date: Fri, 10 Jan 2014 16:52:29 +0000
+Message-ID: <20140110165229.GP29039@sirena.org.uk>
+References: <1389265078-16256-1-git-send-email-Guangyu.Chen@freescale.com>
+ <20140109184453.GP12858@sirena.org.uk>
+ <20140110023252.GA16467@MrMyself>
+ <20140110023537.GB16467@MrMyself>
+ <20140110120439.GG29039@sirena.org.uk>
+ <20140110130338.GA17392@MrMyself>
+ <20140110132642.GM29039@sirena.org.uk>
+ <20140110154824.GA17609@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id EFFC126109F
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2014 17:18:19 +0100 (CET)
-In-Reply-To: <s5hsisvx21s.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vzUQzca511KWT6Hk"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140110154824.GA17609@MrMyself>
+Sender: linux-doc-owner@vger.kernel.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: timur@tabi.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, shawn.guo@linaro.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Iwai-san,
 
-(Jan 11 2014 00:57), Takashi Iwai wrote:
- > Yeah, module names aren't that important.  And you can put
- > MODULE_ALIAS("snd-firewire-speakers"), if any.
+--vzUQzca511KWT6Hk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-OK. I decide to rename the driver to 'snd-oxfw, and add the alias.
+On Fri, Jan 10, 2014 at 11:48:25PM +0800, Nicolin Chen wrote:
 
+> I think I start to understand the point here: If a user only needs to playback
+> the default case - 44.1KHz for example, the driver can just configure all the
+> dividers once at the beginning, not every time, so that we can save further
+> register overriding operation or even complicated clock selection and divisor
+> calculation, which obviously makes the procedure clean and reduces the system
+> loading even if it might be just in a slight level.
 
-Thanks
+> Is this the reason, or maybe one of the reasons, to the defaults providing?
 
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+The main thing is that if the DAI driver does it then it's less code in
+the machine drivers using it - what tends to happen otherwise is that
+quite a few machine drivers end up replicating the same logic.  Hardware
+designers tend to do a lot of cut'n'paste with these things so even if
+the CODEC is different the clocking is often very similar.
+
+--vzUQzca511KWT6Hk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS0CVKAAoJELSic+t+oim99IQP/08MHspLPF61FZWnYD7c/ocz
+umRR6MfesK+5hChKTM5MjqKhRbORurpimLy3SQgiFHuoJXHUWkDWOFyU7ARsirm4
+SE93me6Ug7ARPdKtfdLJpH7xxgBsdV9YvbsZMfilEAjjLCa3UbZt7ZeDDBlOYMVE
+AbWOoGFjPrmvAMn5vNIUGZ2whqp9GEEzWCjrcFb2PRWNr8CCiJF+u23bX0CT/17B
+kxXqagbocugD3Rqjpo7EVZhaDlh8B/MARkGbnqTp53DpxRJl8xlSuM2GuyV7njhZ
+qedOxwUu7prtwID2HvF+xhj2cQstZaA0IXRutEoe2wj0cVBx0btGz/FHPcw85aou
+EQburgwdP2e63AcC8m2JcGGZ5y5QLQqMktxwgOr9RNTZj7ksL399KKpsLRiM2ABH
+z6gisop7cFr4BHl2H11V8W6telUgNq/TVIYAYfKASZ/3ei8BdPrT8cDm8NCShzBy
+aRgmxb6f2rfBwIl1xXlNYV3vP1iWhICO0TzHDKxCQ+hl1cSKB0b6Lez6OmmHzUN3
+o86Hz/pfcxzRY6BdwwINgEqdiSyi0YJ91DQ8uvuISSLUVvOqx4ZwB9Mw4mhprAhV
+Ezpp0kEIGQuL7OhcPrjSGyJP8SeNjWMsFzZFtO3YbtPdcuw/gFIKzHvTfBL5xNbJ
+MBAW15HInlDLOVdc5Yga
+=SwMh
+-----END PGP SIGNATURE-----
+
+--vzUQzca511KWT6Hk--
