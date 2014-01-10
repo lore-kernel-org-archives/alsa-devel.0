@@ -1,56 +1,84 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl-sai: Add device tree nodes and its availiable
- check
-Date: Fri, 10 Jan 2014 11:09:00 +0000
-Message-ID: <20140110110900.GC29039@sirena.org.uk>
-References: <1389319550-12238-1-git-send-email-Li.Xiubo@freescale.com>
+From: Nenghua Cao <nhcao@marvell.com>
+Subject: Re: [PATCH] ASoC: dpcm: don't do hw_param when BE has
+ done	hw_param
+Date: Fri, 10 Jan 2014 19:21:34 +0800
+Message-ID: <52CFD7BE.5030907@marvell.com>
+References: <1389332195-15900-1-git-send-email-nhcao@marvell.com>
+ <s5htxdcxg0q.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NU0Ex4SbNnrxsi6C"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1389319550-12238-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
+ [67.231.148.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 049F92602F3
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2014 12:18:18 +0100 (CET)
+In-Reply-To: <s5htxdcxg0q.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---NU0Ex4SbNnrxsi6C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jan 10, 2014 at 10:05:50AM +0800, Xiubo Li wrote:
-
-> +	if (!np || !of_device_is_available(np))
-> +		return -ENODEV;
-> +
-
-I would expect the of_device_is_available() check to be done by the
-driver core rather than by individual drivers - every single driver
-should have that check.  Is this not happening?  The check for np is OK
-though.
-
---NU0Ex4SbNnrxsi6C
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSz9TJAAoJELSic+t+oim9SCgP+wUU19bsBjDnH5cuKtmBgChR
-Rp0b+I0Bk2wKJGLgFC+TJrV2auSSMROZh2jYGScFBXjSm2hjg2J9LHY4cudQWsRy
-12inmCUAA+VL39JS0pqzGpbmCTdxyoTrP2CQ4pljmNbRPO625KVYVlaI3jLLKOUX
-Rxflghkl8hZwSE+uwRNYCGsokAvP3m5BHCyYh5jxklW8GE55PDRenJxsH6JVk3k7
-5tc4ZFImzN2duwPTwI58jwpTVoE/3s8d2Lkil6LOD4Gufq7XAqEbBzhENri4tKM3
-twwJ+SBiNbhrHUQBIgIoe61ekn7A+iOYr0Dw9dsuPH3A2X+qD4E0qW4e5RZt7SHV
-Yxtp0bSZNq618lbiubGo3/NKWkODtbyZFAVdNReD43TR/q8erDnyZJu32seS9Uu4
-lMu05o5d8hz5z05kLqNbPODpKcMoEbTDOqjKzq9bp8nhmxAVlL83oH0P9PZFbPVg
-c08UQN4Zn/CatxCfeHiIegZlZdJNnq3W1wAGI6CFcMO965gWmt8Ay+ZmW+rjJxk1
-pmHK53JcQYWz/MUmCBDAlnboAlJIGcV1cwEacJzszqhzCnp5b9fw/71Dk1BnPBn3
-mjkmwfTE3u4rV4UwI3iKd+LJ1tL10lXNNWSO+CJQ0CKq3kudDfM4JxV7Iz3qJIVp
-yGRJbXMTXn1THt+AJBww
-=Nre5
------END PGP SIGNATURE-----
-
---NU0Ex4SbNnrxsi6C--
+On 01/10/2014 06:55 PM, Takashi Iwai wrote:
+> [Corrected mail addresses of both Mark and Liam]
+> 
+Hi, Takashi:
+Thanks for correcting my mistake.
+> At Fri, 10 Jan 2014 13:36:35 +0800,
+> Nenghua Cao wrote:
+>>
+>> From: Nenghua Cao <nhcao@marvell.com>
+>>
+>>     It fixes the following case:
+>>     Two FEs connects the same BE; FE1 & BE path has been opened and hw_paramed.
+>> At this momment, FE2 & BE path is being opened and hw_paramed. The BE
+>> dai will do hw_param again even if it has done hw_param. It is not
+>> reasonable.
+>> FE1------------>BE
+>> FE2-------------^
+> 
+> What happens if FE2 tries to set up an incompatible hw_params?
+> (Through a quick glance, it won't work properly well, too, though...)
+> 
+If FE2 uses an incompatible param, it will make FE1 doesn't work. Maybe
+FE2 works well.
+If FE2 uses the same param, BE hw_param function will be called twice
+(This is the most happening case).
+So we can't get benefits from it.
+> 
+> Takashi
+> 
+>>
+>> Signed-off-by: Nenghua Cao <nhcao@marvell.com>
+>> ---
+>>  sound/soc/soc-pcm.c |    1 -
+>>  1 files changed, 0 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+>> index 891b9a9..ec07e37 100644
+>> --- a/sound/soc/soc-pcm.c
+>> +++ b/sound/soc/soc-pcm.c
+>> @@ -1339,7 +1339,6 @@ static int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
+>>  			continue;
+>>  
+>>  		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
+>> -		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
+>>  		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE))
+>>  			continue;
+>>  
+>> -- 
+>> 1.7.0.4
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
