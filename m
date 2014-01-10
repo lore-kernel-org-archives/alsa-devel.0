@@ -1,100 +1,51 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: dpcm: don't do hw_param when BE has
- done	hw_param
-Date: Fri, 10 Jan 2014 11:47:15 +0000
-Message-ID: <1389354435.2293.32.camel@loki>
-References: <1389332195-15900-1-git-send-email-nhcao@marvell.com>
-	 <s5htxdcxg0q.wl%tiwai@suse.de> <52CFD7BE.5030907@marvell.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/2] mfd: wm5110: Add registers for headphone short
+ circuit control
+Date: Fri, 10 Jan 2014 11:52:43 +0000
+Message-ID: <20140110115243.GF29039@sirena.org.uk>
+References: <1389277765-23914-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/aVve/J9H4Wl5yVO"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <52CFD7BE.5030907@marvell.com>
+Content-Disposition: inline
+In-Reply-To: <1389277765-23914-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nenghua Cao <nhcao@marvell.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: lee.jones@linaro.org, sameo@linux.intel.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2014-01-10 at 19:21 +0800, Nenghua Cao wrote:
-> On 01/10/2014 06:55 PM, Takashi Iwai wrote:
-> > [Corrected mail addresses of both Mark and Liam]
-> > 
-> Hi, Takashi:
-> Thanks for correcting my mistake.
-> > At Fri, 10 Jan 2014 13:36:35 +0800,
-> > Nenghua Cao wrote:
-> >>
-> >> From: Nenghua Cao <nhcao@marvell.com>
-> >>
-> >>     It fixes the following case:
-> >>     Two FEs connects the same BE; FE1 & BE path has been opened and hw_paramed.
-> >> At this momment, FE2 & BE path is being opened and hw_paramed. The BE
-> >> dai will do hw_param again even if it has done hw_param. It is not
-> >> reasonable.
-> >> FE1------------>BE
-> >> FE2-------------^
-> > 
-> > What happens if FE2 tries to set up an incompatible hw_params?
-> > (Through a quick glance, it won't work properly well, too, though...)
-> > 
 
-The intention in this case would be for the DSP FE driver to determine
-if it can perform format conversion or SRC to the running BE. If the DSP
-cant do the conversion then it should fail.
+--/aVve/J9H4Wl5yVO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> If FE2 uses an incompatible param, it will make FE1 doesn't work. Maybe
-> FE2 works well.
-> If FE2 uses the same param, BE hw_param function will be called twice
-> (This is the most happening case).
-> So we can't get benefits from it.
+On Thu, Jan 09, 2014 at 02:29:24PM +0000, Charles Keepax wrote:
+> Add the registers necessary to enable/disable the headphone short
+> circuit protection.
 
-We shouldn't be calling the hw_params() on the BE when it's already
-configured in this case. So this seems like a bug. However :-
+Applied both, thanks.
 
-/* only allow hw_params() if no connected FEs are running */
-		if (!snd_soc_dpcm_can_be_params(fe, be, stream))
-			continue;
+--/aVve/J9H4Wl5yVO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
-		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
-		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE))
-			continue;
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-We do do a test to check if any connected FEs are running (i.e.
-triggered) prior to calling hw_params() on the BE. Can you confirm if
-the FE was running in your case ?
+iQIcBAEBAgAGBQJSz98IAAoJELSic+t+oim9U+sP/3sGWMVRlH1+ilAm+DeT8N/b
+Hr3WYUfjpnoh+hyjEhzoNJTAr2nl4ZkwYUzKUKgk+HFbqByG5oJ4IUCD0HIumvw4
+o7FCSHIK4TNVpRUJiO2v9OVKn9pzxH4PxzRsC3BRwVmE/raKnZDm4lL+yX7U0BQT
+xwRRebRtA3QnOAdNbgQz+3L2/9sZW374kJzZ9A8HxI82ZsKK9q9uuozX4C4SVa8O
+nUXfvxKFe44jLaoCefWUNN/rXqo03i9iokDBQ6pv6ERVVZZ3IEw/J+dIwy7Oprz9
+0I0GmNkqf5JA1VondN9tWAijRTrkVrG70XHWP6w4ckhHqtGywbFeOyqV39oRq89e
+tXZtVnI5UF9G3o2BZG9kKWZfVON4Zh3cooN6WYRCkEqqYXCbN7V8A62JIz0ARqK/
+2XG8Ri+DbTqMl//mMfSFrzn0tpc39jKBqwhBwsHQasRykX0uIXwe/4GpQ+Am6Fps
+qzyzXBknjdu7ugNfaQ7Peioa/KpcnPwh7V6pwndDhRh6WaN4jI1Yd7Es94bi0eWH
+r7r5aAD5PIOpvSmGDLytLWjNz6IbqX+pCzjN4r0u4rfnvK6JddJR+d7lUlFRXh4q
+HPaV2Rbjitl382DZSZ0l85SfvxNvO2rZFTZQA8ox4KR3UuLSr4LR6reV2Lj/AKDS
+LCb+zntj4v1bURJVHbtH
+=FzMB
+-----END PGP SIGNATURE-----
 
-Thanks
-
-Liam
-
-> > 
-> > Takashi
-> > 
-> >>
-> >> Signed-off-by: Nenghua Cao <nhcao@marvell.com>
-> >> ---
-> >>  sound/soc/soc-pcm.c |    1 -
-> >>  1 files changed, 0 insertions(+), 1 deletions(-)
-> >>
-> >> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> >> index 891b9a9..ec07e37 100644
-> >> --- a/sound/soc/soc-pcm.c
-> >> +++ b/sound/soc/soc-pcm.c
-> >> @@ -1339,7 +1339,6 @@ static int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
-> >>  			continue;
-> >>  
-> >>  		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
-> >> -		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
-> >>  		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE))
-> >>  			continue;
-> >>  
-> >> -- 
-> >> 1.7.0.4
-> >>
-> >> _______________________________________________
-> >> Alsa-devel mailing list
-> >> Alsa-devel@alsa-project.org
-> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >>
-> 
+--/aVve/J9H4Wl5yVO--
