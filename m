@@ -1,17 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 10/13] speakers: Add support for
-	Behringer/Mackie devices
-Date: Sat, 11 Jan 2014 00:29:32 +0900
-Message-ID: <1389367775-21360-11-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 11/13] speakers: Add support AMDTP in-stream
+	and PCM capture
+Date: Sat, 11 Jan 2014 00:29:33 +0900
+Message-ID: <1389367775-21360-12-git-send-email-o-takashi@sakamocchi.jp>
 References: <1388920417-5584-1-git-send-email-o-takashi@sakamocchi.jp>
  <1389367775-21360-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F1A0261589
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2014 16:30:01 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CF672654DB
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2014 16:30:03 +0100 (CET)
 In-Reply-To: <1389367775-21360-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,188 +26,789 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-RkZBRE8gcHJvamVjdCBoYXZlIGFscmVhZHkgaWRlbnRpZmllZCB0aGF0IHNvbWUgZGV2aWNlcyBw
-cm9kdWNlZCBieQpCZWhyaW5nZXIvTWFja2llIGFyZSBiYXNlZCBvbiBPWEZXOTcwLzk3MS4KClRo
-ZXkgc3VwcG9ydCAnQVYvQyBTdHJlYW0gRm9ybWF0IEluZm9ybWF0aW9uJyBjb21tYW5kLiBCdXQg
-c29tZSBvZiB0aGVtCmRvbid0IGltcGxlbWVudCAnTElTVCcgc3ViZnVuY3Rpb24uIFNvIHRoaXMg
-Y29tbWl0IHVzZXMgYW4gYXNzdW1wdGlvbgp0aGF0ICdpZiB0aGV5IGRvbid0IGltcGxlbWVudCBp
-dCwgdGhleSBkb24ndCBjaGFuZ2UgZm9ybWF0aW9uIG9mIHN0cmVhbQpmb3IgZWFjaCBzYW1wbGlu
-ZyByYXRlJy4KCldpdGggdGhpcyBhc3N1bXB0aW9uLCB0aGlzIGRyaXZlciBnZW5lcmF0ZSBmb3Jt
-YXRpb25zIGZvciB0aGUgZGV2aWNlcyBieToKIDEuZ2V0dGluZyBjdXJyZW50IGZvcm1hdGlvbiBi
-eSBTSU5HTEUgc3ViZnVuY3Rpb24KIDIuZ2V0dGluZyBzdXBwb3J0ZWQgc2FtcGxpbmcgcmF0ZXMK
-IDMuYXBwbHlpbmcgY3VycmVudCBmb3JtYXRpb24gZm9yIGFsbCBvZiBzdXBwb3J0ZWQgc2FtcGxp
-bmcgcmF0ZXMKCkJlaHJpbmdlci9NYWNraWUgZGV2aWNlcyBzdXBwb3J0IGNhcHR1cmUvcGxheWJh
-Y2sgb2YgUENNLXNhbXBsZXMgYW5kIHNvbWUKb2YgdGhlbSBzdXBwb3J0cyBjYXB0dXJlL3BsYXli
-YWNrIG9mIE1JREktbWVzc2FnZXMuIEZvbGxvd2VkIGNvbW1pdHMgd2lsbAphZGQgdGhlc2UgZnVu
-Y3Rpb25hbGl0aWVzLgoKU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBTYWthbW90byA8by10YWthc2hp
-QHNha2Ftb2NjaGkuanA+Ci0tLQogc291bmQvZmlyZXdpcmUvS2NvbmZpZyAgICAgICAgICAgICAg
-ICAgICAgfCAgMTEgKy0KIHNvdW5kL2ZpcmV3aXJlL3NwZWFrZXJzL3NwZWFrZXJzLmMgICAgICAg
-IHwgIDQ4ICsrKysrKystCiBzb3VuZC9maXJld2lyZS9zcGVha2Vycy9zcGVha2Vycy5oICAgICAg
-ICB8ICAgMSArCiBzb3VuZC9maXJld2lyZS9zcGVha2Vycy9zcGVha2Vyc19zdHJlYW0uYyB8IDE5
-NyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKIDQgZmlsZXMgY2hhbmdlZCwgMjQ5IGlu
-c2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUv
-S2NvbmZpZyBiL3NvdW5kL2ZpcmV3aXJlL0tjb25maWcKaW5kZXggYjJjNWE3ZS4uMWNmMzcxZiAx
-MDA2NDQKLS0tIGEvc291bmQvZmlyZXdpcmUvS2NvbmZpZworKysgYi9zb3VuZC9maXJld2lyZS9L
-Y29uZmlnCkBAIC0yNywxMiArMjcsMTcgQEAgY29uZmlnIFNORF9ESUNFCiAJICB3aWxsIGJlIGNh
-bGxlZCBzbmQtZGljZS4KIAogY29uZmlnIFNORF9GSVJFV0lSRV9TUEVBS0VSUwotCXRyaXN0YXRl
-ICJGaXJlV2lyZSBzcGVha2VycyIKKwl0cmlzdGF0ZSAiT3hmb3JkIE9YRlc5NzAvOTcxIGNoaXBz
-ZXQgc3VwcG9ydCIKIAlzZWxlY3QgU05EX1BDTQogCXNlbGVjdCBTTkRfRklSRVdJUkVfTElCCiAJ
-aGVscAotCSAgU2F5IFkgaGVyZSB0byBpbmNsdWRlIHN1cHBvcnQgZm9yIHRoZSBHcmlmZmluIEZp
-cmVXYXZlIFN1cnJvdW5kCi0JICBhbmQgdGhlIExhQ2llIEZpcmVXaXJlIFNwZWFrZXJzLgorCSAg
-U2F5IFkgaGVyZSB0byBpbmNsdWRlIHN1cHBvcnQgZm9yIEZpcmV3aXJlIGRldmljZXMgYmFzZWQg
-b24KKwkgIE94Zm9yZCBTZW1pY29uZHVjdG9yIE9YRlc5NzAvOTcxLgorCSAgICogR3JpZmZpbiBG
-aXJld2F2ZQorCSAgICogTGFDaWUgRmlyZXdpcmUgU3BlYWtlcnMKKwkgICAqIEJlaHJpbmdlciBG
-LUNvbnRyb2wgQXVkaW8gMjAyCisJICAgKiBNYWNraWUgT255eC1pIHNlcmllcyAoZm9ybWVyIG1v
-ZGVsKQorCSAgICogTWFja2llIE9ueXggU2F0ZWxsaXRlCiAKIAkgIFRvIGNvbXBpbGUgdGhpcyBk
-cml2ZXIgYXMgYSBtb2R1bGUsIGNob29zZSBNIGhlcmU6IHRoZSBtb2R1bGUKIAkgIHdpbGwgYmUg
-Y2FsbGVkIHNuZC1maXJld2lyZS1zcGVha2Vycy4KZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJl
-L3NwZWFrZXJzL3NwZWFrZXJzLmMgYi9zb3VuZC9maXJld2lyZS9zcGVha2Vycy9zcGVha2Vycy5j
-CmluZGV4IDhjM2JmNGEuLmU2ODA0NmMgMTAwNjQ0Ci0tLSBhL3NvdW5kL2ZpcmV3aXJlL3NwZWFr
-ZXJzL3NwZWFrZXJzLmMKKysrIGIvc291bmQvZmlyZXdpcmUvc3BlYWtlcnMvc3BlYWtlcnMuYwpA
-QCAtMTYsNiArMTYsOCBAQAogCiAjZGVmaW5lIFZFTkRPUl9HUklGRklOCQkweDAwMTI5MgogI2Rl
-ZmluZSBWRU5ET1JfTEFDSUUJCTB4MDBkMDRiCisjZGVmaW5lIFZFTl9CRUhSSU5HRVIJCTB4MDAx
-NTY0CisjZGVmaW5lIFZFTl9MT1VECQkweDAwMGZmMgogCiAjZGVmaW5lIFNQRUNJRklFUl8xMzk0
-VEEJMHgwMGEwMmQKICNkZWZpbmUgVkVSU0lPTl9BVkMJCTB4MDEwMDAxCkBAIC02NCw3ICs2Niwx
-MiBAQCBzdGF0aWMgaW50IG5hbWVfY2FyZChzdHJ1Y3QgZndzcGsgKmZ3c3BrKQogCQlnb3RvIGVu
-ZDsKIAliZTMyX3RvX2NwdXMoJmZpcm13YXJlKTsKIAotCXN0cmNweShmd3Nway0+Y2FyZC0+ZHJp
-dmVyLCBmd3Nway0+ZGV2aWNlX2luZm8tPmRyaXZlcl9uYW1lKTsKKwkvKiB0byBhcHBseSBjYXJk
-IGRlZmluaXRpb25zICovCisJaWYgKGZ3c3BrLT5kZXZpY2VfaW5mbykKKwkJc3RyY3B5KGZ3c3Br
-LT5jYXJkLT5kcml2ZXIsIGZ3c3BrLT5kZXZpY2VfaW5mby0+ZHJpdmVyX25hbWUpOworCWVsc2UK
-KwkJc3RyY3B5KGZ3c3BrLT5jYXJkLT5kcml2ZXIsICJPWEZXIik7CisKIAlzdHJjcHkoZndzcGst
-PmNhcmQtPnNob3J0bmFtZSwgbW9kZWwpOwogCiAJc25wcmludGYoZndzcGstPmNhcmQtPmxvbmdu
-YW1lLCBzaXplb2YoZndzcGstPmNhcmQtPmxvbmduYW1lKSwKQEAgLTExMCw4ICsxMTcsMTAgQEAg
-c3RhdGljIGludCBmd3Nwa19wcm9iZShzdHJ1Y3QgZndfdW5pdCAqdW5pdCwKIAogCWlmIChmd3Nw
-ay0+ZGV2aWNlX2luZm8gPT0gJmdyaWZmaW5fZmlyZXdhdmUpCiAJCWVyciA9IGZpcmV3YXZlX3N0
-cmVhbV9kaXNjb3Zlcihmd3Nwayk7Ci0JZWxzZQorCWVsc2UgaWYgKGZ3c3BrLT5kZXZpY2VfaW5m
-byA9PSAmbGFjaWVfc3BlYWtlcnMpCiAJCWVyciA9IGxhY2llX3NwZWFrZXJzX3N0cmVhbV9kaXNj
-b3Zlcihmd3Nwayk7CisJZWxzZQorCQllcnIgPSBzbmRfZndzcGtfc3RyZWFtX2Rpc2NvdmVyKGZ3
-c3BrKTsKIAlpZiAoZXJyIDwgMCkKIAkJZ290byBlcnJfY2FyZDsKIApAQCAtMTI3LDkgKzEzNiwx
-MSBAQCBzdGF0aWMgaW50IGZ3c3BrX3Byb2JlKHN0cnVjdCBmd191bml0ICp1bml0LAogCWlmIChl
-cnIgPCAwKQogCQlnb3RvIGVycl9jYXJkOwogCi0JZXJyID0gc25kX2Z3c3BrX2NyZWF0ZV9taXhl
-cihmd3Nwayk7Ci0JaWYgKGVyciA8IDApCi0JCWdvdG8gZXJyX2NhcmQ7CisJaWYgKGZ3c3BrLT5k
-ZXZpY2VfaW5mbykgeworCQllcnIgPSBzbmRfZndzcGtfY3JlYXRlX21peGVyKGZ3c3BrKTsKKwkJ
-aWYgKGVyciA8IDApCisJCQlnb3RvIGVycl9jYXJkOworCX0KIAogCXNuZF9md3Nwa19wcm9jX2lu
-aXQoZndzcGspOwogCkBAIC0xODksNiArMjAwLDMzIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaWVl
-ZTEzOTRfZGV2aWNlX2lkIGZ3c3BrX2lkX3RhYmxlW10gPSB7CiAJCS52ZXJzaW9uICAgICAgPSBW
-RVJTSU9OX0FWQywKIAkJLmRyaXZlcl9kYXRhICA9IChrZXJuZWxfdWxvbmdfdCkmbGFjaWVfc3Bl
-YWtlcnMsCiAJfSwKKwkvKiBCZWhyaW5nZXIsRi1Db250cm9sIEF1ZGlvIDIwMiAqLworCXsKKwkJ
-Lm1hdGNoX2ZsYWdzCT0gSUVFRTEzOTRfTUFUQ0hfVkVORE9SX0lEIHwKKwkJCQkgIElFRUUxMzk0
-X01BVENIX01PREVMX0lELAorCQkudmVuZG9yX2lkCT0gVkVOX0JFSFJJTkdFUiwKKwkJLm1vZGVs
-X2lkCT0gMHgwMGZjMjIsCisJfSwKKwkvKiBNYWNraWUsIE9ueXgtaSBzZXJpZXMgKGZvcm1lciBt
-b2RlbHMpICovCisJeworCQkubWF0Y2hfZmxhZ3MJPSBJRUVFMTM5NF9NQVRDSF9WRU5ET1JfSUQg
-fAorCQkJCSAgSUVFRTEzOTRfTUFUQ0hfTU9ERUxfSUQsCisJCS52ZW5kb3JfaWQJPSBWRU5fTE9V
-RCwKKwkJLm1vZGVsX2lkCT0gMHgwODEyMTYsCisJfSwKKwkvKiBNYWNraWUsIE9ueXggU2F0ZWxs
-aXRlICovCisJeworCQkubWF0Y2hfZmxhZ3MJPSBJRUVFMTM5NF9NQVRDSF9WRU5ET1JfSUQgfAor
-CQkJCSAgSUVFRTEzOTRfTUFUQ0hfTU9ERUxfSUQsCisJCS52ZW5kb3JfaWQJPSBWRU5fTE9VRCwK
-KwkJLm1vZGVsX2lkCT0gMHgwMDIwMGYsCisJfSwKKwkvKiBJRHMgYXJlIHVua25vd24gYnV0IGFi
-bGUgdG8gYmUgc3VwcG9ydGVkICovCisJLyogIE1hY2tpZShMb3VkKSwgZC4yIHBybyAqLworCS8q
-ICBNYWNraWUoTG91ZCksIGQuNCBwcm8gKi8KKwkvKiAgTWFja2llKExvdWQpLCBVLjQyMCAqLwor
-CS8qICBNYWNraWUoTG91ZCksIFUuNDIwZCAqLworCS8qICBNYWNraWUoTG91ZCksIFRhcGNvIExp
-bmsuRmlyZXdpcmUgKi8KIAl7IH0KIH07CiBNT0RVTEVfREVWSUNFX1RBQkxFKGllZWUxMzk0LCBm
-d3Nwa19pZF90YWJsZSk7CmRpZmYgLS1naXQgYS9zb3VuZC9maXJld2lyZS9zcGVha2Vycy9zcGVh
-a2Vycy5oIGIvc291bmQvZmlyZXdpcmUvc3BlYWtlcnMvc3BlYWtlcnMuaAppbmRleCAzODZlMjY3
-Li4wMTdkOTcyIDEwMDY0NAotLS0gYS9zb3VuZC9maXJld2lyZS9zcGVha2Vycy9zcGVha2Vycy5o
-CisrKyBiL3NvdW5kL2ZpcmV3aXJlL3NwZWFrZXJzL3NwZWFrZXJzLmgKQEAgLTk1LDYgKzk1LDcg
-QEAgdm9pZCBzbmRfZndzcGtfc3RyZWFtX3VwZGF0ZShzdHJ1Y3QgZndzcGsgKmZ3c3BrKTsKIAog
-aW50IGZpcmV3YXZlX3N0cmVhbV9kaXNjb3ZlcihzdHJ1Y3QgZndzcGsgKmZ3c3BrKTsKIGludCBs
-YWNpZV9zcGVha2Vyc19zdHJlYW1fZGlzY292ZXIoc3RydWN0IGZ3c3BrICpmd3Nwayk7CitpbnQg
-c25kX2Z3c3BrX3N0cmVhbV9kaXNjb3ZlcihzdHJ1Y3QgZndzcGsgKmZ3c3BrKTsKIAogaW50IHNu
-ZF9md3Nwa19jcmVhdGVfcGNtKHN0cnVjdCBmd3NwayAqZndzcGspOwogCmRpZmYgLS1naXQgYS9z
-b3VuZC9maXJld2lyZS9zcGVha2Vycy9zcGVha2Vyc19zdHJlYW0uYyBiL3NvdW5kL2ZpcmV3aXJl
-L3NwZWFrZXJzL3NwZWFrZXJzX3N0cmVhbS5jCmluZGV4IGVmMmFjOWQuLjU5MWU2YmYgMTAwNjQ0
-Ci0tLSBhL3NvdW5kL2ZpcmV3aXJlL3NwZWFrZXJzL3NwZWFrZXJzX3N0cmVhbS5jCisrKyBiL3Nv
-dW5kL2ZpcmV3aXJlL3NwZWFrZXJzL3NwZWFrZXJzX3N0cmVhbS5jCkBAIC0yMiw2ICsyMiwyMCBA
-QCBjb25zdCB1bnNpZ25lZCBpbnQgZndzcGtfcmF0ZV90YWJsZVtGV1NQS19TVFJFQU1fVEFCTEVf
-RU5UUklFU10gPSB7CiAJWzZdID0gMTkyMDAwLAogfTsKIAorLyoKKyAqIFNlZSBUYWJsZSA1Ljcg
-4oCTIFNhbXBsaW5nIGZyZXF1ZW5jeSBmb3IgTXVsdGktYml0IEF1ZGlvCisgKiBhdCBBVi9DIFN0
-cmVhbSBGb3JtYXQgSW5mb3JtYXRpb24gU3BlY2lmaWNhdGlvbiAxLjEgKEFwciAyMDA1LCAxMzk0
-VEEpCisgKi8KK3N0YXRpYyBjb25zdCB1bnNpZ25lZCBpbnQgYXZjX3N0cmVhbV9yYXRlX3RhYmxl
-W10gPSB7CisJWzBdID0gMHgwMiwKKwlbMV0gPSAweDAzLAorCVsyXSA9IDB4MDQsCisJWzNdID0g
-MHgwYSwKKwlbNF0gPSAweDA1LAorCVs1XSA9IDB4MDYsCisJWzZdID0gMHgwNywKK307CisKIGlu
-dCBzbmRfZndzcGtfc3RyZWFtX2luaXQoc3RydWN0IGZ3c3BrICpmd3NwaykKIHsKIAlpbnQgZXJy
-OwpAQCAtMTY0LDMgKzE3OCwxODYgQEAgaW50IGxhY2llX3NwZWFrZXJzX3N0cmVhbV9kaXNjb3Zl
-cihzdHJ1Y3QgZndzcGsgKmZ3c3BrKQogCiAJcmV0dXJuIDA7CiB9CisKKy8qCisgKiBTZWUgVGFi
-bGUgNi4xNiAtIEFNODI0IFN0cmVhbSBGb3JtYXQKKyAqICAgICBGaWd1cmUgNi4xOSAtIGZvcm1h
-dF9pbmZvcm1hdGlvbiBmaWVsZCBmb3IgQU04MjQgQ29tcG91bmQKKyAqIGF0IEFWL0MgU3RyZWFt
-IEZvcm1hdCBJbmZvcm1hdGlvbiBTcGVjaWZpY2F0aW9uIDEuMSAoQXByIDIwMDUsIDEzOTRUQSkK
-KyAqLworc3RhdGljIGludAorcGFyc2Vfc3RyZWFtX2Zvcm1hdGlvbih1OCAqYnVmLCB1bnNpZ25l
-ZCBpbnQgbGVuLAorCQkgICAgICAgc3RydWN0IGZ3c3BrX3N0cmVhbV9mb3JtYXRpb24gKmZvcm1h
-dGlvbiwKKwkJICAgICAgIHVuc2lnbmVkIGludCAqaW5kZXgpCit7CisJdW5zaWduZWQgaW50IGUs
-IGNoYW5uZWxzLCBmb3JtYXQ7CisKKwkvKgorCSAqIHRoaXMgbW9kdWxlIGNhbiBzdXBwb3J0IGEg
-aGllcmFyY2h5IGNvbWJpbmF0aW9uIHRoYXQ6CisJICogIFJvb3Q6CUF1ZGlvIGFuZCBNdXNpYyAo
-MHg5MCkKKwkgKiAgTGV2ZWwgMToJQU04MjQgQ29tcG91bmQgICgweDQwKQorCSAqLworCWlmICgo
-YnVmWzBdICE9IDB4OTApIHx8IChidWZbMV0gIT0gMHg0MCkpCisJCXJldHVybiAtRU5PU1lTOwor
-CisJLyogY2hlY2sgdGhlIHNhbXBsaW5nIHJhdGUgKi8KKwlmb3IgKCppbmRleCA9IDA7ICppbmRl
-eCA8IHNpemVvZihhdmNfc3RyZWFtX3JhdGVfdGFibGUpOyAqaW5kZXggKz0gMSkgeworCQlpZiAo
-YnVmWzJdID09IGF2Y19zdHJlYW1fcmF0ZV90YWJsZVsqaW5kZXhdKQorCQkJYnJlYWs7CisJfQor
-CWlmICgqaW5kZXggPT0gc2l6ZW9mKGF2Y19zdHJlYW1fcmF0ZV90YWJsZSkpCisJCXJldHVybiAt
-RU5PU1lTOworCisJZm9yIChlID0gMDsgZSA8IGJ1Zls0XTsgZSsrKSB7CisJCWNoYW5uZWxzID0g
-YnVmWzUgKyBlICogMl07CisJCWZvcm1hdCA9IGJ1Zls2ICsgZSAqIDJdOworCisJCXN3aXRjaCAo
-Zm9ybWF0KSB7CisJCS8qIElFQyA2MDk1OC0zICovCisJCWNhc2UgMHgwMDoKKwkJLyogTXVsdGkg
-Qml0IExpbmVhciBBdWRpbyAoUmF3KSAqLworCQljYXNlIDB4MDY6CisJCQlmb3JtYXRpb25bKmlu
-ZGV4XS5wY20gKz0gY2hhbm5lbHM7CisJCQlicmVhazsKKwkJLyogTUlESSBjb21mb3JtYW50ICov
-CisJCWNhc2UgMHgwZDoKKwkJCWZvcm1hdGlvblsqaW5kZXhdLm1pZGkgKz0gY2hhbm5lbHM7CisJ
-CQlicmVhazsKKwkJLyogTXVsdGkgQml0IExpbmVhciBBdWRpbyAoRFZELWF1ZGlvKSAqLworCQlj
-YXNlIDB4MDc6CisJCS8qIElFQyA2MTkzNy0zIHRvIDcgKi8KKwkJY2FzZSAweDAxOgorCQljYXNl
-IDB4MDI6CisJCWNhc2UgMHgwMzoKKwkJY2FzZSAweDA0OgorCQljYXNlIDB4MDU6CisJCS8qIE9u
-ZSBCaXQgQXVkaW8gKi8KKwkJY2FzZSAweDA4OgkvKiAoUGxhaW4pIFJhdyAqLworCQljYXNlIDB4
-MDk6CS8qIChQbGFpbikgU0FDRCAqLworCQljYXNlIDB4MGE6CS8qIChFbmNvZGVkKSBSYXcgKi8K
-KwkJY2FzZSAweDBiOgkvKiAoRU5jb2RlZCkgU0FDRCAqLworCQkvKiBIaWdoIHByZWNpc2lvbiBN
-dWx0aS1iaXQgTGluZWFyIEF1ZGlvICovCisJCWNhc2UgMHgwYzoKKwkJLyogU01QVEUgVGltZS1D
-b2RlIGNvbmZvcm1hbnQgKi8KKwkJY2FzZSAweDBlOgorCQkvKiBTYW1wbGUgQ291bnQgKi8KKwkJ
-Y2FzZSAweDBmOgorCQkvKiBBbmNpbGlhcnkgRGF0YSAqLworCQljYXNlIDB4MTA6CisJCS8qIFN5
-bmNocm9uaXphdGlvbiBTdHJlYW0gKFN0ZXJlbyBSYXcgYXVkaW8pICovCisJCWNhc2UgMHg0MDoK
-KwkJLyogRG9uJ3QgY2FyZSAqLworCQljYXNlIDB4ZmY6CisJCWRlZmF1bHQ6CisJCQlicmVhazsJ
-Lyogbm90IHN1cHBvcnRlZCAqLworCQl9CisJfQorCisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBp
-bnQKK2Fzc3VtZV9zdHJlYW1fZm9ybWF0aW9ucyhzdHJ1Y3QgZndzcGsgKmZ3c3BrLCBlbnVtIGF2
-Y19nZW5lcmFsX3BsdWdfZGlyIGRpciwKKwkJCSB1bnNpZ25lZCBpbnQgcGlkLCB1OCAqYnVmLCB1
-bnNpZ25lZCBpbnQgKmxlbiwKKwkJCSBzdHJ1Y3QgZndzcGtfc3RyZWFtX2Zvcm1hdGlvbiAqZm9y
-bWF0aW9ucykKK3sKKwl1bnNpZ25lZCBpbnQgaSwgcGNtX2NoYW5uZWxzLCBtaWRpX2NoYW5uZWxz
-OworCWludCBlcnI7CisKKwkvKiBnZXQgZm9ybWF0aW9uIGF0IGN1cnJlbnQgc2FtcGxpbmcgcmF0
-ZSAqLworCWVyciA9IGF2Y19zdHJlYW1fZ2V0X2Zvcm1hdF9zaW5nbGUoZndzcGstPnVuaXQsIGRp
-ciwgcGlkLCBidWYsIGxlbik7CisJaWYgKChlcnIgPCAwKSB8fCAoZXJyID09IDB4ODApIC8qIE5P
-VCBJTVBMRU1FTlRFRCAqLykKKwkJZ290byBlbmQ7CisKKwkvKiBwYXJzZSBhbmQgc2V0IHN0cmVh
-bSBmb3JtYXRpb24gKi8KKwllcnIgPSBwYXJzZV9zdHJlYW1fZm9ybWF0aW9uKGJ1ZiwgKmxlbiwg
-Zm9ybWF0aW9ucywgJmkpOworCWlmIChlcnIgPCAwKQorCQlnb3RvIGVuZDsKKworCXBjbV9jaGFu
-bmVscyA9IGZvcm1hdGlvbnNbaV0ucGNtOworCW1pZGlfY2hhbm5lbHMgPSBmb3JtYXRpb25zW2ld
-Lm1pZGk7CisKKwkvKiBhcHBseSB0aGUgZm9ybWF0aW9uIGZvciBlYWNoIGF2YWlsYWJsZSBzYW1w
-bGluZyByYXRlICovCisJZm9yIChpID0gMDsgaSA8IEZXU1BLX1NUUkVBTV9UQUJMRV9FTlRSSUVT
-OyBpKyspIHsKKwkJZXJyID0gYXZjX2dlbmVyYWxfaW5xdWlyeV9zaWdfZm10KGZ3c3BrLT51bml0
-LAorCQkJCQkJICBmd3Nwa19yYXRlX3RhYmxlW2ldLAorCQkJCQkJICBkaXIsIHBpZCk7CisJCWlm
-ICgoZXJyIDwgMCkgfHwgKGVyciA9PSAweDA4KSAvKiBOT1QgSU1QTEVNRU5URUQgKi8pCisJCQlj
-b250aW51ZTsKKworCQlmb3JtYXRpb25zW2ldLnBjbSA9IHBjbV9jaGFubmVsczsKKwkJZm9ybWF0
-aW9uc1tpXS5taWRpID0gbWlkaV9jaGFubmVsczsKKwl9CitlbmQ6CisJcmV0dXJuIGVycjsKK30K
-Kworc3RhdGljIGludAorZmlsbF9zdHJlYW1fZm9ybWF0aW9ucyhzdHJ1Y3QgZndzcGsgKmZ3c3Br
-LCBlbnVtIGF2Y19nZW5lcmFsX3BsdWdfZGlyIGRpciwKKwkJICAgICAgIHVuc2lnbmVkIHNob3J0
-IHBpZCkKK3sKKwl1OCAqYnVmOworCXN0cnVjdCBmd3Nwa19zdHJlYW1fZm9ybWF0aW9uICpmb3Jt
-YXRpb25zOworCXVuc2lnbmVkIGludCBpLCBsZW4sIGVpZDsKKwlpbnQgZXJyOworCisJYnVmID0g
-a21hbGxvYyhBVkNfR0VORVJJQ19GUkFNRV9NQVhJTVVNX0JZVEVTLCBHRlBfS0VSTkVMKTsKKwlp
-ZiAoYnVmID09IE5VTEwpCisJCXJldHVybiAtRU5PTUVNOworCisJZm9ybWF0aW9ucyA9IGZ3c3Br
-LT5yeF9zdHJlYW1fZm9ybWF0aW9uczsKKworCS8qIGluaXRpYWxpemUgcGFyYW1ldGVycyBoZXJl
-IGJlY2F1c2Ugb2YgY2hlY2tpbmcgaW1wbGVtZW50YXRpb24gKi8KKwllaWQgPSAwOworCWxlbiA9
-IEFWQ19HRU5FUklDX0ZSQU1FX01BWElNVU1fQllURVM7CisJbWVtc2V0KGJ1ZiwgMCwgbGVuKTsK
-KworCS8qIGdldCBmaXJzdCBlbnRyeSAqLworCWVyciA9IGF2Y19zdHJlYW1fZ2V0X2Zvcm1hdF9s
-aXN0KGZ3c3BrLT51bml0LCBkaXIsIDAsIGJ1ZiwgJmxlbiwgZWlkKTsKKwlpZiAoKGVyciA8IDAp
-IHx8IChsZW4gPCAzKSkgeworCQkvKiBMSVNUIHN1YmZ1bmN0aW9uIGlzIG5vdCBpbXBsZW1lbnRl
-ZCAqLworCQllcnIgPSBhc3N1bWVfc3RyZWFtX2Zvcm1hdGlvbnMoZndzcGssIGRpciwgcGlkLCBi
-dWYsICZsZW4sCisJCQkJCSAgICAgICBmb3JtYXRpb25zKTsKKwkJZ290byBlbmQ7CisJfQorCisJ
-LyogTElTVCBzdWJmdW5jdGlvbiBpcyBpbXBsZW1lbnRlZCAqLworCWRvIHsKKwkJLyogcGFyc2Ug
-YW5kIHNldCBzdHJlYW0gZm9ybWF0aW9uICovCisJCWVyciA9IHBhcnNlX3N0cmVhbV9mb3JtYXRp
-b24oYnVmLCBsZW4sIGZvcm1hdGlvbnMsICZpKTsKKwkJaWYgKGVyciA8IDApCisJCQljb250aW51
-ZTsKKworCQkvKiBnZXQgbmV4dCBlbnRyeSAqLworCQlsZW4gPSBBVkNfR0VORVJJQ19GUkFNRV9N
-QVhJTVVNX0JZVEVTOworCQltZW1zZXQoYnVmLCAwLCBsZW4pOworCQllcnIgPSBhdmNfc3RyZWFt
-X2dldF9mb3JtYXRfbGlzdChmd3Nway0+dW5pdCwgZGlyLCAwLAorCQkJCQkJIGJ1ZiwgJmxlbiwg
-KytlaWQpOworCQlpZiAoKGVyciA8IDApIHx8IChsZW4gPCAzKSkKKwkJCWJyZWFrOworCX0gd2hp
-bGUgKGVpZCA8IEZXU1BLX1NUUkVBTV9UQUJMRV9FTlRSSUVTKTsKK2VuZDoKKwlrZnJlZShidWYp
-OworCXJldHVybiBlcnI7Cit9CisKK2ludCBzbmRfZndzcGtfc3RyZWFtX2Rpc2NvdmVyKHN0cnVj
-dCBmd3NwayAqZndzcGspCit7CisJdTggcGx1Z3NbQVZDX1BMVUdfSU5GT19CVUZfQ09VTlRdOwor
-CWludCBlcnI7CisKKwkvKiB0aGUgbnVtYmVyIG9mIHBsdWdzIGZvciBpc29jIGluL291dCwgZXh0
-IGluL291dCAgKi8KKwllcnIgPSBhdmNfZ2VuZXJhbF9nZXRfcGx1Z19pbmZvKGZ3c3BrLT51bml0
-LCAweDFmLCAweDA3LCAweDAwLCBwbHVncyk7CisJaWYgKGVyciA8IDApCisJCWdvdG8gZW5kOwor
-CWlmICgocGx1Z3NbMF0gPT0gMCkgfHwgKHBsdWdzWzBdID09IDApKSB7CisJCWVyciA9IC1FSU87
-CisJCWdvdG8gZW5kOworCX0KKworCS8qIHVzZSBpUENSWzBdICovCisJZXJyID0gZmlsbF9zdHJl
-YW1fZm9ybWF0aW9ucyhmd3NwaywgQVZDX0dFTkVSQUxfUExVR19ESVJfSU4sIDApOworCWlmIChl
-cnIgPCAwKQorCQlnb3RvIGVuZDsKK2VuZDoKKwlyZXR1cm4gZXJyOworfQotLSAKMS44LjMuMgoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Previous commit adds support for some devices which can capture PCM samples.
+They transmits AMDTP stream in non-blocking mode. This stream has a quirk for
+'presentation timestamp'.
+
+The sequence of 'presentation timestamp' is invalid even if header of packet
+shows 'CIP header with SYT field'. So this driver can't reuse it for out
+stream.
+
+In this reason, this driver handles both streams separately.
+
+For your information, I note the sequence of CIP headers in stream transmitted
+by  Behringer F-Control Audio 202:
+
+When this driver gives no out-stream:
+Index	Payload	CIP_Header_0	CIP_Header_1
+38	14	00020092	900103D1
+39	12	00020098	900102FF
+40	12	0002009D	9001027F
+41	14	000200A2	90010396
+42	14	000200A8	900102E8
+43	12	000200AE	90010219
+44	14	000200B3	90010331
+45	12	000200B9	9001025F
+46	14	000200BE	90010376
+47	12	000200C4	900102A1
+00	12	000200C9	9001023E
+01	14	000200CE	90010358
+02	12	000200D4	90010289
+03	16	000200D9	900103A3
+04	12	000200E0	900102DD
+05	14	000200E5	900103F1
+06	12	000200EB	90010335
+07	12	000200F0	90010263
+08	14	000200F5	9001037C
+09	12	000200FB	900102AE
+
+When this driver gives out-stream:
+Index	Payload	CIP_Header_0	CIP_Header_1
+38	12	000200BD	900104A8
+39	14	000200C2	900104A8
+40	12	000200C8	900104AC
+41	14	000200CD	900104A9
+42	12	000200D3	900104B1
+43	14	000200D8	900104A8
+44	12	000200DE	900104AA
+45	14	000200E3	900104A9
+46	14	000200E9	900104AE
+47	12	000200EF	900104A8
+00	14	000200F4	900104AD
+01	12	000200FA	900104A7
+02	14	000200FF	900104A9
+03	12	00020005	900104A9
+04	14	0002000A	900104B1
+05	12	00020010	900104AA
+06	14	00020015	900104AD
+07	12	0002001B	900104A7
+08	14	00020020	900104AC
+09	12	00020026	900104A7
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/speakers/speakers.c         |   9 +-
+ sound/firewire/speakers/speakers.h         |  26 ++++-
+ sound/firewire/speakers/speakers_command.c |  40 +++++++
+ sound/firewire/speakers/speakers_pcm.c     | 179 +++++++++++++++++++++++++----
+ sound/firewire/speakers/speakers_proc.c    |  14 ++-
+ sound/firewire/speakers/speakers_stream.c  | 171 +++++++++++++++++++++------
+ 6 files changed, 365 insertions(+), 74 deletions(-)
+
+diff --git a/sound/firewire/speakers/speakers.c b/sound/firewire/speakers/speakers.c
+index e68046c..76afce9 100644
+--- a/sound/firewire/speakers/speakers.c
++++ b/sound/firewire/speakers/speakers.c
+@@ -90,7 +90,8 @@ static void fwspk_card_free(struct snd_card *card)
+ 	struct fwspk *fwspk = card->private_data;
+ 
+ 	mutex_lock(&fwspk->mutex);
+-	snd_fwspk_stream_destroy(fwspk);
++	snd_fwspk_stream_destroy(fwspk, &fwspk->rx_stream);
++	snd_fwspk_stream_destroy(fwspk, &fwspk->tx_stream);
+ 	mutex_unlock(&fwspk->mutex);
+ 
+ 	fw_unit_put(fwspk->unit);	/* dec reference counter */
+@@ -163,7 +164,8 @@ static void fwspk_bus_reset(struct fw_unit *unit)
+ 	mutex_lock(&fwspk->mutex);
+ 
+ 	fcp_bus_reset(fwspk->unit);
+-	snd_fwspk_stream_update(fwspk);
++	snd_fwspk_stream_update(fwspk, &fwspk->rx_stream);
++	snd_fwspk_stream_update(fwspk, &fwspk->tx_stream);
+ 
+ 	mutex_unlock(&fwspk->mutex);
+ }
+@@ -172,7 +174,8 @@ static void fwspk_remove(struct fw_unit *unit)
+ {
+ 	struct fwspk *fwspk = dev_get_drvdata(&unit->device);
+ 
+-	snd_fwspk_stream_destroy(fwspk);
++	snd_fwspk_stream_destroy(fwspk, &fwspk->rx_stream);
++	snd_fwspk_stream_destroy(fwspk, &fwspk->tx_stream);
+ 	snd_card_disconnect(fwspk->card);
+ 	snd_card_free_when_closed(fwspk->card);
+ }
+diff --git a/sound/firewire/speakers/speakers.h b/sound/firewire/speakers/speakers.h
+index 017d972..5d6c8e8 100644
+--- a/sound/firewire/speakers/speakers.h
++++ b/sound/firewire/speakers/speakers.h
+@@ -47,8 +47,12 @@ struct fwspk {
+ 	struct mutex mutex;
+ 
+ 	struct fwspk_stream_formation
++		tx_stream_formations[FWSPK_STREAM_TABLE_ENTRIES];
++	struct fwspk_stream_formation
+ 		rx_stream_formations[FWSPK_STREAM_TABLE_ENTRIES];
++	struct cmp_connection out_conn;
+ 	struct cmp_connection in_conn;
++	struct amdtp_stream tx_stream;
+ 	struct amdtp_stream rx_stream;
+ 
+ 	bool mute;
+@@ -87,11 +91,23 @@ int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
+ 				enum avc_general_plug_dir dir,
+ 				unsigned short pid);
+ 
+-int snd_fwspk_stream_init(struct fwspk *fwspk);
+-int snd_fwspk_stream_start(struct fwspk *fwspk, unsigned int rate);
+-void snd_fwspk_stream_stop(struct fwspk *fwspk);
+-void snd_fwspk_stream_destroy(struct fwspk *fwspk);
+-void snd_fwspk_stream_update(struct fwspk *fwspk);
++int snd_fwspk_command_set_rate(struct fwspk *fwspk,
++			       enum avc_general_plug_dir dir,
++			       unsigned int rate);
++int snd_fwspk_command_get_rate(struct fwspk *fwspk,
++			       enum avc_general_plug_dir dir,
++			       unsigned int *rate);
++
++int snd_fwspk_stream_get_rate(struct fwspk *fwspk, unsigned int *rate);
++int snd_fwspk_stream_set_rate(struct fwspk *fwspk, unsigned int rate);
++
++int snd_fwspk_stream_start(struct fwspk *fwspk,
++			   struct amdtp_stream *stream, unsigned int rate);
++void snd_fwspk_stream_stop(struct fwspk *fwspk, struct amdtp_stream *stream);
++void snd_fwspk_stream_destroy(struct fwspk *fwspk, struct amdtp_stream *stream);
++void snd_fwspk_stream_update(struct fwspk *fwspk, struct amdtp_stream *stream);
++
++int snd_fwspk_streams_init(struct fwspk *fwspk);
+ 
+ int firewave_stream_discover(struct fwspk *fwspk);
+ int lacie_speakers_stream_discover(struct fwspk *fwspk);
+diff --git a/sound/firewire/speakers/speakers_command.c b/sound/firewire/speakers/speakers_command.c
+index a13bc9e..274683e 100644
+--- a/sound/firewire/speakers/speakers_command.c
++++ b/sound/firewire/speakers/speakers_command.c
+@@ -120,3 +120,43 @@ end:
+ 	kfree(buf);
+ 	return err;
+ }
++
++int snd_fwspk_command_set_rate(struct fwspk *fwspk,
++			       enum avc_general_plug_dir dir,
++			       unsigned int rate)
++{
++	int err;
++
++	err = avc_general_set_sig_fmt(fwspk->unit, rate, dir, 0);
++	if (err < 0)
++		goto end;
++
++	/* ACCEPTED or INTERIM is OK */
++	if ((err != 0x0f) && (err != 0x09)) {
++		dev_err(&fwspk->unit->device,
++			"failed to set sampling rate\n");
++		err = -EIO;
++	}
++end:
++	return err;
++}
++
++int snd_fwspk_command_get_rate(struct fwspk *fwspk,
++			       enum avc_general_plug_dir dir,
++			       unsigned int *rate)
++{
++	int err;
++
++	err = avc_general_get_sig_fmt(fwspk->unit, rate, dir, 0);
++	if (err < 0)
++		goto end;
++
++	/* IMPLEMENTED/STABLE is OK */
++	if (err != 0x0c) {
++		dev_err(&fwspk->unit->device,
++			"failed to get sampling rate\n");
++		err = -EIO;
++	}
++end:
++	return err;
++}
+diff --git a/sound/firewire/speakers/speakers_pcm.c b/sound/firewire/speakers/speakers_pcm.c
+index 2258ddf..da777d2 100644
+--- a/sound/firewire/speakers/speakers_pcm.c
++++ b/sound/firewire/speakers/speakers_pcm.c
+@@ -66,6 +66,13 @@ static int hw_rule_channels(struct snd_pcm_hw_params *params,
+ 	return snd_interval_refine(c, &t);
+ }
+ 
++static inline int hw_rule_capture_rate(struct snd_pcm_hw_params *params,
++				       struct snd_pcm_hw_rule *rule)
++{
++	struct fwspk *fwspk = rule->private;
++	return hw_rule_rate(params, rule, fwspk,
++			    fwspk->tx_stream_formations);
++}
+ static inline int hw_rule_playback_rate(struct snd_pcm_hw_params *params,
+ 					struct snd_pcm_hw_rule *rule)
+ {
+@@ -74,6 +81,14 @@ static inline int hw_rule_playback_rate(struct snd_pcm_hw_params *params,
+ 			    fwspk->rx_stream_formations);
+ }
+ 
++static inline int hw_rule_capture_channels(struct snd_pcm_hw_params *params,
++					   struct snd_pcm_hw_rule *rule)
++{
++	struct fwspk *fwspk = rule->private;
++	return hw_rule_channels(params, rule, fwspk,
++				fwspk->tx_stream_formations);
++}
++
+ static inline int hw_rule_playback_channels(struct snd_pcm_hw_params *params,
+ 					    struct snd_pcm_hw_rule *rule)
+ {
+@@ -117,12 +132,14 @@ static void prepare_rates(struct snd_pcm_hardware *hw,
+ 	return;
+ }
+ 
+-int fwspk_open(struct snd_pcm_substream *substream)
++static int init_hw_params(struct fwspk *fwspk,
++			  struct snd_pcm_substream *substream)
+ {
+ 	static const struct snd_pcm_hardware hw = {
+ 		.info = SNDRV_PCM_INFO_MMAP |
+ 			SNDRV_PCM_INFO_BATCH |
+ 			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_JOINT_DUPLEX |
+ 			/* for Open Sound System compatibility */
+ 			SNDRV_PCM_INFO_MMAP_VALID |
+ 			SNDRV_PCM_INFO_BLOCK_TRANSFER,
+@@ -139,22 +156,33 @@ int fwspk_open(struct snd_pcm_substream *substream)
+ 		.periods_min = 1,
+ 		.periods_max = UINT_MAX,
+ 	};
+-	struct fwspk *fwspk = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int err;
+ 
+ 	runtime->hw = hw;
+ 
+ 	/* add rule between channels and sampling rate */
+-	prepare_rates(&runtime->hw, fwspk->rx_stream_formations);
+-	prepare_channels(&runtime->hw, fwspk->rx_stream_formations);
+-	runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
+-	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+-			hw_rule_playback_channels, fwspk,
+-			SNDRV_PCM_HW_PARAM_RATE, -1);
+-	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+-			hw_rule_playback_rate, fwspk,
+-			SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		prepare_rates(&runtime->hw, fwspk->tx_stream_formations);
++		prepare_channels(&runtime->hw, fwspk->tx_stream_formations);
++		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
++		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				    hw_rule_capture_channels, fwspk,
++				    SNDRV_PCM_HW_PARAM_RATE, -1);
++		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				    hw_rule_capture_rate, fwspk,
++				    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	} else {
++		prepare_rates(&runtime->hw, fwspk->rx_stream_formations);
++		prepare_channels(&runtime->hw, fwspk->rx_stream_formations);
++		runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
++		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				    hw_rule_playback_channels, fwspk,
++				    SNDRV_PCM_HW_PARAM_RATE, -1);
++		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				    hw_rule_playback_rate, fwspk,
++				    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	}
+ 
+ 	/* AM824 in IEC 61883-6 can deliver 24bit data */
+ 	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
+@@ -178,6 +206,34 @@ end:
+ 	return err;
+ }
+ 
++static int fwspk_open(struct snd_pcm_substream *substream)
++{
++	struct fwspk *fwspk = substream->private_data;
++	unsigned int rate;
++	int err;
++
++	err = init_hw_params(fwspk, substream);
++	if (err < 0)
++		goto end;
++
++	/*
++	 * When any PCM stream are already running, the available sampling rate
++	 *  is limited at current value.
++	 */
++	if (amdtp_stream_pcm_running(&fwspk->tx_stream) ||
++	    amdtp_stream_pcm_running(&fwspk->rx_stream)) {
++		err = snd_fwspk_stream_get_rate(fwspk, &rate);
++		if (err < 0)
++			goto end;
++		substream->runtime->hw.rate_min = rate;
++		substream->runtime->hw.rate_max = rate;
++	}
++
++	snd_pcm_set_sync(substream);
++end:
++	return err;
++}
++
+ static int fwspk_close(struct snd_pcm_substream *substream)
+ {
+ 	return 0;
+@@ -190,18 +246,46 @@ static int fwspk_hw_params(struct snd_pcm_substream *substream,
+ 						params_buffer_bytes(hw_params));
+ }
+ 
+-static int fwspk_hw_free(struct snd_pcm_substream *substream)
++static int fwspk_hw_free_capture(struct snd_pcm_substream *substream)
+ {
+ 	struct fwspk *fwspk = substream->private_data;
+ 
+ 	mutex_lock(&fwspk->mutex);
+-	snd_fwspk_stream_stop(fwspk);
++	snd_fwspk_stream_stop(fwspk, &fwspk->tx_stream);
+ 	mutex_unlock(&fwspk->mutex);
+ 
+ 	return snd_pcm_lib_free_vmalloc_buffer(substream);
+ }
++static int fwspk_hw_free_playback(struct snd_pcm_substream *substream)
++{
++	struct fwspk *fwspk = substream->private_data;
++
++	mutex_lock(&fwspk->mutex);
++	snd_fwspk_stream_stop(fwspk, &fwspk->rx_stream);
++	mutex_unlock(&fwspk->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int fwspk_prepare_capture(struct snd_pcm_substream *substream)
++{
++	struct fwspk *fwspk = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
+ 
+-static int fwspk_prepare(struct snd_pcm_substream *substream)
++	mutex_lock(&fwspk->mutex);
++
++	err = snd_fwspk_stream_start(fwspk, &fwspk->tx_stream, runtime->rate);
++	if (err < 0)
++		goto end;
++
++	amdtp_stream_set_pcm_format(&fwspk->tx_stream, runtime->format);
++	amdtp_stream_pcm_prepare(&fwspk->tx_stream);
++end:
++	mutex_unlock(&fwspk->mutex);
++	return err;
++}
++static int fwspk_prepare_playback(struct snd_pcm_substream *substream)
+ {
+ 	struct fwspk *fwspk = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -209,7 +293,7 @@ static int fwspk_prepare(struct snd_pcm_substream *substream)
+ 
+ 	mutex_lock(&fwspk->mutex);
+ 
+-	err = snd_fwspk_stream_start(fwspk, runtime->rate);
++	err = snd_fwspk_stream_start(fwspk, &fwspk->rx_stream, runtime->rate);
+ 	if (err < 0)
+ 		goto end;
+ 
+@@ -220,7 +304,25 @@ end:
+ 	return err;
+ }
+ 
+-static int fwspk_trigger(struct snd_pcm_substream *substream, int cmd)
++static int fwspk_trigger_capture(struct snd_pcm_substream *substream, int cmd)
++{
++	struct fwspk *fwspk = substream->private_data;
++	struct snd_pcm_substream *pcm;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		pcm = substream;
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		pcm = NULL;
++		break;
++	default:
++		return -EINVAL;
++	}
++	amdtp_stream_pcm_trigger(&fwspk->tx_stream, pcm);
++	return 0;
++}
++static int fwspk_trigger_playback(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct fwspk *fwspk = substream->private_data;
+ 	struct snd_pcm_substream *pcm;
+@@ -239,35 +341,62 @@ static int fwspk_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	return 0;
+ }
+ 
+-static snd_pcm_uframes_t fwspk_pointer(struct snd_pcm_substream *substream)
++static snd_pcm_uframes_t fwspk_pointer_capture(struct snd_pcm_substream *sbstm)
+ {
+-	struct fwspk *fwspk = substream->private_data;
++	struct fwspk *fwspk = sbstm->private_data;
++
++	return amdtp_stream_pcm_pointer(&fwspk->tx_stream);
++}
++static snd_pcm_uframes_t fwspk_pointer_playback(struct snd_pcm_substream *sbstm)
++{
++	struct fwspk *fwspk = sbstm->private_data;
+ 
+ 	return amdtp_stream_pcm_pointer(&fwspk->rx_stream);
+ }
+ 
+ int snd_fwspk_create_pcm(struct fwspk *fwspk)
+ {
+-	static struct snd_pcm_ops ops = {
++	static struct snd_pcm_ops capture_ops = {
+ 		.open      = fwspk_open,
+ 		.close     = fwspk_close,
+ 		.ioctl     = snd_pcm_lib_ioctl,
+ 		.hw_params = fwspk_hw_params,
+-		.hw_free   = fwspk_hw_free,
+-		.prepare   = fwspk_prepare,
+-		.trigger   = fwspk_trigger,
+-		.pointer   = fwspk_pointer,
++		.hw_free   = fwspk_hw_free_capture,
++		.prepare   = fwspk_prepare_capture,
++		.trigger   = fwspk_trigger_capture,
++		.pointer   = fwspk_pointer_capture,
++		.page      = snd_pcm_lib_get_vmalloc_page,
++		.mmap      = snd_pcm_lib_mmap_vmalloc,
++	};
++	static struct snd_pcm_ops playback_ops = {
++		.open      = fwspk_open,
++		.close     = fwspk_close,
++		.ioctl     = snd_pcm_lib_ioctl,
++		.hw_params = fwspk_hw_params,
++		.hw_free   = fwspk_hw_free_playback,
++		.prepare   = fwspk_prepare_playback,
++		.trigger   = fwspk_trigger_playback,
++		.pointer   = fwspk_pointer_playback,
+ 		.page      = snd_pcm_lib_get_vmalloc_page,
+ 		.mmap      = snd_pcm_lib_mmap_vmalloc,
+ 	};
+ 	struct snd_pcm *pcm;
++	unsigned int cap = 0;
+ 	int err;
+ 
+-	err = snd_pcm_new(fwspk->card, fwspk->card->driver, 0, 1, 0, &pcm);
++	/* 44.1kHz is the most popular */
++	if (fwspk->tx_stream_formations[1].pcm > 0)
++		cap = 1;
++
++	err = snd_pcm_new(fwspk->card, fwspk->card->driver, 0, 1, cap, &pcm);
+ 	if (err < 0)
+ 		return err;
++
+ 	pcm->private_data = fwspk;
+ 	strcpy(pcm->name, fwspk->card->shortname);
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &playback_ops);
++	if (cap > 0)
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &capture_ops);
++
+ 	return 0;
+ }
+diff --git a/sound/firewire/speakers/speakers_proc.c b/sound/firewire/speakers/speakers_proc.c
+index 9721e52..2865ce2 100644
+--- a/sound/firewire/speakers/speakers_proc.c
++++ b/sound/firewire/speakers/speakers_proc.c
+@@ -16,6 +16,15 @@ proc_read_formation(struct snd_info_entry *entry,
+ 	struct fwspk_stream_formation *formation;
+ 	unsigned int i;
+ 
++	snd_iprintf(buffer, "Output Stream from device:\n");
++	snd_iprintf(buffer, "\tRate\tPCM\tMIDI\n");
++	formation = fwspk->tx_stream_formations;
++	for (i = 0; i < FWSPK_STREAM_TABLE_ENTRIES; i++) {
++		snd_iprintf(buffer,
++			"\t%d\t%d\t%d\n", fwspk_rate_table[i],
++			formation[i].pcm, formation[i].midi);
++	}
++
+ 	snd_iprintf(buffer, "Input Stream to device:\n");
+ 	snd_iprintf(buffer, "\tRate\tPCM\tMIDI\n");
+ 	formation = fwspk->rx_stream_formations;
+@@ -32,11 +41,8 @@ proc_read_clock(struct snd_info_entry *entry,
+ {
+ 	struct fwspk *fwspk = entry->private_data;
+ 	unsigned int rate;
+-	int err;
+ 
+-	err = avc_general_get_sig_fmt(fwspk->unit, &rate,
+-				      AVC_GENERAL_PLUG_DIR_IN, 0);
+-	if ((err < 0) && (err == 0x09))
++	if (snd_fwspk_stream_get_rate(fwspk, &rate) >= 0)
+ 		snd_iprintf(buffer, "Sampling rate: %d\n", rate);
+ }
+ 
+diff --git a/sound/firewire/speakers/speakers_stream.c b/sound/firewire/speakers/speakers_stream.c
+index 591e6bf..b02b03c 100644
+--- a/sound/firewire/speakers/speakers_stream.c
++++ b/sound/firewire/speakers/speakers_stream.c
+@@ -36,39 +36,101 @@ static const unsigned int avc_stream_rate_table[] = {
+ 	[6] = 0x07,
+ };
+ 
+-int snd_fwspk_stream_init(struct fwspk *fwspk)
++int snd_fwspk_stream_get_rate(struct fwspk *fwspk, unsigned int *rate)
+ {
++	unsigned int tx_rate, rx_rate;
+ 	int err;
+ 
+-	err = cmp_connection_init(&fwspk->in_conn, fwspk->unit,
+-				  CMP_INPUT, 0);
++	err = snd_fwspk_command_get_rate(fwspk,
++					 AVC_GENERAL_PLUG_DIR_OUT, &tx_rate);
++	if (err < 0)
++		goto end;
++
++	err = snd_fwspk_command_get_rate(fwspk,
++				 AVC_GENERAL_PLUG_DIR_IN, &rx_rate);
++	if (err < 0)
++		goto end;
++
++	*rate = rx_rate;
++	if (rx_rate == tx_rate)
++		goto end;
++
++	/* synchronize receive stream rate to transmit stream rate */
++	err = snd_fwspk_command_set_rate(fwspk,
++					 AVC_GENERAL_PLUG_DIR_IN, rx_rate);
++end:
++	return err;
++}
++
++int snd_fwspk_stream_set_rate(struct fwspk *fwspk, unsigned int rate)
++{
++	int err;
++
++	err = snd_fwspk_command_set_rate(fwspk, AVC_GENERAL_PLUG_DIR_OUT, rate);
++	if (err < 0)
++		goto end;
++
++	err = snd_fwspk_command_set_rate(fwspk, AVC_GENERAL_PLUG_DIR_IN, rate);
++end:
++	return err;
++}
++
++static int stream_init(struct fwspk *fwspk, struct amdtp_stream *stream)
++{
++	struct cmp_connection *conn;
++	enum cmp_direction c_dir;
++	enum amdtp_stream_direction s_dir;
++	int err;
++
++	if (stream == &fwspk->tx_stream) {
++		conn = &fwspk->out_conn;
++		c_dir = CMP_OUTPUT;
++		s_dir = AMDTP_IN_STREAM;
++	} else {
++		conn = &fwspk->in_conn;
++		c_dir = CMP_INPUT;
++		s_dir = AMDTP_OUT_STREAM;
++	}
++
++	err = cmp_connection_init(conn, fwspk->unit, c_dir, 0);
+ 	if (err < 0) {
+ 		fw_unit_put(fwspk->unit);
+ 		goto end;
+ 	}
+ 
+-	err = amdtp_stream_init(&fwspk->rx_stream, fwspk->unit,
+-				AMDTP_OUT_STREAM, CIP_NONBLOCKING);
++	err = amdtp_stream_init(stream, fwspk->unit, s_dir, CIP_NONBLOCKING);
+ 	if (err < 0)
+-		cmp_connection_destroy(&fwspk->in_conn);
++		cmp_connection_destroy(conn);
+ end:
+ 	return err;
+ }
+ 
+-int snd_fwspk_stream_start(struct fwspk *fwspk, unsigned int rate)
++int snd_fwspk_stream_start(struct fwspk *fwspk,
++			   struct amdtp_stream *stream,
++			   unsigned int rate)
+ {
+ 	unsigned int i, curr_rate, pcm_channels, midi_ports;
++	struct cmp_connection *conn;
++	enum avc_general_plug_dir dir;
+ 	bool used;
+ 	int err;
+ 
+ 	/* already start or not */
+-	if (amdtp_stream_running(&fwspk->rx_stream)) {
++	if (amdtp_stream_running(stream)) {
+ 		err = 0;
+ 		goto end;
+ 	}
+ 
++	if (stream == &fwspk->tx_stream) {
++		conn = &fwspk->out_conn;
++		dir = AVC_GENERAL_PLUG_DIR_OUT;
++	} else {
++		conn = &fwspk->in_conn;
++		dir = AVC_GENERAL_PLUG_DIR_IN;
++	}
++
+ 	/* check other's connection */
+-	err = cmp_connection_check_used(&fwspk->in_conn, &used);
++	err = cmp_connection_check_used(conn, &used);
+ 	if (err < 0)
+ 		goto end;
+ 	else if (used) {
+@@ -77,8 +139,7 @@ int snd_fwspk_stream_start(struct fwspk *fwspk, unsigned int rate)
+ 	};
+ 
+ 	/* arrange sampling rate */
+-	err = avc_general_get_sig_fmt(fwspk->unit, &curr_rate,
+-				      AVC_GENERAL_PLUG_DIR_IN, 0);
++	err = avc_general_get_sig_fmt(fwspk->unit, &curr_rate, dir, 0);
+ 	if (err < 0)
+ 		goto end;
+ 	if (err != 0x0c /* IMPLEMENTED/STABLE */) {
+@@ -88,8 +149,7 @@ int snd_fwspk_stream_start(struct fwspk *fwspk, unsigned int rate)
+ 		goto end;
+ 	}
+ 	if (curr_rate != rate) {
+-		err = avc_general_set_sig_fmt(fwspk->unit, rate,
+-					      AVC_GENERAL_PLUG_DIR_IN, 0);
++		err = avc_general_set_sig_fmt(fwspk->unit, rate, dir, 0);
+ 		if (err < 0)
+ 			goto end;
+ 		if (err != 0x09 /* ACCEPTED */) {
+@@ -109,52 +169,66 @@ int snd_fwspk_stream_start(struct fwspk *fwspk, unsigned int rate)
+ 		err = -EINVAL;
+ 		goto end;
+ 	}
+-	pcm_channels = fwspk->rx_stream_formations[i].pcm;
+-	midi_ports = fwspk->rx_stream_formations[i].midi;
+-	if ((pcm_channels == 0) && (midi_ports == 0)) {
++	if (stream == &fwspk->tx_stream) {
++		pcm_channels = fwspk->tx_stream_formations[i].pcm;
++		midi_ports = fwspk->tx_stream_formations[i].midi;
++	} else {
++		pcm_channels = fwspk->rx_stream_formations[i].pcm;
++		midi_ports = fwspk->rx_stream_formations[i].midi;
++	}
++	if (pcm_channels == 0) {
+ 		err = -EINVAL;
+ 		goto end;
+ 	}
+-	amdtp_stream_set_parameters(&fwspk->rx_stream, rate,
+-				    pcm_channels, midi_ports);
++	amdtp_stream_set_parameters(stream, rate, pcm_channels, midi_ports);
+ 
+ 	/* establish connection */
+-	err = cmp_connection_establish(&fwspk->in_conn,
+-			amdtp_stream_get_max_payload(&fwspk->rx_stream));
++	err = cmp_connection_establish(conn,
++			amdtp_stream_get_max_payload(stream));
+ 	if (err < 0)
+ 		goto end;
+ 
+ 	/* start stream */
+-	err = amdtp_stream_start(&fwspk->rx_stream,
+-				 fwspk->in_conn.resources.channel,
+-				 fwspk->in_conn.speed);
++	err = amdtp_stream_start(stream,
++				 conn->resources.channel,
++				 conn->speed);
+ 	if (err < 0)
+-		cmp_connection_break(&fwspk->in_conn);
++		cmp_connection_break(conn);
+ end:
+ 	return err;
+ }
+ 
+-void snd_fwspk_stream_stop(struct fwspk *fwspk)
++void snd_fwspk_stream_stop(struct fwspk *fwspk, struct amdtp_stream *stream)
+ {
+-	if (amdtp_stream_running(&fwspk->rx_stream))
+-		amdtp_stream_stop(&fwspk->rx_stream);
++	if (amdtp_stream_running(stream))
++		amdtp_stream_stop(stream);
+ 
+-	cmp_connection_break(&fwspk->in_conn);
++	if (stream == &fwspk->tx_stream)
++		cmp_connection_break(&fwspk->out_conn);
++	else
++		cmp_connection_break(&fwspk->in_conn);
+ }
+ 
+-void snd_fwspk_stream_destroy(struct fwspk *fwspk)
++void snd_fwspk_stream_destroy(struct fwspk *fwspk, struct amdtp_stream *stream)
+ {
+-	amdtp_stream_pcm_abort(&fwspk->rx_stream);
+-	snd_fwspk_stream_stop(fwspk);
++	amdtp_stream_pcm_abort(stream);
++	snd_fwspk_stream_stop(fwspk, stream);
+ }
+ 
+-void snd_fwspk_stream_update(struct fwspk *fwspk)
++void snd_fwspk_stream_update(struct fwspk *fwspk, struct amdtp_stream *stream)
+ {
+-	if (cmp_connection_update(&fwspk->in_conn) < 0) {
+-		amdtp_stream_pcm_abort(&fwspk->rx_stream);
+-		snd_fwspk_stream_stop(fwspk);
++	struct cmp_connection *conn;
++
++	if (stream == &fwspk->tx_stream)
++		conn = &fwspk->out_conn;
++	else
++		conn = &fwspk->in_conn;
++
++	if (cmp_connection_update(conn) < 0) {
++		amdtp_stream_pcm_abort(stream);
++		snd_fwspk_stream_stop(fwspk, stream);
+ 	} else {
+-		amdtp_stream_update(&fwspk->rx_stream);
++		amdtp_stream_update(stream);
+ 	}
+ }
+ 
+@@ -304,7 +378,10 @@ fill_stream_formations(struct fwspk *fwspk, enum avc_general_plug_dir dir,
+ 	if (buf == NULL)
+ 		return -ENOMEM;
+ 
+-	formations = fwspk->rx_stream_formations;
++	if (dir == AVC_GENERAL_PLUG_DIR_OUT)
++		formations = fwspk->tx_stream_formations;
++	else
++		formations = fwspk->rx_stream_formations;
+ 
+ 	/* initialize parameters here because of checking implementation */
+ 	eid = 0;
+@@ -354,6 +431,11 @@ int snd_fwspk_stream_discover(struct fwspk *fwspk)
+ 		goto end;
+ 	}
+ 
++	/* use oPCR[0] */
++	err = fill_stream_formations(fwspk, AVC_GENERAL_PLUG_DIR_OUT, 0);
++	if (err < 0)
++		goto end;
++
+ 	/* use iPCR[0] */
+ 	err = fill_stream_formations(fwspk, AVC_GENERAL_PLUG_DIR_IN, 0);
+ 	if (err < 0)
+@@ -361,3 +443,18 @@ int snd_fwspk_stream_discover(struct fwspk *fwspk)
+ end:
+ 	return err;
+ }
++
++int snd_fwspk_streams_init(struct fwspk *fwspk)
++{
++	int err;
++
++	err = stream_init(fwspk, &fwspk->rx_stream);
++	if (err < 0)
++		goto end;
++
++	/* 44.1kHz is the most popular */
++	if (fwspk->tx_stream_formations[1].pcm > 0)
++		err = stream_init(fwspk, &fwspk->tx_stream);
++end:
++	return err;
++}
+-- 
+1.8.3.2
