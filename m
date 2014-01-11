@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v3 0/6] dma: Indicate residue granularity in
+Subject: [PATCH v3 1/6] dma: Indicate residue granularity in
 	dma_slave_caps
-Date: Sat, 11 Jan 2014 14:02:15 +0100
-Message-ID: <1389445341-17227-1-git-send-email-lars@metafoo.de>
+Date: Sat, 11 Jan 2014 14:02:16 +0100
+Message-ID: <1389445341-17227-2-git-send-email-lars@metafoo.de>
+References: <1389445341-17227-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-015.synserver.de (smtp-out-220.synserver.de
  [212.40.185.220])
- by alsa0.perex.cz (Postfix) with ESMTP id 00E9E2616FA
+ by alsa0.perex.cz (Postfix) with ESMTP id 065FF261987
  for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2014 14:02:01 +0100 (CET)
+In-Reply-To: <1389445341-17227-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,38 +26,14 @@ To: Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>, 
 Cc: dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-New in v3:
-	* Expanded the kernel doc documentation for the dma_residue_granularity
-	  struct a bit
+This patch adds a new field to the dma_slave_caps struct which indicates the
+granularity with which the driver is able to update the residue field of the
+dma_tx_state struct. Making this information available to dmaengine users allows
+them to make better decisions on how to operate. E.g. for audio certain features
+like wakeup less operation or timer based scheduling only make sense and work
+correctly if the reported residue is fine-grained enough.
 
-New in v2:
-	* Dropped byte level granularity as discussed during v1 review
-	* Added support for auto-detecting the NO_RESIDUE flag on the compat path in
-      the generic ASoC dmaengine PCM driver
-	* Updated a few ASoC drivers to take advantage of the new API
-
-Updated original cover text from v1 below:
-
-This patch series introduces a new field to the dma_slave_caps struct which
-exposes the granularity with which the reported residue is updated, updates the
-pl330 DMA driver to set this field and lets the generic dmaengine PCM audio
-driver check that field.
-
-The reason for introducing the field is that for audio we need to know the
-granularity with which the reported residue is updated. The uncertainty of the
-ALSA period pointer depends on the granularity of the reported residue. E.g. if
-residue is only updated once every period this means that the position in the
-buffer from/to which the hardware is currently reading/writing could be
-anywhere between the reported PCM pointer and the reported PCM pointer plus one
-period size (plus some extra margin for interrupt latency, etc). Certain
-algorithms (e.g. pulseaudio's timer based scheduling) only work correctly if the
-uncertainty of the PCM pointer is low enough. Exposing this information from the
-DMA driver makes it possible for applications to switch to alternative modes of
-operation which also work with a high granularity.
-
-The patch series introduces four levels of granularity, which I think will cover
-most DMA cores. I'd like some feedback though if anybody can think of a DMA
-controller for which none of the levels would be correct. The four levels are:
+Right now four different levels of granularity are supported:
 	* DESCRIPTOR: The DMA channel is only able to tell whether a descriptor has
 	  been completed or not, which means residue reporting is not supported by
 	  this channel. The residue field of the dma_tx_state field will always be
@@ -63,35 +41,81 @@ controller for which none of the levels would be correct. The four levels are:
 	* SEGMENT: The DMA channel updates the residue field after each successfully
 	  completed segment of the transfer (For cyclic transfers this is after each
 	  period). This is typically implemented by having the hardware generate an
-	  interrupt after each transferred segment and then the driver updates the
+	  interrupt after each transferred segment and then the drivers updates the
 	  outstanding residue by the size of the segment. Another possibility is if
 	  the hardware supports SG and the segment descriptor has a field which gets
-	  set by the hardware after the segment has been completed. The driver then
-	  counts the number of segments which do not have the flag set to compute
-	  the residue.
+	  set after the segment has been completed. The driver then counts the
+	  number of segments without the flag set to compute the residue.
 	* BURST: The DMA channel updates the residue field after each transferred
 	  burst. This is typically only supported if the hardware has a progress
 	  register of some sort (E.g. a register with the current read/write address
 	  or a register with the amount of bursts/beats/bytes that have been
 	  transferred or still need to be transferred).
 
- - Lars
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+---
+Changes since v2:
+	* Expanded the kernel doc documentation a bit
+Changes since v1:
+	* Drop BYTE granularity level as there has been consent that it is not
+	  really useful.
+---
+ include/linux/dmaengine.h | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-Lars-Peter Clausen (6):
-  dma: Indicate residue granularity in dma_slave_caps
-  dma: pl330: Set residue_granularity
-  ASoC: generic-dmaengine-pcm: Check NO_RESIDUE flag at runtime
-  ASoC: generic-dmaengine-pcm: Check DMA residue granularity
-  ASoC: axi-{spdif,i2s}: Remove SND_DMAENGINE_PCM_FLAG_NO_RESIDUE flag
-  ASoC: samsung: Remove SND_DMAENGINE_PCM_FLAG_NO_RESIDUE flag
-
- drivers/dma/pl330.c                   |  1 +
- include/linux/dmaengine.h             | 28 +++++++++++++++
- sound/soc/adi/axi-i2s.c               |  3 +-
- sound/soc/adi/axi-spdif.c             |  3 +-
- sound/soc/samsung/dmaengine.c         |  1 -
- sound/soc/soc-generic-dmaengine-pcm.c | 66 ++++++++++++++++++++++-------------
- 6 files changed, 73 insertions(+), 29 deletions(-)
-
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index ed92b30..bdaff45 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -364,6 +364,32 @@ struct dma_slave_config {
+ 	unsigned int slave_id;
+ };
+ 
++/**
++ * enum dma_residue_granularity - Granularity of the reported transfer residue
++ * @DMA_RESIDUE_GRANULARITY_DESCRIPTOR: Residue reporting is not support. The
++ *  DMA channel is only able to tell whether a descriptor has been completed or
++ *  not, which means residue reporting is not supported by this channel. The
++ *  residue field of the dma_tx_state field will always be 0.
++ * @DMA_RESIDUE_GRANULARITY_SEGMENT: Residue is updated after each successfully
++ *  completed segment of the transfer (For cyclic transfers this is after each
++ *  period). This is typically implemented by having the hardware generate an
++ *  interrupt after each transferred segment and then the drivers updates the
++ *  outstanding residue by the size of the segment. Another possibility is if
++ *  the hardware supports scatter-gather and the segment descriptor has a field
++ *  which gets set after the segment has been completed. The driver then counts
++ *  the number of segments without the flag set to compute the residue.
++ * @DMA_RESIDUE_GRANULARITY_BURST: Residue is updated after each transferred
++ *  burst. This is typically only supported if the hardware has a progress
++ *  register of some sort (E.g. a register with the current read/write address
++ *  or a register with the amount of bursts/beats/bytes that have been
++ *  transferred or still need to be transferred).
++ */
++enum dma_residue_granularity {
++	DMA_RESIDUE_GRANULARITY_DESCRIPTOR = 0,
++	DMA_RESIDUE_GRANULARITY_SEGMENT = 1,
++	DMA_RESIDUE_GRANULARITY_BURST = 2,
++};
++
+ /* struct dma_slave_caps - expose capabilities of a slave channel only
+  *
+  * @src_addr_widths: bit mask of src addr widths the channel supports
+@@ -374,6 +400,7 @@ struct dma_slave_config {
+  * 	should be checked by controller as well
+  * @cmd_pause: true, if pause and thereby resume is supported
+  * @cmd_terminate: true, if terminate cmd is supported
++ * @residue_granularity: granularity of the reported transfer residue
+  */
+ struct dma_slave_caps {
+ 	u32 src_addr_widths;
+@@ -381,6 +408,7 @@ struct dma_slave_caps {
+ 	u32 directions;
+ 	bool cmd_pause;
+ 	bool cmd_terminate;
++	enum dma_residue_granularity residue_granularity;
+ };
+ 
+ static inline const char *dma_chan_name(struct dma_chan *chan)
 -- 
 1.8.0
