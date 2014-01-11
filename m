@@ -1,132 +1,143 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: dpcm: don't do hw_param when BE has
- done	hw_param
-Date: Fri, 10 Jan 2014 18:43:09 +0000
-Message-ID: <1389379389.2293.114.camel@loki>
-References: <1389332195-15900-1-git-send-email-nhcao@marvell.com>
-	 <s5htxdcxg0q.wl%tiwai@suse.de> <52CFD7BE.5030907@marvell.com>
-	 <1389354435.2293.32.camel@loki> <52CFE0AE.1030606@marvell.com>
-	 <s5hk3e8xcz2.wl%tiwai@suse.de> <1389356948.2293.55.camel@loki>
-	 <s5hd2k0x833.wl%tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: Enable CONFIG_ZONE_DMA for smaller PCI
+	DMA masks
+Date: Sat, 11 Jan 2014 10:11:10 +0100
+Message-ID: <1389431470-2986-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hd2k0x833.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Nenghua Cao <nhcao@marvell.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD6B826167A
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2014 10:11:10 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 56CFCAAD1
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2014 09:11:10 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2014-01-10 at 14:46 +0100, Takashi Iwai wrote:
-> At Fri, 10 Jan 2014 12:29:08 +0000,
-> Liam Girdwood wrote:
-> > 
-> > On Fri, 2014-01-10 at 13:01 +0100, Takashi Iwai wrote:
-> > > At Fri, 10 Jan 2014 19:59:42 +0800,
-> > > Nenghua Cao wrote:
-> > > > 
-> > > > On 01/10/2014 07:47 PM, Liam Girdwood wrote:
-> > > > > On Fri, 2014-01-10 at 19:21 +0800, Nenghua Cao wrote:
-> > > > >> On 01/10/2014 06:55 PM, Takashi Iwai wrote:
-> > > > >>> [Corrected mail addresses of both Mark and Liam]
-> > > > >>>
-> > > > >> Hi, Takashi:
-> > > > >> Thanks for correcting my mistake.
-> > > > >>> At Fri, 10 Jan 2014 13:36:35 +0800,
-> > > > >>> Nenghua Cao wrote:
-> > > > >>>>
-> > > > >>>> From: Nenghua Cao <nhcao@marvell.com>
-> > > > >>>>
-> > > > >>>>     It fixes the following case:
-> > > > >>>>     Two FEs connects the same BE; FE1 & BE path has been opened and hw_paramed.
-> > > > >>>> At this momment, FE2 & BE path is being opened and hw_paramed. The BE
-> > > > >>>> dai will do hw_param again even if it has done hw_param. It is not
-> > > > >>>> reasonable.
-> > > > >>>> FE1------------>BE
-> > > > >>>> FE2-------------^
-> > > > >>>
-> > > > >>> What happens if FE2 tries to set up an incompatible hw_params?
-> > > > >>> (Through a quick glance, it won't work properly well, too, though...)
-> > > > >>>
-> > > > > 
-> > > > > The intention in this case would be for the DSP FE driver to determine
-> > > > > if it can perform format conversion or SRC to the running BE. If the DSP
-> > > > > cant do the conversion then it should fail.
-> > > > > 
-> > > > >> If FE2 uses an incompatible param, it will make FE1 doesn't work. Maybe
-> > > > >> FE2 works well.
-> > > > >> If FE2 uses the same param, BE hw_param function will be called twice
-> > > > >> (This is the most happening case).
-> > > > >> So we can't get benefits from it.
-> > > > > 
-> > > > > We shouldn't be calling the hw_params() on the BE when it's already
-> > > > > configured in this case. So this seems like a bug. However :-
-> > > > > 
-> > > > > /* only allow hw_params() if no connected FEs are running */
-> > > > > 		if (!snd_soc_dpcm_can_be_params(fe, be, stream))
-> > > > > 			continue;
-> > > > > 
-> > > > > 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
-> > > > > 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
-> > > > > 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE))
-> > > > > 			continue;
-> > > > > 
-> > > > > We do do a test to check if any connected FEs are running (i.e.
-> > > > > triggered) prior to calling hw_params() on the BE. Can you confirm if
-> > > > > the FE was running in your case ?
-> > > > > 
-> > > > Hi, Liam:
-> > > >    I am so glad to hear from you. In my case, FE1 has called hw_param,
-> > > > and before FE1 calls prepare/trigger function, the scheduler switches to
-> > > > do FE2 open, hw_param. So hw_param is called twice.
-> > > 
-> > > So basically the current implementation is racy about this.
-> > > 
-> > 
-> > This is a valid use case from the userspace perspective too. The BE in
-> > this case is a shared resource (whether userspace is aware or not) and
-> > I'd expect it to take the the last configured hw_params (in this case
-> > FE2 hw_params) before it is triggered.
-> 
-> Yes, it's how the current code works.  But, what if FE1 didn't know
-> that it's shared? (Actually how it can be informed explicitly?)
+The PCI devices with DMA masks smaller than 32bit should enable
+CONFIG_ZONE_DMA.  Since the recent change of page allocator, page
+allocations via dma_alloc_coherent() with the limited DMA mask bits
+may fail more frequently, ended up with no available buffers, when
+CONFIG_ZONE_DMA isn't enabled.  With CONFIG_ZONE_DMA, the system has
+much more chance to obtain such pages.
 
-It cant atm, although this is not a problem on Android. It can be fixed
-when we export the graph to userspace though.
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=68221
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/Kconfig | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-> FE1 will still try to feed data in wrong formats/rates/etc, won't it?
-> 
-
-No, FE1 wont change it's params in this state. It will be up to the DSP
-driver to perform the conversion to then new formats or fail if the new
-format cannot be supported.
-
-> At best, it should return an error when an incompatible hw_params
-> setup is done by FE2, IMO.  The re-setup by FE1 should be available
-> freely.  So, BE needs to remember who has set it up, then allows only
-> the further re-setup by that FE, for example.
-> 
-> > Fwiw, a similar topic came up the conference this year wrt compressed
-> > streams. The question was about configuring the BE format and rate
-> > directly from userspace. This should be possible without too much effort
-> > since the BE is essentially a PCM. e.g. from userspace
-> > 
-> > 1) configure FE1 hw_params
-> > 
-> > 2) configure FE2 hw_params
-> > 
-> > 3) optional - configure BE1 hw_params
-> > 
-> > If step 3 is not performed then the values from step2 are used.
-> 
-> I forgot about this discussion -- so how was the proposal to allow
-> BE's hw_params?  A new API, or a flag in hw_params?
-
-The intention was to use the existing alsa-lib/tinyalsa PCM hw_params
-APIs. The BE would just export itself to usespace as a PCM (but without
-the capability for direct playback/capture - just format, rate setting)
-
-Thanks
-
-Liam
+diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
+index 3a0504dfeb8a..8756c8e32922 100644
+--- a/sound/pci/Kconfig
++++ b/sound/pci/Kconfig
+@@ -25,6 +25,7 @@ config SND_ALS300
+ 	select SND_PCM
+ 	select SND_AC97_CODEC
+ 	select SND_OPL3_LIB
++	select ZONE_DMA
+ 	help
+ 	  Say 'Y' or 'M' to include support for Avance Logic ALS300/ALS300+
+ 
+@@ -49,6 +50,7 @@ config SND_ALI5451
+ 	tristate "ALi M5451 PCI Audio Controller"
+ 	select SND_MPU401_UART
+ 	select SND_AC97_CODEC
++	select ZONE_DMA
+ 	help
+ 	  Say Y here to include support for the integrated AC97 sound
+ 	  device on motherboards using the ALi M5451 Audio Controller
+@@ -153,6 +155,7 @@ config SND_AZT3328
+ 	select SND_PCM
+ 	select SND_RAWMIDI
+ 	select SND_AC97_CODEC
++	select ZONE_DMA
+ 	help
+ 	  Say Y here to include support for Aztech AZF3328 (PCI168)
+ 	  soundcards.
+@@ -459,6 +462,7 @@ config SND_EMU10K1
+ 	select SND_HWDEP
+ 	select SND_RAWMIDI
+ 	select SND_AC97_CODEC
++	select ZONE_DMA
+ 	help
+ 	  Say Y to include support for Sound Blaster PCI 512, Live!,
+ 	  Audigy and E-mu APS (partially supported) soundcards.
+@@ -474,6 +478,7 @@ config SND_EMU10K1X
+ 	tristate "Emu10k1X (Dell OEM Version)"
+ 	select SND_AC97_CODEC
+ 	select SND_RAWMIDI
++	select ZONE_DMA
+ 	help
+ 	  Say Y here to include support for the Dell OEM version of the
+ 	  Sound Blaster Live!.
+@@ -507,6 +512,7 @@ config SND_ES1938
+ 	select SND_OPL3_LIB
+ 	select SND_MPU401_UART
+ 	select SND_AC97_CODEC
++	select ZONE_DMA
+ 	help
+ 	  Say Y here to include support for soundcards based on ESS Solo-1
+ 	  (ES1938, ES1946, ES1969) chips.
+@@ -518,6 +524,7 @@ config SND_ES1968
+ 	tristate "ESS ES1968/1978 (Maestro-1/2/2E)"
+ 	select SND_MPU401_UART
+ 	select SND_AC97_CODEC
++	select ZONE_DMA
+ 	help
+ 	  Say Y here to include support for soundcards based on ESS Maestro
+ 	  1/2/2E chips.
+@@ -606,6 +613,7 @@ config SND_ICE1712
+ 	select SND_MPU401_UART
+ 	select SND_AC97_CODEC
+ 	select BITREVERSE
++	select ZONE_DMA
+ 	help
+ 	  Say Y here to include support for soundcards based on the
+ 	  ICE1712 (Envy24) chip.
+@@ -693,6 +701,7 @@ config SND_LX6464ES
+ config SND_MAESTRO3
+ 	tristate "ESS Allegro/Maestro3"
+ 	select SND_AC97_CODEC
++	select ZONE_DMA
+ 	help
+ 	  Say Y here to include support for soundcards based on ESS Maestro 3
+ 	  (Allegro) chips.
+@@ -789,6 +798,7 @@ config SND_SIS7019
+ 	tristate "SiS 7019 Audio Accelerator"
+ 	depends on X86 && !X86_64
+ 	select SND_AC97_CODEC
++	select ZONE_DMA
+ 	help
+ 	  Say Y here to include support for the SiS 7019 Audio Accelerator.
+ 
+@@ -800,6 +810,7 @@ config SND_SONICVIBES
+ 	select SND_OPL3_LIB
+ 	select SND_MPU401_UART
+ 	select SND_AC97_CODEC
++	select ZONE_DMA
+ 	help
+ 	  Say Y here to include support for soundcards based on the S3
+ 	  SonicVibes chip.
+@@ -811,6 +822,7 @@ config SND_TRIDENT
+ 	tristate "Trident 4D-Wave DX/NX; SiS 7018"
+ 	select SND_MPU401_UART
+ 	select SND_AC97_CODEC
++	select ZONE_DMA
+ 	help
+ 	  Say Y here to include support for soundcards based on Trident
+ 	  4D-Wave DX/NX or SiS 7018 chips.
+-- 
+1.8.5.2
