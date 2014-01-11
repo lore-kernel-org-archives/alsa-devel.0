@@ -1,76 +1,43 @@
-From: <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org>
-Subject: Fwd: Re: [alsa-devel] no reset_resume for driver snd-usb-audio for
- logitech headset H600
-Date: Sat, 11 Jan 2014 11:08:39 +0100
-Message-ID: <BLU0-SMTP389A28B3B37C63ADEE0EE1AA1B20@phx.gbl>
-References: <527FA9B6.3000403@hotmail.com>
+From: Daniel =?iso-8859-1?Q?Gl=F6ckner?= <daniel-gl@gmx.net>
+Subject: Re: [PATCH v2 3/5] ASoC: s6000: Don't mix
+ SNDRV_PCM_RATE_CONTINUOUS with specific rates
+Date: Sat, 11 Jan 2014 12:24:55 +0100
+Message-ID: <20140111112454.GA12349@minime.bse>
+References: <1389432284-6792-1-git-send-email-lars@metafoo.de>
+ <1389432284-6792-3-git-send-email-lars@metafoo.de>
+ <52D10EF6.4040503@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <527FA9B6.3000403-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E7CA2616E1
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2014 12:24:56 +0100 (CET)
+Received: from minime.bse ([77.20.120.199]) by mail.gmx.com (mrgmx001) with
+ ESMTPSA (Nemesis) id 0LslCb-1VM2Ry3mTx-012LQ3 for
+ <alsa-devel@alsa-project.org>; Sat, 11 Jan 2014 12:24:56 +0100
+Content-Disposition: inline
+In-Reply-To: <52D10EF6.4040503@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-FWD:
+On Sat, Jan 11, 2014 at 10:29:26AM +0100, Lars-Peter Clausen wrote:
+> On 01/11/2014 10:24 AM, Lars-Peter Clausen wrote:
+> > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> > Cc: Acked-by: Daniel Gl=F6ckner <daniel-gl@gmx.net>
+> =
 
-Any news to the snd-usb-audio issue?
+> Uhm, sorry, the "Acked-by:" should have not been there.
 
-Thanks, Bernhard
-
-Old Message:
--------------
-I have tested the patch with kernel 3.12.0 with suspend and hibernate, and the problem is gone.
-
-No messages "no reset_resume for driver snd-usb-audio?" or other negative effects/messages.
-
-After resume, the usb_audio_device (Headset) is the master channel in KDE Mixer, as it should be.
-
-=> So the problem is solved for me.
-
-Can you please add the patch to the latest kernels and LTS-kernels or whitelist the workaround for my device (ID 046d:0a29 Logitech, Inc. H600 [Wireless Headset])
-
-Thanks, Bernhard
-
-On 2013-10-20 23:35, Takashi Iwai wrote:
-> At Sun, 20 Oct 2013 23:18:13 +0200,
-> <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org> wrote:
->>
->> On 2013-10-09 11:16 (CEST,UTC+2), Takashi Iwai wrote:
->>>>>> diff --git a/sound/usb/card.c b/sound/usb/card.c
->>>>>> index 9d9de8d..c591a83 100644
->>>>>> --- a/sound/usb/card.c
->>>>>> +++ b/sound/usb/card.c
->>>>>> @@ -747,6 +747,7 @@ static struct usb_driver usb_audio_driver = {
->>>>>>    	.disconnect =	usb_audio_disconnect,
->>>>>>    	.suspend =	usb_audio_suspend,
->>>>>>    	.resume =	usb_audio_resume,
->>>>>> +	.reset_resume =	usb_audio_resume,
->>>>>>    	.id_table =	usb_audio_ids,
->>>>>>    	.supports_autosuspend = 1,
->>>>>>    };
->>
->> Shall I add the line in b/sound/usb/card.c and try it? Which kernel version shall I use?
->
-> It doesn't matter which kernel version is.
-> The error message should disappear, but I don't know whether any other
-> positive effect you get.  As Clemens pointed, there can be some
-> negative effects by this, so it cannot be taken as is.  But at least,
-> it'd be good to know the result...
->
->
-> thanks,
->
-> Takashi
-
-
-
-
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Acked-by: Daniel Gl=F6ckner <daniel-gl@gmx.net>
+provided 4/5 and 5/5 get applied first
