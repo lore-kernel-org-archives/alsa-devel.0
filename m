@@ -1,16 +1,16 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH 1/2] ASoC: codec: tlv320aic32x4: Fix regmap
-	range config
-Date: Sat, 11 Jan 2014 14:48:30 +0100
-Message-ID: <1389448111-17064-2-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH 2/2] ASoC: codec doc,
+	tlv320aic3x: Add tlv320aic32x4 as compatible
+Date: Sat, 11 Jan 2014 14:48:31 +0100
+Message-ID: <1389448111-17064-3-git-send-email-mpa@pengutronix.de>
 References: <1389448111-17064-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 7F4612616FA
- for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2014 14:49:09 +0100 (CET)
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 393872617BB
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2014 14:49:10 +0100 (CET)
 In-Reply-To: <1389448111-17064-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,28 +25,24 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-This codec driver fails to probe because it has a higher regmap
-range_max value than max_register. This patch sets the range_max to the
-max_register value as described in the for struct regmap_range_cfg:
-"@range_max: Address of the highest register in virtual range."
+Add tlv320aic32x4 to the compatible list in the binding documentation.
 
 Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/tlv320aic3x.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 18cdcca..6941fa9 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -268,7 +268,7 @@ static const struct regmap_range_cfg aic32x4_regmap_pages[] = {
- 		.window_start = 0,
- 		.window_len = 128,
- 		.range_min = AIC32X4_PAGE1,
--		.range_max = AIC32X4_PAGE1 + 127,
-+		.range_max = AIC32X4_RMICPGAVOL,
- 	},
- };
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+index 5e6040c..9d8ea14 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
++++ b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+@@ -6,6 +6,7 @@ Required properties:
  
+ - compatible - "string" - One of:
+     "ti,tlv320aic3x" - Generic TLV320AIC3x device
++    "ti,tlv320aic32x4" - TLV320AIC32x4
+     "ti,tlv320aic33" - TLV320AIC33
+     "ti,tlv320aic3007" - TLV320AIC3007
+     "ti,tlv320aic3106" - TLV320AIC3106
 -- 
 1.8.5.2
