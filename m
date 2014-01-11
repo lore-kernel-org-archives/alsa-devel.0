@@ -1,68 +1,97 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: dpcm: don't do hw_param when BE has
- done	hw_param
-Date: Sat, 11 Jan 2014 12:08:26 +0000
-Message-ID: <20140111120826.GS29039@sirena.org.uk>
-References: <1389332195-15900-1-git-send-email-nhcao@marvell.com>
- <s5htxdcxg0q.wl%tiwai@suse.de>
- <52CFD7BE.5030907@marvell.com>
- <1389354435.2293.32.camel@loki>
- <52CFE0AE.1030606@marvell.com>
- <s5hk3e8xcz2.wl%tiwai@suse.de>
- <1389356948.2293.55.camel@loki>
- <s5hd2k0x833.wl%tiwai@suse.de>
- <1389379389.2293.114.camel@loki>
- <s5hzjn2n9ne.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH v3 0/6] dma: Indicate residue granularity in
+	dma_slave_caps
+Date: Sat, 11 Jan 2014 14:02:15 +0100
+Message-ID: <1389445341-17227-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xe2geHXJg22At20M"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hzjn2n9ne.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Nenghua Cao <nhcao@marvell.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-015.synserver.de (smtp-out-220.synserver.de
+ [212.40.185.220])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00E9E2616FA
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2014 14:02:01 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>
+Cc: dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+New in v3:
+	* Expanded the kernel doc documentation for the dma_residue_granularity
+	  struct a bit
 
---xe2geHXJg22At20M
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+New in v2:
+	* Dropped byte level granularity as discussed during v1 review
+	* Added support for auto-detecting the NO_RESIDUE flag on the compat path in
+      the generic ASoC dmaengine PCM driver
+	* Updated a few ASoC drivers to take advantage of the new API
 
-On Sat, Jan 11, 2014 at 10:35:33AM +0100, Takashi Iwai wrote:
+Updated original cover text from v1 below:
 
-> But, the point is that basically we already know that something is
-> wrong at the point BE2 setting up an incompatible hw_params; then it
-> should be notified properly to FE1, or the incompatible change must be
-> handled as an error.  This is the missing piece in the current
-> implementation.  The skip of redundant BE hw_params call can be
-> implemented as an optimization in this compatibility check, too.
+This patch series introduces a new field to the dma_slave_caps struct which
+exposes the granularity with which the reported residue is updated, updates the
+pl330 DMA driver to set this field and lets the generic dmaengine PCM audio
+driver check that field.
 
-Only in the case where they actually are incompatible though - if
-there's DSP in place which can do suitable mixing it's not an issue.
-At the minute the core is relying on the drivers handling any limits
-just like with the CODECs.
+The reason for introducing the field is that for audio we need to know the
+granularity with which the reported residue is updated. The uncertainty of the
+ALSA period pointer depends on the granularity of the reported residue. E.g. if
+residue is only updated once every period this means that the position in the
+buffer from/to which the hardware is currently reading/writing could be
+anywhere between the reported PCM pointer and the reported PCM pointer plus one
+period size (plus some extra margin for interrupt latency, etc). Certain
+algorithms (e.g. pulseaudio's timer based scheduling) only work correctly if the
+uncertainty of the PCM pointer is low enough. Exposing this information from the
+DMA driver makes it possible for applications to switch to alternative modes of
+operation which also work with a high granularity.
 
---xe2geHXJg22At20M
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+The patch series introduces four levels of granularity, which I think will cover
+most DMA cores. I'd like some feedback though if anybody can think of a DMA
+controller for which none of the levels would be correct. The four levels are:
+	* DESCRIPTOR: The DMA channel is only able to tell whether a descriptor has
+	  been completed or not, which means residue reporting is not supported by
+	  this channel. The residue field of the dma_tx_state field will always be
+	  0.
+	* SEGMENT: The DMA channel updates the residue field after each successfully
+	  completed segment of the transfer (For cyclic transfers this is after each
+	  period). This is typically implemented by having the hardware generate an
+	  interrupt after each transferred segment and then the driver updates the
+	  outstanding residue by the size of the segment. Another possibility is if
+	  the hardware supports SG and the segment descriptor has a field which gets
+	  set by the hardware after the segment has been completed. The driver then
+	  counts the number of segments which do not have the flag set to compute
+	  the residue.
+	* BURST: The DMA channel updates the residue field after each transferred
+	  burst. This is typically only supported if the hardware has a progress
+	  register of some sort (E.g. a register with the current read/write address
+	  or a register with the amount of bursts/beats/bytes that have been
+	  transferred or still need to be transferred).
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+ - Lars
 
-iQIcBAEBAgAGBQJS0TQ3AAoJELSic+t+oim97tkQAIryE4RhnX93Wmo2GJrx8BSi
-SGQwoTP8hoAc6nbbb07hYqQDrpVX7Z8vVBMa0diS67l0CS2iauKaLGNtK/I+wBgY
-ct45/bFNt8sxdLS53KbN37taz0XiEEZkpVgY/Z6hszwmZ04+xLz5tqLNm3dCsWus
-UMWFOVu2nAEETypJDCFBtKzRWAVjKmaG4C1x4cnBg4K19q/ydZkaVzh8ytKoMIM2
-fPTxBlhh548ISpX+0aPkzdmpswek1bZnJ8uBBij7qGnvn7ccjyIvU5PTTf94mlPu
-GAkRkX/NILejCt658JCUT+f3jDWDMQQwf5y2v7iU7ycNHlMvmwFRXiE/QDnX+LdF
-biR9RGttPKGlQYb5VU+S8eHPLSGu+vKV9UawTyEpvGXK/AlIKPqxuPoVdbuxL9E+
-+JkoLt84ao08FSCtTpQ3AAFHFdM6jcCoc1iufMmb0dPqboPpF+oIuLyJvRmIDCqZ
-ZYwljOJUwV+SCR3DCJ3I/JyznnOIuVQLpzOvj5aR9+t1z1pX2j6JooRYHzIqw11F
-zGC7PF3I8rS6q/kpuh4WzVWz+498fzgCqLbRhETAK5aK8adUd+q2oYC+2ggpe4zM
-JKJeicMh5yF+9LV2Wj1YL6XbH6l0WUgbftQ7ryrINr3vxn5ndHKFrrJasmpDIryw
-/8GOJrwk7gak8z4XNn6h
-=aetL
------END PGP SIGNATURE-----
+Lars-Peter Clausen (6):
+  dma: Indicate residue granularity in dma_slave_caps
+  dma: pl330: Set residue_granularity
+  ASoC: generic-dmaengine-pcm: Check NO_RESIDUE flag at runtime
+  ASoC: generic-dmaengine-pcm: Check DMA residue granularity
+  ASoC: axi-{spdif,i2s}: Remove SND_DMAENGINE_PCM_FLAG_NO_RESIDUE flag
+  ASoC: samsung: Remove SND_DMAENGINE_PCM_FLAG_NO_RESIDUE flag
 
---xe2geHXJg22At20M--
+ drivers/dma/pl330.c                   |  1 +
+ include/linux/dmaengine.h             | 28 +++++++++++++++
+ sound/soc/adi/axi-i2s.c               |  3 +-
+ sound/soc/adi/axi-spdif.c             |  3 +-
+ sound/soc/samsung/dmaengine.c         |  1 -
+ sound/soc/soc-generic-dmaengine-pcm.c | 66 ++++++++++++++++++++++-------------
+ 6 files changed, 73 insertions(+), 29 deletions(-)
+
+-- 
+1.8.0
