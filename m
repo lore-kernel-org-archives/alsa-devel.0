@@ -1,14 +1,18 @@
-From: Dave Reisner <dreisner@archlinux.org>
-Subject: [PATCH] alsa-restore.rules: refer to correct attr
-Date: Sun, 12 Jan 2014 11:15:52 -0500
-Message-ID: <1389543352-9105-1-git-send-email-dreisner@archlinux.org>
+From: Yvan Masson <funyvan@hotmail.com>
+Subject: Re: searching volunteer to test Hoontech DSP24 to
+ check if the driver is realy working well
+Date: Sun, 12 Jan 2014 17:22:07 +0100
+Message-ID: <BLU0-SMTP2746766C274F79B23C672DFB2BD0@phx.gbl>
+References: <loom.20140105T194353-495@post.gmane.org>
+ <201401052039.59438.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gerolde.archlinux.org (gerolde.archlinux.org [66.211.214.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 8694C2619E4
- for <alsa-devel@alsa-project.org>; Sun, 12 Jan 2014 17:15:55 +0100 (CET)
+Received: from blu0-omc3-s6.blu0.hotmail.com (blu0-omc3-s6.blu0.hotmail.com
+ [65.55.116.81]) by alsa0.perex.cz (Postfix) with ESMTP id D23902619E4
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jan 2014 17:28:23 +0100 (CET)
+In-Reply-To: <201401052039.59438.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,40 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Dave Reisner <dreisner@archlinux.org>
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-$attr{number} in the RUN rule is an empty expansion. This makes sense,
-because the path doesn't exist -- i.e., it refers to the path:
-
-/sys/devices/pci0000:00/foo/bar/sound/card0/controlC0/number
-
-Instead, refer to $attr{device/number}, which does exist.
-
-Signed-off-by: Dave Reisner <dreisner@archlinux.org>
----
-This seems to have been broken when it was first introduced a little over
-three years ago (de7c3eff0e).
-
-Please CC me on replies as I am not subscribed to the list.
-
- alsactl/90-alsa-restore.rules.in | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/alsactl/90-alsa-restore.rules.in b/alsactl/90-alsa-restore.rules.in
-index 88e12e0..c68119d 100644
---- a/alsactl/90-alsa-restore.rules.in
-+++ b/alsactl/90-alsa-restore.rules.in
-@@ -2,7 +2,7 @@ ACTION=="add", SUBSYSTEM=="sound", KERNEL=="controlC*", KERNELS!="card*", GOTO="
- GOTO="alsa_restore_end"
- 
- LABEL="alsa_restore_go"
--TEST!="@daemonswitch@", RUN+="@sbindir@/alsactl restore $attr{number}"
--TEST=="@daemonswitch@", RUN+="@sbindir@/alsactl nrestore $attr{number}"
-+TEST!="@daemonswitch@", RUN+="@sbindir@/alsactl restore $attr{device/number}"
-+TEST=="@daemonswitch@", RUN+="@sbindir@/alsactl nrestore $attr{device/number}"
- 
- LABEL="alsa_restore_end"
--- 
-1.8.5.2
+SGkgQWxhbiwKClRoYW5rcyBmb3IgYW5zd2VyLgpMZSBkaW1hbmNoZSAwNSBqYW52aWVyIDIwMTQg
+w6AgMjA6MzkgKzAwMDAsIEFsYW4gSG9yc3RtYW5uIGEgw6ljcml0IDoKPiBIaSBZdmFuLAo+IAo+
+IE9uIFN1bmRheSAwNSBKYW51YXJ5IDIwMTQgMTk6MTYsIFl2YW5NIHdyb3RlOgo+ID4gRmlyc3Qg
+cGxlYXNlIGFwb2xvZ2l6ZSBpZiBJJ20gaW4gdGhlIHdyb25nIHBsYWNlLgo+IAo+IEl0IGlzIHBy
+b2JhYmx5IHRoZSBiZXN0IHBsYWNlLgo+IAo+ID4gSSBoYXZlIGEgSG9vbnRlY2ggRFNQMjQKPiA+
+IChodHRwOi8vZnIuYXVkaW9mYW56aW5lLmNvbS9jYXJ0ZS1zb24tcmFjay9ob29udGVjaC9EU1Ay
+NC0rLUFEREEyMDAwLURTUDIwMAo+ID4wLUMtUG9ydC8pLCBidXQgSSBoYWQgcHJvYmxlbSB0byBt
+YWtlIGl0IHdvcmtpbmcuCj4gCj4gQXJlIHlvdSB0YWxraW5nIGhlcmUgYWJvdXQgdGhlIFBDSSBj
+YXJkLCA4LWNoYW5uZWwgYXVkaW8gdW5pdCwgbm90IHRoZSBBREFUIAo+IGNhcmRzPyAgV2hhdCBw
+cm9ibGVtcyBhcmUgeW91IGhhdmluZz8KPiAKWWVzIEknbSB0YWxraW5nIGFib3V0IHRoZSByYWNr
+IGFuZCB0aGUgUENJIGNhcmQgc2hvd24gaGVyZSA6Cmh0dHA6Ly9pbWcuYXVkaW9mYW56aW5lLmNv
+bS9pbWFnZS5waHA/bGFuZz1mciZpZGVudGlmaWVyPWlkJnNpemU9bm9ybWFsJm1vZHVsZT1wcm9k
+dWN0JnByb2R1Y3RfaWQ9NDg2IApJIGRpZCBub3QgdXNlIHRoZSBudW1lcmljIG91dHB1dHMgb24g
+dGhlIHNlY29uZGFyeSBjYXJkLgoKVGhlIHByb2JsZW1zIEkgaGFkIGFyZSB0aGUgb25lcyBkZXNj
+cmliZWQgYmVsb3cuCgo+IEkgaGF2ZSBvbmUgb2YgdGhlIGF1ZGlvIGNhcmQvcmFjayBwYWlycywg
+d2hpY2ggaGFzIGJlZW4gd29ya2luZyBmaW5lIHdpdGggQWxzYSAKPiBzaW5jZSB5ZWFycyBhZ28g
+KG5vdCBhY3R1YWxseSB1c2VkIHJlY2VudGx5KS4gIEluIHBhcnRpY3VsYXIgSSBoYXZlIHJlY29y
+ZGVkIAo+IGxpdmUgOC1jaGFubmVscyBmcm9tIGEgbWl4aW5nIGRlc2ssIGFuZCBsYXRlciBwbGF5
+ZWQgYmFjayBhbGwgOCB0byBhbmFsb2d1ZSAKPiBtaXgtZG93bi4gIEkgdGhpbmsgdGhlIFBDIHJh
+biBhbiB1cGRhdGVkIEFsc2EtMS4wLjEyIHdpdGggYSAyLjQgbGludXgga2VybmVsLiAgCj4gSSB3
+YXMgaW52b2x2ZWQgaW4gYSBwYXRjaCBmaXhpbmcgdGhlIE1JREkgc2V2ZXJhbCB5ZWFycyBhZ28g
+YW5kIHRoZXJlIHdlcmUgCj4gb3RoZXIgdXNlcnMgdGhlbiwgaW5jbHVkaW5nIGEgc3R1ZGlvIGlu
+IEF1c3RyYWxpYS4gIE1heWJlIGl0IGJyb2tlIG1vcmUgCj4gcmVjZW50bHkgKGFsbCBteSBzeXN0
+ZW1zIGFyZSBxdWl0ZSBvbGQpPwo+IAo+ID5JIGRvbid0IHVzZSBpdCBzbywgaWYgCj4gPiBzb21l
+b25lIHdpdGgga25vd2xlZGdlIHdhbnRzIHRvIGNoZWNrIGlmIHRoaXMgc291bmRjYXJkIGlzIHJl
+YWxseQo+ID4gcmVjb2duaXplZCwgSSBjYW4gc2VuZCBpdCB0byBoaW0uIEFmdGVyIHRoYXQsIGZl
+ZWwgZnJlZSB0byBwbGF5IHdpdGggaXQsCj4gPiBpbXByb3ZlIHRoZSBkcml2ZXIsIG9yIGV2ZW4g
+c2VsbCBpdCAhCj4gPgo+ID4gVGhlIHByb2JsZW0gSSBoYWQgOgo+ID4gICAtIHNwZW50IDMgbW9u
+dGhzIHRvIGZpbmQgb24gdGhlIEludGVybmV0IHRoZSBmb2xsb3dpbmcgbGluZXMgdG8gaGFkIHRv
+Cj4gPiAvZXRjL21vZHByb2JlLmQvYWxzYS1iYXNlIHRvIG1ha2UgdGhlIGNhcmQgcmVjb2duaXpl
+ZCA6Cj4gPiAgc3RhbGwgc25kLWljZTE3MTIgL3NiaW4vbW9kcHJvYmUgLS1pZ25vcmUtaW5zdGFs
+bCBzbmQtaWNlMTcxMiAmJiB7Cj4gPiAvc2Jpbi9tb2Rwcm9iZSAtUWIgc25kLWljZTE3MTIgOyB9
+Cj4gPiBvcHRpb25zIHNuZC1pY2UxNzEyIG1vZGVsPWRzcDI0Cj4gPiAgIC0gaW1wb3NzaWJsZSB0
+byBoYXZlICJub3JtYWwiIHN0ZXJlbyA6IGl0IHNlZW1zIHRoYXQgZWFjaCBsb2dpY2FsIGNhbmFs
+Cj4gPiAocmlnaHQgYW5kIGxlZnQpIGlzIHJlZGlyZWN0ZWQgdG8gYm90aCByaWdodCBhbmQgbGVm
+dCBzcGVha2VyLgo+IAo+IEkndmUgbmV2ZXIgZG9uZSBhbnl0aGluZyBsaWtlIHRoYXQuICBJcyB5
+b3VyIHN5c3RlbSBydW5uaW5nIFB1bHNlYXVkaW8/ICBXaGljaCAKPiBkaXN0cm8va2VybmVsIGFy
+ZSB5b3UgdXNpbmc/CkkgdHJpZWQgc2V2ZXJhbCBkaXN0cmlidXRpb25zLCBtb3N0bHkgYmFzZWQg
+b24gRGViaWFuIDogRGViaWFuIHN0YWJsZSwKVWJ1bnR1IFN0dWRpbyAxMi40IGFuZCAxMi4xMCwg
+NjQgU3R1ZGlvLiBJJ20gbm90IHN1cmUgYnV0IEkgdGhpbmsgSSBhbHNvCnRyaWVkIEZlZG9yYS4K
+U28gaWYgSSdtIG5vdCB3cm9uZywgdGhlc2UgZGlzdHJpYnV0aW9ucyBhbGwgdXNlIFB1bHNlYXVk
+aW8uCgpSZWdhcmRzLApZdmFuCgo+IAo+IE90aGVycyBvbiB0aGlzIGxpc3QgbWF5IGhhdmUgbW9y
+ZSBpZGVhIG9mIHRoZSBpc3N1ZXM/Cj4gCj4gUmVnYXJkcwo+IAo+IEFsYW4KPiAKCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
