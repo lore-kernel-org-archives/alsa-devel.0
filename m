@@ -1,66 +1,117 @@
-From: Crazy Audio <daniel@matuschek.net>
-Subject: Re: [PATCH] ASoC: wm8804: Cleanup of post_table
-Date: Sun, 12 Jan 2014 18:03:22 +0100
-Message-ID: <20301DDF-0676-4B70-BC73-9322A5ABDD41@crazy-audio.com>
-References: <alpine.DEB.2.02.1401121222180.3093@parallels-Parallels-Virtual-Platform>
-Mime-Version: 1.0 (Mac OS X Mail 7.1 \(1827\))
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f50.google.com (mail-ee0-f50.google.com [74.125.83.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 0340E261A9B
- for <alsa-devel@alsa-project.org>; Sun, 12 Jan 2014 18:03:26 +0100 (CET)
-Received: by mail-ee0-f50.google.com with SMTP id d17so289501eek.9
- for <alsa-devel@alsa-project.org>; Sun, 12 Jan 2014 09:03:26 -0800 (PST)
-In-Reply-To: <alpine.DEB.2.02.1401121222180.3093@parallels-Parallels-Virtual-Platform>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Matuschek <daniel@matuschek.net>
-Cc: alsa-devel@alsa-project.org, Dimitris.Papastamos@wolfsonmicro.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+From: Daniel Matuschek <daniel@matuschek.net>
+Subject: [PATCH] ASoC: wm8804: Allow control of master clock divider in PLL
+ generation
+Date: Sun, 12 Jan 2014 22:11:25 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1401122206520.7929@parallels-Parallels-Virtual-Platform>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Dimitris.Papastamos@wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, info@crazy-audio.com
 List-Id: alsa-devel@alsa-project.org
 
-Please ignore this patch. I did some regression tests, that shows, that it does not work correctly with MCLK=256xfs
-I will create a new patch...
+Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
+
+After some discussions of the patch last week, here is a new version. 
+Simply reducing the post_table did not work, as for some frequencies
+both settings (MCLKDIV=0 and MCLKDIV=1) are needed (e.g. 96 and 192kHz)
 
 
-Am 12.01.2014 um 12:31 schrieb Daniel Matuschek <daniel@matuschek.net>:
+  WM8804 can run with PLL frequencies of 256xfs and 128xfs for
+  most sample rates. At 192kHz only 128xfs is supported. The
+  existing driver selects 128xfs automatically for some lower
+  samples rates. By using an additional mclk_div divider, is
+  is now possible to control the behaviour. This allows using
+  256xfs PLL frequency on all sample rates up to 96kHz. It
+  should allow lower jitter and better signal quality. The
+  behavior has to be controlled by the sound card driver,
+  because some sample frequency share the same setting. e.g.
+  192kHz and 96kHz use 24.576MHz master clock. The only
+  difference is the MCLK divider.
 
-> 
-> Signed-off-by: Daniel Matuschek <inof@crazy-audio.com>
-> 
-> Existing post_table has duplicate settings for some PLL settings.
-> Only the first setting was used with mclk_div=1
-> With the updated post_table, the driver
-> uses mclk_div=0 whenever it is possible. This allows the WM8804
-> to work at 256xfs internal clock and only use 128xfs
-> internal clock for high sample rates where 256xfs is not
-> supported anymore.
-> 
-> ---
-> sound/soc/codecs/wm8804.c |    2 --
-> 1 file changed, 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
-> index 1704b1e..f605b8b 100644
-> --- a/sound/soc/codecs/wm8804.c
-> +++ b/sound/soc/codecs/wm8804.c
-> @@ -307,9 +307,7 @@ static struct {
-> 	unsigned int mclkdiv;
-> } post_table[] = {
-> 	{  2,  0, 0 },
-> -	{  4,  0, 1 },
-> 	{  4,  1, 0 },
-> -	{  8,  1, 1 },
-> 	{  8,  2, 0 },
-> 	{ 16,  2, 1 },
-> 	{ 12,  3, 0 },
-> -- 
-> 1.7.9.5
-> 
+---
+  sound/soc/codecs/wm8804.c |   17 ++++++++++++++---
+  sound/soc/codecs/wm8804.h |    4 ++++
+  2 files changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
+index 1704b1e..4619bf8 100644
+--- a/sound/soc/codecs/wm8804.c
++++ b/sound/soc/codecs/wm8804.c
+@@ -63,6 +63,7 @@ struct wm8804_priv {
+  	struct regmap *regmap;
+  	struct regulator_bulk_data supplies[WM8804_NUM_SUPPLIES];
+  	struct notifier_block disable_nb[WM8804_NUM_SUPPLIES];
++	int mclk_div;
+  };
+
+  static int txsrc_get(struct snd_kcontrol *kcontrol,
+@@ -318,7 +319,7 @@ static struct {
+
+  #define FIXED_PLL_SIZE ((1ULL << 22) * 10)
+  static int pll_factors(struct pll_div *pll_div, unsigned int target,
+-		       unsigned int source)
++		       unsigned int source, unsigned int mclk_div)
+  {
+  	u64 Kpart;
+  	unsigned long int K, Ndiv, Nmod, tmp;
+@@ -330,7 +331,8 @@ static int pll_factors(struct pll_div *pll_div, unsigned int target,
+  	 */
+  	for (i = 0; i < ARRAY_SIZE(post_table); i++) {
+  		tmp = target * post_table[i].div;
+-		if (tmp >= 90000000 && tmp <= 100000000) {
++		if ((tmp >= 90000000 && tmp <= 100000000) &&
++		    (mclk_div == post_table[i].mclkdiv)) {
+  			pll_div->freqmode = post_table[i].freqmode;
+  			pll_div->mclkdiv = post_table[i].mclkdiv;
+  			target *= post_table[i].div;
+@@ -387,8 +389,12 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
+  	} else {
+  		int ret;
+  		struct pll_div pll_div;
++		struct wm8804_priv *wm8804;
+
+-		ret = pll_factors(&pll_div, freq_out, freq_in);
++		wm8804 = snd_soc_codec_get_drvdata(codec);
++
++		ret = pll_factors(&pll_div, freq_out, freq_in,
++			wm8804->mclk_div);
+  		if (ret)
+  			return ret;
+
+@@ -452,6 +458,7 @@ static int wm8804_set_clkdiv(struct snd_soc_dai *dai,
+  			     int div_id, int div)
+  {
+  	struct snd_soc_codec *codec;
++	struct wm8804_priv *wm8804;
+
+  	codec = dai->codec;
+  	switch (div_id) {
+@@ -459,6 +466,10 @@ static int wm8804_set_clkdiv(struct snd_soc_dai *dai,
+  		snd_soc_update_bits(codec, WM8804_PLL5, 0x30,
+  				    (div & 0x3) << 4);
+  		break;
++	case WM8804_MCLK_DIV:
++		wm8804 = snd_soc_codec_get_drvdata(codec);
++		wm8804->mclk_div = div;
++		break;
+  	default:
+  		dev_err(dai->dev, "Unknown clock divider: %d\n", div_id);
+  		return -EINVAL;
+diff --git a/sound/soc/codecs/wm8804.h b/sound/soc/codecs/wm8804.h
+index 8ec14f5..e72d4f4 100644
+--- a/sound/soc/codecs/wm8804.h
++++ b/sound/soc/codecs/wm8804.h
+@@ -57,5 +57,9 @@
+  #define WM8804_CLKOUT_SRC_OSCCLK		4
+
+  #define WM8804_CLKOUT_DIV			1
++#define WM8804_MCLK_DIV				2
++
++#define WM8804_MCLKDIV_256FS			0
++#define WM8804_MCLKDIV_128FS			1
+
+  #endif  /* _WM8804_H */
+-- 
+1.7.9.5
