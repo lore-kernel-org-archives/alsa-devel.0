@@ -1,125 +1,32 @@
-From: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: [PATCHv2 5/6] ASoC: fsl: Add VF610 simple audio card widgets driver.
-Date: Mon, 13 Jan 2014 13:53:57 +0800
-Message-ID: <1389592438-13761-6-git-send-email-Li.Xiubo@freescale.com>
-References: <1389592438-13761-1-git-send-email-Li.Xiubo@freescale.com>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCHv2 0/6] One simple card use case
+Date: Mon, 13 Jan 2014 13:53:52 +0800
+Message-ID: <1389592438-13761-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1389592438-13761-1-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Cc: kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe001.messaging.microsoft.com [207.46.163.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id C30F32619E5
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 07:51:04 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-This is the SGTL5000 codec based off-CODEC widgets supports.
+This patch series is one use case of simple card driver based on dts.
+For some audio cards they need to add some off-CODEC widgets. For the
+audio card, if it needs off-CODEC widgets, some explict code for a
+simple audio is needed, if not, just ignore of this.
 
-Signed-off-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
----
- sound/soc/fsl/Kconfig                     | 25 ++++++++++++++++++
- sound/soc/fsl/Makefile                    |  3 +++
- sound/soc/fsl/snd-soc-simple-card-vf610.c | 43 +++++++++++++++++++++++++++++++
- 3 files changed, 71 insertions(+)
- create mode 100644 sound/soc/fsl/snd-soc-simple-card-vf610.c
-
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 324988d..1a09028 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -219,3 +219,28 @@ config SND_SOC_IMX_MC13783
- 	select SND_SOC_IMX_PCM_DMA
- 
- endif # SND_IMX_SOC
-+
-+menuconfig SND_VF610_SOC
-+       tristate "SoC Audio for Freescale VF610 CPUs"
-+       select DMA_ENGINE
-+       help
-+         Say Y or M if you want to add support for codecs attached to
-+         the VF610 CPUs.
-+
-+         This will enable Freeacale SAI and SGTL5000 codec, and an extra
-+         TWR-AUDIO-SGTL sub-board is needed for SGTL5000.
-+
-+if SND_VF610_SOC
-+
-+config SND_SOC_VF610_SGTL5000
-+       tristate "SoC Audio support for VF610 boards with SGTL5000"
-+       depends on OF && I2C
-+       select SND_SOC_FSL_SAI
-+       select SND_SOC_SGTL5000
-+       select SND_SIMPLE_CARD
-+       help
-+         Say Y if you want to add support for SoC audio on an VF610 board with
-+         a SGTL5000 codec and a SAI.
-+
-+
-+endif #SND_VF610_SOC
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index b12ad4b..668cead 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -60,3 +60,6 @@ obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
- obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
- obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
- obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
-+
-+# Simple audio card widgets Support
-+obj-$(CONFIG_SND_SOC_VF610_SGTL5000) += snd-soc-simple-card-vf610.o
-diff --git a/sound/soc/fsl/snd-soc-simple-card-vf610.c b/sound/soc/fsl/snd-soc-simple-card-vf610.c
-new file mode 100644
-index 0000000..ee28748
---- /dev/null
-+++ b/sound/soc/fsl/snd-soc-simple-card-vf610.c
-@@ -0,0 +1,43 @@
-+/*
-+ * ASoC VF610 SGTL5000 off-CODEC widgets support
-+ *
-+ * Copyright 2014 Freescale Semiconductor, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+#include <linux/module.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+static const struct snd_soc_dapm_widget vf610_sgtl5000_dapm_widgets[] = {
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+	SND_SOC_DAPM_LINE("Line In Jack", NULL),
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_SPK("Line Out Jack", NULL),
-+	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-+};
-+
-+struct snd_soc_widgets vf610_sgtl5000_widgets = {
-+	.name = "vf610-sgtl5000",
-+	.widgets = vf610_sgtl5000_dapm_widgets,
-+	.cnt = ARRAY_SIZE(vf610_sgtl5000_dapm_widgets),
-+};
-+
-+static int __init __vf610_sgtl5000_widgets_init(void)
-+{
-+	return snd_soc_register_widgets(&vf610_sgtl5000_widgets);
-+}
-+module_init(__vf610_sgtl5000_widgets_init);
-+
-+static void __exit __vf610_sgtl5000_widgets_exit(void)
-+{
-+	snd_soc_unregister_widgets(&vf610_sgtl5000_widgets);
-+}
-+module_exit(__vf610_sgtl5000_widgets_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:vf610-simple-card-widgets");
-+MODULE_DESCRIPTION("ASoC Simple Sound Card Widgets");
-+MODULE_AUTHOR("Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>");
--- 
-1.8.4
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+This can make the audio card driver simpler and easier to debug by using
+the simple card driver and some explict code if needed.
