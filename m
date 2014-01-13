@@ -1,19 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: imx: Allow using sound with DT
-	descriptions only
-Date: Mon, 13 Jan 2014 17:45:36 +0000
-Message-ID: <20140113174536.GH29039@sirena.org.uk>
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Subject: Re:
+ =?utf-8?q?=5BPATCH_v3=5D_ASoC=3A_imx=3A_Allow_using_?=
+ =?utf-8?q?sound_with_DT_descriptions_only?=
+Date: Mon, 13 Jan 2014 21:49:11 +0400
+Message-ID: <1389635351.629972498@f244.i.mail.ru>
 References: <1389358827-381-1-git-send-email-shc_work@mail.ru>
- <20140113035626.GI23525@S2101-09.ap.freescale.net>
  <20140113183212.22f73787442da8af0879d012@mail.ru>
+ <20140113174536.GH29039@sirena.org.uk>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4963703207068253564=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CAF4C2607B6
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 18:45:44 +0100 (CET)
-In-Reply-To: <20140113183212.22f73787442da8af0879d012@mail.ru>
+Received: from f244.i.mail.ru (f244.i.mail.ru [94.100.178.219])
+ by alsa0.perex.cz (Postfix) with ESMTP id 081022607BB
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 18:49:14 +0100 (CET)
+In-Reply-To: <20140113174536.GH29039@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,69 +25,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: =?UTF-8?B?TWFyayBCcm93bg==?= <broonie@kernel.org>
+Cc: =?UTF-8?B?VGFrYXNoaSBJd2Fp?= <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?B?U2hhd24gR3Vv?= <shawn.guo@linaro.org>, =?UTF-8?B?TGlhbSBHaXJkd29vZA==?= <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4963703207068253564==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mlnxvmnLyWgus2CN"
-Content-Disposition: inline
-
-
---mlnxvmnLyWgus2CN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jan 13, 2014 at 06:32:12PM +0400, Alexander Shiyan wrote:
-> Shawn Guo <shawn.guo@linaro.org> wrote:
-
-> > Just want to understand the direction of this change.  Besides
-> > FSL_SSI, we will have other CPU DAIs FSL_SPDIF, FSL_ESAI and FSL_SAI.
-> > Will we select all of them from SND_IMX_SOC, or we only do it for
-> > FSL_SSI?  Note, IMX_AUDMUX should be only needed for machine drivers
-> > that use SSI CPU DAI.
-
-> Not clear how to do it right ...
-> I conclude that the first version of the patch was the best, do a separate
-> symbol for DT and select all required options.
-> Rewrite in this way?
-
-No, that just means that the same problem that Shawn identified affects
-all DT users which isn't really moving us forwards since all these
-systems use DT and they probably shouldn't suffer anyway.  Why not just
-make each of the drivers selectable?
-
---mlnxvmnLyWgus2CN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS1CY8AAoJELSic+t+oim9+FQP/1x0p7WytaIW7wXl3zJOlg9z
-kkAL9qV7+4jKXL7g9O1DeA0BLYRylgZEVmoiHcaK6am9oRyjY5ml1RBOeUjNV9sk
-KrsZB7GTgW1jyQsODNOITTlBxCZjNF6z02MDeMYpIj3fRSEJNz64yu1nk2l6cFgX
-8T1Ms1and3jdfpxoKclKjm8NQ0hXz8YqHW7MuHkNRMmypBn9fuhK3Nf+qy/U8GKg
-u82yCuNozeSjgS3XNN/lZ3+mdiwHej68WNN2011oXCU4yDJrg7hHS9EHF3RRV+Xc
-kKg9Tj2Ird8eKJmKT2faGgc597dkioGcqg+n0TcqQtDVCf5UskOUjVVikBb0iDNV
-I5TFfzqmWechibtnJyfMHjrvpxE9F8Vzzt8vJvYRCIl3ZQCT0SDbMHEPq/Drvt4G
-hnzYf+wbsNs0FxK0hNaGzvX31Y9fBF4BU0B17hlDtLMzBIEKwxSiJFHYVppeaqmI
-D2+9ULGScVFXRrdpzyssASRrOQ1WmeUCQdtyF3Xx0w75pJyDumJHLuGksi/vdn9R
-N9yrZU8TSjmgC44Rnur3PyKau7q3ZSk539d5Zi2QQJaSvTTXjUi0eEIDCCoDfbHO
-kjaPPi0aX66FwseXThKGphzxmnPLvw8kRwXsxmYZIhA9gJP9MuhH3VsN6NJpWsEn
-u64uJBt8zxhJbwdadWQ8
-=S1k1
------END PGP SIGNATURE-----
-
---mlnxvmnLyWgus2CN--
-
---===============4963703207068253564==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4963703207068253564==--
+0J/QvtC90LXQtNC10LvRjNC90LjQuiwgMTMg0Y/QvdCy0LDRgNGPIDIwMTQsIDE3OjQ1IFVUQyDQ
+vtGCIE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz46Cj4gT24gTW9uLCBKYW4gMTMsIDIw
+MTQgYXQgMDY6MzI6MTJQTSArMDQwMCwgQWxleGFuZGVyIFNoaXlhbiB3cm90ZToKPiA+IFNoYXdu
+IEd1byA8c2hhd24uZ3VvQGxpbmFyby5vcmc+IHdyb3RlOgo+IAo+ID4gPiBKdXN0IHdhbnQgdG8g
+dW5kZXJzdGFuZCB0aGUgZGlyZWN0aW9uIG9mIHRoaXMgY2hhbmdlLiAgQmVzaWRlcwo+ID4gPiBG
+U0xfU1NJLCB3ZSB3aWxsIGhhdmUgb3RoZXIgQ1BVIERBSXMgRlNMX1NQRElGLCBGU0xfRVNBSSBh
+bmQgRlNMX1NBSS4KPiA+ID4gV2lsbCB3ZSBzZWxlY3QgYWxsIG9mIHRoZW0gZnJvbSBTTkRfSU1Y
+X1NPQywgb3Igd2Ugb25seSBkbyBpdCBmb3IKPiA+ID4gRlNMX1NTST8gIE5vdGUsIElNWF9BVURN
+VVggc2hvdWxkIGJlIG9ubHkgbmVlZGVkIGZvciBtYWNoaW5lIGRyaXZlcnMKPiA+ID4gdGhhdCB1
+c2UgU1NJIENQVSBEQUkuCj4gCj4gPiBOb3QgY2xlYXIgaG93IHRvIGRvIGl0IHJpZ2h0IC4uLgo+
+ID4gSSBjb25jbHVkZSB0aGF0IHRoZSBmaXJzdCB2ZXJzaW9uIG9mIHRoZSBwYXRjaCB3YXMgdGhl
+IGJlc3QsIGRvIGEgc2VwYXJhdGUKPiA+IHN5bWJvbCBmb3IgRFQgYW5kIHNlbGVjdCBhbGwgcmVx
+dWlyZWQgb3B0aW9ucy4KPiA+IFJld3JpdGUgaW4gdGhpcyB3YXk/Cj4gCj4gTm8sIHRoYXQganVz
+dCBtZWFucyB0aGF0IHRoZSBzYW1lIHByb2JsZW0gdGhhdCBTaGF3biBpZGVudGlmaWVkIGFmZmVj
+dHMKPiBhbGwgRFQgdXNlcnMgd2hpY2ggaXNuJ3QgcmVhbGx5IG1vdmluZyB1cyBmb3J3YXJkcyBz
+aW5jZSBhbGwgdGhlc2UKPiBzeXN0ZW1zIHVzZSBEVCBhbmQgdGhleSBwcm9iYWJseSBzaG91bGRu
+J3Qgc3VmZmVyIGFueXdheS4gIFdoeSBub3QganVzdAo+IG1ha2UgZWFjaCBvZiB0aGUgZHJpdmVy
+cyBzZWxlY3RhYmxlPwoKWW91IG1lYW4gYWRkIGRlc2NyaXB0aW9ucyBmb3IgdGhlIG9wdGlvbnMg
+YW5kIHRodXMgbWFrZSB0aGVtIHB1YmxpYz8KCi0tLQpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
