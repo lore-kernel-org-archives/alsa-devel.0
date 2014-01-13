@@ -1,62 +1,66 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: Re: [PATCH] ASoC: simple-card: fix one bug to writing
- to the platform data
-Date: Mon, 13 Jan 2014 09:09:43 +0000
-Message-ID: <4ff4c32fbad64d90b0839a7a43642adb@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <20140110081729.035ce46f@armhf>
+From: Florian Meier <florian.meier@koalo.de>
+Subject: Re: [PATCH] ASoC: wm8804: Allow control of master clock divider in
+ PLL generation
+Date: Mon, 13 Jan 2014 10:21:47 +0100
+Message-ID: <52D3B02B.8070408@koalo.de>
+References: <alpine.DEB.2.02.1401122206520.7929@parallels-Parallels-Virtual-Platform>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2lp0206.outbound.protection.outlook.com [207.46.163.206])
- by alsa0.perex.cz (Postfix) with ESMTP id 785302608C7
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 10:10:02 +0100 (CET)
-In-Reply-To: <20140110081729.035ce46f@armhf>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>, Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "broonie@linaro.org" <broonie@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.02.1401122206520.7929@parallels-Parallels-Virtual-Platform>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Matuschek <daniel@matuschek.net>, alsa-devel@alsa-project.org
+Cc: Dimitris.Papastamos@wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, info@crazy-audio.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark, Jean-Francios
+On 01/12/2014 10:11 PM, Daniel Matuschek wrote:
+> Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
+> 
+> After some discussions of the patch last week, here is a new version.
+> Simply reducing the post_table did not work, as for some frequencies
+> both settings (MCLKDIV=0 and MCLKDIV=1) are needed (e.g. 96 and 192kHz)
+> 
+> 
+>  WM8804 can run with PLL frequencies of 256xfs and 128xfs for
+>  most sample rates. At 192kHz only 128xfs is supported. The
+>  existing driver selects 128xfs automatically for some lower
+>  samples rates. By using an additional mclk_div divider, is
+>  is now possible to control the behaviour. This allows using
+>  256xfs PLL frequency on all sample rates up to 96kHz. It
+>  should allow lower jitter and better signal quality. The
+>  behavior has to be controlled by the sound card driver,
+>  because some sample frequency share the same setting. e.g.
+>  192kHz and 96kHz use 24.576MHz master clock. The only
+>  difference is the MCLK divider.
+> 
+> ---
+>  sound/soc/codecs/wm8804.c |   17 ++++++++++++++---
+>  sound/soc/codecs/wm8804.h |    4 ++++
+>  2 files changed, 18 insertions(+), 3 deletions(-)
 
-> If the original cinfo is not used anymore, the use of its structure to
-> handle the card information is not a good idea:
-> 
-> - almost all cinfo information are in the struct snd_soc_card,
-> 
-> - this cinfo structure cannot be extended to handle many DAI links,
-> 
-> - it contains simple-card information which are of no use for the
->   platform caller.
-> 
-> So, I'd rather have seen:
-> 
-> - the removal of 'snd_link' and 'snd_card' from the platform interface
->   (struct asoc_simple_card_info),
-> 
-> - the definition of a local struct simple_card_data containing the
->   struct snd_soc_card and a pointer to an array of fmt/sysclk values
->   (one per DAI link).
->
+You have disarranged the parts, again. It should be
 
-@Jean-Francios, apart from this separate issue we're discussing, do you have
-any comment on this patch itself?
+WM8804 can run with PLL frequencies of 256xfs and 128xfs for
+most sample rates. At 192kHz only 128xfs is supported. The
+existing driver selects 128xfs automatically for some lower
+samples rates. By using an additional mclk_div divider, is
+is now possible to control the behaviour. This allows using
+256xfs PLL frequency on all sample rates up to 96kHz. It
+should allow lower jitter and better signal quality. The
+behavior has to be controlled by the sound card driver,
+because some sample frequency share the same setting. e.g.
+192kHz and 96kHz use 24.576MHz master clock. The only
+difference is the MCLK divider.
 
-@Mark, Since what Jean-Francios is concerned by is another issue apart from
-this patch itself and being discussed, can you apply the patch?
+Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
 
-Thanks,
+---
 
---
-Best Regards,
-Xiubo
+After some discussions of the patch last week, here is a new version.
+Simply reducing the post_table did not work, as for some frequencies
+both settings (MCLKDIV=0 and MCLKDIV=1) are needed (e.g. 96 and 192kHz)
+
+ sound/soc/codecs/wm8804.c |   17 ++++++++++++++---
+ sound/soc/codecs/wm8804.h |    4 ++++
+ 2 files changed, 18 insertions(+), 3 deletions(-)
