@@ -1,19 +1,20 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v3] ASoC: imx: Allow using sound with DT
-	descriptions only
-Date: Mon, 13 Jan 2014 11:56:28 +0800
-Message-ID: <20140113035626.GI23525@S2101-09.ap.freescale.net>
-References: <1389358827-381-1-git-send-email-shc_work@mail.ru>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH] ASoC: fsl-sai: Add device tree nodes and
+ its availiable check
+Date: Mon, 13 Jan 2014 06:15:24 +0000
+Message-ID: <8ea36054cbe745cf9ce5c5d4a786f9ff@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1389319550-12238-1-git-send-email-Li.Xiubo@freescale.com>
+ <20140110110900.GC29039@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe006.messaging.microsoft.com [216.32.180.189])
- by alsa0.perex.cz (Postfix) with ESMTP id D99C326168D
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 04:55:15 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1389358827-381-1-git-send-email-shc_work@mail.ru>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2lp0205.outbound.protection.outlook.com [207.46.163.205])
+ by alsa0.perex.cz (Postfix) with ESMTP id AE52E2619E5
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 07:15:35 +0100 (CET)
+In-Reply-To: <20140110110900.GC29039@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,154 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 10, 2014 at 05:00:27PM +0400, Alexander Shiyan wrote:
-> This patch allow using generic sound cards/codecs based on DT description.
-> 
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-> ---
->  sound/soc/fsl/Kconfig | 43 +++++++++++++++++--------------------------
->  1 file changed, 17 insertions(+), 26 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-> index 1c7b3b7..8249000 100644
-> --- a/sound/soc/fsl/Kconfig
-> +++ b/sound/soc/fsl/Kconfig
-> @@ -7,6 +7,7 @@ config SND_SOC_FSL_SSI
->  
->  config SND_SOC_FSL_SPDIF
->  	tristate
-> +	select REGMAP_MMIO
->  
->  config SND_SOC_FSL_UTILS
->  	tristate
-> @@ -103,27 +104,32 @@ config SND_MPC52xx_SOC_EFIKA
->  
->  endif # SND_POWERPC_SOC
->  
-> -menuconfig SND_IMX_SOC
-> -	tristate "SoC Audio for Freescale i.MX CPUs"
-> -	depends on ARCH_MXC || COMPILE_TEST
-> -	help
-> -	  Say Y or M if you want to add support for codecs attached to
-> -	  the i.MX CPUs.
-> -
-> -if SND_IMX_SOC
-> -
-> -config SND_SOC_IMX_SSI
-> +config SND_SOC_IMX_AUDMUX
->  	tristate
->  
->  config SND_SOC_IMX_PCM_FIQ
->  	tristate
->  	select FIQ
-> +	default y if SND_SOC_IMX_SSI=y || SND_SOC_FSL_SSI=y
->  
->  config SND_SOC_IMX_PCM_DMA
->  	tristate
->  	select SND_SOC_GENERIC_DMAENGINE_PCM
-> +	default y if SND_SOC_IMX_SSI=y || SND_SOC_FSL_SSI=y
->  
-> -config SND_SOC_IMX_AUDMUX
-> +menuconfig SND_IMX_SOC
-> +	tristate "SoC Audio for Freescale i.MX CPUs"
-> +	depends on ARCH_MXC || COMPILE_TEST
-> +	select SND_SOC_FSL_SSI if OF
-> +	select SND_SOC_IMX_AUDMUX
-> +	select SND_SOC_IMX_PCM_DMA
 
-Just want to understand the direction of this change.  Besides
-FSL_SSI, we will have other CPU DAIs FSL_SPDIF, FSL_ESAI and FSL_SAI.
-Will we select all of them from SND_IMX_SOC, or we only do it for
-FSL_SSI?  Note, IMX_AUDMUX should be only needed for machine drivers
-that use SSI CPU DAI.
-
-Shawn
-
-> +	help
-> +	  Say Y or M if you want to add support for codecs attached to
-> +	  the i.MX CPUs.
-> +
-> +if SND_IMX_SOC
-> +
-> +config SND_SOC_IMX_SSI
->  	tristate
->  
->  config SND_MXC_SOC_WM1133_EV1
-> @@ -131,7 +137,6 @@ config SND_MXC_SOC_WM1133_EV1
->  	depends on MACH_MX31ADS_WM1133_EV1
->  	select SND_SOC_WM8350
->  	select SND_SOC_IMX_PCM_FIQ
-> -	select SND_SOC_IMX_AUDMUX
->  	select SND_SOC_IMX_SSI
->  	help
->  	  Enable support for audio on the i.MX31ADS with the WM1133-EV1
-> @@ -141,8 +146,6 @@ config SND_SOC_MX27VIS_AIC32X4
->  	tristate "SoC audio support for Visstrim M10 boards"
->  	depends on MACH_IMX27_VISSTRIM_M10 && I2C
->  	select SND_SOC_TLV320AIC32X4
-> -	select SND_SOC_IMX_PCM_DMA
-> -	select SND_SOC_IMX_AUDMUX
->  	select SND_SOC_IMX_SSI
->  	help
->  	  Say Y if you want to add support for SoC audio on Visstrim SM10
-> @@ -154,7 +157,6 @@ config SND_SOC_PHYCORE_AC97
->  	select SND_SOC_AC97_BUS
->  	select SND_SOC_WM9712
->  	select SND_SOC_IMX_PCM_FIQ
-> -	select SND_SOC_IMX_AUDMUX
->  	select SND_SOC_IMX_SSI
->  	help
->  	  Say Y if you want to add support for SoC audio on Phytec phyCORE
-> @@ -169,7 +171,6 @@ config SND_SOC_EUKREA_TLV320
->  	depends on I2C
->  	select SND_SOC_TLV320AIC23
->  	select SND_SOC_IMX_PCM_FIQ
-> -	select SND_SOC_IMX_AUDMUX
->  	select SND_SOC_IMX_SSI
->  	help
->  	  Enable I2S based access to the TLV320AIC23B codec attached
-> @@ -179,9 +180,6 @@ config SND_SOC_IMX_WM8962
->  	tristate "SoC Audio support for i.MX boards with wm8962"
->  	depends on OF && I2C
->  	select SND_SOC_WM8962
-> -	select SND_SOC_IMX_PCM_DMA
-> -	select SND_SOC_IMX_AUDMUX
-> -	select SND_SOC_FSL_SSI
->  	help
->  	  Say Y if you want to add support for SoC audio on an i.MX board with
->  	  a wm8962 codec.
-> @@ -190,18 +188,13 @@ config SND_SOC_IMX_SGTL5000
->  	tristate "SoC Audio support for i.MX boards with sgtl5000"
->  	depends on OF && I2C
->  	select SND_SOC_SGTL5000
-> -	select SND_SOC_IMX_PCM_DMA
-> -	select SND_SOC_IMX_AUDMUX
-> -	select SND_SOC_FSL_SSI
->  	help
->  	  Say Y if you want to add support for SoC audio on an i.MX board with
->  	  a sgtl5000 codec.
->  
->  config SND_SOC_IMX_SPDIF
->  	tristate "SoC Audio support for i.MX boards with S/PDIF"
-> -	select SND_SOC_IMX_PCM_DMA
->  	select SND_SOC_FSL_SPDIF
-> -	select REGMAP_MMIO
->  	help
->  	  SoC Audio support for i.MX boards with S/PDIF
->  	  Say Y if you want to add support for SoC audio on an i.MX board with
-> @@ -211,8 +204,6 @@ config SND_SOC_IMX_MC13783
->  	tristate "SoC Audio support for I.MX boards with mc13783"
->  	depends on MFD_MC13XXX && ARM
->  	select SND_SOC_IMX_SSI
-> -	select SND_SOC_IMX_AUDMUX
->  	select SND_SOC_MC13783
-> -	select SND_SOC_IMX_PCM_DMA
->  
->  endif # SND_IMX_SOC
-> -- 
-> 1.8.3.2
+> > +	if (!np || !of_device_is_available(np))
+> > +		return -ENODEV;
+> > +
 > 
+> I would expect the of_device_is_available() check to be done by the
+> driver core rather than by individual drivers - every single driver
+> should have that check.  Is this not happening?  The check for np is OK
+> though.
+
+Yes, I hasn't found the core driver does that for now...
+
+And IMO this is needed since the SAI driver is only base dts. And maybe
+the device is not presently operational, but it might become operational
+in the future (for example, something is not plugged in, or switched off).
+Or A serious error was detected in the device, and it is unlikely to become
+operational without repair...
+
+And for now for the individual drivers, before calling the of_device_is_available
+the '!np' check is need, because:
+While in __of_device_is_available:
+ >	status = of_get_property(device, "status", &statlen);
+ >	if (status == NULL)
+ >		return 1;
+The status value returned from 'of_get_property()' will be NULL in two cases:
+Firstly: the 'device' value (device node) is NULL.
+Secondly: the 'status' property is actaully not exist.
+
+If the device node is NULL, the __of_device_is_available will return true too,
+that will mean the absent state of the 'status' property.
+
+
+Thanks,
+
+--
+Best Regards,
+Xiubo
