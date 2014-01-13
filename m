@@ -1,134 +1,62 @@
-From: "R. Lemos" <rslemos@gmail.com>
-Subject: Re: On mixer controls naming
-Date: Mon, 13 Jan 2014 14:56:37 -0200
-Message-ID: <CAM6_cxz3ZOOtF4c9rY6-v6J-7GpXL14VVa0ajAXBZEsPCz=+HQ@mail.gmail.com>
-References: <CAM6_cxyGVC+Tzt=6AM=LXn2Eqt48AK4JMSJkfbR07pPgPwBtcA@mail.gmail.com>
- <52D3CA28.3070500@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCHv2 5/6] ASoC: fsl: Add VF610 simple audio card widgets
+ driver.
+Date: Mon, 13 Jan 2014 17:16:14 +0000
+Message-ID: <20140113171614.GD29039@sirena.org.uk>
+References: <1389592438-13761-1-git-send-email-Li.Xiubo@freescale.com>
+ <1389592438-13761-6-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
- [209.85.216.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 64C2C26072A
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 17:56:38 +0100 (CET)
-Received: by mail-qa0-f51.google.com with SMTP id f11so2362662qae.38
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 08:56:37 -0800 (PST)
-In-Reply-To: <52D3CA28.3070500@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Nachn7RqbTHiMSEX"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1389592438-13761-6-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Unfortunately it doesn't work for Tone Control.
 
-I've tried the following (after each alternative is the output of amixer):
+--Nachn7RqbTHiMSEX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-===== "Master Playback Bass" =====
-Simple mixer control 'Master Playback Bass',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 255
-  Mono: 0 [0%]
-===== "Master Playback Tone" =====
-Simple mixer control 'Master Playback Tone',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 255
-  Mono: 0 [0%]
-===== "Playback Tone - Bass" =====
-Simple mixer control 'Playback Tone - Bass',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 255
-  Mono: 0 [0%]
-===== "Playback Tone Control - Bass" =====
-Simple mixer control 'Playback Tone Control - Bass',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 255
-  Mono: 0 [0%]
-===== "Playback Tone Control" =====
-Simple mixer control 'Playback Tone Control',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 255
-  Mono: 0 [0%]
-===== "Tone Control - Bass" =====
-Simple mixer control 'Bass',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 255
-  Mono: 123 [48%]
-===== "Tone Control Playback - Bass" =====
-Simple mixer control 'Tone Control Playback - Bass',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 255
-  Mono: 0 [0%]
-===== "Tone Playback Control - Bass" =====
-Simple mixer control 'Tone Playback Control - Bass',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 255
-  Mono: 0 [0%]
+On Mon, Jan 13, 2014 at 01:53:57PM +0800, Xiubo Li wrote:
+> This is the SGTL5000 codec based off-CODEC widgets supports.
+>=20
+> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+> ---
+>  sound/soc/fsl/Kconfig                     | 25 ++++++++++++++++++
+>  sound/soc/fsl/Makefile                    |  3 +++
+>  sound/soc/fsl/snd-soc-simple-card-vf610.c | 43 +++++++++++++++++++++++++=
+++++++
 
+My previous comment on this still stands - if we're adding an explicit
+machine driver for a simple card that defeats the point of having simple
+card in the first place, the system may as well just have a normal
+machine driver.
 
-In each tested alternative capture channel shows up as mono (instead
-of the expected behavior of showing nothing at all, as below). Each
-control label also reverted to the full control name. Personally I
-prefer the "Tone Control - Bass" alternative, which neatly shows up as
-just "Bass". It would be perfect, were not the availability of a
-capture channel for this control.
+--Nachn7RqbTHiMSEX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-Note: previous amixer output elided to remove the the following common
-working part for the "Master Playback Volume" and "Master Playback
-Switch":
+iQIcBAEBAgAGBQJS1B9bAAoJELSic+t+oim9BnsP+wSGqvNOGzs9e3yopJTBMgWl
+LVsDpWD4M0WtqTw8Q3N3MWZLPAmU49mxTN2xhoWojNRjICPZI+jvO1jdEuatz/78
+lx5kne81YU+oG8yCCEBDXT449nMKQWR/dfC3ZB+KJCYuJ8SECgzJwDd5hOSXc0Lx
+983olXCsgUQcUmDKGGcbwhWDv+82x2GsabWJ/8idyWtLogKl9OQYJeIAbFS3nqWP
+BOlXfXJ0061M3LAPWU58MRYLZoW+Jq3ikcg07b90DPBkzzZcHR2RG98J/CiE7dMh
+Id9Gp7PEB/kAkmV1qRcKoQ1uz0a80RkvVhoRN+QmVi4bEK8G9hndUcc/GQKroxrK
+DuUOq8/B56LOPU7LqbusXSeD4uvL837y6e/SMX/3slGZ8LvDVEt41CKcyEsdHsMe
+CXnOEwUcb0kwi/flKU6VhCUlHyjpJ2aRMV9apqyogLmUlPOXqS//6wiKcbIIZ6mJ
+jo1kfap/Y+EynWsTUNSKGOWxNO3TwBgb+P6pmdr552gAdLl4gE0tuzRGEYB2Opvj
+mutDNP05V8mWkieyujpIcyR2IPEZOILJP0lzlkqRNAaHYea3z5CWUT8Gie32Uk06
+KLouAozxHfo1dVSDNsCv46NF5FScneAnKLmyAQkNKISD7un8mNLrqPtrLl0ylYET
+U5+22Y/ZoKQfKj/oo9u0
+=4Lox
+-----END PGP SIGNATURE-----
 
-Simple mixer control 'Master',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 255
-  Mono: Playback 194 [76%] [on]
-
-
-
-On Mon, Jan 13, 2014 at 9:12 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> R. Lemos wrote:
->> The other control I've named "Tone Control - Bass", as indicated in
->> writing-an-alsa-driver.pdf. But alsamixer shows it under both
->> "Playback" and "Capture" views.
->>
->> How can I restrict this latter control to just playback?
->
-> For a control to be classified as a playback control, its name must
-> have one of the suffixes " Playback Enum", " Playback Switch",
-> " Playback Route", or " Playback Volume".
->
->
-> Regards,
-> Clemens
-
-
-
--- 
-[]'s
-Rodrigo
-Powered by carbohydrates
+--Nachn7RqbTHiMSEX--
