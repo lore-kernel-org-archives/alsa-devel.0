@@ -1,62 +1,50 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv2 5/6] ASoC: fsl: Add VF610 simple audio card widgets
- driver.
-Date: Mon, 13 Jan 2014 17:16:14 +0000
-Message-ID: <20140113171614.GD29039@sirena.org.uk>
-References: <1389592438-13761-1-git-send-email-Li.Xiubo@freescale.com>
- <1389592438-13761-6-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCH] ASoC: simple-card: use snd_soc_card_set/get_drvdata
+Date: Mon, 13 Jan 2014 17:38:49 +0000
+Message-ID: <20140113173849.GG29039@sirena.org.uk>
+References: <1389604088-16536-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Nachn7RqbTHiMSEX"
+	protocol="application/pgp-signature"; boundary="QwltuPJOutxmIGiQ"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1389592438-13761-6-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <1389604088-16536-1-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc: lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Nachn7RqbTHiMSEX
+--QwltuPJOutxmIGiQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 13, 2014 at 01:53:57PM +0800, Xiubo Li wrote:
-> This is the SGTL5000 codec based off-CODEC widgets supports.
->=20
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-> ---
->  sound/soc/fsl/Kconfig                     | 25 ++++++++++++++++++
->  sound/soc/fsl/Makefile                    |  3 +++
->  sound/soc/fsl/snd-soc-simple-card-vf610.c | 43 +++++++++++++++++++++++++=
-++++++
+On Mon, Jan 13, 2014 at 05:08:08PM +0800, Xiubo Li wrote:
+> Remove asoc_simple_get_card_info macro and use snd_soc_card_set_drvdata
+> and snd_soc_card_get_drvdata instead.
 
-My previous comment on this still stands - if we're adding an explicit
-machine driver for a simple card that defeats the point of having simple
-card in the first place, the system may as well just have a normal
-machine driver.
+Applied, thanks.
 
---Nachn7RqbTHiMSEX
+--QwltuPJOutxmIGiQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS1B9bAAoJELSic+t+oim9BnsP+wSGqvNOGzs9e3yopJTBMgWl
-LVsDpWD4M0WtqTw8Q3N3MWZLPAmU49mxTN2xhoWojNRjICPZI+jvO1jdEuatz/78
-lx5kne81YU+oG8yCCEBDXT449nMKQWR/dfC3ZB+KJCYuJ8SECgzJwDd5hOSXc0Lx
-983olXCsgUQcUmDKGGcbwhWDv+82x2GsabWJ/8idyWtLogKl9OQYJeIAbFS3nqWP
-BOlXfXJ0061M3LAPWU58MRYLZoW+Jq3ikcg07b90DPBkzzZcHR2RG98J/CiE7dMh
-Id9Gp7PEB/kAkmV1qRcKoQ1uz0a80RkvVhoRN+QmVi4bEK8G9hndUcc/GQKroxrK
-DuUOq8/B56LOPU7LqbusXSeD4uvL837y6e/SMX/3slGZ8LvDVEt41CKcyEsdHsMe
-CXnOEwUcb0kwi/flKU6VhCUlHyjpJ2aRMV9apqyogLmUlPOXqS//6wiKcbIIZ6mJ
-jo1kfap/Y+EynWsTUNSKGOWxNO3TwBgb+P6pmdr552gAdLl4gE0tuzRGEYB2Opvj
-mutDNP05V8mWkieyujpIcyR2IPEZOILJP0lzlkqRNAaHYea3z5CWUT8Gie32Uk06
-KLouAozxHfo1dVSDNsCv46NF5FScneAnKLmyAQkNKISD7un8mNLrqPtrLl0ylYET
-U5+22Y/ZoKQfKj/oo9u0
-=4Lox
+iQIcBAEBAgAGBQJS1CSmAAoJELSic+t+oim9GvIP/iBaJyJZ9FQ3x3fhyqe9yFL2
+bSoqLHQPIHRLrG8y070L/3Ojx/aRDy3JhzHa6jvrA94XzgTjnuLxcCmxePd8g0Wz
++1XRcR1plYlsucT9x23oZr/VbeIZSl5HbD2sjyJY708x19C/sSqm7BbtBG+QG/5i
+XNhonJ6LPWGW2EnKIldpDptvOJifdeiYQOF0bGKirpToGfNc8RNFdEiQlqFIeme6
+8gDrPvLrNoqYxaDtHijhZ/L9KpbDuaZP0i6w6zWzFOyICfJiSJzn8MB87pi2Ujn1
+5WwVLX61WIPwhENlYtSNYsgzQP1U8xsxIU39C/BrEkBIJ+pq/9cIDw1Symlz3gyD
+lQws/h6ZJkwVvH+SRsWbxJWAE3xPMlKu8uDjuWZv+hEoFFHe78PALimJk2fNbsIG
+Ra72W/Usl+mZGlEF25AG9StktaOQMZoKn56u+b5lri3eLk9cgmnUPMeSJqsLxSTV
+e3BVQfHBDX0kXDP27S/ue6EM0gkNt3iBmONpSGgO5TcDb3ga8hmfQ4C8lJQy6psd
+M5jllw8gO4TfAv3DytgSJRATR0vAIMyuHXetu0Cp+dNUnLgBVc/XP6VZ18xMATTr
+6GbnxF+5DsxMLVXJgoWpULGTj46j5SbwxaJqQzowM8hbLIxOKILVwulL2kixzei6
+zLFUMmbV/4MM5uRp1BlV
+=WLlD
 -----END PGP SIGNATURE-----
 
---Nachn7RqbTHiMSEX--
+--QwltuPJOutxmIGiQ--
