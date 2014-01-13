@@ -1,17 +1,18 @@
-From: Eric F <3rik.gm@gmail.com>
-Subject: [ISSUE] crackles and clicks
-Date: Mon, 13 Jan 2014 09:34:04 +0100
-Message-ID: <CA+T9nP9VBdW6T8o3=5hFJpMXpHGz59VOGva2+8g8xoPw6Xa8+g@mail.gmail.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: How to make Realtek HD-A codec alc282 create
+ "Input Source" controlto select a input for recording?
+Date: Mon, 13 Jan 2014 09:04:40 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B220366@SHSMSX101.ccr.corp.intel.com>
+References: <F46914AEC2663F4A9BB62374E5EEF8F82B220154@SHSMSX101.ccr.corp.intel.com>
+ <BDD07EBF6F514E279E091D759B71DB78@realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vb0-f54.google.com (mail-vb0-f54.google.com
- [209.85.212.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 639F82608C7
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 09:34:07 +0100 (CET)
-Received: by mail-vb0-f54.google.com with SMTP id w20so612818vbb.27
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 00:34:05 -0800 (PST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 959052616B9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 10:04:56 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,23 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Kailang <kailang@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-I tried my DAC (Tenor TE8802 chipset) in USB on Archlinux (LTS 3.10.26).
-I can hear regularly crackles ans clicks.
-
-I've tried all available USB ports, other kernels (3.12.6, 3.12.7), other
-distro (ubuntu), without luck...
-
-The DAC is Teac UD-H01.
-
-here is lsusb verbose : http://ix.io/9Q4
-
-Feel free to ask for more precisions, I'll give you all you need.
-
-I thank you very much.
-
-Eric
+U29ycnksIEkgc2VudCB0aGlzIG1haWwgYWdhaW4gd2l0aG91dCB0aGUgYmlnLXNpemUgYWxzYSBp
+bmZvLg0KDQpGcm9tOiBMaW4sIE1lbmdkb25nDQpTZW50OiBNb25kYXksIEphbnVhcnkgMTMsIDIw
+MTQgNDo1MyBQTQ0KVG86ICdLYWlsYW5nJzsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQpT
+dWJqZWN0OiBSRTogSG93IHRvIG1ha2UgUmVhbHRlayBIRC1BIGNvZGVjIGFsYzI4MiBjcmVhdGUg
+IklucHV0IFNvdXJjZSIgY29udHJvbHRvIHNlbGVjdCBhIGlucHV0IGZvciByZWNvcmRpbmc/DQoN
+CkhpIEthaWxhbmcsDQoNCkkgdHJpZWQgdG8gZGlzYWJsZSBib3RoIE1pYzIgcGluIDB4MTkgYW5k
+IERNSUMgcGluIDB4MTIgYXMgYSBQUkVfUFJPQkUgc3RhZ2UgZml4dXAsIGFzIGJlbG93Og0Kc25k
+X2hkYV9jb2RlY19zZXRfcGluY2ZnKGNvZGVjLCAweDE5LCAweDQxMTExMWYwKTsNCnNuZF9oZGFf
+Y29kZWNfc2V0X3BpbmNmZyhjb2RlYywgMHgxMiwgMHg0MTExMTFmMCk7DQoNCkFmdGVyIHRoaXMs
+IHJlY29yZGluZyBjYW4gd29yayBpZiBJIGJvb3QgdGhlIHBsYXRmb3JtIHdpdGggTWljIGphY2sg
+Y29ubmVjdGVkIHRvIE1pYzEgcG9ydCAoMHgxOCksIGJ1dCBsYXRlciBob3QtcGx1ZyBjYW4gbWFr
+ZSByZWNvcmRpbmcgZmFpbCBhZ2FpbjoNCg0KLSAgICAgICAgICBPbiBib290LCAweDIzIHVubXV0
+ZXMgMHgxOC4gUmVjb3JkaW5nIHdvcmtzIHdlbGwuIEFsc28gdW5zb2wgZXZlbnQgaXMgZW5hYmxl
+ZCBvbiAweDE4IHdpdGggdGFnIDB4MDIuDQoNCi0gICAgICAgICAgVGhlbiBJIHJlbW92ZWQgdGhl
+IG1pYyBqYWNrLCAweDIzIG11dGVzIDB4MTguIEJ1dCBubyB1bnNvbCBldmVudCBpcyBnb3QsIGFu
+ZCBjb2RlYyBpbmZvIHNob3dzIHVuc29sIGV2ZW50IGlzIGRpc2FibGVkIG9uIHBpbiAweDE4IFN0
+cmFuZ2UuDQoNCi0gICAgICAgICAgVGhlbiBJIGNvbm5lY3RlZCB0aGUgbWljIGphY2sgYWdhaW4u
+IE5vIHVuc29sIGV2ZW50IGlzIGdvdC4gMHgyMyBzdGlsbCBtdXRlcyAweDE4Lg0KDQpJIHdvbmRl
+ciBzaW5jZSBvbmx5IE1pYzEgcGluIDB4MTggaXMgZW5hYmxlZCBub3csIHdoeSAweDIzIGNhbm5v
+dCBhbHdheXMgdW5tdXRlcyAweDE4Pw0KDQpSZWdhcmRzDQpNZW5nZG9uZw0KDQpGcm9tOiBLYWls
+YW5nIFttYWlsdG86a2FpbGFuZ0ByZWFsdGVrLmNvbV0NClNlbnQ6IE1vbmRheSwgSmFudWFyeSAx
+MywgMjAxNCA0OjE0IFBNDQpUbzogTGluLCBNZW5nZG9uZzsgYWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnPG1haWx0bzphbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc+DQpTdWJqZWN0OiBSZTog
+SG93IHRvIG1ha2UgUmVhbHRlayBIRC1BIGNvZGVjIGFsYzI4MiBjcmVhdGUgIklucHV0IFNvdXJj
+ZSIgY29udHJvbHRvIHNlbGVjdCBhIGlucHV0IGZvciByZWNvcmRpbmc/DQoNCkkgdGhpbmsgaXQg
+bWF5YmUgY2FuIG5vdCBoYXZlIHR3byBpbnRlcm5hbCBNaWMgYXQgdGhlIHNhbWUgdGltZS4NCkNv
+dWxkIHlvdSB0cnkgdG8gZGlzYWJsZSBwaW4gZm9yIDB4MTkgb3IgMHgxMj8NClRvIGZpeHVwIDB4
+MTkgb3IgMHgxMiB2ZXJiIGFzIDB4NDFmZmZmZjAuDQotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0t
+LS0tDQrlr4Tku7bogIU6IExpbiwgTWVuZ2Rvbmc8bWFpbHRvOm1lbmdkb25nLmxpbkBpbnRlbC5j
+b20+DQrmlLbku7bogIU6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzxtYWlsdG86YWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnPiA7IEthaWxhbmcgKGthaWxhbmdAcmVhbHRlay5jb20pPG1h
+aWx0bzprYWlsYW5nQHJlYWx0ZWsuY29tKT4NCuWCs+mAgeaXpeacnzogMjAxNOW5tDHmnIgxM+aX
+pSDkuIvljYggMDM6MTkNCuS4u+aXqDogSG93IHRvIG1ha2UgUmVhbHRlayBIRC1BIGNvZGVjIGFs
+YzI4MiBjcmVhdGUgIklucHV0IFNvdXJjZSIgY29udHJvbHRvIHNlbGVjdCBhIGlucHV0IGZvciBy
+ZWNvcmRpbmc/DQoNCkhpLA0KDQpIb3cgdG8gbWFrZSB0aGUgZHJpdmVyIGNyZWF0ZSBhIOKAnGlu
+cHV0IHNvdXJjZeKAnSBjb250cm9sIGZvciBBTEMyODIgd2l0aCAzIE1pYyBwaW5zPw0KDQpNeSBw
+bGF0Zm9ybSB1c2VzIGEgUmVhbHRlayBIRC1BIGNvZGVjIEFMQzI4MiBjYXJkLCBpdCBoYXMgMyBN
+aWMgcGluczoNCk1pYyA9IDB4MTggICAgICAoTUlDMSkNCkludGVybmFsIE1pYyA9IDB4MTkgIChN
+SUMyKQ0KSW50ZXJuYWwgTWljID0gMHgxMiAgKERNSUMpDQoNClJlY29yZGluZyBvbiBNaWMxICgw
+eDE4KSBjYW5ub3Qgd29yayBiZWNhdXNlIHRoZSBtaXhlciAweDIzIGFsd2F5cyBtdXRlcyB0aGUg
+aW5wdXQgZnJvbSAweDE4Lg0KQW5kIHRoZXJlIGlzIG5vIOKAnGlucHV0IHNvdXJjZeKAnSBjb250
+cm9sIHRvIGxldCB0aGUgbWl4ZXIgc2VsZWN0IGFuZCB1bm11dGUgMHgxOC4NCg0KSeKAmXZlIHRy
+aWVkIHRvIGRpc2FibGUgcGluIHNlbnNlIG9uIHBpbiAweDE4IGFzIGEgYm9hcmQgZml4LXVwIGxp
+a2UgYmVsb3csIGJ1dCDigJxpbnB1dCBzb3VyY2XigJ0gY29udHJvbCBpcyBzdGlsbCBub3QgY3Jl
+YXRlZDoNCmNhcHMgPSBzbmRfaGRhX3F1ZXJ5X3Bpbl9jYXBzKGNvZGVjLCAweDE4KTsNCmNhcHMg
+Jj0gfkFDX1BJTkNBUF9QUkVTX0RFVEVDVDsNCnNuZF9oZGFfb3ZlcnJpZGVfcGluX2NhcHMoY29k
+ZWMsIDB4MTgsIGNhcHMpOw0Kc25kX2hkYV9jb2RlY19zZXRfcGluY2ZnKGNvZGVjLCAweDE4LCAw
+eDAzYTE5MTIwKTsgIOKApiBzZXQg4oCYSmFjayBEZXRlY3QgT3ZlcnJpZGXigJkNCg0KDQpUaGFu
+a3MNCk1lbmdkb25nDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
