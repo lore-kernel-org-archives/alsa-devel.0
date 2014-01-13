@@ -1,21 +1,20 @@
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-Subject: Re:
- =?utf-8?q?=5BPATCH_v3=5D_ASoC=3A_imx=3A_Allow_using_?=
- =?utf-8?q?sound_with_DT_descriptions_only?=
-Date: Mon, 13 Jan 2014 21:49:11 +0400
-Message-ID: <1389635351.629972498@f244.i.mail.ru>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: imx: Allow using sound with DT
+	descriptions only
+Date: Mon, 13 Jan 2014 17:51:34 +0000
+Message-ID: <20140113175134.GI29039@sirena.org.uk>
 References: <1389358827-381-1-git-send-email-shc_work@mail.ru>
  <20140113183212.22f73787442da8af0879d012@mail.ru>
  <20140113174536.GH29039@sirena.org.uk>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+ <1389635351.629972498@f244.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2991495686112311318=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from f244.i.mail.ru (f244.i.mail.ru [94.100.178.219])
- by alsa0.perex.cz (Postfix) with ESMTP id 081022607BB
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 18:49:14 +0100 (CET)
-In-Reply-To: <20140113174536.GH29039@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D3BB260850
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 18:51:42 +0100 (CET)
+In-Reply-To: <1389635351.629972498@f244.i.mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,29 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?TWFyayBCcm93bg==?= <broonie@kernel.org>
-Cc: =?UTF-8?B?VGFrYXNoaSBJd2Fp?= <tiwai@suse.de>, alsa-devel@alsa-project.org, =?UTF-8?B?U2hhd24gR3Vv?= <shawn.guo@linaro.org>, =?UTF-8?B?TGlhbSBHaXJkd29vZA==?= <lgirdwood@gmail.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-0J/QvtC90LXQtNC10LvRjNC90LjQuiwgMTMg0Y/QvdCy0LDRgNGPIDIwMTQsIDE3OjQ1IFVUQyDQ
-vtGCIE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz46Cj4gT24gTW9uLCBKYW4gMTMsIDIw
-MTQgYXQgMDY6MzI6MTJQTSArMDQwMCwgQWxleGFuZGVyIFNoaXlhbiB3cm90ZToKPiA+IFNoYXdu
-IEd1byA8c2hhd24uZ3VvQGxpbmFyby5vcmc+IHdyb3RlOgo+IAo+ID4gPiBKdXN0IHdhbnQgdG8g
-dW5kZXJzdGFuZCB0aGUgZGlyZWN0aW9uIG9mIHRoaXMgY2hhbmdlLiAgQmVzaWRlcwo+ID4gPiBG
-U0xfU1NJLCB3ZSB3aWxsIGhhdmUgb3RoZXIgQ1BVIERBSXMgRlNMX1NQRElGLCBGU0xfRVNBSSBh
-bmQgRlNMX1NBSS4KPiA+ID4gV2lsbCB3ZSBzZWxlY3QgYWxsIG9mIHRoZW0gZnJvbSBTTkRfSU1Y
-X1NPQywgb3Igd2Ugb25seSBkbyBpdCBmb3IKPiA+ID4gRlNMX1NTST8gIE5vdGUsIElNWF9BVURN
-VVggc2hvdWxkIGJlIG9ubHkgbmVlZGVkIGZvciBtYWNoaW5lIGRyaXZlcnMKPiA+ID4gdGhhdCB1
-c2UgU1NJIENQVSBEQUkuCj4gCj4gPiBOb3QgY2xlYXIgaG93IHRvIGRvIGl0IHJpZ2h0IC4uLgo+
-ID4gSSBjb25jbHVkZSB0aGF0IHRoZSBmaXJzdCB2ZXJzaW9uIG9mIHRoZSBwYXRjaCB3YXMgdGhl
-IGJlc3QsIGRvIGEgc2VwYXJhdGUKPiA+IHN5bWJvbCBmb3IgRFQgYW5kIHNlbGVjdCBhbGwgcmVx
-dWlyZWQgb3B0aW9ucy4KPiA+IFJld3JpdGUgaW4gdGhpcyB3YXk/Cj4gCj4gTm8sIHRoYXQganVz
-dCBtZWFucyB0aGF0IHRoZSBzYW1lIHByb2JsZW0gdGhhdCBTaGF3biBpZGVudGlmaWVkIGFmZmVj
-dHMKPiBhbGwgRFQgdXNlcnMgd2hpY2ggaXNuJ3QgcmVhbGx5IG1vdmluZyB1cyBmb3J3YXJkcyBz
-aW5jZSBhbGwgdGhlc2UKPiBzeXN0ZW1zIHVzZSBEVCBhbmQgdGhleSBwcm9iYWJseSBzaG91bGRu
-J3Qgc3VmZmVyIGFueXdheS4gIFdoeSBub3QganVzdAo+IG1ha2UgZWFjaCBvZiB0aGUgZHJpdmVy
-cyBzZWxlY3RhYmxlPwoKWW91IG1lYW4gYWRkIGRlc2NyaXB0aW9ucyBmb3IgdGhlIG9wdGlvbnMg
-YW5kIHRodXMgbWFrZSB0aGVtIHB1YmxpYz8KCi0tLQpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============2991495686112311318==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3fquP/57BBR2yLsK"
+Content-Disposition: inline
+
+
+--3fquP/57BBR2yLsK
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jan 13, 2014 at 09:49:11PM +0400, Alexander Shiyan wrote:
+> =D0=9F=D0=BE=D0=BD=D0=B5=D0=B4=D0=B5=D0=BB=D1=8C=D0=BD=D0=B8=D0=BA, 13 =
+=D1=8F=D0=BD=D0=B2=D0=B0=D1=80=D1=8F 2014, 17:45 UTC =D0=BE=D1=82 Mark Brow=
+n <broonie@kernel.org>:
+
+> > No, that just means that the same problem that Shawn identified affects
+> > all DT users which isn't really moving us forwards since all these
+> > systems use DT and they probably shouldn't suffer anyway.  Why not just
+> > make each of the drivers selectable?
+
+> You mean add descriptions for the options and thus make them public?
+
+Yes.
+
+--3fquP/57BBR2yLsK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS1CejAAoJELSic+t+oim9CXMP/30NrOd2ZeEa3Ztu135GpfkE
+b2lFM2zVbdyKFpfc9UzYOHDfjty/pRkrAGVZkp0upn8xUE4LUEbnPs1aAAfcFwq3
+u21J1k7cUh1hBtbVSuNxALnz1DHHJme9o8gO2AMIyJn/YpHtCr0Ncrwfkjo2DEZZ
+j2qRrDDdtoX/9BS4i6rPbxKqil4nFR+LTceG1/spi5bF/BClxPgujHWYDDmYBVjo
+TRKh01k99UT0JfgAABhApp0ijzZvl6gbT7qC+fxKn/QO7f8QzqbbFoBXmOT7X9o2
+XQpOdr1Ofn8+uf+2z/Oic0uumXQnBDbyRLqv+9+bt2nsPWjYiz0b3JoOMCwZ20R7
+bPSdWwilSIiGnVzUkf03XZE42RNEpjRIatQQCdZWlRij9r2zfbQfC29o01sW5xZb
+CPXZ997lQ4UmBFpubC5vPEKL9ZB3MM3B//jA/gAv2SrQuxPtRFZ85Cl4VHES9Rhe
+KQHcBDG0ceLg5HLU2MU0wPrS0ujJT509lzqqod1ioQFMHipLDze3SV81JKO99v2b
+yzoesdwhxmOskuu6aGt1u5dXw3tmHHHbnFNFAsUm8EXRsNXWoGAGorPEYPw0jYwh
+3j53g1NFmVBBBBHLFCHTBnTHnGFXCJTpayy8WZMn03s04VCs6eqwxJqfvt1JdWGr
+3KiLD+OgI1mwDTnc/RIm
+=z4ba
+-----END PGP SIGNATURE-----
+
+--3fquP/57BBR2yLsK--
+
+--===============2991495686112311318==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2991495686112311318==--
