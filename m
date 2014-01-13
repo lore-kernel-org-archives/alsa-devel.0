@@ -1,33 +1,176 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [alsa-devel] [PATCH] ASoC: simple-card: fix one bug to writing
- to the platform data
-Date: Mon, 13 Jan 2014 02:02:16 +0000
-Message-ID: <56f71334ad4f41ceaa6237d387e2b478@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <20140110081729.035ce46f@armhf>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v3] ASoC: imx: Allow using sound with DT
+	descriptions only
+Date: Mon, 13 Jan 2014 11:56:28 +0800
+Message-ID: <20140113035626.GI23525@S2101-09.ap.freescale.net>
+References: <1389358827-381-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140110081729.035ce46f@armhf>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: "broonie@linaro.org" <broonie@linaro.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe006.messaging.microsoft.com [216.32.180.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id D99C326168D
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 04:55:15 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1389358827-381-1-git-send-email-shc_work@mail.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgSmVhbi1GcmFuY29pcywNCg0KPiANCj4gSWYgdGhlIG9yaWdpbmFsIGNpbmZvIGlzIG5vdCB1
-c2VkIGFueW1vcmUsIHRoZSB1c2Ugb2YgaXRzIHN0cnVjdHVyZSB0bw0KPiBoYW5kbGUgdGhlIGNh
-cmQgaW5mb3JtYXRpb24gaXMgbm90IGEgZ29vZCBpZGVhOg0KPiANCj4gLSBhbG1vc3QgYWxsIGNp
-bmZvIGluZm9ybWF0aW9uIGFyZSBpbiB0aGUgc3RydWN0IHNuZF9zb2NfY2FyZCwNCj4gDQo+IC0g
-dGhpcyBjaW5mbyBzdHJ1Y3R1cmUgY2Fubm90IGJlIGV4dGVuZGVkIHRvIGhhbmRsZSBtYW55IERB
-SSBsaW5rcywNCj4gDQo+IC0gaXQgY29udGFpbnMgc2ltcGxlLWNhcmQgaW5mb3JtYXRpb24gd2hp
-Y2ggYXJlIG9mIG5vIHVzZSBmb3IgdGhlDQo+ICAgcGxhdGZvcm0gY2FsbGVyLg0KPiANCj4gU28s
-IEknZCByYXRoZXIgaGF2ZSBzZWVuOg0KPiANCj4gLSB0aGUgcmVtb3ZhbCBvZiAnc25kX2xpbmsn
-IGFuZCAnc25kX2NhcmQnIGZyb20gdGhlIHBsYXRmb3JtIGludGVyZmFjZQ0KPiAgIChzdHJ1Y3Qg
-YXNvY19zaW1wbGVfY2FyZF9pbmZvKSwNCj4gDQo+IC0gdGhlIGRlZmluaXRpb24gb2YgYSBsb2Nh
-bCBzdHJ1Y3Qgc2ltcGxlX2NhcmRfZGF0YSBjb250YWluaW5nIHRoZQ0KPiAgIHN0cnVjdCBzbmRf
-c29jX2NhcmQgYW5kIGEgcG9pbnRlciB0byBhbiBhcnJheSBvZiBmbXQvc3lzY2xrIHZhbHVlcw0K
-PiAgIChvbmUgcGVyIERBSSBsaW5rKS4NCj4gDQoNCkkgaGF2ZSBzZW50IG9uZSBwYXRjaCB0byBm
-aXggc29tZSBvZiB0aGVzZSBhbmQgbWFpbmx5IGZpeGVkIHRoZSBidWcgZnJvbQ0KTWFyaydzIGNv
-bW1lbnRzIGluIGFub3RoZXIgZWFybHkgZW1haWwuDQoNClRoYW5rcywNCg0KLS0NCkJlc3QgUmVn
-YXJkcywNClhpdWJvDQo=
+On Fri, Jan 10, 2014 at 05:00:27PM +0400, Alexander Shiyan wrote:
+> This patch allow using generic sound cards/codecs based on DT description.
+> 
+> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+> ---
+>  sound/soc/fsl/Kconfig | 43 +++++++++++++++++--------------------------
+>  1 file changed, 17 insertions(+), 26 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+> index 1c7b3b7..8249000 100644
+> --- a/sound/soc/fsl/Kconfig
+> +++ b/sound/soc/fsl/Kconfig
+> @@ -7,6 +7,7 @@ config SND_SOC_FSL_SSI
+>  
+>  config SND_SOC_FSL_SPDIF
+>  	tristate
+> +	select REGMAP_MMIO
+>  
+>  config SND_SOC_FSL_UTILS
+>  	tristate
+> @@ -103,27 +104,32 @@ config SND_MPC52xx_SOC_EFIKA
+>  
+>  endif # SND_POWERPC_SOC
+>  
+> -menuconfig SND_IMX_SOC
+> -	tristate "SoC Audio for Freescale i.MX CPUs"
+> -	depends on ARCH_MXC || COMPILE_TEST
+> -	help
+> -	  Say Y or M if you want to add support for codecs attached to
+> -	  the i.MX CPUs.
+> -
+> -if SND_IMX_SOC
+> -
+> -config SND_SOC_IMX_SSI
+> +config SND_SOC_IMX_AUDMUX
+>  	tristate
+>  
+>  config SND_SOC_IMX_PCM_FIQ
+>  	tristate
+>  	select FIQ
+> +	default y if SND_SOC_IMX_SSI=y || SND_SOC_FSL_SSI=y
+>  
+>  config SND_SOC_IMX_PCM_DMA
+>  	tristate
+>  	select SND_SOC_GENERIC_DMAENGINE_PCM
+> +	default y if SND_SOC_IMX_SSI=y || SND_SOC_FSL_SSI=y
+>  
+> -config SND_SOC_IMX_AUDMUX
+> +menuconfig SND_IMX_SOC
+> +	tristate "SoC Audio for Freescale i.MX CPUs"
+> +	depends on ARCH_MXC || COMPILE_TEST
+> +	select SND_SOC_FSL_SSI if OF
+> +	select SND_SOC_IMX_AUDMUX
+> +	select SND_SOC_IMX_PCM_DMA
+
+Just want to understand the direction of this change.  Besides
+FSL_SSI, we will have other CPU DAIs FSL_SPDIF, FSL_ESAI and FSL_SAI.
+Will we select all of them from SND_IMX_SOC, or we only do it for
+FSL_SSI?  Note, IMX_AUDMUX should be only needed for machine drivers
+that use SSI CPU DAI.
+
+Shawn
+
+> +	help
+> +	  Say Y or M if you want to add support for codecs attached to
+> +	  the i.MX CPUs.
+> +
+> +if SND_IMX_SOC
+> +
+> +config SND_SOC_IMX_SSI
+>  	tristate
+>  
+>  config SND_MXC_SOC_WM1133_EV1
+> @@ -131,7 +137,6 @@ config SND_MXC_SOC_WM1133_EV1
+>  	depends on MACH_MX31ADS_WM1133_EV1
+>  	select SND_SOC_WM8350
+>  	select SND_SOC_IMX_PCM_FIQ
+> -	select SND_SOC_IMX_AUDMUX
+>  	select SND_SOC_IMX_SSI
+>  	help
+>  	  Enable support for audio on the i.MX31ADS with the WM1133-EV1
+> @@ -141,8 +146,6 @@ config SND_SOC_MX27VIS_AIC32X4
+>  	tristate "SoC audio support for Visstrim M10 boards"
+>  	depends on MACH_IMX27_VISSTRIM_M10 && I2C
+>  	select SND_SOC_TLV320AIC32X4
+> -	select SND_SOC_IMX_PCM_DMA
+> -	select SND_SOC_IMX_AUDMUX
+>  	select SND_SOC_IMX_SSI
+>  	help
+>  	  Say Y if you want to add support for SoC audio on Visstrim SM10
+> @@ -154,7 +157,6 @@ config SND_SOC_PHYCORE_AC97
+>  	select SND_SOC_AC97_BUS
+>  	select SND_SOC_WM9712
+>  	select SND_SOC_IMX_PCM_FIQ
+> -	select SND_SOC_IMX_AUDMUX
+>  	select SND_SOC_IMX_SSI
+>  	help
+>  	  Say Y if you want to add support for SoC audio on Phytec phyCORE
+> @@ -169,7 +171,6 @@ config SND_SOC_EUKREA_TLV320
+>  	depends on I2C
+>  	select SND_SOC_TLV320AIC23
+>  	select SND_SOC_IMX_PCM_FIQ
+> -	select SND_SOC_IMX_AUDMUX
+>  	select SND_SOC_IMX_SSI
+>  	help
+>  	  Enable I2S based access to the TLV320AIC23B codec attached
+> @@ -179,9 +180,6 @@ config SND_SOC_IMX_WM8962
+>  	tristate "SoC Audio support for i.MX boards with wm8962"
+>  	depends on OF && I2C
+>  	select SND_SOC_WM8962
+> -	select SND_SOC_IMX_PCM_DMA
+> -	select SND_SOC_IMX_AUDMUX
+> -	select SND_SOC_FSL_SSI
+>  	help
+>  	  Say Y if you want to add support for SoC audio on an i.MX board with
+>  	  a wm8962 codec.
+> @@ -190,18 +188,13 @@ config SND_SOC_IMX_SGTL5000
+>  	tristate "SoC Audio support for i.MX boards with sgtl5000"
+>  	depends on OF && I2C
+>  	select SND_SOC_SGTL5000
+> -	select SND_SOC_IMX_PCM_DMA
+> -	select SND_SOC_IMX_AUDMUX
+> -	select SND_SOC_FSL_SSI
+>  	help
+>  	  Say Y if you want to add support for SoC audio on an i.MX board with
+>  	  a sgtl5000 codec.
+>  
+>  config SND_SOC_IMX_SPDIF
+>  	tristate "SoC Audio support for i.MX boards with S/PDIF"
+> -	select SND_SOC_IMX_PCM_DMA
+>  	select SND_SOC_FSL_SPDIF
+> -	select REGMAP_MMIO
+>  	help
+>  	  SoC Audio support for i.MX boards with S/PDIF
+>  	  Say Y if you want to add support for SoC audio on an i.MX board with
+> @@ -211,8 +204,6 @@ config SND_SOC_IMX_MC13783
+>  	tristate "SoC Audio support for I.MX boards with mc13783"
+>  	depends on MFD_MC13XXX && ARM
+>  	select SND_SOC_IMX_SSI
+> -	select SND_SOC_IMX_AUDMUX
+>  	select SND_SOC_MC13783
+> -	select SND_SOC_IMX_PCM_DMA
+>  
+>  endif # SND_IMX_SOC
+> -- 
+> 1.8.3.2
+> 
