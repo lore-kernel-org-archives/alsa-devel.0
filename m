@@ -1,117 +1,33 @@
-From: Daniel Matuschek <daniel@matuschek.net>
-Subject: [PATCH] ASoC: wm8804: Allow control of master clock divider in PLL
- generation
-Date: Sun, 12 Jan 2014 22:11:25 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1401122206520.7929@parallels-Parallels-Virtual-Platform>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [alsa-devel] [PATCH] ASoC: simple-card: fix one bug to writing
+ to the platform data
+Date: Mon, 13 Jan 2014 02:02:16 +0000
+Message-ID: <56f71334ad4f41ceaa6237d387e2b478@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <20140110081729.035ce46f@armhf>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140110081729.035ce46f@armhf>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Dimitris.Papastamos@wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, info@crazy-audio.com
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: "broonie@linaro.org" <broonie@linaro.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
-
-After some discussions of the patch last week, here is a new version. 
-Simply reducing the post_table did not work, as for some frequencies
-both settings (MCLKDIV=0 and MCLKDIV=1) are needed (e.g. 96 and 192kHz)
-
-
-  WM8804 can run with PLL frequencies of 256xfs and 128xfs for
-  most sample rates. At 192kHz only 128xfs is supported. The
-  existing driver selects 128xfs automatically for some lower
-  samples rates. By using an additional mclk_div divider, is
-  is now possible to control the behaviour. This allows using
-  256xfs PLL frequency on all sample rates up to 96kHz. It
-  should allow lower jitter and better signal quality. The
-  behavior has to be controlled by the sound card driver,
-  because some sample frequency share the same setting. e.g.
-  192kHz and 96kHz use 24.576MHz master clock. The only
-  difference is the MCLK divider.
-
----
-  sound/soc/codecs/wm8804.c |   17 ++++++++++++++---
-  sound/soc/codecs/wm8804.h |    4 ++++
-  2 files changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
-index 1704b1e..4619bf8 100644
---- a/sound/soc/codecs/wm8804.c
-+++ b/sound/soc/codecs/wm8804.c
-@@ -63,6 +63,7 @@ struct wm8804_priv {
-  	struct regmap *regmap;
-  	struct regulator_bulk_data supplies[WM8804_NUM_SUPPLIES];
-  	struct notifier_block disable_nb[WM8804_NUM_SUPPLIES];
-+	int mclk_div;
-  };
-
-  static int txsrc_get(struct snd_kcontrol *kcontrol,
-@@ -318,7 +319,7 @@ static struct {
-
-  #define FIXED_PLL_SIZE ((1ULL << 22) * 10)
-  static int pll_factors(struct pll_div *pll_div, unsigned int target,
--		       unsigned int source)
-+		       unsigned int source, unsigned int mclk_div)
-  {
-  	u64 Kpart;
-  	unsigned long int K, Ndiv, Nmod, tmp;
-@@ -330,7 +331,8 @@ static int pll_factors(struct pll_div *pll_div, unsigned int target,
-  	 */
-  	for (i = 0; i < ARRAY_SIZE(post_table); i++) {
-  		tmp = target * post_table[i].div;
--		if (tmp >= 90000000 && tmp <= 100000000) {
-+		if ((tmp >= 90000000 && tmp <= 100000000) &&
-+		    (mclk_div == post_table[i].mclkdiv)) {
-  			pll_div->freqmode = post_table[i].freqmode;
-  			pll_div->mclkdiv = post_table[i].mclkdiv;
-  			target *= post_table[i].div;
-@@ -387,8 +389,12 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
-  	} else {
-  		int ret;
-  		struct pll_div pll_div;
-+		struct wm8804_priv *wm8804;
-
--		ret = pll_factors(&pll_div, freq_out, freq_in);
-+		wm8804 = snd_soc_codec_get_drvdata(codec);
-+
-+		ret = pll_factors(&pll_div, freq_out, freq_in,
-+			wm8804->mclk_div);
-  		if (ret)
-  			return ret;
-
-@@ -452,6 +458,7 @@ static int wm8804_set_clkdiv(struct snd_soc_dai *dai,
-  			     int div_id, int div)
-  {
-  	struct snd_soc_codec *codec;
-+	struct wm8804_priv *wm8804;
-
-  	codec = dai->codec;
-  	switch (div_id) {
-@@ -459,6 +466,10 @@ static int wm8804_set_clkdiv(struct snd_soc_dai *dai,
-  		snd_soc_update_bits(codec, WM8804_PLL5, 0x30,
-  				    (div & 0x3) << 4);
-  		break;
-+	case WM8804_MCLK_DIV:
-+		wm8804 = snd_soc_codec_get_drvdata(codec);
-+		wm8804->mclk_div = div;
-+		break;
-  	default:
-  		dev_err(dai->dev, "Unknown clock divider: %d\n", div_id);
-  		return -EINVAL;
-diff --git a/sound/soc/codecs/wm8804.h b/sound/soc/codecs/wm8804.h
-index 8ec14f5..e72d4f4 100644
---- a/sound/soc/codecs/wm8804.h
-+++ b/sound/soc/codecs/wm8804.h
-@@ -57,5 +57,9 @@
-  #define WM8804_CLKOUT_SRC_OSCCLK		4
-
-  #define WM8804_CLKOUT_DIV			1
-+#define WM8804_MCLK_DIV				2
-+
-+#define WM8804_MCLKDIV_256FS			0
-+#define WM8804_MCLKDIV_128FS			1
-
-  #endif  /* _WM8804_H */
--- 
-1.7.9.5
+SGkgSmVhbi1GcmFuY29pcywNCg0KPiANCj4gSWYgdGhlIG9yaWdpbmFsIGNpbmZvIGlzIG5vdCB1
+c2VkIGFueW1vcmUsIHRoZSB1c2Ugb2YgaXRzIHN0cnVjdHVyZSB0bw0KPiBoYW5kbGUgdGhlIGNh
+cmQgaW5mb3JtYXRpb24gaXMgbm90IGEgZ29vZCBpZGVhOg0KPiANCj4gLSBhbG1vc3QgYWxsIGNp
+bmZvIGluZm9ybWF0aW9uIGFyZSBpbiB0aGUgc3RydWN0IHNuZF9zb2NfY2FyZCwNCj4gDQo+IC0g
+dGhpcyBjaW5mbyBzdHJ1Y3R1cmUgY2Fubm90IGJlIGV4dGVuZGVkIHRvIGhhbmRsZSBtYW55IERB
+SSBsaW5rcywNCj4gDQo+IC0gaXQgY29udGFpbnMgc2ltcGxlLWNhcmQgaW5mb3JtYXRpb24gd2hp
+Y2ggYXJlIG9mIG5vIHVzZSBmb3IgdGhlDQo+ICAgcGxhdGZvcm0gY2FsbGVyLg0KPiANCj4gU28s
+IEknZCByYXRoZXIgaGF2ZSBzZWVuOg0KPiANCj4gLSB0aGUgcmVtb3ZhbCBvZiAnc25kX2xpbmsn
+IGFuZCAnc25kX2NhcmQnIGZyb20gdGhlIHBsYXRmb3JtIGludGVyZmFjZQ0KPiAgIChzdHJ1Y3Qg
+YXNvY19zaW1wbGVfY2FyZF9pbmZvKSwNCj4gDQo+IC0gdGhlIGRlZmluaXRpb24gb2YgYSBsb2Nh
+bCBzdHJ1Y3Qgc2ltcGxlX2NhcmRfZGF0YSBjb250YWluaW5nIHRoZQ0KPiAgIHN0cnVjdCBzbmRf
+c29jX2NhcmQgYW5kIGEgcG9pbnRlciB0byBhbiBhcnJheSBvZiBmbXQvc3lzY2xrIHZhbHVlcw0K
+PiAgIChvbmUgcGVyIERBSSBsaW5rKS4NCj4gDQoNCkkgaGF2ZSBzZW50IG9uZSBwYXRjaCB0byBm
+aXggc29tZSBvZiB0aGVzZSBhbmQgbWFpbmx5IGZpeGVkIHRoZSBidWcgZnJvbQ0KTWFyaydzIGNv
+bW1lbnRzIGluIGFub3RoZXIgZWFybHkgZW1haWwuDQoNClRoYW5rcywNCg0KLS0NCkJlc3QgUmVn
+YXJkcywNClhpdWJvDQo=
