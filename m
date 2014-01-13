@@ -1,71 +1,86 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl-sai: Add device tree nodes and its availiable
- check
-Date: Mon, 13 Jan 2014 16:10:39 +0000
-Message-ID: <20140113161039.GA29039@sirena.org.uk>
-References: <1389319550-12238-1-git-send-email-Li.Xiubo@freescale.com>
- <20140110110900.GC29039@sirena.org.uk>
- <8ea36054cbe745cf9ce5c5d4a786f9ff@BY2PR03MB505.namprd03.prod.outlook.com>
+From: LANGLOIS Olivier PIS -EXT <olivier.pis.langlois@transport.alstom.com>
+Subject: Re: [ISSUE] crackles and clicks
+Date: Mon, 13 Jan 2014 16:32:30 +0000
+Message-ID: <89F8E4011FD7234ABFE48744E300CBC206BC3EF2@041-DB3MPN1-093.041d.mgd.msft.net>
+References: <CA+T9nP9VBdW6T8o3=5hFJpMXpHGz59VOGva2+8g8xoPw6Xa8+g@mail.gmail.com>
+ <s5hy52kt71z.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yHgig3XI5r20tkjN"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <8ea36054cbe745cf9ce5c5d4a786f9ff@BY2PR03MB505.namprd03.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from as-smtp1.itc.alstom.com (as-smtp1.itc.alstom.com
+ [159.245.16.36])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FEDD2602AD
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 17:32:56 +0100 (CET)
+In-Reply-To: <s5hy52kt71z.wl%tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+>
+> At Mon, 13 Jan 2014 09:34:04 +0100,
+> Eric F wrote:
+> >
+> > Hello,
+> >
+> > I tried my DAC (Tenor TE8802 chipset) in USB on Archlinux (LTS 3.10.26).
+> > I can hear regularly crackles ans clicks.
+> >
+> > I've tried all available USB ports, other kernels (3.12.6, 3.12.7),
+> > other distro (ubuntu), without luck...
+> >
+> > The DAC is Teac UD-H01.
+> >
+> > here is lsusb verbose : http://ix.io/9Q4
+> >
+> > Feel free to ask for more precisions, I'll give you all you need.
+>
+> Which program / sound backend did you test?  Do the crackles happen with
+> the plain "aplay -Dplughw foo.wav", too?
+>
+>
+> Takashi
 
---yHgig3XI5r20tkjN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+If this can help in the investigation of your problem, I can experience crackles and clicks during pcm playback on my small hpmini notebook. I have kinda nailed down the source of the crackles and clicks.
 
-On Mon, Jan 13, 2014 at 06:15:24AM +0000, Li.Xiubo@freescale.com wrote:
+It turns out that when my Wifi card is on but not connected, I have the crackles and clicks. If I connect to a Wifi network or close the Wifi, the crackles and clicks go away. I have not had the time check the Wifi driver code yet but my explanation of the behavior is that in that specific state, some wifi IRQ handler is taking too much time and stop my sound device irqs to be timely serviced.
 
-> > I would expect the of_device_is_available() check to be done by the
-> > driver core rather than by individual drivers - every single driver
-> > should have that check.  Is this not happening?  The check for np is OK
-> > though.
+My advice, is try to unload as much as possible kernel driver modules that may interfere with your audio playback and see if your crackles and clicks go away. For reference, here is my HW, in case you have the same Wifi Adapter....
 
-> Yes, I hasn't found the core driver does that for now...
+00:1b.0 Audio device [0403]: Intel Corporation NM10/ICH7 Family High Definition Audio Controller [8086:27d8] (rev 02)
+  Subsystem: Hewlett-Packard Company Device [103c:1584]
+  Flags: bus master, fast devsel, latency 0, IRQ 45
+  Memory at 96200000 (64-bit, non-prefetchable) [size=16K]
+  Capabilities: [50] Power Management version 2
+  Capabilities: [60] MSI: Enable+ Count=1/1 Maskable- 64bit+
+  Capabilities: [70] Express Root Complex Integrated Endpoint, MSI 00
+  Capabilities: [100] Virtual Channel
+  Capabilities: [130] Root Complex Link
+  Kernel driver in use: snd_hda_intel
+  Kernel modules: snd_hda_intel
 
-Are you sure, we actively use the ability to mark devices as unavailable
-on some systems?
+01:00.0 Network controller [0280]: Realtek Semiconductor Co., Ltd. RTL8188CE 802.11b/g/n WiFi Adapter [10ec:8176] (rev 01)
+  Subsystem: Hewlett-Packard Company Device [103c:1629]
+  Flags: bus master, fast devsel, latency 0, IRQ 16
+  I/O ports at 3000 [size=256]
+  Memory at 95000000 (64-bit, non-prefetchable) [size=16K]
+  Capabilities: [40] Power Management version 3
+  Capabilities: [50] MSI: Enable- Count=1/1 Maskable- 64bit+
+  Capabilities: [70] Express Endpoint, MSI 00
+  Capabilities: [100] Advanced Error Reporting
+  Capabilities: [140] Virtual Channel
+  Capabilities: [160] Device Serial Number 01-91-81-fe-ff-4c-e0-00
+  Kernel driver in use: rtl8192ce
+  Kernel modules: rtl8192ce
 
-> And IMO this is needed since the SAI driver is only base dts. And maybe
-> the device is not presently operational, but it might become operational
-> in the future (for example, something is not plugged in, or switched off).
-> Or A serious error was detected in the device, and it is unlikely to become
-> operational without repair...
-
-I'm sorry but I don't understand what you're saying here at all.  These
-are all things that might happen but I don't see the connection between
-them and the benefits of implementing things in the core - surely the
-more functionality there is the more useful it's going to be to factor
-all the code out into the driver core?
-
---yHgig3XI5r20tkjN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS1A/7AAoJELSic+t+oim9Z+wP/15s3Uzm929OYV4BNSH8A27Z
-wAyG+i3772RgeySypsKg0k5GITomLMTbcbtLH8vn/UL2P2z9J4qfFAGokuN2t5o1
-0KB2VFVd1WqeU2PyiF7VoZALc05lNG7fAgNawaQU8UQ9CTkryN+iTcmEkpII1FcL
-6Uw4yFNvRxxBgjDDWMlcixObN+U026R2wG2SLz9wgk5lvm06MUpaMPpWXpFOZMkT
-FentX5pMOlFxzE/Ca3WuCFrldUsBlpyn0o72NVs9Yuea5OLO3TTS12hLJvuI63MN
-vN6EoivyydX1pTICp+RJcvg9F7CxvYvzbzoP6OuACELMso0e2oFV7029oLW9Xhjf
-8/ez1VZcLkCq0Pz3gEarZVeMCwcSjjxx4h/RlyZ4IfcVMaop70Rs1tU4e5gNwjoB
-HYwzhAUXL+5QN+uQJxzzzJmqGcGo5Jq2MssOafcGkfY3U+Ec/6foQ7B9r82s96h2
-HiOiL3/pfYHvuSn/rbv/VCu+2gNHym/DRcykvvykdXspbGvTo+TEvscF6sdfjMPX
-OGDl2zqJsaf5WH76BbO4KBzLz8x7ykm8V4e/zYkqbQunQU0kgpGLpmr7bits9Udx
-zYLhc2KjTfEfNJhsJfCyoXhVkkljVySpN8HF2m0rT4b0Fgl66G2QL0TqJ+gNuZkJ
-azfb27qy3C7srozylGN7
-=r134
------END PGP SIGNATURE-----
-
---yHgig3XI5r20tkjN--
+________________________________
+CONFIDENTIALITY : This e-mail and any attachments are confidential and may be privileged. If you are not a named recipient, please notify the sender immediately and do not disclose the contents to another person, use it for any purpose or store or copy the information in any medium.
