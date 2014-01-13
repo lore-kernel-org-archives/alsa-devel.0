@@ -1,20 +1,18 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH 2/2] ASoC: codec doc,
- tlv320aic3x: Add tlv320aic32x4 as compatible
-Date: Mon, 13 Jan 2014 14:18:28 +0100
-Message-ID: <20140113131828.GC12183@pengutronix.de>
-References: <1389448111-17064-1-git-send-email-mpa@pengutronix.de>
- <1389448111-17064-3-git-send-email-mpa@pengutronix.de>
- <20140113123721.GV29039@sirena.org.uk>
+From: Alexander Shiyan <shc_work@mail.ru>
+Subject: Re: [PATCH v3] ASoC: imx: Allow using sound with DT
+ descriptions only
+Date: Mon, 13 Jan 2014 18:32:12 +0400
+Message-ID: <20140113183212.22f73787442da8af0879d012@mail.ru>
+References: <1389358827-381-1-git-send-email-shc_work@mail.ru>
+ <20140113035626.GI23525@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4ACDB2610D2
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 14:18:34 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20140113123721.GV29039@sirena.org.uk>
+Received: from smtp29.i.mail.ru (smtp29.i.mail.ru [94.100.177.89])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8E62261684
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 15:32:21 +0100 (CET)
+In-Reply-To: <20140113035626.GI23525@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello.
 
-On Mon, Jan 13, 2014 at 12:37:21PM +0000, Mark Brown wrote:
-> On Sat, Jan 11, 2014 at 02:48:31PM +0100, Markus Pargmann wrote:
-> > Add tlv320aic32x4 to the compatible list in the binding documentation.
-> > 
-> > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> > ---
-> >  Documentation/devicetree/bindings/sound/tlv320aic3x.txt | 1 +
-> >  1 file changed, 1 insertion(+)
+On Mon, 13 Jan 2014 11:56:28 +0800
+Shawn Guo <shawn.guo@linaro.org> wrote:
+> On Fri, Jan 10, 2014 at 05:00:27PM +0400, Alexander Shiyan wrote:
+> > This patch allow using generic sound cards/codecs based on DT description.
+...
+> > -config SND_SOC_IMX_AUDMUX
+> > +menuconfig SND_IMX_SOC
+> > +	tristate "SoC Audio for Freescale i.MX CPUs"
+> > +	depends on ARCH_MXC || COMPILE_TEST
+> > +	select SND_SOC_FSL_SSI if OF
+> > +	select SND_SOC_IMX_AUDMUX
+> > +	select SND_SOC_IMX_PCM_DMA
 > 
-> Applied, thanks but you should really also add this compatible string to
-> the driver.
+> Just want to understand the direction of this change.  Besides
+> FSL_SSI, we will have other CPU DAIs FSL_SPDIF, FSL_ESAI and FSL_SAI.
+> Will we select all of them from SND_IMX_SOC, or we only do it for
+> FSL_SSI?  Note, IMX_AUDMUX should be only needed for machine drivers
+> that use SSI CPU DAI.
 
-Oh, I didn't notice that the 320aic3x driver actually has of_device_ids.
-I was using the 320aic3x4 driver which only defines i2c_device_id but it
-still matches with the compatible fields from my devicetree.
-
-So perhaps it is better to drop this patch as it is no explicit
-compatible in the driver?
-
-Thanks,
-
-Markus
+Not clear how to do it right ...
+I conclude that the first version of the patch was the best, do a separate
+symbol for DT and select all required options.
+Rewrite in this way?
 
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Alexander Shiyan <shc_work@mail.ru>
