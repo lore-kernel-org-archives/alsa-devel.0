@@ -1,98 +1,92 @@
-From: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: [PATCHv2 6/6] ARM: dts: Enable SGTL5000 codec based audio driver node for VF610 TOWER.
-Date: Mon, 13 Jan 2014 13:53:58 +0800
-Message-ID: <1389592438-13761-7-git-send-email-Li.Xiubo@freescale.com>
-References: <1389592438-13761-1-git-send-email-Li.Xiubo@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1389592438-13761-1-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Cc: kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - Prevent speaker from entering automute on some AIO models
+Date: Mon, 13 Jan 2014 14:52:27 +0800
+Message-ID: <1389595947-15038-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds and enables SGTL5000 codec support, and also specified
-the corresponding SAI node.
+On some AIO (All In One) models with the codec alc668
+(Vendor ID: 0x10ec0668) on it, when we plug a headphone into the jack,
+the system will switch the output to headphone and set the speaker to
+automute as well as change the speaker Pin-ctls from 0x40 to 0x00,
+this will bring loud noise to the headphone.
 
-Signed-off-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+I tried to disable the corresponding EAPD, but it did not help to
+eliminate the noise.
+
+So far, the only way to eliminate the noise is preventing the speaker
+from entering automute.
+
+BugLink: https://bugs.launchpad.net/bugs/1268468
+Cc: David Henningsson <david.henningsson@canonical.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- arch/arm/boot/dts/vf610-twr.dts | 47 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+This problem has been reported on three Dell AIO models.
 
-diff --git a/arch/arm/boot/dts/vf610-twr.dts b/arch/arm/boot/dts/vf610-twr.dts
-index e60c20c..acc860a 100644
---- a/arch/arm/boot/dts/vf610-twr.dts
-+++ b/arch/arm/boot/dts/vf610-twr.dts
-@@ -34,6 +34,43 @@
- 		};
- 	};
+ sound/pci/hda/patch_realtek.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6a705a8..27111d0 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3589,6 +3589,17 @@ static void alc_fixup_headset_mode_alc255(struct hda_codec *codec,
+ 	alc_fixup_headset_mode(codec, fix, action);
+ }
  
-+	regulators {
-+		compatible = "simple-bus";
++static void alc_fixup_spk_automute_alc668(struct hda_codec *codec,
++				const struct hda_fixup *fix, int action)
++{
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		struct alc_spec *spec = codec->spec;
++		/* On some AIO (All In One) machines, setting the speaker
++		   to audomute will bring the noise to the headphone. */
++		spec->gen.suppress_auto_mute = 1;
++	}
++}
 +
-+		reg_3p3v: 3p3v {
-+			compatible = "regulator-fixed";
-+			regulator-name = "3P3V";
-+			regulator-min-microvolt = <3300000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-always-on;
-+		};
-+	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		sound-widgets = "vf610-sgtl5000";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,routing =
-+			"MIC_IN", "Mic Jack",
-+			"Mic Jack", "Mic Bias",
-+			"LINE_IN", "Line In Jack",
-+			"Headphone Jack", "HP_OUT",
-+			"Ext Spk", "LINE_OUT";
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&sai2>;
-+			master-clkdir-out;
-+			frame-master;
-+			bitclock-master;
-+		};
-+
-+		simple-audio-card,codec {
-+			sound-dai = <&codec>;
-+			frame-master;
-+			bitclock-master;
-+		};
-+	};
-+
+ static void alc_fixup_headset_mode_alc668(struct hda_codec *codec,
+ 				const struct hda_fixup *fix, int action)
+ {
+@@ -4935,6 +4946,7 @@ enum {
+ 	ALC662_FIXUP_BASS_CHMAP,
+ 	ALC662_FIXUP_BASS_1A,
+ 	ALC662_FIXUP_BASS_1A_CHMAP,
++	ALC668_FIXUP_AUTO_MUTE,
  };
  
- &dspi0 {
-@@ -72,9 +109,19 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_i2c0_1>;
- 	status = "okay";
-+
-+	codec: sgtl5000@0a {
-+	       #sound-dai-cells = <0>;
-+	       compatible = "fsl,sgtl5000";
-+	       reg = <0x0a>;
-+	       VDDA-supply = <&reg_3p3v>;
-+	       VDDIO-supply = <&reg_3p3v>;
-+	       clocks = <&clks VF610_CLK_SAI2>;
-+	};
- };
- 
- &sai2 {
-+	#sound-dai-cells = <0>;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_sai2_1>;
- 	status = "okay";
+ static const struct hda_fixup alc662_fixups[] = {
+@@ -5095,6 +5107,12 @@ static const struct hda_fixup alc662_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_inv_dmic_0x12,
+ 	},
++	[ALC668_FIXUP_AUTO_MUTE] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_spk_automute_alc668,
++		.chained = true,
++		.chain_id = ALC668_FIXUP_DELL_MIC_NO_PRESENCE
++	},
+ 	[ALC668_FIXUP_DELL_MIC_NO_PRESENCE] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+@@ -5140,11 +5158,11 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x038b, "Acer Aspire 8943G", ALC662_FIXUP_ASPIRE),
+ 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1028, 0x0623, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1028, 0x0624, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x0623, "Dell", ALC668_FIXUP_AUTO_MUTE),
++	SND_PCI_QUIRK(0x1028, 0x0624, "Dell", ALC668_FIXUP_AUTO_MUTE),
+ 	SND_PCI_QUIRK(0x1028, 0x0625, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0626, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1028, 0x0628, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x0628, "Dell", ALC668_FIXUP_AUTO_MUTE),
+ 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
+ 	SND_PCI_QUIRK(0x1043, 0x11cd, "Asus N550", ALC662_FIXUP_BASS_1A_CHMAP),
+ 	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_BASS_CHMAP),
 -- 
-1.8.4
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.8.1.2
