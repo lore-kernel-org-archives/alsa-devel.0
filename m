@@ -1,72 +1,28 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [ISSUE] crackles and clicks
-Date: Tue, 14 Jan 2014 15:42:24 +0100
-Message-ID: <20140114144224.GC23764@tamtam.fritz.box>
-References: <CA+T9nP9VBdW6T8o3=5hFJpMXpHGz59VOGva2+8g8xoPw6Xa8+g@mail.gmail.com>
- <s5hy52kt71z.wl%tiwai@suse.de>
- <89F8E4011FD7234ABFE48744E300CBC206BC3EF2@041-DB3MPN1-093.041d.mgd.msft.net>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [alsa-devel] [RFC][PATCH] ASoC: simple-card: Add
+ asoc_simple_card_data for the simple card driver data
+Date: Tue, 14 Jan 2014 14:43:51 +0000
+Message-ID: <9a2f6818586c4dfb9a5e0a019c6a2b06@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1389678282-1097-1-git-send-email-Li.Xiubo@freescale.com>
+	<871u0bgiai.wl%kuninori.morimoto.gx@gmail.com>
+	<96cb876ff05c4062ab5a2c92fb7b3c41@BY2PR03MB505.namprd03.prod.outlook.com>,<20140114120913.19d883fe@armhf>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 64AAB2619F0
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 15:42:27 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <89F8E4011FD7234ABFE48744E300CBC206BC3EF2@041-DB3MPN1-093.041d.mgd.msft.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: LANGLOIS Olivier PIS -EXT <olivier.pis.langlois@transport.alstom.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140114120913.19d883fe@armhf>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 13, 2014 at 04:32:30PM +0000, LANGLOIS Olivier PIS -EXT wrote:
-> > At Mon, 13 Jan 2014 09:34:04 +0100,
-> > Eric F wrote:
-> > >
-> > > Hello,
-> > >
-> > > I tried my DAC (Tenor TE8802 chipset) in USB on Archlinux (LTS 3.10.26).
-> > > I can hear regularly crackles ans clicks.
-> > >
-> > > I've tried all available USB ports, other kernels (3.12.6, 3.12.7),
-> > > other distro (ubuntu), without luck...
-> > >
-> > > The DAC is Teac UD-H01.
-> > >
-> > > here is lsusb verbose : http://ix.io/9Q4
-> > >
-> > > Feel free to ask for more precisions, I'll give you all you need.
-> >
-> > Which program / sound backend did you test?  Do the crackles happen with
-> > the plain "aplay -Dplughw foo.wav", too?
-> >
-> >
-> > Takashi
-> 
-> If this can help in the investigation of your problem, I can experience crackles and clicks during pcm playback on my small hpmini notebook. I have kinda nailed down the source of the crackles and clicks.
-> 
-> It turns out that when my Wifi card is on but not connected, I have the crackles and clicks. If I connect to a Wifi network or close the Wifi, the crackles and clicks go away. I have not had the time check the Wifi driver code yet but my explanation of the behavior is that in that specific state, some wifi IRQ handler is taking too much time and stop my sound device irqs to be timely serviced.
-> 
-> My advice, is try to unload as much as possible kernel driver modules that may interfere with your audio playback and see if your crackles and clicks go away. For reference, here is my HW, in case you have the same Wifi Adapter....
-> 
-
-I'm not sure whether you're on the right track here.
-
-Which program are you using for this? How are the buffer sizes
-configured? Are you seeing XRUNs?
-
-And are you sure the audio distortion doesn't relate to bad USB power?
-Please check with a different PC as well, and for tests, put a
-powered(!) USB hub inbetween your PC and the DAC.
+Hi  Jean-Francios,
 
 
+I do think split the muti-issues into deferent patches will be easier to
+upstream code, and the risk will be lower.
 
-Daniel
+So this patch is just the first step.
+
+Thanks,
