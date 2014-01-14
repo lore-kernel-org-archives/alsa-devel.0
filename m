@@ -1,28 +1,55 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [alsa-devel] [RFC][PATCH] ASoC: simple-card: Add
- asoc_simple_card_data for the simple card driver data
-Date: Tue, 14 Jan 2014 14:43:51 +0000
-Message-ID: <9a2f6818586c4dfb9a5e0a019c6a2b06@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1389678282-1097-1-git-send-email-Li.Xiubo@freescale.com>
-	<871u0bgiai.wl%kuninori.morimoto.gx@gmail.com>
-	<96cb876ff05c4062ab5a2c92fb7b3c41@BY2PR03MB505.namprd03.prod.outlook.com>,<20140114120913.19d883fe@armhf>
+From: Eric F <3rik.gm@gmail.com>
+Subject: [ISSUE] crackles and clicks
+Date: Tue, 14 Jan 2014 15:59:21 +0100
+Message-ID: <CA+T9nP8TEwAUC-77RDu+TtGpndWFEXj1o8wXt0cPwT17wn58CQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140114120913.19d883fe@armhf>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vc0-f182.google.com (mail-vc0-f182.google.com
+ [209.85.220.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06D9C261AB7
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 15:59:22 +0100 (CET)
+Received: by mail-vc0-f182.google.com with SMTP id id10so312606vcb.13
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 06:59:22 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi  Jean-Francios,
+Please never do the following things on public mailing lists:
+
+1. Take the mailing list address out of Cc. ALWAYS(!) use "reply to all"
+2. Top-post. Please quote your reposonse properly, as everyone else does
+3. Send HTML-Email. Please use plain-text only.
 
 
-I do think split the muti-issues into deferent patches will be easier to
-upstream code, and the risk will be lower.
+As for your problem, please refer to the the reply I posted to you
+earlier mail. I'm really having trouble understanding your problem.
+Please follow the three basic rules above when replying :)
 
-So this patch is just the first step.
+I use Gmail, haven't seen a reply to all option...
 
-Thanks,
+I'm not used to this, pplease excuse me...
+
+HERE IS WHAT I SAID :
+
+Hello,
+
+There is no distortion ! only crackles and clicks.
+
+When using it with Jack, no xruns at all.
+
+But for testing purpose, I have disabled Jack, mpd,  I use only aplay.
+Dunno if there is a way for buffer stuff with it.
+
+Gonna buy a powered USB Hub.
+
+Thanks !
