@@ -1,22 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: codec doc,
- tlv320aic3x: Add tlv320aic32x4 as compatible
-Date: Tue, 14 Jan 2014 12:14:26 +0000
-Message-ID: <20140114121426.GB15567@sirena.org.uk>
-References: <1389448111-17064-1-git-send-email-mpa@pengutronix.de>
- <1389448111-17064-3-git-send-email-mpa@pengutronix.de>
- <20140113123721.GV29039@sirena.org.uk>
- <20140113131828.GC12183@pengutronix.de>
- <20140113154457.GY29039@sirena.org.uk>
- <20140114085019.GD12183@pengutronix.de>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH] ALSA: usb-audio: Add support for Focusrite
+ Saffire 6 USB
+Date: Tue, 14 Jan 2014 13:41:59 +0100
+Message-ID: <20140114124159.GA23764@tamtam.fritz.box>
+References: <1387526818-3080-1-git-send-email-edgilmutdinov@gmail.com>
+ <52B414CD.9040107@zonque.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5604125756260761301=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F7F52616FF
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 13:14:34 +0100 (CET)
-In-Reply-To: <20140114085019.GD12183@pengutronix.de>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECEC326170F
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 13:42:01 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <52B414CD.9040107@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,62 +23,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, Eduard Gilmutdinov <edgilmutdinov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Dec 20, 2013 at 10:58:37AM +0100, Daniel Mack wrote:
+> On 12/20/2013 09:06 AM, Eduard Gilmutdinov wrote:
+> > Signed-off-by: Eduard Gilmutdinov <edgilmutdinov@gmail.com>
+> 
+> Looks good to me, except for the fact that the ordering of the quirk
+> entry is not optimal (0x0010 should be above 0x0018).
+> 
+> But I see that there's another misplaced item (Focusrite Scarlett 18i6),
+> so I'll fix both in a new patch on top of this one.
+> 
+> 
+> Thanks for your submission again!
 
---===============5604125756260761301==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UHN/qo2QbUvPLonB"
-Content-Disposition: inline
-
-
---UHN/qo2QbUvPLonB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jan 14, 2014 at 09:50:19AM +0100, Markus Pargmann wrote:
-> On Mon, Jan 13, 2014 at 03:44:57PM +0000, Mark Brown wrote:
-
-> > Or you could add the compatible string to the driver as I suggested...
-> > I don't see any reason for the device not to have a compatible string?
-
-> The codec is not working here at the moment, so I can't test if the
-> aic3204 codec is really working with the aic3x driver.
-
-Why would you add the compatible string to the aic3x driver, there is a
-separate driver for this chip?
-
---UHN/qo2QbUvPLonB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS1SofAAoJELSic+t+oim9JNoP/0gzU/d2CsqiEVuOqS2xuIVY
-GP6ePPxXLt2RCweEgUZKW768aPyHHR+/bbPzS8gF+1ylMes9vLPKWq6Yn9jEUKU9
-J8s+fLkiNUVnqWGb+NEN4aimb7xkKOa7d7fKNqc3DbOMU4NkPtl6KhGNurzR6W2E
-PIpY1iZ5exbPt2QJRBT8kkOR8A10C2CKFkldTSzThWAgpH0z9+xnnbWgCEHJ9i3C
-MijgMz/L23eFnkUN5aZ0DjRbcwGEXfYdJ7bKY1Y0YNmcqhM44TWEqLdDm6lla/ia
-jPGp8F+VL+MHVFdrHrqf/GWj1SY2ovPBo5jCT8jAfCLQ0kGjNc6vzlH/qL2jbIbk
-glyGQN5ESt/7QrlilUGvIPOlkr4ph7Oe4bTAE97CXqtyiNAmffJwGgBXtLOE7l4L
-5xbf10kHoAIk5ugmN29QL59aGzXaMuWV9U77oQ3UBcowWlx9UUNxlMWOnSJe6yaH
-SeCZs6c/GZ+f2aHnRDlXfx612Ya2w1MNFQdvi45ZtLk6nDfDfnBHPBuU17O/BFie
-qEmV6F2+bRrKR2sz7Jm/V/igLOJojwkJEqwN9Z118OdcgJisQqm28nkIrekuJ8xd
-h2WcYXzYIksB3I7+5xbXlTEqoSHfs9oy83eXiHS2SS1grBl78vTvTQx02nDCtXZ/
-zRaoJ4DRz4ngoy3l8LQk
-=voK2
------END PGP SIGNATURE-----
-
---UHN/qo2QbUvPLonB--
-
---===============5604125756260761301==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Takashi, could you queue this in your tree? I'll send a fixup patch for
+the reording after that.
 
 
---===============5604125756260761301==--
+Thanks,
+Daniel
+
+
+> > ---
+> >  sound/usb/quirks-table.h | 40 ++++++++++++++++++++++++++++++++++++++++
+> >  sound/usb/quirks.c       |  9 +++++----
+> >  2 files changed, 45 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+> > index f5f0595..3454780 100644
+> > --- a/sound/usb/quirks-table.h
+> > +++ b/sound/usb/quirks-table.h
+> > @@ -2569,6 +2569,46 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+> >  		.type = QUIRK_MIDI_NOVATION
+> >  	}
+> >  },
+> > +{
+> > +	USB_DEVICE(0x1235, 0x0010),
+> > +	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+> > +		.vendor_name = "Focusrite",
+> > +		.product_name = "Saffire 6 USB",
+> > +		.ifnum = QUIRK_ANY_INTERFACE,
+> > +		.type = QUIRK_COMPOSITE,
+> > +		.data = (const struct snd_usb_audio_quirk[]) {
+> > +			{
+> > +				.ifnum = 0,
+> > +				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+> > +				.data = &(const struct audioformat) {
+> > +					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
+> > +					.channels = 4,
+> > +					.iface = 0,
+> > +					.altsetting = 1,
+> > +					.altset_idx = 1,
+> > +					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
+> > +					.endpoint = 0x01,
+> > +					.ep_attr = USB_ENDPOINT_XFER_ISOC,
+> > +					.rates = SNDRV_PCM_RATE_44100 |
+> > +						 SNDRV_PCM_RATE_48000,
+> > +					.rate_min = 44100,
+> > +					.rate_max = 48000,
+> > +					.nr_rates = 2,
+> > +					.rate_table = (unsigned int[]) {
+> > +						44100, 48000
+> > +					}
+> > +				}
+> > +			},
+> > +			{
+> > +				.ifnum = 1,
+> > +				.type = QUIRK_MIDI_RAW_BYTES
+> > +			},
+> > +			{
+> > +				.ifnum = -1
+> > +			}
+> > +		}
+> > +	}
+> > +},
+> >  
+> >  /* Access Music devices */
+> >  {
+> > diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+> > index 0df9ede..e9a59e9 100644
+> > --- a/sound/usb/quirks.c
+> > +++ b/sound/usb/quirks.c
+> > @@ -662,8 +662,9 @@ static int snd_usb_cm6206_boot_quirk(struct usb_device *dev)
+> >  
+> >  /*
+> >   * Novation Twitch DJ controller
+> > + * Focusrite Novation Saffire 6 USB audio card
+> >   */
+> > -static int snd_usb_twitch_boot_quirk(struct usb_device *dev)
+> > +static int snd_usb_novation_boot_quirk(struct usb_device *dev)
+> >  {
+> >  	/* preemptively set up the device because otherwise the
+> >  	 * raw MIDI endpoints are not active */
+> > @@ -972,9 +973,9 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
+> >  		/* Digidesign Mbox 2 */
+> >  		return snd_usb_mbox2_boot_quirk(dev);
+> >  
+> > -	case USB_ID(0x1235, 0x0018):
+> > -		/* Focusrite Novation Twitch */
+> > -		return snd_usb_twitch_boot_quirk(dev);
+> > +	case USB_ID(0x1235, 0x0010): /* Focusrite Novation Saffire 6 USB */
+> > +	case USB_ID(0x1235, 0x0018): /* Focusrite Novation Twitch */
+> > +		return snd_usb_novation_boot_quirk(dev);
+> >  
+> >  	case USB_ID(0x133e, 0x0815):
+> >  		/* Access Music VirusTI Desktop */
+> > 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
