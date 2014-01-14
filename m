@@ -1,17 +1,18 @@
-From: Jean-Francois Moine <moinejf@free.fr>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: simple-card: simplify code
-Date: Tue, 14 Jan 2014 17:12:58 +0100
-Message-ID: <20140114171258.2d027ee5@armhf>
+Date: Tue, 14 Jan 2014 18:00:05 +0000
+Message-ID: <20140114180005.GT15567@sirena.org.uk>
 References: <20140114123606.2241d8ab@armhf>
  <20140114142014.GM15567@sirena.org.uk>
+ <20140114171258.2d027ee5@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1108185878572173159=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
- by alsa0.perex.cz (Postfix) with ESMTP id 90CF5261B16
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 17:13:25 +0100 (CET)
-In-Reply-To: <20140114142014.GM15567@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7AC21261B36
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 19:00:18 +0100 (CET)
+In-Reply-To: <20140114171258.2d027ee5@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,40 +22,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
+To: Jean-Francois Moine <moinejf@free.fr>
 Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAxNCBKYW4gMjAxNCAxNDoyMDoxNCArMDAwMApNYXJrIEJyb3duIDxicm9vbmllQGtl
-cm5lbC5vcmc+IHdyb3RlOgoKPiBPbiBUdWUsIEphbiAxNCwgMjAxNCBhdCAxMjozNjowNlBNICsw
-MTAwLCBKZWFuLUZyYW5jb2lzIE1vaW5lIHdyb3RlOgo+ID4gVGhpcyBwYXRjaAo+ID4gLSByZW1v
-dmVzIHRoZSBmaWVsZHMgb2YgdGhlIHBsYXRmb3JtIGRhdGEgd2hpY2ggYXJlIG9mIG5vIHVzZSB0
-byB0aGUKPiA+ICAgbm9uLURUIHBsYXRmb3JtIGNhbGxlcnMsCj4gPiAtIHVzZXMgYSBuZXcgcHJp
-dmF0ZSBzdHJ1Y3R1cmUgdG8gaGFuZGxlIGFsbCB0aGUgc291bmQgY2FyZCBpbmZvcm1hdGlvbiwK
-PiA+IC0gc2ltcGxpZmllcyB0aGUgY29kZSBhbmQgbWFrZSBlYXNpZXIgYSBwb3NzaWJsZSBtdWx0
-aS1EQUkgbGlua3MgZXh0ZW5zaW9uLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBKZWFuLUZyYW5j
-b2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Cj4gPiAtLS0KPiA+IFhpdWJvLCBJIGFsc28gcmVt
-b3ZlZCAnb2ZfZGV2aWNlX2lzX2F2YWlsYWJsZScgd2hpY2ggc2VlbXMgcmVhbGx5Cj4gPiB1c2Vs
-ZXNzOiB0aGUgbW9kdWxlIGlzIG5vdCBwcm9iZWQgd2hlbiB0aGUgRFQgc3RhdHVzIGlzIG5vdCAi
-b2theSIuCj4gCj4gUGxlYXNlIHNlbmQgdGhpcyBhcyBhIHBhdGNoIHNlcmllcyB0byBhaWQgcmV2
-aWV3LCBvbmUgcGF0Y2ggZG9pbmcgZm91cgo+IGRpZmZlcmVudCBjaGFuZ2VzIGlzIG11Y2ggaGFy
-ZGVyIHRvIHJldmlldy4KCkFzIHRoZXJlIGFyZSBvdGhlciBidWdzIHRvIGZpeCwgSSBtYXkgcHV0
-IGJhY2sgdGhlICdvZl9kZXZpY2VfaXNfYXZhaWxhYmxlJywKYnV0IHRoZXJlIGFyZSBub3QgMyBk
-aWZmZXJlbnQgY2hhbmdlczogSSBqdXN0IGV4cGxhaW4gdGhlIHZpc2libGUKZWZmZWN0cyBvZiB0
-aGUgcGF0Y2guIFRoZSBwYXRjaCBpdHNlbGYgaXMsIGFzIHRoZSBzdWJqZWN0IHNheXMsCidzaW1w
-bGlmeSBjb2RlJywgdGhhdCBpcywgJ2hhdmUgYSBzaW1wbGVyIGNvZGUgd2l0aCBubyBjaGFuZ2Ug
-aW4gdGhlCmxvZ2ljJy4KCj4gPiAgCQlyZXQgPSBhc29jX3NpbXBsZV9jYXJkX3N1Yl9wYXJzZV9v
-ZihucCwKPiA+IC0JCQkJCQkgICZpbmZvLT5jcHVfZGFpLAo+ID4gLQkJCQkJCSAgb2ZfY3B1KTsK
-PiA+ICsJCQkJCQkgICZwcml2LT5jcHVfZGFpLAo+ID4gKwkJCQkJICAoc3RydWN0IGRldmljZV9u
-b2RlICoqKQo+ID4gKwkJCQkJCSAgJmRhaV9saW5rLT5jcHVfb2Zfbm9kZSwKPiA+ICsJCQkJCQkg
-ICZkYWlfbGluay0+Y3B1X2RhaV9uYW1lKTsKPiAKPiAKPiBXaGF0J3MgdGhpcyBjYXN0IGhlcmUg
-Zm9yPyAgVGhhdCBjb2RlIGRvZXNuJ3QgbG9vayBhdCBhbGwgc2FmZS4KCmRhaV9saW5rLT5jcHVf
-b2Zfbm9kZSBpcyAnY29uc3Qgc3RydWN0IGRldmljZV9ub2RlIConIGFuZCBib3RoCm9mX2Nsa19n
-ZXQoKSBhbmQgb2Zfbm9kZV9wdXQoKSB3YW50ICdzdHJ1Y3QgZGV2aWNlX25vZGUgKicuIFNvLCB0
-aGVyZQptdXN0IGJlIGEgY2FzdCBzb21ld2hlcmUuCgpEbyB5b3UgcHJlZmVyIEkgcHV0IHRoZXNl
-IG9uZXMgd2hlbiBjYWxsaW5nIHRoZSAnb2ZfeHgnIGZ1bmN0aW9ucz8KCi0tIApLZW4gYXIgYydo
-ZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkplZgkJfAkJaHR0cDov
-L21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+
+--===============1108185878572173159==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="IQvoI1rdlCKiYEYW"
+Content-Disposition: inline
+
+
+--IQvoI1rdlCKiYEYW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jan 14, 2014 at 05:12:58PM +0100, Jean-Francois Moine wrote:
+> Mark Brown <broonie@kernel.org> wrote:
+
+> > Please send this as a patch series to aid review, one patch doing four
+> > different changes is much harder to review.
+
+> As there are other bugs to fix, I may put back the 'of_device_is_available',
+> but there are not 3 different changes: I just explain the visible
+> effects of the patch. The patch itself is, as the subject says,
+> 'simplify code', that is, 'have a simpler code with no change in the
+> logic'.
+
+There's several different simplifications going on here, or at least it
+sounded that way.  For example creating a private data struct doesn't
+seem obviously related to deleting unused fields from the platform data.
+The larger a change is the more benefit there is from a series of
+mechanical individual updates rather than several at once.
+
+> > >  		ret = asoc_simple_card_sub_parse_of(np,
+> > > -						  &info->cpu_dai,
+> > > -						  of_cpu);
+> > > +						  &priv->cpu_dai,
+> > > +					  (struct device_node **)
+> > > +						  &dai_link->cpu_of_node,
+> > > +						  &dai_link->cpu_dai_name);
+
+> > What's this cast here for?  That code doesn't look at all safe.
+
+> dai_link->cpu_of_node is 'const struct device_node *' and both
+> of_clk_get() and of_node_put() want 'struct device_node *'. So, there
+> must be a cast somewhere.
+
+> Do you prefer I put these ones when calling the 'of_xx' functions?
+
+No, I think this stuff needs to actually be type safe with no dodgy
+casts.  I'm not sure why we're doing an of_node_put(), for the
+of_clk_get() it's not immediately obvious why it's not taking a const
+clk.  Or perhaps the pointer shouldn't be stored as const.
+
+--IQvoI1rdlCKiYEYW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS1XsiAAoJELSic+t+oim9yeMP/jnThYE8FYGnXYoruMF/XFwd
+u2jIZEeHVW/xDGMKYA7P1JhBuviGMPiWtAuL8ypFHX5MEsY81wZ55igYOdQHfCeX
+e1Gsd07I7tMN1KvWURh5lWhEA2Bsmz3/C1vYgOW3ps/vONFyQBbaZY9J4mPqwNuo
+wATxZcga/Eicr89DDyU6hbPlFnI3TAIJLAmpLLyVd73NoDlqNyhdBjVpLBeMIrO4
+lfuJ97blj+WpvRTX/valnxp0OlGpo0Suw1SNtwjbb69pQ+ScjMKKsVGYBOxzjrc5
+v33igqiSZGrMcyR6Gr9kuJTmVukw4E9ledQyo5uc3XIaes9zXyp7lezjHNVgtCFu
+Q+4n6d70BST1bZGMMYGukuopGWne0xpHC1o86VhXSFAFigcOBoS1afIDC4mEHKv9
+yKOaSXL/Wy6y+Mdyp7S106O0ndPF937tEL6ohghpVvP8QyRSys6q1Kcjkrd/Hatg
+l7LhCpjkSm30sOKLOgt7xYyDgELUmcL713Rqji4KbICfqu2rjCqcxhk5Hx014Ekk
+Ysq7dwdWFElu4Hd237Cn4Rv0RqA2gUzaaF2zZJAz0Y913WfpThYfB+PMRTYaCt4Z
+JguTxquGhYgyvnu9inLzVkUoS6hM5dpxVVeglYow+T3hmhjbJiO1WO96QrdVNOFj
+QE/h14u53Pjqc45zsxI3
+=ndoj
+-----END PGP SIGNATURE-----
+
+--IQvoI1rdlCKiYEYW--
+
+--===============1108185878572173159==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1108185878572173159==--
