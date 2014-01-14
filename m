@@ -1,51 +1,63 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [alsa-devel] [RFC][PATCH] ASoC: simple-card: Add
-	asoc_simple_card_data for the simple card driver data
-Date: Tue, 14 Jan 2014 07:56:32 +0000
-Message-ID: <96cb876ff05c4062ab5a2c92fb7b3c41@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1389678282-1097-1-git-send-email-Li.Xiubo@freescale.com>
- <871u0bgiai.wl%kuninori.morimoto.gx@gmail.com>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH 2/2] ASoC: codec doc,
+ tlv320aic3x: Add tlv320aic32x4 as compatible
+Date: Tue, 14 Jan 2014 09:50:19 +0100
+Message-ID: <20140114085019.GD12183@pengutronix.de>
+References: <1389448111-17064-1-git-send-email-mpa@pengutronix.de>
+ <1389448111-17064-3-git-send-email-mpa@pengutronix.de>
+ <20140113123721.GV29039@sirena.org.uk>
+ <20140113131828.GC12183@pengutronix.de>
+ <20140113154457.GY29039@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <871u0bgiai.wl%kuninori.morimoto.gx@gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "moinejf@free.fr" <moinejf@free.fr>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 42563261609
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 09:50:26 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20140113154457.GY29039@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-> > Whether the dt is used or not, almost all the simple card information
-> > for the DAI link and sound card are initialized in the simple card driver.
-> >
-> > And for the platform caller, the snd_link and snd_card are of no use, so
-> > move them from struct asoc_simple_card_info to struct asoc_simple_card_data.
-> >
-> > And now only one DAI link is supported for simple card.
-> >
-> > Suggested-by: Jean-Francois Moine <moinejf@free.fr>
-> > Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-> > ---
+On Mon, Jan 13, 2014 at 03:44:57PM +0000, Mark Brown wrote:
+> On Mon, Jan 13, 2014 at 02:18:28PM +0100, Markus Pargmann wrote:
+> > On Mon, Jan 13, 2014 at 12:37:21PM +0000, Mark Brown wrote:
 > 
-> This patch seems have many this kind of lines
->   -	info->xxx
->   +	sdata->info->xxx
+> > > Applied, thanks but you should really also add this compatible string to
+> > > the driver.
 > 
-> But, how about add this line to each function ?
+> > Oh, I didn't notice that the 320aic3x driver actually has of_device_ids.
+> > I was using the 320aic3x4 driver which only defines i2c_device_id but it
+> > still matches with the compatible fields from my devicetree.
 > 
->      struct asoc_simple_card_info *info = &sdata->info;
+> > So perhaps it is better to drop this patch as it is no explicit
+> > compatible in the driver?
 > 
-> Patch will be more readable
->
+> Or you could add the compatible string to the driver as I suggested...
+> I don't see any reason for the device not to have a compatible string?
 
-Yes, that's looks perfect.
+The codec is not working here at the moment, so I can't test if the
+aic3204 codec is really working with the aic3x driver.
 
-See the next version please.
+Regards,
 
-Thanks,
+Markus
 
---
-Best Regards,
-Xiubo
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
