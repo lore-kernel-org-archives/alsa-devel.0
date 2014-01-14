@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/5] ASoC: pcm: Properly initialize
-	hw->rate_max
-Date: Tue, 14 Jan 2014 20:42:58 +0000
-Message-ID: <20140114204258.GY15567@sirena.org.uk>
-References: <1389432284-6792-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH resend] ASoC: simple-card: fix one bug to
+ writing to the platform data
+Date: Tue, 14 Jan 2014 21:25:59 +0000
+Message-ID: <20140114212559.GA15567@sirena.org.uk>
+References: <1389674132-14928-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1581371889592114341=="
+Content-Type: multipart/mixed; boundary="===============0338439667755819164=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E1BB2264FD1
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 21:43:05 +0100 (CET)
-In-Reply-To: <1389432284-6792-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 50251265015
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 22:26:09 +0100 (CET)
+In-Reply-To: <1389674132-14928-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1581371889592114341==
+--===============0338439667755819164==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="72btQdUC6twB1rwh"
+	protocol="application/pgp-signature"; boundary="+HwY7O+GdaLKMYOv"
 Content-Disposition: inline
 
 
---72btQdUC6twB1rwh
+--+HwY7O+GdaLKMYOv
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Jan 11, 2014 at 10:24:40AM +0100, Lars-Peter Clausen wrote:
-> If none of the components (CODEC or CPU DAI) sets a maximum sample rate we'll
-> end up with the rate_max field of the runtime hardware set to 0.  (Note that it
+On Tue, Jan 14, 2014 at 12:35:32PM +0800, Xiubo Li wrote:
+> It's a bug that writing to the platform data directly, for it should
+> be constant. So just copy it before writing.
 
-Applied all, thanks.
+Applied, thanks.
 
---72btQdUC6twB1rwh
+--+HwY7O+GdaLKMYOv
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS1aFPAAoJELSic+t+oim9MlUP/RFVNdX6CPJUSVsW45PWYHy2
-evfvuD60f10WtObKzIyDf5BL9Jruncd2p8mHKc2UMVBsEXPb8Bl/XLfpkVOEXVPI
-i9OeJUo0cfy8wT/H47QpfuCkDmn0rza2dGfABKdHElqblnVRx+56X1kii80U3uB3
-YiWO55WlV0bCz3cmzvnUCmKSoYaxwX3loZ1obNOqXz7A+OYbXCucvOUc4ztQK+KA
-/okFEOtFg+07tmyFZ4Ddus3ovUgYedPfgeaoNyBGY4Qmh9gzUsaAkZCVHFThJbsi
-DxD6AQUAU+DIGYDFFGLeHlAR2xSom2mMDtjeBcvfZsiXuJVqzULrJcXhhlrbu8+d
-/V2TNIpJnVonkVJuF3+r5yHyOL8eC/S6Q4Oj4Ct0iKdh9aP+VlHV1kYnvuNb9neD
-mVvKBrIICZMDoMDkgGu5hx0bU9PbS5PT9OVYtSPMt1jTLyCTWcInZePv25C8HXpr
-ycT3QGqxLs14kr12xq39pT3Nc3ohJGVbcmVX8Trb+qr7ZnTlQ8x3pB4OYk/u/v1T
-ey6Ntd/QYrk++yAFB7V4HmHDi9cKDYASmNjvd2gJ/d8QW70lSsTIUDElcshqZ0hB
-Ot0vL5ZP2DKUeUWELMwyAL0cdoLQkYFpggAhbjwOASg03urHBdRWO6Bzp/8sfamn
-nXDqarWn4ahrfiB6PPoJ
-=YL5J
+iQIcBAEBAgAGBQJS1atkAAoJELSic+t+oim9v4kP/1CKThpq8yWxL5LUK5o4jfEn
+j5hMRHxgPJt57l+60MmAVRsxgRErRMNcIZ4mm9/mne9eNuYp9F3jjbBupkz2CCCn
+a2GtBB3p2i2NvuUL2geV5XnVkCKsawrKWZI1yyCmbQMppcPMfB0+IaMDJ7AqY3h8
+Sz/UywLnXsyNwEc9k08W6wwwrsg7u71okhdDQvYvd5k1nHC+ewlGpk+R7WmPZ5VT
+JF/fNhPc0TutQ1xuplybLAUvhLp8ZIICxoKVwdWz+bmfqCqtxc2q33W86+NbtRRU
+Zszq8bTy1pYHncK3QMGE8j79861nrscCA9x++e1sADZ47DFarXocw5Tow1jPcTGN
+qvgHo1YAB0g4r1tflxUZ6LG/ynX4pR+aNJaVaiqOFA0bK9LXpgd67zc+vx69j3C5
+lb2GPNrLG+ceN9sjVI6krvvQIxreStip1AsVq7x9daWtlK/oDnmZrUBmdQfKa+S3
+05scdU/3P1KBUoGNcY8tIvXrHQ5hJjlGukOeHiMJEn1tfSCFlldsU6vZltFpNPEi
+HFf1Bl25kzIiXb7HU98+Qi4yMWQYH8ff12sIpQQXehxXPamPcXzfkoj16hWCfraV
+/zNko921EBzXuzkFTcnywoRZaANhSEAM2H6AYTyzVkoxdSmjsjFtnVnRbWnsIL4+
+O20j8iMeKUTIm0BdILaf
+=xQEr
 -----END PGP SIGNATURE-----
 
---72btQdUC6twB1rwh--
+--+HwY7O+GdaLKMYOv--
 
---===============1581371889592114341==
+--===============0338439667755819164==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1581371889592114341==--
+--===============0338439667755819164==--
