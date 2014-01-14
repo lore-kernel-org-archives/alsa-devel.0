@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simple-card: simplify code
-Date: Tue, 14 Jan 2014 14:20:14 +0000
-Message-ID: <20140114142014.GM15567@sirena.org.uk>
-References: <20140114123606.2241d8ab@armhf>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: Tenor TE8802,
+ USB : clics and crackles during music play
+Date: Tue, 14 Jan 2014 15:34:17 +0100
+Message-ID: <20140114143417.GB23764@tamtam.fritz.box>
+References: <CA+T9nP_hcPQBoQwike7oB5TfECax2MvARv0dTG9qB-RdFMuy=w@mail.gmail.com>
+ <CA+T9nP-=ffsy9ftnxynUhdJK_Eev+S-MRznLz7CED-Yp3DiOjg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6215956926519698810=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FCCB2616FF
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 15:20:24 +0100 (CET)
-In-Reply-To: <20140114123606.2241d8ab@armhf>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CDB52616FF
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 15:34:19 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CA+T9nP-=ffsy9ftnxynUhdJK_Eev+S-MRznLz7CED-Yp3DiOjg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,78 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org
+To: Eric F <3rik.gm@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Jan 12, 2014 at 04:43:06PM +0100, Eric F wrote:
+> Been searching for days on Internet for this issue, without luck :(
+> 
+> I own a Teac UD-H01 : when connected via USB => crackles and clicks
 
---===============6215956926519698810==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QqzFzR/RUlLahzby"
-Content-Disposition: inline
+Which tool are you using in userspace to test this? Did you try aplay?
 
+> optical => no problem
 
---QqzFzR/RUlLahzby
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm confused. According to
 
-On Tue, Jan 14, 2014 at 12:36:06PM +0100, Jean-Francois Moine wrote:
-> This patch
-> - removes the fields of the platform data which are of no use to the
->   non-DT platform callers,
-> - uses a new private structure to handle all the sound card information,
-> - simplifies the code and make easier a possible multi-DAI links extensio=
-n.
->=20
-> Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
-> ---
-> Xiubo, I also removed 'of_device_is_available' which seems really
-> useless: the module is not probed when the DT status is not "okay".
+  http://www.teac.com/product/ud-h01/
 
-Please send this as a patch series to aid review, one patch doing four
-different changes is much harder to review.
+there is no optical output. Are you saying things only work if you
+connect an optical input?
 
->  		ret =3D asoc_simple_card_sub_parse_of(np,
-> -						  &info->cpu_dai,
-> -						  of_cpu);
-> +						  &priv->cpu_dai,
-> +					  (struct device_node **)
-> +						  &dai_link->cpu_of_node,
-> +						  &dai_link->cpu_dai_name);
+Are you absolutely sure that you're not dealing with analog audio
+distortion? IOW: did you try the very same setup with a different OS?
 
+> I want to use it as USB because it's asynchronous, so only a few jitter
 
-What's this cast here for?  That code doesn't look at all safe.
+I don't follow. According to the device specs, USB is the only option to
+connect this thing?
 
---QqzFzR/RUlLahzby
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> I've tried many kernels (3.12.7, 3.12.6) and the LTS that I use normally
+> (3.10.25, 3.10.26) : not solved
+> 
+> I've tried on a fresh ArchLinux install : no way
+> I've tried Xubuntu : not better (plus they use pulseaudio)
+> I've tried on my desktop's Arch Linux
+> 
+> I'd like to know if any of you have a patch or a fix for the Tead UD-H01
+> DAC when used via USB
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+The device exposes itself as USB audio v2 interface, so it should work
+out-of-the-box. What's interesting is that there are two clock sources,
+but only one is connected in the topology (bCSourceID = 12), and there
+is no clock selector. Crackles could be related to wrong clocking, but
+that's just guessing.
 
-iQIcBAEBAgAGBQJS1UebAAoJELSic+t+oim9n/EQAJYfDiya2h2k595VXqeMpQ5s
-ueWeFI2novw43r944ire0/CzMO490MTRkuh1LTBN+0dT2Ef7tKOmIid/5wsvgk8v
-rzcC9JhWwth4Z6gVHCB0/t5qh6tkzjwzZyiNYQixh5XogJ9xKwZ8UCcyUYnJDkep
-cy3JsAXzcw6gGAMn0pnKEojFnRysSVNrO7R7cHgdAhQLrOFoyK8ZICpowe6gI1SW
-683509CP4Qr4cpqlGrLD3AGqYmwf6RRercm+rYPN+6h9tu58zfOuEPOGCdRPyDr2
-Fhbhw/TMQTbgduiufBB8wpcvEyArLryA0lg2XhcCAO0RFpgsg524xjLqe7WJ0f1r
-8uyB4PQCIgNCU7KV7L+Pz2gR0rfdS9huO25JyXT6EmCg6Eq1gPYIGAiyXfcwjTHb
-Lxa+NdqpT8opqW7dK/ogS7dByJEtnTmi7dfT8KP6TLLoq8V7ZzWY0K+j2A5fMZ59
-u7U376PHJ4M5CiaguB8SKdJPVcUMYMs7ijcF0+7JubzopIOR/7xSgT3sKsNblNn3
-xtbHPyGC3L4t0OWuPbYsR4MbwEDxLBn6rH9yI5gVkXHLB5HV3VTEsyN0mXOBQofZ
-6SI2nNgIRYJ9p6qTEFnLyh9UPvowg+1imJ/sKDToYAIPEV1i2GyBOZ6js+rZ6Ivy
-qKhl/UuhyKagPFfb47z5
-=Lp9F
------END PGP SIGNATURE-----
-
---QqzFzR/RUlLahzby--
-
---===============6215956926519698810==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Please check whether the device works under Windows or Mac OS X.
 
 
---===============6215956926519698810==--
+Daniel
