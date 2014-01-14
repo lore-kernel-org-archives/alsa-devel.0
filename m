@@ -1,20 +1,17 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [ISSUE] crackles and clicks
-Date: Tue, 14 Jan 2014 17:08:54 +0100
-Message-ID: <52D56116.2060407@zonque.org>
-References: <CA+T9nP9VBdW6T8o3=5hFJpMXpHGz59VOGva2+8g8xoPw6Xa8+g@mail.gmail.com>
- <s5hy52kt71z.wl%tiwai@suse.de>
- <89F8E4011FD7234ABFE48744E300CBC206BC3EF2@041-DB3MPN1-093.041d.mgd.msft.net>
- <20140114144224.GC23764@tamtam.fritz.box>
- <89F8E4011FD7234ABFE48744E300CBC206BC449B@041-DB3MPN1-093.041d.mgd.msft.net>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH] ASoC: simple-card: simplify code
+Date: Tue, 14 Jan 2014 17:12:58 +0100
+Message-ID: <20140114171258.2d027ee5@armhf>
+References: <20140114123606.2241d8ab@armhf>
+ <20140114142014.GM15567@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id D41E7261AED
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 17:08:55 +0100 (CET)
-In-Reply-To: <89F8E4011FD7234ABFE48744E300CBC206BC449B@041-DB3MPN1-093.041d.mgd.msft.net>
+Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90CF5261B16
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 17:13:25 +0100 (CET)
+In-Reply-To: <20140114142014.GM15567@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: LANGLOIS Olivier PIS -EXT <olivier.pis.langlois@transport.alstom.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/14/2014 04:59 PM, LANGLOIS Olivier PIS -EXT wrote:
-> I experience the audible clicks with VLC but I have reproduced it 
-> with aplay as well. The clicks that I hear corresponds to underruns.
->  For the records, this is not happening with a USB device. I have a 
-> Intel HDA sound card.
-
-Ok, sorry. I missed that detail.
-
-> I did chime in the discussion to point out that
-> the problem could come from something else than ALSA or the sound
-> card driver. Here is the output of my aplay session. This makes me
-> doubt my hypothesis. I'll check the cpu usage while the Wifi is on
-> but not connected or see if running aplay in real-time prio makes 
-> things any better.
-
-I see, and I'd say that's a sign that the wifi driver is holding off the
-system way too long somewhere, rather than a problem with the sound driver.
-
-Could you repost your findings from the earlier mail and send them to
-Larry.Finger@lwfinger.net and linux-wireless@vger.kernel.org? The
-wireless people might have an idea what's going on.
-
-
-Daniel
+T24gVHVlLCAxNCBKYW4gMjAxNCAxNDoyMDoxNCArMDAwMApNYXJrIEJyb3duIDxicm9vbmllQGtl
+cm5lbC5vcmc+IHdyb3RlOgoKPiBPbiBUdWUsIEphbiAxNCwgMjAxNCBhdCAxMjozNjowNlBNICsw
+MTAwLCBKZWFuLUZyYW5jb2lzIE1vaW5lIHdyb3RlOgo+ID4gVGhpcyBwYXRjaAo+ID4gLSByZW1v
+dmVzIHRoZSBmaWVsZHMgb2YgdGhlIHBsYXRmb3JtIGRhdGEgd2hpY2ggYXJlIG9mIG5vIHVzZSB0
+byB0aGUKPiA+ICAgbm9uLURUIHBsYXRmb3JtIGNhbGxlcnMsCj4gPiAtIHVzZXMgYSBuZXcgcHJp
+dmF0ZSBzdHJ1Y3R1cmUgdG8gaGFuZGxlIGFsbCB0aGUgc291bmQgY2FyZCBpbmZvcm1hdGlvbiwK
+PiA+IC0gc2ltcGxpZmllcyB0aGUgY29kZSBhbmQgbWFrZSBlYXNpZXIgYSBwb3NzaWJsZSBtdWx0
+aS1EQUkgbGlua3MgZXh0ZW5zaW9uLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBKZWFuLUZyYW5j
+b2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Cj4gPiAtLS0KPiA+IFhpdWJvLCBJIGFsc28gcmVt
+b3ZlZCAnb2ZfZGV2aWNlX2lzX2F2YWlsYWJsZScgd2hpY2ggc2VlbXMgcmVhbGx5Cj4gPiB1c2Vs
+ZXNzOiB0aGUgbW9kdWxlIGlzIG5vdCBwcm9iZWQgd2hlbiB0aGUgRFQgc3RhdHVzIGlzIG5vdCAi
+b2theSIuCj4gCj4gUGxlYXNlIHNlbmQgdGhpcyBhcyBhIHBhdGNoIHNlcmllcyB0byBhaWQgcmV2
+aWV3LCBvbmUgcGF0Y2ggZG9pbmcgZm91cgo+IGRpZmZlcmVudCBjaGFuZ2VzIGlzIG11Y2ggaGFy
+ZGVyIHRvIHJldmlldy4KCkFzIHRoZXJlIGFyZSBvdGhlciBidWdzIHRvIGZpeCwgSSBtYXkgcHV0
+IGJhY2sgdGhlICdvZl9kZXZpY2VfaXNfYXZhaWxhYmxlJywKYnV0IHRoZXJlIGFyZSBub3QgMyBk
+aWZmZXJlbnQgY2hhbmdlczogSSBqdXN0IGV4cGxhaW4gdGhlIHZpc2libGUKZWZmZWN0cyBvZiB0
+aGUgcGF0Y2guIFRoZSBwYXRjaCBpdHNlbGYgaXMsIGFzIHRoZSBzdWJqZWN0IHNheXMsCidzaW1w
+bGlmeSBjb2RlJywgdGhhdCBpcywgJ2hhdmUgYSBzaW1wbGVyIGNvZGUgd2l0aCBubyBjaGFuZ2Ug
+aW4gdGhlCmxvZ2ljJy4KCj4gPiAgCQlyZXQgPSBhc29jX3NpbXBsZV9jYXJkX3N1Yl9wYXJzZV9v
+ZihucCwKPiA+IC0JCQkJCQkgICZpbmZvLT5jcHVfZGFpLAo+ID4gLQkJCQkJCSAgb2ZfY3B1KTsK
+PiA+ICsJCQkJCQkgICZwcml2LT5jcHVfZGFpLAo+ID4gKwkJCQkJICAoc3RydWN0IGRldmljZV9u
+b2RlICoqKQo+ID4gKwkJCQkJCSAgJmRhaV9saW5rLT5jcHVfb2Zfbm9kZSwKPiA+ICsJCQkJCQkg
+ICZkYWlfbGluay0+Y3B1X2RhaV9uYW1lKTsKPiAKPiAKPiBXaGF0J3MgdGhpcyBjYXN0IGhlcmUg
+Zm9yPyAgVGhhdCBjb2RlIGRvZXNuJ3QgbG9vayBhdCBhbGwgc2FmZS4KCmRhaV9saW5rLT5jcHVf
+b2Zfbm9kZSBpcyAnY29uc3Qgc3RydWN0IGRldmljZV9ub2RlIConIGFuZCBib3RoCm9mX2Nsa19n
+ZXQoKSBhbmQgb2Zfbm9kZV9wdXQoKSB3YW50ICdzdHJ1Y3QgZGV2aWNlX25vZGUgKicuIFNvLCB0
+aGVyZQptdXN0IGJlIGEgY2FzdCBzb21ld2hlcmUuCgpEbyB5b3UgcHJlZmVyIEkgcHV0IHRoZXNl
+IG9uZXMgd2hlbiBjYWxsaW5nIHRoZSAnb2ZfeHgnIGZ1bmN0aW9ucz8KCi0tIApLZW4gYXIgYydo
+ZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkplZgkJfAkJaHR0cDov
+L21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
