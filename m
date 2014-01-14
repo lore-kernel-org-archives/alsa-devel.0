@@ -1,112 +1,96 @@
-From: Daniel Matuschek <daniel@matuschek.net>
-Subject: [PATCH] ASoC: wm8804: Allow control of master clock divider in PLL
- generation
-Date: Tue, 14 Jan 2014 20:34:10 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1401142030110.23472@parallels-Parallels-Virtual-Platform>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: da9055: Partially fix device
+Date: Tue, 14 Jan 2014 19:51:59 +0000
+Message-ID: <20140114195159.GW15567@sirena.org.uk>
+References: <2E89032DDAA8B9408CB92943514A03376B7CC95A@SW-EX-MBX01.diasemi.com>
+ <20140109121353.GG31886@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376B7CC9BE@SW-EX-MBX01.diasemi.com>
+ <20140109202446.GQ12858@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376B7CCB98@SW-EX-MBX01.diasemi.com>
+ <20140113211858.GK29039@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376B7CCF27@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: daniel@matuschek.net, alsa-devel@alsa-project.org
-Cc: Dimitris.Papastamos@wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============6380814554649081802=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AAA0E264FB0
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 20:52:06 +0100 (CET)
+In-Reply-To: <2E89032DDAA8B9408CB92943514A03376B7CCF27@SW-EX-MBX01.diasemi.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, "Opensource [Anthony Olech]" <anthony.olech.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-WM8804 can run with PLL frequencies of 256xfs and 128xfs for
-most sample rates. At 192kHz only 128xfs is supported. The
-existing driver selects 128xfs automatically for some lower
-samples rates. By using an additional mclk_div divider, it
-is now possible to control the behaviour. This allows using
-256xfs PLL frequency on all sample rates up to 96kHz. It
-should allow lower jitter and better signal quality. The
-behavior has to be controlled by the sound card driver,
-because some sample frequency share the same setting. e.g.
-192kHz and 96kHz use 24.576MHz master clock. The only
-difference is the MCLK divider.
 
-Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
+--===============6380814554649081802==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="1gsfN/+pS0/2Ta7u"
+Content-Disposition: inline
 
----
-  sound/soc/codecs/wm8804.c |   17 ++++++++++++++---
-  sound/soc/codecs/wm8804.h |    4 ++++
-  2 files changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
-index 1704b1e..4619bf8 100644
---- a/sound/soc/codecs/wm8804.c
-+++ b/sound/soc/codecs/wm8804.c
-@@ -63,6 +63,7 @@ struct wm8804_priv {
-  	struct regmap *regmap;
-  	struct regulator_bulk_data supplies[WM8804_NUM_SUPPLIES];
-  	struct notifier_block disable_nb[WM8804_NUM_SUPPLIES];
-+	int mclk_div;
-  };
+--1gsfN/+pS0/2Ta7u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-  static int txsrc_get(struct snd_kcontrol *kcontrol,
-@@ -318,7 +319,7 @@ static struct {
+On Tue, Jan 14, 2014 at 11:04:22AM +0000, Opensource [Adam Thomson] wrote:
 
-  #define FIXED_PLL_SIZE ((1ULL << 22) * 10)
-  static int pll_factors(struct pll_div *pll_div, unsigned int target,
--		       unsigned int source)
-+		       unsigned int source, unsigned int mclk_div)
-  {
-  	u64 Kpart;
-  	unsigned long int K, Ndiv, Nmod, tmp;
-@@ -330,7 +331,8 @@ static int pll_factors(struct pll_div *pll_div, unsigned int target,
-  	 */
-  	for (i = 0; i < ARRAY_SIZE(post_table); i++) {
-  		tmp = target * post_table[i].div;
--		if (tmp >= 90000000 && tmp <= 100000000) {
-+		if ((tmp >= 90000000 && tmp <= 100000000) &&
-+		    (mclk_div == post_table[i].mclkdiv)) {
-  			pll_div->freqmode = post_table[i].freqmode;
-  			pll_div->mclkdiv = post_table[i].mclkdiv;
-  			target *= post_table[i].div;
-@@ -387,8 +389,12 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
-  	} else {
-  		int ret;
-  		struct pll_div pll_div;
-+		struct wm8804_priv *wm8804;
+> I don't disagree with you on common patterns, and I have been an advocate of
+> following these when working in the kernel as it generally makes things simpler
+> and easier. Here I'm not trying to be awkward but am trying to get a simple,
+> flexible, solution which fits best with our devices, whilst still using common
+> kernel frameworks.
 
--		ret = pll_factors(&pll_div, freq_out, freq_in);
-+		wm8804 = snd_soc_codec_get_drvdata(codec);
-+
-+		ret = pll_factors(&pll_div, freq_out, freq_in,
-+			wm8804->mclk_div);
-  		if (ret)
-  			return ret;
+That's not what's been coming over.
 
-@@ -452,6 +458,7 @@ static int wm8804_set_clkdiv(struct snd_soc_dai *dai,
-  			     int div_id, int div)
-  {
-  	struct snd_soc_codec *codec;
-+	struct wm8804_priv *wm8804;
+> The PMIC is configurable via a register in its register map, and the Codec is
+> configurable via an OTP register, which a customer is able to set themselves
+> through a series of register writes, in the Codec register map. When you
 
-  	codec = dai->codec;
-  	switch (div_id) {
-@@ -459,6 +466,10 @@ static int wm8804_set_clkdiv(struct snd_soc_dai *dai,
-  		snd_soc_update_bits(codec, WM8804_PLL5, 0x30,
-  				    (div & 0x3) << 4);
-  		break;
-+	case WM8804_MCLK_DIV:
-+		wm8804 = snd_soc_codec_get_drvdata(codec);
-+		wm8804->mclk_div = div;
-+		break;
-  	default:
-  		dev_err(dai->dev, "Unknown clock divider: %d\n", div_id);
-  		return -EINVAL;
-diff --git a/sound/soc/codecs/wm8804.h b/sound/soc/codecs/wm8804.h
-index 8ec14f5..e72d4f4 100644
---- a/sound/soc/codecs/wm8804.h
-+++ b/sound/soc/codecs/wm8804.h
-@@ -57,5 +57,9 @@
-  #define WM8804_CLKOUT_SRC_OSCCLK		4
+Are you sure that it's not the other way around?  It's much more common
+to have OTP for PMICs...  In any case, for the device configured via the
+register map is there any real scenario where someone might use that
+feature - devices do have this facility but it's generally never used
+since by the time you can do register writes to configure the address
+register I/O is already up and running so it's just making work.
 
-  #define WM8804_CLKOUT_DIV			1
-+#define WM8804_MCLK_DIV				2
-+
-+#define WM8804_MCLKDIV_256FS			0
-+#define WM8804_MCLKDIV_128FS			1
+--1gsfN/+pS0/2Ta7u
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-  #endif  /* _WM8804_H */
--- 
-1.7.9.5
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS1ZVcAAoJELSic+t+oim9J/oP/jFEPaZ+i9Vs8raMd5X1zZgR
+8JzOzqVg04PFRX0c0Ak324pyd3J6BAgA16f2ykmkXSlFCjgkotR2fuHi0PZxRZFe
+y3JBXgioZQ+sDAaUziAKHBUREra9YiMANPpOyWD1d+nF/j1OeJTrGD5qGZcb6jpv
+WB6VD7FAsmG6OEwv6dgp4NdMc7WX0EQL1Is9S/vbZWzzH1LFZc6+zpvz7hrwpsr2
+dL1WcsRfUF2hRm3EatwEpi48ou6FtUb1+FJuP9kRReCgm6p0dH+W93KgHM9K+xoS
+N+oCWMKIte0YdAQ2di+rPI9Yf+maNzlunIjzo+RGfKrbZ5dfCpeVPyirxaa0nIso
+TjzNlTsbcHA5efDYO8QOvVDtG1T1gGQfwZknHfbuZ67X5U5OXyTgmKKXzJCSFC4k
+U0r5+WKVyZSZg1nar5hprbTc8v7sGU1SH1VF0HxAgi3GM6o0UXYiPhaLiUNGfSl/
+4ohow7l/IEuFxE4UA8HwG550MV/LktQ/WFWGdvqHprNo+QjjzMFdoBtsYyJee9ui
+36MDLBOfEch/oH72OixJ0Aq+0GYCDxQv3gZ0JEMM/L7rs2fO+KX2iruww9beb/5/
+aUMJzmMc2ZR8scI2VHB4ru1WG4Ija3mDYMTgVxfeawC/XwdORXf+EkqIOt+/8tmf
+kBa3Wl39hwzVffX3Pb3j
+=jU8A
+-----END PGP SIGNATURE-----
+
+--1gsfN/+pS0/2Ta7u--
+
+--===============6380814554649081802==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6380814554649081802==--
