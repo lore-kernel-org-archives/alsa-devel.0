@@ -1,65 +1,25 @@
-From: "R. Lemos" <rslemos@gmail.com>
-Subject: Re: On mixer controls naming
-Date: Mon, 13 Jan 2014 22:31:02 -0200
-Message-ID: <CAM6_cxx_FDftjsBFsg660GG2H+zEP_iy6o7YVsMK7_Xcn8N8AA@mail.gmail.com>
-References: <CAM6_cxyGVC+Tzt=6AM=LXn2Eqt48AK4JMSJkfbR07pPgPwBtcA@mail.gmail.com>
- <52D3CA28.3070500@ladisch.de>
- <CAM6_cxz3ZOOtF4c9rY6-v6J-7GpXL14VVa0ajAXBZEsPCz=+HQ@mail.gmail.com>
- <52D43526.8040600@ladisch.de>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: Possible regression of Mackerel/ASoC Simple Card in next-20130107
+Date: Tue, 14 Jan 2014 11:23:55 +0900
+Message-ID: <20140114022353.GA7053@verge.net.au>
+References: <20140108040017.GA11231@verge.net.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qe0-f41.google.com (mail-qe0-f41.google.com
- [209.85.128.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 711892610A8
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 01:31:03 +0100 (CET)
-Received: by mail-qe0-f41.google.com with SMTP id gh4so8015401qeb.28
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2014 16:31:02 -0800 (PST)
-In-Reply-To: <52D43526.8040600@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140108040017.GA11231@verge.net.au>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, linux-sh@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Mark Brown <broonie@kernel.org>, Magnus Damm <magnus.damm@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-I'll stick to "Bass Playback Volume" (shows up as "Bass", only
-playback channel).
+On Wed, Jan 08, 2014 at 01:00:21PM +0900, Simon Horman wrote:
+> Hi Morimoto-san, Hi all,
+> 
+> I noticed that next-20130107 does not boot on the Mackerel board does not
+> boot using its defconfig. The boot log is as follows.
+> 
+> I have not investigated any further as typically when I investigate
+> problems in next they turn out to be known problems.
 
-Thank you for your support.
-
-
-On Mon, Jan 13, 2014 at 4:49 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> R. Lemos wrote:
->> On Mon, Jan 13, 2014 at 9:12 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
->>> For a control to be classified as a playback control, its name must
->>> have one of the suffixes " Playback Enum", " Playback Switch",
->>> " Playback Route", or " Playback Volume".
->>
->> Unfortunately it doesn't work for Tone Control.
->>
->> Simple mixer control 'Master Playback Bass',0
->> Simple mixer control 'Master Playback Tone',0
->> Simple mixer control 'Playback Tone - Bass',0
->> Simple mixer control 'Playback Tone Control - Bass',0
->> ...
->
-> "Suffix" means "at the end".  Try "Tone Control Bass Playback Volume".
->
->
-> Regards,
-> Clemens
-
-
-
--- 
-[]'s
-Rodrigo
-Powered by carbohydrates
+This problem does not appear to be present any more in next-20140113.
