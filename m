@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: atmel_wm8904: make it available
-	to choose clock
-Date: Tue, 14 Jan 2014 20:36:50 +0000
-Message-ID: <20140114203650.GX15567@sirena.org.uk>
-References: <1389669956-2304-1-git-send-email-voice.shen@atmel.com>
- <1389669956-2304-3-git-send-email-voice.shen@atmel.com>
+Subject: Re: [PATCH v2 1/5] ASoC: pcm: Properly initialize
+	hw->rate_max
+Date: Tue, 14 Jan 2014 20:42:58 +0000
+Message-ID: <20140114204258.GY15567@sirena.org.uk>
+References: <1389432284-6792-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8829447784800677330=="
+Content-Type: multipart/mixed; boundary="===============1581371889592114341=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 967AA264FB0
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 21:37:09 +0100 (CET)
-In-Reply-To: <1389669956-2304-3-git-send-email-voice.shen@atmel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E1BB2264FD1
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 21:43:05 +0100 (CET)
+In-Reply-To: <1389432284-6792-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,83 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: alsa-devel@alsa-project.org, Wolfram Sang <wsa@the-dreams.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, nicolas.ferre@atmel.com, Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8829447784800677330==
+--===============1581371889592114341==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="v6gilOcl2gU05R9Q"
+	protocol="application/pgp-signature"; boundary="72btQdUC6twB1rwh"
 Content-Disposition: inline
 
 
---v6gilOcl2gU05R9Q
+--72btQdUC6twB1rwh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 14, 2014 at 11:25:55AM +0800, Bo Shen wrote:
-> Make it available to choose the clock from TK pin or RK pin. This
-> is hardware design decided.
+On Sat, Jan 11, 2014 at 10:24:40AM +0100, Lars-Peter Clausen wrote:
+> If none of the components (CODEC or CPU DAI) sets a maximum sample rate we'll
+> end up with the rate_max field of the runtime hardware set to 0.  (Note that it
 
-> --- a/sound/soc/atmel/atmel_wm8904.c
-> +++ b/sound/soc/atmel/atmel_wm8904.c
-> @@ -108,6 +108,7 @@ static int atmel_asoc_wm8904_dt_init(struct platform_=
-device *pdev)
->  	struct device_node *codec_np, *cpu_np;
->  	struct snd_soc_card *card =3D &atmel_asoc_wm8904_card;
->  	struct snd_soc_dai_link *dailink =3D &atmel_asoc_wm8904_dailink;
-> +	struct atmel_ssc_info *ssc_info;
->  	int ret;
-> =20
->  	if (!np) {
-> @@ -115,6 +116,15 @@ static int atmel_asoc_wm8904_dt_init(struct platform=
-_device *pdev)
->  		return -EINVAL;
->  	}
-> =20
-> +	ssc_info =3D devm_kzalloc(&pdev->dev, sizeof(*ssc_info), GFP_KERNEL);
-> +	if (!ssc_info)
-> +		return -ENOMEM;
-> +
-> +	ssc_info->clk_from_rk_pin =3D
-> +		of_property_read_bool(np, "clk_from_rk_pin");
-> +
-> +	card->drvdata =3D (void *)ssc_info;
+Applied all, thanks.
 
-Shouldn't this code be in the DAI driver?  Otherwise this series looks
-fine to me, though the DT folks might have something to say I guess.
-
---v6gilOcl2gU05R9Q
+--72btQdUC6twB1rwh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS1Z/fAAoJELSic+t+oim9uCwP/AhnO/W9V0FYXNgrkZQjOI6d
-1n1QeHGJiSw2soGqnv4FMwx0c23eIYvnL8fiHw04vZY4qyEQYDZdHv4Rgq99U4XX
-6wfTDUi+atk3G7UP2nUIanmZqTNyUmkOI/plRcrQS+kqSuoJlH/bCwiNSi4ig+oU
-5Bi/xyO7EJJvG+RasL0uBrU6nk3WpFc9JMXsXyy51A2Wnm5CK+/uXheSJOP3x5jg
-Pywg40ld0E5P2Z6YItTUwIHQJk/odqe36dpC88pCRyAtQwby2Hq4oqX9M+flkZ0P
-587JT6suCmxsHqgJveeQY2HT7QdyIDrz9JYLR0RGN+d3z2XAXUIsl6CnzNBavnYH
-+MTpTR7J5ONkSRqM84VfQJGnfiUMtouzfRzweUO3jiJnyDIiKki/8VG3c6ttKiQu
-V94i8Lai+F3CJPXoh5sudKDSVw+14R5KvH0MlqrjNQnNjc6+8oj64XJ0Zorfjec6
-EltejJKwgQKjtCkqhJtlVI0TLvs5TWAZu7YaIQ45thT/vA2q9INEEfg9UOP11swv
-W4qHnZvMPCixPXhD0+4PeJkJafEihtkvJuiS/IFAa6ID1Ygumh+97DEFTdMvslZ4
-8yestG9mmU847ziUSh1+0ZTDzkSzHLyPy+H03tFfX/69muvnTPTBaGFRuTjugjOo
-sH1yHarTztFhogG4Vmkk
-=zanM
+iQIcBAEBAgAGBQJS1aFPAAoJELSic+t+oim9MlUP/RFVNdX6CPJUSVsW45PWYHy2
+evfvuD60f10WtObKzIyDf5BL9Jruncd2p8mHKc2UMVBsEXPb8Bl/XLfpkVOEXVPI
+i9OeJUo0cfy8wT/H47QpfuCkDmn0rza2dGfABKdHElqblnVRx+56X1kii80U3uB3
+YiWO55WlV0bCz3cmzvnUCmKSoYaxwX3loZ1obNOqXz7A+OYbXCucvOUc4ztQK+KA
+/okFEOtFg+07tmyFZ4Ddus3ovUgYedPfgeaoNyBGY4Qmh9gzUsaAkZCVHFThJbsi
+DxD6AQUAU+DIGYDFFGLeHlAR2xSom2mMDtjeBcvfZsiXuJVqzULrJcXhhlrbu8+d
+/V2TNIpJnVonkVJuF3+r5yHyOL8eC/S6Q4Oj4Ct0iKdh9aP+VlHV1kYnvuNb9neD
+mVvKBrIICZMDoMDkgGu5hx0bU9PbS5PT9OVYtSPMt1jTLyCTWcInZePv25C8HXpr
+ycT3QGqxLs14kr12xq39pT3Nc3ohJGVbcmVX8Trb+qr7ZnTlQ8x3pB4OYk/u/v1T
+ey6Ntd/QYrk++yAFB7V4HmHDi9cKDYASmNjvd2gJ/d8QW70lSsTIUDElcshqZ0hB
+Ot0vL5ZP2DKUeUWELMwyAL0cdoLQkYFpggAhbjwOASg03urHBdRWO6Bzp/8sfamn
+nXDqarWn4ahrfiB6PPoJ
+=YL5J
 -----END PGP SIGNATURE-----
 
---v6gilOcl2gU05R9Q--
+--72btQdUC6twB1rwh--
 
---===============8829447784800677330==
+--===============1581371889592114341==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8829447784800677330==--
+--===============1581371889592114341==--
