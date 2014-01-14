@@ -1,88 +1,176 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH v2] ALSA: hda - automute via amp instead of pinctl on some AIO models
-Date: Tue, 14 Jan 2014 14:07:36 +0800
-Message-ID: <1389679656-19763-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [alsa-devel] Surround sound not working on
+	ALC887 based motherboard
+Date: Tue, 14 Jan 2014 14:34:47 +0800
+Message-ID: <CAN8cciZ2BUdE+V0SrADBvcTqGdKeqtPk+Us9jUxUcDRJPsfK=g@mail.gmail.com>
+References: <1389286414.4661.13.camel@TesterBox>
+	<CAN8cciaoEwYvqDCGiR5jjgK78GMMG6dVSnzJN2_D9D4H6RWusA@mail.gmail.com>
+	<1389643950.28960.6.camel@TesterTop4>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============1456338461=="
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <1389643950.28960.6.camel@TesterTop4>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+To: =?UTF-8?Q?Olivier_Cr=C3=AAte?= <olivier.crete@ocrete.ca>, pulseaudio-discuss@lists.freedesktop.org
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On some AIO (All In One) models with the codec alc668
-(Vendor ID: 0x10ec0668) on it, when we plug a headphone into the jack,
-the system will switch the output to headphone and set the speaker to
-automute as well as change the speaker Pin-ctls from 0x40 to 0x00,
-this will bring loud noise to the headphone.
+--===============1456338461==
+Content-Type: multipart/alternative; boundary=089e010d9d40814fea04efe8637f
 
-I tried to disable the corresponding EAPD, but it did not help to
-eliminate the noise.
+--089e010d9d40814fea04efe8637f
+Content-Type: text/plain; charset=UTF-8
 
-According to Takashi's suggestion, we use amp operation to replace the
-pinctl modification for the automute, this really eliminate the noise.
+> >         I have a Asus P5G41T-M LX Plus motherboard which is ICH7 +
+> >         Realtek
+> >         ALC887-VD, alsa only lets me access the first 2 channels
+> >         (stereo), but
+> >         not the 6 other ones. It works fine in Windows.
+> >
+> >         Trying to run this after killing pulseaudio fails:
+> >
+> >         $ aplay -D surround40:0 -f S16_LE -r 44100 -c 4 /dev/zero -v
+> >         Playing raw data '/dev/zero' : Signed 16 bit Little Endian,
+> >         Rate 44100 Hz, Channels 4
+> >         aplay: set_params:1239: Channels count non available
+> >
+> >
+> >         Output from alsa-info:
+> >
+http://www.alsa-project.org/db/?f=fe378d28f0dbb5a427b005d20866a762fd37d31a
+>
+> > you have to change channel mode from 2ch to 6ch to retask the input
+> > jacks as output if your motherboard only have three audio jacks at
+> > rear panel
 
-BugLink: https://bugs.launchpad.net/bugs/1268468
-Cc: David Henningsson <david.henningsson@canonical.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+> > Simple mixer control 'Channel Mode',0
+> >   Capabilities: enum
+> >   Items: '2ch' '4ch' '6ch'
+> >   Item0: '2ch'
+>
+> How would one do that ? Pulseaudio only offers Stereo profiles.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d35cf3d..a1c16457 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3580,6 +3580,15 @@ static void alc_fixup_headset_mode_alc255(struct hda_codec *codec,
- 	alc_fixup_headset_mode(codec, fix, action);
- }
- 
-+static void alc_fixup_auto_mute_via_amp(struct hda_codec *codec,
-+					const struct hda_fixup *fix, int action)
-+{
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-+		struct alc_spec *spec = codec->spec;
-+		spec->gen.auto_mute_via_amp = 1;
-+	}
-+}
-+
- static void alc_fixup_headset_mode_alc668(struct hda_codec *codec,
- 				const struct hda_fixup *fix, int action)
- {
-@@ -4839,6 +4848,7 @@ enum {
- 	ALC662_FIXUP_BASS_CHMAP,
- 	ALC662_FIXUP_BASS_1A,
- 	ALC662_FIXUP_BASS_1A_CHMAP,
-+	ALC668_FIXUP_AUTO_MUTE,
- };
- 
- static const struct hda_fixup alc662_fixups[] = {
-@@ -4999,6 +5009,12 @@ static const struct hda_fixup alc662_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_inv_dmic_0x12,
- 	},
-+	[ALC668_FIXUP_AUTO_MUTE] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_auto_mute_via_amp,
-+		.chained = true,
-+		.chain_id = ALC668_FIXUP_DELL_MIC_NO_PRESENCE
-+	},
- 	[ALC668_FIXUP_DELL_MIC_NO_PRESENCE] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -5044,11 +5060,11 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x038b, "Acer Aspire 8943G", ALC662_FIXUP_ASPIRE),
- 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
--	SND_PCI_QUIRK(0x1028, 0x0623, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
--	SND_PCI_QUIRK(0x1028, 0x0624, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x0623, "Dell", ALC668_FIXUP_AUTO_MUTE),
-+	SND_PCI_QUIRK(0x1028, 0x0624, "Dell", ALC668_FIXUP_AUTO_MUTE),
- 	SND_PCI_QUIRK(0x1028, 0x0625, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0626, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
--	SND_PCI_QUIRK(0x1028, 0x0628, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x0628, "Dell", ALC668_FIXUP_AUTO_MUTE),
- 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
- 	SND_PCI_QUIRK(0x1043, 0x11cd, "Asus N550", ALC662_FIXUP_BASS_1A_CHMAP),
- 	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_BASS_CHMAP),
--- 
-1.8.1.2
+
+amixer -c0 set "Channel  Mode" "6ch"
+
+you can logout and login after you set the channel mode to 6ch so that
+pulseaudio is restarted.
+
+this also require
+
+alsactl store this setting before computer shutdown
+
+alsactl restore this setting after computer boot
+
+
+> >
+> > post output of pactl list or pulseaudio verbose log
+>
+> http://www.ocrete.ca/surround/pactl-list.txt
+> http://www.ocrete.ca/surround/pulseaudio-vv.txt
+>
+>
+> > do you mean pulseaudio cannot probe the surroun40 or surround51
+> > profile ?
+>
+> Yes, but I can't use it with aplay even without pulseaudio running.
+>
+
+
+try speaker-test -c 6 -t wav -Dhw:0,0 after you set the channel mode to 6ch
+
+--089e010d9d40814fea04efe8637f
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><p></p>
+<p>&gt; &gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 I have a Asus P5G41T-M LX Plus mot=
+herboard which is ICH7 +<br>
+&gt; &gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 Realtek<br>
+&gt; &gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 ALC887-VD, alsa only lets me access t=
+he first 2 channels<br>
+&gt; &gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 (stereo), but<br>
+&gt; &gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 not the 6 other ones. It works fine i=
+n Windows.<br>
+&gt; &gt;<br>
+&gt; &gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 Trying to run this after killing puls=
+eaudio fails:<br>
+&gt; &gt;<br>
+&gt; &gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 $ aplay -D surround40:0 -f S16_LE -r =
+44100 -c 4 /dev/zero -v<br>
+&gt; &gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 Playing raw data &#39;/dev/zero&#39; =
+: Signed 16 bit Little Endian,<br>
+&gt; &gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 Rate 44100 Hz, Channels 4<br>
+&gt; &gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 aplay: set_params:1239: Channels coun=
+t non available<br>
+&gt; &gt;<br>
+&gt; &gt;<br>
+&gt; &gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 Output from alsa-info:<br>
+&gt; &gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 <a href=3D"http://www.alsa-project.or=
+g/db/?f=3Dfe378d28f0dbb5a427b005d20866a762fd37d31a" target=3D"_blank">http:=
+//www.alsa-project.org/db/?f=3Dfe378d28f0dbb5a427b005d20866a762fd37d31a</a>=
+<br>
+&gt;<br>
+&gt; &gt; you have to change channel mode from 2ch to 6ch to retask the inp=
+ut<br>
+&gt; &gt; jacks as output if your motherboard only have three audio jacks a=
+t<br>
+&gt; &gt; rear panel</p><p>&gt; &gt; Simple mixer control &#39;Channel Mode=
+&#39;,0<br>
+&gt; &gt; =C2=A0 Capabilities: enum<br>
+&gt; &gt; =C2=A0 Items: &#39;2ch&#39; &#39;4ch&#39; &#39;6ch&#39;<br>
+&gt; &gt; =C2=A0 Item0: &#39;2ch&#39;<br>
+&gt;<br>
+&gt; How would one do that ? Pulseaudio only offers Stereo profiles.<br></p=
+><pre><br>amixer -c0 set &quot;Channel  Mode&quot; &quot;6ch&quot;</pre><p>=
+you can logout and login after you set the channel mode to 6ch so that puls=
+eaudio is restarted.<br>
+
+</p><p>this also require <br></p><p>alsactl store this setting before compu=
+ter shutdown<br></p><p>alsactl restore this setting after computer boot<br>=
+</p><p><br>
+&gt; &gt;<br>
+&gt; &gt; post output of pactl list or pulseaudio verbose log<br>
+&gt;<br>
+&gt; <a href=3D"http://www.ocrete.ca/surround/pactl-list.txt" target=3D"_bl=
+ank">http://www.ocrete.ca/surround/pactl-list.txt</a><br>
+&gt; <a href=3D"http://www.ocrete.ca/surround/pulseaudio-vv.txt" target=3D"=
+_blank">http://www.ocrete.ca/surround/pulseaudio-vv.txt</a><br>
+&gt;<br>
+&gt;<br>
+&gt; &gt; do you mean pulseaudio cannot probe the surroun40 or surround51<b=
+r>
+&gt; &gt; profile ?<br>
+&gt;<br>
+&gt; Yes, but I can&#39;t use it with aplay even without pulseaudio running=
+.<br>
+&gt;</p><p><br></p><p>try speaker-test -c 6 -t wav -Dhw:0,0 after you set t=
+he channel mode to 6ch <br>
+</p>
+<p><br><br><br></p>
+</div>
+
+--089e010d9d40814fea04efe8637f--
+
+--===============1456338461==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+pulseaudio-discuss mailing list
+pulseaudio-discuss@lists.freedesktop.org
+http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss
+
+--===============1456338461==--
