@@ -1,18 +1,21 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix endless vmaster hook call in
-	thinkpad_helper.c
-Date: Tue, 14 Jan 2014 14:59:44 +0100
-Message-ID: <1389707984-5450-1-git-send-email-tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: alsa on non-linux
+Date: Tue, 14 Jan 2014 15:04:58 +0100
+Message-ID: <52D5440A.6080508@ladisch.de>
+References: <20140110153700.GC1173@quark.internal.precedence.co.uk>
+ <s5hwqi4t6zg.wl%tiwai@suse.de>
+ <20140114101709.GB160@quark.internal.precedence.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A1BE22616FF
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 14:59:44 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 78C57AC35
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 13:59:44 +0000 (UTC)
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 3BE8F261717
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 15:05:07 +0100 (CET)
+Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
+ by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 9F51E20F45
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 09:05:01 -0500 (EST)
+In-Reply-To: <20140114101709.GB160@quark.internal.precedence.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Patrick Welche <prlw1@cam.ac.uk>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The new vmaster hook, update_tpacpi_mute_led(), calls the original
-vmaster hook, but I forgot to save the original hook function but keep
-calling the updated one, which of course results in a stupid endless
-loop.  Fixed now.
+Patrick Welche wrote:
+> I started out, writing the attached patch in November, but then it looked
+> as though the boundaries of application library interface and linux sound
+> chip driver had become so blurred that I thought that a decision had been
+> taken to bin all OSes bar linux, hence the question. Can you give me a
+> hint on how you think it is supposed to work?
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/thinkpad_helper.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Only the "hw" plugins access the Linux kernel drivers.  Anything else
+should be portable (with the exception of plugins like "dmix" that
+require a "hw" plugin as their slave).
 
-diff --git a/sound/pci/hda/thinkpad_helper.c b/sound/pci/hda/thinkpad_helper.c
-index 8492b8a3ce47..5799fbc24c28 100644
---- a/sound/pci/hda/thinkpad_helper.c
-+++ b/sound/pci/hda/thinkpad_helper.c
-@@ -8,6 +8,7 @@
- #include <linux/thinkpad_acpi.h>
- 
- static int (*led_set_func)(int, bool);
-+static void (*old_vmaster_hook)(void *, int);
- 
- static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void *context,
- 				 void **rv)
-@@ -30,11 +31,8 @@ static bool is_thinkpad(struct hda_codec *codec)
- 
- static void update_tpacpi_mute_led(void *private_data, int enabled)
- {
--	struct hda_codec *codec = private_data;
--	struct hda_gen_spec *spec = codec->spec;
--
--	if (spec->vmaster_mute.hook)
--		spec->vmaster_mute.hook(private_data, enabled);
-+	if (old_vmaster_hook)
-+		old_vmaster_hook(private_data, enabled);
- 
- 	if (led_set_func)
- 		led_set_func(TPACPI_LED_MUTE, !enabled);
-@@ -70,6 +68,7 @@ static void hda_fixup_thinkpad_acpi(struct hda_codec *codec,
- 
- 		removefunc = true;
- 		if (led_set_func(TPACPI_LED_MUTE, false) >= 0) {
-+			old_vmaster_hook = spec->vmaster_mute.hook;
- 			spec->vmaster_mute.hook = update_tpacpi_mute_led;
- 			removefunc = false;
- 		}
-@@ -86,6 +85,7 @@ static void hda_fixup_thinkpad_acpi(struct hda_codec *codec,
- 	if (led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
- 		symbol_put(tpacpi_led_set);
- 		led_set_func = NULL;
-+		old_vmaster_hook = NULL;
- 	}
- }
- 
--- 
-1.8.5.2
+For most device types (hwdep/seq/rawmidi/timer), the hw plugin is the
+only implementation, so a portable alsa-lib has only control and pcm
+devices at the moment.
+
+
+Regards,
+Clemens
