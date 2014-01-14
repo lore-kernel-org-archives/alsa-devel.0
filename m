@@ -1,110 +1,112 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simple-card: simplify code
-Date: Tue, 14 Jan 2014 18:00:05 +0000
-Message-ID: <20140114180005.GT15567@sirena.org.uk>
-References: <20140114123606.2241d8ab@armhf>
- <20140114142014.GM15567@sirena.org.uk>
- <20140114171258.2d027ee5@armhf>
+From: Daniel Matuschek <daniel@matuschek.net>
+Subject: [PATCH] ASoC: wm8804: Allow control of master clock divider in PLL
+ generation
+Date: Tue, 14 Jan 2014 20:34:10 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1401142030110.23472@parallels-Parallels-Virtual-Platform>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1108185878572173159=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7AC21261B36
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 19:00:18 +0100 (CET)
-In-Reply-To: <20140114171258.2d027ee5@armhf>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: daniel@matuschek.net, alsa-devel@alsa-project.org
+Cc: Dimitris.Papastamos@wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+WM8804 can run with PLL frequencies of 256xfs and 128xfs for
+most sample rates. At 192kHz only 128xfs is supported. The
+existing driver selects 128xfs automatically for some lower
+samples rates. By using an additional mclk_div divider, it
+is now possible to control the behaviour. This allows using
+256xfs PLL frequency on all sample rates up to 96kHz. It
+should allow lower jitter and better signal quality. The
+behavior has to be controlled by the sound card driver,
+because some sample frequency share the same setting. e.g.
+192kHz and 96kHz use 24.576MHz master clock. The only
+difference is the MCLK divider.
 
---===============1108185878572173159==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IQvoI1rdlCKiYEYW"
-Content-Disposition: inline
+Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
 
+---
+  sound/soc/codecs/wm8804.c |   17 ++++++++++++++---
+  sound/soc/codecs/wm8804.h |    4 ++++
+  2 files changed, 18 insertions(+), 3 deletions(-)
 
---IQvoI1rdlCKiYEYW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
+index 1704b1e..4619bf8 100644
+--- a/sound/soc/codecs/wm8804.c
++++ b/sound/soc/codecs/wm8804.c
+@@ -63,6 +63,7 @@ struct wm8804_priv {
+  	struct regmap *regmap;
+  	struct regulator_bulk_data supplies[WM8804_NUM_SUPPLIES];
+  	struct notifier_block disable_nb[WM8804_NUM_SUPPLIES];
++	int mclk_div;
+  };
 
-On Tue, Jan 14, 2014 at 05:12:58PM +0100, Jean-Francois Moine wrote:
-> Mark Brown <broonie@kernel.org> wrote:
+  static int txsrc_get(struct snd_kcontrol *kcontrol,
+@@ -318,7 +319,7 @@ static struct {
 
-> > Please send this as a patch series to aid review, one patch doing four
-> > different changes is much harder to review.
+  #define FIXED_PLL_SIZE ((1ULL << 22) * 10)
+  static int pll_factors(struct pll_div *pll_div, unsigned int target,
+-		       unsigned int source)
++		       unsigned int source, unsigned int mclk_div)
+  {
+  	u64 Kpart;
+  	unsigned long int K, Ndiv, Nmod, tmp;
+@@ -330,7 +331,8 @@ static int pll_factors(struct pll_div *pll_div, unsigned int target,
+  	 */
+  	for (i = 0; i < ARRAY_SIZE(post_table); i++) {
+  		tmp = target * post_table[i].div;
+-		if (tmp >= 90000000 && tmp <= 100000000) {
++		if ((tmp >= 90000000 && tmp <= 100000000) &&
++		    (mclk_div == post_table[i].mclkdiv)) {
+  			pll_div->freqmode = post_table[i].freqmode;
+  			pll_div->mclkdiv = post_table[i].mclkdiv;
+  			target *= post_table[i].div;
+@@ -387,8 +389,12 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
+  	} else {
+  		int ret;
+  		struct pll_div pll_div;
++		struct wm8804_priv *wm8804;
 
-> As there are other bugs to fix, I may put back the 'of_device_is_available',
-> but there are not 3 different changes: I just explain the visible
-> effects of the patch. The patch itself is, as the subject says,
-> 'simplify code', that is, 'have a simpler code with no change in the
-> logic'.
+-		ret = pll_factors(&pll_div, freq_out, freq_in);
++		wm8804 = snd_soc_codec_get_drvdata(codec);
++
++		ret = pll_factors(&pll_div, freq_out, freq_in,
++			wm8804->mclk_div);
+  		if (ret)
+  			return ret;
 
-There's several different simplifications going on here, or at least it
-sounded that way.  For example creating a private data struct doesn't
-seem obviously related to deleting unused fields from the platform data.
-The larger a change is the more benefit there is from a series of
-mechanical individual updates rather than several at once.
+@@ -452,6 +458,7 @@ static int wm8804_set_clkdiv(struct snd_soc_dai *dai,
+  			     int div_id, int div)
+  {
+  	struct snd_soc_codec *codec;
++	struct wm8804_priv *wm8804;
 
-> > >  		ret = asoc_simple_card_sub_parse_of(np,
-> > > -						  &info->cpu_dai,
-> > > -						  of_cpu);
-> > > +						  &priv->cpu_dai,
-> > > +					  (struct device_node **)
-> > > +						  &dai_link->cpu_of_node,
-> > > +						  &dai_link->cpu_dai_name);
+  	codec = dai->codec;
+  	switch (div_id) {
+@@ -459,6 +466,10 @@ static int wm8804_set_clkdiv(struct snd_soc_dai *dai,
+  		snd_soc_update_bits(codec, WM8804_PLL5, 0x30,
+  				    (div & 0x3) << 4);
+  		break;
++	case WM8804_MCLK_DIV:
++		wm8804 = snd_soc_codec_get_drvdata(codec);
++		wm8804->mclk_div = div;
++		break;
+  	default:
+  		dev_err(dai->dev, "Unknown clock divider: %d\n", div_id);
+  		return -EINVAL;
+diff --git a/sound/soc/codecs/wm8804.h b/sound/soc/codecs/wm8804.h
+index 8ec14f5..e72d4f4 100644
+--- a/sound/soc/codecs/wm8804.h
++++ b/sound/soc/codecs/wm8804.h
+@@ -57,5 +57,9 @@
+  #define WM8804_CLKOUT_SRC_OSCCLK		4
 
-> > What's this cast here for?  That code doesn't look at all safe.
+  #define WM8804_CLKOUT_DIV			1
++#define WM8804_MCLK_DIV				2
++
++#define WM8804_MCLKDIV_256FS			0
++#define WM8804_MCLKDIV_128FS			1
 
-> dai_link->cpu_of_node is 'const struct device_node *' and both
-> of_clk_get() and of_node_put() want 'struct device_node *'. So, there
-> must be a cast somewhere.
-
-> Do you prefer I put these ones when calling the 'of_xx' functions?
-
-No, I think this stuff needs to actually be type safe with no dodgy
-casts.  I'm not sure why we're doing an of_node_put(), for the
-of_clk_get() it's not immediately obvious why it's not taking a const
-clk.  Or perhaps the pointer shouldn't be stored as const.
-
---IQvoI1rdlCKiYEYW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS1XsiAAoJELSic+t+oim9yeMP/jnThYE8FYGnXYoruMF/XFwd
-u2jIZEeHVW/xDGMKYA7P1JhBuviGMPiWtAuL8ypFHX5MEsY81wZ55igYOdQHfCeX
-e1Gsd07I7tMN1KvWURh5lWhEA2Bsmz3/C1vYgOW3ps/vONFyQBbaZY9J4mPqwNuo
-wATxZcga/Eicr89DDyU6hbPlFnI3TAIJLAmpLLyVd73NoDlqNyhdBjVpLBeMIrO4
-lfuJ97blj+WpvRTX/valnxp0OlGpo0Suw1SNtwjbb69pQ+ScjMKKsVGYBOxzjrc5
-v33igqiSZGrMcyR6Gr9kuJTmVukw4E9ledQyo5uc3XIaes9zXyp7lezjHNVgtCFu
-Q+4n6d70BST1bZGMMYGukuopGWne0xpHC1o86VhXSFAFigcOBoS1afIDC4mEHKv9
-yKOaSXL/Wy6y+Mdyp7S106O0ndPF937tEL6ohghpVvP8QyRSys6q1Kcjkrd/Hatg
-l7LhCpjkSm30sOKLOgt7xYyDgELUmcL713Rqji4KbICfqu2rjCqcxhk5Hx014Ekk
-Ysq7dwdWFElu4Hd237Cn4Rv0RqA2gUzaaF2zZJAz0Y913WfpThYfB+PMRTYaCt4Z
-JguTxquGhYgyvnu9inLzVkUoS6hM5dpxVVeglYow+T3hmhjbJiO1WO96QrdVNOFj
-QE/h14u53Pjqc45zsxI3
-=ndoj
------END PGP SIGNATURE-----
-
---IQvoI1rdlCKiYEYW--
-
---===============1108185878572173159==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1108185878572173159==--
+  #endif  /* _WM8804_H */
+-- 
+1.7.9.5
