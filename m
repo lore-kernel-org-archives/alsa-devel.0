@@ -1,73 +1,87 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: Problems with simple-card
-Date: Wed, 15 Jan 2014 18:50:55 +0000
-Message-ID: <20140115185055.GK15567@sirena.org.uk>
+Date: Wed, 15 Jan 2014 18:56:21 +0000
+Message-ID: <20140115185621.GL15567@sirena.org.uk>
 References: <20140115191831.5965d17e@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/sFzBD2UPiMqxCFT"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
+Content-Type: multipart/mixed; boundary="===============2705393824854697915=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C290F2610A9
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2014 19:56:28 +0100 (CET)
 In-Reply-To: <20140115191831.5965d17e@armhf>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Xiubo Li <Li.Xiubo@freescale.com>, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, lgirdwood@gmail.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---/sFzBD2UPiMqxCFT
-Content-Type: text/plain; charset=iso-8859-1
+--===============2705393824854697915==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="171LwGa4zcdgM9o6"
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+
+
+--171LwGa4zcdgM9o6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 On Wed, Jan 15, 2014 at 07:18:31PM +0100, Jean-Francois Moine wrote:
-> Xiubo,
 
-Adding Morimoto-san.
-
-> I did a mistake in the v1 of my 'ASoC: simple-card: simplify code': I
-> did not initialize the pointer to the asoc_simple_card_dai_init()
-> function when DT. Then, I fixed that, and the simple card does not work
-> for me.
->=20
-> First, without any 'format' in the DT, I get a fmt for each CPU / CODEC
-> DAI: SND_SOC_DAIFMT_CBS_CFS is always set. Well, some code is executed
-> for nothing, but this is not critical.
->=20
 > The main problem is about sysclk: when there is no clock in the DT,
 > you get the clock of the CPU or CODEC DAI. In my system, two clocks
 > are declared in the controller CPU DAI, but there is no .set_sysclk
 > pointer. So, snd_soc_dai_set_sysclk() returns -EINVAL and the card is
 > not created.
->=20
+
+set_sysclk() should be returning -ENOTSUPP in this case as with
+set_fmt() and the generic code then ignoring that error.
+
 > As I don't know why you need these fmt and sysclk, may you have a
 > look at these problems?
->=20
-> --=20
-> Ken ar c'henta=F1	|	      ** Breizh ha Linux atav! **
-> Jef		|		http://moinejf.free.fr/
->=20
 
---/sFzBD2UPiMqxCFT
+The overwhelming majority of combinations of devices need a format
+specifying (usually one will be imposed by the system design even if
+both devices could be master).
+
+--171LwGa4zcdgM9o6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS1tiMAAoJELSic+t+oim9k3YQAI7DXXd58bvI2m3PM9j2RUQv
-emCPuJmDNb+HajVqWCZfz3x5KvvRs/d5ac9NTP4LklUymYsDjyaBXlhE6sq64z3Q
-mjkyG/S77T0+uBf4cH2NUDjCtyMGco3592kCKkN+cEltfbj0kX4QU7ntMPfZMxOI
-Ykh8n0QUl9HeN+beixJd2gXsSCZ1RBgOoMgO4uHhLpT0Jn4z8kXmVHqCSCbrnje0
-5o7z7T5cMsYWMR6l5H99zLjQkjlhffxChcMa3pX/FngGllypRz5wULwyMA/LW1qH
-nHkVo+boPKedLaJkfypPaU8RqGYi6WPIDxi0BOcY46eUl448zzgA8AEvVZR5xBKJ
-MTDgPZ3d+pDCGmB5WWlPMytvelALQ9YW3AeJMtLuGFiX92cZXNGm/Zr+Vyy1DWCn
-JKCyL4196rxzpqLBXcQ0BlPjrU4V/a/bphHWGfzdENaHGIKJOImYERw8/816z5aT
-7xYtcsIwuM+n+xZtUSwa9qjETd3L060qUOcjMegDNlOaPEPnqC3t0PXxFGWH1djV
-gg9V356QJ9xp6oKQvXRM7mJo4/cPmEn1mpZkuoEIbUy/9bJ6Vr/z3x7iom/n1PKk
-zC4N1EawxxGUiEC5/UzFIPfOW+9z/UzofAu4R/zxVjGm5zMVB0D/w8qceNt1p+p5
-sb5g8BZIuf35LaE+YpA9
-=TrGu
+iQIcBAEBAgAGBQJS1tnRAAoJELSic+t+oim9sCwP/08HzC8zw41IlGDD7nJ+pb5f
+G3hKT2XHFYeosvHl5IJPVhPN32HyrWDy/RbWAmzFL9kY/eOiUKbjVtuwzxwXYZDt
+ozplzooErY2IExK7rMkmHfprQ0R8dCubor3/IuSOsUDtU64bD56NEOc7yY3Evq5W
+CzeM7XSKbDwJj4DFZxycXsDpXuoVzqY6myWPflt6RF5EII6AzEArLZlRBodeWTs/
+lHHZUMLKMYNZbAZDDABXDEnevXkxy8OssGAdjmm+DPVhcA520MIy9tJ+KnluMiII
+qYWfbltYSHg/WvbaUQWmiYaTRjCFKplCLE3FcXVkG0xEb/EFZ4igkzcPLs+SfGay
+3KQPG/zomXua1f59bDwgacGKYegGmxG1ztJeJ3W4HMZlBcucXiIPsw0e7nmPbicI
+dqEqDAJI11NUIXuOWfWbX+458qV47VVyYtS7lYf9hHZ5HSNi5uh+Xq8GFwOO4Dhe
+0ySwQG14cHBpZ1VIao53DyCH+87eW7Z/HIrs9lGh1j6YRx3RmL4tSWRwtk+KTPjU
+qwuGkLiI6E9NzvRy5pbdqT81xl29YNafekoWaSebnnXmilPYGdufqSFDOpCuy/nG
+2fKvV7jV3rAVVk1eAUc2GC2yZz7PJ0eDq2H6/SttgGzjYoWcDaPK7LwrxU/S3Nko
+8Tdfb1SC/ypp+YXmy3BL
+=0Umh
 -----END PGP SIGNATURE-----
 
---/sFzBD2UPiMqxCFT--
+--171LwGa4zcdgM9o6--
+
+--===============2705393824854697915==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2705393824854697915==--
