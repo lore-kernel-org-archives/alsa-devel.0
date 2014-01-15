@@ -1,65 +1,51 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH RFC v2 REPOST 3/8] ASoC: davinci-evm: HDMI
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [alsa-devel] [PATCH RFC v2 REPOST 3/8] ASoC: davinci-evm: HDMI
  audio support for TDA998x trough McASP I2S bus
-Date: Wed, 15 Jan 2014 15:48:29 +0200
-Message-ID: <52D691AD.3010206@iki.fi>
+Date: Wed, 15 Jan 2014 16:51:00 +0100
+Message-ID: <20140115165100.3bfab96f@armhf>
 References: <cover.1387535299.git.jsarha@ti.com>
  <d3c3f645d39338df0ee9686cb030255ce36a249d.1387535302.git.jsarha@ti.com>
- <20131231132555.GA31886@sirena.org.uk> <52D67099.1040904@ti.com>
+ <20131231132555.GA31886@sirena.org.uk>
+ <52D67099.1040904@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
- [83.102.40.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 7037626007E
- for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2014 14:49:19 +0100 (CET)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
 In-Reply-To: <52D67099.1040904@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-omap-owner@vger.kernel.org
 To: Jyri Sarha <jsarha@ti.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, "Ujfalusi, Peter" <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, bcousson@baylibre.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: Mark Brown <broonie@kernel.org>, "Ujfalusi, Peter" <peter.ujfalusi@ti.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, bcousson@baylibre.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-15.01.2014 13:27, Jyri Sarha kirjoitti:
-> On 12/31/2013 03:25 PM, Mark Brown wrote:
->> On Fri, Dec 20, 2013 at 12:39:38PM +0200, Jyri Sarha wrote:
->>> support. The only supported sample format is SNDRV_PCM_FORMAT_S32_LE.
->>> The 8 least significant bits are ignored.
->>
->> Where does this constraint come from?
->>
-> 
->  From driver/gpu/drm/i2c/tda998x_drv.c. The driver configures CTS_N 
-> register statically to a value that works only with 4 byte samples. 
-> According to my tests it is possible to support 3 and 2 byte samples too 
-> by changing the CTS_N register value, but I am not sure if the 
-> configuration can be changed on the fly. My data sheet of the nxp chip 
-> is very vague about the register definitions, but I suppose the register 
-> configures some clock divider on the chip. HDMI supports only upto 24bit 
-> audio and the data sheet states that any extraneous least significant 
+On Wed, 15 Jan 2014 13:27:21 +0200
+Jyri Sarha <jsarha@ti.com> wrote:
+
+>  From driver/gpu/drm/i2c/tda998x_drv.c. The driver configures CTS_N=20
+> register statically to a value that works only with 4 byte samples.=20
+> According to my tests it is possible to support 3 and 2 byte samples =
+too=20
+> by changing the CTS_N register value, but I am not sure if the=20
+> configuration can be changed on the fly. My data sheet of the nxp chi=
+p=20
+> is very vague about the register definitions, but I suppose the regis=
+ter=20
+> configures some clock divider on the chip. HDMI supports only upto 24=
+bit=20
+> audio and the data sheet states that any extraneous least significant=
+=20
 > bits are ignored.
 
-That sounds strange, CTS/N values only depend on audio sample rate and
-TMDS/video clock, not on the audio format or the size of samples (HDMI
-spec sec 7.2 - Audio Sample Clock Capture and Regeneration).
+In the tda998x driver, the CTS_N is automatic (AIP_CNTRL_0_ACR_MAN is
+not set).
 
-Sure there isn't anything more going on (like the used HDMI sink being
-more tolerant to wrong CTS/N with 4-byte samples, or more likely
-something else I can't immediately think of)?
+Then, in my Cubox (Marvell A510 + tda19988), the 16, 24 and 32 bits
+formats are working well with I2S input at any rate.
 
-
-BTW, radeon driver has some code that calculates static CTS/N values
-since the hw autogeneration is not reliable there:
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/drivers/gpu/drm/radeon/r600_hdmi.c
-Not that it directly helps now, but just for the record...
-
--- 
-Anssi Hannula
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
