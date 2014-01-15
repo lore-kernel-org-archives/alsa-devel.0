@@ -1,133 +1,85 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v2 8/8] ASoC: simple-card: simplify code
-Date: Wed, 15 Jan 2014 16:52:00 +0100
-Message-ID: <20140115165200.5f4e6077@armhf>
-References: <20140115113551.0eb13409@armhf>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH RFC v2 REPOST 3/8] ASoC: davinci-evm: HDMI
+ audio support for TDA998x trough McASP I2S bus
+Date: Wed, 15 Jan 2014 18:28:14 +0200
+Message-ID: <52D6B71E.5000702@ti.com>
+References: <cover.1387535299.git.jsarha@ti.com>
+ <d3c3f645d39338df0ee9686cb030255ce36a249d.1387535302.git.jsarha@ti.com>
+ <20131231132555.GA31886@sirena.org.uk> <52D67099.1040904@ti.com>
+ <52D691AD.3010206@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140115113551.0eb13409@armhf>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com, Xiubo Li <Li.Xiubo@freescale.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B76326088F
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2014 17:28:20 +0100 (CET)
+In-Reply-To: <52D691AD.3010206@iki.fi>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, "Ujfalusi, Peter" <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, bcousson@baylibre.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Rename the pointer to the private data structure to 'priv' to avoid con=
-fusion with the platform data pointer.
+On 01/15/2014 03:48 PM, Anssi Hannula wrote:
+> 15.01.2014 13:27, Jyri Sarha kirjoitti:
+>> On 12/31/2013 03:25 PM, Mark Brown wrote:
+>>> On Fri, Dec 20, 2013 at 12:39:38PM +0200, Jyri Sarha wrote:
+>>>> support. The only supported sample format is SNDRV_PCM_FORMAT_S32_LE.
+>>>> The 8 least significant bits are ignored.
+>>>
+>>> Where does this constraint come from?
+>>>
+>>
+>>   From driver/gpu/drm/i2c/tda998x_drv.c. The driver configures CTS_N
+>> register statically to a value that works only with 4 byte samples.
+>> According to my tests it is possible to support 3 and 2 byte samples too
+>> by changing the CTS_N register value, but I am not sure if the
+>> configuration can be changed on the fly. My data sheet of the nxp chip
+>> is very vague about the register definitions, but I suppose the register
+>> configures some clock divider on the chip. HDMI supports only upto 24bit
+>> audio and the data sheet states that any extraneous least significant
+>> bits are ignored.
+>
+> That sounds strange, CTS/N values only depend on audio sample rate and
+> TMDS/video clock, not on the audio format or the size of samples (HDMI
+> spec sec 7.2 - Audio Sample Clock Capture and Regeneration).
+>
+> Sure there isn't anything more going on (like the used HDMI sink being
+> more tolerant to wrong CTS/N with 4-byte samples, or more likely
+> something else I can't immediately think of)?
+>
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- sound/soc/generic/simple-card.c     | 32 +++++++++++-----------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+On theoretical level I am not really sure about anything, because have 
+not been able to get my hands on proper NXP TDA19988 documentation.
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple=
--card.c
-index 0f11c28..6443c87 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -47,18 +47,18 @@ static int __asoc_simple_card_dai_init(struct snd_s=
-oc_dai *dai,
-=20
- static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct simple_card_data *info =3D
-+	struct simple_card_data *priv =3D
- 				snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *codec =3D rtd->codec_dai;
- 	struct snd_soc_dai *cpu =3D rtd->cpu_dai;
--	unsigned int daifmt =3D info->daifmt;
-+	unsigned int daifmt =3D priv->daifmt;
- 	int ret;
-=20
--	ret =3D __asoc_simple_card_dai_init(codec, &info->codec_dai, daifmt);
-+	ret =3D __asoc_simple_card_dai_init(codec, &priv->codec_dai, daifmt);
- 	if (ret < 0)
- 		return ret;
-=20
--	ret =3D __asoc_simple_card_dai_init(cpu, &info->cpu_dai, daifmt);
-+	ret =3D __asoc_simple_card_dai_init(cpu, &priv->cpu_dai, daifmt);
- 	if (ret < 0)
- 		return ret;
-=20
-@@ -129,21 +129,21 @@ parse_error:
- }
-=20
- static int asoc_simple_card_parse_of(struct device_node *node,
--				     struct simple_card_data *info,
-+				     struct simple_card_data *priv,
- 				     struct device *dev)
- {
--	struct snd_soc_dai_link *dai_link =3D info->snd_card.dai_link;
-+	struct snd_soc_dai_link *dai_link =3D priv->snd_card.dai_link;
- 	struct device_node *np;
- 	char *name;
- 	int ret;
-=20
- 	/* get CPU/CODEC common format via simple-audio-card,format */
--	info->daifmt =3D snd_soc_of_parse_daifmt(node, "simple-audio-card,") =
-&
-+	priv->daifmt =3D snd_soc_of_parse_daifmt(node, "simple-audio-card,") =
-&
- 		(SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_INV_MASK);
-=20
- 	/* DAPM routes */
- 	if (of_property_read_bool(node, "simple-audio-card,routing")) {
--		ret =3D snd_soc_of_parse_audio_routing(&info->snd_card,
-+		ret =3D snd_soc_of_parse_audio_routing(&priv->snd_card,
- 					"simple-audio-card,routing");
- 		if (ret)
- 			return ret;
-@@ -154,7 +154,7 @@ static int asoc_simple_card_parse_of(struct device_=
-node *node,
- 	np =3D of_get_child_by_name(node, "simple-audio-card,cpu");
- 	if (np)
- 		ret =3D asoc_simple_card_sub_parse_of(np,
--						  &info->cpu_dai,
-+						  &priv->cpu_dai,
- 						  &dai_link->cpu_of_node,
- 						  &dai_link->cpu_dai_name);
- 	if (ret < 0)
-@@ -165,7 +165,7 @@ static int asoc_simple_card_parse_of(struct device_=
-node *node,
- 	np =3D of_get_child_by_name(node, "simple-audio-card,codec");
- 	if (np)
- 		ret =3D asoc_simple_card_sub_parse_of(np,
--						  &info->codec_dai,
-+						  &priv->codec_dai,
- 						  &dai_link->codec_of_node,
- 						  &dai_link->codec_dai_name);
- 	if (ret < 0)
-@@ -181,22 +181,22 @@ static int asoc_simple_card_parse_of(struct devic=
-e_node *node,
- 			    GFP_KERNEL);
- 	sprintf(name, "%s-%s", dai_link->cpu_dai_name,
- 				dai_link->codec_dai_name);
--	info->snd_card.name =3D name;
-+	priv->snd_card.name =3D name;
- 	dai_link->name =3D dai_link->stream_name =3D name;
-=20
- 	/* simple-card assumes platform =3D=3D cpu */
- 	dai_link->platform_of_node =3D dai_link->cpu_of_node;
-=20
- 	dev_dbg(dev, "card-name : %s\n", name);
--	dev_dbg(dev, "platform : %04x\n", info->daifmt);
-+	dev_dbg(dev, "platform : %04x\n", priv->daifmt);
- 	dev_dbg(dev, "cpu : %s / %04x / %d\n",
- 		dai_link->cpu_dai_name,
--		info->cpu_dai.fmt,
--		info->cpu_dai.sysclk);
-+		priv->cpu_dai.fmt,
-+		priv->cpu_dai.sysclk);
- 	dev_dbg(dev, "codec : %s / %04x / %d\n",
- 		dai_link->codec_dai_name,
--		info->codec_dai.fmt,
--		info->codec_dai.sysclk);
-+		priv->codec_dai.fmt,
-+		priv->codec_dai.sysclk);
-=20
- 	return 0;
- }
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+However, while playing around with my Beaglebone-Black I have have found 
+out in practice that by changing CTS_N register's (page 0x11 reg 0x0c) 
+K_SEL bits (bit 2 to 0)[1] I can get 2, 3 and 4 byte samples to work 
+consistently by setting:
+
+K_SEL = 1 for SNDRV_PCM_FORMAT_S16_LE
+K_SEL = 2 for SNDRV_PCM_FORMAT_S24_3LE
+K_SEL = 3 for SNDRV_PCM_FORMAT_S32_LE
+
+Because I do not really know what is going on, I did not want to suggest 
+any changes to the driver and just use the format that works with the 
+current driver version.
+
+The HDMI sinks I have been using are a Toshiba 22B2LF1G and Thomson 
+42E90NF32 televisions. About those I just know that they both behave the 
+same way.
+
+Best regards,
+Jyri
+
+[1] The closest data sheet that has any description about the chip 
+registers I have found is this: 
+http://media.digikey.com/pdf/Data%20Sheets/NXP%20PDFs/TDA9983B.pdf
