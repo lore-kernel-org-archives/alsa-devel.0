@@ -1,23 +1,24 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Surround sound not working on ALC887 based
-	motherboard
-Date: Wed, 15 Jan 2014 15:35:31 +0800
-Message-ID: <CAN8cciZLSbxWVSbpzNkqQ2e1_O9StWCMgYcoTsHdB6gfCkpEWw@mail.gmail.com>
-References: <1389286414.4661.13.camel@TesterBox>
- <CAN8cciaoEwYvqDCGiR5jjgK78GMMG6dVSnzJN2_D9D4H6RWusA@mail.gmail.com>
- <1389643950.28960.6.camel@TesterTop4>
- <1389719312.4661.21.camel@TesterBox>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH 2/2] ASoC: codec doc,
+ tlv320aic3x: Add tlv320aic32x4 as compatible
+Date: Wed, 15 Jan 2014 09:57:56 +0100
+Message-ID: <20140115085756.GG12183@pengutronix.de>
+References: <1389448111-17064-1-git-send-email-mpa@pengutronix.de>
+ <1389448111-17064-3-git-send-email-mpa@pengutronix.de>
+ <20140113123721.GV29039@sirena.org.uk>
+ <20140113131828.GC12183@pengutronix.de>
+ <20140113154457.GY29039@sirena.org.uk>
+ <20140114085019.GD12183@pengutronix.de>
+ <20140114121426.GB15567@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f173.google.com (mail-ig0-f173.google.com
- [209.85.213.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D7812650BC
- for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2014 08:35:32 +0100 (CET)
-Received: by mail-ig0-f173.google.com with SMTP id c10so7236937igq.0
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 23:35:31 -0800 (PST)
-In-Reply-To: <1389719312.4661.21.camel@TesterBox>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 955192650DB
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2014 09:58:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20140114121426.GB15567@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,45 +28,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Olivier_Cr=C3=AAte?= <olivier.crete@ocrete.ca>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-MjAxNC8xLzE1IE9saXZpZXIgQ3LDqnRlIDxvbGl2aWVyLmNyZXRlQG9jcmV0ZS5jYT4KCj4gSGks
-Cj4KPgo+ID4gPiAgICAgICAgIEkgaGF2ZSBhIEFzdXMgUDVHNDFULU0gTFggUGx1cyBtb3RoZXJi
-b2FyZCB3aGljaCBpcyBJQ0g3ICsKPiA+ID4gICAgICAgICBSZWFsdGVrCj4gPiA+ICAgICAgICAg
-QUxDODg3LVZELCBhbHNhIG9ubHkgbGV0cyBtZSBhY2Nlc3MgdGhlIGZpcnN0IDIgY2hhbm5lbHMK
-PiA+ID4gICAgICAgICAoc3RlcmVvKSwgYnV0Cj4gPiA+ICAgICAgICAgbm90IHRoZSA2IG90aGVy
-IG9uZXMuIEl0IHdvcmtzIGZpbmUgaW4gV2luZG93cy4KPiA+ID4KPiA+ID4gICAgICAgICBUcnlp
-bmcgdG8gcnVuIHRoaXMgYWZ0ZXIga2lsbGluZyBwdWxzZWF1ZGlvIGZhaWxzOgo+ID4gPgo+ID4g
-PiAgICAgICAgICQgYXBsYXkgLUQgc3Vycm91bmQ0MDowIC1mIFMxNl9MRSAtciA0NDEwMCAtYyA0
-IC9kZXYvemVybyAtdgo+ID4gPiAgICAgICAgIFBsYXlpbmcgcmF3IGRhdGEgJy9kZXYvemVybycg
-OiBTaWduZWQgMTYgYml0IExpdHRsZSBFbmRpYW4sCj4gPiA+ICAgICAgICAgUmF0ZSA0NDEwMCBI
-eiwgQ2hhbm5lbHMgNAo+ID4gPiAgICAgICAgIGFwbGF5OiBzZXRfcGFyYW1zOjEyMzk6IENoYW5u
-ZWxzIGNvdW50IG5vbiBhdmFpbGFibGUKPiA+ID4KPiA+ID4KPiA+ID4gICAgICAgICBPdXRwdXQg
-ZnJvbSBhbHNhLWluZm86Cj4gPiA+Cj4gaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9m
-PWZlMzc4ZDI4ZjBkYmI1YTQyN2IwMDVkMjA4NjZhNzYyZmQzN2QzMWEKPiA+Cj4gPiA+Cj4gPiA+
-IHBvc3Qgb3V0cHV0IG9mIHBhY3RsIGxpc3Qgb3IgcHVsc2VhdWRpbyB2ZXJib3NlIGxvZwo+ID4K
-PiA+IGh0dHA6Ly93d3cub2NyZXRlLmNhL3N1cnJvdW5kL3BhY3RsLWxpc3QudHh0Cj4gPiBodHRw
-Oi8vd3d3Lm9jcmV0ZS5jYS9zdXJyb3VuZC9wdWxzZWF1ZGlvLXZ2LnR4dAo+ID4KPiA+ID4geW91
-IGhhdmUgdG8gY2hhbmdlIGNoYW5uZWwgbW9kZSBmcm9tIDJjaCB0byA2Y2ggdG8gcmV0YXNrIHRo
-ZSBpbnB1dAo+ID4gPiBqYWNrcyBhcyBvdXRwdXQgaWYgeW91ciBtb3RoZXJib2FyZCBvbmx5IGhh
-dmUgdGhyZWUgYXVkaW8gamFja3MgYXQKPiA+ID4gcmVhciBwYW5lbAo+ID4KPiA+IEhvdyB3b3Vs
-ZCBvbmUgZG8gdGhhdCA/IFB1bHNlYXVkaW8gb25seSBvZmZlcnMgU3RlcmVvIHByb2ZpbGVzLgo+
-CgphbWl4ZXIgLWMwIHNldCAiQ2hhbm5lbCBNb2RlIiAiNmNoIgoKPgo+ID4gZG8geW91IG1lYW4g
-cHVsc2VhdWRpbyBjYW5ub3QgcHJvYmUgdGhlIHN1cnJvdW40MCBvciBzdXJyb3VuZDUxCj4gPiBw
-cm9maWxlID8KPgo+IFllcywgYnV0IEkgY2FuJ3QgdXNlIGl0IHdpdGggYXBsYXkgZXZlbiB3aXRo
-b3V0IHB1bHNlYXVkaW8gcnVubmluZy4KPgo+ID4gU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0NoYW5u
-ZWwgTW9kZScsMAo+ID4gICBDYXBhYmlsaXRpZXM6IGVudW0KPiA+ICAgSXRlbXM6ICcyY2gnICc0
-Y2gnICc2Y2gnCj4gPiAgIEl0ZW0wOiAnMmNoJwo+Cj4KCj4gRm9yIHNvbWUgcmVhc29uIGRpZG4n
-dCBnZXQgeW91ciBsYXN0IGVtYWlsLCBidXQgSSBzYXcgSSBzYXcgaXQgb24gdGhlCj4gYXJjaGl2
-ZS4uIFRoYW5rcyBmb3IgeW91ciBzb2x1dGlvbiwgaXQgd29ya2VkISBEZWZpbml0ZWx5IHNvbWV0
-aGluZwo+IFB1bHNlQXVkaW8gc2hvdWxkIGV4cG9zZSBiZXR0ZXIuCgoKZG8gaXQgcmVhbGx5IHdv
-cmsgc2luY2UgcmVhciBtaWMgYmVjb21lIGFjdGl2ZSBwb3J0IGV2ZW4gd2hlbiBpdCBoYWQgYmVl
-bgpyZXRhc2tlZCBhcyBvdXRwdXQgPwoKUG9ydHM6CgkJYW5hbG9nLWlucHV0LWZyb250LW1pYzog
-RnJvbnQgTWljcm9waG9uZSAocHJpb3JpdHk6IDg1MDAsIG5vdCBhdmFpbGFibGUpCgkJYW5hbG9n
-LWlucHV0LXJlYXItbWljOiBSZWFyIE1pY3JvcGhvbmUgKHByaW9yaXR5OiA4MjAwLCBhdmFpbGFi
-bGUpCgkJYW5hbG9nLWlucHV0LWxpbmVpbjogTGluZSBJbiAocHJpb3JpdHk6IDgxMDAsIGF2YWls
-YWJsZSkKCUFjdGl2ZSBQb3J0OiBhbmFsb2ctaW5wdXQtcmVhci1taWMKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Tue, Jan 14, 2014 at 12:14:26PM +0000, Mark Brown wrote:
+> On Tue, Jan 14, 2014 at 09:50:19AM +0100, Markus Pargmann wrote:
+> > On Mon, Jan 13, 2014 at 03:44:57PM +0000, Mark Brown wrote:
+> 
+> > > Or you could add the compatible string to the driver as I suggested...
+> > > I don't see any reason for the device not to have a compatible string?
+> 
+> > The codec is not working here at the moment, so I can't test if the
+> > aic3204 codec is really working with the aic3x driver.
+> 
+> Why would you add the compatible string to the aic3x driver, there is a
+> separate driver for this chip?
+
+Right, was confused a little. I will add proper bindings for aic32x4 as
+soon as I have everything up and running.
+
+Thanks,
+
+Markus
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
