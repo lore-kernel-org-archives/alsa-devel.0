@@ -1,66 +1,59 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH 2/3] ASoC: atmel_wm8904: make it available to choose clock
-Date: Wed, 15 Jan 2014 18:16:08 +0100
-Message-ID: <52D6C258.6010204@atmel.com>
-References: <1389669956-2304-1-git-send-email-voice.shen@atmel.com> <1389669956-2304-3-git-send-email-voice.shen@atmel.com>
+From: Nicolas Ferre <nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 3/3] Binding: atmel-wm8904: add option to choose clock
+Date: Wed, 15 Jan 2014 18:17:21 +0100
+Message-ID: <52D6C2A1.4080405@atmel.com>
+References: <1389669956-2304-1-git-send-email-voice.shen@atmel.com> <1389669956-2304-4-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <1389669956-2304-3-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>, broonie@kernel.org
-Cc: plagnioj@jcrosoft.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Linus Walleij <linus.walleij@linaro.org>, Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1389669956-2304-4-git-send-email-voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: plagnioj-sclMFOaUSTBWk0Htik3J/w@public.gmane.org, linux-sound-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Rob Landley <rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org>, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 On 14/01/2014 04:25, Bo Shen :
-> Make it available to choose the clock from TK pin or RK pin. This
-> is hardware design decided.
+> Add the option to choose clock output on which pin connect to SSC.
+> Default is on TK pin to SSC, add clk_from_rk_pin option, the clock
+
+Please do not use "_" in DT properties. It is a common pattern to use
+"-" instead.
+
+> is on RK pin to SSC.
 > 
-> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> Signed-off-by: Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
 > ---
 > 
->  sound/soc/atmel/atmel_wm8904.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  Documentation/devicetree/bindings/sound/atmel-wm8904.txt | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
-> index b4e3690..b85088d 100644
-> --- a/sound/soc/atmel/atmel_wm8904.c
-> +++ b/sound/soc/atmel/atmel_wm8904.c
-> @@ -108,6 +108,7 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
->  	struct device_node *codec_np, *cpu_np;
->  	struct snd_soc_card *card = &atmel_asoc_wm8904_card;
->  	struct snd_soc_dai_link *dailink = &atmel_asoc_wm8904_dailink;
-> +	struct atmel_ssc_info *ssc_info;
->  	int ret;
+> diff --git a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
+> index 8bbe50c..68a5c1a 100644
+> --- a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
+> +++ b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
+> @@ -33,6 +33,8 @@ Required properties:
 >  
->  	if (!np) {
-> @@ -115,6 +116,15 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
->  		return -EINVAL;
->  	}
+>  Optional properties:
+>    - pinctrl-names, pinctrl-0: Please refer to pinctrl-bindings.txt
+> +  - clk_from_rk_pin: according to hardware design, clk privide on rk pin
+
+typo + more description is needed:
+Please tell that it is a boolean property, that by default it is using
+the TK pin (like in the commit message in fact).
+
+Bye,
+
+> +    to ssc device
 >  
-> +	ssc_info = devm_kzalloc(&pdev->dev, sizeof(*ssc_info), GFP_KERNEL);
-
-Isn't an atmel_ssc_info structure table already instantiated in
-sound/soc/atmel/atmel_ssc_dai.c ...
-I see, you copy the information contained in this field in the proper
-ssc_info of the DAI in the previous patch... Well, isn't it a better way
-to pass parameters to the DAI than this one?
-
-
-> +	if (!ssc_info)
-> +		return -ENOMEM;
-> +
-> +	ssc_info->clk_from_rk_pin =
-> +		of_property_read_bool(np, "clk_from_rk_pin");
-> +
-> +	card->drvdata = (void *)ssc_info;
-> +
->  	ret = snd_soc_of_parse_card_name(card, "atmel,model");
->  	if (ret) {
->  		dev_err(&pdev->dev, "failed to parse card name\n");
+>  Example:
+>  sound {
 > 
 
 
 -- 
 Nicolas Ferre
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
