@@ -1,81 +1,66 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH 3/3] ASoC: tlv320aic32x4: Fix MICPGA input
-	configuration
-Date: Wed, 15 Jan 2014 18:12:42 +0100
-Message-ID: <1389805962-18670-4-git-send-email-mpa@pengutronix.de>
-References: <1389805962-18670-1-git-send-email-mpa@pengutronix.de>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH 2/3] ASoC: atmel_wm8904: make it available to choose clock
+Date: Wed, 15 Jan 2014 18:16:08 +0100
+Message-ID: <52D6C258.6010204@atmel.com>
+References: <1389669956-2304-1-git-send-email-voice.shen@atmel.com> <1389669956-2304-3-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 90E332610A5
- for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2014 18:13:12 +0100 (CET)
-In-Reply-To: <1389805962-18670-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <1389669956-2304-3-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>, broonie@kernel.org
+Cc: plagnioj@jcrosoft.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Linus Walleij <linus.walleij@linaro.org>, Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently the Negative Terminal Input Routing Configuration is only set
-when there is a special routing configuration. If we don't use one of
-the inputs IN1 or IN2 as negative terminal input, the PGA and recording
-does not work.
+On 14/01/2014 04:25, Bo Shen :
+> Make it available to choose the clock from TK pin or RK pin. This
+> is hardware design decided.
+> 
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> ---
+> 
+>  sound/soc/atmel/atmel_wm8904.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
+> index b4e3690..b85088d 100644
+> --- a/sound/soc/atmel/atmel_wm8904.c
+> +++ b/sound/soc/atmel/atmel_wm8904.c
+> @@ -108,6 +108,7 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
+>  	struct device_node *codec_np, *cpu_np;
+>  	struct snd_soc_card *card = &atmel_asoc_wm8904_card;
+>  	struct snd_soc_dai_link *dailink = &atmel_asoc_wm8904_dailink;
+> +	struct atmel_ssc_info *ssc_info;
+>  	int ret;
+>  
+>  	if (!np) {
+> @@ -115,6 +116,15 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
+>  		return -EINVAL;
+>  	}
+>  
+> +	ssc_info = devm_kzalloc(&pdev->dev, sizeof(*ssc_info), GFP_KERNEL);
 
-This patch adds a route from CM1L/CM1R to the PGA as negative input by
-default. With this configuration the PGA can amplify all input signals
-and line-in/mic works again.
+Isn't an atmel_ssc_info structure table already instantiated in
+sound/soc/atmel/atmel_ssc_dai.c ...
+I see, you copy the information contained in this field in the proper
+ssc_info of the DAI in the previous patch... Well, isn't it a better way
+to pass parameters to the DAI than this one?
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
- sound/soc/codecs/tlv320aic32x4.c | 10 ++++++----
- sound/soc/codecs/tlv320aic32x4.h |  2 ++
- 2 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index ee9ad05..688151b 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -618,12 +618,14 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
- 	snd_soc_write(codec, AIC32X4_CMMODE, tmp_reg);
- 
- 	/* Mic PGA routing */
--	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_LMIC_IN2R_10K) {
-+	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_LMIC_IN2R_10K)
- 		snd_soc_write(codec, AIC32X4_LMICPGANIN, AIC32X4_LMICPGANIN_IN2R_10K);
--	}
--	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_RMIC_IN1L_10K) {
-+	else
-+		snd_soc_write(codec, AIC32X4_LMICPGANIN, AIC32X4_LMICPGANIN_CM1L_10K);
-+	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_RMIC_IN1L_10K)
- 		snd_soc_write(codec, AIC32X4_RMICPGANIN, AIC32X4_RMICPGANIN_IN1L_10K);
--	}
-+	else
-+		snd_soc_write(codec, AIC32X4_RMICPGANIN, AIC32X4_RMICPGANIN_CM1R_10K);
- 
- 	aic32x4_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
-diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
-index 83795af..995f033 100644
---- a/sound/soc/codecs/tlv320aic32x4.h
-+++ b/sound/soc/codecs/tlv320aic32x4.h
-@@ -120,7 +120,9 @@
- #define AIC32X4_MICBIAS_2075V		0x60
- 
- #define AIC32X4_LMICPGANIN_IN2R_10K	0x10
-+#define AIC32X4_LMICPGANIN_CM1L_10K	0x40
- #define AIC32X4_RMICPGANIN_IN1L_10K	0x10
-+#define AIC32X4_RMICPGANIN_CM1R_10K	0x40
- 
- #define AIC32X4_LMICPGAVOL_NOGAIN	0x80
- #define AIC32X4_RMICPGAVOL_NOGAIN	0x80
+> +	if (!ssc_info)
+> +		return -ENOMEM;
+> +
+> +	ssc_info->clk_from_rk_pin =
+> +		of_property_read_bool(np, "clk_from_rk_pin");
+> +
+> +	card->drvdata = (void *)ssc_info;
+> +
+>  	ret = snd_soc_of_parse_card_name(card, "atmel,model");
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "failed to parse card name\n");
+> 
+
+
 -- 
-1.8.5.2
+Nicolas Ferre
