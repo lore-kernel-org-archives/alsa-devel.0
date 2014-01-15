@@ -1,104 +1,71 @@
-From: Arun Shamanna Lakshmi <aruns@nvidia.com>
-Subject: [PATCH] ASoC: dapm: Change prototype of soc_widget_read
-Date: Tue, 14 Jan 2014 15:31:54 -0800
-Message-ID: <1389742314-20125-2-git-send-email-aruns@nvidia.com>
-References: <1389742314-20125-1-git-send-email-aruns@nvidia.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Surround sound not working on ALC887 based
+	motherboard
+Date: Wed, 15 Jan 2014 15:35:31 +0800
+Message-ID: <CAN8cciZLSbxWVSbpzNkqQ2e1_O9StWCMgYcoTsHdB6gfCkpEWw@mail.gmail.com>
+References: <1389286414.4661.13.camel@TesterBox>
+ <CAN8cciaoEwYvqDCGiR5jjgK78GMMG6dVSnzJN2_D9D4H6RWusA@mail.gmail.com>
+ <1389643950.28960.6.camel@TesterTop4>
+ <1389719312.4661.21.camel@TesterBox>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1389742314-20125-1-git-send-email-aruns@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arun Shamanna Lakshmi <aruns@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f173.google.com (mail-ig0-f173.google.com
+ [209.85.213.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D7812650BC
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2014 08:35:32 +0100 (CET)
+Received: by mail-ig0-f173.google.com with SMTP id c10so7236937igq.0
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2014 23:35:31 -0800 (PST)
+In-Reply-To: <1389719312.4661.21.camel@TesterBox>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?Q?Olivier_Cr=C3=AAte?= <olivier.crete@ocrete.ca>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-soc_widget_read API returns the register data and it is possible
-that a register can contain 0xffffffff. Thus, change the prototype
-of soc_widget_read to return only the error code and pass the reg
-data through pointer argument.
-
-Signed-off-by: Arun Shamanna Lakshmi <aruns@nvidia.com>
----
- sound/soc/soc-dapm.c |   26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 51b4c19..2a44fe9 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -371,12 +371,16 @@ static void dapm_reset(struct snd_soc_card *card)
- 	}
- }
- 
--static int soc_widget_read(struct snd_soc_dapm_widget *w, int reg)
-+static int soc_widget_read(struct snd_soc_dapm_widget *w, int reg,
-+	unsigned int *value)
- {
--	if (w->codec)
--		return snd_soc_read(w->codec, reg);
--	else if (w->platform)
--		return snd_soc_platform_read(w->platform, reg);
-+	if (w->codec) {
-+		*value = snd_soc_read(w->codec, reg);
-+		return 0;
-+	} else if (w->platform) {
-+		*value = snd_soc_platform_read(w->platform, reg);
-+		return 0;
-+	}
- 
- 	dev_err(w->dapm->dev, "ASoC: no valid widget read method\n");
- 	return -1;
-@@ -430,13 +434,12 @@ static int soc_widget_update_bits_locked(struct snd_soc_dapm_widget *w,
- 			return ret;
- 	} else {
- 		soc_widget_lock(w);
--		ret = soc_widget_read(w, reg);
-+		ret = soc_widget_read(w, reg, &old);
- 		if (ret < 0) {
- 			soc_widget_unlock(w);
- 			return ret;
- 		}
- 
--		old = ret;
- 		new = (old & ~mask) | (value & mask);
- 		change = old != new;
- 		if (change) {
-@@ -513,7 +516,7 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
- 		unsigned int invert = mc->invert;
- 
- 		if (reg != SND_SOC_NOPM) {
--			val = soc_widget_read(w, reg);
-+			soc_widget_read(w, reg, &val);
- 			val = (val >> shift) & mask;
- 			if (invert)
- 				val = max - val;
-@@ -529,7 +532,7 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
- 			w->kcontrol_news[i].private_value;
- 		int val, item;
- 
--		val = soc_widget_read(w, e->reg);
-+		soc_widget_read(w, e->reg, &val);
- 		item = (val >> e->shift_l) & e->mask;
- 
- 		if (item < e->max && !strcmp(p->name, e->texts[item]))
-@@ -558,7 +561,7 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
- 			w->kcontrol_news[i].private_value;
- 		int val, item;
- 
--		val = soc_widget_read(w, e->reg);
-+		soc_widget_read(w, e->reg, &val);
- 		val = (val >> e->shift_l) & e->mask;
- 		for (item = 0; item < e->max; item++) {
- 			if (val == e->values[item])
-@@ -2782,7 +2785,8 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
- 
- 		/* Read the initial power state from the device */
- 		if (w->reg >= 0) {
--			val = soc_widget_read(w, w->reg) >> w->shift;
-+			soc_widget_read(w, w->reg, &val);
-+			val = val >> w->shift;
- 			val &= w->mask;
- 			if (val == w->on_val)
- 				w->power = 1;
--- 
-1.7.9.5
+MjAxNC8xLzE1IE9saXZpZXIgQ3LDqnRlIDxvbGl2aWVyLmNyZXRlQG9jcmV0ZS5jYT4KCj4gSGks
+Cj4KPgo+ID4gPiAgICAgICAgIEkgaGF2ZSBhIEFzdXMgUDVHNDFULU0gTFggUGx1cyBtb3RoZXJi
+b2FyZCB3aGljaCBpcyBJQ0g3ICsKPiA+ID4gICAgICAgICBSZWFsdGVrCj4gPiA+ICAgICAgICAg
+QUxDODg3LVZELCBhbHNhIG9ubHkgbGV0cyBtZSBhY2Nlc3MgdGhlIGZpcnN0IDIgY2hhbm5lbHMK
+PiA+ID4gICAgICAgICAoc3RlcmVvKSwgYnV0Cj4gPiA+ICAgICAgICAgbm90IHRoZSA2IG90aGVy
+IG9uZXMuIEl0IHdvcmtzIGZpbmUgaW4gV2luZG93cy4KPiA+ID4KPiA+ID4gICAgICAgICBUcnlp
+bmcgdG8gcnVuIHRoaXMgYWZ0ZXIga2lsbGluZyBwdWxzZWF1ZGlvIGZhaWxzOgo+ID4gPgo+ID4g
+PiAgICAgICAgICQgYXBsYXkgLUQgc3Vycm91bmQ0MDowIC1mIFMxNl9MRSAtciA0NDEwMCAtYyA0
+IC9kZXYvemVybyAtdgo+ID4gPiAgICAgICAgIFBsYXlpbmcgcmF3IGRhdGEgJy9kZXYvemVybycg
+OiBTaWduZWQgMTYgYml0IExpdHRsZSBFbmRpYW4sCj4gPiA+ICAgICAgICAgUmF0ZSA0NDEwMCBI
+eiwgQ2hhbm5lbHMgNAo+ID4gPiAgICAgICAgIGFwbGF5OiBzZXRfcGFyYW1zOjEyMzk6IENoYW5u
+ZWxzIGNvdW50IG5vbiBhdmFpbGFibGUKPiA+ID4KPiA+ID4KPiA+ID4gICAgICAgICBPdXRwdXQg
+ZnJvbSBhbHNhLWluZm86Cj4gPiA+Cj4gaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9m
+PWZlMzc4ZDI4ZjBkYmI1YTQyN2IwMDVkMjA4NjZhNzYyZmQzN2QzMWEKPiA+Cj4gPiA+Cj4gPiA+
+IHBvc3Qgb3V0cHV0IG9mIHBhY3RsIGxpc3Qgb3IgcHVsc2VhdWRpbyB2ZXJib3NlIGxvZwo+ID4K
+PiA+IGh0dHA6Ly93d3cub2NyZXRlLmNhL3N1cnJvdW5kL3BhY3RsLWxpc3QudHh0Cj4gPiBodHRw
+Oi8vd3d3Lm9jcmV0ZS5jYS9zdXJyb3VuZC9wdWxzZWF1ZGlvLXZ2LnR4dAo+ID4KPiA+ID4geW91
+IGhhdmUgdG8gY2hhbmdlIGNoYW5uZWwgbW9kZSBmcm9tIDJjaCB0byA2Y2ggdG8gcmV0YXNrIHRo
+ZSBpbnB1dAo+ID4gPiBqYWNrcyBhcyBvdXRwdXQgaWYgeW91ciBtb3RoZXJib2FyZCBvbmx5IGhh
+dmUgdGhyZWUgYXVkaW8gamFja3MgYXQKPiA+ID4gcmVhciBwYW5lbAo+ID4KPiA+IEhvdyB3b3Vs
+ZCBvbmUgZG8gdGhhdCA/IFB1bHNlYXVkaW8gb25seSBvZmZlcnMgU3RlcmVvIHByb2ZpbGVzLgo+
+CgphbWl4ZXIgLWMwIHNldCAiQ2hhbm5lbCBNb2RlIiAiNmNoIgoKPgo+ID4gZG8geW91IG1lYW4g
+cHVsc2VhdWRpbyBjYW5ub3QgcHJvYmUgdGhlIHN1cnJvdW40MCBvciBzdXJyb3VuZDUxCj4gPiBw
+cm9maWxlID8KPgo+IFllcywgYnV0IEkgY2FuJ3QgdXNlIGl0IHdpdGggYXBsYXkgZXZlbiB3aXRo
+b3V0IHB1bHNlYXVkaW8gcnVubmluZy4KPgo+ID4gU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0NoYW5u
+ZWwgTW9kZScsMAo+ID4gICBDYXBhYmlsaXRpZXM6IGVudW0KPiA+ICAgSXRlbXM6ICcyY2gnICc0
+Y2gnICc2Y2gnCj4gPiAgIEl0ZW0wOiAnMmNoJwo+Cj4KCj4gRm9yIHNvbWUgcmVhc29uIGRpZG4n
+dCBnZXQgeW91ciBsYXN0IGVtYWlsLCBidXQgSSBzYXcgSSBzYXcgaXQgb24gdGhlCj4gYXJjaGl2
+ZS4uIFRoYW5rcyBmb3IgeW91ciBzb2x1dGlvbiwgaXQgd29ya2VkISBEZWZpbml0ZWx5IHNvbWV0
+aGluZwo+IFB1bHNlQXVkaW8gc2hvdWxkIGV4cG9zZSBiZXR0ZXIuCgoKZG8gaXQgcmVhbGx5IHdv
+cmsgc2luY2UgcmVhciBtaWMgYmVjb21lIGFjdGl2ZSBwb3J0IGV2ZW4gd2hlbiBpdCBoYWQgYmVl
+bgpyZXRhc2tlZCBhcyBvdXRwdXQgPwoKUG9ydHM6CgkJYW5hbG9nLWlucHV0LWZyb250LW1pYzog
+RnJvbnQgTWljcm9waG9uZSAocHJpb3JpdHk6IDg1MDAsIG5vdCBhdmFpbGFibGUpCgkJYW5hbG9n
+LWlucHV0LXJlYXItbWljOiBSZWFyIE1pY3JvcGhvbmUgKHByaW9yaXR5OiA4MjAwLCBhdmFpbGFi
+bGUpCgkJYW5hbG9nLWlucHV0LWxpbmVpbjogTGluZSBJbiAocHJpb3JpdHk6IDgxMDAsIGF2YWls
+YWJsZSkKCUFjdGl2ZSBQb3J0OiBhbmFsb2ctaW5wdXQtcmVhci1taWMKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
