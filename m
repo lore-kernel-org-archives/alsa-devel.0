@@ -1,317 +1,159 @@
-From: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCHv9][ 1/2] ASoC: eukrea-tlv320: Add DT support.
-Date: Wed, 15 Jan 2014 18:23:25 +0100
-Message-ID: <1389806606-21521-1-git-send-email-denis@eukrea.com>
+From: Olivier =?ISO-8859-1?Q?Cr=EAte?= <olivier.crete@ocrete.ca>
+Subject: Re: Surround sound not working on ALC887 based
+	motherboard
+Date: Wed, 15 Jan 2014 12:50:38 -0500
+Message-ID: <1389808238.4661.24.camel@TesterBox>
+References: <1389286414.4661.13.camel@TesterBox>
+ <CAN8cciaoEwYvqDCGiR5jjgK78GMMG6dVSnzJN2_D9D4H6RWusA@mail.gmail.com>
+ <1389643950.28960.6.camel@TesterTop4> <1389719312.4661.21.camel@TesterBox>
+ <CAN8cciZLSbxWVSbpzNkqQ2e1_O9StWCMgYcoTsHdB6gfCkpEWw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>, =?UTF-8?q?Eric=20B=C3=A9nard?= <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============8272550899595749603=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from relais.videotron.ca (relais.videotron.ca [24.201.245.36])
+ by alsa0.perex.cz (Postfix) with ESMTP id E533A265146
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2014 18:51:47 +0100 (CET)
+Received: from TesterServ.TesterNet ([135.19.19.22])
+ by VL-VM-MR006.ip.videotron.ca
+ (Oracle Communications Messaging Exchange Server 7u4-22.01 64bit (built Apr 21
+ 2011)) with ESMTP id <0MZG00GX1EYA3210@VL-VM-MR006.ip.videotron.ca> for
+ alsa-devel@alsa-project.org; Wed, 15 Jan 2014 12:51:46 -0500 (EST)
+In-reply-to: <CAN8cciZLSbxWVSbpzNkqQ2e1_O9StWCMgYcoTsHdB6gfCkpEWw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Cc: Eric B=C3=A9nard <eric-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
-Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Signed-off-by: Denis Carikli <denis-fO0SIAKYzcbQT0dZR+AlfA@public.gmane.org>
----
-ChangeLog v9->v10:
-- Better Cc list
-- Some non-arm architecture that have CONFIG_OF could select that drive=
-r,
-  but they lacked asm/mach-types.h, so the compilation failed.
-  That has been fixed by permitting, when CONFIG_OF is selected,
-  to select the driver only if CONFIG_ARM is set.
 
-ChangeLog v7->v8:
-- fixed the vendor prefixes in the dts bindings.
-- updated the code and the documentation accordingly.
-- removed the need of an audio-codec property, since it's available in =
-the ssi bindings.
-- the dai codec is now retrived trough the dt in order to support machi=
-nes that have its=20
-  codec on another i2c bus number.
-- driver compatible is now similar to the ones of the other drivers.
+--===============8272550899595749603==
+Content-type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="=-iWCfHge9Uf0eMPlStfzX"
 
-ChangeLog v6->v7:
-- The cleanups went into another patch.
-- The support for fsl_ssi doesn't depend on dt anymore.
-- platform_name =3D "imx-ssi.0" is still set when in non-dt mode.
----
- .../devicetree/bindings/sound/eukrea-tlv320.txt    |   21 ++++
- sound/soc/fsl/Kconfig                              |    5 +-
- sound/soc/fsl/eukrea-tlv320.c                      |  108 ++++++++++++=
-+++++---
- 3 files changed, 121 insertions(+), 13 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/eukrea-tlv3=
-20.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/eukrea-tlv320.txt =
-b/Documentation/devicetree/bindings/sound/eukrea-tlv320.txt
-new file mode 100644
-index 0000000..0d7985c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/eukrea-tlv320.txt
-@@ -0,0 +1,21 @@
-+Audio complex for Eukrea boards with tlv320aic23 codec.
-+
-+Required properties:
-+- compatible : "eukrea,asoc-tlv320"
-+- eukrea,model : The user-visible name of this sound complex.
-+- ssi-controller : The phandle of the SSI controller.
-+- fsl,mux-int-port : The internal port of the i.MX audio muxer (AUDMUX=
-).
-+- fsl,mux-ext-port : The external port of the i.MX audio muxer.
-+
-+Note: The AUDMUX port numbering should start at 1, which is consistent=
- with
-+hardware manual.
-+
-+Example:
-+
-+	sound {
-+		compatible =3D "eukrea,asoc-tlv320";
-+		eukrea,model =3D "imx51-eukrea-tlv320aic23";
-+		ssi-controller =3D <&ssi2>;
-+		fsl,mux-int-port =3D <2>;
-+		fsl,mux-ext-port =3D <3>;
-+	};
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 07f8f14..b8f8703 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -168,12 +168,15 @@ config SND_SOC_EUKREA_TLV320
- 	depends on MACH_EUKREA_MBIMX27_BASEBOARD \
- 		|| MACH_EUKREA_MBIMXSD25_BASEBOARD \
- 		|| MACH_EUKREA_MBIMXSD35_BASEBOARD \
--		|| MACH_EUKREA_MBIMXSD51_BASEBOARD
-+		|| MACH_EUKREA_MBIMXSD51_BASEBOARD \
-+		|| (OF && ARM)
- 	depends on I2C
- 	select SND_SOC_TLV320AIC23
- 	select SND_SOC_IMX_PCM_FIQ
- 	select SND_SOC_IMX_AUDMUX
- 	select SND_SOC_IMX_SSI
-+	select SND_SOC_FSL_SSI
-+	select SND_SOC_IMX_PCM_DMA
- 	help
- 	  Enable I2S based access to the TLV320AIC23B codec attached
- 	  to the SSI interface
-diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv32=
-0.c
-index 5983740..eb093d5 100644
---- a/sound/soc/fsl/eukrea-tlv320.c
-+++ b/sound/soc/fsl/eukrea-tlv320.c
-@@ -15,8 +15,11 @@
-  *
-  */
-=20
-+#include <linux/errno.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
- #include <linux/device.h>
- #include <linux/i2c.h>
- #include <sound/core.h>
-@@ -26,6 +29,7 @@
-=20
- #include "../codecs/tlv320aic23.h"
- #include "imx-ssi.h"
-+#include "fsl_ssi.h"
- #include "imx-audmux.h"
-=20
- #define CODEC_CLOCK 12000000
-@@ -41,7 +45,8 @@ static int eukrea_tlv320_hw_params(struct snd_pcm_sub=
-stream *substream,
- 	ret =3D snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
- 				  SND_SOC_DAIFMT_NB_NF |
- 				  SND_SOC_DAIFMT_CBM_CFM);
--	if (ret) {
-+	/* fsl_ssi lacks the set_fmt ops. */
-+	if (ret && ret !=3D -ENOTSUPP) {
- 		dev_err(cpu_dai->dev,
- 			"Failed to set the cpu dai format.\n");
- 		return ret;
-@@ -63,11 +68,13 @@ static int eukrea_tlv320_hw_params(struct snd_pcm_s=
-ubstream *substream,
- 			"Failed to set the codec sysclk.\n");
- 		return ret;
- 	}
-+
- 	snd_soc_dai_set_tdm_slot(cpu_dai, 0xffffffc, 0xffffffc, 2, 0);
-=20
- 	ret =3D snd_soc_dai_set_sysclk(cpu_dai, IMX_SSP_SYS_CLK, 0,
- 				SND_SOC_CLOCK_IN);
--	if (ret) {
-+	/* fsl_ssi lacks the set_sysclk ops */
-+	if (ret && ret !=3D -EINVAL) {
- 		dev_err(cpu_dai->dev,
- 			"Can't set the IMX_SSP_SYS_CLK CPU system clock.\n");
- 		return ret;
-@@ -84,14 +91,10 @@ static struct snd_soc_dai_link eukrea_tlv320_dai =3D=
- {
- 	.name		=3D "tlv320aic23",
- 	.stream_name	=3D "TLV320AIC23",
- 	.codec_dai_name	=3D "tlv320aic23-hifi",
--	.platform_name	=3D "imx-ssi.0",
--	.codec_name	=3D "tlv320aic23-codec.0-001a",
--	.cpu_dai_name	=3D "imx-ssi.0",
- 	.ops		=3D &eukrea_tlv320_snd_ops,
- };
-=20
- static struct snd_soc_card eukrea_tlv320 =3D {
--	.name		=3D "cpuimx-audio",
- 	.owner		=3D THIS_MODULE,
- 	.dai_link	=3D &eukrea_tlv320_dai,
- 	.num_links	=3D 1,
-@@ -101,8 +104,65 @@ static int eukrea_tlv320_probe(struct platform_dev=
-ice *pdev)
- {
- 	int ret;
- 	int int_port =3D 0, ext_port;
-+	struct device_node *np =3D pdev->dev.of_node;
-+	struct device_node *ssi_np, *codec_np;
-=20
--	if (machine_is_eukrea_cpuimx27()) {
-+	eukrea_tlv320.dev =3D &pdev->dev;
-+	if (np) {
-+		ret =3D snd_soc_of_parse_card_name(&eukrea_tlv320,
-+						 "eukrea,model");
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"eukrea,model node missing or invalid.\n");
-+			goto err;
-+		}
-+
-+		ssi_np =3D of_parse_phandle(pdev->dev.of_node,
-+					  "ssi-controller", 0);
-+		if (!ssi_np) {
-+			dev_err(&pdev->dev,
-+				"ssi-controller missing or invalid.\n");
-+			ret =3D -ENODEV;
-+			goto err;
-+		}
-+
-+		codec_np =3D of_parse_phandle(ssi_np, "codec-handle", 0);
-+		if (codec_np)
-+			eukrea_tlv320_dai.codec_of_node =3D codec_np;
-+		else
-+			dev_err(&pdev->dev, "codec-handle node missing or invalid.\n");
-+
-+		ret =3D of_property_read_u32(np, "fsl,mux-int-port", &int_port);
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"fsl,mux-int-port node missing or invalid.\n");
-+			return ret;
-+		}
-+		ret =3D of_property_read_u32(np, "fsl,mux-ext-port", &ext_port);
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"fsl,mux-ext-port node missing or invalid.\n");
-+			return ret;
-+		}
-+
-+		/*
-+		 * The port numbering in the hardware manual starts at 1, while
-+		 * the audmux API expects it starts at 0.
-+		 */
-+		int_port--;
-+		ext_port--;
-+
-+		eukrea_tlv320_dai.cpu_of_node =3D ssi_np;
-+		eukrea_tlv320_dai.platform_of_node =3D ssi_np;
-+	} else {
-+		eukrea_tlv320_dai.cpu_dai_name =3D "imx-ssi.0";
-+		eukrea_tlv320_dai.platform_name =3D "imx-ssi.0";
-+		eukrea_tlv320_dai.codec_name =3D "tlv320aic23-codec.0-001a";
-+		eukrea_tlv320.name =3D "cpuimx-audio";
-+	}
-+
-+	if (machine_is_eukrea_cpuimx27() ||
-+	    of_find_compatible_node(NULL, NULL, "fsl,imx21-audmux")) {
- 		imx_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
- 			IMX_AUDMUX_V1_PCR_SYN |
- 			IMX_AUDMUX_V1_PCR_TFSDIR |
-@@ -119,8 +179,12 @@ static int eukrea_tlv320_probe(struct platform_dev=
-ice *pdev)
- 		);
- 	} else if (machine_is_eukrea_cpuimx25sd() ||
- 		   machine_is_eukrea_cpuimx35sd() ||
--		   machine_is_eukrea_cpuimx51sd()) {
--		ext_port =3D machine_is_eukrea_cpuimx25sd() ? 4 : 3;
-+		   machine_is_eukrea_cpuimx51sd() ||
-+		   of_find_compatible_node(NULL, NULL, "fsl,imx31-audmux")) {
-+		if (!np)
-+			ext_port =3D machine_is_eukrea_cpuimx25sd() ?
-+				4 : 3;
-+
- 		imx_audmux_v2_configure_port(int_port,
- 			IMX_AUDMUX_V2_PTCR_SYN |
- 			IMX_AUDMUX_V2_PTCR_TFSDIR |
-@@ -134,14 +198,27 @@ static int eukrea_tlv320_probe(struct platform_de=
-vice *pdev)
- 			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port)
- 		);
- 	} else {
--		/* return happy. We might run on a totally different machine */
--		return 0;
-+		if (np) {
-+			/* The eukrea,asoc-tlv320 driver was explicitely
-+			 * requested (through the device tree).
-+			 */
-+			dev_err(&pdev->dev,
-+				"Missing or invalid audmux DT node.\n");
-+			return -ENODEV;
-+		} else {
-+			/* Return happy.
-+			 * We might run on a totally different machine.
-+			 */
-+			return 0;
-+		}
- 	}
-=20
--	eukrea_tlv320.dev =3D &pdev->dev;
- 	ret =3D snd_soc_register_card(&eukrea_tlv320);
-+err:
- 	if (ret)
- 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+	if (np)
-+		of_node_put(ssi_np);
-=20
- 	return ret;
- }
-@@ -153,10 +230,17 @@ static int eukrea_tlv320_remove(struct platform_d=
-evice *pdev)
- 	return 0;
- }
-=20
-+static const struct of_device_id imx_tlv320_dt_ids[] =3D {
-+	{ .compatible =3D "eukrea,asoc-tlv320"},
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, imx_tlv320_dt_ids);
-+
- static struct platform_driver eukrea_tlv320_driver =3D {
- 	.driver =3D {
- 		.name =3D "eukrea_tlv320",
- 		.owner =3D THIS_MODULE,
-+		.of_match_table =3D imx_tlv320_dt_ids,
- 	},
- 	.probe =3D eukrea_tlv320_probe,
- 	.remove =3D eukrea_tlv320_remove,
+--=-iWCfHge9Uf0eMPlStfzX
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2014-01-15 at 15:35 +0800, Raymond Yau wrote:
+>=20
+>=20
+>=20
+> 2014/1/15 Olivier Cr=C3=AAte <olivier.crete@ocrete.ca>
+>         Hi,
+>        =20
+>        =20
+>         > >         I have a Asus P5G41T-M LX Plus motherboard which
+>         is ICH7 +
+>         > >         Realtek
+>         > >         ALC887-VD, alsa only lets me access the first 2
+>         channels
+>         > >         (stereo), but
+>         > >         not the 6 other ones. It works fine in Windows.
+>         > >
+>         > >         Trying to run this after killing pulseaudio fails:
+>         > >
+>         > >         $ aplay -D surround40:0 -f S16_LE -r 44100 -c
+>         4 /dev/zero -v
+>         > >         Playing raw data '/dev/zero' : Signed 16 bit
+>         Little Endian,
+>         > >         Rate 44100 Hz, Channels 4
+>         > >         aplay: set_params:1239: Channels count non
+>         available
+>         > >
+>         > >
+>         > >         Output from alsa-info:
+>         > >
+>         http://www.alsa-project.org/db/?f=3Dfe378d28f0dbb5a427b005d20866a=
+762fd37d31a
+>         >
+>         > >
+>         > > post output of pactl list or pulseaudio verbose log
+>         >
+>         > http://www.ocrete.ca/surround/pactl-list.txt
+>         > http://www.ocrete.ca/surround/pulseaudio-vv.txt
+>         >
+>         > > you have to change channel mode from 2ch to 6ch to retask
+>         the input
+>         > > jacks as output if your motherboard only have three audio
+>         jacks at
+>         > > rear panel
+>         >
+>         > How would one do that ? Pulseaudio only offers Stereo
+>         profiles.
+>        =20
+>=20
+> amixer -c0 set "Channel Mode" "6ch"
+>=20
+>=20
+> >
+> > > do you mean pulseaudio cannot probe the surroun40 or surround51
+> > > profile ?
+> >
+> > Yes, but I can't use it with aplay even without pulseaudio running.
+> >
+> > > Simple mixer control 'Channel Mode',0
+> > >   Capabilities: enum
+> > >   Items: '2ch' '4ch' '6ch'
+> > >   Item0: '2ch'
+> >
+> >
+>=20
+>=20
+> > For some reason didn't get your last email, but I saw I saw it on
+> the
+> > archive.. Thanks for your solution, it worked! Definitely something
+> > PulseAudio should expose better.
+>=20
+>=20
+>=20
+>=20
+> do it really work since rear mic become active port even when it had
+> been retasked as output ?
+
+The 6 outputs work at the same time. I didn't try it as a mic as I don't
+have a mic here...
+
+> Ports:
+> 		analog-input-front-mic: Front Microphone (priority: 8500, not available=
+)
+> 		analog-input-rear-mic: Rear Microphone (priority: 8200, available)
+> 		analog-input-linein: Line In (priority: 8100, available)
+> 	Active Port: analog-input-rear-mic
+
+
 --=20
-1.7.9.5
+Olivier Cr=C3=AAte
+olivier.crete@ocrete.ca
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--=-iWCfHge9Uf0eMPlStfzX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEABECAAYFAlLWym4ACgkQHTiOWk7ZorsJywCfYS0Xcn2oGDyTa+1inSgjxlN2
+O2oAmQEkz+sr9Eywyza0WebY6n+7uzMl
+=oPV1
+-----END PGP SIGNATURE-----
+
+--=-iWCfHge9Uf0eMPlStfzX--
+
+
+--===============8272550899595749603==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8272550899595749603==--
