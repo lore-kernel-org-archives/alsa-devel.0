@@ -1,24 +1,19 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH 2/2] ASoC: codec doc,
- tlv320aic3x: Add tlv320aic32x4 as compatible
-Date: Wed, 15 Jan 2014 09:57:56 +0100
-Message-ID: <20140115085756.GG12183@pengutronix.de>
-References: <1389448111-17064-1-git-send-email-mpa@pengutronix.de>
- <1389448111-17064-3-git-send-email-mpa@pengutronix.de>
- <20140113123721.GV29039@sirena.org.uk>
- <20140113131828.GC12183@pengutronix.de>
- <20140113154457.GY29039@sirena.org.uk>
- <20140114085019.GD12183@pengutronix.de>
- <20140114121426.GB15567@sirena.org.uk>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH RFC v2 REPOST 2/8] ASoC: davinci-evm: Add
+ named clock reference to DT bindings
+Date: Wed, 15 Jan 2014 13:12:03 +0200
+Message-ID: <52D66D03.1040608@ti.com>
+References: <cover.1387535299.git.jsarha@ti.com>
+ <c1ae738c9b6cd9f2e595eed1f4981378ded46925.1387535302.git.jsarha@ti.com>
+ <20131231131617.GZ31886@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 955192650DB
- for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2014 09:58:00 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20140114121426.GB15567@sirena.org.uk>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18F7A2650FF
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2014 12:12:07 +0100 (CET)
+In-Reply-To: <20131231131617.GZ31886@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,31 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, bcousson@baylibre.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 14, 2014 at 12:14:26PM +0000, Mark Brown wrote:
-> On Tue, Jan 14, 2014 at 09:50:19AM +0100, Markus Pargmann wrote:
-> > On Mon, Jan 13, 2014 at 03:44:57PM +0000, Mark Brown wrote:
-> 
-> > > Or you could add the compatible string to the driver as I suggested...
-> > > I don't see any reason for the device not to have a compatible string?
-> 
-> > The codec is not working here at the moment, so I can't test if the
-> > aic3204 codec is really working with the aic3x driver.
-> 
-> Why would you add the compatible string to the aic3x driver, there is a
-> separate driver for this chip?
+On 12/31/2013 03:16 PM, Mark Brown wrote:
+> On Fri, Dec 20, 2013 at 12:38:27PM +0200, Jyri Sarha wrote:
+>
+>> +static int evm_startup(struct snd_pcm_substream *substream)
+>> +{
+>> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>> +	struct snd_soc_card *soc_card = rtd->codec->card;
+>> +	struct clk *mclk = ((struct snd_soc_card_drvdata_davinci *)
+>> +			    snd_soc_card_get_drvdata(soc_card))->mclk;
+>
+> Why do you need to cast away void?  Ths indicates something is going
+> wrong here though I can't see what.
 
-Right, was confused a little. I will add proper bindings for aic32x4 as
-soon as I have everything up and running.
+I'll fix that.
 
-Thanks,
+>> +	mclk = of_clk_get_by_name(np, "ti,codec-clock");
+>> +	if (PTR_ERR(mclk) == -EPROBE_DEFER) {
+>> +		return -EPROBE_DEFER;
+>> +	} else if (IS_ERR(mclk)) {
+>> +		dev_dbg(&pdev->dev, "Codec clock not found.\n");
+>> +		mclk = NULL;
+>> +	}
+>
+> The driver will unconditionally enable and disable the clock which I'd
+> not expect to work well if we got an error, I'd expect either NULL checks
+> on use or a fixed clock to be registered from code in the case where
+> we're using the old binding.
+>
 
-Markus
+In the drivers/clk/clk.c the clk == NULL is always checked before using 
+the pointer. However, adding NULL checks would save couple of 
+lock-unlock cycles. I'll add them.
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> I'd also expect to see devm_clk_get() used here, with the standard
+> clock-names based lookup from DT.
+>
+
+I'll fix that.
+
+Best regards,
+Jyri
