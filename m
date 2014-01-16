@@ -1,15 +1,16 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH] ASoC: simple-card: simplify the daifmt code
-Date: Thu, 16 Jan 2014 11:12:18 +0800
-Message-ID: <1389841938-17177-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCH] ASoC: simple-card: Add snd_card's name parsing
+	from DT node support
+Date: Thu, 16 Jan 2014 12:00:01 +0800
+Message-ID: <1389844801-29309-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe005.messaging.microsoft.com [65.55.88.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A333265099
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2014 05:10:39 +0100 (CET)
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1860E265050
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2014 05:58:22 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,93 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: moinejf@free.fr, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-In the asoc_simple_card_parse_of() will parse the device node's CPU/CODEC
-DAI commone fmts, and then in asoc_simple_card_sub_parse_of() will parse
-the CPU/CODEC DAI's sub-node fmts, so we can combine the info->daifmt and
-info->set.fmt in asoc_simple_card_sub_parse_of() not while just before
-set_fmt().
+If the DT is used and the CPU DAI device has only one DAI, the card
+name will be like :
+
+ALSA device list:
+	0: 40031000.sai-sgtl5000
+
+And this name maybe a little ugly to some customers, so here the
+card name parsing from DT node is supported.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/generic/simple-card.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+ sound/soc/generic/simple-card   | 0
+ sound/soc/generic/simple-card.  | 0
+ sound/soc/generic/simple-card.c | 7 ++++++-
+ 3 files changed, 6 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/generic/simple-card
+ create mode 100644 sound/soc/generic/simple-card.
 
+diff --git a/sound/soc/generic/simple-card b/sound/soc/generic/simple-card
+new file mode 100644
+index 0000000..e69de29
+diff --git a/sound/soc/generic/simple-card. b/sound/soc/generic/simple-card.
+new file mode 100644
+index 0000000..e69de29
 diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index b6014fe..0e2fbdd 100644
+index 0e2fbdd..b40b57c 100644
 --- a/sound/soc/generic/simple-card.c
 +++ b/sound/soc/generic/simple-card.c
-@@ -16,15 +16,12 @@
- #include <sound/simple_card.h>
- 
- static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
--				       struct asoc_simple_dai *set,
--				       unsigned int daifmt)
-+				       struct asoc_simple_dai *set)
- {
- 	int ret;
- 
--	daifmt |= set->fmt;
--
--	if (daifmt) {
--		ret = snd_soc_dai_set_fmt(dai, daifmt);
-+	if (set->fmt) {
-+		ret = snd_soc_dai_set_fmt(dai, set->fmt);
- 		if (ret && ret != -ENOTSUPP) {
- 			dev_err(dai->dev, "simple-card: set_fmt error\n");
+@@ -143,6 +143,10 @@ static int asoc_simple_card_parse_of(struct device_node *node,
  			return ret;
-@@ -48,14 +45,13 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- 				snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *codec = rtd->codec_dai;
- 	struct snd_soc_dai *cpu = rtd->cpu_dai;
--	unsigned int daifmt = info->daifmt;
- 	int ret;
+ 	}
  
--	ret = __asoc_simple_card_dai_init(codec, &info->codec_dai, daifmt);
-+	ret = __asoc_simple_card_dai_init(codec, &info->codec_dai);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = __asoc_simple_card_dai_init(cpu, &info->cpu_dai, daifmt);
-+	ret = __asoc_simple_card_dai_init(cpu, &info->cpu_dai);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -64,6 +60,7 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- 
- static int
- asoc_simple_card_sub_parse_of(struct device_node *np,
-+			      unsigned int daifmt,
- 			      struct asoc_simple_dai *dai,
- 			      struct device_node **node)
- {
-@@ -89,6 +86,7 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 	 * and specific "format" if it has
- 	 */
- 	dai->fmt = snd_soc_of_parse_daifmt(np, NULL);
-+	dai->fmt |= daifmt;
- 
- 	/*
- 	 * dai->sysclk come from
-@@ -149,7 +147,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
++	/* parsing the card name from DT */
++	snd_soc_of_parse_card_name(&info->snd_card,
++					"simple-audio-card,name");
++
+ 	/* CPU sub-node */
  	ret = -EINVAL;
  	np = of_get_child_by_name(node, "simple-audio-card,cpu");
- 	if (np)
--		ret = asoc_simple_card_sub_parse_of(np,
-+		ret = asoc_simple_card_sub_parse_of(np, info->daifmt,
- 						  &info->cpu_dai,
- 						  of_cpu);
- 	if (ret < 0)
-@@ -159,7 +157,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	ret = -EINVAL;
- 	np = of_get_child_by_name(node, "simple-audio-card,codec");
- 	if (np)
--		ret = asoc_simple_card_sub_parse_of(np,
-+		ret = asoc_simple_card_sub_parse_of(np, info->daifmt,
- 						  &info->codec_dai,
- 						  of_codec);
- 	if (ret < 0)
+@@ -257,7 +261,8 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	/*
+ 	 * init snd_soc_card
+ 	 */
+-	cinfo->snd_card.name		= cinfo->card;
++	if (!cinfo->snd_card.name)
++		cinfo->snd_card.name = cinfo->card;
+ 	cinfo->snd_card.owner		= THIS_MODULE;
+ 	cinfo->snd_card.dai_link	= &cinfo->snd_link;
+ 	cinfo->snd_card.num_links	= 1;
 -- 
 1.8.4
