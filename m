@@ -1,14 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC updates for v3.13
-Date: Thu, 16 Jan 2014 14:05:24 +0000
-Message-ID: <20140116140524.GD17314@sirena.org.uk>
+Subject: Re: ASoC fixes for v3.13
+Date: Thu, 16 Jan 2014 14:09:05 +0000
+Message-ID: <20140116140905.GG17314@sirena.org.uk>
+References: <20140116123440.GQ15567@sirena.org.uk>
+ <s5hy52grt7s.wl%tiwai@suse.de>
+ <20140116133344.GS15567@sirena.org.uk>
+ <s5hsisorpik.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3199121029017712736=="
+Content-Type: multipart/mixed; boundary="===============7449119714565200964=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E9BFD261735
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2014 15:05:31 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id BEDBA2616F3
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2014 15:09:10 +0100 (CET)
+In-Reply-To: <s5hsisorpik.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,80 +28,57 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3199121029017712736==
+--===============7449119714565200964==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0/kgSOzhNoDC5T3a"
+	protocol="application/pgp-signature"; boundary="HKEL+t8MFpg/ASTE"
 Content-Disposition: inline
 
 
---0/kgSOzhNoDC5T3a
+--HKEL+t8MFpg/ASTE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-The following changes since commit 7e22e91102c6b9df7c4ae2168910e19d2bb14cd6:
+On Thu, Jan 16, 2014 at 03:05:07PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-  Linux 3.13-rc8 (2014-01-12 17:04:18 +0700)
+> > I can't remember when exactly the problems were introduced but given
+> > that the driver itself only came in with v3.12...
 
-are available in the git repository at:
+> Then it'd need Cc to stable?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.13-rc8-2
+IIRC it was OK in v3.12 and broken in v3.13.  Could be wrong though, but
+we didn't do anything interesting that'd be likely to break it in v3.12
+that I remember.
 
-for you to fetch changes up to c6affc0dba45bb2074ff56b21386d22eeaf682f8:
-
-  Merge remote-tracking branches 'asoc/fix/adau1701' and 'asoc/fix/tlv320aic32x4' into asoc-linus (2014-01-16 14:02:52 +0000)
-
-----------------------------------------------------------------
-
-ASoC: Fixes for v3.13
-
-A few small fixes in drivers, nothing too remarkable here but all good
-to have - mainly these are fixes for things that were introduced in the
-last merge window but only just got useful testing.
-
-----------------------------------------------------------------
-Lars-Peter Clausen (1):
-      ASoC: adau1701: Fix ADAU1701_SEROCTL_WORD_LEN_16 constant
-
-Mark Brown (1):
-      Merge remote-tracking branches 'asoc/fix/adau1701' and 'asoc/fix/tlv320aic32x4' into asoc-linus
-
-Markus Pargmann (2):
-      ASoC: codec: tlv320aic32x4: Fix regmap range config
-      ASoC: tlv320aic32x4: Fix regmap range_min
-
- sound/soc/codecs/adau1701.c      | 2 +-
- sound/soc/codecs/tlv320aic32x4.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
---0/kgSOzhNoDC5T3a
+--HKEL+t8MFpg/ASTE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS1+cgAAoJELSic+t+oim9oHIQAINOclOZvWH3FV3mGKbOoS2F
-cqO/HQ8L1/1ZBibqzFAEuQjqQxm2yXbDlF7OZV61jp7b9BC4mEWDPqQ6xRjc19/h
-HrJZrubYBIthdle9BTlHv33+knq0AFjLE4Ypfmna6oMsZbRoUu6eTeD8watxMeyB
-3XELApuaUulQ1YiOO2tJot+dg3DVIkJGZNewhWpm1deh438UeY9R/cgXIRTWVLsj
-3kRsIFUWvTnJPyXZdwEhiRK1nCpIcU6KTZeg50p8KBoypMhpd+5/cWFazH0M7+RS
-eflek+ci40kx+SAwk7AjRvXvdTCpZcv+38vXBCNB49t65fWJQ8NC9wnQ0M93dhG4
-fUOBhVgEbZCSP6XiKOZFt2iydOau/z5AKOagnP/IHcXb0MHWYhcaXd4o4JD08SyU
-rvXSLmML+nGW6IN2TDWCYDZxGoe1I8JGV3bWS9H+V5/9StTxJbvBftnwIWzh120S
-Y881ylxNZ7SxTgd3J7BsyX+pHXg5Sn6+tSSjKLly0A7mYlglLIZugbjAcg8wTlM4
-PoVkO45iYEFWmJWSBnFEhhAYUVUuogpEdhgjxiPI/Ifw69PXKlSwBvmJPqo4QNhq
-MOlSIMtvRLpmwA8JM1EGQBbrOHraKeR0acgAq6pvE984tbEMxatKHM7Aa6qaKK0s
-0Gfvb+V8m0z0i38V6Ikq
-=FF7y
+iQIcBAEBAgAGBQJS1+f+AAoJELSic+t+oim9nJgQAJ32bcrVxDT+5kHDK1xvx4wB
+aLhdD5DyN8jmwAmThIYioMkOUN4hi9mXJRog/TmIUhIuEbt2WO5vpM4WlWHrjaxS
+hR/rLsEK/IFjkRkWQ4eU66MTir7MRH/bMAVdYoCmhLSDMej74aWfs0iF6F5oSp4q
+Rwn+t4ik7lDuByrYPp5+gUTdjtjeAABmuJjT4AOfpj0CPgt9Ps5aDXZ5+t8f70Cw
+ZiUUSzFim8VJPn/C+JyYhIcVa4K0J2x/RKMAh1TGjiMoyN4wAXlKan5Rnx09z+qh
+L0GsBlYx64tkjg1n9l9i5NAI2lBcxKpAwp0isa4TO+p0HB2+BWcEDHKbLWxoxGFj
+sfF76c9qIyIATMyt/rO/xEIeyFIyAKwvTlZIt6Z8SnC1lNBpdijGMNyTPHdCte03
+R3QqmKW7532tZ4pPY0Hd+0BI8o4C1+3/dO86XjiowbsB89LEqzxvldpUd/6ZB5S2
+LgEp0wFw0PnQonbt8rnSoRtagwXvSGY7BK5ZvwjlVQIOFyhKxaYRirgw2Oe1lqQ4
+u/PgCvO8yO/OixpMJsOs73hPn9ST5lIr/pDG+8IK49RM5+tAqafDzDJkr1TWq1hM
+P70lQe/z71LLiMrMyVxLpPhHKRtSEa8lq5lCSmSEGTp22ZH/X9MdnVmTwFcjK9vm
+2Y/kpOktiOikit9lvSYi
+=FhQU
 -----END PGP SIGNATURE-----
 
---0/kgSOzhNoDC5T3a--
+--HKEL+t8MFpg/ASTE--
 
---===============3199121029017712736==
+--===============7449119714565200964==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3199121029017712736==--
+--===============7449119714565200964==--
