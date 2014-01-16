@@ -1,59 +1,56 @@
 From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [PATCH 2/3] ASoC: atmel_wm8904: make it available to choose clock
-Date: Thu, 16 Jan 2014 09:31:23 +0800
-Message-ID: <52D7366B.1030909@atmel.com>
-References: <1389669956-2304-1-git-send-email-voice.shen@atmel.com> <1389669956-2304-3-git-send-email-voice.shen@atmel.com> <20140114203650.GX15567@sirena.org.uk>
+Subject: Re: [PATCH 3/3] Binding: atmel-wm8904: add option to choose clock
+Date: Thu, 16 Jan 2014 09:33:20 +0800
+Message-ID: <52D736E0.90207@atmel.com>
+References: <1389669956-2304-1-git-send-email-voice.shen@atmel.com> <1389669956-2304-4-git-send-email-voice.shen@atmel.com> <20140115115417.GA9558@ns203013.ovh.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140114203650.GX15567@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Linus Walleij <linus.walleij@linaro.org>, Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <20140115115417.GA9558@ns203013.ovh.net>
+Sender: linux-sound-owner@vger.kernel.org
+To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Cc: broonie@kernel.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Mark Brown <broonie@linaro.org>, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Hi J,
 
-On 01/15/2014 04:36 AM, Mark Brown wrote:
-> On Tue, Jan 14, 2014 at 11:25:55AM +0800, Bo Shen wrote:
->> Make it available to choose the clock from TK pin or RK pin. This
->> is hardware design decided.
->
->> --- a/sound/soc/atmel/atmel_wm8904.c
->> +++ b/sound/soc/atmel/atmel_wm8904.c
->> @@ -108,6 +108,7 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
->>   	struct device_node *codec_np, *cpu_np;
->>   	struct snd_soc_card *card = &atmel_asoc_wm8904_card;
->>   	struct snd_soc_dai_link *dailink = &atmel_asoc_wm8904_dailink;
->> +	struct atmel_ssc_info *ssc_info;
->>   	int ret;
+On 01/15/2014 07:54 PM, Jean-Christophe PLAGNIOL-VILLARD wrote:
+> On 11:25 Tue 14 Jan     , Bo Shen wrote:
+>> Add the option to choose clock output on which pin connect to SSC.
+>> Default is on TK pin to SSC, add clk_from_rk_pin option, the clock
+>> is on RK pin to SSC.
 >>
->>   	if (!np) {
->> @@ -115,6 +116,15 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
->>   		return -EINVAL;
->>   	}
+>> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+>> ---
 >>
->> +	ssc_info = devm_kzalloc(&pdev->dev, sizeof(*ssc_info), GFP_KERNEL);
->> +	if (!ssc_info)
->> +		return -ENOMEM;
->> +
->> +	ssc_info->clk_from_rk_pin =
->> +		of_property_read_bool(np, "clk_from_rk_pin");
->> +
->> +	card->drvdata = (void *)ssc_info;
+>>   Documentation/devicetree/bindings/sound/atmel-wm8904.txt | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
+>> index 8bbe50c..68a5c1a 100644
+>> --- a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
+>> +++ b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
+>> @@ -33,6 +33,8 @@ Required properties:
+>>
+>>   Optional properties:
+>>     - pinctrl-names, pinctrl-0: Please refer to pinctrl-bindings.txt
+>> +  - clk_from_rk_pin: according to hardware design, clk privide on rk pin
+> 							  provide
 >
-> Shouldn't this code be in the DAI driver?  Otherwise this series looks
-> fine to me, though the DT folks might have something to say I guess.
+> 	?? no example?
 
-   For audio on Atmel SoC, it depends on three device nodes, one is SSC 
-node, one is the codec node and the sound node.
-   The sound node will parse by machine driver, and machine driver is 
-mainly for hardware connection. As the "clk_from_rk_pin" is decided by 
-hardware, so, I put it here.
-   If I move the code to dai driver, it will parse the sound node in dai 
-driver, I think it will make the code a little bit not explicit. What do 
-you think?
+If this patch set is acceptable. The sama5 audio will use it (I will 
+send patch after this patch set). Do I still need to put the example in 
+the binding document?
+
+>> +    to ssc device
+>>
+>>   Example:
+>>   sound {
+>> --
+>> 1.8.5.2
+>>
 
 Best Regards,
 Bo Shen
