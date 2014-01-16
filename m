@@ -1,137 +1,89 @@
-From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH 3/4] ASoC: tlv320aic32x4: DT support
-Date: Thu, 16 Jan 2014 16:30:26 +0100
-Message-ID: <1389886227-876-4-git-send-email-mpa@pengutronix.de>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH 1/4] ASoC: tlv320aic32x4: Use signed int mixer
+	controls
+Date: Thu, 16 Jan 2014 16:30:24 +0100
+Message-ID: <1389886227-876-2-git-send-email-mpa@pengutronix.de>
 References: <1389886227-876-1-git-send-email-mpa@pengutronix.de>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1389886227-876-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4AC94261723
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2014 16:30:57 +0100 (CET)
+In-Reply-To: <1389886227-876-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Add DT support for this codec. The bindings differ a bit from the aic3x
-codec bindings, so I created a new binding documentation. The difference
-is especially a "ti,ldo-enable" property, which enables the internal
-LDOs.
+There are a number of mixer controls that support negative values. They
+use signed values for this with different number of bits for the values.
+Currently they only support the positive range.
 
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
-Cc: Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+This patch replaces the unsigned mixers with signed mixers to support
+the full range.
+
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- .../devicetree/bindings/sound/tlv320aic32x4.txt    | 23 +++++++++++++++++
- sound/soc/codecs/tlv320aic32x4.c                   | 30 ++++++++++++++++++++++
- 2 files changed, 53 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
+ sound/soc/codecs/tlv320aic32x4.c | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-new file mode 100644
-index 0000000..5c8fb4a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-@@ -0,0 +1,23 @@
-+Texas Instruments - tlv320aic32x4 Codec module
-+
-+The tlv320aic32x4 serial control bus communicates through I2C protocols
-+
-+Required properties:
-+ - compatible: Should be "ti,tlv320aic32x4"
-+ - reg: I2C slave address
-+
-+Optional properties:
-+ - ti,ldo-enable: Bool, has to be set when the codec is powered only through the
-+   LDOIN pin.
-+ - gpio-reset - gpio pin number used for codec reset
-+
-+
-+Example:
-+
-+codec: tlv320aic32x4@18 {
-+	compatible = "ti,tlv320aic32x4";
-+	reg = <0x18>;
-+	clocks = <&clks 201>;
-+	clock-names = "mclk";
-+	ti,ldo-enable;
-+};
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 1c9f1d8..840f529 100644
+index 688151b..86bcae9 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -29,6 +29,7 @@
- #include <linux/delay.h>
- #include <linux/pm.h>
- #include <linux/gpio.h>
-+#include <linux/of_gpio.h>
- #include <linux/i2c.h>
- #include <linux/cdev.h>
- #include <linux/slab.h>
-@@ -669,11 +670,27 @@ static struct snd_soc_codec_driver soc_codec_dev_aic32x4 = {
- 	.num_dapm_routes = ARRAY_SIZE(aic32x4_dapm_routes),
+@@ -68,18 +68,24 @@ struct aic32x4_priv {
+ 	int rstn_gpio;
  };
  
-+static int aic32x4_parse_dt(struct aic32x4_priv *aic32x4,
-+		struct device_node *np)
-+{
-+	aic32x4->swapdacs = false;
-+	aic32x4->micpga_routing = 0;
-+	aic32x4->rstn_gpio = of_get_named_gpio(np, "gpio-reset", 0);
-+
-+	if (of_property_read_bool(np, "ti,ldo-enable"))
-+		aic32x4->power_cfg = AIC32X4_PWR_AIC32X4_LDO_ENABLE;
-+	else
-+		aic32x4->power_cfg = 0;
-+
-+	return 0;
-+}
-+
- static int aic32x4_i2c_probe(struct i2c_client *i2c,
- 			     const struct i2c_device_id *id)
- {
- 	struct aic32x4_pdata *pdata = i2c->dev.platform_data;
- 	struct aic32x4_priv *aic32x4;
-+	struct device_node *np = i2c->dev.of_node;
- 	int ret;
+-/* 0dB min, 1dB steps */
+-static DECLARE_TLV_DB_SCALE(tlv_step_1, 0, 100, 0);
+ /* 0dB min, 0.5dB steps */
+ static DECLARE_TLV_DB_SCALE(tlv_step_0_5, 0, 50, 0);
++/* -63.5dB min, 0.5dB steps */
++static DECLARE_TLV_DB_SCALE(tlv_pcm, -6350, 50, 0);
++/* -6dB min, 1dB steps */
++static DECLARE_TLV_DB_SCALE(tlv_driver_gain, -600, 100, 0);
++/* -12dB min, 0.5dB steps */
++static DECLARE_TLV_DB_SCALE(tlv_adc_vol, -1200, 50, 0);
  
- 	aic32x4 = devm_kzalloc(&i2c->dev, sizeof(struct aic32x4_priv),
-@@ -692,6 +709,12 @@ static int aic32x4_i2c_probe(struct i2c_client *i2c,
- 		aic32x4->swapdacs = pdata->swapdacs;
- 		aic32x4->micpga_routing = pdata->micpga_routing;
- 		aic32x4->rstn_gpio = pdata->rstn_gpio;
-+	} else if (np) {
-+		ret = aic32x4_parse_dt(aic32x4, np);
-+		if (ret) {
-+			dev_err(&i2c->dev, "Failed to parse DT node\n");
-+			return ret;
-+		}
- 	} else {
- 		aic32x4->power_cfg = 0;
- 		aic32x4->swapdacs = false;
-@@ -723,10 +746,17 @@ static const struct i2c_device_id aic32x4_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, aic32x4_i2c_id);
+ static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
+-	SOC_DOUBLE_R_TLV("PCM Playback Volume", AIC32X4_LDACVOL,
+-			AIC32X4_RDACVOL, 0, 0x30, 0, tlv_step_0_5),
+-	SOC_DOUBLE_R_TLV("HP Driver Gain Volume", AIC32X4_HPLGAIN,
+-			AIC32X4_HPRGAIN, 0, 0x1D, 0, tlv_step_1),
+-	SOC_DOUBLE_R_TLV("LO Driver Gain Volume", AIC32X4_LOLGAIN,
+-			AIC32X4_LORGAIN, 0, 0x1D, 0, tlv_step_1),
++	SOC_DOUBLE_R_S_TLV("PCM Playback Volume", AIC32X4_LDACVOL,
++			AIC32X4_RDACVOL, 0, (s8)0x81, 0x30, 7, 0, tlv_pcm),
++	SOC_DOUBLE_R_S_TLV("HP Driver Gain Volume", AIC32X4_HPLGAIN,
++			AIC32X4_HPRGAIN, 0, (s8)0xfa, 0x1d, 5, 0,
++			tlv_driver_gain),
++	SOC_DOUBLE_R_S_TLV("LO Driver Gain Volume", AIC32X4_LOLGAIN,
++			AIC32X4_LORGAIN, 0, (s8)0xfa, 0x1d, 5, 0,
++			tlv_driver_gain),
+ 	SOC_DOUBLE_R("HP DAC Playback Switch", AIC32X4_HPLGAIN,
+ 			AIC32X4_HPRGAIN, 6, 0x01, 1),
+ 	SOC_DOUBLE_R("LO DAC Playback Switch", AIC32X4_LOLGAIN,
+@@ -90,8 +96,8 @@ static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
+ 	SOC_SINGLE("ADCFGA Left Mute Switch", AIC32X4_ADCFGA, 7, 1, 0),
+ 	SOC_SINGLE("ADCFGA Right Mute Switch", AIC32X4_ADCFGA, 3, 1, 0),
  
-+static const struct of_device_id aic32x4_of_id[] = {
-+	{ .compatible = "ti,tlv320aic32x4", },
-+	{ /* senitel */ }
-+};
-+MODULE_DEVICE_TABLE(of, aic32x4_of_id);
-+
- static struct i2c_driver aic32x4_i2c_driver = {
- 	.driver = {
- 		.name = "tlv320aic32x4",
- 		.owner = THIS_MODULE,
-+		.of_match_table = aic32x4_of_id,
- 	},
- 	.probe =    aic32x4_i2c_probe,
- 	.remove =   aic32x4_i2c_remove,
+-	SOC_DOUBLE_R_TLV("ADC Level Volume", AIC32X4_LADCVOL,
+-			AIC32X4_RADCVOL, 0, 0x28, 0, tlv_step_0_5),
++	SOC_DOUBLE_R_S_TLV("ADC Level Volume", AIC32X4_LADCVOL,
++			AIC32X4_RADCVOL, 0, (s8)0xe8, 0x28, 6, 0, tlv_adc_vol),
+ 	SOC_DOUBLE_R_TLV("PGA Level Volume", AIC32X4_LMICPGAVOL,
+ 			AIC32X4_RMICPGAVOL, 0, 0x5f, 0, tlv_step_0_5),
+ 
 -- 
 1.8.5.2
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
