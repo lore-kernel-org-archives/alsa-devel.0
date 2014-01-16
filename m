@@ -1,20 +1,17 @@
-From: Patrick Welche <prlw1@cam.ac.uk>
-Subject: Re: alsa on non-linux
-Date: Thu, 16 Jan 2014 13:27:17 +0000
-Message-ID: <20140116132717.GB10286@quark.internal.precedence.co.uk>
-References: <20140110153700.GC1173@quark.internal.precedence.co.uk>
- <s5hwqi4t6zg.wl%tiwai@suse.de>
- <20140114101709.GB160@quark.internal.precedence.co.uk>
- <52D5440A.6080508@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: ASoC fixes for v3.13
+Date: Thu, 16 Jan 2014 13:33:44 +0000
+Message-ID: <20140116133344.GS15567@sirena.org.uk>
+References: <20140116123440.GQ15567@sirena.org.uk>
+ <s5hy52grt7s.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1612931844093747566=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ppsw-33.csi.cam.ac.uk (ppsw-33.csi.cam.ac.uk [131.111.8.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 97F4526171E
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2014 14:27:19 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <52D5440A.6080508@ladisch.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 943202616C9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2014 14:33:55 +0100 (CET)
+In-Reply-To: <s5hy52grt7s.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,64 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 14, 2014 at 03:04:58PM +0100, Clemens Ladisch wrote:
-> Patrick Welche wrote:
-> > I started out, writing the attached patch in November, but then it looked
-> > as though the boundaries of application library interface and linux sound
-> > chip driver had become so blurred that I thought that a decision had been
-> > taken to bin all OSes bar linux, hence the question. Can you give me a
-> > hint on how you think it is supposed to work?
-> 
-> Only the "hw" plugins access the Linux kernel drivers.  Anything else
-> should be portable (with the exception of plugins like "dmix" that
-> require a "hw" plugin as their slave).
-> 
-> For most device types (hwdep/seq/rawmidi/timer), the hw plugin is the
-> only implementation, so a portable alsa-lib has only control and pcm
-> devices at the moment.
 
-So, rephrasing for the novice that I am, e.g., include/local.h contains
+--===============1612931844093747566==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fCjW77bNSYaih4x3"
+Content-Disposition: inline
 
-#include <endian.h>
-...
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-...
-#include <linux/types.h>
-#include <linux/ioctl.h>
 
-which are portability headaches. local.h is included by
+--fCjW77bNSYaih4x3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-src/alisp/alisp.c:#include "local.h"
-src/conf.c:#include "local.h"
-src/confmisc.c:#include "local.h"
-src/control/control_local.h:#include "local.h"
-src/control/namehint.c:#include "local.h"
-src/control/setup.c:#include "local.h"
-src/dlmisc.c:#include "local.h"
-src/error.c:#include "local.h"
-src/hwdep/hwdep_local.h:#include "local.h"
-src/input.c:#include "local.h"
-src/mixer/mixer_local.h:#include "local.h"
-src/names.c:#include "local.h"
-src/output.c:#include "local.h"
-src/pcm/pcm_local.h:#include "local.h"
-src/rawmidi/rawmidi_local.h:#include "local.h"
-src/seq/seq_event.c:#include "local.h"
-src/seq/seq_local.h:#include "local.h"
-src/seq/seq_midi_event.c:#include "local.h"
-src/seq/seq_old.c:#include "local.h"
-src/socket.c:#include "local.h"
-src/timer/timer_local.h:#include "local.h"
-src/ucm/ucm_local.h:#include "local.h"
+On Thu, Jan 16, 2014 at 01:45:11PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-That is fine except for files under directories src/control and src/pcm
-which ought to be portable? Or is it stronger, and everything should be
-portable except files under directory src/hwdep?
+> > Nicolin Chen (1):
+> >       ASoC: imx-spdif: Use snd-soc-dummy CODEC driver to link card
 
-Cheers,
+> This commit is a bit too intrusive than I wished for rc8.
+> Is this a regression fix of 3.13?  It's not mentioned there, so I'm
+> not sure about it.
 
-Patrick
+I can't remember when exactly the problems were introduced but given
+that the driver itself only came in with v3.12...
+
+--fCjW77bNSYaih4x3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS19+1AAoJELSic+t+oim9YHEQAIp0GCaccN16qDfoEthCglsh
+qSqL3RBPfXGK7LlSM0gKO7DXK7ZHaM1ZGngjq5lSrLDA74cEkFGzGtjGorR/rsUs
+If8/pRJYUmILxX7e5tvQ3vSokUA9YUm/i7QTVSOKqLZAFDLF7xlsiKempb/Y2s0k
+CPl9jyR/l7M+lU1pePf1Au0Rk/fje9ifgBV68jxY1wRMm9PNFkd9o1WitvS9oTwp
+RV6KcUDeOld6aT5xROHvE0DhpPD7nFURP5EdLtJSombD/SIkGTI95sMpOlzhDImZ
+PGKEek5W7bKuW7GWynczcDdG9Kjmyw0fmZdEE3P1zRvdL1lsmWGni7DvzjFLJnzu
+amjGeDLTvynMiJE4jurZyQug52nkFv8ctpegDsY0cH7Xr0zv0XceRk8+DRP91xNr
+mLRjjFnhCOrLiX2deqlt9l/qciHs/C0vQeBLfR5Vy71SRZPb+X0yJruQyEgQwwzj
+w0B+RB8MuBRS5VFvAEvy7C/yMcg726IVx1cYEwXqvPw38IUMIJ/zK/lFQaqb+Nge
+bDYq12neRad+aPEGxhCu3/XKrPMTULtkvGeKb8XX/Ej0xPg9vL9/4U8Nt6UeYGlL
+BK7ZRF+sPPoLTx4qeikiUnay3x7S0xdJhHh+kDIlAgH+9wyR91f6WGIp6v3zA9aE
+hWDhDQeiEGtlWIrnWULc
+=uSd3
+-----END PGP SIGNATURE-----
+
+--fCjW77bNSYaih4x3--
+
+--===============1612931844093747566==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1612931844093747566==--
