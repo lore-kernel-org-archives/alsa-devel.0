@@ -1,65 +1,65 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [PATCH 3/3] Binding: atmel-wm8904: add option to choose clock
-Date: Thu, 16 Jan 2014 09:38:52 +0800
-Message-ID: <52D7382C.4080705@atmel.com>
-References: <1389669956-2304-1-git-send-email-voice.shen@atmel.com> <1389669956-2304-4-git-send-email-voice.shen@atmel.com> <52D6C2A1.4080405@atmel.com>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Subject: Re: [PATCH] ASoC: da9055: Partially fix device
+Date: Thu, 16 Jan 2014 02:11:03 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A03376B7CD24A@SW-EX-MBX01.diasemi.com>
+References: <2E89032DDAA8B9408CB92943514A03376B7CC95A@SW-EX-MBX01.diasemi.com>
+ <20140109121353.GG31886@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376B7CC9BE@SW-EX-MBX01.diasemi.com>
+ <20140109202446.GQ12858@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376B7CCB98@SW-EX-MBX01.diasemi.com>
+ <20140113211858.GK29039@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376B7CCF27@SW-EX-MBX01.diasemi.com>
+ <20140114195159.GW15567@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <52D6C2A1.4080405@atmel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: broonie@kernel.org, devicetree@vger.kernel.org, plagnioj@jcrosoft.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Mark Brown <broonie@linaro.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
+ [195.245.231.145])
+ by alsa0.perex.cz (Postfix) with ESMTP id 268C82619E7
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2014 03:11:08 +0100 (CET)
+In-Reply-To: <20140114195159.GW15567@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, "Opensource [Anthony Olech]" <anthony.olech.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Nicolas,
+On Tue, 14 Jan 2014 19:52:19 +0000, Mark Brown wrote:
 
-On 01/16/2014 01:17 AM, Nicolas Ferre wrote:
-> On 14/01/2014 04:25, Bo Shen :
->> Add the option to choose clock output on which pin connect to SSC.
->> Default is on TK pin to SSC, add clk_from_rk_pin option, the clock
->
-> Please do not use "_" in DT properties. It is a common pattern to use
-> "-" instead.
+> > I don't disagree with you on common patterns, and I have been an advocate of
+> > following these when working in the kernel as it generally makes things simpler
+> > and easier. Here I'm not trying to be awkward but am trying to get a simple,
+> > flexible, solution which fits best with our devices, whilst still using common
+> > kernel frameworks.
+> 
+> That's not what's been coming over.
 
-OK, I will use "-" instead in next version.
+The drivers follow common patterns. The only thing slightly different is that
+both the Codec and PMIC are initialised separately, but this reflects the
+nature of the chip. I don't believe wanting to add a simple solution which
+fits with that as being awkward or against common methods and am not overly
+happy you're trying to suggest otherwise, especially when previous kernel
+submissions I've been involved with have very much followed common kernel
+practices. I just want the correct solution for our drivers here.
 
->> is on RK pin to SSC.
->>
->> Signed-off-by: Bo Shen <voice.shen@atmel.com>
->> ---
->>
->>   Documentation/devicetree/bindings/sound/atmel-wm8904.txt | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
->> index 8bbe50c..68a5c1a 100644
->> --- a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
->> +++ b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
->> @@ -33,6 +33,8 @@ Required properties:
->>
->>   Optional properties:
->>     - pinctrl-names, pinctrl-0: Please refer to pinctrl-bindings.txt
->> +  - clk_from_rk_pin: according to hardware design, clk privide on rk pin
->
-> typo + more description is needed:
-> Please tell that it is a boolean property, that by default it is using
-> the TK pin (like in the commit message in fact).
+> Are you sure that it's not the other way around?  It's much more common
+> to have OTP for PMICs...  In any case, for the device configured via the
+> register map is there any real scenario where someone might use that
+> feature - devices do have this facility but it's generally never used
+> since by the time you can do register writes to configure the address
+> register I/O is already up and running so it's just making work.
 
-OK, I will add more description for it.
-
-Thanks
-
-> Bye,
->
->> +    to ssc device
->>
->>   Example:
->>   sound {
->>
->
->
-
-Best Regards,
-Bo Shen
+Yes I'm sure, and there are OTP settings for the PMIC as well. For the PMIC
+address configurability, there isn't really an issue anyway as you need to
+provide the address for this I2C device at board initialisation in the kernel.
+The point of note here is that the Codec I2C address is OTP configurable and
+therefore not fixed.
