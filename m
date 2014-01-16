@@ -1,53 +1,45 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/2] ASoC: DPCM: make some DPCM API calls
- non static for compressed usage
-Date: Thu, 16 Jan 2014 20:19:40 +0530
-Message-ID: <20140116144940.GH25466@intel.com>
-References: <1389804717-5985-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <20140116123153.GP15567@sirena.org.uk>
- <20140116144042.GG25466@intel.com> <1389887263.2298.53.camel@loki>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH v4 9/9] ARM: DTS: imx5* imx6*, use imx51-ssi
+Date: Thu, 16 Jan 2014 16:55:14 +0100
+Message-ID: <20140116155514.GA6464@pengutronix.de>
+References: <1387545096-2334-1-git-send-email-mpa@pengutronix.de>
+ <1387545096-2334-10-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F4082619F4
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2014 16:51:46 +0100 (CET)
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 Content-Disposition: inline
-In-Reply-To: <1389887263.2298.53.camel@loki>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.jf.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+In-Reply-To: <1387545096-2334-10-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 16, 2014 at 03:47:43PM +0000, Liam Girdwood wrote:
-> On Thu, 2014-01-16 at 20:10 +0530, Vinod Koul wrote:
-> > On Thu, Jan 16, 2014 at 12:31:53PM +0000, Mark Brown wrote:
-> > > On Wed, Jan 15, 2014 at 04:51:56PM +0000, Liam Girdwood wrote:
-> > > > The ASoC compressed code needs to call the internal DPCM APIs in order to
-> > > > dynamically route compressed data to different DAIs.
-> > > 
-> > > Applied, thanks.  I'm holding off on the second patch for a little so
-> > > Vinod has a chance to say something since it's compressed stuff.
-> > Both look good to me, so
-> > 
-> > Acked-by: Vinod Koul <vinod.koul@intel.com>
-> > 
-> > The second patch still needs an update for properly copying the hw_params. This
-> > was one of issue reported by qcom folks, but I don't want to hold these now. We
-> > can fix that as it will impact systems not have fixup function for BEs.
+Hi Shawn,
+
+On Fri, Dec 20, 2013 at 02:11:36PM +0100, Markus Pargmann wrote:
+> imx51-ssi and imx21-ssi are different IPs. imx51-ssi supports online
+> reconfiguration and needs this for correct interaction with SDMA. This
+> patch adds imx51-ssi before each imx21-ssi for all imx5/imx6 SoCs.
 > 
-> I assume you have that fix ? If so, I can add it incrementally ?
-Not yet! That's why dont want to hold off this series...
 
-We cna update that a bit later :)
+Mark Brown applied all other patches of this series. Could you please
+take this one?
 
---
-~Vinod
+Thanks,
+
+Markus
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
