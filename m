@@ -1,42 +1,39 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ProVideo PV 918A - audi o device created but
- cannot capture sound
-Date: Fri, 17 Jan 2014 11:08:19 +0100
-Message-ID: <52D90113.50406@ladisch.de>
-References: <loom.20140117T085941-825@post.gmane.org>
- <52D8EE31.4000304@ladisch.de>
- <57064bdb1c580b864c735a01d0d4bdea@imap.greenearthnetwork.in>
+From: Dimitris Papastamos <Dimitris.Papastamos@Wolfsonmicro.com>
+Subject: RE: [PATCH] ASoC: wm8804: Allow control of master clock divider in
+ PLL generation
+Date: Fri, 17 Jan 2014 10:35:10 +0000
+Message-ID: <634C081ADD030F4A829AD09D85144F253611607A04@EXCMB2.wolfsonmicro.main>
+References: <alpine.DEB.2.02.1401142030110.23472@parallels-Parallels-Virtual-Platform>,
+    <20140117005437.GQ17314@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 2705A265090
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2014 11:08:22 +0100 (CET)
-In-Reply-To: <57064bdb1c580b864c735a01d0d4bdea@imap.greenearthnetwork.in>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: siddharth <siddharth@greenearthnetwork.in>
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140117005437.GQ17314@sirena.org.uk>
+Content-Language: en-GB
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Daniel Matuschek <daniel@matuschek.net>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-siddharth wrote:
-> For capturing, I used vlc alsa://hw:1,1 I also tried 1,0, 2,0 2,1 etc.
+> Charles (or someone else from Wolfson), you commented on previous
+> versions of this - are you still OK with it?
 
-It's possible that the tuner does not output anything unless it is actually
-tuned to something, i.e., you need to run video capture.
+Looks good to me.
 
-> Am not sure how the card hardware is constructed
+Privacy & Confidentiality Notice
+-------------------------------------------------
+This message and any attachments contain privileged and confidential information that is intended solely for the person(s) to whom it is addressed. If you are not an intended recipient you must not: read; copy; distribute; discuss; take any action in or make any reliance upon the contents of this message; nor open or read any attachment. If you have received this message in error, please notify us as soon as possible on the following telephone number and destroy this message including any attachments. Thank you.
+-------------------------------------------------
+Wolfson Microelectronics plc
+Tel: +44 (0)131 272 7000
+Fax: +44 (0)131 272 7001
+Web: www.wolfsonmicro.com
 
-Then it's likely that it's not possible to record the sound that way.
+Registered in Scotland
 
+Company number SC089839
 
-Regards,
-Clemens
+Registered office: 
+
+Westfield House, 26 Westfield Road, Edinburgh, EH11 2QB, UK
