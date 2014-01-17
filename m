@@ -1,17 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ProVideo PV 918A - audi o device created but
- cannot capture sound
-Date: Fri, 17 Jan 2014 09:47:45 +0100
-Message-ID: <52D8EE31.4000304@ladisch.de>
-References: <loom.20140117T085941-825@post.gmane.org>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH v5] ARM: DTS: imx5* imx6*, use imx51-ssi
+Date: Fri, 17 Jan 2014 10:07:42 +0100
+Message-ID: <1389949662-11172-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id ECE8C261A7B
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2014 09:47:49 +0100 (CET)
-In-Reply-To: <loom.20140117T085941-825@post.gmane.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id A1418265063
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2014 10:08:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,22 +18,164 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: siddharth <siddharth@greenearthnetwork.in>, alsa-devel@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-siddharth wrote:
-> modprobe snd-bt87x load_all=1 digital_rate=48000 enable=1
+imx51-ssi and imx21-ssi are different IPs. imx51-ssi supports online
+reconfiguration and needs this for correct interaction with SDMA. This
+patch adds imx51-ssi before each imx21-ssi for all imx5/imx6 SoCs.
 
-You are telling the driver that the tuner chip has a digital output that
-runs at 48 kHz, and this it is connected to the digital input pin of the
-Bt878 chip.
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
+Hi Shawn,
 
-> but am unable to capture sound.
-
-Do you actually know that your hardware is constructed that way?
-
-How exactly did you try to capture?  From which device?  (see "arecord -l")
-
+This is the patch including the two added compatibles in imx50.dtsi for
+fsl,imx51-ssi. That is the only change in v5.
 
 Regards,
-Clemens
+
+Markus
+
+
+ arch/arm/boot/dts/imx50.dtsi   |  6 +++++-
+ arch/arm/boot/dts/imx53.dtsi   | 10 +++++++---
+ arch/arm/boot/dts/imx6qdl.dtsi | 12 +++++++++---
+ arch/arm/boot/dts/imx6sl.dtsi  | 12 +++++++++---
+ 4 files changed, 30 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx50.dtsi b/arch/arm/boot/dts/imx50.dtsi
+index 01c0499..47df15f 100644
+--- a/arch/arm/boot/dts/imx50.dtsi
++++ b/arch/arm/boot/dts/imx50.dtsi
+@@ -140,7 +140,9 @@
+ 				};
+ 
+ 				ssi2: ssi@50014000 {
+-					compatible = "fsl,imx50-ssi", "fsl,imx21-ssi";
++					compatible = "fsl,imx50-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x50014000 0x4000>;
+ 					interrupts = <30>;
+ 					clocks = <&clks IMX5_CLK_SSI2_IPG_GATE>;
+@@ -446,6 +448,8 @@
+ 
+ 			ssi1: ssi@63fcc000 {
+ 				compatible = "fsl,imx50-ssi", "fsl,imx21-ssi";
++				compatible = "fsl,imx50-ssi", "fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 				reg = <0x63fcc000 0x4000>;
+ 				interrupts = <29>;
+ 				clocks = <&clks IMX5_CLK_SSI1_IPG_GATE>;
+diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
+index 4dbde25..73e103b 100644
+--- a/arch/arm/boot/dts/imx53.dtsi
++++ b/arch/arm/boot/dts/imx53.dtsi
+@@ -171,7 +171,9 @@
+ 				};
+ 
+ 				ssi2: ssi@50014000 {
+-					compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
++					compatible = "fsl,imx53-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x50014000 0x4000>;
+ 					interrupts = <30>;
+ 					clocks = <&clks IMX5_CLK_SSI2_IPG_GATE>;
+@@ -590,7 +592,8 @@
+ 			};
+ 
+ 			ssi1: ssi@63fcc000 {
+-				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
++				compatible = "fsl,imx53-ssi", "fsl,imx51-ssi",
++						"fsl,imx21-ssi";
+ 				reg = <0x63fcc000 0x4000>;
+ 				interrupts = <29>;
+ 				clocks = <&clks IMX5_CLK_SSI1_IPG_GATE>;
+@@ -617,7 +620,8 @@
+ 			};
+ 
+ 			ssi3: ssi@63fe8000 {
+-				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
++				compatible = "fsl,imx53-ssi", "fsl,imx51-ssi",
++						"fsl,imx21-ssi";
+ 				reg = <0x63fe8000 0x4000>;
+ 				interrupts = <96>;
+ 				clocks = <&clks IMX5_CLK_SSI3_IPG_GATE>;
+diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
+index 8a86502..cf7956e 100644
+--- a/arch/arm/boot/dts/imx6qdl.dtsi
++++ b/arch/arm/boot/dts/imx6qdl.dtsi
+@@ -247,7 +247,9 @@
+ 				};
+ 
+ 				ssi1: ssi@02028000 {
+-					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6q-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x02028000 0x4000>;
+ 					interrupts = <0 46 IRQ_TYPE_LEVEL_HIGH>;
+ 					clocks = <&clks 178>;
+@@ -260,7 +262,9 @@
+ 				};
+ 
+ 				ssi2: ssi@0202c000 {
+-					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6q-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x0202c000 0x4000>;
+ 					interrupts = <0 47 IRQ_TYPE_LEVEL_HIGH>;
+ 					clocks = <&clks 179>;
+@@ -273,7 +277,9 @@
+ 				};
+ 
+ 				ssi3: ssi@02030000 {
+-					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6q-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x02030000 0x4000>;
+ 					interrupts = <0 48 IRQ_TYPE_LEVEL_HIGH>;
+ 					clocks = <&clks 180>;
+diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
+index a449c4f..95bb37b 100644
+--- a/arch/arm/boot/dts/imx6sl.dtsi
++++ b/arch/arm/boot/dts/imx6sl.dtsi
+@@ -226,7 +226,9 @@
+ 				};
+ 
+ 				ssi1: ssi@02028000 {
+-					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6sl-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x02028000 0x4000>;
+ 					interrupts = <0 46 IRQ_TYPE_LEVEL_HIGH>;
+ 					clocks = <&clks IMX6SL_CLK_SSI1>;
+@@ -238,7 +240,9 @@
+ 				};
+ 
+ 				ssi2: ssi@0202c000 {
+-					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6sl-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x0202c000 0x4000>;
+ 					interrupts = <0 47 IRQ_TYPE_LEVEL_HIGH>;
+ 					clocks = <&clks IMX6SL_CLK_SSI2>;
+@@ -250,7 +254,9 @@
+ 				};
+ 
+ 				ssi3: ssi@02030000 {
+-					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
++					compatible = "fsl,imx6sl-ssi",
++							"fsl,imx51-ssi",
++							"fsl,imx21-ssi";
+ 					reg = <0x02030000 0x4000>;
+ 					interrupts = <0 48 IRQ_TYPE_LEVEL_HIGH>;
+ 					clocks = <&clks IMX6SL_CLK_SSI3>;
+-- 
+1.8.5.2
