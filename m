@@ -1,12 +1,12 @@
 From: Roman Volkov <v1ron@mail.ru>
-Subject: [PATCH v3 05/16] ALSA: Oxygen: Export
-	oxygen_update_dac_routing symbol
-Date: Fri, 17 Jan 2014 19:08:24 +0400
-Message-ID: <1389971315-3215-5-git-send-email-v1ron@mail.ru>
+Subject: =?utf-8?q?=5BPATCH_v3_06/16=5D_ALSA=3A_Oxygen=3A_Cha?=
+	=?utf-8?q?nge_description_of_the_xonar=5Fdg=2Ec_file?=
+Date: Fri, 17 Jan 2014 19:08:25 +0400
+Message-ID: <1389971315-3215-6-git-send-email-v1ron@mail.ru>
 References: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 In-Reply-To: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,29 +22,39 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Roman Volkov <v1ron@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-When the user switches stereo output to multichannel or vice versa,
-the driver needs to update the channel routing. Instead of
-creating additional subroutines, I better export existing
-oxygen_update_dac_routing symbol from the oxygen mixer
-and call this function. It calls model.adjust_dac_routing()
-and my function does the work.
-
-Signed-off-by: Roman Volkov <v1ron@mail.ru>
----
- sound/pci/oxygen/oxygen_mixer.c |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/pci/oxygen/oxygen_mixer.c b/sound/pci/oxygen/oxygen_mixer.c
-index c0dbb52..5988e04 100644
---- a/sound/pci/oxygen/oxygen_mixer.c
-+++ b/sound/pci/oxygen/oxygen_mixer.c
-@@ -190,6 +190,7 @@ void oxygen_update_dac_routing(struct oxygen *chip)
- 	if (chip->model.update_center_lfe_mix)
- 		chip->model.update_center_lfe_mix(chip, chip->dac_routing > 2);
- }
-+EXPORT_SYMBOL(oxygen_update_dac_routing);
- 
- static int upmix_put(struct snd_kcontrol *ctl, struct snd_ctl_elem_value *value)
- {
--- 
-1.7.10.4
+U29tZSBhZGRpdGlvbmFsIGluZm9ybWF0aW9uIGluIGNvbW1lbnRzIGFuZCBteSBjb3B5cmlnaHQg
+YWRkZWQuCgpTaWduZWQtb2ZmLWJ5OiBSb21hbiBWb2xrb3YgPHYxcm9uQG1haWwucnU+Ci0tLQog
+c291bmQvcGNpL294eWdlbi94b25hcl9kZy5jIHwgICAyMCArKysrKysrKysrKysrKy0tLS0tLQog
+MSBmaWxlIGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pCgpkaWZmIC0t
+Z2l0IGEvc291bmQvcGNpL294eWdlbi94b25hcl9kZy5jIGIvc291bmQvcGNpL294eWdlbi94b25h
+cl9kZy5jCmluZGV4IDc3YWNkNzkuLmI4MDZjYzEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9veHln
+ZW4veG9uYXJfZGcuYworKysgYi9zb3VuZC9wY2kvb3h5Z2VuL3hvbmFyX2RnLmMKQEAgLTEsOCAr
+MSw4IEBACiAvKgotICogY2FyZCBkcml2ZXIgZm9yIHRoZSBYb25hciBERy9ER1gKKyAqIENhcmQg
+ZHJpdmVyIGZvciB0aGUgWG9uYXIgREcvREdYCiAgKgogICogQ29weXJpZ2h0IChjKSBDbGVtZW5z
+IExhZGlzY2ggPGNsZW1lbnNAbGFkaXNjaC5kZT4KLSAqCisgKiBDb3B5cmlnaHQgKGMpIFJvbWFu
+IFZvbGtvdiA8djFyb25AbWFpbC5ydT4KICAqCiAgKiAgVGhpcyBkcml2ZXIgaXMgZnJlZSBzb2Z0
+d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQogICogIGl0IHVuZGVy
+IHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UsIHZlcnNpb24gMi4K
+QEAgLTIwLDI3ICsyMCwzNSBAQAogICogWG9uYXIgREcvREdYCiAgKiAtLS0tLS0tLS0tLS0KICAq
+CisgKiBDUzQyNDUgYW5kIENTNDM2MSBib3RoIHdpbGwgbXV0ZSBhbGwgb3V0cHV0cyBpZiBhbnkg
+Y2xvY2sgcmF0aW8KKyAqIGlzIGludmFsaWQuCisgKgogICogQ01JODc4ODoKICAqCiAgKiAgIFNQ
+SSAwIC0+IENTNDI0NQogICoKKyAqICAgUGxheWJhY2s6CiAgKiAgIEnCslMgMSAtPiBDUzQyNDUK
+ICAqICAgScKyUyAyIC0+IENTNDM2MSAoY2VudGVyL0xGRSkKICAqICAgScKyUyAzIC0+IENTNDM2
+MSAoc3Vycm91bmQpCiAgKiAgIEnCslMgNCAtPiBDUzQzNjEgKGZyb250KQorICogICBDYXB0dXJl
+OgorICogICBJwrJTIEFEQyAxIDwtIENTNDI0NQogICoKICAqICAgR1BJTyAzIDwtID8KICAqICAg
+R1BJTyA0IDwtIGhlYWRwaG9uZSBkZXRlY3QKLSAqICAgR1BJTyA1IC0+IHJvdXRlIGlucHV0IGph
+Y2sgdG8gbGluZS1pbiAoMCkgb3IgbWljLWluICgxKQotICogICBHUElPIDYgLT4gcm91dGUgaW5w
+dXQgamFjayB0byBsaW5lLWluICgwKSBvciBtaWMtaW4gKDEpCi0gKiAgIEdQSU8gNyAtPiBlbmFi
+bGUgcmVhciBoZWFkcGhvbmUgYW1wCisgKiAgIEdQSU8gNSAtPiBlbmFibGUgQURDIGFuYWxvZyBj
+aXJjdWl0IGZvciB0aGUgbGVmdCBjaGFubmVsCisgKiAgIEdQSU8gNiAtPiBlbmFibGUgQURDIGFu
+YWxvZyBjaXJjdWl0IGZvciB0aGUgcmlnaHQgY2hhbm5lbAorICogICBHUElPIDcgLT4gc3dpdGNo
+IGdyZWVuIHJlYXIgb3V0cHV0IGphY2sgYmV0d2VlbiBDUzQyNDUgYW5kCisgKiBhbmQgdGhlIGZp
+cnN0IGNoYW5uZWwgb2YgQ1M0MzYxIChtZWNoYW5pY2FsIHJlbGF5KQogICogICBHUElPIDggLT4g
+ZW5hYmxlIG91dHB1dCB0byBzcGVha2VycwogICoKICAqIENTNDI0NToKICAqCisgKiAgIGlucHV0
+IDAgPC0gbWljCiAgKiAgIGlucHV0IDEgPC0gYXV4CiAgKiAgIGlucHV0IDIgPC0gZnJvbnQgbWlj
+Ci0gKiAgIGlucHV0IDQgPC0gbGluZS9taWMKKyAqICAgaW5wdXQgNCA8LSBsaW5lCiAgKiAgIERB
+QyBvdXQgLT4gaGVhZHBob25lcwogICogICBhdXggb3V0IC0+IGZyb250IHBhbmVsIGhlYWRwaG9u
+ZXMKICAqLwotLSAKMS43LjEwLjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
