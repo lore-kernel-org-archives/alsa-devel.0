@@ -1,8 +1,8 @@
 From: Roman Volkov <v1ron@mail.ru>
-Subject: [PATCH v3 07/16] ALSA: Oxygen: Additional definitions
-	for the Xonar DG/DGX card
-Date: Fri, 17 Jan 2014 19:08:26 +0400
-Message-ID: <1389971315-3215-7-git-send-email-v1ron@mail.ru>
+Subject: [PATCH v3 08/16] ALSA: Oxygen: Add new CS4245 SPI
+	functions
+Date: Fri, 17 Jan 2014 19:08:27 +0400
+Message-ID: <1389971315-3215-8-git-send-email-v1ron@mail.ru>
 References: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,74 +22,107 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Roman Volkov <v1ron@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-Some additional constants added to the xonar_dg.h file:
-capture and playback sources. GPIO_* constants and the
-dg struct moved to the header file from the xonar_dg.c file.
+The existing write function slightly changed. The new
+read function added. This read function used for creating
+initial registers dump and may be used for debugging
+purposes. SPI operations are cached, so there is a new
+function to work with the cache (shadow).
 
 Signed-off-by: Roman Volkov <v1ron@mail.ru>
 ---
- sound/pci/oxygen/xonar_dg.c |   14 --------------
- sound/pci/oxygen/xonar_dg.h |   23 +++++++++++++++++++++++
- 2 files changed, 23 insertions(+), 14 deletions(-)
+ sound/pci/oxygen/xonar_dg.c |   60 +++++++++++++++++++++++++++++++++++++++++++
+ sound/pci/oxygen/xonar_dg.h |    7 +++++
+ 2 files changed, 67 insertions(+)
 
 diff --git a/sound/pci/oxygen/xonar_dg.c b/sound/pci/oxygen/xonar_dg.c
-index b806cc1..2a0ad6e 100644
+index 2a0ad6e..0a8ebe1 100644
 --- a/sound/pci/oxygen/xonar_dg.c
 +++ b/sound/pci/oxygen/xonar_dg.c
-@@ -64,20 +64,6 @@
+@@ -64,6 +64,66 @@
  #include "xonar_dg.h"
  #include "cs4245.h"
  
--#define GPIO_MAGIC		0x0008
--#define GPIO_HP_DETECT		0x0010
--#define GPIO_INPUT_ROUTE	0x0060
--#define GPIO_HP_REAR		0x0080
--#define GPIO_OUTPUT_ENABLE	0x0100
--
--struct dg {
--	unsigned int output_sel;
--	s8 input_vol[4][2];
--	unsigned int input_sel;
--	u8 hp_vol_att;
--	u8 cs4245_regs[0x11];
--};
--
++int cs4245_write_spi(struct oxygen *chip, u8 reg)
++{
++	struct dg *data = chip->model_data;
++	register unsigned int packet;
++
++	packet = (u32)reg;
++	packet <<= 8;
++	packet |= (CS4245_SPI_ADDRESS | CS4245_SPI_WRITE) << 16;
++	packet |= data->cs4245_shadow[reg];
++
++	return oxygen_write_spi(chip, OXYGEN_SPI_TRIGGER |
++			 OXYGEN_SPI_DATA_LENGTH_3 |
++			 OXYGEN_SPI_CLOCK_1280 |
++			 (0 << OXYGEN_SPI_CODEC_SHIFT) |
++			 OXYGEN_SPI_CEN_LATCH_CLOCK_HI,
++			 packet);
++}
++
++int cs4245_read_spi(struct oxygen *chip, u8 addr)
++{
++	struct dg *data = chip->model_data;
++	int ret;
++
++	ret = oxygen_write_spi(chip, OXYGEN_SPI_TRIGGER |
++		OXYGEN_SPI_DATA_LENGTH_2 |
++		OXYGEN_SPI_CEN_LATCH_CLOCK_HI |
++		OXYGEN_SPI_CLOCK_1280 | (0 << OXYGEN_SPI_CODEC_SHIFT),
++		((CS4245_SPI_ADDRESS | CS4245_SPI_WRITE) << 8) | addr);
++	if (ret < 0)
++		return ret;
++
++	ret = oxygen_write_spi(chip, OXYGEN_SPI_TRIGGER |
++		OXYGEN_SPI_DATA_LENGTH_2 |
++		OXYGEN_SPI_CEN_LATCH_CLOCK_HI |
++		OXYGEN_SPI_CLOCK_1280 | (0 << OXYGEN_SPI_CODEC_SHIFT),
++		(CS4245_SPI_ADDRESS | CS4245_SPI_READ) << 8);
++	if (ret < 0)
++		return ret;
++
++	data->cs4245_shadow[addr] = oxygen_read8(chip, OXYGEN_SPI_DATA1);
++
++	return 0;
++}
++
++int cs4245_shadow_control(struct oxygen *chip, enum cs4245_shadow_operation op)
++{
++	unsigned char addr;
++	int ret;
++
++	for (addr = 1; addr < ARRAY_SIZE((((struct dg *)0)->cs4245_shadow));
++								addr++) {
++		ret = (op == CS4245_SAVE_TO_SHADOW ?
++			cs4245_read_spi(chip, addr) :
++			cs4245_write_spi(chip, addr));
++		if (ret < 0)
++			return ret;
++	}
++	return 0;
++}
++
  static void cs4245_write(struct oxygen *chip, unsigned int reg, u8 value)
  {
  	struct dg *data = chip->model_data;
 diff --git a/sound/pci/oxygen/xonar_dg.h b/sound/pci/oxygen/xonar_dg.h
-index 5688d78..0812692 100644
+index 0812692..f861a4c 100644
 --- a/sound/pci/oxygen/xonar_dg.h
 +++ b/sound/pci/oxygen/xonar_dg.h
-@@ -3,6 +3,29 @@
+@@ -18,7 +18,14 @@
+ #define PLAYBACK_DST_HP_FP	1
+ #define PLAYBACK_DST_MULTICH	2
  
- #include "oxygen.h"
- 
-+#define GPIO_MAGIC		0x0008
-+#define GPIO_HP_DETECT		0x0010
-+#define GPIO_INPUT_ROUTE	0x0060
-+#define GPIO_HP_REAR		0x0080
-+#define GPIO_OUTPUT_ENABLE	0x0100
-+
-+#define CAPTURE_SRC_MIC		0
-+#define CAPTURE_SRC_FP_MIC	1
-+#define CAPTURE_SRC_LINE	2
-+#define CAPTURE_SRC_AUX		3
-+
-+#define PLAYBACK_DST_HP		0
-+#define PLAYBACK_DST_HP_FP	1
-+#define PLAYBACK_DST_MULTICH	2
-+
-+struct dg {
-+	unsigned int output_sel;
-+	s8 input_vol[4][2];
-+	unsigned int input_sel;
-+	u8 hp_vol_att;
-+	u8 cs4245_regs[0x11];
++enum cs4245_shadow_operation {
++	CS4245_SAVE_TO_SHADOW,
++	CS4245_LOAD_FROM_SHADOW
 +};
 +
- extern struct oxygen_model model_xonar_dg;
- 
- #endif
+ struct dg {
++	/* The shadow copy of the CS4245 register space */
++	unsigned char cs4245_shadow[17];
+ 	unsigned int output_sel;
+ 	s8 input_vol[4][2];
+ 	unsigned int input_sel;
 -- 
 1.7.10.4
