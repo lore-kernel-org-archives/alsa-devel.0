@@ -1,39 +1,42 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm8804: Allow control of master clock divider in
-	PLL generation
-Date: Fri, 17 Jan 2014 09:48:19 +0000
-Message-ID: <20140117094819.GA2826@opensource.wolfsonmicro.com>
-References: <alpine.DEB.2.02.1401142030110.23472@parallels-Parallels-Virtual-Platform>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ProVideo PV 918A - audi o device created but
+ cannot capture sound
+Date: Fri, 17 Jan 2014 11:08:19 +0100
+Message-ID: <52D90113.50406@ladisch.de>
+References: <loom.20140117T085941-825@post.gmane.org>
+ <52D8EE31.4000304@ladisch.de>
+ <57064bdb1c580b864c735a01d0d4bdea@imap.greenearthnetwork.in>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.02.1401142030110.23472@parallels-Parallels-Virtual-Platform>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Matuschek <daniel@matuschek.net>
-Cc: alsa-devel@alsa-project.org, Dimitris.Papastamos@wolfsonmicro.com, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, perex@perex.cz, broonie@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 2705A265090
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2014 11:08:22 +0100 (CET)
+In-Reply-To: <57064bdb1c580b864c735a01d0d4bdea@imap.greenearthnetwork.in>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: siddharth <siddharth@greenearthnetwork.in>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 14, 2014 at 08:34:10PM +0100, Daniel Matuschek wrote:
-> WM8804 can run with PLL frequencies of 256xfs and 128xfs for
-> most sample rates. At 192kHz only 128xfs is supported. The
-> existing driver selects 128xfs automatically for some lower
-> samples rates. By using an additional mclk_div divider, it
-> is now possible to control the behaviour. This allows using
-> 256xfs PLL frequency on all sample rates up to 96kHz. It
-> should allow lower jitter and better signal quality. The
-> behavior has to be controlled by the sound card driver,
-> because some sample frequency share the same setting. e.g.
-> 192kHz and 96kHz use 24.576MHz master clock. The only
-> difference is the MCLK divider.
-> 
-> Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
+siddharth wrote:
+> For capturing, I used vlc alsa://hw:1,1 I also tried 1,0, 2,0 2,1 etc.
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+It's possible that the tuner does not output anything unless it is actually
+tuned to something, i.e., you need to run video capture.
+
+> Am not sure how the card hardware is constructed
+
+Then it's likely that it's not possible to record the sound that way.
 
 
-Sorry about the slight delay travelling with limited internet at
-the mo.
-
-Thanks,
-Charles
+Regards,
+Clemens
