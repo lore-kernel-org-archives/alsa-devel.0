@@ -1,18 +1,12 @@
-From: siddharth <siddharth@greenearthnetwork.in>
-Subject: Re: ProVideo PV 918A - audi o device created but
-	cannot capture sound
-Date: Fri, 17 Jan 2014 14:33:58 +0530
-Message-ID: <57064bdb1c580b864c735a01d0d4bdea@imap.greenearthnetwork.in>
-References: <loom.20140117T085941-825@post.gmane.org>
- <52D8EE31.4000304@ladisch.de>
+From: Roman Volkov <v1ron@mail.ru>
+Subject: [PATCH v3 01/16] ALSA: Oxygen: Add the separate SPI
+	waiting function
+Date: Fri, 17 Jan 2014 19:08:20 +0400
+Message-ID: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from media.ostv.in (media.ostv.in [69.175.58.122])
- by alsa0.perex.cz (Postfix) with ESMTP id F3BA8261A7B
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2014 10:06:40 +0100 (CET)
-In-Reply-To: <52D8EE31.4000304@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +16,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Roman Volkov <v1ron@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-On 17-01-2014 14:17, Clemens Ladisch wrote:
-> siddharth wrote:
->> modprobe snd-bt87x load_all=1 digital_rate=48000 enable=1
-> 
-> You are telling the driver that the tuner chip has a digital output 
-> that
-> runs at 48 kHz, and this it is connected to the digital input pin of 
-> the
-> Bt878 chip.
-> 
->> but am unable to capture sound.
-> 
-> Do you actually know that your hardware is constructed that way?
-> 
-> How exactly did you try to capture?  From which device?  (see "arecord 
-> -l")
-> 
-> 
-> Regards,
-> Clemens
+This function performs waiting when the SPI bus completes
+a transaction. Timeout error checking introduced and
+the timeout increased to 400 from 40.
 
-I tried loading the module without the digital_rate param as well but to 
-no avail.
-Am not sure how the card hardware is constructed :( I just tried the 
-digital_rate param after reading in the dmesg that it may work :)
+Signed-off-by: Roman Volkov <v1ron@mail.ru>
+---
+ sound/pci/oxygen/oxygen_io.c |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-But as soon as I load the module, the sound setting panel in gnome shows 
-8 audio input devices. a video and a radio input device for each input 
-(there are 4 hardware a/v inputs to the card)
-
-arecord -l shows the following:
-card 1: Bt878 [Brooktree Bt878], device 0: Bt87x Digital [Bt87x Digital]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 1: Bt878 [Brooktree Bt878], device 1: Bt87x Analog [Bt87x Analog]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 2: Bt878_1 [Brooktree Bt878], device 0: Bt87x Digital [Bt87x 
-Digital]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 2: Bt878_1 [Brooktree Bt878], device 1: Bt87x Analog [Bt87x Analog]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-
-....and so on till card 4.
-
-For capturing, I used vlc alsa://hw:1,1 I also tried 1,0, 2,0 2,1 etc.
-Even the sound setting app in gnome does not show any input, which it 
-shows by a flickering equaliser for the native sound card of the 
-machine.
-
-regards
-Siddharth
+diff --git a/sound/pci/oxygen/oxygen_io.c b/sound/pci/oxygen/oxygen_io.c
+index 521eae4..a917f37 100644
+--- a/sound/pci/oxygen/oxygen_io.c
++++ b/sound/pci/oxygen/oxygen_io.c
+@@ -194,6 +194,21 @@ void oxygen_write_ac97_masked(struct oxygen *chip, unsigned int codec,
+ }
+ EXPORT_SYMBOL(oxygen_write_ac97_masked);
+ 
++static int oxygen_wait_spi(struct oxygen *chip)
++{
++	/* Higher timeout to be sure: 400 microseconds */
++	unsigned int count;
++	for (count = 100; count > 0; count--) {
++		if ((oxygen_read8(chip, OXYGEN_SPI_CONTROL) &
++						OXYGEN_SPI_BUSY) == 0)
++			return 0;
++		udelay(4);
++		--count;
++	}
++	snd_printk(KERN_ERR "Oxygen: SPI wait timeout\n");
++	return -EIO;
++}
++
+ void oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data)
+ {
+ 	unsigned int count;
+-- 
+1.7.10.4
