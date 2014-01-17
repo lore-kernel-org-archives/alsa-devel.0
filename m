@@ -1,12 +1,14 @@
 From: Roman Volkov <v1ron@mail.ru>
-Subject: [PATCH v3 01/16] ALSA: Oxygen: Add the separate SPI
-	waiting function
-Date: Fri, 17 Jan 2014 19:08:20 +0400
-Message-ID: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
+Subject: [PATCH v3 02/16] ALSA: Oxygen: Modify the SPI writing
+	function
+Date: Fri, 17 Jan 2014 19:08:21 +0400
+Message-ID: <1389971315-3215-2-git-send-email-v1ron@mail.ru>
+References: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,40 +22,64 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Roman Volkov <v1ron@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-This function performs waiting when the SPI bus completes
-a transaction. Timeout error checking introduced and
-the timeout increased to 400 from 40.
+The SPI writing function modified to use the new
+waiting function. Return value changed from void
+to int, so it can return error codes. Older drivers
+just ignore that return value, the Xonar DG/DGX
+driver handles this value. We need to wait AFTER
+initiating the SPI transaction, otherwise read
+operation will not work.
 
 Signed-off-by: Roman Volkov <v1ron@mail.ru>
 ---
- sound/pci/oxygen/oxygen_io.c |   15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/pci/oxygen/oxygen.h    |    2 +-
+ sound/pci/oxygen/oxygen_io.c |   15 ++++-----------
+ 2 files changed, 5 insertions(+), 12 deletions(-)
 
+diff --git a/sound/pci/oxygen/oxygen.h b/sound/pci/oxygen/oxygen.h
+index 09a24b2..c10ab07 100644
+--- a/sound/pci/oxygen/oxygen.h
++++ b/sound/pci/oxygen/oxygen.h
+@@ -198,7 +198,7 @@ void oxygen_write_ac97(struct oxygen *chip, unsigned int codec,
+ void oxygen_write_ac97_masked(struct oxygen *chip, unsigned int codec,
+ 			      unsigned int index, u16 data, u16 mask);
+ 
+-void oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data);
++int oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data);
+ void oxygen_write_i2c(struct oxygen *chip, u8 device, u8 map, u8 data);
+ 
+ void oxygen_reset_uart(struct oxygen *chip);
 diff --git a/sound/pci/oxygen/oxygen_io.c b/sound/pci/oxygen/oxygen_io.c
-index 521eae4..a917f37 100644
+index a917f37..fb9c826 100644
 --- a/sound/pci/oxygen/oxygen_io.c
 +++ b/sound/pci/oxygen/oxygen_io.c
-@@ -194,6 +194,21 @@ void oxygen_write_ac97_masked(struct oxygen *chip, unsigned int codec,
+@@ -209,23 +209,16 @@ static int oxygen_wait_spi(struct oxygen *chip)
+ 	return -EIO;
  }
- EXPORT_SYMBOL(oxygen_write_ac97_masked);
  
-+static int oxygen_wait_spi(struct oxygen *chip)
-+{
-+	/* Higher timeout to be sure: 400 microseconds */
-+	unsigned int count;
-+	for (count = 100; count > 0; count--) {
-+		if ((oxygen_read8(chip, OXYGEN_SPI_CONTROL) &
-+						OXYGEN_SPI_BUSY) == 0)
-+			return 0;
-+		udelay(4);
-+		--count;
-+	}
-+	snd_printk(KERN_ERR "Oxygen: SPI wait timeout\n");
-+	return -EIO;
-+}
-+
- void oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data)
+-void oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data)
++int oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data)
  {
- 	unsigned int count;
+-	unsigned int count;
+-
+-	/* should not need more than 30.72 us (24 * 1.28 us) */
+-	count = 10;
+-	while ((oxygen_read8(chip, OXYGEN_SPI_CONTROL) & OXYGEN_SPI_BUSY)
+-	       && count > 0) {
+-		udelay(4);
+-		--count;
+-	}
+-
++	/* We need to wait AFTER initiating the SPI transaction,
++	   otherwise read operations will not work */
+ 	oxygen_write8(chip, OXYGEN_SPI_DATA1, data);
+ 	oxygen_write8(chip, OXYGEN_SPI_DATA2, data >> 8);
+ 	if (control & OXYGEN_SPI_DATA_LENGTH_3)
+ 		oxygen_write8(chip, OXYGEN_SPI_DATA3, data >> 16);
+ 	oxygen_write8(chip, OXYGEN_SPI_CONTROL, control);
++	return oxygen_wait_spi(chip);
+ }
+ EXPORT_SYMBOL(oxygen_write_spi);
+ 
 -- 
 1.7.10.4
