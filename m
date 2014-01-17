@@ -1,8 +1,8 @@
 From: Roman Volkov <v1ron@mail.ru>
-Subject: [PATCH v3 10/16] ALSA: Oxygen: Modify DAC/ADC
-	parameters function
-Date: Fri, 17 Jan 2014 19:08:29 +0400
-Message-ID: <1389971315-3215-10-git-send-email-v1ron@mail.ru>
+Subject: [PATCH v3 11/16] ALSA: Oxygen: Modify
+	adjust_dg_dac_routing function
+Date: Fri, 17 Jan 2014 19:08:30 +0400
+Message-ID: <1389971315-3215-11-git-send-email-v1ron@mail.ru>
 References: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,94 +22,79 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Roman Volkov <v1ron@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-When selecting the audio sample rate for CS4245,
-the MCLK divider should also be changed.
+When selecting the audio output destinations (headphones,
+FP headphones, multichannel output), the channel routing
+should be changed depending on what destination selected.
+Also unnecessary I2S channels are digitally muted. This
+function called when the user selects the destination
+in the ALSA mixer.
 
 Signed-off-by: Roman Volkov <v1ron@mail.ru>
 ---
- sound/pci/oxygen/xonar_dg.c |   62 ++++++++++++++++++++++++++++---------------
- 1 file changed, 40 insertions(+), 22 deletions(-)
+ sound/pci/oxygen/xonar_dg.c |   35 +++++++++++++++++++++--------------
+ sound/pci/oxygen/xonar_dg.h |    2 ++
+ 2 files changed, 23 insertions(+), 14 deletions(-)
 
 diff --git a/sound/pci/oxygen/xonar_dg.c b/sound/pci/oxygen/xonar_dg.c
-index d6a8c72..7dcca01 100644
+index 7dcca01..3f3201e 100644
 --- a/sound/pci/oxygen/xonar_dg.c
 +++ b/sound/pci/oxygen/xonar_dg.c
-@@ -213,36 +213,54 @@ static void dg_resume(struct oxygen *chip)
- 	dg_output_enable(chip);
+@@ -274,22 +274,29 @@ static inline unsigned int shift_bits(unsigned int value,
+ 		return (value >> (shift_from - shift_to)) & mask;
  }
  
--static void set_cs4245_dac_params(struct oxygen *chip,
-+void set_cs4245_dac_params(struct oxygen *chip,
- 				  struct snd_pcm_hw_params *params)
+-static unsigned int adjust_dg_dac_routing(struct oxygen *chip,
++unsigned int adjust_dg_dac_routing(struct oxygen *chip,
+ 					  unsigned int play_routing)
  {
- 	struct dg *data = chip->model_data;
--	u8 value;
--
--	value = data->cs4245_regs[CS4245_DAC_CTRL_1] & ~CS4245_DAC_FM_MASK;
--	if (params_rate(params) <= 50000)
--		value |= CS4245_DAC_FM_SINGLE;
--	else if (params_rate(params) <= 100000)
--		value |= CS4245_DAC_FM_DOUBLE;
--	else
--		value |= CS4245_DAC_FM_QUAD;
--	cs4245_write_cached(chip, CS4245_DAC_CTRL_1, value);
-+	unsigned char dac_ctrl;
-+	unsigned char mclk_freq;
+-	return (play_routing & OXYGEN_PLAY_DAC0_SOURCE_MASK) |
+-	       shift_bits(play_routing,
+-			  OXYGEN_PLAY_DAC2_SOURCE_SHIFT,
+-			  OXYGEN_PLAY_DAC1_SOURCE_SHIFT,
+-			  OXYGEN_PLAY_DAC1_SOURCE_MASK) |
+-	       shift_bits(play_routing,
+-			  OXYGEN_PLAY_DAC1_SOURCE_SHIFT,
+-			  OXYGEN_PLAY_DAC2_SOURCE_SHIFT,
+-			  OXYGEN_PLAY_DAC2_SOURCE_MASK) |
+-	       shift_bits(play_routing,
+-			  OXYGEN_PLAY_DAC0_SOURCE_SHIFT,
+-			  OXYGEN_PLAY_DAC3_SOURCE_SHIFT,
+-			  OXYGEN_PLAY_DAC3_SOURCE_MASK);
++	struct dg *data = chip->model_data;
++	unsigned int routing = 0;
 +
-+	dac_ctrl = data->cs4245_shadow[CS4245_DAC_CTRL_1] & ~CS4245_DAC_FM_MASK;
-+	mclk_freq = data->cs4245_shadow[CS4245_MCLK_FREQ] & ~CS4245_MCLK1_MASK;
-+	if (params_rate(params) <= 50000) {
-+		dac_ctrl |= CS4245_DAC_FM_SINGLE;
-+		mclk_freq |= CS4245_MCLK_1 << CS4245_MCLK1_SHIFT;
-+	} else if (params_rate(params) <= 100000) {
-+		dac_ctrl |= CS4245_DAC_FM_DOUBLE;
-+		mclk_freq |= CS4245_MCLK_1 << CS4245_MCLK1_SHIFT;
-+	} else {
-+		dac_ctrl |= CS4245_DAC_FM_QUAD;
-+		mclk_freq |= CS4245_MCLK_2 << CS4245_MCLK1_SHIFT;
++	switch (data->pcm_output) {
++	case PLAYBACK_DST_HP:
++	case PLAYBACK_DST_HP_FP:
++		oxygen_write8_masked(chip, OXYGEN_PLAY_ROUTING,
++			OXYGEN_PLAY_MUTE23 | OXYGEN_PLAY_MUTE45 |
++			OXYGEN_PLAY_MUTE67, OXYGEN_PLAY_MUTE_MASK);
++		break;
++	case PLAYBACK_DST_MULTICH:
++		routing = (0 << OXYGEN_PLAY_DAC0_SOURCE_SHIFT) |
++		(2 << OXYGEN_PLAY_DAC1_SOURCE_SHIFT) |
++		(1 << OXYGEN_PLAY_DAC2_SOURCE_SHIFT) |
++		(0 << OXYGEN_PLAY_DAC3_SOURCE_SHIFT);
++		oxygen_write8_masked(chip, OXYGEN_PLAY_ROUTING,
++			OXYGEN_PLAY_MUTE01, OXYGEN_PLAY_MUTE_MASK);
++		break;
 +	}
-+	data->cs4245_shadow[CS4245_DAC_CTRL_1] = dac_ctrl;
-+	data->cs4245_shadow[CS4245_MCLK_FREQ] = mclk_freq;
-+	cs4245_write_spi(chip, CS4245_DAC_CTRL_1);
-+	cs4245_write_spi(chip, CS4245_MCLK_FREQ);
++	return routing;
  }
  
--static void set_cs4245_adc_params(struct oxygen *chip,
-+void set_cs4245_adc_params(struct oxygen *chip,
- 				  struct snd_pcm_hw_params *params)
- {
- 	struct dg *data = chip->model_data;
--	u8 value;
--
--	value = data->cs4245_regs[CS4245_ADC_CTRL] & ~CS4245_ADC_FM_MASK;
--	if (params_rate(params) <= 50000)
--		value |= CS4245_ADC_FM_SINGLE;
--	else if (params_rate(params) <= 100000)
--		value |= CS4245_ADC_FM_DOUBLE;
--	else
--		value |= CS4245_ADC_FM_QUAD;
--	cs4245_write_cached(chip, CS4245_ADC_CTRL, value);
-+	unsigned char adc_ctrl;
-+	unsigned char mclk_freq;
-+
-+	adc_ctrl = data->cs4245_shadow[CS4245_ADC_CTRL] & ~CS4245_ADC_FM_MASK;
-+	mclk_freq = data->cs4245_shadow[CS4245_MCLK_FREQ] & ~CS4245_MCLK2_MASK;
-+	if (params_rate(params) <= 50000) {
-+		adc_ctrl |= CS4245_ADC_FM_SINGLE;
-+		mclk_freq |= CS4245_MCLK_1 << CS4245_MCLK2_SHIFT;
-+	} else if (params_rate(params) <= 100000) {
-+		adc_ctrl |= CS4245_ADC_FM_DOUBLE;
-+		mclk_freq |= CS4245_MCLK_1 << CS4245_MCLK2_SHIFT;
-+	} else {
-+		adc_ctrl |= CS4245_ADC_FM_QUAD;
-+		mclk_freq |= CS4245_MCLK_2 << CS4245_MCLK2_SHIFT;
-+	}
-+	data->cs4245_shadow[CS4245_ADC_CTRL] = adc_ctrl;
-+	data->cs4245_shadow[CS4245_MCLK_FREQ] = mclk_freq;
-+	cs4245_write_spi(chip, CS4245_ADC_CTRL);
-+	cs4245_write_spi(chip, CS4245_MCLK_FREQ);
- }
- 
- static inline unsigned int shift_bits(unsigned int value,
+ static int output_switch_info(struct snd_kcontrol *ctl,
+diff --git a/sound/pci/oxygen/xonar_dg.h b/sound/pci/oxygen/xonar_dg.h
+index f861a4c..844a67b 100644
+--- a/sound/pci/oxygen/xonar_dg.h
++++ b/sound/pci/oxygen/xonar_dg.h
+@@ -26,6 +26,8 @@ enum cs4245_shadow_operation {
+ struct dg {
+ 	/* The shadow copy of the CS4245 register space */
+ 	unsigned char cs4245_shadow[17];
++	/* Output select: headphone/speakers */
++	unsigned char pcm_output;
+ 	unsigned int output_sel;
+ 	s8 input_vol[4][2];
+ 	unsigned int input_sel;
 -- 
 1.7.10.4
