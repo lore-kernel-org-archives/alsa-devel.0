@@ -1,8 +1,8 @@
 From: Roman Volkov <v1ron@mail.ru>
-Subject: [PATCH v3 12/16] ALSA: Oxygen: Modify CS4245 register
-	dumping function
-Date: Fri, 17 Jan 2014 19:08:31 +0400
-Message-ID: <1389971315-3215-12-git-send-email-v1ron@mail.ru>
+Subject: [PATCH v3 13/16] ALSA: Oxygen: Modify suspend, resume,
+	and cleanup functions
+Date: Fri, 17 Jan 2014 19:08:32 +0400
+Message-ID: <1389971315-3215-13-git-send-email-v1ron@mail.ru>
 References: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,39 +22,50 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Roman Volkov <v1ron@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-Change the function to read the data from the new
-shadow buffer.
+When putting the card into suspended
+mode, just disable the audio output. There is no
+need to do more actions, since PCI slot will be
+already disabled (AFAIK). When resume, we need to
+restore erased registers of CS4245 from the
+memory. When cleanup, just do the same as in
+suspend.
 
 Signed-off-by: Roman Volkov <v1ron@mail.ru>
 ---
- sound/pci/oxygen/xonar_dg.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/pci/oxygen/xonar_dg.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/sound/pci/oxygen/xonar_dg.c b/sound/pci/oxygen/xonar_dg.c
-index 3f3201e..953ef09 100644
+index 953ef09..80fc099 100644
 --- a/sound/pci/oxygen/xonar_dg.c
 +++ b/sound/pci/oxygen/xonar_dg.c
-@@ -625,15 +625,16 @@ static int dg_mixer_init(struct oxygen *chip)
- 	return 0;
+@@ -197,20 +197,21 @@ void dg_init(struct oxygen *chip)
+ 		GPIO_HP_REAR | GPIO_INPUT_ROUTE);
  }
  
--static void dump_cs4245_registers(struct oxygen *chip,
--				  struct snd_info_buffer *buffer)
-+void dump_cs4245_registers(struct oxygen *chip,
-+				struct snd_info_buffer *buffer)
+-static void dg_cleanup(struct oxygen *chip)
++void dg_suspend(struct oxygen *chip)
  {
- 	struct dg *data = chip->model_data;
--	unsigned int i;
-+	unsigned int addr;
- 
- 	snd_iprintf(buffer, "\nCS4245:");
--	for (i = 1; i <= 0x10; ++i)
--		snd_iprintf(buffer, " %02x", data->cs4245_regs[i]);
-+	cs4245_read_spi(chip, CS4245_INT_STATUS);
-+	for (addr = 1; addr < ARRAY_SIZE(data->cs4245_shadow); addr++)
-+		snd_iprintf(buffer, " %02x", data->cs4245_shadow[addr]);
- 	snd_iprintf(buffer, "\n");
+ 	oxygen_clear_bits16(chip, OXYGEN_GPIO_DATA, GPIO_OUTPUT_ENABLE);
  }
  
+-static void dg_suspend(struct oxygen *chip)
++void dg_resume(struct oxygen *chip)
+ {
+-	dg_cleanup(chip);
++	cs4245_shadow_control(chip, CS4245_LOAD_FROM_SHADOW);
++	msleep(2500);
++	oxygen_set_bits16(chip, OXYGEN_GPIO_DATA, GPIO_OUTPUT_ENABLE);
+ }
+ 
+-static void dg_resume(struct oxygen *chip)
++void dg_cleanup(struct oxygen *chip)
+ {
+-	/*cs4245_registers_init(chip);*/
+-	dg_output_enable(chip);
++	dg_suspend(chip);
+ }
+ 
+ void set_cs4245_dac_params(struct oxygen *chip,
 -- 
 1.7.10.4
