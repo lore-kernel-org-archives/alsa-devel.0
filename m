@@ -1,17 +1,24 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v2 2/2] ASoC: compress: Add suport for DPCM
-	into compressed audio
-Date: Fri, 17 Jan 2014 17:03:56 +0000
-Message-ID: <1389978236-7589-2-git-send-email-liam.r.girdwood@linux.intel.com>
-References: <1389978236-7589-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: da9055: Partially fix device
+Date: Fri, 17 Jan 2014 17:20:25 +0000
+Message-ID: <20140117172025.GW17314@sirena.org.uk>
+References: <2E89032DDAA8B9408CB92943514A03376B7CC95A@SW-EX-MBX01.diasemi.com>
+ <20140109121353.GG31886@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376B7CC9BE@SW-EX-MBX01.diasemi.com>
+ <20140109202446.GQ12858@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376B7CCB98@SW-EX-MBX01.diasemi.com>
+ <20140113211858.GK29039@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376B7CCF27@SW-EX-MBX01.diasemi.com>
+ <20140114195159.GW15567@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376B7CD24A@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1549966207882812770=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 1566B2615B9
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2014 18:04:06 +0100 (CET)
-In-Reply-To: <1389978236-7589-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 315262610D4
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2014 18:20:35 +0100 (CET)
+In-Reply-To: <2E89032DDAA8B9408CB92943514A03376B7CD24A@SW-EX-MBX01.diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,404 +28,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, "Opensource [Anthony Olech]" <anthony.olech.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently compressed audio streams are statically routed from the /dev
-to the DAI link. Some DSPs can route compressed data to multiple BE DAIs
-like they do for PCM data.
 
-Add support to allow dynamically routed compressed streams using the existing
-DPCM infrastructure. This patch adds special FE versions of the compressed ops
-that work out the runtime routing.
+--===============1549966207882812770==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+1d8mk/W7pQzMfc7"
+Content-Disposition: inline
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
----
- include/sound/soc.h      |   1 +
- sound/soc/soc-compress.c | 301 ++++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 301 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 0a600b8d..e0233df 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1035,6 +1035,7 @@ struct snd_soc_pcm_runtime {
- 
- 	/* Dynamic PCM BE runtime data */
- 	struct snd_soc_dpcm_runtime dpcm[2];
-+	int fe_compr;
- 
- 	long pmdown_time;
- 	unsigned char pop_wait:1;
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 53c9ecd..5e9690c 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -24,6 +24,7 @@
- #include <sound/compress_driver.h>
- #include <sound/soc.h>
- #include <sound/initval.h>
-+#include <sound/soc-dpcm.h>
- 
- static int soc_compr_open(struct snd_compr_stream *cstream)
- {
-@@ -75,6 +76,98 @@ out:
- 	return ret;
- }
- 
-+static int soc_compr_open_fe(struct snd_compr_stream *cstream)
-+{
-+	struct snd_soc_pcm_runtime *fe = cstream->private_data;
-+	struct snd_pcm_substream *fe_substream = fe->pcm->streams[0].substream;
-+	struct snd_soc_platform *platform = fe->platform;
-+	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
-+	struct snd_soc_dai *codec_dai = fe->codec_dai;
-+	struct snd_soc_dpcm *dpcm;
-+	struct snd_soc_dapm_widget_list *list;
-+	int stream;
-+	int ret = 0;
-+
-+	if (cstream->direction == SND_COMPRESS_PLAYBACK)
-+		stream = SNDRV_PCM_STREAM_PLAYBACK;
-+	else
-+		stream = SNDRV_PCM_STREAM_CAPTURE;
-+
-+	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->open) {
-+		ret = platform->driver->compr_ops->open(cstream);
-+		if (ret < 0) {
-+			pr_err("compress asoc: can't open platform %s\n", platform->name);
-+			goto out;
-+		}
-+	}
-+
-+	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->startup) {
-+		ret = fe->dai_link->compr_ops->startup(cstream);
-+		if (ret < 0) {
-+			pr_err("compress asoc: %s startup failed\n", fe->dai_link->name);
-+			goto machine_err;
-+		}
-+	}
-+
-+	fe->dpcm[stream].runtime = fe_substream->runtime;
-+
-+	if (dpcm_path_get(fe, stream, &list) <= 0) {
-+		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
-+			fe->dai_link->name, stream ? "capture" : "playback");
-+	}
-+
-+	/* calculate valid and active FE <-> BE dpcms */
-+	dpcm_process_paths(fe, stream, &list, 1);
-+
-+	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
-+
-+	ret = dpcm_be_dai_startup(fe, stream);
-+	if (ret < 0) {
-+		/* clean up all links */
-+		list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be)
-+			dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
-+
-+		dpcm_be_disconnect(fe, stream);
-+		fe->dpcm[stream].runtime = NULL;
-+		goto fe_err;
-+	}
-+
-+	dpcm_clear_pending_state(fe, stream);
-+	dpcm_path_put(&list);
-+
-+	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_OPEN;
-+	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
-+
-+	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
-+		cpu_dai->playback_active++;
-+		codec_dai->playback_active++;
-+	} else {
-+		cpu_dai->capture_active++;
-+		codec_dai->capture_active++;
-+	}
-+
-+	cpu_dai->active++;
-+	codec_dai->active++;
-+	fe->codec->active++;
-+
-+	mutex_unlock(&fe->card->mutex);
-+
-+	return 0;
-+
-+fe_err:
-+	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->shutdown)
-+		fe->dai_link->compr_ops->shutdown(cstream);
-+machine_err:
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->free)
-+		platform->driver->compr_ops->free(cstream);
-+out:
-+	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
-+	mutex_unlock(&fe->card->mutex);
-+	return ret;
-+}
-+
- /*
-  * Power down the audio subsystem pmdown_time msecs after close is called.
-  * This is to ensure there are no pops or clicks in between any music tracks
-@@ -164,6 +257,65 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
- 	return 0;
- }
- 
-+static int soc_compr_free_fe(struct snd_compr_stream *cstream)
-+{
-+	struct snd_soc_pcm_runtime *fe = cstream->private_data;
-+	struct snd_soc_platform *platform = fe->platform;
-+	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
-+	struct snd_soc_dai *codec_dai = fe->codec_dai;
-+	struct snd_soc_dpcm *dpcm;
-+	int stream, ret;
-+
-+	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
-+
-+	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
-+		stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		cpu_dai->playback_active--;
-+		codec_dai->playback_active--;
-+	} else {
-+		stream = SNDRV_PCM_STREAM_CAPTURE;
-+		cpu_dai->capture_active--;
-+		codec_dai->capture_active--;
-+	}
-+
-+	cpu_dai->active--;
-+	codec_dai->active--;
-+	fe->codec->active--;
-+
-+	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
-+
-+	ret = dpcm_be_dai_hw_free(fe, stream);
-+	if (ret < 0)
-+		dev_err(fe->dev, "compressed hw_free failed %d\n", ret);
-+
-+	ret = dpcm_be_dai_shutdown(fe, stream);
-+
-+	/* mark FE's links ready to prune */
-+	list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be)
-+		dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
-+
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_STOP);
-+	else
-+		dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_STOP);
-+
-+	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_CLOSE;
-+	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
-+
-+	dpcm_be_disconnect(fe, stream);
-+
-+	fe->dpcm[stream].runtime = NULL;
-+
-+	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->shutdown)
-+		fe->dai_link->compr_ops->shutdown(cstream);
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->free)
-+		platform->driver->compr_ops->free(cstream);
-+
-+	mutex_unlock(&fe->card->mutex);
-+	return 0;
-+}
-+
- static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
- {
- 
-@@ -194,6 +346,59 @@ out:
- 	return ret;
- }
- 
-+static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
-+{
-+	struct snd_soc_pcm_runtime *fe = cstream->private_data;
-+	struct snd_soc_platform *platform = fe->platform;
-+	int ret = 0, stream;
-+
-+	if (cmd == SND_COMPR_TRIGGER_PARTIAL_DRAIN ||
-+		cmd == SND_COMPR_TRIGGER_DRAIN) {
-+
-+		if (platform->driver->compr_ops &&
-+			platform->driver->compr_ops->trigger)
-+		return platform->driver->compr_ops->trigger(cstream, cmd);
-+	}
-+
-+	if (cstream->direction == SND_COMPRESS_PLAYBACK)
-+		stream = SNDRV_PCM_STREAM_PLAYBACK;
-+	else
-+		stream = SNDRV_PCM_STREAM_CAPTURE;
-+
-+
-+	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->trigger) {
-+		ret = platform->driver->compr_ops->trigger(cstream, cmd);
-+		if (ret < 0)
-+			goto out;
-+	}
-+
-+	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
-+
-+	ret = dpcm_be_dai_trigger(fe, stream, cmd);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		fe->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		fe->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
-+		break;
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		fe->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
-+		break;
-+	}
-+
-+out:
-+	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
-+	mutex_unlock(&fe->card->mutex);
-+	return ret;
-+}
-+
- static int soc_compr_set_params(struct snd_compr_stream *cstream,
- 					struct snd_compr_params *params)
- {
-@@ -241,6 +446,64 @@ err:
- 	return ret;
- }
- 
-+static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
-+					struct snd_compr_params *params)
-+{
-+	struct snd_soc_pcm_runtime *fe = cstream->private_data;
-+	struct snd_pcm_substream *fe_substream = fe->pcm->streams[0].substream;
-+	struct snd_soc_platform *platform = fe->platform;
-+	int ret = 0, stream;
-+
-+	if (cstream->direction == SND_COMPRESS_PLAYBACK)
-+		stream = SNDRV_PCM_STREAM_PLAYBACK;
-+	else
-+		stream = SNDRV_PCM_STREAM_CAPTURE;
-+
-+	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->set_params) {
-+		ret = platform->driver->compr_ops->set_params(cstream, params);
-+		if (ret < 0)
-+			goto out;
-+	}
-+
-+	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->set_params) {
-+		ret = fe->dai_link->compr_ops->set_params(cstream);
-+		if (ret < 0)
-+			goto out;
-+	}
-+
-+	/*
-+	 * Create an empty hw_params for the BE as the machine driver must
-+	 * fix this up to match DSP decoder and ASRC configuration.
-+	 * I.e. machine driver fixup for compressed BE is mandatory.
-+	 */
-+	memset(&fe->dpcm[fe_substream->stream].hw_params, 0,
-+		sizeof(struct snd_pcm_hw_params));
-+
-+	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
-+
-+	ret = dpcm_be_dai_hw_params(fe, stream);
-+	if (ret < 0)
-+		goto out;
-+
-+	ret = dpcm_be_dai_prepare(fe, stream);
-+	if (ret < 0)
-+		goto out;
-+
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_START);
-+	else
-+		dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_START);
-+
-+	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_PREPARE;
-+
-+out:
-+	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
-+	mutex_unlock(&fe->card->mutex);
-+	return ret;
-+}
-+
- static int soc_compr_get_params(struct snd_compr_stream *cstream,
- 					struct snd_codec *params)
- {
-@@ -360,6 +623,7 @@ static int soc_compr_get_metadata(struct snd_compr_stream *cstream,
- 
- 	return ret;
- }
-+
- /* ASoC Compress operations */
- static struct snd_compr_ops soc_compr_ops = {
- 	.open		= soc_compr_open,
-@@ -375,6 +639,21 @@ static struct snd_compr_ops soc_compr_ops = {
- 	.get_codec_caps = soc_compr_get_codec_caps
- };
- 
-+/* ASoC Dynamic Compress operations */
-+static struct snd_compr_ops soc_compr_dyn_ops = {
-+	.open		= soc_compr_open_fe,
-+	.free		= soc_compr_free_fe,
-+	.set_params	= soc_compr_set_params_fe,
-+	.get_params	= soc_compr_get_params,
-+	.set_metadata   = soc_compr_set_metadata,
-+	.get_metadata	= soc_compr_get_metadata,
-+	.trigger	= soc_compr_trigger_fe,
-+	.pointer	= soc_compr_pointer,
-+	.ack		= soc_compr_ack,
-+	.get_caps	= soc_compr_get_caps,
-+	.get_codec_caps = soc_compr_get_codec_caps
-+};
-+
- /* create a new compress */
- int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- {
-@@ -383,6 +662,7 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_compr *compr;
-+	struct snd_pcm *be_pcm;
- 	char new_name[64];
- 	int ret = 0, direction = 0;
- 
-@@ -410,7 +690,26 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 		ret = -ENOMEM;
- 		goto compr_err;
- 	}
--	memcpy(compr->ops, &soc_compr_ops, sizeof(soc_compr_ops));
-+
-+	if (rtd->dai_link->dynamic) {
-+		snprintf(new_name, sizeof(new_name), "(%s)",
-+			rtd->dai_link->stream_name);
-+
-+		ret = snd_pcm_new_internal(rtd->card->snd_card, new_name, num,
-+				1, 0, &be_pcm);
-+		if (ret < 0) {
-+			dev_err(rtd->card->dev, "ASoC: can't create compressed for %s\n",
-+				rtd->dai_link->name);
-+			goto compr_err;
-+		}
-+
-+		rtd->pcm = be_pcm;
-+		rtd->fe_compr = 1;
-+		be_pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->private_data = rtd;
-+		be_pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream->private_data = rtd;
-+		memcpy(compr->ops, &soc_compr_dyn_ops, sizeof(soc_compr_dyn_ops));
-+	} else
-+		memcpy(compr->ops, &soc_compr_ops, sizeof(soc_compr_ops));
- 
- 	/* Add copy callback for not memory mapped DSPs */
- 	if (platform->driver->compr_ops && platform->driver->compr_ops->copy)
--- 
-1.8.3.2
+--+1d8mk/W7pQzMfc7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jan 16, 2014 at 02:11:03AM +0000, Opensource [Adam Thomson] wrote:
+> On Tue, 14 Jan 2014 19:52:19 +0000, Mark Brown wrote:
+
+> > That's not what's been coming over.
+
+> The drivers follow common patterns. The only thing slightly different is that
+> both the Codec and PMIC are initialised separately, but this reflects the
+> nature of the chip. I don't believe wanting to add a simple solution which
+> fits with that as being awkward or against common methods and am not overly
+> happy you're trying to suggest otherwise, especially when previous kernel
+> submissions I've been involved with have very much followed common kernel
+> practices. I just want the correct solution for our drivers here.
+
+Sure, like I say this is about the impression that is created rather
+than your actual intention.  One particular thing I'd highlight is that
+it's really common for device vendors to say that their device or code
+is special in some way and can't do the standard things but this rarely
+turns out to be true.  It is therefore really important to do things
+like highlight specific technical things that mean new approaches are
+needed (like the fact that the addresses are independently controllable
+for the functions on this device) otherwise it is very easy for it to
+look like a common pattern is being repeated.
+
+> Yes I'm sure, and there are OTP settings for the PMIC as well. For the PMIC
+> address configurability, there isn't really an issue anyway as you need to
+> provide the address for this I2C device at board initialisation in the kernel.
+> The point of note here is that the Codec I2C address is OTP configurable and
+> therefore not fixed.
+
+OK, that's fine - I was just really surprised since the normal thing
+would be that if only one function was going to have the address
+configured via OTP it'd be the PMIC.
+
+What I would suggest doing is writing a binding document for the device
+(which seems to be missing anyway) and sending that along with patches
+changing both the MFD and CODEC compatible strings and IDs and adding
+comments saying that this is intentional to ensure that nobody cleans
+this up again.
+
+--+1d8mk/W7pQzMfc7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS2WZWAAoJELSic+t+oim9G+IP/ivzRE3iWJba9c+VlA0Y4KkX
+RjTULIgjIGS/tOmepob7L2CPN8kTwZO6+inpEMqHLKneyeZtIklWgJgnM5xraxq3
+UOW+xG2Euksf9Hms0GGepdbO5Dx+3l0VenX+eB9Z76KDonmjOIxthG2O6Lchy025
+1TE4yLxVJK6c1bFlcLzrjzejWfCMpFxW1YqXB364aKV0JLrbD52SQK/vgbYNW+wB
+IRwFPlfmFUUACmw+2INV5OHHlaxVI6riqA57rF3C0RvzjhwKKqPc53UWnDeixWFN
+pfQCuuJ3hc5ika8nt41fu1jHyz0FB8L3VVvpYrLhkFZWLXnJBuj6Dvvf/hno+MyB
+E8kOGG+T/eVIHdH9arasF65505JHX2RXUaSohX8oTLC6YSeFGElxYtSTFfh6TP5n
+pjUbht7y4b/TkNmTR/RBOM+oQ49YVuVvsI3TcPLJUdyGW9FtkUYHdxI201HVn+pQ
+C3bukEozr1Yj6SWr6JTs4wFu7LjWbr5BOe/ivk42DxcK50O3AMydv+uIzpC3ZgJ9
+APBLsdt6nW921PbTznYIwesaxHaOS7jM4DXvNHcfQ2oupnJrYik5jcM9u9KwxJ/Y
+ahBt2DJK2ilu6bWCp3Y/ygWwLsMwD01L9KUSS40N2TFETx9bnNczrMK325c6HHZS
+5IHILQwBIv24vtIS0lop
+=vx7a
+-----END PGP SIGNATURE-----
+
+--+1d8mk/W7pQzMfc7--
+
+--===============1549966207882812770==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1549966207882812770==--
