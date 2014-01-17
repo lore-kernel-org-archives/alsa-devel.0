@@ -1,20 +1,25 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
-Subject: Re: [PATCH 2/2] ASoC: compress: Add suport for DPCM
- into	compressed audio
-Date: Fri, 17 Jan 2014 08:28:04 +0000
-Message-ID: <1389947284.2353.5.camel@loki>
-References: <1389804717-5985-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1389804717-5985-2-git-send-email-liam.r.girdwood@linux.intel.com>
- <s5hbnzbsysd.wl%tiwai@suse.de> <1389892081.2298.61.camel@loki>
- <20140117035326.GK25466@intel.com>
+From: siddharth <siddharth@greenearthnetwork.in>
+Subject: ProVideo PV 918A - audi o device created but cannot
+	capture sound
+Date: Fri, 17 Jan 2014 08:04:16 +0000 (UTC)
+Message-ID: <loom.20140117T085941-825@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 033DD261A7B
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2014 09:28:09 +0100 (CET)
-In-Reply-To: <20140117035326.GK25466@intel.com>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id D27B9261A7B
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2014 09:40:05 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1W44yC-0001xj-P4
+ for alsa-devel@alsa-project.org; Fri, 17 Jan 2014 09:40:04 +0100
+Received: from 117.195.53.10 ([117.195.53.10])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2014 09:40:04 +0100
+Received: from siddharth by 117.195.53.10 with local (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2014 09:40:04 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +29,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.jf.intel.com>, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2014-01-17 at 09:23 +0530, Vinod Koul wrote:
-> On Thu, Jan 16, 2014 at 05:08:01PM +0000, Liam Girdwood wrote:
-> > On Thu, 2014-01-16 at 16:59 +0100, Takashi Iwai wrote:
-> > > At Wed, 15 Jan 2014 16:51:57 +0000,
-> > > Liam Girdwood wrote:
-> > > > 
-> > 
-> > > 
-> > > > +	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
-> > > > +
-> > > > +	if (platform->driver->compr_ops && platform->driver->compr_ops->set_params) {
-> > > > +		ret = platform->driver->compr_ops->set_params(cstream, params);
-> > > > +		if (ret < 0)
-> > > > +			goto out;
-> > > > +	}
-> > > > +
-> > > > +	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->set_params) {
-> > > > +		ret = fe->dai_link->compr_ops->set_params(cstream);
-> > > > +		if (ret < 0)
-> > > > +			goto out;
-> > > > +	}
-> > > > +
-> > > > +	memcpy(&fe->dpcm[fe_substream->stream].hw_params, params,
-> > > > +			sizeof(struct snd_pcm_hw_params));
-> > > 
-> > > Does this really work?  params is snd_compr_params and hw_parmas is
-> > > snd_pcm_hw_params, isn't it?
-> > > 
-> > 
-> > Hmmm, no one reported a failure here to me. It is complete nonsense
-> > though so I dont know why the testers didn't run into this. I'll fix it
-> > for V2.
-> I think that due to the fixup fn noone noticed this. The issue will be seen only
-> by folks who dont have the fixup function.
+Hi,
 
-I now know why we didn't see this on HSW. We have a fixed BE SSP
-configuration so we always ignore the BE hw_params. So we ignored the
-junk data ;)
+I have installed a ProVideo PV 981.
 
-Liam
+I was able to get the sound device detected by putting 
 
----------------------------------------------------------------------
-Intel Corporation (UK) Limited
-Registered No. 1134945 (England)
-Registered Office: Pipers Way, Swindon SN3 1RJ
-VAT No: 860 2173 47
+modprobe snd-bt87x load_all=1 digital_rate=48000 enable=1
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+but am unable to capture sound. I am using Fedora 19 on an intel i5 machine.
+
+In dmesg i get the error:
+
+[  235.145932] ALSA sound/pci/bt87x.c:860 unknown card 0x878-0xaa00:0x1460
+[  235.145935] ALSA sound/pci/bt87x.c:863 please mail id, board name, and,
+if it works, the correct digital_rate option to <alsa-devel@alsa-project.org>
+[  235.146061] ALSA sound/pci/bt87x.c:931 bt87x0: Using board 0, analog,
+digital (rate 48000 Hz)
+
+
+Any help will be appreciated.
+
+regards
+Siddharth
