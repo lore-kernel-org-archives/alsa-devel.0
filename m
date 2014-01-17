@@ -1,81 +1,56 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/2] Dynamic routing for compressed
-	streams.
-Date: Fri, 17 Jan 2014 17:56:44 +0000
-Message-ID: <20140117175644.GY17314@sirena.org.uk>
-References: <1389978145.2353.29.camel@loki>
+Subject: Re: [PATCH] ASoC: wm8804: Allow control of master clock divider in
+ PLL generation
+Date: Fri, 17 Jan 2014 17:59:27 +0000
+Message-ID: <20140117175927.GZ17314@sirena.org.uk>
+References: <alpine.DEB.2.02.1401142030110.23472@parallels-Parallels-Virtual-Platform>
+ <52D95DA2.7000509@koalo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3402010759748689418=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 256192610D4
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2014 18:56:51 +0100 (CET)
-In-Reply-To: <1389978145.2353.29.camel@loki>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mu4zWe6QekgCAJVd"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <52D95DA2.7000509@koalo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Florian Meier <florian.meier@koalo.de>
+Cc: Daniel Matuschek <daniel@matuschek.net>, alsa-devel@alsa-project.org, Dimitris.Papastamos@wolfsonmicro.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3402010759748689418==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ELMKpCVvjiB+uwRu"
-Content-Disposition: inline
-
-
---ELMKpCVvjiB+uwRu
+--mu4zWe6QekgCAJVd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 17, 2014 at 05:02:25PM +0000, Liam Girdwood wrote:
-> Changes for V2
->=20
->  * We no longer copy the compressed params into the BE hw_params. This
-> was bogus, but didn't show up on Haswell testing as the BE params were
-> never used. The DSP ran the BE is a fixed configuration so all BE params
-> were ignored.
+On Fri, Jan 17, 2014 at 05:43:14PM +0100, Florian Meier wrote:
+> I have tested your patch.
+> There is a (non blocking) error message regarding .idle_bias_off, but I
+> assume that should not have something to do with your patch. Can we just
+> set idle_bias_off to false here?
 
-Applied both, thanks.
+What is the error message?  I remember that the first version of this
+had an undocumented change to idle_bias_off in it, I expect that needed
+to split out into a separate patch rather than dropped.
 
---ELMKpCVvjiB+uwRu
+--mu4zWe6QekgCAJVd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS2W7ZAAoJELSic+t+oim9NQkP/irEhu0/d0ML1+sxUETlI8aD
-57QmfpL5xxvoskXFth/IW4EbYLe/hy7Jl2zalK0gRAB4pNYjsBP1CENX5msHYjC0
-tDwBpKAnnymK7bfqiFOLblWY7dcXatsZ1+VrMnZ73C69xCjxm2NNdoXBb/82eOdz
-oDFLKmNac2TyJgTKAredKTMSAfyGAUUX6ZJ7PYocoJcvHtSNvMLxOGGy6FYHjZkY
-5WRWdjKiMOik1l2PMPaFy6uu6ieHeAAphR/E1YNYO4vaSpLfBb0ZiFaZDLWibytb
-fNGOecWFuKw1T15JxSZSIPgjyeISvpfpMWBbc5mCK4niikmbLI5NljGQ0Dx1Cf5b
-3tTJKmQyZ2tEwBxYtKK+0kMks7fp35RZWwWDrKFk5xxBO6hvBkjjK69p1Kd+fToP
-7jpJujX2G/7+L6vFh/weQ863oCphp2aoetKTTqCR0kAd9w0n+PkBzfTJgmN38SwR
-GddKO/YZrds7hCBu4u7L5jb2aInEwvYIIohXfKOuD/Z4YgsfMmM3Mpeymvw6RWcC
-o05K6/cNyDbI5cIxOxwmOEu3aiCrIjDcWRLeSePCiLwchlqsFY4Hlgo5Pq6r6LA6
-jbDPoX/oYkrOam92NwxIwaOrerHumfsNShGgEzoEOzDbK/2NPdSH1c3tPPAkhShb
-Hvo0QF6nGCs3fixUyNqQ
-=8qRV
+iQIcBAEBAgAGBQJS2W98AAoJELSic+t+oim9aUwP/i5K5QxgkwK28oKq5zTiX717
+P4gh/Fxv9p+2GYdbfD0u7W1mfqvWbcM7rVaIU78sFcSVsc9bERSr1CLdvSUpiE6u
+eCe66zU7vKTKXY1IIqYw5yd1wI9CnQC4aoFiudDNCmlnD9GjBmupkO36GoSeBjlI
+ayV+5RdsSmP5vdJS5w80JHRXKJq4k6vTz68J+CV1+yyMnTbfY7rAgbsxjlp5jc4t
+bwp3smxUGzfs1niF6kdAc4TzB9cMgrgZmRgbaXIoefY8lem63GjYmWjYw0rV2vE5
+GzT0Cq8+h+jVjRcZcWFikygeR3Od1RtU+E3k59HkGD1oKVT3u9SpLwP25ovozeHN
+Ocpn6zzwpWLBwHU7juq4w8JLbpbZfAzFUdGPoRDUAgnzlCa5RB5pn/Nq148CX5e3
+l7sCvKWKXKBWdqyG1t4GaT8cdG/o6LmmOcbdtvZa8NKJNBCn5zhW2Cua5JiT4HtG
+TJ4pzp4ToGgpIUCc/2Pc84T4UvFBORV2qwpSc14MzusyUJkDWzoKHi631uZ5kuwW
+jRqeK+J1o6vG98YUjOTi2QOUma8oxWK2k1FYdB/RaXRnxe3XiMU1NKTcW0neJ3ee
+Cr6oyBeZRItewtxfsgUoNDeIiLrzX77irF0z4jdN9ny/K7tFkYUr7mWJMq+RB/2k
+iK96ox91nOX/LYJwhX+E
+=Fxz5
 -----END PGP SIGNATURE-----
 
---ELMKpCVvjiB+uwRu--
-
---===============3402010759748689418==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3402010759748689418==--
+--mu4zWe6QekgCAJVd--
