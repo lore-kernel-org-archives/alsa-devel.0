@@ -1,39 +1,64 @@
-From: Florian Meier <florian.meier@koalo.de>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: wm8804: Allow control of master clock divider in
  PLL generation
-Date: Fri, 17 Jan 2014 19:44:02 +0100
-Message-ID: <52D979F2.8070202@koalo.de>
-References: <alpine.DEB.2.02.1401142030110.23472@parallels-Parallels-Virtual-Platform> <52D95DA2.7000509@koalo.de> <20140117175927.GZ17314@sirena.org.uk> <52D97120.8030606@koalo.de> <20140117183332.GC17314@sirena.org.uk>
+Date: Fri, 17 Jan 2014 18:47:02 +0000
+Message-ID: <20140117184702.GG17314@sirena.org.uk>
+References: <alpine.DEB.2.02.1401142030110.23472@parallels-Parallels-Virtual-Platform>
+ <52D95DA2.7000509@koalo.de>
+ <20140117175927.GZ17314@sirena.org.uk>
+ <52D97120.8030606@koalo.de>
+ <20140117183332.GC17314@sirena.org.uk>
+ <52D979F2.8070202@koalo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="IRIOLc8eTv1AOxGv"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140117183332.GC17314@sirena.org.uk>
+Content-Disposition: inline
+In-Reply-To: <52D979F2.8070202@koalo.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
+To: Florian Meier <florian.meier@koalo.de>
 Cc: Daniel Matuschek <daniel@matuschek.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Dimitris.Papastamos@wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, perex@perex.cz, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/17/2014 07:33 PM, Mark Brown wrote:
-> On Fri, Jan 17, 2014 at 07:06:24PM +0100, Florian Meier wrote:
->>
-> Intentionally off-list?
 
-Oh no - I am sorry!
+--IRIOLc8eTv1AOxGv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->> If I remember correctly the error was
->> "codec can not start from non-off bias with idle_bias_off==true"
-> 
->> I think the solution is just to set idle_bias_off = false and everything
->> seems to be working with that. I just don't know if there might be any
->> side effects.
-> 
-> Setting it to false increases power consumption since the device is
-> kept more powered on when idle but reduces startup time from idle.  For
-> digital only devices like the wm8804 there shouldn't be any reason to
-> keep it powered up when not in use, the startup time is generally
-> negligable anyway.
-> 
+On Fri, Jan 17, 2014 at 07:44:02PM +0100, Florian Meier wrote:
+> On 01/17/2014 07:33 PM, Mark Brown wrote:
 
-So a better solution would be to set SND_SOC_BIAS_OFF instead of
-SND_SOC_BIAS_STANDBY at the end of probe?
+> > Setting it to false increases power consumption since the device is
+> > kept more powered on when idle but reduces startup time from idle.  For
+> > digital only devices like the wm8804 there shouldn't be any reason to
+> > keep it powered up when not in use, the startup time is generally
+> > negligable anyway.
+
+> So a better solution would be to set SND_SOC_BIAS_OFF instead of
+> SND_SOC_BIAS_STANDBY at the end of probe?
+
+Yes (making sure that it is actually in that state).
+
+--IRIOLc8eTv1AOxGv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS2XqiAAoJELSic+t+oim9QiMP/jC5Y/+ZmGsu+tqb61SfPyrI
+OJKq3/7fwixfBeY+V3B+6wMgMfdhpZnNXd7R0yJ9uC2sSSwvASWV3HhnDSv69FC9
+YWWfaf3iJTqGmWpnXnhI/yrJzJ+8trtc/ntLECGU1NnNWbcZ17JFAwbLPSHaAmd1
+v9AEoT/SKyPhgGYW0S6hVK7CjGxnSr9p+duDZm4BphEpXqpGhVyjUEMsWtyJzVQj
+Y4bevGSHgmJGB+RsAQLll328NEQEkh5/a/ykgeLOxbdCL4k9o4eijJw5Vrjsm00q
+bL2wgtwC3a3YbiAWiNONJrNMHz3zWGKyGUqU5XU7PBsAAlS3WBBdqYh4kAEm7cIY
+t2Y0aFNxEZeH09tgUt/EthvoXS2FSHIM91rm8I1c1pa9HFn+L+Wz9O+Ufycr3Ia4
+PfneTtmfa1sDYLdnVp8+ONKaeFuVMJO8XR7tipi4SCmsijaUo+yCfyTgteQgqJs+
+tmiO05n9bQlesoKRCy9R126qybgG9ofjnYXLGvvEmF5PsFEgH/K1OMnfGjcXXWN4
+c5M7HhXDOqhPiE57VURRSWqaQd3rEi9KhLaBVBkqCfcC6Kwh8c9DmYB6eBfJmvMR
+BlfvCZO5WG3xIaSLdwRIy2d6p7rN4wQp+NiRUn0RNCFWaqfKIZgQm2MTTQGeuDK5
+P+G/fdK9n9uwtwWq9P7h
+=EVT0
+-----END PGP SIGNATURE-----
+
+--IRIOLc8eTv1AOxGv--
