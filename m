@@ -1,8 +1,8 @@
 From: Roman Volkov <v1ron@mail.ru>
-Subject: [PATCH v3 04/16] ALSA: Oxygen: Add CS4245_SPI_READ
-	constant
-Date: Fri, 17 Jan 2014 19:08:23 +0400
-Message-ID: <1389971315-3215-4-git-send-email-v1ron@mail.ru>
+Subject: [PATCH v3 05/16] ALSA: Oxygen: Export
+	oxygen_update_dac_routing symbol
+Date: Fri, 17 Jan 2014 19:08:24 +0400
+Message-ID: <1389971315-3215-5-git-send-email-v1ron@mail.ru>
 References: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,28 +22,29 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Roman Volkov <v1ron@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-The driver needs this constant to perform SPI read operations.
-The shift from CS4245_SPI_ADDRESS and CS4245_SPI_WRITE constants
-removed, since when we need to send two bytes instead of three
-in the SPI packet, we need to shift left by 8 instead of 16.
+When the user switches stereo output to multichannel or vice versa,
+the driver needs to update the channel routing. Instead of
+creating additional subroutines, I better export existing
+oxygen_update_dac_routing symbol from the oxygen mixer
+and call this function. It calls model.adjust_dac_routing()
+and my function does the work.
 
 Signed-off-by: Roman Volkov <v1ron@mail.ru>
 ---
- sound/pci/oxygen/cs4245.h |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/pci/oxygen/oxygen_mixer.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/oxygen/cs4245.h b/sound/pci/oxygen/cs4245.h
-index 5e0197e..3dd487a 100644
---- a/sound/pci/oxygen/cs4245.h
-+++ b/sound/pci/oxygen/cs4245.h
-@@ -103,5 +103,6 @@
- #define CS4245_ADC_UNDRFL	0x01
+diff --git a/sound/pci/oxygen/oxygen_mixer.c b/sound/pci/oxygen/oxygen_mixer.c
+index c0dbb52..5988e04 100644
+--- a/sound/pci/oxygen/oxygen_mixer.c
++++ b/sound/pci/oxygen/oxygen_mixer.c
+@@ -190,6 +190,7 @@ void oxygen_update_dac_routing(struct oxygen *chip)
+ 	if (chip->model.update_center_lfe_mix)
+ 		chip->model.update_center_lfe_mix(chip, chip->dac_routing > 2);
+ }
++EXPORT_SYMBOL(oxygen_update_dac_routing);
  
- 
--#define CS4245_SPI_ADDRESS	(0x9e << 16)
--#define CS4245_SPI_WRITE	(0 << 16)
-+#define CS4245_SPI_ADDRESS	0x9e
-+#define CS4245_SPI_WRITE	0
-+#define CS4245_SPI_READ		1
+ static int upmix_put(struct snd_kcontrol *ctl, struct snd_ctl_elem_value *value)
+ {
 -- 
 1.7.10.4
