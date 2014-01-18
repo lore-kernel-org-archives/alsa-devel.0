@@ -1,18 +1,20 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v5] ARM: DTS: imx5* imx6*, use imx51-ssi
-Date: Sat, 18 Jan 2014 16:38:42 +0800
-Message-ID: <20140118083840.GD3430@S2101-09.ap.freescale.net>
-References: <1389949662-11172-1-git-send-email-mpa@pengutronix.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH v3 01/16] ALSA: Oxygen: Add the separate
+ SPI waiting function
+Date: Sat, 18 Jan 2014 11:26:49 +0100
+Message-ID: <52DA56E9.2020703@ladisch.de>
+References: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db8outboundpool.messaging.microsoft.com
- (mail-db8lp0187.outbound.messaging.microsoft.com [213.199.154.187])
- by alsa0.perex.cz (Postfix) with ESMTP id DED20261A88
- for <alsa-devel@alsa-project.org>; Sat, 18 Jan 2014 09:38:58 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1389949662-11172-1-git-send-email-mpa@pengutronix.de>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 2A9F3261A28
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jan 2014 11:27:02 +0100 (CET)
+Received: from compute2.internal (compute2.nyi.mail.srv.osa [10.202.2.42])
+ by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 708C120DA8
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jan 2014 05:27:00 -0500 (EST)
+In-Reply-To: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,171 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Roman Volkov <v1ron@mail.ru>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 17, 2014 at 10:07:42AM +0100, Markus Pargmann wrote:
-> imx51-ssi and imx21-ssi are different IPs. imx51-ssi supports online
-> reconfiguration and needs this for correct interaction with SDMA. This
-> patch adds imx51-ssi before each imx21-ssi for all imx5/imx6 SoCs.
-> 
-> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> ---
-> Hi Shawn,
-> 
-> This is the patch including the two added compatibles in imx50.dtsi for
-> fsl,imx51-ssi. That is the only change in v5.
-> 
-> Regards,
-> 
-> Markus
-> 
-> 
->  arch/arm/boot/dts/imx50.dtsi   |  6 +++++-
->  arch/arm/boot/dts/imx53.dtsi   | 10 +++++++---
->  arch/arm/boot/dts/imx6qdl.dtsi | 12 +++++++++---
->  arch/arm/boot/dts/imx6sl.dtsi  | 12 +++++++++---
->  4 files changed, 30 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/imx50.dtsi b/arch/arm/boot/dts/imx50.dtsi
-> index 01c0499..47df15f 100644
-> --- a/arch/arm/boot/dts/imx50.dtsi
-> +++ b/arch/arm/boot/dts/imx50.dtsi
-> @@ -140,7 +140,9 @@
->  				};
->  
->  				ssi2: ssi@50014000 {
-> -					compatible = "fsl,imx50-ssi", "fsl,imx21-ssi";
-> +					compatible = "fsl,imx50-ssi",
-> +							"fsl,imx51-ssi",
-> +							"fsl,imx21-ssi";
->  					reg = <0x50014000 0x4000>;
->  					interrupts = <30>;
->  					clocks = <&clks IMX5_CLK_SSI2_IPG_GATE>;
-> @@ -446,6 +448,8 @@
->  
->  			ssi1: ssi@63fcc000 {
->  				compatible = "fsl,imx50-ssi", "fsl,imx21-ssi";
+Roman Volkov wrote:
+> This function performs waiting when the SPI bus completes
+> a transaction. Timeout error checking introduced and
+> the timeout increased to 400 from 40.
 
-This line should removed then.  I fixed it up and applied the patch.
+Why 400?  SPI does not allow the codec to delay reads.
 
-Shawn
+> +	for (count =3D 100; count > 0; count--) {
+> +		if ((oxygen_read8(chip, OXYGEN_SPI_CONTROL) &
+> +						OXYGEN_SPI_BUSY) =3D=3D 0)
+> +			return 0;
+> +		udelay(4);
+> +		--count;
+> +	}
 
-> +				compatible = "fsl,imx50-ssi", "fsl,imx51-ssi",
-> +							"fsl,imx21-ssi";
->  				reg = <0x63fcc000 0x4000>;
->  				interrupts = <29>;
->  				clocks = <&clks IMX5_CLK_SSI1_IPG_GATE>;
-> diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
-> index 4dbde25..73e103b 100644
-> --- a/arch/arm/boot/dts/imx53.dtsi
-> +++ b/arch/arm/boot/dts/imx53.dtsi
-> @@ -171,7 +171,9 @@
->  				};
->  
->  				ssi2: ssi@50014000 {
-> -					compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
-> +					compatible = "fsl,imx53-ssi",
-> +							"fsl,imx51-ssi",
-> +							"fsl,imx21-ssi";
->  					reg = <0x50014000 0x4000>;
->  					interrupts = <30>;
->  					clocks = <&clks IMX5_CLK_SSI2_IPG_GATE>;
-> @@ -590,7 +592,8 @@
->  			};
->  
->  			ssi1: ssi@63fcc000 {
-> -				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
-> +				compatible = "fsl,imx53-ssi", "fsl,imx51-ssi",
-> +						"fsl,imx21-ssi";
->  				reg = <0x63fcc000 0x4000>;
->  				interrupts = <29>;
->  				clocks = <&clks IMX5_CLK_SSI1_IPG_GATE>;
-> @@ -617,7 +620,8 @@
->  			};
->  
->  			ssi3: ssi@63fe8000 {
-> -				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
-> +				compatible = "fsl,imx53-ssi", "fsl,imx51-ssi",
-> +						"fsl,imx21-ssi";
->  				reg = <0x63fe8000 0x4000>;
->  				interrupts = <96>;
->  				clocks = <&clks IMX5_CLK_SSI3_IPG_GATE>;
-> diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
-> index 8a86502..cf7956e 100644
-> --- a/arch/arm/boot/dts/imx6qdl.dtsi
-> +++ b/arch/arm/boot/dts/imx6qdl.dtsi
-> @@ -247,7 +247,9 @@
->  				};
->  
->  				ssi1: ssi@02028000 {
-> -					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
-> +					compatible = "fsl,imx6q-ssi",
-> +							"fsl,imx51-ssi",
-> +							"fsl,imx21-ssi";
->  					reg = <0x02028000 0x4000>;
->  					interrupts = <0 46 IRQ_TYPE_LEVEL_HIGH>;
->  					clocks = <&clks 178>;
-> @@ -260,7 +262,9 @@
->  				};
->  
->  				ssi2: ssi@0202c000 {
-> -					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
-> +					compatible = "fsl,imx6q-ssi",
-> +							"fsl,imx51-ssi",
-> +							"fsl,imx21-ssi";
->  					reg = <0x0202c000 0x4000>;
->  					interrupts = <0 47 IRQ_TYPE_LEVEL_HIGH>;
->  					clocks = <&clks 179>;
-> @@ -273,7 +277,9 @@
->  				};
->  
->  				ssi3: ssi@02030000 {
-> -					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
-> +					compatible = "fsl,imx6q-ssi",
-> +							"fsl,imx51-ssi",
-> +							"fsl,imx21-ssi";
->  					reg = <0x02030000 0x4000>;
->  					interrupts = <0 48 IRQ_TYPE_LEVEL_HIGH>;
->  					clocks = <&clks 180>;
-> diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
-> index a449c4f..95bb37b 100644
-> --- a/arch/arm/boot/dts/imx6sl.dtsi
-> +++ b/arch/arm/boot/dts/imx6sl.dtsi
-> @@ -226,7 +226,9 @@
->  				};
->  
->  				ssi1: ssi@02028000 {
-> -					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
-> +					compatible = "fsl,imx6sl-ssi",
-> +							"fsl,imx51-ssi",
-> +							"fsl,imx21-ssi";
->  					reg = <0x02028000 0x4000>;
->  					interrupts = <0 46 IRQ_TYPE_LEVEL_HIGH>;
->  					clocks = <&clks IMX6SL_CLK_SSI1>;
-> @@ -238,7 +240,9 @@
->  				};
->  
->  				ssi2: ssi@0202c000 {
-> -					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
-> +					compatible = "fsl,imx6sl-ssi",
-> +							"fsl,imx51-ssi",
-> +							"fsl,imx21-ssi";
->  					reg = <0x0202c000 0x4000>;
->  					interrupts = <0 47 IRQ_TYPE_LEVEL_HIGH>;
->  					clocks = <&clks IMX6SL_CLK_SSI2>;
-> @@ -250,7 +254,9 @@
->  				};
->  
->  				ssi3: ssi@02030000 {
-> -					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
-> +					compatible = "fsl,imx6sl-ssi",
-> +							"fsl,imx51-ssi",
-> +							"fsl,imx21-ssi";
->  					reg = <0x02030000 0x4000>;
->  					interrupts = <0 48 IRQ_TYPE_LEVEL_HIGH>;
->  					clocks = <&clks IMX6SL_CLK_SSI3>;
-> -- 
-> 1.8.5.2
-> 
+This loop waits for 200 =B5s.
+
+The SPI transaction will not be finished for the first 30 =B5s or so, so
+polling is not needed for that time.
+
+With the wait coming after the transaction, it makes more sense to have
+the busy check not before but after the udelay.
+
+
+Regards,
+Clemens
