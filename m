@@ -1,21 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH v3 04/16] ALSA: Oxygen: Add CS4245_SPI_READ
- constant
-Date: Sat, 18 Jan 2014 11:29:36 +0100
-Message-ID: <52DA5790.3050609@ladisch.de>
+Subject: Re: [PATCH v3 08/16] ALSA: Oxygen: Add new CS4245 SPI
+ functions
+Date: Sat, 18 Jan 2014 11:36:14 +0100
+Message-ID: <52DA591E.8050705@ladisch.de>
 References: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
- <1389971315-3215-4-git-send-email-v1ron@mail.ru>
+ <1389971315-3215-8-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 39A47261A28
- for <alsa-devel@alsa-project.org>; Sat, 18 Jan 2014 11:29:47 +0100 (CET)
-Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
- by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id BC2EC20A0A
- for <alsa-devel@alsa-project.org>; Sat, 18 Jan 2014 05:29:46 -0500 (EST)
-In-Reply-To: <1389971315-3215-4-git-send-email-v1ron@mail.ru>
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id B526C261A28
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jan 2014 11:36:26 +0100 (CET)
+In-Reply-To: <1389971315-3215-8-git-send-email-v1ron@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,22 +27,16 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Roman Volkov wrote:
-> The driver needs this constant to perform SPI read operations.
-> The shift from CS4245_SPI_ADDRESS and CS4245_SPI_WRITE constants
-> removed, since when we need to send two bytes instead of three
-> in the SPI packet, we need to shift left by 8 instead of 16.
->
-> -#define CS4245_SPI_ADDRESS	(0x9e << 16)
-> -#define CS4245_SPI_WRITE	(0 << 16)
-> +#define CS4245_SPI_ADDRESS	0x9e
-> +#define CS4245_SPI_WRITE	0
+> +int cs4245_shadow_control(struct oxygen *chip, enum cs4245_shadow_operation op)
+> +{
+> +	unsigned char addr;
+> +	int ret;
+> +
+> +	for (addr = 1; addr < ARRAY_SIZE((((struct dg *)0)->cs4245_shadow));
+> +								addr++) {
 
-This change alone breaks the driver.
-
-All patches must be self-contained, which is important to be able to
-apply the patch series partially during debugging.
-
-Please merge this with the patch that changes the SPI code.
+This looks ugly (and there's one pair of parentheses too many).  Just
+include the line "struct dg *data = chip->model_data;" in this function.
 
 
 Regards,
