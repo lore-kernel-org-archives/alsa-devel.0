@@ -1,16 +1,18 @@
-From: Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: ALSA: hda - Fix possible races in HDMI driver - lockup
- on shutdown when radeon.audio=1 after using audacity
-Date: Sun, 19 Jan 2014 17:32:16 +1030
-Message-ID: <52DB7878.8000004@internode.on.net>
+From: Roman Volkov <v1ron@mail.ru>
+Subject: Re: [PATCH v3 01/16] ALSA: Oxygen: Add the separate
+ SPI waiting function
+Date: Sun, 19 Jan 2014 12:10:06 +0400
+Message-ID: <20140119121006.3ee8bde7@v1ron-desktop>
+References: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
+ <52DA56E9.2020703@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ipmail04.adl6.internode.on.net (ipmail04.adl6.internode.on.net
- [150.101.137.141])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BA1F2615FC
- for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2014 08:02:44 +0100 (CET)
+Received: from smtp20.mail.ru (smtp20.mail.ru [94.100.176.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F8DF261645
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2014 09:10:12 +0100 (CET)
+In-Reply-To: <52DA56E9.2020703@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,66 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Anssi Hannula <anssi.hannula@iki.fi>, ALSA devel <alsa-devel@alsa-project.org>, xorg-driver-ati@lists.x.org, linux-kernel@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have had reproducible lock-ups on shut-down (at the shutting down ALSA 
-stage) of my AMD64 machine (Asus M3A78Pro motherboard, BIOS 1701 
-01/27/2011, CPU AMD Athlon(tm) II X4 640 Processor) running the 64 bit 
-Linux kernel more recent than 3.12 when *both* radeon.audio=1 was set 
-and I had been running audacity 2.0.5. (iommu=noaperture is also set).
-
-The problem was reproducible with the stock Debian kernel 
-linux-image-3.13-rc6-amd64 version 3.13~rc6-1~exp1.
-
-The machine is using an ATI/AMD 3850HD video card with a DVI cable to a 
-DVI input on my monitor, and the default audio device is the 
-motherboard's on-board audio device:
-
-00:14.2 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] SBx00 
-Azalia (Intel HDA)
-
-01:00.0 VGA compatible controller: Advanced Micro Devices, Inc. 
-[AMD/ATI] RV670 [Radeon HD 3690/3850]
-01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] RV670/680 
-HDMI Audio [Radeon HD 3690/3800 Series]
-
-$ git bisect bad
-cbbaa603a03cc46681e24d6b2804b62fde95a2af is the first bad commit
-commit cbbaa603a03cc46681e24d6b2804b62fde95a2af
-Author: Takashi Iwai <tiwai@suse.de>
-Date:   Thu Oct 17 18:03:24 2013 +0200
-
-     ALSA: hda - Fix possible races in HDMI driver
-
-     Some per_pin fields and ELD contents might be changed dynamically in
-     multiple ways where the concurrent accesses are still opened in the
-     current code.  This patch fixes such possible races by using eld->lock
-     in appropriate places.
-
-     Reported-by: Anssi Hannula <anssi.hannula@iki.fi>
-     Signed-off-by: Takashi Iwai <tiwai@suse.de>
-
-:040000 040000 0c29281f82a3ebd9a704d481114f9cfcefea07c8 
-d71fd101125cd29a628cb5e66c7ee4f56e28329b M      sound
-
-When running audacity from the command line there was the following output:
-
-ALSA lib pcm_dsnoop.c:618:(snd_pcm_dsnoop_open) unable to open slave
-ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
-ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.rear
-ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.center_lfe
-ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.side
-ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
-Expression 'stream->playback.pcm' failed in 
-'src/hostapi/alsa/pa_linux_alsa.c', line: 4611
-Expression 'stream->playback.pcm' failed in 
-'src/hostapi/alsa/pa_linux_alsa.c', line: 4611
-Expression 'stream->playback.pcm' failed in 
-'src/hostapi/alsa/pa_linux_alsa.c', line: 4611
-
-I am happy to supply further information or run further tests to help in 
-isolating the problem and verifying a solution.
-
-Arthur.
+0JIgU2F0LCAxOCBKYW4gMjAxNCAxMToyNjo0OSArMDEwMApDbGVtZW5zIExhZGlzY2ggPGNsZW1l
+bnNAbGFkaXNjaC5kZT4g0L/QuNGI0LXRgjoKCj4gPiBUaGlzIGZ1bmN0aW9uIHBlcmZvcm1zIHdh
+aXRpbmcgd2hlbiB0aGUgU1BJIGJ1cyBjb21wbGV0ZXMKPiA+IGEgdHJhbnNhY3Rpb24uIFRpbWVv
+dXQgZXJyb3IgY2hlY2tpbmcgaW50cm9kdWNlZCBhbmQKPiA+IHRoZSB0aW1lb3V0IGluY3JlYXNl
+ZCB0byA0MDAgZnJvbSA0MC4gIAo+IAo+IFdoeSA0MDA/ICBTUEkgZG9lcyBub3QgYWxsb3cgdGhl
+IGNvZGVjIHRvIGRlbGF5IHJlYWRzLgoKWWVzLiBBRkFJSywgZXZlcnkgU1BJIHRyYW5zYWN0aW9u
+IHdpbGwgdGFrZSBhbG1vc3QgdGhlIHNhbWUgdGltZSwKZGVwZW5kaW5nIG9uIHRoZSBTUEkgY2xv
+Y2sgYW5kIHRoZSBudW1iZXIgb2YgYml0cyB0byB0cmFuc2ZlciwKcmVnYXJkbGVzcyBvZiB3aGF0
+IHdlJ3JlIHBlcmZvcm1pbmcsIHJlYWRpbmcgb3Igd3JpdGluZy4KCjQwMCB1cyBpcyBqdXN0IHRo
+ZSBtYXhpbXVtIHRpbWUsIGV4Y2VlZGluZyB0aGlzIHdpbGwgY2F1c2UgYW4gZXJyb3IuCk9rYXks
+IGxldHMgY2FsY3VsYXRlLCBpbiB3b3JzdCBjYXNlICgzIGJ5dGVzIHRvIHRyYW5zZmVyLCAxMjgw
+bnMgY2xvY2spOgoKMTI4MCAqIDggKiAzID0gMzAyNzBucywgMzAsNzIgdXMuIFBlcmhhcHMgcGx1
+cyBzb21lIHRpbWUgdG8gaW5pdGlhdGUKdGhlIHRyYW5zZmVyLgoKNDAwdXMgaXMgZ3JlYXRlciB0
+aGFuIDQwIGJ5IDEwIHRpbWVzLCBidXQgdGhlIGZ1bmN0aW9uIG5ldmVyIHdhaXRzIDQwMAp1cywg
+aXQgYWx3YXlzIHJldHVybnMgZWFybGllciB0aGFuIGluIDQwLTUwIHVzLiBJIGFsd2F5cyBwcmVm
+ZXIgdG8KaW5jcmVhc2UgdGhlc2UgdGltZW91dHMgbXVjaCBsb25nZXIgdGhhbiBuZWVkZWQsIHRo
+aXMgZ3VhcmFudGVlcwp0aGF0IEkgbmV2ZXIgZ2V0IGZhbHNlLXBvc2l0aXZlcyBhbmQgdGhpcyB3
+YWl0IGlzIHNhZmUuIEV2ZW4gaWYgdGhlCmVycm9yIG9jY3VyZWQsIDQwMHVzIGlzIHZlcnkgc21h
+bGwgYW1vdW50IG9mIHRpbWUuCgo+ID4gKwlmb3IgKGNvdW50ID0gMTAwOyBjb3VudCA+IDA7IGNv
+dW50LS0pIHsKPiA+ICsJCWlmICgob3h5Z2VuX3JlYWQ4KGNoaXAsIE9YWUdFTl9TUElfQ09OVFJP
+TCkgJgo+ID4gKwkJCQkJCU9YWUdFTl9TUElfQlVTWSkKPiA+ID09IDApCj4gPiArCQkJcmV0dXJu
+IDA7Cj4gPiArCQl1ZGVsYXkoNCk7Cj4gPiArCQktLWNvdW50Owo+ID4gKwl9ICAKPiAKPiBUaGlz
+IGxvb3Agd2FpdHMgZm9yIDIwMCDCtXMuCj4gCgpBaC4uLiBUaGFua3MuCkFsc28gd2h5IEkgcHJl
+ZmVyIGhpZ2hlciB0aW1lb3V0czoKaHR0cDovL3N0YWNrb3ZlcmZsb3cuY29tL3F1ZXN0aW9ucy84
+MzUyODEyL2xpbnV4LWtlcm5lbC11ZGVsYXktcmV0dXJucy10b28tZWFybHkKRXZlbiBpZiBhIG1p
+c3Rha2Ugb3IgYSBidWcsIHRoaXMgd29ya3MgYXMgbmVlZGVkIDopIFRoaXMgZHJpdmVyCmN1cnJl
+bnRseSB3b3JrcyBvbiBteSBQQywgaWYgdGhlIHRlc3Qgc3VjY2VlZGVkLCB0aGlzIGRlY3JlYXNl
+cyBteQphdHRlbnRpb24gOikKCj4gVGhlIFNQSSB0cmFuc2FjdGlvbiB3aWxsIG5vdCBiZSBmaW5p
+c2hlZCBmb3IgdGhlIGZpcnN0IDMwIMK1cyBvciBzbywgc28KPiBwb2xsaW5nIGlzIG5vdCBuZWVk
+ZWQgZm9yIHRoYXQgdGltZS4KCldlIG1heSBzd2l0Y2ggdGhlIGNvbnRleHQgYW5kIGZvcmNlIENQ
+VSB0bwpleGVjdXRlIHVzZWZ1bCBjb2RlLCB1c2luZyBzb21ldGhpbmcgbGlrZSB1c2xlZXAsIG1z
+bGVlcC4gSG93ZXZlciwKdGhpcyBtYXkgYmxvY2sgdGhlIHRocmVhZCBmb3IgdG9vIGxvbmcgdGlt
+ZS4gUGxlYXNlIHN1Z2dlc3QKc29tZXRoaW5nIGhvdyB0byBvcHRpbWl6ZSB0aGlzLgoKPiBXaXRo
+IHRoZSB3YWl0IGNvbWluZyBhZnRlciB0aGUgdHJhbnNhY3Rpb24sIGl0IG1ha2VzIG1vcmUgc2Vu
+c2UgdG8KPiBoYXZlIHRoZSBidXN5IGNoZWNrIG5vdCBiZWZvcmUgYnV0IGFmdGVyIHRoZSB1ZGVs
+YXkuCgpPa2F5LCB0aGlzIHdpbGwgYmU6Cgpmb3IgKGNvdW50ID0gMTAwOyBjb3VudCA+IDA7IGNv
+dW50LS0pIHsKCXVkZWxheSg0KTsKCWlmICgob3h5Z2VuX3JlYWQ4KGNoaXAsIE9YWUdFTl9TUElf
+Q09OVFJPTCkgJgoJCQkJCU9YWUdFTl9TUElfQlVTWSkgPT0gMCkKCQlyZXR1cm4gMDsKfQoKLS0g
+CktpbmQgcmVnYXJkcywKUm9tYW4gVm9sa292LAp2MXJvbkBtYWlsLnJ1Cl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
