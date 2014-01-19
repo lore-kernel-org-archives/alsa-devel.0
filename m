@@ -1,56 +1,115 @@
-From: Konstantinos Georgantas <k.georgantas@samsung.com>
-Subject: Audio usb switch to alternate setting 0
-Date: Sun, 19 Jan 2014 14:50:15 +0100
-Message-ID: <52DBD817.8050304@samsung.com>
+From: <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: Fwd: Re: [alsa-devel] no reset_resume for driver snd-usb-audio
+ for logitech headset H600
+Date: Sun, 19 Jan 2014 21:30:58 +0100
+Message-ID: <BLU0-SMTP103D5034514D3C096609C3AA1BA0@phx.gbl>
+References: <527FA9B6.3000403@hotmail.com>	<BLU0-SMTP389A28B3B37C63ADEE0EE1AA1B20@phx.gbl> <s5h61pow6hk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.w1.samsung.com (mailout3.w1.samsung.com
- [210.118.77.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 63B20261692
- for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2014 14:50:19 +0100 (CET)
-Received: from eucpsbgm2.samsung.com (unknown [203.254.199.245])
- by mailout3.w1.samsung.com
- (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
- 17 2011)) with ESMTP id <0MZN00CX9IFTTN50@mailout3.w1.samsung.com> for
- alsa-devel@alsa-project.org; Sun, 19 Jan 2014 13:50:17 +0000 (GMT)
-Received: from [192.168.0.103] ([106.111.34.46])
- by eusync1.samsung.com (Oracle Communications Messaging Server 7u4-23.01
- (7.0.4.23.0) 64bit (built Aug 10 2011))
- with ESMTPA id <0MZN00FHGIFS6K40@eusync1.samsung.com> for
- alsa-devel@alsa-project.org; Sun, 19 Jan 2014 13:50:16 +0000 (GMT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <s5h61pow6hk.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 Hello,
-I am trying to control from the client side which Alternate Setting to 
-use. Basically I would like to be able to switch from Alternate Setting 
-0 to 1 and vice versa so that I am not receiving any set interface 
-requests in the meantime. From the audio class 2.0 documentation I 
-understand that I should be able to do something like this by using the 
-active alternate setting control, and here comes my main problem.
 
-When I generate an interrupt to the interrupt endpoint I should expect a 
-GET request which I never see in the host side (hope I am right here).
+there must be a misunderstanding;
 
-Here comes the interrupt:
-interrupt->bInfo          = 0x00;
-interrupt->bAttribute  = 0x01;
-interrupt->wValue       = 0x0100;
-interrupt->wIndex       = 0x0004;
+There is a functional change, because with the line/patch ".reset_resume = usb_audio_resume," the mixer of the usb headset was not removed during suspend/resume and so the master channel in KDE Mixer was not changed (Headset), which is the correct behaviour.
 
-Could you please tell me if such a functionality is supported and how 
-the interrupt should look like?
+Without the line ".reset_resume = usb_audio_resume," in /sound/usb/card.c, the mixer was removed during suspend/resume and re-added, and so the master channel changed in KDE Mixer to the default onboard audio.
 
-Thank you,
-Konstantinos
+I have tested kernel 3.13rc8, and as you mentioned, the "reset_resume"-messages are gone.
+But the behaviour of removing the mixer of the usb_audio_headset occurs, which is, in my opinion, not the correct behaviour, because the chosen master channel/mixer should stay after suspend/resume.
+
+Could you please take a look at the issue again.
+
+Thanks, Bernhard
+
+
+On 2014-01-13 10:55, Takashi Iwai wrote:
+
+> At Sat, 11 Jan 2014 11:08:39 +0100,
+> The "reset_resume" kernel message was known to be harmless, and now
+> it's degraded as a debug message.  That's the only change, so there is
+> no functional change.
+>
+> That being said, you just need to ignore the kernel messages in the
+> old kernels.  Or, feel free to submit the commit [0a56b4fa6844: USB:
+> change dev_warn about missing reset-resume to dev_dbg] to stable
+> kernel.
+>
+>
+> Takashi
+>
+
+> <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org> wrote:
+>>
+>> FWD:
+>>
+>> Any news to the snd-usb-audio issue?
+>>
+>> Thanks, Bernhard
+>>
+>> Old Message:
+>> -------------
+>> I have tested the patch with kernel 3.12.0 with suspend and hibernate, and the problem is gone.
+>>
+>> No messages "no reset_resume for driver snd-usb-audio?" or other negative effects/messages.
+>>
+>> After resume, the usb_audio_device (Headset) is the master channel in KDE Mixer, as it should be.
+>>
+>> => So the problem is solved for me.
+>>
+>> Can you please add the patch to the latest kernels and LTS-kernels or whitelist the workaround for my device (ID 046d:0a29 Logitech, Inc. H600 [Wireless Headset])
+>
+
+>>
+>> Thanks, Bernhard
+>>
+>> On 2013-10-20 23:35, Takashi Iwai wrote:
+>>> At Sun, 20 Oct 2013 23:18:13 +0200,
+>>> <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org> wrote:
+>>>>
+>>>> On 2013-10-09 11:16 (CEST,UTC+2), Takashi Iwai wrote:
+>>>>>>>> diff --git a/sound/usb/card.c b/sound/usb/card.c
+>>>>>>>> index 9d9de8d..c591a83 100644
+>>>>>>>> --- a/sound/usb/card.c
+>>>>>>>> +++ b/sound/usb/card.c
+>>>>>>>> @@ -747,6 +747,7 @@ static struct usb_driver usb_audio_driver = {
+>>>>>>>>     	.disconnect =	usb_audio_disconnect,
+>>>>>>>>     	.suspend =	usb_audio_suspend,
+>>>>>>>>     	.resume =	usb_audio_resume,
+>>>>>>>> +	.reset_resume =	usb_audio_resume,
+>>>>>>>>     	.id_table =	usb_audio_ids,
+>>>>>>>>     	.supports_autosuspend = 1,
+>>>>>>>>     };
+>>>>
+>>>> Shall I add the line in b/sound/usb/card.c and try it? Which kernel version shall I use?
+>>>
+>>> It doesn't matter which kernel version is.
+>>> The error message should disappear, but I don't know whether any other
+>>> positive effect you get.  As Clemens pointed, there can be some
+>>> negative effects by this, so it cannot be taken as is.  But at least,
+>>> it'd be good to know the result...
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>
+>>
+>>
+>>
+>>
+>>
+>
+>
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
