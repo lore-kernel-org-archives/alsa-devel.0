@@ -1,24 +1,25 @@
-From: Ivan Sorokin <vanyacpp@gmail.com>
-Subject: Re: valgrind error in snd_tlv_get_dB_range
-Date: Sun, 19 Jan 2014 16:22:47 +0400
-Message-ID: <52DBC397.5020704@gmail.com>
-References: <52DBA5EB.3070104@gmail.com>
+From: Konstantinos Georgantas <k.georgantas@samsung.com>
+Subject: Audio usb switch to alternate setting 0
+Date: Sun, 19 Jan 2014 14:50:15 +0100
+Message-ID: <52DBD817.8050304@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f169.google.com (mail-lb0-f169.google.com
- [209.85.217.169])
- by alsa0.perex.cz (Postfix) with ESMTP id CE369261692
- for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2014 13:14:40 +0100 (CET)
-Received: by mail-lb0-f169.google.com with SMTP id q8so4269944lbi.0
- for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2014 04:14:40 -0800 (PST)
-Received: from [10.77.16.222] ([83.243.72.90])
- by mx.google.com with ESMTPSA id mv9sm11258687lbc.0.2014.01.19.04.14.39
- for <alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Sun, 19 Jan 2014 04:14:39 -0800 (PST)
-In-Reply-To: <52DBA5EB.3070104@gmail.com>
+Received: from mailout3.w1.samsung.com (mailout3.w1.samsung.com
+ [210.118.77.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63B20261692
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2014 14:50:19 +0100 (CET)
+Received: from eucpsbgm2.samsung.com (unknown [203.254.199.245])
+ by mailout3.w1.samsung.com
+ (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
+ 17 2011)) with ESMTP id <0MZN00CX9IFTTN50@mailout3.w1.samsung.com> for
+ alsa-devel@alsa-project.org; Sun, 19 Jan 2014 13:50:17 +0000 (GMT)
+Received: from [192.168.0.103] ([106.111.34.46])
+ by eusync1.samsung.com (Oracle Communications Messaging Server 7u4-23.01
+ (7.0.4.23.0) 64bit (built Aug 10 2011))
+ with ESMTPA id <0MZN00FHGIFS6K40@eusync1.samsung.com> for
+ alsa-devel@alsa-project.org; Sun, 19 Jan 2014 13:50:16 +0000 (GMT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,43 +32,25 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 19.01.2014 14:16, Ivan Sorokin wrote:
+Hello,
+I am trying to control from the client side which Alternate Setting to 
+use. Basically I would like to be able to switch from Alternate Setting 
+0 to 1 and vice versa so that I am not receiving any set interface 
+requests in the meantime. From the audio class 2.0 documentation I 
+understand that I should be able to do something like this by using the 
+active alternate setting control, and here comes my main problem.
 
-> I tried to trace problem in snd_hctl_elem_tlv_read, but I failed to do
-> so due to lack of experience with alsa-lib.
->
-> Could someone more experienced with alsa-lib look at the problem?
+When I generate an interrupt to the interrupt endpoint I should expect a 
+GET request which I never see in the host side (hope I am right here).
 
-After a bit more investigation I've found that tlv is initialized in 
-snd_ctl_hw_elem_tlv with memcpy in line 245. This initialization looks 
-perfectly correct. So perhaps this is a error in valgrind (unimplemented 
-ioctl).
+Here comes the interrupt:
+interrupt->bInfo          = 0x00;
+interrupt->bAttribute  = 0x01;
+interrupt->wValue       = 0x0100;
+interrupt->wIndex       = 0x0004;
 
-P.S. I believe I found a memory leak:
+Could you please tell me if such a functionality is supported and how 
+the interrupt should look like?
 
-> 	switch (op_flag) {
-> 	case -1: inum = SNDRV_CTL_IOCTL_TLV_COMMAND; break;
->  	case 0:	inum = SNDRV_CTL_IOCTL_TLV_READ; break;
-> 	case 1:	inum = SNDRV_CTL_IOCTL_TLV_WRITE; break;
-> 	default: return -EINVAL;
-> 	}
-> 	xtlv = malloc(sizeof(struct snd_ctl_tlv) + tlv_size);
-> 	if (xtlv == NULL)
-> 		return -ENOMEM;
-> 	xtlv->numid = numid;
-> 	xtlv->length = tlv_size;
-> 	memcpy(xtlv->tlv, tlv, tlv_size);
-> 	if (ioctl(hw->fd, inum, xtlv) < 0) {
-> 		free(xtlv);
-> 		return -errno;
-> 	}
-> 	if (op_flag == 0) {
-> 		if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size)
-
-missing free(xtlv) here
-
-> 			return -EFAULT;
-> 		memcpy(tlv, xtlv->tlv, xtlv->tlv[1] + 2 * sizeof(unsigned int));
-> 	}
-> 	free(xtlv);
-> 	return 0;
+Thank you,
+Konstantinos
