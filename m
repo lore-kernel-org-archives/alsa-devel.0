@@ -1,21 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH v3 14/16] ALSA: Oxygen: Remove code from
- the	xonar_dg.c file
-Date: Sat, 18 Jan 2014 12:08:34 +0100
-Message-ID: <52DA60B2.7070703@ladisch.de>
-References: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
- <1389971315-3215-14-git-send-email-v1ron@mail.ru>
+From: Arthur Marsh <arthur.marsh@internode.on.net>
+Subject: ALSA: hda - Fix possible races in HDMI driver - lockup
+ on shutdown when radeon.audio=1 after using audacity
+Date: Sun, 19 Jan 2014 17:32:16 +1030
+Message-ID: <52DB7878.8000004@internode.on.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 82A65261A12
- for <alsa-devel@alsa-project.org>; Sat, 18 Jan 2014 12:08:47 +0100 (CET)
-Received: from compute1.internal (compute1.nyi.mail.srv.osa [10.202.2.41])
- by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id AE2A120AB0
- for <alsa-devel@alsa-project.org>; Sat, 18 Jan 2014 06:08:45 -0500 (EST)
-In-Reply-To: <1389971315-3215-14-git-send-email-v1ron@mail.ru>
+Received: from ipmail04.adl6.internode.on.net (ipmail04.adl6.internode.on.net
+ [150.101.137.141])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BA1F2615FC
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2014 08:02:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,19 +20,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Roman Volkov <v1ron@mail.ru>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Anssi Hannula <anssi.hannula@iki.fi>, ALSA devel <alsa-devel@alsa-project.org>, xorg-driver-ati@lists.x.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Roman Volkov wrote:
-> The mixer code and other system structures will come
-> to the separate file.
+I have had reproducible lock-ups on shut-down (at the shutting down ALSA 
+stage) of my AMD64 machine (Asus M3A78Pro motherboard, BIOS 1701 
+01/27/2011, CPU AMD Athlon(tm) II X4 640 Processor) running the 64 bit 
+Linux kernel more recent than 3.12 when *both* radeon.audio=1 was set 
+and I had been running audacity 2.0.5. (iommu=noaperture is also set).
 
->  sound/pci/oxygen/xonar_dg.c |  393 -------------------------------------------
->  1 file changed, 393 deletions(-)
+The problem was reproducible with the stock Debian kernel 
+linux-image-3.13-rc6-amd64 version 3.13~rc6-1~exp1.
 
-This change breaks the driver; you need to merge patches 14..16.
+The machine is using an ATI/AMD 3850HD video card with a DVI cable to a 
+DVI input on my monitor, and the default audio device is the 
+motherboard's on-board audio device:
 
+00:14.2 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] SBx00 
+Azalia (Intel HDA)
 
-Regards,
-Clemens
+01:00.0 VGA compatible controller: Advanced Micro Devices, Inc. 
+[AMD/ATI] RV670 [Radeon HD 3690/3850]
+01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] RV670/680 
+HDMI Audio [Radeon HD 3690/3800 Series]
+
+$ git bisect bad
+cbbaa603a03cc46681e24d6b2804b62fde95a2af is the first bad commit
+commit cbbaa603a03cc46681e24d6b2804b62fde95a2af
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Thu Oct 17 18:03:24 2013 +0200
+
+     ALSA: hda - Fix possible races in HDMI driver
+
+     Some per_pin fields and ELD contents might be changed dynamically in
+     multiple ways where the concurrent accesses are still opened in the
+     current code.  This patch fixes such possible races by using eld->lock
+     in appropriate places.
+
+     Reported-by: Anssi Hannula <anssi.hannula@iki.fi>
+     Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
+:040000 040000 0c29281f82a3ebd9a704d481114f9cfcefea07c8 
+d71fd101125cd29a628cb5e66c7ee4f56e28329b M      sound
+
+When running audacity from the command line there was the following output:
+
+ALSA lib pcm_dsnoop.c:618:(snd_pcm_dsnoop_open) unable to open slave
+ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.rear
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.center_lfe
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.side
+ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
+Expression 'stream->playback.pcm' failed in 
+'src/hostapi/alsa/pa_linux_alsa.c', line: 4611
+Expression 'stream->playback.pcm' failed in 
+'src/hostapi/alsa/pa_linux_alsa.c', line: 4611
+Expression 'stream->playback.pcm' failed in 
+'src/hostapi/alsa/pa_linux_alsa.c', line: 4611
+
+I am happy to supply further information or run further tests to help in 
+isolating the problem and verifying a solution.
+
+Arthur.
