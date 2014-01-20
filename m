@@ -1,115 +1,52 @@
-From: Daniel Matuschek <daniel@matuschek.net>
-Subject: [PATCH] ASoC: wm8804: Allow control of master clock divider in
- PLLgeneration
-Date: Mon, 20 Jan 2014 21:06:52 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1401202104110.31622@parallels-Parallels-Virtual-Platform>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: omap: Make RX51 depend on GPIOLIB due to
+	jack usage
+Date: Mon, 20 Jan 2014 23:00:01 +0000
+Message-ID: <1390258801-26986-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Dimitris.Papastamos@wolfsonmicro.com, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98ACD2619D0
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 00:00:38 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+From: Mark Brown <broonie@linaro.org>
 
-WM8804 can run with PLL frequencies of 256xfs and 128xfs for
-most sample rates. At 192kHz only 128xfs is supported. The
-existing driver selects 128xfs automatically for some lower
-samples rates. By using an additional mclk_div divider, it
-is now possible to control the behaviour. This allows using
-256xfs PLL frequency on all sample rates up to 96kHz. It
-should allow lower jitter and better signal quality. The
-behavior has to be controlled by the sound card driver,
-because some sample frequency share the same setting. e.g.
-192kHz and 96kHz use 24.576MHz master clock. The only
-difference is the MCLK divider.
+Since the GPIO jacks are only supported if gpiolib is built and fail to
+compile otherwise add a build depedency.  This is unlikely to have any
+practical impact outside of coverage testing.
 
-Signed-off-by: Daniel Matuschek <daniel@matuschek.net>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Tested-by: Florian Meier <florian.meier@koalo.de>
-
+Reported-by: Russell King <linux@arm.linux.org.uk>
+Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
-  sound/soc/codecs/wm8804.c | 17 ++++++++++++++---
-  sound/soc/codecs/wm8804.h |  4 ++++
-  2 files changed, 18 insertions(+), 3 deletions(-)
+ sound/soc/omap/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
-index 9bc8206..4163786 100644
---- a/sound/soc/codecs/wm8804.c
-+++ b/sound/soc/codecs/wm8804.c
-@@ -63,6 +63,7 @@ struct wm8804_priv {
-  	struct regmap *regmap;
-  	struct regulator_bulk_data supplies[WM8804_NUM_SUPPLIES];
-  	struct notifier_block disable_nb[WM8804_NUM_SUPPLIES];
-+	int mclk_div;
-  };
-
-  static int txsrc_get(struct snd_kcontrol *kcontrol,
-@@ -318,7 +319,7 @@ static struct {
-
-  #define FIXED_PLL_SIZE ((1ULL << 22) * 10)
-  static int pll_factors(struct pll_div *pll_div, unsigned int target,
--		       unsigned int source)
-+		       unsigned int source, unsigned int mclk_div)
-  {
-  	u64 Kpart;
-  	unsigned long int K, Ndiv, Nmod, tmp;
-@@ -330,7 +331,8 @@ static int pll_factors(struct pll_div *pll_div, unsigned int target,
-  	 */
-  	for (i = 0; i < ARRAY_SIZE(post_table); i++) {
-  		tmp = target * post_table[i].div;
--		if (tmp >= 90000000 && tmp <= 100000000) {
-+		if ((tmp >= 90000000 && tmp <= 100000000) &&
-+		    (mclk_div == post_table[i].mclkdiv)) {
-  			pll_div->freqmode = post_table[i].freqmode;
-  			pll_div->mclkdiv = post_table[i].mclkdiv;
-  			target *= post_table[i].div;
-@@ -387,8 +389,12 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
-  	} else {
-  		int ret;
-  		struct pll_div pll_div;
-+		struct wm8804_priv *wm8804;
-
--		ret = pll_factors(&pll_div, freq_out, freq_in);
-+		wm8804 = snd_soc_codec_get_drvdata(codec);
-+
-+		ret = pll_factors(&pll_div, freq_out, freq_in,
-+			wm8804->mclk_div);
-  		if (ret)
-  			return ret;
-
-@@ -452,6 +458,7 @@ static int wm8804_set_clkdiv(struct snd_soc_dai *dai,
-  			     int div_id, int div)
-  {
-  	struct snd_soc_codec *codec;
-+	struct wm8804_priv *wm8804;
-
-  	codec = dai->codec;
-  	switch (div_id) {
-@@ -459,6 +466,10 @@ static int wm8804_set_clkdiv(struct snd_soc_dai *dai,
-  		snd_soc_update_bits(codec, WM8804_PLL5, 0x30,
-  				    (div & 0x3) << 4);
-  		break;
-+	case WM8804_MCLK_DIV:
-+		wm8804 = snd_soc_codec_get_drvdata(codec);
-+		wm8804->mclk_div = div;
-+		break;
-  	default:
-  		dev_err(dai->dev, "Unknown clock divider: %d\n", div_id);
-  		return -EINVAL;
-diff --git a/sound/soc/codecs/wm8804.h b/sound/soc/codecs/wm8804.h
-index 8ec14f5..e72d4f4 100644
---- a/sound/soc/codecs/wm8804.h
-+++ b/sound/soc/codecs/wm8804.h
-@@ -57,5 +57,9 @@
-  #define WM8804_CLKOUT_SRC_OSCCLK		4
-
-  #define WM8804_CLKOUT_DIV			1
-+#define WM8804_MCLK_DIV				2
-+
-+#define WM8804_MCLKDIV_256FS			0
-+#define WM8804_MCLKDIV_128FS			1
-
-  #endif  /* _WM8804_H */
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 4a07f7179690..22ad9c5654b5 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -30,6 +30,7 @@ config SND_OMAP_SOC_RX51
+ 	select SND_OMAP_SOC_MCBSP
+ 	select SND_SOC_TLV320AIC3X
+ 	select SND_SOC_TPA6130A2
++	depends on GPIOLIB
+ 	help
+ 	  Say Y if you want to add support for SoC audio on Nokia RX-51
+ 	  hardware. This is also known as Nokia N900 product.
 -- 
-1.8.3.2
+1.8.5.2
