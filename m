@@ -1,19 +1,14 @@
-From: Roman Volkov <v1ron@mail.ru>
-Subject: Re: [PATCH v3 09/16] ALSA: Oxygen: Modify
- initialization functions
-Date: Mon, 20 Jan 2014 18:14:03 +0400
-Message-ID: <20140120181403.41028cd4@v1ron-desktop>
-References: <1389971315-3215-1-git-send-email-v1ron@mail.ru>
- <1389971315-3215-9-git-send-email-v1ron@mail.ru>
- <52DA5C8C.9050400@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: ASoC updates for v3.14
+Date: Mon, 20 Jan 2014 14:46:38 +0000
+Message-ID: <20140120144638.GO17314@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============7020969945531650726=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp53.i.mail.ru (smtp53.i.mail.ru [94.100.177.113])
- by alsa0.perex.cz (Postfix) with ESMTP id C8DFC2608D6
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2014 15:14:09 +0100 (CET)
-In-Reply-To: <52DA5C8C.9050400@ladisch.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 088082608D6
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2014 15:46:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +18,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-0JIgU2F0LCAxOCBKYW4gMjAxNCAxMTo1MDo1MiArMDEwMApDbGVtZW5zIExhZGlzY2ggPGNsZW1l
-bnNAbGFkaXNjaC5kZT4g0L/QuNGI0LXRgjoKCj4gUm9tYW4gVm9sa292IHdyb3RlOgo+ID4gQ2hh
-bmdlcyBpbiBHUElPIHZhbHVlcyBhbmQgc2VxdWVuY2UgYXQgc3RhcnR1cCwgQ1M0MjQ1Cj4gPiBp
-bml0aWFsaXphdGlvbiBjaGFuZ2VkIGFuZCBzaW1wbGlmaWVkLCBhY2NvcmRpbmcgdG8KPiA+IGRh
-dGFzaGVldHMgYW5kIHJldmVyc2UtZW5naW5lZXJpbmcgaW5mb3JtYXRpb24uCj4gPgo+ID4gIHN0
-YXRpYyB2b2lkIGNzNDI0NV9pbml0KHN0cnVjdCBveHlnZW4gKmNoaXApCj4gPiAgewo+ID4gIAlz
-dHJ1Y3QgZGcgKmRhdGEgPSBjaGlwLT5tb2RlbF9kYXRhOwo+ID4KPiA+IC0JZGF0YS0+Y3M0MjQ1
-X3JlZ3NbQ1M0MjQ1X0RBQ19DVFJMXzFdID0KPiA+IC0JCUNTNDI0NV9EQUNfRk1fU0lOR0xFIHwg
-Q1M0MjQ1X0RBQ19ESUZfTEpVU1Q7Cj4gPiAtCWRhdGEtPmNzNDI0NV9yZWdzW0NTNDI0NV9BRENf
-Q1RSTF0gPQo+ID4gLQkJQ1M0MjQ1X0FEQ19GTV9TSU5HTEUgfCBDUzQyNDVfQURDX0RJRl9MSlVT
-VDsKPiA+IC0JZGF0YS0+Y3M0MjQ1X3JlZ3NbQ1M0MjQ1X1NJR05BTF9TRUxdID0KPiA+IC0JCUNT
-NDI0NV9BX09VVF9TRUxfSElaIHwgQ1M0MjQ1X0FTWU5DSDsKPiA+IC0JZGF0YS0+Y3M0MjQ1X3Jl
-Z3NbQ1M0MjQ1X1BHQV9CX0NUUkxdID0gMDsKPiA+IC0JZGF0YS0+Y3M0MjQ1X3JlZ3NbQ1M0MjQ1
-X1BHQV9BX0NUUkxdID0gMDsKPiA+IC0JZGF0YS0+Y3M0MjQ1X3JlZ3NbQ1M0MjQ1X0FOQUxPR19J
-Tl0gPQo+ID4gLQkJQ1M0MjQ1X1BHQV9TT0ZUIHwgQ1M0MjQ1X1BHQV9aRVJPIHwKPiA+IENTNDI0
-NV9TRUxfSU5QVVRfNDsKPiA+IC0JZGF0YS0+Y3M0MjQ1X3JlZ3NbQ1M0MjQ1X0RBQ19BX0NUUkxd
-ID0gMDsKPiA+IC0JZGF0YS0+Y3M0MjQ1X3JlZ3NbQ1M0MjQ1X0RBQ19CX0NUUkxdID0gMDsKPiA+
-IC0JY3M0MjQ1X3JlZ2lzdGVyc19pbml0KGNoaXApOwo+ID4gKwkvKiBTYXZlIHRoZSBpbml0aWFs
-IHN0YXRlOiBjb2RlYyB2ZXJzaW9uLCByZWdpc3RlcnMgKi8KPiA+ICsJY3M0MjQ1X3NoYWRvd19j
-b250cm9sKGNoaXAsIENTNDI0NV9TQVZFX1RPX1NIQURPVyk7Cj4gPiArCj4gPiArCWRhdGEtPmNz
-NDI0NV9zaGFkb3dbQ1M0MjQ1X1BPV0VSX0NUUkxdID0gMDsKPiA+ICsJZGF0YS0+Y3M0MjQ1X3No
-YWRvd1tDUzQyNDVfU0lHTkFMX1NFTF0gPQo+ID4gQ1M0MjQ1X0FfT1VUX1NFTF9EQUMgfAo+ID4g
-KwkJQ1M0MjQ1X0FTWU5DSDsKPiA+ICsJZGF0YS0+Y3M0MjQ1X3NoYWRvd1tDUzQyNDVfREFDX0NU
-UkxfMV0gPSAwOwo+ID4gKwlkYXRhLT5jczQyNDVfc2hhZG93W0NTNDI0NV9EQUNfQ1RSTF8yXSA9
-IENTNDI0NV9EQUNfU09GVCB8Cj4gPiArCQlDUzQyNDVfREFDX1pFUk8gfCBDUzQyNDVfSU5WRVJU
-X0RBQzsKPiA+ICsJZGF0YS0+Y3M0MjQ1X3NoYWRvd1tDUzQyNDVfQURDX0NUUkxdID0gMDsKPiA+
-ICsJZGF0YS0+Y3M0MjQ1X3NoYWRvd1tDUzQyNDVfQU5BTE9HX0lOXSA9IENTNDI0NV9QR0FfU09G
-VCB8Cj4gPiArCQlDUzQyNDVfUEdBX1pFUk87Cj4gCj4gUGxlYXNlIGRvbid0IHJlbW92ZSBzeW1i
-b2xzIGxpa2UgIkNTNDI0NV9EQUNfRk1fU0lOR0xFIHwKPiBDUzQyNDVfREFDX0RJRl9MSlVTVCI7
-IHRoaXMgd291bGQgaW1wbHkgdGhhdCB5b3UgZG9uJ3QgY2FyZSBhYm91dAo+IHRoZXNlIHNldHRp
-bmdzLgoKT2theSwgd2lsbCByZW1haW4gdGhlc2Ugc2V0dGluZ3MuIEl0IGlzIGJldHRlciB0byBj
-b25maWd1cmUgdGhlbQptYW51YWxseS4KCj4gV2h5IGRvbid0IHlvdSBpbml0aWFsaXplIHJlZ2lz
-dGVycyBsaWtlIFBHQS9EQUNfQS9CPwoKSWYgeW91IG1lYW50IHZvbHVtZSBjb250cm9sLCB0aGUg
-bWl4ZXIgcGVyZm9ybXMgaW5pdGlhbGl6YXRpb24gb2YgdGhlc2UKc2V0dGluZ3MuIFByb2JhYmx5
-IHRoZXkgY2FuIGJlIGluaXRhbGl6ZWQgdG8gMzAlIHZvbHVtZSwgMTAwJSBieQpkZWZhdWx0LgoK
-PiA+IC0Jb3h5Z2VuX2NsZWFyX2JpdHMxNihjaGlwLCBPWFlHRU5fR1BJT19EQVRBLAo+ID4gLQkJ
-CSAgICBHUElPX0lOUFVUX1JPVVRFIHwgR1BJT19IUF9SRUFSKTsKPiA+ICsJb3h5Z2VuX3dyaXRl
-MTYoY2hpcCwgT1hZR0VOX0dQSU9fREFUQSwgR1BJT19IUF9SRUFSIHwKPiA+IEdQSU9fSU5QVVRf
-Uk9VVEUpOwo+IAo+IFdoeSBhcmUgdGhlc2UgYml0cyBub3cgaW5pdGlhbGl6ZWQgdG8gdGhlIG9w
-cG9zaXRlIHZhbHVlPwo+IAoKQXMgSSBjYW4gcmVjYWxsLCBpZiBHUElPcyA1LDYgYXJlIGNsZWFy
-ZWQsIHRoZSBhdWRpbyBpbnB1dCB3aWxsIGJlCmluYWN0aXZlIGFuZCB3ZSBjYW4ndCByZWNvcmQg
-YW55dGhpbmcuIEhQX1JFQVIgc3dpdGNoZXMgQ1M0MjQ1IHRvIHRoZQpyZWFyIGphY2suIEkgdHJp
-ZWQgYW55IHNlcXVlbmNlcyB0byBtaW5pbWl6ZSBjbGlja3NccG9wcy4gV2lsbCB0cnkgdG8KZG9u
-J3QgdG91Y2ggdGhlIEdQSU9fSFBfUkVBUiwgcGVyaGFwcyB0aGlzIHJlZHVjZSB0aGUgbnVtYmVy
-IG9mIHJlbGF5CnN3aXRjaGVzIGF0IHN0YXJ0dXAuCgo+IAo+IFJlZ2FyZHMsCj4gQ2xlbWVucwo+
-IAoKCgotLSAKS2luZCByZWdhcmRzLApSb21hbiBWb2xrb3YsCnYxcm9uQG1haWwucnUKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============7020969945531650726==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="e4annfiqlsPm5rKd"
+Content-Disposition: inline
+
+
+--e4annfiqlsPm5rKd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 258753361534a40ad7180c742da813fc659e427b:
+
+  Merge branch 'for-next' into for-linus (2014-01-20 10:20:14 +0100)
+
+are available in the git repository at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.14-3
+
+for you to fetch changes up to ac6d7c48e3a5e82e876114b9ca0b489e96997743:
+
+  Merge remote-tracking branch 'asoc/topic/compress' into asoc-next (2014-01-20 11:50:41 +0000)
+
+----------------------------------------------------------------
+
+ASoC: Last updates for the merge window
+
+A couple more fixes plus some extensions to DPCM for use with compressed
+audio from Liam which arrived just after my previous pull request.
+
+----------------------------------------------------------------
+Arun Shamanna Lakshmi (1):
+      ASoC: dapm: Fix double prefix addition
+
+Liam Girdwood (2):
+      ASoC: DPCM: make some DPCM API calls non static for compressed usage
+      ASoC: compress: Add suport for DPCM into compressed audio
+
+Mark Brown (3):
+      Merge remote-tracking branch 'asoc/topic/dapm' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/dma' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/compress' into asoc-next
+
+Xiubo Li (1):
+      ASoC: core: Fix possible NULL pointer dereference of pcm->config
+
+ include/sound/soc-dpcm.h              |  22 +++
+ include/sound/soc.h                   |   1 +
+ sound/soc/soc-compress.c              | 301 +++++++++++++++++++++++++++++++++-
+ sound/soc/soc-dapm.c                  |  11 +-
+ sound/soc/soc-generic-dmaengine-pcm.c |   9 +-
+ sound/soc/soc-pcm.c                   |  29 ++--
+ 6 files changed, 347 insertions(+), 26 deletions(-)
+
+--e4annfiqlsPm5rKd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS3TbLAAoJELSic+t+oim9+2cP/RXPeGiT2eTRlPFC5ctxBWD6
+LxFilNClHMEue5jwsvL27Toy7sCs9ovQBmhyICZYNH9Nk0fpcxGyLJyhk3LnvPIZ
+3uQEetzIhjxQ7EE9mAwxnVrQLI7Tq140bbdVFW6romKNb6xumTWYVP+M0d52u5AD
+7Wu7U/kZo1WmFGx/xHCKcUQgGMenBT6ea9HyWiXB8Fb3vQHWn90hrfzYM//MuzkG
+GyffqXEBEQfYiasHINS2UnEeGZYx/qjH6eyVBfJXDzqTBVf4jBD61rgjW0lnJYDi
+ar2Jl1xLVftvZPjWlP977ZoyZzyEe8ZvsbyL33u65ErVXWoJvpd/9rM91qzdKlT/
+2mo017p30g/aXXlpThEFo85qHpg2cqWSPIa5PrO6+D8K3x4CVAggTnLU4fsuY6pn
+NRRV3Uq3j6HS4NIlt8KFx7F7jIBFAjQf+bL3m3oGGCQy7E8sM9Z2R4Onfc6l1NEY
+zAWpO09TqbUQqQnSv3kINzTf973zrhdMu7N4oFZNiHxTwC6YWuwq352T1174XzP1
+X/YABDf3qYSnGK79mz3SBTCReGTPxK15ZjaVRn9wpcpp29Mkh766iy/byS85se5Y
+faYWKXjnD3abMsZW/NIAnGXk+UaAxX+3FNWV6XqgXWAKCTEXH4+qTSQIh14B49ts
+MORmu9BJiEWpk4FT0ltb
+=xf1Y
+-----END PGP SIGNATURE-----
+
+--e4annfiqlsPm5rKd--
+
+--===============7020969945531650726==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7020969945531650726==--
