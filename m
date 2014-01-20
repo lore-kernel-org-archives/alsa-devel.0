@@ -1,118 +1,89 @@
-From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v2 3/4] ASoC: tlv320aic32x4: Support for master clock
-Date: Mon, 20 Jan 2014 13:05:57 +0100
-Message-ID: <1390219558-25341-4-git-send-email-mpa@pengutronix.de>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH v2 1/4] ASoC: tlv320aic32x4: Use signed int
+	mixer controls
+Date: Mon, 20 Jan 2014 13:05:55 +0100
+Message-ID: <1390219558-25341-2-git-send-email-mpa@pengutronix.de>
 References: <1390219558-25341-1-git-send-email-mpa@pengutronix.de>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1390219558-25341-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id CB2062615FC
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2014 13:06:08 +0100 (CET)
+In-Reply-To: <1390219558-25341-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Add support for a master clock passed through DT. The master clock of
-the codec is only active when the codec is in use.
+There are a number of mixer controls that support negative values. They
+use signed values for this with different number of bits for the values.
+Currently they only support the positive range.
 
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
-Cc: Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+This patch replaces the unsigned mixers with signed mixers to support
+the full range.
+
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- .../devicetree/bindings/sound/tlv320aic32x4.txt    |  4 ++++
- sound/soc/codecs/tlv320aic32x4.c                   | 23 ++++++++++++++++++++++
- 2 files changed, 27 insertions(+)
+ sound/soc/codecs/tlv320aic32x4.c | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-index cff06ea..e90e6f0 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-@@ -8,6 +8,8 @@ Required properties:
- 
- Optional properties:
-  - gpio-reset: Reset-GPIO phandle with args as described in gpio/gpio.txt
-+ - clocks/clock-names: Clock named 'mclk' for the master clock of the codec.
-+   See clock/clock-bindings.txt for information about the detailed format.
- 
- 
- Example:
-@@ -15,4 +17,6 @@ Example:
- codec: tlv320aic32x4@18 {
- 	compatible = "ti,tlv320aic32x4";
- 	reg = <0x18>;
-+	clocks = <&clks 201>;
-+	clock-names = "mclk";
- };
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 6c38cb7..d7fa8dc 100644
+index 36a9cb9..1c9f1d8 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -33,6 +33,7 @@
- #include <linux/i2c.h>
- #include <linux/cdev.h>
- #include <linux/slab.h>
-+#include <linux/clk.h>
- 
- #include <sound/tlv320aic32x4.h>
- #include <sound/core.h>
-@@ -67,6 +68,7 @@ struct aic32x4_priv {
- 	u32 micpga_routing;
- 	bool swapdacs;
+@@ -68,18 +68,24 @@ struct aic32x4_priv {
  	int rstn_gpio;
-+	struct clk *mclk;
  };
  
+-/* 0dB min, 1dB steps */
+-static DECLARE_TLV_DB_SCALE(tlv_step_1, 0, 100, 0);
  /* 0dB min, 0.5dB steps */
-@@ -487,8 +489,21 @@ static int aic32x4_mute(struct snd_soc_dai *dai, int mute)
- static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
- 				  enum snd_soc_bias_level level)
- {
-+	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
-+
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
-+		/* Switch on master clock */
-+		if (!IS_ERR(aic32x4->mclk)) {
-+			int ret;
-+
-+			ret = clk_prepare_enable(aic32x4->mclk);
-+			if (ret) {
-+				dev_err(codec->dev, "Failed to enable master clock\n");
-+				return ret;
-+			}
-+		}
-+
- 		/* Switch on PLL */
- 		snd_soc_update_bits(codec, AIC32X4_PLLPR,
- 				    AIC32X4_PLLEN, AIC32X4_PLLEN);
-@@ -516,6 +531,10 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
-+		/* Switch off master clock */
-+		if (!IS_ERR(aic32x4->mclk))
-+			clk_disable_unprepare(aic32x4->mclk);
-+
- 		/* Switch off PLL */
- 		snd_soc_update_bits(codec, AIC32X4_PLLPR,
- 				    AIC32X4_PLLEN, 0);
-@@ -717,6 +736,10 @@ static int aic32x4_i2c_probe(struct i2c_client *i2c,
- 		aic32x4->rstn_gpio = -1;
- 	}
+ static DECLARE_TLV_DB_SCALE(tlv_step_0_5, 0, 50, 0);
++/* -63.5dB min, 0.5dB steps */
++static DECLARE_TLV_DB_SCALE(tlv_pcm, -6350, 50, 0);
++/* -6dB min, 1dB steps */
++static DECLARE_TLV_DB_SCALE(tlv_driver_gain, -600, 100, 0);
++/* -12dB min, 0.5dB steps */
++static DECLARE_TLV_DB_SCALE(tlv_adc_vol, -1200, 50, 0);
  
-+	aic32x4->mclk = devm_clk_get(&i2c->dev, "mclk");
-+	if (IS_ERR(aic32x4->mclk))
-+		dev_info(&i2c->dev, "No mclk found, continuing without clock\n");
-+
- 	if (gpio_is_valid(aic32x4->rstn_gpio)) {
- 		ret = devm_gpio_request_one(&i2c->dev, aic32x4->rstn_gpio,
- 				GPIOF_OUT_INIT_LOW, "tlv320aic32x4 rstn");
+ static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
+-	SOC_DOUBLE_R_TLV("PCM Playback Volume", AIC32X4_LDACVOL,
+-			AIC32X4_RDACVOL, 0, 0x30, 0, tlv_step_0_5),
+-	SOC_DOUBLE_R_TLV("HP Driver Gain Volume", AIC32X4_HPLGAIN,
+-			AIC32X4_HPRGAIN, 0, 0x1D, 0, tlv_step_1),
+-	SOC_DOUBLE_R_TLV("LO Driver Gain Volume", AIC32X4_LOLGAIN,
+-			AIC32X4_LORGAIN, 0, 0x1D, 0, tlv_step_1),
++	SOC_DOUBLE_R_S_TLV("PCM Playback Volume", AIC32X4_LDACVOL,
++			AIC32X4_RDACVOL, 0, (s8)0x81, 0x30, 7, 0, tlv_pcm),
++	SOC_DOUBLE_R_S_TLV("HP Driver Gain Volume", AIC32X4_HPLGAIN,
++			AIC32X4_HPRGAIN, 0, (s8)0xfa, 0x1d, 5, 0,
++			tlv_driver_gain),
++	SOC_DOUBLE_R_S_TLV("LO Driver Gain Volume", AIC32X4_LOLGAIN,
++			AIC32X4_LORGAIN, 0, (s8)0xfa, 0x1d, 5, 0,
++			tlv_driver_gain),
+ 	SOC_DOUBLE_R("HP DAC Playback Switch", AIC32X4_HPLGAIN,
+ 			AIC32X4_HPRGAIN, 6, 0x01, 1),
+ 	SOC_DOUBLE_R("LO DAC Playback Switch", AIC32X4_LOLGAIN,
+@@ -90,8 +96,8 @@ static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
+ 	SOC_SINGLE("ADCFGA Left Mute Switch", AIC32X4_ADCFGA, 7, 1, 0),
+ 	SOC_SINGLE("ADCFGA Right Mute Switch", AIC32X4_ADCFGA, 3, 1, 0),
+ 
+-	SOC_DOUBLE_R_TLV("ADC Level Volume", AIC32X4_LADCVOL,
+-			AIC32X4_RADCVOL, 0, 0x28, 0, tlv_step_0_5),
++	SOC_DOUBLE_R_S_TLV("ADC Level Volume", AIC32X4_LADCVOL,
++			AIC32X4_RADCVOL, 0, (s8)0xe8, 0x28, 6, 0, tlv_adc_vol),
+ 	SOC_DOUBLE_R_TLV("PGA Level Volume", AIC32X4_LMICPGAVOL,
+ 			AIC32X4_RMICPGAVOL, 0, 0x5f, 0, tlv_step_0_5),
+ 
 -- 
 1.8.5.2
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
