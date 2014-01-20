@@ -1,19 +1,20 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH v2 2/4] ASoC: tlv320aic32x4: DT support
-Date: Mon, 20 Jan 2014 13:58:41 +0100
-Message-ID: <20140120125841.GA6114@pengutronix.de>
-References: <1390219558-25341-1-git-send-email-mpa@pengutronix.de>
- <1390219558-25341-3-git-send-email-mpa@pengutronix.de>
- <1390222497.5871.2.camel@pizza.hi.pengutronix.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: External sound card issue
+Date: Mon, 20 Jan 2014 21:01:23 +0800
+Message-ID: <CAN8cciYR_9Le-tX-CLBjfnYQ1+CuexKzxpxberVkkV6jR_c50A@mail.gmail.com>
+References: <CAEiHY5j=K874m_Jk7ws4eOqts855oSHqY0HUrp_A5WwxFoDr=Q@mail.gmail.com>
+ <52DD1A66.9050909@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B4E4F261A10
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2014 13:58:43 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1390222497.5871.2.camel@pizza.hi.pengutronix.de>
+Received: from mail-ie0-f178.google.com (mail-ie0-f178.google.com
+ [209.85.223.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id E52422615FC
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2014 14:01:24 +0100 (CET)
+Received: by mail-ie0-f178.google.com with SMTP id x13so8031259ief.23
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2014 05:01:24 -0800 (PST)
+In-Reply-To: <52DD1A66.9050909@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +24,139 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de, Kumar Gala <galak@codeaurora.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Ionica Bizau <bizauionica@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 20, 2014 at 01:54:57PM +0100, Philipp Zabel wrote:
-> Am Montag, den 20.01.2014, 13:05 +0100 schrieb Markus Pargmann:
-> > Add DT support for this codec. The bindings differ a bit from the aic3x
-> > codec bindings, so I created a new binding documentation.
-> > 
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Pawel Moll <pawel.moll@arm.com>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Ian Campbell <ijc+devicetree@hellion.org.uk>
-> > Cc: Kumar Gala <galak@codeaurora.org>
-> > Cc: devicetree@vger.kernel.org
-> > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> > ---
-> >  .../devicetree/bindings/sound/tlv320aic32x4.txt    | 18 ++++++++++++++++
-> >  sound/soc/codecs/tlv320aic32x4.c                   | 25 ++++++++++++++++++++++
-> >  2 files changed, 43 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-> > new file mode 100644
-> > index 0000000..cff06ea
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-> > @@ -0,0 +1,18 @@
-> > +Texas Instruments - tlv320aic32x4 Codec module
-> > +
-> > +The tlv320aic32x4 serial control bus communicates through I2C protocols
-> > +
-> > +Required properties:
-> > + - compatible: Should be "ti,tlv320aic32x4"
-> > + - reg: I2C slave address
-> > +
-> > +Optional properties:
-> > + - gpio-reset: Reset-GPIO phandle with args as described in gpio/gpio.txt
-> 
-> This should be "reset-gpios".
+2014/1/20 Clemens Ladisch <clemens@ladisch.de>
 
-Thanks, I will fix it for v3.
+> Ionica Bizau wrote:
+> > I have just bought an external sound card: Asus Xonar U7
+> >
+> >     cannot load mixer controls: Broken pipe
+>
+> This looks like a bug in the device's firmware.
+>
+> Can you at least read the list of controls ("amixer -c1 controls")?
+> Are there some controls that you are able to access (try
+> "amixer -c1 cget name='xxx'" for each one)?
+>
+>
+alsactl store -f abc.txt
+alsactl: get_control:256: Cannot read control '2,0,0,PCM Capture Source,0':
+Broken
 
-Regards,
+[ 398.119996] cannot get ctl value: req = 0x81, wValue = 0x0, wIndex =
+0x1400, type = 3
 
-Markus
+seem fail to read the capture source control
 
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+state.Device {
+ control.1 {
+  iface PCM
+  name 'Playback Channel Map'
+  value.0 0
+  value.1 0
+  comment {
+   access read
+   type INTEGER
+   count 2
+   range '0 - 36'
+  }
+ }
+ control.2 {
+  iface PCM
+  device 1
+  name 'Playback Channel Map'
+  value.0 0
+  value.1 0
+  comment {
+   access read
+   type INTEGER
+   count 2
+   range '0 - 36'
+  }
+ }
+ control.3 {
+  iface MIXER
+  name 'PCM Playback Switch'
+  value true
+  comment {
+   access 'read write'
+   type BOOLEAN
+   count 1
+  }
+ }
+ control.4 {
+  iface MIXER
+  name 'PCM Playback Switch'
+  index 1
+  value true
+  comment {
+   access 'read write'
+   type BOOLEAN
+   count 1
+  }
+ }
+ control.5 {
+  iface MIXER
+  name 'PCM Playback Volume'
+  value.0 107
+  value.1 107
+  value.2 107
+  value.3 107
+  value.4 107
+  value.5 107
+  value.6 107
+  value.7 107
+  comment {
+   access 'read write'
+   type INTEGER
+   count 8
+   range '0 - 127'
+   dbmin -12700
+   dbmax 0
+   dbvalue.0 -2000
+   dbvalue.1 -2000
+   dbvalue.2 -2000
+   dbvalue.3 -2000
+   dbvalue.4 -2000
+   dbvalue.5 -2000
+   dbvalue.6 -2000
+   dbvalue.7 -2000
+  }
+ }
+ control.6 {
+  iface MIXER
+  name 'Mic Capture Switch'
+  value true
+  comment {
+   access 'read write'
+   type BOOLEAN
+   count 1
+  }
+ }
+ control.7 {
+  iface MIXER
+  name 'Line Capture Switch'
+  value true
+  comment {
+   access 'read write'
+   type BOOLEAN
+   count 1
+  }
+ }
+ control.8 {
+  iface MIXER
+  name 'PCM Capture Source'
+  value Mic
+  comment {
+   access 'read write'
+   type ENUMERATED
+   count 1
+   item.0 Mic
+   item.1 Line
+  }
+ }
+}
