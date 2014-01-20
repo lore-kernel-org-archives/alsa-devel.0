@@ -1,67 +1,47 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 1/2] ASoC: fsl_ssi: We do support master mode
-	now
-Date: Mon, 20 Jan 2014 17:35:40 -0200
-Message-ID: <1390246540-23082-2-git-send-email-festevam@gmail.com>
-References: <1390246540-23082-1-git-send-email-festevam@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gg0-f180.google.com (mail-gg0-f180.google.com
- [209.85.161.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 52FFB2619D0
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2014 20:35:58 +0100 (CET)
-Received: by mail-gg0-f180.google.com with SMTP id q3so2283586gge.11
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2014 11:35:56 -0800 (PST)
-In-Reply-To: <1390246540-23082-1-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, b42378@freescale.com
+From: Daniel Matuschek <daniel@matuschek.net>
+Subject: Re: [alsa-devel] [PATCH] ASoC: wm8804: Allow control of master clock divider in PLL generation
+Date: Mon, 20 Jan 2014 21:03:33 +0100
+Message-ID: <A9E51959-7197-442F-9E43-A1D3FD434C46@matuschek.net>
+References: <alpine.DEB.2.02.1401142030110.23472@parallels-Parallels-Virtual-Platform> <20140117122204.GR17314@sirena.org.uk>
+Mime-Version: 1.0 (Mac OS X Mail 7.1 \(1827\))
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140117122204.GR17314@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Dimitris.Papastamos@wolfsonmicro.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+I'm sorry for this. Looks like I still had problems with some whitespaces. I will resend the patch and hope, it will work now.
 
-Since commit aafa85e71a (ASoC: fsl_ssi: Add DAI master mode support for SSI on
-i.MX series) master mode is supported, so update the comments and code to
-reflect that.
+Daniel
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/fsl/fsl_ssi.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+Am 17.01.2014 um 13:22 schrieb Mark Brown <broonie@kernel.org>:
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 3155611..e24c7fe 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1278,18 +1278,13 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	hw_type = (enum fsl_ssi_type) of_id->data;
- 
--	/* We only support the SSI in "I2S Slave" mode */
- 	sprop = of_get_property(np, "fsl,mode", NULL);
- 	if (!sprop) {
- 		dev_err(&pdev->dev, "fsl,mode property is necessary\n");
- 		return -EINVAL;
- 	}
--	if (!strcmp(sprop, "ac97-slave")) {
-+	if (!strcmp(sprop, "ac97-slave"))
- 		ac97 = true;
--	} else if (strcmp(sprop, "i2s-slave")) {
--		dev_notice(&pdev->dev, "mode %s is unsupported\n", sprop);
--		return -ENODEV;
--	}
- 
- 	/* The DAI name is the last part of the full name of the node. */
- 	p = strrchr(np->full_name, '/') + 1;
--- 
-1.8.1.2
+> On Tue, Jan 14, 2014 at 08:34:10PM +0100, Daniel Matuschek wrote:
+> 
+>> WM8804 can run with PLL frequencies of 256xfs and 128xfs for
+>> most sample rates. At 192kHz only 128xfs is supported. The
+>> existing driver selects 128xfs automatically for some lower
+> 
+> This patch doesn't apply against current code.  Please check and resend,
+> from MAINTAINERS:
+> 
+> SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEMENT (ASoC)
+> M:      Liam Girdwood <lgirdwood@gmail.com>
+> M:      Mark Brown <broonie@kernel.org>
+> T:      git git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+> L:      alsa-devel@alsa-project.org (moderated for non-subscribers)
+> W:      http://alsa-project.org/main/index.php/ASoC
+> S:      Supported
+> F:      Documentation/sound/alsa/soc/
+> F:      sound/soc/
+> F:      include/sound/soc*
+> 
+> specifically the for-next branch (or ideally topic/wm8804 for wm8804
+> when it exists).
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
