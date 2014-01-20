@@ -1,18 +1,16 @@
-From: Axel Braun <axel.braun@gmx.de>
-Subject: Re: Thinkpad T520 (Low Volume)
-Date: Sat, 18 Jan 2014 17:44:10 +0100
-Message-ID: <3997344.dLRXQbcGtH@t520.axxite.internal>
-References: <CAN8ccib14G8pyLuMTi2BS6_hW0StBxEEu4EcUv2HKG==BQ27NQ@mail.gmail.com>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: Audio usb switch to alternate setting 0
+Date: Mon, 20 Jan 2014 11:25:14 +0100
+Message-ID: <52DCF98A.4080509@zonque.org>
+References: <52DBD817.8050304@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5489148650041399404=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
- by alsa0.perex.cz (Postfix) with ESMTP id CA2A92619D8
- for <alsa-devel@alsa-project.org>; Sat, 18 Jan 2014 17:44:16 +0100 (CET)
-Received: from t520.axxite.internal ([88.77.52.101]) by mail.gmx.com
- (mrgmx003) with ESMTPSA (Nemesis) id 0MYP57-1Vrgp23gzR-00V4vs for
- <alsa-devel@alsa-project.org>; Sat, 18 Jan 2014 17:44:14 +0100
-In-Reply-To: <CAN8ccib14G8pyLuMTi2BS6_hW0StBxEEu4EcUv2HKG==BQ27NQ@mail.gmail.com>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECE122610A1
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2014 11:25:15 +0100 (CET)
+In-Reply-To: <52DBD817.8050304@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,136 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: tiwai@suse.de, danny@danysek.cz, ALSA Development Mailing List <alsa-devel@alsa-project.org>, jens.taprogge@taprogge.org
+To: Konstantinos Georgantas <k.georgantas@samsung.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============5489148650041399404==
-Content-Type: multipart/signed; boundary="nextPart2929358.bW8mZd7BP6"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+On 01/19/2014 02:50 PM, Konstantinos Georgantas wrote:
+> I am trying to control from the client side which Alternate Setting to 
+> use. Basically I would like to be able to switch from Alternate Setting 
+> 0 to 1 and vice versa so that I am not receiving any set interface 
+> requests in the meantime. From the audio class 2.0 documentation I 
+> understand that I should be able to do something like this by using the 
+> active alternate setting control, and here comes my main problem.
 
+I'm not quite following from which side you're looking at the system,
+IOW, who should be "receiving" requests. Are you talking about the
+device or the host side?
 
---nextPart2929358.bW8mZd7BP6
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+As the spec says (5.2.6.1.1), such a control is read-only, and it "does
+not allow an interface to change from one active Alternate Setting to
+another without Host intervention". "The main purpose of this Control is
+to notify the Host (through an interrupt) that the last
+selected Alternate Setting is no longer valid.".
 
-Hello Raymond,
+Active alt setting switching is done implictly by (de)activating the PCM
+streams that are associated with them.
 
-Am Samstag, 18. Januar 2014, 09:46:22 schrieb Raymond Yau:
-> > 2014/1/16 Axel Braun <axel.braun@gmx.de>
-> > 
-> > same problem on a ThinkPad T520, sound volume is way
-> > too low - watching movie via loudspeakers is fairly impossible.
-> > Any hint you could give me?
-> > 
-> > post the output of alsa-info.sh , there is a bug in alsa-driver which
+> When I generate an interrupt to the interrupt endpoint I should expect a 
+> GET request which I never see in the host side (hope I am right here).
 > 
-> treat
+> Here comes the interrupt:
+> interrupt->bInfo          = 0x00;
+> interrupt->bAttribute  = 0x01;
+> interrupt->wValue       = 0x0100;
+> interrupt->wIndex       = 0x0004;
 > 
-> > dock headphone and headphone to support surround 4.0
-> 
-> you get low volume because Amp Out vals are 0x3d instead of 0x4a but
-> speaker volumes are at 100% (0dB)
+> Could you please tell me if such a functionality is supported and how 
+> the interrupt should look like?
 
-Can I influence that from the running system, e.g. by 
-echo 0x4d > .... 
-?
+This type of interrupt is currently unsupported, but it should be easy
+to add. Note, however, that the only interesting use case is to tear the
+audio stream down and send active users XRUNs.
 
-> Simple mixer control 'Speaker',0
->   Capabilities: pvolume pswitch
->   Playback channels: Front Left - Front Right
->   Limits: Playback 0 - 74
->   Mono:
->   Front Left: Playback 74 [100%] [0.00dB] [on]
->   Front Right: Playback 74 [100%] [0.00dB] [on]
-> 
-> Node 0x10 [Audio Output] wcaps 0xc1d: Stereo Amp-Out R/L
->   Control: name="Speaker Playback Volume", index=0, device=0
->     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
->   Control: name="Speaker Playback Switch", index=0, device=0
->     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
->   Device: name="CX20590 Analog", type="Audio", device=0
->   Amp-Out caps: ofs=0x4a, nsteps=0x4a, stepsize=0x03, mute=1
->   Amp-Out vals:  [0x3d 0x3d]
-> 
-> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/?id=ca20
-> 1c096269ee2d40037fea96a59fd0695888c4
-> 
-> thinkpad t520 was supported with CXT5066_AUTO which use
-> cxt5066_update_speaker which check port a and port d
-> 
-> Do this mean thinkpad don't support surround 4.0 by dock headphone and
-> headphone ?
-> 
-> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pc
-> i/hda/patch_conexant.c?id=d70f363222ef373c2037412f09a600357cfa1c7a
-> 
-> ALSA: hda/conexant - Set up the missing docking-station pins
-> 
-> [    9.956636] ALSA hda_auto_parser.c:393 autoconfig: line_outs=1
-> (0x1f/0x0/0x0/0x0/0x0) type:speaker
-> [    9.956639] ALSA hda_auto_parser.c:397    speaker_outs=0
-> (0x0/0x0/0x0/0x0/0x0)
-> [    9.956641] ALSA hda_auto_parser.c:401    hp_outs=2
-> (0x1c/0x19/0x0/0x0/0x0)
-> [    9.956643] ALSA hda_auto_parser.c:402    mono: mono_out=0x0
-> [    9.956644] ALSA hda_auto_parser.c:406    inputs:
-> [    9.956646] ALSA hda_auto_parser.c:410      Mic=0x1b
-> [    9.956647] ALSA hda_auto_parser.c:410      Internal Mic=0x23
-> [    9.956649] ALSA hda_auto_parser.c:410      Dock Mic=0x1a
-> 
-> the driver select this as best config
-> 
-> ==> Best config: lo_type=1, wired=1, mio=1
-> multi_outs = 1f/0/0/0 : 10/0/0/0 (type SP)
->   out path: depth=2 :10:1f
-> hp_outs = 19/1c/0/0 : 11/11/0/0
->   hp  path: depth=2 :11:19
->   hp  path: depth=2 :11:1c
-> 
-> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pc
-> i/hda/hda_generic.c?id=a07a949be6eb1c9aab06adaadce72dbd27b7d9cb
-> 
-> ALSA: hda - Fix multi-io channel mode management
-> 
-> this patch change the the channel_count from 2 to 4 since there are two
-> headphone
-> 
-> + if (cfg->line_out_type != AUTO_PIN_HP_OUT)
-> + spec->const_channel_count = max(spec->const_channel_count,
-> + cfg->hp_outs * 2);
-> 
-> 
-> 
-> if you don't have docking station ,  the workaround is to remove those pin
-> fix of node 0x1a and 0x1c
+Not sure if this is what you want.
 
-I dont have a docking station - but I have no clue what I should do here....
-
-Thanks
-Axel
-
---nextPart2929358.bW8mZd7BP6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iEYEABECAAYFAlLar1oACgkQG9b1OutI7yJ7+ACcCpoF53VYy1wRTkpHEUQBfZLD
-chUAmgIcbDL9LQAiirw0UPax1tKVgUOj
-=Gcb9
------END PGP SIGNATURE-----
-
---nextPart2929358.bW8mZd7BP6--
+As always: patches are welcome :)
 
 
---===============5489148650041399404==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5489148650041399404==--
+Daniel
