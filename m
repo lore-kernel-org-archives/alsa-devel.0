@@ -1,115 +1,112 @@
-From: <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: Fwd: Re: [alsa-devel] no reset_resume for driver snd-usb-audio
- for logitech headset H600
-Date: Sun, 19 Jan 2014 21:30:58 +0100
-Message-ID: <BLU0-SMTP103D5034514D3C096609C3AA1BA0@phx.gbl>
-References: <527FA9B6.3000403@hotmail.com>	<BLU0-SMTP389A28B3B37C63ADEE0EE1AA1B20@phx.gbl> <s5h61pow6hk.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Thinkpad T520 (Low Volume)
+Date: Mon, 20 Jan 2014 09:27:57 +0800
+Message-ID: <CAN8cciZTWd5zJDfBjqkaTRWfimirq+iqiaEHZpJKt8biY2poSQ@mail.gmail.com>
+References: <CAN8ccib14G8pyLuMTi2BS6_hW0StBxEEu4EcUv2HKG==BQ27NQ@mail.gmail.com>
+ <3997344.dLRXQbcGtH@t520.axxite.internal>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <s5h61pow6hk.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
+ [209.85.223.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40FE3261A10
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2014 02:27:59 +0100 (CET)
+Received: by mail-ie0-f179.google.com with SMTP id ar20so2968974iec.10
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2014 17:27:58 -0800 (PST)
+In-Reply-To: <3997344.dLRXQbcGtH@t520.axxite.internal>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Braun <axel.braun@gmx.de>
+Cc: tiwai@suse.de, danny@danysek.cz, ALSA Development Mailing List <alsa-devel@alsa-project.org>, jens.taprogge@taprogge.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-there must be a misunderstanding;
-
-There is a functional change, because with the line/patch ".reset_resume = usb_audio_resume," the mixer of the usb headset was not removed during suspend/resume and so the master channel in KDE Mixer was not changed (Headset), which is the correct behaviour.
-
-Without the line ".reset_resume = usb_audio_resume," in /sound/usb/card.c, the mixer was removed during suspend/resume and re-added, and so the master channel changed in KDE Mixer to the default onboard audio.
-
-I have tested kernel 3.13rc8, and as you mentioned, the "reset_resume"-messages are gone.
-But the behaviour of removing the mixer of the usb_audio_headset occurs, which is, in my opinion, not the correct behaviour, because the chosen master channel/mixer should stay after suspend/resume.
-
-Could you please take a look at the issue again.
-
-Thanks, Bernhard
-
-
-On 2014-01-13 10:55, Takashi Iwai wrote:
-
-> At Sat, 11 Jan 2014 11:08:39 +0100,
-> The "reset_resume" kernel message was known to be harmless, and now
-> it's degraded as a debug message.  That's the only change, so there is
-> no functional change.
+> >
+> > > same problem on a ThinkPad T520, sound volume is way
+> > > too low - watching movie via loudspeakers is fairly impossible.
+> > > Any hint you could give me?
+> > >
+> > > post the output of alsa-info.sh , there is a bug in alsa-driver which
+> >
+> > treat
+> >
+> > > dock headphone and headphone to support surround 4.0
+> >
+> > you get low volume because Amp Out vals are 0x3d instead of 0x4a but
+> > speaker volumes are at 100% (0dB)
 >
-> That being said, you just need to ignore the kernel messages in the
-> old kernels.  Or, feel free to submit the commit [0a56b4fa6844: USB:
-> change dev_warn about missing reset-resume to dev_dbg] to stable
-> kernel.
->
->
-> Takashi
+> Can I influence that from the running system, e.g. by
+> echo 0x4d > ....
 >
 
-> <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org> wrote:
->>
->> FWD:
->>
->> Any news to the snd-usb-audio issue?
->>
->> Thanks, Bernhard
->>
->> Old Message:
->> -------------
->> I have tested the patch with kernel 3.12.0 with suspend and hibernate, and the problem is gone.
->>
->> No messages "no reset_resume for driver snd-usb-audio?" or other negative effects/messages.
->>
->> After resume, the usb_audio_device (Headset) is the master channel in KDE Mixer, as it should be.
->>
->> => So the problem is solved for me.
->>
->> Can you please add the patch to the latest kernels and LTS-kernels or whitelist the workaround for my device (ID 046d:0a29 Logitech, Inc. H600 [Wireless Headset])
->
+refer to user manual, it seem that both headset and headphone are supported
+but you cannot use conventional mic  with this combo audio jack
 
->>
->> Thanks, Bernhard
->>
->> On 2013-10-20 23:35, Takashi Iwai wrote:
->>> At Sun, 20 Oct 2013 23:18:13 +0200,
->>> <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org> wrote:
->>>>
->>>> On 2013-10-09 11:16 (CEST,UTC+2), Takashi Iwai wrote:
->>>>>>>> diff --git a/sound/usb/card.c b/sound/usb/card.c
->>>>>>>> index 9d9de8d..c591a83 100644
->>>>>>>> --- a/sound/usb/card.c
->>>>>>>> +++ b/sound/usb/card.c
->>>>>>>> @@ -747,6 +747,7 @@ static struct usb_driver usb_audio_driver = {
->>>>>>>>     	.disconnect =	usb_audio_disconnect,
->>>>>>>>     	.suspend =	usb_audio_suspend,
->>>>>>>>     	.resume =	usb_audio_resume,
->>>>>>>> +	.reset_resume =	usb_audio_resume,
->>>>>>>>     	.id_table =	usb_audio_ids,
->>>>>>>>     	.supports_autosuspend = 1,
->>>>>>>>     };
->>>>
->>>> Shall I add the line in b/sound/usb/card.c and try it? Which kernel version shall I use?
->>>
->>> It doesn't matter which kernel version is.
->>> The error message should disappear, but I don't know whether any other
->>> positive effect you get.  As Clemens pointed, there can be some
->>> negative effects by this, so it cannot be taken as is.  But at least,
->>> it'd be good to know the result...
->>>
->>>
->>> thanks,
->>>
->>> Takashi
->>
->>
->>
->>
->>
->>
->
->
+are you using headset or headphone ?
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+do headset mic work or not ?
+
+try hda_analyzer to change the volume slider of those nodes 0x10 and 0x11
+
+
+> ?
+>
+> > Simple mixer control 'Speaker',0
+> >   Capabilities: pvolume pswitch
+> >   Playback channels: Front Left - Front Right
+> >   Limits: Playback 0 - 74
+> >   Mono:
+> >   Front Left: Playback 74 [100%] [0.00dB] [on]
+> >   Front Right: Playback 74 [100%] [0.00dB] [on]
+> >
+> > Node 0x10 [Audio Output] wcaps 0xc1d: Stereo Amp-Out R/L
+> >   Control: name="Speaker Playback Volume", index=0, device=0
+> >     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+> >   Control: name="Speaker Playback Switch", index=0, device=0
+> >     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+> >   Device: name="CX20590 Analog", type="Audio", device=0
+> >   Amp-Out caps: ofs=0x4a, nsteps=0x4a, stepsize=0x03, mute=1
+> >   Amp-Out vals:  [0x3d 0x3d]
+> >
+>
+> >
+> >
+> > if you don't have docking station ,  the workaround is to remove those
+> pin
+> > fix of node 0x1a and 0x1c
+>
+> I dont have a docking station - but I have no clue what I should do here...
+
+
+the easy way is to use model=nofixup since your bios does not have dock
+headphone and dock mic pins default but this also remove mic mute led
+
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/patch_conexant.c?id=2fd3f170e5ba04acc60ee94b2c76ee166727c734
+
+
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/patch_conexant.c?id=d70f363222ef373c2037412f09a600357cfa1c7a
+
+just remove dock mic and dock hp from cxt_pincfg_lenovo_tp410
+
+/* ThinkPad 410/420/510/520, X201 & co with cxt5066 */
+static const struct cxt_pincfg cxt_pincfg_lenovo_tp410[] = {
+ { 0x19, 0x042110ff }, /* HP (seq# overridden) */
+- { 0x1a, 0x21a190f0 }, /* dock-mic */
+- { 0x1c, 0x212140ff }, /* dock-HP */
+ {}
+};
+
+
+there are dock stations which only has combo jack for the dock headset and
+some have dock mic and dock headphone jacks
+
+
+as some notebooks have dual headphone jacks , should those headphone pin
+put in multi out with mic jack retasked to support 5.1
