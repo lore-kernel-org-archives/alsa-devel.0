@@ -1,34 +1,47 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [alsa-devel] [PATCH] ASoC: core: Use devm_kzalloc() instead
- kzalloc()
-Date: Mon, 20 Jan 2014 03:18:44 +0000
-Message-ID: <1b7c6490c56549978740f5d27bb9d392@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1389861887-32721-1-git-send-email-Li.Xiubo@freescale.com>
- <52D854A3.5090109@metafoo.de> <20140117184857.GH17314@sirena.org.uk>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH] ASoC: fsl: use snd_soc_dai_init_dma_data()
+Date: Mon, 20 Jan 2014 15:27:26 +0800
+Message-ID: <1390202846-31670-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140117184857.GH17314@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE49F261A96
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2014 09:27:05 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: lgirdwood@gmail.com, broonie@kernel.org, Guangyu.Chen@freescale.com, timur@tabi.org
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mar, Lars
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+---
+ sound/soc/fsl/fsl_spdif.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-> > I don't like this. I don't think it is a good design pattern to call
-> > devm function from within (especial non-devm) library functions. It
-> > creates an asymmetric API. The memory is allocated when
-> > snd_dmaengine_pcm_register() is called, but it is not freed when
-> > snd_dmaengine_pcm_unregister() is called. This goes against the
-> > principle of least surprise.
-> 
-> Yes, I tend to agree - unless we only support managed registration the
-> API shouldn't do managed things internally.
-
-Got it.
-
-Thanks,
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 4d075f1..8f36f49 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -911,8 +911,8 @@ static int fsl_spdif_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct fsl_spdif_priv *spdif_private = snd_soc_dai_get_drvdata(dai);
+ 
+-	dai->playback_dma_data = &spdif_private->dma_params_tx;
+-	dai->capture_dma_data = &spdif_private->dma_params_rx;
++	snd_soc_dai_init_dma_data(dai, &spdif_private->dma_params_tx,
++				  &spdif_private->dma_params_rx);
+ 
+ 	snd_soc_add_dai_controls(dai, fsl_spdif_ctrls, ARRAY_SIZE(fsl_spdif_ctrls));
+ 
+-- 
+1.8.4
