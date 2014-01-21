@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: wm5102: Improve EQ coefficient
-	controls
-Date: Tue, 21 Jan 2014 18:00:39 +0000
-Message-ID: <20140121180039.GH17314@sirena.org.uk>
-References: <1390319888-27814-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: fsl: use snd_soc_dai_init_dma_data()
+Date: Tue, 21 Jan 2014 18:44:48 +0000
+Message-ID: <20140121184448.GS17314@sirena.org.uk>
+References: <1390202846-31670-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2870291963811730928=="
+Content-Type: multipart/mixed; boundary="===============5785862733987730926=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C3C452619F2
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 19:00:49 +0100 (CET)
-In-Reply-To: <1390319888-27814-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DC1B2619DC
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 19:44:59 +0100 (CET)
+In-Reply-To: <1390202846-31670-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, lgirdwood@gmail.com, Guangyu.Chen@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2870291963811730928==
+--===============5785862733987730926==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OtP5XuPTaeI2U+qV"
+	protocol="application/pgp-signature"; boundary="eAD6YUmhaz+8rRQL"
 Content-Disposition: inline
 
 
---OtP5XuPTaeI2U+qV
+--eAD6YUmhaz+8rRQL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jan 21, 2014 at 03:58:06PM +0000, Charles Keepax wrote:
-> The EQ coefficient binary controls overlapped with the volume controls
-> for the B4 and B5 volumes, which were controllable from either the
-> coefficient control or the volume control itself.
+On Mon, Jan 20, 2014 at 03:27:26PM +0800, Xiubo Li wrote:
+> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 
-Applied all, thanks.
+Applied, thanks.
 
---OtP5XuPTaeI2U+qV
+--eAD6YUmhaz+8rRQL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS3rXDAAoJELSic+t+oim9fSYP/A3D0y26wbsqcM8Bw/y12oeX
-g/Z9v2dn+5DEV1raMwfCUvj2sq9aAY0TCUNVC6wW/ONry+hcGnXPXlAGatWysWGz
-d+WW8H3LiEe6UMOO3x+pGBuEiah9qSBWV7onkwJv3CTmBPScjRwP9C5iF62ovL2L
-RlWk0lcXpLOYtVw3jlFFjSlSBjTfmz+/b8YMZtL3znSW1PRGa9D0CGiqH0HKcIYF
-AZdAgLS+Amf1fWKJV9lkznfrHiZ+cGCgX1wwJRIj/zxxscWn+cPxisppgLaAFlrW
-XDQB31++sERqGk43q1pv5mECENHEtc7+j3Qhrrj3QA6rZ5e5xXdub9jkUmXCRSfj
-J0XvLZEKBtUhVYrtl+Aqy2JY9gWIME6lCfiPdpUdm0qxE/KIp8j2wh0Zeg1nEQBE
-hRKw5H/OL62P0QzqTDnMH13wstvfJS1zP9hZ+e2e7rvEKysosqn3ujSjso8URoom
-lenLJsPBDZdG4mEgy106lXrJtRK8MJCqThJPDAudVnTKSiZpl8rajlrJwzH9vbx0
-Fu3z4txp22dSGGkc27PECJ4UnE12ATCHX/pqq+xsX0AsRgudDPgUvL2+W9hRpW5k
-b0Uy/kC9LrEFZLpJ7s2CDzgANrZbFagsuQIHH3E+tjU+Zl3RNNQYjZdZulS1dkdX
-t7Z+9vofm4YqkpF0HKbN
-=mVfs
+iQIcBAEBAgAGBQJS3sAcAAoJELSic+t+oim9dqMP/3nJveQW7IwEG88VhhHbp6Hl
+CkpLb2lOg7bP8jBdk5zWsNlrQLlEGbdxZZPDfC0feFUE1/paHJrMhsCHz0VSTOLX
+F/rWU6U44HCX2SCTtmSyiqy6Po6ih0Us2O+dojuh4h1R3rCb6YEmhtYHzuhjtxYV
+JRUODbZsLPU6X7YyNHVMXOqnyrBblLKzk1E8NJwjxi/PS7iXDMmD1kQLQU3C2a02
+SC2w/L4fdfxluoVJHZr309X3S3bdIwOSg25nT/J3fyANZWl5p/uowtGK+EArBK8b
+uXgOgvK1lHMfanoBCr+W+e1kZiCdzNdEx/2MwCU1ORCYqaorluGcD91y543GR/FH
+molg2Z4UgbmNY29gsA2vSiFoDy2LWLkfzfCHG8y6Dh0gg+0jt2S/dfkJbrDpF57w
+aaVOXFf/wccdxA1BElOsiTe+VHdqRyXso/r6PHqXr9JAgAtBK2RNiXy47sJYraKW
+fk5dqXJSOuZKIhh7ABm3FedUoT5qyh0SfKKymbdgg09/TdnCBZyG7FjHuo208h53
+VoM/yupscvGr0VjPtkYvAnRc4fLo6iNIwS4ym8UckZT33KteT3uIaJJPUWTW6CP3
+uBTHHsPsVXD5V9MryOf88AsKMo+8y2+S5Clus/VNFiJcFiUa3y/3S1PalOLJWiSi
+PmJjc0aQmiQvaMdODGLc
+=HvaO
 -----END PGP SIGNATURE-----
 
---OtP5XuPTaeI2U+qV--
+--eAD6YUmhaz+8rRQL--
 
---===============2870291963811730928==
+--===============5785862733987730926==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2870291963811730928==--
+--===============5785862733987730926==--
