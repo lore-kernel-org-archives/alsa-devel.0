@@ -1,27 +1,18 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH] ASoC: da9055: Partially fix device
-Date: Tue, 21 Jan 2014 00:35:11 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A03376B7CDC48@SW-EX-MBX01.diasemi.com>
-References: <2E89032DDAA8B9408CB92943514A03376B7CC95A@SW-EX-MBX01.diasemi.com>
- <20140109121353.GG31886@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A03376B7CC9BE@SW-EX-MBX01.diasemi.com>
- <20140109202446.GQ12858@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A03376B7CCB98@SW-EX-MBX01.diasemi.com>
- <20140113211858.GK29039@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A03376B7CCF27@SW-EX-MBX01.diasemi.com>
- <20140114195159.GW15567@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A03376B7CD24A@SW-EX-MBX01.diasemi.com>
- <20140117172025.GW17314@sirena.org.uk>
+From: Arthur Marsh <arthur.marsh@internode.on.net>
+Subject: Re: ALSA: hda - Fix possible races in HDMI driver -
+ lockup on shutdown when radeon.audio=1 after using audacity
+Date: Tue, 21 Jan 2014 11:50:43 +1030
+Message-ID: <52DDCB6B.7010602@internode.on.net>
+References: <52DB7878.8000004@internode.on.net> <s5hha8zox0j.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
- [195.245.231.148])
- by alsa0.perex.cz (Postfix) with ESMTP id B5F01261ACB
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 01:35:14 +0100 (CET)
-In-Reply-To: <20140117172025.GW17314@sirena.org.uk>
-Content-Language: en-US
+Received: from ipmail06.adl2.internode.on.net (ipmail06.adl2.internode.on.net
+ [150.101.137.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id 399C9261ACB
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 02:20:49 +0100 (CET)
+In-Reply-To: <s5hha8zox0j.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,28 +22,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, "Opensource [Anthony Olech]" <anthony.olech.opensource@diasemi.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Anssi Hannula <anssi.hannula@iki.fi>, ALSA devel <alsa-devel@alsa-project.org>, xorg-driver-ati@lists.x.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 17 Jan 2014 17:20:25 +0000, Mark Brown wrote:
 
-> it's really common for device vendors to say that their device or code
-> is special in some way and can't do the standard things but this rarely
-> turns out to be true.  It is therefore really important to do things
-> like highlight specific technical things that mean new approaches are
-> needed (like the fact that the addresses are independently controllable
-> for the functions on this device) otherwise it is very easy for it to
-> look like a common pattern is being repeated.
 
-Certainly wasn't trying to con anyone here. Do wish I'd brought that feature
-up a lot earlier though as it would've saved us both time.
- 
-> What I would suggest doing is writing a binding document for the device
-> (which seems to be missing anyway) and sending that along with patches
-> changing both the MFD and CODEC compatible strings and IDs and adding
-> comments saying that this is intentional to ensure that nobody cleans
-> this up again.
+Takashi Iwai wrote, on 20/01/14 19:22:
+> At Sun, 19 Jan 2014 17:32:16 +1030,
+> Arthur Marsh wrote:
+>>
+>> I have had reproducible lock-ups on shut-down (at the shutting down ALSA
+>> stage) of my AMD64 machine (Asus M3A78Pro motherboard, BIOS 1701
+>> 01/27/2011, CPU AMD Athlon(tm) II X4 640 Processor) running the 64 bit
+>> Linux kernel more recent than 3.12 when *both* radeon.audio=1 was set
+>> and I had been running audacity 2.0.5. (iommu=noaperture is also set).
+>>
+>> The problem was reproducible with the stock Debian kernel
+>> linux-image-3.13-rc6-amd64 version 3.13~rc6-1~exp1.
+>>
+>> The machine is using an ATI/AMD 3850HD video card with a DVI cable to a
+>> DVI input on my monitor, and the default audio device is the
+>> motherboard's on-board audio device:
+>>
+>> 00:14.2 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] SBx00
+>> Azalia (Intel HDA)
+>>
+>> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
+>> [AMD/ATI] RV670 [Radeon HD 3690/3850]
+>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] RV670/680
+>> HDMI Audio [Radeon HD 3690/3800 Series]
+>>
+>> $ git bisect bad
+>> cbbaa603a03cc46681e24d6b2804b62fde95a2af is the first bad commit
+>> commit cbbaa603a03cc46681e24d6b2804b62fde95a2af
+>> Author: Takashi Iwai <tiwai@suse.de>
+>> Date:   Thu Oct 17 18:03:24 2013 +0200
+>>
+>>       ALSA: hda - Fix possible races in HDMI driver
+>>
+>>       Some per_pin fields and ELD contents might be changed dynamically in
+>>       multiple ways where the concurrent accesses are still opened in the
+>>       current code.  This patch fixes such possible races by using eld->lock
+>>       in appropriate places.
+>>
+>>       Reported-by: Anssi Hannula <anssi.hannula@iki.fi>
+>>       Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>
+>> :040000 040000 0c29281f82a3ebd9a704d481114f9cfcefea07c8
+>> d71fd101125cd29a628cb5e66c7ee4f56e28329b M      sound
+>>
+>> When running audacity from the command line there was the following output:
+>>
+>> ALSA lib pcm_dsnoop.c:618:(snd_pcm_dsnoop_open) unable to open slave
+>> ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
+>> ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.rear
+>> ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.center_lfe
+>> ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.side
+>> ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
+>> Expression 'stream->playback.pcm' failed in
+>> 'src/hostapi/alsa/pa_linux_alsa.c', line: 4611
+>> Expression 'stream->playback.pcm' failed in
+>> 'src/hostapi/alsa/pa_linux_alsa.c', line: 4611
+>> Expression 'stream->playback.pcm' failed in
+>> 'src/hostapi/alsa/pa_linux_alsa.c', line: 4611
+>>
+>> I am happy to supply further information or run further tests to help in
+>> isolating the problem and verifying a solution.
+>
+> Could you build the kernel with lockdep kconfig and see whether it
+> reports errors?
+>
+> Reverting the commit doesn't work cleanly.  Instead, you can try to
+> simply comment out all mutex_lock(&per_pin->lock) and
+> mutex_unlock(&per_pin->lock) calls in patch_hdmi.c to see whether it's
+> a mutex deadlock.
+>
+>
+> thanks,
+>
+> Takashi
+>
 
-Ok, I'll look into that. I guess it makes sense to write one document for the
-PMIC and one for the CODEC as well, given their individual nature?
+I rebuilt the kernel after commenting out all mutex_lock(&per_pin->lock) 
+and mutex_unlock(&per_pin->lock) calls in patch_hdmi.c, and the 
+resulting kernel shutdown without hanging.
+
+Regards,
+
+Arthur.
