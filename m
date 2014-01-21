@@ -1,17 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Resume mixer values properly
-Date: Tue, 21 Jan 2014 12:53:45 +0100
-Message-ID: <1390305225-26739-1-git-send-email-tiwai@suse.de>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Need your advice: Add a new communication inteface
+ between HD-Audio and Gfx drivers for hotplug notification/ELD update
+Date: Tue, 21 Jan 2014 12:35:53 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B231778@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C725C2610D7
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 12:53:45 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B8602AC6B
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 11:53:45 +0000 (UTC)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A38E261603
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 13:36:00 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,213 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "Barnes, Jesse" <jesse.barnes@intel.com>, "Daniel Vetter (daniel@ffwll.ch)" <daniel@ffwll.ch>, "Zanoni, Paulo R" <paulo.r.zanoni@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Implement reset_resume callback so that the mixer values are properly
-restored.  Still no boot quirks are called, so it might not work well
-on some devices.
+Dear audio and gfx stakeholders,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/card.c  | 18 ++++++++--
- sound/usb/mixer.c | 99 ++++++++++++++++++++++++++++++++++++++++++++-----------
- sound/usb/mixer.h |  7 ++--
- 3 files changed, 99 insertions(+), 25 deletions(-)
+We hope to add a new interface between audio and gfx driver, for gfx driver to notify audio about HDMI/DP hot-plug and ELD update.
+Would you please share some comments on the proposal below?
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index d979050e6a6a..025224136129 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -691,12 +691,12 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
- 	}
- 
- 	list_for_each_entry(mixer, &chip->mixer_list, list)
--		snd_usb_mixer_inactivate(mixer);
-+		snd_usb_mixer_suspend(mixer);
- 
- 	return 0;
- }
- 
--static int usb_audio_resume(struct usb_interface *intf)
-+static int __usb_audio_resume(struct usb_interface *intf, bool reset_resume)
- {
- 	struct snd_usb_audio *chip = usb_get_intfdata(intf);
- 	struct usb_mixer_interface *mixer;
-@@ -711,7 +711,7 @@ static int usb_audio_resume(struct usb_interface *intf)
- 	 * we just notify and restart the mixers
- 	 */
- 	list_for_each_entry(mixer, &chip->mixer_list, list) {
--		err = snd_usb_mixer_activate(mixer);
-+		err = snd_usb_mixer_resume(mixer, reset_resume);
- 		if (err < 0)
- 			goto err_out;
- 	}
-@@ -723,9 +723,20 @@ static int usb_audio_resume(struct usb_interface *intf)
- err_out:
- 	return err;
- }
-+
-+static int usb_audio_resume(struct usb_interface *intf)
-+{
-+	return __usb_audio_resume(intf, false);
-+}
-+
-+static int usb_audio_reset_resume(struct usb_interface *intf)
-+{
-+	return __usb_audio_resume(intf, true);
-+}
- #else
- #define usb_audio_suspend	NULL
- #define usb_audio_resume	NULL
-+#define usb_audio_reset_resume	NULL
- #endif		/* CONFIG_PM */
- 
- static struct usb_device_id usb_audio_ids [] = {
-@@ -747,6 +758,7 @@ static struct usb_driver usb_audio_driver = {
- 	.disconnect =	usb_audio_disconnect,
- 	.suspend =	usb_audio_suspend,
- 	.resume =	usb_audio_resume,
-+	.reset_resume =	usb_audio_reset_resume,
- 	.id_table =	usb_audio_ids,
- 	.supports_autosuspend = 1,
- };
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 44b0ba4feab3..aa9bc19aae68 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -2299,26 +2299,6 @@ requeue:
- 	}
- }
- 
--/* stop any bus activity of a mixer */
--void snd_usb_mixer_inactivate(struct usb_mixer_interface *mixer)
--{
--	usb_kill_urb(mixer->urb);
--	usb_kill_urb(mixer->rc_urb);
--}
--
--int snd_usb_mixer_activate(struct usb_mixer_interface *mixer)
--{
--	int err;
--
--	if (mixer->urb) {
--		err = usb_submit_urb(mixer->urb, GFP_NOIO);
--		if (err < 0)
--			return err;
--	}
--
--	return 0;
--}
--
- /* create the handler for the optional status interrupt endpoint */
- static int snd_usb_mixer_status_create(struct usb_mixer_interface *mixer)
- {
-@@ -2417,3 +2397,82 @@ void snd_usb_mixer_disconnect(struct list_head *p)
- 	usb_kill_urb(mixer->urb);
- 	usb_kill_urb(mixer->rc_urb);
- }
-+
-+#ifdef CONFIG_PM
-+/* stop any bus activity of a mixer */
-+static void snd_usb_mixer_inactivate(struct usb_mixer_interface *mixer)
-+{
-+	usb_kill_urb(mixer->urb);
-+	usb_kill_urb(mixer->rc_urb);
-+}
-+
-+static int snd_usb_mixer_activate(struct usb_mixer_interface *mixer)
-+{
-+	int err;
-+
-+	if (mixer->urb) {
-+		err = usb_submit_urb(mixer->urb, GFP_NOIO);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+int snd_usb_mixer_suspend(struct usb_mixer_interface *mixer)
-+{
-+	snd_usb_mixer_inactivate(mixer);
-+	return 0;
-+}
-+
-+static int restore_mixer_value(struct usb_mixer_elem_info *cval)
-+{
-+	int c, err, idx;
-+
-+	if (cval->cmask) {
-+		idx = 0;
-+		for (c = 0; c < MAX_CHANNELS; c++) {
-+			if (!(cval->cmask & (1 << c)))
-+				continue;
-+			if (cval->cached & (1 << c)) {
-+				err = set_cur_mix_value(cval, c + 1, idx,
-+							cval->cache_val[idx]);
-+				if (err < 0)
-+					return err;
-+			}
-+			idx++;
-+		}
-+	} else {
-+		/* master */
-+		if (cval->cached) {
-+			err = set_cur_mix_value(cval, 0, 0, *cval->cache_val);
-+			if (err < 0)
-+				return err;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
-+{
-+	struct usb_mixer_elem_info *cval;
-+	int id, err;
-+
-+	/* FIXME: any mixer quirks? */
-+
-+	if (reset_resume) {
-+		/* restore cached mixer values */
-+		for (id = 0; id < MAX_ID_ELEMS; id++) {
-+			for (cval = mixer->id_elems[id]; cval;
-+			     cval = cval->next_id_elem) {
-+				err = restore_mixer_value(cval);
-+				if (err < 0)
-+					return err;
-+			}
-+		}
-+	}
-+
-+	return snd_usb_mixer_activate(mixer);
-+}
-+#endif
-diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-index aab80df201bd..73b1f649447b 100644
---- a/sound/usb/mixer.h
-+++ b/sound/usb/mixer.h
-@@ -63,8 +63,6 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid);
- 
- int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
- 				int request, int validx, int value_set);
--void snd_usb_mixer_inactivate(struct usb_mixer_interface *mixer);
--int snd_usb_mixer_activate(struct usb_mixer_interface *mixer);
- 
- int snd_usb_mixer_add_control(struct usb_mixer_interface *mixer,
- 			      struct snd_kcontrol *kctl);
-@@ -72,4 +70,9 @@ int snd_usb_mixer_add_control(struct usb_mixer_interface *mixer,
- int snd_usb_mixer_vol_tlv(struct snd_kcontrol *kcontrol, int op_flag,
- 			  unsigned int size, unsigned int __user *_tlv);
- 
-+#ifdef CONFIG_PM
-+int snd_usb_mixer_suspend(struct usb_mixer_interface *mixer);
-+int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume);
-+#endif
-+
- #endif /* __USBMIXER_H */
--- 
-1.8.5.2
+Background of this issue: On Intel Haswell/Broadwell platforms, there is a HW restriction that after the display HD-Audio controller is in D3,
+it cannot be waken up by HDMI/DP hot-plug. Consequently, although the gfx driver can still detect the HDMI/DP hot-plug,
+audio driver has no idea about this and cannot notify user space whether the external HDMI/DP monitor is available for audio playback,
+because the audio controller cannot wake up to D0 and receive HW unsolicited event about hot-plug from the audio codec.
+This limitation will affect user space to decide whether we can output audio over HDMI/DP.
+
+To solve the above limitation, Takashi suggested to add a new communication interface between audio and gfx driver: create a common object
+containing the ops registered by both graphics and audio drivers, then communicate through it, something like vga_switcheroo.
+
+Is it okay to create this kernel object in i915 driver?
+
+I915 can export an API like "display_register_audio_client" for audio driver to register a client and hot-plug notification ops.
+
+I915 can also call some API like "display_register_gfx_client" itself and register ops for audio driver to query monitor presence and ELD info on a specific port.
+It would be faster for audio driver than quering ELD by command/response over the HD-A bus, thus avoid delay in i915 mode set.
+This will also avoid waking up the audio devices unnecessarily if the user space does not really want to use HDMI/DP for audio playback.
+
+Whenever i195 enables/disables audio on a port in modeset, it can call some API like "display_set_audio_state()" on this kernel object and trigger notifications to the audio driver.
+
+When the audio driver is probed (in the delayed probe stage), it can request i915 API symbol to register the audio client for this communication kernel object.
+Since the 1st i915 mode set may happen before audio driver registers the ops, we'll let audio driver check ELD once after registering the audio client ops.
+And for the platforms which uses this communication interface, we can disable unsolicited event for HDMI/DP hot-plug in the audio driver.
+
+We hope to hear your feedback and start to work out more details.
+
+Thanks & Best Regards
+Mengdong
