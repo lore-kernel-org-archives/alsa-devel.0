@@ -1,162 +1,89 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: Need your advice: Add a new communication inteface between
-	HD-Audio and Gfx drivers for hotplug notification/ELD update
-Date: Tue, 21 Jan 2014 14:11:20 +0100
-Message-ID: <CAKMK7uFSEHW2=3MycdrZhysGBSCX7-y+SzFZJGM4GiEmwK5aAQ@mail.gmail.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F82B231778@SHSMSX101.ccr.corp.intel.com>
-	<CAKMK7uFYNfVhXsEmikDZCaFGM8k7g7VMcGqGM4U+1bA_9MX1zQ@mail.gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3] ASoC: wm5102: Improve EQ coefficient
+	controls
+Date: Tue, 21 Jan 2014 15:58:06 +0000
+Message-ID: <1390319888-27814-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <CAKMK7uFYNfVhXsEmikDZCaFGM8k7g7VMcGqGM4U+1bA_9MX1zQ@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces@lists.freedesktop.org
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-To: "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
-	Paulo R" <paulo.r.zanoni@intel.com>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>, "Barnes,
-	Jesse" <jesse.barnes@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B03592619D6
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 17:06:25 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-_Actually_ add dri-devel ...
+The EQ coefficient binary controls overlapped with the volume controls
+for the B4 and B5 volumes, which were controllable from either the
+coefficient control or the volume control itself.
 
-On Tue, Jan 21, 2014 at 2:10 PM, Daniel Vetter <daniel@ffwll.ch> wrote:
-> On Tue, Jan 21, 2014 at 1:35 PM, Lin, Mengdong <mengdong.lin@intel.com> w=
-rote:
->> Dear audio and gfx stakeholders,
->>
->>
->>
->> We hope to add a new interface between audio and gfx driver, for gfx dri=
-ver
->> to notify audio about HDMI/DP hot-plug and ELD update.
->>
->> Would you please share some comments on the proposal below?
->>
->>
->>
->> Background of this issue: On Intel Haswell/Broadwell platforms, there is=
- a
->> HW restriction that after the display HD-Audio controller is in D3,
->>
->> it cannot be waken up by HDMI/DP hot-plug. Consequently, although the gfx
->> driver can still detect the HDMI/DP hot-plug,
->>
->> audio driver has no idea about this and cannot notify user space whether=
- the
->> external HDMI/DP monitor is available for audio playback,
->>
->> because the audio controller cannot wake up to D0 and receive HW unsolic=
-ited
->> event about hot-plug from the audio codec.
->>
->> This limitation will affect user space to decide whether we can output a=
-udio
->> over HDMI/DP.
->>
->>
->>
->> To solve the above limitation, Takashi suggested to add a new communicat=
-ion
->> interface between audio and gfx driver: create a common object
->>
->> containing the ops registered by both graphics and audio drivers, then
->> communicate through it, something like vga_switcheroo.
->>
->>
->>
->> Is it okay to create this kernel object in i915 driver?
->>
->>
->>
->> I915 can export an API like =93display_register_audio_client=94 for audi=
-o driver
->> to register a client and hot-plug notification ops.
->>
->>
->>
->> I915 can also call some API like =93display_register_gfx_client=94 itsel=
-f and
->> register ops for audio driver to query monitor presence and ELD info on a
->> specific port.
->>
->> It would be faster for audio driver than quering ELD by command/response
->> over the HD-A bus, thus avoid delay in i915 mode set.
->>
->> This will also avoid waking up the audio devices unnecessarily if the us=
-er
->> space does not really want to use HDMI/DP for audio playback.
->>
->>
->>
->> Whenever i195 enables/disables audio on a port in modeset, it can call s=
-ome
->> API like =93display_set_audio_state()=94 on this kernel object and trigg=
-er
->> notifications to the audio driver.
->>
->>
->>
->> When the audio driver is probed (in the delayed probe stage), it can req=
-uest
->> i915 API symbol to register the audio client for this communication kern=
-el
->> object.
->>
->> Since the 1st i915 mode set may happen before audio driver registers the
->> ops, we=92ll let audio driver check ELD once after registering the audio
->> client ops.
->>
->> And for the platforms which uses this communication interface, we can
->> disable unsolicited event for HDMI/DP hot-plug in the audio driver.
->>
->>
->>
->> We hope to hear your feedback and start to work out more details.
->
-> Yeah, I've discussed this at KS with Takashi and we've agreed that
-> some common object to facilitate driver interactions. A few things
-> though:
-> - This should be common infrastructure useable by all alsa and drm
-> drivers, not just i915 and snd-hda. Especially on embedded platforms
-> this issue is fairly rampant ...
-> - While at it it should also encompass power management handling of
-> the shared hw imo so that we can get rid of the hsw specific hacks for
-> the power well code. Or at least we need to rework the power well code
-> to reuse this new infrastructure, I don't really want to maintain a
-> few copies of the lazy symbol_get logic this kind of stuff requires.
-> - I think the biggest problem is figuring out who should register
-> these device nodes. I think it makes the most sense if we do this in
-> the gfx driver, but that requires some trickery on the alsa side
-> (probably with using -EPROBE_DEFER or something like that.
-> - I agree that passing ELD and all the other information through this
-> new structure makes lot more sense than the current mess we have with
-> passing the ELD through some hardware buffer.
-> - Finally I think we should assign some identifier to this link which
-> will get exposed both on the drm side and in alsa, so that userspace
-> can figure out which display connects to which output. With that media
-> player could do the Right Thing and automatically place the audio
-> stream on the right pin in alsa.
->
-> Adding dri-devel since that's where we imo need to have this discussion.
->
-> Cheers, Daniel
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> +41 (0) 79 365 57 48 - http://blog.ffwll.ch
+This patch adds controls for the mode and moves the coefficient control
+to only cover the coefficients.
 
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5102.c |   17 ++++++++---------
+ 1 files changed, 8 insertions(+), 9 deletions(-)
 
-
--- =
-
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index a08e8bf..ac19f62 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -685,15 +685,8 @@ ARIZONA_MIXER_CONTROLS("EQ2", ARIZONA_EQ2MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("EQ3", ARIZONA_EQ3MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("EQ4", ARIZONA_EQ4MIX_INPUT_1_SOURCE),
+ 
+-SND_SOC_BYTES_MASK("EQ1 Coefficients", ARIZONA_EQ1_1, 21,
+-		   ARIZONA_EQ1_ENA_MASK),
+-SND_SOC_BYTES_MASK("EQ2 Coefficients", ARIZONA_EQ2_1, 21,
+-		   ARIZONA_EQ2_ENA_MASK),
+-SND_SOC_BYTES_MASK("EQ3 Coefficients", ARIZONA_EQ3_1, 21,
+-		   ARIZONA_EQ3_ENA_MASK),
+-SND_SOC_BYTES_MASK("EQ4 Coefficients", ARIZONA_EQ4_1, 21,
+-		   ARIZONA_EQ4_ENA_MASK),
+-
++SND_SOC_BYTES("EQ1 Coefficients", ARIZONA_EQ1_3, 18),
++SOC_SINGLE("EQ1 Mode Switch", ARIZONA_EQ1_2, ARIZONA_EQ1_B1_MODE, 1, 0),
+ SOC_SINGLE_TLV("EQ1 B1 Volume", ARIZONA_EQ1_1, ARIZONA_EQ1_B1_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+ SOC_SINGLE_TLV("EQ1 B2 Volume", ARIZONA_EQ1_1, ARIZONA_EQ1_B2_GAIN_SHIFT,
+@@ -705,6 +698,8 @@ SOC_SINGLE_TLV("EQ1 B4 Volume", ARIZONA_EQ1_2, ARIZONA_EQ1_B4_GAIN_SHIFT,
+ SOC_SINGLE_TLV("EQ1 B5 Volume", ARIZONA_EQ1_2, ARIZONA_EQ1_B5_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+ 
++SND_SOC_BYTES("EQ2 Coefficients", ARIZONA_EQ2_3, 18),
++SOC_SINGLE("EQ2 Mode Switch", ARIZONA_EQ2_2, ARIZONA_EQ2_B1_MODE, 1, 0),
+ SOC_SINGLE_TLV("EQ2 B1 Volume", ARIZONA_EQ2_1, ARIZONA_EQ2_B1_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+ SOC_SINGLE_TLV("EQ2 B2 Volume", ARIZONA_EQ2_1, ARIZONA_EQ2_B2_GAIN_SHIFT,
+@@ -716,6 +711,8 @@ SOC_SINGLE_TLV("EQ2 B4 Volume", ARIZONA_EQ2_2, ARIZONA_EQ2_B4_GAIN_SHIFT,
+ SOC_SINGLE_TLV("EQ2 B5 Volume", ARIZONA_EQ2_2, ARIZONA_EQ2_B5_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+ 
++SND_SOC_BYTES("EQ3 Coefficients", ARIZONA_EQ3_3, 18),
++SOC_SINGLE("EQ3 Mode Switch", ARIZONA_EQ3_2, ARIZONA_EQ3_B1_MODE, 1, 0),
+ SOC_SINGLE_TLV("EQ3 B1 Volume", ARIZONA_EQ3_1, ARIZONA_EQ3_B1_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+ SOC_SINGLE_TLV("EQ3 B2 Volume", ARIZONA_EQ3_1, ARIZONA_EQ3_B2_GAIN_SHIFT,
+@@ -727,6 +724,8 @@ SOC_SINGLE_TLV("EQ3 B4 Volume", ARIZONA_EQ3_2, ARIZONA_EQ3_B4_GAIN_SHIFT,
+ SOC_SINGLE_TLV("EQ3 B5 Volume", ARIZONA_EQ3_2, ARIZONA_EQ3_B5_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+ 
++SND_SOC_BYTES("EQ4 Coefficients", ARIZONA_EQ4_3, 18),
++SOC_SINGLE("EQ4 Mode Switch", ARIZONA_EQ4_2, ARIZONA_EQ4_B1_MODE, 1, 0),
+ SOC_SINGLE_TLV("EQ4 B1 Volume", ARIZONA_EQ4_1, ARIZONA_EQ4_B1_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+ SOC_SINGLE_TLV("EQ4 B2 Volume", ARIZONA_EQ4_1, ARIZONA_EQ4_B2_GAIN_SHIFT,
+-- 
+1.7.2.5
