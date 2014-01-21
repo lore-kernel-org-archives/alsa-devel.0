@@ -1,15 +1,15 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_adsp: Add info print to note that the
-	DSP has shutdown
-Date: Tue, 21 Jan 2014 16:05:37 +0000
-Message-ID: <1390320337-29339-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm5110: Extend SYSCLK patch file for rev
+	D
+Date: Tue, 21 Jan 2014 16:27:51 +0000
+Message-ID: <1390321671-31144-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 82F4F2619F3
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 17:13:53 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 487712617AE
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 17:36:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,26 +23,72 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-It can be useful for debugging purposes to see at what point the DSP has
-powered down, so add a message to inform us of this.
+Latest evaluation of the the device has given some patch file additions
+for improved performance.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ sound/soc/codecs/wm5110.c |   48 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 48 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 4fbcab6..a15f75b 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1637,6 +1637,8 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 			list_del(&alg_region->list);
- 			kfree(alg_region);
- 		}
-+
-+		adsp_info(dsp, "Shutdown complete\n");
- 		break;
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 34fbb03..92f1b40 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -43,6 +43,54 @@ static const struct reg_default wm5110_sysclk_revd_patch[] = {
+ 	{ 0x3133, 0x1201 },
+ 	{ 0x3183, 0x1501 },
+ 	{ 0x31D3, 0x1401 },
++	{ 0x0049, 0x01ea },
++	{ 0x004a, 0x01f2 },
++	{ 0x0057, 0x01e7 },
++	{ 0x0058, 0x01fb },
++	{ 0x33ce, 0xc4f5 },
++	{ 0x33cf, 0x1361 },
++	{ 0x33d0, 0x0402 },
++	{ 0x33d1, 0x4700 },
++	{ 0x33d2, 0x026d },
++	{ 0x33d3, 0xff00 },
++	{ 0x33d4, 0x026d },
++	{ 0x33d5, 0x0101 },
++	{ 0x33d6, 0xc4f5 },
++	{ 0x33d7, 0x0361 },
++	{ 0x33d8, 0x0402 },
++	{ 0x33d9, 0x6701 },
++	{ 0x33da, 0xc4f5 },
++	{ 0x33db, 0x136f },
++	{ 0x33dc, 0xc4f5 },
++	{ 0x33dd, 0x134f },
++	{ 0x33de, 0xc4f5 },
++	{ 0x33df, 0x131f },
++	{ 0x33e0, 0x026d },
++	{ 0x33e1, 0x4f01 },
++	{ 0x33e2, 0x026d },
++	{ 0x33e3, 0xf100 },
++	{ 0x33e4, 0x026d },
++	{ 0x33e5, 0x0001 },
++	{ 0x33e6, 0xc4f5 },
++	{ 0x33e7, 0x0361 },
++	{ 0x33e8, 0x0402 },
++	{ 0x33e9, 0x6601 },
++	{ 0x33ea, 0xc4f5 },
++	{ 0x33eb, 0x136f },
++	{ 0x33ec, 0xc4f5 },
++	{ 0x33ed, 0x134f },
++	{ 0x33ee, 0xc4f5 },
++	{ 0x33ef, 0x131f },
++	{ 0x33f0, 0x026d },
++	{ 0x33f1, 0x4e01 },
++	{ 0x33f2, 0x026d },
++	{ 0x33f3, 0xf000 },
++	{ 0x33f6, 0xc4f5 },
++	{ 0x33f7, 0x1361 },
++	{ 0x33f8, 0x0402 },
++	{ 0x33f9, 0x4600 },
++	{ 0x33fa, 0x026d },
++	{ 0x33fb, 0xfe00 },
+ };
  
- 	default:
+ static int wm5110_sysclk_ev(struct snd_soc_dapm_widget *w,
 -- 
 1.7.2.5
