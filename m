@@ -1,83 +1,174 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/4] ASoC: tlv320aic32x4: Use signed int
-	mixer controls
-Date: Tue, 21 Jan 2014 21:14:55 +0000
-Message-ID: <20140121211455.GZ17314@sirena.org.uk>
-References: <1390219558-25341-1-git-send-email-mpa@pengutronix.de>
- <1390219558-25341-2-git-send-email-mpa@pengutronix.de>
+From: Arthur Marsh <arthur.marsh@internode.on.net>
+Subject: Re: ALSA: hda - Fix possible races in HDMI driver - lockup on shutdown
+ when radeon.audio=1 after using audacity
+Date: Wed, 22 Jan 2014 08:27:55 +1030
+Message-ID: <52DEED63.2010401@internode.on.net>
+References: <52DB7878.8000004@internode.on.net>	<s5hha8zox0j.wl%tiwai@suse.de>	<52DDCB6B.7010602@internode.on.net> <s5hk3dt8u4q.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7659258514390354983=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CA83E261A01
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 22:15:07 +0100 (CET)
-In-Reply-To: <1390219558-25341-2-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hk3dt8u4q.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Anssi Hannula <anssi.hannula@iki.fi>, ALSA devel <alsa-devel@alsa-project.org>, xorg-driver-ati@lists.x.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7659258514390354983==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6mjziG+ONat+OS9O"
-Content-Disposition: inline
 
+Takashi Iwai wrote, on 21/01/14 21:43:
+> At Tue, 21 Jan 2014 11:50:43 +1030,
+> Arthur Marsh wrote:
+>>
+>>
+>>
+>> Takashi Iwai wrote, on 20/01/14 19:22:
+>>> At Sun, 19 Jan 2014 17:32:16 +1030,
+>>> Arthur Marsh wrote:
+>>>>
+>>>> I have had reproducible lock-ups on shut-down (at the shutting down ALSA
+>>>> stage) of my AMD64 machine (Asus M3A78Pro motherboard, BIOS 1701
+>>>> 01/27/2011, CPU AMD Athlon(tm) II X4 640 Processor) running the 64 bit
+>>>> Linux kernel more recent than 3.12 when *both* radeon.audio=1 was set
+>>>> and I had been running audacity 2.0.5. (iommu=noaperture is also set).
+>>>>
+>>>> The problem was reproducible with the stock Debian kernel
+>>>> linux-image-3.13-rc6-amd64 version 3.13~rc6-1~exp1.
+>>>>
+>>>> The machine is using an ATI/AMD 3850HD video card with a DVI cable to a
+>>>> DVI input on my monitor, and the default audio device is the
+>>>> motherboard's on-board audio device:
+>>>>
+>>>> 00:14.2 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] SBx00
+>>>> Azalia (Intel HDA)
+>>>>
+>>>> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
+>>>> [AMD/ATI] RV670 [Radeon HD 3690/3850]
+>>>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] RV670/680
+>>>> HDMI Audio [Radeon HD 3690/3800 Series]
+>>>>
+>>>> $ git bisect bad
+>>>> cbbaa603a03cc46681e24d6b2804b62fde95a2af is the first bad commit
+>>>> commit cbbaa603a03cc46681e24d6b2804b62fde95a2af
+>>>> Author: Takashi Iwai <tiwai@suse.de>
+>>>> Date:   Thu Oct 17 18:03:24 2013 +0200
+>>>>
+>>>>        ALSA: hda - Fix possible races in HDMI driver
+>>>>
+>>>>        Some per_pin fields and ELD contents might be changed dynamically in
+>>>>        multiple ways where the concurrent accesses are still opened in the
+>>>>        current code.  This patch fixes such possible races by using eld->lock
+>>>>        in appropriate places.
+>>>>
+>>>>        Reported-by: Anssi Hannula <anssi.hannula@iki.fi>
+>>>>        Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>>>
+>>>> :040000 040000 0c29281f82a3ebd9a704d481114f9cfcefea07c8
+>>>> d71fd101125cd29a628cb5e66c7ee4f56e28329b M      sound
+>>>>
+>>>> When running audacity from the command line there was the following output:
+>>>>
+>>>> ALSA lib pcm_dsnoop.c:618:(snd_pcm_dsnoop_open) unable to open slave
+>>>> ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
+>>>> ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.rear
+>>>> ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.center_lfe
+>>>> ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.side
+>>>> ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
+>>>> Expression 'stream->playback.pcm' failed in
+>>>> 'src/hostapi/alsa/pa_linux_alsa.c', line: 4611
+>>>> Expression 'stream->playback.pcm' failed in
+>>>> 'src/hostapi/alsa/pa_linux_alsa.c', line: 4611
+>>>> Expression 'stream->playback.pcm' failed in
+>>>> 'src/hostapi/alsa/pa_linux_alsa.c', line: 4611
+>>>>
+>>>> I am happy to supply further information or run further tests to help in
+>>>> isolating the problem and verifying a solution.
+>>>
+>>> Could you build the kernel with lockdep kconfig and see whether it
+>>> reports errors?
+>>>
+>>> Reverting the commit doesn't work cleanly.  Instead, you can try to
+>>> simply comment out all mutex_lock(&per_pin->lock) and
+>>> mutex_unlock(&per_pin->lock) calls in patch_hdmi.c to see whether it's
+>>> a mutex deadlock.
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>>
+>>
+>> I rebuilt the kernel after commenting out all mutex_lock(&per_pin->lock)
+>> and mutex_unlock(&per_pin->lock) calls in patch_hdmi.c, and the
+>> resulting kernel shutdown without hanging.
+>
+> Thanks.  Could you try the patch below?  It's already queued for
+> 3.14.  If this patch really fixes the issue, I'm going to send it to
+> stable 3.13.x.
+>
+>
+> Takashi
+>
+> -- 8< --
+> From: David Henningsson <david.henningsson@canonical.com>
+> Subject: [PATCH] ALSA: hda - Explicitly keep codec powered up in
+>   hdmi_present_sense
+>
+> This should help us avoid the following mutex deadlock:
+>
+> [] mutex_lock+0x2a/0x50
+> [] hdmi_present_sense+0x53/0x3a0 [snd_hda_codec_hdmi]
+> [] generic_hdmi_resume+0x5a/0x70 [snd_hda_codec_hdmi]
+> [] hda_call_codec_resume+0xec/0x1d0 [snd_hda_codec]
+> [] snd_hda_power_save+0x1e4/0x280 [snd_hda_codec]
+> [] codec_exec_verb+0x5f/0x290 [snd_hda_codec]
+> [] snd_hda_codec_read+0x5b/0x90 [snd_hda_codec]
+> [] snd_hdmi_get_eld_size+0x1e/0x20 [snd_hda_codec_hdmi]
+> [] snd_hdmi_get_eld+0x2c/0xd0 [snd_hda_codec_hdmi]
+> [] hdmi_present_sense+0x9a/0x3a0 [snd_hda_codec_hdmi]
+> [] hdmi_repoll_eld+0x34/0x50 [snd_hda_codec_hdmi]
+>
+> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>   sound/pci/hda/patch_hdmi.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> index f5060fc7c303..977db17db26c 100644
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -1496,11 +1496,14 @@ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+>   	 * specification worked this way. Hence, we just ignore the data in
+>   	 * the unsolicited response to avoid custom WARs.
+>   	 */
+> -	int present = snd_hda_pin_sense(codec, pin_nid);
+> +	int present;
+>   	bool update_eld = false;
+>   	bool eld_changed = false;
+>   	bool ret;
+>
+> +	snd_hda_power_up(codec);
+> +	present = snd_hda_pin_sense(codec, pin_nid);
+> +
+>   	mutex_lock(&per_pin->lock);
+>   	pin_eld->monitor_present = !!(present & AC_PINSENSE_PRESENCE);
+>   	if (pin_eld->monitor_present)
+> @@ -1573,6 +1576,7 @@ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+>   		jack->block_report = !ret;
+>
+>   	mutex_unlock(&per_pin->lock);
+> +	snd_hda_power_down(codec);
+>   	return ret;
+>   }
+>
+>
 
---6mjziG+ONat+OS9O
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The patch worked thanks.
 
-On Mon, Jan 20, 2014 at 01:05:55PM +0100, Markus Pargmann wrote:
+I had to revert this patch to update the kernel to the current Linus' 
+git head.
 
-> +	SOC_DOUBLE_R_S_TLV("PCM Playback Volume", AIC32X4_LDACVOL,
-> +			AIC32X4_RDACVOL, 0, (s8)0x81, 0x30, 7, 0, tlv_pcm),
+Regards,
 
-These casts are icky - I'd expect either signed numbers being used here
-or the macros to deal with any required casting.  On the other hand
-there's fun and games with the type sizes...
-
-Also this seems to depend on the patch series adding these controls,
-please note such dependencies when submitting.
-
---6mjziG+ONat+OS9O
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS3uNMAAoJELSic+t+oim96OAQAIjddN+2ZlToVt2J3aWmd4Ar
-099Z/5oXLZ/IY9H30N1u5HL8QuE8BwEb+6y0LAA5glrs9PBL/VUDjfp5snW1B01v
-vck+IrN/8GlwYvrwLc7BDxmDKUqiN2lR1RHxMFdgbDvj1r9DglTebCgchAI36tCr
-D9g2nuQ6tsT6vSzLKfzteeOMLvBa19SNJ/p5e16n0jK4Y11sOYQTxeAnYjYoxDbU
-PvLT9oNFMEdF7mMsgE5HX7R2jWO0SFsLzc+kmyn8787Yq65a25d7NOQYrIDxgzDk
-yJPfVDo9WrpLzj9gpY8bZYFtYmDTk22SdnnSniQ32tqkCAJbhq3986TlOBhCQ41l
-HO+WhB2K0jN1EEF5/m4ADsh/EWtqAz0EjcTwJ+SbDNk8BIMZqhlbk5Nufl1QfxQL
-0QEKNdMNNeEXqi9iNhdzsyZd5A1At7xFEX7B6fE5UrxUf0pM5AVYXGpTmZXucoWt
-smDm4imWXNV7ndEhB19fsi6f8m2tvXkvm8alpejsKMX8dEz9Rv4XXHXG2Gsap+DE
-Vt4Diz0TALCi4CK0XL1JIWw1T7BI/DSVh+wDVNMZqjQP+xMGSpXR1w+iP4h6Jex2
-gWMB3sAVRnbBcUd/2kti3xFrMAnCaZOS5wyeLkUIQ1wIgRZ2lxVJLbdWdpM7zStu
-JABHnj3NfTk7BxOoGojZ
-=qZbU
------END PGP SIGNATURE-----
-
---6mjziG+ONat+OS9O--
-
---===============7659258514390354983==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7659258514390354983==--
+Arthur.
