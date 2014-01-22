@@ -1,17 +1,19 @@
-From: Rob Clark <robdclark@gmail.com>
+From: Daniel Vetter <daniel@ffwll.ch>
 Subject: Re: [Intel-gfx] Need your advice: Add a new communication inteface
 	between HD-Audio and Gfx drivers for hotplug notification/ELD update
-Date: Wed, 22 Jan 2014 10:04:14 -0500
-Message-ID: <CAF6AEGtfNzy_NZC64u2hhZMcWi=N2fFELKDYJ+Qyxh3TCyz9Hw@mail.gmail.com>
+Date: Wed, 22 Jan 2014 16:20:55 +0100
+Message-ID: <20140122152055.GK9772@phenom.ffwll.local>
 References: <F46914AEC2663F4A9BB62374E5EEF8F82B231778@SHSMSX101.ccr.corp.intel.com>
 	<CAKMK7uFYNfVhXsEmikDZCaFGM8k7g7VMcGqGM4U+1bA_9MX1zQ@mail.gmail.com>
 	<F46914AEC2663F4A9BB62374E5EEF8F82B23315E@SHSMSX101.ccr.corp.intel.com>
 	<20140122141821.GI9772@phenom.ffwll.local>
+	<CAF6AEGtfNzy_NZC64u2hhZMcWi=N2fFELKDYJ+Qyxh3TCyz9Hw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20140122141821.GI9772@phenom.ffwll.local>
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGtfNzy_NZC64u2hhZMcWi=N2fFELKDYJ+Qyxh3TCyz9Hw@mail.gmail.com>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
 	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
@@ -21,207 +23,46 @@ List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
 	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Sender: dri-devel-bounces@lists.freedesktop.org
 Errors-To: dri-devel-bounces@lists.freedesktop.org
-To: Daniel Vetter <daniel@ffwll.ch>
+To: Rob Clark <robdclark@gmail.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
 	Paulo R" <paulo.r.zanoni@intel.com>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "Lin,
 	Mengdong" <mengdong.lin@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>, "Barnes,
 	Jesse" <jesse.barnes@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 22, 2014 at 9:18 AM, Daniel Vetter <daniel@ffwll.ch> wrote:
-> On Wed, Jan 22, 2014 at 12:48:04PM +0000, Lin, Mengdong wrote:
->> > -----Original Message-----
->> > From: daniel.vetter@ffwll.ch [mailto:daniel.vetter@ffwll.ch] On Behalf Of
->> > Daniel Vetter
->> > Sent: Tuesday, January 21, 2014 9:11 PM
->> > To: Lin, Mengdong
->> > Cc: Takashi Iwai (tiwai@suse.de); Barnes, Jesse; Zanoni, Paulo R;
->> > alsa-devel@alsa-project.org; intel-gfx@lists.freedesktop.org
->> > Subject: Re: Need your advice: Add a new communication inteface
->> > between HD-Audio and Gfx drivers for hotplug notification/ELD update
->> >
->> > On Tue, Jan 21, 2014 at 1:35 PM, Lin, Mengdong <mengdong.lin@intel.com>
->> > wrote:
->> > > Dear audio and gfx stakeholders,
->> > >
->> > >
->> > >
->> > > We hope to add a new interface between audio and gfx driver, for gfx
->> > > driver to notify audio about HDMI/DP hot-plug and ELD update.
->> > >
->> > > Would you please share some comments on the proposal below?
->> > >
->> > >
->> > >
->> > > Background of this issue: On Intel Haswell/Broadwell platforms, there
->> > > is a HW restriction that after the display HD-Audio controller is in
->> > > D3,
->> > >
->> > > it cannot be waken up by HDMI/DP hot-plug. Consequently, although the
->> > > gfx driver can still detect the HDMI/DP hot-plug,
->> > >
->> > > audio driver has no idea about this and cannot notify user space
->> > > whether the external HDMI/DP monitor is available for audio playback,
->> > >
->> > > because the audio controller cannot wake up to D0 and receive HW
->> > > unsolicited event about hot-plug from the audio codec.
->> > >
->> > > This limitation will affect user space to decide whether we can output
->> > > audio over HDMI/DP.
->> > >
->> > >
->> > >
->> > > To solve the above limitation, Takashi suggested to add a new
->> > > communication interface between audio and gfx driver: create a
->> > common
->> > > object
->> > >
->> > > containing the ops registered by both graphics and audio drivers, then
->> > > communicate through it, something like vga_switcheroo.
->> > >
->> > >
->> > >
->> > > Is it okay to create this kernel object in i915 driver?
->> > >
->> > >
->> > >
->> > > I915 can export an API like "display_register_audio_client" for audio
->> > > driver to register a client and hot-plug notification ops.
->> > >
->> > >
->> > >
->> > > I915 can also call some API like "display_register_gfx_client" itself
->> > > and register ops for audio driver to query monitor presence and ELD
->> > > info on a specific port.
->> > >
->> > > It would be faster for audio driver than quering ELD by
->> > > command/response over the HD-A bus, thus avoid delay in i915 mode
->> > set.
->> > >
->> > > This will also avoid waking up the audio devices unnecessarily if the
->> > > user space does not really want to use HDMI/DP for audio playback.
->> > >
->> > >
->> > >
->> > > Whenever i195 enables/disables audio on a port in modeset, it can call
->> > > some API like "display_set_audio_state()" on this kernel object and
->> > > trigger notifications to the audio driver.
->> > >
->> > >
->> > >
->> > > When the audio driver is probed (in the delayed probe stage), it can
->> > > request
->> > > i915 API symbol to register the audio client for this communication
->> > > kernel object.
->> > >
->> > > Since the 1st i915 mode set may happen before audio driver registers
->> > > the ops, we'll let audio driver check ELD once after registering the
->> > > audio client ops.
->> > >
->> > > And for the platforms which uses this communication interface, we can
->> > > disable unsolicited event for HDMI/DP hot-plug in the audio driver.
->> > >
->> > >
->> > >
->> > > We hope to hear your feedback and start to work out more details.
->>
->> Thanks for your advice, Daniel!
->>
->> > Yeah, I've discussed this at KS with Takashi and we've agreed that some
->> > common object to facilitate driver interactions. A few things
->> > though:
->> > - This should be common infrastructure useable by all alsa and drm
->> > drivers, not just i915 and snd-hda. Especially on embedded platforms this
->> > issue is fairly rampant ...
->>
->> Agree. Where to put this common object?
->> Is it okay to put it under /driver/gpu/drm, similar to vga_switchroo?
->> Shall we divide clients into audio and gfx categories, and define
->> different ops for them? Since different info/request flow in different
->> direction between audio and gfx.
->
-> I guess we could place them into drivers/gpu, yeah. For a name I'd suggest
-> avsink or something like that, to make it clear that it's the combination
-> of audio+video. For the actual interfaces I guess we just need one object
-> in the device model, but the interface should be split into things called
-> from the audio side only, functions for the video driver side only and
-> stuff which can be called from both sides. This matters mostly just so we
-> don't end up with deadlocks since we need a lock to protect the avsink
-> state itself (e.g. the EDL or the audio_output_connected state).
+On Wed, Jan 22, 2014 at 10:04:14AM -0500, Rob Clark wrote:
+> sorry to jump into this a bit late, so maybe this was covered already earlier..
 
-sorry to jump into this a bit late, so maybe this was covered already earlier..
+It just started, I've quoted everything when cc'ing dri-devel. But good to
+have examples outside of x86 (where things are mostly standardized by the
+Eye of Redmond).
 
-For drm/msm the hdmi code needs something along these lines from audio:
+> For drm/msm the hdmi code needs something along these lines from audio:
+> 
+> int hdmi_audio_info_setup(struct platform_device *pdev, bool enabled,
+>         uint32_t num_of_channels, uint32_t channel_allocation,
+>         uint32_t level_shift, bool down_mix);
+> void hdmi_audio_set_sample_rate(struct platform_device *pdev, int rate);
+> 
+> (former is mainly to setup avi audio infoframe, latter for clks)
+> 
+> in addition to hotplug and ELD stuff
 
-int hdmi_audio_info_setup(struct platform_device *pdev, bool enabled,
-        uint32_t num_of_channels, uint32_t channel_allocation,
-        uint32_t level_shift, bool down_mix);
-void hdmi_audio_set_sample_rate(struct platform_device *pdev, int rate);
+Can you elaborate a bit on what you need for msm? On intel (and I think
+the other x86 platforms are similar) we have separate buffers in the hw
+for avi infoframes and audio infoframes, so the drm and alsa driver can
+bash the right stuff into the hardware on their own. I'm mostly confused
+since you say _AVI_ infoframe here, which is purely generated by the drm
+side of the code here. Or at least that's been my understanding.
 
-(former is mainly to setup avi audio infoframe, latter for clks)
+The clocks are also funny really, but I'm not sure whether this fits. I'd
+have expected some DT-based generic clock source which the audio driver
+just grabs as part of his multi-device beast (maybe using Russell's new
+driver core code) and used directly. What's the reason that this has to go
+through the drm driverr?
 
-in addition to hotplug and ELD stuff
-
-BR,
--R
-
->> > - While at it it should also encompass power management handling of the
->> > shared hw imo so that we can get rid of the hsw specific hacks for the
->> > power well code. Or at least we need to rework the power well code to
->> > reuse this new infrastructure, I don't really want to maintain a few copies
->> > of the lazy symbol_get logic this kind of stuff requires.
->>
->> Sounds good.
->>
->> > - I think the biggest problem is figuring out who should register these
->> > device nodes. I think it makes the most sense if we do this in the gfx driver,
->> > but that requires some trickery on the alsa side (probably with using
->> > -EPROBE_DEFER or something like that.
->>
->> Can the new infrastructure allow audio driver to query whether gfx driver is ready?
->> Maybe audio can wait until gfx is ready. For HD-Audio driver, the most
->> time consuming part is delayed after the probe stage, and actually we
->> can wait in the delayed phase.
->
-> Tbh I haven't really thought about this really. EPROBE_DEFER looks like
-> the technique used by embedded platforms, but there's also the new
-> aggregate device driver infrastructure that Russell King is working on for
-> the imx driver. Or maybe we need to hand-roll our own notification scheme.
->
-> On a hunch it's probably best if the gfx side registers this device (since
-> it also owns the output state in general) and that the audio side waits
-> until the gfx side has registered everything if it's not there yet. I also
-> haven't though about how the audio side could probe for the right avsink
-> node really ...
->
->> > - I agree that passing ELD and all the other information through this new
->> > structure makes lot more sense than the current mess we have with
->> > passing the ELD through some hardware buffer.
->>
->> > - Finally I think we should assign some identifier to this link which will get
->> > exposed both on the drm side and in alsa, so that userspace can figure
->> > out which display connects to which output. With that media player could
->> > do the Right Thing and automatically place the audio stream on the right
->> > pin in alsa.
->>
->> Is there something that blocks media player from doing the right thing now?
->> For HD-Audio, the eld entries under /proc/asound/cardx expose the ELD
->> info and can help user space to check if a monitor is usable on a pin.
->> Current limitation is these eld entries cannot update if the audio
->> controller is in D3, so we need the new infrastructure to notify audio
->> driver to update them. But I'm not sure about embedded audio, maybe
->> Takashi would like to share more info.
->
-> ELD doesn't contain the serial number from the EDID, so if you have two
-> monitors of the same model userspace can't figure out which audio output
-> is connected to which screen.
->
-> Cheers, Daniel
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> +41 (0) 79 365 57 48 - http://blog.ffwll.ch
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> http://lists.freedesktop.org/mailman/listinfo/intel-gfx
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
