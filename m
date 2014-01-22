@@ -1,50 +1,87 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [alsa-devel] [PATCH RFC v2 REPOST 3/8] ASoC: davinci-evm: HDMI
- audio support for TDA998x trough McASP I2S bus
-Date: Wed, 22 Jan 2014 11:46:47 +0100
-Message-ID: <20140122114647.20f75d0d@armhf>
-References: <cover.1387535299.git.jsarha@ti.com>
-	<d3c3f645d39338df0ee9686cb030255ce36a249d.1387535302.git.jsarha@ti.com>
-	<20131231132555.GA31886@sirena.org.uk>
-	<52D67099.1040904@ti.com>
-	<20140115165100.3bfab96f@armhf>
-	<52DF8D60.9020505@ti.com>
-	<20140122111953.238349a5@armhf>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 6/7] ASoC: Samsung: smdk_wm8994: Fix build
+	error
+Date: Wed, 22 Jan 2014 11:10:21 +0000
+Message-ID: <20140122111021.GD17314@sirena.org.uk>
+References: <1390371213-21643-1-git-send-email-sachin.kamat@linaro.org>
+ <1390371213-21643-7-git-send-email-sachin.kamat@linaro.org>
+ <s5hlhy8v703.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20140122111953.238349a5@armhf>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Jyri Sarha <jsarha@ti.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, "Ujfalusi, Peter" <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, bcousson@baylibre.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============3432284912746848264=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24DFD261A80
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 12:11:25 +0100 (CET)
+In-Reply-To: <s5hlhy8v703.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Sachin Kamat <sachin.kamat@linaro.org>, sbkim73@samsung.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 22 Jan 2014 11:19:53 +0100
-Jean-Francois Moine <moinejf@free.fr> wrote:
 
-> As both I2S and S/PDIF may be used for HDMI output in the Cubox,
-> I wrote a tda998x CODEC which gets the audio ports from the DT and
-> dynamically sets these ports and the audio type (i2s / spdif) on audi=
-o
-> streaming start. I have not submitted yet this codec and the associat=
-ed
-> changes in tda998x, because I am waiting for a first patch series on =
-the
-> tda998x to be applied
-> (http://lists.freedesktop.org/archives/dri-devel/2014-January/051552.=
-html).
+--===============3432284912746848264==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="k+1XiaZWzQ61FkPh"
+Content-Disposition: inline
 
-Sorry, the last patch request is
 
-http://lists.freedesktop.org/archives/dri-devel/2014-January/052201.htm=
-l
+--k+1XiaZWzQ61FkPh
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On Wed, Jan 22, 2014 at 07:57:16AM +0100, Takashi Iwai wrote:
+> At Wed, 22 Jan 2014 11:43:32 +0530,
+> Sachin Kamat wrote:
+
+> > Fixes the following build error when OF is not defined:
+> > sound/soc/samsung/smdk_wm8994.c:191:23: error: =E2=80=98samsung_wm8994_=
+of_match=E2=80=99 undeclared (first use in this function)
+
+> We can just remove the #ifdef CONFIG_OF, instead?
+> The compiler should be clever enough to drop the actually unused
+> static variables after optimization.
+
+Yes, that's a nicer solution.
+
+--k+1XiaZWzQ61FkPh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS36caAAoJELSic+t+oim9rDgP/iTzknO4kRlpLY9GYa60Ykof
+TBCd8MHBiNnbuamRA5ItQeOiJbY+wEYLY39D24c/lU2v3Yd4MLBQcQMZpv/KTm7M
+PCMVDpiOxztxdzurhYA2D/tpIYu7oBH1QC4Hjq4fSr6RR2tDcCkk9iBFnFiMCBEE
+/zkVJn1lRwntOCb+vEgTOiTwftlaOzwdg7Zw4X0BfZ3lj55WAf5VLC3PJsMUJ5V2
+055MTcuD7y51Wg+bxBdU38kfgFwmaytDhVZmhRA+I2MELUMPRAtMo5ZGLwnKCA2q
+b+Vk58HyFKlj1/g8oqVnTF0w2FQjiQ7deyEiu7zLd4VoGpqnOyu3f7a7Z8Vo2B8X
+6eIUF8Jo/tkn37reggfYNrl00+3BOfU2nE3sdG0N8xR0agzYZfYA6ZWvL3SiVcu7
+rx1DVNG5RVC/BcjQjX3BZ1O6Ib6jqjk7AOXUI+xH9zskJ9OT9Yb/LSY1EBQ6x34u
+T6Y3wUmV+Va077rRrBLB1XqeE/8lRBLcjCrCPczhXMXZlwIOIX6entuDMTIIQcIa
+w0bHSQ29U4J8b/RePReNDadRg/6Xo8+Lm3nkW3pPGNI4j+xtRxU6k+iadx7luvKK
+GnKNTVfC8SPGabHKUiglUVeDLtyY5jRakVRt2lKlDLwu0DaapMQLrxh9iURLuL4I
+ml7ifaxnl+qtjqBTLUzW
+=++zp
+-----END PGP SIGNATURE-----
+
+--k+1XiaZWzQ61FkPh--
+
+--===============3432284912746848264==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3432284912746848264==--
