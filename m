@@ -1,20 +1,19 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH v2 6/6] ASoC: Samsung: smdk_wm8994: Fix build
-	error
-Date: Wed, 22 Jan 2014 17:30:43 +0530
-Message-ID: <1390392043-24387-7-git-send-email-sachin.kamat@linaro.org>
-References: <1390392043-24387-1-git-send-email-sachin.kamat@linaro.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [RFC PATCH] ALSA: hda - Detect codecs on Intel
+	DZ77SL-50K
+Date: Wed, 22 Jan 2014 13:25:34 +0100
+Message-ID: <52DFB8BE.6060005@canonical.com>
+References: <1390390348-11745-1-git-send-email-david.henningsson@canonical.com>
+ <s5hd2jkfdn7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
- [209.85.192.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F88B265132
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 13:05:32 +0100 (CET)
-Received: by mail-pd0-f182.google.com with SMTP id v10so290585pde.13
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 04:05:31 -0800 (PST)
-In-Reply-To: <1390392043-24387-1-git-send-email-sachin.kamat@linaro.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CD97265066
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 13:25:34 +0100 (CET)
+In-Reply-To: <s5hd2jkfdn7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +23,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: patches@linaro.org, sbkim73@samsung.com, lgirdwood@gmail.com, tiwai@suse.de, broonie@kernel.org, sachin.kamat@linaro.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: kulkarniniraj@rediffmail.com, alsa-devel@alsa-project.org, 1155202@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-Rml4ZXMgdGhlIGZvbGxvd2luZyBidWlsZCBlcnJvciBhbmQgd2FybmluZyB3aGVuIE9GIGlzIG5v
-dCBkZWZpbmVkOgpzb3VuZC9zb2Mvc2Ftc3VuZy9zbWRrX3dtODk5NC5jOjE5MToyMzogZXJyb3I6
-IOKAmHNhbXN1bmdfd204OTk0X29mX21hdGNo4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0
-aGlzIGZ1bmN0aW9uKQpzb3VuZC9zb2Mvc2Ftc3VuZy9zbWRrX3dtODk5NC5jOjQ3OjMyOiB3YXJu
-aW5nOiDigJhzbWRrX2JvYXJkX2RhdGHigJkgZGVmaW5lZCBidXQgbm90IHVzZWQgWy1XdW51c2Vk
-LXZhcmlhYmxlXQoKb2ZfbWF0Y2hfcHRyKCkgaXMgdXNlZCBzbyB0aGF0IHNhbXN1bmdfd204OTk0
-X29mX21hdGNoIGdldHMgZHJvcHBlZCAoYXMgdW51c2VkKQpieSB0aGUgY29tcGlsZXIgd2hlbiBP
-RiBpcyBub3QgZGVmaW5lZC4KClNpZ25lZC1vZmYtYnk6IFNhY2hpbiBLYW1hdCA8c2FjaGluLmth
-bWF0QGxpbmFyby5vcmc+Ci0tLQogc291bmQvc29jL3NhbXN1bmcvc21ka193bTg5OTQuYyB8ICAg
-IDQgKy0tLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAzIGRlbGV0aW9ucygtKQoK
-ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zYW1zdW5nL3NtZGtfd204OTk0LmMgYi9zb3VuZC9zb2Mv
-c2Ftc3VuZy9zbWRrX3dtODk5NC5jCmluZGV4IGIwNzJiZDEwN2IzMS4uZDM4YWU5OGUyZjMyIDEw
-MDY0NAotLS0gYS9zb3VuZC9zb2Mvc2Ftc3VuZy9zbWRrX3dtODk5NC5jCisrKyBiL3NvdW5kL3Nv
-Yy9zYW1zdW5nL3NtZGtfd204OTk0LmMKQEAgLTE1MiwxMyArMTUyLDExIEBAIHN0YXRpYyBzdHJ1
-Y3Qgc25kX3NvY19jYXJkIHNtZGsgPSB7CiAJLm51bV9saW5rcyA9IEFSUkFZX1NJWkUoc21ka19k
-YWkpLAogfTsKIAotI2lmZGVmIENPTkZJR19PRgogc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZp
-Y2VfaWQgc2Ftc3VuZ193bTg5OTRfb2ZfbWF0Y2hbXSA9IHsKIAl7IC5jb21wYXRpYmxlID0gInNh
-bXN1bmcsc21kay13bTg5OTQiLCAuZGF0YSA9ICZzbWRrX2JvYXJkX2RhdGEgfSwKIAl7fSwKIH07
-CiBNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBzYW1zdW5nX3dtODk5NF9vZl9tYXRjaCk7Ci0jZW5k
-aWYgLyogQ09ORklHX09GICovCiAKIHN0YXRpYyBpbnQgc21ka19hdWRpb19wcm9iZShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlICpwZGV2KQogewpAQCAtMTg4LDcgKzE4Niw3IEBAIHN0YXRpYyBpbnQg
-c21ka19hdWRpb19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogCQlzbWRrX2Rh
-aVswXS5wbGF0Zm9ybV9vZl9ub2RlID0gc21ka19kYWlbMF0uY3B1X29mX25vZGU7CiAJfQogCi0J
-aWQgPSBvZl9tYXRjaF9kZXZpY2Uoc2Ftc3VuZ193bTg5OTRfb2ZfbWF0Y2gsICZwZGV2LT5kZXYp
-OworCWlkID0gb2ZfbWF0Y2hfZGV2aWNlKG9mX21hdGNoX3B0cihzYW1zdW5nX3dtODk5NF9vZl9t
-YXRjaCksICZwZGV2LT5kZXYpOwogCWlmIChpZCkKIAkJKmJvYXJkID0gKigoc3RydWN0IHNtZGtf
-d204OTk0X2RhdGEgKilpZC0+ZGF0YSk7CiAKLS0gCjEuNy45LjUKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 01/22/2014 12:40 PM, Takashi Iwai wrote:
+> At Wed, 22 Jan 2014 12:32:28 +0100,
+> David Henningsson wrote:
+>>
+>> From: Niraj <kulkarniniraj@rediffmail.com>
+>>
+>> Apparently this board seems to need some extra initialization before a proper
+>> codec probe value can be read.
+>>
+>> BugLink: https://bugs.launchpad.net/bugs/1155202
+>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+>> ---
+>>  sound/pci/hda/hda_intel.c |    6 ++++++
+>>  1 file changed, 6 insertions(+)
+>>
+>> Hi Takashi,
+>>
+>> Here's a patch from Niraj, which has found this code below to make audio work
+>> on the Intel DZ77SL-50K board. Without it, no codecs will be detected.
+>>
+>> I'm not sure if you like it this way or if you want me or Niraj to change
+>> anything, or debug further. Or maybe add a new quirk for this particular device?
+> 
+> Of course, I don't like this :)
+> 
+> The patch essentially disables the codec reset in *all* cases after a
+> codec is probed.  This smells badly of a future regression.
+
+Hmm, but I don't see how the patch *disables* any codec reset. It only
+does an *extra* controller reset in some cases.
+
+> FWIW, you can set a forced codec probe mask in probe_mask_list[].
+> The bit 0x100 means to force the detection.
+
+Yes, we tried this and it did not help. If the codecs do not show up
+naturally in STATETS, then they cannot be communicated with either.
+
+> But, before going that direction, could you clarify how this fixes the
+> probing at all?  Which azx_init_chip() calls hinders the probing of an
+> active codec?
+
+It seems more like, the particular chip or board requires a special
+quirky initialization sequence.
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+>>
+>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>> index fa2879a..2bf46e9 100644
+>> --- a/sound/pci/hda/hda_intel.c
+>> +++ b/sound/pci/hda/hda_intel.c
+>> @@ -1306,6 +1306,12 @@ static void azx_init_chip(struct azx *chip, int full_reset)
+>>  
+>>  	/* reset controller */
+>>  	azx_reset(chip, full_reset);
+>> +	if (!chip->codec_mask) {
+>> +		azx_writel(chip, GCTL, 0x100);
+>> +		while(azx_readl(chip, GCTL) != 0x0);
+>> +		azx_writel(chip, GCTL, 0x1);
+>> +		azx_reset(chip, full_reset);
+>> +	}
+>>  
+>>  	/* initialize interrupts */
+>>  	azx_int_clear(chip);
+>> -- 
+>> 1.7.9.5
+>>
+> 
+
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
