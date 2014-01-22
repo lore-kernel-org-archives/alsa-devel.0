@@ -1,20 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/7] ASoC: Samsung: Fix build regressions
- due to gpio re-org
-Date: Wed, 22 Jan 2014 11:43:13 +0000
-Message-ID: <20140122114313.GE17314@sirena.org.uk>
-References: <1390371213-21643-1-git-send-email-sachin.kamat@linaro.org>
- <1390371213-21643-2-git-send-email-sachin.kamat@linaro.org>
- <CACRpkdZ05LPRB_MdM4ZaJtSYRVM294aW4h9DC04wc__8rSyxjA@mail.gmail.com>
- <CAK9yfHxRAfTYnPHJC3dkzBaCf13-RxeJeJ=4fAY+1wfDYK0BGA@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: wm_adsp: Add debug print to note
+ that the DSP has shutdown
+Date: Wed, 22 Jan 2014 11:45:53 +0000
+Message-ID: <20140122114553.GF17314@sirena.org.uk>
+References: <1390385351-3154-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7476581000880694316=="
+Content-Type: multipart/mixed; boundary="===============2791110633711506052=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 24AF7261B35
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 12:43:28 +0100 (CET)
-In-Reply-To: <CAK9yfHxRAfTYnPHJC3dkzBaCf13-RxeJeJ=4fAY+1wfDYK0BGA@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 67D3F261A80
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 12:46:06 +0100 (CET)
+In-Reply-To: <1390385351-3154-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Patch Tracking <patches@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7476581000880694316==
+--===============2791110633711506052==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PirNdcX87PK7+kHx"
+	protocol="application/pgp-signature"; boundary="qSUODgShzI+GU3D8"
 Content-Disposition: inline
 
 
---PirNdcX87PK7+kHx
-Content-Type: text/plain; charset=utf-8
+--qSUODgShzI+GU3D8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 22, 2014 at 01:40:06PM +0530, Sachin Kamat wrote:
-> On 22 January 2014 13:26, Linus Walleij <linus.walleij@linaro.org> wrote:
+On Wed, Jan 22, 2014 at 10:09:11AM +0000, Charles Keepax wrote:
+> It can be useful for debugging purposes to see at what point the DSP has
+> powered down, so add a message to inform us of this.
 
-> >> sound/soc/samsung/smartq_wm8987.c:112:3: error: implicit declaration o=
-f function =E2=80=98S3C64XX_GPL=E2=80=99
+Applied, thanks.
 
-> > And I *really* tried to catch all these, could we make this driver
-> > part of the defconfig
-> > if it isn't?
-
-> They aren't enabled by default. But makes sense to have them enabled
-> for better compile coverage.
-
-Given that they mostly have so few users it doesn't seem to fit with
-what a defconfig is supposed to do - allXconfig is usually the way one
-gets coverage (yes, it's a bit slow but build times seem to be
-increasing faster than kernel size these days).
-
---PirNdcX87PK7+kHx
+--qSUODgShzI+GU3D8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS367NAAoJELSic+t+oim9ZqsQAIVA6ow+zvcCX0ZJsX6zKC5R
-9zipEnwSbbv45soRwXkW+5U59Sd8UGFpxIAIJufjRfFRJdR4ZDNRmkdIH1O+BZo0
-SB8LGldERrV/OOMsuEDB8tN2L4QJPYMK84nAyy7l7iipGOM8r6Mxdlsdl3FeVjBW
-gPhvDBfpjAwkt8O9/mpraYekezZFjZSQR4lbjU31GbEthAYN0XgAT3vdPDK+lmo1
-MCZgPs819pczfqLeONRm7etOLDRg7vr+D7El9vzvyxEJ6PzDXD5J7vD74IzGu42R
-yumFKmXk8sqlbIYAXnI2QREtMRYOmCi9tKfHFyzTgr3HDMt8D9/RSb12G7TQ/IEA
-/LQ+lMKXMTY7R9MdtkjdmyD8krUVPLqFUkjHFnUaWN8Bf2i8/uVb8cRcMIoRCkfN
-Su5S77FAQGaJ3rey12S7xGH4ZomhMFRKejDjbz1Fy8j1eRzwA1VSAbsg/AO+WcK/
-pX9ZzXBz8BCRB8N3LPJA3v9KQRuHpoonT0i59qoa0OGMz0pzseskwhkASaIz5fVo
-Dt4iMxTXmFulP4hLkhod76R0jSCZ4bDPUlL7o1qqLnZ+63UMaWE99bbixKKLe/kT
-Iqf+GJP/1qIc9tS/wy5ZAevd3v0kPTb2VUMpfPHsHIFCypVILDVxeDK+ggzT31gH
-l2HWCk6jY5GESTcoQZYo
-=j/Z1
+iQIcBAEBAgAGBQJS369uAAoJELSic+t+oim9HaIQAJPi5kokBz7Kbb3WvghtOWym
+UnjRbojE1tmd2l6HnH/d12p81lLaHvAN73bQjJvaS+zWDmzIQfi82ozwGZH557dV
+B3qre03Mx00/OQKqruMpnjAdEMGrwZopPp/xzfJOgLxeAZXpyFwMIlEYByodni+Q
+2ev9t+wXNubmh4/mwSuFHADood1HhFVKgP+lPmvu2OirbclWWoSmIhPJXylQL3f/
+7N1ZSECeNZoqNOWYHNv8cWCB3kcGPdlAyYc1jGYWlG36SU0sboGfHVSJr9xf16Cv
+qhUOp89W+lJTeKs2cvwIgI+pdUJLbr1bfqelmXZQzociYDEasOvS+gGNIqOCsfVZ
+TsZ9nYwaPsnHbAGJ40OFGhrZ6QKDw941zu4PlaPfRWxNf0MBgBlNVhoOU+Z0KHq7
+ydy1p23JChY1wZoyPVHbpOPgGuDLFL2Fk1g3XCF7lqDwemtkkzRBoAeVIVjXeyGe
+06pG32weTbWjbAk0nU8Vu0+E7CzumHQHpzosWaOpi7qxW5fS/5KoqBHbwaTSK9+0
+bfvcz6CgYOOtpFBuXDG0OxmGcp/RHmh4df2TKJ/4Sp+ZUhZGta/lr6ShrPw5yGHJ
+y2fxPMmcQw/Qp0Om7vhpQsg98U8A1tTJ0ZjB6R1uwRodXoYnfp3kypwSg1JaINl1
+TTvd4QdFKx+UYRN6Wqeb
+=MAVd
 -----END PGP SIGNATURE-----
 
---PirNdcX87PK7+kHx--
+--qSUODgShzI+GU3D8--
 
---===============7476581000880694316==
+--===============2791110633711506052==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7476581000880694316==--
+--===============2791110633711506052==--
