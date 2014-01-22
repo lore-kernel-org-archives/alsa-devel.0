@@ -1,51 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 5/8] ASoC: simple-card: simplify code
-Date: Wed, 22 Jan 2014 19:42:46 +0000
-Message-ID: <20140122194246.GY17314@sirena.org.uk>
+Subject: Re: [PATCH v2 6/8] ASoC: simple-card: simplify code
+Date: Wed, 22 Jan 2014 20:05:58 +0000
+Message-ID: <20140122200558.GA17314@sirena.org.uk>
 References: <20140115113551.0eb13409@armhf>
- <20140115165148.2e0e19f3@armhf>
+ <20140115165152.0ad6e344@armhf>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mnf9g033gFJG8dr6"
+	protocol="application/pgp-signature"; boundary="r/WOGnZHPnL8Js0N"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140115165148.2e0e19f3@armhf>
+In-Reply-To: <20140115165152.0ad6e344@armhf>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jean-Francois Moine <moinejf@free.fr>
 Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---mnf9g033gFJG8dr6
+--r/WOGnZHPnL8Js0N
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jan 15, 2014 at 04:51:48PM +0100, Jean-Francois Moine wrote:
-> The CPU and CODEC DAI names are still copied to the user info structure.
-> Put them directly in the DAI links.
+On Wed, Jan 15, 2014 at 04:51:52PM +0100, Jean-Francois Moine wrote:
+> In the non-DT sequence, the platform data is copied as a whole to the
+> dynamic card info and the same pointer 'cinfo' is used to copy the
+> platform information to the card.
 
 Applied, thanks.
 
---mnf9g033gFJG8dr6
+--r/WOGnZHPnL8Js0N
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS4B8yAAoJELSic+t+oim9X7AP/i1l7WM+mQagUXb++bO89Tsr
-yF4jGPwYzzoGWSQVqqyqk+D/4fmsmqlut7JiD5RD5Ppmv8uXyKSnBuuONgligYG3
-VeQSAv+/3Ioj8JXZUSG+n+Df1WHiSittHeMqU6g6jZSPlzk+Pf9PefyvOM0lb28x
-2pFFrwerhRxOiW7+G8rVXFN4Q4aQJuwxCkkf+lGy5J/+Qgn5NO0iAXUbYn30N18n
-fNPVJBMtsKIN5IzKd9vlCE24/Iq5/Gc8cEoXjzwFj78L6GU1rOpkxcTh0xq9bl2M
-aRkJqG0T1ZXbyEohvCx6NW72ejBP8JeY/4PNU3MOaikugzmf3R14liTPws3gO/YK
-xcDa3dStXoY5jpsg9MGXKj50sp97JRa8jqsmQNtZbjXw6KT4qGySrACT6bJWrhpD
-33Z1jkPvwhCQrSRCTF7Bpcbhz5YMO2dUhJzPRYdHqsrDMMrvp3XC//S7aWEYWZjf
-PykBrl8uZmOECZkFcLTvhAm3sa2A/V9MsU3kECsQOopLZyD2zoJ55f0PmJdSVe8a
-wXTF6hOKZWVRKf0dUGg1k7dN3o80iE+rzTkV4V1n6FajN6YUgsS0uK2I6GJMdA+P
-5qWWmIzbj7enJtg8NplFze9jJOyivY7uqAi0teM0OYSSNMAT6UbnhsfUmvw5ar2M
-cKG2FdWJFxNsD7vc2Em4
-=LAg8
+iQIcBAEBAgAGBQJS4CSjAAoJELSic+t+oim9pyoP/1/Lp/t8bAlypz+UztsPHsO2
+GM1oU+F0vskE42MHA82M7MJp0VeL+vtgS5rhrRcH5COQgOxxzDn35+oKZti0WRoL
+65bvC/lFJuKwFKeiZ2/IidtkkZ+e8AWaFIY9iUucqq++k2viTvazggCJssD/DTdA
+lkUWbswJ/pZqMK7XryhgSu/BaRRbh1vtXV2yJTCGJB6vtPUOXhNhx2DPx4AynPnT
+9BZ2DX/Z1rDAmGaU+dIkRUR6djO2B2n8G7rRApRWTUovmpWwPsocs7WS/g/zeawD
+/xhsY5lK9yeWsR3ivfi4qR+fRfQ6VquBON9XiuDVVuMbaSbQGDLpr6xgMQP14tIf
+IpOo0jvH84qdTnjUL6uHiS/kWkRFZq2pSXjQJ8p06FrgfVhoIHYP/mQPR5Mz2Ftu
+SmwXIhH7awfFiNXEIu1eWuglIAQCpVbfD5CAti7K5TftzBOW2jSTp9cDUqv2ehoF
+uestEohpnBo80IWvZDLFTv0ZPCw3/4OaxEy2LIYWLTzOpz2/hcwG5q6z+clO9a+p
+nY3EUi7DwMSAqb+2nR27KLhR74qgJA3JBjQVYq5FrOd88VYPFrA+Umq9VeYF3JWG
+CmNDM5jSWPZ5yuRLmYG1Rr9xEINAPCXkrUYEO8fOuYcZwo+T6PR68/oZmw0nl+9W
+mXgEE211ZBshw4Vu5Z8T
+=1KuS
 -----END PGP SIGNATURE-----
 
---mnf9g033gFJG8dr6--
+--r/WOGnZHPnL8Js0N--
