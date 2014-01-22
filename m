@@ -1,54 +1,101 @@
-From: gianluca <gianlucarenzi@eurekelettronica.it>
-Subject: Hello list! My first question!
-Date: Wed, 22 Jan 2014 16:30:31 +0100
-Message-ID: <52DFE417.4080709@eurekelettronica.it>
+From: Rob Clark <robdclark@gmail.com>
+Subject: Re: Need your advice: Add a new communication inteface
+ between HD-Audio and Gfx drivers for hotplug notification/ELD update
+Date: Wed, 22 Jan 2014 10:45:26 -0500
+Message-ID: <CAF6AEGtNfqy1025p+pZYgCPRUORe-9Y0mu3nCs62q9fTVymp1g@mail.gmail.com>
+References: <F46914AEC2663F4A9BB62374E5EEF8F82B231778@SHSMSX101.ccr.corp.intel.com>
+	<CAKMK7uFYNfVhXsEmikDZCaFGM8k7g7VMcGqGM4U+1bA_9MX1zQ@mail.gmail.com>
+	<F46914AEC2663F4A9BB62374E5EEF8F82B23315E@SHSMSX101.ccr.corp.intel.com>
+	<20140122141821.GI9772@phenom.ffwll.local>
+	<CAF6AEGtfNzy_NZC64u2hhZMcWi=N2fFELKDYJ+Qyxh3TCyz9Hw@mail.gmail.com>
+	<20140122152055.GK9772@phenom.ffwll.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx4.acantho.net (mx4.acantho.net [213.174.182.197])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A2892619E0
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 16:31:02 +0100 (CET)
-Received: (from root@localhost)
- by mx4.acantho.net (8.14.3/8.13.4/Debian-3sarge1) id s0MFV2xn006493
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 16:31:02 +0100
-Received: from [192.168.143.6] ([77.89.4.21])
- by mx4.acantho.net (8.14.3/8.13.4/Debian-3sarge1) with ESMTP id s0MFUVXn005872
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 16:30:31 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20140122152055.GK9772@phenom.ffwll.local>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces@lists.freedesktop.org
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+To: Daniel Vetter <daniel@ffwll.ch>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
+	Paulo R" <paulo.r.zanoni@intel.com>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>, daeinki <inki.dae@samsung.com>, Thierry Reding <thierry.reding@gmail.com>, "Barnes,
+	Jesse" <jesse.barnes@intel.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Archit Taneja <archit@ti.com>, Tomi Valkeinen <tomi.valkeinen@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gbGlzdCEKSSBhbSB3b3JraW5nIG9uIGEgY3VzdG9tIGVtYmVkZGVkIEFSTSBiYXNlZC1i
-b2FyZCAoaU1YMjgpIHdpdGggYSAKU0dUTDUwMDAgYXVkaW8gY29kZWMgKGNvcnJlY3RseSBzZWVu
-IGJ5IGtlcm5lbCAzLjEyLjIpIGJ1dCB0aGUgbGluZW91dCAKbGluZXMgKExJTkVPVVRfTCBhbmQg
-TElORU9VVF9SKSBhcmUgaW5wdXRzIGZvciBhIFRleGFzIEluc3RydW1lbnRzJyAKVm9sdW1lIENv
-bnRyb2xsZXIgbmFtZWQgTE00ODEwMFEgaTJjLWJ1cyBiYXNlZC4KCkkgd291bGQgbGlrZSB0byBr
-bm93IGlmIHRoZXJlIGFyZSBhbnkgY2hhbmNlcyB0byBhZGQgYSBBTFNBIERyaXZlciBmb3IgCnRo
-aXMgVk9MVU1FIENPTlRST0xMRVIuIEkgYW0gbG9va2luZyBhdCBzb3VuZHMvaTJjL290aGVyL3B0
-MjI1OC5jIGRyaXZlciAKYW5kIGl0IGxvb2tzIHZlcnkgc2ltaWxhciB0byBsbTQ4MTAwLiBBY3R1
-YWxseSB0aGlzIGxtNDgxMDAgaGFzIDUgCnJlZ2lzdGVycyBidXQgb25seSAzIGFyZSB1c2VmdWwg
-dG8gbWU6IE1PREUgQ09OVFJPTCAoaG93IG1hbnkgaW5wdXRzIGl0IAp1c2VzICgxIG9yIDIpIG9y
-IFBPV0VSIE9OL09GRiksIGFuZCBvbmUgcmVnaXN0ZXIgZm9yIElOUFVUMSBWT0xVTUUgClNFVFRJ
-TkcgYW5kIGFub3RoZXIgb25lIGZvciBJTlBVVDIgVk9MVU1FIFNFVFRJTkcuCgpPciBJIHdpbGwg
-YmUgZm9yY2VkIHRvIHVzZSB0aGlzIGluIGEgdXNlcnNwYWNlIGRyaXZlciBhY2Nlc3NpbmcgdGhl
-IGkyYywgCmJ1dCB3aXRoIG5vIGludGVncmF0aW9uIGluIGFueSBsaW51eC1iYXNlZCBhdWRpbyBt
-aXhlciBhbHNhIHRvb2wuCgpDYW4geW91IGhlbHAgbWUgb24gdGhpcz8KCgpSZWdhcmRzLAotLSAK
-ICAgICAgICAgICAgLCwsCiAgICAgICAgICAgKG8gbykKPT09PT09b09PPT0oXyk9PU9Pbz09PT09
-PQoKR2lhbmx1Y2EgUmVuemkKUiZECnBob25lOiArMzkuMDU0Mi42MDkxMjAKZmF4OiAgICszOS4w
-NTQyLjYwOTIxMgoKICAgICAgIC5vb29PICBPb29vLgo9PT09PT0oICAgKT09KCAgICk9PT09PT09
-CiAgICAgICAgXCAoICAgICkgLwogICAgICAgICBcXykgIChfLwoKPT09PT09PT09PT09PT09PT09
-PQp8IEkgd291bGQgbGlrZSB0byB8CnwgZml4IHRoZSB3b3JsZCwgIHwKfCBidXQgdGhleSdyZSBu
-b3QgfAp8IGdpdmluZyBtZSB0aGUgICB8CiAgXCBzb3VyY2UgY29kZSEgIC8KICAgLS0tLS0tLS0t
-LS0tLS0tCiAgICAgwq9cXygiLilfL8KvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+On Wed, Jan 22, 2014 at 10:20 AM, Daniel Vetter <daniel@ffwll.ch> wrote:
+> On Wed, Jan 22, 2014 at 10:04:14AM -0500, Rob Clark wrote:
+>> sorry to jump into this a bit late, so maybe this was covered already earlier..
+>
+> It just started, I've quoted everything when cc'ing dri-devel. But good to
+> have examples outside of x86 (where things are mostly standardized by the
+> Eye of Redmond).
+
+perhaps the arm/SoC stuff was standardized by the Eye of Cthulhu
+
+btw, added a few other SoC drm types who might be interested in the topic
+
+>> For drm/msm the hdmi code needs something along these lines from audio:
+>>
+>> int hdmi_audio_info_setup(struct platform_device *pdev, bool enabled,
+>>         uint32_t num_of_channels, uint32_t channel_allocation,
+>>         uint32_t level_shift, bool down_mix);
+>> void hdmi_audio_set_sample_rate(struct platform_device *pdev, int rate);
+>>
+>> (former is mainly to setup avi audio infoframe, latter for clks)
+>>
+>> in addition to hotplug and ELD stuff
+>
+> Can you elaborate a bit on what you need for msm? On intel (and I think
+> the other x86 platforms are similar) we have separate buffers in the hw
+> for avi infoframes and audio infoframes, so the drm and alsa driver can
+> bash the right stuff into the hardware on their own. I'm mostly confused
+> since you say _AVI_ infoframe here, which is purely generated by the drm
+> side of the code here. Or at least that's been my understanding.
+
+Sorry, typo, meant audio infoframe
+
+We could have the API such that the audio driver constructs the
+infoframe.. that probably makes more sense and simplifies things.  But
+the drm driver is the one that needs to bash that constructed buffer
+into the hw.  Or, well, either that or both drivers ioremap the same
+block of registers, but that seems somewhat lame.
+
+But I do need to know some basic things, like # of channels.. and
+would kinda prefer not to have to parse the audio infoframe to get
+that info.
+
+> The clocks are also funny really, but I'm not sure whether this fits. I'd
+> have expected some DT-based generic clock source which the audio driver
+> just grabs as part of his multi-device beast (maybe using Russell's new
+> driver core code) and used directly. What's the reason that this has to go
+> through the drm driverr?
+
+possibly it could be exposed to the audio driver as a 'struct clk'
+that is implemented/registered/exported by the drm driver, I guess?
+
+
+fwiw, if curious, what I have on msm so far is at:
+
+https://github.com/freedreno/kernel-msm/commit/6ffd278d39a3ff8712c70b5fd98dc135bd6c7b8a
+
+It works on downstream qcom android kernel.. the API exported by drm
+driver, called by audio driver, is basically just a clone of the hack
+that was already there between fbdev and alsa.  I haven't tried to
+clean that up at all yet.  It was enough work just untangling ION (!!)
+from alsa in that kernel :-/
+
+BR,
+-R
+
+> Cheers, Daniel
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> +41 (0) 79 365 57 48 - http://blog.ffwll.ch
