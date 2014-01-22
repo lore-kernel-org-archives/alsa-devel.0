@@ -1,19 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 4/7] ASoC: Samsung: h1940_uda1380: Fix build
-	warning
-Date: Wed, 22 Jan 2014 11:43:30 +0530
-Message-ID: <1390371213-21643-5-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 5/7] ASoC: Samsung: rx1950_uda1380: Remove
+	unused variable
+Date: Wed, 22 Jan 2014 11:43:31 +0530
+Message-ID: <1390371213-21643-6-git-send-email-sachin.kamat@linaro.org>
 References: <1390371213-21643-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f179.google.com (mail-pd0-f179.google.com
- [209.85.192.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 0395F264F3D
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 07:18:21 +0100 (CET)
-Received: by mail-pd0-f179.google.com with SMTP id q10so7188528pdj.10
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 22:18:21 -0800 (PST)
+Received: from mail-pd0-f173.google.com (mail-pd0-f173.google.com
+ [209.85.192.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 745AA261ACD
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 07:18:25 +0100 (CET)
+Received: by mail-pd0-f173.google.com with SMTP id y10so5644814pdj.4
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 22:18:24 -0800 (PST)
 In-Reply-To: <1390371213-21643-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,20 +28,20 @@ To: alsa-devel@alsa-project.org
 Cc: patches@linaro.org, sbkim73@samsung.com, lgirdwood@gmail.com, tiwai@suse.de, broonie@kernel.org, sachin.kamat@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Rml4ZXMgdGhlIGZvbGxvd2luZyB3YXJuaW5nOgpzb3VuZC9zb2Mvc2Ftc3VuZy9oMTk0MF91ZGEx
-MzgwLmM6OTg6NDogd2FybmluZzogcGFzc2luZyBhcmd1bWVudCAxIG9mIOKAmGRldl9lcnLigJkg
-ZnJvbSBpbmNvbXBhdGlibGUgcG9pbnRlciB0eXBlIFtlbmFibGVkIGJ5IGRlZmF1bHRdCgpTaWdu
-ZWQtb2ZmLWJ5OiBTYWNoaW4gS2FtYXQgPHNhY2hpbi5rYW1hdEBsaW5hcm8ub3JnPgotLS0KIHNv
-dW5kL3NvYy9zYW1zdW5nL2gxOTQwX3VkYTEzODAuYyB8ICAgIDIgKy0KIDEgZmlsZSBjaGFuZ2Vk
-LCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9z
-YW1zdW5nL2gxOTQwX3VkYTEzODAuYyBiL3NvdW5kL3NvYy9zYW1zdW5nL2gxOTQwX3VkYTEzODAu
-YwppbmRleCAzYjI3Y2Q5NjU3MGIuLjAwMDNiNjYxYWI2MiAxMDA2NDQKLS0tIGEvc291bmQvc29j
-L3NhbXN1bmcvaDE5NDBfdWRhMTM4MC5jCisrKyBiL3NvdW5kL3NvYy9zYW1zdW5nL2gxOTQwX3Vk
-YTEzODAuYwpAQCAtOTQsNyArOTQsNyBAQCBzdGF0aWMgaW50IGgxOTQwX2h3X3BhcmFtcyhzdHJ1
-Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAkJCWRpdisrOwogCQlicmVhazsKIAlk
-ZWZhdWx0OgotCQlkZXZfZXJyKCZydGQtPmRldiwgIiVzOiByYXRlICVkIGlzIG5vdCBzdXBwb3J0
-ZWRcbiIsCisJCWRldl9lcnIocnRkLT5kZXYsICIlczogcmF0ZSAlZCBpcyBub3Qgc3VwcG9ydGVk
-XG4iLAogCQkJX19mdW5jX18sIHJhdGUpOwogCQlyZXR1cm4gLUVJTlZBTDsKIAl9Ci0tIAoxLjcu
-OS41CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Rml4ZXMgdGhlIGZvbGxvd2luZyB3YXJuaW5nOgpzb3VuZC9zb2Mvc2Ftc3VuZy9yeDE5NTBfdWRh
+MTM4MC5jOjIyODo2OiB3YXJuaW5nOiB1bnVzZWQgdmFyaWFibGUg4oCYZXJy4oCZIFstV3VudXNl
+ZC12YXJpYWJsZV0KClNpZ25lZC1vZmYtYnk6IFNhY2hpbiBLYW1hdCA8c2FjaGluLmthbWF0QGxp
+bmFyby5vcmc+Ci0tLQogc291bmQvc29jL3NhbXN1bmcvcngxOTUwX3VkYTEzODAuYyB8ICAgIDEg
+LQogMSBmaWxlIGNoYW5nZWQsIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
+c2Ftc3VuZy9yeDE5NTBfdWRhMTM4MC5jIGIvc291bmQvc29jL3NhbXN1bmcvcngxOTUwX3VkYTEz
+ODAuYwppbmRleCAwNmViZGMwNjE3NzAuLmFmYmZlNGFhMmNiZiAxMDA2NDQKLS0tIGEvc291bmQv
+c29jL3NhbXN1bmcvcngxOTUwX3VkYTEzODAuYworKysgYi9zb3VuZC9zb2Mvc2Ftc3VuZy9yeDE5
+NTBfdWRhMTM4MC5jCkBAIC0yMjYsNyArMjI2LDYgQEAgc3RhdGljIGludCByeDE5NTBfdWRhMTM4
+MF9pbml0KHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpydGQpCiB7CiAJc3RydWN0IHNuZF9z
+b2NfY29kZWMgKmNvZGVjID0gcnRkLT5jb2RlYzsKIAlzdHJ1Y3Qgc25kX3NvY19kYXBtX2NvbnRl
+eHQgKmRhcG0gPSAmY29kZWMtPmRhcG07Ci0JaW50IGVycjsKIAogCXNuZF9zb2NfZGFwbV9lbmFi
+bGVfcGluKGRhcG0sICJIZWFkcGhvbmUgSmFjayIpOwogCXNuZF9zb2NfZGFwbV9lbmFibGVfcGlu
+KGRhcG0sICJTcGVha2VyIik7Ci0tIAoxLjcuOS41CgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
