@@ -1,101 +1,234 @@
-From: Rob Clark <robdclark@gmail.com>
-Subject: Re: Need your advice: Add a new communication inteface
- between HD-Audio and Gfx drivers for hotplug notification/ELD update
-Date: Wed, 22 Jan 2014 10:45:26 -0500
-Message-ID: <CAF6AEGtNfqy1025p+pZYgCPRUORe-9Y0mu3nCs62q9fTVymp1g@mail.gmail.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F82B231778@SHSMSX101.ccr.corp.intel.com>
-	<CAKMK7uFYNfVhXsEmikDZCaFGM8k7g7VMcGqGM4U+1bA_9MX1zQ@mail.gmail.com>
-	<F46914AEC2663F4A9BB62374E5EEF8F82B23315E@SHSMSX101.ccr.corp.intel.com>
-	<20140122141821.GI9772@phenom.ffwll.local>
-	<CAF6AEGtfNzy_NZC64u2hhZMcWi=N2fFELKDYJ+Qyxh3TCyz9Hw@mail.gmail.com>
-	<20140122152055.GK9772@phenom.ffwll.local>
+From: Ionica Bizau <bizauionica@yahoo.com>
+Subject: Re: External sound card issue
+Date: Wed, 22 Jan 2014 05:51:33 -0800 (PST)
+Message-ID: <1390398693.24097.YahooMailNeo@web162304.mail.bf1.yahoo.com>
+References: <CAEiHY5j=K874m_Jk7ws4eOqts855oSHqY0HUrp_A5WwxFoDr=Q@mail.gmail.com>	<52DD1A66.9050909@ladisch.de>
+ <CAN8cciYR_9Le-tX-CLBjfnYQ1+CuexKzxpxberVkkV6jR_c50A@mail.gmail.com>
+Reply-To: Ionica Bizau <bizauionica@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20140122152055.GK9772@phenom.ffwll.local>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Sender: intel-gfx-bounces@lists.freedesktop.org
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-To: Daniel Vetter <daniel@ffwll.ch>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
-	Paulo R" <paulo.r.zanoni@intel.com>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>, daeinki <inki.dae@samsung.com>, Thierry Reding <thierry.reding@gmail.com>, "Barnes,
-	Jesse" <jesse.barnes@intel.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Archit Taneja <archit@ti.com>, Tomi Valkeinen <tomi.valkeinen@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nm50-vm2.bullet.mail.bf1.yahoo.com
+ (nm50-vm2.bullet.mail.bf1.yahoo.com [216.109.115.221])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E52A265074
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 14:51:34 +0100 (CET)
+In-Reply-To: <CAN8cciYR_9Le-tX-CLBjfnYQ1+CuexKzxpxberVkkV6jR_c50A@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Ionica Bizau <bizauionica@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 22, 2014 at 10:20 AM, Daniel Vetter <daniel@ffwll.ch> wrote:
-> On Wed, Jan 22, 2014 at 10:04:14AM -0500, Rob Clark wrote:
->> sorry to jump into this a bit late, so maybe this was covered already earlier..
+Hi Clemens and Raymond,
+
+First of all please tell me if this can be fixed. I can be patient and wait=
+ until you fix it but if it's not possible I will return the external audio=
+ card to the shop.
+
+Here you see the alsa information: http://www.alsa-project.org/db/?f=3D869e=
+c0f1ade49a17bc50e9f62a1e8881f7b4cf91
+
+
+(just uploaded it)
+
+Below you have the commands and their output:
+
+ionicabizau@laptop:~$ amixer -c1 controls
+numid=3D7,iface=3DMIXER,name=3D'PCM Capture Source'
+numid=3D5,iface=3DMIXER,name=3D'PCM Capture Switch'
+numid=3D6,iface=3DMIXER,name=3D'PCM Capture Switch',index=3D1
+numid=3D4,iface=3DMIXER,name=3D'IEC958 In Playback Switch'
+numid=3D3,iface=3DMIXER,name=3D'Input Gain Pad Control'
+numid=3D1,iface=3DMIXER,name=3D'Speaker Playback Switch'
+numid=3D2,iface=3DMIXER,name=3D'Speaker Playback Volume'
+ionicabizau@laptop:~$ amixer -c1 cget name=3D'PCM Capture Source'
+numid=3D7,iface=3DMIXER,name=3D'PCM Capture Source'
+=A0 ; type=3DENUMERATED,access=3Drw------,values=3D1,items=3D2
+=A0 ; Item #0 'Unit 22'
+=A0 ; Item #1 'Unit 22'
+amixer: Control hw:1 element read error: Broken pipe
+
+ionicabizau@laptop:~$ amixer -c1 cget name=3D'PCM Capture Switch'
+numid=3D5,iface=3DMIXER,name=3D'PCM Capture Switch'
+=A0 ; type=3DBOOLEAN,access=3Drw------,values=3D1
+=A0 : values=3Don
+ionicabizau@laptop:~$ amixer -c1 cget name=3D'PCM Capture Switch'
+numid=3D5,iface=3DMIXER,name=3D'PCM Capture Switch'
+=A0 ; type=3DBOOLEAN,access=3Drw------,values=3D1
+=A0 : values=3Don
+ionicabizau@laptop:~$ amixer -c1 cget name=3D'IEC958 In Playback Switch'
+numid=3D4,iface=3DMIXER,name=3D'IEC958 In Playback Switch'
+=A0 ; type=3DBOOLEAN,access=3Drw------,values=3D1
+=A0 : values=3Doff
+ionicabizau@laptop:~$ amixer -c1 cget name=3D'Input Gain Pad Control'
+numid=3D3,iface=3DMIXER,name=3D'Input Gain Pad Control'
+=A0 ; type=3DBOOLEAN,access=3Drw------,values=3D2
+=A0 : values=3Doff,off
+ionicabizau@laptop:~$ amixer -c1 cget name=3D'Speaker Playback Switch'
+numid=3D1,iface=3DMIXER,name=3D'Speaker Playback Switch'
+=A0 ; type=3DBOOLEAN,access=3Drw------,values=3D1
+=A0 : values=3Don
+ionicabizau@laptop:~$ amixer -c1 cget name=3D'Speaker Playback Volume'
+numid=3D2,iface=3DMIXER,name=3D'Speaker Playback Volume'
+=A0 ; type=3DINTEGER,access=3Drw---R--,values=3D8,min=3D0,max=3D127,step=3D0
+=A0 : values=3D107,107,107,107,107,107,107,107
+=A0 | dBminmax-min=3D-127.00dB,max=3D0.00dB
+
+
+
+
+
+
+On Monday, January 20, 2014 3:01 PM, Raymond Yau <superquad.vortex2@gmail.c=
+om> wrote:
+ =
+
+
+
+
+
+
+2014/1/20 Clemens Ladisch <clemens@ladisch.de>
+
+Ionica Bizau wrote:
+>> I have just bought an external sound card: Asus Xonar U7
+>>
 >
-> It just started, I've quoted everything when cc'ing dri-devel. But good to
-> have examples outside of x86 (where things are mostly standardized by the
-> Eye of Redmond).
-
-perhaps the arm/SoC stuff was standardized by the Eye of Cthulhu
-
-btw, added a few other SoC drm types who might be interested in the topic
-
->> For drm/msm the hdmi code needs something along these lines from audio:
->>
->> int hdmi_audio_info_setup(struct platform_device *pdev, bool enabled,
->>         uint32_t num_of_channels, uint32_t channel_allocation,
->>         uint32_t level_shift, bool down_mix);
->> void hdmi_audio_set_sample_rate(struct platform_device *pdev, int rate);
->>
->> (former is mainly to setup avi audio infoframe, latter for clks)
->>
->> in addition to hotplug and ELD stuff
+>> =A0 =A0 cannot load mixer controls: Broken pipe
 >
-> Can you elaborate a bit on what you need for msm? On intel (and I think
-> the other x86 platforms are similar) we have separate buffers in the hw
-> for avi infoframes and audio infoframes, so the drm and alsa driver can
-> bash the right stuff into the hardware on their own. I'm mostly confused
-> since you say _AVI_ infoframe here, which is purely generated by the drm
-> side of the code here. Or at least that's been my understanding.
-
-Sorry, typo, meant audio infoframe
-
-We could have the API such that the audio driver constructs the
-infoframe.. that probably makes more sense and simplifies things.  But
-the drm driver is the one that needs to bash that constructed buffer
-into the hw.  Or, well, either that or both drivers ioremap the same
-block of registers, but that seems somewhat lame.
-
-But I do need to know some basic things, like # of channels.. and
-would kinda prefer not to have to parse the audio infoframe to get
-that info.
-
-> The clocks are also funny really, but I'm not sure whether this fits. I'd
-> have expected some DT-based generic clock source which the audio driver
-> just grabs as part of his multi-device beast (maybe using Russell's new
-> driver core code) and used directly. What's the reason that this has to go
-> through the drm driverr?
-
-possibly it could be exposed to the audio driver as a 'struct clk'
-that is implemented/registered/exported by the drm driver, I guess?
+>This looks like a bug in the device's firmware.
+>
+>Can you at least read the list of controls ("amixer -c1 controls")?
+>Are there some controls that you are able to access (try
+>"amixer -c1 cget name=3D'xxx'" for each one)?
+>
+>
+alsactl store -f abc.txt
+alsactl: get_control:256: Cannot read control '2,0,0,PCM Capture Source,0':=
+ Broken =
 
 
-fwiw, if curious, what I have on msm so far is at:
+[  398.119996] cannot get ctl value: req =3D 0x81, wValue =3D 0x0, wIndex =
+=3D 0x1400, type =3D 3
 
-https://github.com/freedreno/kernel-msm/commit/6ffd278d39a3ff8712c70b5fd98dc135bd6c7b8a
 
-It works on downstream qcom android kernel.. the API exported by drm
-driver, called by audio driver, is basically just a clone of the hack
-that was already there between fbdev and alsa.  I haven't tried to
-clean that up at all yet.  It was enough work just untangling ION (!!)
-from alsa in that kernel :-/
+seem fail to read the capture source control
 
-BR,
--R
 
-> Cheers, Daniel
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> +41 (0) 79 365 57 48 - http://blog.ffwll.ch
+state.Device {
+=A0control.1 {
+=A0=A0iface PCM
+=A0=A0name 'Playback Channel Map'
+=A0=A0value.0 0
+=A0=A0value.1 0
+=A0=A0comment {
+=A0=A0=A0access read
+=A0=A0=A0type INTEGER
+=A0=A0=A0count 2
+=A0=A0=A0range '0 - 36'
+=A0=A0}
+=A0}
+=A0control.2 {
+=A0=A0iface PCM
+=A0=A0device 1
+=A0=A0name 'Playback Channel Map'
+=A0=A0value.0 0
+=A0=A0value.1 0
+=A0=A0comment {
+=A0=A0=A0access read
+=A0=A0=A0type INTEGER
+=A0=A0=A0count 2
+=A0=A0=A0range '0 - 36'
+=A0=A0}
+=A0}
+=A0control.3 {
+=A0=A0iface MIXER
+=A0=A0name 'PCM Playback Switch'
+=A0=A0value true
+=A0=A0comment {
+=A0=A0=A0access 'read write'
+=A0=A0=A0type BOOLEAN
+=A0=A0=A0count 1
+=A0=A0}
+=A0}
+=A0control.4 {
+=A0=A0iface MIXER
+=A0=A0name 'PCM Playback Switch'
+=A0=A0index 1
+=A0=A0value true
+=A0=A0comment {
+=A0=A0=A0access 'read write'
+=A0=A0=A0type BOOLEAN
+=A0=A0=A0count 1
+=A0=A0}
+=A0}
+=A0control.5 {
+=A0=A0iface MIXER
+=A0=A0name 'PCM Playback Volume'
+=A0=A0value.0 107
+=A0=A0value.1 107
+=A0=A0value.2 107
+=A0=A0value.3 107
+=A0=A0value.4 107
+=A0=A0value.5 107
+=A0=A0value.6 107
+=A0=A0value.7 107
+=A0=A0comment {
+=A0=A0=A0access 'read write'
+=A0=A0=A0type INTEGER
+=A0=A0=A0count 8
+=A0=A0=A0range '0 - 127'
+=A0=A0=A0dbmin -12700
+=A0=A0=A0dbmax 0
+=A0=A0=A0dbvalue.0 -2000
+=A0=A0=A0dbvalue.1 -2000
+=A0=A0=A0dbvalue.2 -2000
+=A0=A0=A0dbvalue.3 -2000
+=A0=A0=A0dbvalue.4 -2000
+=A0=A0=A0dbvalue.5 -2000
+=A0=A0=A0dbvalue.6 -2000
+=A0=A0=A0dbvalue.7 -2000
+=A0=A0}
+=A0}
+=A0control.6 {
+=A0=A0iface MIXER
+=A0=A0name 'Mic Capture Switch'
+=A0=A0value true
+=A0=A0comment {
+=A0=A0=A0access 'read write'
+=A0=A0=A0type BOOLEAN
+=A0=A0=A0count 1
+=A0=A0}
+=A0}
+=A0control.7 {
+=A0=A0iface MIXER
+=A0=A0name 'Line Capture Switch'
+=A0=A0value true
+=A0=A0comment {
+=A0=A0=A0access 'read write'
+=A0=A0=A0type BOOLEAN
+=A0=A0=A0count 1
+=A0=A0}
+=A0}
+=A0control.8 {
+=A0=A0iface MIXER
+=A0=A0name 'PCM Capture Source'
+=A0=A0value Mic
+=A0=A0comment {
+=A0=A0=A0access 'read write'
+=A0=A0=A0type ENUMERATED
+=A0=A0=A0count 1
+=A0=A0=A0item.0 Mic
+=A0=A0=A0item.1 Line
+
+=A0=A0}
+=A0}
+}
