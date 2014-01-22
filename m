@@ -1,53 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/8] ASoC: simple-card: simplify code
-Date: Wed, 22 Jan 2014 19:03:16 +0000
-Message-ID: <20140122190316.GT17314@sirena.org.uk>
-References: <20140115165128.479994c3@armhf>
+Subject: Re: [PATCH v2 1/8] ASoC: simple-card: simplify code
+Date: Wed, 22 Jan 2014 19:04:30 +0000
+Message-ID: <20140122190430.GU17314@sirena.org.uk>
+References: <20140115113551.0eb13409@armhf>
+ <20140115165133.507595c9@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="q+oMmc1K1xhZpILv"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140115165128.479994c3@armhf>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============8438313857225468630=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FABB261A7B
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 20:04:38 +0100 (CET)
+In-Reply-To: <20140115165133.507595c9@armhf>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Jean-Francois Moine <moinejf@free.fr>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com, Xiubo Li <Li.Xiubo@freescale.com>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---q+oMmc1K1xhZpILv
+--===============8438313857225468630==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="l2vDcU+jBoWlRij1"
+Content-Disposition: inline
+
+
+--l2vDcU+jBoWlRij1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jan 15, 2014 at 04:51:28PM +0100, Jean-Francois Moine wrote:
-> This patch set simplifies the code and make easier a possible multi-DAI
-> links extension.
+On Wed, Jan 15, 2014 at 04:51:33PM +0100, Jean-Francois Moine wrote:
 
-Just as a general thing about this and the other simple-card patches
-that are floating around: there's a lot of them all working on the same
-things.  It'd be good to see more peer review and testing going on,
-mostly there's no comments from other people working on the code.
+> The check of the mandatory fields is done for DT in its specific sequence.
+> Move the global check to the non-DT sequence.
 
---q+oMmc1K1xhZpILv
+Applied, thanks.
+
+--l2vDcU+jBoWlRij1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS4BXxAAoJELSic+t+oim9rRYP/2snpMzp//3GGy7PXbi+yHa8
-d9dIsvhpI1rwlvzoJP32njHoh9YbwjjlqBkc+pTPeYRcBTL2O+8KpmSM2I7e7I8u
-P6hYreDb1b0woXMBT75W/J3se5D7vAv2JnT7byk22x3GrXbDULnDakRzY5VBTCl6
-pw2vYvL/AR7LpnGvpXwJyVCsuN12ayF2Jh1YtXFHhwF5s9aVIxBuHkqn7CtE8/H0
-JH4Eg6sVXqyxKXKz1015jWIbk0IQ14Gv2lZg6qIVy3bOI6+HWbQCMhbxaaecAmx3
-cCVuLxQr4ikCXxxmXWp4TKuwgZwqkHMwK2n0gUubj2YGmjtQ+SSwNGuqV+h6AZon
-0KADwKBY/Ffgysl6uN3xlL3xtHO9waeHhfofqFc/UvIYOnRNgjvNz/p/WcWxUoJu
-rbRkIJy9oso9uS9DJdQEpWjQlWFuirfEvg+4fwTsm9dQ385jGy6FRxNYG5NvhH8K
-1y3IFZArYPBb9mwfxWAInG09jy6/3qzdHE8688ZexFaa5SDbOHl6jtoiG0b5IJ/u
-FwNzNCpkF0dcDXEyUbLGVTmLjQYWrQmQ6GcsCXFDbv1yALU4Te6QvmnI/XAfQNnp
-trkFsu4w4SMcGCvPyJS9aq12HFJJMeuiI8ATWxfoSQ4kCRtvCFBYp2A39CYzOwAC
-z1NpzINgZDenwjRQ21CC
-=ZXuV
+iQIcBAEBAgAGBQJS4BY7AAoJELSic+t+oim9I20QAJA2R3yahk4plEkY/Rg/It6i
+iQM8Fg8N8dsm7/T9twTt5X0n68XcGMsAndHXI463Xu0RQ9XItF01tbtIAJv5VH4L
+mxwchj8UEa2EUM0YhsmKx7Je9E5UTQMixi5xrLLH3vzsqBzOR1ybZHyX9WeTuAxj
+9W5UK1zHeHoYTN0iZZm5TiBOZWqvD/LabktD+Y91I71a9+Bys3u9SFLaMpMhDpXq
+iniRZzHpaX7mB78IQ0G/afOFX0CqAwV5wVOZyuWJqvRtihuja+kugxZiK2BKaV6n
+H+3h0L7Ev5oIz40ZLyRp7FR6nUL8a4aFFhs1xBKDVEKC79+mRYgIoLcS+RTlYanG
+u+JEnk0mT3yfP8EbRh+mh1AAkvG0qRpwlBgCSQINZwVM7vjaBIuV5URVNUkZYoAb
+dC/8Wcc7Mw7ZP2VYaDANT+StpEcwsBGsitI0am02xU+OzY72hNici/S4PkPoFimR
+NsdyH3HWJ7waHSh8/WTAiYRjgLPh3uwuimZJ4TRGqN4Zjf5HM5tue+LgiB9diMMn
+fVLp82Mqj+L/XWha9xULxmfFXdT5ATJa16nGNEo39VUPIvgZuWcj+STUqycNv/Fp
+W13zWGvmOBhAj6xO1NV6Z3ffykSQ6dc0XG1NO88teOzLX96Zcr7VtSTCVf/dndc7
+x/J47J7Z/nVPRNcW8KPt
+=sxni
 -----END PGP SIGNATURE-----
 
---q+oMmc1K1xhZpILv--
+--l2vDcU+jBoWlRij1--
+
+--===============8438313857225468630==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8438313857225468630==--
