@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/6] ASoC: Samsung: h1940_uda1380: Fix
-	build warning
-Date: Wed, 22 Jan 2014 17:12:52 +0000
-Message-ID: <20140122171252.GL17314@sirena.org.uk>
+Subject: Re: [PATCH 5/6] ASoC: Samsung: rx1950_uda1380: Remove
+	unused variable
+Date: Wed, 22 Jan 2014 17:13:01 +0000
+Message-ID: <20140122171301.GM17314@sirena.org.uk>
 References: <1390392043-24387-1-git-send-email-sachin.kamat@linaro.org>
- <1390392043-24387-5-git-send-email-sachin.kamat@linaro.org>
+ <1390392043-24387-6-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3738061571320271237=="
+Content-Type: multipart/mixed; boundary="===============8485775535600568477=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DD245261A5F
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 18:12:56 +0100 (CET)
-In-Reply-To: <1390392043-24387-5-git-send-email-sachin.kamat@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id EB1722619D9
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 18:13:05 +0100 (CET)
+In-Reply-To: <1390392043-24387-6-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,54 +27,53 @@ Cc: sbkim73@samsung.com, tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@g
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3738061571320271237==
+--===============8485775535600568477==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uez3XWYSTYqFCK2C"
+	protocol="application/pgp-signature"; boundary="Rci9/ELBNj9eCHO9"
 Content-Disposition: inline
 
 
---uez3XWYSTYqFCK2C
+--Rci9/ELBNj9eCHO9
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 22, 2014 at 05:30:41PM +0530, Sachin Kamat wrote:
+On Wed, Jan 22, 2014 at 05:30:42PM +0530, Sachin Kamat wrote:
 > Fixes the following warning:
-> sound/soc/samsung/h1940_uda1380.c:98:4: warning: passing argument 1 of =
-=E2=80=98dev_err=E2=80=99 from incompatible pointer type [enabled by defaul=
-t]
+> sound/soc/samsung/rx1950_uda1380.c:228:6: warning: unused variable =E2=80=
+=98err=E2=80=99 [-Wunused-variable]
 
 Applied, thanks.
 
---uez3XWYSTYqFCK2C
+--Rci9/ELBNj9eCHO9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS3/wRAAoJELSic+t+oim9otAP/1ulXbmgUv/rk8s3XDisYHHS
-HalPoRMhs/ks+SMP3TbAZHjLw9ZF9FgS7PYXh3AF0nW/W8JWaoQZwb5OZwCgayDD
-5gyUK6Et8HxSTzIRAJ+3+EgUn8emGqNISDvvCBPPkqFtO+83hoDUPCLVinVNy+MX
-U2UMv+40d/PJn/+UDzL/wybM3WvIgokBowp7O5J8ke6kP/dKSXuV0Tvcfqh0LXyo
-xsUgacjH7XZ9cuwBX9wKJYkFgaZB6Ub+xfnObgzYNScohn0yNRU4qz8Rkc5o5m/m
-A4/2ocR9/CpaSP6pxEU6nSQGA5iaVoKMIOKULpdwmc5D95dT+s9k5rmtlMzCrd+5
-xywTGm6bL1SXuasD+Jg8sR5jYjWw8F8GP4yDEBpw/qDcxBkYWExeB1cQqMhhShnx
-Z4rIb88lUF70IVPX6beaPtR/Zn41yH/E+dXfKhWn7iU0zHuAaXpNLKHqd3b1sPIf
-hDpp3grCNYXJzv667Pfl7o5gav6+lKq0pY3nwd1uXRNyLbIcjc6ql4DTlYgzDyjT
-BK95f/5DcUxpa0I2M3p5MBF0FGnMCzw+A6yxYLxJCKjb7uRgN1rwaYZ01rAEc13N
-eLjMXYH+tMiCd0rtSZgXOYRbcfW+Mk+8xpkKe6Wc/Wp/Ey5tsc2oech2Sx2Aphni
-MXSkN0ExBy52WHMimWl6
-=YNsz
+iQIcBAEBAgAGBQJS3/waAAoJELSic+t+oim9tfcP/3gi2HtdQh31NAEnIXZxunDf
+IG7w7DX2miFullo6IcxLsfSIb4jwwLd/Fgize28OJff2+Y3rSxxuuRBJ6iKtevfe
+s7/ap8Y0uL4gp9ijbEjiXg1yFdAnPBtQLElKkv8PnArl0GkCCfgyZSeLIZKr7+dq
+YKvCKZuBd+O+r77cBr8KGVyhZ8uZJHSQpDB9I7zk+kdL6bVkuerbDD0NeAP8WuRp
+4bZrMV4zxpVapfgEYbNyCj5jkHdV1QAoIi/OJ8pvnE67TB9BNHoIpcEvWC7kmQdn
+zZTcyzJPNlU2V6RTFTO4uxx2pB28TMvkfq8vgN6JcvlXTIwA4rL3BwM7SA5vy22P
+7ba2d071eOq96qEocEZZ4L5LVOfqiECmsAdKX/45+Ze1HHDWwuOV6m8D5x9is8JR
+OopZwWHgRocwJ8uun63qdS7o+xUxPn3eRgwGz9ulQTBfae4smg4r3eps60841+c+
+Y2kznuBll9jb0dFmekc3sE7cHu/l0V/oLF9rEbFAyHFLEwfFKh3T9FntNUAunt9s
+vVyVs2yPeltMI7GQC0QGSrC69Y6MGBkBJm2v5QCLYPavXuYUUfCEVfuCQwAfWx4N
+NtY0ePw5FmWiu5/wntbUiClFX4uxlrzxeaPzwX7aQjoRzAFSsWMnB+MrTRUrN6tL
+M7aFdaOCBThqKQ+AklDc
+=C/oH
 -----END PGP SIGNATURE-----
 
---uez3XWYSTYqFCK2C--
+--Rci9/ELBNj9eCHO9--
 
---===============3738061571320271237==
+--===============8485775535600568477==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3738061571320271237==--
+--===============8485775535600568477==--
