@@ -1,18 +1,20 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 0/7] ASoC: Samsung: Fix build errors and
-	warnings
-Date: Wed, 22 Jan 2014 11:43:26 +0530
-Message-ID: <1390371213-21643-1-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 1/7] ASoC: Samsung: Fix build regressions due
+	to gpio re-org
+Date: Wed, 22 Jan 2014 11:43:27 +0530
+Message-ID: <1390371213-21643-2-git-send-email-sachin.kamat@linaro.org>
+References: <1390371213-21643-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 15DA7261ACD
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 07:18:10 +0100 (CET)
-Received: by mail-pa0-f48.google.com with SMTP id kx10so7926524pab.35
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 22:18:08 -0800 (PST)
+Received: from mail-pb0-f42.google.com (mail-pb0-f42.google.com
+ [209.85.160.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4395E261B18
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 07:18:11 +0100 (CET)
+Received: by mail-pb0-f42.google.com with SMTP id jt11so7408403pbb.29
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2014 22:18:10 -0800 (PST)
+In-Reply-To: <1390371213-21643-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +25,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: patches@linaro.org, sbkim73@samsung.com, lgirdwood@gmail.com, tiwai@suse.de, broonie@kernel.org, sachin.kamat@linaro.org
+Cc: patches@linaro.org, sbkim73@samsung.com, Linus Walleij <linus.walleij@linaro.org>, lgirdwood@gmail.com, tiwai@suse.de, broonie@kernel.org, sachin.kamat@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-This series attempts to fix several build errors and warnings that
-came up while building for deifferent Samsung defconfigs. Some of these
-could possibly be applied to stable kernels as well (like patch 2 & 6).
-This series is based on latest linux-next and is build tested on various
-Samsung configs.
-
-Sachin Kamat (7):
-  ASoC: Samsung: Fix build regressions due to gpio re-org
-  ASoC: Samsung: s3c-i2s-v2: Fix build error
-  ASoC: Samsung: h1940_uda1380: Remove unused variable
-  ASoC: Samsung: h1940_uda1380: Fix build warning
-  ASoC: Samsung: rx1950_uda1380: Remove unused variable
-  ASoC: Samsung: smdk_wm8994: Fix build error
-  ASoC: Samsung: smdk_wm8994: Fix unused variable warning
-
- sound/soc/samsung/h1940_uda1380.c  |    4 ++--
- sound/soc/samsung/neo1973_wm8753.c |    1 +
- sound/soc/samsung/rx1950_uda1380.c |    2 +-
- sound/soc/samsung/s3c-i2s-v2.c     |    6 +++---
- sound/soc/samsung/s3c2412-i2s.c    |    2 ++
- sound/soc/samsung/s3c24xx-i2s.c    |    2 ++
- sound/soc/samsung/smartq_wm8987.c  |    1 +
- sound/soc/samsung/smdk_wm8994.c    |   12 ++++++------
- 8 files changed, 18 insertions(+), 12 deletions(-)
-
--- 
-1.7.9.5
+UmVjZW50IGNoYW5nZXMgdGhyb3VnaCBjb21taXRzIGM2N2QwZjI5MjYyYiAoIkFSTTogczNjMjR4
+eDogZ2V0IHJpZApvZiBjdXN0b20gPG1hY2gvZ3Bpby5oPiIpLCBiMDE2MWNhYTcyYjYgKCJBUk06
+IFMzQ1syNHw2NF14eDogbW92ZSBpbmNsdWRlcwpiYWNrIHVuZGVyIDxtYWNoLz4gc2NvcGUiKSwg
+MzY0Mzc0MTIxYjc4ICgiQVJNOiBzM2MyNHh4OiBleHBsaWNpdApkZXBlbmRlbmN5IG9uIDxwbGF0
+L2dwaW8tY2ZnLmg+IikgYW5kIDQxYzM1NDhlNmRhNiAoIkFSTTogczNjNjR4eDogZ2V0IHJpZApv
+ZiBjdXN0b20gPG1hY2gvZ3Bpby5oPiIpIGNhdXNlZCBidWlsZCByZWdyZXNzaW9ucyBkdWUgdG8g
+YnJva2VuCmRlcGVuZGVuY2llcy4gRml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIGJ5IGluY2x1ZGlu
+ZyB0aGUgbmVjZXNzYXJ5IGhlYWRlcgpmaWxlcyBleHBsaWNpdGx5OgoKc291bmQvc29jL3NhbXN1
+bmcvaDE5NDBfdWRhMTM4MC5jOjU2OjM6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBm
+dW5jdGlvbiDigJhTM0MyNDEwX0dQR+KAmQpzb3VuZC9zb2Mvc2Ftc3VuZy9oMTk0MF91ZGExMzgw
+LmM6MTQ5OjE4OiBlcnJvcjog4oCYUzNDX0dQSU9fRU5E4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVz
+ZSBpbiB0aGlzIGZ1bmN0aW9uKQpzb3VuZC9zb2Mvc2Ftc3VuZy9oMTk0MF91ZGExMzgwLmM6MjM0
+OjIxOiBlcnJvcjog4oCYUzNDX0dQSU9fRU5E4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0
+aGlzIGZ1bmN0aW9uKQpzb3VuZC9zb2Mvc2Ftc3VuZy9oMTk0MF91ZGExMzgwLmM6MjcwOjEyOiBl
+cnJvcjog4oCYUzNDX0dQSU9fRU5E4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1
+bmN0aW9uKQpzb3VuZC9zb2Mvc2Ftc3VuZy9uZW8xOTczX3dtODc1My5jOjIzOToyOiBlcnJvcjog
+aW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYUzNDMjQxMF9HUErigJkKc291bmQv
+c29jL3NhbXN1bmcvcngxOTUwX3VkYTEzODAuYzo2NzozOiBlcnJvcjogaW1wbGljaXQgZGVjbGFy
+YXRpb24gb2YgZnVuY3Rpb24g4oCYUzNDMjQxMF9HUEfigJkKc291bmQvc29jL3NhbXN1bmcvczNj
+MjQxMi1pMnMuYzo4NjoyOiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g
+4oCYczNjX2dwaW9fY2ZnYWxsX3Jhbmdl4oCZCnNvdW5kL3NvYy9zYW1zdW5nL3MzYzI0MTItaTJz
+LmM6ODY6MjogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmFMzQzI0
+MTBfR1BF4oCZCnNvdW5kL3NvYy9zYW1zdW5nL3MzYzI0MTItaTJzLmM6ODY6MjogZXJyb3I6IGlt
+cGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmFMzQ19HUElPX1NGTuKAmQpzb3VuZC9z
+b2Mvc2Ftc3VuZy9zM2MyNDEyLWkycy5jOjg3OjEwOiBlcnJvcjog4oCYUzNDX0dQSU9fUFVMTF9O
+T05F4oCZIHVuZGVjbGFyZWQKc291bmQvc29jL3NhbXN1bmcvczNjMjR4eC1pMnMuYzozOTQ6Mjog
+ZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmHMzY19ncGlvX2NmZ2Fs
+bF9yYW5nZeKAmQpzb3VuZC9zb2Mvc2Ftc3VuZy9zM2MyNHh4LWkycy5jOjM5NDoyOiBlcnJvcjog
+aW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYUzNDMjQxMF9HUEXigJkKc291bmQv
+c29jL3NhbXN1bmcvczNjMjR4eC1pMnMuYzozOTQ6MjogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0
+aW9uIG9mIGZ1bmN0aW9uIOKAmFMzQ19HUElPX1NGTuKAmQpzb3VuZC9zb2Mvc2Ftc3VuZy9zM2My
+NHh4LWkycy5jOjM5NToxMDogZXJyb3I6IOKAmFMzQ19HUElPX1BVTExfTk9OReKAmSB1bmRlY2xh
+cmVkCnNvdW5kL3NvYy9zYW1zdW5nL3NtYXJ0cV93bTg5ODcuYzoxMTI6MzogZXJyb3I6IGltcGxp
+Y2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmFMzQzY0WFhfR1BM4oCZCgpTaWduZWQtb2Zm
+LWJ5OiBTYWNoaW4gS2FtYXQgPHNhY2hpbi5rYW1hdEBsaW5hcm8ub3JnPgpDYzogTGludXMgV2Fs
+bGVpaiA8bGludXMud2FsbGVpakBsaW5hcm8ub3JnPgotLS0KIHNvdW5kL3NvYy9zYW1zdW5nL2gx
+OTQwX3VkYTEzODAuYyAgfCAgICAxICsKIHNvdW5kL3NvYy9zYW1zdW5nL25lbzE5NzNfd204NzUz
+LmMgfCAgICAxICsKIHNvdW5kL3NvYy9zYW1zdW5nL3J4MTk1MF91ZGExMzgwLmMgfCAgICAxICsK
+IHNvdW5kL3NvYy9zYW1zdW5nL3MzYzI0MTItaTJzLmMgICAgfCAgICAyICsrCiBzb3VuZC9zb2Mv
+c2Ftc3VuZy9zM2MyNHh4LWkycy5jICAgIHwgICAgMiArKwogc291bmQvc29jL3NhbXN1bmcvc21h
+cnRxX3dtODk4Ny5jICB8ICAgIDEgKwogNiBmaWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKykK
+CmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc2Ftc3VuZy9oMTk0MF91ZGExMzgwLmMgYi9zb3VuZC9z
+b2Mvc2Ftc3VuZy9oMTk0MF91ZGExMzgwLmMKaW5kZXggZmE5MTM3NmUzMjNkLi5mYmNlZDU4OWQw
+NzcgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9zYW1zdW5nL2gxOTQwX3VkYTEzODAuYworKysgYi9z
+b3VuZC9zb2Mvc2Ftc3VuZy9oMTk0MF91ZGExMzgwLmMKQEAgLTIzLDYgKzIzLDcgQEAKICNpbmNs
+dWRlICJyZWdzLWlpcy5oIgogI2luY2x1ZGUgPGFzbS9tYWNoLXR5cGVzLmg+CiAKKyNpbmNsdWRl
+IDxtYWNoL2dwaW8tc2Ftc3VuZy5oPgogI2luY2x1ZGUgInMzYzI0eHgtaTJzLmgiCiAKIHN0YXRp
+YyB1bnNpZ25lZCBpbnQgcmF0ZXNbXSA9IHsKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zYW1zdW5n
+L25lbzE5NzNfd204NzUzLmMgYi9zb3VuZC9zb2Mvc2Ftc3VuZy9uZW8xOTczX3dtODc1My5jCmlu
+ZGV4IDgwN2RiNDE3ZDIzNC4uOThhMDRjMTEyMDJkIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc2Ft
+c3VuZy9uZW8xOTczX3dtODc1My5jCisrKyBiL3NvdW5kL3NvYy9zYW1zdW5nL25lbzE5NzNfd204
+NzUzLmMKQEAgLTIwLDYgKzIwLDcgQEAKIAogI2luY2x1ZGUgPHNvdW5kL3NvYy5oPgogCisjaW5j
+bHVkZSA8bWFjaC9ncGlvLXNhbXN1bmcuaD4KICNpbmNsdWRlIDxhc20vbWFjaC10eXBlcy5oPgog
+I2luY2x1ZGUgInJlZ3MtaWlzLmgiCiAKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zYW1zdW5nL3J4
+MTk1MF91ZGExMzgwLmMgYi9zb3VuZC9zb2Mvc2Ftc3VuZy9yeDE5NTBfdWRhMTM4MC5jCmluZGV4
+IDcwNDQ2MGEzNzAwNS4uMDZlYmRjMDYxNzcwIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc2Ftc3Vu
+Zy9yeDE5NTBfdWRhMTM4MC5jCisrKyBiL3NvdW5kL3NvYy9zYW1zdW5nL3J4MTk1MF91ZGExMzgw
+LmMKQEAgLTI0LDYgKzI0LDcgQEAKICNpbmNsdWRlIDxzb3VuZC9zb2MuaD4KICNpbmNsdWRlIDxz
+b3VuZC9qYWNrLmg+CiAKKyNpbmNsdWRlIDxtYWNoL2dwaW8tc2Ftc3VuZy5oPgogI2luY2x1ZGUg
+InJlZ3MtaWlzLmgiCiAjaW5jbHVkZSA8YXNtL21hY2gtdHlwZXMuaD4KIApkaWZmIC0tZ2l0IGEv
+c291bmQvc29jL3NhbXN1bmcvczNjMjQxMi1pMnMuYyBiL3NvdW5kL3NvYy9zYW1zdW5nL3MzYzI0
+MTItaTJzLmMKaW5kZXggZWE4ODVjYjlmNzZjLi5kMDc5NDQ1ODk2M2EgMTAwNjQ0Ci0tLSBhL3Nv
+dW5kL3NvYy9zYW1zdW5nL3MzYzI0MTItaTJzLmMKKysrIGIvc291bmQvc29jL3NhbXN1bmcvczNj
+MjQxMi1pMnMuYwpAQCAtMjYsNiArMjYsOCBAQAogI2luY2x1ZGUgPHNvdW5kL3BjbV9wYXJhbXMu
+aD4KIAogI2luY2x1ZGUgPG1hY2gvZG1hLmg+CisjaW5jbHVkZSA8bWFjaC9ncGlvLXNhbXN1bmcu
+aD4KKyNpbmNsdWRlIDxwbGF0L2dwaW8tY2ZnLmg+CiAKICNpbmNsdWRlICJkbWEuaCIKICNpbmNs
+dWRlICJyZWdzLWkycy12Mi5oIgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NhbXN1bmcvczNjMjR4
+eC1pMnMuYyBiL3NvdW5kL3NvYy9zYW1zdW5nL3MzYzI0eHgtaTJzLmMKaW5kZXggOWM4ZWJkODcy
+ZmFjLi5mMzFlOTE2ZGQ4YzQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9zYW1zdW5nL3MzYzI0eHgt
+aTJzLmMKKysrIGIvc291bmQvc29jL3NhbXN1bmcvczNjMjR4eC1pMnMuYwpAQCAtMjQsNiArMjQs
+OCBAQAogI2luY2x1ZGUgPHNvdW5kL3BjbV9wYXJhbXMuaD4KIAogI2luY2x1ZGUgPG1hY2gvZG1h
+Lmg+CisjaW5jbHVkZSA8bWFjaC9ncGlvLXNhbXN1bmcuaD4KKyNpbmNsdWRlIDxwbGF0L2dwaW8t
+Y2ZnLmg+CiAjaW5jbHVkZSAicmVncy1paXMuaCIKIAogI2luY2x1ZGUgImRtYS5oIgpkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL3NhbXN1bmcvc21hcnRxX3dtODk4Ny5jIGIvc291bmQvc29jL3NhbXN1
+bmcvc21hcnRxX3dtODk4Ny5jCmluZGV4IDU4YWUzMjM3ZWY2OS4uYzNiMmFkYWZiN2I1IDEwMDY0
+NAotLS0gYS9zb3VuZC9zb2Mvc2Ftc3VuZy9zbWFydHFfd204OTg3LmMKKysrIGIvc291bmQvc29j
+L3NhbXN1bmcvc21hcnRxX3dtODk4Ny5jCkBAIC0xOSw2ICsxOSw3IEBACiAjaW5jbHVkZSA8c291
+bmQvc29jLmg+CiAjaW5jbHVkZSA8c291bmQvamFjay5oPgogCisjaW5jbHVkZSA8bWFjaC9ncGlv
+LXNhbXN1bmcuaD4KICNpbmNsdWRlIDxhc20vbWFjaC10eXBlcy5oPgogCiAjaW5jbHVkZSAiaTJz
+LmgiCi0tIAoxLjcuOS41CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
