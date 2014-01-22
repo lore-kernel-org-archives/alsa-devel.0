@@ -1,22 +1,20 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: Re: [PATCH 1/7] ASoC: Samsung: Fix build regressions
-	due to gpio re-org
-Date: Wed, 22 Jan 2014 13:40:06 +0530
-Message-ID: <CAK9yfHxRAfTYnPHJC3dkzBaCf13-RxeJeJ=4fAY+1wfDYK0BGA@mail.gmail.com>
-References: <1390371213-21643-1-git-send-email-sachin.kamat@linaro.org>
- <1390371213-21643-2-git-send-email-sachin.kamat@linaro.org>
- <CACRpkdZ05LPRB_MdM4ZaJtSYRVM294aW4h9DC04wc__8rSyxjA@mail.gmail.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH RFC v2 REPOST 3/8] ASoC: davinci-evm: HDMI
+ audio support for TDA998x trough McASP I2S bus
+Date: Wed, 22 Jan 2014 11:20:32 +0200
+Message-ID: <52DF8D60.9020505@ti.com>
+References: <cover.1387535299.git.jsarha@ti.com>
+ <d3c3f645d39338df0ee9686cb030255ce36a249d.1387535302.git.jsarha@ti.com>
+ <20131231132555.GA31886@sirena.org.uk> <52D67099.1040904@ti.com>
+ <20140115165100.3bfab96f@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f49.google.com (mail-oa0-f49.google.com
- [209.85.219.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CFB72610A0
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 09:10:07 +0100 (CET)
-Received: by mail-oa0-f49.google.com with SMTP id i7so51977oag.36
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 00:10:06 -0800 (PST)
-In-Reply-To: <CACRpkdZ05LPRB_MdM4ZaJtSYRVM294aW4h9DC04wc__8rSyxjA@mail.gmail.com>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A9642610A0
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 10:20:38 +0100 (CET)
+In-Reply-To: <20140115165100.3bfab96f@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,68 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Patch Tracking <patches@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, "Ujfalusi, Peter" <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, bcousson@baylibre.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 22 January 2014 13:26, Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Wed, Jan 22, 2014 at 7:13 AM, Sachin Kamat <sachin.kamat@linaro.org> w=
-rote:
+On 01/15/2014 05:51 PM, Jean-Francois Moine wrote:
+> On Wed, 15 Jan 2014 13:27:21 +0200
+> Jyri Sarha <jsarha@ti.com> wrote:
 >
->> Recent changes through commits c67d0f29262b ("ARM: s3c24xx: get rid
->> of custom <mach/gpio.h>"), b0161caa72b6 ("ARM: S3C[24|64]xx: move includ=
-es
->> back under <mach/> scope"), 364374121b78 ("ARM: s3c24xx: explicit
->> dependency on <plat/gpio-cfg.h>") and 41c3548e6da6 ("ARM: s3c64xx: get r=
-id
->> of custom <mach/gpio.h>") caused build regressions due to broken
->> dependencies. Fix the following errors by including the necessary header
->> files explicitly:
->>
->> sound/soc/samsung/h1940_uda1380.c:56:3: error: implicit declaration of f=
-unction =91S3C2410_GPG=92
->> sound/soc/samsung/h1940_uda1380.c:149:18: error: =91S3C_GPIO_END=92 unde=
-clared (first use in this function)
->> sound/soc/samsung/h1940_uda1380.c:234:21: error: =91S3C_GPIO_END=92 unde=
-clared (first use in this function)
->> sound/soc/samsung/h1940_uda1380.c:270:12: error: =91S3C_GPIO_END=92 unde=
-clared (first use in this function)
->> sound/soc/samsung/neo1973_wm8753.c:239:2: error: implicit declaration of=
- function =91S3C2410_GPJ=92
->> sound/soc/samsung/rx1950_uda1380.c:67:3: error: implicit declaration of =
-function =91S3C2410_GPG=92
->> sound/soc/samsung/s3c2412-i2s.c:86:2: error: implicit declaration of fun=
-ction =91s3c_gpio_cfgall_range=92
->> sound/soc/samsung/s3c2412-i2s.c:86:2: error: implicit declaration of fun=
-ction =91S3C2410_GPE=92
->> sound/soc/samsung/s3c2412-i2s.c:86:2: error: implicit declaration of fun=
-ction =91S3C_GPIO_SFN=92
->> sound/soc/samsung/s3c2412-i2s.c:87:10: error: =91S3C_GPIO_PULL_NONE=92 u=
-ndeclared
->> sound/soc/samsung/s3c24xx-i2s.c:394:2: error: implicit declaration of fu=
-nction =91s3c_gpio_cfgall_range=92
->> sound/soc/samsung/s3c24xx-i2s.c:394:2: error: implicit declaration of fu=
-nction =91S3C2410_GPE=92
->> sound/soc/samsung/s3c24xx-i2s.c:394:2: error: implicit declaration of fu=
-nction =91S3C_GPIO_SFN=92
->> sound/soc/samsung/s3c24xx-i2s.c:395:10: error: =91S3C_GPIO_PULL_NONE=92 =
-undeclared
->> sound/soc/samsung/smartq_wm8987.c:112:3: error: implicit declaration of =
-function =91S3C64XX_GPL=92
->>
->> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
->> Cc: Linus Walleij <linus.walleij@linaro.org>
+>>   From driver/gpu/drm/i2c/tda998x_drv.c. The driver configures CTS_N
+>> register statically to a value that works only with 4 byte samples.
+>> According to my tests it is possible to support 3 and 2 byte samples too
+>> by changing the CTS_N register value, but I am not sure if the
+>> configuration can be changed on the fly. My data sheet of the nxp chip
+>> is very vague about the register definitions, but I suppose the register
+>> configures some clock divider on the chip. HDMI supports only upto 24bit
+>> audio and the data sheet states that any extraneous least significant
+>> bits are ignored.
 >
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> In the tda998x driver, the CTS_N is automatic (AIP_CNTRL_0_ACR_MAN is
+> not set).
 >
-> And I *really* tried to catch all these, could we make this driver
-> part of the defconfig
-> if it isn't?
+> Then, in my Cubox (Marvell A510 + tda19988), the 16, 24 and 32 bits
+> formats are working well with I2S input at any rate.
+>
 
-They aren't enabled by default. But makes sense to have them enabled
-for better compile coverage.
+Could you refer the kernel version (main line?) and the involved ASoC 
+drivers so could take I a look if there is something I could do differently?
 
--- =
-
-With warm regards,
-Sachin
+Best regards,
+Jyri
