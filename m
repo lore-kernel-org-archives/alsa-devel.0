@@ -1,55 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/8] ASoC: simple-card: simplify code
-Date: Wed, 22 Jan 2014 19:06:14 +0000
-Message-ID: <20140122190614.GV17314@sirena.org.uk>
-References: <20140115113551.0eb13409@armhf>
- <20140115165137.5fec601b@armhf>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: tlv320aic32x4: Use gpio_is_valid()
+Date: Wed, 22 Jan 2014 17:24:17 -0200
+Message-ID: <1390418657-5373-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5CROkWtElhX9+YmA"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140115165137.5fec601b@armhf>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com, Xiubo Li <Li.Xiubo@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gg0-f173.google.com (mail-gg0-f173.google.com
+ [209.85.161.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8716B261609
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 20:24:29 +0100 (CET)
+Received: by mail-gg0-f173.google.com with SMTP id n5so3229312ggj.32
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2014 11:24:28 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
---5CROkWtElhX9+YmA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+We could use gpio_is_valid() for doing the sanity check on the GPIO number.
 
-On Wed, Jan 15, 2014 at 04:51:37PM +0100, Jean-Francois Moine wrote:
-> The DT values are copied to the non-DT structure before being moved to
-> the card structure.
-> Set directly the DT values in the card and move the non-DT copy to the
-> non-DT sequence.
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/codecs/tlv320aic32x4.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied, thanks.  Every patch in this series seems to have the same
-subject line - please don't do that, it makes things harder to work
-with.
-
---5CROkWtElhX9+YmA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS4BajAAoJELSic+t+oim9oJUP/36y2RnsohSJvR4JIx+YrQ29
-acY2v4b0MCUda0SjNBoZo69eHPOAOML5XTTSWc28Z0m0luZL6Jon/ZWilVW6Mret
-A4tAmWxPfqFCnhonP6dzo8iFN3KQX91wNlNrIo9FsbNQeU/37vuHSU+O/h9CqxlJ
-UGkKdXCVM4ozw97ocrUWq0UpZrvihXZ3tCrMxCltceAm/it9Bp7Q+JiWti3J4E9Z
-rdteE/VTcGWJ/Q2UY3Qm6wuEYXYrrCF6vwNMdgZp9Gf5Q6cpiKVnOaXnl96hRITQ
-VmqfyXRSTZgGKzYS47FEZaxWhtEaCthngsUiOVPGZFyQPNQl2GsUPLXan2TpPBht
-nl9CAC6cHrx07uvuLts2aC7ay4lrJsnmKr5JaPSCFPq5ufJteJDi43oolL0dYKjR
-xr5XPQ93hM2AQXBEbnU3qxz+4w03psNu1TgtYUUuo20Ayb5QQC26Q0x0H5p43Ngc
-MXbpBpISYXWjLGR41znMeifROrIJ8OcB6EWTfldDOEuIzcgk3d5EZXht5aec3Hhs
-6IiqsjQtoCmGg19uWJD7ty2E0srYvz8/K2Fi7sWsPsMW4AGfqit0vs8dst64zZ0N
-J5vpSiMqlfULtpi7JmXZuphngIxx12kELLGoiFPi6TTQgBjkui/RTGbKB0bQL1Ts
-8bK5gLJbKdp/cnHZcAGr
-=PR2l
------END PGP SIGNATURE-----
-
---5CROkWtElhX9+YmA--
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 385dec1..02d2d3c 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -687,7 +687,7 @@ static int aic32x4_i2c_probe(struct i2c_client *i2c,
+ 		aic32x4->rstn_gpio = -1;
+ 	}
+ 
+-	if (aic32x4->rstn_gpio >= 0) {
++	if (gpio_is_valid(aic32x4->rstn_gpio)) {
+ 		ret = devm_gpio_request_one(&i2c->dev, aic32x4->rstn_gpio,
+ 				GPIOF_OUT_INIT_LOW, "tlv320aic32x4 rstn");
+ 		if (ret != 0)
+-- 
+1.8.1.2
