@@ -1,74 +1,76 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/8] ASoC: fsl: Add VF610 soc audio card Kconfig
-Date: Thu, 23 Jan 2014 18:38:29 +0000
-Message-ID: <20140123183829.GB11727@sirena.org.uk>
-References: <1390453370-29194-1-git-send-email-Li.Xiubo@freescale.com>
- <1390453370-29194-2-git-send-email-Li.Xiubo@freescale.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: [PATCH] fix alsa-tools/hdspmixer for RME 9632 A
+Date: Thu, 23 Jan 2014 20:05:00 +0100
+Message-ID: <20140123190500.GQ25242@ltw.loris.tv>
+References: <CADeOaFr6H_pct9bywOey2p1XVfrT3sKmSDiGO_DS0vuPpcwqUQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8P1HSweYDcXXzwPJ"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ltw.loris.tv (ltw.loris.tv [188.40.101.23])
+ by alsa0.perex.cz (Postfix) with ESMTP id E244B265299
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 20:05:06 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1390453370-29194-2-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, shawn.guo@linaro.org, kuninori.morimoto.gx@renesas.com, moinejf@free.fr, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <CADeOaFr6H_pct9bywOey2p1XVfrT3sKmSDiGO_DS0vuPpcwqUQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Turing <mail@danielturing.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jan 23, 2014 at 12:38:29PM +0100, Daniel Turing wrote:
 
---8P1HSweYDcXXzwPJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Thu, Jan 23, 2014 at 01:02:43PM +0800, Xiubo Li wrote:
+Hi!
 
-> +menuconfig SND_VF610_SOC
-> +       tristate "SoC Audio for Freescale VF610 CPUs"
-> +       select DMA_ENGINE
-> +       help
-> +         Say Y or M if you want to add support for codecs attached to
-> +         the VF610 CPUs.
-> +
-> +         This will enable Freeacale SAI and SGTL5000 codec, and an extra
-> +         TWR-AUDIO-SGTL sub-board is needed for SGTL5000.
+> since i never turned up here, let me just quickly congratulate and
+> thank y'all for your outstanding work on linux audio. My world
+> wouldn't be as great without you!
 
-This bit is OK but...
+You're welcome.
 
-> +config SND_SOC_VF610_SGTL5000
-> +       tristate "SoC Audio support for VF610 boards with SGTL5000"
-> +       depends on OF && I2C
-> +       select SND_SOC_FSL_SAI
-> +       select SND_SOC_SGTL5000
-> +       select SND_SIMPLE_CARD
+> I run a HDSP 9632 with the "AI4s-192 AIO" 4x Analog input extension
+> board. It works great so far, but hdspmixer segfaults because it tries
+> to show 16 channels with fltk, but doesnt care to initialize the
+> channel labels for the input extension board.
 
-...for simple card since the whole idea is to support any CODEC with the
-same driver we should probably just make sure that all the individual
-drivers can be enabled in Kconfig, that way we don't have to have
-specific Kconfig entries for boards and loose some of the benefit of the
-generic card.  I sent a patch earlier exposing the OF supporting CODEC
-drivers, one for at least some of the Freescale CPU drivers was sent to
-the list recently too but there were some review comments.
+Since I don't own the card in question, I cannot test the patch and
+simply trust your word here.
 
---8P1HSweYDcXXzwPJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+OTOH, I have to admit I don't fully understand the patch. What you're
+doing is to increment the number of output channels in case you have an
+additional input module.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+The input module is handled in HDSPMixerCard.cxx. Is it just a side
+effect? Because semantically, it is wrong to create output destinations
+just to get input channels rendered.
 
-iQIcBAEBAgAGBQJS4WGiAAoJELSic+t+oim9QAUP/RFv5AYDForSR5l3Wd+80uD4
-L4j8HjDnd1kXUXmLCHoU4kg+pXJU8jXNn4qQMOUsAh+lTklr5cVy/N4Wcxck6Nwt
-OLfyW9LDzDDuFyl4Y/Zn0fLZ1ZaYtCGMiCRLzNC1eVm659sl+vz/JTP0q4WWQmRq
-xeEJmtJMLww47jqfgR51MdCW960ybgd3Wt38BsapWx6PEb7Pq2A99goH5cB2Xjik
-5RtZpZa2KQA4qSg9AJOO/MEC2OIEJKrelNnm3CX3xpGRsOf8uttLxGMmJHGg1666
-p0Hut24Ng51JwnEmmGWE6psjkf0tMhKg6dPLQw/VYAQgFhbWLvsclwO6ZofLbwr1
-P5mFGdeIwSL7AFPEau7PyXylKHclWng9BrPBjeUQE539ZqSglS3QabHz981fsjK0
-OG6EbQuujmQ3t2ds7fnOztt0Wh+m4GPYMjp3duhThseMK29pwcZMqaxlik9qxNao
-+B0sealsirm/eZilCaT9JexGfyfw3icoeR+sSAdREFnI1NbhPwdu9Pjp2b2EJT1K
-Wya+7mvYCRGmcztYWRLn5ThLzgrnqJbUfBlKGrQZcQpz7Vyzdk1TUtciuCunIJTM
-6WA810W3MarJdGwWPOr9KNbrlQTyjj7BQJPfjaO7hJgGG57qYCTtF2+KXDSD67lf
-94uYK2ihYioJDSe6u98X
-=uZlJ
------END PGP SIGNATURE-----
+Why is hdspmixer segfaulting? Do you happen to have a backtrace or
+explanation? This should be part of the commit message.
 
---8P1HSweYDcXXzwPJ--
+
+Minor nitpicking: I'd prefer (foo || bar) over (foo|bar). Sure, both do
+the trick, but the first seems easier to read to me.
+
+
+For the final patch:
+
+   <http://www.alsa-project.org/main/index.php/GIT_Server#Occasional_Developers>
+
+Basically: proper commit message and sent to patch@alsa-project.org),
+so your attribution will always be kept.
+
+
+
+
+Cheers
+
+-- 
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
