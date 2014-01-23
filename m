@@ -1,17 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: Refactor slot assignment code
-Date: Thu, 23 Jan 2014 11:48:59 +0100
-Message-ID: <1390474139-26108-1-git-send-email-tiwai@suse.de>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 1/2] ASoC: Samsung: Fix Kconfig dependency
+Date: Thu, 23 Jan 2014 16:22:06 +0530
+Message-ID: <1390474326-5544-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 76B8F264E9F
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 11:48:59 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 61842AC5B
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 10:48:59 +0000 (UTC)
+Received: from mail-pa0-f41.google.com (mail-pa0-f41.google.com
+ [209.85.220.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id A95BC264E9F
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 11:56:36 +0100 (CET)
+Received: by mail-pa0-f41.google.com with SMTP id fa1so1723279pad.0
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 02:56:35 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,98 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: sbkim73@samsung.com, sachin.kamat@linaro.org, broonie@kernel.org, lgirdwood@gmail.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-There are two loops that are almost identical but only with different
-checks.  Refactor them with a simple helper, and give a bit more
-comments what's doing there.
+Select S3C24XX_DMA instead of S3C2410_DMA to avoid following dependency issues
+and build errors:
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+warning: (CPU_S3C2410 && CPU_S3C2442 && SND_SOC_SAMSUNG && SND_S3C24XX_I2S && SND_S3C2412_SOC_I2S && SND_SOC_SAMSUNG_SMDK2443_WM9710 && SND_SOC_SAMSUNG_LN2440SBC_ALC650) selects S3C2410_DMA which has unmet direct dependencies (ARCH_S3C24XX && S3C24XX_DMA && (CPU_S3C2410 || CPU_S3C2442))
+warning: (CPU_S3C2410 && CPU_S3C2442 && SND_SOC_SAMSUNG && SND_S3C24XX_I2S && SND_S3C2412_SOC_I2S && SND_SOC_SAMSUNG_SMDK2443_WM9710 && SND_SOC_SAMSUNG_LN2440SBC_ALC650) selects S3C2410_DMA which has unmet direct dependencies (ARCH_S3C24XX && S3C24XX_DMA && (CPU_S3C2410 || CPU_S3C2442))
+
+arch/arm/mach-s3c24xx/built-in.o: In function `s3c2410_dma_add':
+arch/arm/mach-s3c24xx/dma-s3c2410.c:134: undefined reference to `s3c2410_dma_init'
+arch/arm/mach-s3c24xx/dma-s3c2410.c:135: undefined reference to `s3c24xx_dma_order_set'
+arch/arm/mach-s3c24xx/dma-s3c2410.c:136: undefined reference to `s3c24xx_dma_init_map'
+arch/arm/plat-samsung/include/plat/dma-ops.h:60: undefined reference to `s3c_dma_get_ops'
+sound/soc/samsung/s3c24xx-i2s.c:293: undefined reference to `s3c2410_dma_ctrl'
+arch/arm/plat-samsung/include/plat/dma-ops.h:60: undefined reference to `s3c_dma_get_ops'
+arch/arm/plat-samsung/include/plat/dma-ops.h:60: undefined reference to `s3c_dma_get_ops'
+sound/built-in.o: In function `s3c2412_i2s_trigger':
+sound/soc/samsung/s3c-i2s-v2.c:432: undefined reference to `s3c2410_dma_ctrl'
+
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/core/init.c | 57 +++++++++++++++++++++++++++++--------------------------
- 1 file changed, 30 insertions(+), 27 deletions(-)
+ sound/soc/samsung/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/core/init.c b/sound/core/init.c
-index e3c93cd77ee7..0d42fcda0de2 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -131,6 +131,31 @@ static inline int init_info_for_card(struct snd_card *card)
- #define init_info_for_card(card)
- #endif
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 27930fc432dc..e8fbf4e5732f 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -19,7 +19,7 @@ config SND_S3C_DMA_LEGACY
  
-+static int check_empty_slot(struct module *module, int slot)
-+{
-+	return !slots[slot] || !*slots[slot];
-+}
-+
-+/* return an empty slot number (>= 0) found in the given bitmask @mask.
-+ * @mask == -1 == 0xffffffff means: take any free slot up to 32
-+ * when no slot is available, return the original @mask as is.
-+ */
-+static int get_slot_from_bitmask(int mask, int (*check)(struct module *, int),
-+				 struct module *module)
-+{
-+	int slot;
-+
-+	for (slot = 0; slot < SNDRV_CARDS; slot++) {
-+		if (slot < 32 && !(mask & (1U << slot)))
-+			continue;
-+		if (!test_bit(slot, snd_cards_lock)) {
-+			if (check(module, slot))
-+				return slot; /* found */
-+		}
-+	}
-+	return mask; /* unchanged */
-+}
-+
- /**
-  *  snd_card_create - create and initialize a soundcard structure
-  *  @idx: card index (address) [0 ... (SNDRV_CARDS-1)]
-@@ -152,7 +177,7 @@ int snd_card_create(int idx, const char *xid,
- 		    struct snd_card **card_ret)
- {
- 	struct snd_card *card;
--	int err, idx2;
-+	int err;
+ config SND_S3C24XX_I2S
+ 	tristate
+-	select S3C2410_DMA
++	select S3C24XX_DMA
  
- 	if (snd_BUG_ON(!card_ret))
- 		return -EINVAL;
-@@ -167,32 +192,10 @@ int snd_card_create(int idx, const char *xid,
- 		strlcpy(card->id, xid, sizeof(card->id));
- 	err = 0;
- 	mutex_lock(&snd_card_mutex);
--	if (idx < 0) {
--		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++) {
--			/* idx == -1 == 0xffff means: take any free slot */
--			if (idx2 < 32 && !(idx & (1U << idx2)))
--				continue;
--			if (!test_bit(idx2, snd_cards_lock)) {
--				if (module_slot_match(module, idx2)) {
--					idx = idx2;
--					break;
--				}
--			}
--		}
--	}
--	if (idx < 0) {
--		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++) {
--			/* idx == -1 == 0xffff means: take any free slot */
--			if (idx2 < 32 && !(idx & (1U << idx2)))
--				continue;
--			if (!test_bit(idx2, snd_cards_lock)) {
--				if (!slots[idx2] || !*slots[idx2]) {
--					idx = idx2;
--					break;
--				}
--			}
--		}
--	}
-+	if (idx < 0) /* first check the matching module-name slot */
-+		idx = get_slot_from_bitmask(idx, module_slot_match, module);
-+	if (idx < 0) /* if not matched, assign an empty slot */
-+		idx = get_slot_from_bitmask(idx, check_empty_slot, module);
- 	if (idx < 0)
- 		err = -ENODEV;
- 	else if (idx < snd_ecards_limit) {
+ config SND_S3C_I2SV2_SOC
+ 	tristate
 -- 
-1.8.5.2
+1.7.9.5
