@@ -1,35 +1,64 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: bits vs bytes bug in snd_card_create()
-Date: Thu, 23 Jan 2014 11:21:28 +0300
-Message-ID: <20140123082128.GA28688@elgon.mountain>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: Need your advice: Add a new communication inteface
+ between HD-Audio and Gfx drivers for hotplug notification/ELD update
+Date: Thu, 23 Jan 2014 09:26:56 +0100
+Message-ID: <CAKMK7uGT1My5hrVCZgnO5UGP5QQkXw=UBxxnaAdqTFTOxptCyw@mail.gmail.com>
+References: <F46914AEC2663F4A9BB62374E5EEF8F82B231778@SHSMSX101.ccr.corp.intel.com>
+	<CAKMK7uFYNfVhXsEmikDZCaFGM8k7g7VMcGqGM4U+1bA_9MX1zQ@mail.gmail.com>
+	<F46914AEC2663F4A9BB62374E5EEF8F82B23315E@SHSMSX101.ccr.corp.intel.com>
+	<20140122141821.GI9772@phenom.ffwll.local>
+	<s5hd2jkj5nt.wl%tiwai@suse.de>
+	<F46914AEC2663F4A9BB62374E5EEF8F82B2342D7@SHSMSX101.ccr.corp.intel.com>
+	<s5h38kfuo4a.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, Yacine Belkadi <yacine.belkadi.1@gmail.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5h38kfuo4a.wl%tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces@lists.freedesktop.org
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
+	Paulo R" <paulo.r.zanoni@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>, "Barnes,
+	Jesse" <jesse.barnes@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The test here is intended intended to prevent shift wrapping bugs when
-we do "1U << idx2".  We should consider the number of bits in a u32
-instead of the number of bytes.
+On Thu, Jan 23, 2014 at 8:57 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> Thanks for clarification!
+>> Maybe we can add output info (eg. display port number) to the eld entries under /proc/asound/cardx. Is it okay?
+>
+> It's possible, but the proc file is just a help.  It can't be the
+> API.  For accessing the information, we'll need some new API, or let
+> inform via sysfs of the new device.
 
-Fixes: 7bb2491b35a2 ('ALSA: Add kconfig to specify the max card numbers')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-WARNING:  Please check this one carefully because I might be wrong.
+Links in sysfs sound like the best approach. drm already has nodes for
+each connector, so on the gfx side there's a natural endpoint already.
+sysfs links also avoids any naming issues from the start, e.g. the
+above DP connector id might lead to clashes with multiple cards.
 
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 1351f22f651c..e9e3db321e64 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -183,7 +183,7 @@ int snd_card_create(int idx, const char *xid,
- 	if (idx < 0) {
- 		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++) {
- 			/* idx == -1 == 0xffff means: take any free slot */
--			if (idx2 < sizeof(int) && !(idx & (1U << idx2)))
-+			if (idx2 < 32 && !(idx & (1U << idx2)))
- 				continue;
- 			if (!test_bit(idx2, snd_cards_lock)) {
- 				if (!slots[idx2] || !*slots[idx2]) {
+>> And I have a question: how to assure the audio/gfx client find its right peer?
+>> On a x86 platform, there can be an integrated GPU and an discrete GPU. So there can be two audio controllers and two GPUs.
+>> We need to assure audio controller find the proper GPU, and vice versa. Maybe we need the peer audio/gfx to register with a same identifier (something like vendor ID) for peering.
+>
+> Yes, it's an open issue.  So far, the binding with vga_switcheroo is
+> done by a rough guess with PCI ID.
+
+Yeah, I guess we need platform/bus specific hints. E.g. on x86 we
+could use the pci id of the gfx card + enumeration of all the audio
+input pins (and just hope that there's no one insane enough to route
+different codecs to the same gfx card or something like that). On ARM
+we could just fish device refernences out of dt. So probably we need
+some platform specific code to fish out the right avsink from the
+audio side.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
