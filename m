@@ -1,57 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 8/8] ASoC: simple-card: add off-codec widgets supports.
-Date: Thu, 23 Jan 2014 19:40:38 +0000
-Message-ID: <20140123194038.GI11727@sirena.org.uk>
+Subject: Re: [PATCH 6/8] ASoC: simple-card: add tdm slot supports
+Date: Thu, 23 Jan 2014 19:48:50 +0000
+Message-ID: <20140123194850.GJ11727@sirena.org.uk>
 References: <1390453370-29194-1-git-send-email-Li.Xiubo@freescale.com>
- <1390453370-29194-9-git-send-email-Li.Xiubo@freescale.com>
+ <1390453370-29194-7-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="STPqjqpCrtky8aYs"
+	protocol="application/pgp-signature"; boundary="NqSa+Xr3J/G6Hhls"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1390453370-29194-9-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <1390453370-29194-7-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Xiubo Li <Li.Xiubo@freescale.com>
 Cc: lgirdwood@gmail.com, shawn.guo@linaro.org, kuninori.morimoto.gx@renesas.com, moinejf@free.fr, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---STPqjqpCrtky8aYs
+--NqSa+Xr3J/G6Hhls
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jan 23, 2014 at 01:02:50PM +0800, Xiubo Li wrote:
+On Thu, Jan 23, 2014 at 01:02:48PM +0800, Xiubo Li wrote:
+> For some CPU/CODEC DAI devices the tdm slot maybe needed. This patch
+> adds the tdm slot supporting for simple-card driver.
 
-> +	/* off-codec widgets */
-> +	if (of_property_read_bool(node, "simple-audio-card,widgets")) {
-> +		ret = snd_soc_of_parse_audio_simple_widgets(&priv->snd_card,
-> +					"simple-audio-card,widgets");
-> +		if (ret)
-> +			return ret;
-> +	}
+This needs binding documentation.
 
-Again, needs documenting.
-
---STPqjqpCrtky8aYs
+--NqSa+Xr3J/G6Hhls
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS4XAzAAoJELSic+t+oim9sM0P/2fm0zF8Q0EAw8WMECZQvFDj
-SKrjtmFFaJcMNQ/EBEQoFNF2b++5HnDQVJ2qD7cqeyOhW4BKeM5ZWGTxyKRHHPsc
-0TdNrubpM2R+uUY8yawzUnmXcvXNLwO6eIK1Urs+9URA6XH2VFPrWb1CVmxiMaH1
-GbuGVLJakf/E7DvZtahdA8cnAiPs0WMmgunPwZAQm6AINLmh6j/TT6rmboc8Dgat
-sjjFp43ZiPvq3fIDQpm6o8ycWMBWwYhEm4A6J9VhZc1waIKjJyGGFi6fnQERw/Br
-M+sMwJAtve1V+8W4YP3NIFtN7C3rY7YllN8DeKWLMHoAFPYlouDOIQb0XPO8odz3
-/237rOaukIKKFwvBhyHcmygRzxM49MpA8DqGfPJ/4LfQOoEmGvMnmb9VL3slyc6H
-7sTbqzUATkjh9Ruzxj7N2yVHGwrP74LV5Bgl6giFDbzc08JfRZzY4anXsR6n9WOj
-D7hQ0tXiR/YrKTxTXX7e4gN5odZ4flPsDVU4+oZJJmSw2OK3cMTwXFZbVRGsp13X
-kbPVi+kl++JQ6WZWdYv/RVCMUDRbiZcJNxCap0JnPoMR7xluzEyf509WhQDiWywO
-6cAJCuhfU+U81A2XWvCYd/pM1B2jBtsTciOblinBbeIz2+mT9BJYluyVVEEQrebu
-cwYGUGc2EHMKxOsttYEx
-=63u1
+iQIcBAEBAgAGBQJS4XIfAAoJELSic+t+oim95cAQAJvhrpEkzgblNK+7xWFXFCXC
+25yBW0vxiVlEOyZ7Gk8dxiFf9pdOlh53oz/iFO4vWsJ2SDhfR1morYeJT+qd0Gfy
+TyaFJ2OyIOLnntGUxuYEjtjJ41nLyc0cJ1y8oJR1CE9qkshqck+YkcGTwYK0Xt2Y
+ftAvpTXBMeOP5jb6i4Vvp24/mr0fMRubnLTgPYqSUjSqBtc4qnC91Y3GE8aV2FSw
+uVuNnN3B9Jk4/wGlth2WD2KavuSeprQKYelTXZAXaGnclsOUBJBC+Tmwkc2JAmFM
+ImU6dLxLwtONH7bOmC/SJYq8cSRzkp2nUSu3vIwn+DIMc4hoFRzJMzVhNYeIjA48
+kL62V1Jxbe0mTzIvXd5Rc2Dq9aGcIkL/7IA7aAqRSEeTjIC9AjcQdxKNqSiRvhbU
+zdtFkCyz2PbkHmKti3fkT2A1hoR5PuAJ0adlwux7VETudo+ioJwT+hZgpn8+LX+z
+WsAfmXX20z83jxj10svHeN5dZGTH9PYNxFGTcgItd3yGpgmRos27YbhXAFXA9Zbz
+ALRDXtF+txaWNJhFMncPKbuJNDSvBEa3bMi1LQxOo9SAch7eaydlyB3ynSrWfTD2
+OsbGouRthL0vV+Brsdn+QNWdg6THZJc4AxXV5DIuMLYUWVYf6RiM8fwgJ6IfILuf
+xoC95/hx5tlTSkKlLjLf
+=w/Ed
 -----END PGP SIGNATURE-----
 
---STPqjqpCrtky8aYs--
+--NqSa+Xr3J/G6Hhls--
