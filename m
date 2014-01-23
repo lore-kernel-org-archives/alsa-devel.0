@@ -1,96 +1,69 @@
-From: Konstantinos Georgantas <k.georgantas@samsung.com>
-Subject: Audio usb switch to alternate setting 0
-Date: Thu, 23 Jan 2014 20:31:04 +0100
-Message-ID: <52E16DF8.8000909@samsung.com>
-References: <52DBD817.8050304@samsung.com> <52DCF98A.4080509@zonque.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH Resend 7/8] ASoC: add
+ snd_soc_of_parse_audio_simple_widgets for DeviceTree
+Date: Thu, 23 Jan 2014 19:39:45 +0000
+Message-ID: <20140123193945.GH11727@sirena.org.uk>
+References: <1390453370-29194-1-git-send-email-Li.Xiubo@freescale.com>
+ <1390453370-29194-8-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.w1.samsung.com (mailout4.w1.samsung.com
- [210.118.77.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 80B2B2652C4
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 20:31:10 +0100 (CET)
-Received: from eucpsbgm1.samsung.com (unknown [203.254.199.244])
- by mailout4.w1.samsung.com
- (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
- 17 2011)) with ESMTP id <0MZV00FJSCVUL660@mailout4.w1.samsung.com> for
- alsa-devel@alsa-project.org; Thu, 23 Jan 2014 19:31:07 +0000 (GMT)
-Received: from [192.168.0.101] ([106.111.34.46])
- by eusync4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTPA id <0MZV00AFDCVT1OA0@eusync4.samsung.com> for
- alsa-devel@alsa-project.org; Thu, 23 Jan 2014 19:31:05 +0000 (GMT)
-In-reply-to: <52DCF98A.4080509@zonque.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="IbVRjBtIbJdbeK1C"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1390453370-29194-8-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: lgirdwood@gmail.com, shawn.guo@linaro.org, kuninori.morimoto.gx@renesas.com, moinejf@free.fr, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
 
-On 01/20/2014 11:25 AM, Daniel Mack wrote:
-> Hi,
->
-> On 01/19/2014 02:50 PM, Konstantinos Georgantas wrote:
->> I am trying to control from the client side which Alternate Setting to
->> use. Basically I would like to be able to switch from Alternate Setting
->> 0 to 1 and vice versa so that I am not receiving any set interface
->> requests in the meantime. From the audio class 2.0 documentation I
->> understand that I should be able to do something like this by using the
->> active alternate setting control, and here comes my main problem.
-> I'm not quite following from which side you're looking at the system,
-> IOW, who should be "receiving" requests. Are you talking about the
-> device or the host side?
-As I see it generating an interrupt from the device to the host should 
-"force" the host to "take appropriate action to reactivate the interface 
-by switching to a valid Alternate Setting".
-> As the spec says (5.2.6.1.1), such a control is read-only, and it "does
-> not allow an interface to change from one active Alternate Setting to
-> another without Host intervention". "The main purpose of this Control is
-> to notify the Host (through an interrupt) that the last
-> selected Alternate Setting is no longer valid.".
->
-> Active alt setting switching is done implictly by (de)activating the PCM
-> streams that are associated with them.
-That is right! But what if someone tries to play music for example? The 
-host will try to set Alternate Setting 1 again thinking that it is still 
-active but in this case my device happens to be in sleep mode so it 
-cannot reply to the usb_set_interface requests. I thought that if I 
-indicated that only Alternate Setting 0 is active I would avoid this 
-request. Am I right? Of course when waking up I could issue another 
-interrupt indicating that my device activates again the Alternate 
-Setting 1. Please correct me if I misunderstand something.
->> When I generate an interrupt to the interrupt endpoint I should expect a
->> GET request which I never see in the host side (hope I am right here).
->>
->> Here comes the interrupt:
->> interrupt->bInfo          = 0x00;
->> interrupt->bAttribute  = 0x01;
->> interrupt->wValue       = 0x0100;
->> interrupt->wIndex       = 0x0004;
->>
->> Could you please tell me if such a functionality is supported and how
->> the interrupt should look like?
-> This type of interrupt is currently unsupported, but it should be easy
-> to add. Note, however, that the only interesting use case is to tear the
-> audio stream down and send active users XRUNs.
->
-> Not sure if this is what you want.
->
-> As always: patches are welcome :)
->
->
-> Daniel
->
-Absolutely! I can come up with a patch but I just want to be sure I have 
-understood the spec in the right way :) Thanks for your help!
+--IbVRjBtIbJdbeK1C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Kostas
+On Thu, Jan 23, 2014 at 01:02:49PM +0800, Xiubo Li wrote:
+
+> +static struct snd_soc_dapm_widget simple_widgets[] = {
+> +	SND_SOC_DAPM_MIC("Mic", NULL),
+> +	SND_SOC_DAPM_LINE("Line", NULL),
+> +	SND_SOC_DAPM_HP("Hp", NULL),
+> +	SND_SOC_DAPM_SPK("Spk", NULL),
+> +};
+
+Does this mean we're restricted to a particular set of names?  That
+seems sad and won't work if there's a desire for more than one of a
+given widget - the main use case I can see is multiple microphones with
+separate microphone biases.  How about having some templates that we
+copy and then replace the name with the one the user supplied?
+
+> +	if (cnt <= 0) {
+> +		dev_err(card->dev,
+> +			"ASoC: Property '%s' does not exist or "
+> +			"length is zero\n", propname);
+
+Don't split error messages over lines, this makes it harder to grep for
+them.
+
+--IbVRjBtIbJdbeK1C
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS4W/9AAoJELSic+t+oim9brIP/RH2ta9ulYxSXYZ0harq5kUE
+GDDW4NFPBVx/WzW2it1KGSoZ1EFqkPIjOQccfbD8NORSnge/dihWwaGiFqAe7Tsu
+6Y3T3TYzL38ZbMRk13NJJFZktKZiZiTBqVxL9NQUe5ADflXT3M5iYlYIYJigLKl2
+0PVtTQ3AfiD7rjYy4EMvTwEN+eH6Zm2efXXhPS5+8bj6SZfG8HOAhBCnCnnalSPK
+Og9xmf7i4FbhSp3cyHu27r2TvW8bMQVSosQmJZ76YNFrDXC7YovxwkZvEwcVjBnN
+SL7NXCExRuHfgUZUgU3cA1NsJXHg2DvK9HLKVBkSmS3VZA9ncZEqnk3DBfa685Md
+RQcAaoGHOZtWz4/VHT5zyBq060Ryn6Htpui20JpATX/0FG/hkumiqNuJMgojJEES
+iXvjjKKVqUOlOZDS/WHyCamVTRkUk1GcRN8begeJLaPrAnffUmKCYNPuRCvc/Bmc
+hh0F8pzbVyTck+8UAAbGp9+w25TOoyU/xn3gPn5GrT5bP5s0on1ow9puDxROw8jo
+iROHdWW0XNFJcwBDTt3EeoTvoUT1+BkjY/eCl0Y38fJSoynwyGnJLhvb//kjzc9x
+UoGbiU88hXPLjXIVXoxWGEHcO7Nw+dTmbCOU0o59nORu6DcL/+Ba0OwLMiWrXe68
+MaDfhy4JkvEdhooNYzRp
+=Aeza
+-----END PGP SIGNATURE-----
+
+--IbVRjBtIbJdbeK1C--
