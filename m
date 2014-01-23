@@ -1,17 +1,15 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH] ASoC: tlv320aic32x4: Use gpio_is_valid()
-Date: Thu, 23 Jan 2014 15:44:03 +0100
-Message-ID: <20140123144403.GG25016@pengutronix.de>
-References: <1390418657-5373-1-git-send-email-festevam@gmail.com>
+From: Putinei Ionut via LinkedIn <member@linkedin.com>
+Subject: abdul, please add me to your LinkedIn network
+Date: Thu, 23 Jan 2014 15:47:48 +0000 (UTC)
+Message-ID: <1412699258.7373153.1390492068159.JavaMail.app@ela4-app5004.prod>
+Reply-To: Putinei Ionut <putineiionut@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4ADF4262618
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 15:44:13 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1390418657-5373-1-git-send-email-festevam@gmail.com>
+Received: from mailb-da.linkedin.com (mailb-da.linkedin.com [199.101.160.71])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8E1326524C
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 16:47:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@kernel.org
+To: "abdul M." <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fabio,
+LinkedIn
+------------
 
-On Wed, Jan 22, 2014 at 05:24:17PM -0200, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
-> 
-> We could use gpio_is_valid() for doing the sanity check on the GPIO number.
-> 
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-This looks like the same patch as [1].
 
-[1] http://thread.gmane.org/gmane.linux.alsa.devel/117668/focus=117669
 
-Regards,
+    Putinei Ionut requested to add you as a connection on LinkedIn:
+  
 
-Markus
+------------------------------------------
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+abdul,
+
+I'd like to add you to my professional network on LinkedIn.
+
+- Putinei
+
+Accept invitation from Putinei Ionut
+http://www.linkedin.com/e/jpxkk3-hqs72qer-24/uii-rtptP1H4ViCg9YiBUOvto1r4_5GcrJPkip6lXT/blk/I483592681_135/e39SrCAJoS5vrCAJoyRJtCVFnSRJrScJr6RBfnhv9ClRsDgZp6lQs6lzoQ5AomZIpn8_djcNnP4Udz8VdjcUd4ALqCMRryRbgSELdPkVe3gSej0Sc34LrCBxbOYWrSlI/eml-comm_invm-b-in_ac-inv28/?hs=false&tok=1ddRqysBbjDC41
+
+View profile of Putinei Ionut
+http://www.linkedin.com/e/jpxkk3-hqs72qer-24/rso/227244299/bCFj/name/138036396_I483592681_135/?hs=false&tok=2rmsn-XyrjDC41
+------------------------------------------
+You are receiving Invitation emails.
+
+
+This email was intended for abdul moiz.
+Learn why this is included: http://www.linkedin.com/e/jpxkk3-hqs72qer-24/plh/http%3A%2F%2Fhelp%2Elinkedin%2Ecom%2Fapp%2Fanswers%2Fdetail%2Fa_id%2F4788/-GXI/?hs=false&tok=0HksL7NMrjDC41
+
+(c) 2012, LinkedIn Corporation. 2029 Stierlin Ct, Mountain View, CA 94043, USA.
+
+
+  
