@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: codecs: Make OF supported CODECs
- visible	in Kconfig
-Date: Thu, 23 Jan 2014 13:22:40 +0000
-Message-ID: <20140123132240.GM17314@sirena.org.uk>
-References: <1390481947-4325-1-git-send-email-broonie@kernel.org>
- <s5hmwimu9dt.wl%tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3] ASoC: wm5102: Correct typo in EQ
+	coefficient sizes
+Date: Thu, 23 Jan 2014 13:45:34 +0000
+Message-ID: <1390484736-12316-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1324234387004339534=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8882D2625D4
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 14:22:51 +0100 (CET)
-In-Reply-To: <s5hmwimu9dt.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E627D2625FF
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 14:53:52 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,68 +19,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
 
---===============1324234387004339534==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FcSIktkEp0oIiTkb"
-Content-Disposition: inline
+Sorry seems there was a small typo in my patches from
+yesterday.
 
+Let me know if you would rather I respun the patches from
+yesterday but for now here they are as an incremental fix.
 
---FcSIktkEp0oIiTkb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks,
+Charles
 
-On Thu, Jan 23, 2014 at 02:15:42PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+ sound/soc/codecs/wm5102.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-> > It may also be desirable to hide these if OF is not enabled to reduce
-> > noise.
-
-> IIRC, you can write like:
-
-> config SND_SOC_ADAU1701
-> 	tristate "Analog Devices ADAU1701 CODEC" if OF
-> 	depends on I2C
-
-> so that it's visible only when CONFIG_OF is set.
-
-Yes, or use a proxy symbol so we can add ACPI easily as well in due
-course without having to go through and update every device again - that
-was the main thing really.
-
---FcSIktkEp0oIiTkb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS4RedAAoJELSic+t+oim98qkP+gNd7LIyJ2Mtucme0MFBazzI
-QIIWOH3Y9DRUSmAjGbaPwahFf61062mHYi9TU4bTcwm4CO8ocfJsqh3yP4VNl+Jh
-jDM6l6sD4glM0gdoVoDsbKGOzewAH1GlrHsfMNq2uym6NjvP4FmkuaNrmRJarRzU
-mIOs9otmSMrG3mmb6vUv0PWCJXmXwWRTn+v1r2nusEINtkz/EcYsgoI/odWdEviz
-UEf0D7AUwZO3sjjeve5spJOKTulzEqfsyHW3Uq+C2v1euKeKQqMbNNWLAdPZ8uzG
-g0rYxkFWgFB1cPJFrAST1YLfSVdTMp6qMNJVrj0tcHxMbB3JLX0F3kmQILE1qKxK
-yTsDKQo6c2PBQEccQjMmMWPtQsNGA5c/wzWY+quC6yrUL/FZEfWx5QpP9W/oyW6Z
-drsR0AssJg1EKh0G9p6X4YX+l5S+doKjm0FXngiGUzKkwiUNzkbmuRoB5yb4TPjA
-UoVb0k1655P8yPIhngvyuw+pa7DPtqst6UIJPFc6TfDW8phlI/zwZFBRHrCeDdHy
-vwFRS069m0KTyBPmfuaNtQYyXn18otK3wtoVeJQljaYFXqn3dvnZ9XIMyrG5PBl7
-d75DjSevgP6BUvNvPnJvSiEn7czzMjJu1dmimI9/HJq3Eb9m6l+q8tmrYhYpklx5
-uRqNglDO31lGqbWHaTMS
-=YTWw
------END PGP SIGNATURE-----
-
---FcSIktkEp0oIiTkb--
-
---===============1324234387004339534==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1324234387004339534==--
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 5e03a83..ebffe81 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -685,7 +685,7 @@ ARIZONA_MIXER_CONTROLS("EQ2", ARIZONA_EQ2MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("EQ3", ARIZONA_EQ3MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("EQ4", ARIZONA_EQ4MIX_INPUT_1_SOURCE),
+ 
+-SND_SOC_BYTES("EQ1 Coefficients", ARIZONA_EQ1_3, 18),
++SND_SOC_BYTES("EQ1 Coefficients", ARIZONA_EQ1_3, 19),
+ SOC_SINGLE("EQ1 Mode Switch", ARIZONA_EQ1_2, ARIZONA_EQ1_B1_MODE, 1, 0),
+ SOC_SINGLE_TLV("EQ1 B1 Volume", ARIZONA_EQ1_1, ARIZONA_EQ1_B1_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+@@ -698,7 +698,7 @@ SOC_SINGLE_TLV("EQ1 B4 Volume", ARIZONA_EQ1_2, ARIZONA_EQ1_B4_GAIN_SHIFT,
+ SOC_SINGLE_TLV("EQ1 B5 Volume", ARIZONA_EQ1_2, ARIZONA_EQ1_B5_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+ 
+-SND_SOC_BYTES("EQ2 Coefficients", ARIZONA_EQ2_3, 18),
++SND_SOC_BYTES("EQ2 Coefficients", ARIZONA_EQ2_3, 19),
+ SOC_SINGLE("EQ2 Mode Switch", ARIZONA_EQ2_2, ARIZONA_EQ2_B1_MODE, 1, 0),
+ SOC_SINGLE_TLV("EQ2 B1 Volume", ARIZONA_EQ2_1, ARIZONA_EQ2_B1_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+@@ -711,7 +711,7 @@ SOC_SINGLE_TLV("EQ2 B4 Volume", ARIZONA_EQ2_2, ARIZONA_EQ2_B4_GAIN_SHIFT,
+ SOC_SINGLE_TLV("EQ2 B5 Volume", ARIZONA_EQ2_2, ARIZONA_EQ2_B5_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+ 
+-SND_SOC_BYTES("EQ3 Coefficients", ARIZONA_EQ3_3, 18),
++SND_SOC_BYTES("EQ3 Coefficients", ARIZONA_EQ3_3, 19),
+ SOC_SINGLE("EQ3 Mode Switch", ARIZONA_EQ3_2, ARIZONA_EQ3_B1_MODE, 1, 0),
+ SOC_SINGLE_TLV("EQ3 B1 Volume", ARIZONA_EQ3_1, ARIZONA_EQ3_B1_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+@@ -724,7 +724,7 @@ SOC_SINGLE_TLV("EQ3 B4 Volume", ARIZONA_EQ3_2, ARIZONA_EQ3_B4_GAIN_SHIFT,
+ SOC_SINGLE_TLV("EQ3 B5 Volume", ARIZONA_EQ3_2, ARIZONA_EQ3_B5_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+ 
+-SND_SOC_BYTES("EQ4 Coefficients", ARIZONA_EQ4_3, 18),
++SND_SOC_BYTES("EQ4 Coefficients", ARIZONA_EQ4_3, 19),
+ SOC_SINGLE("EQ4 Mode Switch", ARIZONA_EQ4_2, ARIZONA_EQ4_B1_MODE, 1, 0),
+ SOC_SINGLE_TLV("EQ4 B1 Volume", ARIZONA_EQ4_1, ARIZONA_EQ4_B1_GAIN_SHIFT,
+ 	       24, 0, eq_tlv),
+-- 
+1.7.2.5
