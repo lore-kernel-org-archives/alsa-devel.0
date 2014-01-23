@@ -1,76 +1,55 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: [PATCH] fix alsa-tools/hdspmixer for RME 9632 A
-Date: Thu, 23 Jan 2014 20:05:00 +0100
-Message-ID: <20140123190500.GQ25242@ltw.loris.tv>
-References: <CADeOaFr6H_pct9bywOey2p1XVfrT3sKmSDiGO_DS0vuPpcwqUQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH Resend 3/8] ASoC: simple-card: simplify the daifmt code
+Date: Thu, 23 Jan 2014 19:20:04 +0000
+Message-ID: <20140123192004.GD11727@sirena.org.uk>
+References: <1390453370-29194-1-git-send-email-Li.Xiubo@freescale.com>
+ <1390453370-29194-4-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [188.40.101.23])
- by alsa0.perex.cz (Postfix) with ESMTP id E244B265299
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 20:05:06 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TybLhxa8M7aNoW+V"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CADeOaFr6H_pct9bywOey2p1XVfrT3sKmSDiGO_DS0vuPpcwqUQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Turing <mail@danielturing.com>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <1390453370-29194-4-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: lgirdwood@gmail.com, shawn.guo@linaro.org, kuninori.morimoto.gx@renesas.com, moinejf@free.fr, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 23, 2014 at 12:38:29PM +0100, Daniel Turing wrote:
 
+--TybLhxa8M7aNoW+V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi!
+On Thu, Jan 23, 2014 at 01:02:45PM +0800, Xiubo Li wrote:
+> In the asoc_simple_card_parse_of() will parse the device node's CPU/CODEC
+> DAI commone fmts, and then in asoc_simple_card_sub_parse_of() will parse
+> the CPU/CODEC DAI's sub-node fmts, so we can combine the info->daifmt and
+> info->set.fmt in asoc_simple_card_sub_parse_of() not while just before
+> _set_fmt().
 
-> since i never turned up here, let me just quickly congratulate and
-> thank y'all for your outstanding work on linux audio. My world
-> wouldn't be as great without you!
+This doesn't apply against the current topic/simple, can you please
+check and resend?
 
-You're welcome.
+--TybLhxa8M7aNoW+V
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> I run a HDSP 9632 with the "AI4s-192 AIO" 4x Analog input extension
-> board. It works great so far, but hdspmixer segfaults because it tries
-> to show 16 channels with fltk, but doesnt care to initialize the
-> channel labels for the input extension board.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-Since I don't own the card in question, I cannot test the patch and
-simply trust your word here.
+iQIcBAEBAgAGBQJS4WtaAAoJELSic+t+oim95aQP/iXfEhjJQ85Qj8IU4az7+aNk
+2tW6kCvwypPEZN04p4Yp82Atf3GX/p8t4Oo70qaWnRYs++NdFdqWrU8NXXyQ0ku0
+P4pKZjQh1ynK5k9b3fI9PGkecefMAfpqQtHU1iy/rOaUSWht9yWB2yvnkfc7XaQU
+lONcmRVbCgSilK0mktUoqreChLdtkd/aytfYswWhkRIIjD9N3yQegt8eBZIan/hZ
+zOKW3SYcZO3JjJibFCc5fZhyN+Ud3xDGY5MPuE/Kx8vNnqKpZkjRApw/teyCLQRc
+LbXbn2ifMDqGADaWLjQk6YyWzS0pPqY4oY1F9/k4n+KaAQwKSoEZaafa0pIWzgBx
+AIPwJ3jFfRxR6u8JD/4o1To7PPjF+0MAZpJkUV4lCUtN0Tb0gVXsg/h5rBYitoGR
+fVh24hretXK1qibCA1nR/1b+ov5pWeDTFCmTtUkykLAW47rEwy5WSUOPddYq5sYZ
+NWvZ1HKKwjOuHj81OoPv2skrwyJbAqkAvbFyYx5jLFREwzBmKi6hXlLx7t4rztPy
+P5kFgIiJj+Z/tQ6IiUSOIr4MHrxxPleg47nEFkYMFgrRbnnTr8xdCQWcVwMqtMIO
+l5QHO9UrbjEmPEKQy4CLSILX6klijStOZCylA6qZoPglxmgdw5k6qReycsduxSq8
+KMS7OloBaa+jjvYscApj
+=ZsJg
+-----END PGP SIGNATURE-----
 
-OTOH, I have to admit I don't fully understand the patch. What you're
-doing is to increment the number of output channels in case you have an
-additional input module.
-
-The input module is handled in HDSPMixerCard.cxx. Is it just a side
-effect? Because semantically, it is wrong to create output destinations
-just to get input channels rendered.
-
-Why is hdspmixer segfaulting? Do you happen to have a backtrace or
-explanation? This should be part of the commit message.
-
-
-Minor nitpicking: I'd prefer (foo || bar) over (foo|bar). Sure, both do
-the trick, but the first seems easier to read to me.
-
-
-For the final patch:
-
-   <http://www.alsa-project.org/main/index.php/GIT_Server#Occasional_Developers>
-
-Basically: proper commit message and sent to patch@alsa-project.org),
-so your attribution will always be kept.
-
-
-
-
-Cheers
-
--- 
-mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
+--TybLhxa8M7aNoW+V--
