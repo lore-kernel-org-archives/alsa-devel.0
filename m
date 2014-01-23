@@ -1,80 +1,39 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH Resend 2/8] ASoC: simple-card: fix
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [PATCH Resend 2/8] ASoC: simple-card: fix
  __asoc_simple_card_dai_init
-Date: Thu, 23 Jan 2014 08:11:51 +0100
-Message-ID: <20140123081151.35837d3b@armhf>
+Date: Thu, 23 Jan 2014 07:22:48 +0000
+Message-ID: <54eb54a8ba71491ba5fe9248aa53732b@BY2PR03MB505.namprd03.prod.outlook.com>
 References: <1390453370-29194-1-git-send-email-Li.Xiubo@freescale.com>
 	<1390453370-29194-3-git-send-email-Li.Xiubo@freescale.com>
+ <20140123081151.35837d3b@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1390453370-29194-3-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <20140123081151.35837d3b@armhf>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, shawn.guo@linaro.org, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 23 Jan 2014 13:02:44 +0800
-Xiubo Li <Li.Xiubo@freescale.com> wrote:
-
-> If the CPU/CODEC DAI set_sysclk() is not support, the -ENOTSUPP will =
-returnd.
-> Here do the check like set_fmt().
->=20
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-> ---
->=20
->=20
->=20
-> The VF610 Tower and VF610 LS1 platforms' ESAI and SPDIF will depend o=
-n this
-> patch too.
->=20
->=20
->=20
->=20
->  sound/soc/generic/simple-card.c | 17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
->=20
-> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simp=
-le-card.c
-> index 6443c87..3b8c9a2 100644
-> --- a/sound/soc/generic/simple-card.c
-> +++ b/sound/soc/generic/simple-card.c
-> @@ -31,16 +31,21 @@ static int __asoc_simple_card_dai_init(struct snd=
-_soc_dai *dai,
-> =20
->  	daifmt |=3D set->fmt;
-> =20
-> -	if (daifmt)
-> +	if (daifmt) {
->  		ret =3D snd_soc_dai_set_fmt(dai, daifmt);
-> -
-> -	if (ret =3D=3D -ENOTSUPP) {
-> -		dev_dbg(dai->dev, "ASoC: set_fmt is not supported\n");
-> -		ret =3D 0;
-> +		if (ret && ret !=3D -ENOTSUPP) {
-> +			dev_err(dai->dev, "simple-card: set_fmt error\n");
-> +			return ret;
-> +		}
->  	}
-> =20
-> -	if (!ret && set->sysclk)
-> +	if (set->sysclk) {
->  		ret =3D snd_soc_dai_set_sysclk(dai, 0, set->sysclk, 0);
-> +		if (ret && ret !=3D -ENOTSUPP) {
-> +			dev_err(dai->dev, "simple-card: set_sysclk error\n");
-> +			return ret;
-> +		}
-> +	}
-> =20
->  	return ret;
-
-Sorry: you must return 0 here
-
->  }
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+DQo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9nZW5lcmljL3NpbXBsZS1jYXJkLmMgYi9zb3Vu
+ZC9zb2MvZ2VuZXJpYy9zaW1wbGUtDQo+IGNhcmQuYw0KPiA+IGluZGV4IDY0NDNjODcuLjNiOGM5
+YTIgMTAwNjQ0DQo+ID4gLS0tIGEvc291bmQvc29jL2dlbmVyaWMvc2ltcGxlLWNhcmQuYw0KPiA+
+ICsrKyBiL3NvdW5kL3NvYy9nZW5lcmljL3NpbXBsZS1jYXJkLmMNCj4gPiBAQCAtMzEsMTYgKzMx
+LDIxIEBAIHN0YXRpYyBpbnQgX19hc29jX3NpbXBsZV9jYXJkX2RhaV9pbml0KHN0cnVjdA0KPiBz
+bmRfc29jX2RhaSAqZGFpLA0KPiA+DQo+ID4gIAlkYWlmbXQgfD0gc2V0LT5mbXQ7DQo+ID4NCj4g
+PiAtCWlmIChkYWlmbXQpDQo+ID4gKwlpZiAoZGFpZm10KSB7DQo+ID4gIAkJcmV0ID0gc25kX3Nv
+Y19kYWlfc2V0X2ZtdChkYWksIGRhaWZtdCk7DQo+ID4gLQ0KPiA+IC0JaWYgKHJldCA9PSAtRU5P
+VFNVUFApIHsNCj4gPiAtCQlkZXZfZGJnKGRhaS0+ZGV2LCAiQVNvQzogc2V0X2ZtdCBpcyBub3Qg
+c3VwcG9ydGVkXG4iKTsNCj4gPiAtCQlyZXQgPSAwOw0KPiA+ICsJCWlmIChyZXQgJiYgcmV0ICE9
+IC1FTk9UU1VQUCkgew0KPiA+ICsJCQlkZXZfZXJyKGRhaS0+ZGV2LCAic2ltcGxlLWNhcmQ6IHNl
+dF9mbXQgZXJyb3JcbiIpOw0KPiA+ICsJCQlyZXR1cm4gcmV0Ow0KPiA+ICsJCX0NCj4gPiAgCX0N
+Cj4gPg0KPiA+IC0JaWYgKCFyZXQgJiYgc2V0LT5zeXNjbGspDQo+ID4gKwlpZiAoc2V0LT5zeXNj
+bGspIHsNCj4gPiAgCQlyZXQgPSBzbmRfc29jX2RhaV9zZXRfc3lzY2xrKGRhaSwgMCwgc2V0LT5z
+eXNjbGssIDApOw0KPiA+ICsJCWlmIChyZXQgJiYgcmV0ICE9IC1FTk9UU1VQUCkgew0KPiA+ICsJ
+CQlkZXZfZXJyKGRhaS0+ZGV2LCAic2ltcGxlLWNhcmQ6IHNldF9zeXNjbGsgZXJyb3JcbiIpOw0K
+PiA+ICsJCQlyZXR1cm4gcmV0Ow0KPiA+ICsJCX0NCj4gPiArCX0NCj4gPg0KPiA+ICAJcmV0dXJu
+IHJldDsNCj4gDQo+IFNvcnJ5OiB5b3UgbXVzdCByZXR1cm4gMCBoZXJlDQo+IA0KDQpZZXMsIHRo
+ZSByZXQgbWF5YmUgLUVOT1RTVVBQLg0KDQpJIHdpbGwgcmV2aXNlIGl0Lg0KDQpUaGFua3MsDQoN
+CkJlc3QgUmVnYXJkcywNClhpdWJvDQoNCg==
