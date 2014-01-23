@@ -1,22 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Need your advice: Add a new communication inteface
- between HD-Audio and Gfx drivers for hotplug notification/ELD update
-Date: Thu, 23 Jan 2014 09:13:07 +0100
-Message-ID: <52E0CF13.4020905@perex.cz>
-References: <F46914AEC2663F4A9BB62374E5EEF8F82B231778@SHSMSX101.ccr.corp.intel.com>
- <CAKMK7uFYNfVhXsEmikDZCaFGM8k7g7VMcGqGM4U+1bA_9MX1zQ@mail.gmail.com>
- <F46914AEC2663F4A9BB62374E5EEF8F82B23315E@SHSMSX101.ccr.corp.intel.com>
- <20140122141821.GI9772@phenom.ffwll.local> <s5hd2jkj5nt.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F82B2342D7@SHSMSX101.ccr.corp.intel.com>
- <s5h38kfuo4a.wl%tiwai@suse.de>
+From: Olivier Langlois <olivier@trillion01.com>
+Subject: Re: [ISSUE] rtl8192ce appears to interfere with ALSA
+	playback
+Date: Thu, 23 Jan 2014 03:13:20 -0500
+Message-ID: <1390464800.2436.111.camel@Wailaba2>
+References: <1389767820.2436.45.camel@Wailaba2>
+ <52D6BEEF.5050705@lwfinger.net> <52D76D56.6060906@trillion01.com>
+ <20140116055547.GU19393@us.netrek.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FB00265172
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 09:13:08 +0100 (CET)
-In-Reply-To: <s5h38kfuo4a.wl%tiwai@suse.de>
+Received: from oproxy6-pub.mail.unifiedlayer.com
+ (oproxy6-pub.mail.unifiedlayer.com [67.222.54.6])
+ by alsa0.perex.cz (Postfix) with SMTP id 1AD1A265176
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 09:13:25 +0100 (CET)
+In-Reply-To: <20140116055547.GU19393@us.netrek.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,249 +24,276 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
- Paulo R" <paulo.r.zanoni@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>, "Barnes,
- Jesse" <jesse.barnes@intel.com>, Daniel Vetter <daniel@ffwll.ch>
+To: James Cameron <quozl@laptop.org>
+Cc: alsa-devel@alsa-project.org, linux-wireless@vger.kernel.org, daniel@zonque.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 23.1.2014 08:57, Takashi Iwai wrote:
-> At Thu, 23 Jan 2014 06:35:12 +0000,
-> Lin, Mengdong wrote:
->>
->>> -----Original Message-----
->>> From: Takashi Iwai [mailto:tiwai@suse.de]
->>> Sent: Thursday, January 23, 2014 1:19 AM
->>> To: Daniel Vetter
->>> Cc: Lin, Mengdong; Barnes, Jesse; Zanoni, Paulo R;
->>> alsa-devel@alsa-project.org; intel-gfx@lists.freedesktop.org; dri-devel
->>> Subject: Re: Need your advice: Add a new communication inteface
->>> between HD-Audio and Gfx drivers for hotplug notification/ELD update
->>>
->>> At Wed, 22 Jan 2014 15:18:21 +0100,
->>> Daniel Vetter wrote:
->>>>
->>>> On Wed, Jan 22, 2014 at 12:48:04PM +0000, Lin, Mengdong wrote:
->>>>>> -----Original Message-----
->>>>>> From: daniel.vetter@ffwll.ch [mailto:daniel.vetter@ffwll.ch] On
->>>>>> Behalf Of Daniel Vetter
->>>>>> Sent: Tuesday, January 21, 2014 9:11 PM
->>>>>> To: Lin, Mengdong
->>>>>> Cc: Takashi Iwai (tiwai@suse.de); Barnes, Jesse; Zanoni, Paulo R;
->>>>>> alsa-devel@alsa-project.org; intel-gfx@lists.freedesktop.org
->>>>>> Subject: Re: Need your advice: Add a new communication inteface
->>>>>> between HD-Audio and Gfx drivers for hotplug notification/ELD
->>>>>> update
->>>>>>
->>>>>> On Tue, Jan 21, 2014 at 1:35 PM, Lin, Mengdong
->>>>>> <mengdong.lin@intel.com>
->>>>>> wrote:
->>>>>>> Dear audio and gfx stakeholders,
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> We hope to add a new interface between audio and gfx driver, for
->>>>>>> gfx driver to notify audio about HDMI/DP hot-plug and ELD update.
->>>>>>>
->>>>>>> Would you please share some comments on the proposal below?
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> Background of this issue: On Intel Haswell/Broadwell platforms,
->>>>>>> there is a HW restriction that after the display HD-Audio
->>>>>>> controller is in D3,
->>>>>>>
->>>>>>> it cannot be waken up by HDMI/DP hot-plug. Consequently,
->>>>>>> although the gfx driver can still detect the HDMI/DP hot-plug,
->>>>>>>
->>>>>>> audio driver has no idea about this and cannot notify user space
->>>>>>> whether the external HDMI/DP monitor is available for audio
->>>>>>> playback,
->>>>>>>
->>>>>>> because the audio controller cannot wake up to D0 and receive HW
->>>>>>> unsolicited event about hot-plug from the audio codec.
->>>>>>>
->>>>>>> This limitation will affect user space to decide whether we can
->>>>>>> output audio over HDMI/DP.
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> To solve the above limitation, Takashi suggested to add a new
->>>>>>> communication interface between audio and gfx driver: create a
->>>>>> common
->>>>>>> object
->>>>>>>
->>>>>>> containing the ops registered by both graphics and audio
->>>>>>> drivers, then communicate through it, something like
->>> vga_switcheroo.
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> Is it okay to create this kernel object in i915 driver?
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> I915 can export an API like "display_register_audio_client" for
->>>>>>> audio driver to register a client and hot-plug notification ops.
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> I915 can also call some API like "display_register_gfx_client"
->>>>>>> itself and register ops for audio driver to query monitor
->>>>>>> presence and ELD info on a specific port.
->>>>>>>
->>>>>>> It would be faster for audio driver than quering ELD by
->>>>>>> command/response over the HD-A bus, thus avoid delay in i915
->>>>>>> mode
->>>>>> set.
->>>>>>>
->>>>>>> This will also avoid waking up the audio devices unnecessarily
->>>>>>> if the user space does not really want to use HDMI/DP for audio
->>> playback.
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> Whenever i195 enables/disables audio on a port in modeset, it
->>>>>>> can call some API like "display_set_audio_state()" on this
->>>>>>> kernel object and trigger notifications to the audio driver.
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> When the audio driver is probed (in the delayed probe stage), it
->>>>>>> can request
->>>>>>> i915 API symbol to register the audio client for this
->>>>>>> communication kernel object.
->>>>>>>
->>>>>>> Since the 1st i915 mode set may happen before audio driver
->>>>>>> registers the ops, we'll let audio driver check ELD once after
->>>>>>> registering the audio client ops.
->>>>>>>
->>>>>>> And for the platforms which uses this communication interface,
->>>>>>> we can disable unsolicited event for HDMI/DP hot-plug in the audio
->>> driver.
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> We hope to hear your feedback and start to work out more details.
->>>>>
->>>>> Thanks for your advice, Daniel!
->>>>>
->>>>>> Yeah, I've discussed this at KS with Takashi and we've agreed that
->>>>>> some common object to facilitate driver interactions. A few things
->>>>>> though:
->>>>>> - This should be common infrastructure useable by all alsa and drm
->>>>>> drivers, not just i915 and snd-hda. Especially on embedded
->>>>>> platforms this issue is fairly rampant ...
->>>>>
->>>>> Agree. Where to put this common object?
->>>>> Is it okay to put it under /driver/gpu/drm, similar to vga_switchroo?
->>>>> Shall we divide clients into audio and gfx categories, and define
->>>>> different ops for them? Since different info/request flow in
->>>>> different direction between audio and gfx.
->>>>
->>>> I guess we could place them into drivers/gpu, yeah. For a name I'd
->>>> suggest avsink or something like that, to make it clear that it's the
->>>> combination of audio+video. For the actual interfaces I guess we just
->>>> need one object in the device model, but the interface should be split
->>>> into things called from the audio side only, functions for the video
->>>> driver side only and stuff which can be called from both sides. This
->>>> matters mostly just so we don't end up with deadlocks since we need a
->>>> lock to protect the avsink state itself (e.g. the EDL or the
->>> audio_output_connected state).
->>>>
->>>>>> - While at it it should also encompass power management handling
->>>>>> of the shared hw imo so that we can get rid of the hsw specific
->>>>>> hacks for the power well code. Or at least we need to rework the
->>>>>> power well code to reuse this new infrastructure, I don't really
->>>>>> want to maintain a few copies of the lazy symbol_get logic this kind
->>> of stuff requires.
->>>>>
->>>>> Sounds good.
->>>>>
->>>>>> - I think the biggest problem is figuring out who should register
->>>>>> these device nodes. I think it makes the most sense if we do this
->>>>>> in the gfx driver, but that requires some trickery on the alsa
->>>>>> side (probably with using -EPROBE_DEFER or something like that.
->>>>>
->>>>> Can the new infrastructure allow audio driver to query whether gfx
->>> driver is ready?
->>>>> Maybe audio can wait until gfx is ready. For HD-Audio driver, the
->>>>> most time consuming part is delayed after the probe stage, and
->>>>> actually we can wait in the delayed phase.
->>>>
->>>> Tbh I haven't really thought about this really. EPROBE_DEFER looks
->>>> like the technique used by embedded platforms, but there's also the
->>>> new aggregate device driver infrastructure that Russell King is
->>>> working on for the imx driver. Or maybe we need to hand-roll our own
->>> notification scheme.
->>>>
->>>> On a hunch it's probably best if the gfx side registers this device
->>>> (since it also owns the output state in general) and that the audio
->>>> side waits until the gfx side has registered everything if it's not
->>>> there yet. I also haven't though about how the audio side could probe
->>>> for the right avsink node really ...
->>>
->>> Yes, I think doing it first in the gfx side makes sense, too.
->>>
->>>>>> - I agree that passing ELD and all the other information through
->>>>>> this new structure makes lot more sense than the current mess we
->>>>>> have with passing the ELD through some hardware buffer.
->>>>>
->>>>>> - Finally I think we should assign some identifier to this link
->>>>>> which will get exposed both on the drm side and in alsa, so that
->>>>>> userspace can figure out which display connects to which output.
->>>>>> With that media player could do the Right Thing and automatically
->>>>>> place the audio stream on the right pin in alsa.
->>>>>
->>>>> Is there something that blocks media player from doing the right thing
->>> now?
->>>>> For HD-Audio, the eld entries under /proc/asound/cardx expose the
->>>>> ELD info and can help user space to check if a monitor is usable on a
->>> pin.
->>>>> Current limitation is these eld entries cannot update if the audio
->>>>> controller is in D3, so we need the new infrastructure to notify
->>>>> audio driver to update them. But I'm not sure about embedded audio,
->>>>> maybe Takashi would like to share more info.
->>>>
->>>> ELD doesn't contain the serial number from the EDID, so if you have
->>>> two monitors of the same model userspace can't figure out which audio
->>>> output is connected to which screen.
->>>
->>> Right.  And, comparing two different data just for knowing whether A
->>> and B are relevant is merely a pain.
->>
->> Thanks for clarification!
->> Maybe we can add output info (eg. display port number) to the eld entries under /proc/asound/cardx. Is it okay?
-> 
-> It's possible, but the proc file is just a help.  It can't be the
-> API.  For accessing the information, we'll need some new API, or let
-> inform via sysfs of the new device.
+James,
 
-I agree here. From my view, the cleanest solution is to create an
-universal API in the kernel for the shared state / binding information
-and inter-communication. I believe, that other drivers may use this API
-in the future like mentioned vga_switcheroo.
+I think that I have found and fix the cause of the timing miscalculation
+[1]
 
-						Jaroslav
+I have recompiled rtlwifi modules to have access to the debug option
+which I have set to 4. I have also compiled ALSA modules with the
+XRUN_DEBUG option that I have activated with
 
-> 
->> And I have a question: how to assure the audio/gfx client find its right peer?
->> On a x86 platform, there can be an integrated GPU and an discrete GPU. So there can be two audio controllers and two GPUs.
->> We need to assure audio controller find the proper GPU, and vice versa. Maybe we need the peer audio/gfx to register with a same identifier (something like vendor ID) for peering.
-> 
-> Yes, it's an open issue.  So far, the binding with vga_switcheroo is
-> done by a rough guess with PCI ID.
-> 
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+echo 1 > /proc/asound/card0/pcm0p/xrun_debug
+
+I have reproduced the problems while collecting dmesg output and using
+'watch -n1 cat /proc/interrupts'
+
+I have made a couple of observations.
+
+1. there is a small burst of interrupts for rtl8192ce at a regular
+interval which seems to happen during rtl_op_sw_scan and the underruns
+appear to coincide with that.
+2. I was expecting to see XRUN entries in dmesg but I didn't. The
+closest that I have is
+[ 1700.756017] PCM: Lost interrupts? [Q] (stream=0, delta=16108,
+new_hw_ptr=383756, old_hw_ptr=367648)
+3. I didn't realise that the default ALSA device was a plugin using
+dmix. I have no underruns by using directly the ALSA HW device (hw:0,0)
+4. I have seen this in dmesg logs:
+hda-intel: IRQ timing workaround is activated for card #0. Suggest a
+bigger bdl_pos_adj.
+
+here is the aplay output with the dmesg logs around this time:
+
+$ aplay -v ~/Music/sine.wav 
+Playing WAVE '/home/lano1106/Music/sine.wav' : Signed 16 bit Little
+Endian, Rate 44100 Hz, Stereo
+Plug PCM: Rate conversion PCM (48000, sformat=S32_LE)
+Converter: linear-interpolation
+Protocol version: 10002
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 44100
+  exact rate   : 44100 (44100/1)
+  msbits       : 16
+  buffer_size  : 15052
+  period_size  : 940
+  period_time  : 21333
+  tstamp_mode  : NONE
+  period_step  : 1
+  avail_min    : 940
+  period_event : 0
+  start_threshold  : 15052
+  stop_threshold   : 15052
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 986447872
+Slave: Soft volume PCM
+Control: PCM Playback Volume
+min_dB: -51
+max_dB: 0
+resolution: 256
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S32_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 32
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 21333
+  tstamp_mode  : NONE
+  period_step  : 1
+  avail_min    : 1024
+  period_event : 0
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: Direct Stream Mixing PCM
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S32_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 32
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 21333
+  tstamp_mode  : NONE
+  period_step  : 1
+  avail_min    : 1024
+  period_event : 0
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Hardware PCM card 0 'HDA Intel' device 0 subdevice 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S32_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 32
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 21333
+  tstamp_mode  : ENABLE
+  period_step  : 1
+  avail_min    : 1024
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 1073741824
+  silence_threshold: 0
+  silence_size : 1073741824
+  boundary     : 1073741824
+  appl_ptr     : 0
+  hw_ptr       : 0
+underrun!!! (at least 7098.589 ms long)
+Status:
+  state       : XRUN
+  trigger_time: 1692.774265154
+  tstamp      : 1700.760145135
+  delay       : -301
+  avail       : 15353
+  avail_max   : 15341
+
+[ 1692.761247] hda-intel 0000:00:1b.0: azx_pcm_prepare: bufsize=0x20000, format=0x31
+[ 1692.761268] hda_codec_setup_stream: NID=0x13, stream=0x8, channel=0, format=0x31
+[ 1692.761275] hda_codec_setup_stream: NID=0x14, stream=0x8, channel=0, format=0x31
+[ 1694.303968] rtl8192ce:_rtl92ce_phy_set_rf_power_state():<0-1> IPS Set eRf nic enable
+[ 1694.304021] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1694.304086] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1694.304200] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1694.304314] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1694.304427] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1694.304541] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1694.304655] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1694.304693] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1694.304693] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1694.304693] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1694.304693] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1694.304693] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:98053f15:10
+[ 1694.304693] rtl8192ce:rtl92ce_sw_led_on():<0-1> LedAddr:4E ledpin=1
+[ 1694.304693] rtl8192c_common:rtl92c_download_fw():<0-1> Firmware Version(49), Signature(0x88c1),Size(32)
+[ 1694.318113] rtl8192ce:rtl92ce_enable_hw_security_config():<0-1> PairwiseEncAlgorithm = 0 GroupEncAlgorithm = 0
+[ 1694.318113] rtl8192ce:rtl92ce_enable_hw_security_config():<0-1> The SECR-value cc
+[ 1694.318113] rtl8192c_common:rtl92c_dm_check_txpower_tracking_thermal_meter():<0-1> Schedule TxPowerTracking direct call!!
+[ 1694.318113] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> rtl92c_dm_txpower_tracking_callback_thermalmeter
+[ 1694.318113] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Readback Thermal Meter = 0xd pre thermal meter 0xf eeprom_thermalmeter 0xf
+[ 1694.318113] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Initial pathA ele_d reg0xc80 = 0x40000000, ofdm_index=0xc
+[ 1694.318113] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Initial reg0xa24 = 0x90e1317, cck_index=0xc, ch14 0
+[ 1694.318113] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Readback Thermal Meter = 0xd pre thermal meter 0xf eeprom_thermalmeter 0xf delta 0x2 delta_lck 0x1 delta_iqk 0x1
+[ 1694.318113] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> <===
+[ 1694.318113] rtl8192c_common:rtl92c_dm_initialize_txpower_tracking_thermalmeter():<0-1> pMgntInfo->txpower_tracking = 1
+[ 1694.318113] rtl8192ce:rtl92ce_led_control():<0-1> ledaction 3
+[ 1694.318113] rtl8192ce:rtl92ce_sw_led_on():<0-1> LedAddr:4E ledpin=1
+[ 1694.640920] PCM: Lost interrupts? [Q] (stream=0, delta=14444, new_hw_ptr=90248, old_hw_ptr=75804)
+[ 1694.641440] rtl8192c_common:rtl92c_dm_dynamic_bb_powersaving():<0-0> Not connected to any
+[ 1694.641454] rtl8192c_common:rtl92c_dm_dynamic_bb_powersaving():<0-0> AP Ext Port PWDB = 0x0
+[ 1694.641472] rtl8192c_common:rtl92c_dm_check_txpower_tracking_thermal_meter():<0-0> Trigger 92S Thermal Meter!!
+[ 1694.641517] rtlwifi:rtl_op_sw_scan_start():<0-0>
+[ 1694.641530] rtl8192ce:rtl92ce_led_control():<0-0> ledaction 6
+[ 1694.641545] rtl8192c_common:rtl92c_dm_write_dig():<0-0> cur_igvalue = 0x20, pre_igvalue = 0x0, back_val = 10
+[ 1694.654779] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
+[ 1694.654786] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
+[ 1694.724173] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
+[ 1694.724179] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
+[ 1694.794176] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
+[ 1694.794181] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
+[ 1694.864217] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
+[ 1694.864226] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
+[ 1694.934184] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
+[ 1694.934193] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
+[ 1695.004187] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
+[ 1695.004196] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
+[ 1695.074187] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
+[ 1695.074196] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
+[ 1695.144185] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
+[ 1695.144194] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
+[ 1695.214184] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
+[ 1695.214196] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
+[ 1695.284182] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
+[ 1695.284192] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
+[ 1695.354186] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
+[ 1695.354195] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
+[ 1695.424207] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
+[ 1695.424217] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
+[ 1695.424275] rtlwifi:rtl_op_sw_scan_complete():<0-0>
+[ 1695.424282] rtl8192c_common:rtl92c_dm_write_dig():<0-0> cur_igvalue = 0x22, pre_igvalue = 0x22, back_val = 10
+[ 1695.524091] rtl8192ce:_rtl92ce_phy_set_rf_power_state():<0-0> IPS Set eRf nic disable
+[ 1695.524141] rtl8192ce:rtl92ce_led_control():<0-0> ledaction 2
+[ 1695.524147] rtl8192ce:rtl92ce_sw_led_on():<0-0> LedAddr:4E ledpin=1
+[ 1700.419054] rtl8192ce:_rtl92ce_phy_set_rf_power_state():<0-1> IPS Set eRf nic enable
+[ 1700.419106] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1700.419172] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1700.419286] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1700.419399] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1700.419513] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1700.419627] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1700.419745] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1700.419866] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1700.419984] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1700.420015] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1700.420015] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
+[ 1700.420015] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:98053f15:10
+[ 1700.420015] rtl8192ce:rtl92ce_sw_led_on():<0-1> LedAddr:4E ledpin=1
+[ 1700.420015] rtl8192c_common:rtl92c_download_fw():<0-1> Firmware Version(49), Signature(0x88c1),Size(32)
+[ 1700.420015] rtl8192ce:rtl92ce_enable_hw_security_config():<0-1> PairwiseEncAlgorithm = 0 GroupEncAlgorithm = 0
+[ 1700.420015] rtl8192ce:rtl92ce_enable_hw_security_config():<0-1> The SECR-value cc
+[ 1700.420015] rtl8192c_common:rtl92c_dm_check_txpower_tracking_thermal_meter():<0-1> Schedule TxPowerTracking direct call!!
+[ 1700.420015] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> rtl92c_dm_txpower_tracking_callback_thermalmeter
+[ 1700.420015] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Readback Thermal Meter = 0xd pre thermal meter 0xf eeprom_thermalmeter 0xf
+[ 1700.420015] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Initial pathA ele_d reg0xc80 = 0x40000000, ofdm_index=0xc
+[ 1700.420015] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Initial reg0xa24 = 0x90e1317, cck_index=0xc, ch14 0
+[ 1700.420015] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Readback Thermal Meter = 0xd pre thermal meter 0xf eeprom_thermalmeter 0xf delta 0x2 delta_lck 0x1 delta_iqk 0x1
+[ 1700.420015] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> <===
+[ 1700.420015] rtl8192c_common:rtl92c_dm_initialize_txpower_tracking_thermalmeter():<0-1> pMgntInfo->txpower_tracking = 1
+[ 1700.420015] rtl8192ce:rtl92ce_led_control():<0-1> ledaction 3
+[ 1700.420015] rtl8192ce:rtl92ce_sw_led_on():<0-1> LedAddr:4E ledpin=1
+[ 1700.756017] PCM: Lost interrupts? [Q] (stream=0, delta=16108, new_hw_ptr=383756, old_hw_ptr=367648)
+[ 1700.756513] rtlwifi:rtl_op_sw_scan_start():<0-0>
 
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+[1]
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071521.html
+
+On Thu, 2014-01-16 at 16:55 +1100, James Cameron wrote:
+> On Thu, Jan 16, 2014 at 12:25:42AM -0500, Olivier Langlois wrote:
+> > On 01/15/2014 12:01 PM, Larry Finger wrote:
+> > >On 01/15/2014 12:37 AM, Olivier Langlois wrote:
+> > >>How to reproduce:
+> > >>
+> > >>1. Enable Wifi while not connecting to any AP.
+> > >>2. lano1106@hpmini ~/Music $ aplay -c1 sine.wav
+> > >>underrun!!! (at least 1856093977.967 ms long)
+> 
+> Indeed, that timing is fishy.
+> 
+> I've looked at the alsa-devel thread [1] and your problem description
+> there.
+> 
+> At OLPC during development we found similar symptoms showing up in
+> ALSA playback that were contributed to other drivers, but the
+> underlying causes were in the ALSA driver for our codec chip, and the
+> other drivers were changing the appearance of the fault only because
+> of timing changes.
+> 
+> But there's no need to conclude that interrupts were disabled or
+> delayed.  There can be many other causes.
+> 
+> The timing miscalculation by ALSA might be important.  I can't figure
+> out how a wireless driver can easily cause that.
+> 
+> 1.
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071142.html
+> 
