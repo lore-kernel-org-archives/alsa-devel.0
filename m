@@ -1,18 +1,27 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/8] ASoC: core: set_tdm_slot() will return
- -ENOTSUPP if no operation provided
-Date: Thu, 23 Jan 2014 19:29:42 +0000
-Message-ID: <20140123192942.GF11727@sirena.org.uk>
-References: <1390453370-29194-1-git-send-email-Li.Xiubo@freescale.com>
- <1390453370-29194-6-git-send-email-Li.Xiubo@freescale.com>
+From: Konstantinos Georgantas <k.georgantas@samsung.com>
+Subject: Audio usb switch to alternate setting 0
+Date: Thu, 23 Jan 2014 20:31:04 +0100
+Message-ID: <52E16DF8.8000909@samsung.com>
+References: <52DBD817.8050304@samsung.com> <52DCF98A.4080509@zonque.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0389305055049615893=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BDECB2652AD
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 20:29:57 +0100 (CET)
-In-Reply-To: <1390453370-29194-6-git-send-email-Li.Xiubo@freescale.com>
+Received: from mailout4.w1.samsung.com (mailout4.w1.samsung.com
+ [210.118.77.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80B2B2652C4
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 20:31:10 +0100 (CET)
+Received: from eucpsbgm1.samsung.com (unknown [203.254.199.244])
+ by mailout4.w1.samsung.com
+ (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
+ 17 2011)) with ESMTP id <0MZV00FJSCVUL660@mailout4.w1.samsung.com> for
+ alsa-devel@alsa-project.org; Thu, 23 Jan 2014 19:31:07 +0000 (GMT)
+Received: from [192.168.0.101] ([106.111.34.46])
+ by eusync4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTPA id <0MZV00AFDCVT1OA0@eusync4.samsung.com> for
+ alsa-devel@alsa-project.org; Thu, 23 Jan 2014 19:31:05 +0000 (GMT)
+In-reply-to: <52DCF98A.4080509@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +31,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: moinejf@free.fr, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, shawn.guo@linaro.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello!
 
---===============0389305055049615893==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GV0iVqYguTV4Q9ER"
-Content-Disposition: inline
+On 01/20/2014 11:25 AM, Daniel Mack wrote:
+> Hi,
+>
+> On 01/19/2014 02:50 PM, Konstantinos Georgantas wrote:
+>> I am trying to control from the client side which Alternate Setting to
+>> use. Basically I would like to be able to switch from Alternate Setting
+>> 0 to 1 and vice versa so that I am not receiving any set interface
+>> requests in the meantime. From the audio class 2.0 documentation I
+>> understand that I should be able to do something like this by using the
+>> active alternate setting control, and here comes my main problem.
+> I'm not quite following from which side you're looking at the system,
+> IOW, who should be "receiving" requests. Are you talking about the
+> device or the host side?
+As I see it generating an interrupt from the device to the host should 
+"force" the host to "take appropriate action to reactivate the interface 
+by switching to a valid Alternate Setting".
+> As the spec says (5.2.6.1.1), such a control is read-only, and it "does
+> not allow an interface to change from one active Alternate Setting to
+> another without Host intervention". "The main purpose of this Control is
+> to notify the Host (through an interrupt) that the last
+> selected Alternate Setting is no longer valid.".
+>
+> Active alt setting switching is done implictly by (de)activating the PCM
+> streams that are associated with them.
+That is right! But what if someone tries to play music for example? The 
+host will try to set Alternate Setting 1 again thinking that it is still 
+active but in this case my device happens to be in sleep mode so it 
+cannot reply to the usb_set_interface requests. I thought that if I 
+indicated that only Alternate Setting 0 is active I would avoid this 
+request. Am I right? Of course when waking up I could issue another 
+interrupt indicating that my device activates again the Alternate 
+Setting 1. Please correct me if I misunderstand something.
+>> When I generate an interrupt to the interrupt endpoint I should expect a
+>> GET request which I never see in the host side (hope I am right here).
+>>
+>> Here comes the interrupt:
+>> interrupt->bInfo          = 0x00;
+>> interrupt->bAttribute  = 0x01;
+>> interrupt->wValue       = 0x0100;
+>> interrupt->wIndex       = 0x0004;
+>>
+>> Could you please tell me if such a functionality is supported and how
+>> the interrupt should look like?
+> This type of interrupt is currently unsupported, but it should be easy
+> to add. Note, however, that the only interesting use case is to tear the
+> audio stream down and send active users XRUNs.
+>
+> Not sure if this is what you want.
+>
+> As always: patches are welcome :)
+>
+>
+> Daniel
+>
+Absolutely! I can come up with a patch but I just want to be sure I have 
+understood the spec in the right way :) Thanks for your help!
 
-
---GV0iVqYguTV4Q9ER
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jan 23, 2014 at 01:02:47PM +0800, Xiubo Li wrote:
-> Make it easier for generic code to work with set_tdm_slot() by distinguishing
-> between the operation not being supported and an error as is done.
-
-Applied, thanks.
-
---GV0iVqYguTV4Q9ER
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS4W2jAAoJELSic+t+oim91WEP/i1IReTZuU5q6zvPu8BetSHY
-BNOIPkYj2pIXqBZiz3BFmG8GaTOv4ZVI6DnaAHzTBzOJQWz11J+pf9Bdo8f5GW6U
-Ew5xDvSKlhZ36ZnQU6K0TeCcBcQyByUzIxcqvq3fG6BnHDUT/D76UngSbv4jaD+n
-Hw1ByaaKrWMC7e1V797wnAWunC0pcaKDhhyiTCgYYRKOVLlWOYVsDXx9mO9vS34Q
-D7aoAh2XmP82dhL4aTwDUU2WqYj5cEGwtBq2zrC6xHZ6NSWR2DNpcFHwrUROwQyU
-C96AdL93q34rpREfqE9HzeW9bsm/+oPdeerTOtaNwUirvGy1Jt6sEnATftptS6DG
-g6Aduh37GjbFm2lW/dODzlCysg0Mz256Xu2tCseac/kRrRw7EC212Vybdu6r6QIc
-HliZBdV0zIlxAhxypX5oLwTh4bXylJk0OuqoZahVkx2vWEWyBGEDtSr5Qw9htMsL
-bKCpLG2foj18XFjKkhKM87O80+IK6Ij07XSwXhMlLzHVVUSJPP7KLHG89FHS2Wcx
-znpNS+hJhgiMTTcMtQUBJByqQs+icaIGiRXGsGlzgENET/qM8dSTu2SYQfw8YVyS
-VJZ6v8US/VcZQXAfdt0eTyM9wQcVdxmD6sr8b7cXSrodIV1Rz+HOqTAZoGTyoOc3
-wUUQ5Xf0raXaY5/UiiTZ
-=n7u9
------END PGP SIGNATURE-----
-
---GV0iVqYguTV4Q9ER--
-
---===============0389305055049615893==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0389305055049615893==--
+Kostas
