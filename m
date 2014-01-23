@@ -1,299 +1,35 @@
-From: Olivier Langlois <olivier@trillion01.com>
-Subject: Re: [ISSUE] rtl8192ce appears to interfere with ALSA
-	playback
-Date: Thu, 23 Jan 2014 03:13:20 -0500
-Message-ID: <1390464800.2436.111.camel@Wailaba2>
-References: <1389767820.2436.45.camel@Wailaba2>
- <52D6BEEF.5050705@lwfinger.net> <52D76D56.6060906@trillion01.com>
- <20140116055547.GU19393@us.netrek.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ALSA: bits vs bytes bug in snd_card_create()
+Date: Thu, 23 Jan 2014 11:21:28 +0300
+Message-ID: <20140123082128.GA28688@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from oproxy6-pub.mail.unifiedlayer.com
- (oproxy6-pub.mail.unifiedlayer.com [67.222.54.6])
- by alsa0.perex.cz (Postfix) with SMTP id 1AD1A265176
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 09:13:25 +0100 (CET)
-In-Reply-To: <20140116055547.GU19393@us.netrek.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: James Cameron <quozl@laptop.org>
-Cc: alsa-devel@alsa-project.org, linux-wireless@vger.kernel.org, daniel@zonque.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Yacine Belkadi <yacine.belkadi.1@gmail.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-James,
+The test here is intended intended to prevent shift wrapping bugs when
+we do "1U << idx2".  We should consider the number of bits in a u32
+instead of the number of bytes.
 
-I think that I have found and fix the cause of the timing miscalculation
-[1]
+Fixes: 7bb2491b35a2 ('ALSA: Add kconfig to specify the max card numbers')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+WARNING:  Please check this one carefully because I might be wrong.
 
-I have recompiled rtlwifi modules to have access to the debug option
-which I have set to 4. I have also compiled ALSA modules with the
-XRUN_DEBUG option that I have activated with
-
-echo 1 > /proc/asound/card0/pcm0p/xrun_debug
-
-I have reproduced the problems while collecting dmesg output and using
-'watch -n1 cat /proc/interrupts'
-
-I have made a couple of observations.
-
-1. there is a small burst of interrupts for rtl8192ce at a regular
-interval which seems to happen during rtl_op_sw_scan and the underruns
-appear to coincide with that.
-2. I was expecting to see XRUN entries in dmesg but I didn't. The
-closest that I have is
-[ 1700.756017] PCM: Lost interrupts? [Q] (stream=0, delta=16108,
-new_hw_ptr=383756, old_hw_ptr=367648)
-3. I didn't realise that the default ALSA device was a plugin using
-dmix. I have no underruns by using directly the ALSA HW device (hw:0,0)
-4. I have seen this in dmesg logs:
-hda-intel: IRQ timing workaround is activated for card #0. Suggest a
-bigger bdl_pos_adj.
-
-here is the aplay output with the dmesg logs around this time:
-
-$ aplay -v ~/Music/sine.wav 
-Playing WAVE '/home/lano1106/Music/sine.wav' : Signed 16 bit Little
-Endian, Rate 44100 Hz, Stereo
-Plug PCM: Rate conversion PCM (48000, sformat=S32_LE)
-Converter: linear-interpolation
-Protocol version: 10002
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 15052
-  period_size  : 940
-  period_time  : 21333
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 940
-  period_event : 0
-  start_threshold  : 15052
-  stop_threshold   : 15052
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 986447872
-Slave: Soft volume PCM
-Control: PCM Playback Volume
-min_dB: -51
-max_dB: 0
-resolution: 256
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S32_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 32
-  buffer_size  : 16384
-  period_size  : 1024
-  period_time  : 21333
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 16384
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Slave: Direct Stream Mixing PCM
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S32_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 32
-  buffer_size  : 16384
-  period_size  : 1024
-  period_time  : 21333
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 16384
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Hardware PCM card 0 'HDA Intel' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S32_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 32
-  buffer_size  : 16384
-  period_size  : 1024
-  period_time  : 21333
-  tstamp_mode  : ENABLE
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 1
-  stop_threshold   : 1073741824
-  silence_threshold: 0
-  silence_size : 1073741824
-  boundary     : 1073741824
-  appl_ptr     : 0
-  hw_ptr       : 0
-underrun!!! (at least 7098.589 ms long)
-Status:
-  state       : XRUN
-  trigger_time: 1692.774265154
-  tstamp      : 1700.760145135
-  delay       : -301
-  avail       : 15353
-  avail_max   : 15341
-
-[ 1692.761247] hda-intel 0000:00:1b.0: azx_pcm_prepare: bufsize=0x20000, format=0x31
-[ 1692.761268] hda_codec_setup_stream: NID=0x13, stream=0x8, channel=0, format=0x31
-[ 1692.761275] hda_codec_setup_stream: NID=0x14, stream=0x8, channel=0, format=0x31
-[ 1694.303968] rtl8192ce:_rtl92ce_phy_set_rf_power_state():<0-1> IPS Set eRf nic enable
-[ 1694.304021] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1694.304086] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1694.304200] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1694.304314] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1694.304427] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1694.304541] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1694.304655] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1694.304693] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1694.304693] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1694.304693] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1694.304693] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1694.304693] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:98053f15:10
-[ 1694.304693] rtl8192ce:rtl92ce_sw_led_on():<0-1> LedAddr:4E ledpin=1
-[ 1694.304693] rtl8192c_common:rtl92c_download_fw():<0-1> Firmware Version(49), Signature(0x88c1),Size(32)
-[ 1694.318113] rtl8192ce:rtl92ce_enable_hw_security_config():<0-1> PairwiseEncAlgorithm = 0 GroupEncAlgorithm = 0
-[ 1694.318113] rtl8192ce:rtl92ce_enable_hw_security_config():<0-1> The SECR-value cc
-[ 1694.318113] rtl8192c_common:rtl92c_dm_check_txpower_tracking_thermal_meter():<0-1> Schedule TxPowerTracking direct call!!
-[ 1694.318113] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> rtl92c_dm_txpower_tracking_callback_thermalmeter
-[ 1694.318113] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Readback Thermal Meter = 0xd pre thermal meter 0xf eeprom_thermalmeter 0xf
-[ 1694.318113] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Initial pathA ele_d reg0xc80 = 0x40000000, ofdm_index=0xc
-[ 1694.318113] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Initial reg0xa24 = 0x90e1317, cck_index=0xc, ch14 0
-[ 1694.318113] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Readback Thermal Meter = 0xd pre thermal meter 0xf eeprom_thermalmeter 0xf delta 0x2 delta_lck 0x1 delta_iqk 0x1
-[ 1694.318113] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> <===
-[ 1694.318113] rtl8192c_common:rtl92c_dm_initialize_txpower_tracking_thermalmeter():<0-1> pMgntInfo->txpower_tracking = 1
-[ 1694.318113] rtl8192ce:rtl92ce_led_control():<0-1> ledaction 3
-[ 1694.318113] rtl8192ce:rtl92ce_sw_led_on():<0-1> LedAddr:4E ledpin=1
-[ 1694.640920] PCM: Lost interrupts? [Q] (stream=0, delta=14444, new_hw_ptr=90248, old_hw_ptr=75804)
-[ 1694.641440] rtl8192c_common:rtl92c_dm_dynamic_bb_powersaving():<0-0> Not connected to any
-[ 1694.641454] rtl8192c_common:rtl92c_dm_dynamic_bb_powersaving():<0-0> AP Ext Port PWDB = 0x0
-[ 1694.641472] rtl8192c_common:rtl92c_dm_check_txpower_tracking_thermal_meter():<0-0> Trigger 92S Thermal Meter!!
-[ 1694.641517] rtlwifi:rtl_op_sw_scan_start():<0-0>
-[ 1694.641530] rtl8192ce:rtl92ce_led_control():<0-0> ledaction 6
-[ 1694.641545] rtl8192c_common:rtl92c_dm_write_dig():<0-0> cur_igvalue = 0x20, pre_igvalue = 0x0, back_val = 10
-[ 1694.654779] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
-[ 1694.654786] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
-[ 1694.724173] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
-[ 1694.724179] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
-[ 1694.794176] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
-[ 1694.794181] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
-[ 1694.864217] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
-[ 1694.864226] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
-[ 1694.934184] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
-[ 1694.934193] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
-[ 1695.004187] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
-[ 1695.004196] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
-[ 1695.074187] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
-[ 1695.074196] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
-[ 1695.144185] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
-[ 1695.144194] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
-[ 1695.214184] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
-[ 1695.214196] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
-[ 1695.284182] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
-[ 1695.284192] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
-[ 1695.354186] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
-[ 1695.354195] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
-[ 1695.424207] rtl8192c_common:rtl92c_phy_sw_chnl():<0-0> sw_chnl_inprogress false schedule workitem
-[ 1695.424217] rtl8192ce:rtl92ce_set_hw_reg():<0-0> HW_VAR_SLOT_TIME 14
-[ 1695.424275] rtlwifi:rtl_op_sw_scan_complete():<0-0>
-[ 1695.424282] rtl8192c_common:rtl92c_dm_write_dig():<0-0> cur_igvalue = 0x22, pre_igvalue = 0x22, back_val = 10
-[ 1695.524091] rtl8192ce:_rtl92ce_phy_set_rf_power_state():<0-0> IPS Set eRf nic disable
-[ 1695.524141] rtl8192ce:rtl92ce_led_control():<0-0> ledaction 2
-[ 1695.524147] rtl8192ce:rtl92ce_sw_led_on():<0-0> LedAddr:4E ledpin=1
-[ 1700.419054] rtl8192ce:_rtl92ce_phy_set_rf_power_state():<0-1> IPS Set eRf nic enable
-[ 1700.419106] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1700.419172] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1700.419286] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1700.419399] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1700.419513] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1700.419627] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1700.419745] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1700.419866] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1700.419984] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1700.420015] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1700.420015] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:18051d59:11
-[ 1700.420015] rtl8192ce:_rtl92ce_init_mac():<0-1> reg0xec:98053f15:10
-[ 1700.420015] rtl8192ce:rtl92ce_sw_led_on():<0-1> LedAddr:4E ledpin=1
-[ 1700.420015] rtl8192c_common:rtl92c_download_fw():<0-1> Firmware Version(49), Signature(0x88c1),Size(32)
-[ 1700.420015] rtl8192ce:rtl92ce_enable_hw_security_config():<0-1> PairwiseEncAlgorithm = 0 GroupEncAlgorithm = 0
-[ 1700.420015] rtl8192ce:rtl92ce_enable_hw_security_config():<0-1> The SECR-value cc
-[ 1700.420015] rtl8192c_common:rtl92c_dm_check_txpower_tracking_thermal_meter():<0-1> Schedule TxPowerTracking direct call!!
-[ 1700.420015] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> rtl92c_dm_txpower_tracking_callback_thermalmeter
-[ 1700.420015] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Readback Thermal Meter = 0xd pre thermal meter 0xf eeprom_thermalmeter 0xf
-[ 1700.420015] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Initial pathA ele_d reg0xc80 = 0x40000000, ofdm_index=0xc
-[ 1700.420015] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Initial reg0xa24 = 0x90e1317, cck_index=0xc, ch14 0
-[ 1700.420015] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> Readback Thermal Meter = 0xd pre thermal meter 0xf eeprom_thermalmeter 0xf delta 0x2 delta_lck 0x1 delta_iqk 0x1
-[ 1700.420015] rtl8192c_common:rtl92c_dm_txpower_tracking_callback_thermalmeter():<0-1> <===
-[ 1700.420015] rtl8192c_common:rtl92c_dm_initialize_txpower_tracking_thermalmeter():<0-1> pMgntInfo->txpower_tracking = 1
-[ 1700.420015] rtl8192ce:rtl92ce_led_control():<0-1> ledaction 3
-[ 1700.420015] rtl8192ce:rtl92ce_sw_led_on():<0-1> LedAddr:4E ledpin=1
-[ 1700.756017] PCM: Lost interrupts? [Q] (stream=0, delta=16108, new_hw_ptr=383756, old_hw_ptr=367648)
-[ 1700.756513] rtlwifi:rtl_op_sw_scan_start():<0-0>
-
-
-[1]
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071521.html
-
-On Thu, 2014-01-16 at 16:55 +1100, James Cameron wrote:
-> On Thu, Jan 16, 2014 at 12:25:42AM -0500, Olivier Langlois wrote:
-> > On 01/15/2014 12:01 PM, Larry Finger wrote:
-> > >On 01/15/2014 12:37 AM, Olivier Langlois wrote:
-> > >>How to reproduce:
-> > >>
-> > >>1. Enable Wifi while not connecting to any AP.
-> > >>2. lano1106@hpmini ~/Music $ aplay -c1 sine.wav
-> > >>underrun!!! (at least 1856093977.967 ms long)
-> 
-> Indeed, that timing is fishy.
-> 
-> I've looked at the alsa-devel thread [1] and your problem description
-> there.
-> 
-> At OLPC during development we found similar symptoms showing up in
-> ALSA playback that were contributed to other drivers, but the
-> underlying causes were in the ALSA driver for our codec chip, and the
-> other drivers were changing the appearance of the fault only because
-> of timing changes.
-> 
-> But there's no need to conclude that interrupts were disabled or
-> delayed.  There can be many other causes.
-> 
-> The timing miscalculation by ALSA might be important.  I can't figure
-> out how a wireless driver can easily cause that.
-> 
-> 1.
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071142.html
-> 
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 1351f22f651c..e9e3db321e64 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -183,7 +183,7 @@ int snd_card_create(int idx, const char *xid,
+ 	if (idx < 0) {
+ 		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++) {
+ 			/* idx == -1 == 0xffff means: take any free slot */
+-			if (idx2 < sizeof(int) && !(idx & (1U << idx2)))
++			if (idx2 < 32 && !(idx & (1U << idx2)))
+ 				continue;
+ 			if (!test_bit(idx2, snd_cards_lock)) {
+ 				if (!slots[idx2] || !*slots[idx2]) {
