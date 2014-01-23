@@ -1,50 +1,96 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 8/8] ASoC: simple-card: simplify code
-Date: Wed, 22 Jan 2014 20:06:23 +0000
-Message-ID: <20140122200623.GC17314@sirena.org.uk>
-References: <20140115113551.0eb13409@armhf>
- <20140115165200.5f4e6077@armhf>
+From: Olivier Langlois <olivier@trillion01.com>
+Subject: [PATCH] alsa-libs: initialize pcm_dmix monotonic field
+Date: Wed, 22 Jan 2014 19:04:45 -0500
+Message-ID: <1390435485-15180-1-git-send-email-olivier@trillion01.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MxTdzNviYdWQq2Ha"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140115165200.5f4e6077@armhf>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com, Xiubo Li <Li.Xiubo@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from oproxy7-pub.mail.unifiedlayer.com
+ (oproxy7-pub.mail.unifiedlayer.com [67.222.55.9])
+ by alsa0.perex.cz (Postfix) with SMTP id 6FC99265099
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2014 01:05:13 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Olivier Langlois <olivier@trillion01.com>
 List-Id: alsa-devel@alsa-project.org
 
+not doing so, leaves the pcm object in an inconsistent state since
+'info' field is copied from the slave which is then used when
+snd_pcm_hw_params_is_monotonic() is called.
 
---MxTdzNviYdWQq2Ha
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For instance, when using dmix with aplay and an underrun is occuring, the following
+info is returned:
 
-On Wed, Jan 15, 2014 at 04:52:00PM +0100, Jean-Francois Moine wrote:
-> Rename the pointer to the private data structure to 'priv' to avoid confusion with the platform data pointer.
+underrun!!! (at least 1248687948.256 ms long)
+Status:
+  state       : XRUN
+  trigger_time: 1390347762.628483000
+  tstamp      : 1390347766.184350000
+  delay       : -635
+  avail       : 15687
+  avail_max   : 15675
 
-Applied, thanks.
+now is computed from CLOCK_MONOTONIC while pcm status tstamps are from gettimeofday().
 
---MxTdzNviYdWQq2Ha
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+After the fix, underruns are still occuring on my setup but at least the displayed info
+is correct:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+underrun!!! (at least 7630.409 ms long)
+Status:
+  state       : XRUN
+  trigger_time: 7652.739201431
+  tstamp      : 7660.369600636
+  delay       : -624
+  avail       : 15676
+  avail_max   : 15664
 
-iQIcBAEBAgAGBQJS4CS8AAoJELSic+t+oim9og0P/RV4jevGWYcw5YPyn0Mqhq5M
-WDMmPGmMB+oh+jN/ySK+sAvQf45bPwA7m748CectspufT4iiDZVjkVgc43PWYe4D
-9LrmHTOPQO46hs8PjtmAzLxGkPprn427NXpNqh5MaUoAvX6xwD2RKV8zzdyfsBQv
-1izfCLiHGiejnmoZWKpAFgcOAO1660FPFpuL5o7083QzTUBNoDh/oAl1qJ6jI5sy
-V6pse1mTlJrI+Be7lwgf3UWCcil6AisS/Qy6nK0oECtYQ0vPuQmXS/XolvIiIrsv
-4YxsaHHAYGqlqD3uLXG/pNyn+pk1xtGqfKfqFtxlKyYtXNuaP1DiT09s1ioO3AR/
-gbNwzONbO/HOj33nH7IveStEOyiCvKmsOdb7D+yz5ld5Hw9ZauIxvX2Ob3vV0chL
-UzHv9BZ1+WHgG5BuxyRssAh54ClT2V2MGwARWvQtOZYMDyeAf48hxRpEagXRyJya
-znMUR9u0GiCtWLAjM/9Fg1Itj1Dph0JDPUaDiaLX5JIDV83dUD6PbizdYTEiueZr
-MRUCYXWrgIW76taYJA4mHWfouf5/iiNdXWvXesnutGr4oOa7YasOfKDPmt3lM1zf
-s+J7U+7O8Xg0aOizCaeqDM/fqHuabHWtxwkhl9QeZtwguH39yHCrpbWlMvM4kmaN
-brpUBKWU1VdGN5xsrkxf
-=LO9g
------END PGP SIGNATURE-----
+Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+---
+ src/pcm/pcm_direct.c | 2 ++
+ src/pcm/pcm_dmix.c   | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
---MxTdzNviYdWQq2Ha--
+diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+index 899c250..5416cf7 100644
+--- a/src/pcm/pcm_direct.c
++++ b/src/pcm/pcm_direct.c
+@@ -857,6 +857,7 @@ static void save_slave_setting(snd_pcm_direct_t *dmix, snd_pcm_t *spcm)
+ 	COPY_SLAVE(buffer_time);
+ 	COPY_SLAVE(sample_bits);
+ 	COPY_SLAVE(frame_bits);
++	COPY_SLAVE(monotonic);
+ }
+ 
+ #undef COPY_SLAVE
+@@ -1220,6 +1221,7 @@ static void copy_slave_setting(snd_pcm_direct_t *dmix, snd_pcm_t *spcm)
+ 	COPY_SLAVE(buffer_time);
+ 	COPY_SLAVE(sample_bits);
+ 	COPY_SLAVE(frame_bits);
++	COPY_SLAVE(monotonic);
+ 
+ 	spcm->info &= ~SND_PCM_INFO_PAUSE;
+ 	spcm->boundary = recalc_boundary_size(dmix->shmptr->s.boundary, spcm->buffer_size);
+diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+index 2bd5d39..4aa6d4e 100644
+--- a/src/pcm/pcm_dmix.c
++++ b/src/pcm/pcm_dmix.c
+@@ -1104,7 +1104,7 @@ int snd_pcm_dmix_open(snd_pcm_t **pcmp, const char *name,
+ 		
+ 	pcm->poll_fd = dmix->poll_fd;
+ 	pcm->poll_events = POLLIN;	/* it's different than other plugins */
+-		
++	pcm->monotonic = spcm->monotonic;
+ 	pcm->mmap_rw = 1;
+ 	snd_pcm_set_hw_ptr(pcm, &dmix->hw_ptr, -1, 0);
+ 	snd_pcm_set_appl_ptr(pcm, &dmix->appl_ptr, -1, 0);
+-- 
+1.8.5.3
