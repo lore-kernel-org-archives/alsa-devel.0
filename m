@@ -1,7 +1,7 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH v2 2/7] ASoC: simple-card: simplify the daifmt code
-Date: Fri, 24 Jan 2014 15:43:01 +0800
-Message-ID: <1390549386-4702-3-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCH v2 4/7] ASoC: simple-card: add tdm slot supports
+Date: Fri, 24 Jan 2014 15:43:03 +0800
+Message-ID: <1390549386-4702-5-git-send-email-Li.Xiubo@freescale.com>
 References: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,93 +12,158 @@ To: broonie@kernel.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
 Cc: rob@landley.net, perex@perex.cz, moinejf@free.fr, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-In the asoc_simple_card_parse_of() will parse the device node's CPU/CODEC
-DAI commone fmts, and then in asoc_simple_card_sub_parse_of() will parse
-the CPU/CODEC DAI's sub-node fmts, so we can combine the info->daifmt and
-info->set.fmt in asoc_simple_card_sub_parse_of() not while just before
-_set_fmt().
+For some CPU/CODEC DAI devices the tdm slot maybe needed. This patch
+adds the tdm slot supporting for simple-card driver.
 
-And this will be more easy to add new functions, such as supporting
-_set_tdm_slot(), etc.
+The style of the tdm slot in DT:
+
+For instance:
+
+	simple-tdm-slot = <0xffffffc 0xffffffc 2 0>;
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/generic/simple-card.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+ include/sound/simple_card.h     |  8 ++++++
+ sound/soc/generic/simple-card.c | 60 ++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 65 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 6366f3f..65833fe 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -24,15 +24,12 @@ struct simple_card_data {
+diff --git a/include/sound/simple_card.h b/include/sound/simple_card.h
+index e1ac996..cfc5b66 100644
+--- a/include/sound/simple_card.h
++++ b/include/sound/simple_card.h
+@@ -14,10 +14,18 @@
+ 
+ #include <sound/soc.h>
+ 
++struct asoc_simple_tdm_slot {
++	unsigned int tx_mask;
++	unsigned int rx_mask;
++	int slots;
++	int slot_width;
++};
++
+ struct asoc_simple_dai {
+ 	const char *name;
+ 	unsigned int fmt;
+ 	unsigned int sysclk;
++	struct asoc_simple_tdm_slot *tdm;
  };
  
- static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
--				       struct asoc_simple_dai *set,
--				       unsigned int daifmt)
-+				       struct asoc_simple_dai *set)
- {
- 	int ret;
+ struct asoc_simple_card_info {
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 0890fcd..3177aa8 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -9,11 +9,14 @@
+  * published by the Free Software Foundation.
+  */
+ #include <linux/clk.h>
++#include <linux/device.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/string.h>
+ #include <sound/simple_card.h>
++#include <sound/soc-dai.h>
++#include <sound/soc.h>
  
--	daifmt |= set->fmt;
--
--	if (daifmt) {
--		ret = snd_soc_dai_set_fmt(dai, daifmt);
-+	if (set->fmt) {
-+		ret = snd_soc_dai_set_fmt(dai, set->fmt);
- 		if (ret && ret != -ENOTSUPP) {
- 			dev_err(dai->dev, "simple-card: set_fmt error\n");
- 			goto err;
-@@ -59,14 +56,13 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- 				snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *codec = rtd->codec_dai;
- 	struct snd_soc_dai *cpu = rtd->cpu_dai;
--	unsigned int daifmt = priv->daifmt;
- 	int ret;
+ struct simple_card_data {
+ 	struct snd_soc_card snd_card;
+@@ -44,6 +47,17 @@ static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
+ 		}
+ 	}
  
--	ret = __asoc_simple_card_dai_init(codec, &priv->codec_dai, daifmt);
-+	ret = __asoc_simple_card_dai_init(codec, &priv->codec_dai);
- 	if (ret < 0)
- 		return ret;
++	if (set->tdm) {
++		ret = snd_soc_dai_set_tdm_slot(dai, set->tdm->tx_mask,
++						set->tdm->rx_mask,
++						set->tdm->slots,
++						set->tdm->slot_width);
++		if (ret && ret != -ENOTSUPP) {
++			dev_err(dai->dev, "simple-card: set_tdm_slot error\n");
++			goto err;
++		}
++	}
++
+ 	ret = 0;
  
--	ret = __asoc_simple_card_dai_init(cpu, &priv->cpu_dai, daifmt);
-+	ret = __asoc_simple_card_dai_init(cpu, &priv->cpu_dai);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -75,6 +71,7 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ err:
+@@ -70,11 +84,43 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ }
  
  static int
++asoc_simple_card_of_parse_tdm_slot(struct device_node *np,
++				   struct device *dev,
++				   struct asoc_simple_dai *dai,
++				   const char *propname)
++{
++	struct asoc_simple_tdm_slot *tdm;
++	u32 out_value[4];
++	int ret;
++
++	if (!of_property_read_bool(np, propname))
++		return 0;
++
++	tdm = devm_kzalloc(dev, sizeof(*tdm), GFP_KERNEL);
++	if (!tdm)
++		return -ENOMEM;
++
++	ret = of_property_read_u32_array(np, propname, out_value, 4);
++	if (ret)
++		return ret;
++
++	tdm->tx_mask = out_value[0];
++	tdm->rx_mask = out_value[1];
++	tdm->slots = out_value[2];
++	tdm->slot_width = out_value[3];
++
++	dai->tdm = tdm;
++
++	return 0;
++}
++
++static int
  asoc_simple_card_sub_parse_of(struct device_node *np,
-+			      unsigned int daifmt,
+ 			      unsigned int daifmt,
  			      struct asoc_simple_dai *dai,
  			      const struct device_node **p_node,
- 			      const char **name)
-@@ -103,6 +100,7 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 	 * and specific "format" if it has
- 	 */
- 	dai->fmt = snd_soc_of_parse_daifmt(np, NULL);
-+	dai->fmt |= daifmt;
+-			      const char **name)
++			      const char **name,
++			      struct device *dev)
+ {
+ 	struct device_node *node;
+ 	struct clk *clk;
+@@ -94,6 +140,12 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 	if (ret < 0)
+ 		goto parse_error;
  
++	/* parse tdm_slot */
++	ret = asoc_simple_card_of_parse_tdm_slot(np, dev, dai,
++				"simple-audio-card,tdm-slot");
++	if (ret < 0)
++		goto parse_error;
++
  	/*
- 	 * dai->sysclk come from
-@@ -161,7 +159,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	ret = -EINVAL;
- 	np = of_get_child_by_name(node, "simple-audio-card,cpu");
- 	if (np)
--		ret = asoc_simple_card_sub_parse_of(np,
-+		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
+ 	 * bitclock-inversion, frame-inversion
+ 	 * bitclock-master,    frame-master
+@@ -165,7 +217,8 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
  						  &priv->cpu_dai,
  						  &dai_link->cpu_of_node,
- 						  &dai_link->cpu_dai_name);
-@@ -172,7 +170,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	ret = -EINVAL;
- 	np = of_get_child_by_name(node, "simple-audio-card,codec");
- 	if (np)
--		ret = asoc_simple_card_sub_parse_of(np,
-+		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
+-						  &dai_link->cpu_dai_name);
++						  &dai_link->cpu_dai_name,
++						  dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -176,7 +229,8 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
  						  &priv->codec_dai,
  						  &dai_link->codec_of_node,
- 						  &dai_link->codec_dai_name);
+-						  &dai_link->codec_dai_name);
++						  &dai_link->codec_dai_name,
++						  dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
 1.8.4
