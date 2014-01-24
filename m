@@ -1,91 +1,55 @@
-From: Olivier Langlois <olivier-VxAV575H0jR+kJTeVDPgHg@public.gmane.org>
-Subject: Re: [alsa-devel] [ISSUE] rtl8192ce appears to interfere with	ALSA
- playback
-Date: Fri, 24 Jan 2014 00:32:39 -0500
-Message-ID: <1390541559.2436.125.camel@Wailaba2>
-References: <1389767820.2436.45.camel@Wailaba2>
-	 <52D6BEEF.5050705@lwfinger.net> <52D76D56.6060906@trillion01.com>
-	 <20140116055547.GU19393@us.netrek.org> <1390464800.2436.111.camel@Wailaba2>
-	 <s5htxcvt718.wl%tiwai@suse.de>
-	 <89F8E4011FD7234ABFE48744E300CBC206BCE732@041-DB3MPN1-092.041d.mgd.msft.net>
-	 <s5h1tzyu0em.wl%tiwai@suse.de>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH Resend 3/8] ASoC: simple-card: simplify the
+	daifmt code
+Date: Fri, 24 Jan 2014 07:26:26 +0000
+Message-ID: <bd116a4f66f14933a9f018e3f37343b4@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1390453370-29194-1-git-send-email-Li.Xiubo@freescale.com>
+ <1390453370-29194-4-git-send-email-Li.Xiubo@freescale.com>
+ <20140123192004.GD11727@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <s5h1tzyu0em.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: LANGLOIS Olivier PIS -EXT <olivier.pis.langlois-XS9+L/t3R/8JfuP8PSSGd1aTQe2KTcn/@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, James Cameron <quozl-2X9k7bc8m7Mdnm+yROfE0A@public.gmane.org>, "daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org" <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1blp0186.outbound.protection.outlook.com [207.46.163.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id D88B926165C
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 08:26:29 +0100 (CET)
+In-Reply-To: <20140123192004.GD11727@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "moinejf@free.fr" <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
 
-On Thu, 2014-01-23 at 17:29 +0100, Takashi Iwai wrote:
-
-> Which machine and codec?  For example, Lenovo IdeaPad with ALC269 is
-> known to be broken with 48kHz, so we have a fixed rate limitation in
-> the driver.
+> Subject: Re: [PATCH Resend 3/8] ASoC: simple-card: simplify the daifmt code
 > 
-
-it is a hpmini. I have this from dmesg:
-
-[    9.638142] hda_codec: 92HD81B1X5: Apply fix-func for HP
-[    9.639859] hda-codec: Enable HP auto-muting on NID 0xb
-[    9.639888] hda-codec: Enable auto-mic switch on NID 0x11/0xa/0x0
-[    9.642312] hda_codec: 92HD81B1X5: Apply fix-func for HP
-
-
-> Other than the hardware restriction, you may play more with
-> position_fix or bdl_pos_adj option of snd-hda-intel driver.
+> On Thu, Jan 23, 2014 at 01:02:45PM +0800, Xiubo Li wrote:
+> > In the asoc_simple_card_parse_of() will parse the device node's CPU/CODEC
+> > DAI commone fmts, and then in asoc_simple_card_sub_parse_of() will parse
+> > the CPU/CODEC DAI's sub-node fmts, so we can combine the info->daifmt and
+> > info->set.fmt in asoc_simple_card_sub_parse_of() not while just before
+> > _set_fmt().
 > 
-thank you for the advice. I'll take a look on these params to see what
-they do. However, because my sound card works very well all the time
-except that I have underruns that happens only when wpa_supplicant is
-doing this:
+> This doesn't apply against the current topic/simple, can you please
+> check and resend?
 
-wlan0: Control interface command 'STATUS'
-wlan0: State: DISCONNECTED -> SCANNING
-...
-wlan0: No suitable network found
-wlan0: Setting scan request: 5 sec 0 usec
-wlan0: Checking for other virtual interfaces sharing same radio (phy0)
-in event_scan_results
-wlan0: Starting AP scan for wildcard SSID
-WPS: Building WPS IE for Probe Request
-WPS:  * Version (hardcoded 0x10)
-WPS:  * Request Type
-WPS:  * Config Methods (148)
-WPS:  * UUID-E
-WPS:  * Primary Device Type
-WPS:  * RF Bands (1)
-WPS:  * Association State
-WPS:  * Configuration Error (0)
-WPS:  * Device Password ID (0)
-WPS:  * Device Name
-P2P: * P2P IE header
-P2P: * Capability dev=21 group=00
-P2P: * Listen Channel: Regulatory Class 81 Channel 1
-nl80211: Scan SSID - hexdump_ascii(len=0): [NULL]
-nl80211: Scan extra IEs - hexdump(len=101): xxx
-Scan requested (ret=0) - scan timeout 30 seconds
-nl80211: Event message available
-nl80211: Scan trigger
-nl80211: Event message available
-nl80211: New scan results available
-wlan0: Event SCAN_RESULTS (3) received
-nl80211: Received scan results (19 BSSes)
-wlan0: BSS: Start scan result update 2
+Yes, it's caused by the dependency of PATCH 2/8, and the PATCH 2/8 needs to
+be revised.
 
-when wlan0 goes to connected or I just turn off the wifi, underruns go
-away, I'll check first what rtl8192ce's nl80211 interface implementation
-does when asked to perform a scan.
+I will resend them, which hasn't been applied, and also adding one binding
+patch.
 
-thank you again for your suggestions,
-Olivier
-
+Thanks,
 
 --
-To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Best Regards,
+Xiubo
