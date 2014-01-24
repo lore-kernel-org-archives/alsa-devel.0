@@ -1,169 +1,81 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH v2 4/7] ASoC: simple-card: add tdm slot supports
-Date: Fri, 24 Jan 2014 15:43:03 +0800
-Message-ID: <1390549386-4702-5-git-send-email-Li.Xiubo@freescale.com>
-References: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 1/2] ASoC: wm8580: Fix build error
+Date: Fri, 24 Jan 2014 14:09:24 +0530
+Message-ID: <1390552765-32210-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
-Cc: rob@landley.net, perex@perex.cz, moinejf@free.fr, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
+ [209.85.220.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3723B265357
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 09:44:05 +0100 (CET)
+Received: by mail-pa0-f48.google.com with SMTP id kx10so3007994pab.35
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 00:44:04 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: patches@linaro.org, sbkim73@samsung.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sachin.kamat@linaro.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-For some CPU/CODEC DAI devices the tdm slot maybe needed. This patch
-adds the tdm slot supporting for simple-card driver.
-
-The style of the tdm slot in DT:
-
-For instance:
-
-	simple-tdm-slot = <0xffffffc 0xffffffc 2 0>;
-
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
----
- include/sound/simple_card.h     |  8 ++++++
- sound/soc/generic/simple-card.c | 60 ++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 65 insertions(+), 3 deletions(-)
-
-diff --git a/include/sound/simple_card.h b/include/sound/simple_card.h
-index e1ac996..cfc5b66 100644
---- a/include/sound/simple_card.h
-+++ b/include/sound/simple_card.h
-@@ -14,10 +14,18 @@
- 
- #include <sound/soc.h>
- 
-+struct asoc_simple_tdm_slot {
-+	unsigned int tx_mask;
-+	unsigned int rx_mask;
-+	int slots;
-+	int slot_width;
-+};
-+
- struct asoc_simple_dai {
- 	const char *name;
- 	unsigned int fmt;
- 	unsigned int sysclk;
-+	struct asoc_simple_tdm_slot *tdm;
- };
- 
- struct asoc_simple_card_info {
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 0890fcd..3177aa8 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -9,11 +9,14 @@
-  * published by the Free Software Foundation.
-  */
- #include <linux/clk.h>
-+#include <linux/device.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/string.h>
- #include <sound/simple_card.h>
-+#include <sound/soc-dai.h>
-+#include <sound/soc.h>
- 
- struct simple_card_data {
- 	struct snd_soc_card snd_card;
-@@ -44,6 +47,17 @@ static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
- 		}
- 	}
- 
-+	if (set->tdm) {
-+		ret = snd_soc_dai_set_tdm_slot(dai, set->tdm->tx_mask,
-+						set->tdm->rx_mask,
-+						set->tdm->slots,
-+						set->tdm->slot_width);
-+		if (ret && ret != -ENOTSUPP) {
-+			dev_err(dai->dev, "simple-card: set_tdm_slot error\n");
-+			goto err;
-+		}
-+	}
-+
- 	ret = 0;
- 
- err:
-@@ -70,11 +84,43 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- }
- 
- static int
-+asoc_simple_card_of_parse_tdm_slot(struct device_node *np,
-+				   struct device *dev,
-+				   struct asoc_simple_dai *dai,
-+				   const char *propname)
-+{
-+	struct asoc_simple_tdm_slot *tdm;
-+	u32 out_value[4];
-+	int ret;
-+
-+	if (!of_property_read_bool(np, propname))
-+		return 0;
-+
-+	tdm = devm_kzalloc(dev, sizeof(*tdm), GFP_KERNEL);
-+	if (!tdm)
-+		return -ENOMEM;
-+
-+	ret = of_property_read_u32_array(np, propname, out_value, 4);
-+	if (ret)
-+		return ret;
-+
-+	tdm->tx_mask = out_value[0];
-+	tdm->rx_mask = out_value[1];
-+	tdm->slots = out_value[2];
-+	tdm->slot_width = out_value[3];
-+
-+	dai->tdm = tdm;
-+
-+	return 0;
-+}
-+
-+static int
- asoc_simple_card_sub_parse_of(struct device_node *np,
- 			      unsigned int daifmt,
- 			      struct asoc_simple_dai *dai,
- 			      const struct device_node **p_node,
--			      const char **name)
-+			      const char **name,
-+			      struct device *dev)
- {
- 	struct device_node *node;
- 	struct clk *clk;
-@@ -94,6 +140,12 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 	if (ret < 0)
- 		goto parse_error;
- 
-+	/* parse tdm_slot */
-+	ret = asoc_simple_card_of_parse_tdm_slot(np, dev, dai,
-+				"simple-audio-card,tdm-slot");
-+	if (ret < 0)
-+		goto parse_error;
-+
- 	/*
- 	 * bitclock-inversion, frame-inversion
- 	 * bitclock-master,    frame-master
-@@ -165,7 +217,8 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
- 						  &priv->cpu_dai,
- 						  &dai_link->cpu_of_node,
--						  &dai_link->cpu_dai_name);
-+						  &dai_link->cpu_dai_name,
-+						  dev);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -176,7 +229,8 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
- 						  &priv->codec_dai,
- 						  &dai_link->codec_of_node,
--						  &dai_link->codec_dai_name);
-+						  &dai_link->codec_dai_name,
-+						  dev);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-1.8.4
+UmUtb3JnYW5pemUgdGhlIGNvZGUgYSBiaXQgdG8gZml4IHRoZSBmb2xsb3dpbmcgYnVpbGQgZXJy
+b3JzIGFuZCB3YXJuaW5nczoKCnNvdW5kL3NvYy9jb2RlY3Mvd204NTgwLmM6OTMyOjIxOiBlcnJv
+cjogdmFyaWFibGUg4oCYd204NTgwX3JlZ21hcOKAmSBoYXMgaW5pdGlhbGl6ZXIgYnV0IGluY29t
+cGxldGUgdHlwZQogc3RhdGljIGNvbnN0IHN0cnVjdCByZWdtYXBfY29uZmlnIHdtODU4MF9yZWdt
+YXAgPSB7Cgpzb3VuZC9zb2MvY29kZWNzL3dtODU4MC5jOjIzMzoyMDogd2FybmluZzog4oCYd204
+NTgwX3N1cHBseV9uYW1lc+KAmSBkZWZpbmVkIGJ1dCBub3QgdXNlZCBbLVd1bnVzZWQtdmFyaWFi
+bGVdCnNvdW5kL3NvYy9jb2RlY3Mvd204NTgwLmM6ODQwOjM0OiB3YXJuaW5nOiDigJh3bTg1ODBf
+ZGFp4oCZIGRlZmluZWQgYnV0IG5vdCB1c2VkIFstV3VudXNlZC12YXJpYWJsZV0Kc291bmQvc29j
+L2NvZGVjcy93bTg1ODAuYzo5MTQ6MzY6IHdhcm5pbmc6IOKAmHNvY19jb2RlY19kZXZfd204NTgw
+4oCZIGRlZmluZWQgYnV0IG5vdCB1c2VkIFstV3VudXNlZC12YXJpYWJsZV0KClNpZ25lZC1vZmYt
+Ynk6IFNhY2hpbiBLYW1hdCA8c2FjaGluLmthbWF0QGxpbmFyby5vcmc+Ci0tLQogc291bmQvc29j
+L2NvZGVjcy93bTg1ODAuYyB8ICAgMzggKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0t
+LS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMCBpbnNlcnRpb25zKCspLCAxOCBkZWxldGlvbnMoLSkK
+CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3dtODU4MC5jIGIvc291bmQvc29jL2NvZGVj
+cy93bTg1ODAuYwppbmRleCAzMTg5ODlhY2JiZTUuLjdhOWQ2ZmE5ZjNiMyAxMDA2NDQKLS0tIGEv
+c291bmQvc29jL2NvZGVjcy93bTg1ODAuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL3dtODU4MC5j
+CkBAIC0yMTQsMjggKzIxNCwxMiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHJlZ19kZWZhdWx0IHdt
+ODU4MF9yZWdfZGVmYXVsdHNbXSA9IHsKIAl7IDUyLCAweDAwMDAgfSwKIH07CiAKLXN0YXRpYyBi
+b29sIHdtODU4MF92b2xhdGlsZShzdHJ1Y3QgZGV2aWNlICpkZXYsIHVuc2lnbmVkIGludCByZWcp
+Ci17Ci0Jc3dpdGNoIChyZWcpIHsKLQljYXNlIFdNODU4MF9SRVNFVDoKLQkJcmV0dXJuIHRydWU7
+Ci0JZGVmYXVsdDoKLQkJcmV0dXJuIGZhbHNlOwotCX0KLX0KLQogc3RydWN0IHBsbF9zdGF0ZSB7
+CiAJdW5zaWduZWQgaW50IGluOwogCXVuc2lnbmVkIGludCBvdXQ7CiB9OwogCiAjZGVmaW5lIFdN
+ODU4MF9OVU1fU1VQUExJRVMgMwotc3RhdGljIGNvbnN0IGNoYXIgKndtODU4MF9zdXBwbHlfbmFt
+ZXNbV004NTgwX05VTV9TVVBQTElFU10gPSB7Ci0JIkFWREQiLAotCSJEVkREIiwKLQkiUFZERCIs
+Ci19OwotCiAvKiBjb2RlYyBwcml2YXRlIGRhdGEgKi8KIHN0cnVjdCB3bTg1ODBfcHJpdiB7CiAJ
+c3RydWN0IHJlZ21hcCAqcmVnbWFwOwpAQCAtODM3LDYgKzgyMSw3IEBAIHN0YXRpYyBjb25zdCBz
+dHJ1Y3Qgc25kX3NvY19kYWlfb3BzIHdtODU4MF9kYWlfb3BzX2NhcHR1cmUgPSB7CiAJLnNldF9w
+bGwJPSB3bTg1ODBfc2V0X2RhaV9wbGwsCiB9OwogCisjaWYgSVNfRU5BQkxFRChDT05GSUdfSTJD
+KQogc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIgd204NTgwX2RhaVtdID0gewogCXsK
+IAkJLm5hbWUgPSAid204NTgwLWhpZmktcGxheWJhY2siLApAQCAtODYzLDYgKzg0OCw3IEBAIHN0
+YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfZHJpdmVyIHdtODU4MF9kYWlbXSA9IHsKIAkJLm9wcyA9
+ICZ3bTg1ODBfZGFpX29wc19jYXB0dXJlLAogCX0sCiB9OworI2VuZGlmCiAKIHN0YXRpYyBpbnQg
+d204NTgwX3Byb2JlKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykKIHsKQEAgLTkxMSw3ICs4
+OTcsNyBAQCBzdGF0aWMgaW50IHdtODU4MF9yZW1vdmUoc3RydWN0IHNuZF9zb2NfY29kZWMgKmNv
+ZGVjKQogCXJldHVybiAwOwogfQogCi1zdGF0aWMgc3RydWN0IHNuZF9zb2NfY29kZWNfZHJpdmVy
+IHNvY19jb2RlY19kZXZfd204NTgwID0geworc3RhdGljIHN0cnVjdCBzbmRfc29jX2NvZGVjX2Ry
+aXZlciBzb2NfY29kZWNfZGV2X3dtODU4MCBfX21heWJlX3VudXNlZCA9IHsKIAkucHJvYmUgPQl3
+bTg1ODBfcHJvYmUsCiAJLnJlbW92ZSA9CXdtODU4MF9yZW1vdmUsCiAJLnNldF9iaWFzX2xldmVs
+ID0gd204NTgwX3NldF9iaWFzX2xldmVsLApAQCAtOTI5LDYgKzkxNSwyMyBAQCBzdGF0aWMgY29u
+c3Qgc3RydWN0IG9mX2RldmljZV9pZCB3bTg1ODBfb2ZfbWF0Y2hbXSA9IHsKIAl7IH0sCiB9Owog
+CisjaWYgSVNfRU5BQkxFRChDT05GSUdfSTJDKQorc3RhdGljIGNvbnN0IGNoYXIgKndtODU4MF9z
+dXBwbHlfbmFtZXNbV004NTgwX05VTV9TVVBQTElFU10gPSB7CisJIkFWREQiLAorCSJEVkREIiwK
+KwkiUFZERCIsCit9OworCitzdGF0aWMgYm9vbCB3bTg1ODBfdm9sYXRpbGUoc3RydWN0IGRldmlj
+ZSAqZGV2LCB1bnNpZ25lZCBpbnQgcmVnKQoreworCXN3aXRjaCAocmVnKSB7CisJY2FzZSBXTTg1
+ODBfUkVTRVQ6CisJCXJldHVybiB0cnVlOworCWRlZmF1bHQ6CisJCXJldHVybiBmYWxzZTsKKwl9
+Cit9CisKIHN0YXRpYyBjb25zdCBzdHJ1Y3QgcmVnbWFwX2NvbmZpZyB3bTg1ODBfcmVnbWFwID0g
+ewogCS5yZWdfYml0cyA9IDcsCiAJLnZhbF9iaXRzID0gOSwKQEAgLTk0MSw3ICs5NDQsNiBAQCBz
+dGF0aWMgY29uc3Qgc3RydWN0IHJlZ21hcF9jb25maWcgd204NTgwX3JlZ21hcCA9IHsKIAkudm9s
+YXRpbGVfcmVnID0gd204NTgwX3ZvbGF0aWxlLAogfTsKIAotI2lmIElTX0VOQUJMRUQoQ09ORklH
+X0kyQykKIHN0YXRpYyBpbnQgd204NTgwX2kyY19wcm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqaTJj
+LAogCQkJICAgIGNvbnN0IHN0cnVjdCBpMmNfZGV2aWNlX2lkICppZCkKIHsKLS0gCjEuNy45LjUK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
