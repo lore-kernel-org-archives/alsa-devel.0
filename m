@@ -1,12 +1,12 @@
 From: Roman Volkov <v1ron@mail.ru>
-Subject: =?utf-8?q?=5BPATCH_v4_05/19=5D_ALSA=3A_Oxygen=3A_Cha?=
-	=?utf-8?q?nge_description_of_the_xonar=5Fdg=2Ec_file?=
-Date: Fri, 24 Jan 2014 16:18:06 +0400
-Message-ID: <1390565900-3337-5-git-send-email-v1ron@mail.ru>
+Subject: [PATCH v4 06/19] ALSA: Oxygen: Additional definitions
+	for the Xonar DG/DGX card
+Date: Fri, 24 Jan 2014 16:18:07 +0400
+Message-ID: <1390565900-3337-6-git-send-email-v1ron@mail.ru>
 References: <1390565900-3337-1-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 In-Reply-To: <1390565900-3337-1-git-send-email-v1ron@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,39 +22,74 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Roman Volkov <v1ron@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-QWRkIHNvbWUgYWRkaXRpb25hbCBpbmZvcm1hdGlvbiBpbiBjb21tZW50cyBhbmQgbXkgY29weXJp
-Z2h0LgoKU2lnbmVkLW9mZi1ieTogUm9tYW4gVm9sa292IDx2MXJvbkBtYWlsLnJ1PgotLS0KIHNv
-dW5kL3BjaS9veHlnZW4veG9uYXJfZGcuYyB8ICAgMjAgKysrKysrKysrKysrKystLS0tLS0KIDEg
-ZmlsZSBjaGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
-dCBhL3NvdW5kL3BjaS9veHlnZW4veG9uYXJfZGcuYyBiL3NvdW5kL3BjaS9veHlnZW4veG9uYXJf
-ZGcuYwppbmRleCA3N2FjZDc5Li5iODA2Y2MxIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvb3h5Z2Vu
-L3hvbmFyX2RnLmMKKysrIGIvc291bmQvcGNpL294eWdlbi94b25hcl9kZy5jCkBAIC0xLDggKzEs
-OCBAQAogLyoKLSAqIGNhcmQgZHJpdmVyIGZvciB0aGUgWG9uYXIgREcvREdYCisgKiBDYXJkIGRy
-aXZlciBmb3IgdGhlIFhvbmFyIERHL0RHWAogICoKICAqIENvcHlyaWdodCAoYykgQ2xlbWVucyBM
-YWRpc2NoIDxjbGVtZW5zQGxhZGlzY2guZGU+Ci0gKgorICogQ29weXJpZ2h0IChjKSBSb21hbiBW
-b2xrb3YgPHYxcm9uQG1haWwucnU+CiAgKgogICogIFRoaXMgZHJpdmVyIGlzIGZyZWUgc29mdHdh
-cmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKICAqICBpdCB1bmRlciB0
-aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlLCB2ZXJzaW9uIDIuCkBA
-IC0yMCwyNyArMjAsMzUgQEAKICAqIFhvbmFyIERHL0RHWAogICogLS0tLS0tLS0tLS0tCiAgKgor
-ICogQ1M0MjQ1IGFuZCBDUzQzNjEgYm90aCB3aWxsIG11dGUgYWxsIG91dHB1dHMgaWYgYW55IGNs
-b2NrIHJhdGlvCisgKiBpcyBpbnZhbGlkLgorICoKICAqIENNSTg3ODg6CiAgKgogICogICBTUEkg
-MCAtPiBDUzQyNDUKICAqCisgKiAgIFBsYXliYWNrOgogICogICBJwrJTIDEgLT4gQ1M0MjQ1CiAg
-KiAgIEnCslMgMiAtPiBDUzQzNjEgKGNlbnRlci9MRkUpCiAgKiAgIEnCslMgMyAtPiBDUzQzNjEg
-KHN1cnJvdW5kKQogICogICBJwrJTIDQgLT4gQ1M0MzYxIChmcm9udCkKKyAqICAgQ2FwdHVyZToK
-KyAqICAgScKyUyBBREMgMSA8LSBDUzQyNDUKICAqCiAgKiAgIEdQSU8gMyA8LSA/CiAgKiAgIEdQ
-SU8gNCA8LSBoZWFkcGhvbmUgZGV0ZWN0Ci0gKiAgIEdQSU8gNSAtPiByb3V0ZSBpbnB1dCBqYWNr
-IHRvIGxpbmUtaW4gKDApIG9yIG1pYy1pbiAoMSkKLSAqICAgR1BJTyA2IC0+IHJvdXRlIGlucHV0
-IGphY2sgdG8gbGluZS1pbiAoMCkgb3IgbWljLWluICgxKQotICogICBHUElPIDcgLT4gZW5hYmxl
-IHJlYXIgaGVhZHBob25lIGFtcAorICogICBHUElPIDUgLT4gZW5hYmxlIEFEQyBhbmFsb2cgY2ly
-Y3VpdCBmb3IgdGhlIGxlZnQgY2hhbm5lbAorICogICBHUElPIDYgLT4gZW5hYmxlIEFEQyBhbmFs
-b2cgY2lyY3VpdCBmb3IgdGhlIHJpZ2h0IGNoYW5uZWwKKyAqICAgR1BJTyA3IC0+IHN3aXRjaCBn
-cmVlbiByZWFyIG91dHB1dCBqYWNrIGJldHdlZW4gQ1M0MjQ1IGFuZAorICogYW5kIHRoZSBmaXJz
-dCBjaGFubmVsIG9mIENTNDM2MSAobWVjaGFuaWNhbCByZWxheSkKICAqICAgR1BJTyA4IC0+IGVu
-YWJsZSBvdXRwdXQgdG8gc3BlYWtlcnMKICAqCiAgKiBDUzQyNDU6CiAgKgorICogICBpbnB1dCAw
-IDwtIG1pYwogICogICBpbnB1dCAxIDwtIGF1eAogICogICBpbnB1dCAyIDwtIGZyb250IG1pYwot
-ICogICBpbnB1dCA0IDwtIGxpbmUvbWljCisgKiAgIGlucHV0IDQgPC0gbGluZQogICogICBEQUMg
-b3V0IC0+IGhlYWRwaG9uZXMKICAqICAgYXV4IG91dCAtPiBmcm9udCBwYW5lbCBoZWFkcGhvbmVz
-CiAgKi8KLS0gCjEuNy4xMC40CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+Add additional constants to the xonar_dg.h file:
+capture and playback sources. Move GPIO_* constants and the
+dg struct to the header file from the xonar_dg.c file.
+
+Signed-off-by: Roman Volkov <v1ron@mail.ru>
+---
+ sound/pci/oxygen/xonar_dg.c |   14 --------------
+ sound/pci/oxygen/xonar_dg.h |   23 +++++++++++++++++++++++
+ 2 files changed, 23 insertions(+), 14 deletions(-)
+
+diff --git a/sound/pci/oxygen/xonar_dg.c b/sound/pci/oxygen/xonar_dg.c
+index b806cc1..2a0ad6e 100644
+--- a/sound/pci/oxygen/xonar_dg.c
++++ b/sound/pci/oxygen/xonar_dg.c
+@@ -64,20 +64,6 @@
+ #include "xonar_dg.h"
+ #include "cs4245.h"
+ 
+-#define GPIO_MAGIC		0x0008
+-#define GPIO_HP_DETECT		0x0010
+-#define GPIO_INPUT_ROUTE	0x0060
+-#define GPIO_HP_REAR		0x0080
+-#define GPIO_OUTPUT_ENABLE	0x0100
+-
+-struct dg {
+-	unsigned int output_sel;
+-	s8 input_vol[4][2];
+-	unsigned int input_sel;
+-	u8 hp_vol_att;
+-	u8 cs4245_regs[0x11];
+-};
+-
+ static void cs4245_write(struct oxygen *chip, unsigned int reg, u8 value)
+ {
+ 	struct dg *data = chip->model_data;
+diff --git a/sound/pci/oxygen/xonar_dg.h b/sound/pci/oxygen/xonar_dg.h
+index 5688d78..0812692 100644
+--- a/sound/pci/oxygen/xonar_dg.h
++++ b/sound/pci/oxygen/xonar_dg.h
+@@ -3,6 +3,29 @@
+ 
+ #include "oxygen.h"
+ 
++#define GPIO_MAGIC		0x0008
++#define GPIO_HP_DETECT		0x0010
++#define GPIO_INPUT_ROUTE	0x0060
++#define GPIO_HP_REAR		0x0080
++#define GPIO_OUTPUT_ENABLE	0x0100
++
++#define CAPTURE_SRC_MIC		0
++#define CAPTURE_SRC_FP_MIC	1
++#define CAPTURE_SRC_LINE	2
++#define CAPTURE_SRC_AUX		3
++
++#define PLAYBACK_DST_HP		0
++#define PLAYBACK_DST_HP_FP	1
++#define PLAYBACK_DST_MULTICH	2
++
++struct dg {
++	unsigned int output_sel;
++	s8 input_vol[4][2];
++	unsigned int input_sel;
++	u8 hp_vol_att;
++	u8 cs4245_regs[0x11];
++};
++
+ extern struct oxygen_model model_xonar_dg;
+ 
+ #endif
+-- 
+1.7.10.4
