@@ -1,17 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: Samsung: Remove dma.h inclusion
-Date: Fri, 24 Jan 2014 13:18:32 +0000
-Message-ID: <20140124131832.GB11727@sirena.org.uk>
-References: <1390560804-31135-1-git-send-email-sachin.kamat@linaro.org>
- <1390560804-31135-2-git-send-email-sachin.kamat@linaro.org>
+Subject: Re: [PATCH v4 07/19] ALSA: Oxygen: Add new CS4245 SPI
+ functions
+Date: Fri, 24 Jan 2014 13:43:51 +0000
+Message-ID: <20140124134351.GC11727@sirena.org.uk>
+References: <1390565900-3337-1-git-send-email-v1ron@mail.ru>
+ <1390565900-3337-7-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3480701342139309551=="
+Content-Type: multipart/mixed; boundary="===============1236256508089508265=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E612265467
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 14:18:37 +0100 (CET)
-In-Reply-To: <1390560804-31135-2-git-send-email-sachin.kamat@linaro.org>
+In-Reply-To: <1390565900-3337-7-git-send-email-v1ron@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +18,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, patches@linaro.org
+To: Roman Volkov <v1ron@mail.ru>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3480701342139309551==
+--===============1236256508089508265==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LMmSgwdUwKH/sMG1"
+	protocol="application/pgp-signature"; boundary="a9msq94+WlNd0NRk"
 Content-Disposition: inline
 
 
---LMmSgwdUwKH/sMG1
+--a9msq94+WlNd0NRk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jan 24, 2014 at 04:23:23PM +0530, Sachin Kamat wrote:
-> mach/dma.h is not referenced by this file. Remove it.
+On Fri, Jan 24, 2014 at 04:18:08PM +0400, Roman Volkov wrote:
+> Add the new SPI write and read functions. The SPI read function
+> is used for creating initial registers dump and may be used for
+> debugging purposes. SPI operations are cached, so there is a new
+> function to manage the cache (shadow). I have to remove
+> the shift from the CS4245_SPI_* constants, since when
+> we are performing the reading, we need to shift by 8 instead
+> of 16.
 
-Applied, thanks.
+I can't help but think that this driver ought to be making more use of
+frameworks - it sounds like an ASoC system really (split CODEC and CPU)
+and all this register I/O stuff sounds like it could make use of regmap.
 
---LMmSgwdUwKH/sMG1
+--a9msq94+WlNd0NRk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS4mglAAoJELSic+t+oim9wn4QAJDSyYZ6cKCG4px9K5QEMYir
-ttPvO6O2PUU7X8EW6zuz8j5oyGtySGNXdSNDESbePWw1Vovu5O3PuepnxkamyNyG
-rLmCB+I1cwCfu7joqPTa3XWh/eKrEQRKQi0AnY3kRxJsETOpqLAbFKYVHpYvTGgu
-Rd/E8QglJhSgabVuIJgS7cVSj2iLQnj6DXpXQxNkN8VW5lgMZBaXXuFloljpDR0e
-ElFnXxy7gEZCaiWLXGqhuF5AQvQbNGj49jHr468R0voBOENB3u6/sEo17kyfrjKf
-7O4ihmviv06KeKSOqH8FksJ8VHYLXtZgIycms82Si6Z33RP4EWQpyvH4R+XT2FQa
-WsKYZzmLE0aadWq0nBBSLTgsX/QSymKTD0i8WoZDpixylYMy5kGXZMRcpYryoigg
-p8w2dEVRbO+4RUVplnM9AJ8HHkX8+uPJPxHT2QCHRaxk2J6SwGu1YDMJE5OV89oQ
-6LzYqAe1iR8aKU9gopo16RkTMhyxH9Jr1HBE0rye51gkaAJKXavdK5wNNae1I2CA
-wKz/dWz90D9zjjxm5Rm2Oq/YgtiDgAg4plustUE9A7ORIzwsNksB/p7GjkmRtkR3
-vX5F3R/+KiQvCBbU9aVXPhvrh23t68Z/sqLzDQX+SfOm6eSWMbgiRm7mfyMlylb8
-IgVDB0CLXD9T28XYiK0L
-=J/dJ
+iQIcBAEBAgAGBQJS4m4UAAoJELSic+t+oim9vwoP/jnYeIxNnabVqCQ29PQV3PzG
+iV1yOkR6INOTDb0bU+Lmv0MQNqFqq641BmaKj7vxuMr2BvTFEXDrn1znOk5lWk/q
+IhyShf6cP/MbY9FJDt42MrrjHLmku90O3Sop3BcL4V2xKnjgHo+4+WpsWTpJQRjR
+7NjcchuRW7bSvmr25ZZIWzDoYY2BASZyfW4DjuJejyFnfT7uB6rEWYRyir9GGcj4
+wUZ1wx4f2wH2+JzRAyizKPAmEJhu+CQqZSifqQ0oP89qXlS6NjADtMzfED0+JDvT
+IDUnHutfHmodYT+N6svUun7z9YPF8eqaCYYyfG1VXi8XjNgY6pdRmEpZlJx31R5c
+zL2Ii3AjQB+Mbs/ZDhr/td2Sck/5L198Y4YmwMOTwYY9DwUnOlQlqr1O5D2JtDqs
+AivR05Vm6w7WANUnzJcdXVa9WOUQTah3fGg7Ou6XkomRsoRme+zuNWFHHWUlfFkZ
+ENbyVB6mDKr2i6rkAfFvwKE8mAD2Ucer+afsqd80Mz+m6R6n8d4OikDcvvg0HeSx
+Pzyer0G8ojesvHpaUv3hqHA5PE6/V0+QPlGlZVFKLTOcE5/dq+RYCyL5+XZiiImx
+FUyx103+OP4WUE5RkRM46QFY5ULk9yKjjViVgU7aAwOKSLRDUV5/3a2d5mXGz4Oh
+C/ecQZ8lQJBCyBG0TYHA
+=1/Tu
 -----END PGP SIGNATURE-----
 
---LMmSgwdUwKH/sMG1--
+--a9msq94+WlNd0NRk--
 
---===============3480701342139309551==
+--===============1236256508089508265==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3480701342139309551==--
+--===============1236256508089508265==--
