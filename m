@@ -1,51 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: simple-card: fix simple card widgets
- routing property name usage
-Date: Thu, 23 Jan 2014 20:23:40 +0000
-Message-ID: <20140123202339.GR11727@sirena.org.uk>
-References: <1389331047-21437-1-git-send-email-Li.Xiubo@freescale.com>
+From: Olivier Langlois <olivier@trillion01.com>
+Subject: [PATCH] alsa-libs: use CLOCK_REALTIME for
+	non-monotonic ts
+Date: Thu, 23 Jan 2014 19:03:00 -0500
+Message-ID: <1390521780-14366-1-git-send-email-olivier@trillion01.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QFliEIXSSz7hGqqc"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1389331047-21437-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from alt-proxy11.mail.unifiedlayer.com
+ (alt-proxy11.mail.unifiedlayer.com [74.220.211.241])
+ by alsa0.perex.cz (Postfix) with SMTP id A89952652E5
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 01:04:16 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: Olivier Langlois <olivier@trillion01.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+gettimeofday() is the same than clock_gettime(CLOCK_REALTIME)
+except for the loss of precision and the double unnecessary
+conversion timespec <-> timeval.
 
---QFliEIXSSz7hGqqc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+---
+ src/pcm/pcm_local.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-On Fri, Jan 10, 2014 at 01:17:27PM +0800, Xiubo Li wrote:
-> Fix the usage of simple card widgets routing property, and make it the
-> same with simple card routing property name.
-
-Applied, thanks.
-
---QFliEIXSSz7hGqqc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS4XpIAAoJELSic+t+oim9XmsQAJWo4DZS6ltaxtF9VxuzbIJR
-HSCHN4yOkd7qGFfNizUTMtJxa/+JTFpoXebozGbk5FNguDnGBJ5aASgSz9N/agU9
-M1uOrpxINtMXj3ng8/GCDtVrW9eGYSj9ZHsoP4ltn+ZdLx/hyK8sqhDJ7yJhXh60
-m0/EtAzbEssA43/ZKqqtrt0tNaeJRcrBtsiXyQm7sEDd/yzJ6WgMRS0ktfUbc5kl
-kIFUJNtKomO+xrhq0dPlkVbhuTqdX9ckKse8QMU54oAnkDIBoWjHImcK/PGu3BA4
-AhR0hMjlQFM3EKf0P+91sWJOUIuHKO/4JomZ6R9GLS73+ZypxyLTvVB7B89tnwm0
-Ve51sjaq0t8DWzUEbtq17Nqkdakha7h7b0y9UpKNwlJv/G71FAP9RCRKqX8iPOqE
-5zPsrldLLwiH2ZosrzD0gfOfVmVTeULhasWMKGiItbbp+v97F2X9KrMGim8Y6k7E
-O6mL7YMYsQnyDHxTsirX05DhQ/0ptdNIwl0BGYw2la0mCo3ofq1D9e3GKHdrwcds
-TCCjSvkadVt1SIAaYza329HQvVhcffcWsCkGBI1w9YwVsk1v4jKXHKS8qKjKCrw3
-CcQJBpF01cUWg+loU5nQoRqBZW99W4vOnaKdX4d/vI2NJ4DXx89pybNUhxleYT1b
-Qv2dPnlFDDGzKGvdLKl6
-=UwYr
------END PGP SIGNATURE-----
-
---QFliEIXSSz7hGqqc--
+diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
+index e1c0baa..8a6c743 100644
+--- a/src/pcm/pcm_local.h
++++ b/src/pcm/pcm_local.h
+@@ -961,17 +961,21 @@ typedef union snd_tmp_double {
+ /* get the current timestamp */
+ static inline void gettimestamp(snd_htimestamp_t *tstamp, int monotonic)
+ {
+-#if defined(HAVE_CLOCK_GETTIME) && defined(CLOCK_MONOTONIC)
++#if defined(HAVE_CLOCK_GETTIME)
++#if defined(CLOCK_MONOTONIC)
+ 	if (monotonic) {
+ 		clock_gettime(CLOCK_MONOTONIC, tstamp);
+ 	} else {
+ #endif
++		clock_gettime(CLOCK_REALTIME, tstamp);
++#else
+ 		struct timeval tv;
+ 
+ 		gettimeofday(&tv, 0);
+ 		tstamp->tv_sec = tv.tv_sec;
+ 		tstamp->tv_nsec = tv.tv_usec * 1000L;
+-#if defined(HAVE_CLOCK_GETTIME) && defined(CLOCK_MONOTONIC)
++#endif
++#if defined(HAVE_CLOCK_GETTIME)
+ 	}
+ #endif
+ }
+-- 
+1.8.5.3
