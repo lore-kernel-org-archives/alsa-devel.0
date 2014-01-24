@@ -1,8 +1,8 @@
 From: Roman Volkov <v1ron@mail.ru>
-Subject: [PATCH v4 02/19] ALSA: Oxygen: Modify the SPI writing
-	function
-Date: Fri, 24 Jan 2014 16:18:03 +0400
-Message-ID: <1390565900-3337-2-git-send-email-v1ron@mail.ru>
+Subject: [PATCH v4 03/19] ALSA: Oxygen: Add mute mask for the
+	OXYGEN_PLAY_ROUTING register
+Date: Fri, 24 Jan 2014 16:18:04 +0400
+Message-ID: <1390565900-3337-3-git-send-email-v1ron@mail.ru>
 References: <1390565900-3337-1-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,64 +22,25 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Roman Volkov <v1ron@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-Modify the oxygen_write_spi() function to use the newly
-introduced oxygen_wait_spi() function. Change return value
-from void to int, so it can return error codes. Older
-drivers just ignore that return value, new drivers can
-check this value. We need to wait AFTER
-initiating the SPI transaction, otherwise read
-operation will not work.
+The Xonar DG/DGX driver needs this mask to mute unnecessary
+channels.
 
 Signed-off-by: Roman Volkov <v1ron@mail.ru>
 ---
- sound/pci/oxygen/oxygen.h    |    2 +-
- sound/pci/oxygen/oxygen_io.c |   15 ++++-----------
- 2 files changed, 5 insertions(+), 12 deletions(-)
+ sound/pci/oxygen/oxygen_regs.h |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/oxygen/oxygen.h b/sound/pci/oxygen/oxygen.h
-index 09a24b2..c10ab07 100644
---- a/sound/pci/oxygen/oxygen.h
-+++ b/sound/pci/oxygen/oxygen.h
-@@ -198,7 +198,7 @@ void oxygen_write_ac97(struct oxygen *chip, unsigned int codec,
- void oxygen_write_ac97_masked(struct oxygen *chip, unsigned int codec,
- 			      unsigned int index, u16 data, u16 mask);
- 
--void oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data);
-+int oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data);
- void oxygen_write_i2c(struct oxygen *chip, u8 device, u8 map, u8 data);
- 
- void oxygen_reset_uart(struct oxygen *chip);
-diff --git a/sound/pci/oxygen/oxygen_io.c b/sound/pci/oxygen/oxygen_io.c
-index 471e64a..04f529e 100644
---- a/sound/pci/oxygen/oxygen_io.c
-+++ b/sound/pci/oxygen/oxygen_io.c
-@@ -209,23 +209,16 @@ static int oxygen_wait_spi(struct oxygen *chip)
- 	return -EIO;
- }
- 
--void oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data)
-+int oxygen_write_spi(struct oxygen *chip, u8 control, unsigned int data)
- {
--	unsigned int count;
--
--	/* should not need more than 30.72 us (24 * 1.28 us) */
--	count = 10;
--	while ((oxygen_read8(chip, OXYGEN_SPI_CONTROL) & OXYGEN_SPI_BUSY)
--	       && count > 0) {
--		udelay(4);
--		--count;
--	}
--
-+	/* We need to wait AFTER initiating the SPI transaction,
-+	   otherwise read operations will not work */
- 	oxygen_write8(chip, OXYGEN_SPI_DATA1, data);
- 	oxygen_write8(chip, OXYGEN_SPI_DATA2, data >> 8);
- 	if (control & OXYGEN_SPI_DATA_LENGTH_3)
- 		oxygen_write8(chip, OXYGEN_SPI_DATA3, data >> 16);
- 	oxygen_write8(chip, OXYGEN_SPI_CONTROL, control);
-+	return oxygen_wait_spi(chip);
- }
- EXPORT_SYMBOL(oxygen_write_spi);
- 
+diff --git a/sound/pci/oxygen/oxygen_regs.h b/sound/pci/oxygen/oxygen_regs.h
+index 63dc7a0..8c191ba 100644
+--- a/sound/pci/oxygen/oxygen_regs.h
++++ b/sound/pci/oxygen/oxygen_regs.h
+@@ -318,6 +318,7 @@
+ #define  OXYGEN_PLAY_MUTE23		0x0002
+ #define  OXYGEN_PLAY_MUTE45		0x0004
+ #define  OXYGEN_PLAY_MUTE67		0x0008
++#define  OXYGEN_PLAY_MUTE_MASK		0x000f
+ #define  OXYGEN_PLAY_MULTICH_MASK	0x0010
+ #define  OXYGEN_PLAY_MULTICH_I2S_DAC	0x0000
+ #define  OXYGEN_PLAY_MULTICH_AC97	0x0010
 -- 
 1.7.10.4
