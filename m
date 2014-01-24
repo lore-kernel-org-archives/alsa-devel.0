@@ -1,148 +1,56 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH v2 5/7] ASoC: add snd_soc_of_parse_audio_simple_widgets for DT
-Date: Fri, 24 Jan 2014 15:43:04 +0800
-Message-ID: <1390549386-4702-6-git-send-email-Li.Xiubo@freescale.com>
-References: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 2/2] ASoC: Samsung: Fix build error due to
+	missing dependency
+Date: Fri, 24 Jan 2014 14:09:25 +0530
+Message-ID: <1390552765-32210-2-git-send-email-sachin.kamat@linaro.org>
+References: <1390552765-32210-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
-Cc: rob@landley.net, perex@perex.cz, moinejf@free.fr, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pb0-f53.google.com (mail-pb0-f53.google.com
+ [209.85.160.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00CC6261687
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 09:44:07 +0100 (CET)
+Received: by mail-pb0-f53.google.com with SMTP id md12so2979512pbc.40
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 00:44:07 -0800 (PST)
+In-Reply-To: <1390552765-32210-1-git-send-email-sachin.kamat@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: patches@linaro.org, sbkim73@samsung.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sachin.kamat@linaro.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds snd_soc_of_parse_audio_simple_widgets() and supports
-below style of widgets name on DT:
+Depend on MFD_ARIZONA to avoid the following build errors:
 
-"template-wname", "user supplied wname"
+sound/soc/codecs/arizona.c:218: undefined reference to `arizona_request_irq'
+sound/soc/codecs/arizona.c:226: undefined reference to `arizona_request_irq'
+sound/soc/codecs/arizona.c:1719: undefined reference to `arizona_request_irq'
 
-The "template-wname" includes: "Mic", "Line", "Hp", "Spk"...
-
-For instance:
-	simple-audio-widgets =
-		"Mic", "Microphone Jack",
-		"Line", "Line In Jack",
-		"Line", "Line Out Jack",
-		"Hp", "Headphone Jack",
-		"Spk", "Speaker External";
-
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- include/sound/soc.h  |  2 ++
- sound/soc/soc-core.c | 87 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 89 insertions(+)
+ sound/soc/samsung/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 9a00147..465dc6e 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1173,6 +1173,8 @@ void snd_soc_util_exit(void);
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index e8fbf4e5732f..454f41cfc828 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -210,7 +210,7 @@ config SND_SOC_TOBERMORY
  
- int snd_soc_of_parse_card_name(struct snd_soc_card *card,
- 			       const char *propname);
-+int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
-+					  const char *propname);
- int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 				   const char *propname);
- unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index fe1df50..73fdf18 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -4417,6 +4417,93 @@ int snd_soc_of_parse_card_name(struct snd_soc_card *card,
- }
- EXPORT_SYMBOL_GPL(snd_soc_of_parse_card_name);
- 
-+static const struct snd_soc_dapm_widget simple_widgets[] = {
-+	SND_SOC_DAPM_MIC("Mic", NULL),
-+	SND_SOC_DAPM_LINE("Line", NULL),
-+	SND_SOC_DAPM_HP("Hp", NULL),
-+	SND_SOC_DAPM_SPK("Spk", NULL),
-+};
-+
-+int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
-+					  const char *propname)
-+{
-+	struct device_node *np = card->dev->of_node;
-+	struct snd_soc_dapm_widget *widgets;
-+	const char *template, *wname;
-+	int i, j, num_widgets, ret;
-+
-+	num_widgets = of_property_count_strings(np, propname);
-+	if (num_widgets < 0) {
-+		dev_err(card->dev,
-+			"ASoC: Property '%s' does not exist\n",	propname);
-+		return -EINVAL;
-+	}
-+	if (num_widgets & 1) {
-+		dev_err(card->dev,
-+			"ASoC: Property '%s' length is not even\n", propname);
-+		return -EINVAL;
-+	}
-+
-+	num_widgets /= 2;
-+	if (!num_widgets) {
-+		dev_err(card->dev, "ASoC: Property '%s's length is zero\n",
-+			propname);
-+		return -EINVAL;
-+	}
-+
-+	widgets = devm_kcalloc(card->dev, num_widgets, sizeof(*widgets),
-+			       GFP_KERNEL);
-+	if (!widgets) {
-+		dev_err(card->dev,
-+			"ASoC: Could not allocate memory for widgets\n");
-+		return -ENOMEM;
-+	}
-+
-+	for (i = 0; i < num_widgets; i++) {
-+		ret = of_property_read_string_index(np, propname,
-+			2 * i, &template);
-+		if (ret) {
-+			dev_err(card->dev,
-+				"ASoC: Property '%s' index %d read error:%d\n",
-+				propname, 2 * i, ret);
-+			return -EINVAL;
-+		}
-+
-+		for (j = 0; j < ARRAY_SIZE(simple_widgets); j++) {
-+			if (!strncmp(template, simple_widgets[j].name,
-+				     strlen(simple_widgets[j].name))) {
-+				widgets[i] = simple_widgets[j];
-+				break;
-+			}
-+		}
-+
-+		if (j >= ARRAY_SIZE(simple_widgets)) {
-+			dev_err(card->dev,
-+				"ASoC: DAPM widget '%s' is not supported\n",
-+				template);
-+			return -EINVAL;
-+		}
-+
-+		ret = of_property_read_string_index(np, propname,
-+						    (2 * i) + 1,
-+						    &wname);
-+		if (ret) {
-+			dev_err(card->dev,
-+				"ASoC: Property '%s' index %d read error:%d\n",
-+				propname, (2 * i) + 1, ret);
-+			return -EINVAL;
-+		}
-+
-+		widgets[i].name = wname;
-+	}
-+
-+	card->dapm_widgets = widgets;
-+	card->num_dapm_widgets = num_widgets;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_simple_widgets);
-+
- int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 				   const char *propname)
- {
+ config SND_SOC_BELLS
+ 	tristate "Audio support for Wolfson Bells"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
++	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && MFD_ARIZONA
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM5102
+ 	select SND_SOC_WM5110
 -- 
-1.8.4
+1.7.9.5
