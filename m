@@ -1,17 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 1/3] ASoC: Samsung: Add NULL check in i2s.c
-Date: Fri, 24 Jan 2014 16:23:22 +0530
-Message-ID: <1390560804-31135-1-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 2/3] ASoC: Samsung: Remove dma.h inclusion
+Date: Fri, 24 Jan 2014 16:23:23 +0530
+Message-ID: <1390560804-31135-2-git-send-email-sachin.kamat@linaro.org>
+References: <1390560804-31135-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pb0-f52.google.com (mail-pb0-f52.google.com
  [209.85.160.52])
- by alsa0.perex.cz (Postfix) with ESMTP id D2EEC2616FA
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 11:57:58 +0100 (CET)
-Received: by mail-pb0-f52.google.com with SMTP id jt11so3108916pbb.39
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 02:57:57 -0800 (PST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D89D5261ADB
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 11:58:00 +0100 (CET)
+Received: by mail-pb0-f52.google.com with SMTP id jt11so3127547pbb.11
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 02:58:00 -0800 (PST)
+In-Reply-To: <1390560804-31135-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,28 +27,25 @@ To: alsa-devel@alsa-project.org
 Cc: sbkim73@samsung.com, sachin.kamat@linaro.org, broonie@kernel.org, lgirdwood@gmail.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-'res' could be NULL from one of the operations above (line 1243). Thus
-check 'res' for NULL before releasing the region to avoid null pointer
-dereference.
+mach/dma.h is not referenced by this file. Remove it.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/samsung/i2s.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/samsung/i2s.c |    2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 92f64363427d..a9da24f34834 100644
+index a9da24f34834..0a9b44c940ce 100644
 --- a/sound/soc/samsung/i2s.c
 +++ b/sound/soc/samsung/i2s.c
-@@ -1268,7 +1268,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+@@ -22,8 +22,6 @@
+ #include <sound/soc.h>
+ #include <sound/pcm_params.h>
  
- 	return 0;
- err:
--	release_mem_region(regs_base, resource_size(res));
-+	if (res)
-+		release_mem_region(regs_base, resource_size(res));
+-#include <mach/dma.h>
+-
+ #include <linux/platform_data/asoc-s3c.h>
  
- 	return ret;
- }
+ #include "dma.h"
 -- 
 1.7.9.5
