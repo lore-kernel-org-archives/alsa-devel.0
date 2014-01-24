@@ -1,81 +1,148 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 1/2] ASoC: wm8580: Fix build error
-Date: Fri, 24 Jan 2014 14:09:24 +0530
-Message-ID: <1390552765-32210-1-git-send-email-sachin.kamat@linaro.org>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH v2 5/7] ASoC: add snd_soc_of_parse_audio_simple_widgets for DT
+Date: Fri, 24 Jan 2014 15:43:04 +0800
+Message-ID: <1390549386-4702-6-git-send-email-Li.Xiubo@freescale.com>
+References: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 3723B265357
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 09:44:05 +0100 (CET)
-Received: by mail-pa0-f48.google.com with SMTP id kx10so3007994pab.35
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 00:44:04 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: patches@linaro.org, sbkim73@samsung.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sachin.kamat@linaro.org, broonie@kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
+Cc: rob@landley.net, perex@perex.cz, moinejf@free.fr, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-UmUtb3JnYW5pemUgdGhlIGNvZGUgYSBiaXQgdG8gZml4IHRoZSBmb2xsb3dpbmcgYnVpbGQgZXJy
-b3JzIGFuZCB3YXJuaW5nczoKCnNvdW5kL3NvYy9jb2RlY3Mvd204NTgwLmM6OTMyOjIxOiBlcnJv
-cjogdmFyaWFibGUg4oCYd204NTgwX3JlZ21hcOKAmSBoYXMgaW5pdGlhbGl6ZXIgYnV0IGluY29t
-cGxldGUgdHlwZQogc3RhdGljIGNvbnN0IHN0cnVjdCByZWdtYXBfY29uZmlnIHdtODU4MF9yZWdt
-YXAgPSB7Cgpzb3VuZC9zb2MvY29kZWNzL3dtODU4MC5jOjIzMzoyMDogd2FybmluZzog4oCYd204
-NTgwX3N1cHBseV9uYW1lc+KAmSBkZWZpbmVkIGJ1dCBub3QgdXNlZCBbLVd1bnVzZWQtdmFyaWFi
-bGVdCnNvdW5kL3NvYy9jb2RlY3Mvd204NTgwLmM6ODQwOjM0OiB3YXJuaW5nOiDigJh3bTg1ODBf
-ZGFp4oCZIGRlZmluZWQgYnV0IG5vdCB1c2VkIFstV3VudXNlZC12YXJpYWJsZV0Kc291bmQvc29j
-L2NvZGVjcy93bTg1ODAuYzo5MTQ6MzY6IHdhcm5pbmc6IOKAmHNvY19jb2RlY19kZXZfd204NTgw
-4oCZIGRlZmluZWQgYnV0IG5vdCB1c2VkIFstV3VudXNlZC12YXJpYWJsZV0KClNpZ25lZC1vZmYt
-Ynk6IFNhY2hpbiBLYW1hdCA8c2FjaGluLmthbWF0QGxpbmFyby5vcmc+Ci0tLQogc291bmQvc29j
-L2NvZGVjcy93bTg1ODAuYyB8ICAgMzggKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0t
-LS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMCBpbnNlcnRpb25zKCspLCAxOCBkZWxldGlvbnMoLSkK
-CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3dtODU4MC5jIGIvc291bmQvc29jL2NvZGVj
-cy93bTg1ODAuYwppbmRleCAzMTg5ODlhY2JiZTUuLjdhOWQ2ZmE5ZjNiMyAxMDA2NDQKLS0tIGEv
-c291bmQvc29jL2NvZGVjcy93bTg1ODAuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL3dtODU4MC5j
-CkBAIC0yMTQsMjggKzIxNCwxMiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHJlZ19kZWZhdWx0IHdt
-ODU4MF9yZWdfZGVmYXVsdHNbXSA9IHsKIAl7IDUyLCAweDAwMDAgfSwKIH07CiAKLXN0YXRpYyBi
-b29sIHdtODU4MF92b2xhdGlsZShzdHJ1Y3QgZGV2aWNlICpkZXYsIHVuc2lnbmVkIGludCByZWcp
-Ci17Ci0Jc3dpdGNoIChyZWcpIHsKLQljYXNlIFdNODU4MF9SRVNFVDoKLQkJcmV0dXJuIHRydWU7
-Ci0JZGVmYXVsdDoKLQkJcmV0dXJuIGZhbHNlOwotCX0KLX0KLQogc3RydWN0IHBsbF9zdGF0ZSB7
-CiAJdW5zaWduZWQgaW50IGluOwogCXVuc2lnbmVkIGludCBvdXQ7CiB9OwogCiAjZGVmaW5lIFdN
-ODU4MF9OVU1fU1VQUExJRVMgMwotc3RhdGljIGNvbnN0IGNoYXIgKndtODU4MF9zdXBwbHlfbmFt
-ZXNbV004NTgwX05VTV9TVVBQTElFU10gPSB7Ci0JIkFWREQiLAotCSJEVkREIiwKLQkiUFZERCIs
-Ci19OwotCiAvKiBjb2RlYyBwcml2YXRlIGRhdGEgKi8KIHN0cnVjdCB3bTg1ODBfcHJpdiB7CiAJ
-c3RydWN0IHJlZ21hcCAqcmVnbWFwOwpAQCAtODM3LDYgKzgyMSw3IEBAIHN0YXRpYyBjb25zdCBz
-dHJ1Y3Qgc25kX3NvY19kYWlfb3BzIHdtODU4MF9kYWlfb3BzX2NhcHR1cmUgPSB7CiAJLnNldF9w
-bGwJPSB3bTg1ODBfc2V0X2RhaV9wbGwsCiB9OwogCisjaWYgSVNfRU5BQkxFRChDT05GSUdfSTJD
-KQogc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIgd204NTgwX2RhaVtdID0gewogCXsK
-IAkJLm5hbWUgPSAid204NTgwLWhpZmktcGxheWJhY2siLApAQCAtODYzLDYgKzg0OCw3IEBAIHN0
-YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfZHJpdmVyIHdtODU4MF9kYWlbXSA9IHsKIAkJLm9wcyA9
-ICZ3bTg1ODBfZGFpX29wc19jYXB0dXJlLAogCX0sCiB9OworI2VuZGlmCiAKIHN0YXRpYyBpbnQg
-d204NTgwX3Byb2JlKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykKIHsKQEAgLTkxMSw3ICs4
-OTcsNyBAQCBzdGF0aWMgaW50IHdtODU4MF9yZW1vdmUoc3RydWN0IHNuZF9zb2NfY29kZWMgKmNv
-ZGVjKQogCXJldHVybiAwOwogfQogCi1zdGF0aWMgc3RydWN0IHNuZF9zb2NfY29kZWNfZHJpdmVy
-IHNvY19jb2RlY19kZXZfd204NTgwID0geworc3RhdGljIHN0cnVjdCBzbmRfc29jX2NvZGVjX2Ry
-aXZlciBzb2NfY29kZWNfZGV2X3dtODU4MCBfX21heWJlX3VudXNlZCA9IHsKIAkucHJvYmUgPQl3
-bTg1ODBfcHJvYmUsCiAJLnJlbW92ZSA9CXdtODU4MF9yZW1vdmUsCiAJLnNldF9iaWFzX2xldmVs
-ID0gd204NTgwX3NldF9iaWFzX2xldmVsLApAQCAtOTI5LDYgKzkxNSwyMyBAQCBzdGF0aWMgY29u
-c3Qgc3RydWN0IG9mX2RldmljZV9pZCB3bTg1ODBfb2ZfbWF0Y2hbXSA9IHsKIAl7IH0sCiB9Owog
-CisjaWYgSVNfRU5BQkxFRChDT05GSUdfSTJDKQorc3RhdGljIGNvbnN0IGNoYXIgKndtODU4MF9z
-dXBwbHlfbmFtZXNbV004NTgwX05VTV9TVVBQTElFU10gPSB7CisJIkFWREQiLAorCSJEVkREIiwK
-KwkiUFZERCIsCit9OworCitzdGF0aWMgYm9vbCB3bTg1ODBfdm9sYXRpbGUoc3RydWN0IGRldmlj
-ZSAqZGV2LCB1bnNpZ25lZCBpbnQgcmVnKQoreworCXN3aXRjaCAocmVnKSB7CisJY2FzZSBXTTg1
-ODBfUkVTRVQ6CisJCXJldHVybiB0cnVlOworCWRlZmF1bHQ6CisJCXJldHVybiBmYWxzZTsKKwl9
-Cit9CisKIHN0YXRpYyBjb25zdCBzdHJ1Y3QgcmVnbWFwX2NvbmZpZyB3bTg1ODBfcmVnbWFwID0g
-ewogCS5yZWdfYml0cyA9IDcsCiAJLnZhbF9iaXRzID0gOSwKQEAgLTk0MSw3ICs5NDQsNiBAQCBz
-dGF0aWMgY29uc3Qgc3RydWN0IHJlZ21hcF9jb25maWcgd204NTgwX3JlZ21hcCA9IHsKIAkudm9s
-YXRpbGVfcmVnID0gd204NTgwX3ZvbGF0aWxlLAogfTsKIAotI2lmIElTX0VOQUJMRUQoQ09ORklH
-X0kyQykKIHN0YXRpYyBpbnQgd204NTgwX2kyY19wcm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqaTJj
-LAogCQkJICAgIGNvbnN0IHN0cnVjdCBpMmNfZGV2aWNlX2lkICppZCkKIHsKLS0gCjEuNy45LjUK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This patch adds snd_soc_of_parse_audio_simple_widgets() and supports
+below style of widgets name on DT:
+
+"template-wname", "user supplied wname"
+
+The "template-wname" includes: "Mic", "Line", "Hp", "Spk"...
+
+For instance:
+	simple-audio-widgets =
+		"Mic", "Microphone Jack",
+		"Line", "Line In Jack",
+		"Line", "Line Out Jack",
+		"Hp", "Headphone Jack",
+		"Spk", "Speaker External";
+
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+---
+ include/sound/soc.h  |  2 ++
+ sound/soc/soc-core.c | 87 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 89 insertions(+)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 9a00147..465dc6e 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1173,6 +1173,8 @@ void snd_soc_util_exit(void);
+ 
+ int snd_soc_of_parse_card_name(struct snd_soc_card *card,
+ 			       const char *propname);
++int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
++					  const char *propname);
+ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+ 				   const char *propname);
+ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index fe1df50..73fdf18 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -4417,6 +4417,93 @@ int snd_soc_of_parse_card_name(struct snd_soc_card *card,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_of_parse_card_name);
+ 
++static const struct snd_soc_dapm_widget simple_widgets[] = {
++	SND_SOC_DAPM_MIC("Mic", NULL),
++	SND_SOC_DAPM_LINE("Line", NULL),
++	SND_SOC_DAPM_HP("Hp", NULL),
++	SND_SOC_DAPM_SPK("Spk", NULL),
++};
++
++int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
++					  const char *propname)
++{
++	struct device_node *np = card->dev->of_node;
++	struct snd_soc_dapm_widget *widgets;
++	const char *template, *wname;
++	int i, j, num_widgets, ret;
++
++	num_widgets = of_property_count_strings(np, propname);
++	if (num_widgets < 0) {
++		dev_err(card->dev,
++			"ASoC: Property '%s' does not exist\n",	propname);
++		return -EINVAL;
++	}
++	if (num_widgets & 1) {
++		dev_err(card->dev,
++			"ASoC: Property '%s' length is not even\n", propname);
++		return -EINVAL;
++	}
++
++	num_widgets /= 2;
++	if (!num_widgets) {
++		dev_err(card->dev, "ASoC: Property '%s's length is zero\n",
++			propname);
++		return -EINVAL;
++	}
++
++	widgets = devm_kcalloc(card->dev, num_widgets, sizeof(*widgets),
++			       GFP_KERNEL);
++	if (!widgets) {
++		dev_err(card->dev,
++			"ASoC: Could not allocate memory for widgets\n");
++		return -ENOMEM;
++	}
++
++	for (i = 0; i < num_widgets; i++) {
++		ret = of_property_read_string_index(np, propname,
++			2 * i, &template);
++		if (ret) {
++			dev_err(card->dev,
++				"ASoC: Property '%s' index %d read error:%d\n",
++				propname, 2 * i, ret);
++			return -EINVAL;
++		}
++
++		for (j = 0; j < ARRAY_SIZE(simple_widgets); j++) {
++			if (!strncmp(template, simple_widgets[j].name,
++				     strlen(simple_widgets[j].name))) {
++				widgets[i] = simple_widgets[j];
++				break;
++			}
++		}
++
++		if (j >= ARRAY_SIZE(simple_widgets)) {
++			dev_err(card->dev,
++				"ASoC: DAPM widget '%s' is not supported\n",
++				template);
++			return -EINVAL;
++		}
++
++		ret = of_property_read_string_index(np, propname,
++						    (2 * i) + 1,
++						    &wname);
++		if (ret) {
++			dev_err(card->dev,
++				"ASoC: Property '%s' index %d read error:%d\n",
++				propname, (2 * i) + 1, ret);
++			return -EINVAL;
++		}
++
++		widgets[i].name = wname;
++	}
++
++	card->dapm_widgets = widgets;
++	card->num_dapm_widgets = num_widgets;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_simple_widgets);
++
+ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+ 				   const char *propname)
+ {
+-- 
+1.8.4
