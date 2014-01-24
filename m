@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: Samsung: Add NULL check in i2s.c
-Date: Fri, 24 Jan 2014 13:18:22 +0000
-Message-ID: <20140124131822.GA11727@sirena.org.uk>
+Subject: Re: [PATCH 2/3] ASoC: Samsung: Remove dma.h inclusion
+Date: Fri, 24 Jan 2014 13:18:32 +0000
+Message-ID: <20140124131832.GB11727@sirena.org.uk>
 References: <1390560804-31135-1-git-send-email-sachin.kamat@linaro.org>
+ <1390560804-31135-2-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3066574086138169589=="
+Content-Type: multipart/mixed; boundary="===============3480701342139309551=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C3B42616F4
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 14:18:27 +0100 (CET)
-In-Reply-To: <1390560804-31135-1-git-send-email-sachin.kamat@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E612265467
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 14:18:37 +0100 (CET)
+In-Reply-To: <1390560804-31135-2-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,52 +26,50 @@ Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, patch
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3066574086138169589==
+--===============3480701342139309551==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mPYgjWmOFizS0g23"
+	protocol="application/pgp-signature"; boundary="LMmSgwdUwKH/sMG1"
 Content-Disposition: inline
 
 
---mPYgjWmOFizS0g23
+--LMmSgwdUwKH/sMG1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jan 24, 2014 at 04:23:22PM +0530, Sachin Kamat wrote:
-> 'res' could be NULL from one of the operations above (line 1243). Thus
-> check 'res' for NULL before releasing the region to avoid null pointer
-> dereference.
+On Fri, Jan 24, 2014 at 04:23:23PM +0530, Sachin Kamat wrote:
+> mach/dma.h is not referenced by this file. Remove it.
 
 Applied, thanks.
 
---mPYgjWmOFizS0g23
+--LMmSgwdUwKH/sMG1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS4mgbAAoJELSic+t+oim9DMsP/3xft861xMxVGQ9jU7V0Yj8U
-ZwS9gTkq8ETv9WC7DTQHscvkv4MK7tCECe8yuJhaPGndfTGNE3WELlE5Nblkfqs9
-nOrJxjW8tmTU3Q14YmxUw2N+Ka99Oq76K0v/uGbb2Hy/XRWABYRobo+o/cer2GZe
-l2rPwVbjMf7vKQ3PeiZGmdWAcRj8MhYE3ZIh++wixyxuUY4lcRUFHDGzGYXnh8+v
-P4KXaFcGsqNGBSgpuiYbsl+h8dsWQyEEZnfkHP9j7SwEQXu5vCWm0GCGdIW658t4
-Mv7pS0qR6ZtiGLkAu+WFMYgkP7ph0HFU4RupjL6UxAxXXy7Ttfa5S1bTlombBLAC
-f/ZMf0t2fEColDGw0+39F0i4uoe4//pm+dDRTYLp40L6RmTENZ43Sco7DLVxTOI2
-0Oq4gcAwvhzkSmLb8FdvT/e0H1KRTsfpAU4yMDFoUvv5FwIwNHIOUfMPMah6KlDY
-E0NR9Htiili9jAYD5HOpOsclSZMW+Biu1QSYV5p1ePR1ir4WSVXTrcVf2ttJNPu+
-dh7jg+QXxd8Lbc04CJcMC3TAyNQs/v2zGoy2JMgCouArzx6skn3ombFBQ37kxl0p
-txg2QTdsIwrYcKZGzlYstGmUKHmdXPO2//tjRC9yhsGlthSGaE3tEWnOrzIfXZiu
-dgIMmCfFfUHWzPD0+TAu
-=J4AJ
+iQIcBAEBAgAGBQJS4mglAAoJELSic+t+oim9wn4QAJDSyYZ6cKCG4px9K5QEMYir
+ttPvO6O2PUU7X8EW6zuz8j5oyGtySGNXdSNDESbePWw1Vovu5O3PuepnxkamyNyG
+rLmCB+I1cwCfu7joqPTa3XWh/eKrEQRKQi0AnY3kRxJsETOpqLAbFKYVHpYvTGgu
+Rd/E8QglJhSgabVuIJgS7cVSj2iLQnj6DXpXQxNkN8VW5lgMZBaXXuFloljpDR0e
+ElFnXxy7gEZCaiWLXGqhuF5AQvQbNGj49jHr468R0voBOENB3u6/sEo17kyfrjKf
+7O4ihmviv06KeKSOqH8FksJ8VHYLXtZgIycms82Si6Z33RP4EWQpyvH4R+XT2FQa
+WsKYZzmLE0aadWq0nBBSLTgsX/QSymKTD0i8WoZDpixylYMy5kGXZMRcpYryoigg
+p8w2dEVRbO+4RUVplnM9AJ8HHkX8+uPJPxHT2QCHRaxk2J6SwGu1YDMJE5OV89oQ
+6LzYqAe1iR8aKU9gopo16RkTMhyxH9Jr1HBE0rye51gkaAJKXavdK5wNNae1I2CA
+wKz/dWz90D9zjjxm5Rm2Oq/YgtiDgAg4plustUE9A7ORIzwsNksB/p7GjkmRtkR3
+vX5F3R/+KiQvCBbU9aVXPhvrh23t68Z/sqLzDQX+SfOm6eSWMbgiRm7mfyMlylb8
+IgVDB0CLXD9T28XYiK0L
+=J/dJ
 -----END PGP SIGNATURE-----
 
---mPYgjWmOFizS0g23--
+--LMmSgwdUwKH/sMG1--
 
---===============3066574086138169589==
+--===============3480701342139309551==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3066574086138169589==--
+--===============3480701342139309551==--
