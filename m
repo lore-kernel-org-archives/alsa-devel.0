@@ -1,73 +1,68 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH v2 7/7] ASoC: binding: for new properties documenting and usage
-Date: Fri, 24 Jan 2014 15:43:06 +0800
-Message-ID: <1390549386-4702-8-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCH v2 3/7] ASoC: simple-card: Add snd_card's name
+	parsing from DT node support
+Date: Fri, 24 Jan 2014 15:43:02 +0800
+Message-ID: <1390549386-4702-4-git-send-email-Li.Xiubo@freescale.com>
 References: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe004.messaging.microsoft.com [213.199.154.207])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58F992616FA
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 09:44:15 +0100 (CET)
 In-Reply-To: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
-Cc: rob@landley.net, perex@perex.cz, moinejf@free.fr, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
+Cc: moinejf@free.fr, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>, rob@landley.net
 List-Id: alsa-devel@alsa-project.org
 
-This add the following three new properties documenting and usage
-for simple card:
+If the DT is used and the CPU DAI device has only one DAI, the card
+name will be like :
 
-	"simple-audio-card,name",
-	"simple-audio-card,widgets",
-	"simple-audio-card,tdm-slot".
+ALSA device list:
+0: 40031000.sai-sgtl5000
+
+And this name maybe a little ugly to some customers, so here the
+card name parsing from DT node is supported.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- Documentation/devicetree/bindings/sound/simple-card.txt | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ sound/soc/generic/simple-card.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index 19c84df..dea1229 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -8,13 +8,19 @@ Required properties:
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 65833fe..0890fcd 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -143,6 +143,9 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	char *name;
+ 	int ret;
  
- Optional properties:
- 
-+- simple-audio-card,name		: User specified audio sound card name, one string
-+					  property.
- - simple-audio-card,format		: CPU/CODEC common audio format.
- 					  "i2s", "right_j", "left_j" , "dsp_a"
- 					  "dsp_b", "ac97", "pdm", "msb", "lsb"
-+- simple-audio-card,widgets		: A list of the off-CODEC widgets, each entry is a pair
-+					  of strings, the first being the template widget name,
-+					  the second being the user specified widget name.
- - simple-audio-card,routing		: A list of the connections between audio components.
- 					  Each entry is a pair of strings, the first being the
- 					  connection's sink, the second being the connection's
- 					  source.
-+- simple-audio-card,tdm-slot		: The configuration of TDM operation for CPU/CODEC DAI.
- 
- Required subnodes:
- 
-@@ -42,11 +48,18 @@ Example:
- 
- sound {
- 	compatible = "simple-audio-card";
-+	simple-audio-card,name = "VF610-Tower-Sound-Card";
- 	simple-audio-card,format = "left_j";
-+	simple-audio-card,widgets =
-+		"Mic", "Microphone Jack",
-+		"Hp", "Headphone Jack",
-+		"Spk", "External Speaker";
- 	simple-audio-card,routing =
--		"MIC_IN", "Mic Jack",
-+		"MIC_IN", "Microphone Jack",
- 		"Headphone Jack", "HP_OUT",
--		"Ext Spk", "LINE_OUT";
-+		"External Speaker", "LINE_OUT";
++	/* parsing the card name from DT */
++	snd_soc_of_parse_card_name(&priv->snd_card, "simple-audio-card,name");
 +
-+	simple-audio-card,tdm-slot = <0xffffffc 0xffffffc 2 0>;
+ 	/* get CPU/CODEC common format via simple-audio-card,format */
+ 	priv->daifmt = snd_soc_of_parse_daifmt(node, "simple-audio-card,") &
+ 		(SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_INV_MASK);
+@@ -187,7 +190,8 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 			    GFP_KERNEL);
+ 	sprintf(name, "%s-%s", dai_link->cpu_dai_name,
+ 				dai_link->codec_dai_name);
+-	priv->snd_card.name = name;
++	if (!priv->snd_card.name)
++		priv->snd_card.name = name;
+ 	dai_link->name = dai_link->stream_name = name;
  
- 	simple-audio-card,cpu {
- 		sound-dai = <&sh_fsi2 0>;
+ 	/* simple-card assumes platform == cpu */
 -- 
 1.8.4
