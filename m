@@ -1,56 +1,40 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 2/2] ASoC: Samsung: Fix build error due to
-	missing dependency
-Date: Fri, 24 Jan 2014 14:09:25 +0530
-Message-ID: <1390552765-32210-2-git-send-email-sachin.kamat@linaro.org>
-References: <1390552765-32210-1-git-send-email-sachin.kamat@linaro.org>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH v2 6/7] ASoC: simple-card: add off-codec widgets supports.
+Date: Fri, 24 Jan 2014 15:43:05 +0800
+Message-ID: <1390549386-4702-7-git-send-email-Li.Xiubo@freescale.com>
+References: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f53.google.com (mail-pb0-f53.google.com
- [209.85.160.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 00CC6261687
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 09:44:07 +0100 (CET)
-Received: by mail-pb0-f53.google.com with SMTP id md12so2979512pbc.40
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 00:44:07 -0800 (PST)
-In-Reply-To: <1390552765-32210-1-git-send-email-sachin.kamat@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: patches@linaro.org, sbkim73@samsung.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sachin.kamat@linaro.org, broonie@kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
+Cc: rob@landley.net, perex@perex.cz, moinejf@free.fr, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Depend on MFD_ARIZONA to avoid the following build errors:
-
-sound/soc/codecs/arizona.c:218: undefined reference to `arizona_request_irq'
-sound/soc/codecs/arizona.c:226: undefined reference to `arizona_request_irq'
-sound/soc/codecs/arizona.c:1719: undefined reference to `arizona_request_irq'
-
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/samsung/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/generic/simple-card.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index e8fbf4e5732f..454f41cfc828 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -210,7 +210,7 @@ config SND_SOC_TOBERMORY
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 3177aa8..ec2a65d 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -202,6 +202,14 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	priv->daifmt = snd_soc_of_parse_daifmt(node, "simple-audio-card,") &
+ 		(SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_INV_MASK);
  
- config SND_SOC_BELLS
- 	tristate "Audio support for Wolfson Bells"
--	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
-+	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && MFD_ARIZONA
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM5102
- 	select SND_SOC_WM5110
++	/* off-codec widgets */
++	if (of_property_read_bool(node, "simple-audio-card,widgets")) {
++		ret = snd_soc_of_parse_audio_simple_widgets(&priv->snd_card,
++					"simple-audio-card,widgets");
++		if (ret)
++			return ret;
++	}
++
+ 	/* DAPM routes */
+ 	if (of_property_read_bool(node, "simple-audio-card,routing")) {
+ 		ret = snd_soc_of_parse_audio_routing(&priv->snd_card,
 -- 
-1.7.9.5
+1.8.4
