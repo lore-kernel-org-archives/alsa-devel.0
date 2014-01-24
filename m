@@ -1,175 +1,174 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [alsa-devel] [PATCH RFC v2 REPOST 3/8] ASoC: davinci-evm: HDMI
-	audio support for TDA998x trough McASP I2S bus
-Date: Fri, 24 Jan 2014 17:54:31 +0100
-Message-ID: <20140124175431.47a82d57@armhf>
-References: <cover.1387535299.git.jsarha@ti.com>
-	<d3c3f645d39338df0ee9686cb030255ce36a249d.1387535302.git.jsarha@ti.com>
-	<20131231132555.GA31886@sirena.org.uk> <52D67099.1040904@ti.com>
-	<20140115165100.3bfab96f@armhf> <52DF8D60.9020505@ti.com>
-	<20140122111953.238349a5@armhf> <20140122114647.20f75d0d@armhf>
-	<52E26325.4040203@ti.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: Check clocking during hw_params
+	rather than startup
+Date: Fri, 24 Jan 2014 16:59:13 +0000
+Message-ID: <1390582753-1026-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <52E26325.4040203@ti.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces@lists.freedesktop.org
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 406AC265372
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2014 18:07:29 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyNCBKYW4gMjAxNCAxNDo1NzowOSArMDIwMApKeXJpIFNhcmhhIDxqc2FyaGFAdGku
-Y29tPiB3cm90ZToKCj4gQ291bGQgeW91IGdpdmUgbWUgYSBsaW5rIHRvIGEgZ2l0IHJlcG8gd2l0
-aCB5b3VyIHRkYTk5OHggY29kZWMgY29kZSBzbyBJIAo+IGNvdWxkIHByZXBhcmUgdG8gdXNlIHRo
-YXQgdG9vPwoKSSBoYXZlIG5vIGdpdCByZXBvLiBJbnN0ZWFkLCBoZXJlIGlzIHRoZSBzb3VyY2Uu
-CgpJdCBnb2VzIGludG8gc291bmQvc29jL2NvZGVjcyBhbmQgaXMgc2VsZWN0ZWQgd2l0aCBDT05G
-SUdfT0YgYW5kCkNPTkZJR19EUk1fSTJDX05YUF9UREE5OThYLgoKSXQgbmVlZHMgMiBleHBvcnRl
-ZCBmdW5jdGlvbnMgb2YgdGhlIHRkYTk5OHggZHJpdmVyOiB0aGUgZmlyc3Qgb25lIHRvCnNlbGVj
-dCB0aGUgYXVkaW8gcG9ydCAodGRhOTk4eF9hdWRpb191cGRhdGUpICBhbmQgdGhlIG90aGVyIG9u
-ZSB0byBnZXQKdGhlIEVMRCAodGRhOTk4eF9hdWRpb19nZXRfZWxkKS4KCkZvciB0aGVzZSBmdW5j
-dGlvbnMgdG8gcmVjZWl2ZSB0aGUgY29ycmVjdCBpMmNfY2xpZW50LCB0aGUgY29kZWMKc2VhcmNo
-ZXMgdGhlIHRkYTk5OHggZHJpdmVyIGluIHRoZSBEVCBieSBpdHMgY29tcGF0aWJsZSAibnhwLHRk
-YTk5OHgiLgpJZiB0aGUgdGRhOTk4eCBpcyBsb2FkZWQgYnkgZHJtX2kyY19lbmNvZGVyX2luaXQo
-KSwgaXQgc2hvdWxkIG5vdCBiZQpkZWNsYXJlZCBpbiB0aGUgRFQsIHNvLCB0aGlzIHJhaXNlcyBh
-IHByb2JsZW0uIEkgZG9uJ3Qga25vdyB3aGF0IG11c3QKYmUgZG9uZSBpbiB0aGlzIGNhc2UuCgpU
-aGUgY29kZWMgaXMgdXNlZCB3aXRoIHRoZSBzaW1wbGUgY2FyZCBhcyB0aGUgc291bmQgY2FyZC4g
-Rm9yIHlvdSwgdGhlCkRUIGNvdWxkIGJlOgoKCWhkbWlfY29kZWM6IGhkbWktY29kZWMgewoJCWNv
-bXBhdGlibGUgPSAibnhwLHRkYTk5OHgtY29kZWMiOwoJCSNzb3VuZC1kYWktY2VsbHMgPSA8MT47
-CgkJYXVkaW8tcG9ydHMgPSA8MHgwMz4sIDwweDA0PjsJLyogaTJzIC0gcy9wZGlmICovCgl9OwoK
-CXNvdW5kIHsKCQljb21wYXRpYmxlID0gInNpbXBsZS1hdWRpby1jYXJkIjsKCQlzaW1wbGUtYXVk
-aW8tY2FyZCxjcHUgewoJCQlzb3VuZC1kYWkgPSA8JmF1ZGlvMSAxPjsKCQkJZm9ybWF0ID0gImky
-cyI7CgkJfTsKCQlzaW1wbGUtYXVkaW8tY2FyZCxjb2RlYyB7CgkJCXNvdW5kLWRhaSA9IDwmaGRt
-aV9jb2RlYyAwPjsJLyogaTJzICovCgkJfTsKCX07CgooJ2F1ZGlvMScgaXMgdGhlIGF1ZGlvIGNv
-bnRyb2xsZXIpCgotLS0tLS0tLS0tLS0tLS0tLS0tODwtLS0tLS0tLS0tLS0tLS0tIHNvdXJjZSBz
-b3VuZC9zb2MvY29kZWNzL3RkYTk5OHguYwovKgogKiBBTFNBIFNvQyBUREE5OThYIGRyaXZlcgog
-KgogKiBUaGlzIGRyaXZlciBpcyB1c2VkIGJ5IHRoZSBOWFAgVERBOTk4eCBIRE1JIHRyYW5zbWl0
-dGVyLgogKgogKiBDb3B5cmlnaHQgKEMpIDIwMTQgSmVhbi1GcmFuY29pcyBNb2luZQogKgogKiBU
-aGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5k
-L29yIG1vZGlmeQogKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1Ymxp
-YyBMaWNlbnNlIHZlcnNpb24gMiBhcwogKiBwdWJsaXNoZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUg
-Rm91bmRhdGlvbi4KICovCgojaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+CiNpbmNsdWRlIDxzb3Vu
-ZC9zb2MuaD4KI2luY2x1ZGUgPHNvdW5kL3BjbS5oPgojaW5jbHVkZSA8bGludXgvb2YuaD4KI2lu
-Y2x1ZGUgPGxpbnV4L2kyYy5oPgojaW5jbHVkZSA8ZHJtL2RybV9lbmNvZGVyX3NsYXZlLmg+CiNp
-bmNsdWRlIDxkcm0vaTJjL3RkYTk5OHguaD4KCiNkZWZpbmUgVERBOTk4WF9GT1JNQVRTCShTTkRS
-Vl9QQ01fRk1UQklUX1MxNl9MRSB8IFwKCQkJU05EUlZfUENNX0ZNVEJJVF9TMjBfM0xFIHwgXAoJ
-CQlTTkRSVl9QQ01fRk1UQklUX1MyNF9MRSB8IFwKCQkJU05EUlZfUENNX0ZNVEJJVF9TMzJfTEUp
-CgpzdHJ1Y3QgdGRhX3ByaXYgewoJc3RydWN0IGkyY19jbGllbnQgKmkyY19jbGllbnQ7CglzdHJ1
-Y3Qgc25kX3NvY19jb2RlYyAqY29kZWM7Cgl1MzIgcG9ydHNbMl07CglpbnQgZGFpX2lkOwoJdTgg
-KmVsZDsKfTsKCnN0YXRpYyB2b2lkIHRkYV9nZXRfZW5jb2RlcihzdHJ1Y3QgdGRhX3ByaXYgKnBy
-aXYpCnsKCXN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYyA9IHByaXYtPmNvZGVjOwoJc3RydWN0
-IGRldmljZV9ub2RlICpucDsKCXN0cnVjdCBpMmNfY2xpZW50ICppMmNfY2xpZW50OwoJc3RhdGlj
-IGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgdGRhX2R0W10gPSB7CgkJeyAuY29tcGF0aWJsZSA9
-ICJueHAsdGRhOTk4eCIgfSwKCQl7IH0sCgl9OwoKCS8qIHNlYXJjaCB0aGUgdGRhOTk4eCBkZXZp
-Y2UgKG9ubHkgb25lISkgKi8KCW5wID0gb2ZfZmluZF9tYXRjaGluZ19ub2RlX2FuZF9tYXRjaChO
-VUxMLCB0ZGFfZHQsIE5VTEwpOwoJaWYgKCFucCB8fCAhb2ZfZGV2aWNlX2lzX2F2YWlsYWJsZShu
-cCkpIHsKCQlkZXZfZXJyKGNvZGVjLT5kZXYsICJObyB0ZGE5OTh4IGluIERUXG4iKTsKCQlyZXR1
-cm47Cgl9CglpMmNfY2xpZW50ID0gb2ZfZmluZF9pMmNfZGV2aWNlX2J5X25vZGUobnApOwoJb2Zf
-bm9kZV9wdXQobnApOwoJaWYgKCFpMmNfY2xpZW50KSB7CgkJZGV2X2Vycihjb2RlYy0+ZGV2LCAi
-bm8gdGRhOTk4eCBpMmMgY2xpZW50XG4iKTsKCQlyZXR1cm47Cgl9CglpZiAoIWkyY19nZXRfY2xp
-ZW50ZGF0YShpMmNfY2xpZW50KSkgewoJCWRldl9lcnIoY29kZWMtPmRldiwgInRkYTk5OHggbm90
-IGluaXRpYWxpemVkXG4iKTsKCQlyZXR1cm47Cgl9CgoJcHJpdi0+aTJjX2NsaWVudCA9IGkyY19j
-bGllbnQ7Cn0KCnN0YXRpYyBpbnQgdGRhX3N0YXJ0X3N0b3Aoc3RydWN0IHRkYV9wcml2ICpwcml2
-LAoJCQlpbnQgc3RhcnQpCnsKCWludCBmb3JtYXQ7Cgl1MzIgcG9ydDsKCglpZiAoIXByaXYtPmky
-Y19jbGllbnQpIHsKCQl0ZGFfZ2V0X2VuY29kZXIocHJpdik7CgkJaWYgKCFwcml2LT5pMmNfY2xp
-ZW50KQoJCQlyZXR1cm4gLUVJTlZBTDsKCX0KCgkvKiBnaXZlIHRoZSBhdWRpbyBpbnB1dCB0eXBl
-IGFuZCBwb3J0cyB0byB0aGUgSERNSSBlbmNvZGVyICovCglmb3JtYXQgPSBzdGFydCA/IHByaXYt
-PmRhaV9pZCA6IDA7Cglzd2l0Y2ggKGZvcm1hdCkgewoJY2FzZSBBRk1UX0kyUzoKCQlwb3J0ID0g
-cHJpdi0+cG9ydHNbMF07CgkJYnJlYWs7CglkZWZhdWx0OgoJY2FzZSBBRk1UX1NQRElGOgoJCXBv
-cnQgPSBwcml2LT5wb3J0c1sxXTsKCQlicmVhazsKCX0KCXRkYTk5OHhfYXVkaW9fdXBkYXRlKHBy
-aXYtPmkyY19jbGllbnQsIGZvcm1hdCwgcG9ydCk7CglyZXR1cm4gMDsKfQoKc3RhdGljIGludCB0
-ZGFfc3RhcnR1cChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKCQkJc3RydWN0
-IHNuZF9zb2NfZGFpICpkYWkpCnsKCXN0cnVjdCB0ZGFfcHJpdiAqcHJpdiA9IHNuZF9zb2NfY29k
-ZWNfZ2V0X2RydmRhdGEoZGFpLT5jb2RlYyk7Cgl1OCAqZWxkID0gTlVMTDsKCXN0YXRpYyB1bnNp
-Z25lZCByYXRlc19tYXNrW10gPSB7CgkJU05EUlZfUENNX1JBVEVfMzIwMDAsCgkJU05EUlZfUENN
-X1JBVEVfNDQxMDAsCgkJU05EUlZfUENNX1JBVEVfNDgwMDAsCgkJU05EUlZfUENNX1JBVEVfODgy
-MDAsCgkJU05EUlZfUENNX1JBVEVfOTYwMDAsCgkJU05EUlZfUENNX1JBVEVfMTc2NDAwLAoJCVNO
-RFJWX1BDTV9SQVRFXzE5MjAwMCwKCX07CgoJLyogbWVtb3JpemUgdGhlIHVzZWQgREFJICovCglw
-cml2LT5kYWlfaWQgPSBkYWktPmlkOwoKCS8qIGdldCB0aGUgRUxEIGZyb20gdGhlIHRkYTk5OHgg
-ZHJpdmVyICovCglpZiAoIXByaXYtPmkyY19jbGllbnQpCgkJdGRhX2dldF9lbmNvZGVyKHByaXYp
-OwoJaWYgKHByaXYtPmkyY19jbGllbnQpCgkJZWxkID0gdGRhOTk4eF9hdWRpb19nZXRfZWxkKHBy
-aXYtPmkyY19jbGllbnQpOwoKCS8qIGxpbWl0IHRoZSBodyBwYXJhbXMgZnJvbSB0aGUgRUxEIChF
-RElEKSAqLwoJaWYgKGVsZCkgewoJCXN0cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIgKmRhaV9kcnYg
-PSBkYWktPmRyaXZlcjsKCQlzdHJ1Y3Qgc25kX3NvY19wY21fc3RyZWFtICpzdHJlYW0gPSAmZGFp
-X2Rydi0+cGxheWJhY2s7CgkJdTggKnNhZDsKCQlpbnQgc2FkX2NvdW50OwoJCXVuc2lnbmVkIGVs
-ZF92ZXIsIG1ubCwgcmF0ZXMsIHJhdGVfbWFzaywgaTsKCQl1bnNpZ25lZCBtYXhfY2hhbm5lbHM7
-CgoJCWVsZF92ZXIgPSBlbGRbMF0gPj4gMzsKCQlpZiAoZWxkX3ZlciAhPSAyICYmIGVsZF92ZXIg
-IT0gMzEpCgkJCXJldHVybiAwOwoKCQltbmwgPSBlbGRbNF0gJiAweDFmOwoJCWlmIChtbmwgPiAx
-NikKCQkJcmV0dXJuIDA7CgoJCXNhZF9jb3VudCA9IGVsZFs1XSA+PiA0OwoJCXNhZCA9IGVsZCAr
-IDIwICsgbW5sOwoKCQkvKiBTdGFydCBmcm9tIHRoZSBiYXNpYyBhdWRpbyBzZXR0aW5ncyAqLwoJ
-CW1heF9jaGFubmVscyA9IDI7CgkJcmF0ZXMgPSAwOwoJCXdoaWxlIChzYWRfY291bnQtLSkgewoJ
-CQlzd2l0Y2ggKHNhZFswXSAmIDB4NzgpIHsKCQkJY2FzZSAweDA4OiAvKiBQQ00gKi8KCQkJCW1h
-eF9jaGFubmVscyA9IG1heChtYXhfY2hhbm5lbHMsIChzYWRbMF0gJiA3KSArIDF1KTsKCQkJCXJh
-dGVzIHw9IHNhZFsxXTsKCQkJCWJyZWFrOwoJCQl9CgkJCXNhZCArPSAzOwoJCX0KCgkJZm9yIChy
-YXRlX21hc2sgPSBpID0gMDsgaSA8IEFSUkFZX1NJWkUocmF0ZXNfbWFzayk7IGkrKykKCQkJaWYg
-KHJhdGVzICYgMSA8PCBpKQoJCQkJcmF0ZV9tYXNrIHw9IHJhdGVzX21hc2tbaV07CgoJCS8qIGNo
-YW5nZSB0aGUgc25kX3NvY19wY21fc3RyZWFtIHZhbHVlcyBvZiB0aGUgZHJpdmVyICovCgkJc3Ry
-ZWFtLT5yYXRlcyA9IHJhdGVfbWFzazsKCQlzdHJlYW0tPmNoYW5uZWxzX21heCA9IG1heF9jaGFu
-bmVsczsKCX0KCgkvKiBzdGFydCB0aGUgVERBOTk4eCBhdWRpbyAqLwoJcmV0dXJuIHRkYV9zdGFy
-dF9zdG9wKHByaXYsIDEpOwp9CgpzdGF0aWMgdm9pZCB0ZGFfc2h1dGRvd24oc3RydWN0IHNuZF9w
-Y21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCgkJCXN0cnVjdCBzbmRfc29jX2RhaSAqZGFpKQp7Cglz
-dHJ1Y3QgdGRhX3ByaXYgKnByaXYgPSBzbmRfc29jX2NvZGVjX2dldF9kcnZkYXRhKGRhaS0+Y29k
-ZWMpOwoKCXByaXYtPmRhaV9pZCA9IDA7Cgl0ZGFfc3RhcnRfc3RvcChwcml2LCAwKTsKfQoKc3Rh
-dGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhaV9vcHMgdGRhX29wcyA9IHsKCS5zdGFydHVwID0g
-dGRhX3N0YXJ0dXAsCgkuc2h1dGRvd24gPSB0ZGFfc2h1dGRvd24sCn07CgpzdGF0aWMgY29uc3Qg
-c3RydWN0IHNuZF9zb2NfZGFpX2RyaXZlciB0ZGE5OTh4X2RhaVtdID0gewogICAgewoJLm5hbWUg
-PSAiaTJzLWhpZmkiLAoJLmlkID0gQUZNVF9JMlMsCgkucGxheWJhY2sgPSB7CgkJLnN0cmVhbV9u
-YW1lCT0gIkhETUkgSTJTIFBsYXliYWNrIiwKCQkuY2hhbm5lbHNfbWluCT0gMSwKCQkuY2hhbm5l
-bHNfbWF4CT0gOCwKCQkucmF0ZXMJCT0gU05EUlZfUENNX1JBVEVfQ09OVElOVU9VUywKCQkucmF0
-ZV9taW4JPSA1NTEyLAoJCS5yYXRlX21heAk9IDE5MjAwMCwKCQkuZm9ybWF0cwk9IFREQTk5OFhf
-Rk9STUFUUywKCgl9LAoJLm9wcyA9ICZ0ZGFfb3BzLAogICAgfSwKICAgIHsKCS5uYW1lID0gInNw
-ZGlmLWhpZmkiLAoJLmlkID0gQUZNVF9TUERJRiwKCS5wbGF5YmFjayA9IHsKCQkuc3RyZWFtX25h
-bWUJPSAiSERNSSBTUERJRiBQbGF5YmFjayIsCgkJLmNoYW5uZWxzX21pbgk9IDEsCgkJLmNoYW5u
-ZWxzX21heAk9IDIsCgkJLnJhdGVzCQk9IFNORFJWX1BDTV9SQVRFX0NPTlRJTlVPVVMsCgkJLnJh
-dGVfbWluCT0gMjIwNTAsCgkJLnJhdGVfbWF4CT0gMTkyMDAwLAoJCS5mb3JtYXRzCT0gVERBOTk4
-WF9GT1JNQVRTLAoJfSwKCS5vcHMgPSAmdGRhX29wcywKICAgIH0sCn07CgpzdGF0aWMgY29uc3Qg
-c3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQgdGRhX3dpZGdldHNbXSA9IHsKCVNORF9TT0NfREFQ
-TV9PVVRQVVQoImhkbWktb3V0IiksCn07CnN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBt
-X3JvdXRlIHRkYV9yb3V0ZXNbXSA9IHsKCXsgImhkbWktb3V0IiwgTlVMTCwgIkhETUkgSTJTIFBs
-YXliYWNrIiB9LAoJeyAiaGRtaS1vdXQiLCBOVUxMLCAiSERNSSBTUERJRiBQbGF5YmFjayIgfSwK
-fTsKCnN0YXRpYyBpbnQgdGRhX3Byb2JlKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykKewoJ
-c3RydWN0IHRkYV9wcml2ICpwcml2OwoJc3RydWN0IGRldmljZV9ub2RlICpucDsKCWludCBpLCBy
-ZXQ7CgoJcHJpdiA9IGRldm1fa3phbGxvYyhjb2RlYy0+ZGV2LCBzaXplb2YoKnByaXYpLCBHRlBf
-S0VSTkVMKTsKCWlmICghcHJpdikKCQlyZXR1cm4gLUVOT01FTTsKCXNuZF9zb2NfY29kZWNfc2V0
-X2RydmRhdGEoY29kZWMsIHByaXYpOwoJcHJpdi0+Y29kZWMgPSBjb2RlYzsKCgkvKiBnZXQgdGhl
-IGF1ZGlvIGlucHV0IHBvcnRzIChJMnMgYW5kIFMvUERJRikgKi8KCW5wID0gY29kZWMtPmRldi0+
-b2Zfbm9kZTsKCWZvciAoaSA9IDA7IGkgPCAyOyBpKyspIHsKCQlyZXQgPSBvZl9wcm9wZXJ0eV9y
-ZWFkX3UzMl9pbmRleChucCwgImF1ZGlvLXBvcnRzIiwgaSwKCQkJCQkJJnByaXYtPnBvcnRzW2ld
-KTsKCQlpZiAocmV0KSB7CgkJCWlmIChpID09IDApCgkJCQlkZXZfZXJyKGNvZGVjLT5kZXYsCgkJ
-CQkJImJhZCBvciBtaXNzaW5nIGF1ZGlvLXBvcnRzXG4iKTsKCQkJYnJlYWs7CgkJfQoJfQoKCXJl
-dHVybiAwOwp9CgpzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfY29kZWNfZHJpdmVyIHNvY19j
-b2RlY190ZGE5OTh4ID0gewoJLnByb2JlID0gdGRhX3Byb2JlLAoJLmRhcG1fd2lkZ2V0cyA9IHRk
-YV93aWRnZXRzLAoJLm51bV9kYXBtX3dpZGdldHMgPSBBUlJBWV9TSVpFKHRkYV93aWRnZXRzKSwK
-CS5kYXBtX3JvdXRlcyA9IHRkYV9yb3V0ZXMsCgkubnVtX2RhcG1fcm91dGVzID0gQVJSQVlfU0la
-RSh0ZGFfcm91dGVzKSwKfTsKCnN0YXRpYyBpbnQgdGRhOTk4eF9kZXZfcHJvYmUoc3RydWN0IHBs
-YXRmb3JtX2RldmljZSAqcGRldikKewoJc3RydWN0IHNuZF9zb2NfZGFpX2RyaXZlciAqZGFpX2Ry
-djsKCgkvKiBjb3B5IHRoZSBEQUkgZHJpdmVyIHRvIGEgd3JpdGFibGUgYXJlYSAqLwoJZGFpX2Ry
-diA9IGRldm1fa3phbGxvYygmcGRldi0+ZGV2LCBzaXplb2YodGRhOTk4eF9kYWkpLCBHRlBfS0VS
-TkVMKTsKCWlmICghZGFpX2RydikKCQlyZXR1cm4gLUVOT01FTTsKCW1lbWNweShkYWlfZHJ2LCB0
-ZGE5OTh4X2RhaSwgc2l6ZW9mKHRkYTk5OHhfZGFpKSk7CgoJcmV0dXJuIHNuZF9zb2NfcmVnaXN0
-ZXJfY29kZWMoJnBkZXYtPmRldiwKCQkJCSZzb2NfY29kZWNfdGRhOTk4eCwKCQkJCWRhaV9kcnYs
-IEFSUkFZX1NJWkUodGRhOTk4eF9kYWkpKTsKfQoKc3RhdGljIGludCB0ZGE5OTh4X2Rldl9yZW1v
-dmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKewoJc25kX3NvY191bnJlZ2lzdGVyX2Nv
-ZGVjKCZwZGV2LT5kZXYpOwoJcmV0dXJuIDA7Cn0KCnN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2
-aWNlX2lkIHRkYTk5OHhfY29kZWNfaWRzW10gPSB7Cgl7IC5jb21wYXRpYmxlID0gIm54cCx0ZGE5
-OTh4LWNvZGVjIiwgfSwKCXsgfQp9OwpNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCB0ZGE5OTh4X2Nv
-ZGVjX2lkcyk7CgpzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciB0ZGE5OTh4X2RyaXZlciA9
-IHsKCS5wcm9iZQkJPSB0ZGE5OTh4X2Rldl9wcm9iZSwKCS5yZW1vdmUJCT0gdGRhOTk4eF9kZXZf
-cmVtb3ZlLAoJLmRyaXZlcgkJPSB7CgkJLm5hbWUJPSAidGRhOTk4eC1jb2RlYyIsCgkJLm93bmVy
-CT0gVEhJU19NT0RVTEUsCgkJLm9mX21hdGNoX3RhYmxlID0gdGRhOTk4eF9jb2RlY19pZHMsCgl9
-LAp9OwoKbW9kdWxlX3BsYXRmb3JtX2RyaXZlcih0ZGE5OTh4X2RyaXZlcik7CgpNT0RVTEVfQVVU
-SE9SKCJKZWFuLUZyYW5jb2lzIE1vaW5lIik7Ck1PRFVMRV9ERVNDUklQVElPTigiVERBOTk4eCBj
-b2RlYyBkcml2ZXIiKTsKTU9EVUxFX0xJQ0VOU0UoIkdQTCIpOwotLS0tLS0tLS0tLS0tLS0tLS0t
-ODwtLS0tLS0tLS0tLS0tLS0tCgotLSAKS2VuIGFyIGMnaGVudGHDsQl8CSAgICAgICoqIEJyZWl6
-aCBoYSBMaW51eCBhdGF2ISAqKgpKZWYJCXwJCWh0dHA6Ly9tb2luZWpmLmZyZWUuZnIvCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWls
-aW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+It is a fairly common usage to configure SYSCLK as part of the hw_params
+callback in the machine driver. The current driver applies PCM
+constraints based on the value of SYSCLK during the startup callback
+however because many systems will have not configured SYSCLK yet this
+will often use the SYSCLK value that was used for the last stream.
+
+The patch checks the clocking constraints as part of the hw_params
+callback, which will be after any clocking changes have been made by
+the machine driver.
+
+Change-Id: I48e16256e9ed4df2f4ef1350c356b8b331d288bf
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |   79 +++++++------------------------------------
+ 1 files changed, 13 insertions(+), 66 deletions(-)
+
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index e4295fe..ae5031b 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -990,29 +990,6 @@ static const int arizona_48k_bclk_rates[] = {
+ 	24576000,
+ };
+ 
+-static const unsigned int arizona_48k_rates[] = {
+-	12000,
+-	24000,
+-	48000,
+-	96000,
+-	192000,
+-	384000,
+-	768000,
+-	4000,
+-	8000,
+-	16000,
+-	32000,
+-	64000,
+-	128000,
+-	256000,
+-	512000,
+-};
+-
+-static const struct snd_pcm_hw_constraint_list arizona_48k_constraint = {
+-	.count	= ARRAY_SIZE(arizona_48k_rates),
+-	.list	= arizona_48k_rates,
+-};
+-
+ static const int arizona_44k1_bclk_rates[] = {
+ 	-1,
+ 	44100,
+@@ -1035,21 +1012,6 @@ static const int arizona_44k1_bclk_rates[] = {
+ 	22579200,
+ };
+ 
+-static const unsigned int arizona_44k1_rates[] = {
+-	11025,
+-	22050,
+-	44100,
+-	88200,
+-	176400,
+-	352800,
+-	705600,
+-};
+-
+-static const struct snd_pcm_hw_constraint_list arizona_44k1_constraint = {
+-	.count	= ARRAY_SIZE(arizona_44k1_rates),
+-	.list	= arizona_44k1_rates,
+-};
+-
+ static int arizona_sr_vals[] = {
+ 	0,
+ 	12000,
+@@ -1077,13 +1039,15 @@ static int arizona_sr_vals[] = {
+ 	512000,
+ };
+ 
+-static int arizona_startup(struct snd_pcm_substream *substream,
+-			   struct snd_soc_dai *dai)
++static int arizona_hw_params_rate(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *params,
++				  struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
+ 	struct arizona_dai_priv *dai_priv = &priv->dai[dai->id - 1];
+-	const struct snd_pcm_hw_constraint_list *constraint;
++	int base = dai->driver->base;
++	int i, sr_val;
+ 	unsigned int base_rate;
+ 
+ 	switch (dai_priv->clk) {
+@@ -1094,31 +1058,16 @@ static int arizona_startup(struct snd_pcm_substream *substream,
+ 		base_rate = priv->asyncclk;
+ 		break;
+ 	default:
+-		return 0;
++		arizona_aif_err(dai, "Unknown clock: %d\n", dai_priv->clk);
++		return -EINVAL;
+ 	}
+ 
+-	if (base_rate == 0)
+-		return 0;
+-
+-	if (base_rate % 8000)
+-		constraint = &arizona_44k1_constraint;
+-	else
+-		constraint = &arizona_48k_constraint;
+-
+-	return snd_pcm_hw_constraint_list(substream->runtime, 0,
+-					  SNDRV_PCM_HW_PARAM_RATE,
+-					  constraint);
+-}
+-
+-static int arizona_hw_params_rate(struct snd_pcm_substream *substream,
+-				  struct snd_pcm_hw_params *params,
+-				  struct snd_soc_dai *dai)
+-{
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
+-	struct arizona_dai_priv *dai_priv = &priv->dai[dai->id - 1];
+-	int base = dai->driver->base;
+-	int i, sr_val;
++	if (!!(base_rate % 8000) != !!(params_rate(params) % 8000)) {
++		arizona_aif_err(dai,
++				"Rate %dHz not supported off %dHz clock\n",
++				params_rate(params), base_rate);
++		return -EINVAL;
++	}
+ 
+ 	/*
+ 	 * We will need to be more flexible than this in future,
+@@ -1308,7 +1257,6 @@ static int arizona_set_tristate(struct snd_soc_dai *dai, int tristate)
+ }
+ 
+ const struct snd_soc_dai_ops arizona_dai_ops = {
+-	.startup = arizona_startup,
+ 	.set_fmt = arizona_set_fmt,
+ 	.hw_params = arizona_hw_params,
+ 	.set_sysclk = arizona_dai_set_sysclk,
+@@ -1317,7 +1265,6 @@ const struct snd_soc_dai_ops arizona_dai_ops = {
+ EXPORT_SYMBOL_GPL(arizona_dai_ops);
+ 
+ const struct snd_soc_dai_ops arizona_simple_dai_ops = {
+-	.startup = arizona_startup,
+ 	.hw_params = arizona_hw_params_rate,
+ 	.set_sysclk = arizona_dai_set_sysclk,
+ };
+-- 
+1.7.2.5
