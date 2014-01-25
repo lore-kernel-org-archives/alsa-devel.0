@@ -1,17 +1,17 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: Audio usb switch to alternate setting 0
-Date: Sat, 25 Jan 2014 00:21:39 +0100
-Message-ID: <52E2F583.9000609@zonque.org>
-References: <52DBD817.8050304@samsung.com> <52DCF98A.4080509@zonque.org>
- <52E16DF8.8000909@samsung.com>
+From: "Niraj Kulkarni" <kulkarniniraj@rediffmail.com>
+Subject: Re:
+	=?utf-8?q?=5BBug_1155202=5D__=5BIntel_DZ77SL-50K=2C_?=
+	=?utf-8?q?Intel_PantherPoint_HDMI=2C_Digital_Out=2C_HDMI=5D_No_sou?=
+	=?utf-8?q?nd_at_all?=
+Date: 25 Jan 2014 05:56:25 -0000
+Message-ID: <1390627477.S.24238.autosave.drafts.old.1390629385.4357@webmail.rediffmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id C4D752654B4
- for <alsa-devel@alsa-project.org>; Sat, 25 Jan 2014 00:21:40 +0100 (CET)
-In-Reply-To: <52E16DF8.8000909@samsung.com>
+Received: from rediffmail.com (f4mail-235-81.rediffmail.com [202.137.235.81])
+ by alsa0.perex.cz (Postfix) with SMTP id 7D7EF2654C0
+ for <alsa-devel@alsa-project.org>; Sat, 25 Jan 2014 06:56:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Konstantinos Georgantas <k.georgantas@samsung.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, "david.henningsson@canonical.com" <david.henningsson@canonical.com>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/23/2014 08:31 PM, Konstantinos Georgantas wrote:
-> On 01/20/2014 11:25 AM, Daniel Mack wrote:
->> On 01/19/2014 02:50 PM, Konstantinos Georgantas wrote:
->>> I am trying to control from the client side which Alternate Setting to
->>> use. Basically I would like to be able to switch from Alternate Setting
->>> 0 to 1 and vice versa so that I am not receiving any set interface
->>> requests in the meantime. From the audio class 2.0 documentation I
->>> understand that I should be able to do something like this by using the
->>> active alternate setting control, and here comes my main problem.
->>
->> I'm not quite following from which side you're looking at the system,
->> IOW, who should be "receiving" requests. Are you talking about the
->> device or the host side?
->
-> As I see it generating an interrupt from the device to the host should 
-> "force" the host to "take appropriate action to reactivate the interface 
-> by switching to a valid Alternate Setting".
+&gt;This is doubtful. Here we see the behavior of the PCI controller, and
 
-Yes, that's the intended use of such an interrupt.
-
->> As the spec says (5.2.6.1.1), such a control is read-only, and it "does
->> not allow an interface to change from one active Alternate Setting to
->> another without Host intervention". "The main purpose of this Control is
->> to notify the Host (through an interrupt) that the last
->> selected Alternate Setting is no longer valid.".
->>
->> Active alt setting switching is done implictly by (de)activating the PCM
->> streams that are associated with them.
->
-> That is right! But what if someone tries to play music for example? The 
-> host will try to set Alternate Setting 1 again thinking that it is still 
-> active but in this case my device happens to be in sleep mode so it 
-> cannot reply to the usb_set_interface requests.
-
-That's a different problem then. As far as the error case is concerned,
-I would expect the device to stop ACKing the isochronous URBs
-immediately, which would result the PCM stream to get torn down. When a
-PCM interface is closed, the alternate setting 0 is selected
-automatically, and things should be in sync again.
-
-> I thought that if I 
-> indicated that only Alternate Setting 0 is active I would avoid this 
-> request.
-
-Yes, but such a request should be NACKed by the device anyway if the alt
-setting changed during runtime, so it shouldn't do any harm.
-
-> Am I right? Of course when waking up I could issue another 
-> interrupt indicating that my device activates again the Alternate 
-> Setting 1. Please correct me if I misunderstand something.
-
-I believe you're seeing two different effects mixed up here. The device
-is not supposed to go to sleep mode in such sitations, and without being
-asked to do so by the host. What exactly makes you believe it is in this
-mode?
-
->> As always: patches are welcome :)
->
-> Absolutely! I can come up with a patch but I just want to be sure I have 
-> understood the spec in the right way :)
-
-I think you did, but I have my doubts that your interpretations of what
-happens is right, but you might recognize that yourself once you
-implemented the code.
-
-When cooking the patch, consider a generic interrupt handler outside of
-mixer.c, and redirect to a mixer interrupt function for mixer requests.
-I'd like to avoid fiddling with PCM stream details from mixer.c.
+&gt;there shouldn't be difference by CPU instructions.
 
 
-Thanks,
-Daniel
+
+&gt;The difference in the code between azx_reset() and your code are:
+
+
+
+&gt;- Use of azx_writeb() and azx_writel()
+
+&gt;- Limited loop time for GCTL_RESET bit check
+
+I tried both things. It did not work. So, I tried adding a delay between while loop and reset writel in my code. A few experiments with it shows that delay between reset state and on state determines codec detection. Only a delay of less than 100 uSec results in successful codec detection.
+Here is table of my observations:
+
+usleep&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result 
+5-10 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ok
+50-100 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ok
+75-100&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; ok
+75-150&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; fail
+100-200&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; fail
+250-500&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; fail
+500-1000 &nbsp;&nbsp;&nbsp; fail
+
+
+Since link_reset_enter and exit have a lot of code in between (atleast greater than 100us) it always results in failure.
