@@ -1,39 +1,44 @@
-From: "Nicolo'" <nicolopiazzalunga@gmail.com>
-Subject: Re: [PATCH] ALSA: hda - Fix silent output on MacBook Air 1,1
-Date: Sat, 25 Jan 2014 15:47:06 +0100
-Message-ID: <CABru_zWW6V7Db+3awbAn3bBEvz49gj=Es8UYk_ug-ExcSdXf2A@mail.gmail.com>
-References: <1390593374-6592-1-git-send-email-adrienverge@gmail.com>
- <1390594484.15637.2.camel@x220> <CANsc=4XiKexRwApFDdDi09mrduz6BXQPDTz880ucwJA1SOV27Q@mail.gmail.com>
- <1390597685.15637.6.camel@x220> <s5hd2jgpj81.wl%tiwai@suse.de>
- <CABru_zWurg5tiOy-LtyizB0bqK5HoTScw0f3TizX4VHTorttTw@mail.gmail.com> <CANsc=4WLVub0RSJTwnGabqhBcaSUDV4g1JEbDA7NjBsaA6t9AQ@mail.gmail.com>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [PATCH 1/8] ASoC: fsl: Add VF610 soc audio card Kconfig
+Date: Sun, 26 Jan 2014 05:15:05 +0000
+Message-ID: <88ad355def5f440eb92ca921b17aabb9@DM2PR03MB509.namprd03.prod.outlook.com>
+References: <1390453370-29194-1-git-send-email-Li.Xiubo@freescale.com>
+ <1390453370-29194-2-git-send-email-Li.Xiubo@freescale.com>
+ <20140123183829.GB11727@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CANsc=4WLVub0RSJTwnGabqhBcaSUDV4g1JEbDA7NjBsaA6t9AQ@mail.gmail.com>
+In-Reply-To: <20140123183829.GB11727@sirena.org.uk>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: =?ISO-8859-1?Q?Adrien_Verg=E9?= <adrienverge@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Paul Bolle <pebolle@tiscali.nl>, Jaroslav Kysela <perex@perex.cz>, David Henningsson <david.henningsson@canonical.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, alsa-devel <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "moinejf@free.fr" <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I stand corrected, also on mine (3.2) VREF on 0x18 mutes only speakers
+Hi Mark,
 
-On Sat, Jan 25, 2014 at 3:36 PM, Adrien Verg=E9 <adrienverge@gmail.com>=
- wrote:
-> 2014-01-24 Paul Bolle <pebolle@tiscali.nl>:
->> I see. Well, if your analysis is correct I think you're supposed to =
-add
->>      Fixes: 1a97b7f22774 ("ALSA: hda/realtek - Remove the last stati=
-c quirks for ALC882")
->
-> Sorry for that. Thank you for correcting.
->
-> 2014-01-25 Nicolo' <nicolopiazzalunga@gmail.com>:
->> I can confirm this happens on my machine too: does anybody have a hi=
-nt
->> on why changing VREF on 0x18 mutes/unmutes speakers and hp, which ar=
-e
->> on 0x14 and 0x15 ?
->
-> Very strange indeed. However Nicolo', on my machine (with v3.13),
-> playing with pin 0x18 only mutes/unmutes speakers, not headphones.
+> > +config SND_SOC_VF610_SGTL5000
+> > +       tristate "SoC Audio support for VF610 boards with SGTL5000"
+> > +       depends on OF && I2C
+> > +       select SND_SOC_FSL_SAI
+> > +       select SND_SOC_SGTL5000
+> > +       select SND_SIMPLE_CARD
+> 
+> ...for simple card since the whole idea is to support any CODEC with the
+> same driver we should probably just make sure that all the individual
+> drivers can be enabled in Kconfig, that way we don't have to have
+> specific Kconfig entries for boards and loose some of the benefit of the
+> generic card.  I sent a patch earlier exposing the OF supporting CODEC
+> drivers, one for at least some of the Freescale CPU drivers was sent to
+> the list recently too but there were some review comments.
+
+I hadn't found the patches, could you tell me the titles of them please?
+
+Thanks very much,
+
+--
+* Happy New Year *
+
+Best Regards,
+Xiubo
