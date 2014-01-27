@@ -1,65 +1,82 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH RFC v3 0/8] Beaglebone-Black HDMI audio
-Date: Mon, 27 Jan 2014 20:47:23 +0100
-Message-ID: <52E6B7CB.7010107@metafoo.de>
-References: <y> <cover.1390836773.git.jsarha@ti.com> <52E6806A.2090109@metafoo.de> <52E686B2.9060806@ti.com> <52E68A00.5030207@metafoo.de> <52E6B613.9050400@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 13/27] ASoC: rsnd: explain SRC bypass mode
+ settings in comment
+Date: Mon, 27 Jan 2014 19:45:54 +0000
+Message-ID: <20140127194554.GT11841@sirena.org.uk>
+References: <877g9qgl6i.wl%kuninori.morimoto.gx@gmail.com>
+ <87ob32f6h2.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <52E6B613.9050400@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: detheridge@ti.com, alsa-devel@alsa-project.org, Jean-Francois Moine <moinejf@free.fr>, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, broonie@kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============4049956234229827915=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7B45261A80
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 20:45:59 +0100 (CET)
+In-Reply-To: <87ob32f6h2.wl%kuninori.morimoto.gx@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/27/2014 08:40 PM, Jyri Sarha wrote:
-> On 01/27/2014 06:32 PM, Lars-Peter Clausen wrote:
->> On 01/27/2014 05:17 PM, Jyri Sarha wrote:
->>> On 01/27/2014 05:51 PM, Lars-Peter Clausen wrote:
->>>> Hi,
->>>>
->>>> I think you should try to get this in sync with the work Jean-Francois is
->>>> currently doing[1]. Having the HDMI transmitter register a CODEC device is
->>>> definitely the right approach, compared to the rather 'interesting'
->>>> constraints stuff you do in patch 4.
->>>>
->>>
->>> Oh, Jean-Francois's patches are now out. I'll take those into use, but I am
->>> afraid it still does not save me from the constraint stuff.
->>>
->>> The most complex piece of code comes from limited sample-rate availability,
->>> which is coming Beaglebone-Black desing (available i2s master clock), not
->>> from the HDMI encoder itself. It does not help with the stereo only
->>> limitation either, because it comes from the one wire only audio data
->>> connection on BBB.
->>>
->>> Support for S16_LE could maybe be added if the tda998x specific codec would
->>> fiddle with CTS_N predivider-setting (K select) according to the used sample
->>> width. But it appears Cobox plays all the sample formats fine without this
->>> change, so the question is if playing around with CTS_N predivider would
->>> break already working support there (something to be tested).
->>
->> The ASoC core will set the constraints for the audio format/rate to the
->> intersection of what is supported by the CODEC and the CPU DAI. So if the
->> limitation comes from the CPU DAI the constraints should be applied there
->> and not in the machine driver. Similar if the tda998x only supports 32 bit
->> samples it should advertise this and the compound card will only support 32
->> bit samples.
->>
->
-> Yes. I know. But these limitations come from the run time setup of the audio
-> serial bus and those details are not available to the cpu dai at the register
-> time.
->
-> If more of the McASP configuration data would be moved to DT, instead of giving
-> it in set_sysclk, set_fmt, etc. calls it would be possible for the driver code
-> produce more accurate constraints at register time. However that would change
-> McASP driver a lot and would possibly break some of the legacy support.
 
-There is nothing wrong with setting the constraints based on the parameters 
-passed to set_sysclk or set_fmt, etc. In fact this is something that is often 
-done by drivers.
+--===============4049956234229827915==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZNotpC0yWfjHZxBL"
+Content-Disposition: inline
 
-- Lars
 
+--ZNotpC0yWfjHZxBL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Jan 23, 2014 at 06:39:56PM -0800, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> SRC bypass mode is useful for debugging.
+> This patch explains SRC bypass mode settings in comment
+
+Surely it's also useful for providing a power saving in cases where the
+SRC is not required?  Depending on the implementation it may also end up
+resulting in a small improvement in audio quality in such cases.
+
+--ZNotpC0yWfjHZxBL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS5rdvAAoJELSic+t+oim9HxQP/0bvkalDleoAzfvbDBhv10Fi
+KrKikGHi6WVUVG/1tIO3YF+Pe7WWwFTeZEfFLHPmnO/WH6WOfERQZZDIidK9ufHH
+pLS+rqXCwL69bT2YHb4bpEZKggKiXVqsnPHsU74HXpwVKI9fqbrtL6gDmDat+dTM
+eXfNv0lWD4wSKzQfWdRGDrFXFc26JRege0A1GdVLLXVd+8zdiv83KHVldsOsHU/s
+lQxV/Ck94Xy5IJqQmxbRUPbWvx/RHfIFbpPA+CyYzbI+fp+oXkOjBl9wETJxHoKV
+XKHDjFeKKBLqUPk9v2MdRW8BFNbq2P0ZjRBWp+Yl5HQDxrmH8kZ0KsL1cpdLnt8x
+EYL9Is33DpBUmTtgCGWU9wH7nOxydYuCEhC6Jy0YLFKeBBINTXItN++AEJQfBHWD
+N5H/8iMYp5F4veBRHwCT9GceqgS1z9dE7YkKix3mTXo+vDFIlYdKUJn3MhinwHqw
+D4wJ6QCtuAItFOHbw3LfHLSQfgtRxSjscCUC7Iq0KJt3lNcxbU0nP5aFJrmWyRgd
+SVb20VIH/gwCc1MTm0t28pp0UZQ7njucr881WHHzfPbnNwv2ZgkMN9hBUHmteFLD
+PqoDwxlPGYFtX2aH6fPp/TjlWHswVPDXAgFl3xVXOVKVayMCUpeSQ/3gfXGTKo/W
+U3sZTSy2epUmIpbQJ5mg
+=hYgy
+-----END PGP SIGNATURE-----
+
+--ZNotpC0yWfjHZxBL--
+
+--===============4049956234229827915==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4049956234229827915==--
