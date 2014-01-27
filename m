@@ -1,17 +1,20 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH RFC v3 0/8] Beaglebone-Black HDMI audio
-Date: Mon, 27 Jan 2014 16:51:06 +0100
-Message-ID: <52E6806A.2090109@metafoo.de>
-References: <y> <cover.1390836773.git.jsarha@ti.com>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH v3 6/6] ASoC: tlv320aic32x4: Support for
+	regulators
+Date: Mon, 27 Jan 2014 17:10:54 +0100
+Message-ID: <20140127161054.GB9934@pengutronix.de>
+References: <1390824190-18376-1-git-send-email-mpa@pengutronix.de>
+ <1390824190-18376-7-git-send-email-mpa@pengutronix.de>
+ <20140127151533.GA11727@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-233.synserver.de (smtp-out-233.synserver.de
- [212.40.185.233])
- by alsa0.perex.cz (Postfix) with ESMTP id C34E0261B1E
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 16:51:08 +0100 (CET)
-In-Reply-To: <cover.1390836773.git.jsarha@ti.com>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4E7F2265013
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 17:11:05 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20140127151533.GA11727@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,72 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: detheridge@ti.com, alsa-devel@alsa-project.org, Jean-Francois Moine <moinejf@free.fr>, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, broonie@kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-I think you should try to get this in sync with the work Jean-Francois is
-currently doing[1]. Having the HDMI transmitter register a CODEC device is
-definitely the right approach, compared to the rather 'interesting'
-constraints stuff you do in patch 4.
-
-- Lars
-
-[1] http://lkml.org/lkml/2014/1/27/85
-
-
-On 01/27/2014 04:37 PM, Jyri Sarha wrote:
-> Changes since RFC v2 version of the patches:
-> - Dropped out already applied:
->   ASoC: hdmi-codec: Add devicetree binding with documentation
-> - Addresses Mark's comments here:
->   http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/070605.html
->   - ASoC: davinci-evm: Add named clock reference to DT bindings
->     - Get rid of unnecessary castings
->     - Add mclk NULL checks
->     - Use devm_clk_get()
->     - Change clock name from "ti,codec-clock" to "mclk"
-> - Address Mark's comments here:
->   http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/070606.html  - ASoC: davinci-evm: HDMI audio support for TDA998x trough McASP I2S bus
->     - Get rid of unnecessary castings
->     - Update commit message
->   - Add: ASoC: davinci-mcasp: Set BCLK divider if McASP is BCLK master
->     - Use snd_soc_params_to_bclk()
+On Mon, Jan 27, 2014 at 03:15:33PM +0000, Mark Brown wrote:
+> On Mon, Jan 27, 2014 at 01:03:10PM +0100, Markus Pargmann wrote:
 > 
-> Changes since the first RFC version of the patches:
-> - Drop out already applied: 
->   ASoC: hdmi-codec: Add SNDRV_PCM_FMTBIT_32_LE playback format
-> - Change sound node's compatible property
->   form: "ti,am33xx-beaglebone-black" to "ti,am33xx-beaglebone-black-audio"
-> - Some minor style issue fixes from TI internal review
+> > +	aic32x4->supply_ldo = devm_regulator_get_optional(dev, "ldoin");
+> > +	aic32x4->supply_iov = devm_regulator_get_optional(dev, "iov");
+> > +	aic32x4->supply_dv = devm_regulator_get_optional(dev, "dv");
+> > +	aic32x4->supply_av = devm_regulator_get_optional(dev, "av");
 > 
-> Jyri Sarha (8):
->   clk: add gpio controlled clock
->   ASoC: davinci-evm: Add named clock reference to DT bindings
->   ASoC: davinci-mcasp: Set BCLK divider if McASP is BCLK master
->   ASoC: davinci-evm: HDMI audio support for TDA998x trough McASP I2S
->     bus
->   ASoC: davinci: HDMI audio build for AM33XX and TDA998x
->   drm/tilcdc: Add I2C HDMI audio config for tda998x
->   ARM: OMAP2+: omap2plus_defconfig: Enable tilcdc and TDA998X HDMI
->     support
->   ARM: OMAP2+: omap2plus_defconfig: Enable BeagleBone Black HDMI audio
->     support
+> These shouldn't be optional, it seems unlikely that the device is going
+> to work without power.  This will also be broken for probe deferral
+> since the code will just ignore errors so if the error is -EPROBE_DEFER
+> it'll not actually defer.
+
+The manual describes the possible power supplies as the following:
+
+dv has to be present if ldoin is not supplied or LDO_SELECT hardware pin
+is low.
+av has to be present if ldoin is not supplied.
+iov is always necessary.
+ldoin is necessary if both dv and av are not supplied.
+
+I will try to catch all those conditions in the next version and fix the
+EPROBE_DEFER.
+
 > 
->  .../devicetree/bindings/clock/gpio-clock.txt       |   21 ++
->  .../bindings/sound/davinci-evm-audio.txt           |   13 +-
->  arch/arm/configs/omap2plus_defconfig               |    5 +
->  drivers/clk/Makefile                               |    1 +
->  drivers/clk/clk-gpio.c                             |  210 +++++++++++++++++++
->  drivers/gpu/drm/tilcdc/tilcdc_slave.c              |   24 ++-
->  include/linux/clk-provider.h                       |   25 +++
->  sound/soc/davinci/Kconfig                          |   12 ++
->  sound/soc/davinci/Makefile                         |    1 +
->  sound/soc/davinci/davinci-evm.c                    |  211 +++++++++++++++++++-
->  sound/soc/davinci/davinci-mcasp.c                  |   20 ++
->  11 files changed, 534 insertions(+), 9 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/clock/gpio-clock.txt
->  create mode 100644 drivers/clk/clk-gpio.c
-> 
+> Just use the normal bulk functions, as Fabio said this will be simpler
+> too, and there should be code to disable on device removal at least
+> (ideally also on suspend and resume, and while the device is idle if it
+> doesn't have slow startup times).
+
+Do the normal bulk functions handle optional regulators?
+
+Thanks,
+
+Markus
+
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
