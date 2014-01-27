@@ -1,52 +1,62 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/7] ASoC: simple-card: Add snd_card's name parsing
- from DT node support
-Date: Mon, 27 Jan 2014 19:50:57 +0000
-Message-ID: <20140127195057.GX11841@sirena.org.uk>
+Subject: Re: [PATCH v2 4/7] ASoC: simple-card: add tdm slot supports
+Date: Mon, 27 Jan 2014 19:53:46 +0000
+Message-ID: <20140127195346.GY11841@sirena.org.uk>
 References: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
- <1390549386-4702-4-git-send-email-Li.Xiubo@freescale.com>
+ <1390549386-4702-5-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="A3ZnGbl6n9tZ6+mF"
+	protocol="application/pgp-signature"; boundary="MzUyxqdXrKJm2YZW"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1390549386-4702-4-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <1390549386-4702-5-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Xiubo Li <Li.Xiubo@freescale.com>
 Cc: lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, rob@landley.net, perex@perex.cz, moinejf@free.fr, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---A3ZnGbl6n9tZ6+mF
+--MzUyxqdXrKJm2YZW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 24, 2014 at 03:43:02PM +0800, Xiubo Li wrote:
-> If the DT is used and the CPU DAI device has only one DAI, the card
-> name will be like :
+On Fri, Jan 24, 2014 at 03:43:03PM +0800, Xiubo Li wrote:
+> For some CPU/CODEC DAI devices the tdm slot maybe needed. This patch
+> adds the tdm slot supporting for simple-card driver.
+>=20
+> The style of the tdm slot in DT:
+>=20
+> For instance:
+>=20
+> 	simple-tdm-slot =3D <0xffffffc 0xffffffc 2 0>;
 
-Applied, thanks.
+It's not clear to me what such a definition for the TDM slots means - I
+looked at the binding document as well and that didn't clarify.  We
+would need some definition of what the above means, though I think most
+likely the current definition is too specific and we need something more
+generic.
 
---A3ZnGbl6n9tZ6+mF
+--MzUyxqdXrKJm2YZW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS5rieAAoJELSic+t+oim9klYP/RUrRvunCnnl790+AAcNfMdC
-tR9sTPqz2VJ6RrHhpYPaTIsenzlEnqDuYaf1+c0d+OHSJRyXC/I12+QOtK18iznR
-9WMmNGMKCXxgDsXQ8Dbp5IQuLTpbwYRt6jYEQ0ByJIJ1DlOZz3r52VifLJesK86l
-AgBwS8LngVHc5WHIfqkggKtQIgWdW1qaZZp60IyOBLDHWcIO/argd/sD5szwOfzb
-+CcRJxNi7FhaM0t9LLJIa+1wYLqgLbfoquZHe7/tSSIttvfV+QYSiBzA55NIiLYv
-VgymlmociIsSnmOy5lpcNVs1vDqkPEEZLEUiOoFrXju67hm7NvVo5yvGABRBBvIU
-bdX2Zt/mmo1y46HmTVkb0cw/6MaSMNeHF5MotLEXtBFTWdL3gGvhLWTaXI5e3ukd
-wC/cjvNAf587NUgdjNkjg37zZeyZimo3DZk0IesVbuSGYUvLjXNC77F9XakYBqAH
-KuA/zt5/A0wNwmfucDSruaeJ24p9nqmhocHu1wCWMLOBt9iAl3Q283CVyJNqI3+n
-gJ6l1rbZofpllD6G7+BNIeh8H0QbHWinxpF3hldz/1c61wNn4iGRzQKnfRBhARBb
-zTQTMQyxfkblZ1WMNemcKCxjs+iLsbymUBiT5t+CdpRltigxncgD6dx0MTUhmVWK
-/LkIMliLtyX7ZGHhaE9m
-=u4Qp
+iQIcBAEBAgAGBQJS5rlHAAoJELSic+t+oim9nkUP/2P2i1qHByL9tAZRANvlLITt
+jmCuhJPG+ECB3AvZYDbuen14klEbOv+qCDMbWbw3YrOtQTWbz/aYIy0Mx4GAnb4g
+T2ZILDUEMsbRarika3C/T7o0VkDz5yek3fnlCvUOqYvfB1HbuAQvJ8H2V6RRkkk+
+zxXzR/viovniqjhqRC+oXCnEo3wwAuV1pkNggSvSLl6FbxXVjmGJE/R886LDdkp3
+tv56GzGUunfoWS0fYlvd9esaqRLwjFUuEn1DK8fmH0R5sRlyh4gdkyEi0oQkPBA6
+gTHWs3we+JRDRBqwPNxoM+Sb8J7hGl3Wd9/SI6tINkumbee7Y64YIrAOcvfOMkYA
+DZqNfD3GHRgnO2UnfCMPXVE98zxGmhisv3fLT2FlthFh2gF028LGUM2VumIL2eIg
+Wd4ysaWG3hTiV3cdOAbLiJw3Y1m/wofHWeYTCUyKqabzzeFeZpsYID40xFYHk0WT
+5lFV6EgvYzNV660MgRk+/2uHaIEj8nNVwYOdiBcIwpdIdgCd1M+kQuHj3KMk6UXB
+WiwcJrgSomyMH5uQtL34DlncWrgwpMwpEPgotLNkU0cK1pZ3rihm3z/GUEItVqqQ
+wPHsZiprVa5lDhD7GHXXosgtiPTtTBcZ/NQ9LaQTHh5EtCHxnTmYTDUQwt/aQOwy
+SxKG7A2fpUmfNJzWgmDT
+=bS6u
 -----END PGP SIGNATURE-----
 
---A3ZnGbl6n9tZ6+mF--
+--MzUyxqdXrKJm2YZW--
