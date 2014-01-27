@@ -1,67 +1,111 @@
 From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH v2 2/3] ASoC: atmel_wm8904: make it available
-	to choose clock
-Date: Mon, 27 Jan 2014 14:55:25 +0800
-Message-ID: <1390805726-1841-3-git-send-email-voice.shen@atmel.com>
+Subject: [PATCH v2 1/3] ASoC: atmel_ssc_dai: make option to choose clock
+Date: Mon, 27 Jan 2014 14:55:24 +0800
+Message-ID: <1390805726-1841-2-git-send-email-voice.shen@atmel.com>
 References: <1390805726-1841-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B1F7261B14
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 07:57:22 +0100 (CET)
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <1390805726-1841-1-git-send-email-voice.shen@atmel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Wolfram Sang <wsa@the-dreams.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, nicolas.ferre@atmel.com, Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, nicolas.ferre@atmel.com, Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Bo Shen <voice.shen@atmel.com>, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Make it available to choose the clock from TK pin or RK pin. This
-is hardware design decided.
+When SSC works in slave mode, according to the hardware design, the
+clock can get from TK pin, also can get from RK pin. So, add one
+parameter to choose where the clock from.
 
 Signed-off-by: Bo Shen <voice.shen@atmel.com>
 ---
 Changes in v2: None
 
- sound/soc/atmel/atmel_wm8904.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/atmel/atmel_ssc_dai.c | 16 ++++++++++++----
+ sound/soc/atmel/atmel_ssc_dai.h |  1 +
+ 2 files changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
-index b4e3690..9346410 100644
---- a/sound/soc/atmel/atmel_wm8904.c
-+++ b/sound/soc/atmel/atmel_wm8904.c
-@@ -108,6 +108,7 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
- 	struct device_node *codec_np, *cpu_np;
- 	struct snd_soc_card *card = &atmel_asoc_wm8904_card;
- 	struct snd_soc_dai_link *dailink = &atmel_asoc_wm8904_dailink;
-+	struct atmel_ssc_info *ssc_info;
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 8697ced..03eb0be 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -340,6 +340,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *dai)
+ {
+ 	int id = dai->id;
++	struct snd_soc_card *card = dai->card;
+ 	struct atmel_ssc_info *ssc_p = &ssc_info[id];
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir, channels, bits;
+@@ -347,6 +348,9 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 	int start_event;
  	int ret;
  
- 	if (!np) {
-@@ -115,6 +116,15 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
++	ssc_p->clk_from_rk_pin =
++		((struct atmel_ssc_info *)(card->drvdata))->clk_from_rk_pin;
++
+ 	/*
+ 	 * Currently, there is only one set of dma params for
+ 	 * each direction.  If more are added, this code will
+@@ -466,7 +470,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 			| SSC_BF(RCMR_START, start_event)
+ 			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
+ 			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
+-			| SSC_BF(RCMR_CKS, SSC_CKS_CLOCK);
++			| SSC_BF(RCMR_CKS, ssc_p->clk_from_rk_pin ?
++					   SSC_CKS_PIN : SSC_CKS_CLOCK);
  
-+	ssc_info = devm_kzalloc(&pdev->dev, sizeof(*ssc_info), GFP_KERNEL);
-+	if (!ssc_info)
-+		return -ENOMEM;
-+
-+	ssc_info->clk_from_rk_pin =
-+		of_property_read_bool(np, "atmel,clk-from-rk-pin");
-+
-+	card->drvdata = (void *)ssc_info;
-+
- 	ret = snd_soc_of_parse_card_name(card, "atmel,model");
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to parse card name\n");
+ 		rfmr =	  SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
+ 			| SSC_BF(RFMR_FSOS, SSC_FSOS_NONE)
+@@ -481,7 +486,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 			| SSC_BF(TCMR_START, start_event)
+ 			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
+ 			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
+-			| SSC_BF(TCMR_CKS, SSC_CKS_PIN);
++			| SSC_BF(TCMR_CKS, ssc_p->clk_from_rk_pin ?
++					   SSC_CKS_CLOCK : SSC_CKS_PIN);
+ 
+ 		tfmr =	  SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
+ 			| SSC_BF(TFMR_FSDEN, 0)
+@@ -550,7 +556,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 			| SSC_BF(RCMR_START, SSC_START_RISING_RF)
+ 			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
+ 			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
+-			| SSC_BF(RCMR_CKS, SSC_CKS_PIN);
++			| SSC_BF(RCMR_CKS, ssc_p->clk_from_rk_pin ?
++					   SSC_CKS_PIN : SSC_CKS_CLOCK);
+ 
+ 		rfmr =	  SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
+ 			| SSC_BF(RFMR_FSOS, SSC_FSOS_NONE)
+@@ -565,7 +572,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 			| SSC_BF(TCMR_START, SSC_START_RISING_RF)
+ 			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
+ 			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
+-			| SSC_BF(TCMR_CKS, SSC_CKS_PIN);
++			| SSC_BF(RCMR_CKS, ssc_p->clk_from_rk_pin ?
++					   SSC_CKS_CLOCK : SSC_CKS_PIN);
+ 
+ 		tfmr =	  SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
+ 			| SSC_BF(TFMR_FSDEN, 0)
+diff --git a/sound/soc/atmel/atmel_ssc_dai.h b/sound/soc/atmel/atmel_ssc_dai.h
+index b1f08d5..f147895 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.h
++++ b/sound/soc/atmel/atmel_ssc_dai.h
+@@ -113,6 +113,7 @@ struct atmel_ssc_info {
+ 	unsigned short cmr_div;
+ 	unsigned short tcmr_period;
+ 	unsigned short rcmr_period;
++	bool clk_from_rk_pin;
+ 	struct atmel_pcm_dma_params *dma_params[2];
+ 	struct atmel_ssc_state ssc_state;
+ };
 -- 
 1.8.5.2
