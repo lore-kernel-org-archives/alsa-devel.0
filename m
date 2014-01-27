@@ -1,74 +1,55 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH RFC v3 0/8] Beaglebone-Black HDMI audio
-Date: Mon, 27 Jan 2014 21:40:03 +0200
-Message-ID: <52E6B613.9050400@ti.com>
-References: <y> <cover.1390836773.git.jsarha@ti.com>
- <52E6806A.2090109@metafoo.de> <52E686B2.9060806@ti.com>
- <52E68A00.5030207@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl-sai: convert to use regmap API for Freeacale
+ SAI
+Date: Mon, 27 Jan 2014 19:41:14 +0000
+Message-ID: <20140127194114.GS11841@sirena.org.uk>
+References: <1390463283-7545-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B290261ACE
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 20:40:10 +0100 (CET)
-In-Reply-To: <52E68A00.5030207@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, dri-devel@lists.freedesktop.org, detheridge@ti.com, broonie@kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="hOmQO3H5Qmmwdmk8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1390463283-7545-1-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: lgirdwood@gmail.com, timur@tabi.org, Guangyu.Chen@freescale.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/27/2014 06:32 PM, Lars-Peter Clausen wrote:
-> On 01/27/2014 05:17 PM, Jyri Sarha wrote:
->> On 01/27/2014 05:51 PM, Lars-Peter Clausen wrote:
->>> Hi,
->>>
->>> I think you should try to get this in sync with the work Jean-Francois is
->>> currently doing[1]. Having the HDMI transmitter register a CODEC device is
->>> definitely the right approach, compared to the rather 'interesting'
->>> constraints stuff you do in patch 4.
->>>
->>
->> Oh, Jean-Francois's patches are now out. I'll take those into use, but I am
->> afraid it still does not save me from the constraint stuff.
->>
->> The most complex piece of code comes from limited sample-rate availability,
->> which is coming Beaglebone-Black desing (available i2s master clock), not
->> from the HDMI encoder itself. It does not help with the stereo only
->> limitation either, because it comes from the one wire only audio data
->> connection on BBB.
->>
->> Support for S16_LE could maybe be added if the tda998x specific codec would
->> fiddle with CTS_N predivider-setting (K select) according to the used sample
->> width. But it appears Cobox plays all the sample formats fine without this
->> change, so the question is if playing around with CTS_N predivider would
->> break already working support there (something to be tested).
->
-> The ASoC core will set the constraints for the audio format/rate to the
-> intersection of what is supported by the CODEC and the CPU DAI. So if the
-> limitation comes from the CPU DAI the constraints should be applied there
-> and not in the machine driver. Similar if the tda998x only supports 32 bit
-> samples it should advertise this and the compound card will only support 32
-> bit samples.
->
 
-Yes. I know. But these limitations come from the run time setup of the 
-audio serial bus and those details are not available to the cpu dai at 
-the register time.
+--hOmQO3H5Qmmwdmk8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If more of the McASP configuration data would be moved to DT, instead of 
-giving it in set_sysclk, set_fmt, etc. calls it would be possible for 
-the driver code produce more accurate constraints at register time. 
-However that would change McASP driver a lot and would possibly break 
-some of the legacy support.
+On Thu, Jan 23, 2014 at 03:48:03PM +0800, Xiubo Li wrote:
+> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+> Cc: Nicolin Chen <Guangyu.Chen@freescale.com>
+> ---
+>  sound/soc/fsl/fsl_sai.c | 243 +++++++++++++++++++++++++-----------------------
+>  sound/soc/fsl/fsl_sai.h |  47 +++++-----
 
-Best regards,
-Jyri
+This is fine but it doesn't seem to apply against sound-3.14-rc1 - can
+you please check what's going on here?
+
+--hOmQO3H5Qmmwdmk8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS5rZXAAoJELSic+t+oim9L0YP/3W5A58eW3dtQ/m4yI5GBC8/
+xLBc+4jXa+lYdH5VN/ouA/AkRli273ZicUzy9GJ1fF3NTEscj8rkmkq9xObEpgQS
+9ijdnJYPgAFPItRVbLJODOnCU/J36wNdnbp8vo9ofCFSfLLZe4C3IxWOaqPoF+so
+5b4Xby0CYOA5/xDvN++F6T0IJ2GbUtrZhSQiz02x3XN3YCJlVaG+WLQBSiz3EksT
+ZA0bq40Miu9/cz5ityFx3Gfpfg/BpSje0Wk00mxAh/9qN3yccWnI2TTdKTw620Fu
+9CqyPF1rHC127ESR+5lQ2DnzobWZy33n3pgE9amjfa6VWHsog2Af7+V3OxuyghqG
+99ynL0NA3CB2hlA1tjJ5Cencdv5ilLVzlAeE0RupZwK7RnyZmePNR7CGHv3EeMTZ
+s6bq4lejpfmOsXjSgo+k+M8ZIN2jg/aZa5VVu9PG5JO2ikAKYaCGFisdSa20bEbX
+8wy+tBi//Yd9lruVwL/uNpusd6RHMqL7bNy45ocVc9IXDhxHU7kuHbt1Fx9L3zk9
+mdc/Ys7NNPhmY/REFXYIxtHymTnJNQw0c2/yUPRFoSpRu8DX7Xfa3ud2Vbejx8hE
+17HFqxPc98ZSSJFyV7WshwfbOBJzbb/Fm54MZjfdSF3RkkXBFHliTqL5bzin+08U
+90EL6qihy2090iw6mD3o
+=0sEL
+-----END PGP SIGNATURE-----
+
+--hOmQO3H5Qmmwdmk8--
