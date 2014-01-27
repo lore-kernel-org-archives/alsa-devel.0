@@ -1,51 +1,54 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/7] ASoC: simple-card: fix __asoc_simple_card_dai_init
-Date: Mon, 27 Jan 2014 19:50:37 +0000
-Message-ID: <20140127195037.GV11841@sirena.org.uk>
+Subject: Re: [PATCH v2 2/7] ASoC: simple-card: simplify the daifmt code
+Date: Mon, 27 Jan 2014 19:50:46 +0000
+Message-ID: <20140127195046.GW11841@sirena.org.uk>
 References: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
- <1390549386-4702-2-git-send-email-Li.Xiubo@freescale.com>
+ <1390549386-4702-3-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1AtvaQRkIQxkm1Oe"
+	protocol="application/pgp-signature"; boundary="GdlkuMH+DRYbUHkj"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1390549386-4702-2-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <1390549386-4702-3-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Xiubo Li <Li.Xiubo@freescale.com>
 Cc: lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, rob@landley.net, perex@perex.cz, moinejf@free.fr, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---1AtvaQRkIQxkm1Oe
+--GdlkuMH+DRYbUHkj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jan 24, 2014 at 03:43:00PM +0800, Xiubo Li wrote:
-> If the CPU/CODEC DAI set_sysclk() is not support, the -ENOTSUPP will returnd.
-> Here do the check like set_fmt().
+On Fri, Jan 24, 2014 at 03:43:01PM +0800, Xiubo Li wrote:
+> In the asoc_simple_card_parse_of() will parse the device node's CPU/CODEC
+> DAI commone fmts, and then in asoc_simple_card_sub_parse_of() will parse
+> the CPU/CODEC DAI's sub-node fmts, so we can combine the info->daifmt and
+> info->set.fmt in asoc_simple_card_sub_parse_of() not while just before
+> _set_fmt().
 
 Applied, thanks.
 
---1AtvaQRkIQxkm1Oe
+--GdlkuMH+DRYbUHkj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS5riKAAoJELSic+t+oim9fooQAIFXCnKqJzESU8MhE/V2hl3D
-DMW4L/WvuPt4w00b3ILfBvLpENqftBMaAjRPu9SGoC6fDXoWtrbwkD0vrjyz8eHF
-e2ufZt0zTWRsMPI5LH68U+9THlF/U97yf64uIqTCHMSkS472yjKE5anSAKZMhgSn
-/puHorpeW3hRgzumZ6sFazcSU3p9DxDF5W3Gx6IWJy2YeiSjgxzcVBPHDvA9s/PB
-Ox0qoYCCoR3HvuGwT5ba8xvKxrx4Pb04o7n7BQsKGIVs2rXyy1+F4zCvGf8TQv1/
-0YhlVaMDWp9t/Igjr7+sV1JTsJCNNMiXsNfAZniGmvs855am+9iGloXZJiFyCWP4
-tsFa2IcyX3EIzHdlBnw/t8nEduKlzx3aJNBAhXTmy2/VWgNZVIG9jJvxyQUG6+TK
-por1+YwYjbIzfMMy6QLUmkwWXuyDzNWe8CtcoLtTh82JWVgReka3dvndVFyeCAo7
-VvVb2uQWpy9+2osaElkQ/N2eJpQ/K0K/+li8Fi68dtsSHvcV/LGt/AORE4VRlaB5
-ZQO4N7SjmyMl4nrZDvUCVPxy/GqpFcU3HbKR7+yxn3SwMbpQsV7WgXs2F3g4Gn6s
-0sABFRgpNXYPiW/Ltcg1r3ddYk0UMmOStHMHVH6Ztl5+C21+IIRFgQH28Bs5gDxJ
-INZT5PKKj0T1bzliAzRx
-=HGbO
+iQIcBAEBAgAGBQJS5riSAAoJELSic+t+oim9RiQP/2Yer6UBGBm2QB+DoPtYmM2f
+q2sKMAStrklSRBeAV6gfViRp9A8Lu7uC5Gpj9GXAbD9fUaS5p1+PwHokBlyNtja2
+M8zZavu8G7Xof+kNK4/pKken+SRkbK3IA5Luk1CwVhpnvFQf4+DMUdUwh5F7i3oY
+V0SGH7JnwpfVXeZA7wB9ZPysnJZ3vCwKcwd3J8CDGGIP2gZXfUW4EaLZQl/mtRab
+OH4UVMyZqToHPrBtM6grJGvsnRtEDLwVdryMEhcVl1zRll7m3CrTzvdWmh8kLund
+nwb7KLezQdqIYDLR26rQW6af7BXrp01/F20zHVXBthEGyFxgFeYymuXOV8fJfRuh
+MDjDm1XXwCGnmczksmANufpZ2Kz6l37OLSRh/lhJTlJrecyuSmwKtTV0Bfgze7yi
+3FY7xDQyWYH32OrP0C5WrwHnNdLmUOL8kMpcRTyfdqcyo643HJYyQETVaOikcWtu
+j+j4KySCdF1mr/3QeRmLyw55v6CXg0PI3Zdusulb8/Hj253Tuoj34oFC9n24z8oO
+Wu0e1BunUxhOHAdIE9Jtkx6y22Wm098BeyzRKiiN5dkp3T7Mx4lZckktBe+rzKVh
+GmIgCUr4Y9LbU8alV7511UWpQ2hzflSVIDuso+GUN/F8x1rEMKmbR7pGX+HcCrpO
+29pLxY2eDhg4JB5TlP1f
+=AoO8
 -----END PGP SIGNATURE-----
 
---1AtvaQRkIQxkm1Oe--
+--GdlkuMH+DRYbUHkj--
