@@ -1,118 +1,81 @@
-From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v3 5/6] ASoC: tlv320aic32x4: Support for master clock
-Date: Mon, 27 Jan 2014 13:03:09 +0100
-Message-ID: <1390824190-18376-6-git-send-email-mpa@pengutronix.de>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH v3 2/6] ASoC: tlv320aic32x4: Fix MICPGA input
+	configuration
+Date: Mon, 27 Jan 2014 13:03:06 +0100
+Message-ID: <1390824190-18376-3-git-send-email-mpa@pengutronix.de>
 References: <1390824190-18376-1-git-send-email-mpa@pengutronix.de>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1390824190-18376-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4ABA12625FD
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 13:03:35 +0100 (CET)
+In-Reply-To: <1390824190-18376-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Add support for a master clock passed through DT. The master clock of
-the codec is only active when the codec is in use.
+Currently the Negative Terminal Input Routing Configuration is only set
+when there is a special routing configuration. If we don't use one of
+the inputs IN1 or IN2 as negative terminal input, the PGA and recording
+does not work.
 
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
-Cc: Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+This patch adds a route from CM1L/CM1R to the PGA as negative input by
+default. With this configuration the PGA can amplify all input signals
+and line-in/mic works again.
+
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- .../devicetree/bindings/sound/tlv320aic32x4.txt    |  4 ++++
- sound/soc/codecs/tlv320aic32x4.c                   | 23 ++++++++++++++++++++++
- 2 files changed, 27 insertions(+)
+ sound/soc/codecs/tlv320aic32x4.c | 10 ++++++----
+ sound/soc/codecs/tlv320aic32x4.h |  2 ++
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-index db05510..352be7b 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-@@ -8,6 +8,8 @@ Required properties:
- 
- Optional properties:
-  - reset-gpios: Reset-GPIO phandle with args as described in gpio/gpio.txt
-+ - clocks/clock-names: Clock named 'mclk' for the master clock of the codec.
-+   See clock/clock-bindings.txt for information about the detailed format.
- 
- 
- Example:
-@@ -15,4 +17,6 @@ Example:
- codec: tlv320aic32x4@18 {
- 	compatible = "ti,tlv320aic32x4";
- 	reg = <0x18>;
-+	clocks = <&clks 201>;
-+	clock-names = "mclk";
- };
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 1dd50e4..4f7830d 100644
+index 0a8079b..36a9cb9 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -33,6 +33,7 @@
- #include <linux/i2c.h>
- #include <linux/cdev.h>
- #include <linux/slab.h>
-+#include <linux/clk.h>
+@@ -618,12 +618,14 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
+ 	snd_soc_write(codec, AIC32X4_CMMODE, tmp_reg);
  
- #include <sound/tlv320aic32x4.h>
- #include <sound/core.h>
-@@ -67,6 +68,7 @@ struct aic32x4_priv {
- 	u32 micpga_routing;
- 	bool swapdacs;
- 	int rstn_gpio;
-+	struct clk *mclk;
- };
+ 	/* Mic PGA routing */
+-	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_LMIC_IN2R_10K) {
++	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_LMIC_IN2R_10K)
+ 		snd_soc_write(codec, AIC32X4_LMICPGANIN, AIC32X4_LMICPGANIN_IN2R_10K);
+-	}
+-	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_RMIC_IN1L_10K) {
++	else
++		snd_soc_write(codec, AIC32X4_LMICPGANIN, AIC32X4_LMICPGANIN_CM1L_10K);
++	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_RMIC_IN1L_10K)
+ 		snd_soc_write(codec, AIC32X4_RMICPGANIN, AIC32X4_RMICPGANIN_IN1L_10K);
+-	}
++	else
++		snd_soc_write(codec, AIC32X4_RMICPGANIN, AIC32X4_RMICPGANIN_CM1R_10K);
  
- /* 0dB min, 0.5dB steps */
-@@ -487,8 +489,21 @@ static int aic32x4_mute(struct snd_soc_dai *dai, int mute)
- static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
- 				  enum snd_soc_bias_level level)
- {
-+	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
-+
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
-+		/* Switch on master clock */
-+		if (!IS_ERR(aic32x4->mclk)) {
-+			int ret;
-+
-+			ret = clk_prepare_enable(aic32x4->mclk);
-+			if (ret) {
-+				dev_err(codec->dev, "Failed to enable master clock\n");
-+				return ret;
-+			}
-+		}
-+
- 		/* Switch on PLL */
- 		snd_soc_update_bits(codec, AIC32X4_PLLPR,
- 				    AIC32X4_PLLEN, AIC32X4_PLLEN);
-@@ -516,6 +531,10 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
-+		/* Switch off master clock */
-+		if (!IS_ERR(aic32x4->mclk))
-+			clk_disable_unprepare(aic32x4->mclk);
-+
- 		/* Switch off PLL */
- 		snd_soc_update_bits(codec, AIC32X4_PLLPR,
- 				    AIC32X4_PLLEN, 0);
-@@ -717,6 +736,10 @@ static int aic32x4_i2c_probe(struct i2c_client *i2c,
- 		aic32x4->rstn_gpio = -1;
- 	}
+ 	aic32x4_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
  
-+	aic32x4->mclk = devm_clk_get(&i2c->dev, "mclk");
-+	if (IS_ERR(aic32x4->mclk))
-+		dev_info(&i2c->dev, "No mclk found, continuing without clock\n");
-+
- 	if (gpio_is_valid(aic32x4->rstn_gpio)) {
- 		ret = devm_gpio_request_one(&i2c->dev, aic32x4->rstn_gpio,
- 				GPIOF_OUT_INIT_LOW, "tlv320aic32x4 rstn");
+diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
+index 83795af..995f033 100644
+--- a/sound/soc/codecs/tlv320aic32x4.h
++++ b/sound/soc/codecs/tlv320aic32x4.h
+@@ -120,7 +120,9 @@
+ #define AIC32X4_MICBIAS_2075V		0x60
+ 
+ #define AIC32X4_LMICPGANIN_IN2R_10K	0x10
++#define AIC32X4_LMICPGANIN_CM1L_10K	0x40
+ #define AIC32X4_RMICPGANIN_IN1L_10K	0x10
++#define AIC32X4_RMICPGANIN_CM1R_10K	0x40
+ 
+ #define AIC32X4_LMICPGAVOL_NOGAIN	0x80
+ #define AIC32X4_RMICPGAVOL_NOGAIN	0x80
 -- 
 1.8.5.2
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
