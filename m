@@ -1,65 +1,91 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/4] ASoC: tda998x: add DT documentation
-Date: Mon, 27 Jan 2014 20:56:27 +0000
-Message-ID: <20140127205627.GD11841@sirena.org.uk>
-References: <cover.1390813480.git.moinejf@free.fr>
- <22fafd7e11771ffc25c84ff609d18039f07b7295.1390813481.git.moinejf@free.fr>
- <20140127204302.GY11841@sirena.org.uk>
- <20140127204534.GB15937@n2100.arm.linux.org.uk>
+Subject: Re: [PATCH 2/3] ASoC: atmel_wm8904: make it available
+	to choose clock
+Date: Mon, 27 Jan 2014 20:59:25 +0000
+Message-ID: <20140127205925.GE11841@sirena.org.uk>
+References: <1389669956-2304-1-git-send-email-voice.shen@atmel.com>
+ <1389669956-2304-3-git-send-email-voice.shen@atmel.com>
+ <20140114203650.GX15567@sirena.org.uk> <52D7366B.1030909@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9KMRXrBaLD3S8C0H"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140127204534.GB15937@n2100.arm.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>
+Content-Type: multipart/mixed; boundary="===============3873998622628554329=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D61A7261A7B
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 21:59:38 +0100 (CET)
+In-Reply-To: <52D7366B.1030909@atmel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: alsa-devel@alsa-project.org, Wolfram Sang <wsa@the-dreams.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, nicolas.ferre@atmel.com, Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---9KMRXrBaLD3S8C0H
+--===============3873998622628554329==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KPK+YGx+4g/J2wGm"
+Content-Disposition: inline
+
+
+--KPK+YGx+4g/J2wGm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jan 27, 2014 at 08:45:34PM +0000, Russell King - ARM Linux wrote:
-> On Mon, Jan 27, 2014 at 08:43:02PM +0000, Mark Brown wrote:
-> > On Mon, Jan 27, 2014 at 09:34:49AM +0100, Jean-Francois Moine wrote:
+On Thu, Jan 16, 2014 at 09:31:23AM +0800, Bo Shen wrote:
 
-> > > +	- audio-ports: one or two values.
-> > > +		The first value defines the I2S input port.
-> > > +		The second one, if present, defines the S/PDIF input port.
+> >Shouldn't this code be in the DAI driver?  Otherwise this series looks
+> >fine to me, though the DT folks might have something to say I guess.
 
-> > I take it these are port numbers on the device and it's not possible to
-> > do something like having multiple I2S ports?
+>   For audio on Atmel SoC, it depends on three device nodes, one is
+> SSC node, one is the codec node and the sound node.
+>   The sound node will parse by machine driver, and machine driver is
+> mainly for hardware connection. As the "clk_from_rk_pin" is decided
+> by hardware, so, I put it here.
+>   If I move the code to dai driver, it will parse the sound node in
+> dai driver, I think it will make the code a little bit not explicit.
+> What do you think?
 
-> You can feed it with multiple synchronised I2S streams for the additional
-> channels.
+I think it should just be a property of the DAI device.  It's true that
+the card defines the connections but if something is going to be an
+option that's there for most if not all systems then putting it in the
+device driver means less effort on each integration.
 
-Ah, I feared as much.  The bindings ought to take account of that
-posibility even if the code can't use additional ports yet.  Perhaps
-separate properties for I2S and S/PDIF?
-
---9KMRXrBaLD3S8C0H
+--KPK+YGx+4g/J2wGm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS5sf4AAoJELSic+t+oim9l+AQAJwZVDa/OoV3JumAi8CZgoT0
-rULrwoP9ZkIrI/IdV+YcygDtzE998ulCownvZTSSD1kYPrEafgWKQtPlZzffTX+t
-rcINMh0c5J2QTouy7dkCrRsDYJ9YQhiReWuE6PS8fy6GMo4EjI1yTiFydfZ3HLKo
-heLHLXzm9+J07dsqqAxe3IlRsgDCUvEewgbwz9M0rUCPH3ENPQw8VjXYSWAdPmpO
-8Zqq05YInnd5DSLWPd9mxTjF8QW0Nf+cA4PAVS9wvr7B4grSvT8w55g4LzQIUapo
-nkAa4KqT1wHz+ojKcKGH+nujb2TSkZmcsPnzVjAG469kPnDwUrs40x0LvpcteKg2
-cesfi98228Bay33jM5f/xcAD4jT7/LUSq7s4uRKVZS+PLA83ysoQ348sci9TxbaA
-3oTo74DvZMuDyEfKBAWk5WyfCicRmAst7b+GjfdKXxst9u0YoKagEVDyI85Pf1bn
-0/dJIJL+/+XcE3Ghq2JlK2pNBObi/4BBMO/HeV0CVzAA+TzZES8jsGMcex0LW3Lm
-JVZDTWB5O72cZtF72cEsrip78VrShXJB/mBRqEzl7iPOeiwwjS9WR8Bb9KL3M/vW
-wk23+0+3hsFb1S3k9wZuXhnC/kVYSRYM0TkW54dgd7kT4P6jfQDmRHcNHAZQBSNh
-bnAqTJQLt8+VNUkc8JSY
-=niaY
+iQIcBAEBAgAGBQJS5siqAAoJELSic+t+oim9MHkP/RFle2mFJCWuNpUqfkcVIDF4
+JAqbH3k+5X1gmw5SE8/NQLuwsXb1jfp4AKQBPnw8uu3M6BbVohCavIO8Q8FAYvZq
+XBIlOjoGrgRLjgoCpiC//RXd49IkMW4G7JhbS3mRtaPkVh37JP84kY3hKiQuSvjL
+hZd8I+6Jc0jMfpf+GJE4Sndi0XMOPw1O+h8sIdy8r6ufdcfLz8KVtYpqJ8H8i7Tc
+bUiO2Wto9ntPWOeAThIkqESnAwOvTfHBkQ6JPnpzGn6XyjdnAw5MeNuYcYuBE6wZ
++vu/7IOwAIA2KUMmlq2v+9w+pmeMYYDvmUNyA3sh0hUlqYrZ36Su+le+cimTW2o0
+szdKywT2G8sJp6nWIDDMiab0e54A8qeYX0KW+ptJR8FoyDYCqUxLVKdT5W1UplHV
+r/F7XcbSmQen8B1uCSsflSqvQFJy5of8kioaPQTsCaaDEM0ZYxyW4o/uRf/0mH75
+5zZG6Ic32iJ2/346+DZehoYgEYCcZh49bNR1mVh4cYzjztHprojYSqwQYij+b6PA
+s+3kxTz9pr6wqsmh4ahwy7NTSMAU/kQDMQSvYyIXHWvgdVRAYbJWGVhyVjzf+ldA
+3KTJGr/NKzUH2nAvLrsYugDf167sgcLhvazVw+GkPLSN9WxKIYq/5wHudZvlEpX6
+aREgA0c+Djq7lLUzpGX9
+=S9B2
 -----END PGP SIGNATURE-----
 
---9KMRXrBaLD3S8C0H--
+--KPK+YGx+4g/J2wGm--
+
+--===============3873998622628554329==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3873998622628554329==--
