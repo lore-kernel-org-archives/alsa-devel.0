@@ -1,58 +1,41 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC v3 4/8] ASoC: davinci-evm: HDMI audio support for
- TDA998x trough McASP I2S bus
-Date: Mon, 27 Jan 2014 20:49:10 +0000
-Message-ID: <20140127204910.GB11841@sirena.org.uk>
-References: <cover.1390836773.git.jsarha@ti.com>
- <86fcca2ecf302a695e7fd8199a1d635a67bbfcc8.1390836773.git.jsarha@ti.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 4/4] ASoC: tda998x: adjust the audio hw parameters from
+	EDID
+Date: Mon, 27 Jan 2014 20:49:15 +0000
+Message-ID: <20140127204915.GC15937@n2100.arm.linux.org.uk>
+References: <cover.1390813480.git.moinejf@free.fr> <d99e90932aad1a644fa32ff22fd2cb56b830341b.1390813481.git.moinejf@free.fr> <20140127204441.GZ11841@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gzJEy4voKlV4eANz"
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <86fcca2ecf302a695e7fd8199a1d635a67bbfcc8.1390836773.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, detheridge@ti.com, bcousson@baylibre.com
+In-Reply-To: <20140127204441.GZ11841@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jan 27, 2014 at 08:44:41PM +0000, Mark Brown wrote:
+> On Mon, Jan 27, 2014 at 09:48:54AM +0100, Jean-Francois Moine wrote:
+> 
+> > +		eld_ver = eld[0] >> 3;
+> > +		if (eld_ver != 2 && eld_ver != 31)
+> > +			return 0;
+> > +
+> > +		mnl = eld[4] & 0x1f;
+> > +		if (mnl > 16)
+> > +			return 0;
+> > +
+> > +		sad_count = eld[5] >> 4;
+> > +		sad = eld + 20 + mnl;
+> 
+> Can this parsing code be factored out - it (or large parts of it) should
+> be usable by other HDMI devices shouldn't it?
 
---gzJEy4voKlV4eANz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes, preferably as a generic ALSA helper rather than an ASoC helper -
+I don't see any need for this to be ASoC specific (I have a pure ALSA
+driver which has very similar code in it.)
 
-On Mon, Jan 27, 2014 at 05:37:53PM +0200, Jyri Sarha wrote:
-> Add machine driver support for BeagleBone-Black and other boards with
-> tilcdc support and NXP TDA998X HDMI transmitter connected to McASP
-> port in I2S mode. McASP produces the bit clock for the i2s bus from
-> the masted clock by a simple divider and the available sample rates
-
-I have to say I agree with Lars' comments about where the code to set
-the constraints is here - I don't doubt that these limitations are valid
-but it would be better to factor them into the relevant chip drivers so
-that other systems with similar limitations can be handled correctly
-too.
-
---gzJEy4voKlV4eANz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS5sZDAAoJELSic+t+oim92CEP/i6Lk3eoSGMZhmghkLueNZ5F
-jxY69hZj9Nj5piSWBp7RG0P3XYv0GfMft6/8XM912fZmvbNBGVbBITCDOqTgKEaR
-ZRo2fNHshv33frh7BsxJefYSfs59mhzpB9DKW40+KxNAWOZi6PKg+Bu6KyvVpZca
-tEiovnDetDYtuFx0iPkEiPvYYb1VCUlqTISQlaYNi3G+VQ3xwXclvGkCgZJD37pN
-5w+Yoa0l1Vp3AplfO5q9QZT7HIdqCUzcSnFdeiQBFxr4xxGWOPvIS1hBBgSXFe90
-X5rOKZ6F86lN6UxpEu2Hz6NiozuRQs2/EssUrjG7FM2on/PMtludXUldI15a1GsJ
-l5PruX3HA1ZCivLOBhcSHHZdX7FCnY8EAFXsaCZQVs0TiB34HkvdUHnSdbO6b++q
-NJ/pqwpeLdtGlAzeSb8kEDUZTcY71/ZZccr7J74rruyo4GPZPM8fH3vvbiaOT+Vc
-eZyvGF/k8oORwn/B8F1lYbbc8Me35+zq7VlnD8UtfRS/J4PY77u0dDy9+auERQSN
-0gfP6Tejp+AO9r8GNOUbOAJrK6ehn37beNg9coeUPaBRYrPCT/iG7G0j0CPa+/oN
-Q13Uqp5l+htydZvBKIs3YUkRAVgopXzkg9b/lCpata95ve4UCrlPktXuCspy91VF
-skZ08KotoBP/Y2JA/bdR
-=P3GD
------END PGP SIGNATURE-----
-
---gzJEy4voKlV4eANz--
+-- 
+FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
+in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
+Estimate before purchase was "up to 13.2Mbit".
