@@ -1,21 +1,20 @@
-From: Daniel Turing <mail@danielturing.com>
-Subject: Fwd: [PATCH] fix alsa-tools/hdspmixer for RME 9632 A
-Date: Mon, 27 Jan 2014 10:54:00 +0100
-Message-ID: <CADeOaFp0NyzFppc78jm-Nz3KFUWtamaBA8UdJy6YkP=+5=YWKg@mail.gmail.com>
-References: <CADeOaFr6H_pct9bywOey2p1XVfrT3sKmSDiGO_DS0vuPpcwqUQ@mail.gmail.com>
- <20140123190500.GQ25242@ltw.loris.tv>
- <CADeOaFomxBuURg+byWKtxyv5nRVCXjdFKH8En8fpSt-7+oRbYw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: arizona: Check clocking during
+ hw_params rather than startup
+Date: Mon, 27 Jan 2014 10:55:08 +0000
+Message-ID: <20140127105508.GW11727@sirena.org.uk>
+References: <1390582753-1026-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <52E2A1F2.6070707@metafoo.de>
+ <20140124173754.GD11727@sirena.org.uk>
+ <52E607FE.8010807@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9175586508293776601=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f54.google.com (mail-oa0-f54.google.com
- [209.85.219.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F463261724
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 10:54:00 +0100 (CET)
-Received: by mail-oa0-f54.google.com with SMTP id i4so6453445oah.13
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 01:54:00 -0800 (PST)
-In-Reply-To: <CADeOaFomxBuURg+byWKtxyv5nRVCXjdFKH8En8fpSt-7+oRbYw@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39363261685
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 11:55:18 +0100 (CET)
+In-Reply-To: <52E607FE.8010807@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,124 +24,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Sorry, this should've been CC'd to the list, forwarding here:
 
----------- Forwarded message ----------
-From: Daniel Turing <mail@danielturing.com>
-Date: Mon, Jan 27, 2014 at 10:52 AM
-Subject: Re: [PATCH] fix alsa-tools/hdspmixer for RME 9632 A
-To: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+--===============9175586508293776601==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="my6/OtttYtn8dhky"
+Content-Disposition: inline
 
 
-Adi,
+--my6/OtttYtn8dhky
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-thanks for getting back to me on this.
+On Mon, Jan 27, 2014 at 08:17:18AM +0100, Lars-Peter Clausen wrote:
+> On 01/24/2014 06:37 PM, Mark Brown wrote:
 
-On Thu, Jan 23, 2014 at 8:05 PM, Adrian Knoth <adi@drcomp.erfurt.thur.de> wrote:
-> OTOH, I have to admit I don't fully understand the patch. What you're
-> doing is to increment the number of output channels in case you have an
-> additional input module.
->
-> The input module is handled in HDSPMixerCard.cxx. Is it just a side
-> effect? Because semantically, it is wrong to create output destinations
-> just to get input channels rendered.
->
-> Why is hdspmixer segfaulting? Do you happen to have a backtrace or
-> explanation? This should be part of the commit message.
-I admit i don't fully understand hdspmixer ;)
+> > Thanks, that's about what I was going to write.  The current theory is
+> > that setting the sysclk to zero is the equivalent of a dynamic SYSCLK
+> > flag - with the extensive use of charge pumps and so on in modern
+> > devices on the fly reclocking is normally difficult to do safely so the
+> > idea is that if the machine driver is in a position to reclock it should
+> > set the clock to zero.
 
-Here's the backtrace of the segfault in the unpatched version:
-[dan@demo2 hdspmixer]$ gdb src/hdspmixer
-GNU gdb (GDB) 7.6.2
-Copyright (C) 2013 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-and "show warranty" for details.
-This GDB was configured as "x86_64-unknown-linux-gnu".
-For bug reporting instructions, please see:
-<http://www.gnu.org/software/gdb/bugs/>...
-Reading symbols from
-/home/dan/alsa-tools/alsa-tools-1.0.27/hdspmixer/src/hdspmixer...done.
-(gdb) r
-Starting program: /home/dan/alsa-tools/alsa-tools-1.0.27/hdspmixer/src/hdspmixer
-warning: no loadable sections found in added symbol-file
-system-supplied DSO at 0x7ffff7ffa000
-warning: Could not load shared library symbols for linux-vdso.so.1.
-Do you need "set solib-search-path" or "set sysroot"?
-[Thread debugging using libthread_db enabled]
-Using host libthread_db library "/usr/lib/libthread_db.so.1".
+> It's a bit ugly though to set the clock to 0 in the startup callback of the
+> machine driver and then set it to the actual sysclk in the hw_params callback.
 
-HDSPMixer 1.11 - Copyright (C) 2003 Thomas Charbonnel <thomas@undata.org>
-This program comes with ABSOLUTELY NO WARRANTY
-HDSPMixer is free software, see the file COPYING for details
+If something is doing this I'd expect it to set the clock to zero when
+it is idled rather than during startup() - set_bias_level() is usually a
+good place to do this, or possibly a DAPM widget supplying the clocks in
+the device if the clocks are visible in DAPM.  That's a bit nicer and
+doing it on startup runs into issues with things like bypass paths
+anyway.
 
-Looking for RME cards:
-Card 0: RME Hammerfall HDSP 9632 at 0xfebf0000, irq 17
-HDSP 9632 found!
-1 RME cards card found.
-Initializing default presets
+--my6/OtttYtn8dhky
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Program received signal SIGSEGV, Segmentation fault.
-0x00007ffff71399eb in fl_draw(char const*, int, int, int, int,
-unsigned int, Fl_Image*, int) () from /usr/lib/libfltk.so.1.3
-(gdb) bt
-#0  0x00007ffff71399eb in fl_draw(char const*, int, int, int, int,
-unsigned int, Fl_Image*, int) () from /usr/lib/libfltk.so.1.3
-#1  0x000000000040aa73 in HDSPMixerSelector::draw (this=0x6a8a50) at
-HDSPMixerSelector.cxx:180
-#2  0x00007ffff70f0709 in Fl_Group::draw_child(Fl_Widget&) const ()
-from /usr/lib/libfltk.so.1.3
-#3  0x000000000040a647 in HDSPMixerIOMixer::draw (this=0x6a2360) at
-HDSPMixerIOMixer.cxx:79
-#4  0x00007ffff70f0709 in Fl_Group::draw_child(Fl_Widget&) const ()
-from /usr/lib/libfltk.so.1.3
-#5  0x00007ffff70f08fb in Fl_Group::draw_children() () from
-/usr/lib/libfltk.so.1.3
-#6  0x00007ffff70f0709 in Fl_Group::draw_child(Fl_Widget&) const ()
-from /usr/lib/libfltk.so.1.3
-#7  0x00007ffff711108b in Fl_Scroll::draw_clip(void*, int, int, int,
-int) () from /usr/lib/libfltk.so.1.3
-#8  0x00007ffff7111d29 in Fl_Scroll::draw() () from /usr/lib/libfltk.so.1.3
-#9  0x00007ffff70f0709 in Fl_Group::draw_child(Fl_Widget&) const ()
-from /usr/lib/libfltk.so.1.3
-#10 0x00007ffff70f08fb in Fl_Group::draw_children() () from
-/usr/lib/libfltk.so.1.3
-#11 0x00007ffff70e9707 in Fl_Double_Window::flush(int) () from
-/usr/lib/libfltk.so.1.3
-#12 0x00007ffff70db362 in Fl::flush() () from /usr/lib/libfltk.so.1.3
-#13 0x00007ffff70dc1c5 in Fl::wait(double) () from /usr/lib/libfltk.so.1.3
-#14 0x00007ffff70dc2fd in Fl::run() () from /usr/lib/libfltk.so.1.3
-#15 0x0000000000404433 in main (argc=1, argv=0x7fffffffeb88) at
-hdspmixer.cxx:122
-(gdb)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-It crashes when it tries to render the mixer labels for the inputs
-(top row). Hdspmixer correctly shows 16 channels, but fails to
-initialize the right amount of labels (in HDSPMixerSelector::draw(),
-mvalue()->label() is NULL or some illegal low address value like 0x20
-for the last four channels).
+iQIcBAEBAgAGBQJS5jsJAAoJELSic+t+oim9Th0P/iXko2UHvFH1SjEvlBx/++qM
+MYOD5eD0ZSp0FuRQqOJXlRWRocfJEvWOZY4NeiAq/9OjMNB/MQb1/P+EovjMLUWj
+FvCyDQ6PPH9wN6ufL+9k9g9LLPF91rWjJZ0mImz/f2vCH+A0WJnhkqBKZlfVeuZM
+3N9YgGlTyorgysWBuLCORfsKdEW3e/GIMC3OML4jqktnxyYOoxC9I/g4zgP1cYPl
+y8XTbfrx9lZ52Brz1Y3GFtQOYmEJHcP9yZiJoRa8CjyJTs/4JaqGcVgD/fjGpHoB
+hQ+LGO+BH+61gfCAqMsrXt2n0dlYcWcGTJGLQzXkh9+003AiZO6dsvowT37Dxosc
+aJKEkjHSAalXGRj8ogQwHqOyiYbvY/G7Fc2mUaXwy+BJBUm43CNOB+E62GwpL2di
+ao1+HWJsswJdSpvT54r1ML4mDWreLXbtjBPi2ki8168PIxJ0GX/XycAFuCDiyaLU
+UbNhcb6ZqdVQGUc2x54NSufSTlUTVKdCNqbi0756t+dcDmRf7gpwTWw+uODUKoGV
+l+uKWwh3PGfGttb8V6wyQeLKy25qB2a6T8u/gP874Nr4mW76Zgbx66S6Xcvh07al
+qaklar6nzdY/VG/msxXjRYsSxEJA1xUuwxWr5UCWRGHE7+WP5l6p+cNgIGWUk/ix
+FblhfnDoXl5d0QEqCIVq
+=aL1t
+-----END PGP SIGNATURE-----
 
-So i dont think the labels initialized in HDSPMixerSelector::setLabels
-only relate to outputs, instead they seem to double for inputs and
-outputs.
+--my6/OtttYtn8dhky--
 
-I'm sorry that i have only limited time and energy to work on this. If
-the patch would go thru as it is, i can try to jump thru the hoops for
-"Occasional Developers" though.
-
-Best,
--daniel
+--===============9175586508293776601==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
---
-from the desk of Daniel Turing
-see also: http://danielturing.com
-
-
--- 
-from the desk of Daniel Turing
-see also: http://danielturing.com
+--===============9175586508293776601==--
