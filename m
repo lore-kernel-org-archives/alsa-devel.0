@@ -1,16 +1,15 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v3 2/6] ASoC: tlv320aic32x4: Fix MICPGA input
-	configuration
-Date: Mon, 27 Jan 2014 13:03:06 +0100
-Message-ID: <1390824190-18376-3-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v3 1/6] ASoC: tlv320aic32x4: Fix mono playback
+Date: Mon, 27 Jan 2014 13:03:05 +0100
+Message-ID: <1390824190-18376-2-git-send-email-mpa@pengutronix.de>
 References: <1390824190-18376-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4ABA12625FD
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 13:03:35 +0100 (CET)
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 3BC61264FF0
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 13:03:43 +0100 (CET)
 In-Reply-To: <1390824190-18376-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,57 +24,66 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Currently the Negative Terminal Input Routing Configuration is only set
-when there is a special routing configuration. If we don't use one of
-the inputs IN1 or IN2 as negative terminal input, the PGA and recording
-does not work.
+Playback of a mono stream should output the same stream on both
+channels. At the moment only the left analog signal is valid, the right
+one is just noise.
 
-This patch adds a route from CM1L/CM1R to the PGA as negative input by
-default. With this configuration the PGA can amplify all input signals
-and line-in/mic works again.
+This patch maps the left digital channel onto both DACs when receiving a
+mono stream.
 
 Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 10 ++++++----
- sound/soc/codecs/tlv320aic32x4.h |  2 ++
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/codecs/tlv320aic32x4.c | 18 +++++++++++-------
+ sound/soc/codecs/tlv320aic32x4.h |  1 +
+ 2 files changed, 12 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 0a8079b..36a9cb9 100644
+index 7639601..0a8079b 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -618,12 +618,14 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
+@@ -450,6 +450,17 @@ static int aic32x4_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 	snd_soc_write(codec, AIC32X4_IFACE1, data);
+ 
++	if (params_channels(params) == 1) {
++		data = AIC32X4_RDAC2LCHN | AIC32X4_LDAC2LCHN;
++	} else {
++		if (aic32x4->swapdacs)
++			data = AIC32X4_RDAC2LCHN | AIC32X4_LDAC2RCHN;
++		else
++			data = AIC32X4_LDAC2LCHN | AIC32X4_RDAC2RCHN;
++	}
++	snd_soc_update_bits(codec, AIC32X4_DACSETUP, AIC32X4_DAC_CHAN_MASK,
++			data);
++
+ 	return 0;
+ }
+ 
+@@ -606,13 +617,6 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
+ 	}
  	snd_soc_write(codec, AIC32X4_CMMODE, tmp_reg);
  
+-	/* Do DACs need to be swapped? */
+-	if (aic32x4->swapdacs) {
+-		snd_soc_write(codec, AIC32X4_DACSETUP, AIC32X4_LDAC2RCHN | AIC32X4_RDAC2LCHN);
+-	} else {
+-		snd_soc_write(codec, AIC32X4_DACSETUP, AIC32X4_LDAC2LCHN | AIC32X4_RDAC2RCHN);
+-	}
+-
  	/* Mic PGA routing */
--	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_LMIC_IN2R_10K) {
-+	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_LMIC_IN2R_10K)
+ 	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_LMIC_IN2R_10K) {
  		snd_soc_write(codec, AIC32X4_LMICPGANIN, AIC32X4_LMICPGANIN_IN2R_10K);
--	}
--	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_RMIC_IN1L_10K) {
-+	else
-+		snd_soc_write(codec, AIC32X4_LMICPGANIN, AIC32X4_LMICPGANIN_CM1L_10K);
-+	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_RMIC_IN1L_10K)
- 		snd_soc_write(codec, AIC32X4_RMICPGANIN, AIC32X4_RMICPGANIN_IN1L_10K);
--	}
-+	else
-+		snd_soc_write(codec, AIC32X4_RMICPGANIN, AIC32X4_RMICPGANIN_CM1R_10K);
- 
- 	aic32x4_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
 diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
-index 83795af..995f033 100644
+index 3577422..83795af 100644
 --- a/sound/soc/codecs/tlv320aic32x4.h
 +++ b/sound/soc/codecs/tlv320aic32x4.h
-@@ -120,7 +120,9 @@
- #define AIC32X4_MICBIAS_2075V		0x60
+@@ -138,6 +138,7 @@
+ #define AIC32X4_LDAC2RCHN		(0x02 << 4)
+ #define AIC32X4_LDAC2LCHN		(0x01 << 4)
+ #define AIC32X4_RDAC2RCHN		(0x01 << 2)
++#define AIC32X4_DAC_CHAN_MASK		0x3c
  
- #define AIC32X4_LMICPGANIN_IN2R_10K	0x10
-+#define AIC32X4_LMICPGANIN_CM1L_10K	0x40
- #define AIC32X4_RMICPGANIN_IN1L_10K	0x10
-+#define AIC32X4_RMICPGANIN_CM1R_10K	0x40
- 
- #define AIC32X4_LMICPGAVOL_NOGAIN	0x80
- #define AIC32X4_RMICPGAVOL_NOGAIN	0x80
+ #define AIC32X4_SSTEP2WCLK		0x01
+ #define AIC32X4_MUTEON			0x0C
 -- 
 1.8.5.2
