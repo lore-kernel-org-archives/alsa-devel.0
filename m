@@ -1,44 +1,30 @@
 From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH v2 3/3] Binding: atmel-wm8904: add option to choose clock
-Date: Mon, 27 Jan 2014 14:55:26 +0800
-Message-ID: <1390805726-1841-4-git-send-email-voice.shen@atmel.com>
-References: <1390805726-1841-1-git-send-email-voice.shen@atmel.com>
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <1390805726-1841-1-git-send-email-voice.shen@atmel.com>
-Sender: linux-doc-owner@vger.kernel.org
+Subject: [PATCH v2 0/3] ASoC: atmel_ssc_dai: add option to choose clock
+Date: Mon, 27 Jan 2014 14:55:23 +0800
+Message-ID: <1390805726-1841-1-git-send-email-voice.shen@atmel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Bo Shen <voice.shen@atmel.com>, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Landley <rob@landley.net>, Mark Brown <broonie@linaro.org>, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Bo Shen <voice.shen@atmel.com>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, linux-doc@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Stephen Warren <swarren@wwwdotorg.org>, Wolfram Sang <wsa@the-dreams.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Mark Brown <broonie@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Rob Herring <rob.herring@calxeda.com>, Rob Landley <rob@landley.net>
 List-Id: alsa-devel@alsa-project.org
 
-Add the option to choose clock on which pin input to SSC (as slave).
-Default is on TK pin to SSC, add "atmel,clk-from-rk-pin" option to
-specify the clock is on RK pin to SSC.
+When SSC work in slave mode, the clock can come from TK pin and also
+can come from RK pin, this is hardware design decided. So, make it
+available to choose where the clock from.
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
----
 Changes in v2:
   - using "-" replace "_" in binding document
 
- Documentation/devicetree/bindings/sound/atmel-wm8904.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+Bo Shen (3):
+  ASoC: atmel_ssc_dai: make option to choose clock
+  ASoC: atmel_wm8904: make it available to choose clock
+  Binding: atmel-wm8904: add option to choose clock
 
-diff --git a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
-index 8bbe50c..2d86e2b 100644
---- a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
-+++ b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
-@@ -33,6 +33,12 @@ Required properties:
- 
- Optional properties:
-   - pinctrl-names, pinctrl-0: Please refer to pinctrl-bindings.txt
-+  - atmel,clk-from-rk-pin: bool property.
-+     - When SSC works in slave mode, according to the hardware design, the
-+       clock can get from TK pin, and also can get from RK pin. So, add
-+       this parameter to choose where the clock from.
-+     - By default the clock is from TK pin, if the clock from RK pin, this
-+       property is needed.
- 
- Example:
- sound {
+ Documentation/devicetree/bindings/sound/atmel-wm8904.txt |  6 ++++++
+ sound/soc/atmel/atmel_ssc_dai.c                          | 16 ++++++++++++----
+ sound/soc/atmel/atmel_ssc_dai.h                          |  1 +
+ sound/soc/atmel/atmel_wm8904.c                           | 10 ++++++++++
+ 4 files changed, 29 insertions(+), 4 deletions(-)
+
 -- 
 1.8.5.2
-
