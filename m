@@ -1,19 +1,20 @@
 From: Ionica Bizau <bizauionica@yahoo.com>
 Subject: Re: External sound card issue
-Date: Mon, 27 Jan 2014 04:14:03 -0800 (PST)
-Message-ID: <1390824843.46971.YahooMailNeo@web162301.mail.bf1.yahoo.com>
+Date: Mon, 27 Jan 2014 04:15:03 -0800 (PST)
+Message-ID: <1390824903.41806.YahooMailNeo@web162305.mail.bf1.yahoo.com>
 References: <CAEiHY5j=K874m_Jk7ws4eOqts855oSHqY0HUrp_A5WwxFoDr=Q@mail.gmail.com>	<52DD1A66.9050909@ladisch.de>	<CAN8cciYR_9Le-tX-CLBjfnYQ1+CuexKzxpxberVkkV6jR_c50A@mail.gmail.com>	<1390398693.24097.YahooMailNeo@web162304.mail.bf1.yahoo.com>	<52E54D7B.3040408@ladisch.de>	<1390765545.16173.YahooMailNeo@web162301.mail.bf1.yahoo.com>
  <s5ha9ehkdk5.wl%tiwai@suse.de>
+ <1390824843.46971.YahooMailNeo@web162301.mail.bf1.yahoo.com>
 Reply-To: Ionica Bizau <bizauionica@yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm1-vm1.bullet.mail.bf1.yahoo.com
- (nm1-vm1.bullet.mail.bf1.yahoo.com [98.139.213.163])
- by alsa0.perex.cz (Postfix) with ESMTP id C8080261B1E
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 13:14:04 +0100 (CET)
-In-Reply-To: <s5ha9ehkdk5.wl%tiwai@suse.de>
+Received: from nm19-vm0.bullet.mail.bf1.yahoo.com
+ (nm19-vm0.bullet.mail.bf1.yahoo.com [98.139.213.162])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F8F92625E0
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 13:15:05 +0100 (CET)
+In-Reply-To: <1390824843.46971.YahooMailNeo@web162301.mail.bf1.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,6 +27,18 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
+
+I still get the Broken pipe error...
+
+ionicabizau@laptop:~$ modprobe snd-usb-audio ignore_ctl_error=3D1
+ionicabizau@laptop:~$ alsamixer
+cannot load mixer controls: Broken pipe
+
+
+
+
+On , Ionica Bizau <bizauionica@yahoo.com> wrote:
+ =
 
 When I run the first command:
 
@@ -74,7 +87,8 @@ Takashi
 > Ionica Bizau wrote:
 > > $ amixer -c1 cget name=3D'PCM Capture Source'
 > > numid=3D7,iface=3DMIXER,name=3D'PCM Capture Source'
-> >=A0=A0 ; type=3DENUMERATED,access=3Drw------,values=3D1,items=3D2
+> >=A0=A0 ;
+ type=3DENUMERATED,access=3Drw------,values=3D1,items=3D2
 > >=A0=A0 ; Item #0 'Unit 22'
 > >=A0=A0 ; Item #1 'Unit 22'
 > > amixer: Control hw:1 element read error: Broken pipe
