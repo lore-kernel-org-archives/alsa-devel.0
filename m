@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 5/6] ASoC: tlv320aic32x4: Support for
-	master clock
-Date: Mon, 27 Jan 2014 18:17:07 +0000
-Message-ID: <20140127181707.GD11841@sirena.org.uk>
-References: <1390824190-18376-1-git-send-email-mpa@pengutronix.de>
- <1390824190-18376-6-git-send-email-mpa@pengutronix.de>
+Subject: Re: [PATCH v2 3/3] Binding: atmel-wm8904: add option
+	to choose clock
+Date: Mon, 27 Jan 2014 19:31:49 +0000
+Message-ID: <20140127193149.GQ11841@sirena.org.uk>
+References: <1390805726-1841-1-git-send-email-voice.shen@atmel.com>
+ <1390805726-1841-4-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8083011972080772362=="
+Content-Type: multipart/mixed; boundary="===============4922891855099421353=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A5E6261AA4
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 19:17:17 +0100 (CET)
-In-Reply-To: <1390824190-18376-6-git-send-email-mpa@pengutronix.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id ECBF3261ACE
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 20:32:05 +0100 (CET)
+In-Reply-To: <1390805726-1841-4-git-send-email-voice.shen@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,67 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de, Kumar Gala <galak@codeaurora.org>
+To: Bo Shen <voice.shen@atmel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, nicolas.ferre@atmel.com, linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>, Rob Landley <rob@landley.net>, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8083011972080772362==
+--===============4922891855099421353==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8nsIa27JVQLqB7/C"
+	protocol="application/pgp-signature"; boundary="aNvCJ41Feu8IgPyB"
 Content-Disposition: inline
 
 
---8nsIa27JVQLqB7/C
+--aNvCJ41Feu8IgPyB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 27, 2014 at 01:03:09PM +0100, Markus Pargmann wrote:
+On Mon, Jan 27, 2014 at 02:55:26PM +0800, Bo Shen wrote:
 
->  	case SND_SOC_BIAS_STANDBY:
-> +		/* Switch off master clock */
-> +		if (!IS_ERR(aic32x4->mclk))
-> +			clk_disable_unprepare(aic32x4->mclk);
-> +
->  		/* Switch off PLL */
->  		snd_soc_update_bits(codec, AIC32X4_PLLPR,
->  				    AIC32X4_PLLEN, 0);
+> diff --git a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt b/D=
+ocumentation/devicetree/bindings/sound/atmel-wm8904.txt
+> index 8bbe50c..2d86e2b 100644
+> --- a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
+> +++ b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
+> @@ -33,6 +33,12 @@ Required properties:
+> =20
+>  Optional properties:
+>    - pinctrl-names, pinctrl-0: Please refer to pinctrl-bindings.txt
+> +  - atmel,clk-from-rk-pin: bool property.
+> +     - When SSC works in slave mode, according to the hardware design, t=
+he
+> +       clock can get from TK pin, and also can get from RK pin. So, add
+> +       this parameter to choose where the clock from.
+> +     - By default the clock is from TK pin, if the clock from RK pin, th=
+is
+> +       property is needed.
 
-This looks like it's disabling the MCLK before disabling the PLL - if
-the two are being disabled together I would expect to see the other way
-around.
+Can this be made a property of the SSC device so that it's available for
+all cards using it rather than just this one?  That would also address
+the issue with the way the configuration is passed to the controller
+that Lars-Peter identified.
 
-Otherwise this looks good to me.
-
---8nsIa27JVQLqB7/C
+--aNvCJ41Feu8IgPyB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS5qKgAAoJELSic+t+oim9i0YP/jUIjww9I9eedf5x/YqL/0jH
-W7jK/pJJ23lcIWTkr/nBXzJPDNZm9r3B6hE0okH3QgxSMpnuRaGINkzistabeOxZ
-e0m0hdGuJ5ZKkJGdMmi/czqd7354xXFv5wgPvhHcZV2OWg0pgajXBAEV1vOdCYXU
-esBpD2X5Ty28McYkJIQlyAARzBN7vosVSK2IlXPQdkiF3+QiHw0FtaSmJO+Momdc
-KMBVRZXNJSWQ8w06VlrFv5EWKF4rYIKWMXFL1f4uyEu7T0VwOHRuQWGjk8gDfTN8
-jCjflLlajWdsR8uay+1tFDWRd8HPLAThj0n6QEMBP0ZzOnXFIje80rDBlUxaC55y
-mEzxJ9LNhyklp33yGb4nHVsUqStaohJNN5yMJ1ayQFgu/9BjKqw08hvgkp+rjvdY
-lH3ZGH2YSzKl/RRSvaldvAB0Ncn7R1dtwmy62ORP+3nMUrmrVts1Qoo+o6PtnXVf
-/DRVKZ1j9sB/1dl2JmvxEAh3pi+Xg96L3YmShWfn2rRRrUtGY8o3kCCsBhSTBRKu
-Q14e4vOeDZ4xHikCiU8qAiSDvODVHh5dBefc0y1wSRjeFZfPbH2A59Eg61N9fpwl
-zDcGmfQoJDRzcF2i00H1pz23yvmFhNCXD9aivRMc3CevQvpPQ4UDW2pjS9NiH13O
-DYq4SN3TVYoHkazC8Es0
-=gER7
+iQIcBAEBAgAGBQJS5rQiAAoJELSic+t+oim9SaQP/j/gJn19O2uDOb/Vy9xTetL7
+xdX9xq8LknromRrCXPIzOafVM3+UK+NvPI1cgA9PYCaJ61djg/KfR53tHrpscmzk
+V1xlmCfNsgtH0H1bW3LGRXq6PAwcZCj4ppL1Z7EDbT1j5OpSXQvKYN5WP8j2lhPo
+67NYWnvDDliVVoH39gzaw1o+c/mEYfb0seAFOyXFUPwqxKvbY5/PpUJaz+6AT7ZS
+BKI5BlVcEsqoyBSbvHiIPc/x5OFxPv1EQLHwh866NPXoYdYHvkn71jjSwkGd/2b/
+GZ8Ut+NC19uK9/ObsU35jQfHSck6OJzgoKqVxWU8ggbdVUgxC8tMy3mnrrJ1qH73
+QqTeyDSmkwBkpnAVpBBqSB5fKYSm0EMSLGJoftHdVOmHcEXeDRyQhBxcuGpeXSMa
+ICmRR+/4iJjF6Ok4IiLzYYritzCUe8Qt7PNPvqvNTEHbdR+nPa0AlWYt7fRf4lDO
+XUq4WHcHTXUgw5IEayRsqWOCwhF22IqyrrLymfFtJHxQR9c4wly4RCV6TGXV/L1c
+deikYCcxMlf4LCFfKOIBVxk0WFnVNKyMlghIuyZ7KOwzIg5zyJNTsyEdzZfiy2dR
+kOkfPUqIMC8IReySjDlU0fARWpTY/tIODT1BwbmPIhxBZQ35ZZ1hD4+645A/jfd3
+RKzcMdxMYzH6SnA7deBd
+=ubGp
 -----END PGP SIGNATURE-----
 
---8nsIa27JVQLqB7/C--
+--aNvCJ41Feu8IgPyB--
 
---===============8083011972080772362==
+--===============4922891855099421353==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8083011972080772362==--
+--===============4922891855099421353==--
