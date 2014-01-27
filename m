@@ -1,7 +1,7 @@
 From: Ionica Bizau <bizauionica@yahoo.com>
 Subject: Re: External sound card issue
-Date: Mon, 27 Jan 2014 04:15:12 -0800 (PST)
-Message-ID: <1390824912.4495.YahooMailNeo@web162306.mail.bf1.yahoo.com>
+Date: Mon, 27 Jan 2014 04:15:55 -0800 (PST)
+Message-ID: <1390824955.17611.YahooMailNeo@web162303.mail.bf1.yahoo.com>
 References: <CAEiHY5j=K874m_Jk7ws4eOqts855oSHqY0HUrp_A5WwxFoDr=Q@mail.gmail.com>	<52DD1A66.9050909@ladisch.de>	<CAN8cciYR_9Le-tX-CLBjfnYQ1+CuexKzxpxberVkkV6jR_c50A@mail.gmail.com>	<1390398693.24097.YahooMailNeo@web162304.mail.bf1.yahoo.com>	<52E54D7B.3040408@ladisch.de>	<1390765545.16173.YahooMailNeo@web162301.mail.bf1.yahoo.com>
  <s5ha9ehkdk5.wl%tiwai@suse.de>
  <1390824843.46971.YahooMailNeo@web162301.mail.bf1.yahoo.com>
@@ -11,10 +11,10 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm10-vm0.bullet.mail.bf1.yahoo.com
- (nm10-vm0.bullet.mail.bf1.yahoo.com [98.139.213.147])
- by alsa0.perex.cz (Postfix) with ESMTP id 78484261B1E
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 13:15:13 +0100 (CET)
+Received: from nm7.bullet.mail.bf1.yahoo.com (nm7.bullet.mail.bf1.yahoo.com
+ [98.139.212.166])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C7EB264F0F
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 13:15:56 +0100 (CET)
 In-Reply-To: <1390824903.41806.YahooMailNeo@web162305.mail.bf1.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,7 +29,9 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+I think I will return it to shop.
 
+What external sound card do you recommend me to buy?
 
 
 
