@@ -1,7 +1,7 @@
 From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v3 4/6] ASoC: tlv320aic32x4: DT support
-Date: Mon, 27 Jan 2014 13:03:08 +0100
-Message-ID: <1390824190-18376-5-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v3 5/6] ASoC: tlv320aic32x4: Support for master clock
+Date: Mon, 27 Jan 2014 13:03:09 +0100
+Message-ID: <1390824190-18376-6-git-send-email-mpa@pengutronix.de>
 References: <1390824190-18376-1-git-send-email-mpa@pengutronix.de>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <1390824190-18376-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
@@ -10,8 +10,8 @@ To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Add DT support for this codec. The bindings differ a bit from the aic3x
-codec bindings, so I created a new binding documentation.
+Add support for a master clock passed through DT. The master clock of
+the codec is only active when the codec is in use.
 
 Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
@@ -21,101 +21,94 @@ Cc: Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- .../devicetree/bindings/sound/tlv320aic32x4.txt    | 18 ++++++++++++++++
- sound/soc/codecs/tlv320aic32x4.c                   | 25 ++++++++++++++++++++++
- 2 files changed, 43 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
+ .../devicetree/bindings/sound/tlv320aic32x4.txt    |  4 ++++
+ sound/soc/codecs/tlv320aic32x4.c                   | 23 ++++++++++++++++++++++
+ 2 files changed, 27 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-new file mode 100644
-index 0000000..db05510
---- /dev/null
+index db05510..352be7b 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
 +++ b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-@@ -0,0 +1,18 @@
-+Texas Instruments - tlv320aic32x4 Codec module
-+
-+The tlv320aic32x4 serial control bus communicates through I2C protocols
-+
-+Required properties:
-+ - compatible: Should be "ti,tlv320aic32x4"
-+ - reg: I2C slave address
-+
-+Optional properties:
-+ - reset-gpios: Reset-GPIO phandle with args as described in gpio/gpio.txt
-+
-+
-+Example:
-+
-+codec: tlv320aic32x4@18 {
-+	compatible = "ti,tlv320aic32x4";
-+	reg = <0x18>;
-+};
+@@ -8,6 +8,8 @@ Required properties:
+ 
+ Optional properties:
+  - reset-gpios: Reset-GPIO phandle with args as described in gpio/gpio.txt
++ - clocks/clock-names: Clock named 'mclk' for the master clock of the codec.
++   See clock/clock-bindings.txt for information about the detailed format.
+ 
+ 
+ Example:
+@@ -15,4 +17,6 @@ Example:
+ codec: tlv320aic32x4@18 {
+ 	compatible = "ti,tlv320aic32x4";
+ 	reg = <0x18>;
++	clocks = <&clks 201>;
++	clock-names = "mclk";
+ };
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index c541213..1dd50e4 100644
+index 1dd50e4..4f7830d 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -29,6 +29,7 @@
- #include <linux/delay.h>
- #include <linux/pm.h>
- #include <linux/gpio.h>
-+#include <linux/of_gpio.h>
+@@ -33,6 +33,7 @@
  #include <linux/i2c.h>
  #include <linux/cdev.h>
  #include <linux/slab.h>
-@@ -669,11 +670,22 @@ static struct snd_soc_codec_driver soc_codec_dev_aic32x4 = {
- 	.num_dapm_routes = ARRAY_SIZE(aic32x4_dapm_routes),
++#include <linux/clk.h>
+ 
+ #include <sound/tlv320aic32x4.h>
+ #include <sound/core.h>
+@@ -67,6 +68,7 @@ struct aic32x4_priv {
+ 	u32 micpga_routing;
+ 	bool swapdacs;
+ 	int rstn_gpio;
++	struct clk *mclk;
  };
  
-+static int aic32x4_parse_dt(struct aic32x4_priv *aic32x4,
-+		struct device_node *np)
-+{
-+	aic32x4->swapdacs = false;
-+	aic32x4->micpga_routing = 0;
-+	aic32x4->rstn_gpio = of_get_named_gpio(np, "reset-gpios", 0);
-+
-+	return 0;
-+}
-+
- static int aic32x4_i2c_probe(struct i2c_client *i2c,
- 			     const struct i2c_device_id *id)
+ /* 0dB min, 0.5dB steps */
+@@ -487,8 +489,21 @@ static int aic32x4_mute(struct snd_soc_dai *dai, int mute)
+ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
+ 				  enum snd_soc_bias_level level)
  {
- 	struct aic32x4_pdata *pdata = i2c->dev.platform_data;
- 	struct aic32x4_priv *aic32x4;
-+	struct device_node *np = i2c->dev.of_node;
- 	int ret;
- 
- 	aic32x4 = devm_kzalloc(&i2c->dev, sizeof(struct aic32x4_priv),
-@@ -692,6 +704,12 @@ static int aic32x4_i2c_probe(struct i2c_client *i2c,
- 		aic32x4->swapdacs = pdata->swapdacs;
- 		aic32x4->micpga_routing = pdata->micpga_routing;
- 		aic32x4->rstn_gpio = pdata->rstn_gpio;
-+	} else if (np) {
-+		ret = aic32x4_parse_dt(aic32x4, np);
-+		if (ret) {
-+			dev_err(&i2c->dev, "Failed to parse DT node\n");
-+			return ret;
-+		}
- 	} else {
- 		aic32x4->power_cfg = 0;
- 		aic32x4->swapdacs = false;
-@@ -723,10 +741,17 @@ static const struct i2c_device_id aic32x4_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, aic32x4_i2c_id);
- 
-+static const struct of_device_id aic32x4_of_id[] = {
-+	{ .compatible = "ti,tlv320aic32x4", },
-+	{ /* senitel */ }
-+};
-+MODULE_DEVICE_TABLE(of, aic32x4_of_id);
++	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
 +
- static struct i2c_driver aic32x4_i2c_driver = {
- 	.driver = {
- 		.name = "tlv320aic32x4",
- 		.owner = THIS_MODULE,
-+		.of_match_table = aic32x4_of_id,
- 	},
- 	.probe =    aic32x4_i2c_probe,
- 	.remove =   aic32x4_i2c_remove,
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
++		/* Switch on master clock */
++		if (!IS_ERR(aic32x4->mclk)) {
++			int ret;
++
++			ret = clk_prepare_enable(aic32x4->mclk);
++			if (ret) {
++				dev_err(codec->dev, "Failed to enable master clock\n");
++				return ret;
++			}
++		}
++
+ 		/* Switch on PLL */
+ 		snd_soc_update_bits(codec, AIC32X4_PLLPR,
+ 				    AIC32X4_PLLEN, AIC32X4_PLLEN);
+@@ -516,6 +531,10 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
++		/* Switch off master clock */
++		if (!IS_ERR(aic32x4->mclk))
++			clk_disable_unprepare(aic32x4->mclk);
++
+ 		/* Switch off PLL */
+ 		snd_soc_update_bits(codec, AIC32X4_PLLPR,
+ 				    AIC32X4_PLLEN, 0);
+@@ -717,6 +736,10 @@ static int aic32x4_i2c_probe(struct i2c_client *i2c,
+ 		aic32x4->rstn_gpio = -1;
+ 	}
+ 
++	aic32x4->mclk = devm_clk_get(&i2c->dev, "mclk");
++	if (IS_ERR(aic32x4->mclk))
++		dev_info(&i2c->dev, "No mclk found, continuing without clock\n");
++
+ 	if (gpio_is_valid(aic32x4->rstn_gpio)) {
+ 		ret = devm_gpio_request_one(&i2c->dev, aic32x4->rstn_gpio,
+ 				GPIOF_OUT_INIT_LOW, "tlv320aic32x4 rstn");
 -- 
 1.8.5.2
 
