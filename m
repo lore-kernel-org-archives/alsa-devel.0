@@ -1,20 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: arizona: Check clocking
-	during	hw_params rather than startup
-Date: Mon, 27 Jan 2014 11:25:26 +0000
-Message-ID: <20140127112526.GF11589@opensource.wolfsonmicro.com>
-References: <1390582753-1026-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <52E2A1F2.6070707@metafoo.de> <20140124173754.GD11727@sirena.org.uk>
- <52E607FE.8010807@metafoo.de> <20140127105508.GW11727@sirena.org.uk>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH v3 3/6] ASoC: tlv320aic32x4: Use signed int
+	mixer controls
+Date: Mon, 27 Jan 2014 13:03:07 +0100
+Message-ID: <1390824190-18376-4-git-send-email-mpa@pengutronix.de>
+References: <1390824190-18376-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B1087261685
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 12:32:01 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20140127105508.GW11727@sirena.org.uk>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 811D8261B1E
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 13:03:29 +0100 (CET)
+In-Reply-To: <1390824190-18376-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 27, 2014 at 10:55:08AM +0000, Mark Brown wrote:
-> On Mon, Jan 27, 2014 at 08:17:18AM +0100, Lars-Peter Clausen wrote:
-> > On 01/24/2014 06:37 PM, Mark Brown wrote:
-> 
-> > > Thanks, that's about what I was going to write.  The current theory is
-> > > that setting the sysclk to zero is the equivalent of a dynamic SYSCLK
-> > > flag - with the extensive use of charge pumps and so on in modern
-> > > devices on the fly reclocking is normally difficult to do safely so the
-> > > idea is that if the machine driver is in a position to reclock it should
-> > > set the clock to zero.
-> 
-> > It's a bit ugly though to set the clock to 0 in the startup callback of the
-> > machine driver and then set it to the actual sysclk in the hw_params callback.
-> 
-> If something is doing this I'd expect it to set the clock to zero when
-> it is idled rather than during startup() - set_bias_level() is usually a
-> good place to do this, or possibly a DAPM widget supplying the clocks in
-> the device if the clocks are visible in DAPM.  That's a bit nicer and
-> doing it on startup runs into issues with things like bypass paths
-> anyway.
+There are a number of mixer controls that support negative values. They
+use signed values for this with different number of bits for the values.
+Currently they only support the positive range.
 
-Yeah I think the existing support is actually likely sufficent
-looks likely this was actually an issue with the machine driver
-in question, apologies for the noise.
+This patch replaces the unsigned mixers with signed mixers to support
+the full range.
 
-Thanks,
-Charles
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
+ sound/soc/codecs/tlv320aic32x4.c | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 36a9cb9..c541213 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -68,18 +68,24 @@ struct aic32x4_priv {
+ 	int rstn_gpio;
+ };
+ 
+-/* 0dB min, 1dB steps */
+-static DECLARE_TLV_DB_SCALE(tlv_step_1, 0, 100, 0);
+ /* 0dB min, 0.5dB steps */
+ static DECLARE_TLV_DB_SCALE(tlv_step_0_5, 0, 50, 0);
++/* -63.5dB min, 0.5dB steps */
++static DECLARE_TLV_DB_SCALE(tlv_pcm, -6350, 50, 0);
++/* -6dB min, 1dB steps */
++static DECLARE_TLV_DB_SCALE(tlv_driver_gain, -600, 100, 0);
++/* -12dB min, 0.5dB steps */
++static DECLARE_TLV_DB_SCALE(tlv_adc_vol, -1200, 50, 0);
+ 
+ static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
+-	SOC_DOUBLE_R_TLV("PCM Playback Volume", AIC32X4_LDACVOL,
+-			AIC32X4_RDACVOL, 0, 0x30, 0, tlv_step_0_5),
+-	SOC_DOUBLE_R_TLV("HP Driver Gain Volume", AIC32X4_HPLGAIN,
+-			AIC32X4_HPRGAIN, 0, 0x1D, 0, tlv_step_1),
+-	SOC_DOUBLE_R_TLV("LO Driver Gain Volume", AIC32X4_LOLGAIN,
+-			AIC32X4_LORGAIN, 0, 0x1D, 0, tlv_step_1),
++	SOC_DOUBLE_R_S_TLV("PCM Playback Volume", AIC32X4_LDACVOL,
++			AIC32X4_RDACVOL, 0, -0x7f, 0x30, 7, 0, tlv_pcm),
++	SOC_DOUBLE_R_S_TLV("HP Driver Gain Volume", AIC32X4_HPLGAIN,
++			AIC32X4_HPRGAIN, 0, -0x6, 0x1d, 5, 0,
++			tlv_driver_gain),
++	SOC_DOUBLE_R_S_TLV("LO Driver Gain Volume", AIC32X4_LOLGAIN,
++			AIC32X4_LORGAIN, 0, -0x6, 0x1d, 5, 0,
++			tlv_driver_gain),
+ 	SOC_DOUBLE_R("HP DAC Playback Switch", AIC32X4_HPLGAIN,
+ 			AIC32X4_HPRGAIN, 6, 0x01, 1),
+ 	SOC_DOUBLE_R("LO DAC Playback Switch", AIC32X4_LOLGAIN,
+@@ -90,8 +96,8 @@ static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
+ 	SOC_SINGLE("ADCFGA Left Mute Switch", AIC32X4_ADCFGA, 7, 1, 0),
+ 	SOC_SINGLE("ADCFGA Right Mute Switch", AIC32X4_ADCFGA, 3, 1, 0),
+ 
+-	SOC_DOUBLE_R_TLV("ADC Level Volume", AIC32X4_LADCVOL,
+-			AIC32X4_RADCVOL, 0, 0x28, 0, tlv_step_0_5),
++	SOC_DOUBLE_R_S_TLV("ADC Level Volume", AIC32X4_LADCVOL,
++			AIC32X4_RADCVOL, 0, -0x18, 0x28, 6, 0, tlv_adc_vol),
+ 	SOC_DOUBLE_R_TLV("PGA Level Volume", AIC32X4_LMICPGAVOL,
+ 			AIC32X4_RMICPGAVOL, 0, 0x5f, 0, tlv_step_0_5),
+ 
+-- 
+1.8.5.2
