@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 6/6] ASoC: tlv320aic32x4: Support for
-	regulators
-Date: Mon, 27 Jan 2014 15:15:33 +0000
-Message-ID: <20140127151533.GA11727@sirena.org.uk>
-References: <1390824190-18376-1-git-send-email-mpa@pengutronix.de>
- <1390824190-18376-7-git-send-email-mpa@pengutronix.de>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH RFC v3 0/8] Beaglebone-Black HDMI audio
+Date: Mon, 27 Jan 2014 17:37:49 +0200
+Message-ID: <cover.1390836773.git.jsarha@ti.com>
+References: <y>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7975847291033132783=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E31C261B1E
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 16:15:48 +0100 (CET)
-In-Reply-To: <1390824190-18376-7-git-send-email-mpa@pengutronix.de>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A36E261B1E
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2014 16:38:16 +0100 (CET)
+In-Reply-To: <y>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,67 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+To: linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, broonie@kernel.org
+Cc: peter.ujfalusi@ti.com, detheridge@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Changes since RFC v2 version of the patches:
+- Dropped out already applied:
+  ASoC: hdmi-codec: Add devicetree binding with documentation
+- Addresses Mark's comments here:
+  http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/070605.html
+  - ASoC: davinci-evm: Add named clock reference to DT bindings
+    - Get rid of unnecessary castings
+    - Add mclk NULL checks
+    - Use devm_clk_get()
+    - Change clock name from "ti,codec-clock" to "mclk"
+- Address Mark's comments here:
+  http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/070606.html  - ASoC: davinci-evm: HDMI audio support for TDA998x trough McASP I2S bus
+    - Get rid of unnecessary castings
+    - Update commit message
+  - Add: ASoC: davinci-mcasp: Set BCLK divider if McASP is BCLK master
+    - Use snd_soc_params_to_bclk()
 
---===============7975847291033132783==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5C/VXimrgG1HEvSQ"
-Content-Disposition: inline
+Changes since the first RFC version of the patches:
+- Drop out already applied: 
+  ASoC: hdmi-codec: Add SNDRV_PCM_FMTBIT_32_LE playback format
+- Change sound node's compatible property
+  form: "ti,am33xx-beaglebone-black" to "ti,am33xx-beaglebone-black-audio"
+- Some minor style issue fixes from TI internal review
 
+Jyri Sarha (8):
+  clk: add gpio controlled clock
+  ASoC: davinci-evm: Add named clock reference to DT bindings
+  ASoC: davinci-mcasp: Set BCLK divider if McASP is BCLK master
+  ASoC: davinci-evm: HDMI audio support for TDA998x trough McASP I2S
+    bus
+  ASoC: davinci: HDMI audio build for AM33XX and TDA998x
+  drm/tilcdc: Add I2C HDMI audio config for tda998x
+  ARM: OMAP2+: omap2plus_defconfig: Enable tilcdc and TDA998X HDMI
+    support
+  ARM: OMAP2+: omap2plus_defconfig: Enable BeagleBone Black HDMI audio
+    support
 
---5C/VXimrgG1HEvSQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ .../devicetree/bindings/clock/gpio-clock.txt       |   21 ++
+ .../bindings/sound/davinci-evm-audio.txt           |   13 +-
+ arch/arm/configs/omap2plus_defconfig               |    5 +
+ drivers/clk/Makefile                               |    1 +
+ drivers/clk/clk-gpio.c                             |  210 +++++++++++++++++++
+ drivers/gpu/drm/tilcdc/tilcdc_slave.c              |   24 ++-
+ include/linux/clk-provider.h                       |   25 +++
+ sound/soc/davinci/Kconfig                          |   12 ++
+ sound/soc/davinci/Makefile                         |    1 +
+ sound/soc/davinci/davinci-evm.c                    |  211 +++++++++++++++++++-
+ sound/soc/davinci/davinci-mcasp.c                  |   20 ++
+ 11 files changed, 534 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/gpio-clock.txt
+ create mode 100644 drivers/clk/clk-gpio.c
 
-On Mon, Jan 27, 2014 at 01:03:10PM +0100, Markus Pargmann wrote:
-
-> +	aic32x4->supply_ldo = devm_regulator_get_optional(dev, "ldoin");
-> +	aic32x4->supply_iov = devm_regulator_get_optional(dev, "iov");
-> +	aic32x4->supply_dv = devm_regulator_get_optional(dev, "dv");
-> +	aic32x4->supply_av = devm_regulator_get_optional(dev, "av");
-
-These shouldn't be optional, it seems unlikely that the device is going
-to work without power.  This will also be broken for probe deferral
-since the code will just ignore errors so if the error is -EPROBE_DEFER
-it'll not actually defer.
-
-Just use the normal bulk functions, as Fabio said this will be simpler
-too, and there should be code to disable on device removal at least
-(ideally also on suspend and resume, and while the device is idle if it
-doesn't have slow startup times).
-
---5C/VXimrgG1HEvSQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS5ngRAAoJELSic+t+oim9xugQAJeec+AIh/uRBuL1aDy6/Hls
-W3pvAjWGyRmwhMomy810NOVFVNOHFFdmVhV6Kh7kuPH7X5naNzGqyLlyZiZngPwN
-E+YERW6z9+5oNojAypfLGeyOB8tbCFK6zlPlcflpXX4fPr0HWIhQKpK8AjAMF1ac
-xyQ7NqnFInXUJgdOIkKCPkoWDOwbzfLN9ZAwT3VRjbr5WWmx5x1EoViVcHH8Hx5z
-mc7Pw8raZwyrP14Pq6DXhSHr9zu7g/46VMuGiYf9Ju/Ev7a7URx/nCyhioye0IkE
-PePZhZ/oONy3qZNe4JQcKmW3lhwytjrZt4iF9C36jLXwZBlDkhWUNY6fUjZWAzj8
-49jeR0FuxnpORTIFAc0NCDM4WqMi7XoYOwMcyVIfbP5enxA76sJX8q++fvO+Eajn
-3P0gbgFt8xx6CjoZjr62FDB3dOHGjL/MeqEVuiRqK/kCTvQB2WXoeM3+hRrdVyBY
-iub1N1QyLejgKO8mdmWHFXRNwGDTTIwOqCUck9aDXbBBPHg+aBb0gQg3cf9FCAyh
-vir7tao7g2gBAOF/Fhi9u4emrUmoNj+FsNgOcAZcJH59aUaKfEJfR51e9Nc4fQoK
-RlYtcETuYyIkPzsfJwHyeGW8Frpvd8imj8XN8Ks5m/92Jgdw/7SiUu8USPbraDw4
-eeR1axygMbIW+rCyFvz0
-=rgzO
------END PGP SIGNATURE-----
-
---5C/VXimrgG1HEvSQ--
-
---===============7975847291033132783==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7975847291033132783==--
+-- 
+1.7.9.5
