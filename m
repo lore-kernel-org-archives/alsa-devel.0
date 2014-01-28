@@ -1,23 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 0/27]: ASoC: rsnd: add Renesas Gen2
- DMAEngine support
-Date: Tue, 28 Jan 2014 14:20:31 +0100
-Message-ID: <52E7AE9F.7010403@metafoo.de>
-References: <877g9qgl6i.wl%kuninori.morimoto.gx@gmail.com>
- <20140127194902.GU11841@sirena.org.uk>
- <87zjmh7xtd.wl%kuninori.morimoto.gx@gmail.com> <52E75DD5.6040605@metafoo.de>
- <20140128113429.GK11841@sirena.org.uk> <52E79D45.5090301@metafoo.de>
- <20140128123743.GM11841@sirena.org.uk>
- <20140128130519.GJ15937@n2100.arm.linux.org.uk>
+From: =?UTF-8?B?SWdvciBLb3RyYXNpxYRza2k=?= <ikk_pl@yahoo.co.uk>
+Subject: OSS virtual driver - dma buffer size problems
+Date: Tue, 28 Jan 2014 14:47:41 +0100
+Message-ID: <52E7B4FD.5060100@yahoo.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-175.synserver.de (smtp-out-231.synserver.de
- [212.40.185.231])
- by alsa0.perex.cz (Postfix) with ESMTP id 76EED2651E3
- for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2014 14:20:32 +0100 (CET)
-In-Reply-To: <20140128130519.GJ15937@n2100.arm.linux.org.uk>
+Received: from nm8-vm1.bullet.mail.ir2.yahoo.com
+ (nm8-vm1.bullet.mail.ir2.yahoo.com [212.82.96.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E457264F19
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2014 14:47:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,36 +19,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Simon <horms@verge.net.au>, Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/28/2014 02:05 PM, Russell King - ARM Linux wrote:
-> On Tue, Jan 28, 2014 at 12:37:43PM +0000, Mark Brown wrote:
->> On Tue, Jan 28, 2014 at 01:06:29PM +0100, Lars-Peter Clausen wrote:
->>
->>> The virt_dma helper functions already take care of some of the cyclic
->>> specific details. And more can probably be added. E.g. what comes to mind is
->>> the tracking of whether a descriptor is cyclic and which segment of the
->>> descriptor to submit next. All users of virt_dma already implement these in
->>> almost the same fashion. So this would not only to allow to factor out the
->>> handling for the cyclic case, but also for the non cyclic case. And for all
->>> users of those helpers cyclic support would essentially be free.
->>
->> OK, I had a brief look and that does seem like the way forwards - I had
->> been remembering the last time this was discussed when the DMA guys were
->> pretty uncomfortable with the idea of doing things there but it seems
->> things are different now.
-> 
-> I don't want virt_dma to do any tracking of which part of the descriptor
-> is to be submitted next, because that needlessly makes virt_dma harder to
-> use on hardware which you can generate the scatterlist in memory and have
-> the hardware walk it, only notifying when it reaches the end of the list.
+Hello,
 
-Or maybe make it a lib orthogonal to or on top of virt_dma. A soft sg lib
-for devices that don't have hardware support for scatterlist is definitely
-something that would be beneficial to the dmaengine framework as there are
-quite a few of those driver which all have more or less the same code over
-and over again. With such a lib cyclic support comes for free.
+I'm trying to get the "cuckoo" OSS module (virtual ALSA driver) to work, 
+and have some trouble properly setting up the dma buffer size. Relevant 
+code (old type names are properly typedeffed from new ones) is:
 
-- Lars
+static snd_pcm_hardware_t snd_cuckoo_playback = {
+   .info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
+            SNDRV_PCM_INFO_BLOCK_TRANSFER |
+            SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_SYNC_START),
+   .channels_min = 1,
+   .channels_max = 2,
+   .buffer_bytes_max = (64 * 1024),
+   .period_bytes_min = 64,
+   .period_bytes_max = (32 * 1024),
+   .periods_min = 2,
+   .periods_max = 1024,
+   (...)
+};
+
+
+static snd_pcm_ops_t snd_cuckoo_playback_ops = {
+   .open = snd_cuckoo_playback_open,
+   .hw_params = snd_cuckoo_playback_hw_params,
+   .prepare = snd_cuckoo_playback_prepare,
+   (...)
+};
+
+static int
+snd_cuckoo_playback_hw_params (snd_pcm_substream_t * substream,
+                                snd_pcm_hw_params_t * hw_params)
+{
+   cuckoo_t *chip = snd_pcm_substream_chip (substream);
+   snd_pcm_runtime_t *runtime = substream->runtime;
+   dmap_t *dmap; //relevant buffer data here
+   snd_dma_buffer_t *dmab;
+
+   (...)
+
+   if (runtime->dma_buffer_p)
+     dmab = runtime->dma_buffer_p;
+   else
+     dmab = &(substream->dma_buffer);
+
+   dmab->area = dmap->dmabuf;
+   dmab->addr = dmap->dmabuf_phys;
+   dmab->bytes = dmap -> buffsize; //supposed to be 4096
+   snd_pcm_set_runtime_buffer(substream, dmab);
+   memset (dmap->dmabuf, 0, dmap->buffsize);
+   return 0;
+}
+
+Inspecting values in snd_cuckoo_playback_prepare shows that 
+runtime->dma_bytes is correctly set to 4096, but runtime->buffer_size is 
+16384 (with frame_bits == 32) and snd_pcm_lib_buffer_bytes(substream) 
+returns 65536. If not aborted, it indeed overwrites the kernel. What is 
+the correct way to pass a manually initialized dma buffer?
