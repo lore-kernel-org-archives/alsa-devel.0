@@ -1,20 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 0/27]: ASoC: rsnd: add Renesas Gen2
- DMAEngine support
-Date: Tue, 28 Jan 2014 08:35:49 +0100
-Message-ID: <52E75DD5.6040605@metafoo.de>
-References: <877g9qgl6i.wl%kuninori.morimoto.gx@gmail.com>
- <20140127194902.GU11841@sirena.org.uk>
- <87zjmh7xtd.wl%kuninori.morimoto.gx@gmail.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH RFC v3 4/8] ASoC: davinci-evm: HDMI audio
+ support for TDA998x trough McASP I2S bus
+Date: Tue, 28 Jan 2014 09:47:13 +0200
+Message-ID: <52E76081.3030905@ti.com>
+References: <cover.1390836773.git.jsarha@ti.com>
+ <86fcca2ecf302a695e7fd8199a1d635a67bbfcc8.1390836773.git.jsarha@ti.com>
+ <20140127204910.GB11841@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id BDFEA26518D
- for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2014 08:33:20 +0100 (CET)
-In-Reply-To: <87zjmh7xtd.wl%kuninori.morimoto.gx@gmail.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35AD4265193
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2014 08:47:24 +0100 (CET)
+In-Reply-To: <20140127204910.GB11841@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,28 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: detheridge@ti.com, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, bcousson@baylibre.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/28/2014 01:30 AM, Kuninori Morimoto wrote:
+On 01/27/2014 10:49 PM, Mark Brown wrote:
+> On Mon, Jan 27, 2014 at 05:37:53PM +0200, Jyri Sarha wrote:
+>> Add machine driver support for BeagleBone-Black and other boards with
+>> tilcdc support and NXP TDA998X HDMI transmitter connected to McASP
+>> port in I2S mode. McASP produces the bit clock for the i2s bus from
+>> the masted clock by a simple divider and the available sample rates
 >
-> Hi Mark
+> I have to say I agree with Lars' comments about where the code to set
+> the constraints is here - I don't doubt that these limitations are valid
+> but it would be better to factor them into the relevant chip drivers so
+> that other systems with similar limitations can be handled correctly
+> too.
 >
->>> These are Renesas Gen2 DMAEngine support patches.
->>> #1 - #26 are cleanup/prepare patches.
->>> #27 adds Gen2 DMAEngine support.
->>
->> I've applied all these but as discussed please do work towards using the
->> generic dmaengine code (with extensions to handle non-cyclic DMA) and
->> DPCM.
->
-> Thank you for your help.
-> I'll try to update non-cyclic DMA code as next step.
 
-I still think the emulation of the transfers is better done in the DMA driver 
-rather than in the audio driver. The DMA driver has much more state information 
-available than the audio driver, which should make the implementation on one 
-hand simpler and on the other hand more reliable.
+Ok, I'll push them into mcasp driver then.
 
-- Lars
+Thanks,
+Jyri
