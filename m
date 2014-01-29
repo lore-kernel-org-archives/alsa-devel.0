@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 37/52] bebob: Send a cue to load firmware for M-Audio Firewire
-	series
-Date: Wed, 29 Jan 2014 22:44:44 +0900
-Message-ID: <1391003099-7109-38-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 41/52] oxfw: Split PCM functionality to a new file
+Date: Wed, 29 Jan 2014 22:44:48 +0900
+Message-ID: <1391003099-7109-42-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,171 +20,569 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Just powering on, these devices below wait to download firmware.
- - Firewire Audiophile
- - Firewire 410
-
-But firmware version 5058 or later, flash memory in the device stores the
-firmware. So this driver can enable these devices by sending a certain cue to
-load the firmware.
+To make it easy to work in followed commit.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob.c        | 22 +++++++-----
- sound/firewire/bebob/bebob.h        |  2 ++
- sound/firewire/bebob/bebob_maudio.c | 69 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 84 insertions(+), 9 deletions(-)
+ sound/firewire/oxfw/Makefile   |   2 +-
+ sound/firewire/oxfw/oxfw.c     | 248 +--------------------------------------
+ sound/firewire/oxfw/oxfw.h     |   5 +
+ sound/firewire/oxfw/oxfw_pcm.c | 259 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 266 insertions(+), 248 deletions(-)
+ create mode 100644 sound/firewire/oxfw/oxfw_pcm.c
 
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 4a93d6c..22bda91 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -177,18 +177,21 @@ bebob_probe(struct fw_unit *unit,
- 	}
+diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
+index 510c1cb..408b5e5 100644
+--- a/sound/firewire/oxfw/Makefile
++++ b/sound/firewire/oxfw/Makefile
+@@ -1,2 +1,2 @@
+-snd-oxfw-objs := oxfw_stream.o oxfw.o
++snd-oxfw-objs := oxfw_stream.o oxfw_pcm.o oxfw.o
+ obj-m += snd-oxfw.o
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index 93adf73..866fcb2 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -25,252 +25,6 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS("snd-firewire-speakers");
  
- 	if ((entry->vendor_id == VEN_FOCUSRITE) &&
--	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH)) {
-+	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH))
- 		spec = get_saffire_spec(unit);
--	} else if ((entry->vendor_id == VEN_MAUDIO1) &&
--		   (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
--		   !check_audiophile_booted(unit)) {
--			err = 0;
--			goto end;
--	} else {
-+	else if ((entry->vendor_id == VEN_MAUDIO1) &&
-+		 (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
-+		 !check_audiophile_booted(unit))
-+		spec = NULL;
-+	else
- 		spec = (const struct snd_bebob_spec *)entry->driver_data;
+-static int firewave_rate_constraint(struct snd_pcm_hw_params *params,
+-				    struct snd_pcm_hw_rule *rule)
+-{
+-	static unsigned int stereo_rates[] = { 48000, 96000 };
+-	struct snd_interval *channels =
+-			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+-	struct snd_interval *rate =
+-			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+-
+-	/* two channels work only at 48/96 kHz */
+-	if (snd_interval_max(channels) < 6)
+-		return snd_interval_list(rate, 2, stereo_rates, 0);
+-	return 0;
+-}
+-
+-static int firewave_channels_constraint(struct snd_pcm_hw_params *params,
+-					struct snd_pcm_hw_rule *rule)
+-{
+-	static const struct snd_interval all_channels = { .min = 6, .max = 6 };
+-	struct snd_interval *rate =
+-			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *channels =
+-			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+-
+-	/* 32/44.1 kHz work only with all six channels */
+-	if (snd_interval_max(rate) < 48000)
+-		return snd_interval_refine(channels, &all_channels);
+-	return 0;
+-}
+-
+-static int firewave_constraints(struct snd_pcm_runtime *runtime)
+-{
+-	static unsigned int channels_list[] = { 2, 6 };
+-	static struct snd_pcm_hw_constraint_list channels_list_constraint = {
+-		.count = 2,
+-		.list = channels_list,
+-	};
+-	int err;
+-
+-	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
+-			    SNDRV_PCM_RATE_44100 |
+-			    SNDRV_PCM_RATE_48000 |
+-			    SNDRV_PCM_RATE_96000;
+-	runtime->hw.channels_max = 6;
+-
+-	err = snd_pcm_hw_constraint_list(runtime, 0,
+-					 SNDRV_PCM_HW_PARAM_CHANNELS,
+-					 &channels_list_constraint);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+-				  firewave_rate_constraint, NULL,
+-				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+-				  firewave_channels_constraint, NULL,
+-				  SNDRV_PCM_HW_PARAM_RATE, -1);
+-	if (err < 0)
+-		return err;
+-
+-	return 0;
+-}
+-
+-static int lacie_speakers_constraints(struct snd_pcm_runtime *runtime)
+-{
+-	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
+-			    SNDRV_PCM_RATE_44100 |
+-			    SNDRV_PCM_RATE_48000 |
+-			    SNDRV_PCM_RATE_88200 |
+-			    SNDRV_PCM_RATE_96000;
+-
+-	return 0;
+-}
+-
+-static int oxfw_open(struct snd_pcm_substream *substream)
+-{
+-	static const struct snd_pcm_hardware hardware = {
+-		.info = SNDRV_PCM_INFO_MMAP |
+-			SNDRV_PCM_INFO_MMAP_VALID |
+-			SNDRV_PCM_INFO_BATCH |
+-			SNDRV_PCM_INFO_INTERLEAVED |
+-			SNDRV_PCM_INFO_BLOCK_TRANSFER,
+-		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
+-		.channels_min = 2,
+-		.channels_max = 2,
+-		.buffer_bytes_max = 4 * 1024 * 1024,
+-		.period_bytes_min = 1,
+-		.period_bytes_max = UINT_MAX,
+-		.periods_min = 1,
+-		.periods_max = UINT_MAX,
+-	};
+-	struct snd_oxfw *oxfw = substream->private_data;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	int err;
+-
+-	runtime->hw = hardware;
+-
+-	err = oxfw->device_info->pcm_constraints(runtime);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_limit_hw_rates(runtime);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_constraint_minmax(runtime,
+-					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
+-					   5000, UINT_MAX);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
+-	if (err < 0)
+-		return err;
+-
+-	return 0;
+-}
+-
+-static int oxfw_close(struct snd_pcm_substream *substream)
+-{
+-	return 0;
+-}
+-
+-static int oxfw_hw_params(struct snd_pcm_substream *substream,
+-			   struct snd_pcm_hw_params *hw_params)
+-{
+-	struct snd_oxfw *oxfw = substream->private_data;
+-	int err;
+-
+-	mutex_lock(&oxfw->mutex);
+-	snd_oxfw_stream_stop(oxfw);
+-	mutex_unlock(&oxfw->mutex);
+-
+-	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+-					       params_buffer_bytes(hw_params));
+-	if (err < 0)
+-		goto error;
+-
+-	amdtp_stream_set_parameters(&oxfw->rx_stream,
+-				    params_rate(hw_params),
+-				    params_channels(hw_params),
+-				    0);
+-
+-	amdtp_stream_set_pcm_format(&oxfw->rx_stream,
+-				    params_format(hw_params));
+-
+-	err = avc_general_set_sig_fmt(oxfw->unit, params_rate(hw_params),
+-				      AVC_GENERAL_PLUG_DIR_IN, 0);
+-	if (err < 0)
+-		goto err_buffer;
+-	if (err != 0x09 /* ACCEPTED */) {
+-		dev_err(&oxfw->unit->device, "failed to set sample rate\n");
+-		err = -EIO;
+-		goto error;
 -	}
-+
- 	if (spec == NULL) {
--		err = -ENOSYS;
-+		if ((entry->vendor_id == VEN_MAUDIO1) ||
-+		    (entry->vendor_id == VEN_MAUDIO2))
-+			err = snd_bebob_maudio_load_firmware(unit);
-+		else
-+			err = -ENOSYS;
- 		goto end;
- 	}
+-
+-	return 0;
+-
+-err_buffer:
+-	snd_pcm_lib_free_vmalloc_buffer(substream);
+-error:
+-	return err;
+-}
+-
+-static int oxfw_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct snd_oxfw *oxfw = substream->private_data;
+-
+-	mutex_lock(&oxfw->mutex);
+-	snd_oxfw_stream_stop(oxfw);
+-	mutex_unlock(&oxfw->mutex);
+-
+-	return snd_pcm_lib_free_vmalloc_buffer(substream);
+-}
+-
+-static int oxfw_prepare(struct snd_pcm_substream *substream)
+-{
+-	struct snd_oxfw *oxfw = substream->private_data;
+-	int err;
+-
+-	mutex_lock(&oxfw->mutex);
+-
+-	snd_oxfw_stream_stop(oxfw);
+-
+-	err = snd_oxfw_stream_start(oxfw);
+-	if (err < 0)
+-		goto end;
+-
+-	amdtp_stream_pcm_prepare(&oxfw->rx_stream);
+-end:
+-	mutex_unlock(&oxfw->mutex);
+-	return err;
+-}
+-
+-static int oxfw_trigger(struct snd_pcm_substream *substream, int cmd)
+-{
+-	struct snd_oxfw *oxfw = substream->private_data;
+-	struct snd_pcm_substream *pcm;
+-
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-		pcm = substream;
+-		break;
+-	case SNDRV_PCM_TRIGGER_STOP:
+-		pcm = NULL;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-	amdtp_stream_pcm_trigger(&oxfw->rx_stream, pcm);
+-	return 0;
+-}
+-
+-static snd_pcm_uframes_t oxfw_pointer(struct snd_pcm_substream *substream)
+-{
+-	struct snd_oxfw *oxfw = substream->private_data;
+-
+-	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
+-}
+-
+-static int oxfw_create_pcm(struct snd_oxfw *oxfw)
+-{
+-	static struct snd_pcm_ops ops = {
+-		.open      = oxfw_open,
+-		.close     = oxfw_close,
+-		.ioctl     = snd_pcm_lib_ioctl,
+-		.hw_params = oxfw_hw_params,
+-		.hw_free   = oxfw_hw_free,
+-		.prepare   = oxfw_prepare,
+-		.trigger   = oxfw_trigger,
+-		.pointer   = oxfw_pointer,
+-		.page      = snd_pcm_lib_get_vmalloc_page,
+-		.mmap      = snd_pcm_lib_mmap_vmalloc,
+-	};
+-	struct snd_pcm *pcm;
+-	int err;
+-
+-	err = snd_pcm_new(oxfw->card, "OXFW970", 0, 1, 0, &pcm);
+-	if (err < 0)
+-		return err;
+-	pcm->private_data = oxfw;
+-	strcpy(pcm->name, oxfw->device_info->short_name);
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
+-	return 0;
+-}
+-
+ enum control_action { CTL_READ, CTL_WRITE };
+ enum control_attribute {
+ 	CTL_MIN		= 0x02,
+@@ -598,7 +352,7 @@ static int oxfw_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto err_card;
  
-@@ -367,6 +370,7 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
- 			    &saffire_spec),
- 	/* M-Audio, Firewire 410 */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010058, NULL),	/* bootloader */
- 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010046, &maudio_fw410_spec),
- 	/* M-Audio, Firewire Audiophile */
- 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_AUDIOPHILE_BOTH,
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 76f29e3..1c4cc19 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -242,6 +242,8 @@ extern struct snd_bebob_spec maudio_solo_spec;
- extern struct snd_bebob_spec maudio_ozonic_spec;
- extern struct snd_bebob_spec maudio_nrv10_spec;
+-	err = oxfw_create_pcm(oxfw);
++	err = snd_oxfw_create_pcm(oxfw);
+ 	if (err < 0)
+ 		goto err_card;
  
-+int snd_bebob_maudio_load_firmware(struct fw_unit *unit);
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index f2c5b75..9fd5320 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -54,3 +54,8 @@ int snd_oxfw_stream_start(struct snd_oxfw *oxfw);
+ void snd_oxfw_stream_stop(struct snd_oxfw *oxfw);
+ void snd_oxfw_stream_destroy(struct snd_oxfw *oxfw);
+ void snd_oxfw_stream_update(struct snd_oxfw *oxfw);
 +
- #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
- { \
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
-index 7c8f5c1..e3ab42c 100644
---- a/sound/firewire/bebob/bebob_maudio.c
-+++ b/sound/firewire/bebob/bebob_maudio.c
-@@ -15,6 +15,15 @@
-  * settings when completing uploading. Then these devices generate bus reset
-  * and are recognized as new devices with the firmware.
-  *
-+ * But with firmware version 5058 or later, the firmware is stored to flash
-+ * memory in the device and drivers can tell DM1000 to load the firmware by
-+ * sending a cue. This cue must be sent one time.
-+ *
-+ * If the firmware blobs are in alsa-firmware package, this driver can support
-+ * these devices with any firmware versions. (Then this driver need codes to
-+ * upload the firmware blob.) But for this, the license of firmware blob needs
-+ * to be considered.
-+ *
-  * For streaming, both of output and input streams are needed for Firewire 410
-  * and Ozonic. The single stream is OK for the other devices even if the clock
-  * source is not SYT-Match (I note no devices use SYT-Match).
-@@ -24,6 +33,20 @@
-  * mixer.
-  */
- 
-+/* Offset from information register */
-+#define INFO_OFFSET_SW_DATE	0x20
++int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
 +
-+/* Bootloader Protocol Version 1 */
-+#define MAUDIO_BOOTLOADER_CUE1	0x00000001
++int firewave_constraints(struct snd_pcm_runtime *runtime);
++int lacie_speakers_constraints(struct snd_pcm_runtime *runtime);
+diff --git a/sound/firewire/oxfw/oxfw_pcm.c b/sound/firewire/oxfw/oxfw_pcm.c
+new file mode 100644
+index 0000000..c742ce0
+--- /dev/null
++++ b/sound/firewire/oxfw/oxfw_pcm.c
+@@ -0,0 +1,259 @@
 +/*
-+ * Initializing configuration to factory settings (= 0x1101), (swapped in line),
-+ * Command code is zero (= 0x00),
-+ * the number of operands is zero (= 0x00)(at least significant byte)
-+ */
-+#define MAUDIO_BOOTLOADER_CUE2	0x01110000
-+/* padding */
-+#define MAUDIO_BOOTLOADER_CUE3	0x00000000
-+
- #define MAUDIO_SPECIFIC_ADDRESS	0xffc700000000
- 
- #define METER_OFFSET		0x00600000
-@@ -50,6 +73,52 @@
- /* for NRV */
- #define UNKNOWN_METER	"Unknown"
- 
-+/*
-+ * For some M-Audio devices, this module just send cue to load firmware. After
-+ * loading, the device generates bus reset and newly detected.
++ * oxfw_pcm.c - a part of driver for OXFW970/971 based devices
 + *
-+ * If we make any transactions to load firmware, the operation may failed.
++ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
++ * Licensed under the terms of the GNU General Public License, version 2.
 + */
-+int snd_bebob_maudio_load_firmware(struct fw_unit *unit)
++
++#include "oxfw.h"
++
++static int firewave_rate_constraint(struct snd_pcm_hw_params *params,
++				    struct snd_pcm_hw_rule *rule)
 +{
-+	struct fw_device *device = fw_parent_device(unit);
-+	int err, rcode;
-+	u64 date;
-+	__be32 cues[3] = {
-+		MAUDIO_BOOTLOADER_CUE1,
-+		MAUDIO_BOOTLOADER_CUE2,
-+		MAUDIO_BOOTLOADER_CUE3
-+	};
++	static unsigned int stereo_rates[] = { 48000, 96000 };
++	struct snd_interval *channels =
++			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval *rate =
++			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
 +
-+	/* check date of software used to build */
-+	err = snd_bebob_read_block(unit, INFO_OFFSET_SW_DATE,
-+				   &date, sizeof(u64));
++	/* two channels work only at 48/96 kHz */
++	if (snd_interval_max(channels) < 6)
++		return snd_interval_list(rate, 2, stereo_rates, 0);
++	return 0;
++}
++
++static int firewave_channels_constraint(struct snd_pcm_hw_params *params,
++					struct snd_pcm_hw_rule *rule)
++{
++	static const struct snd_interval all_channels = { .min = 6, .max = 6 };
++	struct snd_interval *rate =
++			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels =
++			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	/* 32/44.1 kHz work only with all six channels */
++	if (snd_interval_max(rate) < 48000)
++		return snd_interval_refine(channels, &all_channels);
++	return 0;
++}
++
++int firewave_constraints(struct snd_pcm_runtime *runtime)
++{
++	static unsigned int channels_list[] = { 2, 6 };
++	static struct snd_pcm_hw_constraint_list channels_list_constraint = {
++		.count = 2,
++		.list = channels_list,
++	};
++	int err;
++
++	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
++			    SNDRV_PCM_RATE_44100 |
++			    SNDRV_PCM_RATE_48000 |
++			    SNDRV_PCM_RATE_96000;
++	runtime->hw.channels_max = 6;
++
++	err = snd_pcm_hw_constraint_list(runtime, 0,
++					 SNDRV_PCM_HW_PARAM_CHANNELS,
++					 &channels_list_constraint);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				  firewave_rate_constraint, NULL,
++				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				  firewave_channels_constraint, NULL,
++				  SNDRV_PCM_HW_PARAM_RATE, -1);
++	if (err < 0)
++		return err;
++
++	return 0;
++}
++
++int lacie_speakers_constraints(struct snd_pcm_runtime *runtime)
++{
++	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
++			    SNDRV_PCM_RATE_44100 |
++			    SNDRV_PCM_RATE_48000 |
++			    SNDRV_PCM_RATE_88200 |
++			    SNDRV_PCM_RATE_96000;
++
++	return 0;
++}
++
++static int oxfw_open(struct snd_pcm_substream *substream)
++{
++	static const struct snd_pcm_hardware hardware = {
++		.info = SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_BATCH |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_BLOCK_TRANSFER,
++		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
++		.channels_min = 2,
++		.channels_max = 2,
++		.buffer_bytes_max = 4 * 1024 * 1024,
++		.period_bytes_min = 1,
++		.period_bytes_max = UINT_MAX,
++		.periods_min = 1,
++		.periods_max = UINT_MAX,
++	};
++	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	bool used;
++	int err;
++
++	err = cmp_connection_check_used(&oxfw->in_conn, &used);
++	if ((err < 0) || used)
++		goto end;
++
++	runtime->hw = hardware;
++
++	err = oxfw->device_info->pcm_constraints(runtime);
 +	if (err < 0)
 +		goto end;
-+	/*
-+	 * firmware version 5058 or later has date later than "20070401", but
-+	 * 'date' is not null-terminated.
-+	 */
-+	if (date < 0x3230303730343031) {
-+		dev_err(&unit->device,
-+			"Use firmware version 5058 or later\n");
-+		err = -ENOSYS;
++	err = snd_pcm_limit_hw_rates(runtime);
++	if (err < 0)
 +		goto end;
-+	}
 +
-+	rcode = fw_run_transaction(device->card, TCODE_WRITE_BLOCK_REQUEST,
-+				   device->node_id, device->generation,
-+				   device->max_speed, BEBOB_ADDR_REG_REQ,
-+				   cues, sizeof(cues));
-+	if (rcode != RCODE_COMPLETE) {
-+		dev_err(&unit->device,
-+			"Failed to send a cue to load firmware\n");
-+		err = -EIO;
-+	}
++	err = snd_pcm_hw_constraint_minmax(runtime,
++					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
++					   5000, UINT_MAX);
++	if (err < 0)
++		goto end;
++
++	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	if (err < 0)
++		goto end;
 +end:
 +	return err;
 +}
 +
- static inline int
- get_meter(struct snd_bebob *bebob, void *buf, unsigned int size)
- {
++static int oxfw_close(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static int oxfw_hw_params(struct snd_pcm_substream *substream,
++			   struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++	int err;
++
++	mutex_lock(&oxfw->mutex);
++	snd_oxfw_stream_stop(oxfw);
++	mutex_unlock(&oxfw->mutex);
++
++	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
++					       params_buffer_bytes(hw_params));
++	if (err < 0)
++		goto error;
++
++	amdtp_stream_set_parameters(&oxfw->rx_stream,
++				    params_rate(hw_params),
++				    params_channels(hw_params),
++				    0);
++
++	amdtp_stream_set_pcm_format(&oxfw->rx_stream,
++				    params_format(hw_params));
++
++	err = avc_general_set_sig_fmt(oxfw->unit, params_rate(hw_params),
++				      AVC_GENERAL_PLUG_DIR_IN, 0);
++	if (err < 0)
++		goto err_buffer;
++	if (err != 0x09 /* ACCEPTED */) {
++		dev_err(&oxfw->unit->device, "failed to set sample rate\n");
++		err = -EIO;
++		goto error;
++	}
++
++	return 0;
++
++err_buffer:
++	snd_pcm_lib_free_vmalloc_buffer(substream);
++error:
++	return err;
++}
++
++static int oxfw_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++
++	mutex_lock(&oxfw->mutex);
++	snd_oxfw_stream_stop(oxfw);
++	mutex_unlock(&oxfw->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int oxfw_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++	int err;
++
++	mutex_lock(&oxfw->mutex);
++
++	snd_oxfw_stream_stop(oxfw);
++
++	err = snd_oxfw_stream_start(oxfw);
++	if (err < 0)
++		goto end;
++
++	amdtp_stream_pcm_prepare(&oxfw->rx_stream);
++end:
++	mutex_unlock(&oxfw->mutex);
++	return err;
++}
++
++static int oxfw_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_pcm_substream *pcm;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		pcm = substream;
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		pcm = NULL;
++		break;
++	default:
++		return -EINVAL;
++	}
++	amdtp_stream_pcm_trigger(&oxfw->rx_stream, pcm);
++	return 0;
++}
++
++static snd_pcm_uframes_t oxfw_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++
++	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
++}
++
++int snd_oxfw_create_pcm(struct snd_oxfw *oxfw)
++{
++	static struct snd_pcm_ops ops = {
++		.open      = oxfw_open,
++		.close     = oxfw_close,
++		.ioctl     = snd_pcm_lib_ioctl,
++		.hw_params = oxfw_hw_params,
++		.hw_free   = oxfw_hw_free,
++		.prepare   = oxfw_prepare,
++		.trigger   = oxfw_trigger,
++		.pointer   = oxfw_pointer,
++		.page      = snd_pcm_lib_get_vmalloc_page,
++		.mmap      = snd_pcm_lib_mmap_vmalloc,
++	};
++	struct snd_pcm *pcm;
++	int err;
++
++	err = snd_pcm_new(oxfw->card, oxfw->card->driver, 0, 1, 0, &pcm);
++	if (err < 0)
++		return err;
++	pcm->private_data = oxfw;
++	strcpy(pcm->name, oxfw->card->shortname);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
++	return 0;
++}
 -- 
 1.8.3.2
 
