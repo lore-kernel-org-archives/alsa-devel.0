@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 43/52] oxfw: Change the way to name card
-Date: Wed, 29 Jan 2014 22:44:50 +0900
-Message-ID: <1391003099-7109-44-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 29/52] bebob: Add MIDI interface
+Date: Wed, 29 Jan 2014 22:44:36 +0900
+Message-ID: <1391003099-7109-30-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,139 +20,249 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-'struct snd_card' has 4 members for name. They're 'driver', 'shortname',
-'longname' and 'mixername'. The 'driver' is used to detect card
-Configuration file but the others are not used for important
-functionality. So it's OK to name them with the information from config
-ROM.
+This commit adds a functionality to capture/playback MIDI messages.
 
-This commit adds 'name_card()' function and change the way to name card.
-The 'driver' is still given by 'struct device_info'. The 'shortname' and
-'mixername' is given by 'model' and the 'longname' is given by 'vendor'
-and 'model'.
+When no AMDTP streams are running, this module starts AMDTP stream at current
+sampling rate for MIDI stream.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw.c | 59 +++++++++++++++++++++++++++++-----------------
- sound/firewire/oxfw/oxfw.h |  2 --
- 2 files changed, 38 insertions(+), 23 deletions(-)
+ sound/firewire/Kconfig            |   1 +
+ sound/firewire/bebob/Makefile     |   3 +-
+ sound/firewire/bebob/bebob.c      |   7 ++
+ sound/firewire/bebob/bebob.h      |   3 +
+ sound/firewire/bebob/bebob_midi.c | 162 ++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 175 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/bebob/bebob_midi.c
 
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index fdb5d78..6d64364 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -25,14 +25,44 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("snd-firewire-speakers");
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 9027b23..8081ca1 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -82,6 +82,7 @@ config SND_FIREWORKS
+ config SND_BEBOB
+ 	tristate "BridgeCo DM1000/1500 with BeBoB firmware"
+ 	select SND_FIREWIRE_LIB
++	select SND_RAWMIDI
+         help
+ 	 Say Y here to include support for FireWire devices based
+ 	 on BridgeCo DM1000/1500 with BeBoB firmware:
+diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
+index 757c40e..1e39e59 100644
+--- a/sound/firewire/bebob/Makefile
++++ b/sound/firewire/bebob/Makefile
+@@ -1,2 +1,3 @@
+-snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob.o
++snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
++		  bebob.o
+ obj-m += snd-bebob.o
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index b19d7c5..adb5493 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -169,6 +169,13 @@ bebob_probe(struct fw_unit *unit,
  
--static u32 oxfw_read_firmware_version(struct fw_unit *unit)
-+static int name_card(struct snd_oxfw *oxfw)
- {
--	__be32 data;
-+	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
-+	char vendor[24] = {0};
-+	char model[24] = {0};
-+	u32 firmware;
- 	int err;
+ 	snd_bebob_proc_init(bebob);
  
--	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
--				 OXFORD_FIRMWARE_ID_ADDRESS, &data, 4, 0);
--	return err >= 0 ? be32_to_cpu(data) : 0;
-+	/* get vendor name from root directory */
-+	err = fw_csr_string(fw_dev->config_rom + 5, CSR_VENDOR,
-+			    vendor, sizeof(vendor));
-+	if (err < 0)
-+		goto end;
++	if ((bebob->midi_input_ports > 0) ||
++	    (bebob->midi_output_ports > 0)) {
++		err = snd_bebob_create_midi_devices(bebob);
++		if (err < 0)
++			goto error;
++	}
 +
-+	/* get model name from unit directory */
-+	err = fw_csr_string(oxfw->unit->directory, CSR_MODEL,
-+			    model, sizeof(model));
-+	if (err < 0)
-+		goto end;
+ 	snd_card_set_dev(card, &unit->device);
+ 	err = snd_card_register(card);
+ 	if (err < 0) {
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index e513fd3..c8e774b 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -21,6 +21,7 @@
+ #include <sound/core.h>
+ #include <sound/initval.h>
+ #include <sound/info.h>
++#include <sound/rawmidi.h>
+ 
+ #include "../lib.h"
+ #include "../fcp.h"
+@@ -178,6 +179,8 @@ void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob);
+ 
+ void snd_bebob_proc_init(struct snd_bebob *bebob);
+ 
++int snd_bebob_create_midi_devices(struct snd_bebob *bebob);
 +
-+	err = snd_fw_transaction(oxfw->unit, TCODE_READ_QUADLET_REQUEST,
-+				 OXFORD_FIRMWARE_ID_ADDRESS, &firmware, 4, 0);
-+	if (err < 0)
-+		goto end;
-+	be32_to_cpus(&firmware);
+ #define SND_BEBOB_DEV_ENTRY(vendor, model) \
+ { \
+ 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
+diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
+new file mode 100644
+index 0000000..10945fe16
+--- /dev/null
++++ b/sound/firewire/bebob/bebob_midi.c
+@@ -0,0 +1,162 @@
++/*
++ * bebob_midi.c - a part of driver for BeBoB based devices
++ *
++ * Copyright (c) 2013 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
 +
-+	strcpy(oxfw->card->driver, oxfw->device_info->driver_name);
-+	strcpy(oxfw->card->shortname, model);
++#include "bebob.h"
 +
-+	snprintf(oxfw->card->longname, sizeof(oxfw->card->longname),
-+		 "%s %s (OXFW%x %04x), GUID %08x%08x at %s, S%d",
-+		 vendor, model, firmware >> 20, firmware & 0xffff,
-+		 fw_dev->config_rom[3], fw_dev->config_rom[4],
-+		 dev_name(&oxfw->unit->device), 100 << fw_dev->max_speed);
++static int midi_capture_open(struct snd_rawmidi_substream *substream)
++{
++	struct snd_bebob *bebob = substream->rmidi->private_data;
++	int err = 0;
 +
-+	strcpy(oxfw->card->mixername, oxfw->card->shortname);
-+end:
++	bebob->tx_midi_substreams++;
++	if (!amdtp_stream_running(&bebob->tx_stream))
++		err = snd_bebob_stream_start_duplex(bebob,
++						    &bebob->tx_stream, 0);
++
 +	return err;
- }
- 
- static void oxfw_card_free(struct snd_card *card)
-@@ -45,10 +75,8 @@ static void oxfw_card_free(struct snd_card *card)
- static int oxfw_probe(struct fw_unit *unit,
- 		       const struct ieee1394_device_id *id)
- {
--	struct fw_device *fw_dev = fw_parent_device(unit);
- 	struct snd_card *card;
- 	struct snd_oxfw *oxfw;
--	u32 firmware;
- 	int err;
- 
- 	err = snd_card_create(-1, NULL, THIS_MODULE, sizeof(*oxfw), &card);
-@@ -62,16 +90,9 @@ static int oxfw_probe(struct fw_unit *unit,
- 	oxfw->device_info = (const struct device_info *)id->driver_data;
- 	mutex_init(&oxfw->mutex);
- 
--	strcpy(card->driver, oxfw->device_info->driver_name);
--	strcpy(card->shortname, oxfw->device_info->short_name);
--	firmware = oxfw_read_firmware_version(unit);
--	snprintf(card->longname, sizeof(card->longname),
--		 "%s (OXFW%x %04x), GUID %08x%08x at %s, S%d",
--		 oxfw->device_info->long_name,
--		 firmware >> 20, firmware & 0xffff,
--		 fw_dev->config_rom[3], fw_dev->config_rom[4],
--		 dev_name(&unit->device), 100 << fw_dev->max_speed);
--	strcpy(card->mixername, "OXFW970");
-+	err = name_card(oxfw);
++}
++
++static int midi_playback_open(struct snd_rawmidi_substream *substream)
++{
++	struct snd_bebob *bebob = substream->rmidi->private_data;
++	int err = 0;
++
++	bebob->rx_midi_substreams++;
++	if (!amdtp_stream_running(&bebob->rx_stream))
++		err = snd_bebob_stream_start_duplex(bebob,
++						    &bebob->rx_stream, 0);
++
++	return err;
++}
++
++static int midi_capture_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_bebob *bebob = substream->rmidi->private_data;
++
++	if (--bebob->tx_midi_substreams == 0)
++		snd_bebob_stream_stop_duplex(bebob);
++
++	return 0;
++}
++
++static int midi_playback_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_bebob *bebob = substream->rmidi->private_data;
++
++	if (--bebob->rx_midi_substreams == 0)
++		snd_bebob_stream_stop_duplex(bebob);
++
++	return 0;
++}
++
++static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_bebob *bebob = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&bebob->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&bebob->tx_stream,
++					  substrm->number, substrm);
++	else
++		amdtp_stream_midi_trigger(&bebob->tx_stream,
++					  substrm->number, NULL);
++
++	spin_unlock_irqrestore(&bebob->lock, flags);
++
++	return;
++}
++
++static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_bebob *bebob = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&bebob->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&bebob->rx_stream,
++					  substrm->number, substrm);
++	else
++		amdtp_stream_midi_trigger(&bebob->rx_stream,
++					  substrm->number, NULL);
++
++	spin_unlock_irqrestore(&bebob->lock, flags);
++
++	return;
++}
++
++static struct snd_rawmidi_ops midi_capture_ops = {
++	.open		= midi_capture_open,
++	.close		= midi_capture_close,
++	.trigger	= midi_capture_trigger,
++};
++
++static struct snd_rawmidi_ops midi_playback_ops = {
++	.open		= midi_playback_open,
++	.close		= midi_playback_close,
++	.trigger	= midi_playback_trigger,
++};
++
++static void set_midi_substream_names(struct snd_bebob *bebob,
++				     struct snd_rawmidi_str *str)
++{
++	struct snd_rawmidi_substream *subs;
++
++	list_for_each_entry(subs, &str->substreams, list) {
++		snprintf(subs->name, sizeof(subs->name),
++			 "%s MIDI %d",
++			 bebob->card->shortname, subs->number + 1);
++	}
++}
++
++int snd_bebob_create_midi_devices(struct snd_bebob *bebob)
++{
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_str *str;
++	int err;
++
++	/* create midi ports */
++	err = snd_rawmidi_new(bebob->card, bebob->card->driver, 0,
++			      bebob->midi_output_ports, bebob->midi_input_ports,
++			      &rmidi);
 +	if (err < 0)
-+		goto err_card;
- 
- 	err = snd_oxfw_stream_init(oxfw);
- 	if (err < 0)
-@@ -119,8 +140,6 @@ static void oxfw_remove(struct fw_unit *unit)
- 
- static const struct device_info griffin_firewave = {
- 	.driver_name = "FireWave",
--	.short_name  = "FireWave",
--	.long_name   = "Griffin FireWave Surround",
- 	.pcm_constraints = firewave_constraints,
- 	.mixer_channels = 6,
- 	.mute_fb_id   = 0x01,
-@@ -129,8 +148,6 @@ static const struct device_info griffin_firewave = {
- 
- static const struct device_info lacie_speakers = {
- 	.driver_name = "FWSpeakers",
--	.short_name  = "FireWire Speakers",
--	.long_name   = "LaCie FireWire Speakers",
- 	.pcm_constraints = lacie_speakers_constraints,
- 	.mixer_channels = 1,
- 	.mute_fb_id   = 0x01,
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index b65c6bd..0a97592 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -28,8 +28,6 @@
- 
- struct device_info {
- 	const char *driver_name;
--	const char *short_name;
--	const char *long_name;
- 	int (*pcm_constraints)(struct snd_pcm_runtime *runtime);
- 	unsigned int mixer_channels;
- 	u8 mute_fb_id;
++		return err;
++
++	snprintf(rmidi->name, sizeof(rmidi->name),
++			"%s MIDI", bebob->card->shortname);
++	rmidi->private_data = bebob;
++
++	if (bebob->midi_input_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++					&midi_capture_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++
++		set_midi_substream_names(bebob, str);
++	}
++
++	if (bebob->midi_output_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
++					&midi_playback_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++
++		set_midi_substream_names(bebob, str);
++	}
++
++	if ((bebob->midi_output_ports > 0) && (bebob->midi_input_ports > 0))
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
++
++	return 0;
++}
 -- 
 1.8.3.2
 
