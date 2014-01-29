@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 51/52] oxfw: Add hwdep interface
-Date: Wed, 29 Jan 2014 23:49:36 +0900
-Message-ID: <1391006977-11572-2-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 52/52] bebob: Add support for M-Audio special Firewire series
+Date: Wed, 29 Jan 2014 23:49:37 +0900
+Message-ID: <1391006977-11572-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,507 +20,953 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This interface is designed for mixer/control application. To use hwdep
-interface, the application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+This commit is optional. The aim of this commit is to show firmware
+quirks for some M-Audio devices.
+
+This commit allows this driver to support some models which M-Audio produces
+with DM1000 but its firmware is special. They are:
+ - Firewire 1814
+ - ProjectMix I/O
+
+They have heavily customized firmware. The usual operations can't be applied to
+them. For this reason, this commit adds some model specific members in 'struct
+snd_bebob' and model specific functions. Some parameters are write-only so this
+commit also adds control interface for them.
+
+M-Audio special firmware quirks:
+ - Just after powering on, they wait to download firmware. This state is
+   changed when receiving cue. Then bus reset is generated and the device is
+   recognized as a different model with the uploaded firmware.
+ - They don't respond against BridgeCo AV/C extension commands. So drivers
+   can't get their stream formations and so on.
+ - They do not start to transmit packets only by establishing connection but
+   also by receiving SIGNAL FORMAT command.
+ - They have a time not to respond transaction. In this reason, this driver
+   often fail to handle them.
+
+This module don't support to upload firmware.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h       |   3 +-
- include/uapi/sound/firewire.h     |   3 +-
- sound/firewire/Kconfig            |   1 +
- sound/firewire/oxfw/Makefile      |   2 +-
- sound/firewire/oxfw/oxfw.c        |   5 +
- sound/firewire/oxfw/oxfw.h        |  13 +++
- sound/firewire/oxfw/oxfw_hwdep.c  | 195 ++++++++++++++++++++++++++++++++++++++
- sound/firewire/oxfw/oxfw_midi.c   |  28 ++++--
- sound/firewire/oxfw/oxfw_pcm.c    |  13 ++-
- sound/firewire/oxfw/oxfw_stream.c |  39 ++++++++
- 10 files changed, 291 insertions(+), 11 deletions(-)
- create mode 100644 sound/firewire/oxfw/oxfw_hwdep.c
+ sound/firewire/Kconfig                |   1 +
+ sound/firewire/bebob/bebob.c          |  21 +-
+ sound/firewire/bebob/bebob.h          |  10 +-
+ sound/firewire/bebob/bebob_command.c  |  16 +-
+ sound/firewire/bebob/bebob_maudio.c   | 583 +++++++++++++++++++++++++++++++++-
+ sound/firewire/bebob/bebob_stream.c   |  39 ++-
+ sound/firewire/bebob/bebob_terratec.c |   6 +-
+ sound/firewire/bebob/bebob_yamaha.c   |   2 +-
+ 8 files changed, 653 insertions(+), 25 deletions(-)
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 2249483..0c1872a 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -96,9 +96,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_FW_DICE,	/* TC DICE FireWire device */
- 	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
- 	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
-+	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_BEBOB
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_OXFW
- };
- 
- struct snd_hwdep_info {
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index d69c0b6..1894e32 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -54,7 +54,8 @@ union snd_firewire_event {
- #define SNDRV_FIREWIRE_TYPE_DICE	1
- #define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
- #define SNDRV_FIREWIRE_TYPE_BEBOB	3
--/* AV/C, RME, MOTU, ... */
-+#define SNDRV_FIREWIRE_TYPE_OXFW	4
-+/* RME, MOTU, ... */
- 
- struct snd_firewire_get_info {
- 	unsigned int type; /* SNDRV_FIREWIRE_TYPE_xxx */
 diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index c0e1701..e073b89 100644
+index e073b89..3742f3e 100644
 --- a/sound/firewire/Kconfig
 +++ b/sound/firewire/Kconfig
-@@ -31,6 +31,7 @@ config SND_OXFW
- 	select SND_PCM
- 	select SND_FIREWIRE_LIB
- 	select SND_RAWMIDI
-+	select SND_HWDEP
- 	help
- 	  Say Y here to include support for Firewire devices based on
- 	  Oxford Semiconductor OXFW970/971 chipset.
-diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
-index 5f65270..310b62d 100644
---- a/sound/firewire/oxfw/Makefile
-+++ b/sound/firewire/oxfw/Makefile
-@@ -1,3 +1,3 @@
- snd-oxfw-objs := oxfw_command.o oxfw_stream.o oxfw_control.o oxfw_proc.o \
--		 oxfw_midi.o oxfw_pcm.o oxfw.o
-+		 oxfw_midi.o oxfw_pcm.o oxfw_hwdep.o oxfw.o
- obj-m += snd-oxfw.o
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index d094ba4..5ac1acb 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -111,6 +111,7 @@ static int oxfw_probe(struct fw_unit *unit,
- 	oxfw->device_info = (const struct device_info *)id->driver_data;
- 	mutex_init(&oxfw->mutex);
- 	spin_lock_init(&oxfw->lock);
-+	init_waitqueue_head(&oxfw->hwdep_wait);
+@@ -122,6 +122,7 @@ config SND_BEBOB
+ 	  * Focusrite Saffire/Saffire LE/SaffirePro10 IO/SaffirePro26 IO
+ 	  * M-Audio Firewire410/AudioPhile/Solo
+ 	  * M-Audio Ozonic/NRV10/ProfireLightBridge
++	  * M-Audio Firewire 1814/ProjectMix IO
  
- 	if (oxfw->device_info == &griffin_firewave)
- 		err = firewave_stream_discover(oxfw);
-@@ -147,6 +148,10 @@ static int oxfw_probe(struct fw_unit *unit,
- 			goto err_card;
- 	}
+           To compile this driver as a module, choose M here: the module
+           will be called snd-bebob.
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 22bda91..7ae2a58 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -60,6 +60,8 @@ static unsigned int devices_used;
  
-+	err = snd_oxfw_create_hwdep(oxfw);
-+	if (err < 0)
-+		goto err_card;
-+
- 	snd_card_set_dev(card, &unit->device);
- 	err = snd_card_register(card);
+ #define MODEL_FOCUSRITE_SAFFIRE_BOTH	0x00000000
+ #define MODEL_MAUDIO_AUDIOPHILE_BOTH	0x00010060
++#define MODEL_MAUDIO_FW1814		0x00010071
++#define MODEL_MAUDIO_PROJECTMIX		0x00010091
+ 
+ static int
+ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+@@ -214,7 +216,14 @@ bebob_probe(struct fw_unit *unit,
  	if (err < 0)
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index 5f24bbb..a229876 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -12,6 +12,7 @@
- #include <linux/mod_devicetable.h>
- #include <linux/mutex.h>
- #include <linux/slab.h>
-+#include <linux/compat.h>
+ 		goto error;
  
- #include <sound/control.h>
- #include <sound/core.h>
-@@ -20,6 +21,8 @@
- #include <sound/pcm_params.h>
- #include <sound/info.h>
- #include <sound/rawmidi.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
+-	err = snd_bebob_stream_discover(bebob);
++	if ((entry->vendor_id == VEN_MAUDIO1) &&
++	    (entry->model_id == MODEL_MAUDIO_FW1814))
++		err = snd_bebob_maudio_special_discover(bebob, true);
++	else if ((entry->vendor_id == VEN_MAUDIO1) &&
++		 (entry->model_id == MODEL_MAUDIO_PROJECTMIX))
++		err = snd_bebob_maudio_special_discover(bebob, false);
++	else
++		err = snd_bebob_stream_discover(bebob);
+ 	if (err < 0)
+ 		goto error;
  
- #include "../lib.h"
- #include "../fcp.h"
-@@ -66,6 +69,10 @@ struct snd_oxfw {
- 	s16 volume[6];
- 	s16 volume_min;
- 	s16 volume_max;
+@@ -277,6 +286,9 @@ static void bebob_remove(struct fw_unit *unit)
+ 	if (bebob == NULL)
+ 		return;
+ 
++	if (bebob->maudio_special_quirk != NULL)
++		kfree(bebob->maudio_special_quirk);
 +
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
+ 	snd_bebob_stream_destroy_duplex(bebob);
+ 	snd_card_disconnect(bebob->card);
+ 	snd_card_free_when_closed(bebob->card);
+@@ -383,6 +395,13 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010081, &maudio_nrv10_spec),
+ 	/* M-Audio, ProFireLightbridge */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x000100a1, &spec_normal),
++	/* Firewire 1814 */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010070, NULL),	/* bootloader */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_FW1814,
++			    &maudio_special_spec),
++	/* M-Audio ProjectMix */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_PROJECTMIX,
++			    &maudio_special_spec),
+ 	/* IDs are unknown but able to be supported */
+ 	/*  Apogee, Mini-ME Firewire */
+ 	/*  Apogee, Mini-DAC Firewire */
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index 1c4cc19..a9c4db5 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -101,6 +101,9 @@ struct snd_bebob {
+ 	int dev_lock_count;
+ 	bool dev_lock_changed;
+ 	wait_queue_head_t hwdep_wait;
++
++	/* for M-Audio special devices */
++	void *maudio_special_quirk;
  };
  
+ static inline int
+@@ -123,7 +126,7 @@ snd_bebob_read_quad(struct fw_unit *unit, u64 addr, u32 *buf)
+ int avc_audio_set_selector(struct fw_unit *unit, unsigned int subunit_id,
+ 			   unsigned int fb_id, unsigned int num);
+ int avc_audio_get_selector(struct fw_unit *unit, unsigned  int subunit_id,
+-			   unsigned int fb_id, unsigned int *num);
++			   unsigned int fb_id, unsigned int *num, bool quiet);
+ 
  /*
-@@ -124,6 +131,10 @@ int firewave_stream_discover(struct snd_oxfw *oxfw);
- int lacie_speakers_stream_discover(struct snd_oxfw *oxfw);
- int snd_oxfw_stream_discover(struct snd_oxfw *oxfw);
+  * AVC command extensions, AV/C Unit and Subunit, Revision 17
+@@ -196,7 +199,7 @@ int avc_bridgeco_get_plug_strm_fmt(struct fw_unit *unit,
+ 				   unsigned int *len);
  
-+void snd_oxfw_stream_lock_changed(struct snd_oxfw *oxfw);
-+int snd_oxfw_stream_lock_try(struct snd_oxfw *oxfw);
-+void snd_oxfw_stream_lock_release(struct snd_oxfw *oxfw);
-+
- int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
+ int snd_bebob_get_rate(struct snd_bebob *bebob, unsigned int *rate,
+-		       enum avc_general_plug_dir dir);
++		       enum avc_general_plug_dir dir, bool quiet);
+ int snd_bebob_set_rate(struct snd_bebob *bebob, unsigned int rate,
+ 		       enum avc_general_plug_dir dir);
  
- int snd_oxfw_create_mixer(struct snd_oxfw *oxfw);
-@@ -131,3 +142,5 @@ int snd_oxfw_create_mixer(struct snd_oxfw *oxfw);
- void snd_oxfw_proc_init(struct snd_oxfw *oxfw);
+@@ -242,6 +245,9 @@ extern struct snd_bebob_spec maudio_solo_spec;
+ extern struct snd_bebob_spec maudio_ozonic_spec;
+ extern struct snd_bebob_spec maudio_nrv10_spec;
  
- int snd_oxfw_create_midi(struct snd_oxfw *oxfw);
++extern struct snd_bebob_spec maudio_special_spec;
++int snd_bebob_maudio_special_discover(struct snd_bebob *bebob, bool is1814);
 +
-+int snd_oxfw_create_hwdep(struct snd_oxfw *oxfw);
-diff --git a/sound/firewire/oxfw/oxfw_hwdep.c b/sound/firewire/oxfw/oxfw_hwdep.c
-new file mode 100644
-index 0000000..9cd6d88
---- /dev/null
-+++ b/sound/firewire/oxfw/oxfw_hwdep.c
-@@ -0,0 +1,195 @@
-+/*
-+ * oxfw_hwdep.c - a part of driver for OXFW970/971 based devices
-+ *
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+/*
-+ * This codes give three functionality.
-+ *
-+ * 1.get firewire node infomation
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock stream
-+ */
-+
-+#include "oxfw.h"
-+
-+static long
-+hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
-+	   loff_t *offset)
-+{
-+	struct snd_oxfw *oxfw = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+	union snd_firewire_event event;
-+
-+	spin_lock_irq(&oxfw->lock);
-+
-+	while (!oxfw->dev_lock_changed) {
-+		prepare_to_wait(&oxfw->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&oxfw->lock);
-+		schedule();
-+		finish_wait(&oxfw->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&oxfw->lock);
-+	}
-+
-+	memset(&event, 0, sizeof(event));
-+	if (oxfw->dev_lock_changed) {
-+		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+		event.lock_status.status = (oxfw->dev_lock_count > 0);
-+		oxfw->dev_lock_changed = false;
-+
-+		count = min_t(long, count, sizeof(event.lock_status));
-+	}
-+
-+	spin_unlock_irq(&oxfw->lock);
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static unsigned int
-+hwdep_poll(struct snd_hwdep *hwdep, struct file *file, poll_table *wait)
-+{
-+	struct snd_oxfw *oxfw = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &oxfw->hwdep_wait, wait);
-+
-+	spin_lock_irq(&oxfw->lock);
-+	if (oxfw->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&oxfw->lock);
-+
-+	return events;
-+}
-+
-+static int
-+hwdep_get_info(struct snd_oxfw *oxfw, void __user *arg)
-+{
-+	struct fw_device *dev = fw_parent_device(oxfw->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_OXFW;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int
-+hwdep_lock(struct snd_oxfw *oxfw)
-+{
-+	int err;
-+
-+	spin_lock_irq(&oxfw->lock);
-+
-+	if (oxfw->dev_lock_count == 0) {
-+		oxfw->dev_lock_count = -1;
-+		err = 0;
-+	} else
-+		err = -EBUSY;
-+
-+	spin_unlock_irq(&oxfw->lock);
-+
-+	return err;
-+}
-+
-+static int
-+hwdep_unlock(struct snd_oxfw *oxfw)
-+{
-+	int err;
-+
-+	spin_lock_irq(&oxfw->lock);
-+
-+	if (oxfw->dev_lock_count == -1) {
-+		oxfw->dev_lock_count = 0;
-+		err = 0;
-+	} else
-+		err = -EBADFD;
-+
-+	spin_unlock_irq(&oxfw->lock);
-+
-+	return err;
-+}
-+
-+static int
-+hwdep_release(struct snd_hwdep *hwdep, struct file *file)
-+{
-+	struct snd_oxfw *oxfw = hwdep->private_data;
-+
-+	spin_lock_irq(&oxfw->lock);
-+	if (oxfw->dev_lock_count == -1)
-+		oxfw->dev_lock_count = 0;
-+	spin_unlock_irq(&oxfw->lock);
-+
-+	return 0;
-+}
-+
-+static int
-+hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+	    unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_oxfw *oxfw = hwdep->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(oxfw, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(oxfw);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(oxfw);
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
-+}
-+
-+#ifdef CONFIG_COMPAT
-+static int
-+hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+		   unsigned int cmd, unsigned long arg)
-+{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
-+
-+int snd_oxfw_create_hwdep(struct snd_oxfw *oxfw)
-+{
-+	static const struct snd_hwdep_ops hwdep_ops = {
-+		.read		= hwdep_read,
-+		.release	= hwdep_release,
-+		.poll		= hwdep_poll,
-+		.ioctl		= hwdep_ioctl,
-+		.ioctl_compat	= hwdep_compat_ioctl,
-+	};
-+	struct snd_hwdep *hwdep;
-+	int err;
-+
-+	err = snd_hwdep_new(oxfw->card, oxfw->card->driver, 0, &hwdep);
-+	if (err < 0)
-+		goto end;
-+	strcpy(hwdep->name, oxfw->card->driver);
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_OXFW;
-+	hwdep->ops = hwdep_ops;
-+	hwdep->private_data = oxfw;
-+	hwdep->exclusive = true;
-+end:
-+	return err;
-+}
-diff --git a/sound/firewire/oxfw/oxfw_midi.c b/sound/firewire/oxfw/oxfw_midi.c
-index 0801c5e..7e59957 100644
---- a/sound/firewire/oxfw/oxfw_midi.c
-+++ b/sound/firewire/oxfw/oxfw_midi.c
-@@ -11,24 +11,38 @@
- static int midi_capture_open(struct snd_rawmidi_substream *substream)
+ int snd_bebob_maudio_load_firmware(struct fw_unit *unit);
+ 
+ #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
+diff --git a/sound/firewire/bebob/bebob_command.c b/sound/firewire/bebob/bebob_command.c
+index c63c6d8..ef7c21e 100644
+--- a/sound/firewire/bebob/bebob_command.c
++++ b/sound/firewire/bebob/bebob_command.c
+@@ -50,7 +50,7 @@ end:
+ }
+ 
+ int avc_audio_get_selector(struct fw_unit *unit, unsigned int subunit_id,
+-			   unsigned int fb_id, unsigned int *num)
++			   unsigned int fb_id, unsigned int *num, bool quiet)
  {
- 	struct snd_oxfw *oxfw = substream->rmidi->private_data;
--	int err = 0;
-+	int err;
-+
-+	err = snd_oxfw_stream_lock_try(oxfw);
-+	if (err < 0)
-+		goto end;
- 
- 	oxfw->tx_midi_substreams++;
--	if (!amdtp_stream_running(&oxfw->tx_stream))
-+	if (!amdtp_stream_running(&oxfw->tx_stream)) {
- 		err = snd_oxfw_stream_start(oxfw, &oxfw->tx_stream, 0);
--
-+		if (err < 0)
-+			snd_oxfw_stream_lock_release(oxfw);
-+	}
-+end:
- 	return err;
+ 	u8 *buf;
+ 	int err;
+@@ -76,9 +76,10 @@ int avc_audio_get_selector(struct fw_unit *unit, unsigned int subunit_id,
+ 	if (err < 0)
+ 		goto end;
+ 	if ((err < 6) || (buf[0] != 0x0c)) {
+-		dev_err(&unit->device,
+-			"failed to get selector %d: 0x%02X\n",
+-			fb_id, buf[0]);
++		if (!quiet)
++			dev_err(&unit->device,
++				"failed to get selector %d: 0x%02X\n",
++				fb_id, buf[0]);
+ 		err = -EIO;
+ 		goto end;
+ 	}
+@@ -314,7 +315,7 @@ end:
  }
  
- static int midi_playback_open(struct snd_rawmidi_substream *substream)
+ int snd_bebob_get_rate(struct snd_bebob *bebob, unsigned int *rate,
+-		       enum avc_general_plug_dir dir)
++		       enum avc_general_plug_dir dir, bool quiet)
  {
- 	struct snd_oxfw *oxfw = substream->rmidi->private_data;
--	int err = 0;
-+	int err;
-+
-+	err = snd_oxfw_stream_lock_try(oxfw);
-+	if (err < 0)
-+		goto end;
- 
- 	oxfw->rx_midi_substreams++;
--	if (!amdtp_stream_running(&oxfw->rx_stream))
-+	if (!amdtp_stream_running(&oxfw->rx_stream)) {
- 		err = snd_oxfw_stream_start(oxfw, &oxfw->rx_stream, 0);
--
-+		if (err < 0)
-+			snd_oxfw_stream_lock_release(oxfw);
-+	}
-+end:
- 	return err;
- }
- 
-@@ -39,6 +53,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
- 	if (--oxfw->tx_midi_substreams == 0)
- 		snd_oxfw_stream_stop(oxfw, &oxfw->tx_stream);
- 
-+	snd_oxfw_stream_lock_release(oxfw);
- 	return 0;
- }
- 
-@@ -49,6 +64,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
- 	if (--oxfw->rx_midi_substreams == 0)
- 		snd_oxfw_stream_stop(oxfw, &oxfw->rx_stream);
- 
-+	snd_oxfw_stream_lock_release(oxfw);
- 	return 0;
- }
- 
-diff --git a/sound/firewire/oxfw/oxfw_pcm.c b/sound/firewire/oxfw/oxfw_pcm.c
-index 17dd17a..0da860b 100644
---- a/sound/firewire/oxfw/oxfw_pcm.c
-+++ b/sound/firewire/oxfw/oxfw_pcm.c
-@@ -210,10 +210,14 @@ static int oxfw_open(struct snd_pcm_substream *substream)
- 	unsigned int rate;
  	int err;
  
--	err = init_hw_params(oxfw, substream);
-+	err = snd_oxfw_stream_lock_try(oxfw);
+@@ -324,8 +325,9 @@ int snd_bebob_get_rate(struct snd_bebob *bebob, unsigned int *rate,
+ 
+ 	/* IMPLEMENTED/STABLE is OK */
+ 	if (err != 0x0c) {
+-		dev_err(&bebob->unit->device,
+-			"failed to get sampling rate\n");
++		if (!quiet)
++			dev_err(&bebob->unit->device,
++				"failed to get sampling rate\n");
+ 		err = -EIO;
+ 	}
+ end:
+diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
+index e3ab42c..c890fe40 100644
+--- a/sound/firewire/bebob/bebob_maudio.c
++++ b/sound/firewire/bebob/bebob_maudio.c
+@@ -7,9 +7,10 @@
+  */
+ 
+ #include "./bebob.h"
++#include <sound/control.h>
+ 
+ /*
+- * Just powering on, Firewire 410/Audiophile wait to
++ * Just powering on, Firewire 410/Audiophile/1814 and ProjectMix I/O wait to
+  * download firmware blob. To enable these devices, drivers should upload
+  * firmware blob and send a command to initialize configuration to factory
+  * settings when completing uploading. Then these devices generate bus reset
+@@ -31,8 +32,16 @@
+  * Without streaming, the devices except for Firewire Audiophile can mix any
+  * input and output. For this reason, Audiophile cannot be used as standalone
+  * mixer.
++ *
++ * Firewire 1814 and ProjectMix I/O uses special firmware. It will be freezed
++ * when receiving any commands which the firmware can't understand. These
++ * devices utilize completely different system to control. It is some
++ * write-transaction directly into a certain address. All of addresses for mixer
++ * functionality is between 0xffc700700000 to 0xffc70070009c.
+  */
+ 
++#define MAX_TRIALS	3
++
+ /* Offset from information register */
+ #define INFO_OFFSET_SW_DATE	0x20
+ 
+@@ -52,6 +61,7 @@
+ #define METER_OFFSET		0x00600000
+ 
+ /* some device has sync info after metering data */
++#define METER_SIZE_SPECIAL	84	/* with sync info */
+ #define METER_SIZE_FW410	76	/* with sync info */
+ #define METER_SIZE_AUDIOPHILE	60	/* with sync info */
+ #define METER_SIZE_SOLO		52	/* with sync info */
+@@ -73,6 +83,16 @@
+ /* for NRV */
+ #define UNKNOWN_METER	"Unknown"
+ 
++struct special_params {
++	bool is1814;
++	unsigned int clk_src;
++	unsigned int dig_in_iface;
++	unsigned int dig_in_fmt;
++	unsigned int dig_out_fmt;
++	unsigned int clk_lock;
++	struct snd_ctl_elem_id *ctl_id_sync;
++};
++
+ /*
+  * For some M-Audio devices, this module just send cue to load firmware. After
+  * loading, the device generates bus reset and newly detected.
+@@ -127,7 +147,545 @@ get_meter(struct snd_bebob *bebob, void *buf, unsigned int size)
+ 				  buf, size, 0);
+ }
+ 
+-/* Firewire 410 specific operation */
++static int
++check_clk_sync(struct snd_bebob *bebob, unsigned int size, bool *sync)
++{
++	int err;
++	u8 *buf;
++
++	buf = kmalloc(size, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	err = get_meter(bebob, buf, size);
++	if (err < 0)
++		goto end;
++
++	/* if synced, this value is the same of SFC of FDF in CIP header */
++	*sync = (buf[size - 2] != 0xff);
++end:
++	kfree(buf);
++	return err;
++}
++
++/*
++ * dig_fmt: 0x00:S/PDIF, 0x01:ADAT
++ * clk_lock: 0x00:unlock, 0x01:lock
++ */
++static int
++special_clk_set_params(struct snd_bebob *bebob, unsigned int clk_src,
++		       unsigned int dig_in_fmt, unsigned int dig_out_fmt,
++		       unsigned int clk_lock)
++{
++	struct special_params *params = bebob->maudio_special_quirk;
++	int err;
++	u8 *buf;
++
++	if (amdtp_stream_running(&bebob->rx_stream) ||
++	    amdtp_stream_running(&bebob->tx_stream))
++		return -EBUSY;
++
++	buf = kmalloc(12, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	buf[0]  = 0x00;		/* CONTROL */
++	buf[1]  = 0xff;		/* UNIT */
++	buf[2]  = 0x00;		/* vendor dependent */
++	buf[3]  = 0x04;		/* company ID high */
++	buf[4]  = 0x00;		/* company ID middle */
++	buf[5]  = 0x04;		/* company ID low */
++	buf[6]  = 0xff & clk_src;	/* clock source */
++	buf[7]  = 0xff & dig_in_fmt;	/* input digital format */
++	buf[8]  = 0xff & dig_out_fmt;	/* output digital format */
++	buf[9]  = 0xff & clk_lock;	/* lock these settings */
++	buf[10] = 0x00;		/* padding  */
++	buf[11] = 0x00;		/* padding */
++
++	/* do transaction and check buf[1-9] are the same against command */
++	err = fcp_avc_transaction(bebob->unit, buf, 12, buf, 12,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) |
++				  BIT(5) | BIT(6) | BIT(7) | BIT(8) |
++				  BIT(9));
++	if (err < 0)
++		goto end;
++	if ((err < 6) || (buf[0] != 0x09)) {
++		dev_err(&bebob->unit->device,
++			"failed to set clock params\n");
++		err = -EIO;
++		goto end;
++	}
++
++	params->clk_src		= buf[6];
++	params->dig_in_fmt	= buf[7];
++	params->dig_out_fmt	= buf[8];
++	params->clk_lock	= buf[9];
++
++	if (params->ctl_id_sync)
++		snd_ctl_notify(bebob->card, SNDRV_CTL_EVENT_MASK_VALUE,
++			       params->ctl_id_sync);
++end:
++	kfree(buf);
++	return err;
++}
++static void
++special_stream_formation_set(struct snd_bebob *bebob)
++{
++	struct special_params *params = bebob->maudio_special_quirk;
++	unsigned int i;
++
++	/*
++	 * the stream formation is different depending on digital interface
++	 */
++	if (params->dig_in_fmt == 0x01) {
++		bebob->tx_stream_formations[3].pcm = 16;
++		bebob->tx_stream_formations[4].pcm = 16;
++		bebob->tx_stream_formations[5].pcm = 12;
++		bebob->tx_stream_formations[6].pcm = 12;
++		if (params->is1814) {
++			bebob->tx_stream_formations[7].pcm = 2;
++			bebob->tx_stream_formations[8].pcm = 2;
++		}
++	} else {
++		bebob->tx_stream_formations[3].pcm = 10;
++		bebob->tx_stream_formations[4].pcm = 10;
++		bebob->tx_stream_formations[5].pcm = 10;
++		bebob->tx_stream_formations[6].pcm = 10;
++		if (params->is1814) {
++			bebob->tx_stream_formations[7].pcm = 2;
++			bebob->tx_stream_formations[8].pcm = 2;
++		}
++	}
++
++	if (params->dig_out_fmt == 0x01) {
++		bebob->rx_stream_formations[3].pcm = 12;
++		bebob->rx_stream_formations[4].pcm = 12;
++		bebob->rx_stream_formations[5].pcm = 8;
++		bebob->rx_stream_formations[6].pcm = 8;
++		if (params->is1814) {
++			bebob->rx_stream_formations[7].pcm = 4;
++			bebob->rx_stream_formations[8].pcm = 4;
++		}
++	} else {
++		bebob->rx_stream_formations[3].pcm = 6;
++		bebob->rx_stream_formations[4].pcm = 6;
++		bebob->rx_stream_formations[5].pcm = 6;
++		bebob->rx_stream_formations[6].pcm = 6;
++		if (params->is1814) {
++			bebob->rx_stream_formations[7].pcm = 4;
++			bebob->rx_stream_formations[8].pcm = 4;
++		}
++	}
++
++	for (i = 3; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
++		bebob->tx_stream_formations[i].midi = 1;
++		bebob->rx_stream_formations[i].midi = 1;
++		if ((i > 7) && !params->is1814)
++			break;
++	}
++}
++
++static int snd_bebob_maudio_special_add_controls(struct snd_bebob *bebob);
++int
++snd_bebob_maudio_special_discover(struct snd_bebob *bebob, bool is1814)
++{
++	unsigned int trials;
++	struct special_params *params;
++	int err;
++
++	params = kmalloc(sizeof(struct special_params), GFP_KERNEL);
++	if (params == NULL)
++		return -ENOMEM;
++
++	mutex_lock(&bebob->mutex);
++
++	bebob->maudio_special_quirk = (void *)params;
++	params->is1814 = is1814;
++
++	/* initialize these parameters because driver is not allowed to ask */
++	bebob->rx_stream.context = ERR_PTR(-1);
++	bebob->tx_stream.context = ERR_PTR(-1);
++	trials = 0;
++	do {
++		err = special_clk_set_params(bebob, 0x03, 0x00, 0x00, 0x00);
++		if (err >= 0)
++			break;
++	} while (++trials < MAX_TRIALS);
++	if (err < 0) {
++		dev_err(&bebob->unit->device,
++			"failed to initialize clock params\n");
++		goto end;
++	}
++
++	trials = 0;
++	do {
++		err = avc_audio_get_selector(bebob->unit, 0x00, 0x04,
++					     &params->dig_in_iface, true);
++		if (err >= 0)
++			break;
++	} while (++trials < MAX_TRIALS);
++	if (err < 0) {
++		dev_err(&bebob->unit->device,
++			"failed to get current dig iface.");
++		goto end;
++	}
++
++	err = snd_bebob_maudio_special_add_controls(bebob);
++	if (err < 0)
++		goto end;
++
++	special_stream_formation_set(bebob);
++
++	if (params->is1814) {
++		bebob->midi_input_ports = 1;
++		bebob->midi_output_ports = 1;
++	} else {
++		bebob->midi_input_ports = 2;
++		bebob->midi_output_ports = 2;
++	}
++end:
++	if (err < 0) {
++		kfree(params);
++		bebob->maudio_special_quirk = NULL;
++	}
++	mutex_unlock(&bebob->mutex);
++	return err;
++}
++
++/* Input plug shows actual rate. Output plug is needless for this purpose. */
++static int special_get_rate(struct snd_bebob *bebob, unsigned int *rate)
++{
++	unsigned int trials;
++	int err;
++
++	trials = 0;
++	do {
++		err = snd_bebob_get_rate(bebob, rate, AVC_GENERAL_PLUG_DIR_IN,
++					 true);
++		if (err >= 0)
++			break;
++	} while (++trials < MAX_TRIALS);
++	if (err < 0)
++		dev_err(&bebob->unit->device,
++			"failed to get sampling rate\n");
++
++	return err;
++}
++static int special_set_rate(struct snd_bebob *bebob, unsigned int rate)
++{
++	struct special_params *params = bebob->maudio_special_quirk;
++	int err;
++
++	err = snd_bebob_set_rate(bebob, rate, AVC_GENERAL_PLUG_DIR_OUT);
++	if (err < 0)
++		goto end;
++
++	err = snd_bebob_set_rate(bebob, rate, AVC_GENERAL_PLUG_DIR_IN);
++	if (err < 0)
++		goto end;
++
++	if (params->ctl_id_sync)
++		snd_ctl_notify(bebob->card, SNDRV_CTL_EVENT_MASK_VALUE,
++			       params->ctl_id_sync);
++end:
++	return err;
++}
++
++/* Clock source control for special firmware */
++static char *special_clk_labels[] = {
++	SND_BEBOB_CLOCK_INTERNAL " with Digital Mute", "Digital",
++	"Word Clock", SND_BEBOB_CLOCK_INTERNAL};
++static int special_clk_get(struct snd_bebob *bebob, unsigned int *id)
++{
++	struct special_params *params = bebob->maudio_special_quirk;
++	*id = params->clk_src;
++	return 0;
++}
++static int special_clk_ctl_info(struct snd_kcontrol *kctl,
++				struct snd_ctl_elem_info *einf)
++{
++	einf->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	einf->count = 1;
++	einf->value.enumerated.items = ARRAY_SIZE(special_clk_labels);
++
++	if (einf->value.enumerated.item >= einf->value.enumerated.items)
++		einf->value.enumerated.item = einf->value.enumerated.items - 1;
++
++	strcpy(einf->value.enumerated.name,
++	       special_clk_labels[einf->value.enumerated.item]);
++
++	return 0;
++}
++static int special_clk_ctl_get(struct snd_kcontrol *kctl,
++			       struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	struct special_params *params = bebob->maudio_special_quirk;
++	uval->value.enumerated.item[0] = params->clk_src;
++	return 0;
++}
++static int special_clk_ctl_put(struct snd_kcontrol *kctl,
++			       struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	struct special_params *params = bebob->maudio_special_quirk;
++	int err, id;
++
++	mutex_lock(&bebob->mutex);
++
++	id = uval->value.enumerated.item[0];
++	if (id >= ARRAY_SIZE(special_clk_labels))
++		return 0;
++
++	err = special_clk_set_params(bebob, id,
++				     params->dig_in_fmt,
++				     params->dig_out_fmt,
++				     params->clk_lock);
++	mutex_unlock(&bebob->mutex);
++
++	return err >= 0;
++}
++static struct snd_kcontrol_new special_clk_ctl = {
++	.name	= "Clock Source",
++	.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
++	.access	= SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.info	= special_clk_ctl_info,
++	.get	= special_clk_ctl_get,
++	.put	= special_clk_ctl_put
++};
++
++/* Clock synchronization control for special firmware */
++static int special_sync_ctl_info(struct snd_kcontrol *kctl,
++				 struct snd_ctl_elem_info *einf)
++{
++	einf->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++	einf->count = 1;
++	einf->value.integer.min = 0;
++	einf->value.integer.max = 1;
++
++	return 0;
++}
++static int special_sync_ctl_get(struct snd_kcontrol *kctl,
++				struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	int err;
++	bool synced = 0;
++
++	err = check_clk_sync(bebob, METER_SIZE_SPECIAL, &synced);
++	if (err >= 0)
++		uval->value.integer.value[0] = synced;
++
++	return 0;
++}
++static struct snd_kcontrol_new special_sync_ctl = {
++	.name	= "Sync Status",
++	.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
++	.access	= SNDRV_CTL_ELEM_ACCESS_READ,
++	.info	= special_sync_ctl_info,
++	.get	= special_sync_ctl_get,
++};
++
++/* Digital interface control for special firmware */
++static char *special_dig_iface_labels[] = {
++	"S/PDIF Optical", "S/PDIF Coaxial", "ADAT Optical"
++};
++static int special_dig_in_iface_ctl_info(struct snd_kcontrol *kctl,
++					 struct snd_ctl_elem_info *einf)
++{
++	einf->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	einf->count = 1;
++	einf->value.enumerated.items = ARRAY_SIZE(special_dig_iface_labels);
++
++	if (einf->value.enumerated.item >= einf->value.enumerated.items)
++		einf->value.enumerated.item = einf->value.enumerated.items - 1;
++
++	strcpy(einf->value.enumerated.name,
++	       special_dig_iface_labels[einf->value.enumerated.item]);
++
++	return 0;
++}
++static int special_dig_in_iface_ctl_get(struct snd_kcontrol *kctl,
++					struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	struct special_params *params = bebob->maudio_special_quirk;
++	int val;
++
++	/* encoded id for user value */
++	val = (params->dig_in_fmt << 1) | (params->dig_in_iface & 0x01);
++
++	/* for ADAT Optical */
++	if (val > 2)
++		val = 2;
++
++	uval->value.enumerated.item[0] = val;
++
++	return 0;
++}
++static int special_dig_in_iface_ctl_set(struct snd_kcontrol *kctl,
++					struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	struct special_params *params = bebob->maudio_special_quirk;
++	unsigned int id, dig_in_fmt, dig_in_iface;
++	int err;
++
++	mutex_lock(&bebob->mutex);
++
++	id = uval->value.enumerated.item[0];
++
++	/* decode user value */
++	dig_in_fmt = (id >> 1) & 0x01;
++	dig_in_iface = id & 0x01;
++
++	err = special_clk_set_params(bebob, params->clk_src, dig_in_fmt,
++				     params->dig_out_fmt, params->clk_lock);
++	if ((err < 0) || (params->dig_in_fmt > 0)) /* ADAT */
++		goto end;
++
++	err = avc_audio_set_selector(bebob->unit, 0x00, 0x04, dig_in_iface);
++	if (err < 0)
++		goto end;
++
++	params->dig_in_iface = dig_in_iface;
++end:
++	special_stream_formation_set(bebob);
++	mutex_unlock(&bebob->mutex);
++	return err;
++}
++static struct snd_kcontrol_new special_dig_in_iface_ctl = {
++	.name	= "Digital Input Interface",
++	.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
++	.access	= SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.info	= special_dig_in_iface_ctl_info,
++	.get	= special_dig_in_iface_ctl_get,
++	.put	= special_dig_in_iface_ctl_set
++};
++
++static int special_dig_out_iface_ctl_info(struct snd_kcontrol *kctl,
++					  struct snd_ctl_elem_info *einf)
++{
++	einf->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	einf->count = 1;
++	einf->value.enumerated.items = ARRAY_SIZE(special_dig_iface_labels) - 1;
++
++	if (einf->value.enumerated.item >= einf->value.enumerated.items)
++		einf->value.enumerated.item = einf->value.enumerated.items - 1;
++
++	strcpy(einf->value.enumerated.name,
++	       special_dig_iface_labels[einf->value.enumerated.item + 1]);
++
++	return 0;
++}
++static int special_dig_out_iface_ctl_get(struct snd_kcontrol *kctl,
++					 struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	struct special_params *params = bebob->maudio_special_quirk;
++	mutex_lock(&bebob->mutex);
++	uval->value.enumerated.item[0] = params->dig_out_fmt;
++	mutex_unlock(&bebob->mutex);
++	return 0;
++}
++static int special_dig_out_iface_ctl_set(struct snd_kcontrol *kctl,
++					 struct snd_ctl_elem_value *uval)
++{
++	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
++	struct special_params *params = bebob->maudio_special_quirk;
++	unsigned int id;
++	int err;
++
++	mutex_lock(&bebob->mutex);
++
++	id = uval->value.enumerated.item[0];
++
++	err = special_clk_set_params(bebob, params->clk_src, params->dig_in_fmt,
++				     id, params->clk_lock);
++	if (err >= 0)
++		special_stream_formation_set(bebob);
++
++	mutex_unlock(&bebob->mutex);
++	return err;
++}
++static struct snd_kcontrol_new special_dig_out_iface_ctl = {
++	.name	= "Digital Output Interface",
++	.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
++	.access	= SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.info	= special_dig_out_iface_ctl_info,
++	.get	= special_dig_out_iface_ctl_get,
++	.put	= special_dig_out_iface_ctl_set
++};
++
++static int snd_bebob_maudio_special_add_controls(struct snd_bebob *bebob)
++{
++	struct snd_kcontrol *kctl;
++	struct special_params *params = bebob->maudio_special_quirk;
++	int err;
++
++	kctl = snd_ctl_new1(&special_clk_ctl, bebob);
++	err = snd_ctl_add(bebob->card, kctl);
++	if (err < 0)
++		goto end;
++
++	kctl = snd_ctl_new1(&special_sync_ctl, bebob);
++	err = snd_ctl_add(bebob->card, kctl);
++	if (err < 0)
++		goto end;
++	params->ctl_id_sync = &kctl->id;
++
++	kctl = snd_ctl_new1(&special_dig_in_iface_ctl, bebob);
++	err = snd_ctl_add(bebob->card, kctl);
++	if (err < 0)
++		goto end;
++
++	kctl = snd_ctl_new1(&special_dig_out_iface_ctl, bebob);
++	err = snd_ctl_add(bebob->card, kctl);
++end:
++	return err;
++}
++
++/* Hardware metering for special firmware */
++static char *special_meter_labels[] = {
++	ANA_IN, ANA_IN, ANA_IN, ANA_IN,
++	SPDIF_IN,
++	ADAT_IN, ADAT_IN, ADAT_IN, ADAT_IN,
++	ANA_OUT, ANA_OUT,
++	SPDIF_OUT,
++	ADAT_OUT, ADAT_OUT, ADAT_OUT, ADAT_OUT,
++	HP_OUT, HP_OUT,
++	AUX_OUT
++};
++static int
++special_meter_get(struct snd_bebob *bebob, u32 *target, unsigned int size)
++{
++	u16 *buf;
++	unsigned int i, c, channels;
++	int err;
++
++	channels = ARRAY_SIZE(special_meter_labels) * 2;
++	if (size < channels * sizeof(u32))
++		return -EINVAL;
++
++	/* omit last 4 bytes because it's clock info. */
++	buf = kmalloc(METER_SIZE_SPECIAL - 4, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	err = get_meter(bebob, (void *)buf, METER_SIZE_SPECIAL - 4);
++	if (err < 0)
++		goto end;
++
++	/* some channels are not used, and format is u16 */
++	i = 0;
++	for (c = 2; c < channels + 2; c++)
++		target[i++] = be16_to_cpu(buf[c]) << 16;
++end:
++	kfree(buf);
++	return err;
++}
++
++/* Firewire 410 specific operations */
+ static char *fw410_meter_labels[] = {
+ 	ANA_IN, DIG_IN,
+ 	ANA_OUT, ANA_OUT, ANA_OUT, ANA_OUT, DIG_OUT,
+@@ -278,6 +836,27 @@ end:
+ 	return err;
+ }
+ 
++/* for special customized devices */
++static struct snd_bebob_rate_spec special_rate_spec = {
++	.get	= &special_get_rate,
++	.set	= &special_set_rate,
++};
++static struct snd_bebob_clock_spec special_clk_spec = {
++	.num	= ARRAY_SIZE(special_clk_labels),
++	.labels	= special_clk_labels,
++	.get	= &special_clk_get,
++};
++static struct snd_bebob_meter_spec special_meter_spec = {
++	.num	= ARRAY_SIZE(special_meter_labels),
++	.labels	= special_meter_labels,
++	.get	= &special_meter_get
++};
++struct snd_bebob_spec maudio_special_spec = {
++	.clock	= &special_clk_spec,
++	.rate	= &special_rate_spec,
++	.meter	= &special_meter_spec
++};
++
+ /* Firewire 410 specification */
+ static struct snd_bebob_rate_spec usual_rate_spec = {
+ 	.get	= &snd_bebob_stream_get_rate,
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 61dd54e..3998123 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -72,11 +72,13 @@ snd_bebob_stream_get_rate(struct snd_bebob *bebob, unsigned int *curr_rate)
+ 	unsigned int tx_rate, rx_rate;
+ 	int err;
+ 
+-	err = snd_bebob_get_rate(bebob, &tx_rate, AVC_GENERAL_PLUG_DIR_OUT);
++	err = snd_bebob_get_rate(bebob, &tx_rate, AVC_GENERAL_PLUG_DIR_OUT,
++				 false);
  	if (err < 0)
  		goto end;
  
-+	err = init_hw_params(oxfw, substream);
-+	if (err < 0)
-+		goto err_locked;
-+
- 	/*
- 	 * When any PCM streams are already running, the available sampling
- 	 * rate is limited at current value.
-@@ -222,7 +226,7 @@ static int oxfw_open(struct snd_pcm_substream *substream)
- 	    amdtp_stream_pcm_running(&oxfw->rx_stream)) {
- 		err = snd_oxfw_stream_get_rate(oxfw, &rate);
- 		if (err < 0)
--			goto end;
-+			goto err_locked;
- 		substream->runtime->hw.rate_min = rate;
- 		substream->runtime->hw.rate_max = rate;
- 	}
-@@ -230,10 +234,15 @@ static int oxfw_open(struct snd_pcm_substream *substream)
- 	snd_pcm_set_sync(substream);
- end:
- 	return err;
-+err_locked:
-+	snd_oxfw_stream_lock_release(oxfw);
-+	return err;
- }
+-	err = snd_bebob_get_rate(bebob, &rx_rate, AVC_GENERAL_PLUG_DIR_IN);
++	err = snd_bebob_get_rate(bebob, &rx_rate, AVC_GENERAL_PLUG_DIR_IN,
++				 false);
+ 	if (err < 0)
+ 		goto end;
  
- static int oxfw_close(struct snd_pcm_substream *substream)
+@@ -342,7 +344,6 @@ break_both_connections(struct snd_bebob *bebob)
  {
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	snd_oxfw_stream_lock_release(oxfw);
- 	return 0;
+ 	cmp_connection_break(&bebob->in_conn);
+ 	cmp_connection_break(&bebob->out_conn);
+-	return;
  }
  
-diff --git a/sound/firewire/oxfw/oxfw_stream.c b/sound/firewire/oxfw/oxfw_stream.c
-index f3d2ca3..2740dbb 100644
---- a/sound/firewire/oxfw/oxfw_stream.c
-+++ b/sound/firewire/oxfw/oxfw_stream.c
-@@ -541,3 +541,42 @@ int snd_oxfw_streams_init(struct snd_oxfw *oxfw)
- end:
- 	return err;
- }
-+
-+void snd_oxfw_stream_lock_changed(struct snd_oxfw *oxfw)
-+{
-+	oxfw->dev_lock_changed = true;
-+	wake_up(&oxfw->hwdep_wait);
-+}
-+
-+int snd_oxfw_stream_lock_try(struct snd_oxfw *oxfw)
-+{
-+	int err;
-+
-+	spin_lock_irq(&oxfw->lock);
-+
-+	/* user land lock this */
-+	if (oxfw->dev_lock_count < 0) {
-+		err = -EBUSY;
-+		goto end;
+ static void
+@@ -379,9 +380,11 @@ start_stream(struct snd_bebob *bebob, struct amdtp_stream *stream,
+ 		conn = &bebob->out_conn;
+ 
+ 	/* channel mapping */
+-	err = map_stream(bebob, stream);
+-	if (err < 0)
+-		goto end;
++	if (bebob->maudio_special_quirk == NULL) {
++		err = map_stream(bebob, stream);
++		if (err < 0)
++			goto end;
 +	}
+ 
+ 	/* start amdtp stream */
+ 	err = amdtp_stream_start(stream,
+@@ -472,10 +475,14 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob,
+ 		 * NOTE:
+ 		 * If establishing connections at first, Yamaha GO46
+ 		 * (and maybe Terratec X24) don't generate sound.
++		 *
++		 * For firmware customized by M-Audio, refer to next NOTE.
+ 		 */
+-		err = rate_spec->set(bebob, rate);
+-		if (err < 0)
+-			goto end;
++		if (bebob->maudio_special_quirk == NULL) {
++			err = rate_spec->set(bebob, rate);
++			if (err < 0)
++				goto end;
++		}
+ 
+ 		err = make_both_connections(bebob, rate);
+ 		if (err < 0)
+@@ -489,6 +496,20 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob,
+ 			goto end;
+ 		}
+ 
++		/*
++		 * NOTE:
++		 * The firmware customized by M-Audio uses these commands to
++		 * start transmitting stream. This is not usual way.
++		 */
++		if (bebob->maudio_special_quirk != NULL) {
++			err = rate_spec->set(bebob, rate);
++			if (err < 0) {
++				amdtp_stream_stop(master);
++				break_both_connections(bebob);
++				goto end;
++			}
++		}
 +
-+	/* this is the first time */
-+	if (oxfw->dev_lock_count++ == 0)
-+		snd_oxfw_stream_lock_changed(oxfw);
-+	err = 0;
-+end:
-+	spin_unlock_irq(&oxfw->lock);
-+	return err;
-+}
-+
-+void snd_oxfw_stream_lock_release(struct snd_oxfw *oxfw)
-+{
-+	spin_lock_irq(&oxfw->lock);
-+
-+	if (WARN_ON(oxfw->dev_lock_count <= 0))
-+		goto end;
-+	if (--oxfw->dev_lock_count == 0)
-+		snd_oxfw_stream_lock_changed(oxfw);
-+end:
-+	spin_unlock_irq(&oxfw->lock);
-+}
+ 		/* wait first callback */
+ 		if (!amdtp_stream_wait_callback(master, CALLBACK_TIMEOUT)) {
+ 			amdtp_stream_stop(master);
+diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
+index 9c2cebf..d5da8de 100644
+--- a/sound/firewire/bebob/bebob_terratec.c
++++ b/sound/firewire/bebob/bebob_terratec.c
+@@ -17,10 +17,10 @@ phase88_rack_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
+ 	unsigned int enable_ext, enable_word;
+ 	int err;
+ 
+-	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_ext);
++	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_ext, false);
+ 	if (err < 0)
+ 		goto end;
+-	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_word);
++	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_word, false);
+ 	if (err < 0)
+ 		goto end;
+ 
+@@ -35,7 +35,7 @@ static char *phase24_series_clk_src_labels[] = {
+ static int
+ phase24_series_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
+ {
+-	return avc_audio_get_selector(bebob->unit, 0, 4, id);
++	return avc_audio_get_selector(bebob->unit, 0, 4, id, false);
+ }
+ 
+ struct snd_bebob_rate_spec phase_series_rate_spec = {
+diff --git a/sound/firewire/bebob/bebob_yamaha.c b/sound/firewire/bebob/bebob_yamaha.c
+index f71af6b..23ca489 100644
+--- a/sound/firewire/bebob/bebob_yamaha.c
++++ b/sound/firewire/bebob/bebob_yamaha.c
+@@ -32,7 +32,7 @@ static char *clk_src_labels[] = {SND_BEBOB_CLOCK_INTERNAL, "SPDIF"};
+ static int
+ clk_src_get(struct snd_bebob *bebob, unsigned int *id)
+ {
+-	return avc_audio_get_selector(bebob->unit, 0, 4, id);
++	return avc_audio_get_selector(bebob->unit, 0, 4, id, false);
+ }
+ static struct snd_bebob_clock_spec clock_spec = {
+ 	.num	= ARRAY_SIZE(clk_src_labels),
 -- 
 1.8.3.2
 
