@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 10/52] firewire-lib: Add transfer delay to synchronized duplex
-	streams
-Date: Wed, 29 Jan 2014 22:44:17 +0900
-Message-ID: <1391003099-7109-11-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 13/52] firewire-lib: Add 'direction' member to
+	'cmp_connection' structure
+Date: Wed, 29 Jan 2014 22:44:20 +0900
+Message-ID: <1391003099-7109-14-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,47 +21,77 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Currently, in duplex streams with synchronization mode, this module just pass
-'presentation timestamp' from in-packets to out-packets. This is enough to
-handle actual device but logically the timestamp should include
-'transfer delay' and 'processing time'. This means the timestamp in out-packet
-should be at future.
+This patch adds 'direction' member to 'cmp_connection' structure to indicate
+the direction of connection. This patch also adds 'direction' argument to
+cmp_connection_init() function to determine the direction.
 
-To be simple, this commit add only 'transfer delay'.
+The cmp_connection_init() function is exported and used in snd-firewire-speakers
+so this patch also affect it.
+
+This patch just add them. Actual implementation will be done by followed
+patches.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/firewire/cmp.c      | 1 +
+ sound/firewire/cmp.h      | 7 +++++++
+ sound/firewire/speakers.c | 2 +-
+ 3 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 9d1c47f..881d610 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -784,6 +784,15 @@ static void packet_sort(struct sort_table *tbl, unsigned int len)
- 	} while (i < len);
- }
+diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
+index 17ad4f2..1430fec 100644
+--- a/sound/firewire/cmp.c
++++ b/sound/firewire/cmp.c
+@@ -94,6 +94,7 @@ static int pcr_modify(struct cmp_connection *c,
+  */
+ int cmp_connection_init(struct cmp_connection *c,
+ 			struct fw_unit *unit,
++			enum cmp_direction direction,
+ 			unsigned int pcr_index)
+ {
+ 	__be32 mpr_be;
+diff --git a/sound/firewire/cmp.h b/sound/firewire/cmp.h
+index 2320cd4..9b58448 100644
+--- a/sound/firewire/cmp.h
++++ b/sound/firewire/cmp.h
+@@ -7,6 +7,11 @@
  
-+static inline void add_transfer_delay(struct amdtp_stream *s, unsigned int *syt)
-+{
-+	if (*syt != CIP_SYT_NO_INFO) {
-+		*syt += (s->transfer_delay / TICKS_PER_CYCLE) << 12;
-+		*syt += s->transfer_delay % TICKS_PER_CYCLE;
-+		*syt &= CIP_SYT_MASK;
-+	}
-+}
+ struct fw_unit;
+ 
++enum cmp_direction {
++	CMP_INPUT = 0,
++	CMP_OUTPUT,
++};
 +
- static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
- 				size_t header_length, void *header,
- 				void *private_data)
-@@ -855,6 +864,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
- 			    (s->flags & CIP_SYNC_TO_DEVICE) &&
- 			    s->sync_slave->callbacked) {
- 				syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
-+				add_transfer_delay(s, &syt);
- 				handle_out_packet(s->sync_slave, syt);
- 			}
- 			handle_in_packet(s, tbl[i].payload_size / 4, buffer);
+ /**
+  * struct cmp_connection - manages an isochronous connection to a device
+  * @speed: the connection's actual speed
+@@ -26,10 +31,12 @@ struct cmp_connection {
+ 	__be32 last_pcr_value;
+ 	unsigned int pcr_index;
+ 	unsigned int max_speed;
++	enum cmp_direction direction;
+ };
+ 
+ int cmp_connection_init(struct cmp_connection *connection,
+ 			struct fw_unit *unit,
++			enum cmp_direction direction,
+ 			unsigned int pcr_index);
+ void cmp_connection_destroy(struct cmp_connection *connection);
+ 
+diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
+index f5d0bf3..350e578 100644
+--- a/sound/firewire/speakers.c
++++ b/sound/firewire/speakers.c
+@@ -679,7 +679,7 @@ static int fwspk_probe(struct fw_unit *unit,
+ 	fwspk->unit = fw_unit_get(unit);
+ 	fwspk->device_info = (const struct device_info *)id->driver_data;
+ 
+-	err = cmp_connection_init(&fwspk->connection, unit, 0);
++	err = cmp_connection_init(&fwspk->connection, unit, CMP_INPUT, 0);
+ 	if (err < 0)
+ 		goto err_unit;
+ 
 -- 
 1.8.3.2
 
