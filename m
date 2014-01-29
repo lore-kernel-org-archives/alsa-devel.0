@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 49/52] oxfw: Add support AMDTP in-stream and PCM capture
-Date: Wed, 29 Jan 2014 22:44:56 +0900
-Message-ID: <1391003099-7109-50-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 05/52] firewire-lib: Add support for AMDTP in-stream and PCM
+	capture
+Date: Wed, 29 Jan 2014 22:44:12 +0900
+Message-ID: <1391003099-7109-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,786 +21,326 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Previous commit adds support for some devices which can capture PCM samples.
-These devices transmit AMDTP stream in non-blocking mode. The stream from
-these devices has a quirk for 'presentation timestamp'.
+For capturing PCM, this commit adds the functionality to handle in-stream.
+This is also applied for dual-wire mode.
 
-The sequence of 'presentation timestamp' is invalid even if header of packet
-shows 'CIP header with SYT field'. So this driver can't reuse the timestamp
-for out stream.
-
-In this reason, this driver handles both streams separately.
+Currently, capturing 32bit samples are supported.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw.c         |   8 +-
- sound/firewire/oxfw/oxfw.h         |  27 ++++-
- sound/firewire/oxfw/oxfw_command.c |  40 ++++++++
- sound/firewire/oxfw/oxfw_pcm.c     | 176 ++++++++++++++++++++++++++-------
- sound/firewire/oxfw/oxfw_proc.c    |  14 ++-
- sound/firewire/oxfw/oxfw_stream.c  | 198 ++++++++++++++++++++++++++-----------
- 6 files changed, 361 insertions(+), 102 deletions(-)
+ sound/firewire/amdtp.c | 218 +++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 201 insertions(+), 17 deletions(-)
 
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index d45073a..fad85f0 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -124,7 +124,7 @@ static int oxfw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto err_card;
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index ca79cb4..4ebfd67 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -39,6 +39,7 @@
+  * only "Clock-based rate control mode" is supported
+  */
+ #define AMDTP_FDF_AM824		(0 << (CIP_FDF_SFC_SHIFT + 3))
++#define AMDTP_FDF_NO_DATA	0xff
+ #define AMDTP_DBS_MASK		0x00ff0000
+ #define AMDTP_DBS_SHIFT		16
+ #define AMDTP_DBC_MASK		0x000000ff
+@@ -47,6 +48,7 @@
+ #define INTERRUPT_INTERVAL	16
+ #define QUEUE_LENGTH		48
  
--	err = snd_oxfw_stream_init(oxfw);
-+	err = snd_oxfw_streams_init(oxfw);
- 	if (err < 0)
- 		goto err_card;
++#define IN_PACKET_HEADER_SIZE	4
+ #define OUT_PACKET_HEADER_SIZE	0
  
-@@ -157,14 +157,16 @@ static void oxfw_bus_reset(struct fw_unit *unit)
- 	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
+ static void pcm_period_tasklet(unsigned long data);
+@@ -179,6 +181,12 @@ static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
+ static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
+ 				     struct snd_pcm_substream *pcm,
+ 				     __be32 *buffer, unsigned int frames);
++static void amdtp_read_s32(struct amdtp_stream *s,
++			   struct snd_pcm_substream *pcm,
++			   __be32 *buffer, unsigned int frames);
++static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
++				    struct snd_pcm_substream *pcm,
++				    __be32 *buffer, unsigned int frames);
  
- 	fcp_bus_reset(oxfw->unit);
--	snd_oxfw_stream_update(oxfw);
-+	snd_oxfw_stream_update(oxfw, &oxfw->rx_stream);
-+	snd_oxfw_stream_update(oxfw, &oxfw->tx_stream);
+ /**
+  * amdtp_stream_set_pcm_format - set the PCM format
+@@ -200,16 +208,26 @@ void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
+ 		WARN_ON(1);
+ 		/* fall through */
+ 	case SNDRV_PCM_FORMAT_S16:
+-		if (s->dual_wire)
+-			s->transfer_samples = amdtp_write_s16_dualwire;
+-		else
+-			s->transfer_samples = amdtp_write_s16;
+-		break;
++		if (s->direction == AMDTP_OUT_STREAM) {
++			if (s->dual_wire)
++				s->transfer_samples = amdtp_write_s16_dualwire;
++			else
++				s->transfer_samples = amdtp_write_s16;
++			break;
++		}
++		WARN_ON(1);
++		/* fall through */
+ 	case SNDRV_PCM_FORMAT_S32:
+-		if (s->dual_wire)
+-			s->transfer_samples = amdtp_write_s32_dualwire;
+-		else
+-			s->transfer_samples = amdtp_write_s32;
++		if (s->direction == AMDTP_OUT_STREAM) {
++			if (s->dual_wire)
++				s->transfer_samples = amdtp_write_s32_dualwire;
++			else
++				s->transfer_samples = amdtp_write_s32;
++		} else if (s->dual_wire) {
++			s->transfer_samples = amdtp_read_s32_dualwire;
++		} else {
++			s->transfer_samples = amdtp_read_s32;
++		}
+ 		break;
+ 	}
+ }
+@@ -420,6 +438,58 @@ static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
+ 	}
  }
  
- static void oxfw_remove(struct fw_unit *unit)
- {
- 	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
- 
--	snd_oxfw_stream_destroy(oxfw);
-+	snd_oxfw_stream_destroy(oxfw, &oxfw->rx_stream);
-+	snd_oxfw_stream_destroy(oxfw, &oxfw->tx_stream);
- 
- 	snd_card_disconnect(oxfw->card);
- 	snd_card_free_when_closed(oxfw->card);
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index fe6936e..3765f89 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -47,8 +47,12 @@ struct snd_oxfw {
- 	struct mutex mutex;
- 
- 	struct snd_oxfw_stream_formation
-+		tx_stream_formations[SND_OXFW_STREAM_TABLE_ENTRIES];
-+	struct snd_oxfw_stream_formation
- 		rx_stream_formations[SND_OXFW_STREAM_TABLE_ENTRIES];
-+	struct cmp_connection out_conn;
- 	struct cmp_connection in_conn;
-+	struct amdtp_stream tx_stream;
- 	struct amdtp_stream rx_stream;
- 
- 	bool mute;
-@@ -90,11 +94,24 @@ int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
- 				enum avc_general_plug_dir dir,
- 				unsigned short pid);
- 
--int snd_oxfw_stream_init(struct snd_oxfw *oxfw);
--int snd_oxfw_stream_start(struct snd_oxfw *oxfw, unsigned int rate);
--void snd_oxfw_stream_stop(struct snd_oxfw *oxfw);
--void snd_oxfw_stream_destroy(struct snd_oxfw *oxfw);
--void snd_oxfw_stream_update(struct snd_oxfw *oxfw);
-+int snd_oxfw_command_set_rate(struct snd_oxfw *oxfw,
-+			       enum avc_general_plug_dir dir,
-+			       unsigned int rate);
-+int snd_oxfw_command_get_rate(struct snd_oxfw *oxfw,
-+			       enum avc_general_plug_dir dir,
-+			       unsigned int *rate);
-+
-+int snd_oxfw_stream_get_rate(struct snd_oxfw *oxfw, unsigned int *rate);
-+int snd_oxfw_stream_set_rate(struct snd_oxfw *oxfw, unsigned int rate);
-+
-+int snd_oxfw_stream_start(struct snd_oxfw *oxfw,
-+			  struct amdtp_stream *stream, unsigned int rate);
-+void snd_oxfw_stream_stop(struct snd_oxfw *oxfw, struct amdtp_stream *stream);
-+void snd_oxfw_stream_destroy(struct snd_oxfw *oxfw,
-+			     struct amdtp_stream *stream);
-+void snd_oxfw_stream_update(struct snd_oxfw *oxfw, struct amdtp_stream *stream);
-+
-+int snd_oxfw_streams_init(struct snd_oxfw *oxfw);
- 
- int firewave_stream_discover(struct snd_oxfw *oxfw);
- int lacie_speakers_stream_discover(struct snd_oxfw *oxfw);
-diff --git a/sound/firewire/oxfw/oxfw_command.c b/sound/firewire/oxfw/oxfw_command.c
-index 5f8cb22..2392b92 100644
---- a/sound/firewire/oxfw/oxfw_command.c
-+++ b/sound/firewire/oxfw/oxfw_command.c
-@@ -120,3 +120,43 @@ end:
- 	kfree(buf);
- 	return err;
- }
-+
-+int snd_oxfw_command_set_rate(struct snd_oxfw *oxfw,
-+			       enum avc_general_plug_dir dir,
-+			       unsigned int rate)
++static void amdtp_read_s32(struct amdtp_stream *s,
++			   struct snd_pcm_substream *pcm,
++			   __be32 *buffer, unsigned int frames)
 +{
-+	int err;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int remaining_frames, i, c;
++	u32 *dst;
 +
-+	err = avc_general_set_sig_fmt(oxfw->unit, rate, dir, 0);
-+	if (err < 0)
-+		goto end;
++	dst  = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
 +
-+	/* ACCEPTED or INTERIM is OK */
-+	if ((err != 0x0f) && (err != 0x09)) {
-+		dev_err(&oxfw->unit->device,
-+			"failed to set sampling rate\n");
-+		err = -EIO;
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < s->pcm_channels; ++c) {
++			*dst = be32_to_cpu(buffer[c]) << 8;
++			dst++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			dst = (void *)runtime->dma_area;
 +	}
-+end:
-+	return err;
 +}
 +
-+int snd_oxfw_command_get_rate(struct snd_oxfw *oxfw,
-+			       enum avc_general_plug_dir dir,
-+			       unsigned int *rate)
++static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
++				    struct snd_pcm_substream *pcm,
++				    __be32 *buffer, unsigned int frames)
 +{
-+	int err;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	u32 *dst;
 +
-+	err = avc_general_get_sig_fmt(oxfw->unit, rate, dir, 0);
-+	if (err < 0)
-+		goto end;
++	dst = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++	channels = s->pcm_channels / 2;
 +
-+	/* IMPLEMENTED/STABLE is OK */
-+	if (err != 0x0c) {
-+		dev_err(&oxfw->unit->device,
-+			"failed to get sampling rate\n");
-+		err = -EIO;
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			*dst = be32_to_cpu(buffer[c * 2]) << 8;
++			dst++;
++		}
++		buffer += 1;
++		for (c = 0; c < channels; ++c) {
++			*dst = be32_to_cpu(buffer[c * 2]) << 8;
++			dst++;
++		}
++		buffer += s->data_block_quadlets - 1;
++		if (--remaining_frames == 0)
++			dst = (void *)runtime->dma_area;
 +	}
-+end:
-+	return err;
-+}
-diff --git a/sound/firewire/oxfw/oxfw_pcm.c b/sound/firewire/oxfw/oxfw_pcm.c
-index 6755980..17dd17a 100644
---- a/sound/firewire/oxfw/oxfw_pcm.c
-+++ b/sound/firewire/oxfw/oxfw_pcm.c
-@@ -66,6 +66,14 @@ static int hw_rule_channels(struct snd_pcm_hw_params *params,
- 	return snd_interval_refine(c, &t);
- }
- 
-+static inline int hw_rule_capture_rate(struct snd_pcm_hw_params *params,
-+				       struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_oxfw *oxfw = rule->private;
-+	return hw_rule_rate(params, rule, oxfw,
-+			    oxfw->tx_stream_formations);
 +}
 +
- static inline int hw_rule_playback_rate(struct snd_pcm_hw_params *params,
- 					struct snd_pcm_hw_rule *rule)
+ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
+ 				   __be32 *buffer, unsigned int frames)
  {
-@@ -74,6 +82,14 @@ static inline int hw_rule_playback_rate(struct snd_pcm_hw_params *params,
- 			    oxfw->rx_stream_formations);
+@@ -505,6 +575,12 @@ static inline int queue_out_packet(struct amdtp_stream *s,
+ 			    payload_length, skip);
  }
  
-+static inline int hw_rule_capture_channels(struct snd_pcm_hw_params *params,
-+					   struct snd_pcm_hw_rule *rule)
++static inline int queue_in_packet(struct amdtp_stream *s)
 +{
-+	struct snd_oxfw *oxfw = rule->private;
-+	return hw_rule_channels(params, rule, oxfw,
-+				oxfw->tx_stream_formations);
++	return queue_packet(s, IN_PACKET_HEADER_SIZE,
++			    amdtp_stream_get_max_payload(s), false);
 +}
 +
- static inline int hw_rule_playback_channels(struct snd_pcm_hw_params *params,
- 					    struct snd_pcm_hw_rule *rule)
+ static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
  {
-@@ -117,12 +133,14 @@ static void prepare_rates(struct snd_pcm_hardware *hw,
- 	return;
+ 	__be32 *buffer;
+@@ -552,6 +628,67 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
+ 		update_pcm_pointers(s, pcm, data_blocks);
  }
  
--static int oxfw_open(struct snd_pcm_substream *substream)
-+static int init_hw_params(struct snd_oxfw *oxfw,
-+			  struct snd_pcm_substream *substream)
- {
- 	static const struct snd_pcm_hardware hw = {
- 		.info = SNDRV_PCM_INFO_MMAP |
- 			SNDRV_PCM_INFO_BATCH |
- 			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_JOINT_DUPLEX |
- 			/* for Open Sound System compatibility */
- 			SNDRV_PCM_INFO_MMAP_VALID |
- 			SNDRV_PCM_INFO_BLOCK_TRANSFER,
-@@ -133,29 +151,39 @@ static int oxfw_open(struct snd_pcm_substream *substream)
- 		/* set up later */
- 		.channels_min = UINT_MAX,
- 		.channels_max = 0,
--		.buffer_bytes_max = 4 * 1024 * 1024,
-+		.buffer_bytes_max = 4 * 16 * 2048,
- 		.period_bytes_min = 1,
--		.period_bytes_max = UINT_MAX,
-+		.period_bytes_max = 4 * 16 * 2048,
- 		.periods_min = 1,
- 		.periods_max = UINT_MAX,
- 	};
--	struct snd_oxfw *oxfw = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	unsigned int rate;
- 	int err;
- 
- 	runtime->hw = hw;
- 
- 	/* add rule between channels and sampling rate */
--	prepare_rates(&runtime->hw, oxfw->rx_stream_formations);
--	prepare_channels(&runtime->hw, oxfw->rx_stream_formations);
--	runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
--	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--			    hw_rule_playback_channels, oxfw,
--			    SNDRV_PCM_HW_PARAM_RATE, -1);
--	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
--			    hw_rule_playback_rate, oxfw,
--			    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		prepare_rates(&runtime->hw, oxfw->tx_stream_formations);
-+		prepare_channels(&runtime->hw, oxfw->tx_stream_formations);
-+		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
-+		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				    hw_rule_capture_channels, oxfw,
-+				    SNDRV_PCM_HW_PARAM_RATE, -1);
-+		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				    hw_rule_capture_rate, oxfw,
-+				    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	} else {
-+		prepare_rates(&runtime->hw, oxfw->rx_stream_formations);
-+		prepare_channels(&runtime->hw, oxfw->rx_stream_formations);
-+		runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
-+		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				    hw_rule_playback_channels, oxfw,
-+				    SNDRV_PCM_HW_PARAM_RATE, -1);
-+		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				    hw_rule_playback_rate, oxfw,
-+				    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	}
- 
- 	/* AM824 in IEC 61883-6 can deliver 24bit data */
- 	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
-@@ -170,19 +198,29 @@ static int oxfw_open(struct snd_pcm_substream *substream)
- 					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
- 	if (err < 0)
- 		goto end;
-+	err = snd_pcm_hw_constraint_step(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 32);
-+end:
-+	return err;
-+}
- 
--	/* time for period constraint */
--	err = snd_pcm_hw_constraint_minmax(runtime,
--					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
--					   5000, UINT_MAX);
-+static int oxfw_open(struct snd_pcm_substream *substream)
++static void handle_in_packet(struct amdtp_stream *s,
++			     unsigned int payload_quadlets,
++			     __be32 *buffer)
 +{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	unsigned int rate;
-+	int err;
-+
-+	err = init_hw_params(oxfw, substream);
-+	if (err < 0)
-+		goto end;
- 
- 	/*
- 	 * When any PCM streams are already running, the available sampling
- 	 * rate is limited at current value.
- 	 */
--	if (amdtp_stream_pcm_running(&oxfw->rx_stream)) {
--		err = avc_general_get_sig_fmt(oxfw->unit, &rate,
--					      AVC_GENERAL_PLUG_DIR_IN, 0);
-+	if (amdtp_stream_pcm_running(&oxfw->tx_stream) ||
-+	    amdtp_stream_pcm_running(&oxfw->rx_stream)) {
-+		err = snd_oxfw_stream_get_rate(oxfw, &rate);
- 		if (err < 0)
- 			goto end;
- 		substream->runtime->hw.rate_min = rate;
-@@ -206,22 +244,45 @@ static int oxfw_hw_params(struct snd_pcm_substream *substream,
- 						params_buffer_bytes(hw_params));
- }
- 
--static int oxfw_hw_free(struct snd_pcm_substream *substream)
-+static int oxfw_hw_free_capture(struct snd_pcm_substream *substream)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+
-+	snd_oxfw_stream_stop(oxfw, &oxfw->tx_stream);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+static int oxfw_hw_free_playback(struct snd_pcm_substream *substream)
- {
- 	struct snd_oxfw *oxfw = substream->private_data;
- 
--	snd_oxfw_stream_stop(oxfw);
-+	snd_oxfw_stream_stop(oxfw, &oxfw->rx_stream);
- 
- 	return snd_pcm_lib_free_vmalloc_buffer(substream);
- }
- 
--static int oxfw_prepare(struct snd_pcm_substream *substream)
-+static int oxfw_prepare_capture(struct snd_pcm_substream *substream)
- {
- 	struct snd_oxfw *oxfw = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int err;
- 
--	err = snd_oxfw_stream_start(oxfw, runtime->rate);
-+	err = snd_oxfw_stream_start(oxfw, &oxfw->tx_stream, runtime->rate);
-+	if (err < 0)
-+		goto end;
-+
-+	amdtp_stream_set_pcm_format(&oxfw->tx_stream, runtime->format);
-+	amdtp_stream_pcm_prepare(&oxfw->tx_stream);
-+end:
-+	return err;
-+}
-+static int oxfw_prepare_playback(struct snd_pcm_substream *substream)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	err = snd_oxfw_stream_start(oxfw, &oxfw->rx_stream, runtime->rate);
- 	if (err < 0)
- 		goto end;
- 
-@@ -231,7 +292,25 @@ end:
- 	return err;
- }
- 
--static int oxfw_trigger(struct snd_pcm_substream *substream, int cmd)
-+static int oxfw_trigger_capture(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
++	u32 cip_header[2];
++	unsigned int data_block_quadlets, data_blocks, data_block_counter;
 +	struct snd_pcm_substream *pcm;
 +
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		pcm = substream;
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		pcm = NULL;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	amdtp_stream_pcm_trigger(&oxfw->tx_stream, pcm);
-+	return 0;
-+}
-+static int oxfw_trigger_playback(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_oxfw *oxfw = substream->private_data;
- 	struct snd_pcm_substream *pcm;
-@@ -250,35 +329,62 @@ static int oxfw_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return 0;
- }
- 
--static snd_pcm_uframes_t oxfw_pointer(struct snd_pcm_substream *substream)
-+static snd_pcm_uframes_t oxfw_pointer_capture(struct snd_pcm_substream *sbstm)
- {
--	struct snd_oxfw *oxfw = substream->private_data;
-+	struct snd_oxfw *oxfw = sbstm->private_data;
++	cip_header[0] = be32_to_cpu(buffer[0]);
++	cip_header[1] = be32_to_cpu(buffer[1]);
 +
-+	return amdtp_stream_pcm_pointer(&oxfw->tx_stream);
++	/*
++	 * This module supports 'Two-quadlet CIP header with SYT field'.
++	 * For convinience, also check FMT field is AM824 or not.
++	 */
++	if (((cip_header[0] & CIP_EOH_MASK) == CIP_EOH) ||
++	    ((cip_header[1] & CIP_EOH_MASK) != CIP_EOH) ||
++	    ((cip_header[1] & CIP_FMT_MASK) != CIP_FMT_AM)) {
++		dev_info_ratelimited(&s->unit->device,
++				"Invalid CIP header for AMDTP: %08X:%08X\n",
++				cip_header[0], cip_header[1]);
++		return;
++	}
++
++	/* ignore empty CIP packet or NO-DATA AMDTP packet */
++	if ((payload_quadlets < 3) ||
++	    (((cip_header[1] & CIP_FDF_MASK) >> CIP_FDF_SFC_SHIFT) ==
++							AMDTP_FDF_NO_DATA))
++		return;
++
++	data_block_quadlets =
++			(cip_header[1] & AMDTP_DBS_MASK) >> AMDTP_DBS_SHIFT;
++	/* avoid division by zero */
++	if (data_block_quadlets == 0) {
++		dev_info_ratelimited(&s->unit->device,
++				 "Detect invalid value in dbs field: %08X\n",
++				 data_block_quadlets);
++		return;
++	}
++
++	data_blocks = (payload_quadlets - 2) / data_block_quadlets;
++	data_block_counter = cip_header[1] & AMDTP_DBC_MASK;
++
++	/* check packet continuity */
++	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
++	if (s->data_block_counter != data_block_counter) {
++		dev_info_ratelimited(&s->unit->device,
++				     "Detect uncontinuity of CIP packets\n");
++		s->data_block_counter = data_block_counter;
++		return;
++	}
++
++	buffer += 2;
++
++	pcm = ACCESS_ONCE(s->pcm);
++	if (pcm) {
++		s->transfer_samples(s, pcm, buffer, data_blocks);
++		update_pcm_pointers(s, pcm, data_blocks);
++	}
 +}
-+static snd_pcm_uframes_t oxfw_pointer_playback(struct snd_pcm_substream *sbstm)
-+{
-+	struct snd_oxfw *oxfw = sbstm->private_data;
- 
- 	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
++
+ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 				size_t header_length, void *header,
+ 				void *private_data)
+@@ -571,6 +708,35 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 	fw_iso_context_queue_flush(s->context);
  }
  
- int snd_oxfw_create_pcm(struct snd_oxfw *oxfw)
- {
--	static struct snd_pcm_ops ops = {
-+	static struct snd_pcm_ops capture_ops = {
-+		.open      = oxfw_open,
-+		.close     = oxfw_close,
-+		.ioctl     = snd_pcm_lib_ioctl,
-+		.hw_params = oxfw_hw_params,
-+		.hw_free   = oxfw_hw_free_capture,
-+		.prepare   = oxfw_prepare_capture,
-+		.trigger   = oxfw_trigger_capture,
-+		.pointer   = oxfw_pointer_capture,
-+		.page      = snd_pcm_lib_get_vmalloc_page,
-+		.mmap      = snd_pcm_lib_mmap_vmalloc,
-+	};
-+	static struct snd_pcm_ops playback_ops = {
- 		.open      = oxfw_open,
- 		.close     = oxfw_close,
- 		.ioctl     = snd_pcm_lib_ioctl,
- 		.hw_params = oxfw_hw_params,
--		.hw_free   = oxfw_hw_free,
--		.prepare   = oxfw_prepare,
--		.trigger   = oxfw_trigger,
--		.pointer   = oxfw_pointer,
-+		.hw_free   = oxfw_hw_free_playback,
-+		.prepare   = oxfw_prepare_playback,
-+		.trigger   = oxfw_trigger_playback,
-+		.pointer   = oxfw_pointer_playback,
- 		.page      = snd_pcm_lib_get_vmalloc_page,
- 		.mmap      = snd_pcm_lib_mmap_vmalloc,
++static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
++			       size_t header_length, void *header,
++			       void *private_data)
++{
++	struct amdtp_stream *s = private_data;
++	unsigned int p, packets, data_quadlets;
++	__be32 *buffer, *headers = header;
++
++	/* The number of packets in buffer */
++	packets = header_length / IN_PACKET_HEADER_SIZE;
++
++	for (p = 0; p < packets; p++) {
++		buffer = s->buffer.packets[s->packet_index].buffer;
++
++		/* The number of quadlets in this packet */
++		data_quadlets =
++			(be32_to_cpu(headers[p]) >> ISO_DATA_LENGTH_SHIFT) / 4;
++		/* handle each packet data */
++		handle_in_packet(s, data_quadlets, buffer);
++
++		if (queue_in_packet(s) < 0) {
++			amdtp_stream_pcm_abort(s);
++			return;
++		}
++	}
++
++	fw_iso_context_queue_flush(s->context);
++}
++
+ /**
+  * amdtp_stream_start - start transferring packets
+  * @s: the AMDTP stream to start
+@@ -595,7 +761,10 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 		[CIP_SFC_88200]  = {  0,   67 },
+ 		[CIP_SFC_176400] = {  0,   67 },
  	};
- 	struct snd_pcm *pcm;
-+	unsigned int cap = 0;
- 	int err;
- 
--	err = snd_pcm_new(oxfw->card, oxfw->card->driver, 0, 1, 0, &pcm);
-+	/* 44.1kHz is the most popular */
-+	if (oxfw->tx_stream_formations[1].pcm > 0)
-+		cap = 1;
-+
-+	err = snd_pcm_new(oxfw->card, oxfw->card->driver, 0, 1, cap, &pcm);
- 	if (err < 0)
- 		return err;
-+
- 	pcm->private_data = oxfw;
- 	strcpy(pcm->name, oxfw->card->shortname);
--	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &playback_ops);
-+	if (cap > 0)
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &capture_ops);
-+
- 	return 0;
- }
-diff --git a/sound/firewire/oxfw/oxfw_proc.c b/sound/firewire/oxfw/oxfw_proc.c
-index e8d80d5..a90dfdb 100644
---- a/sound/firewire/oxfw/oxfw_proc.c
-+++ b/sound/firewire/oxfw/oxfw_proc.c
-@@ -16,6 +16,15 @@ proc_read_formation(struct snd_info_entry *entry,
- 	struct snd_oxfw_stream_formation *formation;
- 	unsigned int i;
- 
-+	snd_iprintf(buffer, "Output Stream from device:\n");
-+	snd_iprintf(buffer, "\tRate\tPCM\tMIDI\n");
-+	formation = oxfw->tx_stream_formations;
-+	for (i = 0; i < SND_OXFW_STREAM_TABLE_ENTRIES; i++) {
-+		snd_iprintf(buffer,
-+			"\t%d\t%d\t%d\n", snd_oxfw_rate_table[i],
-+			formation[i].pcm, formation[i].midi);
-+	}
-+
- 	snd_iprintf(buffer, "Input Stream to device:\n");
- 	snd_iprintf(buffer, "\tRate\tPCM\tMIDI\n");
- 	formation = oxfw->rx_stream_formations;
-@@ -32,11 +41,8 @@ proc_read_clock(struct snd_info_entry *entry,
- {
- 	struct snd_oxfw *oxfw = entry->private_data;
- 	unsigned int rate;
 -	int err;
++	unsigned int header_size;
++	enum dma_data_direction dir;
++	fw_iso_callback_t cb;
++	int type, err;
  
--	err = avc_general_get_sig_fmt(oxfw->unit, &rate,
--				      AVC_GENERAL_PLUG_DIR_IN, 0);
--	if ((err < 0) && (err == 0x09))
-+	if (snd_oxfw_stream_get_rate(oxfw, &rate) >= 0)
- 		snd_iprintf(buffer, "Sampling rate: %d\n", rate);
- }
+ 	mutex_lock(&s->mutex);
  
-diff --git a/sound/firewire/oxfw/oxfw_stream.c b/sound/firewire/oxfw/oxfw_stream.c
-index 4431571..d4f019c 100644
---- a/sound/firewire/oxfw/oxfw_stream.c
-+++ b/sound/firewire/oxfw/oxfw_stream.c
-@@ -38,27 +38,77 @@ static const unsigned int avc_stream_rate_table[] = {
- 	[6] = 0x07,
- };
+@@ -609,16 +778,26 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	s->syt_offset_state = initial_state[s->sfc].syt_offset;
+ 	s->last_syt_offset = TICKS_PER_CYCLE;
  
--int snd_oxfw_stream_init(struct snd_oxfw *oxfw)
-+int snd_oxfw_stream_get_rate(struct snd_oxfw *oxfw, unsigned int *rate)
- {
-+	unsigned int tx_rate, rx_rate;
- 	int err;
- 
--	err = cmp_connection_init(&oxfw->in_conn, oxfw->unit,
--				  CMP_INPUT, 0);
-+	err = snd_oxfw_command_get_rate(oxfw, AVC_GENERAL_PLUG_DIR_OUT,
-+					&tx_rate);
- 	if (err < 0)
- 		goto end;
- 
--	err = amdtp_stream_init(&oxfw->rx_stream, oxfw->unit,
--				AMDTP_OUT_STREAM, CIP_NONBLOCKING);
-+	err = snd_oxfw_command_get_rate(oxfw, AVC_GENERAL_PLUG_DIR_IN,
-+					&rx_rate);
- 	if (err < 0)
--		cmp_connection_destroy(&oxfw->in_conn);
-+		goto end;
-+
-+	*rate = rx_rate;
-+	if (rx_rate == tx_rate)
-+		goto end;
-+
-+	/* synchronize receive stream rate to transmit stream rate */
-+	err = snd_oxfw_command_set_rate(oxfw, AVC_GENERAL_PLUG_DIR_IN,
-+					rx_rate);
-+end:
-+	return err;
-+}
-+
-+int snd_oxfw_stream_set_rate(struct snd_oxfw *oxfw, unsigned int rate)
-+{
-+	int err;
-+
-+	err = snd_oxfw_command_set_rate(oxfw, AVC_GENERAL_PLUG_DIR_OUT, rate);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_oxfw_command_set_rate(oxfw, AVC_GENERAL_PLUG_DIR_IN, rate);
- end:
- 	return err;
- }
- 
--static int start_stream(struct snd_oxfw *oxfw, unsigned int rate)
-+static int stream_init(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
-+{
-+	struct cmp_connection *conn;
-+	enum cmp_direction c_dir;
-+	enum amdtp_stream_direction s_dir;
-+	int err;
-+
-+	if (stream == &oxfw->tx_stream) {
-+		conn = &oxfw->out_conn;
-+		c_dir = CMP_OUTPUT;
-+		s_dir = AMDTP_IN_STREAM;
++	/* initialize packet buffer */
++	if (s->direction == AMDTP_IN_STREAM) {
++		dir = DMA_FROM_DEVICE;
++		type = FW_ISO_CONTEXT_RECEIVE;
++		header_size = IN_PACKET_HEADER_SIZE;
++		cb = in_stream_callback;
 +	} else {
-+		conn = &oxfw->in_conn;
-+		c_dir = CMP_INPUT;
-+		s_dir = AMDTP_OUT_STREAM;
++		dir = DMA_TO_DEVICE;
++		type = FW_ISO_CONTEXT_TRANSMIT;
++		header_size = OUT_PACKET_HEADER_SIZE;
++		cb = out_stream_callback;
 +	}
-+
-+	err = cmp_connection_init(conn, oxfw->unit, c_dir, 0);
-+	if (err < 0)
-+		goto end;
-+
-+	err = amdtp_stream_init(stream, oxfw->unit, s_dir, CIP_NONBLOCKING);
-+	if (err < 0)
-+		cmp_connection_destroy(conn);
-+end:
-+	return err;
-+}
-+
-+static int start_stream(struct snd_oxfw *oxfw,
-+			struct amdtp_stream *stream, unsigned int rate)
- {
- 	unsigned int i, pcm_channels, midi_ports;
--	struct amdtp_stream *stream;
- 	struct cmp_connection *conn;
- 	int err;
- 
-@@ -71,11 +121,15 @@ static int start_stream(struct snd_oxfw *oxfw, unsigned int rate)
- 		err = -EINVAL;
- 		goto end;
- 	}
--
--	pcm_channels = oxfw->rx_stream_formations[i].pcm;
--	midi_ports = oxfw->rx_stream_formations[i].midi;
--	conn = &oxfw->in_conn;
--	stream = &oxfw->rx_stream;
-+	if (stream == &oxfw->tx_stream) {
-+		pcm_channels = oxfw->tx_stream_formations[i].pcm;
-+		midi_ports = oxfw->tx_stream_formations[i].midi;
-+		conn = &oxfw->out_conn;
-+	} else {
-+		pcm_channels = oxfw->rx_stream_formations[i].pcm;
-+		midi_ports = oxfw->rx_stream_formations[i].midi;
-+		conn = &oxfw->in_conn;
-+	}
- 
- 	/* The stream should have one pcm channels at least */
- 	if (pcm_channels == 0) {
-@@ -102,20 +156,22 @@ static int start_stream(struct snd_oxfw *oxfw, unsigned int rate)
- 	/* Wait first callback */
- 	err = amdtp_stream_wait_callback(stream, CALLBACK_TIMEOUT);
+ 	err = iso_packets_buffer_init(&s->buffer, s->unit, QUEUE_LENGTH,
+-				      amdtp_stream_get_max_payload(s),
+-				      DMA_TO_DEVICE);
++				      amdtp_stream_get_max_payload(s), dir);
  	if (err < 0)
--		snd_oxfw_stream_stop(oxfw);
-+		snd_oxfw_stream_stop(oxfw, stream);
- end:
- 	return err;
- }
+ 		goto err_unlock;
  
--static int check_connection_used_by_others(struct snd_oxfw *oxfw)
-+static int check_connection_used_by_others(struct snd_oxfw *oxfw,
-+					   struct amdtp_stream *stream)
- {
- 	struct cmp_connection *conn;
--	struct amdtp_stream *stream;
- 	bool used;
- 	int err;
+ 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
+-					   FW_ISO_CONTEXT_TRANSMIT,
+-					   channel, speed, 0,
+-					   out_stream_callback, s);
++					   type, channel, speed, header_size,
++					   cb, s);
+ 	if (IS_ERR(s->context)) {
+ 		err = PTR_ERR(s->context);
+ 		if (err == -EBUSY)
+@@ -631,13 +810,18 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
  
--	stream = &oxfw->rx_stream;
--	conn = &oxfw->in_conn;
-+	if (stream == &oxfw->tx_stream)
-+		conn = &oxfw->out_conn;
-+	else
-+		conn = &oxfw->in_conn;
- 
- 	err = cmp_connection_check_used(conn, &used);
- 	if ((err >= 0) && used && !amdtp_stream_running(stream)) {
-@@ -129,10 +185,12 @@ static int check_connection_used_by_others(struct snd_oxfw *oxfw)
- 	return err;
- }
- 
--int snd_oxfw_stream_start(struct snd_oxfw *oxfw, unsigned int rate)
-+int snd_oxfw_stream_start(struct snd_oxfw *oxfw,
-+			  struct amdtp_stream *stream, unsigned int rate)
- {
- 	unsigned int curr_rate;
--	int err = 0;
-+	struct amdtp_stream *opposite;
-+	int err;
- 
- 	mutex_lock(&oxfw->mutex);
- 
-@@ -140,72 +198,81 @@ int snd_oxfw_stream_start(struct snd_oxfw *oxfw, unsigned int rate)
- 	 * Considering JACK/FFADO streaming:
- 	 * TODO: This can be removed hwdep functionality becomes popular.
- 	 */
--	err = check_connection_used_by_others(oxfw);
-+	err = check_connection_used_by_others(oxfw, stream);
- 	if (err < 0)
- 		goto end;
- 
- 	/* packet queueing error */
--	if (amdtp_streaming_error(&oxfw->rx_stream))
--		snd_oxfw_stream_stop(oxfw);
-+	if (amdtp_streaming_error(stream))
-+		snd_oxfw_stream_stop(oxfw, stream);
- 
--	/* arrange sampling rate */
--	err = avc_general_get_sig_fmt(oxfw->unit, &curr_rate,
--				      AVC_GENERAL_PLUG_DIR_IN, 0);
-+	/* stop streams if rate is different */
-+	err = snd_oxfw_stream_get_rate(oxfw, &curr_rate);
- 	if (err < 0)
- 		goto end;
--	if (err != 0x0c /* IMPLEMENTED/STABLE */) {
--		dev_err(&oxfw->unit->device,
--			"failed to get sample rate\n");
--		err = -EIO;
--		goto end;
--	}
- 	if (curr_rate != rate) {
--		err = avc_general_set_sig_fmt(oxfw->unit, rate,
--					      AVC_GENERAL_PLUG_DIR_IN, 0);
-+		/* get opposite stream */
-+		if (stream == &oxfw->tx_stream)
-+			opposite = &oxfw->rx_stream;
+ 	s->packet_index = 0;
+ 	do {
+-		err = queue_out_packet(s, 0, true);
++		if (s->direction == AMDTP_IN_STREAM)
++			err = queue_in_packet(s);
 +		else
-+			opposite = &oxfw->tx_stream;
-+
-+		err = check_connection_used_by_others(oxfw, opposite);
++			err = queue_out_packet(s, 0, true);
  		if (err < 0)
- 			goto end;
--		if (err != 0x09 /* ACCEPTED */) {
--			dev_err(&oxfw->unit->device,
--				"failed to set sample rate\n");
--			err = -EIO;
-+
-+		err = snd_oxfw_stream_set_rate(oxfw, rate);
-+		if (err < 0)
- 			goto end;
--		}
- 	}
+ 			goto err_context;
+ 	} while (s->packet_index > 0);
  
--	if (!amdtp_stream_running(&oxfw->rx_stream))
--		err = start_stream(oxfw, rate);
-+	if (!amdtp_stream_running(stream))
-+		err = start_stream(oxfw, stream, rate);
- end:
- 	mutex_unlock(&oxfw->mutex);
- 	return err;
- }
- 
--void snd_oxfw_stream_stop(struct snd_oxfw *oxfw)
-+void snd_oxfw_stream_stop(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
- {
--	if (amdtp_stream_running(&oxfw->rx_stream))
--		amdtp_stream_stop(&oxfw->rx_stream);
-+	if (amdtp_stream_running(stream))
-+		amdtp_stream_stop(stream);
- 
--	cmp_connection_break(&oxfw->in_conn);
-+	if (stream == &oxfw->tx_stream)
-+		cmp_connection_break(&oxfw->out_conn);
-+	else
-+		cmp_connection_break(&oxfw->in_conn);
- }
- 
--void snd_oxfw_stream_destroy(struct snd_oxfw *oxfw)
-+void snd_oxfw_stream_destroy(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
- {
--	amdtp_stream_pcm_abort(&oxfw->rx_stream);
-+	amdtp_stream_pcm_abort(stream);
- 
- 	mutex_lock(&oxfw->mutex);
--	snd_oxfw_stream_stop(oxfw);
--	cmp_connection_destroy(&oxfw->in_conn);
-+	snd_oxfw_stream_stop(oxfw, stream);
-+	if (stream == &oxfw->tx_stream)
-+		cmp_connection_destroy(&oxfw->out_conn);
-+	else
-+		cmp_connection_destroy(&oxfw->in_conn);
- 	mutex_unlock(&oxfw->mutex);
- }
- 
--void snd_oxfw_stream_update(struct snd_oxfw *oxfw)
-+void snd_oxfw_stream_update(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
- {
--	if (cmp_connection_update(&oxfw->in_conn) < 0) {
--		amdtp_stream_pcm_abort(&oxfw->rx_stream);
-+	struct cmp_connection *conn;
-+
-+	if (stream == &oxfw->tx_stream)
-+		conn = &oxfw->out_conn;
-+	else
-+		conn = &oxfw->in_conn;
-+
-+	if (cmp_connection_update(conn) < 0) {
-+		amdtp_stream_pcm_abort(stream);
- 		mutex_lock(&oxfw->mutex);
--		snd_oxfw_stream_stop(oxfw);
-+		snd_oxfw_stream_stop(oxfw, stream);
- 		mutex_unlock(&oxfw->mutex);
- 	} else {
--		amdtp_stream_update(&oxfw->rx_stream);
-+		amdtp_stream_update(stream);
- 	}
- }
- 
-@@ -355,7 +422,10 @@ fill_stream_formations(struct snd_oxfw *oxfw, enum avc_general_plug_dir dir,
- 	if (buf == NULL)
- 		return -ENOMEM;
- 
--	formations = oxfw->rx_stream_formations;
-+	if (dir == AVC_GENERAL_PLUG_DIR_OUT)
-+		formations = oxfw->tx_stream_formations;
-+	else
-+		formations = oxfw->rx_stream_formations;
- 
- 	/* initialize parameters here because of checking implementation */
- 	eid = 0;
-@@ -405,10 +475,28 @@ int snd_oxfw_stream_discover(struct snd_oxfw *oxfw)
- 		goto end;
- 	}
- 
-+	/* use oPCR[0] */
-+	err = fill_stream_formations(oxfw, AVC_GENERAL_PLUG_DIR_OUT, 0);
-+	if (err < 0)
-+		goto end;
-+
- 	/* use iPCR[0] */
- 	err = fill_stream_formations(oxfw, AVC_GENERAL_PLUG_DIR_IN, 0);
-+end:
-+	return err;
-+}
-+
-+int snd_oxfw_streams_init(struct snd_oxfw *oxfw)
-+{
-+	int err;
-+
-+	err = stream_init(oxfw, &oxfw->rx_stream);
++	/* NOTE: TAG1 matches CIP. This just affects in stream */
+ 	s->data_block_counter = 0;
+-	err = fw_iso_context_start(s->context, -1, 0, 0);
++	err = fw_iso_context_start(s->context, -1, 0,
++				   FW_ISO_CONTEXT_MATCH_TAG1);
  	if (err < 0)
- 		goto end;
-+
-+	/* 44.1kHz is the most popular */
-+	if (oxfw->tx_stream_formations[1].pcm > 0)
-+		err = stream_init(oxfw, &oxfw->tx_stream);
- end:
- 	return err;
- }
+ 		goto err_context;
+ 
 -- 
 1.8.3.2
 
