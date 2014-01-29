@@ -1,16 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [GIT PULL] real support for Xonar DG(X), for 3.15
-Date: Wed, 29 Jan 2014 22:06:46 +0100
-Message-ID: <52E96D66.1080607@ladisch.de>
-References: <1390565900-3337-1-git-send-email-v1ron@mail.ru>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Regression due to 6169b673618b "ALSA: hda - Always
+ turn on pins for HDMI/DP"
+Date: Wed, 29 Jan 2014 16:34:11 -0700
+Message-ID: <52E98FF3.80707@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 1C4D126530C
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2014 22:07:03 +0100 (CET)
-In-Reply-To: <1390565900-3337-1-git-send-email-v1ron@mail.ru>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA5AC2652A2
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2014 00:34:15 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Roman Volkov <v1ron@mail.ru>
+To: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit d8ec26d7f8287f5788a494f56e8814210f0e64be:
+Takashi,
 
-  Linux 3.13 (2014-01-19 18:40:07 -0800)
+It looks like commit 6169b673618b "ALSA: hda - Always turn on pins for
+HDMI/DP" has caused a regression on NVIDIA graphics cards. It's been
+reported to us by at least two separate users.
 
-are available in the git repository at:
+On NVIDIA GPUs, it appears that if multiple pin complex widgets have
+their input mux set to the same audio output widget and PIN_OUT, then
+only one of the pin complex widgets will actually receive the audio.
+That's the reason we need to dynamically toggle PIN_OUT on and off, so
+that only actually active pin complex widgets are enabled. Without this,
+audio will be routed to the same pin complex all the time, rather than
+the user-selected device. I'm not sure if this is the way HDA CODECs are
+meant to work, but it certainly is how they do work:-)
 
-  git://git.alsa-project.org/alsa-kprivate.git xonar-dg
+So, I'd like to basically revert 6169b673618b "ALSA: hda - Always turn
+on pins for HDMI/DP", and return the code to the state it was after
+commit 384a48d71520 "ALSA: hda: HDMI: Support codecs with fewer cvts
+than pins". However, I obviously don't want to re-introduce the
+regression that your commit solved. I think we should solve this by
+including the code for both behaviours in the kernel, and having either
+a flag in struct hdmi_spec, or some extra ops in struct hdmi_ops, select
+between the two paths. Does that seem reasonable?
 
-for you to fetch changes up to 3f49a66f6ceff1c87b49858644771c17763902ab:
-
-  ALSA: oxygen: Xonar DG(X): cleanup and minor changes (2014-01-29 20:45:53 +0100)
-
-----------------------------------------------------------------
-
-This completes the hardware support for the Asus Xonar DG/DGX cards,
-and makes them actually usable.
-
-This is v4 of Roman's patch set with some small formatting changes.
-
-----------------------------------------------------------------
-Roman Volkov (19):
-      ALSA: oxygen: add the separate SPI waiting function
-      ALSA: oxygen: modify the SPI writing function
-      ALSA: oxygen: add mute mask for the OXYGEN_PLAY_ROUTING register
-      ALSA: oxygen: export oxygen_update_dac_routing symbol
-      ALSA: oxygen: change description of the xonar_dg.c file
-      ALSA: oxygen: additional definitions for the Xonar DG/DGX card
-      ALSA: oxygen: Xonar DG(X): add new CS4245 SPI functions
-      ALSA: oxygen: Xonar DG(X): modify initialization functions
-      ALSA: oxygen: Xonar DG(X): modify DAC/ADC parameters function
-      ALSA: oxygen: modify adjust_dg_dac_routing function
-      ALSA: oxygen: modify CS4245 register dumping function
-      ALSA: oxygen: Xonar DG(X): move the mixer code into another file
-      ALSA: oxygen: Xonar DG(X): capture from I2S channel 1, not 2
-      ALSA: oxygen: Xonar DG(X): modify playback output select
-      ALSA: oxygen: Xonar DG(X): use headphone volume control
-      ALSA: oxygen: Xonar DG(X): modify capture volume functions
-      ALSA: oxygen: Xonar DG(X): modify input select functions
-      ALSA: oxygen: Xonar DG(X): modify high-pass filter control
-      ALSA: oxygen: Xonar DG(X): cleanup and minor changes
-
- sound/pci/oxygen/Makefile         |   2 +-
- sound/pci/oxygen/cs4245.h         |   7 +-
- sound/pci/oxygen/oxygen.h         |   2 +-
- sound/pci/oxygen/oxygen_io.c      |  25 +-
- sound/pci/oxygen/oxygen_mixer.c   |   1 +
- sound/pci/oxygen/oxygen_regs.h    |   1 +
- sound/pci/oxygen/xonar_dg.c       | 651 ++++++++----------------------
- sound/pci/oxygen/xonar_dg.h       |  48 +++
- sound/pci/oxygen/xonar_dg_mixer.c | 477 ++++++++++++++++++++++
- 9 files changed, 713 insertions(+), 501 deletions(-)
- create mode 100644 sound/pci/oxygen/xonar_dg_mixer.c
+If so, the only remaining question is: which behaviour should be default
+a/k/a should I blacklist the problematic GM965 (mentioned in
+https://bugzilla.kernel.org/show_bug.cgi?id=51421) against having the
+dynamic PIN_OUT behaviour, or whitelist NVIDIA GPUs as requiring the
+dynamic PIN_OUT behaviour? I know that my patch worked fine on my wife's
+Intel chipset, but I have no idea if the dynamic PIN_OUT behaviour was
+actually needed there, or simply tolerated, and I have no way to test
+much aside from NVIDIA GPUs. That all said, the dynamic PIN_OUT
+behaviour seems to make most sense to me, or some systems may end up
+with audio being sent to multiple outputs when only one was expected.
