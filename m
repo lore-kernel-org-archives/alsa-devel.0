@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 30/52] bebob: Add PCM interface
-Date: Wed, 29 Jan 2014 22:44:37 +0900
-Message-ID: <1391003099-7109-31-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 25/52] fireworks: Add command/response functionality into
+	hwdep interface
+Date: Wed, 29 Jan 2014 22:44:32 +0900
+Message-ID: <1391003099-7109-26-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,495 +21,687 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a functionality to capture/playback PCM samples.
+This commit adds two functionality for hwdep interface, adds two parameters for
+this driver, add a node for proc interface.
 
-When AMDTP stream is already running for PCM or the source of clock is not
-internal, available sampling rate is limited at current one.
+To receive responses from devices, this driver already allocate own callback
+into private address area in host controller. This means no one can allocate
+its own callback to the address. So this driver must give a way for user
+applications to receive responses.
+
+This commit adds a functionality to receive responses via hwdep interface. The
+application can receive responses to read from this interface. To achieve this,
+this commit adds a buffer to queue responses. The default size of this buffer is
+1024 bytes. This size can be changed to give preferrable size to
+'resp_buf_size' parameter for this driver. The application should notice rest
+of space in this buffer because this driver don't push responses when this
+buffer has no space.
+
+Additionaly, this commit adds a functionality to transmit commands via hwdep
+interface. The application can transmit commands to write into this interface.
+I note that the application can transmit one command at once, but can receive
+as many responses as possible untill the user-buffer is full.
+
+When using these interfaces, the application must keep maximum number of
+sequence number in command within the number in firewire.h because this driver
+uses this number to distinguish the response is against the command by the
+application or this driver.
+
+Usually responses against commands which the application transmits are pushed
+into this buffer. But to enable 'resp_buf_debug' parameter for this driver, all
+responses are pushed into the buffer. When using this mode, I reccomend to
+expand the size of buffer.
+
+Finally this commit adds a new node into proc interface to output status of the
+buffer.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig           |   1 +
- sound/firewire/bebob/Makefile    |   1 +
- sound/firewire/bebob/bebob.c     |   4 +
- sound/firewire/bebob/bebob.h     |   4 +
- sound/firewire/bebob/bebob_pcm.c | 410 +++++++++++++++++++++++++++++++++++++++
- 5 files changed, 420 insertions(+)
- create mode 100644 sound/firewire/bebob/bebob_pcm.c
+ include/uapi/sound/firewire.h                    |  18 +++
+ sound/firewire/fireworks/fireworks.c             |  17 +++
+ sound/firewire/fireworks/fireworks.h             |  22 +--
+ sound/firewire/fireworks/fireworks_command.c     |   6 +-
+ sound/firewire/fireworks/fireworks_hwdep.c       | 134 ++++++++++++++---
+ sound/firewire/fireworks/fireworks_proc.c        |  19 +++
+ sound/firewire/fireworks/fireworks_transaction.c | 176 ++++++++++++++++++++---
+ 7 files changed, 345 insertions(+), 47 deletions(-)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 8081ca1..022fee0 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -83,6 +83,7 @@ config SND_BEBOB
- 	tristate "BridgeCo DM1000/1500 with BeBoB firmware"
- 	select SND_FIREWIRE_LIB
- 	select SND_RAWMIDI
-+	select SND_PCM
-         help
- 	 Say Y here to include support for FireWire devices based
- 	 on BridgeCo DM1000/1500 with BeBoB firmware:
-diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-index 1e39e59..533718a 100644
---- a/sound/firewire/bebob/Makefile
-+++ b/sound/firewire/bebob/Makefile
-@@ -1,3 +1,4 @@
- snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
-+		  bebob_pcm.o \
- 		  bebob.o
- obj-m += snd-bebob.o
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index adb5493..a56917d 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -176,6 +176,10 @@ bebob_probe(struct fw_unit *unit,
- 			goto error;
+diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
+index fc9afb2..7f4c419 100644
+--- a/include/uapi/sound/firewire.h
++++ b/include/uapi/sound/firewire.h
+@@ -7,6 +7,7 @@
+ 
+ #define SNDRV_FIREWIRE_EVENT_LOCK_STATUS	0x000010cc
+ #define SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION	0xd1ce004e
++#define SNDRV_FIREWIRE_EVENT_EFW_RESPONSE	0x4e617475
+ 
+ struct snd_firewire_event_common {
+ 	unsigned int type; /* SNDRV_FIREWIRE_EVENT_xxx */
+@@ -22,10 +23,27 @@ struct snd_firewire_event_dice_notification {
+ 	unsigned int notification; /* DICE-specific bits */
+ };
+ 
++#define SND_EFW_TRANSACTION_SEQNUM_MAX	((uint32_t)(BIT(28) - 1))
++/* each field should be in big endian */
++struct snd_efw_transaction {
++	uint32_t length;
++	uint32_t version;
++	uint32_t seqnum;
++	uint32_t category;
++	uint32_t command;
++	uint32_t status;
++	uint32_t params[0];
++};
++struct snd_firewire_event_efw_response {
++	unsigned int type;
++	uint32_t response[0];	/* some responses */
++};
++
+ union snd_firewire_event {
+ 	struct snd_firewire_event_common            common;
+ 	struct snd_firewire_event_lock_status       lock_status;
+ 	struct snd_firewire_event_dice_notification dice_notification;
++	struct snd_firewire_event_efw_response      efw_response;
+ };
+ 
+ 
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index d845aec..c583df2 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -24,6 +24,8 @@ MODULE_LICENSE("GPL v2");
+ static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
+ static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
+ static bool enable[SNDRV_CARDS]	= SNDRV_DEFAULT_ENABLE_PNP;
++unsigned int resp_buf_size	= 1024;
++bool resp_buf_debug		= false;
+ 
+ module_param_array(index, int, NULL, 0444);
+ MODULE_PARM_DESC(index, "card index");
+@@ -31,6 +33,10 @@ module_param_array(id, charp, NULL, 0444);
+ MODULE_PARM_DESC(id, "ID string");
+ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "enable Fireworks sound card");
++module_param(resp_buf_size, uint, 0444);
++MODULE_PARM_DESC(resp_buf_size, "response buffer size (default 1024)");
++module_param(resp_buf_debug, bool, 0444);
++MODULE_PARM_DESC(resp_buf_debug, "store all responses to buffer");
+ 
+ static DEFINE_MUTEX(devices_mutex);
+ static unsigned int devices_used;
+@@ -167,6 +173,7 @@ efw_probe(struct fw_unit *unit,
+ {
+ 	struct snd_card *card;
+ 	struct snd_efw *efw;
++	void *resp_buf;
+ 	int card_index, err;
+ 
+ 	mutex_lock(&devices_mutex);
+@@ -180,6 +187,13 @@ efw_probe(struct fw_unit *unit,
+ 		goto end;
  	}
  
-+	err = snd_bebob_create_pcm_devices(bebob);
-+	if (err < 0)
-+		goto error;
-+
- 	snd_card_set_dev(card, &unit->device);
- 	err = snd_card_register(card);
- 	if (err < 0) {
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index c8e774b..ddd31a2 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -22,6 +22,8 @@
- #include <sound/initval.h>
- #include <sound/info.h>
- #include <sound/rawmidi.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
- 
- #include "../lib.h"
- #include "../fcp.h"
-@@ -181,6 +183,8 @@ void snd_bebob_proc_init(struct snd_bebob *bebob);
- 
- int snd_bebob_create_midi_devices(struct snd_bebob *bebob);
- 
-+int snd_bebob_create_pcm_devices(struct snd_bebob *bebob);
-+
- #define SND_BEBOB_DEV_ENTRY(vendor, model) \
- { \
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
-new file mode 100644
-index 0000000..e4c6c11
---- /dev/null
-+++ b/sound/firewire/bebob/bebob_pcm.c
-@@ -0,0 +1,410 @@
-+/*
-+ * bebob_pcm.c - a part of driver for BeBoB based devices
-+ *
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "./bebob.h"
-+
-+static int
-+hw_rule_rate(struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule,
-+	     struct snd_bebob *bebob,
-+	     struct snd_bebob_stream_formation *formations)
-+{
-+	struct snd_interval *r =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	const struct snd_interval *c =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1
-+	};
-+	unsigned int i;
-+
-+	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
-+		/* entry is invalid */
-+		if (formations[i].pcm == 0)
-+			continue;
-+
-+		if (!snd_interval_test(c, formations[i].pcm))
-+			continue;
-+
-+		t.min = min(t.min, snd_bebob_rate_table[i]);
-+		t.max = max(t.max, snd_bebob_rate_table[i]);
-+
-+	}
-+	return snd_interval_refine(r, &t);
-+}
-+
-+static int
-+hw_rule_channels(struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule,
-+		 struct snd_bebob *bebob,
-+		 struct snd_bebob_stream_formation *formations)
-+{
-+	struct snd_interval *c =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	const struct snd_interval *r =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1
-+	};
-+
-+	unsigned int i;
-+
-+	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
-+		/* entry is invalid */
-+		if (formations[i].pcm == 0)
-+			continue;
-+
-+		if (!snd_interval_test(r, snd_bebob_rate_table[i]))
-+			continue;
-+
-+		t.min = min(t.min, formations[i].pcm);
-+		t.max = max(t.max, formations[i].pcm);
++	/* prepare response buffer */
++	resp_buf = kzalloc(resp_buf_size, GFP_KERNEL);
++	if (resp_buf == NULL) {
++		err = -ENOMEM;
++		goto end;
 +	}
 +
-+	return snd_interval_refine(c, &t);
+ 	err = snd_card_create(index[card_index], id[card_index],
+ 			      THIS_MODULE, sizeof(struct snd_efw), &card);
+ 	if (err < 0)
+@@ -193,6 +207,7 @@ efw_probe(struct fw_unit *unit,
+ 	mutex_init(&efw->mutex);
+ 	spin_lock_init(&efw->lock);
+ 	init_waitqueue_head(&efw->hwdep_wait);
++	efw->resp_buf = efw->pull_ptr = efw->push_ptr = resp_buf;
+ 
+ 	err = get_hardware_info(efw);
+ 	if (err < 0)
+@@ -214,6 +229,7 @@ efw_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
+ 
++	snd_efw_transaction_add_instance(efw);
+ 	err = snd_efw_create_hwdep_device(efw);
+ 	if (err < 0)
+ 		goto error;
+@@ -250,6 +266,7 @@ static void efw_remove(struct fw_unit *unit)
+ 	struct snd_efw *efw = dev_get_drvdata(&unit->device);
+ 
+ 	snd_efw_stream_destroy_duplex(efw);
++	snd_efw_transaction_remove_instance(efw);
+ 
+ 	snd_card_disconnect(efw->card);
+ 	snd_card_free_when_closed(efw->card);
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index 713066d..7e11a05 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -40,6 +40,9 @@
+ #define HWINFO_NAME_SIZE_BYTES		32
+ #define HWINFO_MAX_CAPS_GROUPS		8
+ 
++extern unsigned int resp_buf_size;
++extern bool resp_buf_debug;
++
+ struct snd_efw_phys_grp {
+ 	u8 type;	/* see enum snd_efw_grp_type */
+ 	u8 count;
+@@ -83,23 +86,24 @@ struct snd_efw {
+ 	int dev_lock_count;
+ 	bool dev_lock_changed;
+ 	wait_queue_head_t hwdep_wait;
+-};
+ 
+-struct snd_efw_transaction {
+-	u32 length;
+-	u32 version;
+-	u32 seqnum;
+-	u32 category;
+-	u32 command;
+-	u32 status;
+-	u32 params[0];
++	/* response queue */
++	u8 *resp_buf;
++	u8 *pull_ptr;
++	u8 *push_ptr;
++	unsigned int resp_queues;
+ };
++
++int snd_efw_transaction_cmd(struct fw_unit *unit,
++			    const void *cmd, unsigned int size);
+ int snd_efw_transaction_run(struct fw_unit *unit,
+ 			    const void *cmd, unsigned int cmd_size,
+ 			    void *resp, unsigned int resp_size, u32 seqnum);
+ int snd_efw_transaction_register(void);
+ void snd_efw_transaction_unregister(void);
+ void snd_efw_transaction_bus_reset(struct fw_unit *unit);
++void snd_efw_transaction_add_instance(struct snd_efw *efw);
++void snd_efw_transaction_remove_instance(struct snd_efw *efw);
+ 
+ struct snd_efw_hwinfo {
+ 	u32 flags;
+diff --git a/sound/firewire/fireworks/fireworks_command.c b/sound/firewire/fireworks/fireworks_command.c
+index 9b19e3e..92f3325 100644
+--- a/sound/firewire/fireworks/fireworks_command.c
++++ b/sound/firewire/fireworks/fireworks_command.c
+@@ -22,6 +22,7 @@
+  * Information commands. But this module don't use them.
+  */
+ 
++#define EFW_TRANSACTION_SEQNUM_MIN	(SND_EFW_TRANSACTION_SEQNUM_MAX + 1)
+ #define EFW_TRANSACTION_SEQNUM_MAX	((u32)~0)
+ 
+ /* for clock source and sampling rate */
+@@ -120,8 +121,9 @@ efw_transaction(struct snd_efw *efw, unsigned int category,
+ 
+ 	/* to keep consistency of sequence number */
+ 	spin_lock(&efw->lock);
+-	if (efw->seqnum + 1 >= EFW_TRANSACTION_SEQNUM_MAX)
+-		efw->seqnum = 0;
++	if ((efw->seqnum < EFW_TRANSACTION_SEQNUM_MIN) ||
++	    (efw->seqnum >= EFW_TRANSACTION_SEQNUM_MAX - 2))
++		efw->seqnum = EFW_TRANSACTION_SEQNUM_MIN;
+ 	else
+ 		efw->seqnum += 2;
+ 	seqnum = efw->seqnum;
+diff --git a/sound/firewire/fireworks/fireworks_hwdep.c b/sound/firewire/fireworks/fireworks_hwdep.c
+index 4c28b6c..9798d5b 100644
+--- a/sound/firewire/fireworks/fireworks_hwdep.c
++++ b/sound/firewire/fireworks/fireworks_hwdep.c
+@@ -7,26 +7,100 @@
+  */
+ 
+ /*
+- * This codes have three functionalities.
++ * This codes have five functionalities.
+  *
+  * 1.get information about firewire node
+  * 2.get notification about starting/stopping stream
+  * 3.lock/unlock streaming
++ * 4.transmit command of EFW transaction
++ * 5.receive response of EFW transaction
++ *
+  */
+ 
+ #include "fireworks.h"
+ 
+ static long
+-hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
++hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
++		    loff_t *offset)
++{
++	unsigned int length, till_end, type;
++	struct snd_efw_transaction *t;
++	long count = 0;
++
++	if (remained < sizeof(type) + sizeof(struct snd_efw_transaction))
++		return -ENOSPC;
++
++	/* data type is SNDRV_FIREWIRE_EVENT_EFW_RESPONSE */
++	type = SNDRV_FIREWIRE_EVENT_EFW_RESPONSE;
++	if (copy_to_user(buf, &type, sizeof(type)))
++		return -EFAULT;
++	remained -= sizeof(type);
++	buf += sizeof(type);
++
++	/* write into buffer as many responses as possible */
++	while (efw->resp_queues > 0) {
++		t = (struct snd_efw_transaction *)(efw->pull_ptr);
++		length = be32_to_cpu(t->length) * sizeof(u32);
++
++		/* confirm enough space for this response */
++		if (remained < length)
++			break;
++
++		/* copy from ring buffer to user buffer */
++		while (length > 0) {
++			till_end = resp_buf_size -
++				(unsigned int)(efw->pull_ptr - efw->resp_buf);
++			till_end = min_t(unsigned int, length, till_end);
++
++			if (copy_to_user(buf, efw->pull_ptr, till_end))
++				return -EFAULT;
++
++			efw->pull_ptr += till_end;
++			if (efw->pull_ptr >= efw->resp_buf + resp_buf_size)
++				efw->pull_ptr = efw->resp_buf;
++
++			length -= till_end;
++			buf += till_end;
++			count += till_end;
++			remained -= till_end;
++		}
++
++		efw->resp_queues--;
++	}
++
++	return count;
 +}
 +
-+static inline int
-+hw_rule_capture_rate(struct snd_pcm_hw_params *params,
-+				struct snd_pcm_hw_rule *rule)
++static long
++hwdep_read_locked(struct snd_efw *efw, char __user *buf, long count,
++		  loff_t *offset)
 +{
-+	struct snd_bebob *bebob = rule->private;
-+	return hw_rule_rate(params, rule, bebob,
-+				bebob->tx_stream_formations);
++	union snd_firewire_event event;
++
++	memset(&event, 0, sizeof(event));
++
++	event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
++	event.lock_status.status = (efw->dev_lock_count > 0);
++	efw->dev_lock_changed = false;
++
++	count = min_t(long, count, sizeof(event.lock_status));
++
++	if (copy_to_user(buf, &event, count))
++		return -EFAULT;
++
++	return count;
 +}
 +
-+static inline int
-+hw_rule_playback_rate(struct snd_pcm_hw_params *params,
-+				struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_bebob *bebob = rule->private;
-+	return hw_rule_rate(params, rule, bebob,
-+				bebob->rx_stream_formations);
++static long
++hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+ 	   loff_t *offset)
+ {
+ 	struct snd_efw *efw = hwdep->private_data;
+ 	DEFINE_WAIT(wait);
+-	union snd_firewire_event event;
+ 
+ 	spin_lock_irq(&efw->lock);
+ 
+-	while (!efw->dev_lock_changed) {
++	while ((!efw->dev_lock_changed) && (efw->resp_queues == 0)) {
+ 		prepare_to_wait(&efw->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
+ 		spin_unlock_irq(&efw->lock);
+ 		schedule();
+@@ -36,20 +110,47 @@ hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
+ 		spin_lock_irq(&efw->lock);
+ 	}
+ 
+-	memset(&event, 0, sizeof(event));
+-	if (efw->dev_lock_changed) {
+-		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
+-		event.lock_status.status = (efw->dev_lock_count > 0);
+-		efw->dev_lock_changed = false;
+-
+-		count = min_t(long, count, sizeof(event.lock_status));
+-	}
++	if (efw->dev_lock_changed)
++		count = hwdep_read_locked(efw, buf, count, offset);
++	else if (efw->resp_queues > 0)
++		count = hwdep_read_resp_buf(efw, buf, count, offset);
+ 
+ 	spin_unlock_irq(&efw->lock);
+ 
+-	if (copy_to_user(buf, &event, count))
+-		return -EFAULT;
++	return count;
 +}
 +
-+static inline int
-+hw_rule_capture_channels(struct snd_pcm_hw_params *params,
-+				struct snd_pcm_hw_rule *rule)
++static long
++hwdep_write(struct snd_hwdep *hwdep, const char __user *data, long count,
++	    loff_t *offset)
 +{
-+	struct snd_bebob *bebob = rule->private;
-+	return hw_rule_channels(params, rule, bebob,
-+				bebob->tx_stream_formations);
++	struct snd_efw *efw = hwdep->private_data;
++	u32 seqnum;
++	u8 *buf;
++
++	if (count < sizeof(struct snd_efw_transaction))
++		return -EINVAL;
++
++	buf = kmalloc(count, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	if (copy_from_user(buf, data, count)) {
++		count = -EFAULT;
++		goto end;
++	}
++
++	/* check seqnum is not for kernel-land */
++	seqnum = ((struct snd_efw_transaction *)buf)->seqnum;
++	if (seqnum + 2 > SND_EFW_TRANSACTION_SEQNUM_MAX) {
++		count = -EINVAL;
++		goto end;
++	}
+ 
++	if (snd_efw_transaction_cmd(efw->unit, buf, count) < 0)
++		count = -EIO;
++end:
++	kfree(buf);
+ 	return count;
+ }
+ 
+@@ -62,13 +163,13 @@ hwdep_poll(struct snd_hwdep *hwdep, struct file *file, poll_table *wait)
+ 	poll_wait(file, &efw->hwdep_wait, wait);
+ 
+ 	spin_lock_irq(&efw->lock);
+-	if (efw->dev_lock_changed)
++	if (efw->dev_lock_changed || (efw->resp_queues > 0))
+ 		events = POLLIN | POLLRDNORM;
+ 	else
+ 		events = 0;
+ 	spin_unlock_irq(&efw->lock);
+ 
+-	return events;
++	return events | POLLOUT;
+ }
+ 
+ static int
+@@ -172,6 +273,7 @@ hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
+ 
+ static const struct snd_hwdep_ops hwdep_ops = {
+ 	.read		= hwdep_read,
++	.write		= hwdep_write,
+ 	.release	= hwdep_release,
+ 	.poll		= hwdep_poll,
+ 	.ioctl		= hwdep_ioctl,
+diff --git a/sound/firewire/fireworks/fireworks_proc.c b/sound/firewire/fireworks/fireworks_proc.c
+index 389a68b..ceb3b75 100644
+--- a/sound/firewire/fireworks/fireworks_proc.c
++++ b/sound/firewire/fireworks/fireworks_proc.c
+@@ -173,12 +173,31 @@ end:
+ 	return;
+ }
+ 
++static void
++proc_read_queues_state(struct snd_info_entry *entry,
++		       struct snd_info_buffer *buffer)
++{
++	struct snd_efw *efw = entry->private_data;
++	unsigned int consumed;
++
++	if (efw->pull_ptr > efw->push_ptr)
++		consumed = resp_buf_size -
++			   (unsigned int)(efw->pull_ptr - efw->push_ptr);
++	else
++		consumed = (unsigned int)(efw->push_ptr - efw->pull_ptr);
++
++	snd_iprintf(buffer, "%d %d/%d\n",
++		    efw->resp_queues, consumed, resp_buf_size);
 +}
 +
-+static inline int
-+hw_rule_playback_channels(struct snd_pcm_hw_params *params,
-+				struct snd_pcm_hw_rule *rule)
+ void snd_efw_proc_init(struct snd_efw *efw)
+ {
+ 	struct snd_info_entry *entry;
+ 
+ 	if (!snd_card_proc_new(efw->card, "#firmware", &entry))
+ 		snd_info_set_text_ops(entry, efw, proc_read_hwinfo);
++	if (!snd_card_proc_new(efw->card, "#queues", &entry))
++		snd_info_set_text_ops(entry, efw, proc_read_queues_state);
+ 	if (!snd_card_proc_new(efw->card, "#clock", &entry))
+ 		snd_info_set_text_ops(entry, efw, proc_read_clock);
+ 	if (!snd_card_proc_new(efw->card, "#meters", &entry))
+diff --git a/sound/firewire/fireworks/fireworks_transaction.c b/sound/firewire/fireworks/fireworks_transaction.c
+index c2f499e..a310958 100644
+--- a/sound/firewire/fireworks/fireworks_transaction.c
++++ b/sound/firewire/fireworks/fireworks_transaction.c
+@@ -40,6 +40,9 @@
+ #define ERROR_DELAY_MS 5
+ #define EFC_TIMEOUT_MS 125
+ 
++static DEFINE_SPINLOCK(instances_lock);
++static struct snd_efw *instances[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
++
+ static DEFINE_SPINLOCK(transaction_queues_lock);
+ static LIST_HEAD(transaction_queues);
+ 
+@@ -59,6 +62,14 @@ struct transaction_queue {
+ 	wait_queue_head_t wait;
+ };
+ 
++int snd_efw_transaction_cmd(struct fw_unit *unit,
++			    const void *cmd, unsigned int size)
 +{
-+	struct snd_bebob *bebob = rule->private;
-+	return hw_rule_channels(params, rule, bebob,
-+				bebob->rx_stream_formations);
++	return snd_fw_transaction(unit, TCODE_WRITE_BLOCK_REQUEST,
++				  MEMORY_SPACE_EFW_COMMAND,
++				  (void *)cmd, size, 0);
++}
++
+ int snd_efw_transaction_run(struct fw_unit *unit,
+ 			    const void *cmd, unsigned int cmd_size,
+ 			    void *resp, unsigned int resp_size, u32 seqnum)
+@@ -80,9 +91,7 @@ int snd_efw_transaction_run(struct fw_unit *unit,
+ 
+ 	tries = 0;
+ 	do {
+-		ret = snd_fw_transaction(unit, TCODE_WRITE_BLOCK_REQUEST,
+-					 MEMORY_SPACE_EFW_COMMAND,
+-					 (void *)cmd, cmd_size, 0);
++		ret = snd_efw_transaction_cmd(t.unit, (void *)cmd, cmd_size);
+ 		if (ret < 0)
+ 			break;
+ 
+@@ -109,27 +118,92 @@ int snd_efw_transaction_run(struct fw_unit *unit,
+ }
+ 
+ static void
+-efw_response(struct fw_card *card, struct fw_request *request,
+-	     int tcode, int destination, int source,
+-	     int generation, unsigned long long offset,
+-	     void *data, size_t length, void *callback_data)
++copy_resp_to_buf(struct snd_efw *efw, void *data, size_t length, int *rcode)
+ {
+-	struct fw_device *device;
+-	struct transaction_queue *t;
+-	unsigned long flags;
+-	int rcode;
+-	u32 seqnum;
++	size_t capacity, till_end;
++	struct snd_efw_transaction *t;
+ 
+-	rcode = RCODE_TYPE_ERROR;
+-	if (length < sizeof(struct snd_efw_transaction)) {
+-		rcode = RCODE_DATA_ERROR;
+-		goto end;
+-	} else if (offset != MEMORY_SPACE_EFW_RESPONSE) {
+-		rcode = RCODE_ADDRESS_ERROR;
++	spin_lock_irq(&efw->lock);
++
++	t = (struct snd_efw_transaction *)data;
++	length = min_t(size_t, t->length * sizeof(t->length), length);
++
++	if (efw->push_ptr < efw->pull_ptr)
++		capacity = (unsigned int)(efw->pull_ptr - efw->push_ptr);
++	else
++		capacity = resp_buf_size -
++			   (unsigned int)(efw->push_ptr - efw->pull_ptr);
++
++	/* confirm enough space for this response */
++	if (capacity < length) {
++		*rcode = RCODE_CONFLICT_ERROR;
+ 		goto end;
+ 	}
+ 
+-	seqnum = be32_to_cpu(((struct snd_efw_transaction *)data)->seqnum);
++	/* copy to ring buffer */
++	while (length > 0) {
++		till_end = resp_buf_size -
++			   (unsigned int)(efw->push_ptr - efw->resp_buf);
++		till_end = min_t(unsigned int, length, till_end);
++
++		memcpy(efw->push_ptr, data, till_end);
++
++		efw->push_ptr += till_end;
++		if (efw->push_ptr >= efw->resp_buf + resp_buf_size)
++			efw->push_ptr = efw->resp_buf;
++
++		length -= till_end;
++		data += till_end;
++	}
++
++	/* for hwdep */
++	efw->resp_queues++;
++	wake_up(&efw->hwdep_wait);
++
++	*rcode = RCODE_COMPLETE;
++end:
++	spin_unlock_irq(&efw->lock);
 +}
 +
 +static void
-+prepare_channels(struct snd_pcm_hardware *hw,
-+	  struct snd_bebob_stream_formation *formations)
++handle_resp_for_user(struct fw_card *card, int generation, int source,
++		     void *data, size_t length, int *rcode)
 +{
++	struct fw_device *device;
++	struct snd_efw *efw;
 +	unsigned int i;
 +
-+	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
-+		/* entry has no PCM channels */
-+		if (formations[i].pcm == 0)
++	spin_lock_irq(&instances_lock);
++
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		efw = instances[i];
++		if (efw == NULL)
++			continue;
++		device = fw_parent_device(efw->unit);
++		if ((device->card != card) ||
++		    (device->generation != generation))
++			continue;
++		smp_rmb();	/* node id vs. generation */
++		if (device->node_id != source)
 +			continue;
 +
-+		hw->channels_min = min(hw->channels_min, formations[i].pcm);
-+		hw->channels_max = max(hw->channels_max, formations[i].pcm);
++		break;
 +	}
++	if (i == SNDRV_CARDS)
++		goto end;
 +
-+	return;
++	copy_resp_to_buf(efw, data, length, rcode);
++end:
++	spin_unlock_irq(&instances_lock);
 +}
 +
 +static void
-+prepare_rates(struct snd_pcm_hardware *hw,
-+	  struct snd_bebob_stream_formation *formations)
++handle_resp_for_kernel(struct fw_card *card, int generation, int source,
++		       void *data, size_t length, int *rcode, u32 seqnum)
 +{
-+	unsigned int i;
-+
-+	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
-+		/* entry has no PCM channels */
-+		if (formations[i].pcm == 0)
-+			continue;
-+
-+		hw->rate_min = min(hw->rate_min, snd_bebob_rate_table[i]);
-+		hw->rate_max = max(hw->rate_max, snd_bebob_rate_table[i]);
-+		hw->rates |= snd_pcm_rate_to_rate_bit(snd_bebob_rate_table[i]);
-+	}
-+
-+	return;
++	struct fw_device *device;
++	struct transaction_queue *t;
++	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&transaction_queues_lock, flags);
+ 	list_for_each_entry(t, &transaction_queues, list) {
+@@ -146,14 +220,76 @@ efw_response(struct fw_card *card, struct fw_request *request,
+ 			t->size = min_t(unsigned int, length, t->size);
+ 			memcpy(t->buf, data, t->size);
+ 			wake_up(&t->wait);
+-			rcode = RCODE_COMPLETE;
++			*rcode = RCODE_COMPLETE;
+ 		}
+ 	}
+ 	spin_unlock_irqrestore(&transaction_queues_lock, flags);
 +}
 +
-+static int
-+pcm_init_hw_params(struct snd_bebob *bebob,
-+			struct snd_pcm_substream *substream)
++static void
++efw_response(struct fw_card *card, struct fw_request *request,
++	     int tcode, int destination, int source,
++	     int generation, unsigned long long offset,
++	     void *data, size_t length, void *callback_data)
 +{
-+	int err;
++	int rcode, dummy;
++	u32 seqnum;
 +
-+	static const struct snd_pcm_hardware hw = {
-+		.info = SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_BATCH |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_JOINT_DUPLEX |
-+			/* for Open Sound System compatibility */
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_BLOCK_TRANSFER,
-+		/* set up later */
-+		.rates = 0,
-+		.rate_min = UINT_MAX,
-+		.rate_max = 0,
-+		/* set up later */
-+		.channels_min = UINT_MAX,
-+		.channels_max = 0,
-+		.buffer_bytes_max = 4 * 16 * 2048,
-+		.period_bytes_min = 1,
-+		.period_bytes_max = 4 * 16 * 2048,
-+		.periods_min = 1,
-+		.periods_max = UINT_MAX,
-+	};
++	rcode = RCODE_TYPE_ERROR;
++	if (length < sizeof(struct snd_efw_transaction)) {
++		rcode = RCODE_DATA_ERROR;
++		goto end;
++	} else if (offset != MEMORY_SPACE_EFW_RESPONSE) {
++		rcode = RCODE_ADDRESS_ERROR;
++		goto end;
++	}
 +
-+	substream->runtime->hw = hw;
-+
-+	/* add rule between channels and sampling rate */
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		prepare_rates(&substream->runtime->hw,
-+			      bebob->tx_stream_formations);
-+		prepare_channels(&substream->runtime->hw,
-+				 bebob->tx_stream_formations);
-+		substream->runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
-+		snd_pcm_hw_rule_add(substream->runtime, 0,
-+				    SNDRV_PCM_HW_PARAM_CHANNELS,
-+				    hw_rule_capture_channels, bebob,
-+				    SNDRV_PCM_HW_PARAM_RATE, -1);
-+		snd_pcm_hw_rule_add(substream->runtime, 0,
-+				    SNDRV_PCM_HW_PARAM_RATE,
-+				    hw_rule_capture_rate, bebob,
-+				    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	seqnum = be32_to_cpu(((struct snd_efw_transaction *)data)->seqnum);
++	if (seqnum > SND_EFW_TRANSACTION_SEQNUM_MAX) {
++		handle_resp_for_kernel(card, generation, source,
++				       data, length, &rcode, seqnum);
++		if (resp_buf_debug)
++			handle_resp_for_user(card, generation, source,
++					     data, length, &dummy);
 +	} else {
-+		prepare_rates(&substream->runtime->hw,
-+			      bebob->rx_stream_formations);
-+		prepare_channels(&substream->runtime->hw,
-+				 bebob->rx_stream_formations);
-+		substream->runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
-+		snd_pcm_hw_rule_add(substream->runtime, 0,
-+				    SNDRV_PCM_HW_PARAM_CHANNELS,
-+				    hw_rule_playback_channels, bebob,
-+				    SNDRV_PCM_HW_PARAM_RATE, -1);
-+		snd_pcm_hw_rule_add(substream->runtime, 0,
-+				    SNDRV_PCM_HW_PARAM_RATE,
-+				    hw_rule_playback_rate, bebob,
-+				    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++		handle_resp_for_user(card, generation, source,
++				     data, length, &rcode);
++	}
+ end:
+ 	fw_send_response(card, request, rcode);
+ }
+ 
++void snd_efw_transaction_add_instance(struct snd_efw *efw)
++{
++	unsigned int i;
++
++	spin_lock_irq(&instances_lock);
++
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		if (instances[i] != NULL)
++			continue;
++		instances[i] = efw;
++		break;
 +	}
 +
-+	/* AM824 in IEC 61883-6 can deliver 24bit data */
-+	err = snd_pcm_hw_constraint_msbits(substream->runtime, 0, 32, 24);
-+	if (err < 0)
-+		goto end;
-+
-+	/*
-+	 * AMDTP functionality in firewire-lib require periods to be aligned to
-+	 * 16 bit, or 24bit inner 32bit.
-+	 */
-+	err = snd_pcm_hw_constraint_step(substream->runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
-+	if (err < 0)
-+		goto end;
-+	err = snd_pcm_hw_constraint_step(substream->runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 32);
-+end:
-+	return err;
++	spin_unlock_irq(&instances_lock);
 +}
 +
-+static int
-+pcm_open(struct snd_pcm_substream *substream)
++void snd_efw_transaction_remove_instance(struct snd_efw *efw)
 +{
-+	struct snd_bebob *bebob = substream->private_data;
-+	unsigned int sampling_rate;
-+	bool internal;
-+	int err;
++	unsigned int i;
 +
-+	err = pcm_init_hw_params(bebob, substream);
-+	if (err < 0)
-+		goto end;
++	spin_lock_irq(&instances_lock);
 +
-+	err = snd_bebob_stream_check_internal_clock(bebob, &internal);
-+	if (err < 0)
-+		goto end;
-+
-+	/*
-+	 * When source of clock is internal or any PCM stream are running,
-+	 * the available sampling rate is limited at current sampling rate.
-+	 */
-+	if (!internal ||
-+	    amdtp_stream_pcm_running(&bebob->tx_stream) ||
-+	    amdtp_stream_pcm_running(&bebob->rx_stream)) {
-+		err = snd_bebob_stream_get_rate(bebob, &sampling_rate);
-+		if (err < 0)
-+			goto end;
-+
-+		substream->runtime->hw.rate_min = sampling_rate;
-+		substream->runtime->hw.rate_max = sampling_rate;
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		if (instances[i] != efw)
++			continue;
++		instances[i] = NULL;
 +	}
 +
-+	snd_pcm_set_sync(substream);
-+
-+end:
-+	return err;
++	spin_unlock_irq(&instances_lock);
 +}
 +
-+static int
-+pcm_close(struct snd_pcm_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static int
-+pcm_hw_params(struct snd_pcm_substream *substream,
-+	      struct snd_pcm_hw_params *hw_params)
-+{
-+	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+						params_buffer_bytes(hw_params));
-+}
-+
-+static int
-+pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_bebob *bebob = substream->private_data;
-+
-+	snd_bebob_stream_stop_duplex(bebob);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int
-+pcm_capture_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_bebob *bebob = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	err = snd_bebob_stream_start_duplex(bebob, &bebob->tx_stream,
-+					    runtime->rate);
-+	if (err < 0)
-+		goto end;
-+
-+	amdtp_stream_set_pcm_format(&bebob->tx_stream, runtime->format);
-+	amdtp_stream_pcm_prepare(&bebob->tx_stream);
-+end:
-+	return err;
-+}
-+static int
-+pcm_playback_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_bebob *bebob = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	err = snd_bebob_stream_start_duplex(bebob, &bebob->rx_stream,
-+					    runtime->rate);
-+	if (err < 0)
-+		goto end;
-+
-+	amdtp_stream_set_pcm_format(&bebob->rx_stream, runtime->format);
-+	amdtp_stream_pcm_prepare(&bebob->rx_stream);
-+end:
-+	return err;
-+}
-+
-+static int
-+pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_bebob *bebob = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&bebob->tx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&bebob->tx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+static int
-+pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_bebob *bebob = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&bebob->rx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&bebob->rx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t
-+pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_bebob *bebob = sbstrm->private_data;
-+	return amdtp_stream_pcm_pointer(&bebob->tx_stream);
-+}
-+static snd_pcm_uframes_t
-+pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_bebob *bebob = sbstrm->private_data;
-+	return amdtp_stream_pcm_pointer(&bebob->rx_stream);
-+}
-+
-+static struct snd_pcm_ops pcm_capture_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_hw_params,
-+	.hw_free	= pcm_hw_free,
-+	.prepare	= pcm_capture_prepare,
-+	.trigger	= pcm_capture_trigger,
-+	.pointer	= pcm_capture_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+};
-+static struct snd_pcm_ops pcm_playback_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_hw_params,
-+	.hw_free	= pcm_hw_free,
-+	.prepare	= pcm_playback_prepare,
-+	.trigger	= pcm_playback_trigger,
-+	.pointer	= pcm_playback_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+	.mmap		= snd_pcm_lib_mmap_vmalloc,
-+};
-+
-+int snd_bebob_create_pcm_devices(struct snd_bebob *bebob)
-+{
-+	struct snd_pcm *pcm;
-+	int err;
-+
-+	err = snd_pcm_new(bebob->card, bebob->card->driver, 0, 1, 1, &pcm);
-+	if (err < 0)
-+		goto end;
-+
-+	pcm->private_data = bebob;
-+	snprintf(pcm->name, sizeof(pcm->name),
-+		 "%s PCM", bebob->card->shortname);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
-+
-+end:
-+	return err;
-+}
+ void snd_efw_transaction_bus_reset(struct fw_unit *unit)
+ {
+ 	struct transaction_queue *t;
 -- 
 1.8.3.2
 
