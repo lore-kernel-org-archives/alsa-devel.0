@@ -1,12 +1,12 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 08/52] firewire-lib: Add support for duplex streams
-	synchronization in blocking mode
-Date: Wed, 29 Jan 2014 22:44:15 +0900
-Message-ID: <1391003099-7109-9-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 02/52] firewire-lib: Add macros instead of fixed value for
+	AMDTP
+Date: Wed, 29 Jan 2014 22:44:09 +0900
+Message-ID: <1391003099-7109-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
 In-Reply-To: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
@@ -21,267 +21,57 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Generally, the devices can synchronize to handle 'presentation timestamp'
-in CIP packets. This commit adds functionality to pick up this timestamp from
-in-packets transmitted by the device, then use it for out packets.
-
-In current implementation, this module generated the timestamp by itself. This
-is 'SYT Match' mode. Then this drive acts as synchronization master. This
-commit allows this module to act as synchronization slave.
-
-This commit restricts this mechanism is only available in blocking mode because
-handling the timestamp in non-blocking mode is more complicated than in
-blocking mode.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp.c | 80 ++++++++++++++++++++++++++++++++++++++++++++++----
- sound/firewire/amdtp.h | 32 ++++++++++++++++++--
- 2 files changed, 103 insertions(+), 9 deletions(-)
-
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 56b01c8..8284b39 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -11,6 +11,7 @@
- #include <linux/firewire.h>
- #include <linux/module.h>
- #include <linux/slab.h>
-+#include <linux/sched.h>
- #include <sound/pcm.h>
- #include <sound/rawmidi.h>
- #include "amdtp.h"
-@@ -72,6 +73,10 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
- 	tasklet_init(&s->period_tasklet, pcm_period_tasklet, (unsigned long)s);
- 	s->packet_index = 0;
- 
-+	init_waitqueue_head(&s->callback_wait);
-+	s->callbacked = false;
-+	s->sync_slave = ERR_PTR(-1);
-+
- 	return 0;
- }
- EXPORT_SYMBOL(amdtp_stream_init);
-@@ -626,7 +631,7 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
- {
- 	__be32 *buffer;
- 	unsigned int data_blocks, payload_length;
--	struct snd_pcm_substream *pcm;
-+	struct snd_pcm_substream *pcm = NULL;
- 
- 	if (s->packet_index < 0)
- 		return;
-@@ -756,7 +761,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
- 			       void *private_data)
- {
- 	struct amdtp_stream *s = private_data;
--	unsigned int p, packets, data_quadlets;
-+	unsigned int p, packets, syt, data_quadlets;
- 	__be32 *buffer, *headers = header;
- 
- 	/* The number of packets in buffer */
-@@ -768,6 +773,15 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
- 		/* The number of quadlets in this packet */
- 		data_quadlets =
- 			(be32_to_cpu(headers[p]) >> ISO_DATA_LENGTH_SHIFT) / 4;
-+
-+		/* Process sync slave stream */
-+		if ((s->flags & CIP_BLOCKING) &&
-+		    (s->flags & CIP_SYNC_TO_DEVICE) &&
-+		    s->sync_slave->callbacked) {
-+			syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
-+			handle_out_packet(s->sync_slave, syt);
-+		}
-+
- 		/* handle each packet data */
- 		handle_in_packet(s, data_quadlets, buffer);
- 
-@@ -777,9 +791,48 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
- 		}
- 	}
- 
-+	/* when sync to device, flush the packets for slave stream */
-+	if ((s->flags & CIP_BLOCKING) &&
-+	    (s->flags & CIP_SYNC_TO_DEVICE) && s->sync_slave->callbacked)
-+		fw_iso_context_queue_flush(s->sync_slave->context);
-+
- 	fw_iso_context_queue_flush(s->context);
- }
- 
-+/* processing is done by master callback */
-+static void slave_stream_callback(struct fw_iso_context *context, u32 cycle,
-+				  size_t header_length, void *header,
-+				  void *private_data)
-+{
-+	return;
-+}
-+
-+/* this is executed one time */
-+static void amdtp_stream_callback(struct fw_iso_context *context, u32 cycle,
-+				  size_t header_length, void *header,
-+				  void *private_data)
-+{
-+	struct amdtp_stream *s = private_data;
-+
-+	/*
-+	 * For in-stream, first packet has come.
-+	 * For out-stream, prepared to transmit first packet
-+	 */
-+	s->callbacked = true;
-+	wake_up(&s->callback_wait);
-+
-+	if (s->direction == AMDTP_IN_STREAM)
-+		context->callback.sc = in_stream_callback;
-+	else if ((s->flags & CIP_BLOCKING) && (s->flags & CIP_SYNC_TO_DEVICE))
-+		context->callback.sc = slave_stream_callback;
-+	else
-+		context->callback.sc = out_stream_callback;
-+
-+	context->callback.sc(context, cycle, header_length, header, s);
-+
-+	return;
-+}
-+
- /**
-  * amdtp_stream_start - start transferring packets
-  * @s: the AMDTP stream to start
-@@ -806,7 +859,6 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	};
- 	unsigned int header_size;
- 	enum dma_data_direction dir;
--	fw_iso_callback_t cb;
- 	int type, err;
- 
- 	mutex_lock(&s->mutex);
-@@ -826,12 +878,10 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 		dir = DMA_FROM_DEVICE;
- 		type = FW_ISO_CONTEXT_RECEIVE;
- 		header_size = IN_PACKET_HEADER_SIZE;
--		cb = in_stream_callback;
- 	} else {
- 		dir = DMA_TO_DEVICE;
- 		type = FW_ISO_CONTEXT_TRANSMIT;
- 		header_size = OUT_PACKET_HEADER_SIZE;
--		cb = out_stream_callback;
- 	}
- 	err = iso_packets_buffer_init(&s->buffer, s->unit, QUEUE_LENGTH,
- 				      amdtp_stream_get_max_payload(s), dir);
-@@ -840,7 +890,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 
- 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
- 					   type, channel, speed, header_size,
--					   cb, s);
-+					   amdtp_stream_callback, s);
- 	if (IS_ERR(s->context)) {
- 		err = PTR_ERR(s->context);
- 		if (err == -EBUSY)
-@@ -863,6 +913,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 
- 	/* NOTE: TAG1 matches CIP. This just affects in stream */
- 	s->data_block_counter = 0;
-+	s->callbacked = false;
- 	err = fw_iso_context_start(s->context, -1, 0,
- 				   FW_ISO_CONTEXT_MATCH_TAG1);
- 	if (err < 0)
-@@ -935,6 +986,8 @@ void amdtp_stream_stop(struct amdtp_stream *s)
- 	s->context = ERR_PTR(-1);
- 	iso_packets_buffer_destroy(&s->buffer, s->unit);
- 
-+	s->callbacked = false;
-+
- 	mutex_unlock(&s->mutex);
- }
- EXPORT_SYMBOL(amdtp_stream_stop);
-@@ -959,3 +1012,18 @@ void amdtp_stream_pcm_abort(struct amdtp_stream *s)
- 	}
- }
- EXPORT_SYMBOL(amdtp_stream_pcm_abort);
-+
-+/**
-+ * amdtp_stream_wait_callback - sleep till callbacked or timeout
-+ * @s: the AMDTP stream
-+ * @timeout: msec till timeout
-+ *
-+ * If this function return false, the AMDTP stream should be stopped.
-+ */
-+bool amdtp_stream_wait_callback(struct amdtp_stream *s, unsigned int timeout)
-+{
-+	return wait_event_timeout(s->callback_wait,
-+				  s->callbacked == true,
-+				  msecs_to_jiffies(timeout)) > 0;
-+}
-+EXPORT_SYMBOL(amdtp_stream_wait_callback);
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 96f25f9..0e73313 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -20,11 +20,14 @@
-  *	at half the actual sample rate with twice the number of channels;
-  *	two samples of a channel are stored consecutively in the packet.
-  *	Requires blocking mode and SYT_INTERVAL-aligned PCM buffer size.
-+ * @CIP_SYNC_TO_DEVICE: In sync to device mode, time stamp in out packets is
-+ *	generated by in packets. Defaultly this driver generates timestamp.
-  */
- enum cip_flags {
--	CIP_NONBLOCKING	= 0x00,
--	CIP_BLOCKING	= 0x01,
--	CIP_HI_DUALWIRE	= 0x02,
-+	CIP_NONBLOCKING		= 0x00,
-+	CIP_BLOCKING		= 0x01,
-+	CIP_HI_DUALWIRE		= 0x02,
-+	CIP_SYNC_TO_DEVICE	= 0x04
- };
- 
- /**
-@@ -102,6 +105,10 @@ struct amdtp_stream {
- 	bool pointer_flush;
- 
- 	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
-+
-+	bool callbacked;
-+	wait_queue_head_t callback_wait;
-+	struct amdtp_stream *sync_slave;
- };
- 
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
-@@ -124,6 +131,7 @@ void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
- void amdtp_stream_pcm_prepare(struct amdtp_stream *s);
- unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s);
- void amdtp_stream_pcm_abort(struct amdtp_stream *s);
-+bool amdtp_stream_wait_callback(struct amdtp_stream *s, unsigned int timeout);
- 
- extern const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
- 
-@@ -199,4 +207,22 @@ static inline bool cip_sfc_is_base_44100(enum cip_sfc sfc)
- 	return sfc & 1;
- }
- 
-+static inline void amdtp_stream_set_sync(enum cip_flags sync_mode,
-+					 struct amdtp_stream *master,
-+					 struct amdtp_stream *slave)
-+{
-+	/* clear sync flag */
-+	master->flags &= ~CIP_SYNC_TO_DEVICE;
-+	slave->flags &= ~CIP_SYNC_TO_DEVICE;
-+
-+	if (sync_mode == CIP_SYNC_TO_DEVICE) {
-+		master->flags |= CIP_SYNC_TO_DEVICE;
-+		slave->flags |= CIP_SYNC_TO_DEVICE;
-+		master->sync_slave = slave;
-+	} else
-+		master->sync_slave = ERR_PTR(-1);
-+
-+	slave->sync_slave = ERR_PTR(-1);
-+}
-+
- #endif
--- 
-1.8.3.2
-
-
-------------------------------------------------------------------------------
-WatchGuard Dimension instantly turns raw network data into actionable 
-security intelligence. It gives you real-time visual feedback on key
-security issues and trends.  Skip the complicated setup - simply import
-a virtual appliance and go from zero to informed in seconds.
-http://pubads.g.doubleclick.net/gampad/clk?id=123612991&iu=/4140/ostg.clktrk
+VGhpcyBwYXRjaCBhZGRzIHNvbWUgbWFjcm9zIGluc3RlYWQgb2YgZml4ZWQgdmFsdWUgZm9yIEFN
+RFRQIGluIElFQyA2MTg4My02LgpUaGVzZSBtYWNyb3Mgd2lsbCBhbHNvIGJlIHVzZWQgYnkgZm9s
+bG93ZWQgcGF0Y2hlcy4KClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNo
+aUBzYWthbW9jY2hpLmpwPgotLS0KIHNvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgfCAzMCArKysrKysr
+KysrKysrKysrKysrKysrKy0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCsp
+LCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgYi9z
+b3VuZC9maXJld2lyZS9hbWR0cC5jCmluZGV4IDE2ZmU4NTguLjM4MDEzZjkgMTAwNjQ0Ci0tLSBh
+L3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKKysrIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuYwpAQCAt
+MjAsMTIgKzIwLDI4IEBACiAKICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgyZTAwIC8q
+IDQ3OS4xNyDCtXMgKi8KIAorLyogaXNvY2hyb25vdXMgaGVhZGVyIHBhcmFtZXRlcnMgKi8KKyNk
+ZWZpbmUgSVNPX0RBVEFfTEVOR1RIX1NISUZUCTE2CiAjZGVmaW5lIFRBR19DSVAJCQkxCiAKKy8q
+IGNvbW1vbiBpc29jaHJvbm91cyBwYWNrZXQgaGVhZGVyIHBhcmFtZXRlcnMgKi8KICNkZWZpbmUg
+Q0lQX0VPSAkJCSgxdSA8PCAzMSkKKyNkZWZpbmUgQ0lQX0VPSF9NQVNLCQkweDgwMDAwMDAwCiAj
+ZGVmaW5lIENJUF9GTVRfQU0JCSgweDEwIDw8IDI0KQotI2RlZmluZSBBTURUUF9GREZfQU04MjQJ
+CSgwIDw8IDE5KQotI2RlZmluZSBBTURUUF9GREZfU0ZDX1NISUZUCTE2CisjZGVmaW5lIENJUF9G
+TVRfTUFTSwkJMHgzZjAwMDAwMAorI2RlZmluZSBDSVBfU1lUX01BU0sJCTB4MDAwMGZmZmYKKyNk
+ZWZpbmUgQ0lQX1NZVF9OT19JTkZPCQkweGZmZmYKKyNkZWZpbmUgQ0lQX0ZERl9NQVNLCQkweDAw
+ZmYwMDAwCisjZGVmaW5lIENJUF9GREZfU0ZDX1NISUZUCTE2CisKKy8qCisgKiBBdWRpbyBhbmQg
+TXVzaWMgdHJhbnNmZXIgcHJvdG9jb2wgc3BlY2lmaWMgcGFyYW1ldGVycworICogb25seSAiQ2xv
+Y2stYmFzZWQgcmF0ZSBjb250cm9sIG1vZGUiIGlzIHN1cHBvcnRlZAorICovCisjZGVmaW5lIEFN
+RFRQX0ZERl9BTTgyNAkJKDAgPDwgKENJUF9GREZfU0ZDX1NISUZUICsgMykpCisjZGVmaW5lIEFN
+RFRQX0RCU19NQVNLCQkweDAwZmYwMDAwCisjZGVmaW5lIEFNRFRQX0RCU19TSElGVAkJMTYKKyNk
+ZWZpbmUgQU1EVFBfREJDX01BU0sJCTB4MDAwMDAwZmYKIAogLyogVE9ETzogbWFrZSB0aGVzZSBj
+b25maWd1cmFibGUgKi8KICNkZWZpbmUgSU5URVJSVVBUX0lOVEVSVkFMCTE2CkBAIC0yODAsOSAr
+Mjk2LDkgQEAgc3RhdGljIHVuc2lnbmVkIGludCBjYWxjdWxhdGVfc3l0KHN0cnVjdCBhbWR0cF9z
+dHJlYW0gKnMsCiAJCXN5dCA9IChjeWNsZSArIHN5dF9vZmZzZXQgLyBUSUNLU19QRVJfQ1lDTEUp
+IDw8IDEyOwogCQlzeXQgKz0gc3l0X29mZnNldCAlIFRJQ0tTX1BFUl9DWUNMRTsKIAotCQlyZXR1
+cm4gc3l0ICYgMHhmZmZmOworCQlyZXR1cm4gc3l0ICYgQ0lQX1NZVF9NQVNLOwogCX0gZWxzZSB7
+Ci0JCXJldHVybiAweGZmZmY7IC8qIG5vIGluZm8gKi8KKwkJcmV0dXJuIENJUF9TWVRfTk9fSU5G
+TzsKIAl9CiB9CiAKQEAgLTQzOCwxNyArNDU0LDE3IEBAIHN0YXRpYyB2b2lkIHF1ZXVlX291dF9w
+YWNrZXQoc3RydWN0IGFtZHRwX3N0cmVhbSAqcywgdW5zaWduZWQgaW50IGN5Y2xlKQogCXN5dCA9
+IGNhbGN1bGF0ZV9zeXQocywgY3ljbGUpOwogCWlmICghKHMtPmZsYWdzICYgQ0lQX0JMT0NLSU5H
+KSkKIAkJZGF0YV9ibG9ja3MgPSBjYWxjdWxhdGVfZGF0YV9ibG9ja3Mocyk7Ci0JZWxzZSBpZiAo
+c3l0ICE9IDB4ZmZmZikKKwllbHNlIGlmIChzeXQgIT0gQ0lQX1NZVF9OT19JTkZPKQogCQlkYXRh
+X2Jsb2NrcyA9IHMtPnN5dF9pbnRlcnZhbDsKIAllbHNlCiAJCWRhdGFfYmxvY2tzID0gMDsKIAog
+CWJ1ZmZlciA9IHMtPmJ1ZmZlci5wYWNrZXRzW2luZGV4XS5idWZmZXI7CiAJYnVmZmVyWzBdID0g
+Y3B1X3RvX2JlMzIoQUNDRVNTX09OQ0Uocy0+c291cmNlX25vZGVfaWRfZmllbGQpIHwKLQkJCQko
+cy0+ZGF0YV9ibG9ja19xdWFkbGV0cyA8PCAxNikgfAorCQkJCShzLT5kYXRhX2Jsb2NrX3F1YWRs
+ZXRzIDw8IEFNRFRQX0RCU19TSElGVCkgfAogCQkJCXMtPmRhdGFfYmxvY2tfY291bnRlcik7CiAJ
+YnVmZmVyWzFdID0gY3B1X3RvX2JlMzIoQ0lQX0VPSCB8IENJUF9GTVRfQU0gfCBBTURUUF9GREZf
+QU04MjQgfAotCQkJCShzLT5zZmMgPDwgQU1EVFBfRkRGX1NGQ19TSElGVCkgfCBzeXQpOworCQkJ
+CShzLT5zZmMgPDwgQ0lQX0ZERl9TRkNfU0hJRlQpIHwgc3l0KTsKIAlidWZmZXIgKz0gMjsKIAog
+CXBjbSA9IEFDQ0VTU19PTkNFKHMtPnBjbSk7Ci0tIAoxLjguMy4yCgoKLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCldhdGNoR3VhcmQgRGltZW5zaW9uIGluc3RhbnRseSB0dXJucyByYXcgbmV0d29yayBk
+YXRhIGludG8gYWN0aW9uYWJsZSAKc2VjdXJpdHkgaW50ZWxsaWdlbmNlLiBJdCBnaXZlcyB5b3Ug
+cmVhbC10aW1lIHZpc3VhbCBmZWVkYmFjayBvbiBrZXkKc2VjdXJpdHkgaXNzdWVzIGFuZCB0cmVu
+ZHMuICBTa2lwIHRoZSBjb21wbGljYXRlZCBzZXR1cCAtIHNpbXBseSBpbXBvcnQKYSB2aXJ0dWFs
+IGFwcGxpYW5jZSBhbmQgZ28gZnJvbSB6ZXJvIHRvIGluZm9ybWVkIGluIHNlY29uZHMuCmh0dHA6
+Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD0xMjM2MTI5OTEmaXU9LzQx
+NDAvb3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KbWFpbGluZyBsaXN0IGxpbnV4MTM5NC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
+aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbGludXgxMzk0LWRl
+dmVsCg==
