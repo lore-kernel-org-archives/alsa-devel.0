@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 11/52] firewire-lib: Add support for channel mapping
-Date: Wed, 29 Jan 2014 22:44:18 +0900
-Message-ID: <1391003099-7109-12-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 18/52] fireworks: Add skelton for Fireworks based devices
+Date: Wed, 29 Jan 2014 22:44:25 +0900
+Message-ID: <1391003099-7109-19-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,314 +20,311 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Some devices arrange the position of PCM/MIDI data channel in AMDTP packet.
-This commit allows drivers to set channel mapping.
+This commit adds a new driver with no functionality. This driver just
+creates/removes card instance according to callbacks.
 
-To be simple, the mapping table is an array with fixed length. Then the number
-of channels for PCM is restricted by 64 channels.
+Fireworks is a board module which Echo Audio produced. This module consists
+of three chipsets:
+ - Communication chipset for IEEE1394 PHY/Link and IEC 61883-1/6
+ - DSP or/and FPGA for signal processing
+ - Flash Memory to store firmwares
+
+Current supported devices:
+ - Mackie Onyx 400F/1200F
+ - Echo AudioFire12/8(until 2009 July)
+ - Echo AudioFire2/4/Pre8/8(since 2009 July)
+ - Echo Fireworks 8/HDMI
+ - Gibson Robot Interface pack/GoldTop
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 122 +++++++++++++++++++++++++++++--------------------
- sound/firewire/amdtp.h |   8 ++++
- 2 files changed, 80 insertions(+), 50 deletions(-)
+ sound/firewire/Kconfig               |  14 +++
+ sound/firewire/Makefile              |   1 +
+ sound/firewire/fireworks/Makefile    |   2 +
+ sound/firewire/fireworks/fireworks.c | 184 +++++++++++++++++++++++++++++++++++
+ sound/firewire/fireworks/fireworks.h |  41 ++++++++
+ 5 files changed, 242 insertions(+)
+ create mode 100644 sound/firewire/fireworks/Makefile
+ create mode 100644 sound/firewire/fireworks/fireworks.c
+ create mode 100644 sound/firewire/fireworks/fireworks.h
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 881d610..73f36fb 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -140,11 +140,12 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
- 		[CIP_SFC_176400] = 176400,
- 		[CIP_SFC_192000] = 192000,
- 	};
--	unsigned int sfc, midi_channels;
-+	unsigned int i, sfc, midi_channels;
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index b3e274f..8cd4f1f 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -61,4 +61,18 @@ config SND_SCS1X
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-scs1x.
  
- 	midi_channels = DIV_ROUND_UP(midi_ports, 8);
- 
--	if (WARN_ON(amdtp_stream_running(s)) ||
-+	if (WARN_ON(amdtp_stream_running(s)) |
-+	    WARN_ON(pcm_channels > AMDTP_MAX_CHANNELS_FOR_PCM) |
- 	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
- 		return;
- 
-@@ -159,11 +160,12 @@ sfc_found:
- 	if (s->dual_wire) {
- 		sfc -= 2;
- 		rate /= 2;
--		pcm_channels *= 2;
-+		s->pcm_channels = pcm_channels * 2;
-+	} else {
-+		s->pcm_channels = pcm_channels;
- 	}
- 	s->sfc = sfc;
--	s->data_block_quadlets = pcm_channels + midi_channels;
--	s->pcm_channels = pcm_channels;
-+	s->data_block_quadlets = s->pcm_channels + midi_channels;
- 	s->midi_ports = midi_ports;
- 
- 	s->syt_interval = amdtp_syt_intervals[sfc];
-@@ -173,6 +175,11 @@ sfc_found:
- 	if (s->flags & CIP_BLOCKING)
- 		/* additional buffering needed to adjust for no-data packets */
- 		s->transfer_delay += TICKS_PER_SECOND * s->syt_interval / rate;
++config SND_FIREWORKS
++	tristate "Echo Fireworks board module support"
++	help
++	  Say Y here to include support for FireWire devices based
++	  on Echo Digital Audio Fireworks board:
++	   * Mackie Onyx 400F/1200F
++	   * Echo AudioFire12/8(until 2009 July)
++	   * Echo AudioFire2/4/Pre8/8(since 2009 July)
++	   * Echo Fireworks 8/HDMI
++	   * Gibson Robot Interface Pack/GoldTop
 +
-+	/* init the position map for PCM and MIDI channels */
-+	for (i = 0; i < pcm_channels; i++)
-+		s->pcm_positions[i] = i;
-+	s->midi_position = s->pcm_channels;
- }
- EXPORT_SYMBOL(amdtp_stream_set_parameters);
- 
-@@ -351,22 +358,20 @@ static void amdtp_write_s32(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
- {
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, frame_step, i, c;
-+	unsigned int remaining_frames, i, c;
- 	const u32 *src;
- 
--	channels = s->pcm_channels;
- 	src = (void *)runtime->dma_area +
- 			frames_to_bytes(runtime, s->pcm_buffer_pointer);
- 	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--	frame_step = s->data_block_quadlets - channels;
- 
- 	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
-+		for (c = 0; c < s->pcm_channels; ++c) {
-+			buffer[s->pcm_positions[c]] =
-+					cpu_to_be32((*src >> 8) | 0x40000000);
- 			src++;
--			buffer++;
- 		}
--		buffer += frame_step;
-+		buffer += s->data_block_quadlets;
- 		if (--remaining_frames == 0)
- 			src = (void *)runtime->dma_area;
- 	}
-@@ -377,22 +382,20 @@ static void amdtp_write_s16(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
- {
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, frame_step, i, c;
-+	unsigned int remaining_frames, i, c;
- 	const u16 *src;
- 
--	channels = s->pcm_channels;
- 	src = (void *)runtime->dma_area +
- 			frames_to_bytes(runtime, s->pcm_buffer_pointer);
- 	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--	frame_step = s->data_block_quadlets - channels;
- 
- 	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
-+		for (c = 0; c < s->pcm_channels; ++c) {
-+			buffer[s->pcm_positions[c]] =
-+					cpu_to_be32((*src << 8) | 0x40000000);
- 			src++;
--			buffer++;
- 		}
--		buffer += frame_step;
-+		buffer += s->data_block_quadlets;
- 		if (--remaining_frames == 0)
- 			src = (void *)runtime->dma_area;
- 	}
-@@ -403,29 +406,29 @@ static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
- 				     __be32 *buffer, unsigned int frames)
- {
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, frame_adjust_1, frame_adjust_2, i, c;
-+	unsigned int channels, remaining_frames, i, c;
- 	const u32 *src;
- 
--	channels = s->pcm_channels;
- 	src = (void *)runtime->dma_area +
--			s->pcm_buffer_pointer * (runtime->frame_bits / 8);
--	frame_adjust_1 = channels - 1;
--	frame_adjust_2 = 1 - (s->data_block_quadlets - channels);
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+	channels = s->pcm_channels / 2;
- 
--	channels /= 2;
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
-+			buffer[s->pcm_positions[c] * 2] =
-+					cpu_to_be32((*src >> 8) | 0x40000000);
- 			src++;
--			buffer += 2;
- 		}
--		buffer -= frame_adjust_1;
-+		buffer += 1;
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
-+			buffer[s->pcm_positions[c] * 2] =
-+					cpu_to_be32((*src >> 8) | 0x40000000);
- 			src++;
--			buffer += 2;
- 		}
--		buffer -= frame_adjust_2;
-+		buffer += s->data_block_quadlets - 1;
-+		if (--remaining_frames == 0)
-+			src = (void *)runtime->dma_area;
- 	}
- }
- 
-@@ -434,29 +437,29 @@ static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
- 				     __be32 *buffer, unsigned int frames)
- {
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, frame_adjust_1, frame_adjust_2, i, c;
-+	unsigned int channels, remaining_frames, i, c;
- 	const u16 *src;
- 
--	channels = s->pcm_channels;
- 	src = (void *)runtime->dma_area +
--			s->pcm_buffer_pointer * (runtime->frame_bits / 8);
--	frame_adjust_1 = channels - 1;
--	frame_adjust_2 = 1 - (s->data_block_quadlets - channels);
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+	channels = s->pcm_channels / 2;
- 
--	channels /= 2;
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
-+			buffer[s->pcm_positions[c] * 2] =
-+					cpu_to_be32((*src << 8) | 0x40000000);
- 			src++;
--			buffer += 2;
- 		}
--		buffer -= frame_adjust_1;
-+		buffer += 1;
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
-+			buffer[s->pcm_positions[c] * 2] =
-+					cpu_to_be32((*src << 8) | 0x40000000);
- 			src++;
--			buffer += 2;
- 		}
--		buffer -= frame_adjust_2;
-+		buffer += s->data_block_quadlets - 1;
-+		if (--remaining_frames == 0)
-+			src = (void *)runtime->dma_area;
- 	}
- }
- 
-@@ -474,7 +477,7 @@ static void amdtp_read_s32(struct amdtp_stream *s,
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < s->pcm_channels; ++c) {
--			*dst = be32_to_cpu(buffer[c]) << 8;
-+			*dst = be32_to_cpu(buffer[s->pcm_positions[c]]) << 8;
- 			dst++;
- 		}
- 		buffer += s->data_block_quadlets;
-@@ -498,12 +501,14 @@ static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
--			*dst = be32_to_cpu(buffer[c * 2]) << 8;
-+			*dst =
-+			     be32_to_cpu(buffer[s->pcm_positions[c] * 2]) << 8;
- 			dst++;
- 		}
- 		buffer += 1;
- 		for (c = 0; c < channels; ++c) {
--			*dst = be32_to_cpu(buffer[c * 2]) << 8;
-+			*dst =
-+			     be32_to_cpu(buffer[s->pcm_positions[c] * 2]) << 8;
- 			dst++;
- 		}
- 		buffer += s->data_block_quadlets - 1;
-@@ -519,11 +524,26 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < s->pcm_channels; ++c)
--			buffer[c] = cpu_to_be32(0x40000000);
-+			buffer[s->pcm_positions[c]] = cpu_to_be32(0x40000000);
- 		buffer += s->data_block_quadlets;
- 	}
- }
- 
-+static void amdtp_fill_pcm_silence_dualwire(struct amdtp_stream *s,
-+					   __be32 *buffer, unsigned int frames)
-+{
-+	unsigned int i, c, channels;
++	  To compile this driver as a module, choose M here: the module
++	  will be called snd-fireworks.
 +
-+	channels = s->pcm_channels / 2;
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			buffer[s->pcm_positions[c] * 2] =
-+			buffer[s->pcm_positions[c] * 2 + 1] =
-+						cpu_to_be32(0x40000000);
-+		}
-+		buffer += s->data_block_quadlets;
-+	}
-+}
- static void amdtp_fill_midi(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
- {
-@@ -531,8 +551,8 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
- 	u8 *b;
- 
- 	for (f = 0; f < frames; f++) {
--		buffer[s->pcm_channels + 1] = 0x00;
--		b = (u8 *)&buffer[s->pcm_channels + 1];
-+		buffer[s->midi_position] = 0x00;
-+		b = (u8 *)&buffer[s->midi_position];
- 
- 		port = (s->data_block_counter + f) % 8;
- 		if ((s->midi[port] == NULL) ||
-@@ -555,7 +575,7 @@ static void amdtp_pull_midi(struct amdtp_stream *s,
- 
- 	for (f = 0; f < frames; f++) {
- 		port = (s->data_block_counter + f) % 8;
--		b = (u8 *)&buffer[s->pcm_channels + 1];
-+		b = (u8 *)&buffer[s->midi_position];
- 
- 		len = b[0] - 0x80;
- 		if (len < 1 || 3 < len)
-@@ -664,6 +684,8 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
- 	pcm = ACCESS_ONCE(s->pcm);
- 	if (pcm)
- 		s->transfer_samples(s, pcm, buffer, data_blocks);
-+	else if (s->dual_wire)
-+		amdtp_fill_pcm_silence_dualwire(s, buffer, data_blocks);
- 	else
- 		amdtp_fill_pcm_silence(s, buffer, data_blocks);
- 	if (s->midi_ports)
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 4cf7a7e..d7bd81a 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -49,6 +49,12 @@ enum cip_sfc {
- 
- 
- /*
-+ * This module supports maximum 64 PCM channels for one PCM stream
-+ * This is for our convinience.
+ endif # SND_FIREWIRE
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index 5099550..5cd39dc 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -10,3 +10,4 @@ obj-$(CONFIG_SND_DICE) += snd-dice.o
+ obj-$(CONFIG_SND_FIREWIRE_SPEAKERS) += snd-firewire-speakers.o
+ obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
+ obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
++obj-$(CONFIG_SND_FIREWORKS) += fireworks/
+diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
+new file mode 100644
+index 0000000..99f6fc3
+--- /dev/null
++++ b/sound/firewire/fireworks/Makefile
+@@ -0,0 +1,2 @@
++snd-fireworks-objs := fireworks.o
++obj-m += snd-fireworks.o
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+new file mode 100644
+index 0000000..33a0acb
+--- /dev/null
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -0,0 +1,184 @@
++/*
++ * fireworks.c - a part of driver for Fireworks based devices
++ *
++ * Copyright (c) 2009-2010 Clemens Ladisch
++ * Copyright (c) 2013 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
 + */
-+#define AMDTP_MAX_CHANNELS_FOR_PCM	64
 +
 +/*
-  * AMDTP packet can include channels for MIDI conformant data.
-  * Each MIDI conformant data channel includes 8 MPX-MIDI data stream.
-  * Each MPX-MIDI data stream includes one data stream from/to MIDI ports.
-@@ -83,6 +89,8 @@ struct amdtp_stream {
- 	void (*transfer_samples)(struct amdtp_stream *s,
- 				 struct snd_pcm_substream *pcm,
- 				 __be32 *buffer, unsigned int frames);
-+	u8 pcm_positions[AMDTP_MAX_CHANNELS_FOR_PCM];
-+	u8 midi_position;
- 
- 	unsigned int syt_interval;
- 	unsigned int transfer_delay;
++ * Fireworks is a board module which Echo Audio produced. This module consists
++ * of three chipsets:
++ *  - Communication chipset for IEEE1394 PHY/Link and IEC 61883-1/6
++ *  - DSP or/and FPGA for signal processing
++ *  - Flash Memory to store firmwares
++ */
++
++#include "fireworks.h"
++
++MODULE_DESCRIPTION("Echo Fireworks driver");
++MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
++MODULE_LICENSE("GPL v2");
++
++static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
++static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
++static bool enable[SNDRV_CARDS]	= SNDRV_DEFAULT_ENABLE_PNP;
++
++module_param_array(index, int, NULL, 0444);
++MODULE_PARM_DESC(index, "card index");
++module_param_array(id, charp, NULL, 0444);
++MODULE_PARM_DESC(id, "ID string");
++module_param_array(enable, bool, NULL, 0444);
++MODULE_PARM_DESC(enable, "enable Fireworks sound card");
++
++static DEFINE_MUTEX(devices_mutex);
++static unsigned int devices_used;
++
++#define VENDOR_LOUD			0x000ff2
++#define  MODEL_MACKIE_400F		0x00400f
++#define  MODEL_MACKIE_1200F		0x01200f
++
++#define VENDOR_ECHO			0x001486
++#define  MODEL_ECHO_AUDIOFIRE_12	0x00af12
++#define  MODEL_ECHO_AUDIOFIRE_12HD	0x0af12d
++#define  MODEL_ECHO_AUDIOFIRE_12_APPLE	0x0af12a
++/* This is applied for AudioFire8 (until 2009 July) */
++#define  MODEL_ECHO_AUDIOFIRE_8		0x000af8
++#define  MODEL_ECHO_AUDIOFIRE_2		0x000af2
++#define  MODEL_ECHO_AUDIOFIRE_4		0x000af4
++/* AudioFire9 is applied for AudioFire8(since 2009 July) and AudioFirePre8 */
++#define  MODEL_ECHO_AUDIOFIRE_9		0x000af9
++/* unknown as product */
++#define  MODEL_ECHO_FIREWORKS_8		0x0000f8
++#define  MODEL_ECHO_FIREWORKS_HDMI	0x00afd1
++
++#define VENDOR_GIBSON			0x00075b
++/* for Robot Interface Pack of Dark Fire, Dusk Tiger, Les Paul Standard 2010 */
++#define  MODEL_GIBSON_RIP		0x00afb2
++/* unknown as product */
++#define  MODEL_GIBSON_GOLDTOP		0x00afb9
++
++static void
++efw_card_free(struct snd_card *card)
++{
++	struct snd_efw *efw = card->private_data;
++
++	if (efw->card_index >= 0) {
++		mutex_lock(&devices_mutex);
++		devices_used &= ~BIT(efw->card_index);
++		mutex_unlock(&devices_mutex);
++	}
++
++	mutex_destroy(&efw->mutex);
++
++	return;
++}
++
++static int
++efw_probe(struct fw_unit *unit,
++	  const struct ieee1394_device_id *entry)
++{
++	struct snd_card *card;
++	struct snd_efw *efw;
++	int card_index, err;
++
++	mutex_lock(&devices_mutex);
++
++	/* check registered cards */
++	for (card_index = 0; card_index < SNDRV_CARDS; ++card_index)
++		if (!(devices_used & BIT(card_index)) && enable[card_index])
++			break;
++	if (card_index >= SNDRV_CARDS) {
++		err = -ENOENT;
++		goto end;
++	}
++
++	err = snd_card_create(index[card_index], id[card_index],
++			      THIS_MODULE, sizeof(struct snd_efw), &card);
++	if (err < 0)
++		goto end;
++	card->private_free = efw_card_free;
++
++	efw = card->private_data;
++	efw->card = card;
++	efw->unit = unit;
++	efw->card_index = -1;
++	mutex_init(&efw->mutex);
++	spin_lock_init(&efw->lock);
++
++	strcpy(efw->card->driver, "Fireworks");
++	strcpy(efw->card->shortname, "Fireworks");
++	strcpy(efw->card->longname, "Fireworks");
++	strcpy(efw->card->mixername, "Fireworks");
++
++	snd_card_set_dev(card, &unit->device);
++	err = snd_card_register(card);
++	if (err < 0) {
++		snd_card_free(card);
++		goto end;
++	}
++	dev_set_drvdata(&unit->device, efw);
++	devices_used |= BIT(card_index);
++	efw->card_index = card_index;
++end:
++	mutex_unlock(&devices_mutex);
++	return err;
++}
++
++static void efw_update(struct fw_unit *unit)
++{
++	return;
++}
++
++static void efw_remove(struct fw_unit *unit)
++{
++	struct snd_efw *efw = dev_get_drvdata(&unit->device);
++	snd_card_disconnect(efw->card);
++	snd_card_free_when_closed(efw->card);
++	return;
++}
++
++static const struct ieee1394_device_id efw_id_table[] = {
++	SND_EFW_DEV_ENTRY(VENDOR_LOUD, MODEL_MACKIE_400F),
++	SND_EFW_DEV_ENTRY(VENDOR_LOUD, MODEL_MACKIE_1200F),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_8),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_12),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_12HD),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_12_APPLE),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_2),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_4),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_9),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_FIREWORKS_8),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_FIREWORKS_HDMI),
++	SND_EFW_DEV_ENTRY(VENDOR_GIBSON, MODEL_GIBSON_RIP),
++	SND_EFW_DEV_ENTRY(VENDOR_GIBSON, MODEL_GIBSON_GOLDTOP),
++	{}
++};
++MODULE_DEVICE_TABLE(ieee1394, efw_id_table);
++
++static struct fw_driver efw_driver = {
++	.driver = {
++		.owner = THIS_MODULE,
++		.name = "snd-fireworks",
++		.bus = &fw_bus_type,
++	},
++	.probe    = efw_probe,
++	.update   = efw_update,
++	.remove   = efw_remove,
++	.id_table = efw_id_table,
++};
++
++static int __init snd_efw_init(void)
++{
++	return driver_register(&efw_driver.driver);
++}
++
++static void __exit snd_efw_exit(void)
++{
++	driver_unregister(&efw_driver.driver);
++	mutex_destroy(&devices_mutex);
++}
++
++module_init(snd_efw_init);
++module_exit(snd_efw_exit);
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+new file mode 100644
+index 0000000..9e29ee4
+--- /dev/null
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -0,0 +1,41 @@
++/*
++ * fireworks.h - a part of driver for Fireworks based devices
++ *
++ * Copyright (c) 2009-2010 Clemens Ladisch
++ * Copyright (c) 2013 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++#ifndef SOUND_FIREWORKS_H_INCLUDED
++#define SOUND_FIREWORKS_H_INCLUDED
++
++#include <linux/compat.h>
++#include <linux/device.h>
++#include <linux/firewire.h>
++#include <linux/firewire-constants.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/delay.h>
++#include <linux/slab.h>
++
++#include <sound/core.h>
++#include <sound/initval.h>
++
++struct snd_efw {
++	struct snd_card *card;
++	struct fw_unit *unit;
++	int card_index;
++
++	struct mutex mutex;
++	spinlock_t lock;
++};
++
++#define SND_EFW_DEV_ENTRY(vendor, model) \
++{ \
++	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
++			  IEEE1394_MATCH_MODEL_ID, \
++	.vendor_id	= vendor,\
++	.model_id	= model \
++}
++
++#endif
 -- 
 1.8.3.2
 
