@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 31/52] bebob: Add hwdep interface
-Date: Wed, 29 Jan 2014 22:44:38 +0900
-Message-ID: <1391003099-7109-32-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 38/52] speakers: Rename to oxfw
+Date: Wed, 29 Jan 2014 22:44:45 +0900
+Message-ID: <1391003099-7109-39-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,512 +20,1685 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This interface is designed for mixer/control application. To use hwdep
-interface, the application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+This commit rename 'firewire-speakers' to 'oxfw' to enhance support for
+devices based on OXFW970/971.
+
+And a line is added for MODULE_ALIAS.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h         |   3 +-
- include/uapi/sound/firewire.h       |   1 +
- sound/firewire/Kconfig              |   1 +
- sound/firewire/bebob/Makefile       |   2 +-
- sound/firewire/bebob/bebob.c        |   5 +
- sound/firewire/bebob/bebob.h        |  13 +++
- sound/firewire/bebob/bebob_hwdep.c  | 197 ++++++++++++++++++++++++++++++++++++
- sound/firewire/bebob/bebob_midi.c   |  28 +++--
- sound/firewire/bebob/bebob_pcm.c    |  16 ++-
- sound/firewire/bebob/bebob_stream.c |  39 +++++++
- 10 files changed, 293 insertions(+), 12 deletions(-)
- create mode 100644 sound/firewire/bebob/bebob_hwdep.c
+ sound/firewire/Kconfig    |  12 +-
+ sound/firewire/Makefile   |   4 +-
+ sound/firewire/oxfw.c     | 802 ++++++++++++++++++++++++++++++++++++++++++++++
+ sound/firewire/speakers.c | 801 ---------------------------------------------
+ 4 files changed, 811 insertions(+), 808 deletions(-)
+ create mode 100644 sound/firewire/oxfw.c
+ delete mode 100644 sound/firewire/speakers.c
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 5dfbfdf..2249483 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -95,9 +95,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_USB_STREAM,	/* direct access to usb stream */
- 	SNDRV_HWDEP_IFACE_FW_DICE,	/* TC DICE FireWire device */
- 	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
-+	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_FIREWORKS
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_BEBOB
- };
- 
- struct snd_hwdep_info {
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index 7f4c419..d69c0b6 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -53,6 +53,7 @@ union snd_firewire_event {
- 
- #define SNDRV_FIREWIRE_TYPE_DICE	1
- #define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
-+#define SNDRV_FIREWIRE_TYPE_BEBOB	3
- /* AV/C, RME, MOTU, ... */
- 
- struct snd_firewire_get_info {
 diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 022fee0..060fe7e 100644
+index f9aa176..d8b8c54 100644
 --- a/sound/firewire/Kconfig
 +++ b/sound/firewire/Kconfig
-@@ -84,6 +84,7 @@ config SND_BEBOB
- 	select SND_FIREWIRE_LIB
- 	select SND_RAWMIDI
+@@ -26,16 +26,18 @@ config SND_DICE
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-dice.
+ 
+-config SND_FIREWIRE_SPEAKERS
+-	tristate "FireWire speakers"
++config SND_OXFW
++	tristate "Oxford OXFW970/971 chipset support"
  	select SND_PCM
-+	select SND_HWDEP
-         help
- 	 Say Y here to include support for FireWire devices based
- 	 on BridgeCo DM1000/1500 with BeBoB firmware:
-diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-index 533718a..7808777 100644
---- a/sound/firewire/bebob/Makefile
-+++ b/sound/firewire/bebob/Makefile
-@@ -1,4 +1,4 @@
- snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
--		  bebob_pcm.o \
-+		  bebob_pcm.o bebob_hwdep.o \
- 		  bebob.o
- obj-m += snd-bebob.o
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index a56917d..19f2831 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -154,6 +154,7 @@ bebob_probe(struct fw_unit *unit,
- 	bebob->card_index = -1;
- 	mutex_init(&bebob->mutex);
- 	spin_lock_init(&bebob->lock);
-+	init_waitqueue_head(&bebob->hwdep_wait);
+ 	select SND_FIREWIRE_LIB
+ 	help
+-	  Say Y here to include support for the Griffin FireWave Surround
+-	  and the LaCie FireWire Speakers.
++	  Say Y here to include support for Firewire devices based on
++	  Oxford Semiconductor OXFW970/971 chipset.
++	   * Griffin Firewave
++	   * LaCie Firewire Speakers
  
- 	err = name_device(bebob, entry->vendor_id);
- 	if (err < 0)
-@@ -180,6 +181,10 @@ bebob_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
+ 	  To compile this driver as a module, choose M here: the module
+-	  will be called snd-firewire-speakers.
++	  will be called snd-oxfw.
  
-+	err = snd_bebob_create_hwdep_device(bebob);
-+	if (err < 0)
-+		goto error;
-+
- 	snd_card_set_dev(card, &unit->device);
- 	err = snd_card_register(card);
- 	if (err < 0) {
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index ddd31a2..57ad5e6 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -24,6 +24,8 @@
- #include <sound/rawmidi.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
+ config SND_ISIGHT
+ 	tristate "Apple iSight microphone"
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index fad8d49..cec888f 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -1,14 +1,14 @@
+ snd-firewire-lib-objs := lib.o iso-resources.o packets-buffer.o \
+ 			 fcp.o cmp.o amdtp.o
+ snd-dice-objs := dice.o
+-snd-firewire-speakers-objs := speakers.o
++snd-oxfw-objs := oxfw.o
+ snd-isight-objs := isight.o
+ snd-scs1x-objs := scs1x.o
  
- #include "../lib.h"
- #include "../fcp.h"
-@@ -70,6 +72,11 @@ struct snd_bebob {
- 		rx_stream_formations[SND_BEBOB_STRM_FMT_ENTRIES];
- 
- 	int sync_input_plug;
-+
-+	/* for uapi */
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
- };
- 
- static inline int
-@@ -179,12 +186,18 @@ int snd_bebob_stream_stop_duplex(struct snd_bebob *bebob);
- void snd_bebob_stream_update_duplex(struct snd_bebob *bebob);
- void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob);
- 
-+void snd_bebob_stream_lock_changed(struct snd_bebob *bebob);
-+int snd_bebob_stream_lock_try(struct snd_bebob *bebob);
-+void snd_bebob_stream_lock_release(struct snd_bebob *bebob);
-+
- void snd_bebob_proc_init(struct snd_bebob *bebob);
- 
- int snd_bebob_create_midi_devices(struct snd_bebob *bebob);
- 
- int snd_bebob_create_pcm_devices(struct snd_bebob *bebob);
- 
-+int snd_bebob_create_hwdep_device(struct snd_bebob *bebob);
-+
- #define SND_BEBOB_DEV_ENTRY(vendor, model) \
- { \
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/bebob/bebob_hwdep.c b/sound/firewire/bebob/bebob_hwdep.c
+ obj-$(CONFIG_SND_FIREWIRE_LIB) += snd-firewire-lib.o
+ obj-$(CONFIG_SND_DICE) += snd-dice.o
+-obj-$(CONFIG_SND_FIREWIRE_SPEAKERS) += snd-firewire-speakers.o
+ obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
+ obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
+ obj-$(CONFIG_SND_FIREWORKS) += fireworks/
+ obj-$(CONFIG_SND_BEBOB) += bebob/
++obj-$(CONFIG_SND_OXFW) += snd-oxfw.o
+diff --git a/sound/firewire/oxfw.c b/sound/firewire/oxfw.c
 new file mode 100644
-index 0000000..54937c0
+index 0000000..4ac74a3
 --- /dev/null
-+++ b/sound/firewire/bebob/bebob_hwdep.c
-@@ -0,0 +1,197 @@
++++ b/sound/firewire/oxfw.c
+@@ -0,0 +1,802 @@
 +/*
-+ * bebob_hwdep.c - a part of driver for BeBoB based devices
++ * oxfw.c - a part of driver for OXFW970/971 based devices
 + *
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
++ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+/*
-+ * This codes give three functionality.
-+ *
-+ * 1.get firewire node infomation
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock stream
-+ */
++#include <linux/device.h>
++#include <linux/firewire.h>
++#include <linux/firewire-constants.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/mutex.h>
++#include <linux/slab.h>
++#include <sound/control.h>
++#include <sound/core.h>
++#include <sound/initval.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include "cmp.h"
++#include "fcp.h"
++#include "amdtp.h"
++#include "lib.h"
 +
-+#include "bebob.h"
++#define OXFORD_FIRMWARE_ID_ADDRESS	(CSR_REGISTER_BASE + 0x50000)
++/* 0x970?vvvv or 0x971?vvvv, where vvvv = firmware version */
 +
-+static long
-+hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
-+	   loff_t *offset)
-+{
-+	struct snd_bebob *bebob = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+	union snd_firewire_event event;
++#define OXFORD_HARDWARE_ID_ADDRESS	(CSR_REGISTER_BASE + 0x90020)
++#define OXFORD_HARDWARE_ID_OXFW970	0x39443841
++#define OXFORD_HARDWARE_ID_OXFW971	0x39373100
 +
-+	spin_lock_irq(&bebob->lock);
++#define VENDOR_GRIFFIN		0x001292
++#define VENDOR_LACIE		0x00d04b
 +
-+	while (!bebob->dev_lock_changed) {
-+		prepare_to_wait(&bebob->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&bebob->lock);
-+		schedule();
-+		finish_wait(&bebob->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&bebob->lock);
-+	}
++#define SPECIFIER_1394TA	0x00a02d
++#define VERSION_AVC		0x010001
 +
-+	memset(&event, 0, sizeof(event));
-+	if (bebob->dev_lock_changed) {
-+		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+		event.lock_status.status = (bebob->dev_lock_count > 0);
-+		bebob->dev_lock_changed = false;
-+
-+		count = min_t(long, count, sizeof(event.lock_status));
-+	}
-+
-+	spin_unlock_irq(&bebob->lock);
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static unsigned int
-+hwdep_poll(struct snd_hwdep *hwdep, struct file *file, poll_table *wait)
-+{
-+	struct snd_bebob *bebob = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &bebob->hwdep_wait, wait);
-+
-+	spin_lock_irq(&bebob->lock);
-+	if (bebob->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&bebob->lock);
-+
-+	return events;
-+}
-+
-+static int
-+hwdep_get_info(struct snd_bebob *bebob, void __user *arg)
-+{
-+	struct fw_device *dev = fw_parent_device(bebob->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_BEBOB;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int
-+hwdep_lock(struct snd_bebob *bebob)
-+{
-+	int err;
-+
-+	spin_lock_irq(&bebob->lock);
-+
-+	if (bebob->dev_lock_count == 0) {
-+		bebob->dev_lock_count = -1;
-+		err = 0;
-+	} else
-+		err = -EBUSY;
-+
-+	spin_unlock_irq(&bebob->lock);
-+
-+	return err;
-+}
-+
-+static int
-+hwdep_unlock(struct snd_bebob *bebob)
-+{
-+	int err;
-+
-+	spin_lock_irq(&bebob->lock);
-+
-+	if (bebob->dev_lock_count == -1) {
-+		bebob->dev_lock_count = 0;
-+		err = 0;
-+	} else
-+		err = -EBADFD;
-+
-+	spin_unlock_irq(&bebob->lock);
-+
-+	return err;
-+}
-+
-+static int
-+hwdep_release(struct snd_hwdep *hwdep, struct file *file)
-+{
-+	struct snd_bebob *bebob = hwdep->private_data;
-+
-+	spin_lock_irq(&bebob->lock);
-+	if (bebob->dev_lock_count == -1)
-+		bebob->dev_lock_count = 0;
-+	spin_unlock_irq(&bebob->lock);
-+
-+	return 0;
-+}
-+
-+static int
-+hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+	    unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_bebob *bebob = hwdep->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(bebob, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(bebob);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(bebob);
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
-+}
-+
-+#ifdef CONFIG_COMPAT
-+static int
-+hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+		   unsigned int cmd, unsigned long arg)
-+{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
-+
-+static const struct snd_hwdep_ops hwdep_ops = {
-+	.read		= hwdep_read,
-+	.release	= hwdep_release,
-+	.poll		= hwdep_poll,
-+	.ioctl		= hwdep_ioctl,
-+	.ioctl_compat	= hwdep_compat_ioctl,
++struct device_info {
++	const char *driver_name;
++	const char *short_name;
++	const char *long_name;
++	int (*pcm_constraints)(struct snd_pcm_runtime *runtime);
++	unsigned int mixer_channels;
++	u8 mute_fb_id;
++	u8 volume_fb_id;
 +};
 +
-+int snd_bebob_create_hwdep_device(struct snd_bebob *bebob)
++struct snd_oxfw {
++	struct snd_card *card;
++	struct fw_unit *unit;
++	const struct device_info *device_info;
++	struct mutex mutex;
++	struct cmp_connection connection;
++	struct amdtp_stream stream;
++	bool mute;
++	s16 volume[6];
++	s16 volume_min;
++	s16 volume_max;
++};
++
++MODULE_DESCRIPTION("Oxford OXFW970/971 driver");
++MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("snd-firewire-speakers");
++
++static int firewave_rate_constraint(struct snd_pcm_hw_params *params,
++				    struct snd_pcm_hw_rule *rule)
 +{
-+	struct snd_hwdep *hwdep;
++	static unsigned int stereo_rates[] = { 48000, 96000 };
++	struct snd_interval *channels =
++			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval *rate =
++			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++
++	/* two channels work only at 48/96 kHz */
++	if (snd_interval_max(channels) < 6)
++		return snd_interval_list(rate, 2, stereo_rates, 0);
++	return 0;
++}
++
++static int firewave_channels_constraint(struct snd_pcm_hw_params *params,
++					struct snd_pcm_hw_rule *rule)
++{
++	static const struct snd_interval all_channels = { .min = 6, .max = 6 };
++	struct snd_interval *rate =
++			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels =
++			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	/* 32/44.1 kHz work only with all six channels */
++	if (snd_interval_max(rate) < 48000)
++		return snd_interval_refine(channels, &all_channels);
++	return 0;
++}
++
++static int firewave_constraints(struct snd_pcm_runtime *runtime)
++{
++	static unsigned int channels_list[] = { 2, 6 };
++	static struct snd_pcm_hw_constraint_list channels_list_constraint = {
++		.count = 2,
++		.list = channels_list,
++	};
 +	int err;
 +
-+	err = snd_hwdep_new(bebob->card, "BeBoB", 0, &hwdep);
++	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
++			    SNDRV_PCM_RATE_44100 |
++			    SNDRV_PCM_RATE_48000 |
++			    SNDRV_PCM_RATE_96000;
++	runtime->hw.channels_max = 6;
++
++	err = snd_pcm_hw_constraint_list(runtime, 0,
++					 SNDRV_PCM_HW_PARAM_CHANNELS,
++					 &channels_list_constraint);
 +	if (err < 0)
-+		goto end;
-+	strcpy(hwdep->name, "BeBoB");
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_BEBOB;
-+	hwdep->ops = hwdep_ops;
-+	hwdep->private_data = bebob;
-+	hwdep->exclusive = true;
-+end:
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				  firewave_rate_constraint, NULL,
++				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				  firewave_channels_constraint, NULL,
++				  SNDRV_PCM_HW_PARAM_RATE, -1);
++	if (err < 0)
++		return err;
++
++	return 0;
++}
++
++static int lacie_speakers_constraints(struct snd_pcm_runtime *runtime)
++{
++	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
++			    SNDRV_PCM_RATE_44100 |
++			    SNDRV_PCM_RATE_48000 |
++			    SNDRV_PCM_RATE_88200 |
++			    SNDRV_PCM_RATE_96000;
++
++	return 0;
++}
++
++static int oxfw_open(struct snd_pcm_substream *substream)
++{
++	static const struct snd_pcm_hardware hardware = {
++		.info = SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_BATCH |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_BLOCK_TRANSFER,
++		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
++		.channels_min = 2,
++		.channels_max = 2,
++		.buffer_bytes_max = 4 * 1024 * 1024,
++		.period_bytes_min = 1,
++		.period_bytes_max = UINT_MAX,
++		.periods_min = 1,
++		.periods_max = UINT_MAX,
++	};
++	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	runtime->hw = hardware;
++
++	err = oxfw->device_info->pcm_constraints(runtime);
++	if (err < 0)
++		return err;
++	err = snd_pcm_limit_hw_rates(runtime);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_hw_constraint_minmax(runtime,
++					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
++					   5000, UINT_MAX);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	if (err < 0)
++		return err;
++
++	return 0;
++}
++
++static int oxfw_close(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static void oxfw_stop_stream(struct snd_oxfw *oxfw)
++{
++	if (amdtp_stream_running(&oxfw->stream)) {
++		amdtp_stream_stop(&oxfw->stream);
++		cmp_connection_break(&oxfw->connection);
++	}
++}
++
++static int oxfw_hw_params(struct snd_pcm_substream *substream,
++			   struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++	int err;
++
++	mutex_lock(&oxfw->mutex);
++	oxfw_stop_stream(oxfw);
++	mutex_unlock(&oxfw->mutex);
++
++	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
++					       params_buffer_bytes(hw_params));
++	if (err < 0)
++		goto error;
++
++	amdtp_stream_set_parameters(&oxfw->stream,
++				    params_rate(hw_params),
++				    params_channels(hw_params),
++				    0);
++
++	amdtp_stream_set_pcm_format(&oxfw->stream,
++				    params_format(hw_params));
++
++	err = avc_general_set_sig_fmt(oxfw->unit, params_rate(hw_params),
++				      AVC_GENERAL_PLUG_DIR_IN, 0);
++	if (err < 0)
++		goto err_buffer;
++	if (err != 0x09 /* ACCEPTED */) {
++		dev_err(&oxfw->unit->device, "failed to set sample rate\n");
++		err = -EIO;
++		goto error;
++	}
++
++	return 0;
++
++err_buffer:
++	snd_pcm_lib_free_vmalloc_buffer(substream);
++error:
 +	return err;
 +}
 +
-diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
-index 10945fe16..2eb2813 100644
---- a/sound/firewire/bebob/bebob_midi.c
-+++ b/sound/firewire/bebob/bebob_midi.c
-@@ -11,26 +11,40 @@
- static int midi_capture_open(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_bebob *bebob = substream->rmidi->private_data;
--	int err = 0;
-+	int err;
-+
-+	err = snd_bebob_stream_lock_try(bebob);
-+	if (err < 0)
-+		goto end;
- 
- 	bebob->tx_midi_substreams++;
--	if (!amdtp_stream_running(&bebob->tx_stream))
-+	if (!amdtp_stream_running(&bebob->tx_stream)) {
- 		err = snd_bebob_stream_start_duplex(bebob,
- 						    &bebob->tx_stream, 0);
--
-+		if (err < 0)
-+			snd_bebob_stream_lock_release(bebob);
-+	}
-+end:
- 	return err;
- }
- 
- static int midi_playback_open(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_bebob *bebob = substream->rmidi->private_data;
--	int err = 0;
-+	int err;
-+
-+	err = snd_bebob_stream_lock_try(bebob);
-+	if (err < 0)
-+		goto end;
- 
- 	bebob->rx_midi_substreams++;
--	if (!amdtp_stream_running(&bebob->rx_stream))
-+	if (!amdtp_stream_running(&bebob->rx_stream)) {
- 		err = snd_bebob_stream_start_duplex(bebob,
- 						    &bebob->rx_stream, 0);
--
-+		if (err < 0)
-+			snd_bebob_stream_lock_release(bebob);
-+	}
-+end:
- 	return err;
- }
- 
-@@ -41,6 +55,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
- 	if (--bebob->tx_midi_substreams == 0)
- 		snd_bebob_stream_stop_duplex(bebob);
- 
-+	snd_bebob_stream_lock_release(bebob);
- 	return 0;
- }
- 
-@@ -51,6 +66,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
- 	if (--bebob->rx_midi_substreams == 0)
- 		snd_bebob_stream_stop_duplex(bebob);
- 
-+	snd_bebob_stream_lock_release(bebob);
- 	return 0;
- }
- 
-diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
-index e4c6c11..70fa53a 100644
---- a/sound/firewire/bebob/bebob_pcm.c
-+++ b/sound/firewire/bebob/bebob_pcm.c
-@@ -228,13 +228,17 @@ pcm_open(struct snd_pcm_substream *substream)
- 	bool internal;
- 	int err;
- 
--	err = pcm_init_hw_params(bebob, substream);
-+	err = snd_bebob_stream_lock_try(bebob);
- 	if (err < 0)
- 		goto end;
- 
-+	err = pcm_init_hw_params(bebob, substream);
-+	if (err < 0)
-+		goto err_locked;
-+
- 	err = snd_bebob_stream_check_internal_clock(bebob, &internal);
- 	if (err < 0)
--		goto end;
-+		goto err_locked;
- 
- 	/*
- 	 * When source of clock is internal or any PCM stream are running,
-@@ -245,21 +249,25 @@ pcm_open(struct snd_pcm_substream *substream)
- 	    amdtp_stream_pcm_running(&bebob->rx_stream)) {
- 		err = snd_bebob_stream_get_rate(bebob, &sampling_rate);
- 		if (err < 0)
--			goto end;
-+			goto err_locked;
- 
- 		substream->runtime->hw.rate_min = sampling_rate;
- 		substream->runtime->hw.rate_max = sampling_rate;
- 	}
- 
- 	snd_pcm_set_sync(substream);
--
- end:
- 	return err;
-+err_locked:
-+	snd_bebob_stream_lock_release(bebob);
-+	return err;
- }
- 
- static int
- pcm_close(struct snd_pcm_substream *substream)
- {
-+	struct snd_bebob *bebob = substream->private_data;
-+	snd_bebob_stream_lock_release(bebob);
- 	return 0;
- }
- 
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index f70b8c0..273843b 100644
---- a/sound/firewire/bebob/bebob_stream.c
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -786,3 +786,42 @@ int snd_bebob_stream_discover(struct snd_bebob *bebob)
- end:
- 	return err;
- }
-+
-+void snd_bebob_stream_lock_changed(struct snd_bebob *bebob)
++static int oxfw_hw_free(struct snd_pcm_substream *substream)
 +{
-+	bebob->dev_lock_changed = true;
-+	wake_up(&bebob->hwdep_wait);
++	struct snd_oxfw *oxfw = substream->private_data;
++
++	mutex_lock(&oxfw->mutex);
++	oxfw_stop_stream(oxfw);
++	mutex_unlock(&oxfw->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
 +}
 +
-+int snd_bebob_stream_lock_try(struct snd_bebob *bebob)
++static int oxfw_prepare(struct snd_pcm_substream *substream)
 +{
++	struct snd_oxfw *oxfw = substream->private_data;
 +	int err;
 +
-+	spin_lock_irq(&bebob->lock);
++	mutex_lock(&oxfw->mutex);
 +
-+	/* user land lock this */
-+	if (bebob->dev_lock_count < 0) {
-+		err = -EBUSY;
-+		goto end;
++	if (amdtp_streaming_error(&oxfw->stream))
++		oxfw_stop_stream(oxfw);
++
++	if (!amdtp_stream_running(&oxfw->stream)) {
++		err = cmp_connection_establish(&oxfw->connection,
++			amdtp_stream_get_max_payload(&oxfw->stream));
++		if (err < 0)
++			goto err_mutex;
++
++		err = amdtp_stream_start(&oxfw->stream,
++					 oxfw->connection.resources.channel,
++					 oxfw->connection.speed);
++		if (err < 0)
++			goto err_connection;
 +	}
 +
-+	/* this is the first time */
-+	if (bebob->dev_lock_count++ == 0)
-+		snd_bebob_stream_lock_changed(bebob);
++	mutex_unlock(&oxfw->mutex);
++
++	amdtp_stream_pcm_prepare(&oxfw->stream);
++
++	return 0;
++
++err_connection:
++	cmp_connection_break(&oxfw->connection);
++err_mutex:
++	mutex_unlock(&oxfw->mutex);
++
++	return err;
++}
++
++static int oxfw_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_pcm_substream *pcm;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		pcm = substream;
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		pcm = NULL;
++		break;
++	default:
++		return -EINVAL;
++	}
++	amdtp_stream_pcm_trigger(&oxfw->stream, pcm);
++	return 0;
++}
++
++static snd_pcm_uframes_t oxfw_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++
++	return amdtp_stream_pcm_pointer(&oxfw->stream);
++}
++
++static int oxfw_create_pcm(struct snd_oxfw *oxfw)
++{
++	static struct snd_pcm_ops ops = {
++		.open      = oxfw_open,
++		.close     = oxfw_close,
++		.ioctl     = snd_pcm_lib_ioctl,
++		.hw_params = oxfw_hw_params,
++		.hw_free   = oxfw_hw_free,
++		.prepare   = oxfw_prepare,
++		.trigger   = oxfw_trigger,
++		.pointer   = oxfw_pointer,
++		.page      = snd_pcm_lib_get_vmalloc_page,
++		.mmap      = snd_pcm_lib_mmap_vmalloc,
++	};
++	struct snd_pcm *pcm;
++	int err;
++
++	err = snd_pcm_new(oxfw->card, "OXFW970", 0, 1, 0, &pcm);
++	if (err < 0)
++		return err;
++	pcm->private_data = oxfw;
++	strcpy(pcm->name, oxfw->device_info->short_name);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
++	return 0;
++}
++
++enum control_action { CTL_READ, CTL_WRITE };
++enum control_attribute {
++	CTL_MIN		= 0x02,
++	CTL_MAX		= 0x03,
++	CTL_CURRENT	= 0x10,
++};
++
++static int oxfw_mute_command(struct snd_oxfw *oxfw, bool *value,
++			      enum control_action action)
++{
++	u8 *buf;
++	u8 response_ok;
++	int err;
++
++	buf = kmalloc(11, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	if (action == CTL_READ) {
++		buf[0] = 0x01;		/* AV/C, STATUS */
++		response_ok = 0x0c;	/*       STABLE */
++	} else {
++		buf[0] = 0x00;		/* AV/C, CONTROL */
++		response_ok = 0x09;	/*       ACCEPTED */
++	}
++	buf[1] = 0x08;			/* audio unit 0 */
++	buf[2] = 0xb8;			/* FUNCTION BLOCK */
++	buf[3] = 0x81;			/* function block type: feature */
++	buf[4] = oxfw->device_info->mute_fb_id; /* function block ID */
++	buf[5] = 0x10;			/* control attribute: current */
++	buf[6] = 0x02;			/* selector length */
++	buf[7] = 0x00;			/* audio channel number */
++	buf[8] = 0x01;			/* control selector: mute */
++	buf[9] = 0x01;			/* control data length */
++	if (action == CTL_READ)
++		buf[10] = 0xff;
++	else
++		buf[10] = *value ? 0x70 : 0x60;
++
++	err = fcp_avc_transaction(oxfw->unit, buf, 11, buf, 11, 0x3fe);
++	if (err < 0)
++		goto error;
++	if (err < 11) {
++		dev_err(&oxfw->unit->device, "short FCP response\n");
++		err = -EIO;
++		goto error;
++	}
++	if (buf[0] != response_ok) {
++		dev_err(&oxfw->unit->device, "mute command failed\n");
++		err = -EIO;
++		goto error;
++	}
++	if (action == CTL_READ)
++		*value = buf[10] == 0x70;
++
 +	err = 0;
-+end:
-+	spin_unlock_irq(&bebob->lock);
++
++error:
++	kfree(buf);
++
 +	return err;
 +}
 +
-+void snd_bebob_stream_lock_release(struct snd_bebob *bebob)
++static int oxfw_volume_command(struct snd_oxfw *oxfw, s16 *value,
++				unsigned int channel,
++				enum control_attribute attribute,
++				enum control_action action)
 +{
-+	spin_lock_irq(&bebob->lock);
++	u8 *buf;
++	u8 response_ok;
++	int err;
 +
-+	if (WARN_ON(bebob->dev_lock_count <= 0))
-+		goto end;
-+	if (--bebob->dev_lock_count == 0)
-+		snd_bebob_stream_lock_changed(bebob);
-+end:
-+	spin_unlock_irq(&bebob->lock);
++	buf = kmalloc(12, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	if (action == CTL_READ) {
++		buf[0] = 0x01;		/* AV/C, STATUS */
++		response_ok = 0x0c;	/*       STABLE */
++	} else {
++		buf[0] = 0x00;		/* AV/C, CONTROL */
++		response_ok = 0x09;	/*       ACCEPTED */
++	}
++	buf[1] = 0x08;			/* audio unit 0 */
++	buf[2] = 0xb8;			/* FUNCTION BLOCK */
++	buf[3] = 0x81;			/* function block type: feature */
++	buf[4] = oxfw->device_info->volume_fb_id; /* function block ID */
++	buf[5] = attribute;		/* control attribute */
++	buf[6] = 0x02;			/* selector length */
++	buf[7] = channel;		/* audio channel number */
++	buf[8] = 0x02;			/* control selector: volume */
++	buf[9] = 0x02;			/* control data length */
++	if (action == CTL_READ) {
++		buf[10] = 0xff;
++		buf[11] = 0xff;
++	} else {
++		buf[10] = *value >> 8;
++		buf[11] = *value;
++	}
++
++	err = fcp_avc_transaction(oxfw->unit, buf, 12, buf, 12, 0x3fe);
++	if (err < 0)
++		goto error;
++	if (err < 12) {
++		dev_err(&oxfw->unit->device, "short FCP response\n");
++		err = -EIO;
++		goto error;
++	}
++	if (buf[0] != response_ok) {
++		dev_err(&oxfw->unit->device, "volume command failed\n");
++		err = -EIO;
++		goto error;
++	}
++	if (action == CTL_READ)
++		*value = (buf[10] << 8) | buf[11];
++
++	err = 0;
++
++error:
++	kfree(buf);
++
++	return err;
 +}
++
++static int oxfw_mute_get(struct snd_kcontrol *control,
++			  struct snd_ctl_elem_value *value)
++{
++	struct snd_oxfw *oxfw = control->private_data;
++
++	value->value.integer.value[0] = !oxfw->mute;
++
++	return 0;
++}
++
++static int oxfw_mute_put(struct snd_kcontrol *control,
++			  struct snd_ctl_elem_value *value)
++{
++	struct snd_oxfw *oxfw = control->private_data;
++	bool mute;
++	int err;
++
++	mute = !value->value.integer.value[0];
++
++	if (mute == oxfw->mute)
++		return 0;
++
++	err = oxfw_mute_command(oxfw, &mute, CTL_WRITE);
++	if (err < 0)
++		return err;
++	oxfw->mute = mute;
++
++	return 1;
++}
++
++static int oxfw_volume_info(struct snd_kcontrol *control,
++			     struct snd_ctl_elem_info *info)
++{
++	struct snd_oxfw *oxfw = control->private_data;
++
++	info->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	info->count = oxfw->device_info->mixer_channels;
++	info->value.integer.min = oxfw->volume_min;
++	info->value.integer.max = oxfw->volume_max;
++
++	return 0;
++}
++
++static const u8 channel_map[6] = { 0, 1, 4, 5, 2, 3 };
++
++static int oxfw_volume_get(struct snd_kcontrol *control,
++			    struct snd_ctl_elem_value *value)
++{
++	struct snd_oxfw *oxfw = control->private_data;
++	unsigned int i;
++
++	for (i = 0; i < oxfw->device_info->mixer_channels; ++i)
++		value->value.integer.value[channel_map[i]] = oxfw->volume[i];
++
++	return 0;
++}
++
++static int oxfw_volume_put(struct snd_kcontrol *control,
++			  struct snd_ctl_elem_value *value)
++{
++	struct snd_oxfw *oxfw = control->private_data;
++	unsigned int i, changed_channels;
++	bool equal_values = true;
++	s16 volume;
++	int err;
++
++	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
++		if (value->value.integer.value[i] < oxfw->volume_min ||
++		    value->value.integer.value[i] > oxfw->volume_max)
++			return -EINVAL;
++		if (value->value.integer.value[i] !=
++		    value->value.integer.value[0])
++			equal_values = false;
++	}
++
++	changed_channels = 0;
++	for (i = 0; i < oxfw->device_info->mixer_channels; ++i)
++		if (value->value.integer.value[channel_map[i]] !=
++							oxfw->volume[i])
++			changed_channels |= 1 << (i + 1);
++
++	if (equal_values && changed_channels != 0)
++		changed_channels = 1 << 0;
++
++	for (i = 0; i <= oxfw->device_info->mixer_channels; ++i) {
++		volume = value->value.integer.value[channel_map[i ? i - 1 : 0]];
++		if (changed_channels & (1 << i)) {
++			err = oxfw_volume_command(oxfw, &volume, i,
++						   CTL_CURRENT, CTL_WRITE);
++			if (err < 0)
++				return err;
++		}
++		if (i > 0)
++			oxfw->volume[i - 1] = volume;
++	}
++
++	return changed_channels != 0;
++}
++
++static int oxfw_create_mixer(struct snd_oxfw *oxfw)
++{
++	static const struct snd_kcontrol_new controls[] = {
++		{
++			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++			.name = "PCM Playback Switch",
++			.info = snd_ctl_boolean_mono_info,
++			.get = oxfw_mute_get,
++			.put = oxfw_mute_put,
++		},
++		{
++			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++			.name = "PCM Playback Volume",
++			.info = oxfw_volume_info,
++			.get = oxfw_volume_get,
++			.put = oxfw_volume_put,
++		},
++	};
++	unsigned int i, first_ch;
++	int err;
++
++	err = oxfw_volume_command(oxfw, &oxfw->volume_min,
++				   0, CTL_MIN, CTL_READ);
++	if (err < 0)
++		return err;
++	err = oxfw_volume_command(oxfw, &oxfw->volume_max,
++				   0, CTL_MAX, CTL_READ);
++	if (err < 0)
++		return err;
++
++	err = oxfw_mute_command(oxfw, &oxfw->mute, CTL_READ);
++	if (err < 0)
++		return err;
++
++	first_ch = oxfw->device_info->mixer_channels == 1 ? 0 : 1;
++	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
++		err = oxfw_volume_command(oxfw, &oxfw->volume[i],
++					   first_ch + i, CTL_CURRENT, CTL_READ);
++		if (err < 0)
++			return err;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(controls); ++i) {
++		err = snd_ctl_add(oxfw->card,
++				  snd_ctl_new1(&controls[i], oxfw));
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
++static u32 oxfw_read_firmware_version(struct fw_unit *unit)
++{
++	__be32 data;
++	int err;
++
++	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
++				 OXFORD_FIRMWARE_ID_ADDRESS, &data, 4, 0);
++	return err >= 0 ? be32_to_cpu(data) : 0;
++}
++
++static void oxfw_card_free(struct snd_card *card)
++{
++	struct snd_oxfw *oxfw = card->private_data;
++
++	amdtp_stream_destroy(&oxfw->stream);
++	cmp_connection_destroy(&oxfw->connection);
++	fw_unit_put(oxfw->unit);
++	mutex_destroy(&oxfw->mutex);
++}
++
++static int oxfw_probe(struct fw_unit *unit,
++		       const struct ieee1394_device_id *id)
++{
++	struct fw_device *fw_dev = fw_parent_device(unit);
++	struct snd_card *card;
++	struct snd_oxfw *oxfw;
++	u32 firmware;
++	int err;
++
++	err = snd_card_create(-1, NULL, THIS_MODULE, sizeof(*oxfw), &card);
++	if (err < 0)
++		return err;
++	snd_card_set_dev(card, &unit->device);
++
++	oxfw = card->private_data;
++	oxfw->card = card;
++	mutex_init(&oxfw->mutex);
++	oxfw->unit = fw_unit_get(unit);
++	oxfw->device_info = (const struct device_info *)id->driver_data;
++
++	err = cmp_connection_init(&oxfw->connection, unit, CMP_INPUT, 0);
++	if (err < 0)
++		goto err_unit;
++
++	err = amdtp_stream_init(&oxfw->stream, unit, AMDTP_OUT_STREAM,
++				CIP_NONBLOCKING);
++	if (err < 0)
++		goto err_connection;
++
++	card->private_free = oxfw_card_free;
++
++	strcpy(card->driver, oxfw->device_info->driver_name);
++	strcpy(card->shortname, oxfw->device_info->short_name);
++	firmware = oxfw_read_firmware_version(unit);
++	snprintf(card->longname, sizeof(card->longname),
++		 "%s (OXFW%x %04x), GUID %08x%08x at %s, S%d",
++		 oxfw->device_info->long_name,
++		 firmware >> 20, firmware & 0xffff,
++		 fw_dev->config_rom[3], fw_dev->config_rom[4],
++		 dev_name(&unit->device), 100 << fw_dev->max_speed);
++	strcpy(card->mixername, "OXFW970");
++
++	err = oxfw_create_pcm(oxfw);
++	if (err < 0)
++		goto error;
++
++	err = oxfw_create_mixer(oxfw);
++	if (err < 0)
++		goto error;
++
++	err = snd_card_register(card);
++	if (err < 0)
++		goto error;
++
++	dev_set_drvdata(&unit->device, oxfw);
++
++	return 0;
++
++err_connection:
++	cmp_connection_destroy(&oxfw->connection);
++err_unit:
++	fw_unit_put(oxfw->unit);
++	mutex_destroy(&oxfw->mutex);
++error:
++	snd_card_free(card);
++	return err;
++}
++
++static void oxfw_bus_reset(struct fw_unit *unit)
++{
++	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
++
++	fcp_bus_reset(oxfw->unit);
++
++	if (cmp_connection_update(&oxfw->connection) < 0) {
++		amdtp_stream_pcm_abort(&oxfw->stream);
++		mutex_lock(&oxfw->mutex);
++		oxfw_stop_stream(oxfw);
++		mutex_unlock(&oxfw->mutex);
++		return;
++	}
++
++	amdtp_stream_update(&oxfw->stream);
++}
++
++static void oxfw_remove(struct fw_unit *unit)
++{
++	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
++
++	amdtp_stream_pcm_abort(&oxfw->stream);
++	snd_card_disconnect(oxfw->card);
++
++	mutex_lock(&oxfw->mutex);
++	oxfw_stop_stream(oxfw);
++	mutex_unlock(&oxfw->mutex);
++
++	snd_card_free_when_closed(oxfw->card);
++}
++
++static const struct device_info griffin_firewave = {
++	.driver_name = "FireWave",
++	.short_name  = "FireWave",
++	.long_name   = "Griffin FireWave Surround",
++	.pcm_constraints = firewave_constraints,
++	.mixer_channels = 6,
++	.mute_fb_id   = 0x01,
++	.volume_fb_id = 0x02,
++};
++
++static const struct device_info lacie_speakers = {
++	.driver_name = "FWSpeakers",
++	.short_name  = "FireWire Speakers",
++	.long_name   = "LaCie FireWire Speakers",
++	.pcm_constraints = lacie_speakers_constraints,
++	.mixer_channels = 1,
++	.mute_fb_id   = 0x01,
++	.volume_fb_id = 0x01,
++};
++
++static const struct ieee1394_device_id oxfw_id_table[] = {
++	{
++		.match_flags  = IEEE1394_MATCH_VENDOR_ID |
++				IEEE1394_MATCH_MODEL_ID |
++				IEEE1394_MATCH_SPECIFIER_ID |
++				IEEE1394_MATCH_VERSION,
++		.vendor_id    = VENDOR_GRIFFIN,
++		.model_id     = 0x00f970,
++		.specifier_id = SPECIFIER_1394TA,
++		.version      = VERSION_AVC,
++		.driver_data  = (kernel_ulong_t)&griffin_firewave,
++	},
++	{
++		.match_flags  = IEEE1394_MATCH_VENDOR_ID |
++				IEEE1394_MATCH_MODEL_ID |
++				IEEE1394_MATCH_SPECIFIER_ID |
++				IEEE1394_MATCH_VERSION,
++		.vendor_id    = VENDOR_LACIE,
++		.model_id     = 0x00f970,
++		.specifier_id = SPECIFIER_1394TA,
++		.version      = VERSION_AVC,
++		.driver_data  = (kernel_ulong_t)&lacie_speakers,
++	},
++	{ }
++};
++MODULE_DEVICE_TABLE(ieee1394, oxfw_id_table);
++
++static struct fw_driver oxfw_driver = {
++	.driver   = {
++		.owner	= THIS_MODULE,
++		.name	= KBUILD_MODNAME,
++		.bus	= &fw_bus_type,
++	},
++	.probe    = oxfw_probe,
++	.update   = oxfw_bus_reset,
++	.remove   = oxfw_remove,
++	.id_table = oxfw_id_table,
++};
++
++static int __init snd_oxfw_init(void)
++{
++	return driver_register(&oxfw_driver.driver);
++}
++
++static void __exit snd_oxfw_exit(void)
++{
++	driver_unregister(&oxfw_driver.driver);
++}
++
++module_init(snd_oxfw_init);
++module_exit(snd_oxfw_exit);
+diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
+deleted file mode 100644
+index abb2eb1..0000000
+--- a/sound/firewire/speakers.c
++++ /dev/null
+@@ -1,801 +0,0 @@
+-/*
+- * OXFW970-based speakers driver
+- *
+- * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
+- * Licensed under the terms of the GNU General Public License, version 2.
+- */
+-
+-#include <linux/device.h>
+-#include <linux/firewire.h>
+-#include <linux/firewire-constants.h>
+-#include <linux/module.h>
+-#include <linux/mod_devicetable.h>
+-#include <linux/mutex.h>
+-#include <linux/slab.h>
+-#include <sound/control.h>
+-#include <sound/core.h>
+-#include <sound/initval.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include "cmp.h"
+-#include "fcp.h"
+-#include "amdtp.h"
+-#include "lib.h"
+-
+-#define OXFORD_FIRMWARE_ID_ADDRESS	(CSR_REGISTER_BASE + 0x50000)
+-/* 0x970?vvvv or 0x971?vvvv, where vvvv = firmware version */
+-
+-#define OXFORD_HARDWARE_ID_ADDRESS	(CSR_REGISTER_BASE + 0x90020)
+-#define OXFORD_HARDWARE_ID_OXFW970	0x39443841
+-#define OXFORD_HARDWARE_ID_OXFW971	0x39373100
+-
+-#define VENDOR_GRIFFIN		0x001292
+-#define VENDOR_LACIE		0x00d04b
+-
+-#define SPECIFIER_1394TA	0x00a02d
+-#define VERSION_AVC		0x010001
+-
+-struct device_info {
+-	const char *driver_name;
+-	const char *short_name;
+-	const char *long_name;
+-	int (*pcm_constraints)(struct snd_pcm_runtime *runtime);
+-	unsigned int mixer_channels;
+-	u8 mute_fb_id;
+-	u8 volume_fb_id;
+-};
+-
+-struct fwspk {
+-	struct snd_card *card;
+-	struct fw_unit *unit;
+-	const struct device_info *device_info;
+-	struct mutex mutex;
+-	struct cmp_connection connection;
+-	struct amdtp_stream stream;
+-	bool mute;
+-	s16 volume[6];
+-	s16 volume_min;
+-	s16 volume_max;
+-};
+-
+-MODULE_DESCRIPTION("FireWire speakers driver");
+-MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+-MODULE_LICENSE("GPL v2");
+-
+-static int firewave_rate_constraint(struct snd_pcm_hw_params *params,
+-				    struct snd_pcm_hw_rule *rule)
+-{
+-	static unsigned int stereo_rates[] = { 48000, 96000 };
+-	struct snd_interval *channels =
+-			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+-	struct snd_interval *rate =
+-			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+-
+-	/* two channels work only at 48/96 kHz */
+-	if (snd_interval_max(channels) < 6)
+-		return snd_interval_list(rate, 2, stereo_rates, 0);
+-	return 0;
+-}
+-
+-static int firewave_channels_constraint(struct snd_pcm_hw_params *params,
+-					struct snd_pcm_hw_rule *rule)
+-{
+-	static const struct snd_interval all_channels = { .min = 6, .max = 6 };
+-	struct snd_interval *rate =
+-			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *channels =
+-			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+-
+-	/* 32/44.1 kHz work only with all six channels */
+-	if (snd_interval_max(rate) < 48000)
+-		return snd_interval_refine(channels, &all_channels);
+-	return 0;
+-}
+-
+-static int firewave_constraints(struct snd_pcm_runtime *runtime)
+-{
+-	static unsigned int channels_list[] = { 2, 6 };
+-	static struct snd_pcm_hw_constraint_list channels_list_constraint = {
+-		.count = 2,
+-		.list = channels_list,
+-	};
+-	int err;
+-
+-	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
+-			    SNDRV_PCM_RATE_44100 |
+-			    SNDRV_PCM_RATE_48000 |
+-			    SNDRV_PCM_RATE_96000;
+-	runtime->hw.channels_max = 6;
+-
+-	err = snd_pcm_hw_constraint_list(runtime, 0,
+-					 SNDRV_PCM_HW_PARAM_CHANNELS,
+-					 &channels_list_constraint);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+-				  firewave_rate_constraint, NULL,
+-				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+-				  firewave_channels_constraint, NULL,
+-				  SNDRV_PCM_HW_PARAM_RATE, -1);
+-	if (err < 0)
+-		return err;
+-
+-	return 0;
+-}
+-
+-static int lacie_speakers_constraints(struct snd_pcm_runtime *runtime)
+-{
+-	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
+-			    SNDRV_PCM_RATE_44100 |
+-			    SNDRV_PCM_RATE_48000 |
+-			    SNDRV_PCM_RATE_88200 |
+-			    SNDRV_PCM_RATE_96000;
+-
+-	return 0;
+-}
+-
+-static int fwspk_open(struct snd_pcm_substream *substream)
+-{
+-	static const struct snd_pcm_hardware hardware = {
+-		.info = SNDRV_PCM_INFO_MMAP |
+-			SNDRV_PCM_INFO_MMAP_VALID |
+-			SNDRV_PCM_INFO_BATCH |
+-			SNDRV_PCM_INFO_INTERLEAVED |
+-			SNDRV_PCM_INFO_BLOCK_TRANSFER,
+-		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
+-		.channels_min = 2,
+-		.channels_max = 2,
+-		.buffer_bytes_max = 4 * 1024 * 1024,
+-		.period_bytes_min = 1,
+-		.period_bytes_max = UINT_MAX,
+-		.periods_min = 1,
+-		.periods_max = UINT_MAX,
+-	};
+-	struct fwspk *fwspk = substream->private_data;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	int err;
+-
+-	runtime->hw = hardware;
+-
+-	err = fwspk->device_info->pcm_constraints(runtime);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_limit_hw_rates(runtime);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_constraint_minmax(runtime,
+-					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
+-					   5000, UINT_MAX);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
+-	if (err < 0)
+-		return err;
+-
+-	return 0;
+-}
+-
+-static int fwspk_close(struct snd_pcm_substream *substream)
+-{
+-	return 0;
+-}
+-
+-static void fwspk_stop_stream(struct fwspk *fwspk)
+-{
+-	if (amdtp_stream_running(&fwspk->stream)) {
+-		amdtp_stream_stop(&fwspk->stream);
+-		cmp_connection_break(&fwspk->connection);
+-	}
+-}
+-
+-static int fwspk_hw_params(struct snd_pcm_substream *substream,
+-			   struct snd_pcm_hw_params *hw_params)
+-{
+-	struct fwspk *fwspk = substream->private_data;
+-	int err;
+-
+-	mutex_lock(&fwspk->mutex);
+-	fwspk_stop_stream(fwspk);
+-	mutex_unlock(&fwspk->mutex);
+-
+-	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+-					       params_buffer_bytes(hw_params));
+-	if (err < 0)
+-		goto error;
+-
+-	amdtp_stream_set_parameters(&fwspk->stream,
+-				    params_rate(hw_params),
+-				    params_channels(hw_params),
+-				    0);
+-
+-	amdtp_stream_set_pcm_format(&fwspk->stream,
+-				    params_format(hw_params));
+-
+-	err = avc_general_set_sig_fmt(fwspk->unit, params_rate(hw_params),
+-				      AVC_GENERAL_PLUG_DIR_IN, 0);
+-	if (err < 0)
+-		goto err_buffer;
+-	if (err != 0x09 /* ACCEPTED */) {
+-		dev_err(&fwspk->unit->device, "failed to set sample rate\n");
+-		err = -EIO;
+-		goto error;
+-	}
+-
+-	return 0;
+-
+-err_buffer:
+-	snd_pcm_lib_free_vmalloc_buffer(substream);
+-error:
+-	return err;
+-}
+-
+-static int fwspk_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct fwspk *fwspk = substream->private_data;
+-
+-	mutex_lock(&fwspk->mutex);
+-	fwspk_stop_stream(fwspk);
+-	mutex_unlock(&fwspk->mutex);
+-
+-	return snd_pcm_lib_free_vmalloc_buffer(substream);
+-}
+-
+-static int fwspk_prepare(struct snd_pcm_substream *substream)
+-{
+-	struct fwspk *fwspk = substream->private_data;
+-	int err;
+-
+-	mutex_lock(&fwspk->mutex);
+-
+-	if (amdtp_streaming_error(&fwspk->stream))
+-		fwspk_stop_stream(fwspk);
+-
+-	if (!amdtp_stream_running(&fwspk->stream)) {
+-		err = cmp_connection_establish(&fwspk->connection,
+-			amdtp_stream_get_max_payload(&fwspk->stream));
+-		if (err < 0)
+-			goto err_mutex;
+-
+-		err = amdtp_stream_start(&fwspk->stream,
+-					 fwspk->connection.resources.channel,
+-					 fwspk->connection.speed);
+-		if (err < 0)
+-			goto err_connection;
+-	}
+-
+-	mutex_unlock(&fwspk->mutex);
+-
+-	amdtp_stream_pcm_prepare(&fwspk->stream);
+-
+-	return 0;
+-
+-err_connection:
+-	cmp_connection_break(&fwspk->connection);
+-err_mutex:
+-	mutex_unlock(&fwspk->mutex);
+-
+-	return err;
+-}
+-
+-static int fwspk_trigger(struct snd_pcm_substream *substream, int cmd)
+-{
+-	struct fwspk *fwspk = substream->private_data;
+-	struct snd_pcm_substream *pcm;
+-
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-		pcm = substream;
+-		break;
+-	case SNDRV_PCM_TRIGGER_STOP:
+-		pcm = NULL;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-	amdtp_stream_pcm_trigger(&fwspk->stream, pcm);
+-	return 0;
+-}
+-
+-static snd_pcm_uframes_t fwspk_pointer(struct snd_pcm_substream *substream)
+-{
+-	struct fwspk *fwspk = substream->private_data;
+-
+-	return amdtp_stream_pcm_pointer(&fwspk->stream);
+-}
+-
+-static int fwspk_create_pcm(struct fwspk *fwspk)
+-{
+-	static struct snd_pcm_ops ops = {
+-		.open      = fwspk_open,
+-		.close     = fwspk_close,
+-		.ioctl     = snd_pcm_lib_ioctl,
+-		.hw_params = fwspk_hw_params,
+-		.hw_free   = fwspk_hw_free,
+-		.prepare   = fwspk_prepare,
+-		.trigger   = fwspk_trigger,
+-		.pointer   = fwspk_pointer,
+-		.page      = snd_pcm_lib_get_vmalloc_page,
+-		.mmap      = snd_pcm_lib_mmap_vmalloc,
+-	};
+-	struct snd_pcm *pcm;
+-	int err;
+-
+-	err = snd_pcm_new(fwspk->card, "OXFW970", 0, 1, 0, &pcm);
+-	if (err < 0)
+-		return err;
+-	pcm->private_data = fwspk;
+-	strcpy(pcm->name, fwspk->device_info->short_name);
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
+-	return 0;
+-}
+-
+-enum control_action { CTL_READ, CTL_WRITE };
+-enum control_attribute {
+-	CTL_MIN		= 0x02,
+-	CTL_MAX		= 0x03,
+-	CTL_CURRENT	= 0x10,
+-};
+-
+-static int fwspk_mute_command(struct fwspk *fwspk, bool *value,
+-			      enum control_action action)
+-{
+-	u8 *buf;
+-	u8 response_ok;
+-	int err;
+-
+-	buf = kmalloc(11, GFP_KERNEL);
+-	if (!buf)
+-		return -ENOMEM;
+-
+-	if (action == CTL_READ) {
+-		buf[0] = 0x01;		/* AV/C, STATUS */
+-		response_ok = 0x0c;	/*       STABLE */
+-	} else {
+-		buf[0] = 0x00;		/* AV/C, CONTROL */
+-		response_ok = 0x09;	/*       ACCEPTED */
+-	}
+-	buf[1] = 0x08;			/* audio unit 0 */
+-	buf[2] = 0xb8;			/* FUNCTION BLOCK */
+-	buf[3] = 0x81;			/* function block type: feature */
+-	buf[4] = fwspk->device_info->mute_fb_id; /* function block ID */
+-	buf[5] = 0x10;			/* control attribute: current */
+-	buf[6] = 0x02;			/* selector length */
+-	buf[7] = 0x00;			/* audio channel number */
+-	buf[8] = 0x01;			/* control selector: mute */
+-	buf[9] = 0x01;			/* control data length */
+-	if (action == CTL_READ)
+-		buf[10] = 0xff;
+-	else
+-		buf[10] = *value ? 0x70 : 0x60;
+-
+-	err = fcp_avc_transaction(fwspk->unit, buf, 11, buf, 11, 0x3fe);
+-	if (err < 0)
+-		goto error;
+-	if (err < 11) {
+-		dev_err(&fwspk->unit->device, "short FCP response\n");
+-		err = -EIO;
+-		goto error;
+-	}
+-	if (buf[0] != response_ok) {
+-		dev_err(&fwspk->unit->device, "mute command failed\n");
+-		err = -EIO;
+-		goto error;
+-	}
+-	if (action == CTL_READ)
+-		*value = buf[10] == 0x70;
+-
+-	err = 0;
+-
+-error:
+-	kfree(buf);
+-
+-	return err;
+-}
+-
+-static int fwspk_volume_command(struct fwspk *fwspk, s16 *value,
+-				unsigned int channel,
+-				enum control_attribute attribute,
+-				enum control_action action)
+-{
+-	u8 *buf;
+-	u8 response_ok;
+-	int err;
+-
+-	buf = kmalloc(12, GFP_KERNEL);
+-	if (!buf)
+-		return -ENOMEM;
+-
+-	if (action == CTL_READ) {
+-		buf[0] = 0x01;		/* AV/C, STATUS */
+-		response_ok = 0x0c;	/*       STABLE */
+-	} else {
+-		buf[0] = 0x00;		/* AV/C, CONTROL */
+-		response_ok = 0x09;	/*       ACCEPTED */
+-	}
+-	buf[1] = 0x08;			/* audio unit 0 */
+-	buf[2] = 0xb8;			/* FUNCTION BLOCK */
+-	buf[3] = 0x81;			/* function block type: feature */
+-	buf[4] = fwspk->device_info->volume_fb_id; /* function block ID */
+-	buf[5] = attribute;		/* control attribute */
+-	buf[6] = 0x02;			/* selector length */
+-	buf[7] = channel;		/* audio channel number */
+-	buf[8] = 0x02;			/* control selector: volume */
+-	buf[9] = 0x02;			/* control data length */
+-	if (action == CTL_READ) {
+-		buf[10] = 0xff;
+-		buf[11] = 0xff;
+-	} else {
+-		buf[10] = *value >> 8;
+-		buf[11] = *value;
+-	}
+-
+-	err = fcp_avc_transaction(fwspk->unit, buf, 12, buf, 12, 0x3fe);
+-	if (err < 0)
+-		goto error;
+-	if (err < 12) {
+-		dev_err(&fwspk->unit->device, "short FCP response\n");
+-		err = -EIO;
+-		goto error;
+-	}
+-	if (buf[0] != response_ok) {
+-		dev_err(&fwspk->unit->device, "volume command failed\n");
+-		err = -EIO;
+-		goto error;
+-	}
+-	if (action == CTL_READ)
+-		*value = (buf[10] << 8) | buf[11];
+-
+-	err = 0;
+-
+-error:
+-	kfree(buf);
+-
+-	return err;
+-}
+-
+-static int fwspk_mute_get(struct snd_kcontrol *control,
+-			  struct snd_ctl_elem_value *value)
+-{
+-	struct fwspk *fwspk = control->private_data;
+-
+-	value->value.integer.value[0] = !fwspk->mute;
+-
+-	return 0;
+-}
+-
+-static int fwspk_mute_put(struct snd_kcontrol *control,
+-			  struct snd_ctl_elem_value *value)
+-{
+-	struct fwspk *fwspk = control->private_data;
+-	bool mute;
+-	int err;
+-
+-	mute = !value->value.integer.value[0];
+-
+-	if (mute == fwspk->mute)
+-		return 0;
+-
+-	err = fwspk_mute_command(fwspk, &mute, CTL_WRITE);
+-	if (err < 0)
+-		return err;
+-	fwspk->mute = mute;
+-
+-	return 1;
+-}
+-
+-static int fwspk_volume_info(struct snd_kcontrol *control,
+-			     struct snd_ctl_elem_info *info)
+-{
+-	struct fwspk *fwspk = control->private_data;
+-
+-	info->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	info->count = fwspk->device_info->mixer_channels;
+-	info->value.integer.min = fwspk->volume_min;
+-	info->value.integer.max = fwspk->volume_max;
+-
+-	return 0;
+-}
+-
+-static const u8 channel_map[6] = { 0, 1, 4, 5, 2, 3 };
+-
+-static int fwspk_volume_get(struct snd_kcontrol *control,
+-			    struct snd_ctl_elem_value *value)
+-{
+-	struct fwspk *fwspk = control->private_data;
+-	unsigned int i;
+-
+-	for (i = 0; i < fwspk->device_info->mixer_channels; ++i)
+-		value->value.integer.value[channel_map[i]] = fwspk->volume[i];
+-
+-	return 0;
+-}
+-
+-static int fwspk_volume_put(struct snd_kcontrol *control,
+-			  struct snd_ctl_elem_value *value)
+-{
+-	struct fwspk *fwspk = control->private_data;
+-	unsigned int i, changed_channels;
+-	bool equal_values = true;
+-	s16 volume;
+-	int err;
+-
+-	for (i = 0; i < fwspk->device_info->mixer_channels; ++i) {
+-		if (value->value.integer.value[i] < fwspk->volume_min ||
+-		    value->value.integer.value[i] > fwspk->volume_max)
+-			return -EINVAL;
+-		if (value->value.integer.value[i] !=
+-		    value->value.integer.value[0])
+-			equal_values = false;
+-	}
+-
+-	changed_channels = 0;
+-	for (i = 0; i < fwspk->device_info->mixer_channels; ++i)
+-		if (value->value.integer.value[channel_map[i]] !=
+-							fwspk->volume[i])
+-			changed_channels |= 1 << (i + 1);
+-
+-	if (equal_values && changed_channels != 0)
+-		changed_channels = 1 << 0;
+-
+-	for (i = 0; i <= fwspk->device_info->mixer_channels; ++i) {
+-		volume = value->value.integer.value[channel_map[i ? i - 1 : 0]];
+-		if (changed_channels & (1 << i)) {
+-			err = fwspk_volume_command(fwspk, &volume, i,
+-						   CTL_CURRENT, CTL_WRITE);
+-			if (err < 0)
+-				return err;
+-		}
+-		if (i > 0)
+-			fwspk->volume[i - 1] = volume;
+-	}
+-
+-	return changed_channels != 0;
+-}
+-
+-static int fwspk_create_mixer(struct fwspk *fwspk)
+-{
+-	static const struct snd_kcontrol_new controls[] = {
+-		{
+-			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-			.name = "PCM Playback Switch",
+-			.info = snd_ctl_boolean_mono_info,
+-			.get = fwspk_mute_get,
+-			.put = fwspk_mute_put,
+-		},
+-		{
+-			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-			.name = "PCM Playback Volume",
+-			.info = fwspk_volume_info,
+-			.get = fwspk_volume_get,
+-			.put = fwspk_volume_put,
+-		},
+-	};
+-	unsigned int i, first_ch;
+-	int err;
+-
+-	err = fwspk_volume_command(fwspk, &fwspk->volume_min,
+-				   0, CTL_MIN, CTL_READ);
+-	if (err < 0)
+-		return err;
+-	err = fwspk_volume_command(fwspk, &fwspk->volume_max,
+-				   0, CTL_MAX, CTL_READ);
+-	if (err < 0)
+-		return err;
+-
+-	err = fwspk_mute_command(fwspk, &fwspk->mute, CTL_READ);
+-	if (err < 0)
+-		return err;
+-
+-	first_ch = fwspk->device_info->mixer_channels == 1 ? 0 : 1;
+-	for (i = 0; i < fwspk->device_info->mixer_channels; ++i) {
+-		err = fwspk_volume_command(fwspk, &fwspk->volume[i],
+-					   first_ch + i, CTL_CURRENT, CTL_READ);
+-		if (err < 0)
+-			return err;
+-	}
+-
+-	for (i = 0; i < ARRAY_SIZE(controls); ++i) {
+-		err = snd_ctl_add(fwspk->card,
+-				  snd_ctl_new1(&controls[i], fwspk));
+-		if (err < 0)
+-			return err;
+-	}
+-
+-	return 0;
+-}
+-
+-static u32 fwspk_read_firmware_version(struct fw_unit *unit)
+-{
+-	__be32 data;
+-	int err;
+-
+-	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
+-				 OXFORD_FIRMWARE_ID_ADDRESS, &data, 4, 0);
+-	return err >= 0 ? be32_to_cpu(data) : 0;
+-}
+-
+-static void fwspk_card_free(struct snd_card *card)
+-{
+-	struct fwspk *fwspk = card->private_data;
+-
+-	amdtp_stream_destroy(&fwspk->stream);
+-	cmp_connection_destroy(&fwspk->connection);
+-	fw_unit_put(fwspk->unit);
+-	mutex_destroy(&fwspk->mutex);
+-}
+-
+-static int fwspk_probe(struct fw_unit *unit,
+-		       const struct ieee1394_device_id *id)
+-{
+-	struct fw_device *fw_dev = fw_parent_device(unit);
+-	struct snd_card *card;
+-	struct fwspk *fwspk;
+-	u32 firmware;
+-	int err;
+-
+-	err = snd_card_create(-1, NULL, THIS_MODULE, sizeof(*fwspk), &card);
+-	if (err < 0)
+-		return err;
+-	snd_card_set_dev(card, &unit->device);
+-
+-	fwspk = card->private_data;
+-	fwspk->card = card;
+-	mutex_init(&fwspk->mutex);
+-	fwspk->unit = fw_unit_get(unit);
+-	fwspk->device_info = (const struct device_info *)id->driver_data;
+-
+-	err = cmp_connection_init(&fwspk->connection, unit, CMP_INPUT, 0);
+-	if (err < 0)
+-		goto err_unit;
+-
+-	err = amdtp_stream_init(&fwspk->stream, unit, AMDTP_OUT_STREAM,
+-				CIP_NONBLOCKING);
+-	if (err < 0)
+-		goto err_connection;
+-
+-	card->private_free = fwspk_card_free;
+-
+-	strcpy(card->driver, fwspk->device_info->driver_name);
+-	strcpy(card->shortname, fwspk->device_info->short_name);
+-	firmware = fwspk_read_firmware_version(unit);
+-	snprintf(card->longname, sizeof(card->longname),
+-		 "%s (OXFW%x %04x), GUID %08x%08x at %s, S%d",
+-		 fwspk->device_info->long_name,
+-		 firmware >> 20, firmware & 0xffff,
+-		 fw_dev->config_rom[3], fw_dev->config_rom[4],
+-		 dev_name(&unit->device), 100 << fw_dev->max_speed);
+-	strcpy(card->mixername, "OXFW970");
+-
+-	err = fwspk_create_pcm(fwspk);
+-	if (err < 0)
+-		goto error;
+-
+-	err = fwspk_create_mixer(fwspk);
+-	if (err < 0)
+-		goto error;
+-
+-	err = snd_card_register(card);
+-	if (err < 0)
+-		goto error;
+-
+-	dev_set_drvdata(&unit->device, fwspk);
+-
+-	return 0;
+-
+-err_connection:
+-	cmp_connection_destroy(&fwspk->connection);
+-err_unit:
+-	fw_unit_put(fwspk->unit);
+-	mutex_destroy(&fwspk->mutex);
+-error:
+-	snd_card_free(card);
+-	return err;
+-}
+-
+-static void fwspk_bus_reset(struct fw_unit *unit)
+-{
+-	struct fwspk *fwspk = dev_get_drvdata(&unit->device);
+-
+-	fcp_bus_reset(fwspk->unit);
+-
+-	if (cmp_connection_update(&fwspk->connection) < 0) {
+-		amdtp_stream_pcm_abort(&fwspk->stream);
+-		mutex_lock(&fwspk->mutex);
+-		fwspk_stop_stream(fwspk);
+-		mutex_unlock(&fwspk->mutex);
+-		return;
+-	}
+-
+-	amdtp_stream_update(&fwspk->stream);
+-}
+-
+-static void fwspk_remove(struct fw_unit *unit)
+-{
+-	struct fwspk *fwspk = dev_get_drvdata(&unit->device);
+-
+-	amdtp_stream_pcm_abort(&fwspk->stream);
+-	snd_card_disconnect(fwspk->card);
+-
+-	mutex_lock(&fwspk->mutex);
+-	fwspk_stop_stream(fwspk);
+-	mutex_unlock(&fwspk->mutex);
+-
+-	snd_card_free_when_closed(fwspk->card);
+-}
+-
+-static const struct device_info griffin_firewave = {
+-	.driver_name = "FireWave",
+-	.short_name  = "FireWave",
+-	.long_name   = "Griffin FireWave Surround",
+-	.pcm_constraints = firewave_constraints,
+-	.mixer_channels = 6,
+-	.mute_fb_id   = 0x01,
+-	.volume_fb_id = 0x02,
+-};
+-
+-static const struct device_info lacie_speakers = {
+-	.driver_name = "FWSpeakers",
+-	.short_name  = "FireWire Speakers",
+-	.long_name   = "LaCie FireWire Speakers",
+-	.pcm_constraints = lacie_speakers_constraints,
+-	.mixer_channels = 1,
+-	.mute_fb_id   = 0x01,
+-	.volume_fb_id = 0x01,
+-};
+-
+-static const struct ieee1394_device_id fwspk_id_table[] = {
+-	{
+-		.match_flags  = IEEE1394_MATCH_VENDOR_ID |
+-				IEEE1394_MATCH_MODEL_ID |
+-				IEEE1394_MATCH_SPECIFIER_ID |
+-				IEEE1394_MATCH_VERSION,
+-		.vendor_id    = VENDOR_GRIFFIN,
+-		.model_id     = 0x00f970,
+-		.specifier_id = SPECIFIER_1394TA,
+-		.version      = VERSION_AVC,
+-		.driver_data  = (kernel_ulong_t)&griffin_firewave,
+-	},
+-	{
+-		.match_flags  = IEEE1394_MATCH_VENDOR_ID |
+-				IEEE1394_MATCH_MODEL_ID |
+-				IEEE1394_MATCH_SPECIFIER_ID |
+-				IEEE1394_MATCH_VERSION,
+-		.vendor_id    = VENDOR_LACIE,
+-		.model_id     = 0x00f970,
+-		.specifier_id = SPECIFIER_1394TA,
+-		.version      = VERSION_AVC,
+-		.driver_data  = (kernel_ulong_t)&lacie_speakers,
+-	},
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(ieee1394, fwspk_id_table);
+-
+-static struct fw_driver fwspk_driver = {
+-	.driver   = {
+-		.owner	= THIS_MODULE,
+-		.name	= KBUILD_MODNAME,
+-		.bus	= &fw_bus_type,
+-	},
+-	.probe    = fwspk_probe,
+-	.update   = fwspk_bus_reset,
+-	.remove   = fwspk_remove,
+-	.id_table = fwspk_id_table,
+-};
+-
+-static int __init alsa_fwspk_init(void)
+-{
+-	return driver_register(&fwspk_driver.driver);
+-}
+-
+-static void __exit alsa_fwspk_exit(void)
+-{
+-	driver_unregister(&fwspk_driver.driver);
+-}
+-
+-module_init(alsa_fwspk_init);
+-module_exit(alsa_fwspk_exit);
 -- 
 1.8.3.2
 
