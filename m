@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 22/52] fireworks: Add MIDI interface
-Date: Wed, 29 Jan 2014 22:44:29 +0900
-Message-ID: <1391003099-7109-23-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 37/52] bebob: Send a cue to load firmware for M-Audio Firewire
+	series
+Date: Wed, 29 Jan 2014 22:44:44 +0900
+Message-ID: <1391003099-7109-38-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,257 +21,171 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a functionality to capture/playback MIDI messages.
+Just powering on, these devices below wait to download firmware.
+ - Firewire Audiophile
+ - Firewire 410
 
-When no AMDTP streams are running, this driver starts AMDTP stream for MIDI
-stream at current sampling rate.
+But firmware version 5058 or later, flash memory in the device stores the
+firmware. So this driver can enable these devices by sending a certain cue to
+load the firmware.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig                    |   1 +
- sound/firewire/fireworks/Makefile         |   3 +-
- sound/firewire/fireworks/fireworks.c      |   6 ++
- sound/firewire/fireworks/fireworks.h      |   3 +
- sound/firewire/fireworks/fireworks_midi.c | 170 ++++++++++++++++++++++++++++++
- 5 files changed, 182 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/fireworks/fireworks_midi.c
+ sound/firewire/bebob/bebob.c        | 22 +++++++-----
+ sound/firewire/bebob/bebob.h        |  2 ++
+ sound/firewire/bebob/bebob_maudio.c | 69 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 84 insertions(+), 9 deletions(-)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 0b85ebd..36a1212 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -64,6 +64,7 @@ config SND_SCS1X
- config SND_FIREWORKS
- 	tristate "Echo Fireworks board module support"
- 	select SND_FIREWIRE_LIB
-+	select SND_RAWMIDI
- 	help
- 	  Say Y here to include support for FireWire devices based
- 	  on Echo Digital Audio Fireworks board:
-diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-index 52bd15e..a2cecc6 100644
---- a/sound/firewire/fireworks/Makefile
-+++ b/sound/firewire/fireworks/Makefile
-@@ -1,3 +1,4 @@
- snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
--		      fireworks_stream.o fireworks_proc.o fireworks.o
-+		      fireworks_stream.o fireworks_proc.o fireworks_midi.o \
-+		      fireworks.o
- obj-m += snd-fireworks.o
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index cec865c..17c9853 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -203,6 +203,12 @@ efw_probe(struct fw_unit *unit,
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 4a93d6c..22bda91 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -177,18 +177,21 @@ bebob_probe(struct fw_unit *unit,
+ 	}
  
- 	snd_efw_proc_init(efw);
- 
-+	if (efw->midi_out_ports || efw->midi_in_ports) {
-+		err = snd_efw_create_midi_devices(efw);
-+		if (err < 0)
-+			goto error;
-+	}
+ 	if ((entry->vendor_id == VEN_FOCUSRITE) &&
+-	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH)) {
++	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH))
+ 		spec = get_saffire_spec(unit);
+-	} else if ((entry->vendor_id == VEN_MAUDIO1) &&
+-		   (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
+-		   !check_audiophile_booted(unit)) {
+-			err = 0;
+-			goto end;
+-	} else {
++	else if ((entry->vendor_id == VEN_MAUDIO1) &&
++		 (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
++		 !check_audiophile_booted(unit))
++		spec = NULL;
++	else
+ 		spec = (const struct snd_bebob_spec *)entry->driver_data;
+-	}
 +
- 	snd_card_set_dev(card, &unit->device);
- 	err = snd_card_register(card);
- 	if (err < 0)
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 5891b79..65c746d 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -22,6 +22,7 @@
- #include <sound/initval.h>
- #include <sound/pcm.h>
- #include <sound/info.h>
-+#include <sound/rawmidi.h>
+ 	if (spec == NULL) {
+-		err = -ENOSYS;
++		if ((entry->vendor_id == VEN_MAUDIO1) ||
++		    (entry->vendor_id == VEN_MAUDIO2))
++			err = snd_bebob_maudio_load_firmware(unit);
++		else
++			err = -ENOSYS;
+ 		goto end;
+ 	}
  
- #include "../packets-buffer.h"
- #include "../iso-resources.h"
-@@ -189,6 +190,8 @@ void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
+@@ -367,6 +370,7 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
+ 			    &saffire_spec),
+ 	/* M-Audio, Firewire 410 */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010058, NULL),	/* bootloader */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010046, &maudio_fw410_spec),
+ 	/* M-Audio, Firewire Audiophile */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_AUDIOPHILE_BOTH,
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index 76f29e3..1c4cc19 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -242,6 +242,8 @@ extern struct snd_bebob_spec maudio_solo_spec;
+ extern struct snd_bebob_spec maudio_ozonic_spec;
+ extern struct snd_bebob_spec maudio_nrv10_spec;
  
- void snd_efw_proc_init(struct snd_efw *efw);
- 
-+int snd_efw_create_midi_devices(struct snd_efw *efw);
++int snd_bebob_maudio_load_firmware(struct fw_unit *unit);
 +
- #define SND_EFW_DEV_ENTRY(vendor, model) \
+ #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
  { \
  	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
-new file mode 100644
-index 0000000..00bb747
---- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_midi.c
-@@ -0,0 +1,170 @@
+diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
+index 7c8f5c1..e3ab42c 100644
+--- a/sound/firewire/bebob/bebob_maudio.c
++++ b/sound/firewire/bebob/bebob_maudio.c
+@@ -15,6 +15,15 @@
+  * settings when completing uploading. Then these devices generate bus reset
+  * and are recognized as new devices with the firmware.
+  *
++ * But with firmware version 5058 or later, the firmware is stored to flash
++ * memory in the device and drivers can tell DM1000 to load the firmware by
++ * sending a cue. This cue must be sent one time.
++ *
++ * If the firmware blobs are in alsa-firmware package, this driver can support
++ * these devices with any firmware versions. (Then this driver need codes to
++ * upload the firmware blob.) But for this, the license of firmware blob needs
++ * to be considered.
++ *
+  * For streaming, both of output and input streams are needed for Firewire 410
+  * and Ozonic. The single stream is OK for the other devices even if the clock
+  * source is not SYT-Match (I note no devices use SYT-Match).
+@@ -24,6 +33,20 @@
+  * mixer.
+  */
+ 
++/* Offset from information register */
++#define INFO_OFFSET_SW_DATE	0x20
++
++/* Bootloader Protocol Version 1 */
++#define MAUDIO_BOOTLOADER_CUE1	0x00000001
 +/*
-+ * fireworks_midi.c - a part of driver for Fireworks based devices
-+ *
-+ * Copyright (c) 2009-2010 Clemens Ladisch
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
++ * Initializing configuration to factory settings (= 0x1101), (swapped in line),
++ * Command code is zero (= 0x00),
++ * the number of operands is zero (= 0x00)(at least significant byte)
 + */
-+#include "fireworks.h"
++#define MAUDIO_BOOTLOADER_CUE2	0x01110000
++/* padding */
++#define MAUDIO_BOOTLOADER_CUE3	0x00000000
 +
-+static int midi_capture_open(struct snd_rawmidi_substream *substream)
+ #define MAUDIO_SPECIFIC_ADDRESS	0xffc700000000
+ 
+ #define METER_OFFSET		0x00600000
+@@ -50,6 +73,52 @@
+ /* for NRV */
+ #define UNKNOWN_METER	"Unknown"
+ 
++/*
++ * For some M-Audio devices, this module just send cue to load firmware. After
++ * loading, the device generates bus reset and newly detected.
++ *
++ * If we make any transactions to load firmware, the operation may failed.
++ */
++int snd_bebob_maudio_load_firmware(struct fw_unit *unit)
 +{
-+	struct snd_efw *efw = substream->rmidi->private_data;
-+	int err = 0;
++	struct fw_device *device = fw_parent_device(unit);
++	int err, rcode;
++	u64 date;
++	__be32 cues[3] = {
++		MAUDIO_BOOTLOADER_CUE1,
++		MAUDIO_BOOTLOADER_CUE2,
++		MAUDIO_BOOTLOADER_CUE3
++	};
 +
-+	efw->tx_midi_substreams++;
-+	if (!amdtp_stream_running(&efw->tx_stream))
-+		err = snd_efw_stream_start_duplex(efw, &efw->tx_stream, 0);
-+
-+	return err;
-+}
-+
-+static int midi_playback_open(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_efw *efw = substream->rmidi->private_data;
-+	int err = 0;
-+
-+	efw->rx_midi_substreams++;
-+	if (!amdtp_stream_running(&efw->rx_stream))
-+		err = snd_efw_stream_start_duplex(efw, &efw->rx_stream, 0);
-+
-+	return err;
-+}
-+
-+static int midi_capture_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_efw *efw = substream->rmidi->private_data;
-+
-+	if (--efw->tx_midi_substreams == 0)
-+		snd_efw_stream_stop_duplex(efw);
-+
-+	return 0;
-+}
-+
-+static int midi_playback_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_efw *efw = substream->rmidi->private_data;
-+
-+	if (--efw->rx_midi_substreams == 0)
-+		snd_efw_stream_stop_duplex(efw);
-+
-+	return 0;
-+}
-+
-+static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct snd_efw *efw = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&efw->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&efw->tx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&efw->tx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&efw->lock, flags);
-+
-+	return;
-+}
-+
-+static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct snd_efw *efw = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&efw->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&efw->rx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&efw->rx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&efw->lock, flags);
-+
-+	return;
-+}
-+
-+static struct snd_rawmidi_ops midi_capture_ops = {
-+	.open		= midi_capture_open,
-+	.close		= midi_capture_close,
-+	.trigger	= midi_capture_trigger,
-+};
-+
-+static struct snd_rawmidi_ops midi_playback_ops = {
-+	.open		= midi_playback_open,
-+	.close		= midi_playback_close,
-+	.trigger	= midi_playback_trigger,
-+};
-+
-+static void set_midi_substream_names(struct snd_efw *efw,
-+				     struct snd_rawmidi_str *str)
-+{
-+	struct snd_rawmidi_substream *subs;
-+
-+	list_for_each_entry(subs, &str->substreams, list) {
-+		snprintf(subs->name, sizeof(subs->name),
-+			 "%s MIDI %d", efw->card->shortname, subs->number + 1);
-+	}
-+}
-+
-+int snd_efw_create_midi_devices(struct snd_efw *efw)
-+{
-+	struct snd_rawmidi *rmidi;
-+	struct snd_rawmidi_str *str;
-+	int err;
-+
-+	/* check the number of midi stream */
-+	if ((efw->midi_in_ports > SND_EFW_MAX_MIDI_IN_PORTS) |
-+	    (efw->midi_out_ports > SND_EFW_MAX_MIDI_OUT_PORTS))
-+		return -EIO;
-+
-+	/* create midi ports */
-+	err = snd_rawmidi_new(efw->card, efw->card->driver, 0,
-+			      efw->midi_out_ports, efw->midi_in_ports,
-+			      &rmidi);
++	/* check date of software used to build */
++	err = snd_bebob_read_block(unit, INFO_OFFSET_SW_DATE,
++				   &date, sizeof(u64));
 +	if (err < 0)
-+		return err;
-+
-+	snprintf(rmidi->name, sizeof(rmidi->name),
-+			"%s MIDI", efw->card->shortname);
-+	rmidi->private_data = efw;
-+
-+	if (efw->midi_in_ports > 0) {
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
-+
-+		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-+					&midi_capture_ops);
-+
-+		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
-+
-+		set_midi_substream_names(efw, str);
++		goto end;
++	/*
++	 * firmware version 5058 or later has date later than "20070401", but
++	 * 'date' is not null-terminated.
++	 */
++	if (date < 0x3230303730343031) {
++		dev_err(&unit->device,
++			"Use firmware version 5058 or later\n");
++		err = -ENOSYS;
++		goto end;
 +	}
 +
-+	if (efw->midi_out_ports > 0) {
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
-+
-+		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
-+					&midi_playback_ops);
-+
-+		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
-+
-+		set_midi_substream_names(efw, str);
-+
-+		/*
-+		 * Fireworks ignores MIDI messages in greater than first 8 data
-+		 * blocks of an AMDTP packet.
-+		 */
-+		efw->rx_stream.blocks_for_midi = 8;
++	rcode = fw_run_transaction(device->card, TCODE_WRITE_BLOCK_REQUEST,
++				   device->node_id, device->generation,
++				   device->max_speed, BEBOB_ADDR_REG_REQ,
++				   cues, sizeof(cues));
++	if (rcode != RCODE_COMPLETE) {
++		dev_err(&unit->device,
++			"Failed to send a cue to load firmware\n");
++		err = -EIO;
 +	}
-+
-+	if ((efw->midi_out_ports > 0) && (efw->midi_in_ports > 0))
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
-+
-+	return 0;
++end:
++	return err;
 +}
++
+ static inline int
+ get_meter(struct snd_bebob *bebob, void *buf, unsigned int size)
+ {
 -- 
 1.8.3.2
 
