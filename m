@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 06/52] firewire-lib: Add support for MIDI capture/playback
-Date: Wed, 29 Jan 2014 22:44:13 +0900
-Message-ID: <1391003099-7109-7-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 08/52] firewire-lib: Add support for duplex streams
+	synchronization in blocking mode
+Date: Wed, 29 Jan 2014 22:44:15 +0900
+Message-ID: <1391003099-7109-9-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,217 +21,260 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-For capturing/playbacking MIDI messages, this commit adds one MIDI conformant
-data channel. This channel supports 8 MPX-MIDI data streams then maximum number
-of supported MIDI ports is limited by 8.
+Generally, the devices can synchronize to handle 'presentation timestamp'
+in CIP packets. This commit adds functionality to pick up this timestamp from
+in-packets transmitted by the device, then use it for out packets.
 
-And this commit allows to set PCM format even if AMDTP stream already starts.
-I suppose the case that PCM stream is going to be joined into AMDTP streams after
-AMDTP stream is already started by MIDI. Each driver must count how many MIDI
-substreams use AMDTP stream to stop AMDTP stream.
+In current implementation, this module generated the timestamp by itself. This
+is 'SYT Match' mode. Then this drive acts as synchronization master. This
+commit allows this module to act as synchronization slave.
 
-IEC 61883-6 refers to AMEI/MMA RP-027 for implementation of MIDI conformant
-data. In the specification, 'MIDI1.0-2x/3x-SPEED' mode are described with
-'negotiation procedure' and 'encapsulation details'. But there is no
-specifications to define them. This module implement 'MIDI1.0-1x-SPEED' mode.
+This commit restricts this mechanism is only available in blocking mode because
+handling the timestamp in non-blocking mode is more complicated than in
+blocking mode.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 63 ++++++++++++++++++++++++++++++++++++++++++--------
- sound/firewire/amdtp.h | 43 ++++++++++++++++++++++++++++++++++
- 2 files changed, 96 insertions(+), 10 deletions(-)
+ sound/firewire/amdtp.c | 80 ++++++++++++++++++++++++++++++++++++++++++++++----
+ sound/firewire/amdtp.h | 32 ++++++++++++++++++--
+ 2 files changed, 103 insertions(+), 9 deletions(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 4ebfd67..ad3521f 100644
+index 56b01c8..8284b39 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -12,6 +12,7 @@
+@@ -11,6 +11,7 @@
+ #include <linux/firewire.h>
  #include <linux/module.h>
  #include <linux/slab.h>
++#include <linux/sched.h>
  #include <sound/pcm.h>
-+#include <sound/rawmidi.h>
+ #include <sound/rawmidi.h>
  #include "amdtp.h"
+@@ -72,6 +73,10 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 	tasklet_init(&s->period_tasklet, pcm_period_tasklet, (unsigned long)s);
+ 	s->packet_index = 0;
  
- #define TICKS_PER_CYCLE		3072
-@@ -123,9 +124,12 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
- 		[CIP_SFC_176400] = 176400,
- 		[CIP_SFC_192000] = 192000,
- 	};
--	unsigned int sfc;
-+	unsigned int sfc, midi_channels;
- 
--	if (WARN_ON(amdtp_stream_running(s)))
-+	midi_channels = DIV_ROUND_UP(midi_ports, 8);
++	init_waitqueue_head(&s->callback_wait);
++	s->callbacked = false;
++	s->sync_slave = ERR_PTR(-1);
 +
-+	if (WARN_ON(amdtp_stream_running(s)) ||
-+	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
- 		return;
- 
- 	for (sfc = 0; sfc < CIP_SFC_COUNT; ++sfc)
-@@ -142,7 +146,7 @@ sfc_found:
- 		pcm_channels *= 2;
- 	}
- 	s->sfc = sfc;
--	s->data_block_quadlets = pcm_channels + DIV_ROUND_UP(midi_ports, 8);
-+	s->data_block_quadlets = pcm_channels + midi_channels;
- 	s->pcm_channels = pcm_channels;
- 	s->midi_ports = midi_ports;
- 
-@@ -200,7 +204,7 @@ static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
- void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
- 				 snd_pcm_format_t format)
+ 	return 0;
+ }
+ EXPORT_SYMBOL(amdtp_stream_init);
+@@ -626,7 +631,7 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
  {
--	if (WARN_ON(amdtp_stream_running(s)))
-+	if (WARN_ON(amdtp_stream_pcm_running(s)))
- 		return;
+ 	__be32 *buffer;
+ 	unsigned int data_blocks, payload_length;
+-	struct snd_pcm_substream *pcm;
++	struct snd_pcm_substream *pcm = NULL;
  
- 	switch (format) {
-@@ -505,11 +509,46 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
- static void amdtp_fill_midi(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
+ 	if (s->packet_index < 0)
+ 		return;
+@@ -756,7 +761,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 			       void *private_data)
  {
--	unsigned int i;
-+	unsigned int f, port;
-+	u8 *b;
+ 	struct amdtp_stream *s = private_data;
+-	unsigned int p, packets, data_quadlets;
++	unsigned int p, packets, syt, data_quadlets;
+ 	__be32 *buffer, *headers = header;
+ 
+ 	/* The number of packets in buffer */
+@@ -768,6 +773,15 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 		/* The number of quadlets in this packet */
+ 		data_quadlets =
+ 			(be32_to_cpu(headers[p]) >> ISO_DATA_LENGTH_SHIFT) / 4;
 +
-+	for (f = 0; f < frames; f++) {
-+		buffer[s->pcm_channels + 1] = 0x00;
-+		b = (u8 *)&buffer[s->pcm_channels + 1];
-+
-+		port = (s->data_block_counter + f) % 8;
-+		if ((s->midi[port] == NULL) ||
-+		    (snd_rawmidi_transmit(s->midi[port], b + 1, 1) <= 0)) {
-+			b[0] = 0x80;
-+			b[1] = 0x00;	/* confirm to be zero */
-+		} else {
-+			b[0] = 0x81;
++		/* Process sync slave stream */
++		if ((s->flags & CIP_BLOCKING) &&
++		    (s->flags & CIP_SYNC_TO_DEVICE) &&
++		    s->sync_slave->callbacked) {
++			syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
++			handle_out_packet(s->sync_slave, syt);
 +		}
-+		buffer += s->data_block_quadlets;
-+	}
++
+ 		/* handle each packet data */
+ 		handle_in_packet(s, data_quadlets, buffer);
+ 
+@@ -777,9 +791,48 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 		}
+ 	}
+ 
++	/* when sync to device, flush the packets for slave stream */
++	if ((s->flags & CIP_BLOCKING) &&
++	    (s->flags & CIP_SYNC_TO_DEVICE) && s->sync_slave->callbacked)
++		fw_iso_context_queue_flush(s->sync_slave->context);
++
+ 	fw_iso_context_queue_flush(s->context);
+ }
+ 
++/* processing is done by master callback */
++static void slave_stream_callback(struct fw_iso_context *context, u32 cycle,
++				  size_t header_length, void *header,
++				  void *private_data)
++{
++	return;
 +}
 +
-+static void amdtp_pull_midi(struct amdtp_stream *s,
-+			    __be32 *buffer, unsigned int frames)
++/* this is executed one time */
++static void amdtp_stream_callback(struct fw_iso_context *context, u32 cycle,
++				  size_t header_length, void *header,
++				  void *private_data)
 +{
-+	unsigned int f, port;
-+	int len;
-+	u8 *b;
++	struct amdtp_stream *s = private_data;
 +
-+	for (f = 0; f < frames; f++) {
-+		port = (s->data_block_counter + f) % 8;
-+		b = (u8 *)&buffer[s->pcm_channels + 1];
++	/*
++	 * For in-stream, first packet has come.
++	 * For out-stream, prepared to transmit first packet
++	 */
++	s->callbacked = true;
++	wake_up(&s->callback_wait);
 +
-+		len = b[0] - 0x80;
-+		if (len < 1 || 3 < len)
-+			continue;
++	if (s->direction == AMDTP_IN_STREAM)
++		context->callback.sc = in_stream_callback;
++	else if ((s->flags & CIP_BLOCKING) && (s->flags & CIP_SYNC_TO_DEVICE))
++		context->callback.sc = slave_stream_callback;
++	else
++		context->callback.sc = out_stream_callback;
++
++	context->callback.sc(context, cycle, header_length, header, s);
++
++	return;
++}
++
+ /**
+  * amdtp_stream_start - start transferring packets
+  * @s: the AMDTP stream to start
+@@ -806,7 +859,6 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	};
+ 	unsigned int header_size;
+ 	enum dma_data_direction dir;
+-	fw_iso_callback_t cb;
+ 	int type, err;
  
--	for (i = 0; i < frames; ++i)
--		buffer[s->pcm_channels + i * s->data_block_quadlets] =
--						cpu_to_be32(0x80000000);
-+		if (s->midi[port] == NULL)
-+			continue;
+ 	mutex_lock(&s->mutex);
+@@ -826,12 +878,10 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 		dir = DMA_FROM_DEVICE;
+ 		type = FW_ISO_CONTEXT_RECEIVE;
+ 		header_size = IN_PACKET_HEADER_SIZE;
+-		cb = in_stream_callback;
+ 	} else {
+ 		dir = DMA_TO_DEVICE;
+ 		type = FW_ISO_CONTEXT_TRANSMIT;
+ 		header_size = OUT_PACKET_HEADER_SIZE;
+-		cb = out_stream_callback;
+ 	}
+ 	err = iso_packets_buffer_init(&s->buffer, s->unit, QUEUE_LENGTH,
+ 				      amdtp_stream_get_max_payload(s), dir);
+@@ -840,7 +890,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 
+ 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
+ 					   type, channel, speed, header_size,
+-					   cb, s);
++					   amdtp_stream_callback, s);
+ 	if (IS_ERR(s->context)) {
+ 		err = PTR_ERR(s->context);
+ 		if (err == -EBUSY)
+@@ -863,6 +913,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 
+ 	/* NOTE: TAG1 matches CIP. This just affects in stream */
+ 	s->data_block_counter = 0;
++	s->callbacked = false;
+ 	err = fw_iso_context_start(s->context, -1, 0,
+ 				   FW_ISO_CONTEXT_MATCH_TAG1);
+ 	if (err < 0)
+@@ -935,6 +986,8 @@ void amdtp_stream_stop(struct amdtp_stream *s)
+ 	s->context = ERR_PTR(-1);
+ 	iso_packets_buffer_destroy(&s->buffer, s->unit);
+ 
++	s->callbacked = false;
 +
-+		snd_rawmidi_receive(s->midi[port], b + 1, len);
-+		buffer += s->data_block_quadlets;
-+	}
+ 	mutex_unlock(&s->mutex);
  }
- 
- static void update_pcm_pointers(struct amdtp_stream *s,
-@@ -683,10 +722,14 @@ static void handle_in_packet(struct amdtp_stream *s,
- 	buffer += 2;
- 
- 	pcm = ACCESS_ONCE(s->pcm);
--	if (pcm) {
-+	if (pcm)
- 		s->transfer_samples(s, pcm, buffer, data_blocks);
-+
-+	if (s->midi_ports)
-+		amdtp_pull_midi(s, buffer, data_blocks);
-+
-+	if (pcm)
- 		update_pcm_pointers(s, pcm, data_blocks);
--	}
+ EXPORT_SYMBOL(amdtp_stream_stop);
+@@ -959,3 +1012,18 @@ void amdtp_stream_pcm_abort(struct amdtp_stream *s)
+ 	}
  }
- 
- static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ EXPORT_SYMBOL(amdtp_stream_pcm_abort);
++
++/**
++ * amdtp_stream_wait_callback - sleep till callbacked or timeout
++ * @s: the AMDTP stream
++ * @timeout: msec till timeout
++ *
++ * If this function return false, the AMDTP stream should be stopped.
++ */
++bool amdtp_stream_wait_callback(struct amdtp_stream *s, unsigned int timeout)
++{
++	return wait_event_timeout(s->callback_wait,
++				  s->callbacked == true,
++				  msecs_to_jiffies(timeout)) > 0;
++}
++EXPORT_SYMBOL(amdtp_stream_wait_callback);
 diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 019134e..96f25f9 100644
+index 96f25f9..0e73313 100644
 --- a/sound/firewire/amdtp.h
 +++ b/sound/firewire/amdtp.h
-@@ -44,9 +44,21 @@ enum cip_sfc {
- #define AMDTP_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
- 					 SNDRV_PCM_FMTBIT_S32)
+@@ -20,11 +20,14 @@
+  *	at half the actual sample rate with twice the number of channels;
+  *	two samples of a channel are stored consecutively in the packet.
+  *	Requires blocking mode and SYT_INTERVAL-aligned PCM buffer size.
++ * @CIP_SYNC_TO_DEVICE: In sync to device mode, time stamp in out packets is
++ *	generated by in packets. Defaultly this driver generates timestamp.
+  */
+ enum cip_flags {
+-	CIP_NONBLOCKING	= 0x00,
+-	CIP_BLOCKING	= 0x01,
+-	CIP_HI_DUALWIRE	= 0x02,
++	CIP_NONBLOCKING		= 0x00,
++	CIP_BLOCKING		= 0x01,
++	CIP_HI_DUALWIRE		= 0x02,
++	CIP_SYNC_TO_DEVICE	= 0x04
+ };
  
-+
-+/*
-+ * AMDTP packet can include channels for MIDI conformant data.
-+ * Each MIDI conformant data channel includes 8 MPX-MIDI data stream.
-+ * Each MPX-MIDI data stream includes one data stream from/to MIDI ports.
-+ *
-+ * This module supports maximum 1 MIDI conformant data channels.
-+ * Then this AMDTP packets can transfer maximum 8 MIDI data streams.
-+ */
-+#define AMDTP_MAX_CHANNELS_FOR_MIDI	1
-+
- struct fw_unit;
- struct fw_iso_context;
- struct snd_pcm_substream;
-+struct snd_rawmidi_substream;
- 
- enum amdtp_stream_direction {
- 	AMDTP_OUT_STREAM = 0,
-@@ -88,6 +100,8 @@ struct amdtp_stream {
- 	unsigned int pcm_buffer_pointer;
- 	unsigned int pcm_period_pointer;
+ /**
+@@ -102,6 +105,10 @@ struct amdtp_stream {
  	bool pointer_flush;
+ 
+ 	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
 +
-+	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
++	bool callbacked;
++	wait_queue_head_t callback_wait;
++	struct amdtp_stream *sync_slave;
  };
  
  int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
-@@ -137,6 +151,17 @@ static inline bool amdtp_streaming_error(struct amdtp_stream *s)
- }
+@@ -124,6 +131,7 @@ void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
+ void amdtp_stream_pcm_prepare(struct amdtp_stream *s);
+ unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s);
+ void amdtp_stream_pcm_abort(struct amdtp_stream *s);
++bool amdtp_stream_wait_callback(struct amdtp_stream *s, unsigned int timeout);
  
- /**
-+ * amdtp_stream_pcm_running - check PCM stream is running or not
-+ * @s: the AMDTP stream
-+ *
-+ * If this function returns true, PCM stream in the stream is running.
-+ */
-+static inline bool amdtp_stream_pcm_running(struct amdtp_stream *s)
-+{
-+	return !IS_ERR_OR_NULL(s->pcm);
-+}
-+
-+/**
-  * amdtp_stream_pcm_trigger - start/stop playback from a PCM device
-  * @s: the AMDTP stream
-  * @pcm: the PCM device to be started, or %NULL to stop the current device
-@@ -151,6 +176,24 @@ static inline void amdtp_stream_pcm_trigger(struct amdtp_stream *s,
- 	ACCESS_ONCE(s->pcm) = pcm;
- }
+ extern const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
  
-+/**
-+ * amdtp_stream_midi_trigger - start/stop playback/capture with a MIDI device
-+ * @s: the AMDTP stream
-+ * @port: index of MIDI port
-+ * @midi: the MIDI device to be started, or %NULL to stop the current device
-+ *
-+ * Call this function on a running isochronous stream to enable the actual
-+ * transmission of MIDI data.  This function should be called from the MIDI
-+ * device's .trigger callback.
-+ */
-+static inline void amdtp_stream_midi_trigger(struct amdtp_stream *s,
-+					     unsigned int port,
-+					     struct snd_rawmidi_substream *midi)
-+{
-+	if (port < s->midi_ports)
-+		ACCESS_ONCE(s->midi[port]) = midi;
-+}
-+
- static inline bool cip_sfc_is_base_44100(enum cip_sfc sfc)
- {
+@@ -199,4 +207,22 @@ static inline bool cip_sfc_is_base_44100(enum cip_sfc sfc)
  	return sfc & 1;
+ }
+ 
++static inline void amdtp_stream_set_sync(enum cip_flags sync_mode,
++					 struct amdtp_stream *master,
++					 struct amdtp_stream *slave)
++{
++	/* clear sync flag */
++	master->flags &= ~CIP_SYNC_TO_DEVICE;
++	slave->flags &= ~CIP_SYNC_TO_DEVICE;
++
++	if (sync_mode == CIP_SYNC_TO_DEVICE) {
++		master->flags |= CIP_SYNC_TO_DEVICE;
++		slave->flags |= CIP_SYNC_TO_DEVICE;
++		master->sync_slave = slave;
++	} else
++		master->sync_slave = ERR_PTR(-1);
++
++	slave->sync_slave = ERR_PTR(-1);
++}
++
+ #endif
 -- 
 1.8.3.2
 
