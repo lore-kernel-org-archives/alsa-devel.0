@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 44/52] oxfw: Change the way to make PCM rules/constraints
-Date: Wed, 29 Jan 2014 22:44:51 +0900
-Message-ID: <1391003099-7109-45-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 17/52] firewire-lib: Add quirks for Fireworks
+Date: Wed, 29 Jan 2014 22:44:24 +0900
+Message-ID: <1391003099-7109-18-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,457 +20,143 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-For PCM rules/constrains, drivers need to know stream formation at each
-supported sampling rates in advance. This commit adds
-'struct snd_oxfw_stream_formation' to save formation information.
+This commit adds three modifications for Echo Audio's Fireworks quirks.
 
-According to datasheet of OXFW970/971, they support 32.0kHz to 196.0kHz.
-So this commit adds 'rx_stream_formations' member to 'struct snd_oxfw'. It's
-an array with 7 elements. Each element corresponds to each sampling rate.
+1.Making this module to support both TAG0 and TAG1
+In IEC 61883-1, each common isochronous packet (CIP) has 'tag' field in its
+packet header. The value is generally 0x01 (CIP header is included = TAG1).
+But Fireworks in 'IEC 61883 compliant' mode transmits 'no data' packet with
+0x00 (No CIP header is included = TAG0) but the packet includes CIP structure.
+To process 'presentation timestamp' for duplex streams synchronization
+correctly, this packets needs to be handled.
 
-With these data structure, this commit changes the way to make PCM
-rules/constraints.
+2.Making this module to calculate data block size and not to check continuity
+One of Fireworks device, AudioFirePre8, always reports 8 data block size in
+in-packets and the data block counter is incremented by 8. But actual value is
+different.
 
-I don't know whether Griffin/LaCie devices supports SINGLE/LIST subfunction
-'AV/C Stream Format Information' command. So this commit adds codes to
-generate formations for them.
+3.Making this module to have the numebr of first data blocks for MIDI messages
+in out-packet
+Fireworks can pick up MIDI messages in first 8 data blocks and ignore in other
+data blocks.
+
+I confirm these quirks in firmware version between 4.8 and 5.8 with Windows.
+I didn't investigate for the other versions. But according to contact person
+in Echo Audio, there is no differences between firmwares installed by Windows
+or OS X.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw.c        |  37 ++++---
- sound/firewire/oxfw/oxfw.h        |  17 ++-
- sound/firewire/oxfw/oxfw_pcm.c    | 214 +++++++++++++++++++++++++-------------
- sound/firewire/oxfw/oxfw_stream.c |  36 +++++++
- 4 files changed, 209 insertions(+), 95 deletions(-)
+ sound/firewire/amdtp.c | 50 +++++++++++++++++++++++++-------------------------
+ sound/firewire/amdtp.h |  2 ++
+ 2 files changed, 27 insertions(+), 25 deletions(-)
 
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 6d64364..fda1ada 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -25,6 +25,20 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("snd-firewire-speakers");
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 5b0df21..9b637af 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -88,6 +88,8 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 	s->sort_table = NULL;
+ 	s->left_packets = NULL;
  
-+static const struct device_info griffin_firewave = {
-+	.driver_name = "FireWave",
-+	.mixer_channels = 6,
-+	.mute_fb_id   = 0x01,
-+	.volume_fb_id = 0x02,
-+};
++	s->blocks_for_midi = UINT_MAX;
 +
-+static const struct device_info lacie_speakers = {
-+	.driver_name = "FWSpeakers",
-+	.mixer_channels = 1,
-+	.mute_fb_id   = 0x01,
-+	.volume_fb_id = 0x01,
-+};
-+
- static int name_card(struct snd_oxfw *oxfw)
- {
- 	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
-@@ -90,6 +104,13 @@ static int oxfw_probe(struct fw_unit *unit,
- 	oxfw->device_info = (const struct device_info *)id->driver_data;
- 	mutex_init(&oxfw->mutex);
- 
-+	if (oxfw->device_info == &griffin_firewave)
-+		err = firewave_stream_discover(oxfw);
-+	else
-+		err = lacie_speakers_stream_discover(oxfw);
-+	if (err < 0)
-+		goto err_card;
-+
- 	err = name_card(oxfw);
- 	if (err < 0)
- 		goto err_card;
-@@ -138,22 +159,6 @@ static void oxfw_remove(struct fw_unit *unit)
- 	snd_card_free_when_closed(oxfw->card);
+ 	return 0;
  }
+ EXPORT_SYMBOL(amdtp_stream_init);
+@@ -556,8 +558,14 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 		buffer[s->midi_position] = 0x00;
+ 		b = (u8 *)&buffer[s->midi_position];
  
--static const struct device_info griffin_firewave = {
--	.driver_name = "FireWave",
--	.pcm_constraints = firewave_constraints,
--	.mixer_channels = 6,
--	.mute_fb_id   = 0x01,
--	.volume_fb_id = 0x02,
--};
++		/*
++		 * NOTE:
++		 * Fireworks ignores midi messages in more than first 8
++		 * data blocks of an packet.
++		 */
+ 		port = (s->data_block_counter + f) % 8;
+-		if ((s->midi[port] == NULL) ||
++		if ((f >= s->blocks_for_midi) ||
++		    (s->midi[port] == NULL) ||
+ 		    (snd_rawmidi_transmit(s->midi[port], b + 1, 1) <= 0)) {
+ 			b[0] = 0x80;
+ 			b[1] = 0x00;	/* confirm to be zero */
+@@ -710,7 +718,7 @@ static void handle_in_packet(struct amdtp_stream *s,
+ 			     __be32 *buffer)
+ {
+ 	u32 cip_header[2];
+-	unsigned int data_block_quadlets, data_blocks, data_block_counter;
++	unsigned int data_blocks;
+ 	struct snd_pcm_substream *pcm;
+ 
+ 	cip_header[0] = be32_to_cpu(buffer[0]);
+@@ -735,27 +743,16 @@ static void handle_in_packet(struct amdtp_stream *s,
+ 							AMDTP_FDF_NO_DATA))
+ 		return;
+ 
+-	data_block_quadlets =
+-			(cip_header[1] & AMDTP_DBS_MASK) >> AMDTP_DBS_SHIFT;
+-	/* avoid division by zero */
+-	if (data_block_quadlets == 0) {
+-		dev_info_ratelimited(&s->unit->device,
+-				 "Detect invalid value in dbs field: %08X\n",
+-				 data_block_quadlets);
+-		return;
+-	}
 -
--static const struct device_info lacie_speakers = {
--	.driver_name = "FWSpeakers",
--	.pcm_constraints = lacie_speakers_constraints,
--	.mixer_channels = 1,
--	.mute_fb_id   = 0x01,
--	.volume_fb_id = 0x01,
--};
+-	data_blocks = (payload_quadlets - 2) / data_block_quadlets;
+-	data_block_counter = cip_header[1] & AMDTP_DBC_MASK;
 -
- static const struct ieee1394_device_id oxfw_id_table[] = {
- 	{
- 		.match_flags  = IEEE1394_MATCH_VENDOR_ID |
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index 0a97592..c3a7e22 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -28,19 +28,28 @@
- 
- struct device_info {
- 	const char *driver_name;
--	int (*pcm_constraints)(struct snd_pcm_runtime *runtime);
- 	unsigned int mixer_channels;
- 	u8 mute_fb_id;
- 	u8 volume_fb_id;
- };
- 
-+#define	SND_OXFW_STREAM_TABLE_ENTRIES	7
-+struct snd_oxfw_stream_formation {
-+	unsigned int pcm;
-+	unsigned int midi;
-+};
-+extern const unsigned int snd_oxfw_rate_table[SND_OXFW_STREAM_TABLE_ENTRIES];
- struct snd_oxfw {
- 	struct snd_card *card;
- 	struct fw_unit *unit;
- 	const struct device_info *device_info;
- 	struct mutex mutex;
-+
-+	struct snd_oxfw_stream_formation
-+		rx_stream_formations[SND_OXFW_STREAM_TABLE_ENTRIES];
- 	struct cmp_connection in_conn;
- 	struct amdtp_stream rx_stream;
-+
- 	bool mute;
- 	s16 volume[6];
- 	s16 volume_min;
-@@ -53,9 +62,9 @@ void snd_oxfw_stream_stop(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_destroy(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_update(struct snd_oxfw *oxfw);
- 
--int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
-+int firewave_stream_discover(struct snd_oxfw *oxfw);
-+int lacie_speakers_stream_discover(struct snd_oxfw *oxfw);
- 
--int firewave_constraints(struct snd_pcm_runtime *runtime);
--int lacie_speakers_constraints(struct snd_pcm_runtime *runtime);
-+int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
- 
- int snd_oxfw_create_mixer(struct snd_oxfw *oxfw);
-diff --git a/sound/firewire/oxfw/oxfw_pcm.c b/sound/firewire/oxfw/oxfw_pcm.c
-index c742ce0..d217a9d 100644
---- a/sound/firewire/oxfw/oxfw_pcm.c
-+++ b/sound/firewire/oxfw/oxfw_pcm.c
-@@ -7,92 +7,132 @@
- 
- #include "oxfw.h"
- 
--static int firewave_rate_constraint(struct snd_pcm_hw_params *params,
--				    struct snd_pcm_hw_rule *rule)
-+static int hw_rule_rate(struct snd_pcm_hw_params *params,
-+			struct snd_pcm_hw_rule *rule,
-+			struct snd_oxfw *oxfw,
-+			struct snd_oxfw_stream_formation *formations)
- {
--	static unsigned int stereo_rates[] = { 48000, 96000 };
--	struct snd_interval *channels =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--	struct snd_interval *rate =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--
--	/* two channels work only at 48/96 kHz */
--	if (snd_interval_max(channels) < 6)
--		return snd_interval_list(rate, 2, stereo_rates, 0);
--	return 0;
-+	struct snd_interval *r =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	const struct snd_interval *c =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1
-+	};
-+	unsigned int i;
-+
-+	for (i = 0; i < SND_OXFW_STREAM_TABLE_ENTRIES; i++) {
-+		/* entry is invalid */
-+		if (formations[i].pcm == 0)
-+			continue;
-+
-+		if (!snd_interval_test(c, formations[i].pcm))
-+			continue;
-+
-+		t.min = min(t.min, snd_oxfw_rate_table[i]);
-+		t.max = max(t.max, snd_oxfw_rate_table[i]);
-+
-+	}
-+	return snd_interval_refine(r, &t);
-+}
-+
-+static int hw_rule_channels(struct snd_pcm_hw_params *params,
-+			    struct snd_pcm_hw_rule *rule,
-+			    struct snd_oxfw *oxfw,
-+			    struct snd_oxfw_stream_formation *formations)
-+{
-+	struct snd_interval *c =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	const struct snd_interval *r =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1
-+	};
-+
-+	unsigned int i;
-+
-+	for (i = 0; i < SND_OXFW_STREAM_TABLE_ENTRIES; i++) {
-+		/* entry is invalid */
-+		if (formations[i].pcm == 0)
-+			continue;
-+
-+		if (!snd_interval_test(r, snd_oxfw_rate_table[i]))
-+			continue;
-+
-+		t.min = min(t.min, formations[i].pcm);
-+		t.max = max(t.max, formations[i].pcm);
-+	}
-+
-+	return snd_interval_refine(c, &t);
- }
- 
--static int firewave_channels_constraint(struct snd_pcm_hw_params *params,
-+static inline int hw_rule_playback_rate(struct snd_pcm_hw_params *params,
- 					struct snd_pcm_hw_rule *rule)
- {
--	static const struct snd_interval all_channels = { .min = 6, .max = 6 };
--	struct snd_interval *rate =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *channels =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--
--	/* 32/44.1 kHz work only with all six channels */
--	if (snd_interval_max(rate) < 48000)
--		return snd_interval_refine(channels, &all_channels);
--	return 0;
-+	struct snd_oxfw *oxfw = rule->private;
-+	return hw_rule_rate(params, rule, oxfw,
-+			    oxfw->rx_stream_formations);
- }
- 
--int firewave_constraints(struct snd_pcm_runtime *runtime)
-+static inline int hw_rule_playback_channels(struct snd_pcm_hw_params *params,
-+					    struct snd_pcm_hw_rule *rule)
- {
--	static unsigned int channels_list[] = { 2, 6 };
--	static struct snd_pcm_hw_constraint_list channels_list_constraint = {
--		.count = 2,
--		.list = channels_list,
--	};
--	int err;
-+	struct snd_oxfw *oxfw = rule->private;
-+	return hw_rule_channels(params, rule, oxfw,
-+				oxfw->rx_stream_formations);
-+}
- 
--	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
--			    SNDRV_PCM_RATE_44100 |
--			    SNDRV_PCM_RATE_48000 |
--			    SNDRV_PCM_RATE_96000;
--	runtime->hw.channels_max = 6;
-+static void prepare_channels(struct snd_pcm_hardware *hw,
-+			     struct snd_oxfw_stream_formation *formations)
-+{
-+	unsigned int i;
- 
--	err = snd_pcm_hw_constraint_list(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_CHANNELS,
--					 &channels_list_constraint);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
--				  firewave_rate_constraint, NULL,
--				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--				  firewave_channels_constraint, NULL,
--				  SNDRV_PCM_HW_PARAM_RATE, -1);
--	if (err < 0)
--		return err;
-+	for (i = 0; i < SND_OXFW_STREAM_TABLE_ENTRIES; i++) {
-+		/* entry has no PCM channels */
-+		if (formations[i].pcm == 0)
-+			continue;
- 
--	return 0;
-+		hw->channels_min = min(hw->channels_min, formations[i].pcm);
-+		hw->channels_max = max(hw->channels_max, formations[i].pcm);
-+	}
-+
-+	return;
- }
- 
--int lacie_speakers_constraints(struct snd_pcm_runtime *runtime)
-+static void prepare_rates(struct snd_pcm_hardware *hw,
-+			  struct snd_oxfw_stream_formation *formations)
- {
--	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
--			    SNDRV_PCM_RATE_44100 |
--			    SNDRV_PCM_RATE_48000 |
--			    SNDRV_PCM_RATE_88200 |
--			    SNDRV_PCM_RATE_96000;
-+	unsigned int i;
- 
--	return 0;
-+	for (i = 0; i < SND_OXFW_STREAM_TABLE_ENTRIES; i++) {
-+		/* entry has no PCM channels */
-+		if (formations[i].pcm == 0)
-+			continue;
-+
-+		hw->rate_min = min(hw->rate_min, snd_oxfw_rate_table[i]);
-+		hw->rate_max = max(hw->rate_max, snd_oxfw_rate_table[i]);
-+		hw->rates |= snd_pcm_rate_to_rate_bit(snd_oxfw_rate_table[i]);
-+	}
-+
-+	return;
- }
- 
- static int oxfw_open(struct snd_pcm_substream *substream)
- {
--	static const struct snd_pcm_hardware hardware = {
-+	static const struct snd_pcm_hardware hw = {
- 		.info = SNDRV_PCM_INFO_MMAP |
--			SNDRV_PCM_INFO_MMAP_VALID |
- 			SNDRV_PCM_INFO_BATCH |
- 			SNDRV_PCM_INFO_INTERLEAVED |
-+			/* for Open Sound System compatibility */
-+			SNDRV_PCM_INFO_MMAP_VALID |
- 			SNDRV_PCM_INFO_BLOCK_TRANSFER,
--		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
--		.channels_min = 2,
--		.channels_max = 2,
-+		/* set up later */
-+		.rates = 0,
-+		.rate_min = UINT_MAX,
-+		.rate_max = 0,
-+		/* set up later */
-+		.channels_min = UINT_MAX,
-+		.channels_max = 0,
- 		.buffer_bytes_max = 4 * 1024 * 1024,
- 		.period_bytes_min = 1,
- 		.period_bytes_max = UINT_MAX,
-@@ -101,31 +141,55 @@ static int oxfw_open(struct snd_pcm_substream *substream)
- 	};
- 	struct snd_oxfw *oxfw = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	bool used;
-+	unsigned int rate;
- 	int err;
- 
--	err = cmp_connection_check_used(&oxfw->in_conn, &used);
--	if ((err < 0) || used)
--		goto end;
-+	runtime->hw = hw;
- 
--	runtime->hw = hardware;
-+	/* add rule between channels and sampling rate */
-+	prepare_rates(&runtime->hw, oxfw->rx_stream_formations);
-+	prepare_channels(&runtime->hw, oxfw->rx_stream_formations);
-+	runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
-+	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+			    hw_rule_playback_channels, oxfw,
-+			    SNDRV_PCM_HW_PARAM_RATE, -1);
-+	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+			    hw_rule_playback_rate, oxfw,
-+			    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
- 
--	err = oxfw->device_info->pcm_constraints(runtime);
-+	/* AM824 in IEC 61883-6 can deliver 24bit data */
-+	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
- 	if (err < 0)
- 		goto end;
--	err = snd_pcm_limit_hw_rates(runtime);
-+
+-	/* check packet continuity */
+-	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
+-	if (s->data_block_counter != data_block_counter) {
+-		dev_info_ratelimited(&s->unit->device,
+-				     "Detect uncontinuity of CIP packets\n");
+-		s->data_block_counter = data_block_counter;
+-		return;
+-	}
 +	/*
-+	 * AMDTP functionality in firewire-lib require periods to be aligned to
-+	 * 16 bit, or 24bit inner 32bit.
++	 * This module don't use the value of dbs and dbc beceause Echo
++	 * AudioFirePre8 reports inappropriate value.
++	 *
++	 * This model always reports a fixed value "8" as data block size at
++	 * any sampling rates but actually data block size is different.
++	 * Additionally the value of data block count always incremented by
++	 * "8" at any sampling rates but actually it's different.
 +	 */
-+	err = snd_pcm_hw_constraint_step(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
- 	if (err < 0)
- 		goto end;
++	data_blocks = (payload_quadlets - 2) / s->data_block_quadlets;
  
-+	/* time for period constraint */
- 	err = snd_pcm_hw_constraint_minmax(runtime,
- 					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
- 					   5000, UINT_MAX);
--	if (err < 0)
--		goto end;
+ 	buffer += 2;
  
--	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
--	if (err < 0)
--		goto end;
+@@ -1040,11 +1037,14 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 			goto err_context;
+ 	} while (s->packet_index > 0);
+ 
+-	/* NOTE: TAG1 matches CIP. This just affects in stream */
 +	/*
-+	 * When any PCM streams are already running, the available sampling
-+	 * rate is limited at current value.
++	 * NOTE: TAG1 matches CIP. This just affects in stream.
++	 * Fireworks transmits NODATA packets with TAG0.
 +	 */
-+	if (amdtp_stream_pcm_running(&oxfw->rx_stream)) {
-+		err = avc_general_get_sig_fmt(oxfw->unit, &rate,
-+					      AVC_GENERAL_PLUG_DIR_IN, 0);
-+		if (err < 0)
-+			goto end;
-+		substream->runtime->hw.rate_min = rate;
-+		substream->runtime->hw.rate_max = rate;
-+	}
-+
-+	snd_pcm_set_sync(substream);
- end:
- 	return err;
- }
-diff --git a/sound/firewire/oxfw/oxfw_stream.c b/sound/firewire/oxfw/oxfw_stream.c
-index 199a0ef..f1d6ce5 100644
---- a/sound/firewire/oxfw/oxfw_stream.c
-+++ b/sound/firewire/oxfw/oxfw_stream.c
-@@ -7,6 +7,21 @@
+ 	s->data_block_counter = 0;
+ 	s->callbacked = false;
+ 	err = fw_iso_context_start(s->context, -1, 0,
+-				   FW_ISO_CONTEXT_MATCH_TAG1);
++			FW_ISO_CONTEXT_MATCH_TAG0 | FW_ISO_CONTEXT_MATCH_TAG1);
+ 	if (err < 0)
+ 		goto err_context;
  
- #include "oxfw.h"
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index 7da1cbf..d94e62a 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -113,6 +113,8 @@ struct amdtp_stream {
+ 	bool pointer_flush;
  
-+/*
-+ * According to their datasheet:
-+ *  OXFW970: 32.0/44.1/48.0/96.0 Khz, 8 audio channels I/O
-+ *  OXFW971: 32.0/44.1/48.0/88.2/96.0/192.0 kHz, 16 audio channels I/O, MIDI I/O
-+ */
-+const unsigned int snd_oxfw_rate_table[SND_OXFW_STREAM_TABLE_ENTRIES] = {
-+	[0] = 32000,
-+	[1] = 44100,
-+	[2] = 48000,
-+	[3] = 88200,
-+	[4] = 96000,
-+	[5] = 176400,
-+	[6] = 192000,
-+};
-+
- int snd_oxfw_stream_init(struct snd_oxfw *oxfw)
- {
- 	int err;
-@@ -72,3 +87,24 @@ void snd_oxfw_stream_update(struct snd_oxfw *oxfw)
- 		amdtp_stream_update(&oxfw->rx_stream);
- 	}
- }
-+
-+int firewave_stream_discover(struct snd_oxfw *oxfw)
-+{
-+	oxfw->rx_stream_formations[0].pcm = 6;
-+	oxfw->rx_stream_formations[1].pcm = 6;
-+	oxfw->rx_stream_formations[2].pcm = 2;
-+	oxfw->rx_stream_formations[4].pcm = 2;
-+
-+	return 0;
-+}
-+
-+int lacie_speakers_stream_discover(struct snd_oxfw *oxfw)
-+{
-+	oxfw->rx_stream_formations[0].pcm = 2;
-+	oxfw->rx_stream_formations[1].pcm = 2;
-+	oxfw->rx_stream_formations[2].pcm = 2;
-+	oxfw->rx_stream_formations[3].pcm = 2;
-+	oxfw->rx_stream_formations[4].pcm = 2;
-+
-+	return 0;
-+}
+ 	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
++	/* quirk: the first count of data blocks in an AMDTP packet for MIDI */
++	unsigned int blocks_for_midi;
+ 
+ 	bool callbacked;
+ 	wait_queue_head_t callback_wait;
 -- 
 1.8.3.2
 
