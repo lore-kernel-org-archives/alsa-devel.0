@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 41/52] oxfw: Split PCM functionality to a new file
-Date: Wed, 29 Jan 2014 22:44:48 +0900
-Message-ID: <1391003099-7109-42-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 36/52] bebob: Add support for M-Audio usual Firewire series
+Date: Wed, 29 Jan 2014 22:44:43 +0900
+Message-ID: <1391003099-7109-37-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,569 +20,483 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-To make it easy to work in followed commit.
+This commit allows this driver to support some models which M-Audio produces
+with DM1000/DM1000E with usual firmware. They are:
+ - Firewire 410
+ - Firewire AudioPhile
+ - Firewire Solo
+ - Ozonic
+ - NRV10
+ - FirewireLightBridge
+
+According to person of BridgeCo, Some models are produced with 'Pre-BeBoB'. This
+means that these products were released before BeBoB was officially produced. So
+these models have some quirks.
+
+M-Audio usual firmware quirks:
+ - Just after powering on, 'Firewire 410' waits to download firmware. This
+   state is changed when receiving cue. Then bus reset is generated and the
+   device is recognized as a different model with the uploaded firmware.
+ - 'Firewire Audiophile' also waits to download firmware but its
+   vendor id/model id is the same as the one after loading firmware.
+ - The information of channel mapping for MIDI conformant data channel is
+   invalid against BridgeCo specification.
+
+This commit adds some codes for these quirks but don't support to upload
+firmware.
+
+This commit also adds specific operations to get metering information. The
+metering information also includes status of clock synchronization if the model
+supports to switch source of clock.
+
+The specification of FirewireLightBridge is unknown. So in this time, normal
+operations are applied for this model.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/Makefile   |   2 +-
- sound/firewire/oxfw/oxfw.c     | 248 +--------------------------------------
- sound/firewire/oxfw/oxfw.h     |   5 +
- sound/firewire/oxfw/oxfw_pcm.c | 259 +++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 266 insertions(+), 248 deletions(-)
- create mode 100644 sound/firewire/oxfw/oxfw_pcm.c
+ sound/firewire/Kconfig              |   2 +
+ sound/firewire/bebob/Makefile       |   2 +-
+ sound/firewire/bebob/bebob.c        |  45 +++++-
+ sound/firewire/bebob/bebob.h        |   5 +
+ sound/firewire/bebob/bebob_maudio.c | 274 ++++++++++++++++++++++++++++++++++++
+ sound/firewire/bebob/bebob_stream.c |   9 ++
+ 6 files changed, 334 insertions(+), 3 deletions(-)
+ create mode 100644 sound/firewire/bebob/bebob_maudio.c
 
-diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
-index 510c1cb..408b5e5 100644
---- a/sound/firewire/oxfw/Makefile
-+++ b/sound/firewire/oxfw/Makefile
-@@ -1,2 +1,2 @@
--snd-oxfw-objs := oxfw_stream.o oxfw.o
-+snd-oxfw-objs := oxfw_stream.o oxfw_pcm.o oxfw.o
- obj-m += snd-oxfw.o
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 93adf73..866fcb2 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -25,252 +25,6 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("snd-firewire-speakers");
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 14ae19c..f9aa176 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -113,6 +113,8 @@ config SND_BEBOB
+ 	  * Terratec Aureon 7.1 Firewire
+ 	  * Yamaha GO44/GO46
+ 	  * Focusrite Saffire/Saffire LE/SaffirePro10 IO/SaffirePro26 IO
++	  * M-Audio Firewire410/AudioPhile/Solo
++	  * M-Audio Ozonic/NRV10/ProfireLightBridge
  
--static int firewave_rate_constraint(struct snd_pcm_hw_params *params,
--				    struct snd_pcm_hw_rule *rule)
--{
--	static unsigned int stereo_rates[] = { 48000, 96000 };
--	struct snd_interval *channels =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--	struct snd_interval *rate =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--
--	/* two channels work only at 48/96 kHz */
--	if (snd_interval_max(channels) < 6)
--		return snd_interval_list(rate, 2, stereo_rates, 0);
--	return 0;
--}
--
--static int firewave_channels_constraint(struct snd_pcm_hw_params *params,
--					struct snd_pcm_hw_rule *rule)
--{
--	static const struct snd_interval all_channels = { .min = 6, .max = 6 };
--	struct snd_interval *rate =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *channels =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--
--	/* 32/44.1 kHz work only with all six channels */
--	if (snd_interval_max(rate) < 48000)
--		return snd_interval_refine(channels, &all_channels);
--	return 0;
--}
--
--static int firewave_constraints(struct snd_pcm_runtime *runtime)
--{
--	static unsigned int channels_list[] = { 2, 6 };
--	static struct snd_pcm_hw_constraint_list channels_list_constraint = {
--		.count = 2,
--		.list = channels_list,
--	};
--	int err;
--
--	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
--			    SNDRV_PCM_RATE_44100 |
--			    SNDRV_PCM_RATE_48000 |
--			    SNDRV_PCM_RATE_96000;
--	runtime->hw.channels_max = 6;
--
--	err = snd_pcm_hw_constraint_list(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_CHANNELS,
--					 &channels_list_constraint);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
--				  firewave_rate_constraint, NULL,
--				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--				  firewave_channels_constraint, NULL,
--				  SNDRV_PCM_HW_PARAM_RATE, -1);
--	if (err < 0)
--		return err;
--
--	return 0;
--}
--
--static int lacie_speakers_constraints(struct snd_pcm_runtime *runtime)
--{
--	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
--			    SNDRV_PCM_RATE_44100 |
--			    SNDRV_PCM_RATE_48000 |
--			    SNDRV_PCM_RATE_88200 |
--			    SNDRV_PCM_RATE_96000;
--
--	return 0;
--}
--
--static int oxfw_open(struct snd_pcm_substream *substream)
--{
--	static const struct snd_pcm_hardware hardware = {
--		.info = SNDRV_PCM_INFO_MMAP |
--			SNDRV_PCM_INFO_MMAP_VALID |
--			SNDRV_PCM_INFO_BATCH |
--			SNDRV_PCM_INFO_INTERLEAVED |
--			SNDRV_PCM_INFO_BLOCK_TRANSFER,
--		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
--		.channels_min = 2,
--		.channels_max = 2,
--		.buffer_bytes_max = 4 * 1024 * 1024,
--		.period_bytes_min = 1,
--		.period_bytes_max = UINT_MAX,
--		.periods_min = 1,
--		.periods_max = UINT_MAX,
--	};
--	struct snd_oxfw *oxfw = substream->private_data;
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	int err;
--
--	runtime->hw = hardware;
--
--	err = oxfw->device_info->pcm_constraints(runtime);
--	if (err < 0)
--		return err;
--	err = snd_pcm_limit_hw_rates(runtime);
--	if (err < 0)
--		return err;
--
--	err = snd_pcm_hw_constraint_minmax(runtime,
--					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
--					   5000, UINT_MAX);
--	if (err < 0)
--		return err;
--
--	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
--	if (err < 0)
--		return err;
--
--	return 0;
--}
--
--static int oxfw_close(struct snd_pcm_substream *substream)
--{
--	return 0;
--}
--
--static int oxfw_hw_params(struct snd_pcm_substream *substream,
--			   struct snd_pcm_hw_params *hw_params)
--{
--	struct snd_oxfw *oxfw = substream->private_data;
--	int err;
--
--	mutex_lock(&oxfw->mutex);
--	snd_oxfw_stream_stop(oxfw);
--	mutex_unlock(&oxfw->mutex);
--
--	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
--					       params_buffer_bytes(hw_params));
--	if (err < 0)
--		goto error;
--
--	amdtp_stream_set_parameters(&oxfw->rx_stream,
--				    params_rate(hw_params),
--				    params_channels(hw_params),
--				    0);
--
--	amdtp_stream_set_pcm_format(&oxfw->rx_stream,
--				    params_format(hw_params));
--
--	err = avc_general_set_sig_fmt(oxfw->unit, params_rate(hw_params),
--				      AVC_GENERAL_PLUG_DIR_IN, 0);
--	if (err < 0)
--		goto err_buffer;
--	if (err != 0x09 /* ACCEPTED */) {
--		dev_err(&oxfw->unit->device, "failed to set sample rate\n");
--		err = -EIO;
--		goto error;
--	}
--
--	return 0;
--
--err_buffer:
--	snd_pcm_lib_free_vmalloc_buffer(substream);
--error:
--	return err;
--}
--
--static int oxfw_hw_free(struct snd_pcm_substream *substream)
--{
--	struct snd_oxfw *oxfw = substream->private_data;
--
--	mutex_lock(&oxfw->mutex);
--	snd_oxfw_stream_stop(oxfw);
--	mutex_unlock(&oxfw->mutex);
--
--	return snd_pcm_lib_free_vmalloc_buffer(substream);
--}
--
--static int oxfw_prepare(struct snd_pcm_substream *substream)
--{
--	struct snd_oxfw *oxfw = substream->private_data;
--	int err;
--
--	mutex_lock(&oxfw->mutex);
--
--	snd_oxfw_stream_stop(oxfw);
--
--	err = snd_oxfw_stream_start(oxfw);
--	if (err < 0)
--		goto end;
--
--	amdtp_stream_pcm_prepare(&oxfw->rx_stream);
--end:
--	mutex_unlock(&oxfw->mutex);
--	return err;
--}
--
--static int oxfw_trigger(struct snd_pcm_substream *substream, int cmd)
--{
--	struct snd_oxfw *oxfw = substream->private_data;
--	struct snd_pcm_substream *pcm;
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--		pcm = substream;
--		break;
--	case SNDRV_PCM_TRIGGER_STOP:
--		pcm = NULL;
--		break;
--	default:
--		return -EINVAL;
--	}
--	amdtp_stream_pcm_trigger(&oxfw->rx_stream, pcm);
--	return 0;
--}
--
--static snd_pcm_uframes_t oxfw_pointer(struct snd_pcm_substream *substream)
--{
--	struct snd_oxfw *oxfw = substream->private_data;
--
--	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
--}
--
--static int oxfw_create_pcm(struct snd_oxfw *oxfw)
--{
--	static struct snd_pcm_ops ops = {
--		.open      = oxfw_open,
--		.close     = oxfw_close,
--		.ioctl     = snd_pcm_lib_ioctl,
--		.hw_params = oxfw_hw_params,
--		.hw_free   = oxfw_hw_free,
--		.prepare   = oxfw_prepare,
--		.trigger   = oxfw_trigger,
--		.pointer   = oxfw_pointer,
--		.page      = snd_pcm_lib_get_vmalloc_page,
--		.mmap      = snd_pcm_lib_mmap_vmalloc,
--	};
--	struct snd_pcm *pcm;
--	int err;
--
--	err = snd_pcm_new(oxfw->card, "OXFW970", 0, 1, 0, &pcm);
--	if (err < 0)
--		return err;
--	pcm->private_data = oxfw;
--	strcpy(pcm->name, oxfw->device_info->short_name);
--	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
--	return 0;
--}
--
- enum control_action { CTL_READ, CTL_WRITE };
- enum control_attribute {
- 	CTL_MIN		= 0x02,
-@@ -598,7 +352,7 @@ static int oxfw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto err_card;
+           To compile this driver as a module, choose M here: the module
+           will be called snd-bebob.
+diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
+index 6565420..6cf470c 100644
+--- a/sound/firewire/bebob/Makefile
++++ b/sound/firewire/bebob/Makefile
+@@ -1,4 +1,4 @@
+ snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
+ 		  bebob_pcm.o bebob_hwdep.o bebob_terratec.o bebob_yamaha.o \
+-		  bebob_focusrite.o bebob.o
++		  bebob_focusrite.o bebob_maudio.o bebob.o
+ obj-m += snd-bebob.o
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 631d6a0..4a93d6c 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -55,8 +55,11 @@ static unsigned int devices_used;
+ #define VEN_TERRATEC	0x00000aac
+ #define VEN_YAMAHA	0x0000a0de
+ #define VEN_FOCUSRITE	0x0000130e
++#define VEN_MAUDIO1	0x00000d6c
++#define VEN_MAUDIO2	0x000007f5
  
--	err = oxfw_create_pcm(oxfw);
-+	err = snd_oxfw_create_pcm(oxfw);
- 	if (err < 0)
- 		goto err_card;
+ #define MODEL_FOCUSRITE_SAFFIRE_BOTH	0x00000000
++#define MODEL_MAUDIO_AUDIOPHILE_BOTH	0x00010060
  
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index f2c5b75..9fd5320 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -54,3 +54,8 @@ int snd_oxfw_stream_start(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_stop(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_destroy(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_update(struct snd_oxfw *oxfw);
+ static int
+ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+@@ -141,6 +144,17 @@ get_saffire_spec(struct fw_unit *unit)
+ 		return &saffire_spec;
+ }
+ 
++static bool
++check_audiophile_booted(struct fw_unit *unit)
++{
++	char name[24] = {0};
 +
-+int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
++	if (fw_csr_string(unit->directory, CSR_MODEL, name, sizeof(name)) < 0)
++		return false;
 +
-+int firewave_constraints(struct snd_pcm_runtime *runtime);
-+int lacie_speakers_constraints(struct snd_pcm_runtime *runtime);
-diff --git a/sound/firewire/oxfw/oxfw_pcm.c b/sound/firewire/oxfw/oxfw_pcm.c
++	return strncmp(name, "FW Audiophile Bootloader", 15) != 0;
++}
++
+ static int
+ bebob_probe(struct fw_unit *unit,
+ 	    const struct ieee1394_device_id *entry)
+@@ -163,10 +177,16 @@ bebob_probe(struct fw_unit *unit,
+ 	}
+ 
+ 	if ((entry->vendor_id == VEN_FOCUSRITE) &&
+-	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH))
++	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH)) {
+ 		spec = get_saffire_spec(unit);
+-	else
++	} else if ((entry->vendor_id == VEN_MAUDIO1) &&
++		   (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
++		   !check_audiophile_booted(unit)) {
++			err = 0;
++			goto end;
++	} else {
+ 		spec = (const struct snd_bebob_spec *)entry->driver_data;
++	}
+ 	if (spec == NULL) {
+ 		err = -ENOSYS;
+ 		goto end;
+@@ -238,6 +258,10 @@ static void
+ bebob_update(struct fw_unit *unit)
+ {
+ 	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
++
++	if (bebob == NULL)
++		return;
++
+ 	fcp_bus_reset(bebob->unit);
+ 	snd_bebob_stream_update_duplex(bebob);
+ }
+@@ -246,6 +270,10 @@ bebob_update(struct fw_unit *unit)
+ static void bebob_remove(struct fw_unit *unit)
+ {
+ 	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
++
++	if (bebob == NULL)
++		return;
++
+ 	snd_bebob_stream_destroy_duplex(bebob);
+ 	snd_card_disconnect(bebob->card);
+ 	snd_card_free_when_closed(bebob->card);
+@@ -338,6 +366,19 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	/* Focusrite, Saffire(no label and LE) */
+ 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
+ 			    &saffire_spec),
++	/* M-Audio, Firewire 410 */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010046, &maudio_fw410_spec),
++	/* M-Audio, Firewire Audiophile */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_AUDIOPHILE_BOTH,
++			    &maudio_audiophile_spec),
++	/* M-Audio, Firewire Solo */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010062, &maudio_solo_spec),
++	/* M-Audio, Ozonic */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x0000000a, &maudio_ozonic_spec),
++	/* M-Audio NRV10 */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010081, &maudio_nrv10_spec),
++	/* M-Audio, ProFireLightbridge */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x000100a1, &spec_normal),
+ 	/* IDs are unknown but able to be supported */
+ 	/*  Apogee, Mini-ME Firewire */
+ 	/*  Apogee, Mini-DAC Firewire */
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index 5669326..76f29e3 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -236,6 +236,11 @@ extern struct snd_bebob_spec saffirepro_26_spec;
+ extern struct snd_bebob_spec saffirepro_10_spec;
+ extern struct snd_bebob_spec saffire_le_spec;
+ extern struct snd_bebob_spec saffire_spec;
++extern struct snd_bebob_spec maudio_fw410_spec;
++extern struct snd_bebob_spec maudio_audiophile_spec;
++extern struct snd_bebob_spec maudio_solo_spec;
++extern struct snd_bebob_spec maudio_ozonic_spec;
++extern struct snd_bebob_spec maudio_nrv10_spec;
+ 
+ #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
+ { \
+diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
 new file mode 100644
-index 0000000..c742ce0
+index 0000000..7c8f5c1
 --- /dev/null
-+++ b/sound/firewire/oxfw/oxfw_pcm.c
-@@ -0,0 +1,259 @@
++++ b/sound/firewire/bebob/bebob_maudio.c
+@@ -0,0 +1,274 @@
 +/*
-+ * oxfw_pcm.c - a part of driver for OXFW970/971 based devices
++ * bebob_maudio.c - a part of driver for BeBoB based devices
 + *
-+ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
++ * Copyright (c) 2013 Takashi Sakamoto
++ *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "oxfw.h"
++#include "./bebob.h"
 +
-+static int firewave_rate_constraint(struct snd_pcm_hw_params *params,
-+				    struct snd_pcm_hw_rule *rule)
++/*
++ * Just powering on, Firewire 410/Audiophile wait to
++ * download firmware blob. To enable these devices, drivers should upload
++ * firmware blob and send a command to initialize configuration to factory
++ * settings when completing uploading. Then these devices generate bus reset
++ * and are recognized as new devices with the firmware.
++ *
++ * For streaming, both of output and input streams are needed for Firewire 410
++ * and Ozonic. The single stream is OK for the other devices even if the clock
++ * source is not SYT-Match (I note no devices use SYT-Match).
++ *
++ * Without streaming, the devices except for Firewire Audiophile can mix any
++ * input and output. For this reason, Audiophile cannot be used as standalone
++ * mixer.
++ */
++
++#define MAUDIO_SPECIFIC_ADDRESS	0xffc700000000
++
++#define METER_OFFSET		0x00600000
++
++/* some device has sync info after metering data */
++#define METER_SIZE_FW410	76	/* with sync info */
++#define METER_SIZE_AUDIOPHILE	60	/* with sync info */
++#define METER_SIZE_SOLO		52	/* with sync info */
++#define METER_SIZE_OZONIC	48
++#define METER_SIZE_NRV10	80
++
++/* labels for metering */
++#define ANA_IN		"Analog In"
++#define ANA_OUT		"Analog Out"
++#define DIG_IN		"Digital In"
++#define SPDIF_IN	"S/PDIF In"
++#define ADAT_IN		"ADAT In"
++#define DIG_OUT		"Digital Out"
++#define SPDIF_OUT	"S/PDIF Out"
++#define ADAT_OUT	"ADAT Out"
++#define STRM_IN		"Stream In"
++#define AUX_OUT		"Aux Out"
++#define HP_OUT		"HP Out"
++/* for NRV */
++#define UNKNOWN_METER	"Unknown"
++
++static inline int
++get_meter(struct snd_bebob *bebob, void *buf, unsigned int size)
 +{
-+	static unsigned int stereo_rates[] = { 48000, 96000 };
-+	struct snd_interval *channels =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval *rate =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+
-+	/* two channels work only at 48/96 kHz */
-+	if (snd_interval_max(channels) < 6)
-+		return snd_interval_list(rate, 2, stereo_rates, 0);
-+	return 0;
++	return snd_fw_transaction(bebob->unit, TCODE_READ_BLOCK_REQUEST,
++				  MAUDIO_SPECIFIC_ADDRESS + METER_OFFSET,
++				  buf, size, 0);
 +}
 +
-+static int firewave_channels_constraint(struct snd_pcm_hw_params *params,
-+					struct snd_pcm_hw_rule *rule)
++/* Firewire 410 specific operation */
++static char *fw410_meter_labels[] = {
++	ANA_IN, DIG_IN,
++	ANA_OUT, ANA_OUT, ANA_OUT, ANA_OUT, DIG_OUT,
++	HP_OUT
++};
++static int
++fw410_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
 +{
-+	static const struct snd_interval all_channels = { .min = 6, .max = 6 };
-+	struct snd_interval *rate =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
 +
-+	/* 32/44.1 kHz work only with all six channels */
-+	if (snd_interval_max(rate) < 48000)
-+		return snd_interval_refine(channels, &all_channels);
-+	return 0;
-+}
-+
-+int firewave_constraints(struct snd_pcm_runtime *runtime)
-+{
-+	static unsigned int channels_list[] = { 2, 6 };
-+	static struct snd_pcm_hw_constraint_list channels_list_constraint = {
-+		.count = 2,
-+		.list = channels_list,
-+	};
++	unsigned int c, channels;
 +	int err;
 +
-+	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
-+			    SNDRV_PCM_RATE_44100 |
-+			    SNDRV_PCM_RATE_48000 |
-+			    SNDRV_PCM_RATE_96000;
-+	runtime->hw.channels_max = 6;
-+
-+	err = snd_pcm_hw_constraint_list(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_CHANNELS,
-+					 &channels_list_constraint);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				  firewave_rate_constraint, NULL,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				  firewave_channels_constraint, NULL,
-+				  SNDRV_PCM_HW_PARAM_RATE, -1);
-+	if (err < 0)
-+		return err;
-+
-+	return 0;
-+}
-+
-+int lacie_speakers_constraints(struct snd_pcm_runtime *runtime)
-+{
-+	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
-+			    SNDRV_PCM_RATE_44100 |
-+			    SNDRV_PCM_RATE_48000 |
-+			    SNDRV_PCM_RATE_88200 |
-+			    SNDRV_PCM_RATE_96000;
-+
-+	return 0;
-+}
-+
-+static int oxfw_open(struct snd_pcm_substream *substream)
-+{
-+	static const struct snd_pcm_hardware hardware = {
-+		.info = SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_BATCH |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_BLOCK_TRANSFER,
-+		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.buffer_bytes_max = 4 * 1024 * 1024,
-+		.period_bytes_min = 1,
-+		.period_bytes_max = UINT_MAX,
-+		.periods_min = 1,
-+		.periods_max = UINT_MAX,
-+	};
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	bool used;
-+	int err;
-+
-+	err = cmp_connection_check_used(&oxfw->in_conn, &used);
-+	if ((err < 0) || used)
-+		goto end;
-+
-+	runtime->hw = hardware;
-+
-+	err = oxfw->device_info->pcm_constraints(runtime);
-+	if (err < 0)
-+		goto end;
-+	err = snd_pcm_limit_hw_rates(runtime);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_pcm_hw_constraint_minmax(runtime,
-+					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
-+					   5000, UINT_MAX);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
-+	if (err < 0)
-+		goto end;
-+end:
-+	return err;
-+}
-+
-+static int oxfw_close(struct snd_pcm_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static int oxfw_hw_params(struct snd_pcm_substream *substream,
-+			   struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	int err;
-+
-+	mutex_lock(&oxfw->mutex);
-+	snd_oxfw_stream_stop(oxfw);
-+	mutex_unlock(&oxfw->mutex);
-+
-+	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+					       params_buffer_bytes(hw_params));
-+	if (err < 0)
-+		goto error;
-+
-+	amdtp_stream_set_parameters(&oxfw->rx_stream,
-+				    params_rate(hw_params),
-+				    params_channels(hw_params),
-+				    0);
-+
-+	amdtp_stream_set_pcm_format(&oxfw->rx_stream,
-+				    params_format(hw_params));
-+
-+	err = avc_general_set_sig_fmt(oxfw->unit, params_rate(hw_params),
-+				      AVC_GENERAL_PLUG_DIR_IN, 0);
-+	if (err < 0)
-+		goto err_buffer;
-+	if (err != 0x09 /* ACCEPTED */) {
-+		dev_err(&oxfw->unit->device, "failed to set sample rate\n");
-+		err = -EIO;
-+		goto error;
-+	}
-+
-+	return 0;
-+
-+err_buffer:
-+	snd_pcm_lib_free_vmalloc_buffer(substream);
-+error:
-+	return err;
-+}
-+
-+static int oxfw_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+
-+	mutex_lock(&oxfw->mutex);
-+	snd_oxfw_stream_stop(oxfw);
-+	mutex_unlock(&oxfw->mutex);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int oxfw_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	int err;
-+
-+	mutex_lock(&oxfw->mutex);
-+
-+	snd_oxfw_stream_stop(oxfw);
-+
-+	err = snd_oxfw_stream_start(oxfw);
-+	if (err < 0)
-+		goto end;
-+
-+	amdtp_stream_pcm_prepare(&oxfw->rx_stream);
-+end:
-+	mutex_unlock(&oxfw->mutex);
-+	return err;
-+}
-+
-+static int oxfw_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	struct snd_pcm_substream *pcm;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		pcm = substream;
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		pcm = NULL;
-+		break;
-+	default:
++	/* last 4 bytes are omitted because it's clock info. */
++	channels = ARRAY_SIZE(fw410_meter_labels) * 2;
++	if (size < channels * sizeof(u32))
 +		return -EINVAL;
-+	}
-+	amdtp_stream_pcm_trigger(&oxfw->rx_stream, pcm);
-+	return 0;
++
++	err = get_meter(bebob, (void *)buf, size);
++	if (err < 0)
++		goto end;
++
++	for (c = 0; c < channels; c++)
++		be32_to_cpus(&buf[c]);
++end:
++	return err;
 +}
 +
-+static snd_pcm_uframes_t oxfw_pointer(struct snd_pcm_substream *substream)
++/* Firewire Audiophile specific operation */
++static char *audiophile_meter_labels[] = {
++	ANA_IN, DIG_IN,
++	ANA_OUT, ANA_OUT, DIG_OUT,
++	HP_OUT, AUX_OUT,
++};
++static int
++audiophile_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
 +{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+
-+	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
-+}
-+
-+int snd_oxfw_create_pcm(struct snd_oxfw *oxfw)
-+{
-+	static struct snd_pcm_ops ops = {
-+		.open      = oxfw_open,
-+		.close     = oxfw_close,
-+		.ioctl     = snd_pcm_lib_ioctl,
-+		.hw_params = oxfw_hw_params,
-+		.hw_free   = oxfw_hw_free,
-+		.prepare   = oxfw_prepare,
-+		.trigger   = oxfw_trigger,
-+		.pointer   = oxfw_pointer,
-+		.page      = snd_pcm_lib_get_vmalloc_page,
-+		.mmap      = snd_pcm_lib_mmap_vmalloc,
-+	};
-+	struct snd_pcm *pcm;
++	unsigned int c, channels;
 +	int err;
 +
-+	err = snd_pcm_new(oxfw->card, oxfw->card->driver, 0, 1, 0, &pcm);
++	/* last 4 bytes are omitted because it's clock info. */
++	channels = ARRAY_SIZE(audiophile_meter_labels) * 2;
++	if (size < channels * sizeof(u32))
++		return -EINVAL;
++
++	err = get_meter(bebob, (void *)buf, size);
 +	if (err < 0)
-+		return err;
-+	pcm->private_data = oxfw;
-+	strcpy(pcm->name, oxfw->card->shortname);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
-+	return 0;
++		goto end;
++
++	for (c = 0; c < channels; c++)
++		be32_to_cpus(&buf[c]);
++end:
++	return err;
 +}
++
++/* Firewire Solo specific operation */
++static char *solo_meter_labels[] = {
++	ANA_IN, DIG_IN,
++	STRM_IN, STRM_IN,
++	ANA_OUT, DIG_OUT
++};
++static int
++solo_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
++{
++	unsigned int c;
++	int err;
++	u32 tmp;
++
++	/* last 4 bytes are omitted because it's clock info. */
++	if (size < ARRAY_SIZE(solo_meter_labels) * 2 * sizeof(u32))
++		return -EINVAL;
++
++	err = get_meter(bebob, (void *)buf, size);
++	if (err < 0)
++		goto end;
++
++	c = 0;
++	do
++		buf[c] = be32_to_cpu(buf[c]);
++	while (++c < 4);
++
++	/* swap stream channels because inverted */
++	tmp = be32_to_cpu(buf[c]);
++	buf[c] = be32_to_cpu(buf[c + 2]);
++	buf[c + 2] = tmp;
++	tmp = be32_to_cpu(buf[c + 1]);
++	buf[c + 1] = be32_to_cpu(buf[c + 3]);
++	buf[c + 3] = tmp;
++
++	c += 4;
++	do
++		be32_to_cpus(&buf[c]);
++	while (++c < 12);
++end:
++	return err;
++}
++
++/* Ozonic specific operation */
++static char *ozonic_meter_labels[] = {
++	ANA_IN, ANA_IN,
++	STRM_IN, STRM_IN,
++	ANA_OUT, ANA_OUT
++};
++static int
++ozonic_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
++{
++	unsigned int c, channels;
++	int err;
++
++	channels = ARRAY_SIZE(ozonic_meter_labels) * 2;
++	if (size < channels * sizeof(u32))
++		return -EINVAL;
++
++	err = get_meter(bebob, (void *)buf, size);
++	if (err < 0)
++		goto end;
++
++	for (c = 0; c < channels; c++)
++		be32_to_cpus(&buf[c]);
++end:
++	return err;
++}
++
++/* NRV10 specific operation */
++/* TODO: need testers. these positions are based on my assumption */
++static char *nrv10_meter_labels[] = {
++	ANA_IN, ANA_IN, ANA_IN, ANA_IN,
++	DIG_IN,
++	ANA_OUT, ANA_OUT, ANA_OUT, ANA_OUT,
++	DIG_IN
++};
++static int
++nrv10_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
++{
++	unsigned int c, channels;
++	int err;
++
++	channels = ARRAY_SIZE(nrv10_meter_labels) * 2;
++	if (size < channels * sizeof(u32))
++		return -EINVAL;
++
++	err = get_meter(bebob, (void *)buf, size);
++	if (err < 0)
++		goto end;
++
++	for (c = 0; c < channels; c++)
++		be32_to_cpus(&buf[c]);
++end:
++	return err;
++}
++
++/* Firewire 410 specification */
++static struct snd_bebob_rate_spec usual_rate_spec = {
++	.get	= &snd_bebob_stream_get_rate,
++	.set	= &snd_bebob_stream_set_rate,
++};
++static struct snd_bebob_meter_spec fw410_meter_spec = {
++	.num	= ARRAY_SIZE(fw410_meter_labels),
++	.labels	= fw410_meter_labels,
++	.get	= &fw410_meter_get
++};
++struct snd_bebob_spec maudio_fw410_spec = {
++	.clock	= NULL,
++	.rate	= &usual_rate_spec,
++	.meter	= &fw410_meter_spec
++};
++
++/* Firewire Audiophile specification */
++static struct snd_bebob_meter_spec audiophile_meter_spec = {
++	.num	= ARRAY_SIZE(audiophile_meter_labels),
++	.labels	= audiophile_meter_labels,
++	.get	= &audiophile_meter_get
++};
++struct snd_bebob_spec maudio_audiophile_spec = {
++	.clock	= NULL,
++	.rate	= &usual_rate_spec,
++	.meter	= &audiophile_meter_spec
++};
++
++/* Firewire Solo specification */
++static struct snd_bebob_meter_spec solo_meter_spec = {
++	.num	= ARRAY_SIZE(solo_meter_labels),
++	.labels	= solo_meter_labels,
++	.get	= &solo_meter_get
++};
++struct snd_bebob_spec maudio_solo_spec = {
++	.clock	= NULL,
++	.rate	= &usual_rate_spec,
++	.meter	= &solo_meter_spec
++};
++
++/* Ozonic specification */
++static struct snd_bebob_meter_spec ozonic_meter_spec = {
++	.num	= ARRAY_SIZE(ozonic_meter_labels),
++	.labels	= ozonic_meter_labels,
++	.get	= &ozonic_meter_get
++};
++struct snd_bebob_spec maudio_ozonic_spec = {
++	.clock	= NULL,
++	.rate	= &usual_rate_spec,
++	.meter	= &ozonic_meter_spec
++};
++
++/* NRV10 specification */
++static struct snd_bebob_meter_spec nrv10_meter_spec = {
++	.num	= ARRAY_SIZE(nrv10_meter_labels),
++	.labels	= nrv10_meter_labels,
++	.get	= &nrv10_meter_get
++};
++struct snd_bebob_spec maudio_nrv10_spec = {
++	.clock	= NULL,
++	.rate	= &usual_rate_spec,
++	.meter	= &nrv10_meter_spec
++};
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 506eb6a8..61dd54e 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -215,6 +215,15 @@ map_stream(struct snd_bebob *bebob, struct amdtp_stream *s)
+ 			/* location of this channel in this section */
+ 			sec_loc = buf[pos++] - 1;
+ 
++			/*
++			 * Basically the number of location is within the
++			 * number of channels in this section. But some models
++			 * of M-Audio don't follow this. Its location for MIDI
++			 * is the position of MIDI channels in AMDTP packet.
++			 */
++			if (sec_loc >= channels)
++				sec_loc = ch;
++
+ 			switch (type) {
+ 			/* for MIDI conformant data channel */
+ 			case 0x0a:
 -- 
 1.8.3.2
 
