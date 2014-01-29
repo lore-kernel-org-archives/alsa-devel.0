@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/52] firewire-lib: Split some codes into functions to reuse
-	for both streams
-Date: Wed, 29 Jan 2014 22:44:11 +0900
-Message-ID: <1391003099-7109-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 06/52] firewire-lib: Add support for MIDI capture/playback
+Date: Wed, 29 Jan 2014 22:44:13 +0900
+Message-ID: <1391003099-7109-7-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,237 +20,217 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Some codes can be reused to handle in stream. This commit adds new functions.
-This commit also renames some functions to keep naming consistency.
+For capturing/playbacking MIDI messages, this commit adds one MIDI conformant
+data channel. This channel supports 8 MPX-MIDI data streams then maximum number
+of supported MIDI ports is limited by 8.
+
+And this commit allows to set PCM format even if AMDTP stream already starts.
+I suppose the case that PCM stream is going to be joined into AMDTP streams after
+AMDTP stream is already started by MIDI. Each driver must count how many MIDI
+substreams use AMDTP stream to stop AMDTP stream.
+
+IEC 61883-6 refers to AMEI/MMA RP-027 for implementation of MIDI conformant
+data. In the specification, 'MIDI1.0-2x/3x-SPEED' mode are described with
+'negotiation procedure' and 'encapsulation details'. But there is no
+specifications to define them. This module implement 'MIDI1.0-1x-SPEED' mode.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 156 ++++++++++++++++++++++++++-----------------------
- 1 file changed, 82 insertions(+), 74 deletions(-)
+ sound/firewire/amdtp.c | 63 ++++++++++++++++++++++++++++++++++++++++++--------
+ sound/firewire/amdtp.h | 43 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 96 insertions(+), 10 deletions(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 95c5a15..ca79cb4 100644
+index 4ebfd67..ad3521f 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -47,6 +47,8 @@
- #define INTERRUPT_INTERVAL	16
- #define QUEUE_LENGTH		48
+@@ -12,6 +12,7 @@
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <sound/pcm.h>
++#include <sound/rawmidi.h>
+ #include "amdtp.h"
  
-+#define OUT_PACKET_HEADER_SIZE	0
-+
- static void pcm_period_tasklet(unsigned long data);
+ #define TICKS_PER_CYCLE		3072
+@@ -123,9 +124,12 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
+ 		[CIP_SFC_176400] = 176400,
+ 		[CIP_SFC_192000] = 192000,
+ 	};
+-	unsigned int sfc;
++	unsigned int sfc, midi_channels;
  
- /**
-@@ -440,13 +442,74 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
- 						cpu_to_be32(0x80000000);
- }
+-	if (WARN_ON(amdtp_stream_running(s)))
++	midi_channels = DIV_ROUND_UP(midi_ports, 8);
++
++	if (WARN_ON(amdtp_stream_running(s)) ||
++	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
+ 		return;
  
--static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
-+static void update_pcm_pointers(struct amdtp_stream *s,
-+				struct snd_pcm_substream *pcm,
-+				unsigned int frames)
-+{	unsigned int ptr;
+ 	for (sfc = 0; sfc < CIP_SFC_COUNT; ++sfc)
+@@ -142,7 +146,7 @@ sfc_found:
+ 		pcm_channels *= 2;
+ 	}
+ 	s->sfc = sfc;
+-	s->data_block_quadlets = pcm_channels + DIV_ROUND_UP(midi_ports, 8);
++	s->data_block_quadlets = pcm_channels + midi_channels;
+ 	s->pcm_channels = pcm_channels;
+ 	s->midi_ports = midi_ports;
+ 
+@@ -200,7 +204,7 @@ static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
+ void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
+ 				 snd_pcm_format_t format)
+ {
+-	if (WARN_ON(amdtp_stream_running(s)))
++	if (WARN_ON(amdtp_stream_pcm_running(s)))
+ 		return;
+ 
+ 	switch (format) {
+@@ -505,11 +509,46 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
+ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 			    __be32 *buffer, unsigned int frames)
+ {
+-	unsigned int i;
++	unsigned int f, port;
++	u8 *b;
 +
-+	if (s->dual_wire)
-+		frames *= 2;
++	for (f = 0; f < frames; f++) {
++		buffer[s->pcm_channels + 1] = 0x00;
++		b = (u8 *)&buffer[s->pcm_channels + 1];
 +
-+	ptr = s->pcm_buffer_pointer + frames;
-+	if (ptr >= pcm->runtime->buffer_size)
-+		ptr -= pcm->runtime->buffer_size;
-+	ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
-+
-+	s->pcm_period_pointer += frames;
-+	if (s->pcm_period_pointer >= pcm->runtime->period_size) {
-+		s->pcm_period_pointer -= pcm->runtime->period_size;
-+		s->pointer_flush = false;
-+		tasklet_hi_schedule(&s->period_tasklet);
++		port = (s->data_block_counter + f) % 8;
++		if ((s->midi[port] == NULL) ||
++		    (snd_rawmidi_transmit(s->midi[port], b + 1, 1) <= 0)) {
++			b[0] = 0x80;
++			b[1] = 0x00;	/* confirm to be zero */
++		} else {
++			b[0] = 0x81;
++		}
++		buffer += s->data_block_quadlets;
 +	}
 +}
 +
-+static void pcm_period_tasklet(unsigned long data)
++static void amdtp_pull_midi(struct amdtp_stream *s,
++			    __be32 *buffer, unsigned int frames)
 +{
-+	struct amdtp_stream *s = (void *)data;
-+	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
++	unsigned int f, port;
++	int len;
++	u8 *b;
++
++	for (f = 0; f < frames; f++) {
++		port = (s->data_block_counter + f) % 8;
++		b = (u8 *)&buffer[s->pcm_channels + 1];
++
++		len = b[0] - 0x80;
++		if (len < 1 || 3 < len)
++			continue;
+ 
+-	for (i = 0; i < frames; ++i)
+-		buffer[s->pcm_channels + i * s->data_block_quadlets] =
+-						cpu_to_be32(0x80000000);
++		if (s->midi[port] == NULL)
++			continue;
++
++		snd_rawmidi_receive(s->midi[port], b + 1, len);
++		buffer += s->data_block_quadlets;
++	}
+ }
+ 
+ static void update_pcm_pointers(struct amdtp_stream *s,
+@@ -683,10 +722,14 @@ static void handle_in_packet(struct amdtp_stream *s,
+ 	buffer += 2;
+ 
+ 	pcm = ACCESS_ONCE(s->pcm);
+-	if (pcm) {
++	if (pcm)
+ 		s->transfer_samples(s, pcm, buffer, data_blocks);
++
++	if (s->midi_ports)
++		amdtp_pull_midi(s, buffer, data_blocks);
 +
 +	if (pcm)
-+		snd_pcm_period_elapsed(pcm);
-+}
-+
-+static int queue_packet(struct amdtp_stream *s,
-+			unsigned int header_length,
-+			unsigned int payload_length, bool skip)
-+{
-+	struct fw_iso_packet p = {0};
-+	int err;
-+
-+	p.interrupt = IS_ALIGNED(s->packet_index + 1, INTERRUPT_INTERVAL);
-+	p.tag = TAG_CIP;
-+	p.header_length = header_length;
-+	p.payload_length = (!skip) ? payload_length : 0;
-+	p.skip = skip;
-+	err = fw_iso_context_queue(s->context, &p, &s->buffer.iso_buffer,
-+				   s->buffer.packets[s->packet_index].offset);
-+	if (err < 0) {
-+		dev_err(&s->unit->device, "queueing error: %d\n", err);
-+		s->packet_index = -1;
-+		goto end;
-+	}
-+
-+	if (++s->packet_index >= QUEUE_LENGTH)
-+		s->packet_index = 0;
-+end:
-+	return err;
-+}
-+
-+static inline int queue_out_packet(struct amdtp_stream *s,
-+				   unsigned int payload_length, bool skip)
-+{
-+	return queue_packet(s, OUT_PACKET_HEADER_SIZE,
-+			    payload_length, skip);
-+}
-+
-+static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
- {
- 	__be32 *buffer;
--	unsigned int index, data_blocks, syt, ptr;
-+	unsigned int index, data_blocks, syt, payload_length;
- 	struct snd_pcm_substream *pcm;
--	struct fw_iso_packet packet;
--	int err;
- 
- 	if (s->packet_index < 0)
- 		return;
-@@ -479,55 +542,19 @@ static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
- 
- 	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
- 
--	packet.payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
--	packet.interrupt = IS_ALIGNED(index + 1, INTERRUPT_INTERVAL);
--	packet.skip = 0;
--	packet.tag = TAG_CIP;
--	packet.sy = 0;
--	packet.header_length = 0;
--
--	err = fw_iso_context_queue(s->context, &packet, &s->buffer.iso_buffer,
--				   s->buffer.packets[index].offset);
--	if (err < 0) {
--		dev_err(&s->unit->device, "queueing error: %d\n", err);
--		s->packet_index = -1;
-+	payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
-+	if (queue_out_packet(s, payload_length, false) < 0) {
- 		amdtp_stream_pcm_abort(s);
- 		return;
- 	}
- 
--	if (++index >= QUEUE_LENGTH)
--		index = 0;
--	s->packet_index = index;
--
--	if (pcm) {
--		if (s->dual_wire)
--			data_blocks *= 2;
--
--		ptr = s->pcm_buffer_pointer + data_blocks;
--		if (ptr >= pcm->runtime->buffer_size)
--			ptr -= pcm->runtime->buffer_size;
--		ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
--
--		s->pcm_period_pointer += data_blocks;
--		if (s->pcm_period_pointer >= pcm->runtime->period_size) {
--			s->pcm_period_pointer -= pcm->runtime->period_size;
--			s->pointer_flush = false;
--			tasklet_hi_schedule(&s->period_tasklet);
--		}
+ 		update_pcm_pointers(s, pcm, data_blocks);
 -	}
--}
--
--static void pcm_period_tasklet(unsigned long data)
--{
--	struct amdtp_stream *s = (void *)data;
--	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
--
- 	if (pcm)
--		snd_pcm_period_elapsed(pcm);
-+		update_pcm_pointers(s, pcm, data_blocks);
  }
  
--static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
--			size_t header_length, void *header, void *private_data)
-+static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
-+				size_t header_length, void *header,
-+				void *private_data)
- {
- 	struct amdtp_stream *s = private_data;
- 	unsigned int i, packets = header_length / 4;
-@@ -540,31 +567,10 @@ static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
- 	cycle += QUEUE_LENGTH - packets;
+ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index 019134e..96f25f9 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -44,9 +44,21 @@ enum cip_sfc {
+ #define AMDTP_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
+ 					 SNDRV_PCM_FMTBIT_S32)
  
- 	for (i = 0; i < packets; ++i)
--		queue_out_packet(s, ++cycle);
-+		handle_out_packet(s, ++cycle);
- 	fw_iso_context_queue_flush(s->context);
++
++/*
++ * AMDTP packet can include channels for MIDI conformant data.
++ * Each MIDI conformant data channel includes 8 MPX-MIDI data stream.
++ * Each MPX-MIDI data stream includes one data stream from/to MIDI ports.
++ *
++ * This module supports maximum 1 MIDI conformant data channels.
++ * Then this AMDTP packets can transfer maximum 8 MIDI data streams.
++ */
++#define AMDTP_MAX_CHANNELS_FOR_MIDI	1
++
+ struct fw_unit;
+ struct fw_iso_context;
+ struct snd_pcm_substream;
++struct snd_rawmidi_substream;
+ 
+ enum amdtp_stream_direction {
+ 	AMDTP_OUT_STREAM = 0,
+@@ -88,6 +100,8 @@ struct amdtp_stream {
+ 	unsigned int pcm_buffer_pointer;
+ 	unsigned int pcm_period_pointer;
+ 	bool pointer_flush;
++
++	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
+ };
+ 
+ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+@@ -137,6 +151,17 @@ static inline bool amdtp_streaming_error(struct amdtp_stream *s)
  }
  
--static int queue_initial_skip_packets(struct amdtp_stream *s)
--{
--	struct fw_iso_packet skip_packet = {
--		.skip = 1,
--	};
--	unsigned int i;
--	int err;
--
--	for (i = 0; i < QUEUE_LENGTH; ++i) {
--		skip_packet.interrupt = IS_ALIGNED(s->packet_index + 1,
--						   INTERRUPT_INTERVAL);
--		err = fw_iso_context_queue(s->context, &skip_packet, NULL, 0);
--		if (err < 0)
--			return err;
--		if (++s->packet_index >= QUEUE_LENGTH)
--			s->packet_index = 0;
--	}
--
--	return 0;
--}
--
  /**
-  * amdtp_stream_start - start transferring packets
-  * @s: the AMDTP stream to start
-@@ -594,7 +600,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	mutex_lock(&s->mutex);
++ * amdtp_stream_pcm_running - check PCM stream is running or not
++ * @s: the AMDTP stream
++ *
++ * If this function returns true, PCM stream in the stream is running.
++ */
++static inline bool amdtp_stream_pcm_running(struct amdtp_stream *s)
++{
++	return !IS_ERR_OR_NULL(s->pcm);
++}
++
++/**
+  * amdtp_stream_pcm_trigger - start/stop playback from a PCM device
+  * @s: the AMDTP stream
+  * @pcm: the PCM device to be started, or %NULL to stop the current device
+@@ -151,6 +176,24 @@ static inline void amdtp_stream_pcm_trigger(struct amdtp_stream *s,
+ 	ACCESS_ONCE(s->pcm) = pcm;
+ }
  
- 	if (WARN_ON(amdtp_stream_running(s) ||
--		    (!s->pcm_channels && !s->midi_ports))) {
-+		    (s->data_block_quadlets < 1))) {
- 		err = -EBADFD;
- 		goto err_unlock;
- 	}
-@@ -612,7 +618,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
- 					   FW_ISO_CONTEXT_TRANSMIT,
- 					   channel, speed, 0,
--					   out_packet_callback, s);
-+					   out_stream_callback, s);
- 	if (IS_ERR(s->context)) {
- 		err = PTR_ERR(s->context);
- 		if (err == -EBUSY)
-@@ -624,11 +630,13 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	amdtp_stream_update(s);
- 
- 	s->packet_index = 0;
--	s->data_block_counter = 0;
--	err = queue_initial_skip_packets(s);
--	if (err < 0)
--		goto err_context;
-+	do {
-+		err = queue_out_packet(s, 0, true);
-+		if (err < 0)
-+			goto err_context;
-+	} while (s->packet_index > 0);
- 
-+	s->data_block_counter = 0;
- 	err = fw_iso_context_start(s->context, -1, 0, 0);
- 	if (err < 0)
- 		goto err_context;
++/**
++ * amdtp_stream_midi_trigger - start/stop playback/capture with a MIDI device
++ * @s: the AMDTP stream
++ * @port: index of MIDI port
++ * @midi: the MIDI device to be started, or %NULL to stop the current device
++ *
++ * Call this function on a running isochronous stream to enable the actual
++ * transmission of MIDI data.  This function should be called from the MIDI
++ * device's .trigger callback.
++ */
++static inline void amdtp_stream_midi_trigger(struct amdtp_stream *s,
++					     unsigned int port,
++					     struct snd_rawmidi_substream *midi)
++{
++	if (port < s->midi_ports)
++		ACCESS_ONCE(s->midi[port]) = midi;
++}
++
+ static inline bool cip_sfc_is_base_44100(enum cip_sfc sfc)
+ {
+ 	return sfc & 1;
 -- 
 1.8.3.2
 
