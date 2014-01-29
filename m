@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/52] firewire-lib: Add handling output connection by CMP
-Date: Wed, 29 Jan 2014 22:44:21 +0900
-Message-ID: <1391003099-7109-15-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 12/52] firewire-lib: Rename macros,
+	variables and functions for CMP
+Date: Wed, 29 Jan 2014 22:44:19 +0900
+Message-ID: <1391003099-7109-13-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,191 +21,233 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds some macros, codes with condition of direction and new functions
-to handle output connection. Once cmp_connection_init() is executed with its
-direction, CMP input and output connection can be handled by the same way.
+Referring to IEC 61883-1, oMPR and iMPR, oPCR and iPCR have some fields with
+the same role in the same position. This patch renames some macros, variables
+and function arguments with "i" in its prefix to reuse them between oMPR and
+iMPR, oPCR and iPCR.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/cmp.c | 113 +++++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 104 insertions(+), 9 deletions(-)
+ sound/firewire/cmp.c | 91 ++++++++++++++++++++++++++--------------------------
+ sound/firewire/cmp.h |  6 ++--
+ 2 files changed, 49 insertions(+), 48 deletions(-)
 
 diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
-index 1430fec..00b1b2d 100644
+index efdbf58..17ad4f2 100644
 --- a/sound/firewire/cmp.c
 +++ b/sound/firewire/cmp.c
-@@ -29,6 +29,16 @@
- #define PCR_CHANNEL_MASK	0x003f0000
- #define PCR_CHANNEL_SHIFT	16
+@@ -14,18 +14,20 @@
+ #include "iso-resources.h"
+ #include "cmp.h"
  
-+/* oPCR specific fields */
-+#define OPCR_XSPEED_MASK	0x00C00000
-+#define OPCR_XSPEED_SHIFT	22
-+#define OPCR_SPEED_MASK		0x0000C000
-+#define OPCR_SPEED_SHIFT	14
-+#define OPCR_OVERHEAD_ID_MASK	0x00003C00
-+#define OPCR_OVERHEAD_ID_SHIFT	10
-+#define OPCR_PAYLOAD_MASK	0x000003FF
-+#define OPCR_PAYLOAD_SHIFT	0
+-#define IMPR_SPEED_MASK		0xc0000000
+-#define IMPR_SPEED_SHIFT	30
+-#define IMPR_XSPEED_MASK	0x00000060
+-#define IMPR_XSPEED_SHIFT	5
+-#define IMPR_PLUGS_MASK		0x0000001f
+-
+-#define IPCR_ONLINE		0x80000000
+-#define IPCR_BCAST_CONN		0x40000000
+-#define IPCR_P2P_CONN_MASK	0x3f000000
+-#define IPCR_P2P_CONN_SHIFT	24
+-#define IPCR_CHANNEL_MASK	0x003f0000
+-#define IPCR_CHANNEL_SHIFT	16
++/* MPR common fields */
++#define MPR_SPEED_MASK		0xc0000000
++#define MPR_SPEED_SHIFT		30
++#define MPR_XSPEED_MASK		0x00000060
++#define MPR_XSPEED_SHIFT	5
++#define MPR_PLUGS_MASK		0x0000001f
 +
++/* PCR common fields */
++#define PCR_ONLINE		0x80000000
++#define PCR_BCAST_CONN		0x40000000
++#define PCR_P2P_CONN_MASK	0x3f000000
++#define PCR_P2P_CONN_SHIFT	24
++#define PCR_CHANNEL_MASK	0x003f0000
++#define PCR_CHANNEL_SHIFT	16
+ 
  enum bus_reset_handling {
  	ABORT_ON_BUS_RESET,
- 	SUCCEED_ON_BUS_RESET,
-@@ -41,10 +51,30 @@ void cmp_error(struct cmp_connection *c, const char *fmt, ...)
- 
- 	va_start(va, fmt);
- 	dev_err(&c->resources.unit->device, "%cPCR%u: %pV",
--		'i', c->pcr_index, &(struct va_format){ fmt, &va });
-+		(c->direction == CMP_INPUT) ? 'i' : 'o',
-+		c->pcr_index, &(struct va_format){ fmt, &va });
- 	va_end(va);
- }
- 
-+static unsigned long long get_offset(struct cmp_connection *c, bool master)
-+{
-+	unsigned long long offset = CSR_REGISTER_BASE;
-+
-+	if (!master) {
-+		if (c->direction == CMP_INPUT)
-+			offset += CSR_IPCR(c->pcr_index);
-+		else
-+			offset += CSR_OPCR(c->pcr_index);
-+	} else {
-+		if (c->direction == CMP_INPUT)
-+			offset += CSR_IMPR;
-+		else
-+			offset += CSR_OMPR;
-+	}
-+
-+	return offset;
-+}
-+
- static int pcr_modify(struct cmp_connection *c,
- 		      __be32 (*modify)(struct cmp_connection *c, __be32 old),
- 		      int (*check)(struct cmp_connection *c, __be32 pcr),
-@@ -60,8 +90,7 @@ static int pcr_modify(struct cmp_connection *c,
- 
- 		err = snd_fw_transaction(
- 				c->resources.unit, TCODE_LOCK_COMPARE_SWAP,
--				CSR_REGISTER_BASE + CSR_IPCR(c->pcr_index),
--				buffer, 8,
-+				get_offset(c, false), buffer, 8,
- 				FW_FIXED_GENERATION | c->resources.generation);
- 
- 		if (err < 0) {
-@@ -102,8 +131,7 @@ int cmp_connection_init(struct cmp_connection *c,
+@@ -88,24 +90,24 @@ static int pcr_modify(struct cmp_connection *c,
+  * cmp_connection_init - initializes a connection manager
+  * @c: the connection manager to initialize
+  * @unit: a unit of the target device
+- * @ipcr_index: the index of the iPCR on the target device
++ * @pcr_index: the index of the iPCR/oPCR on the target device
+  */
+ int cmp_connection_init(struct cmp_connection *c,
+ 			struct fw_unit *unit,
+-			unsigned int ipcr_index)
++			unsigned int pcr_index)
+ {
+-	__be32 impr_be;
+-	u32 impr;
++	__be32 mpr_be;
++	u32 mpr;
  	int err;
  
  	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
--				 CSR_REGISTER_BASE + CSR_IMPR,
--				 &mpr_be, 4, 0);
-+				 get_offset(c, true), &mpr_be, 4, 0);
+ 				 CSR_REGISTER_BASE + CSR_IMPR,
+-				 &impr_be, 4, 0);
++				 &mpr_be, 4, 0);
  	if (err < 0)
  		return err;
- 	mpr = be32_to_cpu(mpr_be);
-@@ -122,6 +150,7 @@ int cmp_connection_init(struct cmp_connection *c,
- 	c->max_speed = (mpr & MPR_SPEED_MASK) >> MPR_SPEED_SHIFT;
+-	impr = be32_to_cpu(impr_be);
++	mpr = be32_to_cpu(mpr_be);
+ 
+-	if (ipcr_index >= (impr & IMPR_PLUGS_MASK))
++	if (pcr_index >= (mpr & MPR_PLUGS_MASK))
+ 		return -EINVAL;
+ 
+ 	err = fw_iso_resources_init(&c->resources, unit);
+@@ -115,10 +117,10 @@ int cmp_connection_init(struct cmp_connection *c,
+ 	c->connected = false;
+ 	mutex_init(&c->mutex);
+ 	c->last_pcr_value = cpu_to_be32(0x80000000);
+-	c->pcr_index = ipcr_index;
+-	c->max_speed = (impr & IMPR_SPEED_MASK) >> IMPR_SPEED_SHIFT;
++	c->pcr_index = pcr_index;
++	c->max_speed = (mpr & MPR_SPEED_MASK) >> MPR_SPEED_SHIFT;
  	if (c->max_speed == SCODE_BETA)
- 		c->max_speed += (mpr & MPR_XSPEED_MASK) >> MPR_XSPEED_SHIFT;
-+	c->direction = direction;
+-		c->max_speed += (impr & IMPR_XSPEED_MASK) >> IMPR_XSPEED_SHIFT;
++		c->max_speed += (mpr & MPR_XSPEED_MASK) >> MPR_XSPEED_SHIFT;
  
  	return 0;
  }
-@@ -151,6 +180,62 @@ static __be32 ipcr_set_modify(struct cmp_connection *c, __be32 ipcr)
+@@ -139,23 +141,23 @@ EXPORT_SYMBOL(cmp_connection_destroy);
+ 
+ static __be32 ipcr_set_modify(struct cmp_connection *c, __be32 ipcr)
+ {
+-	ipcr &= ~cpu_to_be32(IPCR_BCAST_CONN |
+-			     IPCR_P2P_CONN_MASK |
+-			     IPCR_CHANNEL_MASK);
+-	ipcr |= cpu_to_be32(1 << IPCR_P2P_CONN_SHIFT);
+-	ipcr |= cpu_to_be32(c->resources.channel << IPCR_CHANNEL_SHIFT);
++	ipcr &= ~cpu_to_be32(PCR_BCAST_CONN |
++			     PCR_P2P_CONN_MASK |
++			     PCR_CHANNEL_MASK);
++	ipcr |= cpu_to_be32(1 << PCR_P2P_CONN_SHIFT);
++	ipcr |= cpu_to_be32(c->resources.channel << PCR_CHANNEL_SHIFT);
+ 
  	return ipcr;
  }
  
-+static int get_overhead_id(struct cmp_connection *c)
-+{
-+	int id;
-+
-+	/*
-+	 * apply "oPCR overhead ID encoding"
-+	 * the encoding table can convert up to 512.
-+	 * here the value over 512 is converted as the same way as 512.
-+	 */
-+	for (id = 1; id < 16; id++) {
-+		if (c->resources.bandwidth_overhead < (id << 5))
-+			break;
-+	}
-+	if (id == 16)
-+		id = 0;
-+
-+	return id;
-+}
-+
-+static __be32 opcr_set_modify(struct cmp_connection *c, __be32 opcr)
-+{
-+	unsigned int spd, xspd;
-+
-+	/* generate speed and extended speed field value */
-+	if (c->speed > SCODE_400) {
-+		spd  = SCODE_800;
-+		xspd = c->speed - SCODE_800;
-+	} else {
-+		spd = c->speed;
-+		xspd = 0;
-+	}
-+
-+	opcr &= ~cpu_to_be32(PCR_BCAST_CONN |
-+			     PCR_P2P_CONN_MASK |
-+			     OPCR_XSPEED_MASK |
-+			     PCR_CHANNEL_MASK |
-+			     OPCR_SPEED_MASK |
-+			     OPCR_OVERHEAD_ID_MASK |
-+			     OPCR_PAYLOAD_MASK);
-+	opcr |= cpu_to_be32(1 << PCR_P2P_CONN_SHIFT);
-+	opcr |= cpu_to_be32(xspd << OPCR_XSPEED_SHIFT);
-+	opcr |= cpu_to_be32(c->resources.channel << PCR_CHANNEL_SHIFT);
-+	opcr |= cpu_to_be32(spd << OPCR_SPEED_SHIFT);
-+	opcr |= cpu_to_be32(get_overhead_id(c) << OPCR_OVERHEAD_ID_SHIFT);
-+	/*
-+	 * here zero is applied to payload field.
-+	 * it means the maximum number of quadlets in an isochronous packet is
-+	 * 1024 when spd is less than three, 1024 * 2 * xspd + 1 when spd is
-+	 * equal to three. An arbitrary value can be set here but 0 is enough
-+	 * for our purpose.
-+	 */
-+	opcr |= cpu_to_be32(0 << OPCR_PAYLOAD_SHIFT);
-+
-+	return opcr;
-+}
-+
- static int pcr_set_check(struct cmp_connection *c, __be32 pcr)
+-static int ipcr_set_check(struct cmp_connection *c, __be32 ipcr)
++static int pcr_set_check(struct cmp_connection *c, __be32 pcr)
  {
- 	if (pcr & cpu_to_be32(PCR_BCAST_CONN |
-@@ -196,8 +281,13 @@ retry_after_bus_reset:
+-	if (ipcr & cpu_to_be32(IPCR_BCAST_CONN |
+-			       IPCR_P2P_CONN_MASK)) {
++	if (pcr & cpu_to_be32(PCR_BCAST_CONN |
++			       PCR_P2P_CONN_MASK)) {
+ 		cmp_error(c, "plug is already in use\n");
+ 		return -EBUSY;
+ 	}
+-	if (!(ipcr & cpu_to_be32(IPCR_ONLINE))) {
++	if (!(pcr & cpu_to_be32(PCR_ONLINE))) {
+ 		cmp_error(c, "plug is not on-line\n");
+ 		return -ECONNREFUSED;
+ 	}
+@@ -170,9 +172,9 @@ static int ipcr_set_check(struct cmp_connection *c, __be32 ipcr)
+  *
+  * This function establishes a point-to-point connection from the local
+  * computer to the target by allocating isochronous resources (channel and
+- * bandwidth) and setting the target's input plug control register.  When this
+- * function succeeds, the caller is responsible for starting transmitting
+- * packets.
++ * bandwidth) and setting the target's input/output plug control register.
++ * When this function succeeds, the caller is responsible for starting
++ * transmitting packets.
+  */
+ int cmp_connection_establish(struct cmp_connection *c,
+ 			     unsigned int max_payload_bytes)
+@@ -193,7 +195,7 @@ retry_after_bus_reset:
  	if (err < 0)
  		goto err_mutex;
  
--	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
--			 ABORT_ON_BUS_RESET);
-+	if (c->direction == CMP_OUTPUT)
-+		err = pcr_modify(c, opcr_set_modify, pcr_set_check,
-+				 ABORT_ON_BUS_RESET);
-+	else
-+		err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
-+				 ABORT_ON_BUS_RESET);
-+
+-	err = pcr_modify(c, ipcr_set_modify, ipcr_set_check,
++	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+ 			 ABORT_ON_BUS_RESET);
  	if (err == -EAGAIN) {
  		fw_iso_resources_free(&c->resources);
- 		goto retry_after_bus_reset;
-@@ -245,8 +335,13 @@ int cmp_connection_update(struct cmp_connection *c)
+@@ -221,8 +223,8 @@ EXPORT_SYMBOL(cmp_connection_establish);
+  * cmp_connection_update - update the connection after a bus reset
+  * @c: the connection manager
+  *
+- * This function must be called from the driver's .update handler to reestablish
+- * any connection that might have been active.
++ * This function must be called from the driver's .update handler to
++ * reestablish any connection that might have been active.
+  *
+  * Returns zero on success, or a negative error code.  On an error, the
+  * connection is broken and the caller must stop transmitting iso packets.
+@@ -242,7 +244,7 @@ int cmp_connection_update(struct cmp_connection *c)
  	if (err < 0)
  		goto err_unconnect;
  
--	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
--			 SUCCEED_ON_BUS_RESET);
-+	if (c->direction == CMP_OUTPUT)
-+		err = pcr_modify(c, opcr_set_modify, pcr_set_check,
-+				 SUCCEED_ON_BUS_RESET);
-+	else
-+		err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
-+				 SUCCEED_ON_BUS_RESET);
-+
+-	err = pcr_modify(c, ipcr_set_modify, ipcr_set_check,
++	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+ 			 SUCCEED_ON_BUS_RESET);
  	if (err < 0)
  		goto err_resources;
+@@ -261,19 +263,18 @@ err_unconnect:
+ }
+ EXPORT_SYMBOL(cmp_connection_update);
  
+-
+-static __be32 ipcr_break_modify(struct cmp_connection *c, __be32 ipcr)
++static __be32 pcr_break_modify(struct cmp_connection *c, __be32 pcr)
+ {
+-	return ipcr & ~cpu_to_be32(IPCR_BCAST_CONN | IPCR_P2P_CONN_MASK);
++	return pcr & ~cpu_to_be32(PCR_BCAST_CONN | PCR_P2P_CONN_MASK);
+ }
+ 
+ /**
+  * cmp_connection_break - break the connection to the target
+  * @c: the connection manager
+  *
+- * This function deactives the connection in the target's input plug control
+- * register, and frees the isochronous resources of the connection.  Before
+- * calling this function, the caller should cease transmitting packets.
++ * This function deactives the connection in the target's input/output plug
++ * control register, and frees the isochronous resources of the connection.
++ * Before calling this function, the caller should cease transmitting packets.
+  */
+ void cmp_connection_break(struct cmp_connection *c)
+ {
+@@ -286,7 +287,7 @@ void cmp_connection_break(struct cmp_connection *c)
+ 		return;
+ 	}
+ 
+-	err = pcr_modify(c, ipcr_break_modify, NULL, SUCCEED_ON_BUS_RESET);
++	err = pcr_modify(c, pcr_break_modify, NULL, SUCCEED_ON_BUS_RESET);
+ 	if (err < 0)
+ 		cmp_error(c, "plug is still connected\n");
+ 
+diff --git a/sound/firewire/cmp.h b/sound/firewire/cmp.h
+index f47de08..2320cd4 100644
+--- a/sound/firewire/cmp.h
++++ b/sound/firewire/cmp.h
+@@ -11,8 +11,8 @@ struct fw_unit;
+  * struct cmp_connection - manages an isochronous connection to a device
+  * @speed: the connection's actual speed
+  *
+- * This structure manages (using CMP) an isochronous stream from the local
+- * computer to a device's input plug (iPCR).
++ * This structure manages (using CMP) an isochronous stream between the local
++ * computer and a device's input plug (iPCR) and output plug (oPCR).
+  *
+  * There is no corresponding oPCR created on the local computer, so it is not
+  * possible to overlay connections on top of this one.
+@@ -30,7 +30,7 @@ struct cmp_connection {
+ 
+ int cmp_connection_init(struct cmp_connection *connection,
+ 			struct fw_unit *unit,
+-			unsigned int ipcr_index);
++			unsigned int pcr_index);
+ void cmp_connection_destroy(struct cmp_connection *connection);
+ 
+ int cmp_connection_establish(struct cmp_connection *connection,
 -- 
 1.8.3.2
 
