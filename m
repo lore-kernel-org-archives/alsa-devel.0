@@ -1,12 +1,11 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 02/52] firewire-lib: Add macros instead of fixed value for
-	AMDTP
-Date: Wed, 29 Jan 2014 22:44:09 +0900
-Message-ID: <1391003099-7109-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 14/52] firewire-lib: Add handling output connection by CMP
+Date: Wed, 29 Jan 2014 22:44:21 +0900
+Message-ID: <1391003099-7109-15-git-send-email-o-takashi@sakamocchi.jp>
 References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
 In-Reply-To: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
@@ -21,57 +20,198 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCBhZGRzIHNvbWUgbWFjcm9zIGluc3RlYWQgb2YgZml4ZWQgdmFsdWUgZm9yIEFN
-RFRQIGluIElFQyA2MTg4My02LgpUaGVzZSBtYWNyb3Mgd2lsbCBhbHNvIGJlIHVzZWQgYnkgZm9s
-bG93ZWQgcGF0Y2hlcy4KClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNo
-aUBzYWthbW9jY2hpLmpwPgotLS0KIHNvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgfCAzMCArKysrKysr
-KysrKysrKysrKysrKysrKy0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCsp
-LCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgYi9z
-b3VuZC9maXJld2lyZS9hbWR0cC5jCmluZGV4IDE2ZmU4NTguLjM4MDEzZjkgMTAwNjQ0Ci0tLSBh
-L3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKKysrIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuYwpAQCAt
-MjAsMTIgKzIwLDI4IEBACiAKICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgyZTAwIC8q
-IDQ3OS4xNyDCtXMgKi8KIAorLyogaXNvY2hyb25vdXMgaGVhZGVyIHBhcmFtZXRlcnMgKi8KKyNk
-ZWZpbmUgSVNPX0RBVEFfTEVOR1RIX1NISUZUCTE2CiAjZGVmaW5lIFRBR19DSVAJCQkxCiAKKy8q
-IGNvbW1vbiBpc29jaHJvbm91cyBwYWNrZXQgaGVhZGVyIHBhcmFtZXRlcnMgKi8KICNkZWZpbmUg
-Q0lQX0VPSAkJCSgxdSA8PCAzMSkKKyNkZWZpbmUgQ0lQX0VPSF9NQVNLCQkweDgwMDAwMDAwCiAj
-ZGVmaW5lIENJUF9GTVRfQU0JCSgweDEwIDw8IDI0KQotI2RlZmluZSBBTURUUF9GREZfQU04MjQJ
-CSgwIDw8IDE5KQotI2RlZmluZSBBTURUUF9GREZfU0ZDX1NISUZUCTE2CisjZGVmaW5lIENJUF9G
-TVRfTUFTSwkJMHgzZjAwMDAwMAorI2RlZmluZSBDSVBfU1lUX01BU0sJCTB4MDAwMGZmZmYKKyNk
-ZWZpbmUgQ0lQX1NZVF9OT19JTkZPCQkweGZmZmYKKyNkZWZpbmUgQ0lQX0ZERl9NQVNLCQkweDAw
-ZmYwMDAwCisjZGVmaW5lIENJUF9GREZfU0ZDX1NISUZUCTE2CisKKy8qCisgKiBBdWRpbyBhbmQg
-TXVzaWMgdHJhbnNmZXIgcHJvdG9jb2wgc3BlY2lmaWMgcGFyYW1ldGVycworICogb25seSAiQ2xv
-Y2stYmFzZWQgcmF0ZSBjb250cm9sIG1vZGUiIGlzIHN1cHBvcnRlZAorICovCisjZGVmaW5lIEFN
-RFRQX0ZERl9BTTgyNAkJKDAgPDwgKENJUF9GREZfU0ZDX1NISUZUICsgMykpCisjZGVmaW5lIEFN
-RFRQX0RCU19NQVNLCQkweDAwZmYwMDAwCisjZGVmaW5lIEFNRFRQX0RCU19TSElGVAkJMTYKKyNk
-ZWZpbmUgQU1EVFBfREJDX01BU0sJCTB4MDAwMDAwZmYKIAogLyogVE9ETzogbWFrZSB0aGVzZSBj
-b25maWd1cmFibGUgKi8KICNkZWZpbmUgSU5URVJSVVBUX0lOVEVSVkFMCTE2CkBAIC0yODAsOSAr
-Mjk2LDkgQEAgc3RhdGljIHVuc2lnbmVkIGludCBjYWxjdWxhdGVfc3l0KHN0cnVjdCBhbWR0cF9z
-dHJlYW0gKnMsCiAJCXN5dCA9IChjeWNsZSArIHN5dF9vZmZzZXQgLyBUSUNLU19QRVJfQ1lDTEUp
-IDw8IDEyOwogCQlzeXQgKz0gc3l0X29mZnNldCAlIFRJQ0tTX1BFUl9DWUNMRTsKIAotCQlyZXR1
-cm4gc3l0ICYgMHhmZmZmOworCQlyZXR1cm4gc3l0ICYgQ0lQX1NZVF9NQVNLOwogCX0gZWxzZSB7
-Ci0JCXJldHVybiAweGZmZmY7IC8qIG5vIGluZm8gKi8KKwkJcmV0dXJuIENJUF9TWVRfTk9fSU5G
-TzsKIAl9CiB9CiAKQEAgLTQzOCwxNyArNDU0LDE3IEBAIHN0YXRpYyB2b2lkIHF1ZXVlX291dF9w
-YWNrZXQoc3RydWN0IGFtZHRwX3N0cmVhbSAqcywgdW5zaWduZWQgaW50IGN5Y2xlKQogCXN5dCA9
-IGNhbGN1bGF0ZV9zeXQocywgY3ljbGUpOwogCWlmICghKHMtPmZsYWdzICYgQ0lQX0JMT0NLSU5H
-KSkKIAkJZGF0YV9ibG9ja3MgPSBjYWxjdWxhdGVfZGF0YV9ibG9ja3Mocyk7Ci0JZWxzZSBpZiAo
-c3l0ICE9IDB4ZmZmZikKKwllbHNlIGlmIChzeXQgIT0gQ0lQX1NZVF9OT19JTkZPKQogCQlkYXRh
-X2Jsb2NrcyA9IHMtPnN5dF9pbnRlcnZhbDsKIAllbHNlCiAJCWRhdGFfYmxvY2tzID0gMDsKIAog
-CWJ1ZmZlciA9IHMtPmJ1ZmZlci5wYWNrZXRzW2luZGV4XS5idWZmZXI7CiAJYnVmZmVyWzBdID0g
-Y3B1X3RvX2JlMzIoQUNDRVNTX09OQ0Uocy0+c291cmNlX25vZGVfaWRfZmllbGQpIHwKLQkJCQko
-cy0+ZGF0YV9ibG9ja19xdWFkbGV0cyA8PCAxNikgfAorCQkJCShzLT5kYXRhX2Jsb2NrX3F1YWRs
-ZXRzIDw8IEFNRFRQX0RCU19TSElGVCkgfAogCQkJCXMtPmRhdGFfYmxvY2tfY291bnRlcik7CiAJ
-YnVmZmVyWzFdID0gY3B1X3RvX2JlMzIoQ0lQX0VPSCB8IENJUF9GTVRfQU0gfCBBTURUUF9GREZf
-QU04MjQgfAotCQkJCShzLT5zZmMgPDwgQU1EVFBfRkRGX1NGQ19TSElGVCkgfCBzeXQpOworCQkJ
-CShzLT5zZmMgPDwgQ0lQX0ZERl9TRkNfU0hJRlQpIHwgc3l0KTsKIAlidWZmZXIgKz0gMjsKIAog
-CXBjbSA9IEFDQ0VTU19PTkNFKHMtPnBjbSk7Ci0tIAoxLjguMy4yCgoKLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCldhdGNoR3VhcmQgRGltZW5zaW9uIGluc3RhbnRseSB0dXJucyByYXcgbmV0d29yayBk
-YXRhIGludG8gYWN0aW9uYWJsZSAKc2VjdXJpdHkgaW50ZWxsaWdlbmNlLiBJdCBnaXZlcyB5b3Ug
-cmVhbC10aW1lIHZpc3VhbCBmZWVkYmFjayBvbiBrZXkKc2VjdXJpdHkgaXNzdWVzIGFuZCB0cmVu
-ZHMuICBTa2lwIHRoZSBjb21wbGljYXRlZCBzZXR1cCAtIHNpbXBseSBpbXBvcnQKYSB2aXJ0dWFs
-IGFwcGxpYW5jZSBhbmQgZ28gZnJvbSB6ZXJvIHRvIGluZm9ybWVkIGluIHNlY29uZHMuCmh0dHA6
-Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD0xMjM2MTI5OTEmaXU9LzQx
-NDAvb3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KbWFpbGluZyBsaXN0IGxpbnV4MTM5NC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
-aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbGludXgxMzk0LWRl
-dmVsCg==
+This patch adds some macros, codes with condition of direction and new functions
+to handle output connection. Once cmp_connection_init() is executed with its
+direction, CMP input and output connection can be handled by the same way.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/cmp.c | 113 +++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 104 insertions(+), 9 deletions(-)
+
+diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
+index 1430fec..00b1b2d 100644
+--- a/sound/firewire/cmp.c
++++ b/sound/firewire/cmp.c
+@@ -29,6 +29,16 @@
+ #define PCR_CHANNEL_MASK	0x003f0000
+ #define PCR_CHANNEL_SHIFT	16
+ 
++/* oPCR specific fields */
++#define OPCR_XSPEED_MASK	0x00C00000
++#define OPCR_XSPEED_SHIFT	22
++#define OPCR_SPEED_MASK		0x0000C000
++#define OPCR_SPEED_SHIFT	14
++#define OPCR_OVERHEAD_ID_MASK	0x00003C00
++#define OPCR_OVERHEAD_ID_SHIFT	10
++#define OPCR_PAYLOAD_MASK	0x000003FF
++#define OPCR_PAYLOAD_SHIFT	0
++
+ enum bus_reset_handling {
+ 	ABORT_ON_BUS_RESET,
+ 	SUCCEED_ON_BUS_RESET,
+@@ -41,10 +51,30 @@ void cmp_error(struct cmp_connection *c, const char *fmt, ...)
+ 
+ 	va_start(va, fmt);
+ 	dev_err(&c->resources.unit->device, "%cPCR%u: %pV",
+-		'i', c->pcr_index, &(struct va_format){ fmt, &va });
++		(c->direction == CMP_INPUT) ? 'i' : 'o',
++		c->pcr_index, &(struct va_format){ fmt, &va });
+ 	va_end(va);
+ }
+ 
++static unsigned long long get_offset(struct cmp_connection *c, bool master)
++{
++	unsigned long long offset = CSR_REGISTER_BASE;
++
++	if (!master) {
++		if (c->direction == CMP_INPUT)
++			offset += CSR_IPCR(c->pcr_index);
++		else
++			offset += CSR_OPCR(c->pcr_index);
++	} else {
++		if (c->direction == CMP_INPUT)
++			offset += CSR_IMPR;
++		else
++			offset += CSR_OMPR;
++	}
++
++	return offset;
++}
++
+ static int pcr_modify(struct cmp_connection *c,
+ 		      __be32 (*modify)(struct cmp_connection *c, __be32 old),
+ 		      int (*check)(struct cmp_connection *c, __be32 pcr),
+@@ -60,8 +90,7 @@ static int pcr_modify(struct cmp_connection *c,
+ 
+ 		err = snd_fw_transaction(
+ 				c->resources.unit, TCODE_LOCK_COMPARE_SWAP,
+-				CSR_REGISTER_BASE + CSR_IPCR(c->pcr_index),
+-				buffer, 8,
++				get_offset(c, false), buffer, 8,
+ 				FW_FIXED_GENERATION | c->resources.generation);
+ 
+ 		if (err < 0) {
+@@ -102,8 +131,7 @@ int cmp_connection_init(struct cmp_connection *c,
+ 	int err;
+ 
+ 	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
+-				 CSR_REGISTER_BASE + CSR_IMPR,
+-				 &mpr_be, 4, 0);
++				 get_offset(c, true), &mpr_be, 4, 0);
+ 	if (err < 0)
+ 		return err;
+ 	mpr = be32_to_cpu(mpr_be);
+@@ -122,6 +150,7 @@ int cmp_connection_init(struct cmp_connection *c,
+ 	c->max_speed = (mpr & MPR_SPEED_MASK) >> MPR_SPEED_SHIFT;
+ 	if (c->max_speed == SCODE_BETA)
+ 		c->max_speed += (mpr & MPR_XSPEED_MASK) >> MPR_XSPEED_SHIFT;
++	c->direction = direction;
+ 
+ 	return 0;
+ }
+@@ -151,6 +180,62 @@ static __be32 ipcr_set_modify(struct cmp_connection *c, __be32 ipcr)
+ 	return ipcr;
+ }
+ 
++static int get_overhead_id(struct cmp_connection *c)
++{
++	int id;
++
++	/*
++	 * apply "oPCR overhead ID encoding"
++	 * the encoding table can convert up to 512.
++	 * here the value over 512 is converted as the same way as 512.
++	 */
++	for (id = 1; id < 16; id++) {
++		if (c->resources.bandwidth_overhead < (id << 5))
++			break;
++	}
++	if (id == 16)
++		id = 0;
++
++	return id;
++}
++
++static __be32 opcr_set_modify(struct cmp_connection *c, __be32 opcr)
++{
++	unsigned int spd, xspd;
++
++	/* generate speed and extended speed field value */
++	if (c->speed > SCODE_400) {
++		spd  = SCODE_800;
++		xspd = c->speed - SCODE_800;
++	} else {
++		spd = c->speed;
++		xspd = 0;
++	}
++
++	opcr &= ~cpu_to_be32(PCR_BCAST_CONN |
++			     PCR_P2P_CONN_MASK |
++			     OPCR_XSPEED_MASK |
++			     PCR_CHANNEL_MASK |
++			     OPCR_SPEED_MASK |
++			     OPCR_OVERHEAD_ID_MASK |
++			     OPCR_PAYLOAD_MASK);
++	opcr |= cpu_to_be32(1 << PCR_P2P_CONN_SHIFT);
++	opcr |= cpu_to_be32(xspd << OPCR_XSPEED_SHIFT);
++	opcr |= cpu_to_be32(c->resources.channel << PCR_CHANNEL_SHIFT);
++	opcr |= cpu_to_be32(spd << OPCR_SPEED_SHIFT);
++	opcr |= cpu_to_be32(get_overhead_id(c) << OPCR_OVERHEAD_ID_SHIFT);
++	/*
++	 * here zero is applied to payload field.
++	 * it means the maximum number of quadlets in an isochronous packet is
++	 * 1024 when spd is less than three, 1024 * 2 * xspd + 1 when spd is
++	 * equal to three. An arbitrary value can be set here but 0 is enough
++	 * for our purpose.
++	 */
++	opcr |= cpu_to_be32(0 << OPCR_PAYLOAD_SHIFT);
++
++	return opcr;
++}
++
+ static int pcr_set_check(struct cmp_connection *c, __be32 pcr)
+ {
+ 	if (pcr & cpu_to_be32(PCR_BCAST_CONN |
+@@ -196,8 +281,13 @@ retry_after_bus_reset:
+ 	if (err < 0)
+ 		goto err_mutex;
+ 
+-	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+-			 ABORT_ON_BUS_RESET);
++	if (c->direction == CMP_OUTPUT)
++		err = pcr_modify(c, opcr_set_modify, pcr_set_check,
++				 ABORT_ON_BUS_RESET);
++	else
++		err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
++				 ABORT_ON_BUS_RESET);
++
+ 	if (err == -EAGAIN) {
+ 		fw_iso_resources_free(&c->resources);
+ 		goto retry_after_bus_reset;
+@@ -245,8 +335,13 @@ int cmp_connection_update(struct cmp_connection *c)
+ 	if (err < 0)
+ 		goto err_unconnect;
+ 
+-	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+-			 SUCCEED_ON_BUS_RESET);
++	if (c->direction == CMP_OUTPUT)
++		err = pcr_modify(c, opcr_set_modify, pcr_set_check,
++				 SUCCEED_ON_BUS_RESET);
++	else
++		err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
++				 SUCCEED_ON_BUS_RESET);
++
+ 	if (err < 0)
+ 		goto err_resources;
+ 
+-- 
+1.8.3.2
+
+
+------------------------------------------------------------------------------
+WatchGuard Dimension instantly turns raw network data into actionable 
+security intelligence. It gives you real-time visual feedback on key
+security issues and trends.  Skip the complicated setup - simply import
+a virtual appliance and go from zero to informed in seconds.
+http://pubads.g.doubleclick.net/gampad/clk?id=123612991&iu=/4140/ostg.clktrk
