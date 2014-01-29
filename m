@@ -1,17 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] ASoC: core: volume control using
- signed register values
-Date: Wed, 29 Jan 2014 19:19:17 +0000
-Message-ID: <20140129191917.GI22609@sirena.org.uk>
-References: <1389884531-19429-1-git-send-email-mpa@pengutronix.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [GIT PULL] real support for Xonar DG(X), for 3.15
+Date: Wed, 29 Jan 2014 22:06:46 +0100
+Message-ID: <52E96D66.1080607@ladisch.de>
+References: <1390565900-3337-1-git-send-email-v1ron@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5192826790318625073=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CA58D2652C3
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2014 20:19:27 +0100 (CET)
-In-Reply-To: <1389884531-19429-1-git-send-email-mpa@pengutronix.de>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 1C4D126530C
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2014 22:07:03 +0100 (CET)
+In-Reply-To: <1390565900-3337-1-git-send-email-v1ron@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Roman Volkov <v1ron@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
+The following changes since commit d8ec26d7f8287f5788a494f56e8814210f0e64be:
 
---===============5192826790318625073==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BEa57a89OpeoUzGD"
-Content-Disposition: inline
+  Linux 3.13 (2014-01-19 18:40:07 -0800)
 
+are available in the git repository at:
 
---BEa57a89OpeoUzGD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+  git://git.alsa-project.org/alsa-kprivate.git xonar-dg
 
-On Thu, Jan 16, 2014 at 04:02:09PM +0100, Markus Pargmann wrote:
+for you to fetch changes up to 3f49a66f6ceff1c87b49858644771c17763902ab:
 
-> There are a lot of codecs using negative and positive volume control ranges as
-> values in their registers. These two patches add support for arbitrary size
-> signed integer values in registers.
+  ALSA: oxygen: Xonar DG(X): cleanup and minor changes (2014-01-29 20:45:53 +0100)
 
-Applied both, thanks.
+----------------------------------------------------------------
 
---BEa57a89OpeoUzGD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+This completes the hardware support for the Asus Xonar DG/DGX cards,
+and makes them actually usable.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+This is v4 of Roman's patch set with some small formatting changes.
 
-iQIcBAEBAgAGBQJS6VQyAAoJELSic+t+oim9v/MP/i5P0bvuEdZ3NFS8FrNtH6IA
-p/JXso/8pQ+XPvSRbwy2qA0uw3Jcf9HDAuQOk7+siA2QC7+z2s8W2mGgRDhDuXNc
-5KPxNGGP8HZvDW08kN0fd1GqnbzwetHEt884mAScRrXA9+IlIXFOr6AuzJJM8RLU
-QlzukSjmYUt3pruKYtXgid/Bk72cy0wN+diLINHL0OJ5H52BuFyLQ8vUcRgfaj4o
-v5wMZZ7vsbf285lI0mdQddoraMaf85sJpsfd7M7+p2JKVFnGutX0Kr2X0W3lm7HI
-hA2w8d06dtsfymjWDASpMLwTpZWvLVpNbeKjasI1SRdjHUQwyB5i3qjbVKOEyQP/
-00UDCMMSgO2K+ymuU2HG4xCkZlKB4bGRJCEkmlmYaAJx48VcVKL6yay12wX9skPK
-tZtBuZUsR6iZDnQDjzsEJGlmgsOXK2QZ+xJBXvgoJJuC+tirQaj/WpvZVvEoXUHq
-zz9NWQUQN5YnWAQiMglvSET3THXiagw+NqUDM3ljaGSWOsiQB/OrAYD8D9s7vUsN
-muOlfuja2nEOOTppzgXxHmnjE0kUdr6raeaYtsFpgx2uA/86juKEj+GqSuFwmqW9
-9jYHov657cY4D6hq0y493oTviuigIMao6Isz9TrCLruhuQ2b9xR1DJSx/CK4v0XA
-rFy914osDrRhUD97HvZ/
-=rXDX
------END PGP SIGNATURE-----
+----------------------------------------------------------------
+Roman Volkov (19):
+      ALSA: oxygen: add the separate SPI waiting function
+      ALSA: oxygen: modify the SPI writing function
+      ALSA: oxygen: add mute mask for the OXYGEN_PLAY_ROUTING register
+      ALSA: oxygen: export oxygen_update_dac_routing symbol
+      ALSA: oxygen: change description of the xonar_dg.c file
+      ALSA: oxygen: additional definitions for the Xonar DG/DGX card
+      ALSA: oxygen: Xonar DG(X): add new CS4245 SPI functions
+      ALSA: oxygen: Xonar DG(X): modify initialization functions
+      ALSA: oxygen: Xonar DG(X): modify DAC/ADC parameters function
+      ALSA: oxygen: modify adjust_dg_dac_routing function
+      ALSA: oxygen: modify CS4245 register dumping function
+      ALSA: oxygen: Xonar DG(X): move the mixer code into another file
+      ALSA: oxygen: Xonar DG(X): capture from I2S channel 1, not 2
+      ALSA: oxygen: Xonar DG(X): modify playback output select
+      ALSA: oxygen: Xonar DG(X): use headphone volume control
+      ALSA: oxygen: Xonar DG(X): modify capture volume functions
+      ALSA: oxygen: Xonar DG(X): modify input select functions
+      ALSA: oxygen: Xonar DG(X): modify high-pass filter control
+      ALSA: oxygen: Xonar DG(X): cleanup and minor changes
 
---BEa57a89OpeoUzGD--
-
---===============5192826790318625073==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5192826790318625073==--
+ sound/pci/oxygen/Makefile         |   2 +-
+ sound/pci/oxygen/cs4245.h         |   7 +-
+ sound/pci/oxygen/oxygen.h         |   2 +-
+ sound/pci/oxygen/oxygen_io.c      |  25 +-
+ sound/pci/oxygen/oxygen_mixer.c   |   1 +
+ sound/pci/oxygen/oxygen_regs.h    |   1 +
+ sound/pci/oxygen/xonar_dg.c       | 651 ++++++++----------------------
+ sound/pci/oxygen/xonar_dg.h       |  48 +++
+ sound/pci/oxygen/xonar_dg_mixer.c | 477 ++++++++++++++++++++++
+ 9 files changed, 713 insertions(+), 501 deletions(-)
+ create mode 100644 sound/pci/oxygen/xonar_dg_mixer.c
