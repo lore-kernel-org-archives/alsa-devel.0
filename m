@@ -1,18 +1,18 @@
-From: Brian Austin <brian.austin@cirrus.com>
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 Subject: Re: Regression caused by "ASoC: core: Rework
  SOC_DOUBLE_R_SX_TLV add SOC_SINGLE_SX_TLV"
-Date: Thu, 30 Jan 2014 08:59:44 -0600
-Message-ID: <alpine.DEB.2.10.1401300856050.10630@heelrod.ad.cirrus.com>
+Date: Thu, 30 Jan 2014 16:05:54 +0100
+Message-ID: <20140130160554.694a8a84@skate>
 References: <20140130144807.5b102b28@skate>
+ <alpine.DEB.2.10.1401300856050.10630@heelrod.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe003.messaging.microsoft.com [216.32.180.186])
- by alsa0.perex.cz (Postfix) with ESMTP id 755712654B0
- for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2014 15:54:35 +0100 (CET)
-In-Reply-To: <20140130144807.5b102b28@skate>
+Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id C69F62654B9
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2014 16:05:57 +0100 (CET)
+In-Reply-To: <alpine.DEB.2.10.1401300856050.10630@heelrod.ad.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, =?ISO-8859-15?Q?Gregory_Cl=E9ment?= <gregory.clement@free-electrons.com>
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: Lior Amsalem <alior@marvell.com>, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory =?UTF-8?B?Q2zDqW1lbnQ=?= <gregory.clement@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Thomas,
+Dear Brian Austin,
 
-On Thu, 30 Jan 2014, Thomas Petazzoni wrote:
+On Thu, 30 Jan 2014 08:59:44 -0600, Brian Austin wrote:
 
-> Brian, Liam, Mark,
->
-> I am currently bringing up audio support on the Marvell Armada 370 ARM
-> SoC, for which the development board uses the CS42L51 audio codec.
->
-> It turns out that the commit 1d99f2436d0d1c7741d6dfd9d27b5376cdbbca40
-> ("ASoC: core: Rework SOC_DOUBLE_R_SX_TLV add SOC_SINGLE_SX_TLV") causes
-> a problem here, and reverting this commit gets things back to normal.
->
-> Basically, when this commit is applied, the "PCM", "Analog" and "ADC
-> Mixer" volume controls in alsamixer cannot be changed to any other
-> value than 60 or 61. The volume control doesn't allow to go above 61
-> and below 60. If I remember correctly, at the codec level, the values
-> configured for PCM in registers 0x10 and 0x11 are either 0x0 or 0x1
-> depending on whether you select 60 or 61 in alsamixer.
+> That is odd. My other devices that use this don't show that behavior, I 
+> will check on a different device, but I will see if I can get an L51 
+> today. So your saying the L51 for PCMA/B Mixer Volume COntrol, you can 
+> only select 2 values in the whole range?
 
-That is odd. My other devices that use this don't show that behavior, I 
-will check on a different device, but I will see if I can get an L51 
-today. So your saying the L51 for PCMA/B Mixer Volume COntrol, you can 
-only select 2 values in the whole range?
+Yes, absolutely. Not only for the PCMA/B Mixer Volume Control but also
+for the two other volume controls that were modified by your commit.
+I'll try to get back to your commit (without my revert) to verify once
+again my claims.
 
->
-> Reverting the commit mentioned above makes alsamixer behave normally:
-> the volume can be adjusted between 0 and 100 as expected, the values in
-> register 0x10 and 0x11 are meaningful, and the behavior is as expected:
-> with a volume to 0, I hear nothing in my headphones, with a volume set
-> to 100, the volume is maximum, with a nice progressive volume increase
-> in-between.
->
-> Therefore, I believe that the commit has a problem. I haven't yet
-> investigated where the problem is, maybe just the values passed to
-> SOC_DOUBLE_R_SX_TLV(), or maybe in the implementation of the volume
-> control functions themselves. I can certainly start investigating, but
-> maybe the author of the commit will immediately realize where the
-> problem could be.
->
+> > Therefore, I believe that the commit has a problem. I haven't yet
+> > investigated where the problem is, maybe just the values passed to
+> > SOC_DOUBLE_R_SX_TLV(), or maybe in the implementation of the volume
+> > control functions themselves. I can certainly start investigating, but
+> > maybe the author of the commit will immediately realize where the
+> > problem could be.
+> 
+> I do see however that the MAX value is not correct and should be 0x80 
+> instead of 0x7F. Off by 1...
 
-I do see however that the MAX value is not correct and should be 0x80 
-instead of 0x7F. Off by 1...
+Hum, ok, but I don't believe this should affect the range of values
+that alsamixer sees, but only the fact that you're not using the full
+range of volumes available at the codec level, right?
 
-I'll investigate today.
+> I'll investigate today.
 
-> Thanks a lot!
->
-> Thomas
-> -- 
-> Thomas Petazzoni, CTO, Free Electrons
-> Embedded Linux, Kernel and Android engineering
-> http://free-electrons.com
->
->
 Thanks!
+
+Thomas
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
