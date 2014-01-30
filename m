@@ -1,141 +1,70 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH] ALSA: hda/hdmi - allow PIN_OUT to be dynamically enabled
-Date: Thu, 30 Jan 2014 11:52:16 -0700
-Message-ID: <1391107936-18134-1-git-send-email-swarren@wwwdotorg.org>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, stable@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 2/5] ASoC: tda998x: add a codec driver for TDA998x
+Date: Thu, 30 Jan 2014 21:02:08 +0000
+Message-ID: <20140130210208.GY22609@sirena.org.uk>
+References: <cover.1391081933.git.moinejf@free.fr>
+ <c638b6622f4e059987f075091716a2305217ee49.1391081934.git.moinejf@free.fr>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/mvwczta11gu4fnM"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <c638b6622f4e059987f075091716a2305217ee49.1391081934.git.moinejf@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren@nvidia.com>
 
-Commit 384a48d71520 "ALSA: hda: HDMI: Support codecs with fewer cvts
-than pins" dynamically enabled each pin widget's PIN_OUT only when the
-pin was actively in use. This was required on certain NVIDIA CODECs for
-correct operation. Specifically, if multiple pin widgets each had their
-mux input select the same audio converter widget and each pin widget had
-PIN_OUT enabled, then only one of the pin widgets would actually receive
-the audio, and often not the one the user wanted!
+--/mvwczta11gu4fnM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-However, this apparently broke some Intel systems, and commit
-6169b673618b "ALSA: hda - Always turn on pins for HDMI/DP" reverted the
-dynamic setting of PIN_OUT. This in turn broke the afore-mentioned NVIDIA
-CODECs.
+On Sun, Jan 26, 2014 at 07:45:36PM +0100, Jean-Francois Moine wrote:
 
-This change supports either dynamic or static handling of PIN_OUT,
-selected by a flag set up during CODEC initialization. This flag is
-enabled for all recent NVIDIA GPUs.
+> +static void tda_get_encoder(struct tda_priv *priv)
+> +{
+> +	struct snd_soc_codec *codec = priv->codec;
+> +	struct device_node *np;
+> +	struct i2c_client *i2c_client;
+> +	static const struct of_device_id tda_dt[] = {
+> +		{ .compatible = "nxp,tda998x" },
+> +		{ },
+> +	};
+> +
+> +	/* search the tda998x device */
+> +	np = of_find_matching_node_and_match(NULL, tda_dt, NULL);
+> +	if (!np || !of_device_is_available(np)) {
+> +		dev_err(codec->dev, "No tda998x in DT\n");
+> +		return;
+> +	}
+> +	i2c_client = of_find_i2c_device_by_node(np);
 
-Reported-by: Uosis <uosisl@gmail.com>
-Cc: <stable@vger.kernel.org> # v3.13
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
-v3.12 or earlier stable require some manual back-porting effort, or
-perhaps just a variety of other commits to be backported. I'm
-investigating exactly which commits, and whether they're appropriate
-for stable.
----
- sound/pci/hda/patch_hdmi.c | 40 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 36 insertions(+), 4 deletions(-)
+Like I said last time I'd really expect this to look like a MFD (or
+generally a proper CODEC driver) so we don't get this weird probe
+ordering stuff.  If you don't think that's sensible for some reason it'd
+be helpful to understand why.
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 64f0a5e73a25..5ef95034d041 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -132,6 +132,9 @@ struct hdmi_spec {
- 
- 	struct hdmi_eld temp_eld;
- 	struct hdmi_ops ops;
-+
-+	bool dyn_pin_out;
-+
- 	/*
- 	 * Non-generic VIA/NVIDIA specific
- 	 */
-@@ -500,15 +503,25 @@ static void hdmi_write_dip_byte(struct hda_codec *codec, hda_nid_t pin_nid,
- 
- static void hdmi_init_pin(struct hda_codec *codec, hda_nid_t pin_nid)
- {
-+	struct hdmi_spec *spec = codec->spec;
-+	int pin_out;
-+
- 	/* Unmute */
- 	if (get_wcaps(codec, pin_nid) & AC_WCAP_OUT_AMP)
- 		snd_hda_codec_write(codec, pin_nid, 0,
- 				AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
--	/* Enable pin out: some machines with GM965 gets broken output when
--	 * the pin is disabled or changed while using with HDMI
--	 */
-+
-+	if (spec->dyn_pin_out)
-+		/* Disable pin out until stream is active */
-+		pin_out = 0;
-+	else
-+		/* Enable pin out: some machines with GM965 gets broken output
-+		 * when the pin is disabled or changed while using with HDMI
-+		 */
-+		pin_out = PIN_OUT;
-+
- 	snd_hda_codec_write(codec, pin_nid, 0,
--			    AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
-+			    AC_VERB_SET_PIN_WIDGET_CONTROL, pin_out);
- }
- 
- static int hdmi_get_channel_count(struct hda_codec *codec, hda_nid_t cvt_nid)
-@@ -1735,6 +1748,7 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
- 	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
- 	hda_nid_t pin_nid = per_pin->pin_nid;
- 	bool non_pcm;
-+	int pinctl;
- 
- 	non_pcm = check_non_pcm_per_cvt(codec, cvt_nid);
- 	mutex_lock(&per_pin->lock);
-@@ -1744,6 +1758,14 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
- 	hdmi_setup_audio_infoframe(codec, per_pin, non_pcm);
- 	mutex_unlock(&per_pin->lock);
- 
-+	if (spec->dyn_pin_out) {
-+		pinctl = snd_hda_codec_read(codec, pin_nid, 0,
-+					    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+		snd_hda_codec_write(codec, pin_nid, 0,
-+				    AC_VERB_SET_PIN_WIDGET_CONTROL,
-+				    pinctl | PIN_OUT);
-+	}
-+
- 	return spec->ops.setup_stream(codec, cvt_nid, pin_nid, stream_tag, format);
- }
- 
-@@ -1763,6 +1785,7 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
- 	int cvt_idx, pin_idx;
- 	struct hdmi_spec_per_cvt *per_cvt;
- 	struct hdmi_spec_per_pin *per_pin;
-+	int pinctl;
- 
- 	if (hinfo->nid) {
- 		cvt_idx = cvt_nid_to_cvt_index(spec, hinfo->nid);
-@@ -1779,6 +1802,14 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
- 			return -EINVAL;
- 		per_pin = get_pin(spec, pin_idx);
- 
-+		if (spec->dyn_pin_out) {
-+			pinctl = snd_hda_codec_read(codec, per_pin->pin_nid, 0,
-+					AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+			snd_hda_codec_write(codec, per_pin->pin_nid, 0,
-+					    AC_VERB_SET_PIN_WIDGET_CONTROL,
-+					    pinctl & ~PIN_OUT);
-+		}
-+
- 		snd_hda_spdif_ctls_unassign(codec, pin_idx);
- 
- 		mutex_lock(&per_pin->lock);
-@@ -2840,6 +2871,7 @@ static int patch_nvhdmi(struct hda_codec *codec)
- 		return err;
- 
- 	spec = codec->spec;
-+	spec->dyn_pin_out = true;
- 
- 	spec->ops.chmap_cea_alloc_validate_get_type =
- 		nvhdmi_chmap_cea_alloc_validate_get_type;
--- 
-1.8.1.5
+--/mvwczta11gu4fnM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS6r3MAAoJELSic+t+oim9lY0QAJU8vB/4fcWMhQXll+Ijq1u1
+eVfno44p3qAB8Glfvguzc6G5/bvh5ue2VYqSBXX7GUlhXsiQwdaSCs/47o/3rE84
+cSMAYFPjSQepcWsWYVfGYMTa5M0+9sddaOYjlLC3TjtMqWyK/zIDD00xZVcESCex
+RkAI1Xt5/RwFB0G6tI7q5f4mr4pw0OLpxEyomHHu8gdMOhF5WN5sFibJATBdCT9+
+VxzhAJqZmII5Bw4yClzsTxAYZWmzeuNBwRS4JTIa3WRqUxYmiokrDUt1zamV5xLn
+BF1014J3wG4uG5KseH7p1whIU+tXE5r8Ms3hODdg33ai4Cfp5Upjva//KiFaxcG1
+A8PBllGHbqeM3Bntv23KmIqBovtayw1l8UCnG4wM/zFP4rsf3ET0EcqYzp0BZ96f
+07bg1CVYi31JYrYs/FN4YGDP9z73aZSWp0r7vZbDKz9wIrBYbs3hcHX+gN7YP4tE
+yRq5wTapX6jqSUpmnJL3hEXflDJckuprP+6RzZNZfvpUjJklEW/OiR35E6rCovCh
+aaSZf93EKbAnn4NNORGEq+J1xhQnA9cQ4HczSQmUBEoIh2GevcJFRox4K8UwjEhN
+1oN24DN0xzpV2+AYoM5yz5hUUMQrFkdOsXWtbqjHET4FD0LoSJ0Cxiu2/M41dEVI
+kI+sn6DgCrFLVNAoc/Ry
+=R8Gs
+-----END PGP SIGNATURE-----
+
+--/mvwczta11gu4fnM--
