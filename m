@@ -1,69 +1,80 @@
 From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: [PATCH 1/7] sound: codec: add Device Tree binding to cs42l51
-Date: Thu, 30 Jan 2014 18:14:05 +0100
-Message-ID: <1391102051-5319-2-git-send-email-thomas.petazzoni@free-electrons.com>
+Subject: [PATCH 4/7] ARM: mvebu: add audio I2S controller to
+	Armada 370 Device Tree
+Date: Thu, 30 Jan 2014 18:14:08 +0100
+Message-ID: <1391102051-5319-5-git-send-email-thomas.petazzoni@free-electrons.com>
 References: <1391102051-5319-1-git-send-email-thomas.petazzoni@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D1DB2654E6
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2014 18:14:17 +0100 (CET)
 In-Reply-To: <1391102051-5319-1-git-send-email-thomas.petazzoni@free-electrons.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 Cc: Lior Amsalem <alior@marvell.com>, alsa-devel@alsa-project.org, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a trivial Device Tree binding to the I2C-based
-cs42l51 sound codec, so that it can be used from Device Tree based
-platforms.
+The Armada 370 SoC has an I2S audio controller. This commit adds the
+description of this controller to the Device Tree describing this SoC,
+as well as two possible muxing configurations for the I2S bus pins.
 
 Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 ---
- Documentation/devicetree/bindings/i2c/trivial-devices.txt | 1 +
- sound/soc/codecs/cs42l51.c                                | 7 +++++++
- 2 files changed, 8 insertions(+)
+ arch/arm/boot/dts/armada-370.dtsi | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/i2c/trivial-devices.txt b/Documentation/devicetree/bindings/i2c/trivial-devices.txt
-index b1cb341..041e560 100644
---- a/Documentation/devicetree/bindings/i2c/trivial-devices.txt
-+++ b/Documentation/devicetree/bindings/i2c/trivial-devices.txt
-@@ -17,6 +17,7 @@ at,24c08		i2c serial eeprom  (24cxx)
- atmel,24c02		i2c serial eeprom  (24cxx)
- atmel,at97sc3204t	i2c trusted platform module (TPM)
- catalyst,24c32		i2c serial eeprom
-+cirrus,cs42l51		Cirrus Logic CS42L51 audio codec
- dallas,ds1307		64 x 8, Serial, I2C Real-Time Clock
- dallas,ds1338		I2C RTC with 56-Byte NV RAM
- dallas,ds1339		I2C Serial Real-Time Clock
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index 1e0fa3b..4a7a733 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -604,10 +604,17 @@ static const struct i2c_device_id cs42l51_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, cs42l51_id);
- 
-+static const struct of_device_id cs42l51_of_match[] = {
-+	{ .compatible = "cirrus,cs42l51", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, cs42l51_of_match);
+diff --git a/arch/arm/boot/dts/armada-370.dtsi b/arch/arm/boot/dts/armada-370.dtsi
+index 7a4b82e..d3bb66a 100644
+--- a/arch/arm/boot/dts/armada-370.dtsi
++++ b/arch/arm/boot/dts/armada-370.dtsi
+@@ -128,6 +128,20 @@
+ 							"mpp51", "mpp52", "mpp53";
+ 					marvell,function = "sd0";
+ 				};
 +
- static struct i2c_driver cs42l51_i2c_driver = {
- 	.driver = {
- 		.name = "cs42l51-codec",
- 		.owner = THIS_MODULE,
-+		.of_match_table = cs42l51_of_match,
- 	},
- 	.id_table = cs42l51_id,
- 	.probe = cs42l51_i2c_probe,
++				i2s_pins1: i2s-pins1 {
++					marvell,pins = "mpp5", "mpp6", "mpp7",
++						       "mpp8", "mpp9", "mpp10",
++						       "mpp12", "mpp13";
++					marvell,function = "audio";
++				};
++
++				i2s_pins2: i2s-pins2 {
++					marvell,pins = "mpp49", "mpp47", "mpp50",
++						       "mpp59", "mpp57", "mpp61",
++						       "mpp62", "mpp60", "mpp58";
++					marvell,function = "audio";
++				};
+ 			};
+ 
+ 			gpio0: gpio@18100 {
+@@ -241,6 +255,16 @@
+ 					0x18304 0x4>;
+ 				status = "okay";
+ 			};
++
++			audio-controller@30000 {
++				compatible = "marvell,armada370-audio";
++				reg = <0x30000 0x4000>;
++				interrupts = <93>;
++				clocks = <&gateclk 0>;
++				clock-names = "internal";
++				status = "disabled";
++			};
++
+ 		};
+ 	};
+ };
 -- 
 1.8.3.2
