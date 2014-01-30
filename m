@@ -1,37 +1,71 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - add headset mic detect quirks for another Dell laptop
-Date: Thu, 30 Jan 2014 10:55:51 +0800
-Message-ID: <1391050551-8744-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH 2/2] ASoC: fsl: add imx-ssm2603 machine
+ driver
+Date: Thu, 30 Jan 2014 13:46:29 +0800
+Message-ID: <20140130054626.GA2405@MrMyself>
+References: <1391014047-22816-1-git-send-email-p.zabel@pengutronix.de>
+ <1391014047-22816-2-git-send-email-p.zabel@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe004.messaging.microsoft.com [216.32.180.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id E39722652F8
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2014 06:46:42 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1391014047-22816-2-git-send-email-p.zabel@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-When we plug a 3-ring headset on the Dell machine (Vendor ID:
-0x10ec0255, Subsystem ID: 0x1028064d), the headset mic can't be
-detected, after apply this patch, the headset mic can work well.
+Hi Philipp,
 
-BugLink: https://bugs.launchpad.net/bugs/1260303
-Cc: David Henningsson <david.henningsson@canonical.com>
-Tested-by: Doro Wu <fan-cheng.wu@canonical.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+On Wed, Jan 29, 2014 at 05:47:27PM +0100, Philipp Zabel wrote:
+> This adds support for i.MX boards with Analog Devices SSM2603 codecs
+> connected via I2S with separate Tx and Rx clocks.
+> 
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> ---
+>  sound/soc/fsl/Kconfig       |  12 +++
+>  sound/soc/fsl/Makefile      |   2 +
+>  sound/soc/fsl/imx-ssm2603.c | 239 ++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 253 insertions(+)
+>  create mode 100644 sound/soc/fsl/imx-ssm2603.c
+> 
+> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+> index b7ab71f..8a4ff4e 100644
+> --- a/sound/soc/fsl/Kconfig
+> +++ b/sound/soc/fsl/Kconfig
+> @@ -212,4 +212,16 @@ config SND_SOC_IMX_MC13783
+>  	select SND_SOC_MC13783
+>  	select SND_SOC_IMX_PCM_DMA
+>  
+> +config SND_SOC_IMX_SSM2603
+> +	tristate "SoC Audio support for i.MX boards with ssm2603"
+> +	depends on OF && I2C
+> +	select SND_SOC_SSM2602
+> +	select SND_SOC_IMX_PCM_DMA
+> +	select SND_SOC_IMX_AUDMUX
+> +	select SND_SOC_FSL_SSI
+> +	select SND_SOC_FSL_UTILS
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d723c1f..56a8f18 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4294,6 +4294,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x063e, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x063f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0640, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x064d, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0651, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0652, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0653, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
--- 
-1.8.1.2
+Not sure if this UTILS is essential...
+
+> +static int imx_ssm2603_probe(struct platform_device *pdev)
+> +{
+> +	ret = snd_soc_register_card(&data->card);
+
+devm_ might be better?
+
+Best regards,
+Nicolin Chen
