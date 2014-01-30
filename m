@@ -1,23 +1,14 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: Regression caused by "ASoC: core: Rework
- SOC_DOUBLE_R_SX_TLV add SOC_SINGLE_SX_TLV"
-Date: Thu, 30 Jan 2014 11:13:36 -0600
-Message-ID: <alpine.DEB.2.10.1401301108450.10630@heelrod.ad.cirrus.com>
-References: <20140130144807.5b102b28@skate>
- <alpine.DEB.2.10.1401300856050.10630@heelrod.ad.cirrus.com>
- <20140130160554.694a8a84@skate>
- <alpine.DEB.2.10.1401300922150.10630@heelrod.ad.cirrus.com>
- <alpine.DEB.2.10.1401300934340.10630@heelrod.ad.cirrus.com>
- <20140130175658.11469081@skate>
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: [PATCH 0/7] Audio support for Armada 370 DB
+Date: Thu, 30 Jan 2014 18:14:04 +0100
+Message-ID: <1391102051-5319-1-git-send-email-thomas.petazzoni@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe004.messaging.microsoft.com [216.32.180.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 934BB26553F
- for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2014 18:08:28 +0100 (CET)
-In-Reply-To: <20140130175658.11469081@skate>
+Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC20E26553F
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2014 18:14:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,31 +18,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, =?ISO-8859-15?Q?Gregory_Cl=E9ment?= <gregory.clement@free-electrons.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Lior Amsalem <alior@marvell.com>, alsa-devel@alsa-project.org, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-> I've tried again, and I confirm the problem. When the PCM is muted, I
-> can only toggle it between the values 62 and 64. When the PCM is
-> unmuted, I can only toggle it between the values 60 and 61.
-OK, that is very odd.  I will take a look when I get a chance. I have an 
-L51 board, but need to do some other stuff first.
+Hello,
 
->
-> The ugly attached patch fixes the problem for me (the patch is a
-> partial revert of your patch).
->
+This series of patches enable audio support on the Marvell Armada 370
+Development Board. Since both the I2S controller on the SoC side and
+the I2C audio codec are already supported by the kernel, the amount of
+work is fairly limited.
 
-Thanks! but...
+Also, since the DT bindings that allows to replace the ASoC board
+driver are still being ironed out, I'm proposing to add an old-style
+ASoC board driver for now.
 
-         SOC_DOUBLE_R_SX_TLV("Analog Playback Volume",
-                         CS42L51_AOUTA_VOL, CS42L51_AOUTB_VOL,
--                       0, 0x34, 0xE4, aout_tlv),
-+                       8, 0xffffff19, 0x18, aout_tlv),
-         SOC_DOUBLE_R_SX_TLV("ADC Mixer Volume",
+This set of patches only provide support for the analog output and
+input, I am waiting for the optical cable to arrive to get the digital
+input and output to work.
 
-shifting 8 on an 8bit register?
+Patches 1 to 3 are to be taken by the ASoC maintainer, while patches 4
+to 7 are to be taken by the mvebu maintainers.
 
-I'll have to look into this. Thanks for the feedback!
+Note that the audio support for Armada 370 also needs a fix to the
+CS42L51, which is being discussed with the author of the change that
+apparently introduced the problem (see discussion at
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071916.html).
 
--Brian
+Thanks,
+
+Thomas
+
+Thomas Petazzoni (7):
+  sound: codec: add Device Tree binding to cs42l51
+  sound: soc: enable Kirkwood driver for mvebu platforms
+  sound: soc: add ASoC board driver for Armada 370 DB
+  ARM: mvebu: add audio I2S controller to Armada 370 Device Tree
+  ARM: mvebu: add I2C0 muxing option for Armada 370 SoC
+  ARM: mvebu: add audio support to Armada 370 DB
+  ARM: mvebu: enable audio options in mvebu_defconfig
+
+ .../devicetree/bindings/i2c/trivial-devices.txt    |   1 +
+ .../devicetree/bindings/sound/mvebu-audio.txt      |   1 +
+ arch/arm/boot/dts/armada-370-db.dts                |  46 +++++++
+ arch/arm/boot/dts/armada-370.dtsi                  |  29 +++++
+ arch/arm/configs/mvebu_defconfig                   |   5 +
+ sound/soc/codecs/cs42l51.c                         |   7 +
+ sound/soc/kirkwood/Kconfig                         |  10 +-
+ sound/soc/kirkwood/Makefile                        |   2 +
+ sound/soc/kirkwood/armada-370-db.c                 | 144 +++++++++++++++++++++
+ sound/soc/kirkwood/kirkwood-i2s.c                  |   1 +
+ 10 files changed, 245 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/kirkwood/armada-370-db.c
+
+-- 
+1.8.3.2
