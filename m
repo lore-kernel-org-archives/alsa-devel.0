@@ -1,141 +1,141 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [alsa-devel] [PATCH RFC v3 0/8] Beaglebone-Black HDMI audio
-Date: Thu, 30 Jan 2014 19:00:11 +0100
-Message-ID: <20140130190011.3849cf37@armhf>
-References: <y>
-	<cover.1390836773.git.jsarha@ti.com>
-	<52E6806A.2090109@metafoo.de>
-	<52E686B2.9060806@ti.com>
-	<20140127190641.273890c6@armhf>
-	<52E6B42F.4050901@ti.com>
-	<20140128102353.48e8fb51@armhf>
-	<52EA43A8.9050909@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <52EA43A8.9050909@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, broonie@kernel.org, peter.ujfalusi@ti.com, detheridge@ti.com
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: [PATCH] ALSA: hda/hdmi - allow PIN_OUT to be dynamically enabled
+Date: Thu, 30 Jan 2014 11:52:16 -0700
+Message-ID: <1391107936-18134-1-git-send-email-swarren@wwwdotorg.org>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 30 Jan 2014 14:20:56 +0200
-Jyri Sarha <jsarha@ti.com> wrote:
+From: Stephen Warren <swarren@nvidia.com>
 
-> I am having trouble getting the tda998x-codec working on BBB. The=20
-> problem is I do not have a DT node for the tda998x driver. Instead I=20
-> have tilcdc-slave node that provides pdata for the tda-driver.
->=20
-> I am thinking of solving the problem by adding a reference to the=20
-> i2c-adapter hosting tda998x as an optional DT property to the codec=20
-> node. I could then dig the driver instance from the i2c adapter's=20
-> children. Any better ideas?
+Commit 384a48d71520 "ALSA: hda: HDMI: Support codecs with fewer cvts
+than pins" dynamically enabled each pin widget's PIN_OUT only when the
+pin was actively in use. This was required on certain NVIDIA CODECs for
+correct operation. Specifically, if multiple pin widgets each had their
+mux input select the same audio converter widget and each pin widget had
+PIN_OUT enabled, then only one of the pin widgets would actually receive
+the audio, and often not the one the user wanted!
 
-I better think about a 'normal' DT definition:
+However, this apparently broke some Intel systems, and commit
+6169b673618b "ALSA: hda - Always turn on pins for HDMI/DP" reverted the
+dynamic setting of PIN_OUT. This in turn broke the afore-mentioned NVIDIA
+CODECs.
 
-- in the DT, define the tda998x in a i2c subnode:
+This change supports either dynamic or static handling of PIN_OUT,
+selected by a flag set up during CODEC initialization. This flag is
+enabled for all recent NVIDIA GPUs.
 
-  &i2c0 {
-	tda998x: hdmi-encoder {
-		compatible =3D "nxp,tda998x";
-		reg =3D <0x70>;
-		/* the video ports are OK by default */
-		/* define the interrupt if you want to use it */
-	};
-  };
+Reported-by: Uosis <uosisl@gmail.com>
+Cc: <stable@vger.kernel.org> # v3.13
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+---
+v3.12 or earlier stable require some manual back-porting effort, or
+perhaps just a variety of other commits to be backported. I'm
+investigating exactly which commits, and whether they're appropriate
+for stable.
+---
+ sound/pci/hda/patch_hdmi.c | 40 ++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 36 insertions(+), 4 deletions(-)
 
-- in tilcdc_slave.c, in the function slave_encoder_create(), instead of
-  using drm_i2c_encoder_init(), do quite the same, but without calling
-  request_module() nor i2c_new_device().
-
-  This can be done as follows (the code is not compiled):
-
---------------------8<---------------------
-static struct drm_encoder *slave_encoder_create(struct drm_device *dev,
-		struct slave_module *mod)
-{
-	struct slave_encoder *slave_encoder;
-	struct drm_encoder *encoder;
-	int ret;
-/* ------ added ------ */
-	struct device_node *np;
-	static const struct of_device_id tda_dt[] =3D {
-		{ .compatible =3D "nxp,tda998x" },
-		{ },
-	};
-/* ------ end added ------ */
-
-	... no change ...
-
-	 drm_encoder_helper_add(encoder, &slave_encoder_helper_funcs);
-
-/* ------ added ------ */
-
-	/* search the tda998x device */
-	np =3D of_find_matching_node_and_match(NULL, tda_dt, NULL);
-	if (np && of_device_is_available(np)) {
-		struct i2c_client *i2c_client;
-		struct drm_i2c_encoder_driver *encoder_drv;
-		struct module *module;
-
-					/* the tda998x is in the DT */
-
-		i2c_client =3D of_find_i2c_device_by_node(np);
-		of_node_put(np);
-		if (!i2c_client) {
-			dev_err(dev->dev, "no tda998x i2c client\n");
-			goto fail;
-		}
-
-		to_encoder_slave(encoder)->bus_priv =3D i2c_client;
-
-		encoder_drv =3D to_drm_i2c_encoder_driver(
-				to_i2c_driver(i2c_client->dev.driver));
-
-		/* lock the tda998x module in memory */
-		module =3D to_i2c_driver(i2c_client->dev.driver)->driver.owner;
-		if (!module || !try_module_get(module)) {
-			dev_err(dev->dev, "cannot get module %s\n", module->name);
-			goto fail;
-		}
-
-		ret =3D encoder_drv->encoder_init(i2c_client, dev, encoder_slave);
-		if (ret < 0) {
-			dev_err(dev->dev, "slave encoder init failed\n");
-			module_put(module);
-			goto fail;
-		}
-					/* set_config is useless */
-		return encoder;
-	}
-
-/* ------ end added ------ */
-
-	ret =3D drm_i2c_encoder_init(dev, to_encoder_slave(encoder), mod->i2c,=
- &info);
-	if (ret)
-		goto fail;
-
-	return encoder;
-
-fail:
-	slave_encoder_destroy(encoder);
-	return NULL;
-}
---------------------8<---------------------
-
-When the tda998x is in the DT, the i2c_client is already created.
-It must not be freed, and so, the function drm_i2c_encoder_destroy()
-must not be called. But, the module must be explicitly unlocked in
-slave_encoder_destroy(), and then, there must be some flag in the
-structures for this job to be done...
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 64f0a5e73a25..5ef95034d041 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -132,6 +132,9 @@ struct hdmi_spec {
+ 
+ 	struct hdmi_eld temp_eld;
+ 	struct hdmi_ops ops;
++
++	bool dyn_pin_out;
++
+ 	/*
+ 	 * Non-generic VIA/NVIDIA specific
+ 	 */
+@@ -500,15 +503,25 @@ static void hdmi_write_dip_byte(struct hda_codec *codec, hda_nid_t pin_nid,
+ 
+ static void hdmi_init_pin(struct hda_codec *codec, hda_nid_t pin_nid)
+ {
++	struct hdmi_spec *spec = codec->spec;
++	int pin_out;
++
+ 	/* Unmute */
+ 	if (get_wcaps(codec, pin_nid) & AC_WCAP_OUT_AMP)
+ 		snd_hda_codec_write(codec, pin_nid, 0,
+ 				AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
+-	/* Enable pin out: some machines with GM965 gets broken output when
+-	 * the pin is disabled or changed while using with HDMI
+-	 */
++
++	if (spec->dyn_pin_out)
++		/* Disable pin out until stream is active */
++		pin_out = 0;
++	else
++		/* Enable pin out: some machines with GM965 gets broken output
++		 * when the pin is disabled or changed while using with HDMI
++		 */
++		pin_out = PIN_OUT;
++
+ 	snd_hda_codec_write(codec, pin_nid, 0,
+-			    AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
++			    AC_VERB_SET_PIN_WIDGET_CONTROL, pin_out);
+ }
+ 
+ static int hdmi_get_channel_count(struct hda_codec *codec, hda_nid_t cvt_nid)
+@@ -1735,6 +1748,7 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
+ 	hda_nid_t pin_nid = per_pin->pin_nid;
+ 	bool non_pcm;
++	int pinctl;
+ 
+ 	non_pcm = check_non_pcm_per_cvt(codec, cvt_nid);
+ 	mutex_lock(&per_pin->lock);
+@@ -1744,6 +1758,14 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 	hdmi_setup_audio_infoframe(codec, per_pin, non_pcm);
+ 	mutex_unlock(&per_pin->lock);
+ 
++	if (spec->dyn_pin_out) {
++		pinctl = snd_hda_codec_read(codec, pin_nid, 0,
++					    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
++		snd_hda_codec_write(codec, pin_nid, 0,
++				    AC_VERB_SET_PIN_WIDGET_CONTROL,
++				    pinctl | PIN_OUT);
++	}
++
+ 	return spec->ops.setup_stream(codec, cvt_nid, pin_nid, stream_tag, format);
+ }
+ 
+@@ -1763,6 +1785,7 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
+ 	int cvt_idx, pin_idx;
+ 	struct hdmi_spec_per_cvt *per_cvt;
+ 	struct hdmi_spec_per_pin *per_pin;
++	int pinctl;
+ 
+ 	if (hinfo->nid) {
+ 		cvt_idx = cvt_nid_to_cvt_index(spec, hinfo->nid);
+@@ -1779,6 +1802,14 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
+ 			return -EINVAL;
+ 		per_pin = get_pin(spec, pin_idx);
+ 
++		if (spec->dyn_pin_out) {
++			pinctl = snd_hda_codec_read(codec, per_pin->pin_nid, 0,
++					AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
++			snd_hda_codec_write(codec, per_pin->pin_nid, 0,
++					    AC_VERB_SET_PIN_WIDGET_CONTROL,
++					    pinctl & ~PIN_OUT);
++		}
++
+ 		snd_hda_spdif_ctls_unassign(codec, pin_idx);
+ 
+ 		mutex_lock(&per_pin->lock);
+@@ -2840,6 +2871,7 @@ static int patch_nvhdmi(struct hda_codec *codec)
+ 		return err;
+ 
+ 	spec = codec->spec;
++	spec->dyn_pin_out = true;
+ 
+ 	spec->ops.chmap_cea_alloc_validate_get_type =
+ 		nvhdmi_chmap_cea_alloc_validate_get_type;
+-- 
+1.8.1.5
