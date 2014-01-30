@@ -1,223 +1,121 @@
 From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: [PATCH 3/7] sound: soc: add ASoC board driver for Armada 370 DB
-Date: Thu, 30 Jan 2014 18:14:07 +0100
-Message-ID: <1391102051-5319-4-git-send-email-thomas.petazzoni@free-electrons.com>
+Subject: [PATCH 6/7] ARM: mvebu: add audio support to Armada
+	370 DB
+Date: Thu, 30 Jan 2014 18:14:10 +0100
+Message-ID: <1391102051-5319-7-git-send-email-thomas.petazzoni@free-electrons.com>
 References: <1391102051-5319-1-git-send-email-thomas.petazzoni@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id 74291265582
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2014 18:14:19 +0100 (CET)
 In-Reply-To: <1391102051-5319-1-git-send-email-thomas.petazzoni@free-electrons.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 Cc: Lior Amsalem <alior@marvell.com>, alsa-devel@alsa-project.org, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a simple ASoC board driver fo the Armada 370
-Development Board, which connects the audio unit of the Armada 370 SoC
-to the I2C-based CS42L51.
+This commit adds the necessary Device Tree informations to enable
+audio support on the Armada 370 DB platform. In details it:
 
-For now, only the analog audio input and output through the CS42L51
-are supported, but in the near future, digital audio input and output
-support will be added through SPDIF.
+ * Instantiates the CS42L51 audio codec on the I2C0 bus, and
+   configures this bus with the appropriate pin-muxing configuration.
+
+ * Enables the I2S audio controller, and configures it with the
+   appropriate pin-muxing configuration.
+
+ * Through hog pins, ensures that the other pins possibly used for I2S
+   are muxed with another function than I2S.
 
 Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 ---
- sound/soc/kirkwood/Kconfig         |   8 +++
- sound/soc/kirkwood/Makefile        |   2 +
- sound/soc/kirkwood/armada-370-db.c | 144 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 154 insertions(+)
- create mode 100644 sound/soc/kirkwood/armada-370-db.c
+ arch/arm/boot/dts/armada-370-db.dts | 46 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
-index 764a0ef..2dc3ecf 100644
---- a/sound/soc/kirkwood/Kconfig
-+++ b/sound/soc/kirkwood/Kconfig
-@@ -6,6 +6,14 @@ config SND_KIRKWOOD_SOC
- 	  the Kirkwood I2S interface. You will also need to select the
- 	  audio interfaces to support below.
+diff --git a/arch/arm/boot/dts/armada-370-db.dts b/arch/arm/boot/dts/armada-370-db.dts
+index 08a56bc..bc305d7 100644
+--- a/arch/arm/boot/dts/armada-370-db.dts
++++ b/arch/arm/boot/dts/armada-370-db.dts
+@@ -64,6 +64,22 @@
+ 				phy-mode = "rgmii-id";
+ 			};
  
-+config SND_KIRKWOOD_SOC_ARMADA370_DB
-+	tristate "SoC Audio support for Armada 370 DB"
-+	depends on SND_KIRKWOOD_SOC && (ARCH_MVEBU || COMPILE_TEST) && I2C
-+	select SND_SOC_CS42L51
-+	help
-+	  Say Y if you want to add support for SoC audio on
-+	  the Armada 370 Development Board.
++			i2c@11000 {
++				pinctrl-0 = <&i2c0_pins>;
++				pinctrl-names = "default";
++				status = "okay";
++				audio-codec@4a {
++					compatible = "cirrus,cs42l51";
++					reg = <0x4a>;
++				};
++			};
 +
- config SND_KIRKWOOD_SOC_OPENRD
- 	tristate "SoC Audio support for Kirkwood Openrd Client"
- 	depends on SND_KIRKWOOD_SOC && (MACH_OPENRD_CLIENT || MACH_OPENRD_ULTIMATE || COMPILE_TEST)
-diff --git a/sound/soc/kirkwood/Makefile b/sound/soc/kirkwood/Makefile
-index 9e78138..7c1d8fe 100644
---- a/sound/soc/kirkwood/Makefile
-+++ b/sound/soc/kirkwood/Makefile
-@@ -4,6 +4,8 @@ obj-$(CONFIG_SND_KIRKWOOD_SOC) += snd-soc-kirkwood.o
++			audio-controller@30000 {
++				pinctrl-0 = <&i2s_pins2>;
++				pinctrl-names = "default";
++				status = "okay";
++			};
++
+ 			mvsdio@d4000 {
+ 				pinctrl-0 = <&sdio_pins1>;
+ 				pinctrl-names = "default";
+@@ -80,6 +96,30 @@
+ 				broken-cd;
+ 			};
  
- snd-soc-openrd-objs := kirkwood-openrd.o
- snd-soc-t5325-objs := kirkwood-t5325.o
-+snd-soc-armada-370-db-objs := armada-370-db.o
- 
-+obj-$(CONFIG_SND_KIRKWOOD_SOC_ARMADA370_DB) += snd-soc-armada-370-db.o
- obj-$(CONFIG_SND_KIRKWOOD_SOC_OPENRD) += snd-soc-openrd.o
- obj-$(CONFIG_SND_KIRKWOOD_SOC_T5325) += snd-soc-t5325.o
-diff --git a/sound/soc/kirkwood/armada-370-db.c b/sound/soc/kirkwood/armada-370-db.c
-new file mode 100644
-index 0000000..d5d8388
---- /dev/null
-+++ b/sound/soc/kirkwood/armada-370-db.c
-@@ -0,0 +1,144 @@
-+/*
-+ * Copyright (C) 2014 Marvell
-+ *
-+ * Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of the
-+ * License, or (at your option) any later version.
-+ */
++			pinctrl {
++				/*
++				 * These pins might be muxed as I2S by
++				 * the bootloader, but it conflicts
++				 * with the real I2S pins that are
++				 * muxed using i2s_pins. We must mux
++				 * those pins to a function other than
++				 * I2S.
++				 */
++				pinctrl-0 = <&hog_pins1 &hog_pins2>;
++				pinctrl-names = "default";
 +
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/interrupt.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <sound/soc.h>
-+#include <linux/of.h>
-+#include <linux/platform_data/asoc-kirkwood.h>
-+#include "../codecs/cs42l51.h"
++				hog_pins1: hog-pins1 {
++					marvell,pins = "mpp6",  "mpp8", "mpp10",
++						       "mpp12", "mpp13";
++					marvell,function = "gpio";
++				};
 +
-+static int a370db_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	int ret;
-+	unsigned int freq, fmt;
++				hog_pins2: hog-pins2 {
++					marvell,pins = "mpp5", "mpp7", "mpp9";
++					marvell,function = "gpo";
++				};
++			};
 +
-+	fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS;
-+	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
-+	if (ret < 0)
-+		return ret;
+ 			usb@50000 {
+ 				status = "okay";
+ 			};
+@@ -112,10 +152,16 @@
+ 				/* Port 0, Lane 0 */
+ 				status = "okay";
+ 			};
 +
-+	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
-+	if (ret < 0)
-+		return ret;
+ 			pcie@2,0 {
+ 				/* Port 1, Lane 0 */
+ 				status = "okay";
+ 			};
+ 		};
+ 	};
 +
-+	switch (params_rate(params)) {
-+	default:
-+	case 44100:
-+		freq = 11289600;
-+		break;
-+	case 48000:
-+		freq = 12288000;
-+		break;
-+	case 96000:
-+		freq = 24576000;
-+		break;
-+	}
-+
-+	return snd_soc_dai_set_sysclk(codec_dai, 0, freq, SND_SOC_CLOCK_IN);
-+}
-+
-+static struct snd_soc_ops a370db_ops = {
-+	.hw_params = a370db_hw_params,
-+};
-+
-+static const struct snd_soc_dapm_widget a370db_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Out Jack", NULL),
-+	SND_SOC_DAPM_LINE("In Jack", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route a370db_route[] = {
-+	{ "Out Jack",	NULL,	"HPL" },
-+	{ "Out Jack",	NULL,	"HPR" },
-+	{ "AIN1L",	NULL,	"In Jack" },
-+	{ "AIN1L",	NULL,	"In Jack" },
-+};
-+
-+static int a370db_dai_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+
-+	snd_soc_dapm_enable_pin(dapm, "Out Jack");
-+	snd_soc_dapm_enable_pin(dapm, "In Jack");
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link a370db_dai[] = {
-+{
-+	.name = "CS42L51",
-+	.stream_name = "CS42L51 HiFi",
-+	.cpu_dai_name = "i2s",
-+	.platform_name = "d0030000.audio-controller",
-+	.codec_dai_name = "cs42l51-hifi",
-+	.codec_name = "cs42l51-codec.0-004a",
-+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
-+	.ops = &a370db_ops,
-+	.init = a370db_dai_init,
-+},
-+};
-+
-+static struct snd_soc_card a370db = {
-+	.name = "a370db",
-+	.owner = THIS_MODULE,
-+	.dai_link = a370db_dai,
-+	.num_links = ARRAY_SIZE(a370db_dai),
-+	.dapm_widgets = a370db_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(a370db_dapm_widgets),
-+	.dapm_routes = a370db_route,
-+	.num_dapm_routes = ARRAY_SIZE(a370db_route),
-+};
-+
-+static int a370db_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &a370db;
-+	int ret;
-+
-+	card->dev = &pdev->dev;
-+
-+	return snd_soc_register_card(card);
-+}
-+
-+static int a370db_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	return snd_soc_unregister_card(card);
-+}
-+
-+static const struct of_device_id a370db_dt_ids[] = {
-+	{ .compatible = "marvell,a370db-audio" },
-+	{ },
-+};
-+
-+static struct platform_driver a370db_driver = {
-+	.driver		= {
-+		.name	= "a370db-audio",
-+		.owner	= THIS_MODULE,
-+		.of_match_table = of_match_ptr(a370db_dt_ids),
-+	},
-+	.probe		= a370db_probe,
-+	.remove		= a370db_remove,
-+};
-+
-+module_platform_driver(a370db_driver);
-+
-+MODULE_AUTHOR("Thomas Petazzoni <thomas.petazzoni@free-electrons.com>");
-+MODULE_DESCRIPTION("ALSA SoC a370db audio client");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:a370db-audio");
++	sound {
++	      compatible = "marvell,a370db-audio";
++	      status = "okay";
++	};
+ };
 -- 
 1.8.3.2
