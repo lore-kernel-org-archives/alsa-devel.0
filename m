@@ -1,17 +1,15 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH RFC v3 0/8] Beaglebone-Black HDMI audio
-Date: Thu, 30 Jan 2014 14:20:56 +0200
-Message-ID: <52EA43A8.9050909@ti.com>
-References: <y>	<cover.1390836773.git.jsarha@ti.com>	<52E6806A.2090109@metafoo.de>	<52E686B2.9060806@ti.com>	<20140127190641.273890c6@armhf>	<52E6B42F.4050901@ti.com>
- <20140128102353.48e8fb51@armhf>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/4] ASoC: davinci-mcasp: Fix master mode
+	capture (w/o playback)
+Date: Thu, 30 Jan 2014 15:15:21 +0200
+Message-ID: <1391087725-4088-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ABF1265363
- for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2014 13:21:03 +0100 (CET)
-In-Reply-To: <20140128102353.48e8fb51@armhf>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D88D265378
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2014 14:15:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,37 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: detheridge@ti.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, broonie@kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, nsekhar@ti.com, jsarha@ti.com, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 01/28/2014 11:23 AM, Jean-Francois Moine wrote:
-> On Mon, 27 Jan 2014 21:31:59 +0200
-> Jyri Sarha <jsarha@ti.com> wrote:
->
->> I would suggest to leave the CTS_N_K to the current setting (3), unless
->> we can change the CTS_N_K on the fly according to the used sample format.
->
-> Yes, this is possible:
->
-> - the tda998x codec may call the tda998x hdmi in the hw_params()
->    function, i.e. when the sample format is known, and then,
->
-> - the tda998x_audio_update() function may have the audio parameters
->    (struct snd_pcm_hw_params) as an argument, and CTS_N_K may be set
->    to either 1, 2 or 3 for SNDRV_PCM_FORMAT_S16_LE / S24_LE and S32_LE.
->
-> This is working in my machine. Would it also work for you?
->
+Hi,
 
-I am having trouble getting the tda998x-codec working on BBB. The 
-problem is I do not have a DT node for the tda998x driver. Instead I 
-have tilcdc-slave node that provides pdata for the tda-driver.
+When McASP is master the TX clocks are used for capture clocking as well. Other
+parts of the code already does the configuration for both tx and rx - for
+different bits in xxFMT/xxFMCT registers we should do the same in other places.
 
-I am thinking of solving the problem by adding a reference to the 
-i2c-adapter hosting tda998x as an optional DT property to the codec 
-node. I could then dig the driver instance from the i2c adapter's 
-children. Any better ideas?
+Along with this fix I have added three cleanup patch which came along when I was
+debugging the issue.
 
-Best regards,
-Jyri
+Regards,
+Peter
+---
+Peter Ujfalusi (4):
+  ASoC: davinci-mcasp: Harmonize the sub hw_params function names
+  ASoC: davinci-mcasp: Configure xxTDM, xxFMT and xxFMCT registers
+    synchronously
+  ASoC: davinci-mcasp: Return value handling cleanup for
+    mcasp_common_hw_param()
+  ASoC: davinci-mcasp: Code cleanup in davinci_mcasp_hw_params()
+
+ sound/soc/davinci/davinci-mcasp.c | 81 +++++++++++++++++++--------------------
+ 1 file changed, 39 insertions(+), 42 deletions(-)
+
+-- 
+1.8.5.3
