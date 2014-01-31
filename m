@@ -1,8 +1,7 @@
 From: "Corfu, ValentinX" <valentinx.corfu@intel.com>
-Subject: [alsa-plugins] [PATCH 1/2] Allow to specify a client
- name as parameters
-Date: Fri, 31 Jan 2014 14:05:42 +0000
-Message-ID: <9900E8BE2ADAAB43B2A4471493EDB7F94B12E3@IRSMSX104.ger.corp.intel.com>
+Subject: [alsa-plugins] [PATCH 2/2] Allow number of channels
+Date: Fri, 31 Jan 2014 14:05:48 +0000
+Message-ID: <9900E8BE2ADAAB43B2A4471493EDB7F94B12EB@IRSMSX104.ger.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -22,59 +21,82 @@ Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Trandafir,
  IonutX" <ionutx.trandafir@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
->From 1ac8268330df7564edf252a542a27f3cf4f4472f Mon Sep 17 00:00:00 2001
+>From 92cf8488d3d2e271fdb4b1fb41fbc006cc59677b Mon Sep 17 00:00:00 2001
 From: Valentin Corfu <valentinx.corfu@intel.com>
-Date: Fri, 31 Jan 2014 08:06:23 -0500
-Subject: [PATCH 1/2] Allow to specify a client name as parameters
+Date: Fri, 31 Jan 2014 08:08:51 -0500
+Subject: [PATCH 2/2] Allow number of channels
 
-The current jack client name contains the process id of the application providing the audio samples.
-This leads to unpredictable jack client names which makes handling of the connections by a controlling application very hard.
-This modification now, allows to specify a client name as parameters in the configuration file.
-The implementation is backward compatible and simply adds a new configuration option to the plugin.
+The modification allows to specify the number of channels as parameters in the configuration file
+The given number of channels are then created but not connected.
 
 Signed-off-by: Valentin Corfu <valentinx.corfu@intel.com>
 
 diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index c51fe84..475c619 100644
+index 475c619..feef4a0 100644
 --- a/jack/pcm_jack.c
 +++ b/jack/pcm_jack.c
-@@ -355,12 +355,19 @@ static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
-         snd_pcm_jack_free(jack);
-         return -EINVAL;
-     }
--
--    if (snprintf(jack_client_name, sizeof(jack_client_name), "alsa-jack.%s%s.%d.%d", name,
--             stream == SND_PCM_STREAM_PLAYBACK ? "P" : "C", getpid(), num++)
--        >= (int)sizeof(jack_client_name)) {
--        fprintf(stderr, "%s: WARNING: JACK client name '%s' truncated to %d characters, might not be unique\n",
--            __func__, jack_client_name, (int)strlen(jack_client_name));
-+    if ( name == NULL ) {
-+        if (snprintf(jack_client_name, sizeof(jack_client_name), "alsa-jack.%s%s.%d.%d", name,
-+                stream == SND_PCM_STREAM_PLAYBACK ? "P" : "C", getpid(), num++)
-+            >= (int)sizeof(jack_client_name)) {
-+                fprintf(stderr, "%s: WARNING: JACK client name '%s' truncated to %d characters, might not be unique\n",
-+                __func__, jack_client_name, (int)strlen(jack_client_name));
-+        }
-+    } else {
-+        if (snprintf(jack_client_name, sizeof(jack_client_name), "%s", name)
-+            >= (int)sizeof(jack_client_name)) {
-+                fprintf(stderr, "%s: WARNING: JACK client name '%s' truncated to %d characters, might not be unique\n",
-+                __func__, jack_client_name, (int)strlen(jack_client_name));
+@@ -325,7 +325,7 @@ static int make_nonblock(int fd)
+ static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
+                  snd_config_t *playback_conf,
+                  snd_config_t *capture_conf,
+-                 snd_pcm_stream_t stream, int mode)
++                 snd_pcm_stream_t stream, int mode, long num_channels)
+ {
+     snd_pcm_jack_t *jack;
+     int err;
+@@ -341,11 +341,19 @@ static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
+     jack->fd = -1;
+     jack->io.poll_fd = -1;
+
+-    err = parse_ports(jack, stream == SND_PCM_STREAM_PLAYBACK ?
+-              playback_conf : capture_conf);
+-    if (err) {
+-        snd_pcm_jack_free(jack);
+-        return err;
++    if (num_channels > 0) {
++        jack->num_ports = num_channels;
++        jack->port_names = calloc(num_channels, sizeof(char*));
++        if (jack->port_names == NULL)
++            return -ENOMEM;
++    }
++    else {
++        err = parse_ports(jack, stream == SND_PCM_STREAM_PLAYBACK ?
++                  playback_conf : capture_conf);
++        if (err) {
++            snd_pcm_jack_free(jack);
++            return err;
 +        }
      }
 
-     jack->client = jack_client_new(jack_client_name);
-@@ -423,6 +430,10 @@ SND_PCM_PLUGIN_DEFINE_FUNC(jack)
+     jack->channels = jack->num_ports;
+@@ -422,6 +430,7 @@ SND_PCM_PLUGIN_DEFINE_FUNC(jack)
+     snd_config_t *playback_conf = NULL;
+     snd_config_t *capture_conf = NULL;
+     int err;
++    long num_channels = 0;
+
+     snd_config_for_each(i, next, conf) {
+         snd_config_t *n = snd_config_iterator_entry(i);
+@@ -434,6 +443,10 @@ SND_PCM_PLUGIN_DEFINE_FUNC(jack)
+             snd_config_get_string(n, &name);
              continue;
-         if (strcmp(id, "comment") == 0 || strcmp(id, "type") == 0 || strcmp(id, "hint") == 0)
-             continue;
-+        if (strcmp(id, "name") == 0) {
-+            snd_config_get_string(n, &name);
+         }
++        if (strcmp(id, "nchan") == 0) {
++            snd_config_get_integer(n, &num_channels);
 +            continue;
 +        }
          if (strcmp(id, "playback_ports") == 0) {
              if (snd_config_get_type(n) != SND_CONFIG_TYPE_COMPOUND) {
                  SNDERR("Invalid type for %s", id);
+@@ -454,7 +467,7 @@ SND_PCM_PLUGIN_DEFINE_FUNC(jack)
+         return -EINVAL;
+     }
+
+-    err = snd_pcm_jack_open(pcmp, name, playback_conf, capture_conf, stream, mode);
++    err = snd_pcm_jack_open(pcmp, name, playback_conf, capture_conf, stream, mode, num_channels);
+
+     return err;
+ }
 --
 1.8.1.4
 
