@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: davinci-mcasp: Move pm callbacks
- from platform device to soc_dai_driver
-Date: Fri, 31 Jan 2014 16:41:05 +0000
-Message-ID: <20140131164105.GO22609@sirena.org.uk>
-References: <1391088092-4157-1-git-send-email-peter.ujfalusi@ti.com>
- <1391088092-4157-4-git-send-email-peter.ujfalusi@ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Fix inconsistent Mic mute LED
+Date: Fri, 31 Jan 2014 17:52:55 +0100
+Message-ID: <52EBD4E7.5060408@canonical.com>
+References: <1391101459-2973-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1016507806866588484=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 25B402625E6
- for <alsa-devel@alsa-project.org>; Fri, 31 Jan 2014 17:41:17 +0100 (CET)
-In-Reply-To: <1391088092-4157-4-git-send-email-peter.ujfalusi@ti.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 79007262632
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jan 2014 17:52:55 +0100 (CET)
+In-Reply-To: <1391101459-2973-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +21,214 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, jsarha@ti.com, zonque@gmail.com
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 01/30/2014 06:04 PM, Takashi Iwai wrote:
+> The current code for controlling mic mute LED in patch_sigmatel.c
+> blindly assumes that there is a single capture switch.  But, there can
+> be multiple multiple ones, and each of them flips the state, ended up
+> in an inconsistent state.
+> 
+> For fixing this problem, this patch adds kcontrol to be passed to the
+> hook function so that the callee can check which switch is being
+> accessed.  In stac_capture_led_hook(), the state is checked as a
+> bitmask, and turns on the LED when all capture switches are off.
 
---===============1016507806866588484==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LQyQLyduEnelPo/g"
-Content-Disposition: inline
+Is capture switch with non-zero indices turned off by default (and not
+turned on by e g alsactl init)? Otherwise it sounds like this could be
+regressing OOTB behaviour, i e, the mic mute LED worked with
+people/PulseAudio just toggling Capture Switch 0, but now requires
+manual toggling of the other capture switches...?
+
+Anyway, the same reasoning would potentially apply to Conexant and
+Realtek, so perhaps it's time to move some more of mic mute LED handling
+into hda_generic?
+
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/hda_generic.c     |  8 ++++----
+>  sound/pci/hda/hda_generic.h     |  1 +
+>  sound/pci/hda/patch_conexant.c  |  3 ++-
+>  sound/pci/hda/patch_realtek.c   |  9 ++++++---
+>  sound/pci/hda/patch_sigmatel.c  | 27 +++++++++++++++++----------
+>  sound/pci/hda/thinkpad_helper.c |  1 +
+>  6 files changed, 31 insertions(+), 18 deletions(-)
+> 
+> diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+> index 8321a97d5c05..d9a09bdd09db 100644
+> --- a/sound/pci/hda/hda_generic.c
+> +++ b/sound/pci/hda/hda_generic.c
+> @@ -3269,7 +3269,7 @@ static int cap_put_caller(struct snd_kcontrol *kcontrol,
+>  	mutex_unlock(&codec->control_mutex);
+>  	snd_hda_codec_flush_cache(codec); /* flush the updates */
+>  	if (err >= 0 && spec->cap_sync_hook)
+> -		spec->cap_sync_hook(codec, ucontrol);
+> +		spec->cap_sync_hook(codec, kcontrol, ucontrol);
+>  	return err;
+>  }
+>  
+> @@ -3390,7 +3390,7 @@ static int cap_single_sw_put(struct snd_kcontrol *kcontrol,
+>  		return ret;
+>  
+>  	if (spec->cap_sync_hook)
+> -		spec->cap_sync_hook(codec, ucontrol);
+> +		spec->cap_sync_hook(codec, kcontrol, ucontrol);
+>  
+>  	return ret;
+>  }
+> @@ -3795,7 +3795,7 @@ static int mux_select(struct hda_codec *codec, unsigned int adc_idx,
+>  		return 0;
+>  	snd_hda_activate_path(codec, path, true, false);
+>  	if (spec->cap_sync_hook)
+> -		spec->cap_sync_hook(codec, NULL);
+> +		spec->cap_sync_hook(codec, NULL, NULL);
+>  	path_power_down_sync(codec, old_path);
+>  	return 1;
+>  }
+> @@ -5270,7 +5270,7 @@ static void init_input_src(struct hda_codec *codec)
+>  	}
+>  
+>  	if (spec->cap_sync_hook)
+> -		spec->cap_sync_hook(codec, NULL);
+> +		spec->cap_sync_hook(codec, NULL, NULL);
+>  }
+>  
+>  /* set right pin controls for digital I/O */
+> diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+> index 07f767231c9f..c908afbe4d94 100644
+> --- a/sound/pci/hda/hda_generic.h
+> +++ b/sound/pci/hda/hda_generic.h
+> @@ -274,6 +274,7 @@ struct hda_gen_spec {
+>  	void (*init_hook)(struct hda_codec *codec);
+>  	void (*automute_hook)(struct hda_codec *codec);
+>  	void (*cap_sync_hook)(struct hda_codec *codec,
+> +			      struct snd_kcontrol *kcontrol,
+>  			      struct snd_ctl_elem_value *ucontrol);
+>  
+>  	/* PCM hooks */
+> diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+> index 4e0ec146553d..bcf91bea3317 100644
+> --- a/sound/pci/hda/patch_conexant.c
+> +++ b/sound/pci/hda/patch_conexant.c
+> @@ -3291,7 +3291,8 @@ static void cxt_update_headset_mode(struct hda_codec *codec)
+>  }
+>  
+>  static void cxt_update_headset_mode_hook(struct hda_codec *codec,
+> -			     struct snd_ctl_elem_value *ucontrol)
+> +					 struct snd_kcontrol *kcontrol,
+> +					 struct snd_ctl_elem_value *ucontrol)
+>  {
+>  	cxt_update_headset_mode(codec);
+>  }
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 56a8f1876603..6aabaa1c19f5 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -708,7 +708,8 @@ static void alc_inv_dmic_sync(struct hda_codec *codec, bool force)
+>  }
+>  
+>  static void alc_inv_dmic_hook(struct hda_codec *codec,
+> -			     struct snd_ctl_elem_value *ucontrol)
+> +			      struct snd_kcontrol *kcontrol,
+> +			      struct snd_ctl_elem_value *ucontrol)
+>  {
+>  	alc_inv_dmic_sync(codec, false);
+>  }
+> @@ -3211,7 +3212,8 @@ static void alc269_fixup_hp_gpio_mute_hook(void *private_data, int enabled)
+>  
+>  /* turn on/off mic-mute LED per capture hook */
+>  static void alc269_fixup_hp_gpio_mic_mute_hook(struct hda_codec *codec,
+> -			       struct snd_ctl_elem_value *ucontrol)
+> +					       struct snd_kcontrol *kcontrol,
+> +					       struct snd_ctl_elem_value *ucontrol)
+>  {
+>  	struct alc_spec *spec = codec->spec;
+>  	unsigned int oldval = spec->gpio_led;
+> @@ -3521,7 +3523,8 @@ static void alc_update_headset_mode(struct hda_codec *codec)
+>  }
+>  
+>  static void alc_update_headset_mode_hook(struct hda_codec *codec,
+> -			     struct snd_ctl_elem_value *ucontrol)
+> +					 struct snd_kcontrol *kcontrol,
+> +					 struct snd_ctl_elem_value *ucontrol)
+>  {
+>  	alc_update_headset_mode(codec);
+>  }
+> diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+> index 6998cf29b9bc..7311badf6a94 100644
+> --- a/sound/pci/hda/patch_sigmatel.c
+> +++ b/sound/pci/hda/patch_sigmatel.c
+> @@ -194,7 +194,7 @@ struct sigmatel_spec {
+>  	int default_polarity;
+>  
+>  	unsigned int mic_mute_led_gpio; /* capture mute LED GPIO */
+> -	bool mic_mute_led_on; /* current mic mute state */
+> +	unsigned int mic_enabled; /* current mic mute state (bitmask) */
+>  
+>  	/* stream */
+>  	unsigned int stream_delay;
+> @@ -324,19 +324,26 @@ static void stac_gpio_set(struct hda_codec *codec, unsigned int mask,
+>  
+>  /* hook for controlling mic-mute LED GPIO */
+>  static void stac_capture_led_hook(struct hda_codec *codec,
+> -			       struct snd_ctl_elem_value *ucontrol)
+> +				  struct snd_kcontrol *kcontrol,
+> +				  struct snd_ctl_elem_value *ucontrol)
+>  {
+>  	struct sigmatel_spec *spec = codec->spec;
+> -	bool mute;
+> +	unsigned int mask;
+> +	bool cur_mute, prev_mute;
+>  
+> -	if (!ucontrol)
+> +	if (!kcontrol || !ucontrol)
+>  		return;
+>  
+> -	mute = !(ucontrol->value.integer.value[0] ||
+> -		 ucontrol->value.integer.value[1]);
+> -	if (spec->mic_mute_led_on != mute) {
+> -		spec->mic_mute_led_on = mute;
+> -		if (mute)
+> +	mask = 1U << snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
+> +	prev_mute = !spec->mic_enabled;
+> +	if (ucontrol->value.integer.value[0] ||
+> +	    ucontrol->value.integer.value[1])
+> +		spec->mic_enabled |= mask;
+> +	else
+> +		spec->mic_enabled &= ~mask;
+> +	cur_mute = !spec->mic_enabled;
+> +	if (cur_mute != prev_mute) {
+> +		if (cur_mute)
+>  			spec->gpio_data |= spec->mic_mute_led_gpio;
+>  		else
+>  			spec->gpio_data &= ~spec->mic_mute_led_gpio;
+> @@ -4462,7 +4469,7 @@ static void stac_setup_gpio(struct hda_codec *codec)
+>  	if (spec->mic_mute_led_gpio) {
+>  		spec->gpio_mask |= spec->mic_mute_led_gpio;
+>  		spec->gpio_dir |= spec->mic_mute_led_gpio;
+> -		spec->mic_mute_led_on = true;
+> +		spec->mic_enabled = 0;
+>  		spec->gpio_data |= spec->mic_mute_led_gpio;
+>  
+>  		spec->gen.cap_sync_hook = stac_capture_led_hook;
+> diff --git a/sound/pci/hda/thinkpad_helper.c b/sound/pci/hda/thinkpad_helper.c
+> index 5799fbc24c28..8fe3b8c18ed4 100644
+> --- a/sound/pci/hda/thinkpad_helper.c
+> +++ b/sound/pci/hda/thinkpad_helper.c
+> @@ -39,6 +39,7 @@ static void update_tpacpi_mute_led(void *private_data, int enabled)
+>  }
+>  
+>  static void update_tpacpi_micmute_led(struct hda_codec *codec,
+> +				      struct snd_kcontrol *kcontrol,
+>  				      struct snd_ctl_elem_value *ucontrol)
+>  {
+>  	if (!ucontrol || !led_set_func)
+> 
 
 
---LQyQLyduEnelPo/g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Thu, Jan 30, 2014 at 03:21:32PM +0200, Peter Ujfalusi wrote:
-> Handle the PM callbacks via the ASoC core instead of device core.
-
-Applied, thanks.
-
---LQyQLyduEnelPo/g
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS69IeAAoJELSic+t+oim95RsQAI7RrOztyhZWDWfWmywDlOg7
-E109mmr6Fsl09nyuj1Gk1cH8FqxtfDSTpLfc+DTpyX6Jjle0TucAIBw9SnxjL3Ge
-aiMtcQmvoSAMMz+4Cv/N4yCgTlscBW0GCgZ30Os1LwZ/ghrF66aVVeAUJLUxqer5
-jp2yVi8Qq6vYyKVJ9GYsF/4iR4GwnhynW7rxW6x/7asAmamU/uOMlNGt3cfTkrpu
-xNL+6coLGzXBXMQruKLt5XgFtdYw5fbajk4vGhr4rXt5tFS1p8TT6t2uhV3B91EX
-OZCLM5SCt/+GuNouPtRyqCdaAFFXClPiR+w9dkWM4DBy84z78DVbfc99I1cGtGUf
-taImuwFBA0aj+o5D3gDbuAE8ZLF1eSXkYPnmt5xIfHyXuEomaJtiKOp1weu94sO7
-uBYa95Fc8y6c+i6lU6NuMY3vg0WbptfH3ilqxFSW678p78Wn0lVGvXb2OANoKUPy
-F/q3uAzTEXth29DgD0fnYL+v+UXFdI/EmbaxWrpbupsCNYC33igdSRTkv9uaDYpx
-uZkuZF4MtgT5rYWVO/OfZEod4vQvKdI4cZx0jsjIU4jF2k/geYczW5OsVFJcC3pk
-T964AYr4hOKZSYfETA/XwJDY9nSYey8w6OG8sd3j/t95UnCk6d4ADACSwgb77QTF
-/P9aVjfN8ZKVNhbhoxF1
-=lWqj
------END PGP SIGNATURE-----
-
---LQyQLyduEnelPo/g--
-
---===============1016507806866588484==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1016507806866588484==--
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
