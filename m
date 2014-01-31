@@ -1,17 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: arizona: Improve ultrasonic
-	frequency response
-Date: Fri, 31 Jan 2014 15:47:14 +0000
-Message-ID: <1391183234-13943-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1391183234-13943-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/4] ASoC: davinci-mcasp: Harmonize the sub
+ hw_params function names
+Date: Fri, 31 Jan 2014 15:58:59 +0000
+Message-ID: <20140131155859.GG22609@sirena.org.uk>
+References: <1391087725-4088-1-git-send-email-peter.ujfalusi@ti.com>
+ <1391087725-4088-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1956554582908374266=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 752B5264FEB
- for <alsa-devel@alsa-project.org>; Fri, 31 Jan 2014 16:55:30 +0100 (CET)
-In-Reply-To: <1391183234-13943-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E80202625E6
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jan 2014 16:59:06 +0100 (CET)
+In-Reply-To: <1391087725-4088-2-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lee.jones@linaro.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, sameo@linux.intel.com, lgirdwood@gmail.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, jsarha@ti.com, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Evaluation of the device has given some settings to improve the
-ultrasonic frequency response. This patch allows the user the option of
-applying those.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- include/linux/mfd/arizona/pdata.h |    3 +++
- sound/soc/codecs/arizona.c        |   15 +++++++++++++++
- 2 files changed, 18 insertions(+), 0 deletions(-)
+--===============1956554582908374266==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Mb1GmuWGbG8HO3cw"
+Content-Disposition: inline
 
-diff --git a/include/linux/mfd/arizona/pdata.h b/include/linux/mfd/arizona/pdata.h
-index 12a5c13..3df0ed5 100644
---- a/include/linux/mfd/arizona/pdata.h
-+++ b/include/linux/mfd/arizona/pdata.h
-@@ -177,6 +177,9 @@ struct arizona_pdata {
- 	/** Mode for outputs */
- 	bool out_mono[ARIZONA_MAX_OUTPUT];
- 
-+	/** Provide improved ultrasonic frequency response */
-+	bool ultrasonic_response;
-+
- 	/** PDM speaker mute setting */
- 	unsigned int spk_mute[ARIZONA_MAX_PDM_SPK];
- 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index e4295fe..f2e1ffe 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1134,6 +1134,21 @@ static int arizona_hw_params_rate(struct snd_pcm_substream *substream,
- 	}
- 	sr_val = i;
- 
-+	switch (priv->arizona->type) {
-+	case WM5102:
-+		if (priv->arizona->pdata.ultrasonic_response) {
-+			snd_soc_write(codec, 0x80, 0x3);
-+			if (params_rate(params) >= 176400)
-+				snd_soc_write(codec, 0x4dd, 0x1);
-+			else
-+				snd_soc_write(codec, 0x4dd, 0x0);
-+			snd_soc_write(codec, 0x80, 0x0);
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
- 	switch (dai_priv->clk) {
- 	case ARIZONA_CLK_SYSCLK:
- 		snd_soc_update_bits(codec, ARIZONA_SAMPLE_RATE_1,
--- 
-1.7.2.5
+
+--Mb1GmuWGbG8HO3cw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jan 30, 2014 at 03:15:22PM +0200, Peter Ujfalusi wrote:
+> Instead of
+> davinci_hw_common_param - for common, I2S/DIT mode settings
+> davinci_hw_dit_param - for DIT protocol configuration
+> davinci_hw_param - for I2S (and compatible protocols)
+
+I've applied this but please don't put stylistic cleanups like this
+before bugfixes in patch serieses - it creates a barrier to applying the
+bugfix.
+
+--Mb1GmuWGbG8HO3cw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS68hAAAoJELSic+t+oim9Em4P/0iyMIP8ennadVcyNZgRpWx1
+sjBAcf+izbNEChbjvZobbtTVuBwrj6OYl/hZfY+jPdHk+xnFvTRiaV3LF6qe2KQL
+9Cc2Ryk08t+AyhkjwujgMX0r+38IQ1XHtCTfbe3oFp9HlolQThf0nHMlLhJ8yW6k
+KWHpxfNPEokT+mjwxbNjiMEQzOznoP3Ilqd4DhIR1aaJTHpAqrocug66btEfy9w8
+RNGByrwcefY8ARiFA/cik2SCRh88JDdIbfRvPT4LvruOYicgwYNrrQxeTM8ZJTmC
+ooeo8WpjsKgyEuVa1HXzqK/EHG7ugh+hUk3UCJrarQrxeXzFQ0/S08YmT5fukFpk
+0UaxN3C/TZcvK4E6C+sXfNk98Prr2V5sPg4qp6FX82O+RYMKfWPEPPPooxH+W1zo
+LbT1ae0RYa7/Gxic0YCCv6nyTjeDVyYAaRaGMnShSTJcFAOrXcZvPP2/5D+4dSQE
+Xap0Jf/eDgS3/32JOLCjprJXdUetnBqrafkNqhH/IzNWVZLR4If3oaymGS+8w0mu
+e5tNWgX4X21prQqCSo8X5uKDvdJSkX1Z4pHin96+4RqDkkPnv9CgIV/Lsop+UjLV
+hre1RRcBcqQ8rX2nvRNCH4iuBZKqdJNIENb1ZoNw5xxyWPQyw3j8pNqcS6XSsMZy
+Pq/U/zYgsrKc/cfq7J0z
+=UvB8
+-----END PGP SIGNATURE-----
+
+--Mb1GmuWGbG8HO3cw--
+
+--===============1956554582908374266==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1956554582908374266==--
