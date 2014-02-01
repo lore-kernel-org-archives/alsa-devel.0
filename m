@@ -1,174 +1,53 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v3 5/5] ASoC: tda998x: adjust the audio CTS_N pre-divider from
- audio format
-Date: Thu, 30 Jan 2014 12:08:06 +0100
-Message-ID: <df65a2de7d4afc2471846c02b73e8bbdc4f9a743.1391274628.git.moinejf@free.fr>
-References: <cover.1391274627.git.moinejf@free.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1391274627.git.moinejf@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+From: Sergei Shtylyov <sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v3 3/5] ASoC: tda998x: add DT documentation of the tda998x
+ CODEC
+Date: Sat, 01 Feb 2014 22:30:00 +0400
+Message-ID: <52ED3D28.7020709@cogentembedded.com>
+References: <cover.1391274627.git.moinejf@free.fr> <8e4231b7a55802f58a14dd07ac5cd8b0babb1dce.1391274628.git.moinejf@free.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <8e4231b7a55802f58a14dd07ac5cd8b0babb1dce.1391274628.git.moinejf-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Rob Clark <robdclark-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-In some boards, with I2S input, the NXP TDA998x HDMI transmitter did
-not play audio streams with a sample width lower than S16_32.
+Hello.
 
-This patch adjusts the CTS_N predivider according to the used sample
-width.
+On 01-02-2014 20:48, Jean-Francois Moine wrote:
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- drivers/gpu/drm/i2c/tda998x_drv.c | 25 +++++++++++++++++++++----
- include/drm/i2c/tda998x.h         |  5 ++++-
- sound/soc/codecs/tda998x.c        | 18 ++++++++++++++----
- 3 files changed, 39 insertions(+), 9 deletions(-)
+> This patch adds the DT documentation of the NXP TDA998x CODEC.
 
-diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
-index b833fa5..66013ba 100644
---- a/drivers/gpu/drm/i2c/tda998x_drv.c
-+++ b/drivers/gpu/drm/i2c/tda998x_drv.c
-@@ -22,6 +22,7 @@
- #include <linux/irq.h>
- #include <linux/of_platform.h>
- #include <sound/asoundef.h>
-+#include <sound/pcm_params.h>
- 
- #include <drm/drmP.h>
- #include <drm/drm_crtc_helper.h>
-@@ -48,6 +49,8 @@ struct tda998x_priv {
- 	volatile int wq_edid_wait;
- 	struct drm_encoder *encoder;
- 
-+	int audio_sample_format;
-+
- 	u8 *eld;
- };
- 
-@@ -664,7 +667,18 @@ tda998x_configure_audio(struct tda998x_priv *priv,
- 		reg_write(priv, REG_MUX_AP, MUX_AP_SELECT_I2S);
- 		clksel_aip = AIP_CLKSEL_AIP_I2S;
- 		clksel_fs = AIP_CLKSEL_FS_ACLK;
--		cts_n = CTS_N_M(3) | CTS_N_K(3);
-+		switch (priv->audio_sample_format) {
-+		case SNDRV_PCM_FORMAT_S16_LE:
-+			cts_n = CTS_N_M(3) | CTS_N_K(1);
-+			break;
-+		case SNDRV_PCM_FORMAT_S24_LE:
-+			cts_n = CTS_N_M(3) | CTS_N_K(2);
-+			break;
-+		default:
-+		case SNDRV_PCM_FORMAT_S32_LE:
-+			cts_n = CTS_N_M(3) | CTS_N_K(3);
-+			break;
-+		}
- 		aclk = 1;				/* clock enable */
- 		break;
- 
-@@ -745,13 +759,14 @@ EXPORT_SYMBOL_GPL(tda998x_audio_get_eld);
- 
- void tda998x_audio_update(struct i2c_client *client,
- 			int format,
--			int port)
-+			int port,
-+			struct snd_pcm_hw_params *params)
- {
- 	struct tda998x_priv *priv = i2c_get_clientdata(client);
- 	struct tda998x_encoder_params *p = &priv->params;
- 
- 	/* if the audio output is active, it may be a second start or a stop */
--	if (format == 0 || priv->audio_active) {
-+	if (format == 0 || !params || priv->audio_active) {
- 		if (format == 0) {
- 			priv->audio_active = 0;
- 			reg_write(priv, REG_ENA_AP, 0);
-@@ -763,11 +778,13 @@ void tda998x_audio_update(struct i2c_client *client,
- 	p->audio_cfg = port;
- 
- 	/* don't restart audio if same input format */
--	if (format == p->audio_format) {
-+	if (format == p->audio_format &&
-+	    params_format(params) == priv->audio_sample_format) {
- 		reg_write(priv, REG_ENA_AP, p->audio_cfg);
- 		return;
- 	}
- 	p->audio_format = format;
-+	priv->audio_sample_format = params_format(params);
- 
- 	tda998x_configure_audio(priv, &priv->encoder->crtc->hwmode, p);
- }
-diff --git a/include/drm/i2c/tda998x.h b/include/drm/i2c/tda998x.h
-index 99387ae..62b838f 100644
---- a/include/drm/i2c/tda998x.h
-+++ b/include/drm/i2c/tda998x.h
-@@ -27,8 +27,11 @@ struct tda998x_encoder_params {
- 	unsigned audio_sample_rate;
- };
- 
-+struct snd_pcm_hw_params;
-+
- u8 *tda998x_audio_get_eld(struct i2c_client *client);
- void tda998x_audio_update(struct i2c_client *client,
- 			int format,
--			int port);
-+			int port,
-+			struct snd_pcm_hw_params *params);
- #endif
-diff --git a/sound/soc/codecs/tda998x.c b/sound/soc/codecs/tda998x.c
-index 0493163..a1de35d 100644
---- a/sound/soc/codecs/tda998x.c
-+++ b/sound/soc/codecs/tda998x.c
-@@ -47,7 +47,8 @@ static int tda_get_encoder(struct tda_priv *priv)
- 	return 0;
- }
- 
--static int tda_start_stop(struct tda_priv *priv)
-+static int tda_start_stop(struct tda_priv *priv,
-+			struct snd_pcm_hw_params *params)
- {
- 	int port;
- 
-@@ -56,7 +57,7 @@ static int tda_start_stop(struct tda_priv *priv)
- 		port = priv->ports[0];
- 	else
- 		port = priv->ports[1];
--	tda998x_audio_update(priv->i2c_client, priv->dai_id, port);
-+	tda998x_audio_update(priv->i2c_client, priv->dai_id, port, params);
- 	return 0;
- }
- 
-@@ -136,9 +137,17 @@ static int tda_startup(struct snd_pcm_substream *substream,
- 		stream->channels_max = max_channels;
- 		stream->formats = formats;
- 	}
-+	return 0;
-+}
-+
-+static int tda_hw_params(struct snd_pcm_substream *substream,
-+			struct snd_pcm_hw_params *params,
-+			struct snd_soc_dai *dai)
-+{
-+	struct tda_priv *priv = snd_soc_codec_get_drvdata(dai->codec);
- 
- 	/* start the TDA998x audio */
--	return tda_start_stop(priv);
-+	return tda_start_stop(priv, params);
- }
- 
- static void tda_shutdown(struct snd_pcm_substream *substream,
-@@ -147,11 +156,12 @@ static void tda_shutdown(struct snd_pcm_substream *substream,
- 	struct tda_priv *priv = snd_soc_codec_get_drvdata(dai->codec);
- 
- 	priv->dai_id = 0;		/* streaming stop */
--	tda_start_stop(priv);
-+	tda_start_stop(priv, NULL);
- }
- 
- static const struct snd_soc_dai_ops tda_ops = {
- 	.startup = tda_startup,
-+	.hw_params = tda_hw_params,
- 	.shutdown = tda_shutdown,
- };
- 
--- 
-1.9.rc1
+> Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+> ---
+>   Documentation/devicetree/bindings/drm/i2c/tda998x.txt | 17 +++++++++++++++++
+>   1 file changed, 17 insertions(+)
+
+> diff --git a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
+> index d7df01c..aa0d81b 100644
+> --- a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
+> +++ b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
+[...]
+> @@ -24,4 +35,10 @@ Example:
+>   		interrupts = <27 2>;		/* falling edge */
+>   		pinctrl-0 = <&pmx_camera>;
+>   		pinctrl-names = "default";
+> +			hdmi_codec: codec {
+
+    This line is indented too far to the right.
+
+> +			compatible = "nxp,tda998x-codec";
+> +			audio-ports = <0x03>, <0x04>;
+> +			audio-port-names = "i2s", "spdif";
+> +			#sound-dai-cells = <1>;
+> +		};
+>   	};
+
+WBR, Sergei
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
