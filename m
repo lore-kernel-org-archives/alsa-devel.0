@@ -1,21 +1,21 @@
 From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Echo Fireworks control protocol (was Re: Sample
- program for hwdep interface)
-Date: Sun, 2 Feb 2014 14:58:50 +0100
-Message-ID: <20140202145850.1f8684b3@stein>
-References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
- <52B45837.2080804@sakamocchi.jp>
- <20131221101123.GA17855@marvin.atrad.com.au>
- <52C93F8B.1010701@sakamocchi.jp> <20140112142230.4aacdc9e@stein>
- <52D2B41B.7090505@sakamocchi.jp>
+Subject: Re: [PATCH 06/13] speakers: Change the way to make PCM
+ rules/constraints
+Date: Sun, 2 Feb 2014 16:45:04 +0100
+Message-ID: <20140202164504.20523579@stein>
+References: <1388920417-5584-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1389367775-21360-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1389367775-21360-7-git-send-email-o-takashi@sakamocchi.jp>
+ <20140112131855.71976e86@stein> <52D2AA48.3020203@sakamocchi.jp>
+ <20140130152117.186f08d5@stein> <52EC94CF.2010306@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
- by alsa0.perex.cz (Postfix) with ESMTP id 131E626504A
- for <alsa-devel@alsa-project.org>; Sun,  2 Feb 2014 14:58:52 +0100 (CET)
-In-Reply-To: <52D2B41B.7090505@sakamocchi.jp>
+ by alsa0.perex.cz (Postfix) with ESMTP id 51FD8265051
+ for <alsa-devel@alsa-project.org>; Sun,  2 Feb 2014 16:45:07 +0100 (CET)
+In-Reply-To: <52EC94CF.2010306@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,246 +26,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, Jonathan Woithe <jwoithe@just42.net>, Clemens Ladisch <clemens@ladisch.de>, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Jan 13 Takashi Sakamoto wrote:
-> Hi Stefan,
-> 
->  > another alternative would be to implement sharing/multiplexing of the
->  > EFC response address range in firewire-core, like it is implemented
->  > for FCP_COMMAND and FCP_RESPONSE.  Not sure if it is wise to share
->  > nonstandard address ranges though.
-> 
-> Currently I'm considering to use AV/C-command-based EFC in kernel-land. 
-> Fireworks has a face of GenericAVC and commands with issue may be 
-> replaced with some AV/C commands for a few purposes (but I have never 
-> checked my idea).
-> 
-> I need more time for this issue.
-> 
-> And, just from my curiosity, is your solution allowed by related 
-> specifications such as OHCI1394 or IEEE1394? I have a little 
-> knowledgement about these specification.
-
-I figure from your driver your that EFC_COMMAND and EFC_RESPONSE are
-located at
-	[0xecc0'0000'0000...0xecc0'0000'0200) and
-	[0xecc0'8000'0000...0xecc0'8000'0200),
-although the latter apparently could be reconfigured by the controller
-according to a comment in your sources.  On the other hand, FCP_COMMAND
-and FCP_RESPONSE are of course located at the addresses
-	[0xffff'f000'0b00...0xffff'f000'0d00) and
-	[0xffff'f000'0d00...0xffff'f000'0f00),
-which are not configurable.
-
-So, let's see what the specifications provide for these address ranges.
-
-
-OHCI-1394
----------
-
->From the point of view of OHCI-1394 --- which can be roughly described as a
-specification for 1394 link layer controllers or 1394-to-PCI bridges ---,
-DMA programming of the EFC address range works in the same way as with the
-FCP address range, i.e. by asynchronous reception DMA in buffer-fill style.
-
-The two address ranges are treated differently though with respect to
-acknowledge packets and 1394 response subactions:  According to OHCI-1394
-clauses 3.3.2 and 3.3.3, incoming write requests to addresses below
-0xffff'0000'0000 are immediately acknowledged with ack_complete by the
-OHCI, whereas any requests to addresses at or above 0xffff'0000'0000 are
-acknowledged with ack_pending by the OHCI and presumably followed up by a
-subsequent 1394 response subaction from transaction layer software.
-
-Assuming that we have an FCP controller with an OHCI link-layer controller
-and an FCP target with an OHCI link layer, then a typical FCP transaction
-would look like this (c = controller node, t = target node, req = 1394
-write request packet, rsp = 1394 write response packet):
-
-	(FCP transaction request subaction)
-	c->t  req at 0xffff'f000'0b00
-	t->c  ack_pending
-	t->c  rsp re: 0xffff'f000'0b00
-	c->t  ack_complete
-	(FCP transaction response subaction)
-	t->c  req at 0xffff'f000'0d00
-	c->t  ack_pending
-	c->t  rsp re: 0xffff'f000'0d00
-	t->c  ack_complete
-
-I.e. one FCP transaction is typically wrapped into IEEE 1212/ IEEE 1394
-split transactions.  In contrast, EFC transactions are wrapped into IEEE
-1212/ IEEE 1394 unified transactions (if we assume that EFC controller
-and EFC responder had an OHCI link layer):
-
-	(EFC transaction request subaction)
-	c->t  req at 0xecc0'0000'0000
-	t->c  ack_complete
-	(EFC transaction response subaction)
-	t->c  req at 0xecc0'8000'0000
-	c->t  ack_complete
-
-Link layer controllers which are *not* OHCI-1394 implementations may use
-one or the other 1212/ 1394 transaction type in either of the two
-transport protocols.  Furthermore, OHCI-1394 also allows split transaction
-behavior to be configured for the range below 0xffff'0000'0000, but Linux'
-firewire-ohci and older Linux' ohci1394 configure unified transaction
-behavior, which is implemented by means of posted host bus writes by the
-OHCI.  Lastly, some OHCI-1394 hardware allows addresses like the EFC range
-to be covered by the physical response unit, but neither firewire-ohci nor
-ohci1394 extend the OHCI physical response range over the EFC register
-range.
-
-Anyway; the use of split or unified transactions is immaterial to the
-question of exclusive use versus shared use of these address ranges by the
-application layer.
-
-
-IEEE 1212
----------
-
-The IEEE 1212 Control and Status Registers (CSR) Architecture for
-Microcomputer buses defines the following address ranges within node
-address space:
-
-	Memory space,
-	[0x0000'0000'0000...0xffff'e000'0000):
-	"The name reflects a historical expectation that node resources
-	located here exhibit behaviors usually associated with memory.
-	That is, read and write transactions do not have side effects.
-	In fact, any node resources may be located in this address space
-	--- even registers with associated side effects."
-
-That is, EFC uses Memory space.  (Particularly, it uses Memory space for
-two vendor-defined registers with write side effects.)
-
-	Private space,
-	[0xffff'e000'0000...0xffff'f000'0000):
-	"Allocated for vendor-dependent uses local to the node.  Some
-	implementations may preclude the reuse of an internal address as
-	an externally accessible bus address."
-
-	Register space,
-	[0xffff'f000'0000...0x1'0000'0000'0000):
-	"Register space is allocated for the definition of registers that
-	may have side effects when accessed; it includes standard CSR
-	architecture registers, bus-dependent registers, configuration
-	ROM, and units space."
-
-	CSR architecture registers,
-	[0xffff'f000'0000...0xffff'f000'0200):
-	These are registers defined by IEEE 1212 itself.
-
-	Bus-dependent registers,
-	[0xffff'f000'0200...0xffff'f000'0400):
-	These are registers defined by bus standards based on IEEE 1212,
-	notably IEEE 1394.
-
-	Configuration ROM,
-	[0xffff'f000'0400...0xffff'f000'0800):
-	This is a read-only register whose format is defined by IEEE 1212
-	and whose contents are defined by IEEE 1212, by bus standards like
-	IEEE 1394, and by unit architecture standards like SBP-2, RFC 2734,
-	IEC 61883, AV/C specifications, and others.
-
-	Units space,
-	[0xffff'f000'0800...0x1'0000'0000'0000):
-	"Allocated for cooperative, shared definition by the applicable
-	bus standard or the organizations or vendors responsible for unit
-	architectures."
-
-That is, FCP uses Units space.
-
-According to this, we can do anything we want within the EFC address range
-(just take care that different applications do not confuse each other),
-whereas we have to take higher-level specifications into account when
-we deal with the FCP address range.
-
-
-IEEE 1394
----------
-
-IEEE 1394 High-Performance Serial Bus does not add any provisions for CSR
-Architecture Memory space or Private space.  It only adds definitions
-concerning all three sub-ranges of Register space.  IEEE 1394 explicitly
-reserves [0xffff'f000'0900...0xffff'f000'0a00) for IEC 61883-1 plug
-control registers and [0xffff'f000'0b00...0xffff'f000'0f00) for IEC
-61883-1 FCP command and response registers.
-
-
-IEC 61883-1
------------
-
-Among else this specification defines how FCP transactions are
-encapsulated in IEEE 1212/ IEEE 1394 transactions, and how the headers of
-FCP request and response frames look.  The fact that response headers
-repeat certain parts of the request header, together with the IEEE 1394
-transaction layer implementation (firewire-core) giving the
-bus:generation:node tuple from which an FCP response frame originated,
-allows firewire-core to hand out copies of each incoming FCP response
-frame to all applications that registered themselves as listeners to
-FCP_RESPONSE.  It is then the responsibility of the application to sort
-out whether or not the FCP response belongs to any of the FCP requests
-which this application sent out.  Such application programs can be
-implemented in userspace or in kernelspace.  The firedtv DVB driver is an
-example of the latter kind.
-
->From comments in your sources (added by patch 19/52 "fireworks: Add
-transaction and some commands"), I guess that bytes 1...4 in EFC response
-frames allow applications to match response frames with request frames.
-If so, the implementation could be organized similarly to FCP:
-firewire-core could allow multiple application programs (in kernelspace or
-in userspace) to register for listening at
-[0xecc0'8000'0000...0xecc0'8000'0200) and would give copies of all
-incoming EFC response frames to all listeners.  It would then be the
-responsibility of the listeners to sort out which of the responses are
-theirs, and which to ignore.  When implemented correctly in those
-applications, this matching of commands and responses would work with any
-number of controller applications and with any number of target devices on
-any number of 1394 buses attached to the host.
-
-However, there are some more considerations:
-
-  - This perhaps requires that none of the EFC controllers tell the EFC
-    target to use an EFC_RESPONSE address other than the default,
-    0xecc0'8000'0000.
-
-  - How well do Fireworks devices deal with overlapping EFC transactions?
-    In other words, may two or even more controller applications (e.g. one
-    streaming driver in kernelspace and one mixer UI in userspace) operate
-    independently, or do they have to coordinate certain actions?
-
-  - In firewire-core, we could hardwire shared use of
-    [0xecc0'8000'0000...0xecc0'8000'0200) just like we hardwired shared
-    use of FCP_COMMAND and FCP_RESPONSE.  This assumes that no other
-    application --- outside of Fireworks control applications --- attempts
-    to use this address range.
-
-    Or we could add an in-kernel API and kernel--userspace ABI which lets
-    applications request shared listening to an address range (in contrast
-    to the existing API/ ABI which lets applications register for
-    exclusive listening to an address range).
-
-    In the latter case, the userspace ABI could be either firewire-core's
-    firewire-cdev interface, or it could be ALSA's hwdep interface.
-
-    In the former case, firewire-cdev and/or hwdep could be used as well,
-    although firewire-cdev would be the more natural choice.
-
-I understood from Clemens' comments that he intended that mixer
-applications should use hwdep only
-  - to match ALSA hwdep nodes with firewire-cdev nodes,
-  - to lock/ unlock streaming,
-  - in the future:  to receive certain status information from the ALSA
-    driver if that status is only available as in-band data from the
-    isochronous data stream, or if that status is nowhere available
-    because it is implicit status of write-only registers,
-whereas the mixer applications are supposed to use firewire-cdev for all
-their other dealings with the audio devices.  (Clemens and Jonathan,
-correct me if I misunderstood or if I forgot other control and status I/O
-that is only possible with direct cooperation by the ALSA driver.)
--- 
-Stefan Richter
--=====-====- ---= ====-
-http://arcgraph.de/sr/
+T24gRmViIDAxIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4gSGkgU3RlZmFuLAo+IAo+IFRoYW5r
+cyB0byBnZXQgdGhlc2UgbG9ncy4gSXQncyByZWFsbHkgaGVscGZ1bCB0byBtZS4KPiAKPiA+PiAx
+LlRoZXkgaGF2ZSBib3RoIGlQQ1Ivb1BDUi4KPiAKPiBUaGV5IGhhdmUgbm8gb1BDUnMsIGFnYWlu
+c3QgbXkgZ3Vlc3MuCj4gCj4gSSB3cm90ZSBzbmQtb3hmdyB3aXRoIGFuIGFzc3VtcHRpb24gdGhh
+dCBkZXZpY2VzIGhhdmUgaVBDUi9vUENSLiBTbyBJIAo+IG11c3Qgd3JpdGUgc29tZSBwYXRjaGVz
+IGZvciBteSBsYXN0IFJGQzoKCk5laXRoZXIgTGFDaWUgRmlyZVdpcmUgU3BlYWtlcnMgbm9yIEdy
+aWZmaW4gRmlyZVdhdmUgaGF2ZSBwaHlzaWNhbApyZWNvcmRpbmcgaW5wdXRzLiAgSXQgaXMgdGhl
+cmVmb3JlIHNlbnNpYmxlIHRoYXQgdGhleSBwcmVzZW50Ck9VVFBVVF9NQVNURVJfUExVRy5vdXRw
+dXRfcGx1Z3MgPT0gMC4KCkJ5IHRoZSB3YXksIHdoaWxlIExhQ2llIEZpcmVXaXJlIFNwZWFrZXJz
+IGlzIGEgc3RlcmVvIHBsYXliYWNrIGRldmljZSwKR3JpZmZpbiBGaXJlV2F2ZSBpcyBhIDYtY2hh
+bm5lbCBwbGF5YmFjayBkZXZpY2Ugd2l0aCBzaXggcGh5c2ljYWwgb3V0cHV0cwoodGhyZWUgMy41
+IG1tIHN0ZXJlbyByZWNlcHRhY2xlcykuICBJdCBhbHNvIGNvbnRhaW5zIGEgIkRvbGJ54oSiIERp
+Z2l0YWwKZGVjb2RlciBhbmQgYSBEb2xieSBQcm8gTG9naWMgSUkgYWRhcHRpdmUgbWF0cml4IHN1
+cnJvdW5kIGRlY29kZXIiCmFjY29yZGluZyB0byB0aGUgdXNlcidzIG1hbnVhbC4gIEkgaGF2ZSBu
+byBpZGVhIGhvdyBtdWNoIG9mIHRoYXQgaXMKaW1wbGVtZW50ZWQgaW4gdGhlIEZpcmVXYXZlIGl0
+c2VsZiBhbmQgaG93IG11Y2ggaXMgZG9uZSBpbiB0aGUgRmlyZVdhdmUKZHJpdmVyIGZvciBPUyBY
+LgoKQXBwbGUnIE9TIFggYnVpbHQtaW4gRmlyZVdpcmUgYXVkaW8gZHJpdmVyIHByZXNlbnRzIHRo
+ZSBGaXJlV2F2ZSBhcyBhCm91dHB1dC1vbmx5IGRldmljZSB3aXRob3V0IGFueSBjb250cm9sIGJl
+c2lkZXMgdGhlIGdsb2JhbCBqb2ludAp2b2x1bWUgY29udHJvbC4gIEkgZG9uJ3Qga25vdyB3aGV0
+aGVyIGl0IHdvcmtzIGFzIGEgNi1jaGFubmVsIGRldmljZQp3aXRoIHRoZSBzdG9jayBkcml2ZXI7
+IGl0IGV2aWRlbnRseSBkb2VzIHdvcmsgYXQgbGVhc3QgYXMgYSAyLWNoYW5uZWwKZGV2aWNlIHdp
+dGggc3RlcmVvIHNvdW5kLiAgSW4gb3JkZXIgdG8gdXNlIERvbGJ5IGZlYXR1cmVzIG9uIE9TIFgs
+IGEKY3VzdG9tIGRyaXZlciBmcm9tIEdyaWZmaW4gbmVlZHMgdG8gYmUgaW5zdGFsbGVkLiAgSSBo
+YXZlbid0IHRyaWVkIHRoYXQKZHJpdmVyIG15c2VsZiB5ZXQsIGJ1dCBJIGhhdmUgaGVhcmQgZnJv
+bSBzb21lYm9keSBlbHNlIHRoYXQgdGhpcyBkcml2ZXIKZW1pdHMgdmVuZG9yLXNwZWNpZmljIChG
+Q1A/KSByZXF1ZXN0cyB0byB0aGUgRmlyZVdhdmUgdG8gc2V0IHVwIDUuMQpwbGF5YmFjay4KCkkg
+ZG8gaGF2ZSBhIE1hYyB3aGljaCBkdWFsLWJvb3RzIHRvIEFwcGxlIE9TIFgsIGFuZCBhIFBDSUx5
+bnggY2FyZCB3aGljaApJIGNhbiBwdXQgaW50byBhIExpbnV4IGJveCwgc28gSSBjb3VsZCBhdHRl
+bXB0IHRvIGFuYWx5emUgdGhvc2UgdmVuZG9yLQpzcGVjaWZpYyByZXF1ZXN0cyB0aGF0IGVuYWJs
+ZSA1LjEgb3V0cHV0LiAgVGhvdWdoIGN1cnJlbnRseSwgbGl2ZSBzZWVtcwp0b28gc2hvcnQgdG8g
+Ym90aGVyLgoKSnVzdCBpbiBjYXNlIGl0IHRlbGxzIGFueXRoaW5nIHVzZWZ1bCwgaGVyZSBhcmUg
+c29tZSBwYXJ0cyBvZiBhbHNhLWluZm8ncwpvdXRwdXQgKGZyb20gYWxzYS1pbmZvLnNoIHZlcnNp
+b24gMC40LjYzIGFuZCBrZXJuZWwgMy4xMy1yYzUgd2l0aG91dCB5b3VyCnBhdGNoZXM7IEkgaGF2
+ZW4ndCB0cmllZCB5b3VyIHBhdGNoZXMgeWV0KToKCiEhU291bmRjYXJkcyByZWNvZ25pc2VkIGJ5
+IEFMU0EKISEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpbLi4uXQogMiBbRmlyZVdhdmUg
+ICAgICAgXTogRmlyZVdhdmUgLSBGaXJlV2F2ZQogICAgICAgICAgICAgICAgICAgICAgR3JpZmZp
+biBGaXJlV2F2ZSBTdXJyb3VuZCAoT1hGVzk3MCAwMTA0KSwgR1VJRCAwMDEyOTIwNjAwNTIwOTkx
+IGF0IGZ3Ni4wLCBTNDAwCiAzIFtTcGVha2VycyAgICAgICBdOiBGV1NwZWFrZXJzIC0gRmlyZVdp
+cmUgU3BlYWtlcnMKICAgICAgICAgICAgICAgICAgICAgIExhQ2llIEZpcmVXaXJlIFNwZWFrZXJz
+IChPWEZXOTcwIDAxMDUpLCBHVUlEIDAwZDA0YjIxMDEwMjEyYzggYXQgZnc3LjAsIFM0MDAKCiEh
+QXBsYXkvQXJlY29yZCBvdXRwdXQKISEtLS0tLS0tLS0tLS0tLS0tLS0tLQoKQVBMQVkKCioqKiog
+TGlzdCBvZiBQTEFZQkFDSyBIYXJkd2FyZSBEZXZpY2VzICoqKioKWy4uLl0KY2FyZCAyOiBGaXJl
+V2F2ZSBbRmlyZVdhdmVdLCBkZXZpY2UgMDogT1hGVzk3MCBbRmlyZVdhdmVdCiAgU3ViZGV2aWNl
+czogMS8xCiAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKY2FyZCAzOiBTcGVha2VycyBbRmly
+ZVdpcmUgU3BlYWtlcnNdLCBkZXZpY2UgMDogT1hGVzk3MCBbRmlyZVdpcmUgU3BlYWtlcnNdCiAg
+U3ViZGV2aWNlczogMS8xCiAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKCkFSRUNPUkQKCioq
+KiogTGlzdCBvZiBDQVBUVVJFIEhhcmR3YXJlIERldmljZXMgKioqKgpbLi4ub2YgY291cnNlIG5v
+dGhpbmcgZnJvbSBjYXJkcyAyIGFuZCAzLi4uLl0KCiEhQW1peGVyIG91dHB1dAohIS0tLS0tLS0t
+LS0tLS0KWy4uLl0KISEtLS0tLS0tTWl4ZXIgY29udHJvbHMgZm9yIGNhcmQgMiBbRmlyZVdhdmVd
+CgpDYXJkIGh3OjIgJ0ZpcmVXYXZlJy8nR3JpZmZpbiBGaXJlV2F2ZSBTdXJyb3VuZCAoT1hGVzk3
+MCAwMTA0KSwgR1VJRCAwMDEyOTIwNjAwNTIwOTkxIGF0IGZ3Ni4wLCBTNDAwJwogIE1peGVyIG5h
+bWUJOiAnT1hGVzk3MCcKICBDb21wb25lbnRzCTogJycKICBDb250cm9scyAgICAgIDogMgogIFNp
+bXBsZSBjdHJscyAgOiAxClNpbXBsZSBtaXhlciBjb250cm9sICdQQ00nLDAKICBDYXBhYmlsaXRp
+ZXM6IHB2b2x1bWUgcHN3aXRjaCBwc3dpdGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBG
+cm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQgLSBSZWFyIExlZnQgLSBSZWFyIFJpZ2h0IC0gRnJvbnQg
+Q2VudGVyIC0gV29vZmVyCiAgTGltaXRzOiBQbGF5YmFjayAtMzI3NjggLSAwCiAgTW9ubzoKICBG
+cm9udCBMZWZ0OiBQbGF5YmFjayAwIFsxMDAlXSBbb25dCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNr
+IDAgWzEwMCVdIFtvbl0KICBSZWFyIExlZnQ6IFBsYXliYWNrIDAgWzEwMCVdIFtvbl0KICBSZWFy
+IFJpZ2h0OiBQbGF5YmFjayAwIFsxMDAlXSBbb25dCiAgRnJvbnQgQ2VudGVyOiBQbGF5YmFjayAw
+IFsxMDAlXSBbb25dCiAgV29vZmVyOiBQbGF5YmFjayAwIFsxMDAlXSBbb25dCgohIS0tLS0tLS1N
+aXhlciBjb250cm9scyBmb3IgY2FyZCAzIFtTcGVha2Vyc10KCkNhcmQgaHc6MyAnU3BlYWtlcnMn
+LydMYUNpZSBGaXJlV2lyZSBTcGVha2VycyAoT1hGVzk3MCAwMTA1KSwgR1VJRCAwMGQwNGIyMTAx
+MDIxMmM4IGF0IGZ3Ny4wLCBTNDAwJwogIE1peGVyIG5hbWUJOiAnT1hGVzk3MCcKICBDb21wb25l
+bnRzCTogJycKICBDb250cm9scyAgICAgIDogMgogIFNpbXBsZSBjdHJscyAgOiAxClNpbXBsZSBt
+aXhlciBjb250cm9sICdQQ00nLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUgcHZvbHVtZS1qb2lu
+ZWQgcHN3aXRjaCBwc3dpdGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTGlt
+aXRzOiBQbGF5YmFjayAtMTE1MzggLSAwCiAgTW9ubzogUGxheWJhY2sgLTMxMzcgWzczJV0gW29u
+XQoKISFBbHNhY3RsIG91dHB1dAohIS0tLS0tLS0tLS0tLS0tClsuLi5dCnN0YXRlLkZpcmVXYXZl
+IHsKCWNvbnRyb2wuMSB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdQQ00gUGxheWJhY2sgU3dpdGNo
+JwoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBl
+IEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMiB7CgkJaWZhY2UgTUlYRVIKCQlu
+YW1lICdQQ00gUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCXZhbHVl
+LjIgMAoJCXZhbHVlLjMgMAoJCXZhbHVlLjQgMAoJCXZhbHVlLjUgMAoJCWNvbW1lbnQgewoJCQlh
+Y2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCA2CgkJCXJhbmdlICct
+MzI3NjggLSAwJwoJCX0KCX0KfQpzdGF0ZS5TcGVha2VycyB7Cgljb250cm9sLjEgewoJCWlmYWNl
+IE1JWEVSCgkJbmFtZSAnUENNIFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1ZSB0cnVlCgkJY29tbWVu
+dCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDEKCQl9
+Cgl9Cgljb250cm9sLjIgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnUENNIFBsYXliYWNrIFZvbHVt
+ZScKCQl2YWx1ZSAtMzEzNwoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5
+cGUgSU5URUdFUgoJCQljb3VudCAxCgkJCXJhbmdlICctMTE1MzggLSAwJwoJCX0KCX0KfQoKLS0g
+ClN0ZWZhbiBSaWNodGVyCi09PT09PS09PT09LSAtLT0tIC0tLT0tCmh0dHA6Ly9hcmNncmFwaC5k
+ZS9zci8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
