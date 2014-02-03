@@ -1,16 +1,18 @@
-From: Randy Li <lxr1234@hotmail.com>
-Subject: Strange sound of IDT 82hd206xx6 at font port in AC97
-	mode
-Date: Mon, 3 Feb 2014 15:01:00 +0800
-Message-ID: <BLU0-SMTP22F128862C405DED98AB89ADAB0@phx.gbl>
+From: noman pouigt <variksla@gmail.com>
+Subject: Re: compress: adding support for hardware dependent
+	params
+Date: Mon, 3 Feb 2014 01:01:18 -0800
+Message-ID: <CAES_P+_Wztn3udEbc5vcUgAmFKuNLXh6MwHpcOSzLkah0c0Oxg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from blu0-omc3-s36.blu0.hotmail.com (blu0-omc3-s36.blu0.hotmail.com
- [65.55.116.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C95A12617AA
- for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2014 08:01:10 +0100 (CET)
+Received: from mail-oa0-f52.google.com (mail-oa0-f52.google.com
+ [209.85.219.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB4802602AD
+ for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2014 10:01:19 +0100 (CET)
+Received: by mail-oa0-f52.google.com with SMTP id i4so7892186oah.11
+ for <alsa-devel@alsa-project.org>; Mon, 03 Feb 2014 01:01:18 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +22,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, xingchao.wang@linux.intel.com
+To: alsa-devel@alsa-project.org, bgoswami@codeaurora.org
+Cc: vinod.koul@linux.intel.com, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
+>  We have a requirement, where we need to set a number of hardware specific
+> parameters for compressed offload use-cases, before starting a stream. As
+> these parameters need to be set once for the entire session, we would
+> like to explore the best way to set these additional parameters somewhere
+> before calling trigger() function.
+>  Below are few of the proposed solutions that we could think of at this
+> point for getting this done-
+As you have not mentioned what kind of metadata you are talking about
+I am assuming if your meta data can fit in below structure then we already
+have a code in upstream which takes care of your need.
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+140 struct snd_compr_metadata {
+141          __u32 key;
+142          __u32 value[8];
+143 };
 
-Hello
-My mainboard is ECS A780GM-A, the sound chip in it is IDT 82HD206XX6, it
-shows that below
-00:14.2 Audio device: Advanced Micro Devices [AMD] nee ATI SBx00 Azalia
-(Intel HDA)
-        Subsystem: Elitegroup Computer Systems Device 2816
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-        Latency: 64, Cache Line Size: 64 bytes
-        Interrupt: pin A routed to IRQ 16
-        Region 0: Memory at f9ff0000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-        Kernel driver in use: snd_hda_intel
+Structure snd_compr_ops has set_metadata and get_metadata callbacks
+which you can use for your need.
 
-In my bios I don't have a switch to make the font port mode into AC97 or
-HD Audio.
-In windows you need to install a driver and set the font port into AC97.
-In Linux, you can use the font port, but it seems that audio channel is
-wrong, I can't hear the sound in some part of a film and I can hear the
-stranger accent of sound in the other part of a film(or a music). But
-all the 7.1 channel in the back ports can output the sound match my
-mircophone(all are the same).
-How to fix the problem?
-Kernel is 3.4.77
+ 88  * struct snd_compr_ops: compressed path DSP operations
+ 89  * @open: Open the compressed stream
+ 90  * This callback is mandatory and shall keep dsp ready to receive the stream
+ 91  * parameter
+ 92  * @free: Close the compressed stream, mandatory
+ 93  * @set_params: Sets the compressed stream parameters, mandatory
+ 94  * This can be called in during stream creation only to set codec params
+ 95  * and the stream properties
+ 96  * @get_params: retrieve the codec parameters, mandatory
+ 97  * @trigger: Trigger operations like start, pause, resume, drain, stop.
+ 98  * This callback is mandatory
+ 99  * @pointer: Retrieve current h/w pointer information. Mandatory
+100  * @copy: Copy the compressed data to/from userspace, Optional
+101  * Can't be implemented if DSP supports mmap
+102  * @mmap: DSP mmap method to mmap DSP memory
+103  * @ack: Ack for DSP when data is written to audio buffer, Optional
+104  * Not valid if copy is implemented
+105  * @get_caps: Retrieve DSP capabilities, mandatory
+106  * @get_codec_caps: Retrieve capabilities for a specific codec, mandatory
+107  */
 
+It would be nice if someone can send a patch here to describe set and
+get_metadata callbacks in compress_driver.h
 
-ayaka
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+>
+>
+> 1. Adding new IOCTL call: Add a new ioctl control in compress-offload.c
+> file to handle hardware specific parameters setting. This new ioctl
+> control will call into soc-compress.c and eventually call into platform
+> driver ioctl to set those hardware specific parameters. In this case, we
+> will add a new structure, let's say "snd_compr_hw_ctrl_params", with the
+> same fields as "snd_compr_metadata" struct.
+>
+>
+> 2. Adding a function hw_dependant_hw_params(), which will be called after
+> hw_params() and before prepare() function. The new function will
+> eventually call into the platform driver to get the hardware specific
+> parameters set. Once implemented, this would look something like-
+>   hw_params();
+>   hw_dependant_hw_params();
+>   prepare();
+>
+>
+> 3. Add a function "hw_dependant_hw_params()", as _part_ of the hw_params()
+> function. This new function will be called after the (existing) generic
+> parameters are set. So once implemented, the proposed function calls would
+> look like-
+>   hw_params() {
+>         generic_hw_params();
+>         hw_dependant_hw_params();
+>   }
+>   prepare();
+>
+>
+> We would like to get feedback on these proposed solutions and get a
+> discussion going to see how best these requirements can be fitted in the
+> current Compressed ALSA framework (for mainlining).
+Can you explain your meta data?
 
-iQEcBAEBAgAGBQJS7z6nAAoJEPb4VsMIzTziIY0H/1Um6EnDRGIJ+4DLl6h5AgCl
-Bzcg3haOtFPX4j473TWOOUVqFjesjYqlvWIQaRLorGTNVVwBYRLef/MG4R4DKeti
-pXa6gu92UrkAxOtCWUE71u/snCkEzfe6py5uRV6ut2fL+FpewujHQYrxpyIlBmro
-MaWEN6BjMK2qUFCgx3te7ssKa0HEamjzIPa2HWEDKryNB4jTrBLjYEWng3dXESu3
-czZIFgMCOIHOsRiaB9P1Z/7NTx0xgHsBOspKMUNS/s4hmP5kQ1cev04qrDCB9c2N
-/mUMStViGuZ13r8rO527KEsvuXc41Yt3V9b34wLi+FoIGZoKfDn+Y6K/3u63fD0=
-=y/91
------END PGP SIGNATURE-----
+Be the change you want to see in the world:Gandhi
