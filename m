@@ -1,43 +1,101 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: compress: adding support for hardware dependent
- params
-Date: Mon, 03 Feb 2014 08:25:31 -0600
-Message-ID: <52EFA6DB.4030905@linux.intel.com>
-References: <655481c83253b83c0c7b902829eabfa6.squirrel@www.codeaurora.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 73903260845
- for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2014 15:25:44 +0100 (CET)
-In-Reply-To: <655481c83253b83c0c7b902829eabfa6.squirrel@www.codeaurora.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Banajit Goswami <bgoswami@codeaurora.org>, vinod.koul@linux.intel.com
-Cc: alsa-devel@alsa-project.org, plai@codeaurora.org
+From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Subject: [PATCH 1/2] devicetree: Add devicetree bindings documentation for the ADAU1977
+Date: Mon,  3 Feb 2014 15:57:07 +0100
+Message-ID: <1391439428-3198-1-git-send-email-lars@metafoo.de>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+The ADAU1977 is a four channel audio ADC. It can either be connected to an I2C
+or a SPI bus. Both bindings are described in this document. Other than the
+standard I2C and SPI bus properties a regulator for the AVDD supply needs to be
+specified in the bindings. Optionally, if present in the hardware design, a
+regulator for the DVDD supply and a GPIO connected to the chips reset pin can be
+specified. The bindings also allow to specify the microphone bias voltage that
+should be used with the hardware design.
 
->
->   We have a requirement, where we need to set a number of hardware specific
-> parameters for compressed offload use-cases, before starting a stream. As
-> these parameters need to be set once for the entire session, we would
-> like to explore the best way to set these additional parameters somewhere
-> before calling trigger() function.
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
+Cc: Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Signed-off-by: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+---
+ .../devicetree/bindings/sound/adi,adau1977.txt     | 58 ++++++++++++++++++++++
+ 1 file changed, 58 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,adau1977.txt
 
-I think you need to provide more context here. The compressed API 
-provides a fair amount of information on the parameters needed to handle 
-the stream - maybe too much in most cases -, I don't really get the 
-rationale for hardware-specific parameters needed specifically for 
-compressed data that you wouldn't need for PCM.
-I am also not clear on how we are going to agree on new hw_params that 
-are hardware specific. Shouldn't this sort of requirement be handled 
-through a control interface?
+diff --git a/Documentation/devicetree/bindings/sound/adi,adau1977.txt b/Documentation/devicetree/bindings/sound/adi,adau1977.txt
+new file mode 100644
+index 0000000..3cf03d8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/adi,adau1977.txt
+@@ -0,0 +1,58 @@
++Analog Devices ADAU1977, ADAU1978, ADAU1979 devicetree bindings
++
++The ADAU1977 is a four channel audio ADC. It can either be connected to an I2C
++or a SPI bus. Both bindings are described in this document. Depending on the bus
++type different properties must/can be specified.
++
++Shared required properties:
++ - compatible: Must be "adi,adau1977", "adi,adau1978" or adi,adau1979"
++ - AVDD-supply: A handle to the power supply connected to the AVDD pin
++
++Shared optional properties:
++ - DVDD-supply: A handle to the power supply connected to the DVDD pin. If
++   specified the internal LDO will be disabled.
++ - reset-gpios: GPIO chip handle and specifier that define which GPIO is
++   connected to the chips PD/RST pin. If not specified the reset pin is assumed
++   to be hardwired to VCC.
++ - adi,micbias: Configures the voltage setting for the MICBIAS pin. If not
++   specified the default value will be 8.5 Volts. This property is only valid
++   for the ADAU1977.
++   Valid values for this property are:
++	0: 5.0V
++	1: 5.5V
++	2: 6.0V
++	3: 6.5V
++	4: 7.0V
++	5: 7.5V
++	6: 8.0V
++	7: 8.5V
++	8: 9.0V
++
++I2C required properties:
++ - reg: The I2C address of the chip
++
++SPI required properties:
++ - reg: The SPI chipselect signal of the SPI master associated with this chip
++ - spi-max-frequency: Maximum spi frequency to use.
++
++Examples:
++
++&i2c_bus {
++	adau1977: codec@11 {
++		compatible = "adi,adau1977";
++		reg = <0x11>;
++		reset-gpios = <&gpio 5 0>;
++		AVDD-supply = <&codec_avdd_supply>;
++		DVDD-supply = <&codec_dvdd_supply>;
++	};
++};
++
++&spi_bus {
++	adau1977: codec@1 {
++		compatible = "adi,adau1977";
++		reg = <0x1>;
++		spi-max-frequency = <10000000>;
++		AVDD-supply = <&codec_avdd_supply>;
++		adi,micbias = <5>;
++	};
++};
+-- 
+1.8.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
