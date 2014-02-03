@@ -1,17 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: h1940_uda1380: Don't modify
-	runtime->hw
-Date: Mon, 3 Feb 2014 18:42:18 +0000
-Message-ID: <20140203184218.GM22609@sirena.org.uk>
-References: <1391444662-11933-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 2/2] ASoC: arizona: Improve ultrasonic
+	frequency response
+Date: Mon, 3 Feb 2014 18:43:48 +0000
+Message-ID: <20140203184348.GN22609@sirena.org.uk>
+References: <1391183234-13943-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1391183234-13943-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20140203083730.GB13529@lee--X1>
+ <20140203161014.GE22609@sirena.org.uk>
+ <20140203164846.GX13529@lee--X1>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8260061235674682719=="
+Content-Type: multipart/mixed; boundary="===============3747517652592404440=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2BE162610AB
- for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2014 19:42:26 +0100 (CET)
-In-Reply-To: <1391444662-11933-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id C41E62610A6
+ for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2014 19:43:59 +0100 (CET)
+In-Reply-To: <20140203164846.GX13529@lee--X1>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, sameo@linux.intel.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8260061235674682719==
+--===============3747517652592404440==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Dc3VIgh5NkUOUh1j"
+	protocol="application/pgp-signature"; boundary="8Nc+Tfv1AudcG31Y"
 Content-Disposition: inline
 
 
---Dc3VIgh5NkUOUh1j
+--8Nc+Tfv1AudcG31Y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 03, 2014 at 05:24:21PM +0100, Lars-Peter Clausen wrote:
-> Individual components are not supposed to modify the runtime->hw struct itself
-> as it is manged by the ASoC core. If a component wants to limit the list of
-> supported rates it should set a rate constraint. The h1940_uda1380 already does
-> this, so it is safe to just remove the code that modifies runtime->hw.
+On Mon, Feb 03, 2014 at 04:48:46PM +0000, Lee Jones wrote:
+> > > For the MFD change:
+> > >   Acked-by: Lee Jones <lee.jones@linaro.org>
 
-Applied both, thanks.
+> > There's no actual dependency between the two patches AFAICT so I expect
+> > the register patch can go straight into the MFD tree?
 
---Dc3VIgh5NkUOUh1j
+> That's fine by me. Are you okay with the patch? Can I apply your Ack?
+
+It looked fine to me - just undocumented numbers!  Feel free to add an
+ack from me if you like.
+
+--8Nc+Tfv1AudcG31Y
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS7+MHAAoJELSic+t+oim9GtQP/j9ZYltD7DPLwda1RubX1zGQ
-BKpu16WGsjrdCh/nREe3xM/lomM6gSMvIKnz8Wave6Q6ZSNR1Qr26laPAsP4veub
-kPrOpBqeOBXP84FJDaX5Y9NRzlKmYZpGX2AusshHWpZcSwRuo8XqHPmdCIM52uGl
-+FfCU5QmtNOntubrJGmbRWHN+qGMhrkuJOW5u05/r/HJU79AsfJC3i6QN0JTgWv3
-gmGeMhOH73y1q4t2iU65bGDoRoDdL6ibKi8duDOEjNJw6Rq8uAwnVmJPtI/FpoRy
-0nrZzfJsd3LD9Ylc/ycNC3eOOmVnJIUEFD75ilziu8iwUtQw7qBBsAtTsoozeT7t
-OPrOQd3HcsH5MdTnywyod3y1sGLrTghMwIjf3EGqbOEIGj440MQwrlouQeUq0esP
-xUoqtgCgDTEIvjUtX6vEz/yPghtnJyW+g0Qf3t9zRf4clmkoNyWstKjt/LJwvb7H
-8qqXjfefD85e08/Nr3+B6JbwHcV8QE2K8TKgWwtW7ZEHbDTlI1OAPxwZee0IdlYi
-Fq46p07WMBq1XGNyWJqWxbE+i1AcwSDt2hE+eKmK04zPnnWzrPO0Acd417P/Gs7k
-XdVPVnxkRbdmzoouk11hvD5sPS7/d9lHfXK17lAZaHpOeiPSXI/ZUcv8WULgzLdi
-GNs1xgryn0bwLJUs9fj/
-=Ji0v
+iQIcBAEBAgAGBQJS7+NhAAoJELSic+t+oim9OJ4P/2tV1NNDoaJT4PufSBF4+cDD
+yoOZXuJvxHHuy9z/vvlyVpEJM3H7KhdMag315w8T6P8x2Q8+nizeoBMx/O7WHoD3
+nT0RL4SZOZDOyG6Hyc++ekUhchdgbSOTPhCyo1DB8w3EoEhTSlVYBmkDtI5aMOMq
+Nw9wLm/h5qqw3H9ZL1DFj1rYZKf6L1p52y0uQFOUch8TuK0EjUXhBnwoMjPEWIHf
+Cy+gre/vdsG8ALHUvvMUYjjilXh4An25QI8HsDdFDjQl5SpV58aeIhTC7BXeJf6k
+ZUsUPCvm6lrN/LXBYAsmCNOhm2sfPzb6wfDM+aC1BZzjapZMfrzAC3pvSpH1fDQ+
+YRUS3IT7CggNC0Mx0eUKXyBtaTx0J4zOB0zcckAUZRc96AWtyWGJ6FqqtRMngfvB
+CU1sKrXdwsCVAtO8PbrAvemqJeUpJb5/1hTBDBJCQWTmPqWnpQhpj5fPGlamigQu
++PKK66nXbnaAjUS+szINXhlPoulOSWAArpMGc6NLy/0sD5NGXwoL2oLXdf0XnhJ9
+9ibaO5izu64vT2iklD51L31uFqJsdHM+gBPB+VnqeXSltvpVWXpo8bu3F3ZGTcrJ
+2RcZr9YDqultfoYwjK4TsDZYUwyG30gql1GOQj/oUyElpFM5sevxZfCoQEO8lDNW
+ZXVXQe0/nDNXBTkJsiPE
+=Oax+
 -----END PGP SIGNATURE-----
 
---Dc3VIgh5NkUOUh1j--
+--8Nc+Tfv1AudcG31Y--
 
---===============8260061235674682719==
+--===============3747517652592404440==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8260061235674682719==--
+--===============3747517652592404440==--
