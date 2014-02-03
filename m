@@ -1,18 +1,24 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/2] ASoC: rx1950_uda1380: Don't modify
-	runtime->hw
-Date: Mon,  3 Feb 2014 17:24:22 +0100
-Message-ID: <1391444662-11933-2-git-send-email-lars@metafoo.de>
-References: <1391444662-11933-1-git-send-email-lars@metafoo.de>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 2/2] ASoC: arizona: Improve ultrasonic
+	frequency response
+Date: Mon, 3 Feb 2014 16:48:46 +0000
+Message-ID: <20140203164846.GX13529@lee--X1>
+References: <1391183234-13943-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1391183234-13943-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20140203083730.GB13529@lee--X1>
+ <20140203161014.GE22609@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-089.synserver.de (smtp-out-089.synserver.de
- [212.40.185.89])
- by alsa0.perex.cz (Postfix) with ESMTP id 350CC2608CA
- for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2014 17:24:27 +0100 (CET)
-In-Reply-To: <1391444662-11933-1-git-send-email-lars@metafoo.de>
+Received: from mail-we0-f177.google.com (mail-we0-f177.google.com
+ [74.125.82.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id D4F962608C7
+ for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2014 17:48:52 +0100 (CET)
+Received: by mail-we0-f177.google.com with SMTP id t61so2429261wes.8
+ for <alsa-devel@alsa-project.org>; Mon, 03 Feb 2014 08:48:52 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20140203161014.GE22609@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +28,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, sameo@linux.intel.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Individual components are not supposed to modify the runtime->hw struct itself
-as it is manged by the ASoC core. If a component wants to limit the list of
-supported rates it should set a rate constraint. The rx1950_uda1380 already does
-this, so it is safe to just remove the code that modifies runtime->hw.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/samsung/rx1950_uda1380.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/sound/soc/samsung/rx1950_uda1380.c b/sound/soc/samsung/rx1950_uda1380.c
-index f69da8f..2311c88 100644
---- a/sound/soc/samsung/rx1950_uda1380.c
-+++ b/sound/soc/samsung/rx1950_uda1380.c
-@@ -131,10 +131,6 @@ static int rx1950_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 
--	runtime->hw.rate_min = hw_rates.list[0];
--	runtime->hw.rate_max = hw_rates.list[hw_rates.count - 1];
--	runtime->hw.rates = SNDRV_PCM_RATE_KNOT;
--
- 	return snd_pcm_hw_constraint_list(runtime, 0,
- 					SNDRV_PCM_HW_PARAM_RATE,
- 					&hw_rates);
--- 
-1.8.0
+PiA+IEZvciB0aGUgTUZEIGNoYW5nZToKPiA+ICAgQWNrZWQtYnk6IExlZSBKb25lcyA8bGVlLmpv
+bmVzQGxpbmFyby5vcmc+Cj4gCj4gVGhlcmUncyBubyBhY3R1YWwgZGVwZW5kZW5jeSBiZXR3ZWVu
+IHRoZSB0d28gcGF0Y2hlcyBBRkFJQ1Qgc28gSSBleHBlY3QKPiB0aGUgcmVnaXN0ZXIgcGF0Y2gg
+Y2FuIGdvIHN0cmFpZ2h0IGludG8gdGhlIE1GRCB0cmVlPwoKVGhhdCdzIGZpbmUgYnkgbWUuIEFy
+ZSB5b3Ugb2theSB3aXRoIHRoZSBwYXRjaD8gQ2FuIEkgYXBwbHkgeW91ciBBY2s/CgotLSAKTGVl
+IEpvbmVzCkxpbmFybyBTVE1pY3JvZWxlY3Ryb25pY3MgTGFuZGluZyBUZWFtIExlYWQKTGluYXJv
+Lm9yZyDilIIgT3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBMaW5hcm86
+IEZhY2Vib29rIHwgVHdpdHRlciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
