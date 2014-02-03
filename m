@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/2] ASoC: h1940_uda1380: Don't modify
+Subject: [PATCH 2/2] ASoC: rx1950_uda1380: Don't modify
 	runtime->hw
-Date: Mon,  3 Feb 2014 17:24:21 +0100
-Message-ID: <1391444662-11933-1-git-send-email-lars@metafoo.de>
+Date: Mon,  3 Feb 2014 17:24:22 +0100
+Message-ID: <1391444662-11933-2-git-send-email-lars@metafoo.de>
+References: <1391444662-11933-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-089.synserver.de (smtp-out-089.synserver.de
  [212.40.185.89])
- by alsa0.perex.cz (Postfix) with ESMTP id A077C2608C7
- for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2014 17:24:24 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 350CC2608CA
+ for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2014 17:24:27 +0100 (CET)
+In-Reply-To: <1391444662-11933-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,19 +28,19 @@ List-Id: alsa-devel@alsa-project.org
 
 Individual components are not supposed to modify the runtime->hw struct itself
 as it is manged by the ASoC core. If a component wants to limit the list of
-supported rates it should set a rate constraint. The h1940_uda1380 already does
+supported rates it should set a rate constraint. The rx1950_uda1380 already does
 this, so it is safe to just remove the code that modifies runtime->hw.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/samsung/h1940_uda1380.c | 4 ----
+ sound/soc/samsung/rx1950_uda1380.c | 4 ----
  1 file changed, 4 deletions(-)
 
-diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
-index ec5cbdd..7a85ce8 100644
---- a/sound/soc/samsung/h1940_uda1380.c
-+++ b/sound/soc/samsung/h1940_uda1380.c
-@@ -66,10 +66,6 @@ static int h1940_startup(struct snd_pcm_substream *substream)
+diff --git a/sound/soc/samsung/rx1950_uda1380.c b/sound/soc/samsung/rx1950_uda1380.c
+index f69da8f..2311c88 100644
+--- a/sound/soc/samsung/rx1950_uda1380.c
++++ b/sound/soc/samsung/rx1950_uda1380.c
+@@ -131,10 +131,6 @@ static int rx1950_startup(struct snd_pcm_substream *substream)
  {
  	struct snd_pcm_runtime *runtime = substream->runtime;
  
