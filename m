@@ -1,21 +1,19 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 2/2] ASoC: arizona: Improve ultrasonic
-	frequency response
-Date: Mon, 3 Feb 2014 08:37:30 +0000
-Message-ID: <20140203083730.GB13529@lee--X1>
-References: <1391183234-13943-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1391183234-13943-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Hubert Denkmair <hubert@denkmair.de>
+Subject: =?utf-8?q?mentoring_for_open_sound_hardware_project?=
+	=?utf-8?q?=3F?=
+Date: Mon, 03 Feb 2014 11:43:36 +0200
+Message-ID: <6b13108559968f4fca18b21420753eaa@little-isp.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f50.google.com (mail-wg0-f50.google.com [74.125.82.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 5AEF526512D
- for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2014 09:37:35 +0100 (CET)
-Received: by mail-wg0-f50.google.com with SMTP id l18so11274831wgh.17
- for <alsa-devel@alsa-project.org>; Mon, 03 Feb 2014 00:37:35 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <1391183234-13943-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mxout.aspect-it.de (mxout.aspect-it.de [78.46.235.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 978042602F3
+ for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2014 10:43:36 +0100 (CET)
+Received: from localhost ([127.0.0.1] helo=mail.aspect-it.de)
+ by mail.aspect-it.de with esmtp (Exim 4.71)
+ (envelope-from <hubert@denkmair.de>) id 1WAG40-0000ts-Ax
+ for alsa-devel@alsa-project.org; Mon, 03 Feb 2014 10:43:36 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,19 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, broonie@kernel.org, sameo@linux.intel.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PiBFdmFsdWF0aW9uIG9mIHRoZSBkZXZpY2UgaGFzIGdpdmVuIHNvbWUgc2V0dGluZ3MgdG8gaW1w
-cm92ZSB0aGUKPiB1bHRyYXNvbmljIGZyZXF1ZW5jeSByZXNwb25zZS4gVGhpcyBwYXRjaCBhbGxv
-d3MgdGhlIHVzZXIgdGhlIG9wdGlvbiBvZgo+IGFwcGx5aW5nIHRob3NlLgo+IAo+IFNpZ25lZC1v
-ZmYtYnk6IENoYXJsZXMgS2VlcGF4IDxja2VlcGF4QG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNv
-bT4KPiAtLS0KPiAgaW5jbHVkZS9saW51eC9tZmQvYXJpem9uYS9wZGF0YS5oIHwgICAgMyArKysK
-CkZvciB0aGUgTUZEIGNoYW5nZToKICBBY2tlZC1ieTogTGVlIEpvbmVzIDxsZWUuam9uZXNAbGlu
-YXJvLm9yZz4KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNUTWljcm9lbGVjdHJvbmljcyBMYW5kaW5n
-IFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNv
-Q3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+ Hello list,
+
+ I'm currently pushing a project for free audio hardware (basically a 
+ digital audio interface / mixer with attached linux system).
+ The details are not final yet, but the design involves a FPGA for audio 
+ routing and a ARM SoC board for recording, playback etc.
+ Plan is to support quite a few channels on the linux side, say 20 in, 
+ 20 out at 96kHz/24bit.
+
+ Of course, this needs a Alsa driver.
+
+ My question is: Is there a "best way" to do the FPGA<->Linux 
+ connection?
+ Using the linux GPMC system for communication is the best thing we came 
+ up with until now.
+
+ Are there already drivers doing something alike that we could build 
+ upon?
+ Since there is no kernel developer in our team (yet), is someone on 
+ this list willing to mentor our driver development?
+
+ Greetings,
+
+ Hubert Denkmair
