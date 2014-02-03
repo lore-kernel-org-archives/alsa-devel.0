@@ -1,78 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 3/6] ASoC: tlv320aic32x4: Use signed int
-	mixer controls
-Date: Mon, 3 Feb 2014 12:47:51 +0000
-Message-ID: <20140203124751.GX22609@sirena.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 4/6] ASoC: tlv320aic32x4: DT support
+Date: Mon, 3 Feb 2014 12:48:55 +0000
+Message-ID: <20140203124855.GY22609@sirena.org.uk>
 References: <1390824190-18376-1-git-send-email-mpa@pengutronix.de>
- <1390824190-18376-4-git-send-email-mpa@pengutronix.de>
+ <1390824190-18376-5-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8840798057659665060=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A745260885
- for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2014 13:48:01 +0100 (CET)
-In-Reply-To: <1390824190-18376-4-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="O8nUzFXSEQuWwhTG"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1390824190-18376-5-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8840798057659665060==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9FlPK/CTwZII6yRd"
-Content-Disposition: inline
-
-
---9FlPK/CTwZII6yRd
+--O8nUzFXSEQuWwhTG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jan 27, 2014 at 01:03:07PM +0100, Markus Pargmann wrote:
-> There are a number of mixer controls that support negative values. They
-> use signed values for this with different number of bits for the values.
-> Currently they only support the positive range.
+On Mon, Jan 27, 2014 at 01:03:08PM +0100, Markus Pargmann wrote:
+> Add DT support for this codec. The bindings differ a bit from the aic3x
+> codec bindings, so I created a new binding documentation.
 
-Applied, thanks.
+I've applied this but please send a followup removing it from the
+tlv320aic3x bindings.
 
---9FlPK/CTwZII6yRd
+--O8nUzFXSEQuWwhTG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS74/0AAoJELSic+t+oim9cKwP+gP7Db3M7cb/Fdt7YmIvazQE
-fGmCzY0qZCZNoW+upl7XzIApy44/EyWx06h0e9LGe5Z1sm9mfoplpTajThJUshJx
-13g6wLK+BhqIksKH/o2UhyQ53QBbb72nOvAilhC2MF3rZQXQsPrlvXl2WPfdwKvw
-dcPkF5NjXofG1pcp4yHY/tkAdn4JuMmxe0sTpMYm8+cc79nN55Ak1bXGC1N9TigV
-n97DZpOfhvUvT0/GJgG9JwQzE/nhYjKe7Hn0+G6BCpGYMErZvJHXrvZ+xxxM0N8c
-V+RgR4Bn+takeYY5o0LX6Y+EnEvHEgCP61KK5YsneXX2L0o8ifG9wWluFVKGzFDs
-BGJaz6EHHxzjOqpi3AUri0ASwGwORZ+gcKh6CiBaeq257pSWT9xI2uoARgJB/KUg
-ZbTFKnu1LFdZewq4sa47QBFpNOV3cb9xv21m3F3VSGZEK8W51LqOuxYnlBELVzf/
-Z25OXawdYNRPEtUKa1MvVF1wtpE1ILDyqk8yTdhz2XeNK5pRwhe3NyZle/1nyL9M
-lHsL30OETtMXvtOhnD10o4pzlb85ll1Lwpgh93Pjmle1M4PDDJYSZR8v9cs07uOm
-rQvOmmmidlWjpvibgs4vx7pduup8gyi5TKNG7eSeyHVmxQ1RAf6mrKfuMWjQqyzt
-6FqSexPLbwTsxF1rUdPi
-=kN0D
+iQIcBAEBAgAGBQJS75AzAAoJELSic+t+oim91bYP/1sUCcI4Xp1gNGM8X5TOGj/s
+1ojLWyH/8s9EuMQqvPex4fXm2G5jcX2l7CI4bOz+aQunK8BDGquiMR6TBUq1BZvy
+VYzgx0mSnBzYS4YtRVskLTb4q1Y2wWLj4fdlXoX9wkuMW1xwksyCMHUDRIlg4DSn
+P1XNkScTTRq3ASHpc/8qAKcn0WsNhRu2oWF08QGWGr4ps+2AEBZYOvwSHENlJ5tf
+UegcdtyvfvJ3N2y+qMaRJmBGoDQR/g0a7JzZSlpKbk4Z/LRFCdiV8wLK+g/AYn9i
+G7gIZyDrD3VEzYwd2bnqsYneonbIZM1FO8nAqRgPo7sW2hUQWzRUYlsvkX6m3RV2
+m0AeC6149mLr3mbIUFWwtn08lham4l1+U7arXVMjGR3CZaph00IoyKLn2YnSZgeb
+d6Ffpp0EpG7OdyGygip3jSpZSqt8JVzb0a5FpxHojBMeXeC+hz/ZiINir+ejqiQn
+aEBR043VwSSeFg8V+B8kjw2bLmgC+nxkkj92D7EN7WX4lTHbZ2PWbyCtUO5RC0pT
+GB5p4e/q6aKMs5DDqAgtWLrjLOXKfTh9yFA4yoVSt+C4INcf3m+0uXweGVkSzKfz
+EYYqS7ECswEVcOF/HCS/UZS6IgtSwRpIjVTAedKTuAI4IySNTGEsQ+P7MuQHgXz/
+71eugO08djRUt32L8JAK
+=VI2j
 -----END PGP SIGNATURE-----
 
---9FlPK/CTwZII6yRd--
-
---===============8840798057659665060==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8840798057659665060==--
+--O8nUzFXSEQuWwhTG--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
