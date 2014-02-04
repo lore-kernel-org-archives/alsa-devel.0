@@ -1,141 +1,86 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH 2/2] ALSA: hda/hdmi - allow PIN_OUT to be dynamically enabled
-Date: Mon,  3 Feb 2014 16:54:04 -0700
-Message-ID: <1391471644-16256-2-git-send-email-swarren@wwwdotorg.org>
-References: <1391471644-16256-1-git-send-email-swarren@wwwdotorg.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1391471644-16256-1-git-send-email-swarren@wwwdotorg.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: stable@vger.kernel.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Anssi Hannula <anssi.hannula@iki.fi>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Stephen Warren <swarren@nvidia.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2 v2] ASoC: arizona: Improve ultrasonic
+ frequency response
+Date: Tue, 4 Feb 2014 00:17:27 +0000
+Message-ID: <20140204001727.GO22609@sirena.org.uk>
+References: <1391184978-14516-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1391184978-14516-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============6339557305200375280=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D766F26158B
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 01:17:46 +0100 (CET)
+In-Reply-To: <1391184978-14516-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, sameo@linux.intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren@nvidia.com>
 
-(This is upstream 75fae117a5db "ALSA: hda/hdmi - allow PIN_OUT to be
-dynamically enabled", backported to stable 3.10 through 3.12. 3.13 and
-later can take the original patch.)
+--===============6339557305200375280==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2+gS0LBHjVo9w9tQ"
+Content-Disposition: inline
 
-Commit 384a48d71520 "ALSA: hda: HDMI: Support codecs with fewer cvts
-than pins" dynamically enabled each pin widget's PIN_OUT only when the
-pin was actively in use. This was required on certain NVIDIA CODECs for
-correct operation. Specifically, if multiple pin widgets each had their
-mux input select the same audio converter widget and each pin widget had
-PIN_OUT enabled, then only one of the pin widgets would actually receive
-the audio, and often not the one the user wanted!
 
-However, this apparently broke some Intel systems, and commit
-6169b673618b "ALSA: hda - Always turn on pins for HDMI/DP" reverted the
-dynamic setting of PIN_OUT. This in turn broke the afore-mentioned NVIDIA
-CODECs.
+--2+gS0LBHjVo9w9tQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This change supports either dynamic or static handling of PIN_OUT,
-selected by a flag set up during CODEC initialization. This flag is
-enabled for all recent NVIDIA GPUs.
+On Fri, Jan 31, 2014 at 04:16:18PM +0000, Charles Keepax wrote:
+> Evaluation of the device has given some settings to improve the
+> ultrasonic frequency response. However, this may cause sub-optimal
+> performance in system designs with high output gains on the headphone
+> path (0dB or -2dB), and as the frequencies are inaudible anyway some
+> users may not desire higher frequency response at those frequencies.
+> So allow the user the option to select it if it is appopriate for
+> their system design.
 
-Reported-by: Uosis <uosisl@gmail.com>
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
- sound/pci/hda/patch_hdmi.c | 40 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 36 insertions(+), 4 deletions(-)
+Reading what you're saying here I can't help but think that this sounds
+like it may be use case dependent as well and therefore something that
+ought to be runtime controllable depending on if ultrasonics and/or line
+level outputs are in use (0dB isn't high gain, it's no gain!) for
+example.
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index aad73a1fc2cd..417e0fc2d119 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -88,6 +88,9 @@ struct hdmi_spec {
- 	unsigned int channels_max; /* max over all cvts */
- 
- 	struct hdmi_eld temp_eld;
-+
-+	bool dyn_pin_out;
-+
- 	/*
- 	 * Non-generic ATI/NVIDIA specific
- 	 */
-@@ -452,15 +455,25 @@ static void hdmi_write_dip_byte(struct hda_codec *codec, hda_nid_t pin_nid,
- 
- static void hdmi_init_pin(struct hda_codec *codec, hda_nid_t pin_nid)
- {
-+	struct hdmi_spec *spec = codec->spec;
-+	int pin_out;
-+
- 	/* Unmute */
- 	if (get_wcaps(codec, pin_nid) & AC_WCAP_OUT_AMP)
- 		snd_hda_codec_write(codec, pin_nid, 0,
- 				AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
--	/* Enable pin out: some machines with GM965 gets broken output when
--	 * the pin is disabled or changed while using with HDMI
--	 */
-+
-+	if (spec->dyn_pin_out)
-+		/* Disable pin out until stream is active */
-+		pin_out = 0;
-+	else
-+		/* Enable pin out: some machines with GM965 gets broken output
-+		 * when the pin is disabled or changed while using with HDMI
-+		 */
-+		pin_out = PIN_OUT;
-+
- 	snd_hda_codec_write(codec, pin_nid, 0,
--			    AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
-+			    AC_VERB_SET_PIN_WIDGET_CONTROL, pin_out);
- }
- 
- static int hdmi_get_channel_count(struct hda_codec *codec, hda_nid_t cvt_nid)
-@@ -1535,6 +1548,7 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
- 	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
- 	hda_nid_t pin_nid = per_pin->pin_nid;
- 	bool non_pcm;
-+	int pinctl;
- 
- 	non_pcm = check_non_pcm_per_cvt(codec, cvt_nid);
- 	per_pin->channels = substream->runtime->channels;
-@@ -1544,6 +1558,14 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
- 
- 	hdmi_setup_audio_infoframe(codec, per_pin, non_pcm);
- 
-+	if (spec->dyn_pin_out) {
-+		pinctl = snd_hda_codec_read(codec, pin_nid, 0,
-+					    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+		snd_hda_codec_write(codec, pin_nid, 0,
-+				    AC_VERB_SET_PIN_WIDGET_CONTROL,
-+				    pinctl | PIN_OUT);
-+	}
-+
- 	return hdmi_setup_stream(codec, cvt_nid, pin_nid, stream_tag, format);
- }
- 
-@@ -1563,6 +1585,7 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
- 	int cvt_idx, pin_idx;
- 	struct hdmi_spec_per_cvt *per_cvt;
- 	struct hdmi_spec_per_pin *per_pin;
-+	int pinctl;
- 
- 	if (hinfo->nid) {
- 		cvt_idx = cvt_nid_to_cvt_index(spec, hinfo->nid);
-@@ -1579,6 +1602,14 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
- 			return -EINVAL;
- 		per_pin = get_pin(spec, pin_idx);
- 
-+		if (spec->dyn_pin_out) {
-+			pinctl = snd_hda_codec_read(codec, per_pin->pin_nid, 0,
-+					AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+			snd_hda_codec_write(codec, per_pin->pin_nid, 0,
-+					    AC_VERB_SET_PIN_WIDGET_CONTROL,
-+					    pinctl & ~PIN_OUT);
-+		}
-+
- 		snd_hda_spdif_ctls_unassign(codec, pin_idx);
- 		per_pin->chmap_set = false;
- 		memset(per_pin->chmap, 0, sizeof(per_pin->chmap));
-@@ -2570,6 +2601,7 @@ static int patch_nvhdmi(struct hda_codec *codec)
- 		return err;
- 
- 	spec = codec->spec;
-+	spec->dyn_pin_out = true;
- 
- 	return 0;
- }
--- 
-1.8.1.5
+--2+gS0LBHjVo9w9tQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS8DGUAAoJELSic+t+oim9KscP/1S6F/X0Mw2HsuOzDHIwOmGU
+mk/f8MWtrwyhmpAzg4VyHqmIZM9u/5I8Sm4zHsj1if9iKisV980H6KnetzQSncZk
+5dpIEfU4/RAaZh4av23QrqN8CWUPfla1s5MjSXKvcc05Y/eOzmMoF19I2ZuLs+UG
+8C1FrWtZKMDStcH6Yn03RzH86cxTPxKXamRKLUdpULed2ZnJ4LcNGVdttBWPZDsd
+uvHE4jjRz3lV8VH8q040dpTN/d8lggAsTPcndLE4iPuHf1rQVmJKcznGvP3+TReD
+CXSPQKQ3o5i7tIMcJnmIvyKE9yq3cExgOddIqbkjh2oA4z8zv93+Bi8euRhZqfCj
+UhQvPnMaxMWtKcHDp9468WkSZyQZ8T+b6yZti/tehxYALZr1rmPYk+qHic7JQR7v
+CQ1uS1LmAKFO6NPiCo+ENHsyFupGs0l4ULvxVSb8jW79YcbFC1o4hvD77wVEObdA
+fdD0oVcgLolMgrvO/Cks07auSRsu4aC7AnC8ZVSvRw3qJDCbqUMWoljs8N8dETm7
+ygcxDqUMnCShGyuCplKH3ct3b6gkwbFUsr/2TzyblMx7YKDKaVfAdVetzokW7dgU
+lmBPLdjfShxPImD3poOc78Vs0Qka0rNezJDtB/lXKmsUYHbYXUhNZY1su3vfgbna
+s6sjQPiiBsjvPc1m1ijY
+=gv4V
+-----END PGP SIGNATURE-----
+
+--2+gS0LBHjVo9w9tQ--
+
+--===============6339557305200375280==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6339557305200375280==--
