@@ -1,18 +1,22 @@
-From: Randy Li <lxr1234@hotmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: Strange sound of IDT 82hd206xx6 at font port in
- AC97 mode
-Date: Tue, 4 Feb 2014 09:15:02 +0800
-Message-ID: <BLU0-SMTP39216262BA66E5ED8A80E9BADAA0@phx.gbl>
+	AC97 mode
+Date: Tue, 4 Feb 2014 11:48:05 +0800
+Message-ID: <CAN8ccibwRRokZ0BdJgQVeQuds8oxPAs7SyxVLehaTjK21G1s+w@mail.gmail.com>
 References: <BLU0-SMTP22F128862C405DED98AB89ADAB0@phx.gbl>
  <CAN8cciZ+QwNpSnBmXuvKV9Hkqhfbo6CvY0bmx7rMQic9+tgb8A@mail.gmail.com>
+ <BLU0-SMTP168158F76E25FBB1A51D33EADAA0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from blu0-omc3-s9.blu0.hotmail.com (blu0-omc3-s9.blu0.hotmail.com
- [65.55.116.84]) by alsa0.perex.cz (Postfix) with ESMTP id 7AEBD261685
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 02:15:13 +0100 (CET)
-In-Reply-To: <CAN8cciZ+QwNpSnBmXuvKV9Hkqhfbo6CvY0bmx7rMQic9+tgb8A@mail.gmail.com>
+Received: from mail-qc0-f182.google.com (mail-qc0-f182.google.com
+ [209.85.216.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9299226167E
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 04:48:06 +0100 (CET)
+Received: by mail-qc0-f182.google.com with SMTP id c9so12607334qcz.41
+ for <alsa-devel@alsa-project.org>; Mon, 03 Feb 2014 19:48:05 -0800 (PST)
+In-Reply-To: <BLU0-SMTP168158F76E25FBB1A51D33EADAA0@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,44 +26,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, xingchao.wang@linux.intel.com
+To: Randy Li <lxr1234@hotmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgrkuo4gMjAxNOW5
-tDAy5pyIMDTml6UgMDc6MDgsIFJheW1vbmQgWWF1IOWGmemBkzoKCj4gQ2hlY2sgdGhlIGZyb250
-IGF1ZGlvIGNvbm5lY3RvciBvZiB5b3VyIG1vdGhlcmJvYXJkIGluIHRoZSB1c2VyCj4gbWFudWFs
-Cj4gCj4gQ2hlY2sgdGhlIGZyb250IGF1ZGlvIHBhbmVsIHNwZWNpZmljYXRpb24gb2YgeW91ciBj
-b21wdXRlciBjaGFzc2lzIAo+IHdoZXRoZXIgc3VwcG9ydCBKYWNrIGRldGVjdGlvbiBvZiBoZWFk
-cGhvbmUgYW5kIG1pYwo+IAo+IE9ubHkgYSBmZXcgbXVsdGkgY2hhbm5lbCBBQzk3IDIuMyBjb2Rl
-Y3MgKGUuZy4gQUxDODUwKSBzdXBwb3J0Cj4gamFjayBkZXRlY3Rpb24gYW5kIG1vc3QgQUM5NyBm
-cm9udCBhdWRpbyBwYW5lbCBkb2VzIG5vdCBoYXZlIGphY2sKPiBkZXRlY3Rpb24gY2lyY3VpdAo+
-IAo+IGh0dHA6Ly93d3cuaW50ZWwuY29tL3N1cHBvcnQvbW90aGVyYm9hcmRzL2Rlc2t0b3Avc2Iv
-Y3MtMDE1ODUxLmh0bQo+IAo+PiBJIGNhbid0IGhlYXIgdGhlIHNvdW5kIGluIHNvbWUgcGFydCBv
-ZiBhIGZpbG0gYW5kIEkgY2FuIGhlYXIgdGhlIAo+PiBzdHJhbmdlciBhY2NlbnQgb2Ygc291bmQg
-aW4gdGhlIG90aGVyIHBhcnQgb2YgYSBmaWxtKG9yIGEgbXVzaWMpLgo+PiBCdXQgYWxsIHRoZSA3
-LjEgY2hhbm5lbCBpbiB0aGUgYmFjayBwb3J0cyBjYW4gb3V0cHV0IHRoZSBzb3VuZAo+PiBtYXRj
-aCBteSBtaXJjb3Bob25lKGFsbCBhcmUgdGhlIHNhbWUpLgo+IAo+IFRoZSBmcm9udCBhdWRpbyBw
-YW5lbCBoZWFkcGhvbmUgc2hhcmUgdGhlIGZyb250IGNoYW5uZWwgc2lnbmFsIG9ubHkKPiB3aGVu
-IHBsYXlpbmcgbXVsdGkgY2hhbm5lbCBhdWRpbwo+IAo+IFlvdSBuZWVkICB0byB1c2UgYXBwbGlj
-YXRpb25z77yIZS5nICBtcGxheWVy77yJIHdoaWNoIGNhbiAgZG93biBtaXgKPiBtdWx0aSBjaGFu
-bmVsIHRvIHN0ZXJlbyBvciBzZWxlY3QgdGhlIHN0ZXJlbyB0cmFjayAgaW5zdGVhZCBvZiBEVFMK
-PiBvZiBtb3ZpZSBEVkQgd2hlbiB5b3UgYXJlIHVzaW5nIGhlYWRwaG9uZQo+IApJIGZpbmQgdGhl
-IG90aGVyIHRoaW5nLCB0aGlzIGhlYWRwaG9uZSBpcyBmb3IgYW5kcm9pZCBtb2JpbGUgd2hpY2gK
-Y29tYmluZSBjb250cm9sbGVyLCBoZWFkcGhvbmUgYW5kIHNwZWFrZXIuIElmIHlvdSBkb24ndCBw
-bHVnIGl0IGludG8KZm9udCBwb3J0IGZ1bGx5LCBpdCB3b3Jrcy4KSSBoYXZlIHRlc3RlZCBhIG5v
-cm5hbCBoZWFkcGhvbmUsIGl0IHdvcmtzIHRvby4KCk1heWJlIGl0IGNhdXNlIGJ5IG15IGhhcmR3
-YXJlLCBpdCBpcyBub3QgYWxzYSdzIHByb2JsZW0uCgoKVGhhbmsgeW91CmF5YWthCi0tLS0tQkVH
-SU4gUEdQIFNJR05BVFVSRS0tLS0tClZlcnNpb246IEdudVBHIHYxLjQuMTIgKEdOVS9MaW51eCkK
-Q29tbWVudDogVXNpbmcgR251UEcgd2l0aCBNb3ppbGxhIC0gaHR0cDovL2VuaWdtYWlsLm1vemRl
-di5vcmcvCgppUUVjQkFFQkFnQUdCUUpTOEQ4V0FBb0pFUGI0VnNNSXpUemlqMmtIL2l4dXp2NlpT
-Q1gzd0RlYVh5UmJIU2psCjI2VUduUjFRMGhrRjFQRmQ1Y2xxNU5YdDlGNFVIdGg2ZjI3YkhmNjFw
-MVYwWlNKQTlGaDQxamJocHNRVlJ0aXgKeE1hQlVJaFJodG1XVDVvMzZWeEdjM3FWbUFPdlVRWDlh
-TDRJS3JFNG1kcmR1bmhFUU9IQ0hrZDgxellPamVpdgpybEd5MlNiT3oyMHJVK2RXNjdJZytRSkJO
-eURoSnU5QWp3KzQwaHdqY2gvMGhuQitvakpxd1pBNDluUzZCd0FrClRZQmtIb0ZydU8reVpEQlRj
-aHZzY3VoREE4S3FVTzZMaWpidVhzSFFLWHJ0bUZNQW9XMEZ0YnYwbzhsazJESUMKcFVTeGQwb0Fp
-cXg1TExEVlNsQldvVmMySFpUSnZHa0dYSWVFeXoyVldYOHdHb3NyUDNXdU4yT3RiTm14eWNnPQo9
-MFhNYgotLS0tLUVORCBQR1AgU0lHTkFUVVJFLS0tLS0KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+>
+
+> >>
+> >> Hello My mainboard is ECS A780GM-A, the sound chip in it is IDT
+> >> 82HD206XX6,
+> >
+> > Is this 92HD206X ?
+> >
+> Maybe it is, but it is 82HD206XX6 in the top side of the chip.
+>
+
+you can try hda_jack_sense_test.py to measure the impedance of the rear
+panel jacks
+
+https://bugzilla.kernel.org/attachment.cgi?id=118731
+
+this require the python and hda codec parser of hda-analyer
+
+
+>
+> > Seem this codec support impedance sense
+> >
+> > Post the output of alsa-info.sh
+> >
+> http://www.alsa-project.org/db/?f=ce795f0f8e31b9eb5e35cc2fed572290d14b1cda
+>
+
+
+the BIOS of those motherboard which use IDT codec seem use
+[Jack] Speaker at ext Rear for those line out jacks at rear panel
+
+Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
+  Control: name="Speaker Front Jack", index=0, device=0
+  Pincap 0x0000173f: IN OUT HP Detect Trigger ImpSense
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x01114010: [Jack] Speaker at Ext Rear
+    Conn = 1/8, Color = Green
+    DefAssociation = 0x1, Sequence = 0x0
+
+
+is it possible for the auto parser to put them into cfg->lineout when
+device is speaker but the  connection is [Jack] and location is Ext Rear ?
+
+the driver will not create those "line in jack mode" and "mic jack mode"
+controls when it is desktop instead of notebook
+
+Node 0x0e [Pin Complex] wcaps 0x400181: Stereo
+  Control: name="Line Jack Mode", index=0, device=0
+    ControlAmp: chs=0, dir=In, idx=0, ofs=0
+  Control: name="Line Jack", index=0, device=0
+  Pincap 0x00001737: IN OUT Detect Trigger ImpSense
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x01813022: [Jack] Line In at Ext Rear
+    Conn = 1/8, Color = Blue
+    DefAssociation = 0x2, Sequence = 0x2
+
+
+
+Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
+  Control: name="Rear Mic Jack Mode", index=0, device=0
+    ControlAmp: chs=0, dir=In, idx=0, ofs=0
+  Control: name="Rear Mic Jack", index=0, device=0
+  Pincap 0x00001737: IN OUT Detect Trigger ImpSense
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x01a19021: [Jack] Mic at Ext Rear
+    Conn = 1/8, Color = Pink
+    DefAssociation = 0x2, Sequence = 0x1
+  Pin-ctls: 0x24: IN VREF_80
+  Unsolicited: tag=03, enabled=1
+  Connection: 1
+     0x03
