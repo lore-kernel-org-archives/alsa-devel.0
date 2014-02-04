@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 4/5] ASoC: tda998x: adjust the audio hw
- parameters from EDID
-Date: Tue, 4 Feb 2014 18:06:25 +0000
-Message-ID: <20140204180625.GM22609@sirena.org.uk>
+Subject: Re: [PATCH v3 5/5] ASoC: tda998x: adjust the audio
+ CTS_N pre-divider from audio format
+Date: Tue, 4 Feb 2014 18:09:22 +0000
+Message-ID: <20140204180922.GN22609@sirena.org.uk>
 References: <cover.1391274627.git.moinejf@free.fr>
- <1b15025671d9099863a3091346536e45891e4a26.1391274628.git.moinejf@free.fr>
+ <df65a2de7d4afc2471846c02b73e8bbdc4f9a743.1391274628.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7363433986507547603=="
+Content-Type: multipart/mixed; boundary="===============4033519853754971343=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BD9A32619E1
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 19:06:40 +0100 (CET)
-In-Reply-To: <1b15025671d9099863a3091346536e45891e4a26.1391274628.git.moinejf@free.fr>
+ by alsa0.perex.cz (Postfix) with ESMTP id BD9772619E1
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 19:09:26 +0100 (CET)
+In-Reply-To: <df65a2de7d4afc2471846c02b73e8bbdc4f9a743.1391274628.git.moinejf@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,64 +27,63 @@ Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.u
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7363433986507547603==
+--===============4033519853754971343==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="EJCnrJiDxBM3d8Vu"
+	protocol="application/pgp-signature"; boundary="rXXdS9IWuK35PRlJ"
 Content-Disposition: inline
 
 
---EJCnrJiDxBM3d8Vu
+--rXXdS9IWuK35PRlJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jan 27, 2014 at 09:48:54AM +0100, Jean-Francois Moine wrote:
+On Thu, Jan 30, 2014 at 12:08:06PM +0100, Jean-Francois Moine wrote:
 
-> +		/* change the snd_soc_pcm_stream values of the driver */
-> +		stream->rates = rate_mask;
-> +		stream->channels_max = max_channels;
-> +		stream->formats = formats;
+> -	if (format == p->audio_format) {
+> +	if (format == p->audio_format &&
+> +	    params_format(params) == priv->audio_sample_format) {
+>  		reg_write(priv, REG_ENA_AP, p->audio_cfg);
+>  		return;
 
-> +	/* copy the DAI driver to a writable area */
-> +	dai_drv = devm_kzalloc(&pdev->dev, sizeof(tda998x_dai), GFP_KERNEL);
-> +	if (!dai_drv)
-> +		return -ENOMEM;
-> +	memcpy(dai_drv, tda998x_dai, sizeof(tda998x_dai));
-> +
+I find the above confusing and probably deserving of a comment
+explaining the logic.  I think it's trying to skip noop configuration
+updates?
 
-The code should be doing this by setting constraints based on the
-current setup rather than by editing the data structure - the expecation
-is very much that the data won't change so this prevents surprises with
-future work on the core.
+>  	}
+>  	p->audio_format = format;
+> +	priv->audio_sample_format = params_format(params);
 
---EJCnrJiDxBM3d8Vu
+You should be using params_width() for the number of bits per sample.
+
+--rXXdS9IWuK35PRlJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS8SweAAoJELSic+t+oim9kLgP/2YWNETHFss7iQze9oPo+UMv
-85VolGPTj7pipx3EgSf9S8y/2Cb/JnkiAw5dwVMhXsgJFoFVWFUA1Ryw3FsAfYh6
-M3QsLTIQ89WuQmv3rkVPzbKNFaGFC2v1+A1yTvNQyT7Eq/5DZXEDsZIFIgzADw1n
-4Z5EX8uZpNMyRXSAEvV1SQvvEWJnLgQVnCLOoLdX7B9zGZGgE2xLdAyWPBg3bFVD
-0XoSVpfN9AFONY8MZ7ed/1RUaEGR2/kKjo6+GGgHm2oQFQpl3EX95zQwvoPlJu6p
-gJ2BjDIAkt2wXYAHxmHf7ENFmyDkzR0UnP0hcIrpTf99VAfyJYd+Lr9F7u7Tnof+
-fKbnhohO+wvyKgwg/le11pjJ2Tolp69nFtocLiCuq+yka3Ej0bkoZ4X8EQzOlcsh
-g/FpCVhpT4AzwjG4U/Bt+jXLXnlzPwzrrA1+ZZVZVHLwbKfOUHKchvHrDNGPdRp8
-M6hwgEPsVpLhPpmsY4YT29HzxrNEXaT/rGpbY6Ae9uxkXMb+mriGtduldTfJUQ43
-6WdUh/LavruQfh27QjH/ivXOrscuv4mqcs7++jgfHD7p2TWR/8YpxrMFpXZupqOx
-XiRBP5CDK1h9kPTMMmuKOoUPbWsFAhggbYq2/qUMJv5h70ta63XQVi8pyxMXDyoo
-89cbDjJn3nQ7VnqoKgam
-=3BW0
+iQIcBAEBAgAGBQJS8SzOAAoJELSic+t+oim9H5QQAIRbYIjNbLCbAiCQ4/Qq9eQp
+1rgLxCPjVG6XATgn3QMAk9zuAwOoRjk+fjSjMyb1GlG0zjVs5LqJ66KDz76ekUpU
+PYb2XlFJgaI6ETDGN3Nx+ooVPPxzOEvbpc2KTW/GeVNHUQdpVm5W7luSxFhepNy3
+uYW8Mgw+iyL6IGXW4L4pf+qnq+RfAb7rKy/TvtLwhST/WoJAe4otzlRE9UduEek7
+sriGv4NzvKbi+s46Zz1y5LTqQU5WTaYl+DROkoCmXAaSwTB9MYx28ZgxLb0H3pxF
+TxYO4sfMASbo4TAMOLbtF0dpXWzasvDAOPg/0n/XzeSlKG8xaW76KW7afq0mbw6L
+utUT1I2EUMktZjLFVIOKO9U3gIXTDyV4OxwS66qn0wMNtSXWK2Jezu0zLxDxgJm/
+JTtmbuvYRBtoVu0p+SNAXeOaVsnFbsxFLyp16TuBs2daTVL2wKndPs6oKd0he9M7
+YkV9t2g+xmYq1uhuYad5ST84kmp9XhZ0acV32ccYVIXjsGX4xtrBbAp6FZcPhVyF
+4M65WD8JWOHt9FFogZkIPfMgVXGsd6xrFiPP3CuJX/P4taZl7lN5pJT3etaqFXur
+H961qTcyzVv2LNxss6q3B5YAtutYhFru6ofoBN+vGhZcmyD6d2Ugy7tzGSl7X3HU
+xVToPVJ+y8W1nn+nMHu0
+=8agD
 -----END PGP SIGNATURE-----
 
---EJCnrJiDxBM3d8Vu--
+--rXXdS9IWuK35PRlJ--
 
---===============7363433986507547603==
+--===============4033519853754971343==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7363433986507547603==--
+--===============4033519853754971343==--
