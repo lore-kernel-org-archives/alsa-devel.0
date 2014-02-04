@@ -1,19 +1,17 @@
-From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
-Subject: Re: [PATCH] ASoC: cs42l73: Don't mix
- SNDRV_PCM_RATE_KNOT with specific rates
-Date: Wed, 05 Feb 2014 10:49:06 +1300
-Message-ID: <52F16052.9000609@blennerhassett.gen.nz>
-References: <1391543731-9085-1-git-send-email-lars@metafoo.de>
- <A40422ED-1EEB-4A09-A550-0AAAAA89464D@cirrus.com>
- <52F15519.7090109@metafoo.de>
+From: Hendrik-Jan Heins <hjheins@gmail.com>
+Subject: Sony Vaio Pro svp112a1cm
+Date: Tue, 4 Feb 2014 23:04:08 +0100
+Message-ID: <CAAU0D9cXafhbUY9bOf9AK_uUpYszV5BuoM5d3vHJjhFQbifxqQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from omr2.mail.isx.net.nz (omr2.mail.isx.net.nz [111.65.230.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 759FC261AA4
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 22:49:11 +0100 (CET)
-In-Reply-To: <52F15519.7090109@metafoo.de>
+Received: from mail-lb0-f178.google.com (mail-lb0-f178.google.com
+ [209.85.217.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1BCF261AA4
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 23:04:08 +0100 (CET)
+Received: by mail-lb0-f178.google.com with SMTP id u14so7032609lbd.9
+ for <alsa-devel@alsa-project.org>; Tue, 04 Feb 2014 14:04:08 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,24 +21,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, "Austin, Brian" <Brian.Austin@cirrus.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/02/14 10:01, Lars-Peter Clausen wrote:
-> e.g. by a rate list constraint. I find this confusing when casually
-> reading the code. 
+Dear list,
 
+to report the Spny Vaio Pro svp112a1cm
+THe sound device in this notebook works, but the internal microphone not.
+This seeems to be the same device as in teh 13 inch version of this
+laptop, but they seem to have changed the ID of the device.
+Maybe the same fix can be applied to fix?
 
-> And this is the only driver that does it.
+All details of the machine are available here:
+http://www.alsa-project.org/db/?f=970d897015298925b86d4d2c68a106fba22eb184
 
-A quick grep through the sound tree for "KNOT" shows that there are many
-drivers that do?
+thank you.
 
-Just a example:
+best regards,
 
-pci/intel8x0m.c:  .rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
-SNDRV_PCM_RATE_KNOT
-
-
-Do these need 'fixing'?
+Hendrik-Jan
