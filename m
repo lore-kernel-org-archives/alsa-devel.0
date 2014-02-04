@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 2/5] ASoC: tda998x: add a codec driver
-	for the TDA998x
-Date: Tue, 4 Feb 2014 17:54:10 +0000
-Message-ID: <20140204175410.GL22609@sirena.org.uk>
+Subject: Re: [PATCH v3 4/5] ASoC: tda998x: adjust the audio hw
+ parameters from EDID
+Date: Tue, 4 Feb 2014 18:06:25 +0000
+Message-ID: <20140204180625.GM22609@sirena.org.uk>
 References: <cover.1391274627.git.moinejf@free.fr>
- <ae68394f080f0ea5acaf3377cb1d18f29e42c646.1391274628.git.moinejf@free.fr>
- <20140204133014.GA22609@sirena.org.uk>
- <20140204181605.5b837a70@armhf>
+ <1b15025671d9099863a3091346536e45891e4a26.1391274628.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3694963603900751310=="
+Content-Type: multipart/mixed; boundary="===============7363433986507547603=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C6D22619E1
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 18:54:16 +0100 (CET)
-In-Reply-To: <20140204181605.5b837a70@armhf>
+ by alsa0.perex.cz (Postfix) with ESMTP id BD9A32619E1
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 19:06:40 +0100 (CET)
+In-Reply-To: <1b15025671d9099863a3091346536e45891e4a26.1391274628.git.moinejf@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,122 +27,64 @@ Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.u
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3694963603900751310==
+--===============7363433986507547603==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BrzBj8PzWVa+9geT"
+	protocol="application/pgp-signature"; boundary="EJCnrJiDxBM3d8Vu"
 Content-Disposition: inline
 
 
---BrzBj8PzWVa+9geT
+--EJCnrJiDxBM3d8Vu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 04, 2014 at 06:16:05PM +0100, Jean-Francois Moine wrote:
-> Mark Brown <broonie@kernel.org> wrote:
+On Mon, Jan 27, 2014 at 09:48:54AM +0100, Jean-Francois Moine wrote:
 
-> > > +	/* load the optional CODEC */
-> > > +	of_platform_populate(np, NULL, NULL, &client->dev);
+> +		/* change the snd_soc_pcm_stream values of the driver */
+> +		stream->rates = rate_mask;
+> +		stream->channels_max = max_channels;
+> +		stream->formats = formats;
 
-> > Why is this using of_platform_populate()?  That's a very odd way of
-> > doing things.
+> +	/* copy the DAI driver to a writable area */
+> +	dai_drv = devm_kzalloc(&pdev->dev, sizeof(tda998x_dai), GFP_KERNEL);
+> +	if (!dai_drv)
+> +		return -ENOMEM;
+> +	memcpy(dai_drv, tda998x_dai, sizeof(tda998x_dai));
+> +
 
-> The i2c does not populate the subnodes in the DT. I did not find why,
-> but, what is sure is that if of_platform_populate() is not called, the
-> tda CODEC module is not loaded.
+The code should be doing this by setting constraints based on the
+current setup rather than by editing the data structure - the expecation
+is very much that the data won't change so this prevents surprises with
+future work on the core.
 
-You shouldn't be representing this as a separate node in the DT unless
-there really is a distinct and reusable IP, otherwise you're putting
-Linux implementation details in there.  Describe the hardware, not the
-implemementation.
-
-> You may find an other example in drivers/mfd/twl-core.c.
-
-The TWL drivers aren't always a shining example of how to do things -
-they were one of the earliest MFDs so there's warts in there.
-
-> > > +config SND_SOC_TDA998X
-> > > +	tristate
-> > > +	depends on OF
-> > > +	default y if DRM_I2C_NXP_TDA998X=y
-> > > +	default m if DRM_I2C_NXP_TDA998X=m
-
-> > Make this visible if it can be selected from DT so it can be used with
-> > generic cards.
-
-> I don't understand. The tda CODEC can only be used with the TDA998x I2C
-> driver. It might have been included in the tda998x source as well.
-
-You shouldn't have the default settings there at all, that's not the
-normal idiom for MFDs.  I'd also not expect to have to build the CODEC
-driver just because I built the DRM component.
-
-> Now, the CODEC is declared inside the tda998x as a node child. But, in
-> a bad DT, the tda CODEC could be declared anywhere, even inside a other
-> DRM I2C slave encoder, in which case, bad things would happen...
-
-So, part of the problem here is that this is being explicitly declared
-in the DT leading to more sources for error.
-
-> > What does this actually do?  No information is being passed in to the
-> > core function here, not even any information on if it's starting or
-> > stopping.  Looking at the rest of the code I can't help thinking it
-> > might be clearer to inline this possibly with a lookup helper, the code
-> > is very small and the lack of parameters makes it hard to follow.
-
-> I thought it was simple enough. The function tda_start_stop() is called
-> from 2 places:
-
-It's not at all obvious - _audio_update() isn't a terribly descriptive
-name, just looking at that function by itself I had no idea what it was
-supposed to be doing.
-
-> - on audio start in tda_startup with the audio type (DAI id)
-> 	priv->dai_id = dai->id;
-
-> - on audio stop with a null audio type
-> 	priv->dai_id = 0;		/* streaming stop */
-
-> On stream start, the DAI id is never null, as explained in the patch 1:
-
-> 	The audio format values in the encoder configuration interface  are
-> 	changed to non null values so that the value 0 is used in the audio
-> 	function to indicate that audio streaming is stopped.
-
-> and on streaming stop the port is not meaningful.
-
-> I will add a null item in the enum (AFMT_NO_AUDIO).
-
-So we can't use both streams simultaneously then?  That's a bit sad.
-
---BrzBj8PzWVa+9geT
+--EJCnrJiDxBM3d8Vu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS8Sk+AAoJELSic+t+oim9JqcP/R5L4TJjwGwhKVSKd9egxV/V
-+/URsfGxMcjXxoU0N98m/UILQofBiybrINbaLoTCTEnISeLtXeezrzUdnx/fEJSP
-QDGOT8TNeqY0WYo6lre42pTAaV2YJKOxEmvcLAWS81FsOxkOJohHOVDRjYIlVHBd
-w5jB44Y89xINGjHKEzeacTSlOLY6ywZb+M5PiRGdVNw6LwwC7gRdUT7KYIXlhKRT
-mRch3P7DLe8RKXqAqBddtmZD3gRtCXdMmBYwsfSx5sefH6qC2YcnXc7wcxtKYs6k
-OMYPc3lQaRIFo5g83SXAH9fmiP+zVgaG3VQFBlBUywbox2u+ZD8bIttXb1rbM2V3
-x6A9TJ9ql17VmUle+g3Rxg1BIbLU3X5Tyxv+u9qTw4pz6SdOYG4MwgkfwxMGqb+6
-3eZKzfraXhPXf7Be4dsyNMGSU7DDXz3EAF1sRQJ5M1Au3SOUJIdnFI+fq6GV1Fo9
-65J3gpx4A4Hfu5hKbQslBMy1YrQDCbNrXReJY1Z0hKP6VN7IA7Ee45OdUWWSAp+8
-3ED5jcLMfrIDauFb0NngllCBo/n/UvQ/BI3clqAxS+SojGvMr9xq6xhBu1DhFjAx
-i5Cf4EraxUG42UDkvz+CuzPJOvY/Ya4/RxZQfqtSVEPPSKhqMOve/aNlR8dCxts1
-3sDzqUj1CV0vKzZOAME/
-=65Yr
+iQIcBAEBAgAGBQJS8SweAAoJELSic+t+oim9kLgP/2YWNETHFss7iQze9oPo+UMv
+85VolGPTj7pipx3EgSf9S8y/2Cb/JnkiAw5dwVMhXsgJFoFVWFUA1Ryw3FsAfYh6
+M3QsLTIQ89WuQmv3rkVPzbKNFaGFC2v1+A1yTvNQyT7Eq/5DZXEDsZIFIgzADw1n
+4Z5EX8uZpNMyRXSAEvV1SQvvEWJnLgQVnCLOoLdX7B9zGZGgE2xLdAyWPBg3bFVD
+0XoSVpfN9AFONY8MZ7ed/1RUaEGR2/kKjo6+GGgHm2oQFQpl3EX95zQwvoPlJu6p
+gJ2BjDIAkt2wXYAHxmHf7ENFmyDkzR0UnP0hcIrpTf99VAfyJYd+Lr9F7u7Tnof+
+fKbnhohO+wvyKgwg/le11pjJ2Tolp69nFtocLiCuq+yka3Ej0bkoZ4X8EQzOlcsh
+g/FpCVhpT4AzwjG4U/Bt+jXLXnlzPwzrrA1+ZZVZVHLwbKfOUHKchvHrDNGPdRp8
+M6hwgEPsVpLhPpmsY4YT29HzxrNEXaT/rGpbY6Ae9uxkXMb+mriGtduldTfJUQ43
+6WdUh/LavruQfh27QjH/ivXOrscuv4mqcs7++jgfHD7p2TWR/8YpxrMFpXZupqOx
+XiRBP5CDK1h9kPTMMmuKOoUPbWsFAhggbYq2/qUMJv5h70ta63XQVi8pyxMXDyoo
+89cbDjJn3nQ7VnqoKgam
+=3BW0
 -----END PGP SIGNATURE-----
 
---BrzBj8PzWVa+9geT--
+--EJCnrJiDxBM3d8Vu--
 
---===============3694963603900751310==
+--===============7363433986507547603==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3694963603900751310==--
+--===============7363433986507547603==--
