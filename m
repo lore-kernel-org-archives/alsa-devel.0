@@ -1,37 +1,48 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH v3 2/5] ASoC: tda998x: add a codec driver
- for the TDA998x
-Date: Tue, 04 Feb 2014 14:36:50 +0100
-Message-ID: <52F0ECF2.9070102@metafoo.de>
-References: <cover.1391274627.git.moinejf@free.fr> <ae68394f080f0ea5acaf3377cb1d18f29e42c646.1391274628.git.moinejf@free.fr> <20140204133014.GA22609@sirena.org.uk>
+Subject: [PATCH] ASoC: cs4271: Remove outdated comment
+Date: Tue,  4 Feb 2014 14:48:22 +0100
+Message-ID: <1391521702-15594-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140204133014.GA22609@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, Dave Airlie <airlied@gmail.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-089.synserver.de (smtp-out-089.synserver.de
+ [212.40.185.89])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45B782619E1
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 14:48:19 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/04/2014 02:30 PM, Mark Brown wrote:
-[...]
->
-> What does this actually do?  No information is being passed in to the
-> core function here, not even any information on if it's starting or
-> stopping.  Looking at the rest of the code I can't help thinking it
-> might be clearer to inline this possibly with a lookup helper, the code
-> is very small and the lack of parameters makes it hard to follow.
->
->> +static const struct snd_soc_dapm_route tda_routes[] = {
->> +	{ "hdmi-out", NULL, "HDMI I2S Playback" },
->> +	{ "hdmi-out", NULL, "HDMI SPDIF Playback" },
->> +};
->
-> S/PDIF.
+Commit 1b1861ead ("ASoC: cs4271: convert to direct regmap API usage") removed
+the bus_type field from the cs4271_private struct, but left the comment that
+described the field in there. This patch removes the comment.
 
-Won't this cause issues with the debugfs widget entries? It's fixable by 
-escaping it (replace it by a dash or something) in the debugfs widget 
-filename, but I don't think we do this right now.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/cs4271.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-- Lars
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index ce05fd9..f7bbe6f 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -159,7 +159,6 @@ static bool cs4271_volatile_reg(struct device *dev, unsigned int reg)
+ }
+ 
+ struct cs4271_private {
+-	/* SND_SOC_I2C or SND_SOC_SPI */
+ 	unsigned int			mclk;
+ 	bool				master;
+ 	bool				deemph;
+-- 
+1.8.0
