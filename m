@@ -1,24 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Strange sound of IDT 82hd206xx6 at font port in
-	AC97 mode
-Date: Tue, 4 Feb 2014 22:16:31 +0800
-Message-ID: <CAN8cciZtetqAFq4uCC_qxN5+FmNRm58g1x2rzVWk4b-Zy3aHRA@mail.gmail.com>
-References: <BLU0-SMTP22F128862C405DED98AB89ADAB0@phx.gbl>
- <CAN8cciZ+QwNpSnBmXuvKV9Hkqhfbo6CvY0bmx7rMQic9+tgb8A@mail.gmail.com>
- <BLU0-SMTP39216262BA66E5ED8A80E9BADAA0@phx.gbl>
- <CAN8ccianyNMd02ywO+AtbFoAsTxcm_Q8Fa-ab4hExAXi=Jw0Fw@mail.gmail.com>
- <BLU0-SMTP2290BB01520D451B3C3E1FCADAA0@phx.gbl>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v3 2/5] ASoC: tda998x: add a codec driver
+ for the TDA998x
+Date: Tue, 4 Feb 2014 18:16:05 +0100
+Message-ID: <20140204181605.5b837a70@armhf>
+References: <cover.1391274627.git.moinejf@free.fr>
+ <ae68394f080f0ea5acaf3377cb1d18f29e42c646.1391274628.git.moinejf@free.fr>
+ <20140204133014.GA22609@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
- [209.85.216.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E5792619E1
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 15:16:32 +0100 (CET)
-Received: by mail-qa0-f51.google.com with SMTP id f11so12391676qae.10
- for <alsa-devel@alsa-project.org>; Tue, 04 Feb 2014 06:16:32 -0800 (PST)
-In-Reply-To: <BLU0-SMTP2290BB01520D451B3C3E1FCADAA0@phx.gbl>
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 142572619E1
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 18:15:55 +0100 (CET)
+In-Reply-To: <20140204133014.GA22609@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,29 +23,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Randy Li <lxr1234@hotmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, Dave Airlie <airlied@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> >
-> > Simple mixer control 'Swap Center/LFE',0 Capabilities: pswitch
-> > pswitch-joined penum Playback channels: Mono Mono: Playback [off]
-> >
-> >
-> >
-> > Do this switch change the output of center and lfe when you run
-> >
-> > speaker-test -c 6 -t wav -D hw:0,0
-> >
-> I only hear the font left and font right in both side of my
-> headphone(the one for android)
-> > seem that your are not using latest alsa driver
-> The alsa driver? Well, shall I try the latest kernel?
-
-Do the channel swap at the orange rack at rear panel ?
-
-Do you have a speaker to test ?
-
-This switch seem lost in the latest alsa driver
->
+T24gVHVlLCA0IEZlYiAyMDE0IDEzOjMwOjE0ICswMDAwCk1hcmsgQnJvd24gPGJyb29uaWVAa2Vy
+bmVsLm9yZz4gd3JvdGU6Cgo+IE9uIFN1biwgSmFuIDI2LCAyMDE0IGF0IDA3OjQ1OjM2UE0gKzAx
+MDAsIEplYW4tRnJhbmNvaXMgTW9pbmUgd3JvdGU6Cj4gCj4gPiArCS8qIGxvYWQgdGhlIG9wdGlv
+bmFsIENPREVDICovCj4gPiArCW9mX3BsYXRmb3JtX3BvcHVsYXRlKG5wLCBOVUxMLCBOVUxMLCAm
+Y2xpZW50LT5kZXYpOwo+ID4gKwo+IAo+IFdoeSBpcyB0aGlzIHVzaW5nIG9mX3BsYXRmb3JtX3Bv
+cHVsYXRlKCk/ICBUaGF0J3MgYSB2ZXJ5IG9kZCB3YXkgb2YKPiBkb2luZyB0aGluZ3MuCgpUaGUg
+aTJjIGRvZXMgbm90IHBvcHVsYXRlIHRoZSBzdWJub2RlcyBpbiB0aGUgRFQuIEkgZGlkIG5vdCBm
+aW5kIHdoeSwKYnV0LCB3aGF0IGlzIHN1cmUgaXMgdGhhdCBpZiBvZl9wbGF0Zm9ybV9wb3B1bGF0
+ZSgpIGlzIG5vdCBjYWxsZWQsIHRoZQp0ZGEgQ09ERUMgbW9kdWxlIGlzIG5vdCBsb2FkZWQuCgpZ
+b3UgbWF5IGZpbmQgYW4gb3RoZXIgZXhhbXBsZSBpbiBkcml2ZXJzL21mZC90d2wtY29yZS5jLgoK
+PiA+ICtjb25maWcgU05EX1NPQ19UREE5OThYCj4gPiArCXRyaXN0YXRlCj4gPiArCWRlcGVuZHMg
+b24gT0YKPiA+ICsJZGVmYXVsdCB5IGlmIERSTV9JMkNfTlhQX1REQTk5OFg9eQo+ID4gKwlkZWZh
+dWx0IG0gaWYgRFJNX0kyQ19OWFBfVERBOTk4WD1tCj4gPiArCj4gCj4gTWFrZSB0aGlzIHZpc2li
+bGUgaWYgaXQgY2FuIGJlIHNlbGVjdGVkIGZyb20gRFQgc28gaXQgY2FuIGJlIHVzZWQgd2l0aAo+
+IGdlbmVyaWMgY2FyZHMuCgpJIGRvbid0IHVuZGVyc3RhbmQuIFRoZSB0ZGEgQ09ERUMgY2FuIG9u
+bHkgYmUgdXNlZCB3aXRoIHRoZSBUREE5OTh4IEkyQwpkcml2ZXIuIEl0IG1pZ2h0IGhhdmUgYmVl
+biBpbmNsdWRlZCBpbiB0aGUgdGRhOTk4eCBzb3VyY2UgYXMgd2VsbC4KCj4gPiArc3RhdGljIGlu
+dCB0ZGFfZ2V0X2VuY29kZXIoc3RydWN0IHRkYV9wcml2ICpwcml2KQo+ID4gK3sKPiA+ICsJc3Ry
+dWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjID0gcHJpdi0+Y29kZWM7Cj4gPiArCXN0cnVjdCBkZXZp
+Y2Vfbm9kZSAqbnA7Cj4gPiArCj4gPiArCS8qIGdldCB0aGUgcGFyZW50IHRkYTk5OHggZGV2aWNl
+ICovCj4gPiArCW5wID0gb2ZfZ2V0X3BhcmVudChjb2RlYy0+ZGV2LT5vZl9ub2RlKTsKPiA+ICsJ
+aWYgKCFucCB8fCAhb2ZfZGV2aWNlX2lzX2NvbXBhdGlibGUobnAsICJueHAsdGRhOTk4eCIpKSB7
+Cj4gPiArCQlkZXZfZXJyKGNvZGVjLT5kZXYsICJubyBvciBiYWQgcGFyZW50IVxuIik7Cj4gPiAr
+CQlyZXR1cm4gLUVJTlZBTDsKPiA+ICsJfQo+ID4gKwlwcml2LT5pMmNfY2xpZW50ID0gb2ZfZmlu
+ZF9pMmNfZGV2aWNlX2J5X25vZGUobnApOwo+ID4gKwlvZl9ub2RlX3B1dChucCk7Cj4gPiArCXJl
+dHVybiAwOwo+ID4gK30KPiAKPiBXaHkgZG9lcyB0aGlzIG5lZWQgdG8gYmUgY2hlY2tlZCBsaWtl
+IHRoaXM/ICBXZSBkb24ndCBub3JtYWxseSBoYXZlIHRoaXMKPiBzb3J0IG9mIGNvZGUgdG8gY2hl
+Y2sgdGhhdCB0aGUgcGFyZW50IGlzIGNvcnJlY3QuCgpJbiBteSBwcmV2aW91cyBzdWJtaXQsIHRo
+ZSB0ZGEgQ09ERUMgd2FzIG5vdCBkZWNsYXJlZCBpbnNpZGUgdGhlCnRkYTk5OHggSTJjIGRldmlj
+ZSwgc28sIGl0cyBsb2NhdGlvbiB3YXMgc2VhcmNoZWQgZnJvbSAgcGhhbmRsZS4KCk5vdywgdGhl
+IENPREVDIGlzIGRlY2xhcmVkIGluc2lkZSB0aGUgdGRhOTk4eCBhcyBhIG5vZGUgY2hpbGQuIEJ1
+dCwgaW4KYSBiYWQgRFQsIHRoZSB0ZGEgQ09ERUMgY291bGQgYmUgZGVjbGFyZWQgYW55d2hlcmUs
+IGV2ZW4gaW5zaWRlIGEgb3RoZXIKRFJNIEkyQyBzbGF2ZSBlbmNvZGVyLCBpbiB3aGljaCBjYXNl
+LCBiYWQgdGhpbmdzIHdvdWxkIGhhcHBlbi4uLgoKPiA+ICtzdGF0aWMgaW50IHRkYV9zdGFydF9z
+dG9wKHN0cnVjdCB0ZGFfcHJpdiAqcHJpdikKPiA+ICt7Cj4gPiArCWludCBwb3J0Owo+ID4gKwo+
+ID4gKwkvKiBnaXZlIHRoZSBhdWRpbyBwYXJhbWV0ZXJzIHRvIHRoZSBIRE1JIGVuY29kZXIgKi8K
+PiA+ICsJaWYgKHByaXYtPmRhaV9pZCA9PSBBRk1UX0kyUykKPiA+ICsJCXBvcnQgPSBwcml2LT5w
+b3J0c1swXTsKPiA+ICsJZWxzZQo+ID4gKwkJcG9ydCA9IHByaXYtPnBvcnRzWzFdOwo+ID4gKwl0
+ZGE5OTh4X2F1ZGlvX3VwZGF0ZShwcml2LT5pMmNfY2xpZW50LCBwcml2LT5kYWlfaWQsIHBvcnQp
+Owo+ID4gKwlyZXR1cm4gMDsKPiA+ICt9Cj4gCj4gV2hhdCBkb2VzIHRoaXMgYWN0dWFsbHkgZG8/
+ICBObyBpbmZvcm1hdGlvbiBpcyBiZWluZyBwYXNzZWQgaW4gdG8gdGhlCj4gY29yZSBmdW5jdGlv
+biBoZXJlLCBub3QgZXZlbiBhbnkgaW5mb3JtYXRpb24gb24gaWYgaXQncyBzdGFydGluZyBvcgo+
+IHN0b3BwaW5nLiAgTG9va2luZyBhdCB0aGUgcmVzdCBvZiB0aGUgY29kZSBJIGNhbid0IGhlbHAg
+dGhpbmtpbmcgaXQKPiBtaWdodCBiZSBjbGVhcmVyIHRvIGlubGluZSB0aGlzIHBvc3NpYmx5IHdp
+dGggYSBsb29rdXAgaGVscGVyLCB0aGUgY29kZQo+IGlzIHZlcnkgc21hbGwgYW5kIHRoZSBsYWNr
+IG9mIHBhcmFtZXRlcnMgbWFrZXMgaXQgaGFyZCB0byBmb2xsb3cuCgpJIHRob3VnaHQgaXQgd2Fz
+IHNpbXBsZSBlbm91Z2guIFRoZSBmdW5jdGlvbiB0ZGFfc3RhcnRfc3RvcCgpIGlzIGNhbGxlZApm
+cm9tIDIgcGxhY2VzOgoKLSBvbiBhdWRpbyBzdGFydCBpbiB0ZGFfc3RhcnR1cCB3aXRoIHRoZSBh
+dWRpbyB0eXBlIChEQUkgaWQpCglwcml2LT5kYWlfaWQgPSBkYWktPmlkOwoKLSBvbiBhdWRpbyBz
+dG9wIHdpdGggYSBudWxsIGF1ZGlvIHR5cGUKCXByaXYtPmRhaV9pZCA9IDA7CQkvKiBzdHJlYW1p
+bmcgc3RvcCAqLwoKT24gc3RyZWFtIHN0YXJ0LCB0aGUgREFJIGlkIGlzIG5ldmVyIG51bGwsIGFz
+IGV4cGxhaW5lZCBpbiB0aGUgcGF0Y2ggMToKCglUaGUgYXVkaW8gZm9ybWF0IHZhbHVlcyBpbiB0
+aGUgZW5jb2RlciBjb25maWd1cmF0aW9uIGludGVyZmFjZSAgYXJlCgljaGFuZ2VkIHRvIG5vbiBu
+dWxsIHZhbHVlcyBzbyB0aGF0IHRoZSB2YWx1ZSAwIGlzIHVzZWQgaW4gdGhlIGF1ZGlvCglmdW5j
+dGlvbiB0byBpbmRpY2F0ZSB0aGF0IGF1ZGlvIHN0cmVhbWluZyBpcyBzdG9wcGVkLgoKYW5kIG9u
+IHN0cmVhbWluZyBzdG9wIHRoZSBwb3J0IGlzIG5vdCBtZWFuaW5nZnVsLgoKSSB3aWxsIGFkZCBh
+IG51bGwgaXRlbSBpbiB0aGUgZW51bSAoQUZNVF9OT19BVURJTykuCgo+ID4gK3N0YXRpYyBjb25z
+dCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3JvdXRlIHRkYV9yb3V0ZXNbXSA9IHsKPiA+ICsJeyAiaGRt
+aS1vdXQiLCBOVUxMLCAiSERNSSBJMlMgUGxheWJhY2siIH0sCj4gPiArCXsgImhkbWktb3V0Iiwg
+TlVMTCwgIkhETUkgU1BESUYgUGxheWJhY2siIH0sCj4gPiArfTsKPiAKPiBTL1BESUYuCgpEaWQg
+eW91IGV2ZXIgdHJ5IHRoYXQgd2l0aCBkZWJ1Z2ZzPwoKQlRXLCB0aGlzIHBhdGNoIHNlcmllcyBt
+YXkgYmUgZGVsYXllZCBmb3Igc29tZSB0aW1lOiB0aGUgdGRhOTk4eCBkcml2ZXIKaGFzIHRvIGJl
+IHJld29ya2VkIGZvciBEVCBzdXBwb3J0LgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAq
+KiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZy
+LwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
