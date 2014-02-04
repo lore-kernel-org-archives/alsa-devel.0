@@ -1,20 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: Add ADAU1977 driver
-Date: Tue, 4 Feb 2014 14:10:17 +0000
-Message-ID: <20140204141017.GB22609@sirena.org.uk>
-References: <1391439428-3198-1-git-send-email-lars@metafoo.de>
- <1391439428-3198-2-git-send-email-lars@metafoo.de>
- <20140203184026.GL22609@sirena.org.uk> <52F0CC16.50302@metafoo.de>
- <20140204121224.GW22609@sirena.org.uk>
- <52F0EBA7.7000501@metafoo.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Strange sound of IDT 82hd206xx6 at font port in
+	AC97 mode
+Date: Tue, 4 Feb 2014 22:16:31 +0800
+Message-ID: <CAN8cciZtetqAFq4uCC_qxN5+FmNRm58g1x2rzVWk4b-Zy3aHRA@mail.gmail.com>
+References: <BLU0-SMTP22F128862C405DED98AB89ADAB0@phx.gbl>
+ <CAN8cciZ+QwNpSnBmXuvKV9Hkqhfbo6CvY0bmx7rMQic9+tgb8A@mail.gmail.com>
+ <BLU0-SMTP39216262BA66E5ED8A80E9BADAA0@phx.gbl>
+ <CAN8ccianyNMd02ywO+AtbFoAsTxcm_Q8Fa-ab4hExAXi=Jw0Fw@mail.gmail.com>
+ <BLU0-SMTP2290BB01520D451B3C3E1FCADAA0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8232761625747720940=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EB5A4261987
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 15:10:27 +0100 (CET)
-In-Reply-To: <52F0EBA7.7000501@metafoo.de>
+Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
+ [209.85.216.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E5792619E1
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 15:16:32 +0100 (CET)
+Received: by mail-qa0-f51.google.com with SMTP id f11so12391676qae.10
+ for <alsa-devel@alsa-project.org>; Tue, 04 Feb 2014 06:16:32 -0800 (PST)
+In-Reply-To: <BLU0-SMTP2290BB01520D451B3C3E1FCADAA0@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,92 +28,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Randy Li <lxr1234@hotmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+> >
+> >
+> > Simple mixer control 'Swap Center/LFE',0 Capabilities: pswitch
+> > pswitch-joined penum Playback channels: Mono Mono: Playback [off]
+> >
+> >
+> >
+> > Do this switch change the output of center and lfe when you run
+> >
+> > speaker-test -c 6 -t wav -D hw:0,0
+> >
+> I only hear the font left and font right in both side of my
+> headphone(the one for android)
+> > seem that your are not using latest alsa driver
+> The alsa driver? Well, shall I try the latest kernel?
 
---===============8232761625747720940==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="50WZftmI8KrtQkml"
-Content-Disposition: inline
+Do the channel swap at the orange rack at rear panel ?
 
+Do you have a speaker to test ?
 
---50WZftmI8KrtQkml
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Feb 04, 2014 at 02:31:19PM +0100, Lars-Peter Clausen wrote:
-
-> currently find in drivers with more than one interface. And there is
-> the thing that you can actually build a config that results in a build
-> error which triggers the occasional randconfig build failures for
-> for ASoC. Once the last three drivers that still soc-io have been
-
-Those randconfig failures are for configurations that no human would
-ever generate, it's really hard to care.
-
-> converted to regmap I think we should move the selection of
-> REGMAP_I2C and REGMAP_SPI to the individual drivers rather letting
-> the core select them unconditionally. Using this new scheme will
-
-That's the idea, it does need the drivers handling first though.  The
-fact that not everything works through select (there's the ignored
-dependencies thing and I think some other stuff) isn't helpful with this
-stuff either, it makes it all too fragile.
-
-> make it easier to avoid the situation where you end up selection
-> REGMAP_I2C or REGMAP_SPI even though I2S or SPI_MASTER is not
-
-The core only enables the regmap code if the bus is being built, we
-don't have a problem with that bit - that bit at least is fine.
-
-> selected. I don't have a problem with updating the other drivers to
-> use the new scheme, but it's not like we have to update them all at
-> once in one atomic step. And you have to start somewhere.
-
-Right, but that somewhere shouldn't be doing it in a new driver without
-even mentioning that it's being done - it's not something that should be
-coming as a surprise in the middle of a review of something that should
-be unrelated.  That's the biggest problem here, it wasn't even called
-out in the changelog so people wouldn't be able to figure out why this
-driver was being different. =20
-
-An explicit conversion patch for at least one driver (possibly even this
-one on the end of the series) would be ideal, or adding a note in the
-changelog saying something like "We should do this in general because X
-but I didn't get round to starting yet" so that it's visible.
-
---50WZftmI8KrtQkml
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS8PTGAAoJELSic+t+oim9RA0P/i2MJY6oL2SRWS6jmYHp/g8r
-6Rwcdq9x7iuU8BoxklBcnpxrkVDHIXnDjHjUdOdaATkBGerQ4vVYcDR04axLbNm7
-20ZPGozspIUDIsrIrf4PPO2BbHU5NZ/NI/siM9OLrXXLshsYiY/vEhiNTdVaFc5L
-y9vCFzmWCOO/EwVM2SHKEBMl72e82pvCtoTtWm1G8ly3qSIKGSB/idqWyYEN3UoD
-+Muez2KFuJQI95tuc0sax41TQhHPGoV2KkeVjzmciIo8H1uUd1VOqk9vNuSrHS4A
-bJpDyRpwR0Y3qe8vA9v0AtkT6AGqNVoEO6oq8QvdT68SNX3uBBDJtJnHdISKo/jB
-AsfNr3KZ5IvaQtSqqy4T3ndN43LtRNs8QC9TOs6oXm20R3Qxgm2EdskLLq2tEjMK
-qjJS4n//+1GfPrzD6CxDqAbPO7BhTwy5LA+mPCmZS9OywIb5HVYHphTcGyx2e6mH
-LkWdIWOfHYWQ61sQXpZZCnszZrzQOKCwNOvgbv5OkcUDoUl9z+D7aCiXGgJN69Rd
-jWKylt+X2evUGaPo2tOLlsufyAgiQRBaqZZlh15yqGFBf+FXoMZ5RomfIi4MNIkw
-RW0Olt/fRWFbjCvSoaGwpUniWxFNJ40IScCoZSUSK78AGAgXo8CkQNrV+eWVOE0K
-q+ibOyj8MzWjLTf4uKmh
-=Wwor
------END PGP SIGNATURE-----
-
---50WZftmI8KrtQkml--
-
---===============8232761625747720940==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8232761625747720940==--
+This switch seem lost in the latest alsa driver
+>
