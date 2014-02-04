@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: Add ADAU1977 driver
-Date: Tue, 4 Feb 2014 12:12:24 +0000
-Message-ID: <20140204121224.GW22609@sirena.org.uk>
-References: <1391439428-3198-1-git-send-email-lars@metafoo.de>
- <1391439428-3198-2-git-send-email-lars@metafoo.de>
- <20140203184026.GL22609@sirena.org.uk> <52F0CC16.50302@metafoo.de>
+From: Randy Li <lxr1234@hotmail.com>
+Subject: Re: Strange sound of IDT 82hd206xx6 at font port in
+ AC97 mode
+Date: Tue, 4 Feb 2014 21:00:15 +0800
+Message-ID: <BLU0-SMTP2290BB01520D451B3C3E1FCADAA0@phx.gbl>
+References: <BLU0-SMTP22F128862C405DED98AB89ADAB0@phx.gbl>
+ <CAN8cciZ+QwNpSnBmXuvKV9Hkqhfbo6CvY0bmx7rMQic9+tgb8A@mail.gmail.com>
+ <BLU0-SMTP39216262BA66E5ED8A80E9BADAA0@phx.gbl>
+ <CAN8ccianyNMd02ywO+AtbFoAsTxcm_Q8Fa-ab4hExAXi=Jw0Fw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7463505842407589743=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 26F552617AA
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 13:25:51 +0100 (CET)
-In-Reply-To: <52F0CC16.50302@metafoo.de>
+Received: from blu0-omc3-s21.blu0.hotmail.com (blu0-omc3-s21.blu0.hotmail.com
+ [65.55.116.96]) by alsa0.perex.cz (Postfix) with ESMTP id ED203261987
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 14:00:26 +0100 (CET)
+In-Reply-To: <CAN8ccianyNMd02ywO+AtbFoAsTxcm_Q8Fa-ab4hExAXi=Jw0Fw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,86 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============7463505842407589743==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T2qahi4UwJNXfvXD"
-Content-Disposition: inline
-
-
---T2qahi4UwJNXfvXD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Feb 04, 2014 at 12:16:38PM +0100, Lars-Peter Clausen wrote:
-> On 02/03/2014 07:40 PM, Mark Brown wrote:
-
-> >>  sound/soc/codecs/adau1977-i2c.c        |  58 ++
-> >>  sound/soc/codecs/adau1977-spi.c        |  73 +++
-
-> >This isn't the general style, if we want to do that we should be
-> >converting all the other drivers.
-
-> I think we want to change it. Cause as it is right now we always get
-> issues when the SPI core is build-in, but the I2C core is built as a
-> module. Using the scheme used in this driver the core module for the
-> driver does not depend on either framework, but provides a library
-> to the bus specific modules. E.g. if SPI is built-in and the SPI
-> driver for the ADAU1977 is built-in the core will also be built-in,
-> but it is still possible to build I2C as a module and also build the
-> ADAU1977 I2C driver as a module. And I know there is
-> SND_SOC_I2C_AND_SPI, but in my opinion it's a hack to work around
-> the issue. E.g. if you have a board driver and the board driver
-> selects the CODEC driver, the board driver also has to depend on
-> SND_SOC_I2C_AND_SPI to avoid any issues (None of the board drivers
-> do this right now).
-
-I'm having a hard time seeing that as a meaningful issue to be honest -
-only I2C has the modular option and I'm never terribly convinced about
-the realism of scenarios that trigger this.  In any case the main thing
-is that we shouldn't be silently putting something like this into driver
-submissions, we should be actively making the change to all drivers.
-
-> >Please make these user visible if OF is in use.
-
-> Was there a resolution on how to best do this? Make them always
-> visible, or only when CONFIG_OF is selected?
-
-Always visible if their dependencies are enabled.
-
---T2qahi4UwJNXfvXD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS8NklAAoJELSic+t+oim9kzUP/i6v9GjozEP8yuSanT/ZcF+F
-22RVvXt6dMHVXI3j2lV/0svKUndwiuGxW0X8mh+Y3k/xyHzvC4zy2HrBQR9dRZYc
-5hmj/e/Ui/jzQwuAU82cAJql5oJeKMWO6+FxPWvwsPFh7B//av+mez7WxnklCmXu
-x00pT1nukOj4J2HnIJHMh2OAEBdVhgEWPBNEfyAjnTpbA/+rsRUdoQxTlo/LUkJ0
-yfNqgjORRoimWhlPISy3V6jjI6FfuxIHJ2x0JW90kPqTBs2POol54eNuXC193MIb
-Bpbk2zJWFYy3asoSzJzuHEnM4QMS1dWlgCeQymCc0fpJh1uFzjgjQkL41erO25hM
-tmh5VQ/M/Q7202RL27MnK7xmxqdq0bx8FV9q9yXjJ7xAWjlr6mk5r/7DOXA/faC2
-LPyQTfqRgq5MSTRi/9POlfF9GuaJi5psUA4beAQAR6RFpNtGqIe57OgEjupQghAw
-H69JaLCj9SY6NTliJpz9fM22v5IrYgV10ZQ0pvJ2S8r5IBsYNNYJ+eLxHiJi+vqv
-aWrWoM4yLabxhIcgtPaUOTn9YtSV3O+vbtXliYiW0Xn6yewh20NubmdRDBw5wOyv
-mPesGIuE0KfRZvsjZ3cjSY2aNXq2OfcNJBEiMXv6sDAqFd2vumwo3C4C6EMlSlr1
-l+id8y53qu+tSm9DsxEt
-=I4zh
------END PGP SIGNATURE-----
-
---T2qahi4UwJNXfvXD--
-
---===============7463505842407589743==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7463505842407589743==--
+LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgrkuo4gMjAxNOW5
+tDAy5pyIMDTml6UgMTc6MDEsIFJheW1vbmQgWWF1IOWGmemBkzoKPiAKPiAKPiAKPj4gQ2hlY2sg
+dGhlIGZyb250IGF1ZGlvIGNvbm5lY3RvciBvZiB5b3VyIG1vdGhlcmJvYXJkIGluIHRoZSB1c2Vy
+IAo+PiBtYW51YWwKPj4gCj4+IENoZWNrIHRoZSBmcm9udCBhdWRpbyBwYW5lbCBzcGVjaWZpY2F0
+aW9uIG9mIHlvdXIgY29tcHV0ZXIKPj4gY2hhc3NpcyB3aGV0aGVyIHN1cHBvcnQgSmFjayBkZXRl
+Y3Rpb24gb2YgaGVhZHBob25lIGFuZCBtaWMKPj4gCj4+IE9ubHkgYSBmZXcgbXVsdGkgY2hhbm5l
+bCBBQzk3IDIuMyBjb2RlY3MgKGUuZy4gQUxDODUwKSBzdXBwb3J0IAo+PiBqYWNrIGRldGVjdGlv
+biBhbmQgbW9zdCBBQzk3IGZyb250IGF1ZGlvIHBhbmVsIGRvZXMgbm90IGhhdmUKPj4gamFjayBk
+ZXRlY3Rpb24gY2lyY3VpdAo+PiAKPj4gaHR0cDovL3d3dy5pbnRlbC5jb20vc3VwcG9ydC9tb3Ro
+ZXJib2FyZHMvZGVza3RvcC9zYi9jcy0wMTU4NTEuaHRtCj4KPj4gCj4gCj4+PiBJIGNhbid0IGhl
+YXIgdGhlIHNvdW5kIGluIHNvbWUgcGFydCBvZiBhIGZpbG0gYW5kIEkgY2FuIGhlYXIKPj4+IHRo
+ZSBzdHJhbmdlciBhY2NlbnQgb2Ygc291bmQgaW4gdGhlIG90aGVyIHBhcnQgb2YgYSBmaWxtKG9y
+IGEKPj4+IG11c2ljKS4gQnV0IGFsbCB0aGUgNy4xIGNoYW5uZWwgaW4gdGhlIGJhY2sgcG9ydHMg
+Y2FuIG91dHB1dAo+Pj4gdGhlIHNvdW5kIG1hdGNoIG15IG1pcmNvcGhvbmUoYWxsIGFyZSB0aGUg
+c2FtZSkuCj4+IAo+PiBUaGUgZnJvbnQgYXVkaW8gcGFuZWwgaGVhZHBob25lIHNoYXJlIHRoZSBm
+cm9udCBjaGFubmVsIHNpZ25hbAo+PiBvbmx5IHdoZW4gcGxheWluZyBtdWx0aSBjaGFubmVsIGF1
+ZGlvCj4+IAo+PiBZb3UgbmVlZCAgdG8gdXNlIGFwcGxpY2F0aW9uc++8iGUuZyAgbXBsYXllcu+8
+iSB3aGljaCBjYW4gIGRvd24gbWl4IAo+PiBtdWx0aSBjaGFubmVsIHRvIHN0ZXJlbyBvciBzZWxl
+Y3QgdGhlIHN0ZXJlbyB0cmFjayAgaW5zdGVhZCBvZgo+PiBEVFMgb2YgbW92aWUgRFZEIHdoZW4g
+eW91IGFyZSB1c2luZyBoZWFkcGhvbmUKPj4gCj4gSSBmaW5kIHRoZSBvdGhlciB0aGluZywgdGhp
+cyBoZWFkcGhvbmUgaXMgZm9yIGFuZHJvaWQgbW9iaWxlIHdoaWNoIAo+IGNvbWJpbmUgY29udHJv
+bGxlciwgaGVhZHBob25lIGFuZCBzcGVha2VyLiBJZiB5b3UgZG9uJ3QgcGx1ZyBpdAo+IGludG8g
+Zm9udCBwb3J0IGZ1bGx5LCBpdCB3b3Jrcy4gSSBoYXZlIHRlc3RlZCBhIG5vcm5hbCBoZWFkcGhv
+bmUsCj4gaXQgd29ya3MgdG9vLgo+IAo+IE1heWJlIGl0IGNhdXNlIGJ5IG15IGhhcmR3YXJlLCBp
+dCBpcyBub3QgYWxzYSdzIHByb2JsZW0uCj4gCj4gCj4gCj4gU2ltcGxlIG1peGVyIGNvbnRyb2wg
+J1N3YXAgQ2VudGVyL0xGRScsMCBDYXBhYmlsaXRpZXM6IHBzd2l0Y2gKPiBwc3dpdGNoLWpvaW5l
+ZCBwZW51bSBQbGF5YmFjayBjaGFubmVsczogTW9ubyBNb25vOiBQbGF5YmFjayBbb2ZmXQo+IAo+
+IAo+IAo+IERvIHRoaXMgc3dpdGNoIGNoYW5nZSB0aGUgb3V0cHV0IG9mIGNlbnRlciBhbmQgbGZl
+IHdoZW4geW91IHJ1bgo+IAo+IHNwZWFrZXItdGVzdCAtYyA2IC10IHdhdiAtRCBodzowLDAKPiAK
+SSBvbmx5IGhlYXIgdGhlIGZvbnQgbGVmdCBhbmQgZm9udCByaWdodCBpbiBib3RoIHNpZGUgb2Yg
+bXkKaGVhZHBob25lKHRoZSBvbmUgZm9yIGFuZHJvaWQpCj4gc2VlbSB0aGF0IHlvdXIgYXJlIG5v
+dCB1c2luZyBsYXRlc3QgYWxzYSBkcml2ZXIKVGhlIGFsc2EgZHJpdmVyPyBXZWxsLCBzaGFsbCBJ
+IHRyeSB0aGUgbGF0ZXN0IGtlcm5lbD8KCgp0aGFuayB5b3UKYXlha2EKLS0tLS1CRUdJTiBQR1Ag
+U0lHTkFUVVJFLS0tLS0KVmVyc2lvbjogR251UEcgdjEuNC4xMiAoR05VL0xpbnV4KQpDb21tZW50
+OiBVc2luZyBHbnVQRyB3aXRoIE1vemlsbGEgLSBodHRwOi8vZW5pZ21haWwubW96ZGV2Lm9yZy8K
+CmlRRWNCQUVCQWdBR0JRSlM4T1JmQUFvSkVQYjRWc01JelR6aS9BWUgvMVVuVHZoSkFDVE1pMmU5
+UCttcUFudjUKdEFIL2JWQmg3bDhSRFg2VW5ZTzVPM1Y5YWY1TnZUSHhkWVZIY25qanlQMmJoOTVZ
+VVNDSmFuc1AyeFZpeWRoMgo1MXUvZnVYVTRzeDFUZ1p6dncxTFpwYThjcWpSWGNJYUZiVVFXUDIz
+cXpBVjV5RndyRmNFc3J2VzNLZ0hDSFZqCmR3cXM2ZC90UXpXak52TTJMd1RJcVptWDR1NGRTVVVh
+Si8vM0VUQzE5dWJpMVlKa3JxRlQ2dldVVVl3UHhrem0KT3o5U0VMZkpobzgxeGsvVEFlUFdoOUhQ
+VVlwRUdKZkp6YkRUd2JrckxMbnQ2NUdDcGw3YWVSYmpDYlJxN0NQTgpiVXJLZCtWc3Z6aU5aeUtV
+SGFJbUR3UnFuVkdVY3lQUmRHOHJ6RkVmTVdIb1JzTjBOU1JBUjJkRS9vVHFPcFk9Cj1rNGw5Ci0t
+LS0tRU5EIFBHUCBTSUdOQVRVUkUtLS0tLQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
