@@ -1,109 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 2/5] ASoC: tda998x: add a codec driver for the TDA998x
-Date: Tue, 4 Feb 2014 13:30:14 +0000
-Message-ID: <20140204133014.GA22609@sirena.org.uk>
-References: <cover.1391274627.git.moinejf@free.fr>
- <ae68394f080f0ea5acaf3377cb1d18f29e42c646.1391274628.git.moinejf@free.fr>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/2] ASoC: Add ADAU1977 driver
+Date: Tue, 04 Feb 2014 14:31:19 +0100
+Message-ID: <52F0EBA7.7000501@metafoo.de>
+References: <1391439428-3198-1-git-send-email-lars@metafoo.de>
+ <1391439428-3198-2-git-send-email-lars@metafoo.de>
+ <20140203184026.GL22609@sirena.org.uk> <52F0CC16.50302@metafoo.de>
+ <20140204121224.GW22609@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Y3YVtFU9bcHhbVJF"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <ae68394f080f0ea5acaf3377cb1d18f29e42c646.1391274628.git.moinejf@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-089.synserver.de (smtp-out-089.synserver.de
+ [212.40.185.89])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8D252619EA
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 14:31:15 +0100 (CET)
+In-Reply-To: <20140204121224.GW22609@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 02/04/2014 01:12 PM, Mark Brown wrote:
+> On Tue, Feb 04, 2014 at 12:16:38PM +0100, Lars-Peter Clausen wrote:
+>> On 02/03/2014 07:40 PM, Mark Brown wrote:
+>
+>>>>   sound/soc/codecs/adau1977-i2c.c        |  58 ++
+>>>>   sound/soc/codecs/adau1977-spi.c        |  73 +++
+>
+>>> This isn't the general style, if we want to do that we should be
+>>> converting all the other drivers.
+>
+>> I think we want to change it. Cause as it is right now we always get
+>> issues when the SPI core is build-in, but the I2C core is built as a
+>> module. Using the scheme used in this driver the core module for the
+>> driver does not depend on either framework, but provides a library
+>> to the bus specific modules. E.g. if SPI is built-in and the SPI
+>> driver for the ADAU1977 is built-in the core will also be built-in,
+>> but it is still possible to build I2C as a module and also build the
+>> ADAU1977 I2C driver as a module. And I know there is
+>> SND_SOC_I2C_AND_SPI, but in my opinion it's a hack to work around
+>> the issue. E.g. if you have a board driver and the board driver
+>> selects the CODEC driver, the board driver also has to depend on
+>> SND_SOC_I2C_AND_SPI to avoid any issues (None of the board drivers
+>> do this right now).
+>
+> I'm having a hard time seeing that as a meaningful issue to be honest -
+> only I2C has the modular option and I'm never terribly convinced about
+> the realism of scenarios that trigger this.  In any case the main thing
+> is that we shouldn't be silently putting something like this into driver
+> submissions, we should be actively making the change to all drivers.
 
---Y3YVtFU9bcHhbVJF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sun, Jan 26, 2014 at 07:45:36PM +0100, Jean-Francois Moine wrote:
-
-> +	/* load the optional CODEC */
-> +	of_platform_populate(np, NULL, NULL, &client->dev);
-> +
-
-Why is this using of_platform_populate()?  That's a very odd way of
-doing things.
-
-> +config SND_SOC_TDA998X
-> +	tristate
-> +	depends on OF
-> +	default y if DRM_I2C_NXP_TDA998X=y
-> +	default m if DRM_I2C_NXP_TDA998X=m
-> +
-
-Make this visible if it can be selected from DT so it can be used with
-generic cards.
-
-> +static int tda_get_encoder(struct tda_priv *priv)
-> +{
-> +	struct snd_soc_codec *codec = priv->codec;
-> +	struct device_node *np;
-> +
-> +	/* get the parent tda998x device */
-> +	np = of_get_parent(codec->dev->of_node);
-> +	if (!np || !of_device_is_compatible(np, "nxp,tda998x")) {
-> +		dev_err(codec->dev, "no or bad parent!\n");
-> +		return -EINVAL;
-> +	}
-> +	priv->i2c_client = of_find_i2c_device_by_node(np);
-> +	of_node_put(np);
-> +	return 0;
-> +}
-
-Why does this need to be checked like this?  We don't normally have this
-sort of code to check that the parent is correct.
-
-> +static int tda_start_stop(struct tda_priv *priv)
-> +{
-> +	int port;
-> +
-> +	/* give the audio parameters to the HDMI encoder */
-> +	if (priv->dai_id == AFMT_I2S)
-> +		port = priv->ports[0];
-> +	else
-> +		port = priv->ports[1];
-> +	tda998x_audio_update(priv->i2c_client, priv->dai_id, port);
-> +	return 0;
-> +}
-
-What does this actually do?  No information is being passed in to the
-core function here, not even any information on if it's starting or
-stopping.  Looking at the rest of the code I can't help thinking it
-might be clearer to inline this possibly with a lookup helper, the code
-is very small and the lack of parameters makes it hard to follow.
-
-> +static const struct snd_soc_dapm_route tda_routes[] = {
-> +	{ "hdmi-out", NULL, "HDMI I2S Playback" },
-> +	{ "hdmi-out", NULL, "HDMI SPDIF Playback" },
-> +};
-
-S/PDIF.
-
---Y3YVtFU9bcHhbVJF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS8OtjAAoJELSic+t+oim9bs4P/iJT+6VOJ9QSnwm/m8U0RIUS
-qfim/SCriTfqXoxC+fDD/VoDzP4a/hh6zUDLkjP3Unmq9oy+NyKtH0f4K5mIyXxW
-USgrkQho80hUtZhQzIKsmWtadwNyjFPTIB6N/XiphUhvROuLxHQP/0zHBjN93v4o
-FWAr2H5Y6scjT/JGewS+IiUsSieMQVG0EblyQjsot9CTCwJTjOoEfq7lWBQIyhpe
-ygf9vFtDRnbwsOH+Y/wF0TmJFHeJdHvuWymahUtKtlWl0yV3A/QYfCpifis6iedh
-Maf9YAEFThLuwoZbZMnQY5fdkh46HtAZoNXaqBHq8qSo2aqVOkVPKsmeLtHqPqf8
-JF66+54Tjw6pbv+1eDIy6AClZiin8Fr0BcKsCo6VMfNFOnQsMB57mzACc4M4WfgZ
-DCQvj16bzSQzWKkBB+HKr3Lx4VxcZ0Y+04jS3HoJl6Ka2GXBsgqCDi7K+Z2gmlm8
-Sb8sQPPm+FrmebYYtn1yI8qeraqpj+NGisxiNYx8j4NF/NqfszYFZemFW/JiFPpJ
-KyzrYSbl4UaZawGbHoi/nV0PkjYDdhOdC6FJvCUFGIETXr9JE76LtxSkQ/RCf+xD
-qZp+Gp4D4ELVOqfqUTQjioNpJgFUW1Z/+kCL03YI3WY+ojz3h3MBsIHiM4o8zbb6
-hv9jTbckAjn5LAV8GiT0
-=TKAW
------END PGP SIGNATURE-----
-
---Y3YVtFU9bcHhbVJF--
+I think this is the cleaner approach rather than the #ifdef mess we 
+currently find in drivers with more than one interface. And there is the 
+thing that you can actually build a config that results in a build error 
+which triggers the occasional randconfig build failures for ASoC. Once the 
+last three drivers that still soc-io have been converted to regmap I think 
+we should move the selection of REGMAP_I2C and REGMAP_SPI to the individual 
+drivers rather letting the core select them unconditionally. Using this new 
+scheme will make it easier to avoid the situation where you end up selection 
+REGMAP_I2C or REGMAP_SPI even though I2S or SPI_MASTER is not selected. I 
+don't have a problem with updating the other drivers to use the new scheme, 
+but it's not like we have to update them all at once in one atomic step. And 
+you have to start somewhere.
