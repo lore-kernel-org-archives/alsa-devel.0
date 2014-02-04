@@ -1,89 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 5/5] ASoC: tda998x: adjust the audio
- CTS_N pre-divider from audio format
-Date: Tue, 4 Feb 2014 18:09:22 +0000
-Message-ID: <20140204180922.GN22609@sirena.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 3/5] ASoC: tda998x: add DT documentation of the
+ tda998x CODEC
+Date: Tue, 4 Feb 2014 18:12:13 +0000
+Message-ID: <20140204181213.GO22609@sirena.org.uk>
 References: <cover.1391274627.git.moinejf@free.fr>
- <df65a2de7d4afc2471846c02b73e8bbdc4f9a743.1391274628.git.moinejf@free.fr>
+ <8e4231b7a55802f58a14dd07ac5cd8b0babb1dce.1391274628.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4033519853754971343=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BD9772619E1
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 19:09:26 +0100 (CET)
-In-Reply-To: <df65a2de7d4afc2471846c02b73e8bbdc4f9a743.1391274628.git.moinejf@free.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, Dave Airlie <airlied@gmail.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="e59cmCxsGlzMyaN0"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <8e4231b7a55802f58a14dd07ac5cd8b0babb1dce.1391274628.git.moinejf-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Clark <robdclark-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4033519853754971343==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rXXdS9IWuK35PRlJ"
-Content-Disposition: inline
-
-
---rXXdS9IWuK35PRlJ
+--e59cmCxsGlzMyaN0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jan 30, 2014 at 12:08:06PM +0100, Jean-Francois Moine wrote:
+On Sat, Feb 01, 2014 at 05:48:49PM +0100, Jean-Francois Moine wrote:
 
-> -	if (format == p->audio_format) {
-> +	if (format == p->audio_format &&
-> +	    params_format(params) == priv->audio_sample_format) {
->  		reg_write(priv, REG_ENA_AP, p->audio_cfg);
->  		return;
+> +	- compatible: must be "nxp,tda998x-codec".
 
-I find the above confusing and probably deserving of a comment
-explaining the logic.  I think it's trying to skip noop configuration
-updates?
+It's not clear to me why there's a separate compatible here - as far as
+I can see this can only appear as part of one of these devices and
+there's no addressing or other information that'd account for chip
+variation so I'd not expect to need to bind this independently of the
+parent.
 
->  	}
->  	p->audio_format = format;
-> +	priv->audio_sample_format = params_format(params);
-
-You should be using params_width() for the number of bits per sample.
-
---rXXdS9IWuK35PRlJ
+--e59cmCxsGlzMyaN0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS8SzOAAoJELSic+t+oim9H5QQAIRbYIjNbLCbAiCQ4/Qq9eQp
-1rgLxCPjVG6XATgn3QMAk9zuAwOoRjk+fjSjMyb1GlG0zjVs5LqJ66KDz76ekUpU
-PYb2XlFJgaI6ETDGN3Nx+ooVPPxzOEvbpc2KTW/GeVNHUQdpVm5W7luSxFhepNy3
-uYW8Mgw+iyL6IGXW4L4pf+qnq+RfAb7rKy/TvtLwhST/WoJAe4otzlRE9UduEek7
-sriGv4NzvKbi+s46Zz1y5LTqQU5WTaYl+DROkoCmXAaSwTB9MYx28ZgxLb0H3pxF
-TxYO4sfMASbo4TAMOLbtF0dpXWzasvDAOPg/0n/XzeSlKG8xaW76KW7afq0mbw6L
-utUT1I2EUMktZjLFVIOKO9U3gIXTDyV4OxwS66qn0wMNtSXWK2Jezu0zLxDxgJm/
-JTtmbuvYRBtoVu0p+SNAXeOaVsnFbsxFLyp16TuBs2daTVL2wKndPs6oKd0he9M7
-YkV9t2g+xmYq1uhuYad5ST84kmp9XhZ0acV32ccYVIXjsGX4xtrBbAp6FZcPhVyF
-4M65WD8JWOHt9FFogZkIPfMgVXGsd6xrFiPP3CuJX/P4taZl7lN5pJT3etaqFXur
-H961qTcyzVv2LNxss6q3B5YAtutYhFru6ofoBN+vGhZcmyD6d2Ugy7tzGSl7X3HU
-xVToPVJ+y8W1nn+nMHu0
-=8agD
+iQIcBAEBAgAGBQJS8S16AAoJELSic+t+oim9eOIP/AyusIviYZa8U00UwCEjbhBb
+O32EjirGkgP7RFqbsaVN6u3nudovMhGrwEs7AGX/gB0Y37YA92bJVj4k3PkmrEiV
+e9qFEEgQSSfTsrZ0c6vb/QdgRkdlKFl5WD8YX8JzhocociiRyok0mFJBVCESGbkv
+cRWnlWTR1S0WPoQj/KCeky/Mqjfn2x9KK1GaKnSEb9QfxXLvaLfpFmsF3ufWhkr4
+y/LQ20xPO6YgpgUUxe44OeK2G3YfUDTw0biMjMJrL9x4GyUv0dnSkQhP8dntG4iu
+mn+xu6y7u1vBTcB41+FrbsdZAYIsOV4iK93ynjQOMSPtb+fj+ukg5BuYxyz1fkPR
+p62RBBz9DfdINtXwQdiYDMTSgEl9Da7r/6vs+RNsaVrgSWThm/qHY6kDpukP/r3y
+68pxxXhzExxSN8srmWniMY1nKAx046SK6NJ0YRfs9pnjelYu5m7u67KMgJysbcBz
+1Wcd0Yva2aaGfkzcikeEFmASDZxgX0Alh5GzSJ5MLqjatGFF7QBG6ReHLUMMjWlk
+Ydw70uDkSbpKsJHE3pO5FNDj9+bd12wM92HP5t1w1hpzvR53PZGBknOVWzevRL8L
+NA9aTEZ3Est7UnfwqVHW/xIRuqUClHn0cnYzfnlldGmEoD2Rpo9SKMxx7zxQwpUc
+asguWWttm5sdpHL5eHxZ
+=AI7n
 -----END PGP SIGNATURE-----
 
---rXXdS9IWuK35PRlJ--
-
---===============4033519853754971343==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4033519853754971343==--
+--e59cmCxsGlzMyaN0--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
