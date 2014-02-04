@@ -1,96 +1,64 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH v3 2/5] ASoC: tda998x: add a codec driver
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v3 2/5] ASoC: tda998x: add a codec driver
  for the TDA998x
-Date: Tue, 4 Feb 2014 18:16:05 +0100
-Message-ID: <20140204181605.5b837a70@armhf>
+Date: Tue, 4 Feb 2014 17:46:27 +0000
+Message-ID: <20140204174627.GK22609@sirena.org.uk>
 References: <cover.1391274627.git.moinejf@free.fr>
  <ae68394f080f0ea5acaf3377cb1d18f29e42c646.1391274628.git.moinejf@free.fr>
  <20140204133014.GA22609@sirena.org.uk>
+ <52F0ECF2.9070102@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 142572619E1
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 18:15:55 +0100 (CET)
-In-Reply-To: <20140204133014.GA22609@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, Dave Airlie <airlied@gmail.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="c4ATLI8HJzklxeaH"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <52F0ECF2.9070102@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, Dave Airlie <airlied@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCA0IEZlYiAyMDE0IDEzOjMwOjE0ICswMDAwCk1hcmsgQnJvd24gPGJyb29uaWVAa2Vy
-bmVsLm9yZz4gd3JvdGU6Cgo+IE9uIFN1biwgSmFuIDI2LCAyMDE0IGF0IDA3OjQ1OjM2UE0gKzAx
-MDAsIEplYW4tRnJhbmNvaXMgTW9pbmUgd3JvdGU6Cj4gCj4gPiArCS8qIGxvYWQgdGhlIG9wdGlv
-bmFsIENPREVDICovCj4gPiArCW9mX3BsYXRmb3JtX3BvcHVsYXRlKG5wLCBOVUxMLCBOVUxMLCAm
-Y2xpZW50LT5kZXYpOwo+ID4gKwo+IAo+IFdoeSBpcyB0aGlzIHVzaW5nIG9mX3BsYXRmb3JtX3Bv
-cHVsYXRlKCk/ICBUaGF0J3MgYSB2ZXJ5IG9kZCB3YXkgb2YKPiBkb2luZyB0aGluZ3MuCgpUaGUg
-aTJjIGRvZXMgbm90IHBvcHVsYXRlIHRoZSBzdWJub2RlcyBpbiB0aGUgRFQuIEkgZGlkIG5vdCBm
-aW5kIHdoeSwKYnV0LCB3aGF0IGlzIHN1cmUgaXMgdGhhdCBpZiBvZl9wbGF0Zm9ybV9wb3B1bGF0
-ZSgpIGlzIG5vdCBjYWxsZWQsIHRoZQp0ZGEgQ09ERUMgbW9kdWxlIGlzIG5vdCBsb2FkZWQuCgpZ
-b3UgbWF5IGZpbmQgYW4gb3RoZXIgZXhhbXBsZSBpbiBkcml2ZXJzL21mZC90d2wtY29yZS5jLgoK
-PiA+ICtjb25maWcgU05EX1NPQ19UREE5OThYCj4gPiArCXRyaXN0YXRlCj4gPiArCWRlcGVuZHMg
-b24gT0YKPiA+ICsJZGVmYXVsdCB5IGlmIERSTV9JMkNfTlhQX1REQTk5OFg9eQo+ID4gKwlkZWZh
-dWx0IG0gaWYgRFJNX0kyQ19OWFBfVERBOTk4WD1tCj4gPiArCj4gCj4gTWFrZSB0aGlzIHZpc2li
-bGUgaWYgaXQgY2FuIGJlIHNlbGVjdGVkIGZyb20gRFQgc28gaXQgY2FuIGJlIHVzZWQgd2l0aAo+
-IGdlbmVyaWMgY2FyZHMuCgpJIGRvbid0IHVuZGVyc3RhbmQuIFRoZSB0ZGEgQ09ERUMgY2FuIG9u
-bHkgYmUgdXNlZCB3aXRoIHRoZSBUREE5OTh4IEkyQwpkcml2ZXIuIEl0IG1pZ2h0IGhhdmUgYmVl
-biBpbmNsdWRlZCBpbiB0aGUgdGRhOTk4eCBzb3VyY2UgYXMgd2VsbC4KCj4gPiArc3RhdGljIGlu
-dCB0ZGFfZ2V0X2VuY29kZXIoc3RydWN0IHRkYV9wcml2ICpwcml2KQo+ID4gK3sKPiA+ICsJc3Ry
-dWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjID0gcHJpdi0+Y29kZWM7Cj4gPiArCXN0cnVjdCBkZXZp
-Y2Vfbm9kZSAqbnA7Cj4gPiArCj4gPiArCS8qIGdldCB0aGUgcGFyZW50IHRkYTk5OHggZGV2aWNl
-ICovCj4gPiArCW5wID0gb2ZfZ2V0X3BhcmVudChjb2RlYy0+ZGV2LT5vZl9ub2RlKTsKPiA+ICsJ
-aWYgKCFucCB8fCAhb2ZfZGV2aWNlX2lzX2NvbXBhdGlibGUobnAsICJueHAsdGRhOTk4eCIpKSB7
-Cj4gPiArCQlkZXZfZXJyKGNvZGVjLT5kZXYsICJubyBvciBiYWQgcGFyZW50IVxuIik7Cj4gPiAr
-CQlyZXR1cm4gLUVJTlZBTDsKPiA+ICsJfQo+ID4gKwlwcml2LT5pMmNfY2xpZW50ID0gb2ZfZmlu
-ZF9pMmNfZGV2aWNlX2J5X25vZGUobnApOwo+ID4gKwlvZl9ub2RlX3B1dChucCk7Cj4gPiArCXJl
-dHVybiAwOwo+ID4gK30KPiAKPiBXaHkgZG9lcyB0aGlzIG5lZWQgdG8gYmUgY2hlY2tlZCBsaWtl
-IHRoaXM/ICBXZSBkb24ndCBub3JtYWxseSBoYXZlIHRoaXMKPiBzb3J0IG9mIGNvZGUgdG8gY2hl
-Y2sgdGhhdCB0aGUgcGFyZW50IGlzIGNvcnJlY3QuCgpJbiBteSBwcmV2aW91cyBzdWJtaXQsIHRo
-ZSB0ZGEgQ09ERUMgd2FzIG5vdCBkZWNsYXJlZCBpbnNpZGUgdGhlCnRkYTk5OHggSTJjIGRldmlj
-ZSwgc28sIGl0cyBsb2NhdGlvbiB3YXMgc2VhcmNoZWQgZnJvbSAgcGhhbmRsZS4KCk5vdywgdGhl
-IENPREVDIGlzIGRlY2xhcmVkIGluc2lkZSB0aGUgdGRhOTk4eCBhcyBhIG5vZGUgY2hpbGQuIEJ1
-dCwgaW4KYSBiYWQgRFQsIHRoZSB0ZGEgQ09ERUMgY291bGQgYmUgZGVjbGFyZWQgYW55d2hlcmUs
-IGV2ZW4gaW5zaWRlIGEgb3RoZXIKRFJNIEkyQyBzbGF2ZSBlbmNvZGVyLCBpbiB3aGljaCBjYXNl
-LCBiYWQgdGhpbmdzIHdvdWxkIGhhcHBlbi4uLgoKPiA+ICtzdGF0aWMgaW50IHRkYV9zdGFydF9z
-dG9wKHN0cnVjdCB0ZGFfcHJpdiAqcHJpdikKPiA+ICt7Cj4gPiArCWludCBwb3J0Owo+ID4gKwo+
-ID4gKwkvKiBnaXZlIHRoZSBhdWRpbyBwYXJhbWV0ZXJzIHRvIHRoZSBIRE1JIGVuY29kZXIgKi8K
-PiA+ICsJaWYgKHByaXYtPmRhaV9pZCA9PSBBRk1UX0kyUykKPiA+ICsJCXBvcnQgPSBwcml2LT5w
-b3J0c1swXTsKPiA+ICsJZWxzZQo+ID4gKwkJcG9ydCA9IHByaXYtPnBvcnRzWzFdOwo+ID4gKwl0
-ZGE5OTh4X2F1ZGlvX3VwZGF0ZShwcml2LT5pMmNfY2xpZW50LCBwcml2LT5kYWlfaWQsIHBvcnQp
-Owo+ID4gKwlyZXR1cm4gMDsKPiA+ICt9Cj4gCj4gV2hhdCBkb2VzIHRoaXMgYWN0dWFsbHkgZG8/
-ICBObyBpbmZvcm1hdGlvbiBpcyBiZWluZyBwYXNzZWQgaW4gdG8gdGhlCj4gY29yZSBmdW5jdGlv
-biBoZXJlLCBub3QgZXZlbiBhbnkgaW5mb3JtYXRpb24gb24gaWYgaXQncyBzdGFydGluZyBvcgo+
-IHN0b3BwaW5nLiAgTG9va2luZyBhdCB0aGUgcmVzdCBvZiB0aGUgY29kZSBJIGNhbid0IGhlbHAg
-dGhpbmtpbmcgaXQKPiBtaWdodCBiZSBjbGVhcmVyIHRvIGlubGluZSB0aGlzIHBvc3NpYmx5IHdp
-dGggYSBsb29rdXAgaGVscGVyLCB0aGUgY29kZQo+IGlzIHZlcnkgc21hbGwgYW5kIHRoZSBsYWNr
-IG9mIHBhcmFtZXRlcnMgbWFrZXMgaXQgaGFyZCB0byBmb2xsb3cuCgpJIHRob3VnaHQgaXQgd2Fz
-IHNpbXBsZSBlbm91Z2guIFRoZSBmdW5jdGlvbiB0ZGFfc3RhcnRfc3RvcCgpIGlzIGNhbGxlZApm
-cm9tIDIgcGxhY2VzOgoKLSBvbiBhdWRpbyBzdGFydCBpbiB0ZGFfc3RhcnR1cCB3aXRoIHRoZSBh
-dWRpbyB0eXBlIChEQUkgaWQpCglwcml2LT5kYWlfaWQgPSBkYWktPmlkOwoKLSBvbiBhdWRpbyBz
-dG9wIHdpdGggYSBudWxsIGF1ZGlvIHR5cGUKCXByaXYtPmRhaV9pZCA9IDA7CQkvKiBzdHJlYW1p
-bmcgc3RvcCAqLwoKT24gc3RyZWFtIHN0YXJ0LCB0aGUgREFJIGlkIGlzIG5ldmVyIG51bGwsIGFz
-IGV4cGxhaW5lZCBpbiB0aGUgcGF0Y2ggMToKCglUaGUgYXVkaW8gZm9ybWF0IHZhbHVlcyBpbiB0
-aGUgZW5jb2RlciBjb25maWd1cmF0aW9uIGludGVyZmFjZSAgYXJlCgljaGFuZ2VkIHRvIG5vbiBu
-dWxsIHZhbHVlcyBzbyB0aGF0IHRoZSB2YWx1ZSAwIGlzIHVzZWQgaW4gdGhlIGF1ZGlvCglmdW5j
-dGlvbiB0byBpbmRpY2F0ZSB0aGF0IGF1ZGlvIHN0cmVhbWluZyBpcyBzdG9wcGVkLgoKYW5kIG9u
-IHN0cmVhbWluZyBzdG9wIHRoZSBwb3J0IGlzIG5vdCBtZWFuaW5nZnVsLgoKSSB3aWxsIGFkZCBh
-IG51bGwgaXRlbSBpbiB0aGUgZW51bSAoQUZNVF9OT19BVURJTykuCgo+ID4gK3N0YXRpYyBjb25z
-dCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3JvdXRlIHRkYV9yb3V0ZXNbXSA9IHsKPiA+ICsJeyAiaGRt
-aS1vdXQiLCBOVUxMLCAiSERNSSBJMlMgUGxheWJhY2siIH0sCj4gPiArCXsgImhkbWktb3V0Iiwg
-TlVMTCwgIkhETUkgU1BESUYgUGxheWJhY2siIH0sCj4gPiArfTsKPiAKPiBTL1BESUYuCgpEaWQg
-eW91IGV2ZXIgdHJ5IHRoYXQgd2l0aCBkZWJ1Z2ZzPwoKQlRXLCB0aGlzIHBhdGNoIHNlcmllcyBt
-YXkgYmUgZGVsYXllZCBmb3Igc29tZSB0aW1lOiB0aGUgdGRhOTk4eCBkcml2ZXIKaGFzIHRvIGJl
-IHJld29ya2VkIGZvciBEVCBzdXBwb3J0LgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAq
-KiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZy
-LwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--c4ATLI8HJzklxeaH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Feb 04, 2014 at 02:36:50PM +0100, Lars-Peter Clausen wrote:
+> On 02/04/2014 02:30 PM, Mark Brown wrote:
+
+> >>+static const struct snd_soc_dapm_route tda_routes[] = {
+> >>+	{ "hdmi-out", NULL, "HDMI I2S Playback" },
+> >>+	{ "hdmi-out", NULL, "HDMI SPDIF Playback" },
+> >>+};
+
+> >S/PDIF.
+
+> Won't this cause issues with the debugfs widget entries? It's
+> fixable by escaping it (replace it by a dash or something) in the
+> debugfs widget filename, but I don't think we do this right now.
+
+Oh, bother, so it will.
+
+--c4ATLI8HJzklxeaH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS8SdwAAoJELSic+t+oim9h5MP/2ovfQhynAZqb/azeBIcx/Hc
+zA8Zi7gcGynDMHAT6aUuJmmq6QVR9HFcGXlY7qWWuo/NubyZAUtbXjxTsxYQsUqs
+YwKW9SnEnia2XoYbzK+dH2+58jht41LHw1Bjt1Uhb3XUL+0hDdk6RQQGKEhi61wn
+hXTZJ+UF+s/7609uRvZvICVmxesp6Cy0yEvRJYzf3H10JsIce3AJYsNNR/MhhoUG
+n50gOtwqQ8mKWLGoqrJf/bz+RfZ6G9UrjNiXn3aY/NzjnmsJECqTHBColw3zP5d/
+zCw35oQYPeu6Q0HQa5eLB200aGm0vdA/GZSTEt6e7wDerAuD++YlrxuNOdHG95km
+datVUmB3lEHnnDdfdCY+bEEvi327x/5tYpcU0jZELliVH7vHxP8vDIW8OYLQOayl
+puRk/jTZtOFGoOe/D8OcV3vgvD2ChQQONNd+3zi2LnF3uR6KZEbPHsw2d0NBjCEz
+dHFCaGUQR/UaY+M0PuW16Un7jhs+q7y4Ic34wkmoqzwO1SrK6+R64qdGzkGN38a6
+nmqybc4FdqilapB+rHDwPB2Y/i3qVVn905W9SfcUSgmSfB/k86nO48a332YzEEe/
+QWavHFF2Ex5gCmGWo6ISIN+Svxc8IAwOb8RQ6aCVaKS/lab+XD90RRTCUSJ42Gnb
+lVdnL2oTplbAzlxwGzvt
+=YQGB
+-----END PGP SIGNATURE-----
+
+--c4ATLI8HJzklxeaH--
