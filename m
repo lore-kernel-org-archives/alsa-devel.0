@@ -1,75 +1,109 @@
-From: Randy Li <lxr1234@hotmail.com>
-Subject: Re: Strange sound of IDT 82hd206xx6 at font port in
- AC97 mode
-Date: Tue, 4 Feb 2014 21:00:15 +0800
-Message-ID: <BLU0-SMTP2290BB01520D451B3C3E1FCADAA0@phx.gbl>
-References: <BLU0-SMTP22F128862C405DED98AB89ADAB0@phx.gbl>
- <CAN8cciZ+QwNpSnBmXuvKV9Hkqhfbo6CvY0bmx7rMQic9+tgb8A@mail.gmail.com>
- <BLU0-SMTP39216262BA66E5ED8A80E9BADAA0@phx.gbl>
- <CAN8ccianyNMd02ywO+AtbFoAsTxcm_Q8Fa-ab4hExAXi=Jw0Fw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 2/5] ASoC: tda998x: add a codec driver for the TDA998x
+Date: Tue, 4 Feb 2014 13:30:14 +0000
+Message-ID: <20140204133014.GA22609@sirena.org.uk>
+References: <cover.1391274627.git.moinejf@free.fr>
+ <ae68394f080f0ea5acaf3377cb1d18f29e42c646.1391274628.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from blu0-omc3-s21.blu0.hotmail.com (blu0-omc3-s21.blu0.hotmail.com
- [65.55.116.96]) by alsa0.perex.cz (Postfix) with ESMTP id ED203261987
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 14:00:26 +0100 (CET)
-In-Reply-To: <CAN8ccianyNMd02ywO+AtbFoAsTxcm_Q8Fa-ab4hExAXi=Jw0Fw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Y3YVtFU9bcHhbVJF"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <ae68394f080f0ea5acaf3377cb1d18f29e42c646.1391274628.git.moinejf@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgrkuo4gMjAxNOW5
-tDAy5pyIMDTml6UgMTc6MDEsIFJheW1vbmQgWWF1IOWGmemBkzoKPiAKPiAKPiAKPj4gQ2hlY2sg
-dGhlIGZyb250IGF1ZGlvIGNvbm5lY3RvciBvZiB5b3VyIG1vdGhlcmJvYXJkIGluIHRoZSB1c2Vy
-IAo+PiBtYW51YWwKPj4gCj4+IENoZWNrIHRoZSBmcm9udCBhdWRpbyBwYW5lbCBzcGVjaWZpY2F0
-aW9uIG9mIHlvdXIgY29tcHV0ZXIKPj4gY2hhc3NpcyB3aGV0aGVyIHN1cHBvcnQgSmFjayBkZXRl
-Y3Rpb24gb2YgaGVhZHBob25lIGFuZCBtaWMKPj4gCj4+IE9ubHkgYSBmZXcgbXVsdGkgY2hhbm5l
-bCBBQzk3IDIuMyBjb2RlY3MgKGUuZy4gQUxDODUwKSBzdXBwb3J0IAo+PiBqYWNrIGRldGVjdGlv
-biBhbmQgbW9zdCBBQzk3IGZyb250IGF1ZGlvIHBhbmVsIGRvZXMgbm90IGhhdmUKPj4gamFjayBk
-ZXRlY3Rpb24gY2lyY3VpdAo+PiAKPj4gaHR0cDovL3d3dy5pbnRlbC5jb20vc3VwcG9ydC9tb3Ro
-ZXJib2FyZHMvZGVza3RvcC9zYi9jcy0wMTU4NTEuaHRtCj4KPj4gCj4gCj4+PiBJIGNhbid0IGhl
-YXIgdGhlIHNvdW5kIGluIHNvbWUgcGFydCBvZiBhIGZpbG0gYW5kIEkgY2FuIGhlYXIKPj4+IHRo
-ZSBzdHJhbmdlciBhY2NlbnQgb2Ygc291bmQgaW4gdGhlIG90aGVyIHBhcnQgb2YgYSBmaWxtKG9y
-IGEKPj4+IG11c2ljKS4gQnV0IGFsbCB0aGUgNy4xIGNoYW5uZWwgaW4gdGhlIGJhY2sgcG9ydHMg
-Y2FuIG91dHB1dAo+Pj4gdGhlIHNvdW5kIG1hdGNoIG15IG1pcmNvcGhvbmUoYWxsIGFyZSB0aGUg
-c2FtZSkuCj4+IAo+PiBUaGUgZnJvbnQgYXVkaW8gcGFuZWwgaGVhZHBob25lIHNoYXJlIHRoZSBm
-cm9udCBjaGFubmVsIHNpZ25hbAo+PiBvbmx5IHdoZW4gcGxheWluZyBtdWx0aSBjaGFubmVsIGF1
-ZGlvCj4+IAo+PiBZb3UgbmVlZCAgdG8gdXNlIGFwcGxpY2F0aW9uc++8iGUuZyAgbXBsYXllcu+8
-iSB3aGljaCBjYW4gIGRvd24gbWl4IAo+PiBtdWx0aSBjaGFubmVsIHRvIHN0ZXJlbyBvciBzZWxl
-Y3QgdGhlIHN0ZXJlbyB0cmFjayAgaW5zdGVhZCBvZgo+PiBEVFMgb2YgbW92aWUgRFZEIHdoZW4g
-eW91IGFyZSB1c2luZyBoZWFkcGhvbmUKPj4gCj4gSSBmaW5kIHRoZSBvdGhlciB0aGluZywgdGhp
-cyBoZWFkcGhvbmUgaXMgZm9yIGFuZHJvaWQgbW9iaWxlIHdoaWNoIAo+IGNvbWJpbmUgY29udHJv
-bGxlciwgaGVhZHBob25lIGFuZCBzcGVha2VyLiBJZiB5b3UgZG9uJ3QgcGx1ZyBpdAo+IGludG8g
-Zm9udCBwb3J0IGZ1bGx5LCBpdCB3b3Jrcy4gSSBoYXZlIHRlc3RlZCBhIG5vcm5hbCBoZWFkcGhv
-bmUsCj4gaXQgd29ya3MgdG9vLgo+IAo+IE1heWJlIGl0IGNhdXNlIGJ5IG15IGhhcmR3YXJlLCBp
-dCBpcyBub3QgYWxzYSdzIHByb2JsZW0uCj4gCj4gCj4gCj4gU2ltcGxlIG1peGVyIGNvbnRyb2wg
-J1N3YXAgQ2VudGVyL0xGRScsMCBDYXBhYmlsaXRpZXM6IHBzd2l0Y2gKPiBwc3dpdGNoLWpvaW5l
-ZCBwZW51bSBQbGF5YmFjayBjaGFubmVsczogTW9ubyBNb25vOiBQbGF5YmFjayBbb2ZmXQo+IAo+
-IAo+IAo+IERvIHRoaXMgc3dpdGNoIGNoYW5nZSB0aGUgb3V0cHV0IG9mIGNlbnRlciBhbmQgbGZl
-IHdoZW4geW91IHJ1bgo+IAo+IHNwZWFrZXItdGVzdCAtYyA2IC10IHdhdiAtRCBodzowLDAKPiAK
-SSBvbmx5IGhlYXIgdGhlIGZvbnQgbGVmdCBhbmQgZm9udCByaWdodCBpbiBib3RoIHNpZGUgb2Yg
-bXkKaGVhZHBob25lKHRoZSBvbmUgZm9yIGFuZHJvaWQpCj4gc2VlbSB0aGF0IHlvdXIgYXJlIG5v
-dCB1c2luZyBsYXRlc3QgYWxzYSBkcml2ZXIKVGhlIGFsc2EgZHJpdmVyPyBXZWxsLCBzaGFsbCBJ
-IHRyeSB0aGUgbGF0ZXN0IGtlcm5lbD8KCgp0aGFuayB5b3UKYXlha2EKLS0tLS1CRUdJTiBQR1Ag
-U0lHTkFUVVJFLS0tLS0KVmVyc2lvbjogR251UEcgdjEuNC4xMiAoR05VL0xpbnV4KQpDb21tZW50
-OiBVc2luZyBHbnVQRyB3aXRoIE1vemlsbGEgLSBodHRwOi8vZW5pZ21haWwubW96ZGV2Lm9yZy8K
-CmlRRWNCQUVCQWdBR0JRSlM4T1JmQUFvSkVQYjRWc01JelR6aS9BWUgvMVVuVHZoSkFDVE1pMmU5
-UCttcUFudjUKdEFIL2JWQmg3bDhSRFg2VW5ZTzVPM1Y5YWY1TnZUSHhkWVZIY25qanlQMmJoOTVZ
-VVNDSmFuc1AyeFZpeWRoMgo1MXUvZnVYVTRzeDFUZ1p6dncxTFpwYThjcWpSWGNJYUZiVVFXUDIz
-cXpBVjV5RndyRmNFc3J2VzNLZ0hDSFZqCmR3cXM2ZC90UXpXak52TTJMd1RJcVptWDR1NGRTVVVh
-Si8vM0VUQzE5dWJpMVlKa3JxRlQ2dldVVVl3UHhrem0KT3o5U0VMZkpobzgxeGsvVEFlUFdoOUhQ
-VVlwRUdKZkp6YkRUd2JrckxMbnQ2NUdDcGw3YWVSYmpDYlJxN0NQTgpiVXJLZCtWc3Z6aU5aeUtV
-SGFJbUR3UnFuVkdVY3lQUmRHOHJ6RkVmTVdIb1JzTjBOU1JBUjJkRS9vVHFPcFk9Cj1rNGw5Ci0t
-LS0tRU5EIFBHUCBTSUdOQVRVUkUtLS0tLQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+
+--Y3YVtFU9bcHhbVJF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Jan 26, 2014 at 07:45:36PM +0100, Jean-Francois Moine wrote:
+
+> +	/* load the optional CODEC */
+> +	of_platform_populate(np, NULL, NULL, &client->dev);
+> +
+
+Why is this using of_platform_populate()?  That's a very odd way of
+doing things.
+
+> +config SND_SOC_TDA998X
+> +	tristate
+> +	depends on OF
+> +	default y if DRM_I2C_NXP_TDA998X=y
+> +	default m if DRM_I2C_NXP_TDA998X=m
+> +
+
+Make this visible if it can be selected from DT so it can be used with
+generic cards.
+
+> +static int tda_get_encoder(struct tda_priv *priv)
+> +{
+> +	struct snd_soc_codec *codec = priv->codec;
+> +	struct device_node *np;
+> +
+> +	/* get the parent tda998x device */
+> +	np = of_get_parent(codec->dev->of_node);
+> +	if (!np || !of_device_is_compatible(np, "nxp,tda998x")) {
+> +		dev_err(codec->dev, "no or bad parent!\n");
+> +		return -EINVAL;
+> +	}
+> +	priv->i2c_client = of_find_i2c_device_by_node(np);
+> +	of_node_put(np);
+> +	return 0;
+> +}
+
+Why does this need to be checked like this?  We don't normally have this
+sort of code to check that the parent is correct.
+
+> +static int tda_start_stop(struct tda_priv *priv)
+> +{
+> +	int port;
+> +
+> +	/* give the audio parameters to the HDMI encoder */
+> +	if (priv->dai_id == AFMT_I2S)
+> +		port = priv->ports[0];
+> +	else
+> +		port = priv->ports[1];
+> +	tda998x_audio_update(priv->i2c_client, priv->dai_id, port);
+> +	return 0;
+> +}
+
+What does this actually do?  No information is being passed in to the
+core function here, not even any information on if it's starting or
+stopping.  Looking at the rest of the code I can't help thinking it
+might be clearer to inline this possibly with a lookup helper, the code
+is very small and the lack of parameters makes it hard to follow.
+
+> +static const struct snd_soc_dapm_route tda_routes[] = {
+> +	{ "hdmi-out", NULL, "HDMI I2S Playback" },
+> +	{ "hdmi-out", NULL, "HDMI SPDIF Playback" },
+> +};
+
+S/PDIF.
+
+--Y3YVtFU9bcHhbVJF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS8OtjAAoJELSic+t+oim9bs4P/iJT+6VOJ9QSnwm/m8U0RIUS
+qfim/SCriTfqXoxC+fDD/VoDzP4a/hh6zUDLkjP3Unmq9oy+NyKtH0f4K5mIyXxW
+USgrkQho80hUtZhQzIKsmWtadwNyjFPTIB6N/XiphUhvROuLxHQP/0zHBjN93v4o
+FWAr2H5Y6scjT/JGewS+IiUsSieMQVG0EblyQjsot9CTCwJTjOoEfq7lWBQIyhpe
+ygf9vFtDRnbwsOH+Y/wF0TmJFHeJdHvuWymahUtKtlWl0yV3A/QYfCpifis6iedh
+Maf9YAEFThLuwoZbZMnQY5fdkh46HtAZoNXaqBHq8qSo2aqVOkVPKsmeLtHqPqf8
+JF66+54Tjw6pbv+1eDIy6AClZiin8Fr0BcKsCo6VMfNFOnQsMB57mzACc4M4WfgZ
+DCQvj16bzSQzWKkBB+HKr3Lx4VxcZ0Y+04jS3HoJl6Ka2GXBsgqCDi7K+Z2gmlm8
+Sb8sQPPm+FrmebYYtn1yI8qeraqpj+NGisxiNYx8j4NF/NqfszYFZemFW/JiFPpJ
+KyzrYSbl4UaZawGbHoi/nV0PkjYDdhOdC6FJvCUFGIETXr9JE76LtxSkQ/RCf+xD
+qZp+Gp4D4ELVOqfqUTQjioNpJgFUW1Z/+kCL03YI3WY+ojz3h3MBsIHiM4o8zbb6
+hv9jTbckAjn5LAV8GiT0
+=TKAW
+-----END PGP SIGNATURE-----
+
+--Y3YVtFU9bcHhbVJF--
