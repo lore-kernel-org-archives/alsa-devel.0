@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2 v2] ASoC: arizona: Improve ultrasonic
- frequency response
-Date: Tue, 4 Feb 2014 00:17:27 +0000
-Message-ID: <20140204001727.GO22609@sirena.org.uk>
-References: <1391184978-14516-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1391184978-14516-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Randy Li <lxr1234@hotmail.com>
+Subject: Re: Strange sound of IDT 82hd206xx6 at font port in
+ AC97 mode
+Date: Tue, 4 Feb 2014 08:43:17 +0800
+Message-ID: <BLU0-SMTP168158F76E25FBB1A51D33EADAA0@phx.gbl>
+References: <BLU0-SMTP22F128862C405DED98AB89ADAB0@phx.gbl>
+ <CAN8cciZ+QwNpSnBmXuvKV9Hkqhfbo6CvY0bmx7rMQic9+tgb8A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6339557305200375280=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D766F26158B
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 01:17:46 +0100 (CET)
-In-Reply-To: <1391184978-14516-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from blu0-omc3-s15.blu0.hotmail.com (blu0-omc3-s15.blu0.hotmail.com
+ [65.55.116.90]) by alsa0.perex.cz (Postfix) with ESMTP id 7AD6D26158B
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 01:43:25 +0100 (CET)
+In-Reply-To: <CAN8cciZ+QwNpSnBmXuvKV9Hkqhfbo6CvY0bmx7rMQic9+tgb8A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, sameo@linux.intel.com, lgirdwood@gmail.com
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============6339557305200375280==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2+gS0LBHjVo9w9tQ"
-Content-Disposition: inline
-
-
---2+gS0LBHjVo9w9tQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jan 31, 2014 at 04:16:18PM +0000, Charles Keepax wrote:
-> Evaluation of the device has given some settings to improve the
-> ultrasonic frequency response. However, this may cause sub-optimal
-> performance in system designs with high output gains on the headphone
-> path (0dB or -2dB), and as the frequencies are inaudible anyway some
-> users may not desire higher frequency response at those frequencies.
-> So allow the user the option to select it if it is appopriate for
-> their system design.
-
-Reading what you're saying here I can't help but think that this sounds
-like it may be use case dependent as well and therefore something that
-ought to be runtime controllable depending on if ultrasonics and/or line
-level outputs are in use (0dB isn't high gain, it's no gain!) for
-example.
-
---2+gS0LBHjVo9w9tQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS8DGUAAoJELSic+t+oim9KscP/1S6F/X0Mw2HsuOzDHIwOmGU
-mk/f8MWtrwyhmpAzg4VyHqmIZM9u/5I8Sm4zHsj1if9iKisV980H6KnetzQSncZk
-5dpIEfU4/RAaZh4av23QrqN8CWUPfla1s5MjSXKvcc05Y/eOzmMoF19I2ZuLs+UG
-8C1FrWtZKMDStcH6Yn03RzH86cxTPxKXamRKLUdpULed2ZnJ4LcNGVdttBWPZDsd
-uvHE4jjRz3lV8VH8q040dpTN/d8lggAsTPcndLE4iPuHf1rQVmJKcznGvP3+TReD
-CXSPQKQ3o5i7tIMcJnmIvyKE9yq3cExgOddIqbkjh2oA4z8zv93+Bi8euRhZqfCj
-UhQvPnMaxMWtKcHDp9468WkSZyQZ8T+b6yZti/tehxYALZr1rmPYk+qHic7JQR7v
-CQ1uS1LmAKFO6NPiCo+ENHsyFupGs0l4ULvxVSb8jW79YcbFC1o4hvD77wVEObdA
-fdD0oVcgLolMgrvO/Cks07auSRsu4aC7AnC8ZVSvRw3qJDCbqUMWoljs8N8dETm7
-ygcxDqUMnCShGyuCplKH3ct3b6gkwbFUsr/2TzyblMx7YKDKaVfAdVetzokW7dgU
-lmBPLdjfShxPImD3poOc78Vs0Qka0rNezJDtB/lXKmsUYHbYXUhNZY1su3vfgbna
-s6sjQPiiBsjvPc1m1ijY
-=gv4V
------END PGP SIGNATURE-----
-
---2+gS0LBHjVo9w9tQ--
-
---===============6339557305200375280==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6339557305200375280==--
+LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgrkuo4gMjAxNOW5
+tDAy5pyIMDTml6UgMDc6MDgsIFJheW1vbmQgWWF1IOWGmemBkzoKPiAKPj4gCj4+IEhlbGxvIE15
+IG1haW5ib2FyZCBpcyBFQ1MgQTc4MEdNLUEsIHRoZSBzb3VuZCBjaGlwIGluIGl0IGlzIElEVAo+
+PiA4MkhEMjA2WFg2LAo+IAo+IElzIHRoaXMgOTJIRDIwNlggPwo+IApNYXliZSBpdCBpcywgYnV0
+IGl0IGlzIDgySEQyMDZYWDYgaW4gdGhlIHRvcCBzaWRlIG9mIHRoZSBjaGlwLgoKPiBTZWVtIHRo
+aXMgY29kZWMgc3VwcG9ydCBpbXBlZGFuY2Ugc2Vuc2UKPiAKPiBQb3N0IHRoZSBvdXRwdXQgb2Yg
+YWxzYS1pbmZvLnNoCj4gCmh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj1jZTc5NWYw
+ZjhlMzFiOWViNWUzNWNjMmZlZDU3MjI5MGQxNGIxY2RhCj4+IAo+PiBJbiBteSBiaW9zIEkgZG9u
+J3QgaGF2ZSBhIHN3aXRjaCB0byBtYWtlIHRoZSBmb250IHBvcnQgbW9kZSBpbnRvCj4+IEFDOTcg
+b3IgSEQgQXVkaW8uIEluIHdpbmRvd3MgeW91IG5lZWQgdG8gaW5zdGFsbCBhIGRyaXZlciBhbmQg
+c2V0Cj4+IHRoZSBmb250IHBvcnQgaW50byBBQzk3LiBJbiBMaW51eCwgeW91IGNhbiB1c2UgdGhl
+IGZvbnQgcG9ydCwgYnV0Cj4+IGl0IHNlZW1zIHRoYXQgYXVkaW8gY2hhbm5lbCBpcyB3cm9uZywK
+PiAKPiBDaGVjayB0aGUgZnJvbnQgYXVkaW8gY29ubmVjdG9yIG9mIHlvdXIgbW90aGVyYm9hcmQg
+aW4gdGhlIHVzZXIKPiBtYW51YWwKPiAKPiBDaGVjayB0aGUgZnJvbnQgYXVkaW8gcGFuZWwgc3Bl
+Y2lmaWNhdGlvbiBvZiB5b3VyIGNvbXB1dGVyIGNoYXNzaXMgCj4gd2hldGhlciBzdXBwb3J0IEph
+Y2sgZGV0ZWN0aW9uIG9mIGhlYWRwaG9uZSBhbmQgbWljCj4gCj4gT25seSBhIGZldyBtdWx0aSBj
+aGFubmVsIEFDOTcgMi4zIGNvZGVjcyAoZS5nLiBBTEM4NTApIHN1cHBvcnQKPiBqYWNrIGRldGVj
+dGlvbiBhbmQgbW9zdCBBQzk3IGZyb250IGF1ZGlvIHBhbmVsIGRvZXMgbm90IGhhdmUgamFjawo+
+IGRldGVjdGlvbiBjaXJjdWl0Cj4gCj4gaHR0cDovL3d3dy5pbnRlbC5jb20vc3VwcG9ydC9tb3Ro
+ZXJib2FyZHMvZGVza3RvcC9zYi9jcy0wMTU4NTEuaHRtCj4gCj4+IEkgY2FuJ3QgaGVhciB0aGUg
+c291bmQgaW4gc29tZSBwYXJ0IG9mIGEgZmlsbSBhbmQgSSBjYW4gaGVhciB0aGUgCj4+IHN0cmFu
+Z2VyIGFjY2VudCBvZiBzb3VuZCBpbiB0aGUgb3RoZXIgcGFydCBvZiBhIGZpbG0ob3IgYSBtdXNp
+YykuCj4+IEJ1dCBhbGwgdGhlIDcuMSBjaGFubmVsIGluIHRoZSBiYWNrIHBvcnRzIGNhbiBvdXRw
+dXQgdGhlIHNvdW5kCj4+IG1hdGNoIG15IG1pcmNvcGhvbmUoYWxsIGFyZSB0aGUgc2FtZSkuCj4g
+Cj4gVGhlIGZyb250IGF1ZGlvIHBhbmVsIGhlYWRwaG9uZSBzaGFyZSB0aGUgZnJvbnQgY2hhbm5l
+bCBzaWduYWwgb25seQo+IHdoZW4gcGxheWluZyBtdWx0aSBjaGFubmVsIGF1ZGlvCj4gCj4gWW91
+IG5lZWQgIHRvIHVzZSBhcHBsaWNhdGlvbnPvvIhlLmcgIG1wbGF5ZXLvvIkgd2hpY2ggY2FuICBk
+b3duIG1peAo+IG11bHRpIGNoYW5uZWwgdG8gc3RlcmVvIG9yIHNlbGVjdCB0aGUgc3RlcmVvIHRy
+YWNrICBpbnN0ZWFkIG9mIERUUwo+IG9mIG1vdmllIERWRCB3aGVuIHlvdSBhcmUgdXNpbmcgaGVh
+ZHBob25lCj4gCldlbGwsIHRob3NlIHZpZGVvIGFyZSBkb3dubG9hZGVkIGZyb20geW91dHViZS4K
+SSB3aWxsIHRyeSB0byB1c2UgbXBsYXllciBkbyB0aGF0LgoKClRoYW5rIHlvdQotLS0tLUJFR0lO
+IFBHUCBTSUdOQVRVUkUtLS0tLQpWZXJzaW9uOiBHbnVQRyB2MS40LjEyIChHTlUvTGludXgpCkNv
+bW1lbnQ6IFVzaW5nIEdudVBHIHdpdGggTW96aWxsYSAtIGh0dHA6Ly9lbmlnbWFpbC5tb3pkZXYu
+b3JnLwoKaVFFY0JBRUJBZ0FHQlFKUzhEZWxBQW9KRVBiNFZzTUl6VHppSlFvSC9pNzFOMHkvQkhK
+amdZQ29mK0sycGlRZAovV0g1dUk1V1Z1MC92em5mQmt0NjdnWGZMQ1Q4d3YvOGYvaGlLTW9ndXAr
+YjJwNVBXOVlmenJheHQ5Rmx4QVcyCm1XUHExa0lvQ1gwSDE1bzBBemJnNzZLWHJBelNadFBXK2VN
+RDFUYkY4RjZGT2doZzc3aVJHY0QwbDdDcnNnQ0YKNG9iSnRPUThNNE5RdmRrMmRqQlFGcDZVa1hy
+MVg4Y3JKekR2RVA1a0VvY0xKZUpZZ2FHWnJ2alZ2QlVDRTJyNApkMDhnYXpnV3FvZlNBLzBmKzZG
+ZnhFdXk2dmhpNldPVmtHUVRneUNlQUZMUVZpQmxoeWNJWDNuS1RYVHlyZmJYCk1RcWIvRmJncDhM
+S1VZYWViTzZvazdySHRzTWJKaU1RMlZTRXBXWTBleHo0czBpRzF4Z3pXNkhJWWxuZDI2Zz0KPURT
+UWsKLS0tLS1FTkQgUEdQIFNJR05BVFVSRS0tLS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
