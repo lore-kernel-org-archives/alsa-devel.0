@@ -1,42 +1,86 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH v3 3/5] ASoC: tda998x: add DT documentation of the
-	tda998x CODEC
-Date: Tue, 4 Feb 2014 20:02:39 +0100
-Message-ID: <20140204200239.1baf309b@armhf>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 2/5] ASoC: tda998x: add a codec driver for the TDA998x
+Date: Tue, 4 Feb 2014 19:40:18 +0000
+Message-ID: <20140204194018.GX22609@sirena.org.uk>
 References: <cover.1391274627.git.moinejf@free.fr>
-	<8e4231b7a55802f58a14dd07ac5cd8b0babb1dce.1391274628.git.moinejf@free.fr>
-	<20140204181213.GO22609@sirena.org.uk>
+ <ae68394f080f0ea5acaf3377cb1d18f29e42c646.1391274628.git.moinejf@free.fr>
+ <20140204133014.GA22609@sirena.org.uk>
+ <20140204181605.5b837a70@armhf>
+ <20140204175410.GL22609@sirena.org.uk>
+ <20140204195921.5ace6163@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20140204181213.GO22609@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces@lists.freedesktop.org
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2UusUvefyJ2PB+/T"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140204195921.5ace6163@armhf>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCA0IEZlYiAyMDE0IDE4OjEyOjEzICswMDAwCk1hcmsgQnJvd24gPGJyb29uaWVAa2Vy
-bmVsLm9yZz4gd3JvdGU6Cgo+IE9uIFNhdCwgRmViIDAxLCAyMDE0IGF0IDA1OjQ4OjQ5UE0gKzAx
-MDAsIEplYW4tRnJhbmNvaXMgTW9pbmUgd3JvdGU6Cj4gCj4gPiArCS0gY29tcGF0aWJsZTogbXVz
-dCBiZSAibnhwLHRkYTk5OHgtY29kZWMiLgo+IAo+IEl0J3Mgbm90IGNsZWFyIHRvIG1lIHdoeSB0
-aGVyZSdzIGEgc2VwYXJhdGUgY29tcGF0aWJsZSBoZXJlIC0gYXMgZmFyIGFzCj4gSSBjYW4gc2Vl
-IHRoaXMgY2FuIG9ubHkgYXBwZWFyIGFzIHBhcnQgb2Ygb25lIG9mIHRoZXNlIGRldmljZXMgYW5k
-Cj4gdGhlcmUncyBubyBhZGRyZXNzaW5nIG9yIG90aGVyIGluZm9ybWF0aW9uIHRoYXQnZCBhY2Nv
-dW50IGZvciBjaGlwCj4gdmFyaWF0aW9uIHNvIEknZCBub3QgZXhwZWN0IHRvIG5lZWQgdG8gYmlu
-ZCB0aGlzIGluZGVwZW5kZW50bHkgb2YgdGhlCj4gcGFyZW50LgoKSWYgdGhlcmUgaXMgbm8gJ2Nv
-bXBhdGlibGUnLCB0aGUgQ09ERUMgbW9kdWxlIGlzIG5vdCBsb2FkZWQsIGFuZCwgd2hlbgp0aGUg
-bW9kdWxlIGlzIGluIHRoZSBjb3JlLCBubyBDT0RFQyBkZXZpY2UgY2FuIGJlIGNyZWF0ZWQgZnJv
-bSB0aGUgRFQuCgotLSAKS2VuIGFyIGMnaGVudGHDsQl8CSAgICAgICoqIEJyZWl6aCBoYSBMaW51
-eCBhdGF2ISAqKgpKZWYJCXwJCWh0dHA6Ly9tb2luZWpmLmZyZWUuZnIvCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QK
-ZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Au
-b3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--2UusUvefyJ2PB+/T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Feb 04, 2014 at 07:59:21PM +0100, Jean-Francois Moine wrote:
+> Mark Brown <broonie@kernel.org> wrote:
+
+> > You shouldn't be representing this as a separate node in the DT unless
+> > there really is a distinct and reusable IP, otherwise you're putting
+> > Linux implementation details in there.  Describe the hardware, not the
+> > implemementation.
+
+> If there is no 'compatible' node for the tda998x CODEC in the DT, the
+> simple-card is not usable, simply because you want the CODEC DAIs to be
+> defined by 'phandle + index' instead of by DAI name.
+
+This is a bit circular, though - it's only happening because you decided
+to push everything onto a subnode in the DT.  If you just work with the
+existing device this is no different to any other device.
+
+> > > I don't understand. The tda CODEC can only be used with the TDA998x I2C
+> > > driver. It might have been included in the tda998x source as well.
+
+> > You shouldn't have the default settings there at all, that's not the
+> > normal idiom for MFDs.  I'd also not expect to have to build the CODEC
+> > driver just because I built the DRM component.
+
+> As the tda998x handles audio in HDMI, it would be a pity if you should
+> connect an other cable to your screen.
+
+My screen doesn't have any speakers anyway :P (I'm writing this on a
+computer with the monitor connected via HDMI).  Besides, this is more
+about build coverage stuff than anything else.
+
+> So, as I understand from your remarks, the CODEC should be included in
+> the tda998x driver, and, then, as the simple-card cannot be used, there
+> should be a Cubox specific audio card driver for the (kirkwood audio +
+> tda998x HDMI + S/PDIF) set. Am I right?
+
+No, it shouldn't be.
+
+--2UusUvefyJ2PB+/T
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS8UIeAAoJELSic+t+oim9yXwQAI/JnoEa6hspEphr5gxFLTma
+ANxAZ+TCxLtgWi+PLksrJcCglMCxrfAVyoAluHC8+Kn1P5FpN7nwpLx69iHk4Jrk
+/GB8uI+gI8M5j6JzRtzAfIb4eVaia674NS2jrVysXd731W4LXGYE3UuCWTKYCJi7
+EhqkrheOXRAuw7X+LviD+RWGgwNT2bjwa6zDHsCmA6t4CkYu0SEw/Fl2Tpv6WUqj
+0+VFcgavLVo5P15hlZ1i0DTZIzFaS9BLaYzvgfoMAUyNWgTYzRB+bedxm6QK07lb
+xppcDRn4Zinqx5kpvy22uWrX9HutUehJSf8PNBXen6KcHZBQyyDI70AbMH4LYE4L
+YPHHYl5aPwfQ++99kGjNAQtsP47J9PVmmeDFEy5YLGceNhv+5aQUFYEqSXFW24ho
+K5Bw5vODymthnPxIu9G3ZRkT9Nc/HqatpI1y0lt5Y7QVlVZCJRsk6pLQ8mQrOie/
+h7YVN8NJ+1FcigqTUYw+AXJ0sxy2syH4f+Ngw3+jl+9fBE3wsCae0PQLlbswgm9O
+i2vIOYBcYWK1ed/o5J7SZkJudLTiZf6AmTUMCqoWZUDkmIEpLDwVpYHHXRd/jbDp
+IvfvjFoEa+KaTnKMx3m5VwLOx0vh4vZuBjrf2Jnn7lVLgxdnqFMk+Rk5bgco7OYu
+T9JkPHx3aU3oPIMBfQt2
+=1CVJ
+-----END PGP SIGNATURE-----
+
+--2UusUvefyJ2PB+/T--
