@@ -1,22 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Strange sound of IDT 82hd206xx6 at font port in
-	AC97 mode
-Date: Tue, 4 Feb 2014 17:04:21 +0800
-Message-ID: <CAN8ccia9pfXS0d35wXHBaeXXduV_7a107yuQ-y+O0jaEt0cUDg@mail.gmail.com>
-References: <BLU0-SMTP22F128862C405DED98AB89ADAB0@phx.gbl>
- <CAN8cciZ+QwNpSnBmXuvKV9Hkqhfbo6CvY0bmx7rMQic9+tgb8A@mail.gmail.com>
- <BLU0-SMTP168158F76E25FBB1A51D33EADAA0@phx.gbl>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2 v2] ASoC: arizona: Improve ultrasonic
+	frequency	response
+Date: Tue, 4 Feb 2014 09:17:58 +0000
+Message-ID: <20140204091758.GA16684@opensource.wolfsonmicro.com>
+References: <1391184978-14516-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1391184978-14516-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20140204001727.GO22609@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f41.google.com (mail-qa0-f41.google.com
- [209.85.216.41])
- by alsa0.perex.cz (Postfix) with ESMTP id A3EED26171E
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 10:04:22 +0100 (CET)
-Received: by mail-qa0-f41.google.com with SMTP id w8so11829170qac.14
- for <alsa-devel@alsa-project.org>; Tue, 04 Feb 2014 01:04:21 -0800 (PST)
-In-Reply-To: <BLU0-SMTP168158F76E25FBB1A51D33EADAA0@phx.gbl>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1D9F726171E
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 10:17:59 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20140204001727.GO22609@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,32 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Randy Li <lxr1234@hotmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, sameo@linux.intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
->>
-> >> Hello My mainboard is ECS A780GM-A, the sound chip in it is IDT
-> >> 82HD206XX6,
-> >
-> > Is this 92HD206X ?
-> >
-> Maybe it is, but it is 82HD206XX6 in the top side of the chip.
->
-> > Seem this codec support impedance sense
-> >
-> > Post the output of alsa-info.sh
-> >
-> http://www.alsa-project.org/db/?f=ce795f0f8e31b9eb5e35cc2fed572290d14b1cda
->
+On Tue, Feb 04, 2014 at 12:17:27AM +0000, Mark Brown wrote:
+> On Fri, Jan 31, 2014 at 04:16:18PM +0000, Charles Keepax wrote:
+> > Evaluation of the device has given some settings to improve the
+> > ultrasonic frequency response. However, this may cause sub-optimal
+> > performance in system designs with high output gains on the headphone
+> > path (0dB or -2dB), and as the frequencies are inaudible anyway some
+> > users may not desire higher frequency response at those frequencies.
+> > So allow the user the option to select it if it is appopriate for
+> > their system design.
+> 
+> Reading what you're saying here I can't help but think that this sounds
+> like it may be use case dependent as well and therefore something that
+> ought to be runtime controllable depending on if ultrasonics and/or line
+> level outputs are in use (0dB isn't high gain, it's no gain!) for
+> example.
 
+I think in practice it will likely be set once for a given
+system. Although that said there is nothing that would prevent
+this being switchable at runtime, I will look into respinning it
+with runtime control.
 
-Simple mixer control 'Swap Center/LFE',0
-  Capabilities: pswitch pswitch-joined penum
-  Playback channels: Mono
-  Mono: Playback [off]
-
-
-Do this switch work as expected when you run
-
-speaker-test -c 6 -t wav -Dhw:0,0
+Thanks,
+Charles
