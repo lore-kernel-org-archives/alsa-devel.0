@@ -1,69 +1,104 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 3/5] ASoC: tda998x: add DT documentation of the
- tda998x CODEC
-Date: Tue, 4 Feb 2014 19:54:47 +0000
-Message-ID: <20140204195447.GY22609@sirena.org.uk>
-References: <cover.1391274627.git.moinejf@free.fr>
- <8e4231b7a55802f58a14dd07ac5cd8b0babb1dce.1391274628.git.moinejf@free.fr>
- <20140204181213.GO22609@sirena.org.uk>
- <20140204200239.1baf309b@armhf>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: cs42l73: Don't mix SNDRV_PCM_RATE_KNOT
+	with specific rates
+Date: Tue,  4 Feb 2014 20:55:31 +0100
+Message-ID: <1391543731-9085-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="aV+nM5O4EiZgYTzs"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140204200239.1baf309b@armhf>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-089.synserver.de (smtp-out-174.synserver.de
+ [212.40.185.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4AC2261A8B
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2014 20:55:33 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+SNDRV_PCM_RATE_KNOT means that the device can support rates that can not be
+expressed using the rate bits. The driver will provide a list of those rates
+specified through constraints. Any rate bits that are set in the rates mask will
+be ignored. So setting other rate bits besides SNDRV_PCM_RATE_KNOT wont have any
+effect, but might be confusing to the casual reader, so remove them.
 
---aV+nM5O4EiZgYTzs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/cs42l73.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-On Tue, Feb 04, 2014 at 08:02:39PM +0100, Jean-Francois Moine wrote:
-> Mark Brown <broonie@kernel.org> wrote:
-
-> > On Sat, Feb 01, 2014 at 05:48:49PM +0100, Jean-Francois Moine wrote:
-
-> > > +	- compatible: must be "nxp,tda998x-codec".
-
-> > It's not clear to me why there's a separate compatible here - as far as
-> > I can see this can only appear as part of one of these devices and
-> > there's no addressing or other information that'd account for chip
-> > variation so I'd not expect to need to bind this independently of the
-> > parent.
-
-> If there is no 'compatible', the CODEC module is not loaded, and, when
-> the module is in the core, no CODEC device can be created from the DT.
-
-You're confusing implementation details with device tree specification
-here.  We can easily handle loading a subdriver without having to put
-anything in the device tree, just create a platform device like we do
-with MFDs.
-
---aV+nM5O4EiZgYTzs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS8UWEAAoJELSic+t+oim9mBoP/iOWL3+ui3vOiZmu1ytj1RLR
-frT3ePQ+8wF2mTaDx23u8i8ijG6ZlgAslVFwZb1/jKu/2H4paCF9YGVqv0ilRGLw
-PtbEgXScTxC+M1DJyIf4b4F5h0d7PBXaBVMTRx2Hs1Mz/7/Z9TwbLslXT/txGX/G
-RfAqppgYkg6aj/DQeShW1GjzW13nG+lV5j6ShjJJ/2qkpdT536/berUmOahdgvlV
-CzbsyPYoyY07vkptX+UJDuBc495cSrdKJlNDY9CheIV+X+V8Y6sL7bn0Zv8aERXw
-GxrfF7PDiSwvCk29zFqIVTXyDktl6UuPuuG+oYm3wT8ZFY3c3hZnIT40rHOapMH7
-apjvfwK2N2d10YUsWKPlLf2ouMX/xcgxCnHwV6X30Y6SN3QrT9sfEEFoTE2Z+s9p
-Zdzv5ZfP9OwezpzdiSz4kJ4dRPbk//9QKwXmymb8MIguD0xHphbKk/u27CIEzHkb
-fhuOigpW2YGQ0I8kfxdD+V6WkwqksTi6c2Y2LxdVMac2DidieBJIMeDUMf84+mYp
-3OJfk1637Cmy99SD0NgS58lo7Fc83K9KJyoRzRSS381mjJvjdQcUEuHuKPz0hq8t
-TP/lPCHExlk55ps/pzQktTZcrJa8YRsd682RX6SUdnlf5m+WfhibDFu53J3dQLnj
-ZU3j8MOYw8Lh46UyIQbO
-=vhoH
------END PGP SIGNATURE-----
-
---aV+nM5O4EiZgYTzs--
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index 549d5d6..7cae046 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -1255,9 +1255,6 @@ static int cs42l73_pcm_startup(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-/* SNDRV_PCM_RATE_KNOT -> 12000, 24000 Hz, limit with constraint list */
+-#define CS42L73_RATES (SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_KNOT)
+-
+ 
+ #define CS42L73_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+ 	SNDRV_PCM_FMTBIT_S24_LE)
+@@ -1278,14 +1275,14 @@ static struct snd_soc_dai_driver cs42l73_dai[] = {
+ 			.stream_name = "XSP Playback",
+ 			.channels_min = 1,
+ 			.channels_max = 2,
+-			.rates = CS42L73_RATES,
++			.rates = SNDRV_PCM_RATE_KNOT,
+ 			.formats = CS42L73_FORMATS,
+ 		},
+ 		.capture = {
+ 			.stream_name = "XSP Capture",
+ 			.channels_min = 1,
+ 			.channels_max = 2,
+-			.rates = CS42L73_RATES,
++			.rates = SNDRV_PCM_RATE_KNOT,
+ 			.formats = CS42L73_FORMATS,
+ 		},
+ 		.ops = &cs42l73_ops,
+@@ -1298,14 +1295,14 @@ static struct snd_soc_dai_driver cs42l73_dai[] = {
+ 			.stream_name = "ASP Playback",
+ 			.channels_min = 2,
+ 			.channels_max = 2,
+-			.rates = CS42L73_RATES,
++			.rates = SNDRV_PCM_RATE_KNOT,
+ 			.formats = CS42L73_FORMATS,
+ 		},
+ 		.capture = {
+ 			.stream_name = "ASP Capture",
+ 			.channels_min = 2,
+ 			.channels_max = 2,
+-			.rates = CS42L73_RATES,
++			.rates = SNDRV_PCM_RATE_KNOT,
+ 			.formats = CS42L73_FORMATS,
+ 		},
+ 		.ops = &cs42l73_ops,
+@@ -1318,14 +1315,14 @@ static struct snd_soc_dai_driver cs42l73_dai[] = {
+ 			.stream_name = "VSP Playback",
+ 			.channels_min = 1,
+ 			.channels_max = 2,
+-			.rates = CS42L73_RATES,
++			.rates = SNDRV_PCM_RATE_KNOT,
+ 			.formats = CS42L73_FORMATS,
+ 		},
+ 		.capture = {
+ 			.stream_name = "VSP Capture",
+ 			.channels_min = 1,
+ 			.channels_max = 2,
+-			.rates = CS42L73_RATES,
++			.rates = SNDRV_PCM_RATE_KNOT,
+ 			.formats = CS42L73_FORMATS,
+ 		},
+ 		.ops = &cs42l73_ops,
+-- 
+1.8.0
