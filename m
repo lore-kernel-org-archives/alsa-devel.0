@@ -1,86 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 2/5] ASoC: tda998x: add a codec driver for the TDA998x
-Date: Tue, 4 Feb 2014 19:40:18 +0000
-Message-ID: <20140204194018.GX22609@sirena.org.uk>
+Subject: Re: [PATCH v3 3/5] ASoC: tda998x: add DT documentation of the
+ tda998x CODEC
+Date: Tue, 4 Feb 2014 19:54:47 +0000
+Message-ID: <20140204195447.GY22609@sirena.org.uk>
 References: <cover.1391274627.git.moinejf@free.fr>
- <ae68394f080f0ea5acaf3377cb1d18f29e42c646.1391274628.git.moinejf@free.fr>
- <20140204133014.GA22609@sirena.org.uk>
- <20140204181605.5b837a70@armhf>
- <20140204175410.GL22609@sirena.org.uk>
- <20140204195921.5ace6163@armhf>
+ <8e4231b7a55802f58a14dd07ac5cd8b0babb1dce.1391274628.git.moinejf@free.fr>
+ <20140204181213.GO22609@sirena.org.uk>
+ <20140204200239.1baf309b@armhf>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2UusUvefyJ2PB+/T"
+	protocol="application/pgp-signature"; boundary="aV+nM5O4EiZgYTzs"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140204195921.5ace6163@armhf>
+In-Reply-To: <20140204200239.1baf309b@armhf>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
 
---2UusUvefyJ2PB+/T
+--aV+nM5O4EiZgYTzs
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 04, 2014 at 07:59:21PM +0100, Jean-Francois Moine wrote:
+On Tue, Feb 04, 2014 at 08:02:39PM +0100, Jean-Francois Moine wrote:
 > Mark Brown <broonie@kernel.org> wrote:
 
-> > You shouldn't be representing this as a separate node in the DT unless
-> > there really is a distinct and reusable IP, otherwise you're putting
-> > Linux implementation details in there.  Describe the hardware, not the
-> > implemementation.
+> > On Sat, Feb 01, 2014 at 05:48:49PM +0100, Jean-Francois Moine wrote:
 
-> If there is no 'compatible' node for the tda998x CODEC in the DT, the
-> simple-card is not usable, simply because you want the CODEC DAIs to be
-> defined by 'phandle + index' instead of by DAI name.
+> > > +	- compatible: must be "nxp,tda998x-codec".
 
-This is a bit circular, though - it's only happening because you decided
-to push everything onto a subnode in the DT.  If you just work with the
-existing device this is no different to any other device.
+> > It's not clear to me why there's a separate compatible here - as far as
+> > I can see this can only appear as part of one of these devices and
+> > there's no addressing or other information that'd account for chip
+> > variation so I'd not expect to need to bind this independently of the
+> > parent.
 
-> > > I don't understand. The tda CODEC can only be used with the TDA998x I2C
-> > > driver. It might have been included in the tda998x source as well.
+> If there is no 'compatible', the CODEC module is not loaded, and, when
+> the module is in the core, no CODEC device can be created from the DT.
 
-> > You shouldn't have the default settings there at all, that's not the
-> > normal idiom for MFDs.  I'd also not expect to have to build the CODEC
-> > driver just because I built the DRM component.
+You're confusing implementation details with device tree specification
+here.  We can easily handle loading a subdriver without having to put
+anything in the device tree, just create a platform device like we do
+with MFDs.
 
-> As the tda998x handles audio in HDMI, it would be a pity if you should
-> connect an other cable to your screen.
-
-My screen doesn't have any speakers anyway :P (I'm writing this on a
-computer with the monitor connected via HDMI).  Besides, this is more
-about build coverage stuff than anything else.
-
-> So, as I understand from your remarks, the CODEC should be included in
-> the tda998x driver, and, then, as the simple-card cannot be used, there
-> should be a Cubox specific audio card driver for the (kirkwood audio +
-> tda998x HDMI + S/PDIF) set. Am I right?
-
-No, it shouldn't be.
-
---2UusUvefyJ2PB+/T
+--aV+nM5O4EiZgYTzs
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS8UIeAAoJELSic+t+oim9yXwQAI/JnoEa6hspEphr5gxFLTma
-ANxAZ+TCxLtgWi+PLksrJcCglMCxrfAVyoAluHC8+Kn1P5FpN7nwpLx69iHk4Jrk
-/GB8uI+gI8M5j6JzRtzAfIb4eVaia674NS2jrVysXd731W4LXGYE3UuCWTKYCJi7
-EhqkrheOXRAuw7X+LviD+RWGgwNT2bjwa6zDHsCmA6t4CkYu0SEw/Fl2Tpv6WUqj
-0+VFcgavLVo5P15hlZ1i0DTZIzFaS9BLaYzvgfoMAUyNWgTYzRB+bedxm6QK07lb
-xppcDRn4Zinqx5kpvy22uWrX9HutUehJSf8PNBXen6KcHZBQyyDI70AbMH4LYE4L
-YPHHYl5aPwfQ++99kGjNAQtsP47J9PVmmeDFEy5YLGceNhv+5aQUFYEqSXFW24ho
-K5Bw5vODymthnPxIu9G3ZRkT9Nc/HqatpI1y0lt5Y7QVlVZCJRsk6pLQ8mQrOie/
-h7YVN8NJ+1FcigqTUYw+AXJ0sxy2syH4f+Ngw3+jl+9fBE3wsCae0PQLlbswgm9O
-i2vIOYBcYWK1ed/o5J7SZkJudLTiZf6AmTUMCqoWZUDkmIEpLDwVpYHHXRd/jbDp
-IvfvjFoEa+KaTnKMx3m5VwLOx0vh4vZuBjrf2Jnn7lVLgxdnqFMk+Rk5bgco7OYu
-T9JkPHx3aU3oPIMBfQt2
-=1CVJ
+iQIcBAEBAgAGBQJS8UWEAAoJELSic+t+oim9mBoP/iOWL3+ui3vOiZmu1ytj1RLR
+frT3ePQ+8wF2mTaDx23u8i8ijG6ZlgAslVFwZb1/jKu/2H4paCF9YGVqv0ilRGLw
+PtbEgXScTxC+M1DJyIf4b4F5h0d7PBXaBVMTRx2Hs1Mz/7/Z9TwbLslXT/txGX/G
+RfAqppgYkg6aj/DQeShW1GjzW13nG+lV5j6ShjJJ/2qkpdT536/berUmOahdgvlV
+CzbsyPYoyY07vkptX+UJDuBc495cSrdKJlNDY9CheIV+X+V8Y6sL7bn0Zv8aERXw
+GxrfF7PDiSwvCk29zFqIVTXyDktl6UuPuuG+oYm3wT8ZFY3c3hZnIT40rHOapMH7
+apjvfwK2N2d10YUsWKPlLf2ouMX/xcgxCnHwV6X30Y6SN3QrT9sfEEFoTE2Z+s9p
+Zdzv5ZfP9OwezpzdiSz4kJ4dRPbk//9QKwXmymb8MIguD0xHphbKk/u27CIEzHkb
+fhuOigpW2YGQ0I8kfxdD+V6WkwqksTi6c2Y2LxdVMac2DidieBJIMeDUMf84+mYp
+3OJfk1637Cmy99SD0NgS58lo7Fc83K9KJyoRzRSS381mjJvjdQcUEuHuKPz0hq8t
+TP/lPCHExlk55ps/pzQktTZcrJa8YRsd682RX6SUdnlf5m+WfhibDFu53J3dQLnj
+ZU3j8MOYw8Lh46UyIQbO
+=vhoH
 -----END PGP SIGNATURE-----
 
---2UusUvefyJ2PB+/T--
+--aV+nM5O4EiZgYTzs--
