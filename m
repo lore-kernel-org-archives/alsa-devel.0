@@ -1,17 +1,18 @@
-From: Jean-Francois Moine <moinejf@free.fr>
+From: Lars-Peter Clausen <lars@metafoo.de>
 Subject: Re: [alsa-devel] [PATCH v3 4/5] ASoC: tda998x: adjust the audio hw
 	parameters from EDID
-Date: Wed, 5 Feb 2014 19:07:32 +0100
-Message-ID: <20140205190732.5617f200@armhf>
+Date: Wed, 05 Feb 2014 19:21:23 +0100
+Message-ID: <52F28123.1080102@metafoo.de>
 References: <cover.1391274627.git.moinejf@free.fr>
 	<1b15025671d9099863a3091346536e45891e4a26.1391274628.git.moinejf@free.fr>
 	<20140204180625.GM22609@sirena.org.uk>
 	<20140205101134.4591e5c3@armhf> <52F2021A.9020804@metafoo.de>
+	<20140205190732.5617f200@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <52F2021A.9020804@metafoo.de>
+In-Reply-To: <20140205190732.5617f200@armhf>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
 	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
@@ -21,26 +22,57 @@ List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
 	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Sender: dri-devel-bounces@lists.freedesktop.org
 Errors-To: dri-devel-bounces@lists.freedesktop.org
-To: Lars-Peter Clausen <lars@metafoo.de>
+To: Jean-Francois Moine <moinejf@free.fr>
 Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAwNSBGZWIgMjAxNCAxMDoxOToyMiArMDEwMApMYXJzLVBldGVyIENsYXVzZW4gPGxh
-cnNAbWV0YWZvby5kZT4gd3JvdGU6Cgo+ID4gU28sIGluIHRoZSBDT0RFQywgSSBkb24ndCBzZWUg
-aG93IEkgY291bGQgdXBkYXRlIHRoZSBwYXJhbWV0ZXJzCj4gPiBkaWN0YXRlZCBieSB0aGUgRURJ
-RCBvdGhlcndpc2UgaW4gY2hhbmdpbmcgdGhlIERBSSBkcml2ZXIgcGFyYW1ldGVycy4KPiA+ICAK
-PiAKPiBUaGUgc3RhcnR1cCBmdW5jdGlvbiBpcyB0aGUgcmlnaHQgcGxhY2UuIEJ1dCBpbnN0ZWFk
-IG9mIG1vZGlmeWluZyB0aGUgREFJIAo+IHVzZSBzbmRfcGNtX2h3X2NvbnN0cmFpbnRfbWFzazY0
-KCksIHNuZF9wY21faHdfY29uc3RyYWludF9saXN0KCksIGV0Yy4gdG8gCj4gc2V0dXAgdGhlIGFk
-ZGl0aW9uYWwgY29uc3RyYWludHMgdGhhdCBjb21lIGZyb20gdGhlIEVESUQuCgpJdCBpcyBtb3Jl
-IGNvbXBsaWNhdGVkLCBidXQgaXQgd29ya3MuIE5ldmVydGhlbGVzcywgSSBoYXZlIDIgcHJvYmxl
-bXM6CgotIHNuZF9wY21faHdfY29uc3RyYWludF9saXN0KCkga2VlcHMgYSBwb2ludGVyIHRvIHRo
-ZSBsaXN0LCBzbywgaXQKICBjYW5ub3QgYmUgaW4gdGhlIHN0YWNrLiBJdCBmaXggdGhpcyB3aXRo
-IHN0YXRpYyBzdHJ1Y3QgYW5kIHJhdGUgYXJyYXkuCgotIHNuZF9wY21faHdfY29uc3RyYWludF9t
-YXNrNjQoKSBpcyBub3QgZXhwb3J0ZWQuCiAgSXMgdGhlcmUgYW4gb3RoZXIgd2F5IHRvIHNldCBj
-b25zdHJhaW50cyBvbiB0aGUgZm9ybWF0cy9zYW1wbGUgd2lkdGhzPwoKLS0gCktlbiBhciBjJ2hl
-bnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8v
-bW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3Rv
-cC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1k
-ZXZlbAo=
+On 02/05/2014 07:07 PM, Jean-Francois Moine wrote:
+> On Wed, 05 Feb 2014 10:19:22 +0100
+> Lars-Peter Clausen <lars@metafoo.de> wrote:
+>
+>>> So, in the CODEC, I don't see how I could update the parameters
+>>> dictated by the EDID otherwise in changing the DAI driver parameters.
+>>>
+>>
+>> The startup function is the right place. But instead of modifying the DAI
+>> use snd_pcm_hw_constraint_mask64(), snd_pcm_hw_constraint_list(), etc. to
+>> setup the additional constraints that come from the EDID.
+>
+> It is more complicated, but it works. Nevertheless, I have 2 problems:
+>
+> - snd_pcm_hw_constraint_list() keeps a pointer to the list, so, it
+>    cannot be in the stack. It fix this with static struct and rate array.
+>
+
+Right. If the struct is modified though it should be per device and not 
+global. I think the best way to implement this is to make the array static 
+and specify a mask for the constraint based on the EDID. E.g.
+
+static unsigned int hdmi_rates[] = {
+	32000,
+	44100,
+	48000,
+	88200,
+	96000,
+	176400,
+	192000,
+};
+
+rate_mask = 0;
+
+while (...) {
+	...
+	rate_mask |= 1 << sad[1];
+}
+
+rate_constraints->list = hdmi_rates;
+rate_constraints->count = ARRAY_SIZE(hdmi_rates);
+rate_constraints->mask = rate_mask;
+
+> - snd_pcm_hw_constraint_mask64() is not exported.
+>    Is there an other way to set constraints on the formats/sample widths?
+
+I think that's a bug. Both snd_pcm_hw_constraint_mask() and 
+snd_pcm_hw_constraint_mask64() should be exported. Can you send a patch?
+
+- Lars
