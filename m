@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda/realtek - Avoid invalid COEFs for
-	ALC271X
-Date: Wed,  5 Feb 2014 07:19:00 +0100
-Message-ID: <1391581140-3363-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Add missing mixer widget for AD1983
+Date: Wed,  5 Feb 2014 07:33:31 +0100
+Message-ID: <1391582011-3919-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E7201261ACD
- for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 07:19:00 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 69A92261B07
+ for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 07:33:31 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 0D3A2AAD1
- for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 06:19:00 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 247EDAAD1
+ for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 06:33:31 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,35 +24,27 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We've seen often problems after suspend/resume on Acer Aspire One
-AO725 with ALC271X codec as reported in kernel bugzilla, and it turned
-out that some COEFs doesn't work and triggers the codec communication
-stall.
+The mixer widget on AD1983 at NID 0x0e was missing in the commit
+[f2f8be43c5c9: ALSA: hda - Add aamix NID to AD codecs].
 
-Since these magic COEF setups are specific to ALC269VB for some PLL
-configurations, the machine works even without these manual
-adjustment.  So, let's simply avoid applying them for ALC271X.
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=52181
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=70011
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/pci/hda/patch_analog.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 56a8f1876603..e16a71e586f0 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4427,6 +4427,9 @@ static void alc269_fill_coef(struct hda_codec *codec)
+diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
+index 50b2427f19ca..195cd62cdce5 100644
+--- a/sound/pci/hda/patch_analog.c
++++ b/sound/pci/hda/patch_analog.c
+@@ -498,6 +498,7 @@ static int patch_ad1983(struct hda_codec *codec)
+ 		return err;
+ 	spec = codec->spec;
  
- 	if (spec->codec_variant != ALC269_TYPE_ALC269VB)
- 		return;
-+	/* ALC271X doesn't seem to support these COEFs (bko#52181) */
-+	if (!strcmp(codec->chip_name, "ALC271X"))
-+		return;
- 
- 	if ((alc_get_coef0(codec) & 0x00ff) < 0x015) {
- 		alc_write_coef_idx(codec, 0xf, 0x960b);
++	spec->gen.mixer_nid = 0x0e;
+ 	spec->gen.beep_nid = 0x10;
+ 	set_beep_amp(spec, 0x10, 0, HDA_OUTPUT);
+ 	err = ad198x_parse_auto_config(codec, false);
 -- 
 1.8.5.2
