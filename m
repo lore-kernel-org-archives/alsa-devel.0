@@ -1,66 +1,137 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v3 4/5] ASoC: tda998x: adjust the audio hw
- parameters from EDID
-Date: Wed, 5 Feb 2014 14:08:08 +0000
-Message-ID: <20140205140808.GI22609@sirena.org.uk>
-References: <cover.1391274627.git.moinejf@free.fr>
- <1b15025671d9099863a3091346536e45891e4a26.1391274628.git.moinejf@free.fr>
- <20140204180625.GM22609@sirena.org.uk>
- <20140205101134.4591e5c3@armhf>
- <52F2021A.9020804@metafoo.de>
- <20140205111814.GF22609@sirena.org.uk>
- <52F23D1D.7040804@metafoo.de>
+From: "Austin, Brian" <Brian.Austin@cirrus.com>
+Subject: Re: [PATCH] ASoC: cs42l73: Don't mix
+ SNDRV_PCM_RATE_KNOT with specific rates
+Date: Wed, 5 Feb 2014 14:35:05 +0000
+Message-ID: <2AA67204-1A61-4E3E-959A-F50D1E0A2B53@cirrus.com>
+References: <1391543731-9085-1-git-send-email-lars@metafoo.de>
+ <A40422ED-1EEB-4A09-A550-0AAAAA89464D@cirrus.com>
+ <52F15519.7090109@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="b4TJccIV73PFtYC8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <52F23D1D.7040804@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4967654483978303373=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe002.messaging.microsoft.com [216.32.180.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E93D264F47
+ for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 15:35:18 +0100 (CET)
+In-Reply-To: <52F15519.7090109@metafoo.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, Dave Airlie <airlied@gmail.com>, linux-arm-kernel@lists.infradead.org, Takashi Iwai <tiwai@suse.de>
+Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+--===============4967654483978303373==
+Content-Language: en-US
+Content-Type: multipart/signed;
+	boundary="Apple-Mail=_941854C6-E9C8-4377-8447-97DC740A2F46";
+	protocol="application/pgp-signature"; micalg=pgp-sha512
 
---b4TJccIV73PFtYC8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Apple-Mail=_941854C6-E9C8-4377-8447-97DC740A2F46
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=windows-1252
 
-On Wed, Feb 05, 2014 at 02:31:09PM +0100, Lars-Peter Clausen wrote:
-> On 02/05/2014 12:18 PM, Mark Brown wrote:
 
-> >...as previously requested.  I know there was some discusion of broader
-> >moves to factor this stuff out but it'd still be good to keep it
-> >separated out even prior to a final non-EDID based solution so it's
-> >easier to refactor.
+On Feb 4, 2014, at 3:01 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
 
-> I think it will always be EDID (or ELD) based. As I understood it
-> the re-factoring Takashi was talking about is related to how this
-> data is passed from the graphics driver to the audio driver. The way
+> On 02/04/2014 09:30 PM, Austin, Brian wrote:
+>>> On Feb 4, 2014, at 13:55, "Lars-Peter Clausen" <lars@metafoo.de> =
+wrote:
+>>>=20
+>>> SNDRV_PCM_RATE_KNOT means that the device can support rates that can =
+not be
+>>> expressed using the rate bits. The driver will provide a list of =
+those rates
+>>> specified through constraints. Any rate bits that are set in the =
+rates mask will
+>>> be ignored. So setting other rate bits besides SNDRV_PCM_RATE_KNOT =
+wont have any
+>>> effect, but might be confusing to the casual reader, so remove them.
+>>>=20
+>>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> >
+>> I don't see how this makes it any less confusing to the casual =
+reader. I think the
+> > define works well in the descriptive sense. maybe a comment about =
+what KNOT really
+> > means instead of just using a non-rate define?
+>=20
+> The thing is SNDRV_PCM_RATE_8000_48000 does something if =
+SNDRV_PCM_RATE_{KNOT,CONTINUOUS} is not set, but does nothing at all if =
+either of them is set.
 
-Right, the data of course has to come from there originally, it's about
-how we pass the data and updates to it around.
 
---b4TJccIV73PFtYC8
+> While when reading the code it will, in my opinion, give the =
+impression that the rates that are
+> specified by SNDRV_PCM_RATE_8000_48000 are definitely among the =
+supported rates and somewhere else additional rates are specified as =
+well. But this is not the case all the supported rates need to be =
+specified somewhere else, e.g. by a rate list constraint. I find this =
+confusing when casually reading the code. And this is the only driver =
+that does it.
+But that is the case is it not? The device supports the rates within =
+8000 and 48000. There are additional rates that need to be specified. If =
+anything I see the issue with having to specify ALL the rates supported =
+in the constraint list. The KNOT is an addition to the .rates member. =
+The KNOT list is added to the .rates member in the dai driver.
+
+>=20
+> Also there was a bug, which is now fixed, where additionally =
+specifying rates in the rate bitmap when KNOT or CONTINUOUS was set did =
+something, but did the wrong thing and caused additional rates which =
+where outside of the range of the rates set in the bitmap to be ignored. =
+Better avoid that by not mixing KNOT or CONTINUOUS with other rate bits.
+>=20
+Shouldn=92t the rates outside of the range of the rates bitmap be =
+ignored?  Maybe this is a wrong interpretation of how this is supposed =
+to work, but I thought you specify the rates that are available and add =
+a constraint list to add rates that are not defined in ALSA. Not that =
+the KNOT value would mean that you also have rates outside of the values =
+you specified.
+
+example: SNDRV_PCM_RATE_8000_48000 | | SNDRV_PCM_RATE_KNOT means that I =
+support all rates defined between 8 and 48 PLUS addition rates INSIDE of =
+8 and 48.  Is this correct?
+
+Sorry Lars, I just want to have a clear understanding of what the bug is =
+and how this fixes it.
+
+Thanks,
+Brian
+
+--Apple-Mail=_941854C6-E9C8-4377-8447-97DC740A2F46
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="signature.asc"
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: Message signed with OpenPGP using GPGMail
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+Comment: GPGTools - https://gpgtools.org
 
-iQIcBAEBAgAGBQJS8kXFAAoJELSic+t+oim9uRcP/2e8T6RAq45tOdi2i6+1yBp2
-xkLMeOYCBtNC2pihKA0bI+R33F8OdrnjQabMEjlGdjVgGo9DwCuVhESt7dujpBL8
-wR+FS71WLLxUdJmURqvSR03hM0txEdOliojZBViue8ZKlXAwNswc4Bt1v8vrH9PQ
-RBxi+l2GaQnoNXkAFVPnUpgSAf2EV661Oh5Srt0+Nh8gfNfiY542uMobdaOQqSka
-zlDlggVFuVjxR+XPt5GBg6t00Ns5izgXt4tmuRcm047TOy/ukeChZNb3qunQbR3x
-03r4ZDbgcK2dELR7Tb2rCgqBM4y8KBC+DWzTEG1bRSk9fOjfwG42fh2s/Kc3tBZJ
-5bnkwDYFhL6uJln7AHffOBLyW0oU1HWmPvy8bPHb0NCsyTAH77mU6HX54khlvj4/
-N7oWXdMGpBFOecILZZ7sz3YnykCntxiZyDfhZb7DH8FCWqfFrRFp5DD2osG0DAUX
-pSEke5BuXUDU+KW89XnOp6fJTXGzsMGThfSLYS4ctQl4zO/uGVTkj0gO7XiLAKMp
-HKxw2V5BuFuVJEUhFhDTCP3ozWtHkdThBN+zM8VYmP31mj8QZ+Mkq4UMPdj45Wu8
-0x2ZNEq/nQj3xMHxsQih2F41qXsEfeImu24Vzaid0o29fkrWlhvEVzzIN9fHD0wD
-tLCmehA6bt2YCzxfNUcW
-=jekc
+iQEcBAEBCgAGBQJS8kwYAAoJEHdXZdGWfiO7Yo0H/1e9Moa4GGDgwod8YC5FaQIH
+/cd8QWhl2+PMIx7AJu1Mtv2eJaognvvw+0KO1C/fpHq8FJt41X62k/7NE1NLbbQq
+A2jinyLzb3IXW+89bDgupXkijSv9JQdev5VU9zpXLahg0ZPrKOCDVOE9UEo8vy1S
+LvPc4KVCPnkCT1h9ysU95mLGStiiqG5SLH86G3omBl02mZcTKa2SrU3L7vIBSxRi
+/3QklDYJZgnsdlXFLNBYew6GATaPz2wl/NVfH6uQFo7sQPT2YRhz2Cy8dMVxqZgt
+YUoskRGYpoLvLjeSj0c+tNZi4UzviT3MzgQE1vzOveH9UGX/ZNm4y5qw7uFZtEw=
+=8rqD
 -----END PGP SIGNATURE-----
 
---b4TJccIV73PFtYC8--
+--Apple-Mail=_941854C6-E9C8-4377-8447-97DC740A2F46--
+
+--===============4967654483978303373==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4967654483978303373==--
