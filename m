@@ -1,16 +1,16 @@
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH 3/8] mfd: da9055: Add DT support for PMIC
-Date: Wed, 5 Feb 2014 17:48:34 +0000
-Message-ID: <46f41a14205ac39de3adb8c87d2a6dba557ad8d1.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH 4/8] regulator: da9055: Add DT support
+Date: Wed, 5 Feb 2014 17:48:35 +0000
+Message-ID: <6d76ae40cd435eaae0323f3e806515130b06a376.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
 References: <cover.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.bemta14.messagelabs.com (mail1.bemta14.messagelabs.com
- [193.109.254.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 4194C26501D
- for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 18:48:38 +0100 (CET)
+ [193.109.254.107])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10020265025
+ for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 18:48:39 +0100 (CET)
 In-Reply-To: <cover.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,122 +28,113 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 ---
- Documentation/devicetree/bindings/mfd/da9055.txt |   73 ++++++++++++++++++++++
- drivers/mfd/da9055-i2c.c                         |    8 +++
- 2 files changed, 81 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mfd/da9055.txt
+ drivers/regulator/da9055-regulator.c |   59 +++++++++++++++++++++++++++++++---
+ 1 files changed, 54 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/da9055.txt b/Documentation/devicetree/bindings/mfd/da9055.txt
-new file mode 100644
-index 0000000..f903c3f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/da9055.txt
-@@ -0,0 +1,73 @@
-+* Dialog DA9055 Power Management Integrated Circuit (PMIC)
-+
-+DA9055 consists of a large and varied group of sub-devices (I2C Only):
-+
-+Device			 Supply Names	 Description
-+------			 ------------	 -----------
-+da9055-gpio		:		: GPIOs
-+da9055-regulator	:		: Regulators
-+da9055-onkey		:		: On key
-+da9055-rtc		:		: RTC
-+da9055-hwmon		:		: ADC
-+da9055-watchdog		:		: Watchdog
-+
-+The CODEC device in DA9055 has a separate, configurable I2C address and so
-+is instantiated separately from the PMIC.
-+
-+For details on accompanying CODEC I2C device, see the following:
-+Documentation/devicetree/bindings/sound/da9055.txt
-+
-+======
-+
-+Required properties:
-+- compatible : Should be "dlg,da9055-pmic"
-+- reg: Specifies the I2C slave address (defaults to 0x5a but can be modified)
-+- interrupt-parent: Specifies the phandle of the interrupt controller to which
-+  the IRQs from da9055 are delivered to.
-+- interrupts: IRQ line info for da9055 chip.
-+- interrupt-controller: da9055 has internal IRQs (has own IRQ domain).
-+- #interrupt-cells: Should be 1, is the local IRQ number for da9055.
-+
-+Sub-nodes:
-+- regulators : Contain the regulator nodes. The DA9055 regulators are
-+  bound using their names as listed below:
-+
-+    buck1     : regulator BUCK1
-+    buck2     : regulator BUCK2
-+    ldo1      : regulator LDO1
-+    ldo2      : regulator LDO2
-+    ldo3      : regulator LDO3
-+    ldo4      : regulator LDO4
-+    ldo5      : regulator LDO5
-+    ldo6      : regulator LDO6
-+
-+  The bindings details of individual regulator device can be found in:
-+  Documentation/devicetree/bindings/regulator/regulator.txt
-+
-+
-+Example:
-+
-+	pmic: da9055-pmic@5a {
-+		compatible = "dlg,da9055-pmic";
-+		reg = <0x5a>;
-+		interrupt-parent = <&intc>;
-+		interrupts = <5 0x8>;
-+		interrupt-controller;
-+		#interrupt-cells = <1>;
-+
-+		regulators {
-+			buck1: BUCK1 {
-+				regulator-min-microvolt = <725000>;
-+				regulator-max-microvolt = <2075000>;
-+			};
-+
-+			buck2: BUCK2 {
-+				regulator-min-microvolt = <925000>;
-+				regulator-max-microvolt = <2500000>;
-+			};
-+			ldo1: LDO1 {
-+				regulator-min-microvolt = <900000>;
-+				regulator-max-microvolt = <3300000>;
-+			};
-+		};
-+	};
-diff --git a/drivers/mfd/da9055-i2c.c b/drivers/mfd/da9055-i2c.c
-index 8103e43..366a3e2 100644
---- a/drivers/mfd/da9055-i2c.c
-+++ b/drivers/mfd/da9055-i2c.c
-@@ -15,6 +15,8 @@
- #include <linux/device.h>
- #include <linux/i2c.h>
- #include <linux/err.h>
+diff --git a/drivers/regulator/da9055-regulator.c b/drivers/regulator/da9055-regulator.c
+index 7f34020..bc41137 100644
+--- a/drivers/regulator/da9055-regulator.c
++++ b/drivers/regulator/da9055-regulator.c
+@@ -19,6 +19,10 @@
+ #include <linux/platform_device.h>
+ #include <linux/regulator/driver.h>
+ #include <linux/regulator/machine.h>
++#ifdef CONFIG_OF
 +#include <linux/of.h>
-+#include <linux/of_device.h>
++#include <linux/regulator/of_regulator.h>
++#endif /* CONFIG_OF */
 
  #include <linux/mfd/da9055/core.h>
+ #include <linux/mfd/da9055/reg.h>
+@@ -446,6 +450,9 @@ static int da9055_gpio_init(struct da9055_regulator *regulator,
+ 	struct da9055_regulator_info *info = regulator->info;
+ 	int ret = 0;
 
-@@ -66,6 +68,11 @@ static struct i2c_device_id da9055_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, da9055_i2c_id);
-
-+static const struct of_device_id da9055_of_match[] = {
-+	{ .compatible = "dlg,da9055-pmic", .data = (void *)&da9055_i2c_id[0] },
-+	{ }
-+};
++	if (!pdata)
++		return 0;
 +
- static struct i2c_driver da9055_i2c_driver = {
- 	.probe = da9055_i2c_probe,
- 	.remove = da9055_i2c_remove,
-@@ -73,6 +80,7 @@ static struct i2c_driver da9055_i2c_driver = {
- 	.driver = {
- 		.name = "da9055-pmic",
- 		.owner = THIS_MODULE,
-+		.of_match_table = of_match_ptr(da9055_of_match),
- 	},
- };
+ 	if (pdata->gpio_ren && pdata->gpio_ren[id]) {
+ 		char name[18];
+ 		int gpio_mux = pdata->gpio_ren[id];
+@@ -530,6 +537,46 @@ static inline struct da9055_regulator_info *find_regulator_info(int id)
+ 	return NULL;
+ }
 
++#ifdef CONFIG_OF
++static int da9055_regulator_dt_init(struct platform_device *pdev,
++				    struct da9055_regulator *regulator,
++				    struct regulator_config *config)
++{
++	struct device_node *nproot, *np;
++
++	nproot = of_node_get(pdev->dev.parent->of_node);
++	if (!nproot)
++		return -ENODEV;
++
++	nproot = of_find_node_by_name(nproot, "regulators");
++	if (!nproot)
++		return -ENODEV;
++
++	for_each_child_of_node(nproot, np) {
++		if (!of_node_cmp(np->name,
++				 regulator->info->reg_desc.name)) {
++			config->init_data = of_get_regulator_init_data(
++				&pdev->dev, np);
++			config->of_node = np;
++			break;
++		}
++	}
++	of_node_put(nproot);
++
++	if (!config->of_node)
++		return -ENODEV;
++
++	return 0;
++}
++#else
++static inline da9055_regulator_dt_init(struct platform_device *pdev,
++				       struct da9055_regulator *regulator,
++				       struct regulator_config *config)
++{
++	return -ENODEV;
++}
++#endif /* CONFIG_OF */
++
+ static int da9055_regulator_probe(struct platform_device *pdev)
+ {
+ 	struct regulator_config config = { };
+@@ -538,9 +585,6 @@ static int da9055_regulator_probe(struct platform_device *pdev)
+ 	struct da9055_pdata *pdata = dev_get_platdata(da9055->dev);
+ 	int ret, irq;
+
+-	if (pdata == NULL || pdata->regulators[pdev->id] == NULL)
+-		return -ENODEV;
+-
+ 	regulator = devm_kzalloc(&pdev->dev, sizeof(struct da9055_regulator),
+ 				 GFP_KERNEL);
+ 	if (!regulator)
+@@ -559,6 +603,11 @@ static int da9055_regulator_probe(struct platform_device *pdev)
+
+ 	if (pdata && pdata->regulators)
+ 		config.init_data = pdata->regulators[pdev->id];
++	else {
++		ret = da9055_regulator_dt_init(pdev, regulator, &config);
++		if (ret < 0)
++			return ret;
++	}
+
+ 	ret = da9055_gpio_init(regulator, &config, pdata, pdev->id);
+ 	if (ret < 0)
+@@ -575,8 +624,8 @@ static int da9055_regulator_probe(struct platform_device *pdev)
+
+ 	/* Only LDO 5 and 6 has got the over current interrupt */
+ 	if (pdev->id == DA9055_ID_LDO5 || pdev->id ==  DA9055_ID_LDO6) {
+-		irq = platform_get_irq_byname(pdev, "REGULATOR");
+-		irq = regmap_irq_get_virq(da9055->irq_data, irq);
++		irq = regmap_irq_get_virq(da9055->irq_data,
++					  DA9055_IRQ_REGULATOR);
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+ 						da9055_ldo5_6_oc_irq,
+ 						IRQF_TRIGGER_HIGH |
 --
 1.7.0.4
