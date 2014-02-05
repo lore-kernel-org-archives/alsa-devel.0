@@ -1,8 +1,8 @@
 From: Takashi Iwai <tiwai@suse.de>
 Subject: Re: [PATCH] ASoC: cs42l73: Don't mix
 	SNDRV_PCM_RATE_KNOT with specific rates
-Date: Wed, 05 Feb 2014 08:08:47 +0100
-Message-ID: <s5ha9e6jatc.wl%tiwai@suse.de>
+Date: Wed, 05 Feb 2014 08:08:59 +0100
+Message-ID: <s5h8utqjat0.wl%tiwai@suse.de>
 References: <1391543731-9085-1-git-send-email-lars@metafoo.de>
  <A40422ED-1EEB-4A09-A550-0AAAAA89464D@cirrus.com>
  <52F15519.7090109@metafoo.de>
@@ -12,8 +12,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 975BC2625CF
- for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 08:08:48 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AEED72625EF
+ for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 08:08:59 +0100 (CET)
 In-Reply-To: <52F16052.9000609@blennerhassett.gen.nz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
