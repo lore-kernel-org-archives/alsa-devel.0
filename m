@@ -1,17 +1,17 @@
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH 7/8] rtc: da9055: Remove use of
-	platform_get_irq_byname()
-Date: Wed, 5 Feb 2014 17:48:37 +0000
-Message-ID: <14837b7c85e701e0008b095c009790ebec252e0c.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH 8/8] mfd: da9055: Remove unused resource
+	structures for mfd cells.
+Date: Wed, 5 Feb 2014 17:48:38 +0000
+Message-ID: <0f633e556abaecaa1feb70e0e3f6bbaeffc47874.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
 References: <cover.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
- [195.245.231.143])
- by alsa0.perex.cz (Postfix) with ESMTP id 080D3265038
- for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 18:48:39 +0100 (CET)
+ [195.245.231.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEAF926504A
+ for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 18:48:40 +0100 (CET)
 In-Reply-To: <cover.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,24 +27,92 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alessandro Zummo <a
 List-Id: alsa-devel@alsa-project.org
 
 
+
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 ---
- drivers/rtc/rtc-da9055.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+ drivers/mfd/da9055-core.c |   46 ---------------------------------------------
+ 1 files changed, 0 insertions(+), 46 deletions(-)
 
-diff --git a/drivers/rtc/rtc-da9055.c b/drivers/rtc/rtc-da9055.c
-index 48cb2ac..6e06840 100644
---- a/drivers/rtc/rtc-da9055.c
-+++ b/drivers/rtc/rtc-da9055.c
-@@ -301,8 +301,7 @@ static int da9055_rtc_probe(struct platform_device *pdev)
- 		goto err_rtc;
- 	}
+diff --git a/drivers/mfd/da9055-core.c b/drivers/mfd/da9055-core.c
+index caf8dcf..5cf8ca6 100644
+--- a/drivers/mfd/da9055-core.c
++++ b/drivers/mfd/da9055-core.c
+@@ -258,42 +258,6 @@ struct regmap_config da9055_regmap_config = {
+ };
+ EXPORT_SYMBOL_GPL(da9055_regmap_config);
 
--	alm_irq = platform_get_irq_byname(pdev, "ALM");
--	alm_irq = regmap_irq_get_virq(rtc->da9055->irq_data, alm_irq);
-+	alm_irq = regmap_irq_get_virq(rtc->da9055->irq_data, DA9055_IRQ_ALARM);
- 	ret = devm_request_threaded_irq(&pdev->dev, alm_irq, NULL,
- 					da9055_rtc_alm_irq,
- 					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+-static struct resource da9055_onkey_resource = {
+-	.name = "ONKEY",
+-	.start = DA9055_IRQ_NONKEY,
+-	.end   = DA9055_IRQ_NONKEY,
+-	.flags = IORESOURCE_IRQ,
+-};
+-
+-static struct resource da9055_rtc_resource[] = {
+-	{
+-		.name = "ALM",
+-		.start = DA9055_IRQ_ALARM,
+-		.end   = DA9055_IRQ_ALARM,
+-		.flags = IORESOURCE_IRQ,
+-	},
+-	{
+-		.name = "TICK",
+-		.start = DA9055_IRQ_TICK,
+-		.end   = DA9055_IRQ_TICK,
+-		.flags = IORESOURCE_IRQ,
+-	},
+-};
+-
+-static struct resource da9055_hwmon_resource = {
+-	.name = "HWMON",
+-	.start = DA9055_IRQ_HWMON,
+-	.end   = DA9055_IRQ_HWMON,
+-	.flags = IORESOURCE_IRQ,
+-};
+-
+-static struct resource da9055_ld05_6_resource = {
+-	.name = "REGULATOR",
+-	.start = DA9055_IRQ_REGULATOR,
+-	.end   = DA9055_IRQ_REGULATOR,
+-	.flags = IORESOURCE_IRQ,
+-};
+-
+ static const struct mfd_cell da9055_devs[] = {
+ 	{
+ 		.of_compatible = "dialog,da9055-gpio",
+@@ -333,33 +297,23 @@ static const struct mfd_cell da9055_devs[] = {
+ 		.of_compatible = "dialog,da9055-regulator",
+ 		.name = "da9055-regulator",
+ 		.id = 7,
+-		.resources = &da9055_ld05_6_resource,
+-		.num_resources = 1,
+ 	},
+ 	{
+ 		.of_compatible = "dialog,da9055-regulator",
+ 		.name = "da9055-regulator",
+-		.resources = &da9055_ld05_6_resource,
+-		.num_resources = 1,
+ 		.id = 8,
+ 	},
+ 	{
+ 		.of_compatible = "dialog,da9055-onkey",
+ 		.name = "da9055-onkey",
+-		.resources = &da9055_onkey_resource,
+-		.num_resources = 1,
+ 	},
+ 	{
+ 		.of_compatible = "dialog,da9055-rtc",
+ 		.name = "da9055-rtc",
+-		.resources = da9055_rtc_resource,
+-		.num_resources = ARRAY_SIZE(da9055_rtc_resource),
+ 	},
+ 	{
+ 		.of_compatible = "dialog,da9055-hwmon",
+ 		.name = "da9055-hwmon",
+-		.resources = &da9055_hwmon_resource,
+-		.num_resources = 1,
+ 	},
+ 	{
+ 		.of_compatible = "dialog,da9055-watchdog",
 --
 1.7.0.4
