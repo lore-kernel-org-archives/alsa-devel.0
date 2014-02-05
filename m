@@ -1,66 +1,59 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH v3 4/5] ASoC: tda998x: adjust the audio hw
-	parameters from EDID
-Date: Wed, 05 Feb 2014 10:19:22 +0100
-Message-ID: <52F2021A.9020804@metafoo.de>
-References: <cover.1391274627.git.moinejf@free.fr>
-	<1b15025671d9099863a3091346536e45891e4a26.1391274628.git.moinejf@free.fr>
-	<20140204180625.GM22609@sirena.org.uk>
-	<20140205101134.4591e5c3@armhf>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH] ASoC: cs4271: Remove outdated comment
+Date: Wed, 05 Feb 2014 11:31:24 +0100
+Message-ID: <52F212FC.3020200@zonque.org>
+References: <1391521702-15594-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20140205101134.4591e5c3@armhf>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces@lists.freedesktop.org
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0A3A2625ED
+ for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 11:31:28 +0100 (CET)
+In-Reply-To: <1391521702-15594-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/05/2014 10:11 AM, Jean-Francois Moine wrote:
-> On Tue, 4 Feb 2014 18:06:25 +0000
-> Mark Brown <broonie@kernel.org> wrote:
->
->> On Mon, Jan 27, 2014 at 09:48:54AM +0100, Jean-Francois Moine wrote:
->>
->>> +		/* change the snd_soc_pcm_stream values of the driver */
->>> +		stream->rates = rate_mask;
->>> +		stream->channels_max = max_channels;
->>> +		stream->formats = formats;
->>
->>> +	/* copy the DAI driver to a writable area */
->>> +	dai_drv = devm_kzalloc(&pdev->dev, sizeof(tda998x_dai), GFP_KERNEL);
->>> +	if (!dai_drv)
->>> +		return -ENOMEM;
->>> +	memcpy(dai_drv, tda998x_dai, sizeof(tda998x_dai));
->>> +
->>
->> The code should be doing this by setting constraints based on the
->> current setup rather than by editing the data structure - the expecation
->> is very much that the data won't change so this prevents surprises with
->> future work on the core.
->
-> As it is done in the soc core, in soc_pcm_open(), the runtime hw_params
-> are initialized after the call to the CODEC startup, and the next CODEC
-> event is hw_params() when the user has already chosen all the parameters.
->
-> So, in the CODEC, I don't see how I could update the parameters
-> dictated by the EDID otherwise in changing the DAI driver parameters.
->
+On 02/04/2014 02:48 PM, Lars-Peter Clausen wrote:
+> Commit 1b1861ead ("ASoC: cs4271: convert to direct regmap API usage") removed
+> the bus_type field from the cs4271_private struct, but left the comment that
+> described the field in there. This patch removes the comment.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-The startup function is the right place. But instead of modifying the DAI 
-use snd_pcm_hw_constraint_mask64(), snd_pcm_hw_constraint_list(), etc. to 
-setup the additional constraints that come from the EDID.
+Jup, I seem to have forgotten to remove this comment.
 
-Bonus points for making this a generic helper function that takes a runtime 
-and a EDID and then applies the EDID constraints on the runtime.
+Acked-by: Daniel Mack <daniel@zonque.org>
 
-- Lars
+
+Thanks,
+Daniel
+
+
+> ---
+>  sound/soc/codecs/cs4271.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+> index ce05fd9..f7bbe6f 100644
+> --- a/sound/soc/codecs/cs4271.c
+> +++ b/sound/soc/codecs/cs4271.c
+> @@ -159,7 +159,6 @@ static bool cs4271_volatile_reg(struct device *dev, unsigned int reg)
+>  }
+>  
+>  struct cs4271_private {
+> -	/* SND_SOC_I2C or SND_SOC_SPI */
+>  	unsigned int			mclk;
+>  	bool				master;
+>  	bool				deemph;
+> 
