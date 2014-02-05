@@ -1,23 +1,18 @@
-From: Randy Li <lxr1234@hotmail.com>
-Subject: Re: Strange sound of IDT 82hd206xx6 at font port in
- AC97 mode
-Date: Wed, 5 Feb 2014 09:06:07 +0800
-Message-ID: <BLU0-SMTP2938A849DA7F312C44807A3AD950@phx.gbl>
-References: <BLU0-SMTP22F128862C405DED98AB89ADAB0@phx.gbl>
- <CAN8cciZ+QwNpSnBmXuvKV9Hkqhfbo6CvY0bmx7rMQic9+tgb8A@mail.gmail.com>
- <BLU0-SMTP39216262BA66E5ED8A80E9BADAA0@phx.gbl>
- <CAN8ccianyNMd02ywO+AtbFoAsTxcm_Q8Fa-ab4hExAXi=Jw0Fw@mail.gmail.com>
- <BLU0-SMTP2290BB01520D451B3C3E1FCADAA0@phx.gbl>
- <CAN8cciZtetqAFq4uCC_qxN5+FmNRm58g1x2rzVWk4b-Zy3aHRA@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/realtek - Avoid invalid COEFs for
+	ALC271X
+Date: Wed,  5 Feb 2014 07:19:00 +0100
+Message-ID: <1391581140-3363-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from blu0-omc3-s37.blu0.hotmail.com (blu0-omc3-s37.blu0.hotmail.com
- [65.55.116.112])
- by alsa0.perex.cz (Postfix) with ESMTP id C37FC261A76
- for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 02:06:18 +0100 (CET)
-In-Reply-To: <CAN8cciZtetqAFq4uCC_qxN5+FmNRm58g1x2rzVWk4b-Zy3aHRA@mail.gmail.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7201261ACD
+ for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 07:19:00 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 0D3A2AAD1
+ for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 06:19:00 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,39 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgrkuo4gMjAxNOW5
-tDAy5pyIMDTml6UgMjI6MTYsIFJheW1vbmQgWWF1IOWGmemBkzoKPiAKPj4+IAo+Pj4gCj4+PiBT
-aW1wbGUgbWl4ZXIgY29udHJvbCAnU3dhcCBDZW50ZXIvTEZFJywwIENhcGFiaWxpdGllczogcHN3
-aXRjaCAKPj4+IHBzd2l0Y2gtam9pbmVkIHBlbnVtIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vIE1v
-bm86IFBsYXliYWNrCj4+PiBbb2ZmXQo+Pj4gCj4+PiAKPj4+IAo+Pj4gRG8gdGhpcyBzd2l0Y2gg
-Y2hhbmdlIHRoZSBvdXRwdXQgb2YgY2VudGVyIGFuZCBsZmUgd2hlbiB5b3UKPj4+IHJ1bgo+Pj4g
-Cj4+PiBzcGVha2VyLXRlc3QgLWMgNiAtdCB3YXYgLUQgaHc6MCwwCj4+PiAKPj4gSSBvbmx5IGhl
-YXIgdGhlIGZvbnQgbGVmdCBhbmQgZm9udCByaWdodCBpbiBib3RoIHNpZGUgb2YgbXkgCj4+IGhl
-YWRwaG9uZSh0aGUgb25lIGZvciBhbmRyb2lkKQo+Pj4gc2VlbSB0aGF0IHlvdXIgYXJlIG5vdCB1
-c2luZyBsYXRlc3QgYWxzYSBkcml2ZXIKPj4gVGhlIGFsc2EgZHJpdmVyPyBXZWxsLCBzaGFsbCBJ
-IHRyeSB0aGUgbGF0ZXN0IGtlcm5lbD8KPiAKPiBEbyB0aGUgY2hhbm5lbCBzd2FwIGF0IHRoZSBv
-cmFuZ2UgcmFjayBhdCByZWFyIHBhbmVsID8KPiAKPiBEbyB5b3UgaGF2ZSBhIHNwZWFrZXIgdG8g
-dGVzdCA/Cj4gCkkgYW0gdmVyeSBzb3JyeSwgSSBtaXN0YWtlIHRoZSBtZWFuaW5ncyBvZiB0aGUg
-bWlyY29waG9uZSBhbmQgc3BlYWtlci4KV2hhdCBJIHVzZWQgaXMgdGhlIGhlYWRwaG9uZS4KRm9y
-IHRoZSBhbmRyb2lkIGhlYWRwaG9uZQpBdCB0aGUgZnJvbnQgcGFuZWwsIG5vdCBzd2FwLCBJIGhl
-YXJlZCBmcm9udCBsZWZ0IGFuZCBmcm9udCByaWdodCBpbgpib3RoIHNpZGUuCkF0IHRoZSByYWNr
-IHBhbmVsLCBzd2FwZWQuCkZvciB0aGUgbm9ybWFsIGhlYWRwaG9uZShzcGVha2VyKQpUaGUgZm9u
-dCBsZWZ0IGFuZCBmb250IHJpZ2h0IGlzIHN3aXRjaCB0aGUgc2lkZS4KPiBUaGlzIHN3aXRjaCBz
-ZWVtIGxvc3QgaW4gdGhlIGxhdGVzdCBhbHNhIGRyaXZlcgo+PiAKPiAKVGhhbmsgeW91Ci0tLS0t
-QkVHSU4gUEdQIFNJR05BVFVSRS0tLS0tClZlcnNpb246IEdudVBHIHYxLjQuMTIgKEdOVS9MaW51
-eCkKQ29tbWVudDogVXNpbmcgR251UEcgd2l0aCBNb3ppbGxhIC0gaHR0cDovL2VuaWdtYWlsLm1v
-emRldi5vcmcvCgppUUVjQkFFQkFnQUdCUUpTOFk1L0FBb0pFUGI0VnNNSXpUemlpRndILzJqcEFH
-aGt2Q01va3EzaHdmYWlDVG9VCkc1VDhzb3pjbEJ6U3pKQVg2Ly9SZ2ZUdHZKYnFQMFJBd3ZPRzBJ
-ckdtN1FURUtWUW42STZ2UDVadG1LUFUzMFIKblNucXl5VE4xWERmeEhuWE1Gb2U3TXBDYnhqMjdt
-K2FGdWp4L1UrdzhFNENhUnc3K3NBT3ZGMEdZT3JGaEJBWQpPWWFUYTBtSURlNDd3Q3Q0VDVBVFlM
-b2w5UUY0UmdWZUJRNlNBZXhKc1hoZmpZaW9iMzFXcW12VHNZem9neEJmCm9leE1kWSt2OHFhZlMz
-dGhTTFY0SlZFR1ZCd3FQS3lEUUNET0NOTEdKVlJoWExVUjdJd0JVa2xLSHZ5RFdYaWMKaVhTWHN2
-MDVWTDkzQnh4Q0w0ZWtNWTdNRzF1SlF0bG5XL25VcWx0c3EwSG9EbUcyRXJsamUzckdoUjhnNHlN
-PQo9c2tYdQotLS0tLUVORCBQR1AgU0lHTkFUVVJFLS0tLS0KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+We've seen often problems after suspend/resume on Acer Aspire One
+AO725 with ALC271X codec as reported in kernel bugzilla, and it turned
+out that some COEFs doesn't work and triggers the codec communication
+stall.
+
+Since these magic COEF setups are specific to ALC269VB for some PLL
+configurations, the machine works even without these manual
+adjustment.  So, let's simply avoid applying them for ALC271X.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=52181
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 56a8f1876603..e16a71e586f0 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4427,6 +4427,9 @@ static void alc269_fill_coef(struct hda_codec *codec)
+ 
+ 	if (spec->codec_variant != ALC269_TYPE_ALC269VB)
+ 		return;
++	/* ALC271X doesn't seem to support these COEFs (bko#52181) */
++	if (!strcmp(codec->chip_name, "ALC271X"))
++		return;
+ 
+ 	if ((alc_get_coef0(codec) & 0x00ff) < 0x015) {
+ 		alc_write_coef_idx(codec, 0xf, 0x960b);
+-- 
+1.8.5.2
