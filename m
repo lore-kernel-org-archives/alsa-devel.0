@@ -1,17 +1,17 @@
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH 5/8] onkey: da9055: Remove use of
+Subject: [PATCH 7/8] rtc: da9055: Remove use of
 	platform_get_irq_byname()
-Date: Wed, 5 Feb 2014 17:48:36 +0000
-Message-ID: <c332a2885a76869f922057211ebae4757c5079f4.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
+Date: Wed, 5 Feb 2014 17:48:37 +0000
+Message-ID: <14837b7c85e701e0008b095c009790ebec252e0c.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
 References: <cover.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta14.messagelabs.com (mail1.bemta14.messagelabs.com
- [193.109.254.110])
- by alsa0.perex.cz (Postfix) with ESMTP id 87DFE265044
- for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 18:48:40 +0100 (CET)
+Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
+ [195.245.231.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id 080D3265038
+ for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 18:48:39 +0100 (CET)
 In-Reply-To: <cover.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,47 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alessandro Zummo <a.zummo@towertech.it>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.netg>, Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alessandro Zummo <a.zummo@towertech.it>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
-Using platform_get_irq_byname() to retrieve the IRQ number
-returns the VIRQ number rather than the local IRQ number for
-the device. Passing that value then into regmap_irq_get_virq()
-causes a failure because the function is expecting the local
-IRQ number (e.g. 0, 1, 2, 3, etc). This patch removes use of
-platform_get_irq_byname() and uses the local IRQ number instead.
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 ---
- drivers/input/misc/da9055_onkey.c |    9 +--------
- 1 files changed, 1 insertions(+), 8 deletions(-)
+ drivers/rtc/rtc-da9055.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/misc/da9055_onkey.c b/drivers/input/misc/da9055_onkey.c
-index 4b11ede..4842c6c 100644
---- a/drivers/input/misc/da9055_onkey.c
-+++ b/drivers/input/misc/da9055_onkey.c
-@@ -79,13 +79,6 @@ static int da9055_onkey_probe(struct platform_device *pdev)
- 	struct input_dev *input_dev;
- 	int irq, err;
+diff --git a/drivers/rtc/rtc-da9055.c b/drivers/rtc/rtc-da9055.c
+index 48cb2ac..6e06840 100644
+--- a/drivers/rtc/rtc-da9055.c
++++ b/drivers/rtc/rtc-da9055.c
+@@ -301,8 +301,7 @@ static int da9055_rtc_probe(struct platform_device *pdev)
+ 		goto err_rtc;
+ 	}
 
--	irq = platform_get_irq_byname(pdev, "ONKEY");
--	if (irq < 0) {
--		dev_err(&pdev->dev,
--			"Failed to get an IRQ for input device, %d\n", irq);
--		return -EINVAL;
--	}
--
- 	onkey = devm_kzalloc(&pdev->dev, sizeof(*onkey), GFP_KERNEL);
- 	if (!onkey) {
- 		dev_err(&pdev->dev, "Failed to allocate memory\n");
-@@ -109,7 +102,7 @@ static int da9055_onkey_probe(struct platform_device *pdev)
-
- 	INIT_DELAYED_WORK(&onkey->work, da9055_onkey_work);
-
--	irq = regmap_irq_get_virq(da9055->irq_data, irq);
-+	irq = regmap_irq_get_virq(da9055->irq_data, DA9055_IRQ_NONKEY);
- 	err = request_threaded_irq(irq, NULL, da9055_onkey_irq,
- 				   IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
- 				   "ONKEY", onkey);
+-	alm_irq = platform_get_irq_byname(pdev, "ALM");
+-	alm_irq = regmap_irq_get_virq(rtc->da9055->irq_data, alm_irq);
++	alm_irq = regmap_irq_get_virq(rtc->da9055->irq_data, DA9055_IRQ_ALARM);
+ 	ret = devm_request_threaded_irq(&pdev->dev, alm_irq, NULL,
+ 					da9055_rtc_alm_irq,
+ 					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
 --
 1.7.0.4
