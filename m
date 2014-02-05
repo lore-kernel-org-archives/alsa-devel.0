@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: use device dependency clock
-Date: Wed, 5 Feb 2014 17:26:40 +0000
-Message-ID: <20140205172640.GF32298@sirena.org.uk>
-References: <87wqhg6228.wl%kuninori.morimoto.gx@gmail.com>
- <20140204182749.GR22609@sirena.org.uk>
- <87siryv15f.wl%kuninori.morimoto.gx@gmail.com>
+From: Alexander Shiyan <shc_work@mail.ru>
+Subject: [PATCH 1/2] ASoC: fsl: Separation of the main audio
+	options and boards
+Date: Wed,  5 Feb 2014 21:31:51 +0400
+Message-ID: <1391621512-15064-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6510744920101503630=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 343C4265007
- for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 18:26:49 +0100 (CET)
-In-Reply-To: <87siryv15f.wl%kuninori.morimoto.gx@gmail.com>
+Received: from smtp43.i.mail.ru (smtp43.i.mail.ru [94.100.177.103])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92372265007
+ for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2014 18:32:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +19,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: alsa-devel@alsa-project.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Alexander Shiyan <shc_work@mail.ru>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Nicolin Chen <Guangyu.Chen@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+This patch provide separation of the main audio options and boards.
 
---===============6510744920101503630==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8JPrznbw0YAQ/KXy"
-Content-Disposition: inline
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ sound/soc/fsl/Kconfig | 36 ++++++++++++++++++++++--------------
+ 1 file changed, 22 insertions(+), 14 deletions(-)
 
-
---8JPrznbw0YAQ/KXy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Feb 04, 2014 at 04:44:34PM -0800, Kuninori Morimoto wrote:
-
-> Here "new style" means "external sound clock has relationship with sound driver",
-> "old style" means "external sound clock is independent clock"
-
-> This patch adds new clock-relationship rule to rsnd <-> platform.
-> (sound clock should has relationship to sound drvier)
-
-> The external sound clocks (= clk_a/b/c/i) are "independent" clock
-> in current linus/master.
-> Then, all clk_get(dev, xxx) will be same clock (= module clock)
-> (It was not strange if clk_get(dev, xxx) returns NULL though, but...)
-
-> # Above code can works well both common/legacy clock implementations.
-> # And, it can't select both common/legacy clock in same time.
-
-> I will exchange git log comment (= about "new/old" clock),
-> is it OK ?
-
-OK, I'm hoping that this situation is not expected to last more than a
-kernel release or so until all the platforms are converted - can we have
-a comment explaining the issue giving an ETA in the code as well as in
-the changelog please?
-
---8JPrznbw0YAQ/KXy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS8nRNAAoJELSic+t+oim9yqAQAJVp7hdjGGGpmm/Gav6esOw8
-e6ndsccl66xWE9rocmiEoq5jzZ9Cs2UPrtNSWW9GEddGnadcDayAlNvqS3CnN1nX
-MtT3QINUyR4NwWkZmX7DlzW6Qq1kXHXx6qwxOVfe5RiKFuvETAJl1/8ghmwSgKbc
-5/P4crRA3FZ5shvZT6ePG2iXfuC/qcoqAbdPpkisIyhYBphdwQYZ9o2K7GAcKNCh
-+VjjanRJjYVKOw8vadxYEGZK5T4XhIlTYr3zkY8/MXhXRFYCYfBq/mlt6MT1cvcz
-m1+rJ1krS9oJuiTal7U3n2YCHHkP0lvZ+vXYCLfggCo9IsnNuf1fspJDvr8EVFS3
-07GOg4WVFKSJpJULduYYvu7iE0zFPVEab1MxP1aXzDV4Xx36xokv90uWfw7/SBb2
-EW2HGsQOp78Xtj8HK2MrhV4V4UBj5A6LPhc92cDfW4tC06GeeSVE3FTn7UA+Z0M/
-ZfL/O6Gwy0j39T7Xls5lABuPrrqlExF3/mso9Dsa/yA/6AePlSLtJyO9mPRX7cgl
-TOL8XkGzGyXaZKz77Vpygl2ymKB8ijv1OiqNLuNGZN2g5J9iyhCOWTFFunW+VRHJ
-6760//g5MaQFS1hVsYvqkIPWcsImH82SpU4lX6ReFyaQLBedyP0gKjIkgrwwfspi
-WtCtSLPsUe+CEvMzF8LU
-=MjFH
------END PGP SIGNATURE-----
-
---8JPrznbw0YAQ/KXy--
-
---===============6510744920101503630==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6510744920101503630==--
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 07f8f14..ecc1092 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -1,3 +1,5 @@
++menu "SoC Audio for Freescale CPUs"
++
+ config SND_SOC_FSL_SAI
+ 	tristate
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+@@ -14,13 +16,27 @@ config SND_SOC_FSL_ESAI
+ config SND_SOC_FSL_UTILS
+ 	tristate
+ 
+-menuconfig SND_POWERPC_SOC
++config SND_SOC_IMX_PCM_DMA
++	tristate
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++
++config SND_SOC_IMX_AUDMUX
++	tristate
++
++config SND_POWERPC_SOC
+ 	tristate "SoC Audio for Freescale PowerPC CPUs"
+ 	depends on FSL_SOC || PPC_MPC52xx
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the PowerPC CPUs.
+ 
++config SND_IMX_SOC
++	tristate "SoC Audio for Freescale i.MX CPUs"
++	depends on ARCH_MXC || COMPILE_TEST
++	help
++	  Say Y or M if you want to add support for codecs attached to
++	  the i.MX CPUs.
++
+ if SND_POWERPC_SOC
+ 
+ config SND_MPC52xx_DMA
+@@ -29,6 +45,8 @@ config SND_MPC52xx_DMA
+ config SND_SOC_POWERPC_DMA
+ 	tristate
+ 
++comment "SoC Audio support for Freescale PPC boards:"
++
+ config SND_SOC_MPC8610_HPCD
+ 	tristate "ALSA SoC support for the Freescale MPC8610 HPCD board"
+ 	# I2C is necessary for the CS4270 driver
+@@ -106,13 +124,6 @@ config SND_MPC52xx_SOC_EFIKA
+ 
+ endif # SND_POWERPC_SOC
+ 
+-menuconfig SND_IMX_SOC
+-	tristate "SoC Audio for Freescale i.MX CPUs"
+-	depends on ARCH_MXC || COMPILE_TEST
+-	help
+-	  Say Y or M if you want to add support for codecs attached to
+-	  the i.MX CPUs.
+-
+ if SND_IMX_SOC
+ 
+ config SND_SOC_IMX_SSI
+@@ -122,12 +133,7 @@ config SND_SOC_IMX_PCM_FIQ
+ 	tristate
+ 	select FIQ
+ 
+-config SND_SOC_IMX_PCM_DMA
+-	tristate
+-	select SND_SOC_GENERIC_DMAENGINE_PCM
+-
+-config SND_SOC_IMX_AUDMUX
+-	tristate
++comment "SoC Audio support for Freescale i.MX boards:"
+ 
+ config SND_MXC_SOC_WM1133_EV1
+ 	tristate "Audio on the i.MX31ADS with WM1133-EV1 fitted"
+@@ -219,3 +225,5 @@ config SND_SOC_IMX_MC13783
+ 	select SND_SOC_IMX_PCM_DMA
+ 
+ endif # SND_IMX_SOC
++
++endmenu
+-- 
+1.8.3.2
