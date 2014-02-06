@@ -1,59 +1,83 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/8] regulator: da9055: Add DT support
-Date: Thu, 6 Feb 2014 14:30:50 +0000
-Message-ID: <20140206143050.GU32298@sirena.org.uk>
-References: <cover.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
- <6d76ae40cd435eaae0323f3e806515130b06a376.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
- <20140205183642.GH32298@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A03376B7E1669@SW-EX-MBX02.diasemi.com>
- <20140206120336.GL32298@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A03376B7E36B9@SW-EX-MBX02.diasemi.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: pcm512x: Add PCM512x driver
+Date: Thu, 6 Feb 2014 14:22:06 +0000
+Message-ID: <20140206142206.GS32298@sirena.org.uk>
+References: <1391689575-4039-1-git-send-email-broonie@kernel.org>
+ <52F38CF7.7060306@metafoo.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="28wbjzzu+2Xmo01Z"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="OtP8TOIcu2/MSuWQ"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <2E89032DDAA8B9408CB92943514A03376B7E36B9@SW-EX-MBX02.diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Lee Jones <lee.jones@linaro.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>, Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <52F38CF7.7060306-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Cc: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-kernel-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---28wbjzzu+2Xmo01Z
+--OtP8TOIcu2/MSuWQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 06, 2014 at 12:22:13PM +0000, Opensource [Adam Thomson] wrote:
+On Thu, Feb 06, 2014 at 02:24:07PM +0100, Lars-Peter Clausen wrote:
+> On 02/06/2014 01:26 PM, Mark Brown wrote:
 
-> Is what I summised but I obviously chose the wrong direction for my fix.
-> Will use platform_get_irq_byname() solely, and will make sure all works on
-> both DT and non-DT setups. If not I'll dig further.
+> >+static const char *pcm512x_dsp_program_texts[] =3D {
 
-Yeah.  In general I'd say that if you've got two options for something
-like this the option that makes the driver smaller or which replaces
-more code with data is normally going to be the right way to go.
+> Nitpick: should be "static const char * const ...", a immutable
+> array of pointers pointing to immutable strings. Same for all the
+> enum texts in this driver.
 
---28wbjzzu+2Xmo01Z
+Oh, good - someone fixed the core code for that without me noticing.
+Last time I looked if you made the strings const there were annoying
+warnings since they got passed in to things that weren't expecting const
+strings and it seemed to annoying to check that it was actually safe in
+all cases.
+
+> Another reason why I think it is better to separate the I2C and SPI
+> bits into different modules. If the registration of the SPI driver
+> fails you'll return an error and the module will not be loaded. At
+> the same time the i2c driver is already registered. I know that this
+> is rather theoretical, but if we don't care if our error handling is
+> correct, because we assume that the error will never happen, we do
+> not need error handling at all.
+
+Like I say I'm perfectly aware of the issues, I just don't have much
+enthusiasm myself since they pretty much only affect unrealistic and
+apparently quite rare randconfigs - the time I might spend on that is
+more likely to get spent on things like the format negotiation stuff.
+If someone (you? :P) wants to do the work that's fine but nobody had
+shown any sign of that until your driver the other day. =20
+
+I do also want to see some explicit conversion happening so it's clearer
+that this is a deliberate change that's being rolled out.
+
+--OtP8TOIcu2/MSuWQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS85yWAAoJELSic+t+oim9WqwP/3LhoaOTrzYs4B99Daljki9R
-jDfHwyk2GQ/uC9yNcE6BtXF2wRO/I/R+dJtMzd6RUYZcheodcC6e6zFUxlk9wu0/
-PABtnuCc5au2KrGsYZmAz+bQ+qd0gkpNyC373XXnvczKm8rASj11u7Da7ddRlT5G
-29oBBhSFypR4wP85Vi3mPdQ8WAz9fsQR6ZOaxZbn8VB84yVy2ojG506uxwclH1+K
-J4sL2HJMy9jAjdDCw2ewuuJvPILz6JHf5fh7+SksxMZEjqxjYfVhum/hzB/rYxU3
-/rRXDl0UesMGpDOqZtFIF+v3+RQcB8sWsn1yKN1QtiidbgLc1xifbZMRX0//zJfR
-oAB+ccBRv6Q37ZdmLZdvzyDJDEmmjYJhvvFkgjdODXT18XPkGUnINNC3/5Q3MmxT
-vSwTvfnnYA0yQEz1O67Y53v+NxnFtrpH+QnMcHkw6GF8FmhEswBs4GWEqchwjx19
-VZkACXnRNtQYvLW5QDKxhRM6hoDiyNE98bBih6cfFyGgvgOdrsuL70Me1mXd2ada
-V7q1aWmCLzgzORC3fWOO7u+YHZ4IeqovbxXv2nzjDd+ZtG6ikuScEjV6GhbKP4ku
-fYjJfOkP0w+F/LMJimgcnv71c25m3ovZvSIdJjiNzacBBpYt9g47UtHOuDbX8PK4
-TBZe4jBYEEYGdGLl+EbU
-=jCP6
+iQIcBAEBAgAGBQJS85qLAAoJELSic+t+oim95NUP/2wXDzKr+Y8jQto8PAv2D9se
+1roGIH7rSek4CvdkJcqFHe1CDMDT1SGqk4Snm4dKrBqJlcffLk9iy4aUr6fERiBd
+P21OI3d20ADmjI/N9v2RqqHG8Rxfcvk3lj2g6aGWZE4/BlImTzkvEP0qzlMs0ksY
+nKiBn9PSHqo4p3XBqCQM5+9Mdrmpx5G674Zm3BvrA9+T8oMftcgxkVCOFcNUIvL1
+Y6L/WPhFpB0poISzWgsQJFJOr7xLPxQqi+C1TJ7FsXEY0VJe40GEKCP8yCJLpH7k
+zVnDtgakO63MkKUVmy5wXh17mMGFw/QJsGKXqybCCTDSYq1/HQCpUjqp49wLYKjn
+wxNyFvS2q1BPz/jPmWm2iBYMnYHrv3ItNZff9QEFkfarrP9ThRofM3wL+GmbEhv3
+RRKbAvX6hcj6j9ruQAEKNA5FVwrno+Vwt0dyFZDiESgbdHsw2DBA1rNkXabGUhOX
+dGsm9WOj1x+CmeRC2/wRHywHBpME8cS73xSvSF4OiG9EwXQyKlp/r9WBDayFGZ4z
+e0FpvUSbwQeUCSLeJZaFjZ8dJKBzq3D6RvlT3m9LMQN/maemg8RIdDXRAsqq9550
+UVxnVC2fzr8Io+LI+ZT+peTLmriTq0QHV0j8+5PL+N000mwtM22SVQT4ze7qNcWS
+rx06fcpKKMyPNvNySFOd
+=jXv5
 -----END PGP SIGNATURE-----
 
---28wbjzzu+2Xmo01Z--
+--OtP8TOIcu2/MSuWQ--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
