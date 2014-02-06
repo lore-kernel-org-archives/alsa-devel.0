@@ -1,130 +1,130 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH v2 4/8] regulator: da9055: Add DT support
-Date: Thu, 6 Feb 2014 18:03:13 +0000
-Message-ID: <9c9235270af15eb50bd2d5c20daa7a81858910a4.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
-References: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH v2] MIDI driver for Behringer BCD2000 USB
+ device
+Date: Thu, 06 Feb 2014 21:51:12 +0100
+Message-ID: <52F3F5C0.7000805@ladisch.de>
+References: <1391631059-6840-1-git-send-email-dev@kicherer.org>
+ <52F35430.8040502@ladisch.de> <52F3B34A.3090209@kicherer.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>, Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 0B2A22650C0
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2014 21:51:34 +0100 (CET)
+In-Reply-To: <52F3B34A.3090209@kicherer.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mario Kicherer <dev@kicherer.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
----
- drivers/regulator/da9055-regulator.c |   69 ++++++++++++++++++++++++++++++++--
- 1 files changed, 65 insertions(+), 4 deletions(-)
+Mario Kicherer wrote:
+> On 06.02.2014 10:21, Clemens Ladisch wrote:
+>>> +config SND_USB_BCD2000
+>>> +    tristate "Behringer BCD2000 MIDI driver"
+>>> +    select SND_HWDEP
+>>
+>> Why HWDEP?
+>
+> I admit, I copied this from the other modules (caiaq I believe). After
+> grepping the documentation, I'm not sure if I need this. Should I remove
+> it?
 
-diff --git a/drivers/regulator/da9055-regulator.c b/drivers/regulator/da9055-regulator.c
-index 7f34020..d90f785 100644
---- a/drivers/regulator/da9055-regulator.c
-+++ b/drivers/regulator/da9055-regulator.c
-@@ -19,6 +19,8 @@
- #include <linux/platform_device.h>
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
-+#include <linux/of.h>
-+#include <linux/regulator/of_regulator.h>
+Yes; you aren't using any snd_hwdep* functions.
 
- #include <linux/mfd/da9055/core.h>
- #include <linux/mfd/da9055/reg.h>
-@@ -446,6 +448,9 @@ static int da9055_gpio_init(struct da9055_regulator *regulator,
- 	struct da9055_regulator_info *info = regulator->info;
- 	int ret = 0;
+>> There is no need to have "usb" in the module name if that is the only
+>> bus this device works with.
+>
+> Okay, after looking at the other modules I thought that it is common to
+> use the "snd-usb" prefix.
 
-+	if (!pdata)
-+		return 0;
-+
- 	if (pdata->gpio_ren && pdata->gpio_ren[id]) {
- 		char name[18];
- 		int gpio_mux = pdata->gpio_ren[id];
-@@ -530,6 +535,59 @@ static inline struct da9055_regulator_info *find_regulator_info(int id)
- 	return NULL;
- }
+The USB audio class driver uses "snd-usb-audio" because "snd-audio" would
+be completely useless as a name.  Other drivers then blindly copied this.
 
-+#ifdef CONFIG_OF
-+static struct of_regulator_match da9055_reg_matches[] = {
-+	{ .name = "BUCK1", },
-+	{ .name = "BUCK2", },
-+	{ .name = "LDO1", },
-+	{ .name = "LDO2", },
-+	{ .name = "LDO3", },
-+	{ .name = "LDO4", },
-+	{ .name = "LDO5", },
-+	{ .name = "LDO6", },
-+};
-+
-+static int da9055_regulator_dt_init(struct platform_device *pdev,
-+				    struct da9055_regulator *regulator,
-+				    struct regulator_config *config,
-+				    int regid)
-+{
-+	struct device_node *nproot, *np;
-+	int ret;
-+
-+	nproot = of_node_get(pdev->dev.parent->of_node);
-+	if (!nproot)
-+		return -ENODEV;
-+
-+	np = of_find_node_by_name(nproot, "regulators");
-+	if (!np)
-+		return -ENODEV;
-+
-+	ret = of_regulator_match(&pdev->dev, np, &da9055_reg_matches[regid], 1);
-+	of_node_put(nproot);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Error matching regulator: %d\n", ret);
-+		return -ENODEV;
-+	}
-+
-+	config->init_data = da9055_reg_matches[regid].init_data;
-+	config->of_node = da9055_reg_matches[regid].of_node;
-+
-+	if (!config->of_node)
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+#else
-+static inline da9055_regulator_dt_init(struct platform_device *pdev,
-+				       struct da9055_regulator *regulator,
-+				       struct regulator_config *config,
-+				       int regid)
-+{
-+	return -ENODEV;
-+}
-+#endif /* CONFIG_OF */
-+
- static int da9055_regulator_probe(struct platform_device *pdev)
- {
- 	struct regulator_config config = { };
-@@ -538,9 +596,6 @@ static int da9055_regulator_probe(struct platform_device *pdev)
- 	struct da9055_pdata *pdata = dev_get_platdata(da9055->dev);
- 	int ret, irq;
+> Should I remove it? I find it useful, e.g., to recognize it in a "lsmod".
 
--	if (pdata == NULL || pdata->regulators[pdev->id] == NULL)
--		return -ENODEV;
--
- 	regulator = devm_kzalloc(&pdev->dev, sizeof(struct da9055_regulator),
- 				 GFP_KERNEL);
- 	if (!regulator)
-@@ -557,8 +612,14 @@ static int da9055_regulator_probe(struct platform_device *pdev)
- 	config.driver_data = regulator;
- 	config.regmap = da9055->regmap;
+"snd-bcd2000" would not be recognizable?
 
--	if (pdata && pdata->regulators)
-+	if (pdata && pdata->regulators) {
- 		config.init_data = pdata->regulators[pdev->id];
-+	} else {
-+		ret = da9055_regulator_dt_init(pdev, regulator, &config,
-+					       pdev->id);
-+		if (ret < 0)
-+			return ret;
-+	}
+>>> -obj-$(CONFIG_SND) += misc/ usx2y/ caiaq/ 6fire/ hiface/
+>>> +obj-$(CONFIG_SND) += misc/ usx2y/ caiaq/ 6fire/ hiface/ bcd2000/
+>>
+>> If there is only a single source file, just put it into misc/.
+>> If you plan to have multiple source files, then this file should have
+>> "_midi" in its name.
+>
+> Okay, I thought that the code is short enough to put everything in one
+> file but I think with the audio part it would be best to split the file.
+> I can move it to misc/ or do you think an own subdirectory is okay to
+> avoid moving it in later versions?
 
- 	ret = da9055_gpio_init(regulator, &config, pdata, pdev->id);
- 	if (ret < 0)
---
-1.7.0.4
+It doesn't make much sense to put it into a directory that you know you
+will move it out of later.
+
+>> ALSA does not require full MIDI commands, and handles running status.
+>
+> Oh, okay. So, should I just pass everything through to
+> snd_rawmidi_receive() ?
+
+Yes.
+
+>>> +static void bcd2000_midi_output_done(struct urb *urb)
+>>> +{
+>>> ...
+>>> +    if (!bcd2k->midi_out_substream)
+>>> +        return;
+>>> +
+>>> +    bcd2000_midi_send(bcd2k, bcd2k->midi_out_substream);
+>>
+>> The midi_out_substream field gets modified asynchronously by the trigger
+>> callback; this might happen between these two statements.
+>>
+>> Assuming that setting a pointer is atomic, use ACCESS_ONCE.
+>
+> You mean like this:
+>
+> struct snd_rawmidi_substream * midi_out_substream;
+> midi_out_substream = ACCESS_ONCE(bcd2k->midi_out_substream);
+> if (!midi_out_substream)
+>     return;
+> bcd2000_midi_send(bcd2k, midi_out_substream);
+
+Yes.
+
+The code that modifies this field also needs ACCESS_ONCE.
+
+>>> +static void bcd2000_init_midi(struct bcd2000 *bcd2k)
+>>> +{
+>>> +    bcd2k->midi_in_urb = usb_alloc_urb(0, GFP_KERNEL);
+>>> +    bcd2k->midi_out_urb = usb_alloc_urb(0, GFP_KERNEL);
+>>
+>> Error checking.
+>
+> Okay, I guess I should close everything I opened in this module before
+> or would a "return" suffice?
+
+Typically, in case of an error, a function is responsible to revert
+everything allocated in this function, i.e.:
+
+static int bcd2000_init_midi(struct bcd2000 *bcd2k)
+{
+	bcd2k->midi_in_urb = usb_alloc_urb(0, GFP_KERNEL);
+	if (!bcd2k->midi_in_urb)
+		return -ENOMEM;
+	bcd2k->midi_out_urb = usb_alloc_urb(0, GFP_KERNEL);
+	if (!bcd2k->midi_out_urb) {
+		usb_free_urb(bcd2k->midi_in_urb);
+		return -ENOMEM;
+	}
+	...
+
+
+Regards,
+Clemens
