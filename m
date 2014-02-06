@@ -1,93 +1,41 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH v2 1/8] ASoC: da9055: Fix device registration of PMIC and CODEC devices
-Date: Thu, 6 Feb 2014 18:03:07 +0000
-Message-ID: <6a398d176b0b2bf8792d27bd5e2995fd96afb32d.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+From: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Subject: [PATCH v2 8/8] regulator: da9055: Remove use of regmap_irq_get_virq()
+Date: Thu, 6 Feb 2014 18:03:21 +0000
+Message-ID: <1234f50ae0bcf6e9fe057cbe26f9c55b042d2c2e.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
 References: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>, Guenter Roeck <linux@roeck-us.net>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <cover.1391705989.git.Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Guenter Roeck <linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Currently the I2C device Ids conflict for the MFD and CODEC so
-cannot be both instantiated on one platform. This patch updates
-the Ids and names to make them unique from each other.
-
-It should be noted that the I2C addresses for both PMIC and CODEC
-are modifiable so instantiation of the two are kept as separate
-devices, rather than instantiating the CODEC from the MFD code.
-
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Acked-by: Mark Brown <broonie@linaro.org>
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
 ---
- drivers/mfd/da9055-i2c.c  |   12 ++++++++++--
- sound/soc/codecs/da9055.c |   11 +++++++++--
- 2 files changed, 19 insertions(+), 4 deletions(-)
+ drivers/regulator/da9055-regulator.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mfd/da9055-i2c.c b/drivers/mfd/da9055-i2c.c
-index 13af7e5..8103e43 100644
---- a/drivers/mfd/da9055-i2c.c
-+++ b/drivers/mfd/da9055-i2c.c
-@@ -53,17 +53,25 @@ static int da9055_i2c_remove(struct i2c_client *i2c)
- 	return 0;
- }
-
-+/*
-+ * DO NOT change the device Ids. The naming is intentionally specific as both
-+ * the PMIC and CODEC parts of this chip are instantiated separately as I2C
-+ * devices (both have configurable I2C addresses, and are to all intents and
-+ * purposes separate). As a result there are specific DA9055 ids for PMIC
-+ * and CODEC, which must be different to operate together.
-+ */
- static struct i2c_device_id da9055_i2c_id[] = {
--	{"da9055", 0},
-+	{"da9055-pmic", 0},
- 	{ }
- };
-+MODULE_DEVICE_TABLE(i2c, da9055_i2c_id);
-
- static struct i2c_driver da9055_i2c_driver = {
- 	.probe = da9055_i2c_probe,
- 	.remove = da9055_i2c_remove,
- 	.id_table = da9055_i2c_id,
- 	.driver = {
--		.name = "da9055",
-+		.name = "da9055-pmic",
- 		.owner = THIS_MODULE,
- 	},
- };
-diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
-index 52b79a4..4228126 100644
---- a/sound/soc/codecs/da9055.c
-+++ b/sound/soc/codecs/da9055.c
-@@ -1523,8 +1523,15 @@ static int da9055_remove(struct i2c_client *client)
- 	return 0;
- }
-
-+/*
-+ * DO NOT change the device Ids. The naming is intentionally specific as both
-+ * the CODEC and PMIC parts of this chip are instantiated separately as I2C
-+ * devices (both have configurable I2C addresses, and are to all intents and
-+ * purposes separate). As a result there are specific DA9055 Ids for CODEC
-+ * and PMIC, which must be different to operate together.
-+ */
- static const struct i2c_device_id da9055_i2c_id[] = {
--	{ "da9055", 0 },
-+	{ "da9055-codec", 0 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, da9055_i2c_id);
-@@ -1532,7 +1539,7 @@ MODULE_DEVICE_TABLE(i2c, da9055_i2c_id);
- /* I2C codec control layer */
- static struct i2c_driver da9055_i2c_driver = {
- 	.driver = {
--		.name = "da9055",
-+		.name = "da9055-codec",
- 		.owner = THIS_MODULE,
- 	},
- 	.probe		= da9055_i2c_probe,
+diff --git a/drivers/regulator/da9055-regulator.c b/drivers/regulator/da9055-regulator.c
+index d90f785..3b7a26c 100644
+--- a/drivers/regulator/da9055-regulator.c
++++ b/drivers/regulator/da9055-regulator.c
+@@ -637,7 +637,9 @@ static int da9055_regulator_probe(struct platform_device *pdev)
+ 	/* Only LDO 5 and 6 has got the over current interrupt */
+ 	if (pdev->id == DA9055_ID_LDO5 || pdev->id ==  DA9055_ID_LDO6) {
+ 		irq = platform_get_irq_byname(pdev, "REGULATOR");
+-		irq = regmap_irq_get_virq(da9055->irq_data, irq);
++		if (irq < 0)
++			return irq;
++
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+ 						da9055_ldo5_6_oc_irq,
+ 						IRQF_TRIGGER_HIGH |
 --
 1.7.0.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
