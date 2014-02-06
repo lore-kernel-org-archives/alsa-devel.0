@@ -1,95 +1,135 @@
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH v2 2/8] ASoC: da9055: Add DT support for CODEC
-Date: Thu, 6 Feb 2014 18:03:09 +0000
-Message-ID: <9ec36c0633ae8291267be6802a34a469a34ae292.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH v2 3/8] mfd: da9055: Add DT support for PMIC
+Date: Thu, 6 Feb 2014 18:03:11 +0000
+Message-ID: <46f41a14205ac39de3adb8c87d2a6dba557ad8d1.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
 References: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta14.messagelabs.com (mail1.bemta14.messagelabs.com
- [193.109.254.109])
- by alsa0.perex.cz (Postfix) with ESMTP id 42926265043
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2014 19:03:13 +0100 (CET)
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alessandro Zummo <a.zummo@towertech.it>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Guenter Roeck <linux@roeck-us.net>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 ---
- Documentation/devicetree/bindings/sound/da9055.txt |   22 ++++++++++++++++++++
- sound/soc/codecs/da9055.c                          |    8 +++++++
- 2 files changed, 30 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/da9055.txt
+ Documentation/devicetree/bindings/mfd/da9055.txt |   73 ++++++++++++++++++++++
+ drivers/mfd/da9055-i2c.c                         |    8 +++
+ 2 files changed, 81 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/da9055.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/da9055.txt b/Documentation/devicetree/bindings/sound/da9055.txt
+diff --git a/Documentation/devicetree/bindings/mfd/da9055.txt b/Documentation/devicetree/bindings/mfd/da9055.txt
 new file mode 100644
-index 0000000..ed1b7cc
+index 0000000..f903c3f
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/da9055.txt
-@@ -0,0 +1,22 @@
-+* Dialog DA9055 Audio CODEC
++++ b/Documentation/devicetree/bindings/mfd/da9055.txt
+@@ -0,0 +1,73 @@
++* Dialog DA9055 Power Management Integrated Circuit (PMIC)
 +
-+DA9055 provides Audio CODEC support (I2C only).
++DA9055 consists of a large and varied group of sub-devices (I2C Only):
 +
-+The Audio CODEC device in DA9055 has it's own I2C address which is configurable,
-+so the device is instantiated separately from the PMIC (MFD) device.
++Device			 Supply Names	 Description
++------			 ------------	 -----------
++da9055-gpio		:		: GPIOs
++da9055-regulator	:		: Regulators
++da9055-onkey		:		: On key
++da9055-rtc		:		: RTC
++da9055-hwmon		:		: ADC
++da9055-watchdog		:		: Watchdog
 +
-+For details on accompanying PMIC I2C device, see the following:
-+Documentation/devicetree/bindings/mfd/da9055.txt
++The CODEC device in DA9055 has a separate, configurable I2C address and so
++is instantiated separately from the PMIC.
++
++For details on accompanying CODEC I2C device, see the following:
++Documentation/devicetree/bindings/sound/da9055.txt
++
++======
 +
 +Required properties:
++- compatible : Should be "dlg,da9055-pmic"
++- reg: Specifies the I2C slave address (defaults to 0x5a but can be modified)
++- interrupt-parent: Specifies the phandle of the interrupt controller to which
++  the IRQs from da9055 are delivered to.
++- interrupts: IRQ line info for da9055 chip.
++- interrupt-controller: da9055 has internal IRQs (has own IRQ domain).
++- #interrupt-cells: Should be 1, is the local IRQ number for da9055.
 +
-+  - compatible: "dlg,da9055-codec"
-+  - reg: Specifies the I2C slave address
++Sub-nodes:
++- regulators : Contain the regulator nodes. The DA9055 regulators are
++  bound using their names as listed below:
++
++    buck1     : regulator BUCK1
++    buck2     : regulator BUCK2
++    ldo1      : regulator LDO1
++    ldo2      : regulator LDO2
++    ldo3      : regulator LDO3
++    ldo4      : regulator LDO4
++    ldo5      : regulator LDO5
++    ldo6      : regulator LDO6
++
++  The bindings details of individual regulator device can be found in:
++  Documentation/devicetree/bindings/regulator/regulator.txt
 +
 +
 +Example:
 +
-+	codec: da9055-codec@1a {
-+		compatible = "dlg,da9055-codec";
-+		reg = <0x1a>;
++	pmic: da9055-pmic@5a {
++		compatible = "dlg,da9055-pmic";
++		reg = <0x5a>;
++		interrupt-parent = <&intc>;
++		interrupts = <5 0x8>;
++		interrupt-controller;
++		#interrupt-cells = <1>;
++
++		regulators {
++			buck1: BUCK1 {
++				regulator-min-microvolt = <725000>;
++				regulator-max-microvolt = <2075000>;
++			};
++
++			buck2: BUCK2 {
++				regulator-min-microvolt = <925000>;
++				regulator-max-microvolt = <2500000>;
++			};
++			ldo1: LDO1 {
++				regulator-min-microvolt = <900000>;
++				regulator-max-microvolt = <3300000>;
++			};
++		};
 +	};
-diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
-index 4228126..be31f3c 100644
---- a/sound/soc/codecs/da9055.c
-+++ b/sound/soc/codecs/da9055.c
-@@ -18,6 +18,8 @@
- #include <linux/regmap.h>
- #include <linux/slab.h>
- #include <linux/module.h>
+diff --git a/drivers/mfd/da9055-i2c.c b/drivers/mfd/da9055-i2c.c
+index 8103e43..366a3e2 100644
+--- a/drivers/mfd/da9055-i2c.c
++++ b/drivers/mfd/da9055-i2c.c
+@@ -15,6 +15,8 @@
+ #include <linux/device.h>
+ #include <linux/i2c.h>
+ #include <linux/err.h>
 +#include <linux/of.h>
 +#include <linux/of_device.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -1536,11 +1538,17 @@ static const struct i2c_device_id da9055_i2c_id[] = {
+
+ #include <linux/mfd/da9055/core.h>
+
+@@ -66,6 +68,11 @@ static struct i2c_device_id da9055_i2c_id[] = {
  };
  MODULE_DEVICE_TABLE(i2c, da9055_i2c_id);
 
 +static const struct of_device_id da9055_of_match[] = {
-+	{ .compatible = "dlg,da9055-codec", },
++	{ .compatible = "dlg,da9055-pmic", .data = (void *)&da9055_i2c_id[0] },
 +	{ }
 +};
 +
- /* I2C codec control layer */
  static struct i2c_driver da9055_i2c_driver = {
+ 	.probe = da9055_i2c_probe,
+ 	.remove = da9055_i2c_remove,
+@@ -73,6 +80,7 @@ static struct i2c_driver da9055_i2c_driver = {
  	.driver = {
- 		.name = "da9055-codec",
+ 		.name = "da9055-pmic",
  		.owner = THIS_MODULE,
 +		.of_match_table = of_match_ptr(da9055_of_match),
  	},
- 	.probe		= da9055_i2c_probe,
- 	.remove		= da9055_remove,
+ };
+
 --
 1.7.0.4
