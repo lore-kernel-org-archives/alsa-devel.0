@@ -1,35 +1,82 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: RE: [PATCH 0/8] da9055: Driver initialisation fixes, add DT support
-Date: Thu, 6 Feb 2014 13:31:22 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A03376B7E36D8@SW-EX-MBX02.diasemi.com>
-References: <cover.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
- <20140206005406.GC1308@roeck-us.net>
- <2E89032DDAA8B9408CB92943514A03376B7E368A@SW-EX-MBX02.diasemi.com>
- <52F38CA1.8020806@roeck-us.net>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: pcm512x: Add PCM512x driver
+Date: Thu, 6 Feb 2014 13:50:15 +0000
+Message-ID: <20140206135015.GR32298@sirena.org.uk>
+References: <1391689575-4039-1-git-send-email-broonie@kernel.org>
+ <s5hr47gv1yi.wl%tiwai@suse.de>
+ <20140206130735.GP32298@sirena.org.uk>
+ <s5hob2kv0z3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <52F38CA1.8020806@roeck-us.net>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Guenter Roeck <linux@roeck-us.net>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="G6ArjEZjY3m60389"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <s5hob2kv0z3.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-kernel-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBGZWIgMDYsIDIwMTQgYXQgMTM6MjM6NDdQTSArMDAwMCwgR3VlbnRlciBSb2VjayB3
-cm90ZToNCg0KPiA+IFdoYXQgSSBjb3VsZCd2ZSBkb25lIGlzIHVzZSBwbGF0Zm9ybV9nZXRfaXJx
-X2J5bmFtZSgpIGFuZCBhdm9pZGVkIHVzaW5nDQo+ID4gcmVnbWFwX2lycV9nZXRfdmlycSgpIGFz
-IEkgd291bGQgYWxyZWFkeSBoYXZlIHRoZSBjb3JyZWN0IFZJUlEgdG8gcGFzcyB0bw0KPiA+IHJl
-cXVlc3RfdGhyZWFkZWRfaXJxKCksIGJ1dCBJIGZpZ3VyZWQgdGhhdCB1c2luZyByZWdtYXBfaXJx
-X2dldF92aXJxKCkgbWFkZQ0KPiA+IG1vcmUgc2Vuc2UgYXQgdGhlIHRpbWUsIGFuZCB3YXMgdW5h
-YmxlIHRvIHVzZSBib3RoLg0KPiA+DQo+IA0KPiBJIG1heSBiZSBtaXNzaW5nIHNvbWV0aGluZywg
-YnV0IEkgdGhpbmsgdGhlIHByb2JsZW0gbWF5IGJlIHRoYXQgeW91IGFyZQ0KPiBkb2luZyB0d28g
-bWFwcGluZ3MgaW5zdGVhZCBvZiBqdXN0IG9uZS4gSSBkb24ndCB0aGluayB5b3UgbmVlZCB0byBj
-YWxsDQo+IHJlZ21hcF9pcnFfZ2V0X3ZpcnEoKSBhdCBhbGwuDQoNClllcywgeW91J3JlIGNvcnJl
-Y3QuIFRoZSBpc3N1ZSB3YXMgYWxyZWFkeSB0aGVyZSBpbiB0aGUgY29kZSBhbmQgSSB3YXMNCmF0
-dGVtcHRpbmcgdG8gZml4IGl0LiBXaGVuIEkgbWFkZSB0aGUgY2hhbmdlIEkgZmlndXJlZCB1c2lu
-ZyBvbmx5DQpyZWdtYXBfaXJxX2dldF92aXJxKCkgd2FzIHRoZSB3YXkgdG8gZ28sIGJ1dCBzZWVt
-cyBsaWtlIEkgY2hvc2UgdGhlIHdyb25nDQpvcHRpb24uIFdpbGwgbWFrZSB0aGUgY2hhbmdlcyAo
-cmVtb3ZlIHJlZ21hcF9pcnFfZ2V0X3ZpcnEoKSksIHRlc3Qgb24gYm90aCBEVA0KYW5kIG5vbi1E
-VCBwbGF0Zm9ybXMsIGFuZCB0aGVuIHdpbGwgcmUtc3VibWl0IHRoZSBwYXRjaGVzLg0K
+
+--G6ArjEZjY3m60389
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Feb 06, 2014 at 02:12:48PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
+
+> > > The numbers of items in pcm512x_dsp_program_texts[] and _values[]
+> > > don't match.
+
+> > Yeah, fixed.
+
+> I'm thinking whether we can check this in the macro.
+> I thought of using BUILD_BUG_ON(), but it's unsure whether it aligns
+> there well.
+
+Yes, or changing the way we pass things in so it's an array of
+key/value.  Usability isn't great for enums in general and particularly
+poor for sparse ones.
+
+> > Hrm, it is but this points out an error in the control helpers which has
+> > been there since forever - they call that parameter max but it's not a
+> > maximum, it's the number of elements in the enumeration.  I bet we have
+> > a bunch of other enumerations which miss the last element as a result.
+
+> Yeah, the argument name is really confusing.  I had to double-check
+> the code when I reviewed your patch, too :)
+
+> Also it'd be better to have a practice to use either ARRAY_SIZE() or a
+> constant there, too.
+
+Indeed - even better would be to just remove the parameter entirely and
+use ARRAY_SIZE() on the array of strings we get passed in so there's no
+way it could be messed up.
+
+--G6ArjEZjY3m60389
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS85MUAAoJELSic+t+oim9dj4P/1/kOSVCzFKd8t4ppjMVp3ky
+aC/CoyIi1cbu7JzM/jNshE86X7ODlMOcPwy/Qe/sD/cml1Wf8RFucXIqnkf/YPMg
+Hx8ByebwQlTES8h6FTIkcs8/Ga/F63GGK8hvapYS/5MuAcXylTkNUrLnNDX/VPza
+8EK32JbErgcqjejGY8G2IVOgTm4TDStK0bop7iWy+l/UQ3X/SRDGZD5tIPEJkSvk
+wggl6mi9SVEGpNlvj+6ADLARVwDexY5zssDauTglpwip/zFHSsEhtimS3mX6GoFY
+D5SXZV0Ychar/uzdkkj1HITw9lvs9DLsmX3g0NswRIb+TEp0ucXTDYbCxDHMu503
+TZzjh8XKMmRFulhKliAhh1cMF/3YTL0/K0h+55/nVjBLKNjmDLqg5wIycmdooLu2
+JyJ1Sbk+dEcO7ttZDnT0754e+X1goKKM69qjm2WEjpYPMAEurYrpXJOnJHLSCyHj
+mHE0scKyY6CfPXWqJ7eVNXEykeim96H6EPx0zLXs7ClAc9fYhBukUOv1qKKtvzoj
+SIMqOgNzBxnCuKw8X2DjdOEMSoFmmJPqyKo3Fb1htgrzQ9fY9G0bSP5Kgee+cksZ
+V0+nCx4fd4ukDxauMX1UOa8NsUQ8Rr1SVv5xuz9kClJO7fF0J4WjYvNk6FGL/mSe
+sQWwNtVCZ98X4jLgH+Y8
+=q4gJ
+-----END PGP SIGNATURE-----
+
+--G6ArjEZjY3m60389--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
