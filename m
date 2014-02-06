@@ -1,55 +1,35 @@
-From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: pcm512x: Add PCM512x driver
-Date: Thu, 06 Feb 2014 14:24:07 +0100
-Message-ID: <52F38CF7.7060306@metafoo.de>
-References: <1391689575-4039-1-git-send-email-broonie@kernel.org>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Subject: RE: [PATCH 0/8] da9055: Driver initialisation fixes, add DT support
+Date: Thu, 6 Feb 2014 13:31:22 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A03376B7E36D8@SW-EX-MBX02.diasemi.com>
+References: <cover.1391614923.git.Adam.Thomson.Opensource@diasemi.com>
+ <20140206005406.GC1308@roeck-us.net>
+ <2E89032DDAA8B9408CB92943514A03376B7E368A@SW-EX-MBX02.diasemi.com>
+ <52F38CA1.8020806@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1391689575-4039-1-git-send-email-broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-kernel-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <52F38CA1.8020806@roeck-us.net>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Guenter Roeck <linux@roeck-us.net>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/06/2014 01:26 PM, Mark Brown wrote:
-[...]
-> +static const char *pcm512x_dsp_program_texts[] = {
-
-Nitpick: should be "static const char * const ...", a immutable array of 
-pointers pointing to immutable strings. Same for all the enum texts in this 
-driver.
-[...]
-> +static int __init pcm512x_modinit(void)
-> +{
-> +	int ret = 0;
-> +
-> +#if IS_ENABLED(CONFIG_I2C)
-> +	ret = i2c_add_driver(&pcm512x_i2c_driver);
-> +	if (ret) {
-> +		printk(KERN_ERR "Failed to register pcm512x I2C driver: %d\n",
-> +		       ret);
-> +	}
-> +#endif
-> +#if defined(CONFIG_SPI_MASTER)
-> +	ret = spi_register_driver(&pcm512x_spi_driver);
-> +	if (ret != 0) {
-> +		printk(KERN_ERR "Failed to register pcm512x SPI driver: %d\n",
-> +		       ret);
-> +	}
-> +#endif
-
-Another reason why I think it is better to separate the I2C and SPI bits 
-into different modules. If the registration of the SPI driver fails you'll 
-return an error and the module will not be loaded. At the same time the i2c 
-driver is already registered. I know that this is rather theoretical, but if 
-we don't care if our error handling is correct, because we assume that the 
-error will never happen, we do not need error handling at all.
-
-> +	return ret;
-> +}
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24gVGh1LCBGZWIgMDYsIDIwMTQgYXQgMTM6MjM6NDdQTSArMDAwMCwgR3VlbnRlciBSb2VjayB3
+cm90ZToNCg0KPiA+IFdoYXQgSSBjb3VsZCd2ZSBkb25lIGlzIHVzZSBwbGF0Zm9ybV9nZXRfaXJx
+X2J5bmFtZSgpIGFuZCBhdm9pZGVkIHVzaW5nDQo+ID4gcmVnbWFwX2lycV9nZXRfdmlycSgpIGFz
+IEkgd291bGQgYWxyZWFkeSBoYXZlIHRoZSBjb3JyZWN0IFZJUlEgdG8gcGFzcyB0bw0KPiA+IHJl
+cXVlc3RfdGhyZWFkZWRfaXJxKCksIGJ1dCBJIGZpZ3VyZWQgdGhhdCB1c2luZyByZWdtYXBfaXJx
+X2dldF92aXJxKCkgbWFkZQ0KPiA+IG1vcmUgc2Vuc2UgYXQgdGhlIHRpbWUsIGFuZCB3YXMgdW5h
+YmxlIHRvIHVzZSBib3RoLg0KPiA+DQo+IA0KPiBJIG1heSBiZSBtaXNzaW5nIHNvbWV0aGluZywg
+YnV0IEkgdGhpbmsgdGhlIHByb2JsZW0gbWF5IGJlIHRoYXQgeW91IGFyZQ0KPiBkb2luZyB0d28g
+bWFwcGluZ3MgaW5zdGVhZCBvZiBqdXN0IG9uZS4gSSBkb24ndCB0aGluayB5b3UgbmVlZCB0byBj
+YWxsDQo+IHJlZ21hcF9pcnFfZ2V0X3ZpcnEoKSBhdCBhbGwuDQoNClllcywgeW91J3JlIGNvcnJl
+Y3QuIFRoZSBpc3N1ZSB3YXMgYWxyZWFkeSB0aGVyZSBpbiB0aGUgY29kZSBhbmQgSSB3YXMNCmF0
+dGVtcHRpbmcgdG8gZml4IGl0LiBXaGVuIEkgbWFkZSB0aGUgY2hhbmdlIEkgZmlndXJlZCB1c2lu
+ZyBvbmx5DQpyZWdtYXBfaXJxX2dldF92aXJxKCkgd2FzIHRoZSB3YXkgdG8gZ28sIGJ1dCBzZWVt
+cyBsaWtlIEkgY2hvc2UgdGhlIHdyb25nDQpvcHRpb24uIFdpbGwgbWFrZSB0aGUgY2hhbmdlcyAo
+cmVtb3ZlIHJlZ21hcF9pcnFfZ2V0X3ZpcnEoKSksIHRlc3Qgb24gYm90aCBEVA0KYW5kIG5vbi1E
+VCBwbGF0Zm9ybXMsIGFuZCB0aGVuIHdpbGwgcmUtc3VibWl0IHRoZSBwYXRjaGVzLg0K
