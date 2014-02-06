@@ -1,18 +1,16 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH v2] MIDI driver for Behringer BCD2000 USB
- device
-Date: Thu, 06 Feb 2014 17:16:41 +0100
-Message-ID: <52F3B569.3070406@zonque.org>
-References: <1391631059-6840-1-git-send-email-dev@kicherer.org>
- <52F2BBF7.6050802@zonque.org> <52F3B348.5060907@kicherer.org>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH v2 0/8] da9055: Driver initialisation fixes,
+	add DT support
+Date: Thu, 6 Feb 2014 18:03:04 +0000
+Message-ID: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FCE92651FC
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2014 17:16:42 +0100 (CET)
-In-Reply-To: <52F3B348.5060907@kicherer.org>
+Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
+ [195.245.230.162])
+ by alsa0.perex.cz (Postfix) with ESMTP id 77A1E26500C
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2014 19:03:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mario Kicherer <dev@kicherer.org>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alessandro Zummo <a.zummo@towertech.it>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/06/2014 05:07 PM, Mario Kicherer wrote:
-> On 05.02.2014 23:32, Daniel Mack wrote:
+This patch series provides the following updates for DA9055 drivers:
 
->> ERROR: DOS line endings
->>
->> Did you send the patch using git send-email?
-> 
-> Yes, I only get the two warnings as Takashi. I also moved the
-> strings in one line as he suggested.
+ - Fixes an issue with da9055 driver initialisation (conflicting device ids) of
+   PMIC (MFD) and CODEC drivers which means they cannot be used together on
+   the same I2C bus.
+ - Add initial DT support for DA9055 related drivers, including binding
+   documentation.
+ - Remove use of regmap_irq_get_virq() in driver probes which was conflicting
+   with use of platform_get_irq_byname(). platform_get_irq_byname() already
+   returns the VIRQ number due to MFD core translation so using
+   regmap_irq_get_virq() on that returned value results in an incorrect IRQ
+   being requested. The driver probes then fail because of this.
 
-As Takashi pointed out, that might be my bad. I'm puzzled though, as I
-didn't change my procedure.
+[Changes since v1]:
 
->> You could add something like this:
->>
->> #ifdef CONFIG_SND_DEBUG
->> static void bcd2000_midi_hex_dump(const char *prefix,
->> 				  const unsigned char *buf, int len)
->> {
->> 	print_hex_dump(KERN_DEBUG, prefix,
->> 		       DUMP_PREFIX_NONE, 16, 1, buf, len, false);
->> }
->> #else
->> static inline void bcd2000_midi_hex_dump(const char *prefix,
->> 				  const unsigned char *buf, int len) {}
->> #endif
->>
->> And then just call the function from various places. That would safe you
->> the module parameter, the condition check, and an indentation level.
-> 
-> Hm, I removed the CONFIG_ part as the module parameter would allow
-> me and possible users to debug things spontaneously. But I can use our
-> approach if you think it would be better nonetheless?
+ - Regulator:
+    * fixed coding style issue (lack of braces for if,else statement)
+    * removal of 'ifdef' around DT related headers
+    * Use of 'of_regulator_match()' for retrieving regulator related info
+      from DT nodes.
 
-I think so. Less debug conditionals in the code usually result in better
-readability. But it's a nit really.
+ - General:
+    * Instead of removing platform_get_irq_byname() usage and device resources
+      to fix IRQ conflict in driver probes, now removed 'regmap_irq_get_virq()'
+      as advised. This has been tested on target for both DT and non-DT setups
+      and works as expected.
 
->>> +		/* safety check */
->>> +		if (bcd2k->midi_cmd_offset + tocopy < BUFSIZE &&
->>> +				buf_offset + tocopy < len) {
->>> +			memcpy(&bcd2k->midi_cmd_buf[bcd2k->midi_cmd_offset],
->>> +				&buf[buf_offset], tocopy);
->>> +		} else {
->>> +			snd_printk(KERN_ERR PREFIX "access violation in %s\n",
->>> +					__func__);
->>
->> You want to drop the entire packet here, right?
-> 
-> Hm, I'm not sure. A "return" after the snd_printk would do, right?
+Adam Thomson (8):
+  ASoC: da9055: Fix device registration of PMIC and CODEC devices
+  ASoC: da9055: Add DT support for CODEC
+  mfd: da9055: Add DT support for PMIC
+  regulator: da9055: Add DT support
+  onkey: da9055: Remove use of regmap_irq_get_virq()
+  hwmon: da9055: Remove use of regmap_irq_get_virq()
+  rtc: da9055: Remove use of regmap_irq_get_virq()
+  regulator: da9055: Remove use of regmap_irq_get_virq()
 
-Yes, that should do.
-
-
-Daniel
+ Documentation/devicetree/bindings/mfd/da9055.txt   |   73 ++++++++++++++++++++
+ Documentation/devicetree/bindings/sound/da9055.txt |   22 ++++++
+ drivers/hwmon/da9055-hwmon.c                       |    4 -
+ drivers/input/misc/da9055_onkey.c                  |    1 -
+ drivers/mfd/da9055-i2c.c                           |   20 +++++-
+ drivers/regulator/da9055-regulator.c               |   73 ++++++++++++++++++--
+ drivers/rtc/rtc-da9055.c                           |    4 +-
+ sound/soc/codecs/da9055.c                          |   19 +++++-
+ 8 files changed, 201 insertions(+), 15 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/da9055.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/da9055.txt
