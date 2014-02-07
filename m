@@ -1,548 +1,120 @@
-From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH 3/3] dts: imx: add kosagi novena imx6q dts file
-Date: Fri,  7 Feb 2014 13:05:17 +0800
-Message-ID: <1391749517-11787-4-git-send-email-xobs@kosagi.com>
-References: <1391749517-11787-1-git-send-email-xobs@kosagi.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1391749517-11787-1-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: compress: adding support for hardware dependent
+ params
+Date: Fri, 07 Feb 2014 11:05:29 +0530
+Message-ID: <1391751329.24802.5.camel@vkoul-udesk3>
+References: <CAES_P+_Wztn3udEbc5vcUgAmFKuNLXh6MwHpcOSzLkah0c0Oxg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB06726526D
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 06:36:40 +0100 (CET)
+In-Reply-To: <CAES_P+_Wztn3udEbc5vcUgAmFKuNLXh6MwHpcOSzLkah0c0Oxg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: noman pouigt <variksla@gmail.com>, bgoswami@codeaurora.org
+Cc: vinod@alsa-project.org, alsa-devel@alsa-project.org, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, "." <koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add a device tree file for the Novena i.MX6q-based board.
----
- arch/arm/boot/dts/imx6q-novena.dts | 517 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 517 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6q-novena.dts
+On Mon, 2014-02-03 at 01:01 -0800, noman pouigt wrote:
+> >  We have a requirement, where we need to set a number of hardware specific
+> > parameters for compressed offload use-cases, before starting a stream. As
+> > these parameters need to be set once for the entire session, we would
+> > like to explore the best way to set these additional parameters somewhere
+> > before calling trigger() function.
+> >  Below are few of the proposed solutions that we could think of at this
+> > point for getting this done-
+> As you have not mentioned what kind of metadata you are talking about
+> I am assuming if your meta data can fit in below structure then we already
+> have a code in upstream which takes care of your need.
+No this is for audio file metadata which should be passed to decoder
+running in your DSP.
 
-diff --git a/arch/arm/boot/dts/imx6q-novena.dts b/arch/arm/boot/dts/imx6q-novena.dts
-new file mode 100644
-index 0000000..ea95168
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6q-novena.dts
-@@ -0,0 +1,517 @@
-+/*
-+ * Copyright 2012 Freescale Semiconductor, Inc.
-+ * Copyright 2011 Linaro Ltd.
-+ *
-+ * The code contained herein is licensed under the GNU General Public
-+ * License. You may obtain a copy of the GNU General Public License
-+ * Version 2 or later at the following locations:
-+ *
-+ * http://www.opensource.org/licenses/gpl-license.html
-+ * http://www.gnu.org/copyleft/gpl.html
-+ */
-+
-+/dts-v1/;
-+#include "imx6q.dtsi"
-+
-+/ {
-+	model = "Kosagi Novena (i.MX6 Quad)";
-+	compatible = "kosagi,imx6q-novena", "fsl,imx6q";
-+
-+	memory {
-+		reg = <0x10000000 0x40000000>;
-+	};
-+
-+	regulators {
-+		compatible = "simple-bus";
-+
-+		reg_2p5v: 2p5v {
-+			compatible = "regulator-fixed";
-+			regulator-name = "2P5V";
-+			regulator-min-microvolt = <2500000>;
-+			regulator-max-microvolt = <2500000>;
-+			regulator-always-on;
-+		};
-+
-+		reg_3p3v: 3p3v {
-+			compatible = "regulator-fixed";
-+			regulator-name = "3P3V";
-+			regulator-min-microvolt = <3300000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-always-on;
-+		};
-+
-+		reg_usb_otg_vbus: usb_otg_vbus {
-+			compatible = "regulator-fixed";
-+			regulator-name = "usb_otg_vbus";
-+			regulator-min-microvolt = <5000000>;
-+			regulator-max-microvolt = <5000000>;
-+			enable-active-high;
-+		};
-+		reg_audio_codec: es8328-regulator {
-+			compatible = "regulator-fixed";
-+			regulator-name = "es8328-power";
-+			regulator-boot-on;
-+			regulator-min-microvolt = <5000000>;
-+			regulator-max-microvolt = <5000000>;
-+			startup-delay-us = <400000>;
-+			gpio = <&gpio5 17 0>;
-+			enable-active-high;
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		user-button {
-+			label = "User Button";
-+			gpios = <&gpio4 14 1>;
-+			gpio-key,wakeup;
-+			linux,code = <116>; /* KEY_POWER */
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		heartbeat {
-+			label = "novena::usr0";
-+			gpios = <&gpio3 19 0>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+
-+        backlight {
-+                compatible = "pwm-backlight";
-+                pwms = <&pwm1 0 10000>;
-+
-+                brightness-levels = <0 3 6 12 16 24 32 48 64 96 128 192 255>;
-+                default-brightness-level = <12>;
-+        };
-+
-+        imx-drm {
-+		compatible = "fsl,imx-drm";
-+		crtcs = <&ipu1 0>, <&ipu1 1>;
-+		connectors = <&ldb>;
-+	};
-+
-+	sound {
-+		compatible = "fsl,imx-audio-novena";
-+		model = "imx-audio-novena";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_sound_novena>;
-+		clocks = <&clks 169>, <&clks 57>, <&clks 173>, <&clks 203>, <&clks 201>;
-+		clock-names = "cko1", "cko1_sel", "pll4_audio", "pll4_post_div", "cko_sel";
-+		ssi-controller = <&ssi1>;
-+		audio-codec = <&codec>;
-+		jack-gpio = <&gpio5 15 0>;
-+		audio-routing =
-+			"MIC_IN", "Mic Jack",
-+			"Mic Jack", "Mic Bias",
-+			"Headphone Jack", "HP_OUT",
-+			"Ext Spk", "SPK_OUT";
-+		mux-int-port = <1>;
-+		mux-ext-port = <3>;
-+	};
-+};
-+
-+&ssi1 {
-+	fsl,mode = "i2s-slave";
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart2_1>;
-+};
-+
-+&uart3 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart3_1>;
-+};
-+
-+&uart4 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart4_novena>;
-+};
-+
-+&sata {
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_hog>;
-+
-+	hog {
-+		pinctrl_hog: hoggrp {
-+			fsl,pins = <
-+				/* Touchscreen interrupt */
-+				MX6QDL_PAD_DISP0_DAT19__GPIO5_IO13 0x80000000
-+
-+				/* GPIO LED */
-+				MX6QDL_PAD_EIM_D19__GPIO3_IO19  0x80000000
-+
-+				/* FPGA power */
-+				MX6QDL_PAD_SD1_DAT1__GPIO1_IO17 0x80000000
-+
-+				/* User button */
-+				MX6QDL_PAD_SD2_DAT1__GPIO1_IO14 0x80000000
-+			>;
-+		};
-+	};
-+
-+	pcie {
-+		pinctrl_pcie_novena: pciegrp-novena {
-+			fsl,pins = <
-+				MX6QDL_PAD_EIM_D22__GPIO3_IO22  0x80000000 /* Wakeup */
-+				MX6QDL_PAD_EIM_D29__GPIO3_IO29  0x80000000 /* Reset */
-+				MX6QDL_PAD_GPIO_17__GPIO7_IO12  0x80000000 /* Power On */
-+				MX6QDL_PAD_EIM_A22__GPIO2_IO16  0x80000000 /* Wifi kill */
-+			>;
-+		};
-+	};
-+
-+	enet {
-+		pinctrl_enet_novena: enetgrp-novena {
-+			fsl,pins = <
-+				MX6QDL_PAD_ENET_MDIO__ENET_MDIO       0x1b0b0
-+				MX6QDL_PAD_ENET_MDC__ENET_MDC         0x1b0b0
-+				MX6QDL_PAD_RGMII_TXC__RGMII_TXC       0x1b020
-+				MX6QDL_PAD_RGMII_TD0__RGMII_TD0       0x1b028
-+				MX6QDL_PAD_RGMII_TD1__RGMII_TD1       0x1b028
-+				MX6QDL_PAD_RGMII_TD2__RGMII_TD2       0x1b028
-+				MX6QDL_PAD_RGMII_TD3__RGMII_TD3       0x1b028
-+				MX6QDL_PAD_RGMII_TX_CTL__RGMII_TX_CTL 0x1b028
-+				MX6QDL_PAD_ENET_REF_CLK__ENET_TX_CLK  0x1b0b0
-+				MX6QDL_PAD_RGMII_RXC__RGMII_RXC       0x1b0b0
-+				MX6QDL_PAD_RGMII_RD0__RGMII_RD0       0x1b0b0
-+				MX6QDL_PAD_RGMII_RD1__RGMII_RD1       0x1b0b0
-+				MX6QDL_PAD_RGMII_RD2__RGMII_RD2       0x1b0b0
-+				MX6QDL_PAD_RGMII_RD3__RGMII_RD3       0x1b0b0
-+				MX6QDL_PAD_RGMII_RX_CTL__RGMII_RX_CTL 0x1b0b0
-+				MX6QDL_PAD_GPIO_16__ENET_REF_CLK      0x4001b0a8
-+
-+				/* Ethernet reset */
-+				MX6QDL_PAD_EIM_D23__GPIO3_IO23  0x80000000
-+			>;
-+		};
-+	};
-+
-+	uart4 {
-+		pinctrl_uart4_novena: uart4-novena {
-+			fsl,pins = <
-+				MX6QDL_PAD_CSI0_DAT12__UART4_TX_DATA 0x1b0b1
-+				MX6QDL_PAD_CSI0_DAT13__UART4_RX_DATA 0x1b0b1
-+			>;
-+		};
-+	};
-+
-+	sound {
-+		pinctrl_sound_novena: sound-novena {
-+			fsl,pins = <
-+				/* Audio power regulator */
-+				MX6QDL_PAD_DISP0_DAT23__GPIO5_IO17 0x80000000
-+
-+				/* Headphone plug */
-+				MX6QDL_PAD_DISP0_DAT21__GPIO5_IO15 0x80000000
-+
-+				MX6QDL_PAD_GPIO_0__CCM_CLKO1       0x80000000
-+			>;
-+		};
-+	};
-+
-+	usdhc2 {
-+		pinctrl_usdhc2_novena: usdhc2-novena {
-+			fsl,pins = <
-+				MX6QDL_PAD_SD2_CMD__SD2_CMD    0x17059
-+				MX6QDL_PAD_SD2_CLK__SD2_CLK    0x10059
-+				MX6QDL_PAD_SD2_DAT0__SD2_DATA0 0x17059
-+				MX6QDL_PAD_SD2_DAT1__SD2_DATA1 0x17059
-+				MX6QDL_PAD_SD2_DAT2__SD2_DATA2 0x17059
-+				MX6QDL_PAD_SD2_DAT3__SD2_DATA3 0x17059
-+
-+				/* Write protect */
-+				MX6QDL_PAD_GPIO_2__GPIO1_IO02   0x80000000
-+
-+				/* Card detect */
-+				MX6QDL_PAD_GPIO_4__GPIO1_IO04   0x80000000
-+			>;
-+		};
-+	};
-+};
-+
-+&fec {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_enet_novena>;
-+	phy-mode = "rgmii";
-+	phy-reset-gpios = <&gpio3 23 0>;
-+	mac-address = [00 22 C6 87 72 03];
-+	rxc-skew-ps = <3000>;
-+	rxdv-skew-ps = <0>;
-+	txc-skew-ps = <3000>;
-+	txen-skew-ps = <0>;
-+	rxd0-skew-ps = <0>;
-+	rxd1-skew-ps = <0>;
-+	rxd2-skew-ps = <0>;
-+	rxd3-skew-ps = <0>;
-+	txd0-skew-ps = <3000>;
-+	txd1-skew-ps = <3000>;
-+	txd2-skew-ps = <3000>;
-+	txd3-skew-ps = <3000>;
-+};
-+
-+&usdhc2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc2_1>;
-+	pinctrl-0 = <&pinctrl_usdhc2_novena>;
-+	cd-gpios = <&gpio1 4 0>;
-+	wp-gpios = <&gpio1 2 0>;
-+	status = "okay";
-+};
-+
-+&usdhc3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc3_2>;
-+	non-removable;
-+	status = "okay";
-+};
-+
-+&usbotg {
-+	vbus-supply = <&reg_usb_otg_vbus>;
-+	dr_mode = "otg";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usbotg_2>;
-+	disable-over-current;
-+	status = "okay";
-+};
-+
-+&usbh1 {
-+	status = "okay";
-+};
-+
-+&audmux {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_audmux_2>;
-+};
-+
-+&i2c1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1_1>;
-+	status = "okay";
-+
-+	stmpe610@0 {
-+		compatible = "st,stmpe610";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0x44>;
-+		irq-over-gpio;
-+		irq-gpios = <&gpio5 13 0>;
-+		id = <0>;
-+		blocks = <0x5>;
-+		irq-trigger = <0x1>;
-+
-+		stmpe_adc {
-+			compatible = "st,stmpe-adc";
-+		};
-+		stmpe_touchscreen {
-+			compatible = "st,stmpe-ts";
-+			ts,sample-time = <4>;
-+			ts,mod-12b = <1>;
-+			ts,ref-sel = <0>;
-+			ts,adc-freq = <1>;
-+			ts,ave-ctrl = <1>;
-+			ts,touch-det-delay = <2>;
-+			ts,settling = <2>;
-+			ts,fraction-z = <7>;
-+			ts,i-drive = <1>;
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c2_1>;
-+	status = "okay";
-+
-+	pmic: pfuze100@08 {
-+		compatible = "fsl,pfuze100";
-+		reg = <0x08>;
-+
-+		regulators {
-+			sw1a_reg: sw1ab {
-+				regulator-min-microvolt = <300000>;
-+				regulator-max-microvolt = <1875000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+				regulator-ramp-delay = <6250>;
-+			};
-+
-+			sw1c_reg: sw1c {
-+				regulator-min-microvolt = <300000>;
-+				regulator-max-microvolt = <1875000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			sw2_reg: sw2 {
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			sw3a_reg: sw3a {
-+				regulator-min-microvolt = <400000>;
-+				regulator-max-microvolt = <1975000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			sw3b_reg: sw3b {
-+				regulator-min-microvolt = <400000>;
-+				regulator-max-microvolt = <1975000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			sw4_reg: sw4 {
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <3300000>;
-+			};
-+
-+			swbst_reg: swbst {
-+				regulator-min-microvolt = <5000000>;
-+				regulator-max-microvolt = <5150000>;
-+			};
-+
-+			snvs_reg: vsnvs {
-+				regulator-min-microvolt = <1000000>;
-+				regulator-max-microvolt = <3000000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			vref_reg: vrefddr {
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			vgen1_reg: vgen1 {
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <1550000>;
-+			};
-+
-+			vgen2_reg: vgen2 {
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <1550000>;
-+			};
-+
-+			vgen3_reg: vgen3 {
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+			};
-+
-+			vgen4_reg: vgen4 {
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+			};
-+
-+			vgen5_reg: vgen5 {
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+			};
-+
-+			vgen6_reg: vgen6 {
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+			};
-+
-+			coin_reg: coin {
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+				regulator-boot-on;
-+			};
-+		};
-+	};
-+};
-+
-+&i2c3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c3_1>;
-+	status = "okay";
-+
-+	codec: es8328@11 {
-+		compatible = "everest,es8328";
-+		reg = <0x11>;
-+		status = "disabled";
-+	};
-+
-+	stdp4028@73 {
-+		compatible = "st,stdp4028";
-+		power-switch = <&gpio5 28 0>;
-+		reg = <0x73>;
-+		status = "disabled";
-+	};
-+
-+	/*
-+	eepromoops@56 {
-+		compatible = "kosagi,eepromoops";
-+		reg = <0x56>;
-+		status = "okay";
-+	};
-+	*/
-+};
-+
-+&ecspi3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi3_1>;
-+	fsl,spi-num-chipselects = <3>;
-+	status = "okay";
-+
-+	spidev@0x00 {
-+		compatible = "spidev";
-+		spi-max-frequency = <30000000>;
-+		reg = <0>;
-+	};
-+};
-+
-+&pcie {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pcie_novena>;
-+	reset-gpio = <&gpio3 29 0>;
-+	power-on-gpio = <&gpio7 12 0>;
-+	wake-up-gpio = <&gpio3 22 0>;
-+	disable-gpio = <&gpio2 16 0>;
-+};
-+
-+&ldb {
-+	fsl,dual-channel;
-+	status = "disabled";
-+        lvds-channel@0 {
-+		fsl,data-mapping = "jeida";
-+		fsl,data-width = <24>;
-+		crtcs = <&ipu2 0>, <&ipu2 1>;
-+                display-timings {
-+			2560x1700p50 {
-+				clock-frequency = <185000000>;
-+				hactive = <2560>;
-+				vactive = <1700>;
-+				hback-porch = <80>;
-+				hfront-porch = <48>;
-+				hsync-len = <32>;
-+				vback-porch = <36>;
-+				vfront-porch = <3>;
-+				vsync-len = <10>;
-+				hsync-active = <1>;
-+				vsync-active = <1>;
-+			};
-+                };
-+        };
-+};
+Yes as you and Pierre said in the absence of any specifics in the
+parameters it would be very difficult to comment on how to go about it.
+For offload specific case, you only need to know how to configure the
+decoder, which this API tries to do quite well. If you have something HW
+specific that should be same issue in PCM handling too, how do you do it
+there. I am suspecting the problem statement isn't correct here!
+> 
+> 140 struct snd_compr_metadata {
+> 141          __u32 key;
+> 142          __u32 value[8];
+> 143 };
+> 
+> Structure snd_compr_ops has set_metadata and get_metadata callbacks
+> which you can use for your need.
+> 
+>  88  * struct snd_compr_ops: compressed path DSP operations
+>  89  * @open: Open the compressed stream
+>  90  * This callback is mandatory and shall keep dsp ready to receive the stream
+>  91  * parameter
+>  92  * @free: Close the compressed stream, mandatory
+>  93  * @set_params: Sets the compressed stream parameters, mandatory
+>  94  * This can be called in during stream creation only to set codec params
+>  95  * and the stream properties
+>  96  * @get_params: retrieve the codec parameters, mandatory
+>  97  * @trigger: Trigger operations like start, pause, resume, drain, stop.
+>  98  * This callback is mandatory
+>  99  * @pointer: Retrieve current h/w pointer information. Mandatory
+> 100  * @copy: Copy the compressed data to/from userspace, Optional
+> 101  * Can't be implemented if DSP supports mmap
+> 102  * @mmap: DSP mmap method to mmap DSP memory
+> 103  * @ack: Ack for DSP when data is written to audio buffer, Optional
+> 104  * Not valid if copy is implemented
+> 105  * @get_caps: Retrieve DSP capabilities, mandatory
+> 106  * @get_codec_caps: Retrieve capabilities for a specific codec, mandatory
+> 107  */
+> 
+> It would be nice if someone can send a patch here to describe set and
+> get_metadata callbacks in compress_driver.h
+Thanks for pointing, will do the needful
+
+> >
+> > 1. Adding new IOCTL call: Add a new ioctl control in compress-offload.c
+> > file to handle hardware specific parameters setting. This new ioctl
+> > control will call into soc-compress.c and eventually call into platform
+> > driver ioctl to set those hardware specific parameters. In this case, we
+> > will add a new structure, let's say "snd_compr_hw_ctrl_params", with the
+> > same fields as "snd_compr_metadata" struct.
+> >
+> >
+> > 2. Adding a function hw_dependant_hw_params(), which will be called after
+> > hw_params() and before prepare() function. The new function will
+> > eventually call into the platform driver to get the hardware specific
+> > parameters set. Once implemented, this would look something like-
+> >   hw_params();
+> >   hw_dependant_hw_params();
+> >   prepare();
+> >
+> >
+> > 3. Add a function "hw_dependant_hw_params()", as _part_ of the hw_params()
+> > function. This new function will be called after the (existing) generic
+> > parameters are set. So once implemented, the proposed function calls would
+> > look like-
+> >   hw_params() {
+> >         generic_hw_params();
+> >         hw_dependant_hw_params();
+> >   }
+> >   prepare();
+> >
+> >
+> > We would like to get feedback on these proposed solutions and get a
+> > discussion going to see how best these requirements can be fitted in the
+> > current Compressed ALSA framework (for mainlining).
+> Can you explain your meta data?
+> 
+> Be the change you want to see in the world:Gandhi
+
+
 -- 
-1.8.3.2
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+~Vinod
