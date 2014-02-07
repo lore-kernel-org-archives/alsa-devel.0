@@ -1,83 +1,77 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rsnd: use device dependency clock
-Date: Fri, 7 Feb 2014 17:42:15 +0000
-Message-ID: <20140207174215.GI1757@sirena.org.uk>
-References: <87wqhg6228.wl%kuninori.morimoto.gx@gmail.com>
- <20140204182749.GR22609@sirena.org.uk>
- <87siryv15f.wl%kuninori.morimoto.gx@gmail.com>
- <20140205172640.GF32298@sirena.org.uk>
- <87ppmzb8y9.wl%kuninori.morimoto.gx@gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH RFC 2/2] drivers/base: declare phandle DT nodes as
+ components
+Date: Fri, 7 Feb 2014 17:43:31 +0000
+Message-ID: <20140207174330.GF26684@n2100.arm.linux.org.uk>
+References: <cover.1391793068.git.moinejf@free.fr>
+ <9f8bbe28b00160cab2cedffa3f8fb42121035964.1391793068.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1938015973286765288=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B91A265372
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 18:42:22 +0100 (CET)
-In-Reply-To: <87ppmzb8y9.wl%kuninori.morimoto.gx@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+Content-Disposition: inline
+In-Reply-To: <9f8bbe28b00160cab2cedffa3f8fb42121035964.1391793068.git.moinejf@free.fr>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: driverdev-devel-bounces@linuxdriverproject.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Feb 07, 2014 at 05:53:27PM +0100, Jean-Francois Moine wrote:
+> At system startup time, some devices depends on the availability of
+> some other devices before starting. The infrastructure for componentised
+> subsystems permits to handle this dependence, each driver defining
+> its own role.
+> 
+> This patch does an automatic creation of the lowest components in
+> case of DT. This permits simple devices to be part of complex
+> componentised subsystems without any specific code.
 
---===============1938015973286765288==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LYw3s/afESlflPpp"
-Content-Disposition: inline
+A component with no operations makes precisely no sense - with that,
+there's no way for the component to be a stand-alone driver.  Your
+approach forces your ideas onto every DT device that is referenced
+as a phandle.  That's extremely restrictive.
 
+I don't want the component stuff knowing anything about OF.  I don't
+want it knowing about driver matching.  I don't want it knowing about
+ACPI either.  That's the whole point behind it - it is 100% agnostic
+about how that stuff works.
 
---LYw3s/afESlflPpp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The model is quite simply this:
 
-On Fri, Feb 07, 2014 at 12:53:06AM -0800, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Current R-Car sound driver is using device
-> independent audio clock, but it is not good
-> design for DT support.
+- a master device is the covering component for the "card"
+  - the master device knows what components to expect by some means.
+    In the case of DT, that's by phandle references to the components.
+  - the master device handles the component independent setup of the
+    "card", creating the common resources that are required.  When it's
+    ready, it asks for the components to be bound.
+  - upon removal of any component, the master component is unbound,
+    which triggers the removal of the "card" from the subsystem.
+  - as part of the removal, sub-components are unbound.
+  - the master device should have as /little/ knowledge about the
+    components as possible to permit component re-use.
 
-Applied, thanks.
+- a component driver should be independent of it's master.
+  - A component which is probed from the device model should simply
+    register itself using component_add() with an appropriate operations
+    structure, and a removal function which deletes itself.
+  - When the driver is ready to be initialised (when the "card" level
+    resources have been set in place) the "bind" method will be called.
+    At this point, the component does everything that a classical driver
+    model driver would do in it's probe callback.
+  - unbind is the same as remove in the classical driver model.
 
---LYw3s/afESlflPpp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+So, please, no DT stuff in the component support - it's simply not
+required.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS9RrzAAoJELSic+t+oim9nVYP/j2Md/70j1Rnl8nPtgmJ9nBo
-jDRtP/hqg01rrZ+5EEKS3MyeP00cDC7tWi93VHlQg4E3laWunrn9OjnuzjlXPAQ5
-SC+NXM8luwvhZdWTBRh15tft/hAo+p6YOFm80dVSMSEZPBNCaIqnGHrSe21A1zwK
-sgAVNmoNbrBVxFSYts0Sxmb7OohTe1j1+bCqGfygCpg5PDYnOinIWzI/pYGpXcvt
-/SBTp4wqodlb2jmCdmjqWXZzb84OwdgAEq7PmrfjoPYIg+GOOjauZtsG4L0hS7hN
-3U2S9ykfpYcQ0tej82F+LdtzEJV/g1I6jRequZAjteNK/efsfOtsSPGb7sNd887p
-fUzwpNiJf6FxGPd/QVQgRumrORlhD3wjdCDpNswX1Uo6lT23cES7FjfbaxFhaa3t
-wSz72EF4gLH6Qd2WZ3nGSt2X+qnyw0MUlAEhUGyBTxYGYkYyAA3FR/7bvLcEC02o
-2JQPWBSPRL3gVM0/8gOd6aHFDYyyupGBaRUK7N9ZI2EiYVZ7ItIEqY4anQXhx5hW
-Y9HtRZPjSA29nomuK14IwCyKReg3xUE4yQV+SrPUc27jGVKDow1wKOO/6Q9HG0N4
-yEleD6HE5FHoXVDiorgpylKvEaaU/bVWvsPPyVi3rpwfErFolqI8Lx/uh0eOBIFP
-5/GvmM3KADzwaCDS6el0
-=Q9fd
------END PGP SIGNATURE-----
-
---LYw3s/afESlflPpp--
-
---===============1938015973286765288==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1938015973286765288==--
+-- 
+FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
+in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
+Estimate before purchase was "up to 13.2Mbit".
