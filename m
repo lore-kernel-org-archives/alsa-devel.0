@@ -1,29 +1,35 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC 26/46] drivers/base: provide an infrastructure for
-	componentised subsystems
-Date: Fri, 7 Feb 2014 09:46:56 +0000
-Message-ID: <20140207094656.GY26684@n2100.arm.linux.org.uk>
-References: <20140102212528.GD7383@n2100.arm.linux.org.uk> <E1Vypo6-0007FF-Lb@rmk-PC.arm.linux.org.uk> <CAKMK7uFYhz8Pmv5E7aKY7yzZGDe_m8a0382Njv7tZRoBSfmRpw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-media-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uFYhz8Pmv5E7aKY7yzZGDe_m8a0382Njv7tZRoBSfmRpw@mail.gmail.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Daniel Vetter <daniel@ffwll.ch>
-Cc: David Airlie <airlied@linux.ie>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, devel@driverdev.osuosl.org, dri-devel <dri-devel@lists.freedesktop.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Hans Verkuil <hverkuil@xs4all.nl>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Add a headset quirk for Dell XPS 13
+Date: Fri,  7 Feb 2014 11:00:16 +0100
+Message-ID: <1391767216-4394-1-git-send-email-david.henningsson@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>, "3.10+" <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 07, 2014 at 10:04:30AM +0100, Daniel Vetter wrote:
-> I've chatted a bit with Hans Verkuil about this topic at fosdem and
-> apparently both v4l and alsa have something like this already in their
-> helper libraries. Adding more people as fyi in case they want to
-> switch to the new driver core stuff from Russell.
+This quirk is needed for the headset microphone to work.
 
-It's not ALSA, but ASoC which has this.  Mark is already aware of this
-and will be looking at it from an ASoC perspective.
+Alsa-info at http://www.alsa-project.org/db/?f=8c7dfe857ceff462ca2de133e67023c0f68de9cb
 
+Cc: stable@vger.kernel.org (3.10+)
+Reported-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index bee4b8c..2cb6a39 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5146,6 +5146,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x038b, "Acer Aspire 8943G", ALC662_FIXUP_ASPIRE),
+ 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x060a, "Dell XPS 13", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0623, "Dell", ALC668_FIXUP_AUTO_MUTE),
+ 	SND_PCI_QUIRK(0x1028, 0x0624, "Dell", ALC668_FIXUP_AUTO_MUTE),
+ 	SND_PCI_QUIRK(0x1028, 0x0625, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
 -- 
-FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
-in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
-Estimate before purchase was "up to 13.2Mbit".
+1.7.9.5
