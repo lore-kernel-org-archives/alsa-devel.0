@@ -1,75 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: Add ACPI ID for Intel
-	Baytrail
-Date: Fri, 7 Feb 2014 12:29:38 +0000
-Message-ID: <20140207122938.GI32298@sirena.org.uk>
-References: <1391758516-17772-1-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH v2 1/8] ASoC: da9055: Fix device registration of PMIC and
+ CODEC devices
+Date: Fri, 7 Feb 2014 12:58:31 +0000
+Message-ID: <20140207125831.GL32298@sirena.org.uk>
+References: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+ <6a398d176b0b2bf8792d27bd5e2995fd96afb32d.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+ <20140207105657.GL14727@lee--X1>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4754491969085586438=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 86D8B2651FC
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 13:52:15 +0100 (CET)
-In-Reply-To: <1391758516-17772-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+IojnoBMdP/qo3gc"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140207105657.GL14727@lee--X1>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4754491969085586438==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kyLY//NQyQkWxTQC"
-Content-Disposition: inline
-
-
---kyLY//NQyQkWxTQC
+--+IojnoBMdP/qo3gc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Feb 07, 2014 at 09:35:16AM +0200, Jarkko Nikula wrote:
-> Realtek RT5640 uses ACPI ID "10EC5640" for Intel Baytrail platforms.
+On Fri, Feb 07, 2014 at 10:56:57AM +0000, Lee Jones wrote:
 
-Applied, thanks.
+> > +/*
+> > + * DO NOT change the device Ids. The naming is intentionally specific as both
+> > + * the PMIC and CODEC parts of this chip are instantiated separately as I2C
+> > + * devices (both have configurable I2C addresses, and are to all intents and
+> > + * purposes separate). As a result there are specific DA9055 ids for PMIC
+> > + * and CODEC, which must be different to operate together.
+> > + */
 
---kyLY//NQyQkWxTQC
+> I'm not sure this comment is required.
+
+They are, we've already had the suffixes removed from both PMIC and
+CODEC drivers by people doing code review causing the drivers to fail to
+load for several kernel releases (this should be tagged to stable as a
+result).
+
+> Most device IDs are named this way.
+
+Having the suffix on a subdevice would be normal but it's not normal for
+the primary I2C device, usually you can just put the part number in.
+
+--+IojnoBMdP/qo3gc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS9NGvAAoJELSic+t+oim9lxsP/2Vkj14vSdgdsl4+RD3sNBnQ
-Rw0P4cNTYm/f8I5dUnWTY4uOx9O00RUbuZIJcmPFBnsqBBZe2uV3U0G+lLIF5yaG
-yKcFrf/2DMyOECUHhUfoNea5m6G7hK44y0jvkZ6zCxLjx+0ahtGxP82SxBNKfqhe
-EVO4FOiZzE11w2Ppv47QnO5pCGgoeE6B1iYc9e8go1CNsU4XC/ddr5ZoKZlSfD7x
-nI270DfxsVJxxm7wwF2/e4koDQjFP1Vcq2y9+Ql6JsSgvk7WZe6EkOQ93Wa75sGt
-pjJIBaGJ0mOpO/G/uZJCmG06/nLPDLnR2ufye98ImYRse8cRAMy5RnvzrcpJ5h50
-6vrDTjuE7eg1bfOYVaI6aIKd22sFDpnbqI6YM8Ht+xtVXJBon/BNoabwegXS/dKt
-uef+875ItTSbeE51OAoitCYfHyIlIQAAjt6wT+JvH2pQKG5cFv8md2cM+9eC5ePZ
-c1DV/t/B/h3DkjzEKv4ZTHgL2oF1n5RbEnb0Lb1grjWmKK5JTUl/QIStXQpnmxri
-5UJ2UYHmmKeFPrClg2Q3bnMK28quKzlE+fL46R13shGZCao230nYh0cmglWREcRp
-ZmufWTsEogMDt/X7tqpa9FLTUP9l6RHspfajj+uBIAjGAjYjgFGG+2qDCX7Zp1ie
-Thtqc2vs+5p6LlH7UZ4S
-=kcRx
+iQIcBAEBAgAGBQJS9Nh0AAoJELSic+t+oim99loP/ij+WZiRpWPTJR3oSmGFkKko
+p89l4D93sB+ovRJaq8g6Rs7+ArknmFv8UW7UcAuTPWS1P99JAJi9+XSmLhz7i2rB
+bwWPIFPnwb8UMR1OeVlb8Ph2Ej+5CC4iPctoeaWsxPvNnrVp0bUiY0sGwLK/Z2hQ
+PhVQFH1OgcPMK48ISHtOaT1ENDWWS2znF/Aj9FY4q4zgMym/2eAGezxoDH3Z7H+w
+7Bvzy6W6azWwmqPR+0MRzkwu3JjUCrt2fOBfVclGs8XEuUHENNqyDND7/uuv/Ny7
+AQwRa128efWSovKbE89uGiVG/crvjdslFrf+f3AsxVrsAWWNeHtzcs3eEF+HMDOa
+HOMquXXCEj4xJjcjqgynO1KVywjkPu1PJneQ2hINVvB4rf5ci+ByvBkRUpJd+tIF
+pIpOODsmUICpJYZoyZE6V0SH2RgPjYkIYE5a4kfe9K7JM7KHQNT8nHIfNZm9rYqc
+HxGVvh7q0BHLevFFk/ka71wNWbR0yZ9Iw5NNWQbxwwYLBPeAOep/BhOTVZ79bpbL
+Xnu+QU1BlnYmmm9BuqYPHpASFrI/kRVxqLk6X2PEvFytvXUqCUJmc4U0KUeko8Z3
+zn1/gBhH+B0pV9FjvSMeL4Y/ZR6jDGy8W2pQDHoYefGxWpYFaRZYDVvkxKQZLYHm
+kwzJGtJZpfxmBfBD2TGh
+=DYFT
 -----END PGP SIGNATURE-----
 
---kyLY//NQyQkWxTQC--
-
---===============4754491969085586438==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4754491969085586438==--
+--+IojnoBMdP/qo3gc--
