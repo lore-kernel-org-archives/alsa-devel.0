@@ -1,102 +1,69 @@
-From: Hendrik-Jan Heins <hjheins@gmail.com>
-Subject: Re: Sony Vaio Pro svp112a1cm
-Date: Fri, 7 Feb 2014 19:23:39 +0100
-Message-ID: <CAAU0D9eVs=QrrsznzWeGymF8ejSz_N-tCvGG1vqYVo+etmJaog@mail.gmail.com>
-References: <CAAU0D9cXafhbUY9bOf9AK_uUpYszV5BuoM5d3vHJjhFQbifxqQ@mail.gmail.com>
- <s5h7g9ajagu.wl%tiwai@suse.de>
- <CAAU0D9ewA38Yqq0FhebF1DNtwGPaEv5kk1Pp3OBoeNrOz3zMnA@mail.gmail.com>
- <s5hob2jtbmt.wl%tiwai@suse.de>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH RFC 0/2] drivers/base: simplify simple DT-based
+ components
+Date: Fri, 7 Feb 2014 19:42:04 +0100
+Message-ID: <20140207194204.4d4326bd@armhf>
+References: <cover.1391793068.git.moinejf@free.fr>
+	<20140207173326.GD26684@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f177.google.com (mail-lb0-f177.google.com
- [209.85.217.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 36CC4265372
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 19:23:40 +0100 (CET)
-Received: by mail-lb0-f177.google.com with SMTP id 10so1447823lbg.36
- for <alsa-devel@alsa-project.org>; Fri, 07 Feb 2014 10:23:39 -0800 (PST)
-In-Reply-To: <s5hob2jtbmt.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20140207173326.GD26684@n2100.arm.linux.org.uk>
+Sender: linux-media-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>
 List-Id: alsa-devel@alsa-project.org
 
-Good to hear.
-thanks a lot Takashi!
+On Fri, 7 Feb 2014 17:33:26 +0000
+Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
 
-Hendrik-Jan
+> On Fri, Feb 07, 2014 at 06:11:08PM +0100, Jean-Francois Moine wrote:
+> > This patch series tries to simplify the code of simple devices in c=
+ase
+> > they are part of componentised subsystems, are declared in a DT, an=
+d
+> > are not using the component bin/unbind functions.
+>=20
+> I wonder - I said earlier today that this works absolutely fine witho=
+ut
+> modification with DT, so why are you messing about with it adding DT
+> support?
+>=20
+> This is totally the wrong approach.  The idea is that this deals with
+> /devices/ and /devices/ only.  It groups up /devices/.
+>=20
+> It's up to the add_component callback to the master device to decide
+> how to deal with that.
+>=20
+> > Jean-Francois Moine (2):
+> >   drivers/base: permit base components to omit the bind/unbind ops
+>=20
+> And this patch has me wondering if you even understand how to use
+> this...  The master bind/unbind callbacks are the ones which establis=
+h
+> the "card" based context with the subsystem.
+>=20
+> Please, before buggering up this nicely designed implementation, plea=
+se
+> /first/ look at the imx-drm rework which was posted back in early Jan=
+uary
+> which illustrates how this is used in a DT context - which is somethi=
+ng
+> I've already pointed you at once today already.
 
-2014-02-07 12:17 GMT+01:00 Takashi Iwai <tiwai@suse.de>:
-> At Fri, 7 Feb 2014 08:47:18 +0100,
-> Hendrik-Jan Heins wrote:
->>
->> Dear Takashi,
->>
->> I just went ahead and gave it a shot the way I hoped it should work.
->> The internal and the headphone microphone is now appearing in alsa,
->> and they are both working.
->>
->> The patch is indeed very simple as you said; I just changed the
->> deviceID to the correct one, and it works.
->
-> OK, good to hear!
->
-> Now I applied the fix patch to sound git tree.  It should be included
-> in 3.14-rc3 (slipped from rc2 pull request that was already sent) and
-> will be backported to stable kernels after that.
->
->
-> thanks,
->
-> Takashi
->
->>
->> please find it attached.
->>
->> best regards,
->>
->> Hendrik-Jan
->>
->> 2014-02-05 8:16 GMT+01:00 Takashi Iwai <tiwai@suse.de>:
->> > At Tue, 4 Feb 2014 23:04:08 +0100,
->> > Hendrik-Jan Heins wrote:
->> >>
->> >> Dear list,
->> >>
->> >> to report the Spny Vaio Pro svp112a1cm
->> >> THe sound device in this notebook works, but the internal microphone not.
->> >> This seeems to be the same device as in teh 13 inch version of this
->> >> laptop, but they seem to have changed the ID of the device.
->> >> Maybe the same fix can be applied to fix?
->> >
->> > If adding your id makes it working, just let us know (or submit a fix
->> > patch).
->> >
->> > That fixup is basically to disable the pin detection at NID 0x18 where
->> > reports a bogus state due to the TRRS headset jack.
->> >
->> >
->> > Takashi
->> >
->> >> All details of the machine are available here:
->> >> http://www.alsa-project.org/db/?f=970d897015298925b86d4d2c68a106fba22eb184
->> >>
->> >> thank you.
->> >>
->> >> best regards,
->> >>
->> >> Hendrik-Jan
->> >> _______________________________________________
->> >> Alsa-devel mailing list
->> >> Alsa-devel@alsa-project.org
->> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> >>
+As I told in a previous mail, your code works fine in my DT-based
+Cubox. I am rewriting the TDA988x as a normal encoder/connector, and,
+yes, the bind/unbind functions are useful in this case.
+
+But you opened a door. In a DT context, you know that the probe_defer
+mechanism does not work correctly. Your work permits to solve delicate
+cases: your component_add tells exactly when a device is available, and
+the master bind callback is the green signal for the device waiting for
+its resources. Indeed, your system was not created for such a usage,
+but it works as it is (anyway, the component bind/unbind functions may
+be empty...).
+
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
