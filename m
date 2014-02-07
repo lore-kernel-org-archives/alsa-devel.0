@@ -1,17 +1,18 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: compress: adding support for hardware dependent
- params
-Date: Fri, 07 Feb 2014 11:05:29 +0530
-Message-ID: <1391751329.24802.5.camel@vkoul-udesk3>
-References: <CAES_P+_Wztn3udEbc5vcUgAmFKuNLXh6MwHpcOSzLkah0c0Oxg@mail.gmail.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH v3] ASoC: add RT286 CODEC driver
+Date: Fri, 7 Feb 2014 07:27:44 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D702946A@RTITMBSV03.realtek.com.tw>
+References: <1386727090-15543-1-git-send-email-bardliao@realtek.com>
+ <20131218192040.GN31886@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id DB06726526D
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 06:36:40 +0100 (CET)
-In-Reply-To: <CAES_P+_Wztn3udEbc5vcUgAmFKuNLXh6MwHpcOSzLkah0c0Oxg@mail.gmail.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A56D2652CE
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 08:27:51 +0100 (CET)
+In-Reply-To: <20131218192040.GN31886@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,100 +22,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: noman pouigt <variksla@gmail.com>, bgoswami@codeaurora.org
-Cc: vinod@alsa-project.org, alsa-devel@alsa-project.org, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, "." <koul@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>, "leon@leon.nu" <leon@leon.nu>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2014-02-03 at 01:01 -0800, noman pouigt wrote:
-> >  We have a requirement, where we need to set a number of hardware specific
-> > parameters for compressed offload use-cases, before starting a stream. As
-> > these parameters need to be set once for the entire session, we would
-> > like to explore the best way to set these additional parameters somewhere
-> > before calling trigger() function.
-> >  Below are few of the proposed solutions that we could think of at this
-> > point for getting this done-
-> As you have not mentioned what kind of metadata you are talking about
-> I am assuming if your meta data can fit in below structure then we already
-> have a code in upstream which takes care of your need.
-No this is for audio file metadata which should be passed to decoder
-running in your DSP.
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Thursday, December 19, 2013 3:21 AM
+> To: Bard Liao
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Flove; Oder Chiou;
+> leon@leon.nu
+> Subject: Re: [PATCH v3] ASoC: add RT286 CODEC driver
+> 
+> 
+> > +	if (rt286->pdata.irq_en)
+> > +		rt286_index_update_bits(codec,
+> > +			NODE_ID_VENDOR_REGISTERS, 0x33, 0x0002, 0x0002);
+> 
+> Why would the system ever want to supply an interrupt and not use it?
 
-Yes as you and Pierre said in the absence of any specifics in the
-parameters it would be very difficult to comment on how to go about it.
-For offload specific case, you only need to know how to configure the
-decoder, which this API tries to do quite well. If you have something HW
-specific that should be same issue in PCM handling too, how do you do it
-there. I am suspecting the problem statement isn't correct here!
-> 
-> 140 struct snd_compr_metadata {
-> 141          __u32 key;
-> 142          __u32 value[8];
-> 143 };
-> 
-> Structure snd_compr_ops has set_metadata and get_metadata callbacks
-> which you can use for your need.
-> 
->  88  * struct snd_compr_ops: compressed path DSP operations
->  89  * @open: Open the compressed stream
->  90  * This callback is mandatory and shall keep dsp ready to receive the stream
->  91  * parameter
->  92  * @free: Close the compressed stream, mandatory
->  93  * @set_params: Sets the compressed stream parameters, mandatory
->  94  * This can be called in during stream creation only to set codec params
->  95  * and the stream properties
->  96  * @get_params: retrieve the codec parameters, mandatory
->  97  * @trigger: Trigger operations like start, pause, resume, drain, stop.
->  98  * This callback is mandatory
->  99  * @pointer: Retrieve current h/w pointer information. Mandatory
-> 100  * @copy: Copy the compressed data to/from userspace, Optional
-> 101  * Can't be implemented if DSP supports mmap
-> 102  * @mmap: DSP mmap method to mmap DSP memory
-> 103  * @ack: Ack for DSP when data is written to audio buffer, Optional
-> 104  * Not valid if copy is implemented
-> 105  * @get_caps: Retrieve DSP capabilities, mandatory
-> 106  * @get_codec_caps: Retrieve capabilities for a specific codec, mandatory
-> 107  */
-> 
-> It would be nice if someone can send a patch here to describe set and
-> get_metadata callbacks in compress_driver.h
-Thanks for pointing, will do the needful
+The codec support a configurable irq pin which can be disable or enable.
+Some customers may not use it.
+So, I add a flag in platform data to configure it.
 
-> >
-> > 1. Adding new IOCTL call: Add a new ioctl control in compress-offload.c
-> > file to handle hardware specific parameters setting. This new ioctl
-> > control will call into soc-compress.c and eventually call into platform
-> > driver ioctl to set those hardware specific parameters. In this case, we
-> > will add a new structure, let's say "snd_compr_hw_ctrl_params", with the
-> > same fields as "snd_compr_metadata" struct.
-> >
-> >
-> > 2. Adding a function hw_dependant_hw_params(), which will be called after
-> > hw_params() and before prepare() function. The new function will
-> > eventually call into the platform driver to get the hardware specific
-> > parameters set. Once implemented, this would look something like-
-> >   hw_params();
-> >   hw_dependant_hw_params();
-> >   prepare();
-> >
-> >
-> > 3. Add a function "hw_dependant_hw_params()", as _part_ of the hw_params()
-> > function. This new function will be called after the (existing) generic
-> > parameters are set. So once implemented, the proposed function calls would
-> > look like-
-> >   hw_params() {
-> >         generic_hw_params();
-> >         hw_dependant_hw_params();
-> >   }
-> >   prepare();
-> >
-> >
-> > We would like to get feedback on these proposed solutions and get a
-> > discussion going to see how best these requirements can be fitted in the
-> > current Compressed ALSA framework (for mainlining).
-> Can you explain your meta data?
 > 
-> Be the change you want to see in the world:Gandhi
+> > +	/* Set configuration default  */
+> > +	rt286_write(codec, AC_VERB_SET_CONFIG_DEFAULT_BYTES_3,
+> > +		NODE_ID_MIC1, 0x00);
+> > +	rt286_write(codec, AC_VERB_SET_CONFIG_DEFAULT_BYTES_3,
+> > +		NODE_ID_DMIC1, 0x00);
+> > +	rt286_write(codec, AC_VERB_SET_CONFIG_DEFAULT_BYTES_3,
+> > +		NODE_ID_DMIC2, 0x00);
+> 
+> Why are the silicon defaults not adequate?
+
+Actually, they are hardware dependency.
+I will add a configuration flag in platform data.
+
+> 
+> > +static int rt286_hp_event(struct snd_soc_dapm_widget *w,
+> > +			   struct snd_kcontrol *kcontrol, int event) {
+> > +	struct snd_soc_codec *codec = w->codec;
+> > +	unsigned int val;
+> > +
+> > +	switch (event) {
+> > +	case SND_SOC_DAPM_POST_PMU:
+> > +		val = snd_soc_read(codec, NODE_ID_HP_OUT) & 0x8080;
+> > +		switch (val) {
+> > +		case 0x0:
+> > +			rt286_write(codec, AC_VERB_SET_AMP_GAIN_MUTE,
+> > +				NODE_ID_HP_OUT, 0xb000);
+> > +			break;
+> > +		case 0x8000:
+> > +			rt286_write(codec, AC_VERB_SET_AMP_GAIN_MUTE,
+> > +				NODE_ID_HP_OUT, 0x9000);
+> > +			break;
+> > +		case 0x0080:
+> > +			rt286_write(codec, AC_VERB_SET_AMP_GAIN_MUTE,
+> > +				NODE_ID_HP_OUT, 0xa000);
+> > +			break;
+> > +		}
+> 
+> This is rather unclear.  What is it doing?
+
+SOC_DOUBLE_EXT("Headphone Playback Switch", NODE_ID_HP_OUT,
+			   15, 8, 1, 1, rt286_playback_switch_get,
+			   rt286_playback_switch_put),
+We use NODE_ID_HP_OUT bit 15, 8 to store the mute/unmute status for headphone L/R channel.
+rt286_hp_event will mute both channels when power down.
+And it will read the status from RT286_HP_OUT to unmute the corresponding channel(s) when power on.
 
 
--- 
-~Vinod
+> 
+> 
+> > +static int rt286_set_bias_level(struct snd_soc_codec *codec,
+> > +				 enum snd_soc_bias_level level)
+> > +{
+> > +	switch (level) {
+> > +	case SND_SOC_BIAS_PREPARE:
+> > +		if (SND_SOC_BIAS_STANDBY == codec->dapm.bias_level)
+> > +			rt286_write(codec, AC_VERB_SET_POWER_STATE,
+> > +				NODE_ID_AUDIO_FUNCTION_GROUP, AC_PWRST_D0);
+> > +		break;
+> > +
+> > +	case SND_SOC_BIAS_OFF:
+> > +		rt286_write(codec, AC_VERB_SET_POWER_STATE,
+> > +			NODE_ID_AUDIO_FUNCTION_GROUP, AC_PWRST_D3);
+> > +		break;
+> 
+> These aren't matched - you power up when leaving standby but only power
+> down when you go to off.  That's a bit odd and probably won't do the right
+> thing and will leave the CODEC powered up all the time since you don't set
+> idle_bias_off (though perhaps you should).
+
+I will power off the codec in standby.
+
+> 
+> I'm also not seeing any code for interrupts even though there appears to be
+> some code to initialise them in the driver.
+
+I will add it along with jack detection function in another patch later.
+
+Thanks.
+
+> 
+> ------Please consider the environment before printing this e-mail.
