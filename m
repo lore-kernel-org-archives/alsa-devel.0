@@ -1,30 +1,56 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Subject: RE: [PATCH v2 3/8] mfd: da9055: Add DT support for PMIC
-Date: Fri, 7 Feb 2014 15:45:11 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A03376BACFBC6@SW-EX-MBX01.diasemi.com>
-References: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
- <46f41a14205ac39de3adb8c87d2a6dba557ad8d1.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
- <20140207110320.GM14727@lee--X1>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/2] ASoC: codecs: Put the CODEC drivers in a
+	menu
+Date: Fri,  7 Feb 2014 15:59:29 +0000
+Message-ID: <1391788770-31780-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140207110320.GM14727@lee--X1>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Guenter Roeck <linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69ADF265319
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 16:59:42 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBGZWIgMDcsIDIwMTQgYXQgMTE6MDM6MThBTSArMDAwMCwgTGVlIEpvbmVzIHdyb3Rl
-Og0KDQo+IA0KPiBDYW4geW91IGJyZWFrIHRoaXMgdXAgcGxlYXNlLg0KPiANCj4gQmluZGluZ3Mg
-c2hvdWxkIGJlIHNlcGFyYXRlIHRvIHRoZSBiaW5kaW5nIGRvY3VtZW50Lg0KDQpSaWdodCwgZmlu
-ZS4gRmlndXJlZCBhcyB0aGV5IHdlcmUgZGlyZWN0bHkgcmVsYXRlZCB0aGV5IHNob3VsZCBiZSBp
-biBvbmUgcGF0Y2gNCmJ1dCB3aWxsIHNlcGFyYXRlIHRoZW0uDQoNCj4gRW50YW5nbGluZyB0aGUg
-aTJjX2RldmljZV9pZCB0YWJsZSB3aXRoIHRoZSBvZl9kZXZpY2VfaWQgdGFibGUgc291bmRzDQo+
-IGEgYml0IHRvbyB3YWNreSBmb3IgbXkgbGlraW5nLiBXaGVyZSBkbyB5b3UgZXZlbiB1c2UgaXQ/
-DQo+IA0KDQpZb3UncmUgcmlnaHQuIElzIG5vdCB1c2VkIHNvIGNhbiByZW1vdmUgaXQuDQo=
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+From: Mark Brown <broonie@linaro.org>
+
+Now they're visible they get a bit noisy.
+
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/Kconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 28faa2d0eaef..6b67e86f3f2c 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -8,6 +8,8 @@ config SND_SOC_I2C_AND_SPI
+ 	default y if I2C=y
+ 	default y if SPI_MASTER=y
+ 
++menu "CODEC drivers"
++
+ config SND_SOC_ALL_CODECS
+ 	tristate "Build all ASoC CODEC drivers"
+ 	depends on COMPILE_TEST
+@@ -588,3 +590,5 @@ config SND_SOC_ML26124
+ config SND_SOC_TPA6130A2
+ 	tristate "Texas Instruments TPA6130A2 headphone amplifier"
+ 	depends on I2C
++
++endmenu
+-- 
+1.9.rc1
