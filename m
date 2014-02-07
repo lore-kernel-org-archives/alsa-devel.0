@@ -1,77 +1,70 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC 2/2] drivers/base: declare phandle DT nodes as
- components
-Date: Fri, 7 Feb 2014 17:43:31 +0000
-Message-ID: <20140207174330.GF26684@n2100.arm.linux.org.uk>
-References: <cover.1391793068.git.moinejf@free.fr>
- <9f8bbe28b00160cab2cedffa3f8fb42121035964.1391793068.git.moinejf@free.fr>
+From: Christopher Seifert <seifert@ims.uni-hannover.de>
+Subject: ASoC driver for multi-codec sound device
+Date: Fri, 07 Feb 2014 18:52:58 +0100
+Message-ID: <52F51D7A.1050109@ims.uni-hannover.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-Content-Disposition: inline
-In-Reply-To: <9f8bbe28b00160cab2cedffa3f8fb42121035964.1391793068.git.moinejf@free.fr>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: driverdev-devel-bounces@linuxdriverproject.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout2.uni-hannover.de (mailout2.uni-hannover.de
+ [130.75.2.114]) by alsa0.perex.cz (Postfix) with ESMTP id 7E1C7265454
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 18:52:59 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 07, 2014 at 05:53:27PM +0100, Jean-Francois Moine wrote:
-> At system startup time, some devices depends on the availability of
-> some other devices before starting. The infrastructure for componentised
-> subsystems permits to handle this dependence, each driver defining
-> its own role.
-> 
-> This patch does an automatic creation of the lowest components in
-> case of DT. This permits simple devices to be part of complex
-> componentised subsystems without any specific code.
+Hi all,
 
-A component with no operations makes precisely no sense - with that,
-there's no way for the component to be a stand-alone driver.  Your
-approach forces your ideas onto every DT device that is referenced
-as a phandle.  That's extremely restrictive.
+we are currently working on an ASoC driver for a multi-codec sound 
+device. The kernel we use is version 3.10.
 
-I don't want the component stuff knowing anything about OF.  I don't
-want it knowing about driver matching.  I don't want it knowing about
-ACPI either.  That's the whole point behind it - it is 100% agnostic
-about how that stuff works.
+Each codec has it's own I2C address and are connected via I2S to a 
+single CPU DAI. We'd like to use the codecs in TDM mode later on, so we 
+can use them as a single multi channel ALSA device. Currently we can use 
+one codec in stereo mode with playback and capturing working using a 
+device tree. We were able to get a second codec working (using the 
+snd_soc_aux_dev structure in our driver) in so far we can see and use 
+the codec's controls via alsamixer, however the codec seems to ignore 
+the commands or does not receive any at all.
 
-The model is quite simply this:
+What we'd like to know:
 
-- a master device is the covering component for the "card"
-  - the master device knows what components to expect by some means.
-    In the case of DT, that's by phandle references to the components.
-  - the master device handles the component independent setup of the
-    "card", creating the common resources that are required.  When it's
-    ready, it asks for the components to be bound.
-  - upon removal of any component, the master component is unbound,
-    which triggers the removal of the "card" from the subsystem.
-  - as part of the removal, sub-components are unbound.
-  - the master device should have as /little/ knowledge about the
-    components as possible to permit component re-use.
+1) How to we achieve proper initialisation of all codecs? More 
+specifically, which function (ALSA side) or callback (codec side) is 
+used to set up the codecs clocks (via I2C)?
 
-- a component driver should be independent of it's master.
-  - A component which is probed from the device model should simply
-    register itself using component_add() with an appropriate operations
-    structure, and a removal function which deletes itself.
-  - When the driver is ready to be initialised (when the "card" level
-    resources have been set in place) the "bind" method will be called.
-    At this point, the component does everything that a classical driver
-    model driver would do in it's probe callback.
-  - unbind is the same as remove in the classical driver model.
+2) As far as we know the driver we are building upon does not implement 
+own PCM or DMA drivers. Is it necessary to do this on our own to get the 
+codecs working in TDM mode? Also when working in I2S (stereo) mode on 
+ALSA side, is it possible to tell ALSA to use more than 2 channels of 
+the sound buffer? We currently have interleaved audio samples from more 
+than one codec in our sound buffer (transferred by DMA) and we'd like to 
+select a subset of these depending on how the sound device was opened 
+(for example "arecord -c 2" vs. "arecord -c 4" and so on). Which are the 
+audio sample order ALSA supports or expects, specifically in the case of 
+more than 2 audio channels? (Interleaved "L0, L1, L2, ..., Ln, R0, R1, 
+..., Rn" vs. "L0, R0, L1, R1, ..., Ln, Rn")
 
-So, please, no DT stuff in the component support - it's simply not
-required.
+3) If there is no custom DMA driver implemented how does the ALSA 
+framework use the DMA controller? In which case do we need to write our 
+own DMA driver? Are there possibilities to use the ALSA framework's 
+internal DMA handling for our purposes?
 
--- 
-FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
-in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
-Estimate before purchase was "up to 13.2Mbit".
+4) How are PCM and DMA correlated in ALSA framework? Specifically, do 
+the implementations depend on each other or are they independent, so we 
+can for example implement a DMA driver and use ALSA's default PCM?
+
+We're stuck with this, so we appreciate any kind of help pointing us in 
+the right direction. If there are any required informations missing 
+please don't hesitate to ask.
+
+Thanks,
+Achim and Christopher
