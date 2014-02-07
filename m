@@ -1,88 +1,58 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix leftover ifdef checks after
-	modularization
-Date: Fri,  7 Feb 2014 12:18:45 +0100
-Message-ID: <1391771925-31031-1-git-send-email-tiwai@suse.de>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH RFC 26/46] drivers/base: provide an infrastructure for
+	componentised subsystems
+Date: Fri, 7 Feb 2014 12:57:21 +0100
+Message-ID: <20140207125721.2d925387@armhf>
+References: <20140102212528.GD7383@n2100.arm.linux.org.uk>
+	<E1Vypo6-0007FF-Lb@rmk-PC.arm.linux.org.uk>
+	<CAKMK7uFYhz8Pmv5E7aKY7yzZGDe_m8a0382Njv7tZRoBSfmRpw@mail.gmail.com>
+	<20140207094656.GY26684@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E5AD02607C8
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 12:18:45 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B8E9DABA6
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 11:18:45 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20140207094656.GY26684@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Sender: dri-devel-bounces@lists.freedesktop.org
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: devel@driverdev.osuosl.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Sascha Hauer <kernel@pengutronix.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel <dri-devel@lists.freedesktop.org>, Takashi Iwai <tiwai@suse.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Since the commit [595fe1b702c3: ALSA: hda - Make
-CONFIG_SND_HDA_CODEC_* tristate], the kconfig variables for the
-generic parser and codec drivers can be "m" instead of boolean, but
-some codes are left unchanged to check only #ifdef
-CONFIG_SND_HDA_CODEC_XXX, which is no longer true for modules.
-This patch fixes them by replacing with IS_ENABLED() macros.
-
-Fixes: 595fe1b702c3 ('ALSA: hda - Make CONFIG_SND_HDA_CODEC_* tristate')
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=70161
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_codec.c | 6 +++---
- sound/pci/hda/hda_intel.c | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index ec4536c8d8d4..69acbf758bbb 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -932,7 +932,7 @@ int snd_hda_bus_new(struct snd_card *card,
- }
- EXPORT_SYMBOL_GPL(snd_hda_bus_new);
- 
--#ifdef CONFIG_SND_HDA_GENERIC
-+#if IS_ENABLED(CONFIG_SND_HDA_GENERIC)
- #define is_generic_config(codec) \
- 	(codec->modelname && !strcmp(codec->modelname, "generic"))
- #else
-@@ -1570,7 +1570,7 @@ int snd_hda_codec_update_widgets(struct hda_codec *codec)
- EXPORT_SYMBOL_GPL(snd_hda_codec_update_widgets);
- 
- 
--#ifdef CONFIG_SND_HDA_CODEC_HDMI
-+#if IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI)
- /* if all audio out widgets are digital, let's assume the codec as a HDMI/DP */
- static bool is_likely_hdmi_codec(struct hda_codec *codec)
- {
-@@ -1622,7 +1622,7 @@ int snd_hda_codec_configure(struct hda_codec *codec)
- 		unload_parser(codec); /* to be sure */
- 		if (is_likely_hdmi_codec(codec))
- 			patch = load_parser(codec, snd_hda_parse_hdmi_codec);
--#ifdef CONFIG_SND_HDA_GENERIC
-+#if IS_ENABLED(CONFIG_SND_HDA_GENERIC)
- 		if (!patch)
- 			patch = load_parser(codec, snd_hda_parse_generic_codec);
- #endif
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index fa2879a21a50..e354ab1ec20f 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -198,7 +198,7 @@ MODULE_DESCRIPTION("Intel HDA driver");
- #endif
- 
- #if defined(CONFIG_PM) && defined(CONFIG_VGA_SWITCHEROO)
--#ifdef CONFIG_SND_HDA_CODEC_HDMI
-+#if IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI)
- #define SUPPORT_VGA_SWITCHEROO
- #endif
- #endif
--- 
-1.8.5.2
+T24gRnJpLCA3IEZlYiAyMDE0IDA5OjQ2OjU2ICswMDAwClJ1c3NlbGwgS2luZyAtIEFSTSBMaW51
+eCA8bGludXhAYXJtLmxpbnV4Lm9yZy51az4gd3JvdGU6Cgo+IE9uIEZyaSwgRmViIDA3LCAyMDE0
+IGF0IDEwOjA0OjMwQU0gKzAxMDAsIERhbmllbCBWZXR0ZXIgd3JvdGU6Cj4gPiBJJ3ZlIGNoYXR0
+ZWQgYSBiaXQgd2l0aCBIYW5zIFZlcmt1aWwgYWJvdXQgdGhpcyB0b3BpYyBhdCBmb3NkZW0gYW5k
+Cj4gPiBhcHBhcmVudGx5IGJvdGggdjRsIGFuZCBhbHNhIGhhdmUgc29tZXRoaW5nIGxpa2UgdGhp
+cyBhbHJlYWR5IGluIHRoZWlyCj4gPiBoZWxwZXIgbGlicmFyaWVzLiBBZGRpbmcgbW9yZSBwZW9w
+bGUgYXMgZnlpIGluIGNhc2UgdGhleSB3YW50IHRvCj4gPiBzd2l0Y2ggdG8gdGhlIG5ldyBkcml2
+ZXIgY29yZSBzdHVmZiBmcm9tIFJ1c3NlbGwuICAKPiAKPiBJdCdzIG5vdCBBTFNBLCBidXQgQVNv
+QyB3aGljaCBoYXMgdGhpcy4gIE1hcmsgaXMgYWxyZWFkeSBhd2FyZSBvZiB0aGlzCj4gYW5kIHdp
+bGwgYmUgbG9va2luZyBhdCBpdCBmcm9tIGFuIEFTb0MgcGVyc3BlY3RpdmUuCgpSdXNzZWxsLAoK
+SSBzdGFydGVkIHRvIHVzZSB5b3VyIGNvZGUgKHdoaWNoIHdvcmtzIGZpbmUsIHRoYW5rcyksIGFu
+ZCBpdCBhdm9pZHMgYQpsb3Qgb2YgcHJvYmxlbXMsIGVzcGVjaWFsbHksIGFib3V0IHByb2JlX2Rl
+ZmVyIGluIGEgRFQgY29udGV4dC4KCkkgd2FzIHdvbmRlcmluZyBpZiB5b3VyIGNvbXBvbmVudGlz
+ZWQgbWVjaGFuaXNtIGNvdWxkIGJlIGV4dGVuZGVkIHRvIHRoZQpkZXZpY2VzIGRlZmluZWQgYnkg
+RFQuCgpJbiB0aGUgRFQsIHdoZW4gYSBkZXZpY2Vfbm9kZSBpcyBhIHBoYW5kbGUsIHRoaXMgbWVh
+bnMgaXQgaXMgcmVmZXJlbmNlZApieSBzb21lIG90aGVyIGRldmljZShzKSwgYW5kIHRoZXNlIGRl
+dmljZShzKSB3aWxsIG5vdCBzdGFydCB1bnRpbCB0aGUKcGhhbmRsZSBkZXZpY2UgaXMgcmVnaXN0
+ZXJlZC4KClRoZW4sIHRoZSBpZGVhIGlzIHRvIGRvIGEgY29tcG9uZW50X2FkZCgpIGZvciBzdWNo
+IHBoYW5kbGUgZGV2aWNlcyBpbgpkZXZpY2VfYWRkKCkgKGRldmljZV9yZWdpc3RlcikuCgpQcmF0
+aWNhbGx5LAoKLSB0aGUgY29tcG9uZW50X2FkZCgpIGNhbGwgaW4gZGV2aWNlX3JlZ2lzdGVyIHdv
+dWxkIG5vdCBpbmNsdWRlIGFueQogIGJpbmQvdW5iaW5kIGNhbGxiYWNrIGZ1bmN0aW9uLCBzbywg
+dGhpcyBzaG91bGQgYmUgdGVzdGVkIGluCiAgY29tcG9uZW50X2JpbmQvdW5iaW5kKCksCgotIGNv
+bXBvbmVudF9hZGQgd291bGQgbm90IGJlIGNhbGxlZCBpZiB0aGUgZGV2aWNlIGJlaW5nIGFkZGVk
+IGFscmVhZHkKICBjYWxsZWQgY29tcG9uZW50X2FkZCBpbiBpdHMgcHJvYmUgZnVuY3Rpb24uIEEg
+c2ltcGxlIGZsYWcgaW4gdGhlCiAgc3RydWN0IGRldmljZV9ub2RlIHNob3VsZCBzb2x2ZSB0aGlz
+IHByb2JsZW0uCgpXaGF0IGRvIHlvdSB0aGluayBhYm91dCB0aGlzPwoKLS0gCktlbiBhciBjJ2hl
+bnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8v
+bW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3Rv
+cC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1k
+ZXZlbAo=
