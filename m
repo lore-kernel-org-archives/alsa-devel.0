@@ -1,230 +1,81 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC 0/2] drivers/base: simplify simple DT-based components
-Date: Fri, 7 Feb 2014 20:23:51 +0000
-Message-ID: <20140207202351.GH26684@n2100.arm.linux.org.uk>
-References: <cover.1391793068.git.moinejf@free.fr>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: wm8991: Remove unused pointer in
+	wm8991_probe()
+Date: Fri, 7 Feb 2014 20:51:56 +0000
+Message-ID: <20140207205156.GN1757@sirena.org.uk>
+References: <20140204212059.51b9a904@spike>
+ <20140207133948.GO32298@sirena.org.uk>
+ <20140207194319.74f6099f@spike>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-Content-Disposition: inline
-In-Reply-To: <cover.1391793068.git.moinejf@free.fr>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: driverdev-devel-bounces@linuxdriverproject.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0643670122495268639=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3C962654BE
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 21:52:35 +0100 (CET)
+In-Reply-To: <20140207194319.74f6099f@spike>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Christian Engelmayer <cengelma@gmx.at>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 07, 2014 at 06:11:08PM +0100, Jean-Francois Moine wrote:
-> This patch series tries to simplify the code of simple devices in case
-> they are part of componentised subsystems, are declared in a DT, and
-> are not using the component bin/unbind functions.
 
-Here's my changes to the TDA998x driver to add support for the component
-helper.  The TDA998x driver retains support for the old way so that
-drivers can be transitioned.  For any one DRM "card" the transition to
-using the component layer must be all-in or all-out - partial transitions
-are not permitted with the simple locking implementation currently in
-the component helper due to the possibility of deadlock.  (Master
-binds, holding the component lock, master declares i2c device, i2c
-device is bound to tda998x, which tries to register with the component
-layer, trying to take the held lock.)
-
-http://ftp.arm.linux.org.uk/cgit/linux-cubox.git/log/?h=unstable/tda998x-devel
-
-It's marked unstable because the two "drivers/base" commits in there are
-_not_ the upstream commits.  You'll notice that I just sent one of those
-to Gregkh in patch form.
-
-Now, the bits which aren't in that branch but which update the Armada
-driver is the below, which needs some clean up and removal of some local
-differences I have in my cubox tree, but nicely illustrates why /your/
-patches to the component stuff is the wrong approach.
-
-Not only does the patch below add support for using the componentised
-TDA998x driver in the above link, but it allows that componentised support
-to be specified not only via platform data but also via DT.  The DT
-stuff is untested, but it works exactly the same way as imx-drm does
-which has been tested.
-
-And yes, I'm thinking that maybe moving compare_of() into the component
-support so that drivers can share this generic function may be a good
-idea.
-
-So... as I've been saying, no changes to component.c are required here.
-
-diff --git a/drivers/gpu/drm/armada/armada_drv.c b/drivers/gpu/drm/armada/armada_drv.c
-index 6f6554bac93f..1f2b7c60bff9 100644
---- a/drivers/gpu/drm/armada/armada_drv.c
-+++ b/drivers/gpu/drm/armada/armada_drv.c
-@@ -6,7 +6,9 @@
-  * published by the Free Software Foundation.
-  */
- #include <linux/clk.h>
-+#include <linux/component.h>
- #include <linux/module.h>
-+#include <linux/platform_data/armada_drm.h>
- #include <drm/drmP.h>
- #include <drm/drm_crtc_helper.h>
- #include "armada_crtc.h"
-@@ -53,6 +55,11 @@ static const struct armada_drm_slave_config tda19988_config = {
- };
- #endif
- 
-+static bool is_componentized(struct device *dev)
-+{
-+	return dev->of_node || dev->platform_data;
-+}
-+
- static void armada_drm_unref_work(struct work_struct *work)
- {
- 	struct armada_private *priv =
-@@ -171,16 +178,22 @@ static int armada_drm_load(struct drm_device *dev, unsigned long flags)
- 			goto err_kms;
- 	}
- 
-+	if (is_componentized(dev->dev)) {
-+		ret = component_bind_all(dev->dev, dev);
-+		if (ret)
-+			goto err_kms;
-+	} else {
- #ifdef CONFIG_DRM_ARMADA_TDA1998X
--	ret = armada_drm_connector_slave_create(dev, &tda19988_config);
--	if (ret)
--		goto err_kms;
-+		ret = armada_drm_connector_slave_create(dev, &tda19988_config);
-+		if (ret)
-+			goto err_kms;
- #endif
- #ifdef CONFIG_DRM_ARMADA_TDA1998X_NXP
--	ret = armada_drm_tda19988_nxp_create(dev);
--	if (ret)
--		goto err_kms;
-+		ret = armada_drm_tda19988_nxp_create(dev);
-+		if (ret)
-+			goto err_kms;
- #endif
-+	}
- 
- 	ret = drm_vblank_init(dev, n);
- 	if (ret)
-@@ -204,6 +217,10 @@ static int armada_drm_load(struct drm_device *dev, unsigned long flags)
- 	drm_irq_uninstall(dev);
-  err_kms:
- 	drm_mode_config_cleanup(dev);
-+
-+	if (is_componentized(dev->dev))
-+		component_unbind_all(dev->dev, dev);
-+
- 	drm_mm_takedown(&priv->linear);
- 	flush_work(&priv->fb_unref_work);
- 
-@@ -218,6 +235,10 @@ static int armada_drm_unload(struct drm_device *dev)
- 	armada_fbdev_fini(dev);
- 	drm_irq_uninstall(dev);
- 	drm_mode_config_cleanup(dev);
-+
-+	if (is_componentized(dev->dev))
-+		component_unbind_all(dev->dev, dev);
-+
- 	drm_mm_takedown(&priv->linear);
- 	flush_work(&priv->fb_unref_work);
- 	dev->dev_private = NULL;
-@@ -380,14 +401,82 @@ static struct drm_driver armada_drm_driver = {
- 	.fops			= &armada_drm_fops,
- };
- 
-+static int armada_drm_bind(struct device *dev)
-+{
-+	return drm_platform_init(&armada_drm_driver, to_platform_device(dev));
-+}
-+
-+static void armada_drm_unbind(struct device *dev)
-+{
-+	drm_platform_exit(&armada_drm_driver, to_platform_device(dev));
-+}
-+
-+static int compare_of(struct device *dev, void *data)
-+{
-+	return dev->of_node == data;
-+}
-+
-+static int armada_drm_compare_name(struct device *dev, void *data)
-+{
-+	const char *name = data;
-+	return !strcmp(dev_name(dev), name);
-+}
-+
-+static int armada_drm_add_components(struct device *dev, struct master *master)
-+{
-+	int i, ret = -ENXIO;
-+
-+	if (dev->of_node) {
-+		struct device_node *np = dev->of_node;
-+
-+		for (i = 0; ; i++) {
-+			struct device_node *node;
-+
-+			node = of_parse_phandle(np, "connectors", i);
-+			if (!node)
-+				break;
-+
-+			ret = component_master_add_child(master, compare_of,
-+							 node);
-+			of_node_put(node);
-+			if (ret)
-+				break;
-+		}
-+	} else if (dev->platform_data) {
-+		struct armada_drm_platform_data *data = dev->platform_data;
-+
-+		for (i = 0; i < data->num_devices; i++) {
-+			ret = component_master_add_child(master,
-+					armada_drm_compare_name,
-+					(void *)data->devices[i]);
-+			if (ret)
-+				break;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct component_master_ops armada_master_ops = {
-+	.add_components = armada_drm_add_components,
-+	.bind = armada_drm_bind,
-+	.unbind = armada_drm_unbind,
-+};
-+
- static int armada_drm_probe(struct platform_device *pdev)
- {
--	return drm_platform_init(&armada_drm_driver, pdev);
-+	if (is_componentized(&pdev->dev))
-+		return component_master_add(&pdev->dev, &armada_master_ops);
-+	else
-+		return drm_platform_init(&armada_drm_driver, pdev);
- }
- 
- static int armada_drm_remove(struct platform_device *pdev)
- {
--	drm_platform_exit(&armada_drm_driver, pdev);
-+	if (is_componentized(&pdev->dev))
-+		component_master_del(&pdev->dev, &armada_master_ops);
-+	else
-+		drm_platform_exit(&armada_drm_driver, pdev);
- 	return 0;
- }
- 
+--===============0643670122495268639==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="p1Od3smaOkJqivj4"
+Content-Disposition: inline
 
 
--- 
-FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
-in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
-Estimate before purchase was "up to 13.2Mbit".
+--p1Od3smaOkJqivj4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Feb 07, 2014 at 07:43:19PM +0100, Christian Engelmayer wrote:
+> Remove unused pointer 'wm8991' in function wm8991_probe(). The last user
+> vanished with a86652e5 (ASoC: wm8991: Convert to direct regmap API usage)
+>=20
+> Detected by Coverity: CID 1162831
+
+Applied, thanks.
+
+--p1Od3smaOkJqivj4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS9UdpAAoJELSic+t+oim9JuYP/03BVeK00MoRq+zFH84KleA1
+c/KoBHko7ckRdSiPFnyIfshrdbpXJOkc7brtsKKTCFOLSg4NkE7NH6JeqLVT1s9a
+V6Rz/nkIFaUmwi5AxN+jFeVwTueflexKDHeKAW9AwUPzUFOfnc2KAQqCtauFWUqd
+FoOk9Imz+nvRwAQIEr+wkoANOMqE5p2RZRYwPu22W/8s27eygA32Wt2ScIDKSVXH
+awoCSnbb4RJsfNjA7EP7CPjJCCN2PhBH8s762DoX2u8e9j+QW7r9iUy3GokHOKSq
+/kGYaFVU2yZUo82+Bda34USBi/uFoPK2h6VV5pvbgadSMqhdOGHvWM6Kg7x1XTiB
+OedeXgCjklYBH+D5boQhpL9gm9to8mekkgk6gZequip9g33FVZbQfFEamolmSEvM
+tc1SYqWTa+qhab23KLansmmn86jN7ZjoysVpXJQKkq+ZnhtLUCKZmmAZG7pYdSi3
+WUqWvkQbhqz6W9y1UWaNckAI1qV+w5PBb6PBJ2rWE76NbsMJEkWR+7ZNJf7Ad5x2
+35sG4Xifk+yfRnWy8TZPptAW09ZxzhVI92FkMYrf753pDHSegVB/0rEgPYBzVICS
+4VOODleTE8zSYA1dIkfDsLxg9ujbQJQiTXpbzkxPAwFnHfR1hdOvEKoptFSUXB4w
++n9Q8N7cplqvV3G3SNV/
+=nlhJ
+-----END PGP SIGNATURE-----
+
+--p1Od3smaOkJqivj4--
+
+--===============0643670122495268639==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0643670122495268639==--
