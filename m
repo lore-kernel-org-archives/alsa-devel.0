@@ -1,28 +1,59 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3 0/2] *** SUBJECT HERE ***
-Date: Fri, 7 Feb 2014 09:30:46 -0800
-Message-ID: <20140207173046.GA4983@kroah.com>
-References: <cover.1391792986.git.moinejf@free.fr>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH RFC 0/2] drivers/base: simplify simple
+	DT-based	components
+Date: Fri, 7 Feb 2014 17:33:26 +0000
+Message-ID: <20140207173326.GD26684@n2100.arm.linux.org.uk>
+References: <cover.1391793068.git.moinejf@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pandora.arm.linux.org.uk (gw-1.arm.linux.org.uk [78.32.30.217])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7703E265372
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 18:33:36 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <cover.1391792986.git.moinejf@free.fr>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: driverdev-devel-bounces@linuxdriverproject.org
+In-Reply-To: <cover.1391793068.git.moinejf@free.fr>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>, dri-devel@lists.freedesktop.org, Sascha Hauer <kernel@pengutronix.de>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 07, 2014 at 06:09:46PM +0100, Jean-Francois Moine wrote:
-> *** BLURB HERE ***
+On Fri, Feb 07, 2014 at 06:11:08PM +0100, Jean-Francois Moine wrote:
+> This patch series tries to simplify the code of simple devices in case
+> they are part of componentised subsystems, are declared in a DT, and
+> are not using the component bin/unbind functions.
 
-Subject and BLURB forgotten?
+I wonder - I said earlier today that this works absolutely fine without
+modification with DT, so why are you messing about with it adding DT
+support?
+
+This is totally the wrong approach.  The idea is that this deals with
+/devices/ and /devices/ only.  It groups up /devices/.
+
+It's up to the add_component callback to the master device to decide
+how to deal with that.
+
+> Jean-Francois Moine (2):
+>   drivers/base: permit base components to omit the bind/unbind ops
+
+And this patch has me wondering if you even understand how to use
+this...  The master bind/unbind callbacks are the ones which establish
+the "card" based context with the subsystem.
+
+Please, before buggering up this nicely designed implementation, please
+/first/ look at the imx-drm rework which was posted back in early January
+which illustrates how this is used in a DT context - which is something
+I've already pointed you at once today already.
+
+-- 
+FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
+in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
+Estimate before purchase was "up to 13.2Mbit".
