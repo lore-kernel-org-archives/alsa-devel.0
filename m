@@ -1,83 +1,293 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC 0/2] drivers/base: simplify simple DT-based components
-Date: Fri, 7 Feb 2014 18:59:11 +0000
-Message-ID: <20140207185911.GG26684@n2100.arm.linux.org.uk>
-References: <cover.1391793068.git.moinejf@free.fr>
- <20140207173326.GD26684@n2100.arm.linux.org.uk>
- <20140207194204.4d4326bd@armhf>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/2] ASoC: pcm512x: Implement paging support
+Date: Fri,  7 Feb 2014 19:50:51 +0000
+Message-ID: <1391802652-11218-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-Content-Disposition: inline
-In-Reply-To: <20140207194204.4d4326bd@armhf>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: driverdev-devel-bounces@linuxdriverproject.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62177265454
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 20:54:08 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Florian Meier <florian.meier@koalo.de>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 07, 2014 at 07:42:04PM +0100, Jean-Francois Moine wrote:
-> On Fri, 7 Feb 2014 17:33:26 +0000
-> Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
-> 
-> > On Fri, Feb 07, 2014 at 06:11:08PM +0100, Jean-Francois Moine wrote:
-> > > This patch series tries to simplify the code of simple devices in case
-> > > they are part of componentised subsystems, are declared in a DT, and
-> > > are not using the component bin/unbind functions.
-> > 
-> > I wonder - I said earlier today that this works absolutely fine without
-> > modification with DT, so why are you messing about with it adding DT
-> > support?
-> > 
-> > This is totally the wrong approach.  The idea is that this deals with
-> > /devices/ and /devices/ only.  It groups up /devices/.
-> > 
-> > It's up to the add_component callback to the master device to decide
-> > how to deal with that.
-> > 
-> > > Jean-Francois Moine (2):
-> > >   drivers/base: permit base components to omit the bind/unbind ops
-> > 
-> > And this patch has me wondering if you even understand how to use
-> > this...  The master bind/unbind callbacks are the ones which establish
-> > the "card" based context with the subsystem.
-> > 
-> > Please, before buggering up this nicely designed implementation, please
-> > /first/ look at the imx-drm rework which was posted back in early January
-> > which illustrates how this is used in a DT context - which is something
-> > I've already pointed you at once today already.
-> 
-> As I told in a previous mail, your code works fine in my DT-based
-> Cubox. I am rewriting the TDA988x as a normal encoder/connector, and,
-> yes, the bind/unbind functions are useful in this case.
+From: Mark Brown <broonie@linaro.org>
 
-So, which bit of "I've already got that" was missed?
+The PCM512x devices use a paged register map covering the entire register
+range. Implement support for this, mapping pages in at addresses starting
+at 0x100 for ease of use (though since the pages are numbered from 0 there
+is going to be an off by one when looking at the first byte as a page
+number).
 
-> But you opened a door. In a DT context, you know that the probe_defer
-> mechanism does not work correctly. Your work permits to solve delicate
-> cases: your component_add tells exactly when a device is available, and
-> the master bind callback is the green signal for the device waiting for
-> its resources. Indeed, your system was not created for such a usage,
-> but it works as it is (anyway, the component bind/unbind functions may
-> be empty...).
+Also mark the new registers as accessible with the exception of the
+coefficient RAM which is a bit fiddly and may benefit from some extra
+handling to linearise the blocks.
 
-Sorry.  Deferred probe does work, it's been tested with imx-drm, not
-only from the master component but also the sub-components.  There's
-no problem here.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/pcm512x.c |  65 ++++++++++++++++-------
+ sound/soc/codecs/pcm512x.h | 126 +++++++++++++++++++++++++--------------------
+ 2 files changed, 116 insertions(+), 75 deletions(-)
 
-And no component bind/unbind function should ever be empty.
-
-Again, I put it to you that you don't understand this layer.
-
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index 1150381fc373..cdcb51e4c86f 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -66,22 +66,29 @@ PCM512x_REGULATOR_EVENT(1)
+ PCM512x_REGULATOR_EVENT(2)
+ 
+ static const struct reg_default pcm512x_reg_defaults[] = {
+-	{ PCM512x_RESET,            0x00 },
+-	{ PCM512x_POWER,            0x00 },
+-	{ PCM512x_MUTE,             0x00 },
+-	{ PCM512x_DSP,              0x00 },
+-	{ PCM512x_PLL_REF,          0x00 },
+-	{ PCM512x_DAC_ROUTING,      0x11 },
+-	{ PCM512x_DSP_PROGRAM,      0x01 },
+-	{ PCM512x_CLKDET,           0x00 },
+-	{ PCM512x_AUTO_MUTE,        0x00 },
+-	{ PCM512x_ERROR_DETECT,     0x00 },
+-	{ PCM512x_DIGITAL_VOLUME_1, 0x00 },
+-	{ PCM512x_DIGITAL_VOLUME_2, 0x30 },
+-	{ PCM512x_DIGITAL_VOLUME_3, 0x30 },
+-	{ PCM512x_DIGITAL_MUTE_1,   0x22 },
+-	{ PCM512x_DIGITAL_MUTE_2,   0x00 },
+-	{ PCM512x_DIGITAL_MUTE_3,   0x07 },
++	{ PCM512x_RESET,             0x00 },
++	{ PCM512x_POWER,             0x00 },
++	{ PCM512x_MUTE,              0x00 },
++	{ PCM512x_DSP,               0x00 },
++	{ PCM512x_PLL_REF,           0x00 },
++	{ PCM512x_DAC_ROUTING,       0x11 },
++	{ PCM512x_DSP_PROGRAM,       0x01 },
++	{ PCM512x_CLKDET,            0x00 },
++	{ PCM512x_AUTO_MUTE,         0x00 },
++	{ PCM512x_ERROR_DETECT,      0x00 },
++	{ PCM512x_DIGITAL_VOLUME_1,  0x00 },
++	{ PCM512x_DIGITAL_VOLUME_2,  0x30 },
++	{ PCM512x_DIGITAL_VOLUME_3,  0x30 },
++	{ PCM512x_DIGITAL_MUTE_1,    0x22 },
++	{ PCM512x_DIGITAL_MUTE_2,    0x00 },
++	{ PCM512x_DIGITAL_MUTE_3,    0x07 },
++	{ PCM512x_OUTPUT_AMPLITUDE,  0x00 },
++	{ PCM512x_ANALOG_GAIN_CTRL,  0x00 },
++	{ PCM512x_UNDERVOLTAGE_PROT, 0x00 },
++	{ PCM512x_ANALOG_MUTE_CTRL,  0x00 },
++	{ PCM512x_ANALOG_GAIN_BOOST, 0x00 },
++	{ PCM512x_VCOM_CTRL_1,       0x00 },
++	{ PCM512x_VCOM_CTRL_2,       0x01 },
+ };
+ 
+ static bool pcm512x_readable(struct device *dev, unsigned int reg)
+@@ -141,9 +148,18 @@ static bool pcm512x_readable(struct device *dev, unsigned int reg)
+ 	case PCM512x_ANALOG_MUTE_DET:
+ 	case PCM512x_GPIN:
+ 	case PCM512x_DIGITAL_MUTE_DET:
++	case PCM512x_OUTPUT_AMPLITUDE:
++	case PCM512x_ANALOG_GAIN_CTRL:
++	case PCM512x_UNDERVOLTAGE_PROT:
++	case PCM512x_ANALOG_MUTE_CTRL:
++	case PCM512x_ANALOG_GAIN_BOOST:
++	case PCM512x_VCOM_CTRL_1:
++	case PCM512x_VCOM_CTRL_2:
++	case PCM512x_CRAM_CTRL:
+ 		return true;
+ 	default:
+-		return false;
++		/* There are 256 raw register addresses */
++		return reg < 0xff;
+ 	}
+ }
+ 
+@@ -159,9 +175,11 @@ static bool pcm512x_volatile(struct device *dev, unsigned int reg)
+ 	case PCM512x_ANALOG_MUTE_DET:
+ 	case PCM512x_GPIN:
+ 	case PCM512x_DIGITAL_MUTE_DET:
++	case PCM512x_CRAM_CTRL:
+ 		return true;
+ 	default:
+-		return false;
++		/* There are 256 raw register addresses */
++		return reg < 0xff;
+ 	}
+ }
+ 
+@@ -343,6 +361,14 @@ static struct snd_soc_codec_driver pcm512x_codec_driver = {
+ 	.num_dapm_routes = ARRAY_SIZE(pcm512x_dapm_routes),
+ };
+ 
++static const struct regmap_range_cfg pcm512x_range = {
++	.name = "Pages", .range_min = PCM512x_VIRT_BASE,
++	.range_max = PCM512x_MAX_REGISTER,
++	.selector_reg = PCM512x_PAGE,
++	.selector_mask = 0xff,
++	.window_start = 0, .window_len = 0x100,
++};
++
+ static const struct regmap_config pcm512x_regmap = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+@@ -350,6 +376,9 @@ static const struct regmap_config pcm512x_regmap = {
+ 	.readable_reg = pcm512x_readable,
+ 	.volatile_reg = pcm512x_volatile,
+ 
++	.ranges = &pcm512x_range,
++	.num_ranges = 1,
++
+ 	.max_register = PCM512x_MAX_REGISTER,
+ 	.reg_defaults = pcm512x_reg_defaults,
+ 	.num_reg_defaults = ARRAY_SIZE(pcm512x_reg_defaults),
+diff --git a/sound/soc/codecs/pcm512x.h b/sound/soc/codecs/pcm512x.h
+index b2f518ecb35c..e58743c965d6 100644
+--- a/sound/soc/codecs/pcm512x.h
++++ b/sound/soc/codecs/pcm512x.h
+@@ -17,66 +17,78 @@
+ #ifndef _SND_SOC_PCM512X
+ #define _SND_SOC_PCM512X
+ 
+-#define PCM512x_PAGE_0_BASE 0
++#define PCM512x_VIRT_BASE 0x100
++#define PCM512x_PAGE_LEN  0x100
++#define PCM512x_PAGE_BASE(n)  (PCM512x_VIRT_BASE + (PCM512x_PAGE_LEN * n))
+ 
+ #define PCM512x_PAGE              0
+ 
+-#define PCM512x_RESET             (PCM512x_PAGE_0_BASE +   1)
+-#define PCM512x_POWER             (PCM512x_PAGE_0_BASE +   2)
+-#define PCM512x_MUTE              (PCM512x_PAGE_0_BASE +   3)
+-#define PCM512x_PLL_EN            (PCM512x_PAGE_0_BASE +   4)
+-#define PCM512x_SPI_MISO_FUNCTION (PCM512x_PAGE_0_BASE +   6)
+-#define PCM512x_DSP               (PCM512x_PAGE_0_BASE +   7)
+-#define PCM512x_GPIO_EN           (PCM512x_PAGE_0_BASE +   8)
+-#define PCM512x_BCLK_LRCLK_CFG    (PCM512x_PAGE_0_BASE +   9)
+-#define PCM512x_DSP_GPIO_INPUT    (PCM512x_PAGE_0_BASE +  10)
+-#define PCM512x_MASTER_MODE       (PCM512x_PAGE_0_BASE +  12)
+-#define PCM512x_PLL_REF           (PCM512x_PAGE_0_BASE +  13)
+-#define PCM512x_PLL_COEFF_0       (PCM512x_PAGE_0_BASE +  20)
+-#define PCM512x_PLL_COEFF_1       (PCM512x_PAGE_0_BASE +  21)
+-#define PCM512x_PLL_COEFF_2       (PCM512x_PAGE_0_BASE +  22)
+-#define PCM512x_PLL_COEFF_3       (PCM512x_PAGE_0_BASE +  23)
+-#define PCM512x_PLL_COEFF_4       (PCM512x_PAGE_0_BASE +  24)
+-#define PCM512x_DSP_CLKDIV        (PCM512x_PAGE_0_BASE +  27)
+-#define PCM512x_DAC_CLKDIV        (PCM512x_PAGE_0_BASE +  28)
+-#define PCM512x_NCP_CLKDIV        (PCM512x_PAGE_0_BASE +  29)
+-#define PCM512x_OSR_CLKDIV        (PCM512x_PAGE_0_BASE +  30)
+-#define PCM512x_MASTER_CLKDIV_1   (PCM512x_PAGE_0_BASE +  32)
+-#define PCM512x_MASTER_CLKDIV_2   (PCM512x_PAGE_0_BASE +  33)
+-#define PCM512x_FS_SPEED_MODE     (PCM512x_PAGE_0_BASE +  34)
+-#define PCM512x_IDAC_1            (PCM512x_PAGE_0_BASE +  35)
+-#define PCM512x_IDAC_2            (PCM512x_PAGE_0_BASE +  36)
+-#define PCM512x_ERROR_DETECT      (PCM512x_PAGE_0_BASE +  37)
+-#define PCM512x_I2S_1             (PCM512x_PAGE_0_BASE +  40)
+-#define PCM512x_I2S_2             (PCM512x_PAGE_0_BASE +  41)
+-#define PCM512x_DAC_ROUTING       (PCM512x_PAGE_0_BASE +  42)
+-#define PCM512x_DSP_PROGRAM       (PCM512x_PAGE_0_BASE +  43)
+-#define PCM512x_CLKDET            (PCM512x_PAGE_0_BASE +  44)
+-#define PCM512x_AUTO_MUTE         (PCM512x_PAGE_0_BASE +  59)
+-#define PCM512x_DIGITAL_VOLUME_1  (PCM512x_PAGE_0_BASE +  60)
+-#define PCM512x_DIGITAL_VOLUME_2  (PCM512x_PAGE_0_BASE +  61)
+-#define PCM512x_DIGITAL_VOLUME_3  (PCM512x_PAGE_0_BASE +  62)
+-#define PCM512x_DIGITAL_MUTE_1    (PCM512x_PAGE_0_BASE +  63)
+-#define PCM512x_DIGITAL_MUTE_2    (PCM512x_PAGE_0_BASE +  64)
+-#define PCM512x_DIGITAL_MUTE_3    (PCM512x_PAGE_0_BASE +  65)
+-#define PCM512x_GPIO_OUTPUT_1     (PCM512x_PAGE_0_BASE +  80)
+-#define PCM512x_GPIO_OUTPUT_2     (PCM512x_PAGE_0_BASE +  81)
+-#define PCM512x_GPIO_OUTPUT_3     (PCM512x_PAGE_0_BASE +  82)
+-#define PCM512x_GPIO_OUTPUT_4     (PCM512x_PAGE_0_BASE +  83)
+-#define PCM512x_GPIO_OUTPUT_5     (PCM512x_PAGE_0_BASE +  84)
+-#define PCM512x_GPIO_OUTPUT_6     (PCM512x_PAGE_0_BASE +  85)
+-#define PCM512x_GPIO_CONTROL_1    (PCM512x_PAGE_0_BASE +  86)
+-#define PCM512x_GPIO_CONTROL_2    (PCM512x_PAGE_0_BASE +  87)
+-#define PCM512x_OVERFLOW          (PCM512x_PAGE_0_BASE +  90)
+-#define PCM512x_RATE_DET_1        (PCM512x_PAGE_0_BASE +  91)
+-#define PCM512x_RATE_DET_2        (PCM512x_PAGE_0_BASE +  92)
+-#define PCM512x_RATE_DET_3        (PCM512x_PAGE_0_BASE +  93)
+-#define PCM512x_RATE_DET_4        (PCM512x_PAGE_0_BASE +  94)
+-#define PCM512x_ANALOG_MUTE_DET   (PCM512x_PAGE_0_BASE + 108)
+-#define PCM512x_GPIN              (PCM512x_PAGE_0_BASE + 119)
+-#define PCM512x_DIGITAL_MUTE_DET  (PCM512x_PAGE_0_BASE + 120)
+-
+-#define PCM512x_MAX_REGISTER      (PCM512x_PAGE_0_BASE + 120)
++#define PCM512x_RESET             (PCM512x_PAGE_BASE(0) +   1)
++#define PCM512x_POWER             (PCM512x_PAGE_BASE(0) +   2)
++#define PCM512x_MUTE              (PCM512x_PAGE_BASE(0) +   3)
++#define PCM512x_PLL_EN            (PCM512x_PAGE_BASE(0) +   4)
++#define PCM512x_SPI_MISO_FUNCTION (PCM512x_PAGE_BASE(0) +   6)
++#define PCM512x_DSP               (PCM512x_PAGE_BASE(0) +   7)
++#define PCM512x_GPIO_EN           (PCM512x_PAGE_BASE(0) +   8)
++#define PCM512x_BCLK_LRCLK_CFG    (PCM512x_PAGE_BASE(0) +   9)
++#define PCM512x_DSP_GPIO_INPUT    (PCM512x_PAGE_BASE(0) +  10)
++#define PCM512x_MASTER_MODE       (PCM512x_PAGE_BASE(0) +  12)
++#define PCM512x_PLL_REF           (PCM512x_PAGE_BASE(0) +  13)
++#define PCM512x_PLL_COEFF_0       (PCM512x_PAGE_BASE(0) +  20)
++#define PCM512x_PLL_COEFF_1       (PCM512x_PAGE_BASE(0) +  21)
++#define PCM512x_PLL_COEFF_2       (PCM512x_PAGE_BASE(0) +  22)
++#define PCM512x_PLL_COEFF_3       (PCM512x_PAGE_BASE(0) +  23)
++#define PCM512x_PLL_COEFF_4       (PCM512x_PAGE_BASE(0) +  24)
++#define PCM512x_DSP_CLKDIV        (PCM512x_PAGE_BASE(0) +  27)
++#define PCM512x_DAC_CLKDIV        (PCM512x_PAGE_BASE(0) +  28)
++#define PCM512x_NCP_CLKDIV        (PCM512x_PAGE_BASE(0) +  29)
++#define PCM512x_OSR_CLKDIV        (PCM512x_PAGE_BASE(0) +  30)
++#define PCM512x_MASTER_CLKDIV_1   (PCM512x_PAGE_BASE(0) +  32)
++#define PCM512x_MASTER_CLKDIV_2   (PCM512x_PAGE_BASE(0) +  33)
++#define PCM512x_FS_SPEED_MODE     (PCM512x_PAGE_BASE(0) +  34)
++#define PCM512x_IDAC_1            (PCM512x_PAGE_BASE(0) +  35)
++#define PCM512x_IDAC_2            (PCM512x_PAGE_BASE(0) +  36)
++#define PCM512x_ERROR_DETECT      (PCM512x_PAGE_BASE(0) +  37)
++#define PCM512x_I2S_1             (PCM512x_PAGE_BASE(0) +  40)
++#define PCM512x_I2S_2             (PCM512x_PAGE_BASE(0) +  41)
++#define PCM512x_DAC_ROUTING       (PCM512x_PAGE_BASE(0) +  42)
++#define PCM512x_DSP_PROGRAM       (PCM512x_PAGE_BASE(0) +  43)
++#define PCM512x_CLKDET            (PCM512x_PAGE_BASE(0) +  44)
++#define PCM512x_AUTO_MUTE         (PCM512x_PAGE_BASE(0) +  59)
++#define PCM512x_DIGITAL_VOLUME_1  (PCM512x_PAGE_BASE(0) +  60)
++#define PCM512x_DIGITAL_VOLUME_2  (PCM512x_PAGE_BASE(0) +  61)
++#define PCM512x_DIGITAL_VOLUME_3  (PCM512x_PAGE_BASE(0) +  62)
++#define PCM512x_DIGITAL_MUTE_1    (PCM512x_PAGE_BASE(0) +  63)
++#define PCM512x_DIGITAL_MUTE_2    (PCM512x_PAGE_BASE(0) +  64)
++#define PCM512x_DIGITAL_MUTE_3    (PCM512x_PAGE_BASE(0) +  65)
++#define PCM512x_GPIO_OUTPUT_1     (PCM512x_PAGE_BASE(0) +  80)
++#define PCM512x_GPIO_OUTPUT_2     (PCM512x_PAGE_BASE(0) +  81)
++#define PCM512x_GPIO_OUTPUT_3     (PCM512x_PAGE_BASE(0) +  82)
++#define PCM512x_GPIO_OUTPUT_4     (PCM512x_PAGE_BASE(0) +  83)
++#define PCM512x_GPIO_OUTPUT_5     (PCM512x_PAGE_BASE(0) +  84)
++#define PCM512x_GPIO_OUTPUT_6     (PCM512x_PAGE_BASE(0) +  85)
++#define PCM512x_GPIO_CONTROL_1    (PCM512x_PAGE_BASE(0) +  86)
++#define PCM512x_GPIO_CONTROL_2    (PCM512x_PAGE_BASE(0) +  87)
++#define PCM512x_OVERFLOW          (PCM512x_PAGE_BASE(0) +  90)
++#define PCM512x_RATE_DET_1        (PCM512x_PAGE_BASE(0) +  91)
++#define PCM512x_RATE_DET_2        (PCM512x_PAGE_BASE(0) +  92)
++#define PCM512x_RATE_DET_3        (PCM512x_PAGE_BASE(0) +  93)
++#define PCM512x_RATE_DET_4        (PCM512x_PAGE_BASE(0) +  94)
++#define PCM512x_ANALOG_MUTE_DET   (PCM512x_PAGE_BASE(0) + 108)
++#define PCM512x_GPIN              (PCM512x_PAGE_BASE(0) + 119)
++#define PCM512x_DIGITAL_MUTE_DET  (PCM512x_PAGE_BASE(0) + 120)
++
++#define PCM512x_OUTPUT_AMPLITUDE  (PCM512x_PAGE_BASE(1) +   1)
++#define PCM512x_ANALOG_GAIN_CTRL  (PCM512x_PAGE_BASE(1) +   2)
++#define PCM512x_UNDERVOLTAGE_PROT (PCM512x_PAGE_BASE(1) +   5)
++#define PCM512x_ANALOG_MUTE_CTRL  (PCM512x_PAGE_BASE(1) +   6)
++#define PCM512x_ANALOG_GAIN_BOOST (PCM512x_PAGE_BASE(1) +   7)
++#define PCM512x_VCOM_CTRL_1       (PCM512x_PAGE_BASE(1) +   8)
++#define PCM512x_VCOM_CTRL_2       (PCM512x_PAGE_BASE(1) +   9)
++
++#define PCM512x_CRAM_CTRL         (PCM512x_PAGE_BASE(44) +  1)
++
++#define PCM512x_MAX_REGISTER      (PCM512x_PAGE_BASE(44) +  1)
+ 
+ /* Page 0, Register 1 - reset */
+ #define PCM512x_RSTR (1 << 0)
 -- 
-FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
-in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
-Estimate before purchase was "up to 13.2Mbit".
+1.9.rc1
