@@ -1,167 +1,54 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v3 2/2] drivers/base: declare phandle DT nodes as components
-Date: Fri, 7 Feb 2014 17:53:27 +0100
-Message-ID: <9f8bbe28b00160cab2cedffa3f8fb42121035964.1391792986.git.moinejf@free.fr>
-References: <cover.1391792986.git.moinejf@free.fr>
+From: Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH 1/3] sound: Include appropriate header file in
+ pcsp/pcsp_input.c
+Date: Fri, 7 Feb 2014 09:22:21 -0800
+Message-ID: <20140207172221.GB7298@jtriplet-mobl1>
+References: <512472c7d96cf1c239ba3d0bc517891a7c2f9da1.1391791103.git.rashika.kheria@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <cover.1391792986.git.moinejf@free.fr>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces@lists.freedesktop.org
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-To: Russell King <rmk+kernel@arm.linux.org.uk>, devel@driverdev.osuosl.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <512472c7d96cf1c239ba3d0bc517891a7c2f9da1.1391791103.git.rashika.kheria@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rashika Kheria <rashika.kheria@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-At system startup time, some devices depends on the availability of
-some other devices before starting. The infrastructure for componentised
-subsystems permits to handle this dependence, each driver defining
-its own role.
+On Fri, Feb 07, 2014 at 10:11:53PM +0530, Rashika Kheria wrote:
+> Include appropriate header file in drivers/pcsp/pcsp_input.c because =
+it
+> defines function whose prototype definitions are present in
+> drivers/pcsp/pcsp_input.h.
+>=20
+> This eliminates the following warning in drivers/pcsp/pcsp_input.c:
+> sound/drivers/pcsp/pcsp_input.c:42:6: warning: no previous prototype =
+for =E2=80=98pcspkr_stop_sound=E2=80=99 [-Wmissing-prototypes]
+> sound/drivers/pcsp/pcsp_input.c:80:5: warning: no previous prototype =
+for =E2=80=98pcspkr_input_init=E2=80=99 [-Wmissing-prototypes]
+> sound/drivers/pcsp/pcsp_input.c:110:5: warning: no previous prototype=
+ for =E2=80=98pcspkr_input_remove=E2=80=99 [-Wmissing-prototypes]
+>=20
+> Signed-off-by: Rashika Kheria <rashika.kheria@gmail.com>
 
-This patch does an automatic creation of the lowest components in
-case of DT. This permits simple devices to be part of complex
-componentised subsystems without any specific code.
+Reviewed-by: Josh Triplett <josh@joshtriplett.org>
 
-When created from DT, the device dependence is generally indicated by
-phandle: a device which is pointed to by a phandle must be started
-before the pointing device(s).
-
-So, at device register time, the devices which are pointed to by a
-phandle are declared as components, except when they declared
-themselves as such in their probe function.
-
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- drivers/base/component.c | 12 ++++++++++++
- drivers/base/core.c      | 18 ++++++++++++++++++
- include/linux/of.h       |  2 ++
- 3 files changed, 32 insertions(+)
-
-diff --git a/drivers/base/component.c b/drivers/base/component.c
-index 0a39d7a..3cab26b 100644
---- a/drivers/base/component.c
-+++ b/drivers/base/component.c
-@@ -17,6 +17,7 @@
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/slab.h>
-+#include <linux/of.h>
- 
- struct master {
- 	struct list_head node;
-@@ -336,6 +337,7 @@ EXPORT_SYMBOL_GPL(component_bind_all);
- int component_add(struct device *dev, const struct component_ops *ops)
- {
- 	struct component *component;
-+	struct device_node *np;
- 	int ret;
- 
- 	component = kzalloc(sizeof(*component), GFP_KERNEL);
-@@ -356,6 +358,11 @@ int component_add(struct device *dev, const struct component_ops *ops)
- 
- 		kfree(component);
- 	}
-+
-+	np = dev->of_node;
-+	if (np)
-+		np->_flags |= OF_DEV_COMPONENT;
-+
- 	mutex_unlock(&component_mutex);
- 
- 	return ret < 0 ? ret : 0;
-@@ -365,6 +372,7 @@ EXPORT_SYMBOL_GPL(component_add);
- void component_del(struct device *dev, const struct component_ops *ops)
- {
- 	struct component *c, *component = NULL;
-+	struct device_node *np;
- 
- 	mutex_lock(&component_mutex);
- 	list_for_each_entry(c, &component_list, node)
-@@ -377,6 +385,10 @@ void component_del(struct device *dev, const struct component_ops *ops)
- 	if (component && component->master)
- 		take_down_master(component->master);
- 
-+	np = dev->of_node;
-+	if (np)
-+		np->_flags &= ~OF_DEV_COMPONENT;
-+
- 	mutex_unlock(&component_mutex);
- 
- 	WARN_ON(!component);
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 2b56717..0517b91 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -27,6 +27,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/netdevice.h>
- #include <linux/sysfs.h>
-+#include <linux/component.h>
- 
- #include "base.h"
- #include "power/power.h"
-@@ -980,6 +981,7 @@ int device_add(struct device *dev)
- 	struct device *parent = NULL;
- 	struct kobject *kobj;
- 	struct class_interface *class_intf;
-+	struct device_node *np;
- 	int error = -EINVAL;
- 
- 	dev = get_device(dev);
-@@ -1088,6 +1090,15 @@ int device_add(struct device *dev)
- 				class_intf->add_dev(dev, class_intf);
- 		mutex_unlock(&dev->class->p->mutex);
- 	}
-+
-+	/* if DT-created device referenced by phandle, create a component */
-+	np = dev->of_node;
-+	if (np && np->phandle &&
-+	    !(np->_flags & OF_DEV_COMPONENT)) {
-+		component_add(dev, NULL);
-+		np->_flags |= OF_DEV_IMPLICIT_COMPONENT;
-+	}
-+
- done:
- 	put_device(dev);
- 	return error;
-@@ -1189,10 +1200,17 @@ void device_del(struct device *dev)
- {
- 	struct device *parent = dev->parent;
- 	struct class_interface *class_intf;
-+	struct device_node *np;
- 
- 	/* Notify clients of device removal.  This call must come
- 	 * before dpm_sysfs_remove().
- 	 */
-+	np = dev->of_node;
-+	if (np && (np->_flags & OF_DEV_COMPONENT)) {
-+		component_del(dev, NULL);
-+		np->_flags &= ~OF_DEV_IMPLICIT_COMPONENT;
-+	}
-+
- 	if (dev->bus)
- 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
- 					     BUS_NOTIFY_DEL_DEVICE, dev);
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 70c64ba..40f1c34 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -59,6 +59,8 @@ struct device_node {
- 	struct	proc_dir_entry *pde;	/* this node's proc directory */
- 	struct	kref kref;
- 	unsigned long _flags;
-+#define OF_DEV_COMPONENT 1
-+#define OF_DEV_IMPLICIT_COMPONENT 2
- 	void	*data;
- #if defined(CONFIG_SPARC)
- 	const char *path_component_name;
--- 
-1.9.rc1
+>  sound/drivers/pcsp/pcsp_input.c |    1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/sound/drivers/pcsp/pcsp_input.c b/sound/drivers/pcsp/pcs=
+p_input.c
+> index b874b0a..0ecf8a4 100644
+> --- a/sound/drivers/pcsp/pcsp_input.c
+> +++ b/sound/drivers/pcsp/pcsp_input.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/input.h>
+>  #include <asm/io.h>
+>  #include "pcsp.h"
+> +#include "pcsp_input.h"
+> =20
+>  static void pcspkr_do_sound(unsigned int count)
+>  {
+> --=20
+> 1.7.9.5
+>=20
