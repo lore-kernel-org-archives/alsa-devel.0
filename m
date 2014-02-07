@@ -1,107 +1,83 @@
-From: Christian Engelmayer <cengelma@gmx.at>
-Subject: [PATCH v2] ASoC: wm8991: Remove unused pointer in
-	wm8991_probe()
-Date: Fri, 7 Feb 2014 19:43:19 +0100
-Message-ID: <20140207194319.74f6099f@spike>
-References: <20140204212059.51b9a904@spike>
- <20140207133948.GO32298@sirena.org.uk>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH RFC 0/2] drivers/base: simplify simple DT-based components
+Date: Fri, 7 Feb 2014 18:59:11 +0000
+Message-ID: <20140207185911.GG26684@n2100.arm.linux.org.uk>
+References: <cover.1391793068.git.moinejf@free.fr>
+ <20140207173326.GD26684@n2100.arm.linux.org.uk>
+ <20140207194204.4d4326bd@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6113232290181801569=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B6F5265454
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 19:43:25 +0100 (CET)
-Received: from spike ([81.217.122.98]) by mail.gmx.com (mrgmx101) with ESMTPSA
- (Nemesis) id 0MNdxu-1WAClq3nII-007CUB for
- <alsa-devel@alsa-project.org>; Fri, 07 Feb 2014 19:43:25 +0100
-In-Reply-To: <20140207133948.GO32298@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Graeme.Gregory@wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+Content-Disposition: inline
+In-Reply-To: <20140207194204.4d4326bd@armhf>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: driverdev-devel-bounces@linuxdriverproject.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---===============6113232290181801569==
-Content-Type: multipart/signed; micalg=PGP-SHA1;
- boundary="Sig_/67kUxzQFJ5HV.lL0gPoyHK8"; protocol="application/pgp-signature"
+On Fri, Feb 07, 2014 at 07:42:04PM +0100, Jean-Francois Moine wrote:
+> On Fri, 7 Feb 2014 17:33:26 +0000
+> Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
+> 
+> > On Fri, Feb 07, 2014 at 06:11:08PM +0100, Jean-Francois Moine wrote:
+> > > This patch series tries to simplify the code of simple devices in case
+> > > they are part of componentised subsystems, are declared in a DT, and
+> > > are not using the component bin/unbind functions.
+> > 
+> > I wonder - I said earlier today that this works absolutely fine without
+> > modification with DT, so why are you messing about with it adding DT
+> > support?
+> > 
+> > This is totally the wrong approach.  The idea is that this deals with
+> > /devices/ and /devices/ only.  It groups up /devices/.
+> > 
+> > It's up to the add_component callback to the master device to decide
+> > how to deal with that.
+> > 
+> > > Jean-Francois Moine (2):
+> > >   drivers/base: permit base components to omit the bind/unbind ops
+> > 
+> > And this patch has me wondering if you even understand how to use
+> > this...  The master bind/unbind callbacks are the ones which establish
+> > the "card" based context with the subsystem.
+> > 
+> > Please, before buggering up this nicely designed implementation, please
+> > /first/ look at the imx-drm rework which was posted back in early January
+> > which illustrates how this is used in a DT context - which is something
+> > I've already pointed you at once today already.
+> 
+> As I told in a previous mail, your code works fine in my DT-based
+> Cubox. I am rewriting the TDA988x as a normal encoder/connector, and,
+> yes, the bind/unbind functions are useful in this case.
 
---Sig_/67kUxzQFJ5HV.lL0gPoyHK8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+So, which bit of "I've already got that" was missed?
 
-Remove unused pointer 'wm8991' in function wm8991_probe(). The last user
-vanished with a86652e5 (ASoC: wm8991: Convert to direct regmap API usage)
+> But you opened a door. In a DT context, you know that the probe_defer
+> mechanism does not work correctly. Your work permits to solve delicate
+> cases: your component_add tells exactly when a device is available, and
+> the master bind callback is the green signal for the device waiting for
+> its resources. Indeed, your system was not created for such a usage,
+> but it works as it is (anyway, the component bind/unbind functions may
+> be empty...).
 
-Detected by Coverity: CID 1162831
+Sorry.  Deferred probe does work, it's been tested with imx-drm, not
+only from the master component but also the sub-components.  There's
+no problem here.
 
-Signed-off-by: Christian Engelmayer <cengelma@gmx.at>
----
-v2: Resend after input by Mark Brown
+And no component bind/unbind function should ever be empty.
 
-   * Added ASoC maintainer CC.
-   * Added driver maintainer CC.
-   * Verified that the patch applies against v3.14-rc1 as well as branch
-     for-next in git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git.
-   * Fixed a typo in the summary phrase.
----
- sound/soc/codecs/wm8991.c | 3 ---
- 1 file changed, 3 deletions(-)
+Again, I put it to you that you don't understand this layer.
 
-diff --git a/sound/soc/codecs/wm8991.c b/sound/soc/codecs/wm8991.c
-index dba0306..244eb09 100644
---- a/sound/soc/codecs/wm8991.c
-+++ b/sound/soc/codecs/wm8991.c
-@@ -1251,11 +1251,8 @@ static int wm8991_remove(struct snd_soc_codec *codec)
-=20
- static int wm8991_probe(struct snd_soc_codec *codec)
- {
--	struct wm8991_priv *wm8991;
- 	int ret;
-=20
--	wm8991 =3D snd_soc_codec_get_drvdata(codec);
--
- 	ret =3D snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
- 	if (ret < 0) {
- 		dev_err(codec->dev, "Failed to set cache i/o: %d\n", ret);
---=20
-1.8.3.2
-
---Sig_/67kUxzQFJ5HV.lL0gPoyHK8
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS9SlHAAoJEKssnEpaPQKE+SoQAKX49SWErWPau6fUXfAs9PJ9
-qYTTS9TrhGlW4O0Y1tENDw6N60xGqi7qUTprIJSL0iUMUlL/ImYxc3PddyEXCH+j
-BaQg/JwkltCWvkOMCZLaQRFAQM+uY15kOcLBPyUPesbGEfKQTrh/p/daogWG1LYO
-dh6B7EJ/OUhIKBYfgQV4zveB0PY69tXpBfg1vo4kkRwT2gmr1W2Stybu2STIYYr+
-6ZKxvwpjCyBRVCbUsp7/IV5PeCHgermfhGOEv845TOnd7XYOObhgPC7B9dmqfs+7
-+LtKjYefxq4/LRicbqoQE8I57a+ovJQL+FL5BXHuuu5RbxQTyUHH/rQCmdL+xOQu
-eJWkg9zuIv7KEql/I2Jbz/EOQZ0tk+Lo7pN+8Rv8xPBQCe/wEXAukpu515IgOr+Q
-GaKV8lqZmEPg7vH14SX6lDx/3JOWnamypWpXQcjRpUd1gnj6meRoaWeD54ZN01ea
-St5S1mKCahbrfCqVyVWGM3Do6/gAQQAVHRlor9tFbBNSYQpFUa6hjcHwi7suiAZK
-YDToscf+MU26IEroUqDykzWA+0frOn60HcgK6gOpEIocQjltVqb75UmRd2M3xu4j
-Qq371CWDWuPPVlpoM8fTHCnImWG8zbBDuwrT1BjxJI1o0q0g72m3syk0Dgwb84JY
-bFeFJznkw5L4VE7Zqqfj
-=akEX
------END PGP SIGNATURE-----
-
---Sig_/67kUxzQFJ5HV.lL0gPoyHK8--
-
---===============6113232290181801569==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6113232290181801569==--
+-- 
+FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
+in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
+Estimate before purchase was "up to 13.2Mbit".
