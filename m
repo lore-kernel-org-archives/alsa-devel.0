@@ -1,58 +1,43 @@
-From: Jean-Francois Moine <moinejf@free.fr>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Subject: Re: [PATCH RFC 26/46] drivers/base: provide an infrastructure for
-	componentised subsystems
-Date: Fri, 7 Feb 2014 12:57:21 +0100
-Message-ID: <20140207125721.2d925387@armhf>
+ componentised subsystems
+Date: Fri, 7 Feb 2014 12:28:32 +0000
+Message-ID: <20140207122832.GA26684@n2100.arm.linux.org.uk>
 References: <20140102212528.GD7383@n2100.arm.linux.org.uk>
-	<E1Vypo6-0007FF-Lb@rmk-PC.arm.linux.org.uk>
-	<CAKMK7uFYhz8Pmv5E7aKY7yzZGDe_m8a0382Njv7tZRoBSfmRpw@mail.gmail.com>
-	<20140207094656.GY26684@n2100.arm.linux.org.uk>
+ <E1Vypo6-0007FF-Lb@rmk-PC.arm.linux.org.uk>
+ <CAKMK7uFYhz8Pmv5E7aKY7yzZGDe_m8a0382Njv7tZRoBSfmRpw@mail.gmail.com>
+ <20140207094656.GY26684@n2100.arm.linux.org.uk>
+ <20140207125721.2d925387@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20140207094656.GY26684@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces@lists.freedesktop.org
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: devel@driverdev.osuosl.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Sascha Hauer <kernel@pengutronix.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel <dri-devel@lists.freedesktop.org>, Takashi Iwai <tiwai@suse.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+Content-Disposition: inline
+In-Reply-To: <20140207125721.2d925387@armhf>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: driverdev-devel-bounces@linuxdriverproject.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devel@driverdev.osuosl.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Sascha Hauer <kernel@pengutronix.de>, David Airlie <airlied@linux.ie>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel <dri-devel@lists.freedesktop.org>, Hans Verkuil <hverkuil@xs4all.nl>, Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel@ffwll.ch>, Shawn Guo <shawn.guo@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCA3IEZlYiAyMDE0IDA5OjQ2OjU2ICswMDAwClJ1c3NlbGwgS2luZyAtIEFSTSBMaW51
-eCA8bGludXhAYXJtLmxpbnV4Lm9yZy51az4gd3JvdGU6Cgo+IE9uIEZyaSwgRmViIDA3LCAyMDE0
-IGF0IDEwOjA0OjMwQU0gKzAxMDAsIERhbmllbCBWZXR0ZXIgd3JvdGU6Cj4gPiBJJ3ZlIGNoYXR0
-ZWQgYSBiaXQgd2l0aCBIYW5zIFZlcmt1aWwgYWJvdXQgdGhpcyB0b3BpYyBhdCBmb3NkZW0gYW5k
-Cj4gPiBhcHBhcmVudGx5IGJvdGggdjRsIGFuZCBhbHNhIGhhdmUgc29tZXRoaW5nIGxpa2UgdGhp
-cyBhbHJlYWR5IGluIHRoZWlyCj4gPiBoZWxwZXIgbGlicmFyaWVzLiBBZGRpbmcgbW9yZSBwZW9w
-bGUgYXMgZnlpIGluIGNhc2UgdGhleSB3YW50IHRvCj4gPiBzd2l0Y2ggdG8gdGhlIG5ldyBkcml2
-ZXIgY29yZSBzdHVmZiBmcm9tIFJ1c3NlbGwuICAKPiAKPiBJdCdzIG5vdCBBTFNBLCBidXQgQVNv
-QyB3aGljaCBoYXMgdGhpcy4gIE1hcmsgaXMgYWxyZWFkeSBhd2FyZSBvZiB0aGlzCj4gYW5kIHdp
-bGwgYmUgbG9va2luZyBhdCBpdCBmcm9tIGFuIEFTb0MgcGVyc3BlY3RpdmUuCgpSdXNzZWxsLAoK
-SSBzdGFydGVkIHRvIHVzZSB5b3VyIGNvZGUgKHdoaWNoIHdvcmtzIGZpbmUsIHRoYW5rcyksIGFu
-ZCBpdCBhdm9pZHMgYQpsb3Qgb2YgcHJvYmxlbXMsIGVzcGVjaWFsbHksIGFib3V0IHByb2JlX2Rl
-ZmVyIGluIGEgRFQgY29udGV4dC4KCkkgd2FzIHdvbmRlcmluZyBpZiB5b3VyIGNvbXBvbmVudGlz
-ZWQgbWVjaGFuaXNtIGNvdWxkIGJlIGV4dGVuZGVkIHRvIHRoZQpkZXZpY2VzIGRlZmluZWQgYnkg
-RFQuCgpJbiB0aGUgRFQsIHdoZW4gYSBkZXZpY2Vfbm9kZSBpcyBhIHBoYW5kbGUsIHRoaXMgbWVh
-bnMgaXQgaXMgcmVmZXJlbmNlZApieSBzb21lIG90aGVyIGRldmljZShzKSwgYW5kIHRoZXNlIGRl
-dmljZShzKSB3aWxsIG5vdCBzdGFydCB1bnRpbCB0aGUKcGhhbmRsZSBkZXZpY2UgaXMgcmVnaXN0
-ZXJlZC4KClRoZW4sIHRoZSBpZGVhIGlzIHRvIGRvIGEgY29tcG9uZW50X2FkZCgpIGZvciBzdWNo
-IHBoYW5kbGUgZGV2aWNlcyBpbgpkZXZpY2VfYWRkKCkgKGRldmljZV9yZWdpc3RlcikuCgpQcmF0
-aWNhbGx5LAoKLSB0aGUgY29tcG9uZW50X2FkZCgpIGNhbGwgaW4gZGV2aWNlX3JlZ2lzdGVyIHdv
-dWxkIG5vdCBpbmNsdWRlIGFueQogIGJpbmQvdW5iaW5kIGNhbGxiYWNrIGZ1bmN0aW9uLCBzbywg
-dGhpcyBzaG91bGQgYmUgdGVzdGVkIGluCiAgY29tcG9uZW50X2JpbmQvdW5iaW5kKCksCgotIGNv
-bXBvbmVudF9hZGQgd291bGQgbm90IGJlIGNhbGxlZCBpZiB0aGUgZGV2aWNlIGJlaW5nIGFkZGVk
-IGFscmVhZHkKICBjYWxsZWQgY29tcG9uZW50X2FkZCBpbiBpdHMgcHJvYmUgZnVuY3Rpb24uIEEg
-c2ltcGxlIGZsYWcgaW4gdGhlCiAgc3RydWN0IGRldmljZV9ub2RlIHNob3VsZCBzb2x2ZSB0aGlz
-IHByb2JsZW0uCgpXaGF0IGRvIHlvdSB0aGluayBhYm91dCB0aGlzPwoKLS0gCktlbiBhciBjJ2hl
-bnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8v
-bW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3Rv
-cC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1k
-ZXZlbAo=
+On Fri, Feb 07, 2014 at 12:57:21PM +0100, Jean-Francois Moine wrote:
+> I started to use your code (which works fine, thanks), and it avoids a
+> lot of problems, especially, about probe_defer in a DT context.
+> 
+> I was wondering if your componentised mechanism could be extended to the
+> devices defined by DT.
+
+It was developed against imx-drm, which is purely DT based.  I already
+have a solution for the cubox armada DRM.
+
+-- 
+FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
+in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
+Estimate before purchase was "up to 13.2Mbit".
