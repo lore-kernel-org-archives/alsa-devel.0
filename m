@@ -1,17 +1,17 @@
-From: Christian Engelmayer <cengelma@gmx.at>
-Subject: [PATCH] ASoC: wm8995: Remove unused pointer in
-	hp_supply_event()
-Date: Fri, 7 Feb 2014 23:37:16 +0100
-Message-ID: <20140207233716.394de04b@spike>
+From: Michael Weiner <mweiner@gmail.com>
+Subject: Error trying to compile driver
+Date: Fri, 7 Feb 2014 18:46:52 -0500
+Message-ID: <CAJF-=aU+iXQf-gLmCSox7cc8o0sWMD3E+MG_=JnfjJ6uecQL=Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6532629168528135764=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
- by alsa0.perex.cz (Postfix) with ESMTP id CAFC12654C7
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 23:37:17 +0100 (CET)
-Received: from spike ([81.217.122.98]) by mail.gmx.com (mrgmx101) with ESMTPSA
- (Nemesis) id 0MfAog-1Vsc6Q2Ask-00Os4V for
- <alsa-devel@alsa-project.org>; Fri, 07 Feb 2014 23:37:17 +0100
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+ [74.125.82.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62D562654D0
+ for <alsa-devel@alsa-project.org>; Sat,  8 Feb 2014 00:46:53 +0100 (CET)
+Received: by mail-we0-f179.google.com with SMTP id q58so2743232wes.38
+ for <alsa-devel@alsa-project.org>; Fri, 07 Feb 2014 15:46:53 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +21,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============6532629168528135764==
-Content-Type: multipart/signed; micalg=PGP-SHA1;
- boundary="Sig_/znhD/4_BKyy9.5LGNlxDS9C"; protocol="application/pgp-signature"
+I am trying to fix the sound on a laptop i am working on. Has CentOS 5.10
+64bit installed and i am trying to use the alsa-compile.sh script but it
+fails with the following error:
 
---Sig_/znhD/4_BKyy9.5LGNlxDS9C
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+make -C /lib/modules/2.6.18-371.4.1.el5/build
+SUBDIRS=/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d  CPP="gcc
+-E" CC="gcc" modules
+make[1]: Entering directory `/usr/src/kernels/2.6.18-371.4.1.el5-x86_64'
+  CC [M]
+/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore/hwdep.o
+In file included from
+/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/include/adriver.h:1695,
+                 from
+/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore/hwdep.c:1:
+include/pcmcia/cistpl.h:557: error: expected specifier-qualifier-list
+before 'cisdata_t'
+include/pcmcia/cistpl.h:586: error: expected specifier-qualifier-list
+before 'cisdata_t'
+include/pcmcia/cistpl.h:590: warning: 'struct pcmcia_socket' declared
+inside parameter list
+include/pcmcia/cistpl.h:590: warning: its scope is only this definition or
+declaration, which is probably not what you want
+include/pcmcia/cistpl.h:593: warning: 'struct pcmcia_socket' declared
+inside parameter list
+include/pcmcia/cistpl.h:594: warning: 'struct pcmcia_socket' declared
+inside parameter list
+include/pcmcia/cistpl.h:595: warning: 'struct pcmcia_socket' declared
+inside parameter list
+include/pcmcia/cistpl.h:598: warning: 'struct pcmcia_socket' declared
+inside parameter list
+In file included from include/pcmcia/ds.h:23,
+                 from
+/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/include/adriver.h:1696,
+                 from
+/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore/hwdep.c:1:
+include/pcmcia/bulkmem.h:27: error: expected specifier-qualifier-list
+before 'memory_handle_t'
+include/pcmcia/bulkmem.h:38: warning: 'struct pcmcia_device' declared
+inside parameter list
+include/pcmcia/bulkmem.h:39: warning: 'struct pcmcia_device' declared
+inside parameter list
+In file included from
+/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/include/adriver.h:1696,
+                 from
+/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore/hwdep.c:1:
+include/pcmcia/ds.h:35: error: expected specifier-qualifier-list before
+'win_req_t'
+include/pcmcia/ds.h:55: error: expected specifier-qualifier-list before
+'adjust_t'
+make[3]: ***
+[/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore/hwdep.o]
+Error 1
+make[2]: ***
+[/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore] Error 2
+make[1]: ***
+[_module_/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d] Error 2
+make[1]: Leaving directory `/usr/src/kernels/2.6.18-371.4.1.el5-x86_64'
+make: *** [compile] Error 2
+Working directory /tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d.
+Compilation of alsa-driver failed.
+Report this problem to the <alsa-devel@alsa-project.org> mailing list.
 
-Remove unused driver data pointer 'wm8995' in function hp_supply_event().
+Can anyone help me figure out why this is failing? Kernel is 2.6.18-371.4.1
 
-Detected by Coverity: CID 141181.
-
-Signed-off-by: Christian Engelmayer <cengelma@gmx.at>
----
-Applies against v3.14-rc1 as well as branch for-next in tree
-git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git.
----
- sound/soc/codecs/wm8995.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
-index 4300caf..403e1db 100644
---- a/sound/soc/codecs/wm8995.c
-+++ b/sound/soc/codecs/wm8995.c
-@@ -561,10 +561,8 @@ static int hp_supply_event(struct snd_soc_dapm_widget =
-*w,
- 			   struct snd_kcontrol *kcontrol, int event)
- {
- 	struct snd_soc_codec *codec;
--	struct wm8995_priv *wm8995;
-=20
- 	codec =3D w->codec;
--	wm8995 =3D snd_soc_codec_get_drvdata(codec);
-=20
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
---=20
-1.8.3.2
-
---Sig_/znhD/4_BKyy9.5LGNlxDS9C
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-
-iQIbBAEBAgAGBQJS9WAcAAoJEKssnEpaPQKEWosP+KQeScVd/ktHR3VzwQeNYDoD
-aJ6HZQMOHslkelnpD4GJZkv+s0xf06ywhPf2+G3l6ACm+35b7Wj6INE2C7Tz4Z5Q
-q54+k1kKoIzey8LVsSV7QJLUdibpVUXV/JlqBbI56rgOQPhXw5KGyTnLfWw/BjJv
-MK7vQJ6DwpyNcfvXgqnpoNJ6xgw8yRnADc0aapfjoA5ppWsoqJgFKGWugEv74jyK
-egf6oFP8lDkdBXzyPasqC+lJ93skNQm7Ox788Y+5QvHz9yolvm6KcaBqiPzkse6M
-8JCaO4QPf67+s+T1/7d2StyM3+LsTbGKcp+R8UXfNG/FLHOlUXyo1Y2KBKAJoY3I
-A8Uw8/8lWNhpga8LRdkcAGKs4Bl4f6yjUh1evvmCNs4CIVOYG5w1vFG7+ieH0BWG
-HKQ//915M1wn2dnTHNWJwvzoqU6ost5GveBA0k+X0/3ijBsFbavamP0wWz8lsnbk
-J6LYA7HHS0pvc2SQlD3b2gs6/gFKUJbVHpp4M3Hcs4MEqVAbO42LSmMkeJQ4wcsf
-v/W6tR9UbPJnTyXJZ+XcnMT2a2DdJtJgiDgqnIbOjl4LY6pLPjcgwegg/nvX34Or
-bGcSbf6oFi8fJXjs8yTh4jiaJMxbIgAh8NvHrDKZ1FKz7zyMfkTSI6rf4nHSa5ut
-dDer6+mNqgAcNxo0wd4=
-=RIUp
------END PGP SIGNATURE-----
-
---Sig_/znhD/4_BKyy9.5LGNlxDS9C--
-
---===============6532629168528135764==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6532629168528135764==--
+Thank you in advance
+Michael Weiner
+--
