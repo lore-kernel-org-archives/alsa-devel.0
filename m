@@ -1,52 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/2] ASoC: wm8770: Depend on SPI only
-Date: Fri,  7 Feb 2014 15:59:30 +0000
-Message-ID: <1391788770-31780-2-git-send-email-broonie@kernel.org>
-References: <1391788770-31780-1-git-send-email-broonie@kernel.org>
+Subject: Re: [PATCH v2 2/8] ASoC: da9055: Add DT support for CODEC
+Date: Fri, 7 Feb 2014 16:25:04 +0000
+Message-ID: <20140207162504.GP32298@sirena.org.uk>
+References: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+ <9ec36c0633ae8291267be6802a34a469a34ae292.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D278265329
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2014 16:59:45 +0100 (CET)
-In-Reply-To: <1391788770-31780-1-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>, patches@linaro.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="T/M61er1Kkwq3bEY"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <9ec36c0633ae8291267be6802a34a469a34ae292.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
 
-The device has no I2C support so it shouldn't be buildable if only I2C is
-enabled.
+--T/M61er1Kkwq3bEY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Feb 06, 2014 at 06:03:09PM +0000, Adam Thomson wrote:
+> Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 6b67e86f3f2c..6c87cce8b3cf 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -478,7 +478,7 @@ config SND_SOC_WM8753
- 
- config SND_SOC_WM8770
- 	tristate "Wolfson Microelectronics WM8770 CODEC"
--	depends on SND_SOC_I2C_AND_SPI
-+	depends on SPI
- 
- config SND_SOC_WM8776
- 	tristate "Wolfson Microelectronics WM8776 CODEC"
--- 
-1.9.rc1
+This doesn't apply against my current for-next or v3.14-rc1, can you
+please check and resend?
+
+--T/M61er1Kkwq3bEY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS9QjdAAoJELSic+t+oim9HXIQAIwgonNLwZDfIo0Hp5d8gllr
+aPfkguLulmnm8WRk+ZTaFTdN2iATHwbJPiVdn6t/FKNTeiCfi6LQVycY5kgJTy5m
+6a2qeG1f/oP3HW+w0vGCsNq9oypCVVv/hUXZsvHZeEs2BKoYXWXnDdkr2qARJdpr
+0E/HP65Y8m8MCB3IxLCWxm9ensdNIDnyPu6+Uo0LhURLtxQkcgBsm4lA6uY7z0ky
+LIZQ6OX4DwgBqsBch+HNJzHri3rIZyp3wLP6rl5vqL2DOuvpQL+g9XhsOiqNcB48
+ZjuUQEgnrmMF4M2A6aPbcLvwWFJg8VRmVZiagpMGKQ5YxSdzoW9LwgBsyu07PDcI
+DIz/XMR1OZq0R0ucs+O77PDlOP1APBJxNh1BhNxO2f3ceXQozEjFVImIpPCni7Je
+L87ybaDKAYZWklq9YPS8Lc9r+7lt5aHiWOPaLq+h/7SySF0vvSeXTMCfrKANNE9M
+ki9jjxxWzN0XDTDO6WfD9un3uiSIUk6b/C75C0Ss15YiZRCpPQWMtBmzHTQIjK0F
+fS2th71WUlfmcQMhQaRrxDX4g7F/dVQo3RCCnDjH7juZbHLLnraSczZEtE4tOOkY
+gNbShfx2doKLeTchecPjY5swqCWadt/o1Oxi2MpTM954v1fpiRV+xM9/A+ACU0f0
+FcnQ17pDCT6/RkC120Dp
+=X5AX
+-----END PGP SIGNATURE-----
+
+--T/M61er1Kkwq3bEY--
