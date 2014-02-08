@@ -1,225 +1,554 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH] ASoC: fsl: fix pm support of machine
-	drivers
-Date: Sat, 8 Feb 2014 13:26:43 +0800
-Message-ID: <20140208052641.GA11308@MrMyself>
-References: <1391836835-14892-1-git-send-email-shawn.guo@linaro.org>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH v2] ASoC: fsl-sai: convert to use regmap API for Freeacale SAI
+Date: Sat, 8 Feb 2014 14:38:28 +0800
+Message-ID: <1391841508-14025-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe003.messaging.microsoft.com [65.55.88.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D6762654E5
- for <alsa-devel@alsa-project.org>; Sat,  8 Feb 2014 06:42:24 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1391836835-14892-1-git-send-email-shawn.guo@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: stable@vger.kernel.org, alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>, Nicolin Chen <Guangyu.Chen@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Feb 08, 2014 at 01:20:35PM +0800, Shawn Guo wrote:
-> The commit 1abe729 (ASoC: fsl: Add missing pm to current machine
-> drivers) enables pm support for a few IMX machine drivers.  But it does
-> not update dev drvdata to be the pointer to 'card'.  This causes the
-
-Right...I forgot to merge this part.
-
-> kernel dump below in system suspend, because snd_soc_suspend() expects
-> that the dev drvdata points to 'card', while it still points to the
-> private data of machine driver.
-> 
-> This patch fixes imx-sgtl5000 and imx-wm8962 by attaching 'card' to dev
-> drvdata and private data to card drvdata.  For imx-mc13783, I simply
-> revert the pm change because it must be broken for the same reason and
-> I don't have hardware to test pm enabling code.
-
-Thank you Shawn, and sorry for screwing up.
-
-Nicolin Chen
-
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: Nicolin Chen <Guangyu.Chen@freescale.com>
 ---
 
-> 
-> $ echo mem > /sys/power/state
-> PM: Syncing filesystems ... done.
-> PM: Preparing system for mem sleep
-> mmc1: card e624 removed
-> Freezing user space processes ... (elapsed 0.002 seconds) done.
-> Freezing remaining freezable tasks ... (elapsed 0.002 seconds) done.
-> PM: Entering mem sleep
-> INFO: trying to register non-static key.
-> the code is fine but needs lockdep annotation.
-> turning off the locking correctness validator.
-> CPU: 0 PID: 1861 Comm: bash Not tainted 3.14.0-rc1+ #1648
-> Backtrace:
-> [<80012144>] (dump_backtrace) from [<800122e4>] (show_stack+0x18/0x1c)
->  r6:8079c77c r5:00000c5a r4:00000000 r3:00000000
-> [<800122cc>] (show_stack) from [<80637ac0>] (dump_stack+0x78/0x94)
-> [<80637a48>] (dump_stack) from [<80028918>] (warn_slowpath_common+0x6c/0x8c)
->  r4:bdb21c38 r3:be62df00
-> [<800288ac>] (warn_slowpath_common) from [<800289dc>] (warn_slowpath_fmt+0x38/0x40)
->  r8:be62e3a8 r7:bf122960 r6:00000005 r5:00000000 r4:00000000
-> [<800289a8>] (warn_slowpath_fmt) from [<8006518c>] (__lock_acquire+0x1ae0/0x1ce0)
->  r3:8079d598 r2:80799e70
-> [<800636ac>] (__lock_acquire) from [<80065894>] (lock_acquire+0x68/0x7c)
->  r10:bdb20000 r9:be62df00 r8:00000000 r7:00000000 r6:60000013 r5:bdb20000
->  r4:00000000
-> [<8006582c>] (lock_acquire) from [<8063c938>] (mutex_lock_nested+0x5c/0x3b8)
->  r7:00000000 r6:80dfc78c r5:804be444 r4:bf122928
-> [<8063c8dc>] (mutex_lock_nested) from [<804be444>] (snd_soc_suspend+0x34/0x42c)
->  r10:00000000 r9:00000000 r8:00000000 r7:bf1c4444 r6:bf1c4410 r5:be978150
->  r4:be978010
-> [<804be410>] (snd_soc_suspend) from [<8034392c>] (platform_pm_suspend+0x34/0x64)
->  r10:00000000 r8:00000000 r7:bf1c4444 r6:bf1c4410 r5:803438f8 r4:bf1c4410
-> [<803438f8>] (platform_pm_suspend) from [<80348e18>] (dpm_run_callback.isra.7+0x34/0x6c)
-> [<80348de4>] (dpm_run_callback.isra.7) from [<80349354>] (__device_suspend+0x10c/0x220)
->  r9:808dd974 r8:808c4a5c r6:00000002 r5:80e5001c r4:bf1c4410
-> [<80349248>] (__device_suspend) from [<8034a338>] (dpm_suspend+0x60/0x220)
->  r7:bf1c4410 r6:808dd90c r5:80e5001c r4:bf1c44c0
-> [<8034a2d8>] (dpm_suspend) from [<8034a790>] (dpm_suspend_start+0x60/0x68)
->  r10:8079a818 r9:00000000 r8:00000004 r7:80dfbe90 r6:80641eec r5:00000000
->  r4:00000002
-> [<8034a730>] (dpm_suspend_start) from [<8006a788>] (suspend_devices_and_enter+0x74/0x318)
->  r4:00000003 r3:80dfbe98
-> [<8006a714>] (suspend_devices_and_enter) from [<8006abd8>] (pm_suspend+0x1ac/0x244)
->  r10:8079a818 r8:00000004 r7:00000003 r6:80641eec r5:00000000 r4:00000003
-> [<8006aa2c>] (pm_suspend) from [<80069a4c>] (state_store+0x70/0xc0)
->  r5:00000003 r4:bd85ea40
-> [<800699dc>] (state_store) from [<80294034>] (kobj_attr_store+0x1c/0x28)
->  r10:beb9fe08 r8:00000000 r7:bdb21f78 r6:bd85ea40 r5:00000004 r4:beb9fe00
-> [<80294018>] (kobj_attr_store) from [<80140f90>] (sysfs_kf_write+0x54/0x58)
-> [<80140f3c>] (sysfs_kf_write) from [<8014474c>] (kernfs_fop_write+0xc4/0x160)
->  r6:bd85ea40 r5:beb9fe00 r4:00000004 r3:80140f3c
-> [<80144688>] (kernfs_fop_write) from [<800dfa14>] (vfs_write+0xbc/0x184)
->  r10:00000000 r9:00000000 r8:00000000 r7:bdb21f78 r6:00500c08 r5:00000004
->  r4:be782600
-> [<800df958>] (vfs_write) from [<800dfe00>] (SyS_write+0x48/0x70)
->  r10:00000000 r8:00000000 r7:00000004 r6:00500c08 r5:00000000 r4:be782600
-> [<800dfdb8>] (SyS_write) from [<8000e800>] (ret_fast_syscall+0x0/0x48)
->  r9:bdb20000 r8:8000e9c4 r7:00000004 r6:00500c08 r5:00000004 r4:76eb65e0
-> 
-> Fixes: 1abe729 (ASoC: fsl: Add missing pm to current machine drivers)
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
->  sound/soc/fsl/imx-mc13783.c  |    1 -
->  sound/soc/fsl/imx-sgtl5000.c |   10 ++++++----
->  sound/soc/fsl/imx-wm8962.c   |   11 +++++++----
->  3 files changed, 13 insertions(+), 9 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/imx-mc13783.c b/sound/soc/fsl/imx-mc13783.c
-> index 79cee78..a2fd732 100644
-> --- a/sound/soc/fsl/imx-mc13783.c
-> +++ b/sound/soc/fsl/imx-mc13783.c
-> @@ -160,7 +160,6 @@ static struct platform_driver imx_mc13783_audio_driver = {
->  	.driver = {
->  		.name = "imx_mc13783",
->  		.owner = THIS_MODULE,
-> -		.pm = &snd_soc_pm_ops,
->  	},
->  	.probe = imx_mc13783_probe,
->  	.remove = imx_mc13783_remove
-> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-> index f2beae7..1cb22dd 100644
-> --- a/sound/soc/fsl/imx-sgtl5000.c
-> +++ b/sound/soc/fsl/imx-sgtl5000.c
-> @@ -33,8 +33,7 @@ struct imx_sgtl5000_data {
->  
->  static int imx_sgtl5000_dai_init(struct snd_soc_pcm_runtime *rtd)
->  {
-> -	struct imx_sgtl5000_data *data = container_of(rtd->card,
-> -					struct imx_sgtl5000_data, card);
-> +	struct imx_sgtl5000_data *data = snd_soc_card_get_drvdata(rtd->card);
->  	struct device *dev = rtd->card->dev;
->  	int ret;
->  
-> @@ -159,13 +158,15 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
->  	data->card.dapm_widgets = imx_sgtl5000_dapm_widgets;
->  	data->card.num_dapm_widgets = ARRAY_SIZE(imx_sgtl5000_dapm_widgets);
->  
-> +	platform_set_drvdata(pdev, &data->card);
-> +	snd_soc_card_set_drvdata(&data->card, data);
-> +
->  	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
->  	if (ret) {
->  		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
->  		goto fail;
->  	}
->  
-> -	platform_set_drvdata(pdev, data);
->  	of_node_put(ssi_np);
->  	of_node_put(codec_np);
->  
-> @@ -184,7 +185,8 @@ fail:
->  
->  static int imx_sgtl5000_remove(struct platform_device *pdev)
->  {
-> -	struct imx_sgtl5000_data *data = platform_get_drvdata(pdev);
-> +	struct snd_soc_card *card = platform_get_drvdata(pdev);
-> +	struct imx_sgtl5000_data *data = snd_soc_card_get_drvdata(card);
->  
->  	clk_put(data->codec_clk);
->  
-> diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
-> index 3fd76bc..3a3d17c 100644
-> --- a/sound/soc/fsl/imx-wm8962.c
-> +++ b/sound/soc/fsl/imx-wm8962.c
-> @@ -71,7 +71,7 @@ static int imx_wm8962_set_bias_level(struct snd_soc_card *card,
->  {
->  	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
->  	struct imx_priv *priv = &card_priv;
-> -	struct imx_wm8962_data *data = platform_get_drvdata(priv->pdev);
-> +	struct imx_wm8962_data *data = snd_soc_card_get_drvdata(card);
->  	struct device *dev = &priv->pdev->dev;
->  	unsigned int pll_out;
->  	int ret;
-> @@ -137,7 +137,7 @@ static int imx_wm8962_late_probe(struct snd_soc_card *card)
->  {
->  	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
->  	struct imx_priv *priv = &card_priv;
-> -	struct imx_wm8962_data *data = platform_get_drvdata(priv->pdev);
-> +	struct imx_wm8962_data *data = snd_soc_card_get_drvdata(card);
->  	struct device *dev = &priv->pdev->dev;
->  	int ret;
->  
-> @@ -264,13 +264,15 @@ static int imx_wm8962_probe(struct platform_device *pdev)
->  	data->card.late_probe = imx_wm8962_late_probe;
->  	data->card.set_bias_level = imx_wm8962_set_bias_level;
->  
-> +	platform_set_drvdata(pdev, &data->card);
-> +	snd_soc_card_set_drvdata(&data->card, data);
-> +
->  	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
->  	if (ret) {
->  		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
->  		goto clk_fail;
->  	}
->  
-> -	platform_set_drvdata(pdev, data);
->  	of_node_put(ssi_np);
->  	of_node_put(codec_np);
->  
-> @@ -289,7 +291,8 @@ fail:
->  
->  static int imx_wm8962_remove(struct platform_device *pdev)
->  {
-> -	struct imx_wm8962_data *data = platform_get_drvdata(pdev);
-> +	struct snd_soc_card *card = platform_get_drvdata(pdev);
-> +	struct imx_wm8962_data *data = snd_soc_card_get_drvdata(card);
->  
->  	if (!IS_ERR(data->codec_clk))
->  		clk_disable_unprepare(data->codec_clk);
-> -- 
-> 1.7.9.5
-> 
-> 
+This version applies against sound-3.14-rc1.
+
+
+ sound/soc/fsl/fsl_sai.c | 255 +++++++++++++++++++++++++++---------------------
+ sound/soc/fsl/fsl_sai.h |  47 +++++----
+ 2 files changed, 166 insertions(+), 136 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index cdd3fa8..faa65af 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -15,6 +15,7 @@
+ #include <linux/dmaengine.h>
+ #include <linux/module.h>
+ #include <linux/of_address.h>
++#include <linux/regmap.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/dmaengine_pcm.h>
+@@ -22,34 +23,6 @@
+ 
+ #include "fsl_sai.h"
+ 
+-static inline u32 sai_readl(struct fsl_sai *sai,
+-		const void __iomem *addr)
+-{
+-	u32 val;
+-
+-	val = __raw_readl(addr);
+-
+-	if (likely(sai->big_endian_regs))
+-		val = be32_to_cpu(val);
+-	else
+-		val = le32_to_cpu(val);
+-	rmb();
+-
+-	return val;
+-}
+-
+-static inline void sai_writel(struct fsl_sai *sai,
+-		u32 val, void __iomem *addr)
+-{
+-	wmb();
+-	if (likely(sai->big_endian_regs))
+-		val = cpu_to_be32(val);
+-	else
+-		val = cpu_to_le32(val);
+-
+-	__raw_writel(val, addr);
+-}
+-
+ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+ 		int clk_id, unsigned int freq, int fsl_dir)
+ {
+@@ -61,7 +34,8 @@ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+ 	else
+ 		reg_cr2 = FSL_SAI_RCR2;
+ 
+-	val_cr2 = sai_readl(sai, sai->base + reg_cr2);
++	regmap_read(sai->regmap, reg_cr2, &val_cr2);
++
+ 	val_cr2 &= ~FSL_SAI_CR2_MSEL_MASK;
+ 
+ 	switch (clk_id) {
+@@ -81,7 +55,7 @@ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+ 		return -EINVAL;
+ 	}
+ 
+-	sai_writel(sai, val_cr2, sai->base + reg_cr2);
++	regmap_write(sai->regmap, reg_cr2, val_cr2);
+ 
+ 	return 0;
+ }
+@@ -89,32 +63,22 @@ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+ static int fsl_sai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 		int clk_id, unsigned int freq, int dir)
+ {
+-	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int ret;
+ 
+ 	if (dir == SND_SOC_CLOCK_IN)
+ 		return 0;
+ 
+-	ret = clk_prepare_enable(sai->clk);
+-	if (ret)
+-		return ret;
+-
+ 	ret = fsl_sai_set_dai_sysclk_tr(cpu_dai, clk_id, freq,
+ 					FSL_FMT_TRANSMITTER);
+ 	if (ret) {
+ 		dev_err(cpu_dai->dev, "Cannot set tx sysclk: %d\n", ret);
+-		goto err_clk;
++		return ret;
+ 	}
+ 
+ 	ret = fsl_sai_set_dai_sysclk_tr(cpu_dai, clk_id, freq,
+ 					FSL_FMT_RECEIVER);
+-	if (ret) {
++	if (ret)
+ 		dev_err(cpu_dai->dev, "Cannot set rx sysclk: %d\n", ret);
+-		goto err_clk;
+-	}
+-
+-err_clk:
+-	clk_disable_unprepare(sai->clk);
+ 
+ 	return ret;
+ }
+@@ -133,8 +97,8 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
+ 		reg_cr4 = FSL_SAI_RCR4;
+ 	}
+ 
+-	val_cr2 = sai_readl(sai, sai->base + reg_cr2);
+-	val_cr4 = sai_readl(sai, sai->base + reg_cr4);
++	regmap_read(sai->regmap, reg_cr2, &val_cr2);
++	regmap_read(sai->regmap, reg_cr4, &val_cr4);
+ 
+ 	if (sai->big_endian_data)
+ 		val_cr4 &= ~FSL_SAI_CR4_MF;
+@@ -183,35 +147,25 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
+ 		return -EINVAL;
+ 	}
+ 
+-	sai_writel(sai, val_cr2, sai->base + reg_cr2);
+-	sai_writel(sai, val_cr4, sai->base + reg_cr4);
++	regmap_write(sai->regmap, reg_cr2, val_cr2);
++	regmap_write(sai->regmap, reg_cr4, val_cr4);
+ 
+ 	return 0;
+ }
+ 
+ static int fsl_sai_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ {
+-	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int ret;
+ 
+-	ret = clk_prepare_enable(sai->clk);
+-	if (ret)
+-		return ret;
+-
+ 	ret = fsl_sai_set_dai_fmt_tr(cpu_dai, fmt, FSL_FMT_TRANSMITTER);
+ 	if (ret) {
+ 		dev_err(cpu_dai->dev, "Cannot set tx format: %d\n", ret);
+-		goto err_clk;
++		return ret;
+ 	}
+ 
+ 	ret = fsl_sai_set_dai_fmt_tr(cpu_dai, fmt, FSL_FMT_RECEIVER);
+-	if (ret) {
++	if (ret)
+ 		dev_err(cpu_dai->dev, "Cannot set rx format: %d\n", ret);
+-		goto err_clk;
+-	}
+-
+-err_clk:
+-	clk_disable_unprepare(sai->clk);
+ 
+ 	return ret;
+ }
+@@ -235,11 +189,12 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 		reg_mr = FSL_SAI_RMR;
+ 	}
+ 
+-	val_cr4 = sai_readl(sai, sai->base + reg_cr4);
++	regmap_read(sai->regmap, reg_cr4, &val_cr4);
++	regmap_read(sai->regmap, reg_cr4, &val_cr5);
++
+ 	val_cr4 &= ~FSL_SAI_CR4_SYWD_MASK;
+ 	val_cr4 &= ~FSL_SAI_CR4_FRSZ_MASK;
+ 
+-	val_cr5 = sai_readl(sai, sai->base + reg_cr5);
+ 	val_cr5 &= ~FSL_SAI_CR5_WNW_MASK;
+ 	val_cr5 &= ~FSL_SAI_CR5_W0W_MASK;
+ 	val_cr5 &= ~FSL_SAI_CR5_FBT_MASK;
+@@ -257,9 +212,9 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	val_cr4 |= FSL_SAI_CR4_FRSZ(channels);
+ 	val_mr = ~0UL - ((1 << channels) - 1);
+ 
+-	sai_writel(sai, val_cr4, sai->base + reg_cr4);
+-	sai_writel(sai, val_cr5, sai->base + reg_cr5);
+-	sai_writel(sai, val_mr, sai->base + reg_mr);
++	regmap_write(sai->regmap, reg_cr4, val_cr4);
++	regmap_write(sai->regmap, reg_cr5, val_cr5);
++	regmap_write(sai->regmap, reg_mr, val_mr);
+ 
+ 	return 0;
+ }
+@@ -268,44 +223,34 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		struct snd_soc_dai *cpu_dai)
+ {
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+-	u32 tcsr, rcsr, val_cr2, val_cr3, reg_cr3;
+-
+-	val_cr2 = sai_readl(sai, sai->base + FSL_SAI_TCR2);
+-	val_cr2 &= ~FSL_SAI_CR2_SYNC;
+-	sai_writel(sai, val_cr2, sai->base + FSL_SAI_TCR2);
++	u32 tcsr, rcsr;
+ 
+-	val_cr2 = sai_readl(sai, sai->base + FSL_SAI_RCR2);
+-	val_cr2 |= FSL_SAI_CR2_SYNC;
+-	sai_writel(sai, val_cr2, sai->base + FSL_SAI_RCR2);
++	regmap_update_bits(sai->regmap, FSL_SAI_TCR2, FSL_SAI_CR2_SYNC,
++			   ~FSL_SAI_CR2_SYNC);
++	regmap_update_bits(sai->regmap, FSL_SAI_RCR2, FSL_SAI_CR2_SYNC,
++			   FSL_SAI_CR2_SYNC);
+ 
+-	tcsr = sai_readl(sai, sai->base + FSL_SAI_TCSR);
+-	rcsr = sai_readl(sai, sai->base + FSL_SAI_RCSR);
++	regmap_read(sai->regmap, FSL_SAI_TCSR, &tcsr);
++	regmap_read(sai->regmap, FSL_SAI_RCSR, &rcsr);
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		tcsr |= FSL_SAI_CSR_FRDE;
+ 		rcsr &= ~FSL_SAI_CSR_FRDE;
+-		reg_cr3 = FSL_SAI_TCR3;
+ 	} else {
+ 		rcsr |= FSL_SAI_CSR_FRDE;
+ 		tcsr &= ~FSL_SAI_CSR_FRDE;
+-		reg_cr3 = FSL_SAI_RCR3;
+ 	}
+ 
+-	val_cr3 = sai_readl(sai, sai->base + reg_cr3);
+-
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		tcsr |= FSL_SAI_CSR_TERE;
+ 		rcsr |= FSL_SAI_CSR_TERE;
+-		val_cr3 |= FSL_SAI_CR3_TRCE;
+ 
+-		sai_writel(sai, val_cr3, sai->base + reg_cr3);
+-		sai_writel(sai, rcsr, sai->base + FSL_SAI_RCSR);
+-		sai_writel(sai, tcsr, sai->base + FSL_SAI_TCSR);
++		regmap_write(sai->regmap, FSL_SAI_RCSR, rcsr);
++		regmap_write(sai->regmap, FSL_SAI_TCSR, tcsr);
+ 		break;
+-
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+@@ -314,11 +259,8 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			rcsr &= ~FSL_SAI_CSR_TERE;
+ 		}
+ 
+-		val_cr3 &= ~FSL_SAI_CR3_TRCE;
+-
+-		sai_writel(sai, tcsr, sai->base + FSL_SAI_TCSR);
+-		sai_writel(sai, rcsr, sai->base + FSL_SAI_RCSR);
+-		sai_writel(sai, val_cr3, sai->base + reg_cr3);
++		regmap_write(sai->regmap, FSL_SAI_TCSR, tcsr);
++		regmap_write(sai->regmap, FSL_SAI_RCSR, rcsr);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -331,16 +273,32 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *cpu_dai)
+ {
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
++	u32 reg;
+ 
+-	return clk_prepare_enable(sai->clk);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		reg = FSL_SAI_TCR3;
++	else
++		reg = FSL_SAI_RCR3;
++
++	regmap_update_bits(sai->regmap, reg, FSL_SAI_CR3_TRCE,
++			   FSL_SAI_CR3_TRCE);
++
++	return 0;
+ }
+ 
+ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *cpu_dai)
+ {
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
++	u32 reg;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		reg = FSL_SAI_TCR3;
++	else
++		reg = FSL_SAI_RCR3;
+ 
+-	clk_disable_unprepare(sai->clk);
++	regmap_update_bits(sai->regmap, reg, FSL_SAI_CR3_TRCE,
++			   ~FSL_SAI_CR3_TRCE);
+ }
+ 
+ static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
+@@ -355,18 +313,13 @@ static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
+ static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct fsl_sai *sai = dev_get_drvdata(cpu_dai->dev);
+-	int ret;
+-
+-	ret = clk_prepare_enable(sai->clk);
+-	if (ret)
+-		return ret;
+ 
+-	sai_writel(sai, 0x0, sai->base + FSL_SAI_RCSR);
+-	sai_writel(sai, 0x0, sai->base + FSL_SAI_TCSR);
+-	sai_writel(sai, FSL_SAI_MAXBURST_TX * 2, sai->base + FSL_SAI_TCR1);
+-	sai_writel(sai, FSL_SAI_MAXBURST_RX - 1, sai->base + FSL_SAI_RCR1);
+-
+-	clk_disable_unprepare(sai->clk);
++	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff, 0x0);
++	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff, 0x0);
++	regmap_update_bits(sai->regmap, FSL_SAI_TCR1, FSL_SAI_CR1_RFW_MASK,
++			   FSL_SAI_MAXBURST_TX * 2);
++	regmap_update_bits(sai->regmap, FSL_SAI_RCR1, FSL_SAI_CR1_RFW_MASK,
++			   FSL_SAI_MAXBURST_RX - 1);
+ 
+ 	snd_soc_dai_init_dma_data(cpu_dai, &sai->dma_params_tx,
+ 				&sai->dma_params_rx);
+@@ -397,26 +350,109 @@ static const struct snd_soc_component_driver fsl_component = {
+ 	.name           = "fsl-sai",
+ };
+ 
++static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case FSL_SAI_TCSR:
++	case FSL_SAI_TCR1:
++	case FSL_SAI_TCR2:
++	case FSL_SAI_TCR3:
++	case FSL_SAI_TCR4:
++	case FSL_SAI_TCR5:
++	case FSL_SAI_TFR:
++	case FSL_SAI_TMR:
++	case FSL_SAI_RCSR:
++	case FSL_SAI_RCR1:
++	case FSL_SAI_RCR2:
++	case FSL_SAI_RCR3:
++	case FSL_SAI_RCR4:
++	case FSL_SAI_RCR5:
++	case FSL_SAI_RDR:
++	case FSL_SAI_RFR:
++	case FSL_SAI_RMR:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case FSL_SAI_TFR:
++	case FSL_SAI_RFR:
++	case FSL_SAI_TDR:
++	case FSL_SAI_RDR:
++		return true;
++	default:
++		return false;
++	}
++
++}
++
++static bool fsl_sai_writeable_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case FSL_SAI_TCSR:
++	case FSL_SAI_TCR1:
++	case FSL_SAI_TCR2:
++	case FSL_SAI_TCR3:
++	case FSL_SAI_TCR4:
++	case FSL_SAI_TCR5:
++	case FSL_SAI_TDR:
++	case FSL_SAI_TMR:
++	case FSL_SAI_RCSR:
++	case FSL_SAI_RCR1:
++	case FSL_SAI_RCR2:
++	case FSL_SAI_RCR3:
++	case FSL_SAI_RCR4:
++	case FSL_SAI_RCR5:
++	case FSL_SAI_RMR:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static struct regmap_config fsl_sai_regmap_config = {
++	.reg_bits = 32,
++	.reg_stride = 4,
++	.val_bits = 32,
++
++	.max_register = FSL_SAI_RMR,
++	.readable_reg = fsl_sai_readable_reg,
++	.volatile_reg = fsl_sai_volatile_reg,
++	.writeable_reg = fsl_sai_writeable_reg,
++};
++
+ static int fsl_sai_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct fsl_sai *sai;
+ 	struct resource *res;
++	void __iomem *base;
+ 	int ret;
+ 
+ 	sai = devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
+ 	if (!sai)
+ 		return -ENOMEM;
+ 
++	sai->big_endian_regs = of_property_read_bool(np, "big-endian-regs");
++	if (sai->big_endian_regs)
++		fsl_sai_regmap_config.val_format_endian = REGMAP_ENDIAN_BIG;
++
++	sai->big_endian_data = of_property_read_bool(np, "big-endian-data");
++
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	sai->base = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(sai->base))
+-		return PTR_ERR(sai->base);
+-
+-	sai->clk = devm_clk_get(&pdev->dev, "sai");
+-	if (IS_ERR(sai->clk)) {
+-		dev_err(&pdev->dev, "Cannot get SAI's clock\n");
+-		return PTR_ERR(sai->clk);
++	base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
++
++	sai->regmap = devm_regmap_init_mmio_clk(&pdev->dev,
++			"sai", base, &fsl_sai_regmap_config);
++	if (IS_ERR(sai->regmap)) {
++		dev_err(&pdev->dev, "regmap init failed\n");
++		return PTR_ERR(sai->regmap);
+ 	}
+ 
+ 	sai->dma_params_rx.addr = res->start + FSL_SAI_RDR;
+@@ -424,9 +460,6 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	sai->dma_params_rx.maxburst = FSL_SAI_MAXBURST_RX;
+ 	sai->dma_params_tx.maxburst = FSL_SAI_MAXBURST_TX;
+ 
+-	sai->big_endian_regs = of_property_read_bool(np, "big-endian-regs");
+-	sai->big_endian_data = of_property_read_bool(np, "big-endian-data");
+-
+ 	platform_set_drvdata(pdev, sai);
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 41bb62e..1571459 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -15,31 +15,36 @@
+ 			 SNDRV_PCM_FMTBIT_S20_3LE |\
+ 			 SNDRV_PCM_FMTBIT_S24_LE)
+ 
++/* SAI Register Map Register */
++#define FSL_SAI_TCSR	0x00 /* SAI Transmit Control */
++#define FSL_SAI_TCR1	0x04 /* SAI Transmit Configuration 1 */
++#define FSL_SAI_TCR2	0x08 /* SAI Transmit Configuration 2 */
++#define FSL_SAI_TCR3	0x0c /* SAI Transmit Configuration 3 */
++#define FSL_SAI_TCR4	0x10 /* SAI Transmit Configuration 4 */
++#define FSL_SAI_TCR5	0x14 /* SAI Transmit Configuration 5 */
++#define FSL_SAI_TDR	0x20 /* SAI Transmit Data */
++#define FSL_SAI_TFR	0x40 /* SAI Transmit FIFO */
++#define FSL_SAI_TMR	0x60 /* SAI Transmit Mask */
++#define FSL_SAI_RCSR	0x80 /* SAI Receive Control */
++#define FSL_SAI_RCR1	0x84 /* SAI Receive Configuration 1 */
++#define FSL_SAI_RCR2	0x88 /* SAI Receive Configuration 2 */
++#define FSL_SAI_RCR3	0x8c /* SAI Receive Configuration 3 */
++#define FSL_SAI_RCR4	0x90 /* SAI Receive Configuration 4 */
++#define FSL_SAI_RCR5	0x94 /* SAI Receive Configuration 5 */
++#define FSL_SAI_RDR	0xa0 /* SAI Receive Data */
++#define FSL_SAI_RFR	0xc0 /* SAI Receive FIFO */
++#define FSL_SAI_RMR	0xe0 /* SAI Receive Mask */
++
+ /* SAI Transmit/Recieve Control Register */
+-#define FSL_SAI_TCSR		0x00
+-#define FSL_SAI_RCSR		0x80
+ #define FSL_SAI_CSR_TERE	BIT(31)
+ #define FSL_SAI_CSR_FWF		BIT(17)
+ #define FSL_SAI_CSR_FRIE	BIT(8)
+ #define FSL_SAI_CSR_FRDE	BIT(0)
+ 
+-/* SAI Transmit Data/FIFO/MASK Register */
+-#define FSL_SAI_TDR		0x20
+-#define FSL_SAI_TFR		0x40
+-#define FSL_SAI_TMR		0x60
+-
+-/* SAI Recieve Data/FIFO/MASK Register */
+-#define FSL_SAI_RDR		0xa0
+-#define FSL_SAI_RFR		0xc0
+-#define FSL_SAI_RMR		0xe0
+-
+ /* SAI Transmit and Recieve Configuration 1 Register */
+-#define FSL_SAI_TCR1		0x04
+-#define FSL_SAI_RCR1		0x84
++#define FSL_SAI_CR1_RFW_MASK	0x1f
+ 
+ /* SAI Transmit and Recieve Configuration 2 Register */
+-#define FSL_SAI_TCR2		0x08
+-#define FSL_SAI_RCR2		0x88
+ #define FSL_SAI_CR2_SYNC	BIT(30)
+ #define FSL_SAI_CR2_MSEL_MASK	(0xff << 26)
+ #define FSL_SAI_CR2_MSEL_BUS	0
+@@ -50,15 +55,11 @@
+ #define FSL_SAI_CR2_BCD_MSTR	BIT(24)
+ 
+ /* SAI Transmit and Recieve Configuration 3 Register */
+-#define FSL_SAI_TCR3		0x0c
+-#define FSL_SAI_RCR3		0x8c
+ #define FSL_SAI_CR3_TRCE	BIT(16)
+ #define FSL_SAI_CR3_WDFL(x)	(x)
+ #define FSL_SAI_CR3_WDFL_MASK	0x1f
+ 
+ /* SAI Transmit and Recieve Configuration 4 Register */
+-#define FSL_SAI_TCR4		0x10
+-#define FSL_SAI_RCR4		0x90
+ #define FSL_SAI_CR4_FRSZ(x)	(((x) - 1) << 16)
+ #define FSL_SAI_CR4_FRSZ_MASK	(0x1f << 16)
+ #define FSL_SAI_CR4_SYWD(x)	(((x) - 1) << 8)
+@@ -69,8 +70,6 @@
+ #define FSL_SAI_CR4_FSD_MSTR	BIT(0)
+ 
+ /* SAI Transmit and Recieve Configuration 5 Register */
+-#define FSL_SAI_TCR5		0x14
+-#define FSL_SAI_RCR5		0x94
+ #define FSL_SAI_CR5_WNW(x)	(((x) - 1) << 24)
+ #define FSL_SAI_CR5_WNW_MASK	(0x1f << 24)
+ #define FSL_SAI_CR5_W0W(x)	(((x) - 1) << 16)
+@@ -100,9 +99,7 @@
+ #define FSL_SAI_MAXBURST_RX 6
+ 
+ struct fsl_sai {
+-	struct clk *clk;
+-
+-	void __iomem *base;
++	struct regmap *regmap;
+ 
+ 	bool big_endian_regs;
+ 	bool big_endian_data;
+-- 
+1.8.4
