@@ -1,93 +1,73 @@
-From: Michael Weiner <mweiner@gmail.com>
-Subject: Error trying to compile driver
-Date: Fri, 7 Feb 2014 18:46:52 -0500
-Message-ID: <CAJF-=aU+iXQf-gLmCSox7cc8o0sWMD3E+MG_=JnfjJ6uecQL=Q@mail.gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH RFC 0/2] drivers/base: simplify simple DT-based components
+Date: Sat, 8 Feb 2014 00:23:54 +0000
+Message-ID: <20140208002354.GI26684@n2100.arm.linux.org.uk>
+References: <cover.1391793068.git.moinejf@free.fr>
+ <20140207173326.GD26684@n2100.arm.linux.org.uk>
+ <20140207194204.4d4326bd@armhf>
+ <20140207185911.GG26684@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 62D562654D0
- for <alsa-devel@alsa-project.org>; Sat,  8 Feb 2014 00:46:53 +0100 (CET)
-Received: by mail-we0-f179.google.com with SMTP id q58so2743232wes.38
- for <alsa-devel@alsa-project.org>; Fri, 07 Feb 2014 15:46:53 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+Content-Disposition: inline
+In-Reply-To: <20140207185911.GG26684@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: driverdev-devel-bounces@linuxdriverproject.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Sascha Hauer <kernel@pengutronix.de>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I am trying to fix the sound on a laptop i am working on. Has CentOS 5.10
-64bit installed and i am trying to use the alsa-compile.sh script but it
-fails with the following error:
+On Fri, Feb 07, 2014 at 06:59:11PM +0000, Russell King - ARM Linux wrote:
+> Sorry.  Deferred probe does work, it's been tested with imx-drm, not
+> only from the master component but also the sub-components.  There's
+> no problem here.
 
-make -C /lib/modules/2.6.18-371.4.1.el5/build
-SUBDIRS=/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d  CPP="gcc
--E" CC="gcc" modules
-make[1]: Entering directory `/usr/src/kernels/2.6.18-371.4.1.el5-x86_64'
-  CC [M]
-/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore/hwdep.o
-In file included from
-/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/include/adriver.h:1695,
-                 from
-/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore/hwdep.c:1:
-include/pcmcia/cistpl.h:557: error: expected specifier-qualifier-list
-before 'cisdata_t'
-include/pcmcia/cistpl.h:586: error: expected specifier-qualifier-list
-before 'cisdata_t'
-include/pcmcia/cistpl.h:590: warning: 'struct pcmcia_socket' declared
-inside parameter list
-include/pcmcia/cistpl.h:590: warning: its scope is only this definition or
-declaration, which is probably not what you want
-include/pcmcia/cistpl.h:593: warning: 'struct pcmcia_socket' declared
-inside parameter list
-include/pcmcia/cistpl.h:594: warning: 'struct pcmcia_socket' declared
-inside parameter list
-include/pcmcia/cistpl.h:595: warning: 'struct pcmcia_socket' declared
-inside parameter list
-include/pcmcia/cistpl.h:598: warning: 'struct pcmcia_socket' declared
-inside parameter list
-In file included from include/pcmcia/ds.h:23,
-                 from
-/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/include/adriver.h:1696,
-                 from
-/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore/hwdep.c:1:
-include/pcmcia/bulkmem.h:27: error: expected specifier-qualifier-list
-before 'memory_handle_t'
-include/pcmcia/bulkmem.h:38: warning: 'struct pcmcia_device' declared
-inside parameter list
-include/pcmcia/bulkmem.h:39: warning: 'struct pcmcia_device' declared
-inside parameter list
-In file included from
-/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/include/adriver.h:1696,
-                 from
-/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore/hwdep.c:1:
-include/pcmcia/ds.h:35: error: expected specifier-qualifier-list before
-'win_req_t'
-include/pcmcia/ds.h:55: error: expected specifier-qualifier-list before
-'adjust_t'
-make[3]: ***
-[/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore/hwdep.o]
-Error 1
-make[2]: ***
-[/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore] Error 2
-make[1]: ***
-[_module_/tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d] Error 2
-make[1]: Leaving directory `/usr/src/kernels/2.6.18-371.4.1.el5-x86_64'
-make: *** [compile] Error 2
-Working directory /tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d.
-Compilation of alsa-driver failed.
-Report this problem to the <alsa-devel@alsa-project.org> mailing list.
+Here's the proof that it also works with the Cubox, and armada DRM:
 
-Can anyone help me figure out why this is failing? Kernel is 2.6.18-371.4.1
+[drm] Initialized drm 1.1.0 20060810
+...
+armada-drm armada-510-drm: master bind failed: -517
+i2c 0-0070: Driver tda998x requests probe deferral
+...
+tda998x 0-0070: found TDA19988
+armada-drm armada-510-drm: bound 0-0070 (ops tda998x_ops)
 
-Thank you in advance
-Michael Weiner
---
+So, in the above sequence, the armada DRM driver was bound to its driver
+initially, but the TDA998x driver wasn't.
+
+Then, the TDA998x driver is bound, which completes the requirements for
+the DRM master.  So the system attempts to bind.
+
+In doing so, the master probe function discovers a missing clock (because
+the SIL5531 driver hasn't probed) and it returns -EPROBE_DEFER.  This
+causes the probe of the TDA998x to be deferred.
+
+Later, deferred probes are run - at this time the SIL5531 driver has
+probed its device, and the clocks are now available.  So when the TDA998x
+driver is re-probed, it retriggers the binding attempt, and as the clock
+can now be found, the system is bound and the DRM system for the device
+is initialised.
+
+I've just committed a patch locally which makes Armada DRM fully use
+the component helper, which removes in totality the four armada_output.*
+and armada_slave.* files since they're no longer required:
+
+[cubox-3.13 e2713ff5ac2f] DRM: armada: remove non-component support
+ 7 files changed, 8 insertions(+), 437 deletions(-)
+ delete mode 100644 drivers/gpu/drm/armada/armada_output.c
+ delete mode 100644 drivers/gpu/drm/armada/armada_output.h
+ delete mode 100644 drivers/gpu/drm/armada/armada_slave.c
+ delete mode 100644 drivers/gpu/drm/armada/armada_slave.h
+
+-- 
+FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
+in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
+Estimate before purchase was "up to 13.2Mbit".
