@@ -1,554 +1,185 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH v2] ASoC: fsl-sai: convert to use regmap API for Freeacale SAI
-Date: Sat, 8 Feb 2014 14:38:28 +0800
-Message-ID: <1391841508-14025-1-git-send-email-Li.Xiubo@freescale.com>
+From: Sean Cross <xobs@kosagi.com>
+Subject: Re: [PATCH 1/3] sound: soc: codecs: Add es8328 codec
+Date: Sat, 08 Feb 2014 16:10:09 +0800
+Message-ID: <52F5E661.5010807@kosagi.com>
+References: <1391749517-11787-1-git-send-email-xobs@kosagi.com>
+ <1391749517-11787-2-git-send-email-xobs@kosagi.com>
+ <20140207181238.GL1757@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>, Nicolin Chen <Guangyu.Chen@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.g1.pair.com (mail1.g1.pair.com [66.39.3.162])
+ by alsa0.perex.cz (Postfix) with ESMTP id 747C22654FF
+ for <alsa-devel@alsa-project.org>; Sat,  8 Feb 2014 09:10:18 +0100 (CET)
+In-Reply-To: <20140207181238.GL1757@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Sascha Hauer <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: Nicolin Chen <Guangyu.Chen@freescale.com>
----
+On 8/2/14 2:12 AM, Mark Brown wrote:
+> On Fri, Feb 07, 2014 at 01:05:15PM +0800, Sean Cross wrote:
+>
+> Please use subject likes matching the style for the subsystem.  If your
+> changelog looks different to others in the same area it probably needs
+> an update.
+>
+> In general this looks like it should be making much more use of the
+> framework rather than open coding, it looks like it's very much hard
+> coded for one use cae.
+Alright, I'll try to use more of the framework provided.  I tried to use
+one of the Wolfson codecs as an example.  Is there a "canonical" driver
+that's up-to-date and uses an appreciable amount of framework?
+>
+>> +config SND_SOC_ES8328
+>> +    tristate
+>> +
+>
+> It looks like you're going to use this on an ARM system, you should add
+> DT support and make it visible in Kconfig.
+>
+>> +static const struct snd_soc_dapm_widget es8328_dapm_widgets[] = {
+>> +    SND_SOC_DAPM_DAC("Speaker Volume", "HiFi Playback",
+SND_SOC_NOPM, 0, 0),
+>
+> Don't declare a stream by name, use DAPM routes to connect the stream to
+> the widget.
+Where can I read up on DAPM routes?  I don't see the word "route"
+mentioned in the dapm.txt SoC documentation.
+>
+>> +    SND_SOC_DAPM_OUTPUT("VOUTL"),
+>> +    SND_SOC_DAPM_OUTPUT("VOUTR"),
+>> +        SND_SOC_DAPM_INPUT("LINE_IN"),
+>> +        SND_SOC_DAPM_INPUT("MIC_IN"),
+>> +        SND_SOC_DAPM_OUTPUT("HP_OUT"),
+>> +        SND_SOC_DAPM_OUTPUT("SPK_OUT"),
+>
+> Something is messed up with your indentation, spaces vs tabs I expect.
+Sloppy.  I'll fix this in the next revision.
+>
+>> +    if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>> +
+>> +    if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+>
+> An else clause is more idiomatic here.
+>
+>> +        snd_soc_write(codec, ES8328_ADCCONTROL5, adc);
+>
+> It's more idiomatic to use update_bits() here and save doing a manual
+> read/modify/write cycle - it also avoids the write if not needed.
+>
+>> +static int es8328_adc_enable(struct snd_soc_codec *codec)
+>> +{
+>> +    u16 reg = snd_soc_read(codec, ES8328_CHIPPOWER);
+>> +    reg &= ~(ES8328_CHIPPOWER_ADCVREF_OFF |
+>> +         ES8328_CHIPPOWER_ADCPLL_OFF |
+>> +         ES8328_CHIPPOWER_ADCSTM_RESET |
+>> +         ES8328_CHIPPOWER_ADCDIG_OFF);
+>> +    snd_soc_write(codec, ES8328_CHIPPOWER, reg);
+>
+> This looks like it should be done in DAPM.
+The codec has very strict power sequencing.  If I'm understanding the
+document correctly, I'd add a DAPM widget for the DAC, and then register
+a widget event for when the DAC gets opened, and do power sequencing
+there?  Or is there a way to have multiple register writes defined as a
+single DAPM widget?
 
-This version applies against sound-3.14-rc1.
+>> +
+>> +    /* Set up microphone to be differential input */
+>> +    snd_soc_write(codec, ES8328_ADCCONTROL2, 0xf0);
+>
+> This looks like something that should be platform data and/or DAPM -
+> other platforms may be wired differently.
+>
+>> +    /* Set ADC to act as I2S master */
+>> +    snd_soc_write(codec, ES8328_ADCCONTROL3, 0x02);
+>
+> set_dai_fmt().
+>
+>> +    /* Set I2S to 16-bit mode */
+>> +    snd_soc_write(codec, ES8328_ADCCONTROL4, 0x18);
+>
+> This should be being done in hw_params.
+>> +    /* Frequency clock of 272 */
+>> +    snd_soc_write(codec, ES8328_ADCCONTROL5, 0x02);
+>
+> What is the frequency clock in this context?
+The frequency is a specific divider defined in the datasheet.  There is
+a table of frequencies and dividers for various frequencies.  One option
+is to code this table into the driver and pick the frequency clocks out
+of the table.
 
+I decided to assume the codec has a fixed input frequency of 22.5792
+MHz.  This means the codec can support 11.025, 22.05, and 44.1 kHz, but
+cannot support 48 kHz.  It should be possible to instead feed the codec
+a 24 MHz clock and run it at 48 kHz.  Pulseaudio runs at 44.1 by
+default, so I went with that.
+>
+>> +    /* Power up LOUT2 ROUT2, and power down xOUT1 */
+>> +    snd_soc_write(codec, ES8328_DACPOWER,
+>> +            ES8328_DACPOWER_ROUT2_ON |
+>> +            ES8328_DACPOWER_LOUT2_ON);
+>
+> This looks like it should be being done in DAPM.
+>
+>> +    /* Enable click-free power up */
+>> +    snd_soc_write(codec, ES8328_DACCONTROL6,
+ES8328_DACCONTROL6_CLICKFREE);
+>> +    snd_soc_write(codec, ES8328_DACCONTROL3, 0x36);
+>
+> Just do this once on startup?
+Correct.
+>
+>> +    /* Set I2S to 16-bit mode */
+>> +    snd_soc_write(codec, ES8328_DACCONTROL1,
+ES8328_DACCONTROL1_DACWL_16);
+>
+> hw_params().
+>
+>> +    /* No attenuation */
+>> +    snd_soc_write(codec, ES8328_DACCONTROL4, 0x00);
+>> +    snd_soc_write(codec, ES8328_DACCONTROL5, 0x00);
+>
+> This and the rest of the function looks like it should be done in a
+> combination of DAPM and normal ALSA controls.
+>
+>> +    for (i = 0; i < 4; i++)
+>> +        snd_soc_write(codec, i + ES8328_DACCONTROL24, old_volumes[i]);
+>
+> You are probably looking for something like SOC_DAPM_SINGLE_AUTODISABLE.
+>
+>> +static const struct snd_soc_dai_ops es8328_dai_ops = {
+>> +    .hw_params    = es8328_hw_params,
+>> +    .prepare    = es8328_pcm_prepare,
+>> +    .shutdown    = es8328_pcm_shutdown,
+>> +//    .digital_mute    = es8328_mute,
+>
+> Hrm?
+Oops.  Leftover from some anti-pop work I did earlier.  I'll remove it.
+>
+>> +static const struct of_device_id es8328_of_match[] = {
+>> +    { .compatible = "everest,es8328", },
+>> +    { }
+>> +};
+>> +MODULE_DEVICE_TABLE(of, es8328_of_match);
+>
+> Any device tree device needs a binding document.
+My fault for omitting one.
+Much of the code in adc_enable() and dac_enable() come from the
+reference manual.  They indicate that the codec has very strict ordering
+requirements on registers that must be set during playback and
+recording.  Again, is there any way to ensure that hw_params(),
+set_dai_fmt(), and the DAPM widgets are called in a specific order?
 
- sound/soc/fsl/fsl_sai.c | 255 +++++++++++++++++++++++++++---------------------
- sound/soc/fsl/fsl_sai.h |  47 +++++----
- 2 files changed, 166 insertions(+), 136 deletions(-)
+Thank you for the feedback.
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index cdd3fa8..faa65af 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -15,6 +15,7 @@
- #include <linux/dmaengine.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-+#include <linux/regmap.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/dmaengine_pcm.h>
-@@ -22,34 +23,6 @@
- 
- #include "fsl_sai.h"
- 
--static inline u32 sai_readl(struct fsl_sai *sai,
--		const void __iomem *addr)
--{
--	u32 val;
--
--	val = __raw_readl(addr);
--
--	if (likely(sai->big_endian_regs))
--		val = be32_to_cpu(val);
--	else
--		val = le32_to_cpu(val);
--	rmb();
--
--	return val;
--}
--
--static inline void sai_writel(struct fsl_sai *sai,
--		u32 val, void __iomem *addr)
--{
--	wmb();
--	if (likely(sai->big_endian_regs))
--		val = cpu_to_be32(val);
--	else
--		val = cpu_to_le32(val);
--
--	__raw_writel(val, addr);
--}
--
- static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
- 		int clk_id, unsigned int freq, int fsl_dir)
- {
-@@ -61,7 +34,8 @@ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
- 	else
- 		reg_cr2 = FSL_SAI_RCR2;
- 
--	val_cr2 = sai_readl(sai, sai->base + reg_cr2);
-+	regmap_read(sai->regmap, reg_cr2, &val_cr2);
-+
- 	val_cr2 &= ~FSL_SAI_CR2_MSEL_MASK;
- 
- 	switch (clk_id) {
-@@ -81,7 +55,7 @@ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
- 		return -EINVAL;
- 	}
- 
--	sai_writel(sai, val_cr2, sai->base + reg_cr2);
-+	regmap_write(sai->regmap, reg_cr2, val_cr2);
- 
- 	return 0;
- }
-@@ -89,32 +63,22 @@ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
- static int fsl_sai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 		int clk_id, unsigned int freq, int dir)
- {
--	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
- 	int ret;
- 
- 	if (dir == SND_SOC_CLOCK_IN)
- 		return 0;
- 
--	ret = clk_prepare_enable(sai->clk);
--	if (ret)
--		return ret;
--
- 	ret = fsl_sai_set_dai_sysclk_tr(cpu_dai, clk_id, freq,
- 					FSL_FMT_TRANSMITTER);
- 	if (ret) {
- 		dev_err(cpu_dai->dev, "Cannot set tx sysclk: %d\n", ret);
--		goto err_clk;
-+		return ret;
- 	}
- 
- 	ret = fsl_sai_set_dai_sysclk_tr(cpu_dai, clk_id, freq,
- 					FSL_FMT_RECEIVER);
--	if (ret) {
-+	if (ret)
- 		dev_err(cpu_dai->dev, "Cannot set rx sysclk: %d\n", ret);
--		goto err_clk;
--	}
--
--err_clk:
--	clk_disable_unprepare(sai->clk);
- 
- 	return ret;
- }
-@@ -133,8 +97,8 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
- 		reg_cr4 = FSL_SAI_RCR4;
- 	}
- 
--	val_cr2 = sai_readl(sai, sai->base + reg_cr2);
--	val_cr4 = sai_readl(sai, sai->base + reg_cr4);
-+	regmap_read(sai->regmap, reg_cr2, &val_cr2);
-+	regmap_read(sai->regmap, reg_cr4, &val_cr4);
- 
- 	if (sai->big_endian_data)
- 		val_cr4 &= ~FSL_SAI_CR4_MF;
-@@ -183,35 +147,25 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
- 		return -EINVAL;
- 	}
- 
--	sai_writel(sai, val_cr2, sai->base + reg_cr2);
--	sai_writel(sai, val_cr4, sai->base + reg_cr4);
-+	regmap_write(sai->regmap, reg_cr2, val_cr2);
-+	regmap_write(sai->regmap, reg_cr4, val_cr4);
- 
- 	return 0;
- }
- 
- static int fsl_sai_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- {
--	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
- 	int ret;
- 
--	ret = clk_prepare_enable(sai->clk);
--	if (ret)
--		return ret;
--
- 	ret = fsl_sai_set_dai_fmt_tr(cpu_dai, fmt, FSL_FMT_TRANSMITTER);
- 	if (ret) {
- 		dev_err(cpu_dai->dev, "Cannot set tx format: %d\n", ret);
--		goto err_clk;
-+		return ret;
- 	}
- 
- 	ret = fsl_sai_set_dai_fmt_tr(cpu_dai, fmt, FSL_FMT_RECEIVER);
--	if (ret) {
-+	if (ret)
- 		dev_err(cpu_dai->dev, "Cannot set rx format: %d\n", ret);
--		goto err_clk;
--	}
--
--err_clk:
--	clk_disable_unprepare(sai->clk);
- 
- 	return ret;
- }
-@@ -235,11 +189,12 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 		reg_mr = FSL_SAI_RMR;
- 	}
- 
--	val_cr4 = sai_readl(sai, sai->base + reg_cr4);
-+	regmap_read(sai->regmap, reg_cr4, &val_cr4);
-+	regmap_read(sai->regmap, reg_cr4, &val_cr5);
-+
- 	val_cr4 &= ~FSL_SAI_CR4_SYWD_MASK;
- 	val_cr4 &= ~FSL_SAI_CR4_FRSZ_MASK;
- 
--	val_cr5 = sai_readl(sai, sai->base + reg_cr5);
- 	val_cr5 &= ~FSL_SAI_CR5_WNW_MASK;
- 	val_cr5 &= ~FSL_SAI_CR5_W0W_MASK;
- 	val_cr5 &= ~FSL_SAI_CR5_FBT_MASK;
-@@ -257,9 +212,9 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	val_cr4 |= FSL_SAI_CR4_FRSZ(channels);
- 	val_mr = ~0UL - ((1 << channels) - 1);
- 
--	sai_writel(sai, val_cr4, sai->base + reg_cr4);
--	sai_writel(sai, val_cr5, sai->base + reg_cr5);
--	sai_writel(sai, val_mr, sai->base + reg_mr);
-+	regmap_write(sai->regmap, reg_cr4, val_cr4);
-+	regmap_write(sai->regmap, reg_cr5, val_cr5);
-+	regmap_write(sai->regmap, reg_mr, val_mr);
- 
- 	return 0;
- }
-@@ -268,44 +223,34 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 		struct snd_soc_dai *cpu_dai)
- {
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
--	u32 tcsr, rcsr, val_cr2, val_cr3, reg_cr3;
--
--	val_cr2 = sai_readl(sai, sai->base + FSL_SAI_TCR2);
--	val_cr2 &= ~FSL_SAI_CR2_SYNC;
--	sai_writel(sai, val_cr2, sai->base + FSL_SAI_TCR2);
-+	u32 tcsr, rcsr;
- 
--	val_cr2 = sai_readl(sai, sai->base + FSL_SAI_RCR2);
--	val_cr2 |= FSL_SAI_CR2_SYNC;
--	sai_writel(sai, val_cr2, sai->base + FSL_SAI_RCR2);
-+	regmap_update_bits(sai->regmap, FSL_SAI_TCR2, FSL_SAI_CR2_SYNC,
-+			   ~FSL_SAI_CR2_SYNC);
-+	regmap_update_bits(sai->regmap, FSL_SAI_RCR2, FSL_SAI_CR2_SYNC,
-+			   FSL_SAI_CR2_SYNC);
- 
--	tcsr = sai_readl(sai, sai->base + FSL_SAI_TCSR);
--	rcsr = sai_readl(sai, sai->base + FSL_SAI_RCSR);
-+	regmap_read(sai->regmap, FSL_SAI_TCSR, &tcsr);
-+	regmap_read(sai->regmap, FSL_SAI_RCSR, &rcsr);
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		tcsr |= FSL_SAI_CSR_FRDE;
- 		rcsr &= ~FSL_SAI_CSR_FRDE;
--		reg_cr3 = FSL_SAI_TCR3;
- 	} else {
- 		rcsr |= FSL_SAI_CSR_FRDE;
- 		tcsr &= ~FSL_SAI_CSR_FRDE;
--		reg_cr3 = FSL_SAI_RCR3;
- 	}
- 
--	val_cr3 = sai_readl(sai, sai->base + reg_cr3);
--
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		tcsr |= FSL_SAI_CSR_TERE;
- 		rcsr |= FSL_SAI_CSR_TERE;
--		val_cr3 |= FSL_SAI_CR3_TRCE;
- 
--		sai_writel(sai, val_cr3, sai->base + reg_cr3);
--		sai_writel(sai, rcsr, sai->base + FSL_SAI_RCSR);
--		sai_writel(sai, tcsr, sai->base + FSL_SAI_TCSR);
-+		regmap_write(sai->regmap, FSL_SAI_RCSR, rcsr);
-+		regmap_write(sai->regmap, FSL_SAI_TCSR, tcsr);
- 		break;
--
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-@@ -314,11 +259,8 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 			rcsr &= ~FSL_SAI_CSR_TERE;
- 		}
- 
--		val_cr3 &= ~FSL_SAI_CR3_TRCE;
--
--		sai_writel(sai, tcsr, sai->base + FSL_SAI_TCSR);
--		sai_writel(sai, rcsr, sai->base + FSL_SAI_RCSR);
--		sai_writel(sai, val_cr3, sai->base + reg_cr3);
-+		regmap_write(sai->regmap, FSL_SAI_TCSR, tcsr);
-+		regmap_write(sai->regmap, FSL_SAI_RCSR, rcsr);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -331,16 +273,32 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *cpu_dai)
- {
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
-+	u32 reg;
- 
--	return clk_prepare_enable(sai->clk);
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		reg = FSL_SAI_TCR3;
-+	else
-+		reg = FSL_SAI_RCR3;
-+
-+	regmap_update_bits(sai->regmap, reg, FSL_SAI_CR3_TRCE,
-+			   FSL_SAI_CR3_TRCE);
-+
-+	return 0;
- }
- 
- static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *cpu_dai)
- {
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
-+	u32 reg;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		reg = FSL_SAI_TCR3;
-+	else
-+		reg = FSL_SAI_RCR3;
- 
--	clk_disable_unprepare(sai->clk);
-+	regmap_update_bits(sai->regmap, reg, FSL_SAI_CR3_TRCE,
-+			   ~FSL_SAI_CR3_TRCE);
- }
- 
- static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
-@@ -355,18 +313,13 @@ static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
- static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
- {
- 	struct fsl_sai *sai = dev_get_drvdata(cpu_dai->dev);
--	int ret;
--
--	ret = clk_prepare_enable(sai->clk);
--	if (ret)
--		return ret;
- 
--	sai_writel(sai, 0x0, sai->base + FSL_SAI_RCSR);
--	sai_writel(sai, 0x0, sai->base + FSL_SAI_TCSR);
--	sai_writel(sai, FSL_SAI_MAXBURST_TX * 2, sai->base + FSL_SAI_TCR1);
--	sai_writel(sai, FSL_SAI_MAXBURST_RX - 1, sai->base + FSL_SAI_RCR1);
--
--	clk_disable_unprepare(sai->clk);
-+	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff, 0x0);
-+	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff, 0x0);
-+	regmap_update_bits(sai->regmap, FSL_SAI_TCR1, FSL_SAI_CR1_RFW_MASK,
-+			   FSL_SAI_MAXBURST_TX * 2);
-+	regmap_update_bits(sai->regmap, FSL_SAI_RCR1, FSL_SAI_CR1_RFW_MASK,
-+			   FSL_SAI_MAXBURST_RX - 1);
- 
- 	snd_soc_dai_init_dma_data(cpu_dai, &sai->dma_params_tx,
- 				&sai->dma_params_rx);
-@@ -397,26 +350,109 @@ static const struct snd_soc_component_driver fsl_component = {
- 	.name           = "fsl-sai",
- };
- 
-+static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case FSL_SAI_TCSR:
-+	case FSL_SAI_TCR1:
-+	case FSL_SAI_TCR2:
-+	case FSL_SAI_TCR3:
-+	case FSL_SAI_TCR4:
-+	case FSL_SAI_TCR5:
-+	case FSL_SAI_TFR:
-+	case FSL_SAI_TMR:
-+	case FSL_SAI_RCSR:
-+	case FSL_SAI_RCR1:
-+	case FSL_SAI_RCR2:
-+	case FSL_SAI_RCR3:
-+	case FSL_SAI_RCR4:
-+	case FSL_SAI_RCR5:
-+	case FSL_SAI_RDR:
-+	case FSL_SAI_RFR:
-+	case FSL_SAI_RMR:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case FSL_SAI_TFR:
-+	case FSL_SAI_RFR:
-+	case FSL_SAI_TDR:
-+	case FSL_SAI_RDR:
-+		return true;
-+	default:
-+		return false;
-+	}
-+
-+}
-+
-+static bool fsl_sai_writeable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case FSL_SAI_TCSR:
-+	case FSL_SAI_TCR1:
-+	case FSL_SAI_TCR2:
-+	case FSL_SAI_TCR3:
-+	case FSL_SAI_TCR4:
-+	case FSL_SAI_TCR5:
-+	case FSL_SAI_TDR:
-+	case FSL_SAI_TMR:
-+	case FSL_SAI_RCSR:
-+	case FSL_SAI_RCR1:
-+	case FSL_SAI_RCR2:
-+	case FSL_SAI_RCR3:
-+	case FSL_SAI_RCR4:
-+	case FSL_SAI_RCR5:
-+	case FSL_SAI_RMR:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static struct regmap_config fsl_sai_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+
-+	.max_register = FSL_SAI_RMR,
-+	.readable_reg = fsl_sai_readable_reg,
-+	.volatile_reg = fsl_sai_volatile_reg,
-+	.writeable_reg = fsl_sai_writeable_reg,
-+};
-+
- static int fsl_sai_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
- 	struct fsl_sai *sai;
- 	struct resource *res;
-+	void __iomem *base;
- 	int ret;
- 
- 	sai = devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
- 	if (!sai)
- 		return -ENOMEM;
- 
-+	sai->big_endian_regs = of_property_read_bool(np, "big-endian-regs");
-+	if (sai->big_endian_regs)
-+		fsl_sai_regmap_config.val_format_endian = REGMAP_ENDIAN_BIG;
-+
-+	sai->big_endian_data = of_property_read_bool(np, "big-endian-data");
-+
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	sai->base = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(sai->base))
--		return PTR_ERR(sai->base);
--
--	sai->clk = devm_clk_get(&pdev->dev, "sai");
--	if (IS_ERR(sai->clk)) {
--		dev_err(&pdev->dev, "Cannot get SAI's clock\n");
--		return PTR_ERR(sai->clk);
-+	base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	sai->regmap = devm_regmap_init_mmio_clk(&pdev->dev,
-+			"sai", base, &fsl_sai_regmap_config);
-+	if (IS_ERR(sai->regmap)) {
-+		dev_err(&pdev->dev, "regmap init failed\n");
-+		return PTR_ERR(sai->regmap);
- 	}
- 
- 	sai->dma_params_rx.addr = res->start + FSL_SAI_RDR;
-@@ -424,9 +460,6 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	sai->dma_params_rx.maxburst = FSL_SAI_MAXBURST_RX;
- 	sai->dma_params_tx.maxburst = FSL_SAI_MAXBURST_TX;
- 
--	sai->big_endian_regs = of_property_read_bool(np, "big-endian-regs");
--	sai->big_endian_data = of_property_read_bool(np, "big-endian-data");
--
- 	platform_set_drvdata(pdev, sai);
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index 41bb62e..1571459 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -15,31 +15,36 @@
- 			 SNDRV_PCM_FMTBIT_S20_3LE |\
- 			 SNDRV_PCM_FMTBIT_S24_LE)
- 
-+/* SAI Register Map Register */
-+#define FSL_SAI_TCSR	0x00 /* SAI Transmit Control */
-+#define FSL_SAI_TCR1	0x04 /* SAI Transmit Configuration 1 */
-+#define FSL_SAI_TCR2	0x08 /* SAI Transmit Configuration 2 */
-+#define FSL_SAI_TCR3	0x0c /* SAI Transmit Configuration 3 */
-+#define FSL_SAI_TCR4	0x10 /* SAI Transmit Configuration 4 */
-+#define FSL_SAI_TCR5	0x14 /* SAI Transmit Configuration 5 */
-+#define FSL_SAI_TDR	0x20 /* SAI Transmit Data */
-+#define FSL_SAI_TFR	0x40 /* SAI Transmit FIFO */
-+#define FSL_SAI_TMR	0x60 /* SAI Transmit Mask */
-+#define FSL_SAI_RCSR	0x80 /* SAI Receive Control */
-+#define FSL_SAI_RCR1	0x84 /* SAI Receive Configuration 1 */
-+#define FSL_SAI_RCR2	0x88 /* SAI Receive Configuration 2 */
-+#define FSL_SAI_RCR3	0x8c /* SAI Receive Configuration 3 */
-+#define FSL_SAI_RCR4	0x90 /* SAI Receive Configuration 4 */
-+#define FSL_SAI_RCR5	0x94 /* SAI Receive Configuration 5 */
-+#define FSL_SAI_RDR	0xa0 /* SAI Receive Data */
-+#define FSL_SAI_RFR	0xc0 /* SAI Receive FIFO */
-+#define FSL_SAI_RMR	0xe0 /* SAI Receive Mask */
-+
- /* SAI Transmit/Recieve Control Register */
--#define FSL_SAI_TCSR		0x00
--#define FSL_SAI_RCSR		0x80
- #define FSL_SAI_CSR_TERE	BIT(31)
- #define FSL_SAI_CSR_FWF		BIT(17)
- #define FSL_SAI_CSR_FRIE	BIT(8)
- #define FSL_SAI_CSR_FRDE	BIT(0)
- 
--/* SAI Transmit Data/FIFO/MASK Register */
--#define FSL_SAI_TDR		0x20
--#define FSL_SAI_TFR		0x40
--#define FSL_SAI_TMR		0x60
--
--/* SAI Recieve Data/FIFO/MASK Register */
--#define FSL_SAI_RDR		0xa0
--#define FSL_SAI_RFR		0xc0
--#define FSL_SAI_RMR		0xe0
--
- /* SAI Transmit and Recieve Configuration 1 Register */
--#define FSL_SAI_TCR1		0x04
--#define FSL_SAI_RCR1		0x84
-+#define FSL_SAI_CR1_RFW_MASK	0x1f
- 
- /* SAI Transmit and Recieve Configuration 2 Register */
--#define FSL_SAI_TCR2		0x08
--#define FSL_SAI_RCR2		0x88
- #define FSL_SAI_CR2_SYNC	BIT(30)
- #define FSL_SAI_CR2_MSEL_MASK	(0xff << 26)
- #define FSL_SAI_CR2_MSEL_BUS	0
-@@ -50,15 +55,11 @@
- #define FSL_SAI_CR2_BCD_MSTR	BIT(24)
- 
- /* SAI Transmit and Recieve Configuration 3 Register */
--#define FSL_SAI_TCR3		0x0c
--#define FSL_SAI_RCR3		0x8c
- #define FSL_SAI_CR3_TRCE	BIT(16)
- #define FSL_SAI_CR3_WDFL(x)	(x)
- #define FSL_SAI_CR3_WDFL_MASK	0x1f
- 
- /* SAI Transmit and Recieve Configuration 4 Register */
--#define FSL_SAI_TCR4		0x10
--#define FSL_SAI_RCR4		0x90
- #define FSL_SAI_CR4_FRSZ(x)	(((x) - 1) << 16)
- #define FSL_SAI_CR4_FRSZ_MASK	(0x1f << 16)
- #define FSL_SAI_CR4_SYWD(x)	(((x) - 1) << 8)
-@@ -69,8 +70,6 @@
- #define FSL_SAI_CR4_FSD_MSTR	BIT(0)
- 
- /* SAI Transmit and Recieve Configuration 5 Register */
--#define FSL_SAI_TCR5		0x14
--#define FSL_SAI_RCR5		0x94
- #define FSL_SAI_CR5_WNW(x)	(((x) - 1) << 24)
- #define FSL_SAI_CR5_WNW_MASK	(0x1f << 24)
- #define FSL_SAI_CR5_W0W(x)	(((x) - 1) << 16)
-@@ -100,9 +99,7 @@
- #define FSL_SAI_MAXBURST_RX 6
- 
- struct fsl_sai {
--	struct clk *clk;
--
--	void __iomem *base;
-+	struct regmap *regmap;
- 
- 	bool big_endian_regs;
- 	bool big_endian_data;
--- 
-1.8.4
+Sean
