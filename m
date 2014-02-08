@@ -1,47 +1,64 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [PATCH v2 7/7] ASoC: binding: for new properties documenting
- and usage
-Date: Sat, 8 Feb 2014 08:20:16 +0000
-Message-ID: <28c66e24e8744a6789788600b6a412f5@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1390549386-4702-1-git-send-email-Li.Xiubo@freescale.com>
- <1390549386-4702-8-git-send-email-Li.Xiubo@freescale.com>
- <20140127195848.GB11841@sirena.org.uk>
+From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH 2/3] sound: soc: fsl: Add support for Novena onboard audio
+Date: Sat, 08 Feb 2014 16:27:19 +0800
+Message-ID: <52F5EA67.1080008@kosagi.com>
+References: <1391749517-11787-1-git-send-email-xobs@kosagi.com> <1391749517-11787-3-git-send-email-xobs@kosagi.com> <20140207181433.GM1757@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140127195848.GB11841@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "rob@landley.net" <rob@landley.net>, "perex@perex.cz" <perex@perex.cz>, "moinejf@free.fr" <moinejf@free.fr>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20140207181433.GM1757-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > This add the following three new properties documenting and usage
-> > for simple card:
-> >
-> > 	"simple-audio-card,name",
-> > 	"simple-audio-card,widgets",
-> > 	"simple-audio-card,tdm-slot".
+On 8/2/14 2:14 AM, Mark Brown wrote:
+> On Fri, Feb 07, 2014 at 01:05:16PM +0800, Sean Cross wrote:
+>> Novena uses an ES8328 audio codec connected via I2S.
 > 
-> name and widgets are basically fine modulo the comment about "Hp".
-> tdm-slot needs further study, when resubmitting can you please split
-> that into a second patch so that the name and widgets properties can be
-> merged even if that needs more work?
->
+> The CODEC looked pretty simple, can this use simple-card?
 
-Yes, I will.
+I had never heard of simple-card.  It doesn't look like it supports
+device tree.  Novena doesn't have a platform definition, and we run
+entirely using DT.  If simple-card can work without a platform
+definition, then we can use it.  Otherwise, it's nearly identical to
+imx-sgtl5000.c, with the exception of the code you called out.
 
- 
-> For widgets it might be good to create a separate document widgets.txt
-> and refer to that - since the code in the kernel can be shared and
-> extended we should share the binding document too.
+>> +	/* Headphone jack detection */ +	if
+>> (gpio_is_valid(data->jack_gpio)) { +		ret =
+>> snd_soc_jack_new(rtd->codec, "Headset", +
+>> SND_JACK_HEADSET | SND_JACK_BTN_0, +				       &headset_jack); +
+>> if (ret) +			return ret; + +		headset_jack_gpios[0].gpio =
+>> data->jack_gpio; +		ret = snd_soc_jack_add_gpios(&headset_jack, +
+>> ARRAY_SIZE(headset_jack_gpios), +					     headset_jack_gpios); +
+>> }
+> 
+> We'd need to add support for this but that shouldn't be too hard.
 
-I will send another patch series about this.
+It does seem simple.  I could imagine specifying the jack in a device
+tree file, and mapping it to a GPIO.
 
+Can you think of why this would oops on removal?  If I disable
+headphone jack detection (by simply making data->jack_gpio an invalid
+gpio), the module removes cleanly.
 
-Thanks,
+>> +static int imx_set_frequency(struct imx_novena_data *data, int
+>> freq) { +	int ret; + +	ret = clk_set_parent(data->system_cko,
+>> data->codec_clk); +	if (ret) { +		dev_err(data->dev, "unable to
+>> set clk output"); +		return ret; +	} + +	ret =
+>> clk_set_parent(data->codec_clk_sel, data->codec_clk_post_div); +
+>> if (ret) { +		dev_err(data->dev, "unable to set clk parent"); +
+>> return ret; +	}
+> 
+> There's supposed to be support for this sort of thing going into
+> the clock API with some sort of generic binding.
+
+Can you direct me to this patch?  Is it supposed to be defined in the
+device tree file?  As of right now, the clock is hardcoded to 24 MHz
+in clk-imx6q.c, which is why we need to change it here.
 
 --
-Best Regards,
-Xiubo
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
