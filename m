@@ -1,73 +1,31 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC 0/2] drivers/base: simplify simple DT-based components
-Date: Sat, 8 Feb 2014 00:23:54 +0000
-Message-ID: <20140208002354.GI26684@n2100.arm.linux.org.uk>
-References: <cover.1391793068.git.moinejf@free.fr>
- <20140207173326.GD26684@n2100.arm.linux.org.uk>
- <20140207194204.4d4326bd@armhf>
- <20140207185911.GG26684@n2100.arm.linux.org.uk>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [alsa-devel] v3.14-rc1 locking bug in system suspend
+Date: Sat, 8 Feb 2014 12:58:29 +0800
+Message-ID: <20140208045824.GB10195@S2101-09.ap.freescale.net>
+References: <20140205145408.GA3708@S2101-09.ap.freescale.net>
+ <20140206145509.GB6610@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140207185911.GG26684@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: driverdev-devel-bounces@linuxdriverproject.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Sascha Hauer <kernel@pengutronix.de>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+In-Reply-To: <20140206145509.GB6610@S2101-09.ap.freescale.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 07, 2014 at 06:59:11PM +0000, Russell King - ARM Linux wrote:
-> Sorry.  Deferred probe does work, it's been tested with imx-drm, not
-> only from the master component but also the sub-components.  There's
-> no problem here.
+On Thu, Feb 06, 2014 at 10:55:13PM +0800, Shawn Guo wrote:
+> On Wed, Feb 05, 2014 at 10:54:10PM +0800, Shawn Guo wrote:
+> > I start seeing the following locking bug on IMX6 with suspend operation
+> > after moving to v3.14-rc1.  Before I start looking into the issue, I
+> > would like to confirm if it's an IMX specific problem or one seen on
+> > other platforms.  Please ask if you need more info.
+> 
+> Sorry.  This is not a new bug of v3.14-rc1.  It's been there with
+> v3.13-rc for a while.  It looks like there is something wrong in the
+> use of power_lock in struct snd_card.  Will dig into it.
 
-Here's the proof that it also works with the Cubox, and armada DRM:
+Okay.  This is an IMX specific problem caused by audio driver.  I will
+send a fix to alsa-devel list shortly.
 
-[drm] Initialized drm 1.1.0 20060810
-...
-armada-drm armada-510-drm: master bind failed: -517
-i2c 0-0070: Driver tda998x requests probe deferral
-...
-tda998x 0-0070: found TDA19988
-armada-drm armada-510-drm: bound 0-0070 (ops tda998x_ops)
-
-So, in the above sequence, the armada DRM driver was bound to its driver
-initially, but the TDA998x driver wasn't.
-
-Then, the TDA998x driver is bound, which completes the requirements for
-the DRM master.  So the system attempts to bind.
-
-In doing so, the master probe function discovers a missing clock (because
-the SIL5531 driver hasn't probed) and it returns -EPROBE_DEFER.  This
-causes the probe of the TDA998x to be deferred.
-
-Later, deferred probes are run - at this time the SIL5531 driver has
-probed its device, and the clocks are now available.  So when the TDA998x
-driver is re-probed, it retriggers the binding attempt, and as the clock
-can now be found, the system is bound and the DRM system for the device
-is initialised.
-
-I've just committed a patch locally which makes Armada DRM fully use
-the component helper, which removes in totality the four armada_output.*
-and armada_slave.* files since they're no longer required:
-
-[cubox-3.13 e2713ff5ac2f] DRM: armada: remove non-component support
- 7 files changed, 8 insertions(+), 437 deletions(-)
- delete mode 100644 drivers/gpu/drm/armada/armada_output.c
- delete mode 100644 drivers/gpu/drm/armada/armada_output.h
- delete mode 100644 drivers/gpu/drm/armada/armada_slave.c
- delete mode 100644 drivers/gpu/drm/armada/armada_slave.h
-
--- 
-FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
-in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
-Estimate before purchase was "up to 13.2Mbit".
+Shawn
