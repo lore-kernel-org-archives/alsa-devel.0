@@ -1,60 +1,80 @@
-From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH 1/3] sound: soc: codecs: Add es8328 codec
-Date: Mon, 10 Feb 2014 17:24:47 +0800
-Message-ID: <52F89ADF.8020305@kosagi.com>
-References: <1391749517-11787-1-git-send-email-xobs@kosagi.com> <1391749517-11787-2-git-send-email-xobs@kosagi.com> <20140207181238.GL1757@sirena.org.uk>
+From: Thilo Schulz <thilo@tjps.eu>
+Subject: Workaround for "[AO_ALSA] Unable to set buffer time
+	near: Invalid argument" error on HDMI 5.1 output
+Date: Sun, 9 Feb 2014 22:24:52 +0100
+Message-ID: <201402092224.53074.thilo@tjps.eu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140207181238.GL1757-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tjps.eu (tjps.eu [176.9.53.212])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D217260786
+ for <alsa-devel@alsa-project.org>; Sun,  9 Feb 2014 22:24:58 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: mplayer-users@mplayerhq.hu
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 8/2/14 2:12 AM, Mark Brown wrote:
-> On Fri, Feb 07, 2014 at 01:05:15PM +0800, Sean Cross wrote:
-> 
-> Please use subject likes matching the style for the subsystem.  If your
-> changelog looks different to others in the same area it probably needs
-> an update.
-> 
-> In general this looks like it should be making much more use of the
-> framework rather than open coding, it looks like it's very much hard
-> coded for one use cae.
+Hi,
 
-I've tried to simplify the code somewhat, but I'm still unclear about
-how much of the DAPM code functions.  I'm running into two problems:
-Mapping the codec names "OUT1" and "OUT2" onto "Speaker" and "Headphone"
-respectively, and accommodating this codec's one DAC / two outputs
-architecture.
+the purpose of this message is just to document my workaround solution I found 
+to a bug (probably in ALSA) on a stable Debian system. This took me the better 
+of a fine sunday and I'm posting this to spare anyone who might run into a 
+similar problem the same trouble. And I'm posting this so the alsa devs may 
+look into this (if it's not already fixed in recent alsa versions).
 
-First, this particular codec doesn't specify what the outputs are used
-for, it only specifies the names OUT1 and OUT2.  It is permitted to
-connect either a speaker or headphones to either output.  In the initial
-patch, I hardcoded OUT1 to be named "Speaker", and OUT2 to "Headphone".
- However, I've genericised the codec and changed them back to "OUT1" and
-"OUT2".  Inthe board definition I've added DAPM routes that map
-"Speaker" and "Headphone" back onto these names.  amixer still shows
-OUT1 and OUT2.
+Using mplayer, I recently tried outputting a 6 channel test wave file to the 
+HDMI output on my Acer Aspire with a HDA Intel PCH card.
 
-There seems to be some overlap between DAPM and kcontrols.  How can I
-specify in the board definition file that OUT1 should have a kcontrol
-named "Speaker" and OUT2 should be named "Headphone"?  Tracing shows
-that DAPM at least recognizes the naming: e.g. "snd_soc_dapm_input_path:
-*Speaker <- (direct) <- ROUT1"
+2 channels work fine, but trying to output 6 channels results in:
 
-Second, I'm having trouble getting the DAPM routing to function
-properly.  There is one DAC that routes to two outputs, OUT1 and OUT2.
-Both OUT1 and OUT2 have their own volume controls as well, but the main
-state machine and amplification comes from the DAC.  This doesn't seem
-to be very common.  Are there any codecs I can use as an example that
-have one DAC routing to two outputs?
+$ mplayer test.wav -ao alsa:device=hdmi -channels 6
+[...]
+[AO_ALSA] Unable to set buffer time near: Invalid argument
+Failed to initialize audio driver 'alsa:device=hdmi'
 
+Obviously, this code from mplayer's ao_alsa.c fails:
 
-Sean
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+    unsigned int alsa_buffer_time = 500000; /* 0.5 s */
+[...]
+        if ((err = snd_pcm_hw_params_set_buffer_time_near(alsa_handler, \ 
+alsa_hwparams, &alsa_buffer_time, NULL)) < 0)
+          {
+            mp_msg(MSGT_AO,MSGL_ERR,MSGTR_AO_ALSA_UnableToSetBufferTimeNear,
+                   snd_strerror(err));
+            return 0;
+          }
+
+A similar issue seems to have been discussed in this thread on alsa-devel:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2011-March/037450.html
+
+And as a workaround it is suggested there to raise some memory preallocation 
+parameter:
+$ cat /proc/asound/card0/pcm3p/sub0/prealloc
+64
+
+like so:
+$ echo 128 > /proc/asound/card0/pcm3p/sub0/prealloc
+
+this indeed fixes the problem and mplayer plays fine. Now here comes the curious 
+part. _Lowering_ the parameter like this:
+
+$ echo 63 > /proc/asound/card0/pcm3p/sub0/prealloc
+
+makes the problem go away as well. Strange.
+For followup replies, please CC me, as I'm subscribed to neither mailing 
+lists.
+To ALSA devs: I would be willing to help debug this issue if you'd give a few 
+instructions (where to put a few printk messages in the module, etc)
+
+-- 
+Beste regards,
+Thilo Schulz
