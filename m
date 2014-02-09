@@ -1,46 +1,87 @@
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 25/28] Remove MACH_SMDKV310
-Date: Sun,  9 Feb 2014 19:48:03 +0100
-Message-ID: <1391971686-9517-26-git-send-email-richard@nod.at>
-References: <1391971686-9517-1-git-send-email-richard@nod.at>
+From: Jonathan Woithe <jwoithe@just42.net>
+Subject: Re: Echo Fireworks control protocol (was Re: Sample program for
+	hwdep interface)
+Date: Mon, 10 Feb 2014 08:59:27 +1030
+Message-ID: <20140209222927.GB23867@marvin.atrad.com.au>
+References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
+	<52B45837.2080804@sakamocchi.jp>
+	<20131221101123.GA17855@marvin.atrad.com.au>
+	<52C93F8B.1010701@sakamocchi.jp> <20140112142230.4aacdc9e@stein>
+	<52D2B41B.7090505@sakamocchi.jp> <20140202145850.1f8684b3@stein>
+	<52F62FA0.6040809@sakamocchi.jp>
+	<20140209114228.GB15049@marvin.atrad.com.au>
+	<20140209155145.2175d147@stein>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1391971686-9517-1-git-send-email-richard@nod.at>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "moderated list:ARM/SAMSUNG ARM A..." <linux-arm-kernel@lists.infradead.org>, "moderated list:ARM/SAMSUNG ARM A..." <linux-samsung-soc@vger.kernel.org>, "moderated list:SAMSUNG AUDIO AS...,
- linux-kernel@vger.kernel.org open list" <alsa-devel@alsa-project.org>
-Cc: Richard Weinberger <richard@nod.at>
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20140209155145.2175d147@stein>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Cc: alsa-devel@alsa-project.org, jwoithe@just42.net, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The symbol is an orphan, get rid of it.
+On Sun, Feb 09, 2014 at 03:51:45PM +0100, Stefan Richter wrote:
+> Sure, definitely; my point was that the kernel ABI which userspace mixer
+> applications are going to use could be
+>   a) the ALSA hwdep interface, or
+>   b) the ALSA hwdep interface together with firewire-core's firewire-cdev
+>      interface,
+> but I understood that b) is the first choice.  Specifically, provide in
+> ALSA hwdep only the absolutely necessary interfaces and do as much as
+> possible via firewire-cdev.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- sound/soc/samsung/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Agreed.
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 7ea576c..33fd372 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -145,7 +145,7 @@ config SND_SOC_SAMSUNG_RX1950_UDA1380
- 
- config SND_SOC_SAMSUNG_SMDK_WM9713
- 	tristate "SoC AC97 Audio support for SMDK with WM9713"
--	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310)
-+	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110)
- 	select SND_SOC_WM9713
- 	select SND_SAMSUNG_AC97
- 	help
--- 
-1.8.4.2
+> In contrast, it can't be firewire-cdev alone because of streaming on/off
+> state influences what can be controlled, and because some devices embed
+> status into the isochronous stream (MotU? RME?) ...
+
+MOTU to a certain extent (although we don't make direct use of that at this
+point because the information is quite low level and isn't required to use
+the device successfully).  Hardware meter values (which don't really
+constitute status data) are sent by the RMEs as part of the iso stream but
+again we're not making use of that yet either.
+
+> ... and because some devices (which ones?) may have write-only registers,
+> of which both streaming driver and mixer application want to know what is
+> being written there.
+
+RME is the primary example in this case.
+
+> Furthermore, it can't be a kernel interface like sysfs or configfs because
+> of the complexity and variety of control protocols of FireWire audio
+> devices.
+
+At this stage I don't believe a universal interface is possible because I
+expect this will end up being a case of chasing one's tail (a list of basic
+conventions will be fine though).  As you know, the physical features and
+setup of each interface family can be very different and trying to come up
+with a single interface which works across devices will be the stuff of
+nightmares.  For example, some things needed by one interface may be of no
+concern at all to others.  I imagine the device-specific userspace mixer
+panels which need to will access their relevant kernel interface. 
+Consequently, for the relatively small number of interface models which are
+affected, an interface for each device through sysfs or configfs might work. 
+Mixer and control for most devices will work fine with just the basic list
+of information which can be made available via hwdep.  The most important
+one of these is the streaming status, but it could be useful to include a
+small number of other things which are common to all devices, such as sample
+rate.
+
+Regards
+  jonathan
+
+------------------------------------------------------------------------------
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
