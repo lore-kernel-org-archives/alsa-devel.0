@@ -1,72 +1,46 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Echo Fireworks control protocol (was Re: Sample program for hwdep
-	interface)
-Date: Mon, 10 Feb 2014 01:53:02 +0900
-Message-ID: <52F7B26E.1000703@sakamocchi.jp>
-References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
-	<52B45837.2080804@sakamocchi.jp>
-	<20131221101123.GA17855@marvin.atrad.com.au>
-	<52C93F8B.1010701@sakamocchi.jp> <20140112142230.4aacdc9e@stein>
-	<52D2B41B.7090505@sakamocchi.jp> <20140202145850.1f8684b3@stein>
-	<52F62FA0.6040809@sakamocchi.jp>
-	<20140209114228.GB15049@marvin.atrad.com.au>
-	<20140209155145.2175d147@stein>
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH 14/28] Remove MACH_SMDKC210
+Date: Sun,  9 Feb 2014 19:47:52 +0100
+Message-ID: <1391971686-9517-15-git-send-email-richard@nod.at>
+References: <1391971686-9517-1-git-send-email-richard@nod.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20140209155145.2175d147@stein>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Stefan Richter <stefanr@s5r6.in-berlin.de>, Jonathan Woithe <jwoithe@just42.net>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1391971686-9517-1-git-send-email-richard@nod.at>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "moderated list:ARM/SAMSUNG ARM A..." <linux-arm-kernel@lists.infradead.org>, "moderated list:ARM/SAMSUNG ARM A..." <linux-samsung-soc@vger.kernel.org>, "moderated list:SAMSUNG AUDIO AS...,
+ linux-kernel@vger.kernel.org open list" <alsa-devel@alsa-project.org>
+Cc: Richard Weinberger <richard@nod.at>
 List-Id: alsa-devel@alsa-project.org
 
-> Sure, definitely; my point was that the kernel ABI which userspace mixer
-> applications are going to use could be
->    a) the ALSA hwdep interface, or
->    b) the ALSA hwdep interface together with firewire-core's firewire-cdev
->       interface,
-> but I understood that b) is the first choice.  Specifically, provide in
-> ALSA hwdep only the absolutely necessary interfaces and do as much as
-> possible via firewire-cdev.
+The symbol is an orphan, get rid of it.
 
-Exactly.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ sound/soc/samsung/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> and because some devices (which ones?) may have write-only registers,
-> of which both streaming driver and mixer application want to know
-> what is being written there.
-
-For this purpose, ALSA Control interface can also be used. One example 
-is M-Audio 'Firewire 1814', see:
-[PATCH 52/52] bebob: Add support for M-Audio special Firewire series
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071873.html
-
-And See:
-[alsa-devel] include/uapi/firewire.h for other firewire drivers
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-November/068069.html
-
-(This device has another bit issue but here I don't mention about it.)
-
-> Furthermore, it can't be a kernel interface like sysfs or configfs
-> because of the complexity and variety of control protocols of FireWire
-> audio devices.
-
-Indeed.
-
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
-
-
-------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 454f41c..7ea576c 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -145,7 +145,7 @@ config SND_SOC_SAMSUNG_RX1950_UDA1380
+ 
+ config SND_SOC_SAMSUNG_SMDK_WM9713
+ 	tristate "SoC AC97 Audio support for SMDK with WM9713"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310 || MACH_SMDKC210)
++	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310)
+ 	select SND_SOC_WM9713
+ 	select SND_SAMSUNG_AC97
+ 	help
+-- 
+1.8.4.2
