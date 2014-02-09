@@ -1,28 +1,51 @@
-From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
-Subject: Re: [PATCH] Refresh patch,
-	.reset_resume added to struct usb_driver
-Date: Sun, 09 Feb 2014 18:59:38 +1300
-Message-ID: <52F7194A.9070801@blennerhassett.gen.nz>
-References: <1391920702-18430-1-git-send-email-eliot@blennerhassett.gen.nz>
+From: Jonathan Woithe <jwoithe@just42.net>
+Subject: Re: Echo Fireworks control protocol (was Re: Sample program for
+	hwdep interface)
+Date: Sun, 9 Feb 2014 22:12:28 +1030
+Message-ID: <20140209114228.GB15049@marvin.atrad.com.au>
+References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
+	<52B45837.2080804@sakamocchi.jp>
+	<20131221101123.GA17855@marvin.atrad.com.au>
+	<52C93F8B.1010701@sakamocchi.jp> <20140112142230.4aacdc9e@stein>
+	<52D2B41B.7090505@sakamocchi.jp> <20140202145850.1f8684b3@stein>
+	<52F62FA0.6040809@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from omr.mail.isx.net.nz (omr.mail.isx.net.nz [111.65.230.130])
- by alsa0.perex.cz (Postfix) with ESMTP id 689542610B7
- for <alsa-devel@alsa-project.org>; Sun,  9 Feb 2014 06:59:45 +0100 (CET)
-In-Reply-To: <1391920702-18430-1-git-send-email-eliot@blennerhassett.gen.nz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <52F62FA0.6040809@sakamocchi.jp>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, jwoithe@just42.net, Stefan Richter <stefanr@s5r6.in-berlin.de>, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-BTW if not obvious, this is for alsa-driver-build, build branch
+On Sat, Feb 08, 2014 at 10:22:40PM +0900, Takashi Sakamoto wrote:
+> >I understood from Clemens' comments that ... the mixer applications are
+> >supposed to use firewire-cdev for all their other dealings with the audio
+> >devices.  (Clemens and Jonathan, correct me if I misunderstood or if I
+> >forgot other control and status I/O that is only possible with direct
+> >cooperation by the ALSA driver.)
+> 
+> I don't know his future plan. But according to his advices, my
+> current work is to focus on streaming driver. Currently the
+> functionality to control device's internal mixer should be
+> implemented in user-land application, not in ALSA drivers.
+
+As per an earlier followup, the current intention is indeed to keep the
+mixer control in userspace.
+
+jonathan
+
+------------------------------------------------------------------------------
+Managing the Performance of Cloud-Based Applications
+Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
+Read the Whitepaper.
+http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
