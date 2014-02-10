@@ -1,64 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 14/28] Remove MACH_SMDKC210
-Date: Mon, 10 Feb 2014 11:41:54 +0000
-Message-ID: <20140210114154.GQ1757@sirena.org.uk>
-References: <1391971686-9517-1-git-send-email-richard@nod.at>
- <1391971686-9517-15-git-send-email-richard@nod.at>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v2 1/8] ASoC: da9055: Fix device registration of PMIC and
+ CODEC devices
+Date: Mon, 10 Feb 2014 11:51:09 +0000
+Message-ID: <20140210115109.GC22773@lee--X1>
+References: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+ <6a398d176b0b2bf8792d27bd5e2995fd96afb32d.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+ <20140207105657.GL14727@lee--X1>
+ <20140207125831.GL32298@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qd/SZIFVu+MYwfCR"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1391971686-9517-15-git-send-email-richard@nod.at>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Richard Weinberger <richard@nod.at>
-Cc: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20140207125831.GL32298@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
+> > > +/*
+> > > + * DO NOT change the device Ids. The naming is intentionally spe=
+cific as both
+> > > + * the PMIC and CODEC parts of this chip are instantiated separa=
+tely as I2C
+> > > + * devices (both have configurable I2C addresses, and are to all=
+ intents and
+> > > + * purposes separate). As a result there are specific DA9055 ids=
+ for PMIC
+> > > + * and CODEC, which must be different to operate together.
+> > > + */
+>=20
+> > I'm not sure this comment is required.
+>=20
+> They are, we've already had the suffixes removed from both PMIC and
+> CODEC drivers by people doing code review causing the drivers to fail=
+ to
+> load for several kernel releases (this should be tagged to stable as =
+a
+> result).
+>=20
+> > Most device IDs are named this way.
+>=20
+> Having the suffix on a subdevice would be normal but it's not normal =
+for
+> the primary I2C device, usually you can just put the part number in.
 
---qd/SZIFVu+MYwfCR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Okay, no problem then. Ignore my last.
 
-On Sun, Feb 09, 2014 at 07:47:52PM +0100, Richard Weinberger wrote:
-
-> The symbol is an orphan, get rid of it.
-
-Please fix whatever script you're using to generate your mails, it's
-generating corrupt headers.  Please also use subject lines consistent
-with the rest of the subsystem - between the two I very nearly just
-deleted this unread, it's only Paul's mail that made me look.
-
->  config SND_SOC_SAMSUNG_SMDK_WM9713
->  	tristate "SoC AC97 Audio support for SMDK with WM9713"
-> -	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310 || MACH_SMDKC210)
-> +	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310)
-
-Like I said to Paul this isn't fixing the actual issue - think about why
-the symbol was there in the first place and why it was removed.  There
-is a problem here but this would make it less likely that it would be
-properly fixed.
-
---qd/SZIFVu+MYwfCR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS+Lr+AAoJELSic+t+oim9vxYP/1rHH0BvAyI3uM47spId+ACF
-8nArourCnAlMvprRcqnJhIwUzOmgLof9gIV3wjFakcSNzE/80zKE5fhvUMfoEmAa
-Wvq08oOSJyGn3QUBBKInK36CXyB7M7AJQvTwj+HuhntyTmeaYx1Bvdh39SZEaiOd
-g7lkrHMvD/NuKOn4jx6LnQtx0Uik8Y3RkkVNvtErUOjqyPDOwPBgnICU8832b+nb
-NU7p8TNUgwAYwE86j/GJK40IrnWHz1uYMkHHzhvDJJDqzy7ZPTdcoO88xiDDMWf5
-FW5bLNyOrwmCOuCqwXoPqKd59kYzesi3lpUsaf/n+xLwBvasMH+L8BD9zdjQCY69
-ac8IRC7yzVpF78ZKCCj+GjPPBCovhqPbCW28ELMMS59ynU+QiezqKga8RaoydqPt
-JL0n6nGFTn4eLImJJfADryos6bWTYVea2o1CQYnzInmqBqclX+M323vAKldwEH41
-zkRN+HmbnfCVpqJyc8FJhJ7KjQXV5cSLqCkGqC4xS/v91eWsIAMDopHITt0jif1W
-DcSFd+2MQDaAr/g4vZAcCm25abC6mtfaoNxeR6hcyuL58JZADdDZhHowbZ1gzOvt
-OhjjDn8/l8WpzKjEUCr0reaVo71546kzpareUx6fY6lhKlI/vD3fkwa6MsAXUwas
-6zCaFAG+cpKZ+eBb5uZo
-=Qh7R
------END PGP SIGNATURE-----
-
---qd/SZIFVu+MYwfCR--
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
