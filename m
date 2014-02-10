@@ -1,53 +1,58 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: fsl-sai: convert to use regmap API for
- Freeacale SAI
-Date: Mon, 10 Feb 2014 13:27:46 +0000
-Message-ID: <20140210132746.GD1757@sirena.org.uk>
-References: <1391841508-14025-1-git-send-email-Li.Xiubo@freescale.com>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: Re: [PATCH 14/28] Remove MACH_SMDKC210
+Date: Mon, 10 Feb 2014 14:31:12 +0100
+Message-ID: <1392039072.3585.15.camel@x220>
+References: <1391971686-9517-1-git-send-email-richard@nod.at>
+ <1391971686-9517-15-git-send-email-richard@nod.at>
+ <20140210114154.GQ1757@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UsiV5d7KlsBC0zIw"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1391841508-14025-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Nicolin Chen <Guangyu.Chen@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cpsmtpb-ews09.kpnxchange.com (cpsmtpb-ews09.kpnxchange.com
+ [213.75.39.14]) by alsa0.perex.cz (Postfix) with ESMTP id 454732615FC
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 14:31:15 +0100 (CET)
+In-Reply-To: <20140210114154.GQ1757@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, linux-kernel@vger.kernel.org, Sangbeom Kim <sbkim73@samsung.com>, Richard Weinberger <richard@nod.at>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-samsung-soc@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2014-02-10 at 11:41 +0000, Mark Brown wrote:
+> On Sun, Feb 09, 2014 at 07:47:52PM +0100, Richard Weinberger wrote:
+> Please fix whatever script you're using to generate your mails, it's
+> generating corrupt headers.
 
---UsiV5d7KlsBC0zIw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think Richard's mail didn't end up on lkml. But it's pretty clear what
+it must have looked like.
 
-On Sat, Feb 08, 2014 at 02:38:28PM +0800, Xiubo Li wrote:
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+> >  config SND_SOC_SAMSUNG_SMDK_WM9713
+> >  	tristate "SoC AC97 Audio support for SMDK with WM9713"
+> > -	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310 || MACH_SMDKC210)
+> > +	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310)
+> 
+> Like I said to Paul this isn't fixing the actual issue - think about why
+> the symbol was there in the first place and why it was removed.  There
+> is a problem here but this would make it less likely that it would be
+> properly fixed.
 
-Applied, thanks but I think this needs a select of REGMAP_MMIO in the
-Kconfig to ensure that regmap-mmio is actually there (it might well be
-OK due to implicit dependencies at the minute but should be fixed
-properly).
+Would you mind going through this one step at a time, just to make sure
+_I_ understand what it is that you'd like to see?
 
---UsiV5d7KlsBC0zIw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+If so, to be absolutely sure we start from the same point: do you agree
+that the above line now effectively reads
+    depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || false || false)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+because there's neither a Kconfig symbol MACH_SMDKV310 nor a Kconfig
+symbol MACH_SMDKC210?
 
-iQIcBAEBAgAGBQJS+NPPAAoJELSic+t+oim9oKMP/jCZ15EEYQSzBOPuoKNTrGOq
-k+x1vc9FlROcO5j2L8kOm9qiKP22pYIyVOzaXBYzY3p9qAMstXEuUDWPgWt31+XT
-RJTi4gAd9YivbV3s1Iq65c/4jObvqA81Xw4Iso2iWT+6T+8e5qqxhQ1MckbzvVNS
-Bhn07YDNJnABbQDa/D4iumSnq1X+2H78lidnqdrMeYdWO24aCnCIOk+vzSCSMCzN
-XfpdI6TYhIWVrL88nrWlYI0msx3jKNFFSLQhxaJIDRe4Y3Lk9PX/wnee8fZ4IPa5
-WMjkZgUTH5dgHHScbFrvM67MZXAvKzKLEQNUm4z5CNwpnXeQ01ruVwgxy4dfNJBT
-I1t9PUeS+ouBUDSCs8bPMiPfsQipxB2e/k1lbVBmnREf10sx0bKPsfdPVoMz16hU
-Xw6gKVZNuMRf1+1FUcK0+PPzISWZ7sa7BRglApixvwMQIMthKnII18pf7eAJ+SUQ
-635U0ssLONqaC7PdIupzWGdhqB2ErfB6RAy0foIt4YFp7arKNiHnfFcfqH6yLdWU
-ztu1oGi6OU6SZ8B4E+BOq+BJpuADz8+DaE20DoWqtA4jaMI/LUylYvxXbefXnOcB
-bWMA5fEq41C3f6Dl3OW13HKnxsN8Tbo9+Hhv4j1dh6H3SkuRhIJlrWKZdIR2UPwD
-FV4ILOfuEc3c+pvmDFe3
-=95pU
------END PGP SIGNATURE-----
 
---UsiV5d7KlsBC0zIw--
+Paul Bolle
