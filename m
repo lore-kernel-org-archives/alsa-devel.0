@@ -1,58 +1,50 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: Re: [PATCH 14/28] Remove MACH_SMDKC210
-Date: Mon, 10 Feb 2014 14:31:12 +0100
-Message-ID: <1392039072.3585.15.camel@x220>
-References: <1391971686-9517-1-git-send-email-richard@nod.at>
- <1391971686-9517-15-git-send-email-richard@nod.at>
- <20140210114154.GQ1757@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 0/4] off-codec widgets
+Date: Mon, 10 Feb 2014 13:37:14 +0000
+Message-ID: <20140210133714.GF1757@sirena.org.uk>
+References: <1391846395-10193-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cpsmtpb-ews09.kpnxchange.com (cpsmtpb-ews09.kpnxchange.com
- [213.75.39.14]) by alsa0.perex.cz (Postfix) with ESMTP id 454732615FC
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 14:31:15 +0100 (CET)
-In-Reply-To: <20140210114154.GQ1757@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, linux-kernel@vger.kernel.org, Sangbeom Kim <sbkim73@samsung.com>, Richard Weinberger <richard@nod.at>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-samsung-soc@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kb0TSCuX821Ar6UT"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1391846395-10193-1-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, perex@perex.cz, tiwai@suse.de, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2014-02-10 at 11:41 +0000, Mark Brown wrote:
-> On Sun, Feb 09, 2014 at 07:47:52PM +0100, Richard Weinberger wrote:
-> Please fix whatever script you're using to generate your mails, it's
-> generating corrupt headers.
 
-I think Richard's mail didn't end up on lkml. But it's pretty clear what
-it must have looked like.
+--kb0TSCuX821Ar6UT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> >  config SND_SOC_SAMSUNG_SMDK_WM9713
-> >  	tristate "SoC AC97 Audio support for SMDK with WM9713"
-> > -	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310 || MACH_SMDKC210)
-> > +	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310)
-> 
-> Like I said to Paul this isn't fixing the actual issue - think about why
-> the symbol was there in the first place and why it was removed.  There
-> is a problem here but this would make it less likely that it would be
-> properly fixed.
+On Sat, Feb 08, 2014 at 03:59:51PM +0800, Xiubo Li wrote:
+> This patch series has removed the code about tdm slot, and need to do
+> more study.
 
-Would you mind going through this one step at a time, just to make sure
-_I_ understand what it is that you'd like to see?
+Applied all, thanks.
 
-If so, to be absolutely sure we start from the same point: do you agree
-that the above line now effectively reads
-    depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || false || false)
+--kb0TSCuX821Ar6UT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-because there's neither a Kconfig symbol MACH_SMDKV310 nor a Kconfig
-symbol MACH_SMDKC210?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
+iQIcBAEBAgAGBQJS+NYHAAoJELSic+t+oim9yuwP+wcsF9Hu26expWH1uFP+TyhU
+jwtPqKZl6XbDL87HeJCqMtymFEO9vAznC7odJrVQZqZ80bhB/BmJnsdUrovCzlNr
+kiaBY27TaHkRUCBX3JyFw7fdD7Krz+lD3krAjX23TtS/J+foK3hqQBHgkNT9/WRt
+hfwhlv/PfaxtYrdLorqNYky1vli7p0hs9x8reryeVBqhLkx2rF2FoeSOOEjeuKF3
+1vmaE3Iy5xBeK0f0l+NcQtud7tWWGvje3VT2LjP9Rr8a5Jpi51QnQ4l0kLG1OHyV
+pcquXu16Ffojejsf2jFIbjb87vD9zcPq39YFn4KU9i1KbDqMUvtSLmbKylyaoTEJ
+zRstKuD2Jv1wYnJ7z/qOla+WTkSzrthXuR7HTDN/9mK8UkePR2BFfUIitd18kwwI
+zW/yDwbfSd28EMlYa58xvhJGzGJ8EoTvDLxLONJzA7tmK1v6KYRFfMBTOIh9VZ4u
+KW0u4GJtUVHHR1KbtUwsvJ8QNJgdWNsQuEZ1Jf/T+SI6ew9d6PZcsd+kSJnM+1p0
+zXlUZbWG+81YktfeBGC8HkCnIhJeG4hQNn5gKQIHs95Pfv/IHnf0g1IGKM68oZ6n
+8qdOWpF+jTKHKZy7XCEzkxCp8AjnlbmhfH/W2ahofl3jVm5n8RICf5wi66INhaz9
+mJe/hLV7v49kdWV5QeF7
+=5upt
+-----END PGP SIGNATURE-----
 
-Paul Bolle
+--kb0TSCuX821Ar6UT--
