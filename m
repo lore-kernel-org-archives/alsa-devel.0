@@ -1,17 +1,20 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH v3 1/2] ASoC: atmel_ssc_dai: make option to
-	choose clock
-Date: Mon, 10 Feb 2014 14:09:45 +0800
-Message-ID: <1392012586-30790-2-git-send-email-voice.shen@atmel.com>
-References: <1392012586-30790-1-git-send-email-voice.shen@atmel.com>
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Subject: Re:
+ =?utf-8?q?=5BPATCH_1/2=5D_ASoC=3A_fsl=3A_Separation_?=
+ =?utf-8?q?of_the_main_audio_options_and_boards?=
+Date: Mon, 10 Feb 2014 10:29:03 +0400
+Message-ID: <1392013743.262980234@f144.i.mail.ru>
+References: <1391621512-15064-1-git-send-email-shc_work@mail.ru>
+ <20140210055357.GE9628@S2101-09.ap.freescale.net>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
- by alsa0.perex.cz (Postfix) with ESMTP id BC61E2610B7
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 07:12:17 +0100 (CET)
-In-Reply-To: <1392012586-30790-1-git-send-email-voice.shen@atmel.com>
+Received: from f144.i.mail.ru (f144.i.mail.ru [128.140.171.240])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA6902610B7
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 07:29:06 +0100 (CET)
+In-Reply-To: <20140210055357.GE9628@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,104 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Chas Williams <chas@cmf.nrl.navy.mil>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-atm-general@lists.sourceforge.net, nicolas.ferre@atmel.com, Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, netdev@vger.kernel.org, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
+To: =?UTF-8?B?U2hhd24gR3Vv?= <shawn.guo@linaro.org>
+Cc: =?UTF-8?B?RmFiaW8gRXN0ZXZhbQ==?= <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, =?UTF-8?B?VGFrYXNoaSBJd2Fp?= <tiwai@suse.de>, =?UTF-8?B?TGlhbSBHaXJkd29vZA==?= <lgirdwood@gmail.com>, =?UTF-8?B?TWFyayBCcm93bg==?= <broonie@kernel.org>, =?UTF-8?B?Tmljb2xpbiBDaGVu?= <Guangyu.Chen@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-When SSC works in slave mode, according to the hardware design, the
-clock can get from TK pin, also can get from RK pin. So, add one
-parameter to choose where the clock from.
+Hello.
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> On Wed, Feb 05, 2014 at 09:31:51PM +0400, Alexander Shiyan wrote:
+> > This patch provide separation of the main audio options and boards.
+> > 
+> > Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+> > ---
+> >  sound/soc/fsl/Kconfig | 36 ++++++++++++++++++++++--------------
+> >  1 file changed, 22 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+...
+> >  if SND_IMX_SOC
+> >  
+> >  config SND_SOC_IMX_SSI
+> > @@ -122,12 +133,7 @@ config SND_SOC_IMX_PCM_FIQ
+> >  	tristate
+> >  	select FIQ
+> 
+> Hmm, why do you choose to have SND_SOC_IMX_SSI and SND_SOC_IMX_PCM_FIQ
+> still stay in board section?
+
+SND_SOC_IMX_SSI is used for ATAGS boards only, and selected for each individual
+platform driver, so there are no need to select this option especially.
+
+For SND_SOC_IMX_PCM_FIQ I just not imagine yet how to describe this option
+in Kconfig ;) In any case, it can be done later if the total change concept looks good.
+
+Thanks.
+
 ---
-Changes in v3:
-  - New, move clk-from-rk-pin property from card to ssc device
-
- drivers/misc/atmel-ssc.c        |  6 ++++++
- include/linux/atmel-ssc.h       |  1 +
- sound/soc/atmel/atmel_ssc_dai.c | 13 +++++++++----
- 3 files changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
-index 5be80840..22de137 100644
---- a/drivers/misc/atmel-ssc.c
-+++ b/drivers/misc/atmel-ssc.c
-@@ -150,6 +150,12 @@ static int ssc_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	ssc->pdata = (struct atmel_ssc_platform_data *)plat_dat;
- 
-+	if (pdev->dev.of_node) {
-+		struct device_node *np = pdev->dev.of_node;
-+		ssc->clk_from_rk_pin =
-+			of_property_read_bool(np, "atmel,clk-from-rk-pin");
-+	}
-+
- 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	ssc->regs = devm_ioremap_resource(&pdev->dev, regs);
- 	if (IS_ERR(ssc->regs))
-diff --git a/include/linux/atmel-ssc.h b/include/linux/atmel-ssc.h
-index 66a0e53..571a12e 100644
---- a/include/linux/atmel-ssc.h
-+++ b/include/linux/atmel-ssc.h
-@@ -18,6 +18,7 @@ struct ssc_device {
- 	struct clk		*clk;
- 	int			user;
- 	int			irq;
-+	bool			clk_from_rk_pin;
- };
- 
- struct ssc_device * __must_check ssc_request(unsigned int ssc_num);
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 8697ced..ca1d8a3 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -341,6 +341,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- {
- 	int id = dai->id;
- 	struct atmel_ssc_info *ssc_p = &ssc_info[id];
-+	struct ssc_device *ssc = ssc_p->ssc;
- 	struct atmel_pcm_dma_params *dma_params;
- 	int dir, channels, bits;
- 	u32 tfmr, rfmr, tcmr, rcmr;
-@@ -466,7 +467,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 			| SSC_BF(RCMR_START, start_event)
- 			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
- 			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
--			| SSC_BF(RCMR_CKS, SSC_CKS_CLOCK);
-+			| SSC_BF(RCMR_CKS, ssc->clk_from_rk_pin ?
-+					   SSC_CKS_PIN : SSC_CKS_CLOCK);
- 
- 		rfmr =	  SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
- 			| SSC_BF(RFMR_FSOS, SSC_FSOS_NONE)
-@@ -481,7 +483,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 			| SSC_BF(TCMR_START, start_event)
- 			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
- 			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
--			| SSC_BF(TCMR_CKS, SSC_CKS_PIN);
-+			| SSC_BF(TCMR_CKS, ssc->clk_from_rk_pin ?
-+					   SSC_CKS_CLOCK : SSC_CKS_PIN);
- 
- 		tfmr =	  SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
- 			| SSC_BF(TFMR_FSDEN, 0)
-@@ -550,7 +553,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 			| SSC_BF(RCMR_START, SSC_START_RISING_RF)
- 			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
- 			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
--			| SSC_BF(RCMR_CKS, SSC_CKS_PIN);
-+			| SSC_BF(RCMR_CKS, ssc->clk_from_rk_pin ?
-+					   SSC_CKS_PIN : SSC_CKS_CLOCK);
- 
- 		rfmr =	  SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
- 			| SSC_BF(RFMR_FSOS, SSC_FSOS_NONE)
-@@ -565,7 +569,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 			| SSC_BF(TCMR_START, SSC_START_RISING_RF)
- 			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
- 			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
--			| SSC_BF(TCMR_CKS, SSC_CKS_PIN);
-+			| SSC_BF(RCMR_CKS, ssc->clk_from_rk_pin ?
-+					   SSC_CKS_CLOCK : SSC_CKS_PIN);
- 
- 		tfmr =	  SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
- 			| SSC_BF(TFMR_FSDEN, 0)
--- 
-1.8.5.2
