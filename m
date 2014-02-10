@@ -1,40 +1,88 @@
-From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 1/8] ASoC: da9055: Fix device registration of PMIC and
- CODEC devices
-Date: Mon, 10 Feb 2014 13:59:39 +0000
-Message-ID: <20140210135939.GA23141@lee--X1>
-References: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
- <6a398d176b0b2bf8792d27bd5e2995fd96afb32d.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
- <20140210134310.GH1757@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 14/28] Remove MACH_SMDKC210
+Date: Mon, 10 Feb 2014 14:12:55 +0000
+Message-ID: <20140210141255.GI1757@sirena.org.uk>
+References: <1391971686-9517-1-git-send-email-richard@nod.at>
+ <1391971686-9517-15-git-send-email-richard@nod.at>
+ <20140210114154.GQ1757@sirena.org.uk>
+ <1392039072.3585.15.camel@x220>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fqSO13Wp+IaiYtoI"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140210134310.GH1757-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Guenter Roeck <linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org>
+In-Reply-To: <1392039072.3585.15.camel@x220>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Richard Weinberger <richard@nod.at>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> > Currently the I2C device Ids conflict for the MFD and CODEC so
-> > cannot be both instantiated on one platform. This patch updates
-> > the Ids and names to make them unique from each other.
->=20
-> Applied, thanks.
 
-Actually, do you mind if I take this and apply it to an immutable?
+--fqSO13Wp+IaiYtoI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'd rather not be on the wrong end of some wrath, due to not playing
-the game properly.
+On Mon, Feb 10, 2014 at 02:31:12PM +0100, Paul Bolle wrote:
+> On Mon, 2014-02-10 at 11:41 +0000, Mark Brown wrote:
+> > On Sun, Feb 09, 2014 at 07:47:52PM +0100, Richard Weinberger wrote:
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > Please fix whatever script you're using to generate your mails, it's
+> > generating corrupt headers.
+
+> I think Richard's mail didn't end up on lkml. But it's pretty clear what
+> it must have looked like.
+
+I can see what it looked like from my inbox, but my mail client can't
+understand them at all and hence didn't think the mails were sent to me
+and just ignored them when hitting reply.
+
+> > >  config SND_SOC_SAMSUNG_SMDK_WM9713
+> > >  	tristate "SoC AC97 Audio support for SMDK with WM9713"
+> > > -	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MA=
+CH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310 || MACH_SMDKC210)
+> > > +	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MA=
+CH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310)
+> >=20
+> > Like I said to Paul this isn't fixing the actual issue - think about why
+> > the symbol was there in the first place and why it was removed.  There
+> > is a problem here but this would make it less likely that it would be
+> > properly fixed.
+
+> Would you mind going through this one step at a time, just to make sure
+> _I_ understand what it is that you'd like to see?
+
+> If so, to be absolutely sure we start from the same point: do you agree
+> that the above line now effectively reads
+>     depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH=
+_SMDKV210 || MACH_SMDKC110 || false || false)
+
+> because there's neither a Kconfig symbol MACH_SMDKV310 nor a Kconfig
+> symbol MACH_SMDKC210?
+
+Yes, that's correct.  Now, like I say think about what the symbol was
+there for in the first place.
+
+--fqSO13Wp+IaiYtoI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS+N5kAAoJELSic+t+oim90wwP/2oOne9yTniYTptfI7IhQqtI
+jWQGwXNQpnaoHisLbF+X7nhkyw9IgsdwrwY3cm+BnXNaXLwkBAJ2X361vddSBQIc
+ojjBn5Wsx9iXgL+4fIx44u3jg6zfP8GCPIdsa1Xyahqln2b0+aFwl59jrRCX3yLu
+PIkRueRbfkktWJ4bA5pWITu+8y+XKaNOYkhDbQeVLJXRumn9VANlsoYbkWCKUvgE
+h33MLYOFdjkr2GxhmTL42Oq0bSrcfZaTzV9xyE4ZE9LCqBKJku7EywSbmI1i3sII
+0zkGMHJ912B8Pl/8Ry0+IR4Kfu71wzPvbFYYez1T+swFa2frAdcQsscYWtT1CUaA
+pT4KEt1FRe2htUtAEg4Df4xVCvUry8pZ7331Tar803x2olY/1sWWadD0EE8I9rLd
+ul0IU5XI8MbG4vdEqXr/t/fw+XiHa72AfiAJrOv7c8m0s6j2RRiOQQqi0CgvIGGS
+wYHDG2d8DqIaodYB8zPlj06LWsXjk5Fxd/0CX/Dh3kRCJBYABUH3apwaewl7AqR8
+bmK3odcwxYrjoDYQWocvhbnPGX/CuW9Ju2dEGH64zT6+BS1saWJFSyifokKGEZYO
+8UxDV7QJgulQfwUsKEhU7zGLHsI8Dwj2RmrQvt4ZBjzilMCeFWy+XXJIeczxDkrA
++X9ShkKEOvtKeocb9mps
+=LDwP
+-----END PGP SIGNATURE-----
+
+--fqSO13Wp+IaiYtoI--
