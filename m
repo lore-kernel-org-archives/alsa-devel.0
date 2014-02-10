@@ -1,71 +1,39 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH v3 1/2] drivers/base: permit base components to omit the
- bind/unbind ops
-Date: Mon, 10 Feb 2014 15:35:51 +0100
-Message-ID: <20140210153551.1309f017@armhf>
-References: <cover.1391792986.git.moinejf@free.fr>
-	<9b3c3c2c982f31b026fd1516a2b608026d55b1e9.1391792986.git.moinejf@free.fr>
-	<20140210125307.GG20143@ulmo.nvidia.com>
-	<20140210131233.GT26684@n2100.arm.linux.org.uk>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v2 1/8] ASoC: da9055: Fix device registration of PMIC and
+ CODEC devices
+Date: Mon, 10 Feb 2014 14:42:34 +0000
+Message-ID: <20140210144234.GB26697@lee--X1>
+References: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+ <6a398d176b0b2bf8792d27bd5e2995fd96afb32d.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+ <20140210134310.GH1757@sirena.org.uk>
+ <20140210135939.GA23141@lee--X1>
+ <20140210141400.GJ1757@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20140210131233.GT26684@n2100.arm.linux.org.uk>
-Sender: linux-media-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Thierry Reding <thierry.reding@gmail.com>, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140210141400.GJ1757@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 10 Feb 2014 13:12:33 +0000
-Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
-
-> I've NAK'd these patches already - I believe they're based on a
-> mis-understanding of how this should be used.  I believe Jean-Francoi=
-s
-> has only looked at the core, rather than looking at the imx-drm examp=
-le
-> it was posted with in an attempt to understand it.
+> > > Applied, thanks.
 >=20
-> Omitting the component bind operations is absurd because it makes the
-> component code completely pointless, since there is then no way to
-> control the sequencing of driver initialisation - something which is
-> one of the primary reasons for this code existing in the first place.
+> > Actually, do you mind if I take this and apply it to an immutable?
+>=20
+> > I'd rather not be on the wrong end of some wrath, due to not playin=
+g
+> > the game properly.
+>=20
+> OK, but it does need to go in as a fix targetted for stable.
 
-I perfectly looked at your example and I use it now in my system.
-
-You did not see what could be done with your component code. For
-example, since november, I have not yet the clock probe_defer in the
-mainline (http://www.spinics.net/lists/arm-kernel/msg306072.html), so,
-there are 3 solutions:
-
-- hope the patch will be some day in the mainline and, today, reboot
-  when the system does not start correctly,
-
-- insert a delay in the tda998x and kirkwood probe sequences (delay
-  long enough to be sure the si5351 is started, or loop),
-
-- use your component work.
-
-In the last case, it is easy:
-
-- the si5351 driver calls component_add (with empty ops: it has no
-  interest in the bind/unbind functions) when it is fully started (i.e.
-  registered - that was the subject of my patch),
-
-- in the DRM driver, look for the si5351 as a clock in the DT (drm ->
-  encoder -> clock), and add it to the awaited components (CRTCs,
-  encoders..),
-
-- in the audio subsystem, look for the si5351 as an external clock in
-  the DT (simple-card -> CPU DAI -> clock) and add it to the awaited
-  components (CPU and CODEC DAIs - yes, the S/PDIF CODEC should also be
-  a component with no bin/unbind ops).
-
-Then, when the si5351 is registered, both master components video and
-audio can safely run.
-
+Ah, in which case there's no need, as I don't have anything in my
+-fixes branch with touches this file. Simply take it in, no problem.
 
 --=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
