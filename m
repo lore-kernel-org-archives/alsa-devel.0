@@ -1,20 +1,15 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 2/2] ASoC: fsl: Allow to select individual
-	common options
-Date: Mon, 10 Feb 2014 13:59:45 +0800
-Message-ID: <20140210055943.GF9628@S2101-09.ap.freescale.net>
-References: <1391621512-15064-1-git-send-email-shc_work@mail.ru>
- <1391621512-15064-2-git-send-email-shc_work@mail.ru>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH v3 0/2] ASoC: atmel_ssc_dai: add option to
+	choose clock
+Date: Mon, 10 Feb 2014 14:09:44 +0800
+Message-ID: <1392012586-30790-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe002.messaging.microsoft.com [207.46.163.25])
- by alsa0.perex.cz (Postfix) with ESMTP id B76D72610AE
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 06:59:18 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1391621512-15064-2-git-send-email-shc_work@mail.ru>
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8D642610B1
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 07:12:17 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,74 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Nicolin Chen <Guangyu.Chen@freescale.com>
+To: broonie@kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, linux-doc@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, nicolas.ferre@atmel.com, Bo Shen <voice.shen@atmel.com>, Chas Williams <chas@cmf.nrl.navy.mil>, Lars-Peter Clausen <lars@metafoo.de>, Pawel Moll <pawel.moll@arm.com>, linux-atm-general@lists.sourceforge.net, plagnioj@jcrosoft.com, devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-sound@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org, Richard Genoud <richard.genoud@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Landley <rob@landley.net>, netdev@vger.kernel.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 05, 2014 at 09:31:52PM +0400, Alexander Shiyan wrote:
-> This patch allow to select individual common sound options and
-> as a result allow using sound cards/codecs based on DT description.
-> 
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-> ---
->  sound/soc/fsl/Kconfig | 23 ++++++++++++++++++++---
->  1 file changed, 20 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-> index ecc1092..ed74c19 100644
-> --- a/sound/soc/fsl/Kconfig
-> +++ b/sound/soc/fsl/Kconfig
-> @@ -1,14 +1,26 @@
->  menu "SoC Audio for Freescale CPUs"
->  
-> +comment "Common SoC Audio options for Freescale CPUs:"
-> +
->  config SND_SOC_FSL_SAI
->  	tristate
->  	select SND_SOC_GENERIC_DMAENGINE_PCM
+When SSC work in slave mode, the clock can come from TK pin and also
+can come from RK pin, this is hardware design decided. So, make it
+available to choose where the clock from.
 
-Why do you skip SND_SOC_FSL_SAI and SND_SOC_FSL_ESAI for the change?
+Changes in v3:
+  - Move the property from card to ssc device
+Series-changes: 2
+  - using "-" replace "_" in binding document
 
->  
->  config SND_SOC_FSL_SSI
-> -	tristate
-> +	tristate "Synchronous Serial Interface module support"
-> +	help
-> +	  Say Y if you want to add Synchronous Serial Interface (SSI)
-> +	  support for the Freescale CPUs.
-> +	  This option is only useful for out-of-tree drivers since
-> +	  in-tree drivers select it automatically.
->  
->  config SND_SOC_FSL_SPDIF
-> -	tristate
-> +	tristate "Sony/Philips Digital Interface module support"
-> +	help
-> +	  Say Y if you want to add Sony/Philips Digital Interface (SPDIF)
-> +	  support for the Freescale CPUs.
-> +	  This option is only useful for out-of-tree drivers since
-> +	  in-tree drivers select it automatically.
->  
->  config SND_SOC_FSL_ESAI
->  	tristate
-> @@ -21,7 +33,12 @@ config SND_SOC_IMX_PCM_DMA
->  	select SND_SOC_GENERIC_DMAENGINE_PCM
+Bo Shen (2):
+  ASoC: atmel_ssc_dai: make option to choose clock
+  Binding: atmel-ssc: add option to choose clock
 
-Doesn't the simple card driver need this to work on IMX?
+ Documentation/devicetree/bindings/misc/atmel-ssc.txt |  8 ++++++++
+ drivers/misc/atmel-ssc.c                             |  6 ++++++
+ include/linux/atmel-ssc.h                            |  1 +
+ sound/soc/atmel/atmel_ssc_dai.c                      | 13 +++++++++----
+ 4 files changed, 24 insertions(+), 4 deletions(-)
 
-Shawn
-
->  
->  config SND_SOC_IMX_AUDMUX
-> -	tristate
-> +	tristate "Digital Audio Mux module support"
-> +	help
-> +	  Say Y if you want to add Digital Audio Mux (AUDMUX) support
-> +	  for the ARM i.MX CPUs.
-> +	  This option is only useful for out-of-tree drivers since
-> +	  in-tree drivers select it automatically.
->  
->  config SND_POWERPC_SOC
->  	tristate "SoC Audio for Freescale PowerPC CPUs"
-> -- 
-> 1.8.3.2
-> 
+-- 
+1.8.5.2
