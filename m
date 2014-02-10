@@ -1,86 +1,50 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v3 1/2] drivers/base: permit base components to omit
- the bind/unbind ops
-Date: Mon, 10 Feb 2014 13:12:33 +0000
-Message-ID: <20140210131233.GT26684@n2100.arm.linux.org.uk>
-References: <cover.1391792986.git.moinejf@free.fr>
- <9b3c3c2c982f31b026fd1516a2b608026d55b1e9.1391792986.git.moinejf@free.fr>
- <20140210125307.GG20143@ulmo.nvidia.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl: fix pm support of machine drivers
+Date: Mon, 10 Feb 2014 13:18:55 +0000
+Message-ID: <20140210131855.GC1757@sirena.org.uk>
+References: <1391836835-14892-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TCH5zSpbvKOKdCih"
+Return-path: <stable-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140210125307.GG20143@ulmo.nvidia.com>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: driverdev-devel-bounces@linuxdriverproject.org
-To: Thierry Reding <thierry.reding@gmail.com>
-Cc: devel@driverdev.osuosl.org, Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+In-Reply-To: <1391836835-14892-1-git-send-email-shawn.guo@linaro.org>
+Sender: stable-owner@vger.kernel.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 10, 2014 at 01:53:08PM +0100, Thierry Reding wrote:
-> On Fri, Feb 07, 2014 at 04:55:00PM +0100, Jean-Francois Moine wrote:
-> > Some simple components don't need to do any specific action on
-> > bind to / unbind from a master component.
-> > 
-> > This patch permits such components to omit the bind/unbind
-> > operations.
-> > 
-> > Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
-> > ---
-> >  drivers/base/component.c | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/base/component.c b/drivers/base/component.c
-> > index c53efe6..0a39d7a 100644
-> > --- a/drivers/base/component.c
-> > +++ b/drivers/base/component.c
-> > @@ -225,7 +225,8 @@ static void component_unbind(struct component *component,
-> >  {
-> >  	WARN_ON(!component->bound);
-> >  
-> > -	component->ops->unbind(component->dev, master->dev, data);
-> > +	if (component->ops)
-> > +		component->ops->unbind(component->dev, master->dev, data);
-> 
-> This doesn't actually do what the commit message says. This makes
-> component->ops optional, not component->ops->unbind().
-> 
-> A more correct check would be:
-> 
-> 	if (component->ops && component->ops->unbind)
-> 
-> >  	component->bound = false;
-> >  
-> >  	/* Release all resources claimed in the binding of this component */
-> > @@ -274,7 +275,11 @@ static int component_bind(struct component *component, struct master *master,
-> >  	dev_dbg(master->dev, "binding %s (ops %ps)\n",
-> >  		dev_name(component->dev), component->ops);
-> >  
-> > -	ret = component->ops->bind(component->dev, master->dev, data);
-> > +	if (component->ops)
-> > +		ret = component->ops->bind(component->dev, master->dev, data);
-> 
-> Same here.
 
-I've NAK'd these patches already - I believe they're based on a
-mis-understanding of how this should be used.  I believe Jean-Francois
-has only looked at the core, rather than looking at the imx-drm example
-it was posted with in an attempt to understand it.
+--TCH5zSpbvKOKdCih
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Omitting the component bind operations is absurd because it makes the
-component code completely pointless, since there is then no way to
-control the sequencing of driver initialisation - something which is
-one of the primary reasons for this code existing in the first place.
+On Sat, Feb 08, 2014 at 01:20:35PM +0800, Shawn Guo wrote:
+> The commit 1abe729 (ASoC: fsl: Add missing pm to current machine
+> drivers) enables pm support for a few IMX machine drivers.  But it does
 
--- 
-FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
-in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
-Estimate before purchase was "up to 13.2Mbit".
+Applied, thanks.
+
+--TCH5zSpbvKOKdCih
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS+NG7AAoJELSic+t+oim9L0UP/jaDtiqErNai1lsmzEkYCoC1
+RkgVwpfX77/767TrZ/oMJ5u64f3Rdnmm5bZKN4jlq1nAiZFB8OAGAbrC982U2KIl
+ErFUilCZ78VquAgFlv3NJRuJ81cw/qCaWIUosaiue/ZT3alppxFMJ4KPhYd3M/TI
+GJmIN3uDrDfp8+O48ogu6bieBXW4DAuwkd7E46iS0PScwjYsnHr+kjbG+JTQUEco
+9mEunw8I2fpVDOILdsHzwkb4qre6gUnQ73xhPsxKr/xX1WtQhG123GekGD0LHUrf
+dk9LQKsMKXYE0RIytnHlLFPffbrMNRsXvY2TIUZ7l2LuOcuwJWSC5b/k7157P1bX
+SUYW3FEYaT4M0Wco+BpnNOCPChkeSK26Bc18Y2m8KlCdycivKDJ37Z/laP8gBHzd
+kxHqh7J3GSZu9yvFJqec8HFRU6MAYfjs388eaLsHgQ7ywkg8K3rYx26wLcuSsGmJ
+QR1BDEGcE+nbdj/+MXmF+u6aVtUmbATRYX/W93VyYwQTzVtc8LqUCeg5ZPejcVUo
+sh7/K95sfLhuOGwH3S0onLLlrx7iR3j86GQ7MrpaCm+hj+j26GGc0LAWpCeNj9no
+Eg6qAotHUksDZr6C4DxAcib/o2NC5qar6h8t9oJBVbg3T4jLaZ6lWUwbjDK8ASnd
+7okyHwrbEG1P2Bqf2CH5
+=r5WJ
+-----END PGP SIGNATURE-----
+
+--TCH5zSpbvKOKdCih--
