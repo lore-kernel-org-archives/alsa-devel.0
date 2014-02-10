@@ -1,119 +1,60 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH v3 1/2] ASoC: atmel_ssc_dai: make option to choose clock
-Date: Mon, 10 Feb 2014 10:22:27 +0100
-Message-ID: <52F89A53.4090402@atmel.com>
-References: <1392012586-30790-1-git-send-email-voice.shen@atmel.com> <1392012586-30790-2-git-send-email-voice.shen@atmel.com>
+From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH 1/3] sound: soc: codecs: Add es8328 codec
+Date: Mon, 10 Feb 2014 17:24:47 +0800
+Message-ID: <52F89ADF.8020305@kosagi.com>
+References: <1391749517-11787-1-git-send-email-xobs@kosagi.com> <1391749517-11787-2-git-send-email-xobs@kosagi.com> <20140207181238.GL1757@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <1392012586-30790-2-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>, broonie@kernel.org
-Cc: plagnioj@jcrosoft.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Chas Williams <chas@cmf.nrl.navy.mil>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20140207181238.GL1757-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/02/2014 07:09, Bo Shen :
-> When SSC works in slave mode, according to the hardware design, the
-> clock can get from TK pin, also can get from RK pin. So, add one
-> parameter to choose where the clock from.
+On 8/2/14 2:12 AM, Mark Brown wrote:
+> On Fri, Feb 07, 2014 at 01:05:15PM +0800, Sean Cross wrote:
 > 
-> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> Please use subject likes matching the style for the subsystem.  If your
+> changelog looks different to others in the same area it probably needs
+> an update.
+> 
+> In general this looks like it should be making much more use of the
+> framework rather than open coding, it looks like it's very much hard
+> coded for one use cae.
 
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+I've tried to simplify the code somewhat, but I'm still unclear about
+how much of the DAPM code functions.  I'm running into two problems:
+Mapping the codec names "OUT1" and "OUT2" onto "Speaker" and "Headphone"
+respectively, and accommodating this codec's one DAC / two outputs
+architecture.
 
-> ---
-> Changes in v3:
->   - New, move clk-from-rk-pin property from card to ssc device
-> 
->  drivers/misc/atmel-ssc.c        |  6 ++++++
->  include/linux/atmel-ssc.h       |  1 +
->  sound/soc/atmel/atmel_ssc_dai.c | 13 +++++++++----
->  3 files changed, 16 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
-> index 5be80840..22de137 100644
-> --- a/drivers/misc/atmel-ssc.c
-> +++ b/drivers/misc/atmel-ssc.c
-> @@ -150,6 +150,12 @@ static int ssc_probe(struct platform_device *pdev)
->  		return -ENODEV;
->  	ssc->pdata = (struct atmel_ssc_platform_data *)plat_dat;
->  
-> +	if (pdev->dev.of_node) {
-> +		struct device_node *np = pdev->dev.of_node;
-> +		ssc->clk_from_rk_pin =
-> +			of_property_read_bool(np, "atmel,clk-from-rk-pin");
-> +	}
-> +
->  	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	ssc->regs = devm_ioremap_resource(&pdev->dev, regs);
->  	if (IS_ERR(ssc->regs))
-> diff --git a/include/linux/atmel-ssc.h b/include/linux/atmel-ssc.h
-> index 66a0e53..571a12e 100644
-> --- a/include/linux/atmel-ssc.h
-> +++ b/include/linux/atmel-ssc.h
-> @@ -18,6 +18,7 @@ struct ssc_device {
->  	struct clk		*clk;
->  	int			user;
->  	int			irq;
-> +	bool			clk_from_rk_pin;
->  };
->  
->  struct ssc_device * __must_check ssc_request(unsigned int ssc_num);
-> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-> index 8697ced..ca1d8a3 100644
-> --- a/sound/soc/atmel/atmel_ssc_dai.c
-> +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> @@ -341,6 +341,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->  {
->  	int id = dai->id;
->  	struct atmel_ssc_info *ssc_p = &ssc_info[id];
-> +	struct ssc_device *ssc = ssc_p->ssc;
->  	struct atmel_pcm_dma_params *dma_params;
->  	int dir, channels, bits;
->  	u32 tfmr, rfmr, tcmr, rcmr;
-> @@ -466,7 +467,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->  			| SSC_BF(RCMR_START, start_event)
->  			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
->  			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
-> -			| SSC_BF(RCMR_CKS, SSC_CKS_CLOCK);
-> +			| SSC_BF(RCMR_CKS, ssc->clk_from_rk_pin ?
-> +					   SSC_CKS_PIN : SSC_CKS_CLOCK);
->  
->  		rfmr =	  SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
->  			| SSC_BF(RFMR_FSOS, SSC_FSOS_NONE)
-> @@ -481,7 +483,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->  			| SSC_BF(TCMR_START, start_event)
->  			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
->  			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
-> -			| SSC_BF(TCMR_CKS, SSC_CKS_PIN);
-> +			| SSC_BF(TCMR_CKS, ssc->clk_from_rk_pin ?
-> +					   SSC_CKS_CLOCK : SSC_CKS_PIN);
->  
->  		tfmr =	  SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
->  			| SSC_BF(TFMR_FSDEN, 0)
-> @@ -550,7 +553,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->  			| SSC_BF(RCMR_START, SSC_START_RISING_RF)
->  			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
->  			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
-> -			| SSC_BF(RCMR_CKS, SSC_CKS_PIN);
-> +			| SSC_BF(RCMR_CKS, ssc->clk_from_rk_pin ?
-> +					   SSC_CKS_PIN : SSC_CKS_CLOCK);
->  
->  		rfmr =	  SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
->  			| SSC_BF(RFMR_FSOS, SSC_FSOS_NONE)
-> @@ -565,7 +569,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->  			| SSC_BF(TCMR_START, SSC_START_RISING_RF)
->  			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
->  			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
-> -			| SSC_BF(TCMR_CKS, SSC_CKS_PIN);
-> +			| SSC_BF(RCMR_CKS, ssc->clk_from_rk_pin ?
-> +					   SSC_CKS_CLOCK : SSC_CKS_PIN);
->  
->  		tfmr =	  SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
->  			| SSC_BF(TFMR_FSDEN, 0)
-> 
+First, this particular codec doesn't specify what the outputs are used
+for, it only specifies the names OUT1 and OUT2.  It is permitted to
+connect either a speaker or headphones to either output.  In the initial
+patch, I hardcoded OUT1 to be named "Speaker", and OUT2 to "Headphone".
+ However, I've genericised the codec and changed them back to "OUT1" and
+"OUT2".  Inthe board definition I've added DAPM routes that map
+"Speaker" and "Headphone" back onto these names.  amixer still shows
+OUT1 and OUT2.
+
+There seems to be some overlap between DAPM and kcontrols.  How can I
+specify in the board definition file that OUT1 should have a kcontrol
+named "Speaker" and OUT2 should be named "Headphone"?  Tracing shows
+that DAPM at least recognizes the naming: e.g. "snd_soc_dapm_input_path:
+*Speaker <- (direct) <- ROUT1"
+
+Second, I'm having trouble getting the DAPM routing to function
+properly.  There is one DAC that routes to two outputs, OUT1 and OUT2.
+Both OUT1 and OUT2 have their own volume controls as well, but the main
+state machine and amplification comes from the DAC.  This doesn't seem
+to be very common.  Are there any codecs I can use as an example that
+have one DAC routing to two outputs?
 
 
--- 
-Nicolas Ferre
+Sean
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
