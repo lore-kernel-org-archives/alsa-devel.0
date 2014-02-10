@@ -1,72 +1,88 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Add locking to snd_soc_dapm_xxxx_pin
- functions
-Date: Mon, 10 Feb 2014 12:08:03 +0000
-Message-ID: <20140210120803.GS1757@sirena.org.uk>
-References: <20140210110536.GB6856@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/8] ASoC: fsl: Add VF610 soc audio card
+	Kconfig
+Date: Mon, 10 Feb 2014 12:31:24 +0000
+Message-ID: <20140210123124.GW1757@sirena.org.uk>
+References: <1390453370-29194-1-git-send-email-Li.Xiubo@freescale.com>
+ <1390453370-29194-2-git-send-email-Li.Xiubo@freescale.com>
+ <20140123183829.GB11727@sirena.org.uk>
+ <88ad355def5f440eb92ca921b17aabb9@DM2PR03MB509.namprd03.prod.outlook.com>
+ <20140126124313.GF11727@sirena.org.uk>
+ <d774da5b38ff47b6a350d92d1ffb362a@BY2PR03MB505.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xe2geHXJg22At20M"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140210110536.GB6856@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, dmitry.torokhov@gmail.com, myungjoo.ham@samsung.com, cw00.choi@samsung.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============3915068459167556849=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B8402610CF
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 13:50:56 +0100 (CET)
+In-Reply-To: <d774da5b38ff47b6a350d92d1ffb362a@BY2PR03MB505.namprd03.prod.outlook.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Cc: "moinejf@free.fr" <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---xe2geHXJg22At20M
+--===============3915068459167556849==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Wt10+cXOThorkX0z"
+Content-Disposition: inline
+
+
+--Wt10+cXOThorkX0z
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 10, 2014 at 11:05:36AM +0000, Charles Keepax wrote:
-> snd_soc_dapm_disable_pin, snd_soc_dapm_enable_pin and
-> snd_soc_dapm_force_enable_pin all require the dapm_mutex to be held when
-> they are called as they edit the dirty list. There are 385 usages of
-> these functions and only 7 hold the lock whilst calling.
->=20
-> This patch moves the locking into snd_soc_dapm_set_pin and fixes up the
-> places where the lock was held on the caller side. This saves on fixing
-> up all the current users and also is much more consistant with the rest
-> of the DAPM API which all handles the locking internally.
+On Mon, Feb 10, 2014 at 04:12:19AM +0000, Li.Xiubo@freescale.com wrote:
 
-Unfortunately the fix needs to be in the callers to some extent - there
-are situations where you want to do atomic updates of multiple pins so
-that we don't end up bouncing the power up and down too much, we need
-the unlocked version for things that care.  This means we need to at
-least preserve an unlocked version and translate those callers that
-might care over to it (not sure if any of them are in mainline).
+> > My patch was "ASoC: codecs: Make OF supported CODECs visible in
+> > Kconfig".  I can't remember offhand what the patch for i.MX was called.
 
-It should also be safe to call the functions without explicit locking
-during init since we won't run DAPM until we've finished init - it is
-effectively locked even if we don't actually hold the mutex.  There
-shouldn't be a race with marking the widget dirty since every widget
-should start out dirty but I'd have to verify that one.  This will
-account for a very large proportion of the callers so perhaps it's less
-of an issue to add the locking to them than you had thought.
+> Yes, found it.
 
---xe2geHXJg22At20M
+> If so, shouldn't the CPU DAIs(such as I2S) also be invisible in Kconfig like
+> CODECs ?
+
+Yes, they should be getting made visible too when they can work with
+simple-card - that was what the i.MX patch was doing.
+
+--Wt10+cXOThorkX0z
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS+MEgAAoJELSic+t+oim97PAQAI9bbI24cArteSwsBd2P3IxC
-/lj916LZlei15VVwAgjwpSJLAXsPumDc9K222qQ61oVbliJbKhM87uvazKNpSEj7
-fwt4jVZPaClKyS788kGNrsJeEOeKbzKI0hvR3SnU8Mn00zppll14SY7iR3KHp8zl
-DZsLnhWR+rrbKN7TT3ePhoxzgctJEL3wlOeO5c2LYZT+KjkoWDrrYMjK6dN2hTHP
-9WMYpPr1u1pE6nD2TQ6lOi4Got/U45gPlGSA4zS97cplCAxU33waKqVEh8Bgkk8L
-pU3llqGERg/6Gk85rTg7r4CWHpaXi3efNOCChtmy/HYPGv3fSIvv8kPykJSrRZCk
-aNVxvh3RuTcP1aCwMtV31wz1fZSOzeXcK04EI8pfwJGe2cqE3Q65WTIWW4JBL99l
-XEdYlW7sBxw7GuSmWH0JvteIiA48ES5Qwz/dvuoLDEDlZyY5FZrb5nCQbCHAW6Xi
-RurYa1cX72Qd0PNiVuwocRLcpnnvWb4mYc4zxjpovqyrfO1q269BN3oyjtNXTdms
-xVF8eee0ECRfjJLujF7Y2xzWVeHckiD8knBwpRjwEkCjR0RwbMq9M9MNDPfhFEl5
-lGR8+oBsBQMnuCcUXNhzM31BNc/G7u4kwA0tzl0DjmPvRy96Dm0vY2qkQ+rcmTMb
-pdtHXke2Y4E9zB65Kx/G
-=eUOK
+iQIcBAEBAgAGBQJS+MaZAAoJELSic+t+oim9PPsP/1TOvo9IJ7Wu9LgaYNPxXMU4
+cZbc9YcQoPRgMBhIwofGhDVZs74xi5tiQhQ0ib2GZp+xE3JB2DN+XSn7PJ7cWDSL
+B0E8rqoAkWAxUohLMrX9asRrk7naHWc1vYQOmKCgxYW7srZEXLuhnWlRdBlIDWPX
+aRkzcPGMUjtD91eF13tfRxKnoHvDQfrLlY5O6VGjqVBTOdxKKNPe65P7DL0407jj
+w9guocX+vM7V6GpUSRztG913crpKKml88Q/KE/rNRBOmQ9w5ER+J3FHcsipkJD4B
+HmnxdLINqoEbY9eXIlLjts9lBgADzidqhvZz/3HxkqfLK7oy+noaOFVbB6BvTpaG
+mxR3h4a230Ku4JIuCl3z+R3FbciHdtLn/cRNj/1XWfhimKuTvANZG/ISrQC/DUQy
+D7uQEPZfZ3Pvq4m6CyYTq8Jrfa447N2n1StBK3RF+duaJ3O2j3+r6BqzCGXZFJSw
+DjCkc/5UhD5jPD3sDuXqlIpI/rODMIOOTRykxv9HT78oimNmG06pFrNf9EZQL3CO
+TbHiwpi2ZvwQxySAJ7e12ymGu5nlFbGn/urTKAD81denZQLbQdAH2dVFgWMAuW98
+BKze+Yt5+cvb7o4GBwrEgVunHknKHLdtYJO/l083+CyQ50NQRLYTVrDIQ3z3HQ/R
+NyV61TA7i2qH0ZBLVUC4
+=GV1w
 -----END PGP SIGNATURE-----
 
---xe2geHXJg22At20M--
+--Wt10+cXOThorkX0z--
+
+--===============3915068459167556849==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3915068459167556849==--
