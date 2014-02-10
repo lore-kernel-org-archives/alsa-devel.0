@@ -1,59 +1,93 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/8] ASoC: da9055: Fix device registration of PMIC and
- CODEC devices
-Date: Mon, 10 Feb 2014 14:14:00 +0000
-Message-ID: <20140210141400.GJ1757@sirena.org.uk>
-References: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
- <6a398d176b0b2bf8792d27bd5e2995fd96afb32d.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
- <20140210134310.GH1757@sirena.org.uk>
- <20140210135939.GA23141@lee--X1>
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH 0/7] Audio support for Armada 370 DB
+Date: Mon, 10 Feb 2014 15:21:41 +0100
+Message-ID: <20140210152141.1391fb67@skate>
+References: <1391102051-5319-1-git-send-email-thomas.petazzoni@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QFO1zB2dwAkGraMW"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140210135939.GA23141@lee--X1>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>, Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id 884372619D6
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 15:22:08 +0100 (CET)
+In-Reply-To: <1391102051-5319-1-git-send-email-thomas.petazzoni@free-electrons.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
---QFO1zB2dwAkGraMW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Any comments on the patch series? I'd like these to be included in
+3.15, and so far I've only received one simple comment from Jason
+Cooper regarding the defconfig changes, but no other comments.
 
-On Mon, Feb 10, 2014 at 01:59:39PM +0000, Lee Jones wrote:
+Thanks a lot!
 
-> > Applied, thanks.
+Thomas
 
-> Actually, do you mind if I take this and apply it to an immutable?
+On Thu, 30 Jan 2014 18:14:04 +0100, Thomas Petazzoni wrote:
+> Hello,
+> 
+> This series of patches enable audio support on the Marvell Armada 370
+> Development Board. Since both the I2S controller on the SoC side and
+> the I2C audio codec are already supported by the kernel, the amount of
+> work is fairly limited.
+> 
+> Also, since the DT bindings that allows to replace the ASoC board
+> driver are still being ironed out, I'm proposing to add an old-style
+> ASoC board driver for now.
+> 
+> This set of patches only provide support for the analog output and
+> input, I am waiting for the optical cable to arrive to get the digital
+> input and output to work.
+> 
+> Patches 1 to 3 are to be taken by the ASoC maintainer, while patches 4
+> to 7 are to be taken by the mvebu maintainers.
+> 
+> Note that the audio support for Armada 370 also needs a fix to the
+> CS42L51, which is being discussed with the author of the change that
+> apparently introduced the problem (see discussion at
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071916.html).
+> 
+> Thanks,
+> 
+> Thomas
+> 
+> Thomas Petazzoni (7):
+>   sound: codec: add Device Tree binding to cs42l51
+>   sound: soc: enable Kirkwood driver for mvebu platforms
+>   sound: soc: add ASoC board driver for Armada 370 DB
+>   ARM: mvebu: add audio I2S controller to Armada 370 Device Tree
+>   ARM: mvebu: add I2C0 muxing option for Armada 370 SoC
+>   ARM: mvebu: add audio support to Armada 370 DB
+>   ARM: mvebu: enable audio options in mvebu_defconfig
+> 
+>  .../devicetree/bindings/i2c/trivial-devices.txt    |   1 +
+>  .../devicetree/bindings/sound/mvebu-audio.txt      |   1 +
+>  arch/arm/boot/dts/armada-370-db.dts                |  46 +++++++
+>  arch/arm/boot/dts/armada-370.dtsi                  |  29 +++++
+>  arch/arm/configs/mvebu_defconfig                   |   5 +
+>  sound/soc/codecs/cs42l51.c                         |   7 +
+>  sound/soc/kirkwood/Kconfig                         |  10 +-
+>  sound/soc/kirkwood/Makefile                        |   2 +
+>  sound/soc/kirkwood/armada-370-db.c                 | 144 +++++++++++++++++++++
+>  sound/soc/kirkwood/kirkwood-i2s.c                  |   1 +
+>  10 files changed, 245 insertions(+), 1 deletion(-)
+>  create mode 100644 sound/soc/kirkwood/armada-370-db.c
+> 
 
-> I'd rather not be on the wrong end of some wrath, due to not playing
-> the game properly.
 
-OK, but it does need to go in as a fix targetted for stable.
 
---QFO1zB2dwAkGraMW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS+N6kAAoJELSic+t+oim9GMEP/RUikxwwk3i8Xwj/zR85LUI+
-GvPKRyXt+zHnmz6Zsq12Y+y9wM8edVFtKJXUCSH4RRCxhSCIazMecYC+2AXPTcrt
-DLPm19vaB8jTMHh7MOjcMf820sZHmgXt2Xj01DulNAxbQxi09iY4RK6+svKOz2up
-hF0cGSvGu4mtEXetrBgDLFKpY4V4d2rmZ8iHaFqwBJYVO07TeylQyi+msr361cCc
-zeIgg+Iv+Q7I/y9Vf+B1x6gW7sH1ap2scPebZSk4corwBD4g9yePZLRHAwp6N9Zl
-r+Uev+Htwa9ta3ZbAayu3x04tPvvETnqyLuau6WIJPWEA9UzHbukFSTP8SS3mJDo
-ZKB2olrDrlnJC/b0nBnW7c1ebksWQlgSebeix3hNdw7ryrN9jXDCpysmVJPFZ9Nv
-i8ghPMu+C9ZfNmrAkhpFMCYT0yJfW4mNiucj1QQkaVyg5tIjoMx+oKjvSqCWK5ff
-XO4zXLjLN/24zuS9d18lzW4ez5CPj4IGGvjom2A4mjyS+mp7cV8P5weNQWIUd3YD
-fEhY0hlOPlgCNUm1jcgYMYUMMgrXx11Vu9y5XjCtCBuFrDAxkQrKvG8Jia4rG4YW
-zyb5yN8swT3/s3Eb6d7ukotHDigDlLmK6NBH7K7nmdFhjv3ODxcA10CxXNf/2eJy
-NQydh4//9hYJyoHdaeyQ
-=F0Fw
------END PGP SIGNATURE-----
-
---QFO1zB2dwAkGraMW--
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
