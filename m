@@ -1,104 +1,206 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix undefined symbol due to
-	builtin/module mixup
-Date: Mon, 10 Feb 2014 11:53:01 +0100
-Message-ID: <1392029581-32641-1-git-send-email-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: dapm: Add locking to snd_soc_dapm_xxxx_pin functions
+Date: Mon, 10 Feb 2014 11:05:36 +0000
+Message-ID: <20140210110536.GB6856@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 42B6126072A
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 11:53:01 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2587AABEE
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 10:53:01 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com, dmitry.torokhov@gmail.com, myungjoo.ham@samsung.com, cw00.choi@samsung.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Even after the fix for leftover kconfig handling (commit f8f1becf),
-the current code still doesn't handle properly the builtin/module
-mixup case between the core snd-hda-codec and other codec drivers.
-For example, when CONFIG_SND_HDA_INTEL=y and
-CONFIG_SND_HDA_CODEC_HDMI=m, it'll end up with an unresolved symbol
-snd_hda_parse_hdmi_codec.  This patch fixes the issue.
+snd_soc_dapm_disable_pin, snd_soc_dapm_enable_pin and
+snd_soc_dapm_force_enable_pin all require the dapm_mutex to be held when
+they are called as they edit the dirty list. There are 385 usages of
+these functions and only 7 hold the lock whilst calling.
 
-Now codec->parser points to the parser object *only* when a module
-(either generic or HDMI parser) is loaded and bound.  When a builtin
-symbol is used, codec->parser still points to NULL.  This is the
-difference from the previous versions.
+This patch moves the locking into snd_soc_dapm_set_pin and fixes up the
+places where the lock was held on the caller side. This saves on fixing
+up all the current users and also is much more consistant with the rest
+of the DAPM API which all handles the locking internally.
 
-Fixes: f8f1becfa4ac ('ALSA: hda - Fix leftover ifdef checks after modularization')
-Reported-by: Fengguang Wu <fengguang.wu@intel.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/pci/hda/hda_codec.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 69acbf758bbb..dafcf82139e2 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1339,23 +1339,15 @@ get_hda_cvt_setup(struct hda_codec *codec, hda_nid_t nid)
- /*
-  * Dynamic symbol binding for the codec parsers
-  */
--#ifdef MODULE
--#define load_parser_sym(sym)		((int (*)(struct hda_codec *))symbol_request(sym))
--#define unload_parser_addr(addr)	symbol_put_addr(addr)
--#else
--#define load_parser_sym(sym)		(sym)
--#define unload_parser_addr(addr)	do {} while (0)
--#endif
+Hi,
+
+I have put the changes in a single patch to avoid bisect
+problems, but let me know if it would be better split into
+seperate patches.
+
+Thanks,
+Charles
+
+ drivers/extcon/extcon-arizona.c      |   11 -----------
+ drivers/input/misc/arizona-haptics.c |   19 -------------------
+ sound/soc/soc-dapm.c                 |    8 ++++----
+ 3 files changed, 4 insertions(+), 34 deletions(-)
+
+diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
+index c20602f..84167f4 100644
+--- a/drivers/extcon/extcon-arizona.c
++++ b/drivers/extcon/extcon-arizona.c
+@@ -222,26 +222,19 @@ static void arizona_extcon_pulse_micbias(struct arizona_extcon_info *info)
+ 	struct snd_soc_dapm_context *dapm = arizona->dapm;
+ 	int ret;
  
- #define load_parser(codec, sym) \
--	((codec)->parser = load_parser_sym(sym))
-+	((codec)->parser = (int (*)(struct hda_codec *))symbol_request(sym))
+-	mutex_lock(&dapm->card->dapm_mutex);
+-
+ 	ret = snd_soc_dapm_force_enable_pin(dapm, widget);
+ 	if (ret != 0)
+ 		dev_warn(arizona->dev, "Failed to enable %s: %d\n",
+ 			 widget, ret);
  
- static void unload_parser(struct hda_codec *codec)
+-	mutex_unlock(&dapm->card->dapm_mutex);
+-
+ 	snd_soc_dapm_sync(dapm);
+ 
+ 	if (!arizona->pdata.micd_force_micbias) {
+-		mutex_lock(&dapm->card->dapm_mutex);
+-
+ 		ret = snd_soc_dapm_disable_pin(arizona->dapm, widget);
+ 		if (ret != 0)
+ 			dev_warn(arizona->dev, "Failed to disable %s: %d\n",
+ 				 widget, ret);
+ 
+-		mutex_unlock(&dapm->card->dapm_mutex);
+ 
+ 		snd_soc_dapm_sync(dapm);
+ 	}
+@@ -304,16 +297,12 @@ static void arizona_stop_mic(struct arizona_extcon_info *info)
+ 				 ARIZONA_MICD_ENA, 0,
+ 				 &change);
+ 
+-	mutex_lock(&dapm->card->dapm_mutex);
+-
+ 	ret = snd_soc_dapm_disable_pin(dapm, widget);
+ 	if (ret != 0)
+ 		dev_warn(arizona->dev,
+ 			 "Failed to disable %s: %d\n",
+ 			 widget, ret);
+ 
+-	mutex_unlock(&dapm->card->dapm_mutex);
+-
+ 	snd_soc_dapm_sync(dapm);
+ 
+ 	if (info->micd_reva) {
+diff --git a/drivers/input/misc/arizona-haptics.c b/drivers/input/misc/arizona-haptics.c
+index 7a04f54..ef2e281 100644
+--- a/drivers/input/misc/arizona-haptics.c
++++ b/drivers/input/misc/arizona-haptics.c
+@@ -37,7 +37,6 @@ static void arizona_haptics_work(struct work_struct *work)
+ 						       struct arizona_haptics,
+ 						       work);
+ 	struct arizona *arizona = haptics->arizona;
+-	struct mutex *dapm_mutex = &arizona->dapm->card->dapm_mutex;
+ 	int ret;
+ 
+ 	if (!haptics->arizona->dapm) {
+@@ -67,13 +66,10 @@ static void arizona_haptics_work(struct work_struct *work)
+ 			return;
+ 		}
+ 
+-		mutex_lock_nested(dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+-
+ 		ret = snd_soc_dapm_enable_pin(arizona->dapm, "HAPTICS");
+ 		if (ret != 0) {
+ 			dev_err(arizona->dev, "Failed to start HAPTICS: %d\n",
+ 				ret);
+-			mutex_unlock(dapm_mutex);
+ 			return;
+ 		}
+ 
+@@ -81,21 +77,14 @@ static void arizona_haptics_work(struct work_struct *work)
+ 		if (ret != 0) {
+ 			dev_err(arizona->dev, "Failed to sync DAPM: %d\n",
+ 				ret);
+-			mutex_unlock(dapm_mutex);
+ 			return;
+ 		}
+-
+-		mutex_unlock(dapm_mutex);
+-
+ 	} else {
+ 		/* This disable sequence will be a noop if already enabled */
+-		mutex_lock_nested(dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+-
+ 		ret = snd_soc_dapm_disable_pin(arizona->dapm, "HAPTICS");
+ 		if (ret != 0) {
+ 			dev_err(arizona->dev, "Failed to disable HAPTICS: %d\n",
+ 				ret);
+-			mutex_unlock(dapm_mutex);
+ 			return;
+ 		}
+ 
+@@ -103,12 +92,9 @@ static void arizona_haptics_work(struct work_struct *work)
+ 		if (ret != 0) {
+ 			dev_err(arizona->dev, "Failed to sync DAPM: %d\n",
+ 				ret);
+-			mutex_unlock(dapm_mutex);
+ 			return;
+ 		}
+ 
+-		mutex_unlock(dapm_mutex);
+-
+ 		ret = regmap_update_bits(arizona->regmap,
+ 					 ARIZONA_HAPTICS_CONTROL_1,
+ 					 ARIZONA_HAP_CTRL_MASK,
+@@ -155,16 +141,11 @@ static int arizona_haptics_play(struct input_dev *input, void *data,
+ static void arizona_haptics_close(struct input_dev *input)
  {
--	if (codec->parser) {
--		unload_parser_addr(codec->parser);
--		codec->parser = NULL;
--	}
-+	if (codec->parser)
-+		symbol_put_addr(codec->parser);
-+	codec->parser = NULL;
+ 	struct arizona_haptics *haptics = input_get_drvdata(input);
+-	struct mutex *dapm_mutex = &haptics->arizona->dapm->card->dapm_mutex;
+ 
+ 	cancel_work_sync(&haptics->work);
+ 
+-	mutex_lock_nested(dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+-
+ 	if (haptics->arizona->dapm)
+ 		snd_soc_dapm_disable_pin(haptics->arizona->dapm, "HAPTICS");
+-
+-	mutex_unlock(dapm_mutex);
  }
  
- /*
-@@ -1620,12 +1612,20 @@ int snd_hda_codec_configure(struct hda_codec *codec)
- 		patch = codec->preset->patch;
- 	if (!patch) {
- 		unload_parser(codec); /* to be sure */
--		if (is_likely_hdmi_codec(codec))
-+		if (is_likely_hdmi_codec(codec)) {
-+#if IS_MODULE(CONFIG_SND_HDA_CODEC_HDMI)
- 			patch = load_parser(codec, snd_hda_parse_hdmi_codec);
--#if IS_ENABLED(CONFIG_SND_HDA_GENERIC)
--		if (!patch)
-+#elif IS_BUILTIN(CONFIG_SND_HDA_CODEC_HDMI)
-+			patch = snd_hda_parse_hdmi_codec;
-+#endif
-+		}
-+		if (!patch) {
-+#if IS_MODULE(CONFIG_SND_HDA_GENERIC)
- 			patch = load_parser(codec, snd_hda_parse_generic_codec);
-+#elif IS_BUILTIN(CONFIG_SND_HDA_GENERIC)
-+			patch = snd_hda_parse_generic_codec;
- #endif
-+		}
- 		if (!patch) {
- 			printk(KERN_ERR "hda-codec: No codec parser is available\n");
- 			return -ENODEV;
+ static int arizona_haptics_probe(struct platform_device *pdev)
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index dc8ff13..a44b560 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2325,6 +2325,8 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
+ {
+ 	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
+ 
++	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
++
+ 	if (!w) {
+ 		dev_err(dapm->dev, "ASoC: DAPM unknown pin %s\n", pin);
+ 		return -EINVAL;
+@@ -2337,6 +2339,8 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
+ 	if (status == 0)
+ 		w->force = 0;
+ 
++	mutex_unlock(&dapm->card->dapm_mutex);
++
+ 	return 0;
+ }
+ 
+@@ -3210,15 +3214,11 @@ int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
+ 	const char *pin = (const char *)kcontrol->private_value;
+ 
+-	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+-
+ 	if (ucontrol->value.integer.value[0])
+ 		snd_soc_dapm_enable_pin(&card->dapm, pin);
+ 	else
+ 		snd_soc_dapm_disable_pin(&card->dapm, pin);
+ 
+-	mutex_unlock(&card->dapm_mutex);
+-
+ 	snd_soc_dapm_sync(&card->dapm);
+ 	return 0;
+ }
 -- 
-1.8.5.2
+1.7.2.5
