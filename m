@@ -1,50 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl-esai: fix ESAI TDM slot setting
-Date: Mon, 10 Feb 2014 13:40:08 +0000
-Message-ID: <20140210134008.GG1757@sirena.org.uk>
-References: <1392014837-22308-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCH v2 1/8] ASoC: da9055: Fix device
+ registration of PMIC and CODEC devices
+Date: Mon, 10 Feb 2014 13:43:10 +0000
+Message-ID: <20140210134310.GH1757@sirena.org.uk>
+References: <cover.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+ <6a398d176b0b2bf8792d27bd5e2995fd96afb32d.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gJgGjUUWrnN4mpen"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1392014837-22308-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, Guangyu.Chen@freescale.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0072693866589601344=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAB2B26162E
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 14:43:20 +0100 (CET)
+In-Reply-To: <6a398d176b0b2bf8792d27bd5e2995fd96afb32d.1391705989.git.Adam.Thomson.Opensource@diasemi.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alessandro Zummo <a.zummo@towertech.it>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---gJgGjUUWrnN4mpen
+--===============0072693866589601344==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="nCRcqX7cEx7rr7Pe"
+Content-Disposition: inline
+
+
+--nCRcqX7cEx7rr7Pe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 10, 2014 at 02:47:17PM +0800, Xiubo Li wrote:
-> Cc: Nicolin Chen <Guangyu.Chen@freescale.com>
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+On Thu, Feb 06, 2014 at 06:03:07PM +0000, Adam Thomson wrote:
+> Currently the I2C device Ids conflict for the MFD and CODEC so
+> cannot be both instantiated on one platform. This patch updates
+> the Ids and names to make them unique from each other.
 
 Applied, thanks.
 
---gJgGjUUWrnN4mpen
+--nCRcqX7cEx7rr7Pe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS+Na1AAoJELSic+t+oim9pH4P+wVRxvEzIAmAkdmcOCntcm2X
-5W77U7v/BGSnCKmggRGZP8n65lkrfvOU3hwAkzxxhYxyUoYgqtL67OOPEct34Dvo
-CnJCRUWSZAbdSrVLQnBLEMz0x30CVj+SMNWxJgKvFMGctehZy4Dyd3uc71UqUURQ
-nMqS5VYtdzuI3dd/Ztgv+fxCvEIFUGIJ+dE8011EoUrQOzGBWIwcg8GwHb1GwCt2
-nb5slXiR8GxULdSm64WLRMtwDs3CkmRtbIpYVHBHoNBI7nEC4cs1WNpYhxWQzQe1
-ELwo/SAjDEAddn4PTIyNyGwvBUwskLn9bvBbNvj/KohPKP/GWD95TVK4vklUkrxH
-oPSzkHNWPLknRKFbaTbKLkefED1NFqz/0KMwO8f7O1aYMa3C1W42ZXGmnITdxEXv
-4r8ePLRLJdCFoK7usWTSRU7K//fbnA11ejC58N+svcXu8645e5mkwmI1PJWy3CfV
-nkMC6VITVnjDhVnX6z+QS7owrboWA7A7hSTePDzz4z8bAkDsre6B4N+lwx4R+97/
-s/jL+h/7nId6ifUGy7eIhNRqOjJnlE0WKAOQmAxLiPRhISPLo3wQV+nbIqxVbRRp
-taSbwoX2e8PDajq/Kha0bqNlSD7xS3FwoYYMRg1AA24D3bnRHtJmr8e4hmooNKf0
-6KUESpGhpQEAWkouWKTr
-=1kVf
+iQIcBAEBAgAGBQJS+NdrAAoJELSic+t+oim93b8P/17Anp84nsAFWorx9xQf4jiW
+05Bn8ZIUfZE1UqyyozfwO1Dw3W/EBzEZm0Y3EGHKabKaRp4zYHHcp5vSqi2DJnDb
+y74BFAhX3Vr0/A7mKVe05jaGwHtJa5aMLl0XC6j+ZOT68tDz7WQuK+y5cV29rfr+
+AyBd3JhugJlQl3FctoQ8HGtVf1/ZUT01jHTZ0F0fX4nGOIF7H+mf0DxPitCcZfda
+hkb/rD1VYkN+LiN+vB3yHgnBT6zASIPi7DghfDwLTlcbBIWwxeFCqU8l4bR7qfqD
+cS1Q9Ac383CYEpyi0s6puCxgEj7UYpnAcabRv3cStWiI+jKMyxXkyITwqSanylfh
+/uFUBlBOorVC7OWnNWvRXi3epNCCr3GeWxDcSZ20toDYXrIMK9ZYKN4zJBGQu15W
+aksoRqMA8d62zkCwZkNt2PexkNUFGHDPrIqEJZnmikkSJ4aFgsJsFAYSsKZi8rWe
+KdJzSQV++dEb5R47SDnxLKlZnJoM8uGWP0Y9c/MycMDWBZLXm7QWDaY7vuTXQD0d
+8E/fCOJU+AevCU/HhGcy5RB0VP/tBMyQ2x+b8PlfbcKMcCpevdI8BNoQpF93vey/
+7UvmqIyLSn4pugWNHqDXwvBhzTqcplRLKGAhC3bN6pveP1JNi4NxS4be3ei9fpUs
+882sMbyf/va0TWO7byoc
+=Vkel
 -----END PGP SIGNATURE-----
 
---gJgGjUUWrnN4mpen--
+--nCRcqX7cEx7rr7Pe--
+
+--===============0072693866589601344==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0072693866589601344==--
