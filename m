@@ -1,81 +1,38 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v3 1/2] drivers/base: permit base components to omit
- the bind/unbind ops
-Date: Mon, 10 Feb 2014 15:14:06 +0000
-Message-ID: <20140210151406.GX26684@n2100.arm.linux.org.uk>
-References: <cover.1391792986.git.moinejf@free.fr>
- <9b3c3c2c982f31b026fd1516a2b608026d55b1e9.1391792986.git.moinejf@free.fr>
- <20140210125307.GG20143@ulmo.nvidia.com>
- <20140210131233.GT26684@n2100.arm.linux.org.uk>
- <20140210153551.1309f017@armhf>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: Re: [PATCH 14/28] Remove MACH_SMDKC210
+Date: Mon, 10 Feb 2014 16:30:42 +0100
+Message-ID: <1392046242.3585.41.camel@x220>
+References: <1391971686-9517-1-git-send-email-richard@nod.at>
+	 <1391971686-9517-15-git-send-email-richard@nod.at>
+	 <20140210114154.GQ1757@sirena.org.uk> <1392039072.3585.15.camel@x220>
+	 <20140210141255.GI1757@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-Content-Disposition: inline
-In-Reply-To: <20140210153551.1309f017@armhf>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: driverdev-devel-bounces@linuxdriverproject.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Thierry Reding <thierry.reding@gmail.com>, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20140210141255.GI1757@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 10, 2014 at 03:35:51PM +0100, Jean-Francois Moine wrote:
-> On Mon, 10 Feb 2014 13:12:33 +0000
-> Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
+On Mon, 2014-02-10 at 14:12 +0000, Mark Brown wrote:
+> On Mon, Feb 10, 2014 at 02:31:12PM +0100, Paul Bolle wrote:
+> > If so, to be absolutely sure we start from the same point: do you agree
+> > that the above line now effectively reads
+> >     depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || false || false)
 > 
-> > I've NAK'd these patches already - I believe they're based on a
-> > mis-understanding of how this should be used.  I believe Jean-Francois
-> > has only looked at the core, rather than looking at the imx-drm example
-> > it was posted with in an attempt to understand it.
-> > 
-> > Omitting the component bind operations is absurd because it makes the
-> > component code completely pointless, since there is then no way to
-> > control the sequencing of driver initialisation - something which is
-> > one of the primary reasons for this code existing in the first place.
+> > because there's neither a Kconfig symbol MACH_SMDKV310 nor a Kconfig
+> > symbol MACH_SMDKC210?
 > 
-> I perfectly looked at your example and I use it now in my system.
-> 
-> You did not see what could be done with your component code. For
-> example, since november, I have not yet the clock probe_defer in the
-> mainline (http://www.spinics.net/lists/arm-kernel/msg306072.html), so,
-> there are 3 solutions:
-> 
-> - hope the patch will be some day in the mainline and, today, reboot
->   when the system does not start correctly,
-> 
-> - insert a delay in the tda998x and kirkwood probe sequences (delay
->   long enough to be sure the si5351 is started, or loop),
-> 
-> - use your component work.
-> 
-> In the last case, it is easy:
-> 
-> - the si5351 driver calls component_add (with empty ops: it has no
->   interest in the bind/unbind functions) when it is fully started (i.e.
->   registered - that was the subject of my patch),
+> Yes, that's correct.  Now, like I say think about what the symbol was
+> there for in the first place.
 
-There is only one word for this:
-Ewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww.
+So, next step: the Kconfig symbols MACH_SMDKV310 and MACH_SMDKC210 were
+removed in commit 383ffda2fa ("ARM: EXYNOS: no more support non-DT for
+EXYNOS SoCs"). That commit was part of v3.11. Correct?
 
-Definitely not.
+Thanks for your patience.
 
-The component stuff is there to sort out the subsystems which expect a
-"card" but in DT we supply a set of components.  It's not there to sort
-out dependencies between different subsystems.
 
-I've no idea why your patch to add the deferred probing hasn't been acked
-by Mike yet, but that needs to happen before I take it.  Or, split it up
-in two so I can take the clkdev part and Mike can take the CCF part.
-
--- 
-FTTC broadband for 0.8mile line: 5.8Mbps down 500kbps up.  Estimation
-in database were 13.1 to 19Mbit for a good line, about 7.5+ for a bad.
-Estimate before purchase was "up to 13.2Mbit".
+Paul Bolle
