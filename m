@@ -1,206 +1,89 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: dapm: Add locking to snd_soc_dapm_xxxx_pin functions
-Date: Mon, 10 Feb 2014 11:05:36 +0000
-Message-ID: <20140210110536.GB6856@opensource.wolfsonmicro.com>
+From: niraj kulkarni <kulkarniniraj14@gmail.com>
+Subject: Re: Fw:  [Bug 1155202] [Intel DZ77SL-50K,
+ Intel PantherPoint HDMI, Digital Out, HDMI] No sound at all
+Date: Mon, 10 Feb 2014 17:10:16 +0530
+Message-ID: <CACWODjR3HFTFh5iGGS0WZapL7d+kSqiYf=O7QsQu=7dAqQ7TLA@mail.gmail.com>
+References: <52ef1e8f.a4c3440a.53f1.fffff564SMTPIN_ADDED_BROKEN@mx.google.com>
+ <CACWODjSKJ7yy6dvH3iCiHLvFgYokgmeSy06mYyGnX4N5JKtkEg@mail.gmail.com>
+ <s5hd2ivs5nm.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, dmitry.torokhov@gmail.com, myungjoo.ham@samsung.com, cw00.choi@samsung.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
+ [209.85.212.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id DCC4A2608B7
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 12:40:17 +0100 (CET)
+Received: by mail-vb0-f51.google.com with SMTP id 11so4723520vbe.10
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 03:40:16 -0800 (PST)
+In-Reply-To: <s5hd2ivs5nm.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-snd_soc_dapm_disable_pin, snd_soc_dapm_enable_pin and
-snd_soc_dapm_force_enable_pin all require the dapm_mutex to be held when
-they are called as they edit the dirty list. There are 385 usages of
-these functions and only 7 hold the lock whilst calling.
+Sorry, I did not see that part earlier. Putting udelay(2) is also working
+fine.
 
-This patch moves the locking into snd_soc_dapm_set_pin and fixes up the
-places where the lock was held on the caller side. This saves on fixing
-up all the current users and also is much more consistant with the rest
-of the DAPM API which all handles the locking internally.
+Niraj
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
 
-Hi,
+On Mon, Feb 10, 2014 at 2:31 PM, Takashi Iwai <tiwai@suse.de> wrote:
 
-I have put the changes in a single patch to avoid bisect
-problems, but let me know if it would be better split into
-seperate patches.
-
-Thanks,
-Charles
-
- drivers/extcon/extcon-arizona.c      |   11 -----------
- drivers/input/misc/arizona-haptics.c |   19 -------------------
- sound/soc/soc-dapm.c                 |    8 ++++----
- 3 files changed, 4 insertions(+), 34 deletions(-)
-
-diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
-index c20602f..84167f4 100644
---- a/drivers/extcon/extcon-arizona.c
-+++ b/drivers/extcon/extcon-arizona.c
-@@ -222,26 +222,19 @@ static void arizona_extcon_pulse_micbias(struct arizona_extcon_info *info)
- 	struct snd_soc_dapm_context *dapm = arizona->dapm;
- 	int ret;
- 
--	mutex_lock(&dapm->card->dapm_mutex);
--
- 	ret = snd_soc_dapm_force_enable_pin(dapm, widget);
- 	if (ret != 0)
- 		dev_warn(arizona->dev, "Failed to enable %s: %d\n",
- 			 widget, ret);
- 
--	mutex_unlock(&dapm->card->dapm_mutex);
--
- 	snd_soc_dapm_sync(dapm);
- 
- 	if (!arizona->pdata.micd_force_micbias) {
--		mutex_lock(&dapm->card->dapm_mutex);
--
- 		ret = snd_soc_dapm_disable_pin(arizona->dapm, widget);
- 		if (ret != 0)
- 			dev_warn(arizona->dev, "Failed to disable %s: %d\n",
- 				 widget, ret);
- 
--		mutex_unlock(&dapm->card->dapm_mutex);
- 
- 		snd_soc_dapm_sync(dapm);
- 	}
-@@ -304,16 +297,12 @@ static void arizona_stop_mic(struct arizona_extcon_info *info)
- 				 ARIZONA_MICD_ENA, 0,
- 				 &change);
- 
--	mutex_lock(&dapm->card->dapm_mutex);
--
- 	ret = snd_soc_dapm_disable_pin(dapm, widget);
- 	if (ret != 0)
- 		dev_warn(arizona->dev,
- 			 "Failed to disable %s: %d\n",
- 			 widget, ret);
- 
--	mutex_unlock(&dapm->card->dapm_mutex);
--
- 	snd_soc_dapm_sync(dapm);
- 
- 	if (info->micd_reva) {
-diff --git a/drivers/input/misc/arizona-haptics.c b/drivers/input/misc/arizona-haptics.c
-index 7a04f54..ef2e281 100644
---- a/drivers/input/misc/arizona-haptics.c
-+++ b/drivers/input/misc/arizona-haptics.c
-@@ -37,7 +37,6 @@ static void arizona_haptics_work(struct work_struct *work)
- 						       struct arizona_haptics,
- 						       work);
- 	struct arizona *arizona = haptics->arizona;
--	struct mutex *dapm_mutex = &arizona->dapm->card->dapm_mutex;
- 	int ret;
- 
- 	if (!haptics->arizona->dapm) {
-@@ -67,13 +66,10 @@ static void arizona_haptics_work(struct work_struct *work)
- 			return;
- 		}
- 
--		mutex_lock_nested(dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
--
- 		ret = snd_soc_dapm_enable_pin(arizona->dapm, "HAPTICS");
- 		if (ret != 0) {
- 			dev_err(arizona->dev, "Failed to start HAPTICS: %d\n",
- 				ret);
--			mutex_unlock(dapm_mutex);
- 			return;
- 		}
- 
-@@ -81,21 +77,14 @@ static void arizona_haptics_work(struct work_struct *work)
- 		if (ret != 0) {
- 			dev_err(arizona->dev, "Failed to sync DAPM: %d\n",
- 				ret);
--			mutex_unlock(dapm_mutex);
- 			return;
- 		}
--
--		mutex_unlock(dapm_mutex);
--
- 	} else {
- 		/* This disable sequence will be a noop if already enabled */
--		mutex_lock_nested(dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
--
- 		ret = snd_soc_dapm_disable_pin(arizona->dapm, "HAPTICS");
- 		if (ret != 0) {
- 			dev_err(arizona->dev, "Failed to disable HAPTICS: %d\n",
- 				ret);
--			mutex_unlock(dapm_mutex);
- 			return;
- 		}
- 
-@@ -103,12 +92,9 @@ static void arizona_haptics_work(struct work_struct *work)
- 		if (ret != 0) {
- 			dev_err(arizona->dev, "Failed to sync DAPM: %d\n",
- 				ret);
--			mutex_unlock(dapm_mutex);
- 			return;
- 		}
- 
--		mutex_unlock(dapm_mutex);
--
- 		ret = regmap_update_bits(arizona->regmap,
- 					 ARIZONA_HAPTICS_CONTROL_1,
- 					 ARIZONA_HAP_CTRL_MASK,
-@@ -155,16 +141,11 @@ static int arizona_haptics_play(struct input_dev *input, void *data,
- static void arizona_haptics_close(struct input_dev *input)
- {
- 	struct arizona_haptics *haptics = input_get_drvdata(input);
--	struct mutex *dapm_mutex = &haptics->arizona->dapm->card->dapm_mutex;
- 
- 	cancel_work_sync(&haptics->work);
- 
--	mutex_lock_nested(dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
--
- 	if (haptics->arizona->dapm)
- 		snd_soc_dapm_disable_pin(haptics->arizona->dapm, "HAPTICS");
--
--	mutex_unlock(dapm_mutex);
- }
- 
- static int arizona_haptics_probe(struct platform_device *pdev)
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index dc8ff13..a44b560 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2325,6 +2325,8 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
- {
- 	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
- 
-+	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-+
- 	if (!w) {
- 		dev_err(dapm->dev, "ASoC: DAPM unknown pin %s\n", pin);
- 		return -EINVAL;
-@@ -2337,6 +2339,8 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
- 	if (status == 0)
- 		w->force = 0;
- 
-+	mutex_unlock(&dapm->card->dapm_mutex);
-+
- 	return 0;
- }
- 
-@@ -3210,15 +3214,11 @@ int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
- 	const char *pin = (const char *)kcontrol->private_value;
- 
--	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
--
- 	if (ucontrol->value.integer.value[0])
- 		snd_soc_dapm_enable_pin(&card->dapm, pin);
- 	else
- 		snd_soc_dapm_disable_pin(&card->dapm, pin);
- 
--	mutex_unlock(&card->dapm_mutex);
--
- 	snd_soc_dapm_sync(&card->dapm);
- 	return 0;
- }
--- 
-1.7.2.5
+> At Mon, 10 Feb 2014 11:35:41 +0530,
+> niraj kulkarni wrote:
+> >
+> > Removing these 3 usleep ranges is working now. Although I have a doubt
+> for
+> > applying this patch on all chips. There have been a number of boards
+> > released after this particular board, but nobody else is facing this
+> > problem. Since spec does not specify a max on deasserting RST, some
+> boards
+> > might actually take more than 100uS to reset. Will this patch work for
+> > those boards?
+> >
+> > @@ -1149,7 +1149,7 @@
+> >         timeout = jiffies + msecs_to_jiffies(100);
+> >         while ((azx_readb(chip, GCTL) & ICH6_GCTL_RESET) &&
+> >                         time_before(jiffies, timeout))
+> > -               usleep_range(500, 1000);
+> > +               cpu_relax();
+> >  }
+> >
+> >  /* exit link reset */
+> > @@ -1162,7 +1162,7 @@
+> >         timeout = jiffies + msecs_to_jiffies(100);
+> >         while (!azx_readb(chip, GCTL) &&
+> >                         time_before(jiffies, timeout))
+> > -               usleep_range(500, 1000);
+> > +               cpu_relax();
+> >  }
+> >
+> >  /* reset codec link */
+> > @@ -1180,7 +1180,7 @@
+> >         /* delay for >= 100us for codec PLL to settle per spec
+> >          * Rev 0.9 section 5.5.1
+> >          */
+> > -       usleep_range(500, 1000);
+> > +       //usleep_range(500, 1000);
+>
+> Why didn't you change as I suggested?  In my patch, I placed udelay(2)
+> since the spec tells so.  Didn't it interfere?
+>
+> Replacing usleep_range() with cpu_relax() should make still working on
+> other boards because it doesn't change the length of the timeout
+> itself.  The timeout is set to very long (100ms).  The only drawback
+> would be a higher CPU usage at probing, but the impact should be
+> negligible.
+>
+>
+> Takashi
+>
