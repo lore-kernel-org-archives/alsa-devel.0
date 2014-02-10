@@ -1,88 +1,94 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/8] ASoC: fsl: Add VF610 soc audio card
-	Kconfig
-Date: Mon, 10 Feb 2014 12:31:24 +0000
-Message-ID: <20140210123124.GW1757@sirena.org.uk>
-References: <1390453370-29194-1-git-send-email-Li.Xiubo@freescale.com>
- <1390453370-29194-2-git-send-email-Li.Xiubo@freescale.com>
- <20140123183829.GB11727@sirena.org.uk>
- <88ad355def5f440eb92ca921b17aabb9@DM2PR03MB509.namprd03.prod.outlook.com>
- <20140126124313.GF11727@sirena.org.uk>
- <d774da5b38ff47b6a350d92d1ffb362a@BY2PR03MB505.namprd03.prod.outlook.com>
+From: Thierry Reding <thierry.reding@gmail.com>
+Subject: Re: [PATCH v3 1/2] drivers/base: permit base components to omit the
+ bind/unbind ops
+Date: Mon, 10 Feb 2014 13:53:08 +0100
+Message-ID: <20140210125307.GG20143@ulmo.nvidia.com>
+References: <cover.1391792986.git.moinejf@free.fr>
+ <9b3c3c2c982f31b026fd1516a2b608026d55b1e9.1391792986.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3915068459167556849=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B8402610CF
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 13:50:56 +0100 (CET)
-In-Reply-To: <d774da5b38ff47b6a350d92d1ffb362a@BY2PR03MB505.namprd03.prod.outlook.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Cc: "moinejf@free.fr" <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4ndw/alBWmZEhfcZ"
+Return-path: <linux-media-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <9b3c3c2c982f31b026fd1516a2b608026d55b1e9.1391792986.git.moinejf@free.fr>
+Sender: linux-media-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Russell King <rmk+kernel@arm.linux.org.uk>, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3915068459167556849==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Wt10+cXOThorkX0z"
-Content-Disposition: inline
-
-
---Wt10+cXOThorkX0z
+--4ndw/alBWmZEhfcZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 10, 2014 at 04:12:19AM +0000, Li.Xiubo@freescale.com wrote:
+On Fri, Feb 07, 2014 at 04:55:00PM +0100, Jean-Francois Moine wrote:
+> Some simple components don't need to do any specific action on
+> bind to / unbind from a master component.
+>=20
+> This patch permits such components to omit the bind/unbind
+> operations.
+>=20
+> Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
+> ---
+>  drivers/base/component.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/base/component.c b/drivers/base/component.c
+> index c53efe6..0a39d7a 100644
+> --- a/drivers/base/component.c
+> +++ b/drivers/base/component.c
+> @@ -225,7 +225,8 @@ static void component_unbind(struct component *compon=
+ent,
+>  {
+>  	WARN_ON(!component->bound);
+> =20
+> -	component->ops->unbind(component->dev, master->dev, data);
+> +	if (component->ops)
+> +		component->ops->unbind(component->dev, master->dev, data);
 
-> > My patch was "ASoC: codecs: Make OF supported CODECs visible in
-> > Kconfig".  I can't remember offhand what the patch for i.MX was called.
+This doesn't actually do what the commit message says. This makes
+component->ops optional, not component->ops->unbind().
 
-> Yes, found it.
+A more correct check would be:
 
-> If so, shouldn't the CPU DAIs(such as I2S) also be invisible in Kconfig like
-> CODECs ?
+	if (component->ops && component->ops->unbind)
 
-Yes, they should be getting made visible too when they can work with
-simple-card - that was what the i.MX patch was doing.
+>  	component->bound =3D false;
+> =20
+>  	/* Release all resources claimed in the binding of this component */
+> @@ -274,7 +275,11 @@ static int component_bind(struct component *componen=
+t, struct master *master,
+>  	dev_dbg(master->dev, "binding %s (ops %ps)\n",
+>  		dev_name(component->dev), component->ops);
+> =20
+> -	ret =3D component->ops->bind(component->dev, master->dev, data);
+> +	if (component->ops)
+> +		ret =3D component->ops->bind(component->dev, master->dev, data);
 
---Wt10+cXOThorkX0z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Same here.
+
+Thierry
+
+--4ndw/alBWmZEhfcZ
+Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS+MaZAAoJELSic+t+oim9PPsP/1TOvo9IJ7Wu9LgaYNPxXMU4
-cZbc9YcQoPRgMBhIwofGhDVZs74xi5tiQhQ0ib2GZp+xE3JB2DN+XSn7PJ7cWDSL
-B0E8rqoAkWAxUohLMrX9asRrk7naHWc1vYQOmKCgxYW7srZEXLuhnWlRdBlIDWPX
-aRkzcPGMUjtD91eF13tfRxKnoHvDQfrLlY5O6VGjqVBTOdxKKNPe65P7DL0407jj
-w9guocX+vM7V6GpUSRztG913crpKKml88Q/KE/rNRBOmQ9w5ER+J3FHcsipkJD4B
-HmnxdLINqoEbY9eXIlLjts9lBgADzidqhvZz/3HxkqfLK7oy+noaOFVbB6BvTpaG
-mxR3h4a230Ku4JIuCl3z+R3FbciHdtLn/cRNj/1XWfhimKuTvANZG/ISrQC/DUQy
-D7uQEPZfZ3Pvq4m6CyYTq8Jrfa447N2n1StBK3RF+duaJ3O2j3+r6BqzCGXZFJSw
-DjCkc/5UhD5jPD3sDuXqlIpI/rODMIOOTRykxv9HT78oimNmG06pFrNf9EZQL3CO
-TbHiwpi2ZvwQxySAJ7e12ymGu5nlFbGn/urTKAD81denZQLbQdAH2dVFgWMAuW98
-BKze+Yt5+cvb7o4GBwrEgVunHknKHLdtYJO/l083+CyQ50NQRLYTVrDIQ3z3HQ/R
-NyV61TA7i2qH0ZBLVUC4
-=GV1w
+iQIcBAEBAgAGBQJS+MuzAAoJEN0jrNd/PrOhD+YP/0yqsCV8/Kk54U0h4ijYsxXa
+g20qgFqu3Ggy2WRUtbY831emWdP1PZk1J9n9pqKIKOQa8BDCpIMlQitdIxkZxuur
+0xAdUHIzp6ZerhnxrM8hJW9d2GTCHLWZMGXmY0UrN2X4njQbmplfXRwd1/mu9eMt
+X06nX9aTOOsBLLtnZsIl/IdYIB4dhsLRnon0mUkfJhfcjuivPathgNG562HyTk8q
+X90y4bHvHfM+4cqick02eeQ36i+C9FZlcuMYGcgxRIf13g0Xu9K02N+cY58aBpRi
+0TeC/9In4BPKx8I+baAdIARE6DPXfHfM6vLOBgblXZePAsTv07fLcVdEQPnQHDPS
+Fn03qQL9WxQW31cx17DQ4T1fav80WqlNGXIweStc1F85ZzCqgP+RDgQNA+K/r2Sb
+B2l8l+weCYkm25/IpdEKUI21wvarixzDhs1Jv6VAoP7FLoVPW2RSBBQOFoKa5INK
+TmWZKSf6W4NrXZ1Vh4BQBRL4LEixt6ikxmUgli5sTc2KDzMnxsI6EQLK6TJjoVqM
+3GcW6ljWAuFKqAUniS0xnR2vgHy7GpIANYANpWUmtuNBJEYXKojOYDD9CSgGKHze
+l9HVif8Tm5Yqbwwm8YQAtcJ3BsFM8I/N8u8ZozKtGQIMFmtDbL1/Rjvt4Jd/sUGn
+2YKbQ6LPZk8hKR4JQo2D
+=VtBy
 -----END PGP SIGNATURE-----
 
---Wt10+cXOThorkX0z--
-
---===============3915068459167556849==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3915068459167556849==--
+--4ndw/alBWmZEhfcZ--
