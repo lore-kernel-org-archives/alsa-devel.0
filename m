@@ -1,50 +1,50 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/4] off-codec widgets
-Date: Mon, 10 Feb 2014 13:37:14 +0000
-Message-ID: <20140210133714.GF1757@sirena.org.uk>
-References: <1391846395-10193-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCH] ASoC: fsl-esai: fix ESAI TDM slot setting
+Date: Mon, 10 Feb 2014 13:40:08 +0000
+Message-ID: <20140210134008.GG1757@sirena.org.uk>
+References: <1392014837-22308-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kb0TSCuX821Ar6UT"
+	protocol="application/pgp-signature"; boundary="gJgGjUUWrnN4mpen"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1391846395-10193-1-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <1392014837-22308-1-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, perex@perex.cz, tiwai@suse.de, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: lgirdwood@gmail.com, Guangyu.Chen@freescale.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---kb0TSCuX821Ar6UT
+--gJgGjUUWrnN4mpen
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Feb 08, 2014 at 03:59:51PM +0800, Xiubo Li wrote:
-> This patch series has removed the code about tdm slot, and need to do
-> more study.
+On Mon, Feb 10, 2014 at 02:47:17PM +0800, Xiubo Li wrote:
+> Cc: Nicolin Chen <Guangyu.Chen@freescale.com>
+> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 
-Applied all, thanks.
+Applied, thanks.
 
---kb0TSCuX821Ar6UT
+--gJgGjUUWrnN4mpen
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS+NYHAAoJELSic+t+oim9yuwP+wcsF9Hu26expWH1uFP+TyhU
-jwtPqKZl6XbDL87HeJCqMtymFEO9vAznC7odJrVQZqZ80bhB/BmJnsdUrovCzlNr
-kiaBY27TaHkRUCBX3JyFw7fdD7Krz+lD3krAjX23TtS/J+foK3hqQBHgkNT9/WRt
-hfwhlv/PfaxtYrdLorqNYky1vli7p0hs9x8reryeVBqhLkx2rF2FoeSOOEjeuKF3
-1vmaE3Iy5xBeK0f0l+NcQtud7tWWGvje3VT2LjP9Rr8a5Jpi51QnQ4l0kLG1OHyV
-pcquXu16Ffojejsf2jFIbjb87vD9zcPq39YFn4KU9i1KbDqMUvtSLmbKylyaoTEJ
-zRstKuD2Jv1wYnJ7z/qOla+WTkSzrthXuR7HTDN/9mK8UkePR2BFfUIitd18kwwI
-zW/yDwbfSd28EMlYa58xvhJGzGJ8EoTvDLxLONJzA7tmK1v6KYRFfMBTOIh9VZ4u
-KW0u4GJtUVHHR1KbtUwsvJ8QNJgdWNsQuEZ1Jf/T+SI6ew9d6PZcsd+kSJnM+1p0
-zXlUZbWG+81YktfeBGC8HkCnIhJeG4hQNn5gKQIHs95Pfv/IHnf0g1IGKM68oZ6n
-8qdOWpF+jTKHKZy7XCEzkxCp8AjnlbmhfH/W2ahofl3jVm5n8RICf5wi66INhaz9
-mJe/hLV7v49kdWV5QeF7
-=5upt
+iQIcBAEBAgAGBQJS+Na1AAoJELSic+t+oim9pH4P+wVRxvEzIAmAkdmcOCntcm2X
+5W77U7v/BGSnCKmggRGZP8n65lkrfvOU3hwAkzxxhYxyUoYgqtL67OOPEct34Dvo
+CnJCRUWSZAbdSrVLQnBLEMz0x30CVj+SMNWxJgKvFMGctehZy4Dyd3uc71UqUURQ
+nMqS5VYtdzuI3dd/Ztgv+fxCvEIFUGIJ+dE8011EoUrQOzGBWIwcg8GwHb1GwCt2
+nb5slXiR8GxULdSm64WLRMtwDs3CkmRtbIpYVHBHoNBI7nEC4cs1WNpYhxWQzQe1
+ELwo/SAjDEAddn4PTIyNyGwvBUwskLn9bvBbNvj/KohPKP/GWD95TVK4vklUkrxH
+oPSzkHNWPLknRKFbaTbKLkefED1NFqz/0KMwO8f7O1aYMa3C1W42ZXGmnITdxEXv
+4r8ePLRLJdCFoK7usWTSRU7K//fbnA11ejC58N+svcXu8645e5mkwmI1PJWy3CfV
+nkMC6VITVnjDhVnX6z+QS7owrboWA7A7hSTePDzz4z8bAkDsre6B4N+lwx4R+97/
+s/jL+h/7nId6ifUGy7eIhNRqOjJnlE0WKAOQmAxLiPRhISPLo3wQV+nbIqxVbRRp
+taSbwoX2e8PDajq/Kha0bqNlSD7xS3FwoYYMRg1AA24D3bnRHtJmr8e4hmooNKf0
+6KUESpGhpQEAWkouWKTr
+=1kVf
 -----END PGP SIGNATURE-----
 
---kb0TSCuX821Ar6UT--
+--gJgGjUUWrnN4mpen--
