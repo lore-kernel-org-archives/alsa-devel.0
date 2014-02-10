@@ -1,89 +1,64 @@
-From: niraj kulkarni <kulkarniniraj14@gmail.com>
-Subject: Re: Fw:  [Bug 1155202] [Intel DZ77SL-50K,
- Intel PantherPoint HDMI, Digital Out, HDMI] No sound at all
-Date: Mon, 10 Feb 2014 17:10:16 +0530
-Message-ID: <CACWODjR3HFTFh5iGGS0WZapL7d+kSqiYf=O7QsQu=7dAqQ7TLA@mail.gmail.com>
-References: <52ef1e8f.a4c3440a.53f1.fffff564SMTPIN_ADDED_BROKEN@mx.google.com>
- <CACWODjSKJ7yy6dvH3iCiHLvFgYokgmeSy06mYyGnX4N5JKtkEg@mail.gmail.com>
- <s5hd2ivs5nm.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 14/28] Remove MACH_SMDKC210
+Date: Mon, 10 Feb 2014 11:41:54 +0000
+Message-ID: <20140210114154.GQ1757@sirena.org.uk>
+References: <1391971686-9517-1-git-send-email-richard@nod.at>
+ <1391971686-9517-15-git-send-email-richard@nod.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
- [209.85.212.51])
- by alsa0.perex.cz (Postfix) with ESMTP id DCC4A2608B7
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 12:40:17 +0100 (CET)
-Received: by mail-vb0-f51.google.com with SMTP id 11so4723520vbe.10
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 03:40:16 -0800 (PST)
-In-Reply-To: <s5hd2ivs5nm.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qd/SZIFVu+MYwfCR"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1391971686-9517-15-git-send-email-richard@nod.at>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Richard Weinberger <richard@nod.at>
+Cc: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Sorry, I did not see that part earlier. Putting udelay(2) is also working
-fine.
 
-Niraj
+--qd/SZIFVu+MYwfCR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Sun, Feb 09, 2014 at 07:47:52PM +0100, Richard Weinberger wrote:
 
-On Mon, Feb 10, 2014 at 2:31 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> The symbol is an orphan, get rid of it.
 
-> At Mon, 10 Feb 2014 11:35:41 +0530,
-> niraj kulkarni wrote:
-> >
-> > Removing these 3 usleep ranges is working now. Although I have a doubt
-> for
-> > applying this patch on all chips. There have been a number of boards
-> > released after this particular board, but nobody else is facing this
-> > problem. Since spec does not specify a max on deasserting RST, some
-> boards
-> > might actually take more than 100uS to reset. Will this patch work for
-> > those boards?
-> >
-> > @@ -1149,7 +1149,7 @@
-> >         timeout = jiffies + msecs_to_jiffies(100);
-> >         while ((azx_readb(chip, GCTL) & ICH6_GCTL_RESET) &&
-> >                         time_before(jiffies, timeout))
-> > -               usleep_range(500, 1000);
-> > +               cpu_relax();
-> >  }
-> >
-> >  /* exit link reset */
-> > @@ -1162,7 +1162,7 @@
-> >         timeout = jiffies + msecs_to_jiffies(100);
-> >         while (!azx_readb(chip, GCTL) &&
-> >                         time_before(jiffies, timeout))
-> > -               usleep_range(500, 1000);
-> > +               cpu_relax();
-> >  }
-> >
-> >  /* reset codec link */
-> > @@ -1180,7 +1180,7 @@
-> >         /* delay for >= 100us for codec PLL to settle per spec
-> >          * Rev 0.9 section 5.5.1
-> >          */
-> > -       usleep_range(500, 1000);
-> > +       //usleep_range(500, 1000);
->
-> Why didn't you change as I suggested?  In my patch, I placed udelay(2)
-> since the spec tells so.  Didn't it interfere?
->
-> Replacing usleep_range() with cpu_relax() should make still working on
-> other boards because it doesn't change the length of the timeout
-> itself.  The timeout is set to very long (100ms).  The only drawback
-> would be a higher CPU usage at probing, but the impact should be
-> negligible.
->
->
-> Takashi
->
+Please fix whatever script you're using to generate your mails, it's
+generating corrupt headers.  Please also use subject lines consistent
+with the rest of the subsystem - between the two I very nearly just
+deleted this unread, it's only Paul's mail that made me look.
+
+>  config SND_SOC_SAMSUNG_SMDK_WM9713
+>  	tristate "SoC AC97 Audio support for SMDK with WM9713"
+> -	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310 || MACH_SMDKC210)
+> +	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110 || MACH_SMDKV310)
+
+Like I said to Paul this isn't fixing the actual issue - think about why
+the symbol was there in the first place and why it was removed.  There
+is a problem here but this would make it less likely that it would be
+properly fixed.
+
+--qd/SZIFVu+MYwfCR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS+Lr+AAoJELSic+t+oim9vxYP/1rHH0BvAyI3uM47spId+ACF
+8nArourCnAlMvprRcqnJhIwUzOmgLof9gIV3wjFakcSNzE/80zKE5fhvUMfoEmAa
+Wvq08oOSJyGn3QUBBKInK36CXyB7M7AJQvTwj+HuhntyTmeaYx1Bvdh39SZEaiOd
+g7lkrHMvD/NuKOn4jx6LnQtx0Uik8Y3RkkVNvtErUOjqyPDOwPBgnICU8832b+nb
+NU7p8TNUgwAYwE86j/GJK40IrnWHz1uYMkHHzhvDJJDqzy7ZPTdcoO88xiDDMWf5
+FW5bLNyOrwmCOuCqwXoPqKd59kYzesi3lpUsaf/n+xLwBvasMH+L8BD9zdjQCY69
+ac8IRC7yzVpF78ZKCCj+GjPPBCovhqPbCW28ELMMS59ynU+QiezqKga8RaoydqPt
+JL0n6nGFTn4eLImJJfADryos6bWTYVea2o1CQYnzInmqBqclX+M323vAKldwEH41
+zkRN+HmbnfCVpqJyc8FJhJ7KjQXV5cSLqCkGqC4xS/v91eWsIAMDopHITt0jif1W
+DcSFd+2MQDaAr/g4vZAcCm25abC6mtfaoNxeR6hcyuL58JZADdDZhHowbZ1gzOvt
+OhjjDn8/l8WpzKjEUCr0reaVo71546kzpareUx6fY6lhKlI/vD3fkwa6MsAXUwas
+6zCaFAG+cpKZ+eBb5uZo
+=Qh7R
+-----END PGP SIGNATURE-----
+
+--qd/SZIFVu+MYwfCR--
