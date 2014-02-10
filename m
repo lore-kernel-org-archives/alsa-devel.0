@@ -1,63 +1,143 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 14/28] Remove MACH_SMDKC210
-Date: Mon, 10 Feb 2014 16:36:22 +0000
-Message-ID: <20140210163621.GA13533@sirena.org.uk>
-References: <1391971686-9517-1-git-send-email-richard@nod.at>
- <1391971686-9517-15-git-send-email-richard@nod.at>
- <20140210114154.GQ1757@sirena.org.uk>
- <1392039072.3585.15.camel@x220>
- <20140210141255.GI1757@sirena.org.uk>
- <1392046242.3585.41.camel@x220>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Disable static quirks for C-Media
+	codecs
+Date: Mon, 10 Feb 2014 18:21:06 +0100
+Message-ID: <1392052866-6363-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rwEMma7ioTxnRzrJ"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1392046242.3585.41.camel@x220>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Richard Weinberger <richard@nod.at>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id C62572625E2
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 18:21:20 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 895D1ABC3
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 17:21:06 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+According to alsa-info.sh outputs, all three entries with static
+quirks have the correct pin configs, so it's safe to remove static
+quirks.  For now, turn the static quirks off via ifdef.  The dead
+codes will be removed in later release.
 
---rwEMma7ioTxnRzrJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_cmedia.c | 31 +++++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
 
-On Mon, Feb 10, 2014 at 04:30:42PM +0100, Paul Bolle wrote:
-> On Mon, 2014-02-10 at 14:12 +0000, Mark Brown wrote:
-
-> > Yes, that's correct.  Now, like I say think about what the symbol was
-> > there for in the first place.
-
-> So, next step: the Kconfig symbols MACH_SMDKV310 and MACH_SMDKC210 were
-> removed in commit 383ffda2fa ("ARM: EXYNOS: no more support non-DT for
-> EXYNOS SoCs"). That commit was part of v3.11. Correct?
-
-Indeed, so we can see that these platforms were converted to use DT and
-the symbols were removed as a result.  This means that a good fix here
-is to ensure that the driver can be used with DT platforms.
-
---rwEMma7ioTxnRzrJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS+QACAAoJELSic+t+oim9gcMP/26leZ6LFzKPlv9jOvbe82Li
-QVHEq7Gt2FfIDYJjkiXYy7UK6HKB5xZ1PUqxVJy2ExKqEGz2SwkfYgN8uLs16R8z
-7AHO86PluSecrq1P3hzLxQ2BRia45eoiSpujCy3oYN13RMiHUq1MrrUp/LlttJnT
-Y++oA0oxoeJAPL+iQYJWDuRZGmduoC3ibdtXOs51eaYBCijhqs9u4X6pTZo0VoGE
-V3gu2Idya9ocyQ28KipNvpG+cFjaYna8evj8MGb7vdCUHsQxg2eZZWBsvudpBo94
-jYzjMekU8sQN+QVbFTt+MTsxd/wndqCJXMuiwHdQ3SvzusmeOHcSDcOmsXfyIy6C
-hZFE4pNkMnekMM8ZjPTy073lFyky9GXg0jHn/amTE0e3ouGEPAaZgHY8Lv6FLgoz
-3bS7ZFV3phh8Fjr/DrX434hiQC8TLTkdWbmaOTJJAK1lQbeENMVX804UfUttkCE4
-QZK2+har0qUOzgTl26hJz2osPAWZSE7qo3UmdD9LWqGMx1DQ1KVDDFj5hCUoXRkz
-LjYtn16rFYTCTSyao/Mp4eg5WGEawrBWYKXK7PZWDDH/89OAsnwuxi7HI9cClnng
-yvhRG2rMQYUvtw0xMmTJWbTYJV0nowzA/x8D4EKo9obNu0ZBmrdMY5lTFNFFvWCZ
-WWCorlRxgZllBsQetG3W
-=Xxmg
------END PGP SIGNATURE-----
-
---rwEMma7ioTxnRzrJ--
+diff --git a/sound/pci/hda/patch_cmedia.c b/sound/pci/hda/patch_cmedia.c
+index 9c6ce73b03c5..139ef301c914 100644
+--- a/sound/pci/hda/patch_cmedia.c
++++ b/sound/pci/hda/patch_cmedia.c
+@@ -32,6 +32,9 @@
+ #include "hda_jack.h"
+ #include "hda_generic.h"
+ 
++#undef ENABLE_CMI_STATIC_QUIRKS
++
++#ifdef ENABLE_CMI_STATIC_QUIRKS
+ #define NUM_PINS	11
+ 
+ 
+@@ -45,10 +48,12 @@ enum {
+ 	CMI_AUTO,	/* let driver guess it */
+ 	CMI_MODELS
+ };
++#endif /* ENABLE_CMI_STATIC_QUIRKS */
+ 
+ struct cmi_spec {
+ 	struct hda_gen_spec gen;
+ 
++#ifdef ENABLE_CMI_STATIC_QUIRKS
+ 	/* below are only for static models */
+ 
+ 	int board_config;
+@@ -81,8 +86,10 @@ struct cmi_spec {
+ 
+ 	/* multichannel pins */
+ 	struct hda_verb multi_init[9];	/* 2 verbs for each pin + terminator */
++#endif /* ENABLE_CMI_STATIC_QUIRKS */
+ };
+ 
++#ifdef ENABLE_CMI_STATIC_QUIRKS
+ /*
+  * input MUX
+  */
+@@ -566,6 +573,7 @@ static const struct hda_codec_ops cmi9880_patch_ops = {
+ 	.init = cmi9880_init,
+ 	.free = cmi9880_free,
+ };
++#endif /* ENABLE_CMI_STATIC_QUIRKS */
+ 
+ /*
+  * stuff for auto-parser
+@@ -588,15 +596,20 @@ static int cmi_parse_auto_config(struct hda_codec *codec)
+ 
+ 	err = snd_hda_parse_pin_defcfg(codec, cfg, NULL, 0);
+ 	if (err < 0)
+-		return err;
++		goto error;
+ 	err = snd_hda_gen_parse_auto_config(codec, cfg);
+ 	if (err < 0)
+-		return err;
++		goto error;
+ 
+ 	codec->patch_ops = cmi_auto_patch_ops;
+ 	return 0;
++
++ error:
++	snd_hda_gen_free(codec);
++	return err;
+ }
+ 
++
+ static int patch_cmi9880(struct hda_codec *codec)
+ {
+ 	struct cmi_spec *spec;
+@@ -606,6 +619,7 @@ static int patch_cmi9880(struct hda_codec *codec)
+ 		return -ENOMEM;
+ 
+ 	codec->spec = spec;
++#ifdef ENABLE_CMI_STATIC_QUIRKS
+ 	spec->board_config = snd_hda_check_board_config(codec, CMI_MODELS,
+ 							cmi9880_models,
+ 							cmi9880_cfg_tbl);
+@@ -615,14 +629,8 @@ static int patch_cmi9880(struct hda_codec *codec)
+ 		spec->board_config = CMI_AUTO; /* try everything */
+ 	}
+ 
+-	if (spec->board_config == CMI_AUTO) {
+-		int err = cmi_parse_auto_config(codec);
+-		if (err < 0) {
+-			snd_hda_gen_free(codec);
+-			return err;
+-		}
+-		return 0;
+-	}
++	if (spec->board_config == CMI_AUTO)
++		return cmi_parse_auto_config(codec);
+ 
+ 	/* copy default DAC NIDs */
+ 	memcpy(spec->dac_nids, cmi9880_dac_nids, sizeof(spec->dac_nids));
+@@ -669,6 +677,9 @@ static int patch_cmi9880(struct hda_codec *codec)
+ 	codec->patch_ops = cmi9880_patch_ops;
+ 
+ 	return 0;
++#else
++	return cmi_parse_auto_config(codec);
++#endif
+ }
+ 
+ /*
+-- 
+1.8.5.2
