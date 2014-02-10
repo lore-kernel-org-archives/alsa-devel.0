@@ -1,87 +1,48 @@
-From: Jonathan Woithe <jwoithe@just42.net>
-Subject: Re: Echo Fireworks control protocol (was Re: Sample program for
-	hwdep interface)
-Date: Mon, 10 Feb 2014 08:59:27 +1030
-Message-ID: <20140209222927.GB23867@marvin.atrad.com.au>
-References: <1387545269-3875-1-git-send-email-o-takashi@sakamocchi.jp>
-	<52B45837.2080804@sakamocchi.jp>
-	<20131221101123.GA17855@marvin.atrad.com.au>
-	<52C93F8B.1010701@sakamocchi.jp> <20140112142230.4aacdc9e@stein>
-	<52D2B41B.7090505@sakamocchi.jp> <20140202145850.1f8684b3@stein>
-	<52F62FA0.6040809@sakamocchi.jp>
-	<20140209114228.GB15049@marvin.atrad.com.au>
-	<20140209155145.2175d147@stein>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [PATCH 1/8] ASoC: fsl: Add VF610 soc audio card Kconfig
+Date: Mon, 10 Feb 2014 04:12:19 +0000
+Message-ID: <d774da5b38ff47b6a350d92d1ffb362a@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1390453370-29194-1-git-send-email-Li.Xiubo@freescale.com>
+ <1390453370-29194-2-git-send-email-Li.Xiubo@freescale.com>
+ <20140123183829.GB11727@sirena.org.uk>
+ <88ad355def5f440eb92ca921b17aabb9@DM2PR03MB509.namprd03.prod.outlook.com>
+ <20140126124313.GF11727@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20140209155145.2175d147@stein>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Cc: alsa-devel@alsa-project.org, jwoithe@just42.net, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140126124313.GF11727@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "moinejf@free.fr" <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Feb 09, 2014 at 03:51:45PM +0100, Stefan Richter wrote:
-> Sure, definitely; my point was that the kernel ABI which userspace mixer
-> applications are going to use could be
->   a) the ALSA hwdep interface, or
->   b) the ALSA hwdep interface together with firewire-core's firewire-cdev
->      interface,
-> but I understood that b) is the first choice.  Specifically, provide in
-> ALSA hwdep only the absolutely necessary interfaces and do as much as
-> possible via firewire-cdev.
 
-Agreed.
+> Subject: Re: [PATCH 1/8] ASoC: fsl: Add VF610 soc audio card Kconfig
+> 
+> On Sun, Jan 26, 2014 at 05:15:05AM +0000, Li.Xiubo@freescale.com wrote:
+> 
+> > > ...for simple card since the whole idea is to support any CODEC with the
+> > > same driver we should probably just make sure that all the individual
+> > > drivers can be enabled in Kconfig, that way we don't have to have
+> > > specific Kconfig entries for boards and loose some of the benefit of the
+> > > generic card.  I sent a patch earlier exposing the OF supporting CODEC
+> > > drivers, one for at least some of the Freescale CPU drivers was sent to
+> > > the list recently too but there were some review comments.
+> 
+> > I hadn't found the patches, could you tell me the titles of them please?
+> 
+> My patch was "ASoC: codecs: Make OF supported CODECs visible in
+> Kconfig".  I can't remember offhand what the patch for i.MX was called.
 
-> In contrast, it can't be firewire-cdev alone because of streaming on/off
-> state influences what can be controlled, and because some devices embed
-> status into the isochronous stream (MotU? RME?) ...
+Yes, found it.
 
-MOTU to a certain extent (although we don't make direct use of that at this
-point because the information is quite low level and isn't required to use
-the device successfully).  Hardware meter values (which don't really
-constitute status data) are sent by the RMEs as part of the iso stream but
-again we're not making use of that yet either.
+If so, shouldn't the CPU DAIs(such as I2S) also be invisible in Kconfig like
+CODECs ?
 
-> ... and because some devices (which ones?) may have write-only registers,
-> of which both streaming driver and mixer application want to know what is
-> being written there.
 
-RME is the primary example in this case.
-
-> Furthermore, it can't be a kernel interface like sysfs or configfs because
-> of the complexity and variety of control protocols of FireWire audio
-> devices.
-
-At this stage I don't believe a universal interface is possible because I
-expect this will end up being a case of chasing one's tail (a list of basic
-conventions will be fine though).  As you know, the physical features and
-setup of each interface family can be very different and trying to come up
-with a single interface which works across devices will be the stuff of
-nightmares.  For example, some things needed by one interface may be of no
-concern at all to others.  I imagine the device-specific userspace mixer
-panels which need to will access their relevant kernel interface. 
-Consequently, for the relatively small number of interface models which are
-affected, an interface for each device through sysfs or configfs might work. 
-Mixer and control for most devices will work fine with just the basic list
-of information which can be made available via hwdep.  The most important
-one of these is the streaming status, but it could be useful to include a
-small number of other things which are common to all devices, such as sample
-rate.
-
-Regards
-  jonathan
-
-------------------------------------------------------------------------------
-Managing the Performance of Cloud-Based Applications
-Take advantage of what the Cloud has to offer - Avoid Common Pitfalls.
-Read the Whitepaper.
-http://pubads.g.doubleclick.net/gampad/clk?id=121051231&iu=/4140/ostg.clktrk
+Thanks very much.
+--
+Best Regards,
+Xiubo
