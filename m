@@ -1,74 +1,56 @@
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-Subject: Re:
- =?utf-8?q?=5BPATCH_2/2=5D_ASoC=3A_fsl=3A_Allow_to_se?=
- =?utf-8?q?lect_individual_common_options?=
-Date: Mon, 10 Feb 2014 10:41:44 +0400
-Message-ID: <1392014504.682792060@f144.i.mail.ru>
-References: <1391621512-15064-1-git-send-email-shc_work@mail.ru>
- <1391621512-15064-2-git-send-email-shc_work@mail.ru>
- <20140210055943.GF9628@S2101-09.ap.freescale.net>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH] ASoC: fsl-esai: fix ESAI TDM slot setting
+Date: Mon, 10 Feb 2014 14:47:17 +0800
+Message-ID: <1392014837-22308-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from f144.i.mail.ru (f144.i.mail.ru [128.140.171.240])
- by alsa0.perex.cz (Postfix) with ESMTP id 9ACFD2610B7
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 07:41:45 +0100 (CET)
-In-Reply-To: <20140210055943.GF9628@S2101-09.ap.freescale.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?U2hhd24gR3Vv?= <shawn.guo@linaro.org>
-Cc: =?UTF-8?B?RmFiaW8gRXN0ZXZhbQ==?= <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, =?UTF-8?B?VGFrYXNoaSBJd2Fp?= <tiwai@suse.de>, =?UTF-8?B?TGlhbSBHaXJkd29vZA==?= <lgirdwood@gmail.com>, =?UTF-8?B?TWFyayBCcm93bg==?= <broonie@kernel.org>, =?UTF-8?B?Tmljb2xpbiBDaGVu?= <Guangyu.Chen@freescale.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com, Guangyu.Chen@freescale.com
+Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
-
-> On Wed, Feb 05, 2014 at 09:31:52PM +0400, Alexander Shiyan wrote:
-> > This patch allow to select individual common sound options and
-> > as a result allow using sound cards/codecs based on DT description.
-> > 
-> > Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-> > ---
-> >  sound/soc/fsl/Kconfig | 23 ++++++++++++++++++++---
-> >  1 file changed, 20 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-> > index ecc1092..ed74c19 100644
-> > --- a/sound/soc/fsl/Kconfig
-> > +++ b/sound/soc/fsl/Kconfig
-> > @@ -1,14 +1,26 @@
-> >  menu "SoC Audio for Freescale CPUs"
-> >  
-> > +comment "Common SoC Audio options for Freescale CPUs:"
-> > +
-> >  config SND_SOC_FSL_SAI
-> >  	tristate
-> >  	select SND_SOC_GENERIC_DMAENGINE_PCM
-> 
-> Why do you skip SND_SOC_FSL_SAI and SND_SOC_FSL_ESAI for the change?
-
-My comments here are the same as for the patch 1/2.
-
-...
-> >  config SND_SOC_FSL_ESAI
-> >  	tristate
-> > @@ -21,7 +33,12 @@ config SND_SOC_IMX_PCM_DMA
-> >  	select SND_SOC_GENERIC_DMAENGINE_PCM
-> 
-> Doesn't the simple card driver need this to work on IMX?
-
-Simple card driver does not work for i.MX at now due to some other issues
-which should be resolved in separate patches for that driver.
-Just one example:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/070697.html
-
-Thanks.
+Cc: Nicolin Chen <Guangyu.Chen@freescale.com>
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
+ sound/soc/fsl/fsl_esai.c | 4 ++--
+ sound/soc/fsl/fsl_esai.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index d0c72ed..c84026c 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -326,7 +326,7 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
+ 	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMA,
+ 			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(tx_mask));
+ 	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMB,
+-			   ESAI_xSMA_xS_MASK, ESAI_xSMB_xS(tx_mask));
++			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(tx_mask));
+ 
+ 	regmap_update_bits(esai_priv->regmap, REG_ESAI_RCCR,
+ 			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
+@@ -334,7 +334,7 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
+ 	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMA,
+ 			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(rx_mask));
+ 	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMB,
+-			   ESAI_xSMA_xS_MASK, ESAI_xSMB_xS(rx_mask));
++			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(rx_mask));
+ 
+ 	esai_priv->slot_width = slot_width;
+ 
+diff --git a/sound/soc/fsl/fsl_esai.h b/sound/soc/fsl/fsl_esai.h
+index 9c9f957..75e1403 100644
+--- a/sound/soc/fsl/fsl_esai.h
++++ b/sound/soc/fsl/fsl_esai.h
+@@ -322,7 +322,7 @@
+ #define ESAI_xSMB_xS_SHIFT	0
+ #define ESAI_xSMB_xS_WIDTH	16
+ #define ESAI_xSMB_xS_MASK	(((1 << ESAI_xSMB_xS_WIDTH) - 1) << ESAI_xSMB_xS_SHIFT)
+-#define ESAI_xSMB_xS(v)		(((v) >> ESAI_xSMA_xS_WIDTH) & ESAI_xSMA_xS_MASK)
++#define ESAI_xSMB_xS(v)		(((v) >> ESAI_xSMA_xS_WIDTH) & ESAI_xSMB_xS_MASK)
+ 
+ /* Port C Direction Register -- REG_ESAI_PRRC 0xF8 */
+ #define ESAI_PRRC_PDC_SHIFT	0
+-- 
+1.8.4
