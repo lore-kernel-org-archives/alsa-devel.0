@@ -1,77 +1,52 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH v2 2/2] ASoC: fsl-esai: big-endian support
-Date: Tue, 11 Feb 2014 15:42:49 +0800
-Message-ID: <1392104569-27792-2-git-send-email-Li.Xiubo@freescale.com>
-References: <1392104569-27792-1-git-send-email-Li.Xiubo@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: fsl: make sure the regmap-mmio is actually
+ enabled
+Date: Tue, 11 Feb 2014 11:20:06 +0000
+Message-ID: <20140211112006.GG13533@sirena.org.uk>
+References: <1392086825-15737-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="L+ofChggJdETEG3Y"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1392104569-27792-1-git-send-email-Li.Xiubo@freescale.com>
+Content-Disposition: inline
+In-Reply-To: <1392086825-15737-1-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, Guangyu.Chen@freescale.com
-Cc: perex@perex.cz, tiwai@suse.de, shawn.guo@linaro.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: lgirdwood@gmail.com, Guangyu.Chen@freescale.com, shawn.guo@linaro.org, perex@perex.cz, tiwai@suse.de, fabio.estevam@freescale.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-For most platforms, the CPU and ESAI device is in the same endianess
-mode. While for the LS1 platform, the CPU is in LE mode and the ESAI
-is in BE mode.
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: Nicolin Chen <Guangyu.Chen@freescale.com>
-Acked-by: Nicolin Chen <Guangyu.Chen@freescale.com>
----
+--L+ofChggJdETEG3Y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fix some issues from Nicolin Chen's comments.
+On Tue, Feb 11, 2014 at 10:47:04AM +0800, Xiubo Li wrote:
+> Since the Freescale SAI, ESAI and SPDIF are using the regmap-mmio,
+> there needs a select of REGMAP_MMIO in the Kconfig to ensure that
+> regmap-mmio is actually enabled.
 
+Applied, thanks.
 
- Documentation/devicetree/bindings/sound/fsl,esai.txt | 5 +++++
- sound/soc/fsl/fsl_esai.c                             | 5 ++++-
- 2 files changed, 9 insertions(+), 1 deletion(-)
+--L+ofChggJdETEG3Y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
-index d7b99fa..aeb8c4a 100644
---- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
-@@ -34,6 +34,10 @@ Required properties:
-     that ESAI would work in the synchronous mode, which means all the settings
-     for Receiving would be duplicated from Transmition related registers.
- 
-+  - big-endian : If this property is absent, the native endian mode will
-+    be in use as default, or the big endian mode will be in use for all the
-+    device registers.
-+
- Example:
- 
- esai: esai@02024000 {
-@@ -46,5 +50,6 @@ esai: esai@02024000 {
- 	dma-names = "rx", "tx";
- 	fsl,fifo-depth = <128>;
- 	fsl,esai-synchronous;
-+	big-endian;
- 	status = "disabled";
- };
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index c84026c..80667fe 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -661,7 +661,7 @@ static bool fsl_esai_writeable_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
--static const struct regmap_config fsl_esai_regmap_config = {
-+static struct regmap_config fsl_esai_regmap_config = {
- 	.reg_bits = 32,
- 	.reg_stride = 4,
- 	.val_bits = 32,
-@@ -687,6 +687,9 @@ static int fsl_esai_probe(struct platform_device *pdev)
- 	esai_priv->pdev = pdev;
- 	strcpy(esai_priv->name, np->name);
- 
-+	if (of_property_read_bool(np, "big-endian"))
-+		fsl_esai_regmap_config.val_format_endian = REGMAP_ENDIAN_BIG;
-+
- 	/* Get the addresses and IRQ */
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	regs = devm_ioremap_resource(&pdev->dev, res);
--- 
-1.8.4
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS+gdjAAoJELSic+t+oim9iUwP/jGGtP2w4LlVJ8DorbcEhcVI
+7vxRC8Vst3LRJW3UFeO1nCg9ekDVWMjU9MPuAzeGPNoq9mEgTvZkSJRHfr27it+N
+Fu2sR3UQw3LBS5EipbXfiJnmHZXwJUWz6zrAgoVYkOIeTOGdTAc+2t4MHKZTqQLK
+z/BbxOmd4ms9nLFJ4bn7wU0Ovs2g+quzJlq75VyXBsUMhaWb7eXcVA7q76bJU5Kb
+x3OFL38ikB51Ku5GzXKpG1YCeAEHRwyxpvJ8o1stBKPF0h7g93mlWk7KYXw+44Mj
+49LODdgrqHApipou8CpkQvZ0PTIRsXPs+5DZZylt0PNioM8PK/QwrRA7+BTKlvy0
+UxjI82aadFZK4uDGD2GxmjF13nwVSMJgBshXU3/+/JT2JK6cxoltQhZLPE9Ivl4F
+h3O9Wq6mPr6NRjUhaF9vyN1wpWcpyYH7jUpNvqRTdLf37l1x7o8uG6EFl23PKUoQ
+1roewZUI5uPZ1LU7r+1NuDuNCJySe7Nj7aoFIWj0GVSoJnRKo9J97WL907gSYv6u
+KlsBQpG2V5ve8gZ+5M9kRn7jp0o2Na+AysGxDnGBLmd0YLl1od7TNWUXupPK4ZQ/
+aGf+Jl1E9HgDQY4jgnpTUoZJmm563obk9WCtjaTcJ5KuQrG+Dw0wo7uklrTzNqt9
+hzHQ0e3Pf/rY+cBvysJP
+=hhrR
+-----END PGP SIGNATURE-----
+
+--L+ofChggJdETEG3Y--
