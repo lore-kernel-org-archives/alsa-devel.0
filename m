@@ -1,83 +1,79 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH 1/2] ASoC: fsl-spdif: big-endian support
-Date: Tue, 11 Feb 2014 13:41:15 +0800
-Message-ID: <1392097276-14705-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCH 2/2] ASoC: fsl-esai: big-endian support
+Date: Tue, 11 Feb 2014 13:41:16 +0800
+Message-ID: <1392097276-14705-2-git-send-email-Li.Xiubo@freescale.com>
+References: <1392097276-14705-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe005.messaging.microsoft.com [65.55.88.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 91193261689
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2014 07:44:56 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1392097276-14705-1-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, lgirdwood@gmail.com, Guangyu.Chen@freescale.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel@vger.kernel.org
+Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-For most platforms, the CPU and SPDIF device is in the same endianess
-mode. While for the LS1 platform, the CPU is in LE mode and the SPDIF
+For most platforms, the CPU and ESAI device is in the same endianess
+mode. While for the LS1 platform, the CPU is in LE mode and the ESAI
 is in BE mode.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 Cc: Nicolin Chen <Guangyu.Chen@freescale.com>
 ---
- Documentation/devicetree/bindings/sound/fsl,spdif.txt | 4 ++++
- sound/soc/fsl/fsl_spdif.c                             | 8 +++++++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/fsl,esai.txt | 6 ++++++
+ sound/soc/fsl/fsl_esai.c                             | 7 ++++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.txt b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
-index f2ae335..433ad00 100644
---- a/Documentation/devicetree/bindings/sound/fsl,spdif.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
-@@ -29,6 +29,10 @@ Required properties:
- 			can also be referred to TxClk_Source
- 			bit of register SPDIF_STC.
+diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+index d7b99fa..c395371 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+@@ -34,6 +34,11 @@ Required properties:
+     that ESAI would work in the synchronous mode, which means all the settings
+     for Receiving would be duplicated from Transmition related registers.
  
-+   - big-endian : If this property is absent, the native endian mode will
-+   be in use as default, or the big endian mode will be in use for all the
-+   device registers.
++  - big-endian : If this property is absent, the native endian mode will
++    be in use as default, or the big endian mode will be in use for all the
++    device registers.
++
 +
  Example:
  
- spdif: spdif@02004000 {
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 8f36f49..2f8ad75 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -83,6 +83,8 @@ struct fsl_spdif_priv {
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
- 
-+	bool big_endian;
-+
- 	/* The name space will be allocated dynamically */
- 	char name[0];
+ esai: esai@02024000 {
+@@ -46,5 +51,6 @@ esai: esai@02024000 {
+ 	dma-names = "rx", "tx";
+ 	fsl,fifo-depth = <128>;
+ 	fsl,esai-synchronous;
++	big-endian;
+ 	status = "disabled";
  };
-@@ -985,7 +987,7 @@ static bool fsl_spdif_writeable_reg(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index c84026c..e1f2669 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -57,6 +57,7 @@ struct fsl_esai {
+ 	bool sck_div[2];
+ 	bool slave_mode;
+ 	bool synchronous;
++	bool big_endian;
+ 	char name[32];
+ };
+ 
+@@ -661,7 +662,7 @@ static bool fsl_esai_writeable_reg(struct device *dev, unsigned int reg)
  	}
  }
  
--static const struct regmap_config fsl_spdif_regmap_config = {
-+static struct regmap_config fsl_spdif_regmap_config = {
+-static const struct regmap_config fsl_esai_regmap_config = {
++static struct regmap_config fsl_esai_regmap_config = {
  	.reg_bits = 32,
  	.reg_stride = 4,
  	.val_bits = 32,
-@@ -1105,6 +1107,10 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 	memcpy(&spdif_priv->cpu_dai_drv, &fsl_spdif_dai, sizeof(fsl_spdif_dai));
- 	spdif_priv->cpu_dai_drv.name = spdif_priv->name;
+@@ -687,6 +688,10 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 	esai_priv->pdev = pdev;
+ 	strcpy(esai_priv->name, np->name);
  
-+	spdif_priv->big_endian = of_property_read_bool(np, "big-endian");
-+	if (spdif_priv->big_endian)
-+		fsl_spdif_regmap_config.val_format_endian = REGMAP_ENDIAN_BIG;
++	esai_priv->big_endian = of_property_read_bool(np, "big-endian");
++	if (esai_priv->big_endian)
++		fsl_esai_regmap_config.val_format_endian = REGMAP_ENDIAN_BIG;
 +
  	/* Get the addresses and IRQ */
  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
