@@ -1,16 +1,23 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH 1/2] ASoC: fsl: make sure the regmap-mmio is
-	actually enabled
-Date: Tue, 11 Feb 2014 10:47:04 +0800
-Message-ID: <1392086825-15737-1-git-send-email-Li.Xiubo@freescale.com>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH] MAINTAINERS: Add entry for Cirrus CODEC
+	drivers
+Date: Mon, 10 Feb 2014 22:45:00 -0600
+Message-ID: <CAOZdJXUtv_rB2rn+s18mLw6p8TkjDQMnFN03=RL24phWcneKeQ@mail.gmail.com>
+References: <1391545805-6746-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe003.messaging.microsoft.com [213.199.154.206])
- by alsa0.perex.cz (Postfix) with ESMTP id 595EF2610C5
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2014 04:51:12 +0100 (CET)
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1676A2610D2
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2014 05:45:02 +0100 (CET)
+Received: from mail-ve0-f179.google.com (mail-ve0-f179.google.com
+ [209.85.128.179])
+ by muin.pair.com (Postfix) with ESMTPSA id 39E3D8FC3E
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 23:45:01 -0500 (EST)
+Received: by mail-ve0-f179.google.com with SMTP id jx11so5702070veb.38
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2014 20:45:00 -0800 (PST)
+In-Reply-To: <1391545805-6746-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,51 +27,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, Guangyu.Chen@freescale.com, shawn.guo@linaro.org
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>, tiwai@suse.de, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Brian Austin <brian.austin@cirrus.com>, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>, alsa-devel mailing list <alsa-devel@alsa-project.org>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since the Freescale SAI, ESAI and SPDIF are using the regmap-mmio,
-there needs a select of REGMAP_MMIO in the Kconfig to ensure that
-regmap-mmio is actually enabled.
+On Tue, Feb 4, 2014 at 2:30 PM, Mark Brown <broonie@kernel.org> wrote:
+> From: Mark Brown <broonie@linaro.org>
+>
+> I noticed that some recent patches hadn't been CCed to the Cirrus people
+> - add an entry in MAINTAINERS to help make that happen.
+>
+> Signed-off-by: Mark Brown <broonie@linaro.org>
+> ---
+>
+> Brian, Paul - are you OK with this?
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: Mark Brown <broonie@linaro.org>
----
- sound/soc/fsl/Kconfig | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 07f8f14..d0914c0 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -1,5 +1,6 @@
- config SND_SOC_FSL_SAI
- 	tristate
-+	select REGMAP_MMIO
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 
- config SND_SOC_FSL_SSI
-@@ -7,9 +8,11 @@ config SND_SOC_FSL_SSI
- 
- config SND_SOC_FSL_SPDIF
- 	tristate
-+	select REGMAP_MMIO
- 
- config SND_SOC_FSL_ESAI
- 	tristate
-+	select REGMAP_MMIO
- 
- config SND_SOC_FSL_UTILS
- 	tristate
-@@ -204,7 +207,6 @@ config SND_SOC_IMX_SPDIF
- 	tristate "SoC Audio support for i.MX boards with S/PDIF"
- 	select SND_SOC_IMX_PCM_DMA
- 	select SND_SOC_FSL_SPDIF
--	select REGMAP_MMIO
- 	help
- 	  SoC Audio support for i.MX boards with S/PDIF
- 	  Say Y if you want to add support for SoC audio on an i.MX board with
--- 
-1.8.4
+Go ahead and remove me as maintainer of the CS4270 driver, if you guys
+want.  I don't have access to that hardware any more, and so I really
+can't maintain it.
