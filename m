@@ -1,112 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/7] sound: soc: add ASoC board driver for Armada 370 DB
-Date: Tue, 11 Feb 2014 12:48:44 +0000
-Message-ID: <20140211124844.GO13533@sirena.org.uk>
-References: <1391102051-5319-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <1391102051-5319-4-git-send-email-thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH] ASoC: fsl_esai: Check the return value
+ from clk_prepare_enable()
+Date: Tue, 11 Feb 2014 12:54:47 +0000
+Message-ID: <20140211125447.GP13533@sirena.org.uk>
+References: <1392055288-20148-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8234343329288165325=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1391102051-5319-4-git-send-email-thomas.petazzoni@free-electrons.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Liam Girdwood <lgirdwood@gmail.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Content-Type: multipart/mixed; boundary="===============5009236322100814903=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C977264F19
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2014 13:54:52 +0100 (CET)
+In-Reply-To: <1392055288-20148-1-git-send-email-fabio.estevam@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: alsa-devel@alsa-project.org, b42378@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8234343329288165325==
+--===============5009236322100814903==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9DptZICXTlJ7FQ09"
+	protocol="application/pgp-signature"; boundary="bvgsfYmVhxWy/2TA"
 Content-Disposition: inline
 
 
---9DptZICXTlJ7FQ09
+--bvgsfYmVhxWy/2TA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jan 30, 2014 at 06:14:07PM +0100, Thomas Petazzoni wrote:
+On Mon, Feb 10, 2014 at 04:01:28PM -0200, Fabio Estevam wrote:
+> clk_prepare_enable() may fail, so let's check its return value and propagate it
+> in the case of error.
 
-> +	fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS;
-> +	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
-> +	if (ret < 0)
-> +		return ret;
+Applied, thanks.
 
-Set .dai_fmt in the DAI link.
-
-> +static int a370db_dai_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	struct snd_soc_codec *codec = rtd->codec;
-> +	struct snd_soc_dapm_context *dapm = &codec->dapm;
-> +
-> +	snd_soc_dapm_enable_pin(dapm, "Out Jack");
-> +	snd_soc_dapm_enable_pin(dapm, "In Jack");
-
-No need to do this, everything defaults to enabled.
-
-> +
-> +	card->dev = &pdev->dev;
-> +
-> +	return snd_soc_register_card(card);
-> +}
-
-devm_snd_soc_register_card().
-
-> +static const struct of_device_id a370db_dt_ids[] = {
-> +	{ .compatible = "marvell,a370db-audio" },
-> +	{ },
-> +};
-
-No binding document for this, and you should be using DT to look up the
-controller and CODEC rather than hard coding their names (which may
-change in future when instantiated from DT, especially the platform
-device).
-
---9DptZICXTlJ7FQ09
+--bvgsfYmVhxWy/2TA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS+hwoAAoJELSic+t+oim9pVIQAJTai2BwZtif3mIfrRVVeT+u
-uIoxKM66PXb/JxLxDtU3yuIv6TCDiETXycldX8wysJ1KoW3aiyn7ed6E8pPMWUns
-3y9/hLqygLhom5lam6L6XKrEWwEw6Ny2ehrRTgV/5JsMPvohXIhKaS1TCvVwOcmF
-B9g+USWAHPWOmyESvaNrcONBBqGKK3d7/PXjL4VOsucZct7dROjrKZYy0VRi1KAY
-0wISDEZH6gqQVDWwkKfgHs90czh1W5Gjbqq9Frs1lHHmC4Ot2gV3nm5SAGOVpheN
-UWK/KlP8gGCi9wHbIFSebIcV1atirSiNtybVrSN69JQWOy9hViH+QHwYq0ib1dLJ
-SC85UctWL/ZaYpXCtYlVOUn+sow+T0h5BSYxpwdXOqR9YaKuNz+K8Mj4VBYLn6zj
-b761yT346geUTMmZOeVG6Ei1Hm/7NGBj2SEmW6fuLj7jHaGuk30JUAeL+pDshANK
-1BTElaheOwTr6eFjovh3iDxBZKtkWrFsP1rh6JhUu7VoqwXFDW+EXoM3it28ahR0
-eubAEL8xLMaCO91WVziPT2TGBoJT9uipUCHuI9fQbwjBE+v9to5ns/aagSWBqVer
-xFL0BzgN5z03ZwlkUsI7fC86EZpbe4IzINFajMJytcgDN60vfT+V6YPjjzw0xETN
-4GKMoAa33+AZI8MKWX6v
-=hwTN
+iQIcBAEBAgAGBQJS+h2UAAoJELSic+t+oim9UvgP/2YZ2UTQ2zwg9RmFfeBYIAtD
+LEIa4B4EGZt6cU1cvI9WtzEC27VTmKuOazrZixk/5vj0yxBxB0JxGzKdNDFMuWUG
+BYLIEroUqMQQjMbOwvfQVHA6oAMJIiXeG8g+e00Wh2o2IF53GkzQnJnxSxmU7NYp
+nRz2iPW3sh/ARpCQntG78N12mRk57l/xIsGqMzaFKRBEqdjIZKa8O2T7D6vZ3uc1
+f1p0qeNEaoC9lR1SjSr9idQlnK30OhR4Uz7QRzVUjbWbJSsYlK5fOJ/WIjHd0U4n
+EEvOlG9i9djOL6gzj737xmDT00LiC8ZucPO8jnSRAc2tCAVG7q5uNiBefMugl13B
+cs9r8asRzGtZYp3Wa54/udPNEDvzcp2jYs47L8Wcg8/Kvy5p3Kz+BfxYsp36fRmy
+46PtMhOI8+2mD6jgh8R9BZVO9EtSDGx83sLZbSWeXoEdpcY22AOKl/gs+Ewh92D9
+z1fJ/CKcw/x+d8pHJaHn5rCM2vGfBDlmJM8X56CKat+CklVwGX6MBNIr9bUsO9y4
+pM2ryZ0jFS3DzbHr0cXNSN4f6uUywD2PySg29Xz39TfifYryHx7XNUfsZzht68Ak
+cyvXkW8vl1+QbDl72uJJlnFuNtkUg0u3USeI/zZm5A4+aQpn10JyqT6DPcUBi72S
+ZJCbECmunbiB++2S7Bok
+=r6Eq
 -----END PGP SIGNATURE-----
 
---9DptZICXTlJ7FQ09--
+--bvgsfYmVhxWy/2TA--
 
-
---===============8234343329288165325==
+--===============5009236322100814903==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============8234343329288165325==--
+--===============5009236322100814903==--
