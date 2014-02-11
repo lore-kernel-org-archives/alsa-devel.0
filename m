@@ -1,49 +1,54 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: smdk_wm8994: Fix typo "wm8894"
-Date: Tue, 11 Feb 2014 16:46:08 +0000
-Message-ID: <20140211164608.GS13533@sirena.org.uk>
-References: <1392067531.27939.19.camel@x220>
+Subject: [PATCH 1/2] ASoC: cs42l51: Don't log if we fail to
+	allocate memory
+Date: Tue, 11 Feb 2014 19:26:47 +0000
+Message-ID: <1392146808-19269-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="daC8KDjlMyCcZyAo"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1392067531.27939.19.camel@x220>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93DDD2607BB
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2014 20:27:25 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+From: Mark Brown <broonie@linaro.org>
 
---daC8KDjlMyCcZyAo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The VM subsystem already logs quite loudly if we run out of memory so
+don't bother here.
 
-On Mon, Feb 10, 2014 at 10:25:31PM +0100, Paul Bolle wrote:
-> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/cs42l51.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Applied, thanks.
-
---daC8KDjlMyCcZyAo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS+lPNAAoJELSic+t+oim9UgwP/1xzYGjADXwBabOMXLm5atyQ
-3k1JLb8rCfCXDLJCh4McET//CrSXzBG6Ry5fp9FSsGp+q98uzvffbTAKhBctOpfF
-D3vjnWjSav1c6Bkcj1fyg966w1CvGvkCZadeNTRuklpTLW8+8z9/Pxb/ahx/+GWg
-M+bkVMcrFoteU9FTiRd6YkHw60w6qHSq45xhM3xCfwvs/U7Liy/IzHSkvH+/5Y4E
-VJTZQPeNA8d4Kmx3vxfkJaCqoZgb83kUBSCQwxrjpTyTlRcc+Yd593+njzwBCdyV
-qiXaNcGwDrTFgHuOaBm/YXAZpvHEWqp8u5bxmWqQeITkrqqCsq1zxeaX3dfmhqwn
-zz/hyAkOiEdByxOUcQiBIaVsSN7CQVp6BIUuuBsbbJPs5DUGBtu7YpADKI51zk1p
-RhYZCfzWX4M6zkI2xF64d4yltw77SQO8GXiGNq20ERlgne2uTgrfaR8wgTUrfiZ3
-qONAb3tBmIAAxYgGpXYW/pCPMFsp+TQSrHVx4j3r5w+Pui7gU+x6jYsuRSW5zuSm
-SAkGFGxQBU8TES62ODlmJP3QEQe1SvEZ59koF4oE0LFHhvkA6nI/HjnMitM5FHDY
-npY72AfWGxaGCn6FdFDJBe9g7gT/6FFZHHUSYT//DVKnuXtfwIgDAsN6TcAElqVf
-3Hff1qdF0dDNuUzK0Xl8
-=T20I
------END PGP SIGNATURE-----
-
---daC8KDjlMyCcZyAo--
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index 6e9ea8379a91..50c08c8fc9bc 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -574,10 +574,8 @@ static int cs42l51_i2c_probe(struct i2c_client *i2c_client,
+ 
+ 	cs42l51 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs42l51_private),
+ 			       GFP_KERNEL);
+-	if (!cs42l51) {
+-		dev_err(&i2c_client->dev, "could not allocate codec\n");
++	if (!cs42l51)
+ 		return -ENOMEM;
+-	}
+ 
+ 	i2c_set_clientdata(i2c_client, cs42l51);
+ 	cs42l51->control_type = SND_SOC_I2C;
+-- 
+1.9.0.rc3
