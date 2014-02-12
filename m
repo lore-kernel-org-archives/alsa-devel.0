@@ -1,17 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 01/10] ALSA: seq_oss: Drop debug prints
-Date: Wed, 12 Feb 2014 12:33:03 +0100
-Message-ID: <1392204792-12655-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 03/10] ALSA: control: Use standard printk
+	helpers
+Date: Wed, 12 Feb 2014 12:33:05 +0100
+Message-ID: <1392204792-12655-4-git-send-email-tiwai@suse.de>
 References: <1392204792-12655-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 33B41262610
+ by alsa0.perex.cz (Postfix) with ESMTP id 39E31265289
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 12:33:18 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DE157ABF8
+ by mx2.suse.de (Postfix) with ESMTP id E2C89AC03
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 11:33:17 +0000 (UTC)
 In-Reply-To: <1392204792-12655-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,408 +27,312 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The debug prints in snd-seq-oss module are rather useless.
-Let's clean up before further modifications.
+Use dev_err() & co as much as possible.  If not available (no device
+assigned at the calling point), use pr_xxx() helpers instead.
+
+For simplicity, introduce new helpers for pcm stream, pcm_err(), etc.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/seq/oss/seq_oss.c        |  8 --------
- sound/core/seq/oss/seq_oss_device.h | 12 ------------
- sound/core/seq/oss/seq_oss_init.c   | 17 -----------------
- sound/core/seq/oss/seq_oss_ioctl.c  | 18 ------------------
- sound/core/seq/oss/seq_oss_midi.c   |  3 ---
- sound/core/seq/oss/seq_oss_synth.c  |  3 ---
- sound/core/seq/oss/seq_oss_timer.c  |  7 -------
- 7 files changed, 68 deletions(-)
+ include/sound/pcm.h     |  8 ++++++++
+ sound/core/pcm.c        | 12 +++++++-----
+ sound/core/pcm_lib.c    | 27 +++++++++++++--------------
+ sound/core/pcm_native.c | 47 ++++++++++++++++++++++++-----------------------
+ sound/core/pcm_timer.c  |  4 +++-
+ 5 files changed, 55 insertions(+), 43 deletions(-)
 
-diff --git a/sound/core/seq/oss/seq_oss.c b/sound/core/seq/oss/seq_oss.c
-index fef2d8275d0a..972368abde64 100644
---- a/sound/core/seq/oss/seq_oss.c
-+++ b/sound/core/seq/oss/seq_oss.c
-@@ -39,12 +39,6 @@ MODULE_LICENSE("GPL");
- MODULE_ALIAS_SNDRV_MINOR(SNDRV_MINOR_OSS_SEQUENCER);
- MODULE_ALIAS_SNDRV_MINOR(SNDRV_MINOR_OSS_MUSIC);
- 
--#ifdef SNDRV_SEQ_OSS_DEBUG
--module_param(seq_oss_debug, int, 0644);
--MODULE_PARM_DESC(seq_oss_debug, "debug option");
--int seq_oss_debug = 0;
--#endif
--
- 
- /*
-  * prototypes
-@@ -244,7 +238,6 @@ register_device(void)
- 		mutex_unlock(&register_mutex);
- 		return rc;
- 	}
--	debug_printk(("device registered\n"));
- 	mutex_unlock(&register_mutex);
- 	return 0;
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 4883499ab38b..b4d6697085fe 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -1141,4 +1141,12 @@ static inline u64 pcm_format_to_bits(snd_pcm_format_t pcm_format)
+ 	return 1ULL << (__force int) pcm_format;
  }
-@@ -253,7 +246,6 @@ static void
- unregister_device(void)
- {
- 	mutex_lock(&register_mutex);
--	debug_printk(("device unregistered\n"));
- 	if (snd_unregister_oss_device(SNDRV_OSS_DEVICE_TYPE_MUSIC, NULL, 0) < 0)		
- 		snd_printk(KERN_ERR "error unregister device music\n");
- 	if (snd_unregister_oss_device(SNDRV_OSS_DEVICE_TYPE_SEQUENCER, NULL, 0) < 0)
-diff --git a/sound/core/seq/oss/seq_oss_device.h b/sound/core/seq/oss/seq_oss_device.h
-index 07e3ea133b56..b43924325249 100644
---- a/sound/core/seq/oss/seq_oss_device.h
-+++ b/sound/core/seq/oss/seq_oss_device.h
-@@ -31,9 +31,6 @@
- #include <sound/seq_kernel.h>
- #include <sound/info.h>
  
--/* enable debug print */
--#define SNDRV_SEQ_OSS_DEBUG
--
- /* max. applications */
- #define SNDRV_SEQ_OSS_MAX_CLIENTS	16
- #define SNDRV_SEQ_OSS_MAX_SYNTH_DEVS	16
-@@ -176,13 +173,4 @@ snd_seq_oss_fill_addr(struct seq_oss_devinfo *dp, struct snd_seq_event *ev,
- /* misc. functions for proc interface */
- char *enabled_str(int bool);
++/* printk helpers */
++#define pcm_err(pcm, fmt, args...) \
++	dev_err((pcm)->card->dev, fmt, ##args)
++#define pcm_warn(pcm, fmt, args...) \
++	dev_warn((pcm)->card->dev, fmt, ##args)
++#define pcm_dbg(pcm, fmt, args...) \
++	dev_dbg((pcm)->card->dev, fmt, ##args)
++
+ #endif /* __SOUND_PCM_H */
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index 091a05c1d5b3..9defdaef520b 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -338,7 +338,8 @@ static void snd_pcm_proc_info_read(struct snd_pcm_substream *substream,
  
--
--/* for debug */
--#ifdef SNDRV_SEQ_OSS_DEBUG
--extern int seq_oss_debug;
--#define debug_printk(x)	do { if (seq_oss_debug > 0) snd_printd x; } while (0)
--#else
--#define debug_printk(x)	/**/
--#endif
--
- #endif /* __SEQ_OSS_DEVICE_H */
-diff --git a/sound/core/seq/oss/seq_oss_init.c b/sound/core/seq/oss/seq_oss_init.c
-index b3f39b5ed742..b0ac6accf301 100644
---- a/sound/core/seq/oss/seq_oss_init.c
-+++ b/sound/core/seq/oss/seq_oss_init.c
-@@ -92,7 +92,6 @@ snd_seq_oss_create_client(void)
- 		goto __error;
+ 	info = kmalloc(sizeof(*info), GFP_KERNEL);
+ 	if (! info) {
+-		printk(KERN_DEBUG "snd_pcm_proc_info_read: cannot malloc\n");
++		pcm_dbg(substream->pcm,
++			"snd_pcm_proc_info_read: cannot malloc\n");
+ 		return;
+ 	}
  
- 	system_client = rc;
--	debug_printk(("new client = %d\n", rc));
- 
- 	/* create annoucement receiver port */
- 	memset(port, 0, sizeof(*port));
-@@ -193,7 +192,6 @@ snd_seq_oss_open(struct file *file, int level)
- 		snd_printk(KERN_ERR "can't malloc device info\n");
+@@ -660,7 +661,7 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
+ 	if (substream_count > 0 && !pcm->internal) {
+ 		err = snd_pcm_stream_proc_init(pstr);
+ 		if (err < 0) {
+-			snd_printk(KERN_ERR "Error in snd_pcm_stream_proc_init\n");
++			pcm_err(pcm, "Error in snd_pcm_stream_proc_init\n");
+ 			return err;
+ 		}
+ 	}
+@@ -668,7 +669,7 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
+ 	for (idx = 0, prev = NULL; idx < substream_count; idx++) {
+ 		substream = kzalloc(sizeof(*substream), GFP_KERNEL);
+ 		if (substream == NULL) {
+-			snd_printk(KERN_ERR "Cannot allocate PCM substream\n");
++			pcm_err(pcm, "Cannot allocate PCM substream\n");
+ 			return -ENOMEM;
+ 		}
+ 		substream->pcm = pcm;
+@@ -685,7 +686,8 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
+ 		if (!pcm->internal) {
+ 			err = snd_pcm_substream_proc_init(substream);
+ 			if (err < 0) {
+-				snd_printk(KERN_ERR "Error in snd_pcm_stream_proc_init\n");
++				pcm_err(pcm,
++					"Error in snd_pcm_stream_proc_init\n");
+ 				if (prev == NULL)
+ 					pstr->substream = NULL;
+ 				else
+@@ -724,7 +726,7 @@ static int _snd_pcm_new(struct snd_card *card, const char *id, int device,
+ 		*rpcm = NULL;
+ 	pcm = kzalloc(sizeof(*pcm), GFP_KERNEL);
+ 	if (pcm == NULL) {
+-		snd_printk(KERN_ERR "Cannot allocate PCM\n");
++		dev_err(card->dev, "Cannot allocate PCM\n");
  		return -ENOMEM;
  	}
--	debug_printk(("oss_open: dp = %p\n", dp));
- 
- 	dp->cseq = system_client;
- 	dp->port = -1;
-@@ -222,7 +220,6 @@ snd_seq_oss_open(struct file *file, int level)
+ 	pcm->card = card;
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index a2104671f51d..6630a4eb8393 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -174,7 +174,7 @@ static void xrun(struct snd_pcm_substream *substream)
+ 	if (xrun_debug(substream, XRUN_DEBUG_BASIC)) {
+ 		char name[16];
+ 		snd_pcm_debug_name(substream, name, sizeof(name));
+-		snd_printd(KERN_DEBUG "XRUN: %s\n", name);
++		pcm_warn(substream->pcm, "XRUN: %s\n", name);
+ 		dump_stack_on_xrun(substream);
  	}
- 
- 	/* create port */
--	debug_printk(("create new port\n"));
- 	rc = create_port(dp);
- 	if (rc < 0) {
- 		snd_printk(KERN_ERR "can't create port\n");
-@@ -230,7 +227,6 @@ snd_seq_oss_open(struct file *file, int level)
- 	}
- 
- 	/* allocate queue */
--	debug_printk(("allocate queue\n"));
- 	rc = alloc_seq_queue(dp);
- 	if (rc < 0)
- 		goto _error;
-@@ -247,7 +243,6 @@ snd_seq_oss_open(struct file *file, int level)
- 	dp->file_mode = translate_mode(file);
- 
- 	/* initialize read queue */
--	debug_printk(("initialize read queue\n"));
- 	if (is_read_mode(dp->file_mode)) {
- 		dp->readq = snd_seq_oss_readq_new(dp, maxqlen);
- 		if (!dp->readq) {
-@@ -257,7 +252,6 @@ snd_seq_oss_open(struct file *file, int level)
- 	}
- 
- 	/* initialize write queue */
--	debug_printk(("initialize write queue\n"));
- 	if (is_write_mode(dp->file_mode)) {
- 		dp->writeq = snd_seq_oss_writeq_new(dp, maxqlen);
- 		if (!dp->writeq) {
-@@ -267,14 +261,12 @@ snd_seq_oss_open(struct file *file, int level)
- 	}
- 
- 	/* initialize timer */
--	debug_printk(("initialize timer\n"));
- 	dp->timer = snd_seq_oss_timer_new(dp);
- 	if (!dp->timer) {
- 		snd_printk(KERN_ERR "can't alloc timer\n");
- 		rc = -ENOMEM;
- 		goto _error;
- 	}
--	debug_printk(("timer initialized\n"));
- 
- 	/* set private data pointer */
- 	file->private_data = dp;
-@@ -288,7 +280,6 @@ snd_seq_oss_open(struct file *file, int level)
- 	client_table[dp->index] = dp;
- 	num_clients++;
- 
--	debug_printk(("open done\n"));
- 	return 0;
- 
-  _error:
-@@ -347,7 +338,6 @@ create_port(struct seq_oss_devinfo *dp)
- 		return rc;
- 
- 	dp->port = port.addr.port;
--	debug_printk(("new port = %d\n", port.addr.port));
- 
- 	return 0;
  }
-@@ -363,7 +353,6 @@ delete_port(struct seq_oss_devinfo *dp)
- 		return 0;
+@@ -184,9 +184,7 @@ static void xrun(struct snd_pcm_substream *substream)
+ 	do {								\
+ 		if (xrun_debug(substream, XRUN_DEBUG_BASIC)) {		\
+ 			xrun_log_show(substream);			\
+-			if (snd_printd_ratelimit()) {			\
+-				snd_printd("PCM: " fmt, ##args);	\
+-			}						\
++			pr_err_ratelimited("ALSA: PCM: " fmt, ##args);	\
+ 			dump_stack_on_xrun(substream);			\
+ 		}							\
+ 	} while (0)
+@@ -253,7 +251,7 @@ static void xrun_log_show(struct snd_pcm_substream *substream)
+ 		entry = &log->entries[idx];
+ 		if (entry->period_size == 0)
+ 			break;
+-		snd_printd("hwptr log: %s: %sj=%lu, pos=%ld/%ld/%ld, "
++		pr_info("hwptr log: %s: %sj=%lu, pos=%ld/%ld/%ld, "
+ 			   "hwptr=%ld/%ld\n",
+ 			   name, entry->in_interrupt ? "[Q] " : "",
+ 			   entry->jiffies,
+@@ -342,14 +340,14 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 		return -EPIPE;
  	}
- 
--	debug_printk(("delete_port %i\n", dp->port));
- 	return snd_seq_event_port_detach(dp->cseq, dp->port);
- }
- 
-@@ -438,21 +427,16 @@ snd_seq_oss_release(struct seq_oss_devinfo *dp)
- 	client_table[dp->index] = NULL;
- 	num_clients--;
- 
--	debug_printk(("resetting..\n"));
- 	snd_seq_oss_reset(dp);
- 
--	debug_printk(("cleaning up..\n"));
- 	snd_seq_oss_synth_cleanup(dp);
- 	snd_seq_oss_midi_cleanup(dp);
- 
- 	/* clear slot */
--	debug_printk(("releasing resource..\n"));
- 	queue = dp->queue;
- 	if (dp->port >= 0)
- 		delete_port(dp);
- 	delete_seq_queue(queue);
--
--	debug_printk(("release done\n"));
- }
- 
- 
-@@ -466,7 +450,6 @@ snd_seq_oss_drain_write(struct seq_oss_devinfo *dp)
- 		return;
- 	if (is_write_mode(dp->file_mode) && !is_nonblock_mode(dp->file_mode) &&
- 	    dp->writeq) {
--		debug_printk(("syncing..\n"));
- 		while (snd_seq_oss_writeq_sync(dp->writeq))
- 			;
- 	}
-diff --git a/sound/core/seq/oss/seq_oss_ioctl.c b/sound/core/seq/oss/seq_oss_ioctl.c
-index 5ac701c903c1..5b8520177b0e 100644
---- a/sound/core/seq/oss/seq_oss_ioctl.c
-+++ b/sound/core/seq/oss/seq_oss_ioctl.c
-@@ -90,12 +90,10 @@ snd_seq_oss_ioctl(struct seq_oss_devinfo *dp, unsigned int cmd, unsigned long ca
- 		return snd_seq_oss_timer_ioctl(dp->timer, cmd, arg);
- 
- 	case SNDCTL_SEQ_PANIC:
--		debug_printk(("panic\n"));
- 		snd_seq_oss_reset(dp);
- 		return -EINVAL;
- 
- 	case SNDCTL_SEQ_SYNC:
--		debug_printk(("sync\n"));
- 		if (! is_write_mode(dp->file_mode) || dp->writeq == NULL)
- 			return 0;
- 		while (snd_seq_oss_writeq_sync(dp->writeq))
-@@ -105,55 +103,45 @@ snd_seq_oss_ioctl(struct seq_oss_devinfo *dp, unsigned int cmd, unsigned long ca
- 		return 0;
- 
- 	case SNDCTL_SEQ_RESET:
--		debug_printk(("reset\n"));
- 		snd_seq_oss_reset(dp);
- 		return 0;
- 
- 	case SNDCTL_SEQ_TESTMIDI:
--		debug_printk(("test midi\n"));
- 		if (get_user(dev, p))
- 			return -EFAULT;
- 		return snd_seq_oss_midi_open(dp, dev, dp->file_mode);
- 
- 	case SNDCTL_SEQ_GETINCOUNT:
--		debug_printk(("get in count\n"));
- 		if (dp->readq == NULL || ! is_read_mode(dp->file_mode))
- 			return 0;
- 		return put_user(dp->readq->qlen, p) ? -EFAULT : 0;
- 
- 	case SNDCTL_SEQ_GETOUTCOUNT:
--		debug_printk(("get out count\n"));
- 		if (! is_write_mode(dp->file_mode) || dp->writeq == NULL)
- 			return 0;
- 		return put_user(snd_seq_oss_writeq_get_free_size(dp->writeq), p) ? -EFAULT : 0;
- 
- 	case SNDCTL_SEQ_GETTIME:
--		debug_printk(("get time\n"));
- 		return put_user(snd_seq_oss_timer_cur_tick(dp->timer), p) ? -EFAULT : 0;
- 
- 	case SNDCTL_SEQ_RESETSAMPLES:
--		debug_printk(("reset samples\n"));
- 		if (get_user(dev, p))
- 			return -EFAULT;
- 		return snd_seq_oss_synth_ioctl(dp, dev, cmd, carg);
- 
- 	case SNDCTL_SEQ_NRSYNTHS:
--		debug_printk(("nr synths\n"));
- 		return put_user(dp->max_synthdev, p) ? -EFAULT : 0;
- 
- 	case SNDCTL_SEQ_NRMIDIS:
--		debug_printk(("nr midis\n"));
- 		return put_user(dp->max_mididev, p) ? -EFAULT : 0;
- 
- 	case SNDCTL_SYNTH_MEMAVL:
--		debug_printk(("mem avail\n"));
- 		if (get_user(dev, p))
- 			return -EFAULT;
- 		val = snd_seq_oss_synth_ioctl(dp, dev, cmd, carg);
- 		return put_user(val, p) ? -EFAULT : 0;
- 
- 	case SNDCTL_FM_4OP_ENABLE:
--		debug_printk(("4op\n"));
- 		if (get_user(dev, p))
- 			return -EFAULT;
- 		snd_seq_oss_synth_ioctl(dp, dev, cmd, carg);
-@@ -161,19 +149,15 @@ snd_seq_oss_ioctl(struct seq_oss_devinfo *dp, unsigned int cmd, unsigned long ca
- 
- 	case SNDCTL_SYNTH_INFO:
- 	case SNDCTL_SYNTH_ID:
--		debug_printk(("synth info\n"));
- 		return snd_seq_oss_synth_info_user(dp, arg);
- 
- 	case SNDCTL_SEQ_OUTOFBAND:
--		debug_printk(("out of band\n"));
- 		return snd_seq_oss_oob_user(dp, arg);
- 
- 	case SNDCTL_MIDI_INFO:
--		debug_printk(("midi info\n"));
- 		return snd_seq_oss_midi_info_user(dp, arg);
- 
- 	case SNDCTL_SEQ_THRESHOLD:
--		debug_printk(("threshold\n"));
- 		if (! is_write_mode(dp->file_mode))
- 			return 0;
- 		if (get_user(val, p))
-@@ -186,7 +170,6 @@ snd_seq_oss_ioctl(struct seq_oss_devinfo *dp, unsigned int cmd, unsigned long ca
- 		return 0;
- 
- 	case SNDCTL_MIDI_PRETIME:
--		debug_printk(("pretime\n"));
- 		if (dp->readq == NULL || !is_read_mode(dp->file_mode))
- 			return 0;
- 		if (get_user(val, p))
-@@ -199,7 +182,6 @@ snd_seq_oss_ioctl(struct seq_oss_devinfo *dp, unsigned int cmd, unsigned long ca
- 		return put_user(val, p) ? -EFAULT : 0;
- 
- 	default:
--		debug_printk(("others\n"));
- 		if (! is_write_mode(dp->file_mode))
- 			return -EIO;
- 		return snd_seq_oss_synth_ioctl(dp, 0, cmd, carg);
-diff --git a/sound/core/seq/oss/seq_oss_midi.c b/sound/core/seq/oss/seq_oss_midi.c
-index 862d84893ee8..97f958b46542 100644
---- a/sound/core/seq/oss/seq_oss_midi.c
-+++ b/sound/core/seq/oss/seq_oss_midi.c
-@@ -153,7 +153,6 @@ snd_seq_oss_midi_check_new_port(struct snd_seq_port_info *pinfo)
- 	struct seq_oss_midi *mdev;
- 	unsigned long flags;
- 
--	debug_printk(("check for MIDI client %d port %d\n", pinfo->addr.client, pinfo->addr.port));
- 	/* the port must include generic midi */
- 	if (! (pinfo->type & SNDRV_SEQ_PORT_TYPE_MIDI_GENERIC))
- 		return 0;
-@@ -406,7 +405,6 @@ snd_seq_oss_midi_close(struct seq_oss_devinfo *dp, int dev)
- 		return 0;
- 	}
- 
--	debug_printk(("closing client %d port %d mode %d\n", mdev->client, mdev->port, mdev->opened));
- 	memset(&subs, 0, sizeof(subs));
- 	if (mdev->opened & PERM_WRITE) {
- 		subs.sender = dp->addr;
-@@ -470,7 +468,6 @@ snd_seq_oss_midi_reset(struct seq_oss_devinfo *dp, int dev)
- 		struct snd_seq_event ev;
- 		int c;
- 
--		debug_printk(("resetting client %d port %d\n", mdev->client, mdev->port));
- 		memset(&ev, 0, sizeof(ev));
- 		ev.dest.client = mdev->client;
- 		ev.dest.port = mdev->port;
-diff --git a/sound/core/seq/oss/seq_oss_synth.c b/sound/core/seq/oss/seq_oss_synth.c
-index c5b773a1eea9..7333bfe827a7 100644
---- a/sound/core/seq/oss/seq_oss_synth.c
-+++ b/sound/core/seq/oss/seq_oss_synth.c
-@@ -138,7 +138,6 @@ snd_seq_oss_synth_register(struct snd_seq_device *dev)
- 	}
- 	rec->seq_device = i;
- 	synth_devs[i] = rec;
--	debug_printk(("synth %s registered %d\n", rec->name, i));
- 	spin_unlock_irqrestore(&register_lock, flags);
- 	dev->driver_data = rec;
- #ifdef SNDRV_OSS_INFO_DEV_SYNTH
-@@ -256,7 +255,6 @@ snd_seq_oss_synth_setup(struct seq_oss_devinfo *dp)
- 			}
- 			reset_channels(info);
+ 	if (pos >= runtime->buffer_size) {
+-		if (snd_printd_ratelimit()) {
++		if (printk_ratelimit()) {
+ 			char name[16];
+ 			snd_pcm_debug_name(substream, name, sizeof(name));
+ 			xrun_log_show(substream);
+-			snd_printd(KERN_ERR  "BUG: %s, pos = %ld, "
+-				   "buffer size = %ld, period size = %ld\n",
+-				   name, pos, runtime->buffer_size,
+-				   runtime->period_size);
++			pcm_err(substream->pcm,
++				"BUG: %s, pos = %ld, buffer size = %ld, period size = %ld\n",
++				name, pos, runtime->buffer_size,
++				runtime->period_size);
  		}
--		debug_printk(("synth %d assigned\n", i));
- 		info->opened++;
- 		rec->opened++;
- 		dp->synth_opened++;
-@@ -326,7 +324,6 @@ snd_seq_oss_synth_cleanup(struct seq_oss_devinfo *dp)
- 			if (rec == NULL)
+ 		pos = 0;
+ 	}
+@@ -394,8 +392,8 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 			XRUN_DEBUG_PERIODUPDATE : XRUN_DEBUG_HWPTRUPDATE)) {
+ 		char name[16];
+ 		snd_pcm_debug_name(substream, name, sizeof(name));
+-		snd_printd("%s_update: %s: pos=%u/%u/%u, "
+-			   "hwptr=%ld/%ld/%ld/%ld\n",
++		pcm_dbg(substream->pcm,
++			"%s_update: %s: pos=%u/%u/%u, hwptr=%ld/%ld/%ld/%ld\n",
+ 			   in_interrupt ? "period" : "hwptr",
+ 			   name,
+ 			   (unsigned int)pos,
+@@ -1941,8 +1939,9 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
+ 			continue;
+ 		}
+ 		if (!tout) {
+-			snd_printd("%s write error (DMA or IRQ trouble?)\n",
+-				   is_playback ? "playback" : "capture");
++			pcm_dbg(substream->pcm,
++				"%s write error (DMA or IRQ trouble?)\n",
++				is_playback ? "playback" : "capture");
+ 			err = -EIO;
+ 			break;
+ 		}
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index e3664116736b..b653ab001fba 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -190,12 +190,12 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+ 		if (!(params->rmask & (1 << k)))
+ 			continue;
+ #ifdef RULES_DEBUG
+-		printk(KERN_DEBUG "%s = ", snd_pcm_hw_param_names[k]);
+-		printk("%04x%04x%04x%04x -> ", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
++		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
++		pr_cont("%04x%04x%04x%04x -> ", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
+ #endif
+ 		changed = snd_mask_refine(m, constrs_mask(constrs, k));
+ #ifdef RULES_DEBUG
+-		printk("%04x%04x%04x%04x\n", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
++		pr_cont("%04x%04x%04x%04x\n", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
+ #endif
+ 		if (changed)
+ 			params->cmask |= 1 << k;
+@@ -210,21 +210,21 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+ 		if (!(params->rmask & (1 << k)))
+ 			continue;
+ #ifdef RULES_DEBUG
+-		printk(KERN_DEBUG "%s = ", snd_pcm_hw_param_names[k]);
++		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
+ 		if (i->empty)
+-			printk("empty");
++			pr_cont("empty");
+ 		else
+-			printk("%c%u %u%c", 
++			pr_cont("%c%u %u%c",
+ 			       i->openmin ? '(' : '[', i->min,
+ 			       i->max, i->openmax ? ')' : ']');
+-		printk(" -> ");
++		pr_cont(" -> ");
+ #endif
+ 		changed = snd_interval_refine(i, constrs_interval(constrs, k));
+ #ifdef RULES_DEBUG
+ 		if (i->empty)
+-			printk("empty\n");
++			pr_cont("empty\n");
+ 		else 
+-			printk("%c%u %u%c\n", 
++			pr_cont("%c%u %u%c\n",
+ 			       i->openmin ? '(' : '[', i->min,
+ 			       i->max, i->openmax ? ')' : ']');
+ #endif
+@@ -255,18 +255,18 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+ 			if (!doit)
  				continue;
- 			if (rec->opened > 0) {
--				debug_printk(("synth %d closed\n", i));
- 				rec->oper.close(&info->arg);
- 				module_put(rec->oper.owner);
- 				rec->opened = 0;
-diff --git a/sound/core/seq/oss/seq_oss_timer.c b/sound/core/seq/oss/seq_oss_timer.c
-index ab59cbfbcaf2..4f24ea9fad93 100644
---- a/sound/core/seq/oss/seq_oss_timer.c
-+++ b/sound/core/seq/oss/seq_oss_timer.c
-@@ -233,7 +233,6 @@ snd_seq_oss_timer_ioctl(struct seq_oss_timer *timer, unsigned int cmd, int __use
- 	int value;
+ #ifdef RULES_DEBUG
+-			printk(KERN_DEBUG "Rule %d [%p]: ", k, r->func);
++			pr_debug("Rule %d [%p]: ", k, r->func);
+ 			if (r->var >= 0) {
+-				printk("%s = ", snd_pcm_hw_param_names[r->var]);
++				pr_cont("%s = ", snd_pcm_hw_param_names[r->var]);
+ 				if (hw_is_mask(r->var)) {
+ 					m = hw_param_mask(params, r->var);
+-					printk("%x", *m->bits);
++					pr_cont("%x", *m->bits);
+ 				} else {
+ 					i = hw_param_interval(params, r->var);
+ 					if (i->empty)
+-						printk("empty");
++						pr_cont("empty");
+ 					else
+-						printk("%c%u %u%c", 
++						pr_cont("%c%u %u%c",
+ 						       i->openmin ? '(' : '[', i->min,
+ 						       i->max, i->openmax ? ')' : ']');
+ 				}
+@@ -275,19 +275,19 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+ 			changed = r->func(params, r);
+ #ifdef RULES_DEBUG
+ 			if (r->var >= 0) {
+-				printk(" -> ");
++				pr_cont(" -> ");
+ 				if (hw_is_mask(r->var))
+-					printk("%x", *m->bits);
++					pr_cont("%x", *m->bits);
+ 				else {
+ 					if (i->empty)
+-						printk("empty");
++						pr_cont("empty");
+ 					else
+-						printk("%c%u %u%c", 
++						pr_cont("%c%u %u%c",
+ 						       i->openmin ? '(' : '[', i->min,
+ 						       i->max, i->openmax ? ')' : ']');
+ 				}
+ 			}
+-			printk("\n");
++			pr_cont("\n");
+ #endif
+ 			rstamps[k] = stamp;
+ 			if (changed && r->var >= 0) {
+@@ -1541,7 +1541,8 @@ static int snd_pcm_drain(struct snd_pcm_substream *substream,
+ 			if (substream->runtime->status->state == SNDRV_PCM_STATE_SUSPENDED)
+ 				result = -ESTRPIPE;
+ 			else {
+-				snd_printd("playback drain error (DMA or IRQ trouble?)\n");
++				dev_dbg(substream->pcm->card->dev,
++					"playback drain error (DMA or IRQ trouble?)\n");
+ 				snd_pcm_stop(substream, SNDRV_PCM_STATE_SETUP);
+ 				result = -EIO;
+ 			}
+@@ -2066,7 +2067,7 @@ int snd_pcm_open_substream(struct snd_pcm *pcm, int stream,
  
- 	if (cmd == SNDCTL_SEQ_CTRLRATE) {
--		debug_printk(("ctrl rate\n"));
- 		/* if *arg == 0, just return the current rate */
- 		if (get_user(value, arg))
- 			return -EFAULT;
-@@ -248,21 +247,16 @@ snd_seq_oss_timer_ioctl(struct seq_oss_timer *timer, unsigned int cmd, int __use
+ 	err = snd_pcm_hw_constraints_init(substream);
+ 	if (err < 0) {
+-		snd_printd("snd_pcm_hw_constraints_init failed\n");
++		pcm_dbg(pcm, "snd_pcm_hw_constraints_init failed\n");
+ 		goto error;
+ 	}
  
- 	switch (cmd) {
- 	case SNDCTL_TMR_START:
--		debug_printk(("timer start\n"));
- 		return snd_seq_oss_timer_start(timer);
- 	case SNDCTL_TMR_STOP:
--		debug_printk(("timer stop\n"));
- 		return snd_seq_oss_timer_stop(timer);
- 	case SNDCTL_TMR_CONTINUE:
--		debug_printk(("timer continue\n"));
- 		return snd_seq_oss_timer_continue(timer);
- 	case SNDCTL_TMR_TEMPO:
--		debug_printk(("timer tempo\n"));
- 		if (get_user(value, arg))
- 			return -EFAULT;
- 		return snd_seq_oss_timer_tempo(timer, value);
- 	case SNDCTL_TMR_TIMEBASE:
--		debug_printk(("timer timebase\n"));
- 		if (get_user(value, arg))
- 			return -EFAULT;
- 		if (value < MIN_OSS_TIMEBASE)
-@@ -276,7 +270,6 @@ snd_seq_oss_timer_ioctl(struct seq_oss_timer *timer, unsigned int cmd, int __use
- 	case SNDCTL_TMR_METRONOME:
- 	case SNDCTL_TMR_SELECT:
- 	case SNDCTL_TMR_SOURCE:
--		debug_printk(("timer XXX\n"));
- 		/* not supported */
- 		return 0;
+@@ -2077,7 +2078,7 @@ int snd_pcm_open_substream(struct snd_pcm *pcm, int stream,
+ 
+ 	err = snd_pcm_hw_constraints_complete(substream);
+ 	if (err < 0) {
+-		snd_printd("snd_pcm_hw_constraints_complete failed\n");
++		pcm_dbg(pcm, "snd_pcm_hw_constraints_complete failed\n");
+ 		goto error;
+ 	}
+ 
+@@ -2609,7 +2610,7 @@ static int snd_pcm_common_ioctl1(struct file *file,
+ 		return res;
+ 	}
+ 	}
+-	snd_printd("unknown ioctl = 0x%x\n", cmd);
++	pcm_dbg(substream->pcm, "unknown ioctl = 0x%x\n", cmd);
+ 	return -ENOTTY;
+ }
+ 
+diff --git a/sound/core/pcm_timer.c b/sound/core/pcm_timer.c
+index b01d9481d632..20ecd8f18080 100644
+--- a/sound/core/pcm_timer.c
++++ b/sound/core/pcm_timer.c
+@@ -53,7 +53,9 @@ void snd_pcm_timer_resolution_change(struct snd_pcm_substream *substream)
+ 		post *= 2;
+ 	}
+ 	if (rate == 0) {
+-		snd_printk(KERN_ERR "pcm timer resolution out of range (rate = %u, period_size = %lu)\n", runtime->rate, runtime->period_size);
++		pcm_err(substream->pcm,
++			"pcm timer resolution out of range (rate = %u, period_size = %lu)\n",
++			runtime->rate, runtime->period_size);
+ 		runtime->timer_resolution = -1;
+ 		return;
  	}
 -- 
 1.8.5.2
