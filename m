@@ -1,43 +1,42 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH v2 1/3] ASoC: binding: add tdm-slot.txt
-Date: Wed, 12 Feb 2014 10:26:52 +0100
-Message-ID: <52FB3E5C.8040701@metafoo.de>
-References: <1392191112-27028-1-git-send-email-Li.Xiubo@freescale.com> <1392191112-27028-2-git-send-email-Li.Xiubo@freescale.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [RFC PATCH 00/24] Mandate to pass a device pointer at
+	card creation
+Date: Wed, 12 Feb 2014 11:35:16 +0100
+Message-ID: <1392201340-27113-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1392191112-27028-2-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, tiwai@suse.de, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id ADEE02625D3
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 11:35:50 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 7C1BCABF7
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 10:35:50 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/12/2014 08:45 AM, Xiubo Li wrote:
-> TDM slot:
->
-> This specifies audio DAI's TDM slot.
->
-> Each entry is has four non-negative integer values in DT:
->         <tx_mask, rx_mask, slots, slot_width>
->
-> For instance:
->         simple-slot-info = <0xffffffc 0xffffffc 2 0>;
+Hi,
+
+this is the first series of patches for a slight restructuring of
+device management in ALSA core codes.  This batch makes the association
+of struct device mandatory to snd_card at the object creation time,
+so that the driver can refer to the device at any time even before
+registring the device.
+
+Basically, it rewrites snd_card_create() with the (re-)new
+snd_card_new() that requires the struct device pointer.  The only
+upstream driver that had no device assignment was atmel/au1x00, and
+I revived the old patch to convert to platform_device for that.
 
 
-The current internal API for TDM is very poor, I don't think we want to 
-expose that 1 to 1 to the devicetree. Since this means we'd have to support 
-that forever. The first thing is that the semantics of 
-snd_soc_dai_set_tdm_slot() are very unclear. E.g. some drivers use a zero 
-bit for a active slot, some drivers use a 1 bit for a active slot. The 
-second thing is that we are not able to specify which channel should be 
-mapped to which slot. You can merely specify from/to which slots the CODEC 
-should read/write and then it is up to the driver to guess which channel 
-should go to which slot. In my opinion a binding that allows to specify a 
-explicit mapping of which channel goes to which slot would be much better.
-
-Also those are four different settings. In my opinion they should not be 
-expressed in one property, but rather in four. E.g. specifying a tx_mask for 
-a rx only device does not make much sense.
-
-- Lars
+Takashi
