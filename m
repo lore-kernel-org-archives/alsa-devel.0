@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 12/20] ALSA: sh: Use SNDRV_DEV_CARD for card
-	objects
-Date: Wed, 12 Feb 2014 11:52:19 +0100
-Message-ID: <1392202347-11774-13-git-send-email-tiwai@suse.de>
+Subject: [PATCH 10/20] ALSA: parisc: Use SNDRV_DEV_CARD for
+	card objects
+Date: Wed, 12 Feb 2014 11:52:17 +0100
+Message-ID: <1392202347-11774-11-git-send-email-tiwai@suse.de>
 References: <1392202347-11774-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 06C2A2651BF
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B65E2651C6
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 11:52:48 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D4A57AC82
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id CF5A4AC6E
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 10:52:47 +0000 (UTC)
 In-Reply-To: <1392202347-11774-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,21 +32,21 @@ No functional change at this point.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/sh/sh_dac_audio.c | 2 +-
+ sound/parisc/harmony.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/sh/sh_dac_audio.c b/sound/sh/sh_dac_audio.c
-index d1fb74dabbd1..8ae769e62084 100644
---- a/sound/sh/sh_dac_audio.c
-+++ b/sound/sh/sh_dac_audio.c
-@@ -378,7 +378,7 @@ static int snd_sh_dac_create(struct snd_card *card,
- 		return -ENOMEM;
- 	}
+diff --git a/sound/parisc/harmony.c b/sound/parisc/harmony.c
+index 4b20be79c1dd..8664bfc4185c 100644
+--- a/sound/parisc/harmony.c
++++ b/sound/parisc/harmony.c
+@@ -954,7 +954,7 @@ snd_harmony_create(struct snd_card *card,
+ 	spin_lock_init(&h->mixer_lock);
+ 	spin_lock_init(&h->lock);
  
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	err = snd_device_new(card, SNDRV_DEV_CARD, chip, &ops);
- 	if (err < 0) {
- 		snd_sh_dac_free(chip);
- 		return err;
+-        if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL,
++        if ((err = snd_device_new(card, SNDRV_DEV_CARD,
+                                   h, &ops)) < 0) {
+                 goto free_and_ret;
+         }
 -- 
 1.8.5.2
