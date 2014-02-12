@@ -1,23 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 14/28] Remove MACH_SMDKC210
-Date: Wed, 12 Feb 2014 16:04:31 +0000
-Message-ID: <20140212160431.GB28112@sirena.org.uk>
-References: <1391971686-9517-1-git-send-email-richard@nod.at>
- <1391971686-9517-15-git-send-email-richard@nod.at>
- <20140210114154.GQ1757@sirena.org.uk>
- <1392039072.3585.15.camel@x220>
- <20140210141255.GI1757@sirena.org.uk>
- <1392046242.3585.41.camel@x220>
- <20140210163621.GA13533@sirena.org.uk>
- <1392070159.27939.34.camel@x220>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: blackfin: Fix machine driver Kconfig
+	dependencies
+Date: Wed, 12 Feb 2014 17:11:22 +0100
+Message-ID: <1392221482-16559-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6498213489241291189=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 31FD5265019
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 17:05:00 +0100 (CET)
-In-Reply-To: <1392070159.27939.34.camel@x220>
+Received: from smtp-out-003.synserver.de (smtp-out-147.synserver.de
+ [212.40.185.147])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7522265063
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 17:11:16 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,67 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, linux-kernel@vger.kernel.org, Sangbeom Kim <sbkim73@samsung.com>, Richard Weinberger <richard@nod.at>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-samsung-soc@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+Since the machine driver selects the CODEC driver we need to make sure that the
+machine driver is only selectable if the CODEC driver can be build. This avoids
+build errors under some configurations (which typically only result from
+randconfig).
 
---===============6498213489241291189==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2fowzm2eVyDiEwGH"
-Content-Disposition: inline
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/blackfin/Kconfig | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-
---2fowzm2eVyDiEwGH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Feb 10, 2014 at 11:09:19PM +0100, Paul Bolle wrote:
-
-> See, if you scan v3.10:arch/arm/mach-exynos/mach-smdkv310.c you'll
-> notice the string "smdk-audio". If you grep that string you get a few
-> hits. But none in v3.10:sound/soc/samsung/smdk_wm9713.c. And if you scan
-> v3.10:sound/soc/samsung/smdk_wm9713.c for strings you'll find stuff like
-> "wm9713-hifi",  "wm9713-codec", and "soc-audio". But these don't show up
-> in v3.10:arch/arm/mach-exynos/mach-smdkv310.c. So it's not obvious how
-> these two files relate.
-
-> And I'm left wondering why SND_SOC_SAMSUNG_SMDK_WM9713 actually depends
-> on (among other symbols) MACH_SMDKV310 and MACH_SMDKC210 in v3.10.
-
-The hardware is physically present on those boards but must be selected
-with DIP switches, the device registration needs to be changed in the
-kernel when that happens (as the DT must be when it is in use).
-
---2fowzm2eVyDiEwGH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS+5uLAAoJELSic+t+oim9VugP/iZEteXqtzJ2i8/iw0CbFE2y
-uvRWMNC3L+ewPETDiU+wtsq4MNUQsY25PK0u3FV2Wmqwt742P6AbX3jJ/zeV/knc
-3pMhlRBPYP9/1scM2OBzw/4bkH4xPzgBJgXUQEyxeauj9cROSpg5pdGzWu5OSRyD
-fMmj9tmLDkf30p9IP2s6xNorGhTDc+kXKlW6cU8+93bZyc9ZNG8kZjqRFIX03o36
-SUm9seByWb7l0BQVoP56qAsu+j8yTKpNoqWP6QkYrjtiGHq5v9bX5+ZCoKS2Wlct
-LmqK9x+cui4mfxxlz+d9zbHnQWc6FPIa3fZePqUp05r9BlN9EjqYD88touJiknbj
-4rinWep1dTdqXoGm1rQ8T7PeqhHkyavzfsEVkc6M4g4hLYHP569m9fDtiLmwFGeV
-rP0BguG5qVQ8uCWjPgOj5MMY7pp0/kaqrjGK+/81lyd3Gv/aSmIO/+4t+a4tf60s
-Bqo6gDBY5eWZmNbNrMxhj4SZ0V6QOWI+kzMOdzqfzA+KFr8zwM+DJCWfSTOp+CWU
-6n21C3EiSsLp/lHl2e86cUlVjfeBGjkzssoLqvjl/bc/TBZ5Xh/g4O1wrdwtSdgB
-YB44X2Vc1Gz+wfZHxQ/rr3QSErHWJkIgXd0q2CsdcCFmOW9sTdhVkwsRPzikOKp+
-49AGYVATCmQXu8nB0fB9
-=kl1Y
------END PGP SIGNATURE-----
-
---2fowzm2eVyDiEwGH--
-
---===============6498213489241291189==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6498213489241291189==--
+diff --git a/sound/soc/blackfin/Kconfig b/sound/soc/blackfin/Kconfig
+index 54f74f8..4544d8e 100644
+--- a/sound/soc/blackfin/Kconfig
++++ b/sound/soc/blackfin/Kconfig
+@@ -11,7 +11,7 @@ config SND_BF5XX_I2S
+ 
+ config SND_BF5XX_SOC_SSM2602
+ 	tristate "SoC SSM2602 Audio Codec Add-On Card support"
+-	depends on SND_BF5XX_I2S && (SPI_MASTER || I2C)
++	depends on SND_BF5XX_I2S && SND_SOC_I2C_AND_SPI
+ 	select SND_BF5XX_SOC_I2S if !BF60x
+ 	select SND_BF6XX_SOC_I2S if BF60x
+ 	select SND_SOC_SSM2602
+@@ -21,10 +21,9 @@ config SND_BF5XX_SOC_SSM2602
+ 
+ config SND_SOC_BFIN_EVAL_ADAU1701
+ 	tristate "Support for the EVAL-ADAU1701MINIZ board on Blackfin eval boards"
+-	depends on SND_BF5XX_I2S
++	depends on SND_BF5XX_I2S && I2C
+ 	select SND_BF5XX_SOC_I2S
+ 	select SND_SOC_ADAU1701
+-	select I2C
+ 	help
+ 	  Say Y if you want to add support for the Analog Devices EVAL-ADAU1701MINIZ
+ 	  board connected to one of the Blackfin evaluation boards like the
+@@ -45,7 +44,7 @@ config SND_SOC_BFIN_EVAL_ADAU1373
+ 
+ config SND_SOC_BFIN_EVAL_ADAV80X
+ 	tristate "Support for the EVAL-ADAV80X boards on Blackfin eval boards"
+-	depends on SND_BF5XX_I2S && (SPI_MASTER || I2C)
++	depends on SND_BF5XX_I2S && SND_SOC_I2C_AND_SPI
+ 	select SND_BF5XX_SOC_I2S
+ 	select SND_SOC_ADAV80X
+ 	help
+@@ -58,7 +57,7 @@ config SND_SOC_BFIN_EVAL_ADAV80X
+ 
+ config SND_BF5XX_SOC_AD1836
+ 	tristate "SoC AD1836 Audio support for BF5xx"
+-	depends on SND_BF5XX_I2S
++	depends on SND_BF5XX_I2S && SPI_MASTER
+ 	select SND_BF5XX_SOC_I2S
+ 	select SND_SOC_AD1836
+ 	help
+@@ -66,7 +65,7 @@ config SND_BF5XX_SOC_AD1836
+ 
+ config SND_BF5XX_SOC_AD193X
+ 	tristate "SoC AD193X Audio support for Blackfin"
+-	depends on SND_BF5XX_I2S
++	depends on SND_BF5XX_I2S && SND_SOC_I2C_AND_SPI
+ 	select SND_BF5XX_SOC_I2S
+ 	select SND_SOC_AD193X
+ 	help
+-- 
+1.8.0
