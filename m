@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 04/10] ALSA: core: Use standard printk helpers
-Date: Wed, 12 Feb 2014 12:33:06 +0100
-Message-ID: <1392204792-12655-5-git-send-email-tiwai@suse.de>
+Subject: [PATCH 07/10] ALSA: oss: Use standard printk helpers
+Date: Wed, 12 Feb 2014 12:33:09 +0100
+Message-ID: <1392204792-12655-8-git-send-email-tiwai@suse.de>
 References: <1392204792-12655-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EE1C26528B
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D74E265290
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 12:33:18 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E5992AC05
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id EBFF7AC7B
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 11:33:17 +0000 (UTC)
 In-Reply-To: <1392204792-12655-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,250 +31,348 @@ assigned at the calling point), use pr_xxx() helpers instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/device.c   | 19 ++++++++++++++-----
- sound/core/info.c     | 11 ++++++++---
- sound/core/init.c     | 20 ++++++++++----------
- sound/core/isadma.c   |  2 +-
- sound/core/memalloc.c |  4 ++--
- sound/core/sound.c    |  4 ++--
- sound/core/vmaster.c  |  2 +-
- 7 files changed, 38 insertions(+), 24 deletions(-)
+ sound/core/oss/mixer_oss.c | 12 +++---
+ sound/core/oss/pcm_oss.c   | 99 ++++++++++++++++++++++------------------------
+ 2 files changed, 55 insertions(+), 56 deletions(-)
 
-diff --git a/sound/core/device.c b/sound/core/device.c
-index d622bcd4ff53..cbc7ded11a26 100644
---- a/sound/core/device.c
-+++ b/sound/core/device.c
-@@ -25,6 +25,13 @@
- #include <linux/errno.h>
- #include <sound/core.h>
- 
-+#define error(card, fmt, args...) do {	\
-+	if (card)		   \
-+		dev_err((card)->dev, fmt, ##args);	\
-+	else \
-+		pr_err(KERN_ERR "ALSA: " fmt, ##args);	\
-+	} while (0)
-+
- /**
-  * snd_device_new - create an ALSA device component
-  * @card: the card instance
-@@ -51,7 +58,7 @@ int snd_device_new(struct snd_card *card, enum snd_device_type type,
- 		return -ENXIO;
- 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
- 	if (dev == NULL) {
--		snd_printk(KERN_ERR "Cannot allocate device\n");
-+		error(dev->card, "Cannot allocate device, type=%d\n", type);
- 		return -ENOMEM;
+diff --git a/sound/core/oss/mixer_oss.c b/sound/core/oss/mixer_oss.c
+index fcb810142a49..5e6349f00ecd 100644
+--- a/sound/core/oss/mixer_oss.c
++++ b/sound/core/oss/mixer_oss.c
+@@ -1187,7 +1187,8 @@ static void snd_mixer_oss_proc_write(struct snd_info_entry *entry,
+ 			if (oss_mixer_names[ch] && strcmp(oss_mixer_names[ch], str) == 0)
+ 				break;
+ 		if (ch >= SNDRV_OSS_MAX_MIXERS) {
+-			snd_printk(KERN_ERR "mixer_oss: invalid OSS volume '%s'\n", str);
++			pr_err("ALSA: mixer_oss: invalid OSS volume '%s'\n",
++			       str);
+ 			continue;
+ 		}
+ 		cptr = snd_info_get_str(str, cptr, sizeof(str));
+@@ -1201,7 +1202,7 @@ static void snd_mixer_oss_proc_write(struct snd_info_entry *entry,
+ 		snd_info_get_str(idxstr, cptr, sizeof(idxstr));
+ 		idx = simple_strtoul(idxstr, NULL, 10);
+ 		if (idx >= 0x4000) { /* too big */
+-			snd_printk(KERN_ERR "mixer_oss: invalid index %d\n", idx);
++			pr_err("ALSA: mixer_oss: invalid index %d\n", idx);
+ 			continue;
+ 		}
+ 		mutex_lock(&mixer->reg_mutex);
+@@ -1212,7 +1213,7 @@ static void snd_mixer_oss_proc_write(struct snd_info_entry *entry,
+ 			goto __unlock;
+ 		tbl = kmalloc(sizeof(*tbl), GFP_KERNEL);
+ 		if (! tbl) {
+-			snd_printk(KERN_ERR "mixer_oss: no memory\n");
++			pr_err("ALSA: mixer_oss: no memory\n");
+ 			goto __unlock;
+ 		}
+ 		tbl->oss_id = ch;
+@@ -1352,8 +1353,9 @@ static int snd_mixer_oss_notify_handler(struct snd_card *card, int cmd)
+ 		if ((err = snd_register_oss_device(SNDRV_OSS_DEVICE_TYPE_MIXER,
+ 						   card, 0,
+ 						   &snd_mixer_oss_f_ops, card)) < 0) {
+-			snd_printk(KERN_ERR "unable to register OSS mixer device %i:%i\n",
+-				   card->number, 0);
++			dev_err(card->dev,
++				"unable to register OSS mixer device %i:%i\n",
++				card->number, 0);
+ 			kfree(mixer);
+ 			return err;
+ 		}
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index c89349372385..ada69d7a8d70 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -854,7 +854,7 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream)
+ 	params = kmalloc(sizeof(*params), GFP_KERNEL);
+ 	sparams = kmalloc(sizeof(*sparams), GFP_KERNEL);
+ 	if (!sw_params || !params || !sparams) {
+-		snd_printd("No memory\n");
++		pcm_dbg(substream->pcm, "No memory\n");
+ 		err = -ENOMEM;
+ 		goto failure;
  	}
- 	INIT_LIST_HEAD(&dev->list);
-@@ -78,7 +85,8 @@ static int __snd_device_disconnect(struct snd_device *dev)
- 	if (dev->state == SNDRV_DEV_REGISTERED) {
- 		if (dev->ops->dev_disconnect &&
- 		    dev->ops->dev_disconnect(dev))
--			snd_printk(KERN_ERR "device disconnect failure\n");
-+			error(dev->card, "device disconnect failure, type=%d\n",
-+			      dev->type);
- 		dev->state = SNDRV_DEV_DISCONNECTED;
+@@ -877,7 +877,7 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream)
  	}
- 	return 0;
-@@ -92,7 +100,8 @@ static int __snd_device_free(struct snd_device *dev)
- 	__snd_device_disconnect(dev);
- 	if (dev->ops->dev_free) {
- 		if (dev->ops->dev_free(dev))
--			snd_printk(KERN_ERR "device free failure\n");
-+			error(dev->card, "device free failure, type=%d\n",
-+			      dev->type);
+ 	err = snd_pcm_hw_param_mask(substream, sparams, SNDRV_PCM_HW_PARAM_ACCESS, &mask);
+ 	if (err < 0) {
+-		snd_printd("No usable accesses\n");
++		pcm_dbg(substream->pcm, "No usable accesses\n");
+ 		err = -EINVAL;
+ 		goto failure;
  	}
- 	kfree(dev);
- 	return 0;
-@@ -130,8 +139,8 @@ int snd_device_free(struct snd_card *card, void *device_data)
- 	dev = look_for_dev(card, device_data);
- 	if (dev)
- 		return __snd_device_free(dev);
--	snd_printd("device free %p (from %pF), not found\n", device_data,
--		   __builtin_return_address(0));
-+	dev_dbg(card->dev, "device free %p (from %pF), not found\n",
-+		device_data, __builtin_return_address(0));
- 	return -ENXIO;
- }
- EXPORT_SYMBOL(snd_device_free);
-diff --git a/sound/core/info.c b/sound/core/info.c
-index 7916c07b9324..051d55b05521 100644
---- a/sound/core/info.c
-+++ b/sound/core/info.c
-@@ -418,9 +418,14 @@ static int snd_info_entry_release(struct inode *inode, struct file *file)
- 			if (entry->c.text.write) {
- 				entry->c.text.write(entry, data->wbuffer);
- 				if (data->wbuffer->error) {
--					snd_printk(KERN_WARNING "data write error to %s (%i)\n",
--						entry->name,
--						data->wbuffer->error);
-+					if (entry->card)
-+						dev_warn(entry->card->dev, "info: data write error to %s (%i)\n",
-+							 entry->name,
-+							 data->wbuffer->error);
-+					else
-+						pr_warn("ALSA: info: data write error to %s (%i)\n",
-+							entry->name,
-+							data->wbuffer->error);
- 				}
+@@ -902,7 +902,7 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream)
+ 				break;
+ 		}
+ 		if ((__force int)sformat > (__force int)SNDRV_PCM_FORMAT_LAST) {
+-			snd_printd("Cannot find a format!!!\n");
++			pcm_dbg(substream->pcm, "Cannot find a format!!!\n");
+ 			err = -EINVAL;
+ 			goto failure;
+ 		}
+@@ -942,14 +942,16 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream)
+ 		if ((err = snd_pcm_plug_format_plugins(substream,
+ 						       params, 
+ 						       sparams)) < 0) {
+-			snd_printd("snd_pcm_plug_format_plugins failed: %i\n", err);
++			pcm_dbg(substream->pcm,
++				"snd_pcm_plug_format_plugins failed: %i\n", err);
+ 			snd_pcm_oss_plugin_clear(substream);
+ 			goto failure;
+ 		}
+ 		if (runtime->oss.plugin_first) {
+ 			struct snd_pcm_plugin *plugin;
+ 			if ((err = snd_pcm_plugin_build_io(substream, sparams, &plugin)) < 0) {
+-				snd_printd("snd_pcm_plugin_build_io failed: %i\n", err);
++				pcm_dbg(substream->pcm,
++					"snd_pcm_plugin_build_io failed: %i\n", err);
+ 				snd_pcm_oss_plugin_clear(substream);
+ 				goto failure;
  			}
- 			kfree(data->wbuffer->buffer);
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 3fdb4e2ce5ea..ad7234a63a7b 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -113,11 +113,11 @@ static inline int init_info_for_card(struct snd_card *card)
- 	struct snd_info_entry *entry;
+@@ -983,7 +985,7 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream)
+ 	snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_DROP, NULL);
  
- 	if ((err = snd_info_card_register(card)) < 0) {
--		snd_printd("unable to create card info\n");
-+		dev_dbg(card->dev, "unable to create card info\n");
+ 	if ((err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_HW_PARAMS, sparams)) < 0) {
+-		snd_printd("HW_PARAMS failed: %i\n", err);
++		pcm_dbg(substream->pcm, "HW_PARAMS failed: %i\n", err);
+ 		goto failure;
+ 	}
+ 
+@@ -1016,7 +1018,7 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream)
+ 	}
+ 
+ 	if ((err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_SW_PARAMS, sw_params)) < 0) {
+-		snd_printd("SW_PARAMS failed: %i\n", err);
++		pcm_dbg(substream->pcm, "SW_PARAMS failed: %i\n", err);
+ 		goto failure;
+ 	}
+ 
+@@ -1110,7 +1112,8 @@ static int snd_pcm_oss_prepare(struct snd_pcm_substream *substream)
+ 
+ 	err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_PREPARE, NULL);
+ 	if (err < 0) {
+-		snd_printd("snd_pcm_oss_prepare: SNDRV_PCM_IOCTL_PREPARE failed\n");
++		pcm_dbg(substream->pcm,
++			"snd_pcm_oss_prepare: SNDRV_PCM_IOCTL_PREPARE failed\n");
  		return err;
  	}
- 	if ((entry = snd_info_create_card_entry(card, "id", card->proc_root)) == NULL) {
--		snd_printd("unable to create card entry\n");
-+		dev_dbg(card->dev, "unable to create card entry\n");
- 		return err;
- 	}
- 	entry->c.text.read = snd_card_id_read;
-@@ -217,7 +217,7 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 		err = -ENODEV;
- 	if (err < 0) {
- 		mutex_unlock(&snd_card_mutex);
--		snd_printk(KERN_ERR "cannot find the slot for index %d (range 0-%i), error: %d\n",
-+		dev_err(parent, "cannot find the slot for index %d (range 0-%i), error: %d\n",
- 			 idx, snd_ecards_limit - 1, err);
- 		kfree(card);
- 		return err;
-@@ -254,12 +254,12 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 	/* snd_cards_bitmask and snd_cards are set with snd_card_register */
- 	err = snd_ctl_create(card);
- 	if (err < 0) {
--		snd_printk(KERN_ERR "unable to register control minors\n");
-+		dev_err(parent, "unable to register control minors\n");
- 		goto __error;
- 	}
- 	err = snd_info_card_create(card);
- 	if (err < 0) {
--		snd_printk(KERN_ERR "unable to create card info\n");
-+		dev_err(parent, "unable to create card info\n");
- 		goto __error_ctl;
- 	}
- 	*card_ret = card;
-@@ -422,7 +422,7 @@ int snd_card_disconnect(struct snd_card *card)
- 	/* notify all devices that we are disconnected */
- 	err = snd_device_disconnect_all(card);
- 	if (err < 0)
--		snd_printk(KERN_ERR "not all devices for card %i can be disconnected\n", card->number);
-+		dev_err(card->dev, "not all devices for card %i can be disconnected\n", card->number);
+ 	runtime->oss.prepare = 0;
+@@ -1175,12 +1178,10 @@ snd_pcm_sframes_t snd_pcm_oss_write3(struct snd_pcm_substream *substream, const
+ 		if (runtime->status->state == SNDRV_PCM_STATE_XRUN ||
+ 		    runtime->status->state == SNDRV_PCM_STATE_SUSPENDED) {
+ #ifdef OSS_DEBUG
+-			if (runtime->status->state == SNDRV_PCM_STATE_XRUN)
+-				printk(KERN_DEBUG "pcm_oss: write: "
+-				       "recovering from XRUN\n");
+-			else
+-				printk(KERN_DEBUG "pcm_oss: write: "
+-				       "recovering from SUSPEND\n");
++			pcm_dbg(substream->pcm,
++				"pcm_oss: write: recovering from %s\n",
++				runtime->status->state == SNDRV_PCM_STATE_XRUN ?
++				"XRUN" : "SUSPEND");
+ #endif
+ 			ret = snd_pcm_oss_prepare(substream);
+ 			if (ret < 0)
+@@ -1213,12 +1214,10 @@ snd_pcm_sframes_t snd_pcm_oss_read3(struct snd_pcm_substream *substream, char *p
+ 		if (runtime->status->state == SNDRV_PCM_STATE_XRUN ||
+ 		    runtime->status->state == SNDRV_PCM_STATE_SUSPENDED) {
+ #ifdef OSS_DEBUG
+-			if (runtime->status->state == SNDRV_PCM_STATE_XRUN)
+-				printk(KERN_DEBUG "pcm_oss: read: "
+-				       "recovering from XRUN\n");
+-			else
+-				printk(KERN_DEBUG "pcm_oss: read: "
+-				       "recovering from SUSPEND\n");
++			pcm_dbg(substream->pcm,
++				"pcm_oss: read: recovering from %s\n",
++				runtime->status->state == SNDRV_PCM_STATE_XRUN ?
++				"XRUN" : "SUSPEND");
+ #endif
+ 			ret = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_DRAIN, NULL);
+ 			if (ret < 0)
+@@ -1261,12 +1260,10 @@ snd_pcm_sframes_t snd_pcm_oss_writev3(struct snd_pcm_substream *substream, void
+ 		if (runtime->status->state == SNDRV_PCM_STATE_XRUN ||
+ 		    runtime->status->state == SNDRV_PCM_STATE_SUSPENDED) {
+ #ifdef OSS_DEBUG
+-			if (runtime->status->state == SNDRV_PCM_STATE_XRUN)
+-				printk(KERN_DEBUG "pcm_oss: writev: "
+-				       "recovering from XRUN\n");
+-			else
+-				printk(KERN_DEBUG "pcm_oss: writev: "
+-				       "recovering from SUSPEND\n");
++			pcm_dbg(substream->pcm,
++				"pcm_oss: writev: recovering from %s\n",
++				runtime->status->state == SNDRV_PCM_STATE_XRUN ?
++				"XRUN" : "SUSPEND");
+ #endif
+ 			ret = snd_pcm_oss_prepare(substream);
+ 			if (ret < 0)
+@@ -1299,12 +1296,10 @@ snd_pcm_sframes_t snd_pcm_oss_readv3(struct snd_pcm_substream *substream, void *
+ 		if (runtime->status->state == SNDRV_PCM_STATE_XRUN ||
+ 		    runtime->status->state == SNDRV_PCM_STATE_SUSPENDED) {
+ #ifdef OSS_DEBUG
+-			if (runtime->status->state == SNDRV_PCM_STATE_XRUN)
+-				printk(KERN_DEBUG "pcm_oss: readv: "
+-				       "recovering from XRUN\n");
+-			else
+-				printk(KERN_DEBUG "pcm_oss: readv: "
+-				       "recovering from SUSPEND\n");
++			pcm_dbg(substream->pcm,
++				"pcm_oss: readv: recovering from %s\n",
++				runtime->status->state == SNDRV_PCM_STATE_XRUN ?
++				"XRUN" : "SUSPEND");
+ #endif
+ 			ret = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_DRAIN, NULL);
+ 			if (ret < 0)
+@@ -1561,7 +1556,7 @@ static int snd_pcm_oss_sync1(struct snd_pcm_substream *substream, size_t size)
+ 	init_waitqueue_entry(&wait, current);
+ 	add_wait_queue(&runtime->sleep, &wait);
+ #ifdef OSS_DEBUG
+-	printk(KERN_DEBUG "sync1: size = %li\n", size);
++	pcm_dbg(substream->pcm, "sync1: size = %li\n", size);
+ #endif
+ 	while (1) {
+ 		result = snd_pcm_oss_write2(substream, runtime->oss.buffer, size, 1);
+@@ -1587,7 +1582,8 @@ static int snd_pcm_oss_sync1(struct snd_pcm_substream *substream, size_t size)
+ 			break;
+ 		}
+ 		if (res == 0) {
+-			snd_printk(KERN_ERR "OSS sync error - DMA timeout\n");
++			pcm_err(substream->pcm,
++				"OSS sync error - DMA timeout\n");
+ 			result = -EIO;
+ 			break;
+ 		}
+@@ -1618,7 +1614,7 @@ static int snd_pcm_oss_sync(struct snd_pcm_oss_file *pcm_oss_file)
+ 		mutex_lock(&runtime->oss.params_lock);
+ 		if (runtime->oss.buffer_used > 0) {
+ #ifdef OSS_DEBUG
+-			printk(KERN_DEBUG "sync: buffer_used\n");
++			pcm_dbg(substream->pcm, "sync: buffer_used\n");
+ #endif
+ 			size = (8 * (runtime->oss.period_bytes - runtime->oss.buffer_used) + 7) / width;
+ 			snd_pcm_format_set_silence(format,
+@@ -1631,7 +1627,7 @@ static int snd_pcm_oss_sync(struct snd_pcm_oss_file *pcm_oss_file)
+ 			}
+ 		} else if (runtime->oss.period_ptr > 0) {
+ #ifdef OSS_DEBUG
+-			printk(KERN_DEBUG "sync: period_ptr\n");
++			pcm_dbg(substream->pcm, "sync: period_ptr\n");
+ #endif
+ 			size = runtime->oss.period_bytes - runtime->oss.period_ptr;
+ 			snd_pcm_format_set_silence(format,
+@@ -1983,7 +1979,7 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
+ 	int err, cmd;
  
- 	snd_info_card_disconnect(card);
- 	if (card->registered) {
-@@ -455,14 +455,14 @@ static int snd_card_do_free(struct snd_card *card)
- 		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_FREE);
+ #ifdef OSS_DEBUG
+-	printk(KERN_DEBUG "pcm_oss: trigger = 0x%x\n", trigger);
++	pcm_dbg(substream->pcm, "pcm_oss: trigger = 0x%x\n", trigger);
  #endif
- 	if (snd_device_free_all(card) < 0) {
--		snd_printk(KERN_ERR "unable to free all devices\n");
-+		dev_err(card->dev, "unable to free all devices\n");
- 		/* Fatal, but this situation should never occur */
+ 	
+ 	psubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
+@@ -2203,9 +2199,9 @@ static int snd_pcm_oss_get_space(struct snd_pcm_oss_file *pcm_oss_file, int stre
  	}
- 	if (card->private_free)
- 		card->private_free(card);
- 	snd_info_free_entry(card->proc_id);
- 	if (snd_info_card_free(card) < 0) {
--		snd_printk(KERN_WARNING "unable to free card info\n");
-+		dev_warn(card->dev, "unable to free card info\n");
- 		/* Not fatal error */
- 	}
- 	if (card->release_completion)
-@@ -588,7 +588,7 @@ static void snd_card_set_id_no_lock(struct snd_card *card, const char *src,
- 		goto again;
- 	}
- 	/* last resort... */
--	snd_printk(KERN_ERR "unable to set card id (%s)\n", id);
-+	dev_err(card->dev, "unable to set card id (%s)\n", id);
- 	if (card->proc_root->name)
- 		strlcpy(card->id, card->proc_root->name, sizeof(card->id));
- }
-@@ -940,7 +940,7 @@ int snd_card_file_remove(struct snd_card *card, struct file *file)
- 	}
- 	spin_unlock(&card->files_lock);
- 	if (!found) {
--		snd_printk(KERN_ERR "ALSA card file remove problem (%p)\n", file);
-+		dev_err(card->dev, "card file remove problem (%p)\n", file);
- 		return -ENOENT;
- 	}
- 	kfree(found);
-diff --git a/sound/core/isadma.c b/sound/core/isadma.c
-index e2b386156a4c..31e8544d7f2d 100644
---- a/sound/core/isadma.c
-+++ b/sound/core/isadma.c
-@@ -106,7 +106,7 @@ unsigned int snd_dma_pointer(unsigned long dma, unsigned int size)
- 		result = result1;
- #ifdef CONFIG_SND_DEBUG
- 	if (result > size)
--		snd_printk(KERN_ERR "pointer (0x%x) for DMA #%ld is greater than transfer size (0x%x)\n", result, dma, size);
-+		pr_err("ALSA: pointer (0x%x) for DMA #%ld is greater than transfer size (0x%x)\n", result, dma, size);
+ 
+ #ifdef OSS_DEBUG
+-	printk(KERN_DEBUG "pcm_oss: space: bytes = %i, fragments = %i, "
+-	       "fragstotal = %i, fragsize = %i\n",
+-	       info.bytes, info.fragments, info.fragstotal, info.fragsize);
++	pcm_dbg(substream->pcm,
++		"pcm_oss: space: bytes = %i, fragments = %i, fragstotal = %i, fragsize = %i\n",
++		info.bytes, info.fragments, info.fragstotal, info.fragsize);
  #endif
- 	if (result >= size || result == 0)
- 		return 0;
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index 4595f93d151e..082509eb805d 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -207,7 +207,7 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
- 		break;
- #endif
- 	default:
--		printk(KERN_ERR "snd-malloc: invalid device type %d\n", type);
-+		pr_err("snd-malloc: invalid device type %d\n", type);
- 		dmab->area = NULL;
- 		dmab->addr = 0;
- 		return -ENXIO;
-@@ -284,7 +284,7 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
- 		break;
- #endif
- 	default:
--		printk(KERN_ERR "snd-malloc: invalid device type %d\n", dmab->dev.type);
-+		pr_err("snd-malloc: invalid device type %d\n", dmab->dev.type);
- 	}
+ 	if (copy_to_user(_info, &info, sizeof(info)))
+ 		return -EFAULT;
+@@ -2215,7 +2211,7 @@ static int snd_pcm_oss_get_space(struct snd_pcm_oss_file *pcm_oss_file, int stre
+ static int snd_pcm_oss_get_mapbuf(struct snd_pcm_oss_file *pcm_oss_file, int stream, struct buffmem_desc __user * _info)
+ {
+ 	// it won't be probably implemented
+-	// snd_printd("TODO: snd_pcm_oss_get_mapbuf\n");
++	// pr_debug("TODO: snd_pcm_oss_get_mapbuf\n");
+ 	return -EINVAL;
  }
  
-diff --git a/sound/core/sound.c b/sound/core/sound.c
-index 4aaa53161644..60ab9b1f44b9 100644
---- a/sound/core/sound.c
-+++ b/sound/core/sound.c
-@@ -458,7 +458,7 @@ static int __init alsa_sound_init(void)
- 	snd_major = major;
- 	snd_ecards_limit = cards_limit;
- 	if (register_chrdev(major, "alsa", &snd_fops)) {
--		snd_printk(KERN_ERR "unable to register native major device number %d\n", major);
-+		pr_err("ALSA core: unable to register native major device number %d\n", major);
- 		return -EIO;
- 	}
- 	if (snd_info_init() < 0) {
-@@ -467,7 +467,7 @@ static int __init alsa_sound_init(void)
- 	}
- 	snd_info_minor_register();
- #ifndef MODULE
--	printk(KERN_INFO "Advanced Linux Sound Architecture Driver Initialized.\n");
-+	pr_info("Advanced Linux Sound Architecture Driver Initialized.\n");
- #endif
- 	return 0;
- }
-diff --git a/sound/core/vmaster.c b/sound/core/vmaster.c
-index 842a97d5fc3a..6c58e6f73a01 100644
---- a/sound/core/vmaster.c
-+++ b/sound/core/vmaster.c
-@@ -101,7 +101,7 @@ static int slave_init(struct link_slave *slave)
- 	if (slave->info.count > 2  ||
- 	    (slave->info.type != SNDRV_CTL_ELEM_TYPE_INTEGER &&
- 	     slave->info.type != SNDRV_CTL_ELEM_TYPE_BOOLEAN)) {
--		snd_printk(KERN_ERR "invalid slave element\n");
-+		pr_err("ALSA: vmaster: invalid slave element\n");
- 		kfree(uinfo);
+@@ -2519,7 +2515,7 @@ static long snd_pcm_oss_ioctl(struct file *file, unsigned int cmd, unsigned long
+ 	if (((cmd >> 8) & 0xff) != 'P')
  		return -EINVAL;
+ #ifdef OSS_DEBUG
+-	printk(KERN_DEBUG "pcm_oss: ioctl = 0x%x\n", cmd);
++	pr_debug("pcm_oss: ioctl = 0x%x\n", cmd);
+ #endif
+ 	switch (cmd) {
+ 	case SNDCTL_DSP_RESET:
+@@ -2646,7 +2642,7 @@ static long snd_pcm_oss_ioctl(struct file *file, unsigned int cmd, unsigned long
+ 	case SNDCTL_DSP_PROFILE:
+ 		return 0;	/* silently ignore */
+ 	default:
+-		snd_printd("pcm_oss: unknown command = 0x%x\n", cmd);
++		pr_debug("pcm_oss: unknown command = 0x%x\n", cmd);
  	}
+ 	return -EINVAL;
+ }
+@@ -2673,8 +2669,9 @@ static ssize_t snd_pcm_oss_read(struct file *file, char __user *buf, size_t coun
+ #else
+ 	{
+ 		ssize_t res = snd_pcm_oss_read1(substream, buf, count);
+-		printk(KERN_DEBUG "pcm_oss: read %li bytes "
+-		       "(returned %li bytes)\n", (long)count, (long)res);
++		pcm_dbg(substream->pcm,
++			"pcm_oss: read %li bytes (returned %li bytes)\n",
++			(long)count, (long)res);
+ 		return res;
+ 	}
+ #endif
+@@ -2693,7 +2690,7 @@ static ssize_t snd_pcm_oss_write(struct file *file, const char __user *buf, size
+ 	substream->f_flags = file->f_flags & O_NONBLOCK;
+ 	result = snd_pcm_oss_write1(substream, buf, count);
+ #ifdef OSS_DEBUG
+-	printk(KERN_DEBUG "pcm_oss: write %li bytes (wrote %li bytes)\n",
++	pcm_dbg(substream->pcm, "pcm_oss: write %li bytes (wrote %li bytes)\n",
+ 	       (long)count, (long)result);
+ #endif
+ 	return result;
+@@ -2772,7 +2769,7 @@ static int snd_pcm_oss_mmap(struct file *file, struct vm_area_struct *area)
+ 	int err;
+ 
+ #ifdef OSS_DEBUG
+-	printk(KERN_DEBUG "pcm_oss: mmap begin\n");
++	pr_debug("pcm_oss: mmap begin\n");
+ #endif
+ 	pcm_oss_file = file->private_data;
+ 	switch ((area->vm_flags & (VM_READ | VM_WRITE))) {
+@@ -2822,7 +2819,7 @@ static int snd_pcm_oss_mmap(struct file *file, struct vm_area_struct *area)
+ 	runtime->silence_threshold = 0;
+ 	runtime->silence_size = 0;
+ #ifdef OSS_DEBUG
+-	printk(KERN_DEBUG "pcm_oss: mmap ok, bytes = 0x%x\n",
++	pr_debug("pcm_oss: mmap ok, bytes = 0x%x\n",
+ 	       runtime->oss.mmap_bytes);
+ #endif
+ 	/* In mmap mode we never stop */
+@@ -3010,7 +3007,7 @@ static void register_oss_dsp(struct snd_pcm *pcm, int index)
+ 	if (snd_register_oss_device(SNDRV_OSS_DEVICE_TYPE_PCM,
+ 				    pcm->card, index, &snd_pcm_oss_f_reg,
+ 				    pcm) < 0) {
+-		snd_printk(KERN_ERR "unable to register OSS PCM device %i:%i\n",
++		pcm_err(pcm, "unable to register OSS PCM device %i:%i\n",
+ 			   pcm->card->number, pcm->device);
+ 	}
+ }
+@@ -3091,12 +3088,12 @@ static int __init alsa_pcm_oss_init(void)
+ 	/* check device map table */
+ 	for (i = 0; i < SNDRV_CARDS; i++) {
+ 		if (dsp_map[i] < 0 || dsp_map[i] >= SNDRV_PCM_DEVICES) {
+-			snd_printk(KERN_ERR "invalid dsp_map[%d] = %d\n",
++			pr_err("ALSA: pcm_oss: invalid dsp_map[%d] = %d\n",
+ 				   i, dsp_map[i]);
+ 			dsp_map[i] = 0;
+ 		}
+ 		if (adsp_map[i] < 0 || adsp_map[i] >= SNDRV_PCM_DEVICES) {
+-			snd_printk(KERN_ERR "invalid adsp_map[%d] = %d\n",
++			pr_err("ALSA: pcm_oss: invalid adsp_map[%d] = %d\n",
+ 				   i, adsp_map[i]);
+ 			adsp_map[i] = 1;
+ 		}
 -- 
 1.8.5.2
