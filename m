@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 13/20] ALSA: sparc: Use SNDRV_DEV_CARD for card
+Subject: [PATCH 17/20] staging: Use SNDRV_DEV_CARD for card
 	objects
-Date: Wed, 12 Feb 2014 11:52:20 +0100
-Message-ID: <1392202347-11774-14-git-send-email-tiwai@suse.de>
+Date: Wed, 12 Feb 2014 11:52:24 +0100
+Message-ID: <1392202347-11774-18-git-send-email-tiwai@suse.de>
 References: <1392202347-11774-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 105402651C8
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B0592651CF
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 11:52:48 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D8E3FAC86
+ by mx2.suse.de (Postfix) with ESMTP id E3667AC8F
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 10:52:47 +0000 (UTC)
 In-Reply-To: <1392202347-11774-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,44 +32,35 @@ No functional change at this point.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/sparc/amd7930.c | 2 +-
- sound/sparc/cs4231.c  | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/media/go7007/snd-go7007.c      | 2 +-
+ drivers/staging/media/solo6x10/solo6x10-g723.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/sparc/amd7930.c b/sound/sparc/amd7930.c
-index 4a85e1433472..a543172cad60 100644
---- a/sound/sparc/amd7930.c
-+++ b/sound/sparc/amd7930.c
-@@ -992,7 +992,7 @@ static int snd_amd7930_create(struct snd_card *card,
- 
- 	spin_unlock_irqrestore(&amd->lock, flags);
- 
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL,
-+	if ((err = snd_device_new(card, SNDRV_DEV_CARD,
- 				  amd, &snd_amd7930_dev_ops)) < 0) {
- 		snd_amd7930_free(amd);
- 		return err;
-diff --git a/sound/sparc/cs4231.c b/sound/sparc/cs4231.c
-index dabc1ad331e2..72a4b53e4d33 100644
---- a/sound/sparc/cs4231.c
-+++ b/sound/sparc/cs4231.c
-@@ -1855,7 +1855,7 @@ static int snd_cs4231_sbus_create(struct snd_card *card,
+diff --git a/drivers/staging/media/go7007/snd-go7007.c b/drivers/staging/media/go7007/snd-go7007.c
+index 9eb2a20ae40a..32c5032284a3 100644
+--- a/drivers/staging/media/go7007/snd-go7007.c
++++ b/drivers/staging/media/go7007/snd-go7007.c
+@@ -251,7 +251,7 @@ int go7007_snd_init(struct go7007 *go)
+ 		kfree(gosnd);
+ 		return ret;
  	}
- 	snd_cs4231_init(chip);
+-	ret = snd_device_new(gosnd->card, SNDRV_DEV_LOWLEVEL, go,
++	ret = snd_device_new(gosnd->card, SNDRV_DEV_CARD, go,
+ 			&go7007_snd_device_ops);
+ 	if (ret < 0) {
+ 		kfree(gosnd);
+diff --git a/drivers/staging/media/solo6x10/solo6x10-g723.c b/drivers/staging/media/solo6x10/solo6x10-g723.c
+index 74f037b6166c..e825256a1f48 100644
+--- a/drivers/staging/media/solo6x10/solo6x10-g723.c
++++ b/drivers/staging/media/solo6x10/solo6x10-g723.c
+@@ -379,7 +379,7 @@ int solo_g723_init(struct solo_dev *solo_dev)
+ 	sprintf(card->longname, "%s on %s IRQ %d", card->shortname,
+ 		pci_name(solo_dev->pdev), solo_dev->pdev->irq);
  
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL,
-+	if ((err = snd_device_new(card, SNDRV_DEV_CARD,
- 				  chip, &snd_cs4231_sbus_dev_ops)) < 0) {
- 		snd_cs4231_sbus_free(chip);
- 		return err;
-@@ -2047,7 +2047,7 @@ static int snd_cs4231_ebus_create(struct snd_card *card,
- 	}
- 	snd_cs4231_init(chip);
+-	ret = snd_device_new(card, SNDRV_DEV_LOWLEVEL, solo_dev, &ops);
++	ret = snd_device_new(card, SNDRV_DEV_CARD, solo_dev, &ops);
+ 	if (ret < 0)
+ 		goto snd_error;
  
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL,
-+	if ((err = snd_device_new(card, SNDRV_DEV_CARD,
- 				  chip, &snd_cs4231_ebus_dev_ops)) < 0) {
- 		snd_cs4231_ebus_free(chip);
- 		return err;
 -- 
 1.8.5.2
