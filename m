@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/2] ASoC: atmel_ssc_dai: add option to
-	choose clock
-Date: Wed, 12 Feb 2014 17:23:42 +0000
-Message-ID: <20140212172342.GI28112@sirena.org.uk>
-References: <1392012586-30790-1-git-send-email-voice.shen@atmel.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [PATCH] ASoC: max98090: sync regcache on entering
+	STANDBY
+Date: Wed, 12 Feb 2014 10:24:54 -0800
+Message-ID: <1392229494-29761-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2586537175153997943=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BADE0260864
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 18:50:44 +0100 (CET)
-In-Reply-To: <1392012586-30790-1-git-send-email-voice.shen@atmel.com>
+Received: from mail-yk0-f201.google.com (mail-yk0-f201.google.com
+ [209.85.160.201])
+ by alsa0.perex.cz (Postfix) with ESMTP id A1EED26084D
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 19:25:14 +0100 (CET)
+Received: by mail-yk0-f201.google.com with SMTP id 142so2145925ykq.0
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 10:25:13 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, linux-doc@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, nicolas.ferre@atmel.com, Liam Girdwood <lgirdwood@gmail.com>, Chas Williams <chas@cmf.nrl.navy.mil>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, linux-atm-general@lists.sourceforge.net, plagnioj@jcrosoft.com, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-sound@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org, Richard Genoud <richard.genoud@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Rob Landley <rob@landley.net>, netdev@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: sachin.kamat@linaro.org, Dylan Reid <dgreid@chromium.org>, broonie@kernel.org, jerry.wong@maximintegrated.com
 List-Id: alsa-devel@alsa-project.org
 
+Sync regcache when entering STANDBY from OFF.  ON isn't entered with
+OFF as the current state, so the registers were not being re-synced
+after suspend/resume.
 
---===============2586537175153997943==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+NAfxSaP7cKOSWOx"
-Content-Disposition: inline
+The 98088 and 98095 already call regcache_sync from STANDBY.
 
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+ sound/soc/codecs/max98090.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
---+NAfxSaP7cKOSWOx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Feb 10, 2014 at 02:09:44PM +0800, Bo Shen wrote:
-> When SSC work in slave mode, the clock can come from TK pin and also
-> can come from RK pin, this is hardware design decided. So, make it
-> available to choose where the clock from.
-
-Applied, thanks.
-
---+NAfxSaP7cKOSWOx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS+64aAAoJELSic+t+oim9HdEP/1s3b2zCDKiZwxz8pMZEXXZL
-PLWDH6glrCLjH0UBXgXvlC2wVgjNlX8EK8HCBWTYBYKEEM0d1TrPojWFG+SMptDV
-41WSQhbPOA7zsuP8dWqk6DwGTgTKgfgSd9G6UZQ8EQ9C87xwvpeuCj0QQNsYYHt8
-7YhksW+zOl5qXuW1Vcf3UX7JFgQ/ihQOPAp+g5CBjM0BkX2a9bH44qWtWNnS9FJo
-vt4GWngybTU/NSB/PQ+bF0abpnGuu2qKjQjc73GBgtCtxkn6NNyQuqi0hPF/PiDP
-2ShBveB6k9UOrYw1qyxzh/ojXNRpBYyRAO1uEKU9dfBFVhri9I0sVGR447h69NEy
-068FPY7kjNYpasyK8OF9lUQzk8llZvenapVhjgaSCV7oqygix4p4S+TetsOJ+/3m
-MuY8Y8XGipyXxRTCI4aGynZp2I4XsQRCXQJWFjZdJWU6i1/2UZQ/YJIuyU1NcyhK
-vAD0qyigXsGaYLyGgyB4wQcG2q8ugL+DnqYygc2/QWPtu2fG4m2P5ca/tKXomBET
-ItcQoVKGOOBpuXY2IG+nRs991r9rDVsiMBYRxd1t9lX7gbTITigIln3JuW9Y8eQx
-Qpb/PnzvP7YSzSgkd2bKFMv9jxffekTlhG+PYATVlYY2gaps/5JnuHh3FwR/kRUq
-vCUR3GvJPsUlOPJRVskW
-=H++v
------END PGP SIGNATURE-----
-
---+NAfxSaP7cKOSWOx--
-
---===============2586537175153997943==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2586537175153997943==--
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 51f9b3d..149b57f 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -1769,16 +1769,6 @@ static int max98090_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+-		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+-			ret = regcache_sync(max98090->regmap);
+-
+-			if (ret != 0) {
+-				dev_err(codec->dev,
+-					"Failed to sync cache: %d\n", ret);
+-				return ret;
+-			}
+-		}
+-
+ 		if (max98090->jack_state == M98090_JACK_STATE_HEADSET) {
+ 			/*
+ 			 * Set to normal bias level.
+@@ -1792,6 +1782,16 @@ static int max98090_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 
+ 	case SND_SOC_BIAS_STANDBY:
++		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
++			ret = regcache_sync(max98090->regmap);
++			if (ret != 0) {
++				dev_err(codec->dev,
++					"Failed to sync cache: %d\n", ret);
++				return ret;
++			}
++		}
++		break;
++
+ 	case SND_SOC_BIAS_OFF:
+ 		/* Set internal pull-up to lowest power mode */
+ 		snd_soc_update_bits(codec, M98090_REG_JACK_DETECT,
+-- 
+1.8.1.3.605.g02339dd
