@@ -1,52 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: fsl-esai: big-endian support
-Date: Wed, 12 Feb 2014 15:32:40 +0000
-Message-ID: <20140212153240.GV28112@sirena.org.uk>
-References: <1392104569-27792-1-git-send-email-Li.Xiubo@freescale.com>
- <1392104569-27792-2-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCH] ASoC: dapm: Add locking to snd_soc_dapm_xxxx_pin
+ functions
+Date: Wed, 12 Feb 2014 15:44:14 +0000
+Message-ID: <20140212154414.GW28112@sirena.org.uk>
+References: <20140210110536.GB6856@opensource.wolfsonmicro.com>
+ <20140210120803.GS1757@sirena.org.uk>
+ <20140212112409.GD16684@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="w3FC1ngOohd+pYSp"
+	protocol="application/pgp-signature"; boundary="cbsCxbAnPLQXdgdB"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1392104569-27792-2-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <20140212112409.GD16684@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, Guangyu.Chen@freescale.com, perex@perex.cz, tiwai@suse.de, shawn.guo@linaro.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: lgirdwood@gmail.com, dmitry.torokhov@gmail.com, myungjoo.ham@samsung.com, cw00.choi@samsung.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---w3FC1ngOohd+pYSp
+--cbsCxbAnPLQXdgdB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 11, 2014 at 03:42:49PM +0800, Xiubo Li wrote:
-> For most platforms, the CPU and ESAI device is in the same endianess
-> mode. While for the LS1 platform, the CPU is in LE mode and the ESAI
-> is in BE mode.
+On Wed, Feb 12, 2014 at 11:24:09AM +0000, Charles Keepax wrote:
+> On Mon, Feb 10, 2014 at 12:08:03PM +0000, Mark Brown wrote:
 
-Applied, thanks.
+> > Unfortunately the fix needs to be in the callers to some extent - there
+> > are situations where you want to do atomic updates of multiple pins so
+> > that we don't end up bouncing the power up and down too much, we need
+> > the unlocked version for things that care.  This means we need to at
+> > least preserve an unlocked version and translate those callers that
+> > might care over to it (not sure if any of them are in mainline).
 
---w3FC1ngOohd+pYSp
+> There are indeed none in mainline at the moment, or at least if
+> there are any they are not holding the lock at the moment so it
+> is not obviously they require atomic update.
+
+Anything doing this off jack detection probably falls into that category
+so the core jack detection code ought to be doing a bulk update.  For
+safety I'd say that anything that's doing multiple updates at once
+should be assumed to expect them to go through together (that is the
+most likely outcome after all and the whole update then sync idiom means
+the code looks that way).
+
+> How would you feel about adding an extra functions that allows the
+> caller to hold the lock and adding locking into the DAPM core for
+> the existing users? Feels like the intention would be more clear
+> and will allow out of mainline users requiring atomic updates to
+> still do that.
+
+That was roughly what I was suggesting, yes.
+
+--cbsCxbAnPLQXdgdB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS+5QVAAoJELSic+t+oim9WIMP/0UbAleCWhd7JqqKymUJADpP
-tHyEC1tztKCtatDS9XFtoANVR0expg4/FDsC1eSKkuSjvXRTK0sgaKJoehWjutEn
-8PXT/56F3FaoDJ2Tt/tVCuOWGjjBYtBMDCAHalaJ+OVqPUGI3icuKzKODxF46l3C
-FpWceOzG4DVr9VBRE2VAkrgK7uAk95Srzx3eIoOjWBv8XqtRAZAq8fQWFFw8wuX4
-QgxYkHeNknf4Ww0bSfmXmyrN9in97SpW/zzgxFu58hYrq36gvIFRIFE8FMdT/m/M
-vRAsx+5hPVXEmO9ixnEkIRK9l3nzHlIQfXXFMTo4Gzejxswwjn5OE5r8wql653Yn
-/5Hfy/uBV8vjbOexK0CwXEYx+rn47NJgtMnGJnyw1QoicVgX+aJLM4YB9iFRrkeN
-OdVWVZpnmvRRhHrHvSAyRH+dezMbVTUfAZ4oaqyb7gI9JGdEIUKbAHGie0WVfLSf
-gDpOHyQPSEzYuP3L3DHjqZVaaX1z3lbHY7E9IZ4EVAYloE3i/KR78VCFhWVZzi60
-XUVD0Wyaz3MB9lOCdUOO0qYAAi4WaKjy+H8jb7Tj4ynKjx4+ZrKXnRp7ZZ34yYyK
-a0WOzUk8HVF/S9+GftY+ieofmc0BJA+3K1hVKBZN3cxCs/l/NwZlX9LAPpI9PcDK
-+MhY9vR+rFgJ+NqMhL8S
-=Dyi9
+iQIcBAEBAgAGBQJS+5bLAAoJELSic+t+oim9/4MP/A+0jGucB4EKFe296N/4qHer
+yY8MtRk9PZso7v+hf72I/ta7Qdvl2VE0Fz4e6RiCUn3m0LiHnEE8FNX25Qy6WgJK
+9aDVZkMx1su9Kx8heCT2yPXlQX4w91XM/92CyT/Iz/to83GEssat9dXXXPKo56Z0
+yQHQ7oj7DVO1BRrPnuofaMjn6MknjWkqNkQ9AbaND4b5DeGL4zlUmrE30qCTLtNH
+zJwJs5b4Vs5ixJpNSNI7uQKXWC5WONWoLyUDjFRAiZV1eEGNGg1+ThHFW/oHKq9/
+uNOZCmvIRtkOxd4X5XRZTWE6ljSHPGvYwEdncrRmi5/3t5iG9TkGAvBAeJ8coRCU
+poLQuuRW9IHFw7khdNLMdbQ+CfxAlaVNgmJdBEemzP+DNbi7N2HqM/1boVmhO5kf
+IhsczHx026qS0mZQ6QaDLAtMhglpvDzt8ajb37oOlkFFWrmpSr2kJYJMM44Huaq1
+2I7DIbsj0rmC04tRwFJrgQ9M0Rh2KPYnHuVCCF8C/hW6jwz4QsJauMGF6wU/ZA85
+RVqe3dOHnC2smnmcL79YyUIbSpmPyyVkoLkEOPhfUFISMcypU2tHGyCHrH4ZEMk6
+NWaMOpJzJT61HuFCmaJscUdFSXpc8mLqJLDbZ4cWJWcbryb6UF1yaN6WLrZxcSJH
+H9OiCziX+PWUumJnlJpD
+=rv9+
 -----END PGP SIGNATURE-----
 
---w3FC1ngOohd+pYSp--
+--cbsCxbAnPLQXdgdB--
