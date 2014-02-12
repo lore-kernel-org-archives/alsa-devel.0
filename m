@@ -1,59 +1,89 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dapm: Add locking to snd_soc_dapm_xxxx_pin
-	functions
-Date: Wed, 12 Feb 2014 11:24:09 +0000
-Message-ID: <20140212112409.GD16684@opensource.wolfsonmicro.com>
-References: <20140210110536.GB6856@opensource.wolfsonmicro.com> <20140210120803.GS1757@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH] ASoC: dapm: Add locking to
+	snd_soc_dapm_xxxx_pin functions
+Date: Wed, 12 Feb 2014 11:26:40 +0000
+Message-ID: <20140212112640.GE16684@opensource.wolfsonmicro.com>
+References: <20140210110536.GB6856@opensource.wolfsonmicro.com> <s5h7g936ru1.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140210120803.GS1757@sirena.org.uk>
+In-Reply-To: <s5h7g936ru1.wl%tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: lgirdwood@gmail.com, dmitry.torokhov@gmail.com, myungjoo.ham@samsung.com, cw00.choi@samsung.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, cw00.choi@samsung.com, myungjoo.ham@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 10, 2014 at 12:08:03PM +0000, Mark Brown wrote:
-> On Mon, Feb 10, 2014 at 11:05:36AM +0000, Charles Keepax wrote:
-> > snd_soc_dapm_disable_pin, snd_soc_dapm_enable_pin and
-> > snd_soc_dapm_force_enable_pin all require the dapm_mutex to be held when
-> > they are called as they edit the dirty list. There are 385 usages of
-> > these functions and only 7 hold the lock whilst calling.
+On Mon, Feb 10, 2014 at 02:05:26PM +0100, Takashi Iwai wrote:
+> At Mon, 10 Feb 2014 11:05:36 +0000,
+> Charles Keepax wrote:
 > > 
-> > This patch moves the locking into snd_soc_dapm_set_pin and fixes up the
-> > places where the lock was held on the caller side. This saves on fixing
-> > up all the current users and also is much more consistant with the rest
-> > of the DAPM API which all handles the locking internally.
+<snip>
+> > 
+> Actually, this fixes also the double-lock in snd_soc_dapm_sync() call
+> in the line below the above.  snd_soc_dapm_sync() itself takes
+> mutex_lock_nested().
+
+Yeah spotted that as I was going through will do this in a
+seperate patch if this one doesn't go in.
+
+<snip>
+> >  static int arizona_haptics_probe(struct platform_device *pdev)
+> > diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> > index dc8ff13..a44b560 100644
+> > --- a/sound/soc/soc-dapm.c
+> > +++ b/sound/soc/soc-dapm.c
+> > @@ -2325,6 +2325,8 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
+> >  {
+> >  	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
+> >  
+> > +	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+> > +
+> >  	if (!w) {
+> >  		dev_err(dapm->dev, "ASoC: DAPM unknown pin %s\n", pin);
+> >  		return -EINVAL;
 > 
-> Unfortunately the fix needs to be in the callers to some extent - there
-> are situations where you want to do atomic updates of multiple pins so
-> that we don't end up bouncing the power up and down too much, we need
-> the unlocked version for things that care.  This means we need to at
-> least preserve an unlocked version and translate those callers that
-> might care over to it (not sure if any of them are in mainline).
+> Missing unlock here.
 
-There are indeed none in mainline at the moment, or at least if
-there are any they are not holding the lock at the moment so it
-is not obviously they require atomic update.
+Good spot thanks, I will update for this.
 
 > 
-> It should also be safe to call the functions without explicit locking
-> during init since we won't run DAPM until we've finished init - it is
-> effectively locked even if we don't actually hold the mutex.  There
-> shouldn't be a race with marking the widget dirty since every widget
-> should start out dirty but I'd have to verify that one.  This will
-> account for a very large proportion of the callers so perhaps it's less
-> of an issue to add the locking to them than you had thought.
+> 
+> > @@ -2337,6 +2339,8 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
+> >  	if (status == 0)
+> >  		w->force = 0;
+> >  
+> > +	mutex_unlock(&dapm->card->dapm_mutex);
+> > +
+> >  	return 0;
+> >  }
+> >  
+> > @@ -3210,15 +3214,11 @@ int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
+> >  	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
+> >  	const char *pin = (const char *)kcontrol->private_value;
+> >  
+> > -	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+> > -
+> >  	if (ucontrol->value.integer.value[0])
+> >  		snd_soc_dapm_enable_pin(&card->dapm, pin);
+> >  	else
+> >  		snd_soc_dapm_disable_pin(&card->dapm, pin);
+> >  
+> > -	mutex_unlock(&card->dapm_mutex);
+> > -
+> >  	snd_soc_dapm_sync(&card->dapm);
+> >  	return 0;
+> >  }
+> 
+> I guess you forgot patching snd_soc_dapm_force_enable_pin()?
+> It's now left unprotected after this patch.
 
-I will have a look I think this would cut the number down to low
-10s of places that need fixed up.
+Also a good point, thanks I will update.
 
-How would you feel about adding an extra functions that allows the
-caller to hold the lock and adding locking into the DAPM core for
-the existing users? Feels like the intention would be more clear
-and will allow out of mainline users requiring atomic updates to
-still do that.
+> 
+> 
+> Takashi
+
 
 Thanks,
 Charles
