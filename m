@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 08/10] ALSA: timer: Use standard printk helpers
-Date: Wed, 12 Feb 2014 12:33:10 +0100
-Message-ID: <1392204792-12655-9-git-send-email-tiwai@suse.de>
+Subject: [PATCH 09/10] ALSA: seq: Use standard printk helpers
+Date: Wed, 12 Feb 2014 12:33:11 +0100
+Message-ID: <1392204792-12655-10-git-send-email-tiwai@suse.de>
 References: <1392204792-12655-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E070265292
+ by alsa0.perex.cz (Postfix) with ESMTP id 8492F265294
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 12:33:18 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id EEC38AC7C
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id F14BFAC82
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 11:33:17 +0000 (UTC)
 In-Reply-To: <1392204792-12655-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,85 +30,484 @@ Use the standard pr_xxx() helpers instead of home-baked snd_print*().
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/hrtimer.c  |  3 +--
- sound/core/rtctimer.c |  3 +--
- sound/core/timer.c    | 13 ++++++-------
- 3 files changed, 8 insertions(+), 11 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 16 ++++++++--------
+ sound/core/seq/seq_device.c    | 16 ++++++++--------
+ sound/core/seq/seq_dummy.c     |  2 +-
+ sound/core/seq/seq_fifo.c      |  2 +-
+ sound/core/seq/seq_lock.c      |  4 ++--
+ sound/core/seq/seq_memory.c    |  8 ++++----
+ sound/core/seq/seq_midi.c      |  8 ++++----
+ sound/core/seq/seq_midi_emul.c |  6 +++---
+ sound/core/seq/seq_ports.c     |  4 ++--
+ sound/core/seq/seq_prioq.c     | 14 +++++++-------
+ sound/core/seq/seq_queue.c     |  2 +-
+ sound/core/seq/seq_timer.c     | 10 +++++-----
+ sound/core/seq/seq_virmidi.c   |  2 +-
+ 13 files changed, 47 insertions(+), 47 deletions(-)
 
-diff --git a/sound/core/hrtimer.c b/sound/core/hrtimer.c
-index b8b31c433d64..886be7da989d 100644
---- a/sound/core/hrtimer.c
-+++ b/sound/core/hrtimer.c
-@@ -126,8 +126,7 @@ static int __init snd_hrtimer_init(void)
- 
- 	hrtimer_get_res(CLOCK_MONOTONIC, &tp);
- 	if (tp.tv_sec > 0 || !tp.tv_nsec) {
--		snd_printk(KERN_ERR
--			   "snd-hrtimer: Invalid resolution %u.%09u",
-+		pr_err("snd-hrtimer: Invalid resolution %u.%09u",
- 			   (unsigned)tp.tv_sec, (unsigned)tp.tv_nsec);
- 		return -EINVAL;
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 4dc6bae80e15..9ca5e647e54b 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -123,7 +123,7 @@ static inline int snd_seq_write_pool_allocated(struct snd_seq_client *client)
+ static struct snd_seq_client *clientptr(int clientid)
+ {
+ 	if (clientid < 0 || clientid >= SNDRV_SEQ_MAX_CLIENTS) {
+-		snd_printd("Seq: oops. Trying to get pointer to client %d\n",
++		pr_debug("ALSA: seq: oops. Trying to get pointer to client %d\n",
+ 			   clientid);
+ 		return NULL;
  	}
-diff --git a/sound/core/rtctimer.c b/sound/core/rtctimer.c
-index b27223746b0e..f3420d11a12f 100644
---- a/sound/core/rtctimer.c
-+++ b/sound/core/rtctimer.c
-@@ -132,8 +132,7 @@ static int __init rtctimer_init(void)
+@@ -136,7 +136,7 @@ struct snd_seq_client *snd_seq_client_use_ptr(int clientid)
+ 	struct snd_seq_client *client;
  
- 	if (rtctimer_freq < 2 || rtctimer_freq > 8192 ||
- 	    !is_power_of_2(rtctimer_freq)) {
--		snd_printk(KERN_ERR "rtctimer: invalid frequency %d\n",
--			   rtctimer_freq);
-+		pr_err("ALSA: rtctimer: invalid frequency %d\n", rtctimer_freq);
- 		return -EINVAL;
+ 	if (clientid < 0 || clientid >= SNDRV_SEQ_MAX_CLIENTS) {
+-		snd_printd("Seq: oops. Trying to get pointer to client %d\n",
++		pr_debug("ALSA: seq: oops. Trying to get pointer to client %d\n",
+ 			   clientid);
+ 		return NULL;
  	}
+@@ -291,8 +291,8 @@ static void seq_free_client(struct snd_seq_client * client)
+ 	mutex_lock(&register_mutex);
+ 	switch (client->type) {
+ 	case NO_CLIENT:
+-		snd_printk(KERN_WARNING "Seq: Trying to free unused client %d\n",
+-			   client->number);
++		pr_warn("ALSA: seq: Trying to free unused client %d\n",
++			client->number);
+ 		break;
+ 	case USER_CLIENT:
+ 	case KERNEL_CLIENT:
+@@ -301,7 +301,7 @@ static void seq_free_client(struct snd_seq_client * client)
+ 		break;
  
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index cbec51464c5b..cfd455a8ac1a 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -240,7 +240,8 @@ int snd_timer_open(struct snd_timer_instance **ti,
- 		/* open a slave instance */
- 		if (tid->dev_sclass <= SNDRV_TIMER_SCLASS_NONE ||
- 		    tid->dev_sclass > SNDRV_TIMER_SCLASS_OSS_SEQUENCER) {
--			snd_printd("invalid slave class %i\n", tid->dev_sclass);
-+			pr_debug("ALSA: timer: invalid slave class %i\n",
-+				 tid->dev_sclass);
- 			return -EINVAL;
- 		}
- 		mutex_lock(&register_mutex);
-@@ -774,7 +775,7 @@ int snd_timer_new(struct snd_card *card, char *id, struct snd_timer_id *tid,
- 		*rtimer = NULL;
- 	timer = kzalloc(sizeof(*timer), GFP_KERNEL);
- 	if (timer == NULL) {
--		snd_printk(KERN_ERR "timer: cannot allocate\n");
-+		pr_err("ALSA: timer: cannot allocate\n");
+ 	default:
+-		snd_printk(KERN_ERR "Seq: Trying to free client %d with undefined type = %d\n",
++		pr_err("ALSA: seq: Trying to free client %d with undefined type = %d\n",
+ 			   client->number, client->type);
+ 	}
+ 	mutex_unlock(&register_mutex);
+@@ -773,7 +773,7 @@ static int broadcast_event(struct snd_seq_client *client,
+ static int multicast_event(struct snd_seq_client *client, struct snd_seq_event *event,
+ 			   int atomic, int hop)
+ {
+-	snd_printd("seq: multicast not supported yet.\n");
++	pr_debug("ALSA: seq: multicast not supported yet.\n");
+ 	return 0; /* ignored */
+ }
+ #endif /* SUPPORT_BROADCAST */
+@@ -794,7 +794,7 @@ static int snd_seq_deliver_event(struct snd_seq_client *client, struct snd_seq_e
+ 
+ 	hop++;
+ 	if (hop >= SNDRV_SEQ_MAX_HOPS) {
+-		snd_printd("too long delivery path (%d:%d->%d:%d)\n",
++		pr_debug("ALSA: seq: too long delivery path (%d:%d->%d:%d)\n",
+ 			   event->source.client, event->source.port,
+ 			   event->dest.client, event->dest.port);
+ 		return -EMLINK;
+@@ -2196,7 +2196,7 @@ static int snd_seq_do_ioctl(struct snd_seq_client *client, unsigned int cmd,
+ 		if (p->cmd == cmd)
+ 			return p->func(client, arg);
+ 	}
+-	snd_printd("seq unknown ioctl() 0x%x (type='%c', number=0x%02x)\n",
++	pr_debug("ALSA: seq unknown ioctl() 0x%x (type='%c', number=0x%02x)\n",
+ 		   cmd, _IOC_TYPE(cmd), _IOC_NR(cmd));
+ 	return -ENOTTY;
+ }
+diff --git a/sound/core/seq/seq_device.c b/sound/core/seq/seq_device.c
+index 040c60e1da28..e82111cd10c0 100644
+--- a/sound/core/seq/seq_device.c
++++ b/sound/core/seq/seq_device.c
+@@ -325,7 +325,7 @@ int snd_seq_device_register_driver(char *id, struct snd_seq_dev_ops *entry,
  		return -ENOMEM;
  	}
- 	timer->tmr_class = tid->dev_class;
-@@ -813,7 +814,7 @@ static int snd_timer_free(struct snd_timer *timer)
- 	if (! list_empty(&timer->open_list_head)) {
- 		struct list_head *p, *n;
- 		struct snd_timer_instance *ti;
--		snd_printk(KERN_WARNING "timer %p is busy?\n", timer);
-+		pr_warn("ALSA: timer %p is busy?\n", timer);
- 		list_for_each_safe(p, n, &timer->open_list_head) {
- 			list_del_init(p);
- 			ti = list_entry(p, struct snd_timer_instance, open_list);
-@@ -1955,12 +1956,10 @@ static int __init alsa_timer_init(void)
- #endif
+ 	if (ops->driver & DRIVER_LOADED) {
+-		snd_printk(KERN_WARNING "driver_register: driver '%s' already exists\n", id);
++		pr_warn("ALSA: seq: driver_register: driver '%s' already exists\n", id);
+ 		unlock_driver(ops);
+ 		snd_seq_autoload_unlock();
+ 		return -EBUSY;
+@@ -398,7 +398,7 @@ int snd_seq_device_unregister_driver(char *id)
+ 		return -ENXIO;
+ 	if (! (ops->driver & DRIVER_LOADED) ||
+ 	    (ops->driver & DRIVER_LOCKED)) {
+-		snd_printk(KERN_ERR "driver_unregister: cannot unload driver '%s': status=%x\n",
++		pr_err("ALSA: seq: driver_unregister: cannot unload driver '%s': status=%x\n",
+ 			   id, ops->driver);
+ 		unlock_driver(ops);
+ 		return -EBUSY;
+@@ -413,7 +413,7 @@ int snd_seq_device_unregister_driver(char *id)
  
- 	if ((err = snd_timer_register_system()) < 0)
--		snd_printk(KERN_ERR "unable to register system timer (%i)\n",
--			   err);
-+		pr_err("ALSA: unable to register system timer (%i)\n", err);
- 	if ((err = snd_register_device(SNDRV_DEVICE_TYPE_TIMER, NULL, 0,
- 				       &snd_timer_f_ops, NULL, "timer")) < 0)
--		snd_printk(KERN_ERR "unable to register timer device (%i)\n",
--			   err);
-+		pr_err("ALSA: unable to register timer device (%i)\n", err);
- 	snd_timer_proc_init();
- 	return 0;
+ 	ops->driver = 0;
+ 	if (ops->num_init_devices > 0)
+-		snd_printk(KERN_ERR "free_driver: init_devices > 0!! (%d)\n",
++		pr_err("ALSA: seq: free_driver: init_devices > 0!! (%d)\n",
+ 			   ops->num_init_devices);
+ 	mutex_unlock(&ops->reg_mutex);
+ 
+@@ -459,7 +459,7 @@ static int init_device(struct snd_seq_device *dev, struct ops_list *ops)
+ 	if (dev->status != SNDRV_SEQ_DEVICE_FREE)
+ 		return 0; /* already initialized */
+ 	if (ops->argsize != dev->argsize) {
+-		snd_printk(KERN_ERR "incompatible device '%s' for plug-in '%s' (%d %d)\n",
++		pr_err("ALSA: seq: incompatible device '%s' for plug-in '%s' (%d %d)\n",
+ 			   dev->name, ops->id, ops->argsize, dev->argsize);
+ 		return -EINVAL;
+ 	}
+@@ -467,7 +467,7 @@ static int init_device(struct snd_seq_device *dev, struct ops_list *ops)
+ 		dev->status = SNDRV_SEQ_DEVICE_REGISTERED;
+ 		ops->num_init_devices++;
+ 	} else {
+-		snd_printk(KERN_ERR "init_device failed: %s: %s\n",
++		pr_err("ALSA: seq: init_device failed: %s: %s\n",
+ 			   dev->name, dev->id);
+ 	}
+ 
+@@ -486,7 +486,7 @@ static int free_device(struct snd_seq_device *dev, struct ops_list *ops)
+ 	if (dev->status != SNDRV_SEQ_DEVICE_REGISTERED)
+ 		return 0; /* not registered */
+ 	if (ops->argsize != dev->argsize) {
+-		snd_printk(KERN_ERR "incompatible device '%s' for plug-in '%s' (%d %d)\n",
++		pr_err("ALSA: seq: incompatible device '%s' for plug-in '%s' (%d %d)\n",
+ 			   dev->name, ops->id, ops->argsize, dev->argsize);
+ 		return -EINVAL;
+ 	}
+@@ -495,7 +495,7 @@ static int free_device(struct snd_seq_device *dev, struct ops_list *ops)
+ 		dev->driver_data = NULL;
+ 		ops->num_init_devices--;
+ 	} else {
+-		snd_printk(KERN_ERR "free_device failed: %s: %s\n",
++		pr_err("ALSA: seq: free_device failed: %s: %s\n",
+ 			   dev->name, dev->id);
+ 	}
+ 
+@@ -559,7 +559,7 @@ static void __exit alsa_seq_device_exit(void)
+ 	snd_info_free_entry(info_entry);
+ #endif
+ 	if (num_ops)
+-		snd_printk(KERN_ERR "drivers not released (%d)\n", num_ops);
++		pr_err("ALSA: seq: drivers not released (%d)\n", num_ops);
  }
+ 
+ module_init(alsa_seq_device_init)
+diff --git a/sound/core/seq/seq_dummy.c b/sound/core/seq/seq_dummy.c
+index dbc550716790..ec667f158f19 100644
+--- a/sound/core/seq/seq_dummy.c
++++ b/sound/core/seq/seq_dummy.c
+@@ -198,7 +198,7 @@ register_client(void)
+ 	int i;
+ 
+ 	if (ports < 1) {
+-		snd_printk(KERN_ERR "invalid number of ports %d\n", ports);
++		pr_err("ALSA: seq_dummy: invalid number of ports %d\n", ports);
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/sound/core/seq/seq_fifo.c b/sound/core/seq/seq_fifo.c
+index 0d75afa786bc..559989992bef 100644
+--- a/sound/core/seq/seq_fifo.c
++++ b/sound/core/seq/seq_fifo.c
+@@ -34,7 +34,7 @@ struct snd_seq_fifo *snd_seq_fifo_new(int poolsize)
+ 
+ 	f = kzalloc(sizeof(*f), GFP_KERNEL);
+ 	if (f == NULL) {
+-		snd_printd("malloc failed for snd_seq_fifo_new() \n");
++		pr_debug("ALSA: seq: malloc failed for snd_seq_fifo_new() \n");
+ 		return NULL;
+ 	}
+ 
+diff --git a/sound/core/seq/seq_lock.c b/sound/core/seq/seq_lock.c
+index 2cfe50c71a9d..3b693e924db7 100644
+--- a/sound/core/seq/seq_lock.c
++++ b/sound/core/seq/seq_lock.c
+@@ -31,12 +31,12 @@ void snd_use_lock_sync_helper(snd_use_lock_t *lockp, const char *file, int line)
+ 	int max_count = 5 * HZ;
+ 
+ 	if (atomic_read(lockp) < 0) {
+-		printk(KERN_WARNING "seq_lock: lock trouble [counter = %d] in %s:%d\n", atomic_read(lockp), file, line);
++		pr_warn("ALSA: seq_lock: lock trouble [counter = %d] in %s:%d\n", atomic_read(lockp), file, line);
+ 		return;
+ 	}
+ 	while (atomic_read(lockp) > 0) {
+ 		if (max_count == 0) {
+-			snd_printk(KERN_WARNING "seq_lock: timeout [%d left] in %s:%d\n", atomic_read(lockp), file, line);
++			pr_warn("ALSA: seq_lock: timeout [%d left] in %s:%d\n", atomic_read(lockp), file, line);
+ 			break;
+ 		}
+ 		schedule_timeout_uninterruptible(1);
+diff --git a/sound/core/seq/seq_memory.c b/sound/core/seq/seq_memory.c
+index f478f770bf52..1e206de0c2dd 100644
+--- a/sound/core/seq/seq_memory.c
++++ b/sound/core/seq/seq_memory.c
+@@ -236,7 +236,7 @@ static int snd_seq_cell_alloc(struct snd_seq_pool *pool,
+ 	init_waitqueue_entry(&wait, current);
+ 	spin_lock_irqsave(&pool->lock, flags);
+ 	if (pool->ptr == NULL) {	/* not initialized */
+-		snd_printd("seq: pool is not initialized\n");
++		pr_debug("ALSA: seq: pool is not initialized\n");
+ 		err = -EINVAL;
+ 		goto __error;
+ 	}
+@@ -388,7 +388,7 @@ int snd_seq_pool_init(struct snd_seq_pool *pool)
+ 
+ 	pool->ptr = vmalloc(sizeof(struct snd_seq_event_cell) * pool->size);
+ 	if (pool->ptr == NULL) {
+-		snd_printd("seq: malloc for sequencer events failed\n");
++		pr_debug("ALSA: seq: malloc for sequencer events failed\n");
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -431,7 +431,7 @@ int snd_seq_pool_done(struct snd_seq_pool *pool)
+ 
+ 	while (atomic_read(&pool->counter) > 0) {
+ 		if (max_count == 0) {
+-			snd_printk(KERN_WARNING "snd_seq_pool_done timeout: %d cells remain\n", atomic_read(&pool->counter));
++			pr_warn("ALSA: snd_seq_pool_done timeout: %d cells remain\n", atomic_read(&pool->counter));
+ 			break;
+ 		}
+ 		schedule_timeout_uninterruptible(1);
+@@ -464,7 +464,7 @@ struct snd_seq_pool *snd_seq_pool_new(int poolsize)
+ 	/* create pool block */
+ 	pool = kzalloc(sizeof(*pool), GFP_KERNEL);
+ 	if (pool == NULL) {
+-		snd_printd("seq: malloc failed for pool\n");
++		pr_debug("ALSA: seq: malloc failed for pool\n");
+ 		return NULL;
+ 	}
+ 	spin_lock_init(&pool->lock);
+diff --git a/sound/core/seq/seq_midi.c b/sound/core/seq/seq_midi.c
+index 64069dbf89ca..3e05c55a2880 100644
+--- a/sound/core/seq/seq_midi.c
++++ b/sound/core/seq/seq_midi.c
+@@ -121,7 +121,7 @@ static int dump_midi(struct snd_rawmidi_substream *substream, const char *buf, i
+ 	runtime = substream->runtime;
+ 	if ((tmp = runtime->avail) < count) {
+ 		if (printk_ratelimit())
+-			snd_printk(KERN_ERR "MIDI output buffer overrun\n");
++			pr_err("ALSA: seq_midi: MIDI output buffer overrun\n");
+ 		return -ENOMEM;
+ 	}
+ 	if (snd_rawmidi_kernel_write(substream, buf, count) < count)
+@@ -145,7 +145,7 @@ static int event_process_midi(struct snd_seq_event *ev, int direct,
+ 	if (ev->type == SNDRV_SEQ_EVENT_SYSEX) {	/* special case, to save space */
+ 		if ((ev->flags & SNDRV_SEQ_EVENT_LENGTH_MASK) != SNDRV_SEQ_EVENT_LENGTH_VARIABLE) {
+ 			/* invalid event */
+-			snd_printd("seq_midi: invalid sysex event flags = 0x%x\n", ev->flags);
++			pr_debug("ALSA: seq_midi: invalid sysex event flags = 0x%x\n", ev->flags);
+ 			return 0;
+ 		}
+ 		snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
+@@ -189,7 +189,7 @@ static int midisynth_subscribe(void *private_data, struct snd_seq_port_subscribe
+ 					   msynth->subdevice,
+ 					   SNDRV_RAWMIDI_LFLG_INPUT,
+ 					   &msynth->input_rfile)) < 0) {
+-		snd_printd("midi input open failed!!!\n");
++		pr_debug("ALSA: seq_midi: midi input open failed!!!\n");
+ 		return err;
+ 	}
+ 	runtime = msynth->input_rfile.input->runtime;
+@@ -231,7 +231,7 @@ static int midisynth_use(void *private_data, struct snd_seq_port_subscribe *info
+ 					   msynth->subdevice,
+ 					   SNDRV_RAWMIDI_LFLG_OUTPUT,
+ 					   &msynth->output_rfile)) < 0) {
+-		snd_printd("midi output open failed!!!\n");
++		pr_debug("ALSA: seq_midi: midi output open failed!!!\n");
+ 		return err;
+ 	}
+ 	memset(&params, 0, sizeof(params));
+diff --git a/sound/core/seq/seq_midi_emul.c b/sound/core/seq/seq_midi_emul.c
+index 6f64471ddde3..9b6470cdcf24 100644
+--- a/sound/core/seq/seq_midi_emul.c
++++ b/sound/core/seq/seq_midi_emul.c
+@@ -89,7 +89,7 @@ snd_midi_process_event(struct snd_midi_op *ops,
+ 	int dest_channel = 0;
+ 
+ 	if (ev == NULL || chanset == NULL) {
+-		snd_printd("ev or chanbase NULL (snd_midi_process_event)\n");
++		pr_debug("ALSA: seq_midi_emul: ev or chanbase NULL (snd_midi_process_event)\n");
+ 		return;
+ 	}
+ 	if (chanset->channels == NULL)
+@@ -98,7 +98,7 @@ snd_midi_process_event(struct snd_midi_op *ops,
+ 	if (snd_seq_ev_is_channel_type(ev)) {
+ 		dest_channel = ev->data.note.channel;
+ 		if (dest_channel >= chanset->max_channels) {
+-			snd_printd("dest channel is %d, max is %d\n",
++			pr_debug("ALSA: seq_midi_emul: dest channel is %d, max is %d\n",
+ 				   dest_channel, chanset->max_channels);
+ 			return;
+ 		}
+@@ -232,7 +232,7 @@ snd_midi_process_event(struct snd_midi_op *ops,
+ 	case SNDRV_SEQ_EVENT_ECHO:
+ 	not_yet:
+ 	default:
+-		/*snd_printd("Unimplemented event %d\n", ev->type);*/
++		/*pr_debug("ALSA: seq_midi_emul: Unimplemented event %d\n", ev->type);*/
+ 		break;
+ 	}
+ }
+diff --git a/sound/core/seq/seq_ports.c b/sound/core/seq/seq_ports.c
+index 9516e5ce3aad..794a341bf0e5 100644
+--- a/sound/core/seq/seq_ports.c
++++ b/sound/core/seq/seq_ports.c
+@@ -135,14 +135,14 @@ struct snd_seq_client_port *snd_seq_create_port(struct snd_seq_client *client,
+ 		return NULL;
+ 
+ 	if (client->num_ports >= SNDRV_SEQ_MAX_PORTS - 1) {
+-		snd_printk(KERN_WARNING "too many ports for client %d\n", client->number);
++		pr_warn("ALSA: seq: too many ports for client %d\n", client->number);
+ 		return NULL;
+ 	}
+ 
+ 	/* create a new port */
+ 	new_port = kzalloc(sizeof(*new_port), GFP_KERNEL);
+ 	if (! new_port) {
+-		snd_printd("malloc failed for registering client port\n");
++		pr_debug("ALSA: seq: malloc failed for registering client port\n");
+ 		return NULL;	/* failure, out of memory */
+ 	}
+ 	/* init port data */
+diff --git a/sound/core/seq/seq_prioq.c b/sound/core/seq/seq_prioq.c
+index 29896ab23403..021b02bc9330 100644
+--- a/sound/core/seq/seq_prioq.c
++++ b/sound/core/seq/seq_prioq.c
+@@ -60,7 +60,7 @@ struct snd_seq_prioq *snd_seq_prioq_new(void)
+ 
+ 	f = kzalloc(sizeof(*f), GFP_KERNEL);
+ 	if (f == NULL) {
+-		snd_printd("oops: malloc failed for snd_seq_prioq_new()\n");
++		pr_debug("ALSA: seq: malloc failed for snd_seq_prioq_new()\n");
+ 		return NULL;
+ 	}
+ 	
+@@ -79,7 +79,7 @@ void snd_seq_prioq_delete(struct snd_seq_prioq **fifo)
+ 	*fifo = NULL;
+ 
+ 	if (f == NULL) {
+-		snd_printd("oops: snd_seq_prioq_delete() called with NULL prioq\n");
++		pr_debug("ALSA: seq: snd_seq_prioq_delete() called with NULL prioq\n");
+ 		return;
+ 	}
+ 
+@@ -197,7 +197,7 @@ int snd_seq_prioq_cell_in(struct snd_seq_prioq * f,
+ 		cur = cur->next;
+ 		if (! --count) {
+ 			spin_unlock_irqrestore(&f->lock, flags);
+-			snd_printk(KERN_ERR "cannot find a pointer.. infinite loop?\n");
++			pr_err("ALSA: seq: cannot find a pointer.. infinite loop?\n");
+ 			return -EINVAL;
+ 		}
+ 	}
+@@ -223,7 +223,7 @@ struct snd_seq_event_cell *snd_seq_prioq_cell_out(struct snd_seq_prioq *f)
+ 	unsigned long flags;
+ 
+ 	if (f == NULL) {
+-		snd_printd("oops: snd_seq_prioq_cell_in() called with NULL prioq\n");
++		pr_debug("ALSA: seq: snd_seq_prioq_cell_in() called with NULL prioq\n");
+ 		return NULL;
+ 	}
+ 	spin_lock_irqsave(&f->lock, flags);
+@@ -248,7 +248,7 @@ struct snd_seq_event_cell *snd_seq_prioq_cell_out(struct snd_seq_prioq *f)
+ int snd_seq_prioq_avail(struct snd_seq_prioq * f)
+ {
+ 	if (f == NULL) {
+-		snd_printd("oops: snd_seq_prioq_cell_in() called with NULL prioq\n");
++		pr_debug("ALSA: seq: snd_seq_prioq_cell_in() called with NULL prioq\n");
+ 		return 0;
+ 	}
+ 	return f->cells;
+@@ -259,7 +259,7 @@ int snd_seq_prioq_avail(struct snd_seq_prioq * f)
+ struct snd_seq_event_cell *snd_seq_prioq_cell_peek(struct snd_seq_prioq * f)
+ {
+ 	if (f == NULL) {
+-		snd_printd("oops: snd_seq_prioq_cell_in() called with NULL prioq\n");
++		pr_debug("ALSA: seq: snd_seq_prioq_cell_in() called with NULL prioq\n");
+ 		return NULL;
+ 	}
+ 	return f->head;
+@@ -321,7 +321,7 @@ void snd_seq_prioq_leave(struct snd_seq_prioq * f, int client, int timestamp)
+ 			freeprev = cell;
+ 		} else {
+ #if 0
+-			printk(KERN_DEBUG "type = %i, source = %i, dest = %i, "
++			pr_debug("ALSA: seq: type = %i, source = %i, dest = %i, "
+ 			       "client = %i\n",
+ 				cell->event.type,
+ 				cell->event.source.client,
+diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
+index f9077361c119..aad4878cee55 100644
+--- a/sound/core/seq/seq_queue.c
++++ b/sound/core/seq/seq_queue.c
+@@ -112,7 +112,7 @@ static struct snd_seq_queue *queue_new(int owner, int locked)
+ 
+ 	q = kzalloc(sizeof(*q), GFP_KERNEL);
+ 	if (q == NULL) {
+-		snd_printd("malloc failed for snd_seq_queue_new()\n");
++		pr_debug("ALSA: seq: malloc failed for snd_seq_queue_new()\n");
+ 		return NULL;
+ 	}
+ 
+diff --git a/sound/core/seq/seq_timer.c b/sound/core/seq/seq_timer.c
+index 24d44b2f61ac..e73605393eee 100644
+--- a/sound/core/seq/seq_timer.c
++++ b/sound/core/seq/seq_timer.c
+@@ -57,7 +57,7 @@ struct snd_seq_timer *snd_seq_timer_new(void)
+ 	
+ 	tmr = kzalloc(sizeof(*tmr), GFP_KERNEL);
+ 	if (tmr == NULL) {
+-		snd_printd("malloc failed for snd_seq_timer_new() \n");
++		pr_debug("ALSA: seq: malloc failed for snd_seq_timer_new() \n");
+ 		return NULL;
+ 	}
+ 	spin_lock_init(&tmr->lock);
+@@ -78,7 +78,7 @@ void snd_seq_timer_delete(struct snd_seq_timer **tmr)
+ 	*tmr = NULL;
+ 
+ 	if (t == NULL) {
+-		snd_printd("oops: snd_seq_timer_delete() called with NULL timer\n");
++		pr_debug("ALSA: seq: snd_seq_timer_delete() called with NULL timer\n");
+ 		return;
+ 	}
+ 	t->running = 0;
+@@ -199,7 +199,7 @@ int snd_seq_timer_set_ppq(struct snd_seq_timer * tmr, int ppq)
+ 		/* refuse to change ppq on running timers */
+ 		/* because it will upset the song position (ticks) */
+ 		spin_unlock_irqrestore(&tmr->lock, flags);
+-		snd_printd("seq: cannot change ppq of a running timer\n");
++		pr_debug("ALSA: seq: cannot change ppq of a running timer\n");
+ 		return -EBUSY;
+ 	}
+ 
+@@ -252,7 +252,7 @@ int snd_seq_timer_set_skew(struct snd_seq_timer *tmr, unsigned int skew,
+ 
+ 	/* FIXME */
+ 	if (base != SKEW_BASE) {
+-		snd_printd("invalid skew base 0x%x\n", base);
++		pr_debug("ALSA: seq: invalid skew base 0x%x\n", base);
+ 		return -EINVAL;
+ 	}
+ 	spin_lock_irqsave(&tmr->lock, flags);
+@@ -292,7 +292,7 @@ int snd_seq_timer_open(struct snd_seq_queue *q)
+ 		}
+ 	}
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "seq fatal error: cannot create timer (%i)\n", err);
++		pr_err("ALSA: seq fatal error: cannot create timer (%i)\n", err);
+ 		return err;
+ 	}
+ 	t->callback = snd_seq_timer_interrupt;
+diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
+index 4b50e604276d..56e0f4cd3f82 100644
+--- a/sound/core/seq/seq_virmidi.c
++++ b/sound/core/seq/seq_virmidi.c
+@@ -446,7 +446,7 @@ static int snd_virmidi_dev_register(struct snd_rawmidi *rmidi)
+ 		/* should check presence of port more strictly.. */
+ 		break;
+ 	default:
+-		snd_printk(KERN_ERR "seq_mode is not set: %d\n", rdev->seq_mode);
++		pr_err("ALSA: seq_virmidi: seq_mode is not set: %d\n", rdev->seq_mode);
+ 		return -EINVAL;
+ 	}
+ 	return 0;
 -- 
 1.8.5.2
