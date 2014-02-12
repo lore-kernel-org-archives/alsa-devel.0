@@ -1,79 +1,130 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: [PATCH] ASoC: max98090: sync regcache on entering
-	STANDBY
-Date: Wed, 12 Feb 2014 10:24:54 -0800
-Message-ID: <1392229494-29761-1-git-send-email-dgreid@chromium.org>
+From: Martin Kepplinger <martink@posteo.de>
+Subject: Re: [BUG]3.14-rc2 [PATCH] Revert "ALSA: hda/realtek - Avoid invalid
+ COEFs for ALC271X"
+Date: Wed, 12 Feb 2014 19:31:36 +0100
+Message-ID: <52FBBE08.5030902@posteo.de>
+References: <1392221363-5447-1-git-send-email-martink@posteo.de> <s5h4n445mm2.wl%tiwai@suse.de> <s5hwqh046w5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f201.google.com (mail-yk0-f201.google.com
- [209.85.160.201])
- by alsa0.perex.cz (Postfix) with ESMTP id A1EED26084D
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 19:25:14 +0100 (CET)
-Received: by mail-yk0-f201.google.com with SMTP id 142so2145925ykq.0
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 10:25:13 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sachin.kamat@linaro.org, Dylan Reid <dgreid@chromium.org>, broonie@kernel.org, jerry.wong@maximintegrated.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hwqh046w5.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, david.henningsson@canonical.com, hui.wang@canonical.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Sync regcache when entering STANDBY from OFF.  ON isn't entered with
-OFF as the current state, so the registers were not being re-synced
-after suspend/resume.
+Am 2014-02-12 17:45, schrieb Takashi Iwai:
+> At Wed, 12 Feb 2014 17:20:21 +0100,
+> Takashi Iwai wrote:
+>>
+>> At Wed, 12 Feb 2014 17:09:23 +0100,
+>> Martin Kepplinger wrote:
+>>>
+>>> This reverts commit d3c56568f43807135f2c2a09582a69f809f0d8b7.
+>>>
+>>> The reverted commit breaks audio through headphone line out on
+>>> the Acer TravelMate B113 (Type1Sku0) Notebook, my main work
+>>> machine. I don't know much about it but this fixes my problem.
+>>> Bisected and tested.
+>>>
+>>> Tested-by: Martin Kepplinger <martink@posteo.de>
+>>> Signed-off-by: Martin Kepplinger <martink@posteo.de>
+>>
+>> Too bad, we need COEF for some machine but it breaks for some.
+>> Since reverting breaks obviously another machine, we need a different
+>> approach, e.g. checking the machine ID.  Please give alsa-info.sh
+>> output of your machine.
+> 
+> Thinking it again, I'll take your patch as is, and put an additional
+> fix for AO725 as below.  Could you try it to see whether it brings any
+> regressions?  It's to be applied after your revert patch.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda - Better fix for invalid COEF setup on Acer AO725
+> 
+> Instead of disabling the COEF setup for all ALC271X codec (like commit
+> d3c56568), do it only if needed.  Currently, Acer AO725 is known to
+> show the problem, so clear the bad init_hook in the fixup.
+> 
+> The explicit call of alc269_fill_coef() in patch_alc269() is also
+> removed, since the function will be called anyway at init callback.
+> 
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=52181
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/patch_realtek.c | 18 ++++++++++++++++--
+>  1 file changed, 16 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index a9a83b85517a..eaff10598f67 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -3817,6 +3817,14 @@ static void alc290_fixup_mono_speakers(struct hda_codec *codec,
+>  	}
+>  }
+>  
+> +static void alc_fixup_clear_init_hook(struct hda_codec *codec,
+> +				      const struct hda_fixup *fix, int action)
+> +{
+> +	struct alc_spec *spec = codec->spec;
+> +	if (action == HDA_FIXUP_ACT_PROBE)
+> +		spec->init_hook = NULL;
+> +}
+> +
+>  /* for hda_fixup_thinkpad_acpi() */
+>  #include "thinkpad_helper.c"
+>  
+> @@ -3858,6 +3866,7 @@ enum {
+>  	ALC271_FIXUP_HP_GATE_MIC_JACK,
+>  	ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572,
+>  	ALC269_FIXUP_ACER_AC700,
+> +	ALC271_FIXUP_ACER_AO725,
+>  	ALC269_FIXUP_LIMIT_INT_MIC_BOOST,
+>  	ALC269VB_FIXUP_ASUS_ZENBOOK,
+>  	ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A,
+> @@ -4250,13 +4259,19 @@ static const struct hda_fixup alc269_fixups[] = {
+>  		.type = HDA_FIXUP_FUNC,
+>  		.v.func = alc_fixup_headset_mode_alc255,
+>  	},
+> +	[ALC271_FIXUP_ACER_AO725] = {
+> +		.type = HDA_FIXUP_FUNC,
+> +		.v.func = alc_fixup_clear_init_hook,
+> +		.chained = true,
+> +		.chain_id = ALC271_FIXUP_HP_GATE_MIC_JACK,
+> +	},
+>  };
+>  
+>  static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0x1025, 0x029b, "Acer 1810TZ", ALC269_FIXUP_INV_DMIC),
+>  	SND_PCI_QUIRK(0x1025, 0x0349, "Acer AOD260", ALC269_FIXUP_INV_DMIC),
+>  	SND_PCI_QUIRK(0x1025, 0x047c, "Acer AC700", ALC269_FIXUP_ACER_AC700),
+> -	SND_PCI_QUIRK(0x1025, 0x0740, "Acer AO725", ALC271_FIXUP_HP_GATE_MIC_JACK),
+> +	SND_PCI_QUIRK(0x1025, 0x0740, "Acer AO725", ALC271_FIXUP_ACER_AO725),
+>  	SND_PCI_QUIRK(0x1025, 0x0742, "Acer AO756", ALC271_FIXUP_HP_GATE_MIC_JACK),
+>  	SND_PCI_QUIRK_VENDOR(0x1025, "Acer Aspire", ALC271_FIXUP_DMIC),
+>  	SND_PCI_QUIRK(0x1025, 0x0775, "Acer Aspire E1-572", ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572),
+> @@ -4523,7 +4538,6 @@ static int patch_alc269(struct hda_codec *codec)
+>  		if (err < 0)
+>  			goto error;
+>  		spec->init_hook = alc269_fill_coef;
+> -		alc269_fill_coef(codec);
+>  		break;
+>  
+>  	case 0x10ec0280:
+> 
 
-The 98088 and 98095 already call regcache_sync from STANDBY.
+So my alsa-info.sh is
+http://www.alsa-project.org/db/?f=3e9c5d39ff057106d6ae307f9b86c1e562056c1b
+and I'm running your patch on top of mine without any problems.
 
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
----
- sound/soc/codecs/max98090.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+thanks,
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 51f9b3d..149b57f 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -1769,16 +1769,6 @@ static int max98090_set_bias_level(struct snd_soc_codec *codec,
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
--		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
--			ret = regcache_sync(max98090->regmap);
--
--			if (ret != 0) {
--				dev_err(codec->dev,
--					"Failed to sync cache: %d\n", ret);
--				return ret;
--			}
--		}
--
- 		if (max98090->jack_state == M98090_JACK_STATE_HEADSET) {
- 			/*
- 			 * Set to normal bias level.
-@@ -1792,6 +1782,16 @@ static int max98090_set_bias_level(struct snd_soc_codec *codec,
- 		break;
- 
- 	case SND_SOC_BIAS_STANDBY:
-+		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
-+			ret = regcache_sync(max98090->regmap);
-+			if (ret != 0) {
-+				dev_err(codec->dev,
-+					"Failed to sync cache: %d\n", ret);
-+				return ret;
-+			}
-+		}
-+		break;
-+
- 	case SND_SOC_BIAS_OFF:
- 		/* Set internal pull-up to lowest power mode */
- 		snd_soc_update_bits(codec, M98090_REG_JACK_DETECT,
--- 
-1.8.1.3.605.g02339dd
+            martin
