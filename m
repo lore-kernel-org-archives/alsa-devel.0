@@ -1,89 +1,38 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: dapm: Add locking to
-	snd_soc_dapm_xxxx_pin functions
-Date: Wed, 12 Feb 2014 11:26:40 +0000
-Message-ID: <20140212112640.GE16684@opensource.wolfsonmicro.com>
-References: <20140210110536.GB6856@opensource.wolfsonmicro.com> <s5h7g936ru1.wl%tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH RFC 0/3] Embed card device into struct snd_card
+Date: Wed, 12 Feb 2014 12:20:10 +0100
+Message-ID: <1392204013-12334-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h7g936ru1.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, cw00.choi@samsung.com, myungjoo.ham@samsung.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D9082650BE
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 12:20:14 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 884C5ABB2
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 11:20:14 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 10, 2014 at 02:05:26PM +0100, Takashi Iwai wrote:
-> At Mon, 10 Feb 2014 11:05:36 +0000,
-> Charles Keepax wrote:
-> > 
-<snip>
-> > 
-> Actually, this fixes also the double-lock in snd_soc_dapm_sync() call
-> in the line below the above.  snd_soc_dapm_sync() itself takes
-> mutex_lock_nested().
+The third batch is a more intensive change; now struct device for
+card-object is embedded in snd_card struct.  This makes the presence
+of the device object presistent, which can be later referred by
+other devices at the object creation time.
 
-Yeah spotted that as I was going through will do this in a
-seperate patch if this one doesn't go in.
+Also, along with this change, the refcounting of the card object
+was changed just to use the standard device refcount.  This needs
+to move the destructor into the device release callback.
 
-<snip>
-> >  static int arizona_haptics_probe(struct platform_device *pdev)
-> > diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> > index dc8ff13..a44b560 100644
-> > --- a/sound/soc/soc-dapm.c
-> > +++ b/sound/soc/soc-dapm.c
-> > @@ -2325,6 +2325,8 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
-> >  {
-> >  	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
-> >  
-> > +	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-> > +
-> >  	if (!w) {
-> >  		dev_err(dapm->dev, "ASoC: DAPM unknown pin %s\n", pin);
-> >  		return -EINVAL;
-> 
-> Missing unlock here.
+Onre more batch will follow.
 
-Good spot thanks, I will update for this.
-
-> 
-> 
-> > @@ -2337,6 +2339,8 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
-> >  	if (status == 0)
-> >  		w->force = 0;
-> >  
-> > +	mutex_unlock(&dapm->card->dapm_mutex);
-> > +
-> >  	return 0;
-> >  }
-> >  
-> > @@ -3210,15 +3214,11 @@ int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
-> >  	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
-> >  	const char *pin = (const char *)kcontrol->private_value;
-> >  
-> > -	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-> > -
-> >  	if (ucontrol->value.integer.value[0])
-> >  		snd_soc_dapm_enable_pin(&card->dapm, pin);
-> >  	else
-> >  		snd_soc_dapm_disable_pin(&card->dapm, pin);
-> >  
-> > -	mutex_unlock(&card->dapm_mutex);
-> > -
-> >  	snd_soc_dapm_sync(&card->dapm);
-> >  	return 0;
-> >  }
-> 
-> I guess you forgot patching snd_soc_dapm_force_enable_pin()?
-> It's now left unprotected after this patch.
-
-Also a good point, thanks I will update.
-
-> 
-> 
-> Takashi
-
-
-Thanks,
-Charles
+Takashi
