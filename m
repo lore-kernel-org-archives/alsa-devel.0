@@ -1,15 +1,15 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Subject: [PATCH] ASoC: Intel: Add a mfld prefix to Intel SST
 	drivers.
-Date: Wed, 12 Feb 2014 13:35:30 +0000
-Message-ID: <1392212130-5438-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Date: Wed, 12 Feb 2014 13:42:50 +0000
+Message-ID: <1392212570.2346.9.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BE94262610
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 14:36:18 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78741264FEB
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 14:43:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,9 +19,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bronnie@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Benson Leung <bleung@google.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, alsa-devel <alsa-devel@alsa-project.org>, Benson Leung <bleung@google.com>
 List-Id: alsa-devel@alsa-project.org
+
+Resent with correct email for Mark.
 
 In order to differentiate the different Intel SST audio core drivers we
 need to rename the current drivers with a mfld prefix. This also includes
