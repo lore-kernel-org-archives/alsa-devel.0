@@ -1,80 +1,73 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 05/20] ALSA: drivers: Use SNDRV_DEV_CARD for
-	card objects
-Date: Wed, 12 Feb 2014 11:52:12 +0100
-Message-ID: <1392202347-11774-6-git-send-email-tiwai@suse.de>
-References: <1392202347-11774-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v2 1/3] ASoC: binding: add tdm-slot.txt
+Date: Wed, 12 Feb 2014 11:10:33 +0000
+Message-ID: <20140212111033.GD28112@sirena.org.uk>
+References: <1392191112-27028-1-git-send-email-Li.Xiubo@freescale.com>
+ <1392191112-27028-2-git-send-email-Li.Xiubo@freescale.com>
+ <52FB3E5C.8040701@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0251C2651B8
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 11:52:48 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C4086ABFB
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 10:52:47 +0000 (UTC)
-In-Reply-To: <1392202347-11774-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kfjH4zxOES6UT95V"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <52FB3E5C.8040701@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Xiubo Li <Li.Xiubo@freescale.com>, lgirdwood@gmail.com, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, tiwai@suse.de, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-... instead of SNDRV_DEV_LOWLEVEL.
-No functional change at this point.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/drivers/ml403-ac97cr.c  | 2 +-
- sound/drivers/pcsp/pcsp.c     | 2 +-
- sound/drivers/serial-u16550.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+--kfjH4zxOES6UT95V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/drivers/ml403-ac97cr.c b/sound/drivers/ml403-ac97cr.c
-index 33ed76530d0b..8868910e8ddf 100644
---- a/sound/drivers/ml403-ac97cr.c
-+++ b/sound/drivers/ml403-ac97cr.c
-@@ -1185,7 +1185,7 @@ snd_ml403_ac97cr_create(struct snd_card *card, struct platform_device *pfdev,
- 		return err;
- 	}
- 
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, ml403_ac97cr, &ops);
-+	err = snd_device_new(card, SNDRV_DEV_CARD, ml403_ac97cr, &ops);
- 	if (err < 0) {
- 		PDEBUG(INIT_FAILURE, "probe(): snd_device_new() failed!\n");
- 		snd_ml403_ac97cr_free(ml403_ac97cr);
-diff --git a/sound/drivers/pcsp/pcsp.c b/sound/drivers/pcsp/pcsp.c
-index 36808cdab06f..c4493f4e63da 100644
---- a/sound/drivers/pcsp/pcsp.c
-+++ b/sound/drivers/pcsp/pcsp.c
-@@ -87,7 +87,7 @@ static int snd_pcsp_create(struct snd_card *card)
- 	pcsp_chip.dma = -1;
- 
- 	/* Register device */
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, &pcsp_chip, &ops);
-+	err = snd_device_new(card, SNDRV_DEV_CARD, &pcsp_chip, &ops);
- 	if (err < 0)
- 		return err;
- 
-diff --git a/sound/drivers/serial-u16550.c b/sound/drivers/serial-u16550.c
-index 9ad4414fa25c..b2822409ce12 100644
---- a/sound/drivers/serial-u16550.c
-+++ b/sound/drivers/serial-u16550.c
-@@ -836,7 +836,7 @@ static int snd_uart16550_create(struct snd_card *card,
- 	uart->timer_running = 0;
- 
- 	/* Register device */
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, uart, &ops)) < 0) {
-+	if ((err = snd_device_new(card, SNDRV_DEV_CARD, uart, &ops)) < 0) {
- 		snd_uart16550_free(uart);
- 		return err;
- 	}
--- 
-1.8.5.2
+On Wed, Feb 12, 2014 at 10:26:52AM +0100, Lars-Peter Clausen wrote:
+
+> The current internal API for TDM is very poor, I don't think we want
+> to expose that 1 to 1 to the devicetree. Since this means we'd have
+> to support that forever. The first thing is that the semantics of
+> snd_soc_dai_set_tdm_slot() are very unclear. E.g. some drivers use a
+> zero bit for a active slot, some drivers use a 1 bit for a active
+
+Yes, and if we do end up using masks we need to nail down what's going
+on in the DT.
+
+> slot. The second thing is that we are not able to specify which
+> channel should be mapped to which slot. You can merely specify
+> from/to which slots the CODEC should read/write and then it is up to
+> the driver to guess which channel should go to which slot. In my
+> opinion a binding that allows to specify a explicit mapping of which
+> channel goes to which slot would be much better.
+
+It'd certainly be good to be able to do that, though having a default
+would make life easier.
+
+> Also those are four different settings. In my opinion they should
+> not be expressed in one property, but rather in four. E.g.
+> specifying a tx_mask for a rx only device does not make much sense.
+
+That makes sense.
+
+--kfjH4zxOES6UT95V
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS+1alAAoJELSic+t+oim9nZYP/3hDlhlwKkSGrhTq4UqQmDUs
+50UahwX3aVk7gf9Nyk6064S6Jf/jOAb7rIqodg8wVAEdAp72rmLFnc787pmHaD2G
+kfqCme95VA7Mwhzx9ZH0TysJMpO1UY08NecRyH2NgnaYakh9F3qZeVGetrzDSYq2
+bQoq8okB+GKYLM7hM2IX8QFWPY13YuMAOkRbMas+tOBGwPLh8uwsWsevHwUhlTmN
+RFj6iTnBvtFZsUx1S2RO7K4Tn5thdqbifFY1uB6hpFg+IxIuj50P5aE+lcTW93Sj
+0Lolw83n/+/k+pTEhabEFlXVJfrLP5DwH5W4Hr7XlYjHJNB5rbjDeDA62yPnln8d
+1m2MHJKjAWJW9uAYGP5UBHTeSHvqqETVLqpLOMoXbDnXvghHZksdMdHXjgz4N4bc
+LK0c1fgqtXrM2xY02DJelrins+o/eUiJnneKkulKW+9KbQaUWAq+z1P0lkYikmv+
+EL991/94ZbO/ihbVH2XkzQfn/SUkZiBTQzS6OkoJ9q4M4pOW6OI0guMCJ4CMeq1O
+GGJJnGoxV3y8s4V0lhR1Hlz0+7I8eMOvAlZHFSOz4ztKcOcToNftDuXEfyq8Loc9
+xZqp9PZQ3uYF3dK0JcU3cbu7DP7xZ3yAFC3uJ1+9YyitsFa/6HQoQuDNSayeEvcJ
+IgSktKFXZ9A9bnGAuQ5U
+=TT4O
+-----END PGP SIGNATURE-----
+
+--kfjH4zxOES6UT95V--
