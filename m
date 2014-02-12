@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 11/24] ALSA: mips: Convert to snd_card_new()
+Subject: [PATCH 16/24] ALSA: sparc: Convert to snd_card_new()
 	with a device pointer
-Date: Wed, 12 Feb 2014 11:35:27 +0100
-Message-ID: <1392201340-27113-12-git-send-email-tiwai@suse.de>
+Date: Wed, 12 Feb 2014 11:35:32 +0100
+Message-ID: <1392201340-27113-17-git-send-email-tiwai@suse.de>
 References: <1392201340-27113-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id F33AE26501D
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 11:35:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0289C265020
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 11:35:51 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 87BCBAC89
+ by mx2.suse.de (Postfix) with ESMTP id 8C35FAC8F
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 10:35:50 +0000 (UTC)
 In-Reply-To: <1392201340-27113-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,67 +31,74 @@ Also remove superfluous snd_card_set_dev() calls.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/mips/au1x00.c     | 4 ++--
- sound/mips/hal2.c       | 3 +--
- sound/mips/sgio2audio.c | 3 +--
- 3 files changed, 4 insertions(+), 6 deletions(-)
+ sound/sparc/amd7930.c | 4 ++--
+ sound/sparc/cs4231.c  | 9 +++++----
+ sound/sparc/dbri.c    | 4 ++--
+ 3 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/sound/mips/au1x00.c b/sound/mips/au1x00.c
-index 9ca8fd0c2201..a1d2e27bef56 100644
---- a/sound/mips/au1x00.c
-+++ b/sound/mips/au1x00.c
-@@ -599,8 +599,8 @@ static int au1000_ac97_probe(struct platform_device *pdev)
- 	struct snd_ac97_bus *pbus;
- 	struct snd_ac97_template ac97;
+diff --git a/sound/sparc/amd7930.c b/sound/sparc/amd7930.c
+index 174d21fb56e2..4a85e1433472 100644
+--- a/sound/sparc/amd7930.c
++++ b/sound/sparc/amd7930.c
+@@ -1019,8 +1019,8 @@ static int amd7930_sbus_probe(struct platform_device *op)
+ 		return -ENOENT;
+ 	}
  
--	err = snd_card_create(-1, "AC97", THIS_MODULE,
--				sizeof(struct snd_au1000), &card);
-+	err = snd_card_new(&pdev->dev, -1, "AC97", THIS_MODULE,
-+			   sizeof(struct snd_au1000), &card);
+-	err = snd_card_create(index[dev_num], id[dev_num], THIS_MODULE, 0,
+-			      &card);
++	err = snd_card_new(&op->dev, index[dev_num], id[dev_num],
++			   THIS_MODULE, 0, &card);
  	if (err < 0)
- 		goto out0;
+ 		return err;
  
-diff --git a/sound/mips/hal2.c b/sound/mips/hal2.c
-index 2b7f6e8bdd24..23441b9e6148 100644
---- a/sound/mips/hal2.c
-+++ b/sound/mips/hal2.c
-@@ -880,7 +880,7 @@ static int hal2_probe(struct platform_device *pdev)
- 	struct snd_hal2 *chip;
+diff --git a/sound/sparc/cs4231.c b/sound/sparc/cs4231.c
+index dbb1b625eb2f..dabc1ad331e2 100644
+--- a/sound/sparc/cs4231.c
++++ b/sound/sparc/cs4231.c
+@@ -1565,7 +1565,8 @@ static int snd_cs4231_mixer(struct snd_card *card)
+ 
+ static int dev;
+ 
+-static int cs4231_attach_begin(struct snd_card **rcard)
++static int cs4231_attach_begin(struct platform_device *op,
++			       struct snd_card **rcard)
+ {
+ 	struct snd_card *card;
+ 	struct snd_cs4231 *chip;
+@@ -1581,8 +1582,8 @@ static int cs4231_attach_begin(struct snd_card **rcard)
+ 		return -ENOENT;
+ 	}
+ 
+-	err = snd_card_create(index[dev], id[dev], THIS_MODULE,
+-			      sizeof(struct snd_cs4231), &card);
++	err = snd_card_new(&op->dev, index[dev], id[dev], THIS_MODULE,
++			   sizeof(struct snd_cs4231), &card);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -1869,7 +1870,7 @@ static int cs4231_sbus_probe(struct platform_device *op)
+ 	struct snd_card *card;
  	int err;
  
--	err = snd_card_create(index, id, THIS_MODULE, 0, &card);
-+	err = snd_card_new(&pdev->dev, index, id, THIS_MODULE, 0, &card);
+-	err = cs4231_attach_begin(&card);
++	err = cs4231_attach_begin(op, &card);
+ 	if (err)
+ 		return err;
+ 
+diff --git a/sound/sparc/dbri.c b/sound/sparc/dbri.c
+index eee7afcae375..be1b1aa96b7e 100644
+--- a/sound/sparc/dbri.c
++++ b/sound/sparc/dbri.c
+@@ -2615,8 +2615,8 @@ static int dbri_probe(struct platform_device *op)
+ 		return -ENODEV;
+ 	}
+ 
+-	err = snd_card_create(index[dev], id[dev], THIS_MODULE,
+-			      sizeof(struct snd_dbri), &card);
++	err = snd_card_new(&op->dev, index[dev], id[dev], THIS_MODULE,
++			   sizeof(struct snd_dbri), &card);
  	if (err < 0)
  		return err;
  
-@@ -889,7 +889,6 @@ static int hal2_probe(struct platform_device *pdev)
- 		snd_card_free(card);
- 		return err;
- 	}
--	snd_card_set_dev(card, &pdev->dev);
- 
- 	err = hal2_pcm_create(chip);
- 	if (err < 0) {
-diff --git a/sound/mips/sgio2audio.c b/sound/mips/sgio2audio.c
-index cfe99ae149fe..04bb06c03ec8 100644
---- a/sound/mips/sgio2audio.c
-+++ b/sound/mips/sgio2audio.c
-@@ -920,7 +920,7 @@ static int snd_sgio2audio_probe(struct platform_device *pdev)
- 	struct snd_sgio2audio *chip;
- 	int err;
- 
--	err = snd_card_create(index, id, THIS_MODULE, 0, &card);
-+	err = snd_card_new(&pdev->dev, index, id, THIS_MODULE, 0, &card);
- 	if (err < 0)
- 		return err;
- 
-@@ -929,7 +929,6 @@ static int snd_sgio2audio_probe(struct platform_device *pdev)
- 		snd_card_free(card);
- 		return err;
- 	}
--	snd_card_set_dev(card, &pdev->dev);
- 
- 	err = snd_sgio2audio_new_pcm(chip);
- 	if (err < 0) {
 -- 
 1.8.5.2
