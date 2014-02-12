@@ -1,17 +1,27 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: max98090: sync regcache on entering
-	STANDBY
-Date: Wed, 12 Feb 2014 19:56:38 +0000
-Message-ID: <20140212195638.GN28112@sirena.org.uk>
-References: <1392229494-29761-1-git-send-email-dgreid@chromium.org>
+From: Bernhard <schlimmchen@yahoo.de>
+Subject: Re: No sound from Headphone Jack over Lenovo Docking
+	Station with T440p Laptop
+Date: Wed, 12 Feb 2014 21:01:09 +0000 (UTC)
+Message-ID: <loom.20140212T215407-567@post.gmane.org>
+References: <trinity-ed805987-a2af-445d-8c84-171681bd6482-1387447530146@3capp-webde-bs34>
+ <CAN8cciaKv=4s2Njaag7XjqBj203EPL1BTi3XAG+ZmEpSP+20hg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3893782425015829818=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BEEA926084D
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 20:56:45 +0100 (CET)
-In-Reply-To: <1392229494-29761-1-git-send-email-dgreid@chromium.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EA34264EF5
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 22:05:05 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1WDgzP-0003ZG-V3
+ for alsa-devel@alsa-project.org; Wed, 12 Feb 2014 22:05:04 +0100
+Received: from dslb-088-076-060-135.pools.arcor-ip.net ([88.76.60.135])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 22:05:03 +0100
+Received: from schlimmchen by dslb-088-076-060-135.pools.arcor-ip.net with
+ local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 22:05:03 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +31,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: sachin.kamat@linaro.org, alsa-devel@alsa-project.org, jerry.wong@maximintegrated.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Raymond Yau <superquad.vortex2 <at> gmail.com> writes:
+> 
+> Post the output of alsa-info.sh when thinkpad is docked and not docked with
+> headphone pluggedd and unplugged
+> 
 
---===============3893782425015829818==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ukW6Wv09KNCUAh1u"
-Content-Disposition: inline
+I created the output you requested (Lenovo ThinkPad T440p in UltraDock, no 
+sound when docked via dock jack but notebook speakers are also mute).
 
+not docked: http://pastebin.com/MFQT3R9S
+docked, no headphones: http://pastebin.com/8UN1sHSM
+docked, headphones plugged in dock: http://pastebin.com/7XauZLZz
+docked, headphones plugged in notebook: http://pastebin.com/xfL5qkge
 
---ukW6Wv09KNCUAh1u
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Based on that, can you help us getting sound to work on the dock?
 
-On Wed, Feb 12, 2014 at 10:24:54AM -0800, Dylan Reid wrote:
-> Sync regcache when entering STANDBY from OFF.  ON isn't entered with
-> OFF as the current state, so the registers were not being re-synced
-> after suspend/resume.
-
-Applied, thanks.
-
---ukW6Wv09KNCUAh1u
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJS+9HzAAoJELSic+t+oim9wYUQAJc3UXKbu0/eQjn+ntAeJ5lJ
-WnvPe/rfk8uHTmFZ0FEDOA3hdQ41Y286cCz0FsIorwc+Ud2WaylYB6mYoZgCNjAV
-pPqKE5DKP3TKlvhFfroiF8Htxx8O6wgM8PB7IK8n3yWRiaGnEoqAlu7/H7rjT2fC
-ksEaIdSQLkbV417c2pn0HJHpgNjwigwqSajSZo1NgcW8FB8xA5oS6XxDK1Kp2X/T
-G8Al0qZxJSWDXjeJQqHyfbN2f+s2xMN/WaBlrnF6HXIaidZ3prfUy7ntZi/Fh77h
-AwuRP7o8NLMH4ZSZqotoTepgRNECXCmctC7AdL7GPDpAkb05+3J6EgNsdDz5MRnW
-wr0r9G8tBon460MyzeYzk2ZnqUD4zvYDRTtjojZCju6c7Hs94kxvjt0MS9e8OTFy
-LP15bV3elMHIfFnbRUZcFNuwc3V7aNuMkTDO7sY7VuXBt01B4kx9PvvDXvlzQrJ+
-ArznIcxpySPsrLApSdQu95hK0PSxB41bZV4x0Vp9QgLFNfGpsj372pUYiXGf0Zif
-sd/ROib8RPj5/HxEqBdUGocCl/qbUPzAg6IyX+RPaYjdCf24PSwMimbJFzUNpZV4
-WVeVDK+kgcvyPRllTCE/qXNZp+W/fpEy10eqWe/10EYcIOZD/6mi+d4VOdcavHk2
-NbYxe8EL+9gf+Rzoby+6
-=42N0
------END PGP SIGNATURE-----
-
---ukW6Wv09KNCUAh1u--
-
---===============3893782425015829818==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3893782425015829818==--
+Best,
+Bernhard
