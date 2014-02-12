@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 02/10] ALSA: control: Use standard printk
-	helpers
-Date: Wed, 12 Feb 2014 12:33:04 +0100
-Message-ID: <1392204792-12655-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 04/10] ALSA: core: Use standard printk helpers
+Date: Wed, 12 Feb 2014 12:33:06 +0100
+Message-ID: <1392204792-12655-5-git-send-email-tiwai@suse.de>
 References: <1392204792-12655-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3704B2650EE
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EE1C26528B
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 12:33:18 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DFB45ABFB
+ by mx2.suse.de (Postfix) with ESMTP id E5992AC05
  for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 11:33:17 +0000 (UTC)
 In-Reply-To: <1392204792-12655-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,83 +31,250 @@ assigned at the calling point), use pr_xxx() helpers instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/control.c        | 15 +++++++--------
- sound/core/control_compat.c |  2 +-
- 2 files changed, 8 insertions(+), 9 deletions(-)
+ sound/core/device.c   | 19 ++++++++++++++-----
+ sound/core/info.c     | 11 ++++++++---
+ sound/core/init.c     | 20 ++++++++++----------
+ sound/core/isadma.c   |  2 +-
+ sound/core/memalloc.c |  4 ++--
+ sound/core/sound.c    |  4 ++--
+ sound/core/vmaster.c  |  2 +-
+ 7 files changed, 38 insertions(+), 24 deletions(-)
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index c228f00e5701..f038f5afafe2 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -170,7 +170,7 @@ void snd_ctl_notify(struct snd_card *card, unsigned int mask,
- 			ev->mask = mask;
- 			list_add_tail(&ev->list, &ctl->events);
- 		} else {
--			snd_printk(KERN_ERR "No memory available to allocate event\n");
-+			dev_err(card->dev, "No memory available to allocate event\n");
- 		}
- 	_found:
- 		wake_up(&ctl->change_sleep);
-@@ -206,7 +206,7 @@ static struct snd_kcontrol *snd_ctl_new(struct snd_kcontrol *control,
+diff --git a/sound/core/device.c b/sound/core/device.c
+index d622bcd4ff53..cbc7ded11a26 100644
+--- a/sound/core/device.c
++++ b/sound/core/device.c
+@@ -25,6 +25,13 @@
+ #include <linux/errno.h>
+ #include <sound/core.h>
  
- 	kctl = kzalloc(sizeof(*kctl) + sizeof(struct snd_kcontrol_volatile) * control->count, GFP_KERNEL);
- 	if (kctl == NULL) {
--		snd_printk(KERN_ERR "Cannot allocate control instance\n");
-+		pr_err("ALSA: Cannot allocate control instance\n");
- 		return NULL;
++#define error(card, fmt, args...) do {	\
++	if (card)		   \
++		dev_err((card)->dev, fmt, ##args);	\
++	else \
++		pr_err(KERN_ERR "ALSA: " fmt, ##args);	\
++	} while (0)
++
+ /**
+  * snd_device_new - create an ALSA device component
+  * @card: the card instance
+@@ -51,7 +58,7 @@ int snd_device_new(struct snd_card *card, enum snd_device_type type,
+ 		return -ENXIO;
+ 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+ 	if (dev == NULL) {
+-		snd_printk(KERN_ERR "Cannot allocate device\n");
++		error(dev->card, "Cannot allocate device, type=%d\n", type);
+ 		return -ENOMEM;
  	}
- 	*kctl = *control;
-@@ -241,9 +241,8 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
- 	if (ncontrol->name) {
- 		strlcpy(kctl.id.name, ncontrol->name, sizeof(kctl.id.name));
- 		if (strcmp(ncontrol->name, kctl.id.name) != 0)
--			snd_printk(KERN_WARNING
--				   "Control name '%s' truncated to '%s'\n",
--				   ncontrol->name, kctl.id.name);
-+			pr_warn("ALSA: Control name '%s' truncated to '%s'\n",
-+				ncontrol->name, kctl.id.name);
+ 	INIT_LIST_HEAD(&dev->list);
+@@ -78,7 +85,8 @@ static int __snd_device_disconnect(struct snd_device *dev)
+ 	if (dev->state == SNDRV_DEV_REGISTERED) {
+ 		if (dev->ops->dev_disconnect &&
+ 		    dev->ops->dev_disconnect(dev))
+-			snd_printk(KERN_ERR "device disconnect failure\n");
++			error(dev->card, "device disconnect failure, type=%d\n",
++			      dev->type);
+ 		dev->state = SNDRV_DEV_DISCONNECTED;
  	}
- 	kctl.id.index = ncontrol->index;
- 	kctl.count = ncontrol->count ? ncontrol->count : 1;
-@@ -306,7 +305,7 @@ static int snd_ctl_find_hole(struct snd_card *card, unsigned int count)
- 	while (snd_ctl_remove_numid_conflict(card, count)) {
- 		if (--iter == 0) {
- 			/* this situation is very unlikely */
--			snd_printk(KERN_ERR "unable to allocate new control numid\n");
-+			dev_err(card->dev, "unable to allocate new control numid\n");
- 			return -ENOMEM;
- 		}
+ 	return 0;
+@@ -92,7 +100,8 @@ static int __snd_device_free(struct snd_device *dev)
+ 	__snd_device_disconnect(dev);
+ 	if (dev->ops->dev_free) {
+ 		if (dev->ops->dev_free(dev))
+-			snd_printk(KERN_ERR "device free failure\n");
++			error(dev->card, "device free failure, type=%d\n",
++			      dev->type);
  	}
-@@ -341,7 +340,7 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
- 	down_write(&card->controls_rwsem);
- 	if (snd_ctl_find_id(card, &id)) {
- 		up_write(&card->controls_rwsem);
--		snd_printd(KERN_ERR "control %i:%i:%i:%s:%i is already present\n",
-+		dev_err(card->dev, "control %i:%i:%i:%s:%i is already present\n",
- 					id.iface,
- 					id.device,
- 					id.subdevice,
-@@ -1406,7 +1405,7 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
- 		}
+ 	kfree(dev);
+ 	return 0;
+@@ -130,8 +139,8 @@ int snd_device_free(struct snd_card *card, void *device_data)
+ 	dev = look_for_dev(card, device_data);
+ 	if (dev)
+ 		return __snd_device_free(dev);
+-	snd_printd("device free %p (from %pF), not found\n", device_data,
+-		   __builtin_return_address(0));
++	dev_dbg(card->dev, "device free %p (from %pF), not found\n",
++		device_data, __builtin_return_address(0));
+ 	return -ENXIO;
+ }
+ EXPORT_SYMBOL(snd_device_free);
+diff --git a/sound/core/info.c b/sound/core/info.c
+index 7916c07b9324..051d55b05521 100644
+--- a/sound/core/info.c
++++ b/sound/core/info.c
+@@ -418,9 +418,14 @@ static int snd_info_entry_release(struct inode *inode, struct file *file)
+ 			if (entry->c.text.write) {
+ 				entry->c.text.write(entry, data->wbuffer);
+ 				if (data->wbuffer->error) {
+-					snd_printk(KERN_WARNING "data write error to %s (%i)\n",
+-						entry->name,
+-						data->wbuffer->error);
++					if (entry->card)
++						dev_warn(entry->card->dev, "info: data write error to %s (%i)\n",
++							 entry->name,
++							 data->wbuffer->error);
++					else
++						pr_warn("ALSA: info: data write error to %s (%i)\n",
++							entry->name,
++							data->wbuffer->error);
+ 				}
+ 			}
+ 			kfree(data->wbuffer->buffer);
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 3fdb4e2ce5ea..ad7234a63a7b 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -113,11 +113,11 @@ static inline int init_info_for_card(struct snd_card *card)
+ 	struct snd_info_entry *entry;
+ 
+ 	if ((err = snd_info_card_register(card)) < 0) {
+-		snd_printd("unable to create card info\n");
++		dev_dbg(card->dev, "unable to create card info\n");
+ 		return err;
  	}
- 	up_read(&snd_ioctl_rwsem);
--	snd_printdd("unknown ioctl = 0x%x\n", cmd);
-+	dev_dbg(card->dev, "unknown ioctl = 0x%x\n", cmd);
- 	return -ENOTTY;
+ 	if ((entry = snd_info_create_card_entry(card, "id", card->proc_root)) == NULL) {
+-		snd_printd("unable to create card entry\n");
++		dev_dbg(card->dev, "unable to create card entry\n");
+ 		return err;
+ 	}
+ 	entry->c.text.read = snd_card_id_read;
+@@ -217,7 +217,7 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 		err = -ENODEV;
+ 	if (err < 0) {
+ 		mutex_unlock(&snd_card_mutex);
+-		snd_printk(KERN_ERR "cannot find the slot for index %d (range 0-%i), error: %d\n",
++		dev_err(parent, "cannot find the slot for index %d (range 0-%i), error: %d\n",
+ 			 idx, snd_ecards_limit - 1, err);
+ 		kfree(card);
+ 		return err;
+@@ -254,12 +254,12 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 	/* snd_cards_bitmask and snd_cards are set with snd_card_register */
+ 	err = snd_ctl_create(card);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "unable to register control minors\n");
++		dev_err(parent, "unable to register control minors\n");
+ 		goto __error;
+ 	}
+ 	err = snd_info_card_create(card);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "unable to create card info\n");
++		dev_err(parent, "unable to create card info\n");
+ 		goto __error_ctl;
+ 	}
+ 	*card_ret = card;
+@@ -422,7 +422,7 @@ int snd_card_disconnect(struct snd_card *card)
+ 	/* notify all devices that we are disconnected */
+ 	err = snd_device_disconnect_all(card);
+ 	if (err < 0)
+-		snd_printk(KERN_ERR "not all devices for card %i can be disconnected\n", card->number);
++		dev_err(card->dev, "not all devices for card %i can be disconnected\n", card->number);
+ 
+ 	snd_info_card_disconnect(card);
+ 	if (card->registered) {
+@@ -455,14 +455,14 @@ static int snd_card_do_free(struct snd_card *card)
+ 		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_FREE);
+ #endif
+ 	if (snd_device_free_all(card) < 0) {
+-		snd_printk(KERN_ERR "unable to free all devices\n");
++		dev_err(card->dev, "unable to free all devices\n");
+ 		/* Fatal, but this situation should never occur */
+ 	}
+ 	if (card->private_free)
+ 		card->private_free(card);
+ 	snd_info_free_entry(card->proc_id);
+ 	if (snd_info_card_free(card) < 0) {
+-		snd_printk(KERN_WARNING "unable to free card info\n");
++		dev_warn(card->dev, "unable to free card info\n");
+ 		/* Not fatal error */
+ 	}
+ 	if (card->release_completion)
+@@ -588,7 +588,7 @@ static void snd_card_set_id_no_lock(struct snd_card *card, const char *src,
+ 		goto again;
+ 	}
+ 	/* last resort... */
+-	snd_printk(KERN_ERR "unable to set card id (%s)\n", id);
++	dev_err(card->dev, "unable to set card id (%s)\n", id);
+ 	if (card->proc_root->name)
+ 		strlcpy(card->id, card->proc_root->name, sizeof(card->id));
+ }
+@@ -940,7 +940,7 @@ int snd_card_file_remove(struct snd_card *card, struct file *file)
+ 	}
+ 	spin_unlock(&card->files_lock);
+ 	if (!found) {
+-		snd_printk(KERN_ERR "ALSA card file remove problem (%p)\n", file);
++		dev_err(card->dev, "card file remove problem (%p)\n", file);
+ 		return -ENOENT;
+ 	}
+ 	kfree(found);
+diff --git a/sound/core/isadma.c b/sound/core/isadma.c
+index e2b386156a4c..31e8544d7f2d 100644
+--- a/sound/core/isadma.c
++++ b/sound/core/isadma.c
+@@ -106,7 +106,7 @@ unsigned int snd_dma_pointer(unsigned long dma, unsigned int size)
+ 		result = result1;
+ #ifdef CONFIG_SND_DEBUG
+ 	if (result > size)
+-		snd_printk(KERN_ERR "pointer (0x%x) for DMA #%ld is greater than transfer size (0x%x)\n", result, dma, size);
++		pr_err("ALSA: pointer (0x%x) for DMA #%ld is greater than transfer size (0x%x)\n", result, dma, size);
+ #endif
+ 	if (result >= size || result == 0)
+ 		return 0;
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index 4595f93d151e..082509eb805d 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -207,7 +207,7 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
+ 		break;
+ #endif
+ 	default:
+-		printk(KERN_ERR "snd-malloc: invalid device type %d\n", type);
++		pr_err("snd-malloc: invalid device type %d\n", type);
+ 		dmab->area = NULL;
+ 		dmab->addr = 0;
+ 		return -ENXIO;
+@@ -284,7 +284,7 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
+ 		break;
+ #endif
+ 	default:
+-		printk(KERN_ERR "snd-malloc: invalid device type %d\n", dmab->dev.type);
++		pr_err("snd-malloc: invalid device type %d\n", dmab->dev.type);
+ 	}
  }
  
-diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
-index 2bb95a7a8809..b9c0910fb8c4 100644
---- a/sound/core/control_compat.c
-+++ b/sound/core/control_compat.c
-@@ -247,7 +247,7 @@ static int copy_ctl_value_from_user(struct snd_card *card,
- 	} else {
- 		size = get_elem_size(type, count);
- 		if (size < 0) {
--			printk(KERN_ERR "snd_ioctl32_ctl_elem_value: unknown type %d\n", type);
-+			dev_err(card->dev, "snd_ioctl32_ctl_elem_value: unknown type %d\n", type);
- 			return -EINVAL;
- 		}
- 		if (copy_from_user(data->value.bytes.data,
+diff --git a/sound/core/sound.c b/sound/core/sound.c
+index 4aaa53161644..60ab9b1f44b9 100644
+--- a/sound/core/sound.c
++++ b/sound/core/sound.c
+@@ -458,7 +458,7 @@ static int __init alsa_sound_init(void)
+ 	snd_major = major;
+ 	snd_ecards_limit = cards_limit;
+ 	if (register_chrdev(major, "alsa", &snd_fops)) {
+-		snd_printk(KERN_ERR "unable to register native major device number %d\n", major);
++		pr_err("ALSA core: unable to register native major device number %d\n", major);
+ 		return -EIO;
+ 	}
+ 	if (snd_info_init() < 0) {
+@@ -467,7 +467,7 @@ static int __init alsa_sound_init(void)
+ 	}
+ 	snd_info_minor_register();
+ #ifndef MODULE
+-	printk(KERN_INFO "Advanced Linux Sound Architecture Driver Initialized.\n");
++	pr_info("Advanced Linux Sound Architecture Driver Initialized.\n");
+ #endif
+ 	return 0;
+ }
+diff --git a/sound/core/vmaster.c b/sound/core/vmaster.c
+index 842a97d5fc3a..6c58e6f73a01 100644
+--- a/sound/core/vmaster.c
++++ b/sound/core/vmaster.c
+@@ -101,7 +101,7 @@ static int slave_init(struct link_slave *slave)
+ 	if (slave->info.count > 2  ||
+ 	    (slave->info.type != SNDRV_CTL_ELEM_TYPE_INTEGER &&
+ 	     slave->info.type != SNDRV_CTL_ELEM_TYPE_BOOLEAN)) {
+-		snd_printk(KERN_ERR "invalid slave element\n");
++		pr_err("ALSA: vmaster: invalid slave element\n");
+ 		kfree(uinfo);
+ 		return -EINVAL;
+ 	}
 -- 
 1.8.5.2
