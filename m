@@ -1,97 +1,76 @@
 From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: [PATCH v2 0/7] Audio support for Armada 370 DB
-Date: Wed, 12 Feb 2014 18:20:55 +0100
-Message-ID: <1392225662-20431-1-git-send-email-thomas.petazzoni@free-electrons.com>
+Subject: [PATCH v2 3/7] ARM: mvebu: add audio I2S controller to Armada 370
+ Device Tree
+Date: Wed, 12 Feb 2014 18:20:58 +0100
+Message-ID: <1392225662-20431-4-git-send-email-thomas.petazzoni@free-electrons.com>
+References: <1392225662-20431-1-git-send-email-thomas.petazzoni@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
- by alsa0.perex.cz (Postfix) with ESMTP id EB52C26007E
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 18:21:03 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1392225662-20431-1-git-send-email-thomas.petazzoni@free-electrons.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jason Cooper <jason@lakedaemon.net>, Gregory Clement <gregory.clement@free-electrons.com>, Andrew Lunn <andrew@lunn.ch>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 Cc: Lior Amsalem <alior@marvell.com>, alsa-devel@alsa-project.org, Tawfik Bayouk <tawfik@marvell.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+The Armada 370 SoC has an I2S audio controller. This commit adds the
+description of this controller to the Device Tree describing this SoC,
+as well as two possible muxing configurations for the I2S bus pins.
 
-This series of patches enable audio support on the Marvell Armada 370
-Development Board. Since both the I2S controller on the SoC side and
-the I2C audio codec are already supported by the kernel, the amount of
-work is fairly limited.
+Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+---
+ arch/arm/boot/dts/armada-370.dtsi | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-Changes since v1:
-
- * Drop patches "sound: codec: add Device Tree binding to cs42l51" and
-   " sound: soc: enable Kirkwood driver for mvebu platforms" since
-   they have been applied by Mark Brown.
-
- * Set DAI format directly in the snd_soc_dai_link structure instead
-   of separately calling snd_soc_dai_set_fmt(). Suggested by Mark
-   Brown.
-
- * Do not call snd_soc_dapm_enable_pin(), as Mark Brown mentionned
-   that DAPM widgets default to enabled. It allowed to entirely remove
-   the dai_init operation.
-
- * Use devm_snd_soc_register_card() instead of
-   snd_soc_register_card(), as suggested by Mark Brown.
-
- * Wrote a Device Tree binding document for the DT binding introduced
-   by this driver. Requested by Mark Brown.
-
- * Use the DT to look up the controller and the codec, as suggested by
-   Mark Brown.
-
- * Add S/PDIF support, which has been successfully tested. I've kept
-   it as separate patches (for both the ASoC machine driver, and the
-   Device Tree bits), so that it can be reviewed and applied
-   separately.
-
- * Modified the commit title so that they contain "ASoC", as requested
-   by Mark Brown.
-
-Patches 1 and 2 are to be reviewed/applied by the ASoC maintainer Mark
-Brown, while patches 3 to 7 are to be reviewed/applied by the ARM
-mvebu maintainers.
-
-Note that the audio support for Armada 370 also needs a fix to the
-CS42L51, which is being discussed with the author of the change that
-apparently introduced the problem (see discussion at
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071916.html).
-
-Thanks,
-
-Thomas
-
-Thomas Petazzoni (7):
-  sound: ASoC: add ASoC board driver for Armada 370 DB
-  sound: ASoC: add S/PDIF support to Armada 370 DB ASoC driver
-  ARM: mvebu: add audio I2S controller to Armada 370 Device Tree
-  ARM: mvebu: add I2C0 muxing option for Armada 370 SoC
-  ARM: mvebu: add audio support to Armada 370 DB
-  ARM: mvebu: enable S/PDIF audio in Armada 370 DB Device Tree
-  ARM: mvebu: enable audio options in mvebu_defconfig
-
- .../bindings/sound/armada-370db-audio.txt          |  27 ++++
- arch/arm/boot/dts/armada-370-db.dts                |  56 ++++++++
- arch/arm/boot/dts/armada-370.dtsi                  |  28 ++++
- arch/arm/configs/mvebu_defconfig                   |   5 +
- sound/soc/kirkwood/Kconfig                         |   9 ++
- sound/soc/kirkwood/Makefile                        |   2 +
- sound/soc/kirkwood/armada-370-db.c                 | 148 +++++++++++++++++++++
- 7 files changed, 275 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/armada-370db-audio.txt
- create mode 100644 sound/soc/kirkwood/armada-370-db.c
-
+diff --git a/arch/arm/boot/dts/armada-370.dtsi b/arch/arm/boot/dts/armada-370.dtsi
+index 0d8530c..e3f4c18 100644
+--- a/arch/arm/boot/dts/armada-370.dtsi
++++ b/arch/arm/boot/dts/armada-370.dtsi
+@@ -132,6 +132,20 @@
+ 							"mpp51", "mpp52", "mpp53";
+ 					marvell,function = "sd0";
+ 				};
++
++				i2s_pins1: i2s-pins1 {
++					marvell,pins = "mpp5", "mpp6", "mpp7",
++						       "mpp8", "mpp9", "mpp10",
++						       "mpp12", "mpp13";
++					marvell,function = "audio";
++				};
++
++				i2s_pins2: i2s-pins2 {
++					marvell,pins = "mpp49", "mpp47", "mpp50",
++						       "mpp59", "mpp57", "mpp61",
++						       "mpp62", "mpp60", "mpp58";
++					marvell,function = "audio";
++				};
+ 			};
+ 
+ 			gpio0: gpio@18100 {
+@@ -196,6 +210,15 @@
+ 				clocks = <&coreclk 2>;
+ 			};
+ 
++			audio_controller: audio-controller@30000 {
++				compatible = "marvell,armada370-audio";
++				reg = <0x30000 0x4000>;
++				interrupts = <93>;
++				clocks = <&gateclk 0>;
++				clock-names = "internal";
++				status = "disabled";
++			};
++
+ 			usb@50000 {
+ 				clocks = <&coreclk 0>;
+ 			};
 -- 
 1.8.3.2
