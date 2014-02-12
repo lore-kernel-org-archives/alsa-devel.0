@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: print error if there is SRC
-	settings mismatch
-Date: Wed, 12 Feb 2014 12:00:17 +0000
-Message-ID: <20140212120017.GI28112@sirena.org.uk>
-References: <87a9dwapkc.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH] ASoC: rsnd: set DIV_EN register on
+ rsnd_adg_set_convert_clk_gen2()
+Date: Wed, 12 Feb 2014 12:00:08 +0000
+Message-ID: <20140212120008.GH28112@sirena.org.uk>
+References: <87bnycapmf.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4286493349238240845=="
+Content-Type: multipart/mixed; boundary="===============5211716030551403069=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D1442619D7
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 13:20:49 +0100 (CET)
-In-Reply-To: <87a9dwapkc.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A72A261A49
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 13:20:50 +0100 (CET)
+In-Reply-To: <87bnycapmf.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,53 +26,53 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam G
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4286493349238240845==
+--===============5211716030551403069==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YrlhzR9YrZtruaFS"
+	protocol="application/pgp-signature"; boundary="2NLGdgz3UMHa/lqP"
 Content-Disposition: inline
 
 
---YrlhzR9YrZtruaFS
+--2NLGdgz3UMHa/lqP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 11, 2014 at 09:05:26PM -0800, Kuninori Morimoto wrote:
+On Tue, Feb 11, 2014 at 09:04:12PM -0800, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
-> rsnd request clock master if SRC is used
+> DIV_EN register enable bit is required when you use Gen2 SRC
 
 Applied, thanks.
 
---YrlhzR9YrZtruaFS
+--2NLGdgz3UMHa/lqP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJS+2JOAAoJELSic+t+oim9oWcP/0+n4Dnog4uEZ1RLM4Zr2ngg
-sttPr+b91c2sAFUTdjdAG/4Ac0uKx3Mzpo1ojqvbahJ61O4Ns35d35EDItG7AQVp
-MeRDUOltW1Q+LI3g/sIEshE69kDvsnyqWTqXl4Y9JB4vcEI0DF9pvPQBhQo7rFmP
-8GfqFkYVMM2jSML3LJnM3VnXNTQQ8OLBKVbI6Umj5oE4G/FKZ7hUbXnP387qyRX3
-jzQeUkt/AHGmMqhYxgzi05rdVPuJkUaiIszCZF6UPzX7qWy1iMOL/f5vLn6L+Df1
-r/texZcYbJK3UorK/lBVBq68DbJHrWiUVigSqJMA/QL2Jx6LKmD4x2iUHcNctJNS
-m4xUI2hUeiQgG68+Q2VF9EixlPaTIo9fyMzSRsKBOurpf5+xxfbqcjuQ5xubMBPr
-v7xWo273+LVsujtaYEUOUY1iojHFBfsjR73g2zDnzEa5EcI2DXj9/BTwK5AT6Evq
-Ug6s17DwdNN2ND+i+zDWu9P/Bsi+u7DmrGr5eGwDaxpF2/gbm7eH580bhyZYBx+c
-2q24putjVtUvLroZzc4ipN82dgz/jb9+cYyOHr6MNOuDkOye6eodySkDSCgVX/MU
-2itCtqYIY0IVzblOYUv/XlH6Fpl8y/zECj8rRslmoS6f9jWhbeOWRzt8SMN0gKYa
-4O+3FqQJkr/jcuJJUBRg
-=bjPF
+iQIcBAEBAgAGBQJS+2JEAAoJELSic+t+oim9GMAP/AnptI+IajabDFnQRCpiNOxb
+0+PYuKmwfoOm+XAj55BGlhkSc6o7iwfwlndidBZ2lmO1HSkZ0Pv5hkwioIH69Pni
+hIQWUmAw6nTNCXYcEjfZFQ31sA9i1PTSfF//NGD5nE9DqrpYZJ4u4BtnXHHj1tGx
+QnWwDP3oRbBztm80O1SYTn/Pd9ODhCedOYDLGWGPvubiVYLXTI6CrC99BV+knaXg
+BPF0bItQd9rPfe9fT4ZwutzAWj45zfgkB8iViZGxWekLbGEWafKq16WCFen/9tp1
+u9lqvogVWFHSDrDbkJc/R1dW/v9g2zggjLvroCo4txey0sPc/oq7Tb3EdslgkxFK
+tPuNyEmGdCRtZ5T+ibOFU+cUy6mSgeuxOnbw0mrQrPYsmIAwcutx90aEqrZMWzeS
+dnh4ccLAcpbAQvae3uPxv2gbytbFkourLYjOGV8+4+lJ9SpmbTTFnKHmoyZ/gD5n
+uJcoiVSYlrHOncZ+hJEp6khZk0RNib/spgPcyGSMBZ6NlFf3rP9xE9RRwMr2PEct
+qPVlsZ9mlLZPZCA0rIVActQ5hSC1S+HTZB+3lm/0iwQpuNPSFvFwxSLdfjLqxVeY
+kErolPwA7qg/SzSwshmEXyoPf0eWB8ybPD5UlMAKT5PQXPWPzY/MtM1yRHpKJVGj
+tmMYKyzTMb+RNELyP4dn
+=Fm8c
 -----END PGP SIGNATURE-----
 
---YrlhzR9YrZtruaFS--
+--2NLGdgz3UMHa/lqP--
 
---===============4286493349238240845==
+--===============5211716030551403069==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4286493349238240845==--
+--===============5211716030551403069==--
