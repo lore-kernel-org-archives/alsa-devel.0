@@ -1,21 +1,20 @@
-From: "Handrigan, Paul" <Paul.Handrigan@cirrus.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] MAINTAINERS: Add entry for Cirrus CODEC
  drivers
-Date: Thu, 13 Feb 2014 14:30:27 +0000
-Message-ID: <1F26043D-79EA-4C95-BFC6-0B5E9885002A@cirrus.com>
+Date: Thu, 13 Feb 2014 16:01:08 +0000
+Message-ID: <20140213160108.GS28112@sirena.org.uk>
 References: <1391545805-6746-1-git-send-email-broonie@kernel.org>
- <CAOZdJXUtv_rB2rn+s18mLw6p8TkjDQMnFN03=RL24phWcneKeQ@mail.gmail.com>,
+ <CAOZdJXUtv_rB2rn+s18mLw6p8TkjDQMnFN03=RL24phWcneKeQ@mail.gmail.com>
  <52FC9D90.4060305@zonque.org>
+ <1F26043D-79EA-4C95-BFC6-0B5E9885002A@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7421066951406177831=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe002.messaging.microsoft.com [65.55.88.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 60849260850
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2014 15:31:17 +0100 (CET)
-In-Reply-To: <52FC9D90.4060305@zonque.org>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9ADBD2651DC
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2014 17:01:21 +0100 (CET)
+In-Reply-To: <1F26043D-79EA-4C95-BFC6-0B5E9885002A@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,40 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, Mark Brown <broonie@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, "Austin,
- Brian" <Brian.Austin@cirrus.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>
+To: "Handrigan, Paul" <Paul.Handrigan@cirrus.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, "Austin, Brian" <Brian.Austin@cirrus.com>, Timur Tabi <timur@tabi.org>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============7421066951406177831==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="nF5CeAc4QNWHTmva"
+Content-Disposition: inline
 
-> On Feb 13, 2014, at 4:25 AM, "Daniel Mack" <daniel@zonque.org> wrote:
-> 
->> On 02/11/2014 05:45 AM, Timur Tabi wrote:
->>> On Tue, Feb 4, 2014 at 2:30 PM, Mark Brown <broonie@kernel.org> wrote:
->>> From: Mark Brown <broonie@linaro.org>
->>> 
->>> I noticed that some recent patches hadn't been CCed to the Cirrus people
->>> - add an entry in MAINTAINERS to help make that happen.
->>> 
->>> Signed-off-by: Mark Brown <broonie@linaro.org>
->>> ---
->>> 
->>> Brian, Paul - are you OK with this?
->> 
->> Go ahead and remove me as maintainer of the CS4270 driver, if you guys
->> want.  I don't have access to that hardware any more, and so I really
->> can't maintain it.
-> 
-> I do have hardware, but it will take me some time to test more intrusive
-> patches. If nobody else volunteers, I'd take it.
-> 
-> 
-> Thanks,
-> Daniel
-> 
-> 
-I would like to take it. I have all of the hardware to test patches. 
 
-Thanks,
-Paul
+--nF5CeAc4QNWHTmva
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Feb 13, 2014 at 02:30:27PM +0000, Handrigan, Paul wrote:
+
+> I would like to take it. I have all of the hardware to test patches.=20
+
+It should already be included in the general Cirrus CODEC thing that
+triggered the thread, this would be an extra thing for this CODEC in
+particular.
+
+--nF5CeAc4QNWHTmva
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJS/OxAAAoJELSic+t+oim96j8P/1zjGbnqdd0XxKTu11eM6O0g
+nreflYZN75Z4+JXQ9PTQkxHABjRCMowP1lSxdSHxjCJgSl0wxuKPmpiFLFLfLc3u
+csxhgqzCHSXu6dSiZd7k3+vc8z2EPfneialYzafE4N6aU+MxT/NyJO3JSqf310N+
+dEtATXb+3xIxBX58HLL5RI9TC4g/YwNQ3egs0XO9KG5O5S0WAgYEInCGTckkbtBw
+dR16GS2RxNOWPaboMNxm3d55Sfmc1F6PGGeT4GDGScsgmbgic0UoF/5Iw4ZaNa6t
+pxhXeohPs6NyYpKth+7uvY3zMJkg1O9cqAD1z0EYykObfa4LRJCFtYAR/DOv7yh6
+qt+0YBf64q11GOzxAm7VTK77h7OwktFDkvmWWuSGTWUGqlPEKGNc3QpoOqAglLuW
+0gzTr7AWoLx7sia6eyl4qk36U+SYfcVfq7TvA5g/3O9eNr9MGia75h6Wc+R4Kyhi
+Ps8QZf18oI2qTC0sS8M6sPVtDlqnE9kl4wvHX960Plq1jE3PP76Px1CZbVsMYDQX
+mGf6WQfJK/B1o7VelWrDg00RBhtB4mlV0gbKwIVzecqqPsDiVwDRGjuHJdDKnMdO
+va0hKEBeuYYcGeOCdYTuXO2b3aEFpRn69KqgViws5BSJcVWvvpxjXwogAz9xtcUs
+0zldZgzu30fZ410iZoHj
+=jGX5
+-----END PGP SIGNATURE-----
+
+--nF5CeAc4QNWHTmva--
+
+--===============7421066951406177831==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7421066951406177831==--
