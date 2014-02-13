@@ -1,99 +1,68 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: No sound from Headphone Jack over Lenovo Docking
- Station with T440p Laptop
-Date: Thu, 13 Feb 2014 10:15:30 +0800
-Message-ID: <CAN8cciaSZqBONqtjOE9BPst_7x_HcUm06V9yZEnY2O=woRjZaA@mail.gmail.com>
-References: <trinity-ed805987-a2af-445d-8c84-171681bd6482-1387447530146@3capp-webde-bs34>
- <CAN8cciaKv=4s2Njaag7XjqBj203EPL1BTi3XAG+ZmEpSP+20hg@mail.gmail.com>
- <loom.20140212T215407-567@post.gmane.org>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [alsa-devel] [PATCH v2 1/3] ASoC: binding: add tdm-slot.txt
+Date: Thu, 13 Feb 2014 07:32:10 +0000
+Message-ID: <2eae2c076b7540448be19e9c91a58ee0@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1392191112-27028-1-git-send-email-Li.Xiubo@freescale.com>
+ <1392191112-27028-2-git-send-email-Li.Xiubo@freescale.com>
+ <52FB3E5C.8040701@metafoo.de> <20140212111033.GD28112@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f49.google.com (mail-qa0-f49.google.com
- [209.85.216.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DEB4265175
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2014 03:15:31 +0100 (CET)
-Received: by mail-qa0-f49.google.com with SMTP id w8so14946160qac.8
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2014 18:15:30 -0800 (PST)
-In-Reply-To: <loom.20140212T215407-567@post.gmane.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bernhard <schlimmchen@yahoo.de>, nkalkhof@web.de
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140212111033.GD28112@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-2014-02-13 5:01 GMT+08:00 Bernhard <schlimmchen@yahoo.de>:
-
-> Raymond Yau <superquad.vortex2 <at> gmail.com> writes:
-> >
-> > Post the output of alsa-info.sh when thinkpad is docked and not docked
-> with
-> > headphone pluggedd and unplugged
-> >
+> > The current internal API for TDM is very poor, I don't think we want
+> > to expose that 1 to 1 to the devicetree. Since this means we'd have
+> > to support that forever. The first thing is that the semantics of
+> > snd_soc_dai_set_tdm_slot() are very unclear. E.g. some drivers use a
+> > zero bit for a active slot, some drivers use a 1 bit for a active
+> 
+> Yes, and if we do end up using masks we need to nail down what's going
+> on in the DT.
 >
-> I created the output you requested (Lenovo ThinkPad T440p in UltraDock, no
-> sound when docked via dock jack but notebook speakers are also mute).
->
-> not docked: http://pastebin.com/MFQT3R9S
-> docked, no headphones: http://pastebin.com/8UN1sHSM
-> docked, headphones plugged in dock: http://pastebin.com/7XauZLZz
-> docked, headphones plugged in notebook: http://pastebin.com/xfL5qkge
->
-> Based on that, can you help us getting sound to work on the dock?
->
->
-the headphone is at node 0x15
 
-        control.16 {
-                iface CARD
-                name 'Headphone Jack'
-                value true
-                comment {
-                        access read
-                        type BOOLEAN
-                        count 1
-                }
-        }
+Yes, certainly.
 
-you need to use hda_jack_sense_test.py which require python and hda codec
-parser of hda-analyzer to find out
+> > slot. The second thing is that we are not able to specify which
+> > channel should be mapped to which slot. You can merely specify
+> > from/to which slots the CODEC should read/write and then it is up to
+> > the driver to guess which channel should go to which slot. In my
+> > opinion a binding that allows to specify a explicit mapping of which
+> > channel goes to which slot would be much better.
+> 
+> It'd certainly be good to be able to do that, though having a default
+> would make life easier.
+> 
 
-https://bugzilla.kernel.org/show_bug.cgi?id=66621#c39
+@Lars, @Mark,
 
-pd=1 when plugged and pd=0 when unplugged
+Yes, then will that means that we can just end up parsing masks from DT
+and the masks will be generated by the driver specified
+dai->driver->ops->of_xlate_tdm_slot_mask(slots, &tx_mask, &rx_mask)
+callback or one default
+snd_soc_of_xlate_tdm_slot_mask(slots, &tx_mask, &rx_mask), and the
+'slots' is the number of the slot parsed from the DT node ?
 
-or hda-verb GET_PIN_SENSE
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/plain/Documentation/sound/alsa/HD-Audio.txt
-
-1) the node of the headphone of the dock headset
-
-node 0x16 , 0x18 and 0x19 which pincap support output
-
-try hdajackretask or early patching to fix the pin default to dock headphone
-
-2) for the dock headset mic , you need to find by trial and error from the
-remaining unconnected nodes which pincap support input
-
-node 0x13, 0x19, 0x1b, 0x1d
+Or other better ways ?
 
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/log/sound/pci/hda/patch_realtek.c?qt=grep&q=dock
+Thanks,
 
- 0x21a11000  /* dock-mic */
+--
+Best Regards,
+Xiubo
 
-need to set bit 8 if dock headset mic use jack detection of headphone
-instead of jack detection of its own pin compex
 
- 0x2121103f  /* dock-HP */
- 0x21440100  /* dock SPDIF out */
 
-you need to clear bit 8 if pincap of node 0x1e support DETECT
+
+
+> > Also those are four different settings. In my opinion they should
+> > not be expressed in one property, but rather in four. E.g.
+> > specifying a tx_mask for a rx only device does not make much sense.
+> 
+> That makes sense.
