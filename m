@@ -1,16 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 2/5] ASoC: Intel: Add common SST driver loader
-	on ACPI systems
-Date: Thu, 13 Feb 2014 19:15:27 +0000
-Message-ID: <1392318930-8771-2-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 4/5] ASoC: Intel: Add trace support for generic
+	SST IPC messages.
+Date: Thu, 13 Feb 2014 19:15:29 +0000
+Message-ID: <1392318930-8771-4-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1392318930-8771-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 983712651FC
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2014 20:15:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 13B352651FF
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2014 20:15:53 +0100 (CET)
 In-Reply-To: <1392318930-8771-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,243 +22,170 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Benson Leung <bleung@google.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Benson Leung <bleung@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Provide a trace mechanism for debugging generic SST IPC messages.
 
-Most of the SST devices will be exposed as ACPI devices. It makes sense to
-avoid duplication of the driver enumeration logic and concentrate the functionality
-into a single ACPI SST enumeration file.
-
-Idea of this loader is to parse data we get from ACPI and to be able to load
-needed other SST drivers and ASoC machine driver runtime based on single
-ACPI ID what BIOS gives to us.
-
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/sst-acpi.c | 212 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 212 insertions(+)
- create mode 100644 sound/soc/intel/sst-acpi.c
+ include/trace/events/sst.h | 148 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 148 insertions(+)
+ create mode 100644 include/trace/events/sst.h
 
-diff --git a/sound/soc/intel/sst-acpi.c b/sound/soc/intel/sst-acpi.c
+diff --git a/include/trace/events/sst.h b/include/trace/events/sst.h
 new file mode 100644
-index 0000000..72eedae
+index 0000000..1a0d6b3
 --- /dev/null
-+++ b/sound/soc/intel/sst-acpi.c
-@@ -0,0 +1,212 @@
-+/*
-+ * Intel SST loader on ACPI systems
-+ *
-+ * Copyright (C) 2013, Intel Corporation. All rights reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License version
-+ * 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ */
++++ b/include/trace/events/sst.h
+@@ -0,0 +1,148 @@
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM sst
 +
-+#include <linux/acpi.h>
-+#include <linux/device.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
++#if !defined(_TRACE_SST_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_SST_H
 +
-+#include "sst-dsp.h"
++#include <linux/types.h>
++#include <linux/ktime.h>
++#include <linux/tracepoint.h>
 +
-+#define SST_LPT_DSP_DMA_ADDR_OFFSET	0x0F0000
-+#define SST_WPT_DSP_DMA_ADDR_OFFSET	0x0FE000
-+#define SST_LPT_DSP_DMA_SIZE		(1024 - 1)
++DECLARE_EVENT_CLASS(sst_ipc_msg,
 +
-+/* Descriptor for setting up SST platform data */
-+struct sst_acpi_desc {
-+	const char *drv_name;
-+	/* Platform resource indexes. Must set to -1 if not used */
-+	int resindex_lpe_base;
-+	int resindex_pcicfg_base;
-+	int resindex_fw_base;
-+	int irqindex_host_ipc;
-+	int resindex_dma_base;
-+	/* Unique number identifying the SST core on platform */
-+	int sst_id;
-+	/* firmware file name */
-+	const char *fw_filename;
-+	/* DMA only valid when resindex_dma_base != -1*/
-+	int dma_engine;
-+	int dma_size;
-+};
++	TP_PROTO(unsigned int val),
 +
-+/* Descriptor for SST ASoC machine driver */
-+struct sst_acpi_mach {
-+	const char *drv_name;
-+	struct sst_acpi_desc *res_desc;
-+};
++	TP_ARGS(val),
 +
-+struct sst_acpi_priv {
-+	struct platform_device *pdev_mach;
-+	struct platform_device *pdev_pcm;
-+	struct sst_pdata sst_pdata;
-+	struct sst_acpi_desc *desc;
-+};
++	TP_STRUCT__entry(
++		__field(	unsigned int,	val		)
++	),
 +
-+static int sst_acpi_probe(struct platform_device *pdev)
-+{
-+	const struct acpi_device_id *id;
-+	struct device *dev = &pdev->dev;
-+	struct sst_acpi_priv *sst_acpi;
-+	struct sst_pdata *sst_pdata;
-+	struct sst_acpi_mach *mach;
-+	struct sst_acpi_desc *desc;
-+	struct resource *mmio;
-+	int ret = 0;
++	TP_fast_assign(
++		__entry->val = val;
++	),
 +
-+	sst_acpi = devm_kzalloc(dev, sizeof(*sst_acpi), GFP_KERNEL);
-+	if (sst_acpi == NULL)
-+		return -ENOMEM;
++	TP_printk("0x%8.8x", (unsigned int)__entry->val)
++);
 +
-+	id = acpi_match_device(dev->driver->acpi_match_table, dev);
-+	if (!id)
-+		return -ENODEV;
++DEFINE_EVENT(sst_ipc_msg, sst_ipc_msg_tx,
 +
-+	mach = (struct sst_acpi_mach *)id->driver_data;
-+	desc = mach->res_desc;
-+	sst_pdata = &sst_acpi->sst_pdata;
-+	sst_pdata->id = desc->sst_id;
-+	sst_pdata->fw_filename = desc->fw_filename;
-+	sst_acpi->desc = desc;
++	TP_PROTO(unsigned int val),
 +
-+	if (desc->resindex_dma_base >= 0) {
-+		sst_pdata->dma_engine = desc->dma_engine;
-+		sst_pdata->dma_base = desc->resindex_dma_base;
-+		sst_pdata->dma_size = desc->dma_size;
-+	}
++	TP_ARGS(val)
 +
-+	if (desc->irqindex_host_ipc >= 0)
-+		sst_pdata->irq = platform_get_irq(pdev, desc->irqindex_host_ipc);
++);
 +
-+	if (desc->resindex_lpe_base >= 0) {
-+		mmio = platform_get_resource(pdev, IORESOURCE_MEM,
-+					     desc->resindex_lpe_base);
-+		if (mmio) {
-+			sst_pdata->lpe_base = mmio->start;
-+			sst_pdata->lpe_size = resource_size(mmio);
-+		}
-+	}
++DEFINE_EVENT(sst_ipc_msg, sst_ipc_msg_rx,
 +
-+	if (desc->resindex_pcicfg_base >= 0) {
-+		mmio = platform_get_resource(pdev, IORESOURCE_MEM,
-+					     desc->resindex_pcicfg_base);
-+		if (mmio) {
-+			sst_pdata->pcicfg_base = mmio->start;
-+			sst_pdata->pcicfg_size = resource_size(mmio);
-+		}
-+	}
++	TP_PROTO(unsigned int val),
 +
-+	if (desc->resindex_fw_base >= 0) {
-+		mmio = platform_get_resource(pdev, IORESOURCE_MEM,
-+					     desc->resindex_fw_base);
-+		if (mmio) {
-+			sst_pdata->fw_base = mmio->start;
-+			sst_pdata->fw_size = resource_size(mmio);
-+		}
-+	}
++	TP_ARGS(val)
 +
-+	/* register PCM and DAI driver */
-+	sst_acpi->pdev_pcm =
-+		platform_device_register_data(dev, desc->drv_name, -1,
-+					      sst_pdata, sizeof(*sst_pdata));
-+	if (IS_ERR(sst_acpi->pdev_pcm))
-+		return PTR_ERR(sst_acpi->pdev_pcm);
++);
 +
-+	/* register machine driver */
-+	platform_set_drvdata(pdev, sst_acpi);
++DECLARE_EVENT_CLASS(sst_ipc_mailbox,
 +
-+	sst_acpi->pdev_mach =
-+		platform_device_register_data(dev, mach->drv_name, -1,
-+					      sst_pdata, sizeof(*sst_pdata));
-+	if (IS_ERR(sst_acpi->pdev_mach)) {
-+		ret = PTR_ERR(sst_acpi->pdev_mach);
-+		goto sst_err;
-+	}
++	TP_PROTO(unsigned int offset, unsigned int val),
 +
-+	return ret;
++	TP_ARGS(offset, val),
 +
-+sst_err:
-+	platform_device_unregister(sst_acpi->pdev_pcm);
-+	return ret;
-+}
++	TP_STRUCT__entry(
++		__field(	unsigned int,	offset		)
++		__field(	unsigned int,	val		)
++	),
 +
-+static int sst_acpi_remove(struct platform_device *pdev)
-+{
-+	struct sst_acpi_priv *sst_acpi = platform_get_drvdata(pdev);
++	TP_fast_assign(
++		__entry->offset = offset;
++		__entry->val = val;
++	),
 +
-+	platform_device_unregister(sst_acpi->pdev_mach);
-+	platform_device_unregister(sst_acpi->pdev_pcm);
++	TP_printk(" 0x%4.4x = 0x%8.8x",
++		(unsigned int)__entry->offset, (unsigned int)__entry->val)
++);
 +
-+	return 0;
-+}
++DEFINE_EVENT(sst_ipc_mailbox, sst_ipc_inbox_rdata,
 +
-+static struct sst_acpi_desc sst_acpi_haswell_desc = {
-+	.drv_name = "haswell-pcm-audio",
-+	.resindex_lpe_base = 0,
-+	.resindex_pcicfg_base = 1,
-+	.resindex_fw_base = -1,
-+	.irqindex_host_ipc = 0,
-+	.sst_id = SST_DEV_ID_LYNX_POINT,
-+	.fw_filename = "IntcSST1.bin",
-+	.dma_engine = SST_DMA_TYPE_DW,
-+	.resindex_dma_base = SST_LPT_DSP_DMA_ADDR_OFFSET,
-+	.dma_size = SST_LPT_DSP_DMA_SIZE,
-+};
++	TP_PROTO(unsigned int offset, unsigned int val),
 +
-+static struct sst_acpi_desc sst_acpi_broadwell_desc = {
-+	.drv_name = "haswell-pcm-audio",
-+	.resindex_lpe_base = 0,
-+	.resindex_pcicfg_base = 1,
-+	.resindex_fw_base = -1,
-+	.irqindex_host_ipc = 0,
-+	.sst_id = SST_DEV_ID_WILDCAT_POINT,
-+	.fw_filename = "IntcSST2.bin",
-+	.dma_engine = SST_DMA_TYPE_DW,
-+	.resindex_dma_base = SST_WPT_DSP_DMA_ADDR_OFFSET,
-+	.dma_size = SST_LPT_DSP_DMA_SIZE,
-+};
++	TP_ARGS(offset, val)
 +
-+static struct sst_acpi_mach haswell_mach = {
-+	.drv_name = "haswell-audio",
-+	.res_desc = &sst_acpi_haswell_desc,
-+};
++);
 +
-+static struct sst_acpi_mach broadwell_mach = {
-+	.drv_name = "broadwell-audio",
-+	.res_desc = &sst_acpi_broadwell_desc,
-+};
++DEFINE_EVENT(sst_ipc_mailbox, sst_ipc_inbox_wdata,
 +
-+static struct acpi_device_id sst_acpi_match[] = {
-+	{ "INT33C8", (unsigned long)&haswell_mach },
-+	{ "INT3438", (unsigned long)&broadwell_mach },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, sst_acpi_match);
++	TP_PROTO(unsigned int offset, unsigned int val),
 +
-+static struct platform_driver sst_acpi_driver = {
-+	.probe = sst_acpi_probe,
-+	.remove = sst_acpi_remove,
-+	.driver = {
-+		.name = "sst-acpi",
-+		.owner = THIS_MODULE,
-+		.acpi_match_table = ACPI_PTR(sst_acpi_match),
-+	},
-+};
-+module_platform_driver(sst_acpi_driver);
++	TP_ARGS(offset, val)
 +
-+MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@linux.intel.com>");
-+MODULE_DESCRIPTION("Intel SST loader on ACPI systems");
-+MODULE_LICENSE("GPL v2");
++);
++
++DEFINE_EVENT(sst_ipc_mailbox, sst_ipc_outbox_rdata,
++
++	TP_PROTO(unsigned int offset, unsigned int val),
++
++	TP_ARGS(offset, val)
++
++);
++
++DEFINE_EVENT(sst_ipc_mailbox, sst_ipc_outbox_wdata,
++
++	TP_PROTO(unsigned int offset, unsigned int val),
++
++	TP_ARGS(offset, val)
++
++);
++
++DECLARE_EVENT_CLASS(sst_ipc_mailbox_info,
++
++	TP_PROTO(unsigned int size),
++
++	TP_ARGS(size),
++
++	TP_STRUCT__entry(
++		__field(	unsigned int,	size		)
++	),
++
++	TP_fast_assign(
++		__entry->size = size;
++	),
++
++	TP_printk("Mailbox bytes 0x%8.8x", (unsigned int)__entry->size)
++);
++
++DEFINE_EVENT(sst_ipc_mailbox_info, sst_ipc_inbox_read,
++
++	TP_PROTO(unsigned int size),
++
++	TP_ARGS(size)
++
++);
++
++DEFINE_EVENT(sst_ipc_mailbox_info, sst_ipc_inbox_write,
++
++	TP_PROTO(unsigned int size),
++
++	TP_ARGS(size)
++
++);
++
++DEFINE_EVENT(sst_ipc_mailbox_info, sst_ipc_outbox_read,
++
++	TP_PROTO(unsigned int size),
++
++	TP_ARGS(size)
++
++);
++
++DEFINE_EVENT(sst_ipc_mailbox_info, sst_ipc_outbox_write,
++
++	TP_PROTO(unsigned int size),
++
++	TP_ARGS(size)
++
++);
++
++#endif /* _TRACE_SST_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
 -- 
 1.8.3.2
