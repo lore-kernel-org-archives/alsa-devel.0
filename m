@@ -1,112 +1,41 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH v3 3/3] ASoC: simple-card: add slot information parsing supports
-Date: Fri, 14 Feb 2014 09:34:36 +0800
-Message-ID: <1392341676-4143-4-git-send-email-Li.Xiubo@freescale.com>
-References: <1392341676-4143-1-git-send-email-Li.Xiubo@freescale.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 07/24] ALSA: firewire: Convert to
+ snd_card_new() with a device pointer
+Date: Fri, 14 Feb 2014 15:56:05 +0900
+Message-ID: <52FDBE05.1090702@sakamocchi.jp>
+References: <1392201340-27113-1-git-send-email-tiwai@suse.de>
+ <1392201340-27113-8-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1392341676-4143-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, lars@metafoo.de
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, b47053@freescale.com, Xiubo Li <Li.Xiubo@freescale.com>, Mark Brown <broonie@linaro.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FF732610CE
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2014 07:56:11 +0100 (CET)
+In-Reply-To: <1392201340-27113-8-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-For some CPU/CODEC DAI devices the slot information maybe needed. This
-patch adds the slot information parsing for simple-card driver.
+(Feb 12 2014 19:35), Takashi Iwai wrote:
+> Also remove superfluous snd_card_set_dev() calls.
+>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@linaro.org>
----
- .../devicetree/bindings/sound/simple-card.txt          |  5 +++++
- include/sound/simple_card.h                            |  2 ++
- sound/soc/generic/simple-card.c                        | 18 ++++++++++++++++++
- 3 files changed, 25 insertions(+)
+It's a good idea.
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index 0527358..b30c222 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -18,6 +18,8 @@ Optional properties:
- 					  Each entry is a pair of strings, the first being the
- 					  connection's sink, the second being the connection's
- 					  source.
-+- dai-tdm-slot-num			: Please refer to tdm-slot.txt.
-+- dai-tdm-slot-width			: Please refer to tdm-slot.txt.
- 
- Required subnodes:
- 
-@@ -56,6 +58,9 @@ sound {
- 		"Headphone Jack", "HP_OUT",
- 		"External Speaker", "LINE_OUT";
- 
-+	dai-tdm-slot-num = <2>;
-+	dai-tdm-slot-width = <8>;
-+
- 	simple-audio-card,cpu {
- 		sound-dai = <&sh_fsi2 0>;
- 	};
-diff --git a/include/sound/simple_card.h b/include/sound/simple_card.h
-index e1ac996..9b0ac77 100644
---- a/include/sound/simple_card.h
-+++ b/include/sound/simple_card.h
-@@ -18,6 +18,8 @@ struct asoc_simple_dai {
- 	const char *name;
- 	unsigned int fmt;
- 	unsigned int sysclk;
-+	int slots;
-+	int slot_width;
- };
- 
- struct asoc_simple_card_info {
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 4fe8abc..bdd176d 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -9,11 +9,14 @@
-  * published by the Free Software Foundation.
-  */
- #include <linux/clk.h>
-+#include <linux/device.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/string.h>
- #include <sound/simple_card.h>
-+#include <sound/soc-dai.h>
-+#include <sound/soc.h>
- 
- struct simple_card_data {
- 	struct snd_soc_card snd_card;
-@@ -44,6 +47,16 @@ static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
- 		}
- 	}
- 
-+	if (set->slots) {
-+		ret = snd_soc_dai_set_tdm_slot(dai, 0, 0,
-+						set->slots,
-+						set->slot_width);
-+		if (ret && ret != -ENOTSUPP) {
-+			dev_err(dai->dev, "simple-card: set_tdm_slot error\n");
-+			goto err;
-+		}
-+	}
-+
- 	ret = 0;
- 
- err:
-@@ -94,6 +107,11 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 	if (ret < 0)
- 		goto parse_error;
- 
-+	/* parse TDM slot */
-+	ret = snd_soc_of_parse_tdm_slot(np, &dai->slots, &dai->slot_width);
-+	if (ret)
-+		goto parse_error;
-+
- 	/*
- 	 * bitclock-inversion, frame-inversion
- 	 * bitclock-master,    frame-master
--- 
-1.8.4
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
+
+Regards
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
