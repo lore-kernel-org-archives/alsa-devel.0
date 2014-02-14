@@ -1,19 +1,19 @@
-From: Olivier Langlois <olivier@trillion01.com>
-Subject: user defined plugin and namehint
-Date: Fri, 14 Feb 2014 08:45:49 -0500
-Message-ID: <1392385549.2165.13.camel@Wailaba2>
+From: Liam Girdwood <liam.r.girdwood@intel.com>
+Subject: Re: [PATCH 3/5] ASoC: Intel: Add Intel SST audio DSP
+ Firmware loader.
+Date: Fri, 14 Feb 2014 16:11:15 +0000
+Message-ID: <1392394275.2300.86.camel@loki>
+References: <1392318930-8771-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ <1392318930-8771-3-git-send-email-liam.r.girdwood@linux.intel.com>
+ <s5hy51ehy40.wl%tiwai@suse.de> <1392370729.2300.6.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from alt-proxy30.mail.unifiedlayer.com
- (alt-proxy30.mail.unifiedlayer.com [74.220.223.59])
- by alsa0.perex.cz (Postfix) with SMTP id 07BB3261703
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2014 14:46:00 +0100 (CET)
-Received: from [173.179.63.169] (port=34835 helo=[192.168.1.104])
- by box610.bluehost.com with esmtpsa (SSLv3:RC4-SHA:128) (Exim 4.80)
- (envelope-from <olivier@trillion01.com>) id 1WEJ5Y-0006gv-Li
- for alsa-devel@alsa-project.org; Fri, 14 Feb 2014 06:45:56 -0700
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00E88261663
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2014 17:11:39 +0100 (CET)
+In-Reply-To: <1392370729.2300.6.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,45 +23,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Benson Leung <bleung@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, 2014-02-14 at 09:38 +0000, Liam Girdwood wrote:
+> On Fri, 2014-02-14 at 09:55 +0100, Takashi Iwai wrote:
+> > At Thu, 13 Feb 2014 19:15:28 +0000,
+> > Liam Girdwood wrote:
+> 
+> > > +
+> > > +/* allocate contiguous free DSP blocks - callers hold locks */
+> > > +static int block_alloc_contiguous(struct sst_module *module,
+> > > +	struct sst_module_data *data, u32 next_offset, int size)
+> > > +{
+> > > +	struct sst_dsp *dsp = module->dsp;
+> > > +	struct sst_mem_block *block, *tmp;
+> > > +	int ret;
+> > > +
+> > > +	/* find first free blocks that can hold module */
+> > > +	list_for_each_entry_safe(block, tmp, &dsp->free_block_list, list) {
+> > > +
+> > > +		/* ignore blocks that dont match type */
+> > > +		if (block->type != data->type)
+> > > +			continue;
+> > > +
+> > > +		/* is block next after parent ? */
+> > > +		if (next_offset == block->offset) {
+> > > +
+> > > +			/* do we need more blocks */
+> > > +			if (size > block->size) {
+> > > +				ret = block_alloc_contiguous(module,
+> > > +					data, block->offset + block->size,
+> > > +					size - block->size);
+> > > +				if (ret < 0)
+> > > +					return ret;
+> > 
+> > How many contiguous blocks can be?
+> 
+> In theory, the whole DSP memory can be allocated as a contiguous block,
+> but in practice it's only really a few blocks contiguous per module atm.
+> 
+> > The recursive call for each one block doesn't look scaling.
+> > 
 
-I created a new plugin in asound.conf and I would like it to appear in
-the list presented with aplay -L as this is the list used by my media
-player (vlc) to offer the option to choose my playback device.
+I've double checked the logic here and added more comments and debug. I
+may be missing something though, but it does work and is designed to
+deal with unordered blocks (on address) in the list.
 
-I have tried this:
+The recursion basically checks the whole list each time for the next
+block in address order. It then checks if the required size > current
+block size. We decrement size on each by block size and increment
+address by block size on every call. If the required size < current
+block size we allocate the block and come back up the stack allocating
+the other blocks in the sequence.
 
-pcm.rate96000Hz {
-        type hw
-        card 0
-        device 0
-        rate 96000
-        hint {
-                show on
-                description "96000Hz rate output"
-        }
-}
+>From the debug we get :-
 
-It seems that it is missing the small magic used by standard specs. ie:
-from front.conf:
+> [    6.733916] haswell-pcm-audio haswell-pcm-audio:  module 0 added block 0:4 at offset 0xc0000
+> [    6.733925] haswell-pcm-audio haswell-pcm-audio:  module 0 added block 0:3 at offset 0xb8000
+> [    6.733930] haswell-pcm-audio haswell-pcm-audio:  module 0 added block 0:2 at offset 0xb0000
+> [    6.733936] haswell-pcm-audio haswell-pcm-audio:  module 0 added block 0:1 at offset 0xa8000
+> [    6.810179] haswell-pcm-audio haswell-pcm-audio:  module 0 added block 1:1 at offset 0x88000
+> [    6.810189] haswell-pcm-audio haswell-pcm-audio:  module 0 added block 1:0 at offset 0x80000
+> [    6.857452] haswell-pcm-audio haswell-pcm-audio: scratch buffer required is 56320 bytes
+> [    6.857461] haswell-pcm-audio haswell-pcm-audio: allocating scratch blocks
+> [    6.857469] haswell-pcm-audio haswell-pcm-audio:  module 0 added block 1:6 at offset 0x70000
+> [    6.860268] haswell-pcm-audio haswell-pcm-audio: FW loaded: type 172 - version: 0.0 build 1
 
-        hint {
-                show {
-                        @func refer
-                        name defaults.namehint.basic
-                }
-                description "Front speakers"
-                device $DEV
-        }
+Thanks
 
-Background problem:
+Liam
 
-I have a flac audio file with 88.2 kHz sampling rate 24 bits and the
-player is opening the playback device at 48kHz and downsample my file.
->From the ui, there doesn't seem to be a way to fine tune these params. I
-will bring the discussion to vlc dev as well.
+---------------------------------------------------------------------
+Intel Corporation (UK) Limited
+Registered No. 1134945 (England)
+Registered Office: Pipers Way, Swindon SN3 1RJ
+VAT No: 860 2173 47
 
-Thank you,
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
