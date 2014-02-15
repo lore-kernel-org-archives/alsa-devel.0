@@ -1,17 +1,14 @@
-From: Barnaby Jones <barnabyjones65@gmail.com>
-Subject: Stereo audio not coming through with a TI codec
-Date: Sat, 15 Feb 2014 10:00:04 -0800
-Message-ID: <CAK+7dPJfmRUBULp3XC8Uho8uGW53jJg9rWSMBAZTb0DS2CG6DQ@mail.gmail.com>
+From: Alexander Shiyan <shc_work@mail.ru>
+Subject: [PATCH] ASoC: txx9aclc_ac97: Fix kernel crash on probe
+Date: Sat, 15 Feb 2014 23:28:29 +0400
+Message-ID: <1392492509-29426-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f196.google.com (mail-ie0-f196.google.com
- [209.85.223.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 556FA2615BF
- for <alsa-devel@alsa-project.org>; Sat, 15 Feb 2014 19:00:05 +0100 (CET)
-Received: by mail-ie0-f196.google.com with SMTP id rd18so1257017iec.11
- for <alsa-devel@alsa-project.org>; Sat, 15 Feb 2014 10:00:04 -0800 (PST)
+Received: from smtp1.mail.ru (smtp1.mail.ru [94.100.176.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id D77DB261629
+ for <alsa-devel@alsa-project.org>; Sat, 15 Feb 2014 20:28:37 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-Hey all,
+This patch fixes a crash caused by commit af5b2d7519
+(ASoC: txx9aclc_ac97: Convert to devm_ioremap_resource()).
+This is an attempt to assign "drvdata->base" while memory
+for "drvdata" is not already allocated.
 
-I'm working on a project that has a TI TLV320AIC3256 codec hooked up to an
-OMAP 4 processor.  My biggest issue right now is that I'm only getting one
-of the channels.  E.g. if I run:
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ sound/soc/txx9/txx9aclc-ac97.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-% tinycap test.wav -d 0 -r 48000 -b 16
-
-Only one of the channels (left, in this case) has any data.  The right
-channel is all 0s.
-
-I'm using the tlv320aic325x.c driver that's publicly available from TI[1].
-I've verified that the I2S data sent from the codec to the processor has
-data on both channels (i.e. I see I2S data on both the high and low phases
-of the frame sync).
-
-I'm looking for any help figuring out where to start looking in the sound
-system to debug this.  I'm not really familiar with how the I2S data makes
-its way from the hardware buffers to the PCM driver; any help there would
-be appreciated too!
-
-Thanks
-- B
-
-[1]:
-https://gitorious.org/ti-codecs/ti-codecs/source/721c6e957db39a9d2174cecd4ca6a7c3d88b3e52:sound/soc/codecs/tlv320aic325x.c
+diff --git a/sound/soc/txx9/txx9aclc-ac97.c b/sound/soc/txx9/txx9aclc-ac97.c
+index e0305a1..9edd68d 100644
+--- a/sound/soc/txx9/txx9aclc-ac97.c
++++ b/sound/soc/txx9/txx9aclc-ac97.c
+@@ -183,14 +183,16 @@ static int txx9aclc_ac97_dev_probe(struct platform_device *pdev)
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0)
+ 		return irq;
++
++	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
++	if (!drvdata)
++		return -ENOMEM;
++
+ 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	drvdata->base = devm_ioremap_resource(&pdev->dev, r);
+ 	if (IS_ERR(drvdata->base))
+ 		return PTR_ERR(drvdata->base);
+ 
+-	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
+-	if (!drvdata)
+-		return -ENOMEM;
+ 	platform_set_drvdata(pdev, drvdata);
+ 	drvdata->physbase = r->start;
+ 	if (sizeof(drvdata->physbase) > sizeof(r->start) &&
+-- 
+1.8.3.2
