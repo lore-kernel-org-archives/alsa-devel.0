@@ -1,19 +1,21 @@
-From: "Keith A. Milner" <maillist@superlative.org>
-Subject: Re: Roland V-Studio 20
-Date: Sat, 15 Feb 2014 00:24:47 +0000
-Message-ID: <1428051.5hAzGeGQ4E@kamdesktop>
-References: <8010247.EC2u5T8PMU@kamdesktop> <52FE698C.5080501@ladisch.de>
+From: Olivier Langlois <olivier@trillion01.com>
+Subject: Re: user defined plugin and namehint
+Date: Sat, 15 Feb 2014 02:55:17 -0500
+Message-ID: <1392450917.2165.22.camel@Wailaba2>
+References: <1392385549.2165.13.camel@Wailaba2>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f170.google.com (mail-wi0-f170.google.com
- [209.85.212.170])
- by alsa0.perex.cz (Postfix) with ESMTP id DF321260862
- for <alsa-devel@alsa-project.org>; Sat, 15 Feb 2014 01:24:49 +0100 (CET)
-Received: by mail-wi0-f170.google.com with SMTP id hi5so966637wib.1
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2014 16:24:49 -0800 (PST)
-In-Reply-To: <52FE698C.5080501@ladisch.de>
+Received: from oproxy7-pub.mail.unifiedlayer.com
+ (oproxy7-pub.mail.unifiedlayer.com [67.222.55.9])
+ by alsa0.perex.cz (Postfix) with SMTP id 90E0D2610D1
+ for <alsa-devel@alsa-project.org>; Sat, 15 Feb 2014 08:55:26 +0100 (CET)
+Received: from [173.179.63.169] (port=36398 helo=[192.168.1.104])
+ by box610.bluehost.com with esmtpsa (SSLv3:RC4-SHA:128) (Exim 4.80)
+ (envelope-from <olivier@trillion01.com>) id 1WEa5o-0000MI-1D
+ for alsa-devel@alsa-project.org; Sat, 15 Feb 2014 00:55:20 -0700
+In-Reply-To: <1392385549.2165.13.camel@Wailaba2>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,54 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 14 Feb 2014 20:07:56 Clemens Ladisch wrote:
-> Keith A. Milner wrote:
-> > I've recently picked up a cheap Roland V-Studio 20 device. This is
-> > described in the product spec as supporting 24-bit, but it is appearing
-> > as 16-bit only.
-> How does it appear in /proc/asound/card*/stream0?
+On Fri, 2014-02-14 at 08:45 -0500, Olivier Langlois wrote:
+> Hi,
 > 
-> > Unfortunately, Roland seem to insist on their own proprietary descriptors,
-> > which I don't know how to decode, so I'm not sure whether this is
-> > genuinely a 24-bit interface that isn't being interpreted properly by
-> > snd-usb-audio, or whether it's marketing spin, and it's actually 16-bit.
-> > 
-> > ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 44 ac 00
+> I created a new plugin in asound.conf and I would like it to appear in
+> the list presented with aplay -L as this is the list used by my media
+> player (vlc) to offer the option to choose my playback device.
 > 
->                                    ^^ ^^
->                                    This is three bytes, 24 bits.
+> I have tried this:
 > 
+> pcm.rate96000Hz {
+>         type hw
+>         card 0
+>         device 0
+>         rate 96000
+>         hint {
+>                 show on
+>                 description "96000Hz rate output"
+>         }
+> }
 > 
+I cannot make sense of everything that the function try_config() in
+control/namehint.c is doing or what the hint compound undocumented
+fields are supposed to mean but by changing my pcm definition to:
 
-Cakewalk VS-20 at usb-0000:00:1d.1-2, full speed : USB Audio
+pcm.rate96000Hz {
+        type hw
+        card 0
+        device 0
+        rate 96000
+        hint {
+                show on
+                device -1 # type hw are excluded. Adding this field
+trick alsa-lib to add this PCM in the list of PCMs
+                description "96000Hz rate output"
+        }
+}
 
-Playback:
-  Status: Stop
-  Interface 0
-    Altset 1
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 1 OUT (ADAPTIVE)
-    Rates: 44100
+Unfortunately, it did not resolve my problem. I have finally figured out
+that by simply changing the default dmix sampling rate was what I
+needed.
 
-Capture:
-  Status: Stop
-  Interface 1
-    Altset 1
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 2 IN (ASYNC)
-    Rates: 44100
-
-
-Ahah! thank you!
-
-I was confused because Jack seems to think it is 16 bit only.
-
-Cheers,
-
-Keith
+greetings,
