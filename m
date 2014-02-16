@@ -1,15 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: max98090: make REVISION_ID readable
-Date: Sun, 16 Feb 2014 09:09:47 +0800
-Message-ID: <20140216010947.GR4451@sirena.org.uk>
-References: <1392335664-6586-1-git-send-email-swarren@wwwdotorg.org>
+Subject: [PATCH] ASoC: io: Remove SPI support
+Date: Sun, 16 Feb 2014 10:05:09 +0800
+Message-ID: <1392516309-3327-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5611351079385418170=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 65539261673
- for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 02:58:26 +0100 (CET)
-In-Reply-To: <1392335664-6586-1-git-send-email-swarren@wwwdotorg.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id D64182619FF
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 03:28:24 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,59 +18,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+From: Mark Brown <broonie@linaro.org>
 
---===============5611351079385418170==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/9R6240woFu/reHS"
-Content-Disposition: inline
+All ASoC CODEC drivers that use SPI have now been converted to use regmap
+so we can delete SND_SOC_SPI, preventing any new users being added.
 
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ include/sound/soc.h | 1 -
+ sound/soc/soc-io.c  | 7 -------
+ 2 files changed, 8 deletions(-)
 
---/9R6240woFu/reHS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Feb 13, 2014 at 04:54:24PM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
->=20
-> The REVISION_ID register is not currently marked readable. snd_soc_read()
-> refuses to read the register, and hence probe() fails.
-
-Applied, thanks.
-
---/9R6240woFu/reHS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTAA/YAAoJELSic+t+oim95T0QAJf1OuPSjimt+04MgdxfgR5o
-5dlweabirL+UIs2qEuXmSv1yFtq7TFlUXIQCTVodM48WRG+NI/7AIUrOJ9mRxMpn
-2oCwDNr7QXRyR+6BrsWa4ZXXgUyUxILGCS1ynzXWg/mtNDglIIkKBAVda5VExXwM
-Eb+z6mju9SHB+woqoA2YlrP634hLB9Cpc1VyH/5x9VNuRSeC8ZfHtksWnwS84Frw
-Hvs8G7okH38tciHOAqMMBq7cD3JTE6WPiJhS9+L+9gyU3akl19P9G7GKTlwVdJj2
-7LHFjKwHAa6ZrhwfhV71nWjzgqUWxLSlLF3EUw0OA2Wyww21mWXBp7YghmbdKIr7
-msjYmYYdOKUxMSqbuER/WWDOSdtKCDJThQkCZlLXpZ2K2kuSL9sMDmuMgusdt6rY
-m4sryFbfxVm2d6qPpfH6Qgc1fy6YBV0UEMFkm2uFl1EDX9kwNQfuZhwF4DFgBhpz
-lww7o8EtGO9rRw/CuYW2z50P2HbIKSDKp1fSQFYmVw6lAyXamCfLb1teDkdL4Qd3
-TmJsFnnIUL8RPoqsGYyeNMI0bLBE4iWs7gLAgmcBQZOdFaXQSc9CGD1d/G77ugIp
-FE81Mlt4yRSiJiiJi6dbIONHSch9PZRUtmnBdmUqdnYkoNyGLta3zTFszqHW8RCc
-wTTnCihvDAA0IG+75IsA
-=mZpL
------END PGP SIGNATURE-----
-
---/9R6240woFu/reHS--
-
---===============5611351079385418170==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5611351079385418170==--
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 21d025e..21038e0 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -356,7 +356,6 @@ extern struct snd_ac97_bus_ops *soc_ac97_ops;
+ 
+ enum snd_soc_control_type {
+ 	SND_SOC_I2C = 1,
+-	SND_SOC_SPI,
+ 	SND_SOC_REGMAP,
+ };
+ 
+diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
+index aa886cc..3a0d99e 100644
+--- a/sound/soc/soc-io.c
++++ b/sound/soc/soc-io.c
+@@ -106,13 +106,6 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+ 		break;
+ #endif
+ 
+-#if IS_ENABLED(CONFIG_REGMAP_SPI)
+-	case SND_SOC_SPI:
+-		codec->control_data = regmap_init_spi(to_spi_device(codec->dev),
+-						      &config);
+-		break;
+-#endif
+-
+ 	case SND_SOC_REGMAP:
+ 		/* Device has made its own regmap arrangements */
+ 		codec->using_regmap = true;
+-- 
+1.9.0.rc3
