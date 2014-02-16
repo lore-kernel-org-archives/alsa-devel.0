@@ -1,15 +1,17 @@
-From: xiangxiao <xiaoxiang@xiaomi.com>
-Subject: [PATCH] ASoC: pass snd_soc_jack_gpio to
-	jack_status_check callback
-Date: Sun, 16 Feb 2014 13:36:12 +0800
-Message-ID: <1392528972-9440-1-git-send-email-xiaoxiang@xiaomi.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/1] dmix: Add support for S24_3BE format.
+Date: Sun, 16 Feb 2014 14:26:56 +0100
+Message-ID: <5300BCA0.2070601@ladisch.de>
+References: <1392483271-20453-1-git-send-email-v.vinel@gmail.com>
+ <1392483271-20453-2-git-send-email-v.vinel@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.mxmail.xiaomi.com (mx1.mxmail.xiaomi.com [58.68.235.87])
- by alsa0.perex.cz (Postfix) with ESMTP id B8B6C2615FA
- for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 06:37:06 +0100 (CET)
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 72742261629
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 14:27:22 +0100 (CET)
+In-Reply-To: <1392483271-20453-2-git-send-email-v.vinel@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,44 +21,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: xiaoxiang@xiaomi.com, broonie@kernel.org, lgirdwood@gmail.com
+To: Vincent Vinel <v.vinel@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-so the implementation could get the context data
+Vincent Vinel wrote:
+> Add swapped versions of generic_mix_areas_24() and
+> generic_remix_areas_24().
 
-Change-Id: I5542613ccf9881deb672e71d0f0c4f603ad761fd
-Signed-off-by: xiangxiao <xiaoxiang@xiaomi.com>
----
- include/sound/soc.h  | 2 +-
- sound/soc/soc-jack.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+What for?
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 21038e0..e287462 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -613,7 +613,7 @@ struct snd_soc_jack_gpio {
- 	struct snd_soc_jack *jack;
- 	struct delayed_work work;
- 
--	int (*jack_status_check)(void);
-+	int (*jack_status_check)(struct snd_soc_jack_gpio *gpio);
- };
- 
- struct snd_soc_jack {
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index b12fce6..6028af5 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -250,7 +250,7 @@ static void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
- 		report = 0;
- 
- 	if (gpio->jack_status_check)
--		report = gpio->jack_status_check();
-+		report = gpio->jack_status_check(gpio);
- 
- 	snd_soc_jack_report(jack, report, gpio->report);
- }
--- 
-1.8.1.2
+
+Regards,
+Clemens
