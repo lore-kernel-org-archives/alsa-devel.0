@@ -1,16 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: uda134x: Use core for applying symmetry
-	constraitns
-Date: Sun, 16 Feb 2014 22:35:37 +0100
-Message-ID: <1392586537-8198-1-git-send-email-lars@metafoo.de>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH v6] ARM: DTS: imx5* imx6*, use imx51-ssi
+Date: Sun, 16 Feb 2014 23:08:27 +0100
+Message-ID: <20140216220827.GC31006@pengutronix.de>
+References: <20140118083840.GD3430@S2101-09.ap.freescale.net>
+ <1390220023-6423-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-011.synserver.de (smtp-out-190.synserver.de
- [212.40.185.190])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FDD72610B7
- for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 22:35:30 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 3C2192610CF
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 23:08:37 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1390220023-6423-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,110 +22,181 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Let the core take care of applying sample rate and sample bits constraints
-instead of open-coding this in the driver.
+Hi Shawn,
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
-Only compile tested
----
- sound/soc/codecs/uda134x.c | 52 +++-------------------------------------------
- 1 file changed, 3 insertions(+), 49 deletions(-)
+On Mon, Jan 20, 2014 at 01:13:43PM +0100, Markus Pargmann wrote:
+> imx51-ssi and imx21-ssi are different IPs. imx51-ssi supports online
+> reconfiguration and needs this for correct interaction with SDMA. This
+> patch adds imx51-ssi before each imx21-ssi for all imx5/imx6 SoCs.
+> 
+> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+> ---
+> Hi Shawn,
+> 
+> Sorry for that last patch. I fixed it in this patch.
 
-diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
-index c94d4c1..43b88ee 100644
---- a/sound/soc/codecs/uda134x.c
-+++ b/sound/soc/codecs/uda134x.c
-@@ -34,9 +34,6 @@
- struct uda134x_priv {
- 	int sysclk;
- 	int dai_fmt;
--
--	struct snd_pcm_substream *master_substream;
--	struct snd_pcm_substream *slave_substream;
- };
- 
- /* In-data addresses are hard-coded into the reg-cache values */
-@@ -156,49 +153,6 @@ static int uda134x_mute(struct snd_soc_dai *dai, int mute)
- 	return 0;
- }
- 
--static int uda134x_startup(struct snd_pcm_substream *substream,
--	struct snd_soc_dai *dai)
--{
--	struct snd_soc_codec *codec = dai->codec;
--	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
--	struct snd_pcm_runtime *master_runtime;
--
--	if (uda134x->master_substream) {
--		master_runtime = uda134x->master_substream->runtime;
--
--		pr_debug("%s constraining to %d bits at %d\n", __func__,
--			 master_runtime->sample_bits,
--			 master_runtime->rate);
--
--		snd_pcm_hw_constraint_minmax(substream->runtime,
--					     SNDRV_PCM_HW_PARAM_RATE,
--					     master_runtime->rate,
--					     master_runtime->rate);
--
--		snd_pcm_hw_constraint_minmax(substream->runtime,
--					     SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
--					     master_runtime->sample_bits,
--					     master_runtime->sample_bits);
--
--		uda134x->slave_substream = substream;
--	} else
--		uda134x->master_substream = substream;
--
--	return 0;
--}
--
--static void uda134x_shutdown(struct snd_pcm_substream *substream,
--	struct snd_soc_dai *dai)
--{
--	struct snd_soc_codec *codec = dai->codec;
--	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
--
--	if (uda134x->master_substream == substream)
--		uda134x->master_substream = uda134x->slave_substream;
--
--	uda134x->slave_substream = NULL;
--}
--
- static int uda134x_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params,
- 	struct snd_soc_dai *dai)
-@@ -208,7 +162,7 @@ static int uda134x_hw_params(struct snd_pcm_substream *substream,
- 	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
- 	u8 hw_params;
- 
--	if (substream == uda134x->slave_substream) {
-+	if (dai->active) {
- 		pr_debug("%s ignoring hw_params for slave substream\n",
- 			 __func__);
- 		return 0;
-@@ -447,8 +401,6 @@ static const struct snd_soc_dapm_route uda134x_dapm_routes[] = {
- };
- 
- static const struct snd_soc_dai_ops uda134x_dai_ops = {
--	.startup	= uda134x_startup,
--	.shutdown	= uda134x_shutdown,
- 	.hw_params	= uda134x_hw_params,
- 	.digital_mute	= uda134x_mute,
- 	.set_sysclk	= uda134x_set_dai_sysclk,
-@@ -475,6 +427,8 @@ static struct snd_soc_dai_driver uda134x_dai = {
- 	},
- 	/* pcm operations */
- 	.ops = &uda134x_dai_ops,
-+	.symmetric_rates = 1,
-+	.symmetric_samplebits = 1,
- };
- 
- static int uda134x_soc_probe(struct snd_soc_codec *codec)
+Ping. Should I send this again after rebasing it onto your latest branch?
+
+Regards,
+
+Markus
+
+> 
+> Thanks,
+> 
+> Markus
+> 
+>  arch/arm/boot/dts/imx50.dtsi   |  7 +++++--
+>  arch/arm/boot/dts/imx53.dtsi   | 10 +++++++---
+>  arch/arm/boot/dts/imx6qdl.dtsi | 12 +++++++++---
+>  arch/arm/boot/dts/imx6sl.dtsi  | 12 +++++++++---
+>  4 files changed, 30 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/imx50.dtsi b/arch/arm/boot/dts/imx50.dtsi
+> index 01c0499..24df4f4f 100644
+> --- a/arch/arm/boot/dts/imx50.dtsi
+> +++ b/arch/arm/boot/dts/imx50.dtsi
+> @@ -140,7 +140,9 @@
+>  				};
+>  
+>  				ssi2: ssi@50014000 {
+> -					compatible = "fsl,imx50-ssi", "fsl,imx21-ssi";
+> +					compatible = "fsl,imx50-ssi",
+> +							"fsl,imx51-ssi",
+> +							"fsl,imx21-ssi";
+>  					reg = <0x50014000 0x4000>;
+>  					interrupts = <30>;
+>  					clocks = <&clks IMX5_CLK_SSI2_IPG_GATE>;
+> @@ -445,7 +447,8 @@
+>  			};
+>  
+>  			ssi1: ssi@63fcc000 {
+> -				compatible = "fsl,imx50-ssi", "fsl,imx21-ssi";
+> +				compatible = "fsl,imx50-ssi", "fsl,imx51-ssi",
+> +							"fsl,imx21-ssi";
+>  				reg = <0x63fcc000 0x4000>;
+>  				interrupts = <29>;
+>  				clocks = <&clks IMX5_CLK_SSI1_IPG_GATE>;
+> diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
+> index 4dbde25..73e103b 100644
+> --- a/arch/arm/boot/dts/imx53.dtsi
+> +++ b/arch/arm/boot/dts/imx53.dtsi
+> @@ -171,7 +171,9 @@
+>  				};
+>  
+>  				ssi2: ssi@50014000 {
+> -					compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
+> +					compatible = "fsl,imx53-ssi",
+> +							"fsl,imx51-ssi",
+> +							"fsl,imx21-ssi";
+>  					reg = <0x50014000 0x4000>;
+>  					interrupts = <30>;
+>  					clocks = <&clks IMX5_CLK_SSI2_IPG_GATE>;
+> @@ -590,7 +592,8 @@
+>  			};
+>  
+>  			ssi1: ssi@63fcc000 {
+> -				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
+> +				compatible = "fsl,imx53-ssi", "fsl,imx51-ssi",
+> +						"fsl,imx21-ssi";
+>  				reg = <0x63fcc000 0x4000>;
+>  				interrupts = <29>;
+>  				clocks = <&clks IMX5_CLK_SSI1_IPG_GATE>;
+> @@ -617,7 +620,8 @@
+>  			};
+>  
+>  			ssi3: ssi@63fe8000 {
+> -				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
+> +				compatible = "fsl,imx53-ssi", "fsl,imx51-ssi",
+> +						"fsl,imx21-ssi";
+>  				reg = <0x63fe8000 0x4000>;
+>  				interrupts = <96>;
+>  				clocks = <&clks IMX5_CLK_SSI3_IPG_GATE>;
+> diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
+> index 8a86502..cf7956e 100644
+> --- a/arch/arm/boot/dts/imx6qdl.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl.dtsi
+> @@ -247,7 +247,9 @@
+>  				};
+>  
+>  				ssi1: ssi@02028000 {
+> -					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
+> +					compatible = "fsl,imx6q-ssi",
+> +							"fsl,imx51-ssi",
+> +							"fsl,imx21-ssi";
+>  					reg = <0x02028000 0x4000>;
+>  					interrupts = <0 46 IRQ_TYPE_LEVEL_HIGH>;
+>  					clocks = <&clks 178>;
+> @@ -260,7 +262,9 @@
+>  				};
+>  
+>  				ssi2: ssi@0202c000 {
+> -					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
+> +					compatible = "fsl,imx6q-ssi",
+> +							"fsl,imx51-ssi",
+> +							"fsl,imx21-ssi";
+>  					reg = <0x0202c000 0x4000>;
+>  					interrupts = <0 47 IRQ_TYPE_LEVEL_HIGH>;
+>  					clocks = <&clks 179>;
+> @@ -273,7 +277,9 @@
+>  				};
+>  
+>  				ssi3: ssi@02030000 {
+> -					compatible = "fsl,imx6q-ssi","fsl,imx21-ssi";
+> +					compatible = "fsl,imx6q-ssi",
+> +							"fsl,imx51-ssi",
+> +							"fsl,imx21-ssi";
+>  					reg = <0x02030000 0x4000>;
+>  					interrupts = <0 48 IRQ_TYPE_LEVEL_HIGH>;
+>  					clocks = <&clks 180>;
+> diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
+> index a449c4f..95bb37b 100644
+> --- a/arch/arm/boot/dts/imx6sl.dtsi
+> +++ b/arch/arm/boot/dts/imx6sl.dtsi
+> @@ -226,7 +226,9 @@
+>  				};
+>  
+>  				ssi1: ssi@02028000 {
+> -					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
+> +					compatible = "fsl,imx6sl-ssi",
+> +							"fsl,imx51-ssi",
+> +							"fsl,imx21-ssi";
+>  					reg = <0x02028000 0x4000>;
+>  					interrupts = <0 46 IRQ_TYPE_LEVEL_HIGH>;
+>  					clocks = <&clks IMX6SL_CLK_SSI1>;
+> @@ -238,7 +240,9 @@
+>  				};
+>  
+>  				ssi2: ssi@0202c000 {
+> -					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
+> +					compatible = "fsl,imx6sl-ssi",
+> +							"fsl,imx51-ssi",
+> +							"fsl,imx21-ssi";
+>  					reg = <0x0202c000 0x4000>;
+>  					interrupts = <0 47 IRQ_TYPE_LEVEL_HIGH>;
+>  					clocks = <&clks IMX6SL_CLK_SSI2>;
+> @@ -250,7 +254,9 @@
+>  				};
+>  
+>  				ssi3: ssi@02030000 {
+> -					compatible = "fsl,imx6sl-ssi","fsl,imx21-ssi";
+> +					compatible = "fsl,imx6sl-ssi",
+> +							"fsl,imx51-ssi",
+> +							"fsl,imx21-ssi";
+>  					reg = <0x02030000 0x4000>;
+>  					interrupts = <0 48 IRQ_TYPE_LEVEL_HIGH>;
+>  					clocks = <&clks IMX6SL_CLK_SSI3>;
+> -- 
+> 1.8.5.2
+> 
+> 
+
 -- 
-1.8.0
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
