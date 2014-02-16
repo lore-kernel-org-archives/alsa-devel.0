@@ -1,13 +1,15 @@
-From: Vincent Vinel <v.vinel@gmail.com>
-Subject: [PATCH 1/1] dmix: Add support for S24_3BE format.
-Date: Sat, 15 Feb 2014 17:54:31 +0100
-Message-ID: <1392483271-20453-2-git-send-email-v.vinel@gmail.com>
-References: <1392483271-20453-1-git-send-email-v.vinel@gmail.com>
+From: xiangxiao <xiaoxiang@xiaomi.com>
+Subject: [PATCH] ASoC: pass snd_soc_jack_gpio to
+	jack_status_check callback
+Date: Sun, 16 Feb 2014 13:36:12 +0800
+Message-ID: <1392528972-9440-1-git-send-email-xiaoxiang@xiaomi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1392483271-20453-1-git-send-email-v.vinel@gmail.com>
+Received: from mx1.mxmail.xiaomi.com (mx1.mxmail.xiaomi.com [58.68.235.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8B6C2615FA
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 06:37:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,195 +19,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Vincent Vinel <v.vinel@gmail.com>
+To: xiaoxiang@xiaomi.com, broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add swapped versions of generic_mix_areas_24() and
-generic_remix_areas_24().
+so the implementation could get the context data
 
-Signed-off-by: Vincent Vinel <v.vinel@gmail.com>
+Change-Id: I5542613ccf9881deb672e71d0f0c4f603ad761fd
+Signed-off-by: xiangxiao <xiaoxiang@xiaomi.com>
+---
+ include/sound/soc.h  | 2 +-
+ sound/soc/soc-jack.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/pcm.h b/include/pcm.h
-index 95b8aed..9be595c 100644
---- a/include/pcm.h
-+++ b/include/pcm.h
-@@ -222,6 +222,8 @@ typedef enum _snd_pcm_format {
- 	SND_PCM_FORMAT_S24 = SND_PCM_FORMAT_S24_LE,
- 	/** Unsigned 24 bit CPU endian */
- 	SND_PCM_FORMAT_U24 = SND_PCM_FORMAT_U24_LE,
-+	/** Signed 24 bit CPU endian in 3bytes format */
-+	SND_PCM_FORMAT_S24_3 = SND_PCM_FORMAT_S24_3LE,
- 	/** Signed 32 bit CPU endian */
- 	SND_PCM_FORMAT_S32 = SND_PCM_FORMAT_S32_LE,
- 	/** Unsigned 32 bit CPU endian */
-@@ -241,6 +243,8 @@ typedef enum _snd_pcm_format {
- 	SND_PCM_FORMAT_S24 = SND_PCM_FORMAT_S24_BE,
- 	/** Unsigned 24 bit CPU endian */
- 	SND_PCM_FORMAT_U24 = SND_PCM_FORMAT_U24_BE,
-+	/** Signed 24 bit CPU endian in 3bytes format */
-+	SND_PCM_FORMAT_S24_3 = SND_PCM_FORMAT_S24_3BE,
- 	/** Signed 32 bit CPU endian */
- 	SND_PCM_FORMAT_S32 = SND_PCM_FORMAT_S32_BE,
- 	/** Unsigned 32 bit CPU endian */
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 5416cf7..1a98d8f 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -909,7 +909,8 @@ int snd_pcm_direct_initialize_slave(snd_pcm_direct_t *dmix, snd_pcm_t *spcm, str
- 			SND_PCM_FORMAT_S16,
- 			SND_PCM_FORMAT_S16 ^ SND_PCM_FORMAT_S16_LE ^ SND_PCM_FORMAT_S16_BE,
- 			SND_PCM_FORMAT_S24_LE,
--			SND_PCM_FORMAT_S24_3LE,
-+			SND_PCM_FORMAT_S24_3,
-+			SND_PCM_FORMAT_S24_3 ^ SND_PCM_FORMAT_S24_3LE ^ SND_PCM_FORMAT_S24_3BE,
- 			SND_PCM_FORMAT_U8,
- 		};
- 		snd_pcm_format_t format;
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index 4aa6d4e..46ca289 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -179,6 +179,7 @@ static void mix_areas(snd_pcm_direct_t *dmix,
- 		do_mix_areas = (mix_areas_t *)dmix->u.dmix.mix_areas_24;
- 		break;
- 	case SND_PCM_FORMAT_S24_3LE:
-+	case SND_PCM_FORMAT_S24_3BE:
- 		sample_size = 3;
- 		do_mix_areas = (mix_areas_t *)dmix->u.dmix.mix_areas_24;
- 		break;
-@@ -247,6 +248,7 @@ static void remix_areas(snd_pcm_direct_t *dmix,
- 		do_remix_areas = (mix_areas_t *)dmix->u.dmix.remix_areas_24;
- 		break;
- 	case SND_PCM_FORMAT_S24_3LE:
-+	case SND_PCM_FORMAT_S24_3BE:
- 		sample_size = 3;
- 		do_remix_areas = (mix_areas_t *)dmix->u.dmix.remix_areas_24;
- 		break;
-diff --git a/src/pcm/pcm_dmix_generic.c b/src/pcm/pcm_dmix_generic.c
-index 9e9d3c3..91abd88 100644
---- a/src/pcm/pcm_dmix_generic.c
-+++ b/src/pcm/pcm_dmix_generic.c
-@@ -123,6 +123,7 @@ static void mix_select_callbacks(snd_pcm_direct_t *dmix)
- 	((1ULL << SND_PCM_FORMAT_S16_LE) | (1ULL << SND_PCM_FORMAT_S32_LE) |\
- 	 (1ULL << SND_PCM_FORMAT_S16_BE) | (1ULL << SND_PCM_FORMAT_S32_BE) |\
- 	 (1ULL << SND_PCM_FORMAT_S24_LE) | (1ULL << SND_PCM_FORMAT_S24_3LE) | \
-+	 (1ULL << SND_PCM_FORMAT_S24_3BE) |\
- 	 (1ULL << SND_PCM_FORMAT_U8))
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 21038e0..e287462 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -613,7 +613,7 @@ struct snd_soc_jack_gpio {
+ 	struct snd_soc_jack *jack;
+ 	struct delayed_work work;
  
- #include <byteswap.h>
-@@ -387,8 +388,7 @@ static void generic_remix_areas_32_swap(unsigned int size,
- 	}
+-	int (*jack_status_check)(void);
++	int (*jack_status_check)(struct snd_soc_jack_gpio *gpio);
+ };
+ 
+ struct snd_soc_jack {
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index b12fce6..6028af5 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -250,7 +250,7 @@ static void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
+ 		report = 0;
+ 
+ 	if (gpio->jack_status_check)
+-		report = gpio->jack_status_check();
++		report = gpio->jack_status_check(gpio);
+ 
+ 	snd_soc_jack_report(jack, report, gpio->report);
  }
- 
--/* always little endian */
--static void generic_mix_areas_24(unsigned int size,
-+static void generic_mix_areas_24_native(unsigned int size,
- 				 volatile unsigned char *dst,
- 				 unsigned char *src,
- 				 volatile signed int *sum,
-@@ -421,7 +421,40 @@ static void generic_mix_areas_24(unsigned int size,
- 	}
- }
- 
--static void generic_remix_areas_24(unsigned int size,
-+static void generic_mix_areas_24_swap(unsigned int size,
-+				 volatile unsigned char *dst,
-+				 unsigned char *src,
-+				 volatile signed int *sum,
-+				 size_t dst_step,
-+				 size_t src_step,
-+				 size_t sum_step)
-+{
-+	register signed int sample;
-+
-+	for (;;) {
-+		sample = src[2] | (src[1] << 8) | (((signed char *)src)[0] << 16);
-+		if (!(dst[0] | dst[1] | dst[2])) {
-+			*sum = sample;
-+		} else {
-+			sample += *sum;
-+			*sum = sample;
-+			if (sample > 0x7fffff)
-+				sample = 0x7fffff;
-+			else if (sample < -0x800000)
-+				sample = -0x800000;
-+		}
-+		dst[2] = sample;
-+		dst[1] = sample >> 8;
-+		dst[0] = sample >> 16;
-+		if (!--size)
-+			return;
-+		dst += dst_step;
-+		src += src_step;
-+		sum = (signed int *) ((char *)sum + sum_step);
-+	}
-+}
-+
-+static void generic_remix_areas_24_native(unsigned int size,
- 				   volatile unsigned char *dst,
- 				   unsigned char *src,
- 				   volatile signed int *sum,
-@@ -454,6 +487,38 @@ static void generic_remix_areas_24(unsigned int size,
- 	}
- }
- 
-+static void generic_remix_areas_24_swap(unsigned int size,
-+				   volatile unsigned char *dst,
-+				   unsigned char *src,
-+				   volatile signed int *sum,
-+				   size_t dst_step,
-+				   size_t src_step,
-+				   size_t sum_step)
-+{
-+	register signed int sample;
-+
-+	for (;;) {
-+		sample = src[2] | (src[1] << 8) | (((signed char *)src)[0] << 16);
-+		if (!(dst[0] | dst[1] | dst[2])) {
-+			sample = -sample;
-+			*sum = sample;
-+		} else {
-+			*sum = sample = *sum - sample;
-+			if (sample > 0x7fffff)
-+				sample = 0x7fffff;
-+			else if (sample < -0x800000)
-+				sample = -0x800000;
-+		}
-+		dst[2] = sample;
-+		dst[1] = sample >> 8;
-+		dst[0] = sample >> 16;
-+		if (!--size)
-+			return;
-+		dst += dst_step;
-+		src += src_step;
-+		sum = (signed int *) ((char *)sum + sum_step);
-+	}
-+}
- static void generic_mix_areas_u8(unsigned int size,
- 				 volatile unsigned char *dst,
- 				 unsigned char *src,
-@@ -518,17 +583,19 @@ static void generic_mix_select_callbacks(snd_pcm_direct_t *dmix)
- 	if (snd_pcm_format_cpu_endian(dmix->shmptr->s.format)) {
- 		dmix->u.dmix.mix_areas_16 = generic_mix_areas_16_native;
- 		dmix->u.dmix.mix_areas_32 = generic_mix_areas_32_native;
-+		dmix->u.dmix.mix_areas_24 = generic_mix_areas_24_native;
- 		dmix->u.dmix.remix_areas_16 = generic_remix_areas_16_native;
- 		dmix->u.dmix.remix_areas_32 = generic_remix_areas_32_native;
-+		dmix->u.dmix.remix_areas_24 = generic_remix_areas_24_native;
- 	} else {
- 		dmix->u.dmix.mix_areas_16 = generic_mix_areas_16_swap;
- 		dmix->u.dmix.mix_areas_32 = generic_mix_areas_32_swap;
-+		dmix->u.dmix.mix_areas_24 = generic_mix_areas_24_swap;
- 		dmix->u.dmix.remix_areas_16 = generic_remix_areas_16_swap;
- 		dmix->u.dmix.remix_areas_32 = generic_remix_areas_32_swap;
-+		dmix->u.dmix.remix_areas_24 = generic_remix_areas_24_swap;
- 	}
--	dmix->u.dmix.mix_areas_24 = generic_mix_areas_24;
- 	dmix->u.dmix.mix_areas_u8 = generic_mix_areas_u8;
--	dmix->u.dmix.remix_areas_24 = generic_remix_areas_24;
- 	dmix->u.dmix.remix_areas_u8 = generic_remix_areas_u8;
- }
- 
 -- 
-1.8.5.5
+1.8.1.2
