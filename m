@@ -1,14 +1,14 @@
-From: Alexander Shiyan <shc_work@mail.ru>
-Subject: [PATCH] ASoC: txx9aclc_ac97: Fix kernel crash on probe
-Date: Sat, 15 Feb 2014 23:28:29 +0400
-Message-ID: <1392492509-29426-1-git-send-email-shc_work@mail.ru>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: pcm512x: Add regmap select
+Date: Sun, 16 Feb 2014 08:35:11 +0800
+Message-ID: <1392510911-28840-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.mail.ru (smtp1.mail.ru [94.100.176.129])
- by alsa0.perex.cz (Postfix) with ESMTP id D77DB261629
- for <alsa-devel@alsa-project.org>; Sat, 15 Feb 2014 20:28:37 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 200FB261673
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 01:35:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,43 +18,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Alexander Shiyan <shc_work@mail.ru>
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes a crash caused by commit af5b2d7519
-(ASoC: txx9aclc_ac97: Convert to devm_ioremap_resource()).
-This is an attempt to assign "drvdata->base" while memory
-for "drvdata" is not already allocated.
+From: Mark Brown <broonie@linaro.org>
 
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+We need at least the core regmap code to build.
+
+Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/txx9/txx9aclc-ac97.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/txx9/txx9aclc-ac97.c b/sound/soc/txx9/txx9aclc-ac97.c
-index e0305a1..9edd68d 100644
---- a/sound/soc/txx9/txx9aclc-ac97.c
-+++ b/sound/soc/txx9/txx9aclc-ac97.c
-@@ -183,14 +183,16 @@ static int txx9aclc_ac97_dev_probe(struct platform_device *pdev)
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0)
- 		return irq;
-+
-+	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
-+
- 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	drvdata->base = devm_ioremap_resource(&pdev->dev, r);
- 	if (IS_ERR(drvdata->base))
- 		return PTR_ERR(drvdata->base);
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 56d0c28..fa47a83 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -316,6 +316,7 @@ config SND_SOC_PCM3008
  
--	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
--	if (!drvdata)
--		return -ENOMEM;
- 	platform_set_drvdata(pdev, drvdata);
- 	drvdata->physbase = r->start;
- 	if (sizeof(drvdata->physbase) > sizeof(r->start) &&
+ config SND_SOC_PCM512x
+        tristate "Texas Instruments PCM512x CODECs"
++       select REGMAP
+ 
+ config SND_SOC_RT5631
+ 	tristate
 -- 
-1.8.3.2
+1.9.0.rc3
