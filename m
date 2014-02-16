@@ -1,20 +1,19 @@
-From: Vincent Vinel <v.vinel@gmail.com>
-Subject: Re: [PATCH 1/1] dmix: Add support for S24_3BE format.
-Date: Sun, 16 Feb 2014 20:51:27 +0100
-Message-ID: <530116BF.20803@gmail.com>
-References: <1392483271-20453-1-git-send-email-v.vinel@gmail.com>
- <1392483271-20453-2-git-send-email-v.vinel@gmail.com>
- <5300BCA0.2070601@ladisch.de>
+From: Sander Jansen <s.jansen@gmail.com>
+Subject: Re: Intel HDA + HDMI - snd_pcm_drain buggy behaviour.
+Date: Sun, 16 Feb 2014 14:26:31 -0600
+Message-ID: <CACj81kGyFz9Uq1DGuduSNRb+g1sMSR3zwAHWCnV+XLfc35zrXw@mail.gmail.com>
+References: <CACj81kHMNskj9xB8XJq9KDqj4ODT8aihA8e7rPsOX42HGu1pYw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f46.google.com (mail-wg0-f46.google.com [74.125.82.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 631A42607BB
- for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 20:51:29 +0100 (CET)
-Received: by mail-wg0-f46.google.com with SMTP id x13so1662091wgg.13
- for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 11:51:29 -0800 (PST)
-In-Reply-To: <5300BCA0.2070601@ladisch.de>
+Received: from mail-ve0-f178.google.com (mail-ve0-f178.google.com
+ [209.85.128.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E5112610B7
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 21:26:32 +0100 (CET)
+Received: by mail-ve0-f178.google.com with SMTP id oy12so11138884veb.23
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 12:26:32 -0800 (PST)
+In-Reply-To: <CACj81kHMNskj9xB8XJq9KDqj4ODT8aihA8e7rPsOX42HGu1pYw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,19 +23,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/16/14 14:26, Clemens Ladisch wrote:
-> Vincent Vinel wrote:
->> Add swapped versions of generic_mix_areas_24() and
->> generic_remix_areas_24().
-> What for?
+Further investigation on my part I noticed a couple of mistakes I made
+myself.
+
+1. snd_pcm_drain() doesn't block in non-blocking mode. I fixed my code to
+account for this now.
+2. snd_pcm_drain() doesn't block indefinitely in blocking mode. I must have
+accidently put in a infinite loop somewhere myself.
+
+That leaves still with one unresolved issue, which is that calling
+snd_pcm_drain() does indeed work in both blocking and non-blocking, but I'm
+still hearing part of the audio that was already played before. I assume
+this is some data in the ringbuffer that hasn't been overwritten by any new
+data. I have been able to reproduce this on another PC (Intel G45 chipset)
+as well (snd_intel_hda as well, but with analog output) so I don't think
+it's HDMI related.
+
+
+This is my drain code:
+
+    snd_pcm_state_t state = snd_pcm_state(handle);
+    if (state==SND_PCM_STATE_RUNNING) {
+
+      /// block while draining
+      //if ((result=snd_pcm_nonblock(handle,0))<0) {
+      //  printf("[alsa] failed to set blocking mode. Reason:
+%s\n",snd_strerror(result));
+      //  return;
+      //  }
+
+      result=snd_pcm_drain(handle);
+      if (result==-EAGAIN) {
+        printf("[alsa] waiting for drain\n");
+        while(snd_pcm_state(handle)==SND_PCM_STATE_DRAINING){
+          FXThread::sleep(500000000); // 50ms
+          }
+        printf("[alsa] drain complete. State:
+%s\n",snd_pcm_state_name(snd_pcm_state(handle)));
+        }
+      else if (result<0) {
+        printf("[alsa] drain failed. Reason: %s\n",snd_strerror(result));
+        }
+      else {
+        printf("[alsa] drain complete\n");
+        }
+      }
+
+Anything else I'm doing wrong?
+
+Thanks,
+
+Sander
+
+
+On Sat, Feb 15, 2014 at 6:44 PM, Sander Jansen <s.jansen@gmail.com> wrote:
+
+> All,
 >
-
-To use dmix with soundcards only supporting S24_3BE format, i.e. those 
-using snd-usb-caiaq driver.
-
--- 
-Narthorn
+> When I play regular PCM audio through the HDMI that's connected to my
+> amplifier I noticed  buggy behaviour when using the snd_pcm_drain() call.
+> From my understanding of ALSA, during playback snd_pcm_drain() normally
+> blocks until the playback buffer is empty.
+>
+> Here's what I'm experiencing:
+>
+> a. If the PCM handle is in BLOCKING mode, the snd_pcm_drain() function
+> will block indefinitely (I've waited 30 seconds, before I gave up).
+>
+> b. In NON-BLOCKING mode, the first call to snd_pcm_drain results in a
+> " Resource temporarily unavailable", subsequent call works but the pcm
+> state has changed to DRAINING and takes about 1 sec to change to SETUP.
+> Even though the audio has less than 0.5 seconds of actual playback left.
+>
+> So to make it work, I changed my single snd_pcm_drain() call into the
+> following pseudo code:
+> while(state==RUNNING && snd_pcm_drain()<0) {
+>   state=snd_pcm_state()
+>   }
+>
+> while(state==DRAINING && sleep(100)){
+>   state=snd_pcm_state()
+>   }
+>
+> Even though this seem to "sort of work", another problem with this
+> approach I've noticed, is that part of the beginning of the playback buffer
+> may be replayed at the end of the drain:
+>
+>   1. start playback at beginning of file
+>   2. seek to close to the end of the file (snd_pcm_drop() gets called)
+>   3. end of file reached, drain gets called, hear the end of the song +
+> part of the beginning again?
+>
+> So I'm wondering whether this may be related to the drain issue I've
+> noticed. I've attached the alsa-info.
+>
+> Thanks,
+>
+> Sander
+>
+>
+>
