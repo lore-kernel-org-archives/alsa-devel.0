@@ -1,16 +1,16 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v4 4/4] Revert "ASoC: codec doc,
-	tlv320aic3x: Add tlv320aic32x4 as compatible"
-Date: Sun, 16 Feb 2014 19:27:32 +0100
-Message-ID: <1392575252-9222-5-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v4 2/4] ASoC: tlv320aic32x4: Support for
+	regulators
+Date: Sun, 16 Feb 2014 19:27:30 +0100
+Message-ID: <1392575252-9222-3-git-send-email-mpa@pengutronix.de>
 References: <1392575252-9222-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id A4A7F261A09
- for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 19:28:28 +0100 (CET)
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 688E1261A81
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 19:28:29 +0100 (CET)
 In-Reply-To: <1392575252-9222-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,23 +25,138 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-This reverts tlv320aic32x4 as compatible for tlv320aic3x as it has its
-own bindings now.
----
- Documentation/devicetree/bindings/sound/tlv320aic3x.txt | 1 -
- 1 file changed, 1 deletion(-)
+Support regulators to power up the codec. This patch also enables the
+AVDD LDO if no AV regulator was found.
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
-index 9d8ea14..5e6040c 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
-@@ -6,7 +6,6 @@ Required properties:
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
+ .../devicetree/bindings/sound/tlv320aic32x4.txt    |  8 +++
+ sound/soc/codecs/tlv320aic32x4.c                   | 73 ++++++++++++++++++++++
+ 2 files changed, 81 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
+index 352be7b..5e2741a 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
++++ b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
+@@ -5,6 +5,14 @@ The tlv320aic32x4 serial control bus communicates through I2C protocols
+ Required properties:
+  - compatible: Should be "ti,tlv320aic32x4"
+  - reg: I2C slave address
++ - supply-*: Required supply regulators are:
++    "iov" - digital IO power supply
++    "ldoin" - LDO power supply
++    "dv" - Digital core power supply
++    "av" - Analog core power supply
++    If you supply ldoin, dv and av are optional. Otherwise they are required
++   See regulator/regulator.txt for more information about the detailed binding
++   format.
  
- - compatible - "string" - One of:
-     "ti,tlv320aic3x" - Generic TLV320AIC3x device
--    "ti,tlv320aic32x4" - TLV320AIC32x4
-     "ti,tlv320aic33" - TLV320AIC33
-     "ti,tlv320aic3007" - TLV320AIC3007
-     "ti,tlv320aic3106" - TLV320AIC3106
+ Optional properties:
+  - reset-gpios: Reset-GPIO phandle with args as described in gpio/gpio.txt
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index d96cb7c..2196af6 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -34,6 +34,7 @@
+ #include <linux/cdev.h>
+ #include <linux/slab.h>
+ #include <linux/clk.h>
++#include <linux/regulator/consumer.h>
+ 
+ #include <sound/tlv320aic32x4.h>
+ #include <sound/core.h>
+@@ -69,6 +70,11 @@ struct aic32x4_priv {
+ 	bool swapdacs;
+ 	int rstn_gpio;
+ 	struct clk *mclk;
++
++	struct regulator *supply_ldo;
++	struct regulator *supply_iov;
++	struct regulator *supply_dv;
++	struct regulator *supply_av;
+ };
+ 
+ /* 0dB min, 0.5dB steps */
+@@ -699,6 +705,67 @@ static int aic32x4_parse_dt(struct aic32x4_priv *aic32x4,
+ 	return 0;
+ }
+ 
++static int aic32x4_i2c_setup_regulators(struct device *dev,
++		struct aic32x4_priv *aic32x4)
++{
++	int ret;
++
++	aic32x4->supply_ldo = devm_regulator_get_optional(dev, "ldoin");
++	aic32x4->supply_iov = devm_regulator_get(dev, "iov");
++	aic32x4->supply_dv = devm_regulator_get_optional(dev, "dv");
++	aic32x4->supply_av = devm_regulator_get_optional(dev, "av");
++
++	/* Check if the regulator requirements are fulfilled */
++
++	if (IS_ERR(aic32x4->supply_iov)) {
++		dev_err(dev, "Missing supply 'iov'\n");
++		ret = -EINVAL;
++	}
++
++	if (IS_ERR(aic32x4->supply_ldo)) {
++		if (IS_ERR(aic32x4->supply_dv)) {
++			dev_err(dev, "Missing supply 'dv' or 'ldoin'\n");
++			ret = -EINVAL;
++		}
++		if (IS_ERR(aic32x4->supply_av)) {
++			dev_err(dev, "Missing supply 'av' or 'ldoin'\n");
++			ret = -EINVAL;
++		}
++	}
++
++	if (ret)
++		return ret;
++
++	if (!IS_ERR(aic32x4->supply_ldo)) {
++		ret = regulator_enable(aic32x4->supply_ldo);
++		if (ret)
++			return ret;
++	}
++
++	if (!IS_ERR(aic32x4->supply_iov)) {
++		ret = regulator_enable(aic32x4->supply_iov);
++		if (ret)
++			return ret;
++	}
++
++	if (!IS_ERR(aic32x4->supply_dv)) {
++		ret = regulator_enable(aic32x4->supply_dv);
++		if (ret)
++			return ret;
++	}
++
++	if (!IS_ERR(aic32x4->supply_av)) {
++		ret = regulator_enable(aic32x4->supply_av);
++		if (ret)
++			return ret;
++	}
++
++	if (!IS_ERR(aic32x4->supply_ldo) && IS_ERR(aic32x4->supply_av))
++		aic32x4->power_cfg |= AIC32X4_PWR_AIC32X4_LDO_ENABLE;
++
++	return 0;
++}
++
+ static int aic32x4_i2c_probe(struct i2c_client *i2c,
+ 			     const struct i2c_device_id *id)
+ {
+@@ -736,6 +803,12 @@ static int aic32x4_i2c_probe(struct i2c_client *i2c,
+ 		aic32x4->rstn_gpio = -1;
+ 	}
+ 
++	ret = aic32x4_i2c_setup_regulators(&i2c->dev, aic32x4);
++	if (ret) {
++		dev_err(&i2c->dev, "Failed to setup regulators\n");
++		return ret;
++	}
++
+ 	aic32x4->mclk = devm_clk_get(&i2c->dev, "mclk");
+ 	if (IS_ERR(aic32x4->mclk))
+ 		dev_info(&i2c->dev, "No mclk found, continuing without clock\n");
 -- 
 1.8.5.3
