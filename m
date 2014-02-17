@@ -1,7 +1,7 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 10/15] ASoC: omap: n810: Update locking around use of DAPM pin API
-Date: Mon, 17 Feb 2014 16:51:38 +0000
-Message-ID: <1392655903-24537-11-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 15/15] ASoC: pxa: tosa: Update locking around use of DAPM pin API
+Date: Mon, 17 Feb 2014 16:51:43 +0000
+Message-ID: <1392655903-24537-16-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
@@ -15,45 +15,53 @@ atomically, update to do so.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/omap/n810.c |   20 ++++++++++++--------
- 1 files changed, 12 insertions(+), 8 deletions(-)
+ sound/soc/pxa/tosa.c |   26 +++++++++++++++-----------
+ 1 files changed, 15 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
-index 3fde9e4..b3f59a5 100644
---- a/sound/soc/omap/n810.c
-+++ b/sound/soc/omap/n810.c
-@@ -68,24 +68,28 @@ static void n810_ext_control(struct snd_soc_dapm_context *dapm)
- 		break;
- 	}
+diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
+index 1d9c2ed..64f9620 100644
+--- a/sound/soc/pxa/tosa.c
++++ b/sound/soc/pxa/tosa.c
+@@ -48,29 +48,33 @@ static void tosa_ext_control(struct snd_soc_codec *codec)
+ {
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
  
 +	mutex_lock(&dapm->card->dapm_mutex);
 +
- 	if (n810_spk_func)
--		snd_soc_dapm_enable_pin(dapm, "Ext Spk");
-+		snd_soc_dapm_enable_pin_locked(dapm, "Ext Spk");
- 	else
--		snd_soc_dapm_disable_pin(dapm, "Ext Spk");
-+		snd_soc_dapm_disable_pin_locked(dapm, "Ext Spk");
- 
- 	if (hp)
+ 	/* set up jack connection */
+ 	switch (tosa_jack_func) {
+ 	case TOSA_HP:
+-		snd_soc_dapm_disable_pin(dapm, "Mic (Internal)");
 -		snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Mic (Internal)");
 +		snd_soc_dapm_enable_pin_locked(dapm, "Headphone Jack");
- 	else
++		snd_soc_dapm_disable_pin_locked(dapm, "Headset Jack");
+ 		break;
+ 	case TOSA_MIC_INT:
+-		snd_soc_dapm_enable_pin(dapm, "Mic (Internal)");
 -		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Jack");
++		snd_soc_dapm_enable_pin_locked(dapm, "Mic (Internal)");
 +		snd_soc_dapm_disable_pin_locked(dapm, "Headphone Jack");
- 	if (line1l)
--		snd_soc_dapm_enable_pin(dapm, "LINE1L");
-+		snd_soc_dapm_enable_pin_locked(dapm, "LINE1L");
- 	else
--		snd_soc_dapm_disable_pin(dapm, "LINE1L");
-+		snd_soc_dapm_disable_pin_locked(dapm, "LINE1L");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headset Jack");
+ 		break;
+ 	case TOSA_HEADSET:
+-		snd_soc_dapm_disable_pin(dapm, "Mic (Internal)");
+-		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
+-		snd_soc_dapm_enable_pin(dapm, "Headset Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Mic (Internal)");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headphone Jack");
++		snd_soc_dapm_enable_pin_locked(dapm, "Headset Jack");
+ 		break;
+ 	}
  
- 	if (n810_dmic_func)
--		snd_soc_dapm_enable_pin(dapm, "DMic");
-+		snd_soc_dapm_enable_pin_locked(dapm, "DMic");
+ 	if (tosa_spk_func == TOSA_SPK_ON)
+-		snd_soc_dapm_enable_pin(dapm, "Speaker");
++		snd_soc_dapm_enable_pin_locked(dapm, "Speaker");
  	else
--		snd_soc_dapm_disable_pin(dapm, "DMic");
-+		snd_soc_dapm_disable_pin_locked(dapm, "DMic");
+-		snd_soc_dapm_disable_pin(dapm, "Speaker");
++		snd_soc_dapm_disable_pin_locked(dapm, "Speaker");
 +
 +	mutex_unlock(&dapm->card->dapm_mutex);
  
