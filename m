@@ -1,20 +1,17 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v6] ARM: DTS: imx5* imx6*, use imx51-ssi
-Date: Mon, 17 Feb 2014 09:26:45 +0800
-Message-ID: <20140217012643.GA9879@S2101-09.ap.freescale.net>
-References: <20140118083840.GD3430@S2101-09.ap.freescale.net>
- <1390220023-6423-1-git-send-email-mpa@pengutronix.de>
- <20140216220827.GC31006@pengutronix.de>
+From: Jason Cooper <jason@lakedaemon.net>
+Subject: Re: [PATCH v2 0/7] Audio support for Armada 370 DB
+Date: Sun, 16 Feb 2014 21:46:38 -0500
+Message-ID: <20140217024638.GH7862@titan.lakedaemon.net>
+References: <1392225662-20431-1-git-send-email-thomas.petazzoni@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe004.messaging.microsoft.com [207.46.163.27])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DDCF261A0E
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 02:25:52 +0100 (CET)
+Received: from mho-01-ewr.mailhop.org (mho-03-ewr.mailhop.org [204.13.248.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id A22EC261A0E
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 03:46:47 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20140216220827.GC31006@pengutronix.de>
+In-Reply-To: <1392225662-20431-1-git-send-email-thomas.petazzoni@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +21,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Tawfik Bayouk <tawfik@marvell.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Feb 16, 2014 at 11:08:27PM +0100, Markus Pargmann wrote:
-> Hi Shawn,
+On Wed, Feb 12, 2014 at 06:20:55PM +0100, Thomas Petazzoni wrote:
+> Hello,
 > 
-> On Mon, Jan 20, 2014 at 01:13:43PM +0100, Markus Pargmann wrote:
-> > imx51-ssi and imx21-ssi are different IPs. imx51-ssi supports online
-> > reconfiguration and needs this for correct interaction with SDMA. This
-> > patch adds imx51-ssi before each imx21-ssi for all imx5/imx6 SoCs.
-> > 
-> > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> > ---
-> > Hi Shawn,
-> > 
-> > Sorry for that last patch. I fixed it in this patch.
+> This series of patches enable audio support on the Marvell Armada 370
+> Development Board. Since both the I2S controller on the SoC side and
+> the I2C audio codec are already supported by the kernel, the amount of
+> work is fairly limited.
 > 
-> Ping. Should I send this again after rebasing it onto your latest branch?
+> Changes since v1:
+> 
+>  * Drop patches "sound: codec: add Device Tree binding to cs42l51" and
+>    " sound: soc: enable Kirkwood driver for mvebu platforms" since
+>    they have been applied by Mark Brown.
+> 
+>  * Set DAI format directly in the snd_soc_dai_link structure instead
+>    of separately calling snd_soc_dai_set_fmt(). Suggested by Mark
+>    Brown.
+> 
+>  * Do not call snd_soc_dapm_enable_pin(), as Mark Brown mentionned
+>    that DAPM widgets default to enabled. It allowed to entirely remove
+>    the dai_init operation.
+> 
+>  * Use devm_snd_soc_register_card() instead of
+>    snd_soc_register_card(), as suggested by Mark Brown.
+> 
+>  * Wrote a Device Tree binding document for the DT binding introduced
+>    by this driver. Requested by Mark Brown.
+> 
+>  * Use the DT to look up the controller and the codec, as suggested by
+>    Mark Brown.
+> 
+>  * Add S/PDIF support, which has been successfully tested. I've kept
+>    it as separate patches (for both the ASoC machine driver, and the
+>    Device Tree bits), so that it can be reviewed and applied
+>    separately.
+> 
+>  * Modified the commit title so that they contain "ASoC", as requested
+>    by Mark Brown.
+> 
+> Patches 1 and 2 are to be reviewed/applied by the ASoC maintainer Mark
+> Brown, while patches 3 to 7 are to be reviewed/applied by the ARM
+> mvebu maintainers.
+> 
+> Note that the audio support for Armada 370 also needs a fix to the
+> CS42L51, which is being discussed with the author of the change that
+> apparently introduced the problem (see discussion at
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071916.html).
+> 
+> Thanks,
+> 
+> Thomas
+> 
+> Thomas Petazzoni (7):
+>   sound: ASoC: add ASoC board driver for Armada 370 DB
+>   sound: ASoC: add S/PDIF support to Armada 370 DB ASoC driver
+>   ARM: mvebu: add audio I2S controller to Armada 370 Device Tree
+>   ARM: mvebu: add I2C0 muxing option for Armada 370 SoC
+>   ARM: mvebu: add audio support to Armada 370 DB
+>   ARM: mvebu: enable S/PDIF audio in Armada 370 DB Device Tree
+>   ARM: mvebu: enable audio options in mvebu_defconfig
+> 
+>  .../bindings/sound/armada-370db-audio.txt          |  27 ++++
+>  arch/arm/boot/dts/armada-370-db.dts                |  56 ++++++++
+>  arch/arm/boot/dts/armada-370.dtsi                  |  28 ++++
+>  arch/arm/configs/mvebu_defconfig                   |   5 +
+>  sound/soc/kirkwood/Kconfig                         |   9 ++
+>  sound/soc/kirkwood/Makefile                        |   2 +
+>  sound/soc/kirkwood/armada-370-db.c                 | 148 +++++++++++++++++++++
+>  7 files changed, 275 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/armada-370db-audio.txt
+>  create mode 100644 sound/soc/kirkwood/armada-370-db.c
 
-I believe I've applied the v5 with a minor fix [1].  I split it into 2
-though, one for imx5 [2] and the other for imx6 [2], because I have to
-make my imx/dt pull request small to please arm-soc folks.
+Patches 3 to 6 applied to mvebu/dt.  Patch 7 applied to mvebu/defconfig
 
-Shawn
+thx,
 
-[1] http://thread.gmane.org/gmane.linux.alsa.devel/117689/focus=117729
-[2] http://git.linaro.org/people/shawn.guo/linux-2.6.git/commitdiff/28f93d0bbe171cf0c9051f22b550890740776bbb
-[3] http://git.linaro.org/people/shawn.guo/linux-2.6.git/commitdiff/98ea6ad2edd21f953a43bd27182000a18a44dc20
+Jason.
