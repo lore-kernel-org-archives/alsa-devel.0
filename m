@@ -1,18 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usx2y: Don't peep the card internal
-	object
-Date: Mon, 17 Feb 2014 10:16:46 +0100
-Message-ID: <1392628606-28689-1-git-send-email-tiwai@suse.de>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH v3] MIDI driver for Behringer BCD2000 USB
+ device
+Date: Mon, 17 Feb 2014 10:18:55 +0100
+Message-ID: <5301D3FF.4000309@zonque.org>
+References: <1392071668-10722-1-git-send-email-dev@kicherer.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 782F4261A9F
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 10:16:46 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 6758AAC7B
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 09:16:46 +0000 (UTC)
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id F383A261A9F
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 10:18:56 +0100 (CET)
+In-Reply-To: <1392071668-10722-1-git-send-email-dev@kicherer.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,291 +21,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mario Kicherer <dev@kicherer.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Avoid traversing the device object list of the card instance just for
-checking the PCM streams.  The driver's private object already
-contains the array of substream pointers, so it can be simply looked
-through.  The card internal may be restructured in future, thus better
-not to rely on it.
+Hi Mario,
 
-Also, this fixes the possible deadlocks in PCM mutex.  Instead of
-taking multiple PCM mutexes, just take the common mutex in all
-places.  Along with it, rename prepare_mutex as pcm_mutex.
+On 02/10/2014 11:34 PM, Mario Kicherer wrote:
+> This patch adds initial support for the Behringer BCD2000 USB DJ controller.
+> At the moment, only the MIDI part of the device is working, i.e. knobs,
+> buttons and LEDs.
+> 
+> I also plan to add support for the audio part, but I assume that this will
+> require more effort than the rather simple MIDI interface. Progress can be
+> tracked at https://github.com/anyc/snd-usb-bcd2000.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/usx2y/usbusx2y.c      |  2 +-
- sound/usb/usx2y/usbusx2y.h      |  2 +-
- sound/usb/usx2y/usbusx2yaudio.c | 60 ++++++++++++++++++--------------
- sound/usb/usx2y/usx2yhwdeppcm.c | 76 ++++++++++++++---------------------------
- 4 files changed, 61 insertions(+), 79 deletions(-)
+This looks mostly nice to me now. I just have some minor comments inline.
 
-diff --git a/sound/usb/usx2y/usbusx2y.c b/sound/usb/usx2y/usbusx2y.c
-index e38c87302b15..91e0e2a4808c 100644
---- a/sound/usb/usx2y/usbusx2y.c
-+++ b/sound/usb/usx2y/usbusx2y.c
-@@ -353,7 +353,7 @@ static int usX2Y_create_card(struct usb_device *device,
- 	card->private_free = snd_usX2Y_card_private_free;
- 	usX2Y(card)->dev = device;
- 	init_waitqueue_head(&usX2Y(card)->prepare_wait_queue);
--	mutex_init(&usX2Y(card)->prepare_mutex);
-+	mutex_init(&usX2Y(card)->pcm_mutex);
- 	INIT_LIST_HEAD(&usX2Y(card)->midi_list);
- 	strcpy(card->driver, "USB "NAME_ALLCAPS"");
- 	sprintf(card->shortname, "TASCAM "NAME_ALLCAPS"");
-diff --git a/sound/usb/usx2y/usbusx2y.h b/sound/usb/usx2y/usbusx2y.h
-index e43c0a86441a..6ae6b0806938 100644
---- a/sound/usb/usx2y/usbusx2y.h
-+++ b/sound/usb/usx2y/usbusx2y.h
-@@ -36,7 +36,7 @@ struct usX2Ydev {
- 	unsigned int		rate,
- 				format;
- 	int			chip_status;
--	struct mutex		prepare_mutex;
-+	struct mutex		pcm_mutex;
- 	struct us428ctls_sharedmem	*us428ctls_sharedmem;
- 	int			wait_iso_frame;
- 	wait_queue_head_t	us428ctls_wait_queue_head;
-diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
-index 6234a51625b1..a63330dd1407 100644
---- a/sound/usb/usx2y/usbusx2yaudio.c
-+++ b/sound/usb/usx2y/usbusx2yaudio.c
-@@ -752,36 +752,44 @@ static int snd_usX2Y_pcm_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int		rate = params_rate(hw_params);
- 	snd_pcm_format_t	format = params_format(hw_params);
- 	struct snd_card *card = substream->pstr->pcm->card;
--	struct list_head *list;
-+	struct usX2Ydev	*dev = usX2Y(card);
-+	int i;
- 
-+	mutex_lock(&usX2Y(card)->pcm_mutex);
- 	snd_printdd("snd_usX2Y_hw_params(%p, %p)\n", substream, hw_params);
--	// all pcm substreams off one usX2Y have to operate at the same rate & format
--	list_for_each(list, &card->devices) {
--		struct snd_device *dev;
--		struct snd_pcm *pcm;
--		int s;
--		dev = snd_device(list);
--		if (dev->type != SNDRV_DEV_PCM)
-+	/* all pcm substreams off one usX2Y have to operate at the same
-+	 * rate & format
-+	 */
-+	for (i = 0; i < dev->pcm_devs * 2; i++) {
-+		struct snd_usX2Y_substream *subs = dev->subs[i];
-+		struct snd_pcm_substream *test_substream;
-+
-+		if (!subs)
-+			continue;
-+		test_substream = subs->pcm_substream;
-+		if (!test_substream || test_substream == substream ||
-+		    !test_substream->runtime)
- 			continue;
--		pcm = dev->device_data;
--		for (s = 0; s < 2; ++s) {
--			struct snd_pcm_substream *test_substream;
--			test_substream = pcm->streams[s].substream;
--			if (test_substream && test_substream != substream  &&
--			    test_substream->runtime &&
--			    ((test_substream->runtime->format &&
--			      test_substream->runtime->format != format) ||
--			     (test_substream->runtime->rate &&
--			      test_substream->runtime->rate != rate)))
--				return -EINVAL;
-+		if ((test_substream->runtime->format &&
-+		     test_substream->runtime->format != format) ||
-+		    (test_substream->runtime->rate &&
-+		     test_substream->runtime->rate != rate)) {
-+			err = -EINVAL;
-+			goto error;
- 		}
- 	}
--	if (0 > (err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params)))) {
-+
-+	err = snd_pcm_lib_malloc_pages(substream,
-+				       params_buffer_bytes(hw_params));
-+	if (err < 0) {
- 		snd_printk(KERN_ERR "snd_pcm_lib_malloc_pages(%p, %i) returned %i\n",
- 			   substream, params_buffer_bytes(hw_params), err);
--		return err;
-+		goto error;
- 	}
--	return 0;
-+
-+ error:
-+	mutex_unlock(&usX2Y(card)->pcm_mutex);
-+	return err;
- }
- 
- /*
-@@ -791,7 +799,7 @@ static int snd_usX2Y_pcm_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_usX2Y_substream *subs = runtime->private_data;
--	mutex_lock(&subs->usX2Y->prepare_mutex);
-+	mutex_lock(&subs->usX2Y->pcm_mutex);
- 	snd_printdd("snd_usX2Y_hw_free(%p)\n", substream);
- 
- 	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-@@ -812,7 +820,7 @@ static int snd_usX2Y_pcm_hw_free(struct snd_pcm_substream *substream)
- 			usX2Y_urbs_release(subs);
- 		}
- 	}
--	mutex_unlock(&subs->usX2Y->prepare_mutex);
-+	mutex_unlock(&subs->usX2Y->pcm_mutex);
- 	return snd_pcm_lib_free_pages(substream);
- }
- /*
-@@ -829,7 +837,7 @@ static int snd_usX2Y_pcm_prepare(struct snd_pcm_substream *substream)
- 	int err = 0;
- 	snd_printdd("snd_usX2Y_pcm_prepare(%p)\n", substream);
- 
--	mutex_lock(&usX2Y->prepare_mutex);
-+	mutex_lock(&usX2Y->pcm_mutex);
- 	usX2Y_subs_prepare(subs);
- // Start hardware streams
- // SyncStream first....
-@@ -849,7 +857,7 @@ static int snd_usX2Y_pcm_prepare(struct snd_pcm_substream *substream)
- 		err = usX2Y_urbs_start(subs);
- 
-  up_prepare_mutex:
--	mutex_unlock(&usX2Y->prepare_mutex);
-+	mutex_unlock(&usX2Y->pcm_mutex);
- 	return err;
- }
- 
-diff --git a/sound/usb/usx2y/usx2yhwdeppcm.c b/sound/usb/usx2y/usx2yhwdeppcm.c
-index 814d0e887c62..90766a92e7fd 100644
---- a/sound/usb/usx2y/usx2yhwdeppcm.c
-+++ b/sound/usb/usx2y/usx2yhwdeppcm.c
-@@ -358,7 +358,7 @@ static int snd_usX2Y_usbpcm_hw_free(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_usX2Y_substream *subs = runtime->private_data,
- 		*cap_subs2 = subs->usX2Y->subs[SNDRV_PCM_STREAM_CAPTURE + 2];
--	mutex_lock(&subs->usX2Y->prepare_mutex);
-+	mutex_lock(&subs->usX2Y->pcm_mutex);
- 	snd_printdd("snd_usX2Y_usbpcm_hw_free(%p)\n", substream);
- 
- 	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-@@ -387,7 +387,7 @@ static int snd_usX2Y_usbpcm_hw_free(struct snd_pcm_substream *substream)
- 				usX2Y_usbpcm_urbs_release(cap_subs2);
- 		}
- 	}
--	mutex_unlock(&subs->usX2Y->prepare_mutex);
-+	mutex_unlock(&subs->usX2Y->pcm_mutex);
- 	return snd_pcm_lib_free_pages(substream);
- }
- 
-@@ -493,7 +493,7 @@ static int snd_usX2Y_usbpcm_prepare(struct snd_pcm_substream *substream)
- 		memset(usX2Y->hwdep_pcm_shm, 0, sizeof(struct snd_usX2Y_hwdep_pcm_shm));
- 	}
- 
--	mutex_lock(&usX2Y->prepare_mutex);
-+	mutex_lock(&usX2Y->pcm_mutex);
- 	usX2Y_subs_prepare(subs);
- // Start hardware streams
- // SyncStream first....
-@@ -534,7 +534,7 @@ static int snd_usX2Y_usbpcm_prepare(struct snd_pcm_substream *substream)
- 		usX2Y->hwdep_pcm_shm->capture_iso_start = -1;
- 
-  up_prepare_mutex:
--	mutex_unlock(&usX2Y->prepare_mutex);
-+	mutex_unlock(&usX2Y->pcm_mutex);
- 	return err;
- }
- 
-@@ -600,59 +600,30 @@ static struct snd_pcm_ops snd_usX2Y_usbpcm_ops =
- };
- 
- 
--static int usX2Y_pcms_lock_check(struct snd_card *card)
-+static int usX2Y_pcms_busy_check(struct snd_card *card)
- {
--	struct list_head *list;
--	struct snd_device *dev;
--	struct snd_pcm *pcm;
--	int err = 0;
--	list_for_each(list, &card->devices) {
--		dev = snd_device(list);
--		if (dev->type != SNDRV_DEV_PCM)
--			continue;
--		pcm = dev->device_data;
--		mutex_lock(&pcm->open_mutex);
--	}
--	list_for_each(list, &card->devices) {
--		int s;
--		dev = snd_device(list);
--		if (dev->type != SNDRV_DEV_PCM)
--			continue;
--		pcm = dev->device_data;
--		for (s = 0; s < 2; ++s) {
--			struct snd_pcm_substream *substream;
--			substream = pcm->streams[s].substream;
--			if (substream && SUBSTREAM_BUSY(substream))
--				err = -EBUSY;
--		}
--	}
--	return err;
--}
--
-+	struct usX2Ydev	*dev = usX2Y(card);
-+	int i;
- 
--static void usX2Y_pcms_unlock(struct snd_card *card)
--{
--	struct list_head *list;
--	struct snd_device *dev;
--	struct snd_pcm *pcm;
--	list_for_each(list, &card->devices) {
--		dev = snd_device(list);
--		if (dev->type != SNDRV_DEV_PCM)
--			continue;
--		pcm = dev->device_data;
--		mutex_unlock(&pcm->open_mutex);
-+	for (i = 0; i < dev->pcm_devs * 2; i++) {
-+		struct snd_usX2Y_substream *subs = dev->subs[i];
-+		if (subs && subs->pcm_substream &&
-+		    SUBSTREAM_BUSY(subs->pcm_substream))
-+			return -EBUSY;
- 	}
-+	return 0;
- }
- 
--
- static int snd_usX2Y_hwdep_pcm_open(struct snd_hwdep *hw, struct file *file)
- {
--	// we need to be the first 
- 	struct snd_card *card = hw->card;
--	int err = usX2Y_pcms_lock_check(card);
--	if (0 == err)
-+	int err;
-+
-+	mutex_lock(&usX2Y(card)->pcm_mutex);
-+	err = usX2Y_pcms_busy_check(card);
-+	if (!err)
- 		usX2Y(card)->chip_status |= USX2Y_STAT_CHIP_MMAP_PCM_URBS;
--	usX2Y_pcms_unlock(card);
-+	mutex_unlock(&usX2Y(card)->pcm_mutex);
- 	return err;
- }
- 
-@@ -660,10 +631,13 @@ static int snd_usX2Y_hwdep_pcm_open(struct snd_hwdep *hw, struct file *file)
- static int snd_usX2Y_hwdep_pcm_release(struct snd_hwdep *hw, struct file *file)
- {
- 	struct snd_card *card = hw->card;
--	int err = usX2Y_pcms_lock_check(card);
--	if (0 == err)
-+	int err;
-+
-+	mutex_lock(&usX2Y(card)->pcm_mutex);
-+	err = usX2Y_pcms_busy_check(card);
-+	if (!err)
- 		usX2Y(hw->card)->chip_status &= ~USX2Y_STAT_CHIP_MMAP_PCM_URBS;
--	usX2Y_pcms_unlock(card);
-+	mutex_unlock(&usX2Y(card)->pcm_mutex);
- 	return err;
- }
- 
--- 
-1.8.5.2
+>  sound/usb/Kconfig           |  13 ++
+>  sound/usb/Makefile          |   2 +-
+>  sound/usb/bcd2000/Makefile  |   3 +
+>  sound/usb/bcd2000/bcd2000.c | 484 ++++++++++++++++++++++++++++++++++++++++++++
+
+As soon as you add more functionality here such as audio, please rename
+the file so it describes what it's doing, and split functionality into
+something like card.c, midi.c, pcm.c etc. I think for now, the naming is
+acceptable.
+
+> +static unsigned char bcd2000_init_sequence[] = {
+> +	0x07, 0x00, 0x00, 0x00, 0x78, 0x48, 0x1c, 0x81,
+> +	0xc4, 0x00, 0x00, 0x00, 0x5e, 0x53, 0x4a, 0xf7,
+> +	0x18, 0xfa, 0x11, 0xff, 0x6c, 0xf3, 0x90, 0xff,
+> +	0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
+> +	0x18, 0xfa, 0x11, 0xff, 0x14, 0x00, 0x00, 0x00,
+> +	0x00, 0x00, 0x00, 0x00, 0xf2, 0x34, 0x4a, 0xf7,
+> +	0x18, 0xfa, 0x11, 0xff};
+
+'};' to a new line, please.
+
+> +static void bcd2000_midi_handle_input(struct bcd2000 *bcd2k,
+> +					const unsigned char *buf, int len)
+
+You're passing the 'len' parameter from urb->actual_length, which is
+unsigned int. For consistency, make the type match here.
+
+> +{
+> +	unsigned char length, tocopy;
+> +
+> +	if (!bcd2k->midi_receive_substream)
+> +		return;
+> +
+> +	bcd2000_dump_buffer(PREFIX "received from device: ", buf, len);
+> +
+> +	if (len < 2)
+> +		return;
+> +
+> +	/*
+> +	 * Packet structure: mm nn oo (pp)
+> +	 *	mm: payload length
+> +	 *	nn: MIDI command or note
+> +	 *	oo: note or velocity
+> +	 *	pp: velocity
+> +	 */
+> +
+> +	length = buf[0];
+> +
+> +	/* ignore packets without payload */
+> +	if (length == 0)
+> +		return;
+> +
+> +	tocopy = min(length, (unsigned char) (len-1));
+
+I'd rather like it the other way around: make 'length' and 'tocopy'
+unsigned int, so you can avoid the cast and prevent the statement from
+overflowing.
+
+> +static void bcd2000_midi_send(struct bcd2000 *bcd2k,
+> +				struct snd_rawmidi_substream *substream)
+> +{
+> +	int len, ret;
+> +
+> +	BUILD_BUG_ON(sizeof(device_cmd_prefix) >= BUFSIZE);
+> +	/* copy the "set LED" command bytes */
+> +	memcpy(bcd2k->midi_out_buf, device_cmd_prefix,
+> +		sizeof(device_cmd_prefix));
+> +
+> +	/*
+> +	 * get MIDI packet and leave space for command prefix
+> +	 * and payload length
+> +	 */
+> +	len = snd_rawmidi_transmit(substream,
+> +				bcd2k->midi_out_buf + 3, BUFSIZE - 3);
+> +
+> +	if (len < 0)
+> +		snd_printk("%s: snd_rawmidi_transmit error %d\n",
+> +				__func__, len);
+
+Takashi just went through all the drivers and replaced the snd_printk()
+calls with pr_* and dev_* functions. This driver should also follow that
+new fashion ...
+
+> +	if (ret < 0)
+> +		dev_err(&bcd2k->dev->dev, PREFIX
+> +			"%s (%p): usb_submit_urb() failed, ret=%d, len=%d\n",
+> +			__func__, substream, ret, len);
+
+... like you do here.
+
+
+
+Thanks!
+Daniel
