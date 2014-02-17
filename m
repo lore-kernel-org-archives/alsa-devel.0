@@ -1,8 +1,8 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 Subject: Re: Regression caused by "ASoC: core: Rework
  SOC_DOUBLE_R_SX_TLV add SOC_SINGLE_SX_TLV"
-Date: Mon, 17 Feb 2014 16:03:28 +0100
-Message-ID: <CAOf5uwk5tDDYmOgS+3vaczYOOAjMQ_TPYskdE6JcgzDXFT=mkQ@mail.gmail.com>
+Date: Mon, 17 Feb 2014 16:16:13 +0100
+Message-ID: <20140217161613.3d6fe44e@skate>
 References: <20140130144807.5b102b28@skate>
  <alpine.DEB.2.10.1401300856050.10630@heelrod.ad.cirrus.com>
  <20140130160554.694a8a84@skate>
@@ -20,12 +20,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f53.google.com (mail-qa0-f53.google.com
- [209.85.216.53])
- by alsa0.perex.cz (Postfix) with ESMTP id A69CA261B32
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 16:03:29 +0100 (CET)
-Received: by mail-qa0-f53.google.com with SMTP id cm18so21535634qab.26
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 07:03:29 -0800 (PST)
+Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6575261B32
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 16:16:17 +0100 (CET)
 In-Reply-To: <CAOf5uwncvsUmLJynYZW2kzFf7Dp728HNciLFdLRovFRC8Je35A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -36,74 +33,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Brian Austin <brian.austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, =?ISO-8859-1?Q?Gregory_Cl=E9ment?= <gregory.clement@free-electrons.com>
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: Lior Amsalem <alior@marvell.com>, Brian Austin <brian.austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory =?UTF-8?B?Q2zDqW1lbnQ=?= <gregory.clement@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Dear Michael Trimarchi,
 
-On Mon, Feb 17, 2014 at 3:59 PM, Michael Trimarchi
-<michael@amarulasolutions.com> wrote:
-> Hi
->
-> On Mon, Feb 17, 2014 at 2:14 PM, Thomas Petazzoni
-> <thomas.petazzoni@free-electrons.com> wrote:
->> Dear Mark Brown,
->>
->> On Fri, 14 Feb 2014 20:17:09 +0000, Mark Brown wrote:
->>> On Mon, Feb 10, 2014 at 03:22:44PM +0100, Thomas Petazzoni wrote:
->>> > On Thu, 30 Jan 2014 11:23:57 -0600, Brian Austin wrote:
->>>
->>> > > Once I get it figured out, I'll CC you on the submission for your review
->>> > > and test.
->>>
->>> > Any news about this volume control problem on cs42l51 ?
->>>
->>> What does the datasheet say about these bitfields?  It should be
->>> straightforward to figure out how to fix them, it seems clear that the
->>> original code only worked by accident.
->>
->> For the PCMA and PCMB registers (addresses 0x10 and 0x11), the
->> datasheet says that bits 0 to 6 contain the volume, and bit 7 contains
->> the mute/unmute attribute.
->>
->> The volume can be adjusted in 0.5 dB increments, with the following
->> values described in the datasheet:
->>
->>  001 1000               +12.0 dB
->>  ........               ........
->>  000 0000               0 dB
->>  111 1111               -0.5 dB
->>  111 1110               -1.0 dB
->>  ........               ........
->>  001 1001               -51.5 dB
->>
->> Note that I haven't looked myself in details at the code of the audio
->> codec. I simply noticed there was a volume control problem and that
->> reverting Brian's patch made the volume control work again. I have not
->> investigated at all to fix the codec code, as I was suspecting that
->> Brian may have immediately an idea on what could be wrong. If he
->> doesn't have the time to look into this, I can certainly spend a bit of
->> time to investigate what's going on.
->>
+On Mon, 17 Feb 2014 15:59:35 +0100, Michael Trimarchi wrote:
+
+> > Note that I haven't looked myself in details at the code of the audio
+> > codec. I simply noticed there was a volume control problem and that
+> > reverting Brian's patch made the volume control work again. I have not
+> > investigated at all to fix the codec code, as I was suspecting that
+> > Brian may have immediately an idea on what could be wrong. If he
+> > doesn't have the time to look into this, I can certainly spend a bit of
+> > time to investigate what's going on.
+> >
 > why you don't just use regmap and check what happen on registers?
->
 
-should be /sys/kernel/debug/regmap/...
+I did have a look at the codec_reg debugfs file from ASoC, and the
+values were indeed not correct, as far as I remember. But I don't have
+the board powered up right now, so I'd need to set it up again to make
+a more precise report of what's going on.
 
-Michael
+Thanks,
 
->
-> Michael
->
->> Thanks!
->>
->> Thomas
->> --
->> Thomas Petazzoni, CTO, Free Electrons
->> Embedded Linux, Kernel and Android engineering
->> http://free-electrons.com
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Thomas
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
