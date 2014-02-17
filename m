@@ -1,16 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCHv2 2/5] ASoC: Intel: Add common SST driver
-	loader on ACPI systems
-Date: Mon, 17 Feb 2014 13:32:07 +0000
-Message-ID: <1392643930-6030-2-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCHv2 3/5] ASoC: Intel: Add Intel SST audio DSP
+	Firmware loader.
+Date: Mon, 17 Feb 2014 13:32:08 +0000
+Message-ID: <1392643930-6030-3-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1392643930-6030-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 13A1C262626
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 14:32:31 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A423426260F
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 14:32:34 +0100 (CET)
 In-Reply-To: <1392643930-6030-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,34 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Jarkko Nikula <jarkko.nikula@intel.com>, Benson Leung <bleung@google.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Benson Leung <bleung@google.com>, Jarkko Nikula <jarkko.nikula@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Provide services for Intel SST drivers to load SST modular firmware.
 
-Most of the SST devices will be exposed as ACPI devices. It makes sense to
-avoid duplication of the driver enumeration logic and concentrate the functionality
-into a single ACPI SST enumeration file.
+SST Firmware can be made up of several modules. These modules can exist
+within any of the compatible SST memory blocks. Provide a generic memory
+block and firmware module manager that can be used with any SST firmware
+and core.
 
-Idea of this loader is to parse data we get from ACPI and to be able to load
-needed other SST drivers and ASoC machine driver runtime based on single
-ACPI ID what BIOS gives to us.
-
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/sst-acpi.c | 212 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 212 insertions(+)
- create mode 100644 sound/soc/intel/sst-acpi.c
+ sound/soc/intel/sst-firmware.c | 586 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 586 insertions(+)
+ create mode 100644 sound/soc/intel/sst-firmware.c
 
-diff --git a/sound/soc/intel/sst-acpi.c b/sound/soc/intel/sst-acpi.c
+diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
 new file mode 100644
-index 0000000..aba73ca
+index 0000000..b6f9b5e
 --- /dev/null
-+++ b/sound/soc/intel/sst-acpi.c
-@@ -0,0 +1,212 @@
++++ b/sound/soc/intel/sst-firmware.c
+@@ -0,0 +1,586 @@
 +/*
-+ * Intel SST loader on ACPI systems
++ * Intel SST Firmware Loader
 + *
 + * Copyright (C) 2013, Intel Corporation. All rights reserved.
 + *
@@ -64,201 +60,575 @@ index 0000000..aba73ca
 + *
 + */
 +
-+#include <linux/acpi.h>
-+#include <linux/device.h>
-+#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/sched.h>
++#include <linux/firmware.h>
++#include <linux/export.h>
 +#include <linux/platform_device.h>
++#include <linux/dma-mapping.h>
++#include <linux/dmaengine.h>
++#include <linux/pci.h>
++
++#include <asm/page.h>
++#include <asm/pgtable.h>
 +
 +#include "sst-dsp.h"
++#include "sst-dsp-priv.h"
 +
-+#define SST_LPT_DSP_DMA_ADDR_OFFSET	0x0F0000
-+#define SST_WPT_DSP_DMA_ADDR_OFFSET	0x0FE000
-+#define SST_LPT_DSP_DMA_SIZE		(1024 - 1)
-+
-+/* Descriptor for setting up SST platform data */
-+struct sst_acpi_desc {
-+	const char *drv_name;
-+	/* Platform resource indexes. Must set to -1 if not used */
-+	int resindex_lpe_base;
-+	int resindex_pcicfg_base;
-+	int resindex_fw_base;
-+	int irqindex_host_ipc;
-+	int resindex_dma_base;
-+	/* Unique number identifying the SST core on platform */
-+	int sst_id;
-+	/* firmware file name */
-+	const char *fw_filename;
-+	/* DMA only valid when resindex_dma_base != -1*/
-+	int dma_engine;
-+	int dma_size;
-+};
-+
-+/* Descriptor for SST ASoC machine driver */
-+struct sst_acpi_mach {
-+	const char *drv_name;
-+	struct sst_acpi_desc *res_desc;
-+};
-+
-+struct sst_acpi_priv {
-+	struct platform_device *pdev_mach;
-+	struct platform_device *pdev_pcm;
-+	struct sst_pdata sst_pdata;
-+	struct sst_acpi_desc *desc;
-+};
-+
-+static int sst_acpi_probe(struct platform_device *pdev)
++static void sst_memcpy32(void *dest, void *src, u32 bytes)
 +{
-+	const struct acpi_device_id *id;
-+	struct device *dev = &pdev->dev;
-+	struct sst_acpi_priv *sst_acpi;
-+	struct sst_pdata *sst_pdata;
-+	struct sst_acpi_mach *mach;
-+	struct sst_acpi_desc *desc;
-+	struct resource *mmio;
-+	int ret = 0;
++	u32 i;
 +
-+	sst_acpi = devm_kzalloc(dev, sizeof(*sst_acpi), GFP_KERNEL);
-+	if (sst_acpi == NULL)
-+		return -ENOMEM;
-+
-+	id = acpi_match_device(dev->driver->acpi_match_table, dev);
-+	if (!id)
-+		return -ENODEV;
-+
-+	mach = (struct sst_acpi_mach *)id->driver_data;
-+	desc = mach->res_desc;
-+	sst_pdata = &sst_acpi->sst_pdata;
-+	sst_pdata->id = desc->sst_id;
-+	sst_pdata->fw_filename = desc->fw_filename;
-+	sst_acpi->desc = desc;
-+
-+	if (desc->resindex_dma_base >= 0) {
-+		sst_pdata->dma_engine = desc->dma_engine;
-+		sst_pdata->dma_base = desc->resindex_dma_base;
-+		sst_pdata->dma_size = desc->dma_size;
-+	}
-+
-+	if (desc->irqindex_host_ipc >= 0)
-+		sst_pdata->irq = platform_get_irq(pdev, desc->irqindex_host_ipc);
-+
-+	if (desc->resindex_lpe_base >= 0) {
-+		mmio = platform_get_resource(pdev, IORESOURCE_MEM,
-+					     desc->resindex_lpe_base);
-+		if (mmio) {
-+			sst_pdata->lpe_base = mmio->start;
-+			sst_pdata->lpe_size = resource_size(mmio);
-+		}
-+	}
-+
-+	if (desc->resindex_pcicfg_base >= 0) {
-+		mmio = platform_get_resource(pdev, IORESOURCE_MEM,
-+					     desc->resindex_pcicfg_base);
-+		if (mmio) {
-+			sst_pdata->pcicfg_base = mmio->start;
-+			sst_pdata->pcicfg_size = resource_size(mmio);
-+		}
-+	}
-+
-+	if (desc->resindex_fw_base >= 0) {
-+		mmio = platform_get_resource(pdev, IORESOURCE_MEM,
-+					     desc->resindex_fw_base);
-+		if (mmio) {
-+			sst_pdata->fw_base = mmio->start;
-+			sst_pdata->fw_size = resource_size(mmio);
-+		}
-+	}
-+
-+	/* register PCM and DAI driver */
-+	sst_acpi->pdev_pcm =
-+		platform_device_register_data(dev, desc->drv_name, -1,
-+					      sst_pdata, sizeof(*sst_pdata));
-+	if (IS_ERR(sst_acpi->pdev_pcm))
-+		return PTR_ERR(sst_acpi->pdev_pcm);
-+
-+	/* register machine driver */
-+	platform_set_drvdata(pdev, sst_acpi);
-+
-+	sst_acpi->pdev_mach =
-+		platform_device_register_data(dev, mach->drv_name, -1,
-+					      sst_pdata, sizeof(*sst_pdata));
-+	if (IS_ERR(sst_acpi->pdev_mach)) {
-+		ret = PTR_ERR(sst_acpi->pdev_mach);
-+		goto sst_err;
-+	}
-+
-+	return ret;
-+
-+sst_err:
-+	platform_device_unregister(sst_acpi->pdev_pcm);
-+	return ret;
++	/* copy one 32 bit word at a time as 64 bit access is not supported */
++	for (i = 0; i < bytes; i += 4)
++		memcpy_toio(dest + i, src + i, 4);
 +}
 +
-+static int sst_acpi_remove(struct platform_device *pdev)
++/* create new generic firmware object */
++struct sst_fw *sst_fw_new(struct sst_dsp *dsp, 
++	const struct firmware *fw, void *private)
 +{
-+	struct sst_acpi_priv *sst_acpi = platform_get_drvdata(pdev);
++	struct sst_fw *sst_fw;
++	int err;
 +
-+	platform_device_unregister(sst_acpi->pdev_mach);
-+	platform_device_unregister(sst_acpi->pdev_pcm);
++	if (!dsp->ops->parse_fw)
++		return NULL;
 +
++	sst_fw = kzalloc(sizeof(*sst_fw), GFP_KERNEL);
++	if (sst_fw == NULL)
++		return NULL;
++
++	sst_fw->dsp = dsp;
++	sst_fw->private = private;
++	sst_fw->size = fw->size;
++
++	err = dma_coerce_mask_and_coherent(dsp->dev, DMA_BIT_MASK(32));
++	if (err < 0) {
++		kfree(sst_fw);
++		return NULL;
++	}
++
++	/* allocate DMA buffer to store FW data */
++	sst_fw->dma_buf = dma_alloc_coherent(dsp->dev, sst_fw->size,
++				&sst_fw->dmable_fw_paddr, GFP_DMA);
++	if (!sst_fw->dma_buf) {
++		dev_err(dsp->dev, "error: DMA alloc failed\n");
++		kfree(sst_fw);
++		return NULL;
++	}
++
++	/* copy FW data to DMA-able memory */
++	memcpy((void *)sst_fw->dma_buf, (void *)fw->data, fw->size);
++
++	/* call core specific FW paser to load FW data into DSP */
++	err = dsp->ops->parse_fw(sst_fw);
++	if (err < 0) {
++		dev_err(dsp->dev, "error: parse fw failed %d\n", err);
++		goto parse_err;
++	}
++
++	mutex_lock(&dsp->mutex);
++	list_add(&sst_fw->list, &dsp->fw_list);
++	mutex_unlock(&dsp->mutex);
++
++	return sst_fw;
++
++parse_err:
++	dma_free_coherent(dsp->dev, sst_fw->size,
++				sst_fw->dma_buf,
++				sst_fw->dmable_fw_paddr);
++	kfree(sst_fw);
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(sst_fw_new);
++
++/* free single firmware object */
++void sst_fw_free(struct sst_fw *sst_fw)
++{
++	struct sst_dsp *dsp = sst_fw->dsp;
++
++	mutex_lock(&dsp->mutex);
++	list_del(&sst_fw->list);
++	mutex_unlock(&dsp->mutex);
++
++	dma_free_coherent(dsp->dev, sst_fw->size, sst_fw->dma_buf,
++			sst_fw->dmable_fw_paddr);
++	kfree(sst_fw);
++}
++EXPORT_SYMBOL_GPL(sst_fw_free);
++
++/* free all firmware objects */
++void sst_fw_free_all(struct sst_dsp *dsp)
++{
++	struct sst_fw *sst_fw, *t;
++
++	mutex_lock(&dsp->mutex);
++	list_for_each_entry_safe(sst_fw, t, &dsp->fw_list, list) {
++
++		list_del(&sst_fw->list);
++		dma_free_coherent(dsp->dev, sst_fw->size, sst_fw->dma_buf,
++			sst_fw->dmable_fw_paddr);
++		kfree(sst_fw);
++	}
++	mutex_unlock(&dsp->mutex);
++}
++EXPORT_SYMBOL_GPL(sst_fw_free_all);
++
++/* create a new SST generic module from FW template */
++struct sst_module *sst_module_new(struct sst_fw *sst_fw,
++	struct sst_module_template *template, void *private)
++{
++	struct sst_dsp *dsp = sst_fw->dsp;
++	struct sst_module *sst_module;
++
++	sst_module = kzalloc(sizeof(*sst_module), GFP_KERNEL);
++	if (sst_module == NULL)
++		return NULL;
++
++	sst_module->id = template->id;
++	sst_module->dsp = dsp;
++	sst_module->sst_fw = sst_fw;
++
++	memcpy(&sst_module->s, &template->s, sizeof(struct sst_module_data));
++	memcpy(&sst_module->p, &template->p, sizeof(struct sst_module_data));
++
++	INIT_LIST_HEAD(&sst_module->block_list);
++
++	mutex_lock(&dsp->mutex);
++	list_add(&sst_module->list, &dsp->module_list);
++	mutex_unlock(&dsp->mutex);
++
++	return sst_module;
++}
++EXPORT_SYMBOL_GPL(sst_module_new);
++
++/* free firmware module and remove from available list */
++void sst_module_free(struct sst_module *sst_module)
++{
++	struct sst_dsp *dsp = sst_module->dsp;
++
++	mutex_lock(&dsp->mutex);
++	list_del(&sst_module->list);
++	mutex_unlock(&dsp->mutex);
++
++	kfree(sst_module);
++}
++EXPORT_SYMBOL_GPL(sst_module_free);
++
++static struct sst_mem_block *find_block(struct sst_dsp *dsp, int type,
++	u32 offset)
++{
++	struct sst_mem_block *block;
++
++	list_for_each_entry(block, &dsp->free_block_list, list) {
++		if (block->type == type && block->offset == offset)
++			return block;
++	}
++
++	return NULL;
++}
++
++static int block_alloc_contiguous(struct sst_module *module,
++	struct sst_module_data *data, u32 offset, int size)
++{
++	struct list_head tmp = LIST_HEAD_INIT(tmp);
++	struct sst_dsp *dsp = module->dsp;
++	struct sst_mem_block *block;
++
++	while (size > 0) {
++		block = find_block(dsp, data->type, offset);
++		if (!block) {
++			list_splice(&tmp, &dsp->free_block_list);
++			return -ENOMEM;
++		}
++
++		list_move_tail(&block->list, &tmp);
++		offset += block->size;
++		size -= block->size;
++	}
++
++	list_splice(&tmp, &dsp->used_block_list);
 +	return 0;
 +}
 +
-+static struct sst_acpi_desc sst_acpi_haswell_desc = {
-+	.drv_name = "haswell-pcm-audio",
-+	.resindex_lpe_base = 0,
-+	.resindex_pcicfg_base = 1,
-+	.resindex_fw_base = -1,
-+	.irqindex_host_ipc = 0,
-+	.sst_id = SST_DEV_ID_LYNX_POINT,
-+	.fw_filename = "intel/IntcSST1.bin",
-+	.dma_engine = SST_DMA_TYPE_DW,
-+	.resindex_dma_base = SST_LPT_DSP_DMA_ADDR_OFFSET,
-+	.dma_size = SST_LPT_DSP_DMA_SIZE,
-+};
++/* allocate free DSP blocks for module data - callers hold locks */
++static int block_alloc(struct sst_module *module,
++	struct sst_module_data *data)
++{
++	struct sst_dsp *dsp = module->dsp;
++	struct sst_mem_block *block, *tmp;
++	int ret = 0;
 +
-+static struct sst_acpi_desc sst_acpi_broadwell_desc = {
-+	.drv_name = "haswell-pcm-audio",
-+	.resindex_lpe_base = 0,
-+	.resindex_pcicfg_base = 1,
-+	.resindex_fw_base = -1,
-+	.irqindex_host_ipc = 0,
-+	.sst_id = SST_DEV_ID_WILDCAT_POINT,
-+	.fw_filename = "intel/IntcSST2.bin",
-+	.dma_engine = SST_DMA_TYPE_DW,
-+	.resindex_dma_base = SST_WPT_DSP_DMA_ADDR_OFFSET,
-+	.dma_size = SST_LPT_DSP_DMA_SIZE,
-+};
++	if (data->size == 0)
++		return 0;
 +
-+static struct sst_acpi_mach haswell_mach = {
-+	.drv_name = "haswell-audio",
-+	.res_desc = &sst_acpi_haswell_desc,
-+};
++	/* find first free whole blocks that can hold module */
++	list_for_each_entry_safe(block, tmp, &dsp->free_block_list, list) {
 +
-+static struct sst_acpi_mach broadwell_mach = {
-+	.drv_name = "broadwell-audio",
-+	.res_desc = &sst_acpi_broadwell_desc,
-+};
++		/* ignore blocks with wrong type */
++		if (block->type != data->type)
++			continue;
 +
-+static struct acpi_device_id sst_acpi_match[] = {
-+	{ "INT33C8", (unsigned long)&haswell_mach },
-+	{ "INT3438", (unsigned long)&broadwell_mach },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, sst_acpi_match);
++		if (data->size > block->size)
++			continue;
 +
-+static struct platform_driver sst_acpi_driver = {
-+	.probe = sst_acpi_probe,
-+	.remove = sst_acpi_remove,
-+	.driver = {
-+		.name = "sst-acpi",
-+		.owner = THIS_MODULE,
-+		.acpi_match_table = ACPI_PTR(sst_acpi_match),
-+	},
-+};
-+module_platform_driver(sst_acpi_driver);
++		data->offset = block->offset;
++		block->data_type = data->data_type;
++		block->bytes_used = data->size % block->size;
++		list_add(&block->module_list, &module->block_list);
++		list_move(&block->list, &dsp->used_block_list);
++		dev_dbg(dsp->dev, " *module %d added block %d:%d\n",
++			module->id, block->type, block->index);
++		return 0;
++	}
 +
-+MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@linux.intel.com>");
-+MODULE_DESCRIPTION("Intel SST loader on ACPI systems");
-+MODULE_LICENSE("GPL v2");
++	/* then find free multiple blocks that can hold module */
++	list_for_each_entry_safe(block, tmp, &dsp->free_block_list, list) {
++
++		/* ignore blocks with wrong type */
++		if (block->type != data->type)
++			continue;
++
++		/* do we span > 1 blocks */
++		if (data->size > block->size) {
++			ret = block_alloc_contiguous(module, data,
++				block->offset + block->size,
++				data->size - block->size);
++			if (ret == 0)
++				return ret;
++		}
++	}
++
++	/* not enough free block space */
++	return -ENOMEM;
++}
++
++/* remove module from memory - callers hold locks */
++static void block_module_remove(struct sst_module *module)
++{
++	struct sst_mem_block *block, *tmp;
++	struct sst_dsp *dsp = module->dsp;
++	int err;
++
++	/* disable each block  */
++	list_for_each_entry(block, &module->block_list, module_list) {
++
++		if (block->ops && block->ops->disable) {
++			err = block->ops->disable(block);
++			if (err < 0)
++				dev_err(dsp->dev,
++					"error: cant disable block %d:%d\n",
++					block->type, block->index);
++		}
++	}
++
++	/* mark each block as free */
++	list_for_each_entry_safe(block, tmp, &module->block_list, module_list) {
++		list_del(&block->module_list);
++		list_move(&block->list, &dsp->free_block_list);
++	}
++}
++
++/* prepare the memory block to receive data from host - callers hold locks */
++static int block_module_prepare(struct sst_module *module)
++{
++	struct sst_mem_block *block;
++	int ret = 0;
++
++	/* enable each block so that's it'e ready for module P/S data */
++	list_for_each_entry(block, &module->block_list, module_list) {
++
++		if (block->ops && block->ops->enable)
++			ret = block->ops->enable(block);
++			if (ret < 0) {
++				dev_err(module->dsp->dev,
++					"error: cant disable block %d:%d\n",
++					block->type, block->index);
++				goto err;
++			}
++	}
++	return ret;
++
++err:
++	list_for_each_entry(block, &module->block_list, module_list) {
++		if (block->ops && block->ops->disable)
++			block->ops->disable(block);
++	}
++	return ret;
++}
++
++/* allocate memory blocks for static module addresses - callers hold locks */
++static int block_alloc_fixed(struct sst_module *module,
++	struct sst_module_data *data)
++{
++	struct sst_dsp *dsp = module->dsp;
++	struct sst_mem_block *block, *tmp;
++	u32 end = data->offset + data->size, block_end;
++	int err;
++
++	/* only IRAM/DRAM blocks are managed */
++	if (data->type != SST_MEM_IRAM && data->type != SST_MEM_DRAM)
++		return 0;
++
++	/* are blocks already attached to this module */
++	list_for_each_entry_safe(block, tmp, &module->block_list, module_list) {
++
++		/* force compacting mem blocks of the same data_type */
++		if (block->data_type != data->data_type)
++			continue;
++
++		block_end = block->offset + block->size;
++
++		/* find block that holds section */
++		if (data->offset >= block->offset && end < block_end)
++			return 0;
++
++		/* does block span more than 1 section */
++		if (data->offset >= block->offset && data->offset < block_end) {
++
++			err = block_alloc_contiguous(module, data,
++				block->offset + block->size,
++				data->size - block->size + data->offset - block->offset);
++			if (err < 0)
++				return -ENOMEM;
++
++			/* module already owns blocks */
++			return 0;
++		}
++	}
++
++	/* find first free blocks that can hold section in free list */
++	list_for_each_entry_safe(block, tmp, &dsp->free_block_list, list) {
++		block_end = block->offset + block->size;
++
++		/* find block that holds section */
++		if (data->offset >= block->offset && end < block_end) {
++
++			/* add block */
++			block->data_type = data->data_type;
++			list_move(&block->list, &dsp->used_block_list);
++			list_add(&block->module_list, &module->block_list);
++			return 0;
++		}
++
++		/* does block span more than 1 section */
++		if (data->offset >= block->offset && data->offset < block_end) {
++
++			err = block_alloc_contiguous(module, data,
++				block->offset + block->size,
++				data->size - block->size);
++			if (err < 0)
++				return -ENOMEM;
++
++			/* add block */
++			block->data_type = data->data_type;
++			list_move(&block->list, &dsp->used_block_list);
++			list_add(&block->module_list, &module->block_list);
++			return 0;
++		}
++
++	}
++
++	return -ENOMEM;
++}
++
++/* Load fixed module data into DSP memory blocks */
++int sst_module_insert_fixed_block(struct sst_module *module,
++	struct sst_module_data *data)
++{
++	struct sst_dsp *dsp = module->dsp;
++	int ret;
++
++	mutex_lock(&dsp->mutex);
++
++	/* alloc blocks that includes this section */
++	ret = block_alloc_fixed(module, data);
++	if (ret < 0) {
++		dev_err(dsp->dev,
++			"error: no free blocks for section at offset 0x%x size 0x%x\n",
++			data->offset, data->size);
++		mutex_unlock(&dsp->mutex);
++		return -ENOMEM;
++	}
++
++	/* prepare DSP blocks for module copy */
++	ret = block_module_prepare(module);
++	if (ret < 0) {
++		dev_err(dsp->dev, "error: fw module prepare failed\n");
++		goto err;
++	}
++
++	/* copy partial module data to blocks */
++	sst_memcpy32(dsp->addr.lpe + data->offset, data->data, data->size);
++
++	mutex_unlock(&dsp->mutex);
++	return ret;
++
++err:
++	block_module_remove(module);
++	mutex_unlock(&dsp->mutex);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(sst_module_insert_fixed_block);
++
++/* Unload entire module from DSP memory */
++int sst_block_module_remove(struct sst_module *module)
++{
++	struct sst_dsp *dsp = module->dsp;
++
++	mutex_lock(&dsp->mutex);
++	block_module_remove(module);
++	mutex_unlock(&dsp->mutex);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(sst_block_module_remove);
++
++/* register a DSP memory block for use with FW based modules */
++struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
++	u32 size, enum sst_mem_type type, struct sst_block_ops *ops, u32 index,
++	void *private)
++{
++	struct sst_mem_block *block;
++
++	block = kzalloc(sizeof(*block), GFP_KERNEL);
++	if (block == NULL)
++		return NULL;
++
++	block->offset = offset;
++	block->size = size;
++	block->index = index;
++	block->type = type;
++	block->dsp = dsp;
++	block->private = private;
++	block->ops = ops;
++
++	mutex_lock(&dsp->mutex);
++	list_add(&block->list, &dsp->free_block_list);
++	mutex_unlock(&dsp->mutex);
++
++	return block;
++}
++EXPORT_SYMBOL_GPL(sst_mem_block_register);
++
++/* unregister all DSP memory blocks */
++void sst_mem_block_unregister_all(struct sst_dsp *dsp)
++{
++	struct sst_mem_block *block, *tmp;
++
++	mutex_lock(&dsp->mutex);
++
++	/* unregister used blocks */
++	list_for_each_entry_safe(block, tmp, &dsp->used_block_list, list) {
++		list_del(&block->list);
++		kfree(block);
++	}
++
++	/* unregister free blocks */
++	list_for_each_entry_safe(block, tmp, &dsp->free_block_list, list) {
++		list_del(&block->list);
++		kfree(block);
++	}
++
++	mutex_unlock(&dsp->mutex);
++}
++EXPORT_SYMBOL_GPL(sst_mem_block_unregister_all);
++
++/* allocate scratch buffer blocks */
++struct sst_module *sst_mem_block_alloc_scratch(struct sst_dsp *dsp)
++{
++	struct sst_module *sst_module, *scratch;
++	struct sst_mem_block *block, *tmp;
++	u32 block_size;
++	int ret = 0;
++
++	scratch = kzalloc(sizeof(struct sst_module), GFP_KERNEL);
++	if (scratch == NULL)
++		return NULL;
++
++	mutex_lock(&dsp->mutex);
++
++	/* calculate required scratch size */
++	list_for_each_entry(sst_module, &dsp->module_list, list) {
++		if (scratch->s.size > sst_module->s.size)
++			scratch->s.size = scratch->s.size;
++		else
++			scratch->s.size = sst_module->s.size;
++	}
++
++	dev_dbg(dsp->dev, "scratch buffer required is %d bytes\n",
++		scratch->s.size);
++
++	/* init scratch module */
++	scratch->dsp = dsp;
++	scratch->s.type = SST_MEM_DRAM;
++	scratch->s.data_type = SST_DATA_S;
++	INIT_LIST_HEAD(&scratch->block_list);
++
++	/* check free blocks before looking at used blocks for space */
++	if (!list_empty(&dsp->free_block_list))
++		block = list_first_entry(&dsp->free_block_list,
++			struct sst_mem_block, list);
++	else
++		block = list_first_entry(&dsp->used_block_list,
++			struct sst_mem_block, list);
++	block_size = block->size;
++
++	/* allocate blocks for module scratch buffers */
++	dev_dbg(dsp->dev, "allocating scratch blocks\n");
++	ret = block_alloc(scratch, &scratch->s);
++	if (ret < 0) {
++		dev_err(dsp->dev, "error: can't alloc scratch blocks\n");
++		goto err;
++	}
++
++	/* assign the same offset of scratch to each module */
++	list_for_each_entry(sst_module, &dsp->module_list, list)
++		sst_module->s.offset = scratch->s.offset;
++
++	mutex_unlock(&dsp->mutex);
++	return scratch;
++
++err:
++	list_for_each_entry_safe(block, tmp, &scratch->block_list, module_list)
++		list_del(&block->module_list);
++	mutex_unlock(&dsp->mutex);
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(sst_mem_block_alloc_scratch);
++
++/* free all scratch blocks */
++void sst_mem_block_free_scratch(struct sst_dsp *dsp,
++	struct sst_module *scratch)
++{
++	struct sst_mem_block *block, *tmp;
++
++	mutex_lock(&dsp->mutex);
++
++	list_for_each_entry_safe(block, tmp, &scratch->block_list, module_list)
++		list_del(&block->module_list);
++
++	mutex_unlock(&dsp->mutex);
++}
++EXPORT_SYMBOL_GPL(sst_mem_block_free_scratch);
++
++/* get a module from it's unique ID */
++struct sst_module *sst_module_get_from_id(struct sst_dsp *dsp, u32 id)
++{
++	struct sst_module *module;
++
++	mutex_lock(&dsp->mutex);
++
++	list_for_each_entry(module, &dsp->module_list, list) {
++		if (module->id == id) {
++			mutex_unlock(&dsp->mutex);
++			return module;
++		}
++	}
++
++	mutex_unlock(&dsp->mutex);
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(sst_module_get_from_id);
 -- 
 1.8.3.2
