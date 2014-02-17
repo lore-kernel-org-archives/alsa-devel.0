@@ -1,89 +1,55 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 06/15] ASoC: wm8994: Update locking around use of DAPM pin API
-Date: Mon, 17 Feb 2014 16:51:34 +0000
-Message-ID: <1392655903-24537-7-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 02/15] ASoC: dapm: Add locked version of snd_soc_dapm_xxxx_pin
+ functions
+Date: Mon, 17 Feb 2014 18:06:03 +0100
+Message-ID: <5302417B.3070408@metafoo.de>
+References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com> <1392655903-24537-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+In-Reply-To: <1392655903-24537-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: broonie@kernel.org, myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-The pin updates in this driver look like they are intended to be done
-atomically, update to do so.
+[...]
+> +int snd_soc_dapm_enable_pin_locked(struct snd_soc_dapm_context *dapm,
+> +				   const char *pin)
+> +{
+> +	return snd_soc_dapm_set_pin(dapm, pin, 1);
+> +}
+> +EXPORT_SYMBOL_GPL(snd_soc_dapm_enable_pin_locked);
+> +
+> +/**
+>    * snd_soc_dapm_enable_pin - enable pin.
+>    * @dapm: DAPM context
+>    * @pin: pin name
+>    *
+>    * Enables input/output pin and its parents or children widgets iff there is
+>    * a valid audio route and active audio stream.
+> + *
+>    * NOTE: snd_soc_dapm_sync() needs to be called after this for DAPM to
+>    * do any widget power switching.
+>    */
+>   int snd_soc_dapm_enable_pin(struct snd_soc_dapm_context *dapm, const char *pin)
+>   {
+> -	return snd_soc_dapm_set_pin(dapm, pin, 1);
+> +	int ret;
+> +
+> +	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+> +
+> +	ret = snd_soc_dapm_set_pin(dapm, pin, 1);
+> +
+> +	mutex_unlock(&dapm->card->dapm_mutex);
+> +
+> +	return ret;
+>   }
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |   40 ++++++++++++++++++++++++----------------
- 1 files changed, 24 insertions(+), 16 deletions(-)
+Hm, this is a bit confusing. For other functions in ASoC when we have a pair 
+of functions with the _locked suffix and without the one with _locked takes 
+the lock, the other one doesn't. E.g. snd_soc_update_bits_locked. Here we do 
+it the other way around.
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index b9be9cb..4788c4e 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -2552,38 +2552,46 @@ int wm8994_vmid_mode(struct snd_soc_codec *codec, enum wm8994_vmid_mode mode)
- 
- 	switch (mode) {
- 	case WM8994_VMID_NORMAL:
-+		mutex_lock(&codec->dapm.card->dapm_mutex);
-+
- 		if (wm8994->hubs.lineout1_se) {
--			snd_soc_dapm_disable_pin(&codec->dapm,
--						 "LINEOUT1N Driver");
--			snd_soc_dapm_disable_pin(&codec->dapm,
--						 "LINEOUT1P Driver");
-+			snd_soc_dapm_disable_pin_locked(&codec->dapm,
-+							"LINEOUT1N Driver");
-+			snd_soc_dapm_disable_pin_locked(&codec->dapm,
-+							"LINEOUT1P Driver");
- 		}
- 		if (wm8994->hubs.lineout2_se) {
--			snd_soc_dapm_disable_pin(&codec->dapm,
--						 "LINEOUT2N Driver");
--			snd_soc_dapm_disable_pin(&codec->dapm,
--						 "LINEOUT2P Driver");
-+			snd_soc_dapm_disable_pin_locked(&codec->dapm,
-+							"LINEOUT2N Driver");
-+			snd_soc_dapm_disable_pin_locked(&codec->dapm,
-+							"LINEOUT2P Driver");
- 		}
- 
-+		mutex_unlock(&codec->dapm.card->dapm_mutex);
-+
- 		/* Do the sync with the old mode to allow it to clean up */
- 		snd_soc_dapm_sync(&codec->dapm);
- 		wm8994->vmid_mode = mode;
- 		break;
- 
- 	case WM8994_VMID_FORCE:
-+		mutex_lock(&codec->dapm.card->dapm_mutex);
-+
- 		if (wm8994->hubs.lineout1_se) {
--			snd_soc_dapm_force_enable_pin(&codec->dapm,
--						      "LINEOUT1N Driver");
--			snd_soc_dapm_force_enable_pin(&codec->dapm,
--						      "LINEOUT1P Driver");
-+			snd_soc_dapm_force_enable_pin_locked(&codec->dapm,
-+							     "LINEOUT1N Driver");
-+			snd_soc_dapm_force_enable_pin_locked(&codec->dapm,
-+							     "LINEOUT1P Driver");
- 		}
- 		if (wm8994->hubs.lineout2_se) {
--			snd_soc_dapm_force_enable_pin(&codec->dapm,
--						      "LINEOUT2N Driver");
--			snd_soc_dapm_force_enable_pin(&codec->dapm,
--						      "LINEOUT2P Driver");
-+			snd_soc_dapm_force_enable_pin_locked(&codec->dapm,
-+							     "LINEOUT2N Driver");
-+			snd_soc_dapm_force_enable_pin_locked(&codec->dapm,
-+							     "LINEOUT2P Driver");
- 		}
- 
-+		mutex_unlock(&codec->dapm.card->dapm_mutex);
-+
- 		wm8994->vmid_mode = mode;
- 		snd_soc_dapm_sync(&codec->dapm);
- 		break;
--- 
-1.7.2.5
+- Lars
