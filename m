@@ -1,55 +1,559 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 02/15] ASoC: dapm: Add locked version of snd_soc_dapm_xxxx_pin
- functions
-Date: Mon, 17 Feb 2014 18:06:03 +0100
-Message-ID: <5302417B.3070408@metafoo.de>
-References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com> <1392655903-24537-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [TINYCOMPRESS PATCH 1/2 v4] crec: Initial version
+ of a compressed capture utility
+Date: Mon, 17 Feb 2014 22:49:22 +0530
+Message-ID: <20140217171922.GC10628@intel.com>
+References: <1390563455-26209-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1392655903-24537-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B2CC26086C
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 18:21:29 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1390563455-26209-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: broonie@kernel.org, myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, vinod.koul@linux.jf.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-[...]
-> +int snd_soc_dapm_enable_pin_locked(struct snd_soc_dapm_context *dapm,
-> +				   const char *pin)
-> +{
-> +	return snd_soc_dapm_set_pin(dapm, pin, 1);
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_dapm_enable_pin_locked);
+On Fri, Jan 24, 2014 at 11:37:34AM +0000, Charles Keepax wrote:
+> This version only supports capture of PCM streams over a compressed
+> device and saves these as WAV files.
+> 
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+Applied, thanks for doing this
+
+-- 
+~Vinod
+
+> ---
+> 
+> Changes since v2:
+>   - Switched to using POSIX file IO to improve signal safety
+> 
+> Changes since v3:
+>   - O_CREAT flag was missing from open, add this
+> 
+> Thanks,
+> Charles
+> 
+>  Android.mk     |   10 ++
+>  crec.c         |  418 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  makefile.linux |   20 ++-
+>  3 files changed, 441 insertions(+), 7 deletions(-)
+>  create mode 100644 crec.c
+> 
+> diff --git a/Android.mk b/Android.mk
+> index 104dfef..3cdd3d0 100644
+> --- a/Android.mk
+> +++ b/Android.mk
+> @@ -20,3 +20,13 @@ LOCAL_MODULE_TAGS := optional
+>  
+>  include $(BUILD_EXECUTABLE)
+>  
+> +include $(CLEAR_VARS)
 > +
-> +/**
->    * snd_soc_dapm_enable_pin - enable pin.
->    * @dapm: DAPM context
->    * @pin: pin name
->    *
->    * Enables input/output pin and its parents or children widgets iff there is
->    * a valid audio route and active audio stream.
+> +LOCAL_C_INCLUDES:= $(LOCAL_PATH)/include
+> +LOCAL_SRC_FILES:= crec.c
+> +LOCAL_MODULE := crec
+> +LOCAL_SHARED_LIBRARIES:= libcutils libutils libtinycompress
+> +LOCAL_MODULE_TAGS := optional
+> +
+> +include $(BUILD_EXECUTABLE)
+> +
+> diff --git a/crec.c b/crec.c
+> new file mode 100644
+> index 0000000..568e4b7
+> --- /dev/null
+> +++ b/crec.c
+> @@ -0,0 +1,418 @@
+> +/*
+> + * BSD LICENSE
 > + *
->    * NOTE: snd_soc_dapm_sync() needs to be called after this for DAPM to
->    * do any widget power switching.
->    */
->   int snd_soc_dapm_enable_pin(struct snd_soc_dapm_context *dapm, const char *pin)
->   {
-> -	return snd_soc_dapm_set_pin(dapm, pin, 1);
-> +	int ret;
+> + * crec command line recorder for compress audio record in alsa
+> + * Copyright (c) 2011-2012, Intel Corporation
+> + * Copyright (c) 2013-2014, Wolfson Microelectronic Ltd.
+> + * All rights reserved.
+> + *
+> + * Author: Vinod Koul <vinod.koul@linux.intel.com>
+> + * Author: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> + *
+> + * Redistribution and use in source and binary forms, with or without
+> + * modification, are permitted provided that the following conditions are met:
+> + *
+> + * Redistributions of source code must retain the above copyright notice,
+> + * this list of conditions and the following disclaimer.
+> + * Redistributions in binary form must reproduce the above copyright notice,
+> + * this list of conditions and the following disclaimer in the documentation
+> + * and/or other materials provided with the distribution.
+> + * Neither the name of Intel Corporation nor the names of its contributors
+> + * may be used to endorse or promote products derived from this software
+> + * without specific prior written permission.
+> + *
+> + * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+> + * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+> + * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+> + * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+> + * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+> + * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+> + * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+> + * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+> + * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+> + * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+> + * THE POSSIBILITY OF SUCH DAMAGE.
+> + *
+> + * LGPL LICENSE
+> + *
+> + * crec command line recorder for compress audio record in alsa
+> + * Copyright (c) 2011-2012, Intel Corporation
+> + * Copyright (c) 2013-2014, Wolfson Microelectronic Ltd.
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms and conditions of the GNU Lesser General Public License,
+> + * version 2.1, as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope it will be useful, but WITHOUT
+> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+> + * License for more details.
+> + *
+> + * You should have received a copy of the GNU Lesser General Public License
+> + * along with this program; if not, write to
+> + * the Free Software Foundation, Inc.,
+> + * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
 > +
-> +	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+> +#include <stdint.h>
+> +#include <linux/types.h>
+> +#include <fcntl.h>
+> +#include <errno.h>
+> +#include <unistd.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <signal.h>
+> +#include <stdbool.h>
+> +#include <getopt.h>
+> +#include <sys/time.h>
+> +#define __force
+> +#define __bitwise
+> +#define __user
+> +#include "sound/compress_params.h"
+> +#include "sound/compress_offload.h"
+> +#include "tinycompress/tinycompress.h"
 > +
-> +	ret = snd_soc_dapm_set_pin(dapm, pin, 1);
+> +static int verbose;
 > +
-> +	mutex_unlock(&dapm->card->dapm_mutex);
+> +static const unsigned int DEFAULT_CHANNELS = 1;
+> +static const unsigned int DEFAULT_RATE = 44100;
+> +static const unsigned int DEFAULT_FORMAT = SNDRV_PCM_FORMAT_S16_LE;
 > +
-> +	return ret;
->   }
+> +struct riff_chunk {
+> +	char desc[4];
+> +	uint32_t size;
+> +} __attribute__((__packed__));
+> +
+> +struct wave_header {
+> +	struct {
+> +		struct riff_chunk chunk;
+> +		char format[4];
+> +	} __attribute__((__packed__)) riff;
+> +
+> +	struct {
+> +		struct riff_chunk chunk;
+> +		uint16_t type;
+> +		uint16_t channels;
+> +		uint32_t rate;
+> +		uint32_t byterate;
+> +		uint16_t blockalign;
+> +		uint16_t samplebits;
+> +	} __attribute__((__packed__)) fmt;
+> +
+> +	struct {
+> +		struct riff_chunk chunk;
+> +	} __attribute__((__packed__)) data;
+> +} __attribute__((__packed__));
+> +
+> +const struct wave_header blank_wave_header = {
+> +	.riff = {
+> +		.chunk = {
+> +			.desc = "RIFF",
+> +		},
+> +		.format = "WAVE",
+> +	},
+> +	.fmt = {
+> +		.chunk = {
+> +			.desc = "fmt ", /* Note the space is important here */
+> +			.size = sizeof(blank_wave_header.fmt) -
+> +				sizeof(blank_wave_header.fmt.chunk),
+> +		},
+> +		.type = 0x01,   /* PCM */
+> +	},
+> +	.data = {
+> +		.chunk = {
+> +			.desc = "data",
+> +		},
+> +	},
+> +};
+> +
+> +static void init_wave_header(struct wave_header *header, uint16_t channels,
+> +			     uint32_t rate, uint16_t samplebits)
+> +{
+> +	memcpy(header, &blank_wave_header, sizeof(blank_wave_header));
+> +
+> +	header->fmt.channels = channels;
+> +	header->fmt.rate = rate;
+> +	header->fmt.byterate = channels * rate * (samplebits / 8);
+> +	header->fmt.blockalign = channels * (samplebits / 8);
+> +	header->fmt.samplebits = samplebits;
+> +}
+> +
+> +static void size_wave_header(struct wave_header *header, uint32_t size)
+> +{
+> +	header->riff.chunk.size = sizeof(*header) -
+> +				  sizeof(header->riff.chunk) + size;
+> +	header->data.chunk.size = size;
+> +}
+> +
+> +static void usage(void)
+> +{
+> +	fprintf(stderr, "usage: crec [OPTIONS] filename\n"
+> +		"-c\tcard number\n"
+> +		"-d\tdevice node\n"
+> +		"-b\tbuffer size\n"
+> +		"-f\tfragments\n"
+> +		"-v\tverbose mode\n"
+> +		"-l\tlength of record in seconds\n"
+> +		"-h\tPrints this help list\n\n"
+> +		"-C\tSpecify the number of channels (default %u)\n"
+> +		"-R\tSpecify the sample rate (default %u)\n"
+> +		"-F\tSpecify the format: S16_LE, S32_LE (default S16_LE)\n\n"
+> +		"Example:\n"
+> +		"\tcrec -c 1 -d 2 test.wav\n"
+> +		"\tcrec -f 5 test.wav\n",
+> +		DEFAULT_CHANNELS, DEFAULT_RATE);
+> +
+> +	exit(EXIT_FAILURE);
+> +}
+> +
+> +static int print_time(struct compress *compress)
+> +{
+> +	unsigned int avail;
+> +	struct timespec tstamp;
+> +
+> +	if (compress_get_hpointer(compress, &avail, &tstamp) != 0) {
+> +		fprintf(stderr, "Error querying timestamp\n");
+> +		fprintf(stderr, "ERR: %s\n", compress_get_error(compress));
+> +		return -1;
+> +	} else {
+> +		printf("DSP recorded %jd.%jd\n",
+> +		       (intmax_t)tstamp.tv_sec, (intmax_t)tstamp.tv_nsec*1000);
+> +	}
+> +	return 0;
+> +}
+> +
+> +void capture_samples(char *name, unsigned int card, unsigned int device,
+> +		     unsigned long buffer_size, unsigned int frag,
+> +		     unsigned int length, unsigned int rate,
+> +		     unsigned int channels, unsigned int format)
+> +{
+> +	struct compr_config config;
+> +	struct snd_codec codec;
+> +	struct compress *compress;
+> +	struct wave_header header;
+> +	int file;
+> +	char *buffer;
+> +	size_t written;
+> +	int read, ret;
+> +	unsigned int size, total_read = 0;
+> +	unsigned int samplebits;
+> +
+> +	switch (format) {
+> +	case SNDRV_PCM_FORMAT_S32_LE:
+> +		samplebits = 32;
+> +		break;
+> +	default:
+> +		samplebits = 16;
+> +		break;
+> +	}
+> +
+> +	/* Convert length from seconds to bytes */
+> +	length = length * rate * (samplebits / 8) * channels;
+> +
+> +	if (verbose)
+> +		printf("%s: entry, reading %u bytes\n", __func__, length);
+> +
+> +	file = open(name, O_WRONLY | O_CREAT);
+> +	if (file == -1) {
+> +		fprintf(stderr, "Unable to open file '%s'\n", name);
+> +		exit(EXIT_FAILURE);
+> +	}
+> +
+> +	/* Write a header, will update with size once record is complete */
+> +	init_wave_header(&header, channels, rate, samplebits);
+> +	written = write(file, &header, sizeof(header));
+> +	if (written != sizeof(header)) {
+> +		fprintf(stderr, "Error writing output file header: %s\n",
+> +			strerror(errno));
+> +		goto file_exit;
+> +	}
+> +
+> +	memset(&codec, 0, sizeof(codec));
+> +	memset(&config, 0, sizeof(config));
+> +	codec.id = SND_AUDIOCODEC_PCM;
+> +	codec.ch_in = channels;
+> +	codec.ch_out = channels;
+> +	codec.sample_rate = rate;
+> +	if (!codec.sample_rate) {
+> +		fprintf(stderr, "invalid sample rate %d\n", rate);
+> +		goto file_exit;
+> +	}
+> +	codec.format = format;
+> +	if ((buffer_size != 0) && (frag != 0)) {
+> +		config.fragment_size = buffer_size/frag;
+> +		config.fragments = frag;
+> +	}
+> +	config.codec = &codec;
+> +
+> +	compress = compress_open(card, device, COMPRESS_OUT, &config);
+> +	if (!compress || !is_compress_ready(compress)) {
+> +		fprintf(stderr, "Unable to open Compress device %d:%d\n",
+> +			card, device);
+> +		fprintf(stderr, "ERR: %s\n", compress_get_error(compress));
+> +		goto file_exit;
+> +	};
+> +
+> +	if (verbose)
+> +		printf("%s: Opened compress device\n", __func__);
+> +
+> +	size = config.fragment_size;
+> +	buffer = malloc(size * config.fragments);
+> +	if (!buffer) {
+> +		fprintf(stderr, "Unable to allocate %d bytes\n", size);
+> +		goto comp_exit;
+> +	}
+> +
+> +	printf("Recording file %s On Card %u device %u, with buffer of %lu bytes\n",
+> +	       name, card, device, buffer_size);
+> +	printf("Format %u Channels %u, %u Hz\n",
+> +	       codec.id, codec.ch_out, rate);
+> +
+> +	compress_start(compress);
+> +
+> +	if (verbose)
+> +		printf("%s: Capturing audio NOW!!!\n", __func__);
+> +
+> +	do {
+> +		if (length && size > length - total_read)
+> +			size = length - total_read;
+> +
+> +		read = compress_read(compress, buffer, size);
+> +		if (read < 0) {
+> +			fprintf(stderr, "Error reading sample\n");
+> +			fprintf(stderr, "ERR: %s\n", compress_get_error(compress));
+> +			goto buf_exit;
+> +		}
+> +		if ((unsigned int)read != size) {
+> +			fprintf(stderr, "We read %d, DSP sent %d\n",
+> +				size, read);
+> +		}
+> +
+> +		if (read > 0) {
+> +			total_read += read;
+> +
+> +			written = write(file, buffer, read);
+> +			if (written != (size_t)read) {
+> +				fprintf(stderr, "Error writing output file: %s\n",
+> +					strerror(errno));
+> +				goto buf_exit;
+> +			}
+> +			if (verbose) {
+> +				print_time(compress);
+> +				printf("%s: read %d\n", __func__, read);
+> +			}
+> +		}
+> +	} while (!length || total_read < length);
+> +
+> +	ret = compress_stop(compress);
+> +	if (ret < 0) {
+> +		fprintf(stderr, "Error closing stream\n");
+> +		fprintf(stderr, "ERR: %s\n", compress_get_error(compress));
+> +	}
+> +
+> +	/* Update file header now we know file size */
+> +	size_wave_header(&header, total_read);
+> +	ret = lseek(file, 0, SEEK_SET);
+> +	if (ret < 0) {
+> +		fprintf(stderr, "Error seeking: %s\n", strerror(errno));
+> +		goto buf_exit;
+> +	}
+> +	written = write(file, &header, sizeof(header));
+> +	if (written != sizeof(header)) {
+> +		fprintf(stderr, "Error updating output file header: %s\n",
+> +			strerror(errno));
+> +		goto buf_exit;
+> +	}
+> +
+> +	if (verbose)
+> +		printf("%s: exit success\n", __func__);
+> +
+> +	free(buffer);
+> +	close(file);
+> +
+> +	compress_close(compress);
+> +
+> +	return;
+> +buf_exit:
+> +	free(buffer);
+> +comp_exit:
+> +	compress_close(compress);
+> +file_exit:
+> +	close(file);
+> +
+> +	if (verbose)
+> +		printf("%s: exit failure\n", __func__);
+> +
+> +	exit(EXIT_FAILURE);
+> +}
+> +
+> +int main(int argc, char **argv)
+> +{
+> +	char *file;
+> +	unsigned long buffer_size = 0;
+> +	int c;
+> +	unsigned int card = 0, device = 0, frag = 0, length = 0;
+> +	unsigned int rate = DEFAULT_RATE, channels = DEFAULT_CHANNELS;
+> +	unsigned int format = DEFAULT_FORMAT;
+> +
+> +	if (argc < 2)
+> +		usage();
+> +
+> +	verbose = 0;
+> +	while ((c = getopt(argc, argv, "hvl:R:C:F:b:f:c:d:")) != -1) {
+> +		switch (c) {
+> +		case 'h':
+> +			usage();
+> +			break;
+> +		case 'b':
+> +			buffer_size = strtol(optarg, NULL, 0);
+> +			break;
+> +		case 'f':
+> +			frag = strtol(optarg, NULL, 10);
+> +			break;
+> +		case 'c':
+> +			card = strtol(optarg, NULL, 10);
+> +			break;
+> +		case 'd':
+> +			device = strtol(optarg, NULL, 10);
+> +			break;
+> +		case 'v':
+> +			verbose = 1;
+> +			break;
+> +		case 'l':
+> +			length = strtol(optarg, NULL, 10);
+> +			break;
+> +		case 'R':
+> +			rate = strtol(optarg, NULL, 10);
+> +			break;
+> +		case 'C':
+> +			channels = strtol(optarg, NULL, 10);
+> +			break;
+> +		case 'F':
+> +			if (strcmp(optarg, "S16_LE") == 0) {
+> +				format = SNDRV_PCM_FORMAT_S16_LE;
+> +			} else if (strcmp(optarg, "S32_LE") == 0) {
+> +				format = SNDRV_PCM_FORMAT_S32_LE;
+> +			} else {
+> +				fprintf(stderr, "Unrecognised format: %s\n",
+> +					optarg);
+> +				usage();
+> +			}
+> +			break;
+> +		default:
+> +			exit(EXIT_FAILURE);
+> +		}
+> +	}
+> +	if (optind >= argc)
+> +		usage();
+> +
+> +	file = argv[optind];
+> +
+> +	capture_samples(file, card, device, buffer_size, frag, length,
+> +			rate, channels, format);
+> +
+> +	printf("Finish capturing... Close Normally\n");
+> +	exit(EXIT_SUCCESS);
+> +}
+> +
+> diff --git a/makefile.linux b/makefile.linux
+> index 677878d..81782d0 100644
+> --- a/makefile.linux
+> +++ b/makefile.linux
+> @@ -1,10 +1,13 @@
+>  LIB = libtinycompress
+> -BIN = cplay
+>  VER = 0.1
+>  LIBSRC = compress.c
+> -SRC = cplay.c utils.c
+> +PLAYBIN = cplay
+> +RECBIN = crec
+> +PLAYSRC = cplay.c utils.c
+> +RECSRC = crec.c utils.c
+>  LIBOBJ = ${LIBSRC:.c=.o}
+> -OBJ = ${SRC:.c=.o}
+> +PLAYOBJ = ${PLAYSRC:.c=.o}
+> +RECOBJ = ${RECSRC:.c=.o}
+>  
+>  CC = gcc
+>  CROSS_COMPILE =
+> @@ -13,23 +16,26 @@ CFLAGS += -std=c99 -Wall -Wextra -Wunused -DVERSION=\"${VER}\" -I./include
+>  LDFLAGS += -L. -ltinycompress
+>  LIBLDFLAGS = -lasound
+>  
+> -all: libtinycompress cplay
+> +all: libtinycompress cplay crec
+>  
+>  $(LIB): ${LIBOBJ}
+>  	@echo "  LD	"$@
+>  	@${CROSS_COMPILE}${CC} ${CFLAGS} -shared -Wl,-soname,$@.so -o $@.so ${LIBOBJ} ${LIBLDFLAGS}
+>  
+> -$(BIN): ${OBJ} ${LIB}
+> +$(PLAYBIN): ${PLAYOBJ} ${LIB}
+>  	@echo "  LD	"$@
+> -	@${CROSS_COMPILE}${CC} ${CFLAGS} -o $@ ${OBJ} ${LDFLAGS}
+> +	@${CROSS_COMPILE}${CC} ${CFLAGS} -o $@ ${PLAYOBJ} ${LDFLAGS}
+>  
+> +$(RECBIN): ${RECOBJ} ${LIB}
+> +	@echo "  LD	"$@
+> +	@${CROSS_COMPILE}${CC} ${CFLAGS} -o $@ ${RECOBJ} ${LDFLAGS}
+>  
+>  %.o: %.c
+>  	@echo "  CC	"$<
+>  	@${CROSS_COMPILE}${CC} ${CFLAGS} -c -fPIC -o $@ $<
+>  
+>  clean:
+> -	@rm -rf ${BIN} ${OBJ} ${LIB}.so ${LIBOBJ}
+> +	@rm -rf ${BIN} ${PLAYOBJ} ${RECOBJ} ${LIB}.so ${LIBOBJ}
+>  
+>  
+>  .PHONY: all clean
+> -- 
+> 1.7.2.5
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Hm, this is a bit confusing. For other functions in ASoC when we have a pair 
-of functions with the _locked suffix and without the one with _locked takes 
-the lock, the other one doesn't. E.g. snd_soc_update_bits_locked. Here we do 
-it the other way around.
-
-- Lars
+-- 
