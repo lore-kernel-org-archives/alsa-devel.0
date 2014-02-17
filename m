@@ -1,17 +1,18 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH v3] MIDI driver for Behringer BCD2000 USB
- device
-Date: Mon, 17 Feb 2014 10:18:55 +0100
-Message-ID: <5301D3FF.4000309@zonque.org>
-References: <1392071668-10722-1-git-send-email-dev@kicherer.org>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH v6] ARM: DTS: imx5* imx6*, use imx51-ssi
+Date: Mon, 17 Feb 2014 10:27:48 +0100
+Message-ID: <20140217092748.GA9197@pengutronix.de>
+References: <20140118083840.GD3430@S2101-09.ap.freescale.net>
+ <1390220023-6423-1-git-send-email-mpa@pengutronix.de>
+ <20140216220827.GC31006@pengutronix.de>
+ <20140217012643.GA9879@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7997691955969283971=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id F383A261A9F
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 10:18:56 +0100 (CET)
-In-Reply-To: <1392071668-10722-1-git-send-email-dev@kicherer.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 0BB9A261A8C
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 10:27:56 +0100 (CET)
+In-Reply-To: <20140217012643.GA9879@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,113 +22,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mario Kicherer <dev@kicherer.org>, alsa-devel@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mario,
 
-On 02/10/2014 11:34 PM, Mario Kicherer wrote:
-> This patch adds initial support for the Behringer BCD2000 USB DJ controller.
-> At the moment, only the MIDI part of the device is working, i.e. knobs,
-> buttons and LEDs.
-> 
-> I also plan to add support for the audio part, but I assume that this will
-> require more effort than the rather simple MIDI interface. Progress can be
-> tracked at https://github.com/anyc/snd-usb-bcd2000.
-
-This looks mostly nice to me now. I just have some minor comments inline.
-
->  sound/usb/Kconfig           |  13 ++
->  sound/usb/Makefile          |   2 +-
->  sound/usb/bcd2000/Makefile  |   3 +
->  sound/usb/bcd2000/bcd2000.c | 484 ++++++++++++++++++++++++++++++++++++++++++++
-
-As soon as you add more functionality here such as audio, please rename
-the file so it describes what it's doing, and split functionality into
-something like card.c, midi.c, pcm.c etc. I think for now, the naming is
-acceptable.
-
-> +static unsigned char bcd2000_init_sequence[] = {
-> +	0x07, 0x00, 0x00, 0x00, 0x78, 0x48, 0x1c, 0x81,
-> +	0xc4, 0x00, 0x00, 0x00, 0x5e, 0x53, 0x4a, 0xf7,
-> +	0x18, 0xfa, 0x11, 0xff, 0x6c, 0xf3, 0x90, 0xff,
-> +	0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-> +	0x18, 0xfa, 0x11, 0xff, 0x14, 0x00, 0x00, 0x00,
-> +	0x00, 0x00, 0x00, 0x00, 0xf2, 0x34, 0x4a, 0xf7,
-> +	0x18, 0xfa, 0x11, 0xff};
-
-'};' to a new line, please.
-
-> +static void bcd2000_midi_handle_input(struct bcd2000 *bcd2k,
-> +					const unsigned char *buf, int len)
-
-You're passing the 'len' parameter from urb->actual_length, which is
-unsigned int. For consistency, make the type match here.
-
-> +{
-> +	unsigned char length, tocopy;
-> +
-> +	if (!bcd2k->midi_receive_substream)
-> +		return;
-> +
-> +	bcd2000_dump_buffer(PREFIX "received from device: ", buf, len);
-> +
-> +	if (len < 2)
-> +		return;
-> +
-> +	/*
-> +	 * Packet structure: mm nn oo (pp)
-> +	 *	mm: payload length
-> +	 *	nn: MIDI command or note
-> +	 *	oo: note or velocity
-> +	 *	pp: velocity
-> +	 */
-> +
-> +	length = buf[0];
-> +
-> +	/* ignore packets without payload */
-> +	if (length == 0)
-> +		return;
-> +
-> +	tocopy = min(length, (unsigned char) (len-1));
-
-I'd rather like it the other way around: make 'length' and 'tocopy'
-unsigned int, so you can avoid the cast and prevent the statement from
-overflowing.
-
-> +static void bcd2000_midi_send(struct bcd2000 *bcd2k,
-> +				struct snd_rawmidi_substream *substream)
-> +{
-> +	int len, ret;
-> +
-> +	BUILD_BUG_ON(sizeof(device_cmd_prefix) >= BUFSIZE);
-> +	/* copy the "set LED" command bytes */
-> +	memcpy(bcd2k->midi_out_buf, device_cmd_prefix,
-> +		sizeof(device_cmd_prefix));
-> +
-> +	/*
-> +	 * get MIDI packet and leave space for command prefix
-> +	 * and payload length
-> +	 */
-> +	len = snd_rawmidi_transmit(substream,
-> +				bcd2k->midi_out_buf + 3, BUFSIZE - 3);
-> +
-> +	if (len < 0)
-> +		snd_printk("%s: snd_rawmidi_transmit error %d\n",
-> +				__func__, len);
-
-Takashi just went through all the drivers and replaced the snd_printk()
-calls with pr_* and dev_* functions. This driver should also follow that
-new fashion ...
-
-> +	if (ret < 0)
-> +		dev_err(&bcd2k->dev->dev, PREFIX
-> +			"%s (%p): usb_submit_urb() failed, ret=%d, len=%d\n",
-> +			__func__, substream, ret, len);
-
-... like you do here.
+--===============7997691955969283971==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
+Content-Disposition: inline
 
 
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
-Daniel
+On Mon, Feb 17, 2014 at 09:26:45AM +0800, Shawn Guo wrote:
+> On Sun, Feb 16, 2014 at 11:08:27PM +0100, Markus Pargmann wrote:
+> > Hi Shawn,
+> >=20
+> > On Mon, Jan 20, 2014 at 01:13:43PM +0100, Markus Pargmann wrote:
+> > > imx51-ssi and imx21-ssi are different IPs. imx51-ssi supports online
+> > > reconfiguration and needs this for correct interaction with SDMA. This
+> > > patch adds imx51-ssi before each imx21-ssi for all imx5/imx6 SoCs.
+> > >=20
+> > > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+> > > ---
+> > > Hi Shawn,
+> > >=20
+> > > Sorry for that last patch. I fixed it in this patch.
+> >=20
+> > Ping. Should I send this again after rebasing it onto your latest branc=
+h?
+>=20
+> I believe I've applied the v5 with a minor fix [1].  I split it into 2
+> though, one for imx5 [2] and the other for imx6 [2], because I have to
+> make my imx/dt pull request small to please arm-soc folks.
+
+Oh thanks, I didn't notice that you applied v5 already.
+
+Regards,
+
+Markus
+
+--=20
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTAdYUAAoJEEpcgKtcEGQQMa8QAJx6FMzlL8ZT2aw1VZvys+JW
+R5pcIRvtWu5cuNj8DytsTxQj9l9z/wd/aiU6+tJsLC2NFCQMDd7A1FCnOyRBrRQ/
+595Vj65VDE1D3lQpW6bB+tmxpUAHIgHLeaIfiqEhSWJOc+elFwIWhLOvp3hRw+q+
+kosh4aCHE9k4HyAw8yv9YK0dxeNdKHEWnofDCwPd6WujRz8n/NQWPzlL81Iomctt
+NesZJdcekDg9sXp8uk3YD/UuivfM3rvPqJ0d4hHqahR7sC2h0UI7FgTGluV7ZzVv
+kXV1SEy63nNJqUP6UQwGXR/HR6jSyOYxxtw6IoAtB4uth1gdB/dyVqC0eSa6m20F
+RlR2oUEuzX6o89AUPRF6Az/rDTRQUItUhqumfNodzQ4pbwlnJu6YPFzgb0j9y+dO
+0uIZVZuqjzeqW+nSCzMm+5ApGBJ32u62/FgOHHRbEDO6xf+oRu5CQ/UokT+8Db+v
+IXzqX8uSC20sK9h4dv+3aMxAQ7B+ABzqcnhqF9rm7EF2qFb3BEirZ7ntDWgnI/Cy
+wJfeA6HUNx8W2wCCaSV2KvOfF1I/76rU+bao5NhOyrV+RHJkQNETGPgKJ6wpbvrp
+iEtB1KPgDPB/8ayWM1P3zkQ+Y9s0iwzIN/iCVRt4ae1l0finNJ/y4Cw0Vmak7w5w
+78jN3xtsJuQxrXLgqZfW
+=bdFZ
+-----END PGP SIGNATURE-----
+
+--ZPt4rx8FFjLCG7dd--
+
+--===============7997691955969283971==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7997691955969283971==--
