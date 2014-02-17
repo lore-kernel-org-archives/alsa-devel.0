@@ -1,8 +1,8 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v5 3/4] ASoC: tlv320aic32x4: Rearrange clock
-	tree shutdown
-Date: Mon, 17 Feb 2014 11:04:19 +0100
-Message-ID: <1392631460-32002-4-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v5 4/4] Revert "ASoC: codec doc,
+	tlv320aic3x: Add tlv320aic32x4 as compatible"
+Date: Mon, 17 Feb 2014 11:04:20 +0100
+Message-ID: <1392631460-32002-5-git-send-email-mpa@pengutronix.de>
 References: <1392575252-9222-1-git-send-email-mpa@pengutronix.de>
  <1392631460-32002-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
@@ -10,8 +10,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 688F3261B28
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 11:04:47 +0100 (CET)
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 24C312625F7
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 11:04:59 +0100 (CET)
 In-Reply-To: <1392631460-32002-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,63 +26,23 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Rearrange clock tree shutdown to disable them in the reversed order of
-startup. First disable all dividers, then PLL followed by master clock.
-
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+This reverts tlv320aic32x4 as compatible for tlv320aic3x as it has its
+own bindings now.
 ---
- sound/soc/codecs/tlv320aic32x4.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ Documentation/devicetree/bindings/sound/tlv320aic3x.txt | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index e4a7231..f76a693 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -537,29 +537,29 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
--		/* Switch off PLL */
--		snd_soc_update_bits(codec, AIC32X4_PLLPR,
--				    AIC32X4_PLLEN, 0);
--
--		/* Switch off NDAC Divider */
--		snd_soc_update_bits(codec, AIC32X4_NDAC,
--				    AIC32X4_NDACEN, 0);
-+		/* Switch off BCLK_N Divider */
-+		snd_soc_update_bits(codec, AIC32X4_BCLKN,
-+				    AIC32X4_BCLKEN, 0);
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+index 9d8ea14..5e6040c 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
++++ b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+@@ -6,7 +6,6 @@ Required properties:
  
--		/* Switch off MDAC Divider */
--		snd_soc_update_bits(codec, AIC32X4_MDAC,
--				    AIC32X4_MDACEN, 0);
-+		/* Switch off MADC Divider */
-+		snd_soc_update_bits(codec, AIC32X4_MADC,
-+				    AIC32X4_MADCEN, 0);
- 
- 		/* Switch off NADC Divider */
- 		snd_soc_update_bits(codec, AIC32X4_NADC,
- 				    AIC32X4_NADCEN, 0);
- 
--		/* Switch off MADC Divider */
--		snd_soc_update_bits(codec, AIC32X4_MADC,
--				    AIC32X4_MADCEN, 0);
-+		/* Switch off MDAC Divider */
-+		snd_soc_update_bits(codec, AIC32X4_MDAC,
-+				    AIC32X4_MDACEN, 0);
- 
--		/* Switch off BCLK_N Divider */
--		snd_soc_update_bits(codec, AIC32X4_BCLKN,
--				    AIC32X4_BCLKEN, 0);
-+		/* Switch off NDAC Divider */
-+		snd_soc_update_bits(codec, AIC32X4_NDAC,
-+				    AIC32X4_NDACEN, 0);
-+
-+		/* Switch off PLL */
-+		snd_soc_update_bits(codec, AIC32X4_PLLPR,
-+				    AIC32X4_PLLEN, 0);
- 
- 		/* Switch off master clock */
- 		if (!IS_ERR(aic32x4->mclk))
+ - compatible - "string" - One of:
+     "ti,tlv320aic3x" - Generic TLV320AIC3x device
+-    "ti,tlv320aic32x4" - TLV320AIC32x4
+     "ti,tlv320aic33" - TLV320AIC33
+     "ti,tlv320aic3007" - TLV320AIC3007
+     "ti,tlv320aic3106" - TLV320AIC3106
 -- 
 1.8.5.3
