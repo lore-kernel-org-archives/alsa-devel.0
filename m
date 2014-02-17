@@ -1,7 +1,7 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 07/15] ASoC: wm8996: Update locking around use of DAPM pin API
-Date: Mon, 17 Feb 2014 16:51:35 +0000
-Message-ID: <1392655903-24537-8-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 10/15] ASoC: omap: n810: Update locking around use of DAPM pin API
+Date: Mon, 17 Feb 2014 16:51:38 +0000
+Message-ID: <1392655903-24537-11-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
@@ -15,27 +15,49 @@ atomically, update to do so.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8996.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/omap/n810.c |   20 ++++++++++++--------
+ 1 files changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 1a7655b..a391128 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -2267,8 +2267,12 @@ int wm8996_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
- 			    WM8996_MICB2_DISCH, 0);
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index 3fde9e4..b3f59a5 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -68,24 +68,28 @@ static void n810_ext_control(struct snd_soc_dapm_context *dapm)
+ 		break;
+ 	}
  
- 	/* LDO2 powers the microphones, SYSCLK clocks detection */
--	snd_soc_dapm_force_enable_pin(&codec->dapm, "LDO2");
--	snd_soc_dapm_force_enable_pin(&codec->dapm, "SYSCLK");
-+	mutex_lock(&codec->dapm.card->dapm_mutex);
++	mutex_lock(&dapm->card->dapm_mutex);
 +
-+	snd_soc_dapm_force_enable_pin_locked(&codec->dapm, "LDO2");
-+	snd_soc_dapm_force_enable_pin_locked(&codec->dapm, "SYSCLK");
-+
-+	mutex_unlock(&codec->dapm.card->dapm_mutex);
+ 	if (n810_spk_func)
+-		snd_soc_dapm_enable_pin(dapm, "Ext Spk");
++		snd_soc_dapm_enable_pin_locked(dapm, "Ext Spk");
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, "Ext Spk");
++		snd_soc_dapm_disable_pin_locked(dapm, "Ext Spk");
  
- 	/* We start off just enabling microphone detection - even a
- 	 * plain headphone will trigger detection.
+ 	if (hp)
+-		snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
++		snd_soc_dapm_enable_pin_locked(dapm, "Headphone Jack");
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headphone Jack");
+ 	if (line1l)
+-		snd_soc_dapm_enable_pin(dapm, "LINE1L");
++		snd_soc_dapm_enable_pin_locked(dapm, "LINE1L");
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, "LINE1L");
++		snd_soc_dapm_disable_pin_locked(dapm, "LINE1L");
+ 
+ 	if (n810_dmic_func)
+-		snd_soc_dapm_enable_pin(dapm, "DMic");
++		snd_soc_dapm_enable_pin_locked(dapm, "DMic");
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, "DMic");
++		snd_soc_dapm_disable_pin_locked(dapm, "DMic");
++
++	mutex_unlock(&dapm->card->dapm_mutex);
+ 
+ 	snd_soc_dapm_sync(dapm);
+ }
 -- 
 1.7.2.5
