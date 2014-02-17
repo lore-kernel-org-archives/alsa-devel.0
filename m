@@ -1,16 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCHv2 5/5] ASoC: Intel: Add build support for Intel
-	SST DSP core.
-Date: Mon, 17 Feb 2014 13:32:10 +0000
-Message-ID: <1392643930-6030-5-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCHv2 4/5] ASoC: Intel: Add trace support for
+	generic SST IPC messages.
+Date: Mon, 17 Feb 2014 13:32:09 +0000
+Message-ID: <1392643930-6030-4-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1392643930-6030-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D4BF262631
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 14:32:38 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 23D7F26262D
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 14:32:35 +0100 (CET)
 In-Reply-To: <1392643930-6030-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,50 +25,167 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Benson Leung <bleung@google.com>, Jarkko Nikula <jarkko.nikula@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This adds kernel build support for Intel SST core audio.
+Provide a trace mechanism for debugging generic SST IPC messages.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/Kconfig  | 12 ++++++++++++
- sound/soc/intel/Makefile |  7 +++++++
- 2 files changed, 19 insertions(+)
+ include/trace/events/sst.h | 148 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 148 insertions(+)
+ create mode 100644 include/trace/events/sst.h
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 4d9d0a5..b0a07e4 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -11,3 +11,15 @@ config SND_MFLD_MACHINE
- 
- config SND_SST_MFLD_PLATFORM
- 	tristate
+diff --git a/include/trace/events/sst.h b/include/trace/events/sst.h
+new file mode 100644
+index 0000000..1a0d6b3
+--- /dev/null
++++ b/include/trace/events/sst.h
+@@ -0,0 +1,148 @@
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM sst
 +
-+config SND_SOC_INTEL_SST
-+	tristate "ASoC support for Intel(R) Smart Sound Technology"
-+	select SND_SOC_INTEL_SST_ACPI if ACPI
-+	help
-+          This adds support for Intel(R) Smart Sound Technology (SST).
-+          Say Y if you have such a device
-+          If unsure select "N".
++#if !defined(_TRACE_SST_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_SST_H
 +
-+config SND_SOC_INTEL_SST_ACPI
-+	tristate
++#include <linux/types.h>
++#include <linux/ktime.h>
++#include <linux/tracepoint.h>
 +
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index eb899fc..cf47100 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -1,5 +1,12 @@
-+# Core support
-+snd-soc-sst-dsp-objs := sst-dsp.o sst-firmware.o
-+snd-soc-sst-acpi-objs := sst-acpi.o
++DECLARE_EVENT_CLASS(sst_ipc_msg,
 +
- snd-soc-sst-mfld-platform-objs := sst-mfld-platform.o
- snd-soc-mfld-machine-objs := mfld_machine.o
- 
- obj-$(CONFIG_SND_SST_MFLD_PLATFORM) += snd-soc-sst-mfld-platform.o
- obj-$(CONFIG_SND_MFLD_MACHINE) += snd-soc-mfld-machine.o
++	TP_PROTO(unsigned int val),
 +
-+obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o
-+obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
++	TP_ARGS(val),
++
++	TP_STRUCT__entry(
++		__field(	unsigned int,	val		)
++	),
++
++	TP_fast_assign(
++		__entry->val = val;
++	),
++
++	TP_printk("0x%8.8x", (unsigned int)__entry->val)
++);
++
++DEFINE_EVENT(sst_ipc_msg, sst_ipc_msg_tx,
++
++	TP_PROTO(unsigned int val),
++
++	TP_ARGS(val)
++
++);
++
++DEFINE_EVENT(sst_ipc_msg, sst_ipc_msg_rx,
++
++	TP_PROTO(unsigned int val),
++
++	TP_ARGS(val)
++
++);
++
++DECLARE_EVENT_CLASS(sst_ipc_mailbox,
++
++	TP_PROTO(unsigned int offset, unsigned int val),
++
++	TP_ARGS(offset, val),
++
++	TP_STRUCT__entry(
++		__field(	unsigned int,	offset		)
++		__field(	unsigned int,	val		)
++	),
++
++	TP_fast_assign(
++		__entry->offset = offset;
++		__entry->val = val;
++	),
++
++	TP_printk(" 0x%4.4x = 0x%8.8x",
++		(unsigned int)__entry->offset, (unsigned int)__entry->val)
++);
++
++DEFINE_EVENT(sst_ipc_mailbox, sst_ipc_inbox_rdata,
++
++	TP_PROTO(unsigned int offset, unsigned int val),
++
++	TP_ARGS(offset, val)
++
++);
++
++DEFINE_EVENT(sst_ipc_mailbox, sst_ipc_inbox_wdata,
++
++	TP_PROTO(unsigned int offset, unsigned int val),
++
++	TP_ARGS(offset, val)
++
++);
++
++DEFINE_EVENT(sst_ipc_mailbox, sst_ipc_outbox_rdata,
++
++	TP_PROTO(unsigned int offset, unsigned int val),
++
++	TP_ARGS(offset, val)
++
++);
++
++DEFINE_EVENT(sst_ipc_mailbox, sst_ipc_outbox_wdata,
++
++	TP_PROTO(unsigned int offset, unsigned int val),
++
++	TP_ARGS(offset, val)
++
++);
++
++DECLARE_EVENT_CLASS(sst_ipc_mailbox_info,
++
++	TP_PROTO(unsigned int size),
++
++	TP_ARGS(size),
++
++	TP_STRUCT__entry(
++		__field(	unsigned int,	size		)
++	),
++
++	TP_fast_assign(
++		__entry->size = size;
++	),
++
++	TP_printk("Mailbox bytes 0x%8.8x", (unsigned int)__entry->size)
++);
++
++DEFINE_EVENT(sst_ipc_mailbox_info, sst_ipc_inbox_read,
++
++	TP_PROTO(unsigned int size),
++
++	TP_ARGS(size)
++
++);
++
++DEFINE_EVENT(sst_ipc_mailbox_info, sst_ipc_inbox_write,
++
++	TP_PROTO(unsigned int size),
++
++	TP_ARGS(size)
++
++);
++
++DEFINE_EVENT(sst_ipc_mailbox_info, sst_ipc_outbox_read,
++
++	TP_PROTO(unsigned int size),
++
++	TP_ARGS(size)
++
++);
++
++DEFINE_EVENT(sst_ipc_mailbox_info, sst_ipc_outbox_write,
++
++	TP_PROTO(unsigned int size),
++
++	TP_ARGS(size)
++
++);
++
++#endif /* _TRACE_SST_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
 -- 
 1.8.3.2
