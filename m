@@ -1,79 +1,114 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 01/15] Input - arizona-haptics: Fix double lock
-	of dapm_mutex
-Date: Mon, 17 Feb 2014 16:51:29 +0000
-Message-ID: <1392655903-24537-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 14/15] ASoC: pxa: spitz: Update locking around use of DAPM pin API
+Date: Mon, 17 Feb 2014 16:51:42 +0000
+Message-ID: <1392655903-24537-15-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 087F4264F07
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 17:59:59 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, eric.y.miao@gmail.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, patches@opensource.wolfsonmicro.com, linux@arm.linux.org.uk, jarkko.nikula@bitmer.com
+Cc: myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-snd_soc_dapm_sync takes the dapm_mutex internally, but we currently take
-it externally as well. This patch fixes this.
+The pin updates in this driver look like they are intended to be done
+atomically, update to do so.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- drivers/input/misc/arizona-haptics.c |   11 ++++-------
- 1 files changed, 4 insertions(+), 7 deletions(-)
+ sound/soc/pxa/spitz.c |   49 +++++++++++++++++++++++++++----------------------
+ 1 files changed, 27 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/input/misc/arizona-haptics.c b/drivers/input/misc/arizona-haptics.c
-index 7a04f54..e7e12a5 100644
---- a/drivers/input/misc/arizona-haptics.c
-+++ b/drivers/input/misc/arizona-haptics.c
-@@ -77,16 +77,14 @@ static void arizona_haptics_work(struct work_struct *work)
- 			return;
- 		}
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index fc052d8..e755919 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -46,60 +46,65 @@ static int spitz_mic_gpio;
  
-+		mutex_unlock(dapm_mutex);
+ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
+ {
++	mutex_lock(&dapm->card->dapm_mutex);
 +
- 		ret = snd_soc_dapm_sync(arizona->dapm);
- 		if (ret != 0) {
- 			dev_err(arizona->dev, "Failed to sync DAPM: %d\n",
- 				ret);
--			mutex_unlock(dapm_mutex);
- 			return;
- 		}
--
--		mutex_unlock(dapm_mutex);
--
- 	} else {
- 		/* This disable sequence will be a noop if already enabled */
- 		mutex_lock_nested(dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-@@ -99,16 +97,15 @@ static void arizona_haptics_work(struct work_struct *work)
- 			return;
- 		}
+ 	if (spitz_spk_func == SPITZ_SPK_ON)
+-		snd_soc_dapm_enable_pin(dapm, "Ext Spk");
++		snd_soc_dapm_enable_pin_locked(dapm, "Ext Spk");
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, "Ext Spk");
++		snd_soc_dapm_disable_pin_locked(dapm, "Ext Spk");
  
-+		mutex_unlock(dapm_mutex);
+ 	/* set up jack connection */
+ 	switch (spitz_jack_func) {
+ 	case SPITZ_HP:
+ 		/* enable and unmute hp jack, disable mic bias */
+-		snd_soc_dapm_disable_pin(dapm, "Headset Jack");
+-		snd_soc_dapm_disable_pin(dapm, "Mic Jack");
+-		snd_soc_dapm_disable_pin(dapm, "Line Jack");
+-		snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headset Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Mic Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Line Jack");
++		snd_soc_dapm_enable_pin_locked(dapm, "Headphone Jack");
+ 		gpio_set_value(SPITZ_GPIO_MUTE_L, 1);
+ 		gpio_set_value(SPITZ_GPIO_MUTE_R, 1);
+ 		break;
+ 	case SPITZ_MIC:
+ 		/* enable mic jack and bias, mute hp */
+-		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Jack");
+-		snd_soc_dapm_disable_pin(dapm, "Line Jack");
+-		snd_soc_dapm_enable_pin(dapm, "Mic Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headphone Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headset Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Line Jack");
++		snd_soc_dapm_enable_pin_locked(dapm, "Mic Jack");
+ 		gpio_set_value(SPITZ_GPIO_MUTE_L, 0);
+ 		gpio_set_value(SPITZ_GPIO_MUTE_R, 0);
+ 		break;
+ 	case SPITZ_LINE:
+ 		/* enable line jack, disable mic bias and mute hp */
+-		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Jack");
+-		snd_soc_dapm_disable_pin(dapm, "Mic Jack");
+-		snd_soc_dapm_enable_pin(dapm, "Line Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headphone Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headset Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Mic Jack");
++		snd_soc_dapm_enable_pin_locked(dapm, "Line Jack");
+ 		gpio_set_value(SPITZ_GPIO_MUTE_L, 0);
+ 		gpio_set_value(SPITZ_GPIO_MUTE_R, 0);
+ 		break;
+ 	case SPITZ_HEADSET:
+ 		/* enable and unmute headset jack enable mic bias, mute L hp */
+-		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
+-		snd_soc_dapm_enable_pin(dapm, "Mic Jack");
+-		snd_soc_dapm_disable_pin(dapm, "Line Jack");
+-		snd_soc_dapm_enable_pin(dapm, "Headset Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headphone Jack");
++		snd_soc_dapm_enable_pin_locked(dapm, "Mic Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Line Jack");
++		snd_soc_dapm_enable_pin_locked(dapm, "Headset Jack");
+ 		gpio_set_value(SPITZ_GPIO_MUTE_L, 0);
+ 		gpio_set_value(SPITZ_GPIO_MUTE_R, 1);
+ 		break;
+ 	case SPITZ_HP_OFF:
+ 
+ 		/* jack removed, everything off */
+-		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Jack");
+-		snd_soc_dapm_disable_pin(dapm, "Mic Jack");
+-		snd_soc_dapm_disable_pin(dapm, "Line Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headphone Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headset Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Mic Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Line Jack");
+ 		gpio_set_value(SPITZ_GPIO_MUTE_L, 0);
+ 		gpio_set_value(SPITZ_GPIO_MUTE_R, 0);
+ 		break;
+ 	}
 +
- 		ret = snd_soc_dapm_sync(arizona->dapm);
- 		if (ret != 0) {
- 			dev_err(arizona->dev, "Failed to sync DAPM: %d\n",
- 				ret);
--			mutex_unlock(dapm_mutex);
- 			return;
- 		}
++	mutex_unlock(&dapm->card->dapm_mutex);
++
+ 	snd_soc_dapm_sync(dapm);
+ }
  
--		mutex_unlock(dapm_mutex);
--
- 		ret = regmap_update_bits(arizona->regmap,
- 					 ARIZONA_HAPTICS_CONTROL_1,
- 					 ARIZONA_HAP_CTRL_MASK,
 -- 
 1.7.2.5
