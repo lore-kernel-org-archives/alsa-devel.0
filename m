@@ -1,28 +1,13 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 05/15] ASoC: wm8962: Update locking around use
-	of DAPM pin API
-Date: Mon, 17 Feb 2014 16:51:33 +0000
-Message-ID: <1392655903-24537-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 06/15] ASoC: wm8994: Update locking around use of DAPM pin API
+Date: Mon, 17 Feb 2014 16:51:34 +0000
+Message-ID: <1392655903-24537-7-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 472BA264EED
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 18:00:06 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, eric.y.miao@gmail.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, patches@opensource.wolfsonmicro.com, linux@arm.linux.org.uk, jarkko.nikula@bitmer.com
+Cc: myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
 The pin updates in this driver look like they are intended to be done
@@ -30,35 +15,75 @@ atomically, update to do so.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8962.c |   12 ++++++++----
- 1 files changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8994.c |   40 ++++++++++++++++++++++++----------------
+ 1 files changed, 24 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index c06bb50..535a7dc 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3126,14 +3126,18 @@ int wm8962_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
- 	snd_soc_jack_report(wm8962->jack, 0,
- 			    SND_JACK_MICROPHONE | SND_JACK_BTN_0);
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index b9be9cb..4788c4e 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2552,38 +2552,46 @@ int wm8994_vmid_mode(struct snd_soc_codec *codec, enum wm8994_vmid_mode mode)
  
-+	mutex_lock(&codec->dapm.card->dapm_mutex);
+ 	switch (mode) {
+ 	case WM8994_VMID_NORMAL:
++		mutex_lock(&codec->dapm.card->dapm_mutex);
 +
- 	if (jack) {
--		snd_soc_dapm_force_enable_pin(&codec->dapm, "SYSCLK");
--		snd_soc_dapm_force_enable_pin(&codec->dapm, "MICBIAS");
-+		snd_soc_dapm_force_enable_pin_locked(&codec->dapm, "SYSCLK");
-+		snd_soc_dapm_force_enable_pin_locked(&codec->dapm, "MICBIAS");
- 	} else {
--		snd_soc_dapm_disable_pin(&codec->dapm, "SYSCLK");
--		snd_soc_dapm_disable_pin(&codec->dapm, "MICBIAS");
-+		snd_soc_dapm_disable_pin_locked(&codec->dapm, "SYSCLK");
-+		snd_soc_dapm_disable_pin_locked(&codec->dapm, "MICBIAS");
- 	}
+ 		if (wm8994->hubs.lineout1_se) {
+-			snd_soc_dapm_disable_pin(&codec->dapm,
+-						 "LINEOUT1N Driver");
+-			snd_soc_dapm_disable_pin(&codec->dapm,
+-						 "LINEOUT1P Driver");
++			snd_soc_dapm_disable_pin_locked(&codec->dapm,
++							"LINEOUT1N Driver");
++			snd_soc_dapm_disable_pin_locked(&codec->dapm,
++							"LINEOUT1P Driver");
+ 		}
+ 		if (wm8994->hubs.lineout2_se) {
+-			snd_soc_dapm_disable_pin(&codec->dapm,
+-						 "LINEOUT2N Driver");
+-			snd_soc_dapm_disable_pin(&codec->dapm,
+-						 "LINEOUT2P Driver");
++			snd_soc_dapm_disable_pin_locked(&codec->dapm,
++							"LINEOUT2N Driver");
++			snd_soc_dapm_disable_pin_locked(&codec->dapm,
++							"LINEOUT2P Driver");
+ 		}
  
-+	mutex_unlock(&codec->dapm.card->dapm_mutex);
++		mutex_unlock(&codec->dapm.card->dapm_mutex);
 +
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(wm8962_mic_detect);
+ 		/* Do the sync with the old mode to allow it to clean up */
+ 		snd_soc_dapm_sync(&codec->dapm);
+ 		wm8994->vmid_mode = mode;
+ 		break;
+ 
+ 	case WM8994_VMID_FORCE:
++		mutex_lock(&codec->dapm.card->dapm_mutex);
++
+ 		if (wm8994->hubs.lineout1_se) {
+-			snd_soc_dapm_force_enable_pin(&codec->dapm,
+-						      "LINEOUT1N Driver");
+-			snd_soc_dapm_force_enable_pin(&codec->dapm,
+-						      "LINEOUT1P Driver");
++			snd_soc_dapm_force_enable_pin_locked(&codec->dapm,
++							     "LINEOUT1N Driver");
++			snd_soc_dapm_force_enable_pin_locked(&codec->dapm,
++							     "LINEOUT1P Driver");
+ 		}
+ 		if (wm8994->hubs.lineout2_se) {
+-			snd_soc_dapm_force_enable_pin(&codec->dapm,
+-						      "LINEOUT2N Driver");
+-			snd_soc_dapm_force_enable_pin(&codec->dapm,
+-						      "LINEOUT2P Driver");
++			snd_soc_dapm_force_enable_pin_locked(&codec->dapm,
++							     "LINEOUT2N Driver");
++			snd_soc_dapm_force_enable_pin_locked(&codec->dapm,
++							     "LINEOUT2P Driver");
+ 		}
+ 
++		mutex_unlock(&codec->dapm.card->dapm_mutex);
++
+ 		wm8994->vmid_mode = mode;
+ 		snd_soc_dapm_sync(&codec->dapm);
+ 		break;
 -- 
 1.7.2.5
