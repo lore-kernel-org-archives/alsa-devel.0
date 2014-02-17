@@ -1,17 +1,20 @@
-From: Jason Cooper <jason@lakedaemon.net>
-Subject: Re: [PATCH v2 0/7] Audio support for Armada 370 DB
-Date: Sun, 16 Feb 2014 21:46:38 -0500
-Message-ID: <20140217024638.GH7862@titan.lakedaemon.net>
-References: <1392225662-20431-1-git-send-email-thomas.petazzoni@free-electrons.com>
+From: Sander Jansen <s.jansen@gmail.com>
+Subject: Re: Intel HDA + HDMI - snd_pcm_drain buggy behaviour.
+Date: Sun, 16 Feb 2014 20:52:39 -0600
+Message-ID: <CACj81kF92V5AmbqG7P0gyFKyuc05kkfqDP=ZrPkkXkOXjK45pg@mail.gmail.com>
+References: <CACj81kHMNskj9xB8XJq9KDqj4ODT8aihA8e7rPsOX42HGu1pYw@mail.gmail.com>
+ <CACj81kGyFz9Uq1DGuduSNRb+g1sMSR3zwAHWCnV+XLfc35zrXw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-01-ewr.mailhop.org (mho-03-ewr.mailhop.org [204.13.248.66])
- by alsa0.perex.cz (Postfix) with ESMTP id A22EC261A0E
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 03:46:47 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1392225662-20431-1-git-send-email-thomas.petazzoni@free-electrons.com>
+Received: from mail-vc0-f169.google.com (mail-vc0-f169.google.com
+ [209.85.220.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 986A2261A0E
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 03:52:41 +0100 (CET)
+Received: by mail-vc0-f169.google.com with SMTP id hq11so11484671vcb.28
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2014 18:52:40 -0800 (PST)
+In-Reply-To: <CACj81kGyFz9Uq1DGuduSNRb+g1sMSR3zwAHWCnV+XLfc35zrXw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,84 +24,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Tawfik Bayouk <tawfik@marvell.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 12, 2014 at 06:20:55PM +0100, Thomas Petazzoni wrote:
-> Hello,
-> 
-> This series of patches enable audio support on the Marvell Armada 370
-> Development Board. Since both the I2S controller on the SoC side and
-> the I2C audio codec are already supported by the kernel, the amount of
-> work is fairly limited.
-> 
-> Changes since v1:
-> 
->  * Drop patches "sound: codec: add Device Tree binding to cs42l51" and
->    " sound: soc: enable Kirkwood driver for mvebu platforms" since
->    they have been applied by Mark Brown.
-> 
->  * Set DAI format directly in the snd_soc_dai_link structure instead
->    of separately calling snd_soc_dai_set_fmt(). Suggested by Mark
->    Brown.
-> 
->  * Do not call snd_soc_dapm_enable_pin(), as Mark Brown mentionned
->    that DAPM widgets default to enabled. It allowed to entirely remove
->    the dai_init operation.
-> 
->  * Use devm_snd_soc_register_card() instead of
->    snd_soc_register_card(), as suggested by Mark Brown.
-> 
->  * Wrote a Device Tree binding document for the DT binding introduced
->    by this driver. Requested by Mark Brown.
-> 
->  * Use the DT to look up the controller and the codec, as suggested by
->    Mark Brown.
-> 
->  * Add S/PDIF support, which has been successfully tested. I've kept
->    it as separate patches (for both the ASoC machine driver, and the
->    Device Tree bits), so that it can be reviewed and applied
->    separately.
-> 
->  * Modified the commit title so that they contain "ASoC", as requested
->    by Mark Brown.
-> 
-> Patches 1 and 2 are to be reviewed/applied by the ASoC maintainer Mark
-> Brown, while patches 3 to 7 are to be reviewed/applied by the ARM
-> mvebu maintainers.
-> 
-> Note that the audio support for Armada 370 also needs a fix to the
-> CS42L51, which is being discussed with the author of the change that
-> apparently introduced the problem (see discussion at
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071916.html).
-> 
+Ok. Never mind. I was under the false impression that snd_pcm_drain would
+be able to handle partially filled periods. Making sure the last write
+fills at least a period seemed to have solved the issue.
+
+
+On Sun, Feb 16, 2014 at 2:26 PM, Sander Jansen <s.jansen@gmail.com> wrote:
+
+> Further investigation on my part I noticed a couple of mistakes I made
+> myself.
+>
+> 1. snd_pcm_drain() doesn't block in non-blocking mode. I fixed my code to
+> account for this now.
+> 2. snd_pcm_drain() doesn't block indefinitely in blocking mode. I must
+> have accidently put in a infinite loop somewhere myself.
+>
+> That leaves still with one unresolved issue, which is that calling
+> snd_pcm_drain() does indeed work in both blocking and non-blocking, but I'm
+> still hearing part of the audio that was already played before. I assume
+> this is some data in the ringbuffer that hasn't been overwritten by any new
+> data. I have been able to reproduce this on another PC (Intel G45 chipset)
+> as well (snd_intel_hda as well, but with analog output) so I don't think
+> it's HDMI related.
+>
+>
+> This is my drain code:
+>
+>     snd_pcm_state_t state = snd_pcm_state(handle);
+>     if (state==SND_PCM_STATE_RUNNING) {
+>
+>       /// block while draining
+>       //if ((result=snd_pcm_nonblock(handle,0))<0) {
+>       //  printf("[alsa] failed to set blocking mode. Reason:
+> %s\n",snd_strerror(result));
+>       //  return;
+>       //  }
+>
+>       result=snd_pcm_drain(handle);
+>       if (result==-EAGAIN) {
+>         printf("[alsa] waiting for drain\n");
+>         while(snd_pcm_state(handle)==SND_PCM_STATE_DRAINING){
+>           FXThread::sleep(500000000); // 50ms
+>           }
+>         printf("[alsa] drain complete. State:
+> %s\n",snd_pcm_state_name(snd_pcm_state(handle)));
+>         }
+>       else if (result<0) {
+>         printf("[alsa] drain failed. Reason: %s\n",snd_strerror(result));
+>         }
+>       else {
+>         printf("[alsa] drain complete\n");
+>         }
+>       }
+>
+> Anything else I'm doing wrong?
+>
 > Thanks,
-> 
-> Thomas
-> 
-> Thomas Petazzoni (7):
->   sound: ASoC: add ASoC board driver for Armada 370 DB
->   sound: ASoC: add S/PDIF support to Armada 370 DB ASoC driver
->   ARM: mvebu: add audio I2S controller to Armada 370 Device Tree
->   ARM: mvebu: add I2C0 muxing option for Armada 370 SoC
->   ARM: mvebu: add audio support to Armada 370 DB
->   ARM: mvebu: enable S/PDIF audio in Armada 370 DB Device Tree
->   ARM: mvebu: enable audio options in mvebu_defconfig
-> 
->  .../bindings/sound/armada-370db-audio.txt          |  27 ++++
->  arch/arm/boot/dts/armada-370-db.dts                |  56 ++++++++
->  arch/arm/boot/dts/armada-370.dtsi                  |  28 ++++
->  arch/arm/configs/mvebu_defconfig                   |   5 +
->  sound/soc/kirkwood/Kconfig                         |   9 ++
->  sound/soc/kirkwood/Makefile                        |   2 +
->  sound/soc/kirkwood/armada-370-db.c                 | 148 +++++++++++++++++++++
->  7 files changed, 275 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/armada-370db-audio.txt
->  create mode 100644 sound/soc/kirkwood/armada-370-db.c
-
-Patches 3 to 6 applied to mvebu/dt.  Patch 7 applied to mvebu/defconfig
-
-thx,
-
-Jason.
+>
+> Sander
+>
+>
+> On Sat, Feb 15, 2014 at 6:44 PM, Sander Jansen <s.jansen@gmail.com> wrote:
+>
+>> All,
+>>
+>> When I play regular PCM audio through the HDMI that's connected to my
+>> amplifier I noticed  buggy behaviour when using the snd_pcm_drain() call.
+>> From my understanding of ALSA, during playback snd_pcm_drain() normally
+>> blocks until the playback buffer is empty.
+>>
+>> Here's what I'm experiencing:
+>>
+>> a. If the PCM handle is in BLOCKING mode, the snd_pcm_drain() function
+>> will block indefinitely (I've waited 30 seconds, before I gave up).
+>>
+>> b. In NON-BLOCKING mode, the first call to snd_pcm_drain results in a
+>> " Resource temporarily unavailable", subsequent call works but the pcm
+>> state has changed to DRAINING and takes about 1 sec to change to SETUP.
+>> Even though the audio has less than 0.5 seconds of actual playback left.
+>>
+>> So to make it work, I changed my single snd_pcm_drain() call into the
+>> following pseudo code:
+>> while(state==RUNNING && snd_pcm_drain()<0) {
+>>   state=snd_pcm_state()
+>>   }
+>>
+>> while(state==DRAINING && sleep(100)){
+>>   state=snd_pcm_state()
+>>   }
+>>
+>> Even though this seem to "sort of work", another problem with this
+>> approach I've noticed, is that part of the beginning of the playback buffer
+>> may be replayed at the end of the drain:
+>>
+>>   1. start playback at beginning of file
+>>   2. seek to close to the end of the file (snd_pcm_drop() gets called)
+>>   3. end of file reached, drain gets called, hear the end of the song +
+>> part of the beginning again?
+>>
+>> So I'm wondering whether this may be related to the drain issue I've
+>> noticed. I've attached the alsa-info.
+>>
+>> Thanks,
+>>
+>> Sander
+>>
+>>
+>>
+>
