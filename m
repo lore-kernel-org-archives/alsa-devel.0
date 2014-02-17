@@ -1,18 +1,18 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH v6] ARM: DTS: imx5* imx6*, use imx51-ssi
-Date: Mon, 17 Feb 2014 10:27:48 +0100
-Message-ID: <20140217092748.GA9197@pengutronix.de>
-References: <20140118083840.GD3430@S2101-09.ap.freescale.net>
- <1390220023-6423-1-git-send-email-mpa@pengutronix.de>
- <20140216220827.GC31006@pengutronix.de>
- <20140217012643.GA9879@S2101-09.ap.freescale.net>
+Subject: [PATCH v5 2/4] ASoC: tlv320aic32x4: Support for
+	regulators
+Date: Mon, 17 Feb 2014 11:04:18 +0100
+Message-ID: <1392631460-32002-3-git-send-email-mpa@pengutronix.de>
+References: <1392575252-9222-1-git-send-email-mpa@pengutronix.de>
+ <1392631460-32002-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7997691955969283971=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 0BB9A261A8C
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 10:27:56 +0100 (CET)
-In-Reply-To: <20140217012643.GA9879@S2101-09.ap.freescale.net>
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 3FA12261AFF
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 11:04:36 +0100 (CET)
+In-Reply-To: <1392631460-32002-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,85 +22,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
+Support regulators to power up the codec. This patch also enables the
+AVDD LDO if no AV regulator was found.
 
---===============7997691955969283971==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
-Content-Disposition: inline
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
+ .../devicetree/bindings/sound/tlv320aic32x4.txt    |  8 +++
+ sound/soc/codecs/tlv320aic32x4.c                   | 81 ++++++++++++++++++++++
+ 2 files changed, 89 insertions(+)
 
-
---ZPt4rx8FFjLCG7dd
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Feb 17, 2014 at 09:26:45AM +0800, Shawn Guo wrote:
-> On Sun, Feb 16, 2014 at 11:08:27PM +0100, Markus Pargmann wrote:
-> > Hi Shawn,
-> >=20
-> > On Mon, Jan 20, 2014 at 01:13:43PM +0100, Markus Pargmann wrote:
-> > > imx51-ssi and imx21-ssi are different IPs. imx51-ssi supports online
-> > > reconfiguration and needs this for correct interaction with SDMA. This
-> > > patch adds imx51-ssi before each imx21-ssi for all imx5/imx6 SoCs.
-> > >=20
-> > > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> > > ---
-> > > Hi Shawn,
-> > >=20
-> > > Sorry for that last patch. I fixed it in this patch.
-> >=20
-> > Ping. Should I send this again after rebasing it onto your latest branc=
-h?
->=20
-> I believe I've applied the v5 with a minor fix [1].  I split it into 2
-> though, one for imx5 [2] and the other for imx6 [2], because I have to
-> make my imx/dt pull request small to please arm-soc folks.
-
-Oh thanks, I didn't notice that you applied v5 already.
-
-Regards,
-
-Markus
-
---=20
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---ZPt4rx8FFjLCG7dd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTAdYUAAoJEEpcgKtcEGQQMa8QAJx6FMzlL8ZT2aw1VZvys+JW
-R5pcIRvtWu5cuNj8DytsTxQj9l9z/wd/aiU6+tJsLC2NFCQMDd7A1FCnOyRBrRQ/
-595Vj65VDE1D3lQpW6bB+tmxpUAHIgHLeaIfiqEhSWJOc+elFwIWhLOvp3hRw+q+
-kosh4aCHE9k4HyAw8yv9YK0dxeNdKHEWnofDCwPd6WujRz8n/NQWPzlL81Iomctt
-NesZJdcekDg9sXp8uk3YD/UuivfM3rvPqJ0d4hHqahR7sC2h0UI7FgTGluV7ZzVv
-kXV1SEy63nNJqUP6UQwGXR/HR6jSyOYxxtw6IoAtB4uth1gdB/dyVqC0eSa6m20F
-RlR2oUEuzX6o89AUPRF6Az/rDTRQUItUhqumfNodzQ4pbwlnJu6YPFzgb0j9y+dO
-0uIZVZuqjzeqW+nSCzMm+5ApGBJ32u62/FgOHHRbEDO6xf+oRu5CQ/UokT+8Db+v
-IXzqX8uSC20sK9h4dv+3aMxAQ7B+ABzqcnhqF9rm7EF2qFb3BEirZ7ntDWgnI/Cy
-wJfeA6HUNx8W2wCCaSV2KvOfF1I/76rU+bao5NhOyrV+RHJkQNETGPgKJ6wpbvrp
-iEtB1KPgDPB/8ayWM1P3zkQ+Y9s0iwzIN/iCVRt4ae1l0finNJ/y4Cw0Vmak7w5w
-78jN3xtsJuQxrXLgqZfW
-=bdFZ
------END PGP SIGNATURE-----
-
---ZPt4rx8FFjLCG7dd--
-
---===============7997691955969283971==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7997691955969283971==--
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
+index 352be7b..5e2741a 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
++++ b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
+@@ -5,6 +5,14 @@ The tlv320aic32x4 serial control bus communicates through I2C protocols
+ Required properties:
+  - compatible: Should be "ti,tlv320aic32x4"
+  - reg: I2C slave address
++ - supply-*: Required supply regulators are:
++    "iov" - digital IO power supply
++    "ldoin" - LDO power supply
++    "dv" - Digital core power supply
++    "av" - Analog core power supply
++    If you supply ldoin, dv and av are optional. Otherwise they are required
++   See regulator/regulator.txt for more information about the detailed binding
++   format.
+ 
+ Optional properties:
+  - reset-gpios: Reset-GPIO phandle with args as described in gpio/gpio.txt
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index d96cb7c..e4a7231 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -34,6 +34,7 @@
+ #include <linux/cdev.h>
+ #include <linux/slab.h>
+ #include <linux/clk.h>
++#include <linux/regulator/consumer.h>
+ 
+ #include <sound/tlv320aic32x4.h>
+ #include <sound/core.h>
+@@ -69,6 +70,11 @@ struct aic32x4_priv {
+ 	bool swapdacs;
+ 	int rstn_gpio;
+ 	struct clk *mclk;
++
++	struct regulator *supply_ldo;
++	struct regulator *supply_iov;
++	struct regulator *supply_dv;
++	struct regulator *supply_av;
+ };
+ 
+ /* 0dB min, 0.5dB steps */
+@@ -699,6 +705,75 @@ static int aic32x4_parse_dt(struct aic32x4_priv *aic32x4,
+ 	return 0;
+ }
+ 
++static int aic32x4_i2c_setup_regulators(struct device *dev,
++		struct aic32x4_priv *aic32x4)
++{
++	int ret = 0;
++
++	aic32x4->supply_ldo = devm_regulator_get_optional(dev, "ldoin");
++	aic32x4->supply_iov = devm_regulator_get(dev, "iov");
++	aic32x4->supply_dv = devm_regulator_get_optional(dev, "dv");
++	aic32x4->supply_av = devm_regulator_get_optional(dev, "av");
++
++	/* Check if the regulator requirements are fulfilled */
++
++	if (IS_ERR(aic32x4->supply_iov)) {
++		dev_err(dev, "Missing supply 'iov'\n");
++		ret = -EINVAL;
++	}
++
++	if (IS_ERR(aic32x4->supply_ldo)) {
++		if (IS_ERR(aic32x4->supply_dv)) {
++			dev_err(dev, "Missing supply 'dv' or 'ldoin'\n");
++			ret = -EINVAL;
++		}
++		if (IS_ERR(aic32x4->supply_av)) {
++			dev_err(dev, "Missing supply 'av' or 'ldoin'\n");
++			ret = -EINVAL;
++		}
++	}
++
++	if (ret)
++		return ret;
++
++	if (!IS_ERR(aic32x4->supply_ldo)) {
++		ret = regulator_enable(aic32x4->supply_ldo);
++		if (ret) {
++			printk("Failed to enable regulator ldo\n");
++			return ret;
++		}
++	}
++
++	if (!IS_ERR(aic32x4->supply_iov)) {
++		ret = regulator_enable(aic32x4->supply_iov);
++		if (ret) {
++			printk("Failed to enable regulator iov\n");
++			return ret;
++		}
++	}
++
++	if (!IS_ERR(aic32x4->supply_dv)) {
++		ret = regulator_enable(aic32x4->supply_dv);
++		if (ret) {
++			printk("Failed to enable regulator dv\n");
++			return ret;
++		}
++	}
++
++	if (!IS_ERR(aic32x4->supply_av)) {
++		ret = regulator_enable(aic32x4->supply_av);
++		if (ret) {
++			printk("Failed to enable regulator av\n");
++			return ret;
++		}
++	}
++
++	if (!IS_ERR(aic32x4->supply_ldo) && IS_ERR(aic32x4->supply_av))
++		aic32x4->power_cfg |= AIC32X4_PWR_AIC32X4_LDO_ENABLE;
++
++	return 0;
++}
++
+ static int aic32x4_i2c_probe(struct i2c_client *i2c,
+ 			     const struct i2c_device_id *id)
+ {
+@@ -736,6 +811,12 @@ static int aic32x4_i2c_probe(struct i2c_client *i2c,
+ 		aic32x4->rstn_gpio = -1;
+ 	}
+ 
++	ret = aic32x4_i2c_setup_regulators(&i2c->dev, aic32x4);
++	if (ret) {
++		dev_err(&i2c->dev, "Failed to setup regulators\n");
++		return ret;
++	}
++
+ 	aic32x4->mclk = devm_clk_get(&i2c->dev, "mclk");
+ 	if (IS_ERR(aic32x4->mclk))
+ 		dev_info(&i2c->dev, "No mclk found, continuing without clock\n");
+-- 
+1.8.5.3
