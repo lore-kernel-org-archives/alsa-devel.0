@@ -1,28 +1,13 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 03/15] ASoC: adav80x: Update locking around use
-	of DAPM pin API
-Date: Mon, 17 Feb 2014 16:51:31 +0000
-Message-ID: <1392655903-24537-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 13/15] ASoC: pxa: magician: Update locking around use of DAPM pin API
+Date: Mon, 17 Feb 2014 16:51:41 +0000
+Message-ID: <1392655903-24537-14-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 092EE264F0A
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2014 18:00:02 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, eric.y.miao@gmail.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, patches@opensource.wolfsonmicro.com, linux@arm.linux.org.uk, jarkko.nikula@bitmer.com
+Cc: myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
 The pin updates in this driver look like they are intended to be done
@@ -30,38 +15,51 @@ atomically, update to do so.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/adav80x.c |   14 ++++++++++----
- 1 files changed, 10 insertions(+), 4 deletions(-)
+ sound/soc/pxa/magician.c |   20 ++++++++++++--------
+ 1 files changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
-index f78b27a..aacb2c03 100644
---- a/sound/soc/codecs/adav80x.c
-+++ b/sound/soc/codecs/adav80x.c
-@@ -600,15 +600,21 @@ static int adav80x_set_sysclk(struct snd_soc_codec *codec,
- 			adav80x->sysclk_pd[clk_id] = false;
- 		}
+diff --git a/sound/soc/pxa/magician.c b/sound/soc/pxa/magician.c
+index aace19e..b5f0e00 100644
+--- a/sound/soc/pxa/magician.c
++++ b/sound/soc/pxa/magician.c
+@@ -45,26 +45,30 @@ static void magician_ext_control(struct snd_soc_codec *codec)
+ {
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
  
-+		mutex_lock(&codec->dapm.card->dapm_mutex);
++	mutex_lock(&dapm->card->dapm_mutex);
 +
- 		if (adav80x->sysclk_pd[0])
--			snd_soc_dapm_disable_pin(&codec->dapm, "PLL1");
-+			snd_soc_dapm_disable_pin_locked(&codec->dapm, "PLL1");
- 		else
--			snd_soc_dapm_force_enable_pin(&codec->dapm, "PLL1");
-+			snd_soc_dapm_force_enable_pin_locked(&codec->dapm,
-+							     "PLL1");
+ 	if (magician_spk_switch)
+-		snd_soc_dapm_enable_pin(dapm, "Speaker");
++		snd_soc_dapm_enable_pin_locked(dapm, "Speaker");
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, "Speaker");
++		snd_soc_dapm_disable_pin_locked(dapm, "Speaker");
+ 	if (magician_hp_switch)
+-		snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
++		snd_soc_dapm_enable_pin_locked(dapm, "Headphone Jack");
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headphone Jack");
  
- 		if (adav80x->sysclk_pd[1] || adav80x->sysclk_pd[2])
--			snd_soc_dapm_disable_pin(&codec->dapm, "PLL2");
-+			snd_soc_dapm_disable_pin_locked(&codec->dapm, "PLL2");
- 		else
--			snd_soc_dapm_force_enable_pin(&codec->dapm, "PLL2");
-+			snd_soc_dapm_force_enable_pin_locked(&codec->dapm,
-+							     "PLL2");
-+
-+		mutex_unlock(&codec->dapm.card->dapm_mutex);
- 
- 		snd_soc_dapm_sync(&codec->dapm);
+ 	switch (magician_in_sel) {
+ 	case MAGICIAN_MIC:
+-		snd_soc_dapm_disable_pin(dapm, "Headset Mic");
+-		snd_soc_dapm_enable_pin(dapm, "Call Mic");
++		snd_soc_dapm_disable_pin_locked(dapm, "Headset Mic");
++		snd_soc_dapm_enable_pin_locked(dapm, "Call Mic");
+ 		break;
+ 	case MAGICIAN_MIC_EXT:
+-		snd_soc_dapm_disable_pin(dapm, "Call Mic");
+-		snd_soc_dapm_enable_pin(dapm, "Headset Mic");
++		snd_soc_dapm_disable_pin_locked(dapm, "Call Mic");
++		snd_soc_dapm_enable_pin_locked(dapm, "Headset Mic");
+ 		break;
  	}
+ 
++	mutex_unlock(&dapm->card->dapm_mutex);
++
+ 	snd_soc_dapm_sync(dapm);
+ }
+ 
 -- 
 1.7.2.5
