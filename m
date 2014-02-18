@@ -1,20 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 02/15] ASoC: dapm: Add locked version
-	of	snd_soc_dapm_xxxx_pin functions
-Date: Tue, 18 Feb 2014 09:04:54 +0000
-Message-ID: <20140218090454.GA18502@opensource.wolfsonmicro.com>
-References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1392655903-24537-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <5302417B.3070408@metafoo.de> <20140218003030.GH2669@sirena.org.uk>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 1/1] ASoC: cs42l51: Remove unused variable
+Date: Tue, 18 Feb 2014 14:32:48 +0530
+Message-ID: <1392714168-8292-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6253126514B
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 10:04:55 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20140218003030.GH2669@sirena.org.uk>
+Received: from mail-pb0-f45.google.com (mail-pb0-f45.google.com
+ [209.85.160.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 832DF265148
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 10:08:21 +0100 (CET)
+Received: by mail-pb0-f45.google.com with SMTP id un15so16512006pbc.32
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 01:08:20 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,29 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, eric.y.miao@gmail.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, linux@arm.linux.org.uk, dmitry.torokhov@gmail.com, jarkko.nikula@bitmer.com
+To: alsa-devel@alsa-project.org
+Cc: sachin.kamat@linaro.org, brian.austin@cirrus.com, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 18, 2014 at 09:30:30AM +0900, Mark Brown wrote:
-> On Mon, Feb 17, 2014 at 06:06:03PM +0100, Lars-Peter Clausen wrote:
-> 
-> > Hm, this is a bit confusing. For other functions in ASoC when we
-> > have a pair of functions with the _locked suffix and without the one
-> > with _locked takes the lock, the other one doesn't. E.g.
-> > snd_soc_update_bits_locked. Here we do it the other way around.
-> 
-> Yes, this is definitely confusing.  The existing naming might not be the
-> best but making things inconsistent isn't going to help the situation
-> either.
-
-Oops... sorry that was not intentional I will respin to correct
-this.
-
-Thanks,
-Charles
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+4oCYY3M0Mmw1MeKAmSBpcyBub3QgdXNlZC4gUmVtb3ZlIGl0LgoKU2lnbmVkLW9mZi1ieTogU2Fj
+aGluIEthbWF0IDxzYWNoaW4ua2FtYXRAbGluYXJvLm9yZz4KLS0tCiBzb3VuZC9zb2MvY29kZWNz
+L2NzNDJsNTEuYyB8ICAgIDEgLQogMSBmaWxlIGNoYW5nZWQsIDEgZGVsZXRpb24oLSkKCmRpZmYg
+LS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2NzNDJsNTEuYyBiL3NvdW5kL3NvYy9jb2RlY3MvY3M0
+Mmw1MS5jCmluZGV4IGU1M2M4NzE0NTkxZi4uM2VhYjQ2MDIwYTMwIDEwMDY0NAotLS0gYS9zb3Vu
+ZC9zb2MvY29kZWNzL2NzNDJsNTEuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL2NzNDJsNTEuYwpA
+QCAtNDg3LDcgKzQ4Nyw2IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfZHJpdmVyIGNzNDJs
+NTFfZGFpID0gewogCiBzdGF0aWMgaW50IGNzNDJsNTFfcHJvYmUoc3RydWN0IHNuZF9zb2NfY29k
+ZWMgKmNvZGVjKQogewotCXN0cnVjdCBjczQybDUxX3ByaXZhdGUgKmNzNDJsNTEgPSBzbmRfc29j
+X2NvZGVjX2dldF9kcnZkYXRhKGNvZGVjKTsKIAlpbnQgcmV0LCByZWc7CiAKIAlyZXQgPSBzbmRf
+c29jX2NvZGVjX3NldF9jYWNoZV9pbyhjb2RlYywgOCwgOCwgU05EX1NPQ19SRUdNQVApOwotLSAK
+MS43LjkuNQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
