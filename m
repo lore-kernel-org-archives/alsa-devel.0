@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 067/102] ASoC: wm2200: Use
-	SOC_ENUM_SINGLE_*_DECL()
-Date: Tue, 18 Feb 2014 12:38:23 +0100
-Message-ID: <1392723517-12772-40-git-send-email-tiwai@suse.de>
+Subject: [PATCH 065/102] ASoC: ak4671: Use
+	SOC_ENUM_SINGLE_DECL()
+Date: Tue, 18 Feb 2014 12:38:21 +0100
+Message-ID: <1392723517-12772-38-git-send-email-tiwai@suse.de>
 References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A72422655DA
+ by alsa0.perex.cz (Postfix) with ESMTP id A40452655D8
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:38:39 +0100 (CET)
 In-Reply-To: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,55 +25,42 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Just replace with the helper macros.  No functional change at all.
+Just replace with the helper macro.  No functional change at all.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/cs42l51.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ sound/soc/codecs/ak4671.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index e53c8714591f..f46b7c6f1f3b 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -117,8 +117,7 @@ static const char *chan_mix[] = {
- 	"R L",
- };
+diff --git a/sound/soc/codecs/ak4671.c b/sound/soc/codecs/ak4671.c
+index 743bbe31bc08..deb2b44669de 100644
+--- a/sound/soc/codecs/ak4671.c
++++ b/sound/soc/codecs/ak4671.c
+@@ -237,19 +237,17 @@ static const struct snd_kcontrol_new ak4671_rout3_mixer_controls[] = {
+ /* Input MUXs */
+ static const char *ak4671_lin_mux_texts[] =
+ 		{"LIN1", "LIN2", "LIN3", "LIN4"};
+-static const struct soc_enum ak4671_lin_mux_enum =
+-	SOC_ENUM_SINGLE(AK4671_MIC_SIGNAL_SELECT, 0,
+-			ARRAY_SIZE(ak4671_lin_mux_texts),
+-			ak4671_lin_mux_texts);
++static SOC_ENUM_SINGLE_DECL(ak4671_lin_mux_enum,
++			    AK4671_MIC_SIGNAL_SELECT, 0,
++			    ak4671_lin_mux_texts);
+ static const struct snd_kcontrol_new ak4671_lin_mux_control =
+ 	SOC_DAPM_ENUM("Route", ak4671_lin_mux_enum);
  
--static const struct soc_enum cs42l51_chan_mix =
--	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(chan_mix), chan_mix);
-+static SOC_ENUM_SINGLE_EXT_DECL(cs42l51_chan_mix, chan_mix);
- 
- static const struct snd_kcontrol_new cs42l51_snd_controls[] = {
- 	SOC_DOUBLE_R_SX_TLV("PCM Playback Volume",
-@@ -174,22 +173,22 @@ static int cs42l51_pdn_event(struct snd_soc_dapm_widget *w,
- 
- static const char *cs42l51_dac_names[] = {"Direct PCM",
- 	"DSP PCM", "ADC"};
--static const struct soc_enum cs42l51_dac_mux_enum =
--	SOC_ENUM_SINGLE(CS42L51_DAC_CTL, 6, 3, cs42l51_dac_names);
-+static SOC_ENUM_SINGLE_DECL(cs42l51_dac_mux_enum,
-+			    CS42L51_DAC_CTL, 6, cs42l51_dac_names);
- static const struct snd_kcontrol_new cs42l51_dac_mux_controls =
- 	SOC_DAPM_ENUM("Route", cs42l51_dac_mux_enum);
- 
- static const char *cs42l51_adcl_names[] = {"AIN1 Left", "AIN2 Left",
- 	"MIC Left", "MIC+preamp Left"};
--static const struct soc_enum cs42l51_adcl_mux_enum =
--	SOC_ENUM_SINGLE(CS42L51_ADC_INPUT, 4, 4, cs42l51_adcl_names);
-+static SOC_ENUM_SINGLE_DECL(cs42l51_adcl_mux_enum,
-+			    CS42L51_ADC_INPUT, 4, cs42l51_adcl_names);
- static const struct snd_kcontrol_new cs42l51_adcl_mux_controls =
- 	SOC_DAPM_ENUM("Route", cs42l51_adcl_mux_enum);
- 
- static const char *cs42l51_adcr_names[] = {"AIN1 Right", "AIN2 Right",
- 	"MIC Right", "MIC+preamp Right"};
--static const struct soc_enum cs42l51_adcr_mux_enum =
--	SOC_ENUM_SINGLE(CS42L51_ADC_INPUT, 6, 4, cs42l51_adcr_names);
-+static SOC_ENUM_SINGLE_DECL(cs42l51_adcr_mux_enum,
-+			    CS42L51_ADC_INPUT, 6, cs42l51_adcr_names);
- static const struct snd_kcontrol_new cs42l51_adcr_mux_controls =
- 	SOC_DAPM_ENUM("Route", cs42l51_adcr_mux_enum);
+ static const char *ak4671_rin_mux_texts[] =
+ 		{"RIN1", "RIN2", "RIN3", "RIN4"};
+-static const struct soc_enum ak4671_rin_mux_enum =
+-	SOC_ENUM_SINGLE(AK4671_MIC_SIGNAL_SELECT, 2,
+-			ARRAY_SIZE(ak4671_rin_mux_texts),
+-			ak4671_rin_mux_texts);
++static SOC_ENUM_SINGLE_DECL(ak4671_rin_mux_enum,
++			    AK4671_MIC_SIGNAL_SELECT, 2,
++			    ak4671_rin_mux_texts);
+ static const struct snd_kcontrol_new ak4671_rin_mux_control =
+ 	SOC_DAPM_ENUM("Route", ak4671_rin_mux_enum);
  
 -- 
 1.8.5.2
