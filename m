@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 031/102] ASoC: cs42l52: Use
+Subject: [PATCH 033/102] ASoC: da7213: Use
 	SOC_ENUM_SINGLE_DECL()
-Date: Tue, 18 Feb 2014 12:37:47 +0100
-Message-ID: <1392723517-12772-4-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:37:49 +0100
+Message-ID: <1392723517-12772-6-git-send-email-tiwai@suse.de>
 References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 46A5F2655B8
+ by alsa0.perex.cz (Postfix) with ESMTP id 49D5E2655BA
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:38:39 +0100 (CET)
 In-Reply-To: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,182 +29,267 @@ Just replace with the helper macro.  No functional change at all.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/cs42l52.c | 92 ++++++++++++++++++++++------------------------
- 1 file changed, 43 insertions(+), 49 deletions(-)
+ sound/soc/codecs/da7213.c | 151 ++++++++++++++++++++++++----------------------
+ 1 file changed, 80 insertions(+), 71 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 0bac6d5a4ac8..be455ea5f2fe 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -210,13 +210,11 @@ static const char * const cs42l52_adca_text[] = {
- static const char * const cs42l52_adcb_text[] = {
- 	"Input1B", "Input2B", "Input3B", "Input4B", "PGA Input Right"};
- 
--static const struct soc_enum adca_enum =
--	SOC_ENUM_SINGLE(CS42L52_ADC_PGA_A, 5,
--		ARRAY_SIZE(cs42l52_adca_text), cs42l52_adca_text);
-+static SOC_ENUM_SINGLE_DECL(adca_enum,
-+			    CS42L52_ADC_PGA_A, 5, cs42l52_adca_text);
- 
--static const struct soc_enum adcb_enum =
--	SOC_ENUM_SINGLE(CS42L52_ADC_PGA_B, 5,
--		ARRAY_SIZE(cs42l52_adcb_text), cs42l52_adcb_text);
-+static SOC_ENUM_SINGLE_DECL(adcb_enum,
-+			    CS42L52_ADC_PGA_B, 5, cs42l52_adcb_text);
- 
- static const struct snd_kcontrol_new adca_mux =
- 	SOC_DAPM_ENUM("Left ADC Input Capture Mux", adca_enum);
-@@ -229,26 +227,22 @@ static const char * const mic_bias_level_text[] = {
- 	"0.8 +VA", "0.83 +VA", "0.91 +VA"
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index 0c77e7ad7423..439d10387f10 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -63,30 +63,30 @@ static const char * const da7213_voice_hpf_corner_txt[] = {
+ 	"2.5Hz", "25Hz", "50Hz", "100Hz", "150Hz", "200Hz", "300Hz", "400Hz"
  };
  
--static const struct soc_enum mic_bias_level_enum =
--	SOC_ENUM_SINGLE(CS42L52_IFACE_CTL2, 0,
--			ARRAY_SIZE(mic_bias_level_text), mic_bias_level_text);
-+static SOC_ENUM_SINGLE_DECL(mic_bias_level_enum,
-+			    CS42L52_IFACE_CTL2, 0, mic_bias_level_text);
+-static const struct soc_enum da7213_dac_voice_hpf_corner =
+-	SOC_ENUM_SINGLE(DA7213_DAC_FILTERS1, DA7213_VOICE_HPF_CORNER_SHIFT,
+-			DA7213_VOICE_HPF_CORNER_MAX,
+-			da7213_voice_hpf_corner_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_dac_voice_hpf_corner,
++			    DA7213_DAC_FILTERS1,
++			    DA7213_VOICE_HPF_CORNER_SHIFT,
++			    da7213_voice_hpf_corner_txt);
  
- static const char * const cs42l52_mic_text[] = { "MIC1", "MIC2" };
+-static const struct soc_enum da7213_adc_voice_hpf_corner =
+-	SOC_ENUM_SINGLE(DA7213_ADC_FILTERS1, DA7213_VOICE_HPF_CORNER_SHIFT,
+-			DA7213_VOICE_HPF_CORNER_MAX,
+-			da7213_voice_hpf_corner_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_adc_voice_hpf_corner,
++			    DA7213_ADC_FILTERS1,
++			    DA7213_VOICE_HPF_CORNER_SHIFT,
++			    da7213_voice_hpf_corner_txt);
  
--static const struct soc_enum mica_enum =
--	SOC_ENUM_SINGLE(CS42L52_MICA_CTL, 5,
--			ARRAY_SIZE(cs42l52_mic_text), cs42l52_mic_text);
-+static SOC_ENUM_SINGLE_DECL(mica_enum,
-+			    CS42L52_MICA_CTL, 5, cs42l52_mic_text);
- 
--static const struct soc_enum micb_enum =
--	SOC_ENUM_SINGLE(CS42L52_MICB_CTL, 5,
--			ARRAY_SIZE(cs42l52_mic_text), cs42l52_mic_text);
-+static SOC_ENUM_SINGLE_DECL(micb_enum,
-+			    CS42L52_MICB_CTL, 5, cs42l52_mic_text);
- 
- static const char * const digital_output_mux_text[] = {"ADC", "DSP"};
- 
--static const struct soc_enum digital_output_mux_enum =
--	SOC_ENUM_SINGLE(CS42L52_ADC_MISC_CTL, 6,
--			ARRAY_SIZE(digital_output_mux_text),
--			digital_output_mux_text);
-+static SOC_ENUM_SINGLE_DECL(digital_output_mux_enum,
-+			    CS42L52_ADC_MISC_CTL, 6,
-+			    digital_output_mux_text);
- 
- static const struct snd_kcontrol_new digital_output_mux =
- 	SOC_DAPM_ENUM("Digital Output Mux", digital_output_mux_enum);
-@@ -258,18 +252,18 @@ static const char * const hp_gain_num_text[] = {
- 	"0.7099", "0.8399", "1.000", "1.1430"
+ /* ADC and DAC high pass filter cutoff value */
+ static const char * const da7213_audio_hpf_corner_txt[] = {
+ 	"Fs/24000", "Fs/12000", "Fs/6000", "Fs/3000"
  };
  
--static const struct soc_enum hp_gain_enum =
--	SOC_ENUM_SINGLE(CS42L52_PB_CTL1, 5,
--		ARRAY_SIZE(hp_gain_num_text), hp_gain_num_text);
-+static SOC_ENUM_SINGLE_DECL(hp_gain_enum,
-+			    CS42L52_PB_CTL1, 5,
-+			    hp_gain_num_text);
+-static const struct soc_enum da7213_dac_audio_hpf_corner =
+-	SOC_ENUM_SINGLE(DA7213_DAC_FILTERS1, DA7213_AUDIO_HPF_CORNER_SHIFT,
+-			DA7213_AUDIO_HPF_CORNER_MAX,
+-			da7213_audio_hpf_corner_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_dac_audio_hpf_corner,
++			    DA7213_DAC_FILTERS1
++			    , DA7213_AUDIO_HPF_CORNER_SHIFT,
++			    da7213_audio_hpf_corner_txt);
  
- static const char * const beep_pitch_text[] = {
- 	"C4", "C5", "D5", "E5", "F5", "G5", "A5", "B5",
- 	"C6", "D6", "E6", "F6", "G6", "A6", "B6", "C7"
+-static const struct soc_enum da7213_adc_audio_hpf_corner =
+-	SOC_ENUM_SINGLE(DA7213_ADC_FILTERS1, DA7213_AUDIO_HPF_CORNER_SHIFT,
+-			DA7213_AUDIO_HPF_CORNER_MAX,
+-			da7213_audio_hpf_corner_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_adc_audio_hpf_corner,
++			    DA7213_ADC_FILTERS1,
++			    DA7213_AUDIO_HPF_CORNER_SHIFT,
++			    da7213_audio_hpf_corner_txt);
+ 
+ /* Gain ramping rate value */
+ static const char * const da7213_gain_ramp_rate_txt[] = {
+@@ -94,52 +94,50 @@ static const char * const da7213_gain_ramp_rate_txt[] = {
+ 	"nominal rate / 32"
  };
  
--static const struct soc_enum beep_pitch_enum =
--	SOC_ENUM_SINGLE(CS42L52_BEEP_FREQ, 4,
--			ARRAY_SIZE(beep_pitch_text), beep_pitch_text);
-+static SOC_ENUM_SINGLE_DECL(beep_pitch_enum,
-+			    CS42L52_BEEP_FREQ, 4,
-+			    beep_pitch_text);
+-static const struct soc_enum da7213_gain_ramp_rate =
+-	SOC_ENUM_SINGLE(DA7213_GAIN_RAMP_CTRL, DA7213_GAIN_RAMP_RATE_SHIFT,
+-			DA7213_GAIN_RAMP_RATE_MAX, da7213_gain_ramp_rate_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_gain_ramp_rate,
++			    DA7213_GAIN_RAMP_CTRL,
++			    DA7213_GAIN_RAMP_RATE_SHIFT,
++			    da7213_gain_ramp_rate_txt);
  
- static const char * const beep_ontime_text[] = {
- 	"86 ms", "430 ms", "780 ms", "1.20 s", "1.50 s",
-@@ -277,66 +271,66 @@ static const char * const beep_ontime_text[] = {
- 	"3.50 s", "3.80 s", "4.20 s", "4.50 s", "4.80 s", "5.20 s"
+ /* DAC noise gate setup time value */
+ static const char * const da7213_dac_ng_setup_time_txt[] = {
+ 	"256 samples", "512 samples", "1024 samples", "2048 samples"
  };
  
--static const struct soc_enum beep_ontime_enum =
--	SOC_ENUM_SINGLE(CS42L52_BEEP_FREQ, 0,
--			ARRAY_SIZE(beep_ontime_text), beep_ontime_text);
-+static SOC_ENUM_SINGLE_DECL(beep_ontime_enum,
-+			    CS42L52_BEEP_FREQ, 0,
-+			    beep_ontime_text);
+-static const struct soc_enum da7213_dac_ng_setup_time =
+-	SOC_ENUM_SINGLE(DA7213_DAC_NG_SETUP_TIME,
+-			DA7213_DAC_NG_SETUP_TIME_SHIFT,
+-			DA7213_DAC_NG_SETUP_TIME_MAX,
+-			da7213_dac_ng_setup_time_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_dac_ng_setup_time,
++			    DA7213_DAC_NG_SETUP_TIME,
++			    DA7213_DAC_NG_SETUP_TIME_SHIFT,
++			    da7213_dac_ng_setup_time_txt);
  
- static const char * const beep_offtime_text[] = {
- 	"1.23 s", "2.58 s", "3.90 s", "5.20 s",
- 	"6.60 s", "8.05 s", "9.35 s", "10.80 s"
+ /* DAC noise gate rampup rate value */
+ static const char * const da7213_dac_ng_rampup_txt[] = {
+ 	"0.02 ms/dB", "0.16 ms/dB"
  };
  
--static const struct soc_enum beep_offtime_enum =
--	SOC_ENUM_SINGLE(CS42L52_BEEP_VOL, 5,
--			ARRAY_SIZE(beep_offtime_text), beep_offtime_text);
-+static SOC_ENUM_SINGLE_DECL(beep_offtime_enum,
-+			    CS42L52_BEEP_VOL, 5,
-+			    beep_offtime_text);
+-static const struct soc_enum da7213_dac_ng_rampup_rate =
+-	SOC_ENUM_SINGLE(DA7213_DAC_NG_SETUP_TIME,
+-			DA7213_DAC_NG_RAMPUP_RATE_SHIFT,
+-			DA7213_DAC_NG_RAMP_RATE_MAX,
+-			da7213_dac_ng_rampup_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_dac_ng_rampup_rate,
++			    DA7213_DAC_NG_SETUP_TIME,
++			    DA7213_DAC_NG_RAMPUP_RATE_SHIFT,
++			    da7213_dac_ng_rampup_txt);
  
- static const char * const beep_config_text[] = {
- 	"Off", "Single", "Multiple", "Continuous"
+ /* DAC noise gate rampdown rate value */
+ static const char * const da7213_dac_ng_rampdown_txt[] = {
+ 	"0.64 ms/dB", "20.48 ms/dB"
  };
  
--static const struct soc_enum beep_config_enum =
--	SOC_ENUM_SINGLE(CS42L52_BEEP_TONE_CTL, 6,
--			ARRAY_SIZE(beep_config_text), beep_config_text);
-+static SOC_ENUM_SINGLE_DECL(beep_config_enum,
-+			    CS42L52_BEEP_TONE_CTL, 6,
-+			    beep_config_text);
+-static const struct soc_enum da7213_dac_ng_rampdown_rate =
+-	SOC_ENUM_SINGLE(DA7213_DAC_NG_SETUP_TIME,
+-			DA7213_DAC_NG_RAMPDN_RATE_SHIFT,
+-			DA7213_DAC_NG_RAMP_RATE_MAX,
+-			da7213_dac_ng_rampdown_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_dac_ng_rampdown_rate,
++			    DA7213_DAC_NG_SETUP_TIME,
++			    DA7213_DAC_NG_RAMPDN_RATE_SHIFT,
++			    da7213_dac_ng_rampdown_txt);
  
- static const char * const beep_bass_text[] = {
- 	"50 Hz", "100 Hz", "200 Hz", "250 Hz"
+ /* DAC soft mute rate value */
+ static const char * const da7213_dac_soft_mute_rate_txt[] = {
+ 	"1", "2", "4", "8", "16", "32", "64"
  };
  
--static const struct soc_enum beep_bass_enum =
--	SOC_ENUM_SINGLE(CS42L52_BEEP_TONE_CTL, 1,
--			ARRAY_SIZE(beep_bass_text), beep_bass_text);
-+static SOC_ENUM_SINGLE_DECL(beep_bass_enum,
-+			    CS42L52_BEEP_TONE_CTL, 1,
-+			    beep_bass_text);
+-static const struct soc_enum da7213_dac_soft_mute_rate =
+-	SOC_ENUM_SINGLE(DA7213_DAC_FILTERS5, DA7213_DAC_SOFTMUTE_RATE_SHIFT,
+-			DA7213_DAC_SOFTMUTE_RATE_MAX,
+-			da7213_dac_soft_mute_rate_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_dac_soft_mute_rate,
++			    DA7213_DAC_FILTERS5,
++			    DA7213_DAC_SOFTMUTE_RATE_SHIFT,
++			    da7213_dac_soft_mute_rate_txt);
  
- static const char * const beep_treble_text[] = {
- 	"5 kHz", "7 kHz", "10 kHz", " 15 kHz"
+ /* ALC Attack Rate select */
+ static const char * const da7213_alc_attack_rate_txt[] = {
+@@ -147,9 +145,10 @@ static const char * const da7213_alc_attack_rate_txt[] = {
+ 	"5632/fs", "11264/fs", "22528/fs", "45056/fs", "90112/fs", "180224/fs"
  };
  
--static const struct soc_enum beep_treble_enum =
--	SOC_ENUM_SINGLE(CS42L52_BEEP_TONE_CTL, 3,
--			ARRAY_SIZE(beep_treble_text), beep_treble_text);
-+static SOC_ENUM_SINGLE_DECL(beep_treble_enum,
-+			    CS42L52_BEEP_TONE_CTL, 3,
-+			    beep_treble_text);
+-static const struct soc_enum da7213_alc_attack_rate =
+-	SOC_ENUM_SINGLE(DA7213_ALC_CTRL2, DA7213_ALC_ATTACK_SHIFT,
+-			DA7213_ALC_ATTACK_MAX, da7213_alc_attack_rate_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_alc_attack_rate,
++			    DA7213_ALC_CTRL2,
++			    DA7213_ALC_ATTACK_SHIFT,
++			    da7213_alc_attack_rate_txt);
  
- static const char * const ng_threshold_text[] = {
- 	"-34dB", "-37dB", "-40dB", "-43dB",
- 	"-46dB", "-52dB", "-58dB", "-64dB"
+ /* ALC Release Rate select */
+ static const char * const da7213_alc_release_rate_txt[] = {
+@@ -157,9 +156,10 @@ static const char * const da7213_alc_release_rate_txt[] = {
+ 	"11264/fs", "22528/fs", "45056/fs", "90112/fs", "180224/fs"
  };
  
--static const struct soc_enum ng_threshold_enum =
--	SOC_ENUM_SINGLE(CS42L52_NOISE_GATE_CTL, 2,
--		ARRAY_SIZE(ng_threshold_text), ng_threshold_text);
-+static SOC_ENUM_SINGLE_DECL(ng_threshold_enum,
-+			    CS42L52_NOISE_GATE_CTL, 2,
-+			    ng_threshold_text);
+-static const struct soc_enum da7213_alc_release_rate =
+-	SOC_ENUM_SINGLE(DA7213_ALC_CTRL2, DA7213_ALC_RELEASE_SHIFT,
+-			DA7213_ALC_RELEASE_MAX, da7213_alc_release_rate_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_alc_release_rate,
++			    DA7213_ALC_CTRL2,
++			    DA7213_ALC_RELEASE_SHIFT,
++			    da7213_alc_release_rate_txt);
  
- static const char * const cs42l52_ng_delay_text[] = {
- 	"50ms", "100ms", "150ms", "200ms"};
- 
--static const struct soc_enum ng_delay_enum =
--	SOC_ENUM_SINGLE(CS42L52_NOISE_GATE_CTL, 0,
--		ARRAY_SIZE(cs42l52_ng_delay_text), cs42l52_ng_delay_text);
-+static SOC_ENUM_SINGLE_DECL(ng_delay_enum,
-+			    CS42L52_NOISE_GATE_CTL, 0,
-+			    cs42l52_ng_delay_text);
- 
- static const char * const cs42l52_ng_type_text[] = {
- 	"Apply Specific", "Apply All"
+ /* ALC Hold Time select */
+ static const char * const da7213_alc_hold_time_txt[] = {
+@@ -168,22 +168,25 @@ static const char * const da7213_alc_hold_time_txt[] = {
+ 	"253952/fs", "507904/fs", "1015808/fs", "2031616/fs"
  };
  
--static const struct soc_enum ng_type_enum =
--	SOC_ENUM_SINGLE(CS42L52_NOISE_GATE_CTL, 6,
--		ARRAY_SIZE(cs42l52_ng_type_text), cs42l52_ng_type_text);
-+static SOC_ENUM_SINGLE_DECL(ng_type_enum,
-+			    CS42L52_NOISE_GATE_CTL, 6,
-+			    cs42l52_ng_type_text);
+-static const struct soc_enum da7213_alc_hold_time =
+-	SOC_ENUM_SINGLE(DA7213_ALC_CTRL3, DA7213_ALC_HOLD_SHIFT,
+-			DA7213_ALC_HOLD_MAX, da7213_alc_hold_time_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_alc_hold_time,
++			    DA7213_ALC_CTRL3,
++			    DA7213_ALC_HOLD_SHIFT,
++			    da7213_alc_hold_time_txt);
  
- static const char * const left_swap_text[] = {
- 	"Left", "LR 2", "Right"};
+ /* ALC Input Signal Tracking rate select */
+ static const char * const da7213_alc_integ_rate_txt[] = {
+ 	"1/4", "1/16", "1/256", "1/65536"
+ };
+ 
+-static const struct soc_enum da7213_alc_integ_attack_rate =
+-	SOC_ENUM_SINGLE(DA7213_ALC_CTRL3, DA7213_ALC_INTEG_ATTACK_SHIFT,
+-			DA7213_ALC_INTEG_MAX, da7213_alc_integ_rate_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_alc_integ_attack_rate,
++			    DA7213_ALC_CTRL3,
++			    DA7213_ALC_INTEG_ATTACK_SHIFT,
++			    da7213_alc_integ_rate_txt);
+ 
+-static const struct soc_enum da7213_alc_integ_release_rate =
+-	SOC_ENUM_SINGLE(DA7213_ALC_CTRL3, DA7213_ALC_INTEG_RELEASE_SHIFT,
+-			DA7213_ALC_INTEG_MAX, da7213_alc_integ_rate_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_alc_integ_release_rate,
++			    DA7213_ALC_CTRL3,
++			    DA7213_ALC_INTEG_RELEASE_SHIFT,
++			    da7213_alc_integ_rate_txt);
+ 
+ 
+ /*
+@@ -584,15 +587,17 @@ static const char * const da7213_mic_amp_in_sel_txt[] = {
+ 	"Differential", "MIC_P", "MIC_N"
+ };
+ 
+-static const struct soc_enum da7213_mic_1_amp_in_sel =
+-	SOC_ENUM_SINGLE(DA7213_MIC_1_CTRL, DA7213_MIC_AMP_IN_SEL_SHIFT,
+-			DA7213_MIC_AMP_IN_SEL_MAX, da7213_mic_amp_in_sel_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_mic_1_amp_in_sel,
++			    DA7213_MIC_1_CTRL,
++			    DA7213_MIC_AMP_IN_SEL_SHIFT,
++			    da7213_mic_amp_in_sel_txt);
+ static const struct snd_kcontrol_new da7213_mic_1_amp_in_sel_mux =
+ 	SOC_DAPM_ENUM("Mic 1 Amp Source MUX", da7213_mic_1_amp_in_sel);
+ 
+-static const struct soc_enum da7213_mic_2_amp_in_sel =
+-	SOC_ENUM_SINGLE(DA7213_MIC_2_CTRL, DA7213_MIC_AMP_IN_SEL_SHIFT,
+-			DA7213_MIC_AMP_IN_SEL_MAX, da7213_mic_amp_in_sel_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_mic_2_amp_in_sel,
++			    DA7213_MIC_2_CTRL,
++			    DA7213_MIC_AMP_IN_SEL_SHIFT,
++			    da7213_mic_amp_in_sel_txt);
+ static const struct snd_kcontrol_new da7213_mic_2_amp_in_sel_mux =
+ 	SOC_DAPM_ENUM("Mic 2 Amp Source MUX", da7213_mic_2_amp_in_sel);
+ 
+@@ -601,15 +606,17 @@ static const char * const da7213_dai_src_txt[] = {
+ 	"ADC Left", "ADC Right", "DAI Input Left", "DAI Input Right"
+ };
+ 
+-static const struct soc_enum da7213_dai_l_src =
+-	SOC_ENUM_SINGLE(DA7213_DIG_ROUTING_DAI, DA7213_DAI_L_SRC_SHIFT,
+-			DA7213_DAI_SRC_MAX, da7213_dai_src_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_dai_l_src,
++			    DA7213_DIG_ROUTING_DAI,
++			    DA7213_DAI_L_SRC_SHIFT,
++			    da7213_dai_src_txt);
+ static const struct snd_kcontrol_new da7213_dai_l_src_mux =
+ 	SOC_DAPM_ENUM("DAI Left Source MUX", da7213_dai_l_src);
+ 
+-static const struct soc_enum da7213_dai_r_src =
+-	SOC_ENUM_SINGLE(DA7213_DIG_ROUTING_DAI, DA7213_DAI_R_SRC_SHIFT,
+-			DA7213_DAI_SRC_MAX, da7213_dai_src_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_dai_r_src,
++			    DA7213_DIG_ROUTING_DAI,
++			    DA7213_DAI_R_SRC_SHIFT,
++			    da7213_dai_src_txt);
+ static const struct snd_kcontrol_new da7213_dai_r_src_mux =
+ 	SOC_DAPM_ENUM("DAI Right Source MUX", da7213_dai_r_src);
+ 
+@@ -619,15 +626,17 @@ static const char * const da7213_dac_src_txt[] = {
+ 	"DAI Input Right"
+ };
+ 
+-static const struct soc_enum da7213_dac_l_src =
+-	SOC_ENUM_SINGLE(DA7213_DIG_ROUTING_DAC, DA7213_DAC_L_SRC_SHIFT,
+-			DA7213_DAC_SRC_MAX, da7213_dac_src_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_dac_l_src,
++			    DA7213_DIG_ROUTING_DAC,
++			    DA7213_DAC_L_SRC_SHIFT,
++			    da7213_dac_src_txt);
+ static const struct snd_kcontrol_new da7213_dac_l_src_mux =
+ 	SOC_DAPM_ENUM("DAC Left Source MUX", da7213_dac_l_src);
+ 
+-static const struct soc_enum da7213_dac_r_src =
+-	SOC_ENUM_SINGLE(DA7213_DIG_ROUTING_DAC, DA7213_DAC_R_SRC_SHIFT,
+-			DA7213_DAC_SRC_MAX, da7213_dac_src_txt);
++static SOC_ENUM_SINGLE_DECL(da7213_dac_r_src,
++			    DA7213_DIG_ROUTING_DAC,
++			    DA7213_DAC_R_SRC_SHIFT,
++			    da7213_dac_src_txt);
+ static const struct snd_kcontrol_new da7213_dac_r_src_mux =
+ 	SOC_DAPM_ENUM("DAC Right Source MUX", da7213_dac_r_src);
+ 
 -- 
 1.8.5.2
