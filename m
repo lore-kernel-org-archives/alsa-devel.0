@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 088/102] ASoC: tas5086: Use
+Subject: [PATCH 089/102] ASoC: tlv320aic3x: Use
 	SOC_ENUM_SINGLE_CONST()
-Date: Tue, 18 Feb 2014 12:51:34 +0100
-Message-ID: <1392724308-13375-8-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:51:35 +0100
+Message-ID: <1392724308-13375-9-git-send-email-tiwai@suse.de>
 References: <1392724308-13375-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B3EA265762
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A9E3265761
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:51:52 +0100 (CET)
 In-Reply-To: <1392724308-13375-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,50 +29,66 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/tas5086.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ sound/soc/codecs/tlv320aic3x.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
-index a895a5e4bdf2..15600aef08ee 100644
---- a/sound/soc/codecs/tas5086.c
-+++ b/sound/soc/codecs/tas5086.c
-@@ -555,12 +555,12 @@ static const char *tas5086_dapm_sdin_texts[] =
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 470fbfb4b386..a874f53da37e 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -238,36 +238,36 @@ static const char *aic3x_adc_hpf[] =
+ #define ADC_HPF_ENUM	10
+ 
+ static const struct soc_enum aic3x_enum[] = {
+-	SOC_ENUM_SINGLE(DAC_LINE_MUX, 6, 3, aic3x_left_dac_mux),
+-	SOC_ENUM_SINGLE(DAC_LINE_MUX, 4, 3, aic3x_right_dac_mux),
+-	SOC_ENUM_SINGLE(HPLCOM_CFG, 4, 3, aic3x_left_hpcom_mux),
+-	SOC_ENUM_SINGLE(HPRCOM_CFG, 3, 5, aic3x_right_hpcom_mux),
+-	SOC_ENUM_SINGLE(LINE1L_2_LADC_CTRL, 7, 2, aic3x_linein_mode_mux),
+-	SOC_ENUM_SINGLE(LINE1L_2_RADC_CTRL, 7, 2, aic3x_linein_mode_mux),
+-	SOC_ENUM_SINGLE(LINE1R_2_LADC_CTRL, 7, 2, aic3x_linein_mode_mux),
+-	SOC_ENUM_SINGLE(LINE1R_2_RADC_CTRL, 7, 2, aic3x_linein_mode_mux),
+-	SOC_ENUM_SINGLE(LINE2L_2_LADC_CTRL, 7, 2, aic3x_linein_mode_mux),
+-	SOC_ENUM_SINGLE(LINE2R_2_RADC_CTRL, 7, 2, aic3x_linein_mode_mux),
+-	SOC_ENUM_DOUBLE(AIC3X_CODEC_DFILT_CTRL, 6, 4, 4, aic3x_adc_hpf),
++	SOC_ENUM_SINGLE_CONST(DAC_LINE_MUX, 6, aic3x_left_dac_mux),
++	SOC_ENUM_SINGLE_CONST(DAC_LINE_MUX, 4, aic3x_right_dac_mux),
++	SOC_ENUM_SINGLE_CONST(HPLCOM_CFG, 4, aic3x_left_hpcom_mux),
++	SOC_ENUM_SINGLE_CONST(HPRCOM_CFG, 3, aic3x_right_hpcom_mux),
++	SOC_ENUM_SINGLE_CONST(LINE1L_2_LADC_CTRL, 7, aic3x_linein_mode_mux),
++	SOC_ENUM_SINGLE_CONST(LINE1L_2_RADC_CTRL, 7, aic3x_linein_mode_mux),
++	SOC_ENUM_SINGLE_CONST(LINE1R_2_LADC_CTRL, 7, aic3x_linein_mode_mux),
++	SOC_ENUM_SINGLE_CONST(LINE1R_2_RADC_CTRL, 7, aic3x_linein_mode_mux),
++	SOC_ENUM_SINGLE_CONST(LINE2L_2_LADC_CTRL, 7, aic3x_linein_mode_mux),
++	SOC_ENUM_SINGLE_CONST(LINE2R_2_RADC_CTRL, 7, aic3x_linein_mode_mux),
++	SOC_ENUM_DOUBLE_CONST(AIC3X_CODEC_DFILT_CTRL, 6, 4, aic3x_adc_hpf),
  };
  
- static const struct soc_enum tas5086_dapm_input_mux_enum[] = {
--	SOC_ENUM_SINGLE(TAS5086_INPUT_MUX, 20, 8, tas5086_dapm_sdin_texts),
--	SOC_ENUM_SINGLE(TAS5086_INPUT_MUX, 16, 8, tas5086_dapm_sdin_texts),
--	SOC_ENUM_SINGLE(TAS5086_INPUT_MUX, 12, 8, tas5086_dapm_sdin_texts),
--	SOC_ENUM_SINGLE(TAS5086_INPUT_MUX, 8,  8, tas5086_dapm_sdin_texts),
--	SOC_ENUM_SINGLE(TAS5086_INPUT_MUX, 4,  8, tas5086_dapm_sdin_texts),
--	SOC_ENUM_SINGLE(TAS5086_INPUT_MUX, 0,  8, tas5086_dapm_sdin_texts),
-+	SOC_ENUM_SINGLE_CONST(TAS5086_INPUT_MUX, 20, tas5086_dapm_sdin_texts),
-+	SOC_ENUM_SINGLE_CONST(TAS5086_INPUT_MUX, 16, tas5086_dapm_sdin_texts),
-+	SOC_ENUM_SINGLE_CONST(TAS5086_INPUT_MUX, 12, tas5086_dapm_sdin_texts),
-+	SOC_ENUM_SINGLE_CONST(TAS5086_INPUT_MUX, 8,  tas5086_dapm_sdin_texts),
-+	SOC_ENUM_SINGLE_CONST(TAS5086_INPUT_MUX, 4,  tas5086_dapm_sdin_texts),
-+	SOC_ENUM_SINGLE_CONST(TAS5086_INPUT_MUX, 0,  tas5086_dapm_sdin_texts),
+ static const char *aic3x_agc_level[] =
+ 	{ "-5.5dB", "-8dB", "-10dB", "-12dB", "-14dB", "-17dB", "-20dB", "-24dB" };
+ static const struct soc_enum aic3x_agc_level_enum[] = {
+-	SOC_ENUM_SINGLE(LAGC_CTRL_A, 4, 8, aic3x_agc_level),
+-	SOC_ENUM_SINGLE(RAGC_CTRL_A, 4, 8, aic3x_agc_level),
++	SOC_ENUM_SINGLE_CONST(LAGC_CTRL_A, 4, aic3x_agc_level),
++	SOC_ENUM_SINGLE_CONST(RAGC_CTRL_A, 4, aic3x_agc_level),
  };
  
- static const struct snd_kcontrol_new tas5086_dapm_input_mux_controls[] = {
-@@ -578,12 +578,12 @@ static const char *tas5086_dapm_channel_texts[] =
- 	  "Channel 4 Mux", "Channel 5 Mux", "Channel 6 Mux" };
- 
- static const struct soc_enum tas5086_dapm_output_mux_enum[] = {
--	SOC_ENUM_SINGLE(TAS5086_PWM_OUTPUT_MUX, 20, 6, tas5086_dapm_channel_texts),
--	SOC_ENUM_SINGLE(TAS5086_PWM_OUTPUT_MUX, 16, 6, tas5086_dapm_channel_texts),
--	SOC_ENUM_SINGLE(TAS5086_PWM_OUTPUT_MUX, 12, 6, tas5086_dapm_channel_texts),
--	SOC_ENUM_SINGLE(TAS5086_PWM_OUTPUT_MUX, 8,  6, tas5086_dapm_channel_texts),
--	SOC_ENUM_SINGLE(TAS5086_PWM_OUTPUT_MUX, 4,  6, tas5086_dapm_channel_texts),
--	SOC_ENUM_SINGLE(TAS5086_PWM_OUTPUT_MUX, 0,  6, tas5086_dapm_channel_texts),
-+	SOC_ENUM_SINGLE_CONST(TAS5086_PWM_OUTPUT_MUX, 20, tas5086_dapm_channel_texts),
-+	SOC_ENUM_SINGLE_CONST(TAS5086_PWM_OUTPUT_MUX, 16, tas5086_dapm_channel_texts),
-+	SOC_ENUM_SINGLE_CONST(TAS5086_PWM_OUTPUT_MUX, 12, tas5086_dapm_channel_texts),
-+	SOC_ENUM_SINGLE_CONST(TAS5086_PWM_OUTPUT_MUX, 8,  tas5086_dapm_channel_texts),
-+	SOC_ENUM_SINGLE_CONST(TAS5086_PWM_OUTPUT_MUX, 4,  tas5086_dapm_channel_texts),
-+	SOC_ENUM_SINGLE_CONST(TAS5086_PWM_OUTPUT_MUX, 0,  tas5086_dapm_channel_texts),
+ static const char *aic3x_agc_attack[] = { "8ms", "11ms", "16ms", "20ms" };
+ static const struct soc_enum aic3x_agc_attack_enum[] = {
+-	SOC_ENUM_SINGLE(LAGC_CTRL_A, 2, 4, aic3x_agc_attack),
+-	SOC_ENUM_SINGLE(RAGC_CTRL_A, 2, 4, aic3x_agc_attack),
++	SOC_ENUM_SINGLE_CONST(LAGC_CTRL_A, 2, aic3x_agc_attack),
++	SOC_ENUM_SINGLE_CONST(RAGC_CTRL_A, 2, aic3x_agc_attack),
  };
  
- static const struct snd_kcontrol_new tas5086_dapm_output_mux_controls[] = {
+ static const char *aic3x_agc_decay[] = { "100ms", "200ms", "400ms", "500ms" };
+ static const struct soc_enum aic3x_agc_decay_enum[] = {
+-	SOC_ENUM_SINGLE(LAGC_CTRL_A, 0, 4, aic3x_agc_decay),
+-	SOC_ENUM_SINGLE(RAGC_CTRL_A, 0, 4, aic3x_agc_decay),
++	SOC_ENUM_SINGLE_CONST(LAGC_CTRL_A, 0, aic3x_agc_decay),
++	SOC_ENUM_SINGLE_CONST(RAGC_CTRL_A, 0, aic3x_agc_decay),
+ };
+ 
+ /*
 -- 
 1.8.5.2
