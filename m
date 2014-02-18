@@ -1,58 +1,73 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 02/15] ASoC: dapm: Add locked version of
- snd_soc_dapm_xxxx_pin functions
-Date: Tue, 18 Feb 2014 09:30:30 +0900
-Message-ID: <20140218003030.GH2669@sirena.org.uk>
+Subject: Re: [PATCH 01/15] Input - arizona-haptics: Fix double lock of
+ dapm_mutex
+Date: Tue, 18 Feb 2014 09:28:07 +0900
+Message-ID: <20140218002807.GG2669@sirena.org.uk>
 References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1392655903-24537-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <5302417B.3070408@metafoo.de>
+ <1392655903-24537-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20140217192025.GB19223@core.coreip.homeip.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2oox5VnwalALFvA7"
+	protocol="application/pgp-signature"; boundary="0qt3EE9wi45a2ZFX"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <5302417B.3070408@metafoo.de>
+In-Reply-To: <20140217192025.GB19223@core.coreip.homeip.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, myungjoo.ham@samsung.com, cw00.choi@samsung.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
 
---2oox5VnwalALFvA7
+--0qt3EE9wi45a2ZFX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 17, 2014 at 06:06:03PM +0100, Lars-Peter Clausen wrote:
+On Mon, Feb 17, 2014 at 11:20:26AM -0800, Dmitry Torokhov wrote:
+> On Mon, Feb 17, 2014 at 04:51:29PM +0000, Charles Keepax wrote:
 
-> Hm, this is a bit confusing. For other functions in ASoC when we
-> have a pair of functions with the _locked suffix and without the one
-> with _locked takes the lock, the other one doesn't. E.g.
-> snd_soc_update_bits_locked. Here we do it the other way around.
+> > snd_soc_dapm_sync takes the dapm_mutex internally, but we currently take
+> > it externally as well. This patch fixes this.
 
-Yes, this is definitely confusing.  The existing naming might not be the
-best but making things inconsistent isn't going to help the situation
-either.
+> Hmm, from the first glance this needs to go into current release,
+> however it seems that it has been broken by
+> a73fb2df01866b772a48fab93401fe3edbe0b38d 2 years ago so nobody cares...
 
---2oox5VnwalALFvA7
+Please include plain text versions of commit message descriptions, in
+this case you're referring to "ASoC: dapm: Use DAPM mutex for DAPM ops
+instead of codec mutex".  I expect nobody noticed in part because a lot
+of use has been out of tree on older kernels and in part because the
+issue is a race - there's a good chance things will work just fine
+without the locking.
+
+> Looking at the series I am not sure that this is right direction. You
+> actually do want unlocked versions of snd_soc_dapm_* functions so that
+> callers can take dapm mutex and then perform sequence of operations. The
+> currect callers that were taking the mutex should probbaly be changed so
+> that they do not drop it until they called unlocked version of
+> snd_soc_dapm_sync().
+
+That's all more work than is in scope for a bug fix though.
+
+--0qt3EE9wi45a2ZFX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTAqmjAAoJELSic+t+oim9VdEP+gNbJ7YwWxY7RhGla7HeeK1R
-aMOUkadbnupVs2mIeZO0SdXHf/q6o9z6JH7/fpuOiHEPnpM0a+o5Z64kwrwLJKdi
-ZsjmgjsfnVlYWZ/PmIBIlkZgNr4nOHXoIBjSF+7o8xTaLo031jMlFwlFHCjarqY4
-WO/MHOI0z10uGd0RdsqLB5iUnUHm2gw4B2Egejo3Rt1ERfs7yPR8TT5Y3+dyMSYr
-pyc+I7oerf60+07nDCaW1xI+m52MUbzinx38yDAeb+YLFd9+5kX/JLVFhGwFS2hC
-mwQJeqyOkzh72crrRfMeRbIAIEzBslxVQGF3pGVtL+NdEVVGNcBcAwhFR0XqURHO
-Jota7VmSNA858L9eCtAXffRLA5RvKNtCURywIivpfCdCfzrgQkgmlYrrh2GpQuCX
-PKlSTnLyy9gzH1yVbyLd238h2m6qyrvV6wK5U9KKqaUgOg54Qd4oKaRL3gTqOJKj
-o3a2x2zcXDJ49ShMe5LzAbqR1GXyv6nZ2xcdRiaaCM6xPgUa4miKToedBtuYBNYB
-8gyGTySU+D3rTteJ9BWUNtf+nI36wGqneVgRy1Jl39tHME9EkcpAY2VaiVTTgFrA
-n+XSHJJIrRioF5504qhfiIb9WkUoZ9FmDb2AWvJly1LB+9QZLdPtY7oiL+j/YJo+
-QT5wP+9wRcbuG2qjas9w
-=Tga9
+iQIcBAEBAgAGBQJTAqkUAAoJELSic+t+oim91ugP/Red69cNLvmI8BIMet/dEQRC
+UyAUMzqe4KeOTjzxpyKxR3UFAGDyVX0EzNiET6BJtESJKRjI0DO8lBRXuvZsQOlK
+KDqgHqIzrIEt0yDkCixyrr3epDdJ/5UAHb0NoKecOUKAUjNnq2SvaFV62ayoH6m3
+KIw0PaswdkGtFrglAC20mEurnTAdG+2nuZitLKwpxv/tYiikYXILcmmbdBY9eiR9
+VAYPjBuHArZw0Qiq6g5bl2QvWrVE6ymt31/HACmHnPjAmKpe4EzxDp37vmwjffk0
+xoJnjlnSM5C6mfIJ5g4+n9n13Lv0dRBvda74Ggx6FpF2KDUHw973i4hbR27ePzgl
+q2eIt+WTwPWp/QkjxLLFi9CZOyseL9OJnb3yiItxvzKUfLcE2VJSoTtQF4++AUSd
+F//4DoXyWbrxkp86BUn2F/3eHkVldiaHqEW25o5/u4nn3YjvR0cYSET/Bwc/LOh2
+KUXY1FqoOQyvlA2+owPiWzfSTdE8+H5TLzpLOY3kCtQFv3an0E3KGiZfCYJOsjBc
+JLt3NqcxwnKeGgkEtfLV3BrIf8UvSrYE3fMgyxEo+opX9hPULS0CLk8wx1qQchnp
+wTFp0+koOyWQKcMnb/zfDupyiqKJOh6FfxEp7ouflE0Y8ygU0RH/J366bQCYsjWT
+BijjNHJM2+QtXGZjBO5r
+=FYp9
 -----END PGP SIGNATURE-----
 
---2oox5VnwalALFvA7--
+--0qt3EE9wi45a2ZFX--
