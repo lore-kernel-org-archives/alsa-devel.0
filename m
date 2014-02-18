@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 051/102] ASoC: wm8737: Use
+Subject: [PATCH 058/102] ASoC: wm8993: Use
 	SOC_ENUM_SINGLE_DECL()
-Date: Tue, 18 Feb 2014 12:38:07 +0100
-Message-ID: <1392723517-12772-24-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:38:14 +0100
+Message-ID: <1392723517-12772-31-git-send-email-tiwai@suse.de>
 References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8EB162655CD
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AF1B2655D1
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:38:39 +0100 (CET)
 In-Reply-To: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,123 +29,174 @@ Just replace with the helper macro.  No functional change at all.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8737.c | 44 ++++++++++++++++++++++----------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+ sound/soc/codecs/wm8993.c | 64 +++++++++++++++++++++++------------------------
+ 1 file changed, 32 insertions(+), 32 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
-index 2f167a8ca01b..d8e50f0aaf10 100644
---- a/sound/soc/codecs/wm8737.c
-+++ b/sound/soc/codecs/wm8737.c
-@@ -99,29 +99,29 @@ static const char *micbias_enum_text[] = {
- 	"100%",
+diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
+index 433d59a0f3ef..0b4c42173c19 100644
+--- a/sound/soc/codecs/wm8993.c
++++ b/sound/soc/codecs/wm8993.c
+@@ -646,8 +646,8 @@ static const char *dac_deemph_text[] = {
+ 	"48kHz",
  };
  
--static const struct soc_enum micbias_enum =
--	SOC_ENUM_SINGLE(WM8737_MIC_PREAMP_CONTROL, 0, 4, micbias_enum_text);
-+static SOC_ENUM_SINGLE_DECL(micbias_enum,
-+			    WM8737_MIC_PREAMP_CONTROL, 0, micbias_enum_text);
+-static const struct soc_enum dac_deemph =
+-	SOC_ENUM_SINGLE(WM8993_DAC_CTRL, 4, 4, dac_deemph_text);
++static SOC_ENUM_SINGLE_DECL(dac_deemph,
++			    WM8993_DAC_CTRL, 4, dac_deemph_text);
  
- static const char *low_cutoff_text[] = {
- 	"Low", "High"
+ static const char *adc_hpf_text[] = {
+ 	"Hi-Fi",
+@@ -656,16 +656,16 @@ static const char *adc_hpf_text[] = {
+ 	"Voice 3",
  };
  
--static const struct soc_enum low_3d =
--	SOC_ENUM_SINGLE(WM8737_3D_ENHANCE, 6, 2, low_cutoff_text);
-+static SOC_ENUM_SINGLE_DECL(low_3d,
-+			    WM8737_3D_ENHANCE, 6, low_cutoff_text);
+-static const struct soc_enum adc_hpf =
+-	SOC_ENUM_SINGLE(WM8993_ADC_CTRL, 5, 4, adc_hpf_text);
++static SOC_ENUM_SINGLE_DECL(adc_hpf,
++			    WM8993_ADC_CTRL, 5, adc_hpf_text);
  
- static const char *high_cutoff_text[] = {
- 	"High", "Low"
+ static const char *drc_path_text[] = {
+ 	"ADC",
+ 	"DAC"
  };
  
--static const struct soc_enum high_3d =
--	SOC_ENUM_SINGLE(WM8737_3D_ENHANCE, 5, 2, high_cutoff_text);
-+static SOC_ENUM_SINGLE_DECL(high_3d,
-+			    WM8737_3D_ENHANCE, 5, high_cutoff_text);
+-static const struct soc_enum drc_path =
+-	SOC_ENUM_SINGLE(WM8993_DRC_CONTROL_1, 14, 2, drc_path_text);
++static SOC_ENUM_SINGLE_DECL(drc_path,
++			    WM8993_DRC_CONTROL_1, 14, drc_path_text);
  
- static const char *alc_fn_text[] = {
- 	"Disabled", "Right", "Left", "Stereo"
+ static const char *drc_r0_text[] = {
+ 	"1",
+@@ -676,8 +676,8 @@ static const char *drc_r0_text[] = {
+ 	"0",
  };
  
--static const struct soc_enum alc_fn =
--	SOC_ENUM_SINGLE(WM8737_ALC1, 7, 4, alc_fn_text);
-+static SOC_ENUM_SINGLE_DECL(alc_fn,
-+			    WM8737_ALC1, 7, alc_fn_text);
+-static const struct soc_enum drc_r0 =
+-	SOC_ENUM_SINGLE(WM8993_DRC_CONTROL_3, 8, 6, drc_r0_text);
++static SOC_ENUM_SINGLE_DECL(drc_r0,
++			    WM8993_DRC_CONTROL_3, 8, drc_r0_text);
  
- static const char *alc_hold_text[] = {
- 	"0", "2.67ms", "5.33ms", "10.66ms", "21.32ms", "42.64ms", "85.28ms",
-@@ -129,24 +129,24 @@ static const char *alc_hold_text[] = {
- 	"10.916s", "21.832s", "43.691s"
+ static const char *drc_r1_text[] = {
+ 	"1",
+@@ -687,8 +687,8 @@ static const char *drc_r1_text[] = {
+ 	"0",
  };
  
--static const struct soc_enum alc_hold =
--	SOC_ENUM_SINGLE(WM8737_ALC2, 0, 16, alc_hold_text);
-+static SOC_ENUM_SINGLE_DECL(alc_hold,
-+			    WM8737_ALC2, 0, alc_hold_text);
+-static const struct soc_enum drc_r1 =
+-	SOC_ENUM_SINGLE(WM8993_DRC_CONTROL_4, 13, 5, drc_r1_text);
++static SOC_ENUM_SINGLE_DECL(drc_r1,
++			    WM8993_DRC_CONTROL_4, 13, drc_r1_text);
  
- static const char *alc_atk_text[] = {
- 	"8.4ms", "16.8ms", "33.6ms", "67.2ms", "134.4ms", "268.8ms", "537.6ms",
- 	"1.075s", "2.15s", "4.3s", "8.6s"
+ static const char *drc_attack_text[] = {
+ 	"Reserved",
+@@ -705,8 +705,8 @@ static const char *drc_attack_text[] = {
+ 	"185.6ms",
  };
  
--static const struct soc_enum alc_atk =
--	SOC_ENUM_SINGLE(WM8737_ALC3, 0, 11, alc_atk_text);
-+static SOC_ENUM_SINGLE_DECL(alc_atk,
-+			    WM8737_ALC3, 0, alc_atk_text);
+-static const struct soc_enum drc_attack =
+-	SOC_ENUM_SINGLE(WM8993_DRC_CONTROL_2, 12, 12, drc_attack_text);
++static SOC_ENUM_SINGLE_DECL(drc_attack,
++			    WM8993_DRC_CONTROL_2, 12, drc_attack_text);
  
- static const char *alc_dcy_text[] = {
- 	"33.6ms", "67.2ms", "134.4ms", "268.8ms", "537.6ms", "1.075s", "2.15s",
- 	"4.3s", "8.6s", "17.2s", "34.41s"
+ static const char *drc_decay_text[] = {
+ 	"186ms",
+@@ -720,16 +720,16 @@ static const char *drc_decay_text[] = {
+ 	"47.56ms",
  };
  
--static const struct soc_enum alc_dcy =
--	SOC_ENUM_SINGLE(WM8737_ALC3, 4, 11, alc_dcy_text);
-+static SOC_ENUM_SINGLE_DECL(alc_dcy,
-+			    WM8737_ALC3, 4, alc_dcy_text);
+-static const struct soc_enum drc_decay =
+-	SOC_ENUM_SINGLE(WM8993_DRC_CONTROL_2, 8, 9, drc_decay_text);
++static SOC_ENUM_SINGLE_DECL(drc_decay,
++			    WM8993_DRC_CONTROL_2, 8, drc_decay_text);
  
- static const struct snd_kcontrol_new wm8737_snd_controls[] = {
- SOC_DOUBLE_R_TLV("Mic Boost Volume", WM8737_AUDIO_PATH_L, WM8737_AUDIO_PATH_R,
-@@ -191,8 +191,8 @@ static const char *linsel_text[] = {
- 	"LINPUT1", "LINPUT2", "LINPUT3", "LINPUT1 DC",
+ static const char *drc_ff_text[] = {
+ 	"5 samples",
+ 	"9 samples",
  };
  
--static const struct soc_enum linsel_enum =
--	SOC_ENUM_SINGLE(WM8737_AUDIO_PATH_L, 7, 4, linsel_text);
-+static SOC_ENUM_SINGLE_DECL(linsel_enum,
-+			    WM8737_AUDIO_PATH_L, 7, linsel_text);
+-static const struct soc_enum drc_ff =
+-	SOC_ENUM_SINGLE(WM8993_DRC_CONTROL_3, 7, 2, drc_ff_text);
++static SOC_ENUM_SINGLE_DECL(drc_ff,
++			    WM8993_DRC_CONTROL_3, 7, drc_ff_text);
  
- static const struct snd_kcontrol_new linsel_mux =
- 	SOC_DAPM_ENUM("LINSEL", linsel_enum);
-@@ -202,8 +202,8 @@ static const char *rinsel_text[] = {
- 	"RINPUT1", "RINPUT2", "RINPUT3", "RINPUT1 DC",
+ static const char *drc_qr_rate_text[] = {
+ 	"0.725ms",
+@@ -737,8 +737,8 @@ static const char *drc_qr_rate_text[] = {
+ 	"5.8ms",
  };
  
--static const struct soc_enum rinsel_enum =
--	SOC_ENUM_SINGLE(WM8737_AUDIO_PATH_R, 7, 4, rinsel_text);
-+static SOC_ENUM_SINGLE_DECL(rinsel_enum,
-+			    WM8737_AUDIO_PATH_R, 7, rinsel_text);
+-static const struct soc_enum drc_qr_rate =
+-	SOC_ENUM_SINGLE(WM8993_DRC_CONTROL_3, 0, 3, drc_qr_rate_text);
++static SOC_ENUM_SINGLE_DECL(drc_qr_rate,
++			    WM8993_DRC_CONTROL_3, 0, drc_qr_rate_text);
  
- static const struct snd_kcontrol_new rinsel_mux =
- 	SOC_DAPM_ENUM("RINSEL", rinsel_enum);
-@@ -212,15 +212,15 @@ static const char *bypass_text[] = {
- 	"Direct", "Preamp"
+ static const char *drc_smooth_text[] = {
+ 	"Low",
+@@ -746,8 +746,8 @@ static const char *drc_smooth_text[] = {
+ 	"High",
  };
  
--static const struct soc_enum lbypass_enum =
--	SOC_ENUM_SINGLE(WM8737_MIC_PREAMP_CONTROL, 2, 2, bypass_text);
-+static SOC_ENUM_SINGLE_DECL(lbypass_enum,
-+			    WM8737_MIC_PREAMP_CONTROL, 2, bypass_text);
+-static const struct soc_enum drc_smooth =
+-	SOC_ENUM_SINGLE(WM8993_DRC_CONTROL_1, 4, 3, drc_smooth_text);
++static SOC_ENUM_SINGLE_DECL(drc_smooth,
++			    WM8993_DRC_CONTROL_1, 4, drc_smooth_text);
  
- static const struct snd_kcontrol_new lbypass_mux =
- 	SOC_DAPM_ENUM("Left Bypass", lbypass_enum);
+ static const struct snd_kcontrol_new wm8993_snd_controls[] = {
+ SOC_DOUBLE_TLV("Digital Sidetone Volume", WM8993_DIGITAL_SIDE_TONE,
+@@ -841,26 +841,26 @@ static const char *aif_text[] = {
+ 	"Left", "Right"
+ };
  
+-static const struct soc_enum aifoutl_enum =
+-	SOC_ENUM_SINGLE(WM8993_AUDIO_INTERFACE_1, 15, 2, aif_text);
++static SOC_ENUM_SINGLE_DECL(aifoutl_enum,
++			    WM8993_AUDIO_INTERFACE_1, 15, aif_text);
  
--static const struct soc_enum rbypass_enum =
--	SOC_ENUM_SINGLE(WM8737_MIC_PREAMP_CONTROL, 3, 2, bypass_text);
-+static SOC_ENUM_SINGLE_DECL(rbypass_enum,
-+			    WM8737_MIC_PREAMP_CONTROL, 3, bypass_text);
+ static const struct snd_kcontrol_new aifoutl_mux =
+ 	SOC_DAPM_ENUM("AIFOUTL Mux", aifoutl_enum);
  
- static const struct snd_kcontrol_new rbypass_mux =
- 	SOC_DAPM_ENUM("Left Bypass", rbypass_enum);
+-static const struct soc_enum aifoutr_enum =
+-	SOC_ENUM_SINGLE(WM8993_AUDIO_INTERFACE_1, 14, 2, aif_text);
++static SOC_ENUM_SINGLE_DECL(aifoutr_enum,
++			    WM8993_AUDIO_INTERFACE_1, 14, aif_text);
+ 
+ static const struct snd_kcontrol_new aifoutr_mux =
+ 	SOC_DAPM_ENUM("AIFOUTR Mux", aifoutr_enum);
+ 
+-static const struct soc_enum aifinl_enum =
+-	SOC_ENUM_SINGLE(WM8993_AUDIO_INTERFACE_2, 15, 2, aif_text);
++static SOC_ENUM_SINGLE_DECL(aifinl_enum,
++			    WM8993_AUDIO_INTERFACE_2, 15, aif_text);
+ 
+ static const struct snd_kcontrol_new aifinl_mux =
+ 	SOC_DAPM_ENUM("AIFINL Mux", aifinl_enum);
+ 
+-static const struct soc_enum aifinr_enum =
+-	SOC_ENUM_SINGLE(WM8993_AUDIO_INTERFACE_2, 14, 2, aif_text);
++static SOC_ENUM_SINGLE_DECL(aifinr_enum,
++			    WM8993_AUDIO_INTERFACE_2, 14, aif_text);
+ 
+ static const struct snd_kcontrol_new aifinr_mux =
+ 	SOC_DAPM_ENUM("AIFINR Mux", aifinr_enum);
+@@ -869,14 +869,14 @@ static const char *sidetone_text[] = {
+ 	"None", "Left", "Right"
+ };
+ 
+-static const struct soc_enum sidetonel_enum =
+-	SOC_ENUM_SINGLE(WM8993_DIGITAL_SIDE_TONE, 2, 3, sidetone_text);
++static SOC_ENUM_SINGLE_DECL(sidetonel_enum,
++			    WM8993_DIGITAL_SIDE_TONE, 2, sidetone_text);
+ 
+ static const struct snd_kcontrol_new sidetonel_mux =
+ 	SOC_DAPM_ENUM("Left Sidetone", sidetonel_enum);
+ 
+-static const struct soc_enum sidetoner_enum =
+-	SOC_ENUM_SINGLE(WM8993_DIGITAL_SIDE_TONE, 0, 3, sidetone_text);
++static SOC_ENUM_SINGLE_DECL(sidetoner_enum,
++			    WM8993_DIGITAL_SIDE_TONE, 0, sidetone_text);
+ 
+ static const struct snd_kcontrol_new sidetoner_mux =
+ 	SOC_DAPM_ENUM("Right Sidetone", sidetoner_enum);
 -- 
 1.8.5.2
