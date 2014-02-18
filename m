@@ -1,168 +1,42 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 2/2] ASoC: Intel: sst-acpi: Request firmware
-	before SST platform driver probing
-Date: Tue, 18 Feb 2014 16:42:03 +0200
-Message-ID: <1392734523-5109-2-git-send-email-jarkko.nikula@linux.intel.com>
-References: <1392734523-5109-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH 01/15] Input - arizona-haptics: Fix double
+	lock of dapm_mutex
+Date: Tue, 18 Feb 2014 14:53:34 +0000
+Message-ID: <20140218145334.GA5438@opensource.wolfsonmicro.com>
+References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com> <1392655903-24537-2-git-send-email-ckeepax@opensource.wolfsonmicro.com> <20140217192025.GB19223@core.coreip.homeip.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 284772650E7
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 15:42:48 +0100 (CET)
-In-Reply-To: <1392734523-5109-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140217192025.GB19223@core.coreip.homeip.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, eric.y.miao@gmail.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com, cw00.choi@samsung.com, broonie@kernel.org, myungjoo.ham@samsung.com, linux@arm.linux.org.uk, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
-We originally thought to request SST audio DSP firmware during the SST
-platform driver initialization. However plain request_firmware doesn't
-work in driver probe paths if userspace is not ready to handle it. For
-instance when drivers are built-in.
+On Mon, Feb 17, 2014 at 11:20:26AM -0800, Dmitry Torokhov wrote:
+> HI Charles,
+> 
+> On Mon, Feb 17, 2014 at 04:51:29PM +0000, Charles Keepax wrote:
+> > snd_soc_dapm_sync takes the dapm_mutex internally, but we currently take
+> > it externally as well. This patch fixes this.
+> 
+> Hmm, from the first glance this needs to go into current release,
+> however it seems that it has been broken by
+> a73fb2df01866b772a48fab93401fe3edbe0b38d 2 years ago so nobody cares...
+> 
+> Looking at the series I am not sure that this is right direction. You
+> actually do want unlocked versions of snd_soc_dapm_* functions so that
+> callers can take dapm mutex and then perform sequence of operations. The
+> currect callers that were taking the mutex should probbaly be changed so
+> that they do not drop it until they called unlocked version of
+> snd_soc_dapm_sync().
 
-Implementing asynchronous firmware request in SST platform driver
-initialization complicates code needlessly since it anyway will fail if
-firmware is missing.
+Having looked over this again I would prefer to go with the
+current fix. It means the fix can be sent to the stable trees and
+the haptics driver has no requirement for multiple pin updates to
+be done atomically, so there is not a huge amount to be gained
+from bundling things under an external lock.
 
-This is more simple to handle by requesting firmware asynchronously in
-sst_acpi_probe() and register SST platform only after firmware is loaded.
-
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
- sound/soc/intel/sst-acpi.c | 54 ++++++++++++++++++++++++++++++----------------
- sound/soc/intel/sst-dsp.h  |  2 +-
- 2 files changed, 36 insertions(+), 20 deletions(-)
-
-diff --git a/sound/soc/intel/sst-acpi.c b/sound/soc/intel/sst-acpi.c
-index aba73ca8a923..b76d9d9f15c0 100644
---- a/sound/soc/intel/sst-acpi.c
-+++ b/sound/soc/intel/sst-acpi.c
-@@ -16,6 +16,7 @@
- 
- #include <linux/acpi.h>
- #include <linux/device.h>
-+#include <linux/firmware.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- 
-@@ -56,6 +57,32 @@ struct sst_acpi_priv {
- 	struct sst_acpi_desc *desc;
- };
- 
-+static void sst_acpi_fw_cb(const struct firmware *fw, void *context)
-+{
-+	struct platform_device *pdev = context;
-+	struct device *dev = &pdev->dev;
-+	struct sst_acpi_priv *sst_acpi = platform_get_drvdata(pdev);
-+	struct sst_pdata *sst_pdata = &sst_acpi->sst_pdata;
-+	struct sst_acpi_desc *desc = sst_acpi->desc;
-+
-+	sst_pdata->fw = fw;
-+	if (!fw) {
-+		dev_err(dev, "Cannot load firmware %s\n", desc->fw_filename);
-+		return;
-+	}
-+
-+	/* register PCM and DAI driver */
-+	sst_acpi->pdev_pcm =
-+		platform_device_register_data(dev, desc->drv_name, -1,
-+					      sst_pdata, sizeof(*sst_pdata));
-+	if (IS_ERR(sst_acpi->pdev_pcm)) {
-+		dev_err(dev, "Cannot register device %s. Error %d\n",
-+			desc->drv_name, (int)PTR_ERR(sst_acpi->pdev_pcm));
-+	}
-+
-+	return;
-+}
-+
- static int sst_acpi_probe(struct platform_device *pdev)
- {
- 	const struct acpi_device_id *id;
-@@ -65,7 +92,6 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 	struct sst_acpi_mach *mach;
- 	struct sst_acpi_desc *desc;
- 	struct resource *mmio;
--	int ret = 0;
- 
- 	sst_acpi = devm_kzalloc(dev, sizeof(*sst_acpi), GFP_KERNEL);
- 	if (sst_acpi == NULL)
-@@ -79,7 +105,6 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 	desc = mach->res_desc;
- 	sst_pdata = &sst_acpi->sst_pdata;
- 	sst_pdata->id = desc->sst_id;
--	sst_pdata->fw_filename = desc->fw_filename;
- 	sst_acpi->desc = desc;
- 
- 	if (desc->resindex_dma_base >= 0) {
-@@ -118,37 +143,28 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	/* register PCM and DAI driver */
--	sst_acpi->pdev_pcm =
--		platform_device_register_data(dev, desc->drv_name, -1,
--					      sst_pdata, sizeof(*sst_pdata));
--	if (IS_ERR(sst_acpi->pdev_pcm))
--		return PTR_ERR(sst_acpi->pdev_pcm);
--
--	/* register machine driver */
- 	platform_set_drvdata(pdev, sst_acpi);
- 
-+	/* register machine driver */
- 	sst_acpi->pdev_mach =
- 		platform_device_register_data(dev, mach->drv_name, -1,
- 					      sst_pdata, sizeof(*sst_pdata));
--	if (IS_ERR(sst_acpi->pdev_mach)) {
--		ret = PTR_ERR(sst_acpi->pdev_mach);
--		goto sst_err;
--	}
--
--	return ret;
-+	if (IS_ERR(sst_acpi->pdev_mach))
-+		return PTR_ERR(sst_acpi->pdev_mach);
- 
--sst_err:
--	platform_device_unregister(sst_acpi->pdev_pcm);
--	return ret;
-+	/* continue SST probing after firmware is loaded */
-+	return request_firmware_nowait(THIS_MODULE, true, desc->fw_filename,
-+				       dev, GFP_KERNEL, pdev, sst_acpi_fw_cb);
- }
- 
- static int sst_acpi_remove(struct platform_device *pdev)
- {
- 	struct sst_acpi_priv *sst_acpi = platform_get_drvdata(pdev);
-+	struct sst_pdata *sst_pdata = &sst_acpi->sst_pdata;
- 
- 	platform_device_unregister(sst_acpi->pdev_mach);
- 	platform_device_unregister(sst_acpi->pdev_pcm);
-+	release_firmware(sst_pdata->fw);
- 
- 	return 0;
- }
-diff --git a/sound/soc/intel/sst-dsp.h b/sound/soc/intel/sst-dsp.h
-index d134359fecac..3730fd324455 100644
---- a/sound/soc/intel/sst-dsp.h
-+++ b/sound/soc/intel/sst-dsp.h
-@@ -152,7 +152,7 @@ struct sst_pdata {
- 	int irq;
- 
- 	/* Firmware */
--	const char *fw_filename;
-+	const struct firmware *fw;
- 
- 	/* DMA */
- 	u32 dma_base;
--- 
-1.8.5.3
+Thanks,
+Charles
