@@ -1,19 +1,29 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH v5 2/4] ASoC: tlv320aic32x4: Support for
-	regulators
-Date: Tue, 18 Feb 2014 22:28:28 +0100
-Message-ID: <20140218212828.GD10590@pengutronix.de>
-References: <1392575252-9222-1-git-send-email-mpa@pengutronix.de>
- <1392631460-32002-1-git-send-email-mpa@pengutronix.de>
- <1392631460-32002-3-git-send-email-mpa@pengutronix.de>
- <20140218012725.GS2669@sirena.org.uk>
+From: Chris M <cmanougian@yahoo.com>
+Subject: Re: Update patch for codecs alias name for Dell
+Date: Tue, 18 Feb 2014 21:31:07 +0000 (UTC)
+Message-ID: <loom.20140218T221659-931@post.gmane.org>
+References: <8837DB3485424EB4ADE016301C6D7DF6@realtek.com.tw>
+ <s5hhaay6rsk.wl%tiwai@suse.de>
+ <13CB35BE00B34161858F09AF4314495C@realtek.com.tw>
+ <s5heh604wws.wl%tiwai@suse.de> <loom.20140202T011505-437@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4778847292289976808=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id CD87826525B
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 22:28:36 +0100 (CET)
-In-Reply-To: <20140218012725.GS2669@sirena.org.uk>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12E9426525B
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 22:31:39 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1WFsGO-0001D1-SP
+ for alsa-devel@alsa-project.org; Tue, 18 Feb 2014 22:31:37 +0100
+Received: from pool-96-231-195-50.washdc.fios.verizon.net
+ ([pool-96-231-195-50.washdc.fios.verizon.net])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 22:31:36 +0100
+Received: from cmanougian by pool-96-231-195-50.washdc.fios.verizon.net with
+ local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 22:31:36 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,100 +33,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Chris M <cmanougian <at> yahoo.com> writes:
 
---===============4778847292289976808==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hoZxPH4CaxYzWscb"
-Content-Disposition: inline
+> 
+> Takashi Iwai <tiwai <at> suse.de> writes:
+> 
+> > 
+> > At Thu, 28 Nov 2013 15:30:56 +0800,
+> > Kailang wrote:
+> > > 
+> > > Hi Takashi,
+> > > 
+> > > I remodified the code as belowing.
+> > > 
+> > > >From 888b51395ebab411660401f856e3af7988d9240b Mon Sep 17 00:00:00 2001
+> > > From: Kailang Yang <kailang <at> realtek.com>
+> > > Date: Thu, 28 Nov 2013 15:23:20 +0800
+> > > Subject: [PATCH] ALSA: hda/realtek - Add more codecs alias name for Dell
+> > > 
+> > > Dell assigned alias name for more codecs.
+> > > ALC3220 ALC3221 ALC3223 ALC3226 ALC3234 ALC3661.
+> > > 
+> > > Signed-off-by: Kailang Yang <kailang <at> realtek.com>
+> > 
+> > Thanks, applied now, but it's targeted for 3.14 kernel, as this is no
+> > urgent fixes.  You can find it in for-next branch of sound git tree.
+> > 
+> > Takashi
+> > 
+> 
+> Sorry for asking this on a developer forum, but I'm pretty sure I finally
+> found the answer here. I had considered the need to wait it out for a kernel
+> upgrade (beyond 3.12 in Debian Testing/Jessie). I have no sound right now.
+> How do I apply this patch? When I installed Debian Testing, I installed a
+> targeted initrd, and I was considering retrying with a generic initrd -
+> although I think this thread just saved me from that. Will an established
+> initrd come into play? Will I have to recompile the 3.12 kernel?
+> 
+> The Dell codec alias name is ALC3223.
+> 
+> Thanks
 
+This is a follow up question for anyone.
 
---hoZxPH4CaxYzWscb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This boils down to a general question about new kernel compilation.
 
-On Tue, Feb 18, 2014 at 10:27:25AM +0900, Mark Brown wrote:
-> On Mon, Feb 17, 2014 at 11:04:18AM +0100, Markus Pargmann wrote:
->=20
-> > +	if (IS_ERR(aic32x4->supply_iov)) {
-> > +		dev_err(dev, "Missing supply 'iov'\n");
-> > +		ret =3D -EINVAL;
-> > +	}
->=20
-> This won't work with deferred probe and is ignoring the error value
-> reported by the regualtor API.  It should pass back what it was given
-> and still needs to handle deferred probe even if it's happy for a
-> regulator not to be there.
+To try and solve my no sound issue, I waited until 3.14-rc3 kernel went live.
 
-Right, I added -EPROBE_DEFER checks for every regulator.
-I replaced the usage of the return value to directly return the errors.
-Otherwise it could be confusing to see multiple error messages and get
-one error value returned.
+In the 3.14-rc3 kernel source folder, this patch is located at:
+sound/pci/hda/patch_realtek.c
 
->=20
-> > +	if (!IS_ERR(aic32x4->supply_iov)) {
-> > +		ret =3D regulator_enable(aic32x4->supply_iov);
-> > +		if (ret) {
-> > +			printk("Failed to enable regulator iov\n");
-> > +			return ret;
-> > +		}
-> > +	}
->=20
-> dev_err().  It would probably be easier to put one of the child
-> regulators you did get into supply_iov instead so that outside of the
-> probe you don't need to worry about which is actually there.
->=20
-> I'm also not seeing any disables prior to remove.
+I thought that simply compiling the latest kernel, and then installing it,
+would apply all relevant patches (more than the realtek patch may be in
+play), but now I'm not so sure.
 
-Replaced all printk's with dev_err. I am now disabling all regulators in
-the remove function and added error handling which disables the
-regulators.
+The question is this: Does a 3.14-rc3 compiled kernel already include the
+above patch? Or, because it is labeled as a "patch" within the source, do I
+have to actually patch the source before compiling?
 
-I will test all changes tomorrow and resend the series.
+IOW, does the patch get compiled, or does anything labeled as a patch within
+the source still have to be manually patched against the kernel?
 
-Thanks,
-
-Markus
-
---=20
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---hoZxPH4CaxYzWscb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTA9B8AAoJEEpcgKtcEGQQcRUP/RXtRFy1Rdj3caiG3upo4lr8
-wUyUxrbnxczLZ3Lt+aCQT73QsvclDcp6ANBS7DQiNCGG4vRP7quqf0CgOI+ZcDCY
-IAg8GzEsvncJPnfuGBuvIALqcS353VqoUZDCMiiKWqpzo94bZcE1DYkUjC1pwYWR
-LaPV5PmHQ/gn08szG/yfbCrq16bdFFaBndCBQFHw7JFqlynrrOh1Hp4zVGxA1eXv
-MJW4pQX1ufglh6UM6mZvAzW8CNC0Hacf6uX21u/7Gh7zxmyFo5WGUY3rVnL5YQRy
-zrajBJR1qmLhsp95UnLebYFPnW47UfWsr3hDnY1ZVltKX0FkBMSzsD+e9zAcsDLE
-UNN4WDTKIs99MJawnyBK5LyhcpCFTsiOI7HdfZpfHGZwUgpjsUsBRb2Qxq/jQEKe
-xoSSp+S4bSO803EUDhSrlgeDmEilEv9/1RQHSqawsjxKMBs0kVuZiuqnr2g0RP74
-lx9BzRzwxLrgNeDSgE1eC60nf7xdSlzLkkWeUJmdoyNw9WEH+MGwCqisBaGFGTSi
-O0m+WLB1cNPeoWiUKdBBX8CHsWmZYnnpsRyEvNowQbSGybX9UrpUUcXIfVRSrI1v
-TwjIpZSUsweUca1BwJWH88IGa/F2N17JI0WABi2RFaLWlJFETG+Ey10vOeMc2D3a
-9O/Nhd0xZJGR3uuUvsSb
-=Fsu1
------END PGP SIGNATURE-----
-
---hoZxPH4CaxYzWscb--
-
---===============4778847292289976808==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4778847292289976808==--
+Thanks to anyone who can answer this.  I complied and installed the 3.14-rc3
+kernel without a problem. It was the default kernel in grub. But I'm still
+dealing with the exact same no sound issue as if booting into 3.12.
