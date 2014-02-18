@@ -1,126 +1,56 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: Need your advice: Add a new communication inteface
- between HD-Audio and Gfx drivers for hotplug notification/ELD update
-Date: Tue, 18 Feb 2014 16:22:32 +0200
-Message-ID: <20140218142232.GS3852@intel.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F82B231778@SHSMSX101.ccr.corp.intel.com>
-	<CAKMK7uFYNfVhXsEmikDZCaFGM8k7g7VMcGqGM4U+1bA_9MX1zQ@mail.gmail.com>
-	<F46914AEC2663F4A9BB62374E5EEF8F82B23315E@SHSMSX101.ccr.corp.intel.com>
-	<20140122141821.GI9772@phenom.ffwll.local>
-	<s5hd2jkj5nt.wl%tiwai@suse.de>
-	<F46914AEC2663F4A9BB62374E5EEF8F82B2342D7@SHSMSX101.ccr.corp.intel.com>
-	<s5h38kfuo4a.wl%tiwai@suse.de>
-	<CAKMK7uGT1My5hrVCZgnO5UGP5QQkXw=UBxxnaAdqTFTOxptCyw@mail.gmail.com>
-	<F46914AEC2663F4A9BB62374E5EEF8F82B277FF5@SHSMSX101.ccr.corp.intel.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH 1/2] ASoC: Intel: Move extended fw base and
+	size fields in struct sst_pdata
+Date: Tue, 18 Feb 2014 16:42:02 +0200
+Message-ID: <1392734523-5109-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F82B277FF5@SHSMSX101.ccr.corp.intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Sender: intel-gfx-bounces@lists.freedesktop.org
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-To: "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
-	Paulo R" <paulo.r.zanoni@intel.com>, Takashi Iwai <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>, "Barnes,
-	Jesse" <jesse.barnes@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 282FE2650CC
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 15:42:48 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 18, 2014 at 01:58:22PM +0000, Lin, Mengdong wrote:
-> Sorry to pick up this thread after a long time.
-> =
+Move fw_base and fw_size fields in struct sst_pdata under ACPI data for
+clarifying that these are not related to firmware file but for platform
+specific extended firmware area reserved by the BIOS.
 
-> > -----Original Message-----
-> > From: daniel.vetter@ffwll.ch [mailto:daniel.vetter@ffwll.ch] On Behalf =
-Of
-> > Daniel Vetter
-> > Sent: Thursday, January 23, 2014 4:27 PM
-> > To: Takashi Iwai
->  =
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ sound/soc/intel/sst-dsp.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> > On Thu, Jan 23, 2014 at 8:57 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> > >> Thanks for clarification!
-> > >> Maybe we can add output info (eg. display port number) to the eld en=
-tries
-> > under /proc/asound/cardx. Is it okay?
-> > >
-> > > It's possible, but the proc file is just a help.  It can't be the API.
-> > > For accessing the information, we'll need some new API, or let inform
-> > > via sysfs of the new device.
-> > =
-
-> > Links in sysfs sound like the best approach. drm already has nodes for =
-each
-> > connector, so on the gfx side there's a natural endpoint already.
-> > sysfs links also avoids any naming issues from the start, e.g. the abov=
-e DP
-> > connector id might lead to clashes with multiple cards.
-> =
-
-> Hi Daniel,
-> =
-
-> Is there a 1:1 mapping between these connector nodes and ports of Gfx dis=
-play engine?
-> Eg. For Haswell Ultrabook, under /sys/devices/pci0000:00/0000:00:02.0/drm=
-/card0/
-> There are four connector nodes, =
-
-> card0-DP-1		-> DDI port B
-> card0-eDP-1/		-> DDI port A
-> card0-HDMI-A-1/	-> DDI Port C
-> card0-HDMI-A-2/	-> Which DDI port ?  Haswell-ULT does not support port D,=
- and I think port E is for VGA.
-
-There's no fixed mapping with the port and the connector name. The
-number in the connector name is basically just a running number per
-connector type. However I do believe we do register the connectors
-in the order of the ports more or less always, so you can
-*sometimes* deduce the port name from the connector.
-
-I suppose in this example HDMI-A-1 is port B, HDMI-A-2 is port C, and
-DP-1 can be either port B or port C. DP++ is the reason why we have
-overlapping DP and HDMI connectors for the same port.
-
-> =
-
-> Hi Takashi,
-> =
-
-> To make user space figure out which audio output is connected to which sc=
-reen (connector), maybe we can define a new ALSA control for each HDMI/DP P=
-CM device:
-> e.g. numid=3Dx,iface=3DPCM,name=3D'Screen',device=3D3
-> Reading the control will return the name of the DRM connector nodes like =
-' card0-DP-1'. The audio driver can get the connector name from the gfx dri=
-ver.
-> =
-
-> For DP1.2 Multi-stream transport, it's not supported by i915 and HD-A dri=
-ver now. But probably there will be sub-nodes for the DP connector node in =
-the future and an index in their name can be used distinguish monitors conn=
-ected to the same DP port, like card0-DP-1.1, card0-DP-1.2, card0-DP-1.3 ..=
-. These names can be used by the above ALSA PCM 'Screen' control, so we can=
- still know which audio output is to which monitor.
-> =
-
-> Thanks
-> Mengdong
-> =
-
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> http://lists.freedesktop.org/mailman/listinfo/intel-gfx
-
--- =
-
-Ville Syrj=E4l=E4
-Intel OTC
+diff --git a/sound/soc/intel/sst-dsp.h b/sound/soc/intel/sst-dsp.h
+index 0ce5c8d91794..d134359fecac 100644
+--- a/sound/soc/intel/sst-dsp.h
++++ b/sound/soc/intel/sst-dsp.h
+@@ -147,12 +147,12 @@ struct sst_pdata {
+ 	u32 lpe_size;
+ 	u32 pcicfg_base;
+ 	u32 pcicfg_size;
++	u32 fw_base;
++	u32 fw_size;
+ 	int irq;
+ 
+ 	/* Firmware */
+ 	const char *fw_filename;
+-	u32 fw_base;
+-	u32 fw_size;
+ 
+ 	/* DMA */
+ 	u32 dma_base;
+-- 
+1.8.5.3
