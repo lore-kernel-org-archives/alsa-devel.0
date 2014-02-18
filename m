@@ -1,19 +1,19 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCHv2 3/5] ASoC: Intel: Add Intel SST audio DSP
- Firmware loader.
-Date: Tue, 18 Feb 2014 08:47:51 +0000
-Message-ID: <1392713271.2304.13.camel@loki>
+Subject: Re: [PATCHv2 4/5] ASoC: Intel: Add trace support for
+ generic SST IPC messages.
+Date: Tue, 18 Feb 2014 08:52:12 +0000
+Message-ID: <1392713532.2304.15.camel@loki>
 References: <1392643930-6030-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1392643930-6030-3-git-send-email-liam.r.girdwood@linux.intel.com>
- <20140218013510.GV2669@sirena.org.uk>
+ <1392643930-6030-4-git-send-email-liam.r.girdwood@linux.intel.com>
+ <20140218013618.GW2669@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 953E226514B
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 09:47:55 +0100 (CET)
-In-Reply-To: <20140218013510.GV2669@sirena.org.uk>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FB22265148
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 09:52:26 +0100 (CET)
+In-Reply-To: <20140218013618.GW2669@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,15 +27,15 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Benson Leung <bleung@google.com>, Jarkko Nikula <jarkko.nikula@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2014-02-18 at 10:35 +0900, Mark Brown wrote:
-> On Mon, Feb 17, 2014 at 01:32:08PM +0000, Liam Girdwood wrote:
+On Tue, 2014-02-18 at 10:36 +0900, Mark Brown wrote:
+> On Mon, Feb 17, 2014 at 01:32:09PM +0000, Liam Girdwood wrote:
 > 
-> > +	/* copy FW data to DMA-able memory */
-> > +	memcpy((void *)sst_fw->dma_buf, (void *)fw->data, fw->size);
+> >  include/trace/events/sst.h | 148 +++++++++++++++++++++++++++++++++++++++++++++
 > 
-> There aren't going to be any issues with alignment requirements for DMA
-> with data within the firmware?
+> intel-sst perhaps?  It just seems like something someone else might use
+> as a name.
 
-No, everything will be on 32bit boundaries.
+True, it's a little generic. I also have trace/events/hswadsp.h for
+Haswell IPC but that's quite specific so should be OK.
 
 Liam
