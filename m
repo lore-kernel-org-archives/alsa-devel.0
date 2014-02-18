@@ -1,14 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 006/102] ASoC: lm49453: Remove superfluous const
-Date: Tue, 18 Feb 2014 12:32:18 +0100
-Message-ID: <1392723148-12597-4-git-send-email-tiwai@suse.de>
+Subject: [PATCH 004/102] ASoC: Add const to SOC_ENUM_*_DECL()
+	macros
+Date: Tue, 18 Feb 2014 12:32:16 +0100
+Message-ID: <1392723148-12597-2-git-send-email-tiwai@suse.de>
 References: <1392723148-12597-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 66B45265294
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A2E326530A
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:32:33 +0100 (CET)
 In-Reply-To: <1392723148-12597-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,44 +25,38 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-As SOC_ENUM_SINGLE_DECL() itself contains const modifier now, we can
-reduce const from its users.
+Since these macros are supposed to be used for decalring const
+objects, let's add the const modifier there.
+
+The doubled const appearing in usages will be cleaned by later
+patches.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/lm49453.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ include/sound/soc.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
-index e19490cfb3a8..6b7fe5e54881 100644
---- a/sound/soc/codecs/lm49453.c
-+++ b/sound/soc/codecs/lm49453.c
-@@ -195,18 +195,18 @@ struct lm49453_priv {
- 
- static const char *lm49453_mic2mode_text[] = {"Single Ended", "Differential"};
- 
--static const SOC_ENUM_SINGLE_DECL(lm49453_mic2mode_enum, LM49453_P0_MICR_REG, 5,
--				  lm49453_mic2mode_text);
-+static SOC_ENUM_SINGLE_DECL(lm49453_mic2mode_enum, LM49453_P0_MICR_REG, 5,
-+			    lm49453_mic2mode_text);
- 
- static const char *lm49453_dmic_cfg_text[] = {"DMICDAT1", "DMICDAT2"};
- 
--static const SOC_ENUM_SINGLE_DECL(lm49453_dmic12_cfg_enum,
--				  LM49453_P0_DIGITAL_MIC1_CONFIG_REG,
--				  7, lm49453_dmic_cfg_text);
-+static SOC_ENUM_SINGLE_DECL(lm49453_dmic12_cfg_enum,
-+			    LM49453_P0_DIGITAL_MIC1_CONFIG_REG, 7,
-+			    lm49453_dmic_cfg_text);
- 
--static const SOC_ENUM_SINGLE_DECL(lm49453_dmic34_cfg_enum,
--				  LM49453_P0_DIGITAL_MIC2_CONFIG_REG,
--				  7, lm49453_dmic_cfg_text);
-+static SOC_ENUM_SINGLE_DECL(lm49453_dmic34_cfg_enum,
-+			    LM49453_P0_DIGITAL_MIC2_CONFIG_REG, 7,
-+			    lm49453_dmic_cfg_text);
- 
- /* MUX Controls */
- static const char *lm49453_adcl_mux_text[] = { "MIC1", "Aux_L" };
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index a53edc25334d..cc891387e7ac 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -286,14 +286,14 @@
+  * ARRAY_SIZE internally
+  */
+ #define SOC_ENUM_DOUBLE_DECL(name, xreg, xshift_l, xshift_r, xtexts) \
+-	struct soc_enum name = SOC_ENUM_DOUBLE(xreg, xshift_l, xshift_r, \
++	const struct soc_enum name = SOC_ENUM_DOUBLE(xreg, xshift_l, xshift_r, \
+ 						ARRAY_SIZE(xtexts), xtexts)
+ #define SOC_ENUM_SINGLE_DECL(name, xreg, xshift, xtexts) \
+ 	SOC_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xtexts)
+ #define SOC_ENUM_SINGLE_EXT_DECL(name, xtexts) \
+-	struct soc_enum name = SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(xtexts), xtexts)
++	const struct soc_enum name = SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(xtexts), xtexts)
+ #define SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift_l, xshift_r, xmask, xtexts, xvalues) \
+-	struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, \
++	const struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, \
+ 							ARRAY_SIZE(xtexts), xtexts, xvalues)
+ #define SOC_VALUE_ENUM_SINGLE_DECL(name, xreg, xshift, xmask, xtexts, xvalues) \
+ 	SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xmask, xtexts, xvalues)
 -- 
 1.8.5.2
