@@ -1,14 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 017/102] ASoC: sta32x: Fix array access overflow
-Date: Tue, 18 Feb 2014 12:36:52 +0100
-Message-ID: <1392723422-12689-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 019/102] ASoC: arizona: Fix wrong number of
+	items in enum ctls
+Date: Tue, 18 Feb 2014 12:36:54 +0100
+Message-ID: <1392723422-12689-4-git-send-email-tiwai@suse.de>
 References: <1392723422-12689-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FCF4265586
+ by alsa0.perex.cz (Postfix) with ESMTP id 30780265587
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:37:06 +0100 (CET)
 In-Reply-To: <1392723422-12689-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,98 +25,127 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Preset EQ enum of sta32x codec driver declares too many number of
-items and it may lead to the access over the actual array size.
+arizona codec driver has a few places wrongly defining the number of
+enum items.
 
-Use SOC_ENUM_SINGLE_DECL() helper and it's automatically fixed.
+Use SOC_ENUM_SINGLE_DECL() macro and they are automatically fixed.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/sta32x.c | 72 +++++++++++++++++++++++------------------------
- 1 file changed, 36 insertions(+), 36 deletions(-)
+ sound/soc/codecs/arizona.c | 71 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 40 insertions(+), 31 deletions(-)
 
-diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
-index 06edb396e733..42c5b458b046 100644
---- a/sound/soc/codecs/sta32x.c
-+++ b/sound/soc/codecs/sta32x.c
-@@ -187,42 +187,42 @@ static const unsigned int sta32x_limiter_drc_release_tlv[] = {
- 	13, 16, TLV_DB_SCALE_ITEM(-1500, 300, 0),
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index e4295fee8f13..a32b84ac03f6 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -542,67 +542,76 @@ static const char *arizona_vol_ramp_text[] = {
+ 	"15ms/6dB", "30ms/6dB",
  };
  
--static const struct soc_enum sta32x_drc_ac_enum =
--	SOC_ENUM_SINGLE(STA32X_CONFD, STA32X_CONFD_DRC_SHIFT,
--			2, sta32x_drc_ac);
--static const struct soc_enum sta32x_auto_eq_enum =
--	SOC_ENUM_SINGLE(STA32X_AUTO1, STA32X_AUTO1_AMEQ_SHIFT,
--			3, sta32x_auto_eq_mode);
--static const struct soc_enum sta32x_auto_gc_enum =
--	SOC_ENUM_SINGLE(STA32X_AUTO1, STA32X_AUTO1_AMGC_SHIFT,
--			4, sta32x_auto_gc_mode);
--static const struct soc_enum sta32x_auto_xo_enum =
--	SOC_ENUM_SINGLE(STA32X_AUTO2, STA32X_AUTO2_XO_SHIFT,
--			16, sta32x_auto_xo_mode);
--static const struct soc_enum sta32x_preset_eq_enum =
--	SOC_ENUM_SINGLE(STA32X_AUTO3, STA32X_AUTO3_PEQ_SHIFT,
--			32, sta32x_preset_eq_mode);
--static const struct soc_enum sta32x_limiter_ch1_enum =
--	SOC_ENUM_SINGLE(STA32X_C1CFG, STA32X_CxCFG_LS_SHIFT,
--			3, sta32x_limiter_select);
--static const struct soc_enum sta32x_limiter_ch2_enum =
--	SOC_ENUM_SINGLE(STA32X_C2CFG, STA32X_CxCFG_LS_SHIFT,
--			3, sta32x_limiter_select);
--static const struct soc_enum sta32x_limiter_ch3_enum =
--	SOC_ENUM_SINGLE(STA32X_C3CFG, STA32X_CxCFG_LS_SHIFT,
--			3, sta32x_limiter_select);
--static const struct soc_enum sta32x_limiter1_attack_rate_enum =
--	SOC_ENUM_SINGLE(STA32X_L1AR, STA32X_LxA_SHIFT,
--			16, sta32x_limiter_attack_rate);
--static const struct soc_enum sta32x_limiter2_attack_rate_enum =
--	SOC_ENUM_SINGLE(STA32X_L2AR, STA32X_LxA_SHIFT,
--			16, sta32x_limiter_attack_rate);
--static const struct soc_enum sta32x_limiter1_release_rate_enum =
--	SOC_ENUM_SINGLE(STA32X_L1AR, STA32X_LxR_SHIFT,
--			16, sta32x_limiter_release_rate);
--static const struct soc_enum sta32x_limiter2_release_rate_enum =
--	SOC_ENUM_SINGLE(STA32X_L2AR, STA32X_LxR_SHIFT,
--			16, sta32x_limiter_release_rate);
-+static SOC_ENUM_SINGLE_DECL(sta32x_drc_ac_enum,
-+			    STA32X_CONFD, STA32X_CONFD_DRC_SHIFT,
-+			    sta32x_drc_ac);
-+static SOC_ENUM_SINGLE_DECL(sta32x_auto_eq_enum,
-+			    STA32X_AUTO1, STA32X_AUTO1_AMEQ_SHIFT,
-+			    sta32x_auto_eq_mode);
-+static SOC_ENUM_SINGLE_DECL(sta32x_auto_gc_enum,
-+			    STA32X_AUTO1, STA32X_AUTO1_AMGC_SHIFT,
-+			    sta32x_auto_gc_mode);
-+static SOC_ENUM_SINGLE_DECL(sta32x_auto_xo_enum,
-+			    STA32X_AUTO2, STA32X_AUTO2_XO_SHIFT,
-+			    sta32x_auto_xo_mode);
-+static SOC_ENUM_SINGLE_DECL(sta32x_preset_eq_enum,
-+			    STA32X_AUTO3, STA32X_AUTO3_PEQ_SHIFT,
-+			    sta32x_preset_eq_mode);
-+static SOC_ENUM_SINGLE_DECL(sta32x_limiter_ch1_enum,
-+			    STA32X_C1CFG, STA32X_CxCFG_LS_SHIFT,
-+			    sta32x_limiter_select);
-+static SOC_ENUM_SINGLE_DECL(sta32x_limiter_ch2_enum,
-+			    STA32X_C2CFG, STA32X_CxCFG_LS_SHIFT,
-+			    sta32x_limiter_select);
-+static SOC_ENUM_SINGLE_DECL(sta32x_limiter_ch3_enum,
-+			    STA32X_C3CFG, STA32X_CxCFG_LS_SHIFT,
-+			    sta32x_limiter_select);
-+static SOC_ENUM_SINGLE_DECL(sta32x_limiter1_attack_rate_enum,
-+			    STA32X_L1AR, STA32X_LxA_SHIFT,
-+			    sta32x_limiter_attack_rate);
-+static SOC_ENUM_SINGLE_DECL(sta32x_limiter2_attack_rate_enum,
-+			    STA32X_L2AR, STA32X_LxA_SHIFT,
-+			    sta32x_limiter_attack_rate);
-+static SOC_ENUM_SINGLE_DECL(sta32x_limiter1_release_rate_enum,
-+			    STA32X_L1AR, STA32X_LxR_SHIFT,
-+			    sta32x_limiter_release_rate);
-+static SOC_ENUM_SINGLE_DECL(sta32x_limiter2_release_rate_enum,
-+			    STA32X_L2AR, STA32X_LxR_SHIFT,
-+			    sta32x_limiter_release_rate);
+-const struct soc_enum arizona_in_vd_ramp =
+-	SOC_ENUM_SINGLE(ARIZONA_INPUT_VOLUME_RAMP,
+-			ARIZONA_IN_VD_RAMP_SHIFT, 7, arizona_vol_ramp_text);
++SOC_ENUM_SINGLE_DECL(arizona_in_vd_ramp,
++		     ARIZONA_INPUT_VOLUME_RAMP,
++		     ARIZONA_IN_VD_RAMP_SHIFT,
++		     arizona_vol_ramp_text);
+ EXPORT_SYMBOL_GPL(arizona_in_vd_ramp);
  
- /* byte array controls for setting biquad, mixer, scaling coefficients;
-  * for biquads all five coefficients need to be set in one go,
+-const struct soc_enum arizona_in_vi_ramp =
+-	SOC_ENUM_SINGLE(ARIZONA_INPUT_VOLUME_RAMP,
+-			ARIZONA_IN_VI_RAMP_SHIFT, 7, arizona_vol_ramp_text);
++SOC_ENUM_SINGLE_DECL(arizona_in_vi_ramp,
++		     ARIZONA_INPUT_VOLUME_RAMP,
++		     ARIZONA_IN_VI_RAMP_SHIFT,
++		     arizona_vol_ramp_text);
+ EXPORT_SYMBOL_GPL(arizona_in_vi_ramp);
+ 
+-const struct soc_enum arizona_out_vd_ramp =
+-	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_VOLUME_RAMP,
+-			ARIZONA_OUT_VD_RAMP_SHIFT, 7, arizona_vol_ramp_text);
++SOC_ENUM_SINGLE_DECL(arizona_out_vd_ramp,
++		     ARIZONA_OUTPUT_VOLUME_RAMP,
++		     ARIZONA_OUT_VD_RAMP_SHIFT,
++		     arizona_vol_ramp_text);
+ EXPORT_SYMBOL_GPL(arizona_out_vd_ramp);
+ 
+-const struct soc_enum arizona_out_vi_ramp =
+-	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_VOLUME_RAMP,
+-			ARIZONA_OUT_VI_RAMP_SHIFT, 7, arizona_vol_ramp_text);
++SOC_ENUM_SINGLE_DECL(arizona_out_vi_ramp,
++		     ARIZONA_OUTPUT_VOLUME_RAMP,
++		     ARIZONA_OUT_VI_RAMP_SHIFT,
++		     arizona_vol_ramp_text);
+ EXPORT_SYMBOL_GPL(arizona_out_vi_ramp);
+ 
+ static const char *arizona_lhpf_mode_text[] = {
+ 	"Low-pass", "High-pass"
+ };
+ 
+-const struct soc_enum arizona_lhpf1_mode =
+-	SOC_ENUM_SINGLE(ARIZONA_HPLPF1_1, ARIZONA_LHPF1_MODE_SHIFT, 2,
+-			arizona_lhpf_mode_text);
++SOC_ENUM_SINGLE_DECL(arizona_lhpf1_mode,
++		     ARIZONA_HPLPF1_1,
++		     ARIZONA_LHPF1_MODE_SHIFT,
++		     arizona_lhpf_mode_text);
+ EXPORT_SYMBOL_GPL(arizona_lhpf1_mode);
+ 
+-const struct soc_enum arizona_lhpf2_mode =
+-	SOC_ENUM_SINGLE(ARIZONA_HPLPF2_1, ARIZONA_LHPF2_MODE_SHIFT, 2,
+-			arizona_lhpf_mode_text);
++SOC_ENUM_SINGLE_DECL(arizona_lhpf2_mode,
++		     ARIZONA_HPLPF2_1,
++		     ARIZONA_LHPF2_MODE_SHIFT,
++		     arizona_lhpf_mode_text);
+ EXPORT_SYMBOL_GPL(arizona_lhpf2_mode);
+ 
+-const struct soc_enum arizona_lhpf3_mode =
+-	SOC_ENUM_SINGLE(ARIZONA_HPLPF3_1, ARIZONA_LHPF3_MODE_SHIFT, 2,
+-			arizona_lhpf_mode_text);
++SOC_ENUM_SINGLE_DECL(arizona_lhpf3_mode,
++		     ARIZONA_HPLPF3_1,
++		     ARIZONA_LHPF3_MODE_SHIFT,
++		     arizona_lhpf_mode_text);
+ EXPORT_SYMBOL_GPL(arizona_lhpf3_mode);
+ 
+-const struct soc_enum arizona_lhpf4_mode =
+-	SOC_ENUM_SINGLE(ARIZONA_HPLPF4_1, ARIZONA_LHPF4_MODE_SHIFT, 2,
+-			arizona_lhpf_mode_text);
++SOC_ENUM_SINGLE_DECL(arizona_lhpf4_mode,
++		     ARIZONA_HPLPF4_1,
++		     ARIZONA_LHPF4_MODE_SHIFT,
++		     arizona_lhpf_mode_text);
+ EXPORT_SYMBOL_GPL(arizona_lhpf4_mode);
+ 
+ static const char *arizona_ng_hold_text[] = {
+ 	"30ms", "120ms", "250ms", "500ms",
+ };
+ 
+-const struct soc_enum arizona_ng_hold =
+-	SOC_ENUM_SINGLE(ARIZONA_NOISE_GATE_CONTROL, ARIZONA_NGATE_HOLD_SHIFT,
+-			4, arizona_ng_hold_text);
++SOC_ENUM_SINGLE_DECL(arizona_ng_hold,
++		     ARIZONA_NOISE_GATE_CONTROL,
++		     ARIZONA_NGATE_HOLD_SHIFT,
++		     arizona_ng_hold_text);
+ EXPORT_SYMBOL_GPL(arizona_ng_hold);
+ 
+ static const char * const arizona_in_hpf_cut_text[] = {
+ 	"2.5Hz", "5Hz", "10Hz", "20Hz", "40Hz"
+ };
+ 
+-const struct soc_enum arizona_in_hpf_cut_enum =
+-	SOC_ENUM_SINGLE(ARIZONA_HPF_CONTROL, ARIZONA_IN_HPF_CUT_SHIFT,
+-			ARRAY_SIZE(arizona_in_hpf_cut_text),
+-			arizona_in_hpf_cut_text);
++SOC_ENUM_SINGLE_DECL(arizona_in_hpf_cut_enum,
++		     ARIZONA_HPF_CONTROL,
++		     ARIZONA_IN_HPF_CUT_SHIFT,
++		     arizona_in_hpf_cut_text);
+ EXPORT_SYMBOL_GPL(arizona_in_hpf_cut_enum);
+ 
+ static const char * const arizona_in_dmic_osr_text[] = {
 -- 
 1.8.5.2
