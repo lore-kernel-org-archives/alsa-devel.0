@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 061/102] ASoC: wm_hubs: Use
+Subject: [PATCH 075/102] ASoC: wm9705: Use
 	SOC_ENUM_SINGLE_DECL()
-Date: Tue, 18 Feb 2014 12:38:17 +0100
-Message-ID: <1392723517-12772-34-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:38:31 +0100
+Message-ID: <1392723517-12772-48-git-send-email-tiwai@suse.de>
 References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B47A02655E1
+ by alsa0.perex.cz (Postfix) with ESMTP id B91442655E6
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:38:39 +0100 (CET)
 In-Reply-To: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,53 +29,31 @@ Just replace with the helper macro.  No functional change at all.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm_hubs.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm9705.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index b371066dd5bc..b6209662ab13 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -50,16 +50,16 @@ static const char *speaker_ref_text[] = {
- 	"VMID",
- };
+diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
+index 70ce6793c5bd..c0b7f45dfa37 100644
+--- a/sound/soc/codecs/wm9705.c
++++ b/sound/soc/codecs/wm9705.c
+@@ -67,12 +67,12 @@ static const char *wm9705_mic[] = {"Mic 1", "Mic 2"};
+ static const char *wm9705_rec_sel[] = {"Mic", "CD", "NC", "NC",
+ 	"Line", "Stereo Mix", "Mono Mix", "Phone"};
  
--static const struct soc_enum speaker_ref =
--	SOC_ENUM_SINGLE(WM8993_SPEAKER_MIXER, 8, 2, speaker_ref_text);
-+static SOC_ENUM_SINGLE_DECL(speaker_ref,
-+			    WM8993_SPEAKER_MIXER, 8, speaker_ref_text);
+-static const struct soc_enum wm9705_enum_mic =
+-	SOC_ENUM_SINGLE(AC97_GENERAL_PURPOSE, 8, 2, wm9705_mic);
+-static const struct soc_enum wm9705_enum_rec_l =
+-	SOC_ENUM_SINGLE(AC97_REC_SEL, 8, 8, wm9705_rec_sel);
+-static const struct soc_enum wm9705_enum_rec_r =
+-	SOC_ENUM_SINGLE(AC97_REC_SEL, 0, 8, wm9705_rec_sel);
++static SOC_ENUM_SINGLE_DECL(wm9705_enum_mic,
++			    AC97_GENERAL_PURPOSE, 8, wm9705_mic);
++static SOC_ENUM_SINGLE_DECL(wm9705_enum_rec_l,
++			    AC97_REC_SEL, 8, wm9705_rec_sel);
++static SOC_ENUM_SINGLE_DECL(wm9705_enum_rec_r,
++			    AC97_REC_SEL, 0, wm9705_rec_sel);
  
- static const char *speaker_mode_text[] = {
- 	"Class D",
- 	"Class AB",
- };
- 
--static const struct soc_enum speaker_mode =
--	SOC_ENUM_SINGLE(WM8993_SPKMIXR_ATTENUATION, 8, 2, speaker_mode_text);
-+static SOC_ENUM_SINGLE_DECL(speaker_mode,
-+			    WM8993_SPKMIXR_ATTENUATION, 8, speaker_mode_text);
- 
- static void wait_for_dc_servo(struct snd_soc_codec *codec, unsigned int op)
- {
-@@ -735,15 +735,15 @@ static const char *hp_mux_text[] = {
- 	"DAC",
- };
- 
--static const struct soc_enum hpl_enum =
--	SOC_ENUM_SINGLE(WM8993_OUTPUT_MIXER1, 8, 2, hp_mux_text);
-+static SOC_ENUM_SINGLE_DECL(hpl_enum,
-+			    WM8993_OUTPUT_MIXER1, 8, hp_mux_text);
- 
- const struct snd_kcontrol_new wm_hubs_hpl_mux =
- 	WM_HUBS_ENUM_W("Left Headphone Mux", hpl_enum);
- EXPORT_SYMBOL_GPL(wm_hubs_hpl_mux);
- 
--static const struct soc_enum hpr_enum =
--	SOC_ENUM_SINGLE(WM8993_OUTPUT_MIXER2, 8, 2, hp_mux_text);
-+static SOC_ENUM_SINGLE_DECL(hpr_enum,
-+			    WM8993_OUTPUT_MIXER2, 8, hp_mux_text);
- 
- const struct snd_kcontrol_new wm_hubs_hpr_mux =
- 	WM_HUBS_ENUM_W("Right Headphone Mux", hpr_enum);
+ /* Headphone Mixer */
+ static const struct snd_kcontrol_new wm9705_hp_mixer_controls[] = {
 -- 
 1.8.5.2
