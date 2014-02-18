@@ -1,17 +1,14 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 1/2] ASoC: Intel: Rename SST trace event
- header to be less generic.
-Date: Tue, 18 Feb 2014 11:24:38 +0000
-Message-ID: <1392722678.2304.20.camel@loki>
-References: <1392720110-4278-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 000/105] Rename soc_enum.max field
+Date: Tue, 18 Feb 2014 12:29:24 +0100
+Message-ID: <1392722967-12472-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AF1426517F
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:24:58 +0100 (CET)
-In-Reply-To: <1392720110-4278-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26FA326516D
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:29:34 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,16 +19,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2014-02-18 at 10:41 +0000, Liam Girdwood wrote:
-> The Intel audio DSP SST trace event header has been renamed from sst.h
-> to intel-sst.h in order to avoid any confusion with any future
-> Samoa Standard Time drivers ;)
-> 
+Hi,
 
-bah, I'll need to resend this one. It passed module build, but failed on
-built-in (as I had built-in the driver for some other tests).
+this is the first chunk of the whole patch serires, preliminary works
+for renaming the confusing field name and minor clean ups in the
+relevant places.
 
-Liam 
+After this chunk, SOC_ENUM_*_DECL() macro cleanup and the actual fixes
+for the wrong number of enum items will follow.
+
+Then introduce SOC_ENUM_SINGLE_CONST() & co for omitting the explicit
+ARRAY_SIZE() call, and apply it in the later patches.
+
+
+Takashi
