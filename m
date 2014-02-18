@@ -1,18 +1,18 @@
 From: Adarsh <punia.adarsh@gmail.com>
 Subject: Heavy looping inside snd_pcm_dmix_sync_area with
  snd_pcm_sw_params_set_stop_threshold > boundary and several hours of play
-Date: Tue, 18 Feb 2014 19:32:29 +0530
-Message-ID: <CANxfbX9TBYY3f7Ofs1Z3k12aMSfX08yi4xt604QCX6_PGLsxTg@mail.gmail.com>
+Date: Tue, 18 Feb 2014 19:49:13 +0530
+Message-ID: <CANxfbX9oezg9M12=dHSWSjCAsWg_sJ35VnjBSU67WJLtEdbCQw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f177.google.com (mail-we0-f177.google.com
- [74.125.82.177])
- by alsa0.perex.cz (Postfix) with ESMTP id ABBDC2654CC
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 15:02:29 +0100 (CET)
-Received: by mail-we0-f177.google.com with SMTP id t61so11295454wes.8
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 06:02:29 -0800 (PST)
+Received: from mail-we0-f172.google.com (mail-we0-f172.google.com
+ [74.125.82.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC6F72650DB
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 15:19:13 +0100 (CET)
+Received: by mail-we0-f172.google.com with SMTP id u56so1793952wes.3
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 06:19:13 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
