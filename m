@@ -1,246 +1,126 @@
-From: Adarsh <punia.adarsh@gmail.com>
-Subject: Heavy looping inside snd_pcm_dmix_sync_area with
- snd_pcm_sw_params_set_stop_threshold > boundary and several hours of play
-Date: Tue, 18 Feb 2014 19:49:13 +0530
-Message-ID: <CANxfbX9oezg9M12=dHSWSjCAsWg_sJ35VnjBSU67WJLtEdbCQw@mail.gmail.com>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: Need your advice: Add a new communication inteface
+ between HD-Audio and Gfx drivers for hotplug notification/ELD update
+Date: Tue, 18 Feb 2014 16:22:32 +0200
+Message-ID: <20140218142232.GS3852@intel.com>
+References: <F46914AEC2663F4A9BB62374E5EEF8F82B231778@SHSMSX101.ccr.corp.intel.com>
+	<CAKMK7uFYNfVhXsEmikDZCaFGM8k7g7VMcGqGM4U+1bA_9MX1zQ@mail.gmail.com>
+	<F46914AEC2663F4A9BB62374E5EEF8F82B23315E@SHSMSX101.ccr.corp.intel.com>
+	<20140122141821.GI9772@phenom.ffwll.local>
+	<s5hd2jkj5nt.wl%tiwai@suse.de>
+	<F46914AEC2663F4A9BB62374E5EEF8F82B2342D7@SHSMSX101.ccr.corp.intel.com>
+	<s5h38kfuo4a.wl%tiwai@suse.de>
+	<CAKMK7uGT1My5hrVCZgnO5UGP5QQkXw=UBxxnaAdqTFTOxptCyw@mail.gmail.com>
+	<F46914AEC2663F4A9BB62374E5EEF8F82B277FF5@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f172.google.com (mail-we0-f172.google.com
- [74.125.82.172])
- by alsa0.perex.cz (Postfix) with ESMTP id EC6F72650DB
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 15:19:13 +0100 (CET)
-Received: by mail-we0-f172.google.com with SMTP id u56so1793952wes.3
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 06:19:13 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F82B277FF5@SHSMSX101.ccr.corp.intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces@lists.freedesktop.org
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+To: "Lin, Mengdong" <mengdong.lin@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
+	Paulo R" <paulo.r.zanoni@intel.com>, Takashi Iwai <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>, "Barnes,
+	Jesse" <jesse.barnes@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, Feb 18, 2014 at 01:58:22PM +0000, Lin, Mengdong wrote:
+> Sorry to pick up this thread after a long time.
+> =
 
-We are using RW_INTERLEAVED access as described in write_loop method in
-/test/pcm.c and opening 'default' device.
-However to disable the underruns, the snd_pcm_sw_params_set_stop_threshold
-is set to 0x7fffffff which is greater than boundary
-value. Period size is 1024 and buffer size is 2048. We try to write
-period_size no of frames using snd_pcm_writei.
+> > -----Original Message-----
+> > From: daniel.vetter@ffwll.ch [mailto:daniel.vetter@ffwll.ch] On Behalf =
+Of
+> > Daniel Vetter
+> > Sent: Thursday, January 23, 2014 4:27 PM
+> > To: Takashi Iwai
+>  =
 
-This setup runs fine for several hours. It was left runing overnight. After
-some 12 hours of play, gdb is attached to the process and continued inside
-gdb.
-At this point, the thread went into a tight loop taking >100% cpu and
-playing same sound over and over again abusing speakers.
-It did not recover for a long time.
+> > On Thu, Jan 23, 2014 at 8:57 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> > >> Thanks for clarification!
+> > >> Maybe we can add output info (eg. display port number) to the eld en=
+tries
+> > under /proc/asound/cardx. Is it okay?
+> > >
+> > > It's possible, but the proc file is just a help.  It can't be the API.
+> > > For accessing the information, we'll need some new API, or let inform
+> > > via sysfs of the new device.
+> > =
 
-Stack trace shows that 'snd_pcm_dmix_sync_area' in pcm_dmix.c is taking a
-very long time to return because the 'size' is
-a large unsinged interger and mix_areas is getting called with 'transfer'
-value of <=2048.
+> > Links in sysfs sound like the best approach. drm already has nodes for =
+each
+> > connector, so on the gfx side there's a natural endpoint already.
+> > sysfs links also avoids any naming issues from the start, e.g. the abov=
+e DP
+> > connector id might lead to clashes with multiple cards.
+> =
 
-Below is the stack trace:
-(gdb) bt
-#0  0xb7c44463 in mix_areas_32_smp (size=1360, dst=0xb6855000,
-src=0x84a7510, sum=0xb6845000, dst_step=4, src_step=4, sum_step=4) at
-pcm_dmix_i386.h:261
-#1  0xb7c44d2b in mix_areas (dmix=0x84a7110, src_areas=0x84a51d0,
-dst_areas=0x84a6f00, src_ofs=0, dst_ofs=7168, size=1024) at pcm_dmix.c:193
-#2  0xb7c45422 in snd_pcm_dmix_sync_area (pcm=0x84a71e0) at pcm_dmix.c:371
-#3  0xb7c46680 in snd_pcm_dmix_mmap_commit (pcm=0x84a71e0, offset=0,
-size=1024) at pcm_dmix.c:813
-#4  0xb7c07033 in snd_pcm_mmap_commit (pcm=0x84a71e0, offset=0,
-frames=1024) at pcm.c:6501
-#5  0xb7c1804e in snd_pcm_plugin_mmap_commit (pcm=0x84a6d18, offset=0,
-size=1024) at pcm_plugin.c:434
-#6  0xb7c07033 in snd_pcm_mmap_commit (pcm=0x84a6d18, offset=0,
-frames=1024) at pcm.c:6501
-#7  0xb7c17956 in snd_pcm_plugin_write_areas (pcm=0x84a5390,
-areas=0xb68362b0, offset=0, size=1024) at pcm_plugin.c:290
-#8  0xb7c074bb in snd1_pcm_write_areas (pcm=0x84a5390, areas=0xb68362b0,
-offset=0, size=1024, func=0xb7c177fc <snd_pcm_plugin_write_areas>) at
-pcm.c:6667
-#9  0xb7c17cd5 in snd_pcm_plugin_writei (pcm=0x84a5390, buffer=0x84ab518,
-size=1024) at pcm_plugin.c:361
-#10 0xb7bff1a7 in _snd_pcm_writei (pcm=0x84a6b18, buffer=0x84ab518,
-size=1024) at pcm_local.h:516
-#11 0xb7bff16c in snd_pcm_writei (pcm=0x84a6b18, buffer=0x84ab518,
-size=1024) at pcm.c:1258
+> Hi Daniel,
+> =
 
-(gdb) f 2
-#2  0xb7c45422 in snd_pcm_dmix_sync_area (pcm=0x84a71e0) at pcm_dmix.c:371
-  371     pcm_dmix.c: No such file or directory.
-(gdb) info locals
-  dmix = 0x84a7110
-  slave_hw_ptr = 234156032
-  slave_appl_ptr = 7168
-  slave_size = 1057171456
-  appl_ptr = 0
-  size = 1018295296
-  transfer = 1024
-  src_areas = 0x84a51d0
-  dst_areas = 0x84a6f00
-(gdb) p *dmix
-  $1 = {type = SND_PCM_TYPE_DMIX, ipc_key = 5678293, ipc_perm = 432,
-ipc_gid = 17, semid = 32768, shmid = 65536, shmptr = 0xb6859000, spcm =
-0x84a7340,
-    appl_ptr = 217121792, last_appl_ptr = 233882624, hw_ptr = 233875428,
-avail_max = 0, slave_appl_ptr = 234156032, slave_hw_ptr = 234147996,
-    slave_period_size = 1024, slave_buffer_size = 8192, slave_boundary =
-1073741824, sync_ptr = 0xb7c4557c <snd_pcm_dmix_sync_ptr>,
-    state = SND_PCM_STATE_RUNNING, trigger_tstamp = {tv_sec = 1392384066,
-tv_nsec = 8308000}, server = 0, client = 0, comm_fd = 0, hw_fd = 4,
-timer_fd = {
-      fd = 3, events = 41, revents = 0}, poll_fd = 3, tread = 1,
-timer_need_poll = 0, timer_event_suspend = 131072, timer_event_resume =
-262144,
-    server_fd = 0, server_pid = 0, timer = 0x8496b90, interleaved = 1,
-slowptr = 1, max_periods = 0, channels = 2, bindings = 0x0, u = {dmix = {
-      shmid_sum = 98305, sum_buffer = 0xb6837000, mix_areas_16 = 0xb7c443a8
-<mix_areas_16_smp_mmx>, mix_areas_32 = 0xb7c44415 <mix_areas_32_smp>,
-      mix_areas_24 = 0xb7c4451b <mix_areas_24_smp_cmov>, mix_areas_u8 = 0,
-remix_areas_16 = 0xb7c44638 <remix_areas_16_smp_mmx>,
-      remix_areas_32 = 0xb7c446a5 <remix_areas_32_smp>, remix_areas_24 =
-0xb7c447ab <remix_areas_24_smp_cmov>, remix_areas_u8 = 0},
-    dsnoop = {<No data fields>}, dshare = {chn_mask =
-13151478482154389505}}, server_free = 0}
-(gdb) p *pcm
-$2 = {dl_handle = 0x0, name = 0x84a6e48 "dmix:0", type = SND_PCM_TYPE_DMIX,
-stream = SND_PCM_STREAM_PLAYBACK, mode = 0, poll_fd_count = 1, poll_fd = 3,
-  poll_events = 1, setup = -1, monotonic = 0, access =
-SND_PCM_ACCESS_MMAP_INTERLEAVED, format = SND_PCM_FORMAT_S32_LE, subformat
-= SND_PCM_SUBFORMAT_STD,
-  channels = 2, rate = 44100, period_size = 1024, period_time = 23219,
-periods = {min = 0, max = 0, openmin = 0, openmax = 0, integer = 0, empty =
-0},
-  tstamp_mode = SND_PCM_TSTAMP_NONE, period_step = 1, avail_min = 1024,
-period_event = 0, start_threshold = 1024, stop_threshold = 2147483647,
-  silence_threshold = 0, silence_size = 0, boundary = 1073741824, info =
-2151743747, msbits = 32, rate_num = 44100, rate_den = 1, hw_flags = 0,
-  fifo_size = 0, buffer_size = 2048, buffer_time = {min = 0, max = 0,
-openmin = 0, openmax = 0, integer = 0, empty = 0}, sample_bits = 32,
-  frame_bits = 64, appl = {master = 0x0, ptr = 0x84a7130, fd = -1, offset =
-0, link_dst_count = 0, link_dst = 0x0, private_data = 0x0, changed = 0}, hw
-= {
-    master = 0x0, ptr = 0x84a7138, fd = -1, offset = 0, link_dst_count = 0,
-link_dst = 0x0, private_data = 0x0, changed = 0}, min_align = 1, mmap_rw =
-1,
-  mmap_shadow = 0, donot_close = 0, mmap_channels = 0x84a54a0,
-running_areas = 0x84a51d0, stopped_areas = 0x0, ops = 0xb7c91860, fast_ops
-= 0xb7c918a0,
-  op_arg = 0x84a71e0, fast_op_arg = 0x84a71e0, private_data = 0x84a7110,
-async_handlers = {next = 0x84a72e4, prev = 0x84a72e4}}
+> Is there a 1:1 mapping between these connector nodes and ports of Gfx dis=
+play engine?
+> Eg. For Haswell Ultrabook, under /sys/devices/pci0000:00/0000:00:02.0/drm=
+/card0/
+> There are four connector nodes, =
 
-Attaching gdb does not show this behaviour if
-snd_pcm_sw_params_set_stop_threshold is not set, which then defaults to
-buffer size or when the
-application is running for shorter duration.
+> card0-DP-1		-> DDI port B
+> card0-eDP-1/		-> DDI port A
+> card0-HDMI-A-1/	-> DDI Port C
+> card0-HDMI-A-2/	-> Which DDI port ?  Haswell-ULT does not support port D,=
+ and I think port E is for VGA.
 
-Is it that setting of stop threshold to 0x7fffffff is triggering this and
-attaching gdb is making the buffer pointers misbehave?
-If so, what can be done if we do not want PCM to stop.
+There's no fixed mapping with the port and the connector name. The
+number in the connector name is basically just a running number per
+connector type. However I do believe we do register the connectors
+in the order of the ports more or less always, so you can
+*sometimes* deduce the port name from the connector.
 
-Below is the pcm dump:
-Plug PCM: Linear conversion PCM (S32_LE)
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 2048
-  period_size  : 1024
-  period_time  : 23219
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 1024
-  stop_threshold   : 2147483647
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Slave: Soft volume PCM
-Control: PCM Playback Volume
-min_dB: -51
-max_dB: 0
-resolution: 256
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S32_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 32
-  buffer_size  : 2048
-  period_size  : 1024
-  period_time  : 23219
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 1024
-  stop_threshold   : 2147483647
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Slave: Direct Stream Mixing PCM
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S32_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 32
-  buffer_size  : 2048
-  period_size  : 1024
-  period_time  : 23219
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 1024
-  stop_threshold   : 2147483647
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Hardware PCM card 0 'HDA Intel PCH' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S32_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 32
-  buffer_size  : 8192
-  period_size  : 1024
-  period_time  : 23219
-  tstamp_mode  : ENABLE
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 1
-  stop_threshold   : 1073741824
-  silence_threshold: 0
-  silence_size : 1073741824
-  boundary     : 1073741824
-  appl_ptr     : 0
-  hw_ptr       : 0
+I suppose in this example HDMI-A-1 is port B, HDMI-A-2 is port C, and
+DP-1 can be either port B or port C. DP++ is the reason why we have
+overlapping DP and HDMI connectors for the same port.
 
-Thanks
+> =
+
+> Hi Takashi,
+> =
+
+> To make user space figure out which audio output is connected to which sc=
+reen (connector), maybe we can define a new ALSA control for each HDMI/DP P=
+CM device:
+> e.g. numid=3Dx,iface=3DPCM,name=3D'Screen',device=3D3
+> Reading the control will return the name of the DRM connector nodes like =
+' card0-DP-1'. The audio driver can get the connector name from the gfx dri=
+ver.
+> =
+
+> For DP1.2 Multi-stream transport, it's not supported by i915 and HD-A dri=
+ver now. But probably there will be sub-nodes for the DP connector node in =
+the future and an index in their name can be used distinguish monitors conn=
+ected to the same DP port, like card0-DP-1.1, card0-DP-1.2, card0-DP-1.3 ..=
+. These names can be used by the above ALSA PCM 'Screen' control, so we can=
+ still know which audio output is to which monitor.
+> =
+
+> Thanks
+> Mengdong
+> =
+
+> _______________________________________________
+> Intel-gfx mailing list
+> Intel-gfx@lists.freedesktop.org
+> http://lists.freedesktop.org/mailman/listinfo/intel-gfx
+
+-- =
+
+Ville Syrj=E4l=E4
+Intel OTC
