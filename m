@@ -1,7 +1,7 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 05/17 v2] ASoC: adav80x: Update locking around use of DAPM pin API
-Date: Tue, 18 Feb 2014 15:22:16 +0000
-Message-ID: <1392736948-26623-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 07/17 v2] ASoC: wm8962: Update locking around use of DAPM pin API
+Date: Tue, 18 Feb 2014 15:22:18 +0000
+Message-ID: <1392736948-26623-8-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
@@ -15,56 +15,43 @@ atomically, update to do so.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/adav80x.c |   17 +++++++++++------
- 1 files changed, 11 insertions(+), 6 deletions(-)
+ sound/soc/codecs/wm8962.c |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
-index 09d5609..9eb53c8 100644
---- a/sound/soc/codecs/adav80x.c
-+++ b/sound/soc/codecs/adav80x.c
-@@ -539,6 +539,7 @@ static int adav80x_set_sysclk(struct snd_soc_codec *codec,
- 			      unsigned int freq, int dir)
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index c06bb50..3be4633 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3106,6 +3106,7 @@ static irqreturn_t wm8962_irq(int irq, void *data)
+ int wm8962_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
  {
- 	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
+ 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int irq_mask, enable;
  
- 	if (dir == SND_SOC_CLOCK_IN) {
- 		switch (clk_id) {
-@@ -571,7 +572,7 @@ static int adav80x_set_sysclk(struct snd_soc_codec *codec,
- 			regmap_write(adav80x->regmap, ADAV80X_ICLK_CTRL2,
- 				iclk_ctrl2);
+ 	wm8962->jack = jack;
+@@ -3126,14 +3127,18 @@ int wm8962_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
+ 	snd_soc_jack_report(wm8962->jack, 0,
+ 			    SND_JACK_MICROPHONE | SND_JACK_BTN_0);
  
--			snd_soc_dapm_sync(&codec->dapm);
-+			snd_soc_dapm_sync(dapm);
- 		}
++	snd_soc_dapm_mutex_lock(dapm);
++
+ 	if (jack) {
+-		snd_soc_dapm_force_enable_pin(&codec->dapm, "SYSCLK");
+-		snd_soc_dapm_force_enable_pin(&codec->dapm, "MICBIAS");
++		snd_soc_dapm_force_enable_pin_unlocked(dapm, "SYSCLK");
++		snd_soc_dapm_force_enable_pin_unlocked(dapm, "MICBIAS");
  	} else {
- 		unsigned int mask;
-@@ -598,17 +599,21 @@ static int adav80x_set_sysclk(struct snd_soc_codec *codec,
- 			adav80x->sysclk_pd[clk_id] = false;
- 		}
- 
-+		snd_soc_dapm_mutex_lock(dapm);
-+
- 		if (adav80x->sysclk_pd[0])
--			snd_soc_dapm_disable_pin(&codec->dapm, "PLL1");
-+			snd_soc_dapm_disable_pin_unlocked(dapm, "PLL1");
- 		else
--			snd_soc_dapm_force_enable_pin(&codec->dapm, "PLL1");
-+			snd_soc_dapm_force_enable_pin_unlocked(dapm, "PLL1");
- 
- 		if (adav80x->sysclk_pd[1] || adav80x->sysclk_pd[2])
--			snd_soc_dapm_disable_pin(&codec->dapm, "PLL2");
-+			snd_soc_dapm_disable_pin_unlocked(dapm, "PLL2");
- 		else
--			snd_soc_dapm_force_enable_pin(&codec->dapm, "PLL2");
-+			snd_soc_dapm_force_enable_pin_unlocked(dapm, "PLL2");
- 
--		snd_soc_dapm_sync(&codec->dapm);
-+		snd_soc_dapm_sync_unlocked(dapm);
-+
-+		snd_soc_dapm_mutex_unlock(dapm);
+-		snd_soc_dapm_disable_pin(&codec->dapm, "SYSCLK");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "MICBIAS");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "SYSCLK");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "MICBIAS");
  	}
  
++	snd_soc_dapm_mutex_unlock(dapm);
++
  	return 0;
+ }
+ EXPORT_SYMBOL_GPL(wm8962_mic_detect);
 -- 
 1.7.2.5
