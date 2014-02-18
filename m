@@ -1,49 +1,73 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 09/17 v2] ASoC: wm8996: Update locking around use of DAPM pin API
-Date: Tue, 18 Feb 2014 15:22:20 +0000
-Message-ID: <1392736948-26623-10-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH 021/102] ASoC: ssm2602: Omit superfluous
+ elements in input select array
+Date: Tue, 18 Feb 2014 15:35:33 +0000
+Message-ID: <1392737733.2304.36.camel@loki>
+References: <1392723422-12689-1-git-send-email-tiwai@suse.de>
+ <1392723422-12689-6-git-send-email-tiwai@suse.de> <53034B23.703@metafoo.de>
+ <1392729807.2304.29.camel@loki> <s5hioscy2fo.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA38326530A
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 16:36:09 +0100 (CET)
+In-Reply-To: <s5hioscy2fo.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The pin updates in this driver look like they are intended to be done
-atomically, update to do so.
+On Tue, 2014-02-18 at 14:29 +0100, Takashi Iwai wrote:
+> At Tue, 18 Feb 2014 13:23:27 +0000,
+> Liam Girdwood wrote:
+> > 
+> > On Tue, 2014-02-18 at 12:59 +0100, Lars-Peter Clausen wrote:
+> > > On 02/18/2014 12:36 PM, Takashi Iwai wrote:
+> > > > The array contains too many elements although it should have only
+> > > > two.
+> > > >
+> > > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > > > ---
+> > > >   sound/soc/codecs/ssm2602.c | 9 +++++----
+> > > >   1 file changed, 5 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+> > > > index f444d585b916..e32b82ff6304 100644
+> > > > --- a/sound/soc/codecs/ssm2602.c
+> > > > +++ b/sound/soc/codecs/ssm2602.c
+> > > > @@ -75,15 +75,16 @@ static const u16 ssm2602_reg[SSM2602_CACHEREGNUM] = {
+> > > >
+> > > >   /*Appending several "None"s just for OSS mixer use*/
+> > > >   static const char *ssm2602_input_select[] = {
+> > > > -	"Line", "Mic", "None", "None", "None",
+> > > > -	"None", "None", "None",
+> > > > +	"Line", "Mic",
+> > > >   };
+> > > 
+> > > I never dared to change it because of the comment above the array. I must 
+> > > admit that I have no idea though why those extra None entries are necessary 
+> > > for OSS.
+> > 
+> > iirc the OSS input mixer in userspace may expect a similar number of
+> > entries to be compatible with the old Soundblaster16 input mixer ?
+> 
+> But this array is referred as having only two elements,
+> 
+> 	SOC_ENUM_SINGLE(SSM2602_APANA, 2, 2, ssm2602_input_select),
+> 
+> so the OSS access (via emulation) won't take more than two, either.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8996.c |    9 +++++++--
- 1 files changed, 7 insertions(+), 2 deletions(-)
+Hmm, that is quite odd then. Maybe an error on behalf of the original
+author or just plain weirdness...
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 1a7655b..d565d0a 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -2251,6 +2251,7 @@ int wm8996_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
- 		  wm8996_polarity_fn polarity_cb)
- {
- 	struct wm8996_priv *wm8996 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 
- 	wm8996->jack = jack;
- 	wm8996->detecting = true;
-@@ -2267,8 +2268,12 @@ int wm8996_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
- 			    WM8996_MICB2_DISCH, 0);
- 
- 	/* LDO2 powers the microphones, SYSCLK clocks detection */
--	snd_soc_dapm_force_enable_pin(&codec->dapm, "LDO2");
--	snd_soc_dapm_force_enable_pin(&codec->dapm, "SYSCLK");
-+	snd_soc_dapm_mutex_lock(dapm);
-+
-+	snd_soc_dapm_force_enable_pin_unlocked(dapm, "LDO2");
-+	snd_soc_dapm_force_enable_pin_unlocked(dapm, "SYSCLK");
-+
-+	snd_soc_dapm_mutex_unlock(dapm);
- 
- 	/* We start off just enabling microphone detection - even a
- 	 * plain headphone will trigger detection.
--- 
-1.7.2.5
+Liam
