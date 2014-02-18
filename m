@@ -1,13 +1,28 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 10/17 v2] ASoC: mfld_machine: Update locking around use of DAPM pin API
-Date: Tue, 18 Feb 2014 15:22:21 +0000
-Message-ID: <1392736948-26623-11-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 06/17 v2] ASoC: wm5100: Update locking around
+	use of DAPM pin API
+Date: Tue, 18 Feb 2014 15:22:17 +0000
+Message-ID: <1392736948-26623-7-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 967862652DB
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 16:30:51 +0100 (CET)
 In-Reply-To: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org
-Cc: myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, eric.y.miao@gmail.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, patches@opensource.wolfsonmicro.com, linux@arm.linux.org.uk, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
 The pin updates in this driver look like they are intended to be done
@@ -15,138 +30,38 @@ atomically, update to do so.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/intel/mfld_machine.c |   65 +++++++++++++++++++++++++---------------
- 1 files changed, 41 insertions(+), 24 deletions(-)
+ sound/soc/codecs/wm5100.c |   12 +++++++++---
+ 1 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/mfld_machine.c b/sound/soc/intel/mfld_machine.c
-index d3d4c32..0cef32e 100644
---- a/sound/soc/intel/mfld_machine.c
-+++ b/sound/soc/intel/mfld_machine.c
-@@ -101,20 +101,27 @@ static int headset_set_switch(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index 4e3e31a..492fe84 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -2100,6 +2100,7 @@ static void wm5100_micd_irq(struct wm5100_priv *wm5100)
+ int wm5100_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
  {
- 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+ 	struct wm5100_priv *wm5100 = snd_soc_codec_get_drvdata(codec);
 +	struct snd_soc_dapm_context *dapm = &codec->dapm;
  
- 	if (ucontrol->value.integer.value[0] == hs_switch)
- 		return 0;
+ 	if (jack) {
+ 		wm5100->jack = jack;
+@@ -2117,9 +2118,14 @@ int wm5100_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
+ 				    WM5100_ACCDET_RATE_MASK);
  
-+	snd_soc_dapm_mutex_lock(dapm);
+ 		/* We need the charge pump to power MICBIAS */
+-		snd_soc_dapm_force_enable_pin(&codec->dapm, "CP2");
+-		snd_soc_dapm_force_enable_pin(&codec->dapm, "SYSCLK");
+-		snd_soc_dapm_sync(&codec->dapm);
++		snd_soc_dapm_mutex_lock(dapm);
 +
- 	if (ucontrol->value.integer.value[0]) {
- 		pr_debug("hs_set HS path\n");
--		snd_soc_dapm_enable_pin(&codec->dapm, "Headphones");
--		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "Headphones");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "EPOUT");
- 	} else {
- 		pr_debug("hs_set EP path\n");
--		snd_soc_dapm_disable_pin(&codec->dapm, "Headphones");
--		snd_soc_dapm_enable_pin(&codec->dapm, "EPOUT");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphones");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "EPOUT");
- 	}
--	snd_soc_dapm_sync(&codec->dapm);
++		snd_soc_dapm_force_enable_pin_unlocked(dapm, "CP2");
++		snd_soc_dapm_force_enable_pin_unlocked(dapm, "SYSCLK");
 +
-+	snd_soc_dapm_sync_unlocked(dapm);
++		snd_soc_dapm_sync_unlocked(dapm);
 +
-+	snd_soc_dapm_mutex_unlock(dapm);
-+
- 	hs_switch = ucontrol->value.integer.value[0];
++		snd_soc_dapm_mutex_unlock(dapm);
  
- 	return 0;
-@@ -122,18 +129,20 @@ static int headset_set_switch(struct snd_kcontrol *kcontrol,
- 
- static void lo_enable_out_pins(struct snd_soc_codec *codec)
- {
--	snd_soc_dapm_enable_pin(&codec->dapm, "IHFOUTL");
--	snd_soc_dapm_enable_pin(&codec->dapm, "IHFOUTR");
--	snd_soc_dapm_enable_pin(&codec->dapm, "LINEOUTL");
--	snd_soc_dapm_enable_pin(&codec->dapm, "LINEOUTR");
--	snd_soc_dapm_enable_pin(&codec->dapm, "VIB1OUT");
--	snd_soc_dapm_enable_pin(&codec->dapm, "VIB2OUT");
-+	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+
-+	snd_soc_dapm_enable_pin_unlocked(dapm, "IHFOUTL");
-+	snd_soc_dapm_enable_pin_unlocked(dapm, "IHFOUTR");
-+	snd_soc_dapm_enable_pin_unlocked(dapm, "LINEOUTL");
-+	snd_soc_dapm_enable_pin_unlocked(dapm, "LINEOUTR");
-+	snd_soc_dapm_enable_pin_unlocked(dapm, "VIB1OUT");
-+	snd_soc_dapm_enable_pin_unlocked(dapm, "VIB2OUT");
- 	if (hs_switch) {
--		snd_soc_dapm_enable_pin(&codec->dapm, "Headphones");
--		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "Headphones");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "EPOUT");
- 	} else {
--		snd_soc_dapm_disable_pin(&codec->dapm, "Headphones");
--		snd_soc_dapm_enable_pin(&codec->dapm, "EPOUT");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphones");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "EPOUT");
- 	}
- }
- 
-@@ -148,44 +157,52 @@ static int lo_set_switch(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 
- 	if (ucontrol->value.integer.value[0] == lo_dac)
- 		return 0;
- 
-+	snd_soc_dapm_mutex_lock(dapm);
-+
- 	/* we dont want to work with last state of lineout so just enable all
- 	 * pins and then disable pins not required
- 	 */
- 	lo_enable_out_pins(codec);
-+
- 	switch (ucontrol->value.integer.value[0]) {
- 	case 0:
- 		pr_debug("set vibra path\n");
--		snd_soc_dapm_disable_pin(&codec->dapm, "VIB1OUT");
--		snd_soc_dapm_disable_pin(&codec->dapm, "VIB2OUT");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "VIB1OUT");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "VIB2OUT");
- 		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0);
- 		break;
- 
- 	case 1:
- 		pr_debug("set hs  path\n");
--		snd_soc_dapm_disable_pin(&codec->dapm, "Headphones");
--		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphones");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "EPOUT");
- 		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0x22);
- 		break;
- 
- 	case 2:
- 		pr_debug("set spkr path\n");
--		snd_soc_dapm_disable_pin(&codec->dapm, "IHFOUTL");
--		snd_soc_dapm_disable_pin(&codec->dapm, "IHFOUTR");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "IHFOUTL");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "IHFOUTR");
- 		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0x44);
- 		break;
- 
- 	case 3:
- 		pr_debug("set null path\n");
--		snd_soc_dapm_disable_pin(&codec->dapm, "LINEOUTL");
--		snd_soc_dapm_disable_pin(&codec->dapm, "LINEOUTR");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "LINEOUTL");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "LINEOUTR");
- 		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0x66);
- 		break;
- 	}
--	snd_soc_dapm_sync(&codec->dapm);
-+
-+	snd_soc_dapm_sync_unlocked(dapm);
-+
-+	snd_soc_dapm_mutex_unlock(dapm);
-+
- 	lo_dac = ucontrol->value.integer.value[0];
- 	return 0;
- }
+ 		/* We start off just enabling microphone detection - even a
+ 		 * plain headphone will trigger detection.
 -- 
 1.7.2.5
