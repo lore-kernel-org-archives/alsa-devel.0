@@ -1,65 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 04/15] ASoC: wm5100: Update locking around use of DAPM
- pin API
-Date: Tue, 18 Feb 2014 09:47:29 +0900
-Message-ID: <20140218004729.GK2669@sirena.org.uk>
-References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1392655903-24537-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Adam Williamson <awilliam@redhat.com>
+Subject: Re: Unsupported Valley View 'LPE' adapter?
+Date: Mon, 17 Feb 2014 16:48:32 -0800
+Message-ID: <1392684512.2924.12.camel@adam.happyassassin.net>
+References: <1385840039.2566.12.camel@adam.happyassassin.net>
+ <529A5C6A.70604@ladisch.de>
+ <1385865517.2566.36.camel@adam.happyassassin.net>
+ <20131202063216.GJ8834@intel.com>
+ <1386035807.2566.145.camel@adam.happyassassin.net>
+ <1388369981.15622.7.camel@adam.happyassassin.net>
+ <1388370192.15622.8.camel@adam.happyassassin.net>
+ <s5hwqiebsuo.wl%tiwai@suse.de> <loom.20140217T104754-228@post.gmane.org>
+ <1392684057.2527.3.camel@xps13.happyassassin.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rwbb4r/vLufKlfJs"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1392655903-24537-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 361BD265086
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 01:48:36 +0100 (CET)
+In-Reply-To: <1392684057.2527.3.camel@xps13.happyassassin.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: bobby <bseventynine@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2014-02-17 at 16:40 -0800, Adam Williamson wrote:
+> On Mon, 2014-02-17 at 09:54 +0000, bobby wrote:
+> > 
+> > This is a pci device for which the driver is not yet available.
+> > I went through the intel atom processor manual and found that it has 3 I2S 
+> > ports, has its 
+> > own DMA. The Soc is interfaced with LPE audio core via internal PCI bus. 
+> > Did you guys hear anything from intel about the driver support. Any inputs 
+> > would be of great help please
+> 
+> Jan Michael Brummer at Intel pointed this out to me recently:
+> 
+> https://kernel.googlesource.com/pub/scm/linux/kernel/git/lrg/asoc/+/intel/haswell-audio-dsp%5E
+> 
+> looks like it's being worked on.
 
---rwbb4r/vLufKlfJs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Heh, that's actually just a mirror of the git ASoC branch. All those
+patches went through this very list last week. I don't know precisely
+how the upstreaming process goes for this stuff, but I'm guessing it'll
+wind up in 3.14 or 3.15.
 
-On Mon, Feb 17, 2014 at 04:51:32PM +0000, Charles Keepax wrote:
-
-> +		snd_soc_dapm_force_enable_pin_locked(&codec->dapm, "CP2");
-> +		snd_soc_dapm_force_enable_pin_locked(&codec->dapm, "SYSCLK");
-> +
-> +		mutex_unlock(&codec->dapm.card->dapm_mutex);
-> +
->  		snd_soc_dapm_sync(&codec->dapm);
-
-With all these patches it seems weird that we have to drop the lock to
-do the sync which will immediately retake it.  It's not broken but it
-looks off - it would be better to have a version of _sync() that we can
-call within the lock.
-
-Regarding the naming issue that Lars mentioned I think the current
-operations are probably fine but calling them _unlocked() meaning they
-don't do any locking (as distinct from the existing _locked() which take
-locks) might be OK.
-
---rwbb4r/vLufKlfJs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTAq2eAAoJELSic+t+oim9HiQP/2sz66TMg6Ccj16U26xSuj9k
-AUvoqERSgUkYX1MNjja4GEJQd3J5ZW+HUZ4bDbDzgksX3SEqHtrDAbGYAE/7s5Os
-gfTG2Rkp4iDwHevcLUsbdLvoOdCRzakSqnU15I8kzg1+0UpK7EfLP7RgXtUELl5O
-LkXD7aJD+DhrYsflJYd/L6DWwltgJRUpN8k8W28eN9vcx3RHPUY5pTLhrQNGgzwJ
-HFV14sAfhdBRHoRa6ZDy/j2AOkbz/Ni9vMWH4kd5N0iBtjhcgniibjm7mRu2yxZq
-LeNEz8wh3qPGI2Dh8QmIdqeYA3ZkNDieO6yJw3u63kJ0HO6Oz6gm7iB07xuJ4Snf
-PHcGW5Tx0yjT0RgZ8rqVs+muJW3Eq1FQxNgzW7PvwBkJ27I4Wgu0mjSA7qBxO7PY
-0UoJMijOdDAUZeWChuw91lcWXPvgcnt/9ETG484YbH8fqJs5/4pITyt6ubhZxQpt
-O7k9kRZZEEp90zj6dBnBb5OfF4yDkV0KfKTm5vCR1v567nq/kxzUQqhhSb01wwjH
-RFEDDtPYd3I2sNulG3CgXt9S4+ydjX+JmqcvIXuWJ8c69idS8Jry6aNA3du7IhPJ
-LuumBKIQWrTg6FfGXg2EuiKhn8i8OIbE2awlRaQl3iFXwbK4FDahwW2ViSLOaf7a
-Qz40S43vBBjnjPkyknaZ
-=o9sN
------END PGP SIGNATURE-----
-
---rwbb4r/vLufKlfJs--
+(I may try building the patches into my Fedlet kernel builds and see if
+that gets anywhere...)
+-- 
+Adam Williamson
+Fedora QA Community Monkey
+IRC: adamw | Twitter: AdamW_Fedora | XMPP: adamw AT happyassassin . net
+http://www.happyassassin.net
