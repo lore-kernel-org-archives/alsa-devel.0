@@ -1,7 +1,7 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 12/17 v2] ASoC: omap: n810: Update locking around use of DAPM pin API
-Date: Tue, 18 Feb 2014 15:22:23 +0000
-Message-ID: <1392736948-26623-13-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 10/17 v2] ASoC: mfld_machine: Update locking around use of DAPM pin API
+Date: Tue, 18 Feb 2014 15:22:21 +0000
+Message-ID: <1392736948-26623-11-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
@@ -15,52 +15,138 @@ atomically, update to do so.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/omap/n810.c |   22 +++++++++++++---------
- 1 files changed, 13 insertions(+), 9 deletions(-)
+ sound/soc/intel/mfld_machine.c |   65 +++++++++++++++++++++++++---------------
+ 1 files changed, 41 insertions(+), 24 deletions(-)
 
-diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
-index 3fde9e4..480a39c 100644
---- a/sound/soc/omap/n810.c
-+++ b/sound/soc/omap/n810.c
-@@ -68,26 +68,30 @@ static void n810_ext_control(struct snd_soc_dapm_context *dapm)
- 		break;
- 	}
+diff --git a/sound/soc/intel/mfld_machine.c b/sound/soc/intel/mfld_machine.c
+index d3d4c32..0cef32e 100644
+--- a/sound/soc/intel/mfld_machine.c
++++ b/sound/soc/intel/mfld_machine.c
+@@ -101,20 +101,27 @@ static int headset_set_switch(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
++	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 
+ 	if (ucontrol->value.integer.value[0] == hs_switch)
+ 		return 0;
  
 +	snd_soc_dapm_mutex_lock(dapm);
 +
- 	if (n810_spk_func)
--		snd_soc_dapm_enable_pin(dapm, "Ext Spk");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "Ext Spk");
- 	else
--		snd_soc_dapm_disable_pin(dapm, "Ext Spk");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Ext Spk");
- 
- 	if (hp)
--		snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "Headphone Jack");
- 	else
--		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphone Jack");
- 	if (line1l)
--		snd_soc_dapm_enable_pin(dapm, "LINE1L");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "LINE1L");
- 	else
--		snd_soc_dapm_disable_pin(dapm, "LINE1L");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "LINE1L");
- 
- 	if (n810_dmic_func)
--		snd_soc_dapm_enable_pin(dapm, "DMic");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "DMic");
- 	else
--		snd_soc_dapm_disable_pin(dapm, "DMic");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "DMic");
+ 	if (ucontrol->value.integer.value[0]) {
+ 		pr_debug("hs_set HS path\n");
+-		snd_soc_dapm_enable_pin(&codec->dapm, "Headphones");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
++		snd_soc_dapm_enable_pin_unlocked(dapm, "Headphones");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "EPOUT");
+ 	} else {
+ 		pr_debug("hs_set EP path\n");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "Headphones");
+-		snd_soc_dapm_enable_pin(&codec->dapm, "EPOUT");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphones");
++		snd_soc_dapm_enable_pin_unlocked(dapm, "EPOUT");
+ 	}
+-	snd_soc_dapm_sync(&codec->dapm);
 +
 +	snd_soc_dapm_sync_unlocked(dapm);
- 
--	snd_soc_dapm_sync(dapm);
++
 +	snd_soc_dapm_mutex_unlock(dapm);
++
+ 	hs_switch = ucontrol->value.integer.value[0];
+ 
+ 	return 0;
+@@ -122,18 +129,20 @@ static int headset_set_switch(struct snd_kcontrol *kcontrol,
+ 
+ static void lo_enable_out_pins(struct snd_soc_codec *codec)
+ {
+-	snd_soc_dapm_enable_pin(&codec->dapm, "IHFOUTL");
+-	snd_soc_dapm_enable_pin(&codec->dapm, "IHFOUTR");
+-	snd_soc_dapm_enable_pin(&codec->dapm, "LINEOUTL");
+-	snd_soc_dapm_enable_pin(&codec->dapm, "LINEOUTR");
+-	snd_soc_dapm_enable_pin(&codec->dapm, "VIB1OUT");
+-	snd_soc_dapm_enable_pin(&codec->dapm, "VIB2OUT");
++	struct snd_soc_dapm_context *dapm = &codec->dapm;
++
++	snd_soc_dapm_enable_pin_unlocked(dapm, "IHFOUTL");
++	snd_soc_dapm_enable_pin_unlocked(dapm, "IHFOUTR");
++	snd_soc_dapm_enable_pin_unlocked(dapm, "LINEOUTL");
++	snd_soc_dapm_enable_pin_unlocked(dapm, "LINEOUTR");
++	snd_soc_dapm_enable_pin_unlocked(dapm, "VIB1OUT");
++	snd_soc_dapm_enable_pin_unlocked(dapm, "VIB2OUT");
+ 	if (hs_switch) {
+-		snd_soc_dapm_enable_pin(&codec->dapm, "Headphones");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
++		snd_soc_dapm_enable_pin_unlocked(dapm, "Headphones");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "EPOUT");
+ 	} else {
+-		snd_soc_dapm_disable_pin(&codec->dapm, "Headphones");
+-		snd_soc_dapm_enable_pin(&codec->dapm, "EPOUT");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphones");
++		snd_soc_dapm_enable_pin_unlocked(dapm, "EPOUT");
+ 	}
  }
  
- static int n810_startup(struct snd_pcm_substream *substream)
+@@ -148,44 +157,52 @@ static int lo_set_switch(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
++	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 
+ 	if (ucontrol->value.integer.value[0] == lo_dac)
+ 		return 0;
+ 
++	snd_soc_dapm_mutex_lock(dapm);
++
+ 	/* we dont want to work with last state of lineout so just enable all
+ 	 * pins and then disable pins not required
+ 	 */
+ 	lo_enable_out_pins(codec);
++
+ 	switch (ucontrol->value.integer.value[0]) {
+ 	case 0:
+ 		pr_debug("set vibra path\n");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "VIB1OUT");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "VIB2OUT");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "VIB1OUT");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "VIB2OUT");
+ 		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0);
+ 		break;
+ 
+ 	case 1:
+ 		pr_debug("set hs  path\n");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "Headphones");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphones");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "EPOUT");
+ 		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0x22);
+ 		break;
+ 
+ 	case 2:
+ 		pr_debug("set spkr path\n");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "IHFOUTL");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "IHFOUTR");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "IHFOUTL");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "IHFOUTR");
+ 		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0x44);
+ 		break;
+ 
+ 	case 3:
+ 		pr_debug("set null path\n");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "LINEOUTL");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "LINEOUTR");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "LINEOUTL");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "LINEOUTR");
+ 		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0x66);
+ 		break;
+ 	}
+-	snd_soc_dapm_sync(&codec->dapm);
++
++	snd_soc_dapm_sync_unlocked(dapm);
++
++	snd_soc_dapm_mutex_unlock(dapm);
++
+ 	lo_dac = ucontrol->value.integer.value[0];
+ 	return 0;
+ }
 -- 
 1.7.2.5
