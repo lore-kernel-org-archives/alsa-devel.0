@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 100/102] ASoC: wm9712: Use
+Subject: [PATCH 102/102] ASoC: wm_adsp: Use
 	SOC_ENUM_SINGLE_CONST()
-Date: Tue, 18 Feb 2014 12:51:46 +0100
-Message-ID: <1392724308-13375-20-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:51:48 +0100
+Message-ID: <1392724308-13375-22-git-send-email-tiwai@suse.de>
 References: <1392724308-13375-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 674E626576C
+ by alsa0.perex.cz (Postfix) with ESMTP id 69CC226576D
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:51:52 +0100 (CET)
 In-Reply-To: <1392724308-13375-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,43 +29,27 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm9712.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index c5eb746087b4..0327fff492bb 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -74,18 +74,18 @@ static const DECLARE_TLV_DB_SCALE(main_tlv, -3450, 150, 0);
- static const DECLARE_TLV_DB_SCALE(boost_tlv, 0, 2000, 0);
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index f9fd56444a14..34e79d26922b 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -273,10 +273,10 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ }
  
- static const struct soc_enum wm9712_enum[] = {
--SOC_ENUM_SINGLE(AC97_PCI_SVID, 14, 4, wm9712_alc_select),
--SOC_ENUM_SINGLE(AC97_VIDEO, 12, 4, wm9712_alc_mux),
--SOC_ENUM_SINGLE(AC97_AUX, 9, 4, wm9712_out3_src),
--SOC_ENUM_SINGLE(AC97_AUX, 8, 2, wm9712_spk_src),
--SOC_ENUM_SINGLE(AC97_REC_SEL, 12, 4, wm9712_rec_adc),
--SOC_ENUM_SINGLE(AC97_MASTER_TONE, 15, 2, wm9712_base),
--SOC_ENUM_DOUBLE(AC97_REC_GAIN, 14, 6, 2, wm9712_rec_gain),
--SOC_ENUM_SINGLE(AC97_MIC, 5, 4, wm9712_mic),
--SOC_ENUM_SINGLE(AC97_REC_SEL, 8, 8, wm9712_rec_sel),
--SOC_ENUM_SINGLE(AC97_REC_SEL, 0, 8, wm9712_rec_sel),
--SOC_ENUM_SINGLE(AC97_PCI_SVID, 5, 2, wm9712_ng_type),
--SOC_ENUM_SINGLE(0x5c, 8, 2, wm9712_diff_sel),
-+SOC_ENUM_SINGLE_CONST(AC97_PCI_SVID, 14, wm9712_alc_select),
-+SOC_ENUM_SINGLE_CONST(AC97_VIDEO, 12, wm9712_alc_mux),
-+SOC_ENUM_SINGLE_CONST(AC97_AUX, 9, wm9712_out3_src),
-+SOC_ENUM_SINGLE_CONST(AC97_AUX, 8, wm9712_spk_src),
-+SOC_ENUM_SINGLE_CONST(AC97_REC_SEL, 12, wm9712_rec_adc),
-+SOC_ENUM_SINGLE_CONST(AC97_MASTER_TONE, 15, wm9712_base),
-+SOC_ENUM_DOUBLE_CONST(AC97_REC_GAIN, 14, 6, wm9712_rec_gain),
-+SOC_ENUM_SINGLE_CONST(AC97_MIC, 5, wm9712_mic),
-+SOC_ENUM_SINGLE_CONST(AC97_REC_SEL, 8, wm9712_rec_sel),
-+SOC_ENUM_SINGLE_CONST(AC97_REC_SEL, 0, wm9712_rec_sel),
-+SOC_ENUM_SINGLE_CONST(AC97_PCI_SVID, 5, wm9712_ng_type),
-+SOC_ENUM_SINGLE_CONST(0x5c, 8, wm9712_diff_sel),
+ static const struct soc_enum wm_adsp_fw_enum[] = {
+-	SOC_ENUM_SINGLE(0, 0, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
+-	SOC_ENUM_SINGLE(0, 1, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
+-	SOC_ENUM_SINGLE(0, 2, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
+-	SOC_ENUM_SINGLE(0, 3, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
++	SOC_ENUM_SINGLE_CONST(0, 0, wm_adsp_fw_text),
++	SOC_ENUM_SINGLE_CONST(0, 1, wm_adsp_fw_text),
++	SOC_ENUM_SINGLE_CONST(0, 2, wm_adsp_fw_text),
++	SOC_ENUM_SINGLE_CONST(0, 3, wm_adsp_fw_text),
  };
  
- static const struct snd_kcontrol_new wm9712_snd_ac97_controls[] = {
+ const struct snd_kcontrol_new wm_adsp1_fw_controls[] = {
 -- 
 1.8.5.2
