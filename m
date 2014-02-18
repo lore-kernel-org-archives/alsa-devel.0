@@ -1,14 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 016/102] ASoC: wm8995: Remove superfluous const
-Date: Tue, 18 Feb 2014 12:32:28 +0100
-Message-ID: <1392723148-12597-14-git-send-email-tiwai@suse.de>
+Subject: [PATCH 015/102] ASoC: wm8985: Remove superfluous const
+Date: Tue, 18 Feb 2014 12:32:27 +0100
+Message-ID: <1392723148-12597-13-git-send-email-tiwai@suse.de>
 References: <1392723148-12597-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9ADAF265497
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F1D326549A
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:32:33 +0100 (CET)
 In-Reply-To: <1392723148-12597-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,68 +29,91 @@ reduce const from its users.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8995.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ sound/soc/codecs/wm8985.c | 39 +++++++++++++++++----------------------
+ 1 file changed, 17 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
-index 403e1db6870f..b5e3ab094fb6 100644
---- a/sound/soc/codecs/wm8995.c
-+++ b/sound/soc/codecs/wm8995.c
-@@ -423,24 +423,24 @@ static const char *in1l_text[] = {
- 	"Differential", "Single-ended IN1LN", "Single-ended IN1LP"
+diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
+index 271b517911a4..d786f2b39764 100644
+--- a/sound/soc/codecs/wm8985.c
++++ b/sound/soc/codecs/wm8985.c
+@@ -226,52 +226,48 @@ static const DECLARE_TLV_DB_SCALE(bypass_tlv, -1500, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(pga_boost_tlv, 0, 2000, 0);
+ 
+ static const char *alc_sel_text[] = { "Off", "Right", "Left", "Stereo" };
+-static const SOC_ENUM_SINGLE_DECL(alc_sel, WM8985_ALC_CONTROL_1, 7,
+-				  alc_sel_text);
++static SOC_ENUM_SINGLE_DECL(alc_sel, WM8985_ALC_CONTROL_1, 7, alc_sel_text);
+ 
+ static const char *alc_mode_text[] = { "ALC", "Limiter" };
+-static const SOC_ENUM_SINGLE_DECL(alc_mode, WM8985_ALC_CONTROL_3, 8,
+-				  alc_mode_text);
++static SOC_ENUM_SINGLE_DECL(alc_mode, WM8985_ALC_CONTROL_3, 8, alc_mode_text);
+ 
+ static const char *filter_mode_text[] = { "Audio", "Application" };
+-static const SOC_ENUM_SINGLE_DECL(filter_mode, WM8985_ADC_CONTROL, 7,
+-				  filter_mode_text);
++static SOC_ENUM_SINGLE_DECL(filter_mode, WM8985_ADC_CONTROL, 7,
++			    filter_mode_text);
+ 
+ static const char *eq_bw_text[] = { "Narrow", "Wide" };
+ static const char *eqmode_text[] = { "Capture", "Playback" };
+-static const SOC_ENUM_SINGLE_EXT_DECL(eqmode, eqmode_text);
++static SOC_ENUM_SINGLE_EXT_DECL(eqmode, eqmode_text);
+ 
+ static const char *eq1_cutoff_text[] = {
+ 	"80Hz", "105Hz", "135Hz", "175Hz"
  };
- 
--static const SOC_ENUM_SINGLE_DECL(in1l_enum, WM8995_LEFT_LINE_INPUT_CONTROL,
--				  2, in1l_text);
-+static SOC_ENUM_SINGLE_DECL(in1l_enum, WM8995_LEFT_LINE_INPUT_CONTROL,
-+			    2, in1l_text);
- 
- static const char *in1r_text[] = {
- 	"Differential", "Single-ended IN1RN", "Single-ended IN1RP"
+-static const SOC_ENUM_SINGLE_DECL(eq1_cutoff, WM8985_EQ1_LOW_SHELF, 5,
+-				  eq1_cutoff_text);
++static SOC_ENUM_SINGLE_DECL(eq1_cutoff, WM8985_EQ1_LOW_SHELF, 5,
++			    eq1_cutoff_text);
+ static const char *eq2_cutoff_text[] = {
+ 	"230Hz", "300Hz", "385Hz", "500Hz"
  };
- 
--static const SOC_ENUM_SINGLE_DECL(in1r_enum, WM8995_LEFT_LINE_INPUT_CONTROL,
--				  0, in1r_text);
-+static SOC_ENUM_SINGLE_DECL(in1r_enum, WM8995_LEFT_LINE_INPUT_CONTROL,
-+			    0, in1r_text);
- 
- static const char *dmic_src_text[] = {
- 	"DMICDAT1", "DMICDAT2", "DMICDAT3"
+-static const SOC_ENUM_SINGLE_DECL(eq2_bw, WM8985_EQ2_PEAK_1, 8, eq_bw_text);
+-static const SOC_ENUM_SINGLE_DECL(eq2_cutoff, WM8985_EQ2_PEAK_1, 5,
+-				  eq2_cutoff_text);
++static SOC_ENUM_SINGLE_DECL(eq2_bw, WM8985_EQ2_PEAK_1, 8, eq_bw_text);
++static SOC_ENUM_SINGLE_DECL(eq2_cutoff, WM8985_EQ2_PEAK_1, 5, eq2_cutoff_text);
+ static const char *eq3_cutoff_text[] = {
+ 	"650Hz", "850Hz", "1.1kHz", "1.4kHz"
  };
- 
--static const SOC_ENUM_SINGLE_DECL(dmic_src1_enum, WM8995_POWER_MANAGEMENT_5,
--				  8, dmic_src_text);
--static const SOC_ENUM_SINGLE_DECL(dmic_src2_enum, WM8995_POWER_MANAGEMENT_5,
--				  6, dmic_src_text);
-+static SOC_ENUM_SINGLE_DECL(dmic_src1_enum, WM8995_POWER_MANAGEMENT_5,
-+			    8, dmic_src_text);
-+static SOC_ENUM_SINGLE_DECL(dmic_src2_enum, WM8995_POWER_MANAGEMENT_5,
-+			    6, dmic_src_text);
- 
- static const struct snd_kcontrol_new wm8995_snd_controls[] = {
- 	SOC_DOUBLE_R_TLV("DAC1 Volume", WM8995_DAC1_LEFT_VOLUME,
-@@ -897,14 +897,14 @@ static const char *spk_src_text[] = {
- 	"DAC1L", "DAC1R", "DAC2L", "DAC2R"
+-static const SOC_ENUM_SINGLE_DECL(eq3_bw, WM8985_EQ3_PEAK_2, 8, eq_bw_text);
+-static const SOC_ENUM_SINGLE_DECL(eq3_cutoff, WM8985_EQ3_PEAK_2, 5,
+-				  eq3_cutoff_text);
++static SOC_ENUM_SINGLE_DECL(eq3_bw, WM8985_EQ3_PEAK_2, 8, eq_bw_text);
++static SOC_ENUM_SINGLE_DECL(eq3_cutoff, WM8985_EQ3_PEAK_2, 5,
++			    eq3_cutoff_text);
+ static const char *eq4_cutoff_text[] = {
+ 	"1.8kHz", "2.4kHz", "3.2kHz", "4.1kHz"
  };
+-static const SOC_ENUM_SINGLE_DECL(eq4_bw, WM8985_EQ4_PEAK_3, 8, eq_bw_text);
+-static const SOC_ENUM_SINGLE_DECL(eq4_cutoff, WM8985_EQ4_PEAK_3, 5,
+-				  eq4_cutoff_text);
++static SOC_ENUM_SINGLE_DECL(eq4_bw, WM8985_EQ4_PEAK_3, 8, eq_bw_text);
++static SOC_ENUM_SINGLE_DECL(eq4_cutoff, WM8985_EQ4_PEAK_3, 5, eq4_cutoff_text);
+ static const char *eq5_cutoff_text[] = {
+ 	"5.3kHz", "6.9kHz", "9kHz", "11.7kHz"
+ };
+-static const SOC_ENUM_SINGLE_DECL(eq5_cutoff, WM8985_EQ5_HIGH_SHELF, 5,
++static SOC_ENUM_SINGLE_DECL(eq5_cutoff, WM8985_EQ5_HIGH_SHELF, 5,
+ 				  eq5_cutoff_text);
  
--static const SOC_ENUM_SINGLE_DECL(spk1l_src_enum, WM8995_LEFT_PDM_SPEAKER_1,
--				  0, spk_src_text);
--static const SOC_ENUM_SINGLE_DECL(spk1r_src_enum, WM8995_RIGHT_PDM_SPEAKER_1,
--				  0, spk_src_text);
--static const SOC_ENUM_SINGLE_DECL(spk2l_src_enum, WM8995_LEFT_PDM_SPEAKER_2,
--				  0, spk_src_text);
--static const SOC_ENUM_SINGLE_DECL(spk2r_src_enum, WM8995_RIGHT_PDM_SPEAKER_2,
--				  0, spk_src_text);
-+static SOC_ENUM_SINGLE_DECL(spk1l_src_enum, WM8995_LEFT_PDM_SPEAKER_1,
-+			    0, spk_src_text);
-+static SOC_ENUM_SINGLE_DECL(spk1r_src_enum, WM8995_RIGHT_PDM_SPEAKER_1,
-+			    0, spk_src_text);
-+static SOC_ENUM_SINGLE_DECL(spk2l_src_enum, WM8995_LEFT_PDM_SPEAKER_2,
-+			    0, spk_src_text);
-+static SOC_ENUM_SINGLE_DECL(spk2r_src_enum, WM8995_RIGHT_PDM_SPEAKER_2,
-+			    0, spk_src_text);
+ static const char *speaker_mode_text[] = { "Class A/B", "Class D" };
+-static const SOC_ENUM_SINGLE_DECL(speaker_mode, 0x17, 8, speaker_mode_text);
++static SOC_ENUM_SINGLE_DECL(speaker_mode, 0x17, 8, speaker_mode_text);
  
- static const struct snd_kcontrol_new spk1l_mux =
- 	SOC_DAPM_ENUM("SPK1L SRC", spk1l_src_enum);
+ static const char *depth_3d_text[] = {
+ 	"Off",
+@@ -291,8 +287,7 @@ static const char *depth_3d_text[] = {
+ 	"93.3%",
+ 	"100%"
+ };
+-static const SOC_ENUM_SINGLE_DECL(depth_3d, WM8985_3D_CONTROL, 0,
+-				  depth_3d_text);
++static SOC_ENUM_SINGLE_DECL(depth_3d, WM8985_3D_CONTROL, 0, depth_3d_text);
+ 
+ static const struct snd_kcontrol_new wm8985_snd_controls[] = {
+ 	SOC_SINGLE("Digital Loopback Switch", WM8985_COMPANDING_CONTROL,
 -- 
 1.8.5.2
