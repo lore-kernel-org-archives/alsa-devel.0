@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 069/102] ASoC: ml26124: Use
+Subject: [PATCH 071/102] ASoC: wm5100: Use
 	SOC_ENUM_SINGLE_DECL()
-Date: Tue, 18 Feb 2014 12:38:25 +0100
-Message-ID: <1392723517-12772-42-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:38:27 +0100
+Message-ID: <1392723517-12772-44-git-send-email-tiwai@suse.de>
 References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id AC36B2655DD
+ by alsa0.perex.cz (Postfix) with ESMTP id B56DE2655E3
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:38:39 +0100 (CET)
 In-Reply-To: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,39 +29,46 @@ Just replace with the helper macro.  No functional change at all.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/ml26124.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/wm5100.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
-index 185fa3bc3052..577fb8776ce7 100644
---- a/sound/soc/codecs/ml26124.c
-+++ b/sound/soc/codecs/ml26124.c
-@@ -73,11 +73,11 @@ static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
- static const char * const ml26124_companding[] = {"16bit PCM", "u-law",
- 						  "A-law"};
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index 4e3e31aaf509..14beefd7e58c 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -506,21 +506,21 @@ static const char *wm5100_lhpf_mode_text[] = {
+ 	"Low-pass", "High-pass"
+ };
  
--static const struct soc_enum ml26124_adc_companding_enum
--	= SOC_ENUM_SINGLE(ML26124_SAI_TRANS_CTL, 6, 3, ml26124_companding);
-+static SOC_ENUM_SINGLE_DECL(ml26124_adc_companding_enum,
-+			    ML26124_SAI_TRANS_CTL, 6, ml26124_companding);
+-static const struct soc_enum wm5100_lhpf1_mode =
+-	SOC_ENUM_SINGLE(WM5100_HPLPF1_1, WM5100_LHPF1_MODE_SHIFT, 2,
+-			wm5100_lhpf_mode_text);
++static SOC_ENUM_SINGLE_DECL(wm5100_lhpf1_mode,
++			    WM5100_HPLPF1_1, WM5100_LHPF1_MODE_SHIFT,
++			    wm5100_lhpf_mode_text);
  
--static const struct soc_enum ml26124_dac_companding_enum
--	= SOC_ENUM_SINGLE(ML26124_SAI_RCV_CTL, 6, 3, ml26124_companding);
-+static SOC_ENUM_SINGLE_DECL(ml26124_dac_companding_enum,
-+			    ML26124_SAI_RCV_CTL, 6, ml26124_companding);
+-static const struct soc_enum wm5100_lhpf2_mode =
+-	SOC_ENUM_SINGLE(WM5100_HPLPF2_1, WM5100_LHPF2_MODE_SHIFT, 2,
+-			wm5100_lhpf_mode_text);
++static SOC_ENUM_SINGLE_DECL(wm5100_lhpf2_mode,
++			    WM5100_HPLPF2_1, WM5100_LHPF2_MODE_SHIFT,
++			    wm5100_lhpf_mode_text);
  
- static const struct snd_kcontrol_new ml26124_snd_controls[] = {
- 	SOC_SINGLE_TLV("Capture Digital Volume", ML26124_RECORD_DIG_VOL, 0,
-@@ -136,8 +136,8 @@ static const struct snd_kcontrol_new ml26124_output_mixer_controls[] = {
- static const char * const ml26124_input_select[] = {"Analog MIC SingleEnded in",
- 				"Digital MIC in", "Analog MIC Differential in"};
+-static const struct soc_enum wm5100_lhpf3_mode =
+-	SOC_ENUM_SINGLE(WM5100_HPLPF3_1, WM5100_LHPF3_MODE_SHIFT, 2,
+-			wm5100_lhpf_mode_text);
++static SOC_ENUM_SINGLE_DECL(wm5100_lhpf3_mode,
++			    WM5100_HPLPF3_1, WM5100_LHPF3_MODE_SHIFT,
++			    wm5100_lhpf_mode_text);
  
--static const struct soc_enum ml26124_insel_enum =
--	SOC_ENUM_SINGLE(ML26124_MIC_IF_CTL, 0, 3, ml26124_input_select);
-+static SOC_ENUM_SINGLE_DECL(ml26124_insel_enum,
-+			    ML26124_MIC_IF_CTL, 0, ml26124_input_select);
+-static const struct soc_enum wm5100_lhpf4_mode =
+-	SOC_ENUM_SINGLE(WM5100_HPLPF4_1, WM5100_LHPF4_MODE_SHIFT, 2,
+-			wm5100_lhpf_mode_text);
++static SOC_ENUM_SINGLE_DECL(wm5100_lhpf4_mode,
++			    WM5100_HPLPF4_1, WM5100_LHPF4_MODE_SHIFT,
++			    wm5100_lhpf_mode_text);
  
- static const struct snd_kcontrol_new ml26124_input_mux_controls =
- 	SOC_DAPM_ENUM("Input Select", ml26124_insel_enum);
+ static const struct snd_kcontrol_new wm5100_snd_controls[] = {
+ SOC_SINGLE("IN1 High Performance Switch", WM5100_IN1L_CONTROL,
 -- 
 1.8.5.2
