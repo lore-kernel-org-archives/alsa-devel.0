@@ -1,17 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 020/102] ASoC: isabelle: Fix the wrong number
-	of items in enum ctls
-Date: Tue, 18 Feb 2014 12:36:55 +0100
-Message-ID: <1392723422-12689-5-git-send-email-tiwai@suse.de>
-References: <1392723422-12689-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH 029/102] ASoC: adau1373: Use
+	SOC_ENUM_SINGLE_DECL()
+Date: Tue, 18 Feb 2014 12:37:45 +0100
+Message-ID: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D699265583
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:37:06 +0100 (CET)
-In-Reply-To: <1392723422-12689-1-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 459A02655B6
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:38:39 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,112 +23,27 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-isabelle codec driver has a few places wrongly defining the number of
-enum items.
-
-Use SOC_ENUM_SINGLE_DECL() macro and they are automatically fixed.
+Just replace with the helper macro.  No functional change at all.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/isabelle.c | 52 ++++++++++++++++++++++++++-------------------
- 1 file changed, 30 insertions(+), 22 deletions(-)
+ sound/soc/codecs/adau1373.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/isabelle.c b/sound/soc/codecs/isabelle.c
-index 5839048ec467..cb736ddc446d 100644
---- a/sound/soc/codecs/isabelle.c
-+++ b/sound/soc/codecs/isabelle.c
-@@ -140,13 +140,17 @@ static const char *isabelle_rx1_texts[] = {"VRX1", "ARX1"};
- static const char *isabelle_rx2_texts[] = {"VRX2", "ARX2"};
- 
- static const struct soc_enum isabelle_rx1_enum[] = {
--	SOC_ENUM_SINGLE(ISABELLE_VOICE_HPF_CFG_REG, 3, 1, isabelle_rx1_texts),
--	SOC_ENUM_SINGLE(ISABELLE_AUDIO_HPF_CFG_REG, 5, 1, isabelle_rx1_texts),
-+	SOC_ENUM_SINGLE(ISABELLE_VOICE_HPF_CFG_REG, 3,
-+			ARRAY_SIZE(isabelle_rx1_texts), isabelle_rx1_texts),
-+	SOC_ENUM_SINGLE(ISABELLE_AUDIO_HPF_CFG_REG, 5,
-+			ARRAY_SIZE(isabelle_rx1_texts), isabelle_rx1_texts),
+diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
+index 46b1595d7c50..5765c224cd9a 100644
+--- a/sound/soc/codecs/adau1373.c
++++ b/sound/soc/codecs/adau1373.c
+@@ -576,8 +576,8 @@ static const char *adau1373_decimator_text[] = {
+ 	"DMIC1",
  };
  
- static const struct soc_enum isabelle_rx2_enum[] = {
--	SOC_ENUM_SINGLE(ISABELLE_VOICE_HPF_CFG_REG, 2, 1, isabelle_rx2_texts),
--	SOC_ENUM_SINGLE(ISABELLE_AUDIO_HPF_CFG_REG, 4, 1, isabelle_rx2_texts),
-+	SOC_ENUM_SINGLE(ISABELLE_VOICE_HPF_CFG_REG, 2,
-+			ARRAY_SIZE(isabelle_rx2_texts), isabelle_rx2_texts),
-+	SOC_ENUM_SINGLE(ISABELLE_AUDIO_HPF_CFG_REG, 4,
-+			ARRAY_SIZE(isabelle_rx2_texts), isabelle_rx2_texts),
- };
+-static const struct soc_enum adau1373_decimator_enum =
+-	SOC_ENUM_SINGLE(0, 0, 2, adau1373_decimator_text);
++static SOC_ENUM_SINGLE_DECL(adau1373_decimator_enum,
++			    0, 0, adau1373_decimator_text);
  
- /* Headset DAC playback switches */
-@@ -161,13 +165,17 @@ static const char *isabelle_atx_texts[] = {"AMIC1", "DMIC"};
- static const char *isabelle_vtx_texts[] = {"AMIC2", "DMIC"};
- 
- static const struct soc_enum isabelle_atx_enum[] = {
--	SOC_ENUM_SINGLE(ISABELLE_AMIC_CFG_REG, 7, 1, isabelle_atx_texts),
--	SOC_ENUM_SINGLE(ISABELLE_DMIC_CFG_REG, 0, 1, isabelle_atx_texts),
-+	SOC_ENUM_SINGLE(ISABELLE_AMIC_CFG_REG, 7,
-+			ARRAY_SIZE(isabelle_atx_texts), isabelle_atx_texts),
-+	SOC_ENUM_SINGLE(ISABELLE_DMIC_CFG_REG, 0,
-+			ARRAY_SIZE(isabelle_atx_texts), isabelle_atx_texts),
- };
- 
- static const struct soc_enum isabelle_vtx_enum[] = {
--	SOC_ENUM_SINGLE(ISABELLE_AMIC_CFG_REG, 6, 1, isabelle_vtx_texts),
--	SOC_ENUM_SINGLE(ISABELLE_DMIC_CFG_REG, 0, 1, isabelle_vtx_texts),
-+	SOC_ENUM_SINGLE(ISABELLE_AMIC_CFG_REG, 6,
-+			ARRAY_SIZE(isabelle_vtx_texts), isabelle_vtx_texts),
-+	SOC_ENUM_SINGLE(ISABELLE_DMIC_CFG_REG, 0,
-+			ARRAY_SIZE(isabelle_vtx_texts), isabelle_vtx_texts),
- };
- 
- static const struct snd_kcontrol_new atx_mux_controls =
-@@ -183,17 +191,13 @@ static const char *isabelle_amic1_texts[] = {
- /* Left analog microphone selection */
- static const char *isabelle_amic2_texts[] = {"Sub Mic", "Aux/FM Right"};
- 
--static const struct soc_enum isabelle_amic1_enum[] = {
--	SOC_ENUM_SINGLE(ISABELLE_AMIC_CFG_REG, 5,
--			ARRAY_SIZE(isabelle_amic1_texts),
--			isabelle_amic1_texts),
--};
-+static SOC_ENUM_SINGLE_DECL(isabelle_amic1_enum,
-+			    ISABELLE_AMIC_CFG_REG, 5,
-+			    isabelle_amic1_texts);
- 
--static const struct soc_enum isabelle_amic2_enum[] = {
--	SOC_ENUM_SINGLE(ISABELLE_AMIC_CFG_REG, 4,
--			ARRAY_SIZE(isabelle_amic2_texts),
--			isabelle_amic2_texts),
--};
-+static SOC_ENUM_SINGLE_DECL(isabelle_amic2_enum,
-+			    ISABELLE_AMIC_CFG_REG, 4,
-+			    isabelle_amic2_texts);
- 
- static const struct snd_kcontrol_new amic1_control =
- 	SOC_DAPM_ENUM("Route", isabelle_amic1_enum);
-@@ -206,16 +210,20 @@ static const char *isabelle_st_audio_texts[] = {"ATX1", "ATX2"};
- static const char *isabelle_st_voice_texts[] = {"VTX1", "VTX2"};
- 
- static const struct soc_enum isabelle_st_audio_enum[] = {
--	SOC_ENUM_SINGLE(ISABELLE_ATX_STPGA1_CFG_REG, 7, 1,
-+	SOC_ENUM_SINGLE(ISABELLE_ATX_STPGA1_CFG_REG, 7,
-+			ARRAY_SIZE(isabelle_st_audio_texts),
- 			isabelle_st_audio_texts),
--	SOC_ENUM_SINGLE(ISABELLE_ATX_STPGA2_CFG_REG, 7, 1,
-+	SOC_ENUM_SINGLE(ISABELLE_ATX_STPGA2_CFG_REG, 7,
-+			ARRAY_SIZE(isabelle_st_audio_texts),
- 			isabelle_st_audio_texts),
- };
- 
- static const struct soc_enum isabelle_st_voice_enum[] = {
--	SOC_ENUM_SINGLE(ISABELLE_VTX_STPGA1_CFG_REG, 7, 1,
-+	SOC_ENUM_SINGLE(ISABELLE_VTX_STPGA1_CFG_REG, 7,
-+			ARRAY_SIZE(isabelle_st_voice_texts),
- 			isabelle_st_voice_texts),
--	SOC_ENUM_SINGLE(ISABELLE_VTX2_STPGA2_CFG_REG, 7, 1,
-+	SOC_ENUM_SINGLE(ISABELLE_VTX2_STPGA2_CFG_REG, 7,
-+			ARRAY_SIZE(isabelle_st_voice_texts),
- 			isabelle_st_voice_texts),
- };
- 
+ static const struct snd_kcontrol_new adau1373_decimator_mux =
+ 	SOC_DAPM_ENUM_VIRT("Decimator Mux", adau1373_decimator_enum);
 -- 
 1.8.5.2
