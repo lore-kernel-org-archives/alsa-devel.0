@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 086/102] ASoC: max9877: Use
+Subject: [PATCH 087/102] ASoC: ssm2602: Use
 	SOC_ENUM_SINGLE_CONST()
-Date: Tue, 18 Feb 2014 12:51:32 +0100
-Message-ID: <1392724308-13375-6-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:51:33 +0100
+Message-ID: <1392724308-13375-7-git-send-email-tiwai@suse.de>
 References: <1392724308-13375-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4CA7C265764
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D45B265765
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:51:52 +0100 (CET)
 In-Reply-To: <1392724308-13375-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,27 +29,25 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/max9877.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/ssm2602.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/max9877.c b/sound/soc/codecs/max9877.c
-index 29549cdbf4c1..8702bc69a449 100644
---- a/sound/soc/codecs/max9877.c
-+++ b/sound/soc/codecs/max9877.c
-@@ -63,10 +63,10 @@ static const char *max9877_osc_mode[] = {
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index e32b82ff6304..f85aef825965 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -81,10 +81,8 @@ static const char *ssm2602_input_select[] = {
+ static const char *ssm2602_deemph[] = {"None", "32Khz", "44.1Khz", "48Khz"};
+ 
+ static const struct soc_enum ssm2602_enum[] = {
+-	SOC_ENUM_SINGLE(SSM2602_APANA, 2, ARRAY_SIZE(ssm2602_input_select),
+-			ssm2602_input_select),
+-	SOC_ENUM_SINGLE(SSM2602_APDIGI, 1, ARRAY_SIZE(ssm2602_deemph),
+-			ssm2602_deemph),
++	SOC_ENUM_SINGLE_CONST(SSM2602_APANA, 2, ssm2602_input_select),
++	SOC_ENUM_SINGLE_CONST(SSM2602_APDIGI, 1, ssm2602_deemph),
  };
  
- static const struct soc_enum max9877_enum[] = {
--	SOC_ENUM_SINGLE(MAX9877_OUTPUT_MODE, 0, ARRAY_SIZE(max9877_out_mode),
--			max9877_out_mode),
--	SOC_ENUM_SINGLE(MAX9877_OUTPUT_MODE, MAX9877_OSC_OFFSET,
--			ARRAY_SIZE(max9877_osc_mode), max9877_osc_mode),
-+	SOC_ENUM_SINGLE_CONST(MAX9877_OUTPUT_MODE, 0,
-+			      max9877_out_mode),
-+	SOC_ENUM_SINGLE_CONST(MAX9877_OUTPUT_MODE, MAX9877_OSC_OFFSET,
-+			      max9877_osc_mode),
- };
- 
- static const struct snd_kcontrol_new max9877_controls[] = {
+ static const unsigned int ssm260x_outmix_tlv[] = {
 -- 
 1.8.5.2
