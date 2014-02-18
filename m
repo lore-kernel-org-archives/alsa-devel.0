@@ -1,20 +1,18 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH 009/102] ASoC: rt5640:
-	Removesuperfluousconst
-Date: Tue, 18 Feb 2014 13:20:26 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D7047993@RTITMBSTEMP01.realtek.com.tw>
-References: <1392723148-12597-1-git-send-email-tiwai@suse.de>
- <1392723148-12597-7-git-send-email-tiwai@suse.de>,
- <1392728186.2304.26.camel@loki>
+From: Liam Girdwood <liam.r.girdwood@intel.com>
+Subject: Re: [PATCH 021/102] ASoC: ssm2602: Omit superfluous
+ elements in input select array
+Date: Tue, 18 Feb 2014 13:23:27 +0000
+Message-ID: <1392729807.2304.29.camel@loki>
+References: <1392723422-12689-1-git-send-email-tiwai@suse.de>
+ <1392723422-12689-6-git-send-email-tiwai@suse.de> <53034B23.703@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 6955F2656BA
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 14:20:39 +0100 (CET)
-In-Reply-To: <1392728186.2304.26.camel@loki>
-Content-Language: zh-TW
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C358265829
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 14:23:47 +0100 (CET)
+In-Reply-To: <53034B23.703@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,26 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> Hi Bard,
+On Tue, 2014-02-18 at 12:59 +0100, Lars-Peter Clausen wrote:
+> On 02/18/2014 12:36 PM, Takashi Iwai wrote:
+> > The array contains too many elements although it should have only
+> > two.
+> >
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > ---
+> >   sound/soc/codecs/ssm2602.c | 9 +++++----
+> >   1 file changed, 5 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+> > index f444d585b916..e32b82ff6304 100644
+> > --- a/sound/soc/codecs/ssm2602.c
+> > +++ b/sound/soc/codecs/ssm2602.c
+> > @@ -75,15 +75,16 @@ static const u16 ssm2602_reg[SSM2602_CACHEREGNUM] = {
+> >
+> >   /*Appending several "None"s just for OSS mixer use*/
+> >   static const char *ssm2602_input_select[] = {
+> > -	"Line", "Mic", "None", "None", "None",
+> > -	"None", "None", "None",
+> > +	"Line", "Mic",
+> >   };
 > 
-> Could you please make sure your new rt286 codec driver contains similar
-> changes prior to sending the latest revision upstream.
+> I never dared to change it because of the comment above the array. I must 
+> admit that I have no idea though why those extra None entries are necessary 
+> for OSS.
 
-Sure, thanks for the reminder.
+iirc the OSS input mixer in userspace may expect a similar number of
+entries to be compatible with the old Soundblaster16 input mixer ?
 
-Thanks.
+Liam 
 
-> 
-> Thanks !
-> 
-> Liam
-> 
-> On Tue, 2014-02-18 at 12:32 +0100, Takashi Iwai wrote:
-> > As SOC_ENUM_SINGLE_DECL() itself contains const modifier now, we can
-> > reduce const from its users.
-> 
-> ------Please consider the environment before printing this e-mail.
+
+
+---------------------------------------------------------------------
+Intel Corporation (UK) Limited
+Registered No. 1134945 (England)
+Registered Office: Pipers Way, Swindon SN3 1RJ
+VAT No: 860 2173 47
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
