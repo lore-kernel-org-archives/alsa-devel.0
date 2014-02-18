@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/4] ASoC: adav80x: Use devm_kzalloc()
-Date: Tue, 18 Feb 2014 10:08:33 +0900
-Message-ID: <20140218010833.GO2669@sirena.org.uk>
+Subject: Re: [PATCH 2/4] ASoC: ad193x: Split SPI and I2C code
+ into different modules
+Date: Tue, 18 Feb 2014 10:06:08 +0900
+Message-ID: <20140218010608.GN2669@sirena.org.uk>
 References: <1392639416-11293-1-git-send-email-lars@metafoo.de>
- <1392639416-11293-3-git-send-email-lars@metafoo.de>
+ <1392639416-11293-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4500100848392688618=="
+Content-Type: multipart/mixed; boundary="===============0193195241802590758=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id DCC09265162
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 02:32:47 +0100 (CET)
-In-Reply-To: <1392639416-11293-3-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B1A2265166
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 02:32:49 +0100 (CET)
+In-Reply-To: <1392639416-11293-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,56 +26,64 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4500100848392688618==
+--===============0193195241802590758==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mvuFargmsA+C2jC8"
+	protocol="application/pgp-signature"; boundary="e8/wErwm0bqugfcz"
 Content-Disposition: inline
 
 
---mvuFargmsA+C2jC8
+--e8/wErwm0bqugfcz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 17, 2014 at 01:16:55PM +0100, Lars-Peter Clausen wrote:
-> Use devm_kzalloc() to allocate the device state struct. Saves use from ha=
-ving to
-> free it manually on the error path and in the remove callback.
->=20
-> Now that the adav80x_bus_probe() function is only a call to
-> snd_soc_unregister_codec() also inline that.
+On Mon, Feb 17, 2014 at 01:16:54PM +0100, Lars-Peter Clausen wrote:
 
-Applied, thanks.
+>       kernel if one of the subsystems is build as a module (Currently only SPI
+>       can be build as a module).
 
---mvuFargmsA+C2jC8
+Same issue again here.  You're also going right up to the 80 column
+limit here and...
+
+>     * The module init path error handling is rather ugly. E.g. what should be
+>       done if either the SPI or the I2C driver fails to register? Most drivers
+>       that implement SPI and I2C in the same module currently fallback to
+>       undefined behavior in that case. Splitting the the driver into two
+> 	  modules, one for each bus, allows the registration of the other bus driver
+> 	  to continue without problems if one of them fails.
+
+...and something is messed up here, looks like tab/space confusion.
+
+Applied with fixups to the changelog.
+
+--e8/wErwm0bqugfcz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTArKOAAoJELSic+t+oim9fqIP/Am0SyiQhLAx5ZVFF/QMdGom
-RufNmMMfV5kbn83YbIT2WhyuLRd6m35p5eUvUAzNURLaSci8Tve2vgf5/1pU7Gkh
-H33Y+kTV3lvYrYI3X+xn8UKUXkLgeW7JxeAf18yKBVAtCdlgTSfdqqLvhdzXVifI
-LPlItf+qvlmvykIpD2qHAKQK3xIPrMD5P/IJUhDIYJG9GHACGEbs79SlIDXt95HY
-4SwAU3RLrNl2Z0Y5pRG3L5ElC98VtjE40d1l14Fb1K4kr7xoinfggSMdmiumqKn/
-i9dnPDw/2jLv4Ayqnl+xJ0ZxpeBxK2cLgZuv86v2U20EgkenOEYyElD+VpxybGIN
-WXo7p0nV+AN5tJjyL83Vf+i41Ak4rekA6+HIW8IhXEn5AxZ1bGcyyIf6CfFlpSxc
-jqbqYUtV5bUYwxVW6FLvwqL2A1g9swm+gEQMhrEtkx3O8KliccYeJTou8bBU3A3/
-w5YxcvFvULeeXcmhIDa485e3ub48lhKwhyIwjs7rsTEvrZ5fBpRwmGbB4gyWM/OE
-mUCGherBidMwG2lqdm+HUv4Ii7z2J4UWS2kuKg3Qx75KgCMyTRAvygNtJ78mswUV
-Yy4Mci83pyOGfH7K3HgTXlk/sy1OFfhhcocGFn5TM6kfaO+eMf/MrHNqyOtKCjSW
-kSHX7IFj5K9kT6NJEIUV
-=5Ef9
+iQIcBAEBAgAGBQJTArH9AAoJELSic+t+oim9zXYP/0nM/GZgBuayrdNGScNNMu5x
+cY23oab0DK6QKfu3ZvdbtROcPFfYO3jun8k4FCehRCAe6wT/odpJUe5NrjDmcoaM
+Skuz3LgTDJUiVm1dp17NHuTAehUXhFCSHvg/mA6EwLhtW+1UptmzHhtSKBiTGyky
+ySNw7NAVcZvkKv3vbcthS0UxQ7gVW7Y2CYv/uqVXe0GxZ3gk1mmNBV4NbtZhpDsq
+sBn5k8eMwaX+skGNXb2a5cjNNaVs7vW+C4CTIeJ/7/8mhLiirIzzVu6KqwotmybI
+A3M4Qv7fWSSJVVt7QubbilsDaFWqYBElFqimseDpcDWm2ZAnkkuPtMkwqFTwfQRv
+6MbK1SU6nWmrlURAuRPagyBeEWTakX40S8k57PFgmIbmmCuXEkj4TJo37nckQ+M0
+JxnS+fxztR1RtLx8t6e6u5FlUjy7XLygYpTxcEV7uFv8MSPzg3vkAx/04gbdgPDf
+JpTEJtaWiSYaaVBpNQkzDBxdMMr/3bUbDzyY8d82qtGAn2wyFQiUSW4XKHlS+6KX
+O/2Ro72ERxb+zNpjCoCjh8t3q010EY2JWsKj9KrMTwuf7X5xoRrjdlAqqqCmfatu
+OlUy5h/iSr5m0o4hPvZ3c7g+3Fd90lTGddrVCDLngU8++kA7zvntMrFbP/mllHuF
+HKUuHy9577c4ch6PWaSK
+=DqPa
 -----END PGP SIGNATURE-----
 
---mvuFargmsA+C2jC8--
+--e8/wErwm0bqugfcz--
 
---===============4500100848392688618==
+--===============0193195241802590758==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4500100848392688618==--
+--===============0193195241802590758==--
