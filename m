@@ -1,17 +1,18 @@
 From: Brian Austin <brian.austin@cirrus.com>
 Subject: Re: SOC_VALUE_ENUM usages in cs42l52 & cs42l73 drivers
-Date: Tue, 18 Feb 2014 11:32:44 -0600
-Message-ID: <alpine.DEB.2.02.1402181132070.22940@heelrod>
+Date: Tue, 18 Feb 2014 11:36:30 -0600
+Message-ID: <alpine.DEB.2.02.1402181135380.22940@heelrod>
 References: <s5hha7wwdth.wl%tiwai@suse.de>
+ <alpine.DEB.2.02.1402181132070.22940@heelrod>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FCAA2610D6
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 18:32:50 +0100 (CET)
-In-Reply-To: <s5hha7wwdth.wl%tiwai@suse.de>
+Received: from tx2outboundpool.messaging.microsoft.com
+ (tx2ehsobe003.messaging.microsoft.com [65.55.88.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id 66FE4261B19
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 18:36:37 +0100 (CET)
+In-Reply-To: <alpine.DEB.2.02.1402181132070.22940@heelrod>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Brian Austin <Brian.Austin@cirrus.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 18 Feb 2014, Takashi Iwai wrote:
+>> Similarly, cs42l73.c has four definitions, but with different masks:
+>>
+>> 	SOC_VALUE_ENUM_SINGLE(CS42L73_MMIXCTL, 6, 1, ...
+>> 	SOC_VALUE_ENUM_SINGLE(CS42L73_MMIXCTL, 4, 3, ...
+>> 	SOC_VALUE_ENUM_SINGLE(CS42L73_MMIXCTL, 2, 5, ...
+>> 	SOC_VALUE_ENUM_SINGLE(CS42L73_MMIXCTL, 0, 7, ...
+>> 
+The 3rd argument appears to line up with the register offset for each 
+block. Don't really know why, but I'll check
 
-> Hi,
->
-> as I audited through ASoC codec drivers recently, I noticed that
-> cs42l52 and cs42l73 drivers have some strange SOC_VALUE_ENUM usages.
->
-> For example, cs42l52.c has the following code snippet:
->
-> static const char * const left_swap_text[] = {
-> 	"Left", "LR 2", "Right"};
-> ....
-> static const unsigned int swap_values[] = { 0, 1, 3 };
->
-> static const struct soc_enum adca_swap_enum =
-> 	SOC_VALUE_ENUM_SINGLE(CS42L52_ADC_PCM_MIXER, 2, 1,
-> 			      ARRAY_SIZE(left_swap_text),
-> 			      left_swap_text,
-> 			      swap_values);
->
-> Note that the third argument of SOC_VALUE_ENUM_SINGLE() is the mask
-> bits.  Passing 1 means only the least bit is evaluated no matter what
-> value is assigned while swap_values can be 0, 1 or 3.
-> I suppose here meant 3, but would like to know how the code is
-> supposed to work.  There are three value-enum definitions in
-> cs42l52.c, and all pass 1 there.
->
-> Similarly, cs42l73.c has four definitions, but with different masks:
->
-> 	SOC_VALUE_ENUM_SINGLE(CS42L73_MMIXCTL, 6, 1, ...
-> 	SOC_VALUE_ENUM_SINGLE(CS42L73_MMIXCTL, 4, 3, ...
-> 	SOC_VALUE_ENUM_SINGLE(CS42L73_MMIXCTL, 2, 5, ...
-> 	SOC_VALUE_ENUM_SINGLE(CS42L73_MMIXCTL, 0, 7, ...
->
-> while values can be either 0, 1 or 2.  Something really fishy here.
->
->
-> thanks,
->
-> Takashi
-Let me bring up a board and see how the registers get set. To be honest, I 
-don't know why the 3 value is the way it is...
-
--Brian
+Thanks,
+Brian
