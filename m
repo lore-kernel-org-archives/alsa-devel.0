@@ -1,83 +1,97 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 00/17 v2] Update locking for
-	snd_soc_dapm_xxxx_pin functions
-Date: Tue, 18 Feb 2014 15:22:11 +0000
-Message-ID: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A6DEB2651C7
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 16:30:42 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH 08/17 v2] ASoC: wm8994: Update locking around use of DAPM pin API
+Date: Tue, 18 Feb 2014 15:22:19 +0000
+Message-ID: <1392736948-26623-9-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, eric.y.miao@gmail.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, patches@opensource.wolfsonmicro.com, linux@arm.linux.org.uk, jarkko.nikula@bitmer.com
+Cc: myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patchset updates the locking around the
-snd_soc_dapm_xxxx_pin functions. First we add an unlocked
-version of the functions and add locking to the standard
-call, this also requires us to remove the few places where
-these functions are externally locked. Then we patch usages
-of the functions that look like they are expecting to do an
-atomic update to do so, using external locking.
+The pin updates in this driver look like they are intended to be done
+atomically, update to do so.
 
-Thanks,
-Charles
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |   45 +++++++++++++++++++++++++++------------------
+ 1 files changed, 27 insertions(+), 18 deletions(-)
 
-Updates since v1:
- - Added helper functions to lock/unlock the dapm mutex
- - Added an unlocked version of snd_soc_dapm_sync, so it can
-   be called under the same mutex lock as the pin functions,
-   this is not required just saves a mutex lock
-
-Charles Keepax (17):
-  Input - arizona-haptics: Fix double lock of dapm_mutex
-  ASoC: dapm: Add helpers to lock/unlock DAPM mutex
-  ASoC: dapm: Add locking to snd_soc_dapm_xxxx_pin functions
-  ASoC: dapm: Add unlocked version of snd_soc_dapm_sync
-  ASoC: adav80x: Update locking around use of DAPM pin API
-  ASoC: wm5100: Update locking around use of DAPM pin API
-  ASoC: wm8962: Update locking around use of DAPM pin API
-  ASoC: wm8994: Update locking around use of DAPM pin API
-  ASoC: wm8996: Update locking around use of DAPM pin API
-  ASoC: mfld_machine: Update locking around use of DAPM pin API
-  ASoC: ams-delta: Update locking around use of DAPM pin API
-  ASoC: omap: n810: Update locking around use of DAPM pin API
-  ASoC: omap: rx51: Update locking around use of DAPM pin API
-  ASoC: pxa: corgi: Update locking around use of DAPM pin API
-  ASoC: pxa: magician: Update locking around use of DAPM pin API
-  ASoC: pxa: spitz: Update locking around use of DAPM pin API
-  ASoC: pxa: tosa: Update locking around use of DAPM pin API
-
- drivers/extcon/extcon-arizona.c      |   12 ---
- drivers/input/misc/arizona-haptics.c |   19 ----
- include/sound/soc-dapm.h             |    9 ++
- include/sound/soc.h                  |    9 ++
- sound/soc/codecs/adav80x.c           |   17 +++--
- sound/soc/codecs/wm5100.c            |   12 ++-
- sound/soc/codecs/wm8962.c            |   13 ++-
- sound/soc/codecs/wm8994.c            |   45 ++++++----
- sound/soc/codecs/wm8996.c            |    9 ++-
- sound/soc/intel/mfld_machine.c       |   65 +++++++++-----
- sound/soc/omap/ams-delta.c           |   45 ++++++----
- sound/soc/omap/n810.c                |   22 +++--
- sound/soc/omap/rx51.c                |   22 +++--
- sound/soc/pxa/corgi.c                |   42 +++++----
- sound/soc/pxa/magician.c             |   22 +++--
- sound/soc/pxa/spitz.c                |   51 ++++++-----
- sound/soc/pxa/tosa.c                 |   28 ++++---
- sound/soc/soc-dapm.c                 |  160 ++++++++++++++++++++++++++++++---
- 18 files changed, 399 insertions(+), 203 deletions(-)
-
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index b9be9cb..e8daf55 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2549,43 +2549,52 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
+ int wm8994_vmid_mode(struct snd_soc_codec *codec, enum wm8994_vmid_mode mode)
+ {
+ 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 
+ 	switch (mode) {
+ 	case WM8994_VMID_NORMAL:
++		snd_soc_dapm_mutex_lock(dapm);
++
+ 		if (wm8994->hubs.lineout1_se) {
+-			snd_soc_dapm_disable_pin(&codec->dapm,
+-						 "LINEOUT1N Driver");
+-			snd_soc_dapm_disable_pin(&codec->dapm,
+-						 "LINEOUT1P Driver");
++			snd_soc_dapm_disable_pin_unlocked(dapm,
++							  "LINEOUT1N Driver");
++			snd_soc_dapm_disable_pin_unlocked(dapm,
++							  "LINEOUT1P Driver");
+ 		}
+ 		if (wm8994->hubs.lineout2_se) {
+-			snd_soc_dapm_disable_pin(&codec->dapm,
+-						 "LINEOUT2N Driver");
+-			snd_soc_dapm_disable_pin(&codec->dapm,
+-						 "LINEOUT2P Driver");
++			snd_soc_dapm_disable_pin_unlocked(dapm,
++							  "LINEOUT2N Driver");
++			snd_soc_dapm_disable_pin_unlocked(dapm,
++							  "LINEOUT2P Driver");
+ 		}
+ 
+ 		/* Do the sync with the old mode to allow it to clean up */
+-		snd_soc_dapm_sync(&codec->dapm);
++		snd_soc_dapm_sync_unlocked(dapm);
+ 		wm8994->vmid_mode = mode;
++
++		snd_soc_dapm_mutex_unlock(dapm);
+ 		break;
+ 
+ 	case WM8994_VMID_FORCE:
++		snd_soc_dapm_mutex_lock(dapm);
++
+ 		if (wm8994->hubs.lineout1_se) {
+-			snd_soc_dapm_force_enable_pin(&codec->dapm,
+-						      "LINEOUT1N Driver");
+-			snd_soc_dapm_force_enable_pin(&codec->dapm,
+-						      "LINEOUT1P Driver");
++			snd_soc_dapm_force_enable_pin_unlocked(dapm,
++							       "LINEOUT1N Driver");
++			snd_soc_dapm_force_enable_pin_unlocked(dapm,
++							       "LINEOUT1P Driver");
+ 		}
+ 		if (wm8994->hubs.lineout2_se) {
+-			snd_soc_dapm_force_enable_pin(&codec->dapm,
+-						      "LINEOUT2N Driver");
+-			snd_soc_dapm_force_enable_pin(&codec->dapm,
+-						      "LINEOUT2P Driver");
++			snd_soc_dapm_force_enable_pin_unlocked(dapm,
++							       "LINEOUT2N Driver");
++			snd_soc_dapm_force_enable_pin_unlocked(dapm,
++							       "LINEOUT2P Driver");
+ 		}
+ 
+ 		wm8994->vmid_mode = mode;
+-		snd_soc_dapm_sync(&codec->dapm);
++		snd_soc_dapm_sync_unlocked(dapm);
++
++		snd_soc_dapm_mutex_unlock(dapm);
+ 		break;
+ 
+ 	default:
 -- 
 1.7.2.5
