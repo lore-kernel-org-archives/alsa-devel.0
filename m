@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 093/102] ASoC: wm8350: Use
+Subject: [PATCH 091/102] ASoC: uad134x: Use
 	SOC_ENUM_SINGLE_CONST()
-Date: Tue, 18 Feb 2014 12:51:39 +0100
-Message-ID: <1392724308-13375-13-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:51:37 +0100
+Message-ID: <1392724308-13375-11-git-send-email-tiwai@suse.de>
 References: <1392724308-13375-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 55D38265769
+ by alsa0.perex.cz (Postfix) with ESMTP id 63BB426576B
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:51:52 +0100 (CET)
 In-Reply-To: <1392724308-13375-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,35 +29,25 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8350.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/uda134x.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
-index a183dcf3d5c1..1d8d1424264a 100644
---- a/sound/soc/codecs/wm8350.c
-+++ b/sound/soc/codecs/wm8350.c
-@@ -381,14 +381,14 @@ static const char *wm8350_adchp[] = { "44.1kHz", "8kHz", "16kHz", "32kHz" };
- static const char *wm8350_lr[] = { "Left", "Right" };
+diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
+index c94d4c1e3dac..cce7adf35531 100644
+--- a/sound/soc/codecs/uda134x.c
++++ b/sound/soc/codecs/uda134x.c
+@@ -362,9 +362,9 @@ static const char *uda134x_mixmode[] = {"Differential", "Analog1",
+ 					"Analog2", "Both"};
  
- static const struct soc_enum wm8350_enum[] = {
--	SOC_ENUM_SINGLE(WM8350_DAC_CONTROL, 4, 4, wm8350_deemp),
--	SOC_ENUM_SINGLE(WM8350_DAC_CONTROL, 0, 4, wm8350_pol),
--	SOC_ENUM_SINGLE(WM8350_DAC_MUTE_VOLUME, 14, 2, wm8350_dacmutem),
--	SOC_ENUM_SINGLE(WM8350_DAC_MUTE_VOLUME, 13, 2, wm8350_dacmutes),
--	SOC_ENUM_SINGLE(WM8350_ADC_CONTROL, 15, 2, wm8350_adcfilter),
--	SOC_ENUM_SINGLE(WM8350_ADC_CONTROL, 8, 4, wm8350_adchp),
--	SOC_ENUM_SINGLE(WM8350_ADC_CONTROL, 0, 4, wm8350_pol),
--	SOC_ENUM_SINGLE(WM8350_INPUT_MIXER_VOLUME, 15, 2, wm8350_lr),
-+	SOC_ENUM_SINGLE_CONST(WM8350_DAC_CONTROL, 4, wm8350_deemp),
-+	SOC_ENUM_SINGLE_CONST(WM8350_DAC_CONTROL, 0, wm8350_pol),
-+	SOC_ENUM_SINGLE_CONST(WM8350_DAC_MUTE_VOLUME, 14, wm8350_dacmutem),
-+	SOC_ENUM_SINGLE_CONST(WM8350_DAC_MUTE_VOLUME, 13, wm8350_dacmutes),
-+	SOC_ENUM_SINGLE_CONST(WM8350_ADC_CONTROL, 15, wm8350_adcfilter),
-+	SOC_ENUM_SINGLE_CONST(WM8350_ADC_CONTROL, 8, wm8350_adchp),
-+	SOC_ENUM_SINGLE_CONST(WM8350_ADC_CONTROL, 0, wm8350_pol),
-+	SOC_ENUM_SINGLE_CONST(WM8350_INPUT_MIXER_VOLUME, 15, wm8350_lr),
+ static const struct soc_enum uda134x_mixer_enum[] = {
+-SOC_ENUM_SINGLE(UDA134X_DATA010, 0, 0x04, uda134x_dsp_setting),
+-SOC_ENUM_SINGLE(UDA134X_DATA010, 3, 0x04, uda134x_deemph),
+-SOC_ENUM_SINGLE(UDA134X_EA010, 0, 0x04, uda134x_mixmode),
++SOC_ENUM_SINGLE_CONST(UDA134X_DATA010, 0, uda134x_dsp_setting),
++SOC_ENUM_SINGLE_CONST(UDA134X_DATA010, 3, uda134x_deemph),
++SOC_ENUM_SINGLE_CONST(UDA134X_EA010, 0, uda134x_mixmode),
  };
  
- static DECLARE_TLV_DB_SCALE(pre_amp_tlv, -1200, 3525, 0);
+ static const struct snd_kcontrol_new uda1341_snd_controls[] = {
 -- 
 1.8.5.2
