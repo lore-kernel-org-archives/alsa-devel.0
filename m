@@ -1,105 +1,66 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 04/17 v2] ASoC: dapm: Add unlocked version of
-	snd_soc_dapm_sync
-Date: Tue, 18 Feb 2014 15:22:15 +0000
-Message-ID: <1392736948-26623-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 13/17 v2] ASoC: omap: rx51: Update locking around use of DAPM pin API
+Date: Tue, 18 Feb 2014 15:22:24 +0000
+Message-ID: <1392736948-26623-14-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7D2BA2651DA
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 16:30:48 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, eric.y.miao@gmail.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, patches@opensource.wolfsonmicro.com, linux@arm.linux.org.uk, jarkko.nikula@bitmer.com
+Cc: myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-We will often call sync after several functions that require the DAPM
-mutex to be held. Rather than release and immediately relock the mutex
-provide an unlocked function for this situation.
+The pin updates in this driver look like they are intended to be done
+atomically, update to do so.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- include/sound/soc-dapm.h |    1 +
- sound/soc/soc-dapm.c     |   27 ++++++++++++++++++++++-----
- 2 files changed, 23 insertions(+), 5 deletions(-)
+ sound/soc/omap/rx51.c |   22 +++++++++++++---------
+ 1 files changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 6e89ef6..3b99176 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -461,6 +461,7 @@ int snd_soc_dapm_nc_pin_unlocked(struct snd_soc_dapm_context *dapm,
- int snd_soc_dapm_get_pin_status(struct snd_soc_dapm_context *dapm,
- 				const char *pin);
- int snd_soc_dapm_sync(struct snd_soc_dapm_context *dapm);
-+int snd_soc_dapm_sync_unlocked(struct snd_soc_dapm_context *dapm);
- int snd_soc_dapm_force_enable_pin(struct snd_soc_dapm_context *dapm,
- 				  const char *pin);
- int snd_soc_dapm_force_enable_pin_unlocked(struct snd_soc_dapm_context *dapm,
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 1a3fe85..cf8ba48 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2342,18 +2342,18 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index 611179c..7fb3d4b 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -74,26 +74,30 @@ static void rx51_ext_control(struct snd_soc_dapm_context *dapm)
+ 		break;
+ 	}
+ 
++	snd_soc_dapm_mutex_lock(dapm);
++
+ 	if (rx51_spk_func)
+-		snd_soc_dapm_enable_pin(dapm, "Ext Spk");
++		snd_soc_dapm_enable_pin_unlocked(dapm, "Ext Spk");
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, "Ext Spk");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "Ext Spk");
+ 	if (rx51_dmic_func)
+-		snd_soc_dapm_enable_pin(dapm, "DMic");
++		snd_soc_dapm_enable_pin_unlocked(dapm, "DMic");
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, "DMic");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "DMic");
+ 	if (hp)
+-		snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
++		snd_soc_dapm_enable_pin_unlocked(dapm, "Headphone Jack");
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphone Jack");
+ 	if (hs)
+-		snd_soc_dapm_enable_pin(dapm, "HS Mic");
++		snd_soc_dapm_enable_pin_unlocked(dapm, "HS Mic");
+ 	else
+-		snd_soc_dapm_disable_pin(dapm, "HS Mic");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "HS Mic");
+ 
+ 	gpio_set_value(RX51_TVOUT_SEL_GPIO, tvout);
+ 
+-	snd_soc_dapm_sync(dapm);
++	snd_soc_dapm_sync_unlocked(dapm);
++
++	snd_soc_dapm_mutex_unlock(dapm);
  }
  
- /**
-- * snd_soc_dapm_sync - scan and power dapm paths
-+ * snd_soc_dapm_sync_unlocked - scan and power dapm paths
-  * @dapm: DAPM context
-  *
-  * Walks all dapm audio paths and powers widgets according to their
-  * stream or path usage.
-  *
-+ * Requires external locking.
-+ *
-  * Returns 0 for success.
-  */
--int snd_soc_dapm_sync(struct snd_soc_dapm_context *dapm)
-+int snd_soc_dapm_sync_unlocked(struct snd_soc_dapm_context *dapm)
- {
--	int ret;
--
- 	/*
- 	 * Suppress early reports (eg, jacks syncing their state) to avoid
- 	 * silly DAPM runs during card startup.
-@@ -2361,8 +2361,25 @@ int snd_soc_dapm_sync(struct snd_soc_dapm_context *dapm)
- 	if (!dapm->card || !dapm->card->instantiated)
- 		return 0;
- 
-+	return dapm_power_widgets(dapm->card, SND_SOC_DAPM_STREAM_NOP);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_sync_unlocked);
-+
-+/**
-+ * snd_soc_dapm_sync - scan and power dapm paths
-+ * @dapm: DAPM context
-+ *
-+ * Walks all dapm audio paths and powers widgets according to their
-+ * stream or path usage.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_dapm_sync(struct snd_soc_dapm_context *dapm)
-+{
-+	int ret;
-+
- 	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
--	ret = dapm_power_widgets(dapm->card, SND_SOC_DAPM_STREAM_NOP);
-+	ret = snd_soc_dapm_sync_unlocked(dapm);
- 	mutex_unlock(&dapm->card->dapm_mutex);
- 	return ret;
- }
+ static int rx51_startup(struct snd_pcm_substream *substream)
 -- 
 1.7.2.5
