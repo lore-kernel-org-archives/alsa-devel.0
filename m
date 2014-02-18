@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/4] ASoC: ad193x: Split SPI and I2C code
- into different modules
-Date: Tue, 18 Feb 2014 10:06:08 +0900
-Message-ID: <20140218010608.GN2669@sirena.org.uk>
-References: <1392639416-11293-1-git-send-email-lars@metafoo.de>
- <1392639416-11293-2-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCHv2 3/5] ASoC: Intel: Add Intel SST audio DSP
+ Firmware loader.
+Date: Tue, 18 Feb 2014 10:35:10 +0900
+Message-ID: <20140218013510.GV2669@sirena.org.uk>
+References: <1392643930-6030-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ <1392643930-6030-3-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0193195241802590758=="
+Content-Type: multipart/mixed; boundary="===============6179067160792581942=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B1A2265166
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 02:32:49 +0100 (CET)
-In-Reply-To: <1392639416-11293-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 927AB26508D
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 02:35:44 +0100 (CET)
+In-Reply-To: <1392643930-6030-3-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,69 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Benson Leung <bleung@google.com>, Jarkko Nikula <jarkko.nikula@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0193195241802590758==
+--===============6179067160792581942==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="e8/wErwm0bqugfcz"
+	protocol="application/pgp-signature"; boundary="7XuS4gr/+Xj300Yp"
 Content-Disposition: inline
 
 
---e8/wErwm0bqugfcz
+--7XuS4gr/+Xj300Yp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 17, 2014 at 01:16:54PM +0100, Lars-Peter Clausen wrote:
+On Mon, Feb 17, 2014 at 01:32:08PM +0000, Liam Girdwood wrote:
 
->       kernel if one of the subsystems is build as a module (Currently only SPI
->       can be build as a module).
+> +	/* copy FW data to DMA-able memory */
+> +	memcpy((void *)sst_fw->dma_buf, (void *)fw->data, fw->size);
 
-Same issue again here.  You're also going right up to the 80 column
-limit here and...
+There aren't going to be any issues with alignment requirements for DMA
+with data within the firmware?
 
->     * The module init path error handling is rather ugly. E.g. what should be
->       done if either the SPI or the I2C driver fails to register? Most drivers
->       that implement SPI and I2C in the same module currently fallback to
->       undefined behavior in that case. Splitting the the driver into two
-> 	  modules, one for each bus, allows the registration of the other bus driver
-> 	  to continue without problems if one of them fails.
-
-...and something is messed up here, looks like tab/space confusion.
-
-Applied with fixups to the changelog.
-
---e8/wErwm0bqugfcz
+--7XuS4gr/+Xj300Yp
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTArH9AAoJELSic+t+oim9zXYP/0nM/GZgBuayrdNGScNNMu5x
-cY23oab0DK6QKfu3ZvdbtROcPFfYO3jun8k4FCehRCAe6wT/odpJUe5NrjDmcoaM
-Skuz3LgTDJUiVm1dp17NHuTAehUXhFCSHvg/mA6EwLhtW+1UptmzHhtSKBiTGyky
-ySNw7NAVcZvkKv3vbcthS0UxQ7gVW7Y2CYv/uqVXe0GxZ3gk1mmNBV4NbtZhpDsq
-sBn5k8eMwaX+skGNXb2a5cjNNaVs7vW+C4CTIeJ/7/8mhLiirIzzVu6KqwotmybI
-A3M4Qv7fWSSJVVt7QubbilsDaFWqYBElFqimseDpcDWm2ZAnkkuPtMkwqFTwfQRv
-6MbK1SU6nWmrlURAuRPagyBeEWTakX40S8k57PFgmIbmmCuXEkj4TJo37nckQ+M0
-JxnS+fxztR1RtLx8t6e6u5FlUjy7XLygYpTxcEV7uFv8MSPzg3vkAx/04gbdgPDf
-JpTEJtaWiSYaaVBpNQkzDBxdMMr/3bUbDzyY8d82qtGAn2wyFQiUSW4XKHlS+6KX
-O/2Ro72ERxb+zNpjCoCjh8t3q010EY2JWsKj9KrMTwuf7X5xoRrjdlAqqqCmfatu
-OlUy5h/iSr5m0o4hPvZ3c7g+3Fd90lTGddrVCDLngU8++kA7zvntMrFbP/mllHuF
-HKUuHy9577c4ch6PWaSK
-=DqPa
+iQIcBAEBAgAGBQJTArjLAAoJELSic+t+oim9Wj0P/i0+dhhnSwnXJTWZv0EbBnut
+ZEM19EcYtiUn/T8Rz0KdCn/m4FEVUrrgzBxISqlLehmzGjhIurEypVWcYiwCietC
+6onv4t2VBrCF0zae63o01O0NBUa4KA+K9rdNQLBSFDK8mr7/bat3W5DVaEL2MmpO
+pPFvafPgevkWpgvdWHvc5aM/i+s3SxPanCq09+QN4Xp0NDpR+C7nqnAya21anVh6
+pM+gqSlv3gdb1T4VB5QQSRuTiBtWt4TetyR+pf++opJFNw6fVY5CMcw7dOhD3BTK
+0F3Kth2WJwkAjfx8E5XR1AA9H+7nKUvzU32BqFTsRqqxLtegVZx4TKW2uxFHMM0t
+8N7si02mdIc2SjmZV2x08QK7LASTYjIYN/sdzjbZx4/hObVDuW7Qdz4er0T47vYy
+iNLLe0jzW+KRFU3tpuPBlxnfLX7M6sOCM0UmdVEj3w3sobBghP99VVQXG1mlqdv+
+91RLgS1CDqL33XLL8et0wquW6+b0mfM7ZduJ2CGsmAMcbOdc96X33b3vUnMWSScx
+gEW1KiFdVsLcFW+F+mzN+W0XisWtX4H/ImToecIvzk5bpPiUcNbksilnUESqQpeZ
+R3Eusv6CYvFS/phNS8tTVxIMRrs5nfMM614ZZUs6uGz5nkMx2NhYBy00aSk6QW/0
+cX7hJZc/x9LRCZgbaZJZ
+=KEKt
 -----END PGP SIGNATURE-----
 
---e8/wErwm0bqugfcz--
+--7XuS4gr/+Xj300Yp--
 
---===============0193195241802590758==
+--===============6179067160792581942==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0193195241802590758==--
+--===============6179067160792581942==--
