@@ -1,68 +1,88 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v5 1/4] ASoC: tlv320aic32x4: Support for master clock
-Date: Tue, 18 Feb 2014 10:23:29 +0900
-Message-ID: <20140218012329.GR2669@sirena.org.uk>
-References: <1392575252-9222-1-git-send-email-mpa@pengutronix.de>
- <1392631460-32002-1-git-send-email-mpa@pengutronix.de>
- <1392631460-32002-2-git-send-email-mpa@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: txx9aclc_ac97: Fix kernel crash on
+	probe
+Date: Tue, 18 Feb 2014 10:18:40 +0900
+Message-ID: <20140218011840.GQ2669@sirena.org.uk>
+References: <1392492509-29426-1-git-send-email-shc_work@mail.ru>
+ <20140216003810.GP4451@sirena.org.uk>
+ <1392519353.709209979@f243.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+S4DbcR7QPeSsP0V"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1392631460-32002-2-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============3408714350267851139=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D72492650D4
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 02:31:33 +0100 (CET)
+In-Reply-To: <1392519353.709209979@f243.i.mail.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---+S4DbcR7QPeSsP0V
-Content-Type: text/plain; charset=us-ascii
+--===============3408714350267851139==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="AFQGHouA0VN8Ovbt"
 Content-Disposition: inline
 
-On Mon, Feb 17, 2014 at 11:04:17AM +0100, Markus Pargmann wrote:
 
->  Optional properties:
->   - reset-gpios: Reset-GPIO phandle with args as described in gpio/gpio.txt
-> + - clocks/clock-names: Clock named 'mclk' for the master clock of the codec.
-> +   See clock/clock-bindings.txt for information about the detailed format.
+--AFQGHouA0VN8Ovbt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Looking at the code the clock isn't physically optional, why not make it
-mandatory?  There's only one mainline user, it looks like it should be
-straightforward to update with a fixed clock.
+On Sun, Feb 16, 2014 at 06:55:53AM +0400, Alexander Shiyan wrote:
+> =D0=92=D0=BE=D1=81=D0=BA=D1=80=D0=B5=D1=81=D0=B5=D0=BD=D1=8C=D0=B5, 16 =
+=D1=84=D0=B5=D0=B2=D1=80=D0=B0=D0=BB=D1=8F 2014, 8:38 +08:00 =D0=BE=D1=82 M=
+ark Brown <broonie@kernel.org>:
+> > On Sat, Feb 15, 2014 at 11:28:29PM +0400, Alexander Shiyan wrote:
+> > > This patch fixes a crash caused by commit af5b2d7519
 
-> +	aic32x4->mclk = devm_clk_get(&i2c->dev, "mclk");
-> +	if (IS_ERR(aic32x4->mclk))
-> +		dev_info(&i2c->dev, "No mclk found, continuing without clock\n");
+> > I don't know where you got that hash from by the way, that commit isn't
+> > present in mainline?
 
-This is going to break with deferred probe, we need to handle that at
-least.
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/so=
+und/soc/txx9/txx9aclc-ac97.c?id=3D3bed3344c82623f6a37f3032e307d9af5b2d7519
 
---+S4DbcR7QPeSsP0V
+A shortened commit ID is the *start* of the ID, not the end.  Try
+running 'git show af5b2d7519'.
+
+--AFQGHouA0VN8Ovbt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTArYOAAoJELSic+t+oim9LVsP/jw5bK6KAx6H7RdNkvjaWMeh
-xpmGWHNAkbMms3XEO4/uxep729Z6xp0ZmMPfVmoiZISGqqngF19wjDSDwY39Lj1V
-Swkig/CmxNTNPKbNk1lHNGZLKIbpDXnxVlZZ5bh/KNj1Icmg3oGBJEGYAxrsIF/M
-An0e9+h4oDg7bTMbLSynpDhhKq2Php7qj/BqXuC/j7sU1eixzmRGJ70RcFCm2NIK
-l9+uzYSt6FnOLGElzDp6ivWmkDv0SoA/Jp2wsCiV+hhEnLnNGcjg/U2vjjYFp0W0
-RivJFnJT5vVDaymZ1bkaiNeOXbMtqf0eXsW1549XowBmDMwUKA+n7PZblnAsI2M5
-Hrbtegnb6meEDfxbCuVA3SgvGZALnVGEwlbzxlvfkdyDIOOwEipajLut5235GjdY
-MBxVTMrA2KKeIu0I5qBMst968zUZajSUrleXiOFLKlhuAq55y0Xy66fMvgVeL3FU
-khRgkwVRKF7/ubFazih3BoBiHfA4UHuuh8gNGcsqdwH3DlDbKb+QVR0PInXFdrCK
-RTSJEpqYBYe+gQm1s+L/eNMmFyyZeycPZgE+qp57ExaffAMsNv3vmGB7BidzjYFU
-DPuCWIvPo2igpAfloKLoQFH0+tMlVNIINEUI0oGE8xwtnrdSXT2fYe7xNVgKEkEG
-cx1knn15N9DFtxSjYlzl
-=lQgp
+iQIcBAEBAgAGBQJTArTtAAoJELSic+t+oim9axUP/2sVHyooQ4bZrvuOULcJ/DKb
+WjOnSyZlkxIZQ64XVKLQj6aV4kwCsJ25EvI+Djf4Iv1gxjCzMNU6/mS/LnRohT/7
+8miraVLplYYTU7ROsgEXRWjMSZXU2w0g2nZ6PRxz38vxNVXL8NTvc5bdRvMSG0q5
+AJ1OAod2p3TnWi5dNr4dR3TTZjFGbbqSbpLYy0uytNhdPx85oagH8qNh0ohDEPEg
+55HO9WwjYy1o6dt+iDt0spWS/Sltaw8aT2KyvxWoko1MAikKaBqO7WQJTxKw+7kH
+bHEZ5pVfVWoavqZKiO+gdgNqZheBSKBkXBmBvWvCzf9vg0cKjg1V0nRzVQg+NeSP
+6onXezQK3wvw3Masb6LOOd1/rt2zbTAcaSv9i/M2e7f9vQYIVtDYxDg/pp7MyrlN
+IigVjUSWfwrCCLYqJxvpKsq+y7XTbNXhECWSScWsSRQ6RrpZGel2gxpdWQR3I9+h
+HMa0KMimc0/Z/2rNWhBy2Ihx+Qq5V9DwEau1gt86gSy5NbEMY4bMr1CWob1TEi6i
+cKQF9kTViMsyNxf/5PXBMG3fn4yWyRlv0LETeX08YvhRzczA1AJ4qE2lg+7JLfms
+rkPECIFTkvBALqqYwBUg0IF4el4Zj8XygAt6lno/NQI+bH5IpAc/qn+kaCl5wRdd
+VWBZS38TE+QZOBDoJBZG
+=JxGu
 -----END PGP SIGNATURE-----
 
---+S4DbcR7QPeSsP0V--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--AFQGHouA0VN8Ovbt--
+
+--===============3408714350267851139==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3408714350267851139==--
