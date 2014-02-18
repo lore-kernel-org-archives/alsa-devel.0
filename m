@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 055/102] ASoC: wm8961: Use
+Subject: [PATCH 070/102] ASoC: tlv320aic23: Use
 	SOC_ENUM_SINGLE_DECL()
-Date: Tue, 18 Feb 2014 12:38:11 +0100
-Message-ID: <1392723517-12772-28-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:38:26 +0100
+Message-ID: <1392723517-12772-43-git-send-email-tiwai@suse.de>
 References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id AFB4B2655DF
+ by alsa0.perex.cz (Postfix) with ESMTP id AEF832655DE
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:38:39 +0100 (CET)
 In-Reply-To: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,48 +29,35 @@ Just replace with the helper macro.  No functional change at all.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8961.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/tlv320aic23.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
-index 900328e28a15..ce8fa6e01cb4 100644
---- a/sound/soc/codecs/wm8961.c
-+++ b/sound/soc/codecs/wm8961.c
-@@ -317,15 +317,15 @@ static const char *adc_hpf_text[] = {
- 	"Hi-fi", "Voice 1", "Voice 2", "Voice 3",
- };
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index 5d430cc56f51..139f11f4dd8b 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -64,16 +64,16 @@ static const struct regmap_config tlv320aic23_regmap = {
+ static const char *rec_src_text[] = { "Line", "Mic" };
+ static const char *deemph_text[] = {"None", "32Khz", "44.1Khz", "48Khz"};
  
--static const struct soc_enum adc_hpf =
--	SOC_ENUM_SINGLE(WM8961_ADC_DAC_CONTROL_2, 7, 4, adc_hpf_text);
-+static SOC_ENUM_SINGLE_DECL(adc_hpf,
-+			    WM8961_ADC_DAC_CONTROL_2, 7, adc_hpf_text);
+-static const struct soc_enum rec_src_enum =
+-	SOC_ENUM_SINGLE(TLV320AIC23_ANLG, 2, 2, rec_src_text);
++static SOC_ENUM_SINGLE_DECL(rec_src_enum,
++			    TLV320AIC23_ANLG, 2, rec_src_text);
  
- static const char *dac_deemph_text[] = {
- 	"None", "32kHz", "44.1kHz", "48kHz",
- };
+ static const struct snd_kcontrol_new tlv320aic23_rec_src_mux_controls =
+ SOC_DAPM_ENUM("Input Select", rec_src_enum);
  
--static const struct soc_enum dac_deemph =
--	SOC_ENUM_SINGLE(WM8961_ADC_DAC_CONTROL_1, 1, 4, dac_deemph_text);
-+static SOC_ENUM_SINGLE_DECL(dac_deemph,
-+			    WM8961_ADC_DAC_CONTROL_1, 1, dac_deemph_text);
+-static const struct soc_enum tlv320aic23_rec_src =
+-	SOC_ENUM_SINGLE(TLV320AIC23_ANLG, 2, 2, rec_src_text);
+-static const struct soc_enum tlv320aic23_deemph =
+-	SOC_ENUM_SINGLE(TLV320AIC23_DIGT, 1, 4, deemph_text);
++static SOC_ENUM_SINGLE_DECL(tlv320aic23_rec_src,
++			    TLV320AIC23_ANLG, 2, rec_src_text);
++static SOC_ENUM_SINGLE_DECL(tlv320aic23_deemph,
++			    TLV320AIC23_DIGT, 1, deemph_text);
  
- static const DECLARE_TLV_DB_SCALE(out_tlv, -12100, 100, 1);
- static const DECLARE_TLV_DB_SCALE(hp_sec_tlv, -700, 100, 0);
-@@ -385,11 +385,11 @@ static const char *sidetone_text[] = {
- 	"None", "Left", "Right"
- };
- 
--static const struct soc_enum dacl_sidetone =
--	SOC_ENUM_SINGLE(WM8961_DSP_SIDETONE_0, 2, 3, sidetone_text);
-+static SOC_ENUM_SINGLE_DECL(dacl_sidetone,
-+			    WM8961_DSP_SIDETONE_0, 2, sidetone_text);
- 
--static const struct soc_enum dacr_sidetone =
--	SOC_ENUM_SINGLE(WM8961_DSP_SIDETONE_1, 2, 3, sidetone_text);
-+static SOC_ENUM_SINGLE_DECL(dacr_sidetone,
-+			    WM8961_DSP_SIDETONE_1, 2, sidetone_text);
- 
- static const struct snd_kcontrol_new dacl_mux =
- 	SOC_DAPM_ENUM("DACL Sidetone", dacl_sidetone);
+ static const DECLARE_TLV_DB_SCALE(out_gain_tlv, -12100, 100, 0);
+ static const DECLARE_TLV_DB_SCALE(input_gain_tlv, -1725, 75, 0);
 -- 
 1.8.5.2
