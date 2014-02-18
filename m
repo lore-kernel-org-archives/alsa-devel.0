@@ -1,56 +1,79 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 000/105] Rename soc_enum.max field
-Date: Tue, 18 Feb 2014 17:11:14 +0100
-Message-ID: <53038622.8050309@metafoo.de>
-References: <1392722967-12472-1-git-send-email-tiwai@suse.de>
- <20140218155816.GB5438@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 05/17 v2] ASoC: adav80x: Update locking around use of
+ DAPM pin API
+Date: Tue, 18 Feb 2014 17:12:38 +0100
+Message-ID: <53038676.1040205@metafoo.de>
+References: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com> <1392736948-26623-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-025.synserver.de (smtp-out-137.synserver.de
- [212.40.185.137])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BAC32651CB
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 17:11:06 +0100 (CET)
-In-Reply-To: <20140218155816.GB5438@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1392736948-26623-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: broonie@kernel.org, myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 02/18/2014 04:58 PM, Charles Keepax wrote:
-> On Tue, Feb 18, 2014 at 12:29:24PM +0100, Takashi Iwai wrote:
->> Hi,
->>
->> this is the first chunk of the whole patch serires, preliminary works
->> for renaming the confusing field name and minor clean ups in the
->> relevant places.
->>
->> After this chunk, SOC_ENUM_*_DECL() macro cleanup and the actual fixes
->> for the wrong number of enum items will follow.
->>
->> Then introduce SOC_ENUM_SINGLE_CONST() & co for omitting the explicit
->> ARRAY_SIZE() call, and apply it in the later patches.
->>
->>
->> Takashi
+On 02/18/2014 04:22 PM, Charles Keepax wrote:
+> The pin updates in this driver look like they are intended to be done
+> atomically, update to do so.
 >
-> For all the Wolfson related patches:
->
-> Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
->
-> Although as Liam said please feel free to leave it out rather
-> than editing all the patches.
-
-Same here. Looks all trivial and correct if you need a ack from me for any 
-of the patches, feel free to add it.
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
 Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+
+Thanks.
+
+> ---
+>   sound/soc/codecs/adav80x.c |   17 +++++++++++------
+>   1 files changed, 11 insertions(+), 6 deletions(-)
+>
+> diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
+> index 09d5609..9eb53c8 100644
+> --- a/sound/soc/codecs/adav80x.c
+> +++ b/sound/soc/codecs/adav80x.c
+> @@ -539,6 +539,7 @@ static int adav80x_set_sysclk(struct snd_soc_codec *codec,
+>   			      unsigned int freq, int dir)
+>   {
+>   	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
+> +	struct snd_soc_dapm_context *dapm = &codec->dapm;
+>
+>   	if (dir == SND_SOC_CLOCK_IN) {
+>   		switch (clk_id) {
+> @@ -571,7 +572,7 @@ static int adav80x_set_sysclk(struct snd_soc_codec *codec,
+>   			regmap_write(adav80x->regmap, ADAV80X_ICLK_CTRL2,
+>   				iclk_ctrl2);
+>
+> -			snd_soc_dapm_sync(&codec->dapm);
+> +			snd_soc_dapm_sync(dapm);
+>   		}
+>   	} else {
+>   		unsigned int mask;
+> @@ -598,17 +599,21 @@ static int adav80x_set_sysclk(struct snd_soc_codec *codec,
+>   			adav80x->sysclk_pd[clk_id] = false;
+>   		}
+>
+> +		snd_soc_dapm_mutex_lock(dapm);
+> +
+>   		if (adav80x->sysclk_pd[0])
+> -			snd_soc_dapm_disable_pin(&codec->dapm, "PLL1");
+> +			snd_soc_dapm_disable_pin_unlocked(dapm, "PLL1");
+>   		else
+> -			snd_soc_dapm_force_enable_pin(&codec->dapm, "PLL1");
+> +			snd_soc_dapm_force_enable_pin_unlocked(dapm, "PLL1");
+>
+>   		if (adav80x->sysclk_pd[1] || adav80x->sysclk_pd[2])
+> -			snd_soc_dapm_disable_pin(&codec->dapm, "PLL2");
+> +			snd_soc_dapm_disable_pin_unlocked(dapm, "PLL2");
+>   		else
+> -			snd_soc_dapm_force_enable_pin(&codec->dapm, "PLL2");
+> +			snd_soc_dapm_force_enable_pin_unlocked(dapm, "PLL2");
+>
+> -		snd_soc_dapm_sync(&codec->dapm);
+> +		snd_soc_dapm_sync_unlocked(dapm);
+> +
+> +		snd_soc_dapm_mutex_unlock(dapm);
+>   	}
+>
+>   	return 0;
+>
