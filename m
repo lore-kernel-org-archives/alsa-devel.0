@@ -1,19 +1,15 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 021/102] ASoC: ssm2602: Omit superfluous
- elements in input select array
-Date: Tue, 18 Feb 2014 15:35:33 +0000
-Message-ID: <1392737733.2304.36.camel@loki>
-References: <1392723422-12689-1-git-send-email-tiwai@suse.de>
- <1392723422-12689-6-git-send-email-tiwai@suse.de> <53034B23.703@metafoo.de>
- <1392729807.2304.29.camel@loki> <s5hioscy2fo.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 0/2] alsa-lib surround 2.1 support
+Date: Tue, 18 Feb 2014 16:41:47 +0100
+Message-ID: <1392738109-9956-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id AA38326530A
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 16:36:09 +0100 (CET)
-In-Reply-To: <s5hioscy2fo.wl%tiwai@suse.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id AACF926559B
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 16:41:52 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,51 +19,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2014-02-18 at 14:29 +0100, Takashi Iwai wrote:
-> At Tue, 18 Feb 2014 13:23:27 +0000,
-> Liam Girdwood wrote:
-> > 
-> > On Tue, 2014-02-18 at 12:59 +0100, Lars-Peter Clausen wrote:
-> > > On 02/18/2014 12:36 PM, Takashi Iwai wrote:
-> > > > The array contains too many elements although it should have only
-> > > > two.
-> > > >
-> > > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > > > ---
-> > > >   sound/soc/codecs/ssm2602.c | 9 +++++----
-> > > >   1 file changed, 5 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-> > > > index f444d585b916..e32b82ff6304 100644
-> > > > --- a/sound/soc/codecs/ssm2602.c
-> > > > +++ b/sound/soc/codecs/ssm2602.c
-> > > > @@ -75,15 +75,16 @@ static const u16 ssm2602_reg[SSM2602_CACHEREGNUM] = {
-> > > >
-> > > >   /*Appending several "None"s just for OSS mixer use*/
-> > > >   static const char *ssm2602_input_select[] = {
-> > > > -	"Line", "Mic", "None", "None", "None",
-> > > > -	"None", "None", "None",
-> > > > +	"Line", "Mic",
-> > > >   };
-> > > 
-> > > I never dared to change it because of the comment above the array. I must 
-> > > admit that I have no idea though why those extra None entries are necessary 
-> > > for OSS.
-> > 
-> > iirc the OSS input mixer in userspace may expect a similar number of
-> > entries to be compatible with the old Soundblaster16 input mixer ?
-> 
-> But this array is referred as having only two elements,
-> 
-> 	SOC_ENUM_SINGLE(SSM2602_APANA, 2, 2, ssm2602_input_select),
-> 
-> so the OSS access (via emulation) won't take more than two, either.
+I'm currently experimenting with different ways to make the system autodetect
+if surround2.1 is available through a four channel setup (e g laptop surround
+speaker) and fallback to 5.1 if it isn't.
 
-Hmm, that is quite odd then. Maybe an error on behalf of the original
-author or just plain weirdness...
+It's a bit tricky, especially given that the LFE speaker could be on left channel,
+right channel, and both, so meanwhile, this fallback should be better than nothing
+and help establish a standard for upper parts of the stack (i e PulseAudio).
 
-Liam
+David Henningsson (2):
+  conf: Add basic infrastructure for 2.1 surround sound
+  conf: Add surround 2.1 support to all cards
+
+ src/conf/alsa.conf               |  3 ++
+ src/conf/cards/ATIIXP-SPDMA.conf |  1 +
+ src/conf/cards/ATIIXP.conf       |  1 +
+ src/conf/cards/Audigy.conf       |  1 +
+ src/conf/cards/Audigy2.conf      |  1 +
+ src/conf/cards/Aureon51.conf     |  1 +
+ src/conf/cards/Aureon71.conf     |  1 +
+ src/conf/cards/CA0106.conf       |  1 +
+ src/conf/cards/CMI8738-MC6.conf  |  1 +
+ src/conf/cards/CMI8738-MC8.conf  |  1 +
+ src/conf/cards/CMI8788.conf      |  2 +-
+ src/conf/cards/CS46xx.conf       |  1 +
+ src/conf/cards/EMU10K1.conf      |  1 +
+ src/conf/cards/EMU10K1X.conf     |  1 +
+ src/conf/cards/FM801.conf        |  1 +
+ src/conf/cards/FireWave.conf     |  1 +
+ src/conf/cards/HDA-Intel.conf    |  1 +
+ src/conf/cards/ICE1712.conf      |  1 +
+ src/conf/cards/ICE1724.conf      |  1 +
+ src/conf/cards/ICH.conf          |  1 +
+ src/conf/cards/ICH4.conf         |  1 +
+ src/conf/cards/Loopback.conf     |  1 +
+ src/conf/cards/NFORCE.conf       |  1 +
+ src/conf/cards/SB-XFi.conf       |  1 +
+ src/conf/cards/SI7018.conf       |  1 +
+ src/conf/cards/USB-Audio.conf    |  1 +
+ src/conf/cards/VIA8233.conf      |  1 +
+ src/conf/cards/VIA8233A.conf     |  1 +
+ src/conf/cards/VIA8237.conf      |  1 +
+ src/conf/pcm/Makefile.am         |  2 +-
+ src/conf/pcm/surround21.conf     | 62 ++++++++++++++++++++++++++++++++++++++++
+ 31 files changed, 94 insertions(+), 2 deletions(-)
+ create mode 100644 src/conf/pcm/surround21.conf
+
+-- 
+1.9.rc1
