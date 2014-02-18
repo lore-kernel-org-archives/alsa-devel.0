@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 047/102] ASoC: wl1273: Use
-	SOC_ENUM_SINGLE_EXT_DECL()
-Date: Tue, 18 Feb 2014 12:38:03 +0100
-Message-ID: <1392723517-12772-20-git-send-email-tiwai@suse.de>
+Subject: [PATCH 050/102] ASoC: wm8731: Use
+	SOC_ENUM_SINGLE_DECL()
+Date: Tue, 18 Feb 2014 12:38:06 +0100
+Message-ID: <1392723517-12772-23-git-send-email-tiwai@suse.de>
 References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 880EC2655C9
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D58D2655CB
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:38:39 +0100 (CET)
 In-Reply-To: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,33 +29,23 @@ Just replace with the helper macro.  No functional change at all.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wl1273.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wm8731.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
-index b7ab2ef567c8..7485285d08d2 100644
---- a/sound/soc/codecs/wl1273.c
-+++ b/sound/soc/codecs/wl1273.c
-@@ -209,8 +209,7 @@ static int snd_wl1273_set_audio_route(struct snd_kcontrol *kcontrol,
- 	return 1;
- }
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 029720366ff8..d9655f981df1 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -83,8 +83,8 @@ static bool wm8731_writeable(struct device *dev, unsigned int reg)
  
--static const struct soc_enum wl1273_enum =
--	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(wl1273_audio_route), wl1273_audio_route);
-+static SOC_ENUM_SINGLE_EXT_DECL(wl1273_enum, wl1273_audio_route);
+ static const char *wm8731_input_select[] = {"Line In", "Mic"};
  
- static int snd_wl1273_fm_audio_get(struct snd_kcontrol *kcontrol,
- 				   struct snd_ctl_elem_value *ucontrol)
-@@ -247,9 +246,7 @@ static int snd_wl1273_fm_audio_put(struct snd_kcontrol *kcontrol,
+-static const struct soc_enum wm8731_insel_enum =
+-	SOC_ENUM_SINGLE(WM8731_APANA, 2, 2, wm8731_input_select);
++static SOC_ENUM_SINGLE_DECL(wm8731_insel_enum,
++			    WM8731_APANA, 2, wm8731_input_select);
  
- static const char * const wl1273_audio_strings[] = { "Digital", "Analog" };
+ static int wm8731_deemph[] = { 0, 32000, 44100, 48000 };
  
--static const struct soc_enum wl1273_audio_enum =
--	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(wl1273_audio_strings),
--			    wl1273_audio_strings);
-+static SOC_ENUM_SINGLE_EXT_DECL(wl1273_audio_enum, wl1273_audio_strings);
- 
- static int snd_wl1273_fm_volume_get(struct snd_kcontrol *kcontrol,
- 				    struct snd_ctl_elem_value *ucontrol)
 -- 
 1.8.5.2
