@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 056/102] ASoC: wm8962: Use
+Subject: [PATCH 068/102] ASoC: da732x: Use
 	SOC_ENUM_SINGLE_DECL()
-Date: Tue, 18 Feb 2014 12:38:12 +0100
-Message-ID: <1392723517-12772-29-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:38:24 +0100
+Message-ID: <1392723517-12772-41-git-send-email-tiwai@suse.de>
 References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id AA3982655DC
+ by alsa0.perex.cz (Postfix) with ESMTP id A80A12655DB
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:38:39 +0100 (CET)
 In-Reply-To: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,86 +29,232 @@ Just replace with the helper macro.  No functional change at all.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8962.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ sound/soc/codecs/da732x.c | 160 +++++++++++++++++++++-------------------------
+ 1 file changed, 72 insertions(+), 88 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index c06bb5088e60..3924ee243745 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -1658,16 +1658,16 @@ static const char *cap_hpf_mode_text[] = {
- 	"Hi-fi", "Application"
+diff --git a/sound/soc/codecs/da732x.c b/sound/soc/codecs/da732x.c
+index f295b6569910..3219fa1f3cf5 100644
+--- a/sound/soc/codecs/da732x.c
++++ b/sound/soc/codecs/da732x.c
+@@ -269,81 +269,65 @@ static const char *da732x_hpf_voice[] = {
+ 	"150Hz", "200Hz", "300Hz", "400Hz"
  };
  
--static const struct soc_enum cap_hpf_mode =
--	SOC_ENUM_SINGLE(WM8962_ADC_DAC_CONTROL_2, 10, 2, cap_hpf_mode_text);
-+static SOC_ENUM_SINGLE_DECL(cap_hpf_mode,
-+			    WM8962_ADC_DAC_CONTROL_2, 10, cap_hpf_mode_text);
+-static const struct soc_enum da732x_dac1_hpf_mode_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_DAC1_HPF, DA732X_HPF_MODE_SHIFT,
+-			DA732X_HPF_MODE_MAX, da732x_hpf_mode)
+-};
+-
+-static const struct soc_enum da732x_dac2_hpf_mode_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_DAC2_HPF, DA732X_HPF_MODE_SHIFT,
+-			DA732X_HPF_MODE_MAX, da732x_hpf_mode)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_dac1_hpf_mode_enum,
++			    DA732X_REG_DAC1_HPF, DA732X_HPF_MODE_SHIFT,
++			    da732x_hpf_mode);
  
+-static const struct soc_enum da732x_dac3_hpf_mode_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_DAC3_HPF, DA732X_HPF_MODE_SHIFT,
+-			DA732X_HPF_MODE_MAX, da732x_hpf_mode)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_dac2_hpf_mode_enum,
++			    DA732X_REG_DAC2_HPF, DA732X_HPF_MODE_SHIFT,
++			    da732x_hpf_mode);
  
- static const char *cap_lhpf_mode_text[] = {
- 	"LPF", "HPF"
+-static const struct soc_enum da732x_adc1_hpf_mode_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_ADC1_HPF, DA732X_HPF_MODE_SHIFT,
+-			DA732X_HPF_MODE_MAX, da732x_hpf_mode)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_dac3_hpf_mode_enum,
++			    DA732X_REG_DAC3_HPF, DA732X_HPF_MODE_SHIFT,
++			    da732x_hpf_mode);
+ 
+-static const struct soc_enum da732x_adc2_hpf_mode_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_ADC2_HPF, DA732X_HPF_MODE_SHIFT,
+-			DA732X_HPF_MODE_MAX, da732x_hpf_mode)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_adc1_hpf_mode_enum,
++			    DA732X_REG_ADC1_HPF, DA732X_HPF_MODE_SHIFT,
++			    da732x_hpf_mode);
+ 
+-static const struct soc_enum da732x_dac1_hp_filter_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_DAC1_HPF, DA732X_HPF_MUSIC_SHIFT,
+-			DA732X_HPF_MUSIC_MAX, da732x_hpf_music)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_adc2_hpf_mode_enum,
++			    DA732X_REG_ADC2_HPF, DA732X_HPF_MODE_SHIFT,
++			    da732x_hpf_mode);
+ 
+-static const struct soc_enum da732x_dac2_hp_filter_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_DAC2_HPF, DA732X_HPF_MUSIC_SHIFT,
+-			DA732X_HPF_MUSIC_MAX, da732x_hpf_music)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_dac1_hp_filter_enum,
++			    DA732X_REG_DAC1_HPF, DA732X_HPF_MUSIC_SHIFT,
++			    da732x_hpf_music);
+ 
+-static const struct soc_enum da732x_dac3_hp_filter_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_DAC3_HPF, DA732X_HPF_MUSIC_SHIFT,
+-			DA732X_HPF_MUSIC_MAX, da732x_hpf_music)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_dac2_hp_filter_enum,
++			    DA732X_REG_DAC2_HPF, DA732X_HPF_MUSIC_SHIFT,
++			    da732x_hpf_music);
+ 
+-static const struct soc_enum da732x_adc1_hp_filter_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_ADC1_HPF, DA732X_HPF_MUSIC_SHIFT,
+-			DA732X_HPF_MUSIC_MAX, da732x_hpf_music)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_dac3_hp_filter_enum,
++			    DA732X_REG_DAC3_HPF, DA732X_HPF_MUSIC_SHIFT,
++			    da732x_hpf_music);
+ 
+-static const struct soc_enum da732x_adc2_hp_filter_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_ADC2_HPF, DA732X_HPF_MUSIC_SHIFT,
+-			DA732X_HPF_MUSIC_MAX, da732x_hpf_music)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_adc1_hp_filter_enum,
++			    DA732X_REG_ADC1_HPF, DA732X_HPF_MUSIC_SHIFT,
++			    da732x_hpf_music);
+ 
+-static const struct soc_enum da732x_dac1_voice_filter_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_DAC1_HPF, DA732X_HPF_VOICE_SHIFT,
+-			DA732X_HPF_VOICE_MAX, da732x_hpf_voice)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_adc2_hp_filter_enum,
++			    DA732X_REG_ADC2_HPF, DA732X_HPF_MUSIC_SHIFT,
++			    da732x_hpf_music);
+ 
+-static const struct soc_enum da732x_dac2_voice_filter_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_DAC2_HPF, DA732X_HPF_VOICE_SHIFT,
+-			DA732X_HPF_VOICE_MAX, da732x_hpf_voice)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_dac1_voice_filter_enum,
++			    DA732X_REG_DAC1_HPF, DA732X_HPF_VOICE_SHIFT,
++			    da732x_hpf_voice);
+ 
+-static const struct soc_enum da732x_dac3_voice_filter_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_DAC3_HPF, DA732X_HPF_VOICE_SHIFT,
+-			DA732X_HPF_VOICE_MAX, da732x_hpf_voice)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_dac2_voice_filter_enum,
++			    DA732X_REG_DAC2_HPF, DA732X_HPF_VOICE_SHIFT,
++			    da732x_hpf_voice);
+ 
+-static const struct soc_enum da732x_adc1_voice_filter_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_ADC1_HPF, DA732X_HPF_VOICE_SHIFT,
+-			DA732X_HPF_VOICE_MAX, da732x_hpf_voice)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_dac3_voice_filter_enum,
++			    DA732X_REG_DAC3_HPF, DA732X_HPF_VOICE_SHIFT,
++			    da732x_hpf_voice);
+ 
+-static const struct soc_enum da732x_adc2_voice_filter_enum[] = {
+-	SOC_ENUM_SINGLE(DA732X_REG_ADC2_HPF, DA732X_HPF_VOICE_SHIFT,
+-			DA732X_HPF_VOICE_MAX, da732x_hpf_voice)
+-};
++static SOC_ENUM_SINGLE_DECL(da732x_adc1_voice_filter_enum,
++			    DA732X_REG_ADC1_HPF, DA732X_HPF_VOICE_SHIFT,
++			    da732x_hpf_voice);
+ 
++static SOC_ENUM_SINGLE_DECL(da732x_adc2_voice_filter_enum,
++			    DA732X_REG_ADC2_HPF, DA732X_HPF_VOICE_SHIFT,
++			    da732x_hpf_voice);
+ 
+ static int da732x_hpf_set(struct snd_kcontrol *kcontrol,
+ 			  struct snd_ctl_elem_value *ucontrol)
+@@ -714,65 +698,65 @@ static const char *enable_text[] = {
  };
  
--static const struct soc_enum cap_lhpf_mode =
--	SOC_ENUM_SINGLE(WM8962_LHPF1, 1, 2, cap_lhpf_mode_text);
-+static SOC_ENUM_SINGLE_DECL(cap_lhpf_mode,
-+			    WM8962_LHPF1, 1, cap_lhpf_mode_text);
+ /* ADC1LMUX */
+-static const struct soc_enum adc1l_enum =
+-	SOC_ENUM_SINGLE(DA732X_REG_INP_MUX, DA732X_ADC1L_MUX_SEL_SHIFT,
+-			DA732X_ADCL_MUX_MAX, adcl_text);
++static SOC_ENUM_SINGLE_DECL(adc1l_enum,
++			    DA732X_REG_INP_MUX, DA732X_ADC1L_MUX_SEL_SHIFT,
++			    adcl_text);
+ static const struct snd_kcontrol_new adc1l_mux =
+ 	SOC_DAPM_ENUM("ADC Route", adc1l_enum);
  
- static const struct snd_kcontrol_new wm8962_snd_controls[] = {
- SOC_DOUBLE("Input Mixer Switch", WM8962_INPUT_MIXER_CONTROL_1, 3, 2, 1, 1),
-@@ -2014,40 +2014,40 @@ static int dsp2_event(struct snd_soc_dapm_widget *w,
+ /* ADC1RMUX */
+-static const struct soc_enum adc1r_enum =
+-	SOC_ENUM_SINGLE(DA732X_REG_INP_MUX, DA732X_ADC1R_MUX_SEL_SHIFT,
+-			DA732X_ADCR_MUX_MAX, adcr_text);
++static SOC_ENUM_SINGLE_DECL(adc1r_enum,
++			    DA732X_REG_INP_MUX, DA732X_ADC1R_MUX_SEL_SHIFT,
++			    adcr_text);
+ static const struct snd_kcontrol_new adc1r_mux =
+ 	SOC_DAPM_ENUM("ADC Route", adc1r_enum);
  
- static const char *st_text[] = { "None", "Left", "Right" };
+ /* ADC2LMUX */
+-static const struct soc_enum adc2l_enum =
+-	SOC_ENUM_SINGLE(DA732X_REG_INP_MUX, DA732X_ADC2L_MUX_SEL_SHIFT,
+-			DA732X_ADCL_MUX_MAX, adcl_text);
++static SOC_ENUM_SINGLE_DECL(adc2l_enum,
++			    DA732X_REG_INP_MUX, DA732X_ADC2L_MUX_SEL_SHIFT,
++			    adcl_text);
+ static const struct snd_kcontrol_new adc2l_mux =
+ 	SOC_DAPM_ENUM("ADC Route", adc2l_enum);
  
--static const struct soc_enum str_enum =
--	SOC_ENUM_SINGLE(WM8962_DAC_DSP_MIXING_1, 2, 3, st_text);
-+static SOC_ENUM_SINGLE_DECL(str_enum,
-+			    WM8962_DAC_DSP_MIXING_1, 2, st_text);
+ /* ADC2RMUX */
+-static const struct soc_enum adc2r_enum =
+-	SOC_ENUM_SINGLE(DA732X_REG_INP_MUX, DA732X_ADC2R_MUX_SEL_SHIFT,
+-			DA732X_ADCR_MUX_MAX, adcr_text);
++static SOC_ENUM_SINGLE_DECL(adc2r_enum,
++			    DA732X_REG_INP_MUX, DA732X_ADC2R_MUX_SEL_SHIFT,
++			    adcr_text);
  
- static const struct snd_kcontrol_new str_mux =
- 	SOC_DAPM_ENUM("Right Sidetone", str_enum);
+ static const struct snd_kcontrol_new adc2r_mux =
+ 	SOC_DAPM_ENUM("ADC Route", adc2r_enum);
  
--static const struct soc_enum stl_enum =
--	SOC_ENUM_SINGLE(WM8962_DAC_DSP_MIXING_2, 2, 3, st_text);
-+static SOC_ENUM_SINGLE_DECL(stl_enum,
-+			    WM8962_DAC_DSP_MIXING_2, 2, st_text);
+-static const struct soc_enum da732x_hp_left_output =
+-	SOC_ENUM_SINGLE(DA732X_REG_HPL, DA732X_HP_OUT_DAC_EN_SHIFT,
+-			DA732X_DAC_EN_MAX, enable_text);
++static SOC_ENUM_SINGLE_DECL(da732x_hp_left_output,
++			    DA732X_REG_HPL, DA732X_HP_OUT_DAC_EN_SHIFT,
++			    enable_text);
  
- static const struct snd_kcontrol_new stl_mux =
- 	SOC_DAPM_ENUM("Left Sidetone", stl_enum);
+ static const struct snd_kcontrol_new hpl_mux =
+ 	SOC_DAPM_ENUM("HPL Switch", da732x_hp_left_output);
  
- static const char *outmux_text[] = { "DAC", "Mixer" };
+-static const struct soc_enum da732x_hp_right_output =
+-	SOC_ENUM_SINGLE(DA732X_REG_HPR, DA732X_HP_OUT_DAC_EN_SHIFT,
+-			DA732X_DAC_EN_MAX, enable_text);
++static SOC_ENUM_SINGLE_DECL(da732x_hp_right_output,
++			    DA732X_REG_HPR, DA732X_HP_OUT_DAC_EN_SHIFT,
++			    enable_text);
  
--static const struct soc_enum spkoutr_enum =
--	SOC_ENUM_SINGLE(WM8962_SPEAKER_MIXER_2, 7, 2, outmux_text);
-+static SOC_ENUM_SINGLE_DECL(spkoutr_enum,
-+			    WM8962_SPEAKER_MIXER_2, 7, outmux_text);
+ static const struct snd_kcontrol_new hpr_mux =
+ 	SOC_DAPM_ENUM("HPR Switch", da732x_hp_right_output);
  
- static const struct snd_kcontrol_new spkoutr_mux =
- 	SOC_DAPM_ENUM("SPKOUTR Mux", spkoutr_enum);
+-static const struct soc_enum da732x_speaker_output =
+-	SOC_ENUM_SINGLE(DA732X_REG_LIN3, DA732X_LOUT_DAC_EN_SHIFT,
+-			DA732X_DAC_EN_MAX, enable_text);
++static SOC_ENUM_SINGLE_DECL(da732x_speaker_output,
++			    DA732X_REG_LIN3, DA732X_LOUT_DAC_EN_SHIFT,
++			    enable_text);
  
--static const struct soc_enum spkoutl_enum =
--	SOC_ENUM_SINGLE(WM8962_SPEAKER_MIXER_1, 7, 2, outmux_text);
-+static SOC_ENUM_SINGLE_DECL(spkoutl_enum,
-+			    WM8962_SPEAKER_MIXER_1, 7, outmux_text);
+ static const struct snd_kcontrol_new spk_mux =
+ 	SOC_DAPM_ENUM("SPK Switch", da732x_speaker_output);
  
- static const struct snd_kcontrol_new spkoutl_mux =
- 	SOC_DAPM_ENUM("SPKOUTL Mux", spkoutl_enum);
+-static const struct soc_enum da732x_lout4_output =
+-	SOC_ENUM_SINGLE(DA732X_REG_LIN4, DA732X_LOUT_DAC_EN_SHIFT,
+-			DA732X_DAC_EN_MAX, enable_text);
++static SOC_ENUM_SINGLE_DECL(da732x_lout4_output,
++			    DA732X_REG_LIN4, DA732X_LOUT_DAC_EN_SHIFT,
++			    enable_text);
  
--static const struct soc_enum hpoutr_enum =
--	SOC_ENUM_SINGLE(WM8962_HEADPHONE_MIXER_2, 7, 2, outmux_text);
-+static SOC_ENUM_SINGLE_DECL(hpoutr_enum,
-+			    WM8962_HEADPHONE_MIXER_2, 7, outmux_text);
+ static const struct snd_kcontrol_new lout4_mux =
+ 	SOC_DAPM_ENUM("LOUT4 Switch", da732x_lout4_output);
  
- static const struct snd_kcontrol_new hpoutr_mux =
- 	SOC_DAPM_ENUM("HPOUTR Mux", hpoutr_enum);
+-static const struct soc_enum da732x_lout2_output =
+-	SOC_ENUM_SINGLE(DA732X_REG_LIN2, DA732X_LOUT_DAC_EN_SHIFT,
+-			DA732X_DAC_EN_MAX, enable_text);
++static SOC_ENUM_SINGLE_DECL(da732x_lout2_output,
++			    DA732X_REG_LIN2, DA732X_LOUT_DAC_EN_SHIFT,
++			    enable_text);
  
--static const struct soc_enum hpoutl_enum =
--	SOC_ENUM_SINGLE(WM8962_HEADPHONE_MIXER_1, 7, 2, outmux_text);
-+static SOC_ENUM_SINGLE_DECL(hpoutl_enum,
-+			    WM8962_HEADPHONE_MIXER_1, 7, outmux_text);
- 
- static const struct snd_kcontrol_new hpoutl_mux =
- 	SOC_DAPM_ENUM("HPOUTL Mux", hpoutl_enum);
+ static const struct snd_kcontrol_new lout2_mux =
+ 	SOC_DAPM_ENUM("LOUT2 Switch", da732x_lout2_output);
 -- 
 1.8.5.2
