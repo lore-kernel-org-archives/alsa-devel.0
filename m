@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 019/102] ASoC: arizona: Fix wrong number of
-	items in enum ctls
-Date: Tue, 18 Feb 2014 12:36:54 +0100
-Message-ID: <1392723422-12689-4-git-send-email-tiwai@suse.de>
+Subject: [PATCH 022/102] ASoC: wm8400: Fix the wrong number of
+	enum items
+Date: Tue, 18 Feb 2014 12:36:57 +0100
+Message-ID: <1392723422-12689-7-git-send-email-tiwai@suse.de>
 References: <1392723422-12689-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 30780265587
+ by alsa0.perex.cz (Postfix) with ESMTP id 5576026558A
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:37:06 +0100 (CET)
 In-Reply-To: <1392723422-12689-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,127 +25,79 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-arizona codec driver has a few places wrongly defining the number of
+wm8400 codec driver has a few places wrongly defining the number of
 enum items.
 
 Use SOC_ENUM_SINGLE_DECL() macro and they are automatically fixed.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/arizona.c | 71 ++++++++++++++++++++++++++--------------------
- 1 file changed, 40 insertions(+), 31 deletions(-)
+ sound/soc/codecs/wm8400.c | 34 ++++++++++++++++++++--------------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index e4295fee8f13..a32b84ac03f6 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -542,67 +542,76 @@ static const char *arizona_vol_ramp_text[] = {
- 	"15ms/6dB", "30ms/6dB",
- };
+diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
+index 48dc7d2fee36..6d684d934f4d 100644
+--- a/sound/soc/codecs/wm8400.c
++++ b/sound/soc/codecs/wm8400.c
+@@ -117,19 +117,23 @@ static int wm8400_outpga_put_volsw_vu(struct snd_kcontrol *kcontrol,
+ static const char *wm8400_digital_sidetone[] =
+ 	{"None", "Left ADC", "Right ADC", "Reserved"};
  
--const struct soc_enum arizona_in_vd_ramp =
--	SOC_ENUM_SINGLE(ARIZONA_INPUT_VOLUME_RAMP,
--			ARIZONA_IN_VD_RAMP_SHIFT, 7, arizona_vol_ramp_text);
-+SOC_ENUM_SINGLE_DECL(arizona_in_vd_ramp,
-+		     ARIZONA_INPUT_VOLUME_RAMP,
-+		     ARIZONA_IN_VD_RAMP_SHIFT,
-+		     arizona_vol_ramp_text);
- EXPORT_SYMBOL_GPL(arizona_in_vd_ramp);
+-static const struct soc_enum wm8400_left_digital_sidetone_enum =
+-SOC_ENUM_SINGLE(WM8400_DIGITAL_SIDE_TONE,
+-		WM8400_ADC_TO_DACL_SHIFT, 2, wm8400_digital_sidetone);
++static SOC_ENUM_SINGLE_DECL(wm8400_left_digital_sidetone_enum,
++			    WM8400_DIGITAL_SIDE_TONE,
++			    WM8400_ADC_TO_DACL_SHIFT,
++			    wm8400_digital_sidetone);
  
--const struct soc_enum arizona_in_vi_ramp =
--	SOC_ENUM_SINGLE(ARIZONA_INPUT_VOLUME_RAMP,
--			ARIZONA_IN_VI_RAMP_SHIFT, 7, arizona_vol_ramp_text);
-+SOC_ENUM_SINGLE_DECL(arizona_in_vi_ramp,
-+		     ARIZONA_INPUT_VOLUME_RAMP,
-+		     ARIZONA_IN_VI_RAMP_SHIFT,
-+		     arizona_vol_ramp_text);
- EXPORT_SYMBOL_GPL(arizona_in_vi_ramp);
+-static const struct soc_enum wm8400_right_digital_sidetone_enum =
+-SOC_ENUM_SINGLE(WM8400_DIGITAL_SIDE_TONE,
+-		WM8400_ADC_TO_DACR_SHIFT, 2, wm8400_digital_sidetone);
++static SOC_ENUM_SINGLE_DECL(wm8400_right_digital_sidetone_enum,
++			    WM8400_DIGITAL_SIDE_TONE,
++			    WM8400_ADC_TO_DACR_SHIFT,
++			    wm8400_digital_sidetone);
  
--const struct soc_enum arizona_out_vd_ramp =
--	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_VOLUME_RAMP,
--			ARIZONA_OUT_VD_RAMP_SHIFT, 7, arizona_vol_ramp_text);
-+SOC_ENUM_SINGLE_DECL(arizona_out_vd_ramp,
-+		     ARIZONA_OUTPUT_VOLUME_RAMP,
-+		     ARIZONA_OUT_VD_RAMP_SHIFT,
-+		     arizona_vol_ramp_text);
- EXPORT_SYMBOL_GPL(arizona_out_vd_ramp);
+ static const char *wm8400_adcmode[] =
+ 	{"Hi-fi mode", "Voice mode 1", "Voice mode 2", "Voice mode 3"};
  
--const struct soc_enum arizona_out_vi_ramp =
--	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_VOLUME_RAMP,
--			ARIZONA_OUT_VI_RAMP_SHIFT, 7, arizona_vol_ramp_text);
-+SOC_ENUM_SINGLE_DECL(arizona_out_vi_ramp,
-+		     ARIZONA_OUTPUT_VOLUME_RAMP,
-+		     ARIZONA_OUT_VI_RAMP_SHIFT,
-+		     arizona_vol_ramp_text);
- EXPORT_SYMBOL_GPL(arizona_out_vi_ramp);
+-static const struct soc_enum wm8400_right_adcmode_enum =
+-SOC_ENUM_SINGLE(WM8400_ADC_CTRL, WM8400_ADC_HPF_CUT_SHIFT, 3, wm8400_adcmode);
++static SOC_ENUM_SINGLE_DECL(wm8400_right_adcmode_enum,
++			    WM8400_ADC_CTRL,
++			    WM8400_ADC_HPF_CUT_SHIFT,
++			    wm8400_adcmode);
  
- static const char *arizona_lhpf_mode_text[] = {
- 	"Low-pass", "High-pass"
- };
+ static const struct snd_kcontrol_new wm8400_snd_controls[] = {
+ /* INMIXL */
+@@ -422,9 +426,10 @@ SOC_DAPM_SINGLE("RINPGA34 Switch", WM8400_INPUT_MIXER3, WM8400_L34MNB_SHIFT,
+ static const char *wm8400_ainlmux[] =
+ 	{"INMIXL Mix", "RXVOICE Mix", "DIFFINL Mix"};
  
--const struct soc_enum arizona_lhpf1_mode =
--	SOC_ENUM_SINGLE(ARIZONA_HPLPF1_1, ARIZONA_LHPF1_MODE_SHIFT, 2,
--			arizona_lhpf_mode_text);
-+SOC_ENUM_SINGLE_DECL(arizona_lhpf1_mode,
-+		     ARIZONA_HPLPF1_1,
-+		     ARIZONA_LHPF1_MODE_SHIFT,
-+		     arizona_lhpf_mode_text);
- EXPORT_SYMBOL_GPL(arizona_lhpf1_mode);
+-static const struct soc_enum wm8400_ainlmux_enum =
+-SOC_ENUM_SINGLE( WM8400_INPUT_MIXER1, WM8400_AINLMODE_SHIFT,
+-	ARRAY_SIZE(wm8400_ainlmux), wm8400_ainlmux);
++static SOC_ENUM_SINGLE_DECL(wm8400_ainlmux_enum,
++			    WM8400_INPUT_MIXER1,
++			    WM8400_AINLMODE_SHIFT,
++			    wm8400_ainlmux);
  
--const struct soc_enum arizona_lhpf2_mode =
--	SOC_ENUM_SINGLE(ARIZONA_HPLPF2_1, ARIZONA_LHPF2_MODE_SHIFT, 2,
--			arizona_lhpf_mode_text);
-+SOC_ENUM_SINGLE_DECL(arizona_lhpf2_mode,
-+		     ARIZONA_HPLPF2_1,
-+		     ARIZONA_LHPF2_MODE_SHIFT,
-+		     arizona_lhpf_mode_text);
- EXPORT_SYMBOL_GPL(arizona_lhpf2_mode);
+ static const struct snd_kcontrol_new wm8400_dapm_ainlmux_controls =
+ SOC_DAPM_ENUM("Route", wm8400_ainlmux_enum);
+@@ -435,9 +440,10 @@ SOC_DAPM_ENUM("Route", wm8400_ainlmux_enum);
+ static const char *wm8400_ainrmux[] =
+ 	{"INMIXR Mix", "RXVOICE Mix", "DIFFINR Mix"};
  
--const struct soc_enum arizona_lhpf3_mode =
--	SOC_ENUM_SINGLE(ARIZONA_HPLPF3_1, ARIZONA_LHPF3_MODE_SHIFT, 2,
--			arizona_lhpf_mode_text);
-+SOC_ENUM_SINGLE_DECL(arizona_lhpf3_mode,
-+		     ARIZONA_HPLPF3_1,
-+		     ARIZONA_LHPF3_MODE_SHIFT,
-+		     arizona_lhpf_mode_text);
- EXPORT_SYMBOL_GPL(arizona_lhpf3_mode);
+-static const struct soc_enum wm8400_ainrmux_enum =
+-SOC_ENUM_SINGLE( WM8400_INPUT_MIXER1, WM8400_AINRMODE_SHIFT,
+-	ARRAY_SIZE(wm8400_ainrmux), wm8400_ainrmux);
++static SOC_ENUM_SINGLE_DECL(wm8400_ainrmux_enum,
++			    WM8400_INPUT_MIXER1,
++			    WM8400_AINRMODE_SHIFT,
++			    wm8400_ainrmux);
  
--const struct soc_enum arizona_lhpf4_mode =
--	SOC_ENUM_SINGLE(ARIZONA_HPLPF4_1, ARIZONA_LHPF4_MODE_SHIFT, 2,
--			arizona_lhpf_mode_text);
-+SOC_ENUM_SINGLE_DECL(arizona_lhpf4_mode,
-+		     ARIZONA_HPLPF4_1,
-+		     ARIZONA_LHPF4_MODE_SHIFT,
-+		     arizona_lhpf_mode_text);
- EXPORT_SYMBOL_GPL(arizona_lhpf4_mode);
- 
- static const char *arizona_ng_hold_text[] = {
- 	"30ms", "120ms", "250ms", "500ms",
- };
- 
--const struct soc_enum arizona_ng_hold =
--	SOC_ENUM_SINGLE(ARIZONA_NOISE_GATE_CONTROL, ARIZONA_NGATE_HOLD_SHIFT,
--			4, arizona_ng_hold_text);
-+SOC_ENUM_SINGLE_DECL(arizona_ng_hold,
-+		     ARIZONA_NOISE_GATE_CONTROL,
-+		     ARIZONA_NGATE_HOLD_SHIFT,
-+		     arizona_ng_hold_text);
- EXPORT_SYMBOL_GPL(arizona_ng_hold);
- 
- static const char * const arizona_in_hpf_cut_text[] = {
- 	"2.5Hz", "5Hz", "10Hz", "20Hz", "40Hz"
- };
- 
--const struct soc_enum arizona_in_hpf_cut_enum =
--	SOC_ENUM_SINGLE(ARIZONA_HPF_CONTROL, ARIZONA_IN_HPF_CUT_SHIFT,
--			ARRAY_SIZE(arizona_in_hpf_cut_text),
--			arizona_in_hpf_cut_text);
-+SOC_ENUM_SINGLE_DECL(arizona_in_hpf_cut_enum,
-+		     ARIZONA_HPF_CONTROL,
-+		     ARIZONA_IN_HPF_CUT_SHIFT,
-+		     arizona_in_hpf_cut_text);
- EXPORT_SYMBOL_GPL(arizona_in_hpf_cut_enum);
- 
- static const char * const arizona_in_dmic_osr_text[] = {
+ static const struct snd_kcontrol_new wm8400_dapm_ainrmux_controls =
+ SOC_DAPM_ENUM("Route", wm8400_ainrmux_enum);
 -- 
 1.8.5.2
