@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: txx9aclc_ac97: Fix kernel crash on
-	probe
-Date: Tue, 18 Feb 2014 10:18:40 +0900
-Message-ID: <20140218011840.GQ2669@sirena.org.uk>
-References: <1392492509-29426-1-git-send-email-shc_work@mail.ru>
- <20140216003810.GP4451@sirena.org.uk>
- <1392519353.709209979@f243.i.mail.ru>
+Subject: Re: [PATCH] ASoC: pass snd_soc_jack_gpio to
+ jack_status_check callback
+Date: Tue, 18 Feb 2014 10:16:52 +0900
+Message-ID: <20140218011652.GP2669@sirena.org.uk>
+References: <1392528972-9440-1-git-send-email-xiaoxiang@xiaomi.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3408714350267851139=="
+Content-Type: multipart/mixed; boundary="===============8863758153372205129=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D72492650D4
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 02:31:33 +0100 (CET)
-In-Reply-To: <1392519353.709209979@f243.i.mail.ru>
+ by alsa0.perex.cz (Postfix) with ESMTP id 91DA9265114
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 02:32:04 +0100 (CET)
+In-Reply-To: <1392528972-9440-1-git-send-email-xiaoxiang@xiaomi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,67 +20,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: xiangxiao <xiaoxiang@xiaomi.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3408714350267851139==
+--===============8863758153372205129==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AFQGHouA0VN8Ovbt"
+	protocol="application/pgp-signature"; boundary="l7GkBbkEatsaRqBf"
 Content-Disposition: inline
 
 
---AFQGHouA0VN8Ovbt
-Content-Type: text/plain; charset=utf-8
+--l7GkBbkEatsaRqBf
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 16, 2014 at 06:55:53AM +0400, Alexander Shiyan wrote:
-> =D0=92=D0=BE=D1=81=D0=BA=D1=80=D0=B5=D1=81=D0=B5=D0=BD=D1=8C=D0=B5, 16 =
-=D1=84=D0=B5=D0=B2=D1=80=D0=B0=D0=BB=D1=8F 2014, 8:38 +08:00 =D0=BE=D1=82 M=
-ark Brown <broonie@kernel.org>:
-> > On Sat, Feb 15, 2014 at 11:28:29PM +0400, Alexander Shiyan wrote:
-> > > This patch fixes a crash caused by commit af5b2d7519
+On Sun, Feb 16, 2014 at 01:36:12PM +0800, xiangxiao wrote:
+> so the implementation could get the context data
+>=20
+> Change-Id: I5542613ccf9881deb672e71d0f0c4f603ad761fd
 
-> > I don't know where you got that hash from by the way, that commit isn't
-> > present in mainline?
+This shouldn't be on upstream patches.
 
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/so=
-und/soc/txx9/txx9aclc-ac97.c?id=3D3bed3344c82623f6a37f3032e307d9af5b2d7519
+> Signed-off-by: xiangxiao <xiaoxiang@xiaomi.com>
 
-A shortened commit ID is the *start* of the ID, not the end.  Try
-running 'git show af5b2d7519'.
+> -	int (*jack_status_check)(void);
+> +	int (*jack_status_check)(struct snd_soc_jack_gpio *gpio);
 
---AFQGHouA0VN8Ovbt
+Why is the callback using details of the implementation of
+snd_soc_jack_gpio?  Perhaps there's a good reason, I'm not sure and
+you've not included any implementation.  I'd have expected to see the
+jack able to provide its own context here?
+
+--l7GkBbkEatsaRqBf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTArTtAAoJELSic+t+oim9axUP/2sVHyooQ4bZrvuOULcJ/DKb
-WjOnSyZlkxIZQ64XVKLQj6aV4kwCsJ25EvI+Djf4Iv1gxjCzMNU6/mS/LnRohT/7
-8miraVLplYYTU7ROsgEXRWjMSZXU2w0g2nZ6PRxz38vxNVXL8NTvc5bdRvMSG0q5
-AJ1OAod2p3TnWi5dNr4dR3TTZjFGbbqSbpLYy0uytNhdPx85oagH8qNh0ohDEPEg
-55HO9WwjYy1o6dt+iDt0spWS/Sltaw8aT2KyvxWoko1MAikKaBqO7WQJTxKw+7kH
-bHEZ5pVfVWoavqZKiO+gdgNqZheBSKBkXBmBvWvCzf9vg0cKjg1V0nRzVQg+NeSP
-6onXezQK3wvw3Masb6LOOd1/rt2zbTAcaSv9i/M2e7f9vQYIVtDYxDg/pp7MyrlN
-IigVjUSWfwrCCLYqJxvpKsq+y7XTbNXhECWSScWsSRQ6RrpZGel2gxpdWQR3I9+h
-HMa0KMimc0/Z/2rNWhBy2Ihx+Qq5V9DwEau1gt86gSy5NbEMY4bMr1CWob1TEi6i
-cKQF9kTViMsyNxf/5PXBMG3fn4yWyRlv0LETeX08YvhRzczA1AJ4qE2lg+7JLfms
-rkPECIFTkvBALqqYwBUg0IF4el4Zj8XygAt6lno/NQI+bH5IpAc/qn+kaCl5wRdd
-VWBZS38TE+QZOBDoJBZG
-=JxGu
+iQIcBAEBAgAGBQJTArSBAAoJELSic+t+oim9PkgP/1gNvnP5bO2IQH6NPOqkYqiZ
+LYqLK4pup7mEvCscu9mojidW68Muq4NEERXoHmiM6B0rtt8V2m6AWmQROmUFuORT
+rnCRhlgEQScj4hh8ZvvIVd4Lg5qtpOCoC5aMR6Era3kOvt0KgohsHAMDB17ZN6Av
+OHuXp9OF60x/xSC3RHBllJ/tzg1R9v9NPLFbEjTJjFurxhFymx6lIh6+DbpUZ2oK
+/moCV4eEJhS8a+ZWaxVbu4QL+iJWYnHh5bHxGxLMe7Tqxg0303wqf61rqialnBO2
+G/AMvZBGl8A4IlnY7c5RYfUIc3nMFSj4h68oEPDBVX7piHs7VoM0glO3vWmw9E6j
+oVWNfHlj2gPKmwh8JVPYIlIrDUBnT2h14uR65VjvBwI1sgR0604OCYEJyK84ZTvh
+HJQK9dExK6pKKdi6cvbEAYr00wL+QBSAMAH4JifayvqUZCijrj8PrKh2SQOHJ1dK
+jHgSzda+HE6xS7ow+etjCSLaNi23sjKsdsNJTqYGuHOsa8Q0PeF8bE6R0NuR0n+8
+8vKrI+hvL6pAMHoJAwwTGGS2SALrUf5lmiuIUvoMgvbwjuphIhGOxvj8VqhdNR9r
+HIyw92jwphZ8QjH1jG23s3hKZ0h7lTldjBm72qWZIm49EVZDzPg8q1e65ueONpLe
+jrvCuxfGF/FoVWG0FW7X
+=2l/f
 -----END PGP SIGNATURE-----
 
---AFQGHouA0VN8Ovbt--
+--l7GkBbkEatsaRqBf--
 
---===============3408714350267851139==
+--===============8863758153372205129==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3408714350267851139==--
+--===============8863758153372205129==--
