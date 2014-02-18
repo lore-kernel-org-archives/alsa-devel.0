@@ -1,7 +1,7 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 14/17 v2] ASoC: pxa: corgi: Update locking around use of DAPM pin API
-Date: Tue, 18 Feb 2014 15:22:25 +0000
-Message-ID: <1392736948-26623-15-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 05/17 v2] ASoC: adav80x: Update locking around use of DAPM pin API
+Date: Tue, 18 Feb 2014 15:22:16 +0000
+Message-ID: <1392736948-26623-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
@@ -15,87 +15,56 @@ atomically, update to do so.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/pxa/corgi.c |   42 +++++++++++++++++++++++-------------------
- 1 files changed, 23 insertions(+), 19 deletions(-)
+ sound/soc/codecs/adav80x.c |   17 +++++++++++------
+ 1 files changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
-index 1853d41..9d9c8ad 100644
---- a/sound/soc/pxa/corgi.c
-+++ b/sound/soc/pxa/corgi.c
-@@ -47,51 +47,55 @@ static int corgi_spk_func;
- 
- static void corgi_ext_control(struct snd_soc_dapm_context *dapm)
+diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
+index 09d5609..9eb53c8 100644
+--- a/sound/soc/codecs/adav80x.c
++++ b/sound/soc/codecs/adav80x.c
+@@ -539,6 +539,7 @@ static int adav80x_set_sysclk(struct snd_soc_codec *codec,
+ 			      unsigned int freq, int dir)
  {
-+	snd_soc_dapm_mutex_lock(dapm);
+ 	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 
+ 	if (dir == SND_SOC_CLOCK_IN) {
+ 		switch (clk_id) {
+@@ -571,7 +572,7 @@ static int adav80x_set_sysclk(struct snd_soc_codec *codec,
+ 			regmap_write(adav80x->regmap, ADAV80X_ICLK_CTRL2,
+ 				iclk_ctrl2);
+ 
+-			snd_soc_dapm_sync(&codec->dapm);
++			snd_soc_dapm_sync(dapm);
+ 		}
+ 	} else {
+ 		unsigned int mask;
+@@ -598,17 +599,21 @@ static int adav80x_set_sysclk(struct snd_soc_codec *codec,
+ 			adav80x->sysclk_pd[clk_id] = false;
+ 		}
+ 
++		snd_soc_dapm_mutex_lock(dapm);
 +
- 	/* set up jack connection */
- 	switch (corgi_jack_func) {
- 	case CORGI_HP:
- 		/* set = unmute headphone */
- 		gpio_set_value(CORGI_GPIO_MUTE_L, 1);
- 		gpio_set_value(CORGI_GPIO_MUTE_R, 1);
--		snd_soc_dapm_disable_pin(dapm, "Mic Jack");
--		snd_soc_dapm_disable_pin(dapm, "Line Jack");
--		snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
--		snd_soc_dapm_disable_pin(dapm, "Headset Jack");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Jack");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "Headphone Jack");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
- 		break;
- 	case CORGI_MIC:
- 		/* reset = mute headphone */
- 		gpio_set_value(CORGI_GPIO_MUTE_L, 0);
- 		gpio_set_value(CORGI_GPIO_MUTE_R, 0);
--		snd_soc_dapm_enable_pin(dapm, "Mic Jack");
--		snd_soc_dapm_disable_pin(dapm, "Line Jack");
--		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
--		snd_soc_dapm_disable_pin(dapm, "Headset Jack");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "Mic Jack");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphone Jack");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
- 		break;
- 	case CORGI_LINE:
- 		gpio_set_value(CORGI_GPIO_MUTE_L, 0);
- 		gpio_set_value(CORGI_GPIO_MUTE_R, 0);
--		snd_soc_dapm_disable_pin(dapm, "Mic Jack");
--		snd_soc_dapm_enable_pin(dapm, "Line Jack");
--		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
--		snd_soc_dapm_disable_pin(dapm, "Headset Jack");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Jack");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "Line Jack");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphone Jack");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
- 		break;
- 	case CORGI_HEADSET:
- 		gpio_set_value(CORGI_GPIO_MUTE_L, 0);
- 		gpio_set_value(CORGI_GPIO_MUTE_R, 1);
--		snd_soc_dapm_enable_pin(dapm, "Mic Jack");
--		snd_soc_dapm_disable_pin(dapm, "Line Jack");
--		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
--		snd_soc_dapm_enable_pin(dapm, "Headset Jack");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "Mic Jack");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphone Jack");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "Headset Jack");
- 		break;
+ 		if (adav80x->sysclk_pd[0])
+-			snd_soc_dapm_disable_pin(&codec->dapm, "PLL1");
++			snd_soc_dapm_disable_pin_unlocked(dapm, "PLL1");
+ 		else
+-			snd_soc_dapm_force_enable_pin(&codec->dapm, "PLL1");
++			snd_soc_dapm_force_enable_pin_unlocked(dapm, "PLL1");
+ 
+ 		if (adav80x->sysclk_pd[1] || adav80x->sysclk_pd[2])
+-			snd_soc_dapm_disable_pin(&codec->dapm, "PLL2");
++			snd_soc_dapm_disable_pin_unlocked(dapm, "PLL2");
+ 		else
+-			snd_soc_dapm_force_enable_pin(&codec->dapm, "PLL2");
++			snd_soc_dapm_force_enable_pin_unlocked(dapm, "PLL2");
+ 
+-		snd_soc_dapm_sync(&codec->dapm);
++		snd_soc_dapm_sync_unlocked(dapm);
++
++		snd_soc_dapm_mutex_unlock(dapm);
  	}
  
- 	if (corgi_spk_func == CORGI_SPK_ON)
--		snd_soc_dapm_enable_pin(dapm, "Ext Spk");
-+		snd_soc_dapm_enable_pin_unlocked(dapm, "Ext Spk");
- 	else
--		snd_soc_dapm_disable_pin(dapm, "Ext Spk");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Ext Spk");
- 
- 	/* signal a DAPM event */
--	snd_soc_dapm_sync(dapm);
-+	snd_soc_dapm_sync_unlocked(dapm);
-+
-+	snd_soc_dapm_mutex_unlock(dapm);
- }
- 
- static int corgi_startup(struct snd_pcm_substream *substream)
+ 	return 0;
 -- 
 1.7.2.5
