@@ -1,73 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/15] Input - arizona-haptics: Fix double lock of
- dapm_mutex
-Date: Tue, 18 Feb 2014 09:28:07 +0900
-Message-ID: <20140218002807.GG2669@sirena.org.uk>
-References: <1392655903-24537-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1392655903-24537-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20140217192025.GB19223@core.coreip.homeip.net>
+From: Adam Williamson <awilliam@redhat.com>
+Subject: Re: Unsupported Valley View 'LPE' adapter?
+Date: Mon, 17 Feb 2014 16:40:57 -0800
+Message-ID: <1392684057.2527.3.camel@xps13.happyassassin.net>
+References: <1385840039.2566.12.camel@adam.happyassassin.net>
+ <529A5C6A.70604@ladisch.de>
+ <1385865517.2566.36.camel@adam.happyassassin.net>
+ <20131202063216.GJ8834@intel.com>
+ <1386035807.2566.145.camel@adam.happyassassin.net>
+ <1388369981.15622.7.camel@adam.happyassassin.net>
+ <1388370192.15622.8.camel@adam.happyassassin.net>
+ <s5hwqiebsuo.wl%tiwai@suse.de> <loom.20140217T104754-228@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0qt3EE9wi45a2ZFX"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140217192025.GB19223@core.coreip.homeip.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, myungjoo.ham@samsung.com, cw00.choi@samsung.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6794A26506D
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 01:41:04 +0100 (CET)
+In-Reply-To: <loom.20140217T104754-228@post.gmane.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: bobby <bseventynine@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2014-02-17 at 09:54 +0000, bobby wrote:
+> 
+> This is a pci device for which the driver is not yet available.
+> I went through the intel atom processor manual and found that it has 3 I2S 
+> ports, has its 
+> own DMA. The Soc is interfaced with LPE audio core via internal PCI bus. 
+> Did you guys hear anything from intel about the driver support. Any inputs 
+> would be of great help please
 
---0qt3EE9wi45a2ZFX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Jan Michael Brummer at Intel pointed this out to me recently:
 
-On Mon, Feb 17, 2014 at 11:20:26AM -0800, Dmitry Torokhov wrote:
-> On Mon, Feb 17, 2014 at 04:51:29PM +0000, Charles Keepax wrote:
+https://kernel.googlesource.com/pub/scm/linux/kernel/git/lrg/asoc/+/intel/haswell-audio-dsp%5E
 
-> > snd_soc_dapm_sync takes the dapm_mutex internally, but we currently take
-> > it externally as well. This patch fixes this.
-
-> Hmm, from the first glance this needs to go into current release,
-> however it seems that it has been broken by
-> a73fb2df01866b772a48fab93401fe3edbe0b38d 2 years ago so nobody cares...
-
-Please include plain text versions of commit message descriptions, in
-this case you're referring to "ASoC: dapm: Use DAPM mutex for DAPM ops
-instead of codec mutex".  I expect nobody noticed in part because a lot
-of use has been out of tree on older kernels and in part because the
-issue is a race - there's a good chance things will work just fine
-without the locking.
-
-> Looking at the series I am not sure that this is right direction. You
-> actually do want unlocked versions of snd_soc_dapm_* functions so that
-> callers can take dapm mutex and then perform sequence of operations. The
-> currect callers that were taking the mutex should probbaly be changed so
-> that they do not drop it until they called unlocked version of
-> snd_soc_dapm_sync().
-
-That's all more work than is in scope for a bug fix though.
-
---0qt3EE9wi45a2ZFX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTAqkUAAoJELSic+t+oim91ugP/Red69cNLvmI8BIMet/dEQRC
-UyAUMzqe4KeOTjzxpyKxR3UFAGDyVX0EzNiET6BJtESJKRjI0DO8lBRXuvZsQOlK
-KDqgHqIzrIEt0yDkCixyrr3epDdJ/5UAHb0NoKecOUKAUjNnq2SvaFV62ayoH6m3
-KIw0PaswdkGtFrglAC20mEurnTAdG+2nuZitLKwpxv/tYiikYXILcmmbdBY9eiR9
-VAYPjBuHArZw0Qiq6g5bl2QvWrVE6ymt31/HACmHnPjAmKpe4EzxDp37vmwjffk0
-xoJnjlnSM5C6mfIJ5g4+n9n13Lv0dRBvda74Ggx6FpF2KDUHw973i4hbR27ePzgl
-q2eIt+WTwPWp/QkjxLLFi9CZOyseL9OJnb3yiItxvzKUfLcE2VJSoTtQF4++AUSd
-F//4DoXyWbrxkp86BUn2F/3eHkVldiaHqEW25o5/u4nn3YjvR0cYSET/Bwc/LOh2
-KUXY1FqoOQyvlA2+owPiWzfSTdE8+H5TLzpLOY3kCtQFv3an0E3KGiZfCYJOsjBc
-JLt3NqcxwnKeGgkEtfLV3BrIf8UvSrYE3fMgyxEo+opX9hPULS0CLk8wx1qQchnp
-wTFp0+koOyWQKcMnb/zfDupyiqKJOh6FfxEp7ouflE0Y8ygU0RH/J366bQCYsjWT
-BijjNHJM2+QtXGZjBO5r
-=FYp9
------END PGP SIGNATURE-----
-
---0qt3EE9wi45a2ZFX--
+looks like it's being worked on.
+-- 
+Adam Williamson
+Fedora QA Community Monkey
+IRC: adamw | Twitter: AdamW_Fedora | identi.ca: adamwfedora
+http://www.happyassassin.net
