@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 060/102] ASoC: wm8996: Use
+Subject: [PATCH 053/102] ASoC: wm8904: Use
 	SOC_ENUM_SINGLE_DECL()
-Date: Tue, 18 Feb 2014 12:38:16 +0100
-Message-ID: <1392723517-12772-33-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:38:09 +0100
+Message-ID: <1392723517-12772-26-git-send-email-tiwai@suse.de>
 References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CA8C2655D2
+ by alsa0.perex.cz (Postfix) with ESMTP id A005F2655D6
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:38:39 +0100 (CET)
 In-Reply-To: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,141 +29,176 @@ Just replace with the helper macro.  No functional change at all.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8996.c | 56 +++++++++++++++++++++++------------------------
- 1 file changed, 28 insertions(+), 28 deletions(-)
+ sound/soc/codecs/wm8904.c | 73 ++++++++++++++++++++++++-----------------------
+ 1 file changed, 37 insertions(+), 36 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index ea6b587f65c1..25acbd897e9f 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -311,28 +311,28 @@ static const char *sidetone_hpf_text[] = {
- 	"2.9kHz", "1.5kHz", "735Hz", "403Hz", "196Hz", "98Hz", "49Hz"
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index b2664ec901b9..27299cda0e99 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -552,18 +552,20 @@ static const char *input_mode_text[] = {
+ 	"Single-Ended", "Differential Line", "Differential Mic"
  };
  
--static const struct soc_enum sidetone_hpf =
--	SOC_ENUM_SINGLE(WM8996_SIDETONE, 7, 7, sidetone_hpf_text);
-+static SOC_ENUM_SINGLE_DECL(sidetone_hpf,
-+			    WM8996_SIDETONE, 7, sidetone_hpf_text);
+-static const struct soc_enum lin_mode =
+-	SOC_ENUM_SINGLE(WM8904_ANALOGUE_LEFT_INPUT_1, 0, 3, input_mode_text);
++static SOC_ENUM_SINGLE_DECL(lin_mode,
++			    WM8904_ANALOGUE_LEFT_INPUT_1, 0,
++			    input_mode_text);
+ 
+-static const struct soc_enum rin_mode =
+-	SOC_ENUM_SINGLE(WM8904_ANALOGUE_RIGHT_INPUT_1, 0, 3, input_mode_text);
++static SOC_ENUM_SINGLE_DECL(rin_mode,
++			    WM8904_ANALOGUE_RIGHT_INPUT_1, 0,
++			    input_mode_text);
  
  static const char *hpf_mode_text[] = {
- 	"HiFi", "Custom", "Voice"
+ 	"Hi-fi", "Voice 1", "Voice 2", "Voice 3"
  };
  
--static const struct soc_enum dsp1tx_hpf_mode =
--	SOC_ENUM_SINGLE(WM8996_DSP1_TX_FILTERS, 3, 3, hpf_mode_text);
-+static SOC_ENUM_SINGLE_DECL(dsp1tx_hpf_mode,
-+			    WM8996_DSP1_TX_FILTERS, 3, hpf_mode_text);
+-static const struct soc_enum hpf_mode =
+-	SOC_ENUM_SINGLE(WM8904_ADC_DIGITAL_0, 5, 4, hpf_mode_text);
++static SOC_ENUM_SINGLE_DECL(hpf_mode, WM8904_ADC_DIGITAL_0, 5,
++			    hpf_mode_text);
  
--static const struct soc_enum dsp2tx_hpf_mode =
--	SOC_ENUM_SINGLE(WM8996_DSP2_TX_FILTERS, 3, 3, hpf_mode_text);
-+static SOC_ENUM_SINGLE_DECL(dsp2tx_hpf_mode,
-+			    WM8996_DSP2_TX_FILTERS, 3, hpf_mode_text);
- 
- static const char *hpf_cutoff_text[] = {
- 	"50Hz", "75Hz", "100Hz", "150Hz", "200Hz", "300Hz", "400Hz"
+ static int wm8904_adc_osr_put(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_value *ucontrol)
+@@ -611,8 +613,7 @@ static const char *drc_path_text[] = {
+ 	"ADC", "DAC"
  };
  
--static const struct soc_enum dsp1tx_hpf_cutoff =
--	SOC_ENUM_SINGLE(WM8996_DSP1_TX_FILTERS, 0, 7, hpf_cutoff_text);
-+static SOC_ENUM_SINGLE_DECL(dsp1tx_hpf_cutoff,
-+			    WM8996_DSP1_TX_FILTERS, 0, hpf_cutoff_text);
+-static const struct soc_enum drc_path =
+-	SOC_ENUM_SINGLE(WM8904_DRC_0, 14, 2, drc_path_text);
++static SOC_ENUM_SINGLE_DECL(drc_path, WM8904_DRC_0, 14, drc_path_text);
  
--static const struct soc_enum dsp2tx_hpf_cutoff =
--	SOC_ENUM_SINGLE(WM8996_DSP2_TX_FILTERS, 0, 7, hpf_cutoff_text);
-+static SOC_ENUM_SINGLE_DECL(dsp2tx_hpf_cutoff,
-+			    WM8996_DSP2_TX_FILTERS, 0, hpf_cutoff_text);
- 
- static void wm8996_set_retune_mobile(struct snd_soc_codec *codec, int block)
- {
-@@ -780,14 +780,14 @@ static const char *sidetone_text[] = {
- 	"IN1", "IN2",
+ static const struct snd_kcontrol_new wm8904_dac_snd_controls[] = {
+ SOC_SINGLE_TLV("Digital Playback Boost Volume", 
+@@ -858,14 +859,14 @@ static const char *lin_text[] = {
+ 	"IN1L", "IN2L", "IN3L"
  };
  
--static const struct soc_enum left_sidetone_enum =
--	SOC_ENUM_SINGLE(WM8996_SIDETONE, 0, 2, sidetone_text);
-+static SOC_ENUM_SINGLE_DECL(left_sidetone_enum,
-+			    WM8996_SIDETONE, 0, sidetone_text);
+-static const struct soc_enum lin_enum =
+-	SOC_ENUM_SINGLE(WM8904_ANALOGUE_LEFT_INPUT_1, 2, 3, lin_text);
++static SOC_ENUM_SINGLE_DECL(lin_enum, WM8904_ANALOGUE_LEFT_INPUT_1, 2,
++			    lin_text);
  
- static const struct snd_kcontrol_new left_sidetone =
- 	SOC_DAPM_ENUM("Left Sidetone", left_sidetone_enum);
+ static const struct snd_kcontrol_new lin_mux =
+ 	SOC_DAPM_ENUM("Left Capture Mux", lin_enum);
  
--static const struct soc_enum right_sidetone_enum =
--	SOC_ENUM_SINGLE(WM8996_SIDETONE, 1, 2, sidetone_text);
-+static SOC_ENUM_SINGLE_DECL(right_sidetone_enum,
-+			    WM8996_SIDETONE, 1, sidetone_text);
+-static const struct soc_enum lin_inv_enum =
+-	SOC_ENUM_SINGLE(WM8904_ANALOGUE_LEFT_INPUT_1, 4, 3, lin_text);
++static SOC_ENUM_SINGLE_DECL(lin_inv_enum, WM8904_ANALOGUE_LEFT_INPUT_1, 4,
++			    lin_text);
  
- static const struct snd_kcontrol_new right_sidetone =
- 	SOC_DAPM_ENUM("Right Sidetone", right_sidetone_enum);
-@@ -796,14 +796,14 @@ static const char *spk_text[] = {
- 	"DAC1L", "DAC1R", "DAC2L", "DAC2R"
+ static const struct snd_kcontrol_new lin_inv_mux =
+ 	SOC_DAPM_ENUM("Left Capture Inveting Mux", lin_inv_enum);
+@@ -874,14 +875,14 @@ static const char *rin_text[] = {
+ 	"IN1R", "IN2R", "IN3R"
  };
  
--static const struct soc_enum spkl_enum =
--	SOC_ENUM_SINGLE(WM8996_LEFT_PDM_SPEAKER, 0, 4, spk_text);
-+static SOC_ENUM_SINGLE_DECL(spkl_enum,
-+			    WM8996_LEFT_PDM_SPEAKER, 0, spk_text);
+-static const struct soc_enum rin_enum =
+-	SOC_ENUM_SINGLE(WM8904_ANALOGUE_RIGHT_INPUT_1, 2, 3, rin_text);
++static SOC_ENUM_SINGLE_DECL(rin_enum, WM8904_ANALOGUE_RIGHT_INPUT_1, 2,
++			    rin_text);
  
- static const struct snd_kcontrol_new spkl_mux =
- 	SOC_DAPM_ENUM("SPKL", spkl_enum);
+ static const struct snd_kcontrol_new rin_mux =
+ 	SOC_DAPM_ENUM("Right Capture Mux", rin_enum);
  
--static const struct soc_enum spkr_enum =
--	SOC_ENUM_SINGLE(WM8996_RIGHT_PDM_SPEAKER, 0, 4, spk_text);
-+static SOC_ENUM_SINGLE_DECL(spkr_enum,
-+			    WM8996_RIGHT_PDM_SPEAKER, 0, spk_text);
+-static const struct soc_enum rin_inv_enum =
+-	SOC_ENUM_SINGLE(WM8904_ANALOGUE_RIGHT_INPUT_1, 4, 3, rin_text);
++static SOC_ENUM_SINGLE_DECL(rin_inv_enum, WM8904_ANALOGUE_RIGHT_INPUT_1, 4,
++			    rin_text);
  
- static const struct snd_kcontrol_new spkr_mux =
- 	SOC_DAPM_ENUM("SPKR", spkr_enum);
-@@ -812,8 +812,8 @@ static const char *dsp1rx_text[] = {
- 	"AIF1", "AIF2"
+ static const struct snd_kcontrol_new rin_inv_mux =
+ 	SOC_DAPM_ENUM("Right Capture Inveting Mux", rin_inv_enum);
+@@ -890,26 +891,26 @@ static const char *aif_text[] = {
+ 	"Left", "Right"
  };
  
--static const struct soc_enum dsp1rx_enum =
--	SOC_ENUM_SINGLE(WM8996_POWER_MANAGEMENT_8, 0, 2, dsp1rx_text);
-+static SOC_ENUM_SINGLE_DECL(dsp1rx_enum,
-+			    WM8996_POWER_MANAGEMENT_8, 0, dsp1rx_text);
+-static const struct soc_enum aifoutl_enum =
+-	SOC_ENUM_SINGLE(WM8904_AUDIO_INTERFACE_0, 7, 2, aif_text);
++static SOC_ENUM_SINGLE_DECL(aifoutl_enum, WM8904_AUDIO_INTERFACE_0, 7,
++			    aif_text);
  
- static const struct snd_kcontrol_new dsp1rx =
- 	SOC_DAPM_ENUM("DSP1RX", dsp1rx_enum);
-@@ -822,8 +822,8 @@ static const char *dsp2rx_text[] = {
- 	 "AIF2", "AIF1"
+ static const struct snd_kcontrol_new aifoutl_mux =
+ 	SOC_DAPM_ENUM("AIFOUTL Mux", aifoutl_enum);
+ 
+-static const struct soc_enum aifoutr_enum =
+-	SOC_ENUM_SINGLE(WM8904_AUDIO_INTERFACE_0, 6, 2, aif_text);
++static SOC_ENUM_SINGLE_DECL(aifoutr_enum, WM8904_AUDIO_INTERFACE_0, 6,
++			    aif_text);
+ 
+ static const struct snd_kcontrol_new aifoutr_mux =
+ 	SOC_DAPM_ENUM("AIFOUTR Mux", aifoutr_enum);
+ 
+-static const struct soc_enum aifinl_enum =
+-	SOC_ENUM_SINGLE(WM8904_AUDIO_INTERFACE_0, 5, 2, aif_text);
++static SOC_ENUM_SINGLE_DECL(aifinl_enum, WM8904_AUDIO_INTERFACE_0, 5,
++			    aif_text);
+ 
+ static const struct snd_kcontrol_new aifinl_mux =
+ 	SOC_DAPM_ENUM("AIFINL Mux", aifinl_enum);
+ 
+-static const struct soc_enum aifinr_enum =
+-	SOC_ENUM_SINGLE(WM8904_AUDIO_INTERFACE_0, 4, 2, aif_text);
++static SOC_ENUM_SINGLE_DECL(aifinr_enum, WM8904_AUDIO_INTERFACE_0, 4,
++			    aif_text);
+ 
+ static const struct snd_kcontrol_new aifinr_mux =
+ 	SOC_DAPM_ENUM("AIFINR Mux", aifinr_enum);
+@@ -991,26 +992,26 @@ static const char *out_mux_text[] = {
+ 	"DAC", "Bypass"
  };
  
--static const struct soc_enum dsp2rx_enum =
--	SOC_ENUM_SINGLE(WM8996_POWER_MANAGEMENT_8, 4, 2, dsp2rx_text);
-+static SOC_ENUM_SINGLE_DECL(dsp2rx_enum,
-+			    WM8996_POWER_MANAGEMENT_8, 4, dsp2rx_text);
+-static const struct soc_enum hpl_enum =
+-	SOC_ENUM_SINGLE(WM8904_ANALOGUE_OUT12_ZC, 3, 2, out_mux_text);
++static SOC_ENUM_SINGLE_DECL(hpl_enum, WM8904_ANALOGUE_OUT12_ZC, 3,
++			    out_mux_text);
  
- static const struct snd_kcontrol_new dsp2rx =
- 	SOC_DAPM_ENUM("DSP2RX", dsp2rx_enum);
-@@ -832,8 +832,8 @@ static const char *aif2tx_text[] = {
- 	"DSP2", "DSP1", "AIF1"
+ static const struct snd_kcontrol_new hpl_mux =
+ 	SOC_DAPM_ENUM("HPL Mux", hpl_enum);
+ 
+-static const struct soc_enum hpr_enum =
+-	SOC_ENUM_SINGLE(WM8904_ANALOGUE_OUT12_ZC, 2, 2, out_mux_text);
++static SOC_ENUM_SINGLE_DECL(hpr_enum, WM8904_ANALOGUE_OUT12_ZC, 2,
++			    out_mux_text);
+ 
+ static const struct snd_kcontrol_new hpr_mux =
+ 	SOC_DAPM_ENUM("HPR Mux", hpr_enum);
+ 
+-static const struct soc_enum linel_enum =
+-	SOC_ENUM_SINGLE(WM8904_ANALOGUE_OUT12_ZC, 1, 2, out_mux_text);
++static SOC_ENUM_SINGLE_DECL(linel_enum, WM8904_ANALOGUE_OUT12_ZC, 1,
++			    out_mux_text);
+ 
+ static const struct snd_kcontrol_new linel_mux =
+ 	SOC_DAPM_ENUM("LINEL Mux", linel_enum);
+ 
+-static const struct soc_enum liner_enum =
+-	SOC_ENUM_SINGLE(WM8904_ANALOGUE_OUT12_ZC, 0, 2, out_mux_text);
++static SOC_ENUM_SINGLE_DECL(liner_enum, WM8904_ANALOGUE_OUT12_ZC, 0,
++			    out_mux_text);
+ 
+ static const struct snd_kcontrol_new liner_mux =
+ 	SOC_DAPM_ENUM("LINER Mux", liner_enum);
+@@ -1019,14 +1020,14 @@ static const char *sidetone_text[] = {
+ 	"None", "Left", "Right"
  };
  
--static const struct soc_enum aif2tx_enum =
--	SOC_ENUM_SINGLE(WM8996_POWER_MANAGEMENT_8, 6, 3, aif2tx_text);
-+static SOC_ENUM_SINGLE_DECL(aif2tx_enum,
-+			    WM8996_POWER_MANAGEMENT_8, 6, aif2tx_text);
+-static const struct soc_enum dacl_sidetone_enum =
+-	SOC_ENUM_SINGLE(WM8904_DAC_DIGITAL_0, 2, 3, sidetone_text);
++static SOC_ENUM_SINGLE_DECL(dacl_sidetone_enum, WM8904_DAC_DIGITAL_0, 2,
++			    sidetone_text);
  
- static const struct snd_kcontrol_new aif2tx =
- 	SOC_DAPM_ENUM("AIF2TX", aif2tx_enum);
-@@ -842,14 +842,14 @@ static const char *inmux_text[] = {
- 	"ADC", "DMIC1", "DMIC2"
- };
+ static const struct snd_kcontrol_new dacl_sidetone_mux =
+ 	SOC_DAPM_ENUM("Left Sidetone Mux", dacl_sidetone_enum);
  
--static const struct soc_enum in1_enum =
--	SOC_ENUM_SINGLE(WM8996_POWER_MANAGEMENT_7, 0, 3, inmux_text);
-+static SOC_ENUM_SINGLE_DECL(in1_enum,
-+			    WM8996_POWER_MANAGEMENT_7, 0, inmux_text);
+-static const struct soc_enum dacr_sidetone_enum =
+-	SOC_ENUM_SINGLE(WM8904_DAC_DIGITAL_0, 0, 3, sidetone_text);
++static SOC_ENUM_SINGLE_DECL(dacr_sidetone_enum, WM8904_DAC_DIGITAL_0, 0,
++			    sidetone_text);
  
- static const struct snd_kcontrol_new in1_mux =
- 	SOC_DAPM_ENUM("IN1 Mux", in1_enum);
- 
--static const struct soc_enum in2_enum =
--	SOC_ENUM_SINGLE(WM8996_POWER_MANAGEMENT_7, 4, 3, inmux_text);
-+static SOC_ENUM_SINGLE_DECL(in2_enum,
-+			    WM8996_POWER_MANAGEMENT_7, 4, inmux_text);
- 
- static const struct snd_kcontrol_new in2_mux =
- 	SOC_DAPM_ENUM("IN2 Mux", in2_enum);
+ static const struct snd_kcontrol_new dacr_sidetone_mux =
+ 	SOC_DAPM_ENUM("Right Sidetone Mux", dacr_sidetone_enum);
 -- 
 1.8.5.2
