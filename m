@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 099/102] ASoC: wm8974: Use
+Subject: [PATCH 101/102] ASoC: wm9713: Use
 	SOC_ENUM_SINGLE_CONST()
-Date: Tue, 18 Feb 2014 12:51:45 +0100
-Message-ID: <1392724308-13375-19-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:51:47 +0100
+Message-ID: <1392724308-13375-21-git-send-email-tiwai@suse.de>
 References: <1392724308-13375-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B76E265770
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BB29265772
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:51:52 +0100 (CET)
 In-Reply-To: <1392724308-13375-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,53 +29,59 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8974.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ sound/soc/codecs/wm9713.c | 40 ++++++++++++++++++++--------------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
-index 6e16c4306461..cc30ec5b844d 100644
---- a/sound/soc/codecs/wm8974.c
-+++ b/sound/soc/codecs/wm8974.c
-@@ -63,23 +63,23 @@ static const char *wm8974_eq5[] = {"5.3kHz", "6.9kHz", "9kHz", "11.7kHz" };
- static const char *wm8974_alc[] = {"ALC", "Limiter" };
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index acea8927905b..87a520727429 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -92,26 +92,26 @@ static const char *wm9713_mic_select[] = {"Mic 1", "Mic 2 A", "Mic 2 B"};
+ static const char *wm9713_micb_select[] = {"MPB", "MPA"};
  
- static const struct soc_enum wm8974_enum[] = {
--	SOC_ENUM_SINGLE(WM8974_COMP, 1, 4, wm8974_companding), /* adc */
--	SOC_ENUM_SINGLE(WM8974_COMP, 3, 4, wm8974_companding), /* dac */
--	SOC_ENUM_SINGLE(WM8974_DAC,  4, 4, wm8974_deemp),
--	SOC_ENUM_SINGLE(WM8974_EQ1,  8, 2, wm8974_eqmode),
--
--	SOC_ENUM_SINGLE(WM8974_EQ1,  5, 4, wm8974_eq1),
--	SOC_ENUM_SINGLE(WM8974_EQ2,  8, 2, wm8974_bw),
--	SOC_ENUM_SINGLE(WM8974_EQ2,  5, 4, wm8974_eq2),
--	SOC_ENUM_SINGLE(WM8974_EQ3,  8, 2, wm8974_bw),
--
--	SOC_ENUM_SINGLE(WM8974_EQ3,  5, 4, wm8974_eq3),
--	SOC_ENUM_SINGLE(WM8974_EQ4,  8, 2, wm8974_bw),
--	SOC_ENUM_SINGLE(WM8974_EQ4,  5, 4, wm8974_eq4),
--	SOC_ENUM_SINGLE(WM8974_EQ5,  8, 2, wm8974_bw),
--
--	SOC_ENUM_SINGLE(WM8974_EQ5,  5, 4, wm8974_eq5),
--	SOC_ENUM_SINGLE(WM8974_ALC3,  8, 2, wm8974_alc),
-+	SOC_ENUM_SINGLE_CONST(WM8974_COMP, 1, wm8974_companding), /* adc */
-+	SOC_ENUM_SINGLE_CONST(WM8974_COMP, 3, wm8974_companding), /* dac */
-+	SOC_ENUM_SINGLE_CONST(WM8974_DAC,  4, wm8974_deemp),
-+	SOC_ENUM_SINGLE_CONST(WM8974_EQ1,  8, wm8974_eqmode),
-+
-+	SOC_ENUM_SINGLE_CONST(WM8974_EQ1,  5, wm8974_eq1),
-+	SOC_ENUM_SINGLE_CONST(WM8974_EQ2,  8, wm8974_bw),
-+	SOC_ENUM_SINGLE_CONST(WM8974_EQ2,  5, wm8974_eq2),
-+	SOC_ENUM_SINGLE_CONST(WM8974_EQ3,  8, wm8974_bw),
-+
-+	SOC_ENUM_SINGLE_CONST(WM8974_EQ3,  5, wm8974_eq3),
-+	SOC_ENUM_SINGLE_CONST(WM8974_EQ4,  8, wm8974_bw),
-+	SOC_ENUM_SINGLE_CONST(WM8974_EQ4,  5, wm8974_eq4),
-+	SOC_ENUM_SINGLE_CONST(WM8974_EQ5,  8, wm8974_bw),
-+
-+	SOC_ENUM_SINGLE_CONST(WM8974_EQ5,  5, wm8974_eq5),
-+	SOC_ENUM_SINGLE_CONST(WM8974_ALC3, 8, wm8974_alc),
+ static const struct soc_enum wm9713_enum[] = {
+-SOC_ENUM_SINGLE(AC97_LINE, 3, 4, wm9713_mic_mixer), /* record mic mixer 0 */
+-SOC_ENUM_SINGLE(AC97_VIDEO, 14, 4, wm9713_rec_mux), /* record mux hp 1 */
+-SOC_ENUM_SINGLE(AC97_VIDEO, 9, 4, wm9713_rec_mux),  /* record mux mono 2 */
+-SOC_ENUM_SINGLE(AC97_VIDEO, 3, 8, wm9713_rec_src),  /* record mux left 3 */
+-SOC_ENUM_SINGLE(AC97_VIDEO, 0, 8, wm9713_rec_src),  /* record mux right 4*/
+-SOC_ENUM_DOUBLE(AC97_CD, 14, 6, 2, wm9713_rec_gain), /* record step size 5 */
+-SOC_ENUM_SINGLE(AC97_PCI_SVID, 14, 4, wm9713_alc_select), /* alc source select 6*/
+-SOC_ENUM_SINGLE(AC97_REC_GAIN, 14, 4, wm9713_mono_pga), /* mono input select 7 */
+-SOC_ENUM_SINGLE(AC97_REC_GAIN, 11, 8, wm9713_spk_pga), /* speaker left input select 8 */
+-SOC_ENUM_SINGLE(AC97_REC_GAIN, 8, 8, wm9713_spk_pga), /* speaker right input select 9 */
+-SOC_ENUM_SINGLE(AC97_REC_GAIN, 6, 3, wm9713_hp_pga), /* headphone left input 10 */
+-SOC_ENUM_SINGLE(AC97_REC_GAIN, 4, 3, wm9713_hp_pga), /* headphone right input 11 */
+-SOC_ENUM_SINGLE(AC97_REC_GAIN, 2, 4, wm9713_out3_pga), /* out 3 source 12 */
+-SOC_ENUM_SINGLE(AC97_REC_GAIN, 0, 4, wm9713_out4_pga), /* out 4 source 13 */
+-SOC_ENUM_SINGLE(AC97_REC_GAIN_MIC, 13, 8, wm9713_dac_inv), /* dac invert 1 14 */
+-SOC_ENUM_SINGLE(AC97_REC_GAIN_MIC, 10, 8, wm9713_dac_inv), /* dac invert 2 15 */
+-SOC_ENUM_SINGLE(AC97_GENERAL_PURPOSE, 15, 2, wm9713_bass), /* bass control 16 */
+-SOC_ENUM_SINGLE(AC97_PCI_SVID, 5, 2, wm9713_ng_type), /* noise gate type 17 */
+-SOC_ENUM_SINGLE(AC97_3D_CONTROL, 12, 3, wm9713_mic_select), /* mic selection 18 */
+-SOC_ENUM_SINGLE(MICB_MUX, 0, 2, wm9713_micb_select), /* mic selection 19 */
++SOC_ENUM_SINGLE_CONST(AC97_LINE, 3, wm9713_mic_mixer), /* record mic mixer 0 */
++SOC_ENUM_SINGLE_CONST(AC97_VIDEO, 14, wm9713_rec_mux), /* record mux hp 1 */
++SOC_ENUM_SINGLE_CONST(AC97_VIDEO, 9, wm9713_rec_mux),  /* record mux mono 2 */
++SOC_ENUM_SINGLE_CONST(AC97_VIDEO, 3, wm9713_rec_src),  /* record mux left 3 */
++SOC_ENUM_SINGLE_CONST(AC97_VIDEO, 0, wm9713_rec_src),  /* record mux right 4*/
++SOC_ENUM_DOUBLE_CONST(AC97_CD, 14, 6, wm9713_rec_gain), /* record step size 5 */
++SOC_ENUM_SINGLE_CONST(AC97_PCI_SVID, 14, wm9713_alc_select), /* alc source select 6*/
++SOC_ENUM_SINGLE_CONST(AC97_REC_GAIN, 14, wm9713_mono_pga), /* mono input select 7 */
++SOC_ENUM_SINGLE_CONST(AC97_REC_GAIN, 11, wm9713_spk_pga), /* speaker left input select 8 */
++SOC_ENUM_SINGLE_CONST(AC97_REC_GAIN, 8, wm9713_spk_pga), /* speaker right input select 9 */
++SOC_ENUM_SINGLE_CONST(AC97_REC_GAIN, 6, wm9713_hp_pga), /* headphone left input 10 */
++SOC_ENUM_SINGLE_CONST(AC97_REC_GAIN, 4, wm9713_hp_pga), /* headphone right input 11 */
++SOC_ENUM_SINGLE_CONST(AC97_REC_GAIN, 2, wm9713_out3_pga), /* out 3 source 12 */
++SOC_ENUM_SINGLE_CONST(AC97_REC_GAIN, 0, wm9713_out4_pga), /* out 4 source 13 */
++SOC_ENUM_SINGLE_CONST(AC97_REC_GAIN_MIC, 13, wm9713_dac_inv), /* dac invert 1 14 */
++SOC_ENUM_SINGLE_CONST(AC97_REC_GAIN_MIC, 10, wm9713_dac_inv), /* dac invert 2 15 */
++SOC_ENUM_SINGLE_CONST(AC97_GENERAL_PURPOSE, 15, wm9713_bass), /* bass control 16 */
++SOC_ENUM_SINGLE_CONST(AC97_PCI_SVID, 5, wm9713_ng_type), /* noise gate type 17 */
++SOC_ENUM_SINGLE_CONST(AC97_3D_CONTROL, 12, wm9713_mic_select), /* mic selection 18 */
++SOC_ENUM_SINGLE_CONST(MICB_MUX, 0, wm9713_micb_select), /* mic selection 19 */
  };
  
- static const char *wm8974_auxmode_text[] = { "Buffer", "Mixer" };
+ static const DECLARE_TLV_DB_SCALE(out_tlv, -4650, 150, 0);
 -- 
 1.8.5.2
