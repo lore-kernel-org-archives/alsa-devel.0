@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 038/102] ASoC: max98095: Use
+Subject: [PATCH 046/102] ASoC: uda1380: Use
 	SOC_ENUM_SINGLE_DECL()
-Date: Tue, 18 Feb 2014 12:37:54 +0100
-Message-ID: <1392723517-12772-11-git-send-email-tiwai@suse.de>
+Date: Tue, 18 Feb 2014 12:38:02 +0100
+Message-ID: <1392723517-12772-19-git-send-email-tiwai@suse.de>
 References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 73D9B2655C2
+ by alsa0.perex.cz (Postfix) with ESMTP id 868882655C8
  for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 12:38:39 +0100 (CET)
 In-Reply-To: <1392723517-12772-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,94 +25,63 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Just replace with the helper macro.  No functional change at all.
+Just replace with the helper macro.
+Also, use ARRAY_SIZE() in some ASOC_ENUM_SINGLE() lines.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/max98095.c | 50 ++++++++++++++++++++++++---------------------
- 1 file changed, 27 insertions(+), 23 deletions(-)
+ sound/soc/codecs/uda1380.c | 38 ++++++++++++++++++++------------------
+ 1 file changed, 20 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-index 5bce9cde4a6d..4c22582f3f56 100644
---- a/sound/soc/codecs/max98095.c
-+++ b/sound/soc/codecs/max98095.c
-@@ -560,25 +560,27 @@ static void m98095_biquad_band(struct snd_soc_codec *codec, unsigned int dai,
- }
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index 726df6d43c2b..72ee8e1838e5 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -237,25 +237,27 @@ static const char *uda1380_os_setting[] = {
+ };
  
- static const char * const max98095_fltr_mode[] = { "Voice", "Music" };
--static const struct soc_enum max98095_dai1_filter_mode_enum[] = {
--	SOC_ENUM_SINGLE(M98095_02E_DAI1_FILTERS, 7, 2, max98095_fltr_mode),
--};
--static const struct soc_enum max98095_dai2_filter_mode_enum[] = {
--	SOC_ENUM_SINGLE(M98095_038_DAI2_FILTERS, 7, 2, max98095_fltr_mode),
--};
-+static SOC_ENUM_SINGLE_DECL(max98095_dai1_filter_mode_enum,
-+			    M98095_02E_DAI1_FILTERS, 7,
-+			    max98095_fltr_mode);
-+static SOC_ENUM_SINGLE_DECL(max98095_dai2_filter_mode_enum,
-+			    M98095_038_DAI2_FILTERS, 7,
-+			    max98095_fltr_mode);
+ static const struct soc_enum uda1380_deemp_enum[] = {
+-	SOC_ENUM_SINGLE(UDA1380_DEEMP, 8, 5, uda1380_deemp),
+-	SOC_ENUM_SINGLE(UDA1380_DEEMP, 0, 5, uda1380_deemp),
++	SOC_ENUM_SINGLE(UDA1380_DEEMP, 8, ARRAY_SIZE(uda1380_deemp),
++			uda1380_deemp),
++	SOC_ENUM_SINGLE(UDA1380_DEEMP, 0, ARRAY_SIZE(uda1380_deemp),
++			uda1380_deemp),
+ };
+-static const struct soc_enum uda1380_input_sel_enum =
+-	SOC_ENUM_SINGLE(UDA1380_ADC, 2, 4, uda1380_input_sel);		/* SEL_MIC, SEL_LNA */
+-static const struct soc_enum uda1380_output_sel_enum =
+-	SOC_ENUM_SINGLE(UDA1380_PM, 7, 2, uda1380_output_sel);		/* R02_EN_AVC */
+-static const struct soc_enum uda1380_spf_enum =
+-	SOC_ENUM_SINGLE(UDA1380_MODE, 14, 4, uda1380_spf_mode);		/* M */
+-static const struct soc_enum uda1380_capture_sel_enum =
+-	SOC_ENUM_SINGLE(UDA1380_IFACE, 6, 2, uda1380_capture_sel);	/* SEL_SOURCE */
+-static const struct soc_enum uda1380_sel_ns_enum =
+-	SOC_ENUM_SINGLE(UDA1380_MIXER, 14, 2, uda1380_sel_ns);		/* SEL_NS */
+-static const struct soc_enum uda1380_mix_enum =
+-	SOC_ENUM_SINGLE(UDA1380_MIXER, 12, 4, uda1380_mix_control);	/* MIX, MIX_POS */
+-static const struct soc_enum uda1380_sdet_enum =
+-	SOC_ENUM_SINGLE(UDA1380_MIXER, 4, 4, uda1380_sdet_setting);	/* SD_VALUE */
+-static const struct soc_enum uda1380_os_enum =
+-	SOC_ENUM_SINGLE(UDA1380_MIXER, 0, 3, uda1380_os_setting);	/* OS */
++static SOC_ENUM_SINGLE_DECL(uda1380_input_sel_enum,
++			    UDA1380_ADC, 2, uda1380_input_sel);		/* SEL_MIC, SEL_LNA */
++static SOC_ENUM_SINGLE_DECL(uda1380_output_sel_enum,
++			    UDA1380_PM, 7, uda1380_output_sel);		/* R02_EN_AVC */
++static SOC_ENUM_SINGLE_DECL(uda1380_spf_enum,
++			    UDA1380_MODE, 14, uda1380_spf_mode);		/* M */
++static SOC_ENUM_SINGLE_DECL(uda1380_capture_sel_enum,
++			    UDA1380_IFACE, 6, uda1380_capture_sel);	/* SEL_SOURCE */
++static SOC_ENUM_SINGLE_DECL(uda1380_sel_ns_enum,
++			    UDA1380_MIXER, 14, uda1380_sel_ns);		/* SEL_NS */
++static SOC_ENUM_SINGLE_DECL(uda1380_mix_enum,
++			    UDA1380_MIXER, 12, uda1380_mix_control);	/* MIX, MIX_POS */
++static SOC_ENUM_SINGLE_DECL(uda1380_sdet_enum,
++			    UDA1380_MIXER, 4, uda1380_sdet_setting);	/* SD_VALUE */
++static SOC_ENUM_SINGLE_DECL(uda1380_os_enum,
++			    UDA1380_MIXER, 0, uda1380_os_setting);	/* OS */
  
- static const char * const max98095_extmic_text[] = { "None", "MIC1", "MIC2" };
- 
--static const struct soc_enum max98095_extmic_enum =
--	SOC_ENUM_SINGLE(M98095_087_CFG_MIC, 0, 3, max98095_extmic_text);
-+static SOC_ENUM_SINGLE_DECL(max98095_extmic_enum,
-+			    M98095_087_CFG_MIC, 0,
-+			    max98095_extmic_text);
- 
- static const struct snd_kcontrol_new max98095_extmic_mux =
- 	SOC_DAPM_ENUM("External MIC Mux", max98095_extmic_enum);
- 
- static const char * const max98095_linein_text[] = { "INA", "INB" };
- 
--static const struct soc_enum max98095_linein_enum =
--	SOC_ENUM_SINGLE(M98095_086_CFG_LINE, 6, 2, max98095_linein_text);
-+static SOC_ENUM_SINGLE_DECL(max98095_linein_enum,
-+			    M98095_086_CFG_LINE, 6,
-+			    max98095_linein_text);
- 
- static const struct snd_kcontrol_new max98095_linein_mux =
- 	SOC_DAPM_ENUM("Linein Input Mux", max98095_linein_enum);
-@@ -586,24 +588,26 @@ static const struct snd_kcontrol_new max98095_linein_mux =
- static const char * const max98095_line_mode_text[] = {
- 	"Stereo", "Differential"};
- 
--static const struct soc_enum max98095_linein_mode_enum =
--	SOC_ENUM_SINGLE(M98095_086_CFG_LINE, 7, 2, max98095_line_mode_text);
-+static SOC_ENUM_SINGLE_DECL(max98095_linein_mode_enum,
-+			    M98095_086_CFG_LINE, 7,
-+			    max98095_line_mode_text);
- 
--static const struct soc_enum max98095_lineout_mode_enum =
--	SOC_ENUM_SINGLE(M98095_086_CFG_LINE, 4, 2, max98095_line_mode_text);
-+static SOC_ENUM_SINGLE_DECL(max98095_lineout_mode_enum,
-+			    M98095_086_CFG_LINE, 4,
-+			    max98095_line_mode_text);
- 
- static const char * const max98095_dai_fltr[] = {
- 	"Off", "Elliptical-HPF-16k", "Butterworth-HPF-16k",
- 	"Elliptical-HPF-8k", "Butterworth-HPF-8k", "Butterworth-HPF-Fs/240"};
--static const struct soc_enum max98095_dai1_dac_filter_enum[] = {
--	SOC_ENUM_SINGLE(M98095_02E_DAI1_FILTERS, 0, 6, max98095_dai_fltr),
--};
--static const struct soc_enum max98095_dai2_dac_filter_enum[] = {
--	SOC_ENUM_SINGLE(M98095_038_DAI2_FILTERS, 0, 6, max98095_dai_fltr),
--};
--static const struct soc_enum max98095_dai3_dac_filter_enum[] = {
--	SOC_ENUM_SINGLE(M98095_042_DAI3_FILTERS, 0, 6, max98095_dai_fltr),
--};
-+static SOC_ENUM_SINGLE_DECL(max98095_dai1_dac_filter_enum,
-+			    M98095_02E_DAI1_FILTERS, 0,
-+			    max98095_dai_fltr);
-+static SOC_ENUM_SINGLE_DECL(max98095_dai2_dac_filter_enum,
-+			    M98095_038_DAI2_FILTERS, 0,
-+			    max98095_dai_fltr);
-+static SOC_ENUM_SINGLE_DECL(max98095_dai3_dac_filter_enum,
-+			    M98095_042_DAI3_FILTERS, 0,
-+			    max98095_dai_fltr);
- 
- static int max98095_mic1pre_set(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
+ /*
+  * from -48 dB in 1.5 dB steps (mute instead of -49.5 dB)
 -- 
 1.8.5.2
