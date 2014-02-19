@@ -1,24 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs4271: free reset gpio in
-	cs4271_remove()
-Date: Wed, 19 Feb 2014 23:00:48 +0900
-Message-ID: <20140219140048.GZ2669@sirena.org.uk>
-References: <1392808032-25756-1-git-send-email-zonque@gmail.com>
- <20140219111529.GI2669@sirena.org.uk> <53049467.60106@zonque.org>
- <20140219114303.GJ2669@sirena.org.uk> <53049EF7.5040709@zonque.org>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCHv2] ASoC: Intel: Fix sparse warnings for
+	firmware loader.
+Date: Wed, 19 Feb 2014 14:06:23 +0000
+Message-ID: <1392818784-6248-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5647489779088603556=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F30226535B
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 15:04:31 +0100 (CET)
-Received: from e0109-106-188-144-10.uqwimax.jp ([106.188.144.10]
- helo=finisterre)
- by cassiel.sirena.org.uk with esmtpsa (TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128)
- (Exim 4.80) (envelope-from <broonie@sirena.org.uk>)
- id 1WG7lE-0005oR-JI
- for alsa-devel@alsa-project.org; Wed, 19 Feb 2014 14:04:30 +0000
-In-Reply-To: <53049EF7.5040709@zonque.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE7EB2652CD
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 15:07:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,60 +19,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: brian.austin@cirrus.com, subaparts@yandex.ru, alsa-devel@alsa-project.org, Paul.Handrigan@cirrus.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Changes since V1 :-
+ o Fixed sparse warning for block_module_remove
+ o Fixed additional sparse warnings when building entire driver. 
 
---===============5647489779088603556==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ims+H+fSKJm6k6PB"
-Content-Disposition: inline
+Sparse gives us the following warnings on sst-firmware.c
 
+  CHECK   sound/soc/intel/sst-firmware.c
+sound/soc/intel/sst-firmware.c:39:34: warning: incorrect type in argument 1 (different address spaces)
+sound/soc/intel/sst-firmware.c:39:34:    expected void volatile [noderef] <asn:2>*dst
+sound/soc/intel/sst-firmware.c:39:34:    got void *
+sound/soc/intel/sst-firmware.c:417:36: warning: incorrect type in argument 1 (different address spaces)
+sound/soc/intel/sst-firmware.c:417:36:    expected void *dest
+sound/soc/intel/sst-firmware.c:417:36:    got void [noderef] <asn:2>*
+sound/soc/intel/sst-firmware.c:430:5: warning: symbol 'sst_block_module_remove' was not declared. Should it be static?
 
---Ims+H+fSKJm6k6PB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+and
 
-On Wed, Feb 19, 2014 at 01:09:27PM +0100, Daniel Mack wrote:
-
-> Alright. I thought there was a verdict once that resource claiming
-> should be done right before usage, but you're right, it really rather
-> belongs into the bus probe functions.
-
-No, that's not ever been the case as far as I can recall.  There were
-some things it used to not be possible to do due to the ASoC level I/O
-only working after the card comes up but that's a different issue.
-
---Ims+H+fSKJm6k6PB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTBLkNAAoJELSic+t+oim9hb8QAJcr1WsXRZhYoWWk0fYTYnXS
-BvqJJEwX49Xjmj6XU23ac5YEl4Ptv+3ga9Wj3jUKCZyaHidggmo5nFVKdZ+HaVzj
-KuXpt3vyBECrqDBNOKN2FiS9588Q3UXIlVtb4JY4Zbyg1WU8OZFt4rKVzzVMHdQ0
-jbLzsB7oJrbj16BVdSs8AfS2ArSh5fc1ZWJJ2J8YZQHspQ26JHmwnVCoo6awIB2i
-8HYcYQhldjPonw9WAl+p7aYVJqIo+JYV1/VzygmO+ApYA+V4A/0oJSwpGnOibRDF
-gKFL+8TnC13VYxuUXQDKJJtZzprYfAJd4/n1Fu+G/gX4E5MdPzXmzVoCiBXFIdWX
-frxevgGjZrvQpYFb0D8s/JO41JUcT0ByUGjAH2q4f2A2ofCO8kKUvVOj/qLxRYzS
-IB+/0igBWH6vKZMfZfD/mHkIBRMjLl70+AWegvTySL4aVnNuhVv1UDpQs2HP7IzP
-A04z2CAfeR0legI5ihPcvn1Iu0ssjH0HikS1zW4lKatKfADhmOYhxyZD9LAvJXuS
-xSj//epOfF0daX3e2AjPjNLsGLMWrprrOcKSksh73E7SR430tig5n79tS/6LFdSk
-KhoDbnr19PIjEoqWksUKXlsg4d5wvjIV47LHVO8PAdFM0FDEiGMYLsklZEcnsmYn
-2RLJR6/zezk1BhxXBC3V
-=ZZ/c
------END PGP SIGNATURE-----
-
---Ims+H+fSKJm6k6PB--
-
---===============5647489779088603556==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+  CC [M]  sound/soc/intel/sst-dsp.o
+sound/soc/intel/sst-dsp-priv.h:271:53: warning: incorrect type in argument 3 (different address spaces)
+sound/soc/intel/sst-dsp-priv.h:271:53:    expected void *src
+sound/soc/intel/sst-dsp-priv.h:271:53:    got void [noderef] <asn:2>*
+sound/soc/intel/sst-dsp-priv.h:271:53: warning: incorrect type in argument 3 (different address spaces)
+sound/soc/intel/sst-dsp-priv.h:271:53:    expected void *src
+sound/soc/intel/sst-dsp-priv.h:271:53:    got void [noderef] <asn:2>*
+sound/soc/intel/sst-dsp-priv.h:271:53: warning: incorrect type in argument 3 (different address spaces)
+sound/soc/intel/sst-dsp-priv.h:271:53:    expected void *src
+sound/soc/intel/sst-dsp-priv.h:271:53:    got void [noderef] <asn:2>*
 
 
---===============5647489779088603556==--
+This patch removes these warnings
+
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ sound/soc/intel/sst-dsp-priv.h | 7 +++++--
+ sound/soc/intel/sst-firmware.c | 2 +-
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/intel/sst-dsp-priv.h b/sound/soc/intel/sst-dsp-priv.h
+index 6135564..fe8e81a 100644
+--- a/sound/soc/intel/sst-dsp-priv.h
++++ b/sound/soc/intel/sst-dsp-priv.h
+@@ -41,8 +41,10 @@ struct sst_ops {
+ 	u64 (*read64)(void __iomem *addr, u32 offset);
+ 
+ 	/* DSP I/DRAM IO */
+-	void (*ram_read)(struct sst_dsp *sst, void *dest, void *src, size_t bytes);
+-	void (*ram_write)(struct sst_dsp *sst, void *dest, void *src, size_t bytes);
++	void (*ram_read)(struct sst_dsp *sst, void  *dest, void __iomem *src,
++		size_t bytes);
++	void (*ram_write)(struct sst_dsp *sst, void __iomem *dest, void *src,
++		size_t bytes);
+ 
+ 	void (*dump)(struct sst_dsp *);
+ 
+@@ -296,6 +298,7 @@ struct sst_module *sst_module_get_from_id(struct sst_dsp *dsp, u32 id);
+ struct sst_module *sst_mem_block_alloc_scratch(struct sst_dsp *dsp);
+ void sst_mem_block_free_scratch(struct sst_dsp *dsp,
+ 	struct sst_module *scratch);
++int sst_block_module_remove(struct sst_module *module);
+ 
+ /* Register the DSPs memory blocks - would be nice to read from ACPI */
+ struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
+diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
+index 31cd154..dee7eb5 100644
+--- a/sound/soc/intel/sst-firmware.c
++++ b/sound/soc/intel/sst-firmware.c
+@@ -30,7 +30,7 @@
+ #include "sst-dsp.h"
+ #include "sst-dsp-priv.h"
+ 
+-static void sst_memcpy32(void *dest, void *src, u32 bytes)
++static void sst_memcpy32(volatile void __iomem *dest, void *src, u32 bytes)
+ {
+ 	u32 i;
+ 
+-- 
+1.8.3.2
