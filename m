@@ -1,17 +1,15 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Add QEMU codec vendor ID
-Date: Wed, 19 Feb 2014 11:13:01 +0100
-Message-ID: <1392804781-9614-1-git-send-email-tiwai@suse.de>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: Fix sparse warnings for firmware
+	loader.
+Date: Wed, 19 Feb 2014 11:00:37 +0000
+Message-ID: <1392807637-4767-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 32B7C2610D7
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 11:13:02 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id A145BAC95
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 10:13:01 +0000 (UTC)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEA002652C5
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 12:00:56 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_codec.c | 1 +
- 1 file changed, 1 insertion(+)
+Sparse gives us the following warning on sst-firmware.c
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 4be322b0d745..115502783b64 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -67,6 +67,7 @@ static struct hda_vendor_id hda_vendor_ids[] = {
- 	{ 0x17e8, "Chrontel" },
- 	{ 0x1854, "LG" },
- 	{ 0x1aec, "Wolfson Microelectronics" },
-+	{ 0x1af4, "QEMU" },
- 	{ 0x434d, "C-Media" },
- 	{ 0x8086, "Intel" },
- 	{ 0x8384, "SigmaTel" },
+  CHECK   sound/soc/intel/sst-firmware.c
+sound/soc/intel/sst-firmware.c:39:34: warning: incorrect type in argument 1 (different address spaces)
+sound/soc/intel/sst-firmware.c:39:34:    expected void volatile [noderef] <asn:2>*dst
+sound/soc/intel/sst-firmware.c:39:34:    got void *
+sound/soc/intel/sst-firmware.c:417:36: warning: incorrect type in argument 1 (different address spaces)
+sound/soc/intel/sst-firmware.c:417:36:    expected void *dest
+sound/soc/intel/sst-firmware.c:417:36:    got void [noderef] <asn:2>*
+sound/soc/intel/sst-firmware.c:430:5: warning: symbol 'sst_block_module_remove' was not declared. Should it be static?
+
+This patch removes this warning.
+
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ sound/soc/intel/sst-firmware.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
+index 31cd154..dee7eb5 100644
+--- a/sound/soc/intel/sst-firmware.c
++++ b/sound/soc/intel/sst-firmware.c
+@@ -30,7 +30,7 @@
+ #include "sst-dsp.h"
+ #include "sst-dsp-priv.h"
+ 
+-static void sst_memcpy32(void *dest, void *src, u32 bytes)
++static void sst_memcpy32(volatile void __iomem *dest, void *src, u32 bytes)
+ {
+ 	u32 i;
+ 
 -- 
-1.8.5.2
+1.8.3.2
