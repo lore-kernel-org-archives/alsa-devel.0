@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 017/102] ASoC: sta32x: Fix array access
-	overflow
-Date: Thu, 20 Feb 2014 01:46:34 +0900
-Message-ID: <20140219164634.GA2669@sirena.org.uk>
-References: <1392723422-12689-1-git-send-email-tiwai@suse.de>
- <1392723422-12689-2-git-send-email-tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: About 'SNDRV_PCM_CLASS_MULTI' for devices with
+	multi-channels
+Date: Wed, 19 Feb 2014 20:40:43 +0100
+Message-ID: <530508BB.6060802@canonical.com>
+References: <5304C64D.3090400@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7788869794029029832=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F9FB265AAB
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 17:46:49 +0100 (CET)
-In-Reply-To: <1392723422-12689-2-git-send-email-tiwai@suse.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1175E265D09
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 20:40:46 +0100 (CET)
+In-Reply-To: <5304C64D.3090400@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 02/19/2014 03:57 PM, Takashi Sakamoto wrote:
+> Hi all,
+> 
+> I have two questions about the usage of this macro.
+> 
+> Should I use this macro for new drivers which I'm working for?'
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071820.html
+> 
+> 
+> My drivers support some firewire devices, which is desinged for
+> studio-use and have many channels. Its combination of channels are not
+> designed for surround sound like 5.1ch.
+> 
+> Just judging from its name, 'SNDRV_PCM_CLASS_MULTI', I should use this.
+> But there are no drivers which use this macro in current tree, against
+> my expectation that some drivers (ICE1712-pro, RME9652, 6fire usb and so
+> on) should use this macro.
+> 
+> Are there any reasons?
 
---===============7788869794029029832==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YfA6L/ars3kY+zmg"
-Content-Disposition: inline
+I've never heard of it before. I had a quick look in alsa-lib and
+couldn't find any difference in handling between CLASS_GENERIC and
+CLASS_MULTI.
 
+It's probably something historic that nobody uses any more. Maybe people
+who have been along longer knows what it is.
 
---YfA6L/ars3kY+zmg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Feb 18, 2014 at 12:36:52PM +0100, Takashi Iwai wrote:
-> Preset EQ enum of sta32x codec driver declares too many number of
-> items and it may lead to the access over the actual array size.
-
-Applied, thanks.
-
---YfA6L/ars3kY+zmg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTBN/mAAoJELSic+t+oim9JUEP/RITF7VirFC5tU4z0Zd5V5m5
-bzLg/nasXRY1aHYMUmex/lyfDToFaHQV36bQOCDiX7ZrAsVwz0/RyC/9gHUl7HQr
-GwiIFgoCFWVjKTRCrPIvNLiGeq/xcv9sA39KCV/xomkq2jnffFFCH4Zh07U+5uqa
-Yv+udlAEftaRwJYdLRpk1SIJvOqSvQnvSX4CQ5il8CQwLvCmyeIfUP+0Gl46NhAi
-a784l3hShS/jQKWjPDotttjw/CM7maLLNZ2EyLVaeiCjH4QOryyauTn2ghioxai+
-mQ0qYNv8y2sulxqU8XNIxbXU55pEaTbxdNTnFRO2F9LY2x3igrZqed7IF+Q3elN5
-8AqtcrohElf2DHhV9QtXA9cUjL6NWgLZWk9tkadtvRErC72krrltAzIdwgTF7k3U
-87MKahv7zM3E4vE3iGWPuC6AiRnKKwgBqHTE/HruFOHmx+wX6JzJPOkf1klXeI1Y
-7ggQUnl8QmiG5obn6hGJODk+j67gLmHLtNdKlfZOGq+Z/7f10V0QiLe8OxPyr6w+
-L7hm0/woAUw12mCU6w4fY2oBez4kA+7EY5WAiXkxZa6y/mZr/HiCNQ2gfKBW0uSW
-21tyURF8K6Z7riMjijVURfePvYZvXwMMRIV87i9bhx+ve9LFzGOrMjIPGn5Qryxh
-yw0OVzkTz3XvalWnUjJs
-=HrHB
------END PGP SIGNATURE-----
-
---YfA6L/ars3kY+zmg--
-
---===============7788869794029029832==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7788869794029029832==--
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
