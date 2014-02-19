@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: Intel: Move extended fw base and
- size fields in struct sst_pdata
-Date: Wed, 19 Feb 2014 13:41:26 +0900
-Message-ID: <20140219044126.GZ2669@sirena.org.uk>
-References: <1392734523-5109-1-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Add ADAU1977 CODEC driver
+Date: Wed, 19 Feb 2014 13:37:46 +0900
+Message-ID: <20140219043746.GX2669@sirena.org.uk>
+References: <1392735455-21287-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1423435192245801093=="
+Content-Type: multipart/mixed; boundary="===============5822688481299781336=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D35B12610D7
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 08:52:53 +0100 (CET)
-In-Reply-To: <1392734523-5109-1-git-send-email-jarkko.nikula@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F9A52610D7
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 08:53:09 +0100 (CET)
+In-Reply-To: <1392735455-21287-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1423435192245801093==
+--===============5822688481299781336==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="33vRkRs1qLSKUE7/"
+	protocol="application/pgp-signature"; boundary="EEnv9zyGND1dPpWR"
 Content-Disposition: inline
 
 
---33vRkRs1qLSKUE7/
+--EEnv9zyGND1dPpWR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 18, 2014 at 04:42:02PM +0200, Jarkko Nikula wrote:
-> Move fw_base and fw_size fields in struct sst_pdata under ACPI data for
-> clarifying that these are not related to firmware file but for platform
-> specific extended firmware area reserved by the BIOS.
+On Tue, Feb 18, 2014 at 03:57:35PM +0100, Lars-Peter Clausen wrote:
+> This patch adds support for the ADAU1977, ADAU1978 and ADAU1979 audio CODEC
+> devices. They are a family of 4-channel differential input audio ADC devices.
+> They can be connected to either a SPI or I2C bus. The driver is implemented in
+> three modules, one main module (adau1977.ko) which implements the device logic
+> and one module each for SPI (adau1977-spi.ko) and I2C (adau1977-i2c.ko) bus
+> access.
 
 Applied, thanks.
 
---33vRkRs1qLSKUE7/
+--EEnv9zyGND1dPpWR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBDXzAAoJELSic+t+oim9uoAP/RoIAvi82L2l5Q9TZQo1KW97
-SK1amr8d8JmifwWkNB+3ti0mOZ33BTiGAllzENWqGANRGwYBziEg+djc7S3/cBLq
-9K/kYcV3GqfNIR/40gSHwGCYmnb1SRIb+YnHLxIeQU0XnjWm9pwKQs0SjhTXAPoO
-tTiqHzs0iQ7yEl9XP3/MP3TyqJ+FcR78fiSfP0JZ7A8bPdzkTHjAmWgQxLlc8HYF
-uGyxWBg8i3d7D2LMNTdV/TeCOQfPrLV2mbgvVrLix7/fN5BhAPbG+KzkzZdgWQ/s
-19CA9xxwvlNp8OYIY/xep2RivlAp85J5n2e1AFO/hChyRn5vQ6iJ/wK7FSsqxI2l
-Ofx9YoQPP7oybseZh2cuC/aunW6rzin2/CreyCth6vC6VsHKcsJr8hYhp90eMRaq
-0GnuNl8OeXo7/vfUnrXEHJfuSfdTTnNN4jlzI6xCrYh4YGJs5YG2nP72B7QjOluJ
-oMAy4zvLc4ierJSimpbh+4xrVugn0/R7Ex+R88oXxBjp+6lo8zwXKYZJcvLK8+Ry
-RbtfLGokrFJKyF2zfcdHcddBpGONTo+H0wqOmtVF8QXUFzr0Q+Sns5KnOVFyRk5E
-TJPIMf+9zXdPha13ThglWrfVzcyTDM84C0aSDI4gySMCtdf2C4wSYmRbU+3aYATC
-DcEI0RGxCLvWBWyWXJH+
-=e1Dm
+iQIcBAEBAgAGBQJTBDUXAAoJELSic+t+oim9Y0YP/2bbFOMPTJzJd8MniUZfJrdv
+Ke4SQFX6cRmNvF95S3lU7aCDnK2sHGS7BnHwdlctHRJXUjqpDMZplJ//gc27cdva
+ArQ9CfFPfiVanAnN6ZplTwlfBf4kdBTvNnhVu96J8GvB0+FYdLAFJg1DOfKjcm1c
+W8hFDPh1XdoHxrq5GPuIMemrU6qAWTzoXa9E4xbD39lShmy9HPgM2+OoHs/+D9tm
+UnfvofUHvleG39WXzQylrd6z5amQ4N+wR0rctPrys1Y38IMdeIYUuDoi6ND6Sdqt
+peXBQCG0O03Wg/nI0CjHPNIIog7qrwnhYfaJfaU8L67AOy2Z1fQvhoUI1af6raSj
+fnu3nVX1WQxO4INTmJ0/OfQ2mrPL0kpUTVCWlFu7qr8VQpH7JkjwE60G5xHtQGAy
+enD9fdfh+JIvQphDZLIP5IGasjVQmFAZyxh2eTBWLWqzE/jCn5caEfL9RBfqgMsT
+njm+Dsjk6UnjfurctAFQ/Epu1QAkxRbsH+vy1Trm/is17mM7HBYTM9OOphrQdwou
+isENHAL+DzYOZiT8hoB7HlB4zTRnY0J4dFGJYsKTIwv5uz8j7cF4a9TtQ6AEAkj5
+Q5cYKIBlyCVf+631W7Sb2UQX3E2ni3JEZ+f7RAkoOu4DzXBDHcjsuovCPH4DLKiC
+Zu2pEaSDa9N6M9LIsJt5
+=JF/r
 -----END PGP SIGNATURE-----
 
---33vRkRs1qLSKUE7/--
+--EEnv9zyGND1dPpWR--
 
---===============1423435192245801093==
+--===============5822688481299781336==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1423435192245801093==--
+--===============5822688481299781336==--
