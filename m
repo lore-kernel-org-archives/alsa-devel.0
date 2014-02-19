@@ -1,21 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
+From: Robert Hancock <hancockrwd@gmail.com>
 Subject: Re: Headphone output problems with HP ProDesk 600 G1
 	(Realtek ALC221)
-Date: Wed, 19 Feb 2014 08:52:18 +0800
-Message-ID: <CAN8ccia-cja=_Qh1cwtpvwoxB21F1MVAWYD9reefOn5z7Z0szQ@mail.gmail.com>
+Date: Tue, 18 Feb 2014 19:33:29 -0600
+Message-ID: <CADLC3L0PEC_sVrw-+PpQkodvFKOFNicvdL3M5LbiO1Ok8yKkbQ@mail.gmail.com>
 References: <CAN8cciabECOHSBC0N0WP1nb17+HsLRDD9xEUn8LcmuuBsVH+3w@mail.gmail.com>
  <CADLC3L2B_osxvrVaT-MEbGrPWf99C7eHyzw6NZZvB8ayFxJgfg@mail.gmail.com>
+ <CAN8ccia-cja=_Qh1cwtpvwoxB21F1MVAWYD9reefOn5z7Z0szQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f43.google.com (mail-qg0-f43.google.com
- [209.85.192.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F4D52652B8
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 01:52:20 +0100 (CET)
-Received: by mail-qg0-f43.google.com with SMTP id f51so8213873qge.2
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 16:52:19 -0800 (PST)
-In-Reply-To: <CADLC3L2B_osxvrVaT-MEbGrPWf99C7eHyzw6NZZvB8ayFxJgfg@mail.gmail.com>
+Received: from mail-we0-f169.google.com (mail-we0-f169.google.com
+ [74.125.82.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76BB22652C4
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 02:33:29 +0100 (CET)
+Received: by mail-we0-f169.google.com with SMTP id t61so12421441wes.28
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 17:33:29 -0800 (PST)
+In-Reply-To: <CAN8ccia-cja=_Qh1cwtpvwoxB21F1MVAWYD9reefOn5z7Z0szQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,109 +26,199 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Hancock <hancockrwd@gmail.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
 Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-PiA+Pj4gSSBoYXZlIGEgSFAgUHJvRGVzayA2MDAgRzEgbWFjaGluZSB3aGljaCBzZWVtcyB0byBo
-YXZlIHNvbWUgc3RyYW5nZQo+ID4gYmVoYXZpb3Igd2l0aCB0aGUgZnJvbnQgaGVhZHBob25lIGph
-Y2socykgcnVubmluZyB1bmRlciBGZWRvcmEgMjAKPiA+IChydW5uaW5nIDMuMTMuMiBrZXJuZWwp
-OgoKICBIUCBQcm9EZXNrIDYwMCBHMSBTRkYKCkRvIFNGRiBtZWFuIHNtYWxsIGZvcm0gZmFjdG9y
-IG1vZGVsID8KCgpIRCBhdWRpbyB3aXRoIFJlYWx0ZWsgQUxDMjIxIGNvZGVjCkRUUyBTdHVkaW8g
-U291bmQgYXVkaW8gbWFuYWdlbWVudCB0ZWNobm9sb2d5Ck1pY3JvcGhvbmUgYW5kIGhlYWRwaG9u
-ZSBmcm9udCBwb3J0cyAoMy41bW0pCkxpbmUtb3V0IGFuZCBMaW5lLUluIHJlYXIgUG9ydHMgKDMu
-NW1tKQpNdWx0aS1zdHJlYW1pbmcgY2FwYWJsZQpJbnRlcm5hbCBzcGVha2VyIChzdGFuZGFyZCkK
-ClNpbmNlIGFsbC1pbi1vbmUtcGMgbW9kZWwgaXMgdXNuZyBBTEMzMjI4CgpEVFMgU291bmQr4oSi
-OyBSZWFsdGVrIEFMQyAzMjI4IEF1ZGlvIOKAkyAxNiAmIDI0LWJpdCBQQ007IEhpZ2ggcGVyZm9y
-bWFuY2UKaW50ZWdyYXRlZCBzdGVyZW8gc3BlYWtlcnM7IFZvbHVtZSBjb250cm9sIGFuZCBtdXRl
-IGJ1dHRvbnM7IFN0ZXJlbwpoZWFkcGhvbmUgamFjazsgTWljcm9waG9uZSBpbjsgU3RlcmVvIGxp
-bmUgb3V0Cgo+ID4KPiA+Pj4gVGhpcyBtYWNoaW5lIGhhcyB0d28gZnJvbnQgamFja3M6IGEgaGVh
-ZHBob25lIGphY2sgYW5kIGEKPiA+IG1pY3JvcGhvbmUvaGVhZHBob25lIGphY2suIFdoZW4gdGhl
-IGhlYWRwaG9uZXMgYXJlIHBsdWdnZWQgaW50byB0aGUKPiA+IGhlYWRwaG9uZSBqYWNrLCB0aGVy
-ZSdzIHVzdWFsbHkgbm8gY2hhbmdlIGluIHRoZSBzb3VuZCBvdXRwdXRzIGxpc3QgaW4KPiA+IHRo
-ZSBTb3VuZCBjb250cm9sIHBhbmVsLiBUaGUgYXVkaW8gKG1vc3RseSkgd29ya3MgaWYgdGhlIGF1
-ZGlvIG91dHB1dAo+ID4gZGV2aWNlIGlzIHNldCB0byBBbmFsb2cgT3V0cHV0LCBidXQgc29tZXRp
-bWVzIHNwdXJpb3VzbHkgY2hhbmdlcyBiYWNrCj4gPiB0byBTcGVha2VycyBhbmQgdGhlIGhlYWRw
-aG9uZSBvdXRwdXQgc3RvcHMgd29ya2luZyAoSSBzdXNwZWN0IG1heWJlCj4gPiBmcm9tIGEgc3B1
-cmlvdXMgamFjay1zZW5zaW5nIGV2ZW50LCB0aG91Z2ggSSdtIG5vdCBjZXJ0YWluKS4gTW9yZQo+
-ID4gY29uZnVzaW5nbHksIGEgY291cGxlIG9mIHRpbWVzIEkgaGF2ZSBnb3R0ZW4gaXQgaW50byB0
-aGUgc3RhdGUKPiA+ICh0aHJvdWdoIHZhcmlvdXMgZmlkZGxpbmcgd2l0aCBqYWNrcyBhbmQgcGxh
-eWluZyBpbiB0aGUgU291bmQgY29udHJvbAo+ID4gcGFuZWwpIHdoZXJlIHBsdWdnaW5nIGludG8g
-dGhpcyBqYWNrIGlzIGRldGVjdGVkIGFuZCBjYXVzZXMgdGhlCj4gPiBIZWFkcGhvbmUgb3V0cHV0
-IHRvIGJlIHNlbGVjdGVkIGluIHRoZSBjb250cm9sIHBhbmVsLiBJIGhhdmVuJ3QgYmVlbgo+ID4g
-YWJsZSB0byBmaWd1cmUgb3V0IGNvbnNpc3RlbnRseSB3aGF0IGNhdXNlcyB0aGlzIHRvIGhhcHBl
-bi4KPiA+Cj4gPj4+IElmIHRoZSBoZWFkcGhvbmUgaXMgcGx1Z2dlZCBpbnRvIHRoZSBtaWNyb3Bo
-b25lL2hlYWRwaG9uZSBqYWNrLCB0aGVuCj4gPiB0aGUgY29udHJvbCBwYW5lbCBjb25zaXN0ZW50
-bHkgc3dpdGNoZXMgdG8gdGhlIEhlYWRwaG9uZSBvdXRwdXQgYW5kCj4gPiBjb25zaXN0ZW50bHkg
-c3dpdGNoZXMgYmFjayB0aGUgd2F5IGl0IHdhcyB3aGVuIGl0J3MgdW5wbHVnZ2VkLgo+ID4gSG93
-ZXZlciwgdGhlcmUncyBubyBhY3R1YWwgYXVkaW8gb3V0cHV0IGNvbWluZyBvdXQgb2YgdGhhdCBq
-YWNrLiAoRnJvbQo+ID4gc29tZSBvZiB0aGUgSFAgbWFudWFscywgaXQgc291bmRzIGxpa2Ugd2l0
-aCB0aGUgV2luZG93cyBkcml2ZXIsIHdoZW4KPiA+IHlvdSBwbHVnIGludG8gdGhpcyBqYWNrLCBp
-dCdzIHN1cHBvc2VkIHRvIHBvcCB1cCBhIHByb21wdCBhc2tpbmcgeW91Cj4gPiB3aGV0aGVyIHlv
-dSB3YW50IHRvIHVzZSBpdCBhcyBhIG1pY3JvcGhvbmUgb3IgaGVhZHBob25lcy4pCj4gPgo+ID4+
-PiBUaGUgb3RoZXIgc3RyYW5nZSB0aGluZyBpcyB0aGF0IGludGVybWl0dGVudGx5LCBvbiB0aGUg
-aGVhZHBob25lIGphY2sKPiA+IHlvdSdsbCBzdGFydCBnZXR0aW5nIGEgYnVuY2ggb2YgbG91ZCBz
-dGF0aWMgKGNsaWNraW5nIG5vaXNlcykgYW5kIGFueQo+ID4gYWN0dWFsIGF1ZGlvIHBsYXliYWNr
-IGJlY29tZXMgdmVyeSBmYWludCBhbmQgZGlzdG9ydGVkLgo+ID4KPiA+Pj4gSSdtIGd1ZXNzaW5n
-IHBlcmhhcHMgc29tZXRoaW5nIGlzbid0IGJlaW5nIGluaXRpYWxpemVkL3NldHVwIHByb3Blcmx5
-Cj4gPiBpbiB0aGUgY29kZWMsIGNhdXNpbmcgdGhpcyBraW5kIG9mIGVycmF0aWMgYmVoYXZpb3Iu
-IFRoZSBhbHNhLWluZm8KPiA+IG91dHB1dCBpcyB1cGxvYWRlZCBhdDoKPiA+Cj4gPgpodHRwOi8v
-d3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9NTk0ZTgzN2I3YWYwN2ZmYmUzNDczY2Y4MDc0NjVi
-YzgxYTU4Nzg4MAo+ID4KCj4gPgo+ID4gTm9kZSAweDE0IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0
-MDAxOGQ6IFN0ZXJlbyBBbXAtT3V0Cj4gPiAgIENvbnRyb2w6IG5hbWU9IlBDTSBQbGF5YmFjayBT
-d2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAo+ID4gICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9
-T3V0LCBpZHg9MCwgb2ZzPTAKPiA+ICAgQ29udHJvbDogbmFtZT0iTGluZSBPdXQgSmFjayIsIGlu
-ZGV4PTAsIGRldmljZT0wCj4gPiAgIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAw
-LCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKPiA+ICAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0K
-PiA+ICAgUGluY2FwIDB4MDAwMTAwMTQ6IE9VVCBFQVBEIERldGVjdAo+ID4gICBFQVBEIDB4Mjog
-RUFQRAo+ID4gICBQaW4gRGVmYXVsdCAweDAxMDE0MDIwOiBbSmFja10gTGluZSBPdXQgYXQgRXh0
-IFJlYXIKPiA+ICAgICBDb25uID0gMS84LCBDb2xvciA9IEdyZWVuCj4gPiAgICAgRGVmQXNzb2Np
-YXRpb24gPSAweDIsIFNlcXVlbmNlID0gMHgwCj4gPgo+ID4gaXQgaXMgYSBkcml2ZXIgYnVnIHdo
-aWNoIGFzc2lnbiBQQ00gcGxheWJhY2sgU3dpdGNoIHRvIExpbmUgT3V0IEphY2sKPiA+Cj4gPiB0
-cnkgdGhlIHBhdGNoICBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvYXR0YWNobWVudC5jZ2k/
-aWQ9MTI0OTcxCj4KPiBXaXRoIHRoaXMgcGF0Y2gsIEkgZ2V0IG5vIGF1ZGlvIG91dHB1dCBhdCBh
-bGwgKHRvdGFsbHkgc2lsZW50IG9uIGFsbAo+IHBvcnRzKS4gRXZlbiB3aXRoIHBsYXlpbmcgYXJv
-dW5kIHdpdGggYWxzYW1peGVyIGFuZCBtdXRpbmcvdW5tdXRpbmcKPiBvdXRwdXRzIEkgY291bGQg
-bm90IGdldCBhbnl0aGluZyBjb21pbmcgb3V0Lgo+Cj4gVGhlIGFsc2EtaW5mbyBvdXRwdXQgZnJv
-bSB0aGUgcGF0Y2hlZCBrZXJuZWwgaXMgaGVyZToKPgo+IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0
-Lm9yZy9kYi8/Zj1kZjU4NzRiNGZkYzAxZmQ2ZDJjOTU0MWM5Y2RlMzgwZmU4NDRhYzZjCgphdXRv
-Y29uZmlnOiBsaW5lX291dHM9MSAoMHgxNC8weDAvMHgwLzB4MC8weDApIHR5cGU6bGluZQogICAg
-c3BlYWtlcl9vdXRzPTEgKDB4MTcvMHgwLzB4MC8weDAvMHgwKQogICAgaHBfb3V0cz0xICgweDIx
-LzB4MC8weDAvMHgwLzB4MCkKICAgIG1vbm86IG1vbm9fb3V0PTB4MAogICAgaW5wdXRzOgogICAg
-ICBNaWM9MHgxYQogICAgICBMaW5lPTB4MWIKCmRvIHlvdSBtZWFuIG9uZSBvZiB0aGUgZnJvbnQg
-cGFuZWwgamFja3Mgc3VwcG9ydCBUUlJTIGhlYWRzZXQgPwoKdXNlIGhkYS1qYWNrLXNlbnNlLXRl
-c3QgdG8gZmluZCB0aGUgbm9kZXMgb2YgZnJvbnQgcGFuZWwgamFja3MgYW5kIHJlYXIKcGFuZWwg
-amFja3MKCj4gPgo+ID4gTm9kZSAweDAyIFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4MWQ6IFN0ZXJl
-byBBbXAtT3V0Cj4gPiAgIENvbnRyb2w6IG5hbWU9IlNwZWFrZXIgUGxheWJhY2sgVm9sdW1lIiwg
-aW5kZXg9MCwgZGV2aWNlPTAKPiA+ICAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPU91dCwgaWR4
-PTAsIG9mcz0wCj4gPiAgIEFtcC1PdXQgY2Fwczogb2ZzPTB4NTcsIG5zdGVwcz0weDU3LCBzdGVw
-c2l6ZT0weDAyLCBtdXRlPTAKPiA+ICAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0KCj4gPiBO
-b2RlIDB4MDMgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHgxZDogU3RlcmVvIEFtcC1PdXQKPiA+ICAg
-Q29udHJvbDogbmFtZT0iUENNIFBsYXliYWNrIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCj4g
-PiAgICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAoKaWYgc21hbGwg
-Zm9ybSBmYWN0b3IgaXMgbXVsdGlzdHJlYW1pbmcgY2FwYWJsZSAsIGxpbmUgb3V0IGFuZCBoZWFk
-cGhvbmUKaGF2ZSB0byB1c2UgZGlmZmVyZW50IGF1ZGlvIG91dHB1dCAweDAyIGFuZCAweDAzIGlu
-c3RlYWQgb2Ygc2hhcmluZyB0aGUKc2FtZSBhdWRpbyBvdXRwdXQgMHgwMwoKaHR0cDovL3d3dy5p
-bnRlbC5jb20vc3VwcG9ydC9tb3RoZXJib2FyZHMvZGVza3RvcC9zYi9DUy0wMzQyMDYuaHRtCgp5
-b3Ugc3RpbGwgbmVlZCB0byBtb2RpZnkgcGF0Y2hfcmVhbHRlay5jCgpzcGVjLT5nZW4uaW5kZXBf
-aHAgPSAxOwoKCkBAIC0xNDkzLDE2ICsxNDk3LDI2IEBAIHN0YXRpYyBib29sIGluZGVwX2hwX3Bv
-c3NpYmxlKHN0cnVjdCBoZGFfY29kZWMKKmNvZGVjKQogICAgIHN0cnVjdCBoZGFfZ2VuX3NwZWMg
-KnNwZWMgPSBjb2RlYy0+c3BlYzsKICAgICBzdHJ1Y3QgYXV0b19waW5fY2ZnICpjZmcgPSAmc3Bl
-Yy0+YXV0b2NmZzsKICAgICBzdHJ1Y3QgbmlkX3BhdGggKnBhdGg7CisgICAgaGRhX25pZF90IG5p
-ZDsKICAgICBpbnQgaSwgaWR4OwoKLSAgICBpZiAoY2ZnLT5saW5lX291dF90eXBlID09IEFVVE9f
-UElOX0hQX09VVCkKLSAgICAgICAgaWR4ID0gc3BlYy0+b3V0X3BhdGhzWzBdOwotICAgIGVsc2UK
-LSAgICAgICAgaWR4ID0gc3BlYy0+aHBfcGF0aHNbMF07Ci0gICAgcGF0aCA9IHNuZF9oZGFfZ2V0
-X3BhdGhfZnJvbV9pZHgoY29kZWMsIGlkeCk7CisgICAgaWYgKGNmZy0+bGluZV9vdXRfdHlwZSAh
-PSBBVVRPX1BJTl9MSU5FX09VVCkKKyAgICAgICAgcmV0dXJuIGZhbHNlOworCisgICAgcGF0aCA9
-IHNuZF9oZGFfZ2V0X3BhdGhfZnJvbV9pZHgoY29kZWMsIHNwZWMtPm91dF9wYXRoc1swXSk7CiAg
-ICAgaWYgKCFwYXRoKQogICAgICAgICByZXR1cm4gZmFsc2U7CisgICAgbmlkID0gcGF0aC0+cGF0
-aFswXTsKCisgICAgaWR4ID0gIHNwZWMtPmhwX3BhdGhzWzBdOworICAgIHBhdGggPSBzbmRfaGRh
-X2dldF9wYXRoX2Zyb21faWR4KGNvZGVjLCBpZHgpOworICAgIGlmICghcGF0aCkKKyAgICAgICAg
-cmV0dXJuIGZhbHNlOworCisgICAgLyogSGVhZHBob25lIGFuZCBMaW5lIE91dCBtdXN0IHVzZSBk
-aWZmZXJlbnQgQXVkaW8gT3V0cHV0ICovCisgICAgaWYgKHBhdGgtPnBhdGhbMF0gPT0gbmlkKQor
-ICAgICAgICByZXR1cm4gZmFsc2U7CisKICAgICAvKiBhc3N1bWUgbm8gcGF0aCBjb25mbGljdHMg
-dW5sZXNzIGFhbWl4IGlzIGludm9sdmVkICovCiAgICAgaWYgKCFzcGVjLT5taXhlcl9uaWQgfHwg
-IWlzX25pZF9jb250YWluZWQocGF0aCwgc3BlYy0+bWl4ZXJfbmlkKSkKICAgICAgICAgcmV0dXJu
-IHRydWU7Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Tue, Feb 18, 2014 at 6:52 PM, Raymond Yau
+<superquad.vortex2@gmail.com> wrote:
+>> >>> I have a HP ProDesk 600 G1 machine which seems to have some strange
+>> > behavior with the front headphone jack(s) running under Fedora 20
+>> > (running 3.13.2 kernel):
+>
+>   HP ProDesk 600 G1 SFF
+>
+> Do SFF mean small form factor model ?
+>
+>
+> HD audio with Realtek ALC221 codec
+> DTS Studio Sound audio management technology
+> Microphone and headphone front ports (3.5mm)
+> Line-out and Line-In rear Ports (3.5mm)
+> Multi-streaming capable
+> Internal speaker (standard)
+>
+> Since all-in-one-pc model is usng ALC3228
+>
+> DTS Sound+(tm); Realtek ALC 3228 Audio - 16 & 24-bit PCM; High performance
+> integrated stereo speakers; Volume control and mute buttons; Stereo
+> headphone jack; Microphone in; Stereo line out
+
+Yes, this is the small form factor. It is definitely ALC221 (I checked
+the codec chip on the system board).
+
+>
+>
+>> >
+>> >>> This machine has two front jacks: a headphone jack and a
+>> > microphone/headphone jack. When the headphones are plugged into the
+>> > headphone jack, there's usually no change in the sound outputs list in
+>> > the Sound control panel. The audio (mostly) works if the audio output
+>> > device is set to Analog Output, but sometimes spuriously changes back
+>> > to Speakers and the headphone output stops working (I suspect maybe
+>> > from a spurious jack-sensing event, though I'm not certain). More
+>> > confusingly, a couple of times I have gotten it into the state
+>> > (through various fiddling with jacks and playing in the Sound control
+>> > panel) where plugging into this jack is detected and causes the
+>> > Headphone output to be selected in the control panel. I haven't been
+>> > able to figure out consistently what causes this to happen.
+>> >
+>> >>> If the headphone is plugged into the microphone/headphone jack, then
+>> > the control panel consistently switches to the Headphone output and
+>> > consistently switches back the way it was when it's unplugged.
+>> > However, there's no actual audio output coming out of that jack. (From
+>> > some of the HP manuals, it sounds like with the Windows driver, when
+>> > you plug into this jack, it's supposed to pop up a prompt asking you
+>> > whether you want to use it as a microphone or headphones.)
+>> >
+>> >>> The other strange thing is that intermittently, on the headphone jack
+>> > you'll start getting a bunch of loud static (clicking noises) and any
+>> > actual audio playback becomes very faint and distorted.
+>> >
+>> >>> I'm guessing perhaps something isn't being initialized/setup properly
+>> > in the codec, causing this kind of erratic behavior. The alsa-info
+>> > output is uploaded at:
+>> >
+>> >
+>> > http://www.alsa-project.org/db/?f=594e837b7af07ffbe3473cf807465bc81a587880
+>> >
+>
+>> >
+>> > Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+>> >   Control: name="PCM Playback Switch", index=0, device=0
+>> >     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+>> >   Control: name="Line Out Jack", index=0, device=0
+>> >   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+>> >   Amp-Out vals:  [0x00 0x00]
+>> >   Pincap 0x00010014: OUT EAPD Detect
+>> >   EAPD 0x2: EAPD
+>> >   Pin Default 0x01014020: [Jack] Line Out at Ext Rear
+>> >     Conn = 1/8, Color = Green
+>> >     DefAssociation = 0x2, Sequence = 0x0
+>> >
+>> > it is a driver bug which assign PCM playback Switch to Line Out Jack
+>> >
+>> > try the patch  https://bugzilla.kernel.org/attachment.cgi?id=124971
+>>
+>> With this patch, I get no audio output at all (totally silent on all
+>> ports). Even with playing around with alsamixer and muting/unmuting
+>> outputs I could not get anything coming out.
+>>
+>> The alsa-info output from the patched kernel is here:
+>>
+>> http://www.alsa-project.org/db/?f=df5874b4fdc01fd6d2c9541c9cde380fe844ac6c
+>
+>
+> autoconfig: line_outs=1 (0x14/0x0/0x0/0x0/0x0) type:line
+>     speaker_outs=1 (0x17/0x0/0x0/0x0/0x0)
+>     hp_outs=1 (0x21/0x0/0x0/0x0/0x0)
+>     mono: mono_out=0x0
+>     inputs:
+>       Mic=0x1a
+>       Line=0x1b
+>
+> do you mean one of the front panel jacks support TRRS headset ?
+
+I think that is what the labelling is indicating, yes.
+
+>
+> use hda-jack-sense-test to find the nodes of front panel jacks and rear
+> panel jacks
+
+>From what I can tell:
+
+When the headphone-only jack is plugged into, nothing happens with jack sensing
+When the headphone/mic jack is plugged into, both Pin 0x1a (Black Mic)
+and Pin 0x21 (Black HP Out) show present
+When the rear line out jack is plugged into, Pin 0x14 (Green Line Out)
+shows present
+When the rear line in jack is plugged into, nothing happens with jack sensing
+
+>
+>> >
+>> > Node 0x02 [Audio Output] wcaps 0x1d: Stereo Amp-Out
+>> >   Control: name="Speaker Playback Volume", index=0, device=0
+>> >     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+>> >   Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
+>> >   Amp-Out vals:  [0x00 0x00]
+>
+>> > Node 0x03 [Audio Output] wcaps 0x1d: Stereo Amp-Out
+>> >   Control: name="PCM Playback Volume", index=0, device=0
+>> >     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+>
+> if small form factor is multistreaming capable , line out and headphone have
+> to use different audio output 0x02 and 0x03 instead of sharing the same
+> audio output 0x03
+>
+> http://www.intel.com/support/motherboards/desktop/sb/CS-034206.htm
+>
+> you still need to modify patch_realtek.c
+>
+> spec->gen.indep_hp = 1;
+
+I did try enabling the indep_hp hint in the codec sysfs files as
+described in Documentation/sound/alsa/HD-Audio.txt. That did get the
+"Independent HP" mixer control to show up and I had the separate PCM
+devices (hw:1,0 and hw:1,2). However playing audio into both of those
+produced the same output, and it still had the loud clicking/popping
+noises and distorted audio (sounds like clipping even though the audio
+isn't very loud) on the headphone jack. Let me know if you think your
+patch would do anything more, and I can try it.
+
+I did notice some strange things when playing with alsamixer: Playing
+with the "Line" mixer control changes the audio quality (higher levels
+seem to be less distorted). Changing the Input Source selection under
+the capture settings seems to affect the amount of distortion and
+clicking noises, too. I'm not sure why these settings should have any
+effect on playback. It's also not very repeatable - it seems like on
+different boots and/or power cycles, or depending on what I've been
+playing with before, the results are different. It's like the codec is
+somehow misconfigured and not routing signals the way they should be.
+
+>
+>
+> @@ -1493,16 +1497,26 @@ static bool indep_hp_possible(struct hda_codec
+> *codec)
+>      struct hda_gen_spec *spec = codec->spec;
+>      struct auto_pin_cfg *cfg = &spec->autocfg;
+>      struct nid_path *path;
+> +    hda_nid_t nid;
+>      int i, idx;
+>
+> -    if (cfg->line_out_type == AUTO_PIN_HP_OUT)
+> -        idx = spec->out_paths[0];
+> -    else
+> -        idx = spec->hp_paths[0];
+> -    path = snd_hda_get_path_from_idx(codec, idx);
+> +    if (cfg->line_out_type != AUTO_PIN_LINE_OUT)
+> +        return false;
+> +
+> +    path = snd_hda_get_path_from_idx(codec, spec->out_paths[0]);
+>      if (!path)
+>          return false;
+> +    nid = path->path[0];
+>
+> +    idx =  spec->hp_paths[0];
+> +    path = snd_hda_get_path_from_idx(codec, idx);
+> +    if (!path)
+> +        return false;
+> +
+> +    /* Headphone and Line Out must use different Audio Output */
+> +    if (path->path[0] == nid)
+> +        return false;
+> +
+>      /* assume no path conflicts unless aamix is involved */
+>      if (!spec->mixer_nid || !is_nid_contained(path, spec->mixer_nid))
+>          return true;
+>
+>
