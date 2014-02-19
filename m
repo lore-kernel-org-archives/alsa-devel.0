@@ -1,62 +1,48 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Enable front audio jacks on one HP desktop
- model
-Date: Thu, 20 Feb 2014 15:47:44 +0800
-Message-ID: <5305B320.7030309@canonical.com>
-References: <1392868041-21319-1-git-send-email-hui.wang@canonical.com> <s5ha9dmxngg.wl%tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: About 'SNDRV_PCM_CLASS_MULTI' for devices with
+	multi-channels
+Date: Thu, 20 Feb 2014 00:31:31 +0900
+Message-ID: <5304CE53.5000808@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <s5ha9dmxngg.wl%tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, david.henningsson@canonical.com, stable@vger.kernel.org, gerald.yang@canonical.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id F158C265966
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 16:31:37 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/20/2014 03:17 PM, Takashi Iwai wrote:
-> At Thu, 20 Feb 2014 11:47:21 +0800,
-> Hui Wang wrote:
->> The front headphone and mic jackes on a HP desktop model (Vendor Id:
->> 0x111d76c7 Subsystem Id: 0x103c2b17) can not work, the codec on this
->> machine has 8 physical ports, 6 of them are routed to rear jackes
->> and all of them work very well, while the remaining 2 ports are
->> routed to front headphone and mic jackes, but the corresponding
->> pin complex node are not defined correctly.
->>
->> After apply this fix, the front audio jackes can work very well.
->>
->> BugLink: https://bugs.launchpad.net/bugs/1282369
->> Cc: David Henningsson <david.henningsson@canonical.com>
->> Tested-by: Gerald Yang <gerald.yang@canonical.com>
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Hui Wang <hui.wang@canonical.com>
-> Thanks, I applied with the additional fix below:
->
->> ---
->>   sound/pci/hda/patch_sigmatel.c | 15 ++++++++++++++-
->>   1 file changed, 14 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
->> index 7311bad..d75f90a 100644
->> --- a/sound/pci/hda/patch_sigmatel.c
->> +++ b/sound/pci/hda/patch_sigmatel.c
->> @@ -83,7 +83,8 @@ enum {
->>   	STAC_DELL_M6_BOTH,
->>   	STAC_DELL_EQ,
->>   	STAC_ALIENWARE_M17X,
->> -	STAC_92HD73XX_MODELS
->> +	STAC_92HD73XX_MODELS,
->> +	STAC_92HD89XX_HP_FRONT_JACK
-> XXX_MODELS indicate number of enum items (although they aren't
-> referred any longer in the code), so you need to insert the new item
-> before it.
-Got it, understand now.
+Hi all,
 
-thanks.
-Hui.
->
->
-> Takashi
->
->
+I have two questions about the usage of this macro.
+
+Should I use this macro for new drivers which I'm working for?'
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071820.html
+
+My drivers support some firewire devices, which is desinged for 
+studio-use and have many channels. Its combination of channels are not 
+designed for surround sound like 5.1ch.
+
+Just judging from its name, 'SNDRV_PCM_CLASS_MULTI', I should use this.
+But there are no drivers which use this macro in current tree, against 
+my expectation that some drivers (ICE1712-pro, RME9652, 6fire usb and so 
+on) should use this macro.
+
+Are there any reasons?
+
+
+Regards
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
