@@ -1,15 +1,17 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCHv2] ASoC: Intel: Fix sparse warnings for
-	firmware loader.
-Date: Wed, 19 Feb 2014 14:06:23 +0000
-Message-ID: <1392818784-6248-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: Make sure we only build SST
+	drivers on X86
+Date: Wed, 19 Feb 2014 14:06:24 +0000
+Message-ID: <1392818784-6248-2-git-send-email-liam.r.girdwood@linux.intel.com>
+References: <1392818784-6248-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id DE7EB2652CD
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 15:07:09 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B57026531C
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 15:07:12 +0100 (CET)
+In-Reply-To: <1392818784-6248-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,80 +25,34 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Changes since V1 :-
- o Fixed sparse warning for block_module_remove
- o Fixed additional sparse warnings when building entire driver. 
+Disable build on non X86 architectures. This fixes the following build
+errors on PPC :-
 
-Sparse gives us the following warnings on sst-firmware.c
-
-  CHECK   sound/soc/intel/sst-firmware.c
-sound/soc/intel/sst-firmware.c:39:34: warning: incorrect type in argument 1 (different address spaces)
-sound/soc/intel/sst-firmware.c:39:34:    expected void volatile [noderef] <asn:2>*dst
-sound/soc/intel/sst-firmware.c:39:34:    got void *
-sound/soc/intel/sst-firmware.c:417:36: warning: incorrect type in argument 1 (different address spaces)
-sound/soc/intel/sst-firmware.c:417:36:    expected void *dest
-sound/soc/intel/sst-firmware.c:417:36:    got void [noderef] <asn:2>*
-sound/soc/intel/sst-firmware.c:430:5: warning: symbol 'sst_block_module_remove' was not declared. Should it be static?
-
-and
-
-  CC [M]  sound/soc/intel/sst-dsp.o
-sound/soc/intel/sst-dsp-priv.h:271:53: warning: incorrect type in argument 3 (different address spaces)
-sound/soc/intel/sst-dsp-priv.h:271:53:    expected void *src
-sound/soc/intel/sst-dsp-priv.h:271:53:    got void [noderef] <asn:2>*
-sound/soc/intel/sst-dsp-priv.h:271:53: warning: incorrect type in argument 3 (different address spaces)
-sound/soc/intel/sst-dsp-priv.h:271:53:    expected void *src
-sound/soc/intel/sst-dsp-priv.h:271:53:    got void [noderef] <asn:2>*
-sound/soc/intel/sst-dsp-priv.h:271:53: warning: incorrect type in argument 3 (different address spaces)
-sound/soc/intel/sst-dsp-priv.h:271:53:    expected void *src
-sound/soc/intel/sst-dsp-priv.h:271:53:    got void [noderef] <asn:2>*
-
-
-This patch removes these warnings
+sound/soc/intel/sst-dsp.c: In function 'sst_dsp_outbox_write':
+sound/soc/intel/sst-dsp.c:218:2: error: implicit declaration of function 'memcpy_toio' [-Werror=implicit-function-declaration]
+  memcpy_toio(sst->mailbox.out_base, message, bytes);
+  ^
+sound/soc/intel/sst-dsp.c: In function 'sst_dsp_outbox_read':
+sound/soc/intel/sst-dsp.c:231:2: error: implicit declaration of function 'memcpy_fromio' [-Werror=implicit-function-declaration]
+  memcpy_fromio(message, sst->mailbox.out_base, bytes);
+  ^
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/sst-dsp-priv.h | 7 +++++--
- sound/soc/intel/sst-firmware.c | 2 +-
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/intel/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/sst-dsp-priv.h b/sound/soc/intel/sst-dsp-priv.h
-index 6135564..fe8e81a 100644
---- a/sound/soc/intel/sst-dsp-priv.h
-+++ b/sound/soc/intel/sst-dsp-priv.h
-@@ -41,8 +41,10 @@ struct sst_ops {
- 	u64 (*read64)(void __iomem *addr, u32 offset);
- 
- 	/* DSP I/DRAM IO */
--	void (*ram_read)(struct sst_dsp *sst, void *dest, void *src, size_t bytes);
--	void (*ram_write)(struct sst_dsp *sst, void *dest, void *src, size_t bytes);
-+	void (*ram_read)(struct sst_dsp *sst, void  *dest, void __iomem *src,
-+		size_t bytes);
-+	void (*ram_write)(struct sst_dsp *sst, void __iomem *dest, void *src,
-+		size_t bytes);
- 
- 	void (*dump)(struct sst_dsp *);
- 
-@@ -296,6 +298,7 @@ struct sst_module *sst_module_get_from_id(struct sst_dsp *dsp, u32 id);
- struct sst_module *sst_mem_block_alloc_scratch(struct sst_dsp *dsp);
- void sst_mem_block_free_scratch(struct sst_dsp *dsp,
- 	struct sst_module *scratch);
-+int sst_block_module_remove(struct sst_module *module);
- 
- /* Register the DSPs memory blocks - would be nice to read from ACPI */
- struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
-diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
-index 31cd154..dee7eb5 100644
---- a/sound/soc/intel/sst-firmware.c
-+++ b/sound/soc/intel/sst-firmware.c
-@@ -30,7 +30,7 @@
- #include "sst-dsp.h"
- #include "sst-dsp-priv.h"
- 
--static void sst_memcpy32(void *dest, void *src, u32 bytes)
-+static void sst_memcpy32(volatile void __iomem *dest, void *src, u32 bytes)
- {
- 	u32 i;
- 
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index c962432..e61bd89 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -15,6 +15,7 @@ config SND_SST_MFLD_PLATFORM
+ config SND_SOC_INTEL_SST
+ 	tristate "ASoC support for Intel(R) Smart Sound Technology"
+ 	select SND_SOC_INTEL_SST_ACPI if ACPI
++	depends on X86
+ 	help
+           This adds support for Intel(R) Smart Sound Technology (SST).
+           Say Y if you have such a device
 -- 
 1.8.3.2
