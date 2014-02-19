@@ -1,29 +1,21 @@
-From: Chris M <cmanougian@yahoo.com>
-Subject: Re: Update patch for codecs alias name for Dell
-Date: Tue, 18 Feb 2014 21:31:07 +0000 (UTC)
-Message-ID: <loom.20140218T221659-931@post.gmane.org>
-References: <8837DB3485424EB4ADE016301C6D7DF6@realtek.com.tw>
- <s5hhaay6rsk.wl%tiwai@suse.de>
- <13CB35BE00B34161858F09AF4314495C@realtek.com.tw>
- <s5heh604wws.wl%tiwai@suse.de> <loom.20140202T011505-437@post.gmane.org>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Headphone output problems with HP ProDesk 600 G1
+	(Realtek ALC221)
+Date: Wed, 19 Feb 2014 08:52:18 +0800
+Message-ID: <CAN8ccia-cja=_Qh1cwtpvwoxB21F1MVAWYD9reefOn5z7Z0szQ@mail.gmail.com>
+References: <CAN8cciabECOHSBC0N0WP1nb17+HsLRDD9xEUn8LcmuuBsVH+3w@mail.gmail.com>
+ <CADLC3L2B_osxvrVaT-MEbGrPWf99C7eHyzw6NZZvB8ayFxJgfg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 12E9426525B
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 22:31:39 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1WFsGO-0001D1-SP
- for alsa-devel@alsa-project.org; Tue, 18 Feb 2014 22:31:37 +0100
-Received: from pool-96-231-195-50.washdc.fios.verizon.net
- ([pool-96-231-195-50.washdc.fios.verizon.net])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 22:31:36 +0100
-Received: from cmanougian by pool-96-231-195-50.washdc.fios.verizon.net with
- local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 22:31:36 +0100
+Received: from mail-qg0-f43.google.com (mail-qg0-f43.google.com
+ [209.85.192.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F4D52652B8
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 01:52:20 +0100 (CET)
+Received: by mail-qg0-f43.google.com with SMTP id f51so8213873qge.2
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2014 16:52:19 -0800 (PST)
+In-Reply-To: <CADLC3L2B_osxvrVaT-MEbGrPWf99C7eHyzw6NZZvB8ayFxJgfg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,70 +25,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Robert Hancock <hancockrwd@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Chris M <cmanougian <at> yahoo.com> writes:
-
-> 
-> Takashi Iwai <tiwai <at> suse.de> writes:
-> 
-> > 
-> > At Thu, 28 Nov 2013 15:30:56 +0800,
-> > Kailang wrote:
-> > > 
-> > > Hi Takashi,
-> > > 
-> > > I remodified the code as belowing.
-> > > 
-> > > >From 888b51395ebab411660401f856e3af7988d9240b Mon Sep 17 00:00:00 2001
-> > > From: Kailang Yang <kailang <at> realtek.com>
-> > > Date: Thu, 28 Nov 2013 15:23:20 +0800
-> > > Subject: [PATCH] ALSA: hda/realtek - Add more codecs alias name for Dell
-> > > 
-> > > Dell assigned alias name for more codecs.
-> > > ALC3220 ALC3221 ALC3223 ALC3226 ALC3234 ALC3661.
-> > > 
-> > > Signed-off-by: Kailang Yang <kailang <at> realtek.com>
-> > 
-> > Thanks, applied now, but it's targeted for 3.14 kernel, as this is no
-> > urgent fixes.  You can find it in for-next branch of sound git tree.
-> > 
-> > Takashi
-> > 
-> 
-> Sorry for asking this on a developer forum, but I'm pretty sure I finally
-> found the answer here. I had considered the need to wait it out for a kernel
-> upgrade (beyond 3.12 in Debian Testing/Jessie). I have no sound right now.
-> How do I apply this patch? When I installed Debian Testing, I installed a
-> targeted initrd, and I was considering retrying with a generic initrd -
-> although I think this thread just saved me from that. Will an established
-> initrd come into play? Will I have to recompile the 3.12 kernel?
-> 
-> The Dell codec alias name is ALC3223.
-> 
-> Thanks
-
-This is a follow up question for anyone.
-
-This boils down to a general question about new kernel compilation.
-
-To try and solve my no sound issue, I waited until 3.14-rc3 kernel went live.
-
-In the 3.14-rc3 kernel source folder, this patch is located at:
-sound/pci/hda/patch_realtek.c
-
-I thought that simply compiling the latest kernel, and then installing it,
-would apply all relevant patches (more than the realtek patch may be in
-play), but now I'm not so sure.
-
-The question is this: Does a 3.14-rc3 compiled kernel already include the
-above patch? Or, because it is labeled as a "patch" within the source, do I
-have to actually patch the source before compiling?
-
-IOW, does the patch get compiled, or does anything labeled as a patch within
-the source still have to be manually patched against the kernel?
-
-Thanks to anyone who can answer this.  I complied and installed the 3.14-rc3
-kernel without a problem. It was the default kernel in grub. But I'm still
-dealing with the exact same no sound issue as if booting into 3.12.
+PiA+Pj4gSSBoYXZlIGEgSFAgUHJvRGVzayA2MDAgRzEgbWFjaGluZSB3aGljaCBzZWVtcyB0byBo
+YXZlIHNvbWUgc3RyYW5nZQo+ID4gYmVoYXZpb3Igd2l0aCB0aGUgZnJvbnQgaGVhZHBob25lIGph
+Y2socykgcnVubmluZyB1bmRlciBGZWRvcmEgMjAKPiA+IChydW5uaW5nIDMuMTMuMiBrZXJuZWwp
+OgoKICBIUCBQcm9EZXNrIDYwMCBHMSBTRkYKCkRvIFNGRiBtZWFuIHNtYWxsIGZvcm0gZmFjdG9y
+IG1vZGVsID8KCgpIRCBhdWRpbyB3aXRoIFJlYWx0ZWsgQUxDMjIxIGNvZGVjCkRUUyBTdHVkaW8g
+U291bmQgYXVkaW8gbWFuYWdlbWVudCB0ZWNobm9sb2d5Ck1pY3JvcGhvbmUgYW5kIGhlYWRwaG9u
+ZSBmcm9udCBwb3J0cyAoMy41bW0pCkxpbmUtb3V0IGFuZCBMaW5lLUluIHJlYXIgUG9ydHMgKDMu
+NW1tKQpNdWx0aS1zdHJlYW1pbmcgY2FwYWJsZQpJbnRlcm5hbCBzcGVha2VyIChzdGFuZGFyZCkK
+ClNpbmNlIGFsbC1pbi1vbmUtcGMgbW9kZWwgaXMgdXNuZyBBTEMzMjI4CgpEVFMgU291bmQr4oSi
+OyBSZWFsdGVrIEFMQyAzMjI4IEF1ZGlvIOKAkyAxNiAmIDI0LWJpdCBQQ007IEhpZ2ggcGVyZm9y
+bWFuY2UKaW50ZWdyYXRlZCBzdGVyZW8gc3BlYWtlcnM7IFZvbHVtZSBjb250cm9sIGFuZCBtdXRl
+IGJ1dHRvbnM7IFN0ZXJlbwpoZWFkcGhvbmUgamFjazsgTWljcm9waG9uZSBpbjsgU3RlcmVvIGxp
+bmUgb3V0Cgo+ID4KPiA+Pj4gVGhpcyBtYWNoaW5lIGhhcyB0d28gZnJvbnQgamFja3M6IGEgaGVh
+ZHBob25lIGphY2sgYW5kIGEKPiA+IG1pY3JvcGhvbmUvaGVhZHBob25lIGphY2suIFdoZW4gdGhl
+IGhlYWRwaG9uZXMgYXJlIHBsdWdnZWQgaW50byB0aGUKPiA+IGhlYWRwaG9uZSBqYWNrLCB0aGVy
+ZSdzIHVzdWFsbHkgbm8gY2hhbmdlIGluIHRoZSBzb3VuZCBvdXRwdXRzIGxpc3QgaW4KPiA+IHRo
+ZSBTb3VuZCBjb250cm9sIHBhbmVsLiBUaGUgYXVkaW8gKG1vc3RseSkgd29ya3MgaWYgdGhlIGF1
+ZGlvIG91dHB1dAo+ID4gZGV2aWNlIGlzIHNldCB0byBBbmFsb2cgT3V0cHV0LCBidXQgc29tZXRp
+bWVzIHNwdXJpb3VzbHkgY2hhbmdlcyBiYWNrCj4gPiB0byBTcGVha2VycyBhbmQgdGhlIGhlYWRw
+aG9uZSBvdXRwdXQgc3RvcHMgd29ya2luZyAoSSBzdXNwZWN0IG1heWJlCj4gPiBmcm9tIGEgc3B1
+cmlvdXMgamFjay1zZW5zaW5nIGV2ZW50LCB0aG91Z2ggSSdtIG5vdCBjZXJ0YWluKS4gTW9yZQo+
+ID4gY29uZnVzaW5nbHksIGEgY291cGxlIG9mIHRpbWVzIEkgaGF2ZSBnb3R0ZW4gaXQgaW50byB0
+aGUgc3RhdGUKPiA+ICh0aHJvdWdoIHZhcmlvdXMgZmlkZGxpbmcgd2l0aCBqYWNrcyBhbmQgcGxh
+eWluZyBpbiB0aGUgU291bmQgY29udHJvbAo+ID4gcGFuZWwpIHdoZXJlIHBsdWdnaW5nIGludG8g
+dGhpcyBqYWNrIGlzIGRldGVjdGVkIGFuZCBjYXVzZXMgdGhlCj4gPiBIZWFkcGhvbmUgb3V0cHV0
+IHRvIGJlIHNlbGVjdGVkIGluIHRoZSBjb250cm9sIHBhbmVsLiBJIGhhdmVuJ3QgYmVlbgo+ID4g
+YWJsZSB0byBmaWd1cmUgb3V0IGNvbnNpc3RlbnRseSB3aGF0IGNhdXNlcyB0aGlzIHRvIGhhcHBl
+bi4KPiA+Cj4gPj4+IElmIHRoZSBoZWFkcGhvbmUgaXMgcGx1Z2dlZCBpbnRvIHRoZSBtaWNyb3Bo
+b25lL2hlYWRwaG9uZSBqYWNrLCB0aGVuCj4gPiB0aGUgY29udHJvbCBwYW5lbCBjb25zaXN0ZW50
+bHkgc3dpdGNoZXMgdG8gdGhlIEhlYWRwaG9uZSBvdXRwdXQgYW5kCj4gPiBjb25zaXN0ZW50bHkg
+c3dpdGNoZXMgYmFjayB0aGUgd2F5IGl0IHdhcyB3aGVuIGl0J3MgdW5wbHVnZ2VkLgo+ID4gSG93
+ZXZlciwgdGhlcmUncyBubyBhY3R1YWwgYXVkaW8gb3V0cHV0IGNvbWluZyBvdXQgb2YgdGhhdCBq
+YWNrLiAoRnJvbQo+ID4gc29tZSBvZiB0aGUgSFAgbWFudWFscywgaXQgc291bmRzIGxpa2Ugd2l0
+aCB0aGUgV2luZG93cyBkcml2ZXIsIHdoZW4KPiA+IHlvdSBwbHVnIGludG8gdGhpcyBqYWNrLCBp
+dCdzIHN1cHBvc2VkIHRvIHBvcCB1cCBhIHByb21wdCBhc2tpbmcgeW91Cj4gPiB3aGV0aGVyIHlv
+dSB3YW50IHRvIHVzZSBpdCBhcyBhIG1pY3JvcGhvbmUgb3IgaGVhZHBob25lcy4pCj4gPgo+ID4+
+PiBUaGUgb3RoZXIgc3RyYW5nZSB0aGluZyBpcyB0aGF0IGludGVybWl0dGVudGx5LCBvbiB0aGUg
+aGVhZHBob25lIGphY2sKPiA+IHlvdSdsbCBzdGFydCBnZXR0aW5nIGEgYnVuY2ggb2YgbG91ZCBz
+dGF0aWMgKGNsaWNraW5nIG5vaXNlcykgYW5kIGFueQo+ID4gYWN0dWFsIGF1ZGlvIHBsYXliYWNr
+IGJlY29tZXMgdmVyeSBmYWludCBhbmQgZGlzdG9ydGVkLgo+ID4KPiA+Pj4gSSdtIGd1ZXNzaW5n
+IHBlcmhhcHMgc29tZXRoaW5nIGlzbid0IGJlaW5nIGluaXRpYWxpemVkL3NldHVwIHByb3Blcmx5
+Cj4gPiBpbiB0aGUgY29kZWMsIGNhdXNpbmcgdGhpcyBraW5kIG9mIGVycmF0aWMgYmVoYXZpb3Iu
+IFRoZSBhbHNhLWluZm8KPiA+IG91dHB1dCBpcyB1cGxvYWRlZCBhdDoKPiA+Cj4gPgpodHRwOi8v
+d3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9NTk0ZTgzN2I3YWYwN2ZmYmUzNDczY2Y4MDc0NjVi
+YzgxYTU4Nzg4MAo+ID4KCj4gPgo+ID4gTm9kZSAweDE0IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0
+MDAxOGQ6IFN0ZXJlbyBBbXAtT3V0Cj4gPiAgIENvbnRyb2w6IG5hbWU9IlBDTSBQbGF5YmFjayBT
+d2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAo+ID4gICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9
+T3V0LCBpZHg9MCwgb2ZzPTAKPiA+ICAgQ29udHJvbDogbmFtZT0iTGluZSBPdXQgSmFjayIsIGlu
+ZGV4PTAsIGRldmljZT0wCj4gPiAgIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAw
+LCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKPiA+ICAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0K
+PiA+ICAgUGluY2FwIDB4MDAwMTAwMTQ6IE9VVCBFQVBEIERldGVjdAo+ID4gICBFQVBEIDB4Mjog
+RUFQRAo+ID4gICBQaW4gRGVmYXVsdCAweDAxMDE0MDIwOiBbSmFja10gTGluZSBPdXQgYXQgRXh0
+IFJlYXIKPiA+ICAgICBDb25uID0gMS84LCBDb2xvciA9IEdyZWVuCj4gPiAgICAgRGVmQXNzb2Np
+YXRpb24gPSAweDIsIFNlcXVlbmNlID0gMHgwCj4gPgo+ID4gaXQgaXMgYSBkcml2ZXIgYnVnIHdo
+aWNoIGFzc2lnbiBQQ00gcGxheWJhY2sgU3dpdGNoIHRvIExpbmUgT3V0IEphY2sKPiA+Cj4gPiB0
+cnkgdGhlIHBhdGNoICBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvYXR0YWNobWVudC5jZ2k/
+aWQ9MTI0OTcxCj4KPiBXaXRoIHRoaXMgcGF0Y2gsIEkgZ2V0IG5vIGF1ZGlvIG91dHB1dCBhdCBh
+bGwgKHRvdGFsbHkgc2lsZW50IG9uIGFsbAo+IHBvcnRzKS4gRXZlbiB3aXRoIHBsYXlpbmcgYXJv
+dW5kIHdpdGggYWxzYW1peGVyIGFuZCBtdXRpbmcvdW5tdXRpbmcKPiBvdXRwdXRzIEkgY291bGQg
+bm90IGdldCBhbnl0aGluZyBjb21pbmcgb3V0Lgo+Cj4gVGhlIGFsc2EtaW5mbyBvdXRwdXQgZnJv
+bSB0aGUgcGF0Y2hlZCBrZXJuZWwgaXMgaGVyZToKPgo+IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0
+Lm9yZy9kYi8/Zj1kZjU4NzRiNGZkYzAxZmQ2ZDJjOTU0MWM5Y2RlMzgwZmU4NDRhYzZjCgphdXRv
+Y29uZmlnOiBsaW5lX291dHM9MSAoMHgxNC8weDAvMHgwLzB4MC8weDApIHR5cGU6bGluZQogICAg
+c3BlYWtlcl9vdXRzPTEgKDB4MTcvMHgwLzB4MC8weDAvMHgwKQogICAgaHBfb3V0cz0xICgweDIx
+LzB4MC8weDAvMHgwLzB4MCkKICAgIG1vbm86IG1vbm9fb3V0PTB4MAogICAgaW5wdXRzOgogICAg
+ICBNaWM9MHgxYQogICAgICBMaW5lPTB4MWIKCmRvIHlvdSBtZWFuIG9uZSBvZiB0aGUgZnJvbnQg
+cGFuZWwgamFja3Mgc3VwcG9ydCBUUlJTIGhlYWRzZXQgPwoKdXNlIGhkYS1qYWNrLXNlbnNlLXRl
+c3QgdG8gZmluZCB0aGUgbm9kZXMgb2YgZnJvbnQgcGFuZWwgamFja3MgYW5kIHJlYXIKcGFuZWwg
+amFja3MKCj4gPgo+ID4gTm9kZSAweDAyIFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4MWQ6IFN0ZXJl
+byBBbXAtT3V0Cj4gPiAgIENvbnRyb2w6IG5hbWU9IlNwZWFrZXIgUGxheWJhY2sgVm9sdW1lIiwg
+aW5kZXg9MCwgZGV2aWNlPTAKPiA+ICAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPU91dCwgaWR4
+PTAsIG9mcz0wCj4gPiAgIEFtcC1PdXQgY2Fwczogb2ZzPTB4NTcsIG5zdGVwcz0weDU3LCBzdGVw
+c2l6ZT0weDAyLCBtdXRlPTAKPiA+ICAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0KCj4gPiBO
+b2RlIDB4MDMgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHgxZDogU3RlcmVvIEFtcC1PdXQKPiA+ICAg
+Q29udHJvbDogbmFtZT0iUENNIFBsYXliYWNrIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCj4g
+PiAgICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAoKaWYgc21hbGwg
+Zm9ybSBmYWN0b3IgaXMgbXVsdGlzdHJlYW1pbmcgY2FwYWJsZSAsIGxpbmUgb3V0IGFuZCBoZWFk
+cGhvbmUKaGF2ZSB0byB1c2UgZGlmZmVyZW50IGF1ZGlvIG91dHB1dCAweDAyIGFuZCAweDAzIGlu
+c3RlYWQgb2Ygc2hhcmluZyB0aGUKc2FtZSBhdWRpbyBvdXRwdXQgMHgwMwoKaHR0cDovL3d3dy5p
+bnRlbC5jb20vc3VwcG9ydC9tb3RoZXJib2FyZHMvZGVza3RvcC9zYi9DUy0wMzQyMDYuaHRtCgp5
+b3Ugc3RpbGwgbmVlZCB0byBtb2RpZnkgcGF0Y2hfcmVhbHRlay5jCgpzcGVjLT5nZW4uaW5kZXBf
+aHAgPSAxOwoKCkBAIC0xNDkzLDE2ICsxNDk3LDI2IEBAIHN0YXRpYyBib29sIGluZGVwX2hwX3Bv
+c3NpYmxlKHN0cnVjdCBoZGFfY29kZWMKKmNvZGVjKQogICAgIHN0cnVjdCBoZGFfZ2VuX3NwZWMg
+KnNwZWMgPSBjb2RlYy0+c3BlYzsKICAgICBzdHJ1Y3QgYXV0b19waW5fY2ZnICpjZmcgPSAmc3Bl
+Yy0+YXV0b2NmZzsKICAgICBzdHJ1Y3QgbmlkX3BhdGggKnBhdGg7CisgICAgaGRhX25pZF90IG5p
+ZDsKICAgICBpbnQgaSwgaWR4OwoKLSAgICBpZiAoY2ZnLT5saW5lX291dF90eXBlID09IEFVVE9f
+UElOX0hQX09VVCkKLSAgICAgICAgaWR4ID0gc3BlYy0+b3V0X3BhdGhzWzBdOwotICAgIGVsc2UK
+LSAgICAgICAgaWR4ID0gc3BlYy0+aHBfcGF0aHNbMF07Ci0gICAgcGF0aCA9IHNuZF9oZGFfZ2V0
+X3BhdGhfZnJvbV9pZHgoY29kZWMsIGlkeCk7CisgICAgaWYgKGNmZy0+bGluZV9vdXRfdHlwZSAh
+PSBBVVRPX1BJTl9MSU5FX09VVCkKKyAgICAgICAgcmV0dXJuIGZhbHNlOworCisgICAgcGF0aCA9
+IHNuZF9oZGFfZ2V0X3BhdGhfZnJvbV9pZHgoY29kZWMsIHNwZWMtPm91dF9wYXRoc1swXSk7CiAg
+ICAgaWYgKCFwYXRoKQogICAgICAgICByZXR1cm4gZmFsc2U7CisgICAgbmlkID0gcGF0aC0+cGF0
+aFswXTsKCisgICAgaWR4ID0gIHNwZWMtPmhwX3BhdGhzWzBdOworICAgIHBhdGggPSBzbmRfaGRh
+X2dldF9wYXRoX2Zyb21faWR4KGNvZGVjLCBpZHgpOworICAgIGlmICghcGF0aCkKKyAgICAgICAg
+cmV0dXJuIGZhbHNlOworCisgICAgLyogSGVhZHBob25lIGFuZCBMaW5lIE91dCBtdXN0IHVzZSBk
+aWZmZXJlbnQgQXVkaW8gT3V0cHV0ICovCisgICAgaWYgKHBhdGgtPnBhdGhbMF0gPT0gbmlkKQor
+ICAgICAgICByZXR1cm4gZmFsc2U7CisKICAgICAvKiBhc3N1bWUgbm8gcGF0aCBjb25mbGljdHMg
+dW5sZXNzIGFhbWl4IGlzIGludm9sdmVkICovCiAgICAgaWYgKCFzcGVjLT5taXhlcl9uaWQgfHwg
+IWlzX25pZF9jb250YWluZWQocGF0aCwgc3BlYy0+bWl4ZXJfbmlkKSkKICAgICAgICAgcmV0dXJu
+IHRydWU7Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
