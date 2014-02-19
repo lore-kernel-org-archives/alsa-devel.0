@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs4271: free reset gpio in
-	cs4271_remove()
-Date: Wed, 19 Feb 2014 20:43:03 +0900
-Message-ID: <20140219114303.GJ2669@sirena.org.uk>
-References: <1392808032-25756-1-git-send-email-zonque@gmail.com>
- <20140219111529.GI2669@sirena.org.uk> <53049467.60106@zonque.org>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: core: Fix missing card sysfs contents
+Date: Wed, 19 Feb 2014 13:02:40 +0100
+Message-ID: <1392811360-3309-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7129060852178267600=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 024FD2655EE
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 12:43:39 +0100 (CET)
-In-Reply-To: <53049467.60106@zonque.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B97E26157F
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 13:02:41 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 1260DAC95
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 12:02:41 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: brian.austin@cirrus.com, subaparts@yandex.ru, alsa-devel@alsa-project.org, Paul.Handrigan@cirrus.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+While moving the card device into struct snd_card, the reference to
+the assigned card in sysfs show/store callbacks were forgotten to be
+refreshed, still accessing to the no longer used drvdata.  Fix these
+places to refer correctly via container_of().
 
---===============7129060852178267600==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+oKQImcMW7gsUQ7z"
-Content-Disposition: inline
+Also, remove the superfluous NULL checks since it's guaranteed to be
+non-NULL now.
 
+Fixes: 8bfb181c17d2 ('ALSA: Embed card device into struct snd_card')
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/init.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---+oKQImcMW7gsUQ7z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Feb 19, 2014 at 12:24:23PM +0100, Daniel Mack wrote:
-> On 02/19/2014 12:15 PM, Mark Brown wrote:
-> > On Wed, Feb 19, 2014 at 12:07:12PM +0100, Daniel Mack wrote:
-
-> >> +	if (gpio_is_valid(cs4271->gpio_nreset)) {
-> >>  		/* Set codec to the reset state */
-> >>  		gpio_set_value(cs4271->gpio_nreset, 0);
-> >> +		devm_gpio_free(codec->dev, cs4271->gpio_nreset);
-> >> +	}
-
-> > If it's being requested as a managed resource shouldn't it be being
-> > freed automatically?
-
-> Nope, as the module itself will not go away necessarily. I hit the bug
-> when unloading and reloading the machine driver. cs4271_probe(codec)
-> will fail to acquire and drive the reset line, and the codec stays in reset.
-
-The fix here is to move the resource acquisition to the bus level probe
-instead of the ASoC card startup.
-
---+oKQImcMW7gsUQ7z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTBJjEAAoJELSic+t+oim9dTMQAIN4M/dy08ODjtNceqxaNoTt
-G++aaVyDIPoqbGjHXsp5+swX3xrn+adMPQko+8xNNK8h5xuD7VJi/gpRZQnZJeG9
-hfa2BX5bBAkQkIFPR0Y2CanEnC2mWjP3EipeV0y0TOg7nzBuCySVgmY/b03p1trM
-jjgfiC2Gj93IYgHxEaaJfTwaNOZzg+u3xfj0xn7HWF2DTJ9/NAzb0CaaLKK/Qkqz
-PhnLnqrHEh6u2PNBLVRKIVkPRkc/09A3UVi5rO1d+7bH0lEgnj8AX90r5XqsSQaM
-ekALONt0Fr8+MHqPj1+5ZdWvgmMKwkfEHaGv9L3LM1xSJMHmyGn5+aExoSBNnwd1
-9f0FCvm8ceJuvypQRGBIRDCXHLRbQ14oxGnW/GwufqurAU6htccaSMAC1eMGCaRl
-6r4HGsB+lGSPpQl2pBrosjlGYtT7MUfpcA7v4MbohI9H+xvn7yXp7VFWUasXtxdb
-Ws3HkHw37bs7WRyEv/mD1GEYLyYi/W4EXHt4FHdcO6Re0ow9k4ogStR3Hso1PtcQ
-FFvt8JpK2Rd6rx42Jpbv3h8EPr/MnHcBSVCbsw4ufZKH/SRvzQ2EaungXEY6M19Q
-xxuLDBgXRAoIGl6FhwhA6NQEc6c5rSME/DG7kXljMsKnkDoPQQ8lI7JvvKYwd1Ba
-8p1HOLfYCjkmOvvHfq6K
-=cGw5
------END PGP SIGNATURE-----
-
---+oKQImcMW7gsUQ7z--
-
---===============7129060852178267600==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7129060852178267600==--
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 0095a530ff12..b7085eb19079 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -624,15 +624,15 @@ static ssize_t
+ card_id_show_attr(struct device *dev,
+ 		  struct device_attribute *attr, char *buf)
+ {
+-	struct snd_card *card = dev_get_drvdata(dev);
+-	return snprintf(buf, PAGE_SIZE, "%s\n", card ? card->id : "(null)");
++	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
++	return snprintf(buf, PAGE_SIZE, "%s\n", card->id);
+ }
+ 
+ static ssize_t
+ card_id_store_attr(struct device *dev, struct device_attribute *attr,
+ 		   const char *buf, size_t count)
+ {
+-	struct snd_card *card = dev_get_drvdata(dev);
++	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
+ 	char buf1[sizeof(card->id)];
+ 	size_t copy = count > sizeof(card->id) - 1 ?
+ 					sizeof(card->id) - 1 : count;
+@@ -664,8 +664,8 @@ static ssize_t
+ card_number_show_attr(struct device *dev,
+ 		     struct device_attribute *attr, char *buf)
+ {
+-	struct snd_card *card = dev_get_drvdata(dev);
+-	return snprintf(buf, PAGE_SIZE, "%i\n", card ? card->number : -1);
++	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
++	return snprintf(buf, PAGE_SIZE, "%i\n", card->number);
+ }
+ 
+ static DEVICE_ATTR(number, S_IRUGO, card_number_show_attr, NULL);
+-- 
+1.8.5.2
