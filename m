@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Correct regulator bypass error
-	messages
-Date: Wed, 19 Feb 2014 13:30:27 +0900
-Message-ID: <20140219043027.GW2669@sirena.org.uk>
-References: <1392739527-27392-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 000/102 - chunk#5] Add
+	SOC_ENUM_SINGLE_CONST() & co
+Date: Wed, 19 Feb 2014 17:00:44 +0900
+Message-ID: <20140219080044.GG2669@sirena.org.uk>
+References: <1392724308-13375-1-git-send-email-tiwai@suse.de>
+ <20140219014313.GJ2669@sirena.org.uk>
+ <s5hzjlny4vg.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6477794674805362218=="
+Content-Type: multipart/mixed; boundary="===============8594664917783555577=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id BDF922652BF
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 08:53:19 +0100 (CET)
-In-Reply-To: <1392739527-27392-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 61EDE2610D7
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 09:12:33 +0100 (CET)
+In-Reply-To: <s5hzjlny4vg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6477794674805362218==
+--===============8594664917783555577==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0fs/EiH13ppNklOL"
+	protocol="application/pgp-signature"; boundary="lX3hbvz5zFyKlV8s"
 Content-Disposition: inline
 
 
---0fs/EiH13ppNklOL
+--lX3hbvz5zFyKlV8s
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 18, 2014 at 04:05:27PM +0000, Charles Keepax wrote:
-> The error messages for bypassing/unbypassing a regulator appear to be
-> swapped round, this patch corrects these.
+On Wed, Feb 19, 2014 at 07:48:51AM +0100, Takashi Iwai wrote:
 
-Applied, thanks.
+> All patches are found in topic/asoc-enum-fixes branch of sound git
+> tree.  Now they include acks of several people.
 
---0fs/EiH13ppNklOL
+> Feel free to go through there, either cherry-pick or just merge as you
+> like.
+
+Well, I've got them now so it's a bit late - I'll just work through the
+e-mails.  But yeah, in general if the patch series is more than say 20
+mails (or you feel the need to split it up like you did with this one)
+then breaking it down into smaller chunks is going to help a lot.  It's
+the volume as much as the format, it's an awful lot of patches to look
+through at once.
+
+--lX3hbvz5zFyKlV8s
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBDNfAAoJELSic+t+oim91MMQAJm/HrPVPeQvL7it7sF9hnnT
-IQqOTUC5nCfbyqcPmXYkbnT2DiQypIOx/7VH+GgI5540RALRaN4i8S86ZWOS3lep
-AYxloENfcEBasQ+7FUxW5PCEoQvpXZG+0i9nlRAfEiYctTSIR8YGibjj2NmPz9SX
-A9hsPdDoL4T66w4HH6K2Yw6is0wWubrUOtOCHb6wIU4X4VYLxdJa5p0qi/u93+r6
-haalJb0UoBIhxxuuYv+vWUjU4HfT/RNdFUn/LheQlwQdyMIeXYYXeCZPJnyCshBa
-iuqtQV8BBKvbLrsSyYdAFSGdFe0xfWKNKh7J2B+6cOvCn+cj2H6lHMAd2w2nGGtA
-W49dhFVKYUjVkP8y8osB5AW3LSuPs72GmgteE2K2em21nuutbkEHHugM2GSpwEaS
-ZkMFV6r41oIgT/R7EIa7fbsRrxFkYg8rCTQPTTXYsKPgJDENjx2JyzXtAXQC8lmc
-uSlcjKerdRe6POJs4zUbt03mfU16yHhnqr5MtuokYJ5SBB+kCJxXMNkNgTGfafLo
-DFrcrxGtLizoPe4gUa25mG22lrJg1RVP4CeuU2Z3pTBEjn+0bTjUovdQU61uMH29
-NXJOOWWc+HKQCcTIsbSlqF3lbaV/iFjq0x+dV5pz7Ye1Z86BinTdLwrferwgtFkg
-Rr4N/NL2V/XSpUL2KFJu
-=127Z
+iQIcBAEBAgAGBQJTBGSoAAoJELSic+t+oim9jkwP/RIaxUKDJZK/us3CgAEJbTUO
+fJdsqVYS+MUxfdf40gaPEtZXMGkJjhAYr/WO701koxcxQ9FD0lLQqQtUrQMQZK9J
+Ne+F/7qG+GtCvh5VY2oZSisWUMJR4LlHVgqMDhRDSP64PoqW1W5Ulqd55kok2Ut0
+K+bxt5tiNZcE1ASvuihgLg1B8sJ0vbhXg7Vxe34EjztG0kPdL49fs17dLM/YELFT
++GD0ZTkjTouxA0/Ck4Bi6EUqMdB0wi5TGSFsb5vNZkaZe3EfHlusDtBMh3S7AEbM
+ntGS2MXamQjwP+Nzk35WP6FsfTrMd7gbXpfz98/k1NEf7vRS4WhC13xTsmMyZFcD
+MUOIM4EvnyOgMWjqq3HYcGAX30ZVIPFFRuVHDznJcv8Qs3zYNp5Ndcii6z0gKAzl
+4O3y1Oovhz8v9bTKDX/PNemojQmoqhOBcKunzDTCyTT/ucLtPwJ/Jn3eGo6H4F2G
+hlZABMOSRHDlHjPGdfcQNgsFnC0U70OiBzUT9fND45EfI6y6u0R4KkJLFlpqSMcQ
+cLRaXvnGRce8RDc9ppLjllAuSaqbHBpMlNf1w8fSjPiHR5Nfjy+wtX7LuEg0/C82
+3APvIlgLPJgc7RmeLDfAXIVhvvTpbsEvydIikl38A/PzyN3w/p/SK+c3f2nlQlVN
+fxvms+KozT7Y3pNPUw75
+=AyW6
 -----END PGP SIGNATURE-----
 
---0fs/EiH13ppNklOL--
+--lX3hbvz5zFyKlV8s--
 
---===============6477794674805362218==
+--===============8594664917783555577==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6477794674805362218==--
+--===============8594664917783555577==--
