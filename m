@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Make sure we only build SST
-	drivers on X86
-Date: Thu, 20 Feb 2014 01:02:57 +0900
-Message-ID: <20140219160257.GL2669@sirena.org.uk>
-References: <1392818784-6248-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1392818784-6248-2-git-send-email-liam.r.girdwood@linux.intel.com>
- <20140219150040.GD2669@sirena.org.uk>
- <1392823461.2351.61.camel@loki>
+From: "Austin, Brian" <Brian.Austin@cirrus.com>
+Subject: Re: [PATCH] ASoC: cs4271: claim reset GPIO in bus
+	probe function
+Date: Wed, 19 Feb 2014 16:08:39 +0000
+Message-ID: <993D86A8-0838-4A12-9BF7-F7BC1564F355@cirrus.com>
+References: <1392815154-24728-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6027258117925567294=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 7845F265A32
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 17:03:19 +0100 (CET)
-In-Reply-To: <1392823461.2351.61.camel@loki>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe006.messaging.microsoft.com [213.199.154.209])
+ by alsa0.perex.cz (Postfix) with ESMTP id 422F4265661
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 17:08:48 +0100 (CET)
+In-Reply-To: <1392815154-24728-1-git-send-email-zonque@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,79 +23,137 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "subaparts@yandex.ru" <subaparts@yandex.ru>, "Handrigan,
+ Paul" <Paul.Handrigan@cirrus.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6027258117925567294==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7d9D9O5VQHkAXyI1"
-Content-Disposition: inline
 
+> On Feb 19, 2014, at 7:06, "Daniel Mack" <zonque@gmail.com> wrote:
+> 
+> Move the GPIO acquisition from the codec to the bus probe functions.
+> 
+> Signed-off-by: Daniel Mack <zonque@gmail.com>
+> ---
+> sound/soc/codecs/cs4271.c | 60 +++++++++++++++++++++++++++++++----------------
+> 1 file changed, 40 insertions(+), 20 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+> index ce05fd9..6bfe021 100644
+> --- a/sound/soc/codecs/cs4271.c
+> +++ b/sound/soc/codecs/cs4271.c
+> @@ -540,14 +540,10 @@ static int cs4271_probe(struct snd_soc_codec *codec)
+>    struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+>    struct cs4271_platform_data *cs4271plat = codec->dev->platform_data;
+>    int ret;
+> -    int gpio_nreset = -EINVAL;
+>    bool amutec_eq_bmutec = false;
+> 
+> #ifdef CONFIG_OF
+>    if (of_match_device(cs4271_dt_ids, codec->dev)) {
+> -        gpio_nreset = of_get_named_gpio(codec->dev->of_node,
+> -                        "reset-gpio", 0);
+> -
+>        if (of_get_property(codec->dev->of_node,
+>                     "cirrus,amutec-eq-bmutec", NULL))
+>            amutec_eq_bmutec = true;
+> @@ -559,27 +555,19 @@ static int cs4271_probe(struct snd_soc_codec *codec)
+> #endif
+> 
+>    if (cs4271plat) {
+> -        if (gpio_is_valid(cs4271plat->gpio_nreset))
+> -            gpio_nreset = cs4271plat->gpio_nreset;
+> -
+>        amutec_eq_bmutec = cs4271plat->amutec_eq_bmutec;
+>        cs4271->enable_soft_reset = cs4271plat->enable_soft_reset;
+>    }
+> 
+> -    if (gpio_nreset >= 0)
+> -        if (devm_gpio_request(codec->dev, gpio_nreset, "CS4271 Reset"))
+> -            gpio_nreset = -EINVAL;
+> -    if (gpio_nreset >= 0) {
+> +    if (gpio_is_valid(cs4271->gpio_nreset)) {
+>        /* Reset codec */
+> -        gpio_direction_output(gpio_nreset, 0);
+> +        gpio_direction_output(cs4271->gpio_nreset, 0);
+>        udelay(1);
+> -        gpio_set_value(gpio_nreset, 1);
+> +        gpio_set_value(cs4271->gpio_nreset, 1);
+>        /* Give the codec time to wake up */
+>        udelay(1);
+>    }
+> 
+Since your moving all the GPIO reset code into a new function that's called from the bus probes why not put the reset in there as well?
 
---7d9D9O5VQHkAXyI1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Feb 19, 2014 at 03:24:21PM +0000, Liam Girdwood wrote:
-> On Thu, 2014-02-20 at 00:00 +0900, Mark Brown wrote:
-
-> > But lots of architectures do actually have these operations, I suspect
-> > looking at some of the existing users depending on PCI is enough if
-> > excessively strict (this will improve build coverage which tends to be
-> > useful even if the driver can't be run).
-
-> I know that the other architectures will implement their own ops, but no
-> other architecture other than X86 will have Intel SST.=20
-
-Yes, it should be something like
-
-	depends on (X86 || COMPILE_TEST) && WHATEVER
-
-if there's a WHATEVER needed to guarantee the operation is there (I
-think PCI does the job).  That way only people actively looking to build
-test will see the option on !X86 but people doing wider scale work can
-get build coverage more easily.
-
-> I can either send a new patch that additionally includes linux/io.h or
-> send a V2 ?
-
-The include of linux/io.h is needed no matter what - if it's being
-implicitly included on x86 then someone could change the headers and
-break it later on.  If you can send a new patch right now that'd be
-great.
-
---7d9D9O5VQHkAXyI1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTBNWtAAoJELSic+t+oim9udgP/RNoOsFkifOUIrjatxn2sEaM
-ot/uG9BmvoQXY39iywS0MSPNVybdpnNaVvDI20sI3YMCCYksyia+mVYBH5/Xzjpc
-Vg+g5+u+V7YcsRRmtw9idZQKu6C/Wpe+N5zpEZVe/Luw5BF04S/06J1QMyRk9okm
-ZXvrupjXREyqM3Ag3Ec6P/hKfg+ncWWJkyQ/hIIrNcDwijSbym9xV+/wzXZa6bye
-TZcZnEHRK+Lz5L2oHxJbOCCMxZcLdiOXBwt4X0YFAnksLHx7myrwoSP1SQMPx+8V
-84d8soyoSnfjCZ7wv09PjRdfWmvje/uzq2G1boiMr9wovAC5T8Rv4sqCxHTTpTs4
-2nbaEtCsbOIpYOVeaTCNTaE1lU+w2XIYNZtXLiewTELpR1wWKJqse/LMkE3ZAIjz
-2OR896qXHG/rrkweXJz+4PiIzToh8OHbhBjawVTTYOT/ywGv30Mo46a4ghNwFtri
-TWfPMCzzHDZi60nKQBY627lwzlBaMMXBcpUbGdESxQSFtbKVXhcAx+rq9T/FIrpf
-Wk6nHfEIMv9/j1NsPZkCiYybBwtOy3Z0qHW3fHktTfuLcQVLzNALOb/V0eVjVX8J
-whNLFHpmQNhfxylCOB1vs9Fg/k1TKLtg4i1razFFo9KJeEZMY29wCGF6jnPokJ9x
-7rNwr4kdpAT/Qk4TZCMJ
-=eo+S
------END PGP SIGNATURE-----
-
---7d9D9O5VQHkAXyI1--
-
---===============6027258117925567294==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6027258117925567294==--
+> -    cs4271->gpio_nreset = gpio_nreset;
+> -
+>    ret = regmap_update_bits(cs4271->regmap, CS4271_MODE2,
+>                 CS4271_MODE2_PDN | CS4271_MODE2_CPEN,
+>                 CS4271_MODE2_PDN | CS4271_MODE2_CPEN);
+> @@ -641,14 +629,45 @@ static const struct regmap_config cs4271_spi_regmap = {
+>    .volatile_reg = cs4271_volatile_reg,
+> };
+> 
+> -static int cs4271_spi_probe(struct spi_device *spi)
+> +static int cs4271_common_probe(struct device *dev,
+> +                   struct cs4271_private **c)
+> {
+> +    struct cs4271_platform_data *cs4271plat = dev->platform_data;
+>    struct cs4271_private *cs4271;
+> 
+> -    cs4271 = devm_kzalloc(&spi->dev, sizeof(*cs4271), GFP_KERNEL);
+> +    cs4271 = devm_kzalloc(dev, sizeof(*cs4271), GFP_KERNEL);
+>    if (!cs4271)
+>        return -ENOMEM;
+> 
+> +    if (of_match_device(cs4271_dt_ids, dev))
+> +        cs4271->gpio_nreset =
+> +            of_get_named_gpio(dev->of_node, "reset-gpio", 0);
+> +
+> +    if (cs4271plat)
+> +        cs4271->gpio_nreset = cs4271plat->gpio_nreset;
+> +
+> +    if (gpio_is_valid(cs4271->gpio_nreset)) {
+> +        int ret;
+> +
+> +        ret = devm_gpio_request(dev, cs4271->gpio_nreset,
+> +                    "CS4271 Reset");
+> +        if (ret < 0)
+> +            return ret;
+> +    }
+> +
+> +    *c = cs4271;
+> +    return 0;
+> +}
+> +
+> +static int cs4271_spi_probe(struct spi_device *spi)
+> +{
+> +    struct cs4271_private *cs4271;
+> +    int ret;
+> +
+> +    ret = cs4271_common_probe(&spi->dev, &cs4271);
+> +    if (ret < 0)
+> +        return ret;
+> +
+>    spi_set_drvdata(spi, cs4271);
+>    cs4271->regmap = devm_regmap_init_spi(spi, &cs4271_spi_regmap);
+>    if (IS_ERR(cs4271->regmap))
+> @@ -698,10 +717,11 @@ static int cs4271_i2c_probe(struct i2c_client *client,
+>                const struct i2c_device_id *id)
+> {
+>    struct cs4271_private *cs4271;
+> +    int ret;
+> 
+> -    cs4271 = devm_kzalloc(&client->dev, sizeof(*cs4271), GFP_KERNEL);
+> -    if (!cs4271)
+> -        return -ENOMEM;
+> +    ret = cs4271_common_probe(&client->dev, &cs4271);
+> +    if (ret < 0)
+> +        return ret;
+> 
+>    i2c_set_clientdata(client, cs4271);
+>    cs4271->regmap = devm_regmap_init_i2c(client, &cs4271_i2c_regmap);
+> -- 
+> 1.8.5.3
+> 
+> 
