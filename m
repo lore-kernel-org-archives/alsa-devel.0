@@ -1,17 +1,18 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Fix sparse warnings for
-	firmware loader.
-Date: Wed, 19 Feb 2014 11:06:40 +0000
-Message-ID: <1392808000.2351.40.camel@loki>
-References: <1392807637-4767-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH] ASoC: cs4271: free reset gpio in
+	cs4271_remove()
+Date: Wed, 19 Feb 2014 12:07:12 +0100
+Message-ID: <1392808032-25756-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A94C2652E7
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 12:06:43 +0100 (CET)
-In-Reply-To: <1392807637-4767-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from mail-bk0-f47.google.com (mail-bk0-f47.google.com
+ [209.85.214.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3928826530E
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 12:07:19 +0100 (CET)
+Received: by mail-bk0-f47.google.com with SMTP id d7so151152bkh.6
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 03:07:18 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,45 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: broonie@kernel.org, subaparts@yandex.ru
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, Paul.Handrigan@cirrus.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2014-02-19 at 11:00 +0000, Liam Girdwood wrote:
-> Sparse gives us the following warning on sst-firmware.c
-> 
->   CHECK   sound/soc/intel/sst-firmware.c
-> sound/soc/intel/sst-firmware.c:39:34: warning: incorrect type in argument 1 (different address spaces)
-> sound/soc/intel/sst-firmware.c:39:34:    expected void volatile [noderef] <asn:2>*dst
-> sound/soc/intel/sst-firmware.c:39:34:    got void *
-> sound/soc/intel/sst-firmware.c:417:36: warning: incorrect type in argument 1 (different address spaces)
-> sound/soc/intel/sst-firmware.c:417:36:    expected void *dest
-> sound/soc/intel/sst-firmware.c:417:36:    got void [noderef] <asn:2>*
-> sound/soc/intel/sst-firmware.c:430:5: warning: symbol 'sst_block_module_remove' was not declared. Should it be static?
-> 
+The reset GPIO line is acquired in cs4271_probe(), so it should be
+freed from cs4271_remove() as well. This way, the driver can unloaded
+and reloaded more than once.
 
-Btw, the last warning appears to be a false positive as
-sst_block_module_remove is exported as GPL symbol.
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/soc/codecs/cs4271.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Liam
-
-> This patch removes this warning.
-> 
-> Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> ---
->  sound/soc/intel/sst-firmware.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
-> index 31cd154..dee7eb5 100644
-> --- a/sound/soc/intel/sst-firmware.c
-> +++ b/sound/soc/intel/sst-firmware.c
-> @@ -30,7 +30,7 @@
->  #include "sst-dsp.h"
->  #include "sst-dsp-priv.h"
->  
-> -static void sst_memcpy32(void *dest, void *src, u32 bytes)
-> +static void sst_memcpy32(volatile void __iomem *dest, void *src, u32 bytes)
->  {
->  	u32 i;
->  
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index ce05fd9..aeaa5c6 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -604,9 +604,11 @@ static int cs4271_remove(struct snd_soc_codec *codec)
+ {
+ 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+ 
+-	if (gpio_is_valid(cs4271->gpio_nreset))
++	if (gpio_is_valid(cs4271->gpio_nreset)) {
+ 		/* Set codec to the reset state */
+ 		gpio_set_value(cs4271->gpio_nreset, 0);
++		devm_gpio_free(codec->dev, cs4271->gpio_nreset);
++	}
+ 
+ 	return 0;
+ };
+-- 
+1.8.5.3
