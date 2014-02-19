@@ -1,22 +1,20 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: [PATCH 1/3] ALSA: hda - Remove dependency on
- bus->pci in hda_beep.c
-Date: Wed, 19 Feb 2014 07:16:38 -0800
-Message-ID: <CAEUnVG4y+14Y8ManPPGVvcQjqpdyzBebLWcq7Sa6xQ3SwFRK+Q@mail.gmail.com>
-References: <1392455855-10594-1-git-send-email-tiwai@suse.de>
- <s5hfvnkzq4y.wl%tiwai@suse.de> <5303A0A3.6050206@wwwdotorg.org>
- <s5hob23y01o.wl%tiwai@suse.de>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Re: Need Help: Repeated Jackhammer noise after several
+ hours of play and heavy cpu usage in snd_pcm_dmix_sync_area
+Date: Wed, 19 Feb 2014 07:16:51 -0800
+Message-ID: <5304CAE3.1000303@gmail.com>
+References: <CANxfbX_o=UcTz0Sjno=zkEns4MGdrjnsbJmP0J=7O8owu7_8+g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f48.google.com (mail-qg0-f48.google.com
- [209.85.192.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 06B982658E4
+Received: from mail-pb0-f54.google.com (mail-pb0-f54.google.com
+ [209.85.160.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 131D92658E5
  for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 16:16:59 +0100 (CET)
-Received: by mail-qg0-f48.google.com with SMTP id a108so863788qge.7
+Received: by mail-pb0-f54.google.com with SMTP id uo5so518565pbc.13
  for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 07:16:59 -0800 (PST)
-In-Reply-To: <s5hob23y01o.wl%tiwai@suse.de>
+In-Reply-To: <CANxfbX_o=UcTz0Sjno=zkEns4MGdrjnsbJmP0J=7O8owu7_8+g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>
+To: Adarsh <punia.adarsh@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 19, 2014 at 12:33 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 18 Feb 2014 11:04:19 -0700,
-> Stephen Warren wrote:
->>
->> On 02/15/2014 02:22 AM, Takashi Iwai wrote:
->> > At Sat, 15 Feb 2014 10:17:33 +0100,
->> > Takashi Iwai wrote:
->> >>
->> >> The default parent device can be obtained directly via card object, so
->> >> we don't need to rely on pci->dev.parent.  Since there is no access to
->> >> pci_dev, we can reduce the inclusion of linux/pci.h, too.
->> >>
->> >> Signed-off-by: Takashi Iwai <tiwai@suse.de>
->> >
->> > I forgot the cover page: these tree patches are trivial cleanups of
->> > hda-codec drivers (not the controller) to work without PCI device
->> > assignment. The idea was triggered by Dylan's question.
->>
->> The series seems fine to me, so briefly,
->> Reviewed-by: Stephen Warren <swarren@nvidia.com>
+Hi Adarsh,
+
+On 02/19/2014 04:07 AM, Adarsh wrote:
+> Hi,
 >
-> Thanks.  Any chance to work on / submit other changes for Tegra
-> HD-audio support?
-
-That's the plan, hopefully I'll be able to find time to throw together
-an RFC by the end of the week.
-
+> We are facing a issue where if gdb is attached to the our long running
+> sound process and continued,
+> jackhammer sound is played over and over again abusing the speakers.
 >
-> As already mentioned, I think a cleaner way would be to write
-> hda_platform.c instead of hacking hda_intel.c with ifdefs.
-> Some code in hda_intel.c (e.g. bus ops and PCM callbacks) can be moved
-> out, either as a new helper module or just merging into snd-hda-codec
-> helper module, so that they can be used by both hda_intel.c and
-> hda_platform.c.
+> Process details:
+> 1. We are using RW_INTERLEAVED access as described in write_loop method in
+> /test/pcm.c and opening 'default' device.
+> 2. However to disable the underruns, the
+> snd_pcm_sw_params_set_stop_threshold is set to 0x7fffffff which is greater
+> than boundary
+> value.
 
-That sounds like a good idea.  There aren't a lot of differences,
-mostly isolated to init and suspend/resume.  That should be easy to
-put in hda_platform.
+This doesn't prevent underruns. Underruns happen when the software 
+doesn't keep up with the hardware.
 
-Thanks,
+What this disables is your ability to detect and recover from an 
+underrun. So, what you're experiencing is expected behavior.  If you 
+never reach the stop threshold but userspace fails to write new audio to 
+the buffer.  Since you instructed the driver/hardware to *not* stop in 
+the event of an underrun, it repeatedly cycles on the same, stale 
+buffer. This gives you the "jackhammer" sound.
 
-Dylan
-
+> 3.Period size is 1024 and buffer size is 2048. We try to write period_size
+> no of frames using snd_pcm_writei.
+> (I am attaching a sample program which shows this behaviour.)
 >
-> Ideally, we may rename hda_intel.c with hda_pci.c, but I'm afraid this
-> would bring too many regressions for module options.
->
->
-> Takashi
+> Steps to Reproduce:
+> 1. Left process running for over 12 hours.
+> 2. gdb is attached to the process and continued inside gdb.
+
+When gdb attached to the process, you certainly stopped writing new 
+audio to the buffer because your process got a SIGSTOP... causing all 
+threads to freeze.
+
+> 3. At this point, the thread went into a tight loop taking >100% cpu and
+> repeatedly playing same sound. It did not recover for a long time.
+
+...I'm not sure what you're seeing here.  Possibly dmix is trying to 
+make the best of a bad situation.
+
+> Is it that setting of stop threshold to 0x7fffffff is triggering this and
+> attaching gdb is making the buffer pointers misbehave?
+> If so, what can be done if we do not want PCM to stop? I have tried by
+> setting silence threshold and silence size to let alsa
+> play silence by itself but still observed the issue.
+
+It depends on what you're trying to solve by attaching with gdb.
+
+GDB is good for a lot of things, but solving problems in real-time 
+systems (like audio) has never been one of them. So, chances are that 
+gdb is the wrong tool for what you're trying to do.
+
+-gabe
