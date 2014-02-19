@@ -1,15 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCHv2] ASoC: Intel: Fix build for sst-dsp.c on PPC
-	architecture
-Date: Wed, 19 Feb 2014 16:45:57 +0000
-Message-ID: <1392828357-7610-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 017/102] ASoC: sta32x: Fix array access
+	overflow
+Date: Thu, 20 Feb 2014 01:46:34 +0900
+Message-ID: <20140219164634.GA2669@sirena.org.uk>
+References: <1392723422-12689-1-git-send-email-tiwai@suse.de>
+ <1392723422-12689-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7788869794029029832=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id D8E76265AAC
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 17:47:05 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F9FB265AAB
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 17:46:49 +0100 (CET)
+In-Reply-To: <1392723422-12689-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,52 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Disable build on non X86 architectures except for compile testing. This fixes
-the following build errors on PPC and adds an option for testing the build on other
-architectures as suggested by Mark Brown :-
 
-sound/soc/intel/sst-dsp.c: In function 'sst_dsp_outbox_write':
-sound/soc/intel/sst-dsp.c:218:2: error: implicit declaration of function 'memcpy_toio' [-Werror=implicit-function-declaration]
-  memcpy_toio(sst->mailbox.out_base, message, bytes);
-  ^
-sound/soc/intel/sst-dsp.c: In function 'sst_dsp_outbox_read':
-sound/soc/intel/sst-dsp.c:231:2: error: implicit declaration of function 'memcpy_fromio' [-Werror=implicit-function-declaration]
-  memcpy_fromio(message, sst->mailbox.out_base, bytes);
-  ^
+--===============7788869794029029832==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YfA6L/ars3kY+zmg"
+Content-Disposition: inline
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
- sound/soc/intel/Kconfig   | 1 +
- sound/soc/intel/sst-dsp.c | 1 +
- 2 files changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index c962432..4bb802b 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -15,6 +15,7 @@ config SND_SST_MFLD_PLATFORM
- config SND_SOC_INTEL_SST
- 	tristate "ASoC support for Intel(R) Smart Sound Technology"
- 	select SND_SOC_INTEL_SST_ACPI if ACPI
-+	depends on (X86 || COMPILE_TEST)
- 	help
-           This adds support for Intel(R) Smart Sound Technology (SST).
-           Say Y if you have such a device
-diff --git a/sound/soc/intel/sst-dsp.c b/sound/soc/intel/sst-dsp.c
-index e0ad2e5..6e22c12 100644
---- a/sound/soc/intel/sst-dsp.c
-+++ b/sound/soc/intel/sst-dsp.c
-@@ -19,6 +19,7 @@
- #include <linux/interrupt.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/io.h>
- 
- #include "sst-dsp.h"
- #include "sst-dsp-priv.h"
--- 
-1.8.3.2
+--YfA6L/ars3kY+zmg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Feb 18, 2014 at 12:36:52PM +0100, Takashi Iwai wrote:
+> Preset EQ enum of sta32x codec driver declares too many number of
+> items and it may lead to the access over the actual array size.
+
+Applied, thanks.
+
+--YfA6L/ars3kY+zmg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTBN/mAAoJELSic+t+oim9JUEP/RITF7VirFC5tU4z0Zd5V5m5
+bzLg/nasXRY1aHYMUmex/lyfDToFaHQV36bQOCDiX7ZrAsVwz0/RyC/9gHUl7HQr
+GwiIFgoCFWVjKTRCrPIvNLiGeq/xcv9sA39KCV/xomkq2jnffFFCH4Zh07U+5uqa
+Yv+udlAEftaRwJYdLRpk1SIJvOqSvQnvSX4CQ5il8CQwLvCmyeIfUP+0Gl46NhAi
+a784l3hShS/jQKWjPDotttjw/CM7maLLNZ2EyLVaeiCjH4QOryyauTn2ghioxai+
+mQ0qYNv8y2sulxqU8XNIxbXU55pEaTbxdNTnFRO2F9LY2x3igrZqed7IF+Q3elN5
+8AqtcrohElf2DHhV9QtXA9cUjL6NWgLZWk9tkadtvRErC72krrltAzIdwgTF7k3U
+87MKahv7zM3E4vE3iGWPuC6AiRnKKwgBqHTE/HruFOHmx+wX6JzJPOkf1klXeI1Y
+7ggQUnl8QmiG5obn6hGJODk+j67gLmHLtNdKlfZOGq+Z/7f10V0QiLe8OxPyr6w+
+L7hm0/woAUw12mCU6w4fY2oBez4kA+7EY5WAiXkxZa6y/mZr/HiCNQ2gfKBW0uSW
+21tyURF8K6Z7riMjijVURfePvYZvXwMMRIV87i9bhx+ve9LFzGOrMjIPGn5Qryxh
+yw0OVzkTz3XvalWnUjJs
+=HrHB
+-----END PGP SIGNATURE-----
+
+--YfA6L/ars3kY+zmg--
+
+--===============7788869794029029832==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7788869794029029832==--
