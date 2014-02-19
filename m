@@ -1,70 +1,76 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v5 1/4] ASoC: tlv320aic32x4: Support for master clock
-Date: Wed, 19 Feb 2014 12:54:06 +0900
-Message-ID: <20140219035406.GP2669@sirena.org.uk>
-References: <1392575252-9222-1-git-send-email-mpa@pengutronix.de>
- <1392631460-32002-1-git-send-email-mpa@pengutronix.de>
- <1392631460-32002-2-git-send-email-mpa@pengutronix.de>
- <20140218012329.GR2669@sirena.org.uk>
- <20140218204646.GB10590@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCHv2] ASoC: Intel: Rename SST trace event
+ header to be less generic.
+Date: Wed, 19 Feb 2014 13:27:32 +0900
+Message-ID: <20140219042732.GV2669@sirena.org.uk>
+References: <1392723796-4773-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3m6VNgM56Nljn+Yv"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20140218204646.GB10590-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============4854078228062475743=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E4D3265327
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 05:27:50 +0100 (CET)
+In-Reply-To: <1392723796-4773-1-git-send-email-liam.r.girdwood@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---3m6VNgM56Nljn+Yv
+--===============4854078228062475743==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YMf7pJGz0wcApMUv"
+Content-Disposition: inline
+
+
+--YMf7pJGz0wcApMUv
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 18, 2014 at 09:46:46PM +0100, Markus Pargmann wrote:
-> On Tue, Feb 18, 2014 at 10:23:29AM +0900, Mark Brown wrote:
+On Tue, Feb 18, 2014 at 11:43:16AM +0000, Liam Girdwood wrote:
+> The Intel audio DSP SST trace event header has been renamed from sst.h
+> to intel-sst.h in order to avoid any confusion with any future
+> Samoa Standard Time drivers ;)
 
-> > Looking at the code the clock isn't physically optional, why not make it
-> > mandatory?  There's only one mainline user, it looks like it should be
-> > straightforward to update with a fixed clock.
+Applied, thanks.
 
-> The masterclock is physically optional. There are several modes to use
-> this codec without master clock. The PLL can use different clock inputs,
-> BCLK, MCLK, etc. and even the PLL is not necessary. Instead BCLK and so
-> on can be used as direct codec clock input. However, most of this is not
-> supported by the driver yet and I can't test these cases.
-
-Are any of these modes supported by the driver yet?  If there's modes
-that don't use MCLK supported then I'd expect them to only enable MCLK
-if it's actively being used in the current configuration (triggered via
-set_sysclk()).
-
---3m6VNgM56Nljn+Yv
+--YMf7pJGz0wcApMUv
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBCrbAAoJELSic+t+oim9M/cP/i1Kg/KU66DlCHJpcmHmlGLr
-Pw+uH5nZc6YgnO/b7A9GEhPQsby7DPxXeBdlbFMIo3U+mQOUbG7PhIvDCajIL1vc
-hvVJmmlCbrVlBTuaVmy8YIl1SmYkmqHYp3WvD8hQ27tZo16zeBAnkWBMBU1f+T9D
-MZ5kZlLgaSwfZjLhGhvtVpBkbT698dqUO+VuQHOucSzkYzkU2TzxwYyCKSoTSnJM
-+st7OxqBnHNUdm4q/aNYqyKnlrLx1erVk+7jxgv63CHsDrHsx3kJAn4fCViU4owP
-K6IMlasFMnGTwqAHPVS8rIpDADUJF9JAPTNsesi2mHOdR1AVd4kpW0M33+C661yg
-M1nQlZ+sSQKKs3FyQIGujJ0vh04fkfKUo8lakhtn3PQway0MAzfv9qvFNqTuf1WB
-tjHH4zbNJWYlu09aoY+yQWcvlmxIMf5a16eVK5vOI8D1C99INp775m+Cd+GB7xXV
-TglUpx7guJZMjHsHaf7UPE/WF8AXg1SMOWpM8UaEsWdTEYBDzPi1Y4BgnfHhgZuK
-TIyjvZACo8lNOY/XfVFlYMCwltm2DG0VKn6dcA3T/dZpcA386B9DqwgjsGaoridn
-fQNhcNXzQ4sJR5eAVXTHf0g/m2N3fN24Pq2K+9XEGaWX5dPWh+VZLT8cFYK1rsXs
-dGkIEa5AnuwGYZNKJW8J
-=+LIA
+iQIcBAEBAgAGBQJTBDKxAAoJELSic+t+oim9cTsP/1imdBa3tujd7Jgj/vFEKoOr
+/Uti7vFanOrxbzycAQXlBZG0sT4ndTh1JzTSwPHs60dQh99D4jR2puFasxae4o8T
+ZBQ4nymfC+KNxLz02erR032lCd5Z60fsiwdZV16gfhuJr1Ec9rLuYCyMbeZroHXr
+nCCqAq1h/4jda58U65NITvinVxChg9kZbTawfBsjKUMXa0TdG/dff8BT2ufd2fZ/
+3OQ/sohkth08RDTCJuyqyUE2ghSfvoV0VwF6tueRw5O+xV8oUrdPUWcMcZWFBC7M
+mqOr2GYWos/A7tqA9q9lWZblQeyTgpVmF4VMiAUzPS3Jo4XKbdAH4Op8H79kouBi
+Oe9OfWtHqLRFij5bS1in/xJC3CCDFUOihjByOILfnv2MTuZteFIc7ibYoue+qQ2F
+nmBpPqeHhxy4fC51Yg/3I1frJMFonARuKmgLcR/4Dif7Ld/XsFm40R/yg64xCmyw
+jjyikjVkcmhVhzp6WCVbjk1zlX6oveTM8B7F/x8+WqO3TKpszifPXDbmjzc9yDFa
+p1BAAQuuoqs8nXAyFtFb0rszPMKrhsrggeNmqycpDIoLWAN61n35fNWlWRZQeh0J
+edufoXB5/xlMtHsqp2SL5DVZzYATvUzmzBCHSu6p6at64H8wJDehZYL4O5DpVrzX
+KWs1ywyx3uSSEwsG8lyJ
+=mKOw
 -----END PGP SIGNATURE-----
 
---3m6VNgM56Nljn+Yv--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--YMf7pJGz0wcApMUv--
+
+--===============4854078228062475743==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4854078228062475743==--
