@@ -1,18 +1,21 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH] ASoC: cs4271: claim reset GPIO in bus
-	probe function
-Date: Wed, 19 Feb 2014 17:17:42 +0100
-Message-ID: <5304D926.7070505@zonque.org>
-References: <1392815154-24728-1-git-send-email-zonque@gmail.com>
- <993D86A8-0838-4A12-9BF7-F7BC1564F355@cirrus.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: Make sure we only build SST
+	drivers on X86
+Date: Thu, 20 Feb 2014 01:22:58 +0900
+Message-ID: <20140219162258.GN2669@sirena.org.uk>
+References: <1392818784-6248-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ <1392818784-6248-2-git-send-email-liam.r.girdwood@linux.intel.com>
+ <20140219150040.GD2669@sirena.org.uk>
+ <s5h1tyzw2la.wl%tiwai@suse.de>
+ <20140219155758.GK2669@sirena.org.uk>
+ <s5hy517ulhr.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1887341598183818385=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id C6922265A4E
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 17:17:43 +0100 (CET)
-In-Reply-To: <993D86A8-0838-4A12-9BF7-F7BC1564F355@cirrus.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89646265A72
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 17:23:13 +0100 (CET)
+In-Reply-To: <s5hy517ulhr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Austin, Brian" <Brian.Austin@cirrus.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "subaparts@yandex.ru" <subaparts@yandex.ru>, "Handrigan,
- Paul" <Paul.Handrigan@cirrus.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/19/2014 05:08 PM, Austin, Brian wrote:
->> On Feb 19, 2014, at 7:06, "Daniel Mack" <zonque@gmail.com> wrote:
 
->> -    if (gpio_nreset >= 0)
->> -        if (devm_gpio_request(codec->dev, gpio_nreset, "CS4271 Reset"))
->> -            gpio_nreset = -EINVAL;
->> -    if (gpio_nreset >= 0) {
->> +    if (gpio_is_valid(cs4271->gpio_nreset)) {
->>        /* Reset codec */
->> -        gpio_direction_output(gpio_nreset, 0);
->> +        gpio_direction_output(cs4271->gpio_nreset, 0);
->>        udelay(1);
->> -        gpio_set_value(gpio_nreset, 1);
->> +        gpio_set_value(cs4271->gpio_nreset, 1);
->>        /* Give the codec time to wake up */
->>        udelay(1);
->>    }
->
-> Since your moving all the GPIO reset code into a new function that's
-> called from the bus probes why not put the reset in there as well?
-
-Because I want the codec to stay in reset until it is actually used, and
-the machine drivers builds the DAI link.
+--===============1887341598183818385==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lJhfsPy4o8B7pjPr"
+Content-Disposition: inline
 
 
-Daniel
+--lJhfsPy4o8B7pjPr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Feb 19, 2014 at 05:15:44PM +0100, Takashi Iwai wrote:
+
+> memcpy_toio() is supposed to be defined in all architecture.  If the
+> arch doesn't support it properly, it still should take from
+> asm-generic/io.h.  So, it's a good test coverage for such archs ;)
+
+Ah, so it is - in that case it's just the include that needs to be added
+(and ideally the depends X86 || COMPILE_TEST).
+
+--lJhfsPy4o8B7pjPr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTBNpfAAoJELSic+t+oim93RUP/ibWzU2jtoMZ1oEqaq7OV9q6
+2mGugqbB9mVt7L2jVkG1xNMlvZlJmwWYhBviG80LEpj8ZPbPRZXpKNXKHEA2woxi
+xMvLquIteLhurJvDWxYeHGt9JLA7dTaGTuwpnkF11NQnQSn40PCqUC9S8QY3g/Pg
+ZmwISYBYy/Qv2FjDOwI/h6KGmwItoBbNNI89Rcxa7AGnJFuA2WN5eI6L1sHbOqID
+sAbG4EQFY3Kbs8ccfPze9LDMfpZpIWb3L0I71G0gYb+WLg+ieuv8I++kOodc+1Tr
+DVxxfImijTSSh/R5hEeOqUMd39+eaHFLVoMYp8EwSXtUAY7hqbXZyIWYpHycR1Cv
+9CtWN7IPTA5jtT6Zi3tk9IScqj4Uc0irMwva89+U224Q+LUVCnxmiKuAwPOYiuOz
+nVaFNKAoz2pLEj4WCikf95PZv90IQPaCYbDmIf80pTxvSFWe+g3CidbnQbA4VA3L
+a+Ww7bB2dBDRmcNJqUoWXGYNp3DPn7NHp3EJ+XNeo8BTeIVEKryFJTckUTMyTyz5
+GBK67fqZVr2Bhp/cl9W7M/7Vhtu5EHK0p74YPLt0tVA7vNwdLFFGOSnjGEz59Kqi
+AdbHGOaWHN6JRF1RkhKKbGrYMEzvneOzN1WmilAwsHLe3c7bzi+M56Rv1xl3zoxU
+nEUpJ09+eCPMOoa/9Tqs
+=u8NM
+-----END PGP SIGNATURE-----
+
+--lJhfsPy4o8B7pjPr--
+
+--===============1887341598183818385==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1887341598183818385==--
