@@ -1,16 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv2] ASoC: Intel: Fix sparse warnings for
-	firmware loader.
-Date: Thu, 20 Feb 2014 00:09:27 +0900
-Message-ID: <20140219150927.GG2669@sirena.org.uk>
-References: <1392818784-6248-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: Re: [PATCH 1/3] ALSA: hda - Remove dependency on
+ bus->pci in hda_beep.c
+Date: Wed, 19 Feb 2014 07:16:38 -0800
+Message-ID: <CAEUnVG4y+14Y8ManPPGVvcQjqpdyzBebLWcq7Sa6xQ3SwFRK+Q@mail.gmail.com>
+References: <1392455855-10594-1-git-send-email-tiwai@suse.de>
+ <s5hfvnkzq4y.wl%tiwai@suse.de> <5303A0A3.6050206@wwwdotorg.org>
+ <s5hob23y01o.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7928716884565382236=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 67F5E265893
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 16:09:58 +0100 (CET)
-In-Reply-To: <1392818784-6248-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from mail-qg0-f48.google.com (mail-qg0-f48.google.com
+ [209.85.192.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06B982658E4
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 16:16:59 +0100 (CET)
+Received: by mail-qg0-f48.google.com with SMTP id a108so863788qge.7
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 07:16:59 -0800 (PST)
+In-Reply-To: <s5hob23y01o.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,63 +26,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Feb 19, 2014 at 12:33 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 18 Feb 2014 11:04:19 -0700,
+> Stephen Warren wrote:
+>>
+>> On 02/15/2014 02:22 AM, Takashi Iwai wrote:
+>> > At Sat, 15 Feb 2014 10:17:33 +0100,
+>> > Takashi Iwai wrote:
+>> >>
+>> >> The default parent device can be obtained directly via card object, so
+>> >> we don't need to rely on pci->dev.parent.  Since there is no access to
+>> >> pci_dev, we can reduce the inclusion of linux/pci.h, too.
+>> >>
+>> >> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>> >
+>> > I forgot the cover page: these tree patches are trivial cleanups of
+>> > hda-codec drivers (not the controller) to work without PCI device
+>> > assignment. The idea was triggered by Dylan's question.
+>>
+>> The series seems fine to me, so briefly,
+>> Reviewed-by: Stephen Warren <swarren@nvidia.com>
+>
+> Thanks.  Any chance to work on / submit other changes for Tegra
+> HD-audio support?
 
---===============7928716884565382236==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JRiAoq/qu/J6dj1n"
-Content-Disposition: inline
+That's the plan, hopefully I'll be able to find time to throw together
+an RFC by the end of the week.
 
+>
+> As already mentioned, I think a cleaner way would be to write
+> hda_platform.c instead of hacking hda_intel.c with ifdefs.
+> Some code in hda_intel.c (e.g. bus ops and PCM callbacks) can be moved
+> out, either as a new helper module or just merging into snd-hda-codec
+> helper module, so that they can be used by both hda_intel.c and
+> hda_platform.c.
 
---JRiAoq/qu/J6dj1n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That sounds like a good idea.  There aren't a lot of differences,
+mostly isolated to init and suspend/resume.  That should be easy to
+put in hda_platform.
 
-On Wed, Feb 19, 2014 at 02:06:23PM +0000, Liam Girdwood wrote:
+Thanks,
 
-Applied, thanks.
+Dylan
 
-> Changes since V1 :-
->  o Fixed sparse warning for block_module_remove
->  o Fixed additional sparse warnings when building entire driver.=20
-
-Don't put stuff like this in the changelog, if you want to include it
-put it after the ---.  Nobody is going to care when they look at the git
-log since v1 won't be there.
-
---JRiAoq/qu/J6dj1n
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTBMkkAAoJELSic+t+oim9W08P+wT12C8YlIFH04RvjZRIe2Kj
-RfNJsY0uI9b9+vz1MHhFtWI8fCJP5M1TD+rDjpwR6wrAFmCaBXe32cssi9IOIixy
-nODtav/jp5SSi6rkBWca8R77hT6m0Mv+6OG7ANQ3s+uK5tUCpX+auiX3mCTlX+Fm
-8e3Zt9nTw9IoAxMs559yiGcyE+5ZmONedYgJvcnxBG90SYE+pwB9HsTPaOlrM9vf
-miGBLGv2ebuNf8EF5Fcgkgbdp4lcnz5ZFwCabBcQirF1DiOC7MHT9GjW+i+nbSQt
-PQfwQK/1X/R9VUbUPAR+wsnP/6dLs8nSGbiCHLHoOBIOkT6Ro8Xb00H6lZf3EUHd
-NaCGA8X+L1CQYNrJCEK0Fsz37ypLdDbOctJsgCIp4HB+GS5/U3R87Dgna4yES8hy
-oWnyjfo5bJdIyDafsB5K6fRVoaMrxiZCGncUG0Qw+R+1jOrO49xmTk66PGs6i5IA
-DmQzGqcCuSL1qybpBVQokxgXmZb/r4OCMTWDRqspeMPs9XmDtM1pl+7AecMnuPgw
-QnxtiLiSLNfOOxHhwDkfq+OEHeXD9y2VZyKuWKHCLRs5uUjH0GLsSIOaPZjTzwmd
-WLAEaJEMHp1uL4q3wvT4SaVR0KvVFUS26jgDvdqxBFc39/wnf69OjiEaqg5Fx+xF
-9kyxub2Ik64TbfH1R29D
-=0mbr
------END PGP SIGNATURE-----
-
---JRiAoq/qu/J6dj1n--
-
---===============7928716884565382236==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7928716884565382236==--
+>
+> Ideally, we may rename hda_intel.c with hda_pci.c, but I'm afraid this
+> would bring too many regressions for module options.
+>
+>
+> Takashi
