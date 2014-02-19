@@ -1,17 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: core: Fix missing card sysfs contents
-Date: Wed, 19 Feb 2014 13:02:40 +0100
-Message-ID: <1392811360-3309-1-git-send-email-tiwai@suse.de>
+From: Adarsh <punia.adarsh@gmail.com>
+Subject: Need Help: Repeated Jackhammer noise after several
+ hours of play and heavy cpu usage in snd_pcm_dmix_sync_area
+Date: Wed, 19 Feb 2014 17:37:14 +0530
+Message-ID: <CANxfbX_o=UcTz0Sjno=zkEns4MGdrjnsbJmP0J=7O8owu7_8+g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=f46d04428262b98fc004f2c13a46
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B97E26157F
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 13:02:41 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 1260DAC95
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 12:02:41 +0000 (UTC)
+Received: from mail-wg0-f44.google.com (mail-wg0-f44.google.com [74.125.82.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A4CF26157F
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 13:07:16 +0100 (CET)
+Received: by mail-wg0-f44.google.com with SMTP id k14so243441wgh.23
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 04:07:14 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,53 +23,529 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-While moving the card device into struct snd_card, the reference to
-the assigned card in sysfs show/store callbacks were forgotten to be
-refreshed, still accessing to the no longer used drvdata.  Fix these
-places to refer correctly via container_of().
+--f46d04428262b98fc004f2c13a46
+Content-Type: text/plain; charset=ISO-8859-1
 
-Also, remove the superfluous NULL checks since it's guaranteed to be
-non-NULL now.
+Hi,
 
-Fixes: 8bfb181c17d2 ('ALSA: Embed card device into struct snd_card')
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/init.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+We are facing a issue where if gdb is attached to the our long running
+sound process and continued,
+jackhammer sound is played over and over again abusing the speakers.
 
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 0095a530ff12..b7085eb19079 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -624,15 +624,15 @@ static ssize_t
- card_id_show_attr(struct device *dev,
- 		  struct device_attribute *attr, char *buf)
- {
--	struct snd_card *card = dev_get_drvdata(dev);
--	return snprintf(buf, PAGE_SIZE, "%s\n", card ? card->id : "(null)");
-+	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
-+	return snprintf(buf, PAGE_SIZE, "%s\n", card->id);
- }
- 
- static ssize_t
- card_id_store_attr(struct device *dev, struct device_attribute *attr,
- 		   const char *buf, size_t count)
- {
--	struct snd_card *card = dev_get_drvdata(dev);
-+	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
- 	char buf1[sizeof(card->id)];
- 	size_t copy = count > sizeof(card->id) - 1 ?
- 					sizeof(card->id) - 1 : count;
-@@ -664,8 +664,8 @@ static ssize_t
- card_number_show_attr(struct device *dev,
- 		     struct device_attribute *attr, char *buf)
- {
--	struct snd_card *card = dev_get_drvdata(dev);
--	return snprintf(buf, PAGE_SIZE, "%i\n", card ? card->number : -1);
-+	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
-+	return snprintf(buf, PAGE_SIZE, "%i\n", card->number);
- }
- 
- static DEVICE_ATTR(number, S_IRUGO, card_number_show_attr, NULL);
--- 
-1.8.5.2
+Process details:
+1. We are using RW_INTERLEAVED access as described in write_loop method in
+/test/pcm.c and opening 'default' device.
+2. However to disable the underruns, the
+snd_pcm_sw_params_set_stop_threshold is set to 0x7fffffff which is greater
+than boundary
+value.
+3.Period size is 1024 and buffer size is 2048. We try to write period_size
+no of frames using snd_pcm_writei.
+(I am attaching a sample program which shows this behaviour.)
+
+Steps to Reproduce:
+1. Left process running for over 12 hours.
+2. gdb is attached to the process and continued inside gdb.
+3. At this point, the thread went into a tight loop taking >100% cpu and
+repeatedly playing same sound. It did not recover for a long time.
+
+Stack trace shows that 'snd_pcm_dmix_sync_area' in pcm_dmix.c is taking a
+very long time to return because the 'size' is
+a large unsinged interger and mix_areas is getting called with 'transfer'
+value of <=2048.
+
+If snd_pcm_sw_params_set_stop_threshold is not set or when application is
+running for shorter duration,
+attaching gdb does not show this behaviour.
+
+Is it that setting of stop threshold to 0x7fffffff is triggering this and
+attaching gdb is making the buffer pointers misbehave?
+If so, what can be done if we do not want PCM to stop? I have tried by
+setting silence threshold and silence size to let alsa
+play silence by itself but still observed the issue.
+
+
+
+Below is the stack trace and PCM dump:
+
+(gdb) bt
+#0  0xb7c44463 in mix_areas_32_smp (size=1360, dst=0xb6855000,
+src=0x84a7510, sum=0xb6845000, dst_step=4, src_step=4, sum_step=4) at
+pcm_dmix_i386.h:261
+#1  0xb7c44d2b in mix_areas (dmix=0x84a7110, src_areas=0x84a51d0,
+dst_areas=0x84a6f00, src_ofs=0, dst_ofs=7168, size=1024) at pcm_dmix.c:193
+#2  0xb7c45422 in snd_pcm_dmix_sync_area (pcm=0x84a71e0) at pcm_dmix.c:371
+#3  0xb7c46680 in snd_pcm_dmix_mmap_commit (pcm=0x84a71e0, offset=0,
+size=1024) at pcm_dmix.c:813
+#4  0xb7c07033 in snd_pcm_mmap_commit (pcm=0x84a71e0, offset=0,
+frames=1024) at pcm.c:6501
+#5  0xb7c1804e in snd_pcm_plugin_mmap_commit (pcm=0x84a6d18, offset=0,
+size=1024) at pcm_plugin.c:434
+#6  0xb7c07033 in snd_pcm_mmap_commit (pcm=0x84a6d18, offset=0,
+frames=1024) at pcm.c:6501
+#7  0xb7c17956 in snd_pcm_plugin_write_areas (pcm=0x84a5390,
+areas=0xb68362b0, offset=0, size=1024) at pcm_plugin.c:290
+#8  0xb7c074bb in snd1_pcm_write_areas (pcm=0x84a5390, areas=0xb68362b0,
+offset=0, size=1024, func=0xb7c177fc <snd_pcm_plugin_write_areas>) at
+pcm.c:6667
+#9  0xb7c17cd5 in snd_pcm_plugin_writei (pcm=0x84a5390, buffer=0x84ab518,
+size=1024) at pcm_plugin.c:361
+#10 0xb7bff1a7 in _snd_pcm_writei (pcm=0x84a6b18, buffer=0x84ab518,
+size=1024) at pcm_local.h:516
+#11 0xb7bff16c in snd_pcm_writei (pcm=0x84a6b18, buffer=0x84ab518,
+size=1024) at pcm.c:1258
+
+(gdb) f 2
+#2  0xb7c45422 in snd_pcm_dmix_sync_area (pcm=0x84a71e0) at pcm_dmix.c:371
+  371     pcm_dmix.c: No such file or directory.
+(gdb) info locals
+  dmix = 0x84a7110
+  slave_hw_ptr = 234156032
+  slave_appl_ptr = 7168
+  slave_size = 1057171456
+  appl_ptr = 0
+  size = 1018295296
+  transfer = 1024
+  src_areas = 0x84a51d0
+  dst_areas = 0x84a6f00
+(gdb) p *dmix
+  $1 = {type = SND_PCM_TYPE_DMIX, ipc_key = 5678293, ipc_perm = 432,
+ipc_gid = 17, semid = 32768, shmid = 65536, shmptr = 0xb6859000, spcm =
+0x84a7340,
+    appl_ptr = 217121792, last_appl_ptr = 233882624, hw_ptr = 233875428,
+avail_max = 0, slave_appl_ptr = 234156032, slave_hw_ptr = 234147996,
+    slave_period_size = 1024, slave_buffer_size = 8192, slave_boundary =
+1073741824, sync_ptr = 0xb7c4557c <snd_pcm_dmix_sync_ptr>,
+    state = SND_PCM_STATE_RUNNING, trigger_tstamp = {tv_sec = 1392384066,
+tv_nsec = 8308000}, server = 0, client = 0, comm_fd = 0, hw_fd = 4,
+timer_fd = {
+      fd = 3, events = 41, revents = 0}, poll_fd = 3, tread = 1,
+timer_need_poll = 0, timer_event_suspend = 131072, timer_event_resume =
+262144,
+    server_fd = 0, server_pid = 0, timer = 0x8496b90, interleaved = 1,
+slowptr = 1, max_periods = 0, channels = 2, bindings = 0x0, u = {dmix = {
+      shmid_sum = 98305, sum_buffer = 0xb6837000, mix_areas_16 = 0xb7c443a8
+<mix_areas_16_smp_mmx>, mix_areas_32 = 0xb7c44415 <mix_areas_32_smp>,
+      mix_areas_24 = 0xb7c4451b <mix_areas_24_smp_cmov>, mix_areas_u8 = 0,
+remix_areas_16 = 0xb7c44638 <remix_areas_16_smp_mmx>,
+      remix_areas_32 = 0xb7c446a5 <remix_areas_32_smp>, remix_areas_24 =
+0xb7c447ab <remix_areas_24_smp_cmov>, remix_areas_u8 = 0},
+    dsnoop = {<No data fields>}, dshare = {chn_mask =
+13151478482154389505}}, server_free = 0}
+(gdb) p *pcm
+$2 = {dl_handle = 0x0, name = 0x84a6e48 "dmix:0", type = SND_PCM_TYPE_DMIX,
+stream = SND_PCM_STREAM_PLAYBACK, mode = 0, poll_fd_count = 1, poll_fd = 3,
+  poll_events = 1, setup = -1, monotonic = 0, access =
+SND_PCM_ACCESS_MMAP_INTERLEAVED, format = SND_PCM_FORMAT_S32_LE, subformat
+= SND_PCM_SUBFORMAT_STD,
+  channels = 2, rate = 44100, period_size = 1024, period_time = 23219,
+periods = {min = 0, max = 0, openmin = 0, openmax = 0, integer = 0, empty =
+0},
+  tstamp_mode = SND_PCM_TSTAMP_NONE, period_step = 1, avail_min = 1024,
+period_event = 0, start_threshold = 1024, stop_threshold = 2147483647,
+  silence_threshold = 0, silence_size = 0, boundary = 1073741824, info =
+2151743747, msbits = 32, rate_num = 44100, rate_den = 1, hw_flags = 0,
+  fifo_size = 0, buffer_size = 2048, buffer_time = {min = 0, max = 0,
+openmin = 0, openmax = 0, integer = 0, empty = 0}, sample_bits = 32,
+  frame_bits = 64, appl = {master = 0x0, ptr = 0x84a7130, fd = -1, offset =
+0, link_dst_count = 0, link_dst = 0x0, private_data = 0x0, changed = 0}, hw
+= {
+    master = 0x0, ptr = 0x84a7138, fd = -1, offset = 0, link_dst_count = 0,
+link_dst = 0x0, private_data = 0x0, changed = 0}, min_align = 1, mmap_rw =
+1,
+  mmap_shadow = 0, donot_close = 0, mmap_channels = 0x84a54a0,
+running_areas = 0x84a51d0, stopped_areas = 0x0, ops = 0xb7c91860, fast_ops
+= 0xb7c918a0,
+  op_arg = 0x84a71e0, fast_op_arg = 0x84a71e0, private_data = 0x84a7110,
+async_handlers = {next = 0x84a72e4, prev = 0x84a72e4}}
+
+
+PCM dump:
+Plug PCM: Linear conversion PCM (S32_LE)
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 44100
+  exact rate   : 44100 (44100/1)
+  msbits       : 16
+  buffer_size  : 2048
+  period_size  : 1024
+  period_time  : 23219
+  tstamp_mode  : NONE
+  period_step  : 1
+  avail_min    : 1024
+  period_event : 0
+  start_threshold  : 1024
+  stop_threshold   : 2147483647
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: Soft volume PCM
+Control: PCM Playback Volume
+min_dB: -51
+max_dB: 0
+resolution: 256
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S32_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 44100
+  exact rate   : 44100 (44100/1)
+  msbits       : 32
+  buffer_size  : 2048
+  period_size  : 1024
+  period_time  : 23219
+  tstamp_mode  : NONE
+  period_step  : 1
+  avail_min    : 1024
+  period_event : 0
+  start_threshold  : 1024
+  stop_threshold   : 2147483647
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: Direct Stream Mixing PCM
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S32_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 44100
+  exact rate   : 44100 (44100/1)
+  msbits       : 32
+  buffer_size  : 2048
+  period_size  : 1024
+  period_time  : 23219
+  tstamp_mode  : NONE
+  period_step  : 1
+  avail_min    : 1024
+  period_event : 0
+  start_threshold  : 1024
+  stop_threshold   : 2147483647
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Hardware PCM card 0 'HDA Intel PCH' device 0 subdevice 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S32_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 44100
+  exact rate   : 44100 (44100/1)
+  msbits       : 32
+  buffer_size  : 8192
+  period_size  : 1024
+  period_time  : 23219
+  tstamp_mode  : ENABLE
+  period_step  : 1
+  avail_min    : 1024
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 1073741824
+  silence_threshold: 0
+  silence_size : 1073741824
+  boundary     : 1073741824
+  appl_ptr     : 0
+  hw_ptr       : 0
+
+Thanks
+
+--f46d04428262b98fc004f2c13a46
+Content-Type: text/x-csrc; charset=US-ASCII; name="alsatest.c"
+Content-Disposition: attachment; filename="alsatest.c"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hrujxafk1
+
+LyoKICAgKiBUaGlzIHNtYWxsIGRlbW8gc2VuZHMgYSBzaW1wbGUgc2ludXNvaWRhbCB3YXZlIHRv
+IHlvdXIgc3BlYWtlcnMuCiAgICovCiNpbmNsdWRlIDxzdGRpby5oPgojaW5jbHVkZSA8c3RkbGli
+Lmg+CiNpbmNsdWRlIDxzdHJpbmcuaD4KI2luY2x1ZGUgPHNjaGVkLmg+CiNpbmNsdWRlIDxlcnJu
+by5oPgojaW5jbHVkZSA8Z2V0b3B0Lmg+CiNpbmNsdWRlICIvdXNyL2luY2x1ZGUvYWxzYS9hc291
+bmRsaWIuaCIKI2luY2x1ZGUgPHN5cy90aW1lLmg+CiNpbmNsdWRlIDxtYXRoLmg+CgpzdGF0aWMg
+Y2hhciAqZGV2aWNlID0gImRlZmF1bHQiOyAvKiBwbGF5YmFjayBkZXZpY2UgKi8Kc3RhdGljIHNu
+ZF9wY21fZm9ybWF0X3QgZm9ybWF0ID0gU05EX1BDTV9GT1JNQVRfUzE2X0xFOyAvKiBzYW1wbGUg
+Zm9ybWF0ICovCnN0YXRpYyB1bnNpZ25lZCBpbnQgcmF0ZSA9IDQ0MTAwOyAvKiBzdHJlYW0gcmF0
+ZSAqLwpzdGF0aWMgdW5zaWduZWQgaW50IGNoYW5uZWxzID0gMjsgLyogY291bnQgb2YgY2hhbm5l
+bHMgKi8Kc3RhdGljIHVuc2lnbmVkIGludCBidWZmZXJfdGltZSA9IDUwMDAwMDsgLyogcmluZyBi
+dWZmZXIgbGVuZ3RoIGluIHVzICovCnN0YXRpYyB1bnNpZ25lZCBpbnQgcGVyaW9kX3RpbWUgPSAx
+MDAwMDA7IC8qIHBlcmlvZCB0aW1lIGluIHVzICovCnN0YXRpYyBkb3VibGUgZnJlcSA9IDQ0MDsg
+Lyogc2ludXNvaWRhbCB3YXZlIGZyZXF1ZW5jeSBpbiBIeiAqLwpzdGF0aWMgaW50IHZlcmJvc2Ug
+PSAwOyAvKiB2ZXJib3NlIGZsYWcgKi8Kc3RhdGljIGludCByZXNhbXBsZSA9IDA7IC8qIGVuYWJs
+ZSBhbHNhLWxpYiByZXNhbXBsaW5nICovCnN0YXRpYyBpbnQgcGVyaW9kX2V2ZW50ID0gMDsgLyog
+cHJvZHVjZSBwb2xsIGV2ZW50IGFmdGVyIGVhY2ggcGVyaW9kICovCnN0YXRpYyBzbmRfcGNtX3Nm
+cmFtZXNfdCBidWZmZXJfc2l6ZTsKc3RhdGljIHNuZF9wY21fc2ZyYW1lc190IHBlcmlvZF9zaXpl
+OwpzdGF0aWMgc25kX291dHB1dF90ICpvdXRwdXQgPSBOVUxMOwoKc3RhdGljIHZvaWQgZ2VuZXJh
+dGVfc2luZShjb25zdCBzbmRfcGNtX2NoYW5uZWxfYXJlYV90ICphcmVhcywKICAgIHNuZF9wY21f
+dWZyYW1lc190IG9mZnNldCwKICAgIGludCBjb3VudCwgZG91YmxlICpfcGhhc2UpCnsKICBzdGF0
+aWMgZG91YmxlIG1heF9waGFzZSA9IDIuICogTV9QSTsKICBkb3VibGUgcGhhc2UgPSAqX3BoYXNl
+OwogIGRvdWJsZSBzdGVwID0gbWF4X3BoYXNlKmZyZXEvKGRvdWJsZSlyYXRlOwogIHVuc2lnbmVk
+IGNoYXIgKnNhbXBsZXNbY2hhbm5lbHNdOwogIGludCBzdGVwc1tjaGFubmVsc107CiAgdW5zaWdu
+ZWQgaW50IGNobjsKICBpbnQgZm9ybWF0X2JpdHMgPSBzbmRfcGNtX2Zvcm1hdF93aWR0aChmb3Jt
+YXQpOwogIHVuc2lnbmVkIGludCBtYXh2YWwgPSAoMSA8PCAoZm9ybWF0X2JpdHMgLSAxKSkgLSAx
+OwogIGludCBicHMgPSBmb3JtYXRfYml0cyAvIDg7IC8qIGJ5dGVzIHBlciBzYW1wbGUgKi8KICBp
+bnQgcGh5c19icHMgPSBzbmRfcGNtX2Zvcm1hdF9waHlzaWNhbF93aWR0aChmb3JtYXQpIC8gODsK
+ICBpbnQgYmlnX2VuZGlhbiA9IHNuZF9wY21fZm9ybWF0X2JpZ19lbmRpYW4oZm9ybWF0KSA9PSAx
+OwogIGludCB0b191bnNpZ25lZCA9IHNuZF9wY21fZm9ybWF0X3Vuc2lnbmVkKGZvcm1hdCkgPT0g
+MTsKICBpbnQgaXNfZmxvYXQgPSAoZm9ybWF0ID09IFNORF9QQ01fRk9STUFUX0ZMT0FUX0xFIHx8
+CiAgICAgIGZvcm1hdCA9PSBTTkRfUENNX0ZPUk1BVF9GTE9BVF9CRSk7CiAgLyogdmVyaWZ5IGFu
+ZCBwcmVwYXJlIHRoZSBjb250ZW50cyBvZiBhcmVhcyAqLwogIGZvciAoY2huID0gMDsgY2huIDwg
+Y2hhbm5lbHM7IGNobisrKSB7CiAgICBpZiAoKGFyZWFzW2Nobl0uZmlyc3QgJSA4KSAhPSAwKSB7
+CiAgICAgIHByaW50ZigiYXJlYXNbJWldLmZpcnN0ID09ICVpLCBhYm9ydGluZy4uLlxuIiwgY2hu
+LCBhcmVhc1tjaG5dLmZpcnN0KTsKICAgICAgZXhpdChFWElUX0ZBSUxVUkUpOwogICAgfQogICAg
+c2FtcGxlc1tjaG5dID0gLyooc2lnbmVkIHNob3J0ICopKi8oKCh1bnNpZ25lZCBjaGFyICopYXJl
+YXNbY2huXS5hZGRyKSArIChhcmVhc1tjaG5dLmZpcnN0IC8gOCkpOwogICAgaWYgKChhcmVhc1tj
+aG5dLnN0ZXAgJSAxNikgIT0gMCkgewogICAgICBwcmludGYoImFyZWFzWyVpXS5zdGVwID09ICVp
+LCBhYm9ydGluZy4uLlxuIiwgY2huLCBhcmVhc1tjaG5dLnN0ZXApOwogICAgICBleGl0KEVYSVRf
+RkFJTFVSRSk7CiAgICB9CiAgICBzdGVwc1tjaG5dID0gYXJlYXNbY2huXS5zdGVwIC8gODsKICAg
+IHNhbXBsZXNbY2huXSArPSBvZmZzZXQgKiBzdGVwc1tjaG5dOwogIH0KICAvKiBmaWxsIHRoZSBj
+aGFubmVsIGFyZWFzICovCiAgd2hpbGUgKGNvdW50LS0gPiAwKSB7CiAgICB1bmlvbiB7CiAgICAg
+IGZsb2F0IGY7CiAgICAgIGludCBpOwogICAgfSBmdmFsOwogICAgaW50IHJlcywgaTsKICAgIGlm
+IChpc19mbG9hdCkgewogICAgICBmdmFsLmYgPSBzaW4ocGhhc2UpICogbWF4dmFsOwogICAgICBy
+ZXMgPSBmdmFsLmk7CiAgICB9IGVsc2UKICAgICAgcmVzID0gc2luKHBoYXNlKSAqIG1heHZhbDsK
+ICAgIGlmICh0b191bnNpZ25lZCkKICAgICAgcmVzIF49IDFVIDw8IChmb3JtYXRfYml0cyAtIDEp
+OwogICAgZm9yIChjaG4gPSAwOyBjaG4gPCBjaGFubmVsczsgY2huKyspIHsKICAgICAgLyogR2Vu
+ZXJhdGUgZGF0YSBpbiBuYXRpdmUgZW5kaWFuIGZvcm1hdCAqLwogICAgICBpZiAoYmlnX2VuZGlh
+bikgewogICAgICAgIGZvciAoaSA9IDA7IGkgPCBicHM7IGkrKykKICAgICAgICAgICooc2FtcGxl
+c1tjaG5dICsgcGh5c19icHMgLSAxIC0gaSkgPSAocmVzID4+IGkgKiA4KSAmIDB4ZmY7CiAgICAg
+IH0gZWxzZSB7CiAgICAgICAgZm9yIChpID0gMDsgaSA8IGJwczsgaSsrKQogICAgICAgICAgKihz
+YW1wbGVzW2Nobl0gKyBpKSA9IChyZXMgPj4gaSAqIDgpICYgMHhmZjsKICAgICAgfQogICAgICBz
+YW1wbGVzW2Nobl0gKz0gc3RlcHNbY2huXTsKICAgIH0KICAgIHBoYXNlICs9IHN0ZXA7CiAgICBp
+ZiAocGhhc2UgPj0gbWF4X3BoYXNlKQogICAgICBwaGFzZSAtPSBtYXhfcGhhc2U7CiAgfQogICpf
+cGhhc2UgPSBwaGFzZTsKfQpzdGF0aWMgaW50IHNldF9od3BhcmFtcyhzbmRfcGNtX3QgKmhhbmRs
+ZSwKICAgIHNuZF9wY21faHdfcGFyYW1zX3QgKnBhcmFtcywKICAgIHNuZF9wY21fYWNjZXNzX3Qg
+YWNjZXNzKQp7CiAgdW5zaWduZWQgaW50IHJyYXRlOwogIHNuZF9wY21fdWZyYW1lc190IHNpemU7
+CiAgaW50IGVyciwgZGlyOwogIC8qIGNob29zZSBhbGwgcGFyYW1ldGVycyAqLwogIGVyciA9IHNu
+ZF9wY21faHdfcGFyYW1zX2FueShoYW5kbGUsIHBhcmFtcyk7CiAgaWYgKGVyciA8IDApIHsKICAg
+IHByaW50ZigiQnJva2VuIGNvbmZpZ3VyYXRpb24gZm9yIHBsYXliYWNrOiBubyBjb25maWd1cmF0
+aW9ucyBhdmFpbGFibGU6ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICByZXR1cm4gZXJy
+OwogIH0KICAvKiBzZXQgaGFyZHdhcmUgcmVzYW1wbGluZyAqLwogIC8qZXJyID0gc25kX3BjbV9o
+d19wYXJhbXNfc2V0X3JhdGVfcmVzYW1wbGUoaGFuZGxlLCBwYXJhbXMsIHJlc2FtcGxlKTsKICBp
+ZiAoZXJyIDwgMCkgewogICAgcHJpbnRmKCJSZXNhbXBsaW5nIHNldHVwIGZhaWxlZCBmb3IgcGxh
+eWJhY2s6ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICByZXR1cm4gZXJyOwogIH0qLwog
+IC8qIHNldCB0aGUgaW50ZXJsZWF2ZWQgcmVhZC93cml0ZSBmb3JtYXQgKi8KICBlcnIgPSBzbmRf
+cGNtX2h3X3BhcmFtc19zZXRfYWNjZXNzKGhhbmRsZSwgcGFyYW1zLCBhY2Nlc3MpOwogIGlmIChl
+cnIgPCAwKSB7CiAgICBwcmludGYoIkFjY2VzcyB0eXBlIG5vdCBhdmFpbGFibGUgZm9yIHBsYXli
+YWNrOiAlc1xuIiwgc25kX3N0cmVycm9yKGVycikpOwogICAgcmV0dXJuIGVycjsKICB9CiAgLyog
+c2V0IHRoZSBzYW1wbGUgZm9ybWF0ICovCiAgZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2Zv
+cm1hdChoYW5kbGUsIHBhcmFtcywgZm9ybWF0KTsKICBpZiAoZXJyIDwgMCkgewogICAgcHJpbnRm
+KCJTYW1wbGUgZm9ybWF0IG5vdCBhdmFpbGFibGUgZm9yIHBsYXliYWNrOiAlc1xuIiwgc25kX3N0
+cmVycm9yKGVycikpOwogICAgcmV0dXJuIGVycjsKICB9CiAgLyogc2V0IHRoZSBjb3VudCBvZiBj
+aGFubmVscyAqLwogIGVyciA9IHNuZF9wY21faHdfcGFyYW1zX3NldF9jaGFubmVscyhoYW5kbGUs
+IHBhcmFtcywgY2hhbm5lbHMpOwogIGlmIChlcnIgPCAwKSB7CiAgICBwcmludGYoIkNoYW5uZWxz
+IGNvdW50ICglaSkgbm90IGF2YWlsYWJsZSBmb3IgcGxheWJhY2tzOiAlc1xuIiwgY2hhbm5lbHMs
+IHNuZF9zdHJlcnJvcihlcnIpKTsKICAgIHJldHVybiBlcnI7CiAgfQogIC8qIHNldCB0aGUgc3Ry
+ZWFtIHJhdGUgKi8KICBycmF0ZSA9IHJhdGU7CiAgZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0
+X3JhdGVfbmVhcihoYW5kbGUsIHBhcmFtcywgJnJyYXRlLCAwKTsKICBpZiAoZXJyIDwgMCkgewog
+ICAgcHJpbnRmKCJSYXRlICVpSHogbm90IGF2YWlsYWJsZSBmb3IgcGxheWJhY2s6ICVzXG4iLCBy
+YXRlLCBzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICByZXR1cm4gZXJyOwogIH0KICBpZiAocnJhdGUg
+IT0gcmF0ZSkgewogICAgcHJpbnRmKCJSYXRlIGRvZXNuJ3QgbWF0Y2ggKHJlcXVlc3RlZCAlaUh6
+LCBnZXQgJWlIeilcbiIsIHJhdGUsIGVycik7CiAgICByZXR1cm4gLUVJTlZBTDsKICB9CiAgLyog
+c2V0IHRoZSBidWZmZXIgdGltZSAqLwogIC8vZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2J1
+ZmZlcl90aW1lX25lYXIoaGFuZGxlLCBwYXJhbXMsICZidWZmZXJfdGltZSwgJmRpcik7CiAgc2l6
+ZSA9IDIwNDg7CiAgZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2J1ZmZlcl9zaXplX25lYXIo
+aGFuZGxlLCBwYXJhbXMsICZzaXplKTsKICBpZiAoZXJyIDwgMCkgewogICAgcHJpbnRmKCJVbmFi
+bGUgdG8gc2V0IGJ1ZmZlciB0aW1lICVpIGZvciBwbGF5YmFjazogJXNcbiIsIHNpemUsIHNuZF9z
+dHJlcnJvcihlcnIpKTsKICAgIHJldHVybiBlcnI7CiAgfQogIGVyciA9IHNuZF9wY21faHdfcGFy
+YW1zX2dldF9idWZmZXJfc2l6ZShwYXJhbXMsICZzaXplKTsKICBpZiAoZXJyIDwgMCkgewogICAg
+cHJpbnRmKCJVbmFibGUgdG8gZ2V0IGJ1ZmZlciBzaXplIGZvciBwbGF5YmFjazogJXNcbiIsIHNu
+ZF9zdHJlcnJvcihlcnIpKTsKICAgIHJldHVybiBlcnI7CiAgfQogIGJ1ZmZlcl9zaXplID0gc2l6
+ZTsKICAvKiBzZXQgdGhlIHBlcmlvZCB0aW1lICovCiAgLy9lcnIgPSBzbmRfcGNtX2h3X3BhcmFt
+c19zZXRfcGVyaW9kX3RpbWVfbmVhcihoYW5kbGUsIHBhcmFtcywgJnBlcmlvZF90aW1lLCAmZGly
+KTsKICBzaXplID0gMTAyNDsKICBlcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19zZXRfcGVyaW9kX3Np
+emVfbmVhcihoYW5kbGUsIHBhcmFtcywgJnNpemUsIDApOwogIGlmIChlcnIgPCAwKSB7CiAgICBw
+cmludGYoIlVuYWJsZSB0byBzZXQgcGVyaW9kIHRpbWUgJWkgZm9yIHBsYXliYWNrOiAlc1xuIiwg
+c2l6ZSwgc25kX3N0cmVycm9yKGVycikpOwogICAgcmV0dXJuIGVycjsKICB9CiAgZXJyID0gc25k
+X3BjbV9od19wYXJhbXNfZ2V0X3BlcmlvZF9zaXplKHBhcmFtcywgJnNpemUsICZkaXIpOwogIGlm
+IChlcnIgPCAwKSB7CiAgICBwcmludGYoIlVuYWJsZSB0byBnZXQgcGVyaW9kIHNpemUgZm9yIHBs
+YXliYWNrOiAlc1xuIiwgc25kX3N0cmVycm9yKGVycikpOwogICAgcmV0dXJuIGVycjsKICB9CiAg
+cGVyaW9kX3NpemUgPSBzaXplOwogIC8qIHdyaXRlIHRoZSBwYXJhbWV0ZXJzIHRvIGRldmljZSAq
+LwogIGVyciA9IHNuZF9wY21faHdfcGFyYW1zKGhhbmRsZSwgcGFyYW1zKTsKICBpZiAoZXJyIDwg
+MCkgewogICAgcHJpbnRmKCJVbmFibGUgdG8gc2V0IGh3IHBhcmFtcyBmb3IgcGxheWJhY2s6ICVz
+XG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICByZXR1cm4gZXJyOwogIH0KICByZXR1cm4gMDsK
+fQpzdGF0aWMgaW50IHNldF9zd3BhcmFtcyhzbmRfcGNtX3QgKmhhbmRsZSwgc25kX3BjbV9zd19w
+YXJhbXNfdCAqc3dwYXJhbXMpCnsKICBpbnQgZXJyOwogIC8qIGdldCB0aGUgY3VycmVudCBzd3Bh
+cmFtcyAqLwogIGVyciA9IHNuZF9wY21fc3dfcGFyYW1zX2N1cnJlbnQoaGFuZGxlLCBzd3BhcmFt
+cyk7CiAgaWYgKGVyciA8IDApIHsKICAgIHByaW50ZigiVW5hYmxlIHRvIGRldGVybWluZSBjdXJy
+ZW50IHN3cGFyYW1zIGZvciBwbGF5YmFjazogJXNcbiIsIHNuZF9zdHJlcnJvcihlcnIpKTsKICAg
+IHJldHVybiBlcnI7CiAgfQogIC8qIHN0YXJ0IHRoZSB0cmFuc2ZlciB3aGVuIHRoZSBidWZmZXIg
+aXMgYWxtb3N0IGZ1bGw6ICovCiAgLyogKGJ1ZmZlcl9zaXplIC8gYXZhaWxfbWluKSAqIGF2YWls
+X21pbiAqLwogIGVyciA9IHNuZF9wY21fc3dfcGFyYW1zX3NldF9zdGFydF90aHJlc2hvbGQoaGFu
+ZGxlLCBzd3BhcmFtcywgcGVyaW9kX3NpemUpOwogIGlmIChlcnIgPCAwKSB7CiAgICBwcmludGYo
+IlVuYWJsZSB0byBzZXQgc3RhcnQgdGhyZXNob2xkIG1vZGUgZm9yIHBsYXliYWNrOiAlc1xuIiwg
+c25kX3N0cmVycm9yKGVycikpOwogICAgcmV0dXJuIGVycjsKICB9CgogIGVyciA9IHNuZF9wY21f
+c3dfcGFyYW1zX3NldF9zdG9wX3RocmVzaG9sZChoYW5kbGUsIHN3cGFyYW1zLCAweDdmZmZmZmZm
+KTsKICBpZiAoZXJyIDwgMCkgewogICAgcHJpbnRmKCJVbmFibGUgdG8gc2V0IHN0b3AgdGhyZXNo
+b2xkIG1vZGUgZm9yIHBsYXliYWNrOiAlc1xuIiwgc25kX3N0cmVycm9yKGVycikpOwogICAgcmV0
+dXJuIGVycjsKICB9CgogIC8qIGFsbG93IHRoZSB0cmFuc2ZlciB3aGVuIGF0IGxlYXN0IHBlcmlv
+ZF9zaXplIHNhbXBsZXMgY2FuIGJlIHByb2Nlc3NlZCAqLwogIC8qIG9yIGRpc2FibGUgdGhpcyBt
+ZWNoYW5pc20gd2hlbiBwZXJpb2QgZXZlbnQgaXMgZW5hYmxlZCAoYWthIGludGVycnVwdCBsaWtl
+IHN0eWxlIHByb2Nlc3NpbmcpICovCiAgLyplcnIgPSBzbmRfcGNtX3N3X3BhcmFtc19zZXRfYXZh
+aWxfbWluKGhhbmRsZSwgc3dwYXJhbXMsIHBlcmlvZF9ldmVudCA/IGJ1ZmZlcl9zaXplIDogcGVy
+aW9kX3NpemUpOwogIGlmIChlcnIgPCAwKSB7CiAgICBwcmludGYoIlVuYWJsZSB0byBzZXQgYXZh
+aWwgbWluIGZvciBwbGF5YmFjazogJXNcbiIsIHNuZF9zdHJlcnJvcihlcnIpKTsKICAgIHJldHVy
+biBlcnI7CiAgfSovCiAgLyogZW5hYmxlIHBlcmlvZCBldmVudHMgd2hlbiByZXF1ZXN0ZWQgKi8K
+ICAvKmlmIChwZXJpb2RfZXZlbnQpIHsKICAgIGVyciA9IHNuZF9wY21fc3dfcGFyYW1zX3NldF9w
+ZXJpb2RfZXZlbnQoaGFuZGxlLCBzd3BhcmFtcywgMSk7CiAgICBpZiAoZXJyIDwgMCkgewogICAg
+ICBwcmludGYoIlVuYWJsZSB0byBzZXQgcGVyaW9kIGV2ZW50OiAlc1xuIiwgc25kX3N0cmVycm9y
+KGVycikpOwogICAgICByZXR1cm4gZXJyOwogICAgfQogIH0qLwogIC8qIHdyaXRlIHRoZSBwYXJh
+bWV0ZXJzIHRvIHRoZSBwbGF5YmFjayBkZXZpY2UgKi8KICBlcnIgPSBzbmRfcGNtX3N3X3BhcmFt
+cyhoYW5kbGUsIHN3cGFyYW1zKTsKICBpZiAoZXJyIDwgMCkgewogICAgcHJpbnRmKCJVbmFibGUg
+dG8gc2V0IHN3IHBhcmFtcyBmb3IgcGxheWJhY2s6ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7
+CiAgICByZXR1cm4gZXJyOwogIH0KICByZXR1cm4gMDsKfQovKgogICAqIFVuZGVycnVuIGFuZCBz
+dXNwZW5kIHJlY292ZXJ5CiAgICovCnN0YXRpYyBpbnQgeHJ1bl9yZWNvdmVyeShzbmRfcGNtX3Qg
+KmhhbmRsZSwgaW50IGVycikKewogIGlmICh2ZXJib3NlKQogICAgcHJpbnRmKCJzdHJlYW0gcmVj
+b3ZlcnlcbiIpOwogIGlmIChlcnIgPT0gLUVQSVBFKSB7IC8qIHVuZGVyLXJ1biAqLwogICAgZXJy
+ID0gc25kX3BjbV9wcmVwYXJlKGhhbmRsZSk7CiAgICBpZiAoZXJyIDwgMCkKICAgICAgcHJpbnRm
+KCJDYW4ndCByZWNvdmVyeSBmcm9tIHVuZGVycnVuLCBwcmVwYXJlIGZhaWxlZDogJXNcbiIsIHNu
+ZF9zdHJlcnJvcihlcnIpKTsKICAgIHJldHVybiAwOwogIH0gZWxzZSBpZiAoZXJyID09IC1FU1RS
+UElQRSkgewogICAgd2hpbGUgKChlcnIgPSBzbmRfcGNtX3Jlc3VtZShoYW5kbGUpKSA9PSAtRUFH
+QUlOKQogICAgICBzbGVlcCgxKTsgLyogd2FpdCB1bnRpbCB0aGUgc3VzcGVuZCBmbGFnIGlzIHJl
+bGVhc2VkICovCiAgICBpZiAoZXJyIDwgMCkgewogICAgICBlcnIgPSBzbmRfcGNtX3ByZXBhcmUo
+aGFuZGxlKTsKICAgICAgaWYgKGVyciA8IDApCiAgICAgICAgcHJpbnRmKCJDYW4ndCByZWNvdmVy
+eSBmcm9tIHN1c3BlbmQsIHByZXBhcmUgZmFpbGVkOiAlc1xuIiwgc25kX3N0cmVycm9yKGVycikp
+OwogICAgfQogICAgcmV0dXJuIDA7CiAgfQogIHJldHVybiBlcnI7Cn0KLyoKICAgKiBUcmFuc2Zl
+ciBtZXRob2QgLSB3cml0ZSBvbmx5CiAgICovCnN0YXRpYyBpbnQgd3JpdGVfbG9vcChzbmRfcGNt
+X3QgKmhhbmRsZSwKICAgIHNpZ25lZCBzaG9ydCAqc2FtcGxlcywKICAgIHNuZF9wY21fY2hhbm5l
+bF9hcmVhX3QgKmFyZWFzKQp7CiAgZG91YmxlIHBoYXNlID0gMDsKICBzaWduZWQgc2hvcnQgKnB0
+cjsKICBpbnQgZXJyOwogIHVuc2lnbmVkIGludCBjcHRyOwogIGludCBjY3B0cjsKICB3aGlsZSAo
+MSkgewogICAgZ2VuZXJhdGVfc2luZShhcmVhcywgMCwgcGVyaW9kX3NpemUsICZwaGFzZSk7CiAg
+ICBwdHIgPSBzYW1wbGVzOwogICAgY3B0ciA9IHBlcmlvZF9zaXplOwogICAgY2NwdHIgPSBwZXJp
+b2Rfc2l6ZTsKICAgIHdoaWxlIChjcHRyID4gMCkgCiAgICB7CiAgICAgIGVyciA9IHNuZF9wY21f
+d3JpdGVpKGhhbmRsZSwgcHRyLCBjcHRyKTsKICAgICAgaWYgKGVyciA9PSAtRUFHQUlOKQogICAg
+ICB7CiAgICAgICAgdXNsZWVwKDEwMDApOwogICAgICAgIGNvbnRpbnVlOwogICAgICB9CiAgICAg
+IGlmIChlcnIgPCAwKSAKICAgICAgewogICAgICAgIHByaW50ZigiY2FsbGluZyB4cnVuX3JlY292
+ZXJ5XG4iKTsKICAgICAgICBpZiAoeHJ1bl9yZWNvdmVyeShoYW5kbGUsIGVycikgPCAwKSAKICAg
+ICAgICB7CiAgICAgICAgICBwcmludGYoIldyaXRlIGVycm9yOiAlc1xuIiwgc25kX3N0cmVycm9y
+KGVycikpOwogICAgICAgICAgZXhpdChFWElUX0ZBSUxVUkUpOwogICAgICAgIH0KICAgICAgICBl
+bHNlCiAgICAgICAgICBjb250aW51ZTsKICAgICAgIC8vIGJyZWFrOyAvKiBza2lwIG9uZSBwZXJp
+b2QgKi8KICAgICAgfQogICAgICBwdHIgKz0gZXJyICogY2hhbm5lbHM7CiAgICAgIGNwdHIgLT0g
+ZXJyOwogICAgICBjY3B0ciAtPSBlcnI7CiAgICAgIGlmKGNjcHRyIDwgMCkKICAgICAgICBwcmlu
+dGYoIiEhISBjcHRyIDwgMCAhISFcbiIpOwogICAgfQogIH0KfQovKgogICAqCiAgICovCnN0cnVj
+dCB0cmFuc2Zlcl9tZXRob2QgewogIGNvbnN0IGNoYXIgKm5hbWU7CiAgc25kX3BjbV9hY2Nlc3Nf
+dCBhY2Nlc3M7CiAgaW50ICgqdHJhbnNmZXJfbG9vcCkoc25kX3BjbV90ICpoYW5kbGUsCiAgICAg
+IHNpZ25lZCBzaG9ydCAqc2FtcGxlcywKICAgICAgc25kX3BjbV9jaGFubmVsX2FyZWFfdCAqYXJl
+YXMpOwp9OwpzdGF0aWMgc3RydWN0IHRyYW5zZmVyX21ldGhvZCB0cmFuc2Zlcl9tZXRob2RzW10g
+PSB7CiAgeyAid3JpdGUiLCBTTkRfUENNX0FDQ0VTU19SV19JTlRFUkxFQVZFRCwgd3JpdGVfbG9v
+cCB9LAovKiAgeyAid3JpdGVfYW5kX3BvbGwiLCBTTkRfUENNX0FDQ0VTU19SV19JTlRFUkxFQVZF
+RCwgd3JpdGVfYW5kX3BvbGxfbG9vcCB9LAogIHsgImFzeW5jIiwgU05EX1BDTV9BQ0NFU1NfUldf
+SU5URVJMRUFWRUQsIGFzeW5jX2xvb3AgfSwKICB7ICJhc3luY19kaXJlY3QiLCBTTkRfUENNX0FD
+Q0VTU19NTUFQX0lOVEVSTEVBVkVELCBhc3luY19kaXJlY3RfbG9vcCB9LAogIHsgImRpcmVjdF9p
+bnRlcmxlYXZlZCIsIFNORF9QQ01fQUNDRVNTX01NQVBfSU5URVJMRUFWRUQsIGRpcmVjdF9sb29w
+IH0sCiAgeyAiZGlyZWN0X25vbmludGVybGVhdmVkIiwgU05EX1BDTV9BQ0NFU1NfTU1BUF9OT05J
+TlRFUkxFQVZFRCwgZGlyZWN0X2xvb3AgfSwKICB7ICJkaXJlY3Rfd3JpdGUiLCBTTkRfUENNX0FD
+Q0VTU19NTUFQX0lOVEVSTEVBVkVELCBkaXJlY3Rfd3JpdGVfbG9vcCB9LCovCiAgeyBOVUxMLCBT
+TkRfUENNX0FDQ0VTU19SV19JTlRFUkxFQVZFRCwgTlVMTCB9Cn07CnN0YXRpYyB2b2lkIGhlbHAo
+dm9pZCkKewogIGludCBrOwogIHByaW50ZigKICAgICAgIlVzYWdlOiBwY20gW09QVElPTl0uLi4g
+W0ZJTEVdLi4uXG4iCiAgICAgICItaCwtLWhlbHAgaGVscFxuIgogICAgICAiLUQsLS1kZXZpY2Ug
+cGxheWJhY2sgZGV2aWNlXG4iCiAgICAgICItciwtLXJhdGUgc3RyZWFtIHJhdGUgaW4gSHpcbiIK
+ICAgICAgIi1jLC0tY2hhbm5lbHMgY291bnQgb2YgY2hhbm5lbHMgaW4gc3RyZWFtXG4iCiAgICAg
+ICItZiwtLWZyZXF1ZW5jeSBzaW5lIHdhdmUgZnJlcXVlbmN5IGluIEh6XG4iCiAgICAgICItYiwt
+LWJ1ZmZlciByaW5nIGJ1ZmZlciBzaXplIGluIHVzXG4iCiAgICAgICItcCwtLXBlcmlvZCBwZXJp
+b2Qgc2l6ZSBpbiB1c1xuIgogICAgICAiLW0sLS1tZXRob2QgdHJhbnNmZXIgbWV0aG9kXG4iCiAg
+ICAgICItbywtLWZvcm1hdCBzYW1wbGUgZm9ybWF0XG4iCiAgICAgICItdiwtLXZlcmJvc2Ugc2hv
+dyB0aGUgUENNIHNldHVwIHBhcmFtZXRlcnNcbiIKICAgICAgIi1uLC0tbm9yZXNhbXBsZSBkbyBu
+b3QgcmVzYW1wbGVcbiIKICAgICAgIi1lLC0tcGV2ZW50IGVuYWJsZSBwb2xsIGV2ZW50IGFmdGVy
+IGVhY2ggcGVyaW9kXG4iCiAgICAgICJcbiIpOwogIHByaW50ZigiUmVjb2duaXplZCBzYW1wbGUg
+Zm9ybWF0cyBhcmU6Iik7CiAgZm9yIChrID0gMDsgayA8IFNORF9QQ01fRk9STUFUX0xBU1Q7ICsr
+aykgewogICAgY29uc3QgY2hhciAqcyA9IHNuZF9wY21fZm9ybWF0X25hbWUoayk7CiAgICBpZiAo
+cykKICAgICAgcHJpbnRmKCIgJXMiLCBzKTsKICB9CiAgcHJpbnRmKCJcbiIpOwogIHByaW50Zigi
+UmVjb2duaXplZCB0cmFuc2ZlciBtZXRob2RzIGFyZToiKTsKICBmb3IgKGsgPSAwOyB0cmFuc2Zl
+cl9tZXRob2RzW2tdLm5hbWU7IGsrKykKICAgIHByaW50ZigiICVzIiwgdHJhbnNmZXJfbWV0aG9k
+c1trXS5uYW1lKTsKICBwcmludGYoIlxuIik7Cn0KaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFy
+Z3ZbXSkKewogIHN0cnVjdCBvcHRpb24gbG9uZ19vcHRpb25bXSA9CiAgewogICAgeyJoZWxwIiwg
+MCwgTlVMTCwgJ2gnfSwKICAgIHsiZGV2aWNlIiwgMSwgTlVMTCwgJ0QnfSwKICAgIHsicmF0ZSIs
+IDEsIE5VTEwsICdyJ30sCiAgICB7ImNoYW5uZWxzIiwgMSwgTlVMTCwgJ2MnfSwKICAgIHsiZnJl
+cXVlbmN5IiwgMSwgTlVMTCwgJ2YnfSwKICAgIHsiYnVmZmVyIiwgMSwgTlVMTCwgJ2InfSwKICAg
+IHsicGVyaW9kIiwgMSwgTlVMTCwgJ3AnfSwKICAgIHsibWV0aG9kIiwgMSwgTlVMTCwgJ20nfSwK
+ICAgIHsiZm9ybWF0IiwgMSwgTlVMTCwgJ28nfSwKICAgIHsidmVyYm9zZSIsIDEsIE5VTEwsICd2
+J30sCiAgICB7Im5vcmVzYW1wbGUiLCAxLCBOVUxMLCAnbid9LAogICAgeyJwZXZlbnQiLCAxLCBO
+VUxMLCAnZSd9LAogICAge05VTEwsIDAsIE5VTEwsIDB9LAogIH07CiAgc25kX3BjbV90ICpoYW5k
+bGU7CiAgaW50IGVyciwgbW9yZWhlbHA7CiAgc25kX3BjbV9od19wYXJhbXNfdCAqaHdwYXJhbXM7
+CiAgc25kX3BjbV9zd19wYXJhbXNfdCAqc3dwYXJhbXM7CiAgaW50IG1ldGhvZCA9IDA7CiAgc2ln
+bmVkIHNob3J0ICpzYW1wbGVzOwogIHVuc2lnbmVkIGludCBjaG47CiAgc25kX3BjbV9jaGFubmVs
+X2FyZWFfdCAqYXJlYXM7CiAgc25kX3BjbV9od19wYXJhbXNfYWxsb2NhKCZod3BhcmFtcyk7CiAg
+c25kX3BjbV9zd19wYXJhbXNfYWxsb2NhKCZzd3BhcmFtcyk7CiAgbW9yZWhlbHAgPSAwOwogIHdo
+aWxlICgxKSB7CiAgICBpbnQgYzsKICAgIGlmICgoYyA9IGdldG9wdF9sb25nKGFyZ2MsIGFyZ3Ys
+ICJoRDpyOmM6ZjpiOnA6bTpvOnZuZSIsIGxvbmdfb3B0aW9uLCBOVUxMKSkgPCAwKQogICAgICBi
+cmVhazsKICAgIHN3aXRjaCAoYykgewogICAgICBjYXNlICdoJzoKICAgICAgICBtb3JlaGVscCsr
+OwogICAgICAgIGJyZWFrOwogICAgICBjYXNlICdEJzoKICAgICAgICBkZXZpY2UgPSBzdHJkdXAo
+b3B0YXJnKTsKICAgICAgICBicmVhazsKICAgICAgY2FzZSAncic6CiAgICAgICAgcmF0ZSA9IGF0
+b2kob3B0YXJnKTsKICAgICAgICByYXRlID0gcmF0ZSA8IDQwMDAgPyA0MDAwIDogcmF0ZTsKICAg
+ICAgICByYXRlID0gcmF0ZSA+IDE5NjAwMCA/IDE5NjAwMCA6IHJhdGU7CiAgICAgICAgYnJlYWs7
+CiAgICAgIGNhc2UgJ2MnOgogICAgICAgIGNoYW5uZWxzID0gYXRvaShvcHRhcmcpOwogICAgICAg
+IGNoYW5uZWxzID0gY2hhbm5lbHMgPCAxID8gMSA6IGNoYW5uZWxzOwogICAgICAgIGNoYW5uZWxz
+ID0gY2hhbm5lbHMgPiAxMDI0ID8gMTAyNCA6IGNoYW5uZWxzOwogICAgICAgIGJyZWFrOwogICAg
+ICBjYXNlICdmJzoKICAgICAgICBmcmVxID0gYXRvaShvcHRhcmcpOwogICAgICAgIGZyZXEgPSBm
+cmVxIDwgNTAgPyA1MCA6IGZyZXE7CiAgICAgICAgZnJlcSA9IGZyZXEgPiA1MDAwID8gNTAwMCA6
+IGZyZXE7CiAgICAgICAgYnJlYWs7CiAgICAgIGNhc2UgJ2InOgogICAgICAgIGJ1ZmZlcl90aW1l
+ID0gYXRvaShvcHRhcmcpOwogICAgICAgIGJ1ZmZlcl90aW1lID0gYnVmZmVyX3RpbWUgPCAxMDAw
+ID8gMTAwMCA6IGJ1ZmZlcl90aW1lOwogICAgICAgIGJ1ZmZlcl90aW1lID0gYnVmZmVyX3RpbWUg
+PiAxMDAwMDAwID8gMTAwMDAwMCA6IGJ1ZmZlcl90aW1lOwogICAgICAgIGJyZWFrOwogICAgICBj
+YXNlICdwJzoKICAgICAgICBwZXJpb2RfdGltZSA9IGF0b2kob3B0YXJnKTsKICAgICAgICBwZXJp
+b2RfdGltZSA9IHBlcmlvZF90aW1lIDwgMTAwMCA/IDEwMDAgOiBwZXJpb2RfdGltZTsKICAgICAg
+ICBwZXJpb2RfdGltZSA9IHBlcmlvZF90aW1lID4gMTAwMDAwMCA/IDEwMDAwMDAgOiBwZXJpb2Rf
+dGltZTsKICAgICAgICBicmVhazsKICAgICAgY2FzZSAnbSc6CiAgICAgICAgZm9yIChtZXRob2Qg
+PSAwOyB0cmFuc2Zlcl9tZXRob2RzW21ldGhvZF0ubmFtZTsgbWV0aG9kKyspCiAgICAgICAgICBp
+ZiAoIXN0cmNhc2VjbXAodHJhbnNmZXJfbWV0aG9kc1ttZXRob2RdLm5hbWUsIG9wdGFyZykpCiAg
+ICAgICAgICAgIGJyZWFrOwogICAgICAgIGlmICh0cmFuc2Zlcl9tZXRob2RzW21ldGhvZF0ubmFt
+ZSA9PSBOVUxMKQogICAgICAgICAgbWV0aG9kID0gMDsKICAgICAgICBicmVhazsKICAgICAgY2Fz
+ZSAnbyc6CiAgICAgICAgZm9yIChmb3JtYXQgPSAwOyBmb3JtYXQgPCBTTkRfUENNX0ZPUk1BVF9M
+QVNUOyBmb3JtYXQrKykgewogICAgICAgICAgY29uc3QgY2hhciAqZm9ybWF0X25hbWUgPSBzbmRf
+cGNtX2Zvcm1hdF9uYW1lKGZvcm1hdCk7CiAgICAgICAgICBpZiAoZm9ybWF0X25hbWUpCiAgICAg
+ICAgICAgIGlmICghc3RyY2FzZWNtcChmb3JtYXRfbmFtZSwgb3B0YXJnKSkKICAgICAgICAgICAg
+ICBicmVhazsKICAgICAgICB9CiAgICAgICAgaWYgKGZvcm1hdCA9PSBTTkRfUENNX0ZPUk1BVF9M
+QVNUKQogICAgICAgICAgZm9ybWF0ID0gU05EX1BDTV9GT1JNQVRfUzE2OwogICAgICAgIGlmICgh
+c25kX3BjbV9mb3JtYXRfbGluZWFyKGZvcm1hdCkgJiYKICAgICAgICAgICAgIShmb3JtYXQgPT0g
+U05EX1BDTV9GT1JNQVRfRkxPQVRfTEUgfHwKICAgICAgICAgICAgICBmb3JtYXQgPT0gU05EX1BD
+TV9GT1JNQVRfRkxPQVRfQkUpKSB7CiAgICAgICAgICBwcmludGYoIkludmFsaWQgKG5vbi1saW5l
+YXIvZmxvYXQpIGZvcm1hdCAlc1xuIiwKICAgICAgICAgICAgICBvcHRhcmcpOwogICAgICAgICAg
+cmV0dXJuIDE7CiAgICAgICAgfQogICAgICAgIGJyZWFrOwogICAgICBjYXNlICd2JzoKICAgICAg
+ICB2ZXJib3NlID0gMTsKICAgICAgICBicmVhazsKICAgICAgY2FzZSAnbic6CiAgICAgICAgcmVz
+YW1wbGUgPSAwOwogICAgICAgIGJyZWFrOwogICAgICBjYXNlICdlJzoKICAgICAgICBwZXJpb2Rf
+ZXZlbnQgPSAxOwogICAgICAgIGJyZWFrOwogICAgfQogIH0KICBpZiAobW9yZWhlbHApIHsKICAg
+IGhlbHAoKTsKICAgIHJldHVybiAwOwogIH0KICBlcnIgPSBzbmRfb3V0cHV0X3N0ZGlvX2F0dGFj
+aCgmb3V0cHV0LCBzdGRvdXQsIDApOwogIGlmIChlcnIgPCAwKSB7CiAgICBwcmludGYoIk91dHB1
+dCBmYWlsZWQ6ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICByZXR1cm4gMDsKICB9CiAg
+cHJpbnRmKCJQbGF5YmFjayBkZXZpY2UgaXMgJXNcbiIsIGRldmljZSk7CiAgcHJpbnRmKCJTdHJl
+YW0gcGFyYW1ldGVycyBhcmUgJWlIeiwgJXMsICVpIGNoYW5uZWxzXG4iLCByYXRlLCBzbmRfcGNt
+X2Zvcm1hdF9uYW1lKGZvcm1hdCksIGNoYW5uZWxzKTsKICBwcmludGYoIlNpbmUgd2F2ZSByYXRl
+IGlzICUuNGZIelxuIiwgZnJlcSk7CiAgcHJpbnRmKCJVc2luZyB0cmFuc2ZlciBtZXRob2Q6ICVz
+XG4iLCB0cmFuc2Zlcl9tZXRob2RzW21ldGhvZF0ubmFtZSk7CiAgaWYgKChlcnIgPSBzbmRfcGNt
+X29wZW4oJmhhbmRsZSwgZGV2aWNlLCBTTkRfUENNX1NUUkVBTV9QTEFZQkFDSywgMCkpIDwgMCkg
+ewogICAgcHJpbnRmKCJQbGF5YmFjayBvcGVuIGVycm9yOiAlc1xuIiwgc25kX3N0cmVycm9yKGVy
+cikpOwogICAgcmV0dXJuIDA7CiAgfQogIGlmICgoZXJyID0gc2V0X2h3cGFyYW1zKGhhbmRsZSwg
+aHdwYXJhbXMsIHRyYW5zZmVyX21ldGhvZHNbbWV0aG9kXS5hY2Nlc3MpKSA8IDApIHsKICAgIHBy
+aW50ZigiU2V0dGluZyBvZiBod3BhcmFtcyBmYWlsZWQ6ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJy
+KSk7CiAgICBleGl0KEVYSVRfRkFJTFVSRSk7CiAgfQogIGlmICgoZXJyID0gc2V0X3N3cGFyYW1z
+KGhhbmRsZSwgc3dwYXJhbXMpKSA8IDApIHsKICAgIHByaW50ZigiU2V0dGluZyBvZiBzd3BhcmFt
+cyBmYWlsZWQ6ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICBleGl0KEVYSVRfRkFJTFVS
+RSk7CiAgfQogIGlmICh2ZXJib3NlID4gMCkKICAgIHNuZF9wY21fZHVtcChoYW5kbGUsIG91dHB1
+dCk7CiAgc2FtcGxlcyA9IG1hbGxvYygocGVyaW9kX3NpemUgKiBjaGFubmVscyAqIHNuZF9wY21f
+Zm9ybWF0X3BoeXNpY2FsX3dpZHRoKGZvcm1hdCkpIC8gOCk7CiAgaWYgKHNhbXBsZXMgPT0gTlVM
+TCkgewogICAgcHJpbnRmKCJObyBlbm91Z2ggbWVtb3J5XG4iKTsKICAgIGV4aXQoRVhJVF9GQUlM
+VVJFKTsKICB9CiAgYXJlYXMgPSBjYWxsb2MoY2hhbm5lbHMsIHNpemVvZihzbmRfcGNtX2NoYW5u
+ZWxfYXJlYV90KSk7CiAgaWYgKGFyZWFzID09IE5VTEwpIHsKICAgIHByaW50ZigiTm8gZW5vdWdo
+IG1lbW9yeVxuIik7CiAgICBleGl0KEVYSVRfRkFJTFVSRSk7CiAgfQogIGZvciAoY2huID0gMDsg
+Y2huIDwgY2hhbm5lbHM7IGNobisrKSB7CiAgICBhcmVhc1tjaG5dLmFkZHIgPSBzYW1wbGVzOwog
+ICAgYXJlYXNbY2huXS5maXJzdCA9IGNobiAqIHNuZF9wY21fZm9ybWF0X3BoeXNpY2FsX3dpZHRo
+KGZvcm1hdCk7CiAgICBhcmVhc1tjaG5dLnN0ZXAgPSBjaGFubmVscyAqIHNuZF9wY21fZm9ybWF0
+X3BoeXNpY2FsX3dpZHRoKGZvcm1hdCk7CiAgfQogIGVyciA9IHRyYW5zZmVyX21ldGhvZHNbbWV0
+aG9kXS50cmFuc2Zlcl9sb29wKGhhbmRsZSwgc2FtcGxlcywgYXJlYXMpOwogIGlmIChlcnIgPCAw
+KQogICAgcHJpbnRmKCJUcmFuc2ZlciBmYWlsZWQ6ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7
+CiAgZnJlZShhcmVhcyk7CiAgZnJlZShzYW1wbGVzKTsKICBzbmRfcGNtX2Nsb3NlKGhhbmRsZSk7
+CiAgcmV0dXJuIDA7Cn0K
+--f46d04428262b98fc004f2c13a46
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--f46d04428262b98fc004f2c13a46--
