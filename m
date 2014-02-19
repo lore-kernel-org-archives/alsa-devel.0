@@ -1,24 +1,24 @@
 From: Takashi Sakamoto <mocchi.sakamoto113@gmail.com>
 Subject: About 'SNDRV_PCM_CLASS_MULTI' for devices with
 	multi-channels
-Date: Thu, 20 Feb 2014 01:21:33 +0900
-Message-ID: <5304DA0D.2020809@sakamocchi.jp>
+Date: Thu, 20 Feb 2014 01:41:46 +0900
+Message-ID: <5304DECA.30006@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pa0-f65.google.com (mail-pa0-f65.google.com
  [209.85.220.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E276265A65
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 17:21:38 +0100 (CET)
-Received: by mail-pa0-f65.google.com with SMTP id kq14so353148pab.4
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 08:21:37 -0800 (PST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 36742265670
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 17:42:00 +0100 (CET)
+Received: by mail-pa0-f65.google.com with SMTP id kq14so367721pab.8
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 08:41:59 -0800 (PST)
 Received: from [192.168.100.117] (e0109-106-188-242-244.uqwimax.jp.
  [106.188.242.244])
- by mx.google.com with ESMTPSA id sy2sm1983491pbc.28.2014.02.19.08.21.35
+ by mx.google.com with ESMTPSA id n6sm2156825pbj.22.2014.02.19.08.41.57
  for <alsa-devel@alsa-project.org>
  (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Wed, 19 Feb 2014 08:21:36 -0800 (PST)
+ Wed, 19 Feb 2014 08:41:58 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
