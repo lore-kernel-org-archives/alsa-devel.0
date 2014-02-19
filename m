@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: Intel: Make sure we only build SST
 	drivers on X86
-Date: Thu, 20 Feb 2014 00:57:58 +0900
-Message-ID: <20140219155758.GK2669@sirena.org.uk>
+Date: Thu, 20 Feb 2014 01:02:57 +0900
+Message-ID: <20140219160257.GL2669@sirena.org.uk>
 References: <1392818784-6248-1-git-send-email-liam.r.girdwood@linux.intel.com>
  <1392818784-6248-2-git-send-email-liam.r.girdwood@linux.intel.com>
  <20140219150040.GD2669@sirena.org.uk>
- <s5h1tyzw2la.wl%tiwai@suse.de>
+ <1392823461.2351.61.camel@loki>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8516330097980355319=="
+Content-Type: multipart/mixed; boundary="===============6027258117925567294=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A4A8D265A1C
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 16:58:55 +0100 (CET)
-In-Reply-To: <s5h1tyzw2la.wl%tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7845F265A32
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2014 17:03:19 +0100 (CET)
+In-Reply-To: <1392823461.2351.61.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,71 +23,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8516330097980355319==
+--===============6027258117925567294==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WqKVlampDlunLwEp"
+	protocol="application/pgp-signature"; boundary="7d9D9O5VQHkAXyI1"
 Content-Disposition: inline
 
 
---WqKVlampDlunLwEp
+--7d9D9O5VQHkAXyI1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 19, 2014 at 04:21:05PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+On Wed, Feb 19, 2014 at 03:24:21PM +0000, Liam Girdwood wrote:
+> On Thu, 2014-02-20 at 00:00 +0900, Mark Brown wrote:
 
 > > But lots of architectures do actually have these operations, I suspect
 > > looking at some of the existing users depending on PCI is enough if
 > > excessively strict (this will improve build coverage which tends to be
 > > useful even if the driver can't be run).
 
-> Yes.  I guess including linux/io.h should fix the build issue.
+> I know that the other architectures will implement their own ops, but no
+> other architecture other than X86 will have Intel SST.=20
 
-It should for PowerPC (and ought to be done anyway since an implicit
-include is going to break eventually on x86 too) but it won't for
-architectures that don't have the function at all.
+Yes, it should be something like
 
-> Though, limiting the build to X86 isn't bad particularly for this
-> driver.
+	depends on (X86 || COMPILE_TEST) && WHATEVER
 
-Most people working on ASoC don't build x86 that often, more build
-coverage of these minority platforms is going to help avoid issues for
--next! :)
+if there's a WHATEVER needed to guarantee the operation is there (I
+think PCI does the job).  That way only people actively looking to build
+test will see the option on !X86 but people doing wider scale work can
+get build coverage more easily.
 
---WqKVlampDlunLwEp
+> I can either send a new patch that additionally includes linux/io.h or
+> send a V2 ?
+
+The include of linux/io.h is needed no matter what - if it's being
+implicitly included on x86 then someone could change the headers and
+break it later on.  If you can send a new patch right now that'd be
+great.
+
+--7d9D9O5VQHkAXyI1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBNSDAAoJELSic+t+oim9bGQP/iviUjqVDKSKJ8Lsoz5c+KaP
-yE81hEBPBHSpnQ7NnYBXlPbP34KtSpcyIOjZheLZAzNNWvE8jjxseXvPFvKDYPqM
-SNFkqi7ZtnS2vH2TkPmqsxA7EnQSS6pXshNke3Rd5MDssX0xi+hgqEu4AvqSDUto
-KfKNLlcFRJk2E79pRBn0+3DTi8cp2qS3QbCfLmCkTq6LtCh9WduwGgN+iVFcYSVo
-3zqHH2su/KC4qiXHh89zsVV7k320LwrjBlOmTOtZZ9MMHBRKqytqAqxeH30C141w
-1s2+SRYPpVdBZkvfI/CKiubXdrHyz7y2ju2oCej6YlUoQiddIJU9Sxhx6CMHxt2c
-rbiXML1K8Kyie2+yn5hAEN9kghx3+qWOG36/5HYGc0NZXiQUqPo0qwgtRoiS1ajr
-uqHuIgSgvsnlbhZ8WdESe2x1YK3at4XDd8pYulL63/EdTdJyhuIvMECOU19APjf6
-Uji0XujNk8rbCX4L0AH3VrIFNQXCcfyoEtwgM1NBVJ8M37BNBuNi2ctFGOVtSx6f
-5TNFzSKXLfqitLxdIiSrRPzhHiHC/r+vnymAXEoILsAvMqvZOF5LOv8Bl2+R2ZXK
-gfgN6Cmxy4b5MTyaWWDJRgwhLIvFz2/mc5sktKdG3oFOS7xVa6hn9Me+css0mw/r
-k9q4sGw2Lh7m2DndwJ8j
-=ZC19
+iQIcBAEBAgAGBQJTBNWtAAoJELSic+t+oim9udgP/RNoOsFkifOUIrjatxn2sEaM
+ot/uG9BmvoQXY39iywS0MSPNVybdpnNaVvDI20sI3YMCCYksyia+mVYBH5/Xzjpc
+Vg+g5+u+V7YcsRRmtw9idZQKu6C/Wpe+N5zpEZVe/Luw5BF04S/06J1QMyRk9okm
+ZXvrupjXREyqM3Ag3Ec6P/hKfg+ncWWJkyQ/hIIrNcDwijSbym9xV+/wzXZa6bye
+TZcZnEHRK+Lz5L2oHxJbOCCMxZcLdiOXBwt4X0YFAnksLHx7myrwoSP1SQMPx+8V
+84d8soyoSnfjCZ7wv09PjRdfWmvje/uzq2G1boiMr9wovAC5T8Rv4sqCxHTTpTs4
+2nbaEtCsbOIpYOVeaTCNTaE1lU+w2XIYNZtXLiewTELpR1wWKJqse/LMkE3ZAIjz
+2OR896qXHG/rrkweXJz+4PiIzToh8OHbhBjawVTTYOT/ywGv30Mo46a4ghNwFtri
+TWfPMCzzHDZi60nKQBY627lwzlBaMMXBcpUbGdESxQSFtbKVXhcAx+rq9T/FIrpf
+Wk6nHfEIMv9/j1NsPZkCiYybBwtOy3Z0qHW3fHktTfuLcQVLzNALOb/V0eVjVX8J
+whNLFHpmQNhfxylCOB1vs9Fg/k1TKLtg4i1razFFo9KJeEZMY29wCGF6jnPokJ9x
+7rNwr4kdpAT/Qk4TZCMJ
+=eo+S
 -----END PGP SIGNATURE-----
 
---WqKVlampDlunLwEp--
+--7d9D9O5VQHkAXyI1--
 
---===============8516330097980355319==
+--===============6027258117925567294==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8516330097980355319==--
+--===============6027258117925567294==--
