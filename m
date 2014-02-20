@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 014/102] ASoC: wm8983: Remove superfluous
+Subject: Re: [PATCH 016/102] ASoC: wm8995: Remove superfluous
 	const
-Date: Thu, 20 Feb 2014 10:57:57 +0900
-Message-ID: <20140220015757.GC2669@sirena.org.uk>
+Date: Thu, 20 Feb 2014 10:58:30 +0900
+Message-ID: <20140220015830.GE2669@sirena.org.uk>
 References: <1392723148-12597-1-git-send-email-tiwai@suse.de>
- <1392723148-12597-12-git-send-email-tiwai@suse.de>
+ <1392723148-12597-14-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7452380791877991101=="
+Content-Type: multipart/mixed; boundary="===============7544242378619391323=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 66AF5265646
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 02:58:14 +0100 (CET)
-In-Reply-To: <1392723148-12597-12-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id B4E1D2656C4
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 02:58:42 +0100 (CET)
+In-Reply-To: <1392723148-12597-14-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +26,51 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7452380791877991101==
+--===============7544242378619391323==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2UPnqFQyhpFUUpcd"
+	protocol="application/pgp-signature"; boundary="E2M0Wzx5stW0r4fF"
 Content-Disposition: inline
 
 
---2UPnqFQyhpFUUpcd
+--E2M0Wzx5stW0r4fF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 18, 2014 at 12:32:26PM +0100, Takashi Iwai wrote:
+On Tue, Feb 18, 2014 at 12:32:28PM +0100, Takashi Iwai wrote:
 > As SOC_ENUM_SINGLE_DECL() itself contains const modifier now, we can
 > reduce const from its users.
 
 Applied, thanks.
 
---2UPnqFQyhpFUUpcd
+--E2M0Wzx5stW0r4fF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBWEiAAoJELSic+t+oim9yVAP/iX3nCWjkyO8LnvgFlc2XXvj
-wNS83Oe++44VyQoTyFiIZPFsXvZBGU3bPU3IkU0u0ROCr0ahE55msTxYpNQsTgN0
-9IQ/BqnqtwztdRuisQB1mbsw29GlNQ67OZU+Jdkp+reawflYbdiNRR/KjlvSODtB
-iR7ueoCmbWjAdQU4SiYtue57OLLdwxFzxPAQzvQayaj08DAMb6omfC+VbQ5pIvaU
-IaT14aBraJ7PZn3CUqsJRKIan4NxIxxd4erY5vkdCq1spToJXONOCG9UlKPRpV5d
-JYX3duYExsoCLhMc8Uti3OLouvA9S3pyVXuFC+EAe2aV+Z/vOBbtfs0CGioisgeS
-+X0m2JqmI4Dg6wIvcRTSdrlWWZv6Rwl3dKZSRWDrp08HqAa/Qb7D4r4zNmNiNPXE
-zgHmFIKBeGq9/ZsUTTTzQvmZR0apSG5vYsyI6TrRv/alxI4Wyy3r9r6RrmKL0Bkt
-3qnLJmtxjv0cJ5F7maTRBUHwhGIVkrr0gAS+TBInCSLrEyAqV3dF4hI7XOYArUN4
-N/eLBQa9NdOfL+wtjf63tEh+bZISMkbZFaIwo9av1aUEitdTCwKgHQIIlUTRbjBx
-S1LZtU+HIHpd6KQ9xiBYIaNcjHp1pzzOR+k358kFLfNDH/tv3UWKg5Vo/0+LstJC
-7S1NaxAt8leZWGchbCta
-=0mWI
+iQIcBAEBAgAGBQJTBWFDAAoJELSic+t+oim9mpMP/14F67kaGWyN2IdaUipFiC1q
+RnMrZ0fFxq3upRPdr1StcYoU47KpwUE1bS49RnrQ9V9OONgEo2C3GKnQ2Wx1KpO4
+L7BT4FpROjEeWoG/mc26wsW949H0dNz1beaaByXiBjmZLbPFiSML5K8k7jUD7cdz
+20UCg0BKDOf0XN+Oa7wfaBs+zxJkOfUmIIXZ0E94tifbJzu+LqD7Fa1VO1hmh4as
+tIeFXe5um0Fc0wjDefCbSQrEZTE/C0ZTPCBDRT3vmttGDr3LkzuZqmY2yr2BE3L3
+dXWmhrPo5BCsInUvhKS06mM0Qog+CHQJ1Ac8rVHNbZC9063bD2GYNIKP+02d6DGy
+zFrDWiR0CKukanlBB1YqEKkcRe89dGgI1AuNy0tnKREOTM38UH9djPTYrtRcl7Dy
+gCJB5uDKWVI/7vCyAvXQ0mMtp8bZrXjRz2nf3oulJSwKUvxEBySs/F2iFpLM8kjN
+826zVEIumt409P1mzw9lVQFWkhxywo0l68ELfLM5COKgMAlNrjQJngreceeX7lo3
+ThkijMK79OTpuwPOjWev0MC7vlATtkINZoa720T5yR/W6pj4H8hgoz8cNaMKUgR8
+oJcdy+8y6+xLSw4shARq7feXdjkL6dvFeFb2cX6mWT7gMPjqdugK50YrTPFThe9G
+/69Tma9Qn7BzUnJ6vNBs
+=/Yq0
 -----END PGP SIGNATURE-----
 
---2UPnqFQyhpFUUpcd--
+--E2M0Wzx5stW0r4fF--
 
---===============7452380791877991101==
+--===============7544242378619391323==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7452380791877991101==--
+--===============7544242378619391323==--
