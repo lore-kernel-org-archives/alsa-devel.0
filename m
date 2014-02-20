@@ -1,52 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 07/17 v2] ASoC: wm8962: Update locking around use of DAPM
+Subject: Re: [PATCH 08/17 v2] ASoC: wm8994: Update locking around use of DAPM
  pin API
-Date: Thu, 20 Feb 2014 19:26:44 +0900
-Message-ID: <20140220102644.GI2669@sirena.org.uk>
+Date: Thu, 20 Feb 2014 19:26:56 +0900
+Message-ID: <20140220102655.GJ2669@sirena.org.uk>
 References: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1392736948-26623-8-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1392736948-26623-9-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2bhIMA05eV4p7XYQ"
+	protocol="application/pgp-signature"; boundary="bt3HvjSfDPxOMUKF"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1392736948-26623-8-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+In-Reply-To: <1392736948-26623-9-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Cc: myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
 
---2bhIMA05eV4p7XYQ
+--bt3HvjSfDPxOMUKF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 18, 2014 at 03:22:18PM +0000, Charles Keepax wrote:
+On Tue, Feb 18, 2014 at 03:22:19PM +0000, Charles Keepax wrote:
 > The pin updates in this driver look like they are intended to be done
 > atomically, update to do so.
 
 Applied, thanks.
 
---2bhIMA05eV4p7XYQ
+--bt3HvjSfDPxOMUKF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBdhhAAoJELSic+t+oim9jegP/RpS/doXqmAv60CfYPG1InqU
-qL9jS13sOqrm/WvykGqgzV9KvdoymaPgaXXXvFPXB5lfqK+Ojqx01Mw6WgNTIxRr
-S66omDYbKlHvRpZD6oo1EMv6hXK8b48vu8t8zmOJgiBtnFybdUjQDBENtc63KMDU
-bKBv4FIgtkgd7xOwl8zdQdGD4lWgdPYhmJQxG6FsSqPaz43jow1+8ZzgkeAYIbVd
-NVbgtxsrMUlecEd9oGtk6jNMymEET80Irqonx4Z+Gz2TWgg3G9ViYK/Kc/SoK1bl
-1DWMotk1ArtajA8y9XIoUOqGS0nOHPLRwu3U43Wk/2c1qRhXA8ethQSZ5iJYnbTN
-Hq1rlQzlXQuJ1Z7uOvv/Ruk/ooek0IJFu9pOILGe2rg7BeW2j4iTJsGw/tdBEkoY
-yu3Cr+ijFINTkTZlO68otX9xyalwlLtyeMHIw+Om93WigFXg/Q7sVrcTq1dw9cRW
-B7H/0CLpKhW2jscsd6ggiPBpFuZrZcFV8GQBe8AMT/wMTkOsq9HaZ0hAM+xgjget
-EhjboWtOB7hEKupsz3RJ1guHgboFmdzskv+baLAGcNij6wVeMDI2Mj07vOq8HUUx
-pdpD/0uRA1guNucuMZXowUpxQ0oSG2SoHWglAIBaCsiI2tc51JKdmduFxXkq7GwN
-XGcGysGZT8IIz1HhKgTX
-=1Dse
+iQIcBAEBAgAGBQJTBdhsAAoJELSic+t+oim9sIEP/2C+m/P39lZWsYOC4FdXm0zO
+g72qF3ETNAuIX2fQbw5p/A5TtnxBlLH/W73gt7xS0/eALCmVamZBUbZWWCi1+3j9
+kDVDl7hjFme87n5LWb4C7UZ4qWd/kSII4iPKOBXWhSnp807CM/2ORuJ1IRTEjfz4
+fUjZO4SpdqPVPvjAp+Ik3GBiusQAmrbC3Hpa8BK9f/4yUJBtct45jGNXtDmfVWXp
+VkyTwBrveWDyMIVg99z6kP2x6k4S7oR1brk7STh8eM6r+OHQv0mRHCOrTLFv411H
+ss10E7TSMIdjkiNkbN+QZZtyEuIJwB896xeJ8VM9qMjxFwqGA2Bb8tMMGgvc1Dcz
+K9NpCsUfc3WIoNNAOgcbzFoWGWfXRVth4XC6IF/Yd1xnNCXfVqXqACbRSrVcbn65
+RGLLJcwuaxl3OM9c9jTOtbNQ1ANXCVgLvuqBsGeUvb7dVUuEpZH4Jx7ZkdeETW0B
+2/6Rj3DbNQo08Ckb8phIWt8l5QgizgW9uMvjVjgCTtsXFp4uMgoA1hv07/YCtZEt
+rvzV9yENXSCizSrPq79rQlbRH6lfMBiLWE1shSyF7okWKRz+5b7aS7GasHsvsXqD
+s5CXknUBkTgIg1TI8JcwcMJDubq/pelIPSeDC9tcalRQHhBCpbDOiUzIXu92VCSU
+3XlGND8pVLtDLudYN5hb
+=KPwl
 -----END PGP SIGNATURE-----
 
---2bhIMA05eV4p7XYQ--
+--bt3HvjSfDPxOMUKF--
