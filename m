@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ALSA: Export snd_pcm_constraint_mask64()
-Date: Thu, 20 Feb 2014 17:55:37 +0900
-Message-ID: <20140220085537.GY2669@sirena.org.uk>
-References: <1392866167-15735-1-git-send-email-broonie@kernel.org>
- <s5hd2iixnsp.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Need Help: Repeated Jackhammer noise after several
+ hours of play and heavy cpu usage in snd_pcm_dmix_sync_area
+Date: Thu, 20 Feb 2014 10:57:58 +0100
+Message-ID: <5305D1A6.6060401@ladisch.de>
+References: <CANxfbX_o=UcTz0Sjno=zkEns4MGdrjnsbJmP0J=7O8owu7_8+g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1255651767639262268=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 18A5A265463
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 10:23:24 +0100 (CET)
-In-Reply-To: <s5hd2iixnsp.wl%tiwai@suse.de>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B83FF261A6C
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 10:58:02 +0100 (CET)
+In-Reply-To: <CANxfbX_o=UcTz0Sjno=zkEns4MGdrjnsbJmP0J=7O8owu7_8+g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Adarsh <punia.adarsh@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Adarsh wrote:
+> 2. However to disable the underruns, the
+> snd_pcm_sw_params_set_stop_threshold is set to 0x7fffffff
 
---===============1255651767639262268==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="octRQN4TSnXwUY/x"
-Content-Disposition: inline
+This does not disable underruns; it just disables stopping the device
+when an underrun happens.
 
+> which is greater than boundary value.
 
---octRQN4TSnXwUY/x
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Guess what happens on a 64-bit machine.
 
-On Thu, Feb 20, 2014 at 08:09:58AM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+> 3.Period size is 1024 and buffer size is 2048.
 
-> > OK to apply this to the ASoC tree?
+Do you actually need that low a latency?
 
-> Sure, feel free to take my ack
-> 	Acked-by: Takashi Iwai <tiwai@suse.de>
+> 2. gdb is attached to the process and continued inside gdb.
 
-Great, thanks - done now.
+This will result in an underrun.
 
---octRQN4TSnXwUY/x
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+When an underrun happens, the buffer is reported to contain less than
+zero frames (i.e., the "avail" value is larger than the buffer size).
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+The program has to write samples _faster_ than normally to catch up.
+Alternately, it could advance the pointer by calling snd_pcm_forward
+(which might be a better idea because those samples won't be played
+at the correct time anyway.)
 
-iQIcBAEBAgAGBQJTBcMGAAoJELSic+t+oim9cnsP/2/8lfZXHTYAU/bKFeUoqSaA
-kfGLv80pvMBJwBcw/bHBZYMZp1QADjIna8/MbTSupffive5CyX3K4QnXCVkkKroS
-nN8HNd3KSMcsT7xdzcOUmC4YV42y4aXGqn1NhP6BQ6lHCzmify2HQ084h7FDjIIp
-PfVCzWEZ77jfimlONoNtw5z/sVS0RyYI/djw6GssQpQeqk7/L157AMGSYrR4XRud
-cnZ4xMQYhmh8nEMyG2ewAi5k8LXhEuExq1EPvz3SnnKznvGPxRJVkVnR1yyaINWg
-dio/X6FeKv0FJkTMYY8AT2S1oH9rYjjcPZfqKUdh50tm0UV0OMnqcPZ3VfERMs41
-Nko1/YR1EihWj90Lb+hbxCENn2fIL/WVQC1dVmmHj9oOayQheFwH2jK/JF+LbHOX
-4+cMWhwtXN3aFwl7Nj+oZbBB+ww/Tkr1UTXRsyUU5oi212SijweZNk6v23KQoK4b
-Dg27/DQ0gT8xIWR9kLnKqhOJY2/djq39cjQkc21Qmwpbe8w2pkUohhS+p/m1BtbO
-g23xkSMuHLhFmqMkWxsehBkU1Ud+1gG4jCa0SmHuwLgdBP4QeGqD8p+I3uByDnjP
-ayvvtJSF+mI4CZT/NRv5bAy924ROnFfCXpC6ZXMXppWbMvGCcsHcRh5px7gJRuLu
-vCYg5vogiHkwGkKGFnkO
-=rRHr
------END PGP SIGNATURE-----
+You should reconsider setting the stop threshold.
 
---octRQN4TSnXwUY/x--
+> 3. At this point, the thread went into a tight loop taking >100% cpu
 
---===============1255651767639262268==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This is probably because of all the 'catch-up' samples that are being
+mixed.
+
+> Stack trace shows that 'snd_pcm_dmix_sync_area' in pcm_dmix.c is taking a
+> very long time to return because the 'size' is
+> a large unsinged interger and mix_areas is getting called with 'transfer'
+> value of <=2048.
+
+Hmmm, this might be a bug in the dmix plugin.
 
 
---===============1255651767639262268==--
+Regards,
+Clemens
