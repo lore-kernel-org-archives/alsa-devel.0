@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 002/102] ASoC: twl4030: Clean up duplicated
-	code
-Date: Thu, 20 Feb 2014 10:45:25 +0900
-Message-ID: <20140220014525.GQ2669@sirena.org.uk>
-References: <1392722967-12472-1-git-send-email-tiwai@suse.de>
- <1392722967-12472-3-git-send-email-tiwai@suse.de>
+Subject: Re: [PATCH 028/102] ASoC: ad193x: Use
+	SOC_ENUM_SINGLE_DECL()
+Date: Thu, 20 Feb 2014 10:39:58 +0900
+Message-ID: <20140220013958.GO2669@sirena.org.uk>
+References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
+ <1392728699-14420-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2428360342187362162=="
+Content-Type: multipart/mixed; boundary="===============2464048267572612831=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B6A2265708
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 03:50:17 +0100 (CET)
-In-Reply-To: <1392722967-12472-3-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 86ABD265717
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 03:50:23 +0100 (CET)
+In-Reply-To: <1392728699-14420-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +26,50 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2428360342187362162==
+--===============2464048267572612831==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kVQxcGJfgL0abYBJ"
+	protocol="application/pgp-signature"; boundary="H99FJOXRwgwC59Bw"
 Content-Disposition: inline
 
 
---kVQxcGJfgL0abYBJ
+--H99FJOXRwgwC59Bw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 18, 2014 at 12:29:26PM +0100, Takashi Iwai wrote:
-> Remove the open code in snd_soc_put_twl4030_opmode_enum_double() but
-> just call snd_soc_put_enum_double() instead, which does the very same
-> thing (even correctly with a lock).
+On Tue, Feb 18, 2014 at 02:04:59PM +0100, Takashi Iwai wrote:
+> Just replace with the helper macro.  No functional change at all.
 
 Applied, thanks.
 
---kVQxcGJfgL0abYBJ
+--H99FJOXRwgwC59Bw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBV4yAAoJELSic+t+oim98E0P+we6wNwbWmS4f7UK0zf/FFAn
-KWmzET+bvF5RRewzOLQ12+SmepUigkPmBIaoYnddCGrAXWcNY+9eMJulqaV02ygF
-7bg836SOGoCEvriKnL7HyjtEMJYyr7W0K7kOqufxOBp1rAWf+sTPkFygdk5dw5L6
-YBMD99kjQFVgFTHpt+zPwQNz/DGupvATA0fybWYp8YbE3yTAMlETxU7HE4BiBMwp
-OD68oJnuakXaj9tMeUYmxeTEUvoRBpou517nHuL3vK5jWVzqQNmmVc4AEhBLNK7I
-aZbVizo9smcopRBEOevMoc8Uznx6VvcdNZv1yfPRrg7ZkiwewmNdVrh07RHvk/T8
-KaWculASsp1ihejhyrA0jagvHVpTwHrf9H6xmNNaNBp2W0J0Crp/x5syhzAqVP/H
-KfZPl1ldcrXrfJpYRn5BAQrOSGuHSsfnoY+HEFi7jBQ4hQ0TKj33AzvZdYkreIsm
-wmAT0V51lmtrHAm3nQHdiihNZ6zXCiGqnXcQ2O8kJC3HpPAuiVpvnpnpEumVKy3+
-3iTxsZ728mh7kEziyRuaCGzMJtPsbCCvowFDVGTmUpvYaaEnKDS5SmoWDz02RFRK
-yOKUDCT6ulpZyaSUR98ZULWU4Wk7TO+uyYST6Oy9IGIEgZWP4/Z/sVEUQpPcuzUo
-af3msI5fWiS/Biggt3Ao
-=uQmG
+iQIcBAEBAgAGBQJTBVzrAAoJELSic+t+oim9ab0QAJjPkYZno82ZvLJym6vhQyFZ
+BIjeNdBCURy/0M7uS+Yhk/y9vke0fQ7+RtZY9sHOMFuPcWqDJBTnnebHtmuHl6js
+ySw7w5mGuVreIF7Vje2bcK4vZ5TPMHMN7k2aGTG6LO3NmYM4nFiqem70F2jUrJ30
+NFzEZ04PYOVbWhY+N1CDIWBMNHgmn3ruzP2cou0PYcbYOD+DopnE8XEfdisves7J
+NwYO37mh4f3sjrCH1632xTmhDvCdlPZV9SIdIms0Qz9xYnCOA2t6nxF42kxpRVo7
+Z2DgCnsZ7FckDdISL5o2HoHw7GCl4lIbojvesog5lda/lLcLuAJv+XrZ60nZ1ipn
+eF9b4kLYOV5l4B7j1Pb6d4xUerhLj1TBMoaLlkhKsoa67+2XdpVnnXNQOfcteVOe
+20bFLh5RScDylaFMQrGxl7ednHPXShdnZwnfG+76R3D5x6PNlrwZnR8FRqAXUzfd
+uFpOzCVRN/oqNL7mRN6x9gf+KLXXHa7W0zXabjzNbLqmFJxeOEYxHH+V4QB+HFWm
+kkyFBek/Egzt32yZwC74ihG8Mop4SsLViIEVPJXRJ2k+ce8iNqMryUZ3FRTeZJbo
+t0WKMDyuO4NTTmH+SgSLqmxS9//04FDksK9ylpmYo4zw/ZNUh4+G2n0+QyQV1sKU
+PqDfas17JOVoXnQqNCQt
+=96TX
 -----END PGP SIGNATURE-----
 
---kVQxcGJfgL0abYBJ--
+--H99FJOXRwgwC59Bw--
 
---===============2428360342187362162==
+--===============2464048267572612831==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2428360342187362162==--
+--===============2464048267572612831==--
