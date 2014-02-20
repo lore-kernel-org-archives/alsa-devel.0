@@ -1,51 +1,77 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH 2/2] ASoC: fsl: Make Freescale
- SAI/ESAI/SPDIF to be visible in Kconfig
-Date: Thu, 20 Feb 2014 11:07:41 +0800
-Message-ID: <20140220030739.GA26721@MrMyself>
-References: <1392086825-15737-1-git-send-email-Li.Xiubo@freescale.com>
- <1392086825-15737-2-git-send-email-Li.Xiubo@freescale.com>
- <36d9c0a870604fbe87b129e95fea9da1@BY2PR03MB505.namprd03.prod.outlook.com>
- <20140220024432.GU2669@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe003.messaging.microsoft.com [207.46.163.26])
- by alsa0.perex.cz (Postfix) with ESMTP id 48473265626
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 04:22:21 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20140220024432.GU2669@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - Enable front audio jacks on one HP desktop model
+Date: Thu, 20 Feb 2014 11:47:21 +0800
+Message-ID: <1392868041-21319-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com, gerald.yang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 20, 2014 at 11:44:32AM +0900, Mark Brown wrote:
-> On Thu, Feb 20, 2014 at 02:06:20AM +0000, Li.Xiubo@freescale.com wrote:
-> 
-> > I'm not very sure of this patch, maybe should we add one menu
-> > in Kconfig for all visible CPU DAIs firstly like for code drivers?
-> 
-> Allowing them to be individually selected is definitely useful if people
-> are trying to minimise their kernel size and/or build time.  However
-> none of the other Freescale people have commented on this patch (which
-> I'd have expected) so I was giving them time and IIRC it needs a rebase
-> against current code.
+The front headphone and mic jackes on a HP desktop model (Vendor Id:
+0x111d76c7 Subsystem Id: 0x103c2b17) can not work, the codec on this
+machine has 8 physical ports, 6 of them are routed to rear jackes
+and all of them work very well, while the remaining 2 ports are
+routed to front headphone and mic jackes, but the corresponding
+pin complex node are not defined correctly.
 
-Last month I was revising a new CODEC driver for ESAI and meanwhile abort
-to plan to try simple card for this combination but being suspended due to
-some tough internal issues. So I think it should be a good idea for us to
-move towards simple card starting from this patch.
+After apply this fix, the front audio jackes can work very well.
 
-Surely, Acked.
-Nicolin Chen
+BugLink: https://bugs.launchpad.net/bugs/1282369
+Cc: David Henningsson <david.henningsson@canonical.com>
+Tested-by: Gerald Yang <gerald.yang@canonical.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_sigmatel.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 7311bad..d75f90a 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -83,7 +83,8 @@ enum {
+ 	STAC_DELL_M6_BOTH,
+ 	STAC_DELL_EQ,
+ 	STAC_ALIENWARE_M17X,
+-	STAC_92HD73XX_MODELS
++	STAC_92HD73XX_MODELS,
++	STAC_92HD89XX_HP_FRONT_JACK
+ };
+ 
+ enum {
+@@ -1795,6 +1796,12 @@ static const struct hda_pintbl intel_dg45id_pin_configs[] = {
+ 	{}
+ };
+ 
++static const struct hda_pintbl stac92hd89xx_hp_front_jack_pin_configs[] = {
++	{ 0x0a, 0x02214030 },
++	{ 0x0b, 0x02A19010 },
++	{}
++};
++
+ static void stac92hd73xx_fixup_ref(struct hda_codec *codec,
+ 				   const struct hda_fixup *fix, int action)
+ {
+@@ -1913,6 +1920,10 @@ static const struct hda_fixup stac92hd73xx_fixups[] = {
+ 	[STAC_92HD73XX_NO_JD] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = stac92hd73xx_fixup_no_jd,
++	},
++	[STAC_92HD89XX_HP_FRONT_JACK] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = stac92hd89xx_hp_front_jack_pin_configs,
+ 	}
+ };
+ 
+@@ -1973,6 +1984,8 @@ static const struct snd_pci_quirk stac92hd73xx_fixup_tbl[] = {
+ 		      "Alienware M17x", STAC_ALIENWARE_M17X),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0490,
+ 		      "Alienware M17x R3", STAC_DELL_EQ),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x2b17,
++				"unknown HP", STAC_92HD89XX_HP_FRONT_JACK),
+ 	{} /* terminator */
+ };
+ 
+-- 
+1.8.1.2
