@@ -1,15 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ALSA: Export snd_pcm_constraint_mask64()
-Date: Thu, 20 Feb 2014 12:16:07 +0900
-Message-ID: <1392866167-15735-1-git-send-email-broonie@kernel.org>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH 2/2] ASoC: fsl: Make Freescale
+ SAI/ESAI/SPDIF to be visible in Kconfig
+Date: Thu, 20 Feb 2014 11:07:41 +0800
+Message-ID: <20140220030739.GA26721@MrMyself>
+References: <1392086825-15737-1-git-send-email-Li.Xiubo@freescale.com>
+ <1392086825-15737-2-git-send-email-Li.Xiubo@freescale.com>
+ <36d9c0a870604fbe87b129e95fea9da1@BY2PR03MB505.namprd03.prod.outlook.com>
+ <20140220024432.GU2669@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CD4BD26546B
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 04:16:32 +0100 (CET)
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe003.messaging.microsoft.com [207.46.163.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48473265626
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 04:22:21 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20140220024432.GU2669@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,35 +26,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@linaro.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On Thu, Feb 20, 2014 at 11:44:32AM +0900, Mark Brown wrote:
+> On Thu, Feb 20, 2014 at 02:06:20AM +0000, Li.Xiubo@freescale.com wrote:
+> 
+> > I'm not very sure of this patch, maybe should we add one menu
+> > in Kconfig for all visible CPU DAIs firstly like for code drivers?
+> 
+> Allowing them to be individually selected is definitely useful if people
+> are trying to minimise their kernel size and/or build time.  However
+> none of the other Freescale people have commented on this patch (which
+> I'd have expected) so I was giving them time and IIRC it needs a rebase
+> against current code.
 
-Allow modules to use it, fixing a build failure when the newly added
-ADAU1977 driver is built as a module.
+Last month I was revising a new CODEC driver for ESAI and meanwhile abort
+to plan to try simple card for this combination but being suspended due to
+some tough internal issues. So I think it should be a good idea for us to
+move towards simple card starting from this patch.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
-
-OK to apply this to the ASoC tree?
-
- sound/core/pcm_lib.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 6630a4e..ce83def 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1240,6 +1240,7 @@ int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_par
- 		return -EINVAL;
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_pcm_hw_constraint_mask64);
- 
- /**
-  * snd_pcm_hw_constraint_integer - apply an integer constraint to an interval
--- 
-1.9.0.rc3
+Surely, Acked.
+Nicolin Chen
