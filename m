@@ -1,77 +1,54 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - Enable front audio jacks on one HP desktop model
-Date: Thu, 20 Feb 2014 11:47:21 +0800
-Message-ID: <1392868041-21319-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com, gerald.yang@canonical.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 01/17 v2] Input - arizona-haptics: Fix double lock of
+ dapm_mutex
+Date: Thu, 20 Feb 2014 12:54:31 +0900
+Message-ID: <20140220035431.GV2669@sirena.org.uk>
+References: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1392736948-26623-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qMWhbafIcL4/B+XH"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1392736948-26623-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: myungjoo.ham@samsung.com, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, lgirdwood@gmail.com, lars@metafoo.de, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-The front headphone and mic jackes on a HP desktop model (Vendor Id:
-0x111d76c7 Subsystem Id: 0x103c2b17) can not work, the codec on this
-machine has 8 physical ports, 6 of them are routed to rear jackes
-and all of them work very well, while the remaining 2 ports are
-routed to front headphone and mic jackes, but the corresponding
-pin complex node are not defined correctly.
 
-After apply this fix, the front audio jackes can work very well.
+--qMWhbafIcL4/B+XH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-BugLink: https://bugs.launchpad.net/bugs/1282369
-Cc: David Henningsson <david.henningsson@canonical.com>
-Tested-by: Gerald Yang <gerald.yang@canonical.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_sigmatel.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+On Tue, Feb 18, 2014 at 03:22:12PM +0000, Charles Keepax wrote:
+> snd_soc_dapm_sync takes the dapm_mutex internally, but we currently take
+> it externally as well. This patch fixes this.
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 7311bad..d75f90a 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -83,7 +83,8 @@ enum {
- 	STAC_DELL_M6_BOTH,
- 	STAC_DELL_EQ,
- 	STAC_ALIENWARE_M17X,
--	STAC_92HD73XX_MODELS
-+	STAC_92HD73XX_MODELS,
-+	STAC_92HD89XX_HP_FRONT_JACK
- };
- 
- enum {
-@@ -1795,6 +1796,12 @@ static const struct hda_pintbl intel_dg45id_pin_configs[] = {
- 	{}
- };
- 
-+static const struct hda_pintbl stac92hd89xx_hp_front_jack_pin_configs[] = {
-+	{ 0x0a, 0x02214030 },
-+	{ 0x0b, 0x02A19010 },
-+	{}
-+};
-+
- static void stac92hd73xx_fixup_ref(struct hda_codec *codec,
- 				   const struct hda_fixup *fix, int action)
- {
-@@ -1913,6 +1920,10 @@ static const struct hda_fixup stac92hd73xx_fixups[] = {
- 	[STAC_92HD73XX_NO_JD] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = stac92hd73xx_fixup_no_jd,
-+	},
-+	[STAC_92HD89XX_HP_FRONT_JACK] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = stac92hd89xx_hp_front_jack_pin_configs,
- 	}
- };
- 
-@@ -1973,6 +1984,8 @@ static const struct snd_pci_quirk stac92hd73xx_fixup_tbl[] = {
- 		      "Alienware M17x", STAC_ALIENWARE_M17X),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0490,
- 		      "Alienware M17x R3", STAC_DELL_EQ),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x2b17,
-+				"unknown HP", STAC_92HD89XX_HP_FRONT_JACK),
- 	{} /* terminator */
- };
- 
--- 
-1.8.1.2
+Dimitry, are you OK with this being merged via ASoC?  The subsequent
+improvements to the infrastructure and fix this more generally build on
+top of this one so they'll need to go together.
+
+--qMWhbafIcL4/B+XH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTBXxvAAoJELSic+t+oim9kFUP/2Tk4eVDR11CpdJ5zbO/y/k9
+GdJ1NRQ0wDa4Xu3gp7CG02QvwpQVA/5Nk0/Yko7kf6hWp1nEMDJGQLrGBZRgHMZ/
+NE4Npd1ua2c7xqhUtple4vMARFL5ks63nWc9m+LG+vbKbosdxY9b5oN/YWnMVZEJ
+BQQt6jxKx6yMg+UG2kSzrt40AXO+9BfBahegUnfhPNqre7GOHo1moxNxBv4uMwsF
+fMX1oZvNmQQYAZq8LKhsNYlNRYLL0u5C2Fn9Xmj9SIqhGFmQNH8jaRcoLgnEgZWs
+RUS0fkyT+bq6NG6nNweXJp+dcz6HaYJrJ3MMkBz76THSSO+bWuKBR0VD6I0fQmYp
+nC4CvK08enT67qQmz0cmLu27aQfGVW5qNa+93pkkILgecfTxjVMaujEcDhTUzBVi
+q042BhmJn8W0+i0QuW4oIumC8E6BVQsGfkEdJBqZug8+/pz1j0B/MTwpK9KVWfIC
+LvoarYvP9DuHbBE/Yz91I7lObL1JzAgdk9RlAc/xr34dmq4FbfnabBM3b6X9Zu48
+F78xJmVe1NpRS697SSX4U+D4DMvk1SOFQqzn2g3KrQ4JdK60uK21/ocRpQ6DvaM8
+aZ0l5AOCGyLgHs3Yathvv5prPgnBElo6JleRQodVjcfFWBPtRCsPV6oU41PttlvW
+WxnAicuihrmEyb4MCepV
+=h/iO
+-----END PGP SIGNATURE-----
+
+--qMWhbafIcL4/B+XH--
