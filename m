@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 03/17 v2] ASoC: dapm: Add locking to
- snd_soc_dapm_xxxx_pin functions
-Date: Thu, 20 Feb 2014 18:40:38 +0900
-Message-ID: <20140220094038.GC2669@sirena.org.uk>
+Subject: Re: [PATCH 02/17 v2] ASoC: dapm: Add helpers to
+ lock/unlock DAPM mutex
+Date: Thu, 20 Feb 2014 19:23:11 +0900
+Message-ID: <20140220102311.GE2669@sirena.org.uk>
 References: <1392736948-26623-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1392736948-26623-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1392736948-26623-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5077718182013367605=="
+Content-Type: multipart/mixed; boundary="===============1250490153744900978=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DEA99261A6C
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 11:06:02 +0100 (CET)
-In-Reply-To: <1392736948-26623-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E1732617AB
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 11:23:35 +0100 (CET)
+In-Reply-To: <1392736948-26623-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,52 +27,52 @@ Cc: alsa-devel@alsa-project.org, lars@metafoo.de, eric.y.miao@gmail.com, dmitry.
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5077718182013367605==
+--===============1250490153744900978==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="K/LzB6MLpuRxEY5S"
+	protocol="application/pgp-signature"; boundary="zRAgBwIUb44b1VSK"
 Content-Disposition: inline
 
 
---K/LzB6MLpuRxEY5S
+--zRAgBwIUb44b1VSK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 18, 2014 at 03:22:14PM +0000, Charles Keepax wrote:
-> The snd_soc_dapm_xxxx_pin all require the dapm_mutex to be held when
-> they are called as they edit the dirty list, however very few of the
-> callers do so.
+On Tue, Feb 18, 2014 at 03:22:13PM +0000, Charles Keepax wrote:
+> Acquiring the DAPM mutex is necessary before using several DAPM
+> functions and dereference is quite ugly. This patch provides a helper
+> function to simplify this.
 
 Applied, thanks.
 
---K/LzB6MLpuRxEY5S
+--zRAgBwIUb44b1VSK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBc2SAAoJELSic+t+oim9CeIP/1GYQUTE7lufeZxzveEPiAGH
-H6tsYp1T+PHXYb2mvB43xKLvvIOwLForMEHLulloWUjIKiGkTC8xo39kfpz5pfam
-ap9vTHYSwXaBjSXYVPiXZPG63/FSFc1s2eB+ed+g9uw7886jzC/ItX4zdUR0816B
-9Gz7ZVfo+NbqmQbsTen0z8LOMXnL0t24PIFGbbczugbYpGP+w6lso53xafmrrIi9
-sNyw1dxCsSwaGhsAgiQ5S1ON2xBsYDQd4ww33EfOSNl1WFpqDTiH/ba9neu+S07D
-kfIxJlr6a24VNIbF9iuH2E3oPnS0OFralmtfoe0StrQMDH0cyxcJJ9AQj3Z+yj3S
-Vms8YdAT0/8b8W1EIlPfUGO6dnRDUho9i+y/sp/8+kA+aMk8k0bR37UEyd+QoYBk
-K0z93sJTQjZO94b80fV9oq6k+EroS/OxcnqFZUb+owAam9A92eT2KVljcZCVONOv
-aKIZX4nZ6/plOvlK8os7N9sL9zGETI9wfqrexQFyOSsVi3hvbGyvzdQ2Tg5TQBLp
-WMjrUl6tFhmDfB5DMzGeRfnBRo6OEd5cPxqooHi2zrGDTLiCFj8tiIXAwb80CU0l
-Co6Qdq6deLXHTYaFAK+RnPkeKdHjywvUdDlbTdwIlhu74dk0Ka5Y0AOS6oEJsRNY
-ymTF4hxIxPoti+oDZcQb
-=5/sj
+iQIcBAEBAgAGBQJTBdeMAAoJELSic+t+oim96zIP/ivBMXTxh0KfouvagRl7eCDC
+Qqi2diS1FJSA6cYOXGhDKZ88FDXLMniKGKcWfllGxhIADxNgr1pnxwn+LXWtcj+8
+c9rMlmEvH5bm80Cjo6Aj8LQKNA7Ugs+WldEMUo9xVByVC5uq2fIncWLsiXw/ojMJ
+OV4hw7ia+Jx/aNrCCyGgLhSMEKECClhRRM1Aa7E8Qanrg7kkkweHbogvHw4uBYo1
+UKknuDd0IqGq1Yy+W+fVLXrB7VFWiIPCOxMQN0LiAkIvpsstVdmgOPgLFq6LUpXv
+6pGVZMQUQgQ7Xvo7vovxhX1Z7PF5l8ALE6DV/Pw3WzQwu2K5tQcr/MdE4nriaa59
+yLaYS1/Jts3J6LD5ZUqUuDutcK9GpSXEW49JsgIwESiU6G0Cx8gBDWKz/C32P0x/
+2hA07l7XFbwJ7scdwp50f4RfRZDU0w+gu2yZnm4bRlolonIKX567R/8D7XzRUCag
+kNDjLGDYIvkzLfrkDqRIthUz7HaMNTXbkA9AGtb7LTCjDYp2/vBEFSlTGR/hsCAz
+9FwMhSvRPGuprlOHz6YSGvychxVsIUXtVtAIApVPVkTqi3b+QnLfSEICScM2Kq0W
+FKfDenAf+jjbv1cnN7Z4SlLB2MM1LGmsVhHfvIdu3KsMf8GjZNoI+48e3Bhbof72
+qzeQDz/WlWaSO1NOLvh0
+=s921
 -----END PGP SIGNATURE-----
 
---K/LzB6MLpuRxEY5S--
+--zRAgBwIUb44b1VSK--
 
---===============5077718182013367605==
+--===============1250490153744900978==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5077718182013367605==--
+--===============1250490153744900978==--
