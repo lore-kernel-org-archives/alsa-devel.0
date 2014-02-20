@@ -1,75 +1,58 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 038/102] ASoC: max98095: Use
-	SOC_ENUM_SINGLE_DECL()
-Date: Thu, 20 Feb 2014 11:27:13 +0900
-Message-ID: <20140220022713.GQ2669@sirena.org.uk>
-References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
- <1392723517-12772-11-git-send-email-tiwai@suse.de>
+Subject: Re: [PATCH 2/2] ASoC: fsl: Make Freescale SAI/ESAI/SPDIF to be
+ visible in Kconfig
+Date: Thu, 20 Feb 2014 11:44:32 +0900
+Message-ID: <20140220024432.GU2669@sirena.org.uk>
+References: <1392086825-15737-1-git-send-email-Li.Xiubo@freescale.com>
+ <1392086825-15737-2-git-send-email-Li.Xiubo@freescale.com>
+ <36d9c0a870604fbe87b129e95fea9da1@BY2PR03MB505.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5780087507441182604=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EF362656E5
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 03:30:55 +0100 (CET)
-In-Reply-To: <1392723517-12772-11-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Lx10O6ETy9X4GV3M"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <36d9c0a870604fbe87b129e95fea9da1@BY2PR03MB505.namprd03.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5780087507441182604==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SeC9ahQqsPwp8xEB"
-Content-Disposition: inline
-
-
---SeC9ahQqsPwp8xEB
+--Lx10O6ETy9X4GV3M
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 18, 2014 at 12:37:54PM +0100, Takashi Iwai wrote:
-> Just replace with the helper macro.  No functional change at all.
+On Thu, Feb 20, 2014 at 02:06:20AM +0000, Li.Xiubo@freescale.com wrote:
 
-Applied, thanks.
+> I'm not very sure of this patch, maybe should we add one menu
+> in Kconfig for all visible CPU DAIs firstly like for code drivers?
 
---SeC9ahQqsPwp8xEB
+Allowing them to be individually selected is definitely useful if people
+are trying to minimise their kernel size and/or build time.  However
+none of the other Freescale people have commented on this patch (which
+I'd have expected) so I was giving them time and IIRC it needs a rebase
+against current code.
+
+--Lx10O6ETy9X4GV3M
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBWf+AAoJELSic+t+oim9xhcP/jD/xuaxZhi8XA2L9zyqjNDL
-nibJOxjlKvGr8Z3Ucdn9wkwY/jkGpdtLQQvCtXo4Zj3iHbEzcIEvu+kb9FGsKaXU
-659CUCj7LHniTgk4xDv4//BphQ4yTduP1M39+YssefdUy3rbuR9c1Wgb/2fUS+As
-/eA/609AuHvDhzPH+a/P7+UWNLVVjFzkZolhZC4z7ipsn9s2u2OZ/xj4cF290f0i
-XG+bi7l4vi8GUouISX5g1EENWN8AJZ0g73j0km9fJk2U4efq+Xz/8Jqt8FyVLz8k
-pSCc2thF0na0vzKCumbfIeNj6D0QEkHTrrgMeGjiyrVwb1miuGsUQh7lSj6GOgNm
-0UnxD0SouZQLrMEDpG5irIdgwWAUpLtihxkWRRfx23wfD3btaV3r6qGL+wAlRpSn
-yPMg2wzG2Xj5HtCQoeUmRolohZXWZSINOqtDQbEvS5dS269toriO7EvH4+nHUmZ1
-fMVEr6LBYnExIsKt6gCgPjkri/171yZ7kE3qvDFoAhMpb2cxG+W5UMsnzWsw6ptN
-jPJmkJt1v6Wa+79uTpNHNlKbaBC+fggRP5qtHjlOQsHUJFQLNZefPmai7Cu0GhR9
-Fz8iVItquMfdkbLaQhTecpBPaCV2KI4r7k8s3RnPUmbMjp2hqr6EXHp3NUAPy5zi
-vL9LtvlYARb+g02MOwF1
-=Z9wL
+iQIcBAEBAgAGBQJTBWwMAAoJELSic+t+oim9BkoP/0T7ZZCT4XARSIQ6LQ0fixy6
+vX6kdJF0Jy43oJBLtZNVPQXhAxRUk4cieLG82edCwFRJAp/XowtvhuE+6FCPMhVR
+tIPC75vR4v5TN7tll1fc/PL1T15JP9oThidenjivtXfxg27Q0Kd8hl8LOIDgicyO
+v/3ZyjFr9q2nBUfKl2d+HXmqkFpQPA9MayF17yH72RBpccwxPxEXUegfgX9wKbWn
+adg1iF3Qd6ulHGVx7FQNOnx+5ad+sgbwewpWsO4j0X2RgOd+XB14Lk6bOUfoJe3c
+urmQrfkNZGbWMfKg+CPi4YhSvW3Y/ECqgZn1YE9w/9Y3xWHDgRtfudHHTWDoEvin
+0Xy305c4tiL4CCA1XtLMOXuqErm6g8PgOIYbhqg8ZPjX9q92+seHjI+NlMyHQHF6
+vvigrMzhGVYpD902qRefRbPpibKVemV1GxOHhiStP/TDtU7I+SiZvUgf5fP8Pnmg
+eowtPKtP1GmR5uurvKmoah9yaG/kYFMah+zM1e9VXGT4CqmjRGaIrJ0kBCo7kjBb
+0oDQSq4YsDe3R9RTuU43JMmI+oRZFPa9qKEIF9LwpKgOXkwmpog5RoU0YAwjO849
+96rcj1d4SFatAgKsA5lQlua9g2Q/7GHKpnWkFnRQuVkvHUKIAMpqIcXD0/PNbPKb
+JXyKnbWrPUof1+R9lOxu
+=AKsj
 -----END PGP SIGNATURE-----
 
---SeC9ahQqsPwp8xEB--
-
---===============5780087507441182604==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5780087507441182604==--
+--Lx10O6ETy9X4GV3M--
