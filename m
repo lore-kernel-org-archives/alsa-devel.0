@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 015/102] ASoC: wm8985: Remove superfluous
-	const
-Date: Thu, 20 Feb 2014 10:58:12 +0900
-Message-ID: <20140220015812.GD2669@sirena.org.uk>
-References: <1392723148-12597-1-git-send-email-tiwai@suse.de>
- <1392723148-12597-13-git-send-email-tiwai@suse.de>
+Subject: Re: [PATCH 019/102] ASoC: arizona: Fix wrong number of
+ items in enum ctls
+Date: Thu, 20 Feb 2014 10:58:46 +0900
+Message-ID: <20140220015846.GF2669@sirena.org.uk>
+References: <1392723422-12689-1-git-send-email-tiwai@suse.de>
+ <1392723422-12689-4-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0390285473444394721=="
+Content-Type: multipart/mixed; boundary="===============1172274740842273678=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A1A4826565A
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 02:58:42 +0100 (CET)
-In-Reply-To: <1392723148-12597-13-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 47044265610
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 02:59:00 +0100 (CET)
+In-Reply-To: <1392723422-12689-4-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +26,51 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0390285473444394721==
+--===============1172274740842273678==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/MY3p9q5RkoZ3ws+"
+	protocol="application/pgp-signature"; boundary="LVT3h14SJbKOvfXi"
 Content-Disposition: inline
 
 
---/MY3p9q5RkoZ3ws+
+--LVT3h14SJbKOvfXi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 18, 2014 at 12:32:27PM +0100, Takashi Iwai wrote:
-> As SOC_ENUM_SINGLE_DECL() itself contains const modifier now, we can
-> reduce const from its users.
+On Tue, Feb 18, 2014 at 12:36:54PM +0100, Takashi Iwai wrote:
+> arizona codec driver has a few places wrongly defining the number of
+> enum items.
 
 Applied, thanks.
 
---/MY3p9q5RkoZ3ws+
+--LVT3h14SJbKOvfXi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBWExAAoJELSic+t+oim94QIP/1mE1XIfsri+J8GCwTd4qtCG
-El+3GZZ18WKuSGlp//udIAeHUR4VVpjUyhktCfb0ArxtvKllI97j1X81FsBxT4vs
-ZncUNZziGVtxga6RrRbGSkjxpd0mWQFTmebkaOo1WsSQSJqmM4PjHCMgBoBzeSnS
-HAa7WXX1rpZL/qewOU9/UsSwcieEJd1dgBV/RtwNFFNGAcgNlF0+AJZU2C+wU2pF
-RftwBrykB4fFTo/NOxjSDNRB7KGL0ieL7WDPoK8FAo3ldEkHDdLrvnmXO2oHMZc0
-sHaiveDr/sfuHGX+batNWB5hJEsgTirR4aMCCow3KqzNDx+prpbMh992/XPNsYvk
-uFRhv9pzllIwIx65e8LnQXW2qFUiBEM17sWiCP/Dw4XAyeilEZbKzRpgj4ADioUa
-28nzRcZpJtfCwEk1JfrLlLSsiZIIsfwnzYhJThZW332+6HhskwyaCJH7BICXrzrv
-tfJEyETK6Fet8DSb4R//i+Mc7b8asplit7S+X04Fo5Fp6QCVV80nrC/OJnihxMXB
-e1ZkOFbruArUDziJb5RZmgxrbmUBWbQYzbz2yacg5wUmP76wov6qmdvX3dwq8ExR
-EC+0HN0zu0M5M9byfwKONtT3VGzyJAEQMt59z9COB7gdEsG08MctTxmV4NCB1S0A
-+F0jgS2GRKjLEWTgFr44
-=gnqy
+iQIcBAEBAgAGBQJTBWFTAAoJELSic+t+oim9eX4P/R0JmT33+AZkaoDpeeKW9oCc
+Jho5oxRj8lWZwVkw2UGpdNA5h55FRs4ZP+lXxjIw12UWCmvcrSAsLfbWINXAPOIu
+pPxvy5l3P8lVItxzpDq78fK/hJ7hFGuid3RiWhxqE389f9gG57qjqh8o1xT7rUik
+vAhRbIkbR4my/ZzbZO6nVfLZtUsaeB3qVgGgdxDYqQO3WoubUGmMosGVi4zFj25Z
+DL8xzf209C+OIoM59Vg8ufxzLZZrMbVn7lg98zYfEsDU0MyfDepo78tbX2QeNhwz
+usNqzYPek6s6952qCDjUgAXofFGR12UIx4QFp9Of1tzX0A0dvPvUVBzb4a/yO1aZ
+qNtMSFBT/casAwtWtl6gVTbNR89UdQo66qHkEW/ZCk+jn6OePUOAU/sgI5ERZ1yW
+Y1ebKJW/Dgk33OreCj00Cx95L41d1kzrpNEDyqAS24MCzxhOOZXffBARhzx6eYZb
++Ael30phO7wc1xE0WG0oh0unLPhqm6hTrckXbvaDTcXOL8TbMMYaTn+26pUn9oit
+IjZT0HyoBXUR1bwy/QsXhEQx+og3arZDFgKn1hpW3X38zPEU5NsvWnRgp8b9tgDm
+e6Y8dAfct0ep05SB9ikimiWZq0RbRbj2KtUjP8lmAvCK/jlHn5A5LbdkjztPkz/0
+tefwtvTue3BvfNRsRtEl
+=B36p
 -----END PGP SIGNATURE-----
 
---/MY3p9q5RkoZ3ws+--
+--LVT3h14SJbKOvfXi--
 
---===============0390285473444394721==
+--===============1172274740842273678==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0390285473444394721==--
+--===============1172274740842273678==--
