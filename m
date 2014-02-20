@@ -1,15 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 6/6] ASoC: Intel: Add Haswell Machine support
-Date: Thu, 20 Feb 2014 21:48:47 +0000
-Message-ID: <1392932927-9725-6-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 4/6] ASoC: Intel: Add trace support for
+	Haswell/Broadwell SST IPC messages.
+Date: Thu, 20 Feb 2014 21:48:45 +0000
+Message-ID: <1392932927-9725-4-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1392932927-9725-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D3C83265873
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 22:49:23 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A7599265861
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 22:49:21 +0100 (CET)
 In-Reply-To: <1392932927-9725-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,295 +25,404 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add support for Haswell based machines with SST DSP audio.
+Provide a trace mechanism for debugging Haswell/Broadwell specific SST
+IPC messages.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/Kconfig   |  11 +++
- sound/soc/intel/Makefile  |   5 +
- sound/soc/intel/haswell.c | 241 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 257 insertions(+)
- create mode 100644 sound/soc/intel/haswell.c
+ include/trace/events/hswadsp.h | 384 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 384 insertions(+)
+ create mode 100644 include/trace/events/hswadsp.h
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 4f1ac8f..ce5a692 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -26,3 +26,14 @@ config SND_SOC_INTEL_SST_ACPI
- 
- config SND_SOC_INTEL_HASWELL
- 	tristate
-+
-+config SND_SOC_INTEL_HASWELL_MACH
-+        tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
-+        depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS
-+	select SND_SOC_INTEL_HASWELL
-+	select SND_SOC_RT5640
-+	help
-+          This adds support for the Lynxpoint Audio DSP on Intel(R) Haswell
-+	  Ultrabook platforms.
-+          Say Y if you have such a device
-+          If unsure select "N".
-\ No newline at end of file
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index 4c08b21..1c18815 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -16,3 +16,8 @@ snd-soc-sst-haswell-pcm-objs := \
- 	sst-haswell-ipc.o sst-haswell-pcm.o sst-haswell-dsp.o
- 
- obj-$(CONFIG_SND_SOC_INTEL_HASWELL) += snd-soc-sst-haswell-pcm.o
-+
-+# Machine support
-+snd-soc-sst-haswell-objs := haswell.o
-+
-+obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
-diff --git a/sound/soc/intel/haswell.c b/sound/soc/intel/haswell.c
+diff --git a/include/trace/events/hswadsp.h b/include/trace/events/hswadsp.h
 new file mode 100644
-index 0000000..0d61197
+index 0000000..0f78bbb
 --- /dev/null
-+++ b/sound/soc/intel/haswell.c
-@@ -0,0 +1,241 @@
-+/*
-+ * Intel Haswell Lynxpoint SST Audio
-+ *
-+ * Copyright (C) 2013, Intel Corporation. All rights reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License version
-+ * 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ */
++++ b/include/trace/events/hswadsp.h
+@@ -0,0 +1,384 @@
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM hswadsp
 +
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/pcm_params.h>
++#if !defined(_TRACE_HSWADSP_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_HSWADSP_H
 +
-+#include "sst-dsp.h"
-+#include "sst-haswell-ipc.h"
++#include <linux/types.h>
++#include <linux/ktime.h>
++#include <linux/tracepoint.h>
 +
-+#include "../codecs/rt5640.h"
++struct sst_hsw;
++struct sst_hsw_stream;
++struct sst_hsw_ipc_stream_free_req;
++struct sst_hsw_ipc_volume_req;
++struct sst_hsw_ipc_stream_alloc_req;
++struct sst_hsw_audio_data_format_ipc;
++struct sst_hsw_ipc_stream_info_reply;
++struct sst_hsw_ipc_device_config_req;
 +
-+/* Haswell ULT platforms have a Headphone and Mic jack */
-+static const struct snd_soc_dapm_widget haswell_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphones", NULL),
-+	SND_SOC_DAPM_MIC("Mic", NULL),
-+};
++DECLARE_EVENT_CLASS(sst_irq,
 +
-+static const struct snd_soc_dapm_route haswell_rt5640_map[] = {
++	TP_PROTO(uint32_t status, uint32_t mask),
 +
-+	{"Headphones", NULL, "HPOR"},
-+	{"Headphones", NULL, "HPOL"},
-+	{"IN2P", NULL, "Mic"},
++	TP_ARGS(status, mask),
 +
-+	/* CODEC BE connections */
-+	{"SSP0 CODEC IN", NULL, "AIF1 Capture"},
-+	{"AIF1 Playback", NULL, "SSP0 CODEC OUT"},
-+};
++	TP_STRUCT__entry(
++		__field(	unsigned int,	status		)
++		__field(	unsigned int,	mask		)
++	),
 +
-+static int haswell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
-+			struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate = hw_param_interval(params,
-+			SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+						SNDRV_PCM_HW_PARAM_CHANNELS);
++	TP_fast_assign(
++		__entry->status = status;
++		__entry->mask = mask;
++	),
 +
-+	/* The ADSP will covert the FE rate to 48k, stereo */
-+	rate->min = rate->max = 48000;
-+	channels->min = channels->max = 2;
++	TP_printk("status 0x%8.8x mask 0x%8.8x",
++		(unsigned int)__entry->status, (unsigned int)__entry->mask)
++);
 +
-+	/* set SSP0 to 16 bit */
-+	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
-+				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
-+				    SNDRV_PCM_FORMAT_S16_LE);
-+	return 0;
-+}
++DEFINE_EVENT(sst_irq, sst_irq_busy,
 +
-+static int haswell_rt5640_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret;
++	TP_PROTO(unsigned int status, unsigned int mask),
 +
-+	/* Set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set codec DAI configuration\n");
-+		return ret;
-+	}
++	TP_ARGS(status, mask)
 +
-+	ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_MCLK, 12288000,
-+		SND_SOC_CLOCK_IN);
++);
 +
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
-+		return ret;
-+	}
++DEFINE_EVENT(sst_irq, sst_irq_done,
 +
-+	/* set correct codec filter for DAI format and clock config */
-+	snd_soc_update_bits(rtd->codec, 0x83, 0xffff, 0x8000);
++	TP_PROTO(unsigned int status, unsigned int mask),
 +
-+	return ret;
-+}
++	TP_ARGS(status, mask)
 +
-+static struct snd_soc_ops haswell_rt5640_ops = {
-+	.hw_params = haswell_rt5640_hw_params,
-+};
++);
 +
-+static int haswell_rtd_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	struct sst_pdata *pdata = dev_get_platdata(rtd->platform->dev);
-+	struct sst_hsw *haswell = pdata->dsp;
-+	int ret;
++DECLARE_EVENT_CLASS(ipc,
 +
-+	/* Set ADSP SSP port settings */
-+	ret = sst_hsw_device_set_config(haswell, SST_HSW_DEVICE_SSP_0,
-+		SST_HSW_DEVICE_MCLK_FREQ_24_MHZ,
-+		SST_HSW_DEVICE_CLOCK_MASTER, 9);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "failed to set device config\n");
-+		return ret;
-+	}
++	TP_PROTO(const char *name, int val),
 +
-+	/* always connected */
-+	snd_soc_dapm_enable_pin(dapm, "Headphones");
-+	snd_soc_dapm_enable_pin(dapm, "Mic");
++	TP_ARGS(name, val),
 +
-+	return 0;
-+}
++	TP_STRUCT__entry(
++		__string(	name,	name		)
++		__field(	unsigned int,	val	)
++	),
 +
-+static struct snd_soc_dai_link haswell_rt5640_dais[] = {
-+	/* Front End DAI links */
-+	{
-+		.name = "System",
-+		.stream_name = "System Playback",
-+		.cpu_dai_name = "System Pin",
-+		.platform_name = "haswell-pcm-audio",
-+		.dynamic = 1,
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.init = haswell_rtd_init,
-+		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dpcm_playback = 1,
-+	},
-+	{
-+		.name = "Offload0",
-+		.stream_name = "Offload0 Playback",
-+		.cpu_dai_name = "Offload0 Pin",
-+		.platform_name = "haswell-pcm-audio",
-+		.dynamic = 1,
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dpcm_playback = 1,
-+	},
-+	{
-+		.name = "Offload1",
-+		.stream_name = "Offload1 Playback",
-+		.cpu_dai_name = "Offload1 Pin",
-+		.platform_name = "haswell-pcm-audio",
-+		.dynamic = 1,
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dpcm_playback = 1,
-+	},
-+	{
-+		.name = "Loopback",
-+		.stream_name = "Loopback",
-+		.cpu_dai_name = "Loopback Pin",
-+		.platform_name = "haswell-pcm-audio",
-+		.dynamic = 0,
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dpcm_capture = 1,
-+	},
-+	{
-+		.name = "Capture",
-+		.stream_name = "Capture",
-+		.cpu_dai_name = "Capture Pin",
-+		.platform_name = "haswell-pcm-audio",
-+		.dynamic = 1,
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dpcm_capture = 1,
-+	},
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->val = val;
++	),
 +
-+	/* Back End DAI links */
-+	{
-+		/* SSP0 - Codec */
-+		.name = "Codec",
-+		.be_id = 0,
-+		.cpu_dai_name = "snd-soc-dummy-dai",
-+		.platform_name = "snd-soc-dummy",
-+		.no_pcm = 1,
-+		.codec_name = "i2c-INT33CA:00",
-+		.codec_dai_name = "rt5640-aif1",
-+		.ignore_suspend = 1,
-+		.ignore_pmdown_time = 1,
-+		.be_hw_params_fixup = haswell_ssp0_fixup,
-+		.ops = &haswell_rt5640_ops,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+	},
-+};
++	TP_printk("%s 0x%8.8x", __get_str(name), (unsigned int)__entry->val)
 +
-+/* audio machine driver for Haswell Lynxpoint DSP + RT5640 */
-+static struct snd_soc_card haswell_rt5640 = {
-+	.name = "haswell-rt5640",
-+	.owner = THIS_MODULE,
-+	.dai_link = haswell_rt5640_dais,
-+	.num_links = ARRAY_SIZE(haswell_rt5640_dais),
-+	.dapm_widgets = haswell_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(haswell_widgets),
-+	.dapm_routes = haswell_rt5640_map,
-+	.num_dapm_routes = ARRAY_SIZE(haswell_rt5640_map),
-+	.fully_routed = true,
-+};
++);
 +
-+static int haswell_audio_probe(struct platform_device *pdev)
-+{
-+	haswell_rt5640.dev = &pdev->dev;
++DEFINE_EVENT(ipc, ipc_request,
 +
-+	return snd_soc_register_card(&haswell_rt5640);
-+}
++	TP_PROTO(const char *name, int val),
 +
-+static int haswell_audio_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_card(&haswell_rt5640);
-+	return 0;
-+}
++	TP_ARGS(name, val)
 +
-+static struct platform_driver haswell_audio = {
-+	.probe = haswell_audio_probe,
-+	.remove = haswell_audio_remove,
-+	.driver = {
-+		.name = "haswell-audio",
-+		.owner = THIS_MODULE,
-+	},
-+};
++);
 +
-+module_platform_driver(haswell_audio)
++DEFINE_EVENT(ipc, ipc_reply,
 +
-+/* Module information */
-+MODULE_AUTHOR("Liam Girdwood, Xingchao Wang");
-+MODULE_DESCRIPTION("Intel SST Audio for Haswell Lynxpoint");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:haswell-audio");
++	TP_PROTO(const char *name, int val),
++
++	TP_ARGS(name, val)
++
++);
++
++DEFINE_EVENT(ipc, ipc_pending_reply,
++
++	TP_PROTO(const char *name, int val),
++
++	TP_ARGS(name, val)
++
++);
++
++DEFINE_EVENT(ipc, ipc_notification,
++
++	TP_PROTO(const char *name, int val),
++
++	TP_ARGS(name, val)
++
++);
++
++DEFINE_EVENT(ipc, ipc_error,
++
++	TP_PROTO(const char *name, int val),
++
++	TP_ARGS(name, val)
++
++);
++
++DECLARE_EVENT_CLASS(stream_position,
++
++	TP_PROTO(unsigned int id, unsigned int pos),
++
++	TP_ARGS(id, pos),
++
++	TP_STRUCT__entry(
++		__field(	unsigned int,	id		)
++		__field(	unsigned int,	pos		)
++	),
++
++	TP_fast_assign(
++		__entry->id = id;
++		__entry->pos = pos;
++	),
++
++	TP_printk("id %d position 0x%x",
++		(unsigned int)__entry->id, (unsigned int)__entry->pos)
++);
++
++DEFINE_EVENT(stream_position, stream_read_position,
++
++	TP_PROTO(unsigned int id, unsigned int pos),
++
++	TP_ARGS(id, pos)
++
++);
++
++DEFINE_EVENT(stream_position, stream_write_position,
++
++	TP_PROTO(unsigned int id, unsigned int pos),
++
++	TP_ARGS(id, pos)
++
++);
++
++TRACE_EVENT(hsw_stream_buffer,
++
++	TP_PROTO(struct sst_hsw_stream *stream),
++
++	TP_ARGS(stream),
++
++	TP_STRUCT__entry(
++		__field(	int,	id	)
++		__field(	int,	pt_addr	)
++		__field(	int,	num_pages	)
++		__field(	int,	ring_size	)
++		__field(	int,	ring_offset	)
++		__field(	int,	first_pfn	)
++	),
++
++	TP_fast_assign(
++		__entry->id = stream->host_id;
++		__entry->pt_addr = stream->request.ringinfo.ring_pt_address;
++		__entry->num_pages = stream->request.ringinfo.num_pages;
++		__entry->ring_size = stream->request.ringinfo.ring_size;
++		__entry->ring_offset = stream->request.ringinfo.ring_offset;
++		__entry->first_pfn = stream->request.ringinfo.ring_first_pfn;
++	),
++
++	TP_printk("stream %d ring addr 0x%x pages %d size 0x%x offset 0x%x PFN 0x%x",
++		(int) __entry->id,  (int)__entry->pt_addr,
++		(int)__entry->num_pages, (int)__entry->ring_size,
++		(int)__entry->ring_offset, (int)__entry->first_pfn)
++);
++
++TRACE_EVENT(hsw_stream_alloc_reply,
++
++	TP_PROTO(struct sst_hsw_stream *stream),
++
++	TP_ARGS(stream),
++
++	TP_STRUCT__entry(
++		__field(	int,	id	)
++		__field(	int,	stream_id	)
++		__field(	int,	mixer_id	)
++		__field(	int,	peak0	)
++		__field(	int,	peak1	)
++		__field(	int,	vol0	)
++		__field(	int,	vol1	)
++	),
++
++	TP_fast_assign(
++		__entry->id = stream->host_id;
++		__entry->stream_id = stream->reply.stream_hw_id;
++		__entry->mixer_id = stream->reply.mixer_hw_id;
++		__entry->peak0 = stream->reply.peak_meter_register_address[0];
++		__entry->peak1 = stream->reply.peak_meter_register_address[1];
++		__entry->vol0 = stream->reply.volume_register_address[0];
++		__entry->vol1 = stream->reply.volume_register_address[1];
++	),
++
++	TP_printk("stream %d hw id %d mixer %d peak 0x%x:0x%x vol 0x%x,0x%x",
++		(int) __entry->id, (int) __entry->stream_id, (int)__entry->mixer_id,
++		(int)__entry->peak0, (int)__entry->peak1,
++		(int)__entry->vol0, (int)__entry->vol1)
++);
++
++TRACE_EVENT(hsw_mixer_info_reply,
++
++	TP_PROTO(struct sst_hsw_ipc_stream_info_reply *reply),
++
++	TP_ARGS(reply),
++
++	TP_STRUCT__entry(
++		__field(	int,	mixer_id	)
++		__field(	int,	peak0	)
++		__field(	int,	peak1	)
++		__field(	int,	vol0	)
++		__field(	int,	vol1	)
++	),
++
++	TP_fast_assign(
++		__entry->mixer_id = reply->mixer_hw_id;
++		__entry->peak0 = reply->peak_meter_register_address[0];
++		__entry->peak1 = reply->peak_meter_register_address[1];
++		__entry->vol0 = reply->volume_register_address[0];
++		__entry->vol1 = reply->volume_register_address[1];
++	),
++
++	TP_printk("mixer id %d peak 0x%x:0x%x vol 0x%x,0x%x",
++		(int)__entry->mixer_id,
++		(int)__entry->peak0, (int)__entry->peak1,
++		(int)__entry->vol0, (int)__entry->vol1)
++);
++
++TRACE_EVENT(hsw_stream_data_format,
++
++	TP_PROTO(struct sst_hsw_stream *stream,
++		struct sst_hsw_audio_data_format_ipc *req),
++
++	TP_ARGS(stream, req),
++
++	TP_STRUCT__entry(
++		__field(	uint32_t,	id	)
++		__field(	uint32_t,	frequency	)
++		__field(	uint32_t,	bitdepth	)
++		__field(	uint32_t,	map	)
++		__field(	uint32_t,	config	)
++		__field(	uint32_t,	style	)
++		__field(	uint8_t,	ch_num	)
++		__field(	uint8_t,	valid_bit	)
++	),
++
++	TP_fast_assign(
++		__entry->id = stream->host_id;
++		__entry->frequency = req->frequency;
++		__entry->bitdepth = req->bitdepth;
++		__entry->map = req->map;
++		__entry->config = req->config;
++		__entry->style = req->style;
++		__entry->ch_num = req->ch_num;
++		__entry->valid_bit = req->valid_bit;
++	),
++
++	TP_printk("stream %d freq %d depth %d map 0x%x config 0x%x style 0x%x ch %d bits %d",
++		(int) __entry->id, (uint32_t)__entry->frequency,
++		(uint32_t)__entry->bitdepth, (uint32_t)__entry->map,
++		(uint32_t)__entry->config, (uint32_t)__entry->style,
++		(uint8_t)__entry->ch_num, (uint8_t)__entry->valid_bit)
++);
++
++TRACE_EVENT(hsw_stream_alloc_request,
++
++	TP_PROTO(struct sst_hsw_stream *stream,
++		struct sst_hsw_ipc_stream_alloc_req *req),
++
++	TP_ARGS(stream, req),
++
++	TP_STRUCT__entry(
++		__field(	uint32_t,	id	)
++		__field(	uint8_t,	path_id	)
++		__field(	uint8_t,	stream_type	)
++		__field(	uint8_t,	format_id	)
++	),
++
++	TP_fast_assign(
++		__entry->id = stream->host_id;
++		__entry->path_id = req->path_id;
++		__entry->stream_type = req->stream_type;
++		__entry->format_id = req->format_id;
++	),
++
++	TP_printk("stream %d path %d type %d format %d",
++		(int) __entry->id, (uint8_t)__entry->path_id,
++		(uint8_t)__entry->stream_type, (uint8_t)__entry->format_id)
++);
++
++TRACE_EVENT(hsw_stream_free_req,
++
++	TP_PROTO(struct sst_hsw_stream *stream,
++		struct sst_hsw_ipc_stream_free_req *req),
++
++	TP_ARGS(stream, req),
++
++	TP_STRUCT__entry(
++		__field(	int,	id	)
++		__field(	int,	stream_id	)
++	),
++
++	TP_fast_assign(
++		__entry->id = stream->host_id;
++		__entry->stream_id = req->stream_id;
++	),
++
++	TP_printk("stream %d hw id %d",
++		(int) __entry->id, (int) __entry->stream_id)
++);
++
++TRACE_EVENT(hsw_volume_req,
++
++	TP_PROTO(struct sst_hsw_stream *stream,
++		struct sst_hsw_ipc_volume_req *req),
++
++	TP_ARGS(stream, req),
++
++	TP_STRUCT__entry(
++		__field(	int,	id	)
++		__field(	uint32_t,	channel	)
++		__field(	uint32_t,	target_volume	)
++		__field(	uint64_t,	curve_duration	)
++		__field(	uint32_t,	curve_type	)
++	),
++
++	TP_fast_assign(
++		__entry->id = stream->host_id;
++		__entry->channel = req->channel;
++		__entry->target_volume = req->target_volume;
++		__entry->curve_duration = req->curve_duration;
++		__entry->curve_type = req->curve_type;
++	),
++
++	TP_printk("stream %d chan 0x%x vol %d duration %llu type %d",
++		(int) __entry->id, (uint32_t) __entry->channel,
++		(uint32_t)__entry->target_volume,
++		(uint64_t)__entry->curve_duration,
++		(uint32_t)__entry->curve_type)
++);
++
++TRACE_EVENT(hsw_device_config_req,
++
++	TP_PROTO(struct sst_hsw_ipc_device_config_req *req),
++
++	TP_ARGS(req),
++
++	TP_STRUCT__entry(
++		__field(	uint32_t,	ssp	)
++		__field(	uint32_t,	clock_freq	)
++		__field(	uint32_t,	mode	)
++		__field(	uint16_t,	clock_divider	)
++	),
++
++	TP_fast_assign(
++		__entry->ssp = req->ssp_interface;
++		__entry->clock_freq = req->clock_frequency;
++		__entry->mode = req->mode;
++		__entry->clock_divider = req->clock_divider;
++	),
++
++	TP_printk("SSP %d Freq %d mode %d div %d",
++		(uint32_t)__entry->ssp,
++		(uint32_t)__entry->clock_freq, (uint32_t)__entry->mode,
++		(uint32_t)__entry->clock_divider)
++);
++
++#endif /* _TRACE_HSWADSP_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
 -- 
 1.8.3.2
