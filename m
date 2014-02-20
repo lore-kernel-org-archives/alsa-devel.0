@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: sst-acpi: Add support for
- multiple machine drivers per platform
-Date: Thu, 20 Feb 2014 17:58:30 +0900
-Message-ID: <20140220085830.GZ2669@sirena.org.uk>
-References: <1392820558-27548-1-git-send-email-jarkko.nikula@linux.intel.com>
- <20140219161544.GM2669@sirena.org.uk>
- <5305A910.2000507@linux.intel.com>
+Subject: Re: [PATCH 082/102] ASoC: Add SOC_ENUM_SINGLE_CONST()
+ and SOC_ENUM_DOUBLE_CONST() macros
+Date: Thu, 20 Feb 2014 18:09:38 +0900
+Message-ID: <20140220090938.GA2669@sirena.org.uk>
+References: <1392724308-13375-1-git-send-email-tiwai@suse.de>
+ <1392724308-13375-2-git-send-email-tiwai@suse.de>
+ <20140220023339.GR2669@sirena.org.uk>
+ <s5heh2yxnuk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3240870523672474803=="
+Content-Type: multipart/mixed; boundary="===============6288979278958044780=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D2A32610D7
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 10:00:22 +0100 (CET)
-In-Reply-To: <5305A910.2000507@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DB9F2619E9
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 10:11:43 +0100 (CET)
+In-Reply-To: <s5heh2yxnuk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +24,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3240870523672474803==
+--===============6288979278958044780==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yapsC4sTCx4mg1sJ"
+	protocol="application/pgp-signature"; boundary="mMVwBWE2stLN+mTQ"
 Content-Disposition: inline
 
 
---yapsC4sTCx4mg1sJ
+--mMVwBWE2stLN+mTQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Feb 20, 2014 at 09:04:48AM +0200, Jarkko Nikula wrote:
+On Thu, Feb 20, 2014 at 08:08:51AM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-> Our target is to get as much as possible data from ACPI but
-> meanwhile there will be machines where only data is basically just
-> the SST and codec ACPI IDs + DMI or some other unique identifier.
+> >  I'd also expect this to be more what the default naming does
+> > since we want to try to steer people towards using the simplest and
+> > least error prone mechanism for doing this.
 
-If you were able to hook on to the generic card that'd be really good
-(especially since all the DT systems would then be able to benefit from
-the work too) but that's not a hard requirement by any means.
+> If changing the existing API is fine for you (not adding the new one),
+> it's trivial to convert the patches to do so.  Looking at the end
 
---yapsC4sTCx4mg1sJ
+Yes, I think that's a better approach.  It's fairly obvious that the
+existing interface isn't awesome so it shouldn't be the default one.
+
+> result, all SOC_ENUM_SINGLE() and SOC_ENUM_DOUBLE() usages are
+> covered.  For any specific usage in future, we may provide lowlevel
+> macros, __SOC_ENUM_SINGLE() with the number of items, too.
+
+Indeed, I was intending to go through and look at renaming the legacy
+macros so they're implementaton details once I'd got through all the
+patches.
+
+--mMVwBWE2stLN+mTQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBcOzAAoJELSic+t+oim9FXMP+QH9j8bkpa2uQX5Ti+q8DceV
-0429h/2+M3WzljTbl6Dfxlh/8YzJ+ZncBdg7YbWWZ8fr4KN+NHWszRcLzt8POexi
-6txizLVl8Ec/0jmGkafwAn67uxz9SVnsexgd7SydwR8yz030UxCuFsXIxRUFnW1S
-wbMjYF+kcIXwZmFgqGQCUbEqtZUWsBLU6C/incybW4MEdvkYxpqSJmjvXI0Bk8Z2
-+1LzVbeOsg3F+6fHreVwKIHU5Kgit1an5shsX9h3sZYcjQX0gUp/fSKwC0rsqNit
-f2MrOoZpylf7MMGOacZO0S4Kd4ZpGI267+fQeAsRJ2mzCkmVq/ndPu4plKvu/ZpO
-K4Vui6tJeniBlYEBOJW6uM9eW+0UZQDG6nylY1tXNcWNN28IRIM9/AhoKcXsTqMq
-kAmnr2ZdrUuhmH8W/W+ogrVhsfYV1kQZcSPN3khfeehBxa2Rw2oLBF5i1yIk5LlJ
-GRzNkIz1yL+9WnNcmyCaGQqAuqNynDPqrwc2VwPWz2YQFsfySCkU65JCgtkYuIk6
-3ri0s+TUWhLtMr8JS9cDC95wweVIAsvHWUiOAuzZqQ/PLTflI1dIucJP0/tFea4L
-6g3KEjX9L19xD6Cv+69CFzT9sRt7C2vp4vJJLkHWX6t2AocPWj7Mm3QEyJxD+r3W
-UIztRbZgVeBBHnkHTPW4
-=Y+n8
+iQIcBAEBAgAGBQJTBcZPAAoJELSic+t+oim9n3YQAJXqfMCm/LXD3gR5zymYVmSc
+Z4WWG4OU4vyBhc+ZSchT1JfTRz552Tnhcaku89qL8O3TvLqCc5QI+T+UjkjqEyGV
+557tsSe6urHZQ7mcMNgLxKqacE3i2u/tWoGHwxTWGRTP+8RnMVW830EF210gdBuT
+mlVHqyPZSvuX/a9sOpNjWhYGkFeDVh+F3i0c+fD71EH8QtPTMpQ4nIOd0uqGzkhW
+8RAH/3MFqVi7jkScibn3ke5+kEzcPpJFxBRbMHr7NAz3bGSbhE/NkI9nX+NQba62
+PMBXy+uoboLsKhMomggxF/4JEqV2eYdioYFQPDnm2GDyEiUKQImq4WtSk5fFQ3A1
+ZXxvjcBO6mAmUOWd9oyiSkwj1EFdhEbWkUNXptmjWrqOgnRBVdQnqoH4ELd87EN9
+iITnV79IPWISSKsjMBwMGjpCgaODvofSLWtBENTEIbS5wS9xthnMClA44IDse8/S
+Chy+2/cQhpSaRFQ9ucQ7ssMjmvsc2cU0I/ezIxIUt0ZeOB1fjL2zgEPRqIkImTe3
+AK59p/pKUvR/5unLPZ/Ufj/bytc6i05aoAtRo0OJCKPInCMVLHoh2JM/9Jy4Y6PG
+ecHhwr23OG/Airyy1/M7YMBjHQDXkRWPb+op7veVi6VSy5s+toyb5Fx8m84nBef9
+i7sqJAiB4kBeIoc1W73T
+=gHLW
 -----END PGP SIGNATURE-----
 
---yapsC4sTCx4mg1sJ--
+--mMVwBWE2stLN+mTQ--
 
---===============3240870523672474803==
+--===============6288979278958044780==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3240870523672474803==--
+--===============6288979278958044780==--
