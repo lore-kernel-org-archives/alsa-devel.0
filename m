@@ -1,77 +1,76 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [PATCH 2/2] ASoC: fsl: Make Freescale SAI/ESAI/SPDIF to be
- visible in Kconfig
-Date: Thu, 20 Feb 2014 02:06:20 +0000
-Message-ID: <36d9c0a870604fbe87b129e95fea9da1@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1392086825-15737-1-git-send-email-Li.Xiubo@freescale.com>
- <1392086825-15737-2-git-send-email-Li.Xiubo@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 006/102] ASoC: lm49453: Remove superfluous
+	const
+Date: Thu, 20 Feb 2014 10:56:01 +0900
+Message-ID: <20140220015601.GU2669@sirena.org.uk>
+References: <1392723148-12597-1-git-send-email-tiwai@suse.de>
+ <1392723148-12597-4-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1392086825-15737-2-git-send-email-Li.Xiubo@freescale.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
-Cc: "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@linaro.org>
+Content-Type: multipart/mixed; boundary="===============0519330674353007184=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id AE779265464
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 03:20:34 +0100 (CET)
+In-Reply-To: <1392723148-12597-4-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-I'm not very sure of this patch, maybe should we add one menu
-in Kconfig for all visible CPU DAIs firstly like for code drivers?
-
-Thanks,
-
---
-Best Regards,
-Xiubo
+--===============0519330674353007184==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LX6jtR8+ieQJxFRP"
+Content-Disposition: inline
 
 
-> Subject: [PATCH 2/2] ASoC: fsl: Make Freescale SAI/ESAI/SPDIF to be visible in
-> Kconfig
-> 
-> For simple card since the whole idea is to support any CODEC and
-> any CPU DAI with the same driver, we should probably just make sure
-> that all the individual CODEC and CPU DAI drivers can be enabled in
-> Kconfig. That way we don't have to have specific Kconfig entries for
-> boards and loose some of the benefit of the generic card.
-> 
-> This will make the Freescale SAI/ESAI/SPDIF device be visible in
-> Kconfig.
-> 
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-> Cc: Nicolin Chen <Guangyu.Chen@freescale.com>
-> Cc: Mark Brown <broonie@linaro.org>
-> ---
->  sound/soc/fsl/Kconfig | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-> index d0914c0..f397144 100644
-> --- a/sound/soc/fsl/Kconfig
-> +++ b/sound/soc/fsl/Kconfig
-> @@ -1,5 +1,5 @@
->  config SND_SOC_FSL_SAI
-> -	tristate
-> +	tristate "ALSA SoC support for the Freescale SAI device"
->  	select REGMAP_MMIO
->  	select SND_SOC_GENERIC_DMAENGINE_PCM
-> 
-> @@ -7,11 +7,11 @@ config SND_SOC_FSL_SSI
->  	tristate
-> 
->  config SND_SOC_FSL_SPDIF
-> -	tristate
-> +	tristate "ALSA SoC support for the Freescale SPDIF device"
->  	select REGMAP_MMIO
-> 
->  config SND_SOC_FSL_ESAI
-> -	tristate
-> +	tristate "ALSA SoC support for the Freescale ESAI device"
->  	select REGMAP_MMIO
-> 
->  config SND_SOC_FSL_UTILS
-> --
-> 1.8.4
-> 
+--LX6jtR8+ieQJxFRP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Feb 18, 2014 at 12:32:18PM +0100, Takashi Iwai wrote:
+> As SOC_ENUM_SINGLE_DECL() itself contains const modifier now, we can
+> reduce const from its users.
+
+Applied, thanks.
+
+--LX6jtR8+ieQJxFRP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTBWCtAAoJELSic+t+oim9LuQP/jH/1pYhHnBn3zzqH6IyFWHD
+by2c1lR0ExSiOCKEft+sGs24Mr5438RshdsveFuzsetxvU/CEgRaidJFjXHKj5tg
+rjGc+GFNFtCHGeitzSWcFSBs8JIgp9XyTvzeeHsa7JvXMKJyBuuaA6HXoWl7m6vW
+HNEL5uIJVIKz6hh5h3HsEbSHxnde8Gbjq0pk7XOIwaFlQBlkSr94iinYmYmn9ijk
+OMv3yMSh48rzYIxBNSOeTsZwzLioK0gFoxefTv02/xHKOOo3W1uZhiGGLJSm7Z7Z
+IhuJlEvnL0TxD/kZf7uL9kisJNrwWwcL2I6mfAiPHerYzRUjrEccXFmY9dHNgvbz
+YQX68YQtTMxPMhyFpvJuQIfccWPqLZ2gVXMsUMquQlZUWeta8l1qBDF8ZhAU3Y5s
+DqAsGbF4o0j2arBDWT4Lk6kmymVzcAySsoBrGoJJpi+VOimWpT4xUgXocUQgrMgS
+tPw4f5Utjzs1qBVGy+MSO/6jiqk3uaU/erXO5lV4sJjetGu2ACftNP7sMl1x+79I
+Y0oZEI/qH0rvLiU2b6Cb9jVGO8asJCTTUPVGb+57axCdjVQl7AdslEuS1B04KZfB
+xAP6R+OLBHsSb5j/1HbXEzO2IjD2j6Vaq0Ca0TZbMTFod/VtDHR/p6aVI4C4PVN9
+sXeDq4eYNvCmNL8m1T0q
+=M2tE
+-----END PGP SIGNATURE-----
+
+--LX6jtR8+ieQJxFRP--
+
+--===============0519330674353007184==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0519330674353007184==--
