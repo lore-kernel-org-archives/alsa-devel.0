@@ -1,17 +1,22 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 4/6] ASoC: Intel: Add trace support for
-	Haswell/Broadwell SST IPC messages.
-Date: Thu, 20 Feb 2014 21:48:45 +0000
-Message-ID: <1392932927-9725-4-git-send-email-liam.r.girdwood@linux.intel.com>
-References: <1392932927-9725-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 082/102] ASoC: Add SOC_ENUM_SINGLE_CONST()
+ and SOC_ENUM_DOUBLE_CONST() macros
+Date: Fri, 21 Feb 2014 08:34:00 +0900
+Message-ID: <20140220233400.GD12197@sirena.org.uk>
+References: <1392724308-13375-1-git-send-email-tiwai@suse.de>
+ <1392724308-13375-2-git-send-email-tiwai@suse.de>
+ <20140220023339.GR2669@sirena.org.uk>
+ <s5heh2yxnuk.wl%tiwai@suse.de>
+ <20140220090938.GA2669@sirena.org.uk>
+ <s5hmwhlvnn8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7624723703877878987=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A7599265861
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 22:49:21 +0100 (CET)
-In-Reply-To: <1392932927-9725-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10740265861
+ for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2014 00:34:13 +0100 (CET)
+In-Reply-To: <s5hmwhlvnn8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,408 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Provide a trace mechanism for debugging Haswell/Broadwell specific SST
-IPC messages.
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
- include/trace/events/hswadsp.h | 384 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 384 insertions(+)
- create mode 100644 include/trace/events/hswadsp.h
+--===============7624723703877878987==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="NklN7DEeGtkPCoo3"
+Content-Disposition: inline
 
-diff --git a/include/trace/events/hswadsp.h b/include/trace/events/hswadsp.h
-new file mode 100644
-index 0000000..0f78bbb
---- /dev/null
-+++ b/include/trace/events/hswadsp.h
-@@ -0,0 +1,384 @@
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM hswadsp
-+
-+#if !defined(_TRACE_HSWADSP_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_HSWADSP_H
-+
-+#include <linux/types.h>
-+#include <linux/ktime.h>
-+#include <linux/tracepoint.h>
-+
-+struct sst_hsw;
-+struct sst_hsw_stream;
-+struct sst_hsw_ipc_stream_free_req;
-+struct sst_hsw_ipc_volume_req;
-+struct sst_hsw_ipc_stream_alloc_req;
-+struct sst_hsw_audio_data_format_ipc;
-+struct sst_hsw_ipc_stream_info_reply;
-+struct sst_hsw_ipc_device_config_req;
-+
-+DECLARE_EVENT_CLASS(sst_irq,
-+
-+	TP_PROTO(uint32_t status, uint32_t mask),
-+
-+	TP_ARGS(status, mask),
-+
-+	TP_STRUCT__entry(
-+		__field(	unsigned int,	status		)
-+		__field(	unsigned int,	mask		)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->status = status;
-+		__entry->mask = mask;
-+	),
-+
-+	TP_printk("status 0x%8.8x mask 0x%8.8x",
-+		(unsigned int)__entry->status, (unsigned int)__entry->mask)
-+);
-+
-+DEFINE_EVENT(sst_irq, sst_irq_busy,
-+
-+	TP_PROTO(unsigned int status, unsigned int mask),
-+
-+	TP_ARGS(status, mask)
-+
-+);
-+
-+DEFINE_EVENT(sst_irq, sst_irq_done,
-+
-+	TP_PROTO(unsigned int status, unsigned int mask),
-+
-+	TP_ARGS(status, mask)
-+
-+);
-+
-+DECLARE_EVENT_CLASS(ipc,
-+
-+	TP_PROTO(const char *name, int val),
-+
-+	TP_ARGS(name, val),
-+
-+	TP_STRUCT__entry(
-+		__string(	name,	name		)
-+		__field(	unsigned int,	val	)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, name);
-+		__entry->val = val;
-+	),
-+
-+	TP_printk("%s 0x%8.8x", __get_str(name), (unsigned int)__entry->val)
-+
-+);
-+
-+DEFINE_EVENT(ipc, ipc_request,
-+
-+	TP_PROTO(const char *name, int val),
-+
-+	TP_ARGS(name, val)
-+
-+);
-+
-+DEFINE_EVENT(ipc, ipc_reply,
-+
-+	TP_PROTO(const char *name, int val),
-+
-+	TP_ARGS(name, val)
-+
-+);
-+
-+DEFINE_EVENT(ipc, ipc_pending_reply,
-+
-+	TP_PROTO(const char *name, int val),
-+
-+	TP_ARGS(name, val)
-+
-+);
-+
-+DEFINE_EVENT(ipc, ipc_notification,
-+
-+	TP_PROTO(const char *name, int val),
-+
-+	TP_ARGS(name, val)
-+
-+);
-+
-+DEFINE_EVENT(ipc, ipc_error,
-+
-+	TP_PROTO(const char *name, int val),
-+
-+	TP_ARGS(name, val)
-+
-+);
-+
-+DECLARE_EVENT_CLASS(stream_position,
-+
-+	TP_PROTO(unsigned int id, unsigned int pos),
-+
-+	TP_ARGS(id, pos),
-+
-+	TP_STRUCT__entry(
-+		__field(	unsigned int,	id		)
-+		__field(	unsigned int,	pos		)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->id = id;
-+		__entry->pos = pos;
-+	),
-+
-+	TP_printk("id %d position 0x%x",
-+		(unsigned int)__entry->id, (unsigned int)__entry->pos)
-+);
-+
-+DEFINE_EVENT(stream_position, stream_read_position,
-+
-+	TP_PROTO(unsigned int id, unsigned int pos),
-+
-+	TP_ARGS(id, pos)
-+
-+);
-+
-+DEFINE_EVENT(stream_position, stream_write_position,
-+
-+	TP_PROTO(unsigned int id, unsigned int pos),
-+
-+	TP_ARGS(id, pos)
-+
-+);
-+
-+TRACE_EVENT(hsw_stream_buffer,
-+
-+	TP_PROTO(struct sst_hsw_stream *stream),
-+
-+	TP_ARGS(stream),
-+
-+	TP_STRUCT__entry(
-+		__field(	int,	id	)
-+		__field(	int,	pt_addr	)
-+		__field(	int,	num_pages	)
-+		__field(	int,	ring_size	)
-+		__field(	int,	ring_offset	)
-+		__field(	int,	first_pfn	)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->id = stream->host_id;
-+		__entry->pt_addr = stream->request.ringinfo.ring_pt_address;
-+		__entry->num_pages = stream->request.ringinfo.num_pages;
-+		__entry->ring_size = stream->request.ringinfo.ring_size;
-+		__entry->ring_offset = stream->request.ringinfo.ring_offset;
-+		__entry->first_pfn = stream->request.ringinfo.ring_first_pfn;
-+	),
-+
-+	TP_printk("stream %d ring addr 0x%x pages %d size 0x%x offset 0x%x PFN 0x%x",
-+		(int) __entry->id,  (int)__entry->pt_addr,
-+		(int)__entry->num_pages, (int)__entry->ring_size,
-+		(int)__entry->ring_offset, (int)__entry->first_pfn)
-+);
-+
-+TRACE_EVENT(hsw_stream_alloc_reply,
-+
-+	TP_PROTO(struct sst_hsw_stream *stream),
-+
-+	TP_ARGS(stream),
-+
-+	TP_STRUCT__entry(
-+		__field(	int,	id	)
-+		__field(	int,	stream_id	)
-+		__field(	int,	mixer_id	)
-+		__field(	int,	peak0	)
-+		__field(	int,	peak1	)
-+		__field(	int,	vol0	)
-+		__field(	int,	vol1	)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->id = stream->host_id;
-+		__entry->stream_id = stream->reply.stream_hw_id;
-+		__entry->mixer_id = stream->reply.mixer_hw_id;
-+		__entry->peak0 = stream->reply.peak_meter_register_address[0];
-+		__entry->peak1 = stream->reply.peak_meter_register_address[1];
-+		__entry->vol0 = stream->reply.volume_register_address[0];
-+		__entry->vol1 = stream->reply.volume_register_address[1];
-+	),
-+
-+	TP_printk("stream %d hw id %d mixer %d peak 0x%x:0x%x vol 0x%x,0x%x",
-+		(int) __entry->id, (int) __entry->stream_id, (int)__entry->mixer_id,
-+		(int)__entry->peak0, (int)__entry->peak1,
-+		(int)__entry->vol0, (int)__entry->vol1)
-+);
-+
-+TRACE_EVENT(hsw_mixer_info_reply,
-+
-+	TP_PROTO(struct sst_hsw_ipc_stream_info_reply *reply),
-+
-+	TP_ARGS(reply),
-+
-+	TP_STRUCT__entry(
-+		__field(	int,	mixer_id	)
-+		__field(	int,	peak0	)
-+		__field(	int,	peak1	)
-+		__field(	int,	vol0	)
-+		__field(	int,	vol1	)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->mixer_id = reply->mixer_hw_id;
-+		__entry->peak0 = reply->peak_meter_register_address[0];
-+		__entry->peak1 = reply->peak_meter_register_address[1];
-+		__entry->vol0 = reply->volume_register_address[0];
-+		__entry->vol1 = reply->volume_register_address[1];
-+	),
-+
-+	TP_printk("mixer id %d peak 0x%x:0x%x vol 0x%x,0x%x",
-+		(int)__entry->mixer_id,
-+		(int)__entry->peak0, (int)__entry->peak1,
-+		(int)__entry->vol0, (int)__entry->vol1)
-+);
-+
-+TRACE_EVENT(hsw_stream_data_format,
-+
-+	TP_PROTO(struct sst_hsw_stream *stream,
-+		struct sst_hsw_audio_data_format_ipc *req),
-+
-+	TP_ARGS(stream, req),
-+
-+	TP_STRUCT__entry(
-+		__field(	uint32_t,	id	)
-+		__field(	uint32_t,	frequency	)
-+		__field(	uint32_t,	bitdepth	)
-+		__field(	uint32_t,	map	)
-+		__field(	uint32_t,	config	)
-+		__field(	uint32_t,	style	)
-+		__field(	uint8_t,	ch_num	)
-+		__field(	uint8_t,	valid_bit	)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->id = stream->host_id;
-+		__entry->frequency = req->frequency;
-+		__entry->bitdepth = req->bitdepth;
-+		__entry->map = req->map;
-+		__entry->config = req->config;
-+		__entry->style = req->style;
-+		__entry->ch_num = req->ch_num;
-+		__entry->valid_bit = req->valid_bit;
-+	),
-+
-+	TP_printk("stream %d freq %d depth %d map 0x%x config 0x%x style 0x%x ch %d bits %d",
-+		(int) __entry->id, (uint32_t)__entry->frequency,
-+		(uint32_t)__entry->bitdepth, (uint32_t)__entry->map,
-+		(uint32_t)__entry->config, (uint32_t)__entry->style,
-+		(uint8_t)__entry->ch_num, (uint8_t)__entry->valid_bit)
-+);
-+
-+TRACE_EVENT(hsw_stream_alloc_request,
-+
-+	TP_PROTO(struct sst_hsw_stream *stream,
-+		struct sst_hsw_ipc_stream_alloc_req *req),
-+
-+	TP_ARGS(stream, req),
-+
-+	TP_STRUCT__entry(
-+		__field(	uint32_t,	id	)
-+		__field(	uint8_t,	path_id	)
-+		__field(	uint8_t,	stream_type	)
-+		__field(	uint8_t,	format_id	)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->id = stream->host_id;
-+		__entry->path_id = req->path_id;
-+		__entry->stream_type = req->stream_type;
-+		__entry->format_id = req->format_id;
-+	),
-+
-+	TP_printk("stream %d path %d type %d format %d",
-+		(int) __entry->id, (uint8_t)__entry->path_id,
-+		(uint8_t)__entry->stream_type, (uint8_t)__entry->format_id)
-+);
-+
-+TRACE_EVENT(hsw_stream_free_req,
-+
-+	TP_PROTO(struct sst_hsw_stream *stream,
-+		struct sst_hsw_ipc_stream_free_req *req),
-+
-+	TP_ARGS(stream, req),
-+
-+	TP_STRUCT__entry(
-+		__field(	int,	id	)
-+		__field(	int,	stream_id	)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->id = stream->host_id;
-+		__entry->stream_id = req->stream_id;
-+	),
-+
-+	TP_printk("stream %d hw id %d",
-+		(int) __entry->id, (int) __entry->stream_id)
-+);
-+
-+TRACE_EVENT(hsw_volume_req,
-+
-+	TP_PROTO(struct sst_hsw_stream *stream,
-+		struct sst_hsw_ipc_volume_req *req),
-+
-+	TP_ARGS(stream, req),
-+
-+	TP_STRUCT__entry(
-+		__field(	int,	id	)
-+		__field(	uint32_t,	channel	)
-+		__field(	uint32_t,	target_volume	)
-+		__field(	uint64_t,	curve_duration	)
-+		__field(	uint32_t,	curve_type	)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->id = stream->host_id;
-+		__entry->channel = req->channel;
-+		__entry->target_volume = req->target_volume;
-+		__entry->curve_duration = req->curve_duration;
-+		__entry->curve_type = req->curve_type;
-+	),
-+
-+	TP_printk("stream %d chan 0x%x vol %d duration %llu type %d",
-+		(int) __entry->id, (uint32_t) __entry->channel,
-+		(uint32_t)__entry->target_volume,
-+		(uint64_t)__entry->curve_duration,
-+		(uint32_t)__entry->curve_type)
-+);
-+
-+TRACE_EVENT(hsw_device_config_req,
-+
-+	TP_PROTO(struct sst_hsw_ipc_device_config_req *req),
-+
-+	TP_ARGS(req),
-+
-+	TP_STRUCT__entry(
-+		__field(	uint32_t,	ssp	)
-+		__field(	uint32_t,	clock_freq	)
-+		__field(	uint32_t,	mode	)
-+		__field(	uint16_t,	clock_divider	)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->ssp = req->ssp_interface;
-+		__entry->clock_freq = req->clock_frequency;
-+		__entry->mode = req->mode;
-+		__entry->clock_divider = req->clock_divider;
-+	),
-+
-+	TP_printk("SSP %d Freq %d mode %d div %d",
-+		(uint32_t)__entry->ssp,
-+		(uint32_t)__entry->clock_freq, (uint32_t)__entry->mode,
-+		(uint32_t)__entry->clock_divider)
-+);
-+
-+#endif /* _TRACE_HSWADSP_H */
-+
-+/* This part must be outside protection */
-+#include <trace/define_trace.h>
--- 
-1.8.3.2
+
+--NklN7DEeGtkPCoo3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Feb 20, 2014 at 03:56:11PM +0100, Takashi Iwai wrote:
+
+> OK, but still a question is whether to split patches or not.
+> By splitting patches, we'll break the build in between, so the
+> bisection won't work well.  OTOH, a big single patch would be too
+> big.  I myself am inclined to have split patches despite bisection
+> breakage in this case.
+
+I'd go with a single patch - if it's big and repetitive it's not going
+to be that hard to review - but I think either way is probably OK in the
+end so whatever you feel comfortable with.
+
+--NklN7DEeGtkPCoo3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTBpDlAAoJELSic+t+oim99UUP/101NQbEdxBAsXQWI3oauto+
+eT3kiOr6a6k3yVLK1hCGBXwV1mvI4CPyKbUHmN0fOrTMlAIVyVHxwDO+vH+kZSIV
+LjmJw1GmCvNtrLVDK6mzCLqtJfkHr8wsKqRiFW2ZaAUVeODknZxrLbY0hVXadjom
+dw9gsFUhgbA7LqDK75DW8x9bcrm6JjDf16ihGNWA5uUpMaYrTI0mFI4jdeWx3Oye
+jJa6XDDkgZzeiL2TOUI6sq20oFVnO0JUAokfF9C4xfTjd2O02eTx5vb6qGhMbVw6
+AJwjtvVUfPCHqqvmRVn0zjW2Cb7VsZO4Nk7hts725vu6e2rn+zS0I+78WrFUDxis
+cGlzWyZ0UEgb7IJhs48hiXP0hZjUUwXxDr/2aU1aHWobkJkz5660ser7GyAr7+tH
+PysDCLn/BFfV644/24l7Tse7NPynM6Eh7PRRJ+tEeK+Lq+Q2eJ0c4gtZBwTHpRrU
+QPssDo6NmyEl9g+AGMEgyy59Rl/PWGYmc5QO5gYS8x7OCi/BA9TtySeI6Co2KyOZ
+elz0hFEXKhtaauMGturbQHPvsxzpYMZvtvoHMMiD4gEc3INfkooCxtxuQsjz62RS
+0YymKID9QSQ25wWe/XfcKAY2fDJ6eSZ4cwBwforz3wle99RFljrNxKtqNVCj1Xni
+Tp2JiBHgRBuhdQ5VuOcf
+=iugv
+-----END PGP SIGNATURE-----
+
+--NklN7DEeGtkPCoo3--
+
+--===============7624723703877878987==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7624723703877878987==--
