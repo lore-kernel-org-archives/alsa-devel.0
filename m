@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 004/102] ASoC: Add const to
-	SOC_ENUM_*_DECL() macros
-Date: Thu, 20 Feb 2014 10:55:35 +0900
-Message-ID: <20140220015535.GS2669@sirena.org.uk>
+Subject: Re: [PATCH 005/102] ASoC: adau1373: Remove superfluous
+	const
+Date: Thu, 20 Feb 2014 10:55:46 +0900
+Message-ID: <20140220015546.GT2669@sirena.org.uk>
 References: <1392723148-12597-1-git-send-email-tiwai@suse.de>
- <1392723148-12597-2-git-send-email-tiwai@suse.de>
+ <1392723148-12597-3-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0559771559808559603=="
+Content-Type: multipart/mixed; boundary="===============7437194717197243257=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 25C4926538B
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 02:55:51 +0100 (CET)
-In-Reply-To: <1392723148-12597-2-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A25ED265645
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 02:56:35 +0100 (CET)
+In-Reply-To: <1392723148-12597-3-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +26,51 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0559771559808559603==
+--===============7437194717197243257==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/nI5WQOYKpjxyPr9"
+	protocol="application/pgp-signature"; boundary="YtRCD/bhhyoMRoJW"
 Content-Disposition: inline
 
 
---/nI5WQOYKpjxyPr9
+--YtRCD/bhhyoMRoJW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 18, 2014 at 12:32:16PM +0100, Takashi Iwai wrote:
-> Since these macros are supposed to be used for decalring const
-> objects, let's add the const modifier there.
+On Tue, Feb 18, 2014 at 12:32:17PM +0100, Takashi Iwai wrote:
+> As SOC_ENUM_SINGLE_DECL() itself contains const modifier now, we can
+> reduce const from its users.
 
 Applied, thanks.
 
---/nI5WQOYKpjxyPr9
+--YtRCD/bhhyoMRoJW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBWCUAAoJELSic+t+oim96yMP/1IYYxdfS32/2GklZBsI9kjo
-au/7uhXh6c+WvHz745Hzsh55MAfar0R5BH2x/nDsE/9dEHB9DYvMmqr37pUhOkq1
-5Kis1FgIfP2GnZPWci7EKzkg+pUPQ6DJ0AEk6eK3EJ6bD0WhFdhWmNYzEg/wjOuR
-8KV7hmR9+TxTdOqwrCyU6tNK8DKpUDqS+iMR5+o9kA3o2hGvP3BzECP0bl3gwK3h
-pTmOXKntEOP8UhsB/26E2asLck25ta9C6DkCHV9+cN1ta8TlBoVtZZOOdVjyBine
-3Aj1XtnQ/xQHncLnT/ZAWO3l5hJo85Ra9sMOVnCEWmLpN2npfDbOCp9gXSR72baz
-jEr1syFdCsIHC3mL5dKKzG7kJMS6VOF/OvEcuXtvqG/sGNAC4Z1lItXRlxuZCcZ4
-A33gPOkgz8k/8BBUEUFbsXf9NohVoQvR14EhsEKe/DV+gmfunC1940M0MQiuWc7A
-EIc3mW+OBFHoCafnFQFlsI78xfmRt9oeIZ4uSTERTgjjS76BrryZMqP2qKEJTuSs
-Q+G0EsS7Dc3iyWNAcK0y6thTfMoWe9jp7Rvjt9VTkvjrSRv4hn9v/qyN0/qcdXkc
-GdfvQZkn9FMiI8BHLvEKyfJNApZ4Fryw1LjzAAt6rVtaSAxeWwq6AVJgwkxPtkX7
-hf4fkAqh6JU1+ZtSrQUv
-=Lwm6
+iQIcBAEBAgAGBQJTBWCfAAoJELSic+t+oim9Mm0P/jI8JXZBEAVjXWcA1bEaoaB+
+QHm5qMNTkdGW4SdgQrbBCiFz6yBgSl/5xPf0hovEhF/kIZuxxRYnHYm+fcGEMbGj
+9etbpDUgzA44V0IbeBK4ONjT64or4BF+6NVOiAksZ+F1cfZfjJDudTHXzEJjd3zG
+PtnmC6I5xWRFn/oiXyb+ojT5yAyro6xj6vciDjTX+t1nk9u9/nhBGxZiS8mC/1UR
+AaubYpCRJe0JveshocNznI5gUZXlOVNSb6nHJziE4GR6EJLfhlmpCBT0RKiktdnt
+Uy2Knrl+J/MuwTl9HnWw9kiJXLDMb/TzVkMip5qIBXTisfOzGFpcy9r1qM9c8IKw
+j4kMOWfH878L4Kl3/49zx5CHMu2+IpROnsoGazexg4LiuYSwHjKWz/2u8vPdMYqj
+l3S81oE+cTnvMZ2HalFxc5miGhPPiCruocrVKQEBG4+Na6MFkYAhDiJV0nMYFeE0
+mZlA1N8FAWmQItT7wjJcSv9RdlsxMPjELQJ06KA9Nin0Q3PufQe6B5ldasjUunwW
+zQwWJ84F0mFuUILwl6+n94Kd/9ygHEcyTx1lk+ap9FUQPRBprrFGjXrPbstGn+ZT
+tfI14HG0GG+52shMTEVDQGPFD4NaDblrmvuKB2Sjc9b2bY0SzUVXpotfuaM0lePS
+0PPSltsIC9e9uf9VcvTX
+=xf63
 -----END PGP SIGNATURE-----
 
---/nI5WQOYKpjxyPr9--
+--YtRCD/bhhyoMRoJW--
 
---===============0559771559808559603==
+--===============7437194717197243257==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0559771559808559603==--
+--===============7437194717197243257==--
