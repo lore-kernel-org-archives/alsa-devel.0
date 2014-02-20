@@ -1,58 +1,83 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: fsl: Make Freescale SAI/ESAI/SPDIF to be
- visible in Kconfig
-Date: Thu, 20 Feb 2014 11:44:32 +0900
-Message-ID: <20140220024432.GU2669@sirena.org.uk>
-References: <1392086825-15737-1-git-send-email-Li.Xiubo@freescale.com>
- <1392086825-15737-2-git-send-email-Li.Xiubo@freescale.com>
- <36d9c0a870604fbe87b129e95fea9da1@BY2PR03MB505.namprd03.prod.outlook.com>
+Subject: Re: [PATCH 082/102] ASoC: Add SOC_ENUM_SINGLE_CONST()
+ and SOC_ENUM_DOUBLE_CONST() macros
+Date: Thu, 20 Feb 2014 11:33:39 +0900
+Message-ID: <20140220023339.GR2669@sirena.org.uk>
+References: <1392724308-13375-1-git-send-email-tiwai@suse.de>
+ <1392724308-13375-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Lx10O6ETy9X4GV3M"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <36d9c0a870604fbe87b129e95fea9da1@BY2PR03MB505.namprd03.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============3052204945666730329=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6082B265677
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 03:50:11 +0100 (CET)
+In-Reply-To: <1392724308-13375-2-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---Lx10O6ETy9X4GV3M
+--===============3052204945666730329==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vexDq96c2p6JNt+p"
+Content-Disposition: inline
+
+
+--vexDq96c2p6JNt+p
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Feb 20, 2014 at 02:06:20AM +0000, Li.Xiubo@freescale.com wrote:
+On Tue, Feb 18, 2014 at 12:51:28PM +0100, Takashi Iwai wrote:
+> Add new helper macros for defining the enum elements with a constant
+> array.  With these macros, redundant ARRAY_SIZE() can be removed in
+> the code.
 
-> I'm not very sure of this patch, maybe should we add one menu
-> in Kconfig for all visible CPU DAIs firstly like for code drivers?
+So, this doesn't seem like the best way to do things.  For one thing
+it's not really that the arrays are const, it's the fact that they are a
+fixed size that makes the difference with these macros.  An array where
+we fill in a fixed number of strings at runtime would work just as well
+for this.  I'd also expect this to be more what the default naming does
+since we want to try to steer people towards using the simplest and
+least error prone mechanism for doing this.
 
-Allowing them to be individually selected is definitely useful if people
-are trying to minimise their kernel size and/or build time.  However
-none of the other Freescale people have commented on this patch (which
-I'd have expected) so I was giving them time and IIRC it needs a rebase
-against current code.
-
---Lx10O6ETy9X4GV3M
+--vexDq96c2p6JNt+p
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTBWwMAAoJELSic+t+oim9BkoP/0T7ZZCT4XARSIQ6LQ0fixy6
-vX6kdJF0Jy43oJBLtZNVPQXhAxRUk4cieLG82edCwFRJAp/XowtvhuE+6FCPMhVR
-tIPC75vR4v5TN7tll1fc/PL1T15JP9oThidenjivtXfxg27Q0Kd8hl8LOIDgicyO
-v/3ZyjFr9q2nBUfKl2d+HXmqkFpQPA9MayF17yH72RBpccwxPxEXUegfgX9wKbWn
-adg1iF3Qd6ulHGVx7FQNOnx+5ad+sgbwewpWsO4j0X2RgOd+XB14Lk6bOUfoJe3c
-urmQrfkNZGbWMfKg+CPi4YhSvW3Y/ECqgZn1YE9w/9Y3xWHDgRtfudHHTWDoEvin
-0Xy305c4tiL4CCA1XtLMOXuqErm6g8PgOIYbhqg8ZPjX9q92+seHjI+NlMyHQHF6
-vvigrMzhGVYpD902qRefRbPpibKVemV1GxOHhiStP/TDtU7I+SiZvUgf5fP8Pnmg
-eowtPKtP1GmR5uurvKmoah9yaG/kYFMah+zM1e9VXGT4CqmjRGaIrJ0kBCo7kjBb
-0oDQSq4YsDe3R9RTuU43JMmI+oRZFPa9qKEIF9LwpKgOXkwmpog5RoU0YAwjO849
-96rcj1d4SFatAgKsA5lQlua9g2Q/7GHKpnWkFnRQuVkvHUKIAMpqIcXD0/PNbPKb
-JXyKnbWrPUof1+R9lOxu
-=AKsj
+iQIcBAEBAgAGBQJTBWmAAAoJELSic+t+oim9lqIP/i58OxptgomiAQOdQtPlK9j4
+g6oRoXc2kZqZ1gBWWA4VGKWJ+Pa5TQ3TIIYz+qjTJ1usJJg4g3USMqX7pudg3u8G
+U9IAe0KUlU6eC4gcAhOyabx33aOhRVRgH4HtgQHAw5+7TKt13u6oKAbdwgDsCk8c
+Mf6AQtJHKrc8mHh6LLlGO6D3iCqZu+fBrMTC9e2gAUCWLpIYaWAzXf2TigaBQamu
++dFQGyxSIJ5VApV14G/0Ge8eZ8XCySNSEDo+O4xJjDR35TakO+FXoWtHfPlIY3ii
+ikm+519RB7O3ODslhOLjad+CKtv08DnCxjdejvuY/1Jg3SDQkAAOw9gcz0iFeLxp
+ZkY0xV/7ReiA4oTW2jFQk+hCIdUJVixWM2LGvcj44hZ7YB13EDxBkLVOMaX9gZhU
+qtpIPUP0SVA6xdNJRCqOzlN7mG5PPVuAIjW7tNzKUJYlI3al7SegCKxLVrz2VPdE
+1GCl3ti+XR7NwjTE2oE/bz/d4Uo82QtcNP/KV3nlulY4jkbf6R+QOIFPT4rcC1+U
+472PXHfEJ5btN4EWKupjbNR/r4DpNle9T0Duo242z+eP01R7cQMZSYoDDFLPk4R1
+DIMFx5qr80n8RSLc//W4pspt2kTNgdmMK4tf/giPrHvBPqPikJtc0KTGOlZ/Ghzb
+0Hf1OeK4mv5jxuUiKKx1
+=CPdn
 -----END PGP SIGNATURE-----
 
---Lx10O6ETy9X4GV3M--
+--vexDq96c2p6JNt+p--
+
+--===============3052204945666730329==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3052204945666730329==--
