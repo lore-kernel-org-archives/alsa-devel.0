@@ -1,15 +1,18 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 0/3] alsa-lib - improve surround 2.1 support
-Date: Fri, 21 Feb 2014 16:24:19 +0100
-Message-ID: <1392996262-27970-1-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH 1/3] route: Allow chmap syntax for slave
+	channels in ttable
+Date: Fri, 21 Feb 2014 16:24:20 +0100
+Message-ID: <1392996262-27970-2-git-send-email-david.henningsson@canonical.com>
+References: <1392996262-27970-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id D9A1A2658DE
- for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2014 16:24:24 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B5D682658F4
+ for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2014 16:24:25 +0100 (CET)
+In-Reply-To: <1392996262-27970-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,22 +26,64 @@ To: tiwai@suse.de, alsa-devel@alsa-project.org
 Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-So, in order to support 2.1 surround on both 4-channels (e g FL FR LFE LFE,
-on internal subwoofer) and 6-channels (e g FL FR RL RR C LFE, on desktops
-with 5.1 out), I needed to make the route plugin more chmap aware.
+Instead of writing e g "0" and "1", one can now write "FL" and "FR" instead.
 
-This also included allowing a new syntax for the ttable, which I think is
-quite nice. The new syntax also falls back to ALSAs standard chmap in case
-the hardware does not support it.
+E g:
+	ttable.0.FL 1
+	ttable.1.FR 1
+	ttable.2.LFE 1
 
-David Henningsson (3):
-  route: Allow chmap syntax for slave channels in ttable
-  route: Select slave chmap based on ttable information
-  conf: Allow 2.1 surround to use different number of channels
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ src/pcm/pcm_route.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
- src/conf/pcm/surround21.conf |   7 +-
- src/pcm/pcm_route.c          | 304 ++++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 271 insertions(+), 40 deletions(-)
-
+diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
+index 2beedf6..ffc283f 100644
+--- a/src/pcm/pcm_route.c
++++ b/src/pcm/pcm_route.c
+@@ -789,6 +789,24 @@ static void snd_pcm_route_dump(snd_pcm_t *pcm, snd_output_t *out)
+ 	snd_pcm_dump(route->plug.gen.slave, out);
+ }
+ 
++static int safe_chmapchannel(const char *id, long *channel)
++{
++	int err;
++	int ch;
++	err = safe_strtol(id, channel);
++	if (err >= 0)
++		return err;
++
++	ch = (int) snd_pcm_chmap_from_string(id);
++	if (ch == -1)
++		return -EINVAL;
++
++	/* For now, assume standard channel mapping */
++	*channel = ch - SND_CHMAP_FL;
++	return 0;
++}
++
++
+ static const snd_pcm_ops_t snd_pcm_route_ops = {
+ 	.close = snd_pcm_route_close,
+ 	.info = snd_pcm_generic_info,
+@@ -983,7 +1001,7 @@ int snd_pcm_route_determine_ttable(snd_config_t *tt,
+ 			const char *id;
+ 			if (snd_config_get_id(jnode, &id) < 0)
+ 				continue;
+-			err = safe_strtol(id, &schannel);
++			err = safe_chmapchannel(id, &schannel);
+ 			if (err < 0) {
+ 				SNDERR("Invalid slave channel: %s", id);
+ 				return -EINVAL;
+@@ -1046,7 +1064,7 @@ int snd_pcm_route_load_ttable(snd_config_t *tt, snd_pcm_route_ttable_entry_t *tt
+ 			const char *id;
+ 			if (snd_config_get_id(jnode, &id) < 0)
+ 				continue;
+-			err = safe_strtol(id, &schannel);
++			err = safe_chmapchannel(id, &schannel);
+ 			if (err < 0 || 
+ 			    schannel < 0 || (unsigned int) schannel > tt_ssize || 
+ 			    (schannels > 0 && schannel >= schannels)) {
 -- 
 1.9.0
