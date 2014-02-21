@@ -1,8 +1,7 @@
 From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH 2/4] ASoC: simple-card: dynamically allocate the DAI link
- array
-Date: Wed, 19 Feb 2014 19:07:41 +0100
-Message-ID: <41aa7354a6883f31afa60c21c2e14ecbb3bbb7e9.1392995566.git.moinejf@free.fr>
+Subject: [PATCH 3/4] ASoC: simple-card: accept many DAI links
+Date: Fri, 21 Feb 2014 09:56:45 +0100
+Message-ID: <a6c0e6447da2ce2cc6fa403140550410e7778cc8.1392995566.git.moinejf@free.fr>
 References: <cover.1392995566.git.moinejf@free.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1392995566.git.moinejf@free.fr>
@@ -11,47 +10,168 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-The DAI link array is hard-coded as a single CPU / CODEC DAIs link.
-
-This patch allocates this array with the card definition and facilitates
-handling more links.
+Some simple audio cards may have many DAI links.
+This patch makes them handled by the simple-card driver.
 
 Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
 ---
- sound/soc/generic/simple-card.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/generic/simple-card.c | 100 ++++++++++++++++++++++++++--------------
+ 1 file changed, 66 insertions(+), 34 deletions(-)
 
 diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 8809ab4..a75a8bb 100644
+index a75a8bb..6e0e580 100644
 --- a/sound/soc/generic/simple-card.c
 +++ b/sound/soc/generic/simple-card.c
-@@ -20,7 +20,6 @@ struct simple_card_data {
- 	unsigned int daifmt;
- 	struct asoc_simple_dai cpu_dai;
- 	struct asoc_simple_dai codec_dai;
--	struct snd_soc_dai_link snd_link;
- };
+@@ -93,6 +93,9 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 	if (ret < 0)
+ 		return ret;
  
- static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
-@@ -246,7 +245,9 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
++	if (!dai)
++		return 0;
++
+ 	/*
+ 	 * bitclock-inversion, frame-inversion
+ 	 * bitclock-master,    frame-master
+@@ -135,7 +138,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	struct snd_soc_dai_link *dai_link = priv->snd_card.dai_link;
+ 	struct device_node *np;
+ 	char *name;
+-	int ret;
++	int first_link, ret;
+ 
+ 	/* parsing the card name from DT */
+ 	snd_soc_of_parse_card_name(&priv->snd_card, "simple-audio-card,name");
+@@ -160,50 +163,67 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 			return ret;
+ 	}
+ 
+-	/* CPU sub-node */
+-	ret = -EINVAL;
+-	np = of_get_child_by_name(node, "simple-audio-card,cpu");
+-	if (np) {
++	/* loop on the DAI links */
++	np = NULL;
++	first_link = 1;
++	for (;;) {
++		np = of_get_next_child(node, np);
++		if (!np)
++			break;
++
++		/* CPU sub-node */
++		if (strcmp(np->name, "simple-audio-card,cpu") != 0) {
++			dev_err(dev, "Bad CPU DAI\n");
++			of_node_put(np);
++			return -EINVAL;
++		}
+ 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
+-						  &priv->cpu_dai,
++					first_link ? &priv->cpu_dai : NULL,
+ 						  &dai_link->cpu_of_node,
+ 						  &dai_link->cpu_dai_name);
+ 		of_node_put(np);
+-	}
+-	if (ret < 0)
+-		return ret;
++		if (ret < 0)
++			return ret;
+ 
+-	/* CODEC sub-node */
+-	ret = -EINVAL;
+-	np = of_get_child_by_name(node, "simple-audio-card,codec");
+-	if (np) {
++		/* CODEC sub-node */
++		np = of_get_next_child(node, np);
++		if (strcmp(np->name, "simple-audio-card,codec") != 0) {
++			dev_err(dev, "Bad CODEC DAI\n");
++			of_node_put(np);
++			return -EINVAL;
++		}
+ 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
+-						  &priv->codec_dai,
++					first_link ? &priv->codec_dai : NULL,
+ 						  &dai_link->codec_of_node,
+ 						  &dai_link->codec_dai_name);
+ 		of_node_put(np);
+-	}
+-	if (ret < 0)
+-		return ret;
++		if (ret < 0)
++			return ret;
++
++		if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name)
++			return -EINVAL;
+ 
+-	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name)
+-		return -EINVAL;
++		/* simple-card assumes platform == cpu */
++		dai_link->platform_of_node = dai_link->cpu_of_node;
++
++		name = devm_kzalloc(dev,
++				    strlen(dai_link->cpu_dai_name)   +
++				    strlen(dai_link->codec_dai_name) + 2,
++				    GFP_KERNEL);
++		sprintf(name, "%s-%s", dai_link->cpu_dai_name,
++					dai_link->codec_dai_name);
++		dai_link->name = dai_link->stream_name = name;
++
++		dai_link++;
++		first_link = 0;
++	}
+ 
+ 	/* card name is created from CPU/CODEC dai name */
+-	name = devm_kzalloc(dev,
+-			    strlen(dai_link->cpu_dai_name)   +
+-			    strlen(dai_link->codec_dai_name) + 2,
+-			    GFP_KERNEL);
+-	sprintf(name, "%s-%s", dai_link->cpu_dai_name,
+-				dai_link->codec_dai_name);
++	dai_link = priv->snd_card.dai_link;
+ 	if (!priv->snd_card.name)
+-		priv->snd_card.name = name;
+-	dai_link->name = dai_link->stream_name = name;
+-
+-	/* simple-card assumes platform == cpu */
+-	dai_link->platform_of_node = dai_link->cpu_of_node;
++		priv->snd_card.name = dai_link->name;
+ 
+-	dev_dbg(dev, "card-name : %s\n", name);
++	dev_dbg(dev, "card-name : %s\n", priv->snd_card.name);
+ 	dev_dbg(dev, "platform : %04x\n", priv->daifmt);
+ 	dev_dbg(dev, "cpu : %s / %04x / %d\n",
+ 		dai_link->cpu_dai_name,
+@@ -243,10 +263,22 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct device_node *np = pdev->dev.of_node;
  	struct device *dev = &pdev->dev;
- 	int ret;
+-	int ret;
++	int num_links, ret;
++
++	/* get the number of DAI links */
++	if (np) {
++		num_links = of_get_child_count(np);
++		if (num_links == 0 || (num_links & 1)) {
++			dev_err(&pdev->dev, "Bad number of DAI links\n");
++			return -EINVAL;
++		}
++		num_links /= 2;
++	} else {
++		num_links = 1;
++	}
  
--	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	priv = devm_kzalloc(dev,
-+			sizeof(*priv) + sizeof(*dai_link),
-+			GFP_KERNEL);
+ 	priv = devm_kzalloc(dev,
+-			sizeof(*priv) + sizeof(*dai_link),
++			sizeof(*priv) + sizeof(*dai_link) * num_links,
+ 			GFP_KERNEL);
  	if (!priv)
  		return -ENOMEM;
- 
-@@ -255,7 +256,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	 */
- 	priv->snd_card.owner = THIS_MODULE;
+@@ -258,7 +290,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
  	priv->snd_card.dev = dev;
--	dai_link = &priv->snd_link;
-+	dai_link = (struct snd_soc_dai_link *) (priv + 1);
+ 	dai_link = (struct snd_soc_dai_link *) (priv + 1);
  	priv->snd_card.dai_link = dai_link;
- 	priv->snd_card.num_links = 1;
+-	priv->snd_card.num_links = 1;
++	priv->snd_card.num_links = num_links;
+ 
+ 	if (np && of_device_is_available(np)) {
  
 -- 
 1.9.0
