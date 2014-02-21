@@ -1,22 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 082/102] ASoC: Add SOC_ENUM_SINGLE_CONST()
- and SOC_ENUM_DOUBLE_CONST() macros
-Date: Fri, 21 Feb 2014 08:34:00 +0900
-Message-ID: <20140220233400.GD12197@sirena.org.uk>
-References: <1392724308-13375-1-git-send-email-tiwai@suse.de>
- <1392724308-13375-2-git-send-email-tiwai@suse.de>
- <20140220023339.GR2669@sirena.org.uk>
- <s5heh2yxnuk.wl%tiwai@suse.de>
- <20140220090938.GA2669@sirena.org.uk>
- <s5hmwhlvnn8.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: No sound from Headphone Jack over Lenovo Docking
+ Station with T440p Laptop
+Date: Fri, 21 Feb 2014 08:26:18 +0800
+Message-ID: <CAN8ccibJwV5r6eCSpGxfyF9cKUhA=d2ohiEuaCrytX-6bLHfQg@mail.gmail.com>
+References: <trinity-ed805987-a2af-445d-8c84-171681bd6482-1387447530146@3capp-webde-bs34>
+ <CAN8cciaKv=4s2Njaag7XjqBj203EPL1BTi3XAG+ZmEpSP+20hg@mail.gmail.com>
+ <loom.20140212T215407-567@post.gmane.org>
+ <CAN8cciaSZqBONqtjOE9BPst_7x_HcUm06V9yZEnY2O=woRjZaA@mail.gmail.com>
+ <5305E854.4050502@yahoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7624723703877878987=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 10740265861
- for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2014 00:34:13 +0100 (CET)
-In-Reply-To: <s5hmwhlvnn8.wl%tiwai@suse.de>
+Received: from mail-qc0-f171.google.com (mail-qc0-f171.google.com
+ [209.85.216.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FEE6265862
+ for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2014 01:26:20 +0100 (CET)
+Received: by mail-qc0-f171.google.com with SMTP id x3so4720487qcv.30
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 16:26:19 -0800 (PST)
+In-Reply-To: <5305E854.4050502@yahoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,62 +28,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Bernhard Kirchen <schlimmchen@yahoo.de>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, nkalkhof@web.de
 List-Id: alsa-devel@alsa-project.org
 
-
---===============7624723703877878987==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NklN7DEeGtkPCoo3"
-Content-Disposition: inline
-
-
---NklN7DEeGtkPCoo3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 20, 2014 at 03:56:11PM +0100, Takashi Iwai wrote:
-
-> OK, but still a question is whether to split patches or not.
-> By splitting patches, we'll break the build in between, so the
-> bisection won't work well.  OTOH, a big single patch would be too
-> big.  I myself am inclined to have split patches despite bisection
-> breakage in this case.
-
-I'd go with a single patch - if it's big and repetitive it's not going
-to be that hard to review - but I think either way is probably OK in the
-end so whatever you feel comfortable with.
-
---NklN7DEeGtkPCoo3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTBpDlAAoJELSic+t+oim99UUP/101NQbEdxBAsXQWI3oauto+
-eT3kiOr6a6k3yVLK1hCGBXwV1mvI4CPyKbUHmN0fOrTMlAIVyVHxwDO+vH+kZSIV
-LjmJw1GmCvNtrLVDK6mzCLqtJfkHr8wsKqRiFW2ZaAUVeODknZxrLbY0hVXadjom
-dw9gsFUhgbA7LqDK75DW8x9bcrm6JjDf16ihGNWA5uUpMaYrTI0mFI4jdeWx3Oye
-jJa6XDDkgZzeiL2TOUI6sq20oFVnO0JUAokfF9C4xfTjd2O02eTx5vb6qGhMbVw6
-AJwjtvVUfPCHqqvmRVn0zjW2Cb7VsZO4Nk7hts725vu6e2rn+zS0I+78WrFUDxis
-cGlzWyZ0UEgb7IJhs48hiXP0hZjUUwXxDr/2aU1aHWobkJkz5660ser7GyAr7+tH
-PysDCLn/BFfV644/24l7Tse7NPynM6Eh7PRRJ+tEeK+Lq+Q2eJ0c4gtZBwTHpRrU
-QPssDo6NmyEl9g+AGMEgyy59Rl/PWGYmc5QO5gYS8x7OCi/BA9TtySeI6Co2KyOZ
-elz0hFEXKhtaauMGturbQHPvsxzpYMZvtvoHMMiD4gEc3INfkooCxtxuQsjz62RS
-0YymKID9QSQ25wWe/XfcKAY2fDJ6eSZ4cwBwforz3wle99RFljrNxKtqNVCj1Xni
-Tp2JiBHgRBuhdQ5VuOcf
-=iugv
------END PGP SIGNATURE-----
-
---NklN7DEeGtkPCoo3--
-
---===============7624723703877878987==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7624723703877878987==--
+Pgo+IFRvIG1ha2UgYSA1IGhvdXIgc3Rvcnkgc2hvcnQsIHRoaXMgaXMgbXkgcmVzdWx0Ogo+IFVz
+aW5nIGVhcmx5IHBhdGNoaW5nLCBldmVyeXRoaW5nIHdvcmtzIHRvIG15IGxpbmtpbmc6Cj4gMHgx
+NiAweDIxMjExMDFmICMgZG9jayBoZWFkcGhvbmVzCj4gMHgxOSAweDIxYTExMDMwICMgZG9jayBt
+aWMKPgo+IFRoYW5rIHlvdSB2ZXJ5IG11Y2ggZm9yIHlvdXIgaGVscCEKPgo+IEkgZ3Vlc3MgdGhh
+dCBidWlsZGluZyBhIHBhdGNoIMOhIGxhIEFMQzI2OV9GSVhVUF9MRU5PVk9fRE9DSyBpcyBub3Qg
+YSBiaWcKZGVhbCwgYnV0IG5vdCBteSBidXNpbmVzcy4KPiBJZiB3YW50ZWQsIEkgY2FuIGRvIHRl
+c3RpbmcsIGFzIHNvb24gYXMgSSBsZWFybiBob3cgdG8gcHJvcGVybHkgY29tcGlsZQphbmQgaW5z
+dGFsbCBhIGN1c3RvbSBrZXJuZWwuCj4KPiBJJ2xsIHBvc3Qgc29tZXRoaW5nIG9uCmh0dHBzOi8v
+Z2l0aHViLmNvbS9sZW9sdWsvdGhpbmtwYWQtc3R1ZmYvd2lraS9IYXN3ZWxsLVRoaW5rUGFkLXBy
+b2JsZW1zIHRvCnRlbGwgb3RoZXIgcGVvcGxlIGhvdyB0byBmaXggdGhpcyByaWdodCBhd2F5Lgo+
+Cj4gTW9yZSB0byBteSBzdG9yeToKPiBJIGZvdW5kIC9zeXMvY2xhc3Mvc291bmQvaHdDMUQwLCB3
+aGljaCBpcyBhIFJlYWx0ZWsgQUxDMjkyIGRldmljZS4KPiBUaGUgTklEICh3aGF0IGRvZXMgaXQg
+c3RhbmQgZm9yPykgb2YgaW50ZXJlc3QgZm9yIHRoZSBqYWNrJ3Mgb3V0cHV0IGlzCmluZGVlZCAw
+eDE2Lgo+Cj4gV2hlbiBoZWFkcGhvbmVzIHBsdWdnZWQgaW50byBkb2NraW5nIHN0YXRpb24gamFj
+azoKPiAkIHN1ZG8gaGRhLXZlcmIgL2Rldi9zbmQvaHdDMUQwIDB4MTYgR0VUX1BJTl9TRU5TRSAw
+Cj4gbmlkID0gMHgxNiwgdmVyYiA9IDB4ZjA5LCBwYXJhbSA9IDB4MAo+IHZhbHVlID0gMHg4MDAw
+MDAwMAo+Cj4gV2hlbiBub3QgcGx1Z2dlZDoKPiAkIHN1ZG8gaGRhLXZlcmIgL2Rldi9zbmQvaHdD
+MUQwIDB4MTYgR0VUX1BJTl9TRU5TRSAwCj4gbmlkID0gMHgxNiwgdmVyYiA9IDB4ZjA5LCBwYXJh
+bSA9IDB4MAo+IHZhbHVlID0gMHgwCj4KPiBHRVRfUElOX1NFTlNFIGZvciAweDE5IGlzIDB4ODAw
+MDAwMDAgd2hlbiBoZWFkc2V0IHdpdGggbWljIGlzIHBsdWdnZWQKaW50byBkb2NrLgo+IFBpbiBz
+ZW5zZSBvZiAweDE5IGRvZXMgbm90IGNoYW5nZSB0byAweDgwMDAwMDAwIHdoZW4gb25seSBwbHVn
+Z2luZyAzcG9sZQpzcGVha2VyIGNhYmxlLgo+IFRoZXJlZm9yZSwgSSBhc3N1bWVkIHRoYXQgMHgx
+OSBpcyB0aGUgZG9jayBtaWMgaW5wdXQgKHR1cm5lZCBvdXQgbGF0ZXIgdG8KYmUgdHJ1ZSkuCgpB
+cmUgeW91IHVzaW5nIHRoZSBzYW1lIGRvY2sgc3RhdGlvbiBhcyBOaWNvbGFzPwoKSXQgc2VlbSB0
+aGlzIGRvY2sgc3RhdGlvbiBoYXMgb25seSAxeCBTdGVyZW8vTWljIENvbWJvIEF1ZGlvIFBvcnQK
+Cmh0dHA6Ly9vdXRsZXQubGVub3ZvLmNvbS9uby9lbi9pdGVtZGV0YWlscy80MEExMDA2NUVVLzQ2
+MC82RDUwMUVFODk5MTA0RkY5QTM2MkQ3Mzk2NDJDRkMyNyNvdmVydmlldwoKRG8geW91IG1lYW4g
+d2hlbiBoZWFkc2V0IGlzIHBsdWdnZWQsIGJvdGggbm9kZSAweDE2IGFuZCBub2RlIDB4MTkgY2Fu
+CmRldGVjdCB0aGUgSmFjayBzdGF0ZSB3aGljaCBpcyBub3QgZGlmZmVyZW50IGZyb20gdGhvc2Ug
+ZG9jayBzdGF0aW9uIHdoaWNoCmhhdmUgaGVhZHBob25lIEphY2sgYW5kIE1pYyBqYWNrID8KCkRv
+IHRoaXMgZG9jayBjb21ibyBqYWNrIG5vdCBzdXBwb3J0IGNvbnZlbnRpb25hbCBNaWMgIHNpbWls
+YXIgdG8gdGhlCm5vdGVib29rIGNvbWJvIEphY2sgPwoKRG8geW91IG5lZWQgdG8gZGlmZmVyZW50
+aWF0ZSB0aGVzZSB0d28ga2luZCBvZiBkb2NrIHN0YXRpb25zIGlmIHlvdXIgdWx0cmEKZG9jayBj
+YW5ub3Qgc3VwcG9ydCBjb252ZW50aW9uYWwgTWljID8KCkRvY2sgTWljIGFuZCBkb2NrIGhlYWRz
+ZXQgbWljCgpodHRwOi8vc3VwcG9ydC5sZW5vdm8uY29tL2VuX1VTL2RldGFpbC5wYWdlP0RvY0lE
+PVBEMDI5NDg1CgpDb25uZWN0IGhlYWRwaG9uZXMgb3IgYSBoZWFkc2V0IHRoYXQgaGFzIGEgMy41
+LW1tICgwLjE0LWluY2gpLCA0LXBvbGUgcGx1Zwp0byB0aGUgYXVkaW8gY29ubmVjdG9yIHRvIGxp
+c3RlbiB0byB0aGUgc291bmQgZnJvbSB0aGUgY29tcHV0ZXIuCgpOb3RlczoK4oCiIElmIHlvdSBh
+cmUgdXNpbmcgYSBoZWFkc2V0IHdpdGggYSBmdW5jdGlvbiBzd2l0Y2gsIGZvciBleGFtcGxlLCBh
+IGhlYWRzZXQKZm9yIGFuIGlQaG9uZSBtb2JpbGUgZGlnaXRhbCBkZXZpY2UsIGRvIG5vdCBwcmVz
+cyB0aGlzIHN3aXRjaCB3aGlsZSB1c2luZwp0aGUgaGVhZHNldC4gSWYgeW91IHByZXNzIHRoZSBz
+d2l0Y2gsIHRoZSBoZWFkc2V0IG1pY3JvcGhvbmUgd2lsbCBiZQpkaXNhYmxlZCwgYW5kIHRoZSBp
+bnRlZ3JhdGVkIG1pY3JvcGhvbmVzIG9uIHRoZSBjb21wdXRlciB3aWxsIGJlIGVuYWJsZWQKaW5z
+dGVhZC4KClRoZSBhdWRpbyBjb25uZWN0b3IgZG9lcyBub3Qgc3VwcG9ydCBhIGNvbnZlbnRpb25h
+bCBtaWNyb3Bob25lLgoKPgo+IEkgaW5zdGFsbGVkIGFsc2EtdG9vbHMtZ3VpIGFuZCB1c2VkIGhk
+YWphY2tyZXRhc3QgdG8gb3ZlcnJpZGUgdGhlIHBpbgpjb25maWcuCj4gSXQgdG9vayBhIHdoaWxl
+IHRvIGZpbmQgb3V0IHRoYXQgbm90IGFsbCBjaGFuZ2VzIGFyZSBpbW1lZGlhdGUgKGVhcmx5CnBh
+dGNoaW5nIGFuZCByZXN0YXJ0IHJlcXVpcmVkKS4KPgo+IFVzaW5nIHRoZSBlYXJseSBwYXRjaGlu
+ZyB2YWx1ZXMgZnJvbSBhYm92ZSwgdGhlIHNvdW5kIGlzIGJlaW5nIHJlZGlyZWN0ZWQKZnJvbSB0
+aGUgaW50ZXJuYWwgc3BlYWtlcnMgdG8gdGhlIGRvY2sgamFjaywgd2hlbiBoZWFkcGhvbmVzIGFy
+ZSBjb25uZWN0ZWQuCj4gW1doZW4gY29ubmVjdGluZyBhbiBhZGRpdGlvbmFsIHNwZWFrZXIgdG8g
+dGhlIGxlZnQgamFjayBvbiB0aGUgbm90ZWJvb2ssCnRoZSBzb3VuZCBpcyBvdXRwdXQgdG8gYm90
+aCBkb2NrIGFuZCBub3RlYm9vayBqYWNrLl0KPiBXaGVuIGNvbm5lY3RpbmcgYSBtaWMgdG8gZG9j
+aywgdGhlIGRvY2sgbWljIHNob3dzIHVwIGFzIGlucHV0IGFuZCBpcyB1c2VkCmFzIHN1Y2guCj4g
+V2hlbiBvbmx5IGNvbm5lY3RpbmcgYSBoZWFkc2V0IHdpdGhvdXQgbWljLCB0aGUgaW50ZXJuYWwg
+bWljIHN0YXlzCmZ1bmN0aW9uYWwuCj4KCj4+PiA+Cj4+Pgo+Pj4gSSBjcmVhdGVkIHRoZSBvdXRw
+dXQgeW91IHJlcXVlc3RlZCAoTGVub3ZvIFRoaW5rUGFkIFQ0NDBwIGluIFVsdHJhRG9jaywKbm8K
+Pj4+IHNvdW5kIHdoZW4gZG9ja2VkIHZpYSBkb2NrIGphY2sgYnV0IG5vdGVib29rIHNwZWFrZXJz
+IGFyZSBhbHNvIG11dGUpLgo+Pj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
