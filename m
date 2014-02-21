@@ -1,24 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: No sound from Headphone Jack over Lenovo Docking
- Station with T440p Laptop
-Date: Fri, 21 Feb 2014 08:26:18 +0800
-Message-ID: <CAN8ccibJwV5r6eCSpGxfyF9cKUhA=d2ohiEuaCrytX-6bLHfQg@mail.gmail.com>
-References: <trinity-ed805987-a2af-445d-8c84-171681bd6482-1387447530146@3capp-webde-bs34>
- <CAN8cciaKv=4s2Njaag7XjqBj203EPL1BTi3XAG+ZmEpSP+20hg@mail.gmail.com>
- <loom.20140212T215407-567@post.gmane.org>
- <CAN8cciaSZqBONqtjOE9BPst_7x_HcUm06V9yZEnY2O=woRjZaA@mail.gmail.com>
- <5305E854.4050502@yahoo.de>
+From: Patrick Welche <prlw1@cam.ac.uk>
+Subject: Re: alsa on non-linux
+Date: Fri, 21 Feb 2014 01:27:04 +0000
+Message-ID: <20140221012704.GA15861@quantz>
+References: <20140110153700.GC1173@quark.internal.precedence.co.uk>
+ <s5hwqi4t6zg.wl%tiwai@suse.de>
+ <20140114101709.GB160@quark.internal.precedence.co.uk>
+ <s5hsisqsnnu.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f171.google.com (mail-qc0-f171.google.com
- [209.85.216.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FEE6265862
- for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2014 01:26:20 +0100 (CET)
-Received: by mail-qc0-f171.google.com with SMTP id x3so4720487qcv.30
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2014 16:26:19 -0800 (PST)
-In-Reply-To: <5305E854.4050502@yahoo.de>
+Received: from ppsw-42.csi.cam.ac.uk (ppsw-42.csi.cam.ac.uk [131.111.8.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75DC6261717
+ for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2014 02:27:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hsisqsnnu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,69 +23,177 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bernhard Kirchen <schlimmchen@yahoo.de>
-Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, nkalkhof@web.de
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Pgo+IFRvIG1ha2UgYSA1IGhvdXIgc3Rvcnkgc2hvcnQsIHRoaXMgaXMgbXkgcmVzdWx0Ogo+IFVz
-aW5nIGVhcmx5IHBhdGNoaW5nLCBldmVyeXRoaW5nIHdvcmtzIHRvIG15IGxpbmtpbmc6Cj4gMHgx
-NiAweDIxMjExMDFmICMgZG9jayBoZWFkcGhvbmVzCj4gMHgxOSAweDIxYTExMDMwICMgZG9jayBt
-aWMKPgo+IFRoYW5rIHlvdSB2ZXJ5IG11Y2ggZm9yIHlvdXIgaGVscCEKPgo+IEkgZ3Vlc3MgdGhh
-dCBidWlsZGluZyBhIHBhdGNoIMOhIGxhIEFMQzI2OV9GSVhVUF9MRU5PVk9fRE9DSyBpcyBub3Qg
-YSBiaWcKZGVhbCwgYnV0IG5vdCBteSBidXNpbmVzcy4KPiBJZiB3YW50ZWQsIEkgY2FuIGRvIHRl
-c3RpbmcsIGFzIHNvb24gYXMgSSBsZWFybiBob3cgdG8gcHJvcGVybHkgY29tcGlsZQphbmQgaW5z
-dGFsbCBhIGN1c3RvbSBrZXJuZWwuCj4KPiBJJ2xsIHBvc3Qgc29tZXRoaW5nIG9uCmh0dHBzOi8v
-Z2l0aHViLmNvbS9sZW9sdWsvdGhpbmtwYWQtc3R1ZmYvd2lraS9IYXN3ZWxsLVRoaW5rUGFkLXBy
-b2JsZW1zIHRvCnRlbGwgb3RoZXIgcGVvcGxlIGhvdyB0byBmaXggdGhpcyByaWdodCBhd2F5Lgo+
-Cj4gTW9yZSB0byBteSBzdG9yeToKPiBJIGZvdW5kIC9zeXMvY2xhc3Mvc291bmQvaHdDMUQwLCB3
-aGljaCBpcyBhIFJlYWx0ZWsgQUxDMjkyIGRldmljZS4KPiBUaGUgTklEICh3aGF0IGRvZXMgaXQg
-c3RhbmQgZm9yPykgb2YgaW50ZXJlc3QgZm9yIHRoZSBqYWNrJ3Mgb3V0cHV0IGlzCmluZGVlZCAw
-eDE2Lgo+Cj4gV2hlbiBoZWFkcGhvbmVzIHBsdWdnZWQgaW50byBkb2NraW5nIHN0YXRpb24gamFj
-azoKPiAkIHN1ZG8gaGRhLXZlcmIgL2Rldi9zbmQvaHdDMUQwIDB4MTYgR0VUX1BJTl9TRU5TRSAw
-Cj4gbmlkID0gMHgxNiwgdmVyYiA9IDB4ZjA5LCBwYXJhbSA9IDB4MAo+IHZhbHVlID0gMHg4MDAw
-MDAwMAo+Cj4gV2hlbiBub3QgcGx1Z2dlZDoKPiAkIHN1ZG8gaGRhLXZlcmIgL2Rldi9zbmQvaHdD
-MUQwIDB4MTYgR0VUX1BJTl9TRU5TRSAwCj4gbmlkID0gMHgxNiwgdmVyYiA9IDB4ZjA5LCBwYXJh
-bSA9IDB4MAo+IHZhbHVlID0gMHgwCj4KPiBHRVRfUElOX1NFTlNFIGZvciAweDE5IGlzIDB4ODAw
-MDAwMDAgd2hlbiBoZWFkc2V0IHdpdGggbWljIGlzIHBsdWdnZWQKaW50byBkb2NrLgo+IFBpbiBz
-ZW5zZSBvZiAweDE5IGRvZXMgbm90IGNoYW5nZSB0byAweDgwMDAwMDAwIHdoZW4gb25seSBwbHVn
-Z2luZyAzcG9sZQpzcGVha2VyIGNhYmxlLgo+IFRoZXJlZm9yZSwgSSBhc3N1bWVkIHRoYXQgMHgx
-OSBpcyB0aGUgZG9jayBtaWMgaW5wdXQgKHR1cm5lZCBvdXQgbGF0ZXIgdG8KYmUgdHJ1ZSkuCgpB
-cmUgeW91IHVzaW5nIHRoZSBzYW1lIGRvY2sgc3RhdGlvbiBhcyBOaWNvbGFzPwoKSXQgc2VlbSB0
-aGlzIGRvY2sgc3RhdGlvbiBoYXMgb25seSAxeCBTdGVyZW8vTWljIENvbWJvIEF1ZGlvIFBvcnQK
-Cmh0dHA6Ly9vdXRsZXQubGVub3ZvLmNvbS9uby9lbi9pdGVtZGV0YWlscy80MEExMDA2NUVVLzQ2
-MC82RDUwMUVFODk5MTA0RkY5QTM2MkQ3Mzk2NDJDRkMyNyNvdmVydmlldwoKRG8geW91IG1lYW4g
-d2hlbiBoZWFkc2V0IGlzIHBsdWdnZWQsIGJvdGggbm9kZSAweDE2IGFuZCBub2RlIDB4MTkgY2Fu
-CmRldGVjdCB0aGUgSmFjayBzdGF0ZSB3aGljaCBpcyBub3QgZGlmZmVyZW50IGZyb20gdGhvc2Ug
-ZG9jayBzdGF0aW9uIHdoaWNoCmhhdmUgaGVhZHBob25lIEphY2sgYW5kIE1pYyBqYWNrID8KCkRv
-IHRoaXMgZG9jayBjb21ibyBqYWNrIG5vdCBzdXBwb3J0IGNvbnZlbnRpb25hbCBNaWMgIHNpbWls
-YXIgdG8gdGhlCm5vdGVib29rIGNvbWJvIEphY2sgPwoKRG8geW91IG5lZWQgdG8gZGlmZmVyZW50
-aWF0ZSB0aGVzZSB0d28ga2luZCBvZiBkb2NrIHN0YXRpb25zIGlmIHlvdXIgdWx0cmEKZG9jayBj
-YW5ub3Qgc3VwcG9ydCBjb252ZW50aW9uYWwgTWljID8KCkRvY2sgTWljIGFuZCBkb2NrIGhlYWRz
-ZXQgbWljCgpodHRwOi8vc3VwcG9ydC5sZW5vdm8uY29tL2VuX1VTL2RldGFpbC5wYWdlP0RvY0lE
-PVBEMDI5NDg1CgpDb25uZWN0IGhlYWRwaG9uZXMgb3IgYSBoZWFkc2V0IHRoYXQgaGFzIGEgMy41
-LW1tICgwLjE0LWluY2gpLCA0LXBvbGUgcGx1Zwp0byB0aGUgYXVkaW8gY29ubmVjdG9yIHRvIGxp
-c3RlbiB0byB0aGUgc291bmQgZnJvbSB0aGUgY29tcHV0ZXIuCgpOb3RlczoK4oCiIElmIHlvdSBh
-cmUgdXNpbmcgYSBoZWFkc2V0IHdpdGggYSBmdW5jdGlvbiBzd2l0Y2gsIGZvciBleGFtcGxlLCBh
-IGhlYWRzZXQKZm9yIGFuIGlQaG9uZSBtb2JpbGUgZGlnaXRhbCBkZXZpY2UsIGRvIG5vdCBwcmVz
-cyB0aGlzIHN3aXRjaCB3aGlsZSB1c2luZwp0aGUgaGVhZHNldC4gSWYgeW91IHByZXNzIHRoZSBz
-d2l0Y2gsIHRoZSBoZWFkc2V0IG1pY3JvcGhvbmUgd2lsbCBiZQpkaXNhYmxlZCwgYW5kIHRoZSBp
-bnRlZ3JhdGVkIG1pY3JvcGhvbmVzIG9uIHRoZSBjb21wdXRlciB3aWxsIGJlIGVuYWJsZWQKaW5z
-dGVhZC4KClRoZSBhdWRpbyBjb25uZWN0b3IgZG9lcyBub3Qgc3VwcG9ydCBhIGNvbnZlbnRpb25h
-bCBtaWNyb3Bob25lLgoKPgo+IEkgaW5zdGFsbGVkIGFsc2EtdG9vbHMtZ3VpIGFuZCB1c2VkIGhk
-YWphY2tyZXRhc3QgdG8gb3ZlcnJpZGUgdGhlIHBpbgpjb25maWcuCj4gSXQgdG9vayBhIHdoaWxl
-IHRvIGZpbmQgb3V0IHRoYXQgbm90IGFsbCBjaGFuZ2VzIGFyZSBpbW1lZGlhdGUgKGVhcmx5CnBh
-dGNoaW5nIGFuZCByZXN0YXJ0IHJlcXVpcmVkKS4KPgo+IFVzaW5nIHRoZSBlYXJseSBwYXRjaGlu
-ZyB2YWx1ZXMgZnJvbSBhYm92ZSwgdGhlIHNvdW5kIGlzIGJlaW5nIHJlZGlyZWN0ZWQKZnJvbSB0
-aGUgaW50ZXJuYWwgc3BlYWtlcnMgdG8gdGhlIGRvY2sgamFjaywgd2hlbiBoZWFkcGhvbmVzIGFy
-ZSBjb25uZWN0ZWQuCj4gW1doZW4gY29ubmVjdGluZyBhbiBhZGRpdGlvbmFsIHNwZWFrZXIgdG8g
-dGhlIGxlZnQgamFjayBvbiB0aGUgbm90ZWJvb2ssCnRoZSBzb3VuZCBpcyBvdXRwdXQgdG8gYm90
-aCBkb2NrIGFuZCBub3RlYm9vayBqYWNrLl0KPiBXaGVuIGNvbm5lY3RpbmcgYSBtaWMgdG8gZG9j
-aywgdGhlIGRvY2sgbWljIHNob3dzIHVwIGFzIGlucHV0IGFuZCBpcyB1c2VkCmFzIHN1Y2guCj4g
-V2hlbiBvbmx5IGNvbm5lY3RpbmcgYSBoZWFkc2V0IHdpdGhvdXQgbWljLCB0aGUgaW50ZXJuYWwg
-bWljIHN0YXlzCmZ1bmN0aW9uYWwuCj4KCj4+PiA+Cj4+Pgo+Pj4gSSBjcmVhdGVkIHRoZSBvdXRw
-dXQgeW91IHJlcXVlc3RlZCAoTGVub3ZvIFRoaW5rUGFkIFQ0NDBwIGluIFVsdHJhRG9jaywKbm8K
-Pj4+IHNvdW5kIHdoZW4gZG9ja2VkIHZpYSBkb2NrIGphY2sgYnV0IG5vdGVib29rIHNwZWFrZXJz
-IGFyZSBhbHNvIG11dGUpLgo+Pj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jan 14, 2014 at 02:23:01PM +0100, Takashi Iwai wrote:
+> BTW, about your patch: I don't think it's good to embed the endianness
+> in asoundlib.h.  It makes the header file appearing differently,
+> depending on the architecture, which is rather confusing.
+
+Is this more what you have in mind? (Less portable than autoconf, but
+not set at configure time.)
+
+The four files which included endian.h were:
+
+- include/asoundlib-head.h
+- include/local.h
+- include/sound/type_compat.h
+- src/pcm/pcm_file.c
+
+The endian.h line(s) in asoundlib.h is now generated by configure.
+
+local.h includes the appropriate endian.h vs sys/endian.h file & defines
+the relevant macros.
+
+type_compat.h doesn't seem to be used anywhere? So I left it alone.
+
+pcm_file.c includes pcm_local.h which includes local.h, so I removed
+the #include <endian.h>
+
+(Still far from being able to compile alsa-lib, but it's a start...)
+
+Cheers,
+
+Patrick
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="0001-Portability-fix-look-for-sys-endian.h-as-well-as-end.patch"
+
+>From 5885d2e79dfd8f788177a95c70967d9a3c9a2cb6 Mon Sep 17 00:00:00 2001
+From: Patrick Welche <prlw1@cam.ac.uk>
+Date: Fri, 21 Feb 2014 01:18:01 +0000
+Subject: [PATCH] Portability fix: look for sys/endian.h as well as endian.h
+
+- define __BYTE_ORDER and friends.
+- adjust asoundlib.h accordingly.
+---
+ configure.in             | 19 +++++++++++++++++--
+ include/asoundlib-head.h |  1 -
+ include/local.h          | 18 +++++++++++++++++-
+ src/pcm/pcm_file.c       |  1 -
+ 4 files changed, 34 insertions(+), 5 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index bb56eb6..60d4ae1 100644
+--- a/configure.in
++++ b/configure.in
+@@ -309,8 +309,8 @@ fi
+ 
+ AC_SUBST(ALSA_DEPLIBS)
+ 
+-dnl Check for wordexp.h
+-AC_CHECK_HEADERS([wordexp.h])
++dnl Check for headers
++AC_CHECK_HEADERS([wordexp.h endian.h sys/endian.h])
+ 
+ dnl Check for resmgr support...
+ AC_MSG_CHECKING(for resmgr support)
+@@ -660,6 +660,21 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+ dnl Create asoundlib.h dynamically according to configure options
+ echo "Creating asoundlib.h..."
+ cp "$srcdir"/include/asoundlib-head.h include/asoundlib.h
++test "$ac_cv_header_endian_h" = "yes" && echo "#include <endian.h>" >> include/asoundlib.h
++if test "$ac_cv_header_sys_endian_h" = "yes"; then
++cat >> include/asoundlib.h <<EOF
++#include <sys/endian.h>
++#ifndef __BYTE_ORDER
++#define __BYTE_ORDER BYTE_ORDER
++#endif
++#ifndef __LITTLE_ENDIAN
++#define __LITTLE_ENDIAN LITTLE_ENDIAN
++#endif
++#ifndef __BIG_ENDIAN
++#define __BIG_ENDIAN BIG_ENDIAN
++#endif
++EOF
++fi
+ test "$build_pcm" = "yes" && echo "#include <alsa/pcm.h>" >> include/asoundlib.h
+ test "$build_rawmidi" = "yes" && echo "#include <alsa/rawmidi.h>" >> include/asoundlib.h
+ test "$build_pcm" = "yes" && echo "#include <alsa/timer.h>" >> include/asoundlib.h
+diff --git a/include/asoundlib-head.h b/include/asoundlib-head.h
+index 71b5c29..31408a4 100644
+--- a/include/asoundlib-head.h
++++ b/include/asoundlib-head.h
+@@ -35,7 +35,6 @@
+ #include <string.h>
+ #include <fcntl.h>
+ #include <assert.h>
+-#include <endian.h>
+ #include <sys/poll.h>
+ #include <errno.h>
+ #include <stdarg.h>
+diff --git a/include/local.h b/include/local.h
+index 9464efa..2fe9a27 100644
+--- a/include/local.h
++++ b/include/local.h
+@@ -22,13 +22,30 @@
+ #ifndef __LOCAL_H
+ #define __LOCAL_H
+ 
++#include "config.h"
++
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <fcntl.h>
+ #include <assert.h>
++#ifdef HAVE_ENDIAN_H
+ #include <endian.h>
++#elif defined(HAVE_SYS_ENDIAN_H)
++#include <sys/endian.h>
++#ifndef __BYTE_ORDER
++#define __BYTE_ORDER BYTE_ORDER
++#endif
++#ifndef __LITTLE_ENDIAN
++#define __LITTLE_ENDIAN LITTLE_ENDIAN
++#endif
++#ifndef __BIG_ENDIAN
++#define __BIG_ENDIAN BIG_ENDIAN
++#endif
++#else
++#error Header defining endianness not defined
++#endif
+ #include <stdarg.h>
+ #include <sys/poll.h>
+ #include <sys/types.h>
+@@ -36,7 +53,6 @@
+ #include <linux/types.h>
+ #include <linux/ioctl.h>
+ 
+-#include "config.h"
+ #ifdef SUPPORT_RESMGR
+ #include <resmgr.h>
+ #endif
+diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
+index 7123025..b1f2330 100644
+--- a/src/pcm/pcm_file.c
++++ b/src/pcm/pcm_file.c
+@@ -26,7 +26,6 @@
+  *
+  */
+   
+-#include <endian.h>
+ #include <byteswap.h>
+ #include <ctype.h>
+ #include <string.h>
+-- 
+1.8.5.4
+
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--OXfL5xGRrasGEqWY--
