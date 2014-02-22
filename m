@@ -1,68 +1,51 @@
-From: Christian Engelmayer <cengelma@gmx.at>
-Subject: [PATCH] ASoC: wm8993: Remove unused pointer in wm8993_remove()
-Date: Sat, 22 Feb 2014 16:00:16 +0100
-Message-ID: <20140222160016.372a3683@spike>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: sta32x: Fix cache sync
+Date: Sat, 22 Feb 2014 18:27:17 +0100
+Message-ID: <1393090037-8824-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=PGP-SHA1;
- boundary="Sig_/PgqqabPoqGeDFBsi337eJmh"; protocol="application/pgp-signature"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-015.synserver.de (smtp-out-129.synserver.de
+ [212.40.185.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54B38261B0C
+ for <alsa-devel@alsa-project.org>; Sat, 22 Feb 2014 18:27:21 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Johannes Stezenbach <js@sig21.net>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---Sig_/PgqqabPoqGeDFBsi337eJmh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+codec->control_data contains a pointer to the regmap struct of the device, not
+to the device private data. Use snd_soc_codec_get_drvdata() instead.
 
-Commit 88b5bdfd (ASoC: wm8993: drop regulator_bulk_free of devm_ allocated
-data) eliminated the last user of driver data pointer 'wm8993' in function
-wm8993_remove() - Thus remove it. Detected by Coverity: CID 1186208.
+The issue was introduced in commit 29fdf4fbbe ("ASoC: sta32x: Convert to
+regmap").
 
-Signed-off-by: Christian Engelmayer <cengelma@gmx.at>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
-Applies against branch for-next in tree
-git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
----
- sound/soc/codecs/wm8993.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/sta32x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
-index 2ee23a3..f7978b3 100644
---- a/sound/soc/codecs/wm8993.c
-+++ b/sound/soc/codecs/wm8993.c
-@@ -1559,8 +1559,6 @@ static int wm8993_probe(struct snd_soc_codec *codec)
-=20
- static int wm8993_remove(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
+index 42c5b45..ea78c17 100644
+--- a/sound/soc/codecs/sta32x.c
++++ b/sound/soc/codecs/sta32x.c
+@@ -331,7 +331,7 @@ static int sta32x_sync_coef_shadow(struct snd_soc_codec *codec)
+ 
+ static int sta32x_cache_sync(struct snd_soc_codec *codec)
  {
--	struct wm8993_priv *wm8993 =3D snd_soc_codec_get_drvdata(codec);
--
- 	wm8993_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	return 0;
- }
---=20
-1.8.3.2
-
---Sig_/PgqqabPoqGeDFBsi337eJmh
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTCLuAAAoJEKssnEpaPQKEgJoQAJiyVGX3Wa2n7PKRFsQBOTn6
-wDcW/IqrglJX2Z4JEjmMXg+hkp/McS0yad6wel7zs0AdhrmwCii3GAwWCXh+kZes
-f+GZSOdhReYHcc9p8xrYBT2d/aOQJpM0swyh45f6VtQ4rKsfLm2dQy58tezE/oeP
-ZF4MJxtDTpr8u5MBHQx1dfm4fNYWM/kFBrRwglJXS2cubIP0pYoeWpWrtiWODYaC
-CpRgmUuSwkTZ8H3ahm5JckjiaCNNbByihsTmXPn1bnGX7XZFPRK86zsekqThoR9M
-J5nuv1q+DR6B0VsvVm1dPUHlTeqbJ/2I0iHxdOkM3ygB60CyVJOnFOLYuaUd5bOS
-6wNcXIVZnUhc+zXYLVpT8W7n6l7SDR4DyTZVOmk+OvLPLKfnXLCFRm1fg9AVW92W
-DuTgTqb37MxqcbOikpUDm8b5drCLEZvO7utszBG4OSgIT5YFc72kBj4WLnWSlbCl
-MVF7iuCRvCTXmNsEk9gO/M2d5PutBsBdndGqnlrRk9cqNJLvxbh6srac35Wwaz9R
-QkS2zBuphiIrCllFiCfDVpJi9V9GKN1/sjfk+fePtb+c46GOfwrngYRjPv6h/AWF
-o2Jic3p4Q/p+B4hObs3aq3UA9inrtZKEZMYlrYp37JG0l+mmaCYmQria0wynBeHp
-4nmQcuYpvHQfTTaQHSa/
-=vnzG
------END PGP SIGNATURE-----
-
---Sig_/PgqqabPoqGeDFBsi337eJmh--
+-	struct sta32x_priv *sta32x = codec->control_data;
++	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int mute;
+ 	int rc;
+ 
+-- 
+1.8.0
