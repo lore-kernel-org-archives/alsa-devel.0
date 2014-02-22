@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/2] ASoC: wm8996: Replace codec->control_data
-	with wm8996->regmap
-Date: Sat, 22 Feb 2014 18:32:04 +0100
-Message-ID: <1393090325-10712-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 2/2] ASoC: wm8962: Replace codec->control_data
+	with wm8962->regmap
+Date: Sat, 22 Feb 2014 18:32:05 +0100
+Message-ID: <1393090325-10712-2-git-send-email-lars@metafoo.de>
+References: <1393090325-10712-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-015.synserver.de (smtp-out-131.synserver.de
  [212.40.185.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 33F0D261B0C
+ by alsa0.perex.cz (Postfix) with ESMTP id CF33D261B28
  for <alsa-devel@alsa-project.org>; Sat, 22 Feb 2014 18:31:47 +0100 (CET)
+In-Reply-To: <1393090325-10712-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,41 +28,28 @@ List-Id: alsa-devel@alsa-project.org
 
 With the ongoing component-ization of the ASoC framework and the continuing
 migration to using regmap for IO the control_data field of the snd_soc_codec
-struct will eventually be removed. Prepare the wm8996 driver for this by using
-wm8996->regmap instead of accessing the CODEC's control_data field.
+struct will eventually be removed. Prepare the wm8962 driver for this by using
+wm8962->regmap instead of accessing the CODEC's control_data field.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8996.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8962.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 0330165..e2d0dd7 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -1608,8 +1608,8 @@ static int wm8996_set_bias_level(struct snd_soc_codec *codec,
- 				msleep(5);
- 			}
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 3be4633..b6086d2 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -1479,7 +1479,9 @@ static const DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
  
--			regcache_cache_only(codec->control_data, false);
--			regcache_sync(codec->control_data);
-+			regcache_cache_only(wm8996->regmap, false);
-+			regcache_sync(wm8996->regmap);
- 		}
+ static int wm8962_dsp2_write_config(struct snd_soc_codec *codec)
+ {
+-	return regcache_sync_region(codec->control_data,
++	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
++
++	return regcache_sync_region(wm8962->regmap,
+ 				    WM8962_HDBASS_AI_1, WM8962_MAX_REGISTER);
+ }
  
- 		/* Bypass the MICBIASes for lowest power */
-@@ -1620,10 +1620,10 @@ static int wm8996_set_bias_level(struct snd_soc_codec *codec,
- 		break;
- 
- 	case SND_SOC_BIAS_OFF:
--		regcache_cache_only(codec->control_data, true);
-+		regcache_cache_only(wm8996->regmap, true);
- 		if (wm8996->pdata.ldo_ena >= 0) {
- 			gpio_set_value_cansleep(wm8996->pdata.ldo_ena, 0);
--			regcache_cache_only(codec->control_data, true);
-+			regcache_cache_only(wm8996->regmap, true);
- 		}
- 		regulator_bulk_disable(ARRAY_SIZE(wm8996->supplies),
- 				       wm8996->supplies);
 -- 
 1.8.0
