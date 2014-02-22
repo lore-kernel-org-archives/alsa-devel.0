@@ -1,94 +1,68 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: No sound from Headphone Jack over Lenovo Docking
- Station with T440p Laptop
-Date: Sat, 22 Feb 2014 17:03:02 +0800
-Message-ID: <CAN8ccibW4nqrE278Ur6NdYmPWrLfict6RWWfUwRgRuEYZvwD5g@mail.gmail.com>
-References: <trinity-ed805987-a2af-445d-8c84-171681bd6482-1387447530146@3capp-webde-bs34>
- <CAN8cciaKv=4s2Njaag7XjqBj203EPL1BTi3XAG+ZmEpSP+20hg@mail.gmail.com>
- <loom.20140212T215407-567@post.gmane.org>
- <CAN8cciaSZqBONqtjOE9BPst_7x_HcUm06V9yZEnY2O=woRjZaA@mail.gmail.com>
- <5305E854.4050502@yahoo.de>
+From: Christian Engelmayer <cengelma@gmx.at>
+Subject: [PATCH] ASoC: wm8993: Remove unused pointer in wm8993_remove()
+Date: Sat, 22 Feb 2014 16:00:16 +0100
+Message-ID: <20140222160016.372a3683@spike>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f51.google.com (mail-qg0-f51.google.com
- [209.85.192.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 363A2261A9B
- for <alsa-devel@alsa-project.org>; Sat, 22 Feb 2014 10:03:03 +0100 (CET)
-Received: by mail-qg0-f51.google.com with SMTP id q108so9891394qgd.10
- for <alsa-devel@alsa-project.org>; Sat, 22 Feb 2014 01:03:02 -0800 (PST)
-In-Reply-To: <5305E854.4050502@yahoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bernhard Kirchen <schlimmchen@yahoo.de>, John McCarron <john.mccarron@canonical.com>, Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, nkalkhof@web.de
+Content-Type: multipart/signed; micalg=PGP-SHA1;
+ boundary="Sig_/PgqqabPoqGeDFBsi337eJmh"; protocol="application/pgp-signature"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-PiBUbyBtYWtlIGEgNSBob3VyIHN0b3J5IHNob3J0LCB0aGlzIGlzIG15IHJlc3VsdDoKPiBVc2lu
-ZyBlYXJseSBwYXRjaGluZywgZXZlcnl0aGluZyB3b3JrcyB0byBteSBsaW5raW5nOgo+IDB4MTYg
-MHgyMTIxMTAxZiAjIGRvY2sgaGVhZHBob25lcwo+IDB4MTkgMHgyMWExMTAzMCAjIGRvY2sgbWlj
-Cj4KPiBUaGFuayB5b3UgdmVyeSBtdWNoIGZvciB5b3VyIGhlbHAhCj4KPiBJIGd1ZXNzIHRoYXQg
-YnVpbGRpbmcgYSBwYXRjaCDDoSBsYSBBTEMyNjlfRklYVVBfTEVOT1ZPX0RPQ0sgaXMgbm90IGEg
-YmlnCj4gZGVhbCwgYnV0IG5vdCBteSBidXNpbmVzcy4KPiBJZiB3YW50ZWQsIEkgY2FuIGRvIHRl
-c3RpbmcsIGFzIHNvb24gYXMgSSBsZWFybiBob3cgdG8gcHJvcGVybHkgY29tcGlsZQo+IGFuZCBp
-bnN0YWxsIGEgY3VzdG9tIGtlcm5lbC4KPgoKCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9s
-aW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC9jb21taXQvc291bmQvcGNpL2hkYS9wYXRj
-aF9yZWFsdGVrLmM/aWQ9MTA4Y2MxMDhhM2JiNDJmZTQ3MDVkZjEzMTdmZjk4ZTFlMjk0MjhhNgoK
-VGhlcmUgaXMgYWxyZWFkeSBhIG1vZGVsIGxlbm92by1kb2NrIGZvciBhbGMyNjkgIGJ1dCB0aGUg
-cGlucyBhcmUgZGlmZmVyZW50CmZyb20geW91ciB0NDQwcAoKc28geW91IG5lZWQgIEFMQzI5Ml9G
-SVhVUF9MRU5PVk9fRE9DSyBmb3IgeW91ciB0NDQwcAoKCj4gSSdsbCBwb3N0IHNvbWV0aGluZyBv
-bgo+IGh0dHBzOi8vZ2l0aHViLmNvbS9sZW9sdWsvdGhpbmtwYWQtc3R1ZmYvd2lraS9IYXN3ZWxs
-LVRoaW5rUGFkLXByb2JsZW1zdG8gdGVsbCBvdGhlciBwZW9wbGUgaG93IHRvIGZpeCB0aGlzIHJp
-Z2h0IGF3YXkuCj4KPiBNb3JlIHRvIG15IHN0b3J5Ogo+IEkgZm91bmQgL3N5cy9jbGFzcy9zb3Vu
-ZC9od0MxRDAsIHdoaWNoIGlzIGEgUmVhbHRlayBBTEMyOTIgZGV2aWNlLgo+IFRoZSBOSUQgKHdo
-YXQgZG9lcyBpdCBzdGFuZCBmb3I/KSBvZiBpbnRlcmVzdCBmb3IgdGhlIGphY2sncyBvdXRwdXQg
-aXMKPiBpbmRlZWQgMHgxNi4KPgo+IFdoZW4gaGVhZHBob25lcyBwbHVnZ2VkIGludG8gZG9ja2lu
-ZyBzdGF0aW9uIGphY2s6Cj4gJCBzdWRvIGhkYS12ZXJiIC9kZXYvc25kL2h3QzFEMCAweDE2IEdF
-VF9QSU5fU0VOU0UgMAo+IG5pZCA9IDB4MTYsIHZlcmIgPSAweGYwOSwgcGFyYW0gPSAweDAKPiB2
-YWx1ZSA9IDB4ODAwMDAwMDAKPgo+IFdoZW4gbm90IHBsdWdnZWQ6Cj4gJCBzdWRvIGhkYS12ZXJi
-IC9kZXYvc25kL2h3QzFEMCAweDE2IEdFVF9QSU5fU0VOU0UgMAo+IG5pZCA9IDB4MTYsIHZlcmIg
-PSAweGYwOSwgcGFyYW0gPSAweDAKPiB2YWx1ZSA9IDB4MAo+Cj4gR0VUX1BJTl9TRU5TRSBmb3Ig
-MHgxOSBpcyAweDgwMDAwMDAwIHdoZW4gaGVhZHNldCB3aXRoIG1pYyBpcyBwbHVnZ2VkIGludG8K
-PiBkb2NrLgo+IFBpbiBzZW5zZSBvZiAweDE5IGRvZXMgbm90IGNoYW5nZSB0byAweDgwMDAwMDAw
-IHdoZW4gb25seSBwbHVnZ2luZyAzcG9sZQo+IHNwZWFrZXIgY2FibGUuCj4gVGhlcmVmb3JlLCBJ
-IGFzc3VtZWQgdGhhdCAweDE5IGlzIHRoZSBkb2NrIG1pYyBpbnB1dCAodHVybmVkIG91dCBsYXRl
-ciB0bwo+IGJlIHRydWUpLgo+Cj4gSSBpbnN0YWxsZWQgYWxzYS10b29scy1ndWkgYW5kIHVzZWQg
-aGRhamFja3JldGFzdCB0byBvdmVycmlkZSB0aGUgcGluCj4gY29uZmlnLgo+IEl0IHRvb2sgYSB3
-aGlsZSB0byBmaW5kIG91dCB0aGF0IG5vdCBhbGwgY2hhbmdlcyBhcmUgaW1tZWRpYXRlIChlYXJs
-eQo+IHBhdGNoaW5nIGFuZCByZXN0YXJ0IHJlcXVpcmVkKS4KPgo+IFVzaW5nIHRoZSBlYXJseSBw
-YXRjaGluZyB2YWx1ZXMgZnJvbSBhYm92ZSwgdGhlIHNvdW5kIGlzIGJlaW5nIHJlZGlyZWN0ZWQK
-PiBmcm9tIHRoZSBpbnRlcm5hbCBzcGVha2VycyB0byB0aGUgZG9jayBqYWNrLCB3aGVuIGhlYWRw
-aG9uZXMgYXJlIGNvbm5lY3RlZC4KPiBbV2hlbiBjb25uZWN0aW5nIGFuIGFkZGl0aW9uYWwgc3Bl
-YWtlciB0byB0aGUgbGVmdCBqYWNrIG9uIHRoZSBub3RlYm9vaywKPiB0aGUgc291bmQgaXMgb3V0
-cHV0IHRvIGJvdGggZG9jayBhbmQgbm90ZWJvb2sgamFjay5dCj4KCgpodHRwczovL2dpdC5rZXJu
-ZWwub3JnL2NnaXQvbGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC5naXQvY29tbWl0L3NvdW5k
-L3BjaS9oZGEvaGRhX2dlbmVyaWMuYz9pZD1hMDdhOTQ5YmU2ZWIxYzlhYWIwNmFkYWFkY2U3MmRi
-ZDI3YjdkOWNiCgptdWx0aW91dC5tYXhfY2hhbm5lbHMgaXMgY2hhbmdlZCB0byA0IGJ1dCB5b3Ug
-Y2Fubm90IGdldCA0IGNoYW5uZWxzCnBsYXliYWNrIG9uIGhlYWRwaG9uZSBhbmQgZG9jayBoZWFk
-cGhvbmUKCisgaWYgKGNmZy0+bGluZV9vdXRfdHlwZSAhPSBBVVRPX1BJTl9IUF9PVVQpCisgc3Bl
-Yy0+Y29uc3RfY2hhbm5lbF9jb3VudCA9IG1heChzcGVjLT5jb25zdF9jaGFubmVsX2NvdW50LAor
-IGNmZy0+aHBfb3V0cyAqIDIpOworIHNwZWMtPm11bHRpb3V0Lm1heF9jaGFubmVscyA9IG1heChz
-cGVjLT5leHRfY2hhbm5lbF9jb3VudCwKKyBzcGVjLT5jb25zdF9jaGFubmVsX2NvdW50KTsKCgoK
-CgoKPiBXaGVuIGNvbm5lY3RpbmcgYSBtaWMgdG8gZG9jaywgdGhlIGRvY2sgbWljIHNob3dzIHVw
-IGFzIGlucHV0IGFuZCBpcyB1c2VkCj4gYXMgc3VjaC4KPiBXaGVuIG9ubHkgY29ubmVjdGluZyBh
-IGhlYWRzZXQgd2l0aG91dCBtaWMsIHRoZSBpbnRlcm5hbCBtaWMgc3RheXMKPiBmdW5jdGlvbmFs
-Lgo+CgoKPiBJIGNyZWF0ZWQgdGhlIG91dHB1dCB5b3UgcmVxdWVzdGVkIChMZW5vdm8gVGhpbmtQ
-YWQgVDQ0MHAgaW4gVWx0cmFEb2NrLCBubwo+Cj4gc291bmQgd2hlbiBkb2NrZWQgdmlhIGRvY2sg
-amFjayBidXQgbm90ZWJvb2sgc3BlYWtlcnMgYXJlIGFsc28gbXV0ZSkuCj4+Cj4+IG5vdCBkb2Nr
-ZWQ6IGh0dHA6Ly9wYXN0ZWJpbi5jb20vTUZRVDNSOVMKPj4gZG9ja2VkLCBubyBoZWFkcGhvbmVz
-OiBodHRwOi8vcGFzdGViaW4uY29tLzhVTjFzSFNNCj4+IGRvY2tlZCwgaGVhZHBob25lcyBwbHVn
-Z2VkIGluIGRvY2s6IGh0dHA6Ly9wYXN0ZWJpbi5jb20vN1hhdVpMWnoKPj4gZG9ja2VkLCBoZWFk
-cGhvbmVzIHBsdWdnZWQgaW4gbm90ZWJvb2s6IGh0dHA6Ly9wYXN0ZWJpbi5jb20veGZMNXFrZ2UK
-Pj4KPj4gQmFzZWQgb24gdGhhdCwgY2FuIHlvdSBoZWxwIHVzIGdldHRpbmcgc291bmQgdG8gd29y
-ayBvbiB0aGUgZG9jaz8KPj4KPj4KPgo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+--Sig_/PgqqabPoqGeDFBsi337eJmh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Commit 88b5bdfd (ASoC: wm8993: drop regulator_bulk_free of devm_ allocated
+data) eliminated the last user of driver data pointer 'wm8993' in function
+wm8993_remove() - Thus remove it. Detected by Coverity: CID 1186208.
+
+Signed-off-by: Christian Engelmayer <cengelma@gmx.at>
+---
+Applies against branch for-next in tree
+git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+---
+ sound/soc/codecs/wm8993.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
+index 2ee23a3..f7978b3 100644
+--- a/sound/soc/codecs/wm8993.c
++++ b/sound/soc/codecs/wm8993.c
+@@ -1559,8 +1559,6 @@ static int wm8993_probe(struct snd_soc_codec *codec)
+=20
+ static int wm8993_remove(struct snd_soc_codec *codec)
+ {
+-	struct wm8993_priv *wm8993 =3D snd_soc_codec_get_drvdata(codec);
+-
+ 	wm8993_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	return 0;
+ }
+--=20
+1.8.3.2
+
+--Sig_/PgqqabPoqGeDFBsi337eJmh
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTCLuAAAoJEKssnEpaPQKEgJoQAJiyVGX3Wa2n7PKRFsQBOTn6
+wDcW/IqrglJX2Z4JEjmMXg+hkp/McS0yad6wel7zs0AdhrmwCii3GAwWCXh+kZes
+f+GZSOdhReYHcc9p8xrYBT2d/aOQJpM0swyh45f6VtQ4rKsfLm2dQy58tezE/oeP
+ZF4MJxtDTpr8u5MBHQx1dfm4fNYWM/kFBrRwglJXS2cubIP0pYoeWpWrtiWODYaC
+CpRgmUuSwkTZ8H3ahm5JckjiaCNNbByihsTmXPn1bnGX7XZFPRK86zsekqThoR9M
+J5nuv1q+DR6B0VsvVm1dPUHlTeqbJ/2I0iHxdOkM3ygB60CyVJOnFOLYuaUd5bOS
+6wNcXIVZnUhc+zXYLVpT8W7n6l7SDR4DyTZVOmk+OvLPLKfnXLCFRm1fg9AVW92W
+DuTgTqb37MxqcbOikpUDm8b5drCLEZvO7utszBG4OSgIT5YFc72kBj4WLnWSlbCl
+MVF7iuCRvCTXmNsEk9gO/M2d5PutBsBdndGqnlrRk9cqNJLvxbh6srac35Wwaz9R
+QkS2zBuphiIrCllFiCfDVpJi9V9GKN1/sjfk+fePtb+c46GOfwrngYRjPv6h/AWF
+o2Jic3p4Q/p+B4hObs3aq3UA9inrtZKEZMYlrYp37JG0l+mmaCYmQria0wynBeHp
+4nmQcuYpvHQfTTaQHSa/
+=vnzG
+-----END PGP SIGNATURE-----
+
+--Sig_/PgqqabPoqGeDFBsi337eJmh--
