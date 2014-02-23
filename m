@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 05/11] ASoC: adau1373: Use
-	SOC_ENUM_SINGLE_VIRT_DECL()
-Date: Sun, 23 Feb 2014 16:10:15 +0100
-Message-ID: <1393168221-23018-6-git-send-email-lars@metafoo.de>
+Subject: [PATCH 04/11] ASoC: Add macros for defining virtual
+	enums
+Date: Sun, 23 Feb 2014 16:10:14 +0100
+Message-ID: <1393168221-23018-5-git-send-email-lars@metafoo.de>
 References: <1393168221-23018-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-167.synserver.de (smtp-out-249.synserver.de
  [212.40.185.249])
- by alsa0.perex.cz (Postfix) with ESMTP id C4CD426516D
+ by alsa0.perex.cz (Postfix) with ESMTP id BC51E265164
  for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 16:10:08 +0100 (CET)
 In-Reply-To: <1393168221-23018-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,28 +26,47 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, Jerry Wong <jerry.wong@maximintegrated.com>
 List-Id: alsa-devel@alsa-project.org
 
-For the upcoming consolidation for MUXs and virtual MUXs we need to mark virtual
-enums as such.
+With the upcoming consolidation of normal MUXs and virtual MUXs we need to be
+able to distinguish between enums with and without a backing register at the
+enum level. Use the same approach as used for virtual mixer controls by setting
+the reg field of the enum to SND_SOC_NOPM for enums without a backing register.
+This patch adds a set of helper macros that can be used to define such enums.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/adau1373.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/sound/soc.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-index 5765c22..5223800 100644
---- a/sound/soc/codecs/adau1373.c
-+++ b/sound/soc/codecs/adau1373.c
-@@ -576,8 +576,8 @@ static const char *adau1373_decimator_text[] = {
- 	"DMIC1",
- };
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index e005196..a25de13 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -189,6 +189,8 @@
+ 	.mask = xmask, .items = xitems, .texts = xtexts, .values = xvalues}
+ #define SOC_VALUE_ENUM_SINGLE(xreg, xshift, xmask, xnitmes, xtexts, xvalues) \
+ 	SOC_VALUE_ENUM_DOUBLE(xreg, xshift, xshift, xmask, xnitmes, xtexts, xvalues)
++#define SOC_ENUM_SINGLE_VIRT(xmax, xtexts) \
++	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, xmax, xtexts)
+ #define SOC_ENUM(xname, xenum) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,\
+ 	.info = snd_soc_info_enum_double, \
+@@ -293,6 +295,8 @@
+ 							ARRAY_SIZE(xtexts), xtexts, xvalues)
+ #define SOC_VALUE_ENUM_SINGLE_DECL(name, xreg, xshift, xmask, xtexts, xvalues) \
+ 	SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xmask, xtexts, xvalues)
++#define SOC_ENUM_SINGLE_VIRT_DECL(name, xtexts) \
++	const struct soc_enum name = SOC_ENUM_SINGLE_VIRT(ARRAY_SIZE(xtexts), xtexts)
  
--static SOC_ENUM_SINGLE_DECL(adau1373_decimator_enum,
--			    0, 0, adau1373_decimator_text);
-+static SOC_ENUM_SINGLE_VIRT_DECL(adau1373_decimator_enum,
-+	adau1373_decimator_text);
+ /*
+  * Component probe and remove ordering levels for components with runtime
+@@ -1090,7 +1094,7 @@ struct soc_mreg_control {
  
- static const struct snd_kcontrol_new adau1373_decimator_mux =
- 	SOC_DAPM_ENUM_VIRT("Decimator Mux", adau1373_decimator_enum);
+ /* enumerated kcontrol */
+ struct soc_enum {
+-	unsigned short reg;
++	int reg;
+ 	unsigned char shift_l;
+ 	unsigned char shift_r;
+ 	unsigned int items;
 -- 
 1.8.0
