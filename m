@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re:
- =?utf-8?b?562U5aSNOiBbUEFUQ0hdIEFTb0M6IHBhc3Mgc25k?=
- =?utf-8?q?=5Fsoc=5Fjack=5Fgpio_to_jack=5Fstatus=5Fcheck_callback?=
-Date: Sat, 22 Feb 2014 12:21:40 +0900
-Message-ID: <20140222032140.GW25940@sirena.org.uk>
-References: <1392528972-9440-1-git-send-email-xiaoxiang@xiaomi.com>
- <20140218011652.GP2669@sirena.org.uk>
- <C5331076FE79984AAD7207DE353CEA4E40858C60@ex-mbox1.xiaomi.net>
+Subject: Re: [PATCH 045/102] ASoC: twl6040: Use
+	SOC_ENUM_SINGLE_DECL()
+Date: Sun, 23 Feb 2014 11:30:40 +0900
+Message-ID: <20140223023040.GK25940@sirena.org.uk>
+References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
+ <1392723517-12772-18-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5825857972370539275=="
+Content-Type: multipart/mixed; boundary="===============7382452713657963000=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4840F262634
- for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 00:36:56 +0100 (CET)
-In-Reply-To: <C5331076FE79984AAD7207DE353CEA4E40858C60@ex-mbox1.xiaomi.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id 37503264EFF
+ for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 03:31:13 +0100 (CET)
+In-Reply-To: <1392723517-12772-18-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,73 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?B?6IKW57+U?= <xiaoxiang@xiaomi.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5825857972370539275==
+--===============7382452713657963000==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lGQpFNrcSq0Rb43w"
+	protocol="application/pgp-signature"; boundary="wSq95SjGPZBE6hCW"
 Content-Disposition: inline
 
 
---lGQpFNrcSq0Rb43w
-Content-Type: text/plain; charset=utf-8
+--wSq95SjGPZBE6hCW
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 19, 2014 at 02:20:07PM +0000, =E8=82=96=E7=BF=94 wrote:
-> The new parameter isn't used to get the internal field of snd_soc_jack_gp=
-io.
-> the usage is very like work_struct, here is the demo code:
-> struct xxx_priv {
-> 	truct snd_soc_jack_gpio gpio;
-> };
->=20
-> static int xxx_ jack_status_check(struct snd_soc_jack_gpio *gpio)
-> {
-> 	struct xxx_priv *xxx =3D container_of(gpio, struct xxx_priv, gpio);
-> 	......
-> }
-> Without this parameter, codec driver has to save xxx_priv as a global var=
-iable.
+On Tue, Feb 18, 2014 at 12:38:01PM +0100, Takashi Iwai wrote:
+> Just replace with the helper macro.
+> Also, use ARRAY_SIZE() in some ASOC_ENUM_SINGLE() lines.
 
-OK, this makes sense as a reason for passing the argument in however how
-about instead of passing in the structure adding a void * to it which
-gets passed as the argument instead?  The user can then assign it to
-point to the data they want directly without it looking like they should
-be using the private data for the core code.
+Applied, thanks.
 
---lGQpFNrcSq0Rb43w
+--wSq95SjGPZBE6hCW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTCBfAAAoJELSic+t+oim97MUP/1OYr17CSoWtrwGbaRzUpnLU
-4Lcl8TI0vlRPNGVJsB2Bl6qXsTNUvChe5nGlW6Uiu5pzj8dZza7ZbuuB56NnnQhQ
-j0sdAU7lOsG259fkniDKzcYnJP9+F2m/Z6m8DcEcb+zUzTBfoeHxLnjTBOZ2g6vl
-Hivq0Pp5FdEjgUqATNQ7X6ikVXumzDjhkyzqxKHSF9SlK04YO3lBZr4/m//fSnHD
-RZP6oBOWxRyObk5sZb4dafH1YMPwAJ0527Bk88QBK8oJYfwrBoNhK8eB0tpjIXbH
-S4ZX+bn4uoCa7otJccmMmH7qKgBRjm1TSLHgxC/4MOPmaZR75B/n3zuLRQ9XzxhZ
-OTmJEa8fgn1HNdOHmp9RjCK01WkC1ioKd+TyhgF4U8eMdX13KacCTZN7+JrCFF8P
-6gYDOjxaviHX8clyQMjxbh5H/icEyRLN0XYPDA7W4W0QBCD2OVzgP7RiUrTjkc5X
-A7ipTxCqQmIxe3Ww8N6Srjhhh1BX+9Zl3KimtndrPTXQO7r9AfH8c4VWyBpiGYKX
-HLs2XBdWjKvfhhQ9T1az7PEwYZNkWn3lwRMV+s5c6mQNKTgsu/hOOZFONEFd1NUj
-Bb2A6Ow7cloNMItXaFGGLM0hbo4JJDUkyReI81Z7Qy/+6ywv5a0bjiLSXtuzLhy3
-f1ogVOhA1I4s72D6fWp+
-=yN05
+iQIcBAEBAgAGBQJTCV1NAAoJELSic+t+oim98r4P/15ZWPndVhlz7PFZproUvVF3
+G6tNrzyG75lT0eKALNk2q8UIABXQPrYiQmBGbI4RCH0MbP4UlUs47N+jpVDsE3HF
+E62SJyagGG/6gzrlMHiVVyHTMe6/EISg8X+lmkYhMpOtjyqPowN2Et+hedrcqR4N
+el7NtA6KwtY5Dg4o3JzNwmUd7bf9IJNJmlxQNSgkpr4fpQhUGwDLw9X2HbGBnS3w
+fGBSnpSQ6kHsxCZ8bUZb0k4FeijPL/il49GJZXGjDRacRnJETtwaXMjbi87eUvhR
+gBZjWCEi1SjYzPtBXbVcqrpW9v4OmPgPXzisWTYM3+JgSjsdXFxLA2XSplbhISbj
+EIQA1Baf6cVQLTcBkp7I6MMCaW7o39ig+myoNp+k2Oc0VSr18KNWoPFRfSe/sCi7
+TOoI9NiZWiIzw5i1D8M+hguiqCYy2hAaMUsDGivPdwh+LdNKo+oNSFIctlcPUr/K
+dr0Wv4CACZCC0WC0xWxEaC8fO6aRYcZ1ED64t6SbEoFJEjpwmaTjkcINF+4a3ZrT
+H8xTiH7dfUlVdtMZxnVY/HKEusHH2e5hI0Sh922dI+p4yKqFjtVV4+I446Th//LL
+OLjb6Tlqd45U9NamR1FZ0Vn9wkeABAUVZBvpd0AmNjhAqXbnMB2oE+xxaOW0u35T
+SeDtHD28fC2e8hZhldDN
+=7MOx
 -----END PGP SIGNATURE-----
 
---lGQpFNrcSq0Rb43w--
+--wSq95SjGPZBE6hCW--
 
---===============5825857972370539275==
+--===============7382452713657963000==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5825857972370539275==--
+--===============7382452713657963000==--
