@@ -1,55 +1,77 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v6 1/4] ASoC: tlv320aic32x4: Support for master clock
-Date: Sun, 23 Feb 2014 12:59:47 +0900
-Message-ID: <20140223035947.GD25940@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6 2/4] ASoC: tlv320aic32x4: Support for
+	regulators
+Date: Sun, 23 Feb 2014 13:00:01 +0900
+Message-ID: <20140223040001.GE25940@sirena.org.uk>
 References: <1392916981-9333-1-git-send-email-mpa@pengutronix.de>
- <1392916981-9333-2-git-send-email-mpa@pengutronix.de>
+ <1392916981-9333-3-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rvJlijl7rx+y0eL3"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1392916981-9333-2-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============1791039626601814854=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E98D8261A18
+ for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 05:10:22 +0100 (CET)
+In-Reply-To: <1392916981-9333-3-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
 
---rvJlijl7rx+y0eL3
+--===============1791039626601814854==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="20f69GCBTQuZN9jn"
+Content-Disposition: inline
+
+
+--20f69GCBTQuZN9jn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Feb 20, 2014 at 06:22:58PM +0100, Markus Pargmann wrote:
-> Add support for a master clock passed through DT. The master clock of
-> the codec is only active when the codec is in use.
+On Thu, Feb 20, 2014 at 06:22:59PM +0100, Markus Pargmann wrote:
+> Support regulators to power up the codec. This patch also enables the
+> AVDD LDO if no AV regulator was found.
 
 Applied, thanks.
 
---rvJlijl7rx+y0eL3
+--20f69GCBTQuZN9jn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTCXIwAAoJELSic+t+oim92lAP/29YjhrfzHV1SSX3SS0SFcYX
-zz8X+ZxyB9iTVYbcVshVnscDbML0trnxWQI9UbZyuOTYXwaADZZBlW/AOkwyl5xv
-sATTmLIfobuUhssI5GRDvi/VCeZYMCh9SrNek+XNq62H7W6KTCSr9zuo+vssk2Tg
-Muza65DgrqtyPkxJ7Tl6tE5LMUHc1i4KecS64dlBzN3PVp43dQhiyMoJ8BJy+cPI
-1IGfB0PBswCE5pZa8t5qC6bjhraEkpxHjKlyKvUAev++JeWxwNFDExw8x/2kW8NU
-Di0OXin30aOT+fhmbE5VUz16Za/nfs/voZq1BklS59AoixTXstg3FyqnXSBY+C8t
-AKvI+8i4FZUj8sMtDIF3WZ4/Qn22ZLzdQT2E5zYNbW5P+3VMWGXqSYXdGvOByWeL
-BFwfO59LXHHtaTGjdUCfnqpy/bnRqgmB102P2z1Pb7QPK8wbLaSX1jPX6Uq2sZox
-v+Ruogho8b7pQZyL/J1rWM8vfU+uNf2tUqTYbSyj63Wjb5GiHQ5JhnlIaffCAhLi
-a2Rr+gfLUdBS5RKfHejs/aAoNSBolAbrk2PUkIz3lWkjfm58GDWbYrFlT8KZe0n6
-xdTs+V9enlxSogQasPo31xrO/BCMBKa0kCXoOZ4Hm1SduguPL6aK6kUZ5psvG5/m
-f8RH9G44WDAEiFZ7HtyL
-=KIaB
+iQIcBAEBAgAGBQJTCXI9AAoJELSic+t+oim9NKMP/RSN2K+AYs/wbxd418kJI2/z
+DJ0l6e6fVnqHAFSJrZH8fp0LZqJAJqv8E2pu0UCjKC0bfcnr/eTSRdS+DEHivwuU
+WNOK5uT2jLtU3XpWevir1MAuBTAwWD7vT3MquPuX3aJK7/iR/zXDREIRcn9lw4BT
+gohHQX9MgZJ76q5YaRhxtuJDU08qVHVI6VD5u15oOIcuEl9JfR2kiIzmUehichez
+sfyVTRWcBKNcW8SSCONmfLfooizjSQbpeC0jRrELo/9Dky5Zu3Iq6uhg1s30HBhC
++czhAbpKIPKZfz1ibRWA8+VL8WhXBDTkzRr5wQ/wBLFZ11x3iNnxQ6+B/QHQZGRz
+A5k4vfZIi/DWOIVP/xowTA3K8SD0nFsJFxO/xUiPpFXKmJVEqHQctmQyG/vpoB9O
+bapLssN5qycXWHRMttXKV0bcnH2//RO94+lfuLndP1SZlNJf15lyO6/TqbJ7xyqc
+Zg5Us1mYDgY4O3i+yhjuonBvibhIl5eea+AkJs7MHpENpCpj//e84DIRboIC8ulW
+ANyZXnWVSDPCgQEG9d5yeU71G0lWWcJPFu49owzqoOJKlPsCBTgehxBXYeMSMqyA
+LvjPqGtnuVh249RPY94wq6bpsSJlnhmYDScwJPedc3x2+aBY74jOgl6zIsXhtpEq
+0bv+QTwfOlk4XYwjhGpX
+=IZo/
 -----END PGP SIGNATURE-----
 
---rvJlijl7rx+y0eL3--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--20f69GCBTQuZN9jn--
+
+--===============1791039626601814854==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1791039626601814854==--
