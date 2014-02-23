@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/3] Add TDM slot info OF parsing
-	supports
-Date: Sun, 23 Feb 2014 14:27:56 +0900
-Message-ID: <20140223052756.GL25940@sirena.org.uk>
-References: <1392341676-4143-1-git-send-email-Li.Xiubo@freescale.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Call for testing: ALSA driver for
+	Fireworks/BeBoB	based devices
+Date: Sun, 23 Feb 2014 16:55:18 +0900
+Message-ID: <5309A966.6060709@sakamocchi.jp>
+References: <525B624B.4060906@sakamocchi.jp>
+ <35FE09CFAB387A4BA7ACDDED49F3451818755B52@CRETE.nmmu.ac.za>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2558038192542223033=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 75625264EFF
- for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 08:11:49 +0100 (CET)
-In-Reply-To: <1392341676-4143-1-git-send-email-Li.Xiubo@freescale.com>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B31F265083
+ for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 08:55:25 +0100 (CET)
+In-Reply-To: <35FE09CFAB387A4BA7ACDDED49F3451818755B52@CRETE.nmmu.ac.za>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, b47053@freescale.com, linux-kernel@vger.kernel.org
+To: "Brand, Mark (Mr) (Summerstrand Campus South)" <Mark.Brand@nmmu.ac.za>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ffado-devel@lists.sf.net" <ffado-devel@lists.sf.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---===============2558038192542223033==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1PHFXgj3K5uCxEyX"
-Content-Disposition: inline
+Thanks for your testing. Ozonic is one of devices for which I test.
+
+ > My testing is probably not particularly rigorous, and I would
+ > sincerely appreciate your advice on what steps to follow
+ > in order to verify your driver's functionality.
+
+Try playback/capture PCM samples/MIDI messages with ALSA applications.
+
+ > In particular, you mention "(to control mixer channels please use
+ > FFADO upstream)".
+
+My drivers don't give ways to control device's internal mixer. So you 
+need the other stuff for this purpose.
+
+Please refer to this page. You can see some screenshots of ffado-mixer 
+for 'M-Audio Ozonic'. I already commited these improvement to current 
+FFADO trunk except for FW1814/ProjectMiX:
+MaudioBebob
+http://subversion.ffado.org/wiki/MaudioBebob
+
+ > I have not yet set up FFADO on this machine, but I also see under
+ > "Note": "- Don't use simultaneously 'ALSA PCM/MIDI playback/capture'
+ > and 'jackd with Firewire (FFADO) backend'. Both of them try
+ > connecting to the device when another is running." Would you please
+ > explain?  How should one rely on the "upstream" mixer functionality
+ > while keeping jackd out of ALSA's way?
+
+Devices which my drivers support handle a pair of streams over IEEE1394 
+bus. PCM samples/MIDI messages are multiplexed into these streams. And 
+snd-fireworks/snd-bebob uses 'duplex streams synchronization'.
+As a result:
+  - ALSA PCM/MIDI functionality and jackd with firewire backend conflict 
+for its streaming functionality.
+But:
+  - ALSA PCM/MIDI fuctionality and ffado-dbus-server/ffado-mixer do not 
+interrupt each other.
+
+ > I open Audacity, which now lists "Ozonic: Ozonic PCM (hw:2,0)" as
+ > ALSA input and output options. However, no audio input is shown when
+ > I try to monitor the audio input
+
+I confirm that Audacity has such bugs to detect ALSA PCM character 
+devices. In detail, its PortAudio v19 codes includes bugs. I have no 
+will to investigate this bug because it's not within my work for these 
+drivers.
+
+ > $aplay -D hw:2,0 test.wav
+ > (where test.wav has been saved from Audacity)
+ > ... and this responds with:
+ > aplay: main:722: audio open error: Input/output error
+
+According to aplay codes, snd_pcm_open() generate this error.
+I guess that another application still uses PCM character device for Ozonic.
+
+ > $ aplay -D hw:2,0 Desktop/test.wav
+ > Playing WAVE 'Desktop/test.wav' : Signed 16 bit Little Endian, Rate
+ > 44100 Hz, Mono aplay: set_params:1239: Channels count not available
+
+You MUST add 'c' option to indicate the number of channels with 'hw' PCM 
+device. For convinience, use 'plughw' PCM device instead, like:
+$ aplay -D plughw:2,0 Desktop/test.wav
+
+I note an item:
+  - A few days ago, I fixed bug to fail to start stream for Ozonic. See:
+bebob: fix mappling for MIDI conformant data in stream channels
+https://github.com/takaswie/snd-firewire-improve/commit/545ab7068f1d53b2b17d5615f768af1d53076d6b
+
+Thanks
 
 
---1PHFXgj3K5uCxEyX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Feb 14, 2014 at 09:34:33AM +0800, Xiubo Li wrote:
-> Change in v3:
->    - Add .of_xlate_tdm_slot_mask().
->    - Add snd_soc_of_xlate_tdm_slot_mask().
->    - Remove TDM slot masks OF parsing...
->    - Split the TDM infomation into two properties.
-
-Applied all, thanks - this is a really nice, clear binding though I
-think we will need to extend it in future to support specifying which
-slots are in use by a given device.
-
---1PHFXgj3K5uCxEyX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTCYbZAAoJELSic+t+oim9QTUP/0PJj6TYa1vNhyJ3i6eHiz+R
-viW5L15S6xnh3bEVkuVxibnuXVIxJ6fbjpjq6mt92G3Va1DYQYEg7I4yu7PEmAFQ
-MbLozIkRNbfrpaCqjGGSXrI2XKLZ7M7B0nwVYn3EU37kkQMEYwWszwWJRYK8o/Iv
-ry4ELPUfBGsufFJ19GRCyPunZJyRFqdt2Fd39tA7LBpDh3AMzFVfws4UUH4C8K33
-GzoGOw0OZir5hms97oseKUMBitxOMTwc0XvOtDSiPO8/ql8mq7SX93ncbR6f7Ux6
-jlgl9C+EQQr6WHSnEONDODL9fyRJklUneJP6lKn0RUpo6nih5HLegdpBTMHoH8e1
-GNF/rmWce1lbEm17ea99iG7W/B+8sTjbFJJlJu0mmL7CyHaebA9ZadsOX0mHKWen
-MHP+JgFVNzKsjiCA8zRuhUdwcF056+Bo4kwZefHl/paqKI/d1vK2G5QvN5mSVlne
-PXqGUFdyNskGcfvvl9U6vhNQNGWdn5CG5EBYDYupihHbNKx4KmGJ1C06VZTR5PUp
-pSR8S8J8QpDLZqYzCwijB5B1CNDvOYsVnBMi2fv/hbp/zmDtTAf0rW8vAL+yHdfu
-04GeiIX4frwyhDuzGRSxbt9g4ooU2vbU2lATaRoqXwLHwSYU82CmSUKK6QP/K9BA
-KzdVcTLzB2Rtd1gLuhcS
-=t4hh
------END PGP SIGNATURE-----
-
---1PHFXgj3K5uCxEyX--
-
---===============2558038192542223033==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2558038192542223033==--
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
