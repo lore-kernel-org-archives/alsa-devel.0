@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 070/102] ASoC: tlv320aic23: Use
+Subject: Re: [PATCH 071/102] ASoC: wm5100: Use
 	SOC_ENUM_SINGLE_DECL()
-Date: Sun, 23 Feb 2014 11:57:54 +0900
-Message-ID: <20140223025754.GK25940@sirena.org.uk>
+Date: Sun, 23 Feb 2014 12:03:55 +0900
+Message-ID: <20140223030355.GL25940@sirena.org.uk>
 References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
- <1392723517-12772-43-git-send-email-tiwai@suse.de>
+ <1392723517-12772-44-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7197162920870153459=="
+Content-Type: multipart/mixed; boundary="===============7696446253204583650=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 32C98261606
- for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 03:58:11 +0100 (CET)
-In-Reply-To: <1392723517-12772-43-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 702BE261606
+ for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 04:04:12 +0100 (CET)
+In-Reply-To: <1392723517-12772-44-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,50 +27,50 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7197162920870153459==
+--===============7696446253204583650==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SpYKH75o2aPywVKk"
+	protocol="application/pgp-signature"; boundary="aq8k2F4XKnGQvi/k"
 Content-Disposition: inline
 
 
---SpYKH75o2aPywVKk
+--aq8k2F4XKnGQvi/k
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 18, 2014 at 12:38:26PM +0100, Takashi Iwai wrote:
+On Tue, Feb 18, 2014 at 12:38:27PM +0100, Takashi Iwai wrote:
 > Just replace with the helper macro.  No functional change at all.
 
 Applied, thanks.
 
---SpYKH75o2aPywVKk
+--aq8k2F4XKnGQvi/k
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTCWOvAAoJELSic+t+oim9yv4P/0FwM2fmmdne+0US/4mH3r/q
-4eyHrvXXEfZhzpMSCKucItVl3HVJvWmUb9qA288yGShaO746w75Y6QGjii1rNNMn
-+fMczYOCCNsGq2o0M5lLwUTGakcIi1mhgionFpb0kuYxDqia9D8NDW4UHrb4pETH
-DoPAOR8gvyGJIKnV8dtaMbZAtFbinIQze/PQYcrCtdwncyN8LRKS9B98hNDnQ2Tx
-mn3cIvot29OUe9Ffgzn4/Kc2Bm7tHpZzpj025Snedt8oLzS2ja1l+teOnZ562nYL
-6hjZieuU3WyZflfQwt4Eab6rUOPZCpUfcHtfnKKtKZLbKCLmleVgZOe1K3AZXXIz
-LbfkyjZiAVUFceB+9bE0HEb85BM58LlJztQJQZvit8wv1chZTDz44ZMBSJ5qvN1f
-ixsiwRF4OH9gchCWuEAhxd7itJxwZYM03PIvdYH5b3CfgYXRUjM2kfZcz31K7Xp1
-bExneMd/gw/GPgjn4oU0hPfjIgxnB9Z4k5kuHG3M3+Qcw9Qh1Ea+LNhVBRTrfWdZ
-49nlh1mRCw5CLSZj1Zg1ykU1+Qc5/KE0WlyvypvqQk/xVCPRsDfMn49E3OpsUKux
-lndVnggrLppfWARXBFAH/fworq1elBjDyGhLqyu1y2PWkzOb19mZ5xpUHQZJbwkD
-voGTG8Wk1sx0zi5bihVx
-=xLVn
+iQIcBAEBAgAGBQJTCWUYAAoJELSic+t+oim9SGwQAJeVZBIdAhwYsUhgOXldpofk
+PH7YnKEdySPJPJB3187iclUZSFayEPkpJ7Nvbnd2B+jI4T1/ZEAAwmCd6aigLjjU
+f0/VNrpHfDpj08k+WCMM8aqJCm9v1UV2lWKiWUB7zWC3IWwcmerKk9+x91jXPHp1
+xSPbtJbmiBV1PyFwrBKd4M15A59jSLlxc0yGd3FETcZn9+xtfAQoC2O53TDRLiK2
+1YlPNnEMUvYHMODGr83hRZnSbysZb6k/2dKF8Rmpjmc0DtywZE+WVwL21gqHABnM
+yp3RjAWbscbpqquFhzQuohBLk84hZL/N9WW/BwS8cbuOK/Y6oWyzIu4wyFg7ePCS
+daBkpLN+1Ss91rtRPO0sHW6TBuJTHS9vXS1UcuX3I3L8W8aqMTDEBrg1JLZur0RD
+0LvMLa3bJrMbP+vU5VTOUxakW/uN9wdzWjTjymuIHokkAxmYmG4l3hSa2HGesX0v
+tJcETM/l5vt+CEo7Fo63L+x6ozgZV7AbPwemOEH95ICYr0s2JbMfv+MCsXFZ3mS5
+ROzPhYpKyYcaFaUn/pYTgZ8ENZYDP6AnUwwrxQmGxZ6GhI3HCbGlnADBsG+yCcg9
+31hf4DH5+SDIekHCkmu4Git4Bb2sKIqscJKfGqMo9cB9oYJimtismFYfieOAXHTY
+yHbk2vAFsptCSOkvEh6A
+=+KON
 -----END PGP SIGNATURE-----
 
---SpYKH75o2aPywVKk--
+--aq8k2F4XKnGQvi/k--
 
---===============7197162920870153459==
+--===============7696446253204583650==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7197162920870153459==--
+--===============7696446253204583650==--
