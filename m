@@ -1,18 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 11/11] ASoC: dapm: Break dapm_set_path_status()
-	appart
-Date: Sun, 23 Feb 2014 16:10:21 +0100
-Message-ID: <1393168221-23018-12-git-send-email-lars@metafoo.de>
-References: <1393168221-23018-1-git-send-email-lars@metafoo.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH v6] MIDI driver for Behringer BCD2000 USB
+ device
+Date: Sun, 23 Feb 2014 21:24:22 +0100
+Message-ID: <530A58F6.7030700@ladisch.de>
+References: <1392909089-6242-1-git-send-email-dev@kicherer.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-167.synserver.de (smtp-out-249.synserver.de
- [212.40.185.249])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ED45265133
- for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 16:10:12 +0100 (CET)
-In-Reply-To: <1393168221-23018-1-git-send-email-lars@metafoo.de>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id F07EF2651D1
+ for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 21:24:54 +0100 (CET)
+In-Reply-To: <1392909089-6242-1-git-send-email-dev@kicherer.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,194 +21,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, Jerry Wong <jerry.wong@maximintegrated.com>
+To: Mario Kicherer <dev@kicherer.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There are three different completely independent code paths in
-dapm_set_path_status(). One of them is never used at all and the other two (one
-for mixers, one for MUXs) have their distincive callsites that always go onto
-the same path. Breaking the function into two parts allows us to reduce the code
-size and in the MUX case also do some optimizations to avoid having to calcualte
-the selected item for each item again.
+Mario Kicherer wrote:
+> +static unsigned char bcd2000_init_sequence[] = {
+> +	0x07, 0x00, 0x00, 0x00, 0x78, 0x48, 0x1c, 0x81,
+> +	0xc4, 0x00, 0x00, 0x00, 0x5e, 0x53, 0x4a, 0xf7,
+> +	0x18, 0xfa, 0x11, 0xff, 0x6c, 0xf3, 0x90, 0xff,
+> +	0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
+> +	0x18, 0xfa, 0x11, 0xff, 0x14, 0x00, 0x00, 0x00,
+> +	0x00, 0x00, 0x00, 0x00, 0xf2, 0x34, 0x4a, 0xf7,
+> +	0x18, 0xfa, 0x11, 0xff
+> +};
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-dapm.c | 133 +++++++++++++++++----------------------------------
- 1 file changed, 44 insertions(+), 89 deletions(-)
+I wonder how much of this is the actual init sequence, and how much is
+random garbage.  :-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index c07c7fb..3651a37 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -495,93 +495,6 @@ out:
- 	return ret;
- }
- 
--/* set up initial codec paths */
--static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
--	struct snd_soc_dapm_path *p, int i)
--{
--	switch (w->id) {
--	case snd_soc_dapm_switch:
--	case snd_soc_dapm_mixer:
--	case snd_soc_dapm_mixer_named_ctl: {
--		unsigned int val;
--		struct soc_mixer_control *mc = (struct soc_mixer_control *)
--			w->kcontrol_news[i].private_value;
--		int reg = mc->reg;
--		unsigned int shift = mc->shift;
--		int max = mc->max;
--		unsigned int mask = (1 << fls(max)) - 1;
--		unsigned int invert = mc->invert;
--
--		if (reg != SND_SOC_NOPM) {
--			soc_widget_read(w, reg, &val);
--			val = (val >> shift) & mask;
--			if (invert)
--				val = max - val;
--			p->connect = !!val;
--		} else {
--			p->connect = 0;
--		}
--
--	}
--	break;
--	case snd_soc_dapm_mux: {
--		struct soc_enum *e = (struct soc_enum *)
--			w->kcontrol_news[i].private_value;
--		unsigned int val, item;
--
--		if (e->reg != SND_SOC_NOPM) {
--			soc_widget_read(w, e->reg, &val);
--			val = (val >> e->shift_l) & e->mask;
--			item = snd_soc_enum_val_to_item(e, val);
--		} else {
--			/* since a virtual mux has no backing registers to
--			 * decide which path to connect, it will try to match
--			 * with the first enumeration.  This is to ensure
--			 * that the default mux choice (the first) will be
--			 * correctly powered up during initialization.
--			 */
--			item = 0;
--		}
--
--		if (item < e->items && !strcmp(p->name, e->texts[item]))
--			p->connect = 1;
--		else
--			p->connect = 0;
--	}
--	break;
--	/* does not affect routing - always connected */
--	case snd_soc_dapm_pga:
--	case snd_soc_dapm_out_drv:
--	case snd_soc_dapm_output:
--	case snd_soc_dapm_adc:
--	case snd_soc_dapm_input:
--	case snd_soc_dapm_siggen:
--	case snd_soc_dapm_dac:
--	case snd_soc_dapm_micbias:
--	case snd_soc_dapm_vmid:
--	case snd_soc_dapm_supply:
--	case snd_soc_dapm_regulator_supply:
--	case snd_soc_dapm_clock_supply:
--	case snd_soc_dapm_aif_in:
--	case snd_soc_dapm_aif_out:
--	case snd_soc_dapm_dai_in:
--	case snd_soc_dapm_dai_out:
--	case snd_soc_dapm_hp:
--	case snd_soc_dapm_mic:
--	case snd_soc_dapm_spk:
--	case snd_soc_dapm_line:
--	case snd_soc_dapm_dai_link:
--	case snd_soc_dapm_kcontrol:
--		p->connect = 1;
--	break;
--	/* does affect routing - dynamically connected */
--	case snd_soc_dapm_pre:
--	case snd_soc_dapm_post:
--		p->connect = 0;
--	break;
--	}
--}
--
- /* connect mux widget to its interconnecting audio paths */
- static int dapm_connect_mux(struct snd_soc_dapm_context *dapm,
- 	struct snd_soc_dapm_widget *src, struct snd_soc_dapm_widget *dest,
-@@ -589,15 +502,33 @@ static int dapm_connect_mux(struct snd_soc_dapm_context *dapm,
- 	const struct snd_kcontrol_new *kcontrol)
- {
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned int val, item;
- 	int i;
- 
-+	if (e->reg != SND_SOC_NOPM) {
-+		soc_widget_read(dest, e->reg, &val);
-+		val = (val >> e->shift_l) & e->mask;
-+		item = snd_soc_enum_val_to_item(e, val);
-+	} else {
-+		/* since a virtual mux has no backing registers to
-+		 * decide which path to connect, it will try to match
-+		 * with the first enumeration.  This is to ensure
-+		 * that the default mux choice (the first) will be
-+		 * correctly powered up during initialization.
-+		 */
-+		item = 0;
-+	}
-+
- 	for (i = 0; i < e->items; i++) {
- 		if (!(strcmp(control_name, e->texts[i]))) {
- 			list_add(&path->list, &dapm->card->paths);
- 			list_add(&path->list_sink, &dest->sources);
- 			list_add(&path->list_source, &src->sinks);
- 			path->name = (char*)e->texts[i];
--			dapm_set_path_status(dest, path, 0);
-+			if (i == item)
-+				path->connect = 1;
-+			else
-+				path->connect = 0;
- 			return 0;
- 		}
- 	}
-@@ -605,6 +536,30 @@ static int dapm_connect_mux(struct snd_soc_dapm_context *dapm,
- 	return -ENODEV;
- }
- 
-+/* set up initial codec paths */
-+static void dapm_set_mixer_path_status(struct snd_soc_dapm_widget *w,
-+	struct snd_soc_dapm_path *p, int i)
-+{
-+	struct soc_mixer_control *mc = (struct soc_mixer_control *)
-+		w->kcontrol_news[i].private_value;
-+	unsigned int reg = mc->reg;
-+	unsigned int shift = mc->shift;
-+	unsigned int max = mc->max;
-+	unsigned int mask = (1 << fls(max)) - 1;
-+	unsigned int invert = mc->invert;
-+	unsigned int val;
-+
-+	if (reg != SND_SOC_NOPM) {
-+		soc_widget_read(w, reg, &val);
-+		val = (val >> shift) & mask;
-+		if (invert)
-+			val = max - val;
-+		p->connect = !!val;
-+	} else {
-+		p->connect = 0;
-+	}
-+}
-+
- /* connect mixer widget to its interconnecting audio paths */
- static int dapm_connect_mixer(struct snd_soc_dapm_context *dapm,
- 	struct snd_soc_dapm_widget *src, struct snd_soc_dapm_widget *dest,
-@@ -619,7 +574,7 @@ static int dapm_connect_mixer(struct snd_soc_dapm_context *dapm,
- 			list_add(&path->list_sink, &dest->sources);
- 			list_add(&path->list_source, &src->sinks);
- 			path->name = dest->kcontrol_news[i].name;
--			dapm_set_path_status(dest, path, i);
-+			dapm_set_mixer_path_status(dest, path, i);
- 			return 0;
- 		}
- 	}
--- 
-1.8.0
+> +	/*
+> +	 * Packet structure: mm nn oo (pp)
+> +	 *	mm: payload length
+> +	 *	nn: MIDI command or note
+> +	 *	oo: note or velocity
+> +	 *	pp: velocity
+
+The device often sends data as single-byte packets, so the structure
+actually is "length data...".
+
+> +	/* copy the "set LED" command bytes */
+> +	memcpy(bcd2k->midi_out_buf, device_cmd_prefix,
+> +		sizeof(device_cmd_prefix));
+
+This is also used for data request and input selection, so it's not
+"set LED" but just "MIDI output".
+
+> +static void bcd2000_input_complete(struct urb *urb)
+> +{
+> +	if (urb->status) {
+> +		dev_warn(dev, PREFIX "input urb->status: %i\n", urb->status);
+> +		return;
+> +	}
+
+This will stop the input even on transient errors.
+
+> +	/* acknowledge received packet */
+> +	ret = usb_submit_urb(bcd2k->midi_in_urb, GFP_ATOMIC);
+> +	if (ret < 0)
+> +		dev_err(dev, "unable to submit urb. OOM!?\n");
+
+Don't guess, just show ret.  :)
+
+> +	strcpy(card->driver, DEVICE_NAME);
+> +	strcpy(card->shortname, DEVICE_SHORTNAME);
+> +	usb_make_path(bcd2k->dev, usb_path, sizeof(usb_path));
+> +	snprintf(bcd2k->card->longname, sizeof(bcd2k->card->longname),
+> +			DEVICE_NAME ", at %s",
+> +			usb_path);
+
+$ cat /proc/asound/cards
+...
+18 [bcd2000        ]: Behringer BCD200bcd2000 - bcd2000
+                      Behringer BCD2000, at usb-0000:00:13.1-3
+
+The driver name just identifies the driver, it does not need the vendor
+name.  (And it should not overflow its buffer.)
+
+The short name is shown to the user in many places, so it should be
+properly capitalized.
+
+The long name does not need the comma.
+
+> +	dev_info(&bcd2k->dev->dev, PREFIX "%s", bcd2k->card->longname);
+
+What use does this message have in the log?
+
+
+Regards,
+Clemens
