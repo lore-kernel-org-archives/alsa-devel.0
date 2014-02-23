@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 040/102] ASoC: stl5000: Use
+Subject: Re: [PATCH 046/102] ASoC: uda1380: Use
 	SOC_ENUM_SINGLE_DECL()
-Date: Sun, 23 Feb 2014 11:21:30 +0900
-Message-ID: <20140223022130.GF25940@sirena.org.uk>
+Date: Sun, 23 Feb 2014 11:31:35 +0900
+Message-ID: <20140223023135.GL25940@sirena.org.uk>
 References: <1392723517-12772-2-git-send-email-tiwai@suse.de>
- <1392723517-12772-13-git-send-email-tiwai@suse.de>
+ <1392723517-12772-19-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4607049443435817929=="
+Content-Type: multipart/mixed; boundary="===============7867125447372433941=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B0A0265051
- for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 03:31:48 +0100 (CET)
-In-Reply-To: <1392723517-12772-13-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id F4175265055
+ for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 03:31:55 +0100 (CET)
+In-Reply-To: <1392723517-12772-19-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,50 +27,51 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4607049443435817929==
+--===============7867125447372433941==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TUvp6TiFcfhGC84w"
+	protocol="application/pgp-signature"; boundary="FC52J0nKTzya17Ed"
 Content-Disposition: inline
 
 
---TUvp6TiFcfhGC84w
+--FC52J0nKTzya17Ed
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 18, 2014 at 12:37:56PM +0100, Takashi Iwai wrote:
-> Just replace with the helper macro.  No functional change at all.
+On Tue, Feb 18, 2014 at 12:38:02PM +0100, Takashi Iwai wrote:
+> Just replace with the helper macro.
+> Also, use ARRAY_SIZE() in some ASOC_ENUM_SINGLE() lines.
 
 Applied, thanks.
 
---TUvp6TiFcfhGC84w
+--FC52J0nKTzya17Ed
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTCVsnAAoJELSic+t+oim9iggP/1AgkmDnKzkukCokpmyHAmOd
-MlStQqgtc0guKSoHekzemiQ9U8lDiEO42DnAtwMYzRju9SmtF1N6iMdRQFigjcd5
-yrDOi8Y2q4n8+TAsYeguvI+vFM3jpPNK8dgAuvWkF/yI3+BCX5q/bl+RrkcCxLau
-/67T8FO02NMTrYcQZ9cNsY2AiPrAKNHeYC7hyR1iKeiygdlxIZYz7kAfIX8BxCYK
-7sxKf5cM+gyP23F1DndNRtypkgJAQ3o63Ncm8qSLgxDE0qrxm/SzjEoALWbjLKdj
-/Tjdp156wUhnsaU3qvv7z7Pxz/GqFnriMPtKtT2P4jOcZUvUznfDdVHDquX/zZq0
-vPSsty2erdrtRDEC/gTlMw2pJMBUmbe0LEMh87ytFcZR192VRXhAg7r6zBpGqisR
-dnUJKhh8VfVYVFOLPyE1lo6jTWluoqrkOjdbW2hYfqzv4jez47ML2UgsfDu9yJjD
-dIedtvN/GDLb7KIdyX69OAzBV8u+fWe54b3MmGFLLUQxu6mqHxcciZEyzU6GnIEl
-5CSh8Rl/MJZO35hsl8k26ymCaSTms1lLdZkXwEMX8A9ko6mRclUcDHGlylZdVMsP
-stF2Zkxu3YLy6NVtfKuttT0igTQFS29AKraMetmUofPjjeXRNGHbFWdJdG9dLW6M
-Db/l5u476/JomTTY+mJ2
-=QpH2
+iQIcBAEBAgAGBQJTCV2DAAoJELSic+t+oim98eUP/2AiwgGuPMRtFsRiz5lhEUqQ
+mTkCkd8/V6BlwG4M08iPEJD+VrHLoupImmvBDpPWIT5/GcrcQCRlBaYWPS4b8EkF
+RATtr+bs/yixNTa9G9Isa2hQQscJHcTSYZ2zBSThOuVaWbRAicREJzGNHUoZ+p5v
+yfZReXhmWLa3j2U2llYMMRkPt4mlrl+/OCxtgerxbmfPnzG1NXOnKHzhsiqeWjkA
+29Fuunb/5C4A/q3UuS5dG+IOffsPpVO6Ep9yWsVqtGmuc977SaG3QUTF9aDHfyq3
+rgbx8ALhV5hNO1SVZ283kj7/PtlKKMzuuFRGQXiISrWrSjLbqJKBGgxdTXIQJLfO
+ZVukaPyqwZTm8AWeBgZU8mPqtf8JiF1VXWIizVtMsmIpantgAZ4eXpJH5OsEUAWK
+KtBNB0ZKh0BJL0KHDLJwTQnefcyDdH4CqbeZx4K5YXu/k71OBowICnN6Aa698Nxq
+7fBN1s18t/2NKr1K+TzHHG/Na0XSyLl14RHcxUm5q1YmkNokZdk7ODPj3h3695tg
+eMwTOVkN/SLZSQ3Qtk0j3meQkt4YpHX1CeFOYYWWTzt6V7+XfdeLZPiF6bnf5wVs
+W29I/Oaof60GMvHalO822/Jb2q8A1ULyoq6kxktCVrHJZIOBieZxcRDVj9MabGdL
+SXY3mXqFYbNudbmhR5mP
+=q1A0
 -----END PGP SIGNATURE-----
 
---TUvp6TiFcfhGC84w--
+--FC52J0nKTzya17Ed--
 
---===============4607049443435817929==
+--===============7867125447372433941==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4607049443435817929==--
+--===============7867125447372433941==--
