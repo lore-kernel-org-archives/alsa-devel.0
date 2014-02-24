@@ -1,101 +1,65 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH v6] MIDI driver for Behringer BCD2000 USB
- device
-Date: Sun, 23 Feb 2014 21:24:22 +0100
-Message-ID: <530A58F6.7030700@ladisch.de>
-References: <1392909089-6242-1-git-send-email-dev@kicherer.org>
+From: "Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org" <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Subject: RE: [PATCH 1/4] ASoC: simple-card: Fix device node locks
+Date: Mon, 24 Feb 2014 02:17:00 +0000
+Message-ID: <23e531e0edb34aa9b84799e558abaf26@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <cover.1392995566.git.moinejf@free.fr>
+ <4dca81f45b67a4dcb21271e57409ba114c3b59cb.1392995566.git.moinejf@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id F07EF2651D1
- for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 21:24:54 +0100 (CET)
-In-Reply-To: <1392909089-6242-1-git-send-email-dev@kicherer.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mario Kicherer <dev@kicherer.org>
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <4dca81f45b67a4dcb21271e57409ba114c3b59cb.1392995566.git.moinejf-GANU6spQydw@public.gmane.org>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mario Kicherer wrote:
-> +static unsigned char bcd2000_init_sequence[] = {
-> +	0x07, 0x00, 0x00, 0x00, 0x78, 0x48, 0x1c, 0x81,
-> +	0xc4, 0x00, 0x00, 0x00, 0x5e, 0x53, 0x4a, 0xf7,
-> +	0x18, 0xfa, 0x11, 0xff, 0x6c, 0xf3, 0x90, 0xff,
-> +	0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-> +	0x18, 0xfa, 0x11, 0xff, 0x14, 0x00, 0x00, 0x00,
-> +	0x00, 0x00, 0x00, 0x00, 0xf2, 0x34, 0x4a, 0xf7,
-> +	0x18, 0xfa, 0x11, 0xff
-> +};
+> @@ -169,22 +164,26 @@ static int asoc_simple_card_parse_of(struct device_node
+> *node,
+>  	/* CPU sub-node */
+>  	ret = -EINVAL;
+>  	np = of_get_child_by_name(node, "simple-audio-card,cpu");
+> -	if (np)
+> +	if (np) {
+>  		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
+>  						  &priv->cpu_dai,
+>  						  &dai_link->cpu_of_node,
+>  						  &dai_link->cpu_dai_name);
+> +		of_node_put(np);
 
-I wonder how much of this is the actual init sequence, and how much is
-random garbage.  :-)
+Does the of_node_put(np) is really needed here ?
 
-> +	/*
-> +	 * Packet structure: mm nn oo (pp)
-> +	 *	mm: payload length
-> +	 *	nn: MIDI command or note
-> +	 *	oo: note or velocity
-> +	 *	pp: velocity
 
-The device often sends data as single-byte packets, so the structure
-actually is "length data...".
-
-> +	/* copy the "set LED" command bytes */
-> +	memcpy(bcd2k->midi_out_buf, device_cmd_prefix,
-> +		sizeof(device_cmd_prefix));
-
-This is also used for data request and input selection, so it's not
-"set LED" but just "MIDI output".
-
-> +static void bcd2000_input_complete(struct urb *urb)
-> +{
-> +	if (urb->status) {
-> +		dev_warn(dev, PREFIX "input urb->status: %i\n", urb->status);
-> +		return;
 > +	}
+>  	if (ret < 0)
+>  		return ret;
+> 
+>  	/* CODEC sub-node */
+>  	ret = -EINVAL;
+>  	np = of_get_child_by_name(node, "simple-audio-card,codec");
+> -	if (np)
+> +	if (np) {
+>  		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
+>  						  &priv->codec_dai,
+>  						  &dai_link->codec_of_node,
+>  						  &dai_link->codec_dai_name);
+> +		of_node_put(np);
 
-This will stop the input even on transient errors.
+The same here...
 
-> +	/* acknowledge received packet */
-> +	ret = usb_submit_urb(bcd2k->midi_in_urb, GFP_ATOMIC);
-> +	if (ret < 0)
-> +		dev_err(dev, "unable to submit urb. OOM!?\n");
+> +	}
+>  	if (ret < 0)
+>  		return ret;
+> 
 
-Don't guess, just show ret.  :)
+Thanks,
 
-> +	strcpy(card->driver, DEVICE_NAME);
-> +	strcpy(card->shortname, DEVICE_SHORTNAME);
-> +	usb_make_path(bcd2k->dev, usb_path, sizeof(usb_path));
-> +	snprintf(bcd2k->card->longname, sizeof(bcd2k->card->longname),
-> +			DEVICE_NAME ", at %s",
-> +			usb_path);
+--
+Best Regards,
+Xiubo
 
-$ cat /proc/asound/cards
-...
-18 [bcd2000        ]: Behringer BCD200bcd2000 - bcd2000
-                      Behringer BCD2000, at usb-0000:00:13.1-3
-
-The driver name just identifies the driver, it does not need the vendor
-name.  (And it should not overflow its buffer.)
-
-The short name is shown to the user in many places, so it should be
-properly capitalized.
-
-The long name does not need the comma.
-
-> +	dev_info(&bcd2k->dev->dev, PREFIX "%s", bcd2k->card->longname);
-
-What use does this message have in the log?
-
-
-Regards,
-Clemens
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
