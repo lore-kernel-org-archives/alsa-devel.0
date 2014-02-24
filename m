@@ -1,18 +1,19 @@
-From: Mario Kicherer <dev@kicherer.org>
-Subject: Re: [PATCH v6] MIDI driver for Behringer BCD2000 USB
- device
-Date: Mon, 24 Feb 2014 21:05:34 +0100
-Message-ID: <530BA60E.9000408@kicherer.org>
-References: <1392909089-6242-1-git-send-email-dev@kicherer.org>
- <530A58F6.7030700@ladisch.de>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH 3/6] ASoC: Intel: Add Haswell and Broadwell
+ PCM platform driver
+Date: Mon, 24 Feb 2014 20:07:12 +0000
+Message-ID: <1393272432.2323.72.camel@loki>
+References: <1392932927-9725-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ <1392932927-9725-3-git-send-email-liam.r.girdwood@linux.intel.com>
+ <s5hsircx6tq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zeus06.de (www.zeus06.de [194.117.254.36])
- by alsa0.perex.cz (Postfix) with ESMTP id D6E6F26527F
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 21:05:34 +0100 (CET)
-In-Reply-To: <530A58F6.7030700@ladisch.de>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8227B261ADF
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 21:09:22 +0100 (CET)
+In-Reply-To: <s5hsircx6tq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 23.02.2014 21:24, Clemens Ladisch wrote:
-> I wonder how much of this is the actual init sequence, and how much is
-> random garbage.  :-)
+On Fri, 2014-02-21 at 08:28 +0100, Takashi Iwai wrote:
+> At Thu, 20 Feb 2014 21:48:44 +0000,
+> Liam Girdwood wrote:
+> > +/* TLV used by both global and stream volumes */
+> > +static const DECLARE_TLV_DB_SCALE(hsw_vol_tlv, -9000, 300, 1);
+> > +
+> > +/* System Pin has no volume control */
+> > +static const struct snd_kcontrol_new hsw_volume_controls[] = {
+> > +	/* Global DSP volume */
+> > +	SOC_DOUBLE_EXT_TLV("Master Playback Volume", 0, 0, 8,
+> > +		ARRAY_SIZE(volume_map) -1, 0,
+> > +		hsw_volume_get, hsw_volume_put, hsw_vol_tlv),
+> > +	/* Offload 0 volume */
+> > +	SOC_DOUBLE_EXT_TLV("Media0 Playback Volume", 1, 0, 8,
+> > +		ARRAY_SIZE(volume_map), 0,
+> > +		hsw_stream_volume_get, hsw_stream_volume_put, hsw_vol_tlv),
+> 
+> Why -1 is for Master and not for others although they use the same
+> TLV?
 
-Me too, but I want to make sure the module works before I start 
-experimenting and risk modifying/damaging my device. Some bytes in
-between stay the same, some seem to change randomly everytime I plug in
-the device.
+Iirc, one could be gain and the other attenuation. Let me double check.
 
-> The device often sends data as single-byte packets, so the structure
-> actually is "length data...".
+> 
+> 
+> > +/* Create DMA buffer page table for DSP */
+> > +static int create_adsp_page_table(struct hsw_priv_data *pdata,
+> > +	struct snd_soc_pcm_runtime *rtd,
+> > +	unsigned char *dma_area, size_t size, int pcm, int stream)
+> > +{
+> > +	int i, pages;
+> > +
+> > +	if (size % PAGE_SIZE)
+> > +		pages = (size / PAGE_SIZE) + 1;
+> > +	else
+> > +		pages = size / PAGE_SIZE;
+> > +
+> > +	dev_dbg(rtd->dev, "generating page table for %p size 0x%zu pages %d\n",
+> > +		dma_area, size, pages);
+> > +
+> > +	for (i = 0; i < pages; i++) {
+> > +		u32 idx = (((i << 2) + i)) >> 1;
+> > +		u32 pfn = (virt_to_phys(dma_area + i * PAGE_SIZE)) >> PAGE_SHIFT;
+> 
+> virt_to_phys() is bad, pretty unportable.  And, this implementation
+> doesn't use SG-buffer although the hardware can it obviously.
+> 
+> For managing SG-buffer, just use SNDRV_DMA_TPE_DEV_SG for
+> preallocation, and change the page setup code like:
+> 
+> 	struct snd_dma_buffer *dmab = snd_pcm_get_dma_buf(substream)
+> 
+> 	....
+> 	pages = snd_sgbuf_aligned_pages(size);
+> 	for (i = 0; i < pages; i++) {
+> 		u32 idx = (((i << 2) + i)) >> 1;
+> 		u32 pfn = snd_sgbuf_get_addr(dmab, i * PAGE_SIZE) >> PAGE_SHIFT;
+> 
+> The only other thing to change is to pass snd_pcm_sgbuf_ops_page to
+> snd_pcm_ops.page.  That's all.
 
-Yeah, it's a bit misleading here. I'll change this part.
+Thanks, I wasn't aware these helpers existed. Will fix.
 
->> +static void bcd2000_input_complete(struct urb *urb)
->> +{
->> +	if (urb->status) {
->> +		dev_warn(dev, PREFIX "input urb->status: %i\n", urb->status);
->> +		return;
->> +	}
->
-> This will stop the input even on transient errors.
-
-Hm, so, it is important to send the "acknowledge" urb afterwards
-nonetheless?
-
-> $ cat /proc/asound/cards
-> ...
-> 18 [bcd2000        ]: Behringer BCD200bcd2000 - bcd2000
->                        Behringer BCD2000, at usb-0000:00:13.1-3
->
-> The driver name just identifies the driver, it does not need the vendor
-> name.  (And it should not overflow its buffer.)
->
-> The short name is shown to the user in many places, so it should be
-> properly capitalized.
->
-> The long name does not need the comma.
-
-I removed the macros and just placed the names in there directly as
-that's the only place they're used anyway.
-
-Do you actually own a BCD2000?
-
->> +	dev_info(&bcd2k->dev->dev, PREFIX "%s", bcd2k->card->longname);
->
-> What use does this message have in the log?
-
-I saw this in another driver and thought this is common practice. I'll
-remove it then.
-
-Thank you for your comments!
-Mario
+Liam
