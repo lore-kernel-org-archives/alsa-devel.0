@@ -1,18 +1,17 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 1/6] ASoC: Intel: Add support for
- Haswell/Broadwell DSP
-Date: Mon, 24 Feb 2014 20:09:52 +0000
-Message-ID: <1393272592.2323.74.camel@loki>
-References: <1392932927-9725-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <20140221050121.GA25940@sirena.org.uk> <53074F34.9090301@linux.intel.com>
+Subject: Re: [PATCH 0/7] ASoC: Intel: Add support for Baytrail
+	SST DSP
+Date: Mon, 24 Feb 2014 20:16:01 +0000
+Message-ID: <1393272961.2323.75.camel@loki>
+References: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B15E26550D
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 21:10:56 +0100 (CET)
-In-Reply-To: <53074F34.9090301@linux.intel.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 577DC2654EC
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 21:16:31 +0100 (CET)
+In-Reply-To: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,24 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2014-02-21 at 15:05 +0200, Jarkko Nikula wrote:
-> Hi
+On Mon, 2014-02-24 at 17:26 +0200, Jarkko Nikula wrote:
+> This set adds support for Baytrail SST DSP with RT5640 based machine
+> driver. Design is quite similar and is actually inherited from Intel
+> Haswell SST DSP drivers that were posted recently. Reason for another
+> implementation is that there are more differences than similarities
+> between Haswell and Baytrail.
 > 
-> On 02/21/2014 07:01 AM, Mark Brown wrote:
-> > On Thu, Feb 20, 2014 at 09:48:42PM +0000, Liam Girdwood wrote:
-> >> Add support for low level differentiation functions for Haswell and Broadwell
-> >> SST DSPs. This includes suppoprt for DSP boot and reset, DSP firmware module
-> >> parsing and DSP memory block map initialisation.
-> > Applied, thanks.  Some terribly minor things below:
-> This patch appears to be missing from the tree. Can actually create a 
-> build error after commits
-> 5207ab6b614e ("ASoC: Intel: Add build support for Haswell ADSP") and 
-> 6edbf73e03fd ("ASoC: Intel: Add Haswell Machine support").
+> First difference comes from the SHIM registers that are 32-bit on
+> Haswell and 64-bit on Baytrail. Also memory map and message mailbox is
+> different. Second difference is message passing and message headers
+> between host and SST DSP. For instance the DSP notifies the host using
+> different SHIM registers and bits than on Haswell.
+> 
+> Biggest difference comes from the DSP firmware. It has different IPC
+> messages, stream setup and how DMA pointer is tracked. Currently
+> firmware has less features than Haswell DSP firmware and it doesn't
+> support compress offload and volume controls support.
+> 
+> The RT5640 based machine driver is for our customer reference boards
+> but at quick test it appears to work on Asus T100 too. Note currently
+> the SST is the I2S master on this machine driver and codec is set to
+> use I2C BCLK as it's input clock.
+> 
+> Jarkko Nikula (7):
+>   ASoC: Intel: Add Baytrail SST ID and Baytrail specific register bits
+>   ASoC: Intel: Add Intel Baytrail SST DSP support
+>   ASoC: Intel: Add Intel Baytrail SST DSP IPC support
+>   ASoC: Intel: Add Intel Baytrail SST PCM platform driver
+>   ASoC: Intel: Add machine driver for Baytrail SST with RT5640 codec
+>   ASoC: Intel: Add Baytrail SST and byt-rt5640 machine driver probing
+>   ASoC: Intel: Add build support for Baytrail SST
 > 
 
-Just did a remote update and I can see it now :)
+All 
 
-Liam
+Acked-by: Liam Girdwood <liam.r.girdwood@intel.com>
