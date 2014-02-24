@@ -1,150 +1,57 @@
-From: Nikesh@vger.kernel.org, Oswal@vger.kernel.org
-Subject: [PATCH] ASOC: dapm: add param_fixup callback
-Date: Mon, 24 Feb 2014 13:54:18 +0000
-Message-ID: <1393250058-18430-1-git-send-email-Nikesh.Oswal@wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, nikesh <Nikesh.Oswal@wolfsonmicro.com>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Subject: Re: [PATCH] ASoC: da732x: Mark DC offset control
+	registers volatile
+Date: Mon, 24 Feb 2014 13:57:53 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A03376BAD405D@SW-EX-MBX01.diasemi.com>
+References: <1393210853-32246-1-git-send-email-broonie@kernel.org>
+ <2E89032DDAA8B9408CB92943514A03376BAD3FC8@SW-EX-MBX01.diasemi.com>
+ <20140224124230.GF25940@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
+ [195.245.230.165])
+ by alsa0.perex.cz (Postfix) with ESMTP id F355726534B
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 14:57:55 +0100 (CET)
+In-Reply-To: <20140224124230.GF25940@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, "stable@vger.kernel.org" <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: nikesh <Nikesh.Oswal@wolfsonmicro.com>
+On Mon, 24 Feb 2014 12:43:51 +0000, Mark Brown wrote:
 
-dai-link params for codec-codec links were fixed.
-The fixed link between codec and another chip which
-may be another codec, baseband, bluetooth codec etc
-may require run time configuaration changes.
-This change provides an optional callback to modify
-these params.
+> > Having looked over the driver again, can you include the following
+> > registers as well:
+> 
+> > DA732X_REG_HPL
+> > DA732X_REG_HPR
+> 
+> I did notice those.  However they are a bit more fun since they have
+> some non-volatile fields in them which are also used for control.  I
+> *suspect* that a lot of the time it'll be possible to get away with just
+> caching the first read but it needs further study - often with these
+> things the basic offset is constant in a given system so the sign may
+> well be right all the time.  That's just a guess, though, and may not
+> actually hold at which point a bit more attention might be needed.
 
-Change-Id: Iad6ee3951bc4e8b8bc519c62642a2b4bcd949c18
-Signed-off-by: nikesh <Nikesh.Oswal@wolfsonmicro.com>
----
- include/sound/soc-dapm.h |    7 ++++---
- include/sound/soc.h      |    4 +++-
- sound/soc/soc-core.c     |    4 ++--
- sound/soc/soc-dapm.c     |   21 +++++++++++++++++----
- 4 files changed, 26 insertions(+), 10 deletions(-)
-
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 68d92e3..e3497ed 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -414,9 +414,10 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
- void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card);
- int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
--			 const struct snd_soc_pcm_stream *params,
-+			 struct snd_soc_pcm_stream *params,
- 			 struct snd_soc_dapm_widget *source,
--			 struct snd_soc_dapm_widget *sink);
-+			 struct snd_soc_dapm_widget *sink,
-+			 struct snd_soc_dai_link *dai_link);
- 
- /* dapm path setup */
- int snd_soc_dapm_new_widgets(struct snd_soc_card *card);
-@@ -561,7 +562,7 @@ struct snd_soc_dapm_widget {
- 
- 	void *priv;				/* widget specific data */
- 	struct regulator *regulator;		/* attached regulator */
--	const struct snd_soc_pcm_stream *params; /* params for dai links */
-+	struct snd_soc_pcm_stream *params; /* params for dai links */
- 
- 	/* dapm control */
- 	int reg;				/* negative reg = no direct dapm */
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 9a00147..401c911 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -875,7 +875,9 @@ struct snd_soc_dai_link {
- 	const struct device_node *platform_of_node;
- 	int be_id;	/* optional ID for machine driver BE identification */
- 
--	const struct snd_soc_pcm_stream *params;
-+	struct snd_soc_pcm_stream *params;
-+	/* optional params re-writing for dai links */
-+	int (*params_fixup)(struct snd_soc_dapm_widget *w, int event);
- 
- 	unsigned int dai_fmt;           /* format to set on init */
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index fe1df50..4f03e88 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1469,7 +1469,7 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
- 			capture_w = cpu_dai->capture_widget;
- 			if (play_w && capture_w) {
- 				ret = snd_soc_dapm_new_pcm(card, dai_link->params,
--						   capture_w, play_w);
-+						   capture_w, play_w, dai_link);
- 				if (ret != 0) {
- 					dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
- 						play_w->name, capture_w->name, ret);
-@@ -1481,7 +1481,7 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
- 			capture_w = codec_dai->capture_widget;
- 			if (play_w && capture_w) {
- 				ret = snd_soc_dapm_new_pcm(card, dai_link->params,
--						   capture_w, play_w);
-+						   capture_w, play_w, dai_link);
- 				if (ret != 0) {
- 					dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
- 						play_w->name, capture_w->name, ret);
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index dc8ff13..dc1ef8b 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3378,11 +3378,12 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- {
- 	struct snd_soc_dapm_path *source_p, *sink_p;
- 	struct snd_soc_dai *source, *sink;
--	const struct snd_soc_pcm_stream *config = w->params;
-+	struct snd_soc_pcm_stream *config = w->params;
-+	struct snd_soc_dai_link *dai_link = w->priv;
- 	struct snd_pcm_substream substream;
- 	struct snd_pcm_hw_params *params = NULL;
- 	u64 fmt;
--	int ret;
-+	int ret = 0;
- 
- 	if (WARN_ON(!config) ||
- 	    WARN_ON(list_empty(&w->sources) || list_empty(&w->sinks)))
-@@ -3402,6 +3403,16 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	source = source_p->source->priv;
- 	sink = sink_p->sink->priv;
- 
-+	if (dai_link && dai_link->params_fixup) {
-+		ret = dai_link->params_fixup(w, event);
-+		if (ret < 0) {
-+			dev_err(w->dapm->dev,
-+				"ASoC: params_fixup for dai link widget failed %d\n",
-+				ret);
-+			goto out;
-+		}
-+	}
-+
- 	/* Be a little careful as we don't want to overflow the mask array */
- 	if (config->formats) {
- 		fmt = ffs(config->formats) - 1;
-@@ -3483,9 +3494,10 @@ out:
- }
- 
- int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
--			 const struct snd_soc_pcm_stream *params,
-+			 struct snd_soc_pcm_stream *params,
- 			 struct snd_soc_dapm_widget *source,
--			 struct snd_soc_dapm_widget *sink)
-+			 struct snd_soc_dapm_widget *sink,
-+			 struct snd_soc_dai_link *dai_link)
- {
- 	struct snd_soc_dapm_route routes[2];
- 	struct snd_soc_dapm_widget template;
-@@ -3517,6 +3529,7 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 	}
- 
- 	w->params = params;
-+	w->priv = (void *)dai_link;
- 
- 	memset(&routes, 0, sizeof(routes));
- 
--- 
-1.7.9.5
+The field DA732X_HP_OUT_COMPO is the only volatile field for those two
+registers. Having looked at this some more, I believe the offset_cancellation
+need only be done at Codec initialisation, and doesn't need to be done every time
+the system resumes. Moving to a one time run may make dealing with this easier,
+if we're to do something clever. However, In terms of control, really only the
+MUTE, OUT_EN and OUT_HIZ_EN fields will be used with some frequency, in these
+registers, and generally they will be writes which will likely cause I2C traffic
+anyway. I'd be tempted to keep it simple and just make those registers volatile,
+then you know it will work as expected, at least for the time being until a
+better solution presents itself.
