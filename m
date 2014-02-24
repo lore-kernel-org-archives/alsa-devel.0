@@ -1,21 +1,18 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH] ASoC: da732x: Mark DC offset control
-	registers volatile
-Date: Mon, 24 Feb 2014 13:57:53 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A03376BAD405D@SW-EX-MBX01.diasemi.com>
-References: <1393210853-32246-1-git-send-email-broonie@kernel.org>
- <2E89032DDAA8B9408CB92943514A03376BAD3FC8@SW-EX-MBX01.diasemi.com>
- <20140224124230.GF25940@sirena.org.uk>
+From: =?ISO-8859-1?Q?Philippe_R=E9tornaz?= <philippe.retornaz@epfl.ch>
+Subject: Re: [PATCH 07/11] ASoC: mc13783: Use
+	SOC_ENUM_SINGLE_VIRT_DECL()
+Date: Mon, 24 Feb 2014 15:28:41 +0100
+Message-ID: <530B5719.8000507@epfl.ch>
+References: <1393168221-23018-1-git-send-email-lars@metafoo.de>
+ <1393168221-23018-8-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
- [195.245.230.165])
- by alsa0.perex.cz (Postfix) with ESMTP id F355726534B
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 14:57:55 +0100 (CET)
-In-Reply-To: <20140224124230.GF25940@sirena.org.uk>
-Content-Language: en-US
+Received: from smtp4.epfl.ch (smtp4.epfl.ch [128.178.224.219])
+ by alsa0.perex.cz (Postfix) with ESMTP id 176D326555A
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 15:28:44 +0100 (CET)
+In-Reply-To: <1393168221-23018-8-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, "stable@vger.kernel.org" <stable@vger.kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, Jerry Wong <jerry.wong@maximintegrated.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 24 Feb 2014 12:43:51 +0000, Mark Brown wrote:
+Le 23/02/2014 16:10, Lars-Peter Clausen a =E9crit :
+> For the upcoming consolidation for MUXs and virtual MUXs we need to mark =
+virtual
+> enums as such.
+>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-> > Having looked over the driver again, can you include the following
-> > registers as well:
-> 
-> > DA732X_REG_HPL
-> > DA732X_REG_HPR
-> 
-> I did notice those.  However they are a bit more fun since they have
-> some non-volatile fields in them which are also used for control.  I
-> *suspect* that a lot of the time it'll be possible to get away with just
-> caching the first read but it needs further study - often with these
-> things the basic offset is constant in a given system so the sign may
-> well be right all the time.  That's just a guess, though, and may not
-> actually hold at which point a bit more attention might be needed.
+Tested on mx31moboard, no regression.
 
-The field DA732X_HP_OUT_COMPO is the only volatile field for those two
-registers. Having looked at this some more, I believe the offset_cancellation
-need only be done at Codec initialisation, and doesn't need to be done every time
-the system resumes. Moving to a one time run may make dealing with this easier,
-if we're to do something clever. However, In terms of control, really only the
-MUTE, OUT_EN and OUT_HIZ_EN fields will be used with some frequency, in these
-registers, and generally they will be writes which will likely cause I2C traffic
-anyway. I'd be tempted to keep it simple and just make those registers volatile,
-then you know it will work as expected, at least for the time being until a
-better solution presents itself.
+Thanks,
+
+Philippe
+
+
+> ---
+>   sound/soc/codecs/mc13783.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
+> index c605036..ec89b8f 100644
+> --- a/sound/soc/codecs/mc13783.c
+> +++ b/sound/soc/codecs/mc13783.c
+> @@ -408,8 +408,7 @@ static const char * const adcl_enum_text[] =3D {
+>   	"MC1L", "RXINL",
+>   };
+>
+> -static SOC_ENUM_SINGLE_DECL(adcl_enum,
+> -			    0, 0, adcl_enum_text);
+> +static SOC_ENUM_SINGLE_VIRT_DECL(adcl_enum, adcl_enum_text);
+>
+>   static const struct snd_kcontrol_new left_input_mux =3D
+>   	SOC_DAPM_ENUM_VIRT("Route", adcl_enum);
+> @@ -418,8 +417,7 @@ static const char * const adcr_enum_text[] =3D {
+>   	"MC1R", "MC2", "RXINR", "TXIN",
+>   };
+>
+> -static SOC_ENUM_SINGLE_DECL(adcr_enum,
+> -			    0, 0, adcr_enum_text);
+> +static SOC_ENUM_SINGLE_VIRT_DECL(adcr_enum, adcr_enum_text);
+>
+>   static const struct snd_kcontrol_new right_input_mux =3D
+>   	SOC_DAPM_ENUM_VIRT("Route", adcr_enum);
+>
