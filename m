@@ -1,17 +1,18 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 0/7] ASoC: Intel: Add support for Baytrail
-	SST DSP
-Date: Mon, 24 Feb 2014 20:16:01 +0000
-Message-ID: <1393272961.2323.75.camel@loki>
-References: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH v6] MIDI driver for Behringer BCD2000 USB
+ device
+Date: Mon, 24 Feb 2014 21:39:11 +0100
+Message-ID: <530BADEF.5040806@ladisch.de>
+References: <1392909089-6242-1-git-send-email-dev@kicherer.org>
+ <530A58F6.7030700@ladisch.de> <530BA60E.9000408@kicherer.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 577DC2654EC
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 21:16:31 +0100 (CET)
-In-Reply-To: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id A54FA261ADC
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 21:39:42 +0100 (CET)
+In-Reply-To: <530BA60E.9000408@kicherer.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,43 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mario Kicherer <dev@kicherer.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2014-02-24 at 17:26 +0200, Jarkko Nikula wrote:
-> This set adds support for Baytrail SST DSP with RT5640 based machine
-> driver. Design is quite similar and is actually inherited from Intel
-> Haswell SST DSP drivers that were posted recently. Reason for another
-> implementation is that there are more differences than similarities
-> between Haswell and Baytrail.
-> 
-> First difference comes from the SHIM registers that are 32-bit on
-> Haswell and 64-bit on Baytrail. Also memory map and message mailbox is
-> different. Second difference is message passing and message headers
-> between host and SST DSP. For instance the DSP notifies the host using
-> different SHIM registers and bits than on Haswell.
-> 
-> Biggest difference comes from the DSP firmware. It has different IPC
-> messages, stream setup and how DMA pointer is tracked. Currently
-> firmware has less features than Haswell DSP firmware and it doesn't
-> support compress offload and volume controls support.
-> 
-> The RT5640 based machine driver is for our customer reference boards
-> but at quick test it appears to work on Asus T100 too. Note currently
-> the SST is the I2S master on this machine driver and codec is set to
-> use I2C BCLK as it's input clock.
-> 
-> Jarkko Nikula (7):
->   ASoC: Intel: Add Baytrail SST ID and Baytrail specific register bits
->   ASoC: Intel: Add Intel Baytrail SST DSP support
->   ASoC: Intel: Add Intel Baytrail SST DSP IPC support
->   ASoC: Intel: Add Intel Baytrail SST PCM platform driver
->   ASoC: Intel: Add machine driver for Baytrail SST with RT5640 codec
->   ASoC: Intel: Add Baytrail SST and byt-rt5640 machine driver probing
->   ASoC: Intel: Add build support for Baytrail SST
-> 
+Mario Kicherer wrote:
+> On 23.02.2014 21:24, Clemens Ladisch wrote:
+>>> +static void bcd2000_input_complete(struct urb *urb)
+>>> +{
+>>> +    if (urb->status) {
+>>> +        dev_warn(dev, PREFIX "input urb->status: %i\n", urb->status);
+>>> +        return;
+>>> +    }
+>>
+>> This will stop the input even on transient errors.
+>
+> Hm, so, it is important to send the "acknowledge" urb afterwards
+> nonetheless?
 
-All 
+This has nothing to do with acknowledging.  Once the completion callback
+was called, the URB is again owned by your driver, and nothing happens
+unless you submit it again.
 
-Acked-by: Liam Girdwood <liam.r.girdwood@intel.com>
+The only reason not to re-submit the URB is a permanent error (i.e., if
+the device has been unplugged).
+
+> Do you actually own a BCD2000?
+
+Yes.
+
+
+Regards,
+Clemens
