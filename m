@@ -1,16 +1,16 @@
 From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 4/7] ASoC: Intel: Add Intel Baytrail SST PCM
-	platform driver
-Date: Mon, 24 Feb 2014 17:26:59 +0200
-Message-ID: <1393255622-31365-5-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: [PATCH 5/7] ASoC: Intel: Add machine driver for
+	Baytrail SST with RT5640 codec
+Date: Mon, 24 Feb 2014 17:27:00 +0200
+Message-ID: <1393255622-31365-6-git-send-email-jarkko.nikula@linux.intel.com>
 References: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D328261A38
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 16:27:22 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D24AB265324
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 16:27:24 +0100 (CET)
 In-Reply-To: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,23 +25,22 @@ To: alsa-devel@alsa-project.org
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This adds the Baytrail SST DSP PCM platform driver. It registers itself with
-the ALSA SoC layer and uses Intel Baytrail SST DSP IPC for DSP control.
+Add machine driver for Baytrail SST DSP platform with RT5640 audio codec.
 
 Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 ---
- sound/soc/intel/sst-baytrail-pcm.c | 422 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 422 insertions(+)
- create mode 100644 sound/soc/intel/sst-baytrail-pcm.c
+ sound/soc/intel/byt-rt5640.c | 194 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 194 insertions(+)
+ create mode 100644 sound/soc/intel/byt-rt5640.c
 
-diff --git a/sound/soc/intel/sst-baytrail-pcm.c b/sound/soc/intel/sst-baytrail-pcm.c
+diff --git a/sound/soc/intel/byt-rt5640.c b/sound/soc/intel/byt-rt5640.c
 new file mode 100644
-index 000000000000..6d101f3813b4
+index 000000000000..038547b48b2d
 --- /dev/null
-+++ b/sound/soc/intel/sst-baytrail-pcm.c
-@@ -0,0 +1,422 @@
++++ b/sound/soc/intel/byt-rt5640.c
+@@ -0,0 +1,194 @@
 +/*
-+ * Intel Baytrail SST PCM Support
++ * Intel Baytrail SST RT5640 machine driver
 + * Copyright (c) 2014, Intel Corporation.
 + *
 + * This program is free software; you can redistribute it and/or modify it
@@ -54,413 +53,185 @@ index 000000000000..6d101f3813b4
 + * more details.
 + */
 +
++#include <linux/init.h>
 +#include <linux/module.h>
-+#include <linux/dma-mapping.h>
++#include <linux/platform_device.h>
++#include <linux/acpi.h>
++#include <linux/device.h>
 +#include <linux/slab.h>
-+#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
 +#include <sound/soc.h>
-+#include "sst-baytrail-ipc.h"
-+#include "sst-dsp-priv.h"
++#include <sound/jack.h>
++#include "../codecs/rt5640.h"
++
 +#include "sst-dsp.h"
 +
-+#define BYT_PCM_COUNT		2
-+
-+static const struct snd_pcm_hardware sst_byt_pcm_hardware = {
-+	.info			= SNDRV_PCM_INFO_MMAP |
-+				  SNDRV_PCM_INFO_MMAP_VALID |
-+				  SNDRV_PCM_INFO_INTERLEAVED |
-+				  SNDRV_PCM_INFO_PAUSE |
-+				  SNDRV_PCM_INFO_RESUME,
-+	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
-+				  SNDRV_PCM_FORMAT_S24_LE,
-+	.period_bytes_min	= 384,
-+	.period_bytes_max	= 48000,
-+	.periods_min		= 2,
-+	.periods_max		= 250,
-+	.buffer_bytes_max	= 96000,
++static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MIC("Int Mic", NULL),
++	SND_SOC_DAPM_SPK("Ext Spk", NULL),
 +};
 +
-+/* private data for each PCM DSP stream */
-+struct sst_byt_pcm_data {
-+	struct sst_byt_stream *stream;
-+	struct snd_pcm_substream *substream;
-+	struct mutex mutex;
++static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
++	{"IN2P", NULL, "Headset Mic"},
++	{"IN2N", NULL, "Headset Mic"},
++	{"DMIC1", NULL, "Int Mic"},
++	{"Headphone", NULL, "HPOL"},
++	{"Headphone", NULL, "HPOR"},
++	{"Ext Spk", NULL, "SPOLP"},
++	{"Ext Spk", NULL, "SPOLN"},
++	{"Ext Spk", NULL, "SPORP"},
++	{"Ext Spk", NULL, "SPORN"},
 +};
 +
-+/* private data for the driver */
-+struct sst_byt_priv_data {
-+	/* runtime DSP */
-+	struct sst_byt *byt;
-+
-+	/* DAI data */
-+	struct sst_byt_pcm_data pcm[BYT_PCM_COUNT];
++static const struct snd_kcontrol_new byt_rt5640_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Int Mic"),
++	SOC_DAPM_PIN_SWITCH("Ext Spk"),
 +};
 +
-+/* this may get called several times by oss emulation */
-+static int sst_byt_pcm_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params)
++static int byt_rt5640_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sst_byt_priv_data *pdata =
-+		snd_soc_platform_get_drvdata(rtd->platform);
-+	struct sst_byt_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(rtd);
-+	struct sst_byt *byt = pdata->byt;
-+	u32 rate, bits;
-+	u8 channels;
-+	int ret, playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
-+
-+	dev_dbg(rtd->dev, "PCM: hw_params, pcm_data %p\n", pcm_data);
-+
-+	ret = sst_byt_stream_type(byt, pcm_data->stream,
-+				  1, 1, !playback);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "failed to set stream format %d\n", ret);
-+		return ret;
-+	}
-+
-+	rate = params_rate(params);
-+	ret = sst_byt_stream_set_rate(byt, pcm_data->stream, rate);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "could not set rate %d\n", rate);
-+		return ret;
-+	}
-+
-+	bits = snd_pcm_format_width(params_format(params));
-+	ret = sst_byt_stream_set_bits(byt, pcm_data->stream, bits);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "could not set formats %d\n",
-+			params_rate(params));
-+		return ret;
-+	}
-+
-+	channels = (u8)(params_channels(params) & 0xF);
-+	ret = sst_byt_stream_set_channels(byt, pcm_data->stream, channels);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "could not set channels %d\n",
-+			params_rate(params));
-+		return ret;
-+	}
-+
-+	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
-+
-+	ret = sst_byt_stream_buffer(byt, pcm_data->stream,
-+				    substream->dma_buffer.addr,
-+				    params_buffer_bytes(params));
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "PCM: failed to set DMA buffer %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = sst_byt_stream_commit(byt, pcm_data->stream);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "PCM: failed stream commit %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sst_byt_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+
-+	dev_dbg(rtd->dev, "PCM: hw_free\n");
-+	snd_pcm_lib_free_pages(substream);
-+
-+	return 0;
-+}
-+
-+static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sst_byt_priv_data *pdata =
-+		snd_soc_platform_get_drvdata(rtd->platform);
-+	struct sst_byt_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(rtd);
-+	struct sst_byt *byt = pdata->byt;
-+
-+	dev_dbg(rtd->dev, "PCM: trigger %d\n", cmd);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		sst_byt_stream_start(byt, pcm_data->stream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		sst_byt_stream_resume(byt, pcm_data->stream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		sst_byt_stream_stop(byt, pcm_data->stream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		sst_byt_stream_pause(byt, pcm_data->stream);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static u32 byt_notify_pointer(struct sst_byt_stream *stream, void *data)
-+{
-+	struct sst_byt_pcm_data *pcm_data = data;
-+	struct snd_pcm_substream *substream = pcm_data->substream;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	u32 pos;
-+
-+	pos = frames_to_bytes(runtime,
-+			      (runtime->control->appl_ptr %
-+			       runtime->buffer_size));
-+
-+	dev_dbg(rtd->dev, "PCM: App pointer %d bytes\n", pos);
-+
-+	snd_pcm_period_elapsed(substream);
-+	return pos;
-+}
-+
-+static snd_pcm_uframes_t sst_byt_pcm_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct sst_byt_priv_data *pdata =
-+		snd_soc_platform_get_drvdata(rtd->platform);
-+	struct sst_byt_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(rtd);
-+	struct sst_byt *byt = pdata->byt;
-+	snd_pcm_uframes_t offset;
-+	int pos;
-+
-+	pos = sst_byt_get_dsp_position(byt, pcm_data->stream,
-+				       snd_pcm_lib_buffer_bytes(substream));
-+	offset = bytes_to_frames(runtime, pos);
-+
-+	dev_dbg(rtd->dev, "PCM: DMA pointer %zu bytes\n",
-+		frames_to_bytes(runtime, (u32)offset));
-+	return offset;
-+}
-+
-+static int sst_byt_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sst_byt_priv_data *pdata =
-+		snd_soc_platform_get_drvdata(rtd->platform);
-+	struct sst_byt_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(rtd);
-+	struct sst_byt *byt = pdata->byt;
-+
-+	dev_dbg(rtd->dev, "PCM: open\n");
-+
-+	pcm_data = &pdata->pcm[rtd->cpu_dai->id];
-+	mutex_lock(&pcm_data->mutex);
-+
-+	snd_soc_pcm_set_drvdata(rtd, pcm_data);
-+	pcm_data->substream = substream;
-+
-+	snd_soc_set_runtime_hwparams(substream, &sst_byt_pcm_hardware);
-+
-+	pcm_data->stream = sst_byt_stream_new(byt, rtd->cpu_dai->id + 1,
-+					      byt_notify_pointer, pcm_data);
-+	if (pcm_data->stream == NULL) {
-+		dev_err(rtd->dev, "failed to create stream\n");
-+		mutex_unlock(&pcm_data->mutex);
-+		return -EINVAL;
-+	}
-+
-+	mutex_unlock(&pcm_data->mutex);
-+	return 0;
-+}
-+
-+static int sst_byt_pcm_close(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sst_byt_priv_data *pdata =
-+		snd_soc_platform_get_drvdata(rtd->platform);
-+	struct sst_byt_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(rtd);
-+	struct sst_byt *byt = pdata->byt;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	unsigned int fmt;
 +	int ret;
 +
-+	dev_dbg(rtd->dev, "PCM: close\n");
++	fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++	      SND_SOC_DAIFMT_CBS_CFS;
 +
-+	mutex_lock(&pcm_data->mutex);
-+	ret = sst_byt_stream_free(byt, pcm_data->stream);
++	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
 +	if (ret < 0) {
-+		dev_dbg(rtd->dev, "Free stream fail\n");
-+		goto out;
++		dev_err(codec_dai->dev,
++			"can't set codec DAI configuration %d\n", ret);
++		return ret;
 +	}
-+	pcm_data->stream = NULL;
 +
-+out:
-+	mutex_unlock(&pcm_data->mutex);
++	ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_PLL1,
++				     params_rate(params) * 256,
++				     SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		dev_err(codec_dai->dev, "can't set codec clock %d\n", ret);
++		return ret;
++	}
++	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5640_PLL1_S_BCLK1,
++				  params_rate(params) * 64,
++				  params_rate(params) * 256);
++	if (ret < 0) {
++		dev_err(codec_dai->dev, "can't set codec pll: %d\n", ret);
++		return ret;
++	}
++	return 0;
++}
++
++static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
++{
++	int ret;
++	struct snd_soc_codec *codec = runtime->codec;
++	struct snd_soc_dapm_context *dapm = &codec->dapm;
++	struct snd_soc_card *card = runtime->card;
++
++	card->dapm.idle_bias_off = true;
++
++	ret = snd_soc_add_card_controls(card, byt_rt5640_controls,
++					ARRAY_SIZE(byt_rt5640_controls));
++	if (ret) {
++		dev_err(card->dev, "unable to add card controls\n");
++		return ret;
++	}
++
++	snd_soc_dapm_ignore_suspend(dapm, "HPOL");
++	snd_soc_dapm_ignore_suspend(dapm, "HPOR");
++
++	snd_soc_dapm_ignore_suspend(dapm, "SPOLP");
++	snd_soc_dapm_ignore_suspend(dapm, "SPOLN");
++	snd_soc_dapm_ignore_suspend(dapm, "SPORP");
++	snd_soc_dapm_ignore_suspend(dapm, "SPORN");
++
++	snd_soc_dapm_enable_pin(dapm, "Headset Mic");
++	snd_soc_dapm_enable_pin(dapm, "Headphone");
++	snd_soc_dapm_enable_pin(dapm, "Ext Spk");
++	snd_soc_dapm_enable_pin(dapm, "Int Mic");
++
++	snd_soc_dapm_sync(dapm);
 +	return ret;
 +}
 +
-+static int sst_byt_pcm_mmap(struct snd_pcm_substream *substream,
-+			    struct vm_area_struct *vma)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+
-+	dev_dbg(rtd->dev, "PCM: mmap\n");
-+	return snd_pcm_lib_default_mmap(substream, vma);
-+}
-+
-+static struct snd_pcm_ops sst_byt_pcm_ops = {
-+	.open		= sst_byt_pcm_open,
-+	.close		= sst_byt_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= sst_byt_pcm_hw_params,
-+	.hw_free	= sst_byt_pcm_hw_free,
-+	.trigger	= sst_byt_pcm_trigger,
-+	.pointer	= sst_byt_pcm_pointer,
-+	.mmap		= sst_byt_pcm_mmap,
++static struct snd_soc_ops byt_rt5640_ops = {
++	.hw_params = byt_rt5640_hw_params,
 +};
 +
-+static void sst_byt_pcm_free(struct snd_pcm *pcm)
-+{
-+	snd_pcm_lib_preallocate_free_for_all(pcm);
-+}
-+
-+static int sst_byt_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_pcm *pcm = rtd->pcm;
-+	size_t size;
-+	int ret = 0;
-+
-+	ret = dma_coerce_mask_and_coherent(rtd->card->dev, DMA_BIT_MASK(32));
-+	if (ret)
-+		return ret;
-+
-+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream ||
-+	    pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
-+		size = sst_byt_pcm_hardware.buffer_bytes_max;
-+		ret = snd_pcm_lib_preallocate_pages_for_all(pcm,
-+							    SNDRV_DMA_TYPE_DEV,
-+							    rtd->card->dev,
-+							    size, size);
-+		if (ret) {
-+			dev_err(rtd->dev, "dma buffer allocation failed %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_dai_driver byt_dais[] = {
++static struct snd_soc_dai_link byt_rt5640_dais[] = {
 +	{
-+		.name  = "Front-cpu-dai",
-+		.playback = {
-+			.stream_name = "System Playback",
-+			.channels_min = 2,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.formats = SNDRV_PCM_FMTBIT_S24_3LE |
-+				   SNDRV_PCM_FMTBIT_S16_LE,
-+		},
++		.name = "Baytrail Audio",
++		.stream_name = "Audio",
++		.cpu_dai_name = "Front-cpu-dai",
++		.codec_dai_name = "rt5640-aif1",
++		.codec_name = "i2c-10EC5640:00",
++		.platform_name = "baytrail-pcm-audio",
++		.init = byt_rt5640_init,
++		.ignore_suspend = 1,
++		.ops = &byt_rt5640_ops,
 +	},
 +	{
-+		.name  = "Mic1-cpu-dai",
-+		.capture = {
-+			.stream_name = "Analog Capture",
-+			.channels_min = 2,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		},
++		.name = "Baytrail Voice",
++		.stream_name = "Voice",
++		.cpu_dai_name = "Mic1-cpu-dai",
++		.codec_dai_name = "rt5640-aif1",
++		.codec_name = "i2c-10EC5640:00",
++		.platform_name = "baytrail-pcm-audio",
++		.init = NULL,
++		.ignore_suspend = 1,
++		.ops = &byt_rt5640_ops,
 +	},
 +};
 +
-+static int sst_byt_pcm_probe(struct snd_soc_platform *platform)
-+{
-+	struct sst_pdata *plat_data = dev_get_platdata(platform->dev);
-+	struct sst_byt_priv_data *priv_data;
-+	int i;
-+
-+	if (!plat_data)
-+		return -ENODEV;
-+
-+	priv_data = devm_kzalloc(platform->dev, sizeof(*priv_data),
-+				 GFP_KERNEL);
-+	priv_data->byt = plat_data->dsp;
-+	snd_soc_platform_set_drvdata(platform, priv_data);
-+
-+	for (i = 0; i < ARRAY_SIZE(byt_dais); i++)
-+		mutex_init(&priv_data->pcm[i].mutex);
-+
-+	return 0;
-+}
-+
-+static int sst_byt_pcm_remove(struct snd_soc_platform *platform)
-+{
-+	return 0;
-+}
-+
-+static struct snd_soc_platform_driver byt_soc_platform = {
-+	.probe		= sst_byt_pcm_probe,
-+	.remove		= sst_byt_pcm_remove,
-+	.ops		= &sst_byt_pcm_ops,
-+	.pcm_new	= sst_byt_pcm_new,
-+	.pcm_free	= sst_byt_pcm_free,
++static struct snd_soc_card byt_rt5640_card = {
++	.name = "byt-rt5640",
++	.dai_link = byt_rt5640_dais,
++	.num_links = ARRAY_SIZE(byt_rt5640_dais),
++	.dapm_widgets = byt_rt5640_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(byt_rt5640_widgets),
++	.dapm_routes = byt_rt5640_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(byt_rt5640_audio_map),
 +};
 +
-+static const struct snd_soc_component_driver byt_dai_component = {
-+	.name		= "byt-dai",
-+};
-+
-+static int sst_byt_pcm_dev_probe(struct platform_device *pdev)
++static int byt_rt5640_probe(struct platform_device *pdev)
 +{
-+	struct sst_pdata *sst_pdata = dev_get_platdata(&pdev->dev);
-+	int ret;
++	struct snd_soc_card *card = &byt_rt5640_card;
++	struct device *dev = &pdev->dev;
 +
-+	ret = sst_byt_dsp_init(&pdev->dev, sst_pdata);
-+	if (ret < 0)
-+		return -ENODEV;
-+
-+	ret = snd_soc_register_platform(&pdev->dev, &byt_soc_platform);
-+	if (ret < 0)
-+		goto err_plat;
-+
-+	ret = snd_soc_register_component(&pdev->dev, &byt_dai_component,
-+					 byt_dais, ARRAY_SIZE(byt_dais));
-+	if (ret < 0)
-+		goto err_comp;
-+
-+	return 0;
-+
-+err_comp:
-+	snd_soc_unregister_platform(&pdev->dev);
-+err_plat:
-+	sst_byt_dsp_free(&pdev->dev, sst_pdata);
-+	return ret;
++	card->dev = &pdev->dev;
++	dev_set_drvdata(dev, card);
++	return snd_soc_register_card(card);
 +}
 +
-+static int sst_byt_pcm_dev_remove(struct platform_device *pdev)
++static int byt_rt5640_remove(struct platform_device *pdev)
 +{
-+	struct sst_pdata *sst_pdata = dev_get_platdata(&pdev->dev);
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
 +
-+	snd_soc_unregister_platform(&pdev->dev);
-+	snd_soc_unregister_component(&pdev->dev);
-+	sst_byt_dsp_free(&pdev->dev, sst_pdata);
++	snd_soc_unregister_card(card);
 +
 +	return 0;
 +}
 +
-+static struct platform_driver sst_byt_pcm_driver = {
++static struct platform_driver byt_rt5640_audio = {
++	.probe = byt_rt5640_probe,
++	.remove = byt_rt5640_remove,
 +	.driver = {
-+		.name = "baytrail-pcm-audio",
++		.name = "byt-rt5640",
 +		.owner = THIS_MODULE,
 +	},
-+
-+	.probe = sst_byt_pcm_dev_probe,
-+	.remove = sst_byt_pcm_dev_remove,
 +};
-+module_platform_driver(sst_byt_pcm_driver);
++module_platform_driver(byt_rt5640_audio)
 +
-+MODULE_AUTHOR("Jarkko Nikula");
-+MODULE_DESCRIPTION("Baytrail PCM");
++MODULE_DESCRIPTION("ASoC Intel(R) Baytrail Machine driver");
++MODULE_AUTHOR("Omair Md Abdullah, Jarkko Nikula");
 +MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:baytrail-pcm-audio");
++MODULE_ALIAS("platform:byt-rt5640");
 -- 
 1.8.5.3
