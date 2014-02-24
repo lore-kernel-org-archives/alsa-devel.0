@@ -1,88 +1,68 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 7/7] ASoC: Intel: Add build support for
-	Baytrail SST
-Date: Mon, 24 Feb 2014 17:27:02 +0200
-Message-ID: <1393255622-31365-8-git-send-email-jarkko.nikula@linux.intel.com>
-References: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: "Austin, Brian" <Brian.Austin@cirrus.com>
+Subject: Re: [PATCH] ASoC: cs42888: Add codec driver support
+Date: Mon, 24 Feb 2014 15:52:24 +0000
+Message-ID: <B745DBDD-8A64-4B98-819B-72F8AFF602DE@cirrus.com>
+References: <1393224929-7555-1-git-send-email-Guangyu.Chen@freescale.com>
+ <20140224113011.GE25940@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id F294C261ADC
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 16:27:28 +0100 (CET)
-In-Reply-To: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed;
+	boundary="Apple-Mail=_40263A3A-2A6A-4855-9209-EDC777C5FD00";
+	protocol="application/pgp-signature"; micalg=pgp-sha512
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <20140224113011.GE25940@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-doc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Nicolin Chen <Guangyu.Chen@freescale.com>, "Handrigan, Paul" <Paul.Handrigan@cirrus.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "rob@landley.net" <rob@landley.net>, Liam Girdwood <lgirdwood@gmail.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Enable build support for Baytrail SST DSP platform and byt-rt5640 machine
-drivers.
+--Apple-Mail=_40263A3A-2A6A-4855-9209-EDC777C5FD00
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=windows-1252
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
- sound/soc/intel/Kconfig  | 14 +++++++++++++-
- sound/soc/intel/Makefile |  5 +++++
- 2 files changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index ce5a6928e601..274af1639781 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -27,6 +27,9 @@ config SND_SOC_INTEL_SST_ACPI
- config SND_SOC_INTEL_HASWELL
- 	tristate
- 
-+config SND_SOC_INTEL_BAYTRAIL
-+	tristate
-+
- config SND_SOC_INTEL_HASWELL_MACH
-         tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
-         depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS
-@@ -36,4 +39,13 @@ config SND_SOC_INTEL_HASWELL_MACH
-           This adds support for the Lynxpoint Audio DSP on Intel(R) Haswell
- 	  Ultrabook platforms.
-           Say Y if you have such a device
--          If unsure select "N".
-\ No newline at end of file
-+          If unsure select "N".
-+
-+config SND_SOC_INTEL_BYT_RT5640_MACH
-+	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
-+	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS
-+	select SND_SOC_INTEL_BAYTRAIL
-+	select SND_SOC_RT5640
-+	help
-+	  This adds audio driver for Intel Baytrail platform based boards
-+	  with the RT5640 audio codec.
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index 1c188150accb..edeb79ae3dff 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -14,10 +14,15 @@ obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
- # Platform Support
- snd-soc-sst-haswell-pcm-objs := \
- 	sst-haswell-ipc.o sst-haswell-pcm.o sst-haswell-dsp.o
-+snd-soc-sst-baytrail-pcm-objs := \
-+	sst-baytrail-ipc.o sst-baytrail-pcm.o sst-baytrail-dsp.o
- 
- obj-$(CONFIG_SND_SOC_INTEL_HASWELL) += snd-soc-sst-haswell-pcm.o
-+obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL) += snd-soc-sst-baytrail-pcm.o
- 
- # Machine support
- snd-soc-sst-haswell-objs := haswell.o
-+snd-soc-sst-byt-rt5640-mach-objs := byt-rt5640.o
- 
- obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
-+obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
--- 
-1.8.5.3
+>=20
+>> +	/* Disable auto-mute */
+>> +	regmap_update_bits(cs42888->regmap, CS42888_TXCTL,
+>> +			   CS42888_TXCTL_AMUTE | =
+CS42888_TXCTL_DAC_SZC_MASK,
+>> +			   CS42888_TXCTL_DAC_SZC_SR);
+>=20
+> Does this interfere with the manual mute controls or is it a separate
+> thing?  If it plays nicely with the manual controls it's probably =
+better
+> to leave it enabled since it improves performance in some benchmarks
+> (that's why hardware tends to have the feature).
+
+Auto-Mute should be enabled by default.
+
+>=20
+>> +	if (!IS_ERR(cs42888->clk))
+>> +		clk_disable_unprepare(cs42888->clk);
+>=20
+> Does the device work without MCLK?
+Yes, MCLK is required. If you can=92t get the clock you should error =
+out.
+
+
+
+--Apple-Mail=_40263A3A-2A6A-4855-9209-EDC777C5FD00
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Message signed with OpenPGP using GPGMail
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - https://gpgtools.org
+
+iQEcBAEBCgAGBQJTC2q4AAoJEHdXZdGWfiO70PIIALSgC5o02guz257kMTsyIXyQ
+tT+onHYqqS6ogOZwowzXu18KkX4GqSE/8hrrBf+bBTgGKoo8+TTydpUGfs8pT66B
+ttHKs0t+zMml55NzZUVGrejO5+3qy5OTMql9Prv3jMkKpZeGLCIy0dA3gWtwJ0Rl
+8R/OL+ti3XtLofZWKUyO4jYNB1+Air0iTX5PBg/jBe4mmi1CUfxhI2xZtiKM8Ut6
+OiKn14p9nHiAeojDT3hlnHs1a6mc3wsuE8Hpgc1d2+3llyxgFOrazySsdlEN96x0
+0kr5BQJtczTPKl7FQr3CqkmPRC1iSk0KM+oKRYo3x8zIRIun4160mokgX0G0l5w=
+=XQjd
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_40263A3A-2A6A-4855-9209-EDC777C5FD00--
