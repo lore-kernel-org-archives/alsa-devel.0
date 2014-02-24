@@ -1,16 +1,16 @@
 From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 6/7] ASoC: Intel: Add Baytrail SST and
-	byt-rt5640 machine driver probing
-Date: Mon, 24 Feb 2014 17:27:01 +0200
-Message-ID: <1393255622-31365-7-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: [PATCH 7/7] ASoC: Intel: Add build support for
+	Baytrail SST
+Date: Mon, 24 Feb 2014 17:27:02 +0200
+Message-ID: <1393255622-31365-8-git-send-email-jarkko.nikula@linux.intel.com>
 References: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 23567265454
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 16:27:26 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id F294C261ADC
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 16:27:28 +0100 (CET)
 In-Reply-To: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,44 +25,64 @@ To: alsa-devel@alsa-project.org
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add Baytrail SST descriptor with the byt-rt5640 machine driver to sst-acpi
-loader.
+Enable build support for Baytrail SST DSP platform and byt-rt5640 machine
+drivers.
 
 Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 ---
- sound/soc/intel/sst-acpi.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ sound/soc/intel/Kconfig  | 14 +++++++++++++-
+ sound/soc/intel/Makefile |  5 +++++
+ 2 files changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/sst-acpi.c b/sound/soc/intel/sst-acpi.c
-index c7e36c9ee52f..0bb43169e146 100644
---- a/sound/soc/intel/sst-acpi.c
-+++ b/sound/soc/intel/sst-acpi.c
-@@ -243,9 +243,26 @@ static struct sst_acpi_desc sst_acpi_broadwell_desc = {
- 	.dma_size = SST_LPT_DSP_DMA_SIZE,
- };
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index ce5a6928e601..274af1639781 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -27,6 +27,9 @@ config SND_SOC_INTEL_SST_ACPI
+ config SND_SOC_INTEL_HASWELL
+ 	tristate
  
-+static struct sst_acpi_mach baytrail_machines[] = {
-+	{ "10EC5640", "byt-rt5640", "intel/fw_sst_0f28.bin-i2s_master" },
-+	{}
-+};
++config SND_SOC_INTEL_BAYTRAIL
++	tristate
 +
-+static struct sst_acpi_desc sst_acpi_baytrail_desc = {
-+	.drv_name = "baytrail-pcm-audio",
-+	.machines = baytrail_machines,
-+	.resindex_lpe_base = 0,
-+	.resindex_pcicfg_base = 1,
-+	.resindex_fw_base = 2,
-+	.irqindex_host_ipc = 5,
-+	.sst_id = SST_DEV_ID_BYT,
-+	.resindex_dma_base = -1,
-+};
+ config SND_SOC_INTEL_HASWELL_MACH
+         tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
+         depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS
+@@ -36,4 +39,13 @@ config SND_SOC_INTEL_HASWELL_MACH
+           This adds support for the Lynxpoint Audio DSP on Intel(R) Haswell
+ 	  Ultrabook platforms.
+           Say Y if you have such a device
+-          If unsure select "N".
+\ No newline at end of file
++          If unsure select "N".
 +
- static struct acpi_device_id sst_acpi_match[] = {
- 	{ "INT33C8", (unsigned long)&sst_acpi_haswell_desc },
- 	{ "INT3438", (unsigned long)&sst_acpi_broadwell_desc },
-+	{ "80860F28", (unsigned long)&sst_acpi_baytrail_desc },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, sst_acpi_match);
++config SND_SOC_INTEL_BYT_RT5640_MACH
++	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
++	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS
++	select SND_SOC_INTEL_BAYTRAIL
++	select SND_SOC_RT5640
++	help
++	  This adds audio driver for Intel Baytrail platform based boards
++	  with the RT5640 audio codec.
+diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
+index 1c188150accb..edeb79ae3dff 100644
+--- a/sound/soc/intel/Makefile
++++ b/sound/soc/intel/Makefile
+@@ -14,10 +14,15 @@ obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
+ # Platform Support
+ snd-soc-sst-haswell-pcm-objs := \
+ 	sst-haswell-ipc.o sst-haswell-pcm.o sst-haswell-dsp.o
++snd-soc-sst-baytrail-pcm-objs := \
++	sst-baytrail-ipc.o sst-baytrail-pcm.o sst-baytrail-dsp.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_HASWELL) += snd-soc-sst-haswell-pcm.o
++obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL) += snd-soc-sst-baytrail-pcm.o
+ 
+ # Machine support
+ snd-soc-sst-haswell-objs := haswell.o
++snd-soc-sst-byt-rt5640-mach-objs := byt-rt5640.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
++obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
 -- 
 1.8.5.3
