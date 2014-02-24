@@ -1,104 +1,70 @@
-From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: cs42888: Add codec driver support
-Date: Mon, 24 Feb 2014 18:54:09 +0100
-Message-ID: <530B8741.3010302@metafoo.de>
-References: <1393224929-7555-1-git-send-email-Guangyu.Chen@freescale.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH 1/6] ASoC: Intel: Add support for
+ Haswell/Broadwell DSP
+Date: Mon, 24 Feb 2014 19:47:21 +0000
+Message-ID: <1393271241.2323.57.camel@loki>
+References: <1392932927-9725-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ <20140221050121.GA25940@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1393224929-7555-1-git-send-email-Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Nicolin Chen <Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01D0B261ADF
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 20:47:25 +0100 (CET)
+In-Reply-To: <20140221050121.GA25940@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, 2014-02-21 at 14:01 +0900, Mark Brown wrote:
+> On Thu, Feb 20, 2014 at 09:48:42PM +0000, Liam Girdwood wrote:
+> > Add support for low level differentiation functions for Haswell and Broadwell
+> > SST DSPs. This includes suppoprt for DSP boot and reset, DSP firmware module
+> > parsing and DSP memory block map initialisation.
+> 
+> Applied, thanks.  Some terribly minor things below:
+> 
 
-Couple of trivial things.
+Sorry, been away a few days. Will get around to fixes over the next few
+days.
 
-On 02/24/2014 07:55 AM, Nicolin Chen wrote:
-[...]
-> +config SND_SOC_CS42888
-> +	tristate "Cirrus Logic CS42888 CODEC"
-> +	depends on I2C
+> > +u32 sst_shim32_read(void __iomem *addr, u32 offset)
+> > +{
+> > +	return readl(addr + offset);
+> > +}
+> > +EXPORT_SYMBOL_GPL(sst_shim32_read);
+> 
+> This lot all look like a regmap to me, though some extensions may be
+> needed for the 64 bit variants!
+> 
 
-should select REGMAP_I2C
+The SHIM is the register space that is used to configure the DSP and
+also for sending IPC messages. It's really just PCI register space that
+has some registers shared with the DSP. IIrc, there may be 2 shared
+registers out of about 8 in total, but the different cores may access
+them differently. Iirc, Vinod has a case where they needed to write then
+read a value for one of his cores.
 
-> +
-[...]
-> +#define CS42888_NUM_SUPPLIES 4
-> +static const char *cs42888_supply_names[CS42888_NUM_SUPPLIES] = {
+> > +struct sst_ops haswell_ops = {
+> > +	.reset = hsw_reset,
+> > +        .boot = hsw_boot,
+> > +	.write = sst_shim32_write,
+> 
+> Something appears funky with the indentation for .boot - tab/space
+> confusion?
 
-const char *const
+oops, will fix. 
 
-> +	"VA",
-> +	"VD",
-> +	"VLS",
-> +	"VLC",
-> +};
-> +
-> +static const char *cs42888_adc_single[] = { "Differential", "Single-Ended" };
+Thanks !
 
-const char * const
-
-> +static const char *cs42888_szc[] = { "Immediate Change", "Zero Cross",
-> +				     "Soft Ramp", "Soft Ramp on Zero Cross" };
-> +
-
-const char * constr
-
-> +static const struct soc_enum cs42888_enum[] = {
-> +	SOC_ENUM_SINGLE(CS42888_ADCCTL, 4, 2, cs42888_adc_single),
-> +	SOC_ENUM_SINGLE(CS42888_ADCCTL, 3, 2, cs42888_adc_single),
-> +	SOC_ENUM_SINGLE(CS42888_TXCTL, 5, 4, cs42888_szc),
-> +	SOC_ENUM_SINGLE(CS42888_TXCTL, 0, 4, cs42888_szc),
-> +};
-
-Usually it makes things a bit more clearer when you have a variable with a 
-unique name for each enum rather then putting them into one large array.
-
-> +
-[...]
-> +static struct cs42888_ratios cs42888_ratios[] = {
-
-const
-
-[...]
-> +static struct snd_soc_dai_ops cs42888_dai_ops = {
-
-const
-
-> +	.set_fmt	= cs42888_set_dai_fmt,
-> +	.set_sysclk	= cs42888_set_dai_sysclk,
-> +	.hw_params	= cs42888_hw_params,
-> +	.digital_mute	= cs42888_digital_mute,
-> +};
-> +
-[...]
-> +
-> +static struct reg_default cs42888_reg[] = {
-
-const
-[...]
-> +
-> +static struct snd_soc_codec_driver cs42888_driver = {
-
-const
-
-> +	.probe = cs42888_probe,
-> +	.idle_bias_off = true,
-> +
-> +	.controls = cs42888_snd_controls,
-> +	.num_controls = ARRAY_SIZE(cs42888_snd_controls),
-> +	.dapm_widgets = cs42888_dapm_widgets,
-> +	.num_dapm_widgets = ARRAY_SIZE(cs42888_dapm_widgets),
-> +	.dapm_routes = cs42888_dapm_routes,
-> +	.num_dapm_routes = ARRAY_SIZE(cs42888_dapm_routes),
-> +};
-> +
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Liam
