@@ -1,65 +1,65 @@
-From: "Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org" <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: RE: [PATCH 1/4] ASoC: simple-card: Fix device node locks
-Date: Mon, 24 Feb 2014 02:17:00 +0000
-Message-ID: <23e531e0edb34aa9b84799e558abaf26@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <cover.1392995566.git.moinejf@free.fr>
- <4dca81f45b67a4dcb21271e57409ba114c3b59cb.1392995566.git.moinejf@free.fr>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl: imx-pcm-fiq: Remove unneeded 'out'
+	label
+Date: Mon, 24 Feb 2014 00:20:43 -0300
+Message-ID: <1393212043-9002-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <4dca81f45b67a4dcb21271e57409ba114c3b59cb.1392995566.git.moinejf-GANU6spQydw@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yh0-f53.google.com (mail-yh0-f53.google.com
+ [209.85.213.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FE182651EB
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 04:21:00 +0100 (CET)
+Received: by mail-yh0-f53.google.com with SMTP id v1so4659999yhn.40
+ for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 19:20:59 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> @@ -169,22 +164,26 @@ static int asoc_simple_card_parse_of(struct device_node
-> *node,
->  	/* CPU sub-node */
->  	ret = -EINVAL;
->  	np = of_get_child_by_name(node, "simple-audio-card,cpu");
-> -	if (np)
-> +	if (np) {
->  		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
->  						  &priv->cpu_dai,
->  						  &dai_link->cpu_of_node,
->  						  &dai_link->cpu_dai_name);
-> +		of_node_put(np);
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Does the of_node_put(np) is really needed here ?
+Instead of jumping to the 'out' label, just return the error code immediately.
 
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/fsl/imx-pcm-fiq.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-> +	}
->  	if (ret < 0)
->  		return ret;
-> 
->  	/* CODEC sub-node */
->  	ret = -EINVAL;
->  	np = of_get_child_by_name(node, "simple-audio-card,codec");
-> -	if (np)
-> +	if (np) {
->  		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
->  						  &priv->codec_dai,
->  						  &dai_link->codec_of_node,
->  						  &dai_link->codec_dai_name);
-> +		of_node_put(np);
-
-The same here...
-
-> +	}
->  	if (ret < 0)
->  		return ret;
-> 
-
-Thanks,
-
---
-Best Regards,
-Xiubo
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
+index 6553202..7abf6a0 100644
+--- a/sound/soc/fsl/imx-pcm-fiq.c
++++ b/sound/soc/fsl/imx-pcm-fiq.c
+@@ -270,18 +270,17 @@ static int imx_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 		ret = imx_pcm_preallocate_dma_buffer(pcm,
+ 			SNDRV_PCM_STREAM_PLAYBACK);
+ 		if (ret)
+-			goto out;
++			return ret;
+ 	}
+ 
+ 	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+ 		ret = imx_pcm_preallocate_dma_buffer(pcm,
+ 			SNDRV_PCM_STREAM_CAPTURE);
+ 		if (ret)
+-			goto out;
++			return ret;
+ 	}
+ 
+-out:
+-	return ret;
++	return 0;
+ }
+ 
+ static int ssi_irq = 0;
+-- 
+1.8.1.2
