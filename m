@@ -1,18 +1,20 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: fsl: imx-pcm-fiq: Remove unneeded 'out'
-	label
-Date: Mon, 24 Feb 2014 00:20:43 -0300
-Message-ID: <1393212043-9002-1-git-send-email-festevam@gmail.com>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH 2/4] ASoC: simple-card: dynamically
+ allocate the DAI link array
+Date: Mon, 24 Feb 2014 03:32:02 +0000
+Message-ID: <397c6a465f424a3eb42ead8f1e55f7d9@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <cover.1392995566.git.moinejf@free.fr>
+ <41aa7354a6883f31afa60c21c2e14ecbb3bbb7e9.1392995566.git.moinejf@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f53.google.com (mail-yh0-f53.google.com
- [209.85.213.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 3FE182651EB
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 04:21:00 +0100 (CET)
-Received: by mail-yh0-f53.google.com with SMTP id v1so4659999yhn.40
- for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2014 19:20:59 -0800 (PST)
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0241.outbound.protection.outlook.com [207.46.163.241])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D4EA2651EB
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 04:32:06 +0100 (CET)
+In-Reply-To: <41aa7354a6883f31afa60c21c2e14ecbb3bbb7e9.1392995566.git.moinejf@free.fr>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,44 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>, Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Instead of jumping to the 'out' label, just return the error code immediately.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/fsl/imx-pcm-fiq.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+> @@ -20,7 +20,6 @@ struct simple_card_data {
+>  	unsigned int daifmt;
+>  	struct asoc_simple_dai cpu_dai;
+>  	struct asoc_simple_dai codec_dai;
+> -	struct snd_soc_dai_link snd_link;
+>  };
+> 
+>  static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
+> @@ -246,7 +245,9 @@ static int asoc_simple_card_probe(struct platform_device
+> *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	int ret;
+> 
+> -	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	priv = devm_kzalloc(dev,
+> +			sizeof(*priv) + sizeof(*dai_link),
 
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index 6553202..7abf6a0 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -270,18 +270,17 @@ static int imx_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 		ret = imx_pcm_preallocate_dma_buffer(pcm,
- 			SNDRV_PCM_STREAM_PLAYBACK);
- 		if (ret)
--			goto out;
-+			return ret;
- 	}
- 
- 	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
- 		ret = imx_pcm_preallocate_dma_buffer(pcm,
- 			SNDRV_PCM_STREAM_CAPTURE);
- 		if (ret)
--			goto out;
-+			return ret;
- 	}
- 
--out:
--	return ret;
-+	return 0;
- }
- 
- static int ssi_irq = 0;
--- 
-1.8.1.2
+This is okey for me.
+
+Well, how about splitting the *priv and *dai_link into two separated
+memory blocks? As we can get the dai-link pointer via priv->snd_card.dai_link
+in other places.
+
+IMHO, then the code will be much more simplifier and readable.
+
+Just for one suggestion.
+
+Thanks,
+
+--
+Best regards,
+Xiubo
+
+
+> +			GFP_KERNEL);
+>  	if (!priv)
+>  		return -ENOMEM;
+> 
+> @@ -255,7 +256,7 @@ static int asoc_simple_card_probe(struct platform_device
+> *pdev)
+>  	 */
+>  	priv->snd_card.owner = THIS_MODULE;
+>  	priv->snd_card.dev = dev;
+> -	dai_link = &priv->snd_link;
+> +	dai_link = (struct snd_soc_dai_link *) (priv + 1);
+>  	priv->snd_card.dai_link = dai_link;
+>  	priv->snd_card.num_links = 1;
+> 
+> --
+> 1.9.0
+> 
+> 
