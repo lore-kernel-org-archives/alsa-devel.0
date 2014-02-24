@@ -1,16 +1,16 @@
 From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 3/7] ASoC: Intel: Add Intel Baytrail SST DSP
-	IPC support
-Date: Mon, 24 Feb 2014 17:26:58 +0200
-Message-ID: <1393255622-31365-4-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: [PATCH 4/7] ASoC: Intel: Add Intel Baytrail SST PCM
+	platform driver
+Date: Mon, 24 Feb 2014 17:26:59 +0200
+Message-ID: <1393255622-31365-5-git-send-email-jarkko.nikula@linux.intel.com>
 References: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D48126527F
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 16:27:21 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D328261A38
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 16:27:22 +0100 (CET)
 In-Reply-To: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,25 +25,23 @@ To: alsa-devel@alsa-project.org
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for Baytrail SST DSP IPC. This provides mechanism to communicate
-with the DSP firmware.
+This adds the Baytrail SST DSP PCM platform driver. It registers itself with
+the ALSA SoC layer and uses Intel Baytrail SST DSP IPC for DSP control.
 
 Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 ---
- sound/soc/intel/sst-baytrail-ipc.c | 866 +++++++++++++++++++++++++++++++++++++
- sound/soc/intel/sst-baytrail-ipc.h |  69 +++
- 2 files changed, 935 insertions(+)
- create mode 100644 sound/soc/intel/sst-baytrail-ipc.c
- create mode 100644 sound/soc/intel/sst-baytrail-ipc.h
+ sound/soc/intel/sst-baytrail-pcm.c | 422 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 422 insertions(+)
+ create mode 100644 sound/soc/intel/sst-baytrail-pcm.c
 
-diff --git a/sound/soc/intel/sst-baytrail-ipc.c b/sound/soc/intel/sst-baytrail-ipc.c
+diff --git a/sound/soc/intel/sst-baytrail-pcm.c b/sound/soc/intel/sst-baytrail-pcm.c
 new file mode 100644
-index 000000000000..8c91a68b90bc
+index 000000000000..6d101f3813b4
 --- /dev/null
-+++ b/sound/soc/intel/sst-baytrail-ipc.c
-@@ -0,0 +1,866 @@
++++ b/sound/soc/intel/sst-baytrail-pcm.c
+@@ -0,0 +1,422 @@
 +/*
-+ * Intel Baytrail SST IPC Support
++ * Intel Baytrail SST PCM Support
 + * Copyright (c) 2014, Intel Corporation.
 + *
 + * This program is free software; you can redistribute it and/or modify it
@@ -56,932 +54,413 @@ index 000000000000..8c91a68b90bc
 + * more details.
 + */
 +
-+#include <linux/types.h>
-+#include <linux/kernel.h>
-+#include <linux/list.h>
-+#include <linux/device.h>
-+#include <linux/wait.h>
-+#include <linux/spinlock.h>
-+#include <linux/workqueue.h>
-+#include <linux/export.h>
++#include <linux/module.h>
++#include <linux/dma-mapping.h>
 +#include <linux/slab.h>
-+#include <linux/delay.h>
-+#include <linux/list.h>
-+#include <linux/platform_device.h>
-+#include <linux/kthread.h>
-+#include <linux/firmware.h>
-+#include <asm/div64.h>
-+
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
 +#include "sst-baytrail-ipc.h"
-+#include "sst-dsp.h"
 +#include "sst-dsp-priv.h"
++#include "sst-dsp.h"
 +
-+/* IPC message timeout */
-+#define IPC_TIMEOUT_MSECS	300
-+#define IPC_BOOT_MSECS		200
++#define BYT_PCM_COUNT		2
 +
-+#define IPC_EMPTY_LIST_SIZE	8
-+
-+/* IPC header bits */
-+#define IPC_HEADER_MSG_ID_MASK	0xff
-+#define IPC_HEADER_MSG_ID(x)	((x) & IPC_HEADER_MSG_ID_MASK)
-+#define IPC_HEADER_STR_ID_SHIFT	8
-+#define IPC_HEADER_STR_ID_MASK	0x1f
-+#define IPC_HEADER_STR_ID(x)	(((x) & 0x1f) << IPC_HEADER_STR_ID_SHIFT)
-+#define IPC_HEADER_LARGE_SHIFT	13
-+#define IPC_HEADER_LARGE(x)	(((x) & 0x1) << IPC_HEADER_LARGE_SHIFT)
-+#define IPC_HEADER_DATA_SHIFT	16
-+#define IPC_HEADER_DATA_MASK	0x3fff
-+#define IPC_HEADER_DATA(x)	(((x) & 0x3fff) << IPC_HEADER_DATA_SHIFT)
-+
-+/* mask for differentiating between notification and reply message */
-+#define IPC_NOTIFICATION	(0x1 << 7)
-+
-+/* I2L Stream config/control msgs */
-+#define IPC_IA_ALLOC_STREAM	0x20
-+#define IPC_IA_FREE_STREAM	0x21
-+#define IPC_IA_PAUSE_STREAM	0x24
-+#define IPC_IA_RESUME_STREAM	0x25
-+#define IPC_IA_DROP_STREAM	0x26
-+#define IPC_IA_START_STREAM	0x30
-+
-+/* notification messages */
-+#define IPC_IA_FW_INIT_CMPLT	0x81
-+#define IPC_SST_PERIOD_ELAPSED	0x97
-+
-+/* IPC messages between host and ADSP */
-+struct sst_byt_address_info {
-+	u32 addr;
-+	u32 size;
-+} __packed;
-+
-+struct sst_byt_str_type {
-+	u8 codec_type;
-+	u8 str_type;
-+	u8 operation;
-+	u8 protected_str;
-+	u8 time_slots;
-+	u8 reserved;
-+	u16 result;
-+} __packed;
-+
-+struct sst_byt_pcm_params {
-+	u8 num_chan;
-+	u8 pcm_wd_sz;
-+	u8 use_offload_path;
-+	u8 reserved;
-+	u32 sfreq;
-+	u8 channel_map[8];
-+} __packed;
-+
-+struct sst_byt_frames_info {
-+	u16 num_entries;
-+	u16 rsrvd;
-+	u32 frag_size;
-+	struct sst_byt_address_info ring_buf_info[8];
-+} __packed;
-+
-+struct sst_byt_alloc_params {
-+	struct sst_byt_str_type str_type;
-+	struct sst_byt_pcm_params pcm_params;
-+	struct sst_byt_frames_info frame_info;
-+} __packed;
-+
-+struct sst_byt_alloc_response {
-+	struct sst_byt_str_type str_type;
-+	u8 reserved[88];
-+} __packed;
-+
-+struct sst_byt_start_stream_params {
-+	u32 byte_offset;
-+} __packed;
-+
-+struct sst_byt_tstamp {
-+	u64 ring_buffer_counter;
-+	u64 hardware_counter;
-+	u64 frames_decoded;
-+	u64 bytes_decoded;
-+	u64 bytes_copied;
-+	u32 sampling_frequency;
-+	u32 channel_peak[8];
-+} __packed;
-+
-+/* driver internal IPC message structure */
-+struct ipc_message {
-+	struct list_head list;
-+	u64 header;
-+
-+	/* direction wrt host CPU */
-+	char tx_data[SST_BYT_IPC_MAX_PAYLOAD_SIZE];
-+	size_t tx_size;
-+	char rx_data[SST_BYT_IPC_MAX_PAYLOAD_SIZE];
-+	size_t rx_size;
-+
-+	wait_queue_head_t waitq;
-+	bool complete;
-+	bool wait;
-+	int errno;
++static const struct snd_pcm_hardware sst_byt_pcm_hardware = {
++	.info			= SNDRV_PCM_INFO_MMAP |
++				  SNDRV_PCM_INFO_MMAP_VALID |
++				  SNDRV_PCM_INFO_INTERLEAVED |
++				  SNDRV_PCM_INFO_PAUSE |
++				  SNDRV_PCM_INFO_RESUME,
++	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
++				  SNDRV_PCM_FORMAT_S24_LE,
++	.period_bytes_min	= 384,
++	.period_bytes_max	= 48000,
++	.periods_min		= 2,
++	.periods_max		= 250,
++	.buffer_bytes_max	= 96000,
 +};
 +
-+struct sst_byt_stream;
-+struct sst_byt;
++/* private data for each PCM DSP stream */
++struct sst_byt_pcm_data {
++	struct sst_byt_stream *stream;
++	struct snd_pcm_substream *substream;
++	struct mutex mutex;
++};
 +
-+/* stream infomation */
-+struct sst_byt_stream {
-+	struct list_head node;
-+
-+	/* configuration */
-+	struct sst_byt_alloc_params request;
-+	struct sst_byt_alloc_response reply;
-+
-+	/* runtime info */
++/* private data for the driver */
++struct sst_byt_priv_data {
++	/* runtime DSP */
 +	struct sst_byt *byt;
-+	int str_id;
-+	bool commited;
-+	bool running;
 +
-+	/* driver callback */
-+	u32 (*notify_position)(struct sst_byt_stream *stream, void *data);
-+	void *pdata;
++	/* DAI data */
++	struct sst_byt_pcm_data pcm[BYT_PCM_COUNT];
 +};
 +
-+/* SST Baytrail IPC data */
-+struct sst_byt {
-+	struct device *dev;
-+	struct sst_dsp *dsp;
-+
-+	/* stream */
-+	struct list_head stream_list;
-+
-+	/* boot */
-+	wait_queue_head_t boot_wait;
-+	bool boot_complete;
-+
-+	/* IPC messaging */
-+	struct list_head tx_list;
-+	struct list_head rx_list;
-+	struct list_head empty_list;
-+	wait_queue_head_t wait_txq;
-+	struct task_struct *tx_thread;
-+	struct kthread_worker kworker;
-+	struct kthread_work kwork;
-+	struct ipc_message *msg;
-+};
-+
-+static inline u64 sst_byt_header(int msg_id, int data, bool large, int str_id)
++/* this may get called several times by oss emulation */
++static int sst_byt_pcm_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params)
 +{
-+	u64 header;
-+
-+	header = IPC_HEADER_MSG_ID(msg_id) |
-+		 IPC_HEADER_STR_ID(str_id) |
-+		 IPC_HEADER_LARGE(large) |
-+		 IPC_HEADER_DATA(data) |
-+		 SST_BYT_IPCX_BUSY;
-+
-+	return header;
-+}
-+
-+static inline u16 sst_byt_header_msg_id(u64 header)
-+{
-+	return header & IPC_HEADER_MSG_ID_MASK;
-+}
-+
-+static inline u8 sst_byt_header_str_id(u64 header)
-+{
-+	return (header >> IPC_HEADER_STR_ID_SHIFT) & IPC_HEADER_STR_ID_MASK;
-+}
-+
-+static inline u16 sst_byt_header_data(u64 header)
-+{
-+	return (header >> IPC_HEADER_DATA_SHIFT) & IPC_HEADER_DATA_MASK;
-+}
-+
-+static struct sst_byt_stream *sst_byt_get_stream(struct sst_byt *byt,
-+						 int stream_id)
-+{
-+	struct sst_byt_stream *stream;
-+
-+	list_for_each_entry(stream, &byt->stream_list, node) {
-+		if (stream->str_id == stream_id)
-+			return stream;
-+	}
-+
-+	return NULL;
-+}
-+
-+static void sst_byt_ipc_shim_dbg(struct sst_byt *byt, const char *text)
-+{
-+	struct sst_dsp *sst = byt->dsp;
-+	u64 isr, ipcd, imrx, ipcx;
-+
-+	ipcx = sst_dsp_shim_read64_unlocked(sst, SST_IPCX);
-+	isr = sst_dsp_shim_read64_unlocked(sst, SST_ISRX);
-+	ipcd = sst_dsp_shim_read64_unlocked(sst, SST_IPCD);
-+	imrx = sst_dsp_shim_read64_unlocked(sst, SST_IMRX);
-+
-+	dev_err(byt->dev,
-+		"ipc: --%s-- ipcx 0x%llx isr 0x%llx ipcd 0x%llx imrx 0x%llx\n",
-+		text, ipcx, isr, ipcd, imrx);
-+}
-+
-+/* locks held by caller */
-+static struct ipc_message *sst_byt_msg_get_empty(struct sst_byt *byt)
-+{
-+	struct ipc_message *msg = NULL;
-+
-+	if (!list_empty(&byt->empty_list)) {
-+		msg = list_first_entry(&byt->empty_list,
-+				       struct ipc_message, list);
-+		list_del(&msg->list);
-+	}
-+
-+	return msg;
-+}
-+
-+static void sst_byt_ipc_tx_msgs(struct kthread_work *work)
-+{
-+	struct sst_byt *byt =
-+		container_of(work, struct sst_byt, kwork);
-+	struct ipc_message *msg;
-+	u64 ipcx;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&byt->dsp->spinlock, flags);
-+	if (list_empty(&byt->tx_list)) {
-+		spin_unlock_irqrestore(&byt->dsp->spinlock, flags);
-+		return;
-+	}
-+
-+	/* if the DSP is busy we will TX messages after IRQ */
-+	ipcx = sst_dsp_shim_read64_unlocked(byt->dsp, SST_IPCX);
-+	if (ipcx & SST_BYT_IPCX_BUSY) {
-+		spin_unlock_irqrestore(&byt->dsp->spinlock, flags);
-+		return;
-+	}
-+
-+	msg = list_first_entry(&byt->tx_list, struct ipc_message, list);
-+
-+	list_move(&msg->list, &byt->rx_list);
-+
-+	/* send the message */
-+	if (msg->header & IPC_HEADER_LARGE(true))
-+		sst_dsp_outbox_write(byt->dsp, msg->tx_data, msg->tx_size);
-+	sst_dsp_shim_write64_unlocked(byt->dsp, SST_IPCX, msg->header);
-+
-+	spin_unlock_irqrestore(&byt->dsp->spinlock, flags);
-+}
-+
-+static inline void sst_byt_tx_msg_reply_complete(struct sst_byt *byt,
-+						 struct ipc_message *msg)
-+{
-+	msg->complete = true;
-+
-+	if (!msg->wait)
-+		list_add_tail(&msg->list, &byt->empty_list);
-+	else
-+		wake_up(&msg->waitq);
-+}
-+
-+static int sst_byt_tx_wait_done(struct sst_byt *byt, struct ipc_message *msg,
-+				void *rx_data)
-+{
-+	unsigned long flags;
-+	int ret;
-+
-+	/* wait for DSP completion */
-+	ret = wait_event_timeout(msg->waitq, msg->complete,
-+				 msecs_to_jiffies(IPC_TIMEOUT_MSECS));
-+
-+	spin_lock_irqsave(&byt->dsp->spinlock, flags);
-+	if (ret == 0) {
-+		list_del(&msg->list);
-+		sst_byt_ipc_shim_dbg(byt, "message timeout");
-+
-+		ret = -ETIMEDOUT;
-+	} else {
-+
-+		/* copy the data returned from DSP */
-+		if (msg->rx_size)
-+			memcpy(rx_data, msg->rx_data, msg->rx_size);
-+		ret = msg->errno;
-+	}
-+
-+	list_add_tail(&msg->list, &byt->empty_list);
-+	spin_unlock_irqrestore(&byt->dsp->spinlock, flags);
-+	return ret;
-+}
-+
-+static int sst_byt_ipc_tx_message(struct sst_byt *byt, u64 header,
-+				  void *tx_data, size_t tx_bytes,
-+				  void *rx_data, size_t rx_bytes, int wait)
-+{
-+	unsigned long flags;
-+	struct ipc_message *msg;
-+
-+	spin_lock_irqsave(&byt->dsp->spinlock, flags);
-+
-+	msg = sst_byt_msg_get_empty(byt);
-+	if (msg == NULL) {
-+		spin_unlock_irqrestore(&byt->dsp->spinlock, flags);
-+		return -EBUSY;
-+	}
-+
-+	msg->header = header;
-+	msg->tx_size = tx_bytes;
-+	msg->rx_size = rx_bytes;
-+	msg->wait = wait;
-+	msg->errno = 0;
-+	msg->complete = false;
-+
-+	if (tx_bytes) {
-+		/* msg content = lower 32-bit of the header + data */
-+		*(u32 *)msg->tx_data = (u32)(header & (u32)-1);
-+		memcpy(msg->tx_data + sizeof(u32), tx_data, tx_bytes);
-+		msg->tx_size += sizeof(u32);
-+	}
-+
-+	list_add_tail(&msg->list, &byt->tx_list);
-+	spin_unlock_irqrestore(&byt->dsp->spinlock, flags);
-+
-+	queue_kthread_work(&byt->kworker, &byt->kwork);
-+
-+	if (wait)
-+		return sst_byt_tx_wait_done(byt, msg, rx_data);
-+	else
-+		return 0;
-+}
-+
-+static inline int sst_byt_ipc_tx_msg_wait(struct sst_byt *byt, u64 header,
-+					  void *tx_data, size_t tx_bytes,
-+					  void *rx_data, size_t rx_bytes)
-+{
-+	return sst_byt_ipc_tx_message(byt, header, tx_data, tx_bytes,
-+				      rx_data, rx_bytes, 1);
-+}
-+
-+static inline int sst_byt_ipc_tx_msg_nowait(struct sst_byt *byt, u64 header,
-+						void *tx_data, size_t tx_bytes)
-+{
-+	return sst_byt_ipc_tx_message(byt, header, tx_data, tx_bytes,
-+				      NULL, 0, 0);
-+}
-+
-+static struct ipc_message *sst_byt_reply_find_msg(struct sst_byt *byt,
-+						  u64 header)
-+{
-+	struct ipc_message *msg = NULL, *_msg;
-+	u64 mask;
-+
-+	/* match reply to message sent based on msg and stream IDs */
-+	mask = IPC_HEADER_MSG_ID_MASK |
-+	       IPC_HEADER_STR_ID_MASK << IPC_HEADER_STR_ID_SHIFT;
-+	header &= mask;
-+
-+	if (list_empty(&byt->rx_list)) {
-+		dev_err(byt->dev,
-+			"ipc: rx list is empty but received 0x%llx\n", header);
-+		goto out;
-+	}
-+
-+	list_for_each_entry(_msg, &byt->rx_list, list) {
-+		if ((_msg->header & mask) == header) {
-+			msg = _msg;
-+			break;
-+		}
-+	}
-+
-+out:
-+	return msg;
-+}
-+
-+static void sst_byt_stream_update(struct sst_byt *byt, struct ipc_message *msg)
-+{
-+	struct sst_byt_stream *stream;
-+	u64 header = msg->header;
-+	u8 stream_id = sst_byt_header_str_id(header);
-+	u8 stream_msg = sst_byt_header_msg_id(header);
-+
-+	stream = sst_byt_get_stream(byt, stream_id);
-+	if (stream == NULL)
-+		return;
-+
-+	switch (stream_msg) {
-+	case IPC_IA_DROP_STREAM:
-+	case IPC_IA_PAUSE_STREAM:
-+	case IPC_IA_FREE_STREAM:
-+		stream->running = false;
-+		break;
-+	case IPC_IA_START_STREAM:
-+	case IPC_IA_RESUME_STREAM:
-+		stream->running = true;
-+		break;
-+	}
-+}
-+
-+static int sst_byt_process_reply(struct sst_byt *byt, u64 header)
-+{
-+	struct ipc_message *msg;
-+
-+	msg = sst_byt_reply_find_msg(byt, header);
-+	if (msg == NULL)
-+		return 1;
-+
-+	if (header & IPC_HEADER_LARGE(true)) {
-+		msg->rx_size = sst_byt_header_data(header);
-+		sst_dsp_inbox_read(byt->dsp, msg->rx_data, msg->rx_size);
-+	}
-+
-+	/* update any stream states */
-+	sst_byt_stream_update(byt, msg);
-+
-+	list_del(&msg->list);
-+	/* wake up */
-+	sst_byt_tx_msg_reply_complete(byt, msg);
-+
-+	return 1;
-+}
-+
-+static void sst_byt_fw_ready(struct sst_byt *byt, u64 header)
-+{
-+	dev_dbg(byt->dev, "ipc: DSP is ready 0x%llX\n", header);
-+
-+	byt->boot_complete = true;
-+	wake_up(&byt->boot_wait);
-+}
-+
-+static int sst_byt_process_notification(struct sst_byt *byt,
-+					unsigned long *flags)
-+{
-+	struct sst_dsp *sst = byt->dsp;
-+	struct sst_byt_stream *stream;
-+	u64 header;
-+	u8 msg_id, stream_id;
-+	int handled = 1;
-+
-+	header = sst_dsp_shim_read64_unlocked(sst, SST_IPCD);
-+	msg_id = sst_byt_header_msg_id(header);
-+
-+	switch (msg_id) {
-+	case IPC_SST_PERIOD_ELAPSED:
-+		stream_id = sst_byt_header_str_id(header);
-+		stream = sst_byt_get_stream(byt, stream_id);
-+		if (stream && stream->running && stream->notify_position) {
-+			spin_unlock_irqrestore(&sst->spinlock, *flags);
-+			stream->notify_position(stream, stream->pdata);
-+			spin_lock_irqsave(&sst->spinlock, *flags);
-+		}
-+		break;
-+	case IPC_IA_FW_INIT_CMPLT:
-+		sst_byt_fw_ready(byt, header);
-+		break;
-+	}
-+
-+	return handled;
-+}
-+
-+static irqreturn_t sst_byt_irq_thread(int irq, void *context)
-+{
-+	struct sst_dsp *sst = (struct sst_dsp *) context;
-+	struct sst_byt *byt = sst_dsp_get_thread_context(sst);
-+	u64 header;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&sst->spinlock, flags);
-+
-+	header = sst_dsp_shim_read64_unlocked(sst, SST_IPCD);
-+	if (header & SST_BYT_IPCD_BUSY) {
-+		if (header & IPC_NOTIFICATION) {
-+			/* message from ADSP */
-+			sst_byt_process_notification(byt, &flags);
-+		} else {
-+			/* reply from ADSP */
-+			sst_byt_process_reply(byt, header);
-+		}
-+		/*
-+		 * clear IPCD BUSY bit and set DONE bit. Tell DSP we have
-+		 * processed the message and can accept new. Clear data part
-+		 * of the header
-+		 */
-+		sst_dsp_shim_update_bits64_unlocked(sst, SST_IPCD,
-+			SST_BYT_IPCD_DONE | SST_BYT_IPCD_BUSY |
-+			IPC_HEADER_DATA(IPC_HEADER_DATA_MASK),
-+			SST_BYT_IPCD_DONE);
-+		/* unmask message request interrupts */
-+		sst_dsp_shim_update_bits64_unlocked(sst, SST_IMRX,
-+			SST_BYT_IMRX_REQUEST, 0);
-+	}
-+
-+	spin_unlock_irqrestore(&sst->spinlock, flags);
-+
-+	/* continue to send any remaining messages... */
-+	queue_kthread_work(&byt->kworker, &byt->kwork);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+/* stream API */
-+struct sst_byt_stream *sst_byt_stream_new(struct sst_byt *byt, int id,
-+	u32 (*notify_position)(struct sst_byt_stream *stream, void *data),
-+	void *data)
-+{
-+	struct sst_byt_stream *stream;
-+
-+	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
-+	if (stream == NULL)
-+		return NULL;
-+
-+	list_add(&stream->node, &byt->stream_list);
-+	stream->notify_position = notify_position;
-+	stream->pdata = data;
-+	stream->byt = byt;
-+	stream->str_id = id;
-+
-+	return stream;
-+}
-+
-+int sst_byt_stream_set_bits(struct sst_byt *byt, struct sst_byt_stream *stream,
-+			    int bits)
-+{
-+	stream->request.pcm_params.pcm_wd_sz = bits;
-+	return 0;
-+}
-+
-+int sst_byt_stream_set_channels(struct sst_byt *byt,
-+				struct sst_byt_stream *stream, u8 channels)
-+{
-+	stream->request.pcm_params.num_chan = channels;
-+	return 0;
-+}
-+
-+int sst_byt_stream_set_rate(struct sst_byt *byt, struct sst_byt_stream *stream,
-+			    unsigned int rate)
-+{
-+	stream->request.pcm_params.sfreq = rate;
-+	return 0;
-+}
-+
-+/* stream sonfiguration */
-+int sst_byt_stream_type(struct sst_byt *byt, struct sst_byt_stream *stream,
-+			int codec_type, int stream_type, int operation)
-+{
-+	stream->request.str_type.codec_type = codec_type;
-+	stream->request.str_type.str_type = stream_type;
-+	stream->request.str_type.operation = operation;
-+	stream->request.str_type.time_slots = 0xc;
-+
-+	return 0;
-+}
-+
-+int sst_byt_stream_buffer(struct sst_byt *byt, struct sst_byt_stream *stream,
-+			  uint32_t buffer_addr, uint32_t buffer_size)
-+{
-+	stream->request.frame_info.num_entries = 1;
-+	stream->request.frame_info.ring_buf_info[0].addr = buffer_addr;
-+	stream->request.frame_info.ring_buf_info[0].size = buffer_size;
-+	/* calculate bytes per 4 ms fragment */
-+	stream->request.frame_info.frag_size =
-+		stream->request.pcm_params.sfreq *
-+		stream->request.pcm_params.num_chan *
-+		stream->request.pcm_params.pcm_wd_sz / 8 *
-+		4 / 1000;
-+	return 0;
-+}
-+
-+int sst_byt_stream_commit(struct sst_byt *byt, struct sst_byt_stream *stream)
-+{
-+	struct sst_byt_alloc_params *str_req = &stream->request;
-+	struct sst_byt_alloc_response *reply = &stream->reply;
-+	u64 header;
-+	int ret;
-+
-+	header = sst_byt_header(IPC_IA_ALLOC_STREAM,
-+				sizeof(*str_req) + sizeof(u32),
-+				true, stream->str_id);
-+	ret = sst_byt_ipc_tx_msg_wait(byt, header, str_req, sizeof(*str_req),
-+				      reply, sizeof(*reply));
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sst_byt_priv_data *pdata =
++		snd_soc_platform_get_drvdata(rtd->platform);
++	struct sst_byt_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(rtd);
++	struct sst_byt *byt = pdata->byt;
++	u32 rate, bits;
++	u8 channels;
++	int ret, playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
++
++	dev_dbg(rtd->dev, "PCM: hw_params, pcm_data %p\n", pcm_data);
++
++	ret = sst_byt_stream_type(byt, pcm_data->stream,
++				  1, 1, !playback);
 +	if (ret < 0) {
-+		dev_err(byt->dev, "ipc: error stream commit failed\n");
++		dev_err(rtd->dev, "failed to set stream format %d\n", ret);
 +		return ret;
 +	}
 +
-+	stream->commited = true;
-+
-+	return 0;
-+}
-+
-+int sst_byt_stream_free(struct sst_byt *byt, struct sst_byt_stream *stream)
-+{
-+	u64 header;
-+	int ret = 0;
-+
-+	if (!stream->commited)
-+		goto out;
-+
-+	header = sst_byt_header(IPC_IA_FREE_STREAM, 0, false, stream->str_id);
-+	ret = sst_byt_ipc_tx_msg_wait(byt, header, NULL, 0, NULL, 0);
++	rate = params_rate(params);
++	ret = sst_byt_stream_set_rate(byt, pcm_data->stream, rate);
 +	if (ret < 0) {
-+		dev_err(byt->dev, "ipc: free stream %d failed\n",
-+			stream->str_id);
-+		return -EAGAIN;
++		dev_err(rtd->dev, "could not set rate %d\n", rate);
++		return ret;
 +	}
 +
-+	stream->commited = false;
-+out:
-+	list_del(&stream->node);
-+	kfree(stream);
-+
-+	return ret;
-+}
-+
-+static int sst_byt_stream_operations(struct sst_byt *byt, int type,
-+				     int stream_id, int wait)
-+{
-+	struct sst_byt_start_stream_params start_stream;
-+	u64 header;
-+	void *tx_msg = NULL;
-+	size_t size = 0;
-+
-+	if (type != IPC_IA_START_STREAM) {
-+		header = sst_byt_header(type, 0, false, stream_id);
-+	} else {
-+		start_stream.byte_offset = 0;
-+		header = sst_byt_header(IPC_IA_START_STREAM,
-+					sizeof(start_stream) + sizeof(u32),
-+					true, stream_id);
-+		tx_msg = &start_stream;
-+		size = sizeof(start_stream);
++	bits = snd_pcm_format_width(params_format(params));
++	ret = sst_byt_stream_set_bits(byt, pcm_data->stream, bits);
++	if (ret < 0) {
++		dev_err(rtd->dev, "could not set formats %d\n",
++			params_rate(params));
++		return ret;
 +	}
 +
-+	if (wait)
-+		return sst_byt_ipc_tx_msg_wait(byt, header,
-+					       tx_msg, size, NULL, 0);
-+	else
-+		return sst_byt_ipc_tx_msg_nowait(byt, header, tx_msg, size);
-+}
++	channels = (u8)(params_channels(params) & 0xF);
++	ret = sst_byt_stream_set_channels(byt, pcm_data->stream, channels);
++	if (ret < 0) {
++		dev_err(rtd->dev, "could not set channels %d\n",
++			params_rate(params));
++		return ret;
++	}
 +
-+/* stream ALSA trigger operations */
-+int sst_byt_stream_start(struct sst_byt *byt, struct sst_byt_stream *stream)
-+{
-+	int ret;
++	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
 +
-+	ret = sst_byt_stream_operations(byt, IPC_IA_START_STREAM,
-+					stream->str_id, 0);
-+	if (ret < 0)
-+		dev_err(byt->dev, "ipc: error failed to start stream %d\n",
-+			stream->str_id);
++	ret = sst_byt_stream_buffer(byt, pcm_data->stream,
++				    substream->dma_buffer.addr,
++				    params_buffer_bytes(params));
++	if (ret < 0) {
++		dev_err(rtd->dev, "PCM: failed to set DMA buffer %d\n", ret);
++		return ret;
++	}
 +
-+	return ret;
-+}
-+
-+int sst_byt_stream_stop(struct sst_byt *byt, struct sst_byt_stream *stream)
-+{
-+	int ret;
-+
-+	/* don't stop streams that are not commited */
-+	if (!stream->commited)
-+		return 0;
-+
-+	ret = sst_byt_stream_operations(byt, IPC_IA_DROP_STREAM,
-+					stream->str_id, 0);
-+	if (ret < 0)
-+		dev_err(byt->dev, "ipc: error failed to stop stream %d\n",
-+			stream->str_id);
-+	return ret;
-+}
-+
-+int sst_byt_stream_pause(struct sst_byt *byt, struct sst_byt_stream *stream)
-+{
-+	int ret;
-+
-+	ret = sst_byt_stream_operations(byt, IPC_IA_PAUSE_STREAM,
-+					stream->str_id, 0);
-+	if (ret < 0)
-+		dev_err(byt->dev, "ipc: error failed to pause stream %d\n",
-+			stream->str_id);
-+
-+	return ret;
-+}
-+
-+int sst_byt_stream_resume(struct sst_byt *byt, struct sst_byt_stream *stream)
-+{
-+	int ret;
-+
-+	ret = sst_byt_stream_operations(byt, IPC_IA_RESUME_STREAM,
-+					stream->str_id, 0);
-+	if (ret < 0)
-+		dev_err(byt->dev, "ipc: error failed to resume stream %d\n",
-+			stream->str_id);
-+
-+	return ret;
-+}
-+
-+int sst_byt_get_dsp_position(struct sst_byt *byt,
-+			     struct sst_byt_stream *stream, int buffer_size)
-+{
-+	struct sst_dsp *sst = byt->dsp;
-+	struct sst_byt_tstamp fw_tstamp;
-+	u8 str_id = stream->str_id;
-+	u32 tstamp_offset;
-+
-+	tstamp_offset = SST_BYT_TIMESTAMP_OFFSET + str_id * sizeof(fw_tstamp);
-+	memcpy_fromio(&fw_tstamp,
-+		      sst->addr.lpe + tstamp_offset, sizeof(fw_tstamp));
-+
-+	return do_div(fw_tstamp.ring_buffer_counter, buffer_size);
-+}
-+
-+static int msg_empty_list_init(struct sst_byt *byt)
-+{
-+	struct ipc_message *msg;
-+	int i;
-+
-+	byt->msg = kzalloc(sizeof(*msg) * IPC_EMPTY_LIST_SIZE, GFP_KERNEL);
-+	if (byt->msg == NULL)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < IPC_EMPTY_LIST_SIZE; i++) {
-+		init_waitqueue_head(&byt->msg[i].waitq);
-+		list_add(&byt->msg[i].list, &byt->empty_list);
++	ret = sst_byt_stream_commit(byt, pcm_data->stream);
++	if (ret < 0) {
++		dev_err(rtd->dev, "PCM: failed stream commit %d\n", ret);
++		return ret;
 +	}
 +
 +	return 0;
 +}
 +
-+struct sst_dsp *sst_byt_get_dsp(struct sst_byt *byt)
++static int sst_byt_pcm_hw_free(struct snd_pcm_substream *substream)
 +{
-+	return byt->dsp;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++
++	dev_dbg(rtd->dev, "PCM: hw_free\n");
++	snd_pcm_lib_free_pages(substream);
++
++	return 0;
 +}
 +
-+static struct sst_dsp_device byt_dev = {
-+	.thread = sst_byt_irq_thread,
-+	.ops = &sst_byt_ops,
++static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sst_byt_priv_data *pdata =
++		snd_soc_platform_get_drvdata(rtd->platform);
++	struct sst_byt_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(rtd);
++	struct sst_byt *byt = pdata->byt;
++
++	dev_dbg(rtd->dev, "PCM: trigger %d\n", cmd);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		sst_byt_stream_start(byt, pcm_data->stream);
++		break;
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		sst_byt_stream_resume(byt, pcm_data->stream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		sst_byt_stream_stop(byt, pcm_data->stream);
++		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		sst_byt_stream_pause(byt, pcm_data->stream);
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static u32 byt_notify_pointer(struct sst_byt_stream *stream, void *data)
++{
++	struct sst_byt_pcm_data *pcm_data = data;
++	struct snd_pcm_substream *substream = pcm_data->substream;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	u32 pos;
++
++	pos = frames_to_bytes(runtime,
++			      (runtime->control->appl_ptr %
++			       runtime->buffer_size));
++
++	dev_dbg(rtd->dev, "PCM: App pointer %d bytes\n", pos);
++
++	snd_pcm_period_elapsed(substream);
++	return pos;
++}
++
++static snd_pcm_uframes_t sst_byt_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct sst_byt_priv_data *pdata =
++		snd_soc_platform_get_drvdata(rtd->platform);
++	struct sst_byt_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(rtd);
++	struct sst_byt *byt = pdata->byt;
++	snd_pcm_uframes_t offset;
++	int pos;
++
++	pos = sst_byt_get_dsp_position(byt, pcm_data->stream,
++				       snd_pcm_lib_buffer_bytes(substream));
++	offset = bytes_to_frames(runtime, pos);
++
++	dev_dbg(rtd->dev, "PCM: DMA pointer %zu bytes\n",
++		frames_to_bytes(runtime, (u32)offset));
++	return offset;
++}
++
++static int sst_byt_pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sst_byt_priv_data *pdata =
++		snd_soc_platform_get_drvdata(rtd->platform);
++	struct sst_byt_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(rtd);
++	struct sst_byt *byt = pdata->byt;
++
++	dev_dbg(rtd->dev, "PCM: open\n");
++
++	pcm_data = &pdata->pcm[rtd->cpu_dai->id];
++	mutex_lock(&pcm_data->mutex);
++
++	snd_soc_pcm_set_drvdata(rtd, pcm_data);
++	pcm_data->substream = substream;
++
++	snd_soc_set_runtime_hwparams(substream, &sst_byt_pcm_hardware);
++
++	pcm_data->stream = sst_byt_stream_new(byt, rtd->cpu_dai->id + 1,
++					      byt_notify_pointer, pcm_data);
++	if (pcm_data->stream == NULL) {
++		dev_err(rtd->dev, "failed to create stream\n");
++		mutex_unlock(&pcm_data->mutex);
++		return -EINVAL;
++	}
++
++	mutex_unlock(&pcm_data->mutex);
++	return 0;
++}
++
++static int sst_byt_pcm_close(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sst_byt_priv_data *pdata =
++		snd_soc_platform_get_drvdata(rtd->platform);
++	struct sst_byt_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(rtd);
++	struct sst_byt *byt = pdata->byt;
++	int ret;
++
++	dev_dbg(rtd->dev, "PCM: close\n");
++
++	mutex_lock(&pcm_data->mutex);
++	ret = sst_byt_stream_free(byt, pcm_data->stream);
++	if (ret < 0) {
++		dev_dbg(rtd->dev, "Free stream fail\n");
++		goto out;
++	}
++	pcm_data->stream = NULL;
++
++out:
++	mutex_unlock(&pcm_data->mutex);
++	return ret;
++}
++
++static int sst_byt_pcm_mmap(struct snd_pcm_substream *substream,
++			    struct vm_area_struct *vma)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++
++	dev_dbg(rtd->dev, "PCM: mmap\n");
++	return snd_pcm_lib_default_mmap(substream, vma);
++}
++
++static struct snd_pcm_ops sst_byt_pcm_ops = {
++	.open		= sst_byt_pcm_open,
++	.close		= sst_byt_pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= sst_byt_pcm_hw_params,
++	.hw_free	= sst_byt_pcm_hw_free,
++	.trigger	= sst_byt_pcm_trigger,
++	.pointer	= sst_byt_pcm_pointer,
++	.mmap		= sst_byt_pcm_mmap,
 +};
 +
-+int sst_byt_dsp_init(struct device *dev, struct sst_pdata *pdata)
++static void sst_byt_pcm_free(struct snd_pcm *pcm)
 +{
-+	struct sst_byt *byt;
-+	struct sst_fw *byt_sst_fw;
-+	int err;
++	snd_pcm_lib_preallocate_free_for_all(pcm);
++}
 +
-+	dev_dbg(dev, "initialising Byt DSP IPC\n");
++static int sst_byt_pcm_new(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_pcm *pcm = rtd->pcm;
++	size_t size;
++	int ret = 0;
 +
-+	byt = devm_kzalloc(dev, sizeof(*byt), GFP_KERNEL);
-+	if (byt == NULL)
-+		return -ENOMEM;
++	ret = dma_coerce_mask_and_coherent(rtd->card->dev, DMA_BIT_MASK(32));
++	if (ret)
++		return ret;
 +
-+	byt->dev = dev;
-+	INIT_LIST_HEAD(&byt->stream_list);
-+	INIT_LIST_HEAD(&byt->tx_list);
-+	INIT_LIST_HEAD(&byt->rx_list);
-+	INIT_LIST_HEAD(&byt->empty_list);
-+	init_waitqueue_head(&byt->boot_wait);
-+	init_waitqueue_head(&byt->wait_txq);
-+
-+	err = msg_empty_list_init(byt);
-+	if (err < 0)
-+		goto list_err;
-+
-+	/* start the IPC message thread */
-+	init_kthread_worker(&byt->kworker);
-+	byt->tx_thread = kthread_run(kthread_worker_fn,
-+				     &byt->kworker,
-+				     dev_name(byt->dev));
-+	if (IS_ERR(byt->tx_thread)) {
-+		err = PTR_ERR(byt->tx_thread);
-+		dev_err(byt->dev, "error failed to create message TX task\n");
-+		goto list_err;
-+	}
-+	init_kthread_work(&byt->kwork, sst_byt_ipc_tx_msgs);
-+
-+	byt_dev.thread_context = byt;
-+
-+	/* init SST shim */
-+	byt->dsp = sst_dsp_new(dev, &byt_dev, pdata);
-+	if (byt->dsp == NULL) {
-+		err = -ENODEV;
-+		goto list_err;
++	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream ||
++	    pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
++		size = sst_byt_pcm_hardware.buffer_bytes_max;
++		ret = snd_pcm_lib_preallocate_pages_for_all(pcm,
++							    SNDRV_DMA_TYPE_DEV,
++							    rtd->card->dev,
++							    size, size);
++		if (ret) {
++			dev_err(rtd->dev, "dma buffer allocation failed %d\n",
++				ret);
++			return ret;
++		}
 +	}
 +
-+	/* keep the DSP in reset state for base FW loading */
-+	sst_dsp_reset(byt->dsp);
++	return ret;
++}
 +
-+	byt_sst_fw = sst_fw_new(byt->dsp, pdata->fw, byt);
-+	if (byt_sst_fw  == NULL) {
-+		err = -ENODEV;
-+		dev_err(dev, "error: failed to load firmware\n");
-+		goto fw_err;
-+	}
++static struct snd_soc_dai_driver byt_dais[] = {
++	{
++		.name  = "Front-cpu-dai",
++		.playback = {
++			.stream_name = "System Playback",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_48000,
++			.formats = SNDRV_PCM_FMTBIT_S24_3LE |
++				   SNDRV_PCM_FMTBIT_S16_LE,
++		},
++	},
++	{
++		.name  = "Mic1-cpu-dai",
++		.capture = {
++			.stream_name = "Analog Capture",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_48000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		},
++	},
++};
 +
-+	/* wait for DSP boot completion */
-+	sst_dsp_boot(byt->dsp);
-+	err = wait_event_timeout(byt->boot_wait, byt->boot_complete,
-+				 msecs_to_jiffies(IPC_BOOT_MSECS));
-+	if (err == 0) {
-+		err = -EIO;
-+		dev_err(byt->dev, "ipc: error DSP boot timeout\n");
-+		goto boot_err;
-+	}
++static int sst_byt_pcm_probe(struct snd_soc_platform *platform)
++{
++	struct sst_pdata *plat_data = dev_get_platdata(platform->dev);
++	struct sst_byt_priv_data *priv_data;
++	int i;
 +
-+	pdata->dsp = byt;
++	if (!plat_data)
++		return -ENODEV;
++
++	priv_data = devm_kzalloc(platform->dev, sizeof(*priv_data),
++				 GFP_KERNEL);
++	priv_data->byt = plat_data->dsp;
++	snd_soc_platform_set_drvdata(platform, priv_data);
++
++	for (i = 0; i < ARRAY_SIZE(byt_dais); i++)
++		mutex_init(&priv_data->pcm[i].mutex);
++
++	return 0;
++}
++
++static int sst_byt_pcm_remove(struct snd_soc_platform *platform)
++{
++	return 0;
++}
++
++static struct snd_soc_platform_driver byt_soc_platform = {
++	.probe		= sst_byt_pcm_probe,
++	.remove		= sst_byt_pcm_remove,
++	.ops		= &sst_byt_pcm_ops,
++	.pcm_new	= sst_byt_pcm_new,
++	.pcm_free	= sst_byt_pcm_free,
++};
++
++static const struct snd_soc_component_driver byt_dai_component = {
++	.name		= "byt-dai",
++};
++
++static int sst_byt_pcm_dev_probe(struct platform_device *pdev)
++{
++	struct sst_pdata *sst_pdata = dev_get_platdata(&pdev->dev);
++	int ret;
++
++	ret = sst_byt_dsp_init(&pdev->dev, sst_pdata);
++	if (ret < 0)
++		return -ENODEV;
++
++	ret = snd_soc_register_platform(&pdev->dev, &byt_soc_platform);
++	if (ret < 0)
++		goto err_plat;
++
++	ret = snd_soc_register_component(&pdev->dev, &byt_dai_component,
++					 byt_dais, ARRAY_SIZE(byt_dais));
++	if (ret < 0)
++		goto err_comp;
 +
 +	return 0;
 +
-+boot_err:
-+	sst_dsp_reset(byt->dsp);
-+	sst_fw_free(byt_sst_fw);
-+fw_err:
-+	sst_dsp_free(byt->dsp);
-+	kfree(byt->msg);
-+list_err:
-+	kfree(byt);
-+	return err;
++err_comp:
++	snd_soc_unregister_platform(&pdev->dev);
++err_plat:
++	sst_byt_dsp_free(&pdev->dev, sst_pdata);
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(sst_byt_dsp_init);
 +
-+void sst_byt_dsp_free(struct device *dev, struct sst_pdata *pdata)
++static int sst_byt_pcm_dev_remove(struct platform_device *pdev)
 +{
-+	struct sst_byt *byt = pdata->dsp;
++	struct sst_pdata *sst_pdata = dev_get_platdata(&pdev->dev);
 +
-+	sst_dsp_reset(byt->dsp);
-+	sst_fw_free_all(byt->dsp);
-+	sst_dsp_free(byt->dsp);
-+	kfree(byt->msg);
++	snd_soc_unregister_platform(&pdev->dev);
++	snd_soc_unregister_component(&pdev->dev);
++	sst_byt_dsp_free(&pdev->dev, sst_pdata);
++
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(sst_byt_dsp_free);
-diff --git a/sound/soc/intel/sst-baytrail-ipc.h b/sound/soc/intel/sst-baytrail-ipc.h
-new file mode 100644
-index 000000000000..f172b6440fa9
---- /dev/null
-+++ b/sound/soc/intel/sst-baytrail-ipc.h
-@@ -0,0 +1,69 @@
-+/*
-+ * Intel Baytrail SST IPC Support
-+ * Copyright (c) 2014, Intel Corporation.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms and conditions of the GNU General Public License,
-+ * version 2, as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ */
 +
-+#ifndef __SST_BYT_IPC_H
-+#define __SST_BYT_IPC_H
++static struct platform_driver sst_byt_pcm_driver = {
++	.driver = {
++		.name = "baytrail-pcm-audio",
++		.owner = THIS_MODULE,
++	},
 +
-+#include <linux/types.h>
++	.probe = sst_byt_pcm_dev_probe,
++	.remove = sst_byt_pcm_dev_remove,
++};
++module_platform_driver(sst_byt_pcm_driver);
 +
-+struct sst_byt;
-+struct sst_byt_stream;
-+struct sst_pdata;
-+extern struct sst_ops sst_byt_ops;
-+
-+
-+#define SST_BYT_MAILBOX_OFFSET		0x144000
-+#define SST_BYT_TIMESTAMP_OFFSET	(SST_BYT_MAILBOX_OFFSET + 0x800)
-+
-+/**
-+ * Upfront defined maximum message size that is
-+ * expected by the in/out communication pipes in FW.
-+ */
-+#define SST_BYT_IPC_MAX_PAYLOAD_SIZE	200
-+
-+/* stream API */
-+struct sst_byt_stream *sst_byt_stream_new(struct sst_byt *byt, int id,
-+	uint32_t (*get_write_position)(struct sst_byt_stream *stream,
-+				       void *data),
-+	void *data);
-+
-+/* stream configuration */
-+int sst_byt_stream_set_bits(struct sst_byt *byt, struct sst_byt_stream *stream,
-+			    int bits);
-+int sst_byt_stream_set_channels(struct sst_byt *byt,
-+				struct sst_byt_stream *stream, u8 channels);
-+int sst_byt_stream_set_rate(struct sst_byt *byt, struct sst_byt_stream *stream,
-+			    unsigned int rate);
-+int sst_byt_stream_type(struct sst_byt *byt, struct sst_byt_stream *stream,
-+			int codec_type, int stream_type, int operation);
-+int sst_byt_stream_buffer(struct sst_byt *byt, struct sst_byt_stream *stream,
-+			  uint32_t buffer_addr, uint32_t buffer_size);
-+int sst_byt_stream_commit(struct sst_byt *byt, struct sst_byt_stream *stream);
-+int sst_byt_stream_free(struct sst_byt *byt, struct sst_byt_stream *stream);
-+
-+/* stream ALSA trigger operations */
-+int sst_byt_stream_start(struct sst_byt *byt, struct sst_byt_stream *stream);
-+int sst_byt_stream_stop(struct sst_byt *byt, struct sst_byt_stream *stream);
-+int sst_byt_stream_pause(struct sst_byt *byt, struct sst_byt_stream *stream);
-+int sst_byt_stream_resume(struct sst_byt *byt, struct sst_byt_stream *stream);
-+
-+int sst_byt_get_dsp_position(struct sst_byt *byt,
-+			     struct sst_byt_stream *stream, int buffer_size);
-+
-+/* init */
-+int sst_byt_dsp_init(struct device *dev, struct sst_pdata *pdata);
-+void sst_byt_dsp_free(struct device *dev, struct sst_pdata *pdata);
-+struct sst_dsp *sst_byt_get_dsp(struct sst_byt *byt);
-+
-+#endif
++MODULE_AUTHOR("Jarkko Nikula");
++MODULE_DESCRIPTION("Baytrail PCM");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:baytrail-pcm-audio");
 -- 
 1.8.5.3
