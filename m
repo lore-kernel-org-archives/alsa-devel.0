@@ -1,17 +1,15 @@
-From: Adam Williamson <awilliam@redhat.com>
-Subject: Re: [PATCH] ASoC: Intel: sst-acpi: Fix Oops in case of
- missing firmware
-Date: Tue, 25 Feb 2014 08:57:21 -0800
-Message-ID: <1393347441.8300.82.camel@adam.happyassassin.net>
-References: <1393339067-10307-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Alexander Shiyan <shc_work@mail.ru>
+Subject: [PATCH] ASoC: cirrus: Remove excess dependencies on
+	SND_SOC
+Date: Tue, 25 Feb 2014 22:01:54 +0400
+Message-ID: <1393351314-23006-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id E283E265620
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 17:57:30 +0100 (CET)
-In-Reply-To: <1393339067-10307-1-git-send-email-jarkko.nikula@linux.intel.com>
+Received: from smtp35.i.mail.ru (smtp35.i.mail.ru [94.100.177.95])
+ by alsa0.perex.cz (Postfix) with ESMTP id F264526563A
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 19:02:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,26 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Mika Westerberg <mika.westerberg@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2014-02-25 at 16:37 +0200, Jarkko Nikula wrote:
-> I swear I tested missing firmware in commit e5161d7987f1 ("ASoC: Intel:
-> sst-acpi: Request firmware before SST platform driver probing").
-> 
-> Unfortunately same wasn't done in commit 6dda27cbbd1d ("ASoC: Intel:
-> sst-acpi: Add support for multiple machine drivers per platform") which
-> will cause NULL pointer dereference in sst_acpi_fw_cb() when printing the
-> error since sst_acpi->mach is not set.
-> 
-> Fix this obvious error by setting the sst_acpi->mach in sst_acpi_probe().
+Configuration for Cirrus Logic audio support is included only
+if SND_SOC symbol selected, so no reason to check it once more.
 
-FWIW, I did test with the patch set from lrg's tree as of a couple days
-ago, and hit this crash. So I can confirm the bug for sure. I'll test
-the fix with a new kernel build in a couple of hours.
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ sound/soc/cirrus/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/cirrus/Kconfig b/sound/soc/cirrus/Kconfig
+index 06f938d..c872dac 100644
+--- a/sound/soc/cirrus/Kconfig
++++ b/sound/soc/cirrus/Kconfig
+@@ -1,6 +1,6 @@
+ config SND_EP93XX_SOC
+ 	tristate "SoC Audio support for the Cirrus Logic EP93xx series"
+-	depends on (ARCH_EP93XX || COMPILE_TEST) && SND_SOC
++	depends on ARCH_EP93XX || COMPILE_TEST
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
 -- 
-Adam Williamson
-Fedora QA Community Monkey
-IRC: adamw | Twitter: AdamW_Fedora | XMPP: adamw AT happyassassin . net
-http://www.happyassassin.net
+1.8.3.2
