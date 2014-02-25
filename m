@@ -1,101 +1,76 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH] ASoC: fsl-sai: fix Freescale SAI DAI format setting.
-Date: Tue, 25 Feb 2014 17:54:51 +0800
-Message-ID: <1393322091-24427-1-git-send-email-Li.Xiubo@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: s3c24xx: Remove invalid file
+	reference
+Date: Tue, 25 Feb 2014 21:29:44 +0900
+Message-ID: <20140225122944.GF25940@sirena.org.uk>
+References: <1393321240-7632-1-git-send-email-sachin.kamat@linaro.org>
+ <1393321240-7632-2-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
+Content-Type: multipart/mixed; boundary="===============7224745941861132494=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B2A6261A5F
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 13:29:50 +0100 (CET)
+In-Reply-To: <1393321240-7632-2-git-send-email-sachin.kamat@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-o Fix some bugs of fsl_sai_set_dai_fmt_tr().
-o Add SND_SOC_DAIFMT_LEFT_J support.
-o Add SND_SOC_DAIFMT_CBS_CFM support.
-o Add SND_SOC_DAIFMT_CBM_CFS support.
-o And SND_SOC_DAIFMT_RIGHT_J need to be done in the future.
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
----
- sound/soc/fsl/fsl_sai.c | 38 +++++++++++++++++++++++++++++---------
- 1 file changed, 29 insertions(+), 9 deletions(-)
+--===============7224745941861132494==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="FHd57Hi0DNUQJxBE"
+Content-Disposition: inline
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index faa65af..26d9f5e 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -105,35 +105,47 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
- 	else
- 		val_cr4 |= FSL_SAI_CR4_MF;
- 
-+	/* DAI mode */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
--		val_cr4 |= FSL_SAI_CR4_FSE;
-+		/* Data on rising edge of bclk, frame low, 1clk before data */
-+		val_cr2 &= ~FSL_SAI_CR2_BCP;
-+		val_cr4 |= FSL_SAI_CR4_FSE | FSL_SAI_CR4_FSP;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		/* Data on rising edge of bclk, frame high, 0clk before data */
-+		val_cr2 &= ~FSL_SAI_CR2_BCP;
-+		val_cr4 &= ~(FSL_SAI_CR4_FSE | FSL_SAI_CR4_FSP);
- 		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		/* To be done */
- 	default:
- 		return -EINVAL;
- 	}
- 
-+	/* DAI clock inversion */
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
- 	case SND_SOC_DAIFMT_IB_IF:
--		val_cr4 |= FSL_SAI_CR4_FSP;
--		val_cr2 &= ~FSL_SAI_CR2_BCP;
-+		/* Invert both clocks */
-+		val_cr2 ^= FSL_SAI_CR2_BCP;
-+		val_cr4 ^= FSL_SAI_CR4_FSP;
- 		break;
- 	case SND_SOC_DAIFMT_IB_NF:
--		val_cr4 &= ~FSL_SAI_CR4_FSP;
--		val_cr2 &= ~FSL_SAI_CR2_BCP;
-+		/* Invert bit clock */
-+		val_cr2 ^= FSL_SAI_CR2_BCP;
- 		break;
- 	case SND_SOC_DAIFMT_NB_IF:
--		val_cr4 |= FSL_SAI_CR4_FSP;
--		val_cr2 |= FSL_SAI_CR2_BCP;
-+		/* Invert frame clock */
-+		val_cr4 ^= FSL_SAI_CR4_FSP;
- 		break;
- 	case SND_SOC_DAIFMT_NB_NF:
--		val_cr4 &= ~FSL_SAI_CR4_FSP;
--		val_cr2 |= FSL_SAI_CR2_BCP;
-+		/* Nothing to do for both normal cases */
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
- 
-+	/* DAI clock master masks */
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBS_CFS:
- 		val_cr2 |= FSL_SAI_CR2_BCD_MSTR;
-@@ -143,6 +155,14 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
- 		val_cr2 &= ~FSL_SAI_CR2_BCD_MSTR;
- 		val_cr4 &= ~FSL_SAI_CR4_FSD_MSTR;
- 		break;
-+	case SND_SOC_DAIFMT_CBS_CFM:
-+		val_cr2 |= FSL_SAI_CR2_BCD_MSTR;
-+		val_cr4 &= ~FSL_SAI_CR4_FSD_MSTR;
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFS:
-+		val_cr2 &= ~FSL_SAI_CR2_BCD_MSTR;
-+		val_cr4 |= FSL_SAI_CR4_FSD_MSTR;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
--- 
-1.8.4
+
+--FHd57Hi0DNUQJxBE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Feb 25, 2014 at 03:10:40PM +0530, Sachin Kamat wrote:
+> Remove file references rendered invalid due to relocation.
+
+Applied both, thanks.
+
+--FHd57Hi0DNUQJxBE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTDIy1AAoJELSic+t+oim9UkwP/R3FkNP6478PKzMQmA4RBnfQ
+5fq/BiUPGyy6Nt6hFVg2i78yr6ve3dN4it0WaQ8qT4rd19NFs6DAThTCT/Q+GC6U
+UTnWlLl7BE4GMzTmDxN6HBah4auINk7Wybr2eRu7UqJNCupW6+HNiIbgGgSBLGEF
+yqsZZHpM105YKkdC1iqOD6DmcRWKlVodDUQfxZnKpM43NR6chPuW88PYPHQ4Bmyk
+PhHsk4KZ/NMgtL2nUW2LNkJBN7OWUyWOTGr4i02F+8vGNraewyW+iYai48VzweBJ
+zJZ8JHCP6I+f00DBwv2orFTWeXU2qUsb8Kre+yGAVZbgBQjlN7s1WFYh8+cEuveq
+fZmf2rQQQZBXI8S/BoxuCpXPROm0x2zPgxqYzaPpLb3964EiqAXJXvLeHzLA9Ndo
+6IVu1ebAotnRk5ATfc7E9AWFQH671RI5o9QQ4LTkX92lTMvvcRVxI1LB+RcJ7j1V
+si5oIZnyI4FSeV9aR17emYPu4seL3/dV4uiaZsC+ZvDGj5VmSz44GC0xragSgOfZ
+R3impoJTjftvump+WHrmQ9YYY3XIeqJL8QOs58tzL2ZPWiUKb4eS7JkXt6n1ara6
+T6Wgv4dAt8eVhiKx9VOkjKotXkiFp3mvzHzPv6tzD3ndq2f/XNZReGoGzqSnjm09
+7NDke/UIpABW/FnpcuK0
+=v49R
+-----END PGP SIGNATURE-----
+
+--FHd57Hi0DNUQJxBE--
+
+--===============7224745941861132494==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7224745941861132494==--
