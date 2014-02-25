@@ -1,80 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASOC: dapm: add param_fixup callback
-Date: Tue, 25 Feb 2014 10:05:23 +0900
-Message-ID: <20140225010523.GJ25940@sirena.org.uk>
-References: <1393250058-18430-1-git-send-email-Nikesh.Oswal@wolfsonmicro.com>
+Subject: Re: [PATCH 00/11] ASoC: Consolidate enum controls and
+	DAPM MUXs
+Date: Tue, 25 Feb 2014 10:57:43 +0900
+Message-ID: <20140225015743.GM25940@sirena.org.uk>
+References: <1393168221-23018-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BxIhUKWW31lNoI9D"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1393250058-18430-1-git-send-email-Nikesh.Oswal@wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, nikesh <Nikesh.Oswal@wolfsonmicro.com>
+Content-Type: multipart/mixed; boundary="===============0699821975256439457=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A59126536C
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 02:58:05 +0100 (CET)
+In-Reply-To: <1393168221-23018-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, Jerry Wong <jerry.wong@maximintegrated.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---BxIhUKWW31lNoI9D
+--===============0699821975256439457==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="suF1EXQKA2Mmys/Q"
+Content-Disposition: inline
+
+
+--suF1EXQKA2Mmys/Q
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 24, 2014 at 01:54:18PM +0000, NikeshOswal wrote:
-> From: nikesh <Nikesh.Oswal@wolfsonmicro.com>
+On Sun, Feb 23, 2014 at 04:10:10PM +0100, Lars-Peter Clausen wrote:
+> We currently have 5 nearly identical implementations of enum controls. Two for
+> normal controls and three for DAPM controls. The only difference between them is
+> how and if the selected enum item is mapped to a register value.
 
-You need to fix both your git and e-mail setups, you should be using
-"Nikesh Oswal" or similar as your real name and more importantly your
-mail setup is sending mail as "NikeshOswal" with no even a domain part
-which means you can't be replied to.  It is very important that you are
-able to get review comments at the address you post from.
+This all looks like progress modulo the issue Takashi identified with
+the rename.
 
-> dai-link params for codec-codec links were fixed.
-> The fixed link between codec and another chip which
-> may be another codec, baseband, bluetooth codec etc
-
-Please use the full width for your changelog.
-
-> Change-Id: Iad6ee3951bc4e8b8bc519c62642a2b4bcd949c18
-
-Don't include noise like this in upstream submissions.
-
-> -	const struct snd_soc_pcm_stream *params;
-> +	struct snd_soc_pcm_stream *params;
-> +	/* optional params re-writing for dai links */
-> +	int (*params_fixup)(struct snd_soc_dapm_widget *w, int event);
-
-This isn't a great interface, it relies on the driver peering inside the
-core data structures and it means that we have to drop the consts from
-users.  Systems not using this feature ought to be able to declare their
-parameters as static const but this breaks that ability.  Similarly
-users that are fully dynamic need to allocate some static data to work
-with this interface.
-
-If you look at the existing interface you'll also see that it takes an
-array of parameters rather than just a single parameter.  The idea was
-to extend the interface to provide a control to userspace allowing
-selection of one of the configurations from a list for use with cases
-like modems which can switch between 8kHz and 16kHz modes.
-
---BxIhUKWW31lNoI9D
+--suF1EXQKA2Mmys/Q
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTC+xPAAoJELSic+t+oim9EN0QAIH9wnKFhpH1CZfAZFSQs/5G
-+sETiAQBGduB7EyJb1ZpQqjTjhnLDSfor28Uhuyd6WyQBwIPTiMKREyNFg7W7JiI
-CsgTi7w/KeU1nBL9ckEMxDXqdZ3vibV9TlwI6eSB0PSKVUnBDJYjWL2km6SujNKZ
-RKCpI2HT8jPkQdRY5Zgk6j+i2/ziQPjERISyjQE6s+Hs2VHmQfHKsHhwrhWD+h5z
-IdavPM2Ugi8ves+IqvnYSzkDV5q4WfyvN3toVCl931EXrIe0bbXHE5ucR+sKO5xo
-llLyGm2/aBityXi9Biof/qz98lS98Yc0Tjfg11g5Iqq3uhnZFUj0mUc4SOXkq0bU
-ZPWrw0T0xIPj6bShSFyfSW5EPXo8Xo5iaujBSqPv3700/KjURfhF+xtiA18wGhB/
-+7CMj/BWAw8JTgxgyCCfq1El4b6RaT9wHodIuO7X4YxVwNcdeVe6//lYLK6fJx4S
-1X4MSeLWloMFSeDHIu27r3aUDBAfvwcZ9dS9/YNq3od70QvTQtp7PPUt8seh6TaJ
-eGJNsrpGkJ5eHS/FqHOMcDxTp/kyD+1E06sNILMRifBr0z/rx7c2Ve4pXeBj3VBj
-3duzrrDfiEgz1GRt62+w2Siip66fRlejbRMQbyUAUX69BPUnDlFHZEtW0ZmR9JNn
-i2/jOqCn6vmSANBQ4FKS
-=UjEx
+iQIcBAEBAgAGBQJTC/iUAAoJELSic+t+oim9Ln0P/2+W19sKrAPFLG6cVQUm5vUp
+9XWoo4fnKHPTu4Dm4VylLJDv9bMeGxrKS/bULKD9Yl6q8/rzBMNmGfisX+rOmjqD
+HhrScmKVQOlFghkDroxuy7o0+0wQkZNGn6Gy1h6o1MIqzPnNguuRKO2gJ0io141a
+KL1ZOe6E1AmtlrNNV1wU4K092y2MN8x0NMnSgRjtfDbXBPN3zV2sQAh04s4s5nBs
+ctuGvW2omA4HwWVXyj+TVi+EqPpF90oT5zZ9d+XJJWcr+PdTgiql4UfNVKB7YeRf
+kHcio6zYIAKy2HW7fn2AjWpuv2V3fFgWQCiDpVtcgimiHQdzvSJKY4YbGP5wRn/p
+C7o5m7ynVdGL6Pe/Q/uikfRY28hd0MUj92/W6Ra2I6f7FPXKiXdE0Whrevf5+tf3
+bS4VIL9dpsJJvDaCKl/i6R/FiRYgllu/TEauxZMIXikvo6exPKGII74C82Q7Lkx7
+Jk7CQ6XF6pUGflCgnBdT2Ocu5ItoaMsPsMD/Fd9RelGO52XckH6K4rDr4c9HGO4t
+AouCuOejSXED7PWT3mlliTnQ1fKGyqdjfFwIIAE7FcJjUV/AsAFjHvGmWE5RerL4
+m4NQj8GywFpk1CkQz91GHnrvnZ+qVMXtNH9Z4ghzAuOXzUOQFxrz3bs/ji+oirV9
+aMgH/KdOxHaomaJ3RgTF
+=znjs
 -----END PGP SIGNATURE-----
 
---BxIhUKWW31lNoI9D--
+--suF1EXQKA2Mmys/Q--
+
+--===============0699821975256439457==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0699821975256439457==--
