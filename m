@@ -1,69 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: da732x: Mark DC offset control registers volatile
-Date: Wed, 26 Feb 2014 08:54:34 +0900
-Message-ID: <20140225235434.GH2927@sirena.org.uk>
-References: <1393210853-32246-1-git-send-email-broonie@kernel.org>
- <2E89032DDAA8B9408CB92943514A03376BAD3FC8@SW-EX-MBX01.diasemi.com>
- <20140224124230.GF25940@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A03376BAD405D@SW-EX-MBX01.diasemi.com>
- <20140225012138.GK25940@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A03376BAD41AF@SW-EX-MBX01.diasemi.com>
+Subject: Re: [PATCH] ASoC: cirrus: Remove excess dependencies
+	on SND_SOC
+Date: Wed, 26 Feb 2014 08:57:10 +0900
+Message-ID: <20140225235710.GK2927@sirena.org.uk>
+References: <1393351314-23006-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dMyqICaxQaaUjrCL"
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2E89032DDAA8B9408CB92943514A03376BAD41AF@SW-EX-MBX01.diasemi.com>
-Sender: stable-owner@vger.kernel.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============2528402095131978624=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D0700265357
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 01:32:33 +0100 (CET)
+In-Reply-To: <1393351314-23006-1-git-send-email-shc_work@mail.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---dMyqICaxQaaUjrCL
+--===============2528402095131978624==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="x1F0m3RQhDZyj8sd"
+Content-Disposition: inline
+
+
+--x1F0m3RQhDZyj8sd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 25, 2014 at 04:13:02PM +0000, Opensource [Adam Thomson] wrote:
-> On Tue, 25 Feb 2014 01:22:04 +0000, Mark Brown wrote:
+On Tue, Feb 25, 2014 at 10:01:54PM +0400, Alexander Shiyan wrote:
+> Configuration for Cirrus Logic audio support is included only
+> if SND_SOC symbol selected, so no reason to check it once more.
 
-> > Refactoring the offset correction to happen once on startup would solve
-> > the issue since the cache could just be bypassed, though you are likely
-> > to find that there is some run to run variation for the callibration due
-> > to effects like thermal variation and simple measurement errors.  Still,
-> > the effects are typically very small.
+Applied, thanks.
 
-> I have to agree, the variation won't be great. If it were then you'd see
-> problems for example when keeping a device awake for prolonged periods and
-> during fluctuations in temperature. As far as I'm aware issues like this have
-> not been experienced with this device so I think it's safe to make this a one
-> time thing at startup.
-
-OK, so in that case how about applying the patch I sent for now (since
-it should make things better for stable users) and then refactoring to
-do the callibration at startup with cache bypass enabled for a proper
-fix?
-
---dMyqICaxQaaUjrCL
+--x1F0m3RQhDZyj8sd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTDS02AAoJELSic+t+oim91qQP/1MzyrOl0qQ5H1A0ZXeiYP5K
-0ut2YtiMM34ueUI8xO6azUteKavQm49YF56P9mqgjdcoKu24GUIeyDbkerl8XQTo
-aLhGPVCuHbt1jORzt7F+PdnEpZvTcoklgJGIHhNC8Q4Faa2Dzky03gg/YjdieIa6
-tZbTai7s7jOHgpzr3aQ4+24tpjuYfTr58uZ4TOJ8/vr1thwa0WpSHvu68Bq6+zRn
-O4IDe0+3lYrW6mXzgzmPZdsRgIdXPfo7IsS7Rlr4TQFddyg++lkNEViMb9g+bLlA
-NjxaLrOd+yunI8U+n0IfUbNFOBhc1UyoTGeB6uaLc+Y1mb08CNkRG13ftBxTCD2M
-v508HlSzYG4hBohcC1u7Lhb2pWZCUZhLdgJYHuBhdE3mwfgGYD99zojWvAPrqGSQ
-d5iIGEqyZVVnm4ZXIcYiouTFXZBTv8SgOI2bAvDGzBPgkxoIIVrR4xss/+HWlCXC
-ygWalRDcvFFXaqYVVtRQZjoHHY/Z3jMZq2qmvow0ogZD8+X1waKVcZo/WKp3gAQB
-2tnZLUAHKcdZz0mDSubeauDy3cy0fQ5UfevIXvf+WxkpmfaFCGEkQvup2CokTU6u
-JA7KIDdLE6If1Mz9TL0lVNcHSu1HENQRX2k/AeG0bs9eNywclxgjXrzn66C5mOdZ
-5juCCouY+43RP4EngdPm
-=S8aE
+iQIcBAEBAgAGBQJTDS3TAAoJELSic+t+oim9Ys8P/24w8wpA/wjCSIH6kXcWcKXZ
+fA5a8vVhC4V48kQCFtUWdTvzQvl6bEuE+WwkEQZInAH+LGiDCquGDIUwZGydNg9W
+lJBsOBnBFyBQ4Pk9dPkObGfyH0WXlYOc/kS8x7thlMkxT+7udF4FXDpfW7HH9Ypn
+bGmOfc7WlgYWM0Lr9LteljAhQA1xiu5MwXgSyQimrjF9nuJXF8lg3ihn9Waj4deB
++59f8umilnzyj/Ix4vqy95dgEwNfM0sEYMTAU+0vVVbgfeZiMPSz9OU88qKbhbW3
+Agcso/uQDVjQ5N/XPmKfWjuYkyOIsgYqOm5PoRcNYsd/kwpYpGAVkogHmoyDz7rI
+sb3tC4Ks702a34W8sbX1jBQIpEYeWAx1Oar0j4MC+B9i9xI6RLSJhff6a/DnhjFB
+s5N60AOWE0qxxbT9RP/e/ivKuA3uKUiFYTFhO6S+Czcha9+RiqU1NXG4/xqrp+bN
+FAn/pP2/ttOJ2bUwSyJCiNKe3TDBKHeOwlTWt2CTc/SF8ez35szhwHdSyK/hoGfw
+HMqXm87j0eWfm6/ZhA+tLEJ9luYbdoiYK/Mis88ST7rEcyWSo16tyar+7GHMqEKK
+kadVMCIflOJx2HHMi8Vy90O6zBZ6G2rJjAY27d9+59EA9wpbWJWkdszlFFQRPLr0
+XY/0tymhWIMjvaJtiv0w
+=hcOq
 -----END PGP SIGNATURE-----
 
---dMyqICaxQaaUjrCL--
+--x1F0m3RQhDZyj8sd--
+
+--===============2528402095131978624==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2528402095131978624==--
