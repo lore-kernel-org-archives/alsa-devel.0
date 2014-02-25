@@ -1,66 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: da732x: Mark DC offset control registers volatile
-Date: Tue, 25 Feb 2014 10:21:38 +0900
-Message-ID: <20140225012138.GK25940@sirena.org.uk>
-References: <1393210853-32246-1-git-send-email-broonie@kernel.org>
- <2E89032DDAA8B9408CB92943514A03376BAD3FC8@SW-EX-MBX01.diasemi.com>
- <20140224124230.GF25940@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A03376BAD405D@SW-EX-MBX01.diasemi.com>
+Subject: Re: [PATCH] ASOC: dapm: add param_fixup callback
+Date: Tue, 25 Feb 2014 10:05:23 +0900
+Message-ID: <20140225010523.GJ25940@sirena.org.uk>
+References: <1393250058-18430-1-git-send-email-Nikesh.Oswal@wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="teB4kYKCoFg+dcUh"
-Return-path: <stable-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="BxIhUKWW31lNoI9D"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <2E89032DDAA8B9408CB92943514A03376BAD405D@SW-EX-MBX01.diasemi.com>
-Sender: stable-owner@vger.kernel.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>
+In-Reply-To: <1393250058-18430-1-git-send-email-Nikesh.Oswal@wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, nikesh <Nikesh.Oswal@wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---teB4kYKCoFg+dcUh
+--BxIhUKWW31lNoI9D
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 24, 2014 at 01:57:53PM +0000, Opensource [Adam Thomson] wrote:
+On Mon, Feb 24, 2014 at 01:54:18PM +0000, NikeshOswal wrote:
+> From: nikesh <Nikesh.Oswal@wolfsonmicro.com>
 
-> anyway. I'd be tempted to keep it simple and just make those registers volatile,
-> then you know it will work as expected, at least for the time being until a
+You need to fix both your git and e-mail setups, you should be using
+"Nikesh Oswal" or similar as your real name and more importantly your
+mail setup is sending mail as "NikeshOswal" with no even a domain part
+which means you can't be replied to.  It is very important that you are
+able to get review comments at the address you post from.
 
-That breaks suspend and resume without further work - for suspend and
-resume we generally rely on restoring the register cache to restore the
-current settings but if a register is volatile it won't be cached so
-will go back to the hardware defaults after suspend.  The ability to
-avoid I2C traffic is partly just a nice side effect (though it was
-needed on devices that don't have readback), the main thing these days
-is that controls get efficient suspend and resume handling for free.
+> dai-link params for codec-codec links were fixed.
+> The fixed link between codec and another chip which
+> may be another codec, baseband, bluetooth codec etc
 
-Refactoring the offset correction to happen once on startup would solve
-the issue since the cache could just be bypassed, though you are likely
-to find that there is some run to run variation for the callibration due
-to effects like thermal variation and simple measurement errors.  Still,
-the effects are typically very small.
+Please use the full width for your changelog.
 
---teB4kYKCoFg+dcUh
+> Change-Id: Iad6ee3951bc4e8b8bc519c62642a2b4bcd949c18
+
+Don't include noise like this in upstream submissions.
+
+> -	const struct snd_soc_pcm_stream *params;
+> +	struct snd_soc_pcm_stream *params;
+> +	/* optional params re-writing for dai links */
+> +	int (*params_fixup)(struct snd_soc_dapm_widget *w, int event);
+
+This isn't a great interface, it relies on the driver peering inside the
+core data structures and it means that we have to drop the consts from
+users.  Systems not using this feature ought to be able to declare their
+parameters as static const but this breaks that ability.  Similarly
+users that are fully dynamic need to allocate some static data to work
+with this interface.
+
+If you look at the existing interface you'll also see that it takes an
+array of parameters rather than just a single parameter.  The idea was
+to extend the interface to provide a control to userspace allowing
+selection of one of the configurations from a list for use with cases
+like modems which can switch between 8kHz and 16kHz modes.
+
+--BxIhUKWW31lNoI9D
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTC/AfAAoJELSic+t+oim9GTUP/idaL0Ku0s1Nxe6uExqBNqJl
-aRom7QFTJbrn0L0ZDDFf8n63/bdWaRvHM95lft0VJWiayQD8FfOYGcP1vbqWOJX7
-GVVKWTmtg8PrvnDP5Qd982mJ+wKPts2hhECLu7BvWCvuwOpbGR4tCdrXXRmwmPOU
-01VvSa/pclwQ8P1EQVZTZptnorIDqVMUJyVu91L9NQxVlONXRUMUHk/yBqfDSlXr
-uWUWWu+jCcf9lLDa5IMcLUabi9IuCfyQFoOuDie4Og3/9T5OQF+qXGZcZSjoO+UP
-WhgLpLBMwXMky1KfKLTqNiiL2S5+W8/mz5sXw/Y7lfs7BAlMaee2cuoLqjGtIoa4
-hHFVI0lfJXWKtOlgeA06gmVskrJtp0N87JB5WZZ/H99QoZVCUHSIdp0KUUHgRCf8
-XuqmNDv2pDHMK0m1A2cQ0k+JHhajCKa/Nxu2KASlDq6UfxytDNksMO88H5Jeqp+A
-9MzBPETH7dpQC1ikOPV6dd3RCLQKCIWZj0lusXRSE1k2jYPaz+2TauRmBenHv5Cy
-U4e+/IWXqsqlUXz0I1mFQe2LcXGUKHFZlNiA/Ars2MUBEnO/NrZOAcmJn+5mYGHV
-e8HuuJWFA7QDLkEoTOdhpChWX4DfaXxs5bPnKKiWhc2mqWCtg7CmQsXPBcgGU5mB
-8AGSptXB6vJPrk0D9m6B
-=Wj+y
+iQIcBAEBAgAGBQJTC+xPAAoJELSic+t+oim9EN0QAIH9wnKFhpH1CZfAZFSQs/5G
++sETiAQBGduB7EyJb1ZpQqjTjhnLDSfor28Uhuyd6WyQBwIPTiMKREyNFg7W7JiI
+CsgTi7w/KeU1nBL9ckEMxDXqdZ3vibV9TlwI6eSB0PSKVUnBDJYjWL2km6SujNKZ
+RKCpI2HT8jPkQdRY5Zgk6j+i2/ziQPjERISyjQE6s+Hs2VHmQfHKsHhwrhWD+h5z
+IdavPM2Ugi8ves+IqvnYSzkDV5q4WfyvN3toVCl931EXrIe0bbXHE5ucR+sKO5xo
+llLyGm2/aBityXi9Biof/qz98lS98Yc0Tjfg11g5Iqq3uhnZFUj0mUc4SOXkq0bU
+ZPWrw0T0xIPj6bShSFyfSW5EPXo8Xo5iaujBSqPv3700/KjURfhF+xtiA18wGhB/
++7CMj/BWAw8JTgxgyCCfq1El4b6RaT9wHodIuO7X4YxVwNcdeVe6//lYLK6fJx4S
+1X4MSeLWloMFSeDHIu27r3aUDBAfvwcZ9dS9/YNq3od70QvTQtp7PPUt8seh6TaJ
+eGJNsrpGkJ5eHS/FqHOMcDxTp/kyD+1E06sNILMRifBr0z/rx7c2Ve4pXeBj3VBj
+3duzrrDfiEgz1GRt62+w2Siip66fRlejbRMQbyUAUX69BPUnDlFHZEtW0ZmR9JNn
+i2/jOqCn6vmSANBQ4FKS
+=UjEx
 -----END PGP SIGNATURE-----
 
---teB4kYKCoFg+dcUh--
+--BxIhUKWW31lNoI9D--
