@@ -1,113 +1,60 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: cs42888: Add codec driver support
-Date: Tue, 25 Feb 2014 10:39:13 +0800
-Message-ID: <20140225023912.GC7229@MrMyself>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: cs42888: Add codec driver support
+Date: Tue, 25 Feb 2014 12:09:47 +0900
+Message-ID: <20140225030947.GO25940@sirena.org.uk>
 References: <1393224929-7555-1-git-send-email-Guangyu.Chen@freescale.com>
- <530B8741.3010302@metafoo.de>
+ <20140224113011.GE25940@sirena.org.uk>
+ <B745DBDD-8A64-4B98-819B-72F8AFF602DE@cirrus.com>
+ <20140224160648.GC6132@MrMyself>
+ <20140225000027.GI25940@sirena.org.uk>
+ <20140225023840.GB7229@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BvHHjgBzqS6ETPrS"
 Return-path: <linux-doc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <530B8741.3010302@metafoo.de>
+In-Reply-To: <20140225023840.GB7229@MrMyself>
 Sender: linux-doc-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: broonie@kernel.org, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, linux-doc@vger.kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, rob@landley.net, galak@codeaurora.org, grant.likely@linaro.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, "Handrigan, Paul" <Paul.Handrigan@cirrus.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "rob@landley.net" <rob@landley.net>, Liam Girdwood <lgirdwood@gmail.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 24, 2014 at 06:54:09PM +0100, Lars-Peter Clausen wrote:
-> Hi,
-> 
-> Couple of trivial things.
 
-Will fix them all.
+--BvHHjgBzqS6ETPrS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks a lot,
-Nicolin Chen
+On Tue, Feb 25, 2014 at 10:38:41AM +0800, Nicolin Chen wrote:
 
-> 
-> On 02/24/2014 07:55 AM, Nicolin Chen wrote:
-> [...]
-> >+config SND_SOC_CS42888
-> >+	tristate "Cirrus Logic CS42888 CODEC"
-> >+	depends on I2C
-> 
-> should select REGMAP_I2C
-> 
-> >+
-> [...]
-> >+#define CS42888_NUM_SUPPLIES 4
-> >+static const char *cs42888_supply_names[CS42888_NUM_SUPPLIES] = {
-> 
-> const char *const
-> 
-> >+	"VA",
-> >+	"VD",
-> >+	"VLS",
-> >+	"VLC",
-> >+};
-> >+
-> >+static const char *cs42888_adc_single[] = { "Differential", "Single-Ended" };
-> 
-> const char * const
-> 
-> >+static const char *cs42888_szc[] = { "Immediate Change", "Zero Cross",
-> >+				     "Soft Ramp", "Soft Ramp on Zero Cross" };
-> >+
-> 
-> const char * constr
-> 
-> >+static const struct soc_enum cs42888_enum[] = {
-> >+	SOC_ENUM_SINGLE(CS42888_ADCCTL, 4, 2, cs42888_adc_single),
-> >+	SOC_ENUM_SINGLE(CS42888_ADCCTL, 3, 2, cs42888_adc_single),
-> >+	SOC_ENUM_SINGLE(CS42888_TXCTL, 5, 4, cs42888_szc),
-> >+	SOC_ENUM_SINGLE(CS42888_TXCTL, 0, 4, cs42888_szc),
-> >+};
-> 
-> Usually it makes things a bit more clearer when you have a variable
-> with a unique name for each enum rather then putting them into one
-> large array.
-> 
-> >+
-> [...]
-> >+static struct cs42888_ratios cs42888_ratios[] = {
-> 
-> const
-> 
-> [...]
-> >+static struct snd_soc_dai_ops cs42888_dai_ops = {
-> 
-> const
-> 
-> >+	.set_fmt	= cs42888_set_dai_fmt,
-> >+	.set_sysclk	= cs42888_set_dai_sysclk,
-> >+	.hw_params	= cs42888_hw_params,
-> >+	.digital_mute	= cs42888_digital_mute,
-> >+};
-> >+
-> [...]
-> >+
-> >+static struct reg_default cs42888_reg[] = {
-> 
-> const
-> [...]
-> >+
-> >+static struct snd_soc_codec_driver cs42888_driver = {
-> 
-> const
-> 
-> >+	.probe = cs42888_probe,
-> >+	.idle_bias_off = true,
-> >+
-> >+	.controls = cs42888_snd_controls,
-> >+	.num_controls = ARRAY_SIZE(cs42888_snd_controls),
-> >+	.dapm_widgets = cs42888_dapm_widgets,
-> >+	.num_dapm_widgets = ARRAY_SIZE(cs42888_dapm_widgets),
-> >+	.dapm_routes = cs42888_dapm_routes,
-> >+	.num_dapm_routes = ARRAY_SIZE(cs42888_dapm_routes),
-> >+};
-> >+
-> 
-> 
-> 
+> Hmm...my words might not be so clear last time: we have to handle the dividers
+> of ESAI in ESAI driver because the dividers is in the ESAI's IP, not in the SoC
+> clock controlling unit. So it's hard to get them visible in the clock tree.
 
+We should be able to arrange to have the ESAI be a clock provider
+shouldn't we?  If the clocks need to interface to other things (and they
+do) then we should be able to use the standard interface we have to
+clocks.
 
+--BvHHjgBzqS6ETPrS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTDAl4AAoJELSic+t+oim9GP8P/imLCGxvTsElxeKwyG2MnRVl
+8HvcyXUwrDBUrHU16QGBiGeVVQkr6JdNIHR1W4AGy7ZB0WzXrYY9V2wXx9A7zuLx
+qGw4bS1hoDldaVQNcIeoa7OEUDiq0nm+D784fGjWLo5IQGJUUkH3NpQzzCFDIVem
+CUTnqUuZmJ45uI9bBR91okGScso+cN0/lUzJE33tAHRYj7a+WKT9IHsri8+nttJd
++1ruSmfDBxXS3PkiRg9fPt1kX+7M4bt3bVM3zsp4HHokOWYmdkqfJKVRbVXJYmhs
+hZoxR7CXhO2IKFKUI5cBO5uH4ctZT8gihwxJWzBi0dayUiFjSUdveSRdw6uJ+ioG
+IHbauLHERnQC3XxdBV/bzRIbXMC7bJsjrgW9yMBMAjFbWe9l3I1+Tm5VQF1fVVta
+HZACr7moMDUAgBmumdg+rt/cRlugzEBy/yykIsTxWCAY/1qV0Kw6aP2YKk1gOfCM
+cZW+SoZr3tn5xjSikPwpnvXaxp1ONh249pwcmuscd7MXPmTxm7h3lRcpeekqIhOe
+BbxQDble+SkYT6ACky/lJGwc9IUaeK15jorgw6RdQ004c2xzcs9qRSpoYHsgENYi
+mtEyVOCdOfCsu7F9mVeFYNQVy19lJlMIpHfh0LwEGNqjzBUXFN1LojmInlsrhrMZ
+2Yl1fsi/4ti1AoMR9LJm
+=3ZVy
+-----END PGP SIGNATURE-----
+
+--BvHHjgBzqS6ETPrS--
