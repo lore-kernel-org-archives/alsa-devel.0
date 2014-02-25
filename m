@@ -1,40 +1,101 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 09/11] ASoC: wm8995: Use
-	SOC_ENUM_SINGLE_VIRT_DECL()
-Date: Tue, 25 Feb 2014 09:47:41 +0000
-Message-ID: <20140225094741.GG5438@opensource.wolfsonmicro.com>
-References: <1393168221-23018-1-git-send-email-lars@metafoo.de>
- <1393168221-23018-10-git-send-email-lars@metafoo.de>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH] ASoC: fsl-sai: fix Freescale SAI DAI format setting.
+Date: Tue, 25 Feb 2014 17:54:51 +0800
+Message-ID: <1393322091-24427-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 85CEA26560D
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 10:47:42 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1393168221-23018-10-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, Jerry Wong <jerry.wong@maximintegrated.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Feb 23, 2014 at 04:10:19PM +0100, Lars-Peter Clausen wrote:
-> For the upcoming consolidation for MUXs and virtual MUXs we need to mark virtual
-> enums as such.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
+o Fix some bugs of fsl_sai_set_dai_fmt_tr().
+o Add SND_SOC_DAIFMT_LEFT_J support.
+o Add SND_SOC_DAIFMT_CBS_CFM support.
+o Add SND_SOC_DAIFMT_CBM_CFS support.
+o And SND_SOC_DAIFMT_RIGHT_J need to be done in the future.
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+---
+ sound/soc/fsl/fsl_sai.c | 38 +++++++++++++++++++++++++++++---------
+ 1 file changed, 29 insertions(+), 9 deletions(-)
 
-Thanks,
-Charles
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index faa65af..26d9f5e 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -105,35 +105,47 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
+ 	else
+ 		val_cr4 |= FSL_SAI_CR4_MF;
+ 
++	/* DAI mode */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		val_cr4 |= FSL_SAI_CR4_FSE;
++		/* Data on rising edge of bclk, frame low, 1clk before data */
++		val_cr2 &= ~FSL_SAI_CR2_BCP;
++		val_cr4 |= FSL_SAI_CR4_FSE | FSL_SAI_CR4_FSP;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		/* Data on rising edge of bclk, frame high, 0clk before data */
++		val_cr2 &= ~FSL_SAI_CR2_BCP;
++		val_cr4 &= ~(FSL_SAI_CR4_FSE | FSL_SAI_CR4_FSP);
+ 		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		/* To be done */
+ 	default:
+ 		return -EINVAL;
+ 	}
+ 
++	/* DAI clock inversion */
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_IB_IF:
+-		val_cr4 |= FSL_SAI_CR4_FSP;
+-		val_cr2 &= ~FSL_SAI_CR2_BCP;
++		/* Invert both clocks */
++		val_cr2 ^= FSL_SAI_CR2_BCP;
++		val_cr4 ^= FSL_SAI_CR4_FSP;
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_NF:
+-		val_cr4 &= ~FSL_SAI_CR4_FSP;
+-		val_cr2 &= ~FSL_SAI_CR2_BCP;
++		/* Invert bit clock */
++		val_cr2 ^= FSL_SAI_CR2_BCP;
+ 		break;
+ 	case SND_SOC_DAIFMT_NB_IF:
+-		val_cr4 |= FSL_SAI_CR4_FSP;
+-		val_cr2 |= FSL_SAI_CR2_BCP;
++		/* Invert frame clock */
++		val_cr4 ^= FSL_SAI_CR4_FSP;
+ 		break;
+ 	case SND_SOC_DAIFMT_NB_NF:
+-		val_cr4 &= ~FSL_SAI_CR4_FSP;
+-		val_cr2 |= FSL_SAI_CR2_BCP;
++		/* Nothing to do for both normal cases */
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+ 
++	/* DAI clock master masks */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		val_cr2 |= FSL_SAI_CR2_BCD_MSTR;
+@@ -143,6 +155,14 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
+ 		val_cr2 &= ~FSL_SAI_CR2_BCD_MSTR;
+ 		val_cr4 &= ~FSL_SAI_CR4_FSD_MSTR;
+ 		break;
++	case SND_SOC_DAIFMT_CBS_CFM:
++		val_cr2 |= FSL_SAI_CR2_BCD_MSTR;
++		val_cr4 &= ~FSL_SAI_CR4_FSD_MSTR;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFS:
++		val_cr2 &= ~FSL_SAI_CR2_BCD_MSTR;
++		val_cr4 |= FSL_SAI_CR4_FSD_MSTR;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+1.8.4
