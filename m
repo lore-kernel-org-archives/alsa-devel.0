@@ -1,53 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl-sai: fix Freescale SAI DAI format setting.
-Date: Wed, 26 Feb 2014 08:51:39 +0900
-Message-ID: <20140225235139.GG2927@sirena.org.uk>
-References: <1393322091-24427-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCH] ASoC: da732x: Mark DC offset control registers volatile
+Date: Wed, 26 Feb 2014 08:54:34 +0900
+Message-ID: <20140225235434.GH2927@sirena.org.uk>
+References: <1393210853-32246-1-git-send-email-broonie@kernel.org>
+ <2E89032DDAA8B9408CB92943514A03376BAD3FC8@SW-EX-MBX01.diasemi.com>
+ <20140224124230.GF25940@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376BAD405D@SW-EX-MBX01.diasemi.com>
+ <20140225012138.GK25940@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376BAD41AF@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7uYPyRQQ5N0D02nI"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="dMyqICaxQaaUjrCL"
+Return-path: <stable-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1393322091-24427-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <2E89032DDAA8B9408CB92943514A03376BAD41AF@SW-EX-MBX01.diasemi.com>
+Sender: stable-owner@vger.kernel.org
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---7uYPyRQQ5N0D02nI
+--dMyqICaxQaaUjrCL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 25, 2014 at 05:54:51PM +0800, Xiubo Li wrote:
-> o Fix some bugs of fsl_sai_set_dai_fmt_tr().
-> o Add SND_SOC_DAIFMT_LEFT_J support.
-> o Add SND_SOC_DAIFMT_CBS_CFM support.
-> o Add SND_SOC_DAIFMT_CBM_CFS support.
-> o And SND_SOC_DAIFMT_RIGHT_J need to be done in the future.
+On Tue, Feb 25, 2014 at 04:13:02PM +0000, Opensource [Adam Thomson] wrote:
+> On Tue, 25 Feb 2014 01:22:04 +0000, Mark Brown wrote:
 
-Applied, thanks.
+> > Refactoring the offset correction to happen once on startup would solve
+> > the issue since the cache could just be bypassed, though you are likely
+> > to find that there is some run to run variation for the callibration due
+> > to effects like thermal variation and simple measurement errors.  Still,
+> > the effects are typically very small.
 
---7uYPyRQQ5N0D02nI
+> I have to agree, the variation won't be great. If it were then you'd see
+> problems for example when keeping a device awake for prolonged periods and
+> during fluctuations in temperature. As far as I'm aware issues like this have
+> not been experienced with this device so I think it's safe to make this a one
+> time thing at startup.
+
+OK, so in that case how about applying the patch I sent for now (since
+it should make things better for stable users) and then refactoring to
+do the callibration at startup with cache bypass enabled for a proper
+fix?
+
+--dMyqICaxQaaUjrCL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTDSyIAAoJELSic+t+oim9mdEP/1bT3t1R2ymhc/JFmVeTnO5k
-0E65OBwQYwnkFsicwM3alIqF+UkiGxnkLozhzO4UF6zwso+T0D7oTxqfuUpl9vA3
-VsX4B1SS3VLkPdVD9Vzf/kZa8lFHTDIcccauAt6ewnqGYt4TFM8VO7tRN+Pw6dNH
-JSLfKDz9vGRodZqxL24YudNz07acIdHkTiL+V87NGg1Fl0+P6FUBXx0hmjNsdKzP
-9ezOpblDsuVu1eLTLyKaokrtQy/4VHbKLRzvszxgtJCkj4Gs7Ddh7XehiCk+7C0j
-g4C+fIlk/X9NkQ9dZkPnsKN5T2z5qdP3K8xYDNf3t8CFds/m7zHCyShxxVVftlqG
-86mGDy/6t601Z0aX3H67089XuDQnODb3isoNK+SMxiiMkq6X3D1BPVc1pzrGG58B
-cUrXTxmJL3g5Rn1gOoBu3sp3G8EPZOwOLVEgsqdOVLdES+vVse0bJRvA5cm9mV6z
-H3TysY8PxOHautcpIL3Uddwv7DRYV7i6CFFPBy7h2i/zN60CXWQtB/pCc3L8zpBd
-rv1u97GqmzItA/fatwRy39Z3tMAtOqxssDpDn/ftak19q2bwjX4cD9XXKI1ZBN1X
-JqSZ0s537sDH2rzlzPWF4x6VfBh9+D0AN9c2lCBQ6rgiF73hckX/ApuyxTEM1Ka8
-pzWdesk7GnnEjFBgjaBO
-=4gJh
+iQIcBAEBAgAGBQJTDS02AAoJELSic+t+oim91qQP/1MzyrOl0qQ5H1A0ZXeiYP5K
+0ut2YtiMM34ueUI8xO6azUteKavQm49YF56P9mqgjdcoKu24GUIeyDbkerl8XQTo
+aLhGPVCuHbt1jORzt7F+PdnEpZvTcoklgJGIHhNC8Q4Faa2Dzky03gg/YjdieIa6
+tZbTai7s7jOHgpzr3aQ4+24tpjuYfTr58uZ4TOJ8/vr1thwa0WpSHvu68Bq6+zRn
+O4IDe0+3lYrW6mXzgzmPZdsRgIdXPfo7IsS7Rlr4TQFddyg++lkNEViMb9g+bLlA
+NjxaLrOd+yunI8U+n0IfUbNFOBhc1UyoTGeB6uaLc+Y1mb08CNkRG13ftBxTCD2M
+v508HlSzYG4hBohcC1u7Lhb2pWZCUZhLdgJYHuBhdE3mwfgGYD99zojWvAPrqGSQ
+d5iIGEqyZVVnm4ZXIcYiouTFXZBTv8SgOI2bAvDGzBPgkxoIIVrR4xss/+HWlCXC
+ygWalRDcvFFXaqYVVtRQZjoHHY/Z3jMZq2qmvow0ogZD8+X1waKVcZo/WKp3gAQB
+2tnZLUAHKcdZz0mDSubeauDy3cy0fQ5UfevIXvf+WxkpmfaFCGEkQvup2CokTU6u
+JA7KIDdLE6If1Mz9TL0lVNcHSu1HENQRX2k/AeG0bs9eNywclxgjXrzn66C5mOdZ
+5juCCouY+43RP4EngdPm
+=S8aE
 -----END PGP SIGNATURE-----
 
---7uYPyRQQ5N0D02nI--
+--dMyqICaxQaaUjrCL--
