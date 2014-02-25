@@ -1,19 +1,26 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC v3] [PATCH 00/52] Enhancement for support of
-	firewire devices
-Date: Tue, 25 Feb 2014 12:41:20 +0900
-Message-ID: <530C10E0.4050603@sakamocchi.jp>
-References: <1391003099-7109-1-git-send-email-o-takashi@sakamocchi.jp>
- <20140221165444.GA25817@redhat.com> <53080CB3.9000504@sakamocchi.jp>
- <20140224172846.GA880@redhat.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH] ASoC: cs42888: Add codec driver support
+Date: Tue, 25 Feb 2014 11:46:36 +0800
+Message-ID: <20140225034635.GB7343@MrMyself>
+References: <1393224929-7555-1-git-send-email-Guangyu.Chen@freescale.com>
+ <20140224113011.GE25940@sirena.org.uk>
+ <B745DBDD-8A64-4B98-819B-72F8AFF602DE@cirrus.com>
+ <20140224160648.GC6132@MrMyself>
+ <20140225000027.GI25940@sirena.org.uk>
+ <20140225023840.GB7229@MrMyself>
+ <20140225030947.GO25940@sirena.org.uk>
+ <20140225031313.GA7343@MrMyself>
+ <20140225033929.GP25940@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id C21F7265488
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 04:41:29 +0100 (CET)
-In-Reply-To: <20140224172846.GA880@redhat.com>
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe004.messaging.microsoft.com [207.46.163.27])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E8AA265488
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 04:48:02 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20140225033929.GP25940@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,87 +30,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jay Fenlason <fenlason@redhat.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Austin,
+ Brian" <Brian.Austin@cirrus.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "Handrigan,
+ Paul" <Paul.Handrigan@cirrus.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "rob@landley.net" <rob@landley.net>, "galak@codeaurora.org" <galak@codeaurora.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jay,
+On Tue, Feb 25, 2014 at 12:39:29PM +0900, Mark Brown wrote:
+> On Tue, Feb 25, 2014 at 11:13:14AM +0800, Nicolin Chen wrote:
+> > On Tue, Feb 25, 2014 at 12:09:47PM +0900, Mark Brown wrote:
+> 
+> > > We should be able to arrange to have the ESAI be a clock provider
+> > > shouldn't we?  If the clocks need to interface to other things (and they
+> > > do) then we should be able to use the standard interface we have to
+> > > clocks.
+> 
+> > Excuse me, I think I just don't get the approach how to use clock API to
+> > standardize the MCLK derived from ESAI IP: it's surely not a fixed-clock
+> > so we couldn't register in DT and it's not SoC internal clock which means
+> > we couldn't register it in the SoC clock driver either.
+> 
+> > Could you please shed me some light on it?
+> 
+> So register it from the ESAI driver then.
 
-> The RFC v3 patches.
+Then I think I need to find a way to pass the clock to CODEC driver...
 
-BeBoB/OXFW driver in RFCv3 includes some bugs.
-
-Please use latest patches:
-  https://github.com/takaswie/sound
-Or backport package for Linux 3.11/12/13.
-  https://github.com/takaswie/snd-firewire-improve
-
- >> 1. PreSonus Inspire1394
- > [hack@precision ~]$ cat /proc/asound/card3/#formation
- > [hack@precision ~]$ cat /proc/asound/card3/#clock
- > [hack@precision ~]$ cat /proc/asound/card3/#firmware
-
-OK. I can confirm BeBoB driver detect inspire1394 correctly.
-
- > [hack@precision ~]$ arecord --verbose -D plughw:3 /tmp/test.wav
- > [hack@precision ~]$ aplay --verbose -D plughw:3
-
-It looks good.
-
-I guess:
-  - BeBoB driver in RFCv3 has a bug in access by several processes:
-http://sourceforge.net/mailarchive/message.php?msg_id=31924100
-  - When PulseAudio was installed your system, PulseAudio generate much 
-access to detect inspire1394.
-  - As a result, BeBoB driver works badly, often hungs your system.
-
->> 2. FireWave
-> [hack@precision ~]$ cat /proc/asound/cards
-> [hack@precision ~]$ hexdump -C /sys/bus/firewire/devices/fw3/config_rom
-
-For 'struct snd_card.shortname', OXFW driver pick up model name from 
-config_rom. In this case, the model name is 26 bytes (Griffin FireWave 
-Surround). But OXFW driver keeps char[24] (char model[32] in 
-name_card()). So the name is split.
-
-I pushed fix for this issue:
-https://github.com/takaswie/snd-firewire-improve/commit/cf4cec651de539e5debb2da274cee30a3847004d
-
-But this long model name also affects 'struct snd_card.longname' 
-(Griffin Technology Griffin FireWave Surrou (OXFW970 0104), GUID 
-001292060052048). This shold have been 'Griffin Technology Griffin 
-FireWave Surround (OXFW970 0104), GUID 001292060052048 at fw1,0. S400'. 
-I'm under consideration about how to fix this...
-
-> [hack@precision ~]$ cat /proc/asound/card2/#formation
-> [hack@precision ~]$ aplay --verbose -D plughw:2
-> /usr/share/sounds/alsa/Noise.wav
-> Playing WAVE '/usr/share/sounds/alsa/Noise.wav' : Signed 16 bit Little
-> Endian, Rate 48000 Hz, Mono
-> aplay: set_params:1297: Unable to install hw params:
-> ACCESS:  RW_INTERLEAVED
-> FORMAT:  S16_LE
-> SUBFORMAT:  STD
-> SAMPLE_BITS: 16
-> FRAME_BITS: 16
-> CHANNELS: 1
-> RATE: 48000
-> PERIOD_TIME: 125000
-> PERIOD_SIZE: 6000
-> PERIOD_BYTES: 12000
-> PERIODS: 4
-> BUFFER_TIME: 500000
-> BUFFER_SIZE: 24000
-> BUFFER_BYTES: 48000
-> TICK_TIME: 0
-
-This is a bug of OXFW driver in RFCv3. I already fix this.
-
- > Let me know if there is any other information you need.
-
-I want you to test latest patches with FireWave to check regression.
-
-
-Thank you
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+Anyway, I'll try it first. Thank you.
