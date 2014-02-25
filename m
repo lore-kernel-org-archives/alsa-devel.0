@@ -1,48 +1,54 @@
-From: Dana Goyette <DanaGoyette@gmail.com>
-Subject: Re: External sound card issue (Xonar U7 / CM6632)
-Date: Mon, 24 Feb 2014 23:43:23 -0800
-Message-ID: <lehhid$uis$1@ger.gmane.org>
-References: <CAEiHY5j=K874m_Jk7ws4eOqts855oSHqY0HUrp_A5WwxFoDr=Q@mail.gmail.com>	<52DD1A66.9050909@ladisch.de>	<CAN8cciYR_9Le-tX-CLBjfnYQ1+CuexKzxpxberVkkV6jR_c50A@mail.gmail.com>	<1390398693.24097.YahooMailNeo@web162304.mail.bf1.yahoo.com>	<52E54D7B.3040408@ladisch.de>	<1390765545.16173.YahooMailNeo@web162301.mail.bf1.yahoo.com>
- <s5ha9ehkdk5.wl%tiwai@suse.de>
- <1390824843.46971.YahooMailNeo@web162301.mail.bf1.yahoo.com>
- <52E65597.6040602@ladisch.de> <lehg0l$gu1$1@ger.gmane.org>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [alsa-devel] [PATCH 2/4] ASoC: simple-card: dynamically
+ allocate the DAI link array
+Date: Tue, 25 Feb 2014 09:02:49 +0100
+Message-ID: <20140225090249.4e6cace9@armhf>
+References: <cover.1392995566.git.moinejf@free.fr>
+	<41aa7354a6883f31afa60c21c2e14ecbb3bbb7e9.1392995566.git.moinejf@free.fr>
+	<397c6a465f424a3eb42ead8f1e55f7d9@BY2PR03MB505.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FA8326558E
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 08:45:04 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1WIChL-0003oO-8j
- for alsa-devel@alsa-project.org; Tue, 25 Feb 2014 08:45:03 +0100
-Received: from 173-228-54-224.dsl.dynamic.sonic.net ([173.228.54.224])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 08:45:03 +0100
-Received: from DanaGoyette by 173-228-54-224.dsl.dynamic.sonic.net with local
- (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 08:45:03 +0100
-In-Reply-To: <lehg0l$gu1$1@ger.gmane.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <397c6a465f424a3eb42ead8f1e55f7d9@BY2PR03MB505.namprd03.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Cc: Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 24 Feb 2014 03:32:02 +0000
+"Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com> wrote:
+>=20
+> > @@ -20,7 +20,6 @@ struct simple_card_data {
+> >  	unsigned int daifmt;
+> >  	struct asoc_simple_dai cpu_dai;
+> >  	struct asoc_simple_dai codec_dai;
+> > -	struct snd_soc_dai_link snd_link;
+> >  };
+> >=20
+> >  static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
+> > @@ -246,7 +245,9 @@ static int asoc_simple_card_probe(struct platfo=
+rm_device
+> > *pdev)
+> >  	struct device *dev =3D &pdev->dev;
+> >  	int ret;
+> >=20
+> > -	priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> > +	priv =3D devm_kzalloc(dev,
+> > +			sizeof(*priv) + sizeof(*dai_link),
+>=20
+> This is okey for me.
+>=20
+> Well, how about splitting the *priv and *dai_link into two separated
+> memory blocks? As we can get the dai-link pointer via priv->snd_card.=
+dai_link
+> in other places.
+>=20
+> IMHO, then the code will be much more simplifier and readable.
 
-> Incidentally, the capture selector switch seems horribly broken even in
-> Windows!  In my attempts to get line-in and mic-in working, I've gotten
-> the audio driver (or perhaps the device?) wedged several times.
+It is just a simple optimization: less calls to memory allocation and
+less code (also, less TLB reload?). I will add more comments.
 
-Correction: It seems my hangs may be a red herring, due to using the 
-device on a USB 3.0 controller.
-
-Anyway, if we get a fix committed for this device, it should probably 
-include both device IDs.
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
