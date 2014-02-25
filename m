@@ -1,18 +1,20 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH v4] ASoC: add RT286 CODEC driver
-Date: Tue, 25 Feb 2014 08:58:06 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D7380472@RTITMBSV03.realtek.com.tw>
-References: <1393311589-14315-1-git-send-email-bardliao@realtek.com>
- <s5htxbnvbwa.wl%tiwai@suse.de>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 2/2] ASoC: s3c24xx: Remove invalid file
+	reference
+Date: Tue, 25 Feb 2014 15:10:40 +0530
+Message-ID: <1393321240-7632-2-git-send-email-sachin.kamat@linaro.org>
+References: <1393321240-7632-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DAF62652C1
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 09:58:12 +0100 (CET)
-In-Reply-To: <s5htxbnvbwa.wl%tiwai@suse.de>
-Content-Language: zh-TW
+Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
+ [209.85.220.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F1AF26525B
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 10:46:31 +0100 (CET)
+Received: by mail-pa0-f47.google.com with SMTP id kp14so7823551pab.6
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 01:46:30 -0800 (PST)
+In-Reply-To: <1393321240-7632-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,19 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, Flove <flove@realtek.com>
+To: alsa-devel@alsa-project.org
+Cc: sachin.kamat@linaro.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-> 
-> Don't include this header here.
-> The HD-audio verbs are defined in sound/hda_verbs.h in the usptream tree, so
-> include it instead.
+Remove file references rendered invalid due to relocation.
 
-I will modify it.
-Thanks.
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ include/linux/platform_data/asoc-s3c24xx_simtec.h |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> 
-> Takashi
-> 
-> ------Please consider the environment before printing this e-mail.
+diff --git a/include/linux/platform_data/asoc-s3c24xx_simtec.h b/include/linux/platform_data/asoc-s3c24xx_simtec.h
+index 376af5286a3e..d220e54123aa 100644
+--- a/include/linux/platform_data/asoc-s3c24xx_simtec.h
++++ b/include/linux/platform_data/asoc-s3c24xx_simtec.h
+@@ -1,5 +1,4 @@
+-/* arch/arm/plat-samsung/include/plat/audio-simtec.h
+- *
++/*
+  * Copyright 2008 Simtec Electronics
+  *	http://armlinux.simtec.co.uk/
+  *	Ben Dooks <ben@simtec.co.uk>
+-- 
+1.7.9.5
