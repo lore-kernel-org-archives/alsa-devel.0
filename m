@@ -1,78 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: da732x: Use da732x->regmap instead
- of codec->control_data
-Date: Tue, 25 Feb 2014 13:34:14 +0900
-Message-ID: <20140225043414.GR25940@sirena.org.uk>
-References: <1393090485-10894-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: wm8993: Remove unused pointer in wm8993_remove()
+Date: Tue, 25 Feb 2014 13:34:58 +0900
+Message-ID: <20140225043458.GS25940@sirena.org.uk>
+References: <20140222160016.372a3683@spike>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4170553026532034507=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D6A0D265546
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 05:34:21 +0100 (CET)
-In-Reply-To: <1393090485-10894-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Adam Thomson <Adam.Thomson@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Michal Hajduk <Michal.Hajduk@diasemi.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5ZS7wi46EbtzMhVf"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140222160016.372a3683@spike>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Christian Engelmayer <cengelma@gmx.at>
+Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4170553026532034507==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VTgTzoOEg/vvPQeV"
-Content-Disposition: inline
-
-
---VTgTzoOEg/vvPQeV
+--5ZS7wi46EbtzMhVf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Feb 22, 2014 at 06:34:45PM +0100, Lars-Peter Clausen wrote:
-> With the ongoing component-ization of the ASoC framework and the continuing
-> migration to using regmap for IO the control_data field of the snd_soc_codec
-> struct will eventually be removed. Prepare the da732x driver for this by using
-> da732x->regmap instead of accessing the CODEC's control_data field.
+On Sat, Feb 22, 2014 at 04:00:16PM +0100, Christian Engelmayer wrote:
+> Commit 88b5bdfd (ASoC: wm8993: drop regulator_bulk_free of devm_ allocated
+> data) eliminated the last user of driver data pointer 'wm8993' in function
+> wm8993_remove() - Thus remove it. Detected by Coverity: CID 1186208.
 
 Applied, thanks.
 
---VTgTzoOEg/vvPQeV
+--5ZS7wi46EbtzMhVf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTDB0+AAoJELSic+t+oim9BHIP/1HCYVqU3h31+Qo5G/yEvWOj
-BY14wAKHFqlcmgiNqeEMtFdfoWNd+PexbtQCPfvXqeuTCS5xVkpKTGacWTFTsEct
-K4HBywVN7pAcKQnXLHQhM4HLxK5IhOaUTk2hHkzFrPfEm82OsQKjtVp+uex1rtZM
-5oAN3UObN+TGN8RSbqBrHSyCcnwMJhVTNXgcUrKNFoIZf9+x5sAw8CSTymouE2/C
-DRbCzxqs9l4J4WMj+2m+xSAYM/DH/fXvjhxh7bnUgd4taIXOCl0KfC2qXf0HZD5N
-I8lrfaE40mR/hb7DCDBCvHCq8QCJhBmX8lwfsuyi7IF5eV82d6x/4eB4XQVCePIH
-1uukx1MN7pxIoGqch2H03w8PkfUP9Gg+Krpuzf6jLba56xkHtfNJ14lXz8TPmGxq
-7QXAkI4qhJH53nlcAsUMrKww00VeB6DUuik/ut6gcjfLamiHiOVF9dlfNg7II30R
-IyxRtlkuyKmhH7Y/I6gEO3O4ovEV5jSSePmbtorJIKVt/6ISWHuXc0KuEordxANo
-posW9r5jLpWVIZBdF7eF5l8JQ/7Hg+vPHtVo7rWFuqf5wW6Lhwg2lDo3A3zFxQ1H
-4yf4lScyIlYhM/wkB3Osowo3qVWMsdemShXuCNjUJVAkGKNGziOwUyTU0DGdMRBR
-9PM03INV3P/GhCfQ0vx2
-=jvQ5
+iQIcBAEBAgAGBQJTDB1vAAoJELSic+t+oim9jswP/1HBP/5HotLTxnDsD/5xwRpl
+DEWl+PGhg+7/kX/XXDFr6edO/zKlhLNUjiHlXysIWOPqwtvTxLgMHw1ISni1CLJW
+JD2DrTwq/xixtDH2P0D+JRTSrbR4PRLga0c8n2coZzry7vsO7woYz4FAVuYDaIpA
+AFGEi6EWpIKFPDGG85sgcmYW8leNpYn0+dKpK0C3MoZ/BpBADejHfrLNjJrh35Gx
+54lmcnd2syyaCc4OfOuIGzswRH8lOCUjj0Ir7Os8UOL8utKGbw8sMgaf9bjPik09
+XNmNv28x0VKGFYShshFOYeRXz8vjwwCRVHUP1hQouScaRmPnyzQchtb1Tr2DmA7j
+AYZWdNV5zYHcN4p2P8Usi15npftT092rl3g4uGU6QFs1Xpwy2RtaSgWeY8XgNmoN
+WPMNr+XbbjdSyTXcGXNSpkNgl9CIDG85DjtGEUEsWYubyq8Z+G8c5F8qWt7YQ2ra
+kbfRcPnBrq2iyo3udgb3ox9nHpUjCo5Y0TbT4Ciy65FiV8+2/BqHhHFodDQI08bz
+Iawbk349RapWbj+82HsR/5KWNLizjnurNIjeTwfAUzO/deSijgoRp9M154nkTWwX
+18e/LX5W/r6GtT3mhZEA/9zUAsw5rftEEEJH5YKO+YNj4Knl1ZlEBU7Nwq5/iGCz
+rLFs1+J34OsZFOBGGLSE
+=6tyz
 -----END PGP SIGNATURE-----
 
---VTgTzoOEg/vvPQeV--
-
---===============4170553026532034507==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4170553026532034507==--
+--5ZS7wi46EbtzMhVf--
