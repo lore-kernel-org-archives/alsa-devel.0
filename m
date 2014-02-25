@@ -1,76 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: Intel: byt-rt5640: Update
- internal mic and speaker kcontrol names
-Date: Wed, 26 Feb 2014 08:49:26 +0900
-Message-ID: <20140225234926.GE2927@sirena.org.uk>
-References: <1393334248-29033-1-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH] ASoC: fsl-sai: fix Freescale SAI DAI format setting.
+Date: Wed, 26 Feb 2014 08:51:39 +0900
+Message-ID: <20140225235139.GG2927@sirena.org.uk>
+References: <1393322091-24427-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1322580195601335509=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D0F3226565B
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 00:49:28 +0100 (CET)
-In-Reply-To: <1393334248-29033-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7uYPyRQQ5N0D02nI"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1393322091-24427-1-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1322580195601335509==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3O1VwFp74L81IIeR"
-Content-Disposition: inline
-
-
---3O1VwFp74L81IIeR
+--7uYPyRQQ5N0D02nI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 25, 2014 at 03:17:27PM +0200, Jarkko Nikula wrote:
-> Use more sensible kcontrol names than "Int Mic" and "Ext Spk". Speakers
-> especially are usually integrated devices in sales models.
+On Tue, Feb 25, 2014 at 05:54:51PM +0800, Xiubo Li wrote:
+> o Fix some bugs of fsl_sai_set_dai_fmt_tr().
+> o Add SND_SOC_DAIFMT_LEFT_J support.
+> o Add SND_SOC_DAIFMT_CBS_CFM support.
+> o Add SND_SOC_DAIFMT_CBM_CFS support.
+> o And SND_SOC_DAIFMT_RIGHT_J need to be done in the future.
 
-Applied both, thanks.
+Applied, thanks.
 
---3O1VwFp74L81IIeR
+--7uYPyRQQ5N0D02nI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTDSv+AAoJELSic+t+oim9vR0P/0mOe+dFnePKJ2MPtx+usMJX
-/3yDljannU/aLeysyBlUGKOCF57f7Ch9PRgHg5xrl8zJ0tY7LzjG157fNmCHWkmR
-AsCjdzRS7x+Ia7cn8qt+IeYPJs4xd7Ed8x9B9hVz9t2awuwz9Q8zk9Wa0GYgDHE1
-COFXRQlPwzs54gI4jameBWXYJ5cQin2zqEDC9MksnR1DdX89c2Y7NfxxQ8zQ2O89
-122DJ2ve5nd0/yn6P+RYTr3UrFgerijFqU66xwG7JxGfq2P5cf/ox1zeZOP9Z6VF
-MqCpqhCNZxFY2PWSDC+HibwEkvChxDC1nOhva6qi1HtV10KU/nx8yDKzv0xor88p
-Ie0Kvl+tjFEqSBz/KuihJh/7hdjs4ytyQNeNAlB0s15AenmkVh4BivH+Ue+iPAWT
-OXJyDcJU3fIqM0Rvwl7O8dtEgT1yC96ed4jY/STi1PQTwiVVk0qVkuMYawz7iqmU
-b1BJk+DMqUhBntjfmQduxSRV4H/359S9nM4aH2DUTuKglx/6ckPf6oxJdMcmW+nr
-ZlW8YHIrnA7mkgxXmcPB8lrVcWLpvIKzzcU8aL46F+61wcIZne6JDVEFqxQiCm7Z
-Bh+Ne0+0uZSbnOYVFY/0lIf8Z8GbZf3InG53iE2oYrPiIvtgg7ni8ywo3hpwvVKE
-WnkXL+F/YkuzncTeNJkN
-=YpI/
+iQIcBAEBAgAGBQJTDSyIAAoJELSic+t+oim9mdEP/1bT3t1R2ymhc/JFmVeTnO5k
+0E65OBwQYwnkFsicwM3alIqF+UkiGxnkLozhzO4UF6zwso+T0D7oTxqfuUpl9vA3
+VsX4B1SS3VLkPdVD9Vzf/kZa8lFHTDIcccauAt6ewnqGYt4TFM8VO7tRN+Pw6dNH
+JSLfKDz9vGRodZqxL24YudNz07acIdHkTiL+V87NGg1Fl0+P6FUBXx0hmjNsdKzP
+9ezOpblDsuVu1eLTLyKaokrtQy/4VHbKLRzvszxgtJCkj4Gs7Ddh7XehiCk+7C0j
+g4C+fIlk/X9NkQ9dZkPnsKN5T2z5qdP3K8xYDNf3t8CFds/m7zHCyShxxVVftlqG
+86mGDy/6t601Z0aX3H67089XuDQnODb3isoNK+SMxiiMkq6X3D1BPVc1pzrGG58B
+cUrXTxmJL3g5Rn1gOoBu3sp3G8EPZOwOLVEgsqdOVLdES+vVse0bJRvA5cm9mV6z
+H3TysY8PxOHautcpIL3Uddwv7DRYV7i6CFFPBy7h2i/zN60CXWQtB/pCc3L8zpBd
+rv1u97GqmzItA/fatwRy39Z3tMAtOqxssDpDn/ftak19q2bwjX4cD9XXKI1ZBN1X
+JqSZ0s537sDH2rzlzPWF4x6VfBh9+D0AN9c2lCBQ6rgiF73hckX/ApuyxTEM1Ka8
+pzWdesk7GnnEjFBgjaBO
+=4gJh
 -----END PGP SIGNATURE-----
 
---3O1VwFp74L81IIeR--
-
---===============1322580195601335509==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1322580195601335509==--
+--7uYPyRQQ5N0D02nI--
