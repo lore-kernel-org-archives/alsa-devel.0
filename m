@@ -1,40 +1,87 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
-Subject: Re: [alsa-devel] [patch 1/2] ASoC: sst-haswell-ipc: restore IRQs on
- error
-Date: Tue, 25 Feb 2014 13:12:11 +0000
-Message-ID: <1393333931.2300.11.camel@loki>
-References: <20140225083250.GA22416@elgon.mountain>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH 1/2] ASoC: Intel: byt-rt5640: Update internal
+	mic and speaker kcontrol names
+Date: Tue, 25 Feb 2014 15:17:27 +0200
+Message-ID: <1393334248-29033-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20140225083250.GA22416@elgon.mountain>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97436261AF6
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 14:17:44 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMDE0LTAyLTI1IGF0IDExOjMyICswMzAwLCBEYW4gQ2FycGVudGVyIHdyb3RlOgo+
-IFRoaXMgc2hvdWxkIGJlIHNwaW5fdW5sb2NrX2lycXJlc3RvcmUoKSBpbnN0ZWFkIG9mIHNwaW5f
-dW5sb2NrKCkKPiAKPiBGaXhlczogMjI5ODEyNDM1ODljICgnQVNvQzogSW50ZWw6IEFkZCBIYXN3
-ZWxsL0Jyb2Fkd2VsbCBJUEMnKQo+IFNpZ25lZC1vZmYtYnk6IERhbiBDYXJwZW50ZXIgPGRhbi5j
-YXJwZW50ZXJAb3JhY2xlLmNvbT4KPiAKPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ludGVsL3Nz
-dC1oYXN3ZWxsLWlwYy5jIGIvc291bmQvc29jL2ludGVsL3NzdC1oYXN3ZWxsLWlwYy5jCj4gaW5k
-ZXggNjY4ZDQ4NjUyMGFlLi41NTJhZWJmMmM4ZjUgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2lu
-dGVsL3NzdC1oYXN3ZWxsLWlwYy5jCj4gKysrIGIvc291bmQvc29jL2ludGVsL3NzdC1oYXN3ZWxs
-LWlwYy5jCj4gQEAgLTUyNyw3ICs1MjcsNyBAQCBzdGF0aWMgaW50IGlwY190eF9tZXNzYWdlKHN0
-cnVjdCBzc3RfaHN3ICpoc3csIHUzMiBoZWFkZXIsIHZvaWQgKnR4X2RhdGEsCj4gIAo+ICAJbXNn
-ID0gbXNnX2dldF9lbXB0eShoc3cpOwo+ICAJaWYgKG1zZyA9PSBOVUxMKSB7Cj4gLQkJc3Bpbl91
-bmxvY2soJmhzdy0+ZHNwLT5zcGlubG9jayk7Cj4gKwkJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgm
-aHN3LT5kc3AtPnNwaW5sb2NrLCBmbGFncyk7Cj4gIAkJcmV0dXJuIC1FQlVTWTsKPiAgCX0KPiAg
-CgpCb3RoIAoKQWNrZWQtYnk6IExpYW0gR2lyZHdvb2QgPGxpYW0uci5naXJkd29vZEBsaW51eC5p
-bnRlbC5jb20+CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkludGVsIENvcnBvcmF0aW9uIChVSykgTGltaXRlZApS
-ZWdpc3RlcmVkIE5vLiAxMTM0OTQ1IChFbmdsYW5kKQpSZWdpc3RlcmVkIE9mZmljZTogUGlwZXJz
-IFdheSwgU3dpbmRvbiBTTjMgMVJKClZBVCBObzogODYwIDIxNzMgNDcKClRoaXMgZS1tYWlsIGFu
-ZCBhbnkgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG1hdGVyaWFsIGZvcgp0
-aGUgc29sZSB1c2Ugb2YgdGhlIGludGVuZGVkIHJlY2lwaWVudChzKS4gQW55IHJldmlldyBvciBk
-aXN0cmlidXRpb24KYnkgb3RoZXJzIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuIElmIHlvdSBhcmUg
-bm90IHRoZSBpbnRlbmRlZApyZWNpcGllbnQsIHBsZWFzZSBjb250YWN0IHRoZSBzZW5kZXIgYW5k
-IGRlbGV0ZSBhbGwgY29waWVzLgo=
+Use more sensible kcontrol names than "Int Mic" and "Ext Spk". Speakers
+especially are usually integrated devices in sales models.
 
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+---
+ sound/soc/intel/byt-rt5640.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/sound/soc/intel/byt-rt5640.c b/sound/soc/intel/byt-rt5640.c
+index 038547b48b2d..672fedbfa680 100644
+--- a/sound/soc/intel/byt-rt5640.c
++++ b/sound/soc/intel/byt-rt5640.c
+@@ -29,27 +29,27 @@
+ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+-	SND_SOC_DAPM_MIC("Int Mic", NULL),
+-	SND_SOC_DAPM_SPK("Ext Spk", NULL),
++	SND_SOC_DAPM_MIC("Internal Mic", NULL),
++	SND_SOC_DAPM_SPK("Speaker", NULL),
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
+ 	{"IN2P", NULL, "Headset Mic"},
+ 	{"IN2N", NULL, "Headset Mic"},
+-	{"DMIC1", NULL, "Int Mic"},
++	{"DMIC1", NULL, "Internal Mic"},
+ 	{"Headphone", NULL, "HPOL"},
+ 	{"Headphone", NULL, "HPOR"},
+-	{"Ext Spk", NULL, "SPOLP"},
+-	{"Ext Spk", NULL, "SPOLN"},
+-	{"Ext Spk", NULL, "SPORP"},
+-	{"Ext Spk", NULL, "SPORN"},
++	{"Speaker", NULL, "SPOLP"},
++	{"Speaker", NULL, "SPOLN"},
++	{"Speaker", NULL, "SPORP"},
++	{"Speaker", NULL, "SPORN"},
+ };
+ 
+ static const struct snd_kcontrol_new byt_rt5640_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headphone"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+-	SOC_DAPM_PIN_SWITCH("Int Mic"),
+-	SOC_DAPM_PIN_SWITCH("Ext Spk"),
++	SOC_DAPM_PIN_SWITCH("Internal Mic"),
++	SOC_DAPM_PIN_SWITCH("Speaker"),
+ };
+ 
+ static int byt_rt5640_hw_params(struct snd_pcm_substream *substream,
+@@ -113,8 +113,8 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ 
+ 	snd_soc_dapm_enable_pin(dapm, "Headset Mic");
+ 	snd_soc_dapm_enable_pin(dapm, "Headphone");
+-	snd_soc_dapm_enable_pin(dapm, "Ext Spk");
+-	snd_soc_dapm_enable_pin(dapm, "Int Mic");
++	snd_soc_dapm_enable_pin(dapm, "Speaker");
++	snd_soc_dapm_enable_pin(dapm, "Internal Mic");
+ 
+ 	snd_soc_dapm_sync(dapm);
+ 	return ret;
+-- 
+1.8.5.3
