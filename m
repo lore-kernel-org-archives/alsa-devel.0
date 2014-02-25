@@ -1,19 +1,21 @@
-From: Will R <domohawk@gmail.com>
+From: Erik Ackermann <kurterikackermann@gmail.com>
 Subject: Re: [PATCH - speaker-test 1/1] speaker-test: add
  --force-frequency option to allow hz outside range
-Date: Mon, 24 Feb 2014 07:04:27 -0800
-Message-ID: <CAA2k8L1nH3OJUsEb31zWuzwWTjN3EJGSrb0Wsr=dFqYgievFKQ@mail.gmail.com>
+Date: Tue, 25 Feb 2014 11:49:46 -0800
+Message-ID: <CAN5Z5QH3o=m9rbwuFtMu8DZpDN2xfy_KsC7F6jamwG=_jcXcaA@mail.gmail.com>
 References: <s5hmwhgygon.wl%tiwai@suse.de>
+ <CAA2k8L1nH3OJUsEb31zWuzwWTjN3EJGSrb0Wsr=dFqYgievFKQ@mail.gmail.com>
+ <s5h38j8pmni.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=20cf300e51e51b3f9604f3284c7d
+Content-Type: multipart/mixed; boundary=089e016350c852bf0e04f34066e0
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f176.google.com (mail-yk0-f176.google.com
- [209.85.160.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 00FC6265568
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 16:05:08 +0100 (CET)
-Received: by mail-yk0-f176.google.com with SMTP id 19so14801075ykq.7
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2014 07:05:08 -0800 (PST)
-In-Reply-To: <s5hmwhgygon.wl%tiwai@suse.de>
+Received: from mail-yh0-f47.google.com (mail-yh0-f47.google.com
+ [209.85.213.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 917E1265644
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 20:50:28 +0100 (CET)
+Received: by mail-yh0-f47.google.com with SMTP id c41so7605424yho.34
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 11:50:27 -0800 (PST)
+In-Reply-To: <s5h38j8pmni.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,115 +29,233 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---20cf300e51e51b3f9604f3284c7d
+--089e016350c852bf0e04f34066e0
 Content-Type: text/plain; charset=ISO-8859-1
 
-What is the reasoning behind the limit, protecting speaker hardware,
-hearing? I think common speakers have frequency response up to 15 or 16kHz
-or so, so maybe a bit higher default limit of 8kHz would be okay.
+Updated the english po and de/fr/ja translations courtesy of Google
+translate. Is there any sign-off required beyond the header git
+format-patch adds?
 
-I was doing some tests around 20kHz - 22kHz (to test my hearing and freq
-response of my 25kHz rated headphones), so still see the merit in a force
-option for people who are certain they want to test that high.
-
-New patch: Added min of 1.0Hz for force option, changed default max to
-8kHz, fixed typo in flag name:
-
-diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
-index 261f399..61396f2 100644
---- a/speaker-test/speaker-test.c
-+++ b/speaker-test/speaker-test.c
-@@ -106,6 +106,7 @@ static snd_pcm_uframes_t  period_size;
- static const char *given_test_wav_file = NULL;
- static char *wav_file_dir = SOUNDSDIR;
- static int debug = 0;
-+static int force_frequency = 0;
- static int in_aborting = 0;
- static snd_pcm_t *pcm_handle = NULL;
-
-@@ -1015,6 +1016,7 @@ static void help(void)
-     "-w,--wavfile Use the given WAV file as a test sound\n"
-     "-W,--wavdir Specify the directory containing WAV files\n"
-     "-m,--chmap Specify the channel map to override\n"
-+    "-X,--force-frequency force frequencies outside the 30-8000hz range\n"
-     "\n"));
-   printf(_("Recognized sample formats are:"));
-   for (fmt = supported_formats; *fmt >= 0; fmt++) {
-@@ -1057,6 +1059,7 @@ int main(int argc, char *argv[]) {
-     {"wavfile",   1, NULL, 'w'},
-     {"wavdir",    1, NULL, 'W'},
-     {"debug",   0, NULL, 'd'},
-+    {"force-frequency",   0, NULL, 'X'},
- #ifdef CONFIG_SUPPORT_CHMAP
-     {"chmap",   1, NULL, 'm'},
- #endif
-@@ -1078,7 +1081,7 @@ int main(int argc, char *argv[]) {
-   while (1) {
-     int c;
-
--    if ((c = getopt_long(argc, argv, "hD:r:c:f:F:b:p:P:t:l:s:w:W:d"
-+    if ((c = getopt_long(argc, argv, "hD:r:c:f:F:b:p:P:t:l:s:w:W:d:X"
- #ifdef CONFIG_SUPPORT_CHMAP
-   "m:"
- #endif
-@@ -1114,8 +1117,6 @@ int main(int argc, char *argv[]) {
-       break;
-     case 'f':
-       freq = atof(optarg);
--      freq = freq < 30.0 ? 30.0 : freq;
--      freq = freq > 5000.0 ? 5000.0 : freq;
-       break;
-     case 'b':
-       buffer_time = atoi(optarg);
-@@ -1173,6 +1174,9 @@ int main(int argc, char *argv[]) {
-     case 'd':
-       debug = 1;
-       break;
-+    case 'X':
-+      force_frequency = 1;
-+      break;
- #ifdef CONFIG_SUPPORT_CHMAP
-     case 'm':
-       chmap = optarg;
-@@ -1190,6 +1194,13 @@ int main(int argc, char *argv[]) {
-     exit(EXIT_SUCCESS);
-   }
-
-+  if (!force_frequency) {
-+    freq = freq < 30.0 ? 30.0 : freq;
-+    freq = freq > 8000.0 ? 8000.0 : freq;
-+  } else {
-+    freq = freq < 1.0 ? 1.0 : freq;
-+  }
-+
-   if (test_type == TEST_WAV)
-     format = SND_PCM_FORMAT_S16_LE; /* fixed format */
-
--- 
-1.8.3.2
+Thanks,
+Erik
 
 
-On Mon, Feb 24, 2014 at 1:59 AM, Takashi Iwai <tiwai@suse.de> wrote:
+On Mon, Feb 24, 2014 at 7:15 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-> At Sat, 22 Feb 2014 16:09:57 -0800,
-> erik@caspar.alsa-project.org wrote:
+> At Mon, 24 Feb 2014 07:04:27 -0800,
+> Will R wrote:
 > >
-> > From: Erik Ackermann <domohawk@gmail.com>
+> > What is the reasoning behind the limit, protecting speaker hardware,
+> > hearing?
+>
+> I guess so.
+>
+> > I think common speakers have frequency response up to 15 or 16kHz
+> > or so, so maybe a bit higher default limit of 8kHz would be okay.
+>
+> Agreed.
+>
+> > I was doing some tests around 20kHz - 22kHz (to test my hearing and freq
+> > response of my 25kHz rated headphones), so still see the merit in a force
+> > option for people who are certain they want to test that high.
 > >
-> > Signed-off-by: Erik Ackermann <domohawk@gmail.com>
+> > New patch: Added min of 1.0Hz for force option, changed default max to
+> > 8kHz, fixed typo in flag name:
 >
-> But still it should have some sanity checks like freq <= 0, as freq is
-> used as a divisor.
+> The changes look good to me.
 >
-> Or, we may simply relax the frequency range.  What value do you want
-> to take in your use case?
+> But could you update the man page, and give your sign-off, too?
 >
+>
+> thanks,
 >
 > Takashi
 >
+>
 > >
 > > diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
-> > index 261f399..22927f2 100644
+> > index 261f399..61396f2 100644
+> > --- a/speaker-test/speaker-test.c
+> > +++ b/speaker-test/speaker-test.c
+> > @@ -106,6 +106,7 @@ static snd_pcm_uframes_t  period_size;
+> >  static const char *given_test_wav_file = NULL;
+> >  static char *wav_file_dir = SOUNDSDIR;
+> >  static int debug = 0;
+> > +static int force_frequency = 0;
+> >  static int in_aborting = 0;
+> >  static snd_pcm_t *pcm_handle = NULL;
+> >
+> > @@ -1015,6 +1016,7 @@ static void help(void)
+> >      "-w,--wavfile Use the given WAV file as a test sound\n"
+> >      "-W,--wavdir Specify the directory containing WAV files\n"
+> >      "-m,--chmap Specify the channel map to override\n"
+> > +    "-X,--force-frequency force frequencies outside the 30-8000hz
+> range\n"
+> >      "\n"));
+> >    printf(_("Recognized sample formats are:"));
+> >    for (fmt = supported_formats; *fmt >= 0; fmt++) {
+> > @@ -1057,6 +1059,7 @@ int main(int argc, char *argv[]) {
+> >      {"wavfile",   1, NULL, 'w'},
+> >      {"wavdir",    1, NULL, 'W'},
+> >      {"debug",   0, NULL, 'd'},
+> > +    {"force-frequency",   0, NULL, 'X'},
+> >  #ifdef CONFIG_SUPPORT_CHMAP
+> >      {"chmap",   1, NULL, 'm'},
+> >  #endif
+> > @@ -1078,7 +1081,7 @@ int main(int argc, char *argv[]) {
+> >    while (1) {
+> >      int c;
+> >
+> > -    if ((c = getopt_long(argc, argv, "hD:r:c:f:F:b:p:P:t:l:s:w:W:d"
+> > +    if ((c = getopt_long(argc, argv, "hD:r:c:f:F:b:p:P:t:l:s:w:W:d:X"
+> >  #ifdef CONFIG_SUPPORT_CHMAP
+> >    "m:"
+> >  #endif
+> > @@ -1114,8 +1117,6 @@ int main(int argc, char *argv[]) {
+> >        break;
+> >      case 'f':
+> >        freq = atof(optarg);
+> > -      freq = freq < 30.0 ? 30.0 : freq;
+> > -      freq = freq > 5000.0 ? 5000.0 : freq;
+> >        break;
+> >      case 'b':
+> >        buffer_time = atoi(optarg);
+> > @@ -1173,6 +1174,9 @@ int main(int argc, char *argv[]) {
+> >      case 'd':
+> >        debug = 1;
+> >        break;
+> > +    case 'X':
+> > +      force_frequency = 1;
+> > +      break;
+> >  #ifdef CONFIG_SUPPORT_CHMAP
+> >      case 'm':
+> >        chmap = optarg;
+> > @@ -1190,6 +1194,13 @@ int main(int argc, char *argv[]) {
+> >      exit(EXIT_SUCCESS);
+> >    }
+> >
+> > +  if (!force_frequency) {
+> > +    freq = freq < 30.0 ? 30.0 : freq;
+> > +    freq = freq > 8000.0 ? 8000.0 : freq;
+> > +  } else {
+> > +    freq = freq < 1.0 ? 1.0 : freq;
+> > +  }
+> > +
+> >    if (test_type == TEST_WAV)
+> >      format = SND_PCM_FORMAT_S16_LE; /* fixed format */
+> >
+> > --
+> > 1.8.3.2
+> >
+> >
+> > On Mon, Feb 24, 2014 at 1:59 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > > At Sat, 22 Feb 2014 16:09:57 -0800,
+> > > erik@caspar.alsa-project.org wrote:
+> > > >
+> > > > From: Erik Ackermann <domohawk@gmail.com>
+> > > >
+> > > > Signed-off-by: Erik Ackermann <domohawk@gmail.com>
+> > >
+> > > But still it should have some sanity checks like freq <= 0, as freq is
+> > > used as a divisor.
+> > >
+> > > Or, we may simply relax the frequency range.  What value do you want
+> > > to take in your use case?
+> > >
+> > >
+> > > Takashi
+> > >
+> > > >
+> > > > diff --git a/speaker-test/speaker-test.c
+> b/speaker-test/speaker-test.c
+> > > > index 261f399..22927f2 100644
+> > > > --- a/speaker-test/speaker-test.c
+> > > > +++ b/speaker-test/speaker-test.c
+> > > > @@ -106,6 +106,7 @@ static snd_pcm_uframes_t  period_size;
+> > > >  static const char *given_test_wav_file = NULL;
+> > > >  static char *wav_file_dir = SOUNDSDIR;
+> > > >  static int debug = 0;
+> > > > +static int force_frequency = 0;
+> > > >  static int in_aborting = 0;
+> > > >  static snd_pcm_t *pcm_handle = NULL;
+> > > >
+> > > > @@ -1015,6 +1016,7 @@ static void help(void)
+> > > >          "-w,--wavfile        Use the given WAV file as a test
+> sound\n"
+> > > >          "-W,--wavdir Specify the directory containing WAV files\n"
+> > > >          "-m,--chmap  Specify the channel map to override\n"
+> > > > +        "-X,--force-frequency        force frequencies outside the
+> > > 30-5000hz range\n"
+> > > >          "\n"));
+> > > >    printf(_("Recognized sample formats are:"));
+> > > >    for (fmt = supported_formats; *fmt >= 0; fmt++) {
+> > > > @@ -1057,6 +1059,7 @@ int main(int argc, char *argv[]) {
+> > > >      {"wavfile",   1, NULL, 'w'},
+> > > >      {"wavdir",    1, NULL, 'W'},
+> > > >      {"debug",          0, NULL, 'd'},
+> > > > +    {"force-frequncy",         1, NULL, 'X'},
+> > > >  #ifdef CONFIG_SUPPORT_CHMAP
+> > > >      {"chmap",          1, NULL, 'm'},
+> > > >  #endif
+> > > > @@ -1078,7 +1081,7 @@ int main(int argc, char *argv[]) {
+> > > >    while (1) {
+> > > >      int c;
+> > > >
+> > > > -    if ((c = getopt_long(argc, argv, "hD:r:c:f:F:b:p:P:t:l:s:w:W:d"
+> > > > +    if ((c = getopt_long(argc, argv,
+> "hD:r:c:f:F:b:p:P:t:l:s:w:W:d:X"
+> > > >  #ifdef CONFIG_SUPPORT_CHMAP
+> > > >                        "m:"
+> > > >  #endif
+> > > > @@ -1114,8 +1117,6 @@ int main(int argc, char *argv[]) {
+> > > >        break;
+> > > >      case 'f':
+> > > >        freq = atof(optarg);
+> > > > -      freq = freq < 30.0 ? 30.0 : freq;
+> > > > -      freq = freq > 5000.0 ? 5000.0 : freq;
+> > > >        break;
+> > > >      case 'b':
+> > > >        buffer_time = atoi(optarg);
+> > > > @@ -1173,6 +1174,9 @@ int main(int argc, char *argv[]) {
+> > > >      case 'd':
+> > > >        debug = 1;
+> > > >        break;
+> > > > +    case 'X':
+> > > > +      force_frequency = 1;
+> > > > +      break;
+> > > >  #ifdef CONFIG_SUPPORT_CHMAP
+> > > >      case 'm':
+> > > >        chmap = optarg;
+> > > > @@ -1190,6 +1194,11 @@ int main(int argc, char *argv[]) {
+> > > >      exit(EXIT_SUCCESS);
+> > > >    }
+> > > >
+> > > > +  if (!force_frequency) {
+> > > > +    freq = freq < 30.0 ? 30.0 : freq;
+> > > > +    freq = freq > 5000.0 ? 5000.0 : freq;
+> > > > +  }
+> > > > +
+> > > >    if (test_type == TEST_WAV)
+> > > >      format = SND_PCM_FORMAT_S16_LE; /* fixed format */
+> > > >
+> > > > --
+> > > > 1.8.3.2
+> > > >
+> > >
+> > [1.2  <text/html; ISO-8859-1 (quoted-printable)>]
+> >
+> > From 3d9ceb42e1205618b29479077b0bd3f2d71c64db Mon Sep 17 00:00:00 2001
+> > From: Erik Ackermann <domohawk@gmail.com>
+> > Date: Mon, 24 Feb 2014 06:53:08 -0800
+> > Subject: [PATCH - speaker-test 1/1] speaker-test: add --force-frequency
+> option
+> >  to allow hz outside range
+> >
+> > Signed-off-by: Erik Ackermann <domohawk@gmail.com>
+> >
+> > diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
+> > index 261f399..61396f2 100644
 > > --- a/speaker-test/speaker-test.c
 > > +++ b/speaker-test/speaker-test.c
 > > @@ -106,6 +106,7 @@ static snd_pcm_uframes_t  period_size;
@@ -151,7 +271,7 @@ On Mon, Feb 24, 2014 at 1:59 AM, Takashi Iwai <tiwai@suse.de> wrote:
 > >          "-W,--wavdir Specify the directory containing WAV files\n"
 > >          "-m,--chmap  Specify the channel map to override\n"
 > > +        "-X,--force-frequency        force frequencies outside the
-> 30-5000hz range\n"
+> 30-8000hz range\n"
 > >          "\n"));
 > >    printf(_("Recognized sample formats are:"));
 > >    for (fmt = supported_formats; *fmt >= 0; fmt++) {
@@ -159,7 +279,7 @@ On Mon, Feb 24, 2014 at 1:59 AM, Takashi Iwai <tiwai@suse.de> wrote:
 > >      {"wavfile",   1, NULL, 'w'},
 > >      {"wavdir",    1, NULL, 'W'},
 > >      {"debug",          0, NULL, 'd'},
-> > +    {"force-frequncy",         1, NULL, 'X'},
+> > +    {"force-frequency",        0, NULL, 'X'},
 > >  #ifdef CONFIG_SUPPORT_CHMAP
 > >      {"chmap",          1, NULL, 'm'},
 > >  #endif
@@ -191,13 +311,15 @@ On Mon, Feb 24, 2014 at 1:59 AM, Takashi Iwai <tiwai@suse.de> wrote:
 > >  #ifdef CONFIG_SUPPORT_CHMAP
 > >      case 'm':
 > >        chmap = optarg;
-> > @@ -1190,6 +1194,11 @@ int main(int argc, char *argv[]) {
+> > @@ -1190,6 +1194,13 @@ int main(int argc, char *argv[]) {
 > >      exit(EXIT_SUCCESS);
 > >    }
 > >
 > > +  if (!force_frequency) {
 > > +    freq = freq < 30.0 ? 30.0 : freq;
-> > +    freq = freq > 5000.0 ? 5000.0 : freq;
+> > +    freq = freq > 8000.0 ? 8000.0 : freq;
+> > +  } else {
+> > +    freq = freq < 1.0 ? 1.0 : freq;
 > > +  }
 > > +
 > >    if (test_type == TEST_WAV)
@@ -208,64 +330,107 @@ On Mon, Feb 24, 2014 at 1:59 AM, Takashi Iwai <tiwai@suse.de> wrote:
 > >
 >
 
---20cf300e51e51b3f9604f3284c7d
-Content-Type: text/x-patch; charset=US-ASCII;
+--089e016350c852bf0e04f34066e0
+Content-Type: text/x-patch; charset=UTF-8;
 	name="0001-speaker-test-add-force-frequency-option-to-allow-hz-.patch"
 Content-Disposition: attachment;
 	filename="0001-speaker-test-add-force-frequency-option-to-allow-hz-.patch"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hs1vi59o0
+X-Attachment-Id: f_hs3l6k0f0
 
-RnJvbSAzZDljZWI0MmUxMjA1NjE4YjI5NDc5MDc3YjBiZDNmMmQ3MWM2NGRiIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBFcmlrIEFja2VybWFubiA8ZG9tb2hhd2tAZ21haWwuY29tPgpE
-YXRlOiBNb24sIDI0IEZlYiAyMDE0IDA2OjUzOjA4IC0wODAwClN1YmplY3Q6IFtQQVRDSCAtIHNw
-ZWFrZXItdGVzdCAxLzFdIHNwZWFrZXItdGVzdDogYWRkIC0tZm9yY2UtZnJlcXVlbmN5IG9wdGlv
-bgogdG8gYWxsb3cgaHogb3V0c2lkZSByYW5nZQoKU2lnbmVkLW9mZi1ieTogRXJpayBBY2tlcm1h
-bm4gPGRvbW9oYXdrQGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9zcGVha2VyLXRlc3Qvc3BlYWtl
-ci10ZXN0LmMgYi9zcGVha2VyLXRlc3Qvc3BlYWtlci10ZXN0LmMKaW5kZXggMjYxZjM5OS4uNjEz
-OTZmMiAxMDA2NDQKLS0tIGEvc3BlYWtlci10ZXN0L3NwZWFrZXItdGVzdC5jCisrKyBiL3NwZWFr
-ZXItdGVzdC9zcGVha2VyLXRlc3QuYwpAQCAtMTA2LDYgKzEwNiw3IEBAIHN0YXRpYyBzbmRfcGNt
-X3VmcmFtZXNfdCAgcGVyaW9kX3NpemU7CiBzdGF0aWMgY29uc3QgY2hhciAqZ2l2ZW5fdGVzdF93
-YXZfZmlsZSA9IE5VTEw7CiBzdGF0aWMgY2hhciAqd2F2X2ZpbGVfZGlyID0gU09VTkRTRElSOwog
-c3RhdGljIGludCBkZWJ1ZyA9IDA7CitzdGF0aWMgaW50IGZvcmNlX2ZyZXF1ZW5jeSA9IDA7CiBz
-dGF0aWMgaW50IGluX2Fib3J0aW5nID0gMDsKIHN0YXRpYyBzbmRfcGNtX3QgKnBjbV9oYW5kbGUg
-PSBOVUxMOwogCkBAIC0xMDE1LDYgKzEwMTYsNyBAQCBzdGF0aWMgdm9pZCBoZWxwKHZvaWQpCiAJ
-ICAgIi13LC0td2F2ZmlsZQlVc2UgdGhlIGdpdmVuIFdBViBmaWxlIGFzIGEgdGVzdCBzb3VuZFxu
-IgogCSAgICItVywtLXdhdmRpcglTcGVjaWZ5IHRoZSBkaXJlY3RvcnkgY29udGFpbmluZyBXQVYg
-ZmlsZXNcbiIKIAkgICAiLW0sLS1jaG1hcAlTcGVjaWZ5IHRoZSBjaGFubmVsIG1hcCB0byBvdmVy
-cmlkZVxuIgorCSAgICItWCwtLWZvcmNlLWZyZXF1ZW5jeQlmb3JjZSBmcmVxdWVuY2llcyBvdXRz
-aWRlIHRoZSAzMC04MDAwaHogcmFuZ2VcbiIKIAkgICAiXG4iKSk7CiAgIHByaW50ZihfKCJSZWNv
-Z25pemVkIHNhbXBsZSBmb3JtYXRzIGFyZToiKSk7CiAgIGZvciAoZm10ID0gc3VwcG9ydGVkX2Zv
-cm1hdHM7ICpmbXQgPj0gMDsgZm10KyspIHsKQEAgLTEwNTcsNiArMTA1OSw3IEBAIGludCBtYWlu
-KGludCBhcmdjLCBjaGFyICphcmd2W10pIHsKICAgICB7IndhdmZpbGUiLCAgIDEsIE5VTEwsICd3
-J30sCiAgICAgeyJ3YXZkaXIiLCAgICAxLCBOVUxMLCAnVyd9LAogICAgIHsiZGVidWciLAkgIDAs
-IE5VTEwsICdkJ30sCisgICAgeyJmb3JjZS1mcmVxdWVuY3kiLAkgIDAsIE5VTEwsICdYJ30sCiAj
-aWZkZWYgQ09ORklHX1NVUFBPUlRfQ0hNQVAKICAgICB7ImNobWFwIiwJICAxLCBOVUxMLCAnbSd9
-LAogI2VuZGlmCkBAIC0xMDc4LDcgKzEwODEsNyBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAq
-YXJndltdKSB7CiAgIHdoaWxlICgxKSB7CiAgICAgaW50IGM7CiAgICAgCi0gICAgaWYgKChjID0g
-Z2V0b3B0X2xvbmcoYXJnYywgYXJndiwgImhEOnI6YzpmOkY6YjpwOlA6dDpsOnM6dzpXOmQiCisg
-ICAgaWYgKChjID0gZ2V0b3B0X2xvbmcoYXJnYywgYXJndiwgImhEOnI6YzpmOkY6YjpwOlA6dDps
-OnM6dzpXOmQ6WCIKICNpZmRlZiBDT05GSUdfU1VQUE9SVF9DSE1BUAogCQkJICJtOiIKICNlbmRp
-ZgpAQCAtMTExNCw4ICsxMTE3LDYgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkg
-ewogICAgICAgYnJlYWs7CiAgICAgY2FzZSAnZic6CiAgICAgICBmcmVxID0gYXRvZihvcHRhcmcp
-OwotICAgICAgZnJlcSA9IGZyZXEgPCAzMC4wID8gMzAuMCA6IGZyZXE7Ci0gICAgICBmcmVxID0g
-ZnJlcSA+IDUwMDAuMCA/IDUwMDAuMCA6IGZyZXE7CiAgICAgICBicmVhazsKICAgICBjYXNlICdi
-JzoKICAgICAgIGJ1ZmZlcl90aW1lID0gYXRvaShvcHRhcmcpOwpAQCAtMTE3Myw2ICsxMTc0LDkg
-QEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkgewogICAgIGNhc2UgJ2QnOgogICAg
-ICAgZGVidWcgPSAxOwogICAgICAgYnJlYWs7CisgICAgY2FzZSAnWCc6CisgICAgICBmb3JjZV9m
-cmVxdWVuY3kgPSAxOworICAgICAgYnJlYWs7CiAjaWZkZWYgQ09ORklHX1NVUFBPUlRfQ0hNQVAK
-ICAgICBjYXNlICdtJzoKICAgICAgIGNobWFwID0gb3B0YXJnOwpAQCAtMTE5MCw2ICsxMTk0LDEz
-IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pIHsKICAgICBleGl0KEVYSVRfU1VD
-Q0VTUyk7CiAgIH0KIAorICBpZiAoIWZvcmNlX2ZyZXF1ZW5jeSkgeworICAgIGZyZXEgPSBmcmVx
-IDwgMzAuMCA/IDMwLjAgOiBmcmVxOworICAgIGZyZXEgPSBmcmVxID4gODAwMC4wID8gODAwMC4w
-IDogZnJlcTsKKyAgfSBlbHNlIHsKKyAgICBmcmVxID0gZnJlcSA8IDEuMCA/IDEuMCA6IGZyZXE7
-CisgIH0KKwogICBpZiAodGVzdF90eXBlID09IFRFU1RfV0FWKQogICAgIGZvcm1hdCA9IFNORF9Q
-Q01fRk9STUFUX1MxNl9MRTsgLyogZml4ZWQgZm9ybWF0ICovCiAKLS0gCjEuOC4zLjIKCg==
---20cf300e51e51b3f9604f3284c7d
+RnJvbSAxOThjN2RjNzBhZmUwNGE2MDcyMDU5ZGRjOTk3NDE3YzNjZWNhM2UyIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBFcmlrIEFja2VybWFubiA8a3VydGVyaWthY2tlcm1hbm5AZ21h
+aWwuY29tPgpEYXRlOiBUdWUsIDI1IEZlYiAyMDE0IDExOjQ1OjI0IC0wODAwClN1YmplY3Q6IFtQ
+QVRDSCAtIHNwZWFrZXItdGVzdCAxLzFdIHNwZWFrZXItdGVzdDogYWRkIC0tZm9yY2UtZnJlcXVl
+bmN5IG9wdGlvbgogdG8gYWxsb3cgaHogb3V0c2lkZSByYW5nZQoKU2lnbmVkLW9mZi1ieTogRXJp
+ayBBY2tlcm1hbm4gPGt1cnRlcmlrYWNrZXJtYW5uQGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9w
+by9kZS5wbyBiL3BvL2RlLnBvCmluZGV4IDBjNDdjNjUuLjU4NmJkZTIgMTAwNjQ0Ci0tLSBhL3Bv
+L2RlLnBvCisrKyBiL3BvL2RlLnBvCkBAIC0xNDg3LDYgKzE0ODcsNyBAQCBtc2dpZCAiIgogIi1z
+LC0tc3BlYWtlclx0c2luZ2xlIHNwZWFrZXIgdGVzdC4gVmFsdWVzIDE9TGVmdCwgMj1yaWdodCwg
+ZXRjXG4iCiAiLXcsLS13YXZmaWxlXHRVc2UgdGhlIGdpdmVuIFdBViBmaWxlIGFzIGEgdGVzdCBz
+b3VuZFxuIgogIi1XLC0td2F2ZGlyXHRTcGVjaWZ5IHRoZSBkaXJlY3RvcnkgY29udGFpbmluZyBX
+QVYgZmlsZXNcbiIKKyItWCwtLWZvcmNlLWZyZXF1ZW5jeVx0Zm9yY2UgZnJlcXVlbmNpZXMgb3V0
+c2lkZSB0aGUgMzAtODAwMGh6IHJhbmdlXG4iCiAiXG4iCiBtc2dzdHIgIiIKICJWZXJ3ZW5kdW5n
+OiBzcGVha2VyLXRlc3QgW09wdGlvbl0uLi5cbiIKQEAgLTE1MDQsNiArMTUwNSw3IEBAIG1zZ3N0
+ciAiIgogIi1zLC0tc3BlYWtlciAgICB0ZXN0ZSBlaW5lbiBlaW56ZWxuZW4gTGF1dHNwcmVjaGVy
+OyAxPWxpbmtzLCAyPXJlY2h0cywgdXN3LlxuIgogIi13LC0td2F2ZmlsZSAgICBiZW51dHplIFdB
+Vi1EYXRlaSBhbHMgVGVzdHRvblxuIgogIi1XLC0td2F2ZGlyICAgICBiZW51dHplIFZlcnplaWNo
+bmlzIG1pdCBkYXJpbiBlbnRoYWx0ZW5lbiBXQVYtRGF0ZWllblxuIgorIi1YLC0tZm9yY2UtZnJl
+cXVlbmN5XHRlcm3DtmdsaWNoZW4gRnJlcXVlbnplbiBhdcOfZXJoYWxiIGRlciAzMC04MDAwSHog
+QmVyZWljaFxuIgogIlxuIgogCiAjOiBzcGVha2VyLXRlc3Qvc3BlYWtlci10ZXN0LmM6OTIxCmRp
+ZmYgLS1naXQgYS9wby9mci5wbyBiL3BvL2ZyLnBvCmluZGV4IGE2MDI4YTQuLjg3NmM5YTMgMTAw
+NjQ0Ci0tLSBhL3BvL2ZyLnBvCisrKyBiL3BvL2ZyLnBvCkBAIC0xNDc0LDYgKzE0NzQsNyBAQCBt
+c2dpZCAiIgogIi1zLC0tc3BlYWtlclx0c2luZ2xlIHNwZWFrZXIgdGVzdC4gVmFsdWVzIDE9TGVm
+dCwgMj1yaWdodCwgZXRjXG4iCiAiLXcsLS13YXZmaWxlXHRVc2UgdGhlIGdpdmVuIFdBViBmaWxl
+IGFzIGEgdGVzdCBzb3VuZFxuIgogIi1XLC0td2F2ZGlyXHRTcGVjaWZ5IHRoZSBkaXJlY3Rvcnkg
+Y29udGFpbmluZyBXQVYgZmlsZXNcbiIKKyItWCwtLWZvcmNlLWZyZXF1ZW5jeVx0Zm9yY2UgZnJl
+cXVlbmNpZXMgb3V0c2lkZSB0aGUgMzAtODAwMGh6IHJhbmdlXG4iCiAiXG4iCiBtc2dzdHIgIiIK
+ICJVdGlsaXNhdGlvbjogc3BlYWtlci10ZXN0IFtPUFRJT05dLi4uXG4iCkBAIC0xNDkyLDYgKzE0
+OTMsNyBAQCBtc2dzdHIgIiIKICJcdFx0VmFsZXVycyAxPUdhdWNoZSwgMj1Ecm9pdGUsIGV0IGMu
+XG4iCiAiLXcsLS13YXZmaWxlXHRVdGlsaXNlciBsZSBmaWNoaWVyIFdBViBzcMOpY2lmacOpIHBv
+dXIgbGUgdGVzdFxuIgogIi13LC0td2F2ZGlyXHRTcMOpY2lmaWVyIGxlIHLDqXBlcnRvaXJlIGNv
+bnRlbmFudCBsZXMgZmljaGllcnMgV0FWXG4iCisiLVgsLS1mb3JjZS1mcmVxdWVuY3lcdHBlcm1l
+dHRyZSBmcsOpcXVlbmNlcyBlbiBkZWhvcnMgZGUgbGEgZ2FtbWUgMzAtODAwMEh6XG4iCiAiXG4i
+CiAKICM6IC4uL3NwZWFrZXItdGVzdC9zcGVha2VyLXRlc3QuYzo4NTIKZGlmZiAtLWdpdCBhL3Bv
+L2phLnBvIGIvcG8vamEucG8KaW5kZXggMmMyMzRmNC4uZDhlZjcwNiAxMDA2NDQKLS0tIGEvcG8v
+amEucG8KKysrIGIvcG8vamEucG8KQEAgLTE0MjksNiArMTQyOSw3IEBAIG1zZ2lkICIiCiAiLXMs
+LS1zcGVha2VyXHRzaW5nbGUgc3BlYWtlciB0ZXN0LiBWYWx1ZXMgMT1MZWZ0LCAyPXJpZ2h0LCBl
+dGNcbiIKICItdywtLXdhdmZpbGVcdFVzZSB0aGUgZ2l2ZW4gV0FWIGZpbGUgYXMgYSB0ZXN0IHNv
+dW5kXG4iCiAiLVcsLS13YXZkaXJcdFNwZWNpZnkgdGhlIGRpcmVjdG9yeSBjb250YWluaW5nIFdB
+ViBmaWxlc1xuIgorIi1YLC0tZm9yY2UtZnJlcXVlbmN5XHRmb3JjZSBmcmVxdWVuY2llcyBvdXRz
+aWRlIHRoZSAzMC04MDAwaHogcmFuZ2VcbiIKICJcbiIKIG1zZ3N0ciAiIgogIuS9v+eUqOazlTog
+c3BlYWtlci10ZXN0IFvjgqrjg5fjgrfjg6fjg7NdLi4uXG4iCkBAIC0xNDQ3LDYgKzE0NDgsNyBA
+QCBtc2dzdHIgIiIKICItcywtLXNwZWFrZXIgICAgICAgICDljZjkuIDjgrnjg5Tjg7zjgqvjg7zj
+g4bjgrnjg4ggIDE95bemIOOBvuOBn+OBryAyPeWPs1xuIgogIi13LC0td2F2ZmlsZSAgICAgICAg
+IOaMh+WumuOBrldBVuODleOCoeOCpOODq+OCkuODhuOCueODiOmfs+a6kOOBqOOBl+OBpuS9v+eU
+qFxuIgogIi1XLC0td2F2ZGlyICAgICAgICAgIFdBVuODleOCoeOCpOODq+OBruOBguOCi+ODh+OC
+o+ODrOOCr+ODiOODquOCkuaMh+WumlxuIgorIi1YLC0tZm9yY2UtZnJlcXVlbmN5XHQzMC04MDAw
+SHrnr4Tlm7LlpJboqLHlj69cbiIKICJcbiIKIAogIzogc3BlYWtlci10ZXN0L3NwZWFrZXItdGVz
+dC5jOjgzNQpkaWZmIC0tZ2l0IGEvc3BlYWtlci10ZXN0L3NwZWFrZXItdGVzdC5jIGIvc3BlYWtl
+ci10ZXN0L3NwZWFrZXItdGVzdC5jCmluZGV4IDI2MWYzOTkuLjYxMzk2ZjIgMTAwNjQ0Ci0tLSBh
+L3NwZWFrZXItdGVzdC9zcGVha2VyLXRlc3QuYworKysgYi9zcGVha2VyLXRlc3Qvc3BlYWtlci10
+ZXN0LmMKQEAgLTEwNiw2ICsxMDYsNyBAQCBzdGF0aWMgc25kX3BjbV91ZnJhbWVzX3QgIHBlcmlv
+ZF9zaXplOwogc3RhdGljIGNvbnN0IGNoYXIgKmdpdmVuX3Rlc3Rfd2F2X2ZpbGUgPSBOVUxMOwog
+c3RhdGljIGNoYXIgKndhdl9maWxlX2RpciA9IFNPVU5EU0RJUjsKIHN0YXRpYyBpbnQgZGVidWcg
+PSAwOworc3RhdGljIGludCBmb3JjZV9mcmVxdWVuY3kgPSAwOwogc3RhdGljIGludCBpbl9hYm9y
+dGluZyA9IDA7CiBzdGF0aWMgc25kX3BjbV90ICpwY21faGFuZGxlID0gTlVMTDsKIApAQCAtMTAx
+NSw2ICsxMDE2LDcgQEAgc3RhdGljIHZvaWQgaGVscCh2b2lkKQogCSAgICItdywtLXdhdmZpbGUJ
+VXNlIHRoZSBnaXZlbiBXQVYgZmlsZSBhcyBhIHRlc3Qgc291bmRcbiIKIAkgICAiLVcsLS13YXZk
+aXIJU3BlY2lmeSB0aGUgZGlyZWN0b3J5IGNvbnRhaW5pbmcgV0FWIGZpbGVzXG4iCiAJICAgIi1t
+LC0tY2htYXAJU3BlY2lmeSB0aGUgY2hhbm5lbCBtYXAgdG8gb3ZlcnJpZGVcbiIKKwkgICAiLVgs
+LS1mb3JjZS1mcmVxdWVuY3kJZm9yY2UgZnJlcXVlbmNpZXMgb3V0c2lkZSB0aGUgMzAtODAwMGh6
+IHJhbmdlXG4iCiAJICAgIlxuIikpOwogICBwcmludGYoXygiUmVjb2duaXplZCBzYW1wbGUgZm9y
+bWF0cyBhcmU6IikpOwogICBmb3IgKGZtdCA9IHN1cHBvcnRlZF9mb3JtYXRzOyAqZm10ID49IDA7
+IGZtdCsrKSB7CkBAIC0xMDU3LDYgKzEwNTksNyBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAq
+YXJndltdKSB7CiAgICAgeyJ3YXZmaWxlIiwgICAxLCBOVUxMLCAndyd9LAogICAgIHsid2F2ZGly
+IiwgICAgMSwgTlVMTCwgJ1cnfSwKICAgICB7ImRlYnVnIiwJICAwLCBOVUxMLCAnZCd9LAorICAg
+IHsiZm9yY2UtZnJlcXVlbmN5IiwJICAwLCBOVUxMLCAnWCd9LAogI2lmZGVmIENPTkZJR19TVVBQ
+T1JUX0NITUFQCiAgICAgeyJjaG1hcCIsCSAgMSwgTlVMTCwgJ20nfSwKICNlbmRpZgpAQCAtMTA3
+OCw3ICsxMDgxLDcgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkgewogICB3aGls
+ZSAoMSkgewogICAgIGludCBjOwogICAgIAotICAgIGlmICgoYyA9IGdldG9wdF9sb25nKGFyZ2Ms
+IGFyZ3YsICJoRDpyOmM6ZjpGOmI6cDpQOnQ6bDpzOnc6VzpkIgorICAgIGlmICgoYyA9IGdldG9w
+dF9sb25nKGFyZ2MsIGFyZ3YsICJoRDpyOmM6ZjpGOmI6cDpQOnQ6bDpzOnc6VzpkOlgiCiAjaWZk
+ZWYgQ09ORklHX1NVUFBPUlRfQ0hNQVAKIAkJCSAibToiCiAjZW5kaWYKQEAgLTExMTQsOCArMTEx
+Nyw2IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pIHsKICAgICAgIGJyZWFrOwog
+ICAgIGNhc2UgJ2YnOgogICAgICAgZnJlcSA9IGF0b2Yob3B0YXJnKTsKLSAgICAgIGZyZXEgPSBm
+cmVxIDwgMzAuMCA/IDMwLjAgOiBmcmVxOwotICAgICAgZnJlcSA9IGZyZXEgPiA1MDAwLjAgPyA1
+MDAwLjAgOiBmcmVxOwogICAgICAgYnJlYWs7CiAgICAgY2FzZSAnYic6CiAgICAgICBidWZmZXJf
+dGltZSA9IGF0b2kob3B0YXJnKTsKQEAgLTExNzMsNiArMTE3NCw5IEBAIGludCBtYWluKGludCBh
+cmdjLCBjaGFyICphcmd2W10pIHsKICAgICBjYXNlICdkJzoKICAgICAgIGRlYnVnID0gMTsKICAg
+ICAgIGJyZWFrOworICAgIGNhc2UgJ1gnOgorICAgICAgZm9yY2VfZnJlcXVlbmN5ID0gMTsKKyAg
+ICAgIGJyZWFrOwogI2lmZGVmIENPTkZJR19TVVBQT1JUX0NITUFQCiAgICAgY2FzZSAnbSc6CiAg
+ICAgICBjaG1hcCA9IG9wdGFyZzsKQEAgLTExOTAsNiArMTE5NCwxMyBAQCBpbnQgbWFpbihpbnQg
+YXJnYywgY2hhciAqYXJndltdKSB7CiAgICAgZXhpdChFWElUX1NVQ0NFU1MpOwogICB9CiAKKyAg
+aWYgKCFmb3JjZV9mcmVxdWVuY3kpIHsKKyAgICBmcmVxID0gZnJlcSA8IDMwLjAgPyAzMC4wIDog
+ZnJlcTsKKyAgICBmcmVxID0gZnJlcSA+IDgwMDAuMCA/IDgwMDAuMCA6IGZyZXE7CisgIH0gZWxz
+ZSB7CisgICAgZnJlcSA9IGZyZXEgPCAxLjAgPyAxLjAgOiBmcmVxOworICB9CisKICAgaWYgKHRl
+c3RfdHlwZSA9PSBURVNUX1dBVikKICAgICBmb3JtYXQgPSBTTkRfUENNX0ZPUk1BVF9TMTZfTEU7
+IC8qIGZpeGVkIGZvcm1hdCAqLwogCi0tIAoxLjguMy4yCgo=
+--089e016350c852bf0e04f34066e0
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---20cf300e51e51b3f9604f3284c7d--
+--089e016350c852bf0e04f34066e0--
