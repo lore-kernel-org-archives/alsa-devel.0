@@ -1,79 +1,49 @@
-From: =?koi8-r?B?7cHM2dvF1yDtycjBycw=?= <miha.malyshev@yandex.ru>
-Subject: Re: [FFADO-devel] [alsa-devel] [PATCH 52/52] bebob: Add support for
-	M-Audio special Firewire series
-Date: Wed, 26 Feb 2014 00:12:22 +0400
-Message-ID: <169421393359142@web13g.yandex.ru>
-References: <530CF745.40309@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [patch 1/2] ASoC: sst-haswell-ipc: restore IRQs on error
+Date: Wed, 26 Feb 2014 08:46:19 +0900
+Message-ID: <20140225234619.GB2927@sirena.org.uk>
+References: <20140225083250.GA22416@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: base64
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <530CF745.40309@ladisch.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RASg3xLB4tUQ4RcS"
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140225083250.GA22416@elgon.mountain>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBoYXZlIHBvc3RlZCBvbiB3aWtpIG15IGZpbmRpbmdzIGFib3V0IGZjcCB0cmFuc2FjdGlvbiB0
-aW1pbmdzIGFuZCBzb21lIG90aGVyIGluZm8gYWJvdXQgdGltaW5nIGZvciBmdyAxODE0LiBJdCB3
-b3JrZWQgZ29vZCBpbiBteSB2ZXJzaW9uIG9mIFRha2FzaGkncyBkcml2ZXIuIFVuZm9ydHVuYXRs
-eSBJIGZvcmdvdCB0byBwdXNoIGl0IHRvIG15IGZvcmsgb2YgZ2l0IHJlcG8gYmVmb3IgSSBtb3Zl
-ZCB0byBGaW5sYW5kIGFuZCBjYW5ub3QgZG8gaXQgcmVtb3RseSByaWdodCBub3cuIEkgaGF2ZSBp
-bXBsZW1lbnRlZCBzcGVjaWFsIGZjcCByZWxhdGVkIGZ1bmN0aW9uIHNwZWNpYWxseSBmb3IgZncg
-MTgxNCB3aGljaCBkZWFscyB3aXRoIHRpbWVvdXRzIGFib3V0IDM1MG1zIGFuZCB3aGVuIGRyaXZl
-ciBzZXRzIHNhbXBsb25nIHJhdGUgdGhlcmUgbXVzdCBiZSAxcyBkZWxheSBiZWZvcmUgYW55IGZv
-bGxvd2luZyBmdyB3cml0ZSBvcGVyYXRpb24KCi0tTWljaGFlbAoKMjYuMDIuMTQsIDAwOjA1LCAi
-Q2xlbWVucyBMYWRpc2NoIiA8Y2xlbWVuc0BsYWRpc2NoLmRlPiI6Cj4gCj4gVGFrYXNoaSBTYWth
-bW90byB3cm90ZToKPiA+IENhbiBJIHJlcXVlc3QgeW91ciBjb21tZW50IGZvciB0aGlzIHBhdGNo
-IGFib3V0IGEgcXVpcmsgb2YgdHJhbnNhY3Rpb24/Cj4gPgo+ID4gTS1BdWRpbyBGaXJld2lyZSAx
-ODE0IGFuZCBQcm9qZWN0TWl4IEkvTyBvZnRlbiBzZW5kIG5vIHJlc3BvbnNlIGFnYWluc3QKPiA+
-IGRyaXZlcidzIHJlcXVlc3QsIGV2ZW4gaWYgdGhlIGRldmljZSBoYW5kbGUgdGhlIHJlcXVlc3Qu
-Cj4gPgo+ID4gRm9yIENNUCBhbmQgSXNvY2hyb25vdXMgUmVzb3VyY2UgTWFuYWdlbWVudCwgdGhp
-cyBxdWlyayB3b3JrcyBiYWRseS4KPiA+IFdoZW4gYSByZXF1ZXN0IGZyb20gZHJpdmVyIGlzIGhh
-bmRsZWQgYnkgdGhlIGRldmljZSBidXQgdGhlIGRldmljZQo+ID4gZG9uJ3QgcmVzcG9uZCwgdGhl
-IGRyaXZlcnMgKGZpcmV3aXJlX2NvcmUvc25kLWZpcmV3aXJlLWxpYikgcmV0cnkgdGhlCj4gPiBy
-ZXF1ZXN0LiBUaGVuIGEgcmVzcG9uc2UgZm9yIHRoZSBzZWNvbmQgcmVxdWVzdCBicmluZ3MgZXJy
-b3IgYmVjYXVzZQo+ID4gdGhlIG9wZXJhdGlvbiBmb3IgY29ubmVjdGlvbiBvciBpc29jaHJvbm91
-cyByZXNvdXJjZSBtYW5hZ2VtZW50IGlzCj4gPiBhbHJlYWR5IGRvbmUgaW4gZGV2aWNlIHNpZGUu
-Cj4gCj4gTWF5YmUgd2Ugc2hvdWxkIGNoYW5nZSBob3cgdGhlc2UgZnVuY3Rpb25zIGhhbmRsZSB0
-aW1lb3V0cy4gIEFueSBvdGhlcgo+IGVycm9yIGNvZGUgaW5kaWNhdGVzIHRoYXQgdGhlIGxvY2sg
-dHJhbnNhY3Rpb24gZmFpbGVkIGRlZmluaXRlbHksIGJ1dAo+IGFmdGVyIGEgdGltZW91dCwgd2Ug
-ZG9uJ3Qga25vdyBpZiBpdCB3YXMgdGhlIHJlcXVlc3Qgb3IgdGhlIHJlc3BvbnNlCj4gdGhhdCBn
-b3QgbG9zdC4KPiAKPiBXZSBjb3VsZCB0cnkgdG8gcmVhZCB0aGUgcmVnaXN0ZXIsIGFuZCwgaWYg
-d2Ugc2VlIHRoYXQgdGhlIGNoYW5nZSB0aGF0IHdlCj4gdHJpZWQgdG8gZG8gYWN0dWFsbHkgaGFw
-cGVuZCwgYXNzdW1lIHRoYXQgb3VyIGRyaXZlcidzIHRyYW5zYWN0aW9uIGRpZAo+IHRoaXMgY2hh
-bmdlLgo+IAo+IEFyZSByZWFkIHRyYW5zYWN0aW9ucyBtb3JlIHJlbGlhYmxlIHRoYW4gbG9ja3M/
-ICBJZiBub3QsIHdlIG1pZ2h0IG5lZWQKPiB0byBpbmNyZWFzZSB0aGUgbnVtYmVyIG9mIHJldHJp
-ZXMgZm9yIHRoZXNlIGRldmljZXMuCj4gCj4gPiBBZ2FpbnN0IHRoaXMgcXVpcmssIEkgd2FudCB0
-byBtZXJnZSB0aGlzIHBhdGNoIGZvciB1cHN0cmVhbQo+IAo+IFRoaXMgcGF0Y2ggKG5vLiA1Mikg
-ZG9lcyBub3QgY2hhbmdlIHRoZSBDTVAgY29kZS4KPiAKPiAKPiBSZWdhcmRzLAo+IENsZW1lbnMK
-PiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBGbG93LWJhc2VkIHJlYWwtdGltZSB0cmFmZmlj
-IGFuYWx5dGljcyBzb2Z0d2FyZS4gQ2lzY28gY2VydGlmaWVkIHRvb2wuCj4gTW9uaXRvciB0cmFm
-ZmljLCBTTEFzLCBRb1MsIE1lZGlhbmV0LCBXQUFTIGV0Yy4gd2l0aCBOZXRGbG93IEFuYWx5emVy
-Cj4gQ3VzdG9taXplIHlvdXIgb3duIGRhc2hib2FyZHMsIHNldCB0cmFmZmljIGFsZXJ0cyBhbmQg
-Z2VuZXJhdGUgcmVwb3J0cy4KPiBOZXR3b3JrIGJlaGF2aW9yYWwgYW5hbHlzaXMgJiBzZWN1cml0
-eSBtb25pdG9yaW5nLiBBbGwtaW4tb25lIHRvb2wuCj4gaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNs
-aWNrLm5ldC9nYW1wYWQvY2xrP2lkPTEyNjgzOTA3MSZpdT0vNDE0MC9vc3RnLmNsa3Ryawo+IF9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gRkZBRE8tZGV2
-ZWwgbWFpbGluZyBsaXN0Cj4gRkZBRE8tZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0
-cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vZmZhZG8tZGV2ZWwKCgot
-LSAK79TQ0sHXzMXOzyDJ2iDNz8LJzNjOz8og8c7ExcvTLvDP3tTZOiBodHRwOi8vbS55YS5ydS95
-bWFpbAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkZsb3ctYmFzZWQgcmVhbC10aW1lIHRyYWZmaWMg
-YW5hbHl0aWNzIHNvZnR3YXJlLiBDaXNjbyBjZXJ0aWZpZWQgdG9vbC4KTW9uaXRvciB0cmFmZmlj
-LCBTTEFzLCBRb1MsIE1lZGlhbmV0LCBXQUFTIGV0Yy4gd2l0aCBOZXRGbG93IEFuYWx5emVyCkN1
-c3RvbWl6ZSB5b3VyIG93biBkYXNoYm9hcmRzLCBzZXQgdHJhZmZpYyBhbGVydHMgYW5kIGdlbmVy
-YXRlIHJlcG9ydHMuCk5ldHdvcmsgYmVoYXZpb3JhbCBhbmFseXNpcyAmIHNlY3VyaXR5IG1vbml0
-b3JpbmcuIEFsbC1pbi1vbmUgdG9vbC4KaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9n
-YW1wYWQvY2xrP2lkPTEyNjgzOTA3MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwptYWlsaW5nIGxpc3QgbGludXgxMzk0
-LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
-dC9saXN0cy9saXN0aW5mby9saW51eDEzOTQtZGV2ZWwK
+
+--RASg3xLB4tUQ4RcS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Feb 25, 2014 at 11:32:50AM +0300, Dan Carpenter wrote:
+> This should be spin_unlock_irqrestore() instead of spin_unlock()
+
+Applied both, thanks.
+
+--RASg3xLB4tUQ4RcS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTDStHAAoJELSic+t+oim9BHEQAIsC5fPFcvxcAz0GxxD8v++l
+zMtmpyAZ6MBq8M0Fz/vGl6VKOmO46adNGz5bmebiILrKwYn7ITiOgbz78jY1K9hj
+M+gme2foQNZjagFV+AEmzQ3OzEEyjtZCR+FtPU9Cqe5yZgLqNeLVaW+Z51NlAwsm
+pj31IkoobCcbdtWr3DYKPw+GCqz6nAUklcnKdG0/dSjpITrhv6dOwOixV6qpSfIM
+P4S9vCYvSpsWFispDOkE2243bsG3bRuFIGX5KzC+6zFUnCYrhTRJtokOmF+hBxpA
+gLAb18nzJpW7JZIWdakDoQpxbIbD6GpQnC5shhmm2Sru0rybrXkJ/8JJhX7gkITO
+bCS1bc6J7DmyitUWpQ3TBOu9otl8X4GdPVZSeIJchQ5WaYZbNzn9HUw5+D7NmODT
+mY8EPSG+hJikZH6JFFOY3Zz2pJPHhbqNKNSB9MQt4vHThKn0/sbrzncj/JCwq7ed
+MPfpu0ahgl2f4TFM3wGh/Kv1cq3rWEbm57T4///2f+J4cjHLfskPk/bUBfhOWt8k
+KdoXDTOkYBBWddEU4hunmYY8lFeZwJo01Kq/9Ko74giB3RH8Zygjd8k5a+IIsOjj
+o1QcBxtJQV/FatalHeNaPbKtDGeitBtN5yXbupqwZHnZmqwbZ9bzLWycf2XA+seM
+VxMfUClM9gNhuJk9I9+g
+=HdAe
+-----END PGP SIGNATURE-----
+
+--RASg3xLB4tUQ4RcS--
