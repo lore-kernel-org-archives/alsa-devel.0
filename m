@@ -1,66 +1,66 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs42888: Add codec driver support
-Date: Tue, 25 Feb 2014 09:00:27 +0900
-Message-ID: <20140225000027.GI25940@sirena.org.uk>
-References: <1393224929-7555-1-git-send-email-Guangyu.Chen@freescale.com>
- <20140224113011.GE25940@sirena.org.uk>
- <B745DBDD-8A64-4B98-819B-72F8AFF602DE@cirrus.com>
- <20140224160648.GC6132@MrMyself>
+Subject: Re: [PATCH] ASoC: da732x: Mark DC offset control registers volatile
+Date: Tue, 25 Feb 2014 10:21:38 +0900
+Message-ID: <20140225012138.GK25940@sirena.org.uk>
+References: <1393210853-32246-1-git-send-email-broonie@kernel.org>
+ <2E89032DDAA8B9408CB92943514A03376BAD3FC8@SW-EX-MBX01.diasemi.com>
+ <20140224124230.GF25940@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A03376BAD405D@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PcnNQAcZvbjJh8WA"
-Return-path: <linux-doc-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="teB4kYKCoFg+dcUh"
+Return-path: <stable-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140224160648.GC6132@MrMyself>
-Sender: linux-doc-owner@vger.kernel.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, "Handrigan, Paul" <Paul.Handrigan@cirrus.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "rob@landley.net" <rob@landley.net>, Liam Girdwood <lgirdwood@gmail.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+In-Reply-To: <2E89032DDAA8B9408CB92943514A03376BAD405D@SW-EX-MBX01.diasemi.com>
+Sender: stable-owner@vger.kernel.org
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---PcnNQAcZvbjJh8WA
+--teB4kYKCoFg+dcUh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 25, 2014 at 12:06:49AM +0800, Nicolin Chen wrote:
-> On Mon, Feb 24, 2014 at 03:52:24PM +0000, Austin, Brian wrote:
+On Mon, Feb 24, 2014 at 01:57:53PM +0000, Opensource [Adam Thomson] wrote:
 
-> Wait...Regarding this clock part, I just forgot the reason I put the code:
+> anyway. I'd be tempted to keep it simple and just make those registers volatile,
+> then you know it will work as expected, at least for the time being until a
 
-> 385         cs42888->clk = devm_clk_get(&i2c->dev, "mclk");
-> 386         if (IS_ERR(cs42888->clk))
-> 387                 dev_warn(&i2c->dev, "failed to get the clock: %ld\n",
-> 388                                 PTR_ERR(cs42888->clk));
+That breaks suspend and resume without further work - for suspend and
+resume we generally rely on restoring the register cache to restore the
+current settings but if a register is volatile it won't be cached so
+will go back to the hardware defaults after suspend.  The ability to
+avoid I2C traffic is partly just a nice side effect (though it was
+needed on devices that don't have readback), the main thing these days
+is that controls get efficient suspend and resume handling for free.
 
-> was because the MCLK might be provided from SoC (DAI master) so it could
-> be totally controlled by CPU DAI driver, ESAI for example has its own
-> dividers to derive the HCKT clock (MCLK for Tx) from ahb clock in SoC
-> clock tree, in which case we might not easily pass a valid clock phandle
-> via DT. (RFC to this thought.)
+Refactoring the offset correction to happen once on startup would solve
+the issue since the cache could just be bypassed, though you are likely
+to find that there is some run to run variation for the callibration due
+to effects like thermal variation and simple measurement errors.  Still,
+the effects are typically very small.
 
-We should be getting those clocks visible in the clock API rather than
-doing this.
-
---PcnNQAcZvbjJh8WA
+--teB4kYKCoFg+dcUh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTC90YAAoJELSic+t+oim9+tUQAJmsfJ5U9ZMR3D4G7qxQi6gy
-Q295xlQdHlWD9HzZlPqccF7xf6P1aDeSv1xBZ/Oczq/5e35w+PqZP4rOqofXqXi/
-EwfX2DLkkd6nOsCn9lOrGAwb3wRxp9rAb0FaGnbkg7bYeghN+9ssCsmICc+o3l8Y
-2f5h+h07T0rB/GPI65QdfU7yC/ojKGsGvHePi7xWnpxxchnkK9IENeGKpmYZlpU0
-lNcBrrI7ATyWOGcSvWJtmE4sRfGAkYCKXAQ9tJ+YeCbMIEZ+MovEosZ3pOMF92N2
-T62LxqVRud5YbskDdkZw7dPNsQ2lifD+P9jDFViBxciUXW0B3bYFh+EOFMXfppMA
-qanev9R7u39UkjUaIxBxPnoGC0bxui04a12GEZXc/9nIuKJ33PxTjtnIWzSDlZg6
-h5+c1LDvRfcL42HFNB7jMXJcgcf3q7Aw71oVQ9pc60txxbBP6cKxvQGXkbQlI/eC
-F8eDaBzfH0+wQU+fJZH9XZ70mB3zo6M3oTOW8c7wGwp5lILO5HwwBh+PO0DfSphP
-22CEMVE8LRjcJ3SZqmuUt+zQPnwtTHoqX/v9sjzemS5ZmRBTz+HXCwlOsiW5sk3T
-UbDCCsxLGEJ86F3sZ6HLdS/+BC5aGu9hKvZw1bboDZcqq9zGfY/5ovlaHc7pA+3a
-ykEEdEKQPlyCNBBrrwjh
-=VY5i
+iQIcBAEBAgAGBQJTC/AfAAoJELSic+t+oim9GTUP/idaL0Ku0s1Nxe6uExqBNqJl
+aRom7QFTJbrn0L0ZDDFf8n63/bdWaRvHM95lft0VJWiayQD8FfOYGcP1vbqWOJX7
+GVVKWTmtg8PrvnDP5Qd982mJ+wKPts2hhECLu7BvWCvuwOpbGR4tCdrXXRmwmPOU
+01VvSa/pclwQ8P1EQVZTZptnorIDqVMUJyVu91L9NQxVlONXRUMUHk/yBqfDSlXr
+uWUWWu+jCcf9lLDa5IMcLUabi9IuCfyQFoOuDie4Og3/9T5OQF+qXGZcZSjoO+UP
+WhgLpLBMwXMky1KfKLTqNiiL2S5+W8/mz5sXw/Y7lfs7BAlMaee2cuoLqjGtIoa4
+hHFVI0lfJXWKtOlgeA06gmVskrJtp0N87JB5WZZ/H99QoZVCUHSIdp0KUUHgRCf8
+XuqmNDv2pDHMK0m1A2cQ0k+JHhajCKa/Nxu2KASlDq6UfxytDNksMO88H5Jeqp+A
+9MzBPETH7dpQC1ikOPV6dd3RCLQKCIWZj0lusXRSE1k2jYPaz+2TauRmBenHv5Cy
+U4e+/IWXqsqlUXz0I1mFQe2LcXGUKHFZlNiA/Ars2MUBEnO/NrZOAcmJn+5mYGHV
+e8HuuJWFA7QDLkEoTOdhpChWX4DfaXxs5bPnKKiWhc2mqWCtg7CmQsXPBcgGU5mB
+8AGSptXB6vJPrk0D9m6B
+=Wj+y
 -----END PGP SIGNATURE-----
 
---PcnNQAcZvbjJh8WA--
+--teB4kYKCoFg+dcUh--
