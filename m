@@ -1,49 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [patch 1/2] ASoC: sst-haswell-ipc: restore IRQs on error
-Date: Wed, 26 Feb 2014 08:46:19 +0900
-Message-ID: <20140225234619.GB2927@sirena.org.uk>
-References: <20140225083250.GA22416@elgon.mountain>
+Subject: Re: [patch] ASoC: Intel: sst-firmware: missing curly braces
+ (harmless)
+Date: Wed, 26 Feb 2014 08:46:44 +0900
+Message-ID: <20140225234644.GC2927@sirena.org.uk>
+References: <20140221085240.GA13185@elgon.mountain>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RASg3xLB4tUQ4RcS"
+	protocol="application/pgp-signature"; boundary="pAwQNkOnpTn9IO2O"
 Return-path: <kernel-janitors-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140225083250.GA22416@elgon.mountain>
+In-Reply-To: <20140221085240.GA13185@elgon.mountain>
 Sender: kernel-janitors-owner@vger.kernel.org
 To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---RASg3xLB4tUQ4RcS
+--pAwQNkOnpTn9IO2O
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 25, 2014 at 11:32:50AM +0300, Dan Carpenter wrote:
-> This should be spin_unlock_irqrestore() instead of spin_unlock()
+On Fri, Feb 21, 2014 at 11:52:40AM +0300, Dan Carpenter wrote:
+> There were some curly braces intended here, but the code actually
+> works the same either way so it's not a bug.
 
-Applied both, thanks.
+Applied, thanks.
 
---RASg3xLB4tUQ4RcS
+--pAwQNkOnpTn9IO2O
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTDStHAAoJELSic+t+oim9BHEQAIsC5fPFcvxcAz0GxxD8v++l
-zMtmpyAZ6MBq8M0Fz/vGl6VKOmO46adNGz5bmebiILrKwYn7ITiOgbz78jY1K9hj
-M+gme2foQNZjagFV+AEmzQ3OzEEyjtZCR+FtPU9Cqe5yZgLqNeLVaW+Z51NlAwsm
-pj31IkoobCcbdtWr3DYKPw+GCqz6nAUklcnKdG0/dSjpITrhv6dOwOixV6qpSfIM
-P4S9vCYvSpsWFispDOkE2243bsG3bRuFIGX5KzC+6zFUnCYrhTRJtokOmF+hBxpA
-gLAb18nzJpW7JZIWdakDoQpxbIbD6GpQnC5shhmm2Sru0rybrXkJ/8JJhX7gkITO
-bCS1bc6J7DmyitUWpQ3TBOu9otl8X4GdPVZSeIJchQ5WaYZbNzn9HUw5+D7NmODT
-mY8EPSG+hJikZH6JFFOY3Zz2pJPHhbqNKNSB9MQt4vHThKn0/sbrzncj/JCwq7ed
-MPfpu0ahgl2f4TFM3wGh/Kv1cq3rWEbm57T4///2f+J4cjHLfskPk/bUBfhOWt8k
-KdoXDTOkYBBWddEU4hunmYY8lFeZwJo01Kq/9Ko74giB3RH8Zygjd8k5a+IIsOjj
-o1QcBxtJQV/FatalHeNaPbKtDGeitBtN5yXbupqwZHnZmqwbZ9bzLWycf2XA+seM
-VxMfUClM9gNhuJk9I9+g
-=HdAe
+iQIcBAEBAgAGBQJTDSthAAoJELSic+t+oim9XmQP/A095RfdPU/slmwJzywaLxa5
+pBVHXFpfzmDeodaZXJuddnc/SLckmr9+iL/F1Ut6Ids55NruVlhTZfPtrZ8iBjZZ
+CnpfGuE91tWdeeuMXO60Qs35wBMAiZK3VkNSeWy2xJwi8izHS6D+MK6Acl402MOG
+f1fGESI8HNZ6g9hT+MpdqwEwTlhfl873qNC8X+oMQ3v+ZtsfHatiZX4eyTm42K2M
+E3oCxnU9ErM/7Xc2rryzSjtJvd/BiDbPNCh/v3iE3zlU17lrqFK+32v3naHExDED
+Kak6iv/zKIGNRv7a2ugPAyQVfYfbPFJgUqdfYhyWSU0m8bGRQ3e1b7GW+joiLeCg
+wN7kJE/hrAkaNlSRyz8GzQwrgDzWvK/MmaIJeoftaHIZ7F5OyHg6V5Vv7nWPZs5C
+W2OVjwM5V0kIKtFz/BI/nhqciIlcBgR62Yy+zXF52h3ObI0Jj0KNzr7ivnJPzur7
+RRsU1JF+xen8JPwUzQeIch6UtCPM7lYp6UcToMriOFSkzf/pLg1PVAcTqUvk6J6N
+ZZucgdfTX/GYLywuECh6JQx1Vj+IRwXwHxDJyhVjI/xnrhyS5csu/DdGMScqFL6j
+ULfs8lhhC1OWk35kYjBdcO3ZNFxsUzUSO9TZ6RAB6HiFJU4Rx2vx7aIYODK/wHTe
+dc/znZG/Czqdic5/+Gdp
+=ZH2E
 -----END PGP SIGNATURE-----
 
---RASg3xLB4tUQ4RcS--
+--pAwQNkOnpTn9IO2O--
