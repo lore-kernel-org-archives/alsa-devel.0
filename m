@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8958-dsp: Fix firmware block
-	loading
-Date: Tue, 25 Feb 2014 13:37:58 +0900
-Message-ID: <20140225043758.GV25940@sirena.org.uk>
-References: <1393090213-10532-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 5/7] ASoC: Intel: Add machine driver for
+ Baytrail SST with RT5640 codec
+Date: Tue, 25 Feb 2014 13:42:06 +0900
+Message-ID: <20140225044206.GW25940@sirena.org.uk>
+References: <1393255622-31365-1-git-send-email-jarkko.nikula@linux.intel.com>
+ <1393255622-31365-6-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0738144687206536668=="
+Content-Type: multipart/mixed; boundary="===============4255088569161978599=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FE7F265551
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 05:38:02 +0100 (CET)
-In-Reply-To: <1393090213-10532-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CCF9265488
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 05:42:09 +0100 (CET)
+In-Reply-To: <1393255622-31365-6-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +22,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0738144687206536668==
+--===============4255088569161978599==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ac54cjuyezeSqVQ7"
+	protocol="application/pgp-signature"; boundary="28D0s+P4XAarnxzm"
 Content-Disposition: inline
 
 
---ac54cjuyezeSqVQ7
+--28D0s+P4XAarnxzm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Feb 22, 2014 at 06:30:13PM +0100, Lars-Peter Clausen wrote:
-> The codec->control_data contains a pointer to the device's regmap struct. But
-> wm8994_bulk_write() expects a pointer to the parent wm8998 device.
+On Mon, Feb 24, 2014 at 05:27:00PM +0200, Jarkko Nikula wrote:
 
-Applied, thanks.
+> +static const struct snd_kcontrol_new byt_rt5640_controls[] = {
+> +	SOC_DAPM_PIN_SWITCH("Headphone"),
+> +	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+> +	SOC_DAPM_PIN_SWITCH("Int Mic"),
+> +	SOC_DAPM_PIN_SWITCH("Ext Spk"),
 
---ac54cjuyezeSqVQ7
+Is this really an external speaker (you're making this visible as a
+control name...)?
+
+> +	fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+> +	      SND_SOC_DAIFMT_CBS_CFS;
+> +
+> +	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
+> +	if (ret < 0) {
+> +		dev_err(codec_dai->dev,
+> +			"can't set codec DAI configuration %d\n", ret);
+> +		return ret;
+> +	}
+
+Set this in the dai_link like with the other Intel machine driver the
+other day.
+
+--28D0s+P4XAarnxzm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTDB4jAAoJELSic+t+oim9IFcP/iw+B6A88kW8quubOTKN1REr
-/7PBIrDNnUWepNbTJUx8DJLdukTUt7+NVVNRVdC0dRLU4OGDXvrND70DudCKbVnE
-401e69ukHfN6nfEfLLRBCSzCDRp/5DDbOxKcujeYl145olHreJcIdpnyUZs4yPgq
-ZoLGhtspVWaAIFDQzWyFWEh3CEIS9BQLdhU4JKIPO99A3zn7cuNKUNc8j5tQMFpW
-E5thPT0NKcQnV38nUPnzhM7wuCPQs6+CVFoibbK0Kk/H853d4gwwmugG7kVsW/3c
-Bhmfm7igfxmU18Gnoyx78UlcWy6Hukgo6PJQ7db/YKn2469oVMIsGbl8fVUQov8s
-uYOhGJAS3EEwR/BB9RN94IpSDwzCKF4F9W0cF2VdE/ToG55SzbcR1LcySbqOf80J
-fL90f1O/yTjWLGRv+iPBfh56ye/XXswYaEkXTHmKP1VRrRkFUuAiWfkA0ReN2O93
-cKn/+2PCn97KRI1MYhm0Cc1E7unC+Qyx3SRbU7MyEeRy2BuKU7fuCT5EbVybSl3X
-FxIaMHvt5wq/zcuiN2AYd9FhH5P99qpolGzCSQuOQdrV02WRonBPu4rzUi+D0Nk1
-bY5zJ9vYiBB3CzcsbR5ZcicSWMhtjZmc8Wsg7dGnssKF9xXUAC6cE8ACY4IPSNW7
-qPW13Wz/FY9k+BJBxWQE
-=Xxn2
+iQIcBAEBAgAGBQJTDB8bAAoJELSic+t+oim9tEQQAJSy4pBOQ2PjIFvQYLY/HBN4
+zYdJQh2HXAJLKjf/NKy7cwqpbYg1i9Xa+Tg857KztRSMpDbKx4szCZy3IKi6GPsP
+Ps3haJxBIwF58uFO6syxwjWrB/Bx4GaC2bc8xWKBTMBw2DQTpgIDXQyr451DXdi0
+vwzvlnRTmq+E6q+FnvA4TqpOMyJnZaFwXH6sw9l9lxZ/2xcGyVdayyKkr4bzRNlZ
+hurZgCTqU5BI99KEEK0AZh3oVWNyyDYnSABuv6XDeU2wVJnFkQ1sLmqx61OE3JcZ
+DX0j6mXaQiC2htYPVDRwuetzgaYV8iANiPRjeu9tV3DhuMX4mn/lkDN771skHIx+
+qWEtn5qtfT5E1MIX1DSpFncs4pRb9e7fUrPjVLBpPii60d4gIW0zXlthseg/UTW2
+aOhTeXpWj79eG8uWDkzA22/xgDEo4FvVEt06fjTgQmUaWmA9MbJ1QxdzzgMhC34l
+GrzOkQas/I5k+riT03aBhsqtCMyWraxFsLXpECGcI1t+Th3maF7sDydIZ1sgyTJp
+5dIsfK0D1N0CXJdLA+hGSHjyExGoExQcfQ1iXx9Q0yAHYOlsG9DoXh8mdfMQzNky
+55TLeSdXZ5fzp1mDUxAffF3TqrlY4MpvUlhVFdEDmK6neTc6BOC5cfPb+iHvKTqX
+6XFSTnDVqgvKokvVVtbK
+=36Di
 -----END PGP SIGNATURE-----
 
---ac54cjuyezeSqVQ7--
+--28D0s+P4XAarnxzm--
 
---===============0738144687206536668==
+--===============4255088569161978599==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0738144687206536668==--
+--===============4255088569161978599==--
