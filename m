@@ -1,17 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 05/10] ALSA: Clean up snd_device_*() codes
-Date: Wed, 26 Feb 2014 07:47:27 +0100
-Message-ID: <1393397252-11690-6-git-send-email-tiwai@suse.de>
+Subject: [PATCH 07/10] ALSA: hda - Create own device struct for
+	each codec
+Date: Wed, 26 Feb 2014 07:47:29 +0100
+Message-ID: <1393397252-11690-8-git-send-email-tiwai@suse.de>
 References: <1393397252-11690-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FA4B265562
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DD2A26567B
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 07:47:38 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id EA80775024
+ by mx2.suse.de (Postfix) with ESMTP id EF2DB75026
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 06:47:37 +0000 (UTC)
 In-Reply-To: <1393397252-11690-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,246 +27,144 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A few code cleanups and optimizations.  In addition, drop
-snd_device_disconnect() that isn't used at all, and drop the return
-values from snd_device_free*().
+As the HD-audio is treated individually in each codec driver, it's
+more convenient to assign an own struct device to each codec object.
+Then we'll be able to use dev_err() more easily for each codec, for
+example.
 
-Another slight difference by this change is that now the device state
-will become always SNDRV_DEV_REGISTERED no matter whether dev_register
-ops is present or not.  It's for better consistency.  There should be
-no impact for the current tree, as the state isn't checked.
+For achieving it, this patch just creates an object "hdaudioCxDy".
+It belongs to sound class instead of creating a new bus, just for
+simplicity, at this stage.  No pm ops is implemented in the device
+struct level but currently it's merely a container.  The PCM and hwdep
+devices are now children of this codec device.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/core.h |   5 +-
- sound/core/device.c  | 128 ++++++++++++++++++++-------------------------------
- sound/core/init.c    |   5 +-
- 3 files changed, 52 insertions(+), 86 deletions(-)
+ sound/pci/hda/hda_codec.c | 36 +++++++++++++++++++++++++++++++++---
+ sound/pci/hda/hda_codec.h |  1 +
+ sound/pci/hda/hda_hwdep.c |  3 +++
+ sound/pci/hda/hda_intel.c |  2 ++
+ 4 files changed, 39 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index f1e41f4b067f..aac9a8590265 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -309,10 +309,9 @@ int snd_device_new(struct snd_card *card, enum snd_device_type type,
- 		   void *device_data, struct snd_device_ops *ops);
- int snd_device_register(struct snd_card *card, void *device_data);
- int snd_device_register_all(struct snd_card *card);
--int snd_device_disconnect(struct snd_card *card, void *device_data);
- int snd_device_disconnect_all(struct snd_card *card);
--int snd_device_free(struct snd_card *card, void *device_data);
--int snd_device_free_all(struct snd_card *card);
-+void snd_device_free(struct snd_card *card, void *device_data);
-+void snd_device_free_all(struct snd_card *card);
- 
- /* isadma.c */
- 
-diff --git a/sound/core/device.c b/sound/core/device.c
-index 53291ff21a09..41bec3075ae5 100644
---- a/sound/core/device.c
-+++ b/sound/core/device.c
-@@ -73,6 +73,30 @@ int snd_device_new(struct snd_card *card, enum snd_device_type type,
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 5ea1156954ab..98baf5674a63 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -1368,7 +1368,7 @@ static void snd_hda_codec_free(struct hda_codec *codec)
+ 	kfree(codec->modelname);
+ 	kfree(codec->wcaps);
+ 	codec->bus->num_codecs--;
+-	kfree(codec);
++	put_device(&codec->dev);
  }
- EXPORT_SYMBOL(snd_device_new);
  
-+static int __snd_device_disconnect(struct snd_device *dev)
+ static bool snd_hda_codec_get_supported_ps(struct hda_codec *codec,
+@@ -1377,12 +1377,33 @@ static bool snd_hda_codec_get_supported_ps(struct hda_codec *codec,
+ static unsigned int hda_set_power_state(struct hda_codec *codec,
+ 				unsigned int power_state);
+ 
++static int snd_hda_codec_dev_register(struct snd_device *device)
 +{
-+	if (dev->state == SNDRV_DEV_REGISTERED) {
-+		if (dev->ops->dev_disconnect &&
-+		    dev->ops->dev_disconnect(dev))
-+			dev_err(dev->card->dev, "device disconnect failure\n");
-+		dev->state = SNDRV_DEV_DISCONNECTED;
-+	}
++	struct hda_codec *codec = device->device_data;
++
++	return device_add(&codec->dev);
++}
++
++static int snd_hda_codec_dev_disconnect(struct snd_device *device)
++{
++	struct hda_codec *codec = device->device_data;
++
++	device_del(&codec->dev);
 +	return 0;
 +}
 +
-+static void __snd_device_free(struct snd_device *dev)
-+{
-+	/* unlink */
-+	list_del(&dev->list);
-+
-+	__snd_device_disconnect(dev);
-+	if (dev->ops->dev_free) {
-+		if (dev->ops->dev_free(dev))
-+			dev_err(dev->card->dev, "device free failure\n");
-+	}
-+	kfree(dev);
-+}
-+
- static struct snd_device *look_for_dev(struct snd_card *card, void *device_data)
+ static int snd_hda_codec_dev_free(struct snd_device *device)
  {
- 	struct snd_device *dev;
-@@ -92,71 +116,33 @@ static struct snd_device *look_for_dev(struct snd_card *card, void *device_data)
-  * Removes the device from the list on the card and invokes the
-  * callbacks, dev_disconnect and dev_free, corresponding to the state.
-  * Then release the device.
-- *
-- * Return: Zero if successful, or a negative error code on failure or if the
-- * device not found.
-  */
--int snd_device_free(struct snd_card *card, void *device_data)
-+void snd_device_free(struct snd_card *card, void *device_data)
- {
- 	struct snd_device *dev;
- 	
- 	if (snd_BUG_ON(!card || !device_data))
--		return -ENXIO;
-+		return;
- 	dev = look_for_dev(card, device_data);
--	if (dev) {
--		/* unlink */
--		list_del(&dev->list);
--		if (dev->state == SNDRV_DEV_REGISTERED &&
--		    dev->ops->dev_disconnect)
--			if (dev->ops->dev_disconnect(dev))
--				dev_err(card->dev,
--					"device disconnect failure\n");
--		if (dev->ops->dev_free) {
--			if (dev->ops->dev_free(dev))
--				dev_err(card->dev, "device free failure\n");
--		}
--		kfree(dev);
--		return 0;
--	}
--	dev_dbg(card->dev, "device free %p (from %pF), not found\n",
--		device_data, __builtin_return_address(0));
--	return -ENXIO;
-+	if (dev)
-+		__snd_device_free(dev);
-+	else
-+		dev_dbg(card->dev, "device free %p (from %pF), not found\n",
-+			device_data, __builtin_return_address(0));
- }
- EXPORT_SYMBOL(snd_device_free);
- 
--/**
-- * snd_device_disconnect - disconnect the device
-- * @card: the card instance
-- * @device_data: the data pointer to disconnect
-- *
-- * Turns the device into the disconnection state, invoking
-- * dev_disconnect callback, if the device was already registered.
-- *
-- * Usually called from snd_card_disconnect().
-- *
-- * Return: Zero if successful, or a negative error code on failure or if the
-- * device not found.
-- */
--int snd_device_disconnect(struct snd_card *card, void *device_data)
-+static int __snd_device_register(struct snd_device *dev)
- {
--	struct snd_device *dev;
--
--	if (snd_BUG_ON(!card || !device_data))
--		return -ENXIO;
--	dev = look_for_dev(card, device_data);
--	if (dev) {
--		if (dev->state == SNDRV_DEV_REGISTERED &&
--		    dev->ops->dev_disconnect) {
--			if (dev->ops->dev_disconnect(dev))
--				dev_err(card->dev,
--					"device disconnect failure\n");
--			dev->state = SNDRV_DEV_DISCONNECTED;
-+	if (dev->state == SNDRV_DEV_BUILD) {
-+		if (dev->ops->dev_register) {
-+			int err = dev->ops->dev_register(dev);
-+			if (err < 0)
-+				return err;
- 		}
--		return 0;
-+		dev->state = SNDRV_DEV_REGISTERED;
- 	}
--	dev_dbg(card->dev, "device disconnect %p (from %pF), not found\n",
--		device_data, __builtin_return_address(0));
--	return -ENXIO;
-+	return 0;
- }
- 
- /**
-@@ -175,21 +161,12 @@ int snd_device_disconnect(struct snd_card *card, void *device_data)
- int snd_device_register(struct snd_card *card, void *device_data)
- {
- 	struct snd_device *dev;
--	int err;
- 
- 	if (snd_BUG_ON(!card || !device_data))
- 		return -ENXIO;
- 	dev = look_for_dev(card, device_data);
--	if (dev) {
--		if (dev->state == SNDRV_DEV_BUILD && dev->ops->dev_register) {
--			if ((err = dev->ops->dev_register(dev)) < 0)
--				return err;
--			dev->state = SNDRV_DEV_REGISTERED;
--			return 0;
--		}
--		dev_dbg(card->dev, "snd_device_register busy\n");
--		return -EBUSY;
--	}
-+	if (dev)
-+		return __snd_device_register(dev);
- 	snd_BUG();
- 	return -ENXIO;
- }
-@@ -207,11 +184,9 @@ int snd_device_register_all(struct snd_card *card)
- 	if (snd_BUG_ON(!card))
- 		return -ENXIO;
- 	list_for_each_entry(dev, &card->devices, list) {
--		if (dev->state == SNDRV_DEV_BUILD && dev->ops->dev_register) {
--			if ((err = dev->ops->dev_register(dev)) < 0)
--				return err;
--			dev->state = SNDRV_DEV_REGISTERED;
--		}
-+		err = __snd_device_register(dev);
-+		if (err < 0)
-+			return err;
- 	}
+ 	snd_hda_codec_free(device->device_data);
  	return 0;
  }
-@@ -228,7 +203,7 @@ int snd_device_disconnect_all(struct snd_card *card)
- 	if (snd_BUG_ON(!card))
- 		return -ENXIO;
- 	list_for_each_entry_reverse(dev, &card->devices, list) {
--		if (snd_device_disconnect(card, dev->device_data) < 0)
-+		if (__snd_device_disconnect(dev) < 0)
- 			err = -ENXIO;
- 	}
- 	return err;
-@@ -238,17 +213,12 @@ int snd_device_disconnect_all(struct snd_card *card)
-  * release all the devices on the card.
-  * called from init.c
-  */
--int snd_device_free_all(struct snd_card *card)
-+void snd_device_free_all(struct snd_card *card)
- {
- 	struct snd_device *dev, *next;
--	int ret = 0;
  
- 	if (snd_BUG_ON(!card))
--		return -ENXIO;
--	list_for_each_entry_safe_reverse(dev, next, &card->devices, list) {
--		int err = snd_device_free(card, dev->device_data);
--		if (err < 0)
--			ret = err;
--	}
--	return ret;
-+		return;
-+	list_for_each_entry_safe_reverse(dev, next, &card->devices, list)
-+		__snd_device_free(dev);
++/* just free the container */
++static void snd_hda_codec_dev_release(struct device *dev)
++{
++	kfree(container_of(dev, struct hda_codec, dev));
++}
++
+ /**
+  * snd_hda_codec_new - create a HDA codec
+  * @bus: the bus to assign
+@@ -1400,6 +1421,8 @@ int snd_hda_codec_new(struct hda_bus *bus,
+ 	hda_nid_t fg;
+ 	int err;
+ 	static struct snd_device_ops dev_ops = {
++		.dev_register = snd_hda_codec_dev_register,
++		.dev_disconnect = snd_hda_codec_dev_disconnect,
+ 		.dev_free = snd_hda_codec_dev_free,
+ 	};
+ 
+@@ -1420,6 +1443,13 @@ int snd_hda_codec_new(struct hda_bus *bus,
+ 		return -ENOMEM;
+ 	}
+ 
++	device_initialize(&codec->dev);
++	codec->dev.parent = &bus->card->card_dev;
++	codec->dev.class = sound_class;
++	codec->dev.release = snd_hda_codec_dev_release;
++	dev_set_name(&codec->dev, "hdaudioC%dD%d", bus->card->number,
++		     codec_addr);
++
+ 	codec->bus = bus;
+ 	codec->addr = codec_addr;
+ 	mutex_init(&codec->spdif_mutex);
+@@ -1453,8 +1483,8 @@ int snd_hda_codec_new(struct hda_bus *bus,
+ 	if (codec->bus->modelname) {
+ 		codec->modelname = kstrdup(codec->bus->modelname, GFP_KERNEL);
+ 		if (!codec->modelname) {
+-			snd_hda_codec_free(codec);
+-			return -ENODEV;
++			err = -ENODEV;
++			goto error;
+ 		}
+ 	}
+ 
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index ab2a444ba501..4d9dd2b70f4a 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -271,6 +271,7 @@ struct hda_pcm {
+ 
+ /* codec information */
+ struct hda_codec {
++	struct device dev;
+ 	struct hda_bus *bus;
+ 	unsigned int addr;	/* codec addr*/
+ 	struct list_head list;	/* list point */
+diff --git a/sound/pci/hda/hda_hwdep.c b/sound/pci/hda/hda_hwdep.c
+index 0fada0f8cfe8..896d116ca951 100644
+--- a/sound/pci/hda/hda_hwdep.c
++++ b/sound/pci/hda/hda_hwdep.c
+@@ -155,6 +155,9 @@ int snd_hda_create_hwdep(struct hda_codec *codec)
+ 	snd_array_init(&codec->hints, sizeof(struct hda_hint), 32);
+ 	snd_array_init(&codec->user_pins, sizeof(struct hda_pincfg), 16);
+ 
++	/* link to codec */
++	hwdep->dev = &codec->dev;
++
+ 	return 0;
  }
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 9e7f17b72fb6..5ee83845c5de 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -454,10 +454,7 @@ static int snd_card_do_free(struct snd_card *card)
- 	if (snd_mixer_oss_notify_callback)
- 		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_FREE);
- #endif
--	if (snd_device_free_all(card) < 0) {
--		dev_err(card->dev, "unable to free all devices\n");
--		/* Fatal, but this situation should never occur */
--	}
-+	snd_device_free_all(card);
- 	if (card->private_free)
- 		card->private_free(card);
- 	snd_info_free_entry(card->proc_id);
+ 
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 0870f5f3ed1c..459f54da8d6b 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2663,6 +2663,8 @@ azx_attach_pcm_stream(struct hda_bus *bus, struct hda_codec *codec,
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
+ 					      snd_dma_pci_data(chip->pci),
+ 					      size, MAX_PREALLOC_SIZE);
++	/* link to codec */
++	pcm->dev = &codec->dev;
+ 	return 0;
+ }
+ 
 -- 
 1.9.0
