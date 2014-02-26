@@ -1,17 +1,20 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCHv2] ASoC: Intel: Baytrail: Fix implicit
-	declaration of function 'memcpy_fromio'
-Date: Wed, 26 Feb 2014 15:31:46 +0200
-Message-ID: <1393421506-2411-1-git-send-email-jarkko.nikula@linux.intel.com>
-References: <1393420341-31625-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Maarten Baert <maarten-baert@hotmail.com>
+Subject: Re: [PATCH] Bugfix: Fix resampling when client
+ and	slave both use format float
+Date: Wed, 26 Feb 2014 14:32:51 +0100
+Message-ID: <BLU0-SMTP175CCD2DD79CCAB8548A5C5E2800@phx.gbl>
+References: <BLU0-SMTP134831A0E1EA4F209F321CAE2850@phx.gbl>
+ <s5hwqgkyimw.wl%tiwai@suse.de> <BLU0-SMTP25F099B950B03725BED93DE2860@phx.gbl>
+ <s5hios4ps18.wl%tiwai@suse.de> <s5hha7opr7l.wl%tiwai@suse.de>
+ <BLU0-SMTP4567C0162DA792F75B98686E2860@phx.gbl>
+ <s5hbnxuuycz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="------------030400000801090909040102"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id F178A2617B6
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 14:31:55 +0100 (CET)
-In-Reply-To: <1393420341-31625-1-git-send-email-jarkko.nikula@linux.intel.com>
+Received: from blu0-omc3-s24.blu0.hotmail.com (blu0-omc3-s24.blu0.hotmail.com
+ [65.55.116.99]) by alsa0.perex.cz (Postfix) with ESMTP id 539A92656B0
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 14:32:56 +0100 (CET)
+In-Reply-To: <s5hbnxuuycz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,32 +25,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Liam Girdwood <lgirdwood@gmail.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, kbuild test robot <fengguang.wu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-U29tZSBrZXJuZWwgY29uZmlndXJhdGlvbnMgY2FuIGNhdXNlIGZvbGxvd2luZyBidWlsZCBlcnJv
-cjoKCnNvdW5kL3NvYy9pbnRlbC9zc3QtYmF5dHJhaWwtaXBjLmM6IEluIGZ1bmN0aW9uIOKAmHNz
-dF9ieXRfZ2V0X2RzcF9wb3NpdGlvbuKAmToKc291bmQvc29jL2ludGVsL3NzdC1iYXl0cmFpbC1p
-cGMuYzo3NDQ6MjogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmG1l
-bWNweV9mcm9taW/igJkgWy1XZXJyb3I9aW1wbGljaXQtZnVuY3Rpb24tZGVjbGFyYXRpb25dCiAg
-bWVtY3B5X2Zyb21pbygmZndfdHN0YW1wLAogIF4KY2MxOiBzb21lIHdhcm5pbmdzIGJlaW5nIHRy
-ZWF0ZWQgYXMgZXJyb3JzCgpGaXggdGhpcyBieSBpbmNsdWRpbmcgPGxpbnV4L2lvLmg+IGV4cGxp
-Y2l0bHkuCgpSZXBvcnRlZC1ieToga2J1aWxkIHRlc3Qgcm9ib3QgPGZlbmdndWFuZy53dUBpbnRl
-bC5jb20+ClNpZ25lZC1vZmYtYnk6IEphcmtrbyBOaWt1bGEgPGphcmtrby5uaWt1bGFAbGludXgu
-aW50ZWwuY29tPgotLS0KdjI6IGluY2x1ZGluZyA8bGludXgvaW8uaD4gaW5zdGVhZCBvZiA8YXNt
-L2lvLmg+LiBUaGFua3MgdG8gVGFrYXNoaSBJd2FpIGZvcgpub3RpY2luZyAoY2hlY2twYXRjaC5w
-bCB0ZWxscyBpdCB0b28pLgoKQWxzbyBzc3QtZHNwLiwgc3N0LWJheXRyYWlsLWRzcC5jIGFuZCBz
-c3QtaGFzd2VsbC1kc3AuYyBhcmUgdXNpbmcKbWVtY3B5X2Zyb21pby9fdG9pbyBidXQgdGhlcmUg
-PGFzbS9pby5oPiBzZWVtcyB0byBjb21lIHZpYQo8bGludXgvZG1hLW1hcHBpbmcuaD4gb3IgPGxp
-bnV4L2lvLmg+IHNvIEkgZGlkbid0IHRvdWNoIHRoZW0uCi0tLQogc291bmQvc29jL2ludGVsL3Nz
-dC1iYXl0cmFpbC1pcGMuYyB8IDEgKwogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspCgpk
-aWZmIC0tZ2l0IGEvc291bmQvc29jL2ludGVsL3NzdC1iYXl0cmFpbC1pcGMuYyBiL3NvdW5kL3Nv
-Yy9pbnRlbC9zc3QtYmF5dHJhaWwtaXBjLmMKaW5kZXggOGM5MWE2OGI5MGJjLi5jMTJlMTk0YmJj
-NmIgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9pbnRlbC9zc3QtYmF5dHJhaWwtaXBjLmMKKysrIGIv
-c291bmQvc29jL2ludGVsL3NzdC1iYXl0cmFpbC1pcGMuYwpAQCAtMjYsNiArMjYsNyBAQAogI2lu
-Y2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPgogI2luY2x1ZGUgPGxpbnV4L2t0aHJlYWQu
-aD4KICNpbmNsdWRlIDxsaW51eC9maXJtd2FyZS5oPgorI2luY2x1ZGUgPGxpbnV4L2lvLmg+CiAj
-aW5jbHVkZSA8YXNtL2RpdjY0Lmg+CiAKICNpbmNsdWRlICJzc3QtYmF5dHJhaWwtaXBjLmgiCi0t
-IAoxLjguNS4zCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+--------------030400000801090909040102
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+On 26/02/14 08:28, Takashi Iwai wrote:
+> It's not applicable via git am. Please resubmit with the right format
+> (that is cleanly applied via git am). 
+Sorry, this one should work.
+
+--------------030400000801090909040102
+Content-Type: text/x-patch;
+	name="0001-snd_pcm_plug_change_format-Insert-linear-to-float-co.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename*0="0001-snd_pcm_plug_change_format-Insert-linear-to-float-co.pa";
+	filename*1="tch"
+
+>From 3a576686760ec6bb76892443e3c3c9ed2657bf93 Mon Sep 17 00:00:00 2001
+From: Maarten Baert <maarten-baert@hotmail.com>
+Date: Wed, 26 Feb 2014 14:23:45 +0100
+Subject: [PATCH] snd_pcm_plug_change_format: Insert linear-to-float conversion
+ when rate or channel count is incorrect.
+
+This fixes a bug where snd_pcm_plug_insert_plugins fails when both
+client and slave use format float, but the rate or channel count does
+not match. I also removed some redundant code.
+
+Signed-off-by: Maarten Baert <maarten-baert@hotmail.com>
+---
+ src/pcm/pcm_plug.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c
+index fa84eaa..ede9c15 100644
+--- a/src/pcm/pcm_plug.c
++++ b/src/pcm/pcm_plug.c
+@@ -522,15 +522,13 @@ static int snd_pcm_plug_change_format(snd_pcm_t *pcm, snd_pcm_t **new, snd_pcm_p
+ 		}
+ #ifdef BUILD_PCM_PLUGIN_LFLOAT
+ 	} else if (snd_pcm_format_float(slv->format)) {
+-		/* Conversion is done in another plugin */
+-		if (clt->format == slv->format &&
+-		    clt->rate == slv->rate &&
+-		    clt->channels == slv->channels)
+-			return 0;
+-		cfmt = clt->format;
+-		if (snd_pcm_format_linear(clt->format))
++		if (snd_pcm_format_linear(clt->format)) {
++			cfmt = clt->format;
+ 			f = snd_pcm_lfloat_open;
+-		else
++		} else if (clt->rate != slv->rate || clt->channels != slv->channels) {
++			cfmt = SND_PCM_FORMAT_S16;
++			f = snd_pcm_lfloat_open;
++		} else
+ 			return -EINVAL;
+ #endif
+ #ifdef BUILD_PCM_NONLINEAR
+-- 
+1.9.0
+
+
+--------------030400000801090909040102
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------030400000801090909040102--
