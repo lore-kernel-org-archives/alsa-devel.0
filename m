@@ -1,13 +1,16 @@
-From: "Corfu, ValentinX" <valentinx.corfu@intel.com>
-Subject: [alsa-plugins] [PATCH 1/2] Allow to specify a client
- name as parameters
-Date: Wed, 26 Feb 2014 14:03:56 +0000
-Message-ID: <9900E8BE2ADAAB43B2A4471493EDB7F94B3EFB@IRSMSX104.ger.corp.intel.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [TINYCOMPRESS][PATCH 1/1] compress: no need to set
+	metadata before	calling next_track
+Date: Wed, 26 Feb 2014 14:29:28 +0000
+Message-ID: <20140226142829.GB2002@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3EFBIRSMSX104gercorpi_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Language: en-US
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 498BF2656A6
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:29:41 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,100 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "patch@alsa-project.org" <patch@alsa-project.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Trandafir,
- IonutX" <ionutx.trandafir@intel.com>
+To: vinod.koul@intel.com
+Cc: ckeepax@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, elaurent@google.com
 List-Id: alsa-devel@alsa-project.org
 
---_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3EFBIRSMSX104gercorpi_
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+The metadata is mainly for MP3 gapless playback, since
+the MP3 audio stream does not contain enough information
+to enable gapless. Other audio formats do not necessarily
+require any additional metadata so we should allow next_track
+to be called without any metadata.
 
-Hi Takashi,
+Signed-off-by: Zhao Weijia <weijia.zhao@capelabs.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+---
+ compress.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-I reworked the patches and hope to be the final ones.  J
-You will find attached at each of the emails.
-
-Kind Regards,
-Valentin Corfu
-Intel GmbH
-Dornacher Strasse 1
-85622 Feldkirchen/Muenchen, Deutschland
-Sitz der Gesellschaft: Feldkirchen bei Muenchen
-Geschaeftsfuehrer: Christian Lamprechter, Hannes Schwaderer, Douglas Lusk
-Registergericht: Muenchen HRB 47456
-Ust.-IdNr./VAT Registration No.: DE129385895
-Citibank Frankfurt a.M. (BLZ 502 109 00) 600119052
-
---_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3EFBIRSMSX104gercorpi_
-Content-Type: text/x-patch;
-	name="0001-Allow-to-specify-a-client-name-as-parameters.patch"
-Content-Description: 0001-Allow-to-specify-a-client-name-as-parameters.patch
-Content-Disposition: attachment;
-	filename="0001-Allow-to-specify-a-client-name-as-parameters.patch";
-	size=2929; creation-date="Wed, 26 Feb 2014 13:51:21 GMT";
-	modification-date="Wed, 26 Feb 2014 13:51:21 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSBlYmEwYjRlYmViMzQyNTBmNDlmMzQ3NzZiMjg4NDMyZmI3ODJlMDkyIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBWYWxlbnRpbiBDb3JmdSA8dmFsZW50aW54LmNvcmZ1QGludGVs
-LmNvbT4KRGF0ZTogVHVlLCAxMSBGZWIgMjAxNCAwNDowNjozNiAtMDUwMApTdWJqZWN0OiBbUEFU
-Q0ggMS8yXSBBbGxvdyB0byBzcGVjaWZ5IGEgY2xpZW50IG5hbWUgYXMgcGFyYW1ldGVycwoKIFRo
-ZSBjdXJyZW50IGphY2sgY2xpZW50IG5hbWUgY29udGFpbnMgdGhlIHByb2Nlc3MgaWQgb2YgdGhl
-IGFwcGxpY2F0aW9uCnByb3ZpZGluZyB0aGUgYXVkaW8gc2FtcGxlcy4gVGhpcyBsZWFkcyB0byB1
-bnByZWRpY3RhYmxlIGphY2sgY2xpZW50Cm5hbWVzIHdoaWNoIG1ha2VzIGhhbmRsaW5nIG9mIHRo
-ZSBjb25uZWN0aW9ucyBieSBhIGNvbnRyb2xsaW5nCmFwcGxpY2F0aW9uIHZlcnkgaGFyZC4KIFRo
-aXMgbW9kaWZpY2F0aW9uIG5vdywgYWxsb3dzIHRvIHNwZWNpZnkgYSBjbGllbnQgbmFtZSBhcyBw
-YXJhbWV0ZXJzCmluIHRoZSBjb25maWd1cmF0aW9uIGZpbGUuIFRoZSBpbXBsZW1lbnRhdGlvbiBp
-cyBiYWNrd2FyZApjb21wYXRpYmxlIGFuZCBzaW1wbHkgYWRkcyBhIG5ldyBjb25maWd1cmF0aW9u
-IG9wdGlvbiB0byB0aGUgcGx1Z2luLgoKU2lnbmVkLW9mZi1ieTogVmFsZW50aW4gQ29yZnUgPHZh
-bGVudGlueC5jb3JmdUBpbnRlbC5jb20+CgpkaWZmIC0tZ2l0IGEvamFjay9wY21famFjay5jIGIv
-amFjay9wY21famFjay5jCmluZGV4IGM1MWZlODQuLjk4Mzg3OGYgMTAwNjQ0Ci0tLSBhL2phY2sv
-cGNtX2phY2suYworKysgYi9qYWNrL3BjbV9qYWNrLmMKQEAgLTM1NSwxMiArMzU1LDE5IEBAIHN0
-YXRpYyBpbnQgc25kX3BjbV9qYWNrX29wZW4oc25kX3BjbV90ICoqcGNtcCwgY29uc3QgY2hhciAq
-bmFtZSwKIAkJc25kX3BjbV9qYWNrX2ZyZWUoamFjayk7CiAJCXJldHVybiAtRUlOVkFMOwogCX0K
-LQotCWlmIChzbnByaW50ZihqYWNrX2NsaWVudF9uYW1lLCBzaXplb2YoamFja19jbGllbnRfbmFt
-ZSksICJhbHNhLWphY2suJXMlcy4lZC4lZCIsIG5hbWUsCi0JCSAgICAgc3RyZWFtID09IFNORF9Q
-Q01fU1RSRUFNX1BMQVlCQUNLID8gIlAiIDogIkMiLCBnZXRwaWQoKSwgbnVtKyspCi0JICAgID49
-IChpbnQpc2l6ZW9mKGphY2tfY2xpZW50X25hbWUpKSB7Ci0JCWZwcmludGYoc3RkZXJyLCAiJXM6
-IFdBUk5JTkc6IEpBQ0sgY2xpZW50IG5hbWUgJyVzJyB0cnVuY2F0ZWQgdG8gJWQgY2hhcmFjdGVy
-cywgbWlnaHQgbm90IGJlIHVuaXF1ZVxuIiwKLQkJCV9fZnVuY19fLCBqYWNrX2NsaWVudF9uYW1l
-LCAoaW50KXN0cmxlbihqYWNrX2NsaWVudF9uYW1lKSk7CisgICAgaWYgKCBuYW1lID09IE5VTEwg
-KSB7CisgICAgICAgIGlmIChzbnByaW50ZihqYWNrX2NsaWVudF9uYW1lLCBzaXplb2YoamFja19j
-bGllbnRfbmFtZSksICJhbHNhLWphY2suJXMlcy4lZC4lZCIsIG5hbWUsCisgICAgICAgICAgICAg
-ICAgc3RyZWFtID09IFNORF9QQ01fU1RSRUFNX1BMQVlCQUNLID8gIlAiIDogIkMiLCBnZXRwaWQo
-KSwgbnVtKyspCisgICAgICAgICAgICA+PSAoaW50KXNpemVvZihqYWNrX2NsaWVudF9uYW1lKSkg
-eworICAgICAgICAgICAgICAgIGZwcmludGYoc3RkZXJyLCAiJXM6IFdBUk5JTkc6IEpBQ0sgY2xp
-ZW50IG5hbWUgJyVzJyB0cnVuY2F0ZWQgdG8gJWQgY2hhcmFjdGVycywgbWlnaHQgbm90IGJlIHVu
-aXF1ZVxuIiwKKyAgICAgICAgICAgICAgICBfX2Z1bmNfXywgamFja19jbGllbnRfbmFtZSwgKGlu
-dClzdHJsZW4oamFja19jbGllbnRfbmFtZSkpOworICAgICAgICB9CisgICAgfSBlbHNlIHsKKyAg
-ICAgICAgaWYgKHNucHJpbnRmKGphY2tfY2xpZW50X25hbWUsIHNpemVvZihqYWNrX2NsaWVudF9u
-YW1lKSwgIiVzIiwgbmFtZSkKKyAgICAgICAgICAgID49IChpbnQpc2l6ZW9mKGphY2tfY2xpZW50
-X25hbWUpKSB7CisgICAgICAgICAgICAgICAgZnByaW50ZihzdGRlcnIsICIlczogV0FSTklORzog
-SkFDSyBjbGllbnQgbmFtZSAnJXMnIHRydW5jYXRlZCB0byAlZCBjaGFyYWN0ZXJzLCBtaWdodCBu
-b3QgYmUgdW5pcXVlXG4iLAorICAgICAgICAgICAgICAgIF9fZnVuY19fLCBqYWNrX2NsaWVudF9u
-YW1lLCAoaW50KXN0cmxlbihqYWNrX2NsaWVudF9uYW1lKSk7CisgICAgICAgIH0KIAl9CiAKIAlq
-YWNrLT5jbGllbnQgPSBqYWNrX2NsaWVudF9uZXcoamFja19jbGllbnRfbmFtZSk7CkBAIC0zNjks
-NyArMzc2LDcgQEAgc3RhdGljIGludCBzbmRfcGNtX2phY2tfb3BlbihzbmRfcGNtX3QgKipwY21w
-LCBjb25zdCBjaGFyICpuYW1lLAogCQlzbmRfcGNtX2phY2tfZnJlZShqYWNrKTsKIAkJcmV0dXJu
-IC1FTk9FTlQ7CiAJfQotCQorCiAJamFjay0+YXJlYXMgPSBjYWxsb2MoamFjay0+Y2hhbm5lbHMs
-IHNpemVvZihzbmRfcGNtX2NoYW5uZWxfYXJlYV90KSk7CiAJaWYgKCEgamFjay0+YXJlYXMpIHsK
-IAkJc25kX3BjbV9qYWNrX2ZyZWUoamFjayk7CkBAIC00MjMsNiArNDMwLDEwIEBAIFNORF9QQ01f
-UExVR0lOX0RFRklORV9GVU5DKGphY2spCiAJCQljb250aW51ZTsKIAkJaWYgKHN0cmNtcChpZCwg
-ImNvbW1lbnQiKSA9PSAwIHx8IHN0cmNtcChpZCwgInR5cGUiKSA9PSAwIHx8IHN0cmNtcChpZCwg
-ImhpbnQiKSA9PSAwKQogCQkJY29udGludWU7CisgICAgICAgIGlmIChzdHJjbXAoaWQsICJuYW1l
-IikgPT0gMCkgeworICAgICAgICAgICAgc25kX2NvbmZpZ19nZXRfc3RyaW5nKG4sICZuYW1lKTsK
-KyAgICAgICAgICAgIGNvbnRpbnVlOworICAgICAgICB9CiAJCWlmIChzdHJjbXAoaWQsICJwbGF5
-YmFja19wb3J0cyIpID09IDApIHsKIAkJCWlmIChzbmRfY29uZmlnX2dldF90eXBlKG4pICE9IFNO
-RF9DT05GSUdfVFlQRV9DT01QT1VORCkgewogCQkJCVNOREVSUigiSW52YWxpZCB0eXBlIGZvciAl
-cyIsIGlkKTsKLS0gCjEuOC4xLjQKCg==
-
---_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3EFBIRSMSX104gercorpi_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3EFBIRSMSX104gercorpi_--
+diff --git a/compress.c b/compress.c
+index 15dfdb7..0c9ecd2 100644
+--- a/compress.c
++++ b/compress.c
+@@ -534,8 +534,6 @@ int compress_next_track(struct compress *compress)
+ 	if (!is_compress_running(compress))
+ 		return oops(compress, ENODEV, "device not ready");
+ 
+-	if (!compress->gapless_metadata)
+-		return oops(compress, EPERM, "metadata not set");
+ 	if (ioctl(compress->fd, SNDRV_COMPRESS_NEXT_TRACK))
+ 		return oops(compress, errno, "cannot set next track\n");
+ 	compress->next_track = 1;
+-- 
+1.7.2.5
