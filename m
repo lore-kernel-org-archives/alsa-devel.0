@@ -1,206 +1,101 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH 12/15] ASoC: fsl-ssi: Only enable baudclk when used
-Date: Wed, 26 Feb 2014 17:02:15 +0100
-Message-ID: <1393430538-32333-13-git-send-email-mpa@pengutronix.de>
-References: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 43/48] ALSA: rme9652: Use standard printk
+	helpers
+Date: Wed, 26 Feb 2014 16:53:45 +0100
+Message-ID: <1393430030-26704-44-git-send-email-tiwai@suse.de>
+References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FE452657E5
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 03D0B7502A
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:54 +0000 (UTC)
+In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Enable baudclk only when it is used. The baudclk should not be enabled
-all the time when the SSI driver is active. Instead this patch
-enables/disables the clock in the trigger function. It also limits the
-use of this clock to cases where the SSI unit is the I2S master.
+Convert with dev_err() and co from snd_printk(), etc.
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 77 ++++++++++++++++++++++++++++++-------------------
- 1 file changed, 48 insertions(+), 29 deletions(-)
+ sound/pci/rme9652/rme9652.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 9a1980d..a524195 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -197,6 +197,12 @@ static bool fsl_ssi_is_ac97(struct fsl_ssi_private *ssi_private)
- 	return !!(ssi_private->dai_fmt & SND_SOC_DAIFMT_AC97);
- }
- 
-+static bool fsl_ssi_is_i2s_master(struct fsl_ssi_private *ssi_private)
-+{
-+	return (ssi_private->dai_fmt & SND_SOC_DAIFMT_MASTER_MASK) ==
-+		SND_SOC_DAIFMT_CBS_CFS;
-+}
-+
- static bool fsl_ssi_on_imx(struct fsl_ssi_private *ssi_private)
- {
- 	switch (ssi_private->hw_type) {
-@@ -523,13 +529,6 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct fsl_ssi_private *ssi_private =
- 		snd_soc_dai_get_drvdata(rtd->cpu_dai);
--	unsigned long flags;
--
--	if (!dai->active && !fsl_ssi_is_ac97(ssi_private)) {
--		spin_lock_irqsave(&ssi_private->baudclk_lock, flags);
--		ssi_private->baudclk_locked = false;
--		spin_unlock_irqrestore(&ssi_private->baudclk_lock, flags);
--	}
- 
- 	/* When using dual fifo mode, it is safer to ensure an even period
- 	 * size. If appearing to an odd number while DMA always starts its
-@@ -611,6 +610,9 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- 
- 	ssi_private->dai_fmt = fmt;
- 
-+	if (fsl_ssi_is_i2s_master(ssi_private) && IS_ERR(ssi_private->baudclk))
-+		return -EINVAL;
-+
- 	fsl_ssi_setup_reg_vals(ssi_private);
- 
- 	regmap_read(regs, CCSR_SSI_SCR, &scr);
-@@ -766,8 +768,10 @@ static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 	u64 sub, savesub = 100000;
- 
- 	/* Don't apply it to any non-baudclk circumstance */
--	if (IS_ERR(ssi_private->baudclk))
-+	if (IS_ERR(ssi_private->baudclk)) {
-+		dev_err(cpu_dai->dev, "Failed to set clock, no baudclk present\n");
- 		return -EINVAL;
-+	}
- 
- 	/* It should be already enough to divide clock by setting pm alone */
- 	psr = 0;
-@@ -833,7 +837,10 @@ static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 			dev_err(cpu_dai->dev, "failed to set baudclk rate\n");
- 			return -EINVAL;
- 		}
--		ssi_private->baudclk_locked = true;
-+	} else {
-+		spin_unlock_irqrestore(&ssi_private->baudclk_lock, flags);
-+		dev_err(cpu_dai->dev, "Failed to set baudclk rate because it is in use\n");
-+		return -EBUSY;
- 	}
- 	spin_unlock_irqrestore(&ssi_private->baudclk_lock, flags);
- 
-@@ -898,10 +905,33 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 	struct regmap *regs = ssi_private->regs;
- 	unsigned long flags;
- 	u32 val;
-+	int nr_active;
-+
-+	regmap_read(regs, CCSR_SSI_SCR, &val);
-+	nr_active = !!(val & CCSR_SSI_SCR_TE) + !!(val & CCSR_SSI_SCR_RE);
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		if (fsl_ssi_is_i2s_master(ssi_private) && nr_active == 0) {
-+			int ret;
-+
-+			spin_lock_irqsave(&ssi_private->baudclk_lock, flags);
-+			ret = clk_prepare_enable(ssi_private->baudclk);
-+			if (ret) {
-+				spin_unlock_irqrestore(
-+						&ssi_private->baudclk_lock,
-+						flags);
-+				dev_err(rtd->cpu_dai->dev,
-+						"Failed to enable baud clock (%d)\n",
-+						ret);
-+				return ret;
-+			}
-+			ssi_private->baudclk_locked = true;
-+			spin_unlock_irqrestore(&ssi_private->baudclk_lock,
-+					flags);
-+		}
-+
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 			fsl_ssi_tx_config(ssi_private, true);
- 		else
-@@ -915,12 +945,14 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 		else
- 			fsl_ssi_rx_config(ssi_private, false);
- 
--		regmap_read(regs, CCSR_SSI_SCR, &val);
--		val &= CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE;
--		if (!fsl_ssi_is_ac97(ssi_private) && !val) {
-+		if (fsl_ssi_is_i2s_master(ssi_private) && nr_active == 1) {
- 			spin_lock_irqsave(&ssi_private->baudclk_lock, flags);
--			ssi_private->baudclk_locked = false;
--			spin_unlock_irqrestore(&ssi_private->baudclk_lock, flags);
-+			if (ssi_private->baudclk_locked) {
-+				clk_disable_unprepare(ssi_private->baudclk);
-+				ssi_private->baudclk_locked = false;
-+			}
-+			spin_unlock_irqrestore(&ssi_private->baudclk_lock,
-+					flags);
- 		}
+diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
+index a62d6e13d8ce..1d9be90f7748 100644
+--- a/sound/pci/rme9652/rme9652.c
++++ b/sound/pci/rme9652/rme9652.c
+@@ -394,7 +394,9 @@ static snd_pcm_uframes_t rme9652_hw_pointer(struct snd_rme9652 *rme9652)
+ 	if (offset < period_size) {
+ 		if (offset > rme9652->max_jitter) {
+ 			if (frag)
+-				printk(KERN_ERR "Unexpected hw_pointer position (bufid == 0): status: %x offset: %d\n", status, offset);
++				dev_err(rme9652->card->dev,
++					"Unexpected hw_pointer position (bufid == 0): status: %x offset: %d\n",
++					status, offset);
+ 		} else if (!frag)
+ 			return 0;
+ 		offset -= rme9652->max_jitter;
+@@ -403,7 +405,9 @@ static snd_pcm_uframes_t rme9652_hw_pointer(struct snd_rme9652 *rme9652)
+ 	} else {
+ 		if (offset > period_size + rme9652->max_jitter) {
+ 			if (!frag)
+-				printk(KERN_ERR "Unexpected hw_pointer position (bufid == 1): status: %x offset: %d\n", status, offset);
++				dev_err(rme9652->card->dev,
++					"Unexpected hw_pointer position (bufid == 1): status: %x offset: %d\n",
++					status, offset);
+ 		} else if (frag)
+ 			return period_size;
+ 		offset -= rme9652->max_jitter;
+@@ -769,7 +773,8 @@ static inline int rme9652_spdif_sample_rate(struct snd_rme9652 *s)
  		break;
  
-@@ -1097,12 +1129,6 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 			goto error_baud_clk;
- 		dev_dbg(&pdev->dev, "could not get baud clock: %ld\n",
- 				PTR_ERR(ssi_private->baudclk));
--	} else {
--		ret = clk_prepare_enable(ssi_private->baudclk);
--		if (ret) {
--			dev_err(&pdev->dev, "Failed to enable baud clock\n");
--			goto error_baud_clk;
--		}
+ 	default:
+-		snd_printk(KERN_ERR "%s: unknown S/PDIF input rate (bits = 0x%x)\n",
++		dev_err(s->card->dev,
++			"%s: unknown S/PDIF input rate (bits = 0x%x)\n",
+ 			   s->card_name, rate_bits);
+ 		return 0;
+ 		break;
+@@ -1790,7 +1795,8 @@ static int snd_rme9652_initialize_memory(struct snd_rme9652 *rme9652)
+ 	    snd_hammerfall_get_buffer(rme9652->pci, &rme9652->playback_dma_buf, RME9652_DMA_AREA_BYTES) < 0) {
+ 		if (rme9652->capture_dma_buf.area)
+ 			snd_dma_free_pages(&rme9652->capture_dma_buf);
+-		printk(KERN_ERR "%s: no buffers available\n", rme9652->card_name);
++		dev_err(rme9652->card->dev,
++			"%s: no buffers available\n", rme9652->card_name);
+ 		return -ENOMEM;
  	}
  
- 	/*
-@@ -1142,19 +1168,15 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 
- 		ret = imx_pcm_fiq_init(pdev, &ssi_private->fiq_params);
- 		if (ret)
--			goto error_pcm;
-+			goto error_baud_clk;
- 	} else {
- 		ret = imx_pcm_dma_init(pdev);
- 		if (ret)
--			goto error_pcm;
-+			goto error_baud_clk;
+@@ -2468,13 +2474,14 @@ static int snd_rme9652_create(struct snd_card *card,
+ 	rme9652->port = pci_resource_start(pci, 0);
+ 	rme9652->iobase = ioremap_nocache(rme9652->port, RME9652_IO_EXTENT);
+ 	if (rme9652->iobase == NULL) {
+-		snd_printk(KERN_ERR "unable to remap region 0x%lx-0x%lx\n", rme9652->port, rme9652->port + RME9652_IO_EXTENT - 1);
++		dev_err(card->dev, "unable to remap region 0x%lx-0x%lx\n",
++			rme9652->port, rme9652->port + RME9652_IO_EXTENT - 1);
+ 		return -EBUSY;
  	}
- 
- 	return 0;
- 
--error_pcm:
--	if (!IS_ERR(ssi_private->baudclk))
--		clk_disable_unprepare(ssi_private->baudclk);
--
- error_baud_clk:
- 	clk_disable_unprepare(ssi_private->clk);
- 
-@@ -1166,8 +1188,6 @@ static void fsl_ssi_imx_clean(struct platform_device *pdev,
- {
- 	if (!ssi_private->use_dma)
- 		imx_pcm_fiq_exit(pdev);
--	if (!IS_ERR(ssi_private->baudclk))
--		clk_disable_unprepare(ssi_private->baudclk);
- 	clk_disable_unprepare(ssi_private->clk);
- }
- 
-@@ -1272,7 +1292,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
-                 /* Older 8610 DTs didn't have the fifo-depth property */
- 		ssi_private->fifo_depth = 8;
- 
--	ssi_private->baudclk_locked = false;
- 	spin_lock_init(&ssi_private->baudclk_lock);
- 
- 	dev_set_drvdata(&pdev->dev, ssi_private);
+ 	
+ 	if (request_irq(pci->irq, snd_rme9652_interrupt, IRQF_SHARED,
+ 			KBUILD_MODNAME, rme9652)) {
+-		snd_printk(KERN_ERR "unable to request IRQ %d\n", pci->irq);
++		dev_err(card->dev, "unable to request IRQ %d\n", pci->irq);
+ 		return -EBUSY;
+ 	}
+ 	rme9652->irq = pci->irq;
 -- 
-1.8.5.3
+1.9.0
