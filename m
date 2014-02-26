@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 48/48] ALSA: 6fire: Use standard printk helpers
-Date: Wed, 26 Feb 2014 16:53:50 +0100
-Message-ID: <1393430030-26704-49-git-send-email-tiwai@suse.de>
+Subject: [PATCH 45/48] ALSA: vx222: Use standard printk helpers
+Date: Wed, 26 Feb 2014 16:53:47 +0100
+Message-ID: <1393430030-26704-46-git-send-email-tiwai@suse.de>
 References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 735D72657EC
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A9AA2657E8
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 0F7D87502B
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 06AB67504A
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:54 +0000 (UTC)
 In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,495 +30,123 @@ Convert with dev_err() and co from snd_printk(), etc.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/6fire/chip.c     |  8 +++---
- sound/usb/6fire/comm.c     |  4 +--
- sound/usb/6fire/control.c  | 18 +++++++-----
- sound/usb/6fire/firmware.c | 70 ++++++++++++++++++++++++----------------------
- sound/usb/6fire/midi.c     | 12 ++++----
- sound/usb/6fire/pcm.c      | 46 ++++++++++++++++--------------
- 6 files changed, 86 insertions(+), 72 deletions(-)
+ sound/pci/vx222/vx222.c     |  7 +++----
+ sound/pci/vx222/vx222_ops.c | 19 ++++++++++---------
+ 2 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/sound/usb/6fire/chip.c b/sound/usb/6fire/chip.c
-index e0fe0d92db8c..dcddfc354ba6 100644
---- a/sound/usb/6fire/chip.c
-+++ b/sound/usb/6fire/chip.c
-@@ -106,7 +106,7 @@ static int usb6fire_chip_probe(struct usb_interface *intf,
+diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
+index 4323556c13f8..ff9074d22607 100644
+--- a/sound/pci/vx222/vx222.c
++++ b/sound/pci/vx222/vx222.c
+@@ -170,7 +170,7 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
+ 
+ 	if (request_irq(pci->irq, snd_vx_irq_handler, IRQF_SHARED,
+ 			KBUILD_MODNAME, chip)) {
+-		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
++		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		snd_vx222_free(chip);
+ 		return -EBUSY;
  	}
- 	if (regidx < 0) {
- 		mutex_unlock(&register_mutex);
--		snd_printk(KERN_ERR PREFIX "too many cards registered.\n");
-+		dev_err(&intf->dev, "too many cards registered.\n");
+@@ -228,7 +228,7 @@ static int snd_vx222_probe(struct pci_dev *pci,
+ 
+ 	sprintf(card->longname, "%s at 0x%lx & 0x%lx, irq %i",
+ 		card->shortname, vx->port[0], vx->port[1], vx->core.irq);
+-	snd_printdd("%s at 0x%lx & 0x%lx, irq %i\n",
++	dev_dbg(card->dev, "%s at 0x%lx & 0x%lx, irq %i\n",
+ 		    card->shortname, vx->port[0], vx->port[1], vx->core.irq);
+ 
+ #ifdef SND_VX_FW_LOADER
+@@ -279,8 +279,7 @@ static int snd_vx222_resume(struct device *dev)
+ 	pci_set_power_state(pci, PCI_D0);
+ 	pci_restore_state(pci);
+ 	if (pci_enable_device(pci) < 0) {
+-		printk(KERN_ERR "vx222: pci_enable_device failed, "
+-		       "disabling device\n");
++		dev_err(dev, "pci_enable_device failed, disabling device\n");
+ 		snd_card_disconnect(card);
+ 		return -EIO;
+ 	}
+diff --git a/sound/pci/vx222/vx222_ops.c b/sound/pci/vx222/vx222_ops.c
+index a69e774d0b13..2d1570273e99 100644
+--- a/sound/pci/vx222/vx222_ops.c
++++ b/sound/pci/vx222/vx222_ops.c
+@@ -108,7 +108,7 @@ static void vx2_outb(struct vx_core *chip, int offset, unsigned char val)
+ {
+ 	outb(val, vx2_reg_addr(chip, offset));
+ 	/*
+-	printk(KERN_DEBUG "outb: %x -> %x\n", val, vx2_reg_addr(chip, offset));
++	dev_dbg(chip->card->dev, "outb: %x -> %x\n", val, vx2_reg_addr(chip, offset));
+ 	*/
+ }
+ 
+@@ -129,7 +129,7 @@ static unsigned int vx2_inl(struct vx_core *chip, int offset)
+ static void vx2_outl(struct vx_core *chip, int offset, unsigned int val)
+ {
+ 	/*
+-	printk(KERN_DEBUG "outl: %x -> %x\n", val, vx2_reg_addr(chip, offset));
++	dev_dbg(chip->card->dev, "outl: %x -> %x\n", val, vx2_reg_addr(chip, offset));
+ 	*/
+ 	outl(val, vx2_reg_addr(chip, offset));
+ }
+@@ -173,7 +173,7 @@ static int vx2_test_xilinx(struct vx_core *_chip)
+ 	struct snd_vx222 *chip = (struct snd_vx222 *)_chip;
+ 	unsigned int data;
+ 
+-	snd_printdd("testing xilinx...\n");
++	dev_dbg(_chip->card->dev, "testing xilinx...\n");
+ 	/* This test uses several write/read sequences on TEST0 and TEST1 bits
+ 	 * to figure out whever or not the xilinx was correctly loaded
+ 	 */
+@@ -183,7 +183,7 @@ static int vx2_test_xilinx(struct vx_core *_chip)
+ 	vx_inl(chip, ISR);
+ 	data = vx_inl(chip, STATUS);
+ 	if ((data & VX_STATUS_VAL_TEST0_MASK) == VX_STATUS_VAL_TEST0_MASK) {
+-		snd_printdd("bad!\n");
++		dev_dbg(_chip->card->dev, "bad!\n");
  		return -ENODEV;
  	}
- 	devices[regidx] = device;
-@@ -121,13 +121,13 @@ static int usb6fire_chip_probe(struct usb_interface *intf,
  
- 	/* if we are here, card can be registered in alsa. */
- 	if (usb_set_interface(device, 0, 0) != 0) {
--		snd_printk(KERN_ERR PREFIX "can't set first interface.\n");
-+		dev_err(&intf->dev, "can't set first interface.\n");
- 		return -EIO;
+@@ -192,7 +192,7 @@ static int vx2_test_xilinx(struct vx_core *_chip)
+ 	vx_inl(chip, ISR);
+ 	data = vx_inl(chip, STATUS);
+ 	if (! (data & VX_STATUS_VAL_TEST0_MASK)) {
+-		snd_printdd("bad! #2\n");
++		dev_dbg(_chip->card->dev, "bad! #2\n");
+ 		return -ENODEV;
  	}
- 	ret = snd_card_new(&intf->dev, index[regidx], id[regidx],
- 			   THIS_MODULE, sizeof(struct sfire_chip), &card);
- 	if (ret < 0) {
--		snd_printk(KERN_ERR PREFIX "cannot create alsa card.\n");
-+		dev_err(&intf->dev, "cannot create alsa card.\n");
- 		return ret;
- 	}
- 	strcpy(card->driver, "6FireUSB");
-@@ -168,7 +168,7 @@ static int usb6fire_chip_probe(struct usb_interface *intf,
  
- 	ret = snd_card_register(card);
- 	if (ret < 0) {
--		snd_printk(KERN_ERR PREFIX "cannot register card.");
-+		dev_err(&intf->dev, "cannot register card.");
- 		usb6fire_chip_destroy(chip);
- 		return ret;
+@@ -203,7 +203,7 @@ static int vx2_test_xilinx(struct vx_core *_chip)
+ 		vx_inl(chip, ISR);
+ 		data = vx_inl(chip, STATUS);
+ 		if ((data & VX_STATUS_VAL_TEST1_MASK) == VX_STATUS_VAL_TEST1_MASK) {
+-			snd_printdd("bad! #3\n");
++			dev_dbg(_chip->card->dev, "bad! #3\n");
+ 			return -ENODEV;
+ 		}
+ 
+@@ -212,11 +212,11 @@ static int vx2_test_xilinx(struct vx_core *_chip)
+ 		vx_inl(chip, ISR);
+ 		data = vx_inl(chip, STATUS);
+ 		if (! (data & VX_STATUS_VAL_TEST1_MASK)) {
+-			snd_printdd("bad! #4\n");
++			dev_dbg(_chip->card->dev, "bad! #4\n");
+ 			return -ENODEV;
+ 		}
  	}
-diff --git a/sound/usb/6fire/comm.c b/sound/usb/6fire/comm.c
-index 23452ee617e1..161215d78d95 100644
---- a/sound/usb/6fire/comm.c
-+++ b/sound/usb/6fire/comm.c
-@@ -51,7 +51,7 @@ static void usb6fire_comm_receiver_handler(struct urb *urb)
- 		urb->status = 0;
- 		urb->actual_length = 0;
- 		if (usb_submit_urb(urb, GFP_ATOMIC) < 0)
--			snd_printk(KERN_WARNING PREFIX
-+			dev_warn(&urb->dev->dev,
- 					"comm data receiver aborted.\n");
- 	}
+-	snd_printdd("ok, xilinx fine.\n");
++	dev_dbg(_chip->card->dev, "ok, xilinx fine.\n");
+ 	return 0;
  }
-@@ -179,7 +179,7 @@ int usb6fire_comm_init(struct sfire_chip *chip)
- 	if (ret < 0) {
- 		kfree(rt->receiver_buffer);
- 		kfree(rt);
--		snd_printk(KERN_ERR PREFIX "cannot create comm data receiver.");
-+		dev_err(&chip->dev->dev, "cannot create comm data receiver.");
- 		return ret;
- 	}
- 	chip->comm = rt;
-diff --git a/sound/usb/6fire/control.c b/sound/usb/6fire/control.c
-index f6434c245720..184e3987ac24 100644
---- a/sound/usb/6fire/control.c
-+++ b/sound/usb/6fire/control.c
-@@ -194,7 +194,8 @@ static int usb6fire_control_output_vol_put(struct snd_kcontrol *kcontrol,
- 	int changed = 0;
  
- 	if (ch > 4) {
--		snd_printk(KERN_ERR PREFIX "Invalid channel in volume control.");
-+		dev_err(&rt->chip->dev->dev,
-+			"Invalid channel in volume control.");
- 		return -EINVAL;
- 	}
- 
-@@ -222,7 +223,8 @@ static int usb6fire_control_output_vol_get(struct snd_kcontrol *kcontrol,
- 	unsigned int ch = kcontrol->private_value;
- 
- 	if (ch > 4) {
--		snd_printk(KERN_ERR PREFIX "Invalid channel in volume control.");
-+		dev_err(&rt->chip->dev->dev,
-+			"Invalid channel in volume control.");
- 		return -EINVAL;
- 	}
- 
-@@ -240,7 +242,8 @@ static int usb6fire_control_output_mute_put(struct snd_kcontrol *kcontrol,
- 	u8 value = 0;
- 
- 	if (ch > 4) {
--		snd_printk(KERN_ERR PREFIX "Invalid channel in volume control.");
-+		dev_err(&rt->chip->dev->dev,
-+			"Invalid channel in volume control.");
- 		return -EINVAL;
- 	}
- 
-@@ -265,7 +268,8 @@ static int usb6fire_control_output_mute_get(struct snd_kcontrol *kcontrol,
- 	u8 value = rt->output_mute >> ch;
- 
- 	if (ch > 4) {
--		snd_printk(KERN_ERR PREFIX "Invalid channel in volume control.");
-+		dev_err(&rt->chip->dev->dev,
-+			"Invalid channel in volume control.");
- 		return -EINVAL;
- 	}
- 
-@@ -594,14 +598,14 @@ int usb6fire_control_init(struct sfire_chip *chip)
- 	ret = usb6fire_control_add_virtual(rt, chip->card,
- 		"Master Playback Volume", vol_elements);
- 	if (ret) {
--		snd_printk(KERN_ERR PREFIX "cannot add control.\n");
-+		dev_err(&chip->dev->dev, "cannot add control.\n");
- 		kfree(rt);
- 		return ret;
- 	}
- 	ret = usb6fire_control_add_virtual(rt, chip->card,
- 		"Master Playback Switch", mute_elements);
- 	if (ret) {
--		snd_printk(KERN_ERR PREFIX "cannot add control.\n");
-+		dev_err(&chip->dev->dev, "cannot add control.\n");
- 		kfree(rt);
- 		return ret;
- 	}
-@@ -611,7 +615,7 @@ int usb6fire_control_init(struct sfire_chip *chip)
- 		ret = snd_ctl_add(chip->card, snd_ctl_new1(&elements[i], rt));
- 		if (ret < 0) {
- 			kfree(rt);
--			snd_printk(KERN_ERR PREFIX "cannot add control.\n");
-+			dev_err(&chip->dev->dev, "cannot add control.\n");
- 			return ret;
- 		}
- 		i++;
-diff --git a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
-index 780bf3f62d28..3b02e54b8f6d 100644
---- a/sound/usb/6fire/firmware.c
-+++ b/sound/usb/6fire/firmware.c
-@@ -219,16 +219,16 @@ static int usb6fire_fw_ezusb_upload(
- 	ret = request_firmware(&fw, fwname, &device->dev);
- 	if (ret < 0) {
- 		kfree(rec);
--		snd_printk(KERN_ERR PREFIX "error requesting ezusb "
--				"firmware %s.\n", fwname);
-+		dev_err(&intf->dev,
-+			"error requesting ezusb firmware %s.\n", fwname);
- 		return ret;
- 	}
- 	ret = usb6fire_fw_ihex_init(fw, rec);
- 	if (ret < 0) {
- 		kfree(rec);
- 		release_firmware(fw);
--		snd_printk(KERN_ERR PREFIX "error validating ezusb "
--				"firmware %s.\n", fwname);
-+		dev_err(&intf->dev,
-+			"error validating ezusb firmware %s.\n", fwname);
- 		return ret;
- 	}
- 	/* upload firmware image */
-@@ -237,8 +237,9 @@ static int usb6fire_fw_ezusb_upload(
- 	if (ret < 0) {
- 		kfree(rec);
- 		release_firmware(fw);
--		snd_printk(KERN_ERR PREFIX "unable to upload ezusb "
--				"firmware %s: begin message.\n", fwname);
-+		dev_err(&intf->dev,
-+			"unable to upload ezusb firmware %s: begin message.\n",
-+			fwname);
- 		return ret;
- 	}
- 
-@@ -248,8 +249,9 @@ static int usb6fire_fw_ezusb_upload(
- 		if (ret < 0) {
- 			kfree(rec);
- 			release_firmware(fw);
--			snd_printk(KERN_ERR PREFIX "unable to upload ezusb "
--					"firmware %s: data urb.\n", fwname);
-+			dev_err(&intf->dev,
-+				"unable to upload ezusb firmware %s: data urb.\n",
-+				fwname);
- 			return ret;
- 		}
- 	}
-@@ -260,8 +262,9 @@ static int usb6fire_fw_ezusb_upload(
- 		ret = usb6fire_fw_ezusb_write(device, 0xa0, postaddr,
- 				postdata, postlen);
- 		if (ret < 0) {
--			snd_printk(KERN_ERR PREFIX "unable to upload ezusb "
--					"firmware %s: post urb.\n", fwname);
-+			dev_err(&intf->dev,
-+				"unable to upload ezusb firmware %s: post urb.\n",
-+				fwname);
- 			return ret;
- 		}
- 	}
-@@ -269,8 +272,9 @@ static int usb6fire_fw_ezusb_upload(
- 	data = 0x00; /* resume ezusb cpu */
- 	ret = usb6fire_fw_ezusb_write(device, 0xa0, 0xe600, &data, 1);
- 	if (ret < 0) {
--		snd_printk(KERN_ERR PREFIX "unable to upload ezusb "
--				"firmware %s: end message.\n", fwname);
-+		dev_err(&intf->dev,
-+			"unable to upload ezusb firmware %s: end message.\n",
-+			fwname);
- 		return ret;
- 	}
- 	return 0;
-@@ -292,7 +296,7 @@ static int usb6fire_fw_fpga_upload(
- 
- 	ret = request_firmware(&fw, fwname, &device->dev);
- 	if (ret < 0) {
--		snd_printk(KERN_ERR PREFIX "unable to get fpga firmware %s.\n",
-+		dev_err(&intf->dev, "unable to get fpga firmware %s.\n",
- 				fwname);
- 		kfree(buffer);
- 		return -EIO;
-@@ -305,8 +309,8 @@ static int usb6fire_fw_fpga_upload(
- 	if (ret < 0) {
- 		kfree(buffer);
- 		release_firmware(fw);
--		snd_printk(KERN_ERR PREFIX "unable to upload fpga firmware: "
--				"begin urb.\n");
-+		dev_err(&intf->dev,
-+			"unable to upload fpga firmware: begin urb.\n");
- 		return ret;
- 	}
- 
-@@ -318,8 +322,8 @@ static int usb6fire_fw_fpga_upload(
- 		if (ret < 0) {
- 			release_firmware(fw);
- 			kfree(buffer);
--			snd_printk(KERN_ERR PREFIX "unable to upload fpga "
--					"firmware: fw urb.\n");
-+			dev_err(&intf->dev,
-+				"unable to upload fpga firmware: fw urb.\n");
- 			return ret;
- 		}
- 	}
-@@ -328,8 +332,8 @@ static int usb6fire_fw_fpga_upload(
- 
- 	ret = usb6fire_fw_ezusb_write(device, 9, 0, NULL, 0);
- 	if (ret < 0) {
--		snd_printk(KERN_ERR PREFIX "unable to upload fpga firmware: "
--				"end urb.\n");
-+		dev_err(&intf->dev,
-+			"unable to upload fpga firmware: end urb.\n");
- 		return ret;
- 	}
- 	return 0;
-@@ -338,7 +342,7 @@ static int usb6fire_fw_fpga_upload(
- /* check, if the firmware version the devices has currently loaded
-  * is known by this driver. 'version' needs to have 4 bytes version
-  * info data. */
--static int usb6fire_fw_check(u8 *version)
-+static int usb6fire_fw_check(struct usb_interface *intf, const u8 *version)
- {
- 	int i;
- 
-@@ -346,7 +350,7 @@ static int usb6fire_fw_check(u8 *version)
- 		if (!memcmp(version, known_fw_versions + i, 2))
+@@ -397,7 +397,8 @@ static int vx2_load_xilinx_binary(struct vx_core *chip, const struct firmware *x
+ 		i = vx_inl(chip, GPIOC);
+ 		if (i & 0x0100)
  			return 0;
- 
--	snd_printk(KERN_ERR PREFIX "invalid fimware version in device: %4ph. "
-+	dev_err(&intf->dev, "invalid fimware version in device: %4ph. "
- 			"please reconnect to power. if this failure "
- 			"still happens, check your firmware installation.",
- 			version);
-@@ -364,16 +368,16 @@ int usb6fire_fw_init(struct usb_interface *intf)
- 
- 	ret = usb6fire_fw_ezusb_read(device, 1, 0, buffer, 8);
- 	if (ret < 0) {
--		snd_printk(KERN_ERR PREFIX "unable to receive device "
--				"firmware state.\n");
-+		dev_err(&intf->dev,
-+			"unable to receive device firmware state.\n");
- 		return ret;
- 	}
- 	if (buffer[0] != 0xeb || buffer[1] != 0xaa || buffer[2] != 0x55) {
--		snd_printk(KERN_ERR PREFIX "unknown device firmware state "
--				"received from device: ");
-+		dev_err(&intf->dev,
-+			"unknown device firmware state received from device:");
- 		for (i = 0; i < 8; i++)
--			snd_printk("%02x ", buffer[i]);
--		snd_printk("\n");
-+			printk(KERN_CONT "%02x ", buffer[i]);
-+		printk(KERN_CONT "\n");
- 		return -EIO;
- 	}
- 	/* do we need fpga loader ezusb firmware? */
-@@ -386,7 +390,7 @@ int usb6fire_fw_init(struct usb_interface *intf)
- 	}
- 	/* do we need fpga firmware and application ezusb firmware? */
- 	else if (buffer[3] == 0x02) {
--		ret = usb6fire_fw_check(buffer + 4);
-+		ret = usb6fire_fw_check(intf, buffer + 4);
- 		if (ret < 0)
- 			return ret;
- 		ret = usb6fire_fw_fpga_upload(intf, "6fire/dmx6firecf.bin");
-@@ -402,14 +406,14 @@ int usb6fire_fw_init(struct usb_interface *intf)
- 	}
- 	/* all fw loaded? */
- 	else if (buffer[3] == 0x03)
--		return usb6fire_fw_check(buffer + 4);
-+		return usb6fire_fw_check(intf, buffer + 4);
- 	/* unknown data? */
- 	else {
--		snd_printk(KERN_ERR PREFIX "unknown device firmware state "
--				"received from device: ");
-+		dev_err(&intf->dev,
-+			"unknown device firmware state received from device: ");
- 		for (i = 0; i < 8; i++)
--			snd_printk("%02x ", buffer[i]);
--		snd_printk("\n");
-+			printk(KERN_CONT "%02x ", buffer[i]);
-+		printk(KERN_CONT "\n");
- 		return -EIO;
- 	}
- 	return 0;
-diff --git a/sound/usb/6fire/midi.c b/sound/usb/6fire/midi.c
-index f3dd7266c391..3d410969553e 100644
---- a/sound/usb/6fire/midi.c
-+++ b/sound/usb/6fire/midi.c
-@@ -41,8 +41,9 @@ static void usb6fire_midi_out_handler(struct urb *urb)
- 
- 			ret = usb_submit_urb(urb, GFP_ATOMIC);
- 			if (ret < 0)
--				snd_printk(KERN_ERR PREFIX "midi out urb "
--						"submit failed: %d\n", ret);
-+				dev_err(&urb->dev->dev,
-+					"midi out urb submit failed: %d\n",
-+					ret);
- 		} else /* no more data to transmit */
- 			rt->out = NULL;
- 	}
-@@ -94,8 +95,9 @@ static void usb6fire_midi_out_trigger(
- 
- 			ret = usb_submit_urb(urb, GFP_ATOMIC);
- 			if (ret < 0)
--				snd_printk(KERN_ERR PREFIX "midi out urb "
--						"submit failed: %d\n", ret);
-+				dev_err(&urb->dev->dev,
-+					"midi out urb submit failed: %d\n",
-+					ret);
- 			else
- 				rt->out = alsa_sub;
- 		}
-@@ -181,7 +183,7 @@ int usb6fire_midi_init(struct sfire_chip *chip)
- 	if (ret < 0) {
- 		kfree(rt->out_buffer);
- 		kfree(rt);
--		snd_printk(KERN_ERR PREFIX "unable to create midi.\n");
-+		dev_err(&chip->dev->dev, "unable to create midi.\n");
- 		return ret;
- 	}
- 	rt->instance->private_data = rt;
-diff --git a/sound/usb/6fire/pcm.c b/sound/usb/6fire/pcm.c
-index b5eb97fdc842..241089f03b50 100644
---- a/sound/usb/6fire/pcm.c
-+++ b/sound/usb/6fire/pcm.c
-@@ -79,32 +79,35 @@ static int usb6fire_pcm_set_rate(struct pcm_runtime *rt)
- 	ctrl_rt->usb_streaming = false;
- 	ret = ctrl_rt->update_streaming(ctrl_rt);
- 	if (ret < 0) {
--		snd_printk(KERN_ERR PREFIX "error stopping streaming while "
--				"setting samplerate %d.\n", rates[rt->rate]);
-+		dev_err(&rt->chip->dev->dev,
-+			"error stopping streaming while setting samplerate %d.\n",
-+			rates[rt->rate]);
- 		return ret;
- 	}
- 
- 	ret = ctrl_rt->set_rate(ctrl_rt, rt->rate);
- 	if (ret < 0) {
--		snd_printk(KERN_ERR PREFIX "error setting samplerate %d.\n",
--				rates[rt->rate]);
-+		dev_err(&rt->chip->dev->dev,
-+			"error setting samplerate %d.\n",
-+			rates[rt->rate]);
- 		return ret;
- 	}
- 
- 	ret = ctrl_rt->set_channels(ctrl_rt, OUT_N_CHANNELS, IN_N_CHANNELS,
- 			false, false);
- 	if (ret < 0) {
--		snd_printk(KERN_ERR PREFIX "error initializing channels "
--				"while setting samplerate %d.\n",
--				rates[rt->rate]);
-+		dev_err(&rt->chip->dev->dev,
-+			"error initializing channels while setting samplerate %d.\n",
-+			rates[rt->rate]);
- 		return ret;
- 	}
- 
- 	ctrl_rt->usb_streaming = true;
- 	ret = ctrl_rt->update_streaming(ctrl_rt);
- 	if (ret < 0) {
--		snd_printk(KERN_ERR PREFIX "error starting streaming while "
--				"setting samplerate %d.\n", rates[rt->rate]);
-+		dev_err(&rt->chip->dev->dev,
-+			"error starting streaming while setting samplerate %d.\n",
-+			rates[rt->rate]);
- 		return ret;
- 	}
- 
-@@ -124,7 +127,7 @@ static struct pcm_substream *usb6fire_pcm_get_substream(
- 		return &rt->playback;
- 	else if (alsa_sub->stream == SNDRV_PCM_STREAM_CAPTURE)
- 		return &rt->capture;
--	snd_printk(KERN_ERR PREFIX "error getting pcm substream slot.\n");
-+	dev_err(&rt->chip->dev->dev, "error getting pcm substream slot.\n");
- 	return NULL;
- }
- 
-@@ -257,7 +260,7 @@ static void usb6fire_pcm_playback(struct pcm_substream *sub,
- 	else if (alsa_rt->format == SNDRV_PCM_FORMAT_S24_LE)
- 		dest = (u32 *) (urb->buffer);
- 	else {
--		snd_printk(KERN_ERR PREFIX "Unknown sample format.");
-+		dev_err(&rt->chip->dev->dev, "Unknown sample format.");
- 		return;
- 	}
- 
-@@ -307,8 +310,8 @@ static void usb6fire_pcm_in_urb_handler(struct urb *usb_urb)
- 		}
- 
- 	if (rt->stream_state == STREAM_DISABLED) {
--		snd_printk(KERN_ERR PREFIX "internal error: "
--				"stream disabled in in-urb handler.\n");
-+		dev_err(&rt->chip->dev->dev,
-+			"internal error: stream disabled in in-urb handler.\n");
- 		return;
- 	}
- 
-@@ -410,7 +413,7 @@ static int usb6fire_pcm_open(struct snd_pcm_substream *alsa_sub)
- 
- 	if (!sub) {
- 		mutex_unlock(&rt->stream_mutex);
--		snd_printk(KERN_ERR PREFIX "invalid stream type.\n");
-+		dev_err(&rt->chip->dev->dev, "invalid stream type.\n");
+-		snd_printk(KERN_ERR "vx222: xilinx test failed after load, GPIOC=0x%x\n", i);
++		dev_err(chip->card->dev,
++			"xilinx test failed after load, GPIOC=0x%x\n", i);
  		return -EINVAL;
  	}
  
-@@ -481,8 +484,9 @@ static int usb6fire_pcm_prepare(struct snd_pcm_substream *alsa_sub)
- 				break;
- 		if (rt->rate == ARRAY_SIZE(rates)) {
- 			mutex_unlock(&rt->stream_mutex);
--			snd_printk("invalid rate %d in prepare.\n",
--					alsa_rt->rate);
-+			dev_err(&rt->chip->dev->dev,
-+				"invalid rate %d in prepare.\n",
-+				alsa_rt->rate);
- 			return -EINVAL;
- 		}
- 
-@@ -494,8 +498,8 @@ static int usb6fire_pcm_prepare(struct snd_pcm_substream *alsa_sub)
- 		ret = usb6fire_pcm_stream_start(rt);
- 		if (ret) {
- 			mutex_unlock(&rt->stream_mutex);
--			snd_printk(KERN_ERR PREFIX
--					"could not start pcm stream.\n");
-+			dev_err(&rt->chip->dev->dev,
-+				"could not start pcm stream.\n");
- 			return ret;
- 		}
- 	}
-@@ -650,7 +654,7 @@ int usb6fire_pcm_init(struct sfire_chip *chip)
- 	if (ret < 0) {
- 		usb6fire_pcm_buffers_destroy(rt);
- 		kfree(rt);
--		snd_printk(KERN_ERR PREFIX "cannot create pcm instance.\n");
-+		dev_err(&chip->dev->dev, "cannot create pcm instance.\n");
- 		return ret;
- 	}
- 
-@@ -662,8 +666,8 @@ int usb6fire_pcm_init(struct sfire_chip *chip)
- 	if (ret) {
- 		usb6fire_pcm_buffers_destroy(rt);
- 		kfree(rt);
--		snd_printk(KERN_ERR PREFIX
--				"error preallocating pcm buffers.\n");
-+		dev_err(&rt->chip->dev->dev,
-+			"error preallocating pcm buffers.\n");
- 		return ret;
- 	}
- 	rt->instance = pcm;
 -- 
 1.9.0
