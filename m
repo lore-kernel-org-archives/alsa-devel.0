@@ -1,65 +1,333 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH 00/15] ASoC: fsl-ssi: Driver cleanup
-Date: Wed, 26 Feb 2014 17:02:03 +0100
-Message-ID: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 17/48] ALSA: intel8x0: Use standard printk
+	helpers
+Date: Wed, 26 Feb 2014 16:53:19 +0100
+Message-ID: <1393430030-26704-18-git-send-email-tiwai@suse.de>
+References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B64B2657AC
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id AB88E75021
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
+In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Convert with dev_err() and co from snd_printk(), etc.
 
-Here is a series of cleanups for the fsl-ssi driver.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/intel8x0.c | 86 ++++++++++++++++++++++++++++++----------------------
+ 1 file changed, 49 insertions(+), 37 deletions(-)
 
-It would be great if someone with PPC hardware and this fsl-ssi unit could
-please test this series. I am not sure if the regmap patch works as expected on
-PPC as well.
-
-I tested this series on imx53 quick starter board and a custom board. Both with
-SSI as I2S slave.
-
-Regards,
-
-Markus
-
-
-Markus Pargmann (15):
-  ASoC: fsl-ssi: Use regmap
-  ASoC: fsl-ssi: Remove fsl_ssi_setup
-  ASoC: fsl-ssi: Move debugging to seperate file
-  ASoC: fsl-ssi: Use dev_name for DAI driver struct
-  ASoC: fsl-ssi: Move imx-specific probe to seperate function
-  ASoC: fsl-ssi: Remove useless DMA code
-  ASoC: fsl-ssi: baud clock error handling
-  ASoC: fsl-ssi: Cleanup probe function
-  ASoC: fsl-ssi: Remove unnecessary variables from ssi_private
-  ASoC: fsl-ssi: reorder and document fsl_ssi_private
-  ASoC: fsl-ssi: Fix register values when disabling
-  ASoC: fsl-ssi: Only enable baudclk when used
-  ASoC: fsl-ssi: Set default dai-fmts
-  ASoC: fsl-ssi: Transmit enable synchronization
-  ASoC: fsl-ssi: Update binding documentation
-
- .../devicetree/bindings/sound/fsl,ssi.txt          |   21 +-
- sound/soc/fsl/Kconfig                              |    1 +
- sound/soc/fsl/Makefile                             |    2 +
- sound/soc/fsl/fsl_ssi.c                            | 1167 ++++++++------------
- sound/soc/fsl/fsl_ssi.h                            |  112 +-
- sound/soc/fsl/fsl_ssi_dbg.c                        |  163 +++
- 6 files changed, 750 insertions(+), 716 deletions(-)
- create mode 100644 sound/soc/fsl/fsl_ssi_dbg.c
-
+diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
+index ff24acf06bdd..68340d7df76d 100644
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -547,7 +547,8 @@ static int snd_intel8x0_codec_semaphore(struct intel8x0 *chip, unsigned int code
+ 	/* access to some forbidden (non existent) ac97 registers will not
+ 	 * reset the semaphore. So even if you don't get the semaphore, still
+ 	 * continue the access. We don't need the semaphore anyway. */
+-	snd_printk(KERN_ERR "codec_semaphore: semaphore is not ready [0x%x][0x%x]\n",
++	dev_err(chip->card->dev,
++		"codec_semaphore: semaphore is not ready [0x%x][0x%x]\n",
+ 			igetbyte(chip, ICHREG(ACC_SEMA)), igetdword(chip, ICHREG(GLOB_STA)));
+ 	iagetword(chip, 0);	/* clear semaphore flag */
+ 	/* I don't care about the semaphore */
+@@ -562,7 +563,9 @@ static void snd_intel8x0_codec_write(struct snd_ac97 *ac97,
+ 	
+ 	if (snd_intel8x0_codec_semaphore(chip, ac97->num) < 0) {
+ 		if (! chip->in_ac97_init)
+-			snd_printk(KERN_ERR "codec_write %d: semaphore is not ready for register 0x%x\n", ac97->num, reg);
++			dev_err(chip->card->dev,
++				"codec_write %d: semaphore is not ready for register 0x%x\n",
++				ac97->num, reg);
+ 	}
+ 	iaputword(chip, reg + ac97->num * 0x80, val);
+ }
+@@ -576,7 +579,9 @@ static unsigned short snd_intel8x0_codec_read(struct snd_ac97 *ac97,
+ 
+ 	if (snd_intel8x0_codec_semaphore(chip, ac97->num) < 0) {
+ 		if (! chip->in_ac97_init)
+-			snd_printk(KERN_ERR "codec_read %d: semaphore is not ready for register 0x%x\n", ac97->num, reg);
++			dev_err(chip->card->dev,
++				"codec_read %d: semaphore is not ready for register 0x%x\n",
++				ac97->num, reg);
+ 		res = 0xffff;
+ 	} else {
+ 		res = iagetword(chip, reg + ac97->num * 0x80);
+@@ -585,7 +590,9 @@ static unsigned short snd_intel8x0_codec_read(struct snd_ac97 *ac97,
+ 			iputdword(chip, ICHREG(GLOB_STA), tmp &
+ 				  ~(chip->codec_ready_bits | ICH_GSCI));
+ 			if (! chip->in_ac97_init)
+-				snd_printk(KERN_ERR "codec_read %d: read timeout for register 0x%x\n", ac97->num, reg);
++				dev_err(chip->card->dev,
++					"codec_read %d: read timeout for register 0x%x\n",
++					ac97->num, reg);
+ 			res = 0xffff;
+ 		}
+ 	}
+@@ -619,7 +626,7 @@ static int snd_intel8x0_ali_codec_ready(struct intel8x0 *chip, int mask)
+ 			return 0;
+ 	}
+ 	if (! chip->in_ac97_init)
+-		snd_printd(KERN_WARNING "intel8x0: AC97 codec ready timeout.\n");
++		dev_warn(chip->card->dev, "AC97 codec ready timeout.\n");
+ 	return -EBUSY;
+ }
+ 
+@@ -631,7 +638,7 @@ static int snd_intel8x0_ali_codec_semaphore(struct intel8x0 *chip)
+ 	while (--time && (igetdword(chip, ICHREG(ALI_CAS)) & ALI_CAS_SEM_BUSY))
+ 		udelay(1);
+ 	if (! time && ! chip->in_ac97_init)
+-		snd_printk(KERN_WARNING "ali_codec_semaphore timeout\n");
++		dev_warn(chip->card->dev, "ali_codec_semaphore timeout\n");
+ 	return snd_intel8x0_ali_codec_ready(chip, ALI_CSPSR_CODEC_READY);
+ }
+ 
+@@ -700,7 +707,7 @@ static void snd_intel8x0_setup_periods(struct intel8x0 *chip, struct ichdev *ich
+ 			bdbar[idx + 1] = cpu_to_le32(0x80000000 | /* interrupt on completion */
+ 						     ichdev->fragsize >> ichdev->pos_shift);
+ #if 0
+-			printk(KERN_DEBUG "bdbar[%i] = 0x%x [0x%x]\n",
++			dev_dbg(chip->card->dev, "bdbar[%i] = 0x%x [0x%x]\n",
+ 			       idx + 0, bdbar[idx + 0], bdbar[idx + 1]);
+ #endif
+ 		}
+@@ -712,8 +719,8 @@ static void snd_intel8x0_setup_periods(struct intel8x0 *chip, struct ichdev *ich
+ 	ichdev->lvi_frag = ICH_REG_LVI_MASK % ichdev->frags;
+ 	ichdev->position = 0;
+ #if 0
+-	printk(KERN_DEBUG "lvi_frag = %i, frags = %i, period_size = 0x%x, "
+-	       "period_size1 = 0x%x\n",
++	dev_dbg(chip->card->dev,
++		"lvi_frag = %i, frags = %i, period_size = 0x%x, period_size1 = 0x%x\n",
+ 	       ichdev->lvi_frag, ichdev->frags, ichdev->fragsize,
+ 	       ichdev->fragsize1);
+ #endif
+@@ -781,8 +788,8 @@ static inline void snd_intel8x0_update(struct intel8x0 *chip, struct ichdev *ich
+ 		ichdev->lvi_frag %= ichdev->frags;
+ 		ichdev->bdbar[ichdev->lvi * 2] = cpu_to_le32(ichdev->physbuf + ichdev->lvi_frag * ichdev->fragsize1);
+ #if 0
+-	printk(KERN_DEBUG "new: bdbar[%i] = 0x%x [0x%x], prefetch = %i, "
+-	       "all = 0x%x, 0x%x\n",
++	dev_dbg(chip->card->dev,
++		"new: bdbar[%i] = 0x%x [0x%x], prefetch = %i, all = 0x%x, 0x%x\n",
+ 	       ichdev->lvi * 2, ichdev->bdbar[ichdev->lvi * 2],
+ 	       ichdev->bdbar[ichdev->lvi * 2 + 1], inb(ICH_REG_OFF_PIV + port),
+ 	       inl(port + 4), inb(port + ICH_REG_OFF_CR));
+@@ -2289,7 +2296,8 @@ static int snd_intel8x0_mixer(struct intel8x0 *chip, int ac97_clock,
+ 		ac97.num = i;
+ 		if ((err = snd_ac97_mixer(pbus, &ac97, &chip->ac97[i])) < 0) {
+ 			if (err != -EACCES)
+-				snd_printk(KERN_ERR "Unable to initialize codec #%d\n", i);
++				dev_err(chip->card->dev,
++					"Unable to initialize codec #%d\n", i);
+ 			if (i == 0)
+ 				goto __err;
+ 		}
+@@ -2441,7 +2449,7 @@ static int snd_intel8x0_ich_chip_reset(struct intel8x0 *chip)
+ 			return 0;
+ 		schedule_timeout_uninterruptible(1);
+ 	} while (time_after_eq(end_time, jiffies));
+-	snd_printk(KERN_ERR "AC'97 warm reset still in progress? [0x%x]\n",
++	dev_err(chip->card->dev, "AC'97 warm reset still in progress? [0x%x]\n",
+ 		   igetdword(chip, ICHREG(GLOB_CNT)));
+ 	return -EIO;
+ }
+@@ -2483,7 +2491,8 @@ static int snd_intel8x0_ich_chip_init(struct intel8x0 *chip, int probing)
+ 		} while (time_after_eq(end_time, jiffies));
+ 		if (! status) {
+ 			/* no codec is found */
+-			snd_printk(KERN_ERR "codec_ready: codec is not ready [0x%x]\n",
++			dev_err(chip->card->dev,
++				"codec_ready: codec is not ready [0x%x]\n",
+ 				   igetdword(chip, ICHREG(GLOB_STA)));
+ 			return -EIO;
+ 		}
+@@ -2547,7 +2556,7 @@ static int snd_intel8x0_ali_chip_init(struct intel8x0 *chip, int probing)
+ 			goto __ok;
+ 		schedule_timeout_uninterruptible(1);
+ 	}
+-	snd_printk(KERN_ERR "AC'97 reset failed.\n");
++	dev_err(chip->card->dev, "AC'97 reset failed.\n");
+ 	if (probing)
+ 		return -EIO;
+ 
+@@ -2591,7 +2600,7 @@ static int snd_intel8x0_chip_init(struct intel8x0 *chip, int probing)
+         		        break;
+                 }
+                 if (timeout == 0)
+-                        printk(KERN_ERR "intel8x0: reset of registers failed?\n");
++			dev_err(chip->card->dev, "reset of registers failed?\n");
+         }
+ 	/* initialize Buffer Descriptor Lists */
+ 	for (i = 0; i < chip->bdbars_count; i++)
+@@ -2692,8 +2701,7 @@ static int intel8x0_resume(struct device *dev)
+ 	pci_set_power_state(pci, PCI_D0);
+ 	pci_restore_state(pci);
+ 	if (pci_enable_device(pci) < 0) {
+-		printk(KERN_ERR "intel8x0: pci_enable_device failed, "
+-		       "disabling device\n");
++		dev_err(dev, "pci_enable_device failed, disabling device\n");
+ 		snd_card_disconnect(card);
+ 		return -EIO;
+ 	}
+@@ -2701,8 +2709,8 @@ static int intel8x0_resume(struct device *dev)
+ 	snd_intel8x0_chip_init(chip, 0);
+ 	if (request_irq(pci->irq, snd_intel8x0_interrupt,
+ 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
+-		printk(KERN_ERR "intel8x0: unable to grab IRQ %d, "
+-		       "disabling device\n", pci->irq);
++		dev_err(dev, "unable to grab IRQ %d, disabling device\n",
++			pci->irq);
+ 		snd_card_disconnect(card);
+ 		return -EIO;
+ 	}
+@@ -2779,7 +2787,8 @@ static void intel8x0_measure_ac97_clock(struct intel8x0 *chip)
+       __again:
+ 	subs = chip->pcm[0]->streams[0].substream;
+ 	if (! subs || subs->dma_buffer.bytes < INTEL8X0_TESTBUF_SIZE) {
+-		snd_printk(KERN_WARNING "no playback buffer allocated - aborting measure ac97 clock\n");
++		dev_warn(chip->card->dev,
++			 "no playback buffer allocated - aborting measure ac97 clock\n");
+ 		return;
+ 	}
+ 	ichdev = &chip->ichd[ICHD_PCMOUT];
+@@ -2789,7 +2798,8 @@ static void intel8x0_measure_ac97_clock(struct intel8x0 *chip)
+ 
+ 	/* set rate */
+ 	if (snd_ac97_set_rate(chip->ac97[0], AC97_PCM_FRONT_DAC_RATE, 48000) < 0) {
+-		snd_printk(KERN_ERR "cannot set ac97 rate: clock = %d\n", chip->ac97_bus->clock);
++		dev_err(chip->card->dev, "cannot set ac97 rate: clock = %d\n",
++			chip->ac97_bus->clock);
+ 		return;
+ 	}
+ 	snd_intel8x0_setup_periods(chip, ichdev);
+@@ -2843,7 +2853,8 @@ static void intel8x0_measure_ac97_clock(struct intel8x0 *chip)
+ 	spin_unlock_irq(&chip->reg_lock);
+ 
+ 	if (pos == 0) {
+-		snd_printk(KERN_ERR "intel8x0: measure - unreliable DMA position..\n");
++		dev_err(chip->card->dev,
++			"measure - unreliable DMA position..\n");
+ 	      __retry:
+ 		if (attempt < 3) {
+ 			msleep(300);
+@@ -2857,16 +2868,17 @@ static void intel8x0_measure_ac97_clock(struct intel8x0 *chip)
+ 	t = stop_time.tv_sec - start_time.tv_sec;
+ 	t *= 1000000;
+ 	t += (stop_time.tv_nsec - start_time.tv_nsec) / 1000;
+-	printk(KERN_INFO "%s: measured %lu usecs (%lu samples)\n", __func__, t, pos);
++	dev_info(chip->card->dev,
++		 "%s: measured %lu usecs (%lu samples)\n", __func__, t, pos);
+ 	if (t == 0) {
+-		snd_printk(KERN_ERR "intel8x0: ?? calculation error..\n");
++		dev_err(chip->card->dev, "?? calculation error..\n");
+ 		goto __retry;
+ 	}
+ 	pos *= 1000;
+ 	pos = (pos / t) * 1000 + ((pos % t) * 1000) / t;
+ 	if (pos < 40000 || pos >= 60000) {
+ 		/* abnormal value. hw problem? */
+-		printk(KERN_INFO "intel8x0: measured clock %ld rejected\n", pos);
++		dev_info(chip->card->dev, "measured clock %ld rejected\n", pos);
+ 		goto __retry;
+ 	} else if (pos > 40500 && pos < 41500)
+ 		/* first exception - 41000Hz reference clock */
+@@ -2878,7 +2890,7 @@ static void intel8x0_measure_ac97_clock(struct intel8x0 *chip)
+ 		/* not 48000Hz, tuning the clock.. */
+ 		chip->ac97_bus->clock = (chip->ac97_bus->clock * 48000) / pos;
+       __end:
+-	printk(KERN_INFO "intel8x0: clocking to %d\n", chip->ac97_bus->clock);
++	dev_info(chip->card->dev, "clocking to %d\n", chip->ac97_bus->clock);
+ 	snd_ac97_update_power(chip->ac97[0], AC97_PCM_FRONT_DAC_RATE, 0);
+ }
+ 
+@@ -2899,7 +2911,7 @@ static int intel8x0_in_clock_list(struct intel8x0 *chip)
+ 	wl = snd_pci_quirk_lookup(pci, intel8x0_clock_list);
+ 	if (!wl)
+ 		return 0;
+-	printk(KERN_INFO "intel8x0: white list rate for %04x:%04x is %i\n",
++	dev_info(chip->card->dev, "white list rate for %04x:%04x is %i\n",
+ 	       pci->subsystem_vendor, pci->subsystem_device, wl->value);
+ 	chip->ac97_bus->clock = wl->value;
+ 	return 1;
+@@ -3003,7 +3015,7 @@ static int snd_intel8x0_inside_vm(struct pci_dev *pci)
+ 
+ fini:
+ 	if (msg != NULL)
+-		printk(KERN_INFO "intel8x0: %s optimization\n", msg);
++		dev_info(&pci->dev, "%s optimization\n", msg);
+ 
+ 	return result;
+ }
+@@ -3098,7 +3110,7 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 	else
+ 		chip->addr = pci_iomap(pci, 0, 0);
+ 	if (!chip->addr) {
+-		snd_printk(KERN_ERR "AC'97 space ioremap problem\n");
++		dev_err(card->dev, "AC'97 space ioremap problem\n");
+ 		snd_intel8x0_free(chip);
+ 		return -EIO;
+ 	}
+@@ -3107,7 +3119,7 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 	else
+ 		chip->bmaddr = pci_iomap(pci, 1, 0);
+ 	if (!chip->bmaddr) {
+-		snd_printk(KERN_ERR "Controller space ioremap problem\n");
++		dev_err(card->dev, "Controller space ioremap problem\n");
+ 		snd_intel8x0_free(chip);
+ 		return -EIO;
+ 	}
+@@ -3152,7 +3164,7 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 				chip->bdbars_count * sizeof(u32) * ICH_MAX_FRAGS * 2,
+ 				&chip->bdbars) < 0) {
+ 		snd_intel8x0_free(chip);
+-		snd_printk(KERN_ERR "intel8x0: cannot allocate buffer descriptors\n");
++		dev_err(card->dev, "cannot allocate buffer descriptors\n");
+ 		return -ENOMEM;
+ 	}
+ 	/* tables must be aligned to 8 bytes here, but the kernel pages
+@@ -3206,7 +3218,7 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 	/* request irq after initializaing int_sta_mask, etc */
+ 	if (request_irq(pci->irq, snd_intel8x0_interrupt,
+ 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
+-		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
++		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		snd_intel8x0_free(chip);
+ 		return -EBUSY;
+ 	}
+@@ -3263,12 +3275,12 @@ static int check_default_spdif_aclink(struct pci_dev *pci)
+ 	w = snd_pci_quirk_lookup(pci, spdif_aclink_defaults);
+ 	if (w) {
+ 		if (w->value)
+-			snd_printdd(KERN_INFO
+-				    "intel8x0: Using SPDIF over AC-Link for %s\n",
++			dev_dbg(&pci->dev,
++				"Using SPDIF over AC-Link for %s\n",
+ 				    snd_pci_quirk_name(w));
+ 		else
+-			snd_printdd(KERN_INFO
+-				    "intel8x0: Using integrated SPDIF DMA for %s\n",
++			dev_dbg(&pci->dev,
++				"Using integrated SPDIF DMA for %s\n",
+ 				    snd_pci_quirk_name(w));
+ 		return w->value;
+ 	}
 -- 
-1.8.5.3
+1.9.0
