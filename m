@@ -1,19 +1,18 @@
 From: RongJun Ying <rjying@gmail.com>
-Subject: [PATCH v4 2/7] ASoC: sirf: Add SiRF audio port driver
-	is used by SiRF internal audio codec
-Date: Wed, 26 Feb 2014 14:04:50 +0800
-Message-ID: <1393394695-29735-3-git-send-email-rongjun.ying@csr.com>
+Subject: [PATCH v4 4/7] ASoC: sirf: Add SiRF I2S driver
+Date: Wed, 26 Feb 2014 14:04:52 +0800
+Message-ID: <1393394695-29735-5-git-send-email-rongjun.ying@csr.com>
 References: <1393394695-29735-1-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f44.google.com (mail-pb0-f44.google.com
- [209.85.160.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 52D552655A0
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 07:07:07 +0100 (CET)
-Received: by mail-pb0-f44.google.com with SMTP id rp16so519958pbb.31
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 22:07:06 -0800 (PST)
+Received: from mail-pb0-f50.google.com (mail-pb0-f50.google.com
+ [209.85.160.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3672A26569A
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 07:07:25 +0100 (CET)
+Received: by mail-pb0-f50.google.com with SMTP id md12so519374pbc.37
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 22:07:24 -0800 (PST)
 In-Reply-To: <1393394695-29735-1-git-send-email-rongjun.ying@csr.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,35 +32,29 @@ From: Rongjun Ying <rongjun.ying@csr.com>
 Signed-off-by: Rongjun Ying <rongjun.ying@csr.com>
 ---
 -v4:
-1. Add SiRF audio port driver split from sirf-soc-inner driver.
-2. Use the generic dmaengine pcm register.
-3. Add binding document.
-4. Use MMIO regmap.
+1. Add binding document.
+2. Use MMIO regmap.
 
- .../devicetree/bindings/sound/sirf-audio-port.txt  |   20 ++
- sound/soc/Kconfig                                  |    1 +
- sound/soc/Makefile                                 |    1 +
- sound/soc/sirf/Kconfig                             |    9 +
- sound/soc/sirf/Makefile                            |    3 +
- sound/soc/sirf/sirf-audio-port.c                   |  194 ++++++++++++++++++++
- sound/soc/sirf/sirf-audio-port.h                   |   62 +++++++
- 7 files changed, 290 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio-port.txt
- create mode 100644 sound/soc/sirf/Kconfig
- create mode 100644 sound/soc/sirf/Makefile
- create mode 100644 sound/soc/sirf/sirf-audio-port.c
- create mode 100644 sound/soc/sirf/sirf-audio-port.h
+ .../devicetree/bindings/sound/sirf-i2s.txt         |   27 ++
+ sound/soc/sirf/Kconfig                             |    4 +
+ sound/soc/sirf/Makefile                            |    2 +
+ sound/soc/sirf/sirf-i2s.c                          |  438 ++++++++++++++++++++
+ sound/soc/sirf/sirf-i2s.h                          |   88 ++++
+ 5 files changed, 559 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-i2s.txt
+ create mode 100644 sound/soc/sirf/sirf-i2s.c
+ create mode 100644 sound/soc/sirf/sirf-i2s.h
 
-diff --git a/Documentation/devicetree/bindings/sound/sirf-audio-port.txt b/Documentation/devicetree/bindings/sound/sirf-audio-port.txt
+diff --git a/Documentation/devicetree/bindings/sound/sirf-i2s.txt b/Documentation/devicetree/bindings/sound/sirf-i2s.txt
 new file mode 100644
-index 0000000..1f66de3
+index 0000000..cbff8a8
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sirf-audio-port.txt
-@@ -0,0 +1,20 @@
-+* SiRF SoC audio port
++++ b/Documentation/devicetree/bindings/sound/sirf-i2s.txt
+@@ -0,0 +1,27 @@
++* SiRF SoC I2S module
 +
 +Required properties:
-+- compatible: "sirf,audio-port"
++- compatible: "sirf,prima2-i2s"
 +- reg: Base address and size entries:
 +- dmas: List of DMA controller phandle and DMA request line ordered pairs.
 +- dma-names: Identifier string for each DMA request line in the dmas property.
@@ -70,67 +63,53 @@ index 0000000..1f66de3
 +  One of the DMA channels will be responsible for transmission (should be
 +  named "tx") and one for reception (should be named "rx").
 +
++- clocks: I2S controller clock source
++- pinctrl-names: Must contain a "default" entry.
++- pinctrl-NNN: One property must exist for each entry in pinctrl-names.
++
 +Example:
 +
-+audioport: audioport@b0040000 {
-+	compatible = "sirf,audio-port";
++i2s: i2s@b0040000 {
++	compatible = "sirf,prima2-i2s";
 +	reg = <0xb0040000 0x10000>;
-+	dmas = <&dmac1 3>, <&dmac1 8>;
++	dmas = <&dmac1 6>, <&dmac1 12>;
 +	dma-names = "rx", "tx";
++	clocks = <&clks 27>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2s_pins_a>;
 +};
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index d62ce48..23946c2 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -54,6 +54,7 @@ source "sound/soc/spear/Kconfig"
- source "sound/soc/tegra/Kconfig"
- source "sound/soc/txx9/Kconfig"
- source "sound/soc/ux500/Kconfig"
-+source "sound/soc/sirf/Kconfig"
- 
- # Supported codecs
- source "sound/soc/codecs/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 62a1822..f09210c 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -31,3 +31,4 @@ obj-$(CONFIG_SND_SOC)	+= spear/
- obj-$(CONFIG_SND_SOC)	+= tegra/
- obj-$(CONFIG_SND_SOC)	+= txx9/
- obj-$(CONFIG_SND_SOC)	+= ux500/
-+obj-$(CONFIG_SND_SOC)	+= sirf/
 diff --git a/sound/soc/sirf/Kconfig b/sound/soc/sirf/Kconfig
-new file mode 100644
-index 0000000..5b5407f
---- /dev/null
+index a8e083b..2fca80a 100644
+--- a/sound/soc/sirf/Kconfig
 +++ b/sound/soc/sirf/Kconfig
-@@ -0,0 +1,9 @@
-+config SND_SOC_SIRF
-+	tristate "SoC Audio for the SiRF SoC chips"
-+	depends on ARCH_SIRF || COMPILE_TEST
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
+@@ -12,3 +12,7 @@ config SND_SOC_SIRF_AUDIO
+ 	depends on SND_SOC_SIRF
+ 	select SND_SOC_SIRF_AUDIO_CODEC
+ 	select SND_SOC_SIRF_AUDIO_PORT
 +
-+config SND_SOC_SIRF_AUDIO_PORT
++config SND_SOC_SIRF_I2S
 +	select REGMAP_MMIO
 +	tristate
-+
 diff --git a/sound/soc/sirf/Makefile b/sound/soc/sirf/Makefile
-new file mode 100644
-index 0000000..fb012c8
---- /dev/null
+index 4eea904..2de3cf8 100644
+--- a/sound/soc/sirf/Makefile
 +++ b/sound/soc/sirf/Makefile
-@@ -0,0 +1,3 @@
-+snd-soc-sirf-audio-port-objs := sirf-audio-port.o
-+
-+obj-$(CONFIG_SND_SOC_SIRF_AUDIO_PORT) += snd-soc-sirf-audio-port.o
-diff --git a/sound/soc/sirf/sirf-audio-port.c b/sound/soc/sirf/sirf-audio-port.c
+@@ -1,5 +1,7 @@
+ snd-soc-sirf-audio-port-objs := sirf-audio-port.o
+ snd-soc-sirf-audio-objs := sirf-audio.o
++snd-soc-sirf-i2s-objs := sirf-i2s.o
+ 
+ obj-$(CONFIG_SND_SOC_SIRF_AUDIO_PORT) += snd-soc-sirf-audio-port.o
+ obj-$(CONFIG_SND_SOC_SIRF_AUDIO) += snd-soc-sirf-audio.o
++obj-$(CONFIG_SND_SOC_SIRF_I2S) += snd-soc-sirf-i2s.o
+diff --git a/sound/soc/sirf/sirf-i2s.c b/sound/soc/sirf/sirf-i2s.c
 new file mode 100644
-index 0000000..4169b59
+index 0000000..6da4d61
 --- /dev/null
-+++ b/sound/soc/sirf/sirf-audio-port.c
-@@ -0,0 +1,194 @@
++++ b/sound/soc/sirf/sirf-i2s.c
+@@ -0,0 +1,438 @@
 +/*
-+ * SiRF Audio port driver
++ * SiRF I2S driver
 + *
 + * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
 + *
@@ -138,144 +117,364 @@ index 0000000..4169b59
 + */
 +#include <linux/module.h>
 +#include <linux/io.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/pm_runtime.h>
++#include <linux/clk.h>
 +#include <linux/regmap.h>
 +#include <sound/soc.h>
++#include <sound/pcm_params.h>
 +#include <sound/dmaengine_pcm.h>
 +
-+#include "sirf-audio-port.h"
++#include "sirf-i2s.h"
 +
-+struct sirf_audio_port {
++struct sirf_i2s {
 +	struct regmap *regmap;
++	struct clk *clk;
++	u32 i2s_ctrl;
++	u32 i2s_ctrl_tx_rx_en;
++	bool master;
++	int ext_clk;
++	int src_clk_rate;
 +	struct snd_dmaengine_dai_dma_data playback_dma_data;
 +	struct snd_dmaengine_dai_dma_data capture_dma_data;
 +};
 +
-+static inline void sirf_audio_port_tx_enable(struct sirf_audio_port *port)
++static int sirf_i2s_dai_probe(struct snd_soc_dai *dai)
 +{
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_TXFIFO_OP,
-+		AUDIO_FIFO_RESET, AUDIO_FIFO_RESET);
-+	regmap_write(port->regmap, AUDIO_PORT_IC_TXFIFO_INT_MSK, 0);
-+	regmap_write(port->regmap, AUDIO_PORT_IC_TXFIFO_OP, 0);
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_TXFIFO_OP,
-+		AUDIO_FIFO_START, AUDIO_FIFO_START);
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_CODEC_TX_CTRL,
-+		IC_TX_ENABLE, IC_TX_ENABLE);
-+}
-+
-+static inline void sirf_audio_port_tx_disable(struct sirf_audio_port *port)
-+{
-+	regmap_write(port->regmap, AUDIO_PORT_IC_TXFIFO_OP, 0);
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_CODEC_TX_CTRL,
-+		IC_TX_ENABLE, ~IC_TX_ENABLE);
-+}
-+
-+static inline void sirf_audio_port_rx_enable(struct sirf_audio_port *port,
-+	int channels)
-+{
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_RXFIFO_OP,
-+		AUDIO_FIFO_RESET, AUDIO_FIFO_RESET);
-+	regmap_write(port->regmap, AUDIO_PORT_IC_RXFIFO_INT_MSK, 0);
-+	regmap_write(port->regmap, AUDIO_PORT_IC_RXFIFO_OP, 0);
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_RXFIFO_OP,
-+		AUDIO_FIFO_START, AUDIO_FIFO_START);
-+	if (channels == 1)
-+		regmap_update_bits(port->regmap, AUDIO_PORT_IC_CODEC_RX_CTRL,
-+			IC_RX_ENABLE_MONO, IC_RX_ENABLE_MONO);
-+	else
-+		regmap_update_bits(port->regmap, AUDIO_PORT_IC_CODEC_RX_CTRL,
-+			IC_RX_ENABLE_STEREO, IC_RX_ENABLE_STEREO);
-+}
-+
-+static inline void sirf_audio_port_rx_disable(struct sirf_audio_port *port)
-+{
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_CODEC_RX_CTRL,
-+			IC_RX_ENABLE_STEREO, ~IC_RX_ENABLE_STEREO);
-+}
-+
-+static int sirf_audio_port_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct sirf_audio_port *port = snd_soc_dai_get_drvdata(dai);
-+	snd_soc_dai_init_dma_data(dai, &port->playback_dma_data,
-+			&port->capture_dma_data);
++	struct sirf_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data,
++			&i2s->capture_dma_data);
 +	return 0;
 +}
 +
-+static int sirf_audio_port_trigger(struct snd_pcm_substream *substream, int cmd,
-+	struct snd_soc_dai *dai)
++static inline void sirf_i2s_tx_enable(struct sirf_i2s *i2s)
 +{
-+	struct sirf_audio_port *port = snd_soc_dai_get_drvdata(dai);
-+	int playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++	/* First start the FIFO, then enable the tx/rx */
++	regmap_update_bits(i2s->regmap, AUDIO_CTRL_I2S_TXFIFO_OP,
++		AUDIO_FIFO_RESET, AUDIO_FIFO_RESET);
++	regmap_update_bits(i2s->regmap, AUDIO_CTRL_I2S_TXFIFO_OP,
++		AUDIO_FIFO_START, AUDIO_FIFO_RESET);
++	regmap_update_bits(i2s->regmap, AUDIO_CTRL_I2S_TX_RX_EN,
++		I2S_TX_ENABLE | I2S_DOUT_OE,
++		I2S_TX_ENABLE | I2S_DOUT_OE);
++}
++
++static inline void sirf_i2s_tx_disable(struct sirf_i2s *i2s)
++{
++	regmap_update_bits(i2s->regmap, AUDIO_CTRL_I2S_TX_RX_EN,
++		I2S_TX_ENABLE, ~I2S_TX_ENABLE);
++	/* First disable the tx/rx, then stop the FIFO */
++	regmap_write(i2s->regmap, AUDIO_CTRL_I2S_TXFIFO_OP, 0);
++}
++
++static inline void sirf_i2s_rx_enable(struct sirf_i2s *i2s)
++{
++	/* First start the FIFO, then enable the tx/rx */
++	regmap_update_bits(i2s->regmap, AUDIO_CTRL_I2S_RXFIFO_OP,
++		AUDIO_FIFO_RESET, AUDIO_FIFO_RESET);
++	regmap_update_bits(i2s->regmap, AUDIO_CTRL_I2S_RXFIFO_OP,
++		AUDIO_FIFO_START, AUDIO_FIFO_START);
++	regmap_update_bits(i2s->regmap, AUDIO_CTRL_I2S_TX_RX_EN,
++		I2S_RX_ENABLE, I2S_RX_ENABLE);
++}
++
++static inline void sirf_i2s_rx_disable(struct sirf_i2s *i2s)
++{
++	regmap_update_bits(i2s->regmap, AUDIO_CTRL_I2S_TX_RX_EN,
++		I2S_RX_ENABLE, ~I2S_RX_ENABLE);
++	/* First disable the tx/rx, then stop the FIFO */
++	regmap_write(i2s->regmap, AUDIO_CTRL_I2S_RXFIFO_OP, 0);
++}
++
++static int sirf_i2s_trigger(struct snd_pcm_substream *substream,
++		int cmd, struct snd_soc_dai *dai)
++{
++	struct sirf_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
 +
 +	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		if (playback)
-+			sirf_audio_port_tx_disable(port);
-+		else
-+			sirf_audio_port_rx_disable(port);
-+		break;
 +	case SNDRV_PCM_TRIGGER_START:
 +	case SNDRV_PCM_TRIGGER_RESUME:
 +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 +		if (playback)
-+			sirf_audio_port_tx_enable(port);
++			sirf_i2s_tx_enable(i2s);
 +		else
-+			sirf_audio_port_rx_enable(port,
-+				substream->runtime->channels);
++			sirf_i2s_rx_enable(i2s);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		if (playback)
++			sirf_i2s_tx_disable(i2s);
++		else
++			sirf_i2s_rx_disable(i2s);
 +		break;
 +	default:
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int sirf_i2s_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
++{
++	struct sirf_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++	u32 i2s_ctrl;
++	u32 i2s_tx_rx_ctrl;
++	u32 left_len, frame_len;
++	int channels = params_channels(params);
++	u32 bitclk;
++	u32 bclk_div;
++	u32 div;
++
++	/*
++	 * SiRFSoC I2S controller only support 2 and 6 channells output.
++	 * I2S_SIX_CHANNELS bit clear: select 2 channels mode.
++	 * I2S_SIX_CHANNELS bit set: select 6 channels mode.
++	 */
++	regmap_read(i2s->regmap, AUDIO_CTRL_I2S_CTRL, &i2s_ctrl);
++	regmap_read(i2s->regmap, AUDIO_CTRL_I2S_TX_RX_EN, &i2s_tx_rx_ctrl);
++	switch (channels) {
++	case 2:
++		i2s_ctrl &= ~I2S_SIX_CHANNELS;
++		break;
++	case 6:
++		i2s_ctrl |= I2S_SIX_CHANNELS;
++		break;
++	default:
++		dev_err(dai->dev, "%d channels unsupported\n", channels);
++		return -EINVAL;
++	}
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S8:
++		left_len = 8;
++		break;
++	case SNDRV_PCM_FORMAT_S16_LE:
++		left_len = 16;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		left_len = 24;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		left_len = 32;
++		break;
++	default:
++		dev_err(dai->dev, "Format unsupported\n");
++		return -EINVAL;
++	}
++
++	frame_len = left_len * 2;
++	i2s_ctrl &= ~(I2S_L_CHAN_LEN_MASK | I2S_FRAME_LEN_MASK);
++	/* Fill the actual len - 1 */
++	i2s_ctrl |= ((frame_len - 1) << I2S_FRAME_LEN_SHIFT)
++		| ((left_len - 1) << I2S_L_CHAN_LEN_SHIFT)
++		| (0 << I2S_MCLK_DIV_SHIFT) | (3 << I2S_BITCLK_DIV_SHIFT);
++
++	if (i2s->master) {
++		i2s_ctrl &= ~I2S_SLAVE_MODE;
++		i2s_tx_rx_ctrl |= I2S_MCLK_EN;
++		bitclk = params_rate(params) * frame_len;
++		div = i2s->src_clk_rate / bitclk;
++		/* MCLK divide-by-2 from source clk */
++		div /= 2;
++		bclk_div = div / 2 - 1;
++		i2s_ctrl |= (bclk_div << I2S_BITCLK_DIV_SHIFT);
++		/*
++		 * MCLK coefficient must set to 0, means
++		 * divide-by-two from reference clock.
++		 */
++		i2s_ctrl &= ~I2S_MCLK_DIV_MASK;
++	} else {
++		i2s_ctrl |= I2S_SLAVE_MODE;
++		i2s_tx_rx_ctrl &= ~I2S_MCLK_EN;
++	}
++
++	if (i2s->ext_clk)
++		i2s_tx_rx_ctrl |= I2S_REF_CLK_SEL_EXT;
++	else
++		i2s_tx_rx_ctrl &= ~I2S_REF_CLK_SEL_EXT;
++
++	regmap_write(i2s->regmap, AUDIO_CTRL_I2S_CTRL, i2s_ctrl);
++	regmap_write(i2s->regmap, AUDIO_CTRL_I2S_TX_RX_EN, i2s_tx_rx_ctrl);
++	regmap_update_bits(i2s->regmap, AUDIO_CTRL_MODE_SEL,
++		I2S_MODE, I2S_MODE);
++
++	return 0;
++}
++
++static int sirf_i2s_set_dai_fmt(struct snd_soc_dai *dai,
++		unsigned int fmt)
++{
++	struct sirf_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		i2s->master = false;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		i2s->master = true;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* interface format */
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		break;
++	default:
++		dev_err(dai->dev, "Only I2S format supported\n");
++		return -EINVAL;
++	}
++
++	/* clock inversion */
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		break;
++	default:
++		dev_err(dai->dev, "Only normal bit clock, normal frame clock supported\n");
 +		return -EINVAL;
 +	}
 +
 +	return 0;
 +}
 +
-+static const struct snd_soc_dai_ops sirf_audio_port_dai_ops = {
-+	.trigger = sirf_audio_port_trigger,
++static int sirf_i2s_set_clkdiv(struct snd_soc_dai *dai, int div_id,
++	int src_rate)
++{
++	struct sirf_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++
++	switch (div_id) {
++	case SIRF_I2S_EXT_CLK:
++		i2s->ext_clk = 1;
++		break;
++	case SIRF_I2S_PWM_CLK:
++		i2s->ext_clk = 0;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	i2s->src_clk_rate = src_rate;
++	return 0;
++}
++
++struct snd_soc_dai_ops sirfsoc_i2s_dai_ops = {
++	.trigger	= sirf_i2s_trigger,
++	.hw_params	= sirf_i2s_hw_params,
++	.set_fmt	= sirf_i2s_set_dai_fmt,
++	.set_clkdiv	= sirf_i2s_set_clkdiv,
 +};
 +
-+static struct snd_soc_dai_driver sirf_audio_port_dai = {
-+	.probe = sirf_audio_port_dai_probe,
-+	.name = "sirf-audio-port",
++static struct snd_soc_dai_driver sirf_i2s_dai = {
++	.probe = sirf_i2s_dai_probe,
++	.name = "sirf-i2s",
 +	.id = 0,
 +	.playback = {
++		.stream_name = "SiRF I2S Playback",
 +		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.channels_max = 6,
++		.rates = SNDRV_PCM_RATE_8000_96000,
++		.formats = SNDRV_PCM_FMTBIT_S8 |
++			SNDRV_PCM_FMTBIT_S16_LE |
++			SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
 +	},
 +	.capture = {
-+		.channels_min = 1,
++		.stream_name = "SiRF I2S Capture",
++		.channels_min = 2,
 +		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.rates = SNDRV_PCM_RATE_8000_96000,
++		.formats = SNDRV_PCM_FMTBIT_S8 |
++			SNDRV_PCM_FMTBIT_S16_LE |
++			SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
 +	},
-+	.ops = &sirf_audio_port_dai_ops,
++	.ops = &sirfsoc_i2s_dai_ops,
 +};
 +
-+static const struct snd_soc_component_driver sirf_audio_port_component = {
-+	.name       = "sirf-audio-port",
++#ifdef CONFIG_PM_RUNTIME
++static int sirf_i2s_runtime_suspend(struct device *dev)
++{
++	struct sirf_i2s *i2s = dev_get_drvdata(dev);
++	clk_disable_unprepare(i2s->clk);
++
++	return 0;
++}
++
++static int sirf_i2s_runtime_resume(struct device *dev)
++{
++	struct sirf_i2s *i2s = dev_get_drvdata(dev);
++	int ret;
++	ret = clk_prepare_enable(i2s->clk);
++	if (ret)
++		return ret;
++	return ret;
++}
++#endif
++
++#ifdef CONFIG_PM_SLEEP
++static int sirf_i2s_suspend(struct device *dev)
++{
++	struct sirf_i2s *i2s = dev_get_drvdata(dev);
++
++	if (!pm_runtime_status_suspended(dev)) {
++		regmap_read(i2s->regmap, AUDIO_CTRL_I2S_CTRL, &i2s->i2s_ctrl);
++		regmap_read(i2s->regmap, AUDIO_CTRL_I2S_TX_RX_EN,
++			&i2s->i2s_ctrl_tx_rx_en);
++		sirf_i2s_runtime_suspend(dev);
++	}
++	return 0;
++}
++
++static int sirf_i2s_resume(struct device *dev)
++{
++	struct sirf_i2s *i2s = dev_get_drvdata(dev);
++	int ret;
++	if (!pm_runtime_status_suspended(dev)) {
++		ret = sirf_i2s_runtime_resume(dev);
++		if (ret)
++			return ret;
++		regmap_update_bits(i2s->regmap, AUDIO_CTRL_MODE_SEL,
++			I2S_MODE, I2S_MODE);
++		regmap_write(i2s->regmap, AUDIO_CTRL_I2S_CTRL, i2s->i2s_ctrl);
++		/* Restore MCLK enable and reference clock select bits. */
++		i2s->i2s_ctrl_tx_rx_en &= (I2S_MCLK_EN | I2S_REF_CLK_SEL_EXT);
++		regmap_write(i2s->regmap, AUDIO_CTRL_I2S_TX_RX_EN,
++			i2s->i2s_ctrl_tx_rx_en);
++
++		regmap_write(i2s->regmap, AUDIO_CTRL_I2S_TXFIFO_INT_MSK, 0);
++		regmap_write(i2s->regmap, AUDIO_CTRL_I2S_RXFIFO_INT_MSK, 0);
++	}
++
++	return 0;
++}
++#endif
++
++static const struct snd_soc_component_driver sirf_i2s_component = {
++	.name       = "sirf-i2s",
 +};
 +
-+static const struct regmap_config sirf_audio_port_regmap_config = {
++static const struct regmap_config sirf_i2s_regmap_config = {
 +	.reg_bits = 32,
 +	.reg_stride = 4,
 +	.val_bits = 32,
-+	.max_register = AUDIO_PORT_IC_RXFIFO_INT_MSK,
++	.max_register = AUDIO_CTRL_I2S_RXFIFO_INT_MSK,
 +	.cache_type = REGCACHE_NONE,
 +};
 +
-+static int sirf_audio_port_probe(struct platform_device *pdev)
++static int sirf_i2s_probe(struct platform_device *pdev)
 +{
 +	int ret;
-+	struct sirf_audio_port *port;
++	struct sirf_i2s *i2s;
 +	void __iomem *base;
 +	struct resource *mem_res;
 +
-+	port = devm_kzalloc(&pdev->dev,
-+			sizeof(struct sirf_audio_port), GFP_KERNEL);
-+	if (!port)
++	i2s = devm_kzalloc(&pdev->dev, sizeof(struct sirf_i2s),
++			GFP_KERNEL);
++	if (!i2s)
 +		return -ENOMEM;
 +
 +	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -285,98 +484,139 @@ index 0000000..4169b59
 +	}
 +
 +	base = devm_ioremap(&pdev->dev, mem_res->start,
-+			resource_size(mem_res));
++		resource_size(mem_res));
 +	if (base == NULL)
 +		return -ENOMEM;
 +
-+	port->regmap = devm_regmap_init_mmio(&pdev->dev, base,
-+					    &sirf_audio_port_regmap_config);
-+	if (IS_ERR(port->regmap))
-+		return PTR_ERR(port->regmap);
++	i2s->regmap = devm_regmap_init_mmio(&pdev->dev, base,
++					    &sirf_i2s_regmap_config);
++	if (IS_ERR(i2s->regmap))
++		return PTR_ERR(i2s->regmap);
 +
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+			&sirf_audio_port_component, &sirf_audio_port_dai, 1);
-+	if (ret)
++	i2s->clk = devm_clk_get(&pdev->dev, NULL);
++	if (IS_ERR(i2s->clk)) {
++		dev_err(&pdev->dev, "Get clock failed.\n");
++		ret = PTR_ERR(i2s->clk);
 +		return ret;
++	}
 +
-+	platform_set_drvdata(pdev, port);
++	pm_runtime_enable(&pdev->dev);
++
++	ret = devm_snd_soc_register_component(&pdev->dev, &sirf_i2s_component,
++			&sirf_i2s_dai, 1);
++	if (ret) {
++		dev_err(&pdev->dev, "Register Audio SoC dai failed.\n");
++		return ret;
++	}
++
++	platform_set_drvdata(pdev, i2s);
 +	return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
 +}
 +
-+static const struct of_device_id sirf_audio_port_of_match[] = {
-+	{ .compatible = "sirf,audio-port", },
++static int sirf_i2s_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++	return 0;
++}
++
++static const struct of_device_id sirf_i2s_of_match[] = {
++	{ .compatible = "sirf,prima2-i2s", },
 +	{}
 +};
-+MODULE_DEVICE_TABLE(of, sirf_audio_port_of_match);
++MODULE_DEVICE_TABLE(of, sirf_i2s_of_match);
 +
-+static struct platform_driver sirf_audio_port_driver = {
-+	.driver = {
-+		.name = "sirf-audio-port",
-+		.owner = THIS_MODULE,
-+		.of_match_table = sirf_audio_port_of_match,
-+	},
-+	.probe = sirf_audio_port_probe,
++static const struct dev_pm_ops sirf_i2s_pm_ops = {
++	SET_RUNTIME_PM_OPS(sirf_i2s_runtime_suspend, sirf_i2s_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(sirf_i2s_suspend, sirf_i2s_resume)
 +};
 +
-+module_platform_driver(sirf_audio_port_driver);
++static struct platform_driver sirf_i2s_driver = {
++	.driver = {
++		.name = "sirf-i2s",
++		.owner = THIS_MODULE,
++		.of_match_table = sirf_i2s_of_match,
++		.pm = &sirf_i2s_pm_ops,
++	},
++	.probe = sirf_i2s_probe,
++	.remove = sirf_i2s_remove,
++};
 +
-+MODULE_DESCRIPTION("SiRF Audio Port driver");
++module_platform_driver(sirf_i2s_driver);
++
++MODULE_DESCRIPTION("SiRF SoC I2S driver");
 +MODULE_AUTHOR("RongJun Ying <Rongjun.Ying@csr.com>");
 +MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/sirf/sirf-audio-port.h b/sound/soc/sirf/sirf-audio-port.h
+diff --git a/sound/soc/sirf/sirf-i2s.h b/sound/soc/sirf/sirf-i2s.h
 new file mode 100644
-index 0000000..f32dc54
+index 0000000..3879fe5
 --- /dev/null
-+++ b/sound/soc/sirf/sirf-audio-port.h
-@@ -0,0 +1,62 @@
++++ b/sound/soc/sirf/sirf-i2s.h
+@@ -0,0 +1,88 @@
 +/*
-+ * SiRF Audio port controllers define
++ * SiRF I2S controllers define
 + *
 + * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
 + *
 + * Licensed under GPLv2 or later.
 + */
 +
-+#ifndef _SIRF_AUDIO_PORT_H
-+#define _SIRF_AUDIO_PORT_H
++#ifndef _SIRF_I2S_H
++#define _SIRF_I2S_H
 +
-+#define AUDIO_PORT_TX_FIFO_LEVEL_CHECK_MASK     0x3F
-+#define AUDIO_PORT_TX_FIFO_SC_OFFSET    0
-+#define AUDIO_PORT_TX_FIFO_LC_OFFSET    10
-+#define AUDIO_PORT_TX_FIFO_HC_OFFSET    20
++#define AUDIO_CTRL_TX_FIFO_LEVEL_CHECK_MASK     0x3F
++#define AUDIO_CTRL_TX_FIFO_SC_OFFSET    0
++#define AUDIO_CTRL_TX_FIFO_LC_OFFSET    10
++#define AUDIO_CTRL_TX_FIFO_HC_OFFSET    20
 +
-+#define TX_FIFO_SC(x)           (((x) & AUDIO_PORT_TX_FIFO_LEVEL_CHECK_MASK) \
-+				<< AUDIO_PORT_TX_FIFO_SC_OFFSET)
-+#define TX_FIFO_LC(x)           (((x) & AUDIO_PORT_TX_FIFO_LEVEL_CHECK_MASK) \
-+				<< AUDIO_PORT_TX_FIFO_LC_OFFSET)
-+#define TX_FIFO_HC(x)           (((x) & AUDIO_PORT_TX_FIFO_LEVEL_CHECK_MASK) \
-+				<< AUDIO_PORT_TX_FIFO_HC_OFFSET)
++#define TX_FIFO_SC(x)           (((x) & AUDIO_CTRL_TX_FIFO_LEVEL_CHECK_MASK) \
++				<< AUDIO_CTRL_TX_FIFO_SC_OFFSET)
++#define TX_FIFO_LC(x)           (((x) & AUDIO_CTRL_TX_FIFO_LEVEL_CHECK_MASK) \
++				<< AUDIO_CTRL_TX_FIFO_LC_OFFSET)
++#define TX_FIFO_HC(x)           (((x) & AUDIO_CTRL_TX_FIFO_LEVEL_CHECK_MASK) \
++				<< AUDIO_CTRL_TX_FIFO_HC_OFFSET)
 +
-+#define AUDIO_PORT_RX_FIFO_LEVEL_CHECK_MASK     0x0F
-+#define AUDIO_PORT_RX_FIFO_SC_OFFSET    0
-+#define AUDIO_PORT_RX_FIFO_LC_OFFSET    10
-+#define AUDIO_PORT_RX_FIFO_HC_OFFSET    20
++#define AUDIO_CTRL_RX_FIFO_LEVEL_CHECK_MASK     0x0F
++#define AUDIO_CTRL_RX_FIFO_SC_OFFSET    0
++#define AUDIO_CTRL_RX_FIFO_LC_OFFSET    10
++#define AUDIO_CTRL_RX_FIFO_HC_OFFSET    20
 +
-+#define RX_FIFO_SC(x)           (((x) & AUDIO_PORT_RX_FIFO_LEVEL_CHECK_MASK) \
-+				<< AUDIO_PORT_RX_FIFO_SC_OFFSET)
-+#define RX_FIFO_LC(x)           (((x) & AUDIO_PORT_RX_FIFO_LEVEL_CHECK_MASK) \
-+				<< AUDIO_PORT_RX_FIFO_LC_OFFSET)
-+#define RX_FIFO_HC(x)           (((x) & AUDIO_PORT_RX_FIFO_LEVEL_CHECK_MASK) \
-+				<< AUDIO_PORT_RX_FIFO_HC_OFFSET)
-+#define AUDIO_PORT_IC_CODEC_TX_CTRL		(0x00F4)
-+#define AUDIO_PORT_IC_CODEC_RX_CTRL		(0x00F8)
++#define RX_FIFO_SC(x)           (((x) & AUDIO_CTRL_RX_FIFO_LEVEL_CHECK_MASK) \
++				<< AUDIO_CTRL_RX_FIFO_SC_OFFSET)
++#define RX_FIFO_LC(x)           (((x) & AUDIO_CTRL_RX_FIFO_LEVEL_CHECK_MASK) \
++				<< AUDIO_CTRL_RX_FIFO_LC_OFFSET)
++#define RX_FIFO_HC(x)           (((x) & AUDIO_CTRL_RX_FIFO_LEVEL_CHECK_MASK) \
++				<< AUDIO_CTRL_RX_FIFO_HC_OFFSET)
 +
-+#define AUDIO_PORT_IC_TXFIFO_OP			(0x00FC)
-+#define AUDIO_PORT_IC_TXFIFO_LEV_CHK		(0x0100)
-+#define AUDIO_PORT_IC_TXFIFO_STS		(0x0104)
-+#define AUDIO_PORT_IC_TXFIFO_INT		(0x0108)
-+#define AUDIO_PORT_IC_TXFIFO_INT_MSK		(0x010C)
++#define AUDIO_CTRL_MODE_SEL			(0x0000)
++#define AUDIO_CTRL_I2S_CTRL			(0x0020)
++#define AUDIO_CTRL_I2S_TX_RX_EN			(0x0024)
 +
-+#define AUDIO_PORT_IC_RXFIFO_OP			(0x0110)
-+#define AUDIO_PORT_IC_RXFIFO_LEV_CHK		(0x0114)
-+#define AUDIO_PORT_IC_RXFIFO_STS		(0x0118)
-+#define AUDIO_PORT_IC_RXFIFO_INT		(0x011C)
-+#define AUDIO_PORT_IC_RXFIFO_INT_MSK		(0x0120)
++#define AUDIO_CTRL_I2S_TXFIFO_OP		(0x0040)
++#define AUDIO_CTRL_I2S_TXFIFO_LEV_CHK		(0x0044)
++#define AUDIO_CTRL_I2S_TXFIFO_STS		(0x0048)
++#define AUDIO_CTRL_I2S_TXFIFO_INT		(0x004C)
++#define AUDIO_CTRL_I2S_TXFIFO_INT_MSK		(0x0050)
++
++#define AUDIO_CTRL_I2S_RXFIFO_OP		(0x00B8)
++#define AUDIO_CTRL_I2S_RXFIFO_LEV_CHK		(0x00BC)
++#define AUDIO_CTRL_I2S_RXFIFO_STS		(0x00C0)
++#define AUDIO_CTRL_I2S_RXFIFO_INT		(0x00C4)
++#define AUDIO_CTRL_I2S_RXFIFO_INT_MSK		(0x00C8)
++
++#define I2S_MODE				(1<<0)
++
++#define I2S_LOOP_BACK				(1<<3)
++#define	I2S_MCLK_DIV_SHIFT			15
++#define I2S_MCLK_DIV_MASK			(0x1FF<<I2S_MCLK_DIV_SHIFT)
++#define I2S_BITCLK_DIV_SHIFT			24
++#define I2S_BITCLK_DIV_MASK			(0xFF<<I2S_BITCLK_DIV_SHIFT)
++
++#define I2S_MCLK_EN				(1<<2)
++#define I2S_REF_CLK_SEL_EXT			(1<<3)
++#define I2S_DOUT_OE				(1<<4)
++#define i2s_R2X_LP_TO_TX0			(1<<30)
++#define i2s_R2X_LP_TO_TX1			(2<<30)
++#define i2s_R2X_LP_TO_TX2			(3<<30)
 +
 +#define AUDIO_FIFO_START		(1 << 0)
 +#define AUDIO_FIFO_RESET		(1 << 1)
@@ -386,10 +626,19 @@ index 0000000..f32dc54
 +#define AUDIO_FIFO_OFLOW		(1 << 2)
 +#define AUDIO_FIFO_UFLOW		(1 << 3)
 +
-+#define IC_TX_ENABLE		(0x03)
-+#define IC_RX_ENABLE_MONO	(0x01)
-+#define IC_RX_ENABLE_STEREO	(0x03)
++#define I2S_RX_ENABLE			(1 << 0)
++#define I2S_TX_ENABLE			(1 << 1)
 +
-+#endif /*__SIRF_AUDIO_PORT_H*/
++/* Codec I2S Control Register defines */
++#define I2S_SLAVE_MODE			(1 << 0)
++#define I2S_SIX_CHANNELS		(1 << 1)
++#define I2S_L_CHAN_LEN_SHIFT		(4)
++#define I2S_L_CHAN_LEN_MASK		(0x1f << I2S_L_CHAN_LEN_SHIFT)
++#define I2S_FRAME_LEN_SHIFT		(9)
++#define I2S_FRAME_LEN_MASK		(0x3f << I2S_FRAME_LEN_SHIFT)
++
++#define SIRF_I2S_EXT_CLK	0x0
++#define SIRF_I2S_PWM_CLK	0x1
++#endif /*__SIRF_I2S_H*/
 -- 
 1.7.5.4
