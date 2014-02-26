@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 28/48] ALSA: ca0106: Use standard printk helpers
-Date: Wed, 26 Feb 2014 16:53:30 +0100
-Message-ID: <1393430030-26704-29-git-send-email-tiwai@suse.de>
+Subject: [PATCH 15/48] ALSA: es1968: Use standard printk helpers
+Date: Wed, 26 Feb 2014 16:53:17 +0100
+Message-ID: <1393430030-26704-16-git-send-email-tiwai@suse.de>
 References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 227962657B5
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FD712657BB
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D015B7503B
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 739E875033
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
 In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,332 +27,198 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Convert with dev_err() and co from snd_printk(), etc.
-A couple of prints are difficult to convert with dev_err() so they are
-converted to pr_err() at least.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ca0106/ca0106_main.c | 84 +++++++++++++++++++++++-------------------
- sound/pci/ca0106/ca_midi.c     |  4 +-
- 2 files changed, 49 insertions(+), 39 deletions(-)
+ sound/pci/es1968.c | 49 +++++++++++++++++++++++++++----------------------
+ 1 file changed, 27 insertions(+), 22 deletions(-)
 
-diff --git a/sound/pci/ca0106/ca0106_main.c b/sound/pci/ca0106/ca0106_main.c
-index f659c7a89c0c..f94cc6e97d4a 100644
---- a/sound/pci/ca0106/ca0106_main.c
-+++ b/sound/pci/ca0106/ca0106_main.c
-@@ -417,13 +417,13 @@ int snd_ca0106_i2c_write(struct snd_ca0106 *emu,
- 	int status;
- 	int retry;
- 	if ((reg > 0x7f) || (value > 0x1ff)) {
--		snd_printk(KERN_ERR "i2c_write: invalid values.\n");
-+		dev_err(emu->card->dev, "i2c_write: invalid values.\n");
- 		return -EINVAL;
+diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
+index 87e9cd5d3ceb..5bb1cf603301 100644
+--- a/sound/pci/es1968.c
++++ b/sound/pci/es1968.c
+@@ -632,7 +632,7 @@ static int snd_es1968_ac97_wait(struct es1968 *chip)
+ 			return 0;
+ 		cond_resched();
  	}
- 
- 	tmp = reg << 25 | value << 16;
- 	/*
--	snd_printk(KERN_DEBUG "I2C-write:reg=0x%x, value=0x%x\n", reg, value);
-+	dev_dbg(emu->card->dev, "I2C-write:reg=0x%x, value=0x%x\n", reg, value);
- 	*/
- 	/* Not sure what this I2C channel controls. */
- 	/* snd_ca0106_ptr_write(emu, I2C_D0, 0, tmp); */
-@@ -442,7 +442,7 @@ int snd_ca0106_i2c_write(struct snd_ca0106 *emu,
- 		/* Wait till the transaction ends */
- 		while (1) {
- 			status = snd_ca0106_ptr_read(emu, I2C_A, 0);
--			/*snd_printk(KERN_DEBUG "I2C:status=0x%x\n", status);*/
-+			/*dev_dbg(emu->card->dev, "I2C:status=0x%x\n", status);*/
- 			timeout++;
- 			if ((status & I2C_A_ADC_START) == 0)
- 				break;
-@@ -456,7 +456,7 @@ int snd_ca0106_i2c_write(struct snd_ca0106 *emu,
- 	}
- 
- 	if (retry == 10) {
--		snd_printk(KERN_ERR "Writing to ADC failed!\n");
-+		dev_err(emu->card->dev, "Writing to ADC failed!\n");
- 		return -EINVAL;
- 	}
-     
-@@ -516,7 +516,8 @@ static void restore_spdif_bits(struct snd_ca0106 *chip, int idx)
- 	}
+-	snd_printd("es1968: ac97 timeout\n");
++	dev_dbg(chip->card->dev, "ac97 timeout\n");
+ 	return 1; /* timeout */
  }
  
--static int snd_ca0106_channel_dac(struct snd_ca0106_details *details,
-+static int snd_ca0106_channel_dac(struct snd_ca0106 *chip,
-+				  struct snd_ca0106_details *details,
- 				  int channel_id)
- {
- 	switch (channel_id) {
-@@ -529,7 +530,7 @@ static int snd_ca0106_channel_dac(struct snd_ca0106_details *details,
- 	case PCM_UNKNOWN_CHANNEL:
- 		return (details->spi_dac & 0x000f) >> (4 * 0);
- 	default:
--		snd_printk(KERN_DEBUG "ca0106: unknown channel_id %d\n",
-+		dev_dbg(chip->card->dev, "ca0106: unknown channel_id %d\n",
- 			   channel_id);
+@@ -644,7 +644,7 @@ static int snd_es1968_ac97_wait_poll(struct es1968 *chip)
+ 		if (!(inb(chip->io_port + ESM_AC97_INDEX) & 1))
+ 			return 0;
  	}
- 	return 0;
-@@ -539,7 +540,7 @@ static int snd_ca0106_pcm_power_dac(struct snd_ca0106 *chip, int channel_id,
- 				    int power)
- {
- 	if (chip->details->spi_dac) {
--		const int dac = snd_ca0106_channel_dac(chip->details,
-+		const int dac = snd_ca0106_channel_dac(chip, chip->details,
- 						       channel_id);
- 		const int reg = spi_dacd_reg[dac];
- 		const int bit = spi_dacd_bit[dac];
-@@ -583,7 +584,7 @@ static int snd_ca0106_pcm_open_playback_channel(struct snd_pcm_substream *substr
+-	snd_printd("es1968: ac97 timeout\n");
++	dev_dbg(chip->card->dev, "ac97 timeout\n");
+ 	return 1; /* timeout */
+ }
  
- 	channel->use = 1;
- 	/*
--	printk(KERN_DEBUG "open:channel_id=%d, chip=%p, channel=%p\n",
-+	dev_dbg(chip->card->dev, "open:channel_id=%d, chip=%p, channel=%p\n",
- 	       channel_id, chip, channel);
- 	*/
-         //channel->interrupt = snd_ca0106_pcm_channel_interrupt;
-@@ -660,7 +661,8 @@ static int snd_ca0106_pcm_open_capture_channel(struct snd_pcm_substream *substre
+@@ -687,7 +687,7 @@ static void apu_index_set(struct es1968 *chip, u16 index)
+ 	for (i = 0; i < 1000; i++)
+ 		if (__maestro_read(chip, IDR1_CRAM_POINTER) == index)
+ 			return;
+-	snd_printd("es1968: APU register select failed. (Timeout)\n");
++	dev_dbg(chip->card->dev, "APU register select failed. (Timeout)\n");
+ }
  
- 	epcm = kzalloc(sizeof(*epcm), GFP_KERNEL);
- 	if (epcm == NULL) {
--		snd_printk(KERN_ERR "open_capture_channel: failed epcm alloc\n");
+ /* no spinlock */
+@@ -699,7 +699,7 @@ static void apu_data_set(struct es1968 *chip, u16 data)
+ 			return;
+ 		__maestro_write(chip, IDR0_DATA_PORT, data);
+ 	}
+-	snd_printd("es1968: APU register set probably failed (Timeout)!\n");
++	dev_dbg(chip->card->dev, "APU register set probably failed (Timeout)!\n");
+ }
+ 
+ /* no spinlock */
+@@ -1442,13 +1442,14 @@ snd_es1968_init_dmabuf(struct es1968 *chip)
+ 					   snd_dma_pci_data(chip->pci),
+ 					   chip->total_bufsize, &chip->dma);
+ 	if (err < 0 || ! chip->dma.area) {
+-		snd_printk(KERN_ERR "es1968: can't allocate dma pages for size %d\n",
 +		dev_err(chip->card->dev,
-+			"open_capture_channel: failed epcm alloc\n");
++			"can't allocate dma pages for size %d\n",
+ 			   chip->total_bufsize);
  		return -ENOMEM;
-         }
- 	epcm->emu = chip;
-@@ -677,7 +679,7 @@ static int snd_ca0106_pcm_open_capture_channel(struct snd_pcm_substream *substre
- 
- 	channel->use = 1;
- 	/*
--        printk(KERN_DEBUG "open:channel_id=%d, chip=%p, channel=%p\n",
-+	dev_dbg(chip->card->dev, "open:channel_id=%d, chip=%p, channel=%p\n",
- 	       channel_id, chip, channel);
- 	*/
-         //channel->interrupt = snd_ca0106_pcm_channel_interrupt;
-@@ -771,7 +773,7 @@ static int snd_ca0106_pcm_prepare_playback(struct snd_pcm_substream *substream)
- 	int i;
- 	
- #if 0 /* debug */
--	snd_printk(KERN_DEBUG
-+	dev_dbg(emu->card->dev,
- 		   "prepare:channel_number=%d, rate=%d, format=0x%x, "
- 		   "channels=%d, buffer_size=%ld, period_size=%ld, "
- 		   "periods=%u, frames_to_bytes=%d\n",
-@@ -779,9 +781,11 @@ static int snd_ca0106_pcm_prepare_playback(struct snd_pcm_substream *substream)
- 		   runtime->channels, runtime->buffer_size,
- 		   runtime->period_size, runtime->periods,
- 		   frames_to_bytes(runtime, 1));
--	snd_printk(KERN_DEBUG "dma_addr=%x, dma_area=%p, table_base=%p\n",
-+	dev_dbg(emu->card->dev,
-+		"dma_addr=%x, dma_area=%p, table_base=%p\n",
- 		   runtime->dma_addr, runtime->dma_area, table_base);
--	snd_printk(KERN_DEBUG "dma_addr=%x, dma_area=%p, dma_bytes(size)=%x\n",
-+	dev_dbg(emu->card->dev,
-+		"dma_addr=%x, dma_area=%p, dma_bytes(size)=%x\n",
- 		   emu->buffer.addr, emu->buffer.area, emu->buffer.bytes);
- #endif /* debug */
- 	/* Rate can be set per channel. */
-@@ -876,7 +880,7 @@ static int snd_ca0106_pcm_prepare_capture(struct snd_pcm_substream *substream)
- 	u32 reg71;
- 	
- #if 0 /* debug */
--	snd_printk(KERN_DEBUG
-+	dev_dbg(emu->card->dev,
- 		   "prepare:channel_number=%d, rate=%d, format=0x%x, "
- 		   "channels=%d, buffer_size=%ld, period_size=%ld, "
- 		   "periods=%u, frames_to_bytes=%d\n",
-@@ -884,9 +888,11 @@ static int snd_ca0106_pcm_prepare_capture(struct snd_pcm_substream *substream)
- 		   runtime->channels, runtime->buffer_size,
- 		   runtime->period_size, runtime->periods,
- 		   frames_to_bytes(runtime, 1));
--        snd_printk(KERN_DEBUG "dma_addr=%x, dma_area=%p, table_base=%p\n",
-+	dev_dbg(emu->card->dev,
-+		"dma_addr=%x, dma_area=%p, table_base=%p\n",
- 		   runtime->dma_addr, runtime->dma_area, table_base);
--	snd_printk(KERN_DEBUG "dma_addr=%x, dma_area=%p, dma_bytes(size)=%x\n",
-+	dev_dbg(emu->card->dev,
-+		"dma_addr=%x, dma_area=%p, dma_bytes(size)=%x\n",
- 		   emu->buffer.addr, emu->buffer.area, emu->buffer.bytes);
- #endif /* debug */
- 	/* reg71 controls ADC rate. */
-@@ -934,7 +940,7 @@ static int snd_ca0106_pcm_prepare_capture(struct snd_pcm_substream *substream)
- 
- 
- 	/*
--	printk(KERN_DEBUG
-+	dev_dbg(emu->card->dev,
- 	       "prepare:channel_number=%d, rate=%d, format=0x%x, channels=%d, "
- 	       "buffer_size=%ld, period_size=%ld, frames_to_bytes=%d\n",
- 	       channel, runtime->rate, runtime->format, runtime->channels,
-@@ -982,13 +988,13 @@ static int snd_ca0106_pcm_trigger_playback(struct snd_pcm_substream *substream,
- 		runtime = s->runtime;
- 		epcm = runtime->private_data;
- 		channel = epcm->channel_id;
--		/* snd_printk(KERN_DEBUG "channel=%d\n", channel); */
-+		/* dev_dbg(emu->card->dev, "channel=%d\n", channel); */
- 		epcm->running = running;
- 		basic |= (0x1 << channel);
- 		extended |= (0x10 << channel);
-                 snd_pcm_trigger_done(s, substream);
-         }
--	/* snd_printk(KERN_DEBUG "basic=0x%x, extended=0x%x\n",basic, extended); */
-+	/* dev_dbg(emu->card->dev, "basic=0x%x, extended=0x%x\n",basic, extended); */
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -1070,7 +1076,7 @@ snd_ca0106_pcm_pointer_playback(struct snd_pcm_substream *substream)
- 			return ptr;
- 		prev_ptr = ptr;
- 	} while (--timeout);
--	snd_printk(KERN_WARNING "ca0106: unstable DMA pointer!\n");
-+	dev_warn(emu->card->dev, "ca0106: unstable DMA pointer!\n");
- 	return 0;
- }
- 
-@@ -1093,7 +1099,7 @@ snd_ca0106_pcm_pointer_capture(struct snd_pcm_substream *substream)
-         if (ptr >= runtime->buffer_size)
- 		ptr -= runtime->buffer_size;
- 	/*
--	printk(KERN_DEBUG "ptr1 = 0x%lx, ptr2=0x%lx, ptr=0x%lx, "
-+	dev_dbg(emu->card->dev, "ptr1 = 0x%lx, ptr2=0x%lx, ptr=0x%lx, "
- 	       "buffer_size = 0x%x, period_size = 0x%x, bits=%d, rate=%d\n",
- 	       ptr1, ptr2, ptr, (int)runtime->buffer_size,
- 	       (int)runtime->period_size, (int)runtime->frame_bits,
-@@ -1284,9 +1290,9 @@ static irqreturn_t snd_ca0106_interrupt(int irq, void *dev_id)
- 
-         stat76 = snd_ca0106_ptr_read(chip, EXTENDED_INT, 0);
- 	/*
--	snd_printk(KERN_DEBUG "interrupt status = 0x%08x, stat76=0x%08x\n",
-+	dev_dbg(emu->card->dev, "interrupt status = 0x%08x, stat76=0x%08x\n",
- 		   status, stat76);
--	snd_printk(KERN_DEBUG "ptr=0x%08x\n",
-+	dev_dbg(emu->card->dev, "ptr=0x%08x\n",
- 		   snd_ca0106_ptr_read(chip, PLAYBACK_POINTER, 0));
- 	*/
-         mask = 0x11; /* 0x1 for one half, 0x10 for the other half period. */
-@@ -1296,11 +1302,13 @@ static irqreturn_t snd_ca0106_interrupt(int irq, void *dev_id)
- /* FIXME: Select the correct substream for period elapsed */
- 			if(pchannel->use) {
- 				snd_pcm_period_elapsed(pchannel->epcm->substream);
--				//printk(KERN_INFO "interrupt [%d] used\n", i);
-+				/* dev_dbg(emu->card->dev, "interrupt [%d] used\n", i); */
-                         }
- 		}
--	        //printk(KERN_INFO "channel=%p\n",pchannel);
--	        //printk(KERN_INFO "interrupt stat76[%d] = %08x, use=%d, channel=%d\n", i, stat76, pchannel->use, pchannel->number);
-+		/*
-+		dev_dbg(emu->card->dev, "channel=%p\n", pchannel);
-+		dev_dbg(emu->card->dev, "interrupt stat76[%d] = %08x, use=%d, channel=%d\n", i, stat76, pchannel->use, pchannel->number);
-+		*/
- 		mask <<= 1;
  	}
-         mask = 0x110000; /* 0x1 for one half, 0x10 for the other half period. */
-@@ -1310,11 +1318,13 @@ static irqreturn_t snd_ca0106_interrupt(int irq, void *dev_id)
- /* FIXME: Select the correct substream for period elapsed */
- 			if(pchannel->use) {
- 				snd_pcm_period_elapsed(pchannel->epcm->substream);
--				//printk(KERN_INFO "interrupt [%d] used\n", i);
-+				/* dev_dbg(emu->card->dev, "interrupt [%d] used\n", i); */
-                         }
- 		}
--	        //printk(KERN_INFO "channel=%p\n",pchannel);
--	        //printk(KERN_INFO "interrupt stat76[%d] = %08x, use=%d, channel=%d\n", i, stat76, pchannel->use, pchannel->number);
-+		/*
-+		dev_dbg(emu->card->dev, "channel=%p\n", pchannel);
-+		dev_dbg(emu->card->dev, "interrupt stat76[%d] = %08x, use=%d, channel=%d\n", i, stat76, pchannel->use, pchannel->number);
-+		*/
- 		mask <<= 1;
+ 	if ((chip->dma.addr + chip->dma.bytes - 1) & ~((1 << 28) - 1)) {
+ 		snd_dma_free_pages(&chip->dma);
+-		snd_printk(KERN_ERR "es1968: DMA buffer beyond 256MB.\n");
++		dev_err(chip->card->dev, "DMA buffer beyond 256MB.\n");
+ 		return -ENOMEM;
  	}
  
-@@ -1603,7 +1613,7 @@ static void ca0106_init_chip(struct snd_ca0106 *chip, int resume)
- 		int size, n;
+@@ -1489,7 +1490,8 @@ static int snd_es1968_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 	chan->memory = snd_es1968_new_memory(chip, size);
+ 	if (chan->memory == NULL) {
+-		// snd_printd("cannot allocate dma buffer: size = %d\n", size);
++		dev_dbg(chip->card->dev,
++			"cannot allocate dma buffer: size = %d\n", size);
+ 		return -ENOMEM;
+ 	}
+ 	snd_pcm_set_runtime_buffer(substream, &chan->memory->buf);
+@@ -1715,11 +1717,13 @@ static void es1968_measure_clock(struct es1968 *chip)
  
- 		size = ARRAY_SIZE(i2c_adc_init);
--		/* snd_printk(KERN_DEBUG "I2C:array size=0x%x\n", size); */
-+		/* dev_dbg(emu->card->dev, "I2C:array size=0x%x\n", size); */
- 		for (n = 0; n < size; n++)
- 			snd_ca0106_i2c_write(chip, i2c_adc_init[n][0],
- 					     i2c_adc_init[n][1]);
-@@ -1668,7 +1678,7 @@ static int snd_ca0106_create(int dev, struct snd_card *card,
- 		return err;
- 	if (pci_set_dma_mask(pci, DMA_BIT_MASK(32)) < 0 ||
- 	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(32)) < 0) {
--		printk(KERN_ERR "error to set 32bit mask DMA\n");
-+		dev_err(card->dev, "error to set 32bit mask DMA\n");
+ 	/* search 2 APUs (although one apu is enough) */
+ 	if ((apu = snd_es1968_alloc_apu_pair(chip, ESM_APU_PCM_PLAY)) < 0) {
+-		snd_printk(KERN_ERR "Hmm, cannot find empty APU pair!?\n");
++		dev_err(chip->card->dev, "Hmm, cannot find empty APU pair!?\n");
+ 		return;
+ 	}
+ 	if ((memory = snd_es1968_new_memory(chip, CLOCK_MEASURE_BUFSIZE)) == NULL) {
+-		snd_printk(KERN_ERR "cannot allocate dma buffer - using default clock %d\n", chip->clock);
++		dev_warn(chip->card->dev,
++			 "cannot allocate dma buffer - using default clock %d\n",
++			 chip->clock);
+ 		snd_es1968_free_apu_pair(chip, apu);
+ 		return;
+ 	}
+@@ -1780,7 +1784,7 @@ static void es1968_measure_clock(struct es1968 *chip)
+ 	else
+ 		t += stop_time.tv_usec - start_time.tv_usec;
+ 	if (t == 0) {
+-		snd_printk(KERN_ERR "?? calculation error..\n");
++		dev_err(chip->card->dev, "?? calculation error..\n");
+ 	} else {
+ 		offset *= 1000;
+ 		offset = (offset / t) * 1000 + ((offset % t) * 1000) / t;
+@@ -1788,7 +1792,7 @@ static void es1968_measure_clock(struct es1968 *chip)
+ 			if (offset >= 40000 && offset <= 50000)
+ 				chip->clock = (chip->clock * offset) / 48000;
+ 		}
+-		printk(KERN_INFO "es1968: clocking to %d\n", chip->clock);
++		dev_info(chip->card->dev, "clocking to %d\n", chip->clock);
+ 	}
+ 	snd_es1968_free_memory(chip, memory);
+ 	snd_es1968_free_apu_pair(chip, apu);
+@@ -2108,7 +2112,7 @@ static void snd_es1968_ac97_reset(struct es1968 *chip)
+ 	outw(inw(ioaddr + 0x3c) & 0xfffc, ioaddr + 0x3c);
+ 
+ #if 0				/* the loop here needs to be much better if we want it.. */
+-	snd_printk(KERN_INFO "trying software reset\n");
++	dev_info(chip->card->dev, "trying software reset\n");
+ 	/* try and do a software reset */
+ 	outb(0x80 | 0x7c, ioaddr + 0x30);
+ 	for (w = 0;; w++) {
+@@ -2416,8 +2420,7 @@ static int es1968_resume(struct device *dev)
+ 	pci_set_power_state(pci, PCI_D0);
+ 	pci_restore_state(pci);
+ 	if (pci_enable_device(pci) < 0) {
+-		printk(KERN_ERR "es1968: pci_enable_device failed, "
+-		       "disabling device\n");
++		dev_err(dev, "pci_enable_device failed, disabling device\n");
+ 		snd_card_disconnect(card);
+ 		return -EIO;
+ 	}
+@@ -2479,7 +2482,8 @@ static int snd_es1968_create_gameport(struct es1968 *chip, int dev)
+ 
+ 	chip->gameport = gp = gameport_allocate_port();
+ 	if (!gp) {
+-		printk(KERN_ERR "es1968: cannot allocate memory for gameport\n");
++		dev_err(chip->card->dev,
++			"cannot allocate memory for gameport\n");
+ 		release_and_free_resource(r);
+ 		return -ENOMEM;
+ 	}
+@@ -2706,7 +2710,8 @@ static int snd_es1968_create(struct snd_card *card,
+ 	/* check, if we can restrict PCI DMA transfers to 28 bits */
+ 	if (pci_set_dma_mask(pci, DMA_BIT_MASK(28)) < 0 ||
+ 	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(28)) < 0) {
+-		snd_printk(KERN_ERR "architecture does not support 28bit PCI busmaster DMA\n");
++		dev_err(card->dev,
++			"architecture does not support 28bit PCI busmaster DMA\n");
  		pci_disable_device(pci);
  		return -ENXIO;
  	}
-@@ -1689,14 +1699,14 @@ static int snd_ca0106_create(int dev, struct snd_card *card,
- 	chip->res_port = request_region(chip->port, 0x20, "snd_ca0106");
- 	if (!chip->res_port) {
- 		snd_ca0106_free(chip);
--		printk(KERN_ERR "cannot allocate the port\n");
-+		dev_err(card->dev, "cannot allocate the port\n");
+@@ -2740,7 +2745,7 @@ static int snd_es1968_create(struct snd_card *card,
+ 	chip->io_port = pci_resource_start(pci, 0);
+ 	if (request_irq(pci->irq, snd_es1968_interrupt, IRQF_SHARED,
+ 			KBUILD_MODNAME, chip)) {
+-		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
++		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		snd_es1968_free(chip);
  		return -EBUSY;
  	}
- 
- 	if (request_irq(pci->irq, snd_ca0106_interrupt,
- 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
- 		snd_ca0106_free(chip);
--		printk(KERN_ERR "cannot grab irq\n");
-+		dev_err(card->dev, "cannot grab irq\n");
- 		return -EBUSY;
+@@ -2770,7 +2775,7 @@ static int snd_es1968_create(struct snd_card *card,
+ 		}
+ 		if (do_pm > 1) {
+ 			/* not matched; disabling pm */
+-			printk(KERN_INFO "es1968: not attempting power management.\n");
++			dev_info(card->dev, "not attempting power management.\n");
+ 			do_pm = 0;
+ 		}
  	}
- 	chip->irq = pci->irq;
-@@ -1712,7 +1722,7 @@ static int snd_ca0106_create(int dev, struct snd_card *card,
- 	/* read serial */
- 	pci_read_config_dword(pci, PCI_SUBSYSTEM_VENDOR_ID, &chip->serial);
- 	pci_read_config_word(pci, PCI_SUBSYSTEM_ID, &chip->model);
--	printk(KERN_INFO "snd-ca0106: Model %04x Rev %08x Serial %08x\n",
-+	dev_info(card->dev, "Model %04x Rev %08x Serial %08x\n",
- 	       chip->model, pci->revision, chip->serial);
- 	strcpy(card->driver, "CA0106");
- 	strcpy(card->shortname, "CA0106");
-@@ -1726,7 +1736,7 @@ static int snd_ca0106_create(int dev, struct snd_card *card,
+@@ -2800,7 +2805,7 @@ static int snd_es1968_create(struct snd_card *card,
+ 	for (i = 0; i < ARRAY_SIZE(snd_es1968_tea575x_gpios); i++) {
+ 		chip->tea575x_tuner = i;
+ 		if (!snd_tea575x_init(&chip->tea, THIS_MODULE)) {
+-			snd_printk(KERN_INFO "es1968: detected TEA575x radio type %s\n",
++			dev_info(card->dev, "detected TEA575x radio type %s\n",
+ 				   get_tea575x_gpio(chip)->name);
+ 			strlcpy(chip->tea.card, get_tea575x_gpio(chip)->name,
+ 				sizeof(chip->tea.card));
+@@ -2899,7 +2904,7 @@ static int snd_es1968_probe(struct pci_dev *pci,
+ 					       MPU401_INFO_INTEGRATED |
+ 					       MPU401_INFO_IRQ_HOOK,
+ 					       -1, &chip->rmidi)) < 0) {
+-			printk(KERN_WARNING "es1968: skipping MPU-401 MIDI support..\n");
++			dev_warn(card->dev, "skipping MPU-401 MIDI support..\n");
+ 		}
  	}
- 	chip->details = c;
- 	if (subsystem[dev]) {
--		printk(KERN_INFO "snd-ca0106: Sound card name=%s, "
-+		dev_info(card->dev, "Sound card name=%s, "
- 		       "subsystem=0x%x. Forced to subsystem=0x%x\n",
- 		       c->name, chip->serial, subsystem[dev]);
- 	}
-@@ -1869,11 +1879,11 @@ static int snd_ca0106_probe(struct pci_dev *pci,
- 	if (err < 0)
- 		goto error;
  
--	snd_printdd("ca0106: probe for MIDI channel A ...");
-+	dev_dbg(card->dev, "probe for MIDI channel A ...");
- 	err = snd_ca0106_midi(chip, CA0106_MIDI_CHAN_A);
- 	if (err < 0)
- 		goto error;
--	snd_printdd(" done.\n");
-+	dev_dbg(card->dev, " done.\n");
- 
- #ifdef CONFIG_PROC_FS
- 	snd_ca0106_proc_init(chip);
-diff --git a/sound/pci/ca0106/ca_midi.c b/sound/pci/ca0106/ca_midi.c
-index 8bbdf265d11d..b91c7f6d19f9 100644
---- a/sound/pci/ca0106/ca_midi.c
-+++ b/sound/pci/ca0106/ca_midi.c
-@@ -46,7 +46,7 @@ static void ca_midi_clear_rx(struct snd_ca_midi *midi)
- 		ca_midi_read_data(midi);
- #ifdef CONFIG_SND_DEBUG
- 	if (timeout <= 0)
--		snd_printk(KERN_ERR "ca_midi_clear_rx: timeout (status = 0x%x)\n",
-+		pr_err("ca_midi_clear_rx: timeout (status = 0x%x)\n",
- 			   ca_midi_read_stat(midi));
+@@ -2908,8 +2913,8 @@ static int snd_es1968_probe(struct pci_dev *pci,
+ #ifdef CONFIG_SND_ES1968_INPUT
+ 	err = snd_es1968_input_register(chip);
+ 	if (err)
+-		snd_printk(KERN_WARNING "Input device registration "
+-			"failed with error %i", err);
++		dev_warn(card->dev,
++			 "Input device registration failed with error %i", err);
  #endif
- }
-@@ -113,7 +113,7 @@ static void ca_midi_cmd(struct snd_ca_midi *midi, unsigned char cmd, int ack)
- 	}
- 	spin_unlock_irqrestore(&midi->input_lock, flags);
- 	if (!ok)
--		snd_printk(KERN_ERR "ca_midi_cmd: 0x%x failed at 0x%x (status = 0x%x, data = 0x%x)!!!\n",
-+		pr_err("ca_midi_cmd: 0x%x failed at 0x%x (status = 0x%x, data = 0x%x)!!!\n",
- 			   cmd,
- 			   midi->get_dev_id_port(midi->dev_id),
- 			   ca_midi_read_stat(midi),
+ 
+ 	snd_es1968_start_irq(chip);
 -- 
 1.9.0
