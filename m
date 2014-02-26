@@ -1,17 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 41/48] ALSA: hdsp: Use standard printk helpers
-Date: Wed, 26 Feb 2014 16:53:43 +0100
-Message-ID: <1393430030-26704-42-git-send-email-tiwai@suse.de>
+Subject: [PATCH 34/48] ALSA: ice17xx: Use standard printk
+	helpers
+Date: Wed, 26 Feb 2014 16:53:36 +0100
+Message-ID: <1393430030-26704-35-git-send-email-tiwai@suse.de>
 References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A5992657DF
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E6EF2657CD
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id F1D0875047
+ by mx2.suse.de (Postfix) with ESMTP id E12117503F
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
 In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,401 +31,554 @@ Convert with dev_err() and co from snd_printk(), etc.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/rme9652/hdsp.c | 128 +++++++++++++++++++++++++++++------------------
- 1 file changed, 79 insertions(+), 49 deletions(-)
+ sound/pci/ice1712/aureon.c     |  7 +++++--
+ sound/pci/ice1712/delta.c      |  5 +++--
+ sound/pci/ice1712/ews.c        | 12 ++++++-----
+ sound/pci/ice1712/ice1712.c    | 33 +++++++++++++++++++------------
+ sound/pci/ice1712/ice1724.c    | 45 ++++++++++++++++++++++--------------------
+ sound/pci/ice1712/juli.c       | 14 ++++++-------
+ sound/pci/ice1712/prodigy192.c | 13 ++++++------
+ sound/pci/ice1712/quartet.c    |  6 +++---
+ 8 files changed, 76 insertions(+), 59 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index 825fbbea7f6f..4c6f5d1c9882 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -675,14 +675,15 @@ static int hdsp_check_for_iobox (struct hdsp *hdsp)
- 		if (0 == (hdsp_read(hdsp, HDSP_statusRegister) &
- 					HDSP_ConfigError)) {
- 			if (i) {
--				snd_printd("Hammerfall-DSP: IO box found after %d ms\n",
-+				dev_dbg(hdsp->card->dev,
-+					"IO box found after %d ms\n",
- 						(20 * i));
- 			}
- 			return 0;
- 		}
- 		msleep(20);
- 	}
--	snd_printk(KERN_ERR "Hammerfall-DSP: no IO box connected!\n");
-+	dev_err(hdsp->card->dev, "no IO box connected!\n");
- 	hdsp->state &= ~HDSP_FirmwareLoaded;
- 	return -EIO;
- }
-@@ -699,13 +700,13 @@ static int hdsp_wait_for_iobox(struct hdsp *hdsp, unsigned int loops,
- 		if (hdsp_read(hdsp, HDSP_statusRegister) & HDSP_ConfigError)
- 			msleep(delay);
+diff --git a/sound/pci/ice1712/aureon.c b/sound/pci/ice1712/aureon.c
+index 55902ec40344..3b3cf4ac9060 100644
+--- a/sound/pci/ice1712/aureon.c
++++ b/sound/pci/ice1712/aureon.c
+@@ -1937,9 +1937,12 @@ static int aureon_add_controls(struct snd_ice1712 *ice)
+ 		snd_ice1712_save_gpio_status(ice);
+ 		id = aureon_cs8415_get(ice, CS8415_ID);
+ 		if (id != 0x41)
+-			snd_printk(KERN_INFO "No CS8415 chip. Skipping CS8415 controls.\n");
++			dev_info(ice->card->dev,
++				 "No CS8415 chip. Skipping CS8415 controls.\n");
+ 		else if ((id & 0x0F) != 0x01)
+-			snd_printk(KERN_INFO "Detected unsupported CS8415 rev. (%c)\n", (char)((id & 0x0F) + 'A' - 1));
++			dev_info(ice->card->dev,
++				 "Detected unsupported CS8415 rev. (%c)\n",
++				 (char)((id & 0x0F) + 'A' - 1));
  		else {
--			snd_printd("Hammerfall-DSP: iobox found after %ums!\n",
-+			dev_dbg(hdsp->card->dev, "iobox found after %ums!\n",
- 				   i * delay);
- 			return 0;
- 		}
- 	}
+ 			for (i = 0; i < ARRAY_SIZE(cs8415_controls); i++) {
+ 				struct snd_kcontrol *kctl;
+diff --git a/sound/pci/ice1712/delta.c b/sound/pci/ice1712/delta.c
+index 9e28cc12969b..98e5e955261e 100644
+--- a/sound/pci/ice1712/delta.c
++++ b/sound/pci/ice1712/delta.c
+@@ -425,7 +425,8 @@ static int snd_ice1712_delta1010lt_wordclock_status_get(struct snd_kcontrol *kco
+ 	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
  
--	snd_printk("Hammerfall-DSP: no IO box connected!\n");
-+	dev_info(hdsp->card->dev, "no IO box connected!\n");
- 	hdsp->state &= ~HDSP_FirmwareLoaded;
+ 	if (snd_i2c_sendbytes(ice->cs8427, &reg, 1) != 1)
+-		snd_printk(KERN_ERR "unable to send register 0x%x byte to CS8427\n", reg);
++		dev_err(ice->card->dev,
++			"unable to send register 0x%x byte to CS8427\n", reg);
+ 	snd_i2c_readbytes(ice->cs8427, &reg, 1);
+ 	ucontrol->value.integer.value[0] = (reg & CS8427_UNLOCK) ? 1 : 0;
+ 	return 0;
+@@ -637,7 +638,7 @@ static int snd_ice1712_delta_init(struct snd_ice1712 *ice)
+ 	case ICE1712_SUBDEVICE_VX442:
+ 	case ICE1712_SUBDEVICE_DELTA66E:
+ 		if ((err = snd_i2c_bus_create(ice->card, "ICE1712 GPIO 1", NULL, &ice->i2c)) < 0) {
+-			snd_printk(KERN_ERR "unable to create I2C bus\n");
++			dev_err(ice->card->dev, "unable to create I2C bus\n");
+ 			return err;
+ 		}
+ 		ice->i2c->private_data = ice;
+diff --git a/sound/pci/ice1712/ews.c b/sound/pci/ice1712/ews.c
+index bc2e7011c55d..817a1bc50a60 100644
+--- a/sound/pci/ice1712/ews.c
++++ b/sound/pci/ice1712/ews.c
+@@ -163,7 +163,8 @@ static int snd_ice1712_ews88mt_chip_select(struct snd_ice1712 *ice, int chip_mas
+ 
+      __error:
+ 	snd_i2c_unlock(ice->i2c);
+-	snd_printk(KERN_ERR "AK4524 chip select failed, check cable to the front module\n");
++	dev_err(ice->card->dev,
++		"AK4524 chip select failed, check cable to the front module\n");
  	return -EIO;
  }
-@@ -728,13 +729,14 @@ static int snd_hdsp_load_firmware_from_cache(struct hdsp *hdsp) {
  
- 	if ((hdsp_read (hdsp, HDSP_statusRegister) & HDSP_DllError) != 0) {
+@@ -174,7 +175,7 @@ static void ews88mt_ak4524_lock(struct snd_akm4xxx *ak, int chip)
+ 	unsigned char tmp;
+ 	/* assert AK4524 CS */
+ 	if (snd_ice1712_ews88mt_chip_select(ice, ~(1 << chip) & 0x0f) < 0)
+-		snd_printk(KERN_ERR "fatal error (ews88mt chip select)\n");
++		dev_err(ice->card->dev, "fatal error (ews88mt chip select)\n");
+ 	snd_ice1712_save_gpio_status(ice);
+ 	tmp = ICE1712_EWS88_SERIAL_DATA |
+ 		ICE1712_EWS88_SERIAL_CLOCK |
+@@ -456,7 +457,7 @@ static int snd_ice1712_ews_init(struct snd_ice1712 *ice)
  
--		snd_printk ("Hammerfall-DSP: loading firmware\n");
-+		dev_info(hdsp->card->dev, "loading firmware\n");
- 
- 		hdsp_write (hdsp, HDSP_control2Reg, HDSP_S_PROGRAM);
- 		hdsp_write (hdsp, HDSP_fifoData, 0);
- 
- 		if (hdsp_fifo_wait (hdsp, 0, HDSP_LONG_WAIT)) {
--			snd_printk ("Hammerfall-DSP: timeout waiting for download preparation\n");
-+			dev_info(hdsp->card->dev,
-+				 "timeout waiting for download preparation\n");
- 			hdsp_write(hdsp, HDSP_control2Reg, HDSP_S200);
- 			return -EIO;
- 		}
-@@ -744,7 +746,8 @@ static int snd_hdsp_load_firmware_from_cache(struct hdsp *hdsp) {
- 		for (i = 0; i < HDSP_FIRMWARE_SIZE / 4; ++i) {
- 			hdsp_write(hdsp, HDSP_fifoData, cache[i]);
- 			if (hdsp_fifo_wait (hdsp, 127, HDSP_LONG_WAIT)) {
--				snd_printk ("Hammerfall-DSP: timeout during firmware loading\n");
-+				dev_info(hdsp->card->dev,
-+					 "timeout during firmware loading\n");
- 				hdsp_write(hdsp, HDSP_control2Reg, HDSP_S200);
- 				return -EIO;
- 			}
-@@ -760,11 +763,12 @@ static int snd_hdsp_load_firmware_from_cache(struct hdsp *hdsp) {
- 		hdsp->control2_register = 0;
- #endif
- 		hdsp_write (hdsp, HDSP_control2Reg, hdsp->control2_register);
--		snd_printk ("Hammerfall-DSP: finished firmware loading\n");
-+		dev_info(hdsp->card->dev, "finished firmware loading\n");
- 
+ 	/* create i2c */
+ 	if ((err = snd_i2c_bus_create(ice->card, "ICE1712 GPIO 1", NULL, &ice->i2c)) < 0) {
+-		snd_printk(KERN_ERR "unable to create I2C bus\n");
++		dev_err(ice->card->dev, "unable to create I2C bus\n");
+ 		return err;
  	}
- 	if (hdsp->state & HDSP_InitializationComplete) {
--		snd_printk(KERN_INFO "Hammerfall-DSP: firmware loaded from cache, restoring defaults\n");
-+		dev_info(hdsp->card->dev,
-+			 "firmware loaded from cache, restoring defaults\n");
- 		spin_lock_irqsave(&hdsp->lock, flags);
- 		snd_hdsp_set_defaults(hdsp);
- 		spin_unlock_irqrestore(&hdsp->lock, flags);
-@@ -791,7 +795,7 @@ static int hdsp_get_iobox_version (struct hdsp *hdsp)
- 		hdsp_write (hdsp, HDSP_fifoData, 0);
- 		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) < 0) {
- 			hdsp->io_type = Multiface;
--			snd_printk("Hammerfall-DSP: Multiface found\n");
-+			dev_info(hdsp->card->dev, "Multiface found\n");
- 			return 0;
- 		}
- 
-@@ -799,7 +803,7 @@ static int hdsp_get_iobox_version (struct hdsp *hdsp)
- 		hdsp_write(hdsp, HDSP_fifoData, 0);
- 		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) == 0) {
- 			hdsp->io_type = Digiface;
--			snd_printk("Hammerfall-DSP: Digiface found\n");
-+			dev_info(hdsp->card->dev, "Digiface found\n");
- 			return 0;
- 		}
- 
-@@ -808,7 +812,7 @@ static int hdsp_get_iobox_version (struct hdsp *hdsp)
- 		hdsp_write(hdsp, HDSP_fifoData, 0);
- 		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) == 0) {
- 			hdsp->io_type = Multiface;
--			snd_printk("Hammerfall-DSP: Multiface found\n");
-+			dev_info(hdsp->card->dev, "Multiface found\n");
- 			return 0;
- 		}
- 
-@@ -817,12 +821,12 @@ static int hdsp_get_iobox_version (struct hdsp *hdsp)
- 		hdsp_write(hdsp, HDSP_fifoData, 0);
- 		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) < 0) {
- 			hdsp->io_type = Multiface;
--			snd_printk("Hammerfall-DSP: Multiface found\n");
-+			dev_info(hdsp->card->dev, "Multiface found\n");
- 			return 0;
- 		}
- 
- 		hdsp->io_type = RPM;
--		snd_printk("Hammerfall-DSP: RPM found\n");
-+		dev_info(hdsp->card->dev, "RPM found\n");
- 		return 0;
- 	} else {
- 		/* firmware was already loaded, get iobox type */
-@@ -847,20 +851,18 @@ static int hdsp_check_for_firmware (struct hdsp *hdsp, int load_on_demand)
- 		hdsp->state &= ~HDSP_FirmwareLoaded;
- 		if (! load_on_demand)
- 			return -EIO;
--		snd_printk(KERN_ERR "Hammerfall-DSP: firmware not present.\n");
-+		dev_err(hdsp->card->dev, "firmware not present.\n");
- 		/* try to load firmware */
- 		if (! (hdsp->state & HDSP_FirmwareCached)) {
- 			if (! hdsp_request_fw_loader(hdsp))
- 				return 0;
--			snd_printk(KERN_ERR
--				   "Hammerfall-DSP: No firmware loaded nor "
--				   "cached, please upload firmware.\n");
-+			dev_err(hdsp->card->dev,
-+				   "No firmware loaded nor cached, please upload firmware.\n");
- 			return -EIO;
- 		}
- 		if (snd_hdsp_load_firmware_from_cache(hdsp) != 0) {
--			snd_printk(KERN_ERR
--				   "Hammerfall-DSP: Firmware loading from "
--				   "cache failed, please upload manually.\n");
-+			dev_err(hdsp->card->dev,
-+				   "Firmware loading from cache failed, please upload manually.\n");
- 			return -EIO;
- 		}
- 	}
-@@ -888,7 +890,8 @@ static int hdsp_fifo_wait(struct hdsp *hdsp, int count, int timeout)
- 		udelay (100);
- 	}
- 
--	snd_printk ("Hammerfall-DSP: wait for FIFO status <= %d failed after %d iterations\n",
-+	dev_warn(hdsp->card->dev,
-+		 "wait for FIFO status <= %d failed after %d iterations\n",
- 		    count, timeout);
- 	return -1;
- }
-@@ -1005,7 +1008,9 @@ static int hdsp_spdif_sample_rate(struct hdsp *hdsp)
- 	default:
- 		break;
- 	}
--	snd_printk ("Hammerfall-DSP: unknown spdif frequency status; bits = 0x%x, status = 0x%x\n", rate_bits, status);
-+	dev_warn(hdsp->card->dev,
-+		 "unknown spdif frequency status; bits = 0x%x, status = 0x%x\n",
-+		 rate_bits, status);
- 	return 0;
- }
- 
-@@ -1139,7 +1144,8 @@ static int hdsp_set_rate(struct hdsp *hdsp, int rate, int called_internally)
- 	if (!(hdsp->control_register & HDSP_ClockModeMaster)) {
- 		if (called_internally) {
- 			/* request from ctl or card initialization */
--			snd_printk(KERN_ERR "Hammerfall-DSP: device is not running as a clock master: cannot set sample rate.\n");
-+			dev_err(hdsp->card->dev,
-+				"device is not running as a clock master: cannot set sample rate.\n");
- 			return -1;
- 		} else {
- 			/* hw_param request while in AutoSync mode */
-@@ -1147,11 +1153,14 @@ static int hdsp_set_rate(struct hdsp *hdsp, int rate, int called_internally)
- 			int spdif_freq = hdsp_spdif_sample_rate(hdsp);
- 
- 			if ((spdif_freq == external_freq*2) && (hdsp_autosync_ref(hdsp) >= HDSP_AUTOSYNC_FROM_ADAT1))
--				snd_printk(KERN_INFO "Hammerfall-DSP: Detected ADAT in double speed mode\n");
-+				dev_info(hdsp->card->dev,
-+					 "Detected ADAT in double speed mode\n");
- 			else if (hdsp->io_type == H9632 && (spdif_freq == external_freq*4) && (hdsp_autosync_ref(hdsp) >= HDSP_AUTOSYNC_FROM_ADAT1))
--				snd_printk(KERN_INFO "Hammerfall-DSP: Detected ADAT in quad speed mode\n");
-+				dev_info(hdsp->card->dev,
-+					 "Detected ADAT in quad speed mode\n");
- 			else if (rate != external_freq) {
--				snd_printk(KERN_INFO "Hammerfall-DSP: No AutoSync source for requested rate\n");
-+				dev_info(hdsp->card->dev,
-+					 "No AutoSync source for requested rate\n");
- 				return -1;
- 			}
- 		}
-@@ -1223,7 +1232,8 @@ static int hdsp_set_rate(struct hdsp *hdsp, int rate, int called_internally)
- 	}
- 
- 	if (reject_if_open && (hdsp->capture_pid >= 0 || hdsp->playback_pid >= 0)) {
--		snd_printk ("Hammerfall-DSP: cannot change speed mode (capture PID = %d, playback PID = %d)\n",
-+		dev_warn(hdsp->card->dev,
-+			 "cannot change speed mode (capture PID = %d, playback PID = %d)\n",
- 			    hdsp->capture_pid,
- 			    hdsp->playback_pid);
- 		return -EBUSY;
-@@ -3785,7 +3795,8 @@ static int snd_hdsp_initialize_memory(struct hdsp *hdsp)
- 	    snd_hammerfall_get_buffer(hdsp->pci, &hdsp->playback_dma_buf, HDSP_DMA_AREA_BYTES) < 0) {
- 		if (hdsp->capture_dma_buf.area)
- 			snd_dma_free_pages(&hdsp->capture_dma_buf);
--		printk(KERN_ERR "%s: no buffers available\n", hdsp->card_name);
-+		dev_err(hdsp->card->dev,
-+			"%s: no buffers available\n", hdsp->card_name);
- 		return -ENOMEM;
- 	}
- 
-@@ -4747,7 +4758,8 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
+ 	ice->i2c->private_data = ice;
+@@ -469,7 +470,8 @@ static int snd_ice1712_ews_init(struct snd_ice1712 *ice)
+ 					    ICE1712_6FIRE_PCF9554_ADDR,
+ 					    &spec->i2cdevs[EWS_I2C_6FIRE]);
+ 		if (err < 0) {
+-			snd_printk(KERN_ERR "PCF9554 initialization failed\n");
++			dev_err(ice->card->dev,
++				"PCF9554 initialization failed\n");
  			return err;
- 
- 		if (!(hdsp->state & HDSP_FirmwareLoaded)) {
--			snd_printk(KERN_ERR "Hammerfall-DSP: firmware needs to be uploaded to the card.\n");
-+			dev_err(hdsp->card->dev,
-+				"firmware needs to be uploaded to the card.\n");
- 			return -EINVAL;
  		}
- 
-@@ -4858,7 +4870,8 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
- 		if (hdsp->state & (HDSP_FirmwareCached | HDSP_FirmwareLoaded))
- 			return -EBUSY;
- 
--		snd_printk(KERN_INFO "Hammerfall-DSP: initializing firmware upload\n");
-+		dev_info(hdsp->card->dev,
-+			 "initializing firmware upload\n");
- 		firmware = (struct hdsp_firmware __user *)argp;
- 
- 		if (get_user(firmware_data, &firmware->firmware_data))
-@@ -4893,7 +4906,8 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
- 			snd_hdsp_initialize_midi_flush(hdsp);
- 
- 			if ((err = snd_hdsp_create_alsa_devices(hdsp->card, hdsp)) < 0) {
--				snd_printk(KERN_ERR "Hammerfall-DSP: error creating alsa devices\n");
-+				dev_err(hdsp->card->dev,
-+					"error creating alsa devices\n");
- 				return err;
- 			}
- 		}
-@@ -4983,7 +4997,8 @@ static int snd_hdsp_enable_io (struct hdsp *hdsp)
- 	int i;
- 
- 	if (hdsp_fifo_wait (hdsp, 0, 100)) {
--		snd_printk(KERN_ERR "Hammerfall-DSP: enable_io fifo_wait failed\n");
-+		dev_err(hdsp->card->dev,
-+			"enable_io fifo_wait failed\n");
+ 		snd_ice1712_6fire_write_pca(ice, PCF9554_REG_CONFIG, 0x80);
+@@ -834,7 +836,7 @@ static int snd_ice1712_6fire_read_pca(struct snd_ice1712 *ice, unsigned char reg
+ 	byte = 0;
+ 	if (snd_i2c_readbytes(spec->i2cdevs[EWS_I2C_6FIRE], &byte, 1) != 1) {
+ 		snd_i2c_unlock(ice->i2c);
+-		printk(KERN_ERR "cannot read pca\n");
++		dev_err(ice->card->dev, "cannot read pca\n");
  		return -EIO;
  	}
- 
-@@ -5057,25 +5072,29 @@ static int snd_hdsp_create_alsa_devices(struct snd_card *card, struct hdsp *hdsp
- 	int err;
- 
- 	if ((err = snd_hdsp_create_pcm(card, hdsp)) < 0) {
--		snd_printk(KERN_ERR "Hammerfall-DSP: Error creating pcm interface\n");
-+		dev_err(card->dev,
-+			"Error creating pcm interface\n");
+ 	snd_i2c_unlock(ice->i2c);
+diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
+index 99c022a0d612..0710ec7e69d3 100644
+--- a/sound/pci/ice1712/ice1712.c
++++ b/sound/pci/ice1712/ice1712.c
+@@ -394,7 +394,7 @@ int snd_ice1712_init_cs8427(struct snd_ice1712 *ice, int addr)
+ 	err = snd_cs8427_create(ice->i2c, addr,
+ 		(ice->cs8427_timeout * HZ) / 1000, &ice->cs8427);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "CS8427 initialization failed\n");
++		dev_err(ice->card->dev, "CS8427 initialization failed\n");
  		return err;
  	}
+ 	ice->spdif.ops.open = open_cs8427;
+@@ -467,7 +467,7 @@ static irqreturn_t snd_ice1712_interrupt(int irq, void *dev_id)
+ 			u16 pbkstatus;
+ 			struct snd_pcm_substream *substream;
+ 			pbkstatus = inw(ICEDS(ice, INTSTAT));
+-			/* printk(KERN_DEBUG "pbkstatus = 0x%x\n", pbkstatus); */
++			/* dev_dbg(ice->card->dev, "pbkstatus = 0x%x\n", pbkstatus); */
+ 			for (idx = 0; idx < 6; idx++) {
+ 				if ((pbkstatus & (3 << (idx * 2))) == 0)
+ 					continue;
+@@ -903,7 +903,8 @@ static int snd_ice1712_pcm(struct snd_ice1712 *ice, int device, struct snd_pcm *
+ 	if (rpcm)
+ 		*rpcm = pcm;
  
+-	printk(KERN_WARNING "Consumer PCM code does not work well at the moment --jk\n");
++	dev_warn(ice->card->dev,
++		 "Consumer PCM code does not work well at the moment --jk\n");
  
- 	if ((err = snd_hdsp_create_midi(card, hdsp, 0)) < 0) {
--		snd_printk(KERN_ERR "Hammerfall-DSP: Error creating first midi interface\n");
-+		dev_err(card->dev,
-+			"Error creating first midi interface\n");
- 		return err;
- 	}
- 
- 	if (hdsp->io_type == Digiface || hdsp->io_type == H9652) {
- 		if ((err = snd_hdsp_create_midi(card, hdsp, 1)) < 0) {
--			snd_printk(KERN_ERR "Hammerfall-DSP: Error creating second midi interface\n");
-+			dev_err(card->dev,
-+				"Error creating second midi interface\n");
- 			return err;
- 		}
- 	}
- 
- 	if ((err = snd_hdsp_create_controls(card, hdsp)) < 0) {
--		snd_printk(KERN_ERR "Hammerfall-DSP: Error creating ctl interface\n");
-+		dev_err(card->dev,
-+			"Error creating ctl interface\n");
- 		return err;
- 	}
- 
-@@ -5088,7 +5107,8 @@ static int snd_hdsp_create_alsa_devices(struct snd_card *card, struct hdsp *hdsp
- 	hdsp->playback_substream = NULL;
- 
- 	if ((err = snd_hdsp_set_defaults(hdsp)) < 0) {
--		snd_printk(KERN_ERR "Hammerfall-DSP: Error setting default values\n");
-+		dev_err(card->dev,
-+			"Error setting default values\n");
- 		return err;
- 	}
- 
-@@ -5098,7 +5118,8 @@ static int snd_hdsp_create_alsa_devices(struct snd_card *card, struct hdsp *hdsp
- 			hdsp->port, hdsp->irq);
- 
- 		if ((err = snd_card_register(card)) < 0) {
--			snd_printk(KERN_ERR "Hammerfall-DSP: error registering card\n");
-+			dev_err(card->dev,
-+				"error registering card\n");
- 			return err;
- 		}
- 		hdsp->state |= HDSP_InitializationComplete;
-@@ -5141,16 +5162,19 @@ static int hdsp_request_fw_loader(struct hdsp *hdsp)
- 			fwfile = "digiface_firmware_rev11.bin";
- 		break;
- 	default:
--		snd_printk(KERN_ERR "Hammerfall-DSP: invalid io_type %d\n", hdsp->io_type);
-+		dev_err(hdsp->card->dev,
-+			"invalid io_type %d\n", hdsp->io_type);
- 		return -EINVAL;
- 	}
- 
- 	if (request_firmware(&fw, fwfile, &hdsp->pci->dev)) {
--		snd_printk(KERN_ERR "Hammerfall-DSP: cannot load firmware %s\n", fwfile);
-+		dev_err(hdsp->card->dev,
-+			"cannot load firmware %s\n", fwfile);
- 		return -ENOENT;
- 	}
- 	if (fw->size < HDSP_FIRMWARE_SIZE) {
--		snd_printk(KERN_ERR "Hammerfall-DSP: too short firmware size %d (expected %d)\n",
-+		dev_err(hdsp->card->dev,
-+			"too short firmware size %d (expected %d)\n",
- 			   (int)fw->size, HDSP_FIRMWARE_SIZE);
- 		return -EINVAL;
- 	}
-@@ -5167,13 +5191,15 @@ static int hdsp_request_fw_loader(struct hdsp *hdsp)
- 			return err;
- 
- 		if ((err = snd_hdsp_create_hwdep(hdsp->card, hdsp)) < 0) {
--			snd_printk(KERN_ERR "Hammerfall-DSP: error creating hwdep device\n");
-+			dev_err(hdsp->card->dev,
-+				"error creating hwdep device\n");
- 			return err;
- 		}
- 		snd_hdsp_initialize_channels(hdsp);
- 		snd_hdsp_initialize_midi_flush(hdsp);
- 		if ((err = snd_hdsp_create_alsa_devices(hdsp->card, hdsp)) < 0) {
--			snd_printk(KERN_ERR "Hammerfall-DSP: error creating alsa devices\n");
-+			dev_err(hdsp->card->dev,
-+				"error creating alsa devices\n");
- 			return err;
- 		}
- 	}
-@@ -5249,13 +5275,14 @@ static int snd_hdsp_create(struct snd_card *card,
- 		return err;
- 	hdsp->port = pci_resource_start(pci, 0);
- 	if ((hdsp->iobase = ioremap_nocache(hdsp->port, HDSP_IO_EXTENT)) == NULL) {
--		snd_printk(KERN_ERR "Hammerfall-DSP: unable to remap region 0x%lx-0x%lx\n", hdsp->port, hdsp->port + HDSP_IO_EXTENT - 1);
-+		dev_err(hdsp->card->dev, "unable to remap region 0x%lx-0x%lx\n",
-+			hdsp->port, hdsp->port + HDSP_IO_EXTENT - 1);
- 		return -EBUSY;
- 	}
- 
- 	if (request_irq(pci->irq, snd_hdsp_interrupt, IRQF_SHARED,
- 			KBUILD_MODNAME, hdsp)) {
--		snd_printk(KERN_ERR "Hammerfall-DSP: unable to use IRQ %d\n", pci->irq);
-+		dev_err(hdsp->card->dev, "unable to use IRQ %d\n", pci->irq);
- 		return -EBUSY;
- 	}
- 
-@@ -5281,17 +5308,20 @@ static int snd_hdsp_create(struct snd_card *card,
- 				   if userspace is not ready for
- 				   firmware upload
- 				*/
--				snd_printk(KERN_ERR "Hammerfall-DSP: couldn't get firmware from userspace. try using hdsploader\n");
-+				dev_err(hdsp->card->dev,
-+					"couldn't get firmware from userspace. try using hdsploader\n");
- 			else
- 				/* init is complete, we return */
- 				return 0;
- 			/* we defer initialization */
--			snd_printk(KERN_INFO "Hammerfall-DSP: card initialization pending : waiting for firmware\n");
-+			dev_info(hdsp->card->dev,
-+				 "card initialization pending : waiting for firmware\n");
- 			if ((err = snd_hdsp_create_hwdep(card, hdsp)) < 0)
- 				return err;
+ 	return 0;
+ }
+@@ -1534,7 +1535,8 @@ static int snd_ice1712_ac97_mixer(struct snd_ice1712 *ice)
+ 		ac97.private_free = snd_ice1712_mixer_free_ac97;
+ 		err = snd_ac97_mixer(pbus, &ac97, &ice->ac97);
+ 		if (err < 0)
+-			printk(KERN_WARNING "ice1712: cannot initialize ac97 for consumer, skipped\n");
++			dev_warn(ice->card->dev,
++				 "cannot initialize ac97 for consumer, skipped\n");
+ 		else {
+ 			err = snd_ctl_add(ice->card, snd_ctl_new1(&snd_ice1712_mixer_digmix_route_ac97, ice));
+ 			if (err < 0)
+@@ -1552,7 +1554,8 @@ static int snd_ice1712_ac97_mixer(struct snd_ice1712 *ice)
+ 		ac97.private_free = snd_ice1712_mixer_free_ac97;
+ 		err = snd_ac97_mixer(pbus, &ac97, &ice->ac97);
+ 		if (err < 0)
+-			printk(KERN_WARNING "ice1712: cannot initialize pro ac97, skipped\n");
++			dev_warn(ice->card->dev,
++				 "cannot initialize pro ac97, skipped\n");
+ 		else
  			return 0;
- 		} else {
--			snd_printk(KERN_INFO "Hammerfall-DSP: Firmware already present, initializing card.\n");
-+			dev_info(hdsp->card->dev,
-+				 "Firmware already present, initializing card.\n");
- 			if (hdsp_read(hdsp, HDSP_status2Register) & HDSP_version2)
- 				hdsp->io_type = RPM;
- 			else if (hdsp_read(hdsp, HDSP_status2Register) & HDSP_version1)
+ 	}
+@@ -2332,7 +2335,8 @@ static int snd_ice1712_read_eeprom(struct snd_ice1712 *ice,
+ 			pci_read_config_word(ice->pci, PCI_SUBSYSTEM_ID, &device);
+ 			ice->eeprom.subvendor = ((unsigned int)swab16(vendor) << 16) | swab16(device);
+ 			if (ice->eeprom.subvendor == 0 || ice->eeprom.subvendor == (unsigned int)-1) {
+-				printk(KERN_ERR "ice1712: No valid ID is found\n");
++				dev_err(ice->card->dev,
++					"No valid ID is found\n");
+ 				return -ENXIO;
+ 			}
+ 		}
+@@ -2340,21 +2344,22 @@ static int snd_ice1712_read_eeprom(struct snd_ice1712 *ice,
+ 	for (tbl = card_tables; *tbl; tbl++) {
+ 		for (c = *tbl; c->subvendor; c++) {
+ 			if (modelname && c->model && !strcmp(modelname, c->model)) {
+-				printk(KERN_INFO "ice1712: Using board model %s\n", c->name);
++				dev_info(ice->card->dev,
++					 "Using board model %s\n", c->name);
+ 				ice->eeprom.subvendor = c->subvendor;
+ 			} else if (c->subvendor != ice->eeprom.subvendor)
+ 				continue;
+ 			if (!c->eeprom_size || !c->eeprom_data)
+ 				goto found;
+ 			/* if the EEPROM is given by the driver, use it */
+-			snd_printdd("using the defined eeprom..\n");
++			dev_dbg(ice->card->dev, "using the defined eeprom..\n");
+ 			ice->eeprom.version = 1;
+ 			ice->eeprom.size = c->eeprom_size + 6;
+ 			memcpy(ice->eeprom.data, c->eeprom_data, c->eeprom_size);
+ 			goto read_skipped;
+ 		}
+ 	}
+-	printk(KERN_WARNING "ice1712: No matching model found for ID 0x%x\n",
++	dev_warn(ice->card->dev, "No matching model found for ID 0x%x\n",
+ 	       ice->eeprom.subvendor);
+ 
+  found:
+@@ -2362,12 +2367,13 @@ static int snd_ice1712_read_eeprom(struct snd_ice1712 *ice,
+ 	if (ice->eeprom.size < 6)
+ 		ice->eeprom.size = 32; /* FIXME: any cards without the correct size? */
+ 	else if (ice->eeprom.size > 32) {
+-		snd_printk(KERN_ERR "invalid EEPROM (size = %i)\n", ice->eeprom.size);
++		dev_err(ice->card->dev,
++			"invalid EEPROM (size = %i)\n", ice->eeprom.size);
+ 		return -EIO;
+ 	}
+ 	ice->eeprom.version = snd_ice1712_read_i2c(ice, dev, 0x05);
+ 	if (ice->eeprom.version != 1) {
+-		snd_printk(KERN_ERR "invalid EEPROM version %i\n",
++		dev_err(ice->card->dev, "invalid EEPROM version %i\n",
+ 			   ice->eeprom.version);
+ 		/* return -EIO; */
+ 	}
+@@ -2553,7 +2559,8 @@ static int snd_ice1712_create(struct snd_card *card,
+ 	/* check, if we can restrict PCI DMA transfers to 28 bits */
+ 	if (pci_set_dma_mask(pci, DMA_BIT_MASK(28)) < 0 ||
+ 	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(28)) < 0) {
+-		snd_printk(KERN_ERR "architecture does not support 28bit PCI busmaster DMA\n");
++		dev_err(card->dev,
++			"architecture does not support 28bit PCI busmaster DMA\n");
+ 		pci_disable_device(pci);
+ 		return -ENXIO;
+ 	}
+@@ -2609,7 +2616,7 @@ static int snd_ice1712_create(struct snd_card *card,
+ 
+ 	if (request_irq(pci->irq, snd_ice1712_interrupt, IRQF_SHARED,
+ 			KBUILD_MODNAME, ice)) {
+-		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
++		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		snd_ice1712_free(ice);
+ 		return -EIO;
+ 	}
+diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
+index cf1ba116a772..5e7948f3efe9 100644
+--- a/sound/pci/ice1712/ice1724.c
++++ b/sound/pci/ice1712/ice1724.c
+@@ -146,7 +146,7 @@ static unsigned char snd_vt1724_ac97_ready(struct snd_ice1712 *ice)
+ 			continue;
+ 		return old_cmd;
+ 	}
+-	snd_printd(KERN_ERR "snd_vt1724_ac97_ready: timeout\n");
++	dev_dbg(ice->card->dev, "snd_vt1724_ac97_ready: timeout\n");
+ 	return old_cmd;
+ }
+ 
+@@ -156,7 +156,7 @@ static int snd_vt1724_ac97_wait_bit(struct snd_ice1712 *ice, unsigned char bit)
+ 	for (tm = 0; tm < 0x10000; tm++)
+ 		if ((inb(ICEMT1724(ice, AC97_CMD)) & bit) == 0)
+ 			return 0;
+-	snd_printd(KERN_ERR "snd_vt1724_ac97_wait_bit: timeout\n");
++	dev_dbg(ice->card->dev, "snd_vt1724_ac97_wait_bit: timeout\n");
+ 	return -EIO;
+ }
+ 
+@@ -430,10 +430,10 @@ static irqreturn_t snd_vt1724_interrupt(int irq, void *dev_id)
+ 		spin_lock(&ice->reg_lock);
+ 		if (++timeout > 10) {
+ 			status = inb(ICEREG1724(ice, IRQSTAT));
+-			printk(KERN_ERR "ice1724: Too long irq loop, "
+-			       "status = 0x%x\n", status);
++			dev_err(ice->card->dev,
++				"Too long irq loop, status = 0x%x\n", status);
+ 			if (status & VT1724_IRQ_MPU_TX) {
+-				printk(KERN_ERR "ice1724: Disabling MPU_TX\n");
++				dev_err(ice->card->dev, "Disabling MPU_TX\n");
+ 				enable_midi_irq(ice, VT1724_IRQ_MPU_TX, 0);
+ 			}
+ 			spin_unlock(&ice->reg_lock);
+@@ -801,7 +801,7 @@ static int snd_vt1724_playback_pro_prepare(struct snd_pcm_substream *substream)
+ 	spin_unlock_irq(&ice->reg_lock);
+ 
+ 	/*
+-	printk(KERN_DEBUG "pro prepare: ch = %d, addr = 0x%x, "
++	dev_dbg(ice->card->dev, "pro prepare: ch = %d, addr = 0x%x, "
+ 	       "buffer = 0x%x, period = 0x%x\n",
+ 	       substream->runtime->channels,
+ 	       (unsigned int)substream->runtime->dma_addr,
+@@ -821,13 +821,13 @@ static snd_pcm_uframes_t snd_vt1724_playback_pro_pointer(struct snd_pcm_substrea
+ #if 0 /* read PLAYBACK_ADDR */
+ 	ptr = inl(ICEMT1724(ice, PLAYBACK_ADDR));
+ 	if (ptr < substream->runtime->dma_addr) {
+-		snd_printd("ice1724: invalid negative ptr\n");
++		dev_dbg(ice->card->dev, "invalid negative ptr\n");
+ 		return 0;
+ 	}
+ 	ptr -= substream->runtime->dma_addr;
+ 	ptr = bytes_to_frames(substream->runtime, ptr);
+ 	if (ptr >= substream->runtime->buffer_size) {
+-		snd_printd("ice1724: invalid ptr %d (size=%d)\n",
++		dev_dbg(ice->card->dev, "invalid ptr %d (size=%d)\n",
+ 			   (int)ptr, (int)substream->runtime->period_size);
+ 		return 0;
+ 	}
+@@ -840,7 +840,7 @@ static snd_pcm_uframes_t snd_vt1724_playback_pro_pointer(struct snd_pcm_substrea
+ 	else if (ptr <= substream->runtime->buffer_size)
+ 		ptr = substream->runtime->buffer_size - ptr;
+ 	else {
+-		snd_printd("ice1724: invalid ptr %d (size=%d)\n",
++		dev_dbg(ice->card->dev, "invalid ptr %d (size=%d)\n",
+ 			   (int)ptr, (int)substream->runtime->buffer_size);
+ 		ptr = 0;
+ 	}
+@@ -884,7 +884,7 @@ static snd_pcm_uframes_t snd_vt1724_pcm_pointer(struct snd_pcm_substream *substr
+ 	else if (ptr <= substream->runtime->buffer_size)
+ 		ptr = substream->runtime->buffer_size - ptr;
+ 	else {
+-		snd_printd("ice1724: invalid ptr %d (size=%d)\n",
++		dev_dbg(ice->card->dev, "invalid ptr %d (size=%d)\n",
+ 			   (int)ptr, (int)substream->runtime->buffer_size);
+ 		ptr = 0;
+ 	}
+@@ -1508,7 +1508,8 @@ static int snd_vt1724_ac97_mixer(struct snd_ice1712 *ice)
+ 		ac97.private_data = ice;
+ 		err = snd_ac97_mixer(pbus, &ac97, &ice->ac97);
+ 		if (err < 0)
+-			printk(KERN_WARNING "ice1712: cannot initialize pro ac97, skipped\n");
++			dev_warn(ice->card->dev,
++				 "cannot initialize pro ac97, skipped\n");
+ 		else
+ 			return 0;
+ 	}
+@@ -2271,7 +2272,7 @@ static void wait_i2c_busy(struct snd_ice1712 *ice)
+ 	while ((inb(ICEREG1724(ice, I2C_CTRL)) & VT1724_I2C_BUSY) && t--)
+ 		;
+ 	if (t == -1)
+-		printk(KERN_ERR "ice1724: i2c busy timeout\n");
++		dev_err(ice->card->dev, "i2c busy timeout\n");
+ }
+ 
+ unsigned char snd_vt1724_read_i2c(struct snd_ice1712 *ice,
+@@ -2287,7 +2288,7 @@ unsigned char snd_vt1724_read_i2c(struct snd_ice1712 *ice,
+ 	val = inb(ICEREG1724(ice, I2C_DATA));
+ 	mutex_unlock(&ice->i2c_mutex);
+ 	/*
+-	printk(KERN_DEBUG "i2c_read: [0x%x,0x%x] = 0x%x\n", dev, addr, val);
++	dev_dbg(ice->card->dev, "i2c_read: [0x%x,0x%x] = 0x%x\n", dev, addr, val);
+ 	*/
+ 	return val;
+ }
+@@ -2298,7 +2299,7 @@ void snd_vt1724_write_i2c(struct snd_ice1712 *ice,
+ 	mutex_lock(&ice->i2c_mutex);
+ 	wait_i2c_busy(ice);
+ 	/*
+-	printk(KERN_DEBUG "i2c_write: [0x%x,0x%x] = 0x%x\n", dev, addr, data);
++	dev_dbg(ice->card->dev, "i2c_write: [0x%x,0x%x] = 0x%x\n", dev, addr, data);
+ 	*/
+ 	outb(addr, ICEREG1724(ice, I2C_BYTE_ADDR));
+ 	outb(data, ICEREG1724(ice, I2C_DATA));
+@@ -2335,7 +2336,8 @@ static int snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
+ 				((unsigned int)swab16(vendor) << 16) | swab16(device);
+ 			if (ice->eeprom.subvendor == 0 ||
+ 			    ice->eeprom.subvendor == (unsigned int)-1) {
+-				printk(KERN_ERR "ice1724: No valid ID is found\n");
++				dev_err(ice->card->dev,
++					"No valid ID is found\n");
+ 				return -ENXIO;
+ 			}
+ 		}
+@@ -2344,7 +2346,8 @@ static int snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
+ 		for (c = *tbl; c->name; c++) {
+ 			if (modelname && c->model &&
+ 			    !strcmp(modelname, c->model)) {
+-				printk(KERN_INFO "ice1724: Using board model %s\n",
++				dev_info(ice->card->dev,
++					 "Using board model %s\n",
+ 				       c->name);
+ 				ice->eeprom.subvendor = c->subvendor;
+ 			} else if (c->subvendor != ice->eeprom.subvendor)
+@@ -2353,14 +2356,14 @@ static int snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
+ 			if (!c->eeprom_size || !c->eeprom_data)
+ 				goto found;
+ 			/* if the EEPROM is given by the driver, use it */
+-			snd_printdd("using the defined eeprom..\n");
++			dev_dbg(ice->card->dev, "using the defined eeprom..\n");
+ 			ice->eeprom.version = 2;
+ 			ice->eeprom.size = c->eeprom_size + 6;
+ 			memcpy(ice->eeprom.data, c->eeprom_data, c->eeprom_size);
+ 			goto read_skipped;
+ 		}
+ 	}
+-	printk(KERN_WARNING "ice1724: No matching model found for ID 0x%x\n",
++	dev_warn(ice->card->dev, "No matching model found for ID 0x%x\n",
+ 	       ice->eeprom.subvendor);
+ #ifdef CONFIG_PM_SLEEP
+ 	/* assume AC97-only card which can suspend without additional code */
+@@ -2372,13 +2375,13 @@ static int snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
+ 	if (ice->eeprom.size < 6)
+ 		ice->eeprom.size = 32;
+ 	else if (ice->eeprom.size > 32) {
+-		printk(KERN_ERR "ice1724: Invalid EEPROM (size = %i)\n",
++		dev_err(ice->card->dev, "Invalid EEPROM (size = %i)\n",
+ 		       ice->eeprom.size);
+ 		return -EIO;
+ 	}
+ 	ice->eeprom.version = snd_vt1724_read_i2c(ice, dev, 0x05);
+ 	if (ice->eeprom.version != 1 && ice->eeprom.version != 2)
+-		printk(KERN_WARNING "ice1724: Invalid EEPROM version %i\n",
++		dev_warn(ice->card->dev, "Invalid EEPROM version %i\n",
+ 		       ice->eeprom.version);
+ 	size = ice->eeprom.size - 6;
+ 	for (i = 0; i < size; i++)
+@@ -2586,7 +2589,7 @@ static int snd_vt1724_create(struct snd_card *card,
+ 
+ 	if (request_irq(pci->irq, snd_vt1724_interrupt,
+ 			IRQF_SHARED, KBUILD_MODNAME, ice)) {
+-		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
++		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		snd_vt1724_free(ice);
+ 		return -EIO;
+ 	}
+diff --git a/sound/pci/ice1712/juli.c b/sound/pci/ice1712/juli.c
+index 8855933e710d..7a6c0786c55c 100644
+--- a/sound/pci/ice1712/juli.c
++++ b/sound/pci/ice1712/juli.c
+@@ -244,7 +244,7 @@ static void juli_akm_set_rate_val(struct snd_akm4xxx *ak, unsigned int rate)
+ 	/* AK5385 first, since it requires cold reset affecting both codecs */
+ 	old_gpio = ice->gpio.get_data(ice);
+ 	new_gpio =  (old_gpio & ~GPIO_AK5385A_MASK) | ak5385_pins;
+-	/* printk(KERN_DEBUG "JULI - ak5385 set_rate_val: new gpio 0x%x\n",
++	/* dev_dbg(ice->card->dev, "JULI - ak5385 set_rate_val: new gpio 0x%x\n",
+ 		new_gpio); */
+ 	ice->gpio.set_data(ice, new_gpio);
+ 
+@@ -344,7 +344,7 @@ static int juli_mute_put(struct snd_kcontrol *kcontrol,
+ 			new_gpio =  old_gpio &
+ 				~((unsigned int) kcontrol->private_value);
+ 	}
+-	/* printk(KERN_DEBUG
++	/* dev_dbg(ice->card->dev,
+ 		"JULI - mute/unmute: control_value: 0x%x, old_gpio: 0x%x, "
+ 		"new_gpio 0x%x\n",
+ 		(unsigned int)ucontrol->value.integer.value[0], old_gpio,
+@@ -439,9 +439,9 @@ static void add_slaves(struct snd_card *card,
+ {
+ 	for (; *list; list++) {
+ 		struct snd_kcontrol *slave = ctl_find(card, *list);
+-		/* printk(KERN_DEBUG "add_slaves - %s\n", *list); */
++		/* dev_dbg(card->dev, "add_slaves - %s\n", *list); */
+ 		if (slave) {
+-			/* printk(KERN_DEBUG "slave %s found\n", *list); */
++			/* dev_dbg(card->dev, "slave %s found\n", *list); */
+ 			snd_ctl_add_slave(master, slave);
+ 		}
+ 	}
+@@ -536,7 +536,7 @@ static void juli_set_rate(struct snd_ice1712 *ice, unsigned int rate)
+ 
+ 	old = ice->gpio.get_data(ice);
+ 	new =  (old & ~GPIO_RATE_MASK) | get_gpio_val(rate);
+-	/* printk(KERN_DEBUG "JULI - set_rate: old %x, new %x\n",
++	/* dev_dbg(ice->card->dev, "JULI - set_rate: old %x, new %x\n",
+ 			old & GPIO_RATE_MASK,
+ 			new & GPIO_RATE_MASK); */
+ 
+@@ -573,7 +573,7 @@ static void juli_ak4114_change(struct ak4114 *ak4114, unsigned char c0,
+ 	if (ice->is_spdif_master(ice) && c1) {
+ 		/* only for SPDIF master mode, rate was changed */
+ 		rate = snd_ak4114_external_rate(ak4114);
+-		/* printk(KERN_DEBUG "ak4114 - input rate changed to %d\n",
++		/* dev_dbg(ice->card->dev, "ak4114 - input rate changed to %d\n",
+ 				rate); */
+ 		juli_akm_set_rate_val(ice->akm, rate);
+ 	}
+@@ -628,7 +628,7 @@ static int juli_init(struct snd_ice1712 *ice)
+ #endif
+ 
+ 	if (spec->analog) {
+-		printk(KERN_INFO "juli@: analog I/O detected\n");
++		dev_info(ice->card->dev, "juli@: analog I/O detected\n");
+ 		ice->num_total_dacs = 2;
+ 		ice->num_total_adcs = 2;
+ 
+diff --git a/sound/pci/ice1712/prodigy192.c b/sound/pci/ice1712/prodigy192.c
+index e610339f7601..f3b491aa3e22 100644
+--- a/sound/pci/ice1712/prodigy192.c
++++ b/sound/pci/ice1712/prodigy192.c
+@@ -98,7 +98,7 @@ static int stac9460_dac_mute(struct snd_ice1712 *ice, int idx,
+ 	new = (~mute << 7 & 0x80) | (old & ~0x80);
+ 	change = (new != old);
+ 	if (change)
+-		/*printk ("Volume register 0x%02x: 0x%02x\n", idx, new);*/
++		/* dev_dbg(ice->card->dev, "Volume register 0x%02x: 0x%02x\n", idx, new);*/
+ 		stac9460_put(ice, idx, new);
+ 	return change;
+ }
+@@ -133,7 +133,7 @@ static int stac9460_dac_mute_put(struct snd_kcontrol *kcontrol, struct snd_ctl_e
+ 	/* due to possible conflicts with stac9460_set_rate_val, mutexing */
+ 	mutex_lock(&spec->mute_mutex);
+ 	/*
+-	printk(KERN_DEBUG "Mute put: reg 0x%02x, ctrl value: 0x%02x\n", idx,
++	dev_dbg(ice->card->dev, "Mute put: reg 0x%02x, ctrl value: 0x%02x\n", idx,
+ 	       ucontrol->value.integer.value[0]);
+ 	*/
+ 	change = stac9460_dac_mute(ice, idx, ucontrol->value.integer.value[0]);
+@@ -187,7 +187,7 @@ static int stac9460_dac_vol_put(struct snd_kcontrol *kcontrol, struct snd_ctl_el
+ 	if (change) {
+ 		ovol =  (0x7f - nvol) | (tmp & 0x80);
+ 		/*
+-		printk(KERN_DEBUG "DAC Volume: reg 0x%02x: 0x%02x\n",
++		dev_dbg(ice->card->dev, "DAC Volume: reg 0x%02x: 0x%02x\n",
+ 		       idx, ovol);
+ 		*/
+ 		stac9460_put(ice, idx, (0x7f - nvol) | (tmp & 0x80));
+@@ -348,7 +348,7 @@ static void stac9460_set_rate_val(struct snd_ice1712 *ice, unsigned int rate)
+ 	for (idx = 0; idx < 7 ; ++idx)
+ 		changed[idx] = stac9460_dac_mute(ice,
+ 				STAC946X_MASTER_VOLUME + idx, 0);
+-	/*printk(KERN_DEBUG "Rate change: %d, new MC: 0x%02x\n", rate, new);*/
++	/*dev_dbg(ice->card->dev, "Rate change: %d, new MC: 0x%02x\n", rate, new);*/
+ 	stac9460_put(ice, STAC946X_MASTER_CLOCKING, new);
+ 	udelay(10);
+ 	/* unmuting - only originally unmuted dacs -
+@@ -768,9 +768,10 @@ static int prodigy192_init(struct snd_ice1712 *ice)
+ 		/* from this moment if err = 0 then
+ 		 * spec->ak4114 should not be null
+ 		 */
+-		snd_printdd("AK4114 initialized with status %d\n", err);
++		dev_dbg(ice->card->dev,
++			"AK4114 initialized with status %d\n", err);
+ 	} else
+-		snd_printdd("AK4114 not found\n");
++		dev_dbg(ice->card->dev, "AK4114 not found\n");
+ 	if (err < 0)
+ 		return err;
+ 
+diff --git a/sound/pci/ice1712/quartet.c b/sound/pci/ice1712/quartet.c
+index 71c6003ef338..2c2df4b74e01 100644
+--- a/sound/pci/ice1712/quartet.c
++++ b/sound/pci/ice1712/quartet.c
+@@ -280,7 +280,7 @@ static void qtet_akm_write(struct snd_akm4xxx *ak, int chip,
+ 
+ 	if (snd_BUG_ON(chip < 0 || chip >= 4))
+ 		return;
+-	/*printk(KERN_DEBUG "Writing to AK4620: chip=%d, addr=0x%x,
++	/*dev_dbg(ice->card->dev, "Writing to AK4620: chip=%d, addr=0x%x,
+ 	  data=0x%x\n", chip, addr, data);*/
+ 	orig_dir = ice->gpio.get_dir(ice);
+ 	ice->gpio.set_dir(ice, orig_dir | GPIO_SPI_ALL);
+@@ -898,7 +898,7 @@ static void qtet_set_rate(struct snd_ice1712 *ice, unsigned int rate)
+ 	new =  (get_cpld(ice) & ~CPLD_CKS_MASK) | get_cks_val(rate);
+ 	/* switch to internal clock, drop CPLD_SYNC_SEL */
+ 	new &= ~CPLD_SYNC_SEL;
+-	/* printk(KERN_DEBUG "QT - set_rate: old %x, new %x\n",
++	/* dev_dbg(ice->card->dev, "QT - set_rate: old %x, new %x\n",
+ 	   get_cpld(ice), new); */
+ 	set_cpld(ice, new);
+ }
+@@ -978,7 +978,7 @@ static void qtet_ak4113_change(struct ak4113 *ak4113, unsigned char c0,
+ 			c1) {
+ 		/* only for SPDIF master mode, rate was changed */
+ 		rate = snd_ak4113_external_rate(ak4113);
+-		/* printk(KERN_DEBUG "ak4113 - input rate changed to %d\n",
++		/* dev_dbg(ice->card->dev, "ak4113 - input rate changed to %d\n",
+ 		   rate); */
+ 		qtet_akm_set_rate_val(ice->akm, rate);
+ 	}
 -- 
 1.9.0
