@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/48] ALSA: atiixp-modem: Use standard printk
-	helpers
-Date: Wed, 26 Feb 2014 16:53:08 +0100
-Message-ID: <1393430030-26704-7-git-send-email-tiwai@suse.de>
+Subject: [PATCH 12/48] ALSA: cs5530: Use standard printk helpers
+Date: Wed, 26 Feb 2014 16:53:14 +0100
+Message-ID: <1393430030-26704-13-git-send-email-tiwai@suse.de>
 References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C63CA265784
+ by alsa0.perex.cz (Postfix) with ESMTP id D7C8826579C
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:53 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 4A95075028
+ by mx2.suse.de (Postfix) with ESMTP id 6BC9475030
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
 In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,111 +30,90 @@ Convert with dev_err() and co from snd_printk(), etc.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/atiixp_modem.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ sound/pci/cs5530.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/sound/pci/atiixp_modem.c b/sound/pci/atiixp_modem.c
-index 2b3244a85cf8..b9dc96c5d21e 100644
---- a/sound/pci/atiixp_modem.c
-+++ b/sound/pci/atiixp_modem.c
-@@ -400,7 +400,7 @@ static int snd_atiixp_acquire_codec(struct atiixp_modem *chip)
+diff --git a/sound/pci/cs5530.c b/sound/pci/cs5530.c
+index 8037e8600a72..b4e0ff6a99a3 100644
+--- a/sound/pci/cs5530.c
++++ b/sound/pci/cs5530.c
+@@ -160,17 +160,17 @@ static int snd_cs5530_create(struct snd_card *card,
+ 	sb_base = 0x220 + 0x20 * (map & 3);
  
- 	while (atiixp_read(chip, PHYS_OUT_ADDR) & ATI_REG_PHYS_OUT_ADDR_EN) {
- 		if (! timeout--) {
--			snd_printk(KERN_WARNING "atiixp-modem: codec acquire timeout\n");
-+			dev_warn(chip->card->dev, "codec acquire timeout\n");
- 			return -EBUSY;
- 		}
- 		udelay(1);
-@@ -433,7 +433,7 @@ static unsigned short snd_atiixp_codec_read(struct atiixp_modem *chip,
- 	} while (--timeout);
- 	/* time out may happen during reset */
- 	if (reg < 0x7c)
--		snd_printk(KERN_WARNING "atiixp-modem: codec read timeout (reg %x)\n", reg);
-+		dev_warn(chip->card->dev, "codec read timeout (reg %x)\n", reg);
- 	return 0xffff;
- }
- 
-@@ -499,7 +499,7 @@ static int snd_atiixp_aclink_reset(struct atiixp_modem *chip)
- 		msleep(1);
- 		atiixp_update(chip, CMD, ATI_REG_CMD_AC_RESET, ATI_REG_CMD_AC_RESET);
- 		if (!--timeout) {
--			snd_printk(KERN_ERR "atiixp-modem: codec reset timeout\n");
-+			dev_err(chip->card->dev, "codec reset timeout\n");
- 			break;
- 		}
- 	}
-@@ -553,7 +553,7 @@ static int snd_atiixp_codec_detect(struct atiixp_modem *chip)
- 	atiixp_write(chip, IER, 0); /* disable irqs */
- 
- 	if ((chip->codec_not_ready_bits & ALL_CODEC_NOT_READY) == ALL_CODEC_NOT_READY) {
--		snd_printk(KERN_ERR "atiixp-modem: no codec detected!\n");
-+		dev_err(chip->card->dev, "no codec detected!\n");
- 		return -ENXIO;
- 	}
- 	return 0;
-@@ -624,7 +624,7 @@ static snd_pcm_uframes_t snd_atiixp_pcm_pointer(struct snd_pcm_substream *substr
- 			continue;
- 		return bytes_to_frames(runtime, curptr);
- 	}
--	snd_printd("atiixp-modem: invalid DMA pointer read 0x%x (buf=%x)\n",
-+	dev_dbg(chip->card->dev, "invalid DMA pointer read 0x%x (buf=%x)\n",
- 		   readl(chip->remap_addr + dma->ops->dt_cur), dma->buf_addr);
- 	return 0;
- }
-@@ -637,7 +637,7 @@ static void snd_atiixp_xrun_dma(struct atiixp_modem *chip,
- {
- 	if (! dma->substream || ! dma->running)
- 		return;
--	snd_printdd("atiixp-modem: XRUN detected (DMA %d)\n", dma->ops->type);
-+	dev_dbg(chip->card->dev, "XRUN detected (DMA %d)\n", dma->ops->type);
- 	snd_pcm_stream_lock(dma->substream);
- 	snd_pcm_stop(dma->substream, SNDRV_PCM_STATE_XRUN);
- 	snd_pcm_stream_unlock(dma->substream);
-@@ -1098,14 +1098,15 @@ static int snd_atiixp_mixer_new(struct atiixp_modem *chip, int clock)
- 		ac97.scaps = AC97_SCAP_SKIP_AUDIO | AC97_SCAP_POWER_SAVE;
- 		if ((err = snd_ac97_mixer(pbus, &ac97, &chip->ac97[i])) < 0) {
- 			chip->ac97[i] = NULL; /* to be sure */
--			snd_printdd("atiixp-modem: codec %d not available for modem\n", i);
-+			dev_dbg(chip->card->dev,
-+				"codec %d not available for modem\n", i);
- 			continue;
- 		}
- 		codec_count++;
- 	}
- 
- 	if (! codec_count) {
--		snd_printk(KERN_ERR "atiixp-modem: no codec available\n");
-+		dev_err(chip->card->dev, "no codec available\n");
+ 	if (map & (1<<2))
+-		printk(KERN_INFO "CS5530: XpressAudio at 0x%lx\n", sb_base);
++		dev_info(card->dev, "XpressAudio at 0x%lx\n", sb_base);
+ 	else {
+-		printk(KERN_ERR "Could not find XpressAudio!\n");
++		dev_err(card->dev, "Could not find XpressAudio!\n");
+ 		snd_cs5530_free(chip);
  		return -ENODEV;
  	}
  
-@@ -1150,8 +1151,7 @@ static int snd_atiixp_resume(struct device *dev)
- 	pci_set_power_state(pci, PCI_D0);
- 	pci_restore_state(pci);
- 	if (pci_enable_device(pci) < 0) {
--		printk(KERN_ERR "atiixp-modem: pci_enable_device failed, "
--		       "disabling device\n");
-+		dev_err(dev, "pci_enable_device failed, disabling device\n");
- 		snd_card_disconnect(card);
- 		return -EIO;
+ 	if (map & (1<<5))
+-		printk(KERN_INFO "CS5530: MPU at 0x300\n");
++		dev_info(card->dev, "MPU at 0x300\n");
+ 	else if (map & (1<<6))
+-		printk(KERN_INFO "CS5530: MPU at 0x330\n");
++		dev_info(card->dev, "MPU at 0x330\n");
+ 
+ 	irq = snd_cs5530_mixer_read(sb_base, 0x80) & 0x0F;
+ 	dma8 = snd_cs5530_mixer_read(sb_base, 0x81);
+@@ -182,7 +182,7 @@ static int snd_cs5530_create(struct snd_card *card,
+ 	else if (dma8 & 0x80)
+ 		dma16 = 7;
+ 	else {
+-		printk(KERN_ERR "CS5530: No 16bit DMA enabled\n");
++		dev_err(card->dev, "No 16bit DMA enabled\n");
+ 		snd_cs5530_free(chip);
+ 		return -ENODEV;
  	}
-@@ -1262,14 +1262,14 @@ static int snd_atiixp_create(struct snd_card *card,
- 	chip->addr = pci_resource_start(pci, 0);
- 	chip->remap_addr = pci_ioremap_bar(pci, 0);
- 	if (chip->remap_addr == NULL) {
--		snd_printk(KERN_ERR "AC'97 space ioremap problem\n");
-+		dev_err(card->dev, "AC'97 space ioremap problem\n");
- 		snd_atiixp_free(chip);
- 		return -EIO;
+@@ -194,7 +194,7 @@ static int snd_cs5530_create(struct snd_card *card,
+ 	else if (dma8 & 0x08)
+ 		dma8 = 3;
+ 	else {
+-		printk(KERN_ERR "CS5530: No 8bit DMA enabled\n");
++		dev_err(card->dev, "No 8bit DMA enabled\n");
+ 		snd_cs5530_free(chip);
+ 		return -ENODEV;
+ 	}
+@@ -208,32 +208,31 @@ static int snd_cs5530_create(struct snd_card *card,
+ 	else if (irq & 8)
+ 		irq = 10;
+ 	else {
+-		printk(KERN_ERR "CS5530: SoundBlaster IRQ not set\n");
++		dev_err(card->dev, "SoundBlaster IRQ not set\n");
+ 		snd_cs5530_free(chip);
+ 		return -ENODEV;
  	}
  
- 	if (request_irq(pci->irq, snd_atiixp_interrupt, IRQF_SHARED,
- 			KBUILD_MODNAME, chip)) {
--		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
-+		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
- 		snd_atiixp_free(chip);
- 		return -EBUSY;
+-	printk(KERN_INFO "CS5530: IRQ: %d DMA8: %d DMA16: %d\n", irq, dma8, 
+-									dma16);
++	dev_info(card->dev, "IRQ: %d DMA8: %d DMA16: %d\n", irq, dma8, dma16);
+ 
+ 	err = snd_sbdsp_create(card, sb_base, irq, snd_sb16dsp_interrupt, dma8,
+ 						dma16, SB_HW_CS5530, &chip->sb);
+ 	if (err < 0) {
+-		printk(KERN_ERR "CS5530: Could not create SoundBlaster\n");
++		dev_err(card->dev, "Could not create SoundBlaster\n");
+ 		snd_cs5530_free(chip);
+ 		return err;
+ 	}
+ 
+ 	err = snd_sb16dsp_pcm(chip->sb, 0, &chip->sb->pcm);
+ 	if (err < 0) {
+-		printk(KERN_ERR "CS5530: Could not create PCM\n");
++		dev_err(card->dev, "Could not create PCM\n");
+ 		snd_cs5530_free(chip);
+ 		return err;
+ 	}
+ 
+ 	err = snd_sbmixer_new(chip->sb);
+ 	if (err < 0) {
+-		printk(KERN_ERR "CS5530: Could not create Mixer\n");
++		dev_err(card->dev, "Could not create Mixer\n");
+ 		snd_cs5530_free(chip);
+ 		return err;
  	}
 -- 
 1.9.0
