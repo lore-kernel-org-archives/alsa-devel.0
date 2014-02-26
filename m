@@ -1,277 +1,206 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 38/48] ALSA: nm256: Use standard printk helpers
-Date: Wed, 26 Feb 2014 16:53:40 +0100
-Message-ID: <1393430030-26704-39-git-send-email-tiwai@suse.de>
-References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH 12/15] ASoC: fsl-ssi: Only enable baudclk when used
+Date: Wed, 26 Feb 2014 17:02:15 +0100
+Message-ID: <1393430538-32333-13-git-send-email-mpa@pengutronix.de>
+References: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 501C42657D4
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id EA5B475044
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
-In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Convert with dev_err() and co from snd_printk(), etc.
+Enable baudclk only when it is used. The baudclk should not be enabled
+all the time when the SSI driver is active. Instead this patch
+enables/disables the clock in the trigger function. It also limits the
+use of this clock to cases where the SSI unit is the I2S master.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/pci/nm256/nm256.c | 75 ++++++++++++++++++++++++++++---------------------
- 1 file changed, 43 insertions(+), 32 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 77 ++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 48 insertions(+), 29 deletions(-)
 
-diff --git a/sound/pci/nm256/nm256.c b/sound/pci/nm256/nm256.c
-index b7afd9c8dcd7..ddc60215cc10 100644
---- a/sound/pci/nm256/nm256.c
-+++ b/sound/pci/nm256/nm256.c
-@@ -318,7 +318,8 @@ snd_nm256_write_buffer(struct nm256 *chip, void *src, int offset, int size)
- 	offset -= chip->buffer_start;
- #ifdef CONFIG_SND_DEBUG
- 	if (offset < 0 || offset >= chip->buffer_size) {
--		snd_printk(KERN_ERR "write_buffer invalid offset = %d size = %d\n",
-+		dev_err(chip->card->dev,
-+			"write_buffer invalid offset = %d size = %d\n",
- 			   offset, size);
- 		return;
- 	}
-@@ -366,7 +367,8 @@ snd_nm256_load_coefficient(struct nm256 *chip, int stream, int number)
- 		 NM_RECORD_REG_OFFSET : NM_PLAYBACK_REG_OFFSET);
- 
- 	if (snd_nm256_readb(chip, poffset) & 1) {
--		snd_printd("NM256: Engine was enabled while loading coefficients!\n");
-+		dev_dbg(chip->card->dev,
-+			"NM256: Engine was enabled while loading coefficients!\n");
- 		return;
- 	}
- 
-@@ -466,7 +468,8 @@ static int snd_nm256_acquire_irq(struct nm256 *chip)
- 	if (chip->irq < 0) {
- 		if (request_irq(chip->pci->irq, chip->interrupt, IRQF_SHARED,
- 				KBUILD_MODNAME, chip)) {
--			snd_printk(KERN_ERR "unable to grab IRQ %d\n", chip->pci->irq);
-+			dev_err(chip->card->dev,
-+				"unable to grab IRQ %d\n", chip->pci->irq);
- 			mutex_unlock(&chip->irq_mutex);
- 			return -EBUSY;
- 		}
-@@ -1039,7 +1042,7 @@ snd_nm256_interrupt(int irq, void *dev_id)
- 	if (status & NM_MISC_INT_1) {
- 		status &= ~NM_MISC_INT_1;
- 		NM_ACK_INT(chip, NM_MISC_INT_1);
--		snd_printd("NM256: Got misc interrupt #1\n");
-+		dev_dbg(chip->card->dev, "NM256: Got misc interrupt #1\n");
- 		snd_nm256_writew(chip, NM_INT_REG, 0x8000);
- 		cbyte = snd_nm256_readb(chip, 0x400);
- 		snd_nm256_writeb(chip, 0x400, cbyte | 2);
-@@ -1048,14 +1051,15 @@ snd_nm256_interrupt(int irq, void *dev_id)
- 	if (status & NM_MISC_INT_2) {
- 		status &= ~NM_MISC_INT_2;
- 		NM_ACK_INT(chip, NM_MISC_INT_2);
--		snd_printd("NM256: Got misc interrupt #2\n");
-+		dev_dbg(chip->card->dev, "NM256: Got misc interrupt #2\n");
- 		cbyte = snd_nm256_readb(chip, 0x400);
- 		snd_nm256_writeb(chip, 0x400, cbyte & ~2);
- 	}
- 
- 	/* Unknown interrupt. */
- 	if (status) {
--		snd_printd("NM256: Fire in the hole! Unknown status 0x%x\n",
-+		dev_dbg(chip->card->dev,
-+			"NM256: Fire in the hole! Unknown status 0x%x\n",
- 			   status);
- 		/* Pray. */
- 		NM_ACK_INT(chip, status);
-@@ -1104,7 +1108,7 @@ snd_nm256_interrupt_zx(int irq, void *dev_id)
- 	if (status & NM2_MISC_INT_1) {
- 		status &= ~NM2_MISC_INT_1;
- 		NM2_ACK_INT(chip, NM2_MISC_INT_1);
--		snd_printd("NM256: Got misc interrupt #1\n");
-+		dev_dbg(chip->card->dev, "NM256: Got misc interrupt #1\n");
- 		cbyte = snd_nm256_readb(chip, 0x400);
- 		snd_nm256_writeb(chip, 0x400, cbyte | 2);
- 	}
-@@ -1112,14 +1116,15 @@ snd_nm256_interrupt_zx(int irq, void *dev_id)
- 	if (status & NM2_MISC_INT_2) {
- 		status &= ~NM2_MISC_INT_2;
- 		NM2_ACK_INT(chip, NM2_MISC_INT_2);
--		snd_printd("NM256: Got misc interrupt #2\n");
-+		dev_dbg(chip->card->dev, "NM256: Got misc interrupt #2\n");
- 		cbyte = snd_nm256_readb(chip, 0x400);
- 		snd_nm256_writeb(chip, 0x400, cbyte & ~2);
- 	}
- 
- 	/* Unknown interrupt. */
- 	if (status) {
--		snd_printd("NM256: Fire in the hole! Unknown status 0x%x\n",
-+		dev_dbg(chip->card->dev,
-+			"NM256: Fire in the hole! Unknown status 0x%x\n",
- 			   status);
- 		/* Pray. */
- 		NM2_ACK_INT(chip, status);
-@@ -1245,7 +1250,7 @@ snd_nm256_ac97_write(struct snd_ac97 *ac97,
- 			return;
- 		}
- 	}
--	snd_printd("nm256: ac97 codec not ready..\n");
-+	dev_dbg(chip->card->dev, "nm256: ac97 codec not ready..\n");
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 9a1980d..a524195 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -197,6 +197,12 @@ static bool fsl_ssi_is_ac97(struct fsl_ssi_private *ssi_private)
+ 	return !!(ssi_private->dai_fmt & SND_SOC_DAIFMT_AC97);
  }
  
- /* static resolution table */
-@@ -1347,7 +1352,8 @@ snd_nm256_peek_for_sig(struct nm256 *chip)
++static bool fsl_ssi_is_i2s_master(struct fsl_ssi_private *ssi_private)
++{
++	return (ssi_private->dai_fmt & SND_SOC_DAIFMT_MASTER_MASK) ==
++		SND_SOC_DAIFMT_CBS_CFS;
++}
++
+ static bool fsl_ssi_on_imx(struct fsl_ssi_private *ssi_private)
+ {
+ 	switch (ssi_private->hw_type) {
+@@ -523,13 +529,6 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct fsl_ssi_private *ssi_private =
+ 		snd_soc_dai_get_drvdata(rtd->cpu_dai);
+-	unsigned long flags;
+-
+-	if (!dai->active && !fsl_ssi_is_ac97(ssi_private)) {
+-		spin_lock_irqsave(&ssi_private->baudclk_lock, flags);
+-		ssi_private->baudclk_locked = false;
+-		spin_unlock_irqrestore(&ssi_private->baudclk_lock, flags);
+-	}
  
- 	temp = ioremap_nocache(chip->buffer_addr + chip->buffer_end - 0x400, 16);
- 	if (temp == NULL) {
--		snd_printk(KERN_ERR "Unable to scan for card signature in video RAM\n");
-+		dev_err(chip->card->dev,
-+			"Unable to scan for card signature in video RAM\n");
- 		return -EBUSY;
- 	}
+ 	/* When using dual fifo mode, it is safer to ensure an even period
+ 	 * size. If appearing to an odd number while DMA always starts its
+@@ -611,6 +610,9 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
  
-@@ -1361,12 +1367,14 @@ snd_nm256_peek_for_sig(struct nm256 *chip)
- 		if (pointer == 0xffffffff ||
- 		    pointer < chip->buffer_size ||
- 		    pointer > chip->buffer_end) {
--			snd_printk(KERN_ERR "invalid signature found: 0x%x\n", pointer);
-+			dev_err(chip->card->dev,
-+				"invalid signature found: 0x%x\n", pointer);
- 			iounmap(temp);
- 			return -ENODEV;
- 		} else {
- 			pointer_found = pointer;
--			printk(KERN_INFO "nm256: found card signature in video RAM: 0x%x\n",
-+			dev_info(chip->card->dev,
-+				 "found card signature in video RAM: 0x%x\n",
- 			       pointer);
- 		}
- 	}
-@@ -1411,8 +1419,7 @@ static int nm256_resume(struct device *dev)
- 	pci_set_power_state(pci, PCI_D0);
- 	pci_restore_state(pci);
- 	if (pci_enable_device(pci) < 0) {
--		printk(KERN_ERR "nm256: pci_enable_device failed, "
--		       "disabling device\n");
-+		dev_err(dev, "pci_enable_device failed, disabling device\n");
- 		snd_card_disconnect(card);
- 		return -EIO;
- 	}
-@@ -1520,14 +1527,15 @@ snd_nm256_create(struct snd_card *card, struct pci_dev *pci,
- 	chip->res_cport = request_mem_region(chip->cport_addr, NM_PORT2_SIZE,
- 					     card->driver);
- 	if (chip->res_cport == NULL) {
--		snd_printk(KERN_ERR "memory region 0x%lx (size 0x%x) busy\n",
-+		dev_err(card->dev, "memory region 0x%lx (size 0x%x) busy\n",
- 			   chip->cport_addr, NM_PORT2_SIZE);
- 		err = -EBUSY;
- 		goto __error;
- 	}
- 	chip->cport = ioremap_nocache(chip->cport_addr, NM_PORT2_SIZE);
- 	if (chip->cport == NULL) {
--		snd_printk(KERN_ERR "unable to map control port %lx\n", chip->cport_addr);
-+		dev_err(card->dev, "unable to map control port %lx\n",
-+			chip->cport_addr);
- 		err = -ENOMEM;
- 		goto __error;
- 	}
-@@ -1537,12 +1545,14 @@ snd_nm256_create(struct snd_card *card, struct pci_dev *pci,
- 		pval = snd_nm256_readw(chip, NM_MIXER_PRESENCE);
- 		if ((pval & NM_PRESENCE_MASK) != NM_PRESENCE_VALUE) {
- 			if (! force_ac97) {
--				printk(KERN_ERR "nm256: no ac97 is found!\n");
--				printk(KERN_ERR "  force the driver to load by "
--				       "passing in the module parameter\n");
--				printk(KERN_ERR "    force_ac97=1\n");
--				printk(KERN_ERR "  or try sb16, opl3sa2, or "
--				       "cs423x drivers instead.\n");
-+				dev_err(card->dev,
-+					"no ac97 is found!\n");
-+				dev_err(card->dev,
-+					"force the driver to load by passing in the module parameter\n");
-+				dev_err(card->dev,
-+					" force_ac97=1\n");
-+				dev_err(card->dev,
-+					"or try sb16, opl3sa2, or cs423x drivers instead.\n");
- 				err = -ENXIO;
- 				goto __error;
- 			}
-@@ -1581,14 +1591,14 @@ snd_nm256_create(struct snd_card *card, struct pci_dev *pci,
- 	chip->buffer_start = chip->buffer_end - chip->buffer_size;
- 	chip->buffer_addr += chip->buffer_start;
+ 	ssi_private->dai_fmt = fmt;
  
--	printk(KERN_INFO "nm256: Mapping port 1 from 0x%x - 0x%x\n",
-+	dev_info(card->dev, "Mapping port 1 from 0x%x - 0x%x\n",
- 	       chip->buffer_start, chip->buffer_end);
++	if (fsl_ssi_is_i2s_master(ssi_private) && IS_ERR(ssi_private->baudclk))
++		return -EINVAL;
++
+ 	fsl_ssi_setup_reg_vals(ssi_private);
  
- 	chip->res_buffer = request_mem_region(chip->buffer_addr,
- 					      chip->buffer_size,
- 					      card->driver);
- 	if (chip->res_buffer == NULL) {
--		snd_printk(KERN_ERR "nm256: buffer 0x%lx (size 0x%x) busy\n",
-+		dev_err(card->dev, "buffer 0x%lx (size 0x%x) busy\n",
- 			   chip->buffer_addr, chip->buffer_size);
- 		err = -EBUSY;
- 		goto __error;
-@@ -1596,7 +1606,8 @@ snd_nm256_create(struct snd_card *card, struct pci_dev *pci,
- 	chip->buffer = ioremap_nocache(chip->buffer_addr, chip->buffer_size);
- 	if (chip->buffer == NULL) {
- 		err = -ENOMEM;
--		snd_printk(KERN_ERR "unable to map ring buffer at %lx\n", chip->buffer_addr);
-+		dev_err(card->dev, "unable to map ring buffer at %lx\n",
-+			chip->buffer_addr);
- 		goto __error;
- 	}
+ 	regmap_read(regs, CCSR_SSI_SCR, &scr);
+@@ -766,8 +768,10 @@ static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 	u64 sub, savesub = 100000;
  
-@@ -1658,12 +1669,12 @@ static int snd_nm256_probe(struct pci_dev *pci,
- 
- 	q = snd_pci_quirk_lookup(pci, nm256_quirks);
- 	if (q) {
--		snd_printdd(KERN_INFO "nm256: Enabled quirk for %s.\n",
-+		dev_dbg(&pci->dev, "Enabled quirk for %s.\n",
- 			    snd_pci_quirk_name(q));
- 		switch (q->value) {
- 		case NM_BLACKLISTED:
--			printk(KERN_INFO "nm256: The device is blacklisted. "
--			       "Loading stopped\n");
-+			dev_info(&pci->dev,
-+				 "The device is blacklisted. Loading stopped\n");
- 			return -ENODEV;
- 		case NM_RESET_WORKAROUND_2:
- 			reset_workaround_2 = 1;
-@@ -1689,7 +1700,7 @@ static int snd_nm256_probe(struct pci_dev *pci,
- 		strcpy(card->driver, "NM256XL+");
- 		break;
- 	default:
--		snd_printk(KERN_ERR "invalid device id 0x%x\n", pci->device);
-+		dev_err(&pci->dev, "invalid device id 0x%x\n", pci->device);
- 		snd_card_free(card);
+ 	/* Don't apply it to any non-baudclk circumstance */
+-	if (IS_ERR(ssi_private->baudclk))
++	if (IS_ERR(ssi_private->baudclk)) {
++		dev_err(cpu_dai->dev, "Failed to set clock, no baudclk present\n");
  		return -EINVAL;
- 	}
-@@ -1712,12 +1723,12 @@ static int snd_nm256_probe(struct pci_dev *pci,
- 	card->private_data = chip;
++	}
  
- 	if (reset_workaround) {
--		snd_printdd(KERN_INFO "nm256: reset_workaround activated\n");
-+		dev_dbg(&pci->dev, "reset_workaround activated\n");
- 		chip->reset_workaround = 1;
+ 	/* It should be already enough to divide clock by setting pm alone */
+ 	psr = 0;
+@@ -833,7 +837,10 @@ static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 			dev_err(cpu_dai->dev, "failed to set baudclk rate\n");
+ 			return -EINVAL;
+ 		}
+-		ssi_private->baudclk_locked = true;
++	} else {
++		spin_unlock_irqrestore(&ssi_private->baudclk_lock, flags);
++		dev_err(cpu_dai->dev, "Failed to set baudclk rate because it is in use\n");
++		return -EBUSY;
+ 	}
+ 	spin_unlock_irqrestore(&ssi_private->baudclk_lock, flags);
+ 
+@@ -898,10 +905,33 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	struct regmap *regs = ssi_private->regs;
+ 	unsigned long flags;
+ 	u32 val;
++	int nr_active;
++
++	regmap_read(regs, CCSR_SSI_SCR, &val);
++	nr_active = !!(val & CCSR_SSI_SCR_TE) + !!(val & CCSR_SSI_SCR_RE);
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		if (fsl_ssi_is_i2s_master(ssi_private) && nr_active == 0) {
++			int ret;
++
++			spin_lock_irqsave(&ssi_private->baudclk_lock, flags);
++			ret = clk_prepare_enable(ssi_private->baudclk);
++			if (ret) {
++				spin_unlock_irqrestore(
++						&ssi_private->baudclk_lock,
++						flags);
++				dev_err(rtd->cpu_dai->dev,
++						"Failed to enable baud clock (%d)\n",
++						ret);
++				return ret;
++			}
++			ssi_private->baudclk_locked = true;
++			spin_unlock_irqrestore(&ssi_private->baudclk_lock,
++					flags);
++		}
++
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 			fsl_ssi_tx_config(ssi_private, true);
+ 		else
+@@ -915,12 +945,14 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		else
+ 			fsl_ssi_rx_config(ssi_private, false);
+ 
+-		regmap_read(regs, CCSR_SSI_SCR, &val);
+-		val &= CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE;
+-		if (!fsl_ssi_is_ac97(ssi_private) && !val) {
++		if (fsl_ssi_is_i2s_master(ssi_private) && nr_active == 1) {
+ 			spin_lock_irqsave(&ssi_private->baudclk_lock, flags);
+-			ssi_private->baudclk_locked = false;
+-			spin_unlock_irqrestore(&ssi_private->baudclk_lock, flags);
++			if (ssi_private->baudclk_locked) {
++				clk_disable_unprepare(ssi_private->baudclk);
++				ssi_private->baudclk_locked = false;
++			}
++			spin_unlock_irqrestore(&ssi_private->baudclk_lock,
++					flags);
+ 		}
+ 		break;
+ 
+@@ -1097,12 +1129,6 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
+ 			goto error_baud_clk;
+ 		dev_dbg(&pdev->dev, "could not get baud clock: %ld\n",
+ 				PTR_ERR(ssi_private->baudclk));
+-	} else {
+-		ret = clk_prepare_enable(ssi_private->baudclk);
+-		if (ret) {
+-			dev_err(&pdev->dev, "Failed to enable baud clock\n");
+-			goto error_baud_clk;
+-		}
  	}
  
- 	if (reset_workaround_2) {
--		snd_printdd(KERN_INFO "nm256: reset_workaround_2 activated\n");
-+		dev_dbg(&pci->dev, "reset_workaround_2 activated\n");
- 		chip->reset_workaround_2 = 1;
+ 	/*
+@@ -1142,19 +1168,15 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
+ 
+ 		ret = imx_pcm_fiq_init(pdev, &ssi_private->fiq_params);
+ 		if (ret)
+-			goto error_pcm;
++			goto error_baud_clk;
+ 	} else {
+ 		ret = imx_pcm_dma_init(pdev);
+ 		if (ret)
+-			goto error_pcm;
++			goto error_baud_clk;
  	}
  
+ 	return 0;
+ 
+-error_pcm:
+-	if (!IS_ERR(ssi_private->baudclk))
+-		clk_disable_unprepare(ssi_private->baudclk);
+-
+ error_baud_clk:
+ 	clk_disable_unprepare(ssi_private->clk);
+ 
+@@ -1166,8 +1188,6 @@ static void fsl_ssi_imx_clean(struct platform_device *pdev,
+ {
+ 	if (!ssi_private->use_dma)
+ 		imx_pcm_fiq_exit(pdev);
+-	if (!IS_ERR(ssi_private->baudclk))
+-		clk_disable_unprepare(ssi_private->baudclk);
+ 	clk_disable_unprepare(ssi_private->clk);
+ }
+ 
+@@ -1272,7 +1292,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+                 /* Older 8610 DTs didn't have the fifo-depth property */
+ 		ssi_private->fifo_depth = 8;
+ 
+-	ssi_private->baudclk_locked = false;
+ 	spin_lock_init(&ssi_private->baudclk_lock);
+ 
+ 	dev_set_drvdata(&pdev->dev, ssi_private);
 -- 
-1.9.0
+1.8.5.3
