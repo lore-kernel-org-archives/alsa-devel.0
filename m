@@ -1,110 +1,163 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH 06/15] ASoC: fsl-ssi: Remove useless DMA code
-Date: Wed, 26 Feb 2014 17:02:09 +0100
-Message-ID: <1393430538-32333-7-git-send-email-mpa@pengutronix.de>
-References: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 19/48] ALSA: maestro3: Use standard printk
+	helpers
+Date: Wed, 26 Feb 2014 16:53:21 +0100
+Message-ID: <1393430030-26704-20-git-send-email-tiwai@suse.de>
+References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1BD522657AD
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id B633675023
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
+In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Simplify dma DT property handling. fsl,ssi-dma-events is not used
-anymore. It passes invalid data to imx_pcm_dma_params_init_data() which
-copies some data into an imx dma struct. This struct is never used in
-imx-dma or imx-sdma because of generic OF DMA handling. The
-"fsl,ssi-dma-events" is not used anywhere in dts files.
+Convert with dev_err() and co from snd_printk(), etc.
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 40 +++-------------------------------------
- 1 file changed, 3 insertions(+), 37 deletions(-)
+ sound/pci/maestro3.c | 37 +++++++++++++++++++------------------
+ 1 file changed, 19 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 054813d..43d4342 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -157,8 +157,6 @@ struct fsl_ssi_private {
- 	struct clk *clk;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
--	struct imx_dma_data filter_data_tx;
--	struct imx_dma_data filter_data_rx;
- 	struct imx_pcm_fiq_params fiq_params;
- 	/* Register values for rx/tx configuration */
- 	struct fsl_ssi_rxtx_reg_val rxtx_reg_val;
-@@ -977,8 +975,7 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 		struct fsl_ssi_private *ssi_private)
- {
- 	struct device_node *np = pdev->dev.of_node;
--	u32 dma_events[2], dmas[4];
--	bool shared;
-+	u32 dmas[4];
- 	int ret;
- 
- 	ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
-@@ -1012,26 +1009,9 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 	ssi_private->dma_params_rx.maxburst = ssi_private->fifo_depth - 2;
- 	ssi_private->dma_params_tx.addr = ssi_private->ssi_phys + CCSR_SSI_STX0;
- 	ssi_private->dma_params_rx.addr = ssi_private->ssi_phys + CCSR_SSI_SRX0;
--	ssi_private->dma_params_tx.filter_data = &ssi_private->filter_data_tx;
--	ssi_private->dma_params_rx.filter_data = &ssi_private->filter_data_rx;
- 
--	if (!of_property_read_bool(pdev->dev.of_node, "dmas") &&
--			ssi_private->use_dma) {
--		/*
--		 * FIXME: This is a temporary solution until all
--		 * necessary dma drivers support the generic dma
--		 * bindings.
--		 */
--		ret = of_property_read_u32_array(pdev->dev.of_node,
--				"fsl,ssi-dma-events", dma_events, 2);
--		if (ret && ssi_private->use_dma) {
--			dev_err(&pdev->dev, "could not get dma events but fsl-ssi is configured to use DMA\n");
--			goto error_dma_events;
--		}
--	}
--	/* Should this be merge with the above? */
--	if (!of_property_read_u32_array(pdev->dev.of_node, "dmas", dmas, 4)
--			&& dmas[2] == IMX_DMATYPE_SSI_DUAL) {
-+	ret = !of_property_read_u32_array(np, "dmas", dmas, 4);
-+	if (ssi_private->use_dma && !ret && dmas[2] == IMX_DMATYPE_SSI_DUAL) {
- 		ssi_private->use_dual_fifo = true;
- 		/* When using dual fifo mode, we need to keep watermark
- 		 * as even numbers due to dma script limitation.
-@@ -1040,21 +1020,7 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 		ssi_private->dma_params_rx.maxburst &= ~0x1;
+diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
+index 076c3ec000c0..0d3ea3e79952 100644
+--- a/sound/pci/maestro3.c
++++ b/sound/pci/maestro3.c
+@@ -1403,7 +1403,7 @@ static int snd_m3_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	/* set buffer address */
+ 	s->buffer_addr = substream->runtime->dma_addr;
+ 	if (s->buffer_addr & 0x3) {
+-		snd_printk(KERN_ERR "oh my, not aligned\n");
++		dev_err(substream->pcm->card->dev, "oh my, not aligned\n");
+ 		s->buffer_addr = s->buffer_addr & ~0x3;
  	}
- 
--	shared = of_device_is_compatible(of_get_parent(np), "fsl,spba-bus");
--
--	imx_pcm_dma_params_init_data(&ssi_private->filter_data_tx,
--		dma_events[0], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
--	imx_pcm_dma_params_init_data(&ssi_private->filter_data_rx,
--		dma_events[1], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
--
  	return 0;
--
--error_dma_events:
--	if (!IS_ERR(ssi_private->baudclk))
--		clk_disable_unprepare(ssi_private->baudclk);
--	clk_disable_unprepare(ssi_private->clk);
--
--	return ret;
+@@ -1900,7 +1900,7 @@ static int snd_m3_ac97_wait(struct snd_m3 *chip)
+ 		cpu_relax();
+ 	} while (i-- > 0);
+ 
+-	snd_printk(KERN_ERR "ac97 serial bus busy\n");
++	dev_err(chip->card->dev, "ac97 serial bus busy\n");
+ 	return 1;
  }
  
- static void fsl_ssi_imx_clean(struct platform_device *pdev,
+@@ -2015,7 +2015,8 @@ static void snd_m3_ac97_reset(struct snd_m3 *chip)
+ 		delay1 += 10;
+ 		delay2 += 100;
+ 
+-		snd_printd("maestro3: retrying codec reset with delays of %d and %d ms\n",
++		dev_dbg(chip->card->dev,
++			"retrying codec reset with delays of %d and %d ms\n",
+ 			   delay1, delay2);
+ 	}
+ 
+@@ -2194,7 +2195,8 @@ static int snd_m3_assp_client_init(struct snd_m3 *chip, struct m3_dma *s, int in
+ 	address = 0x1100 + ((data_bytes/2) * index);
+ 
+ 	if ((address + (data_bytes/2)) >= 0x1c00) {
+-		snd_printk(KERN_ERR "no memory for %d bytes at ind %d (addr 0x%x)\n",
++		dev_err(chip->card->dev,
++			"no memory for %d bytes at ind %d (addr 0x%x)\n",
+ 			   data_bytes, index, address);
+ 		return -ENOMEM;
+ 	}
+@@ -2439,8 +2441,7 @@ static int m3_resume(struct device *dev)
+ 	pci_set_power_state(pci, PCI_D0);
+ 	pci_restore_state(pci);
+ 	if (pci_enable_device(pci) < 0) {
+-		printk(KERN_ERR "maestor3: pci_enable_device failed, "
+-		       "disabling device\n");
++		dev_err(dev, "pci_enable_device failed, disabling device\n");
+ 		snd_card_disconnect(card);
+ 		return -EIO;
+ 	}
+@@ -2553,7 +2554,8 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 	/* check, if we can restrict PCI DMA transfers to 28 bits */
+ 	if (pci_set_dma_mask(pci, DMA_BIT_MASK(28)) < 0 ||
+ 	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(28)) < 0) {
+-		snd_printk(KERN_ERR "architecture does not support 28bit PCI busmaster DMA\n");
++		dev_err(card->dev,
++			"architecture does not support 28bit PCI busmaster DMA\n");
+ 		pci_disable_device(pci);
+ 		return -ENXIO;
+ 	}
+@@ -2586,9 +2588,8 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 	else {
+ 		quirk = snd_pci_quirk_lookup(pci, m3_amp_quirk_list);
+ 		if (quirk) {
+-			snd_printdd(KERN_INFO
+-				    "maestro3: set amp-gpio for '%s'\n",
+-				    snd_pci_quirk_name(quirk));
++			dev_info(card->dev, "set amp-gpio for '%s'\n",
++				 snd_pci_quirk_name(quirk));
+ 			chip->amp_gpio = quirk->value;
+ 		} else if (chip->allegro_flag)
+ 			chip->amp_gpio = GPO_EXT_AMP_ALLEGRO;
+@@ -2598,9 +2599,8 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 
+ 	quirk = snd_pci_quirk_lookup(pci, m3_irda_quirk_list);
+ 	if (quirk) {
+-		snd_printdd(KERN_INFO
+-			    "maestro3: enabled irda workaround for '%s'\n",
+-			    snd_pci_quirk_name(quirk));
++		dev_info(card->dev, "enabled irda workaround for '%s'\n",
++			 snd_pci_quirk_name(quirk));
+ 		chip->irda_workaround = 1;
+ 	}
+ 	quirk = snd_pci_quirk_lookup(pci, m3_hv_quirk_list);
+@@ -2652,7 +2652,7 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 
+ 	if (request_irq(pci->irq, snd_m3_interrupt, IRQF_SHARED,
+ 			KBUILD_MODNAME, chip)) {
+-		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
++		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		snd_m3_free(chip);
+ 		return -ENOMEM;
+ 	}
+@@ -2661,7 +2661,7 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ #ifdef CONFIG_PM_SLEEP
+ 	chip->suspend_mem = vmalloc(sizeof(u16) * (REV_B_CODE_MEMORY_LENGTH + REV_B_DATA_MEMORY_LENGTH));
+ 	if (chip->suspend_mem == NULL)
+-		snd_printk(KERN_WARNING "can't allocate apm buffer\n");
++		dev_warn(card->dev, "can't allocate apm buffer\n");
+ #endif
+ 
+ 	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
+@@ -2685,8 +2685,9 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 	if (chip->hv_config & HV_CTRL_ENABLE) {
+ 		err = snd_m3_input_register(chip);
+ 		if (err)
+-			snd_printk(KERN_WARNING "Input device registration "
+-				"failed with error %i", err);
++			dev_warn(card->dev,
++				 "Input device registration failed with error %i",
++				 err);
+ 	}
+ #endif
+ 
+@@ -2763,7 +2764,7 @@ snd_m3_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 				  MPU401_INFO_INTEGRATED | MPU401_INFO_IRQ_HOOK,
+ 				  -1, &chip->rmidi);
+ 	if (err < 0)
+-		printk(KERN_WARNING "maestro3: no MIDI support.\n");
++		dev_warn(card->dev, "no MIDI support.\n");
+ #endif
+ 
+ 	pci_set_drvdata(pci, card);
 -- 
-1.8.5.3
+1.9.0
