@@ -1,17 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 14/48] ALSA: es1938: Use standard printk helpers
-Date: Wed, 26 Feb 2014 16:53:16 +0100
-Message-ID: <1393430030-26704-15-git-send-email-tiwai@suse.de>
+Subject: [PATCH 08/48] ALSA: azt3328: Use standard printk
+	helpers
+Date: Wed, 26 Feb 2014 16:53:10 +0100
+Message-ID: <1393430030-26704-9-git-send-email-tiwai@suse.de>
 References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DBB7626579E
+ by alsa0.perex.cz (Postfix) with ESMTP id C8B5426578D
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:53 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 7164F75032
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4FDEF7502C
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
 In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,242 +28,750 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Convert with dev_err() and co from snd_printk(), etc.
-Some debug prints are replaced with dev_dbg(), too.
+All debug print macros have been replaced with dev_dbg(), too.
+Also, added the missing definition of snd_azf3328_ctrl_inw().
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/es1938.c | 74 +++++++++++++++++++++++-------------------------------
- 1 file changed, 32 insertions(+), 42 deletions(-)
+ sound/pci/azt3328.c | 288 ++++++++++++++++++++++------------------------------
+ 1 file changed, 124 insertions(+), 164 deletions(-)
 
-diff --git a/sound/pci/es1938.c b/sound/pci/es1938.c
-index 33489bcc0aff..34d95bf916b5 100644
---- a/sound/pci/es1938.c
-+++ b/sound/pci/es1938.c
-@@ -254,7 +254,6 @@ MODULE_DEVICE_TABLE(pci, snd_es1938_ids);
- #define WRITE_LOOP_TIMEOUT	0x10000
- #define GET_LOOP_TIMEOUT	0x01000
+diff --git a/sound/pci/azt3328.c b/sound/pci/azt3328.c
+index d5a00f337ab9..c9216c0a9c8b 100644
+--- a/sound/pci/azt3328.c
++++ b/sound/pci/azt3328.c
+@@ -238,51 +238,6 @@ MODULE_SUPPORTED_DEVICE("{{Aztech,AZF3328}}");
+     2>/dev/null
+ */
  
--#undef REG_DEBUG
- /* -----------------------------------------------------------------
-  * Write to a mixer register
-  * -----------------------------------------------------------------*/
-@@ -265,9 +264,7 @@ static void snd_es1938_mixer_write(struct es1938 *chip, unsigned char reg, unsig
- 	outb(reg, SLSB_REG(chip, MIXERADDR));
- 	outb(val, SLSB_REG(chip, MIXERDATA));
- 	spin_unlock_irqrestore(&chip->mixer_lock, flags);
--#ifdef REG_DEBUG
--	snd_printk(KERN_DEBUG "Mixer reg %02x set to %02x\n", reg, val);
+-#define DEBUG_MISC	0
+-#define DEBUG_CALLS	0
+-#define DEBUG_MIXER	0
+-#define DEBUG_CODEC	0
+-#define DEBUG_TIMER	0
+-#define DEBUG_GAME	0
+-#define DEBUG_PM	0
+-#define MIXER_TESTING	0
+-
+-#if DEBUG_MISC
+-#define snd_azf3328_dbgmisc(format, args...) printk(KERN_DEBUG format, ##args)
+-#else
+-#define snd_azf3328_dbgmisc(format, args...)
 -#endif
-+	dev_dbg(chip->card->dev, "Mixer reg %02x set to %02x\n", reg, val);
+-
+-#if DEBUG_MIXER
+-#define snd_azf3328_dbgmixer(format, args...) printk(KERN_DEBUG format, ##args)
+-#else
+-#define snd_azf3328_dbgmixer(format, args...)
+-#endif
+-
+-#if DEBUG_CODEC
+-#define snd_azf3328_dbgcodec(format, args...) printk(KERN_DEBUG format, ##args)
+-#else
+-#define snd_azf3328_dbgcodec(format, args...)
+-#endif
+-
+-#if DEBUG_MISC
+-#define snd_azf3328_dbgtimer(format, args...) printk(KERN_DEBUG format, ##args)
+-#else
+-#define snd_azf3328_dbgtimer(format, args...)
+-#endif
+-
+-#if DEBUG_GAME
+-#define snd_azf3328_dbggame(format, args...) printk(KERN_DEBUG format, ##args)
+-#else
+-#define snd_azf3328_dbggame(format, args...)
+-#endif
+-
+-#if DEBUG_PM
+-#define snd_azf3328_dbgpm(format, args...) printk(KERN_DEBUG format, ##args)
+-#else
+-#define snd_azf3328_dbgpm(format, args...)
+-#endif
+-
+ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
+ module_param_array(index, int, NULL, 0444);
+ MODULE_PARM_DESC(index, "Index value for AZF3328 soundcard.");
+@@ -465,6 +420,12 @@ snd_azf3328_ctrl_inb(const struct snd_azf3328 *chip, unsigned reg)
+ 	return inb(chip->ctrl_io + reg);
  }
  
- /* -----------------------------------------------------------------
-@@ -281,9 +278,7 @@ static int snd_es1938_mixer_read(struct es1938 *chip, unsigned char reg)
- 	outb(reg, SLSB_REG(chip, MIXERADDR));
- 	data = inb(SLSB_REG(chip, MIXERDATA));
- 	spin_unlock_irqrestore(&chip->mixer_lock, flags);
--#ifdef REG_DEBUG
--	snd_printk(KERN_DEBUG "Mixer reg %02x now is %02x\n", reg, data);
--#endif
-+	dev_dbg(chip->card->dev, "Mixer reg %02x now is %02x\n", reg, data);
- 	return data;
++static inline u16
++snd_azf3328_ctrl_inw(const struct snd_azf3328 *chip, unsigned reg)
++{
++	return inw(chip->ctrl_io + reg);
++}
++
+ static inline void
+ snd_azf3328_ctrl_outw(const struct snd_azf3328 *chip, unsigned reg, u16 value)
+ {
+@@ -568,11 +529,12 @@ snd_azf3328_mixer_reset(const struct snd_azf3328 *chip)
+ #ifdef AZF_USE_AC97_LAYER
+ 
+ static inline void
+-snd_azf3328_mixer_ac97_map_unsupported(unsigned short reg, const char *mode)
++snd_azf3328_mixer_ac97_map_unsupported(const struct snd_azf3328 *chip,
++				       unsigned short reg, const char *mode)
+ {
+ 	/* need to add some more or less clever emulation? */
+-	printk(KERN_WARNING
+-		"azt3328: missing %s emulation for AC97 register 0x%02x!\n",
++	dev_warn(chip->card->dev,
++		"missing %s emulation for AC97 register 0x%02x!\n",
+ 		mode, reg);
  }
  
-@@ -302,10 +297,9 @@ static int snd_es1938_mixer_bits(struct es1938 *chip, unsigned char reg,
- 	if (val != oval) {
- 		new = (old & ~mask) | (val & mask);
- 		outb(new, SLSB_REG(chip, MIXERDATA));
--#ifdef REG_DEBUG
--		snd_printk(KERN_DEBUG "Mixer reg %02x was %02x, set to %02x\n",
+@@ -707,10 +669,8 @@ snd_azf3328_mixer_ac97_read(struct snd_ac97 *ac97, unsigned short reg_ac97)
+ 	unsigned short reg_val = 0;
+ 	bool unsupported = false;
+ 
+-	snd_azf3328_dbgmixer(
+-		"snd_azf3328_mixer_ac97_read reg_ac97 %u\n",
+-			reg_ac97
+-	);
++	dev_dbg(chip->card->dev, "snd_azf3328_mixer_ac97_read reg_ac97 %u\n",
++		reg_ac97);
+ 	if (reg_azf & AZF_AC97_REG_UNSUPPORTED)
+ 		unsupported = true;
+ 	else {
+@@ -755,7 +715,7 @@ snd_azf3328_mixer_ac97_read(struct snd_ac97 *ac97, unsigned short reg_ac97)
+ 		}
+ 	}
+ 	if (unsupported)
+-		snd_azf3328_mixer_ac97_map_unsupported(reg_ac97, "read");
++		snd_azf3328_mixer_ac97_map_unsupported(chip, reg_ac97, "read");
+ 
+ 	return reg_val;
+ }
+@@ -768,10 +728,9 @@ snd_azf3328_mixer_ac97_write(struct snd_ac97 *ac97,
+ 	unsigned short reg_azf = snd_azf3328_mixer_ac97_map_reg_idx(reg_ac97);
+ 	bool unsupported = false;
+ 
+-	snd_azf3328_dbgmixer(
++	dev_dbg(chip->card->dev,
+ 		"snd_azf3328_mixer_ac97_write reg_ac97 %u val %u\n",
+-			reg_ac97, val
+-	);
++		reg_ac97, val);
+ 	if (reg_azf & AZF_AC97_REG_UNSUPPORTED)
+ 		unsupported = true;
+ 	else {
+@@ -804,7 +763,7 @@ snd_azf3328_mixer_ac97_write(struct snd_ac97 *ac97,
+ 		}
+ 	}
+ 	if (unsupported)
+-		snd_azf3328_mixer_ac97_map_unsupported(reg_ac97, "write");
++		snd_azf3328_mixer_ac97_map_unsupported(chip, reg_ac97, "write");
+ }
+ 
+ static int
+@@ -840,7 +799,7 @@ snd_azf3328_mixer_new(struct snd_azf3328 *chip)
+ 		 * due to this card being a very quirky AC97 "lookalike".
+ 		 */
+ 	if (rc)
+-		printk(KERN_ERR "azt3328: AC97 init failed, err %d!\n", rc);
++		dev_err(chip->card->dev, "AC97 init failed, err %d!\n", rc);
+ 
+ 	/* If we return an error here, then snd_card_free() should
+ 	 * free up any ac97 codecs that got created, as well as the bus.
+@@ -1007,8 +966,8 @@ snd_azf3328_get_mixer(struct snd_kcontrol *kcontrol,
+ 			val = reg.mask - val;
+ 		ucontrol->value.integer.value[1] = val;
+ 	}
+-	snd_azf3328_dbgmixer("get: %02x is %04x -> vol %02lx|%02lx "
+-			     "(shift %02d|%02d, mask %02x, inv. %d, stereo %d)\n",
++	dev_dbg(chip->card->dev,
++		"get: %02x is %04x -> vol %02lx|%02lx (shift %02d|%02d, mask %02x, inv. %d, stereo %d)\n",
+ 		reg.reg, oreg,
+ 		ucontrol->value.integer.value[0], ucontrol->value.integer.value[1],
+ 		reg.lchan_shift, reg.rchan_shift, reg.mask, reg.invert, reg.stereo);
+@@ -1046,8 +1005,8 @@ snd_azf3328_put_mixer(struct snd_kcontrol *kcontrol,
+ 	else
+         	snd_azf3328_mixer_outw(chip, reg.reg, nreg);
+ 
+-	snd_azf3328_dbgmixer("put: %02x to %02lx|%02lx, "
+-			     "oreg %04x; shift %02d|%02d -> nreg %04x; after: %04x\n",
++	dev_dbg(chip->card->dev,
++		"put: %02x to %02lx|%02lx, oreg %04x; shift %02d|%02d -> nreg %04x; after: %04x\n",
+ 		reg.reg, ucontrol->value.integer.value[0], ucontrol->value.integer.value[1],
+ 		oreg, reg.lchan_shift, reg.rchan_shift,
+ 		nreg, snd_azf3328_mixer_inw(chip, reg.reg));
+@@ -1116,7 +1075,8 @@ snd_azf3328_get_mixer_enum(struct snd_kcontrol *kcontrol,
+ 	} else
+         	ucontrol->value.enumerated.item[0] = (val >> reg.lchan_shift) & (reg.enum_c - 1);
+ 
+-	snd_azf3328_dbgmixer("get_enum: %02x is %04x -> %d|%d (shift %02d, enum_c %d)\n",
++	dev_dbg(chip->card->dev,
++		"get_enum: %02x is %04x -> %d|%d (shift %02d, enum_c %d)\n",
+ 		reg.reg, val, ucontrol->value.enumerated.item[0], ucontrol->value.enumerated.item[1],
+ 		reg.lchan_shift, reg.enum_c);
+         return 0;
+@@ -1148,7 +1108,8 @@ snd_azf3328_put_mixer_enum(struct snd_kcontrol *kcontrol,
+ 	snd_azf3328_mixer_outw(chip, reg.reg, val);
+ 	nreg = val;
+ 
+-	snd_azf3328_dbgmixer("put_enum: %02x to %04x, oreg %04x\n", reg.reg, val, oreg);
++	dev_dbg(chip->card->dev,
++		"put_enum: %02x to %04x, oreg %04x\n", reg.reg, val, oreg);
+ 	return (nreg != oreg);
+ }
+ 
+@@ -1375,15 +1336,16 @@ snd_azf3328_ctrl_reg_6AH_update(struct snd_azf3328 *chip,
+ 		chip->shadow_reg_ctrl_6AH |= bitmask;
+ 	else
+ 		chip->shadow_reg_ctrl_6AH &= ~bitmask;
+-	snd_azf3328_dbgcodec("6AH_update mask 0x%04x do_mask %d: val 0x%04x\n",
+-			bitmask, do_mask, chip->shadow_reg_ctrl_6AH);
++	dev_dbg(chip->card->dev,
++		"6AH_update mask 0x%04x do_mask %d: val 0x%04x\n",
++		bitmask, do_mask, chip->shadow_reg_ctrl_6AH);
+ 	snd_azf3328_ctrl_outw(chip, IDX_IO_6AH, chip->shadow_reg_ctrl_6AH);
+ }
+ 
+ static inline void
+ snd_azf3328_ctrl_enable_codecs(struct snd_azf3328 *chip, bool enable)
+ {
+-	snd_azf3328_dbgcodec("codec_enable %d\n", enable);
++	dev_dbg(chip->card->dev, "codec_enable %d\n", enable);
+ 	/* no idea what exactly is being done here, but I strongly assume it's
+ 	 * PM related */
+ 	snd_azf3328_ctrl_reg_6AH_update(
+@@ -1400,7 +1362,7 @@ snd_azf3328_ctrl_codec_activity(struct snd_azf3328 *chip,
+ 	struct snd_azf3328_codec_data *codec = &chip->codecs[codec_type];
+ 	bool need_change = (codec->running != enable);
+ 
+-	snd_azf3328_dbgcodec(
++	dev_dbg(chip->card->dev,
+ 		"codec_activity: %s codec, enable %d, need_change %d\n",
+ 				codec->name, enable, need_change
+ 	);
+@@ -1441,10 +1403,11 @@ snd_azf3328_ctrl_codec_activity(struct snd_azf3328 *chip,
+ }
+ 
+ static void
+-snd_azf3328_codec_setdmaa(struct snd_azf3328_codec_data *codec,
+-				unsigned long addr,
+-				unsigned int period_bytes,
+-				unsigned int buffer_bytes
++snd_azf3328_codec_setdmaa(struct snd_azf3328 *chip,
++			  struct snd_azf3328_codec_data *codec,
++			  unsigned long addr,
++			  unsigned int period_bytes,
++			  unsigned int buffer_bytes
+ )
+ {
+ 	WARN_ONCE(period_bytes & 1, "odd period length!?\n");
+@@ -1469,7 +1432,7 @@ snd_azf3328_codec_setdmaa(struct snd_azf3328_codec_data *codec,
+ 		setup_io.dma_start_1 = addr;
+ 		setup_io.dma_start_2 = addr+area_length;
+ 
+-		snd_azf3328_dbgcodec(
 +		dev_dbg(chip->card->dev,
-+			"Mixer reg %02x was %02x, set to %02x\n",
- 			   reg, old, new);
--#endif
- 	}
- 	spin_unlock_irqrestore(&chip->mixer_lock, flags);
- 	return oval;
-@@ -324,7 +318,8 @@ static void snd_es1938_write_cmd(struct es1938 *chip, unsigned char cmd)
- 			return;
+ 			"setdma: buffers %08x[%u] / %08x[%u], %u, %u\n",
+ 				setup_io.dma_start_1, area_length,
+ 				setup_io.dma_start_2, area_length,
+@@ -1511,7 +1474,7 @@ snd_azf3328_pcm_prepare(struct snd_pcm_substream *substream)
+ 		runtime->rate,
+ 		snd_pcm_format_width(runtime->format),
+ 		runtime->channels);
+-	snd_azf3328_codec_setdmaa(codec,
++	snd_azf3328_codec_setdmaa(chip, codec,
+ 					runtime->dma_addr, count, size);
+ #endif
+ 	return 0;
+@@ -1530,7 +1493,7 @@ snd_azf3328_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+-		snd_azf3328_dbgcodec("START %s\n", codec->name);
++		dev_dbg(chip->card->dev, "START PCM %s\n", codec->name);
+ 
+ 		if (is_main_mixer_playback_codec) {
+ 			/* mute WaveOut (avoid clicking during setup) */
+@@ -1557,7 +1520,7 @@ snd_azf3328_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		snd_azf3328_codec_outw(codec, IDX_IO_CODEC_IRQTYPE, 0xffff);
+ 		spin_unlock(codec->lock);
+ 
+-		snd_azf3328_codec_setdmaa(codec, runtime->dma_addr,
++		snd_azf3328_codec_setdmaa(chip, codec, runtime->dma_addr,
+ 			snd_pcm_lib_period_bytes(substream),
+ 			snd_pcm_lib_buffer_bytes(substream)
+ 		);
+@@ -1597,10 +1560,10 @@ snd_azf3328_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 				);
  		}
- 	}
--	printk(KERN_ERR "snd_es1938_write_cmd timeout (0x02%x/0x02%x)\n", cmd, v);
-+	dev_err(chip->card->dev,
-+		"snd_es1938_write_cmd timeout (0x02%x/0x02%x)\n", cmd, v);
- }
  
- /* -----------------------------------------------------------------
-@@ -337,7 +332,7 @@ static int snd_es1938_get_byte(struct es1938 *chip)
- 	for (i = GET_LOOP_TIMEOUT; i; i--)
- 		if ((v = inb(SLSB_REG(chip, STATUS))) & 0x80)
- 			return inb(SLSB_REG(chip, READDATA));
--	snd_printk(KERN_ERR "get_byte timeout: status 0x02%x\n", v);
-+	dev_err(chip->card->dev, "get_byte timeout: status 0x02%x\n", v);
- 	return -ENODEV;
- }
+-		snd_azf3328_dbgcodec("STARTED %s\n", codec->name);
++		dev_dbg(chip->card->dev, "PCM STARTED %s\n", codec->name);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+-		snd_azf3328_dbgcodec("RESUME %s\n", codec->name);
++		dev_dbg(chip->card->dev, "PCM RESUME %s\n", codec->name);
+ 		/* resume codec if we were active */
+ 		spin_lock(codec->lock);
+ 		if (codec->running)
+@@ -1612,7 +1575,7 @@ snd_azf3328_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		spin_unlock(codec->lock);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+-		snd_azf3328_dbgcodec("STOP %s\n", codec->name);
++		dev_dbg(chip->card->dev, "PCM STOP %s\n", codec->name);
  
-@@ -351,9 +346,7 @@ static void snd_es1938_write(struct es1938 *chip, unsigned char reg, unsigned ch
- 	snd_es1938_write_cmd(chip, reg);
- 	snd_es1938_write_cmd(chip, val);
- 	spin_unlock_irqrestore(&chip->reg_lock, flags);
--#ifdef REG_DEBUG
--	snd_printk(KERN_DEBUG "Reg %02x set to %02x\n", reg, val);
--#endif
-+	dev_dbg(chip->card->dev, "Reg %02x set to %02x\n", reg, val);
- }
- 
- /* -----------------------------------------------------------------
-@@ -368,9 +361,7 @@ static unsigned char snd_es1938_read(struct es1938 *chip, unsigned char reg)
- 	snd_es1938_write_cmd(chip, reg);
- 	val = snd_es1938_get_byte(chip);
- 	spin_unlock_irqrestore(&chip->reg_lock, flags);
--#ifdef REG_DEBUG
--	snd_printk(KERN_DEBUG "Reg %02x now is %02x\n", reg, val);
--#endif
-+	dev_dbg(chip->card->dev, "Reg %02x now is %02x\n", reg, val);
- 	return val;
- }
- 
-@@ -391,10 +382,8 @@ static int snd_es1938_bits(struct es1938 *chip, unsigned char reg, unsigned char
- 		snd_es1938_write_cmd(chip, reg);
- 		new = (old & ~mask) | (val & mask);
- 		snd_es1938_write_cmd(chip, new);
--#ifdef REG_DEBUG
--		snd_printk(KERN_DEBUG "Reg %02x was %02x, set to %02x\n",
-+		dev_dbg(chip->card->dev, "Reg %02x was %02x, set to %02x\n",
- 			   reg, old, new);
--#endif
- 	}
- 	spin_unlock_irqrestore(&chip->reg_lock, flags);
- 	return oval;
-@@ -416,7 +405,7 @@ static void snd_es1938_reset(struct es1938 *chip)
- 				goto __next;
+ 		if (is_main_mixer_playback_codec) {
+ 			/* mute WaveOut (avoid clicking during setup) */
+@@ -1648,10 +1611,10 @@ snd_azf3328_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 				);
  		}
- 	}
--	snd_printk(KERN_ERR "ESS Solo-1 reset failed\n");
-+	dev_err(chip->card->dev, "ESS Solo-1 reset failed\n");
  
-      __next:
- 	snd_es1938_write_cmd(chip, ESS_CMD_ENABLEEXT);
-@@ -1504,16 +1493,15 @@ static int es1938_resume(struct device *dev)
+-		snd_azf3328_dbgcodec("STOPPED %s\n", codec->name);
++		dev_dbg(chip->card->dev, "PCM STOPPED %s\n", codec->name);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+-		snd_azf3328_dbgcodec("SUSPEND %s\n", codec->name);
++		dev_dbg(chip->card->dev, "PCM SUSPEND %s\n", codec->name);
+ 		/* make sure codec is stopped */
+ 		snd_azf3328_codec_outw(codec, IDX_IO_CODEC_DMA_FLAGS,
+ 			snd_azf3328_codec_inw(
+@@ -1660,13 +1623,13 @@ snd_azf3328_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		);
+ 		break;
+         case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		snd_printk(KERN_ERR "FIXME: SNDRV_PCM_TRIGGER_PAUSE_PUSH NIY!\n");
++		WARN(1, "FIXME: SNDRV_PCM_TRIGGER_PAUSE_PUSH NIY!\n");
+                 break;
+         case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		snd_printk(KERN_ERR "FIXME: SNDRV_PCM_TRIGGER_PAUSE_RELEASE NIY!\n");
++		WARN(1, "FIXME: SNDRV_PCM_TRIGGER_PAUSE_RELEASE NIY!\n");
+                 break;
+         default:
+-		snd_printk(KERN_ERR "FIXME: unknown trigger mode!\n");
++		WARN(1, "FIXME: unknown trigger mode!\n");
+                 return -EINVAL;
+ 	}
+ 
+@@ -1691,8 +1654,8 @@ snd_azf3328_pcm_pointer(struct snd_pcm_substream *substream
+ 	result -= codec->dma_base;
+ #endif
+ 	frmres = bytes_to_frames( substream->runtime, result);
+-	snd_azf3328_dbgcodec("%08li %s @ 0x%8lx, frames %8ld\n",
+-				jiffies, codec->name, result, frmres);
++	dev_dbg(substream->pcm->card->dev, "%08li %s @ 0x%8lx, frames %8ld\n",
++		jiffies, codec->name, result, frmres);
+ 	return frmres;
+ }
+ 
+@@ -1755,7 +1718,7 @@ snd_azf3328_gameport_interrupt(struct snd_azf3328 *chip)
+ 	 * skeleton handler only
+ 	 * (we do not want axis reading in interrupt handler - too much load!)
+ 	 */
+-	snd_azf3328_dbggame("gameport irq\n");
++	dev_dbg(chip->card->dev, "gameport irq\n");
+ 
+ 	 /* this should ACK the gameport IRQ properly, hopefully. */
+ 	snd_azf3328_game_inw(chip, IDX_GAME_AXIS_VALUE);
+@@ -1767,7 +1730,7 @@ snd_azf3328_gameport_open(struct gameport *gameport, int mode)
+ 	struct snd_azf3328 *chip = gameport_get_port_data(gameport);
+ 	int res;
+ 
+-	snd_azf3328_dbggame("gameport_open, mode %d\n", mode);
++	dev_dbg(chip->card->dev, "gameport_open, mode %d\n", mode);
+ 	switch (mode) {
+ 	case GAMEPORT_MODE_COOKED:
+ 	case GAMEPORT_MODE_RAW:
+@@ -1790,7 +1753,7 @@ snd_azf3328_gameport_close(struct gameport *gameport)
+ {
+ 	struct snd_azf3328 *chip = gameport_get_port_data(gameport);
+ 
+-	snd_azf3328_dbggame("gameport_close\n");
++	dev_dbg(chip->card->dev, "gameport_close\n");
+ 	snd_azf3328_gameport_set_counter_frequency(chip,
+ 				GAME_HWCFG_ADC_COUNTER_FREQ_1_200);
+ 	snd_azf3328_gameport_axis_circuit_enable(chip, 0);
+@@ -1855,9 +1818,8 @@ snd_azf3328_gameport_cooked_read(struct gameport *gameport,
+ 			axes[i] = -1;
+ 	}
+ 
+-	snd_azf3328_dbggame("cooked_read: axes %d %d %d %d buttons %d\n",
+-		axes[0], axes[1], axes[2], axes[3], *buttons
+-	);
++	dev_dbg(chip->card->dev, "cooked_read: axes %d %d %d %d buttons %d\n",
++		axes[0], axes[1], axes[2], axes[3], *buttons);
+ 
+ 	return 0;
+ }
+@@ -1869,7 +1831,7 @@ snd_azf3328_gameport(struct snd_azf3328 *chip, int dev)
+ 
+ 	chip->gameport = gp = gameport_allocate_port();
+ 	if (!gp) {
+-		printk(KERN_ERR "azt3328: cannot alloc memory for gameport\n");
++		dev_err(chip->card->dev, "cannot alloc memory for gameport\n");
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -1913,23 +1875,23 @@ snd_azf3328_gameport_free(struct snd_azf3328 *chip) { }
+ static inline void
+ snd_azf3328_gameport_interrupt(struct snd_azf3328 *chip)
+ {
+-	printk(KERN_WARNING "huh, game port IRQ occurred!?\n");
++	dev_warn(chip->card->dev, "huh, game port IRQ occurred!?\n");
+ }
+ #endif /* SUPPORT_GAMEPORT */
+ 
+ /******************************************************************/
+ 
+ static inline void
+-snd_azf3328_irq_log_unknown_type(u8 which)
++snd_azf3328_irq_log_unknown_type(struct snd_azf3328 *chip, u8 which)
+ {
+-	snd_azf3328_dbgcodec(
+-	"azt3328: unknown IRQ type (%x) occurred, please report!\n",
+-		which
+-	);
++	dev_dbg(chip->card->dev,
++		"unknown IRQ type (%x) occurred, please report!\n",
++		which);
+ }
+ 
+ static inline void
+-snd_azf3328_pcm_interrupt(const struct snd_azf3328_codec_data *first_codec,
++snd_azf3328_pcm_interrupt(struct snd_azf3328 *chip,
++			  const struct snd_azf3328_codec_data *first_codec,
+ 			  u8 status
+ )
+ {
+@@ -1953,17 +1915,15 @@ snd_azf3328_pcm_interrupt(const struct snd_azf3328_codec_data *first_codec,
+ 
+ 		if (codec->substream) {
+ 			snd_pcm_period_elapsed(codec->substream);
+-			snd_azf3328_dbgcodec("%s period done (#%x), @ %x\n",
++			dev_dbg(chip->card->dev, "%s period done (#%x), @ %x\n",
+ 				codec->name,
+ 				which,
+ 				snd_azf3328_codec_inl(
+-					codec, IDX_IO_CODEC_DMA_CURRPOS
+-				)
+-			);
++					codec, IDX_IO_CODEC_DMA_CURRPOS));
+ 		} else
+-			printk(KERN_WARNING "azt3328: irq handler problem!\n");
++			dev_warn(chip->card->dev, "irq handler problem!\n");
+ 		if (which & IRQ_SOMETHING)
+-			snd_azf3328_irq_log_unknown_type(which);
++			snd_azf3328_irq_log_unknown_type(chip, which);
+ 	}
+ }
+ 
+@@ -1972,9 +1932,7 @@ snd_azf3328_interrupt(int irq, void *dev_id)
+ {
+ 	struct snd_azf3328 *chip = dev_id;
+ 	u8 status;
+-#if DEBUG_CODEC
+ 	static unsigned long irq_count;
+-#endif
+ 
+ 	status = snd_azf3328_ctrl_inb(chip, IDX_IO_IRQSTATUS);
+ 
+@@ -1985,14 +1943,13 @@ snd_azf3328_interrupt(int irq, void *dev_id)
+ 	))
+ 		return IRQ_NONE; /* must be interrupt for another device */
+ 
+-	snd_azf3328_dbgcodec(
++	dev_dbg(chip->card->dev,
+ 		"irq_count %ld! IDX_IO_IRQSTATUS %04x\n",
+ 			irq_count++ /* debug-only */,
+-			status
+-	);
++			status);
+ 
+ 	if (status & IRQ_TIMER) {
+-		/* snd_azf3328_dbgcodec("timer %ld\n",
++		/* dev_dbg(chip->card->dev, "timer %ld\n",
+ 			snd_azf3328_codec_inl(chip, IDX_IO_TIMER_VALUE)
+ 				& TIMER_VALUE_MASK
+ 		); */
+@@ -2002,11 +1959,11 @@ snd_azf3328_interrupt(int irq, void *dev_id)
+                 spin_lock(&chip->reg_lock);
+ 		snd_azf3328_ctrl_outb(chip, IDX_IO_TIMER_VALUE + 3, 0x07);
+ 		spin_unlock(&chip->reg_lock);
+-		snd_azf3328_dbgcodec("azt3328: timer IRQ\n");
++		dev_dbg(chip->card->dev, "timer IRQ\n");
+ 	}
+ 
+ 	if (status & (IRQ_PLAYBACK|IRQ_RECORDING|IRQ_I2S_OUT))
+-		snd_azf3328_pcm_interrupt(chip->codecs, status);
++		snd_azf3328_pcm_interrupt(chip, chip->codecs, status);
+ 
+ 	if (status & IRQ_GAMEPORT)
+ 		snd_azf3328_gameport_interrupt(chip);
+@@ -2018,7 +1975,7 @@ snd_azf3328_interrupt(int irq, void *dev_id)
+ 
+ 		/* hmm, do we have to ack the IRQ here somehow?
+ 		 * If so, then I don't know how yet... */
+-		snd_azf3328_dbgcodec("azt3328: MPU401 IRQ\n");
++		dev_dbg(chip->card->dev, "MPU401 IRQ\n");
+ 	}
+ 	return IRQ_HANDLED;
+ }
+@@ -2244,10 +2201,10 @@ snd_azf3328_timer_start(struct snd_timer *timer)
+ 		 * this timing tweak
+ 		 * (we need to do it to avoid a lockup, though) */
+ 
+-		snd_azf3328_dbgtimer("delay was too low (%d)!\n", delay);
++		dev_dbg(chip->card->dev, "delay was too low (%d)!\n", delay);
+ 		delay = 49; /* minimum time is 49 ticks */
+ 	}
+-	snd_azf3328_dbgtimer("setting timer countdown value %d\n", delay);
++	dev_dbg(chip->card->dev, "setting timer countdown value %d\n", delay);
+ 	delay |= TIMER_COUNTDOWN_ENABLE | TIMER_IRQ_ENABLE;
+ 	spin_lock_irqsave(&chip->reg_lock, flags);
+ 	snd_azf3328_ctrl_outl(chip, IDX_IO_TIMER_VALUE, delay);
+@@ -2386,34 +2343,34 @@ snd_azf3328_test_bit(unsigned unsigned reg, int bit)
+ static inline void
+ snd_azf3328_debug_show_ports(const struct snd_azf3328 *chip)
+ {
+-#if DEBUG_MISC
+ 	u16 tmp;
+ 
+-	snd_azf3328_dbgmisc(
++	dev_dbg(chip->card->dev,
+ 		"ctrl_io 0x%lx, game_io 0x%lx, mpu_io 0x%lx, "
+ 		"opl3_io 0x%lx, mixer_io 0x%lx, irq %d\n",
+ 		chip->ctrl_io, chip->game_io, chip->mpu_io,
+-		chip->opl3_io, chip->mixer_io, chip->irq
+-	);
++		chip->opl3_io, chip->mixer_io, chip->irq);
+ 
+-	snd_azf3328_dbgmisc("game %02x %02x %02x %02x %02x %02x\n",
++	dev_dbg(chip->card->dev,
++		"game %02x %02x %02x %02x %02x %02x\n",
+ 		snd_azf3328_game_inb(chip, 0),
+ 		snd_azf3328_game_inb(chip, 1),
+ 		snd_azf3328_game_inb(chip, 2),
+ 		snd_azf3328_game_inb(chip, 3),
+ 		snd_azf3328_game_inb(chip, 4),
+-		snd_azf3328_game_inb(chip, 5)
+-	);
++		snd_azf3328_game_inb(chip, 5));
+ 
+ 	for (tmp = 0; tmp < 0x07; tmp += 1)
+-		snd_azf3328_dbgmisc("mpu_io 0x%04x\n", inb(chip->mpu_io + tmp));
++		dev_dbg(chip->card->dev,
++			"mpu_io 0x%04x\n", inb(chip->mpu_io + tmp));
+ 
+ 	for (tmp = 0; tmp <= 0x07; tmp += 1)
+-		snd_azf3328_dbgmisc("0x%02x: game200 0x%04x, game208 0x%04x\n",
++		dev_dbg(chip->card->dev,
++			"0x%02x: game200 0x%04x, game208 0x%04x\n",
+ 			tmp, inb(0x200 + tmp), inb(0x208 + tmp));
+ 
+ 	for (tmp = 0; tmp <= 0x01; tmp += 1)
+-		snd_azf3328_dbgmisc(
++		dev_dbg(chip->card->dev,
+ 			"0x%02x: mpu300 0x%04x, mpu310 0x%04x, mpu320 0x%04x, "
+ 			"mpu330 0x%04x opl388 0x%04x opl38c 0x%04x\n",
+ 				tmp,
+@@ -2422,19 +2379,17 @@ snd_azf3328_debug_show_ports(const struct snd_azf3328 *chip)
+ 				inb(0x320 + tmp),
+ 				inb(0x330 + tmp),
+ 				inb(0x388 + tmp),
+-				inb(0x38c + tmp)
+-		);
++				inb(0x38c + tmp));
+ 
+ 	for (tmp = 0; tmp < AZF_IO_SIZE_CTRL; tmp += 2)
+-		snd_azf3328_dbgmisc("ctrl 0x%02x: 0x%04x\n",
+-			tmp, snd_azf3328_ctrl_inw(chip, tmp)
+-		);
++		dev_dbg(chip->card->dev,
++			"ctrl 0x%02x: 0x%04x\n",
++			tmp, snd_azf3328_ctrl_inw(chip, tmp));
+ 
+ 	for (tmp = 0; tmp < AZF_IO_SIZE_MIXER; tmp += 2)
+-		snd_azf3328_dbgmisc("mixer 0x%02x: 0x%04x\n",
+-			tmp, snd_azf3328_mixer_inw(chip, tmp)
+-		);
+-#endif /* DEBUG_MISC */
++		dev_dbg(chip->card->dev,
++			"mixer 0x%02x: 0x%04x\n",
++			tmp, snd_azf3328_mixer_inw(chip, tmp));
+ }
+ 
+ static int
+@@ -2471,8 +2426,8 @@ snd_azf3328_create(struct snd_card *card,
+ 	/* check if we can restrict PCI DMA transfers to 24 bits */
+ 	if (pci_set_dma_mask(pci, DMA_BIT_MASK(24)) < 0 ||
+ 	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(24)) < 0) {
+-		snd_printk(KERN_ERR "architecture does not support "
+-					"24bit PCI busmaster DMA\n"
++		dev_err(card->dev,
++			"architecture does not support 24bit PCI busmaster DMA\n"
+ 		);
+ 		err = -ENXIO;
+ 		goto out_err;
+@@ -2508,7 +2463,7 @@ snd_azf3328_create(struct snd_card *card,
+ 
+ 	if (request_irq(pci->irq, snd_azf3328_interrupt,
+ 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
+-		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
++		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		err = -EBUSY;
+ 		goto out_err;
+ 	}
+@@ -2603,7 +2558,7 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 		-1, &chip->rmidi
+ 	);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "azf3328: no MPU-401 device at 0x%lx?\n",
++		dev_err(card->dev, "no MPU-401 device at 0x%lx?\n",
+ 				chip->mpu_io
+ 		);
+ 		goto out_err;
+@@ -2619,7 +2574,7 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 
+ 	if (snd_opl3_create(card, chip->opl3_io, chip->opl3_io+2,
+ 			    OPL3_HW_AUTO, 1, &opl3) < 0) {
+-		snd_printk(KERN_ERR "azf3328: no OPL3 device at 0x%lx-0x%lx?\n",
++		dev_err(card->dev, "no OPL3 device at 0x%lx-0x%lx?\n",
+ 			   chip->opl3_io, chip->opl3_io+2
+ 		);
+ 	} else {
+@@ -2641,12 +2596,15 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 		goto out_err;
+ 
+ #ifdef MODULE
+-	printk(KERN_INFO
+-"azt3328: Sound driver for Aztech AZF3328-based soundcards such as PCI168.\n"
+-"azt3328: Hardware was completely undocumented, unfortunately.\n"
+-"azt3328: Feel free to contact andi AT lisas.de for bug reports etc.!\n"
+-"azt3328: User-scalable sequencer timer set to %dHz (1024000Hz / %d).\n",
+-	1024000 / seqtimer_scaling, seqtimer_scaling);
++	dev_info(card->dev,
++		 "Sound driver for Aztech AZF3328-based soundcards such as PCI168.\n");
++	dev_info(card->dev,
++		 "Hardware was completely undocumented, unfortunately.\n");
++	dev_info(card->dev,
++		 "Feel free to contact andi AT lisas.de for bug reports etc.!\n");
++	dev_info(card->dev,
++		 "User-scalable sequencer timer set to %dHz (1024000Hz / %d).\n",
++		 1024000 / seqtimer_scaling, seqtimer_scaling);
+ #endif
+ 
+ 	snd_azf3328_gameport(chip, dev);
+@@ -2658,7 +2616,7 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 	goto out;
+ 
+ out_err:
+-	snd_printk(KERN_ERR "azf3328: something failed, exiting\n");
++	dev_err(card->dev, "something failed, exiting\n");
+ 	snd_card_free(card);
+ 
+ out:
+@@ -2673,13 +2631,14 @@ snd_azf3328_remove(struct pci_dev *pci)
+ 
+ #ifdef CONFIG_PM_SLEEP
+ static inline void
+-snd_azf3328_suspend_regs(unsigned long io_addr, unsigned count, u32 *saved_regs)
++snd_azf3328_suspend_regs(const struct snd_azf3328 *chip,
++			 unsigned long io_addr, unsigned count, u32 *saved_regs)
+ {
+ 	unsigned reg;
+ 
+ 	for (reg = 0; reg < count; ++reg) {
+ 		*saved_regs = inl(io_addr);
+-		snd_azf3328_dbgpm("suspend: io 0x%04lx: 0x%08x\n",
++		dev_dbg(chip->card->dev, "suspend: io 0x%04lx: 0x%08x\n",
+ 			io_addr, *saved_regs);
+ 		++saved_regs;
+ 		io_addr += sizeof(*saved_regs);
+@@ -2687,7 +2646,8 @@ snd_azf3328_suspend_regs(unsigned long io_addr, unsigned count, u32 *saved_regs)
+ }
+ 
+ static inline void
+-snd_azf3328_resume_regs(const u32 *saved_regs,
++snd_azf3328_resume_regs(const struct snd_azf3328 *chip,
++			const u32 *saved_regs,
+ 			unsigned long io_addr,
+ 			unsigned count
+ )
+@@ -2696,7 +2656,8 @@ snd_azf3328_resume_regs(const u32 *saved_regs,
+ 
+ 	for (reg = 0; reg < count; ++reg) {
+ 		outl(*saved_regs, io_addr);
+-		snd_azf3328_dbgpm("resume: io 0x%04lx: 0x%08x --> 0x%08x\n",
++		dev_dbg(chip->card->dev,
++			"resume: io 0x%04lx: 0x%08x --> 0x%08x\n",
+ 			io_addr, *saved_regs, inl(io_addr));
+ 		++saved_regs;
+ 		io_addr += sizeof(*saved_regs);
+@@ -2709,7 +2670,7 @@ snd_azf3328_suspend_ac97(struct snd_azf3328 *chip)
+ #ifdef AZF_USE_AC97_LAYER
+ 	snd_ac97_suspend(chip->ac97);
+ #else
+-	snd_azf3328_suspend_regs(chip->mixer_io,
++	snd_azf3328_suspend_regs(chip, chip->mixer_io,
+ 		ARRAY_SIZE(chip->saved_regs_mixer), chip->saved_regs_mixer);
+ 
+ 	/* make sure to disable master volume etc. to prevent looping sound */
+@@ -2724,7 +2685,7 @@ snd_azf3328_resume_ac97(const struct snd_azf3328 *chip)
+ #ifdef AZF_USE_AC97_LAYER
+ 	snd_ac97_resume(chip->ac97);
+ #else
+-	snd_azf3328_resume_regs(chip->saved_regs_mixer, chip->mixer_io,
++	snd_azf3328_resume_regs(chip, chip->saved_regs_mixer, chip->mixer_io,
+ 					ARRAY_SIZE(chip->saved_regs_mixer));
+ 
+ 	/* unfortunately with 32bit transfers, IDX_MIXER_PLAY_MASTER (0x02)
+@@ -2751,18 +2712,18 @@ snd_azf3328_suspend(struct device *dev)
+ 
+ 	snd_azf3328_suspend_ac97(chip);
+ 
+-	snd_azf3328_suspend_regs(chip->ctrl_io,
++	snd_azf3328_suspend_regs(chip, chip->ctrl_io,
+ 		ARRAY_SIZE(chip->saved_regs_ctrl), chip->saved_regs_ctrl);
+ 
+ 	/* manually store the one currently relevant write-only reg, too */
+ 	saved_regs_ctrl_u16 = (u16 *)chip->saved_regs_ctrl;
+ 	saved_regs_ctrl_u16[IDX_IO_6AH / 2] = chip->shadow_reg_ctrl_6AH;
+ 
+-	snd_azf3328_suspend_regs(chip->game_io,
++	snd_azf3328_suspend_regs(chip, chip->game_io,
+ 		ARRAY_SIZE(chip->saved_regs_game), chip->saved_regs_game);
+-	snd_azf3328_suspend_regs(chip->mpu_io,
++	snd_azf3328_suspend_regs(chip, chip->mpu_io,
+ 		ARRAY_SIZE(chip->saved_regs_mpu), chip->saved_regs_mpu);
+-	snd_azf3328_suspend_regs(chip->opl3_io,
++	snd_azf3328_suspend_regs(chip, chip->opl3_io,
+ 		ARRAY_SIZE(chip->saved_regs_opl3), chip->saved_regs_opl3);
+ 
+ 	pci_disable_device(pci);
+@@ -2781,23 +2742,22 @@ snd_azf3328_resume(struct device *dev)
  	pci_set_power_state(pci, PCI_D0);
  	pci_restore_state(pci);
  	if (pci_enable_device(pci) < 0) {
--		printk(KERN_ERR "es1938: pci_enable_device failed, "
+-		printk(KERN_ERR "azt3328: pci_enable_device failed, "
 -		       "disabling device\n");
 +		dev_err(dev, "pci_enable_device failed, disabling device\n");
  		snd_card_disconnect(card);
  		return -EIO;
  	}
+ 	pci_set_master(pci);
  
- 	if (request_irq(pci->irq, snd_es1938_interrupt,
- 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
--		printk(KERN_ERR "es1938: unable to grab IRQ %d, "
--		       "disabling device\n", pci->irq);
-+		dev_err(dev, "unable to grab IRQ %d, disabling device\n",
-+			pci->irq);
- 		snd_card_disconnect(card);
- 		return -EIO;
- 	}
-@@ -1545,7 +1533,8 @@ static int snd_es1938_create_gameport(struct es1938 *chip)
+-	snd_azf3328_resume_regs(chip->saved_regs_game, chip->game_io,
++	snd_azf3328_resume_regs(chip, chip->saved_regs_game, chip->game_io,
+ 					ARRAY_SIZE(chip->saved_regs_game));
+-	snd_azf3328_resume_regs(chip->saved_regs_mpu, chip->mpu_io,
++	snd_azf3328_resume_regs(chip, chip->saved_regs_mpu, chip->mpu_io,
+ 					ARRAY_SIZE(chip->saved_regs_mpu));
+-	snd_azf3328_resume_regs(chip->saved_regs_opl3, chip->opl3_io,
++	snd_azf3328_resume_regs(chip, chip->saved_regs_opl3, chip->opl3_io,
+ 					ARRAY_SIZE(chip->saved_regs_opl3));
  
- 	chip->gameport = gp = gameport_allocate_port();
- 	if (!gp) {
--		printk(KERN_ERR "es1938: cannot allocate memory for gameport\n");
-+		dev_err(chip->card->dev,
-+			"cannot allocate memory for gameport\n");
- 		return -ENOMEM;
- 	}
+ 	snd_azf3328_resume_ac97(chip);
  
-@@ -1612,7 +1601,8 @@ static int snd_es1938_create(struct snd_card *card,
-         /* check, if we can restrict PCI DMA transfers to 24 bits */
- 	if (pci_set_dma_mask(pci, DMA_BIT_MASK(24)) < 0 ||
- 	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(24)) < 0) {
--		snd_printk(KERN_ERR "architecture does not support 24bit PCI busmaster DMA\n");
-+		dev_err(card->dev,
-+			"architecture does not support 24bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
-                 return -ENXIO;
-         }
-@@ -1639,15 +1629,14 @@ static int snd_es1938_create(struct snd_card *card,
- 	chip->game_port = pci_resource_start(pci, 4);
- 	if (request_irq(pci->irq, snd_es1938_interrupt, IRQF_SHARED,
- 			KBUILD_MODNAME, chip)) {
--		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
-+		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
- 		snd_es1938_free(chip);
- 		return -EBUSY;
- 	}
- 	chip->irq = pci->irq;
--#ifdef ES1938_DDEBUG
--	snd_printk(KERN_DEBUG "create: io: 0x%lx, sb: 0x%lx, vc: 0x%lx, mpu: 0x%lx, game: 0x%lx\n",
-+	dev_dbg(card->dev,
-+		"create: io: 0x%lx, sb: 0x%lx, vc: 0x%lx, mpu: 0x%lx, game: 0x%lx\n",
- 		   chip->io_port, chip->sb_port, chip->vc_port, chip->mpu_port, chip->game_port);
--#endif
+-	snd_azf3328_resume_regs(chip->saved_regs_ctrl, chip->ctrl_io,
++	snd_azf3328_resume_regs(chip, chip->saved_regs_ctrl, chip->ctrl_io,
+ 					ARRAY_SIZE(chip->saved_regs_ctrl));
  
- 	chip->ddma_port = chip->vc_port + 0x00;		/* fix from Thomas Sailer */
- 
-@@ -1673,21 +1662,22 @@ static irqreturn_t snd_es1938_interrupt(int irq, void *dev_id)
- 
- 	status = inb(SLIO_REG(chip, IRQCONTROL));
- #if 0
--	printk(KERN_DEBUG "Es1938debug - interrupt status: =0x%x\n", status);
-+	dev_dbg(chip->card->dev,
-+		"Es1938debug - interrupt status: =0x%x\n", status);
- #endif
- 	
- 	/* AUDIO 1 */
- 	if (status & 0x10) {
- #if 0
--                printk(KERN_DEBUG
-+		dev_dbg(chip->card->dev,
- 		       "Es1938debug - AUDIO channel 1 interrupt\n");
--		printk(KERN_DEBUG
-+		dev_dbg(chip->card->dev,
- 		       "Es1938debug - AUDIO channel 1 DMAC DMA count: %u\n",
- 		       inw(SLDM_REG(chip, DMACOUNT)));
--		printk(KERN_DEBUG
-+		dev_dbg(chip->card->dev,
- 		       "Es1938debug - AUDIO channel 1 DMAC DMA base: %u\n",
- 		       inl(SLDM_REG(chip, DMAADDR)));
--		printk(KERN_DEBUG
-+		dev_dbg(chip->card->dev,
- 		       "Es1938debug - AUDIO channel 1 DMAC DMA status: 0x%x\n",
- 		       inl(SLDM_REG(chip, DMASTATUS)));
- #endif
-@@ -1703,12 +1693,12 @@ static irqreturn_t snd_es1938_interrupt(int irq, void *dev_id)
- 	/* AUDIO 2 */
- 	if (status & 0x20) {
- #if 0
--                printk(KERN_DEBUG
-+		dev_dbg(chip->card->dev,
- 		       "Es1938debug - AUDIO channel 2 interrupt\n");
--		printk(KERN_DEBUG
-+		dev_dbg(chip->card->dev,
- 		       "Es1938debug - AUDIO channel 2 DMAC DMA count: %u\n",
- 		       inw(SLIO_REG(chip, AUDIO2DMACOUNT)));
--		printk(KERN_DEBUG
-+		dev_dbg(chip->card->dev,
- 		       "Es1938debug - AUDIO channel 2 DMAC DMA base: %u\n",
- 		       inl(SLIO_REG(chip, AUDIO2DMAADDR)));
- 
-@@ -1842,7 +1832,7 @@ static int snd_es1938_probe(struct pci_dev *pci,
- 			    SLSB_REG(chip, FMLOWADDR),
- 			    SLSB_REG(chip, FMHIGHADDR),
- 			    OPL3_HW_OPL3, 1, &opl3) < 0) {
--		printk(KERN_ERR "es1938: OPL3 not detected at 0x%lx\n",
-+		dev_err(card->dev, "OPL3 not detected at 0x%lx\n",
- 			   SLSB_REG(chip, FMLOWADDR));
- 	} else {
- 	        if ((err = snd_opl3_timer_new(opl3, 0, 1)) < 0) {
-@@ -1858,7 +1848,7 @@ static int snd_es1938_probe(struct pci_dev *pci,
- 				chip->mpu_port,
- 				MPU401_INFO_INTEGRATED | MPU401_INFO_IRQ_HOOK,
- 				-1, &chip->rmidi) < 0) {
--		printk(KERN_ERR "es1938: unable to initialize MPU-401\n");
-+		dev_err(card->dev, "unable to initialize MPU-401\n");
- 	} else {
- 		// this line is vital for MIDI interrupt handling on ess-solo1
- 		// andreas@flying-snail.de
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
 -- 
 1.9.0
