@@ -1,52 +1,74 @@
-From: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>
-Subject: [PATCH 2/2] ASoC: cirrus: clps711x: Add bindings documentation for the CLPS711X DAI
-Date: Wed, 26 Feb 2014 20:07:36 +0400
-Message-ID: <1393430856-16322-1-git-send-email-shc_work@mail.ru>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH 04/15] ASoC: fsl-ssi: Use dev_name for DAI driver struct
+Date: Wed, 26 Feb 2014 17:02:07 +0100
+Message-ID: <1393430538-32333-5-git-send-email-mpa@pengutronix.de>
+References: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the devicetree documentation for the Cirrus Logic
-CLPS711X Digital Audio Interface (DAI).
+Instead of creating a name using string manipulation functions, we can
+simply use the device name for the DAI driver struct.
 
-Signed-off-by: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- .../bindings/sound/cirrus,clps711x-dai.txt           | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cirrus,clps711x-dai.txt
+ sound/soc/fsl/fsl_ssi.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/cirrus,clps711x-dai.txt b/Documentation/devicetree/bindings/sound/cirrus,clps711x-dai.txt
-new file mode 100644
-index 0000000..718599e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/cirrus,clps711x-dai.txt
-@@ -0,0 +1,20 @@
-+* Cirrus Logic CLPS711X Digital Audio Interface (DAI)
-+
-+Required properties:
-+- compatible: Should be "cirrus,clps711x-dai".
-+- reg: Should contain registers location and length.
-+- clocks: A clock specifier for the CPU PLL clock.
-+- clock-names: The CPU PLL clock should be named "pll".
-+- interrupts: Should contain DAI interrupt number.
-+- syscon: phandle to syscon device node which control DAI (SYSCON3).
-+
-+Example:
-+	dai: dai@80002000 {
-+		#sound-dai-cells = <0>;
-+		compatible = "cirrus,clps711x-dai";
-+		reg = <0x80002000 0x604>;
-+		clocks = <&clks 3>;
-+		clock-names = "pll";
-+		interrupts = <32>;
-+		syscon = <&syscon3>;
-+	};
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 71fcfc6..b3e3758 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1009,17 +1009,13 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	if (!strcmp(sprop, "ac97-slave"))
+ 		ac97 = true;
+ 
+-	/* The DAI name is the last part of the full name of the node. */
+-	p = strrchr(np->full_name, '/') + 1;
+-	ssi_private = devm_kzalloc(&pdev->dev, sizeof(*ssi_private) + strlen(p),
+-			      GFP_KERNEL);
++	ssi_private = devm_kzalloc(&pdev->dev, sizeof(*ssi_private),
++			GFP_KERNEL);
+ 	if (!ssi_private) {
+ 		dev_err(&pdev->dev, "could not allocate DAI object\n");
+ 		return -ENOMEM;
+ 	}
+ 
+-	strcpy(ssi_private->name, p);
+-
+ 	ssi_private->use_dma = !of_property_read_bool(np,
+ 			"fsl,fiq-stream-filter");
+ 	ssi_private->hw_type = hw_type;
+@@ -1037,7 +1033,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
+ 		       sizeof(fsl_ssi_dai_template));
+ 	}
+-	ssi_private->cpu_dai_drv.name = ssi_private->name;
++	ssi_private->cpu_dai_drv.name = dev_name(&pdev->dev);
+ 
+ 	/* Get the addresses and IRQ */
+ 	ret = of_address_to_resource(np, 0, &res);
+@@ -1193,7 +1189,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	 * different writeable interrupt status registers.
+ 	 */
+ 	if (ssi_private->use_dma) {
+-		/* The 'name' should not have any slashes in it. */
+ 		ret = devm_request_irq(&pdev->dev, ssi_private->irq,
+ 					fsl_ssi_isr, 0, ssi_private->name,
+ 					ssi_private);
 -- 
-1.8.3.2
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.8.5.3
