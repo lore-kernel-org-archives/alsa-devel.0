@@ -1,268 +1,401 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH 05/15] ASoC: fsl-ssi: Move imx-specific probe to seperate
- function
-Date: Wed, 26 Feb 2014 17:02:08 +0100
-Message-ID: <1393430538-32333-6-git-send-email-mpa@pengutronix.de>
-References: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 42/48] ALSA: hdspm: Use standard printk helpers
+Date: Wed, 26 Feb 2014 16:53:44 +0100
+Message-ID: <1393430030-26704-43-git-send-email-tiwai@suse.de>
+References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5972B2657DE
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id F395375048
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
+In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Move imx specific probe code to a seperate function. It reduces the
-size of the probe() function and makes the code and error handling
-easier to understand.
+Convert with dev_err() and co from snd_printk(), etc.
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 183 ++++++++++++++++++++++++++----------------------
- 1 file changed, 101 insertions(+), 82 deletions(-)
+ sound/pci/rme9652/hdspm.c | 125 +++++++++++++++++++++++++---------------------
+ 1 file changed, 69 insertions(+), 56 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index b3e3758..054813d 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -973,6 +973,98 @@ static void make_lowercase(char *s)
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 76016287e46f..cb82b593473a 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -1651,9 +1651,8 @@ static int hdspm_set_rate(struct hdspm * hdspm, int rate, int called_internally)
+ 			   just make a warning an remember setting
+ 			   for future master mode switching */
+ 
+-			snd_printk(KERN_WARNING "HDSPM: "
+-				   "Warning: device is not running "
+-				   "as a clock master.\n");
++			dev_warn(hdspm->card->dev,
++				 "Warning: device is not running as a clock master.\n");
+ 			not_set = 1;
+ 		} else {
+ 
+@@ -1664,15 +1663,14 @@ static int hdspm_set_rate(struct hdspm * hdspm, int rate, int called_internally)
+ 			if (hdspm_autosync_ref(hdspm) ==
+ 			    HDSPM_AUTOSYNC_FROM_NONE) {
+ 
+-				snd_printk(KERN_WARNING "HDSPM: "
+-					   "Detected no Externel Sync \n");
++				dev_warn(hdspm->card->dev,
++					 "Detected no Externel Sync\n");
+ 				not_set = 1;
+ 
+ 			} else if (rate != external_freq) {
+ 
+-				snd_printk(KERN_WARNING "HDSPM: "
+-					   "Warning: No AutoSync source for "
+-					   "requested rate\n");
++				dev_warn(hdspm->card->dev,
++					 "Warning: No AutoSync source for requested rate\n");
+ 				not_set = 1;
+ 			}
+ 		}
+@@ -1738,13 +1736,11 @@ static int hdspm_set_rate(struct hdspm * hdspm, int rate, int called_internally)
+ 
+ 	if (current_speed != target_speed
+ 	    && (hdspm->capture_pid >= 0 || hdspm->playback_pid >= 0)) {
+-		snd_printk
+-		    (KERN_ERR "HDSPM: "
+-		     "cannot change from %s speed to %s speed mode "
+-		     "(capture PID = %d, playback PID = %d)\n",
+-		     hdspm_speed_names[current_speed],
+-		     hdspm_speed_names[target_speed],
+-		     hdspm->capture_pid, hdspm->playback_pid);
++		dev_err(hdspm->card->dev,
++			"cannot change from %s speed to %s speed mode (capture PID = %d, playback PID = %d)\n",
++			hdspm_speed_names[current_speed],
++			hdspm_speed_names[target_speed],
++			hdspm->capture_pid, hdspm->playback_pid);
+ 		return -EBUSY;
  	}
- }
  
-+static int fsl_ssi_imx_probe(struct platform_device *pdev,
-+		struct fsl_ssi_private *ssi_private)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	u32 dma_events[2], dmas[4];
-+	bool shared;
-+	int ret;
-+
-+	ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(ssi_private->clk)) {
-+		ret = PTR_ERR(ssi_private->clk);
-+		dev_err(&pdev->dev, "could not get clock: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(ssi_private->clk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "clk_prepare_enable failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* For those SLAVE implementations, we ingore non-baudclk cases
-+	 * and, instead, abandon MASTER mode that needs baud clock.
-+	 */
-+	ssi_private->baudclk = devm_clk_get(&pdev->dev, "baud");
-+	if (IS_ERR(ssi_private->baudclk))
-+		dev_dbg(&pdev->dev, "could not get baud clock: %ld\n",
-+			 PTR_ERR(ssi_private->baudclk));
-+	else
-+		clk_prepare_enable(ssi_private->baudclk);
-+
-+	/*
-+	 * We have burstsize be "fifo_depth - 2" to match the SSI
-+	 * watermark setting in fsl_ssi_startup().
-+	 */
-+	ssi_private->dma_params_tx.maxburst = ssi_private->fifo_depth - 2;
-+	ssi_private->dma_params_rx.maxburst = ssi_private->fifo_depth - 2;
-+	ssi_private->dma_params_tx.addr = ssi_private->ssi_phys + CCSR_SSI_STX0;
-+	ssi_private->dma_params_rx.addr = ssi_private->ssi_phys + CCSR_SSI_SRX0;
-+	ssi_private->dma_params_tx.filter_data = &ssi_private->filter_data_tx;
-+	ssi_private->dma_params_rx.filter_data = &ssi_private->filter_data_rx;
-+
-+	if (!of_property_read_bool(pdev->dev.of_node, "dmas") &&
-+			ssi_private->use_dma) {
-+		/*
-+		 * FIXME: This is a temporary solution until all
-+		 * necessary dma drivers support the generic dma
-+		 * bindings.
-+		 */
-+		ret = of_property_read_u32_array(pdev->dev.of_node,
-+				"fsl,ssi-dma-events", dma_events, 2);
-+		if (ret && ssi_private->use_dma) {
-+			dev_err(&pdev->dev, "could not get dma events but fsl-ssi is configured to use DMA\n");
-+			goto error_dma_events;
-+		}
-+	}
-+	/* Should this be merge with the above? */
-+	if (!of_property_read_u32_array(pdev->dev.of_node, "dmas", dmas, 4)
-+			&& dmas[2] == IMX_DMATYPE_SSI_DUAL) {
-+		ssi_private->use_dual_fifo = true;
-+		/* When using dual fifo mode, we need to keep watermark
-+		 * as even numbers due to dma script limitation.
-+		 */
-+		ssi_private->dma_params_tx.maxburst &= ~0x1;
-+		ssi_private->dma_params_rx.maxburst &= ~0x1;
-+	}
-+
-+	shared = of_device_is_compatible(of_get_parent(np), "fsl,spba-bus");
-+
-+	imx_pcm_dma_params_init_data(&ssi_private->filter_data_tx,
-+		dma_events[0], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
-+	imx_pcm_dma_params_init_data(&ssi_private->filter_data_rx,
-+		dma_events[1], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
-+
-+	return 0;
-+
-+error_dma_events:
-+	if (!IS_ERR(ssi_private->baudclk))
-+		clk_disable_unprepare(ssi_private->baudclk);
-+	clk_disable_unprepare(ssi_private->clk);
-+
-+	return ret;
-+}
-+
-+static void fsl_ssi_imx_clean(struct platform_device *pdev,
-+		struct fsl_ssi_private *ssi_private)
-+{
-+	if (!IS_ERR(ssi_private->baudclk))
-+		clk_disable_unprepare(ssi_private->baudclk);
-+	clk_disable_unprepare(ssi_private->clk);
-+}
-+
- static int fsl_ssi_probe(struct platform_device *pdev)
- {
- 	struct fsl_ssi_private *ssi_private;
-@@ -986,7 +1078,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	struct resource res;
- 	void __iomem *iomem;
- 	char name[64];
--	bool shared;
- 	bool ac97 = false;
+@@ -5446,7 +5442,7 @@ static irqreturn_t snd_hdspm_interrupt(int irq, void *dev_id)
+ 	 *          0         64     ~3998231       ~8191558
+ 	 **/
+ 	/*
+-	   snd_printk(KERN_INFO "snd_hdspm_interrupt %llu @ %llx\n",
++	  dev_info(hdspm->card->dev, "snd_hdspm_interrupt %llu @ %llx\n",
+ 	   now-hdspm->last_interrupt, status & 0xFFC0);
+ 	   hdspm->last_interrupt = now;
+ 	*/
+@@ -5583,7 +5579,7 @@ static int snd_hdspm_hw_params(struct snd_pcm_substream *substream,
+ 	spin_lock_irq(&hdspm->lock);
+ 	err = hdspm_set_rate(hdspm, params_rate(params), 0);
+ 	if (err < 0) {
+-		snd_printk(KERN_INFO "err on hdspm_set_rate: %d\n", err);
++		dev_info(hdspm->card->dev, "err on hdspm_set_rate: %d\n", err);
+ 		spin_unlock_irq(&hdspm->lock);
+ 		_snd_pcm_hw_param_setempty(params,
+ 				SNDRV_PCM_HW_PARAM_RATE);
+@@ -5594,7 +5590,8 @@ static int snd_hdspm_hw_params(struct snd_pcm_substream *substream,
+ 	err = hdspm_set_interrupt_interval(hdspm,
+ 			params_period_size(params));
+ 	if (err < 0) {
+-		snd_printk(KERN_INFO "err on hdspm_set_interrupt_interval: %d\n", err);
++		dev_info(hdspm->card->dev,
++			 "err on hdspm_set_interrupt_interval: %d\n", err);
+ 		_snd_pcm_hw_param_setempty(params,
+ 				SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
+ 		return err;
+@@ -5610,7 +5607,8 @@ static int snd_hdspm_hw_params(struct snd_pcm_substream *substream,
+ 	err =
+ 		snd_pcm_lib_malloc_pages(substream, HDSPM_DMA_AREA_BYTES);
+ 	if (err < 0) {
+-		snd_printk(KERN_INFO "err on snd_pcm_lib_malloc_pages: %d\n", err);
++		dev_info(hdspm->card->dev,
++			 "err on snd_pcm_lib_malloc_pages: %d\n", err);
+ 		return err;
+ 	}
  
- 	/* SSIs that are not connected on the board should have a
-@@ -1108,80 +1199,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+@@ -5624,7 +5622,8 @@ static int snd_hdspm_hw_params(struct snd_pcm_substream *substream,
  
- 	if (hw_type == FSL_SSI_MX21 || hw_type == FSL_SSI_MX51 ||
- 			hw_type == FSL_SSI_MX35) {
--		u32 dma_events[2], dmas[4];
- 		ssi_private->ssi_on_imx = true;
+ 		hdspm->playback_buffer =
+ 			(unsigned char *) substream->runtime->dma_area;
+-		snd_printdd("Allocated sample buffer for playback at %p\n",
++		dev_dbg(hdspm->card->dev,
++			"Allocated sample buffer for playback at %p\n",
+ 				hdspm->playback_buffer);
+ 	} else {
+ 		hdspm_set_sgbuf(hdspm, substream, HDSPM_pageAddressBufferIn,
+@@ -5635,18 +5634,21 @@ static int snd_hdspm_hw_params(struct snd_pcm_substream *substream,
  
--		ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
--		if (IS_ERR(ssi_private->clk)) {
--			ret = PTR_ERR(ssi_private->clk);
--			dev_err(&pdev->dev, "could not get clock: %d\n", ret);
-+		ret = fsl_ssi_imx_probe(pdev, ssi_private);
-+		if (ret)
- 			goto error_irqmap;
--		}
--		ret = clk_prepare_enable(ssi_private->clk);
--		if (ret) {
--			dev_err(&pdev->dev, "clk_prepare_enable failed: %d\n",
--				ret);
--			goto error_irqmap;
--		}
--
--		/* For those SLAVE implementations, we ingore non-baudclk cases
--		 * and, instead, abandon MASTER mode that needs baud clock.
--		 */
--		ssi_private->baudclk = devm_clk_get(&pdev->dev, "baud");
--		if (IS_ERR(ssi_private->baudclk))
--			dev_dbg(&pdev->dev, "could not get baud clock: %ld\n",
--				 PTR_ERR(ssi_private->baudclk));
--		else
--			clk_prepare_enable(ssi_private->baudclk);
--
--		/*
--		 * We have burstsize be "fifo_depth - 2" to match the SSI
--		 * watermark setting in fsl_ssi_startup().
--		 */
--		ssi_private->dma_params_tx.maxburst =
--			ssi_private->fifo_depth - 2;
--		ssi_private->dma_params_rx.maxburst =
--			ssi_private->fifo_depth - 2;
--		ssi_private->dma_params_tx.addr =
--			ssi_private->ssi_phys + CCSR_SSI_STX0;
--		ssi_private->dma_params_rx.addr =
--			ssi_private->ssi_phys + CCSR_SSI_SRX0;
--		ssi_private->dma_params_tx.filter_data =
--			&ssi_private->filter_data_tx;
--		ssi_private->dma_params_rx.filter_data =
--			&ssi_private->filter_data_rx;
--		if (!of_property_read_bool(pdev->dev.of_node, "dmas") &&
--				ssi_private->use_dma) {
--			/*
--			 * FIXME: This is a temporary solution until all
--			 * necessary dma drivers support the generic dma
--			 * bindings.
--			 */
--			ret = of_property_read_u32_array(pdev->dev.of_node,
--					"fsl,ssi-dma-events", dma_events, 2);
--			if (ret && ssi_private->use_dma) {
--				dev_err(&pdev->dev, "could not get dma events but fsl-ssi is configured to use DMA\n");
--				goto error_clk;
--			}
--		}
--		/* Should this be merge with the above? */
--		if (!of_property_read_u32_array(pdev->dev.of_node, "dmas", dmas, 4)
--				&& dmas[2] == IMX_DMATYPE_SSI_DUAL) {
--			ssi_private->use_dual_fifo = true;
--			/* When using dual fifo mode, we need to keep watermark
--			 * as even numbers due to dma script limitation.
--			 */
--			ssi_private->dma_params_tx.maxburst &= ~0x1;
--			ssi_private->dma_params_rx.maxburst &= ~0x1;
--		}
--
--		shared = of_device_is_compatible(of_get_parent(np),
--			    "fsl,spba-bus");
--
--		imx_pcm_dma_params_init_data(&ssi_private->filter_data_tx,
--			dma_events[0], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
--		imx_pcm_dma_params_init_data(&ssi_private->filter_data_rx,
--			dma_events[1], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
+ 		hdspm->capture_buffer =
+ 			(unsigned char *) substream->runtime->dma_area;
+-		snd_printdd("Allocated sample buffer for capture at %p\n",
++		dev_dbg(hdspm->card->dev,
++			"Allocated sample buffer for capture at %p\n",
+ 				hdspm->capture_buffer);
  	}
  
  	/*
-@@ -1196,7 +1218,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		if (ret < 0) {
- 			dev_err(&pdev->dev, "could not claim irq %u\n",
- 					ssi_private->irq);
--			goto error_clk;
-+			goto error_irq;
+-	   snd_printdd("Allocated sample buffer for %s at 0x%08X\n",
++	   dev_dbg(hdspm->card->dev,
++	   "Allocated sample buffer for %s at 0x%08X\n",
+ 	   substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
+ 	   "playback" : "capture",
+ 	   snd_pcm_sgbuf_get_addr(substream, 0));
+ 	   */
+ 	/*
+-	   snd_printdd("set_hwparams: %s %d Hz, %d channels, bs = %d\n",
++	   dev_dbg(hdspm->card->dev,
++	   "set_hwparams: %s %d Hz, %d channels, bs = %d\n",
+ 	   substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
+ 	   "playback" : "capture",
+ 	   params_rate(params), params_channels(params),
+@@ -5667,12 +5669,14 @@ static int snd_hdspm_hw_params(struct snd_pcm_substream *substream,
+ 	/* Switch to native float format if requested */
+ 	if (SNDRV_PCM_FORMAT_FLOAT_LE == params_format(params)) {
+ 		if (!(hdspm->control_register & HDSPe_FLOAT_FORMAT))
+-			snd_printk(KERN_INFO "hdspm: Switching to native 32bit LE float format.\n");
++			dev_info(hdspm->card->dev,
++				 "Switching to native 32bit LE float format.\n");
+ 
+ 		hdspm->control_register |= HDSPe_FLOAT_FORMAT;
+ 	} else if (SNDRV_PCM_FORMAT_S32_LE == params_format(params)) {
+ 		if (hdspm->control_register & HDSPe_FLOAT_FORMAT)
+-			snd_printk(KERN_INFO "hdspm: Switching to native 32bit LE integer format.\n");
++			dev_info(hdspm->card->dev,
++				 "Switching to native 32bit LE integer format.\n");
+ 
+ 		hdspm->control_register &= ~HDSPe_FLOAT_FORMAT;
+ 	}
+@@ -5715,12 +5719,16 @@ static int snd_hdspm_channel_info(struct snd_pcm_substream *substream,
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		if (snd_BUG_ON(info->channel >= hdspm->max_channels_out)) {
+-			snd_printk(KERN_INFO "snd_hdspm_channel_info: output channel out of range (%d)\n", info->channel);
++			dev_info(hdspm->card->dev,
++				 "snd_hdspm_channel_info: output channel out of range (%d)\n",
++				 info->channel);
+ 			return -EINVAL;
+ 		}
+ 
+ 		if (hdspm->channel_map_out[info->channel] < 0) {
+-			snd_printk(KERN_INFO "snd_hdspm_channel_info: output channel %d mapped out\n", info->channel);
++			dev_info(hdspm->card->dev,
++				 "snd_hdspm_channel_info: output channel %d mapped out\n",
++				 info->channel);
+ 			return -EINVAL;
+ 		}
+ 
+@@ -5728,12 +5736,16 @@ static int snd_hdspm_channel_info(struct snd_pcm_substream *substream,
+ 			HDSPM_CHANNEL_BUFFER_BYTES;
+ 	} else {
+ 		if (snd_BUG_ON(info->channel >= hdspm->max_channels_in)) {
+-			snd_printk(KERN_INFO "snd_hdspm_channel_info: input channel out of range (%d)\n", info->channel);
++			dev_info(hdspm->card->dev,
++				 "snd_hdspm_channel_info: input channel out of range (%d)\n",
++				 info->channel);
+ 			return -EINVAL;
+ 		}
+ 
+ 		if (hdspm->channel_map_in[info->channel] < 0) {
+-			snd_printk(KERN_INFO "snd_hdspm_channel_info: input channel %d mapped out\n", info->channel);
++			dev_info(hdspm->card->dev,
++				 "snd_hdspm_channel_info: input channel %d mapped out\n",
++				 info->channel);
+ 			return -EINVAL;
+ 		}
+ 
+@@ -6283,7 +6295,7 @@ static int snd_hdspm_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
+ 
+ 		s = copy_to_user(argp, levels, sizeof(struct hdspm_peak_rms));
+ 		if (0 != s) {
+-			/* snd_printk(KERN_ERR "copy_to_user(.., .., %lu): %lu
++			/* dev_err(hdspm->card->dev, "copy_to_user(.., .., %lu): %lu
+ 			 [Levels]\n", sizeof(struct hdspm_peak_rms), s);
+ 			 */
+ 			return -EFAULT;
+@@ -6329,7 +6341,7 @@ static int snd_hdspm_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
+ 		s = copy_to_user(argp, &ltc, sizeof(struct hdspm_ltc));
+ 		if (0 != s) {
+ 			/*
+-			 snd_printk(KERN_ERR "copy_to_user(.., .., %lu): %lu [LTC]\n", sizeof(struct hdspm_ltc), s); */
++			  dev_err(hdspm->card->dev, "copy_to_user(.., .., %lu): %lu [LTC]\n", sizeof(struct hdspm_ltc), s); */
+ 			return -EFAULT;
+ 		}
+ 
+@@ -6494,11 +6506,13 @@ static int snd_hdspm_preallocate_memory(struct hdspm *hdspm)
+ 						   wanted,
+ 						   wanted);
+ 	if (err < 0) {
+-		snd_printdd("Could not preallocate %zd Bytes\n", wanted);
++		dev_dbg(hdspm->card->dev,
++			"Could not preallocate %zd Bytes\n", wanted);
+ 
+ 		return err;
+ 	} else
+-		snd_printdd(" Preallocated %zd Bytes\n", wanted);
++		dev_dbg(hdspm->card->dev,
++			" Preallocated %zd Bytes\n", wanted);
+ 
+ 	return 0;
+ }
+@@ -6559,7 +6573,7 @@ static int snd_hdspm_create_alsa_devices(struct snd_card *card,
+ {
+ 	int err, i;
+ 
+-	snd_printdd("Create card...\n");
++	dev_dbg(card->dev, "Create card...\n");
+ 	err = snd_hdspm_create_pcm(card, hdspm);
+ 	if (err < 0)
+ 		return err;
+@@ -6581,7 +6595,7 @@ static int snd_hdspm_create_alsa_devices(struct snd_card *card,
+ 	if (err < 0)
+ 		return err;
+ 
+-	snd_printdd("proc init...\n");
++	dev_dbg(card->dev, "proc init...\n");
+ 	snd_hdspm_proc_init(hdspm);
+ 
+ 	hdspm->system_sample_rate = -1;
+@@ -6592,23 +6606,23 @@ static int snd_hdspm_create_alsa_devices(struct snd_card *card,
+ 	hdspm->capture_substream = NULL;
+ 	hdspm->playback_substream = NULL;
+ 
+-	snd_printdd("Set defaults...\n");
++	dev_dbg(card->dev, "Set defaults...\n");
+ 	err = snd_hdspm_set_defaults(hdspm);
+ 	if (err < 0)
+ 		return err;
+ 
+-	snd_printdd("Update mixer controls...\n");
++	dev_dbg(card->dev, "Update mixer controls...\n");
+ 	hdspm_update_simple_mixer_controls(hdspm);
+ 
+-	snd_printdd("Initializeing complete ???\n");
++	dev_dbg(card->dev, "Initializeing complete ???\n");
+ 
+ 	err = snd_card_register(card);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "HDSPM: error registering card\n");
++		dev_err(card->dev, "error registering card\n");
+ 		return err;
+ 	}
+ 
+-	snd_printdd("... yes now\n");
++	dev_dbg(card->dev, "... yes now\n");
+ 
+ 	return 0;
+ }
+@@ -6662,8 +6676,8 @@ static int snd_hdspm_create(struct snd_card *card,
+ 			hdspm->card_name = "RME MADI";
+ 			hdspm->midiPorts = 3;
+ 		} else {
+-			snd_printk(KERN_ERR
+-				"HDSPM: unknown firmware revision %x\n",
++			dev_err(card->dev,
++				"unknown firmware revision %x\n",
+ 				hdspm->firmware_rev);
+ 			return -ENODEV;
+ 		}
+@@ -6682,36 +6696,35 @@ static int snd_hdspm_create(struct snd_card *card,
+ 	hdspm->port = pci_resource_start(pci, 0);
+ 	io_extent = pci_resource_len(pci, 0);
+ 
+-	snd_printdd("grabbed memory region 0x%lx-0x%lx\n",
++	dev_dbg(card->dev, "grabbed memory region 0x%lx-0x%lx\n",
+ 			hdspm->port, hdspm->port + io_extent - 1);
+ 
+ 	hdspm->iobase = ioremap_nocache(hdspm->port, io_extent);
+ 	if (!hdspm->iobase) {
+-		snd_printk(KERN_ERR "HDSPM: "
+-				"unable to remap region 0x%lx-0x%lx\n",
++		dev_err(card->dev, "unable to remap region 0x%lx-0x%lx\n",
+ 				hdspm->port, hdspm->port + io_extent - 1);
+ 		return -EBUSY;
+ 	}
+-	snd_printdd("remapped region (0x%lx) 0x%lx-0x%lx\n",
++	dev_dbg(card->dev, "remapped region (0x%lx) 0x%lx-0x%lx\n",
+ 			(unsigned long)hdspm->iobase, hdspm->port,
+ 			hdspm->port + io_extent - 1);
+ 
+ 	if (request_irq(pci->irq, snd_hdspm_interrupt,
+ 			IRQF_SHARED, KBUILD_MODNAME, hdspm)) {
+-		snd_printk(KERN_ERR "HDSPM: unable to use IRQ %d\n", pci->irq);
++		dev_err(card->dev, "unable to use IRQ %d\n", pci->irq);
+ 		return -EBUSY;
+ 	}
+ 
+-	snd_printdd("use IRQ %d\n", pci->irq);
++	dev_dbg(card->dev, "use IRQ %d\n", pci->irq);
+ 
+ 	hdspm->irq = pci->irq;
+ 
+-	snd_printdd("kmalloc Mixer memory of %zd Bytes\n",
++	dev_dbg(card->dev, "kmalloc Mixer memory of %zd Bytes\n",
+ 			sizeof(struct hdspm_mixer));
+ 	hdspm->mixer = kzalloc(sizeof(struct hdspm_mixer), GFP_KERNEL);
+ 	if (!hdspm->mixer) {
+-		snd_printk(KERN_ERR "HDSPM: "
+-				"unable to kmalloc Mixer memory of %d Bytes\n",
++		dev_err(card->dev,
++			"unable to kmalloc Mixer memory of %d Bytes\n",
+ 				(int)sizeof(struct hdspm_mixer));
+ 		return -ENOMEM;
+ 	}
+@@ -6780,14 +6793,14 @@ static int snd_hdspm_create(struct snd_card *card,
+ 		hdspm->qs_out_channels = AIO_OUT_QS_CHANNELS;
+ 
+ 		if (0 == (hdspm_read(hdspm, HDSPM_statusRegister2) & HDSPM_s2_AEBI_D)) {
+-			snd_printk(KERN_INFO "HDSPM: AEB input board found\n");
++			dev_info(card->dev, "AEB input board found\n");
+ 			hdspm->ss_in_channels += 4;
+ 			hdspm->ds_in_channels += 4;
+ 			hdspm->qs_in_channels += 4;
+ 		}
+ 
+ 		if (0 == (hdspm_read(hdspm, HDSPM_statusRegister2) & HDSPM_s2_AEBO_D)) {
+-			snd_printk(KERN_INFO "HDSPM: AEB output board found\n");
++			dev_info(card->dev, "AEB output board found\n");
+ 			hdspm->ss_out_channels += 4;
+ 			hdspm->ds_out_channels += 4;
+ 			hdspm->qs_out_channels += 4;
+@@ -6854,7 +6867,7 @@ static int snd_hdspm_create(struct snd_card *card,
+ 			if (NULL != hdspm->tco) {
+ 				hdspm_tco_write(hdspm);
+ 			}
+-			snd_printk(KERN_INFO "HDSPM: AIO/RayDAT TCO module found\n");
++			dev_info(card->dev, "AIO/RayDAT TCO module found\n");
+ 		} else {
+ 			hdspm->tco = NULL;
+ 		}
+@@ -6869,7 +6882,7 @@ static int snd_hdspm_create(struct snd_card *card,
+ 			if (NULL != hdspm->tco) {
+ 				hdspm_tco_write(hdspm);
+ 			}
+-			snd_printk(KERN_INFO "HDSPM: MADI/AES TCO module found\n");
++			dev_info(card->dev, "MADI/AES TCO module found\n");
+ 		} else {
+ 			hdspm->tco = NULL;
+ 		}
+@@ -6951,7 +6964,7 @@ static int snd_hdspm_create(struct snd_card *card,
  		}
  	}
  
-@@ -1289,11 +1311,9 @@ error_dbgfs:
- error_dev:
- 	device_remove_file(&pdev->dev, dev_attr);
- 
--error_clk:
-+error_irq:
- 	if (ssi_private->ssi_on_imx) {
--		if (!IS_ERR(ssi_private->baudclk))
--			clk_disable_unprepare(ssi_private->baudclk);
--		clk_disable_unprepare(ssi_private->clk);
-+		fsl_ssi_imx_clean(pdev, ssi_private);
- 	}
- 
- error_irqmap:
-@@ -1312,11 +1332,10 @@ static int fsl_ssi_remove(struct platform_device *pdev)
- 	if (!ssi_private->new_binding)
- 		platform_device_unregister(ssi_private->pdev);
- 	snd_soc_unregister_component(&pdev->dev);
--	if (ssi_private->ssi_on_imx) {
--		if (!IS_ERR(ssi_private->baudclk))
--			clk_disable_unprepare(ssi_private->baudclk);
--		clk_disable_unprepare(ssi_private->clk);
--	}
-+
-+	if (ssi_private->ssi_on_imx)
-+		fsl_ssi_imx_clean(pdev, ssi_private);
-+
- 	if (ssi_private->irq_stats)
- 		irq_dispose_mapping(ssi_private->irq);
- 
+-	snd_printdd("create alsa devices.\n");
++	dev_dbg(card->dev, "create alsa devices.\n");
+ 	err = snd_hdspm_create_alsa_devices(card, hdspm);
+ 	if (err < 0)
+ 		return err;
 -- 
-1.8.5.3
+1.9.0
