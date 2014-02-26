@@ -1,45 +1,129 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/1] ALSA: compress: no need to set metadata before next
-	track
-Date: Wed, 26 Feb 2014 14:54:08 +0000
-Message-ID: <20140226145408.GA2672@opensource.wolfsonmicro.com>
+From: Erik Ackermann <kurterikackermann@gmail.com>
+Subject: Re: [PATCH - speaker-test 1/1] speaker-test: add
+ --force-frequency option to allow hz outside range
+Date: Wed, 26 Feb 2014 07:01:10 -0800
+Message-ID: <CAN5Z5QG6XFkMQ=3hvqtvuZr-pCoTawXoQ+g5G65w_9kv3FmzwA@mail.gmail.com>
+References: <s5hmwhgygon.wl%tiwai@suse.de>
+ <CAA2k8L1nH3OJUsEb31zWuzwWTjN3EJGSrb0Wsr=dFqYgievFKQ@mail.gmail.com>
+ <s5h38j8pmni.wl%tiwai@suse.de>
+ <CAN5Z5QH3o=m9rbwuFtMu8DZpDN2xfy_KsC7F6jamwG=_jcXcaA@mail.gmail.com>
+ <s5hha7muyzb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: vinod.koul@intel.com
-Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, broonie@linaro.org
+Content-Type: multipart/mixed; boundary=089e01634eee03107204f3507c4f
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yh0-f45.google.com (mail-yh0-f45.google.com
+ [209.85.213.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09EDD265755
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:01:50 +0100 (CET)
+Received: by mail-yh0-f45.google.com with SMTP id i57so1042260yha.4
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 07:01:50 -0800 (PST)
+In-Reply-To: <s5hha7muyzb.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The metadata is mainly for MP3 gapless playback, since
-the MP3 audio stream does not contain enough information
-to enable gapless. Other audio formats do not necessarily
-require any additional metadata so we should allow next_track
-to be called without any metadata.
+--089e01634eee03107204f3507c4f
+Content-Type: text/plain; charset=ISO-8859-1
 
-Signed-off-by: Zhao Weijia <weijia.zhao@capelabs.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- sound/core/compress_offload.c |    6 ------
- 1 files changed, 0 insertions(+), 6 deletions(-)
+Sure thing, sorry about that. Also cleaned up a bit of consistency, made
+sure options that take parameters have them.
 
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 7a20897..5a351c7 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -744,12 +744,6 @@ static int snd_compr_next_track(struct snd_compr_stream *stream)
- 	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING)
- 		return -EPERM;
- 
--	/* you can signal next track isf this is intended to be a gapless stream
--	 * and current track metadata is set
--	 */
--	if (stream->metadata_set == false)
--		return -EPERM;
--
- 	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_NEXT_TRACK);
- 	if (retval != 0)
- 		return retval;
--- 
-1.7.2.5
+
+On Tue, Feb 25, 2014 at 11:14 PM, Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Tue, 25 Feb 2014 11:49:46 -0800,
+> Erik Ackermann wrote:
+> >
+> > Updated the english po and de/fr/ja translations courtesy of Google
+> > translate. Is there any sign-off required beyond the header git
+> > format-patch adds?
+>
+> Thanks, applied the patch now.
+> Could you update the man page, too?
+>
+>
+> Takashi
+>
+
+--089e01634eee03107204f3507c4f
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="0001-speaker-test-update-man-page-for-new-X-arg-also-cons.patch"
+Content-Disposition: attachment;
+	filename="0001-speaker-test-update-man-page-for-new-X-arg-also-cons.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hs4qd7580
+
+RnJvbSBhMDAyMTNmZGE3ZjMzZDU3M2Q1NTI2OTAxZTk1Zjg4OWJkMDNlYzdiIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBFcmlrIEFja2VybWFubiA8a3VydGVyaWthY2tlcm1hbm5AZ21h
+aWwuY29tPgpEYXRlOiBXZWQsIDI2IEZlYiAyMDE0IDA2OjUyOjI5IC0wODAwClN1YmplY3Q6IFtQ
+QVRDSCAtIHNwZWFrZXItdGVzdCAxLzFdIHNwZWFrZXItdGVzdDogdXBkYXRlIG1hbiBwYWdlIGZv
+ciBuZXcgLVgKIGFyZywgYWxzbyBjb25zaXN0ZW5jeSBmaXhlcwoKU2lnbmVkLW9mZi1ieTogRXJp
+ayBBY2tlcm1hbm4gPGt1cnRlcmlrYWNrZXJtYW5uQGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9z
+cGVha2VyLXRlc3Qvc3BlYWtlci10ZXN0LjEgYi9zcGVha2VyLXRlc3Qvc3BlYWtlci10ZXN0LjEK
+aW5kZXggMjZkOTg4Mi4uYWRkNmIyMSAxMDA2NDQKLS0tIGEvc3BlYWtlci10ZXN0L3NwZWFrZXIt
+dGVzdC4xCisrKyBiL3NwZWFrZXItdGVzdC9zcGVha2VyLXRlc3QuMQpAQCAtMTMsNyArMTMsNyBA
+QAogLi4KIC5USCBTUEVBS0VSXC1URVNUIDEgIkFwcmlsIDJuZCwgMjAxMSIgc3BlYWtlclwtdGVz
+dAogLlNIIE5BTUUKLXNwZWFrZXJcLXRlc3QgXC0gY29tbWFuZFwtbGluZSBzcGVha2VyIHRlc3Qg
+dG9uZSBnZW5lcmF0b3IgZm9yIEFMU0EgCitzcGVha2VyXC10ZXN0IFwtIGNvbW1hbmRcLWxpbmUg
+c3BlYWtlciB0ZXN0IHRvbmUgZ2VuZXJhdG9yIGZvciBBTFNBCiAuU0ggU1lOT1BTSVMKIC5CIHNw
+ZWFrZXJcLXRlc3QgW1wtb3B0aW9uc10KIApAQCAtNDcsNyArNDcsNyBAQCBzdXJyb3VuZDQwOkNB
+UkQ9SUNINSxERVY9MAogCiAuUCBFYWNoIG9mIHRoZSBkZXZpY2VzIGlzIGxpc3RlZCBpbiB0aGUg
+YmVnaW5uaW5nIG9mIHRoZSBkZWZpbml0aW9uIHNvLAogaW4gdGhlIGFib3ZlIGV4YW1wbGUsIHRo
+ZXJlIGFyZSBmb3VyIGRldmljZXMgbGlzdGVkOiBudWxsLCBkZWZhdWx0LCBmcm9udAotYW5kIHN1
+cnJvdW5kNDAuIFNvLCBpZiB5b3Ugd2FudCB0byB0ZXN0IHRoZSBsYXN0IGRldmljZSB5b3UgY2Fu
+IAorYW5kIHN1cnJvdW5kNDAuIFNvLCBpZiB5b3Ugd2FudCB0byB0ZXN0IHRoZSBsYXN0IGRldmlj
+ZSB5b3UgY2FuCiBydW4gXGZCc3BlYWtlclwtdGVzdCBcLURzdXJyb3VuZDQwOklDSDUgXC1jIDZc
+ZlIuIFRoZSBcZkJcLWNcZlIgb3B0aW9uIHdpbGwKIGluZGljYXRlIHRoYXQgdGhlIHNpeCBhdWRp
+byBjaGFubmVscyBpbiB0aGUgZGV2aWNlIGhhdmUgdG8gYmUgdGVzdGVkLgogCkBAIC04Niw3ICs4
+Niw3IEBAIFdoZW4gMCBpcyBnaXZlbiwgdGhlIHBlcmlvZHMgZ2l2ZW4gYnkgXGZCXC1QXGZQIG9w
+dGlvbiBpcyB1c2VkLgogVGhlIGRlZmF1bHQgdmFsdWUgaXMgMC4KIAogLlRQCi1cZkJcLVBcZlAg
+fCBcZkJcLVwtbnBlcmlvZHNcZlAgXGZQUEVSSU9EU1xmUAorXGZCXC1QXGZQIHwgXGZCXC1cLW5w
+ZXJpb2RzXGZQIFxmSVBFUklPRFNcZlAKIFVzZSBudW1iZXIgb2YgcGVyaW9kcy4gIFRoZSBkZWZh
+dWx0IHZhbHVlIGlzIDQuCiAKIC5UUApAQCAtMTA2LDcgKzEwNiw3IEBAIFBpbmsgbm9pc2UgaXMg
+cGVyY2VwdHVhbGx5IHVuaWZvcm0gbm9pc2UgLS0gdGhhdCBpcywgaXQgc291bmRzIGxpa2UgZXZl
+cnkgZnJlcXVlCiBZb3UgY2FuIHBhc3MgdGhlIG51bWJlciBmcm9tIDEgdG8gMyBhcyBhIGJhY2t3
+YXJkIGNvbXBhdGliaWxpdHkuCiAKIC5UUAotXGZCXC1sXGZQIHwgXGZCXC1cLW5sb29wc1xmUCBc
+ZkJDT1VOVFxmUAorXGZCXC1sXGZQIHwgXGZCXC1cLW5sb29wc1xmUCBcZklDT1VOVFxmUAogCiBT
+cGVjaWZpZXMgdGhlIG51bWJlciBvZiBsb29wcy4gIFplcm8gbWVhbnMgdG8gcnVuIGluZmluaXRl
+bHkuCiAKQEAgLTExNCw3ICsxMTQsNyBAQCBXaGVuIFxmQlwtc1xmUCBvcHRpb24gYmVsb3cgd2l0
+aCBhIHZhbGlkIGNoYW5uZWwgaXMgZ2l2ZW4sIFxmQnNwZWFrZXJcLXRlc3RcZlAgdwogYWx3YXlz
+IGEgc2luZ2xlLXNob3Qgd2l0aG91dCBsb29waW5nLgogCiAuVFAKLVxmQlwtc1xmUCB8IFxmQlwt
+XC1zcGVha2VyXGZQIFxmQkNIQU5ORUxcZlAKK1xmQlwtc1xmUCB8IFxmQlwtXC1zcGVha2VyXGZQ
+IFxmSUNIQU5ORUxcZlAKIERvIGEgc2luZ2xlLXNob3Qgc3BlYWtlciB0ZXN0IGZvciB0aGUgZ2l2
+ZW4gY2hhbm5lbC4gIFRoZSBjaGFubmVsIG51bWJlciBzdGFydHMgZnJvbSAxLgogVGhlIGNoYW5u
+ZWwgbnVtYmVyIGNvcnJlc3BvbmRzIHRvIGxlZnQsIHJpZ2h0LCByZWFyLWxlZnQsIHJlYXItcmln
+aHQsIGNlbnRlciwgTEZFLAogc2lkZS1sZWZ0LCBzaWRlLXJpZ2h0LCBhbmQgc28gb24uCkBAIC0x
+MjMsMjAgKzEyMywyNCBAQCBGb3IgZXhhbXBsZSwgd2hlbiAxIGlzIHBhc3NlZCwgaXQgdGVzdHMg
+dGhlIGxlZnQgY2hhbm5lbCBvbmx5IG9uY2UgcmF0aGVyIHRoYW4gYgogd2l0aCBsb29waW5nLgog
+CiAuVFAKLVxmQlwtd1xmUCB8IFxmQlwtXC13YXZmaWxlXGZQCitcZkJcLXdcZlAgfCBcZkJcLVwt
+d2F2ZmlsZVxmUCBcZklGSUxFXGZQCiBVc2UgdGhlIGdpdmVuIFdBViBmaWxlIGZvciB0aGUgcGxh
+eWJhY2sgaW5zdGVhZCBvZiBwcmUtZGVmaW5lZCBXQVYgZmlsZXMuCiAKIC5UUAotXGZCXC1XXGZQ
+IHwgXGZCXC1cLXdhdmRpclxmUAorXGZCXC1XXGZQIHwgXGZCXC1cLXdhdmRpclxmUCBcZklESVJF
+Q1RPUllcZlAKIFNwZWNpZnkgdGhlIGRpcmVjdG9yeSBjb250YWluaW5nIFdBViBmaWxlcyBmb3Ig
+cGxheWJhY2suCiBUaGUgZGVmYXVsdCBwYXRoIGlzIFxmSS91c3Ivc2hhcmUvc291bmRzL2Fsc2Fc
+ZlAuCiAKIC5UUAotXGZCXC1tXGZQIHwgXGZCXC1cLWNobWFwXGZQCitcZkJcLW1cZlAgfCBcZkJc
+LVwtY2htYXBcZlAgXGZJTUFQXGZQCiBQYXNzIHRoZSBjaGFubmVsIG1hcCB0byBvdmVycmlkZS4K
+IElmIHRoZSBwbGF5YmFjayBpbiBhIHNwZWNpZmljIGNoYW5uZWwgb3JkZXIgb3IgY2hhbm5lbCBw
+b3NpdGlvbnMgaXMKIHJlcXVpcmVkLCBwYXNzIHRoZSBjaGFubmVsIHBvc2l0aW9uIHN0cmluZ3Mg
+dG8gdGhpcyBvcHRpb24uCiAKKy5UUAorXGZCXC1YXGZQIHwgXGZCXC1cLWZvcmNlLWZyZXF1ZW5j
+eVxmUAorQWxsb3cgc3VwcGxpZWQgXGZJRlJFUVxmUCB0byBiZSBvdXRzaWRlIHRoZSBkZWZhdWx0
+IHJhbmdlIG9mIDMwLTgwMDBIei4gQSBtaW5pbXVtIG9mIDFIeiBpcyBzdGlsbCBlbmZvcmNlZC4K
+KwogLlNIIFVTQUdFIEVYQU1QTEVTCiAKIFByb2R1Y2Ugc3RlcmVvIHNvdW5kIGZyb20gb25lIHN0
+ZXJlbyBqYWNrOgotLSAKMS44LjMuMgoK
+--089e01634eee03107204f3507c4f
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--089e01634eee03107204f3507c4f--
