@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 44/48] ALSA: trident: Use standard printk
-	helpers
-Date: Wed, 26 Feb 2014 16:53:46 +0100
-Message-ID: <1393430030-26704-45-git-send-email-tiwai@suse.de>
+Subject: [PATCH 46/48] ALSA: ymfpci: Use standard printk helpers
+Date: Wed, 26 Feb 2014 16:53:48 +0100
+Message-ID: <1393430030-26704-47-git-send-email-tiwai@suse.de>
 References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6902B2657E6
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B16C2657E9
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 049B475049
+ by mx2.suse.de (Postfix) with ESMTP id 08DDD75028
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:54 +0000 (UTC)
 In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,227 +30,168 @@ Convert with dev_err() and co from snd_printk(), etc.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/trident/trident_main.c | 89 ++++++++++++++++++++++------------------
- 1 file changed, 48 insertions(+), 41 deletions(-)
+ sound/pci/ymfpci/ymfpci.c      | 22 +++++++++++++++-------
+ sound/pci/ymfpci/ymfpci_main.c | 26 +++++++++++++++-----------
+ 2 files changed, 30 insertions(+), 18 deletions(-)
 
-diff --git a/sound/pci/trident/trident_main.c b/sound/pci/trident/trident_main.c
-index 4f3c4be30a48..1272c18a2544 100644
---- a/sound/pci/trident/trident_main.c
-+++ b/sound/pci/trident/trident_main.c
-@@ -69,40 +69,40 @@ static void snd_trident_print_voice_regs(struct snd_trident *trident, int voice)
- {
- 	unsigned int val, tmp;
- 
--	printk(KERN_DEBUG "Trident voice %i:\n", voice);
-+	dev_dbg(trident->card->dev, "Trident voice %i:\n", voice);
- 	outb(voice, TRID_REG(trident, T4D_LFO_GC_CIR));
- 	val = inl(TRID_REG(trident, CH_LBA));
--	printk(KERN_DEBUG "LBA: 0x%x\n", val);
-+	dev_dbg(trident->card->dev, "LBA: 0x%x\n", val);
- 	val = inl(TRID_REG(trident, CH_GVSEL_PAN_VOL_CTRL_EC));
--	printk(KERN_DEBUG "GVSel: %i\n", val >> 31);
--	printk(KERN_DEBUG "Pan: 0x%x\n", (val >> 24) & 0x7f);
--	printk(KERN_DEBUG "Vol: 0x%x\n", (val >> 16) & 0xff);
--	printk(KERN_DEBUG "CTRL: 0x%x\n", (val >> 12) & 0x0f);
--	printk(KERN_DEBUG "EC: 0x%x\n", val & 0x0fff);
-+	dev_dbg(trident->card->dev, "GVSel: %i\n", val >> 31);
-+	dev_dbg(trident->card->dev, "Pan: 0x%x\n", (val >> 24) & 0x7f);
-+	dev_dbg(trident->card->dev, "Vol: 0x%x\n", (val >> 16) & 0xff);
-+	dev_dbg(trident->card->dev, "CTRL: 0x%x\n", (val >> 12) & 0x0f);
-+	dev_dbg(trident->card->dev, "EC: 0x%x\n", val & 0x0fff);
- 	if (trident->device != TRIDENT_DEVICE_ID_NX) {
- 		val = inl(TRID_REG(trident, CH_DX_CSO_ALPHA_FMS));
--		printk(KERN_DEBUG "CSO: 0x%x\n", val >> 16);
--		printk("Alpha: 0x%x\n", (val >> 4) & 0x0fff);
--		printk(KERN_DEBUG "FMS: 0x%x\n", val & 0x0f);
-+		dev_dbg(trident->card->dev, "CSO: 0x%x\n", val >> 16);
-+		dev_dbg(trident->card->dev, "Alpha: 0x%x\n", (val >> 4) & 0x0fff);
-+		dev_dbg(trident->card->dev, "FMS: 0x%x\n", val & 0x0f);
- 		val = inl(TRID_REG(trident, CH_DX_ESO_DELTA));
--		printk(KERN_DEBUG "ESO: 0x%x\n", val >> 16);
--		printk(KERN_DEBUG "Delta: 0x%x\n", val & 0xffff);
-+		dev_dbg(trident->card->dev, "ESO: 0x%x\n", val >> 16);
-+		dev_dbg(trident->card->dev, "Delta: 0x%x\n", val & 0xffff);
- 		val = inl(TRID_REG(trident, CH_DX_FMC_RVOL_CVOL));
- 	} else {		// TRIDENT_DEVICE_ID_NX
- 		val = inl(TRID_REG(trident, CH_NX_DELTA_CSO));
- 		tmp = (val >> 24) & 0xff;
--		printk(KERN_DEBUG "CSO: 0x%x\n", val & 0x00ffffff);
-+		dev_dbg(trident->card->dev, "CSO: 0x%x\n", val & 0x00ffffff);
- 		val = inl(TRID_REG(trident, CH_NX_DELTA_ESO));
- 		tmp |= (val >> 16) & 0xff00;
--		printk(KERN_DEBUG "Delta: 0x%x\n", tmp);
--		printk(KERN_DEBUG "ESO: 0x%x\n", val & 0x00ffffff);
-+		dev_dbg(trident->card->dev, "Delta: 0x%x\n", tmp);
-+		dev_dbg(trident->card->dev, "ESO: 0x%x\n", val & 0x00ffffff);
- 		val = inl(TRID_REG(trident, CH_NX_ALPHA_FMS_FMC_RVOL_CVOL));
--		printk(KERN_DEBUG "Alpha: 0x%x\n", val >> 20);
--		printk(KERN_DEBUG "FMS: 0x%x\n", (val >> 16) & 0x0f);
-+		dev_dbg(trident->card->dev, "Alpha: 0x%x\n", val >> 20);
-+		dev_dbg(trident->card->dev, "FMS: 0x%x\n", (val >> 16) & 0x0f);
- 	}
--	printk(KERN_DEBUG "FMC: 0x%x\n", (val >> 14) & 3);
--	printk(KERN_DEBUG "RVol: 0x%x\n", (val >> 7) & 0x7f);
--	printk(KERN_DEBUG "CVol: 0x%x\n", val & 0x7f);
-+	dev_dbg(trident->card->dev, "FMC: 0x%x\n", (val >> 14) & 3);
-+	dev_dbg(trident->card->dev, "RVol: 0x%x\n", (val >> 7) & 0x7f);
-+	dev_dbg(trident->card->dev, "CVol: 0x%x\n", val & 0x7f);
- }
- #endif
- 
-@@ -156,7 +156,8 @@ static unsigned short snd_trident_codec_read(struct snd_ac97 *ac97, unsigned sho
- 	}
- 
- 	if (count == 0 && !trident->ac97_detect) {
--		snd_printk(KERN_ERR "ac97 codec read TIMEOUT [0x%x/0x%x]!!!\n",
-+		dev_err(trident->card->dev,
-+			"ac97 codec read TIMEOUT [0x%x/0x%x]!!!\n",
- 			   reg, data);
- 		data = 0;
- 	}
-@@ -497,16 +498,16 @@ void snd_trident_write_voice_regs(struct snd_trident * trident,
- 	outl(regs[4], TRID_REG(trident, CH_START + 16));
- 
- #if 0
--	printk(KERN_DEBUG "written %i channel:\n", voice->number);
--	printk(KERN_DEBUG "  regs[0] = 0x%x/0x%x\n",
-+	dev_dbg(trident->card->dev, "written %i channel:\n", voice->number);
-+	dev_dbg(trident->card->dev, "  regs[0] = 0x%x/0x%x\n",
- 	       regs[0], inl(TRID_REG(trident, CH_START + 0)));
--	printk(KERN_DEBUG "  regs[1] = 0x%x/0x%x\n",
-+	dev_dbg(trident->card->dev, "  regs[1] = 0x%x/0x%x\n",
- 	       regs[1], inl(TRID_REG(trident, CH_START + 4)));
--	printk(KERN_DEBUG "  regs[2] = 0x%x/0x%x\n",
-+	dev_dbg(trident->card->dev, "  regs[2] = 0x%x/0x%x\n",
- 	       regs[2], inl(TRID_REG(trident, CH_START + 8)));
--	printk(KERN_DEBUG "  regs[3] = 0x%x/0x%x\n",
-+	dev_dbg(trident->card->dev, "  regs[3] = 0x%x/0x%x\n",
- 	       regs[3], inl(TRID_REG(trident, CH_START + 12)));
--	printk(KERN_DEBUG "  regs[4] = 0x%x/0x%x\n",
-+	dev_dbg(trident->card->dev, "  regs[4] = 0x%x/0x%x\n",
- 	       regs[4], inl(TRID_REG(trident, CH_START + 16)));
- #endif
- }
-@@ -589,7 +590,7 @@ static void snd_trident_write_vol_reg(struct snd_trident * trident,
- 		outb(voice->Vol >> 2, TRID_REG(trident, CH_GVSEL_PAN_VOL_CTRL_EC + 2));
- 		break;
- 	case TRIDENT_DEVICE_ID_SI7018:
--		/* printk(KERN_DEBUG "voice->Vol = 0x%x\n", voice->Vol); */
-+		/* dev_dbg(trident->card->dev, "voice->Vol = 0x%x\n", voice->Vol); */
- 		outw((voice->CTRL << 12) | voice->Vol,
- 		     TRID_REG(trident, CH_GVSEL_PAN_VOL_CTRL_EC));
- 		break;
-@@ -3013,13 +3014,15 @@ static int snd_trident_mixer(struct snd_trident *trident, int pcm_spdif_device)
- 		_ac97.num = 1;
- 		err = snd_ac97_mixer(trident->ac97_bus, &_ac97, &trident->ac97_sec);
- 		if (err < 0)
--			snd_printk(KERN_ERR "SI7018: the secondary codec - invalid access\n");
-+			dev_err(trident->card->dev,
-+				"SI7018: the secondary codec - invalid access\n");
- #if 0	// only for my testing purpose --jk
- 		{
- 			struct snd_ac97 *mc97;
- 			err = snd_ac97_modem(trident->card, &_ac97, &mc97);
- 			if (err < 0)
--				snd_printk(KERN_ERR "snd_ac97_modem returned error %i\n", err);
-+				dev_err(trident->card->dev,
-+					"snd_ac97_modem returned error %i\n", err);
+diff --git a/sound/pci/ymfpci/ymfpci.c b/sound/pci/ymfpci/ymfpci.c
+index 6ff4ea389b02..82eed164b275 100644
+--- a/sound/pci/ymfpci/ymfpci.c
++++ b/sound/pci/ymfpci/ymfpci.c
+@@ -106,7 +106,8 @@ static int snd_ymfpci_create_gameport(struct snd_ymfpci *chip, int dev,
+ 					break;
+ 			}
+ 			if (!r) {
+-				printk(KERN_ERR "ymfpci: no gameport ports available\n");
++				dev_err(chip->card->dev,
++					"no gameport ports available\n");
+ 				return -EBUSY;
+ 			}
  		}
- #endif
+@@ -116,19 +117,22 @@ static int snd_ymfpci_create_gameport(struct snd_ymfpci *chip, int dev,
+ 		case 0x204: legacy_ctrl2 |= 2 << 6; break;
+ 		case 0x205: legacy_ctrl2 |= 3 << 6; break;
+ 		default:
+-			printk(KERN_ERR "ymfpci: invalid joystick port %#x", io_port);
++			dev_err(chip->card->dev,
++				"invalid joystick port %#x", io_port);
+ 			return -EINVAL;
+ 		}
  	}
-@@ -3197,7 +3200,8 @@ int snd_trident_create_gameport(struct snd_trident *chip)
+ 
+ 	if (!r && !(r = request_region(io_port, 1, "YMFPCI gameport"))) {
+-		printk(KERN_ERR "ymfpci: joystick port %#x is in use.\n", io_port);
++		dev_err(chip->card->dev,
++			"joystick port %#x is in use.\n", io_port);
+ 		return -EBUSY;
+ 	}
  
  	chip->gameport = gp = gameport_allocate_port();
  	if (!gp) {
--		printk(KERN_ERR "trident: cannot allocate memory for gameport\n");
+-		printk(KERN_ERR "ymfpci: cannot allocate memory for gameport\n");
 +		dev_err(chip->card->dev,
 +			"cannot allocate memory for gameport\n");
+ 		release_and_free_resource(r);
  		return -ENOMEM;
  	}
- 
-@@ -3270,7 +3274,8 @@ static int snd_trident_sis_reset(struct snd_trident *trident)
- 			goto __si7018_ok;
- 		do_delay(trident);
- 	} while (time_after_eq(end_time, jiffies));
--	snd_printk(KERN_ERR "AC'97 codec ready error [0x%x]\n", inl(TRID_REG(trident, SI_SERIAL_INTF_CTRL)));
-+	dev_err(trident->card->dev, "AC'97 codec ready error [0x%x]\n",
-+		inl(TRID_REG(trident, SI_SERIAL_INTF_CTRL)));
- 	if (r-- > 0) {
- 		end_time = jiffies + HZ;
- 		do {
-@@ -3367,7 +3372,7 @@ static int snd_trident_tlb_alloc(struct snd_trident *trident)
- 
- 	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(trident->pci),
- 				2 * SNDRV_TRIDENT_MAX_PAGES * 4, &trident->tlb.buffer) < 0) {
--		snd_printk(KERN_ERR "trident: unable to allocate TLB buffer\n");
-+		dev_err(trident->card->dev, "unable to allocate TLB buffer\n");
- 		return -ENOMEM;
+@@ -314,7 +318,9 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
+ 					       MPU401_INFO_INTEGRATED |
+ 					       MPU401_INFO_IRQ_HOOK,
+ 					       -1, &chip->rawmidi)) < 0) {
+-			printk(KERN_WARNING "ymfpci: cannot initialize MPU401 at 0x%lx, skipping...\n", mpu_port[dev]);
++			dev_warn(card->dev,
++				 "cannot initialize MPU401 at 0x%lx, skipping...\n",
++				 mpu_port[dev]);
+ 			legacy_ctrl &= ~YMFPCI_LEGACY_MIEN; /* disable MPU401 irq */
+ 			pci_write_config_word(pci, PCIR_DSXG_LEGACY, legacy_ctrl);
+ 		}
+@@ -324,12 +330,14 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
+ 					   fm_port[dev],
+ 					   fm_port[dev] + 2,
+ 					   OPL3_HW_OPL3, 1, &opl3)) < 0) {
+-			printk(KERN_WARNING "ymfpci: cannot initialize FM OPL3 at 0x%lx, skipping...\n", fm_port[dev]);
++			dev_warn(card->dev,
++				 "cannot initialize FM OPL3 at 0x%lx, skipping...\n",
++				 fm_port[dev]);
+ 			legacy_ctrl &= ~YMFPCI_LEGACY_FMEN;
+ 			pci_write_config_word(pci, PCIR_DSXG_LEGACY, legacy_ctrl);
+ 		} else if ((err = snd_opl3_hwdep_new(opl3, 0, 1, NULL)) < 0) {
+ 			snd_card_free(card);
+-			snd_printk(KERN_ERR "cannot create opl3 hwdep\n");
++			dev_err(card->dev, "cannot create opl3 hwdep\n");
+ 			return err;
+ 		}
  	}
- 	trident->tlb.entries = (unsigned int*)ALIGN((unsigned long)trident->tlb.buffer.area, SNDRV_TRIDENT_MAX_PAGES * 4);
-@@ -3375,13 +3380,14 @@ static int snd_trident_tlb_alloc(struct snd_trident *trident)
- 	/* allocate shadow TLB page table (virtual addresses) */
- 	trident->tlb.shadow_entries = vmalloc(SNDRV_TRIDENT_MAX_PAGES*sizeof(unsigned long));
- 	if (trident->tlb.shadow_entries == NULL) {
--		snd_printk(KERN_ERR "trident: unable to allocate shadow TLB entries\n");
-+		dev_err(trident->card->dev,
-+			"unable to allocate shadow TLB entries\n");
- 		return -ENOMEM;
- 	}
- 	/* allocate and setup silent page and initialise TLB entries */
- 	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(trident->pci),
- 				SNDRV_TRIDENT_PAGE_SIZE, &trident->tlb.silent_page) < 0) {
--		snd_printk(KERN_ERR "trident: unable to allocate silent page\n");
-+		dev_err(trident->card->dev, "unable to allocate silent page\n");
- 		return -ENOMEM;
- 	}
- 	memset(trident->tlb.silent_page.area, 0, SNDRV_TRIDENT_PAGE_SIZE);
-@@ -3439,7 +3445,7 @@ static int snd_trident_4d_dx_init(struct snd_trident *trident)
- 			goto __dx_ok;
- 		do_delay(trident);
- 	} while (time_after_eq(end_time, jiffies));
--	snd_printk(KERN_ERR "AC'97 codec ready error\n");
-+	dev_err(trident->card->dev, "AC'97 codec ready error\n");
- 	return -EIO;
+diff --git a/sound/pci/ymfpci/ymfpci_main.c b/sound/pci/ymfpci/ymfpci_main.c
+index c7e98ff4f80f..81c916a5eb96 100644
+--- a/sound/pci/ymfpci/ymfpci_main.c
++++ b/sound/pci/ymfpci/ymfpci_main.c
+@@ -86,7 +86,9 @@ static int snd_ymfpci_codec_ready(struct snd_ymfpci *chip, int secondary)
+ 			return 0;
+ 		schedule_timeout_uninterruptible(1);
+ 	} while (time_before(jiffies, end_time));
+-	snd_printk(KERN_ERR "codec_ready: codec %i is not ready [0x%x]\n", secondary, snd_ymfpci_readw(chip, reg));
++	dev_err(chip->card->dev,
++		"codec_ready: codec %i is not ready [0x%x]\n",
++		secondary, snd_ymfpci_readw(chip, reg));
+ 	return -EBUSY;
+ }
  
-  __dx_ok:
-@@ -3477,7 +3483,8 @@ static int snd_trident_4d_nx_init(struct snd_trident *trident)
- 			goto __nx_ok;
- 		do_delay(trident);
- 	} while (time_after_eq(end_time, jiffies));
--	snd_printk(KERN_ERR "AC'97 codec ready error [0x%x]\n", inl(TRID_REG(trident, NX_ACR0_AC97_COM_STAT)));
-+	dev_err(trident->card->dev, "AC'97 codec ready error [0x%x]\n",
-+		inl(TRID_REG(trident, NX_ACR0_AC97_COM_STAT)));
- 	return -EIO;
- 
-  __nx_ok:
-@@ -3562,7 +3569,8 @@ int snd_trident_create(struct snd_card *card,
- 	/* check, if we can restrict PCI DMA transfers to 30 bits */
- 	if (pci_set_dma_mask(pci, DMA_BIT_MASK(30)) < 0 ||
- 	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(30)) < 0) {
--		snd_printk(KERN_ERR "architecture does not support 30bit PCI busmaster DMA\n");
-+		dev_err(card->dev,
-+			"architecture does not support 30bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
+@@ -319,7 +321,7 @@ static void snd_ymfpci_pcm_interrupt(struct snd_ymfpci *chip, struct snd_ymfpci_
+ 		ypcm->last_pos = pos;
+ 		if (ypcm->period_pos >= ypcm->period_size) {
+ 			/*
+-			printk(KERN_DEBUG
++			dev_dbg(chip->card->dev,
+ 			       "done - active_bank = 0x%x, start = 0x%x\n",
+ 			       chip->active_bank,
+ 			       voice->bank[chip->active_bank].start);
+@@ -372,7 +374,7 @@ static void snd_ymfpci_pcm_capture_interrupt(struct snd_pcm_substream *substream
+ 		if (ypcm->period_pos >= ypcm->period_size) {
+ 			ypcm->period_pos %= ypcm->period_size;
+ 			/*
+-			printk(KERN_DEBUG
++			dev_dbg(chip->card->dev,
+ 			       "done - active_bank = 0x%x, start = 0x%x\n",
+ 			       chip->active_bank,
+ 			       voice->bank[chip->active_bank].start);
+@@ -2067,7 +2069,8 @@ static int snd_ymfpci_request_firmware(struct snd_ymfpci *chip)
+ 			       &chip->pci->dev);
+ 	if (err >= 0) {
+ 		if (chip->dsp_microcode->size != YDSXG_DSPLENGTH) {
+-			snd_printk(KERN_ERR "DSP microcode has wrong size\n");
++			dev_err(chip->card->dev,
++				"DSP microcode has wrong size\n");
+ 			err = -EINVAL;
+ 		}
  	}
-@@ -3600,7 +3608,7 @@ int snd_trident_create(struct snd_card *card,
- 
- 	if (request_irq(pci->irq, snd_trident_interrupt, IRQF_SHARED,
- 			KBUILD_MODNAME, trident)) {
--		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
-+		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
- 		snd_trident_free(trident);
- 		return -EBUSY;
+@@ -2082,8 +2085,8 @@ static int snd_ymfpci_request_firmware(struct snd_ymfpci *chip)
+ 			       &chip->pci->dev);
+ 	if (err >= 0) {
+ 		if (chip->controller_microcode->size != YDSXG_CTRLLENGTH) {
+-			snd_printk(KERN_ERR "controller microcode"
+-				   " has wrong size\n");
++			dev_err(chip->card->dev,
++				"controller microcode has wrong size\n");
+ 			err = -EINVAL;
+ 		}
  	}
-@@ -3949,8 +3957,7 @@ static int snd_trident_resume(struct device *dev)
+@@ -2360,8 +2363,7 @@ static int snd_ymfpci_resume(struct device *dev)
  	pci_set_power_state(pci, PCI_D0);
  	pci_restore_state(pci);
  	if (pci_enable_device(pci) < 0) {
--		printk(KERN_ERR "trident: pci_enable_device failed, "
+-		printk(KERN_ERR "ymfpci: pci_enable_device failed, "
 -		       "disabling device\n");
 +		dev_err(dev, "pci_enable_device failed, disabling device\n");
  		snd_card_disconnect(card);
  		return -EIO;
+ 	}
+@@ -2433,13 +2435,15 @@ int snd_ymfpci_create(struct snd_card *card,
+ 	chip->src441_used = -1;
+ 
+ 	if ((chip->res_reg_area = request_mem_region(chip->reg_area_phys, 0x8000, "YMFPCI")) == NULL) {
+-		snd_printk(KERN_ERR "unable to grab memory region 0x%lx-0x%lx\n", chip->reg_area_phys, chip->reg_area_phys + 0x8000 - 1);
++		dev_err(chip->card->dev,
++			"unable to grab memory region 0x%lx-0x%lx\n",
++			chip->reg_area_phys, chip->reg_area_phys + 0x8000 - 1);
+ 		snd_ymfpci_free(chip);
+ 		return -EBUSY;
+ 	}
+ 	if (request_irq(pci->irq, snd_ymfpci_interrupt, IRQF_SHARED,
+ 			KBUILD_MODNAME, chip)) {
+-		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
++		dev_err(chip->card->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		snd_ymfpci_free(chip);
+ 		return -EBUSY;
+ 	}
+@@ -2453,7 +2457,7 @@ int snd_ymfpci_create(struct snd_card *card,
+ 
+ 	err = snd_ymfpci_request_firmware(chip);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "firmware request failed: %d\n", err);
++		dev_err(chip->card->dev, "firmware request failed: %d\n", err);
+ 		snd_ymfpci_free(chip);
+ 		return err;
  	}
 -- 
 1.9.0
