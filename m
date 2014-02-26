@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 39/48] ALSA: oxygen: Use standard printk helpers
-Date: Wed, 26 Feb 2014 16:53:41 +0100
-Message-ID: <1393430030-26704-40-git-send-email-tiwai@suse.de>
+Subject: [PATCH 40/48] ALSA: pcxhr: Use standard printk helpers
+Date: Wed, 26 Feb 2014 16:53:42 +0100
+Message-ID: <1393430030-26704-41-git-send-email-tiwai@suse.de>
 References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 536A22657DB
+ by alsa0.perex.cz (Postfix) with ESMTP id 54DB22657DC
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id EB60175045
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id EEE4E75046
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
 In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,125 +30,860 @@ Convert with dev_err() and co from snd_printk(), etc.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/oxygen/oxygen_io.c  |  8 ++++----
- sound/pci/oxygen/oxygen_lib.c | 10 +++++-----
- sound/pci/oxygen/xonar_hdmi.c |  2 +-
- sound/pci/oxygen/xonar_lib.c  |  4 ++--
- 4 files changed, 12 insertions(+), 12 deletions(-)
+ sound/pci/pcxhr/pcxhr.c       |  54 +++++++++++----------
+ sound/pci/pcxhr/pcxhr_core.c  | 108 ++++++++++++++++++++++++------------------
+ sound/pci/pcxhr/pcxhr_hwdep.c |  31 +++++++-----
+ sound/pci/pcxhr/pcxhr_mix22.c |  23 +++++----
+ sound/pci/pcxhr/pcxhr_mixer.c |  13 +++--
+ 5 files changed, 131 insertions(+), 98 deletions(-)
 
-diff --git a/sound/pci/oxygen/oxygen_io.c b/sound/pci/oxygen/oxygen_io.c
-index 3274907189fe..4b8a32c37e31 100644
---- a/sound/pci/oxygen/oxygen_io.c
-+++ b/sound/pci/oxygen/oxygen_io.c
-@@ -147,7 +147,7 @@ void oxygen_write_ac97(struct oxygen *chip, unsigned int codec,
- 			return;
- 		}
+diff --git a/sound/pci/pcxhr/pcxhr.c b/sound/pci/pcxhr/pcxhr.c
+index 3880f6da9a87..8d09444ff88b 100644
+--- a/sound/pci/pcxhr/pcxhr.c
++++ b/sound/pci/pcxhr/pcxhr.c
+@@ -284,7 +284,7 @@ static int pcxhr_get_clock_reg(struct pcxhr_mgr *mgr, unsigned int rate,
+ 			rmh.cmd_len = 3;
+ 			err = pcxhr_send_msg(mgr, &rmh);
+ 			if (err < 0) {
+-				snd_printk(KERN_ERR
++				dev_err(&mgr->pci->dev,
+ 					   "error CMD_ACCESS_IO_WRITE "
+ 					   "for PLL register : %x!\n", err);
+ 				return err;
+@@ -357,7 +357,7 @@ static int pcxhr_sub_set_clock(struct pcxhr_mgr *mgr,
+ 			return err;
  	}
--	snd_printk(KERN_ERR "AC'97 write timeout\n");
-+	dev_err(chip->card->dev, "AC'97 write timeout\n");
- }
- EXPORT_SYMBOL(oxygen_write_ac97);
+ 	/* set the new frequency */
+-	snd_printdd("clock register : set %x\n", val);
++	dev_dbg(&mgr->pci->dev, "clock register : set %x\n", val);
+ 	err = pcxhr_write_io_num_reg_cont(mgr, PCXHR_FREQ_REG_MASK,
+ 					  val, changed);
+ 	if (err)
+@@ -380,7 +380,7 @@ static int pcxhr_sub_set_clock(struct pcxhr_mgr *mgr,
+ 		mgr->codec_speed = speed;	/* save new codec speed */
+ 	}
  
-@@ -179,7 +179,7 @@ u16 oxygen_read_ac97(struct oxygen *chip, unsigned int codec,
- 			reg ^= 0xffff;
- 		}
- 	}
--	snd_printk(KERN_ERR "AC'97 read timeout on codec %u\n", codec);
-+	dev_err(chip->card->dev, "AC'97 read timeout on codec %u\n", codec);
+-	snd_printdd("pcxhr_sub_set_clock to %dHz (realfreq=%d)\n",
++	dev_dbg(&mgr->pci->dev, "pcxhr_sub_set_clock to %dHz (realfreq=%d)\n",
+ 		    rate, realfreq);
  	return 0;
  }
- EXPORT_SYMBOL(oxygen_read_ac97);
-@@ -208,7 +208,7 @@ static int oxygen_wait_spi(struct oxygen *chip)
- 						OXYGEN_SPI_BUSY) == 0)
- 			return 0;
+@@ -480,7 +480,7 @@ static int pcxhr_sub_get_external_clock(struct pcxhr_mgr *mgr,
+ 	case REG_STATUS_SYNC_192000 :	rate = 192000; break;
+ 	default: rate = 0;
  	}
--	snd_printk(KERN_ERR "oxygen: SPI wait timeout\n");
-+	dev_err(chip->card->dev, "oxygen: SPI wait timeout\n");
- 	return -EIO;
+-	snd_printdd("External clock is at %d Hz\n", rate);
++	dev_dbg(&mgr->pci->dev, "External clock is at %d Hz\n", rate);
+ 	*sample_rate = rate;
+ 	return 0;
+ }
+@@ -537,8 +537,8 @@ static int pcxhr_set_stream_state(struct pcxhr_stream *stream)
+ 
+ 	err = pcxhr_send_msg(chip->mgr, &rmh);
+ 	if (err)
+-		snd_printk(KERN_ERR "ERROR pcxhr_set_stream_state err=%x;\n",
+-			   err);
++		dev_err(chip->card->dev,
++			"ERROR pcxhr_set_stream_state err=%x;\n", err);
+ 	stream->status =
+ 	  start ? PCXHR_STREAM_STATUS_STARTED : PCXHR_STREAM_STATUS_STOPPED;
+ 	return err;
+@@ -628,7 +628,8 @@ static int pcxhr_set_format(struct pcxhr_stream *stream)
+ 	rmh.cmd[rmh.cmd_len++] = (header & 0xff) << 16;
+ 	err = pcxhr_send_msg(chip->mgr, &rmh);
+ 	if (err)
+-		snd_printk(KERN_ERR "ERROR pcxhr_set_format err=%x;\n", err);
++		dev_err(chip->card->dev,
++			"ERROR pcxhr_set_format err=%x;\n", err);
+ 	return err;
  }
  
-@@ -288,5 +288,5 @@ void oxygen_write_eeprom(struct oxygen *chip, unsigned int index, u16 value)
- 		      & OXYGEN_EEPROM_BUSY))
- 			return;
- 	}
--	snd_printk(KERN_ERR "EEPROM write timeout\n");
-+	dev_err(chip->card->dev, "EEPROM write timeout\n");
+@@ -665,7 +666,7 @@ static int pcxhr_update_r_buffer(struct pcxhr_stream *stream)
+ 	rmh.cmd_len = 4;
+ 	err = pcxhr_send_msg(chip->mgr, &rmh);
+ 	if (err)
+-		snd_printk(KERN_ERR
++		dev_err(chip->card->dev,
+ 			   "ERROR CMD_UPDATE_R_BUFFERS err=%x;\n", err);
+ 	return err;
  }
-diff --git a/sound/pci/oxygen/oxygen_lib.c b/sound/pci/oxygen/oxygen_lib.c
-index efa610cd735c..b67e30602473 100644
---- a/sound/pci/oxygen/oxygen_lib.c
-+++ b/sound/pci/oxygen/oxygen_lib.c
-@@ -313,7 +313,7 @@ static void oxygen_restore_eeprom(struct oxygen *chip,
- 		oxygen_clear_bits8(chip, OXYGEN_MISC,
- 				   OXYGEN_MISC_WRITE_PCI_SUBID);
- 
--		snd_printk(KERN_INFO "EEPROM ID restored\n");
-+		dev_info(chip->card->dev, "EEPROM ID restored\n");
+@@ -735,11 +736,11 @@ static void pcxhr_trigger_tasklet(unsigned long arg)
  	}
+ 	if (capture_mask == 0 && playback_mask == 0) {
+ 		mutex_unlock(&mgr->setup_mutex);
+-		snd_printk(KERN_ERR "pcxhr_trigger_tasklet : no pipes\n");
++		dev_err(&mgr->pci->dev, "pcxhr_trigger_tasklet : no pipes\n");
+ 		return;
+ 	}
+ 
+-	snd_printdd("pcxhr_trigger_tasklet : "
++	dev_dbg(&mgr->pci->dev, "pcxhr_trigger_tasklet : "
+ 		    "playback_mask=%x capture_mask=%x\n",
+ 		    playback_mask, capture_mask);
+ 
+@@ -747,7 +748,7 @@ static void pcxhr_trigger_tasklet(unsigned long arg)
+ 	err = pcxhr_set_pipe_state(mgr,  playback_mask, capture_mask, 0);
+ 	if (err) {
+ 		mutex_unlock(&mgr->setup_mutex);
+-		snd_printk(KERN_ERR "pcxhr_trigger_tasklet : "
++		dev_err(&mgr->pci->dev, "pcxhr_trigger_tasklet : "
+ 			   "error stop pipes (P%x C%x)\n",
+ 			   playback_mask, capture_mask);
+ 		return;
+@@ -792,7 +793,7 @@ static void pcxhr_trigger_tasklet(unsigned long arg)
+ 	err = pcxhr_set_pipe_state(mgr, playback_mask, capture_mask, 1);
+ 	if (err) {
+ 		mutex_unlock(&mgr->setup_mutex);
+-		snd_printk(KERN_ERR "pcxhr_trigger_tasklet : "
++		dev_err(&mgr->pci->dev, "pcxhr_trigger_tasklet : "
+ 			   "error start pipes (P%x C%x)\n",
+ 			   playback_mask, capture_mask);
+ 		return;
+@@ -825,7 +826,7 @@ static void pcxhr_trigger_tasklet(unsigned long arg)
+ 
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
+ 	do_gettimeofday(&my_tv2);
+-	snd_printdd("***TRIGGER TASKLET*** TIME = %ld (err = %x)\n",
++	dev_dbg(&mgr->pci->dev, "***TRIGGER TASKLET*** TIME = %ld (err = %x)\n",
+ 		    (long)(my_tv2.tv_usec - my_tv1.tv_usec), err);
+ #endif
  }
+@@ -902,7 +903,7 @@ static int pcxhr_hardware_timer(struct pcxhr_mgr *mgr, int start)
+ 	}
+ 	err = pcxhr_send_msg(mgr, &rmh);
+ 	if (err < 0)
+-		snd_printk(KERN_ERR "error pcxhr_hardware_timer err(%x)\n",
++		dev_err(&mgr->pci->dev, "error pcxhr_hardware_timer err(%x)\n",
+ 			   err);
+ 	return err;
+ }
+@@ -916,7 +917,8 @@ static int pcxhr_prepare(struct snd_pcm_substream *subs)
+ 	struct pcxhr_mgr *mgr = chip->mgr;
+ 	int err = 0;
  
-@@ -617,13 +617,13 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
+-	snd_printdd("pcxhr_prepare : period_size(%lx) periods(%x) buffer_size(%lx)\n",
++	dev_dbg(chip->card->dev,
++		"pcxhr_prepare : period_size(%lx) periods(%x) buffer_size(%lx)\n",
+ 		    subs->runtime->period_size, subs->runtime->periods,
+ 		    subs->runtime->buffer_size);
  
- 	err = pci_request_regions(pci, DRIVER);
- 	if (err < 0) {
--		snd_printk(KERN_ERR "cannot reserve PCI resources\n");
-+		dev_err(card->dev, "cannot reserve PCI resources\n");
- 		goto err_pci_enable;
+@@ -1025,11 +1027,11 @@ static int pcxhr_open(struct snd_pcm_substream *subs)
+ 	runtime->hw = pcxhr_caps;
+ 
+ 	if( subs->stream == SNDRV_PCM_STREAM_PLAYBACK ) {
+-		snd_printdd("pcxhr_open playback chip%d subs%d\n",
++		dev_dbg(chip->card->dev, "pcxhr_open playback chip%d subs%d\n",
+ 			    chip->chip_idx, subs->number);
+ 		stream = &chip->playback_stream[subs->number];
+ 	} else {
+-		snd_printdd("pcxhr_open capture chip%d subs%d\n",
++		dev_dbg(chip->card->dev, "pcxhr_open capture chip%d subs%d\n",
+ 			    chip->chip_idx, subs->number);
+ 		if (mgr->mono_capture)
+ 			runtime->hw.channels_max = 1;
+@@ -1039,7 +1041,7 @@ static int pcxhr_open(struct snd_pcm_substream *subs)
+ 	}
+ 	if (stream->status != PCXHR_STREAM_STATUS_FREE){
+ 		/* streams in use */
+-		snd_printk(KERN_ERR "pcxhr_open chip%d subs%d in use\n",
++		dev_err(chip->card->dev, "pcxhr_open chip%d subs%d in use\n",
+ 			   chip->chip_idx, subs->number);
+ 		mutex_unlock(&mgr->setup_mutex);
+ 		return -EBUSY;
+@@ -1105,7 +1107,7 @@ static int pcxhr_close(struct snd_pcm_substream *subs)
+ 
+ 	mutex_lock(&mgr->setup_mutex);
+ 
+-	snd_printdd("pcxhr_close chip%d subs%d\n",
++	dev_dbg(chip->card->dev, "pcxhr_close chip%d subs%d\n",
+ 		    chip->chip_idx, subs->number);
+ 
+ 	/* sample rate released */
+@@ -1168,7 +1170,7 @@ int pcxhr_create_pcm(struct snd_pcxhr *chip)
+ 	if ((err = snd_pcm_new(chip->card, name, 0,
+ 			       chip->nb_streams_play,
+ 			       chip->nb_streams_capt, &pcm)) < 0) {
+-		snd_printk(KERN_ERR "cannot create pcm %s\n", name);
++		dev_err(chip->card->dev, "cannot create pcm %s\n", name);
+ 		return err;
+ 	}
+ 	pcm->private_data = chip;
+@@ -1214,7 +1216,7 @@ static int pcxhr_create(struct pcxhr_mgr *mgr,
+ 
+ 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+ 	if (! chip) {
+-		snd_printk(KERN_ERR "cannot allocate chip\n");
++		dev_err(card->dev, "cannot allocate chip\n");
+ 		return -ENOMEM;
  	}
  
- 	if (!(pci_resource_flags(pci, 0) & IORESOURCE_IO) ||
- 	    pci_resource_len(pci, 0) < OXYGEN_IO_SIZE) {
--		snd_printk(KERN_ERR "invalid PCI I/O range\n");
-+		dev_err(card->dev, "invalid PCI I/O range\n");
- 		err = -ENXIO;
- 		goto err_pci_regions;
+@@ -1487,7 +1489,7 @@ static int pcxhr_free(struct pcxhr_mgr *mgr)
+ 	/* reset board if some firmware was loaded */
+ 	if(mgr->dsp_loaded) {
+ 		pcxhr_reset_board(mgr);
+-		snd_printdd("reset pcxhr !\n");
++		dev_dbg(&mgr->pci->dev, "reset pcxhr !\n");
  	}
-@@ -658,7 +658,7 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
- 	err = request_irq(pci->irq, oxygen_interrupt, IRQF_SHARED,
- 			  KBUILD_MODNAME, chip);
- 	if (err < 0) {
--		snd_printk(KERN_ERR "cannot grab interrupt %d\n", pci->irq);
-+		dev_err(card->dev, "cannot grab interrupt %d\n", pci->irq);
- 		goto err_card;
+ 
+ 	/* release irq  */
+@@ -1536,8 +1538,8 @@ static int pcxhr_probe(struct pci_dev *pci,
+ 
+ 	/* check if we can restrict PCI DMA transfers to 32 bits */
+ 	if (pci_set_dma_mask(pci, DMA_BIT_MASK(32)) < 0) {
+-		snd_printk(KERN_ERR "architecture does not support "
+-			   "32bit PCI busmaster DMA\n");
++		dev_err(&pci->dev,
++			"architecture does not support 32bit PCI busmaster DMA\n");
+ 		pci_disable_device(pci);
+ 		return -ENXIO;
  	}
- 	chip->irq = pci->irq;
-@@ -796,7 +796,7 @@ static int oxygen_pci_resume(struct device *dev)
- 	pci_set_power_state(pci, PCI_D0);
- 	pci_restore_state(pci);
- 	if (pci_enable_device(pci) < 0) {
--		snd_printk(KERN_ERR "cannot reenable device");
-+		dev_err(dev, "cannot reenable device");
- 		snd_card_disconnect(card);
- 		return -EIO;
+@@ -1588,7 +1590,7 @@ static int pcxhr_probe(struct pci_dev *pci,
+ 
+ 	if (request_irq(pci->irq, pcxhr_interrupt, IRQF_SHARED,
+ 			KBUILD_MODNAME, mgr)) {
+-		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
++		dev_err(&pci->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		pcxhr_free(mgr);
+ 		return -EBUSY;
  	}
-diff --git a/sound/pci/oxygen/xonar_hdmi.c b/sound/pci/oxygen/xonar_hdmi.c
-index 136dac6a3964..91d92bc32b75 100644
---- a/sound/pci/oxygen/xonar_hdmi.c
-+++ b/sound/pci/oxygen/xonar_hdmi.c
-@@ -120,7 +120,7 @@ void xonar_hdmi_uart_input(struct oxygen *chip)
- 	if (chip->uart_input_count >= 2 &&
- 	    chip->uart_input[chip->uart_input_count - 2] == 'O' &&
- 	    chip->uart_input[chip->uart_input_count - 1] == 'K') {
--		printk(KERN_DEBUG "message from HDMI chip received:\n");
-+		dev_dbg(chip->card->dev, "message from HDMI chip received:\n");
- 		print_hex_dump_bytes("", DUMP_PREFIX_OFFSET,
- 				     chip->uart_input, chip->uart_input_count);
- 		chip->uart_input_count = 0;
-diff --git a/sound/pci/oxygen/xonar_lib.c b/sound/pci/oxygen/xonar_lib.c
-index 0ebe7f5916f9..706b1a42163f 100644
---- a/sound/pci/oxygen/xonar_lib.c
-+++ b/sound/pci/oxygen/xonar_lib.c
-@@ -56,9 +56,9 @@ static void xonar_ext_power_gpio_changed(struct oxygen *chip)
- 	if (has_power != data->has_power) {
- 		data->has_power = has_power;
- 		if (has_power) {
--			snd_printk(KERN_NOTICE "power restored\n");
-+			dev_notice(chip->card->dev, "power restored\n");
- 		} else {
--			snd_printk(KERN_CRIT
-+			dev_crit(chip->card->dev,
- 				   "Hey! Don't unplug the power cable!\n");
- 			/* TODO: stop PCMs */
+@@ -1641,7 +1643,7 @@ static int pcxhr_probe(struct pci_dev *pci,
+ 				   0, &card);
+ 
+ 		if (err < 0) {
+-			snd_printk(KERN_ERR "cannot allocate the card %d\n", i);
++			dev_err(card->dev, "cannot allocate the card %d\n", i);
+ 			pcxhr_free(mgr);
+ 			return err;
  		}
+diff --git a/sound/pci/pcxhr/pcxhr_core.c b/sound/pci/pcxhr/pcxhr_core.c
+index 37b431b9b69d..df9371918601 100644
+--- a/sound/pci/pcxhr/pcxhr_core.c
++++ b/sound/pci/pcxhr/pcxhr_core.c
+@@ -23,6 +23,7 @@
+ #include <linux/delay.h>
+ #include <linux/firmware.h>
+ #include <linux/interrupt.h>
++#include <linux/pci.h>
+ #include <asm/io.h>
+ #include <sound/core.h>
+ #include "pcxhr.h"
+@@ -132,14 +133,14 @@ static int pcxhr_check_reg_bit(struct pcxhr_mgr *mgr, unsigned int reg,
+ 		*read = PCXHR_INPB(mgr, reg);
+ 		if ((*read & mask) == bit) {
+ 			if (i > 100)
+-				snd_printdd("ATTENTION! check_reg(%x) "
+-					    "loopcount=%d\n",
++				dev_dbg(&mgr->pci->dev,
++					"ATTENTION! check_reg(%x) loopcount=%d\n",
+ 					    reg, i);
+ 			return 0;
+ 		}
+ 		i++;
+ 	} while (time_after_eq(end_time, jiffies));
+-	snd_printk(KERN_ERR
++	dev_err(&mgr->pci->dev,
+ 		   "pcxhr_check_reg_bit: timeout, reg=%x, mask=0x%x, val=%x\n",
+ 		   reg, mask, *read);
+ 	return -EIO;
+@@ -216,7 +217,7 @@ static int pcxhr_send_it_dsp(struct pcxhr_mgr *mgr,
+ 	err = pcxhr_check_reg_bit(mgr, PCXHR_DSP_CVR,  PCXHR_CVR_HI08_HC, 0,
+ 				  PCXHR_TIMEOUT_DSP, &reg);
+ 	if (err) {
+-		snd_printk(KERN_ERR "pcxhr_send_it_dsp : TIMEOUT CVR\n");
++		dev_err(&mgr->pci->dev, "pcxhr_send_it_dsp : TIMEOUT CVR\n");
+ 		return err;
+ 	}
+ 	if (itdsp & PCXHR_MASK_IT_MANAGE_HF5) {
+@@ -227,7 +228,7 @@ static int pcxhr_send_it_dsp(struct pcxhr_mgr *mgr,
+ 					  PCXHR_TIMEOUT_DSP,
+ 					  &reg);
+ 		if (err) {
+-			snd_printk(KERN_ERR
++			dev_err(&mgr->pci->dev,
+ 				   "pcxhr_send_it_dsp : TIMEOUT HF5\n");
+ 			return err;
+ 		}
+@@ -294,7 +295,7 @@ int pcxhr_load_xilinx_binary(struct pcxhr_mgr *mgr,
+ 	 */
+ 	if(second) {
+ 		if ((chipsc & PCXHR_CHIPSC_GPI_USERI) == 0) {
+-			snd_printk(KERN_ERR "error loading first xilinx\n");
++			dev_err(&mgr->pci->dev, "error loading first xilinx\n");
+ 			return -EINVAL;
+ 		}
+ 		/* activate second xilinx */
+@@ -360,7 +361,7 @@ static int pcxhr_download_dsp(struct pcxhr_mgr *mgr, const struct firmware *dsp)
+ 					  PCXHR_ISR_HI08_TRDY,
+ 					  PCXHR_TIMEOUT_DSP, &dummy);
+ 		if (err) {
+-			snd_printk(KERN_ERR
++			dev_err(&mgr->pci->dev,
+ 				   "dsp loading error at position %d\n", i);
+ 			return err;
+ 		}
+@@ -396,7 +397,7 @@ int pcxhr_load_eeprom_binary(struct pcxhr_mgr *mgr,
+ 		msleep(PCXHR_WAIT_DEFAULT);
+ 		PCXHR_OUTPB(mgr, PCXHR_DSP_ICR, reg);
+ 		msleep(PCXHR_WAIT_DEFAULT);
+-		snd_printdd("no need to load eeprom boot\n");
++		dev_dbg(&mgr->pci->dev, "no need to load eeprom boot\n");
+ 		return 0;
+ 	}
+ 	PCXHR_OUTPB(mgr, PCXHR_DSP_ICR, reg);
+@@ -561,9 +562,9 @@ static int pcxhr_read_rmh_status(struct pcxhr_mgr *mgr, struct pcxhr_rmh *rmh)
+ 					  PCXHR_ISR_HI08_RXDF,
+ 					  PCXHR_TIMEOUT_DSP, &reg);
+ 		if (err) {
+-			snd_printk(KERN_ERR "ERROR RMH stat: "
+-				   "ISR:RXDF=1 (ISR = %x; i=%d )\n",
+-				   reg, i);
++			dev_err(&mgr->pci->dev,
++				"ERROR RMH stat: ISR:RXDF=1 (ISR = %x; i=%d )\n",
++				reg, i);
+ 			return err;
+ 		}
+ 		/* read data */
+@@ -591,13 +592,13 @@ static int pcxhr_read_rmh_status(struct pcxhr_mgr *mgr, struct pcxhr_rmh *rmh)
+ 		}
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
+ 		if (rmh->cmd_idx < CMD_LAST_INDEX)
+-			snd_printdd("    stat[%d]=%x\n", i, data);
++			dev_dbg(&mgr->pci->dev, "    stat[%d]=%x\n", i, data);
+ #endif
+ 		if (i < max_stat_len)
+ 			rmh->stat[i] = data;
+ 	}
+ 	if (rmh->stat_len > max_stat_len) {
+-		snd_printdd("PCXHR : rmh->stat_len=%x too big\n",
++		dev_dbg(&mgr->pci->dev, "PCXHR : rmh->stat_len=%x too big\n",
+ 			    rmh->stat_len);
+ 		rmh->stat_len = max_stat_len;
+ 	}
+@@ -615,7 +616,8 @@ static int pcxhr_send_msg_nolock(struct pcxhr_mgr *mgr, struct pcxhr_rmh *rmh)
+ 		return -EINVAL;
+ 	err = pcxhr_send_it_dsp(mgr, PCXHR_IT_MESSAGE, 1);
+ 	if (err) {
+-		snd_printk(KERN_ERR "pcxhr_send_message : ED_DSP_CRASHED\n");
++		dev_err(&mgr->pci->dev,
++			"pcxhr_send_message : ED_DSP_CRASHED\n");
+ 		return err;
+ 	}
+ 	/* wait for chk bit */
+@@ -641,7 +643,7 @@ static int pcxhr_send_msg_nolock(struct pcxhr_mgr *mgr, struct pcxhr_rmh *rmh)
+ 		data &= 0xff7fff;	/* MASK_1_WORD_COMMAND */
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
+ 	if (rmh->cmd_idx < CMD_LAST_INDEX)
+-		snd_printdd("MSG cmd[0]=%x (%s)\n",
++		dev_dbg(&mgr->pci->dev, "MSG cmd[0]=%x (%s)\n",
+ 			    data, cmd_names[rmh->cmd_idx]);
+ #endif
+ 
+@@ -671,7 +673,8 @@ static int pcxhr_send_msg_nolock(struct pcxhr_mgr *mgr, struct pcxhr_rmh *rmh)
+ 			data = rmh->cmd[i];
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
+ 			if (rmh->cmd_idx < CMD_LAST_INDEX)
+-				snd_printdd("    cmd[%d]=%x\n", i, data);
++				dev_dbg(&mgr->pci->dev,
++					"    cmd[%d]=%x\n", i, data);
+ #endif
+ 			err = pcxhr_check_reg_bit(mgr, PCXHR_DSP_ISR,
+ 						  PCXHR_ISR_HI08_TRDY,
+@@ -697,14 +700,15 @@ static int pcxhr_send_msg_nolock(struct pcxhr_mgr *mgr, struct pcxhr_rmh *rmh)
+ 					  PCXHR_ISR_HI08_RXDF,
+ 					  PCXHR_TIMEOUT_DSP, &reg);
+ 		if (err) {
+-			snd_printk(KERN_ERR "ERROR RMH: ISR:RXDF=1 (ISR = %x)\n", reg);
++			dev_err(&mgr->pci->dev,
++				"ERROR RMH: ISR:RXDF=1 (ISR = %x)\n", reg);
+ 			return err;
+ 		}
+ 		/* read error code */
+ 		data  = PCXHR_INPB(mgr, PCXHR_DSP_TXH) << 16;
+ 		data |= PCXHR_INPB(mgr, PCXHR_DSP_TXM) << 8;
+ 		data |= PCXHR_INPB(mgr, PCXHR_DSP_TXL);
+-		snd_printk(KERN_ERR "ERROR RMH(%d): 0x%x\n",
++		dev_err(&mgr->pci->dev, "ERROR RMH(%d): 0x%x\n",
+ 			   rmh->cmd_idx, data);
+ 		err = -EINVAL;
+ 	} else {
+@@ -780,7 +784,7 @@ static inline int pcxhr_pipes_running(struct pcxhr_mgr *mgr)
+ 	 * (PCXHR_PIPE_STATE_CAPTURE_OFFSET)
+ 	 */
+ 	start_mask &= 0xffffff;
+-	snd_printdd("CMD_PIPE_STATE MBOX2=0x%06x\n", start_mask);
++	dev_dbg(&mgr->pci->dev, "CMD_PIPE_STATE MBOX2=0x%06x\n", start_mask);
+ 	return start_mask;
+ }
+ 
+@@ -809,7 +813,7 @@ static int pcxhr_prepair_pipe_start(struct pcxhr_mgr *mgr,
+ 			}
+ 			err = pcxhr_send_msg(mgr, &rmh);
+ 			if (err) {
+-				snd_printk(KERN_ERR
++				dev_err(&mgr->pci->dev,
+ 					   "error pipe start "
+ 					   "(CMD_CAN_START_PIPE) err=%x!\n",
+ 					   err);
+@@ -847,7 +851,7 @@ static int pcxhr_stop_pipes(struct pcxhr_mgr *mgr, int audio_mask)
+ 			}
+ 			err = pcxhr_send_msg(mgr, &rmh);
+ 			if (err) {
+-				snd_printk(KERN_ERR
++				dev_err(&mgr->pci->dev,
+ 					   "error pipe stop "
+ 					   "(CMD_STOP_PIPE) err=%x!\n", err);
+ 				return err;
+@@ -876,7 +880,7 @@ static int pcxhr_toggle_pipes(struct pcxhr_mgr *mgr, int audio_mask)
+ 							  1 << (audio - PCXHR_PIPE_STATE_CAPTURE_OFFSET));
+ 			err = pcxhr_send_msg(mgr, &rmh);
+ 			if (err) {
+-				snd_printk(KERN_ERR
++				dev_err(&mgr->pci->dev,
+ 					   "error pipe start "
+ 					   "(CMD_CONF_PIPE) err=%x!\n", err);
+ 				return err;
+@@ -889,7 +893,7 @@ static int pcxhr_toggle_pipes(struct pcxhr_mgr *mgr, int audio_mask)
+ 	pcxhr_init_rmh(&rmh, CMD_SEND_IRQA);
+ 	err = pcxhr_send_msg(mgr, &rmh);
+ 	if (err) {
+-		snd_printk(KERN_ERR
++		dev_err(&mgr->pci->dev,
+ 			   "error pipe start (CMD_SEND_IRQA) err=%x!\n",
+ 			   err);
+ 		return err;
+@@ -913,7 +917,8 @@ int pcxhr_set_pipe_state(struct pcxhr_mgr *mgr, int playback_mask,
+ 		      (capture_mask << PCXHR_PIPE_STATE_CAPTURE_OFFSET));
+ 	/* current pipe state (playback + record) */
+ 	state = pcxhr_pipes_running(mgr);
+-	snd_printdd("pcxhr_set_pipe_state %s (mask %x current %x)\n",
++	dev_dbg(&mgr->pci->dev,
++		"pcxhr_set_pipe_state %s (mask %x current %x)\n",
+ 		    start ? "START" : "STOP", audio_mask, state);
+ 	if (start) {
+ 		/* start only pipes that are not yet started */
+@@ -944,7 +949,7 @@ int pcxhr_set_pipe_state(struct pcxhr_mgr *mgr, int playback_mask,
+ 		if ((state & audio_mask) == (start ? audio_mask : 0))
+ 			break;
+ 		if (++i >= MAX_WAIT_FOR_DSP * 100) {
+-			snd_printk(KERN_ERR "error pipe start/stop\n");
++			dev_err(&mgr->pci->dev, "error pipe start/stop\n");
+ 			return -EBUSY;
+ 		}
+ 		udelay(10);			/* wait 10 microseconds */
+@@ -956,7 +961,7 @@ int pcxhr_set_pipe_state(struct pcxhr_mgr *mgr, int playback_mask,
+ 	}
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
+ 	do_gettimeofday(&my_tv2);
+-	snd_printdd("***SET PIPE STATE*** TIME = %ld (err = %x)\n",
++	dev_dbg(&mgr->pci->dev, "***SET PIPE STATE*** TIME = %ld (err = %x)\n",
+ 		    (long)(my_tv2.tv_usec - my_tv1.tv_usec), err);
+ #endif
+ 	return 0;
+@@ -971,7 +976,8 @@ int pcxhr_write_io_num_reg_cont(struct pcxhr_mgr *mgr, unsigned int mask,
+ 
+ 	spin_lock_irqsave(&mgr->msg_lock, flags);
+ 	if ((mgr->io_num_reg_cont & mask) == value) {
+-		snd_printdd("IO_NUM_REG_CONT mask %x already is set to %x\n",
++		dev_dbg(&mgr->pci->dev,
++			"IO_NUM_REG_CONT mask %x already is set to %x\n",
+ 			    mask, value);
+ 		if (changed)
+ 			*changed = 0;
+@@ -1024,7 +1030,7 @@ static int pcxhr_handle_async_err(struct pcxhr_mgr *mgr, u32 err,
+ 		err = ((err >> 12) & 0xfff);
+ 	if (!err)
+ 		return 0;
+-	snd_printdd("CMD_ASYNC : Error %s %s Pipe %d err=%x\n",
++	dev_dbg(&mgr->pci->dev, "CMD_ASYNC : Error %s %s Pipe %d err=%x\n",
+ 		    err_src_name[err_src],
+ 		    is_capture ? "Record" : "Play", pipe, err);
+ 	if (err == 0xe01)
+@@ -1045,20 +1051,24 @@ void pcxhr_msg_tasklet(unsigned long arg)
+ 	int i, j;
+ 
+ 	if (mgr->src_it_dsp & PCXHR_IRQ_FREQ_CHANGE)
+-		snd_printdd("TASKLET : PCXHR_IRQ_FREQ_CHANGE event occurred\n");
++		dev_dbg(&mgr->pci->dev,
++			"TASKLET : PCXHR_IRQ_FREQ_CHANGE event occurred\n");
+ 	if (mgr->src_it_dsp & PCXHR_IRQ_TIME_CODE)
+-		snd_printdd("TASKLET : PCXHR_IRQ_TIME_CODE event occurred\n");
++		dev_dbg(&mgr->pci->dev,
++			"TASKLET : PCXHR_IRQ_TIME_CODE event occurred\n");
+ 	if (mgr->src_it_dsp & PCXHR_IRQ_NOTIFY)
+-		snd_printdd("TASKLET : PCXHR_IRQ_NOTIFY event occurred\n");
++		dev_dbg(&mgr->pci->dev,
++			"TASKLET : PCXHR_IRQ_NOTIFY event occurred\n");
+ 	if (mgr->src_it_dsp & (PCXHR_IRQ_FREQ_CHANGE | PCXHR_IRQ_TIME_CODE)) {
+ 		/* clear events FREQ_CHANGE and TIME_CODE */
+ 		pcxhr_init_rmh(prmh, CMD_TEST_IT);
+ 		err = pcxhr_send_msg(mgr, prmh);
+-		snd_printdd("CMD_TEST_IT : err=%x, stat=%x\n",
++		dev_dbg(&mgr->pci->dev, "CMD_TEST_IT : err=%x, stat=%x\n",
+ 			    err, prmh->stat[0]);
+ 	}
+ 	if (mgr->src_it_dsp & PCXHR_IRQ_ASYNC) {
+-		snd_printdd("TASKLET : PCXHR_IRQ_ASYNC event occurred\n");
++		dev_dbg(&mgr->pci->dev,
++			"TASKLET : PCXHR_IRQ_ASYNC event occurred\n");
+ 
+ 		pcxhr_init_rmh(prmh, CMD_ASYNC);
+ 		prmh->cmd[0] |= 1;	/* add SEL_ASYNC_EVENTS */
+@@ -1066,7 +1076,7 @@ void pcxhr_msg_tasklet(unsigned long arg)
+ 		prmh->stat_len = PCXHR_SIZE_MAX_LONG_STATUS;
+ 		err = pcxhr_send_msg(mgr, prmh);
+ 		if (err)
+-			snd_printk(KERN_ERR "ERROR pcxhr_msg_tasklet=%x;\n",
++			dev_err(&mgr->pci->dev, "ERROR pcxhr_msg_tasklet=%x;\n",
+ 				   err);
+ 		i = 1;
+ 		while (i < prmh->stat_len) {
+@@ -1079,7 +1089,8 @@ void pcxhr_msg_tasklet(unsigned long arg)
+ 			u32 err2;
+ 
+ 			if (prmh->stat[i] & 0x800000) {	/* if BIT_END */
+-				snd_printdd("TASKLET : End%sPipe %d\n",
++				dev_dbg(&mgr->pci->dev,
++					"TASKLET : End%sPipe %d\n",
+ 					    is_capture ? "Record" : "Play",
+ 					    pipe);
+ 			}
+@@ -1136,7 +1147,8 @@ static u_int64_t pcxhr_stream_read_position(struct pcxhr_mgr *mgr,
+ 	hw_sample_count = ((u_int64_t)rmh.stat[0]) << 24;
+ 	hw_sample_count += (u_int64_t)rmh.stat[1];
+ 
+-	snd_printdd("stream %c%d : abs samples real(%llu) timer(%llu)\n",
++	dev_dbg(&mgr->pci->dev,
++		"stream %c%d : abs samples real(%llu) timer(%llu)\n",
+ 		    stream->pipe->is_capture ? 'C' : 'P',
+ 		    stream->substream->number,
+ 		    hw_sample_count,
+@@ -1202,7 +1214,7 @@ static void pcxhr_update_timer_pos(struct pcxhr_mgr *mgr,
+ 				(u_int32_t)(new_sample_count -
+ 					    stream->timer_abs_periods);
+ 		} else {
+-			snd_printk(KERN_ERR
++			dev_err(&mgr->pci->dev,
+ 				   "ERROR new_sample_count too small ??? %ld\n",
+ 				   (long unsigned int)new_sample_count);
+ 		}
+@@ -1247,33 +1259,39 @@ irqreturn_t pcxhr_interrupt(int irq, void *dev_id)
+ 		    (mgr->dsp_time_last != PCXHR_DSP_TIME_INVALID)) {
+ 			/* handle dsp counter wraparound without resync */
+ 			int tmp_diff = dsp_time_diff + PCXHR_DSP_TIME_MASK + 1;
+-			snd_printdd("WARNING DSP timestamp old(%d) new(%d)",
++			dev_dbg(&mgr->pci->dev,
++				"WARNING DSP timestamp old(%d) new(%d)",
+ 				    mgr->dsp_time_last, dsp_time_new);
+ 			if (tmp_diff > 0 && tmp_diff <= (2*mgr->granularity)) {
+-				snd_printdd("-> timestamp wraparound OK: "
++				dev_dbg(&mgr->pci->dev,
++					"-> timestamp wraparound OK: "
+ 					    "diff=%d\n", tmp_diff);
+ 				dsp_time_diff = tmp_diff;
+ 			} else {
+-				snd_printdd("-> resynchronize all streams\n");
++				dev_dbg(&mgr->pci->dev,
++					"-> resynchronize all streams\n");
+ 				mgr->dsp_time_err++;
+ 			}
+ 		}
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
+ 		if (dsp_time_diff == 0)
+-			snd_printdd("ERROR DSP TIME NO DIFF time(%d)\n",
++			dev_dbg(&mgr->pci->dev,
++				"ERROR DSP TIME NO DIFF time(%d)\n",
+ 				    dsp_time_new);
+ 		else if (dsp_time_diff >= (2*mgr->granularity))
+-			snd_printdd("ERROR DSP TIME TOO BIG old(%d) add(%d)\n",
++			dev_dbg(&mgr->pci->dev,
++				"ERROR DSP TIME TOO BIG old(%d) add(%d)\n",
+ 				    mgr->dsp_time_last,
+ 				    dsp_time_new - mgr->dsp_time_last);
+ 		else if (dsp_time_diff % mgr->granularity)
+-			snd_printdd("ERROR DSP TIME increased by %d\n",
++			dev_dbg(&mgr->pci->dev,
++				"ERROR DSP TIME increased by %d\n",
+ 				    dsp_time_diff);
+ #endif
+ 		mgr->dsp_time_last = dsp_time_new;
+ 
+ 		if (timer_toggle == mgr->timer_toggle) {
+-			snd_printdd("ERROR TIMER TOGGLE\n");
++			dev_dbg(&mgr->pci->dev, "ERROR TIMER TOGGLE\n");
+ 			mgr->dsp_time_err++;
+ 		}
+ 		mgr->timer_toggle = timer_toggle;
+@@ -1308,7 +1326,7 @@ irqreturn_t pcxhr_interrupt(int irq, void *dev_id)
+ 	}
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
+ 	if (reg & PCXHR_FATAL_DSP_ERR)
+-		snd_printdd("FATAL DSP ERROR : %x\n", reg);
++		dev_dbg(&mgr->pci->dev, "FATAL DSP ERROR : %x\n", reg);
+ #endif
+ 	spin_unlock(&mgr->lock);
+ 	return IRQ_HANDLED;	/* this device caused the interrupt */
+diff --git a/sound/pci/pcxhr/pcxhr_hwdep.c b/sound/pci/pcxhr/pcxhr_hwdep.c
+index d995175c1c48..15a8ce5f1f48 100644
+--- a/sound/pci/pcxhr/pcxhr_hwdep.c
++++ b/sound/pci/pcxhr/pcxhr_hwdep.c
+@@ -72,7 +72,8 @@ static int pcxhr_init_board(struct pcxhr_mgr *mgr)
+ 	/* test max nb substream per pipe */
+ 	if (((rmh.stat[1] >> 7) & 0x5F) < PCXHR_PLAYBACK_STREAMS)
+ 		return -EINVAL;
+-	snd_printdd("supported formats : playback=%x capture=%x\n",
++	dev_dbg(&mgr->pci->dev,
++		"supported formats : playback=%x capture=%x\n",
+ 		    rmh.stat[2], rmh.stat[3]);
+ 
+ 	pcxhr_init_rmh(&rmh, CMD_VERSION);
+@@ -84,7 +85,8 @@ static int pcxhr_init_board(struct pcxhr_mgr *mgr)
+ 	err = pcxhr_send_msg(mgr, &rmh);
+ 	if (err)
+ 		return err;
+-	snd_printdd("PCXHR DSP version is %d.%d.%d\n", (rmh.stat[0]>>16)&0xff,
++	dev_dbg(&mgr->pci->dev,
++		"PCXHR DSP version is %d.%d.%d\n", (rmh.stat[0]>>16)&0xff,
+ 		    (rmh.stat[0]>>8)&0xff, rmh.stat[0]&0xff);
+ 	mgr->dsp_version = rmh.stat[0];
+ 
+@@ -179,7 +181,7 @@ static int pcxhr_dsp_allocate_pipe(struct pcxhr_mgr *mgr,
+ 		stream_count = PCXHR_PLAYBACK_STREAMS;
+ 		audio_count = 2;	/* always stereo */
+ 	}
+-	snd_printdd("snd_add_ref_pipe pin(%d) pcm%c0\n",
++	dev_dbg(&mgr->pci->dev, "snd_add_ref_pipe pin(%d) pcm%c0\n",
+ 		    pin, is_capture ? 'c' : 'p');
+ 	pipe->is_capture = is_capture;
+ 	pipe->first_audio = pin;
+@@ -194,7 +196,7 @@ static int pcxhr_dsp_allocate_pipe(struct pcxhr_mgr *mgr,
+ 	}
+ 	err = pcxhr_send_msg(mgr, &rmh);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "error pipe allocation "
++		dev_err(&mgr->pci->dev, "error pipe allocation "
+ 			   "(CMD_RES_PIPE) err=%x!\n", err);
+ 		return err;
+ 	}
+@@ -222,14 +224,14 @@ static int pcxhr_dsp_free_pipe( struct pcxhr_mgr *mgr, struct pcxhr_pipe *pipe)
+ 	/* stop one pipe */
+ 	err = pcxhr_set_pipe_state(mgr, playback_mask, capture_mask, 0);
+ 	if (err < 0)
+-		snd_printk(KERN_ERR "error stopping pipe!\n");
++		dev_err(&mgr->pci->dev, "error stopping pipe!\n");
+ 	/* release the pipe */
+ 	pcxhr_init_rmh(&rmh, CMD_FREE_PIPE);
+ 	pcxhr_set_pipe_cmd_params(&rmh, pipe->is_capture, pipe->first_audio,
+ 				  0, 0);
+ 	err = pcxhr_send_msg(mgr, &rmh);
+ 	if (err < 0)
+-		snd_printk(KERN_ERR "error pipe release "
++		dev_err(&mgr->pci->dev, "error pipe release "
+ 			   "(CMD_FREE_PIPE) err(%x)\n", err);
+ 	pipe->status = PCXHR_PIPE_UNDEFINED;
+ 	return err;
+@@ -289,7 +291,8 @@ static int pcxhr_dsp_load(struct pcxhr_mgr *mgr, int index,
+ {
+ 	int err, card_index;
+ 
+-	snd_printdd("loading dsp [%d] size = %Zd\n", index, dsp->size);
++	dev_dbg(&mgr->pci->dev,
++		"loading dsp [%d] size = %Zd\n", index, dsp->size);
+ 
+ 	switch (index) {
+ 	case PCXHR_FIRMWARE_XLX_INT_INDEX:
+@@ -313,19 +316,19 @@ static int pcxhr_dsp_load(struct pcxhr_mgr *mgr, int index,
+ 			return err;
+ 		break;	/* continue with first init */
+ 	default:
+-		snd_printk(KERN_ERR "wrong file index\n");
++		dev_err(&mgr->pci->dev, "wrong file index\n");
+ 		return -EFAULT;
+ 	} /* end of switch file index*/
+ 
+ 	/* first communication with embedded */
+ 	err = pcxhr_init_board(mgr);
+         if (err < 0) {
+-		snd_printk(KERN_ERR "pcxhr could not be set up\n");
++		dev_err(&mgr->pci->dev, "pcxhr could not be set up\n");
+ 		return err;
+ 	}
+ 	err = pcxhr_config_pipes(mgr);
+         if (err < 0) {
+-		snd_printk(KERN_ERR "pcxhr pipes could not be set up\n");
++		dev_err(&mgr->pci->dev, "pcxhr pipes could not be set up\n");
+ 		return err;
+ 	}
+        	/* create devices and mixer in accordance with HW options*/
+@@ -344,10 +347,11 @@ static int pcxhr_dsp_load(struct pcxhr_mgr *mgr, int index,
+ 	}
+ 	err = pcxhr_start_pipes(mgr);
+         if (err < 0) {
+-		snd_printk(KERN_ERR "pcxhr pipes could not be started\n");
++		dev_err(&mgr->pci->dev, "pcxhr pipes could not be started\n");
+ 		return err;
+ 	}
+-	snd_printdd("pcxhr firmware downloaded and successfully set up\n");
++	dev_dbg(&mgr->pci->dev,
++		"pcxhr firmware downloaded and successfully set up\n");
+ 
+ 	return 0;
+ }
+@@ -382,7 +386,8 @@ int pcxhr_setup_firmware(struct pcxhr_mgr *mgr)
+ 			continue;
+ 		sprintf(path, "pcxhr/%s", fw_files[fw_set][i]);
+ 		if (request_firmware(&fw_entry, path, &mgr->pci->dev)) {
+-			snd_printk(KERN_ERR "pcxhr: can't load firmware %s\n",
++			dev_err(&mgr->pci->dev,
++				"pcxhr: can't load firmware %s\n",
+ 				   path);
+ 			return -ENOENT;
+ 		}
+diff --git a/sound/pci/pcxhr/pcxhr_mix22.c b/sound/pci/pcxhr/pcxhr_mix22.c
+index 84fe57626eba..6a56e5306a65 100644
+--- a/sound/pci/pcxhr/pcxhr_mix22.c
++++ b/sound/pci/pcxhr/pcxhr_mix22.c
+@@ -22,6 +22,7 @@
+ 
+ #include <linux/delay.h>
+ #include <linux/io.h>
++#include <linux/pci.h>
+ #include <sound/core.h>
+ #include <sound/control.h>
+ #include <sound/tlv.h>
+@@ -290,7 +291,8 @@ int hr222_sub_init(struct pcxhr_mgr *mgr)
+ 	reg = PCXHR_INPB(mgr, PCXHR_XLX_STATUS);
+ 	if (reg & PCXHR_STAT_MIC_CAPS)
+ 		mgr->board_has_mic = 1;	/* microphone available */
+-	snd_printdd("MIC input available = %d\n", mgr->board_has_mic);
++	dev_dbg(&mgr->pci->dev,
++		"MIC input available = %d\n", mgr->board_has_mic);
+ 
+ 	/* reset codec */
+ 	PCXHR_OUTPB(mgr, PCXHR_DSP_RESET,
+@@ -405,7 +407,7 @@ int hr222_sub_set_clock(struct pcxhr_mgr *mgr,
+ 
+ 	hr222_config_akm(mgr, AKM_UNMUTE_CMD);
+ 
+-	snd_printdd("set_clock to %dHz (realfreq=%d pllreg=%x)\n",
++	dev_dbg(&mgr->pci->dev, "set_clock to %dHz (realfreq=%d pllreg=%x)\n",
+ 		    rate, realfreq, pllreg);
+ 	return 0;
+ }
+@@ -431,13 +433,15 @@ int hr222_get_external_clock(struct pcxhr_mgr *mgr,
+ 		reg = PCXHR_STAT_FREQ_UER1_MASK;
+ 
+ 	} else {
+-		snd_printdd("get_external_clock : type %d not supported\n",
++		dev_dbg(&mgr->pci->dev,
++			"get_external_clock : type %d not supported\n",
+ 			    clock_type);
+ 		return -EINVAL; /* other clocks not supported */
+ 	}
+ 
+ 	if ((PCXHR_INPB(mgr, PCXHR_XLX_CSUER) & mask) != mask) {
+-		snd_printdd("get_external_clock(%d) = 0 Hz\n", clock_type);
++		dev_dbg(&mgr->pci->dev,
++			"get_external_clock(%d) = 0 Hz\n", clock_type);
+ 		*sample_rate = 0;
+ 		return 0; /* no external clock locked */
+ 	}
+@@ -495,7 +499,7 @@ int hr222_get_external_clock(struct pcxhr_mgr *mgr,
+ 	else
+ 		rate = 0;
+ 
+-	snd_printdd("External clock is at %d Hz (measured %d Hz)\n",
++	dev_dbg(&mgr->pci->dev, "External clock is at %d Hz (measured %d Hz)\n",
+ 		    rate, calc_rate);
+ 	*sample_rate = rate;
+ 	return 0;
+@@ -542,7 +546,8 @@ int hr222_manage_timecode(struct pcxhr_mgr *mgr, int enable)
+ int hr222_update_analog_audio_level(struct snd_pcxhr *chip,
+ 				    int is_capture, int channel)
+ {
+-	snd_printdd("hr222_update_analog_audio_level(%s chan=%d)\n",
++	dev_dbg(chip->card->dev,
++		"hr222_update_analog_audio_level(%s chan=%d)\n",
+ 		    is_capture ? "capture" : "playback", channel);
+ 	if (is_capture) {
+ 		int level_l, level_r, level_mic;
+@@ -642,7 +647,7 @@ int hr222_iec958_capture_byte(struct snd_pcxhr *chip,
+ 		if (PCXHR_INPB(chip->mgr, PCXHR_XLX_CSUER) & mask)
+ 			temp |= 1;
+ 	}
+-	snd_printdd("read iec958 AES %d byte %d = 0x%x\n",
++	dev_dbg(chip->card->dev, "read iec958 AES %d byte %d = 0x%x\n",
+ 		    chip->chip_idx, aes_idx, temp);
+ 	*aes_bits = temp;
+ 	return 0;
+@@ -684,7 +689,7 @@ static void hr222_micro_boost(struct pcxhr_mgr *mgr, int level)
+ 
+ 	PCXHR_OUTPB(mgr, PCXHR_XLX_SELMIC, mgr->xlx_selmic);
+ 
+-	snd_printdd("hr222_micro_boost : set %x\n", boost_mask);
++	dev_dbg(&mgr->pci->dev, "hr222_micro_boost : set %x\n", boost_mask);
+ }
+ 
+ static void hr222_phantom_power(struct pcxhr_mgr *mgr, int power)
+@@ -696,7 +701,7 @@ static void hr222_phantom_power(struct pcxhr_mgr *mgr, int power)
+ 
+ 	PCXHR_OUTPB(mgr, PCXHR_XLX_SELMIC, mgr->xlx_selmic);
+ 
+-	snd_printdd("hr222_phantom_power : set %d\n", power);
++	dev_dbg(&mgr->pci->dev, "hr222_phantom_power : set %d\n", power);
+ }
+ 
+ 
+diff --git a/sound/pci/pcxhr/pcxhr_mixer.c b/sound/pci/pcxhr/pcxhr_mixer.c
+index fec049344621..95c9571780d8 100644
+--- a/sound/pci/pcxhr/pcxhr_mixer.c
++++ b/sound/pci/pcxhr/pcxhr_mixer.c
+@@ -72,7 +72,8 @@ static int pcxhr_update_analog_audio_level(struct snd_pcxhr *chip,
+ 	rmh.cmd_len = 3;
+ 	err = pcxhr_send_msg(chip->mgr, &rmh);
+ 	if (err < 0) {
+-		snd_printk(KERN_DEBUG "error update_analog_audio_level card(%d)"
++		dev_dbg(chip->card->dev,
++			"error update_analog_audio_level card(%d)"
+ 			   " is_capture(%d) err(%x)\n",
+ 			   chip->chip_idx, is_capture, err);
+ 		return -EINVAL;
+@@ -284,7 +285,7 @@ static int pcxhr_update_playback_stream_level(struct snd_pcxhr* chip, int idx)
+ 
+ 	err = pcxhr_send_msg(chip->mgr, &rmh);
+ 	if (err < 0) {
+-		snd_printk(KERN_DEBUG "error update_playback_stream_level "
++		dev_dbg(chip->card->dev, "error update_playback_stream_level "
+ 			   "card(%d) err(%x)\n", chip->chip_idx, err);
+ 		return -EINVAL;
+ 	}
+@@ -335,7 +336,8 @@ static int pcxhr_update_audio_pipe_level(struct snd_pcxhr *chip,
+ 
+ 	err = pcxhr_send_msg(chip->mgr, &rmh);
+ 	if (err < 0) {
+-		snd_printk(KERN_DEBUG "error update_audio_level(%d) err=%x\n",
++		dev_dbg(chip->card->dev,
++			"error update_audio_level(%d) err=%x\n",
+ 			   chip->chip_idx, err);
+ 		return -EINVAL;
+ 	}
+@@ -930,7 +932,7 @@ static int pcxhr_iec958_capture_byte(struct snd_pcxhr *chip,
+ 				temp |= 1;
+ 		}
+ 	}
+-	snd_printdd("read iec958 AES %d byte %d = 0x%x\n",
++	dev_dbg(chip->card->dev, "read iec958 AES %d byte %d = 0x%x\n",
+ 		    chip->chip_idx, aes_idx, temp);
+ 	*aes_bits = temp;
+ 	return 0;
+@@ -992,7 +994,8 @@ static int pcxhr_iec958_update_byte(struct snd_pcxhr *chip,
+ 			rmh.cmd[0] |= IO_NUM_REG_CUER;
+ 			rmh.cmd[1] = cmd;
+ 			rmh.cmd_len = 2;
+-			snd_printdd("write iec958 AES %d byte %d bit %d (cmd %x)\n",
++			dev_dbg(chip->card->dev,
++				"write iec958 AES %d byte %d bit %d (cmd %x)\n",
+ 				    chip->chip_idx, aes_idx, i, cmd);
+ 			err = pcxhr_send_msg(chip->mgr, &rmh);
+ 			if (err)
 -- 
 1.9.0
