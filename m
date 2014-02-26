@@ -1,16 +1,20 @@
-From: jwoodward <jwoodward@tensor.co.uk>
-Subject: Fwd: i.MX audio support
-Date: Wed, 26 Feb 2014 09:38:06 +0000
-Message-ID: <530DB5FE.1000202@tensor.co.uk>
-References: <530DB4D2.201@tensor.co.uk>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 47/48] ALSA: usb-audio: Use standard printk
+	helpers
+Date: Wed, 26 Feb 2014 16:53:49 +0100
+Message-ID: <1393430030-26704-48-git-send-email-tiwai@suse.de>
+References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090405000806090506030505"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from MERCURY.olympus.tensor.co.uk
- (host213-123-217-249.in-addr.btopenworld.com [213.123.217.249])
- by alsa0.perex.cz (Postfix) with ESMTP id 374B4261737
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 10:38:21 +0100 (CET)
-In-Reply-To: <530DB4D2.201@tensor.co.uk>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D44D2657EA
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 0E32475029
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:54 +0000 (UTC)
+In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,1286 +24,1782 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---------------090405000806090506030505
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Convert with dev_err() and co from snd_printk(), etc.
+As there are too deep indirections (e.g. ep->chip->dev->dev),
+a few new local macros, usb_audio_err() & co, are introduced.
 
+Also, the device numbers in some messages are dropped, as they are
+shown in the prefix automatically.
 
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/card.c         |  41 ++++++++--------
+ sound/usb/clock.c        |  65 +++++++++++++------------
+ sound/usb/endpoint.c     |  32 +++++++-----
+ sound/usb/format.c       |  68 +++++++++++++++-----------
+ sound/usb/midi.c         |  45 +++++++++--------
+ sound/usb/mixer.c        | 124 ++++++++++++++++++++++++++---------------------
+ sound/usb/mixer_quirks.c |  10 ++--
+ sound/usb/pcm.c          |  83 ++++++++++++++++++-------------
+ sound/usb/quirks.c       |  52 +++++++++++---------
+ sound/usb/stream.c       |  50 ++++++++++---------
+ sound/usb/usbaudio.h     |   9 ++++
+ 11 files changed, 325 insertions(+), 254 deletions(-)
 
-
--------- Original Message --------
-Subject: 	i.MX audio support
-Date: 	Wed, 26 Feb 2014 09:33:06 +0000
-From: 	jwoodward <jwoodward@tensor.co.uk>
-To: 	s.hauer@pengutronix.de
-
-
-
-Hi Sascha,
-
-I am having trouble implimenting the wm8731 codec with the i.MX21.
-
-I have read your article https://lwn.net/Articles/363406/ which does not 
-fill me with confidence on this.
-
-It is at the stage of finding the i2c device, and setting up the 
-transmit line for AC97, I am not very experienced with audio and would 
-appreciate any advise possible?
-
-Here are a few traces I have added:
-
-[    2.935589] wm8731_i2c_probe: i2c_set_clientdata
-[    2.989318] imx_ssi_init
-[    2.997084] imx_ssi_probe
-[    3.007482] imx_ssi_probe
-[    3.015846] setup_channel_to_ac97
-[    3.029115] imx-fiq-pcm-audio imx-fiq-pcm-audio.1: failed to claim 
-fiq: -16
-[    3.049930] imx-fiq-pcm-audio: probe of imx-fiq-pcm-audio.1 failed 
-with error -16
-[    3.075173] ALSA device list:
-[    3.084401]   No soundcards found.
-
-Attached is a schematic of our interface.
-
-Many thanks,
-Jon
-
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 0cfdc2d3b631..893d5a1afc3c 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -139,8 +139,8 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
+ 	struct usb_interface *iface = usb_ifnum_to_if(dev, interface);
+ 
+ 	if (!iface) {
+-		snd_printk(KERN_ERR "%d:%u:%d : does not exist\n",
+-			   dev->devnum, ctrlif, interface);
++		dev_err(&dev->dev, "%u:%d : does not exist\n",
++			ctrlif, interface);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -165,8 +165,8 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
+ 	}
+ 
+ 	if (usb_interface_claimed(iface)) {
+-		snd_printdd(KERN_INFO "%d:%d:%d: skipping, already claimed\n",
+-						dev->devnum, ctrlif, interface);
++		dev_dbg(&dev->dev, "%d:%d: skipping, already claimed\n",
++			ctrlif, interface);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -176,8 +176,9 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
+ 		int err = snd_usbmidi_create(chip->card, iface,
+ 					     &chip->midi_list, NULL);
+ 		if (err < 0) {
+-			snd_printk(KERN_ERR "%d:%u:%d: cannot create sequencer device\n",
+-						dev->devnum, ctrlif, interface);
++			dev_err(&dev->dev,
++				"%u:%d: cannot create sequencer device\n",
++				ctrlif, interface);
+ 			return -EINVAL;
+ 		}
+ 		usb_driver_claim_interface(&usb_audio_driver, iface, (void *)-1L);
+@@ -188,14 +189,15 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
+ 	if ((altsd->bInterfaceClass != USB_CLASS_AUDIO &&
+ 	     altsd->bInterfaceClass != USB_CLASS_VENDOR_SPEC) ||
+ 	    altsd->bInterfaceSubClass != USB_SUBCLASS_AUDIOSTREAMING) {
+-		snd_printdd(KERN_ERR "%d:%u:%d: skipping non-supported interface %d\n",
+-					dev->devnum, ctrlif, interface, altsd->bInterfaceClass);
++		dev_dbg(&dev->dev,
++			"%u:%d: skipping non-supported interface %d\n",
++			ctrlif, interface, altsd->bInterfaceClass);
+ 		/* skip non-supported classes */
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (snd_usb_get_speed(dev) == USB_SPEED_LOW) {
+-		snd_printk(KERN_ERR "low speed audio streaming not supported\n");
++		dev_err(&dev->dev, "low speed audio streaming not supported\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -228,26 +230,27 @@ static int snd_usb_create_streams(struct snd_usb_audio *chip, int ctrlif)
+ 	protocol = altsd->bInterfaceProtocol;
+ 
+ 	if (!control_header) {
+-		snd_printk(KERN_ERR "cannot find UAC_HEADER\n");
++		dev_err(&dev->dev, "cannot find UAC_HEADER\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	switch (protocol) {
+ 	default:
+-		snd_printdd(KERN_WARNING "unknown interface protocol %#02x, assuming v1\n",
+-			    protocol);
++		dev_warn(&dev->dev,
++			 "unknown interface protocol %#02x, assuming v1\n",
++			 protocol);
+ 		/* fall through */
+ 
+ 	case UAC_VERSION_1: {
+ 		struct uac1_ac_header_descriptor *h1 = control_header;
+ 
+ 		if (!h1->bInCollection) {
+-			snd_printk(KERN_INFO "skipping empty audio interface (v1)\n");
++			dev_info(&dev->dev, "skipping empty audio interface (v1)\n");
+ 			return -EINVAL;
+ 		}
+ 
+ 		if (h1->bLength < sizeof(*h1) + h1->bInCollection) {
+-			snd_printk(KERN_ERR "invalid UAC_HEADER (v1)\n");
++			dev_err(&dev->dev, "invalid UAC_HEADER (v1)\n");
+ 			return -EINVAL;
+ 		}
+ 
+@@ -277,7 +280,7 @@ static int snd_usb_create_streams(struct snd_usb_audio *chip, int ctrlif)
+ 		}
+ 
+ 		if (!assoc) {
+-			snd_printk(KERN_ERR "Audio class v2 interfaces need an interface association\n");
++			dev_err(&dev->dev, "Audio class v2 interfaces need an interface association\n");
+ 			return -EINVAL;
+ 		}
+ 
+@@ -351,14 +354,14 @@ static int snd_usb_audio_create(struct usb_interface *intf,
+ 	case USB_SPEED_SUPER:
+ 		break;
+ 	default:
+-		snd_printk(KERN_ERR "unknown device speed %d\n", snd_usb_get_speed(dev));
++		dev_err(&dev->dev, "unknown device speed %d\n", snd_usb_get_speed(dev));
+ 		return -ENXIO;
+ 	}
+ 
+ 	err = snd_card_new(&intf->dev, index[idx], id[idx], THIS_MODULE,
+ 			   0, &card);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "cannot create card instance %d\n", idx);
++		dev_err(&dev->dev, "cannot create card instance %d\n", idx);
+ 		return err;
+ 	}
+ 
+@@ -499,7 +502,7 @@ snd_usb_audio_probe(struct usb_device *dev,
+ 	for (i = 0; i < SNDRV_CARDS; i++) {
+ 		if (usb_chip[i] && usb_chip[i]->dev == dev) {
+ 			if (usb_chip[i]->shutdown) {
+-				snd_printk(KERN_ERR "USB device is in the shutdown state, cannot create a card instance\n");
++				dev_err(&dev->dev, "USB device is in the shutdown state, cannot create a card instance\n");
+ 				goto __error;
+ 			}
+ 			chip = usb_chip[i];
+@@ -523,7 +526,7 @@ snd_usb_audio_probe(struct usb_device *dev,
+ 				break;
+ 			}
+ 		if (!chip) {
+-			printk(KERN_ERR "no available usb audio device\n");
++			dev_err(&dev->dev, "no available usb audio device\n");
+ 			goto __error;
+ 		}
+ 	}
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index 86f80c60b21f..03fed6611d9e 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -115,9 +115,9 @@ static int uac_clock_selector_set_val(struct snd_usb_audio *chip, int selector_i
+ 		return ret;
+ 
+ 	if (ret != sizeof(pin)) {
+-		snd_printk(KERN_ERR
+-			"usb-audio:%d: setting selector (id %d) unexpected length %d\n",
+-			chip->dev->devnum, selector_id, ret);
++		usb_audio_err(chip,
++			"setting selector (id %d) unexpected length %d\n",
++			selector_id, ret);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -126,9 +126,9 @@ static int uac_clock_selector_set_val(struct snd_usb_audio *chip, int selector_i
+ 		return ret;
+ 
+ 	if (ret != pin) {
+-		snd_printk(KERN_ERR
+-			"usb-audio:%d: setting selector (id %d) to %x failed (current: %d)\n",
+-			chip->dev->devnum, selector_id, pin, ret);
++		usb_audio_err(chip,
++			"setting selector (id %d) to %x failed (current: %d)\n",
++			selector_id, pin, ret);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -158,7 +158,8 @@ static bool uac_clock_source_is_valid(struct snd_usb_audio *chip, int source_id)
+ 			      &data, sizeof(data));
+ 
+ 	if (err < 0) {
+-		snd_printk(KERN_WARNING "%s(): cannot get clock validity for id %d\n",
++		dev_warn(&dev->dev,
++			 "%s(): cannot get clock validity for id %d\n",
+ 			   __func__, source_id);
+ 		return 0;
+ 	}
+@@ -177,9 +178,9 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+ 	entity_id &= 0xff;
+ 
+ 	if (test_and_set_bit(entity_id, visited)) {
+-		snd_printk(KERN_WARNING
+-			"%s(): recursive clock topology detected, id %d.\n",
+-			__func__, entity_id);
++		usb_audio_warn(chip,
++			 "%s(): recursive clock topology detected, id %d.\n",
++			 __func__, entity_id);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -188,8 +189,9 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+ 	if (source) {
+ 		entity_id = source->bClockID;
+ 		if (validate && !uac_clock_source_is_valid(chip, entity_id)) {
+-			snd_printk(KERN_ERR "usb-audio:%d: clock source %d is not valid, cannot use\n",
+-				   chip->dev->devnum, entity_id);
++			usb_audio_err(chip,
++				"clock source %d is not valid, cannot use\n",
++				entity_id);
+ 			return -ENXIO;
+ 		}
+ 		return entity_id;
+@@ -208,7 +210,7 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+ 		/* Selector values are one-based */
+ 
+ 		if (ret > selector->bNrInPins || ret < 1) {
+-			snd_printk(KERN_ERR
++			usb_audio_err(chip,
+ 				"%s(): selector reported illegal value, id %d, ret %d\n",
+ 				__func__, selector->bClockID, ret);
+ 
+@@ -237,9 +239,9 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+ 			if (err < 0)
+ 				continue;
+ 
+-			snd_printk(KERN_INFO
+-				"usb-audio:%d: found and selected valid clock source %d\n",
+-				chip->dev->devnum, ret);
++			usb_audio_info(chip,
++				 "found and selected valid clock source %d\n",
++				 ret);
+ 			return ret;
+ 		}
+ 
+@@ -296,8 +298,8 @@ static int set_sample_rate_v1(struct snd_usb_audio *chip, int iface,
+ 				   USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_OUT,
+ 				   UAC_EP_CS_ATTR_SAMPLE_RATE << 8, ep,
+ 				   data, sizeof(data))) < 0) {
+-		snd_printk(KERN_ERR "%d:%d:%d: cannot set freq %d to ep %#x\n",
+-			   dev->devnum, iface, fmt->altsetting, rate, ep);
++		dev_err(&dev->dev, "%d:%d: cannot set freq %d to ep %#x\n",
++			iface, fmt->altsetting, rate, ep);
+ 		return err;
+ 	}
+ 
+@@ -305,14 +307,14 @@ static int set_sample_rate_v1(struct snd_usb_audio *chip, int iface,
+ 				   USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_IN,
+ 				   UAC_EP_CS_ATTR_SAMPLE_RATE << 8, ep,
+ 				   data, sizeof(data))) < 0) {
+-		snd_printk(KERN_WARNING "%d:%d:%d: cannot get freq at ep %#x\n",
+-			   dev->devnum, iface, fmt->altsetting, ep);
++		dev_err(&dev->dev, "%d:%d: cannot get freq at ep %#x\n",
++			iface, fmt->altsetting, ep);
+ 		return 0; /* some devices don't support reading */
+ 	}
+ 
+ 	crate = data[0] | (data[1] << 8) | (data[2] << 16);
+ 	if (crate != rate) {
+-		snd_printd(KERN_WARNING "current rate %d is different from the runtime rate %d\n", crate, rate);
++		dev_warn(&dev->dev, "current rate %d is different from the runtime rate %d\n", crate, rate);
+ 		// runtime->rate = crate;
+ 	}
+ 
+@@ -332,8 +334,8 @@ static int get_sample_rate_v2(struct snd_usb_audio *chip, int iface,
+ 			      snd_usb_ctrl_intf(chip) | (clock << 8),
+ 			      &data, sizeof(data));
+ 	if (err < 0) {
+-		snd_printk(KERN_WARNING "%d:%d:%d: cannot get freq (v2): err %d\n",
+-			   dev->devnum, iface, altsetting, err);
++		dev_warn(&dev->dev, "%d:%d: cannot get freq (v2): err %d\n",
++			 iface, altsetting, err);
+ 		return 0;
+ 	}
+ 
+@@ -369,8 +371,9 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
+ 				      snd_usb_ctrl_intf(chip) | (clock << 8),
+ 				      &data, sizeof(data));
+ 		if (err < 0) {
+-			snd_printk(KERN_ERR "%d:%d:%d: cannot set freq %d (v2): err %d\n",
+-				   dev->devnum, iface, fmt->altsetting, rate, err);
++			usb_audio_err(chip,
++				"%d:%d: cannot set freq %d (v2): err %d\n",
++				iface, fmt->altsetting, rate, err);
+ 			return err;
+ 		}
+ 
+@@ -381,14 +384,14 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
+ 
+ 	if (cur_rate != rate) {
+ 		if (!writeable) {
+-			snd_printk(KERN_WARNING
+-				   "%d:%d:%d: freq mismatch (RO clock): req %d, clock runs @%d\n",
+-				   dev->devnum, iface, fmt->altsetting, rate, cur_rate);
++			usb_audio_warn(chip,
++				 "%d:%d: freq mismatch (RO clock): req %d, clock runs @%d\n",
++				 iface, fmt->altsetting, rate, cur_rate);
+ 			return -ENXIO;
+ 		}
+-		snd_printd(KERN_WARNING
+-			   "current rate %d is different from the runtime rate %d\n",
+-			   cur_rate, rate);
++		usb_audio_dbg(chip,
++			"current rate %d is different from the runtime rate %d\n",
++			cur_rate, rate);
+ 	}
+ 
+ 	/* Some devices doesn't respond to sample rate changes while the
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 83aabea259d7..e70a87e0d9fe 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -333,8 +333,9 @@ static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
+ 
+ 		err = usb_submit_urb(ctx->urb, GFP_ATOMIC);
+ 		if (err < 0)
+-			snd_printk(KERN_ERR "Unable to submit urb #%d: %d (urb %p)\n",
+-				   ctx->index, err, ctx->urb);
++			usb_audio_err(ep->chip,
++				"Unable to submit urb #%d: %d (urb %p)\n",
++				ctx->index, err, ctx->urb);
+ 		else
+ 			set_bit(ctx->index, &ep->active_mask);
+ 	}
+@@ -387,7 +388,7 @@ static void snd_complete_urb(struct urb *urb)
+ 	if (err == 0)
+ 		return;
+ 
+-	snd_printk(KERN_ERR "cannot submit urb (err = %d)\n", err);
++	usb_audio_err(ep->chip, "cannot submit urb (err = %d)\n", err);
+ 	//snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
+ 
+ exit_clear:
+@@ -426,13 +427,14 @@ struct snd_usb_endpoint *snd_usb_add_endpoint(struct snd_usb_audio *chip,
+ 		if (ep->ep_num == ep_num &&
+ 		    ep->iface == alts->desc.bInterfaceNumber &&
+ 		    ep->altsetting == alts->desc.bAlternateSetting) {
+-			snd_printdd(KERN_DEBUG "Re-using EP %x in iface %d,%d @%p\n",
++			usb_audio_dbg(ep->chip,
++				      "Re-using EP %x in iface %d,%d @%p\n",
+ 					ep_num, ep->iface, ep->altsetting, ep);
+ 			goto __exit_unlock;
+ 		}
+ 	}
+ 
+-	snd_printdd(KERN_DEBUG "Creating new %s %s endpoint #%x\n",
++	usb_audio_dbg(chip, "Creating new %s %s endpoint #%x\n",
+ 		    is_playback ? "playback" : "capture",
+ 		    type == SND_USB_ENDPOINT_TYPE_DATA ? "data" : "sync",
+ 		    ep_num);
+@@ -496,8 +498,9 @@ static int wait_clear_urbs(struct snd_usb_endpoint *ep)
+ 	} while (time_before(jiffies, end_time));
+ 
+ 	if (alive)
+-		snd_printk(KERN_ERR "timeout: still %d active urbs on EP #%x\n",
+-					alive, ep->ep_num);
++		usb_audio_err(ep->chip,
++			"timeout: still %d active urbs on EP #%x\n",
++			alive, ep->ep_num);
+ 	clear_bit(EP_FLAG_STOPPING, &ep->flags);
+ 
+ 	return 0;
+@@ -794,8 +797,9 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
+ 	int err;
+ 
+ 	if (ep->use_count != 0) {
+-		snd_printk(KERN_WARNING "Unable to change format on ep #%x: already in use\n",
+-			   ep->ep_num);
++		usb_audio_warn(ep->chip,
++			 "Unable to change format on ep #%x: already in use\n",
++			 ep->ep_num);
+ 		return -EBUSY;
+ 	}
+ 
+@@ -830,8 +834,9 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
+ 		err = -EINVAL;
+ 	}
+ 
+-	snd_printdd(KERN_DEBUG "Setting params for ep #%x (type %d, %d urbs), ret=%d\n",
+-		   ep->ep_num, ep->type, ep->nurbs, err);
++	usb_audio_dbg(ep->chip,
++		"Setting params for ep #%x (type %d, %d urbs), ret=%d\n",
++		ep->ep_num, ep->type, ep->nurbs, err);
+ 
+ 	return err;
+ }
+@@ -906,8 +911,9 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep, bool can_sleep)
+ 
+ 		err = usb_submit_urb(urb, GFP_ATOMIC);
+ 		if (err < 0) {
+-			snd_printk(KERN_ERR "cannot submit urb %d, error %d: %s\n",
+-				   i, err, usb_error_string(err));
++			usb_audio_err(ep->chip,
++				"cannot submit urb %d, error %d: %s\n",
++				i, err, usb_error_string(err));
+ 			goto __error;
+ 		}
+ 		set_bit(i, &ep->active_mask);
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index d244fd3703d8..8bcc87cf5667 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -74,8 +74,8 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
+ 	if ((pcm_formats == 0) &&
+ 	    (format == 0 || format == (1 << UAC_FORMAT_TYPE_I_UNDEFINED))) {
+ 		/* some devices don't define this correctly... */
+-		snd_printdd(KERN_INFO "%d:%u:%d : format type 0 is detected, processed as PCM\n",
+-			    chip->dev->devnum, fp->iface, fp->altsetting);
++		usb_audio_info(chip, "%u:%d : format type 0 is detected, processed as PCM\n",
++			fp->iface, fp->altsetting);
+ 		format = 1 << UAC_FORMAT_TYPE_I_PCM;
+ 	}
+ 	if (format & (1 << UAC_FORMAT_TYPE_I_PCM)) {
+@@ -83,9 +83,9 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
+ 		    sample_width == 24 && sample_bytes == 2)
+ 			sample_bytes = 3;
+ 		else if (sample_width > sample_bytes * 8) {
+-			snd_printk(KERN_INFO "%d:%u:%d : sample bitwidth %d in over sample bytes %d\n",
+-				   chip->dev->devnum, fp->iface, fp->altsetting,
+-				   sample_width, sample_bytes);
++			usb_audio_info(chip, "%u:%d : sample bitwidth %d in over sample bytes %d\n",
++				 fp->iface, fp->altsetting,
++				 sample_width, sample_bytes);
+ 		}
+ 		/* check the format byte size */
+ 		switch (sample_bytes) {
+@@ -108,9 +108,10 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
+ 			pcm_formats |= SNDRV_PCM_FMTBIT_S32_LE;
+ 			break;
+ 		default:
+-			snd_printk(KERN_INFO "%d:%u:%d : unsupported sample bitwidth %d in %d bytes\n",
+-				   chip->dev->devnum, fp->iface, fp->altsetting,
+-				   sample_width, sample_bytes);
++			usb_audio_info(chip,
++				 "%u:%d : unsupported sample bitwidth %d in %d bytes\n",
++				 fp->iface, fp->altsetting,
++				 sample_width, sample_bytes);
+ 			break;
+ 		}
+ 	}
+@@ -132,8 +133,9 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
+ 		pcm_formats |= SNDRV_PCM_FMTBIT_MU_LAW;
+ 	}
+ 	if (format & ~0x3f) {
+-		snd_printk(KERN_INFO "%d:%u:%d : unsupported format bits %#x\n",
+-			   chip->dev->devnum, fp->iface, fp->altsetting, format);
++		usb_audio_info(chip,
++			 "%u:%d : unsupported format bits %#x\n",
++			 fp->iface, fp->altsetting, format);
+ 	}
+ 
+ 	pcm_formats |= snd_usb_interface_dsd_format_quirks(chip, fp, sample_bytes);
+@@ -158,8 +160,9 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
+ 	int nr_rates = fmt[offset];
+ 
+ 	if (fmt[0] < offset + 1 + 3 * (nr_rates ? nr_rates : 2)) {
+-		snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc\n",
+-				   chip->dev->devnum, fp->iface, fp->altsetting);
++		usb_audio_err(chip,
++			"%u:%d : invalid UAC_FORMAT_TYPE desc\n",
++			fp->iface, fp->altsetting);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -171,7 +174,7 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
+ 
+ 		fp->rate_table = kmalloc(sizeof(int) * nr_rates, GFP_KERNEL);
+ 		if (fp->rate_table == NULL) {
+-			snd_printk(KERN_ERR "cannot malloc\n");
++			usb_audio_err(chip, "cannot malloc\n");
+ 			return -ENOMEM;
+ 		}
+ 
+@@ -222,7 +225,8 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
+  * get to know how many sample rates we have to expect.
+  * Then fp->rate_table can be allocated and filled.
+  */
+-static int parse_uac2_sample_rate_range(struct audioformat *fp, int nr_triplets,
++static int parse_uac2_sample_rate_range(struct snd_usb_audio *chip,
++					struct audioformat *fp, int nr_triplets,
+ 					const unsigned char *data)
+ {
+ 	int i, nr_rates = 0;
+@@ -261,7 +265,7 @@ static int parse_uac2_sample_rate_range(struct audioformat *fp, int nr_triplets,
+ 
+ 			nr_rates++;
+ 			if (nr_rates >= MAX_NR_RATES) {
+-				snd_printk(KERN_ERR "invalid uac2 rates\n");
++				usb_audio_err(chip, "invalid uac2 rates\n");
+ 				break;
+ 			}
+ 
+@@ -287,7 +291,8 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
+ 	int clock = snd_usb_clock_find_source(chip, fp->clock, false);
+ 
+ 	if (clock < 0) {
+-		snd_printk(KERN_ERR "%s(): unable to find clock source (clock %d)\n",
++		dev_err(&dev->dev,
++			"%s(): unable to find clock source (clock %d)\n",
+ 				__func__, clock);
+ 		goto err;
+ 	}
+@@ -300,7 +305,8 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
+ 			      tmp, sizeof(tmp));
+ 
+ 	if (ret < 0) {
+-		snd_printk(KERN_ERR "%s(): unable to retrieve number of sample rates (clock %d)\n",
++		dev_err(&dev->dev,
++			"%s(): unable to retrieve number of sample rates (clock %d)\n",
+ 				__func__, clock);
+ 		goto err;
+ 	}
+@@ -321,7 +327,8 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
+ 			      data, data_size);
+ 
+ 	if (ret < 0) {
+-		snd_printk(KERN_ERR "%s(): unable to retrieve sample rate range (clock %d)\n",
++		dev_err(&dev->dev,
++			"%s(): unable to retrieve sample rate range (clock %d)\n",
+ 				__func__, clock);
+ 		ret = -EINVAL;
+ 		goto err_free;
+@@ -332,7 +339,7 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
+ 	 * will have to deal with. */
+ 	kfree(fp->rate_table);
+ 	fp->rate_table = NULL;
+-	fp->nr_rates = parse_uac2_sample_rate_range(fp, nr_triplets, data);
++	fp->nr_rates = parse_uac2_sample_rate_range(chip, fp, nr_triplets, data);
+ 
+ 	if (fp->nr_rates == 0) {
+ 		/* SNDRV_PCM_RATE_CONTINUOUS */
+@@ -348,7 +355,7 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
+ 
+ 	/* Call the triplet parser again, but this time, fp->rate_table is
+ 	 * allocated, so the rates will be stored */
+-	parse_uac2_sample_rate_range(fp, nr_triplets, data);
++	parse_uac2_sample_rate_range(chip, fp, nr_triplets, data);
+ 
+ err_free:
+ 	kfree(data);
+@@ -408,8 +415,9 @@ static int parse_audio_format_i(struct snd_usb_audio *chip,
+ 	}
+ 
+ 	if (fp->channels < 1) {
+-		snd_printk(KERN_ERR "%d:%u:%d : invalid channels %d\n",
+-			   chip->dev->devnum, fp->iface, fp->altsetting, fp->channels);
++		usb_audio_err(chip,
++			"%u:%d : invalid channels %d\n",
++			fp->iface, fp->altsetting, fp->channels);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -435,8 +443,9 @@ static int parse_audio_format_ii(struct snd_usb_audio *chip,
+ 		fp->formats = SNDRV_PCM_FMTBIT_MPEG;
+ 		break;
+ 	default:
+-		snd_printd(KERN_INFO "%d:%u:%d : unknown format tag %#x is detected.  processed as MPEG.\n",
+-			   chip->dev->devnum, fp->iface, fp->altsetting, format);
++		usb_audio_info(chip,
++			 "%u:%d : unknown format tag %#x is detected.  processed as MPEG.\n",
++			 fp->iface, fp->altsetting, format);
+ 		fp->formats = SNDRV_PCM_FMTBIT_MPEG;
+ 		break;
+ 	}
+@@ -449,7 +458,7 @@ static int parse_audio_format_ii(struct snd_usb_audio *chip,
+ 		struct uac_format_type_ii_discrete_descriptor *fmt = _fmt;
+ 		brate = le16_to_cpu(fmt->wMaxBitRate);
+ 		framesize = le16_to_cpu(fmt->wSamplesPerFrame);
+-		snd_printd(KERN_INFO "found format II with max.bitrate = %d, frame size=%d\n", brate, framesize);
++		usb_audio_info(chip, "found format II with max.bitrate = %d, frame size=%d\n", brate, framesize);
+ 		fp->frame_size = framesize;
+ 		ret = parse_audio_format_rates_v1(chip, fp, _fmt, 8); /* fmt[8..] sample rates */
+ 		break;
+@@ -458,7 +467,7 @@ static int parse_audio_format_ii(struct snd_usb_audio *chip,
+ 		struct uac_format_type_ii_ext_descriptor *fmt = _fmt;
+ 		brate = le16_to_cpu(fmt->wMaxBitRate);
+ 		framesize = le16_to_cpu(fmt->wSamplesPerFrame);
+-		snd_printd(KERN_INFO "found format II with max.bitrate = %d, frame size=%d\n", brate, framesize);
++		usb_audio_info(chip, "found format II with max.bitrate = %d, frame size=%d\n", brate, framesize);
+ 		fp->frame_size = framesize;
+ 		ret = parse_audio_format_rates_v2(chip, fp);
+ 		break;
+@@ -484,9 +493,10 @@ int snd_usb_parse_audio_format(struct snd_usb_audio *chip,
+ 		err = parse_audio_format_ii(chip, fp, format, fmt);
+ 		break;
+ 	default:
+-		snd_printd(KERN_INFO "%d:%u:%d : format type %d is not supported yet\n",
+-			   chip->dev->devnum, fp->iface, fp->altsetting,
+-			   fmt->bFormatType);
++		usb_audio_info(chip,
++			 "%u:%d : format type %d is not supported yet\n",
++			 fp->iface, fp->altsetting,
++			 fmt->bFormatType);
+ 		return -ENOTSUPP;
+ 	}
+ 	fp->fmt_type = fmt->bFormatType;
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index b901f468b67a..9da74d2e8eee 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -191,16 +191,16 @@ static int snd_usbmidi_submit_urb(struct urb* urb, gfp_t flags)
+ {
+ 	int err = usb_submit_urb(urb, flags);
+ 	if (err < 0 && err != -ENODEV)
+-		snd_printk(KERN_ERR "usb_submit_urb: %d\n", err);
++		dev_err(&urb->dev->dev, "usb_submit_urb: %d\n", err);
+ 	return err;
+ }
+ 
+ /*
+  * Error handling for URB completion functions.
+  */
+-static int snd_usbmidi_urb_error(int status)
++static int snd_usbmidi_urb_error(const struct urb *urb)
+ {
+-	switch (status) {
++	switch (urb->status) {
+ 	/* manually unlinked, or device gone */
+ 	case -ENOENT:
+ 	case -ECONNRESET:
+@@ -213,7 +213,7 @@ static int snd_usbmidi_urb_error(int status)
+ 	case -EILSEQ:
+ 		return -EIO;
+ 	default:
+-		snd_printk(KERN_ERR "urb status %d\n", status);
++		dev_err(&urb->dev->dev, "urb status %d\n", urb->status);
+ 		return 0; /* continue */
+ 	}
+ }
+@@ -227,7 +227,7 @@ static void snd_usbmidi_input_data(struct snd_usb_midi_in_endpoint* ep, int port
+ 	struct usbmidi_in_port* port = &ep->ports[portidx];
+ 
+ 	if (!port->substream) {
+-		snd_printd("unexpected port %d!\n", portidx);
++		dev_dbg(&ep->umidi->dev->dev, "unexpected port %d!\n", portidx);
+ 		return;
+ 	}
+ 	if (!test_bit(port->substream->number, &ep->umidi->input_triggered))
+@@ -259,7 +259,7 @@ static void snd_usbmidi_in_urb_complete(struct urb* urb)
+ 		ep->umidi->usb_protocol_ops->input(ep, urb->transfer_buffer,
+ 						   urb->actual_length);
+ 	} else {
+-		int err = snd_usbmidi_urb_error(urb->status);
++		int err = snd_usbmidi_urb_error(urb);
+ 		if (err < 0) {
+ 			if (err != -ENODEV) {
+ 				ep->error_resubmit = 1;
+@@ -289,7 +289,7 @@ static void snd_usbmidi_out_urb_complete(struct urb* urb)
+ 	}
+ 	spin_unlock(&ep->buffer_lock);
+ 	if (urb->status < 0) {
+-		int err = snd_usbmidi_urb_error(urb->status);
++		int err = snd_usbmidi_urb_error(urb);
+ 		if (err < 0) {
+ 			if (err != -ENODEV)
+ 				mod_timer(&ep->umidi->error_timer,
+@@ -1668,7 +1668,7 @@ static void snd_usbmidi_init_substream(struct snd_usb_midi* umidi,
+ 
+ 	struct snd_rawmidi_substream *substream = snd_usbmidi_find_substream(umidi, stream, number);
+ 	if (!substream) {
+-		snd_printd(KERN_ERR "substream %d:%d not found\n", stream, number);
++		dev_err(&umidi->dev->dev, "substream %d:%d not found\n", stream, number);
+ 		return;
+ 	}
+ 
+@@ -1717,7 +1717,7 @@ static int snd_usbmidi_create_endpoints(struct snd_usb_midi* umidi,
+ 			}
+ 		}
+ 	}
+-	snd_printdd(KERN_INFO "created %d output and %d input ports\n",
++	dev_dbg(&umidi->dev->dev, "created %d output and %d input ports\n",
+ 		    out_ports, in_ports);
+ 	return 0;
+ }
+@@ -1747,10 +1747,11 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi* umidi,
+ 	    ms_header->bLength >= 7 &&
+ 	    ms_header->bDescriptorType == USB_DT_CS_INTERFACE &&
+ 	    ms_header->bDescriptorSubtype == UAC_HEADER)
+-		snd_printdd(KERN_INFO "MIDIStreaming version %02x.%02x\n",
++		dev_dbg(&umidi->dev->dev, "MIDIStreaming version %02x.%02x\n",
+ 			    ms_header->bcdMSC[1], ms_header->bcdMSC[0]);
+ 	else
+-		snd_printk(KERN_WARNING "MIDIStreaming interface descriptor not found\n");
++		dev_warn(&umidi->dev->dev,
++			 "MIDIStreaming interface descriptor not found\n");
+ 
+ 	epidx = 0;
+ 	for (i = 0; i < intfd->bNumEndpoints; ++i) {
+@@ -1767,7 +1768,8 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi* umidi,
+ 		if (usb_endpoint_dir_out(ep)) {
+ 			if (endpoints[epidx].out_ep) {
+ 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
+-					snd_printk(KERN_WARNING "too many endpoints\n");
++					dev_warn(&umidi->dev->dev,
++						 "too many endpoints\n");
+ 					break;
+ 				}
+ 			}
+@@ -1782,12 +1784,13 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi* umidi,
+ 				 */
+ 				endpoints[epidx].out_interval = 1;
+ 			endpoints[epidx].out_cables = (1 << ms_ep->bNumEmbMIDIJack) - 1;
+-			snd_printdd(KERN_INFO "EP %02X: %d jack(s)\n",
++			dev_dbg(&umidi->dev->dev, "EP %02X: %d jack(s)\n",
+ 				    ep->bEndpointAddress, ms_ep->bNumEmbMIDIJack);
+ 		} else {
+ 			if (endpoints[epidx].in_ep) {
+ 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
+-					snd_printk(KERN_WARNING "too many endpoints\n");
++					dev_warn(&umidi->dev->dev,
++						 "too many endpoints\n");
+ 					break;
+ 				}
+ 			}
+@@ -1797,7 +1800,7 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi* umidi,
+ 			else if (snd_usb_get_speed(umidi->dev) == USB_SPEED_LOW)
+ 				endpoints[epidx].in_interval = 1;
+ 			endpoints[epidx].in_cables = (1 << ms_ep->bNumEmbMIDIJack) - 1;
+-			snd_printdd(KERN_INFO "EP %02X: %d jack(s)\n",
++			dev_dbg(&umidi->dev->dev, "EP %02X: %d jack(s)\n",
+ 				    ep->bEndpointAddress, ms_ep->bNumEmbMIDIJack);
+ 		}
+ 	}
+@@ -1865,7 +1868,7 @@ static void snd_usbmidi_switch_roland_altsetting(struct snd_usb_midi* umidi)
+ 	    (get_endpoint(hostif, 1)->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) != USB_ENDPOINT_XFER_INT)
+ 		return;
+ 
+-	snd_printdd(KERN_INFO "switching to altsetting %d with int ep\n",
++	dev_dbg(&umidi->dev->dev, "switching to altsetting %d with int ep\n",
+ 		    intfd->bAlternateSetting);
+ 	usb_set_interface(umidi->dev, intfd->bInterfaceNumber,
+ 			  intfd->bAlternateSetting);
+@@ -2047,25 +2050,25 @@ static int snd_usbmidi_create_endpoints_midiman(struct snd_usb_midi* umidi,
+ 	 * input bulk endpoints (at indices 1 and 3) which aren't used.
+ 	 */
+ 	if (intfd->bNumEndpoints < (endpoint->out_cables > 0x0001 ? 5 : 3)) {
+-		snd_printdd(KERN_ERR "not enough endpoints\n");
++		dev_dbg(&umidi->dev->dev, "not enough endpoints\n");
+ 		return -ENOENT;
+ 	}
+ 
+ 	epd = get_endpoint(hostif, 0);
+ 	if (!usb_endpoint_dir_in(epd) || !usb_endpoint_xfer_int(epd)) {
+-		snd_printdd(KERN_ERR "endpoint[0] isn't interrupt\n");
++		dev_dbg(&umidi->dev->dev, "endpoint[0] isn't interrupt\n");
+ 		return -ENXIO;
+ 	}
+ 	epd = get_endpoint(hostif, 2);
+ 	if (!usb_endpoint_dir_out(epd) || !usb_endpoint_xfer_bulk(epd)) {
+-		snd_printdd(KERN_ERR "endpoint[2] isn't bulk output\n");
++		dev_dbg(&umidi->dev->dev, "endpoint[2] isn't bulk output\n");
+ 		return -ENXIO;
+ 	}
+ 	if (endpoint->out_cables > 0x0001) {
+ 		epd = get_endpoint(hostif, 4);
+ 		if (!usb_endpoint_dir_out(epd) ||
+ 		    !usb_endpoint_xfer_bulk(epd)) {
+-			snd_printdd(KERN_ERR "endpoint[4] isn't bulk output\n");
++			dev_dbg(&umidi->dev->dev, "endpoint[4] isn't bulk output\n");
+ 			return -ENXIO;
+ 		}
+ 	}
+@@ -2289,7 +2292,7 @@ int snd_usbmidi_create(struct snd_card *card,
+ 		err = snd_usbmidi_detect_per_port_endpoints(umidi, endpoints);
+ 		break;
+ 	default:
+-		snd_printd(KERN_ERR "invalid quirk type %d\n", quirk->type);
++		dev_err(&umidi->dev->dev, "invalid quirk type %d\n", quirk->type);
+ 		err = -ENXIO;
+ 		break;
+ 	}
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 8c152b02da5a..fcd3ab9331d3 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -305,8 +305,9 @@ static int get_ctl_value_v1(struct usb_mixer_elem_info *cval, int request, int v
+ 			goto out;
+ 		}
+ 	}
+-	snd_printdd(KERN_ERR "cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
+-		    request, validx, idx, cval->val_type);
++	usb_audio_dbg(chip,
++		"cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
++		request, validx, idx, cval->val_type);
+ 	err = -EINVAL;
+ 
+  out:
+@@ -351,8 +352,9 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request, int v
+ 
+ 	if (ret < 0) {
+ error:
+-		snd_printk(KERN_ERR "cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
+-			   request, validx, idx, cval->val_type);
++		usb_audio_err(chip,
++			"cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
++			request, validx, idx, cval->val_type);
+ 		return ret;
+ 	}
+ 
+@@ -413,7 +415,8 @@ static int get_cur_mix_value(struct usb_mixer_elem_info *cval,
+ 	err = get_cur_mix_raw(cval, channel, value);
+ 	if (err < 0) {
+ 		if (!cval->mixer->ignore_ctl_error)
+-			snd_printd(KERN_ERR "cannot get current value for control %d ch %d: err = %d\n",
++			usb_audio_dbg(cval->mixer->chip,
++				"cannot get current value for control %d ch %d: err = %d\n",
+ 				   cval->control, channel, err);
+ 		return err;
+ 	}
+@@ -444,7 +447,7 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
+ 
+ 		/* FIXME */
+ 		if (request != UAC_SET_CUR) {
+-			snd_printdd(KERN_WARNING "RANGE setting not yet supported\n");
++			usb_audio_dbg(chip, "RANGE setting not yet supported\n");
+ 			return -EINVAL;
+ 		}
+ 
+@@ -470,7 +473,7 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
+ 			goto out;
+ 		}
+ 	}
+-	snd_printdd(KERN_ERR "cannot set ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d, data = %#x/%#x\n",
++	usb_audio_dbg(chip, "cannot set ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d, data = %#x/%#x\n",
+ 		    request, validx, idx, cval->val_type, buf[0], buf[1]);
+ 	err = -EINVAL;
+ 
+@@ -494,7 +497,8 @@ static int set_cur_mix_value(struct usb_mixer_elem_info *cval, int channel,
+ 		cval->ch_readonly & (1 << (channel - 1));
+ 
+ 	if (read_only) {
+-		snd_printdd(KERN_INFO "%s(): channel %d of control %d is read_only\n",
++		usb_audio_dbg(cval->mixer->chip,
++			      "%s(): channel %d of control %d is read_only\n",
+ 			    __func__, channel, cval->control);
+ 		return 0;
+ 	}
+@@ -560,7 +564,7 @@ int snd_usb_mixer_add_control(struct usb_mixer_interface *mixer,
+ 	while (snd_ctl_find_id(mixer->chip->card, &kctl->id))
+ 		kctl->id.index++;
+ 	if ((err = snd_ctl_add(mixer->chip->card, kctl)) < 0) {
+-		snd_printd(KERN_ERR "cannot add control (err = %d)\n", err);
++		usb_audio_dbg(mixer->chip, "cannot add control (err = %d)\n", err);
+ 		return err;
+ 	}
+ 	cval->elem_id = &kctl->id;
+@@ -807,7 +811,8 @@ static void usb_mixer_elem_free(struct snd_kcontrol *kctl)
+ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 				  struct snd_kcontrol *kctl)
+ {
+-	switch (cval->mixer->chip->usb_id) {
++	struct snd_usb_audio *chip = cval->mixer->chip;
++	switch (chip->usb_id) {
+ 	case USB_ID(0x0763, 0x2030): /* M-Audio Fast Track C400 */
+ 	case USB_ID(0x0763, 0x2031): /* M-Audio Fast Track C600 */
+ 		if (strcmp(kctl->id.name, "Effect Duration") == 0) {
+@@ -839,8 +844,8 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 	case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
+ 	case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra */
+ 		if (strcmp(kctl->id.name, "Effect Duration") == 0) {
+-			snd_printk(KERN_INFO
+-				"usb-audio: set quirk for FTU Effect Duration\n");
++			usb_audio_info(chip,
++				       "set quirk for FTU Effect Duration\n");
+ 			cval->min = 0x0000;
+ 			cval->max = 0x7f00;
+ 			cval->res = 0x0100;
+@@ -848,8 +853,8 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 		}
+ 		if (strcmp(kctl->id.name, "Effect Volume") == 0 ||
+ 		    strcmp(kctl->id.name, "Effect Feedback Volume") == 0) {
+-			snd_printk(KERN_INFO
+-				"usb-audio: set quirks for FTU Effect Feedback/Volume\n");
++			usb_audio_info(chip,
++				       "set quirks for FTU Effect Feedback/Volume\n");
+ 			cval->min = 0x00;
+ 			cval->max = 0x7f;
+ 			break;
+@@ -867,7 +872,7 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 	 */
+ 		if (!strcmp(kctl->id.name, "PCM Playback Volume") &&
+ 		    cval->min == -15616) {
+-			snd_printk(KERN_INFO
++			usb_audio_info(chip,
+ 				 "set volume quirk for UDA1321/N101 chip\n");
+ 			cval->max = -256;
+ 		}
+@@ -875,7 +880,7 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 
+ 	case USB_ID(0x046d, 0x09a4):
+ 		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
+-			snd_printk(KERN_INFO
++			usb_audio_info(chip,
+ 				"set volume quirk for QuickCam E3500\n");
+ 			cval->min = 6080;
+ 			cval->max = 8768;
+@@ -895,7 +900,7 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 	 * Proboly there is some logitech magic behind this number --fishor
+ 	 */
+ 		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
+-			snd_printk(KERN_INFO
++			usb_audio_info(chip,
+ 				"set resolution quirk: cval->res = 384\n");
+ 			cval->res = 384;
+ 		}
+@@ -931,7 +936,8 @@ static int get_min_max_with_quirks(struct usb_mixer_elem_info *cval,
+ 		}
+ 		if (get_ctl_value(cval, UAC_GET_MAX, (cval->control << 8) | minchn, &cval->max) < 0 ||
+ 		    get_ctl_value(cval, UAC_GET_MIN, (cval->control << 8) | minchn, &cval->min) < 0) {
+-			snd_printd(KERN_ERR "%d:%d: cannot get min/max values for control %d (id %d)\n",
++			usb_audio_err(cval->mixer->chip,
++				      "%d:%d: cannot get min/max values for control %d (id %d)\n",
+ 				   cval->id, snd_usb_ctrl_intf(cval->mixer->chip), cval->control, cval->id);
+ 			return -EINVAL;
+ 		}
+@@ -1195,7 +1201,7 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 
+ 	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
+ 	if (! cval) {
+-		snd_printk(KERN_ERR "cannot malloc kcontrol\n");
++		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
+ 		return;
+ 	}
+ 	cval->mixer = state->mixer;
+@@ -1224,7 +1230,7 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 		kctl = snd_ctl_new1(&usb_feature_unit_ctl, cval);
+ 
+ 	if (! kctl) {
+-		snd_printk(KERN_ERR "cannot malloc kcontrol\n");
++		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
+ 		kfree(cval);
+ 		return;
+ 	}
+@@ -1298,16 +1304,16 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 	 * devices. It will definitively catch all buggy Logitech devices.
+ 	 */
+ 	if (range > 384) {
+-		snd_printk(KERN_WARNING "usb_audio: Warning! Unlikely big "
++		usb_audio_warn(state->chip, "Warning! Unlikely big "
+ 			   "volume range (=%u), cval->res is probably wrong.",
+ 			   range);
+-		snd_printk(KERN_WARNING "usb_audio: [%d] FU [%s] ch = %d, "
++		usb_audio_warn(state->chip, "[%d] FU [%s] ch = %d, "
+ 			   "val = %d/%d/%d", cval->id,
+ 			   kctl->id.name, cval->channels,
+ 			   cval->min, cval->max, cval->res);
+ 	}
+ 
+-	snd_printdd(KERN_INFO "[%d] FU [%s] ch = %d, val = %d/%d/%d\n",
++	usb_audio_dbg(state->chip, "[%d] FU [%s] ch = %d, val = %d/%d/%d\n",
+ 		    cval->id, kctl->id.name, cval->channels, cval->min, cval->max, cval->res);
+ 	snd_usb_mixer_add_control(state->mixer, kctl);
+ }
+@@ -1331,16 +1337,17 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
+ 	if (state->mixer->protocol == UAC_VERSION_1) {
+ 		csize = hdr->bControlSize;
+ 		if (!csize) {
+-			snd_printdd(KERN_ERR "usbaudio: unit %u: "
+-				    "invalid bControlSize == 0\n", unitid);
++			usb_audio_dbg(state->chip,
++				      "unit %u: invalid bControlSize == 0\n",
++				      unitid);
+ 			return -EINVAL;
+ 		}
+ 		channels = (hdr->bLength - 7) / csize - 1;
+ 		bmaControls = hdr->bmaControls;
+ 		if (hdr->bLength < 7 + csize) {
+-			snd_printk(KERN_ERR "usbaudio: unit %u: "
+-				   "invalid UAC_FEATURE_UNIT descriptor\n",
+-				   unitid);
++			usb_audio_err(state->chip,
++				      "unit %u: invalid UAC_FEATURE_UNIT descriptor\n",
++				      unitid);
+ 			return -EINVAL;
+ 		}
+ 	} else {
+@@ -1349,9 +1356,9 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
+ 		channels = (hdr->bLength - 6) / 4 - 1;
+ 		bmaControls = ftr->bmaControls;
+ 		if (hdr->bLength < 6 + csize) {
+-			snd_printk(KERN_ERR "usbaudio: unit %u: "
+-				   "invalid UAC_FEATURE_UNIT descriptor\n",
+-				   unitid);
++			usb_audio_err(state->chip,
++				      "unit %u: invalid UAC_FEATURE_UNIT descriptor\n",
++				      unitid);
+ 			return -EINVAL;
+ 		}
+ 	}
+@@ -1369,14 +1376,14 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
+ 	/* master configuration quirks */
+ 	switch (state->chip->usb_id) {
+ 	case USB_ID(0x08bb, 0x2702):
+-		snd_printk(KERN_INFO
+-			   "usbmixer: master volume quirk for PCM2702 chip\n");
++		usb_audio_info(state->chip,
++			       "usbmixer: master volume quirk for PCM2702 chip\n");
+ 		/* disable non-functional volume control */
+ 		master_bits &= ~UAC_CONTROL_BIT(UAC_FU_VOLUME);
+ 		break;
+ 	case USB_ID(0x1130, 0xf211):
+-		snd_printk(KERN_INFO
+-			   "usbmixer: volume control quirk for Tenx TP6911 Audio Headset\n");
++		usb_audio_info(state->chip,
++			       "usbmixer: volume control quirk for Tenx TP6911 Audio Headset\n");
+ 		/* disable non-functional volume control */
+ 		channels = 0;
+ 		break;
+@@ -1478,7 +1485,7 @@ static void build_mixer_unit_ctl(struct mixer_build *state,
+ 
+ 	kctl = snd_ctl_new1(&usb_feature_unit_ctl, cval);
+ 	if (! kctl) {
+-		snd_printk(KERN_ERR "cannot malloc kcontrol\n");
++		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
+ 		kfree(cval);
+ 		return;
+ 	}
+@@ -1491,7 +1498,7 @@ static void build_mixer_unit_ctl(struct mixer_build *state,
+ 		len = sprintf(kctl->id.name, "Mixer Source %d", in_ch + 1);
+ 	append_ctl_name(kctl, " Volume");
+ 
+-	snd_printdd(KERN_INFO "[%d] MU [%s] ch = %d, val = %d/%d\n",
++	usb_audio_dbg(state->chip, "[%d] MU [%s] ch = %d, val = %d/%d\n",
+ 		    cval->id, kctl->id.name, cval->channels, cval->min, cval->max);
+ 	snd_usb_mixer_add_control(state->mixer, kctl);
+ }
+@@ -1508,12 +1515,12 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid, void *r
+ 	int pin, ich, err;
+ 
+ 	if (desc->bLength < 11 || ! (input_pins = desc->bNrInPins) || ! (num_outs = uac_mixer_unit_bNrChannels(desc))) {
+-		snd_printk(KERN_ERR "invalid MIXER UNIT descriptor %d\n", unitid);
++		usb_audio_err(state->chip, "invalid MIXER UNIT descriptor %d\n", unitid);
+ 		return -EINVAL;
+ 	}
+ 	/* no bmControls field (e.g. Maya44) -> ignore */
+ 	if (desc->bLength <= 10 + input_pins) {
+-		snd_printdd(KERN_INFO "MU %d has no bmControls field\n", unitid);
++		usb_audio_dbg(state->chip, "MU %d has no bmControls field\n", unitid);
+ 		return 0;
+ 	}
+ 
+@@ -1712,7 +1719,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
+ 
+ 	if (desc->bLength < 13 || desc->bLength < 13 + num_ins ||
+ 	    desc->bLength < num_ins + uac_processing_unit_bControlSize(desc, state->mixer->protocol)) {
+-		snd_printk(KERN_ERR "invalid %s descriptor (id %d)\n", name, unitid);
++		usb_audio_err(state->chip, "invalid %s descriptor (id %d)\n", name, unitid);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1738,7 +1745,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
+ 			continue;
+ 		cval = kzalloc(sizeof(*cval), GFP_KERNEL);
+ 		if (! cval) {
+-			snd_printk(KERN_ERR "cannot malloc kcontrol\n");
++			usb_audio_err(state->chip, "cannot malloc kcontrol\n");
+ 			return -ENOMEM;
+ 		}
+ 		cval->mixer = state->mixer;
+@@ -1770,7 +1777,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
+ 
+ 		kctl = snd_ctl_new1(&mixer_procunit_ctl, cval);
+ 		if (! kctl) {
+-			snd_printk(KERN_ERR "cannot malloc kcontrol\n");
++			usb_audio_err(state->chip, "cannot malloc kcontrol\n");
+ 			kfree(cval);
+ 			return -ENOMEM;
+ 		}
+@@ -1792,7 +1799,8 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
+ 		append_ctl_name(kctl, " ");
+ 		append_ctl_name(kctl, valinfo->suffix);
+ 
+-		snd_printdd(KERN_INFO "[%d] PU [%s] ch = %d, val = %d/%d\n",
++		usb_audio_dbg(state->chip,
++			"[%d] PU [%s] ch = %d, val = %d/%d\n",
+ 			    cval->id, kctl->id.name, cval->channels, cval->min, cval->max);
+ 		if ((err = snd_usb_mixer_add_control(state->mixer, kctl)) < 0)
+ 			return err;
+@@ -1917,7 +1925,8 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid, void
+ 	char **namelist;
+ 
+ 	if (!desc->bNrInPins || desc->bLength < 5 + desc->bNrInPins) {
+-		snd_printk(KERN_ERR "invalid SELECTOR UNIT descriptor %d\n", unitid);
++		usb_audio_err(state->chip,
++			"invalid SELECTOR UNIT descriptor %d\n", unitid);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1935,7 +1944,7 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid, void
+ 
+ 	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
+ 	if (! cval) {
+-		snd_printk(KERN_ERR "cannot malloc kcontrol\n");
++		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
+ 		return -ENOMEM;
+ 	}
+ 	cval->mixer = state->mixer;
+@@ -1954,7 +1963,7 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid, void
+ 
+ 	namelist = kmalloc(sizeof(char *) * desc->bNrInPins, GFP_KERNEL);
+ 	if (! namelist) {
+-		snd_printk(KERN_ERR "cannot malloc\n");
++		usb_audio_err(state->chip, "cannot malloc\n");
+ 		kfree(cval);
+ 		return -ENOMEM;
+ 	}
+@@ -1964,7 +1973,7 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid, void
+ 		len = 0;
+ 		namelist[i] = kmalloc(MAX_ITEM_NAME_LEN, GFP_KERNEL);
+ 		if (! namelist[i]) {
+-			snd_printk(KERN_ERR "cannot malloc\n");
++			usb_audio_err(state->chip, "cannot malloc\n");
+ 			while (i--)
+ 				kfree(namelist[i]);
+ 			kfree(namelist);
+@@ -1981,7 +1990,7 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid, void
+ 
+ 	kctl = snd_ctl_new1(&mixer_selectunit_ctl, cval);
+ 	if (! kctl) {
+-		snd_printk(KERN_ERR "cannot malloc kcontrol\n");
++		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
+ 		kfree(namelist);
+ 		kfree(cval);
+ 		return -ENOMEM;
+@@ -2009,7 +2018,7 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid, void
+ 			append_ctl_name(kctl, " Playback Source");
+ 	}
+ 
+-	snd_printdd(KERN_INFO "[%d] SU [%s] items = %d\n",
++	usb_audio_dbg(state->chip, "[%d] SU [%s] items = %d\n",
+ 		    cval->id, kctl->id.name, desc->bNrInPins);
+ 	if ((err = snd_usb_mixer_add_control(state->mixer, kctl)) < 0)
+ 		return err;
+@@ -2031,7 +2040,7 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
+ 
+ 	p1 = find_audio_control_unit(state, unitid);
+ 	if (!p1) {
+-		snd_printk(KERN_ERR "usbaudio: unit %d not found!\n", unitid);
++		usb_audio_err(state->chip, "unit %d not found!\n", unitid);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -2061,7 +2070,8 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
+ 	case UAC2_EXTENSION_UNIT_V2:
+ 		return parse_audio_extension_unit(state, unitid, p1);
+ 	default:
+-		snd_printk(KERN_ERR "usbaudio: unit %u: unexpected type 0x%02x\n", unitid, p1[2]);
++		usb_audio_err(state->chip,
++			"unit %u: unexpected type 0x%02x\n", unitid, p1[2]);
+ 		return -EINVAL;
+ 	}
+ }
+@@ -2209,8 +2219,9 @@ static void snd_usb_mixer_interrupt_v2(struct usb_mixer_interface *mixer,
+ 	__u8 channel = value & 0xff;
+ 
+ 	if (channel >= MAX_CHANNELS) {
+-		snd_printk(KERN_DEBUG "%s(): bogus channel number %d\n",
+-				__func__, channel);
++		usb_audio_dbg(mixer->chip,
++			"%s(): bogus channel number %d\n",
++			__func__, channel);
+ 		return;
+ 	}
+ 
+@@ -2239,8 +2250,9 @@ static void snd_usb_mixer_interrupt_v2(struct usb_mixer_interface *mixer,
+ 			break;
+ 
+ 		default:
+-			snd_printk(KERN_DEBUG "unknown attribute %d in interrupt\n",
+-						attribute);
++			usb_audio_dbg(mixer->chip,
++				"unknown attribute %d in interrupt\n",
++				attribute);
+ 			break;
+ 		} /* switch */
+ 	}
+@@ -2261,7 +2273,7 @@ static void snd_usb_mixer_interrupt(struct urb *urb)
+ 		for (status = urb->transfer_buffer;
+ 		     len >= sizeof(*status);
+ 		     len -= sizeof(*status), status++) {
+-			snd_printd(KERN_DEBUG "status interrupt: %02x %02x\n",
++			dev_dbg(&urb->dev->dev, "status interrupt: %02x %02x\n",
+ 						status->bStatusType,
+ 						status->bOriginator);
+ 
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index f4b12c216f1c..f119a41ed9a9 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -600,8 +600,8 @@ static int snd_nativeinstruments_control_get(struct snd_kcontrol *kcontrol,
+ 	up_read(&mixer->chip->shutdown_rwsem);
+ 
+ 	if (ret < 0) {
+-		snd_printk(KERN_ERR
+-			   "unable to issue vendor read request (ret = %d)", ret);
++		dev_err(&dev->dev,
++			"unable to issue vendor read request (ret = %d)", ret);
+ 		return ret;
+ 	}
+ 
+@@ -631,8 +631,8 @@ static int snd_nativeinstruments_control_put(struct snd_kcontrol *kcontrol,
+ 	up_read(&mixer->chip->shutdown_rwsem);
+ 
+ 	if (ret < 0) {
+-		snd_printk(KERN_ERR
+-			   "unable to issue vendor write request (ret = %d)", ret);
++		dev_err(&dev->dev,
++			"unable to issue vendor write request (ret = %d)", ret);
+ 		return ret;
+ 	}
+ 
+@@ -1699,7 +1699,7 @@ void snd_usb_mixer_rc_memory_change(struct usb_mixer_interface *mixer,
+ 			snd_usb_mixer_notify_id(mixer, mixer->rc_cfg->mute_mixer_id);
+ 		break;
+ 	default:
+-		snd_printd(KERN_DEBUG "memory change in unknown unit %d\n", unitid);
++		usb_audio_dbg(mixer->chip, "memory change in unknown unit %d\n", unitid);
+ 		break;
+ 	}
+ }
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index ca3256d6fde3..49de5c1284f6 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -166,8 +166,8 @@ static int init_pitch_v1(struct snd_usb_audio *chip, int iface,
+ 				   USB_TYPE_CLASS|USB_RECIP_ENDPOINT|USB_DIR_OUT,
+ 				   UAC_EP_CS_ATTR_PITCH_CONTROL << 8, ep,
+ 				   data, sizeof(data))) < 0) {
+-		snd_printk(KERN_ERR "%d:%d:%d: cannot set enable PITCH\n",
+-			   dev->devnum, iface, ep);
++		usb_audio_err(chip, "%d:%d: cannot set enable PITCH\n",
++			      iface, ep);
+ 		return err;
+ 	}
+ 
+@@ -187,8 +187,8 @@ static int init_pitch_v2(struct snd_usb_audio *chip, int iface,
+ 				   USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_OUT,
+ 				   UAC2_EP_CS_PITCH << 8, 0,
+ 				   data, sizeof(data))) < 0) {
+-		snd_printk(KERN_ERR "%d:%d:%d: cannot set enable PITCH (v2)\n",
+-			   dev->devnum, iface, fmt->altsetting);
++		usb_audio_err(chip, "%d:%d: cannot set enable PITCH (v2)\n",
++			      iface, fmt->altsetting);
+ 		return err;
+ 	}
+ 
+@@ -226,7 +226,7 @@ static int start_endpoints(struct snd_usb_substream *subs, bool can_sleep)
+ 	if (!test_and_set_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags)) {
+ 		struct snd_usb_endpoint *ep = subs->data_endpoint;
+ 
+-		snd_printdd(KERN_DEBUG "Starting data EP @%p\n", ep);
++		dev_dbg(&subs->dev->dev, "Starting data EP @%p\n", ep);
+ 
+ 		ep->data_subs = subs;
+ 		err = snd_usb_endpoint_start(ep, can_sleep);
+@@ -247,16 +247,15 @@ static int start_endpoints(struct snd_usb_substream *subs, bool can_sleep)
+ 						subs->sync_endpoint->altsetting);
+ 			if (err < 0) {
+ 				clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags);
+-				snd_printk(KERN_ERR
+-					   "%d:%d:%d: cannot set interface (%d)\n",
+-					   subs->dev->devnum,
++				dev_err(&subs->dev->dev,
++					   "%d:%d: cannot set interface (%d)\n",
+ 					   subs->sync_endpoint->iface,
+ 					   subs->sync_endpoint->altsetting, err);
+ 				return -EIO;
+ 			}
+ 		}
+ 
+-		snd_printdd(KERN_DEBUG "Starting sync EP @%p\n", ep);
++		dev_dbg(&subs->dev->dev, "Starting sync EP @%p\n", ep);
+ 
+ 		ep->sync_slave = subs->data_endpoint;
+ 		err = snd_usb_endpoint_start(ep, can_sleep);
+@@ -410,8 +409,9 @@ static int set_sync_endpoint(struct snd_usb_substream *subs,
+ 	if ((get_endpoint(alts, 1)->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) != USB_ENDPOINT_XFER_ISOC ||
+ 	    (get_endpoint(alts, 1)->bLength >= USB_DT_ENDPOINT_AUDIO_SIZE &&
+ 	     get_endpoint(alts, 1)->bSynchAddress != 0)) {
+-		snd_printk(KERN_ERR "%d:%d:%d : invalid sync pipe. bmAttributes %02x, bLength %d, bSynchAddress %02x\n",
+-			   dev->devnum, fmt->iface, fmt->altsetting,
++		dev_err(&dev->dev,
++			"%d:%d : invalid sync pipe. bmAttributes %02x, bLength %d, bSynchAddress %02x\n",
++			   fmt->iface, fmt->altsetting,
+ 			   get_endpoint(alts, 1)->bmAttributes,
+ 			   get_endpoint(alts, 1)->bLength,
+ 			   get_endpoint(alts, 1)->bSynchAddress);
+@@ -421,8 +421,9 @@ static int set_sync_endpoint(struct snd_usb_substream *subs,
+ 	if (get_endpoint(alts, 0)->bLength >= USB_DT_ENDPOINT_AUDIO_SIZE &&
+ 	    ((is_playback && ep != (unsigned int)(get_endpoint(alts, 0)->bSynchAddress | USB_DIR_IN)) ||
+ 	     (!is_playback && ep != (unsigned int)(get_endpoint(alts, 0)->bSynchAddress & ~USB_DIR_IN)))) {
+-		snd_printk(KERN_ERR "%d:%d:%d : invalid sync pipe. is_playback %d, ep %02x, bSynchAddress %02x\n",
+-			   dev->devnum, fmt->iface, fmt->altsetting,
++		dev_err(&dev->dev,
++			"%d:%d : invalid sync pipe. is_playback %d, ep %02x, bSynchAddress %02x\n",
++			   fmt->iface, fmt->altsetting,
+ 			   is_playback, ep, get_endpoint(alts, 0)->bSynchAddress);
+ 		return -EINVAL;
+ 	}
+@@ -469,8 +470,9 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
+ 	if (subs->interface >= 0 && subs->interface != fmt->iface) {
+ 		err = usb_set_interface(subs->dev, subs->interface, 0);
+ 		if (err < 0) {
+-			snd_printk(KERN_ERR "%d:%d:%d: return to setting 0 failed (%d)\n",
+-				dev->devnum, fmt->iface, fmt->altsetting, err);
++			dev_err(&dev->dev,
++				"%d:%d: return to setting 0 failed (%d)\n",
++				fmt->iface, fmt->altsetting, err);
+ 			return -EIO;
+ 		}
+ 		subs->interface = -1;
+@@ -482,12 +484,13 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
+ 	    subs->altset_idx != fmt->altset_idx) {
+ 		err = usb_set_interface(dev, fmt->iface, fmt->altsetting);
+ 		if (err < 0) {
+-			snd_printk(KERN_ERR "%d:%d:%d: usb_set_interface failed (%d)\n",
+-				   dev->devnum, fmt->iface, fmt->altsetting, err);
++			dev_err(&dev->dev,
++				"%d:%d: usb_set_interface failed (%d)\n",
++				fmt->iface, fmt->altsetting, err);
+ 			return -EIO;
+ 		}
+-		snd_printdd(KERN_INFO "setting usb interface %d:%d\n",
+-				fmt->iface, fmt->altsetting);
++		dev_dbg(&dev->dev, "setting usb interface %d:%d\n",
++			fmt->iface, fmt->altsetting);
+ 		subs->interface = fmt->iface;
+ 		subs->altset_idx = fmt->altset_idx;
+ 
+@@ -523,20 +526,23 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
+  * - Requested PCM format is not supported.
+  * - Requested sample rate is not supported.
+  */
+-static int match_endpoint_audioformats(struct audioformat *fp,
+-	struct audioformat *match, int rate,
+-	snd_pcm_format_t pcm_format)
++static int match_endpoint_audioformats(struct snd_usb_substream *subs,
++				       struct audioformat *fp,
++				       struct audioformat *match, int rate,
++				       snd_pcm_format_t pcm_format)
+ {
+ 	int i;
+ 	int score = 0;
+ 
+ 	if (fp->channels < 1) {
+-		snd_printdd("%s: (fmt @%p) no channels\n", __func__, fp);
++		dev_dbg(&subs->dev->dev,
++			"%s: (fmt @%p) no channels\n", __func__, fp);
+ 		return 0;
+ 	}
+ 
+ 	if (!(fp->formats & pcm_format_to_bits(pcm_format))) {
+-		snd_printdd("%s: (fmt @%p) no match for format %d\n", __func__,
++		dev_dbg(&subs->dev->dev,
++			"%s: (fmt @%p) no match for format %d\n", __func__,
+ 			fp, pcm_format);
+ 		return 0;
+ 	}
+@@ -548,7 +554,8 @@ static int match_endpoint_audioformats(struct audioformat *fp,
+ 		}
+ 	}
+ 	if (!score) {
+-		snd_printdd("%s: (fmt @%p) no match for rate %d\n", __func__,
++		dev_dbg(&subs->dev->dev,
++			"%s: (fmt @%p) no match for rate %d\n", __func__,
+ 			fp, rate);
+ 		return 0;
+ 	}
+@@ -556,7 +563,8 @@ static int match_endpoint_audioformats(struct audioformat *fp,
+ 	if (fp->channels == match->channels)
+ 		score++;
+ 
+-	snd_printdd("%s: (fmt @%p) score %d\n", __func__, fp, score);
++	dev_dbg(&subs->dev->dev,
++		"%s: (fmt @%p) score %d\n", __func__, fp, score);
+ 
+ 	return score;
+ }
+@@ -587,7 +595,8 @@ static int configure_sync_endpoint(struct snd_usb_substream *subs)
+ 
+ 	/* Try to find the best matching audioformat. */
+ 	list_for_each_entry(fp, &sync_subs->fmt_list, list) {
+-		int score = match_endpoint_audioformats(fp, subs->cur_audiofmt,
++		int score = match_endpoint_audioformats(subs,
++							fp, subs->cur_audiofmt,
+ 			subs->cur_rate, subs->pcm_format);
+ 
+ 		if (score > cur_score) {
+@@ -597,7 +606,8 @@ static int configure_sync_endpoint(struct snd_usb_substream *subs)
+ 	}
+ 
+ 	if (unlikely(sync_fp == NULL)) {
+-		snd_printk(KERN_ERR "%s: no valid audioformat for sync ep %x found\n",
++		dev_err(&subs->dev->dev,
++			"%s: no valid audioformat for sync ep %x found\n",
+ 			__func__, sync_subs->ep_num);
+ 		return -EINVAL;
+ 	}
+@@ -609,7 +619,8 @@ static int configure_sync_endpoint(struct snd_usb_substream *subs)
+ 	if (sync_fp->channels != subs->channels) {
+ 		sync_period_bytes = (subs->period_bytes / subs->channels) *
+ 			sync_fp->channels;
+-		snd_printdd("%s: adjusted sync ep period bytes (%d -> %d)\n",
++		dev_dbg(&subs->dev->dev,
++			"%s: adjusted sync ep period bytes (%d -> %d)\n",
+ 			__func__, subs->period_bytes, sync_period_bytes);
+ 	}
+ 
+@@ -685,7 +696,8 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	fmt = find_format(subs);
+ 	if (!fmt) {
+-		snd_printd(KERN_DEBUG "cannot set format: format = %#x, rate = %d, channels = %d\n",
++		dev_dbg(&subs->dev->dev,
++			"cannot set format: format = %#x, rate = %d, channels = %d\n",
+ 			   subs->pcm_format, subs->cur_rate, subs->channels);
+ 		return -EINVAL;
+ 	}
+@@ -742,7 +754,7 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ 	int ret;
+ 
+ 	if (! subs->cur_audiofmt) {
+-		snd_printk(KERN_ERR "usbaudio: no format is specified!\n");
++		dev_err(&subs->dev->dev, "no format is specified!\n");
+ 		return -ENXIO;
+ 	}
+ 
+@@ -1235,7 +1247,8 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
+ 	for (i = 0; i < urb->number_of_packets; i++) {
+ 		cp = (unsigned char *)urb->transfer_buffer + urb->iso_frame_desc[i].offset + subs->pkt_offset_adj;
+ 		if (urb->iso_frame_desc[i].status && printk_ratelimit()) {
+-			snd_printdd(KERN_ERR "frame %d active: %d\n", i, urb->iso_frame_desc[i].status);
++			dev_dbg(&subs->dev->dev, "frame %d active: %d\n",
++				i, urb->iso_frame_desc[i].status);
+ 			// continue;
+ 		}
+ 		bytes = urb->iso_frame_desc[i].actual_length;
+@@ -1245,7 +1258,8 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
+ 		if (bytes % (runtime->sample_bits >> 3) != 0) {
+ 			int oldbytes = bytes;
+ 			bytes = frames * stride;
+-			snd_printdd(KERN_ERR "Corrected urb data len. %d->%d\n",
++			dev_warn(&subs->dev->dev,
++				 "Corrected urb data len. %d->%d\n",
+ 							oldbytes, bytes);
+ 		}
+ 		/* update the current pointer */
+@@ -1488,7 +1502,8 @@ static void retire_playback_urb(struct snd_usb_substream *subs,
+ 	 * on two reads of a counter updated every ms.
+ 	 */
+ 	if (abs(est_delay - subs->last_delay) * 1000 > runtime->rate * 2)
+-		snd_printk(KERN_DEBUG "delay: estimated %d, actual %d\n",
++		dev_dbg(&subs->dev->dev,
++			"delay: estimated %d, actual %d\n",
+ 			est_delay, subs->last_delay);
+ 
+ 	if (!subs->running) {
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 89730707614c..7c57f2268dd7 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -110,7 +110,7 @@ static int create_standard_audio_quirk(struct snd_usb_audio *chip,
+ 	altsd = get_iface_desc(alts);
+ 	err = snd_usb_parse_audio_interface(chip, altsd->bInterfaceNumber);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "cannot setup if %d: error %d\n",
++		usb_audio_err(chip, "cannot setup if %d: error %d\n",
+ 			   altsd->bInterfaceNumber, err);
+ 		return err;
+ 	}
+@@ -135,7 +135,7 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 
+ 	fp = kmemdup(quirk->data, sizeof(*fp), GFP_KERNEL);
+ 	if (!fp) {
+-		snd_printk(KERN_ERR "cannot memdup\n");
++		usb_audio_err(chip, "cannot memdup\n");
+ 		return -ENOMEM;
+ 	}
+ 	if (fp->nr_rates > MAX_NR_RATES) {
+@@ -464,7 +464,7 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
+ 		fp->rate_max = fp->rate_min = 96000;
+ 		break;
+ 	default:
+-		snd_printk(KERN_ERR "unknown sample rate\n");
++		usb_audio_err(chip, "unknown sample rate\n");
+ 		kfree(fp);
+ 		return -ENXIO;
+ 	}
+@@ -536,7 +536,7 @@ int snd_usb_create_quirk(struct snd_usb_audio *chip,
+ 	if (quirk->type < QUIRK_TYPE_COUNT) {
+ 		return quirk_funcs[quirk->type](chip, iface, driver, quirk);
+ 	} else {
+-		snd_printd(KERN_ERR "invalid quirk type %d\n", quirk->type);
++		usb_audio_err(chip, "invalid quirk type %d\n", quirk->type);
+ 		return -ENXIO;
+ 	}
+ }
+@@ -555,18 +555,21 @@ static int snd_usb_extigy_boot_quirk(struct usb_device *dev, struct usb_interfac
+ 
+ 	if (le16_to_cpu(get_cfg_desc(config)->wTotalLength) == EXTIGY_FIRMWARE_SIZE_OLD ||
+ 	    le16_to_cpu(get_cfg_desc(config)->wTotalLength) == EXTIGY_FIRMWARE_SIZE_NEW) {
+-		snd_printdd("sending Extigy boot sequence...\n");
++		dev_dbg(&dev->dev, "sending Extigy boot sequence...\n");
+ 		/* Send message to force it to reconnect with full interface. */
+ 		err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev,0),
+ 				      0x10, 0x43, 0x0001, 0x000a, NULL, 0);
+-		if (err < 0) snd_printdd("error sending boot message: %d\n", err);
++		if (err < 0)
++			dev_dbg(&dev->dev, "error sending boot message: %d\n", err);
+ 		err = usb_get_descriptor(dev, USB_DT_DEVICE, 0,
+ 				&dev->descriptor, sizeof(dev->descriptor));
+ 		config = dev->actconfig;
+-		if (err < 0) snd_printdd("error usb_get_descriptor: %d\n", err);
++		if (err < 0)
++			dev_dbg(&dev->dev, "error usb_get_descriptor: %d\n", err);
+ 		err = usb_reset_configuration(dev);
+-		if (err < 0) snd_printdd("error usb_reset_configuration: %d\n", err);
+-		snd_printdd("extigy_boot: new boot length = %d\n",
++		if (err < 0)
++			dev_dbg(&dev->dev, "error usb_reset_configuration: %d\n", err);
++		dev_dbg(&dev->dev, "extigy_boot: new boot length = %d\n",
+ 			    le16_to_cpu(get_cfg_desc(config)->wTotalLength));
+ 		return -ENODEV; /* quit this anyway */
+ 	}
+@@ -594,7 +597,7 @@ static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev)
+ 	int err;
+ 
+ 	if (dev->actconfig->desc.bConfigurationValue == 1) {
+-		snd_printk(KERN_INFO "usb-audio: "
++		dev_info(&dev->dev,
+ 			   "Fast Track Pro switching to config #2\n");
+ 		/* This function has to be available by the usb core module.
+ 		 * if it is not avialable the boot quirk has to be left out
+@@ -603,14 +606,15 @@ static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev)
+ 		 */
+ 		err = usb_driver_set_configuration(dev, 2);
+ 		if (err < 0)
+-			snd_printdd("error usb_driver_set_configuration: %d\n",
+-				    err);
++			dev_dbg(&dev->dev,
++				"error usb_driver_set_configuration: %d\n",
++				err);
+ 		/* Always return an error, so that we stop creating a device
+ 		   that will just be destroyed and recreated with a new
+ 		   configuration */
+ 		return -ENODEV;
+ 	} else
+-		snd_printk(KERN_INFO "usb-audio: Fast Track Pro config OK\n");
++		dev_info(&dev->dev, "Fast Track Pro config OK\n");
+ 
+ 	return 0;
+ }
+@@ -779,11 +783,11 @@ static int snd_usb_mbox2_boot_quirk(struct usb_device *dev)
+ 	fwsize = le16_to_cpu(get_cfg_desc(config)->wTotalLength);
+ 
+ 	if (fwsize != MBOX2_FIRMWARE_SIZE) {
+-		snd_printk(KERN_ERR "usb-audio: Invalid firmware size=%d.\n", fwsize);
++		dev_err(&dev->dev, "Invalid firmware size=%d.\n", fwsize);
+ 		return -ENODEV;
+ 	}
+ 
+-	snd_printd("usb-audio: Sending Digidesign Mbox 2 boot sequence...\n");
++	dev_dbg(&dev->dev, "Sending Digidesign Mbox 2 boot sequence...\n");
+ 
+ 	count = 0;
+ 	bootresponse[0] = MBOX2_BOOT_LOADING;
+@@ -794,32 +798,32 @@ static int snd_usb_mbox2_boot_quirk(struct usb_device *dev)
+ 			0x85, 0xc0, 0x0001, 0x0000, &bootresponse, 0x0012);
+ 		if (bootresponse[0] == MBOX2_BOOT_READY)
+ 			break;
+-		snd_printd("usb-audio: device not ready, resending boot sequence...\n");
++		dev_dbg(&dev->dev, "device not ready, resending boot sequence...\n");
+ 		count++;
+ 	}
+ 
+ 	if (bootresponse[0] != MBOX2_BOOT_READY) {
+-		snd_printk(KERN_ERR "usb-audio: Unknown bootresponse=%d, or timed out, ignoring device.\n", bootresponse[0]);
++		dev_err(&dev->dev, "Unknown bootresponse=%d, or timed out, ignoring device.\n", bootresponse[0]);
+ 		return -ENODEV;
+ 	}
+ 
+-	snd_printdd("usb-audio: device initialised!\n");
++	dev_dbg(&dev->dev, "device initialised!\n");
+ 
+ 	err = usb_get_descriptor(dev, USB_DT_DEVICE, 0,
+ 		&dev->descriptor, sizeof(dev->descriptor));
+ 	config = dev->actconfig;
+ 	if (err < 0)
+-		snd_printd("error usb_get_descriptor: %d\n", err);
++		dev_dbg(&dev->dev, "error usb_get_descriptor: %d\n", err);
+ 
+ 	err = usb_reset_configuration(dev);
+ 	if (err < 0)
+-		snd_printd("error usb_reset_configuration: %d\n", err);
+-	snd_printdd("mbox2_boot: new boot length = %d\n",
++		dev_dbg(&dev->dev, "error usb_reset_configuration: %d\n", err);
++	dev_dbg(&dev->dev, "mbox2_boot: new boot length = %d\n",
+ 		le16_to_cpu(get_cfg_desc(config)->wTotalLength));
+ 
+ 	mbox2_setup_48_24_magic(dev);
+ 
+-	snd_printk(KERN_INFO "usb-audio: Digidesign Mbox 2: 24bit 48kHz");
++	dev_info(&dev->dev, "Digidesign Mbox 2: 24bit 48kHz");
+ 
+ 	return 0; /* Successful boot */
+ }
+@@ -865,7 +869,7 @@ static int quattro_skip_setting_quirk(struct snd_usb_audio *chip,
+ 				return 1; /* skip this altsetting */
+ 		}
+ 	}
+-	snd_printdd(KERN_INFO
++	usb_audio_dbg(chip,
+ 		    "using altsetting %d for interface %d config %d\n",
+ 		    altno, iface, chip->setup);
+ 	return 0; /* keep this altsetting */
+@@ -932,7 +936,7 @@ static int fasttrackpro_skip_setting_quirk(struct snd_usb_audio *chip,
+ 			return 1;
+ 	}
+ 
+-	snd_printdd(KERN_INFO
++	usb_audio_dbg(chip,
+ 		    "using altsetting %d for interface %d config %d\n",
+ 		    altno, iface, chip->setup);
+ 	return 0; /* keep this altsetting */
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 2fb71be5e100..310a3822d2b7 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -411,10 +411,9 @@ static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
+ 
+ 	if (!csep || csep->bLength < 7 ||
+ 	    csep->bDescriptorSubtype != UAC_EP_GENERAL) {
+-		snd_printk(KERN_WARNING "%d:%u:%d : no or invalid"
+-			   " class specific endpoint descriptor\n",
+-			   chip->dev->devnum, iface_no,
+-			   altsd->bAlternateSetting);
++		usb_audio_warn(chip,
++			       "%u:%d : no or invalid class specific endpoint descriptor\n",
++			       iface_no, altsd->bAlternateSetting);
+ 		return 0;
+ 	}
+ 
+@@ -533,8 +532,8 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 		/* get audio formats */
+ 		switch (protocol) {
+ 		default:
+-			snd_printdd(KERN_WARNING "%d:%u:%d: unknown interface protocol %#02x, assuming v1\n",
+-				    dev->devnum, iface_no, altno, protocol);
++			dev_dbg(&dev->dev, "%u:%d: unknown interface protocol %#02x, assuming v1\n",
++				iface_no, altno, protocol);
+ 			protocol = UAC_VERSION_1;
+ 			/* fall through */
+ 
+@@ -544,14 +543,16 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 			struct uac_input_terminal_descriptor *iterm;
+ 
+ 			if (!as) {
+-				snd_printk(KERN_ERR "%d:%u:%d : UAC_AS_GENERAL descriptor not found\n",
+-					   dev->devnum, iface_no, altno);
++				dev_err(&dev->dev,
++					"%u:%d : UAC_AS_GENERAL descriptor not found\n",
++					iface_no, altno);
+ 				continue;
+ 			}
+ 
+ 			if (as->bLength < sizeof(*as)) {
+-				snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_AS_GENERAL desc\n",
+-					   dev->devnum, iface_no, altno);
++				dev_err(&dev->dev,
++					"%u:%d : invalid UAC_AS_GENERAL desc\n",
++					iface_no, altno);
+ 				continue;
+ 			}
+ 
+@@ -574,14 +575,16 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 				snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL, UAC_AS_GENERAL);
+ 
+ 			if (!as) {
+-				snd_printk(KERN_ERR "%d:%u:%d : UAC_AS_GENERAL descriptor not found\n",
+-					   dev->devnum, iface_no, altno);
++				dev_err(&dev->dev,
++					"%u:%d : UAC_AS_GENERAL descriptor not found\n",
++					iface_no, altno);
+ 				continue;
+ 			}
+ 
+ 			if (as->bLength < sizeof(*as)) {
+-				snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_AS_GENERAL desc\n",
+-					   dev->devnum, iface_no, altno);
++				dev_err(&dev->dev,
++					"%u:%d : invalid UAC_AS_GENERAL desc\n",
++					iface_no, altno);
+ 				continue;
+ 			}
+ 
+@@ -607,8 +610,9 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 				break;
+ 			}
+ 
+-			snd_printk(KERN_ERR "%d:%u:%d : bogus bTerminalLink %d\n",
+-				   dev->devnum, iface_no, altno, as->bTerminalLink);
++			dev_err(&dev->dev,
++				"%u:%d : bogus bTerminalLink %d\n",
++				iface_no, altno, as->bTerminalLink);
+ 			continue;
+ 		}
+ 		}
+@@ -616,14 +620,16 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 		/* get format type */
+ 		fmt = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL, UAC_FORMAT_TYPE);
+ 		if (!fmt) {
+-			snd_printk(KERN_ERR "%d:%u:%d : no UAC_FORMAT_TYPE desc\n",
+-				   dev->devnum, iface_no, altno);
++			dev_err(&dev->dev,
++				"%u:%d : no UAC_FORMAT_TYPE desc\n",
++				iface_no, altno);
+ 			continue;
+ 		}
+ 		if (((protocol == UAC_VERSION_1) && (fmt->bLength < 8)) ||
+ 		    ((protocol == UAC_VERSION_2) && (fmt->bLength < 6))) {
+-			snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc\n",
+-				   dev->devnum, iface_no, altno);
++			dev_err(&dev->dev,
++				"%u:%d : invalid UAC_FORMAT_TYPE desc\n",
++				iface_no, altno);
+ 			continue;
+ 		}
+ 
+@@ -644,7 +650,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 
+ 		fp = kzalloc(sizeof(*fp), GFP_KERNEL);
+ 		if (! fp) {
+-			snd_printk(KERN_ERR "cannot malloc\n");
++			dev_err(&dev->dev, "cannot malloc\n");
+ 			return -ENOMEM;
+ 		}
+ 
+@@ -707,7 +713,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 			chconfig = 0;
+ 		fp->chmap = convert_chmap(fp->channels, chconfig, protocol);
+ 
+-		snd_printdd(KERN_INFO "%d:%u:%d: add audio endpoint %#x\n", dev->devnum, iface_no, altno, fp->endpoint);
++		dev_dbg(&dev->dev, "%u:%d: add audio endpoint %#x\n", iface_no, altno, fp->endpoint);
+ 		err = snd_usb_add_audio_stream(chip, stream, fp);
+ 		if (err < 0) {
+ 			kfree(fp->rate_table);
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index 5d2fe0530745..25c4c7e217de 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -60,6 +60,15 @@ struct snd_usb_audio {
+ 	struct usb_host_interface *ctrl_intf;	/* the audio control interface */
+ };
+ 
++#define usb_audio_err(chip, fmt, args...) \
++	dev_err(&(chip)->dev->dev, fmt, ##args)
++#define usb_audio_warn(chip, fmt, args...) \
++	dev_warn(&(chip)->dev->dev, fmt, ##args)
++#define usb_audio_info(chip, fmt, args...) \
++	dev_info(&(chip)->dev->dev, fmt, ##args)
++#define usb_audio_dbg(chip, fmt, args...) \
++	dev_dbg(&(chip)->dev->dev, fmt, ##args)
++
+ /*
+  * Information about devices with broken descriptors
+  */
 -- 
-Regards,
-
-__| __| __|   Jonathan Woodward
-__| __| __|   Embedded Developer
-__| __| __|   Tensor plc
-  
-jwoodward@tensor.co.uk
-Tel: +44 (0)1480 215530 	http://www.tensor.co.uk
-Fax: +44 (0)1480 223966 	
-----------------------------------------------------------------------------------
-Important Email Information
-  
-The information in this email is confidential and may be legally privileged. It is intended solely for the addressee. Access to this email by anyone else is unauthorised. If you are not the intended recipient, any disclosure, copying, distribution or any action taken or omitted to be taken in reliance on it, is prohibited and unlawful. If you are not the intended addressee please contact the sender and dispose of this email.
-Any opinions expressed in this e-mail are those of the individual and not necessarily those of Tensor plc or any companies within the Tensor group. Any prices for the supply of goods or services are only valid if supported by a formal written quotation. This communication is for information only and shall not create or change any contractual relationship.
-Every effort has been made to ensure that any attachment to this mail does not contain a virus. Whilst we have taken every reasonable precaution to minimise this risk, neither it nor the sender can accept liability for any damage which you sustain as a result of software viruses. You should carry out your own virus checks before opening the attachment.
-	
-----------------------------------------------------------------------------------
-Tensor plc, Hail Weston House, Hail Weston, St. Neots, Cambs, PE19 5JY, UK
-Registered in England number 03670909 - VAT Number 761 546 815	
-
-
-
-
---------------090405000806090506030505
-Content-Type: application/pdf; name="D-T8540x^3-143-143-HDC308.pdf"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="D-T8540x^3-143-143-HDC308.pdf"
-
-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
-RfdKVDdlqhRFyDH4cbwpJwK0FoUoH0pC+VxKch+/UEmljLuhmcILTjMFolUIlvFdAIbha2lZ
-5lNcgYB2Zk7q6CQaX/BbJU3OigdOJR0w0OxNSqELAKslQIgPIyF8riS5i3Y0WbBrB0M3wGbQ
-apU878ZVKAvfDAnaMRIiu1Vi2mn8Osox2F3HtWMAr8UhzIeSUD6Xktx1ZJl2bFgIxEaScBXL
-zLePLNGOk2DZvRLVjg0Lw5Bho9pxgNfiEOZDSSifS0nuoh2Ni+naAcjgHbRgHKTiPHlRmCZA
-0Ix+LmIbfVPMyIGvHGOm5c0VYwCvwyHMhJJQHpdCmGL+sft/AcgSshkKZW5kc3RyZWFtCmVu
-ZG9iago0IDAgb2JqCiAgIDIxMjk3CmVuZG9iagoyIDAgb2JqCjw8CiAgIC9FeHRHU3RhdGUg
-PDwKICAgICAgL2EwIDw8IC9DQSAxIC9jYSAxID4+CiAgID4+CiAgIC9YT2JqZWN0IDw8IC94
-NyA3IDAgUiA+PgogICAvRm9udCA8PAogICAgICAvZi0wLTAgNSAwIFIKICAgICAgL2YtMS0w
-IDYgMCBSCiAgID4+Cj4+CmVuZG9iago4IDAgb2JqCjw8IC9UeXBlIC9QYWdlCiAgIC9QYXJl
-bnQgMSAwIFIKICAgL01lZGlhQm94IFsgMCAwIDg0MS44ODk3NjQgNTk1LjI3NTU5MSBdCiAg
-IC9Db250ZW50cyAzIDAgUgogICAvR3JvdXAgPDwKICAgICAgL1R5cGUgL0dyb3VwCiAgICAg
-IC9TIC9UcmFuc3BhcmVuY3kKICAgICAgL0kgdHJ1ZQogICAgICAvQ1MgL0RldmljZVJHQgog
-ICA+PgogICAvUmVzb3VyY2VzIDIgMCBSCj4+CmVuZG9iago3IDAgb2JqCjw8IC9MZW5ndGgg
-OSAwIFIKICAgL0ZpbHRlciAvRmxhdGVEZWNvZGUKICAgL1R5cGUgL1hPYmplY3QKICAgL1N1
-YnR5cGUgL0ltYWdlCiAgIC9XaWR0aCA3NgogICAvSGVpZ2h0IDUxCiAgIC9Db2xvclNwYWNl
-IC9EZXZpY2VSR0IKICAgL0ludGVycG9sYXRlIGZhbHNlCiAgIC9CaXRzUGVyQ29tcG9uZW50
-IDgKPj4Kc3RyZWFtCnicxVp5XBRXtjaZZ2ayvcS8mWSyayaJJlGjxiRGk2gSl5hFExXFaDRq
-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
-dG9yCiAgIC9Gb250TmFtZSAvTkNZVUxXK05pbWJ1c1JvbU5vOUwtUmVndQogICAvRmxhZ3Mg
-NAogICAvRm9udEJCb3ggWyAtMTY4IC0yODEgMTAzMSA5MjQgXQogICAvSXRhbGljQW5nbGUg
-MAogICAvQXNjZW50IDkyNAogICAvRGVzY2VudCAtMjgxCiAgIC9DYXBIZWlnaHQgOTI0CiAg
-IC9TdGVtViA4MAogICAvU3RlbUggODAKICAgL0ZvbnRGaWxlIDEwIDAgUgo+PgplbmRvYmoK
-NSAwIG9iago8PCAvVHlwZSAvRm9udAogICAvU3VidHlwZSAvVHlwZTEKICAgL0Jhc2VGb250
-IC9OQ1lVTFcrTmltYnVzUm9tTm85TC1SZWd1CiAgIC9GaXJzdENoYXIgMzIKICAgL0xhc3RD
-aGFyIDE2OQogICAvRm9udERlc2NyaXB0b3IgMTQgMCBSCiAgIC9FbmNvZGluZyAvV2luQW5z
-aUVuY29kaW5nCiAgIC9XaWR0aHMgWyAyNTAgMCAwIDAgMCA4MzMgMCAwIDAgMCAwIDU2NCAy
-NTAgMzMzIDI1MCAyNzggNTAwIDUwMCA1MDAgNTAwIDUwMCA1MDAgNTAwIDUwMCA1MDAgNTAw
-IDI3OCAwIDAgNTY0IDAgMCAwIDcyMiA2NjcgNjY3IDcyMiA2MTEgNTU2IDcyMiA3MjIgMzMz
-IDAgNzIyIDYxMSA4ODkgNzIyIDcyMiA1NTYgNzIyIDY2NyA1NTYgNjExIDcyMiA3MjIgOTQ0
-IDcyMiA3MjIgNjExIDAgMCAwIDAgNTAwIDAgNDQ0IDUwMCA0NDQgNTAwIDQ0NCAzMzMgNTAw
-IDUwMCAyNzggMCA1MDAgMjc4IDc3OCA1MDAgNTAwIDUwMCAwIDMzMyAzODkgMjc4IDUwMCA1
-MDAgNzIyIDUwMCA1MDAgNDQ0IDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAw
-IDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAw
-IDAgNzYwIF0KICAgIC9Ub1VuaWNvZGUgMTIgMCBSCj4+CmVuZG9iagoxNSAwIG9iago8PCAv
-TGVuZ3RoIDE2IDAgUgogICAvRmlsdGVyIC9GbGF0ZURlY29kZQogICAvTGVuZ3RoMSAxNzg1
-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
-uAfXrd/PF5mL/KojZEiySIe57eRTY3wk2oHFmHl8qjHdoxoT563wbE7jmEK2B5j2yf6iIg/f
-uPQm1PF9Q324bXH/eFmN9dmAntpqnPgRaFxIripZMwDZKdOsngWejpQTHbwKiY1w46aIBLr5
-ZuvX9NTPuSyrg7JM5IJpLa+wNWrlZp897axYhrTEO4w7eUWlvowuNbQERHqykEgPbmjljhnZ
-QaUiiLAfBM7Tb1Q30cqOH2hjIn2/pycr+bkQUY5sQ3sihVKK5H/J4WlMjFQzHBXf/jOfGJCu
-AzntpsOYsD+3kyERpwaVLR/N8muweZHp/+UL7v8X+P+EgKkt0NjJxd7O2MkGztsJ6Oxi7/TH
-Pz/g4P4PWPsCwAplbmRzdHJlYW0KZW5kb2JqCjE2IDAgb2JqCiAgIDEyMTY5CmVuZG9iagox
-NyAwIG9iago8PCAvTGVuZ3RoIDE4IDAgUgogICAvRmlsdGVyIC9GbGF0ZURlY29kZQo+Pgpz
-dHJlYW0KeJxdUstuhDAMvOcrctweVryhKyGkanvh0IdK+wEhcbZIJUSBPfD3tePVVuoBPJl4
-7JGd5Nw/927aZPIeFj3AJu3kTIB1uQYNcoTL5ESWSzPp7XaKfz0rLxIUD/u6wdw7u4i2lckH
-Xq5b2OXhySwjPAgpZfIWDITJXeTh6zwwNVy9/4EZ3CZT0XXSgMVyL8q/qhlkEsXH3uD9tO1H
-lP1lfO4eZB7PGVvSi4HVKw1BuQuINk072VrbCXDm311es2S0+lsF0VYlpqYpBtHWVcQYEANj
-QNwUEWNA3jJvic+ZzxHnacQYkGfcEK4152vCXKemOuVjxBiQz5jPCJ8YnxBXDXtrqCb7bMhn
-wz4b8llyzTJ6M6w1hNlbTd4q9lORn5K1JWkL7ltQ34L7FtS34Jwi1lecr6gO52Cgwd4mSCOm
-t3Dfnb6GgGuLDybuizY1Obi/Kb94UsXvF184qtcKZW5kc3RyZWFtCmVuZG9iagoxOCAwIG9i
-agogICAzNDcKZW5kb2JqCjE5IDAgb2JqCjw8IC9UeXBlIC9Gb250RGVzY3JpcHRvcgogICAv
-Rm9udE5hbWUgL0ZHRUhaTytOaW1idXNSb21ObzlMLVJlZ3VJdGFsCiAgIC9GbGFncyA0CiAg
-IC9Gb250QkJveCBbIC0xNjkgLTI3MCAxMTEyIDkyNCBdCiAgIC9JdGFsaWNBbmdsZSAwCiAg
-IC9Bc2NlbnQgOTI0CiAgIC9EZXNjZW50IC0yNzAKICAgL0NhcEhlaWdodCA5MjQKICAgL1N0
-ZW1WIDgwCiAgIC9TdGVtSCA4MAogICAvRm9udEZpbGUgMTUgMCBSCj4+CmVuZG9iago2IDAg
-b2JqCjw8IC9UeXBlIC9Gb250CiAgIC9TdWJ0eXBlIC9UeXBlMQogICAvQmFzZUZvbnQgL0ZH
-RUhaTytOaW1idXNSb21ObzlMLVJlZ3VJdGFsCiAgIC9GaXJzdENoYXIgMzIKICAgL0xhc3RD
-aGFyIDExNwogICAvRm9udERlc2NyaXB0b3IgMTkgMCBSCiAgIC9FbmNvZGluZyAvV2luQW5z
-aUVuY29kaW5nCiAgIC9XaWR0aHMgWyAyNTAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAw
-IDAgMCA1MDAgMCAwIDAgNTAwIDAgMCAwIDUwMCAwIDAgMCAwIDAgMCAwIDAgMCA2NjcgMCA2
-MTEgMCAwIDcyMiAwIDQ0NCAwIDAgMCAwIDAgNjExIDAgMCAwIDU1NiAwIDAgODMzIDAgNTU2
-IDAgMCAwIDAgMCAwIDAgNTAwIDUwMCA0NDQgMCA0NDQgMCAwIDAgMjc4IDAgMCAyNzggNzIy
-IDUwMCA1MDAgNTAwIDAgMzg5IDM4OSAyNzggNTAwIF0KICAgIC9Ub1VuaWNvZGUgMTcgMCBS
-Cj4+CmVuZG9iagoxIDAgb2JqCjw8IC9UeXBlIC9QYWdlcwogICAvS2lkcyBbIDggMCBSIF0K
-ICAgL0NvdW50IDEKPj4KZW5kb2JqCjIwIDAgb2JqCjw8IC9DcmVhdG9yIChjYWlybyAxLjEy
-LjE2IChodHRwOi8vY2Fpcm9ncmFwaGljcy5vcmcpKQogICAvUHJvZHVjZXIgKGNhaXJvIDEu
-MTIuMTYgKGh0dHA6Ly9jYWlyb2dyYXBoaWNzLm9yZykpCj4+CmVuZG9iagoyMSAwIG9iago8
-PCAvVHlwZSAvQ2F0YWxvZwogICAvUGFnZXMgMSAwIFIKPj4KZW5kb2JqCnhyZWYKMCAyMgow
-MDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwNjM4OTMgMDAwMDAgbiAKMDAwMDAyMTQxMyAwMDAw
-MCBuIAowMDAwMDAwMDE1IDAwMDAwIG4gCjAwMDAwMjEzODkgMDAwMDAgbiAKMDAwMDA0OTc4
-OCAwMDAwMCBuIAowMDAwMDYzNDQ2IDAwMDAwIG4gCjAwMDAwMjE3OTcgMDAwMDAgbiAKMDAw
-MDAyMTU2OSAwMDAwMCBuIAowMDAwMDI4MTA4IDAwMDAwIG4gCjAwMDAwMjgxMzEgMDAwMDAg
-biAKMDAwMDA0ODg3OSAwMDAwMCBuIAowMDAwMDQ4OTA0IDAwMDAwIG4gCjAwMDAwNDk1MTkg
-MDAwMDAgbiAKMDAwMDA0OTU0MiAwMDAwMCBuIAowMDAwMDUwNDIzIDAwMDAwIG4gCjAwMDAw
-NjI3MjIgMDAwMDAgbiAKMDAwMDA2Mjc0NyAwMDAwMCBuIAowMDAwMDYzMTczIDAwMDAwIG4g
-CjAwMDAwNjMxOTYgMDAwMDAgbiAKMDAwMDA2Mzk1OCAwMDAwMCBuIAowMDAwMDY0MDg4IDAw
-MDAwIG4gCnRyYWlsZXIKPDwgL1NpemUgMjIKICAgL1Jvb3QgMjEgMCBSCiAgIC9JbmZvIDIw
-IDAgUgo+PgpzdGFydHhyZWYKNjQxNDEKJSVFT0YK
---------------090405000806090506030505
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------090405000806090506030505--
+1.9.0
