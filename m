@@ -1,189 +1,65 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 13/48] ALSA: ens137x: Use standard printk
-	helpers
-Date: Wed, 26 Feb 2014 16:53:15 +0100
-Message-ID: <1393430030-26704-14-git-send-email-tiwai@suse.de>
-References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH 00/15] ASoC: fsl-ssi: Driver cleanup
+Date: Wed, 26 Feb 2014 17:02:03 +0100
+Message-ID: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DD80E2657A1
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:53 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 6ECD475031
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
-In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Convert with dev_err() and co from snd_printk(), etc.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/ens1370.c | 39 +++++++++++++++++++++------------------
- 1 file changed, 21 insertions(+), 18 deletions(-)
+Here is a series of cleanups for the fsl-ssi driver.
 
-diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
-index 0f89d2a2090e..29cd339ffc37 100644
---- a/sound/pci/ens1370.c
-+++ b/sound/pci/ens1370.c
-@@ -525,7 +525,7 @@ static unsigned int snd_es1371_wait_src_ready(struct ensoniq * ensoniq)
- 			return r;
- 		cond_resched();
- 	}
--	snd_printk(KERN_ERR "wait src ready timeout 0x%lx [0x%x]\n",
-+	dev_err(ensoniq->card->dev, "wait src ready timeout 0x%lx [0x%x]\n",
- 		   ES_REG(ensoniq, 1371_SMPRATE), r);
- 	return 0;
- }
-@@ -587,7 +587,7 @@ static void snd_es1370_codec_write(struct snd_ak4531 *ak4531,
- 	unsigned long end_time = jiffies + HZ / 10;
- 
- #if 0
--	printk(KERN_DEBUG
-+	dev_dbg(ensoniq->card->dev,
- 	       "CODEC WRITE: reg = 0x%x, val = 0x%x (0x%x), creg = 0x%x\n",
- 	       reg, val, ES_1370_CODEC_WRITE(reg, val), ES_REG(ensoniq, 1370_CODEC));
- #endif
-@@ -598,7 +598,7 @@ static void snd_es1370_codec_write(struct snd_ak4531 *ak4531,
- 		}
- 		schedule_timeout_uninterruptible(1);
- 	} while (time_after(end_time, jiffies));
--	snd_printk(KERN_ERR "codec write timeout, status = 0x%x\n",
-+	dev_err(ensoniq->card->dev, "codec write timeout, status = 0x%x\n",
- 		   inl(ES_REG(ensoniq, STATUS)));
- }
- 
-@@ -649,7 +649,7 @@ static void snd_es1371_codec_write(struct snd_ac97 *ac97,
- 		}
- 	}
- 	mutex_unlock(&ensoniq->src_mutex);
--	snd_printk(KERN_ERR "codec write timeout at 0x%lx [0x%x]\n",
-+	dev_err(ensoniq->card->dev, "codec write timeout at 0x%lx [0x%x]\n",
- 		   ES_REG(ensoniq, 1371_CODEC), inl(ES_REG(ensoniq, 1371_CODEC)));
- }
- 
-@@ -706,8 +706,8 @@ static unsigned short snd_es1371_codec_read(struct snd_ac97 *ac97,
- 			}
- 			mutex_unlock(&ensoniq->src_mutex);
- 			if (++fail > 10) {
--				snd_printk(KERN_ERR "codec read timeout (final) "
--					   "at 0x%lx, reg = 0x%x [0x%x]\n",
-+				dev_err(ensoniq->card->dev,
-+					"codec read timeout (final) at 0x%lx, reg = 0x%x [0x%x]\n",
- 					   ES_REG(ensoniq, 1371_CODEC), reg,
- 					   inl(ES_REG(ensoniq, 1371_CODEC)));
- 				return 0;
-@@ -716,7 +716,7 @@ static unsigned short snd_es1371_codec_read(struct snd_ac97 *ac97,
- 		}
- 	}
- 	mutex_unlock(&ensoniq->src_mutex);
--	snd_printk(KERN_ERR "es1371: codec read timeout at 0x%lx [0x%x]\n",
-+	dev_err(ensoniq->card->dev, "codec read timeout at 0x%lx [0x%x]\n",
- 		   ES_REG(ensoniq, 1371_CODEC), inl(ES_REG(ensoniq, 1371_CODEC)));
- 	return 0;
- }
-@@ -1796,7 +1796,7 @@ static int snd_ensoniq_1370_mixer(struct ensoniq *ensoniq)
- #ifdef SUPPORT_JOYSTICK
- 
- #ifdef CHIP1371
--static int snd_ensoniq_get_joystick_port(int dev)
-+static int snd_ensoniq_get_joystick_port(struct ensoniq *ensoniq, int dev)
- {
- 	switch (joystick_port[dev]) {
- 	case 0: /* disabled */
-@@ -1808,12 +1808,13 @@ static int snd_ensoniq_get_joystick_port(int dev)
- 		return joystick_port[dev];
- 
- 	default:
--		printk(KERN_ERR "ens1371: invalid joystick port %#x", joystick_port[dev]);
-+		dev_err(ensoniq->card->dev,
-+			"invalid joystick port %#x", joystick_port[dev]);
- 		return 0;
- 	}
- }
- #else
--static inline int snd_ensoniq_get_joystick_port(int dev)
-+static int snd_ensoniq_get_joystick_port(struct ensoniq *ensoniq, int dev)
- {
- 	return joystick[dev] ? 0x200 : 0;
- }
-@@ -1824,7 +1825,7 @@ static int snd_ensoniq_create_gameport(struct ensoniq *ensoniq, int dev)
- 	struct gameport *gp;
- 	int io_port;
- 
--	io_port = snd_ensoniq_get_joystick_port(dev);
-+	io_port = snd_ensoniq_get_joystick_port(ensoniq, dev);
- 
- 	switch (io_port) {
- 	case 0:
-@@ -1835,14 +1836,16 @@ static int snd_ensoniq_create_gameport(struct ensoniq *ensoniq, int dev)
- 			if (request_region(io_port, 8, "ens137x: gameport"))
- 				break;
- 		if (io_port > 0x218) {
--			printk(KERN_WARNING "ens137x: no gameport ports available\n");
-+			dev_warn(ensoniq->card->dev,
-+				 "no gameport ports available\n");
- 			return -EBUSY;
- 		}
- 		break;
- 
- 	default:
- 		if (!request_region(io_port, 8, "ens137x: gameport")) {
--			printk(KERN_WARNING "ens137x: gameport io port %#x in use\n",
-+			dev_warn(ensoniq->card->dev,
-+				 "gameport io port %#x in use\n",
- 			       io_port);
- 			return -EBUSY;
- 		}
-@@ -1851,7 +1854,8 @@ static int snd_ensoniq_create_gameport(struct ensoniq *ensoniq, int dev)
- 
- 	ensoniq->gameport = gp = gameport_allocate_port();
- 	if (!gp) {
--		printk(KERN_ERR "ens137x: cannot allocate memory for gameport\n");
-+		dev_err(ensoniq->card->dev,
-+			"cannot allocate memory for gameport\n");
- 		release_region(io_port, 8);
- 		return -ENOMEM;
- 	}
-@@ -2082,8 +2086,7 @@ static int snd_ensoniq_resume(struct device *dev)
- 	pci_set_power_state(pci, PCI_D0);
- 	pci_restore_state(pci);
- 	if (pci_enable_device(pci) < 0) {
--		printk(KERN_ERR DRIVER_NAME ": pci_enable_device failed, "
--		       "disabling device\n");
-+		dev_err(dev, "pci_enable_device failed, disabling device\n");
- 		snd_card_disconnect(card);
- 		return -EIO;
- 	}
-@@ -2137,7 +2140,7 @@ static int snd_ensoniq_create(struct snd_card *card,
- 	ensoniq->port = pci_resource_start(pci, 0);
- 	if (request_irq(pci->irq, snd_audiopci_interrupt, IRQF_SHARED,
- 			KBUILD_MODNAME, ensoniq)) {
--		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
-+		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
- 		snd_ensoniq_free(ensoniq);
- 		return -EBUSY;
- 	}
-@@ -2145,7 +2148,7 @@ static int snd_ensoniq_create(struct snd_card *card,
- #ifdef CHIP1370
- 	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(pci),
- 				16, &ensoniq->dma_bug) < 0) {
--		snd_printk(KERN_ERR "unable to allocate space for phantom area - dma_bug\n");
-+		dev_err(card->dev, "unable to allocate space for phantom area - dma_bug\n");
- 		snd_ensoniq_free(ensoniq);
- 		return -EBUSY;
- 	}
+It would be great if someone with PPC hardware and this fsl-ssi unit could
+please test this series. I am not sure if the regmap patch works as expected on
+PPC as well.
+
+I tested this series on imx53 quick starter board and a custom board. Both with
+SSI as I2S slave.
+
+Regards,
+
+Markus
+
+
+Markus Pargmann (15):
+  ASoC: fsl-ssi: Use regmap
+  ASoC: fsl-ssi: Remove fsl_ssi_setup
+  ASoC: fsl-ssi: Move debugging to seperate file
+  ASoC: fsl-ssi: Use dev_name for DAI driver struct
+  ASoC: fsl-ssi: Move imx-specific probe to seperate function
+  ASoC: fsl-ssi: Remove useless DMA code
+  ASoC: fsl-ssi: baud clock error handling
+  ASoC: fsl-ssi: Cleanup probe function
+  ASoC: fsl-ssi: Remove unnecessary variables from ssi_private
+  ASoC: fsl-ssi: reorder and document fsl_ssi_private
+  ASoC: fsl-ssi: Fix register values when disabling
+  ASoC: fsl-ssi: Only enable baudclk when used
+  ASoC: fsl-ssi: Set default dai-fmts
+  ASoC: fsl-ssi: Transmit enable synchronization
+  ASoC: fsl-ssi: Update binding documentation
+
+ .../devicetree/bindings/sound/fsl,ssi.txt          |   21 +-
+ sound/soc/fsl/Kconfig                              |    1 +
+ sound/soc/fsl/Makefile                             |    2 +
+ sound/soc/fsl/fsl_ssi.c                            | 1167 ++++++++------------
+ sound/soc/fsl/fsl_ssi.h                            |  112 +-
+ sound/soc/fsl/fsl_ssi_dbg.c                        |  163 +++
+ 6 files changed, 750 insertions(+), 716 deletions(-)
+ create mode 100644 sound/soc/fsl/fsl_ssi_dbg.c
+
 -- 
-1.9.0
+1.8.5.3
