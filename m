@@ -1,14 +1,15 @@
-From: Alexander Shiyan <shc_work@mail.ru>
-Subject: [PATCH 0/2] ASoC: ARM Cirrus Logic CLPS711X DAI driver
-Date: Wed, 26 Feb 2014 20:05:40 +0400
-Message-ID: <1393430741-16272-1-git-send-email-shc_work@mail.ru>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH] Asoc: codecs: Remove tlv320aic32x4 from
+	compatibles of tlv320aic3x
+Date: Wed, 26 Feb 2014 17:14:33 +0100
+Message-ID: <1393431273-12170-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp25.mail.ru (smtp25.mail.ru [94.100.176.178])
- by alsa0.perex.cz (Postfix) with ESMTP id EB0DE265D97
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 17:11:04 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id CF168265FD7
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 17:14:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,29 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Alexander Shiyan <shc_work@mail.ru>, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Olof Johansson <olof@lixom.net>
+To: Mark Brown <broonie@kernel.org>
+Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-This series adds sound support for the Cirrus Logic CLPS711X CPUs.
-Driver is designed (and tested) for using with generic sound card.
+This reverts tlv320aic32x4 as compatible for tlv320aic3x as it has its
+own bindings now.
 
-Alexander Shiyan (2):
-  ASoC: Add driver for CLPS711X DAI interface
-  ASoC: cirrus: clps711x: Add bindings documentation for the CLPS711X
-    DAI
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
+ Documentation/devicetree/bindings/sound/tlv320aic3x.txt | 1 -
+ 1 file changed, 1 deletion(-)
 
- .../bindings/sound/cirrus,clps711x-dai.txt         |  20 +
- sound/soc/cirrus/Kconfig                           |   8 +
- sound/soc/cirrus/Makefile                          |   5 +
- sound/soc/cirrus/clps711x-dai.c                    | 522 +++++++++++++++++++++
- sound/soc/cirrus/clps711x-dai.h                    |  61 +++
- sound/soc/cirrus/clps711x-fiq.S                    |  56 +++
- 6 files changed, 672 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cirrus,clps711x-dai.txt
- create mode 100644 sound/soc/cirrus/clps711x-dai.c
- create mode 100644 sound/soc/cirrus/clps711x-dai.h
- create mode 100644 sound/soc/cirrus/clps711x-fiq.S
-
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+index 9d8ea14..5e6040c 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
++++ b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+@@ -6,7 +6,6 @@ Required properties:
+ 
+ - compatible - "string" - One of:
+     "ti,tlv320aic3x" - Generic TLV320AIC3x device
+-    "ti,tlv320aic32x4" - TLV320AIC32x4
+     "ti,tlv320aic33" - TLV320AIC33
+     "ti,tlv320aic3007" - TLV320AIC3007
+     "ti,tlv320aic3106" - TLV320AIC3106
 -- 
-1.8.3.2
+1.8.5.3
