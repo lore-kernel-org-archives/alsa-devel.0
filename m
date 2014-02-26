@@ -1,18 +1,18 @@
 From: RongJun Ying <rjying@gmail.com>
-Subject: [PATCH v4 3/7] ASoC: sirf: Add SiRF audio card
-Date: Wed, 26 Feb 2014 14:04:51 +0800
-Message-ID: <1393394695-29735-4-git-send-email-rongjun.ying@csr.com>
+Subject: [PATCH v4 5/7] ASoC: sirf: Add hdmi card
+Date: Wed, 26 Feb 2014 14:04:53 +0800
+Message-ID: <1393394695-29735-6-git-send-email-rongjun.ying@csr.com>
 References: <1393394695-29735-1-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f179.google.com (mail-pd0-f179.google.com
- [209.85.192.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 544E4261A1B
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 07:07:15 +0100 (CET)
-Received: by mail-pd0-f179.google.com with SMTP id w10so497813pde.24
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 22:07:14 -0800 (PST)
+Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
+ [209.85.220.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE6C92656A6
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 07:07:30 +0100 (CET)
+Received: by mail-pa0-f54.google.com with SMTP id fa1so519819pad.13
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2014 22:07:29 -0800 (PST)
 In-Reply-To: <1393394695-29735-1-git-send-email-rongjun.ying@csr.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,223 +29,142 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Rongjun Ying <rongjun.ying@csr.com>
 
-The SiRF audio card driver link SiRF internal audio codec with
-SiRF audio port.
+Link hdmi-audio-codec with SiRF I2S.
 
 Signed-off-by: Rongjun Ying <rongjun.ying@csr.com>
 ---
- .../devicetree/bindings/sound/sirf-audio.txt       |   41 +++++
- sound/soc/sirf/Kconfig                             |    5 +
+ .../devicetree/bindings/sound/sirf-hdmi.txt        |   15 +++
+ sound/soc/sirf/Kconfig                             |    6 +
  sound/soc/sirf/Makefile                            |    2 +
- sound/soc/sirf/sirf-audio.c                        |  156 ++++++++++++++++++++
- 4 files changed, 204 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio.txt
- create mode 100644 sound/soc/sirf/sirf-audio.c
+ sound/soc/sirf/sirf-hdmi.c                         |   98 ++++++++++++++++++++
+ 4 files changed, 121 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-hdmi.txt
+ create mode 100644 sound/soc/sirf/sirf-hdmi.c
 
-diff --git a/Documentation/devicetree/bindings/sound/sirf-audio.txt b/Documentation/devicetree/bindings/sound/sirf-audio.txt
+diff --git a/Documentation/devicetree/bindings/sound/sirf-hdmi.txt b/Documentation/devicetree/bindings/sound/sirf-hdmi.txt
 new file mode 100644
-index 0000000..c88882c
+index 0000000..3b6eb2a
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sirf-audio.txt
-@@ -0,0 +1,41 @@
-+* SiRF atlas6 and prima2 internal audio codec and port based audio setups
++++ b/Documentation/devicetree/bindings/sound/sirf-hdmi.txt
+@@ -0,0 +1,15 @@
++* SiRF atlas6/prima2 hdmi audio codec based audio setups
 +
 +Required properties:
-+- compatible: "sirf,sirf-audio-card"
-+- sirf,audio-platform: phandle for the platform node
-+- sirf,audio-codec: phandle for the SiRF internal codec node
-+
-+Optional properties:
-+- hp-pa-gpios: Need to be present if the board need control external
-+  headphone amplifier.
-+- spk-pa-gpios: Need to be present if the board need control external
-+  speaker amplifier.
-+- hp-switch-gpios: Need to be present if the board capable to detect jack
-+  insertion, removal.
-+
-+Available audio endpoints for the audio-routing table:
-+
-+Board connectors:
-+ * Headset Stereophone
-+ * Ext Spk
-+ * Line In
-+ * Mic
-+
-+SiRF internal audio codec pins:
-+ * HPOUTL
-+ * HPOUTR
-+ * SPKOUT
-+ * Ext Mic
-+ * Mic Bias
++- compatible: "sirf,sirf-hdmi"
++- sirf,i2s-controller: The phandle of the SiRF I2S controller.
++- sirf,hdmi-audio-codec: The phandle of the hdmi audio codec.
 +
 +Example:
 +
-+sound {
-+		compatible = "sirf,sirf-audio-card";
-+		sirf,audio-codec = <&audiocodec>;
-+		sirf,audio-platform = <&audioport>;
-+		hp-pa-gpios = <&gpio 44 0>;
-+		spk-pa-gpios = <&gpio 46 0>;
-+		hp-switch-gpios = <&gpio 45 0>;
++sirf-hdmi {
++	compatible = "sirf,hdmi-card";
++	sirf,i2s-controller = <&i2s>;
++	sirf,hdmi-audio-codec = <&hdmi_audio>;
 +};
 +
 diff --git a/sound/soc/sirf/Kconfig b/sound/soc/sirf/Kconfig
-index 5b5407f..a8e083b 100644
+index 2fca80a..dc7c71e 100644
 --- a/sound/soc/sirf/Kconfig
 +++ b/sound/soc/sirf/Kconfig
-@@ -7,3 +7,8 @@ config SND_SOC_SIRF_AUDIO_PORT
+@@ -16,3 +16,9 @@ config SND_SOC_SIRF_AUDIO
+ config SND_SOC_SIRF_I2S
  	select REGMAP_MMIO
  	tristate
- 
-+config SND_SOC_SIRF_AUDIO
-+	tristate "SoC Audio support for SiRF internal audio codec"
++
++config SND_SOC_SIRF_HDMI
++	tristate "SoC Audio support for SiRF HDMI"
 +	depends on SND_SOC_SIRF
-+	select SND_SOC_SIRF_AUDIO_CODEC
-+	select SND_SOC_SIRF_AUDIO_PORT
++	select SND_SOC_SIRF_I2S
++	select SND_SOC_HDMI_CODEC
 diff --git a/sound/soc/sirf/Makefile b/sound/soc/sirf/Makefile
-index fb012c8..4eea904 100644
+index 2de3cf8..ef28a38 100644
 --- a/sound/soc/sirf/Makefile
 +++ b/sound/soc/sirf/Makefile
-@@ -1,3 +1,5 @@
+@@ -1,7 +1,9 @@
  snd-soc-sirf-audio-port-objs := sirf-audio-port.o
-+snd-soc-sirf-audio-objs := sirf-audio.o
+ snd-soc-sirf-audio-objs := sirf-audio.o
+ snd-soc-sirf-i2s-objs := sirf-i2s.o
++snd-soc-sirf-hdmi-objs := sirf-hdmi.o
  
  obj-$(CONFIG_SND_SOC_SIRF_AUDIO_PORT) += snd-soc-sirf-audio-port.o
-+obj-$(CONFIG_SND_SOC_SIRF_AUDIO) += snd-soc-sirf-audio.o
-diff --git a/sound/soc/sirf/sirf-audio.c b/sound/soc/sirf/sirf-audio.c
+ obj-$(CONFIG_SND_SOC_SIRF_AUDIO) += snd-soc-sirf-audio.o
+ obj-$(CONFIG_SND_SOC_SIRF_I2S) += snd-soc-sirf-i2s.o
++obj-$(CONFIG_SND_SOC_SIRF_HDMI) += snd-soc-sirf-hdmi.o
+diff --git a/sound/soc/sirf/sirf-hdmi.c b/sound/soc/sirf/sirf-hdmi.c
 new file mode 100644
-index 0000000..ecef510
+index 0000000..a581ec4
 --- /dev/null
-+++ b/sound/soc/sirf/sirf-audio.c
-@@ -0,0 +1,156 @@
++++ b/sound/soc/sirf/sirf-hdmi.c
+@@ -0,0 +1,98 @@
 +/*
-+ * SiRF audio card driver
++ * SIRF HDMI ALSA SoC Audio board driver
 + *
-+ * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
++ * Copyright (c) 2013 Cambridge Silicon Radio Limited, a CSR plc group company.
 + *
 + * Licensed under GPLv2 or later.
 + */
 +
-+#include <linux/platform_device.h>
 +#include <linux/module.h>
 +#include <linux/of.h>
-+#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
++
 +#include <sound/soc.h>
 +
-+struct sirf_audio_card {
-+	unsigned int            gpio_hp_pa;
-+	unsigned int            gpio_spk_pa;
-+};
-+
-+static int sirf_audio_hp_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *ctrl, int event)
++static int sirf_hdmi_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
 +{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct snd_soc_card *card = dapm->card;
-+	struct sirf_audio_card *sirf_audio_card = snd_soc_card_get_drvdata(card);
-+	int on = !SND_SOC_DAPM_EVENT_OFF(event);
-+	if (gpio_is_valid(sirf_audio_card->gpio_hp_pa))
-+		gpio_set_value(sirf_audio_card->gpio_hp_pa, on);
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_codec *codec = rtd->codec;
++	struct snd_soc_card *card = codec->card;
++	unsigned int fmt;
++	int ret;
++
++	fmt = card->dai_link[0].dai_fmt;
++
++	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
++	if (ret < 0) {
++		dev_err(card->dev, "can't set cpu DAI configuration\n");
++		return ret;
++	}
++
 +	return 0;
 +}
 +
-+static int sirf_audio_spk_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *ctrl, int event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct snd_soc_card *card = dapm->card;
-+	struct sirf_audio_card *sirf_audio_card = snd_soc_card_get_drvdata(card);
-+	int on = !SND_SOC_DAPM_EVENT_OFF(event);
-+
-+	if (gpio_is_valid(sirf_audio_card->gpio_spk_pa))
-+		gpio_set_value(sirf_audio_card->gpio_spk_pa, on);
-+
-+	return 0;
-+}
-+static const struct snd_soc_dapm_widget sirf_audio_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Hp", sirf_audio_hp_event),
-+	SND_SOC_DAPM_SPK("Ext Spk", sirf_audio_spk_event),
-+	SND_SOC_DAPM_MIC("Ext Mic", NULL),
++static struct snd_soc_ops sirf_hdmi_ops = {
++	.hw_params = sirf_hdmi_hw_params,
 +};
-+
-+static const struct snd_soc_dapm_route intercon[] = {
-+	{"Hp", NULL, "HPOUTL"},
-+	{"Hp", NULL, "HPOUTR"},
-+	{"Ext Spk", NULL, "SPKOUT"},
-+	{"MICIN1", NULL, "Mic Bias"},
-+	{"Mic Bias", NULL, "Ext Mic"},
-+};
-+
 +/* Digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link sirf_audio_dai_link[] = {
++static struct snd_soc_dai_link sirf_hdmi_dai_links[] = {
 +	{
-+		.name = "SiRF audio card",
-+		.stream_name = "SiRF audio HiFi",
-+		.codec_dai_name = "sirf-audio-codec",
++		.name = "SiRF HDMI",
++		.stream_name = "SiRF HDMI",
++		.codec_dai_name = "hdmi-hifi",
++		.ops = &sirf_hdmi_ops,
 +	},
 +};
 +
-+/* Audio machine driver */
-+static struct snd_soc_card snd_soc_sirf_audio_card = {
-+	.name = "SiRF audio card",
++static struct snd_soc_card snd_soc_sirf_hdmi_card = {
++	.name = "SiRF HDMI",
 +	.owner = THIS_MODULE,
-+	.dai_link = sirf_audio_dai_link,
-+	.num_links = ARRAY_SIZE(sirf_audio_dai_link),
-+	.dapm_widgets = sirf_audio_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(sirf_audio_dapm_widgets),
-+	.dapm_routes = intercon,
-+	.num_dapm_routes = ARRAY_SIZE(intercon),
++	.dai_link = sirf_hdmi_dai_links,
++	.num_links = ARRAY_SIZE(sirf_hdmi_dai_links),
 +};
 +
-+static int sirf_audio_probe(struct platform_device *pdev)
++static int sirf_hdmi_card_probe(struct platform_device *pdev)
 +{
-+	struct snd_soc_card *card = &snd_soc_sirf_audio_card;
-+	struct sirf_audio_card *sirf_audio_card;
++	struct snd_soc_card *card = &snd_soc_sirf_hdmi_card;
 +	int ret;
++	sirf_hdmi_dai_links[0].cpu_of_node =
++		of_parse_phandle(pdev->dev.of_node, "sirf,i2s-controller", 0);
++	sirf_hdmi_dai_links[0].platform_of_node =
++		of_parse_phandle(pdev->dev.of_node, "sirf,i2s-controller", 0);
++	sirf_hdmi_dai_links[0].codec_of_node =
++		of_parse_phandle(pdev->dev.of_node, "sirf,hdmi-audio-codec", 0);
 +
-+	sirf_audio_card = devm_kzalloc(&pdev->dev, sizeof(struct sirf_audio_card),
-+			GFP_KERNEL);
-+	if (sirf_audio_card == NULL)
-+		return -ENOMEM;
-+
-+	sirf_audio_dai_link[0].cpu_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "sirf,audio-platform", 0);
-+	sirf_audio_dai_link[0].platform_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "sirf,audio-platform", 0);
-+	sirf_audio_dai_link[0].codec_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "sirf,audio-codec", 0);
-+	sirf_audio_card->gpio_spk_pa = of_get_named_gpio(pdev->dev.of_node,
-+			"spk-pa-gpios", 0);
-+	sirf_audio_card->gpio_hp_pa =  of_get_named_gpio(pdev->dev.of_node,
-+			"hp-pa-gpios", 0);
-+	if (gpio_is_valid(sirf_audio_card->gpio_spk_pa)) {
-+		ret = devm_gpio_request_one(&pdev->dev,
-+				sirf_audio_card->gpio_spk_pa,
-+				GPIOF_OUT_INIT_LOW, "SPA_PA_SD");
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"Failed to request GPIO_%d for reset: %d\n",
-+				sirf_audio_card->gpio_spk_pa, ret);
-+			return ret;
-+		}
-+	}
-+	if (gpio_is_valid(sirf_audio_card->gpio_hp_pa)) {
-+		ret = devm_gpio_request_one(&pdev->dev,
-+				sirf_audio_card->gpio_hp_pa,
-+				GPIOF_OUT_INIT_LOW, "HP_PA_SD");
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"Failed to request GPIO_%d for reset: %d\n",
-+				sirf_audio_card->gpio_hp_pa, ret);
-+			return ret;
-+		}
-+	}
++	sirf_hdmi_dai_links[0].dai_fmt = SND_SOC_DAIFMT_CBM_CFM |
++		SND_SOC_DAIFMT_I2S;
 +
 +	card->dev = &pdev->dev;
-+	snd_soc_card_set_drvdata(card, sirf_audio_card);
 +
 +	ret = devm_snd_soc_register_card(&pdev->dev, card);
 +	if (ret)
@@ -254,25 +173,26 @@ index 0000000..ecef510
 +	return ret;
 +}
 +
-+static const struct of_device_id sirf_audio_of_match[] = {
-+	{.compatible = "sirf,sirf-audio-card", },
-+	{ },
++static const struct of_device_id sirf_hdmi_card_of_match[] = {
++	{ .compatible = "sirf,hdmi-card", },
++	{}
 +};
-+MODULE_DEVICE_TABLE(of, sirf_audio_of_match);
++MODULE_DEVICE_TABLE(of, sirf_hdmi_card_of_match);
 +
-+static struct platform_driver sirf_audio_driver = {
++static struct platform_driver sirf_hdmi_card_driver = {
 +	.driver = {
-+		.name = "sirf-audio-card",
++		.name = "sirf-hdmi-card",
 +		.owner = THIS_MODULE,
 +		.pm = &snd_soc_pm_ops,
-+		.of_match_table = sirf_audio_of_match,
++		.of_match_table = sirf_hdmi_card_of_match,
 +	},
-+	.probe = sirf_audio_probe,
++	.probe = sirf_hdmi_card_probe,
 +};
-+module_platform_driver(sirf_audio_driver);
 +
-+MODULE_AUTHOR("RongJun Ying <RongJun.Ying@csr.com>");
-+MODULE_DESCRIPTION("ALSA SoC SIRF audio card driver");
++module_platform_driver(sirf_hdmi_card_driver);
++
++MODULE_DESCRIPTION("SIRF HDMI ALSA SoC Audio board driver");
++MODULE_AUTHOR("RongJun Ying <Rongjun.Ying@csr.com>");
 +MODULE_LICENSE("GPL v2");
 -- 
 1.7.5.4
