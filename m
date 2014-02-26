@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 02/10] ALSA: hwdep: Take private_data as
-	drvdata for sysfs
-Date: Wed, 26 Feb 2014 07:47:24 +0100
-Message-ID: <1393397252-11690-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 03/10] ALSA: hwdep: Allow to assign the given
+	parent
+Date: Wed, 26 Feb 2014 07:47:25 +0100
+Message-ID: <1393397252-11690-4-git-send-email-tiwai@suse.de>
 References: <1393397252-11690-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D0DC265357
+ by alsa0.perex.cz (Postfix) with ESMTP id 28DFD265512
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 07:47:38 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E4F6F75021
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E753C75022
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 06:47:37 +0000 (UTC)
 In-Reply-To: <1393397252-11690-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,183 +27,83 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-For referring to a different object from sysfs ops, take hwdep
-private_data as stored via dev_set_drvdata() at creating the device
-object.  In that way, the same sysfs ops can be used by different
-device types.
+Just like PCM, allow hwdep to be assigned to a different parent device
+than the card.  It'll be used for the HD-audio codec device in the
+later patches.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/hwdep.c        |  2 ++
- sound/pci/hda/hda_hwdep.c | 45 +++++++++++++++------------------------------
- 2 files changed, 17 insertions(+), 30 deletions(-)
+ include/sound/hwdep.h |  1 +
+ sound/core/hwdep.c    | 19 ++++++++++++-------
+ 2 files changed, 13 insertions(+), 7 deletions(-)
 
+diff --git a/include/sound/hwdep.h b/include/sound/hwdep.h
+index 193a3c57ed25..ae04a3ec9c77 100644
+--- a/include/sound/hwdep.h
++++ b/include/sound/hwdep.h
+@@ -68,6 +68,7 @@ struct snd_hwdep {
+ 	wait_queue_head_t open_wait;
+ 	void *private_data;
+ 	void (*private_free) (struct snd_hwdep *hwdep);
++	struct device *dev;
+ 	const struct attribute_group **groups;
+ 
+ 	struct mutex open_mutex;
 diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
-index 99f7e8515ba1..825cd2847940 100644
+index 825cd2847940..d6eb3ef3e3c7 100644
 --- a/sound/core/hwdep.c
 +++ b/sound/core/hwdep.c
-@@ -441,6 +441,8 @@ static int snd_hwdep_dev_register(struct snd_device *device)
- 		struct device *d = snd_get_device(SNDRV_DEVICE_TYPE_HWDEP,
- 						  hwdep->card, hwdep->device);
- 		if (d) {
-+			if (hwdep->private_data)
-+				dev_set_drvdata(d, hwdep->private_data);
+@@ -416,6 +416,7 @@ static int snd_hwdep_dev_register(struct snd_device *device)
+ {
+ 	struct snd_hwdep *hwdep = device->device_data;
+ 	struct snd_card *card = hwdep->card;
++	struct device *dev;
+ 	int err;
+ 	char name[32];
+ 
+@@ -426,10 +427,14 @@ static int snd_hwdep_dev_register(struct snd_device *device)
+ 	}
+ 	list_add_tail(&hwdep->list, &snd_hwdep_devices);
+ 	sprintf(name, "hwC%iD%i", hwdep->card->number, hwdep->device);
+-	if ((err = snd_register_device(SNDRV_DEVICE_TYPE_HWDEP,
+-				       hwdep->card, hwdep->device,
+-				       &snd_hwdep_f_ops, hwdep, name)) < 0) {
+-		dev_err(card->dev,
++	dev = hwdep->dev;
++	if (!dev)
++		dev = snd_card_get_device_link(hwdep->card);
++	err = snd_register_device_for_dev(SNDRV_DEVICE_TYPE_HWDEP,
++					  hwdep->card, hwdep->device,
++					  &snd_hwdep_f_ops, hwdep, name, dev);
++	if (err < 0) {
++		dev_err(dev,
+ 			"unable to register hardware dependent device %i:%i\n",
+ 			card->number, hwdep->device);
+ 		list_del(&hwdep->list);
+@@ -445,7 +450,7 @@ static int snd_hwdep_dev_register(struct snd_device *device)
+ 				dev_set_drvdata(d, hwdep->private_data);
  			err = sysfs_create_groups(&d->kobj, hwdep->groups);
  			if (err < 0)
- 				dev_warn(card->dev,
-diff --git a/sound/pci/hda/hda_hwdep.c b/sound/pci/hda/hda_hwdep.c
-index 53eef6a01589..0fada0f8cfe8 100644
---- a/sound/pci/hda/hda_hwdep.c
-+++ b/sound/pci/hda/hda_hwdep.c
-@@ -163,8 +163,7 @@ static ssize_t power_on_acct_show(struct device *dev,
- 				  struct device_attribute *attr,
- 				  char *buf)
- {
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);
--	struct hda_codec *codec = hwdep->private_data;
-+	struct hda_codec *codec = dev_get_drvdata(dev);
- 	snd_hda_update_power_acct(codec);
- 	return sprintf(buf, "%u\n", jiffies_to_msecs(codec->power_on_acct));
- }
-@@ -173,8 +172,7 @@ static ssize_t power_off_acct_show(struct device *dev,
- 				   struct device_attribute *attr,
- 				   char *buf)
- {
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);
--	struct hda_codec *codec = hwdep->private_data;
-+	struct hda_codec *codec = dev_get_drvdata(dev);
- 	snd_hda_update_power_acct(codec);
- 	return sprintf(buf, "%u\n", jiffies_to_msecs(codec->power_off_acct));
- }
-@@ -251,8 +249,7 @@ static ssize_t type##_show(struct device *dev,			\
- 			   struct device_attribute *attr,	\
- 			   char *buf)				\
- {								\
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);		\
--	struct hda_codec *codec = hwdep->private_data;		\
-+	struct hda_codec *codec = dev_get_drvdata(dev);		\
- 	return sprintf(buf, "0x%x\n", codec->type);		\
- }
- 
-@@ -261,8 +258,7 @@ static ssize_t type##_show(struct device *dev,			\
- 			     struct device_attribute *attr,	\
- 					char *buf)		\
- {								\
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);		\
--	struct hda_codec *codec = hwdep->private_data;		\
-+	struct hda_codec *codec = dev_get_drvdata(dev);		\
- 	return sprintf(buf, "%s\n",				\
- 		       codec->type ? codec->type : "");		\
- }
-@@ -281,8 +277,7 @@ static ssize_t type##_store(struct device *dev,			\
- 			    struct device_attribute *attr,	\
- 			    const char *buf, size_t count)	\
- {								\
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);		\
--	struct hda_codec *codec = hwdep->private_data;		\
-+	struct hda_codec *codec = dev_get_drvdata(dev);		\
- 	unsigned long val;					\
- 	int err = kstrtoul(buf, 0, &val);			\
- 	if (err < 0)						\
-@@ -296,8 +291,7 @@ static ssize_t type##_store(struct device *dev,			\
- 			    struct device_attribute *attr,	\
- 			    const char *buf, size_t count)	\
- {								\
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);		\
--	struct hda_codec *codec = hwdep->private_data;		\
-+	struct hda_codec *codec = dev_get_drvdata(dev);		\
- 	char *s = kstrndup_noeol(buf, 64);			\
- 	if (!s)							\
- 		return -ENOMEM;					\
-@@ -318,8 +312,7 @@ static ssize_t type##_store(struct device *dev,			\
- 			    struct device_attribute *attr,	\
- 			    const char *buf, size_t count)	\
- {								\
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);		\
--	struct hda_codec *codec = hwdep->private_data;		\
-+	struct hda_codec *codec = dev_get_drvdata(dev);		\
- 	int err = 0;						\
- 	if (*buf)						\
- 		err = type##_codec(codec);			\
-@@ -333,8 +326,7 @@ static ssize_t init_verbs_show(struct device *dev,
- 			       struct device_attribute *attr,
- 			       char *buf)
- {
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);
--	struct hda_codec *codec = hwdep->private_data;
-+	struct hda_codec *codec = dev_get_drvdata(dev);
- 	int i, len = 0;
- 	mutex_lock(&codec->user_mutex);
- 	for (i = 0; i < codec->init_verbs.used; i++) {
-@@ -373,8 +365,7 @@ static ssize_t init_verbs_store(struct device *dev,
- 				struct device_attribute *attr,
- 				const char *buf, size_t count)
- {
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);
--	struct hda_codec *codec = hwdep->private_data;
-+	struct hda_codec *codec = dev_get_drvdata(dev);
- 	int err = parse_init_verbs(codec, buf);
- 	if (err < 0)
- 		return err;
-@@ -385,8 +376,7 @@ static ssize_t hints_show(struct device *dev,
- 			  struct device_attribute *attr,
- 			  char *buf)
- {
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);
--	struct hda_codec *codec = hwdep->private_data;
-+	struct hda_codec *codec = dev_get_drvdata(dev);
- 	int i, len = 0;
- 	mutex_lock(&codec->user_mutex);
- 	for (i = 0; i < codec->hints.used; i++) {
-@@ -480,8 +470,7 @@ static ssize_t hints_store(struct device *dev,
- 			   struct device_attribute *attr,
- 			   const char *buf, size_t count)
- {
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);
--	struct hda_codec *codec = hwdep->private_data;
-+	struct hda_codec *codec = dev_get_drvdata(dev);
- 	int err = parse_hints(codec, buf);
- 	if (err < 0)
- 		return err;
-@@ -507,8 +496,7 @@ static ssize_t init_pin_configs_show(struct device *dev,
- 				     struct device_attribute *attr,
- 				     char *buf)
- {
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);
--	struct hda_codec *codec = hwdep->private_data;
-+	struct hda_codec *codec = dev_get_drvdata(dev);
- 	return pin_configs_show(codec, &codec->init_pins, buf);
- }
- 
-@@ -516,8 +504,7 @@ static ssize_t user_pin_configs_show(struct device *dev,
- 				     struct device_attribute *attr,
- 				     char *buf)
- {
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);
--	struct hda_codec *codec = hwdep->private_data;
-+	struct hda_codec *codec = dev_get_drvdata(dev);
- 	return pin_configs_show(codec, &codec->user_pins, buf);
- }
- 
-@@ -525,8 +512,7 @@ static ssize_t driver_pin_configs_show(struct device *dev,
- 				       struct device_attribute *attr,
- 				       char *buf)
- {
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);
--	struct hda_codec *codec = hwdep->private_data;
-+	struct hda_codec *codec = dev_get_drvdata(dev);
- 	return pin_configs_show(codec, &codec->driver_pins, buf);
- }
- 
-@@ -550,8 +536,7 @@ static ssize_t user_pin_configs_store(struct device *dev,
- 				      struct device_attribute *attr,
- 				      const char *buf, size_t count)
- {
--	struct snd_hwdep *hwdep = dev_get_drvdata(dev);
--	struct hda_codec *codec = hwdep->private_data;
-+	struct hda_codec *codec = dev_get_drvdata(dev);
- 	int err = parse_user_pin_configs(codec, buf);
- 	if (err < 0)
- 		return err;
+-				dev_warn(card->dev,
++				dev_warn(dev,
+ 					 "hwdep %d:%d: cannot create sysfs groups\n",
+ 					 card->number, hwdep->device);
+ 			put_device(d);
+@@ -456,13 +461,13 @@ static int snd_hwdep_dev_register(struct snd_device *device)
+ 	hwdep->ossreg = 0;
+ 	if (hwdep->oss_type >= 0) {
+ 		if ((hwdep->oss_type == SNDRV_OSS_DEVICE_TYPE_DMFM) && (hwdep->device != 0)) {
+-			dev_warn(card->dev,
++			dev_warn(dev,
+ 				 "only hwdep device 0 can be registered as OSS direct FM device!\n");
+ 		} else {
+ 			if (snd_register_oss_device(hwdep->oss_type,
+ 						    card, hwdep->device,
+ 						    &snd_hwdep_f_ops, hwdep) < 0) {
+-				dev_err(card->dev,
++				dev_err(dev,
+ 					"unable to register OSS compatibility device %i:%i\n",
+ 					card->number, hwdep->device);
+ 			} else
 -- 
 1.9.0
