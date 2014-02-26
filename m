@@ -1,17 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cirrus: Remove excess dependencies
-	on SND_SOC
-Date: Wed, 26 Feb 2014 08:57:10 +0900
-Message-ID: <20140225235710.GK2927@sirena.org.uk>
-References: <1393351314-23006-1-git-send-email-shc_work@mail.ru>
+From: Sean McCully <sean_mccully@yahoo.com>
+Subject: CA0132 6 Channel Output
+Date: Tue, 25 Feb 2014 20:34:21 -0600
+Message-ID: <1620347.aAIQAEJUSk@seanmccully>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2528402095131978624=="
+Content-Type: multipart/mixed; boundary="===============6604388244785026660=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D0700265357
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 01:32:33 +0100 (CET)
-In-Reply-To: <1393351314-23006-1-git-send-email-shc_work@mail.ru>
+Received: from nm4.bullet.mail.bf1.yahoo.com (nm4.bullet.mail.bf1.yahoo.com
+ [98.139.212.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id 482BA2619E1
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 03:34:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +18,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2528402095131978624==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="x1F0m3RQhDZyj8sd"
-Content-Disposition: inline
+--===============6604388244785026660==
+Content-Type: multipart/signed; boundary="nextPart13272323.ZfdsYXrMPC"; micalg="pgp-sha256"; protocol="application/pgp-signature"
 
 
---x1F0m3RQhDZyj8sd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--nextPart13272323.ZfdsYXrMPC
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, Feb 25, 2014 at 10:01:54PM +0400, Alexander Shiyan wrote:
-> Configuration for Cirrus Logic audio support is included only
-> if SND_SOC symbol selected, so no reason to check it once more.
+I have  one of these sound cards that came with my motherboard,
 
-Applied, thanks.
+/http://www.asrock.com/microsite/intelx79/GameBlaster.html/[1]
 
---x1F0m3RQhDZyj8sd
+
+Two Channel Output from one audio Jack works perfectly, but there seems to be a 
+problem with using the additional audio jacks for 6 channel "surround sound".
+
+http://www.alsa-project.org/db/?f=a8ae0aa3c0da4d697c1df5f403001dff50bb6e51
+
+
+ pasuspender -- speaker-test --channels=6 --device=surround51:0
+
+speaker-test 1.0.27.2
+
+Playback device is surround51:0
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Using 16 octaves of pink noise
+Channels count (6) not available for playbacks: Invalid argument
+Setting of hwparams failed: Invalid argument
+
+
+$ aplay -L
+null
+    Discard all samples (playback) or generate zero samples (capture)
+oss
+    Open Sound System
+pulse
+    PulseAudio Sound Server
+sysdefault:CARD=PCH
+    HDA Intel PCH, CA0132 Analog
+    Default Audio Device
+front:CARD=PCH,DEV=0
+    HDA Intel PCH, CA0132 Analog
+    Front speakers
+surround40:CARD=PCH,DEV=0
+    HDA Intel PCH, CA0132 Analog
+    4.0 Surround output to Front and Rear speakers
+surround41:CARD=PCH,DEV=0
+    HDA Intel PCH, CA0132 Analog
+    4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=PCH,DEV=0
+    HDA Intel PCH, CA0132 Analog
+    5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=PCH,DEV=0
+    HDA Intel PCH, CA0132 Analog
+    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=PCH,DEV=0
+    HDA Intel PCH, CA0132 Analog
+    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+iec958:CARD=PCH,DEV=0
+    HDA Intel PCH, CA0132 Digital
+    IEC958 (S/PDIF) Digital Audio Output
+hdmi:CARD=NVidia,DEV=0
+    HDA NVidia, HDMI 0
+    HDMI Audio Output
+hdmi:CARD=NVidia,DEV=1
+    HDA NVidia, HDMI 1
+    HDMI Audio Output
+hdmi:CARD=NVidia,DEV=2
+    HDA NVidia, HDMI 2
+    HDMI Audio Output
+
+-- 
+-- Sean McCully
+
+--------
+[1] http://www.asrock.com/microsite/intelx79/GameBlaster.html
+
+--nextPart13272323.ZfdsYXrMPC
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTDS3TAAoJELSic+t+oim9Ys8P/24w8wpA/wjCSIH6kXcWcKXZ
-fA5a8vVhC4V48kQCFtUWdTvzQvl6bEuE+WwkEQZInAH+LGiDCquGDIUwZGydNg9W
-lJBsOBnBFyBQ4Pk9dPkObGfyH0WXlYOc/kS8x7thlMkxT+7udF4FXDpfW7HH9Ypn
-bGmOfc7WlgYWM0Lr9LteljAhQA1xiu5MwXgSyQimrjF9nuJXF8lg3ihn9Waj4deB
-+59f8umilnzyj/Ix4vqy95dgEwNfM0sEYMTAU+0vVVbgfeZiMPSz9OU88qKbhbW3
-Agcso/uQDVjQ5N/XPmKfWjuYkyOIsgYqOm5PoRcNYsd/kwpYpGAVkogHmoyDz7rI
-sb3tC4Ks702a34W8sbX1jBQIpEYeWAx1Oar0j4MC+B9i9xI6RLSJhff6a/DnhjFB
-s5N60AOWE0qxxbT9RP/e/ivKuA3uKUiFYTFhO6S+Czcha9+RiqU1NXG4/xqrp+bN
-FAn/pP2/ttOJ2bUwSyJCiNKe3TDBKHeOwlTWt2CTc/SF8ez35szhwHdSyK/hoGfw
-HMqXm87j0eWfm6/ZhA+tLEJ9luYbdoiYK/Mis88ST7rEcyWSo16tyar+7GHMqEKK
-kadVMCIflOJx2HHMi8Vy90O6zBZ6G2rJjAY27d9+59EA9wpbWJWkdszlFFQRPLr0
-XY/0tymhWIMjvaJtiv0w
-=hcOq
+iF4EABEIAAYFAlMNUrAACgkQXBHqi5XCyTvmxQD9GqJt6cj2LwmkR8452I2UjVjO
+wkKhsELkp3/Hv6OaVm0BAKEfbuPjsnmeVyChdSZuOhYhm77fQSuPEGbG6YsAL6iB
+=0R/O
 -----END PGP SIGNATURE-----
 
---x1F0m3RQhDZyj8sd--
+--nextPart13272323.ZfdsYXrMPC--
 
---===============2528402095131978624==
+
+--===============6604388244785026660==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2528402095131978624==--
+--===============6604388244785026660==--
