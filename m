@@ -1,846 +1,268 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 33/48] ALSA: emu10k1: Use standard printk
-	helpers
-Date: Wed, 26 Feb 2014 16:53:35 +0100
-Message-ID: <1393430030-26704-34-git-send-email-tiwai@suse.de>
-References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH 05/15] ASoC: fsl-ssi: Move imx-specific probe to seperate
+ function
+Date: Wed, 26 Feb 2014 17:02:08 +0100
+Message-ID: <1393430538-32333-6-git-send-email-mpa@pengutronix.de>
+References: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 466202657CA
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DCED67503E
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
-In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Convert with dev_err() and co from snd_printk(), etc.
+Move imx specific probe code to a seperate function. It reduces the
+size of the probe() function and makes the code and error handling
+easier to understand.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/pci/emu10k1/emu10k1.c          |  6 +--
- sound/pci/emu10k1/emu10k1_callback.c |  4 +-
- sound/pci/emu10k1/emu10k1_main.c     | 73 ++++++++++++++++++++++--------------
- sound/pci/emu10k1/emu10k1_patch.c    |  6 ++-
- sound/pci/emu10k1/emufx.c            | 12 +++---
- sound/pci/emu10k1/emumixer.c         |  6 ++-
- sound/pci/emu10k1/emumpu401.c        |  7 +++-
- sound/pci/emu10k1/emupcm.c           | 22 +++++++----
- sound/pci/emu10k1/io.c               | 10 ++---
- sound/pci/emu10k1/irq.c              | 21 +++++++----
- sound/pci/emu10k1/memory.c           | 12 ++++--
- sound/pci/emu10k1/p16v.c             | 45 +++++++++++-----------
- sound/pci/emu10k1/voice.c            |  6 +--
- 13 files changed, 137 insertions(+), 93 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 183 ++++++++++++++++++++++++++----------------------
+ 1 file changed, 101 insertions(+), 82 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emu10k1.c b/sound/pci/emu10k1/emu10k1.c
-index 5c0413b40dc3..ad9d9f8b48ed 100644
---- a/sound/pci/emu10k1/emu10k1.c
-+++ b/sound/pci/emu10k1/emu10k1.c
-@@ -170,7 +170,8 @@ static int snd_card_emu10k1_probe(struct pci_dev *pci,
- 	if (snd_seq_device_new(card, 1, SNDRV_SEQ_DEV_ID_EMU10K1_SYNTH,
- 			       sizeof(struct snd_emu10k1_synth_arg), &wave) < 0 ||
- 	    wave == NULL) {
--		snd_printk(KERN_WARNING "can't initialize Emu10k1 wavetable synth\n");
-+		dev_warn(emu->card->dev,
-+			 "can't initialize Emu10k1 wavetable synth\n");
- 	} else {
- 		struct snd_emu10k1_synth_arg *arg;
- 		arg = SNDRV_SEQ_DEVICE_ARGPTR(wave);
-@@ -247,8 +248,7 @@ static int snd_emu10k1_resume(struct device *dev)
- 	pci_set_power_state(pci, PCI_D0);
- 	pci_restore_state(pci);
- 	if (pci_enable_device(pci) < 0) {
--		printk(KERN_ERR "emu10k1: pci_enable_device failed, "
--		       "disabling device\n");
-+		dev_err(dev, "pci_enable_device failed, disabling device\n");
- 		snd_card_disconnect(card);
- 		return -EIO;
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index b3e3758..054813d 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -973,6 +973,98 @@ static void make_lowercase(char *s)
  	}
-diff --git a/sound/pci/emu10k1/emu10k1_callback.c b/sound/pci/emu10k1/emu10k1_callback.c
-index cae36597aa71..3f3ef38d9b6e 100644
---- a/sound/pci/emu10k1/emu10k1_callback.c
-+++ b/sound/pci/emu10k1/emu10k1_callback.c
-@@ -105,7 +105,7 @@ snd_emu10k1_synth_get_voice(struct snd_emu10k1 *hw)
- 			vp = &emu->voices[best[i].voice];
- 			if ((ch = vp->ch) < 0) {
- 				/*
--				printk(KERN_WARNING
-+				dev_warn(emu->card->dev,
- 				       "synth_get_voice: ch < 0 (%d) ??", i);
- 				*/
- 				continue;
-@@ -339,7 +339,7 @@ start_voice(struct snd_emux_voice *vp)
- 		return -EINVAL;
- 	emem->map_locked++;
- 	if (snd_emu10k1_memblk_map(hw, emem) < 0) {
--		/* printk(KERN_ERR "emu: cannot map!\n"); */
-+		/* dev_err(hw->card->devK, "emu: cannot map!\n"); */
- 		return -ENOMEM;
- 	}
- 	mapped_offset = snd_emu10k1_memblk_offset(emem) >> 1;
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index 75504da63613..229269788023 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -217,7 +217,7 @@ static int snd_emu10k1_init(struct snd_emu10k1 *emu, int enable_ir, int resume)
- 	}
- 	if (emu->card_capabilities->ca0108_chip) { /* audigy2 Value */
- 		/* Hacks for Alice3 to work independent of haP16V driver */
--		snd_printk(KERN_INFO "Audigy2 value: Special config.\n");
-+		dev_info(emu->card->dev, "Audigy2 value: Special config.\n");
- 		/* Setup SRCMulti_I2S SamplingRate */
- 		tmp = snd_emu10k1_ptr_read(emu, A_SPDIF_SAMPLERATE, 0);
- 		tmp &= 0xfffff1ff;
-@@ -723,7 +723,8 @@ static int emu1010_firmware_thread(void *data)
- 		if (reg & EMU_HANA_OPTION_DOCK_OFFLINE) {
- 			/* Audio Dock attached */
- 			/* Return to Audio Dock programming mode */
--			snd_printk(KERN_INFO "emu1010: Loading Audio Dock Firmware\n");
-+			dev_info(emu->card->dev,
-+				 "emu1010: Loading Audio Dock Firmware\n");
- 			snd_emu1010_fpga_write(emu, EMU_HANA_FPGA_CONFIG, EMU_HANA_FPGA_CONFIG_AUDIODOCK);
- 
- 			if (!emu->dock_fw) {
-@@ -756,19 +757,25 @@ static int emu1010_firmware_thread(void *data)
- 
- 			snd_emu1010_fpga_write(emu, EMU_HANA_FPGA_CONFIG, 0);
- 			snd_emu1010_fpga_read(emu, EMU_HANA_IRQ_STATUS, &reg);
--			snd_printk(KERN_INFO "emu1010: EMU_HANA+DOCK_IRQ_STATUS = 0x%x\n", reg);
-+			dev_info(emu->card->dev,
-+				 "emu1010: EMU_HANA+DOCK_IRQ_STATUS = 0x%x\n",
-+				 reg);
- 			/* ID, should read & 0x7f = 0x55 when FPGA programmed. */
- 			snd_emu1010_fpga_read(emu, EMU_HANA_ID, &reg);
--			snd_printk(KERN_INFO "emu1010: EMU_HANA+DOCK_ID = 0x%x\n", reg);
-+			dev_info(emu->card->dev,
-+				 "emu1010: EMU_HANA+DOCK_ID = 0x%x\n", reg);
- 			if ((reg & 0x1f) != 0x15) {
- 				/* FPGA failed to be programmed */
--				snd_printk(KERN_INFO "emu1010: Loading Audio Dock Firmware file failed, reg = 0x%x\n", reg);
-+				dev_info(emu->card->dev,
-+					 "emu1010: Loading Audio Dock Firmware file failed, reg = 0x%x\n",
-+					 reg);
- 				continue;
- 			}
--			snd_printk(KERN_INFO "emu1010: Audio Dock Firmware loaded\n");
-+			dev_info(emu->card->dev,
-+				 "emu1010: Audio Dock Firmware loaded\n");
- 			snd_emu1010_fpga_read(emu, EMU_DOCK_MAJOR_REV, &tmp);
- 			snd_emu1010_fpga_read(emu, EMU_DOCK_MINOR_REV, &tmp2);
--			snd_printk(KERN_INFO "Audio Dock ver: %u.%u\n",
-+			dev_info(emu->card->dev, "Audio Dock ver: %u.%u\n",
- 				   tmp, tmp2);
- 			/* Sync clocking between 1010 and Dock */
- 			/* Allow DLL to settle */
-@@ -777,7 +784,7 @@ static int emu1010_firmware_thread(void *data)
- 			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE);
- 		}
- 	}
--	snd_printk(KERN_INFO "emu1010: firmware thread stopping\n");
-+	dev_info(emu->card->dev, "emu1010: firmware thread stopping\n");
- 	return 0;
  }
  
-@@ -818,7 +825,7 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 	u32 tmp, tmp2, reg;
- 	int err;
- 
--	snd_printk(KERN_INFO "emu1010: Special config.\n");
-+	dev_info(emu->card->dev, "emu1010: Special config.\n");
- 	/* AC97 2.1, Any 16Meg of 4Gig address, Auto-Mute, EMU32 Slave,
- 	 * Lock Sound Memory Cache, Lock Tank Memory Cache,
- 	 * Mute all codecs.
-@@ -843,7 +850,7 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 
- 	/* ID, should read & 0x7f = 0x55. (Bit 7 is the IRQ bit) */
- 	snd_emu1010_fpga_read(emu, EMU_HANA_ID, &reg);
--	snd_printdd("reg1 = 0x%x\n", reg);
-+	dev_dbg(emu->card->dev, "reg1 = 0x%x\n", reg);
- 	if ((reg & 0x3f) == 0x15) {
- 		/* FPGA netlist already present so clear it */
- 		/* Return to programming mode */
-@@ -851,13 +858,14 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 		snd_emu1010_fpga_write(emu, EMU_HANA_FPGA_CONFIG, 0x02);
- 	}
- 	snd_emu1010_fpga_read(emu, EMU_HANA_ID, &reg);
--	snd_printdd("reg2 = 0x%x\n", reg);
-+	dev_dbg(emu->card->dev, "reg2 = 0x%x\n", reg);
- 	if ((reg & 0x3f) == 0x15) {
- 		/* FPGA failed to return to programming mode */
--		snd_printk(KERN_INFO "emu1010: FPGA failed to return to programming mode\n");
-+		dev_info(emu->card->dev,
-+			 "emu1010: FPGA failed to return to programming mode\n");
- 		return -ENODEV;
- 	}
--	snd_printk(KERN_INFO "emu1010: EMU_HANA_ID = 0x%x\n", reg);
-+	dev_info(emu->card->dev, "emu1010: EMU_HANA_ID = 0x%x\n", reg);
- 
- 	if (!emu->firmware) {
- 		const char *filename;
-@@ -880,16 +888,19 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 
- 		err = request_firmware(&emu->firmware, filename, &emu->pci->dev);
- 		if (err != 0) {
--			snd_printk(KERN_ERR "emu1010: firmware: %s not found. Err = %d\n", filename, err);
-+			dev_info(emu->card->dev,
-+				 "emu1010: firmware: %s not found. Err = %d\n",
-+				 filename, err);
- 			return err;
- 		}
--		snd_printk(KERN_INFO "emu1010: firmware file = %s, size = 0x%zx\n",
-+		dev_info(emu->card->dev,
-+			 "emu1010: firmware file = %s, size = 0x%zx\n",
- 			   filename, emu->firmware->size);
- 	}
- 
- 	err = snd_emu1010_load_firmware(emu, emu->firmware);
- 	if (err != 0) {
--		snd_printk(KERN_INFO "emu1010: Loading Firmware failed\n");
-+		dev_info(emu->card->dev, "emu1010: Loading Firmware failed\n");
- 		return err;
- 	}
- 
-@@ -897,21 +908,23 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 	snd_emu1010_fpga_read(emu, EMU_HANA_ID, &reg);
- 	if ((reg & 0x3f) != 0x15) {
- 		/* FPGA failed to be programmed */
--		snd_printk(KERN_INFO "emu1010: Loading Hana Firmware file failed, reg = 0x%x\n", reg);
-+		dev_info(emu->card->dev,
-+			 "emu1010: Loading Hana Firmware file failed, reg = 0x%x\n",
-+			 reg);
- 		return -ENODEV;
- 	}
- 
--	snd_printk(KERN_INFO "emu1010: Hana Firmware loaded\n");
-+	dev_info(emu->card->dev, "emu1010: Hana Firmware loaded\n");
- 	snd_emu1010_fpga_read(emu, EMU_HANA_MAJOR_REV, &tmp);
- 	snd_emu1010_fpga_read(emu, EMU_HANA_MINOR_REV, &tmp2);
--	snd_printk(KERN_INFO "emu1010: Hana version: %u.%u\n", tmp, tmp2);
-+	dev_info(emu->card->dev, "emu1010: Hana version: %u.%u\n", tmp, tmp2);
- 	/* Enable 48Volt power to Audio Dock */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_PWR, EMU_HANA_DOCK_PWR_ON);
- 
- 	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
--	snd_printk(KERN_INFO "emu1010: Card options = 0x%x\n", reg);
-+	dev_info(emu->card->dev, "emu1010: Card options = 0x%x\n", reg);
- 	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
--	snd_printk(KERN_INFO "emu1010: Card options = 0x%x\n", reg);
-+	dev_info(emu->card->dev, "emu1010: Card options = 0x%x\n", reg);
- 	snd_emu1010_fpga_read(emu, EMU_HANA_OPTICAL_TYPE, &tmp);
- 	/* Optical -> ADAT I/O  */
- 	/* 0 : SPDIF
-@@ -950,7 +963,7 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 	snd_emu1010_fpga_write(emu, EMU_HANA_IRQ_ENABLE, 0x00);
- 
- 	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
--	snd_printk(KERN_INFO "emu1010: Card options3 = 0x%x\n", reg);
-+	dev_info(emu->card->dev, "emu1010: Card options3 = 0x%x\n", reg);
- 	/* Default WCLK set to 48kHz. */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, 0x00);
- 	/* Word Clock source, Internal 48kHz x1 */
-@@ -1808,7 +1821,9 @@ int snd_emu10k1_create(struct snd_card *card,
- 	emu->revision = pci->revision;
- 	pci_read_config_dword(pci, PCI_SUBSYSTEM_VENDOR_ID, &emu->serial);
- 	pci_read_config_word(pci, PCI_SUBSYSTEM_ID, &emu->model);
--	snd_printdd("vendor = 0x%x, device = 0x%x, subsystem_vendor_id = 0x%x, subsystem_id = 0x%x\n", pci->vendor, pci->device, emu->serial, emu->model);
-+	dev_dbg(card->dev,
-+		"vendor = 0x%x, device = 0x%x, subsystem_vendor_id = 0x%x, subsystem_id = 0x%x\n",
-+		pci->vendor, pci->device, emu->serial, emu->model);
- 
- 	for (c = emu_chip_details; c->vendor; c++) {
- 		if (c->vendor == pci->vendor && c->device == pci->device) {
-@@ -1827,21 +1842,21 @@ int snd_emu10k1_create(struct snd_card *card,
- 		}
- 	}
- 	if (c->vendor == 0) {
--		snd_printk(KERN_ERR "emu10k1: Card not recognised\n");
-+		dev_err(card->dev, "emu10k1: Card not recognised\n");
- 		kfree(emu);
- 		pci_disable_device(pci);
- 		return -ENOENT;
- 	}
- 	emu->card_capabilities = c;
- 	if (c->subsystem && !subsystem)
--		snd_printdd("Sound card name = %s\n", c->name);
-+		dev_dbg(card->dev, "Sound card name = %s\n", c->name);
- 	else if (subsystem)
--		snd_printdd("Sound card name = %s, "
-+		dev_dbg(card->dev, "Sound card name = %s, "
- 			"vendor = 0x%x, device = 0x%x, subsystem = 0x%x. "
- 			"Forced to subsystem = 0x%x\n",	c->name,
- 			pci->vendor, pci->device, emu->serial, c->subsystem);
- 	else
--		snd_printdd("Sound card name = %s, "
-+		dev_dbg(card->dev, "Sound card name = %s, "
- 			"vendor = 0x%x, device = 0x%x, subsystem = 0x%x.\n",
- 			c->name, pci->vendor, pci->device,
- 			emu->serial);
-@@ -1869,7 +1884,9 @@ int snd_emu10k1_create(struct snd_card *card,
- 	emu->dma_mask = is_audigy ? AUDIGY_DMA_MASK : EMU10K1_DMA_MASK;
- 	if (pci_set_dma_mask(pci, emu->dma_mask) < 0 ||
- 	    pci_set_consistent_dma_mask(pci, emu->dma_mask) < 0) {
--		snd_printk(KERN_ERR "architecture does not support PCI busmaster DMA with mask 0x%lx\n", emu->dma_mask);
-+		dev_err(card->dev,
-+			"architecture does not support PCI busmaster DMA with mask 0x%lx\n",
-+			emu->dma_mask);
- 		kfree(emu);
- 		pci_disable_device(pci);
- 		return -ENXIO;
-diff --git a/sound/pci/emu10k1/emu10k1_patch.c b/sound/pci/emu10k1/emu10k1_patch.c
-index 662a45876a8b..0e069aeab86d 100644
---- a/sound/pci/emu10k1/emu10k1_patch.c
-+++ b/sound/pci/emu10k1/emu10k1_patch.c
-@@ -50,7 +50,8 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_sf_sample *sp,
- 		return -EINVAL;
- 
- 	if (sp->v.size == 0) {
--		snd_printd("emu: rom font for sample %d\n", sp->v.sample);
-+		dev_dbg(emu->card->dev,
-+			"emu: rom font for sample %d\n", sp->v.sample);
- 		return 0;
- 	}
- 
-@@ -92,7 +93,8 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_sf_sample *sp,
- 		blocksize *= 2;
- 	sp->block = snd_emu10k1_synth_alloc(emu, blocksize);
- 	if (sp->block == NULL) {
--		snd_printd("emu10k1: synth malloc failed (size=%d)\n", blocksize);
-+		dev_dbg(emu->card->dev,
-+			"synth malloc failed (size=%d)\n", blocksize);
- 		/* not ENOMEM (for compatibility with OSS) */
- 		return -ENOSPC;
- 	}
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index 1f9c7c4bbcd8..745f0627c634 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -1547,7 +1547,7 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
- 	/* A_PUT_STEREO_OUTPUT(A_EXTOUT_FRONT_L, A_EXTOUT_FRONT_R, playback + SND_EMU10K1_PLAYBACK_CHANNELS); */
- 	if (emu->card_capabilities->emu_model) {
- 		/* EMU1010 Outputs from PCM Front, Rear, Center, LFE, Side */
--		snd_printk(KERN_INFO "EMU outputs on\n");
-+		dev_info(emu->card->dev, "EMU outputs on\n");
- 		for (z = 0; z < 8; z++) {
- 			if (emu->card_capabilities->ca0108_chip) {
- 				A_OP(icode, &ptr, iACC3, A3_EMU32OUT(z), A_GPR(playback + SND_EMU10K1_PLAYBACK_CHANNELS + z), A_C_00000000, A_C_00000000);
-@@ -1571,7 +1571,9 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
- 		A_SWITCH(icode, &ptr, tmp + 1, playback + SND_EMU10K1_PLAYBACK_CHANNELS + z, tmp + 1);
- 		if ((z==1) && (emu->card_capabilities->spdif_bug)) {
- 			/* Due to a SPDIF output bug on some Audigy cards, this code delays the Right channel by 1 sample */
--			snd_printk(KERN_INFO "Installing spdif_bug patch: %s\n", emu->card_capabilities->name);
-+			dev_info(emu->card->dev,
-+				 "Installing spdif_bug patch: %s\n",
-+				 emu->card_capabilities->name);
- 			A_OP(icode, &ptr, iACC3, A_EXTOUT(A_EXTOUT_FRONT_L + z), A_GPR(gpr - 3), A_C_00000000, A_C_00000000);
- 			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 3), A_GPR(tmp + 0), A_GPR(tmp + 1), A_C_00000000);
- 		} else {
-@@ -1595,7 +1597,7 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
- 
- 	if (emu->card_capabilities->emu_model) {
- 		if (emu->card_capabilities->ca0108_chip) {
--			snd_printk(KERN_INFO "EMU2 inputs on\n");
-+			dev_info(emu->card->dev, "EMU2 inputs on\n");
- 			for (z = 0; z < 0x10; z++) {
- 				snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, 
- 									bit_shifter16,
-@@ -1603,11 +1605,11 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
- 									A_FXBUS2(z*2) );
- 			}
- 		} else {
--			snd_printk(KERN_INFO "EMU inputs on\n");
-+			dev_info(emu->card->dev, "EMU inputs on\n");
- 			/* Capture 16 (originally 8) channels of S32_LE sound */
- 
- 			/*
--			printk(KERN_DEBUG "emufx.c: gpr=0x%x, tmp=0x%x\n",
-+			dev_dbg(emu->card->dev, "emufx.c: gpr=0x%x, tmp=0x%x\n",
- 			       gpr, tmp);
- 			*/
- 			/* For the EMU1010: How to get 32bit values from the DSP. High 16bits into L, low 16bits into R. */
-diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
-index f6c3da0d377d..c5ae2a24d8a5 100644
---- a/sound/pci/emu10k1/emumixer.c
-+++ b/sound/pci/emu10k1/emumixer.c
-@@ -1853,8 +1853,10 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
- 		if ((err = snd_ac97_mixer(pbus, &ac97, &emu->ac97)) < 0) {
- 			if (emu->card_capabilities->ac97_chip == 1)
- 				return err;
--			snd_printd(KERN_INFO "emu10k1: AC97 is optional on this board\n");
--			snd_printd(KERN_INFO"          Proceeding without ac97 mixers...\n");
-+			dev_info(emu->card->dev,
-+				 "AC97 is optional on this board\n");
-+			dev_info(emu->card->dev,
-+				 "Proceeding without ac97 mixers...\n");
- 			snd_device_free(emu->card, pbus);
- 			goto no_ac97; /* FIXME: get rid of ugly gotos.. */
- 		}
-diff --git a/sound/pci/emu10k1/emumpu401.c b/sound/pci/emu10k1/emumpu401.c
-index 1ec91246dfee..fdf2b0ada489 100644
---- a/sound/pci/emu10k1/emumpu401.c
-+++ b/sound/pci/emu10k1/emumpu401.c
-@@ -64,7 +64,9 @@ static void mpu401_clear_rx(struct snd_emu10k1 *emu, struct snd_emu10k1_midi *mp
- 		mpu401_read_data(emu, mpu);
- #ifdef CONFIG_SND_DEBUG
- 	if (timeout <= 0)
--		snd_printk(KERN_ERR "cmd: clear rx timeout (status = 0x%x)\n", mpu401_read_stat(emu, mpu));
-+		dev_err(emu->card->dev,
-+			"cmd: clear rx timeout (status = 0x%x)\n",
-+			mpu401_read_stat(emu, mpu));
- #endif
- }
- 
-@@ -141,7 +143,8 @@ static int snd_emu10k1_midi_cmd(struct snd_emu10k1 * emu, struct snd_emu10k1_mid
- 	}
- 	spin_unlock_irqrestore(&midi->input_lock, flags);
- 	if (!ok) {
--		snd_printk(KERN_ERR "midi_cmd: 0x%x failed at 0x%lx (status = 0x%x, data = 0x%x)!!!\n",
-+		dev_err(emu->card->dev,
-+			"midi_cmd: 0x%x failed at 0x%lx (status = 0x%x, data = 0x%x)!!!\n",
- 			   cmd, emu->port,
- 			   mpu401_read_stat(emu, midi),
- 			   mpu401_read_data(emu, midi));
-diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index 5ae1d045bdcb..f82481bd2542 100644
---- a/sound/pci/emu10k1/emupcm.c
-+++ b/sound/pci/emu10k1/emupcm.c
-@@ -44,7 +44,8 @@ static void snd_emu10k1_pcm_interrupt(struct snd_emu10k1 *emu,
- 	if (epcm->substream == NULL)
- 		return;
- #if 0
--	printk(KERN_DEBUG "IRQ: position = 0x%x, period = 0x%x, size = 0x%x\n",
-+	dev_dbg(emu->card->dev,
-+		"IRQ: position = 0x%x, period = 0x%x, size = 0x%x\n",
- 			epcm->substream->runtime->hw->pointer(emu, epcm->substream),
- 			snd_pcm_lib_period_bytes(epcm->substream),
- 			snd_pcm_lib_buffer_bytes(epcm->substream));
-@@ -147,7 +148,7 @@ static int snd_emu10k1_pcm_channel_alloc(struct snd_emu10k1_pcm * epcm, int voic
- 					      &epcm->extra);
- 		if (err < 0) {
- 			/*
--			printk(KERN_DEBUG "pcm_channel_alloc: "
-+			dev_dbg(emu->card->dev, "pcm_channel_alloc: "
- 			       "failed extra: voices=%d, frame=%d\n",
- 			       voices, frame);
- 			*/
-@@ -761,7 +762,8 @@ static int snd_emu10k1_playback_trigger(struct snd_pcm_substream *substream,
- 	int result = 0;
- 
- 	/*
--	printk(KERN_DEBUG "trigger - emu10k1 = 0x%x, cmd = %i, pointer = %i\n",
-+	dev_dbg(emu->card->dev,
-+		"trigger - emu10k1 = 0x%x, cmd = %i, pointer = %i\n",
- 	       (int)emu, cmd, substream->ops->pointer(substream))
- 	*/
- 	spin_lock(&emu->reg_lock);
-@@ -815,7 +817,7 @@ static int snd_emu10k1_capture_trigger(struct snd_pcm_substream *substream,
- 		outl(epcm->capture_ipr, emu->port + IPR);
- 		snd_emu10k1_intr_enable(emu, epcm->capture_inte);
- 		/*
--		printk(KERN_DEBUG "adccr = 0x%x, adcbs = 0x%x\n",
-+		dev_dbg(emu->card->dev, "adccr = 0x%x, adcbs = 0x%x\n",
- 		       epcm->adccr, epcm->adcbs);
- 		*/
- 		switch (epcm->type) {
-@@ -826,7 +828,10 @@ static int snd_emu10k1_capture_trigger(struct snd_pcm_substream *substream,
- 			if (emu->audigy) {
- 				snd_emu10k1_ptr_write(emu, A_FXWC1, 0, epcm->capture_cr_val);
- 				snd_emu10k1_ptr_write(emu, A_FXWC2, 0, epcm->capture_cr_val2);
--				snd_printdd("cr_val=0x%x, cr_val2=0x%x\n", epcm->capture_cr_val, epcm->capture_cr_val2);
-+				dev_dbg(emu->card->dev,
-+					"cr_val=0x%x, cr_val2=0x%x\n",
-+					epcm->capture_cr_val,
-+					epcm->capture_cr_val2);
- 			} else
- 				snd_emu10k1_ptr_write(emu, FXWC, 0, epcm->capture_cr_val);
- 			break;
-@@ -889,7 +894,7 @@ static snd_pcm_uframes_t snd_emu10k1_playback_pointer(struct snd_pcm_substream *
- 	}
- #endif
- 	/*
--	printk(KERN_DEBUG
-+	dev_dbg(emu->card->dev,
- 	       "ptr = 0x%lx, buffer_size = 0x%lx, period_size = 0x%lx\n",
- 	       (long)ptr, (long)runtime->buffer_size,
- 	       (long)runtime->period_size);
-@@ -1594,7 +1599,8 @@ static void snd_emu10k1_fx8010_playback_tram_poke1(unsigned short *dst_left,
- 						   unsigned int tram_shift)
++static int fsl_ssi_imx_probe(struct platform_device *pdev,
++		struct fsl_ssi_private *ssi_private)
++{
++	struct device_node *np = pdev->dev.of_node;
++	u32 dma_events[2], dmas[4];
++	bool shared;
++	int ret;
++
++	ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
++	if (IS_ERR(ssi_private->clk)) {
++		ret = PTR_ERR(ssi_private->clk);
++		dev_err(&pdev->dev, "could not get clock: %d\n", ret);
++		return ret;
++	}
++
++	ret = clk_prepare_enable(ssi_private->clk);
++	if (ret) {
++		dev_err(&pdev->dev, "clk_prepare_enable failed: %d\n", ret);
++		return ret;
++	}
++
++	/* For those SLAVE implementations, we ingore non-baudclk cases
++	 * and, instead, abandon MASTER mode that needs baud clock.
++	 */
++	ssi_private->baudclk = devm_clk_get(&pdev->dev, "baud");
++	if (IS_ERR(ssi_private->baudclk))
++		dev_dbg(&pdev->dev, "could not get baud clock: %ld\n",
++			 PTR_ERR(ssi_private->baudclk));
++	else
++		clk_prepare_enable(ssi_private->baudclk);
++
++	/*
++	 * We have burstsize be "fifo_depth - 2" to match the SSI
++	 * watermark setting in fsl_ssi_startup().
++	 */
++	ssi_private->dma_params_tx.maxburst = ssi_private->fifo_depth - 2;
++	ssi_private->dma_params_rx.maxburst = ssi_private->fifo_depth - 2;
++	ssi_private->dma_params_tx.addr = ssi_private->ssi_phys + CCSR_SSI_STX0;
++	ssi_private->dma_params_rx.addr = ssi_private->ssi_phys + CCSR_SSI_SRX0;
++	ssi_private->dma_params_tx.filter_data = &ssi_private->filter_data_tx;
++	ssi_private->dma_params_rx.filter_data = &ssi_private->filter_data_rx;
++
++	if (!of_property_read_bool(pdev->dev.of_node, "dmas") &&
++			ssi_private->use_dma) {
++		/*
++		 * FIXME: This is a temporary solution until all
++		 * necessary dma drivers support the generic dma
++		 * bindings.
++		 */
++		ret = of_property_read_u32_array(pdev->dev.of_node,
++				"fsl,ssi-dma-events", dma_events, 2);
++		if (ret && ssi_private->use_dma) {
++			dev_err(&pdev->dev, "could not get dma events but fsl-ssi is configured to use DMA\n");
++			goto error_dma_events;
++		}
++	}
++	/* Should this be merge with the above? */
++	if (!of_property_read_u32_array(pdev->dev.of_node, "dmas", dmas, 4)
++			&& dmas[2] == IMX_DMATYPE_SSI_DUAL) {
++		ssi_private->use_dual_fifo = true;
++		/* When using dual fifo mode, we need to keep watermark
++		 * as even numbers due to dma script limitation.
++		 */
++		ssi_private->dma_params_tx.maxburst &= ~0x1;
++		ssi_private->dma_params_rx.maxburst &= ~0x1;
++	}
++
++	shared = of_device_is_compatible(of_get_parent(np), "fsl,spba-bus");
++
++	imx_pcm_dma_params_init_data(&ssi_private->filter_data_tx,
++		dma_events[0], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
++	imx_pcm_dma_params_init_data(&ssi_private->filter_data_rx,
++		dma_events[1], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
++
++	return 0;
++
++error_dma_events:
++	if (!IS_ERR(ssi_private->baudclk))
++		clk_disable_unprepare(ssi_private->baudclk);
++	clk_disable_unprepare(ssi_private->clk);
++
++	return ret;
++}
++
++static void fsl_ssi_imx_clean(struct platform_device *pdev,
++		struct fsl_ssi_private *ssi_private)
++{
++	if (!IS_ERR(ssi_private->baudclk))
++		clk_disable_unprepare(ssi_private->baudclk);
++	clk_disable_unprepare(ssi_private->clk);
++}
++
+ static int fsl_ssi_probe(struct platform_device *pdev)
  {
+ 	struct fsl_ssi_private *ssi_private;
+@@ -986,7 +1078,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	struct resource res;
+ 	void __iomem *iomem;
+ 	char name[64];
+-	bool shared;
+ 	bool ac97 = false;
+ 
+ 	/* SSIs that are not connected on the board should have a
+@@ -1108,80 +1199,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 
+ 	if (hw_type == FSL_SSI_MX21 || hw_type == FSL_SSI_MX51 ||
+ 			hw_type == FSL_SSI_MX35) {
+-		u32 dma_events[2], dmas[4];
+ 		ssi_private->ssi_on_imx = true;
+ 
+-		ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
+-		if (IS_ERR(ssi_private->clk)) {
+-			ret = PTR_ERR(ssi_private->clk);
+-			dev_err(&pdev->dev, "could not get clock: %d\n", ret);
++		ret = fsl_ssi_imx_probe(pdev, ssi_private);
++		if (ret)
+ 			goto error_irqmap;
+-		}
+-		ret = clk_prepare_enable(ssi_private->clk);
+-		if (ret) {
+-			dev_err(&pdev->dev, "clk_prepare_enable failed: %d\n",
+-				ret);
+-			goto error_irqmap;
+-		}
+-
+-		/* For those SLAVE implementations, we ingore non-baudclk cases
+-		 * and, instead, abandon MASTER mode that needs baud clock.
+-		 */
+-		ssi_private->baudclk = devm_clk_get(&pdev->dev, "baud");
+-		if (IS_ERR(ssi_private->baudclk))
+-			dev_dbg(&pdev->dev, "could not get baud clock: %ld\n",
+-				 PTR_ERR(ssi_private->baudclk));
+-		else
+-			clk_prepare_enable(ssi_private->baudclk);
+-
+-		/*
+-		 * We have burstsize be "fifo_depth - 2" to match the SSI
+-		 * watermark setting in fsl_ssi_startup().
+-		 */
+-		ssi_private->dma_params_tx.maxburst =
+-			ssi_private->fifo_depth - 2;
+-		ssi_private->dma_params_rx.maxburst =
+-			ssi_private->fifo_depth - 2;
+-		ssi_private->dma_params_tx.addr =
+-			ssi_private->ssi_phys + CCSR_SSI_STX0;
+-		ssi_private->dma_params_rx.addr =
+-			ssi_private->ssi_phys + CCSR_SSI_SRX0;
+-		ssi_private->dma_params_tx.filter_data =
+-			&ssi_private->filter_data_tx;
+-		ssi_private->dma_params_rx.filter_data =
+-			&ssi_private->filter_data_rx;
+-		if (!of_property_read_bool(pdev->dev.of_node, "dmas") &&
+-				ssi_private->use_dma) {
+-			/*
+-			 * FIXME: This is a temporary solution until all
+-			 * necessary dma drivers support the generic dma
+-			 * bindings.
+-			 */
+-			ret = of_property_read_u32_array(pdev->dev.of_node,
+-					"fsl,ssi-dma-events", dma_events, 2);
+-			if (ret && ssi_private->use_dma) {
+-				dev_err(&pdev->dev, "could not get dma events but fsl-ssi is configured to use DMA\n");
+-				goto error_clk;
+-			}
+-		}
+-		/* Should this be merge with the above? */
+-		if (!of_property_read_u32_array(pdev->dev.of_node, "dmas", dmas, 4)
+-				&& dmas[2] == IMX_DMATYPE_SSI_DUAL) {
+-			ssi_private->use_dual_fifo = true;
+-			/* When using dual fifo mode, we need to keep watermark
+-			 * as even numbers due to dma script limitation.
+-			 */
+-			ssi_private->dma_params_tx.maxburst &= ~0x1;
+-			ssi_private->dma_params_rx.maxburst &= ~0x1;
+-		}
+-
+-		shared = of_device_is_compatible(of_get_parent(np),
+-			    "fsl,spba-bus");
+-
+-		imx_pcm_dma_params_init_data(&ssi_private->filter_data_tx,
+-			dma_events[0], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
+-		imx_pcm_dma_params_init_data(&ssi_private->filter_data_rx,
+-			dma_events[1], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
+ 	}
+ 
  	/*
--	printk(KERN_DEBUG "tram_poke1: dst_left = 0x%p, dst_right = 0x%p, "
-+	dev_dbg(emu->card->dev,
-+		"tram_poke1: dst_left = 0x%p, dst_right = 0x%p, "
- 	       "src = 0x%p, count = 0x%x\n",
- 	       dst_left, dst_right, src, count);
- 	*/
-@@ -1675,7 +1681,7 @@ static int snd_emu10k1_fx8010_playback_prepare(struct snd_pcm_substream *substre
- 	unsigned int i;
- 	
- 	/*
--	printk(KERN_DEBUG "prepare: etram_pages = 0x%p, dma_area = 0x%x, "
-+	dev_dbg(emu->card->dev, "prepare: etram_pages = 0x%p, dma_area = 0x%x, "
- 	       "buffer_size = 0x%x (0x%x)\n",
- 	       emu->fx8010.etram_pages, runtime->dma_area,
- 	       runtime->buffer_size, runtime->buffer_size << 2);
-diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
-index e4fba49fee4a..81c75b4528d9 100644
---- a/sound/pci/emu10k1/io.c
-+++ b/sound/pci/emu10k1/io.c
-@@ -72,7 +72,7 @@ void snd_emu10k1_ptr_write(struct snd_emu10k1 *emu, unsigned int reg, unsigned i
- 	unsigned int mask;
- 
- 	if (!emu) {
--		snd_printk(KERN_ERR "ptr_write: emu is null!\n");
-+		dev_err(emu->card->dev, "ptr_write: emu is null!\n");
- 		dump_stack();
- 		return;
- 	}
-@@ -199,7 +199,7 @@ int snd_emu10k1_i2c_write(struct snd_emu10k1 *emu,
- 	int err = 0;
- 
- 	if ((reg > 0x7f) || (value > 0x1ff)) {
--		snd_printk(KERN_ERR "i2c_write: invalid values.\n");
-+		dev_err(emu->card->dev, "i2c_write: invalid values.\n");
- 		return -EINVAL;
- 	}
- 
-@@ -227,7 +227,7 @@ int snd_emu10k1_i2c_write(struct snd_emu10k1 *emu,
- 				break;
- 
- 			if (timeout > 1000) {
--                		snd_printk(KERN_WARNING
-+				dev_warn(emu->card->dev,
- 					   "emu10k1:I2C:timeout status=0x%x\n",
- 					   status);
- 				break;
-@@ -239,8 +239,8 @@ int snd_emu10k1_i2c_write(struct snd_emu10k1 *emu,
- 	}
- 
- 	if (retry == 10) {
--		snd_printk(KERN_ERR "Writing to ADC failed!\n");
--		snd_printk(KERN_ERR "status=0x%x, reg=%d, value=%d\n",
-+		dev_err(emu->card->dev, "Writing to ADC failed!\n");
-+		dev_err(emu->card->dev, "status=0x%x, reg=%d, value=%d\n",
- 			status, reg, value);
- 		/* dump_stack(); */
- 		err = -EINVAL;
-diff --git a/sound/pci/emu10k1/irq.c b/sound/pci/emu10k1/irq.c
-index 30bfed6f8339..3c5c5e3dc2d9 100644
---- a/sound/pci/emu10k1/irq.c
-+++ b/sound/pci/emu10k1/irq.c
-@@ -41,11 +41,12 @@ irqreturn_t snd_emu10k1_interrupt(int irq, void *dev_id)
- 		orig_status = status;
- 		handled = 1;
- 		if ((status & 0xffffffff) == 0xffffffff) {
--			snd_printk(KERN_INFO "snd-emu10k1: Suspected sound card removal\n");
-+			dev_info(emu->card->dev,
-+				 "Suspected sound card removal\n");
- 			break;
+@@ -1196,7 +1218,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		if (ret < 0) {
+ 			dev_err(&pdev->dev, "could not claim irq %u\n",
+ 					ssi_private->irq);
+-			goto error_clk;
++			goto error_irq;
  		}
- 		if (status & IPR_PCIERROR) {
--			snd_printk(KERN_ERR "interrupt: PCI error\n");
-+			dev_err(emu->card->dev, "interrupt: PCI error\n");
- 			snd_emu10k1_intr_disable(emu, INTE_PCIERRORENABLE);
- 			status &= ~IPR_PCIERROR;
- 		}
-@@ -157,19 +158,22 @@ irqreturn_t snd_emu10k1_interrupt(int irq, void *dev_id)
- 				struct snd_emu10k1_voice *pvoice = &(emu->p16v_voices[0]);
- 				struct snd_emu10k1_voice *cvoice = &(emu->p16v_capture_voice);
- 
--				//printk(KERN_INFO "status2=0x%x\n", status2);
-+				/* dev_dbg(emu->card->dev, "status2=0x%x\n", status2); */
- 				orig_status2 = status2;
- 				if(status2 & mask) {
- 					if(pvoice->use) {
- 						snd_pcm_period_elapsed(pvoice->epcm->substream);
- 					} else { 
--						snd_printk(KERN_ERR "p16v: status: 0x%08x, mask=0x%08x, pvoice=%p, use=%d\n", status2, mask, pvoice, pvoice->use);
-+						dev_err(emu->card->dev,
-+							"p16v: status: 0x%08x, mask=0x%08x, pvoice=%p, use=%d\n",
-+							status2, mask, pvoice,
-+							pvoice->use);
- 					}
- 				}
- 				if(status2 & 0x110000) {
--					//printk(KERN_INFO "capture int found\n");
-+					/* dev_info(emu->card->dev, "capture int found\n"); */
- 					if(cvoice->use) {
--						//printk(KERN_INFO "capture period_elapsed\n");
-+						/* dev_info(emu->card->dev, "capture period_elapsed\n"); */
- 						snd_pcm_period_elapsed(cvoice->epcm->substream);
- 					}
- 				}
-@@ -180,7 +184,8 @@ irqreturn_t snd_emu10k1_interrupt(int irq, void *dev_id)
- 
- 		if (status) {
- 			unsigned int bits;
--			snd_printk(KERN_ERR "emu10k1: unhandled interrupt: 0x%08x\n", status);
-+			dev_err(emu->card->dev,
-+				"unhandled interrupt: 0x%08x\n", status);
- 			//make sure any interrupts we don't handle are disabled:
- 			bits = INTE_FXDSPENABLE |
- 				INTE_PCIERRORENABLE |
-@@ -202,7 +207,7 @@ irqreturn_t snd_emu10k1_interrupt(int irq, void *dev_id)
- 		outl(orig_status, emu->port + IPR); /* ack all */
  	}
- 	if (timeout == 1000)
--		snd_printk(KERN_INFO "emu10k1 irq routine failure\n");
-+		dev_info(emu->card->dev, "emu10k1 irq routine failure\n");
  
- 	return IRQ_RETVAL(handled);
- }
-diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
-index ae709c1ab3a8..c68e6dd2fa67 100644
---- a/sound/pci/emu10k1/memory.c
-+++ b/sound/pci/emu10k1/memory.c
-@@ -236,11 +236,13 @@ __found_pages:
- static int is_valid_page(struct snd_emu10k1 *emu, dma_addr_t addr)
- {
- 	if (addr & ~emu->dma_mask) {
--		snd_printk(KERN_ERR "max memory size is 0x%lx (addr = 0x%lx)!!\n", emu->dma_mask, (unsigned long)addr);
-+		dev_err(emu->card->dev,
-+			"max memory size is 0x%lx (addr = 0x%lx)!!\n",
-+			emu->dma_mask, (unsigned long)addr);
- 		return 0;
+@@ -1289,11 +1311,9 @@ error_dbgfs:
+ error_dev:
+ 	device_remove_file(&pdev->dev, dev_attr);
+ 
+-error_clk:
++error_irq:
+ 	if (ssi_private->ssi_on_imx) {
+-		if (!IS_ERR(ssi_private->baudclk))
+-			clk_disable_unprepare(ssi_private->baudclk);
+-		clk_disable_unprepare(ssi_private->clk);
++		fsl_ssi_imx_clean(pdev, ssi_private);
  	}
- 	if (addr & (EMUPAGESIZE-1)) {
--		snd_printk(KERN_ERR "page is not aligned\n");
-+		dev_err(emu->card->dev, "page is not aligned\n");
- 		return 0;
- 	}
- 	return 1;
-@@ -331,7 +333,8 @@ snd_emu10k1_alloc_pages(struct snd_emu10k1 *emu, struct snd_pcm_substream *subst
- 		else
- 			addr = snd_pcm_sgbuf_get_addr(substream, ofs);
- 		if (! is_valid_page(emu, addr)) {
--			printk(KERN_ERR "emu: failure page = %d\n", idx);
-+			dev_err(emu->card->dev,
-+				"emu: failure page = %d\n", idx);
- 			mutex_unlock(&hdr->block_mutex);
- 			return NULL;
- 		}
-@@ -507,7 +510,8 @@ static inline void *offset_ptr(struct snd_emu10k1 *emu, int page, int offset)
- 		return NULL;
- 	ptr = emu->page_ptr_table[page];
- 	if (! ptr) {
--		printk(KERN_ERR "emu10k1: access to NULL ptr: page = %d\n", page);
-+		dev_err(emu->card->dev,
-+			"access to NULL ptr: page = %d\n", page);
- 		return NULL;
- 	}
- 	ptr += offset & (PAGE_SIZE - 1);
-diff --git a/sound/pci/emu10k1/p16v.c b/sound/pci/emu10k1/p16v.c
-index 7e2025cd6d9c..a4fe7f0c9458 100644
---- a/sound/pci/emu10k1/p16v.c
-+++ b/sound/pci/emu10k1/p16v.c
-@@ -168,7 +168,7 @@ static void snd_p16v_pcm_free_substream(struct snd_pcm_runtime *runtime)
- 	struct snd_emu10k1_pcm *epcm = runtime->private_data;
-   
- 	if (epcm) {
--        	/* snd_printk(KERN_DEBUG "epcm free: %p\n", epcm); */
-+		/* dev_dbg(emu->card->dev, "epcm free: %p\n", epcm); */
- 		kfree(epcm);
- 	}
- }
-@@ -183,14 +183,14 @@ static int snd_p16v_pcm_open_playback_channel(struct snd_pcm_substream *substrea
- 	int err;
  
- 	epcm = kzalloc(sizeof(*epcm), GFP_KERNEL);
--        /* snd_printk(KERN_DEBUG "epcm kcalloc: %p\n", epcm); */
-+	/* dev_dbg(emu->card->dev, "epcm kcalloc: %p\n", epcm); */
+ error_irqmap:
+@@ -1312,11 +1332,10 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+ 	if (!ssi_private->new_binding)
+ 		platform_device_unregister(ssi_private->pdev);
+ 	snd_soc_unregister_component(&pdev->dev);
+-	if (ssi_private->ssi_on_imx) {
+-		if (!IS_ERR(ssi_private->baudclk))
+-			clk_disable_unprepare(ssi_private->baudclk);
+-		clk_disable_unprepare(ssi_private->clk);
+-	}
++
++	if (ssi_private->ssi_on_imx)
++		fsl_ssi_imx_clean(pdev, ssi_private);
++
+ 	if (ssi_private->irq_stats)
+ 		irq_dispose_mapping(ssi_private->irq);
  
- 	if (epcm == NULL)
- 		return -ENOMEM;
- 	epcm->emu = emu;
- 	epcm->substream = substream;
- 	/*
--	snd_printk(KERN_DEBUG "epcm device=%d, channel_id=%d\n",
-+	dev_dbg(emu->card->dev, "epcm device=%d, channel_id=%d\n",
- 		   substream->pcm->device, channel_id);
- 	*/
- 	runtime->private_data = epcm;
-@@ -203,10 +203,10 @@ static int snd_p16v_pcm_open_playback_channel(struct snd_pcm_substream *substrea
- 
-         channel->use=1;
- #if 0 /* debug */
--	snd_printk(KERN_DEBUG
-+	dev_dbg(emu->card->dev,
- 		   "p16v: open channel_id=%d, channel=%p, use=0x%x\n",
- 		   channel_id, channel, channel->use);
--	printk(KERN_DEBUG "open:channel_id=%d, chip=%p, channel=%p\n",
-+	dev_dbg(emu->card->dev, "open:channel_id=%d, chip=%p, channel=%p\n",
- 	       channel_id, chip, channel);
- #endif /* debug */
- 	/* channel->interrupt = snd_p16v_pcm_channel_interrupt; */
-@@ -231,14 +231,14 @@ static int snd_p16v_pcm_open_capture_channel(struct snd_pcm_substream *substream
- 	int err;
- 
- 	epcm = kzalloc(sizeof(*epcm), GFP_KERNEL);
--	/* snd_printk(KERN_DEBUG "epcm kcalloc: %p\n", epcm); */
-+	/* dev_dbg(emu->card->dev, "epcm kcalloc: %p\n", epcm); */
- 
- 	if (epcm == NULL)
- 		return -ENOMEM;
- 	epcm->emu = emu;
- 	epcm->substream = substream;
- 	/*
--	snd_printk(KERN_DEBUG "epcm device=%d, channel_id=%d\n",
-+	dev_dbg(emu->card->dev, "epcm device=%d, channel_id=%d\n",
- 		   substream->pcm->device, channel_id);
- 	*/
- 	runtime->private_data = epcm;
-@@ -251,10 +251,10 @@ static int snd_p16v_pcm_open_capture_channel(struct snd_pcm_substream *substream
- 
- 	channel->use=1;
- #if 0 /* debug */
--	snd_printk(KERN_DEBUG
-+	dev_dbg(emu->card->dev,
- 		   "p16v: open channel_id=%d, channel=%p, use=0x%x\n",
- 		   channel_id, channel, channel->use);
--	printk(KERN_DEBUG "open:channel_id=%d, chip=%p, channel=%p\n",
-+	dev_dbg(emu->card->dev, "open:channel_id=%d, chip=%p, channel=%p\n",
- 	       channel_id, chip, channel);
- #endif /* debug */
- 	/* channel->interrupt = snd_p16v_pcm_channel_interrupt; */
-@@ -349,15 +349,18 @@ static int snd_p16v_pcm_prepare_playback(struct snd_pcm_substream *substream)
- 	u32 tmp;
- 	
- #if 0 /* debug */
--	snd_printk(KERN_DEBUG "prepare:channel_number=%d, rate=%d, "
-+	dev_dbg(emu->card->dev,
-+		"prepare:channel_number=%d, rate=%d, "
- 		   "format=0x%x, channels=%d, buffer_size=%ld, "
- 		   "period_size=%ld, periods=%u, frames_to_bytes=%d\n",
- 		   channel, runtime->rate, runtime->format, runtime->channels,
- 		   runtime->buffer_size, runtime->period_size,
- 		   runtime->periods, frames_to_bytes(runtime, 1));
--	snd_printk(KERN_DEBUG "dma_addr=%x, dma_area=%p, table_base=%p\n",
-+	dev_dbg(emu->card->dev,
-+		"dma_addr=%x, dma_area=%p, table_base=%p\n",
- 		   runtime->dma_addr, runtime->dma_area, table_base);
--	snd_printk(KERN_DEBUG "dma_addr=%x, dma_area=%p, dma_bytes(size)=%x\n",
-+	dev_dbg(emu->card->dev,
-+		"dma_addr=%x, dma_area=%p, dma_bytes(size)=%x\n",
- 		   emu->p16v_buffer.addr, emu->p16v_buffer.area,
- 		   emu->p16v_buffer.bytes);
- #endif /* debug */
-@@ -405,7 +408,7 @@ static int snd_p16v_pcm_prepare_capture(struct snd_pcm_substream *substream)
- 	u32 tmp;
- 
- 	/*
--	printk(KERN_DEBUG "prepare capture:channel_number=%d, rate=%d, "
-+	dev_dbg(emu->card->dev, "prepare capture:channel_number=%d, rate=%d, "
- 	       "format=0x%x, channels=%d, buffer_size=%ld, period_size=%ld, "
- 	       "frames_to_bytes=%d\n",
- 	       channel, runtime->rate, runtime->format, runtime->channels,
-@@ -491,13 +494,13 @@ static int snd_p16v_pcm_trigger_playback(struct snd_pcm_substream *substream,
- 		runtime = s->runtime;
- 		epcm = runtime->private_data;
- 		channel = substream->pcm->device-emu->p16v_device_offset;
--		/* snd_printk(KERN_DEBUG "p16v channel=%d\n", channel); */
-+		/* dev_dbg(emu->card->dev, "p16v channel=%d\n", channel); */
- 		epcm->running = running;
- 		basic |= (0x1<<channel);
- 		inte |= (INTE2_PLAYBACK_CH_0_LOOP<<channel);
-                 snd_pcm_trigger_done(s, substream);
-         }
--	/* snd_printk(KERN_DEBUG "basic=0x%x, inte=0x%x\n", basic, inte); */
-+	/* dev_dbg(emu->card->dev, "basic=0x%x, inte=0x%x\n", basic, inte); */
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -588,10 +591,10 @@ snd_p16v_pcm_pointer_capture(struct snd_pcm_substream *substream)
- 	ptr=ptr2;
- 	if (ptr >= runtime->buffer_size) {
- 		ptr -= runtime->buffer_size;
--		printk(KERN_WARNING "buffer capture limited!\n");
-+		dev_warn(emu->card->dev, "buffer capture limited!\n");
- 	}
- 	/*
--	printk(KERN_DEBUG "ptr1 = 0x%lx, ptr2=0x%lx, ptr=0x%lx, "
-+	dev_dbg(emu->card->dev, "ptr1 = 0x%lx, ptr2=0x%lx, ptr=0x%lx, "
- 	       "buffer_size = 0x%x, period_size = 0x%x, bits=%d, rate=%d\n",
- 	       ptr1, ptr2, ptr, (int)runtime->buffer_size,
- 	       (int)runtime->period_size, (int)runtime->frame_bits,
-@@ -630,7 +633,7 @@ int snd_p16v_free(struct snd_emu10k1 *chip)
- 	if (chip->p16v_buffer.area) {
- 		snd_dma_free_pages(&chip->p16v_buffer);
- 		/*
--		snd_printk(KERN_DEBUG "period lables free: %p\n",
-+		dev_dbg(chip->card->dev, "period lables free: %p\n",
- 			   &chip->p16v_buffer);
- 		*/
- 	}
-@@ -644,7 +647,7 @@ int snd_p16v_pcm(struct snd_emu10k1 *emu, int device, struct snd_pcm **rpcm)
- 	int err;
-         int capture=1;
-   
--	/* snd_printk(KERN_DEBUG "snd_p16v_pcm called. device=%d\n", device); */
-+	/* dev_dbg(emu->card->dev, "snd_p16v_pcm called. device=%d\n", device); */
- 	emu->p16v_device_offset = device;
- 	if (rpcm)
- 		*rpcm = NULL;
-@@ -672,7 +675,7 @@ int snd_p16v_pcm(struct snd_emu10k1 *emu, int device, struct snd_pcm **rpcm)
- 							 ((65536 - 64) * 8), ((65536 - 64) * 8))) < 0) 
- 			return err;
- 		/*
--		snd_printk(KERN_DEBUG
-+		dev_dbg(emu->card->dev,
- 			   "preallocate playback substream: err=%d\n", err);
- 		*/
- 	}
-@@ -686,7 +689,7 @@ int snd_p16v_pcm(struct snd_emu10k1 *emu, int device, struct snd_pcm **rpcm)
- 	                                           65536 - 64, 65536 - 64)) < 0)
- 			return err;
- 		/*
--		snd_printk(KERN_DEBUG
-+		dev_dbg(emu->card->dev,
- 			   "preallocate capture substream: err=%d\n", err);
- 		*/
- 	}
-diff --git a/sound/pci/emu10k1/voice.c b/sound/pci/emu10k1/voice.c
-index 101e7cb79cb2..f16fd5cfb7cd 100644
---- a/sound/pci/emu10k1/voice.c
-+++ b/sound/pci/emu10k1/voice.c
-@@ -55,7 +55,7 @@ static int voice_alloc(struct snd_emu10k1 *emu, int type, int number,
- 	first_voice = last_voice = 0;
- 	for (i = emu->next_free_voice, j = 0; j < NUM_G ; i += number, j += number) {
- 		/*
--		printk(KERN_DEBUG "i %d j %d next free %d!\n",
-+		dev_dbg(emu->card->dev, "i %d j %d next free %d!\n",
- 		       i, j, emu->next_free_voice);
- 		*/
- 		i %= NUM_G;
-@@ -75,7 +75,7 @@ static int voice_alloc(struct snd_emu10k1 *emu, int type, int number,
- 			}
- 		}
- 		if (!skip) {
--			/* printk(KERN_DEBUG "allocated voice %d\n", i); */
-+			/* dev_dbg(emu->card->dev, "allocated voice %d\n", i); */
- 			first_voice = i;
- 			last_voice = (i + number) % NUM_G;
- 			emu->next_free_voice = last_voice;
-@@ -89,7 +89,7 @@ static int voice_alloc(struct snd_emu10k1 *emu, int type, int number,
- 	for (i = 0; i < number; i++) {
- 		voice = &emu->voices[(first_voice + i) % NUM_G];
- 		/*
--		printk(kERN_DEBUG "voice alloc - %i, %i of %i\n",
-+		dev_dbg(emu->card->dev, "voice alloc - %i, %i of %i\n",
- 		       voice->number, idx-first_voice+1, number);
- 		*/
- 		voice->use = 1;
 -- 
-1.9.0
+1.8.5.3
