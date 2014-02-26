@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 26/48] ALSA: ali5451: Use standard printk
+Subject: [PATCH 18/48] ALSA: intel8x0m: Use standard printk
 	helpers
-Date: Wed, 26 Feb 2014 16:53:28 +0100
-Message-ID: <1393430030-26704-27-git-send-email-tiwai@suse.de>
+Date: Wed, 26 Feb 2014 16:53:20 +0100
+Message-ID: <1393430030-26704-19-git-send-email-tiwai@suse.de>
 References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 22EF32657B8
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C6032657AE
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id CDB2275039
+ by mx2.suse.de (Postfix) with ESMTP id A8FF57501D
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
 In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,521 +28,165 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Convert with dev_err() and co from snd_printk(), etc.
-Some debug prints are replaced with dev_dbg(), too.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ali5451/ali5451.c | 148 ++++++++++++++++++++------------------------
- 1 file changed, 68 insertions(+), 80 deletions(-)
+ sound/pci/intel8x0m.c | 46 +++++++++++++++++++++++++++-------------------
+ 1 file changed, 27 insertions(+), 19 deletions(-)
 
-diff --git a/sound/pci/ali5451/ali5451.c b/sound/pci/ali5451/ali5451.c
-index 115b1120319a..feb29c24cab1 100644
---- a/sound/pci/ali5451/ali5451.c
-+++ b/sound/pci/ali5451/ali5451.c
-@@ -65,18 +65,6 @@ module_param(enable, bool, 0444);
- 
- 
- /*
-- *  Debug part definitions
-- */
--
--/* #define ALI_DEBUG */
--
--#ifdef ALI_DEBUG
--#define snd_ali_printk(format, args...) printk(KERN_DEBUG format, ##args);
--#else
--#define snd_ali_printk(format, args...)
--#endif
--
--/*
-  *  Constants definition
-  */
- 
-@@ -321,7 +309,7 @@ static int snd_ali_codec_ready(struct snd_ali *codec,
+diff --git a/sound/pci/intel8x0m.c b/sound/pci/intel8x0m.c
+index f8c72bd8a3cd..b54d3e93cab1 100644
+--- a/sound/pci/intel8x0m.c
++++ b/sound/pci/intel8x0m.c
+@@ -334,7 +334,8 @@ static int snd_intel8x0m_codec_semaphore(struct intel8x0m *chip, unsigned int co
+ 	/* access to some forbidden (non existent) ac97 registers will not
+ 	 * reset the semaphore. So even if you don't get the semaphore, still
+ 	 * continue the access. We don't need the semaphore anyway. */
+-	snd_printk(KERN_ERR "codec_semaphore: semaphore is not ready [0x%x][0x%x]\n",
++	dev_err(chip->card->dev,
++		"codec_semaphore: semaphore is not ready [0x%x][0x%x]\n",
+ 			igetbyte(chip, ICHREG(ACC_SEMA)), igetdword(chip, ICHREG(GLOB_STA)));
+ 	iagetword(chip, 0);	/* clear semaphore flag */
+ 	/* I don't care about the semaphore */
+@@ -349,7 +350,9 @@ static void snd_intel8x0m_codec_write(struct snd_ac97 *ac97,
+ 	
+ 	if (snd_intel8x0m_codec_semaphore(chip, ac97->num) < 0) {
+ 		if (! chip->in_ac97_init)
+-			snd_printk(KERN_ERR "codec_write %d: semaphore is not ready for register 0x%x\n", ac97->num, reg);
++			dev_err(chip->card->dev,
++				"codec_write %d: semaphore is not ready for register 0x%x\n",
++				ac97->num, reg);
  	}
- 
- 	snd_ali_5451_poke(codec, port, res & ~0x8000);
--	snd_printdd("ali_codec_ready: codec is not ready.\n ");
-+	dev_dbg(codec->card->dev, "ali_codec_ready: codec is not ready.\n ");
- 	return -EIO;
+ 	iaputword(chip, reg + ac97->num * 0x80, val);
  }
+@@ -363,7 +366,9 @@ static unsigned short snd_intel8x0m_codec_read(struct snd_ac97 *ac97,
  
-@@ -342,7 +330,7 @@ static int snd_ali_stimer_ready(struct snd_ali *codec)
- 		schedule_timeout_uninterruptible(1);
- 	}
- 
--	snd_printk(KERN_ERR "ali_stimer_read: stimer is not ready.\n");
-+	dev_err(codec->card->dev, "ali_stimer_read: stimer is not ready.\n");
- 	return -EIO;
- }
- 
-@@ -354,7 +342,8 @@ static void snd_ali_codec_poke(struct snd_ali *codec,int secondary,
- 	unsigned int port;
- 
- 	if (reg >= 0x80) {
--		snd_printk(KERN_ERR "ali_codec_poke: reg(%xh) invalid.\n", reg);
-+		dev_err(codec->card->dev,
-+			"ali_codec_poke: reg(%xh) invalid.\n", reg);
- 		return;
- 	}
- 
-@@ -385,7 +374,8 @@ static unsigned short snd_ali_codec_peek(struct snd_ali *codec,
- 	unsigned int port;
- 
- 	if (reg >= 0x80) {
--		snd_printk(KERN_ERR "ali_codec_peek: reg(%xh) invalid.\n", reg);
-+		dev_err(codec->card->dev,
-+			"ali_codec_peek: reg(%xh) invalid.\n", reg);
- 		return ~0;
- 	}
- 
-@@ -417,7 +407,7 @@ static void snd_ali_codec_write(struct snd_ac97 *ac97,
- {
- 	struct snd_ali *codec = ac97->private_data;
- 
--	snd_ali_printk("codec_write: reg=%xh data=%xh.\n", reg, val);
-+	dev_dbg(codec->card->dev, "codec_write: reg=%xh data=%xh.\n", reg, val);
- 	if (reg == AC97_GPIO_STATUS) {
- 		outl((val << ALI_AC97_GPIO_DATA_SHIFT) | ALI_AC97_GPIO_ENABLE,
- 		     ALI_REG(codec, ALI_AC97_GPIO));
-@@ -433,7 +423,7 @@ static unsigned short snd_ali_codec_read(struct snd_ac97 *ac97,
- {
- 	struct snd_ali *codec = ac97->private_data;
- 
--	snd_ali_printk("codec_read reg=%xh.\n", reg);
-+	dev_dbg(codec->card->dev, "codec_read reg=%xh.\n", reg);
- 	return snd_ali_codec_peek(codec, ac97->num, reg);
- }
- 
-@@ -474,7 +464,7 @@ static int snd_ali_reset_5451(struct snd_ali *codec)
- 	}
- 
- 	/* non-fatal if you have a non PM capable codec */
--	/* snd_printk(KERN_WARNING "ali5451: reset time out\n"); */
-+	/* dev_warn(codec->card->dev, "ali5451: reset time out\n"); */
- 	return 0;
- }
- 
-@@ -528,7 +518,7 @@ static void snd_ali_disable_voice_irq(struct snd_ali *codec,
- 	unsigned int mask;
- 	struct snd_ali_channel_control *pchregs = &(codec->chregs);
- 
--	snd_ali_printk("disable_voice_irq channel=%d\n",channel);
-+	dev_dbg(codec->card->dev, "disable_voice_irq channel=%d\n", channel);
- 
- 	mask = 1 << (channel & 0x1f);
- 	pchregs->data.ainten  = inl(ALI_REG(codec, pchregs->regs.ainten));
-@@ -541,7 +531,7 @@ static int snd_ali_alloc_pcm_channel(struct snd_ali *codec, int channel)
- 	unsigned int idx =  channel & 0x1f;
- 
- 	if (codec->synth.chcnt >= ALI_CHANNELS){
--		snd_printk(KERN_ERR
-+		dev_err(codec->card->dev,
- 			   "ali_alloc_pcm_channel: no free channels.\n");
- 		return -1;
- 	}
-@@ -549,7 +539,7 @@ static int snd_ali_alloc_pcm_channel(struct snd_ali *codec, int channel)
- 	if (!(codec->synth.chmap & (1 << idx))) {
- 		codec->synth.chmap |= 1 << idx;
- 		codec->synth.chcnt++;
--		snd_ali_printk("alloc_pcm_channel no. %d.\n",idx);
-+		dev_dbg(codec->card->dev, "alloc_pcm_channel no. %d.\n", idx);
- 		return idx;
- 	}
- 	return -1;
-@@ -560,7 +550,8 @@ static int snd_ali_find_free_channel(struct snd_ali * codec, int rec)
- 	int idx;
- 	int result = -1;
- 
--	snd_ali_printk("find_free_channel: for %s\n",rec ? "rec" : "pcm");
-+	dev_dbg(codec->card->dev,
-+		"find_free_channel: for %s\n", rec ? "rec" : "pcm");
- 
- 	/* recording */
- 	if (rec) {
-@@ -575,8 +566,8 @@ static int snd_ali_find_free_channel(struct snd_ali * codec, int rec)
- 		if (result >= 0)
- 			return result;
- 		else {
--			snd_printk(KERN_ERR "ali_find_free_channel: "
--				   "record channel is busy now.\n");
-+			dev_err(codec->card->dev,
-+				"ali_find_free_channel: record channel is busy now.\n");
- 			return -1;
- 		}
- 	}
-@@ -590,8 +581,8 @@ static int snd_ali_find_free_channel(struct snd_ali * codec, int rec)
- 		if (result >= 0)
- 			return result;
- 		else
--			snd_printk(KERN_ERR "ali_find_free_channel: "
--				   "S/PDIF out channel is in busy now.\n");
-+			dev_err(codec->card->dev,
-+				"ali_find_free_channel: S/PDIF out channel is in busy now.\n");
- 	}
- 
- 	for (idx = 0; idx < ALI_CHANNELS; idx++) {
-@@ -599,7 +590,7 @@ static int snd_ali_find_free_channel(struct snd_ali * codec, int rec)
- 		if (result >= 0)
- 			return result;
- 	}
--	snd_printk(KERN_ERR "ali_find_free_channel: no free channels.\n");
-+	dev_err(codec->card->dev, "ali_find_free_channel: no free channels.\n");
- 	return -1;
- }
- 
-@@ -607,14 +598,15 @@ static void snd_ali_free_channel_pcm(struct snd_ali *codec, int channel)
- {
- 	unsigned int idx = channel & 0x0000001f;
- 
--	snd_ali_printk("free_channel_pcm channel=%d\n",channel);
-+	dev_dbg(codec->card->dev, "free_channel_pcm channel=%d\n", channel);
- 
- 	if (channel < 0 || channel >= ALI_CHANNELS)
- 		return;
- 
- 	if (!(codec->synth.chmap & (1 << idx))) {
--		snd_printk(KERN_ERR "ali_free_channel_pcm: "
--			   "channel %d is not in use.\n", channel);
-+		dev_err(codec->card->dev,
-+			"ali_free_channel_pcm: channel %d is not in use.\n",
-+			channel);
- 		return;
+ 	if (snd_intel8x0m_codec_semaphore(chip, ac97->num) < 0) {
+ 		if (! chip->in_ac97_init)
+-			snd_printk(KERN_ERR "codec_read %d: semaphore is not ready for register 0x%x\n", ac97->num, reg);
++			dev_err(chip->card->dev,
++				"codec_read %d: semaphore is not ready for register 0x%x\n",
++				ac97->num, reg);
+ 		res = 0xffff;
  	} else {
- 		codec->synth.chmap &= ~(1 << idx);
-@@ -626,7 +618,7 @@ static void snd_ali_stop_voice(struct snd_ali *codec, unsigned int channel)
- {
- 	unsigned int mask = 1 << (channel & 0x1f);
- 
--	snd_ali_printk("stop_voice: channel=%d\n",channel);
-+	dev_dbg(codec->card->dev, "stop_voice: channel=%d\n", channel);
- 	outl(mask, ALI_REG(codec, codec->chregs.regs.stop));
- }
- 
-@@ -667,7 +659,7 @@ static void snd_ali_detect_spdif_rate(struct snd_ali *codec)
- 	}
- 
- 	if (count > 50000) {
--		snd_printk(KERN_ERR "ali_detect_spdif_rate: timeout!\n");
-+		dev_err(codec->card->dev, "ali_detect_spdif_rate: timeout!\n");
- 		return;
- 	}
- 
-@@ -682,7 +674,7 @@ static void snd_ali_detect_spdif_rate(struct snd_ali *codec)
- 	}
- 
- 	if (count > 50000) {
--		snd_printk(KERN_ERR "ali_detect_spdif_rate: timeout!\n");
-+		dev_err(codec->card->dev, "ali_detect_spdif_rate: timeout!\n");
- 		return;
- 	}
- 
-@@ -857,9 +849,6 @@ static void snd_ali_update_ptr(struct snd_ali *codec, int channel)
- 	struct snd_ali_voice *pvoice;
- 	struct snd_ali_channel_control *pchregs;
- 	unsigned int old, mask;
--#ifdef ALI_DEBUG
--	unsigned int temp, cspf;
--#endif
- 
- 	pchregs = &(codec->chregs);
- 
-@@ -877,14 +866,11 @@ static void snd_ali_update_ptr(struct snd_ali *codec, int channel)
- 
- 	if (pvoice->pcm && pvoice->substream) {
- 		/* pcm interrupt */
--#ifdef ALI_DEBUG
--		outb((u8)(pvoice->number), ALI_REG(codec, ALI_GC_CIR));
--		temp = inw(ALI_REG(codec, ALI_CSO_ALPHA_FMS + 2));
--		cspf = (inl(ALI_REG(codec, ALI_CSPF)) & mask) == mask;
--#endif
- 		if (pvoice->running) {
--			snd_ali_printk("update_ptr: cso=%4.4x cspf=%d.\n",
--				       (u16)temp, cspf);
-+			dev_dbg(codec->card->dev,
-+				"update_ptr: cso=%4.4x cspf=%d.\n",
-+				inw(ALI_REG(codec, ALI_CSO_ALPHA_FMS + 2)),
-+				(inl(ALI_REG(codec, ALI_CSPF)) & mask) == mask);
- 			spin_unlock(&codec->reg_lock);
- 			snd_pcm_period_elapsed(pvoice->substream);
- 			spin_lock(&codec->reg_lock);
-@@ -940,14 +926,14 @@ static struct snd_ali_voice *snd_ali_alloc_voice(struct snd_ali * codec,
- 	struct snd_ali_voice *pvoice;
- 	int idx;
- 
--	snd_ali_printk("alloc_voice: type=%d rec=%d\n", type, rec);
-+	dev_dbg(codec->card->dev, "alloc_voice: type=%d rec=%d\n", type, rec);
- 
- 	spin_lock_irq(&codec->voice_alloc);
- 	if (type == SNDRV_ALI_VOICE_TYPE_PCM) {
- 		idx = channel > 0 ? snd_ali_alloc_pcm_channel(codec, channel) :
- 			snd_ali_find_free_channel(codec,rec);
- 		if (idx < 0) {
--			snd_printk(KERN_ERR "ali_alloc_voice: err.\n");
-+			dev_err(codec->card->dev, "ali_alloc_voice: err.\n");
- 			spin_unlock_irq(&codec->voice_alloc);
- 			return NULL;
+ 		res = iagetword(chip, reg + ac97->num * 0x80);
+@@ -372,7 +377,9 @@ static unsigned short snd_intel8x0m_codec_read(struct snd_ac97 *ac97,
+ 			iputdword(chip, ICHREG(GLOB_STA),
+ 				  tmp & ~(ICH_SRI|ICH_PRI|ICH_TRI|ICH_GSCI));
+ 			if (! chip->in_ac97_init)
+-				snd_printk(KERN_ERR "codec_read %d: read timeout for register 0x%x\n", ac97->num, reg);
++				dev_err(chip->card->dev,
++					"codec_read %d: read timeout for register 0x%x\n",
++					ac97->num, reg);
+ 			res = 0xffff;
  		}
-@@ -970,7 +956,7 @@ static void snd_ali_free_voice(struct snd_ali * codec,
- 	void (*private_free)(void *);
- 	void *private_data;
- 
--	snd_ali_printk("free_voice: channel=%d\n",pvoice->number);
-+	dev_dbg(codec->card->dev, "free_voice: channel=%d\n", pvoice->number);
- 	if (!pvoice->use)
- 		return;
- 	snd_ali_clear_voices(codec, pvoice->number, pvoice->number);
-@@ -1153,7 +1139,7 @@ static int snd_ali_trigger(struct snd_pcm_substream *substream,
- 	outl(val, ALI_REG(codec, ALI_AINTEN));
- 	if (do_start)
- 		outl(what, ALI_REG(codec, ALI_START));
--	snd_ali_printk("trigger: what=%xh whati=%xh\n", what, whati);
-+	dev_dbg(codec->card->dev, "trigger: what=%xh whati=%xh\n", what, whati);
- 	spin_unlock(&codec->reg_lock);
- 
- 	return 0;
-@@ -1239,7 +1225,7 @@ static int snd_ali_playback_prepare(struct snd_pcm_substream *substream)
- 	unsigned int VOL;
- 	unsigned int EC;
- 	
--	snd_ali_printk("playback_prepare ...\n");
-+	dev_dbg(codec->card->dev, "playback_prepare ...\n");
- 
- 	spin_lock_irq(&codec->reg_lock);	
- 	
-@@ -1266,7 +1252,7 @@ static int snd_ali_playback_prepare(struct snd_pcm_substream *substream)
- 	/* set target ESO for channel */
- 	pvoice->eso = runtime->buffer_size; 
- 
--	snd_ali_printk("playback_prepare: eso=%xh count=%xh\n",
-+	dev_dbg(codec->card->dev, "playback_prepare: eso=%xh count=%xh\n",
- 		       pvoice->eso, pvoice->count);
- 
- 	/* set ESO to capture first MIDLP interrupt */
-@@ -1278,8 +1264,9 @@ static int snd_ali_playback_prepare(struct snd_pcm_substream *substream)
- 	PAN = 0;
- 	VOL = 0;
- 	EC = 0;
--	snd_ali_printk("playback_prepare:\n");
--	snd_ali_printk("ch=%d, Rate=%d Delta=%xh,GVSEL=%xh,PAN=%xh,CTRL=%xh\n",
-+	dev_dbg(codec->card->dev, "playback_prepare:\n");
-+	dev_dbg(codec->card->dev,
-+		"ch=%d, Rate=%d Delta=%xh,GVSEL=%xh,PAN=%xh,CTRL=%xh\n",
- 		       pvoice->number,runtime->rate,Delta,GVSEL,PAN,CTRL);
- 	snd_ali_write_voice_regs(codec,
- 				 pvoice->number,
-@@ -1332,7 +1319,7 @@ static int snd_ali_prepare(struct snd_pcm_substream *substream)
- 
- 	spin_lock_irq(&codec->reg_lock);
- 
--	snd_ali_printk("ali_prepare...\n");
-+	dev_dbg(codec->card->dev, "ali_prepare...\n");
- 
- 	snd_ali_enable_special_channel(codec,pvoice->number);
- 
-@@ -1351,15 +1338,16 @@ static int snd_ali_prepare(struct snd_pcm_substream *substream)
- 
- 		rate = snd_ali_get_spdif_in_rate(codec);
- 		if (rate == 0) {
--			snd_printk(KERN_WARNING "ali_capture_preapre: "
--				   "spdif rate detect err!\n");
-+			dev_warn(codec->card->dev,
-+				 "ali_capture_preapre: spdif rate detect err!\n");
- 			rate = 48000;
+ 	}
+@@ -412,7 +419,7 @@ static void snd_intel8x0m_setup_periods(struct intel8x0m *chip, struct ichdev *i
+ 			bdbar[idx + 1] = cpu_to_le32(0x80000000 | /* interrupt on completion */
+ 						     ichdev->fragsize >> chip->pcm_pos_shift);
+ 			/*
+-			printk(KERN_DEBUG "bdbar[%i] = 0x%x [0x%x]\n",
++			dev_dbg(chip->card->dev, "bdbar[%i] = 0x%x [0x%x]\n",
+ 			       idx + 0, bdbar[idx + 0], bdbar[idx + 1]);
+ 			*/
  		}
- 		spin_lock_irq(&codec->reg_lock);
- 		bValue = inb(ALI_REG(codec,ALI_SPDIF_CTRL));
- 		if (bValue & 0x10) {
- 			outb(bValue,ALI_REG(codec,ALI_SPDIF_CTRL));
--			printk(KERN_WARNING "clear SPDIF parity error flag.\n");
-+			dev_warn(codec->card->dev,
-+				 "clear SPDIF parity error flag.\n");
- 		}
- 
- 		if (rate != 48000)
-@@ -1418,7 +1406,7 @@ snd_ali_playback_pointer(struct snd_pcm_substream *substream)
- 	outb(pvoice->number, ALI_REG(codec, ALI_GC_CIR));
- 	cso = inw(ALI_REG(codec, ALI_CSO_ALPHA_FMS + 2));
- 	spin_unlock(&codec->reg_lock);
--	snd_ali_printk("playback pointer returned cso=%xh.\n", cso);
-+	dev_dbg(codec->card->dev, "playback pointer returned cso=%xh.\n", cso);
- 
- 	return cso;
- }
-@@ -1685,7 +1673,8 @@ static int snd_ali_pcm(struct snd_ali *codec, int device,
- 	err = snd_pcm_new(codec->card, desc->name, device,
- 			  desc->playback_num, desc->capture_num, &pcm);
- 	if (err < 0) {
--		snd_printk(KERN_ERR "snd_ali_pcm: err called snd_pcm_new.\n");
-+		dev_err(codec->card->dev,
-+			"snd_ali_pcm: err called snd_pcm_new.\n");
+@@ -424,8 +431,8 @@ static void snd_intel8x0m_setup_periods(struct intel8x0m *chip, struct ichdev *i
+ 	ichdev->lvi_frag = ICH_REG_LVI_MASK % ichdev->frags;
+ 	ichdev->position = 0;
+ #if 0
+-	printk(KERN_DEBUG "lvi_frag = %i, frags = %i, period_size = 0x%x, "
+-	       "period_size1 = 0x%x\n",
++	dev_dbg(chip->card->dev,
++		"lvi_frag = %i, frags = %i, period_size = 0x%x, period_size1 = 0x%x\n",
+ 	       ichdev->lvi_frag, ichdev->frags, ichdev->fragsize,
+ 	       ichdev->fragsize1);
+ #endif
+@@ -470,8 +477,8 @@ static inline void snd_intel8x0m_update(struct intel8x0m *chip, struct ichdev *i
+ 							     ichdev->lvi_frag *
+ 							     ichdev->fragsize1);
+ #if 0
+-		printk(KERN_DEBUG "new: bdbar[%i] = 0x%x [0x%x], "
+-		       "prefetch = %i, all = 0x%x, 0x%x\n",
++		dev_dbg(chip->card->dev,
++			"new: bdbar[%i] = 0x%x [0x%x], prefetch = %i, all = 0x%x, 0x%x\n",
+ 		       ichdev->lvi * 2, ichdev->bdbar[ichdev->lvi * 2],
+ 		       ichdev->bdbar[ichdev->lvi * 2 + 1], inb(ICH_REG_OFF_PIV + port),
+ 		       inl(port + 4), inb(port + ICH_REG_OFF_CR));
+@@ -850,7 +857,8 @@ static int snd_intel8x0m_mixer(struct intel8x0m *chip, int ac97_clock)
+ 	ac97.pci = chip->pci;
+ 	ac97.num = glob_sta & ICH_SCR ? 1 : 0;
+ 	if ((err = snd_ac97_mixer(pbus, &ac97, &x97)) < 0) {
+-		snd_printk(KERN_ERR "Unable to initialize codec #%d\n", ac97.num);
++		dev_err(chip->card->dev,
++			"Unable to initialize codec #%d\n", ac97.num);
+ 		if (ac97.num == 0)
+ 			goto __err;
  		return err;
- 	}
- 	pcm->private_data = codec;
-@@ -1861,7 +1850,7 @@ static int snd_ali_mixer(struct snd_ali *codec)
- 		ac97.num = i;
- 		err = snd_ac97_mixer(codec->ac97_bus, &ac97, &codec->ac97[i]);
- 		if (err < 0) {
--			snd_printk(KERN_ERR
-+			dev_err(codec->card->dev,
- 				   "ali mixer %d creating error.\n", i);
- 			if (i == 0)
- 				return err;
-@@ -1947,8 +1936,7 @@ static int ali_resume(struct device *dev)
+@@ -901,7 +909,7 @@ static int snd_intel8x0m_ich_chip_init(struct intel8x0m *chip, int probing)
+ 			goto __ok;
+ 		schedule_timeout_uninterruptible(1);
+ 	} while (time_after_eq(end_time, jiffies));
+-	snd_printk(KERN_ERR "AC'97 warm reset still in progress? [0x%x]\n",
++	dev_err(chip->card->dev, "AC'97 warm reset still in progress? [0x%x]\n",
+ 		   igetdword(chip, ICHREG(GLOB_CNT)));
+ 	return -EIO;
+ 
+@@ -921,7 +929,8 @@ static int snd_intel8x0m_ich_chip_init(struct intel8x0m *chip, int probing)
+ 		} while (time_after_eq(end_time, jiffies));
+ 		if (! status) {
+ 			/* no codec is found */
+-			snd_printk(KERN_ERR "codec_ready: codec is not ready [0x%x]\n",
++			dev_err(chip->card->dev,
++				"codec_ready: codec is not ready [0x%x]\n",
+ 				   igetdword(chip, ICHREG(GLOB_STA)));
+ 			return -EIO;
+ 		}
+@@ -1042,16 +1051,15 @@ static int intel8x0m_resume(struct device *dev)
  	pci_set_power_state(pci, PCI_D0);
  	pci_restore_state(pci);
  	if (pci_enable_device(pci) < 0) {
--		printk(KERN_ERR "ali5451: pci_enable_device failed, "
+-		printk(KERN_ERR "intel8x0m: pci_enable_device failed, "
 -		       "disabling device\n");
 +		dev_err(dev, "pci_enable_device failed, disabling device\n");
  		snd_card_disconnect(card);
  		return -EIO;
  	}
-@@ -2013,10 +2001,10 @@ static int snd_ali_chip_init(struct snd_ali *codec)
- 	unsigned char temp;
- 	struct pci_dev *pci_dev;
- 
--	snd_ali_printk("chip initializing ... \n");
-+	dev_dbg(codec->card->dev, "chip initializing ...\n");
- 
- 	if (snd_ali_reset_5451(codec)) {
--		snd_printk(KERN_ERR "ali_chip_init: reset 5451 error.\n");
-+		dev_err(codec->card->dev, "ali_chip_init: reset 5451 error.\n");
- 		return -1;
+ 	pci_set_master(pci);
+ 	if (request_irq(pci->irq, snd_intel8x0m_interrupt,
+ 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
+-		printk(KERN_ERR "intel8x0m: unable to grab IRQ %d, "
+-		       "disabling device\n", pci->irq);
++		dev_err(dev, "unable to grab IRQ %d, disabling device\n",
++			pci->irq);
+ 		snd_card_disconnect(card);
+ 		return -EIO;
  	}
- 
-@@ -2062,7 +2050,7 @@ static int snd_ali_chip_init(struct snd_ali *codec)
- 		     ALI_REG(codec, ALI_SCTRL));
+@@ -1165,7 +1173,7 @@ static int snd_intel8x0m_create(struct snd_card *card,
+ 	else
+ 		chip->addr = pci_iomap(pci, 0, 0);
+ 	if (!chip->addr) {
+-		snd_printk(KERN_ERR "AC'97 space ioremap problem\n");
++		dev_err(card->dev, "AC'97 space ioremap problem\n");
+ 		snd_intel8x0m_free(chip);
+ 		return -EIO;
  	}
- 
--	snd_ali_printk("chip initialize succeed.\n");
-+	dev_dbg(codec->card->dev, "chip initialize succeed.\n");
- 	return 0;
- 
- }
-@@ -2088,7 +2076,7 @@ static int snd_ali_resources(struct snd_ali *codec)
- {
- 	int err;
- 
--	snd_ali_printk("resources allocation ...\n");
-+	dev_dbg(codec->card->dev, "resources allocation ...\n");
- 	err = pci_request_regions(codec->pci, "ALI 5451");
- 	if (err < 0)
- 		return err;
-@@ -2096,11 +2084,11 @@ static int snd_ali_resources(struct snd_ali *codec)
- 
- 	if (request_irq(codec->pci->irq, snd_ali_card_interrupt,
- 			IRQF_SHARED, KBUILD_MODNAME, codec)) {
--		snd_printk(KERN_ERR "Unable to request irq.\n");
-+		dev_err(codec->card->dev, "Unable to request irq.\n");
+@@ -1174,7 +1182,7 @@ static int snd_intel8x0m_create(struct snd_card *card,
+ 	else
+ 		chip->bmaddr = pci_iomap(pci, 1, 0);
+ 	if (!chip->bmaddr) {
+-		snd_printk(KERN_ERR "Controller space ioremap problem\n");
++		dev_err(card->dev, "Controller space ioremap problem\n");
+ 		snd_intel8x0m_free(chip);
+ 		return -EIO;
+ 	}
+@@ -1182,7 +1190,7 @@ static int snd_intel8x0m_create(struct snd_card *card,
+  port_inited:
+ 	if (request_irq(pci->irq, snd_intel8x0m_interrupt, IRQF_SHARED,
+ 			KBUILD_MODNAME, chip)) {
+-		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
++		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		snd_intel8x0m_free(chip);
  		return -EBUSY;
  	}
- 	codec->irq = codec->pci->irq;
--	snd_ali_printk("resources allocated.\n");
-+	dev_dbg(codec->card->dev, "resources allocated.\n");
- 	return 0;
- }
- static int snd_ali_dev_free(struct snd_device *device)
-@@ -2125,7 +2113,7 @@ static int snd_ali_create(struct snd_card *card,
- 
- 	*r_ali = NULL;
- 
--	snd_ali_printk("creating ...\n");
-+	dev_dbg(card->dev, "creating ...\n");
- 
- 	/* enable PCI device */
- 	err = pci_enable_device(pci);
-@@ -2134,8 +2122,8 @@ static int snd_ali_create(struct snd_card *card,
- 	/* check, if we can restrict PCI DMA transfers to 31 bits */
- 	if (pci_set_dma_mask(pci, DMA_BIT_MASK(31)) < 0 ||
- 	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(31)) < 0) {
--		snd_printk(KERN_ERR "architecture does not support "
--			   "31bit PCI busmaster DMA\n");
-+		dev_err(card->dev,
-+			"architecture does not support 31bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
- 	}
-@@ -2199,19 +2187,19 @@ static int snd_ali_create(struct snd_card *card,
- 	/* M1533: southbridge */
- 	codec->pci_m1533 = pci_get_device(0x10b9, 0x1533, NULL);
- 	if (!codec->pci_m1533) {
--		snd_printk(KERN_ERR "ali5451: cannot find ALi 1533 chip.\n");
-+		dev_err(card->dev, "cannot find ALi 1533 chip.\n");
- 		snd_ali_free(codec);
- 		return -ENODEV;
- 	}
- 	/* M7101: power management */
- 	codec->pci_m7101 = pci_get_device(0x10b9, 0x7101, NULL);
- 	if (!codec->pci_m7101 && codec->revision == ALI_5451_V02) {
--		snd_printk(KERN_ERR "ali5451: cannot find ALi 7101 chip.\n");
-+		dev_err(card->dev, "cannot find ALi 7101 chip.\n");
- 		snd_ali_free(codec);
- 		return -ENODEV;
- 	}
- 
--	snd_ali_printk("snd_device_new is called.\n");
-+	dev_dbg(card->dev, "snd_device_new is called.\n");
- 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, codec, &ops);
- 	if (err < 0) {
- 		snd_ali_free(codec);
-@@ -2224,21 +2212,21 @@ static int snd_ali_create(struct snd_card *card,
- 
- 	err = snd_ali_chip_init(codec);
- 	if (err < 0) {
--		snd_printk(KERN_ERR "ali create: chip init error.\n");
-+		dev_err(card->dev, "ali create: chip init error.\n");
- 		return err;
- 	}
- 
- #ifdef CONFIG_PM_SLEEP
- 	codec->image = kmalloc(sizeof(*codec->image), GFP_KERNEL);
- 	if (!codec->image)
--		snd_printk(KERN_WARNING "can't allocate apm buffer\n");
-+		dev_warn(card->dev, "can't allocate apm buffer\n");
- #endif
- 
- 	snd_ali_enable_address_interrupt(codec);
- 	codec->hw_initialized = 1;
- 
- 	*r_ali = codec;
--	snd_ali_printk("created.\n");
-+	dev_dbg(card->dev, "created.\n");
- 	return 0;
- }
- 
-@@ -2249,7 +2237,7 @@ static int snd_ali_probe(struct pci_dev *pci,
- 	struct snd_ali *codec;
- 	int err;
- 
--	snd_ali_printk("probe ...\n");
-+	dev_dbg(&pci->dev, "probe ...\n");
- 
- 	err = snd_card_new(&pci->dev, index, id, THIS_MODULE, 0, &card);
- 	if (err < 0)
-@@ -2260,12 +2248,12 @@ static int snd_ali_probe(struct pci_dev *pci,
- 		goto error;
- 	card->private_data = codec;
- 
--	snd_ali_printk("mixer building ...\n");
-+	dev_dbg(&pci->dev, "mixer building ...\n");
- 	err = snd_ali_mixer(codec);
- 	if (err < 0)
- 		goto error;
- 	
--	snd_ali_printk("pcm building ...\n");
-+	dev_dbg(&pci->dev, "pcm building ...\n");
- 	err = snd_ali_build_pcms(codec);
- 	if (err < 0)
- 		goto error;
-@@ -2278,7 +2266,7 @@ static int snd_ali_probe(struct pci_dev *pci,
- 	sprintf(card->longname, "%s at 0x%lx, irq %i",
- 		card->shortname, codec->port, codec->irq);
- 
--	snd_ali_printk("register card.\n");
-+	dev_dbg(&pci->dev, "register card.\n");
- 	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
 -- 
 1.9.0
