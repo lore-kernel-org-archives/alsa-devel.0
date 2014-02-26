@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 24/48] ALSA: via82xx_modem: Use standard printk
-	helpers
-Date: Wed, 26 Feb 2014 16:53:26 +0100
-Message-ID: <1393430030-26704-25-git-send-email-tiwai@suse.de>
+Subject: [PATCH 30/48] ALSA: cs46xx: Use standard printk helpers
+Date: Wed, 26 Feb 2014 16:53:32 +0100
+Message-ID: <1393430030-26704-31-git-send-email-tiwai@suse.de>
 References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F8292657C4
+ by alsa0.perex.cz (Postfix) with ESMTP id 245922657BA
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C7D1375037
+ by mx2.suse.de (Postfix) with ESMTP id D4D147501E
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
 In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,149 +30,1036 @@ Convert with dev_err() and co from snd_printk(), etc.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/via82xx_modem.c | 45 +++++++++++++++++++++++++--------------------
- 1 file changed, 25 insertions(+), 20 deletions(-)
+ sound/pci/cs46xx/cs46xx_lib.c       | 143 ++++++++++++++++++++++--------------
+ sound/pci/cs46xx/dsp_spos.c         | 126 +++++++++++++++++++------------
+ sound/pci/cs46xx/dsp_spos_scb_lib.c |  57 +++++++++-----
+ 3 files changed, 203 insertions(+), 123 deletions(-)
 
-diff --git a/sound/pci/via82xx_modem.c b/sound/pci/via82xx_modem.c
-index 519740154824..46a0526b1d79 100644
---- a/sound/pci/via82xx_modem.c
-+++ b/sound/pci/via82xx_modem.c
-@@ -312,7 +312,7 @@ static int build_via_table(struct viadev *dev, struct snd_pcm_substream *substre
- 			unsigned int addr;
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index 28766478f81c..32b44f25b5c8 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -116,7 +116,7 @@ static unsigned short snd_cs46xx_codec_read(struct snd_cs46xx *chip,
  
- 			if (idx >= VIA_TABLE_SIZE) {
--				snd_printk(KERN_ERR "via82xx: too much table size!\n");
-+				dev_err(&pci->dev, "too much table size!\n");
- 				return -EINVAL;
- 			}
- 			addr = snd_pcm_sgbuf_get_addr(substream, ofs);
-@@ -329,8 +329,9 @@ static int build_via_table(struct viadev *dev, struct snd_pcm_substream *substre
- 			} else
- 				flag = 0; /* period continues to the next */
- 			/*
--			printk(KERN_DEBUG "via: tbl %d: at %d  size %d "
--			       "(rest %d)\n", idx, ofs, r, rest);
-+			dev_dbg(&pci->dev,
-+				"tbl %d: at %d  size %d (rest %d)\n",
-+				idx, ofs, r, rest);
- 			*/
- 			((u32 *)dev->table.area)[(idx<<1) + 1] = cpu_to_le32(r | flag);
- 			dev->idx_table[idx].offset = ofs;
-@@ -382,7 +383,7 @@ static int snd_via82xx_codec_ready(struct via82xx_modem *chip, int secondary)
- 		if (!((val = snd_via82xx_codec_xread(chip)) & VIA_REG_AC97_BUSY))
- 			return val & 0xffff;
+ 	tmp = snd_cs46xx_peekBA0(chip, BA0_ACCTL);
+ 	if ((tmp & ACCTL_VFRM) == 0) {
+-		snd_printk(KERN_WARNING  "cs46xx: ACCTL_VFRM not set 0x%x\n",tmp);
++		dev_warn(chip->card->dev, "ACCTL_VFRM not set 0x%x\n", tmp);
+ 		snd_cs46xx_pokeBA0(chip, BA0_ACCTL, (tmp & (~ACCTL_ESYN)) | ACCTL_VFRM );
+ 		msleep(50);
+ 		tmp = snd_cs46xx_peekBA0(chip, BA0_ACCTL + offset);
+@@ -168,7 +168,8 @@ static unsigned short snd_cs46xx_codec_read(struct snd_cs46xx *chip,
+ 			goto ok1;
  	}
--	snd_printk(KERN_ERR "codec_ready: codec %i is not ready [0x%x]\n",
-+	dev_err(chip->card->dev, "codec_ready: codec %i is not ready [0x%x]\n",
- 		   secondary, snd_via82xx_codec_xread(chip));
- 	return -EIO;
- }
-@@ -443,7 +444,8 @@ static unsigned short snd_via82xx_codec_read(struct snd_ac97 *ac97, unsigned sho
- 	xval |= (reg & 0x7f) << VIA_REG_AC97_CMD_SHIFT;
-       	while (1) {
-       		if (again++ > 3) {
--			snd_printk(KERN_ERR "codec_read: codec %i is not valid [0x%x]\n",
-+			dev_err(chip->card->dev,
-+				"codec_read: codec %i is not valid [0x%x]\n",
- 				   ac97->num, snd_via82xx_codec_xread(chip));
- 		      	return 0xffff;
- 		}
-@@ -560,7 +562,9 @@ static int snd_via82xx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	((pos) < viadev->lastpos && ((pos) >= viadev->bufsize2 ||\
- 				     viadev->lastpos < viadev->bufsize2))
  
--static inline unsigned int calc_linear_pos(struct viadev *viadev, unsigned int idx,
-+static inline unsigned int calc_linear_pos(struct via82xx_modem *chip,
-+					   struct viadev *viadev,
-+					   unsigned int idx,
- 					   unsigned int count)
- {
- 	unsigned int size, res;
-@@ -570,20 +574,21 @@ static inline unsigned int calc_linear_pos(struct viadev *viadev, unsigned int i
+-	snd_printk(KERN_ERR "AC'97 read problem (ACCTL_DCV), reg = 0x%x\n", reg);
++	dev_err(chip->card->dev,
++		"AC'97 read problem (ACCTL_DCV), reg = 0x%x\n", reg);
+ 	result = 0xffff;
+ 	goto end;
+ 	
+@@ -187,7 +188,9 @@ static unsigned short snd_cs46xx_codec_read(struct snd_cs46xx *chip,
+ 		udelay(10);
+ 	}
+ 	
+-	snd_printk(KERN_ERR "AC'97 read problem (ACSTS_VSTS), codec_index %d, reg = 0x%x\n", codec_index, reg);
++	dev_err(chip->card->dev,
++		"AC'97 read problem (ACSTS_VSTS), codec_index %d, reg = 0x%x\n",
++		codec_index, reg);
+ 	result = 0xffff;
+ 	goto end;
  
- 	/* check the validity of the calculated position */
- 	if (size < count) {
--		snd_printd(KERN_ERR "invalid via82xx_cur_ptr (size = %d, count = %d)\n",
-+		dev_err(chip->card->dev,
-+			"invalid via82xx_cur_ptr (size = %d, count = %d)\n",
- 			   (int)size, (int)count);
- 		res = viadev->lastpos;
- 	} else if (check_invalid_pos(viadev, res)) {
- #ifdef POINTER_DEBUG
--		printk(KERN_DEBUG "fail: idx = %i/%i, lastpos = 0x%x, "
--		       "bufsize2 = 0x%x, offsize = 0x%x, size = 0x%x, "
--		       "count = 0x%x\n", idx, viadev->tbl_entries, viadev->lastpos,
-+		dev_dbg(chip->card->dev,
-+			"fail: idx = %i/%i, lastpos = 0x%x, bufsize2 = 0x%x, offsize = 0x%x, size = 0x%x, count = 0x%x\n",
-+			idx, viadev->tbl_entries, viadev->lastpos,
- 		       viadev->bufsize2, viadev->idx_table[idx].offset,
- 		       viadev->idx_table[idx].size, count);
+@@ -197,7 +200,8 @@ static unsigned short snd_cs46xx_codec_read(struct snd_cs46xx *chip,
+ 	 *  ACSDA = Status Data Register = 474h
+ 	 */
+ #if 0
+-	printk(KERN_DEBUG "e) reg = 0x%x, val = 0x%x, BA0_ACCAD = 0x%x\n", reg,
++	dev_dbg(chip->card->dev,
++		"e) reg = 0x%x, val = 0x%x, BA0_ACCAD = 0x%x\n", reg,
+ 			snd_cs46xx_peekBA0(chip, BA0_ACSDA),
+ 			snd_cs46xx_peekBA0(chip, BA0_ACCAD));
  #endif
- 		if (count && size < count) {
--			snd_printd(KERN_ERR "invalid via82xx_cur_ptr, "
--				   "using last valid pointer\n");
-+			dev_dbg(chip->card->dev,
-+				"invalid via82xx_cur_ptr, using last valid pointer\n");
- 			res = viadev->lastpos;
- 		} else {
- 			if (! count)
-@@ -595,8 +600,8 @@ static inline unsigned int calc_linear_pos(struct viadev *viadev, unsigned int i
- 				 */
- 				res = viadev->idx_table[idx].offset + size;
- 			if (check_invalid_pos(viadev, res)) {
--				snd_printd(KERN_ERR "invalid via82xx_cur_ptr (2), "
--					   "using last valid pointer\n");
-+				dev_dbg(chip->card->dev,
-+					"invalid via82xx_cur_ptr (2), using last valid pointer\n");
- 				res = viadev->lastpos;
- 			}
+@@ -286,7 +290,9 @@ static void snd_cs46xx_codec_write(struct snd_cs46xx *chip,
+ 			goto end;
  		}
-@@ -632,7 +637,7 @@ static snd_pcm_uframes_t snd_via686_pcm_pointer(struct snd_pcm_substream *substr
- 	else /* CURR_PTR holds the address + 8 */
- 		idx = ((ptr - (unsigned int)viadev->table.addr) / 8 - 1) %
- 			viadev->tbl_entries;
--	res = calc_linear_pos(viadev, idx, count);
-+	res = calc_linear_pos(chip, viadev, idx, count);
- 	spin_unlock(&chip->reg_lock);
- 
- 	return bytes_to_frames(substream->runtime, res);
-@@ -991,7 +996,8 @@ static int snd_via82xx_chip_init(struct via82xx_modem *chip)
- 	} while (time_before(jiffies, end_time));
- 
- 	if ((val = snd_via82xx_codec_xread(chip)) & VIA_REG_AC97_BUSY)
--		snd_printk(KERN_ERR "AC'97 codec is not ready [0x%x]\n", val);
+ 	}
+-	snd_printk(KERN_ERR "AC'97 write problem, codec_index = %d, reg = 0x%x, val = 0x%x\n", codec_index, reg, val);
++	dev_err(chip->card->dev,
++		"AC'97 write problem, codec_index = %d, reg = 0x%x, val = 0x%x\n",
++		codec_index, reg, val);
+  end:
+ 	chip->active_ctrl(chip, -1);
+ }
+@@ -608,8 +614,8 @@ static int cs46xx_wait_for_fifo(struct snd_cs46xx * chip,int retry_timeout)
+ 	}
+   
+ 	if(status & SERBST_WBSY) {
+-		snd_printk(KERN_ERR "cs46xx: failure waiting for "
+-			   "FIFO command to complete\n");
 +		dev_err(chip->card->dev,
-+			"AC'97 codec is not ready [0x%x]\n", val);
++			"failure waiting for FIFO command to complete\n");
+ 		return -EINVAL;
+ 	}
  
- 	snd_via82xx_codec_xwrite(chip, VIA_REG_AC97_READ |
- 				 VIA_REG_AC97_SECONDARY_VALID |
-@@ -1054,8 +1060,7 @@ static int snd_via82xx_resume(struct device *dev)
+@@ -646,7 +652,9 @@ static void snd_cs46xx_clear_serial_FIFOs(struct snd_cs46xx *chip)
+ 		 *  Make sure the previous FIFO write operation has completed.
+ 		 */
+ 		if (cs46xx_wait_for_fifo(chip,1)) {
+-			snd_printdd ("failed waiting for FIFO at addr (%02X)\n",idx);
++			dev_dbg(chip->card->dev,
++				"failed waiting for FIFO at addr (%02X)\n",
++				idx);
+ 
+ 			if (powerdown)
+ 				snd_cs46xx_pokeBA0(chip, BA0_CLKCR1, tmp);
+@@ -694,7 +702,7 @@ static void snd_cs46xx_proc_start(struct snd_cs46xx *chip)
+ 	}
+ 
+ 	if (snd_cs46xx_peek(chip, BA1_SPCR) & SPCR_RUNFR)
+-		snd_printk(KERN_ERR "SPCR_RUNFR never reset\n");
++		dev_err(chip->card->dev, "SPCR_RUNFR never reset\n");
+ }
+ 
+ static void snd_cs46xx_proc_stop(struct snd_cs46xx *chip)
+@@ -1054,7 +1062,8 @@ static int _cs46xx_adjust_sample_rate (struct snd_cs46xx *chip, struct snd_cs46x
+ 		cpcm->pcm_channel = cs46xx_dsp_create_pcm_channel (chip, sample_rate, 
+ 								   cpcm, cpcm->hw_buf.addr,cpcm->pcm_channel_id);
+ 		if (cpcm->pcm_channel == NULL) {
+-			snd_printk(KERN_ERR "cs46xx: failed to create virtual PCM channel\n");
++			dev_err(chip->card->dev,
++				"failed to create virtual PCM channel\n");
+ 			return -ENOMEM;
+ 		}
+ 		cpcm->pcm_channel->sample_rate = sample_rate;
+@@ -1067,7 +1076,8 @@ static int _cs46xx_adjust_sample_rate (struct snd_cs46xx *chip, struct snd_cs46x
+ 		if ( (cpcm->pcm_channel = cs46xx_dsp_create_pcm_channel (chip, sample_rate, cpcm, 
+ 									 cpcm->hw_buf.addr,
+ 									 cpcm->pcm_channel_id)) == NULL) {
+-			snd_printk(KERN_ERR "cs46xx: failed to re-create virtual PCM channel\n");
++			dev_err(chip->card->dev,
++				"failed to re-create virtual PCM channel\n");
+ 			return -ENOMEM;
+ 		}
+ 
+@@ -1116,7 +1126,8 @@ static int snd_cs46xx_playback_hw_params(struct snd_pcm_substream *substream,
+ 		 return -EINVAL;
+ 	 }
+ 
+-	snd_printdd ("period_size (%d), periods (%d) buffer_size(%d)\n",
++	dev_dbg(chip->card->dev,
++		"period_size (%d), periods (%d) buffer_size(%d)\n",
+ 		     period_size, params_periods(hw_params),
+ 		     params_buffer_bytes(hw_params));
+ #endif
+@@ -1531,22 +1542,20 @@ static int _cs46xx_playback_open_channel (struct snd_pcm_substream *substream,in
+ 
+ static int snd_cs46xx_playback_open(struct snd_pcm_substream *substream)
+ {
+-	snd_printdd("open front channel\n");
++	dev_dbg(substream->pcm->card->dev, "open front channel\n");
+ 	return _cs46xx_playback_open_channel(substream,DSP_PCM_MAIN_CHANNEL);
+ }
+ 
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
+ static int snd_cs46xx_playback_open_rear(struct snd_pcm_substream *substream)
+ {
+-	snd_printdd("open rear channel\n");
+-
++	dev_dbg(substream->pcm->card->dev, "open rear channel\n");
+ 	return _cs46xx_playback_open_channel(substream,DSP_PCM_REAR_CHANNEL);
+ }
+ 
+ static int snd_cs46xx_playback_open_clfe(struct snd_pcm_substream *substream)
+ {
+-	snd_printdd("open center - LFE channel\n");
+-
++	dev_dbg(substream->pcm->card->dev, "open center - LFE channel\n");
+ 	return _cs46xx_playback_open_channel(substream,DSP_PCM_CENTER_LFE_CHANNEL);
+ }
+ 
+@@ -1554,7 +1563,7 @@ static int snd_cs46xx_playback_open_iec958(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_cs46xx *chip = snd_pcm_substream_chip(substream);
+ 
+-	snd_printdd("open raw iec958 channel\n");
++	dev_dbg(chip->card->dev, "open raw iec958 channel\n");
+ 
+ 	mutex_lock(&chip->spos_mutex);
+ 	cs46xx_iec958_pre_open (chip);
+@@ -1570,7 +1579,7 @@ static int snd_cs46xx_playback_close_iec958(struct snd_pcm_substream *substream)
+ 	int err;
+ 	struct snd_cs46xx *chip = snd_pcm_substream_chip(substream);
+   
+-	snd_printdd("close raw iec958 channel\n");
++	dev_dbg(chip->card->dev, "close raw iec958 channel\n");
+ 
+ 	err = snd_cs46xx_playback_close(substream);
+ 
+@@ -2421,10 +2430,10 @@ static void snd_cs46xx_codec_reset (struct snd_ac97 * ac97)
+ 
+ 	/* set the desired CODEC mode */
+ 	if (ac97->num == CS46XX_PRIMARY_CODEC_INDEX) {
+-		snd_printdd("cs46xx: CODEC1 mode %04x\n", 0x0);
++		dev_dbg(ac97->bus->card->dev, "CODEC1 mode %04x\n", 0x0);
+ 		snd_cs46xx_ac97_write(ac97, AC97_CSR_ACMODE, 0x0);
+ 	} else if (ac97->num == CS46XX_SECONDARY_CODEC_INDEX) {
+-		snd_printdd("cs46xx: CODEC2 mode %04x\n", 0x3);
++		dev_dbg(ac97->bus->card->dev, "CODEC2 mode %04x\n", 0x3);
+ 		snd_cs46xx_ac97_write(ac97, AC97_CSR_ACMODE, 0x3);
+ 	} else {
+ 		snd_BUG(); /* should never happen ... */
+@@ -2456,7 +2465,8 @@ static void snd_cs46xx_codec_reset (struct snd_ac97 * ac97)
+ 		msleep(10);
+ 	} while (time_after_eq(end_time, jiffies));
+ 
+-	snd_printk(KERN_ERR "CS46xx secondary codec doesn't respond!\n");  
++	dev_err(ac97->bus->card->dev,
++		"CS46xx secondary codec doesn't respond!\n");
+ }
+ #endif
+ 
+@@ -2476,7 +2486,8 @@ static int cs46xx_detect_codec(struct snd_cs46xx *chip, int codec)
+ 		snd_cs46xx_codec_write(chip, AC97_RESET, 0, codec);
+ 		udelay(10);
+ 		if (snd_cs46xx_codec_read(chip, AC97_RESET, codec) & 0x8000) {
+-			snd_printdd("snd_cs46xx: seconadry codec not present\n");
++			dev_dbg(chip->card->dev,
++				"seconadry codec not present\n");
+ 			return -ENXIO;
+ 		}
+ 	}
+@@ -2489,7 +2500,7 @@ static int cs46xx_detect_codec(struct snd_cs46xx *chip, int codec)
+ 		}
+ 		msleep(10);
+ 	}
+-	snd_printdd("snd_cs46xx: codec %d detection timeout\n", codec);
++	dev_dbg(chip->card->dev, "codec %d detection timeout\n", codec);
+ 	return -ENXIO;
+ }
+ 
+@@ -2509,7 +2520,7 @@ int snd_cs46xx_mixer(struct snd_cs46xx *chip, int spdif_device)
+ 
+ 	/* detect primary codec */
+ 	chip->nr_ac97_codecs = 0;
+-	snd_printdd("snd_cs46xx: detecting primary codec\n");
++	dev_dbg(chip->card->dev, "detecting primary codec\n");
+ 	if ((err = snd_ac97_bus(card, 0, &ops, chip, &chip->ac97_bus)) < 0)
+ 		return err;
+ 	chip->ac97_bus->private_free = snd_cs46xx_mixer_free_ac97_bus;
+@@ -2519,7 +2530,7 @@ int snd_cs46xx_mixer(struct snd_cs46xx *chip, int spdif_device)
+ 	chip->nr_ac97_codecs = 1;
+ 
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
+-	snd_printdd("snd_cs46xx: detecting seconadry codec\n");
++	dev_dbg(chip->card->dev, "detecting seconadry codec\n");
+ 	/* try detect a secondary codec */
+ 	if (! cs46xx_detect_codec(chip, CS46XX_SECONDARY_CODEC_INDEX))
+ 		chip->nr_ac97_codecs = 2;
+@@ -2554,7 +2565,7 @@ int snd_cs46xx_mixer(struct snd_cs46xx *chip, int spdif_device)
+ 	}
+ 	/* do soundcard specific mixer setup */
+ 	if (chip->mixer_init) {
+-		snd_printdd ("calling chip->mixer_init(chip);\n");
++		dev_dbg(chip->card->dev, "calling chip->mixer_init(chip);\n");
+ 		chip->mixer_init(chip);
+ 	}
+ #endif
+@@ -2801,7 +2812,8 @@ int snd_cs46xx_gameport(struct snd_cs46xx *chip)
+ 
+ 	chip->gameport = gp = gameport_allocate_port();
+ 	if (!gp) {
+-		printk(KERN_ERR "cs46xx: cannot allocate memory for gameport\n");
++		dev_err(chip->card->dev,
++			"cannot allocate memory for gameport\n");
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -3138,8 +3150,10 @@ static int snd_cs46xx_chip_init(struct snd_cs46xx *chip)
+ 	}
+ 
+ 
+-	snd_printk(KERN_ERR "create - never read codec ready from AC'97\n");
+-	snd_printk(KERN_ERR "it is not probably bug, try to use CS4236 driver\n");
++	dev_err(chip->card->dev,
++		"create - never read codec ready from AC'97\n");
++	dev_err(chip->card->dev,
++		"it is not probably bug, try to use CS4236 driver\n");
+ 	return -EIO;
+  ok1:
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
+@@ -3157,7 +3171,8 @@ static int snd_cs46xx_chip_init(struct snd_cs46xx *chip)
+ 		 *  Make sure CODEC is READY.
+ 		 */
+ 		if (!(snd_cs46xx_peekBA0(chip, BA0_ACSTS2) & ACSTS_CRDY))
+-			snd_printdd("cs46xx: never read card ready from secondary AC'97\n");
++			dev_dbg(chip->card->dev,
++				"never read card ready from secondary AC'97\n");
+ 	}
+ #endif
+ 
+@@ -3187,17 +3202,21 @@ static int snd_cs46xx_chip_init(struct snd_cs46xx *chip)
+ 	}
+ 
+ #ifndef CONFIG_SND_CS46XX_NEW_DSP
+-	snd_printk(KERN_ERR "create - never read ISV3 & ISV4 from AC'97\n");
++	dev_err(chip->card->dev,
++		"create - never read ISV3 & ISV4 from AC'97\n");
+ 	return -EIO;
+ #else
+ 	/* This may happen on a cold boot with a Terratec SiXPack 5.1.
+ 	   Reloading the driver may help, if there's other soundcards 
+ 	   with the same problem I would like to know. (Benny) */
+ 
+-	snd_printk(KERN_ERR "ERROR: snd-cs46xx: never read ISV3 & ISV4 from AC'97\n");
+-	snd_printk(KERN_ERR "       Try reloading the ALSA driver, if you find something\n");
+-        snd_printk(KERN_ERR "       broken or not working on your soundcard upon\n");
+-	snd_printk(KERN_ERR "       this message please report to alsa-devel@alsa-project.org\n");
++	dev_err(chip->card->dev, "never read ISV3 & ISV4 from AC'97\n");
++	dev_err(chip->card->dev,
++		"Try reloading the ALSA driver, if you find something\n");
++	dev_err(chip->card->dev,
++		"broken or not working on your soundcard upon\n");
++	dev_err(chip->card->dev,
++		"this message please report to alsa-devel@alsa-project.org\n");
+ 
+ 	return -EIO;
+ #endif
+@@ -3266,13 +3285,13 @@ int snd_cs46xx_start_dsp(struct snd_cs46xx *chip)
+ 	for (i = 0; i < CS46XX_DSP_MODULES; i++) {
+ 		err = load_firmware(chip, &chip->modules[i], module_names[i]);
+ 		if (err < 0) {
+-			snd_printk(KERN_ERR "firmware load error [%s]\n",
++			dev_err(chip->card->dev, "firmware load error [%s]\n",
+ 				   module_names[i]);
+ 			return err;
+ 		}
+ 		err = cs46xx_dsp_load_module(chip, chip->modules[i]);
+ 		if (err < 0) {
+-			snd_printk(KERN_ERR "image download error [%s]\n",
++			dev_err(chip->card->dev, "image download error [%s]\n",
+ 				   module_names[i]);
+ 			return err;
+ 		}
+@@ -3288,7 +3307,7 @@ int snd_cs46xx_start_dsp(struct snd_cs46xx *chip)
+ 	/* old image */
+ 	err = snd_cs46xx_download_image(chip);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "image download error\n");
++		dev_err(chip->card->dev, "image download error\n");
+ 		return err;
+ 	}
+ 
+@@ -3341,7 +3360,7 @@ static int voyetra_setup_eapd_slot(struct snd_cs46xx *chip)
+ 	u32 idx, valid_slots,tmp,powerdown = 0;
+ 	u16 modem_power,pin_config,logic_type;
+ 
+-	snd_printdd ("cs46xx: cs46xx_setup_eapd_slot()+\n");
++	dev_dbg(chip->card->dev, "cs46xx_setup_eapd_slot()+\n");
+ 
+ 	/*
+ 	 *  See if the devices are powered down.  If so, we must power them up first
+@@ -3359,7 +3378,8 @@ static int voyetra_setup_eapd_slot(struct snd_cs46xx *chip)
+ 	 * stuff.
+ 	 */
+ 	if(chip->nr_ac97_codecs != 2) {
+-		snd_printk (KERN_ERR "cs46xx: cs46xx_setup_eapd_slot() - no secondary codec configured\n");
++		dev_err(chip->card->dev,
++			"cs46xx_setup_eapd_slot() - no secondary codec configured\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -3400,7 +3420,7 @@ static int voyetra_setup_eapd_slot(struct snd_cs46xx *chip)
+ 	snd_cs46xx_pokeBA0(chip, BA0_ACOSV, valid_slots);
+ 
+ 	if ( cs46xx_wait_for_fifo(chip,1) ) {
+-	  snd_printdd("FIFO is busy\n");
++		dev_dbg(chip->card->dev, "FIFO is busy\n");
+ 	  
+ 	  return -EINVAL;
+ 	}
+@@ -3421,7 +3441,9 @@ static int voyetra_setup_eapd_slot(struct snd_cs46xx *chip)
+ 		 * Wait for command to complete
+ 		 */
+ 		if ( cs46xx_wait_for_fifo(chip,200) ) {
+-			snd_printdd("failed waiting for FIFO at addr (%02X)\n",idx);
++			dev_dbg(chip->card->dev,
++				"failed waiting for FIFO at addr (%02X)\n",
++				idx);
+ 
+ 			return -EINVAL;
+ 		}
+@@ -3510,14 +3532,14 @@ static void amp_hercules(struct snd_cs46xx *chip, int change)
+ 
+ 	chip->amplifier += change;
+ 	if (chip->amplifier && !old) {
+-		snd_printdd ("Hercules amplifier ON\n");
++		dev_dbg(chip->card->dev, "Hercules amplifier ON\n");
+ 
+ 		snd_cs46xx_pokeBA0(chip, BA0_EGPIODR, 
+ 				   EGPIODR_GPOE2 | val1);     /* enable EGPIO2 output */
+ 		snd_cs46xx_pokeBA0(chip, BA0_EGPIOPTR, 
+ 				   EGPIOPTR_GPPT2 | val2);   /* open-drain on output */
+ 	} else if (old && !chip->amplifier) {
+-		snd_printdd ("Hercules amplifier OFF\n");
++		dev_dbg(chip->card->dev, "Hercules amplifier OFF\n");
+ 		snd_cs46xx_pokeBA0(chip, BA0_EGPIODR,  val1 & ~EGPIODR_GPOE2); /* disable */
+ 		snd_cs46xx_pokeBA0(chip, BA0_EGPIOPTR, val2 & ~EGPIOPTR_GPPT2); /* disable */
+ 	}
+@@ -3525,7 +3547,7 @@ static void amp_hercules(struct snd_cs46xx *chip, int change)
+ 
+ static void voyetra_mixer_init (struct snd_cs46xx *chip)
+ {
+-	snd_printdd ("initializing Voyetra mixer\n");
++	dev_dbg(chip->card->dev, "initializing Voyetra mixer\n");
+ 
+ 	/* Enable SPDIF out */
+ 	snd_cs46xx_pokeBA0(chip, BA0_EGPIODR, EGPIODR_GPOE0);
+@@ -3543,7 +3565,7 @@ static void hercules_mixer_init (struct snd_cs46xx *chip)
+ 	/* set EGPIO to default */
+ 	hercules_init(chip);
+ 
+-	snd_printdd ("initializing Hercules mixer\n");
++	dev_dbg(chip->card->dev, "initializing Hercules mixer\n");
+ 
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
+ 	if (chip->in_suspend)
+@@ -3554,7 +3576,9 @@ static void hercules_mixer_init (struct snd_cs46xx *chip)
+ 
+ 		kctl = snd_ctl_new1(&snd_hercules_controls[idx], chip);
+ 		if ((err = snd_ctl_add(card, kctl)) < 0) {
+-			printk (KERN_ERR "cs46xx: failed to initialize Hercules mixer (%d)\n",err);
++			dev_err(card->dev,
++				"failed to initialize Hercules mixer (%d)\n",
++				err);
+ 			break;
+ 		}
+ 	}
+@@ -3826,8 +3850,7 @@ static int snd_cs46xx_resume(struct device *dev)
  	pci_set_power_state(pci, PCI_D0);
  	pci_restore_state(pci);
  	if (pci_enable_device(pci) < 0) {
--		printk(KERN_ERR "via82xx-modem: pci_enable_device failed, "
+-		printk(KERN_ERR "cs46xx: pci_enable_device failed, "
 -		       "disabling device\n");
 +		dev_err(dev, "pci_enable_device failed, disabling device\n");
  		snd_card_disconnect(card);
  		return -EIO;
  	}
-@@ -1137,7 +1142,7 @@ static int snd_via82xx_create(struct snd_card *card,
- 	chip->port = pci_resource_start(pci, 0);
- 	if (request_irq(pci->irq, snd_via82xx_interrupt, IRQF_SHARED,
+@@ -3932,7 +3955,8 @@ int snd_cs46xx_create(struct snd_card *card,
+ 	chip->ba1_addr = pci_resource_start(pci, 1);
+ 	if (chip->ba0_addr == 0 || chip->ba0_addr == (unsigned long)~0 ||
+ 	    chip->ba1_addr == 0 || chip->ba1_addr == (unsigned long)~0) {
+-	    	snd_printk(KERN_ERR "wrong address(es) - ba0 = 0x%lx, ba1 = 0x%lx\n",
++		dev_err(chip->card->dev,
++			"wrong address(es) - ba0 = 0x%lx, ba1 = 0x%lx\n",
+ 			   chip->ba0_addr, chip->ba1_addr);
+ 	    	snd_cs46xx_free(chip);
+ 	    	return -ENOMEM;
+@@ -3969,7 +3993,8 @@ int snd_cs46xx_create(struct snd_card *card,
+ 
+ 	for (cp = &cards[0]; cp->name; cp++) {
+ 		if (cp->vendor == ss_vendor && cp->id == ss_card) {
+-			snd_printdd ("hack for %s enabled\n", cp->name);
++			dev_dbg(chip->card->dev, "hack for %s enabled\n",
++				cp->name);
+ 
+ 			chip->amplifier_ctrl = cp->amp;
+ 			chip->active_ctrl = cp->active;
+@@ -3982,12 +4007,14 @@ int snd_cs46xx_create(struct snd_card *card,
+ 	}
+ 
+ 	if (external_amp) {
+-		snd_printk(KERN_INFO "Crystal EAPD support forced on.\n");
++		dev_info(chip->card->dev,
++			 "Crystal EAPD support forced on.\n");
+ 		chip->amplifier_ctrl = amp_voyetra;
+ 	}
+ 
+ 	if (thinkpad) {
+-		snd_printk(KERN_INFO "Activating CLKRUN hack for Thinkpad.\n");
++		dev_info(chip->card->dev,
++			 "Activating CLKRUN hack for Thinkpad.\n");
+ 		chip->active_ctrl = clkrun_hack;
+ 		clkrun_init(chip);
+ 	}
+@@ -4005,14 +4032,16 @@ int snd_cs46xx_create(struct snd_card *card,
+ 		region = &chip->region.idx[idx];
+ 		if ((region->resource = request_mem_region(region->base, region->size,
+ 							   region->name)) == NULL) {
+-			snd_printk(KERN_ERR "unable to request memory region 0x%lx-0x%lx\n",
++			dev_err(chip->card->dev,
++				"unable to request memory region 0x%lx-0x%lx\n",
+ 				   region->base, region->base + region->size - 1);
+ 			snd_cs46xx_free(chip);
+ 			return -EBUSY;
+ 		}
+ 		region->remap_addr = ioremap_nocache(region->base, region->size);
+ 		if (region->remap_addr == NULL) {
+-			snd_printk(KERN_ERR "%s ioremap problem\n", region->name);
++			dev_err(chip->card->dev,
++				"%s ioremap problem\n", region->name);
+ 			snd_cs46xx_free(chip);
+ 			return -ENOMEM;
+ 		}
+@@ -4020,7 +4049,7 @@ int snd_cs46xx_create(struct snd_card *card,
+ 
+ 	if (request_irq(pci->irq, snd_cs46xx_interrupt, IRQF_SHARED,
  			KBUILD_MODNAME, chip)) {
 -		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
-+		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
- 		snd_via82xx_free(chip);
++		dev_err(chip->card->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		snd_cs46xx_free(chip);
  		return -EBUSY;
  	}
-@@ -1186,7 +1191,7 @@ static int snd_via82xx_probe(struct pci_dev *pci,
- 		sprintf(card->shortname, "VIA 82XX modem");
- 		break;
- 	default:
--		snd_printk(KERN_ERR "invalid card type %d\n", card_type);
-+		dev_err(card->dev, "invalid card type %d\n", card_type);
- 		err = -EINVAL;
- 		goto __error;
+diff --git a/sound/pci/cs46xx/dsp_spos.c b/sound/pci/cs46xx/dsp_spos.c
+index 1686b4f4c44f..1c4a0fb3ffef 100644
+--- a/sound/pci/cs46xx/dsp_spos.c
++++ b/sound/pci/cs46xx/dsp_spos.c
+@@ -85,12 +85,15 @@ static int shadow_and_reallocate_code (struct snd_cs46xx * chip, u32 * data, u32
+ 						address  = (hival & 0x00FFF) << 5;
+ 						address |=  loval >> 15;
+             
+-						snd_printdd("handle_wideop[1]: %05x:%05x addr %04x\n",hival,loval,address);
++						dev_dbg(chip->card->dev,
++							"handle_wideop[1]: %05x:%05x addr %04x\n",
++							hival, loval, address);
+             
+ 						if ( !(address & 0x8000) ) {
+ 							address += (ins->code.offset / 2) - overlay_begin_address;
+ 						} else {
+-							snd_printdd("handle_wideop[1]: ROM symbol not reallocated\n");
++							dev_dbg(chip->card->dev,
++								"handle_wideop[1]: ROM symbol not reallocated\n");
+ 						}
+             
+ 						hival &= 0xFF000;
+@@ -102,8 +105,9 @@ static int shadow_and_reallocate_code (struct snd_cs46xx * chip, u32 * data, u32
+ 						address  = (hival & 0x00FFF) << 5;
+ 						address |=  loval >> 15;
+             
+-						snd_printdd("handle_wideop:[2] %05x:%05x addr %04x\n",hival,loval,address);            
+-						nreallocated ++;
++						dev_dbg(chip->card->dev,
++							"handle_wideop:[2] %05x:%05x addr %04x\n",
++							hival, loval, address);						nreallocated++;
+ 					} /* wide_opcodes[j] == wide_op */
+ 				} /* for */
+ 			} /* mod_type == 0 ... */
+@@ -113,7 +117,8 @@ static int shadow_and_reallocate_code (struct snd_cs46xx * chip, u32 * data, u32
+ 		ins->code.data[ins->code.size++] = hival;
  	}
+ 
+-	snd_printdd("dsp_spos: %d instructions reallocated\n",nreallocated);
++	dev_dbg(chip->card->dev,
++		"dsp_spos: %d instructions reallocated\n", nreallocated);
+ 	return nreallocated;
+ }
+ 
+@@ -157,7 +162,8 @@ static int add_symbols (struct snd_cs46xx * chip, struct dsp_module_desc * modul
+ 
+ 	for (i = 0;i < module->symbol_table.nsymbols; ++i) {
+ 		if (ins->symbol_table.nsymbols == (DSP_MAX_SYMBOLS - 1)) {
+-			snd_printk(KERN_ERR "dsp_spos: symbol table is full\n");
++			dev_err(chip->card->dev,
++				"dsp_spos: symbol table is full\n");
+ 			return -ENOMEM;
+ 		}
+ 
+@@ -176,8 +182,11 @@ static int add_symbols (struct snd_cs46xx * chip, struct dsp_module_desc * modul
+ 
+ 			ins->symbol_table.nsymbols++;
+ 		} else {
+-          /* if (0) printk ("dsp_spos: symbol <%s> duplicated, probably nothing wrong with that (Cirrus?)\n",
+-                             module->symbol_table.symbols[i].symbol_name); */
++#if 0
++			dev_dbg(chip->card->dev,
++				"dsp_spos: symbol <%s> duplicated, probably nothing wrong with that (Cirrus?)\n",
++				module->symbol_table.symbols[i].symbol_name); */
++#endif
+ 		}
+ 	}
+ 
+@@ -192,14 +201,15 @@ add_symbol (struct snd_cs46xx * chip, char * symbol_name, u32 address, int type)
+ 	int index;
+ 
+ 	if (ins->symbol_table.nsymbols == (DSP_MAX_SYMBOLS - 1)) {
+-		snd_printk(KERN_ERR "dsp_spos: symbol table is full\n");
++		dev_err(chip->card->dev, "dsp_spos: symbol table is full\n");
+ 		return NULL;
+ 	}
+   
+ 	if (cs46xx_dsp_lookup_symbol(chip,
+ 				     symbol_name,
+ 				     type) != NULL) {
+-		snd_printk(KERN_ERR "dsp_spos: symbol <%s> duplicated\n", symbol_name);
++		dev_err(chip->card->dev,
++			"dsp_spos: symbol <%s> duplicated\n", symbol_name);
+ 		return NULL;
+ 	}
+ 
+@@ -305,19 +315,20 @@ static int dsp_load_parameter(struct snd_cs46xx *chip,
+ 	u32 doffset, dsize;
+ 
+ 	if (!parameter) {
+-		snd_printdd("dsp_spos: module got no parameter segment\n");
++		dev_dbg(chip->card->dev,
++			"dsp_spos: module got no parameter segment\n");
+ 		return 0;
+ 	}
+ 
+ 	doffset = (parameter->offset * 4 + DSP_PARAMETER_BYTE_OFFSET);
+ 	dsize   = parameter->size * 4;
+ 
+-	snd_printdd("dsp_spos: "
+-		    "downloading parameter data to chip (%08x-%08x)\n",
++	dev_dbg(chip->card->dev,
++		"dsp_spos: downloading parameter data to chip (%08x-%08x)\n",
+ 		    doffset,doffset + dsize);
+ 	if (snd_cs46xx_download (chip, parameter->data, doffset, dsize)) {
+-		snd_printk(KERN_ERR "dsp_spos: "
+-			   "failed to download parameter data to DSP\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: failed to download parameter data to DSP\n");
+ 		return -EINVAL;
+ 	}
+ 	return 0;
+@@ -329,18 +340,21 @@ static int dsp_load_sample(struct snd_cs46xx *chip,
+ 	u32 doffset, dsize;
+ 
+ 	if (!sample) {
+-		snd_printdd("dsp_spos: module got no sample segment\n");
++		dev_dbg(chip->card->dev,
++			"dsp_spos: module got no sample segment\n");
+ 		return 0;
+ 	}
+ 
+ 	doffset = (sample->offset * 4  + DSP_SAMPLE_BYTE_OFFSET);
+ 	dsize   =  sample->size * 4;
+ 
+-	snd_printdd("dsp_spos: downloading sample data to chip (%08x-%08x)\n",
++	dev_dbg(chip->card->dev,
++		"dsp_spos: downloading sample data to chip (%08x-%08x)\n",
+ 		    doffset,doffset + dsize);
+ 
+ 	if (snd_cs46xx_download (chip,sample->data,doffset,dsize)) {
+-		snd_printk(KERN_ERR "dsp_spos: failed to sample data to DSP\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: failed to sample data to DSP\n");
+ 		return -EINVAL;
+ 	}
+ 	return 0;
+@@ -354,14 +368,16 @@ int cs46xx_dsp_load_module (struct snd_cs46xx * chip, struct dsp_module_desc * m
+ 	int err;
+ 
+ 	if (ins->nmodules == DSP_MAX_MODULES - 1) {
+-		snd_printk(KERN_ERR "dsp_spos: to many modules loaded into DSP\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: to many modules loaded into DSP\n");
+ 		return -ENOMEM;
+ 	}
+ 
+-	snd_printdd("dsp_spos: loading module %s into DSP\n", module->module_name);
++	dev_dbg(chip->card->dev,
++		"dsp_spos: loading module %s into DSP\n", module->module_name);
+   
+ 	if (ins->nmodules == 0) {
+-		snd_printdd("dsp_spos: clearing parameter area\n");
++		dev_dbg(chip->card->dev, "dsp_spos: clearing parameter area\n");
+ 		snd_cs46xx_clear_BA1(chip, DSP_PARAMETER_BYTE_OFFSET, DSP_PARAMETER_BYTE_SIZE);
+ 	}
+   
+@@ -371,7 +387,7 @@ int cs46xx_dsp_load_module (struct snd_cs46xx * chip, struct dsp_module_desc * m
+ 		return err;
+ 
+ 	if (ins->nmodules == 0) {
+-		snd_printdd("dsp_spos: clearing sample area\n");
++		dev_dbg(chip->card->dev, "dsp_spos: clearing sample area\n");
+ 		snd_cs46xx_clear_BA1(chip, DSP_SAMPLE_BYTE_OFFSET, DSP_SAMPLE_BYTE_SIZE);
+ 	}
+ 
+@@ -381,15 +397,17 @@ int cs46xx_dsp_load_module (struct snd_cs46xx * chip, struct dsp_module_desc * m
+ 		return err;
+ 
+ 	if (ins->nmodules == 0) {
+-		snd_printdd("dsp_spos: clearing code area\n");
++		dev_dbg(chip->card->dev, "dsp_spos: clearing code area\n");
+ 		snd_cs46xx_clear_BA1(chip, DSP_CODE_BYTE_OFFSET, DSP_CODE_BYTE_SIZE);
+ 	}
+ 
+ 	if (code == NULL) {
+-		snd_printdd("dsp_spos: module got no code segment\n");
++		dev_dbg(chip->card->dev,
++			"dsp_spos: module got no code segment\n");
+ 	} else {
+ 		if (ins->code.offset + code->size > DSP_CODE_BYTE_SIZE) {
+-			snd_printk(KERN_ERR "dsp_spos: no space available in DSP\n");
++			dev_err(chip->card->dev,
++				"dsp_spos: no space available in DSP\n");
+ 			return -ENOMEM;
+ 		}
+ 
+@@ -401,19 +419,22 @@ int cs46xx_dsp_load_module (struct snd_cs46xx * chip, struct dsp_module_desc * m
+ 		if (snd_BUG_ON(!module->symbol_table.symbols))
+ 			return -ENOMEM;
+ 		if (add_symbols(chip,module)) {
+-			snd_printk(KERN_ERR "dsp_spos: failed to load symbol table\n");
++			dev_err(chip->card->dev,
++				"dsp_spos: failed to load symbol table\n");
+ 			return -ENOMEM;
+ 		}
+     
+ 		doffset = (code->offset * 4 + ins->code.offset * 4 + DSP_CODE_BYTE_OFFSET);
+ 		dsize   = code->size * 4;
+-		snd_printdd("dsp_spos: downloading code to chip (%08x-%08x)\n",
++		dev_dbg(chip->card->dev,
++			"dsp_spos: downloading code to chip (%08x-%08x)\n",
+ 			    doffset,doffset + dsize);   
+ 
+ 		module->nfixups = shadow_and_reallocate_code(chip,code->data,code->size,module->overlay_begin_address);
+ 
+ 		if (snd_cs46xx_download (chip,(ins->code.data + ins->code.offset),doffset,dsize)) {
+-			snd_printk(KERN_ERR "dsp_spos: failed to download code to DSP\n");
++			dev_err(chip->card->dev,
++				"dsp_spos: failed to download code to DSP\n");
+ 			return -EINVAL;
+ 		}
+ 
+@@ -447,7 +468,7 @@ cs46xx_dsp_lookup_symbol (struct snd_cs46xx * chip, char * symbol_name, int symb
+ 	}
+ 
+ #if 0
+-	printk ("dsp_spos: symbol <%s> type %02x not found\n",
++	dev_err(chip->card->dev, "dsp_spos: symbol <%s> type %02x not found\n",
+ 		symbol_name,symbol_type);
+ #endif
+ 
+@@ -910,7 +931,6 @@ int cs46xx_dsp_proc_done (struct snd_cs46xx *chip)
+ }
+ #endif /* CONFIG_PROC_FS */
+ 
+-static int debug_tree;
+ static void _dsp_create_task_tree (struct snd_cs46xx *chip, u32 * task_data,
+ 				   u32  dest, int size)
+ {
+@@ -919,13 +939,13 @@ static void _dsp_create_task_tree (struct snd_cs46xx *chip, u32 * task_data,
+ 	int i;
+ 
+ 	for (i = 0; i < size; ++i) {
+-		if (debug_tree) printk ("addr %p, val %08x\n",spdst,task_data[i]);
++		dev_dbg(chip->card->dev, "addr %p, val %08x\n",
++			spdst, task_data[i]);
+ 		writel(task_data[i],spdst);
+ 		spdst += sizeof(u32);
+ 	}
+ }
+ 
+-static int debug_scb;
+ static void _dsp_create_scb (struct snd_cs46xx *chip, u32 * scb_data, u32 dest)
+ {
+ 	void __iomem *spdst = chip->region.idx[1].remap_addr + 
+@@ -933,7 +953,8 @@ static void _dsp_create_scb (struct snd_cs46xx *chip, u32 * scb_data, u32 dest)
+ 	int i;
+ 
+ 	for (i = 0; i < 0x10; ++i) {
+-		if (debug_scb) printk ("addr %p, val %08x\n",spdst,scb_data[i]);
++		dev_dbg(chip->card->dev, "addr %p, val %08x\n",
++			spdst, scb_data[i]);
+ 		writel(scb_data[i],spdst);
+ 		spdst += sizeof(u32);
+ 	}
+@@ -960,7 +981,8 @@ static struct dsp_scb_descriptor * _map_scb (struct snd_cs46xx *chip, char * nam
+ 	int index;
+ 
+ 	if (ins->nscb == DSP_MAX_SCB_DESC - 1) {
+-		snd_printk(KERN_ERR "dsp_spos: got no place for other SCB\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: got no place for other SCB\n");
+ 		return NULL;
+ 	}
+ 
+@@ -991,7 +1013,8 @@ _map_task_tree (struct snd_cs46xx *chip, char * name, u32 dest, u32 size)
+ 	struct dsp_task_descriptor * desc = NULL;
+ 
+ 	if (ins->ntask == DSP_MAX_TASK_DESC - 1) {
+-		snd_printk(KERN_ERR "dsp_spos: got no place for other TASK\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: got no place for other TASK\n");
+ 		return NULL;
+ 	}
+ 
+@@ -1031,7 +1054,7 @@ cs46xx_dsp_create_scb (struct snd_cs46xx *chip, char * name, u32 * scb_data, u32
+ 		desc->data = scb_data;
+ 		_dsp_create_scb(chip,scb_data,dest);
+ 	} else {
+-		snd_printk(KERN_ERR "dsp_spos: failed to map SCB\n");
++		dev_err(chip->card->dev, "dsp_spos: failed to map SCB\n");
+ #ifdef CONFIG_PM_SLEEP
+ 		kfree(scb_data);
+ #endif
+@@ -1052,7 +1075,7 @@ cs46xx_dsp_create_task_tree (struct snd_cs46xx *chip, char * name, u32 * task_da
+ 		desc->data = task_data;
+ 		_dsp_create_task_tree(chip,task_data,dest,size);
+ 	} else {
+-		snd_printk(KERN_ERR "dsp_spos: failed to map TASK\n");
++		dev_err(chip->card->dev, "dsp_spos: failed to map TASK\n");
+ 	}
+ 
+ 	return desc;
+@@ -1105,31 +1128,36 @@ int cs46xx_dsp_scb_and_task_init (struct snd_cs46xx *chip)
+ 
+ 	null_algorithm  = cs46xx_dsp_lookup_symbol(chip, "NULLALGORITHM", SYMBOL_CODE);
+ 	if (null_algorithm == NULL) {
+-		snd_printk(KERN_ERR "dsp_spos: symbol NULLALGORITHM not found\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: symbol NULLALGORITHM not found\n");
+ 		return -EIO;
+ 	}
+ 
+ 	fg_task_tree_header_code = cs46xx_dsp_lookup_symbol(chip, "FGTASKTREEHEADERCODE", SYMBOL_CODE);  
+ 	if (fg_task_tree_header_code == NULL) {
+-		snd_printk(KERN_ERR "dsp_spos: symbol FGTASKTREEHEADERCODE not found\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: symbol FGTASKTREEHEADERCODE not found\n");
+ 		return -EIO;
+ 	}
+ 
+ 	task_tree_header_code = cs46xx_dsp_lookup_symbol(chip, "TASKTREEHEADERCODE", SYMBOL_CODE);  
+ 	if (task_tree_header_code == NULL) {
+-		snd_printk(KERN_ERR "dsp_spos: symbol TASKTREEHEADERCODE not found\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: symbol TASKTREEHEADERCODE not found\n");
+ 		return -EIO;
+ 	}
+   
+ 	task_tree_thread = cs46xx_dsp_lookup_symbol(chip, "TASKTREETHREAD", SYMBOL_CODE);
+ 	if (task_tree_thread == NULL) {
+-		snd_printk(KERN_ERR "dsp_spos: symbol TASKTREETHREAD not found\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: symbol TASKTREETHREAD not found\n");
+ 		return -EIO;
+ 	}
+ 
+ 	magic_snoop_task = cs46xx_dsp_lookup_symbol(chip, "MAGICSNOOPTASK", SYMBOL_CODE);
+ 	if (magic_snoop_task == NULL) {
+-		snd_printk(KERN_ERR "dsp_spos: symbol MAGICSNOOPTASK not found\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: symbol MAGICSNOOPTASK not found\n");
+ 		return -EIO;
+ 	}
+   
+@@ -1476,7 +1504,7 @@ int cs46xx_dsp_scb_and_task_init (struct snd_cs46xx *chip)
+ 	return 0;
+ 
+  _fail_end:
+-	snd_printk(KERN_ERR "dsp_spos: failed to setup SCB's in DSP\n");
++	dev_err(chip->card->dev, "dsp_spos: failed to setup SCB's in DSP\n");
+ 	return -EINVAL;
+ }
+ 
+@@ -1491,18 +1519,21 @@ static int cs46xx_dsp_async_init (struct snd_cs46xx *chip,
+ 
+ 	s16_async_codec_input_task = cs46xx_dsp_lookup_symbol(chip, "S16_ASYNCCODECINPUTTASK", SYMBOL_CODE);
+ 	if (s16_async_codec_input_task == NULL) {
+-		snd_printk(KERN_ERR "dsp_spos: symbol S16_ASYNCCODECINPUTTASK not found\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: symbol S16_ASYNCCODECINPUTTASK not found\n");
+ 		return -EIO;
+ 	}
+ 	spdifo_task = cs46xx_dsp_lookup_symbol(chip, "SPDIFOTASK", SYMBOL_CODE);
+ 	if (spdifo_task == NULL) {
+-		snd_printk(KERN_ERR "dsp_spos: symbol SPDIFOTASK not found\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: symbol SPDIFOTASK not found\n");
+ 		return -EIO;
+ 	}
+ 
+ 	spdifi_task = cs46xx_dsp_lookup_symbol(chip, "SPDIFITASK", SYMBOL_CODE);
+ 	if (spdifi_task == NULL) {
+-		snd_printk(KERN_ERR "dsp_spos: symbol SPDIFITASK not found\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: symbol SPDIFITASK not found\n");
+ 		return -EIO;
+ 	}
+ 
+@@ -1883,7 +1914,8 @@ int cs46xx_poke_via_dsp (struct snd_cs46xx *chip, u32 address, u32 data)
+ 	}
+ 
+ 	if (i == 25) {
+-		snd_printk(KERN_ERR "dsp_spos: SPIOWriteTask not responding\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: SPIOWriteTask not responding\n");
+ 		return -EBUSY;
+ 	}
+ 
+diff --git a/sound/pci/cs46xx/dsp_spos_scb_lib.c b/sound/pci/cs46xx/dsp_spos_scb_lib.c
+index 409e8764fbeb..8284bc9b5858 100644
+--- a/sound/pci/cs46xx/dsp_spos_scb_lib.c
++++ b/sound/pci/cs46xx/dsp_spos_scb_lib.c
+@@ -233,8 +233,11 @@ void cs46xx_dsp_proc_free_scb_desc (struct dsp_scb_descriptor * scb)
+ {
+ 	if (scb->proc_info) {
+ 		struct proc_scb_info * scb_info = scb->proc_info->private_data;
++		struct snd_cs46xx *chip = scb_info->chip;
+ 
+-		snd_printdd("cs46xx_dsp_proc_free_scb_desc: freeing %s\n",scb->scb_name);
++		dev_dbg(chip->card->dev,
++			"cs46xx_dsp_proc_free_scb_desc: freeing %s\n",
++			scb->scb_name);
+ 
+ 		snd_info_free_entry(scb->proc_info);
+ 		scb->proc_info = NULL;
+@@ -305,7 +308,7 @@ _dsp_create_generic_scb (struct snd_cs46xx *chip, char * name, u32 * scb_data, u
+ 	scb_data[SCBfuncEntryPtr] &= 0xFFFF0000;
+ 	scb_data[SCBfuncEntryPtr] |= task_entry->address;
+ 
+-	snd_printdd("dsp_spos: creating SCB <%s>\n",name);
++	dev_dbg(chip->card->dev, "dsp_spos: creating SCB <%s>\n", name);
+ 
+ 	scb = cs46xx_dsp_create_scb(chip,name,scb_data,dest);
+ 
+@@ -320,9 +323,15 @@ _dsp_create_generic_scb (struct snd_cs46xx *chip, char * name, u32 * scb_data, u
+ 	/* update parent SCB */
+ 	if (scb->parent_scb_ptr) {
+ #if 0
+-		printk ("scb->parent_scb_ptr = %s\n",scb->parent_scb_ptr->scb_name);
+-		printk ("scb->parent_scb_ptr->next_scb_ptr = %s\n",scb->parent_scb_ptr->next_scb_ptr->scb_name);
+-		printk ("scb->parent_scb_ptr->sub_list_ptr = %s\n",scb->parent_scb_ptr->sub_list_ptr->scb_name);
++		dev_dbg(chip->card->dev,
++			"scb->parent_scb_ptr = %s\n",
++			scb->parent_scb_ptr->scb_name);
++		dev_dbg(chip->card->dev,
++			"scb->parent_scb_ptr->next_scb_ptr = %s\n",
++			scb->parent_scb_ptr->next_scb_ptr->scb_name);
++		dev_dbg(chip->card->dev,
++			"scb->parent_scb_ptr->sub_list_ptr = %s\n",
++			scb->parent_scb_ptr->sub_list_ptr->scb_name);
+ #endif
+ 		/* link to  parent SCB */
+ 		if (scb_child_type == SCB_ON_PARENT_NEXT_SCB) {
+@@ -368,7 +377,8 @@ cs46xx_dsp_create_generic_scb (struct snd_cs46xx *chip, char * name, u32 * scb_d
+ 					       SYMBOL_CODE);
+   
+ 	if (task_entry == NULL) {
+-		snd_printk (KERN_ERR "dsp_spos: symbol %s not found\n",task_entry_name);
++		dev_err(chip->card->dev,
++			"dsp_spos: symbol %s not found\n", task_entry_name);
+ 		return NULL;
+ 	}
+   
+@@ -582,7 +592,8 @@ cs46xx_dsp_create_pcm_reader_scb(struct snd_cs46xx * chip, char * scb_name,
+ 								 SYMBOL_CODE);
+     
+ 		if (ins->null_algorithm == NULL) {
+-			snd_printk (KERN_ERR "dsp_spos: symbol NULLALGORITHM not found\n");
++			dev_err(chip->card->dev,
++				"dsp_spos: symbol NULLALGORITHM not found\n");
+ 			return NULL;
+ 		}    
+ 	}
+@@ -612,7 +623,8 @@ cs46xx_dsp_create_src_task_scb(struct snd_cs46xx * chip, char * scb_name,
+ 	unsigned int phiIncr;
+ 	unsigned int correctionPerGOF, correctionPerSec;
+ 
+-	snd_printdd( "dsp_spos: setting %s rate to %u\n",scb_name,rate);
++	dev_dbg(chip->card->dev, "dsp_spos: setting %s rate to %u\n",
++		scb_name, rate);
+ 
+ 	/*
+ 	 *  Compute the values used to drive the actual sample rate conversion.
+@@ -670,7 +682,8 @@ cs46xx_dsp_create_src_task_scb(struct snd_cs46xx * chip, char * scb_name,
+ 								 SYMBOL_CODE);
+ 			
+ 			if (ins->s16_up == NULL) {
+-				snd_printk (KERN_ERR "dsp_spos: symbol S16_UPSRC not found\n");
++				dev_err(chip->card->dev,
++					"dsp_spos: symbol S16_UPSRC not found\n");
+ 				return NULL;
+ 			}    
+ 		}
+@@ -1265,7 +1278,7 @@ cs46xx_dsp_create_pcm_channel (struct snd_cs46xx * chip,
+ 		   the Sample Rate Converted (which could
+ 		   alter the raw data stream ...) */
+ 		if (sample_rate == 48000) {
+-			snd_printdd ("IEC958 pass through\n");
++			dev_dbg(chip->card->dev, "IEC958 pass through\n");
+ 			/* Hack to bypass creating a new SRC */
+ 			pass_through = 1;
+ 		}
+@@ -1299,13 +1312,14 @@ cs46xx_dsp_create_pcm_channel (struct snd_cs46xx * chip,
+ 	}
+ 
+ 	if (pcm_index == -1) {
+-		snd_printk (KERN_ERR "dsp_spos: no free PCM channel\n");
++		dev_err(chip->card->dev, "dsp_spos: no free PCM channel\n");
+ 		return NULL;
+ 	}
+ 
+ 	if (src_scb == NULL) {
+ 		if (ins->nsrc_scb >= DSP_MAX_SRC_NR) {
+-			snd_printk(KERN_ERR "dsp_spos: to many SRC instances\n!");
++			dev_err(chip->card->dev,
++				"dsp_spos: to many SRC instances\n!");
+ 			return NULL;
+ 		}
+ 
+@@ -1331,7 +1345,8 @@ cs46xx_dsp_create_pcm_channel (struct snd_cs46xx * chip,
+ 
+ 		snprintf (scb_name,DSP_MAX_SCB_NAME,"SrcTask_SCB%d",src_index);
+ 		
+-		snd_printdd( "dsp_spos: creating SRC \"%s\"\n",scb_name);
++		dev_dbg(chip->card->dev,
++			"dsp_spos: creating SRC \"%s\"\n", scb_name);
+ 		src_scb = cs46xx_dsp_create_src_task_scb(chip,scb_name,
+ 							 sample_rate,
+ 							 src_output_buffer_addr[src_index],
+@@ -1343,7 +1358,8 @@ cs46xx_dsp_create_pcm_channel (struct snd_cs46xx * chip,
+ 							 pass_through);
+ 
+ 		if (!src_scb) {
+-			snd_printk (KERN_ERR "dsp_spos: failed to create SRCtaskSCB\n");
++			dev_err(chip->card->dev,
++				"dsp_spos: failed to create SRCtaskSCB\n");
+ 			return NULL;
+ 		}
+ 
+@@ -1355,8 +1371,8 @@ cs46xx_dsp_create_pcm_channel (struct snd_cs46xx * chip,
+   
+ 	snprintf (scb_name,DSP_MAX_SCB_NAME,"PCMReader_SCB%d",pcm_index);
+ 
+-	snd_printdd( "dsp_spos: creating PCM \"%s\" (%d)\n",scb_name,
+-                 pcm_channel_id);
++	dev_dbg(chip->card->dev, "dsp_spos: creating PCM \"%s\" (%d)\n",
++		scb_name, pcm_channel_id);
+ 
+ 	pcm_scb = cs46xx_dsp_create_pcm_reader_scb(chip,scb_name,
+ 						   pcm_reader_buffer_addr[pcm_index],
+@@ -1369,7 +1385,8 @@ cs46xx_dsp_create_pcm_channel (struct snd_cs46xx * chip,
+                            );
+ 
+ 	if (!pcm_scb) {
+-		snd_printk (KERN_ERR "dsp_spos: failed to create PCMreaderSCB\n");
++		dev_err(chip->card->dev,
++			"dsp_spos: failed to create PCMreaderSCB\n");
+ 		return NULL;
+ 	}
+ 	
+@@ -1419,7 +1436,8 @@ int cs46xx_dsp_pcm_channel_set_period (struct snd_cs46xx * chip,
+ 		temp |= DMA_RQ_C1_SOURCE_MOD16;
+ 		break; 
+ 	default:
+-		snd_printdd ("period size (%d) not supported by HW\n", period_size);
++		dev_dbg(chip->card->dev,
++			"period size (%d) not supported by HW\n", period_size);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1457,7 +1475,8 @@ int cs46xx_dsp_pcm_ostream_set_period (struct snd_cs46xx * chip,
+ 		temp |= DMA_RQ_C1_DEST_MOD16;
+ 		break; 
+ 	default:
+-		snd_printdd ("period size (%d) not supported by HW\n", period_size);
++		dev_dbg(chip->card->dev,
++			"period size (%d) not supported by HW\n", period_size);
+ 		return -EINVAL;
+ 	}
+ 
 -- 
 1.9.0
