@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 36/48] ALSA: lx6464es: Use standard printk
+Subject: [PATCH 22/48] ALSA: sonicvibes: Use standard printk
 	helpers
-Date: Wed, 26 Feb 2014 16:53:38 +0100
-Message-ID: <1393430030-26704-37-git-send-email-tiwai@suse.de>
+Date: Wed, 26 Feb 2014 16:53:24 +0100
+Message-ID: <1393430030-26704-23-git-send-email-tiwai@suse.de>
 References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4183E2657C5
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DF5F2657BF
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:54 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E374675040
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id C3D0D75036
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
 In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,865 +28,328 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Convert with dev_err() and co from snd_printk(), etc.
+The debug prints are also reformatted to suit with dev_dbg().
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/lx6464es/lx6464es.c | 157 +++++++++++++++++++++---------------------
- sound/pci/lx6464es/lx_core.c  |  89 +++++++++++++-----------
- 2 files changed, 129 insertions(+), 117 deletions(-)
+ sound/pci/sonicvibes.c | 235 ++++++++++++++++++++++++++-----------------------
+ 1 file changed, 124 insertions(+), 111 deletions(-)
 
-diff --git a/sound/pci/lx6464es/lx6464es.c b/sound/pci/lx6464es/lx6464es.c
-index b9743d4fa1cc..27f60ce8a55c 100644
---- a/sound/pci/lx6464es/lx6464es.c
-+++ b/sound/pci/lx6464es/lx6464es.c
-@@ -112,16 +112,16 @@ static int lx_hardware_open(struct lx6464es *chip,
- 
- 	snd_pcm_uframes_t period_size = runtime->period_size;
- 
--	snd_printd(LXP "allocating pipe for %d channels\n", channels);
-+	dev_dbg(chip->card->dev, "allocating pipe for %d channels\n", channels);
- 	err = lx_pipe_allocate(chip, 0, is_capture, channels);
- 	if (err < 0) {
--		snd_printk(KERN_ERR LXP "allocating pipe failed\n");
-+		dev_err(chip->card->dev, LXP "allocating pipe failed\n");
- 		return err;
- 	}
- 
- 	err = lx_set_granularity(chip, period_size);
- 	if (err < 0) {
--		snd_printk(KERN_ERR LXP "setting granularity to %ld failed\n",
-+		dev_err(chip->card->dev, "setting granularity to %ld failed\n",
- 			   period_size);
- 		return err;
- 	}
-@@ -136,24 +136,24 @@ static int lx_hardware_start(struct lx6464es *chip,
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int is_capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
- 
--	snd_printd(LXP "setting stream format\n");
-+	dev_dbg(chip->card->dev, "setting stream format\n");
- 	err = lx_stream_set_format(chip, runtime, 0, is_capture);
- 	if (err < 0) {
--		snd_printk(KERN_ERR LXP "setting stream format failed\n");
-+		dev_err(chip->card->dev, "setting stream format failed\n");
- 		return err;
- 	}
- 
--	snd_printd(LXP "starting pipe\n");
-+	dev_dbg(chip->card->dev, "starting pipe\n");
- 	err = lx_pipe_start(chip, 0, is_capture);
- 	if (err < 0) {
--		snd_printk(KERN_ERR LXP "starting pipe failed\n");
-+		dev_err(chip->card->dev, "starting pipe failed\n");
- 		return err;
- 	}
- 
--	snd_printd(LXP "waiting for pipe to start\n");
-+	dev_dbg(chip->card->dev, "waiting for pipe to start\n");
- 	err = lx_pipe_wait_for_start(chip, 0, is_capture);
- 	if (err < 0) {
--		snd_printk(KERN_ERR LXP "waiting for pipe failed\n");
-+		dev_err(chip->card->dev, "waiting for pipe failed\n");
- 		return err;
- 	}
- 
-@@ -167,24 +167,24 @@ static int lx_hardware_stop(struct lx6464es *chip,
- 	int err = 0;
- 	int is_capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
- 
--	snd_printd(LXP "pausing pipe\n");
-+	dev_dbg(chip->card->dev, "pausing pipe\n");
- 	err = lx_pipe_pause(chip, 0, is_capture);
- 	if (err < 0) {
--		snd_printk(KERN_ERR LXP "pausing pipe failed\n");
-+		dev_err(chip->card->dev, "pausing pipe failed\n");
- 		return err;
- 	}
- 
--	snd_printd(LXP "waiting for pipe to become idle\n");
-+	dev_dbg(chip->card->dev, "waiting for pipe to become idle\n");
- 	err = lx_pipe_wait_for_idle(chip, 0, is_capture);
- 	if (err < 0) {
--		snd_printk(KERN_ERR LXP "waiting for pipe failed\n");
-+		dev_err(chip->card->dev, "waiting for pipe failed\n");
- 		return err;
- 	}
- 
--	snd_printd(LXP "stopping pipe\n");
-+	dev_dbg(chip->card->dev, "stopping pipe\n");
- 	err = lx_pipe_stop(chip, 0, is_capture);
- 	if (err < 0) {
--		snd_printk(LXP "stopping pipe failed\n");
-+		dev_err(chip->card->dev, "stopping pipe failed\n");
- 		return err;
- 	}
- 
-@@ -198,10 +198,10 @@ static int lx_hardware_close(struct lx6464es *chip,
- 	int err = 0;
- 	int is_capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
- 
--	snd_printd(LXP "releasing pipe\n");
-+	dev_dbg(chip->card->dev, "releasing pipe\n");
- 	err = lx_pipe_release(chip, 0, is_capture);
- 	if (err < 0) {
--		snd_printk(LXP "releasing pipe failed\n");
-+		dev_err(chip->card->dev, "releasing pipe failed\n");
- 		return err;
- 	}
- 
-@@ -216,7 +216,7 @@ static int lx_pcm_open(struct snd_pcm_substream *substream)
- 	int err = 0;
- 	int board_rate;
- 
--	snd_printdd("->lx_pcm_open\n");
-+	dev_dbg(chip->card->dev, "->lx_pcm_open\n");
- 	mutex_lock(&chip->setup_mutex);
- 
- 	/* copy the struct snd_pcm_hardware struct */
-@@ -227,7 +227,7 @@ static int lx_pcm_open(struct snd_pcm_substream *substream)
- 	err = snd_pcm_hw_constraint_integer(runtime,
- 					    SNDRV_PCM_HW_PARAM_PERIODS);
- 	if (err < 0) {
--		snd_printk(KERN_WARNING LXP "could not constrain periods\n");
-+		dev_warn(chip->card->dev, "could not constrain periods\n");
- 		goto exit;
- 	}
+diff --git a/sound/pci/sonicvibes.c b/sound/pci/sonicvibes.c
+index 9ff408fff7b0..2044dc742071 100644
+--- a/sound/pci/sonicvibes.c
++++ b/sound/pci/sonicvibes.c
+@@ -273,7 +273,7 @@ static inline void snd_sonicvibes_setdmaa(struct sonicvibes * sonic,
+ 	outl(count, sonic->dmaa_port + SV_DMA_COUNT0);
+ 	outb(0x18, sonic->dmaa_port + SV_DMA_MODE);
+ #if 0
+-	printk(KERN_DEBUG "program dmaa: addr = 0x%x, paddr = 0x%x\n",
++	dev_dbg(sonic->card->dev, "program dmaa: addr = 0x%x, paddr = 0x%x\n",
+ 	       addr, inl(sonic->dmaa_port + SV_DMA_ADDR0));
  #endif
-@@ -238,7 +238,7 @@ static int lx_pcm_open(struct snd_pcm_substream *substream)
- 					   board_rate, board_rate);
- 
- 	if (err < 0) {
--		snd_printk(KERN_WARNING LXP "could not constrain periods\n");
-+		dev_warn(chip->card->dev, "could not constrain periods\n");
- 		goto exit;
- 	}
- 
-@@ -248,7 +248,7 @@ static int lx_pcm_open(struct snd_pcm_substream *substream)
- 					   MICROBLAZE_IBL_MIN,
- 					   MICROBLAZE_IBL_MAX);
- 	if (err < 0) {
--		snd_printk(KERN_WARNING LXP
-+		dev_warn(chip->card->dev,
- 			   "could not constrain period size\n");
- 		goto exit;
- 	}
-@@ -263,14 +263,14 @@ exit:
- 	runtime->private_data = chip;
- 
- 	mutex_unlock(&chip->setup_mutex);
--	snd_printdd("<-lx_pcm_open, %d\n", err);
-+	dev_dbg(chip->card->dev, "<-lx_pcm_open, %d\n", err);
- 	return err;
  }
- 
- static int lx_pcm_close(struct snd_pcm_substream *substream)
+@@ -289,7 +289,7 @@ static inline void snd_sonicvibes_setdmac(struct sonicvibes * sonic,
+ 	outl(count, sonic->dmac_port + SV_DMA_COUNT0);
+ 	outb(0x14, sonic->dmac_port + SV_DMA_MODE);
+ #if 0
+-	printk(KERN_DEBUG "program dmac: addr = 0x%x, paddr = 0x%x\n",
++	dev_dbg(sonic->card->dev, "program dmac: addr = 0x%x, paddr = 0x%x\n",
+ 	       addr, inl(sonic->dmac_port + SV_DMA_ADDR0));
+ #endif
+ }
+@@ -357,105 +357,105 @@ static unsigned char snd_sonicvibes_in(struct sonicvibes * sonic, unsigned char
+ #if 0
+ static void snd_sonicvibes_debug(struct sonicvibes * sonic)
  {
- 	int err = 0;
--	snd_printdd("->lx_pcm_close\n");
-+	dev_dbg(substream->pcm->card->dev, "->lx_pcm_close\n");
- 	return err;
+-	printk(KERN_DEBUG
+-	       "SV REGS:          INDEX = 0x%02x  ", inb(SV_REG(sonic, INDEX)));
+-	printk("                 STATUS = 0x%02x\n", inb(SV_REG(sonic, STATUS)));
+-	printk(KERN_DEBUG
+-	       "  0x00: left input      = 0x%02x  ", snd_sonicvibes_in(sonic, 0x00));
+-	printk("  0x20: synth rate low  = 0x%02x\n", snd_sonicvibes_in(sonic, 0x20));
+-	printk(KERN_DEBUG
+-	       "  0x01: right input     = 0x%02x  ", snd_sonicvibes_in(sonic, 0x01));
+-	printk("  0x21: synth rate high = 0x%02x\n", snd_sonicvibes_in(sonic, 0x21));
+-	printk(KERN_DEBUG
+-	       "  0x02: left AUX1       = 0x%02x  ", snd_sonicvibes_in(sonic, 0x02));
+-	printk("  0x22: ADC clock       = 0x%02x\n", snd_sonicvibes_in(sonic, 0x22));
+-	printk(KERN_DEBUG
+-	       "  0x03: right AUX1      = 0x%02x  ", snd_sonicvibes_in(sonic, 0x03));
+-	printk("  0x23: ADC alt rate    = 0x%02x\n", snd_sonicvibes_in(sonic, 0x23));
+-	printk(KERN_DEBUG
+-	       "  0x04: left CD         = 0x%02x  ", snd_sonicvibes_in(sonic, 0x04));
+-	printk("  0x24: ADC pll M       = 0x%02x\n", snd_sonicvibes_in(sonic, 0x24));
+-	printk(KERN_DEBUG
+-	       "  0x05: right CD        = 0x%02x  ", snd_sonicvibes_in(sonic, 0x05));
+-	printk("  0x25: ADC pll N       = 0x%02x\n", snd_sonicvibes_in(sonic, 0x25));
+-	printk(KERN_DEBUG
+-	       "  0x06: left line       = 0x%02x  ", snd_sonicvibes_in(sonic, 0x06));
+-	printk("  0x26: Synth pll M     = 0x%02x\n", snd_sonicvibes_in(sonic, 0x26));
+-	printk(KERN_DEBUG
+-	       "  0x07: right line      = 0x%02x  ", snd_sonicvibes_in(sonic, 0x07));
+-	printk("  0x27: Synth pll N     = 0x%02x\n", snd_sonicvibes_in(sonic, 0x27));
+-	printk(KERN_DEBUG
+-	       "  0x08: MIC             = 0x%02x  ", snd_sonicvibes_in(sonic, 0x08));
+-	printk("  0x28: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x28));
+-	printk(KERN_DEBUG
+-	       "  0x09: Game port       = 0x%02x  ", snd_sonicvibes_in(sonic, 0x09));
+-	printk("  0x29: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x29));
+-	printk(KERN_DEBUG
+-	       "  0x0a: left synth      = 0x%02x  ", snd_sonicvibes_in(sonic, 0x0a));
+-	printk("  0x2a: MPU401          = 0x%02x\n", snd_sonicvibes_in(sonic, 0x2a));
+-	printk(KERN_DEBUG
+-	       "  0x0b: right synth     = 0x%02x  ", snd_sonicvibes_in(sonic, 0x0b));
+-	printk("  0x2b: drive ctrl      = 0x%02x\n", snd_sonicvibes_in(sonic, 0x2b));
+-	printk(KERN_DEBUG
+-	       "  0x0c: left AUX2       = 0x%02x  ", snd_sonicvibes_in(sonic, 0x0c));
+-	printk("  0x2c: SRS space       = 0x%02x\n", snd_sonicvibes_in(sonic, 0x2c));
+-	printk(KERN_DEBUG
+-	       "  0x0d: right AUX2      = 0x%02x  ", snd_sonicvibes_in(sonic, 0x0d));
+-	printk("  0x2d: SRS center      = 0x%02x\n", snd_sonicvibes_in(sonic, 0x2d));
+-	printk(KERN_DEBUG
+-	       "  0x0e: left analog     = 0x%02x  ", snd_sonicvibes_in(sonic, 0x0e));
+-	printk("  0x2e: wave source     = 0x%02x\n", snd_sonicvibes_in(sonic, 0x2e));
+-	printk(KERN_DEBUG
+-	       "  0x0f: right analog    = 0x%02x  ", snd_sonicvibes_in(sonic, 0x0f));
+-	printk("  0x2f: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x2f));
+-	printk(KERN_DEBUG
+-	       "  0x10: left PCM        = 0x%02x  ", snd_sonicvibes_in(sonic, 0x10));
+-	printk("  0x30: analog power    = 0x%02x\n", snd_sonicvibes_in(sonic, 0x30));
+-	printk(KERN_DEBUG
+-	       "  0x11: right PCM       = 0x%02x  ", snd_sonicvibes_in(sonic, 0x11));
+-	printk("  0x31: analog power    = 0x%02x\n", snd_sonicvibes_in(sonic, 0x31));
+-	printk(KERN_DEBUG
+-	       "  0x12: DMA data format = 0x%02x  ", snd_sonicvibes_in(sonic, 0x12));
+-	printk("  0x32: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x32));
+-	printk(KERN_DEBUG
+-	       "  0x13: P/C enable      = 0x%02x  ", snd_sonicvibes_in(sonic, 0x13));
+-	printk("  0x33: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x33));
+-	printk(KERN_DEBUG
+-	       "  0x14: U/D button      = 0x%02x  ", snd_sonicvibes_in(sonic, 0x14));
+-	printk("  0x34: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x34));
+-	printk(KERN_DEBUG
+-	       "  0x15: revision        = 0x%02x  ", snd_sonicvibes_in(sonic, 0x15));
+-	printk("  0x35: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x35));
+-	printk(KERN_DEBUG
+-	       "  0x16: ADC output ctrl = 0x%02x  ", snd_sonicvibes_in(sonic, 0x16));
+-	printk("  0x36: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x36));
+-	printk(KERN_DEBUG
+-	       "  0x17: ---             = 0x%02x  ", snd_sonicvibes_in(sonic, 0x17));
+-	printk("  0x37: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x37));
+-	printk(KERN_DEBUG
+-	       "  0x18: DMA A upper cnt = 0x%02x  ", snd_sonicvibes_in(sonic, 0x18));
+-	printk("  0x38: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x38));
+-	printk(KERN_DEBUG
+-	       "  0x19: DMA A lower cnt = 0x%02x  ", snd_sonicvibes_in(sonic, 0x19));
+-	printk("  0x39: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x39));
+-	printk(KERN_DEBUG
+-	       "  0x1a: ---             = 0x%02x  ", snd_sonicvibes_in(sonic, 0x1a));
+-	printk("  0x3a: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x3a));
+-	printk(KERN_DEBUG
+-	       "  0x1b: ---             = 0x%02x  ", snd_sonicvibes_in(sonic, 0x1b));
+-	printk("  0x3b: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x3b));
+-	printk(KERN_DEBUG
+-	       "  0x1c: DMA C upper cnt = 0x%02x  ", snd_sonicvibes_in(sonic, 0x1c));
+-	printk("  0x3c: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x3c));
+-	printk(KERN_DEBUG
+-	       "  0x1d: DMA C upper cnt = 0x%02x  ", snd_sonicvibes_in(sonic, 0x1d));
+-	printk("  0x3d: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x3d));
+-	printk(KERN_DEBUG
+-	       "  0x1e: PCM rate low    = 0x%02x  ", snd_sonicvibes_in(sonic, 0x1e));
+-	printk("  0x3e: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x3e));
+-	printk(KERN_DEBUG
+-	       "  0x1f: PCM rate high   = 0x%02x  ", snd_sonicvibes_in(sonic, 0x1f));
+-	printk("  0x3f: ---             = 0x%02x\n", snd_sonicvibes_in(sonic, 0x3f));
++	dev_dbg(sonic->card->dev,
++		"SV REGS:          INDEX = 0x%02x                   STATUS = 0x%02x\n",
++		inb(SV_REG(sonic, INDEX)), inb(SV_REG(sonic, STATUS)));
++	dev_dbg(sonic->card->dev,
++		"  0x00: left input      = 0x%02x    0x20: synth rate low  = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x00), snd_sonicvibes_in(sonic, 0x20));
++	dev_dbg(sonic->card->dev,
++		"  0x01: right input     = 0x%02x    0x21: synth rate high = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x01), snd_sonicvibes_in(sonic, 0x21));
++	dev_dbg(sonic->card->dev,
++		"  0x02: left AUX1       = 0x%02x    0x22: ADC clock       = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x02), snd_sonicvibes_in(sonic, 0x22));
++	dev_dbg(sonic->card->dev,
++		"  0x03: right AUX1      = 0x%02x    0x23: ADC alt rate    = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x03), snd_sonicvibes_in(sonic, 0x23));
++	dev_dbg(sonic->card->dev,
++		"  0x04: left CD         = 0x%02x    0x24: ADC pll M       = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x04), snd_sonicvibes_in(sonic, 0x24));
++	dev_dbg(sonic->card->dev,
++		"  0x05: right CD        = 0x%02x    0x25: ADC pll N       = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x05), snd_sonicvibes_in(sonic, 0x25));
++	dev_dbg(sonic->card->dev,
++		"  0x06: left line       = 0x%02x    0x26: Synth pll M     = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x06), snd_sonicvibes_in(sonic, 0x26));
++	dev_dbg(sonic->card->dev,
++		"  0x07: right line      = 0x%02x    0x27: Synth pll N     = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x07), snd_sonicvibes_in(sonic, 0x27));
++	dev_dbg(sonic->card->dev,
++		"  0x08: MIC             = 0x%02x    0x28: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x08), snd_sonicvibes_in(sonic, 0x28));
++	dev_dbg(sonic->card->dev,
++		"  0x09: Game port       = 0x%02x    0x29: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x09), snd_sonicvibes_in(sonic, 0x29));
++	dev_dbg(sonic->card->dev,
++		"  0x0a: left synth      = 0x%02x    0x2a: MPU401          = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x0a), snd_sonicvibes_in(sonic, 0x2a));
++	dev_dbg(sonic->card->dev,
++		"  0x0b: right synth     = 0x%02x    0x2b: drive ctrl      = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x0b), snd_sonicvibes_in(sonic, 0x2b));
++	dev_dbg(sonic->card->dev,
++		"  0x0c: left AUX2       = 0x%02x    0x2c: SRS space       = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x0c), snd_sonicvibes_in(sonic, 0x2c));
++	dev_dbg(sonic->card->dev,
++		"  0x0d: right AUX2      = 0x%02x    0x2d: SRS center      = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x0d), snd_sonicvibes_in(sonic, 0x2d));
++	dev_dbg(sonic->card->dev,
++		"  0x0e: left analog     = 0x%02x    0x2e: wave source     = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x0e), snd_sonicvibes_in(sonic, 0x2e));
++	dev_dbg(sonic->card->dev,
++		"  0x0f: right analog    = 0x%02x    0x2f: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x0f), snd_sonicvibes_in(sonic, 0x2f));
++	dev_dbg(sonic->card->dev,
++		"  0x10: left PCM        = 0x%02x    0x30: analog power    = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x10), snd_sonicvibes_in(sonic, 0x30));
++	dev_dbg(sonic->card->dev,
++		"  0x11: right PCM       = 0x%02x    0x31: analog power    = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x11), snd_sonicvibes_in(sonic, 0x31));
++	dev_dbg(sonic->card->dev,
++		"  0x12: DMA data format = 0x%02x    0x32: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x12), snd_sonicvibes_in(sonic, 0x32));
++	dev_dbg(sonic->card->dev,
++		"  0x13: P/C enable      = 0x%02x    0x33: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x13), snd_sonicvibes_in(sonic, 0x33));
++	dev_dbg(sonic->card->dev,
++		"  0x14: U/D button      = 0x%02x    0x34: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x14), snd_sonicvibes_in(sonic, 0x34));
++	dev_dbg(sonic->card->dev,
++		"  0x15: revision        = 0x%02x    0x35: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x15), snd_sonicvibes_in(sonic, 0x35));
++	dev_dbg(sonic->card->dev,
++		"  0x16: ADC output ctrl = 0x%02x    0x36: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x16), snd_sonicvibes_in(sonic, 0x36));
++	dev_dbg(sonic->card->dev,
++		"  0x17: ---             = 0x%02x    0x37: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x17), snd_sonicvibes_in(sonic, 0x37));
++	dev_dbg(sonic->card->dev,
++		"  0x18: DMA A upper cnt = 0x%02x    0x38: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x18), snd_sonicvibes_in(sonic, 0x38));
++	dev_dbg(sonic->card->dev,
++		"  0x19: DMA A lower cnt = 0x%02x    0x39: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x19), snd_sonicvibes_in(sonic, 0x39));
++	dev_dbg(sonic->card->dev,
++		"  0x1a: ---             = 0x%02x    0x3a: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x1a), snd_sonicvibes_in(sonic, 0x3a));
++	dev_dbg(sonic->card->dev,
++		"  0x1b: ---             = 0x%02x    0x3b: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x1b), snd_sonicvibes_in(sonic, 0x3b));
++	dev_dbg(sonic->card->dev,
++		"  0x1c: DMA C upper cnt = 0x%02x    0x3c: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x1c), snd_sonicvibes_in(sonic, 0x3c));
++	dev_dbg(sonic->card->dev,
++		"  0x1d: DMA C upper cnt = 0x%02x    0x3d: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x1d), snd_sonicvibes_in(sonic, 0x3d));
++	dev_dbg(sonic->card->dev,
++		"  0x1e: PCM rate low    = 0x%02x    0x3e: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x1e), snd_sonicvibes_in(sonic, 0x3e));
++	dev_dbg(sonic->card->dev,
++		"  0x1f: PCM rate high   = 0x%02x    0x3f: ---             = 0x%02x\n",
++		snd_sonicvibes_in(sonic, 0x1f), snd_sonicvibes_in(sonic, 0x3f));
  }
  
-@@ -285,13 +285,13 @@ static snd_pcm_uframes_t lx_pcm_stream_pointer(struct snd_pcm_substream
- 	struct lx_stream *lx_stream = is_capture ? &chip->capture_stream :
- 		&chip->playback_stream;
- 
--	snd_printdd("->lx_pcm_stream_pointer\n");
-+	dev_dbg(chip->card->dev, "->lx_pcm_stream_pointer\n");
- 
- 	spin_lock_irqsave(&chip->lock, flags);
- 	pos = lx_stream->frame_pos * substream->runtime->period_size;
- 	spin_unlock_irqrestore(&chip->lock, flags);
- 
--	snd_printdd(LXP "stream_pointer at %ld\n", pos);
-+	dev_dbg(chip->card->dev, "stream_pointer at %ld\n", pos);
- 	return pos;
+ #endif
+@@ -511,8 +511,10 @@ static void snd_sonicvibes_pll(unsigned int rate,
+ 	*res_m = m;
+ 	*res_n = n;
+ #if 0
+-	printk(KERN_DEBUG "metric = %i, xm = %i, xn = %i\n", metric, xm, xn);
+-	printk(KERN_DEBUG "pll: m = 0x%x, r = 0x%x, n = 0x%x\n", reg, m, r, n);
++	dev_dbg(sonic->card->dev,
++		"metric = %i, xm = %i, xn = %i\n", metric, xm, xn);
++	dev_dbg(sonic->card->dev,
++		"pll: m = 0x%x, r = 0x%x, n = 0x%x\n", reg, m, r, n);
+ #endif
  }
  
-@@ -301,37 +301,37 @@ static int lx_pcm_prepare(struct snd_pcm_substream *substream)
- 	int err = 0;
- 	const int is_capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
+@@ -624,7 +626,8 @@ static irqreturn_t snd_sonicvibes_interrupt(int irq, void *dev_id)
+ 		return IRQ_NONE;
+ 	if (status == 0xff) {	/* failure */
+ 		outb(sonic->irqmask = ~0, SV_REG(sonic, IRQMASK));
+-		snd_printk(KERN_ERR "IRQ failure - interrupts disabled!!\n");
++		dev_err(sonic->card->dev,
++			"IRQ failure - interrupts disabled!!\n");
+ 		return IRQ_HANDLED;
+ 	}
+ 	if (sonic->pcm) {
+@@ -1198,7 +1201,8 @@ static int snd_sonicvibes_create_gameport(struct sonicvibes *sonic)
  
--	snd_printdd("->lx_pcm_prepare\n");
-+	dev_dbg(chip->card->dev, "->lx_pcm_prepare\n");
- 
- 	mutex_lock(&chip->setup_mutex);
- 
- 	if (chip->hardware_running[is_capture]) {
- 		err = lx_hardware_stop(chip, substream);
- 		if (err < 0) {
--			snd_printk(KERN_ERR LXP "failed to stop hardware. "
-+			dev_err(chip->card->dev, "failed to stop hardware. "
- 				   "Error code %d\n", err);
- 			goto exit;
- 		}
- 
- 		err = lx_hardware_close(chip, substream);
- 		if (err < 0) {
--			snd_printk(KERN_ERR LXP "failed to close hardware. "
-+			dev_err(chip->card->dev, "failed to close hardware. "
- 				   "Error code %d\n", err);
- 			goto exit;
- 		}
+ 	sonic->gameport = gp = gameport_allocate_port();
+ 	if (!gp) {
+-		printk(KERN_ERR "sonicvibes: cannot allocate memory for gameport\n");
++		dev_err(sonic->card->dev,
++			"sonicvibes: cannot allocate memory for gameport\n");
+ 		return -ENOMEM;
  	}
  
--	snd_printd(LXP "opening hardware\n");
-+	dev_dbg(chip->card->dev, "opening hardware\n");
- 	err = lx_hardware_open(chip, substream);
- 	if (err < 0) {
--		snd_printk(KERN_ERR LXP "failed to open hardware. "
-+		dev_err(chip->card->dev, "failed to open hardware. "
- 			   "Error code %d\n", err);
- 		goto exit;
- 	}
- 
- 	err = lx_hardware_start(chip, substream);
- 	if (err < 0) {
--		snd_printk(KERN_ERR LXP "failed to start hardware. "
-+		dev_err(chip->card->dev, "failed to start hardware. "
- 			   "Error code %d\n", err);
- 		goto exit;
- 	}
-@@ -354,7 +354,7 @@ static int lx_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct lx6464es *chip = snd_pcm_substream_chip(substream);
- 	int err = 0;
- 
--	snd_printdd("->lx_pcm_hw_params\n");
-+	dev_dbg(chip->card->dev, "->lx_pcm_hw_params\n");
- 
- 	mutex_lock(&chip->setup_mutex);
- 
-@@ -389,20 +389,20 @@ static int lx_pcm_hw_free(struct snd_pcm_substream *substream)
- 	int err = 0;
- 	int is_capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
- 
--	snd_printdd("->lx_pcm_hw_free\n");
-+	dev_dbg(chip->card->dev, "->lx_pcm_hw_free\n");
- 	mutex_lock(&chip->setup_mutex);
- 
- 	if (chip->hardware_running[is_capture]) {
- 		err = lx_hardware_stop(chip, substream);
- 		if (err < 0) {
--			snd_printk(KERN_ERR LXP "failed to stop hardware. "
-+			dev_err(chip->card->dev, "failed to stop hardware. "
- 				   "Error code %d\n", err);
- 			goto exit;
- 		}
- 
- 		err = lx_hardware_close(chip, substream);
- 		if (err < 0) {
--			snd_printk(KERN_ERR LXP "failed to close hardware. "
-+			dev_err(chip->card->dev, "failed to close hardware. "
- 				   "Error code %d\n", err);
- 			goto exit;
- 		}
-@@ -446,25 +446,25 @@ static void lx_trigger_start(struct lx6464es *chip, struct lx_stream *lx_stream)
- 
- 		err = lx_buffer_ask(chip, 0, is_capture, &needed, &freed,
- 				    size_array);
--		snd_printdd(LXP "starting: needed %d, freed %d\n",
-+		dev_dbg(chip->card->dev, "starting: needed %d, freed %d\n",
- 			    needed, freed);
- 
- 		err = lx_buffer_give(chip, 0, is_capture, period_bytes,
- 				     lower_32_bits(buf), upper_32_bits(buf),
- 				     &buffer_index);
- 
--		snd_printdd(LXP "starting: buffer index %x on 0x%lx (%d bytes)\n",
-+		dev_dbg(chip->card->dev, "starting: buffer index %x on 0x%lx (%d bytes)\n",
- 			    buffer_index, (unsigned long)buf, period_bytes);
- 		buf += period_bytes;
- 	}
- 
- 	err = lx_buffer_ask(chip, 0, is_capture, &needed, &freed, size_array);
--	snd_printdd(LXP "starting: needed %d, freed %d\n", needed, freed);
-+	dev_dbg(chip->card->dev, "starting: needed %d, freed %d\n", needed, freed);
- 
--	snd_printd(LXP "starting: starting stream\n");
-+	dev_dbg(chip->card->dev, "starting: starting stream\n");
- 	err = lx_stream_start(chip, 0, is_capture);
- 	if (err < 0)
--		snd_printk(KERN_ERR LXP "couldn't start stream\n");
-+		dev_err(chip->card->dev, "couldn't start stream\n");
- 	else
- 		lx_stream->status = LX_STREAM_STATUS_RUNNING;
- 
-@@ -476,10 +476,10 @@ static void lx_trigger_stop(struct lx6464es *chip, struct lx_stream *lx_stream)
- 	const unsigned int is_capture = lx_stream->is_capture;
- 	int err;
- 
--	snd_printd(LXP "stopping: stopping stream\n");
-+	dev_dbg(chip->card->dev, "stopping: stopping stream\n");
- 	err = lx_stream_stop(chip, 0, is_capture);
- 	if (err < 0)
--		snd_printk(KERN_ERR LXP "couldn't stop stream\n");
-+		dev_err(chip->card->dev, "couldn't stop stream\n");
- 	else
- 		lx_stream->status = LX_STREAM_STATUS_FREE;
- 
-@@ -507,7 +507,7 @@ static void lx_trigger_tasklet(unsigned long data)
- 	struct lx6464es *chip = (struct lx6464es *)data;
- 	unsigned long flags;
- 
--	snd_printdd("->lx_trigger_tasklet\n");
-+	dev_dbg(chip->card->dev, "->lx_trigger_tasklet\n");
- 
- 	spin_lock_irqsave(&chip->lock, flags);
- 	lx_trigger_tasklet_dispatch_stream(chip, &chip->capture_stream);
-@@ -547,14 +547,14 @@ static int lx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	struct lx_stream *stream = is_capture ? &chip->capture_stream :
- 		&chip->playback_stream;
- 
--	snd_printdd("->lx_pcm_trigger\n");
-+	dev_dbg(chip->card->dev, "->lx_pcm_trigger\n");
- 
- 	return lx_pcm_trigger_dispatch(chip, stream, cmd);
- }
- 
- static int snd_lx6464es_free(struct lx6464es *chip)
- {
--	snd_printdd("->snd_lx6464es_free\n");
-+	dev_dbg(chip->card->dev, "->snd_lx6464es_free\n");
- 
- 	lx_irq_disable(chip);
- 
-@@ -583,7 +583,7 @@ static int lx_init_xilinx_reset(struct lx6464es *chip)
- 	int i;
- 	u32 plx_reg = lx_plx_reg_read(chip, ePLX_CHIPSC);
- 
--	snd_printdd("->lx_init_xilinx_reset\n");
-+	dev_dbg(chip->card->dev, "->lx_init_xilinx_reset\n");
- 
- 	/* activate reset of xilinx */
- 	plx_reg &= ~CHIPSC_RESET_XILINX;
-@@ -603,8 +603,8 @@ static int lx_init_xilinx_reset(struct lx6464es *chip)
- 		msleep(10);
- 		reg_mbox3 = lx_plx_reg_read(chip, ePLX_MBOX3);
- 		if (reg_mbox3) {
--			snd_printd(LXP "xilinx reset done\n");
--			snd_printdd(LXP "xilinx took %d loops\n", i);
-+			dev_dbg(chip->card->dev, "xilinx reset done\n");
-+			dev_dbg(chip->card->dev, "xilinx took %d loops\n", i);
- 			break;
- 		}
- 	}
-@@ -624,7 +624,7 @@ static int lx_init_xilinx_test(struct lx6464es *chip)
- {
- 	u32 reg;
- 
--	snd_printdd("->lx_init_xilinx_test\n");
-+	dev_dbg(chip->card->dev, "->lx_init_xilinx_test\n");
- 
- 	/* TEST if we have access to Xilinx/MicroBlaze */
- 	lx_dsp_reg_write(chip, eReg_CSM, 0);
-@@ -632,19 +632,19 @@ static int lx_init_xilinx_test(struct lx6464es *chip)
- 	reg = lx_dsp_reg_read(chip, eReg_CSM);
- 
- 	if (reg) {
--		snd_printk(KERN_ERR LXP "Problem: Reg_CSM %x.\n", reg);
-+		dev_err(chip->card->dev, "Problem: Reg_CSM %x.\n", reg);
- 
- 		/* PCI9056_SPACE0_REMAP */
- 		lx_plx_reg_write(chip, ePLX_PCICR, 1);
- 
- 		reg = lx_dsp_reg_read(chip, eReg_CSM);
- 		if (reg) {
--			snd_printk(KERN_ERR LXP "Error: Reg_CSM %x.\n", reg);
-+			dev_err(chip->card->dev, "Error: Reg_CSM %x.\n", reg);
- 			return -EAGAIN; /* seems to be appropriate */
- 		}
- 	}
- 
--	snd_printd(LXP "Xilinx/MicroBlaze access test successful\n");
-+	dev_dbg(chip->card->dev, "Xilinx/MicroBlaze access test successful\n");
- 
- 	return 0;
- }
-@@ -661,7 +661,7 @@ static int lx_init_ethersound_config(struct lx6464es *chip)
- 		(64 << IOCR_OUTPUTS_OFFSET) |
- 		(FREQ_RATIO_SINGLE_MODE << FREQ_RATIO_OFFSET);
- 
--	snd_printdd("->lx_init_ethersound\n");
-+	dev_dbg(chip->card->dev, "->lx_init_ethersound\n");
- 
- 	chip->freq_ratio = FREQ_RATIO_SINGLE_MODE;
- 
-@@ -675,18 +675,18 @@ static int lx_init_ethersound_config(struct lx6464es *chip)
- 
- 	for (i = 0; i != 1000; ++i) {
- 		if (lx_dsp_reg_read(chip, eReg_CSES) & 4) {
--			snd_printd(LXP "ethersound initialized after %dms\n",
-+			dev_dbg(chip->card->dev, "ethersound initialized after %dms\n",
- 				   i);
- 			goto ethersound_initialized;
- 		}
- 		msleep(1);
- 	}
--	snd_printk(KERN_WARNING LXP
-+	dev_warn(chip->card->dev,
- 		   "ethersound could not be initialized after %dms\n", i);
- 	return -ETIMEDOUT;
- 
-  ethersound_initialized:
--	snd_printd(LXP "ethersound initialized\n");
-+	dev_dbg(chip->card->dev, "ethersound initialized\n");
- 	return 0;
- }
- 
-@@ -696,14 +696,14 @@ static int lx_init_get_version_features(struct lx6464es *chip)
- 
- 	int err;
- 
--	snd_printdd("->lx_init_get_version_features\n");
-+	dev_dbg(chip->card->dev, "->lx_init_get_version_features\n");
- 
- 	err = lx_dsp_get_version(chip, &dsp_version);
- 
- 	if (err == 0) {
- 		u32 freq;
- 
--		snd_printk(LXP "DSP version: V%02d.%02d #%d\n",
-+		dev_info(chip->card->dev, "DSP version: V%02d.%02d #%d\n",
- 			   (dsp_version>>16) & 0xff, (dsp_version>>8) & 0xff,
- 			   dsp_version & 0xff);
- 
-@@ -718,9 +718,9 @@ static int lx_init_get_version_features(struct lx6464es *chip)
- 		err = lx_dsp_get_clock_frequency(chip, &freq);
- 		if (err == 0)
- 			chip->board_sample_rate = freq;
--		snd_printd(LXP "actual clock frequency %d\n", freq);
-+		dev_dbg(chip->card->dev, "actual clock frequency %d\n", freq);
- 	} else {
--		snd_printk(KERN_ERR LXP "DSP corrupted \n");
-+		dev_err(chip->card->dev, "DSP corrupted \n");
- 		err = -EAGAIN;
- 	}
- 
-@@ -732,7 +732,7 @@ static int lx_set_granularity(struct lx6464es *chip, u32 gran)
- 	int err = 0;
- 	u32 snapped_gran = MICROBLAZE_IBL_MIN;
- 
--	snd_printdd("->lx_set_granularity\n");
-+	dev_dbg(chip->card->dev, "->lx_set_granularity\n");
- 
- 	/* blocksize is a power of 2 */
- 	while ((snapped_gran < gran) &&
-@@ -745,14 +745,14 @@ static int lx_set_granularity(struct lx6464es *chip, u32 gran)
- 
- 	err = lx_dsp_set_granularity(chip, snapped_gran);
- 	if (err < 0) {
--		snd_printk(KERN_WARNING LXP "could not set granularity\n");
-+		dev_warn(chip->card->dev, "could not set granularity\n");
- 		err = -EAGAIN;
- 	}
- 
- 	if (snapped_gran != gran)
--		snd_printk(LXP "snapped blocksize to %d\n", snapped_gran);
-+		dev_err(chip->card->dev, "snapped blocksize to %d\n", snapped_gran);
- 
--	snd_printd(LXP "set blocksize on board %d\n", snapped_gran);
-+	dev_dbg(chip->card->dev, "set blocksize on board %d\n", snapped_gran);
- 	chip->pcm_granularity = snapped_gran;
- 
- 	return err;
-@@ -764,19 +764,19 @@ static int lx_init_dsp(struct lx6464es *chip)
- 	int err;
- 	int i;
- 
--	snd_printdd("->lx_init_dsp\n");
-+	dev_dbg(chip->card->dev, "->lx_init_dsp\n");
- 
--	snd_printd(LXP "initialize board\n");
-+	dev_dbg(chip->card->dev, "initialize board\n");
- 	err = lx_init_xilinx_reset(chip);
- 	if (err)
- 		return err;
- 
--	snd_printd(LXP "testing board\n");
-+	dev_dbg(chip->card->dev, "testing board\n");
- 	err = lx_init_xilinx_test(chip);
- 	if (err)
- 		return err;
- 
--	snd_printd(LXP "initialize ethersound configuration\n");
-+	dev_dbg(chip->card->dev, "initialize ethersound configuration\n");
- 	err = lx_init_ethersound_config(chip);
- 	if (err)
- 		return err;
-@@ -797,8 +797,9 @@ static int lx_init_dsp(struct lx6464es *chip)
- 	return -ETIMEDOUT;
- 
- mac_ready:
--	snd_printd(LXP "mac address ready read after: %dms\n", i);
--	snd_printk(LXP "mac address: %02X.%02X.%02X.%02X.%02X.%02X\n",
-+	dev_dbg(chip->card->dev, "mac address ready read after: %dms\n", i);
-+	dev_info(chip->card->dev,
-+		 "mac address: %02X.%02X.%02X.%02X.%02X.%02X\n",
- 		   chip->mac_address[0], chip->mac_address[1], chip->mac_address[2],
- 		   chip->mac_address[3], chip->mac_address[4], chip->mac_address[5]);
- 
-@@ -977,7 +978,7 @@ static int snd_lx6464es_create(struct snd_card *card,
- 		.dev_free = snd_lx6464es_dev_free,
- 	};
- 
--	snd_printdd("->snd_lx6464es_create\n");
-+	dev_dbg(card->dev, "->snd_lx6464es_create\n");
- 
- 	*rchip = NULL;
- 
-@@ -991,8 +992,8 @@ static int snd_lx6464es_create(struct snd_card *card,
- 	/* check if we can restrict PCI DMA transfers to 32 bits */
- 	err = pci_set_dma_mask(pci, DMA_BIT_MASK(32));
- 	if (err < 0) {
--		snd_printk(KERN_ERR "architecture does not support "
--			   "32bit PCI busmaster DMA\n");
+@@ -1267,7 +1271,8 @@ static int snd_sonicvibes_create(struct snd_card *card,
+ 	/* check, if we can restrict PCI DMA transfers to 24 bits */
+         if (pci_set_dma_mask(pci, DMA_BIT_MASK(24)) < 0 ||
+ 	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(24)) < 0) {
+-		snd_printk(KERN_ERR "architecture does not support 24bit PCI busmaster DMA\n");
 +		dev_err(card->dev,
-+			"architecture does not support 32bit PCI busmaster DMA\n");
++			"architecture does not support 24bit PCI busmaster DMA\n");
  		pci_disable_device(pci);
- 		return -ENXIO;
- 	}
-@@ -1034,7 +1035,7 @@ static int snd_lx6464es_create(struct snd_card *card,
- 	err = request_irq(pci->irq, lx_interrupt, IRQF_SHARED,
- 			  KBUILD_MODNAME, chip);
- 	if (err) {
--		snd_printk(KERN_ERR LXP "unable to grab IRQ %d\n", pci->irq);
+                 return -ENXIO;
+         }
+@@ -1296,7 +1301,7 @@ static int snd_sonicvibes_create(struct snd_card *card,
+ 
+ 	if (request_irq(pci->irq, snd_sonicvibes_interrupt, IRQF_SHARED,
+ 			KBUILD_MODNAME, sonic)) {
+-		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 +		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
- 		goto request_irq_failed;
+ 		snd_sonicvibes_free(sonic);
+ 		return -EBUSY;
  	}
- 	chip->irq = pci->irq;
-@@ -1045,7 +1046,7 @@ static int snd_lx6464es_create(struct snd_card *card,
- 
- 	err = lx_init_dsp(chip);
- 	if (err < 0) {
--		snd_printk(KERN_ERR LXP "error during DSP initialization\n");
-+		dev_err(card->dev, "error during DSP initialization\n");
- 		return err;
+@@ -1310,24 +1315,32 @@ static int snd_sonicvibes_create(struct snd_card *card,
+ 	if (!dmaa) {
+ 		dmaa = dmaio;
+ 		dmaio += 0x10;
+-		snd_printk(KERN_INFO "BIOS did not allocate DDMA channel A i/o, allocated at 0x%x\n", dmaa);
++		dev_info(card->dev,
++			 "BIOS did not allocate DDMA channel A i/o, allocated at 0x%x\n",
++			 dmaa);
  	}
- 
-@@ -1088,7 +1089,7 @@ static int snd_lx6464es_probe(struct pci_dev *pci,
- 	struct lx6464es *chip;
- 	int err;
- 
--	snd_printdd("->snd_lx6464es_probe\n");
-+	dev_dbg(&pci->dev, "->snd_lx6464es_probe\n");
- 
- 	if (dev >= SNDRV_CARDS)
- 		return -ENODEV;
-@@ -1104,7 +1105,7 @@ static int snd_lx6464es_probe(struct pci_dev *pci,
- 
- 	err = snd_lx6464es_create(card, pci, &chip);
- 	if (err < 0) {
--		snd_printk(KERN_ERR LXP "error during snd_lx6464es_create\n");
-+		dev_err(card->dev, "error during snd_lx6464es_create\n");
- 		goto out_free;
+ 	if (!dmac) {
+ 		dmac = dmaio;
+ 		dmaio += 0x10;
+-		snd_printk(KERN_INFO "BIOS did not allocate DDMA channel C i/o, allocated at 0x%x\n", dmac);
++		dev_info(card->dev,
++			 "BIOS did not allocate DDMA channel C i/o, allocated at 0x%x\n",
++			 dmac);
  	}
+ 	pci_write_config_dword(pci, 0x40, dmaa);
+ 	pci_write_config_dword(pci, 0x48, dmac);
  
-@@ -1124,7 +1125,7 @@ static int snd_lx6464es_probe(struct pci_dev *pci,
- 	if (err < 0)
- 		goto out_free;
- 
--	snd_printdd(LXP "initialization successful\n");
-+	dev_dbg(chip->card->dev, "initialization successful\n");
- 	pci_set_drvdata(pci, card);
- 	dev++;
- 	return 0;
-diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
-index df4044d4f43d..2d8e95e9fbe5 100644
---- a/sound/pci/lx6464es/lx_core.c
-+++ b/sound/pci/lx6464es/lx_core.c
-@@ -273,7 +273,7 @@ static int lx_message_send_atomic(struct lx6464es *chip, struct lx_rmh *rmh)
- 	int dwloop;
- 
- 	if (lx_dsp_reg_read(chip, eReg_CSM) & (Reg_CSM_MC | Reg_CSM_MR)) {
--		snd_printk(KERN_ERR LXP "PIOSendMessage eReg_CSM %x\n", reg);
-+		dev_err(chip->card->dev, "PIOSendMessage eReg_CSM %x\n", reg);
+ 	if ((sonic->res_dmaa = request_region(dmaa, 0x10, "S3 SonicVibes DDMA-A")) == NULL) {
+ 		snd_sonicvibes_free(sonic);
+-		snd_printk(KERN_ERR "unable to grab DDMA-A port at 0x%x-0x%x\n", dmaa, dmaa + 0x10 - 1);
++		dev_err(card->dev,
++			"unable to grab DDMA-A port at 0x%x-0x%x\n",
++			dmaa, dmaa + 0x10 - 1);
+ 		return -EBUSY;
+ 	}
+ 	if ((sonic->res_dmac = request_region(dmac, 0x10, "S3 SonicVibes DDMA-C")) == NULL) {
+ 		snd_sonicvibes_free(sonic);
+-		snd_printk(KERN_ERR "unable to grab DDMA-C port at 0x%x-0x%x\n", dmac, dmac + 0x10 - 1);
++		dev_err(card->dev,
++			"unable to grab DDMA-C port at 0x%x-0x%x\n",
++			dmac, dmac + 0x10 - 1);
  		return -EBUSY;
  	}
  
-@@ -294,7 +294,7 @@ static int lx_message_send_atomic(struct lx6464es *chip, struct lx_rmh *rmh)
- 		} else
- 			udelay(1);
- 	}
--	snd_printk(KERN_WARNING LXP "TIMEOUT lx_message_send_atomic! "
-+	dev_warn(chip->card->dev, "TIMEOUT lx_message_send_atomic! "
- 		   "polling failed\n");
- 
- polling_successful:
-@@ -306,18 +306,18 @@ polling_successful:
- 					   rmh->stat_len);
- 		}
- 	} else
--		snd_printk(LXP "rmh error: %08x\n", reg);
-+		dev_err(chip->card->dev, "rmh error: %08x\n", reg);
- 
- 	/* clear Reg_CSM_MR */
- 	lx_dsp_reg_write(chip, eReg_CSM, 0);
- 
- 	switch (reg) {
- 	case ED_DSP_TIMED_OUT:
--		snd_printk(KERN_WARNING LXP "lx_message_send: dsp timeout\n");
-+		dev_warn(chip->card->dev, "lx_message_send: dsp timeout\n");
- 		return -ETIMEDOUT;
- 
- 	case ED_DSP_CRASHED:
--		snd_printk(KERN_WARNING LXP "lx_message_send: dsp crashed\n");
-+		dev_warn(chip->card->dev, "lx_message_send: dsp crashed\n");
- 		return -EAGAIN;
- 	}
- 
-@@ -458,7 +458,7 @@ int lx_pipe_allocate(struct lx6464es *chip, u32 pipe, int is_capture,
- 	spin_unlock_irqrestore(&chip->msg_lock, flags);
- 
- 	if (err != 0)
--		snd_printk(KERN_ERR "lx6464es: could not allocate pipe\n");
-+		dev_err(chip->card->dev, "could not allocate pipe\n");
- 
- 	return err;
- }
-@@ -520,11 +520,13 @@ int lx_buffer_ask(struct lx6464es *chip, u32 pipe, int is_capture,
- 		}
- 
- #if 0
--		snd_printdd(LXP "CMD_08_ASK_BUFFERS: needed %d, freed %d\n",
-+		dev_dbg(chip->card->dev,
-+			"CMD_08_ASK_BUFFERS: needed %d, freed %d\n",
- 			    *r_needed, *r_freed);
- 		for (i = 0; i < MAX_STREAM_BUFFER; ++i) {
- 			for (i = 0; i != chip->rmh.stat_len; ++i)
--				snd_printdd("  stat[%d]: %x, %x\n", i,
-+				dev_dbg(chip->card->dev,
-+					"  stat[%d]: %x, %x\n", i,
- 					    chip->rmh.stat[i],
- 					    chip->rmh.stat[i] & MASK_DATA_SIZE);
- 		}
-@@ -617,8 +619,8 @@ int lx_pipe_sample_count(struct lx6464es *chip, u32 pipe, int is_capture,
- 	err = lx_message_send_atomic(chip, &chip->rmh); /* don't sleep! */
- 
- 	if (err != 0)
--		snd_printk(KERN_ERR
--			   "lx6464es: could not query pipe's sample count\n");
-+		dev_err(chip->card->dev,
-+			"could not query pipe's sample count\n");
- 	else {
- 		*rsample_count = ((u64)(chip->rmh.stat[0] & MASK_SPL_COUNT_HI)
- 				  << 24)     /* hi part */
-@@ -644,7 +646,7 @@ int lx_pipe_state(struct lx6464es *chip, u32 pipe, int is_capture, u16 *rstate)
- 	err = lx_message_send_atomic(chip, &chip->rmh);
- 
- 	if (err != 0)
--		snd_printk(KERN_ERR "lx6464es: could not query pipe's state\n");
-+		dev_err(chip->card->dev, "could not query pipe's state\n");
- 	else
- 		*rstate = (chip->rmh.stat[0] >> PSTATE_OFFSET) & 0x0F;
- 
-@@ -717,7 +719,7 @@ int lx_stream_set_format(struct lx6464es *chip, struct snd_pcm_runtime *runtime,
- 	u32 channels = runtime->channels;
- 
- 	if (runtime->channels != channels)
--		snd_printk(KERN_ERR LXP "channel count mismatch: %d vs %d",
-+		dev_err(chip->card->dev, "channel count mismatch: %d vs %d",
- 			   runtime->channels, channels);
- 
- 	spin_lock_irqsave(&chip->msg_lock, flags);
-@@ -820,13 +822,16 @@ int lx_buffer_give(struct lx6464es *chip, u32 pipe, int is_capture,
- 	}
- 
- 	if (err == EB_RBUFFERS_TABLE_OVERFLOW)
--		snd_printk(LXP "lx_buffer_give EB_RBUFFERS_TABLE_OVERFLOW\n");
-+		dev_err(chip->card->dev,
-+			"lx_buffer_give EB_RBUFFERS_TABLE_OVERFLOW\n");
- 
- 	if (err == EB_INVALID_STREAM)
--		snd_printk(LXP "lx_buffer_give EB_INVALID_STREAM\n");
-+		dev_err(chip->card->dev,
-+			"lx_buffer_give EB_INVALID_STREAM\n");
- 
- 	if (err == EB_CMD_REFUSED)
--		snd_printk(LXP "lx_buffer_give EB_CMD_REFUSED\n");
-+		dev_err(chip->card->dev,
-+			"lx_buffer_give EB_CMD_REFUSED\n");
- 
-  done:
- 	spin_unlock_irqrestore(&chip->msg_lock, flags);
-@@ -899,7 +904,8 @@ int lx_level_unmute(struct lx6464es *chip, int is_capture, int unmute)
- 	chip->rmh.cmd[1] = (u32)(mute_mask >> (u64)32);	       /* hi part */
- 	chip->rmh.cmd[2] = (u32)(mute_mask & (u64)0xFFFFFFFF); /* lo part */
- 
--	snd_printk("mute %x %x %x\n", chip->rmh.cmd[0], chip->rmh.cmd[1],
-+	dev_dbg(chip->card->dev,
-+		"mute %x %x %x\n", chip->rmh.cmd[0], chip->rmh.cmd[1],
- 		   chip->rmh.cmd[2]);
- 
- 	err = lx_message_send_atomic(chip, &chip->rmh);
-@@ -1009,7 +1015,7 @@ static int lx_interrupt_ack(struct lx6464es *chip, u32 *r_irqsrc,
- 	}
- 
- 	if (irq_async) {
--		/* snd_printd("interrupt: async event pending\n"); */
-+		/* dev_dbg(chip->card->dev, "interrupt: async event pending\n"); */
- 		*r_async_pending = 1;
- 	}
- 
-@@ -1055,13 +1061,13 @@ static int lx_interrupt_handle_async_events(struct lx6464es *chip, u32 irqsrc,
- 	if (eb_pending_in) {
- 		*r_notified_in_pipe_mask = ((u64)stat[3] << 32)
- 			+ stat[4];
--		snd_printdd(LXP "interrupt: EOBI pending %llx\n",
-+		dev_dbg(chip->card->dev, "interrupt: EOBI pending %llx\n",
- 			    *r_notified_in_pipe_mask);
- 	}
- 	if (eb_pending_out) {
- 		*r_notified_out_pipe_mask = ((u64)stat[1] << 32)
- 			+ stat[2];
--		snd_printdd(LXP "interrupt: EOBO pending %llx\n",
-+		dev_dbg(chip->card->dev, "interrupt: EOBO pending %llx\n",
- 			    *r_notified_out_pipe_mask);
- 	}
- 
-@@ -1097,17 +1103,19 @@ static int lx_interrupt_request_new_buffer(struct lx6464es *chip,
- 	u32 needed, freed;
- 	u32 size_array[MAX_STREAM_BUFFER];
- 
--	snd_printdd("->lx_interrupt_request_new_buffer\n");
-+	dev_dbg(chip->card->dev, "->lx_interrupt_request_new_buffer\n");
- 
- 	spin_lock_irqsave(&chip->lock, flags);
- 
- 	err = lx_buffer_ask(chip, 0, is_capture, &needed, &freed, size_array);
--	snd_printdd(LXP "interrupt: needed %d, freed %d\n", needed, freed);
-+	dev_dbg(chip->card->dev,
-+		"interrupt: needed %d, freed %d\n", needed, freed);
- 
- 	unpack_pointer(buf, &buf_lo, &buf_hi);
- 	err = lx_buffer_give(chip, 0, is_capture, period_bytes, buf_lo, buf_hi,
- 			     &buffer_index);
--	snd_printdd(LXP "interrupt: gave buffer index %x on 0x%lx (%d bytes)\n",
-+	dev_dbg(chip->card->dev,
-+		"interrupt: gave buffer index %x on 0x%lx (%d bytes)\n",
- 		    buffer_index, (unsigned long)buf, period_bytes);
- 
- 	lx_stream->frame_pos = next_pos;
-@@ -1122,11 +1130,11 @@ void lx_tasklet_playback(unsigned long data)
- 	struct lx_stream *lx_stream = &chip->playback_stream;
- 	int err;
- 
--	snd_printdd("->lx_tasklet_playback\n");
-+	dev_dbg(chip->card->dev, "->lx_tasklet_playback\n");
- 
- 	err = lx_interrupt_request_new_buffer(chip, lx_stream);
- 	if (err < 0)
--		snd_printk(KERN_ERR LXP
-+		dev_err(chip->card->dev,
- 			   "cannot request new buffer for playback\n");
- 
- 	snd_pcm_period_elapsed(lx_stream->stream);
-@@ -1138,10 +1146,10 @@ void lx_tasklet_capture(unsigned long data)
- 	struct lx_stream *lx_stream = &chip->capture_stream;
- 	int err;
- 
--	snd_printdd("->lx_tasklet_capture\n");
-+	dev_dbg(chip->card->dev, "->lx_tasklet_capture\n");
- 	err = lx_interrupt_request_new_buffer(chip, lx_stream);
- 	if (err < 0)
--		snd_printk(KERN_ERR LXP
-+		dev_err(chip->card->dev,
- 			   "cannot request new buffer for capture\n");
- 
- 	snd_pcm_period_elapsed(lx_stream->stream);
-@@ -1156,12 +1164,14 @@ static int lx_interrupt_handle_audio_transfer(struct lx6464es *chip,
- 	int err = 0;
- 
- 	if (notified_in_pipe_mask) {
--		snd_printdd(LXP "requesting audio transfer for capture\n");
-+		dev_dbg(chip->card->dev,
-+			"requesting audio transfer for capture\n");
- 		tasklet_hi_schedule(&chip->tasklet_capture);
- 	}
- 
- 	if (notified_out_pipe_mask) {
--		snd_printdd(LXP "requesting audio transfer for playback\n");
-+		dev_dbg(chip->card->dev,
-+			"requesting audio transfer for playback\n");
- 		tasklet_hi_schedule(&chip->tasklet_playback);
- 	}
- 
-@@ -1177,11 +1187,12 @@ irqreturn_t lx_interrupt(int irq, void *dev_id)
- 
- 	spin_lock(&chip->lock);
- 
--	snd_printdd("**************************************************\n");
-+	dev_dbg(chip->card->dev,
-+		"**************************************************\n");
- 
- 	if (!lx_interrupt_ack(chip, &irqsrc, &async_pending, &async_escmd)) {
- 		spin_unlock(&chip->lock);
--		snd_printdd("IRQ_NONE\n");
-+		dev_dbg(chip->card->dev, "IRQ_NONE\n");
- 		return IRQ_NONE; /* this device did not cause the interrupt */
- 	}
- 
-@@ -1190,16 +1201,16 @@ irqreturn_t lx_interrupt(int irq, void *dev_id)
- 
- #if 0
- 	if (irqsrc & MASK_SYS_STATUS_EOBI)
--		snd_printdd(LXP "interrupt: EOBI\n");
-+		dev_dgg(chip->card->dev, "interrupt: EOBI\n");
- 
- 	if (irqsrc & MASK_SYS_STATUS_EOBO)
--		snd_printdd(LXP "interrupt: EOBO\n");
-+		dev_dbg(chip->card->dev, "interrupt: EOBO\n");
- 
- 	if (irqsrc & MASK_SYS_STATUS_URUN)
--		snd_printdd(LXP "interrupt: URUN\n");
-+		dev_dbg(chip->card->dev, "interrupt: URUN\n");
- 
- 	if (irqsrc & MASK_SYS_STATUS_ORUN)
--		snd_printdd(LXP "interrupt: ORUN\n");
-+		dev_dbg(chip->card->dev, "interrupt: ORUN\n");
- #endif
- 
- 	if (async_pending) {
-@@ -1214,7 +1225,7 @@ irqreturn_t lx_interrupt(int irq, void *dev_id)
- 						       &notified_in_pipe_mask,
- 						       &notified_out_pipe_mask);
- 		if (err)
--			snd_printk(KERN_ERR LXP
-+			dev_err(chip->card->dev,
- 				   "error handling async events\n");
- 
- 		err = lx_interrupt_handle_audio_transfer(chip,
-@@ -1222,7 +1233,7 @@ irqreturn_t lx_interrupt(int irq, void *dev_id)
- 							 notified_out_pipe_mask
- 			);
- 		if (err)
--			snd_printk(KERN_ERR LXP
-+			dev_err(chip->card->dev,
- 				   "error during audio transfer\n");
- 	}
- 
-@@ -1234,7 +1245,7 @@ irqreturn_t lx_interrupt(int irq, void *dev_id)
- 		 *
- 		 * */
- 
--		snd_printdd("lx6464es: interrupt requests escmd handling\n");
-+		dev_dbg(chip->card->dev, "interrupt requests escmd handling\n");
- #endif
- 	}
- 
-@@ -1262,12 +1273,12 @@ static void lx_irq_set(struct lx6464es *chip, int enable)
- 
- void lx_irq_enable(struct lx6464es *chip)
- {
--	snd_printdd("->lx_irq_enable\n");
-+	dev_dbg(chip->card->dev, "->lx_irq_enable\n");
- 	lx_irq_set(chip, 1);
- }
- 
- void lx_irq_disable(struct lx6464es *chip)
- {
--	snd_printdd("->lx_irq_disable\n");
-+	dev_dbg(chip->card->dev, "->lx_irq_disable\n");
- 	lx_irq_set(chip, 0);
- }
 -- 
 1.9.0
