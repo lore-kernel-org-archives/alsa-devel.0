@@ -1,71 +1,43 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH 05/10] ASoC: imx-ssi: Add
-	.of_xlate_tdm_slot_mask() support.
-Date: Wed, 26 Feb 2014 11:59:30 +0800
-Message-ID: <1393387175-15539-6-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCH 08/10] ASoC: blackfin: bf5xx-ad193x: Use snd_soc_dai_set_tdm_slot_xlate()
+Date: Wed, 26 Feb 2014 11:59:33 +0800
+Message-ID: <1393387175-15539-9-git-send-email-Li.Xiubo@freescale.com>
 References: <1393387175-15539-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe001.messaging.microsoft.com [216.32.180.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A8D526515F
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 06:08:33 +0100 (CET)
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1393387175-15539-1-git-send-email-Li.Xiubo@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: fabio.estevam@freescale.com, moinejf@free.fr, alsa-devel@alsa-project.org, lars@metafoo.de, kuninori.morimoto.gx@renesas.com, tiwai@suse.de, s.hauer@pengutronix.de, timur@tabi.org, linux-kernel@vger.kernel.org, denis@eukrea.com, Xiubo Li <Li.Xiubo@freescale.com>, Guangyu.Chen@freescale.com, mpa@pengutronix.de, shawn.guo@linaro.org
+Cc: timur@tabi.org, tiwai@suse.de, lars@metafoo.de, Guangyu.Chen@freescale.com, fabio.estevam@freescale.com, shawn.guo@linaro.org, denis@eukrea.com, mpa@pengutronix.de, s.hauer@pengutronix.de, moinejf@free.fr, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch add .of_xlate_tdm_slot_mask support for IMX SSI, and this
-will generate the TDM slot TX and RX masks.
+Use snd_soc_dai_set_tdm_slot_xlate instead of snd_soc_dai_set_tdm_slot.
+This will use the default snd_soc_of_xlate_tdm_slot_mask to generate
+the TDM slot TX/RX mask using the slot parameter.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/fsl/Kconfig   | 1 +
- sound/soc/fsl/imx-ssi.c | 2 ++
- 2 files changed, 3 insertions(+)
+ sound/soc/blackfin/bf5xx-ad193x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 7472308..67833dd 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -122,6 +122,7 @@ if SND_IMX_SOC
+diff --git a/sound/soc/blackfin/bf5xx-ad193x.c b/sound/soc/blackfin/bf5xx-ad193x.c
+index 603ad1f..f622faa 100644
+--- a/sound/soc/blackfin/bf5xx-ad193x.c
++++ b/sound/soc/blackfin/bf5xx-ad193x.c
+@@ -53,11 +53,11 @@ static int bf5xx_ad193x_link_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
  
- config SND_SOC_IMX_SSI
- 	tristate
-+	select SND_SOC_FSL_UTILS
+ 	/* set codec DAI slots, 8 channels, all channels are enabled */
+-	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xFF, 0xFF, 8, 32);
++	ret = snd_soc_dai_set_tdm_slot_xlate(codec_dai, 8, 32);
+ 	if (ret < 0)
+ 		return ret;
  
- config SND_SOC_IMX_PCM_FIQ
- 	tristate
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index df552fa..52d4b7a 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -50,6 +50,7 @@
- #include <linux/platform_data/asoc-imx-ssi.h>
+-	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0xFF, 0xFF, 8, 32);
++	ret = snd_soc_dai_set_tdm_slot_xlate(cpu_dai, 8, 32);
+ 	if (ret < 0)
+ 		return ret;
  
- #include "imx-ssi.h"
-+#include "fsl_utils.h"
- 
- #define SSI_SACNT_DEFAULT (SSI_SACNT_AC97EN | SSI_SACNT_FV)
- 
-@@ -339,6 +340,7 @@ static const struct snd_soc_dai_ops imx_ssi_pcm_dai_ops = {
- 	.set_fmt	= imx_ssi_set_dai_fmt,
- 	.set_clkdiv	= imx_ssi_set_dai_clkdiv,
- 	.set_sysclk	= imx_ssi_set_dai_sysclk,
-+	.of_xlate_tdm_slot_mask = fsl_asoc_of_xlate_tdm_slot_mask,
- 	.set_tdm_slot	= imx_ssi_set_dai_tdm_slot,
- 	.trigger	= imx_ssi_trigger,
- };
 -- 
 1.8.4
