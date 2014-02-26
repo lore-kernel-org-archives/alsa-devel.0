@@ -1,17 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 05/48] ALSA: atiixp: Use standard printk helpers
-Date: Wed, 26 Feb 2014 16:53:07 +0100
-Message-ID: <1393430030-26704-6-git-send-email-tiwai@suse.de>
+Subject: [PATCH 07/48] ALSA: azt3328: Remove function debug
+	prints
+Date: Wed, 26 Feb 2014 16:53:09 +0100
+Message-ID: <1393430030-26704-8-git-send-email-tiwai@suse.de>
 References: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 77CC226577F
+ by alsa0.perex.cz (Postfix) with ESMTP id C9A4226578F
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 16:53:53 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 4A38A75024
+ by mx2.suse.de (Postfix) with ESMTP id 4F0927502A
  for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 15:53:53 +0000 (UTC)
 In-Reply-To: <1393430030-26704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,127 +27,328 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Convert with dev_err() and co from snd_printk(), etc.
+We have a better infrastructure in general, so let's reduce the
+home-baked debug macros.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/atiixp.c | 29 ++++++++++++++---------------
- 1 file changed, 14 insertions(+), 15 deletions(-)
+ sound/pci/azt3328.c | 58 +----------------------------------------------------
+ 1 file changed, 1 insertion(+), 57 deletions(-)
 
-diff --git a/sound/pci/atiixp.c b/sound/pci/atiixp.c
-index 85f893b5cc99..ae07b4926dc2 100644
---- a/sound/pci/atiixp.c
-+++ b/sound/pci/atiixp.c
-@@ -432,7 +432,7 @@ static int snd_atiixp_acquire_codec(struct atiixp *chip)
+diff --git a/sound/pci/azt3328.c b/sound/pci/azt3328.c
+index 641c235ab4d8..d5a00f337ab9 100644
+--- a/sound/pci/azt3328.c
++++ b/sound/pci/azt3328.c
+@@ -253,16 +253,6 @@ MODULE_SUPPORTED_DEVICE("{{Aztech,AZF3328}}");
+ #define snd_azf3328_dbgmisc(format, args...)
+ #endif
  
- 	while (atiixp_read(chip, PHYS_OUT_ADDR) & ATI_REG_PHYS_OUT_ADDR_EN) {
- 		if (! timeout--) {
--			snd_printk(KERN_WARNING "atiixp: codec acquire timeout\n");
-+			dev_warn(chip->card->dev, "codec acquire timeout\n");
- 			return -EBUSY;
- 		}
- 		udelay(1);
-@@ -463,7 +463,7 @@ static unsigned short snd_atiixp_codec_read(struct atiixp *chip, unsigned short
- 	} while (--timeout);
- 	/* time out may happen during reset */
- 	if (reg < 0x7c)
--		snd_printk(KERN_WARNING "atiixp: codec read timeout (reg %x)\n", reg);
-+		dev_warn(chip->card->dev, "codec read timeout (reg %x)\n", reg);
- 	return 0xffff;
+-#if DEBUG_CALLS
+-#define snd_azf3328_dbgcalls(format, args...) printk(format, ##args)
+-#define snd_azf3328_dbgcallenter() printk(KERN_DEBUG "--> %s\n", __func__)
+-#define snd_azf3328_dbgcallleave() printk(KERN_DEBUG "<-- %s\n", __func__)
+-#else
+-#define snd_azf3328_dbgcalls(format, args...)
+-#define snd_azf3328_dbgcallenter()
+-#define snd_azf3328_dbgcallleave()
+-#endif
+-
+ #if DEBUG_MIXER
+ #define snd_azf3328_dbgmixer(format, args...) printk(KERN_DEBUG format, ##args)
+ #else
+@@ -870,8 +860,6 @@ snd_azf3328_mixer_write_volume_gradually(const struct snd_azf3328 *chip,
+ 	unsigned char curr_vol_left = 0, curr_vol_right = 0;
+ 	int left_change = 0, right_change = 0;
+ 
+-	snd_azf3328_dbgcallenter();
+-
+ 	if (chan_sel & SET_CHAN_LEFT) {
+ 		curr_vol_left  = inb(portbase + 1);
+ 
+@@ -912,7 +900,6 @@ snd_azf3328_mixer_write_volume_gradually(const struct snd_azf3328 *chip,
+ 		if (delay)
+ 			mdelay(delay);
+ 	} while ((left_change) || (right_change));
+-	snd_azf3328_dbgcallleave();
  }
  
-@@ -523,7 +523,7 @@ static int snd_atiixp_aclink_reset(struct atiixp *chip)
- 		mdelay(1);
- 		atiixp_update(chip, CMD, ATI_REG_CMD_AC_RESET, ATI_REG_CMD_AC_RESET);
- 		if (!--timeout) {
--			snd_printk(KERN_ERR "atiixp: codec reset timeout\n");
-+			dev_err(chip->card->dev, "codec reset timeout\n");
- 			break;
- 		}
- 	}
-@@ -567,9 +567,8 @@ static int ac97_probing_bugs(struct pci_dev *pci)
- 
- 	q = snd_pci_quirk_lookup(pci, atiixp_quirks);
- 	if (q) {
--		snd_printdd(KERN_INFO
--			    "Atiixp quirk for %s.  Forcing codec %d\n",
--			    snd_pci_quirk_name(q), q->value);
-+		dev_dbg(&pci->dev, "atiixp quirk for %s.  Forcing codec %d\n",
-+			snd_pci_quirk_name(q), q->value);
- 		return q->value;
- 	}
- 	/* this hardware doesn't need workarounds.  Probe for codec */
-@@ -600,7 +599,7 @@ static int snd_atiixp_codec_detect(struct atiixp *chip)
- 	atiixp_write(chip, IER, 0); /* disable irqs */
- 
- 	if ((chip->codec_not_ready_bits & ALL_CODEC_NOT_READY) == ALL_CODEC_NOT_READY) {
--		snd_printk(KERN_ERR "atiixp: no codec detected!\n");
-+		dev_err(chip->card->dev, "no codec detected!\n");
- 		return -ENXIO;
- 	}
- 	return 0;
-@@ -676,7 +675,7 @@ static snd_pcm_uframes_t snd_atiixp_pcm_pointer(struct snd_pcm_substream *substr
- 			continue;
- 		return bytes_to_frames(runtime, curptr);
- 	}
--	snd_printd("atiixp: invalid DMA pointer read 0x%x (buf=%x)\n",
-+	dev_dbg(chip->card->dev, "invalid DMA pointer read 0x%x (buf=%x)\n",
- 		   readl(chip->remap_addr + dma->ops->dt_cur), dma->buf_addr);
- 	return 0;
- }
-@@ -688,7 +687,7 @@ static void snd_atiixp_xrun_dma(struct atiixp *chip, struct atiixp_dma *dma)
+ /*
+@@ -990,14 +977,12 @@ snd_azf3328_info_mixer(struct snd_kcontrol *kcontrol,
  {
- 	if (! dma->substream || ! dma->running)
- 		return;
--	snd_printdd("atiixp: XRUN detected (DMA %d)\n", dma->ops->type);
-+	dev_dbg(chip->card->dev, "XRUN detected (DMA %d)\n", dma->ops->type);
- 	snd_pcm_stream_lock(dma->substream);
- 	snd_pcm_stop(dma->substream, SNDRV_PCM_STATE_XRUN);
- 	snd_pcm_stream_unlock(dma->substream);
-@@ -1453,14 +1452,15 @@ static int snd_atiixp_mixer_new(struct atiixp *chip, int clock,
- 			ac97.scaps |= AC97_SCAP_NO_SPDIF;
- 		if ((err = snd_ac97_mixer(pbus, &ac97, &chip->ac97[i])) < 0) {
- 			chip->ac97[i] = NULL; /* to be sure */
--			snd_printdd("atiixp: codec %d not available for audio\n", i);
-+			dev_dbg(chip->card->dev,
-+				"codec %d not available for audio\n", i);
- 			continue;
- 		}
- 		codec_count++;
+ 	struct azf3328_mixer_reg reg;
+ 
+-	snd_azf3328_dbgcallenter();
+ 	snd_azf3328_mixer_reg_decode(&reg, kcontrol->private_value);
+ 	uinfo->type = reg.mask == 1 ?
+ 		SNDRV_CTL_ELEM_TYPE_BOOLEAN : SNDRV_CTL_ELEM_TYPE_INTEGER;
+ 	uinfo->count = reg.stereo + 1;
+ 	uinfo->value.integer.min = 0;
+ 	uinfo->value.integer.max = reg.mask;
+-	snd_azf3328_dbgcallleave();
+ 	return 0;
+ }
+ 
+@@ -1009,7 +994,6 @@ snd_azf3328_get_mixer(struct snd_kcontrol *kcontrol,
+ 	struct azf3328_mixer_reg reg;
+ 	u16 oreg, val;
+ 
+-	snd_azf3328_dbgcallenter();
+ 	snd_azf3328_mixer_reg_decode(&reg, kcontrol->private_value);
+ 
+ 	oreg = snd_azf3328_mixer_inw(chip, reg.reg);
+@@ -1028,7 +1012,6 @@ snd_azf3328_get_mixer(struct snd_kcontrol *kcontrol,
+ 		reg.reg, oreg,
+ 		ucontrol->value.integer.value[0], ucontrol->value.integer.value[1],
+ 		reg.lchan_shift, reg.rchan_shift, reg.mask, reg.invert, reg.stereo);
+-	snd_azf3328_dbgcallleave();
+ 	return 0;
+ }
+ 
+@@ -1040,7 +1023,6 @@ snd_azf3328_put_mixer(struct snd_kcontrol *kcontrol,
+ 	struct azf3328_mixer_reg reg;
+ 	u16 oreg, nreg, val;
+ 
+-	snd_azf3328_dbgcallenter();
+ 	snd_azf3328_mixer_reg_decode(&reg, kcontrol->private_value);
+ 	oreg = snd_azf3328_mixer_inw(chip, reg.reg);
+ 	val = ucontrol->value.integer.value[0] & reg.mask;
+@@ -1069,7 +1051,6 @@ snd_azf3328_put_mixer(struct snd_kcontrol *kcontrol,
+ 		reg.reg, ucontrol->value.integer.value[0], ucontrol->value.integer.value[1],
+ 		oreg, reg.lchan_shift, reg.rchan_shift,
+ 		nreg, snd_azf3328_mixer_inw(chip, reg.reg));
+-	snd_azf3328_dbgcallleave();
+ 	return (nreg != oreg);
+ }
+ 
+@@ -1253,7 +1234,6 @@ snd_azf3328_mixer_new(struct snd_azf3328 *chip)
+ 	unsigned int idx;
+ 	int err;
+ 
+-	snd_azf3328_dbgcallenter();
+ 	if (snd_BUG_ON(!chip || !chip->card))
+ 		return -EINVAL;
+ 
+@@ -1279,7 +1259,6 @@ snd_azf3328_mixer_new(struct snd_azf3328 *chip)
+ 	snd_component_add(card, "AZF3328 mixer");
+ 	strcpy(card->mixername, "AZF3328 mixer");
+ 
+-	snd_azf3328_dbgcallleave();
+ 	return 0;
+ }
+ #endif /* AZF_USE_AC97_LAYER */
+@@ -1288,19 +1267,13 @@ static int
+ snd_azf3328_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *hw_params)
+ {
+-	int res;
+-	snd_azf3328_dbgcallenter();
+-	res = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+-	snd_azf3328_dbgcallleave();
+-	return res;
++	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+ }
+ 
+ static int
+ snd_azf3328_hw_free(struct snd_pcm_substream *substream)
+ {
+-	snd_azf3328_dbgcallenter();
+ 	snd_pcm_lib_free_pages(substream);
+-	snd_azf3328_dbgcallleave();
+ 	return 0;
+ }
+ 
+@@ -1315,7 +1288,6 @@ snd_azf3328_codec_setfmt(struct snd_azf3328_codec_data *codec,
+ 	u16 val = 0xff00;
+ 	u8 freq = 0;
+ 
+-	snd_azf3328_dbgcallenter();
+ 	switch (bitrate) {
+ 	case AZF_FREQ_4000:  freq = SOUNDFORMAT_FREQ_SUSPECTED_4000; break;
+ 	case AZF_FREQ_4800:  freq = SOUNDFORMAT_FREQ_SUSPECTED_4800; break;
+@@ -1379,7 +1351,6 @@ snd_azf3328_codec_setfmt(struct snd_azf3328_codec_data *codec,
+ 		);
+ 
+ 	spin_unlock_irqrestore(codec->lock, flags);
+-	snd_azf3328_dbgcallleave();
+ }
+ 
+ static inline void
+@@ -1476,7 +1447,6 @@ snd_azf3328_codec_setdmaa(struct snd_azf3328_codec_data *codec,
+ 				unsigned int buffer_bytes
+ )
+ {
+-	snd_azf3328_dbgcallenter();
+ 	WARN_ONCE(period_bytes & 1, "odd period length!?\n");
+ 	WARN_ONCE(buffer_bytes != 2 * period_bytes,
+ 		 "missed our input expectations! %u vs. %u\n",
+@@ -1522,7 +1492,6 @@ snd_azf3328_codec_setdmaa(struct snd_azf3328_codec_data *codec,
+ 		);
+ 		spin_unlock_irqrestore(codec->lock, flags);
+ 	}
+-	snd_azf3328_dbgcallleave();
+ }
+ 
+ static int
+@@ -1535,8 +1504,6 @@ snd_azf3328_pcm_prepare(struct snd_pcm_substream *substream)
+ 	unsigned int count = snd_pcm_lib_period_bytes(substream);
+ #endif
+ 
+-	snd_azf3328_dbgcallenter();
+-
+ 	codec->dma_base = runtime->dma_addr;
+ 
+ #if 0
+@@ -1547,7 +1514,6 @@ snd_azf3328_pcm_prepare(struct snd_pcm_substream *substream)
+ 	snd_azf3328_codec_setdmaa(codec,
+ 					runtime->dma_addr, count, size);
+ #endif
+-	snd_azf3328_dbgcallleave();
+ 	return 0;
+ }
+ 
+@@ -1562,8 +1528,6 @@ snd_azf3328_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	bool previously_muted = false;
+ 	bool is_main_mixer_playback_codec = (AZF_CODEC_PLAYBACK == codec->type);
+ 
+-	snd_azf3328_dbgcalls("snd_azf3328_pcm_trigger cmd %d\n", cmd);
+-
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 		snd_azf3328_dbgcodec("START %s\n", codec->name);
+@@ -1706,7 +1670,6 @@ snd_azf3328_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+                 return -EINVAL;
  	}
  
- 	if (! codec_count) {
--		snd_printk(KERN_ERR "atiixp: no codec available\n");
-+		dev_err(chip->card->dev, "no codec available\n");
- 		return -ENODEV;
- 	}
+-	snd_azf3328_dbgcallleave();
+ 	return result;
+ }
  
-@@ -1511,8 +1511,7 @@ static int snd_atiixp_resume(struct device *dev)
- 	pci_set_power_state(pci, PCI_D0);
- 	pci_restore_state(pci);
- 	if (pci_enable_device(pci) < 0) {
--		printk(KERN_ERR "atiixp: pci_enable_device failed, "
--		       "disabling device\n");
-+		dev_err(dev, "pci_enable_device failed, disabling device\n");
- 		snd_card_disconnect(card);
- 		return -EIO;
- 	}
-@@ -1637,14 +1636,14 @@ static int snd_atiixp_create(struct snd_card *card,
- 	chip->addr = pci_resource_start(pci, 0);
- 	chip->remap_addr = pci_ioremap_bar(pci, 0);
- 	if (chip->remap_addr == NULL) {
--		snd_printk(KERN_ERR "AC'97 space ioremap problem\n");
-+		dev_err(card->dev, "AC'97 space ioremap problem\n");
- 		snd_atiixp_free(chip);
- 		return -EIO;
- 	}
+@@ -2133,7 +2096,6 @@ snd_azf3328_pcm_open(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_azf3328_codec_data *codec = &chip->codecs[codec_type];
  
- 	if (request_irq(pci->irq, snd_atiixp_interrupt, IRQF_SHARED,
- 			KBUILD_MODNAME, chip)) {
--		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
-+		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
- 		snd_atiixp_free(chip);
- 		return -EBUSY;
- 	}
+-	snd_azf3328_dbgcallenter();
+ 	codec->substream = substream;
+ 
+ 	/* same parameters for all our codecs - at least we think so... */
+@@ -2142,7 +2104,6 @@ snd_azf3328_pcm_open(struct snd_pcm_substream *substream,
+ 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+ 				   &snd_azf3328_hw_constraints_rates);
+ 	runtime->private_data = codec;
+-	snd_azf3328_dbgcallleave();
+ 	return 0;
+ }
+ 
+@@ -2171,9 +2132,7 @@ snd_azf3328_pcm_close(struct snd_pcm_substream *substream
+ 	struct snd_azf3328_codec_data *codec =
+ 		substream->runtime->private_data;
+ 
+-	snd_azf3328_dbgcallenter();
+ 	codec->substream = NULL;
+-	snd_azf3328_dbgcallleave();
+ 	return 0;
+ }
+ 
+@@ -2220,8 +2179,6 @@ enum { AZF_PCMDEV_STD, AZF_PCMDEV_I2S_OUT, NUM_AZF_PCMDEVS }; /* pcm devices */
+ 	struct snd_pcm *pcm;
+ 	int err;
+ 
+-	snd_azf3328_dbgcallenter();
+-
+ 	err = snd_pcm_new(chip->card, "AZF3328 DSP", AZF_PCMDEV_STD,
+ 								1, 1, &pcm);
+ 	if (err < 0)
+@@ -2258,7 +2215,6 @@ enum { AZF_PCMDEV_STD, AZF_PCMDEV_I2S_OUT, NUM_AZF_PCMDEVS }; /* pcm devices */
+ 						snd_dma_pci_data(chip->pci),
+ 							64*1024, 64*1024);
+ 
+-	snd_azf3328_dbgcallleave();
+ 	return 0;
+ }
+ 
+@@ -2281,7 +2237,6 @@ snd_azf3328_timer_start(struct snd_timer *timer)
+ 	unsigned long flags;
+ 	unsigned int delay;
+ 
+-	snd_azf3328_dbgcallenter();
+ 	chip = snd_timer_chip(timer);
+ 	delay = ((timer->sticks * seqtimer_scaling) - 1) & TIMER_VALUE_MASK;
+ 	if (delay < 49) {
+@@ -2297,7 +2252,6 @@ snd_azf3328_timer_start(struct snd_timer *timer)
+ 	spin_lock_irqsave(&chip->reg_lock, flags);
+ 	snd_azf3328_ctrl_outl(chip, IDX_IO_TIMER_VALUE, delay);
+ 	spin_unlock_irqrestore(&chip->reg_lock, flags);
+-	snd_azf3328_dbgcallleave();
+ 	return 0;
+ }
+ 
+@@ -2307,7 +2261,6 @@ snd_azf3328_timer_stop(struct snd_timer *timer)
+ 	struct snd_azf3328 *chip;
+ 	unsigned long flags;
+ 
+-	snd_azf3328_dbgcallenter();
+ 	chip = snd_timer_chip(timer);
+ 	spin_lock_irqsave(&chip->reg_lock, flags);
+ 	/* disable timer countdown and interrupt */
+@@ -2319,7 +2272,6 @@ snd_azf3328_timer_stop(struct snd_timer *timer)
+ 	   the hardware/ALSA interrupt activity. */
+ 	snd_azf3328_ctrl_outb(chip, IDX_IO_TIMER_VALUE + 3, 0x04);
+ 	spin_unlock_irqrestore(&chip->reg_lock, flags);
+-	snd_azf3328_dbgcallleave();
+ 	return 0;
+ }
+ 
+@@ -2328,10 +2280,8 @@ static int
+ snd_azf3328_timer_precise_resolution(struct snd_timer *timer,
+ 					       unsigned long *num, unsigned long *den)
+ {
+-	snd_azf3328_dbgcallenter();
+ 	*num = 1;
+ 	*den = 1024000 / seqtimer_scaling;
+-	snd_azf3328_dbgcallleave();
+ 	return 0;
+ }
+ 
+@@ -2351,7 +2301,6 @@ snd_azf3328_timer(struct snd_azf3328 *chip, int device)
+ 	struct snd_timer_id tid;
+ 	int err;
+ 
+-	snd_azf3328_dbgcallenter();
+ 	tid.dev_class = SNDRV_TIMER_CLASS_CARD;
+ 	tid.dev_sclass = SNDRV_TIMER_SCLASS_NONE;
+ 	tid.card = chip->card->number;
+@@ -2376,7 +2325,6 @@ snd_azf3328_timer(struct snd_azf3328 *chip, int device)
+ 	err = 0;
+ 
+ out:
+-	snd_azf3328_dbgcallleave();
+ 	return err;
+ }
+ 
+@@ -2622,7 +2570,6 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 	struct snd_opl3 *opl3;
+ 	int err;
+ 
+-	snd_azf3328_dbgcallenter();
+ 	if (dev >= SNDRV_CARDS) {
+ 		err = -ENODEV;
+ 		goto out;
+@@ -2715,16 +2662,13 @@ out_err:
+ 	snd_card_free(card);
+ 
+ out:
+-	snd_azf3328_dbgcallleave();
+ 	return err;
+ }
+ 
+ static void
+ snd_azf3328_remove(struct pci_dev *pci)
+ {
+-	snd_azf3328_dbgcallenter();
+ 	snd_card_free(pci_get_drvdata(pci));
+-	snd_azf3328_dbgcallleave();
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
 -- 
 1.9.0
