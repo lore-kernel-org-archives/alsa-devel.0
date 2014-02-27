@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simple-card: cpu_dai_name creates
- confusion when DT case
-Date: Thu, 27 Feb 2014 14:07:26 +0900
-Message-ID: <20140227050726.GR9383@sirena.org.uk>
-References: <87eh2r9169.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl-sai: Add SND_SOC_DAIFMT_DSP_A/B
+	support.
+Date: Thu, 27 Feb 2014 13:36:15 +0900
+Message-ID: <20140227043615.GG9383@sirena.org.uk>
+References: <1393461901-23844-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7862199069529627561=="
+Content-Type: multipart/mixed; boundary="===============4822813596456981748=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BC355261737
- for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 08:46:39 +0100 (CET)
-In-Reply-To: <87eh2r9169.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F34002657D9
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 08:46:41 +0100 (CET)
+In-Reply-To: <1393461901-23844-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,66 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7862199069529627561==
+--===============4822813596456981748==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jcwRHPSxFqmwpRFb"
+	protocol="application/pgp-signature"; boundary="5UGlQXeG3ziZS81+"
 Content-Disposition: inline
 
 
---jcwRHPSxFqmwpRFb
+--5UGlQXeG3ziZS81+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 24, 2014 at 10:06:09PM -0800, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Basically, soc_bind_dai_link() checks
-> cpu_dai->dev->of_node and dai_link->cpu_of_node in DT case.
-> But after that it will check
-> cpu_dai->name and dai_link->cpu_dai_name too.
->=20
-> On the other hand, snd_soc_dai :: name is created by
-> fmt_single_name() or fmt_multiple_name().
+On Thu, Feb 27, 2014 at 08:45:01AM +0800, Xiubo Li wrote:
+> o Add SND_SOC_DAIFMT_DSP_A support.
+> o Add SND_SOC_DAIFMT_DSP_B support.
 
-This looks like a valid issue which still affects current code but it
-doesn't apply due changes on the latest topic/simple branch.  Can you
-please check and resend?
+Applied, thanks.
 
---jcwRHPSxFqmwpRFb
+--5UGlQXeG3ziZS81+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTDsgKAAoJELSic+t+oim9Kq0P/1XrxSvZ6UG/2LgJP3W0mjEd
-vikD/P21WPha+unJfp4nOWV10RXE8opEcbN0J2GmaMltsusmoU0pALs7I5+J1Q5x
-Ke+DeLY1CzqfIp0gSWi1ZAh63XLYvEDwMr41S8eZw4MboFRfyYYrLVN8p80PmIUQ
-0d/QWscdQDVOFrthPdnXRsvrK67brgfIyOoofqnQErADjypvspL7FZ4tSu2lF1Xk
-LJUUXJC6eNzjeaSXsNzxFw2pHJsyfcT7oIiHGceJdEAlh1lv2aHyalfolHxMtW2F
-0q+/AuW72FxgMqeYvq4Y6b3uYWbhoFuhcwFTg/jj+zGm9yfLemgreiVyzAYfpqPg
-cNozCKsOf2uU4PJkiRjJkHvZdYzfR6T4iJBx+9ruEKMWfyBsWBE6ioK/r/ScIF2p
-aIVJd67zKH9rG5x4laZ7IADRgqiSOXJFssaRqwMSRbAB8bV9OuSMZRjfLKtIQ0iL
-N0+Y0YVk5IehW9MjzaGE82kdkUDPgABSsij15UYwn4HyM9vrTlRxLmUAiUucc0Zp
-KO1U9tqY721TKJNMnhjiNEXVXh/MJ3hukPZU6al1SSBq8EzszP0JnKYhRD8TQJyS
-YQFR0IjeiQqnTnDAkEyPjhWaE4oYtN+BNk7zTKKCXA7sDKRJ8/h5ZzzFYAJ5hNlr
-aMkjZLdCLbr6nc2KgM5H
-=IvxA
+iQIcBAEBAgAGBQJTDsC8AAoJELSic+t+oim9nskQAIQsue3I1pj0HbfoTzwdKoqQ
+eHrs2QWbE+KawcJs8wxwubYNF3N3wf+1ZFTmGCk+5aTJGmclsZtyvoUrL8WJtRfM
+/3Bs9kXbghDwx7XGhnFBmvD7v7ZEWUFoNnltVY+tnreV+AYSSmOtBabZ7h4fIZIl
+HDiRkN5jXRPRBdjQRdMMLmIeN9mxKuy23gawCOO7qY9AeGsocmZCPeXVcZ/BQgP1
+WA8p0pGrOuzef2tHTpuJBel2SsfPiObyvhnrXzU2OeLcT5+L+jbRRxRD6hgmeZl1
+rIahOZRiXOc1NgiNtPpw1jMfKY9lDW9tGW/jnB8aMpZcTE1mkUuVdJlDhAAsmQZs
+FEItMywQ8/BXFRAHoctkI+aQvteG+ofFsu+vCHIcLUuoIUb1Vh/Ty4RP5IXnulle
+AKZNGpeXa+Fi0kpDAiTfbpT/aJn/ceJCT7ip8EBinW9sNyXXXdCFzOAxNguxX0Fq
+DM2SMFUvx1+m5HBC7koRWwJ5uHapT84/MzU+zp/vcaxNUhC3MPak6xEMtfnHsQ0L
+clA8JuyjsejwRTT8A22foe+JLVAupk9GgsNiUXfKQExdj0Gwc9o9EeQlyFugMHyO
+LbGQcXZPOs2pG8klbWxx9hxMuTkbaOKAI7M0kYQWW8WlD0zHv8CC80WXYQT5dIYw
+27A8Zeq2IY70PnY8rZ/D
+=vyb1
 -----END PGP SIGNATURE-----
 
---jcwRHPSxFqmwpRFb--
+--5UGlQXeG3ziZS81+--
 
---===============7862199069529627561==
+--===============4822813596456981748==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7862199069529627561==--
+--===============4822813596456981748==--
