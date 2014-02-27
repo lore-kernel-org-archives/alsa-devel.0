@@ -1,119 +1,54 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH] ASoC: fsl-sai: Add SND_SOC_DAIFMT_DSP_A/B support.
-Date: Thu, 27 Feb 2014 08:45:01 +0800
-Message-ID: <1393461901-23844-1-git-send-email-Li.Xiubo@freescale.com>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH 01/15] ASoC: fsl-ssi: Use regmap
+Date: Thu, 27 Feb 2014 02:08:45 +0000
+Message-ID: <6dc5873dcdf54e13aecbf7c6be03f8bf@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
+ <1393430538-32333-2-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, timur@tabi.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0238.outbound.protection.outlook.com [207.46.163.238])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8EAC82657AD
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 03:08:49 +0100 (CET)
+In-Reply-To: <1393430538-32333-2-git-send-email-mpa@pengutronix.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>, Mark Brown <broonie@kernel.org>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-o Add SND_SOC_DAIFMT_DSP_A support.
-o Add SND_SOC_DAIFMT_DSP_B support.
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
----
- sound/soc/fsl/fsl_sai.c | 45 ++++++++++++++++++++++++++++++++++++++++++---
- sound/soc/fsl/fsl_sai.h |  1 +
- 2 files changed, 43 insertions(+), 3 deletions(-)
+> @@ -134,6 +115,15 @@ struct fsl_ssi_rxtx_reg_val {
+>  	struct fsl_ssi_reg_val rx;
+>  	struct fsl_ssi_reg_val tx;
+>  };
+> +static const struct regmap_config fsl_ssi_regconfig = {
+> +	.max_register = CCSR_SSI_SACCDIS,
+> +	.reg_bits = 32,
+> +	.val_bits = 32,
+> +	.reg_stride = 4,
+> +#ifdef PPC
+> +	.val_format_endian = REGMAP_ENDIAN_BIG,
+> +#endif
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 26d9f5e..c4a4231 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -108,15 +108,44 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
- 	/* DAI mode */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
--		/* Data on rising edge of bclk, frame low, 1clk before data */
-+		/*
-+		 * Frame low, 1clk before data, one word length for frame sync,
-+		 * frame sync starts one serial clock cycle earlier,
-+		 * that is, together with the last bit of the previous
-+		 * data word.
-+		 */
- 		val_cr2 &= ~FSL_SAI_CR2_BCP;
- 		val_cr4 |= FSL_SAI_CR4_FSE | FSL_SAI_CR4_FSP;
- 		break;
- 	case SND_SOC_DAIFMT_LEFT_J:
--		/* Data on rising edge of bclk, frame high, 0clk before data */
-+		/*
-+		 * Frame high, one word length for frame sync,
-+		 * frame sync asserts with the first bit of the frame.
-+		 */
- 		val_cr2 &= ~FSL_SAI_CR2_BCP;
- 		val_cr4 &= ~(FSL_SAI_CR4_FSE | FSL_SAI_CR4_FSP);
- 		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		/*
-+		 * Frame high, 1clk before data, one bit for frame sync,
-+		 * frame sync starts one serial clock cycle earlier,
-+		 * that is, together with the last bit of the previous
-+		 * data word.
-+		 */
-+		val_cr2 &= ~FSL_SAI_CR2_BCP;
-+		val_cr4 &= ~FSL_SAI_CR4_FSP;
-+		val_cr4 |= FSL_SAI_CR4_FSE;
-+		sai->is_dsp_mode = true;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		/*
-+		 * Frame high, one bit for frame sync,
-+		 * frame sync asserts with the first bit of the frame.
-+		 */
-+		val_cr2 &= ~FSL_SAI_CR2_BCP;
-+		val_cr4 &= ~(FSL_SAI_CR4_FSE | FSL_SAI_CR4_FSP);
-+		sai->is_dsp_mode = true;
-+		break;
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		/* To be done */
- 	default:
-@@ -219,7 +248,9 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	val_cr5 &= ~FSL_SAI_CR5_W0W_MASK;
- 	val_cr5 &= ~FSL_SAI_CR5_FBT_MASK;
- 
--	val_cr4 |= FSL_SAI_CR4_SYWD(word_width);
-+	if (!sai->is_dsp_mode)
-+		val_cr4 |= FSL_SAI_CR4_SYWD(word_width);
-+
- 	val_cr5 |= FSL_SAI_CR5_WNW(word_width);
- 	val_cr5 |= FSL_SAI_CR5_W0W(word_width);
- 
-@@ -245,6 +276,10 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
- 	u32 tcsr, rcsr;
- 
-+	/*
-+	 * The transmitter bit clock and frame sync are to be
-+	 * used by both the transmitter and receiver.
-+	 */
- 	regmap_update_bits(sai->regmap, FSL_SAI_TCR2, FSL_SAI_CR2_SYNC,
- 			   ~FSL_SAI_CR2_SYNC);
- 	regmap_update_bits(sai->regmap, FSL_SAI_RCR2, FSL_SAI_CR2_SYNC,
-@@ -261,6 +296,10 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 		tcsr &= ~FSL_SAI_CSR_FRDE;
- 	}
- 
-+	/*
-+	 * It is recommended that the transmitter is the last enabled
-+	 * and the first disabled.
-+	 */
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index 1571459..e432260 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -103,6 +103,7 @@ struct fsl_sai {
- 
- 	bool big_endian_regs;
- 	bool big_endian_data;
-+	bool is_dsp_mode;
- 
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
--- 
-1.8.4
+Is this really needed for your PPC platforms?
+
+If so, I think this should depend on one specified platform, which
+the CPU is in LE mode while the SSI is in BE mode...
+
+
+Thanks,
+
+--
+Best Regards,
+Xiubo
