@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/19] ASoC: rsnd: new module path method
-	and DT support
-Date: Thu, 27 Feb 2014 14:08:04 +0900
-Message-ID: <20140227050804.GS9383@sirena.org.uk>
-References: <87d2ib90t9.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH v4 0/7] ASoC: add CSR SiRFSoC sound drivers
+Date: Thu, 27 Feb 2014 13:38:56 +0900
+Message-ID: <20140227043856.GI9383@sirena.org.uk>
+References: <1393394695-29735-1-git-send-email-rongjun.ying@csr.com>
+ <s5hmwhev0tb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3520253910411174999=="
+Content-Type: multipart/mixed; boundary="===============3750661093002323975=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 761F32657F0
- for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 08:46:43 +0100 (CET)
-In-Reply-To: <87d2ib90t9.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C04B42657FD
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 08:46:49 +0100 (CET)
+In-Reply-To: <s5hmwhev0tb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, workgroup.linux@csr.com, Rongjun Ying <rongjun.ying@csr.com>, RongJun Ying <rjying@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3520253910411174999==
+--===============3750661093002323975==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LwgCY5hL6Igino+O"
+	protocol="application/pgp-signature"; boundary="lqaZmxkhekPBfBzr"
 Content-Disposition: inline
 
 
---LwgCY5hL6Igino+O
+--lqaZmxkhekPBfBzr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 24, 2014 at 10:13:57PM -0800, Kuninori Morimoto wrote:
+On Wed, Feb 26, 2014 at 07:35:12AM +0100, Takashi Iwai wrote:
 
-> Now, Mark's ALSA branch doesn't include SH-ARM platform branch.
-> Thus, these patches are keeping compatible for it at this point.
-> Compatible code will be removed after merge.
+> Are there anything else you want to say except for these subject
+> lines?  The empty changelog for such big changes doesn't look good.
 
-Would it make sense to do a cross tree merge of some of this code?
+For new drivers it's more acceptable, though - if the driver isn't doing
+anything exciting (and a lot of them won't be) there's often not much to
+say.  A lot of the changelogs you see are just a bit of the marketing
+blurb from the datasheet.
 
---LwgCY5hL6Igino+O
+--lqaZmxkhekPBfBzr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTDsgxAAoJELSic+t+oim9bYEQAJgRAflAcfLxpraxk2Ep07LH
-EcJxMzs7XQ4EvOgQmWe6S7ec4cuQIpb4yqRUvwQ13PTI/xQh/CwwQlT2oIHQTXI4
-Fv3ISshai332S7NRSpXUtwDSzlaPdKMs8L14NVwPK+cNqgDa1lGMxN6cT9KZrNp9
-xcdZ8hp/rtc5AA+EtgQh9QXsxOZf+ZhK13z9iw8MUNkxR+5OEJvbPfZJci1kWXIm
-A0677x71hhoJeKu11bKbnz0SPoXU6ykf+fADzPRaXJtXLtph+lX6DhXTBukPxL/W
-4DWnOwrRFNGneoWQ1Or3NGLRtS6LluSoj+5bPq+59dWT5az/JYWLbLwX53pTWPdB
-vAPDsBYAL01zLqHA9pBq/LMGdTzYC7IuLRA99P7LQVokP8FjvKDem+ADY9AxzEEE
-UjNUwsUpf3vqhGS7PJ3jZ+XMQ79JZNsQFxd3sUGJcctOXtuJUfn3vXnz0WIEpTJC
-Q3I0g28T0sduARLM5BXbs1GFzpNAXZ6vsEAeYQzOGMkqGzrR/OB6f8jv6wATGEpg
-seTY6oIdbtS6NJKLWpor3O85p1wYDRGfMjG/Eglj3Hknx6TV7sHneACqmm2y7WBS
-WRhGMaDVI7I8+zExKy2jwsUXC/Dc1xRwfPAdzn4Qj7Jo4KLbuHtKPVkj4jHZJiAg
-h09KDFTZiyE+ojeb0dKb
-=sBgt
+iQIcBAEBAgAGBQJTDsFdAAoJELSic+t+oim9Q6EP/jIJJeAVDGtoY2fzXptmtlZu
+LZoHotb4RB4s80S4pu8KrxO8Ztd+k4/VUQvWYf0xag0myW+FbKBO6yhwBxaPxw1u
+vIEpXVM5dpjAq7fIebutHtk90E5sAUCMzMMBxLdbpmuaLYavm5WK0AInu6mMkW9/
+dkYDVisjap7Xv4PYXHI3GItUsYYB/xY+vRhdCsA3vuE4VpyK6XPfXd8G/gclpdfv
+/qtebFP9f4D3IYnqFlJg5WSHaTywBK9iX8Jf+2CHXhT7bVN7/1QdhWa1B7QgjkzX
+maumQJfHpmXC9dHFDawRDn6EXuW4im5WQBDwv8NRIiHO2Oc9C27lZBPhms1ELI2Q
+NaEU1cqsXky0VxhIzayb2XjGdDzerqOJlRP1aSL9g0fpoYVdgQ78Pnnhif+W0Ylt
+ONxRKXOK9XLQl71LGyHCveakKHyiSSpBeJwr7TUD8lVZP1Ofg5rVFVpR/cIL611G
+F8kdYI0qKOmOJnDtNApZpak+zU1ur7wwxQgr/3jF56fEp+r00UrpbfLXz3LEqQLU
+gHRIfPl/DWnF/APjNGYpbZPURzI/l+KZW4h0PTkwfe+t8b745tZRGDnh3B4vFbNU
+LJrIc96OmDpZjRRocDG+aqLZMHMIS4V3EJ1eaQQ2ymOa/dqLW1Gge37xDWu9DCTZ
+5b+qr2dPD/SLlJK9xAZZ
+=SvEX
 -----END PGP SIGNATURE-----
 
---LwgCY5hL6Igino+O--
+--lqaZmxkhekPBfBzr--
 
---===============3520253910411174999==
+--===============3750661093002323975==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3520253910411174999==--
+--===============3750661093002323975==--
