@@ -1,35 +1,19 @@
-From: bobby <bseventynine@yahoo.com>
-Subject: Re: Unsupported Valley View 'LPE' adapter?
-Date: Thu, 27 Feb 2014 08:36:04 +0000 (UTC)
-Message-ID: <loom.20140227T081207-421@post.gmane.org>
-References: <1385840039.2566.12.camel@adam.happyassassin.net>
- <529A5C6A.70604@ladisch.de> <1385865517.2566.36.camel@adam.happyassassin.net>
- <20131202063216.GJ8834@intel.com>
- <1386035807.2566.145.camel@adam.happyassassin.net>
- <1388369981.15622.7.camel@adam.happyassassin.net>
- <1388370192.15622.8.camel@adam.happyassassin.net>
- <s5hwqiebsuo.wl%tiwai@suse.de> <loom.20140217T104754-228@post.gmane.org>
- <1392684057.2527.3.camel@xps13.happyassassin.net>
- <1392684512.2924.12.camel@adam.happyassassin.net>
- <1392785968.30443.1.camel@adam.happyassassin.net>
- <1392795682.2351.10.camel@loki>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sta32x: Fix wrong enum for limiter2
+	release rate
+Date: Thu, 27 Feb 2014 18:55:06 +0900
+Message-ID: <20140227095506.GW9383@sirena.org.uk>
+References: <1393483292-30412-1-git-send-email-tiwai@suse.de>
+ <20140227075317.GV9383@sirena.org.uk>
+ <s5hios1m07f.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3293662549870681888=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id EACB02657F0
- for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 09:36:32 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1WIwSC-0002bE-O9
- for alsa-devel@alsa-project.org; Thu, 27 Feb 2014 09:36:29 +0100
-Received: from 192.8.191.10 ([192.8.191.10])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 09:36:28 +0100
-Received: from bseventynine by 192.8.191.10 with local (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 09:36:28 +0100
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D610265817
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 10:55:14 +0100 (CET)
+In-Reply-To: <s5hios1m07f.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -39,78 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood <liam.r.girdwood <at> linux.intel.com> writes:
 
-> 
-> On Tue, 2014-02-18 at 20:59 -0800, Adam Williamson wrote:
-> > On Mon, 2014-02-17 at 16:48 -0800, Adam Williamson wrote:
-> > > On Mon, 2014-02-17 at 16:40 -0800, Adam Williamson wrote:
-> > > > On Mon, 2014-02-17 at 09:54 +0000, bobby wrote:
-> > > > > 
-> > > > > This is a pci device for which the driver is not yet available.
-> > > > > I went through the intel atom processor manual and found that it 
-has 3 I2S 
-> > > > > ports, has its 
-> > > > > own DMA. The Soc is interfaced with LPE audio core via internal 
-PCI bus. 
-> > > > > Did you guys hear anything from intel about the driver support. 
-Any inputs 
-> > > > > would be of great help please
-> > > > 
-> > > > Jan Michael Brummer at Intel pointed this out to me recently:
-> > > > 
-> > > > 
-https://kernel.googlesource.com/pub/scm/linux/kernel/git/lrg/asoc/+/intel/h
-aswell-audio-dsp%5E
-> > > > 
-> > > > looks like it's being worked on.
-> > > 
-> > > Heh, that's actually just a mirror of the git ASoC branch. All those
-> > > patches went through this very list last week. I don't know precisely
-> > > how the upstreaming process goes for this stuff, but I'm guessing 
-it'll
-> > > wind up in 3.14 or 3.15.
-> > > 
-> > > (I may try building the patches into my Fedlet kernel builds and see 
-if
-> > > that gets anywhere...)
-> > 
-> > FWIW, I tried building a 3.14rc3 kernel with these patches applied and
-> > the drivers enabled as modules. On boot on a Dell Venue 8 Pro, all the
-> > relevant modules are loaded, but there's no ALSA device, and no
-> > obviously useful errors in any logs, or useful output from alsa-
-info.sh.
-> > Is it expected that the driver doesn't actually work yet? Per the 
-recent
-> > commits, do I need some kind of firmware? Any debugging that would be
-> > useful?
-> 
-> Sorry, we're not finished with the upstreaming yet. The current patches
-> upstream are for the low level parts of the Intel DSP drivers. Jarkko
-> and I still have to upstream the upper layers of the drivers (probably
-> today) and you will also need firmware.
-> 
-> Once upstream the drivers will support Valley View, Baytrail, Haswell
-> and Broadwell. The firmware for Baytrail and Valleyview will be
-> available shortly too.
-> 
-> Liam 
-> 
-> 
+--===============3293662549870681888==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="w/fW4OhQtzSNeJ+1"
+Content-Disposition: inline
 
-Thanks Liam and Jarkko saw your patches related to the Intel SST Audio 
-Platform drivers, I hope the upstreaming process is complete for this 
-module. Please let us know when the firmware is available.
 
-I have few question here, the i2s mode should be enabled in the platform 
-drivers right. 
+--w/fW4OhQtzSNeJ+1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-In the Bayley Bay bios I saw that the LPE audio could be enumerated via 
-PCI or ACPI, the patches I saw mostly cover the ACPI mode. Will the PCI 
-mode be covered in the patches.
+On Thu, Feb 27, 2014 at 09:25:24AM +0100, Takashi Iwai wrote:
 
-Thanks in Advance
-Bobby
+> Fine for me.  Then I'm going to push out my tree with your previous
+> request merged now, then will pull the next request on top of that.
+
+Great, I'll send a further request tonight.
+
+--w/fW4OhQtzSNeJ+1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTDwt2AAoJELSic+t+oim9qZsQAJvabH81B1NDUCgZoy5g7xY8
+nR2EzCp+uW/aceVGM5hwhFCr/sUmM6T7aLC+w1UsZf3xip1G7Pt4yV8G87xZue8m
+3Eh+/cXgKxGC5Esv5SMGbDouRkUKuEuRA38drOcuXJOuW8zcshdwayJUiY6RmVJC
+4V2vetnOJ48CAULLDLYdG7LCIEG2lNXajtIJ+JjdBaROugWLHE0Zs5JvMZVSl43y
+o7xz9UfwhaBqJ2JG1y1+CiCrlyXkldNG8QnWorX/r6asDxmI2rSChKtan1ZVwQ2z
+0cjO12SFptcN9CxU+Ll9Wf7PPfN/afnk9SjT0lUasU5Ltmq6rOsjFfXygOPluTKw
+z81CK4mBGwiLk72R2RvkUwn5WF5eiHpVADrznUrnCbN8sIWZRuEPZkGBpcdu7UKq
+3xAicgH+WvRVqDRULerdvqtemQU9gxItxhdoEVD9UDa5I/qP8ANmwkN0GnITHRDJ
+LqKXvILmRgsNRXqiR0mGdIxcc6EIeTnIeEdaYLVS67FXP6516hkinCNRkVuGfeXZ
+fZljMNrZYp3Na5TIRqOGQTs1NaB9OR4wfw0ovf2OfvIKBYBeoEQXEy4/UYXaH/H7
+8uOYg4oDLeEHwfnuXCevmsE0/bhLxebdaGxrkS4zlVCTW/yhCU9CMHgVFAog1Ebs
+S6TZFe92bw0ndZNGkqT+
+=GaYE
+-----END PGP SIGNATURE-----
+
+--w/fW4OhQtzSNeJ+1--
+
+--===============3293662549870681888==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3293662549870681888==--
