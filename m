@@ -1,28 +1,20 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: [PATCH 1/3] ALSA: hda - Remove dependency on
- bus->pci in hda_beep.c
-Date: Thu, 27 Feb 2014 12:41:33 -0800
-Message-ID: <CAEUnVG5+LVw6bjKAfZmz_iOyhmQDhD+=wKxq9OX5HFeZ4dcTgA@mail.gmail.com>
-References: <1392455855-10594-1-git-send-email-tiwai@suse.de>
- <s5hfvnkzq4y.wl%tiwai@suse.de> <5303A0A3.6050206@wwwdotorg.org>
- <s5hob23y01o.wl%tiwai@suse.de>
- <CAEUnVG4y+14Y8ManPPGVvcQjqpdyzBebLWcq7Sa6xQ3SwFRK+Q@mail.gmail.com>
- <s5hob1swyn0.wl%tiwai@suse.de>
- <CAEUnVG7B6B7wD0xDSi87vZj=WKJdY8ZokQ1zUKz_vknL9e=UkQ@mail.gmail.com>
- <s5h1tyowl16.wl%tiwai@suse.de>
- <CAEUnVG4hXF46TCbRGgj13_cEBEXKsZEYxWb=RyV682++mi4pTA@mail.gmail.com>
- <s5heh2omi58.wl%tiwai@suse.de>
+From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: [PATCH 2/4] ARM: dove: prepare new Dove DT Kconfig
+	variable
+Date: Thu, 27 Feb 2014 22:28:03 +0100
+Message-ID: <1393536486-3827-3-git-send-email-sebastian.hesselbarth@gmail.com>
+References: <1393536486-3827-1-git-send-email-sebastian.hesselbarth@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f42.google.com (mail-qa0-f42.google.com
- [209.85.216.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CE642625D4
- for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 21:41:56 +0100 (CET)
-Received: by mail-qa0-f42.google.com with SMTP id k15so1379792qaq.29
- for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 12:41:55 -0800 (PST)
-In-Reply-To: <s5heh2omi58.wl%tiwai@suse.de>
+Received: from mail-ea0-f181.google.com (mail-ea0-f181.google.com
+ [209.85.215.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80D762625D4
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 22:28:17 +0100 (CET)
+Received: by mail-ea0-f181.google.com with SMTP id k10so2182802eaj.12
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 13:28:17 -0800 (PST)
+In-Reply-To: <1393536486-3827-1-git-send-email-sebastian.hesselbarth@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,248 +24,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, Chris Ball <chris@printf.net>, Liam Girdwood <lgirdwood@gmail.com>, Eduardo Valentin <eduardo.valentin@ti.com>, Wim Van Sebroeck <wim@iguana.be>, Mark Brown <broonie@kernel.org>, Gregory Clement <gregory.clement@free-electrons.com>, Zhang Rui <rui.zhang@intel.com>, linux-arm-kernel@lists.infradead.org, linux-watchdog@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 27, 2014 at 12:10 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Thu, 27 Feb 2014 09:32:21 -0800,
-> Dylan Reid wrote:
->>
->> On Thu, Feb 27, 2014 at 8:57 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> > At Thu, 27 Feb 2014 08:44:48 -0800,
->> > Dylan Reid wrote:
->> >>
->> >> On Thu, Feb 27, 2014 at 4:03 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> >> > At Wed, 19 Feb 2014 07:16:38 -0800,
->> >> > Dylan Reid wrote:
->> >> >>
->> >> >> On Wed, Feb 19, 2014 at 12:33 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> >> >> > At Tue, 18 Feb 2014 11:04:19 -0700,
->> >> >> > Stephen Warren wrote:
->> >> >> >>
->> >> >> >> On 02/15/2014 02:22 AM, Takashi Iwai wrote:
->> >> >> >> > At Sat, 15 Feb 2014 10:17:33 +0100,
->> >> >> >> > Takashi Iwai wrote:
->> >> >> >> >>
->> >> >> >> >> The default parent device can be obtained directly via card object, so
->> >> >> >> >> we don't need to rely on pci->dev.parent.  Since there is no access to
->> >> >> >> >> pci_dev, we can reduce the inclusion of linux/pci.h, too.
->> >> >> >> >>
->> >> >> >> >> Signed-off-by: Takashi Iwai <tiwai@suse.de>
->> >> >> >> >
->> >> >> >> > I forgot the cover page: these tree patches are trivial cleanups of
->> >> >> >> > hda-codec drivers (not the controller) to work without PCI device
->> >> >> >> > assignment. The idea was triggered by Dylan's question.
->> >> >> >>
->> >> >> >> The series seems fine to me, so briefly,
->> >> >> >> Reviewed-by: Stephen Warren <swarren@nvidia.com>
->> >> >> >
->> >> >> > Thanks.  Any chance to work on / submit other changes for Tegra
->> >> >> > HD-audio support?
->> >> >>
->> >> >> That's the plan, hopefully I'll be able to find time to throw together
->> >> >> an RFC by the end of the week.
->> >> >
->> >> > Since there was no patch appearing yet, I merged my latest development
->> >> > branch to for-next branch, which includes lots of changes in
->> >> > hda_intel.c and hda_codec.c.  If any, please rebase your patches to
->> >> > it.
->> >>
->> >> Thanks for the heads up.  I've got a series that is almost ready, I'm
->> >> still trying to tease part of the build out from under CONFIG_PCI in
->> >> the hda makefile.
->> >
->> > I don't think we have a dependency on CONFIG_PCI in Makefile.  Kconfig
->> > has a dependency, but it can be easily reduced by a patch like below.
->>
->> Sounds good.  I was looking at re-using some of the config options
->> (HDMI codec and power save) for the platform driver as well.  Maybe
->> something like the following.  SND_HDA would build the helper module
->> and hda-codec that are used by both hda_intel and a platform driver.
->
-> I think we can simply allow building all HD-audio codec drivers when
-> CONFIG_SND_HDA is set.  They are basically independent from the
-> controller type.  There are also other selectable items like hwdep
-> support.  The diff in sound/pci/hda would be like below.
+DT-enabled Dove will move over from ARCH_DOVE in mach-dove to MACH_DOVE in
+mach-mvebu. As non-DT ARCH_DOVE will stay to rot for a while, add a new
+DT-only MACH_DOVE to mmc, thermal, wdt, and asoc Kconfigs.
 
-Thanks I'll work off of that.  It will need a change
-include/sound/core.h to define snd_pci_quirk without CONFIG_PCI since
-the codecs use that, and maybe stub out a couple of the pci specific
-functions.  That seems reasonable to me.
+Signed-off-by: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+---
+Cc: Chris Ball <chris@printf.net>
+Cc: Zhang Rui <rui.zhang@intel.com>
+Cc: Eduardo Valentin <eduardo.valentin@ti.com>
+Cc: Wim Van Sebroeck <wim@iguana.be>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Gregory Clement <gregory.clement@free-electrons.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-watchdog@vger.kernel.org
+Cc: linux-pm@vger.kernel.org
+Cc: linux-mmc@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/mmc/host/Kconfig   | 2 +-
+ drivers/thermal/Kconfig    | 2 +-
+ drivers/watchdog/Kconfig   | 2 +-
+ sound/soc/kirkwood/Kconfig | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-Dylan
-
->
->
-> Takashi
->
-> --
-> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-> index f2032dd7e35e..4cbf46e59d1c 100644
-> --- a/sound/pci/hda/Kconfig
-> +++ b/sound/pci/hda/Kconfig
-> @@ -1,8 +1,15 @@
-> -menuconfig SND_HDA_INTEL
-> -       tristate "Intel HD Audio"
-> +menu "HD-Audio"
-> +
-> +config SND_HDA
-> +       tristate
->         select SND_PCM
->         select SND_VMASTER
->         select SND_KCTL_JACK
-> +
-> +config SND_HDA_INTEL
-> +       tristate "HD Audio PCI"
-> +       depends on SND_PCI
-> +       select SND_HDA
->         help
->           Say Y here to include support for Intel "High Definition
->           Audio" (Azalia) and its compatible devices.
-> @@ -13,7 +20,21 @@ menuconfig SND_HDA_INTEL
->           To compile this driver as a module, choose M here: the module
->           will be called snd-hda-intel.
->
-> -if SND_HDA_INTEL
-> +config SND_HDA_TEGRA
-> +       tristate "Tegra HD Audio"
-> +       select SND_HDA
-> +       help
-> +         Say Y here to support the HDA controller present in Nvidia
-> +         Tegra SoCs
-> +
-> +         This options enables support for the HD Audio controller
-> +         present in some Nvidia Tegra SoCs, used to communicate audio
-> +         to the HDMI output.
-> +
-> +         To compile this driver as a module, choose M here: the module
-> +         will be called snd-hda-tegra.
-> +
-> +if SND_HDA
->
->  config SND_HDA_DSP_LOADER
->         bool
-> @@ -49,7 +70,7 @@ config SND_HDA_RECONFIG
->
->  config SND_HDA_INPUT_BEEP
->         bool "Support digital beep via input layer"
-> -       depends on INPUT=y || INPUT=SND_HDA_INTEL
-> +       depends on INPUT=y || INPUT=SND_HDA
->         help
->           Say Y here to build a digital beep interface for HD-audio
->           driver. This interface is used to generate digital beeps.
-> @@ -90,7 +111,7 @@ config SND_HDA_CODEC_REALTEK
->           snd-hda-intel driver, such as ALC880.
->
->  comment "Set to Y if you want auto-loading the codec driver"
-> -       depends on SND_HDA_INTEL=y && SND_HDA_CODEC_REALTEK=m
-> +       depends on SND_HDA=y && SND_HDA_CODEC_REALTEK=m
->
->  config SND_HDA_CODEC_ANALOG
->         tristate "Build Analog Device HD-audio codec support"
-> @@ -100,7 +121,7 @@ config SND_HDA_CODEC_ANALOG
->           snd-hda-intel driver, such as AD1986A.
->
->  comment "Set to Y if you want auto-loading the codec driver"
-> -       depends on SND_HDA_INTEL=y && SND_HDA_CODEC_ANALOG=m
-> +       depends on SND_HDA=y && SND_HDA_CODEC_ANALOG=m
->
->  config SND_HDA_CODEC_SIGMATEL
->         tristate "Build IDT/Sigmatel HD-audio codec support"
-> @@ -110,7 +131,7 @@ config SND_HDA_CODEC_SIGMATEL
->           snd-hda-intel driver, such as STAC9200.
->
->  comment "Set to Y if you want auto-loading the codec driver"
-> -       depends on SND_HDA_INTEL=y && SND_HDA_CODEC_SIGMATEL=m
-> +       depends on SND_HDA=y && SND_HDA_CODEC_SIGMATEL=m
->
->  config SND_HDA_CODEC_VIA
->         tristate "Build VIA HD-audio codec support"
-> @@ -120,7 +141,7 @@ config SND_HDA_CODEC_VIA
->           snd-hda-intel driver, such as VT1708.
->
->  comment "Set to Y if you want auto-loading the codec driver"
-> -       depends on SND_HDA_INTEL=y && SND_HDA_CODEC_VIA=m
-> +       depends on SND_HDA=y && SND_HDA_CODEC_VIA=m
->
->  config SND_HDA_CODEC_HDMI
->         tristate "Build HDMI/DisplayPort HD-audio codec support"
-> @@ -130,7 +151,7 @@ config SND_HDA_CODEC_HDMI
->           Intel and Nvidia HDMI/DisplayPort codecs.
->
->  comment "Set to Y if you want auto-loading the codec driver"
-> -       depends on SND_HDA_INTEL=y && SND_HDA_CODEC_HDMI=m
-> +       depends on SND_HDA=y && SND_HDA_CODEC_HDMI=m
->
->  config SND_HDA_I915
->         bool
-> @@ -145,7 +166,7 @@ config SND_HDA_CODEC_CIRRUS
->           snd-hda-intel driver, such as CS4206.
->
->  comment "Set to Y if you want auto-loading the codec driver"
-> -       depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CIRRUS=m
-> +       depends on SND_HDA=y && SND_HDA_CODEC_CIRRUS=m
->
->  config SND_HDA_CODEC_CONEXANT
->         tristate "Build Conexant HD-audio codec support"
-> @@ -155,7 +176,7 @@ config SND_HDA_CODEC_CONEXANT
->           snd-hda-intel driver, such as CX20549.
->
->  comment "Set to Y if you want auto-loading the codec driver"
-> -       depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CONEXANT=m
-> +       depends on SND_HDA=y && SND_HDA_CODEC_CONEXANT=m
->
->  config SND_HDA_CODEC_CA0110
->         tristate "Build Creative CA0110-IBG codec support"
-> @@ -165,7 +186,7 @@ config SND_HDA_CODEC_CA0110
->           snd-hda-intel driver, found on some Creative X-Fi cards.
->
->  comment "Set to Y if you want auto-loading the codec driver"
-> -       depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CA0110=m
-> +       depends on SND_HDA=y && SND_HDA_CODEC_CA0110=m
->
->  config SND_HDA_CODEC_CA0132
->         tristate "Build Creative CA0132 codec support"
-> @@ -174,7 +195,7 @@ config SND_HDA_CODEC_CA0132
->           snd-hda-intel driver.
->
->  comment "Set to Y if you want auto-loading the codec driver"
-> -       depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CA0132=m
-> +       depends on SND_HDA=y && SND_HDA_CODEC_CA0132=m
->
->  config SND_HDA_CODEC_CA0132_DSP
->         bool "Support new DSP code for CA0132 codec"
-> @@ -196,7 +217,7 @@ config SND_HDA_CODEC_CMEDIA
->           snd-hda-intel driver, such as CMI9880.
->
->  comment "Set to Y if you want auto-loading the codec driver"
-> -       depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CMEDIA=m
-> +       depends on SND_HDA=y && SND_HDA_CODEC_CMEDIA=m
->
->  config SND_HDA_CODEC_SI3054
->         tristate "Build Silicon Labs 3054 HD-modem codec support"
-> @@ -205,7 +226,7 @@ config SND_HDA_CODEC_SI3054
->           (and compatibles) support in snd-hda-intel driver.
->
->  comment "Set to Y if you want auto-loading the codec driver"
-> -       depends on SND_HDA_INTEL=y && SND_HDA_CODEC_SI3054=m
-> +       depends on SND_HDA=y && SND_HDA_CODEC_SI3054=m
->
->  config SND_HDA_GENERIC
->         tristate "Enable generic HD-audio codec parser"
-> @@ -214,7 +235,7 @@ config SND_HDA_GENERIC
->           in snd-hda-intel driver.
->
->  comment "Set to Y if you want auto-loading the codec driver"
-> -       depends on SND_HDA_INTEL=y && SND_HDA_GENERIC=m
-> +       depends on SND_HDA=y && SND_HDA_GENERIC=m
->
->  config SND_HDA_POWER_SAVE_DEFAULT
->         int "Default time-out for HD-audio power-save mode"
-> @@ -225,3 +246,5 @@ config SND_HDA_POWER_SAVE_DEFAULT
->           power-save mode.  0 means to disable the power-save mode.
->
->  endif
-> +
-> +endmenu
+diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+index 1384f67abe21..a69e48b582e5 100644
+--- a/drivers/mmc/host/Kconfig
++++ b/drivers/mmc/host/Kconfig
+@@ -168,7 +168,7 @@ config MMC_SDHCI_ESDHC_IMX
+ 
+ config MMC_SDHCI_DOVE
+ 	tristate "SDHCI support on Marvell's Dove SoC"
+-	depends on ARCH_DOVE
++	depends on ARCH_DOVE || MACH_DOVE
+ 	depends on MMC_SDHCI_PLTFM
+ 	select MMC_SDHCI_IO_ACCESSORS
+ 	help
+diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
+index 35c066489a19..07b5e56e9a97 100644
+--- a/drivers/thermal/Kconfig
++++ b/drivers/thermal/Kconfig
+@@ -150,7 +150,7 @@ config KIRKWOOD_THERMAL
+ 
+ config DOVE_THERMAL
+ 	tristate "Temperature sensor on Marvell Dove SoCs"
+-	depends on ARCH_DOVE
++	depends on ARCH_DOVE || MACH_DOVE
+ 	depends on OF
+ 	help
+ 	  Support for the Dove thermal sensor driver in the Linux thermal
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index 79d25894343a..5659c62a175c 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -292,7 +292,7 @@ config DAVINCI_WATCHDOG
+ 
+ config ORION_WATCHDOG
+ 	tristate "Orion watchdog"
+-	depends on ARCH_ORION5X || ARCH_KIRKWOOD || ARCH_DOVE
++	depends on ARCH_ORION5X || ARCH_KIRKWOOD || ARCH_DOVE || MACH_DOVE
+ 	select WATCHDOG_CORE
+ 	help
+ 	  Say Y here if to include support for the watchdog timer
+diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
+index 78ed4a42ad21..a1506d57e646 100644
+--- a/sound/soc/kirkwood/Kconfig
++++ b/sound/soc/kirkwood/Kconfig
+@@ -1,6 +1,6 @@
+ config SND_KIRKWOOD_SOC
+ 	tristate "SoC Audio for the Marvell Kirkwood and Dove chips"
+-	depends on ARCH_KIRKWOOD || ARCH_DOVE || COMPILE_TEST
++	depends on ARCH_KIRKWOOD || ARCH_DOVE || MACH_DOVE || COMPILE_TEST
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the Kirkwood I2S interface. You will also need to select the
+-- 
+1.8.5.3
