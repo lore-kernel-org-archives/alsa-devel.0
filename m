@@ -1,15 +1,15 @@
-From: Jack Mitchell <ml@embed.me.uk>
-Subject: tlv320aic3x regcache issue
-Date: Wed, 26 Feb 2014 17:11:05 +0000
-Message-ID: <530E2029.6090904@embed.me.uk>
-Reply-To: ml@embed.me.uk
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: sta32x: Fix wrong enum for limiter2
+	release rate
+Date: Thu, 27 Feb 2014 07:41:32 +0100
+Message-ID: <1393483292-30412-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from owm.eumx.net (eumx.net [91.82.101.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 37486265820
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2014 18:11:09 +0100 (CET)
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0AACA2657DF
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 07:41:33 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,32 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I have come across an issue where the regcache mechanism used in the
-tlv320aic3x driver is causing problems. When switching from 44.1khz to
-48khz some of the registers are not written due to the default register
-cache holding the same value as being written. However, the codec
-requires these registers to be written in order to trigger the change,
-this has been proven by changing the register default to something
-different, therefore forcing a write at the correct time and it triggers
-the change as expected.
-
-What would be the best way to force these registers to be written? Is
-there some sort of force write flag, or a way to turn off the cache just
-during this portion of the configuration?
-
-Any direction in the proper way of doing this would be much appreciated.
-
-Cheers,
-Jack
-
--- 
-  Jack Mitchell (jack@embed.me.uk)
-  Embedded Systems Engineer
-  Cambridgeshire, UK
-  http://www.embed.me.uk
--- 
+VGhlcmUgaXMgYSB0eXBvIGluIHRoZSBMaW1pdGVyMiBSZWxlYXNlIFJhdGUgY29udHJvbCwgYSB3
+cm9uZyBlbnVtIGZvcgpMaW1pdGVyMSBpcyBhc3NpZ25lZC4gIEl0IG11c3QgcG9pbnQgdG8gTGlt
+aXRlcjIuClNwb3R0ZWQgYnkgYSBjb21waWxlIHdhcm5pbmc6CgpJbiBmaWxlIGluY2x1ZGVkIGZy
+b20gc291bmQvc29jL2NvZGVjcy9zdGEzMnguYzozNDowOgpzb3VuZC9zb2MvY29kZWNzL3N0YTMy
+eC5jOjIyMzoyOTogd2FybmluZzog4oCYc3RhMzJ4X2xpbWl0ZXIyX3JlbGVhc2VfcmF0ZV9lbnVt
+4oCZIGRlZmluZWQgYnV0IG5vdCB1c2VkIFstV3VudXNlZC12YXJpYWJsZV0KIHN0YXRpYyBTT0Nf
+RU5VTV9TSU5HTEVfREVDTChzdGEzMnhfbGltaXRlcjJfcmVsZWFzZV9yYXRlX2VudW0sCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgXgppbmNsdWRlL3NvdW5kL3NvYy5oOjI3NToxODogbm90
+ZTogaW4gZGVmaW5pdGlvbiBvZiBtYWNybyDigJhTT0NfRU5VTV9ET1VCTEVfREVDTOKAmQogIHN0
+cnVjdCBzb2NfZW51bSBuYW1lID0gU09DX0VOVU1fRE9VQkxFKHhyZWcsIHhzaGlmdF9sLCB4c2hp
+ZnRfciwgXAogICAgICAgICAgICAgICAgICBeCnNvdW5kL3NvYy9jb2RlY3Mvc3RhMzJ4LmM6MjIz
+Ojg6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyDigJhTT0NfRU5VTV9TSU5HTEVfREVDTOKA
+mQogc3RhdGljIFNPQ19FTlVNX1NJTkdMRV9ERUNMKHN0YTMyeF9saW1pdGVyMl9yZWxlYXNlX3Jh
+dGVfZW51bSwKICAgICAgICBeCgpDYzogPHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmc+ClNpZ25lZC1v
+ZmYtYnk6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KLS0tCgpNYXJrLCB0aGlzIGNvbWVz
+IHVwIGFmdGVyIG1lcmdpbmcgeW91ciBwdWxsIHJlcXVlc3QuCgpJbnRlcmVzdGluZ2x5LCB0aGUg
+d2FybmluZyBpcyB0cmlnZ2VyZWQgYmVjYXVzZSBjb25zdCB3YXMgdGVtcG9yYXJpbHkKcmVkdWNl
+ZCBhbG9uZyBteSBjaGFuZ2VzLiAgU2luY2UgbXkgd2hvbGUgcGF0Y2ggc2VyaWVzIGFkZGVkIHRo
+ZSBjb25zdAppbiB0aGUgbWFjcm8gZGVmaW5pdGlvbiwgSSBkaWRuJ3Qgc2VlIHRoaXMuICBEaXR0
+byBmb3IgbGludXgtbmV4dCwKd2hlcmUgbm8gcmVsZXZhbnQgd2FybmluZyBpcyBzZWVuLgoKSSdk
+IGxpa2UgdG8gcHV0IHRoaXMgYXMgYSBxdWljayBmaXggZm9yIHRoZSBuZXh0IDMuMTQgcHVsbCBy
+ZXF1ZXN0LgpTbywgaWYgeW91IGRvbid0IG1pbmQsIEknbSBnb2luZyB0byBjb21taXQgdG8gbXkg
+dHJlZSBmb3ItbGludXMKYnJhbmNoLgoKClRha2FzaGkKCiBzb3VuZC9zb2MvY29kZWNzL3N0YTMy
+eC5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0p
+CgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9zdGEzMnguYyBiL3NvdW5kL3NvYy9jb2Rl
+Y3Mvc3RhMzJ4LmMKaW5kZXggZWE3OGMxNzI1MzhjLi4yNzM1MzYxYTRjM2MgMTAwNjQ0Ci0tLSBh
+L3NvdW5kL3NvYy9jb2RlY3Mvc3RhMzJ4LmMKKysrIGIvc291bmQvc29jL2NvZGVjcy9zdGEzMngu
+YwpAQCAtNDM0LDcgKzQzNCw3IEBAIFNPQ19TSU5HTEVfVExWKCJUcmVibGUgVG9uZSBDb250cm9s
+IiwgU1RBMzJYX1RPTkUsIFNUQTMyWF9UT05FX1RUQ19TSElGVCwgMTUsIDAsCiBTT0NfRU5VTSgi
+TGltaXRlcjEgQXR0YWNrIFJhdGUgKGRCL21zKSIsIHN0YTMyeF9saW1pdGVyMV9hdHRhY2tfcmF0
+ZV9lbnVtKSwKIFNPQ19FTlVNKCJMaW1pdGVyMiBBdHRhY2sgUmF0ZSAoZEIvbXMpIiwgc3RhMzJ4
+X2xpbWl0ZXIyX2F0dGFja19yYXRlX2VudW0pLAogU09DX0VOVU0oIkxpbWl0ZXIxIFJlbGVhc2Ug
+UmF0ZSAoZEIvbXMpIiwgc3RhMzJ4X2xpbWl0ZXIxX3JlbGVhc2VfcmF0ZV9lbnVtKSwKLVNPQ19F
+TlVNKCJMaW1pdGVyMiBSZWxlYXNlIFJhdGUgKGRCL21zKSIsIHN0YTMyeF9saW1pdGVyMV9yZWxl
+YXNlX3JhdGVfZW51bSksCitTT0NfRU5VTSgiTGltaXRlcjIgUmVsZWFzZSBSYXRlIChkQi9tcyki
+LCBzdGEzMnhfbGltaXRlcjJfcmVsZWFzZV9yYXRlX2VudW0pLAogCiAvKiBkZXBlbmRpbmcgb24g
+bW9kZSwgdGhlIGF0dGFjay9yZWxlYXNlIHRocmVzaG9sZHMgaGF2ZQogICogdHdvIGRpZmZlcmVu
+dCBlbnVtIGRlZmluaXRpb25zOyBwcm92aWRlIGJvdGgKLS0gCjEuOS4wCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
