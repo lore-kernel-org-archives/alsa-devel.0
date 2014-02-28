@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 05/11] ASoC: adau1373: Use
+Subject: [PATCH v2 09/11] ASoC: wm8995: Use
 	SOC_ENUM_SINGLE_VIRT_DECL()
-Date: Fri, 28 Feb 2014 08:31:06 +0100
-Message-ID: <1393572672-13937-6-git-send-email-lars@metafoo.de>
+Date: Fri, 28 Feb 2014 08:31:10 +0100
+Message-ID: <1393572672-13937-10-git-send-email-lars@metafoo.de>
 References: <1393572672-13937-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-167.synserver.de (smtp-out-127.synserver.de
  [212.40.185.127])
- by alsa0.perex.cz (Postfix) with ESMTP id 8966326591B
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 08:30:54 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8AC14265956
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 08:30:58 +0100 (CET)
 In-Reply-To: <1393572672-13937-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,26 +30,25 @@ For the upcoming consolidation for MUXs and virtual MUXs we need to mark virtual
 enums as such.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
 No changes since v1
 ---
- sound/soc/codecs/adau1373.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8995.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-index 5765c22..5223800 100644
---- a/sound/soc/codecs/adau1373.c
-+++ b/sound/soc/codecs/adau1373.c
-@@ -576,8 +576,8 @@ static const char *adau1373_decimator_text[] = {
- 	"DMIC1",
+diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
+index 33ff361..ddb197d 100644
+--- a/sound/soc/codecs/wm8995.c
++++ b/sound/soc/codecs/wm8995.c
+@@ -882,7 +882,7 @@ static const char *adc_mux_text[] = {
+ 	"DMIC",
  };
  
--static SOC_ENUM_SINGLE_DECL(adau1373_decimator_enum,
--			    0, 0, adau1373_decimator_text);
-+static SOC_ENUM_SINGLE_VIRT_DECL(adau1373_decimator_enum,
-+	adau1373_decimator_text);
+-static const SOC_ENUM_SINGLE_DECL(adc_enum, 0, 0, adc_mux_text);
++static SOC_ENUM_SINGLE_VIRT_DECL(adc_enum, adc_mux_text);
  
- static const struct snd_kcontrol_new adau1373_decimator_mux =
- 	SOC_DAPM_ENUM_VIRT("Decimator Mux", adau1373_decimator_enum);
+ static const struct snd_kcontrol_new adcl_mux =
+ 	SOC_DAPM_ENUM_VIRT("ADCL Mux", adc_enum);
 -- 
 1.8.0
