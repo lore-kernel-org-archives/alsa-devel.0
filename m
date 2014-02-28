@@ -1,15 +1,20 @@
-Return-Path: <alsa-devel-bounces@alsa-project.org>
-Received: from cnbjrel01.sonyericsson.com (cnbjrel01.sonyericsson.com
- [219.141.167.165])
- by alsa0.perex.cz (Postfix) with ESMTP id 88B1A26512B
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 09:15:29 +0100 (CET)
-From: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
-Date: Fri, 28 Feb 2014 16:15:23 +0800
-Message-ID: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
-Content-Language: en-US
-MIME-Version: 1.0
-Subject: [alsa-devel] change kmalloc into vmalloc for large memory
-	allocations
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [RFCv2 04/22] ALSA: hda - Use device pointer from the
+	card instead of pci
+Date: Fri, 28 Feb 2014 15:41:15 -0800
+Message-ID: <1393630893-29010-5-git-send-email-dgreid@chromium.org>
+References: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oa0-f73.google.com (mail-oa0-f73.google.com
+ [209.85.219.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AD7E26598B
+ for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 00:42:52 +0100 (CET)
+Received: by mail-oa0-f73.google.com with SMTP id n16so60862oag.0
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 15:42:51 -0800 (PST)
+In-Reply-To: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,72 +22,122 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>, "'linux-arm-msm@vger.kernel.org'" <linux-arm-msm@vger.kernel.org>, "'linux-arm-kernel@lists.infradead.org'" <linux-arm-kernel@lists.infradead.org>, "'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>, "'balbi@ti.com'" <balbi@ti.com>, "'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>, "'lrg@ti.com'" <lrg@ti.com>, "'broonie@opensource.wolfsonmicro.com'" <broonie@opensource.wolfsonmicro.com>, "'perex@perex.cz'" <perex@perex.cz>, "'tiwai@suse.de'" <tiwai@suse.de>, "'pablo@netfilter.org'" <pablo@netfilter.org>, "'kaber@trash.net'" <kaber@trash.net>, "'davem@davemloft.net'" <davem@davemloft.net>, "'rostedt@goodmis.org'" <rostedt@goodmis.org>, "'fweisbec@gmail.com'" <fweisbec@gmail.com>, "'mingo@redhat.com'" <mingo@redhat.com>, "'dmitry.torokhov@gmail.com'" <dmitry.torokhov@gmail.com>, "'rydberg@euromail.se'" <rydberg@euromail.se>, "'linux-usb@vger.kernel.org'" <linux-usb@vger.kernel.org>"'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'netfilter-devel@vger.kernel.org'" <netfilter-devel@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, "'coreteam@netfilter.org'" <coreteam@netfilter.org>, "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>"'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>
-List-ID: <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, swarren@wwwdotorg.org
+List-Id: alsa-devel@alsa-project.org
 
-Hi 
+This removes calls to get the device via PCI from other parts of the
+code that will be able to be re-used by the platform driver.
 
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+ sound/pci/hda/hda_intel.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
-I find there is some drivers use kmalloc to allocate large 
-Memorys during module_init,  some can be changed to use vmalloc
-To save some low mem, I add log in kernel to track ,
-And list them here:
-
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/drivers/usb/gadget/f_mass_storage.c?h=master#n2724
-
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/sound/soc/soc-core.c?h=master#n3772
-
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_ftp.c?h=master#n603
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_h323_main.c?h=master#n1849
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_irc.c?h=master#n247
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_sane.c?h=master#n195
-
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/drivers/input/evdev.c?h=master#n403
-
-
-they allocate large memory from 10k~64K , 
-this will use lots of low mem, instead if we use 
-vmalloc for these drivers , it will be good for some devices
-like smart phone, we often encounter some errors like kmalloc failed 
-because there is not enough low mem , especially when the device has physical 
-memory less than 1GB .
-
-
-could this module change the memory allocation into vmalloc ?
-
-I was thinking that if we can introduce a helper function in kmalloc.h like this :
-
-Kmalloc(size, flags)
-{
-	If (size > PAGE_SIZE && flags&CAN_USE_VMALLOC_FLAG)
-		return vmalloc(size);
-	Else
-		return real_kmalloc(size);
-}
-
-Kfree(ptr)
-{
-	If (is_vmalloc_addr(ptr))
-		Vfree(ptr);
-	Else
-		Kfree(ptr);
-}
-
-
-But we need add some flags to ensure always use kmalloc for
-Some special use (dma etc..)
-
-How do you think of it ?
-
-Thanks
-
-
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 9fcd1d1..7630622 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -364,7 +364,7 @@ static int azx_alloc_cmd_io(struct azx *chip)
+ 
+ 	/* single page (at least 4096 bytes) must suffice for both ringbuffes */
+ 	err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
+-				  snd_dma_pci_data(chip->pci),
++				  chip->card->dev,
+ 				  PAGE_SIZE, &chip->rb);
+ 	if (err < 0) {
+ 		dev_err(chip->card->dev, "cannot allocate CORB/RIRB\n");
+@@ -1032,7 +1032,7 @@ static irqreturn_t azx_interrupt(int irq, void *dev_id)
+ 
+ #ifdef CONFIG_PM_RUNTIME
+ 	if (chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
+-		if (chip->pci->dev.power.runtime_status != RPM_ACTIVE)
++		if (chip->card->dev->power.runtime_status != RPM_ACTIVE)
+ 			return IRQ_NONE;
+ #endif
+ 
+@@ -2290,7 +2290,7 @@ azx_attach_pcm_stream(struct hda_bus *bus, struct hda_codec *codec,
+ 	if (size > MAX_PREALLOC_SIZE)
+ 		size = MAX_PREALLOC_SIZE;
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
+-					      snd_dma_pci_data(chip->pci),
++					      chip->card->dev,
+ 					      size, MAX_PREALLOC_SIZE);
+ 	/* link to codec */
+ 	pcm->dev = &codec->dev;
+@@ -2405,7 +2405,7 @@ static int azx_load_dsp_prepare(struct hda_bus *bus, unsigned int format,
+ 	spin_unlock_irq(&chip->reg_lock);
+ 
+ 	err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG,
+-				  snd_dma_pci_data(chip->pci),
++				  chip->card->dev,
+ 				  byte_size, bufp);
+ 	if (err < 0)
+ 		goto err_alloc;
+@@ -2498,9 +2498,9 @@ static void azx_power_notify(struct hda_bus *bus, bool power_up)
+ 		return;
+ 
+ 	if (power_up)
+-		pm_runtime_get_sync(&chip->pci->dev);
++		pm_runtime_get_sync(chip->card->dev);
+ 	else
+-		pm_runtime_put_sync(&chip->pci->dev);
++		pm_runtime_put_sync(chip->card->dev);
+ }
+ 
+ static DEFINE_MUTEX(card_list_lock);
+@@ -2765,8 +2765,8 @@ static void azx_vs_set_state(struct pci_dev *pci,
+ 		dev_info(chip->card->dev, "%s via VGA-switcheroo\n",
+ 			 disabled ? "Disabling" : "Enabling");
+ 		if (disabled) {
+-			pm_runtime_put_sync_suspend(&pci->dev);
+-			azx_suspend(&pci->dev);
++			pm_runtime_put_sync_suspend(card->dev);
++			azx_suspend(card->dev);
+ 			/* when we get suspended by vga switcheroo we end up in D3cold,
+ 			 * however we have no ACPI handle, so pci/acpi can't put us there,
+ 			 * put ourselves there */
+@@ -2777,9 +2777,9 @@ static void azx_vs_set_state(struct pci_dev *pci,
+ 					 "Cannot lock devices!\n");
+ 		} else {
+ 			snd_hda_unlock_devices(chip->bus);
+-			pm_runtime_get_noresume(&pci->dev);
++			pm_runtime_get_noresume(card->dev);
+ 			chip->disabled = false;
+-			azx_resume(&pci->dev);
++			azx_resume(card->dev);
+ 		}
+ 	}
+ }
+@@ -2833,7 +2833,8 @@ static int register_vga_switcheroo(struct azx *chip)
+ 	chip->vga_switcheroo_registered = 1;
+ 
+ 	/* register as an optimus hdmi audio power domain */
+-	vga_switcheroo_init_domain_pm_optimus_hdmi_audio(&chip->pci->dev, &chip->hdmi_pm_domain);
++	vga_switcheroo_init_domain_pm_optimus_hdmi_audio(chip->card->dev,
++							 &chip->hdmi_pm_domain);
+ 	return 0;
+ }
+ #else
+@@ -3348,7 +3349,7 @@ static int azx_first_init(struct azx *chip)
+ 		dsp_lock_init(&chip->azx_dev[i]);
+ 		/* allocate memory for the BDL for each stream */
+ 		err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
+-					  snd_dma_pci_data(chip->pci),
++					  chip->card->dev,
+ 					  BDL_SIZE, &chip->azx_dev[i].bdl);
+ 		if (err < 0) {
+ 			dev_err(card->dev, "cannot allocate BDL\n");
+@@ -3358,7 +3359,7 @@ static int azx_first_init(struct azx *chip)
+ 	}
+ 	/* allocate memory for the position buffer */
+ 	err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
+-				  snd_dma_pci_data(chip->pci),
++				  chip->card->dev,
+ 				  chip->num_streams * 8, &chip->posbuf);
+ 	if (err < 0) {
+ 		dev_err(card->dev, "cannot allocate posbuf\n");
+-- 
+1.8.1.3.605.g02339dd
