@@ -1,18 +1,18 @@
 From: Dylan Reid <dgreid@chromium.org>
-Subject: [RFC 10/19] ALSA: hda - move alloc_cmd_io to
-	hda_shared.
-Date: Thu, 27 Feb 2014 22:35:53 -0800
-Message-ID: <1393569362-27285-11-git-send-email-dgreid@chromium.org>
+Subject: [RFC 17/19] ALSA: core - Define snd_pci_quirk without
+	CONFIG_PCI
+Date: Thu, 27 Feb 2014 22:36:00 -0800
+Message-ID: <1393569362-27285-18-git-send-email-dgreid@chromium.org>
 References: <1393569362-27285-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f73.google.com (mail-pb0-f73.google.com
- [209.85.160.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 041462650BC
+Received: from mail-vc0-f202.google.com (mail-vc0-f202.google.com
+ [209.85.220.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2D982650B4
  for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 07:37:13 +0100 (CET)
-Received: by mail-pb0-f73.google.com with SMTP id rp16so34667pbb.0
+Received: by mail-vc0-f202.google.com with SMTP id hu8so34210vcb.3
  for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 22:37:12 -0800 (PST)
 In-Reply-To: <1393569362-27285-1-git-send-email-dgreid@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,66 +28,52 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, swarren@wwwdotorg.org
 List-Id: alsa-devel@alsa-project.org
 
-Combining the call to alloc_cmd_io with the allocate pages function
-removes an extra interface between hda_intel and hda_shared.
+The hda codecs all use this struct and, with an HDA platform driver,
+will be able to be built without PCI.
 
 Signed-off-by: Dylan Reid <dgreid@chromium.org>
 ---
- sound/pci/hda/hda_intel.c  | 4 ----
- sound/pci/hda/hda_shared.c | 7 ++++++-
- sound/pci/hda/hda_shared.h | 1 -
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ include/sound/core.h | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 2b00e88..ab3c015 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1777,10 +1777,6 @@ static int azx_first_init(struct azx *chip)
- 	err = azx_alloc_stream_pages(chip);
- 	if (err < 0)
- 		return err;
--	/* allocate CORB/RIRB */
--	err = azx_alloc_cmd_io(chip);
--	if (err < 0)
--		return err;
+diff --git a/include/sound/core.h b/include/sound/core.h
+index aac9a85..d3f5f81 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -433,7 +433,6 @@ static inline void snd_printdd(const char *format, ...) {}
+ #define gameport_get_port_data(gp) (gp)->port_data
+ #endif
  
- 	/* initialize streams */
- 	azx_init_stream(chip);
-diff --git a/sound/pci/hda/hda_shared.c b/sound/pci/hda/hda_shared.c
-index 0b2115e..1f307a8 100644
---- a/sound/pci/hda/hda_shared.c
-+++ b/sound/pci/hda/hda_shared.c
-@@ -1120,7 +1120,7 @@ int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
- /*
-  * CORB / RIRB interface
-  */
--int azx_alloc_cmd_io(struct azx *chip)
-+static int azx_alloc_cmd_io(struct azx *chip)
- {
- 	int err;
+-#ifdef CONFIG_PCI
+ /* PCI quirk list helper */
+ struct snd_pci_quirk {
+ 	unsigned short subvendor;	/* PCI subvendor ID */
+@@ -469,12 +468,26 @@ struct snd_pci_quirk {
+ #define snd_pci_quirk_name(q)	""
+ #endif
  
-@@ -1622,6 +1622,11 @@ int azx_alloc_stream_pages(struct azx *chip)
- 		return -ENOMEM;
- 	}
- 	mark_pages_wc(chip, &chip->posbuf, true);
++#ifdef CONFIG_PCI
+ const struct snd_pci_quirk *
+ snd_pci_quirk_lookup(struct pci_dev *pci, const struct snd_pci_quirk *list);
+ 
+ const struct snd_pci_quirk *
+ snd_pci_quirk_lookup_id(u16 vendor, u16 device,
+ 			const struct snd_pci_quirk *list);
++#else
++static inline const struct snd_pci_quirk *
++snd_pci_quirk_lookup(struct pci_dev *pci, const struct snd_pci_quirk *list)
++{
++	return NULL;
++}
 +
-+	/* allocate CORB/RIRB */
-+	err = azx_alloc_cmd_io(chip);
-+	if (err < 0)
-+		return err;
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(azx_alloc_stream_pages);
-diff --git a/sound/pci/hda/hda_shared.h b/sound/pci/hda/hda_shared.h
-index e0f8e3d..8fed6ea 100644
---- a/sound/pci/hda/hda_shared.h
-+++ b/sound/pci/hda/hda_shared.h
-@@ -54,6 +54,5 @@ unsigned int azx_get_response(struct hda_bus *bus,
- void azx_init_cmd_io(struct azx *chip);
- void azx_free_cmd_io(struct azx *chip);
- void azx_update_rirb(struct azx *chip);
--int azx_alloc_cmd_io(struct azx *chip);
++static inline const struct snd_pci_quirk *
++snd_pci_quirk_lookup_id(u16 vendor, u16 device,
++			const struct snd_pci_quirk *list)
++{
++	return NULL;
++}
+ #endif
  
- #endif /* __SOUND_HDA_SHARED_H */
+ #endif /* __SOUND_CORE_H */
 -- 
 1.8.1.3.605.g02339dd
