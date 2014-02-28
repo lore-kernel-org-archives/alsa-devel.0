@@ -1,18 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix registration of beep input
+Subject: [PATCH v2] ALSA: hda - Fix registration of beep input
 	device
-Date: Fri, 28 Feb 2014 13:46:34 +0100
-Message-ID: <1393591594-3346-1-git-send-email-tiwai@suse.de>
+Date: Fri, 28 Feb 2014 14:08:22 +0100
+Message-ID: <1393592902-13394-1-git-send-email-tiwai@suse.de>
+References: <1393591594-3346-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DC5EB261A27
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 13:46:34 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 381A826512B
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 14:08:23 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 71C2075016
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 12:46:34 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 0075A75011
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 13:08:23 +0000 (UTC)
+In-Reply-To: <1393591594-3346-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -41,18 +43,33 @@ drivers.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_beep.c       | 27 ++++++++++++++++++++-------
- sound/pci/hda/hda_beep.h       |  5 +++++
- sound/pci/hda/hda_codec.c      |  7 ++++++-
+v1->v2:
+  Fix the error case where the device is freed without register
+
+ sound/pci/hda/hda_beep.c       | 33 +++++++++++++++++++++++++--------
+ sound/pci/hda/hda_beep.h       |  6 ++++++
+ sound/pci/hda/hda_codec.c      |  8 +++++++-
  sound/pci/hda/hda_generic.c    |  1 -
  sound/pci/hda/patch_conexant.c |  4 +---
- 5 files changed, 32 insertions(+), 12 deletions(-)
+ 5 files changed, 39 insertions(+), 13 deletions(-)
 
 diff --git a/sound/pci/hda/hda_beep.c b/sound/pci/hda/hda_beep.c
-index 88bb08486f77..b9d3d0cd75c9 100644
+index 88bb08486f77..8c6c50afc0b7 100644
 --- a/sound/pci/hda/hda_beep.c
 +++ b/sound/pci/hda/hda_beep.c
-@@ -148,7 +148,6 @@ static int snd_hda_do_attach(struct hda_beep *beep)
+@@ -139,7 +139,10 @@ static void turn_off_beep(struct hda_beep *beep)
+ 
+ static void snd_hda_do_detach(struct hda_beep *beep)
+ {
+-	input_unregister_device(beep->dev);
++	if (beep->registered)
++		input_unregister_device(beep->dev);
++	else
++		input_free_device(beep->dev);
+ 	beep->dev = NULL;
+ 	turn_off_beep(beep);
+ }
+@@ -148,7 +151,6 @@ static int snd_hda_do_attach(struct hda_beep *beep)
  {
  	struct input_dev *input_dev;
  	struct hda_codec *codec = beep->codec;
@@ -60,7 +77,7 @@ index 88bb08486f77..b9d3d0cd75c9 100644
  
  	input_dev = input_allocate_device();
  	if (!input_dev)
-@@ -169,12 +168,6 @@ static int snd_hda_do_attach(struct hda_beep *beep)
+@@ -169,12 +171,6 @@ static int snd_hda_do_attach(struct hda_beep *beep)
  	input_dev->dev.parent = &codec->dev;
  	input_set_drvdata(input_dev, beep);
  
@@ -73,7 +90,7 @@ index 88bb08486f77..b9d3d0cd75c9 100644
  	beep->dev = input_dev;
  	return 0;
  }
-@@ -244,6 +237,26 @@ void snd_hda_detach_beep_device(struct hda_codec *codec)
+@@ -244,6 +240,27 @@ void snd_hda_detach_beep_device(struct hda_codec *codec)
  }
  EXPORT_SYMBOL_GPL(snd_hda_detach_beep_device);
  
@@ -93,6 +110,7 @@ index 88bb08486f77..b9d3d0cd75c9 100644
 +		kfree(beep);
 +		return err;
 +	}
++	beep->registered = true;
 +	return 0;
 +}
 +EXPORT_SYMBOL_GPL(snd_hda_register_beep_device);
@@ -101,10 +119,18 @@ index 88bb08486f77..b9d3d0cd75c9 100644
  {
  	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
 diff --git a/sound/pci/hda/hda_beep.h b/sound/pci/hda/hda_beep.h
-index cb88464676b6..76eb8589fb9e 100644
+index cb88464676b6..a63b5e077332 100644
 --- a/sound/pci/hda/hda_beep.h
 +++ b/sound/pci/hda/hda_beep.h
-@@ -45,6 +45,7 @@ struct hda_beep {
+@@ -34,6 +34,7 @@ struct hda_beep {
+ 	char phys[32];
+ 	int tone;
+ 	hda_nid_t nid;
++	unsigned int registered:1;
+ 	unsigned int enabled:1;
+ 	unsigned int linear_tone:1;	/* linear tone for IDT/STAC codec */
+ 	unsigned int playing:1;
+@@ -45,6 +46,7 @@ struct hda_beep {
  int snd_hda_enable_beep_device(struct hda_codec *codec, int enable);
  int snd_hda_attach_beep_device(struct hda_codec *codec, int nid);
  void snd_hda_detach_beep_device(struct hda_codec *codec);
@@ -112,7 +138,7 @@ index cb88464676b6..76eb8589fb9e 100644
  #else
  static inline int snd_hda_attach_beep_device(struct hda_codec *codec, int nid)
  {
-@@ -53,5 +54,9 @@ static inline int snd_hda_attach_beep_device(struct hda_codec *codec, int nid)
+@@ -53,5 +55,9 @@ static inline int snd_hda_attach_beep_device(struct hda_codec *codec, int nid)
  static inline void snd_hda_detach_beep_device(struct hda_codec *codec)
  {
  }
@@ -123,7 +149,7 @@ index cb88464676b6..76eb8589fb9e 100644
  #endif
  #endif
 diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 6db2dbcbf4d3..555e8c771cfd 100644
+index 6db2dbcbf4d3..4c20277a6835 100644
 --- a/sound/pci/hda/hda_codec.c
 +++ b/sound/pci/hda/hda_codec.c
 @@ -1379,14 +1379,19 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
@@ -147,6 +173,14 @@ index 6db2dbcbf4d3..555e8c771cfd 100644
  	device_del(&codec->dev);
  	return 0;
  }
+@@ -2692,6 +2697,7 @@ int snd_hda_codec_reset(struct hda_codec *codec)
+ 				  bus->pcm_dev_bits);
+ 		}
+ 	}
++	snd_hda_detach_beep_device(codec);
+ 	if (codec->patch_ops.free)
+ 		codec->patch_ops.free(codec);
+ 	memset(&codec->patch_ops, 0, sizeof(codec->patch_ops));
 diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
 index 9e0609a4b2ba..16133881e967 100644
 --- a/sound/pci/hda/hda_generic.c
