@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 09/39] firewire-lib: Add sort function for
-	transmitted packet
-Date: Fri, 28 Feb 2014 12:27:22 +0900
-Message-ID: <1393558072-25926-10-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 11/39] firewire-lib: Add support for channel
+	mapping
+Date: Fri, 28 Feb 2014 12:27:24 +0900
+Message-ID: <1393558072-25926-12-git-send-email-o-takashi@sakamocchi.jp>
 References: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 09725264FE3
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:28:09 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id BE43B265044
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:28:12 +0100 (CET)
 In-Reply-To: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,232 +25,313 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit is to assure the continuity of timestamp in in-packets
-transmitted by devices.
+Some devices arrange the position of PCM/MIDI data channel in AMDTP packet.
+This commit allows drivers to set channel mapping.
 
-Fireworks with firmware version 5.5 or former is a type of device which
-transmits packets with a bit disorder.
-
-This commit add sorting of in-packets. When callback of receive-context
-is processed, the parameters of in-packets are stored in sort table and
-sorted by its value of data block counter. The sort algorism works faster
-in ordered sequence than in messy sequence. This is convinient for this
-purpose because the sequence is assumed not to be so messy. After sorting,
-packets are processed except for a last few packets in sort table. These
-packets are stored in buffer once and used in next cycle.
+To be simple, the mapping table is an array with fixed length. Then the number
+of channels for PCM is restricted by 64 channels.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 129 +++++++++++++++++++++++++++++++++++++++++++------
- sound/firewire/amdtp.h |   4 ++
- 2 files changed, 119 insertions(+), 14 deletions(-)
+ sound/firewire/amdtp.c | 122 +++++++++++++++++++++++++++++--------------------
+ sound/firewire/amdtp.h |   8 ++++
+ 2 files changed, 80 insertions(+), 50 deletions(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 9415992..3d943d1 100644
+index 43daa32..eb59eb7 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -45,6 +45,7 @@
- #define AMDTP_DBS_MASK		0x00ff0000
- #define AMDTP_DBS_SHIFT		16
- #define AMDTP_DBC_MASK		0x000000ff
-+#define DBC_THRESHOLD		(AMDTP_DBC_MASK / 2)
+@@ -140,11 +140,12 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
+ 		[CIP_SFC_176400] = 176400,
+ 		[CIP_SFC_192000] = 192000,
+ 	};
+-	unsigned int sfc, midi_channels;
++	unsigned int i, sfc, midi_channels;
  
- /* TODO: make these configurable */
- #define INTERRUPT_INTERVAL	16
-@@ -53,6 +54,13 @@
- #define IN_PACKET_HEADER_SIZE	4
- #define OUT_PACKET_HEADER_SIZE	0
+ 	midi_channels = DIV_ROUND_UP(midi_ports, 8);
  
-+/* for re-ordering receive packets */
-+struct sort_table {
-+	unsigned int id;
-+	unsigned int dbc;
-+	unsigned int payload_size;
-+};
+-	if (WARN_ON(amdtp_stream_running(s)) ||
++	if (WARN_ON(amdtp_stream_running(s)) |
++	    WARN_ON(pcm_channels > AMDTP_MAX_CHANNELS_FOR_PCM) |
+ 	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
+ 		return;
+ 
+@@ -159,11 +160,12 @@ sfc_found:
+ 	if (s->dual_wire) {
+ 		sfc -= 2;
+ 		rate /= 2;
+-		pcm_channels *= 2;
++		s->pcm_channels = pcm_channels * 2;
++	} else {
++		s->pcm_channels = pcm_channels;
+ 	}
+ 	s->sfc = sfc;
+-	s->data_block_quadlets = pcm_channels + midi_channels;
+-	s->pcm_channels = pcm_channels;
++	s->data_block_quadlets = s->pcm_channels + midi_channels;
+ 	s->midi_ports = midi_ports;
+ 
+ 	s->syt_interval = amdtp_syt_intervals[sfc];
+@@ -173,6 +175,11 @@ sfc_found:
+ 	if (s->flags & CIP_BLOCKING)
+ 		/* additional buffering needed to adjust for no-data packets */
+ 		s->transfer_delay += TICKS_PER_SECOND * s->syt_interval / rate;
 +
- static void pcm_period_tasklet(unsigned long data);
- 
- /**
-@@ -77,6 +85,9 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
- 	s->callbacked = false;
- 	s->sync_slave = ERR_PTR(-1);
- 
-+	s->sort_table = NULL;
-+	s->left_packets = NULL;
-+
- 	return 0;
++	/* init the position map for PCM and MIDI channels */
++	for (i = 0; i < pcm_channels; i++)
++		s->pcm_positions[i] = i;
++	s->midi_position = s->pcm_channels;
  }
- EXPORT_SYMBOL(amdtp_stream_init);
-@@ -735,6 +746,44 @@ static void handle_in_packet(struct amdtp_stream *s,
- 		update_pcm_pointers(s, pcm, data_blocks);
- }
+ EXPORT_SYMBOL(amdtp_stream_set_parameters);
  
-+#define SWAP(tbl, m, n) \
-+	t = tbl[n].id; \
-+	tbl[n].id = tbl[m].id; \
-+	tbl[m].id = t; \
-+	t = tbl[n].dbc; \
-+	tbl[n].dbc = tbl[m].dbc; \
-+	tbl[m].dbc = t; \
-+	t = tbl[n].payload_size; \
-+	tbl[n].payload_size = tbl[m].payload_size; \
-+	tbl[m].payload_size = t;
-+static void packet_sort(struct sort_table *tbl, unsigned int len)
-+{
-+	unsigned int i, j, k, t;
-+
-+	i = 0;
-+	do {
-+		for (j = i + 1; j < len; j++) {
-+			if (((tbl[i].dbc > tbl[j].dbc) &&
-+			     (tbl[i].dbc - tbl[j].dbc < DBC_THRESHOLD))) {
-+				SWAP(tbl, i, j);
-+			} else if ((tbl[j].dbc > tbl[i].dbc) &&
-+				   (tbl[j].dbc - tbl[i].dbc >
-+							DBC_THRESHOLD)) {
-+				for (k = i; k > 0; k--) {
-+					if ((tbl[k].dbc > tbl[j].dbc) ||
-+					    (tbl[j].dbc - tbl[k].dbc >
-+							DBC_THRESHOLD)) {
-+						SWAP(tbl, j, k);
-+					}
-+					break;
-+				}
-+			}
-+			break;
-+		}
-+		i = j;
-+	} while (i < len);
-+}
-+
- static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
- 				size_t header_length, void *header,
- 				void *private_data)
-@@ -761,30 +810,66 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
- 			       void *private_data)
+@@ -351,22 +358,20 @@ static void amdtp_write_s32(struct amdtp_stream *s,
+ 			    __be32 *buffer, unsigned int frames)
  {
- 	struct amdtp_stream *s = private_data;
--	unsigned int p, packets, syt, data_quadlets;
-+	struct sort_table *entry, *tbl = s->sort_table;
-+	unsigned int i, j, k, index, packets, syt, remain_packets;
- 	__be32 *buffer, *headers = header;
+ 	struct snd_pcm_runtime *runtime = pcm->runtime;
+-	unsigned int channels, remaining_frames, frame_step, i, c;
++	unsigned int remaining_frames, i, c;
+ 	const u32 *src;
  
- 	/* The number of packets in buffer */
- 	packets = header_length / IN_PACKET_HEADER_SIZE;
+-	channels = s->pcm_channels;
+ 	src = (void *)runtime->dma_area +
+ 			frames_to_bytes(runtime, s->pcm_buffer_pointer);
+ 	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
+-	frame_step = s->data_block_quadlets - channels;
  
--	for (p = 0; p < packets; p++) {
--		buffer = s->buffer.packets[s->packet_index].buffer;
-+	/* Store into sort table and sort. */
-+	for (i = 0; i < packets; i++) {
-+		entry = &tbl[s->remain_packets + i];
-+		entry->id = i;
-+
-+		index = s->packet_index + i;
-+		if (index >= QUEUE_LENGTH)
-+			index -= QUEUE_LENGTH;
-+		buffer = s->buffer.packets[index].buffer;
-+		entry->dbc = be32_to_cpu(buffer[0]) & AMDTP_DBC_MASK;
- 
--		/* The number of quadlets in this packet */
--		data_quadlets =
--			(be32_to_cpu(headers[p]) >> ISO_DATA_LENGTH_SHIFT) / 4;
-+		entry->payload_size = be32_to_cpu(headers[i]) >>
-+				      ISO_DATA_LENGTH_SHIFT;
-+	}
-+	packet_sort(tbl, packets + s->remain_packets);
- 
--		/* Process sync slave stream */
--		if ((s->flags & CIP_BLOCKING) &&
--		    (s->flags & CIP_SYNC_TO_DEVICE) &&
--		    s->sync_slave->callbacked) {
--			syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
--			handle_out_packet(s->sync_slave, syt);
-+	/*
-+	 * for convinience, tbl[i].id >= QUEUE_LENGTH is a label to identify
-+	 * previous packets in buffer.
-+	 */
-+	remain_packets = s->remain_packets;
-+	s->remain_packets = packets / 4;
-+	for (i = 0, j = 0, k = 0; i < remain_packets + packets; i++) {
-+		if (tbl[i].id < QUEUE_LENGTH) {
-+			index = s->packet_index + tbl[i].id;
-+			if (index >= QUEUE_LENGTH)
-+				index -= QUEUE_LENGTH;
-+			buffer = s->buffer.packets[index].buffer;
-+		} else {
-+			buffer = s->left_packets +
-+				 amdtp_stream_get_max_payload(s) * j++;
+ 	for (i = 0; i < frames; ++i) {
+-		for (c = 0; c < channels; ++c) {
+-			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
++		for (c = 0; c < s->pcm_channels; ++c) {
++			buffer[s->pcm_positions[c]] =
++					cpu_to_be32((*src >> 8) | 0x40000000);
+ 			src++;
+-			buffer++;
  		}
+-		buffer += frame_step;
++		buffer += s->data_block_quadlets;
+ 		if (--remaining_frames == 0)
+ 			src = (void *)runtime->dma_area;
+ 	}
+@@ -377,22 +382,20 @@ static void amdtp_write_s16(struct amdtp_stream *s,
+ 			    __be32 *buffer, unsigned int frames)
+ {
+ 	struct snd_pcm_runtime *runtime = pcm->runtime;
+-	unsigned int channels, remaining_frames, frame_step, i, c;
++	unsigned int remaining_frames, i, c;
+ 	const u16 *src;
  
--		/* handle each packet data */
--		handle_in_packet(s, data_quadlets, buffer);
-+		if (i < remain_packets + packets - s->remain_packets) {
-+			/* Process sync slave stream */
-+			if ((s->flags & CIP_BLOCKING) &&
-+			    (s->flags & CIP_SYNC_TO_DEVICE) &&
-+			    s->sync_slave->callbacked) {
-+				syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
-+				handle_out_packet(s->sync_slave, syt);
-+			}
-+			handle_in_packet(s, tbl[i].payload_size / 4, buffer);
-+		} else {
-+			tbl[k].id = tbl[i].id + QUEUE_LENGTH;
-+			tbl[k].dbc = tbl[i].dbc;
-+			tbl[k].payload_size = tbl[i].payload_size;
-+			memcpy(s->left_packets +
-+					amdtp_stream_get_max_payload(s) * k++,
-+			       buffer, tbl[i].payload_size);
+-	channels = s->pcm_channels;
+ 	src = (void *)runtime->dma_area +
+ 			frames_to_bytes(runtime, s->pcm_buffer_pointer);
+ 	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
+-	frame_step = s->data_block_quadlets - channels;
+ 
+ 	for (i = 0; i < frames; ++i) {
+-		for (c = 0; c < channels; ++c) {
+-			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
++		for (c = 0; c < s->pcm_channels; ++c) {
++			buffer[s->pcm_positions[c]] =
++					cpu_to_be32((*src << 8) | 0x40000000);
+ 			src++;
+-			buffer++;
+ 		}
+-		buffer += frame_step;
++		buffer += s->data_block_quadlets;
+ 		if (--remaining_frames == 0)
+ 			src = (void *)runtime->dma_area;
+ 	}
+@@ -403,29 +406,29 @@ static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
+ 				     __be32 *buffer, unsigned int frames)
+ {
+ 	struct snd_pcm_runtime *runtime = pcm->runtime;
+-	unsigned int channels, frame_adjust_1, frame_adjust_2, i, c;
++	unsigned int channels, remaining_frames, i, c;
+ 	const u32 *src;
+ 
+-	channels = s->pcm_channels;
+ 	src = (void *)runtime->dma_area +
+-			s->pcm_buffer_pointer * (runtime->frame_bits / 8);
+-	frame_adjust_1 = channels - 1;
+-	frame_adjust_2 = 1 - (s->data_block_quadlets - channels);
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++	channels = s->pcm_channels / 2;
+ 
+-	channels /= 2;
+ 	for (i = 0; i < frames; ++i) {
+ 		for (c = 0; c < channels; ++c) {
+-			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
++			buffer[s->pcm_positions[c] * 2] =
++					cpu_to_be32((*src >> 8) | 0x40000000);
+ 			src++;
+-			buffer += 2;
+ 		}
+-		buffer -= frame_adjust_1;
++		buffer += 1;
+ 		for (c = 0; c < channels; ++c) {
+-			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
++			buffer[s->pcm_positions[c] * 2] =
++					cpu_to_be32((*src >> 8) | 0x40000000);
+ 			src++;
+-			buffer += 2;
+ 		}
+-		buffer -= frame_adjust_2;
++		buffer += s->data_block_quadlets - 1;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
+ 	}
+ }
+ 
+@@ -434,29 +437,29 @@ static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
+ 				     __be32 *buffer, unsigned int frames)
+ {
+ 	struct snd_pcm_runtime *runtime = pcm->runtime;
+-	unsigned int channels, frame_adjust_1, frame_adjust_2, i, c;
++	unsigned int channels, remaining_frames, i, c;
+ 	const u16 *src;
+ 
+-	channels = s->pcm_channels;
+ 	src = (void *)runtime->dma_area +
+-			s->pcm_buffer_pointer * (runtime->frame_bits / 8);
+-	frame_adjust_1 = channels - 1;
+-	frame_adjust_2 = 1 - (s->data_block_quadlets - channels);
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++	channels = s->pcm_channels / 2;
+ 
+-	channels /= 2;
+ 	for (i = 0; i < frames; ++i) {
+ 		for (c = 0; c < channels; ++c) {
+-			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
++			buffer[s->pcm_positions[c] * 2] =
++					cpu_to_be32((*src << 8) | 0x40000000);
+ 			src++;
+-			buffer += 2;
+ 		}
+-		buffer -= frame_adjust_1;
++		buffer += 1;
+ 		for (c = 0; c < channels; ++c) {
+-			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
++			buffer[s->pcm_positions[c] * 2] =
++					cpu_to_be32((*src << 8) | 0x40000000);
+ 			src++;
+-			buffer += 2;
+ 		}
+-		buffer -= frame_adjust_2;
++		buffer += s->data_block_quadlets - 1;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
+ 	}
+ }
+ 
+@@ -474,7 +477,7 @@ static void amdtp_read_s32(struct amdtp_stream *s,
+ 
+ 	for (i = 0; i < frames; ++i) {
+ 		for (c = 0; c < s->pcm_channels; ++c) {
+-			*dst = be32_to_cpu(buffer[c]) << 8;
++			*dst = be32_to_cpu(buffer[s->pcm_positions[c]]) << 8;
+ 			dst++;
+ 		}
+ 		buffer += s->data_block_quadlets;
+@@ -498,12 +501,14 @@ static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
+ 
+ 	for (i = 0; i < frames; ++i) {
+ 		for (c = 0; c < channels; ++c) {
+-			*dst = be32_to_cpu(buffer[c * 2]) << 8;
++			*dst =
++			     be32_to_cpu(buffer[s->pcm_positions[c] * 2]) << 8;
+ 			dst++;
+ 		}
+ 		buffer += 1;
+ 		for (c = 0; c < channels; ++c) {
+-			*dst = be32_to_cpu(buffer[c * 2]) << 8;
++			*dst =
++			     be32_to_cpu(buffer[s->pcm_positions[c] * 2]) << 8;
+ 			dst++;
+ 		}
+ 		buffer += s->data_block_quadlets - 1;
+@@ -519,11 +524,26 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
+ 
+ 	for (i = 0; i < frames; ++i) {
+ 		for (c = 0; c < s->pcm_channels; ++c)
+-			buffer[c] = cpu_to_be32(0x40000000);
++			buffer[s->pcm_positions[c]] = cpu_to_be32(0x40000000);
+ 		buffer += s->data_block_quadlets;
+ 	}
+ }
+ 
++static void amdtp_fill_pcm_silence_dualwire(struct amdtp_stream *s,
++					   __be32 *buffer, unsigned int frames)
++{
++	unsigned int i, c, channels;
++
++	channels = s->pcm_channels / 2;
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			buffer[s->pcm_positions[c] * 2] =
++			buffer[s->pcm_positions[c] * 2 + 1] =
++						cpu_to_be32(0x40000000);
 +		}
++		buffer += s->data_block_quadlets;
 +	}
++}
+ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 			    __be32 *buffer, unsigned int frames)
+ {
+@@ -531,8 +551,8 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 	u8 *b;
  
-+	for (i = 0; i < packets; i++) {
- 		if (queue_in_packet(s) < 0) {
- 			amdtp_stream_pcm_abort(s);
- 			return;
-@@ -888,6 +973,17 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	if (err < 0)
- 		goto err_unlock;
+ 	for (f = 0; f < frames; f++) {
+-		buffer[s->pcm_channels + 1] = 0x00;
+-		b = (u8 *)&buffer[s->pcm_channels + 1];
++		buffer[s->midi_position] = 0x00;
++		b = (u8 *)&buffer[s->midi_position];
  
-+	/* for sorting transmitted packets */
-+	if (s->direction == AMDTP_IN_STREAM) {
-+		s->remain_packets = 0;
-+		s->sort_table = kzalloc(sizeof(struct sort_table) *
-+					QUEUE_LENGTH, GFP_KERNEL);
-+		if (s->sort_table == NULL)
-+			return -ENOMEM;
-+		s->left_packets = kzalloc(amdtp_stream_get_max_payload(s) *
-+					  QUEUE_LENGTH / 4, GFP_KERNEL);
-+	}
-+
- 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
- 					   type, channel, speed, header_size,
- 					   amdtp_stream_callback, s);
-@@ -986,6 +1082,11 @@ void amdtp_stream_stop(struct amdtp_stream *s)
- 	s->context = ERR_PTR(-1);
- 	iso_packets_buffer_destroy(&s->buffer, s->unit);
+ 		port = (s->data_block_counter + f) % 8;
+ 		if ((s->midi[port] == NULL) ||
+@@ -555,7 +575,7 @@ static void amdtp_pull_midi(struct amdtp_stream *s,
  
-+	if (s->sort_table != NULL)
-+		kfree(s->sort_table);
-+	if (s->left_packets != NULL)
-+		kfree(s->left_packets);
-+
- 	s->callbacked = false;
+ 	for (f = 0; f < frames; f++) {
+ 		port = (s->data_block_counter + f) % 8;
+-		b = (u8 *)&buffer[s->pcm_channels + 1];
++		b = (u8 *)&buffer[s->midi_position];
  
- 	mutex_unlock(&s->mutex);
+ 		len = b[0] - 0x80;
+ 		if (len < 1 || 3 < len)
+@@ -664,6 +684,8 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
+ 	pcm = ACCESS_ONCE(s->pcm);
+ 	if (pcm)
+ 		s->transfer_samples(s, pcm, buffer, data_blocks);
++	else if (s->dual_wire)
++		amdtp_fill_pcm_silence_dualwire(s, buffer, data_blocks);
+ 	else
+ 		amdtp_fill_pcm_silence(s, buffer, data_blocks);
+ 	if (s->midi_ports)
 diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index efa2d25..d502646 100644
+index d502646..2fb5175 100644
 --- a/sound/firewire/amdtp.h
 +++ b/sound/firewire/amdtp.h
-@@ -109,6 +109,10 @@ struct amdtp_stream {
- 	bool callbacked;
- 	wait_queue_head_t callback_wait;
- 	struct amdtp_stream *sync_slave;
-+
-+	void *sort_table;
-+	void *left_packets;
-+	unsigned int remain_packets;
- };
+@@ -49,6 +49,12 @@ enum cip_sfc {
  
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 
+ /*
++ * This module supports maximum 64 PCM channels for one PCM stream
++ * This is for our convinience.
++ */
++#define AMDTP_MAX_CHANNELS_FOR_PCM	64
++
++/*
+  * AMDTP packet can include channels for MIDI conformant data.
+  * Each MIDI conformant data channel includes 8 MPX-MIDI data stream.
+  * Each MPX-MIDI data stream includes one data stream from/to MIDI ports.
+@@ -83,6 +89,8 @@ struct amdtp_stream {
+ 	void (*transfer_samples)(struct amdtp_stream *s,
+ 				 struct snd_pcm_substream *pcm,
+ 				 __be32 *buffer, unsigned int frames);
++	u8 pcm_positions[AMDTP_MAX_CHANNELS_FOR_PCM];
++	u8 midi_position;
+ 
+ 	unsigned int syt_interval;
+ 	unsigned int transfer_delay;
 -- 
 1.8.3.2
