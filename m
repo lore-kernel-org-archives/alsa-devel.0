@@ -1,20 +1,17 @@
 From: Dylan Reid <dgreid@chromium.org>
-Subject: [RFCv2 03/22] ALSA: hda - Keep pointer to bdl_pos_fix
-	in chip struct
-Date: Fri, 28 Feb 2014 15:41:14 -0800
-Message-ID: <1393630893-29010-4-git-send-email-dgreid@chromium.org>
-References: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
+Subject: [RFC 00/19] Enable platform HDA drivers
+Date: Fri, 28 Feb 2014 15:41:11 -0800
+Message-ID: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f73.google.com (mail-oa0-f73.google.com
- [209.85.219.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 3926F26598A
+Received: from mail-ie0-f201.google.com (mail-ie0-f201.google.com
+ [209.85.223.201])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B3CB26599C
  for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 00:42:52 +0100 (CET)
-Received: by mail-oa0-f73.google.com with SMTP id n16so60830oag.2
+Received: by mail-ie0-f201.google.com with SMTP id at1so933685iec.2
  for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 15:42:51 -0800 (PST)
-In-Reply-To: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,85 +25,83 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, swarren@wwwdotorg.org
 List-Id: alsa-devel@alsa-project.org
 
-This will allow for a platform hda driver to use it as well.  It
-removes the dependency on the module param from hda_intel, which will
-allow for azx_setup_periods to be shared.
+This series rearranges some code in the HDA driver to break
+dependencies on PCI and allow for most of the HDA code to be reused
+for non-PCI based HDA controllers.
 
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
----
- sound/pci/hda/hda_intel.c | 12 ++++++++----
- sound/pci/hda/hda_priv.h  |  1 +
- 2 files changed, 9 insertions(+), 4 deletions(-)
+I tried to break it up to make it less scary and to keep changes away
+from copies of code.  It is mostly copies with a few modifications to
+make more of the code usable by both HDA drivers.  The main changes
+were to avoid using pci to get a device pointer, and to make the bus
+reads/writes into callbacks so that the Tegra driver could ensure
+32-bit access to the HDA registers.
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 45718fb..9fcd1d1 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1147,7 +1147,7 @@ static int azx_setup_periods(struct azx *chip,
- {
- 	u32 *bdl;
- 	int i, ofs, periods, period_bytes;
--	int pos_adj;
-+	int pos_adj = 0;
- 
- 	/* reset BDL address */
- 	azx_sd_writel(chip, azx_dev, SD_BDLPL, 0);
-@@ -1160,7 +1160,9 @@ static int azx_setup_periods(struct azx *chip,
- 	bdl = (u32 *)azx_dev->bdl.area;
- 	ofs = 0;
- 	azx_dev->frags = 0;
--	pos_adj = bdl_pos_adj[chip->dev_index];
-+
-+	if (chip->bdl_pos_adj)
-+		pos_adj = chip->bdl_pos_adj[chip->dev_index];
- 	if (!azx_dev->no_period_wakeup && pos_adj > 0) {
- 		struct snd_pcm_runtime *runtime = substream->runtime;
- 		int pos_align = pos_adj;
-@@ -1173,7 +1175,7 @@ static int azx_setup_periods(struct azx *chip,
- 		pos_adj = frames_to_bytes(runtime, pos_adj);
- 		if (pos_adj >= period_bytes) {
- 			dev_warn(chip->card->dev,"Too big adjustment %d\n",
--				 bdl_pos_adj[chip->dev_index]);
-+				 pos_adj);
- 			pos_adj = 0;
- 		} else {
- 			ofs = setup_bdle(chip, snd_pcm_get_dma_buf(substream),
-@@ -1184,6 +1186,7 @@ static int azx_setup_periods(struct azx *chip,
- 		}
- 	} else
- 		pos_adj = 0;
-+
- 	for (i = 0; i < periods; i++) {
- 		if (i == periods - 1 && pos_adj)
- 			ofs = setup_bdle(chip, snd_pcm_get_dma_buf(substream),
-@@ -2143,7 +2146,7 @@ static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
- 	if (wallclk < (azx_dev->period_wallclk * 5) / 4 &&
- 	    pos % azx_dev->period_bytes > azx_dev->period_bytes / 2)
- 		/* NG - it's below the first next period boundary */
--		return bdl_pos_adj[chip->dev_index] ? 0 : -1;
-+		return chip->bdl_pos_adj[chip->dev_index] ? 0 : -1;
- 	azx_dev->start_wallclk += wallclk;
- 	return 1; /* OK, it's fine */
- }
-@@ -3207,6 +3210,7 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 			break;
- 		}
- 	}
-+	chip->bdl_pos_adj = bdl_pos_adj;
- 
- 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
- 	if (err < 0) {
-diff --git a/sound/pci/hda/hda_priv.h b/sound/pci/hda/hda_priv.h
-index 6d082d6..17afe90 100644
---- a/sound/pci/hda/hda_priv.h
-+++ b/sound/pci/hda/hda_priv.h
-@@ -357,6 +357,7 @@ struct azx {
- 
- 	/* flags */
- 	int position_fix[2]; /* for both playback/capture streams */
-+	const int *bdl_pos_adj;
- 	int poll_count;
- 	unsigned int running:1;
- 	unsigned int initialized:1;
+The final patch is a work in progress included here to provide context
+for the preceding patches.  The Tegra HDA driver still needs some
+cleaning up, but nothing that will affect the other changes.  The last
+infrastructure issue is that the Tegra driver uses DT, causing it to be
+probed before the codec patches.  I haven't determined how to fix that
+yet.
+
+I didn't include the patch to move the hda directory from under pci
+because of its size and how easy it will be to regenerate later.
+
+Thanks for looking.  Let me know if you think any of these should be
+squashed or re-ordered and if the changes and breakup of code makes
+sense.
+
+Change since v1:
+
+ - Rename hda_shared to hda_controller
+ - Add more 'ops' to break out hda_intel specific functions, such as
+   postponed interrupt handling and page allocation
+ - Re order a few patches to make rebases easier
+ - Make bdl_pos_adj optional
+ - I left the position fix code in hda_controller, I don't have a good
+   way to test a refactoring of that, there are a few combinations of
+   settings. It will probably be useful to other controllers as well,
+   but moving it wouldn't be hard if we really want to.
+
+Thanks again,
+
+Dylan
+
+--
+Dylan Reid (19):
+  ALSA: hda - Move some definitions to new hda_priv.h
+  ALSA: hda - Allow different ops to read/write registers
+  ALSA: hda - Keep pointer to bdl_pos_fix in chip struct
+  ALSA: hda - Store device pointer in chip structure
+  ALSA: hda - Move pcm ops and support funcs to shared file
+  ALSA: hda - Pull pages allocation to shared file
+  ALSA: hda - Move the dsp loader to hda_shared
+  ALSA: hda - Add function pointer for disabling MSI
+  ALSA: hda - Relocate RIRB/CORB interface to hda_shared
+  ALSA: hda - move alloc_cmd_io to hda_shared.
+  ALSA: hda - Move low level functions to hda_shared
+  ALSA: hda - remove unused clear of STATESTS
+  ALSA: hda - Move azx_interrupt to hda_shared
+  ALSA: hda - Add jackpoll_ms to struct azx
+  ALSA: hda - Pass max_slots and power_save to codec_create
+  ALSA: hda - Move codec create to hda_shared
+  ALSA: core - Define snd_pci_quirk without CONFIG_PCI
+  ALSA: hda - remove PCI dependency in Kconfig
+  WIP: ALSA: hda - Add driver for Tegra SoC HDA
+
+ include/sound/core.h       |   15 +-
+ sound/pci/Kconfig          |    4 +-
+ sound/pci/hda/Kconfig      |   55 +-
+ sound/pci/hda/Makefile     |    8 +-
+ sound/pci/hda/hda_intel.c  | 2832 +++-----------------------------------------
+ sound/pci/hda/hda_priv.h   |  446 +++++++
+ sound/pci/hda/hda_shared.c | 2175 ++++++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_shared.h |   52 +
+ sound/pci/hda/hda_tegra.c  |  858 ++++++++++++++
+ 9 files changed, 3778 insertions(+), 2667 deletions(-)
+ create mode 100644 sound/pci/hda/hda_priv.h
+ create mode 100644 sound/pci/hda/hda_shared.c
+ create mode 100644 sound/pci/hda/hda_shared.h
+ create mode 100644 sound/pci/hda/hda_tegra.c
+
 -- 
 1.8.1.3.605.g02339dd
