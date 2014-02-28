@@ -1,48 +1,51 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH 18/39] firewire-lib: Add a fallback at
- RCODE_CANCELLED
-Date: Fri, 28 Feb 2014 21:39:48 +0100
-Message-ID: <20140228213948.2817649b@stein>
-References: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
- <1393558072-25926-19-git-send-email-o-takashi@sakamocchi.jp>
- <20140228212535.7606e0d8@stein>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: Re: [PATCH 14/28] Remove MACH_SMDKC210
+Date: Fri, 28 Feb 2014 22:43:09 +0100
+Message-ID: <1393623789.4052.17.camel@x220>
+References: <1391971686-9517-1-git-send-email-richard@nod.at>
+	 <1391971686-9517-15-git-send-email-richard@nod.at>
+	 <20140210114154.GQ1757@sirena.org.uk> <1392039072.3585.15.camel@x220>
+	 <20140210141255.GI1757@sirena.org.uk> <1392046242.3585.41.camel@x220>
+	 <20140210163621.GA13533@sirena.org.uk> <1392070159.27939.34.camel@x220>
+	 <20140212160431.GB28112@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DFFA26572E
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 21:39:51 +0100 (CET)
-In-Reply-To: <20140228212535.7606e0d8@stein>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20140212160431.GB28112@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Feb 28 Stefan Richter wrote:
->   - Or the AV/C target may still be busy processing a previous command.
->     In this case, the specification accepts that the target does not send
->     any response to subsequent requests at all until it is done with the
->     previous work.
+On Wed, 2014-02-12 at 16:04 +0000, Mark Brown wrote:
+> On Mon, Feb 10, 2014 at 11:09:19PM +0100, Paul Bolle wrote:
+> > See, if you scan v3.10:arch/arm/mach-exynos/mach-smdkv310.c you'll
+> > notice the string "smdk-audio". If you grep that string you get a few
+> > hits. But none in v3.10:sound/soc/samsung/smdk_wm9713.c. And if you scan
+> > v3.10:sound/soc/samsung/smdk_wm9713.c for strings you'll find stuff like
+> > "wm9713-hifi",  "wm9713-codec", and "soc-audio". But these don't show up
+> > in v3.10:arch/arm/mach-exynos/mach-smdkv310.c. So it's not obvious how
+> > these two files relate.
+> 
+> > And I'm left wondering why SND_SOC_SAMSUNG_SMDK_WM9713 actually depends
+> > on (among other symbols) MACH_SMDKV310 and MACH_SMDKC210 in v3.10.
+> 
+> The hardware is physically present on those boards but must be selected
+> with DIP switches, the device registration needs to be changed in the
+> kernel when that happens (as the DT must be when it is in use).
 
-To be more precise:  The specification accepts that the target *ignores*
-incoming AV/C command frames while processing an AV/C command.  This is
-indicated to the requester by lack of a response to any ignored request.
+In v3.14-rc4 these two symbols suddenly got removed, see commit
+eaff64705dd5 ("ASoC: samsung: Remove invalid dependencies"). It does
+exactly what I proposed last year, see
+https://lkml.org/lkml/2013/7/14/27 . (That link currently shows a rather
+empty page; is lkml.org having problems again?)
 
-To me, this implies that the target must send a response to any request
-that it did not ignore, i.e. to any command that it executed.  On the
-other hand, I don't think there is any rollback behavior specified or
-practical in cases when the target is unable to deliver a response to the
-initiator.
--- 
-Stefan Richter
--=====-====- --=- ===--
-http://arcgraph.de/sr/
+That commit is fine with me, of course. I now see no reason to continue
+my, rather slowly progressing, search for the problem that you wanted to
+get properly fixed. I suppose another commit already fixed it.
+
+Thanks,
+
+
+Paul Bolle
