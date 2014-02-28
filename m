@@ -1,14 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 17/39] firewire-lib: Add quirks for Fireworks
-Date: Fri, 28 Feb 2014 12:27:30 +0900
-Message-ID: <1393558072-25926-18-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 18/39] firewire-lib: Add a fallback at
+	RCODE_CANCELLED
+Date: Fri, 28 Feb 2014 12:27:31 +0900
+Message-ID: <1393558072-25926-19-git-send-email-o-takashi@sakamocchi.jp>
 References: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 7AA6C2650C0
+ by alsa0.perex.cz (Postfix) with ESMTP id EA7B3261A1A
  for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:28:21 +0100 (CET)
 In-Reply-To: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,142 +25,126 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds three modifications for Echo Audio's Fireworks quirks.
+I confirm that some devices often send no response against driver's
+request even if the devices handle the request. In this case, drivers
+should not retry the request because it's not clear whether the devices
+already handled an operation of the request or not. The second request
+may bring errors or make no sence if the request was handled.
 
-1.Making this module to support both TAG0 and TAG1
-In IEC 61883-1, each common isochronous packet (CIP) has 'tag' field in its
-packet header. The value is generally 0x01 (CIP header is included = TAG1).
-But Fireworks in 'IEC 61883 compliant' mode transmits 'no data' packet with
-0x00 (No CIP header is included = TAG0) but the packet includes CIP structure.
-To process 'presentation timestamp' for duplex streams synchronization
-correctly, this packets needs to be handled.
+This patch adds a flag, FW_RETURN_TIMEOUT, for snd_fw_transaction().
+With this flag, this function returns -ETIMEOUT when fw_run_transaction()
+returns RCODE_CALCELLED.
 
-2.Making this module to calculate data block size and not to check continuity
-One of Fireworks device, AudioFirePre8, always reports 8 data block size in
-in-packets and the data block counter is incremented by 8. But actual value is
-different.
+For FCP, this patch modifies fcp_avc_transaction() with this flag. The
+-ETIMEDOUT is handled as success. Linux Firewire Subsystem currently gives
+200msec for default timeout (See DEFAULT_SPLIT_TIMEOUT in core-card.c).
+firewire-lib gives 125msec for wait_event_timeout(). As a result, in worst
+case that all of three retries are timeout and devices don't send responses,
+fcp_avc_transaction() returns 1sec later ((200 + 125) msec * 3 times). But
+this is rare.
 
-3.Making this module to have the numebr of first data blocks for MIDI messages
-in out-packet
-Fireworks can pick up MIDI messages in first 8 data blocks and ignore in other
-data blocks.
-
-I confirm these quirks in firmware version between 4.8 and 5.8 with Windows.
-I didn't investigate for the other versions. But according to contact person
-in Echo Audio, there is no differences between firmwares installed by Windows
-or OS X.
+For CMP, this patch modifies pcr_modify() with this flag. The -ETIMEOUT
+generates another read transaction to check current value of PCR. If this
+read transaction returns errors, then pcr_modify() returns the error code.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 50 +++++++++++++++++++++++++-------------------------
- sound/firewire/amdtp.h |  2 ++
- 2 files changed, 27 insertions(+), 25 deletions(-)
+ sound/firewire/cmp.c | 23 +++++++++++++++++++++--
+ sound/firewire/fcp.c |  5 +++--
+ sound/firewire/lib.c |  6 +++++-
+ sound/firewire/lib.h |  1 +
+ 4 files changed, 30 insertions(+), 5 deletions(-)
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 9b45382..a2b293a 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -88,6 +88,8 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
- 	s->sort_table = NULL;
- 	s->left_packets = NULL;
+diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
+index a8199fd..73f5f26 100644
+--- a/sound/firewire/cmp.c
++++ b/sound/firewire/cmp.c
+@@ -89,13 +89,32 @@ static int pcr_modify(struct cmp_connection *c,
+ 		err = snd_fw_transaction(
+ 				c->resources.unit, TCODE_LOCK_COMPARE_SWAP,
+ 				get_offset(c, false), buffer, 8,
+-				FW_FIXED_GENERATION | c->resources.generation);
++				FW_FIXED_GENERATION | c->resources.generation |
++				FW_RETURN_TIMEOUT);
  
-+	s->blocks_for_midi = UINT_MAX;
+ 		if (err < 0) {
+ 			if (err == -EAGAIN &&
+ 			    bus_reset_handling == SUCCEED_ON_BUS_RESET)
+ 				err = 0;
+-			return err;
 +
- 	return 0;
- }
- EXPORT_SYMBOL(amdtp_stream_init);
-@@ -556,8 +558,14 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
- 		buffer[s->midi_position] = 0x00;
- 		b = (u8 *)&buffer[s->midi_position];
++			if (err != -ETIMEDOUT)
++				return err;
++
++			/* Check current PCR. */
++			err = snd_fw_transaction(
++				c->resources.unit, TCODE_READ_QUADLET_REQUEST,
++				get_offset(c, false), buffer, 4,
++				FW_FIXED_GENERATION | c->resources.generation);
++			if (err < 0)
++				return err;
++
++			/* The lock transaction may be failed, retry */
++			if (buffer[0] != buffer[1]) {
++				buffer[0] = c->last_pcr_value;
++				continue;
++			}
++
++			break;
+ 		}
  
-+		/*
-+		 * NOTE:
-+		 * Fireworks ignores midi messages in more than first 8
-+		 * data blocks of an packet.
-+		 */
- 		port = (s->data_block_counter + f) % 8;
--		if ((s->midi[port] == NULL) ||
-+		if ((f >= s->blocks_for_midi) ||
-+		    (s->midi[port] == NULL) ||
- 		    (snd_rawmidi_transmit(s->midi[port], b + 1, 1) <= 0)) {
- 			b[0] = 0x80;
- 			b[1] = 0x00;	/* confirm to be zero */
-@@ -710,7 +718,7 @@ static void handle_in_packet(struct amdtp_stream *s,
- 			     __be32 *buffer)
- {
- 	u32 cip_header[2];
--	unsigned int data_block_quadlets, data_blocks, data_block_counter;
-+	unsigned int data_blocks;
- 	struct snd_pcm_substream *pcm;
+ 		if (buffer[0] == old_arg) /* success? */
+diff --git a/sound/firewire/fcp.c b/sound/firewire/fcp.c
+index e903ddb..6fc813f 100644
+--- a/sound/firewire/fcp.c
++++ b/sound/firewire/fcp.c
+@@ -245,8 +245,9 @@ int fcp_avc_transaction(struct fw_unit *unit,
+ 					  : TCODE_WRITE_BLOCK_REQUEST;
+ 		ret = snd_fw_transaction(t.unit, tcode,
+ 					 CSR_REGISTER_BASE + CSR_FCP_COMMAND,
+-					 (void *)command, command_size, 0);
+-		if (ret < 0)
++					 (void *)command, command_size,
++					 FW_RETURN_TIMEOUT);
++		if ((ret < 0) && (ret != -ETIMEDOUT))
+ 			break;
  
- 	cip_header[0] = be32_to_cpu(buffer[0]);
-@@ -735,27 +743,16 @@ static void handle_in_packet(struct amdtp_stream *s,
- 							AMDTP_FDF_NO_DATA))
- 		return;
+ 		wait_event_timeout(t.wait, t.state != STATE_PENDING,
+diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
+index 7409edb..6c3278b 100644
+--- a/sound/firewire/lib.c
++++ b/sound/firewire/lib.c
+@@ -22,7 +22,7 @@
+  * @length: length of @buffer
+  * @flags: use %FW_FIXED_GENERATION and add the generation value to attempt the
+  *         request only in that generation; use %FW_QUIET to suppress error
+- *         messages
++ *         messages: use %FW_RETURN_TIMEOUT to avoid retry at RCODE_CANCELLED
+  *
+  * Submits an asynchronous request to the target device, and waits for the
+  * response.  The node ID and the current generation are derived from @unit.
+@@ -53,6 +53,10 @@ int snd_fw_transaction(struct fw_unit *unit, int tcode,
+ 		if (rcode == RCODE_GENERATION && (flags & FW_FIXED_GENERATION))
+ 			return -EAGAIN;
  
--	data_block_quadlets =
--			(cip_header[1] & AMDTP_DBS_MASK) >> AMDTP_DBS_SHIFT;
--	/* avoid division by zero */
--	if (data_block_quadlets == 0) {
--		dev_info_ratelimited(&s->unit->device,
--				 "Detect invalid value in dbs field: %08X\n",
--				 data_block_quadlets);
--		return;
--	}
--
--	data_blocks = (payload_quadlets - 2) / data_block_quadlets;
--	data_block_counter = cip_header[1] & AMDTP_DBC_MASK;
--
--	/* check packet continuity */
--	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
--	if (s->data_block_counter != data_block_counter) {
--		dev_info_ratelimited(&s->unit->device,
--				     "Detect uncontinuity of CIP packets\n");
--		s->data_block_counter = data_block_counter;
--		return;
--	}
-+	/*
-+	 * This module don't use the value of dbs and dbc beceause Echo
-+	 * AudioFirePre8 reports inappropriate value.
-+	 *
-+	 * This model always reports a fixed value "8" as data block size at
-+	 * any sampling rates but actually data block size is different.
-+	 * Additionally the value of data block count always incremented by
-+	 * "8" at any sampling rates but actually it's different.
-+	 */
-+	data_blocks = (payload_quadlets - 2) / s->data_block_quadlets;
++		/* timeout */
++		if ((rcode == RCODE_CANCELLED) && (flags & FW_RETURN_TIMEOUT))
++			return -ETIMEDOUT;
++
+ 		if (rcode_is_permanent_error(rcode) || ++tries >= 3) {
+ 			if (!(flags & FW_QUIET))
+ 				dev_err(&unit->device,
+diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
+index 02cfabc..b8ea90b 100644
+--- a/sound/firewire/lib.h
++++ b/sound/firewire/lib.h
+@@ -9,6 +9,7 @@ struct fw_unit;
+ #define FW_GENERATION_MASK	0x00ff
+ #define FW_FIXED_GENERATION	0x0100
+ #define FW_QUIET		0x0200
++#define FW_RETURN_TIMEOUT	0x0400
  
- 	buffer += 2;
- 
-@@ -1041,11 +1038,14 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 			goto err_context;
- 	} while (s->packet_index > 0);
- 
--	/* NOTE: TAG1 matches CIP. This just affects in stream */
-+	/*
-+	 * NOTE: TAG1 matches CIP. This just affects in stream.
-+	 * Fireworks transmits NODATA packets with TAG0.
-+	 */
- 	s->data_block_counter = 0;
- 	s->callbacked = false;
- 	err = fw_iso_context_start(s->context, -1, 0,
--				   FW_ISO_CONTEXT_MATCH_TAG1);
-+			FW_ISO_CONTEXT_MATCH_TAG0 | FW_ISO_CONTEXT_MATCH_TAG1);
- 	if (err < 0)
- 		goto err_context;
- 
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 861f509..dce3903 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -113,6 +113,8 @@ struct amdtp_stream {
- 	bool pointer_flush;
- 
- 	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
-+	/* quirk: the first count of data blocks in an AMDTP packet for MIDI */
-+	unsigned int blocks_for_midi;
- 
- 	bool callbacked;
- 	wait_queue_head_t callback_wait;
+ int snd_fw_transaction(struct fw_unit *unit, int tcode,
+ 		       u64 offset, void *buffer, size_t length,
 -- 
 1.8.3.2
