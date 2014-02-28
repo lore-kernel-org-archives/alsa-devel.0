@@ -1,8 +1,8 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH v2 1/3] route: Allow chmap syntax for slave
-	channels in ttable
-Date: Fri, 28 Feb 2014 08:57:05 +0100
-Message-ID: <1393574227-25732-2-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH v2 3/3] conf: Allow 2.1 surround to use
+	different number of channels
+Date: Fri, 28 Feb 2014 08:57:07 +0100
+Message-ID: <1393574227-25732-4-git-send-email-david.henningsson@canonical.com>
 References: <1393574227-25732-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id F1884265481
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 08:57:08 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 58A31265703
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 08:57:10 +0100 (CET)
 In-Reply-To: <1393574227-25732-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,64 +26,38 @@ To: tiwai@suse.de, alsa-devel@alsa-project.org
 Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Instead of writing e g "0" and "1", one can now write "FL" and "FR" instead.
+This way, cards that support LFE on four channels (e g laptop with
+internal subwoofer) can do that, and other cards on a six channel setup
+can use that as well.
 
-E g:
-	ttable.0.FL 1
-	ttable.1.FR 1
-	ttable.2.LFE 1
+Well, note that there is still a reference to "pcm.surround51" left here.
+In practice, for HDA Intel sound cards this does not matter as both
+surround51 and surround40 reference the same definition.
+(And that's the only card I currently know of that actually does
+surround2.1 over four channels.)
 
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- src/pcm/pcm_route.c |   22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ src/conf/pcm/surround21.conf |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
-index 2beedf6..56318d4 100644
---- a/src/pcm/pcm_route.c
-+++ b/src/pcm/pcm_route.c
-@@ -789,6 +789,24 @@ static void snd_pcm_route_dump(snd_pcm_t *pcm, snd_output_t *out)
- 	snd_pcm_dump(route->plug.gen.slave, out);
- }
- 
-+static int strtochannel(const char *id, long *channel)
-+{
-+	int err;
-+	int ch;
-+	err = safe_strtol(id, channel);
-+	if (err >= 0)
-+		return err;
-+
-+	ch = (int) snd_pcm_chmap_from_string(id);
-+	if (ch == -1)
-+		return -EINVAL;
-+
-+	/* For now, assume standard channel mapping */
-+	*channel = ch - SND_CHMAP_FL;
-+	return 0;
-+}
-+
-+
- static const snd_pcm_ops_t snd_pcm_route_ops = {
- 	.close = snd_pcm_route_close,
- 	.info = snd_pcm_generic_info,
-@@ -983,7 +1001,7 @@ int snd_pcm_route_determine_ttable(snd_config_t *tt,
- 			const char *id;
- 			if (snd_config_get_id(jnode, &id) < 0)
- 				continue;
--			err = safe_strtol(id, &schannel);
-+			err = strtochannel(id, &schannel);
- 			if (err < 0) {
- 				SNDERR("Invalid slave channel: %s", id);
- 				return -EINVAL;
-@@ -1046,7 +1064,7 @@ int snd_pcm_route_load_ttable(snd_config_t *tt, snd_pcm_route_ttable_entry_t *tt
- 			const char *id;
- 			if (snd_config_get_id(jnode, &id) < 0)
- 				continue;
--			err = safe_strtol(id, &schannel);
-+			err = strtochannel(id, &schannel);
- 			if (err < 0 || 
- 			    schannel < 0 || (unsigned int) schannel > tt_ssize || 
- 			    (schannels > 0 && schannel >= schannels)) {
+diff --git a/src/conf/pcm/surround21.conf b/src/conf/pcm/surround21.conf
+index be29020..7f4676b 100644
+--- a/src/conf/pcm/surround21.conf
++++ b/src/conf/pcm/surround21.conf
+@@ -51,10 +51,9 @@ pcm.!surround21 {
+ 			]
+ 		}
+ 	}
+-	slave.channels 6
+-	ttable.0.0 1
+-	ttable.1.1 1
+-	ttable.2.5 1
++	ttable.0.FL 1
++	ttable.1.FR 1
++	ttable.2.LFE 1
+ 	hint {
+ 		description "2.1 Surround output to Front and Subwoofer speakers"
+ 		device $DEV
 -- 
 1.7.9.5
