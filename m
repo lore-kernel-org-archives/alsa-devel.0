@@ -1,12 +1,21 @@
-From: "Corfu, ValentinX" <valentinx.corfu@intel.com>
-Subject: [alsa-plugins] [PATCH 1/1] Allow number of channels
-Date: Fri, 28 Feb 2014 16:24:47 +0000
-Message-ID: <9900E8BE2ADAAB43B2A4471493EDB7F94B3F8B@IRSMSX104.ger.corp.intel.com>
+From: "'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>
+Subject: Re: change kmalloc into vmalloc for large memory
+	allocations
+Date: Fri, 28 Feb 2014 08:33:04 -0800
+Message-ID: <20140228163304.GA15614@kroah.com>
+References: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
+ <53104ECA.4010702@freescale.com>
+ <35FD53F367049845BC99AC72306C23D102844605F38D@CNBJMBX05.corpusers.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3F8BIRSMSX104gercorpi_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Language: en-US
+Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
+ [140.211.169.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47BB6265218
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 17:31:28 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <35FD53F367049845BC99AC72306C23D102844605F38D@CNBJMBX05.corpusers.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,86 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "patch@alsa-project.org" <patch@alsa-project.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Trandafir,
- IonutX" <ionutx.trandafir@intel.com>
+To: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'broonie@opensource.wolfsonmicro.com'" <broonie@opensource.wolfsonmicro.com>, "'tiwai@suse.de'" <tiwai@suse.de>, "'fweisbec@gmail.com'" <fweisbec@gmail.com>, "'mingo@redhat.com'" <mingo@redhat.com>, "'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>, "'rydberg@euromail.se'" <rydberg@euromail.se>, "'lrg@ti.com'" <lrg@ti.com>, "'pablo@netfilter.org'" <pablo@netfilter.org>, "'coreteam@netfilter.org'" <coreteam@netfilter.org>, "'linux-arm-msm@vger.kernel.org'" <linux-arm-msm@vger.kernel.org>, "'rostedt@goodmis.org'" <rostedt@goodmis.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, "'linux-arm-kernel@lists.infradead.org'" <linux-arm-kernel@lists.infradead.org>, "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>, "'dmitry.torokhov@gmail.com'" <dmitry.torokhov@gmail.com>, 'linux-kern
 List-Id: alsa-devel@alsa-project.org
 
---_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3F8BIRSMSX104gercorpi_
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+On Fri, Feb 28, 2014 at 05:20:08PM +0800, Wang, Yalin wrote:
+> Hi  
+> 
+> 
+> Yeah,  
+> Dma buffer must be allocated by kmalloc,
+> 
+> But the modules I list should can all be changed to use
+> vmalloc, because the buffer is only used by software,
+> Not by any hardware .
 
+Are you sure about that?  The USB gadget driver needs DMA memory from
+what I can tell, have you tried your change out on a system that does
+not allow the USB controller to access non-DMA memory?
 
-Intel GmbH
-Dornacher Strasse 1
-85622 Feldkirchen/Muenchen, Deutschland
-Sitz der Gesellschaft: Feldkirchen bei Muenchen
-Geschaeftsfuehrer: Christian Lamprechter, Hannes Schwaderer, Douglas Lusk
-Registergericht: Muenchen HRB 47456
-Ust.-IdNr./VAT Registration No.: DE129385895
-Citibank Frankfurt a.M. (BLZ 502 109 00) 600119052
+And I agree with Steve, just fix the individual drivers, don't do a
+"hidden" change of where the memory is allocated from, that's not a good
+idea and will cause problems later.
 
---_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3F8BIRSMSX104gercorpi_
-Content-Type: text/x-patch; name="0001-Allow-number-of-channels.patch"
-Content-Description: 0001-Allow-number-of-channels.patch
-Content-Disposition: attachment;
-	filename="0001-Allow-number-of-channels.patch"; size=2517;
-	creation-date="Fri, 28 Feb 2014 16:24:33 GMT";
-	modification-date="Fri, 28 Feb 2014 16:24:33 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSBmODBkNTY2NWZkYzFjNWM0MmYyNjE2ZWFjYmU1NDhjMWQwZTdhYmE2IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBWYWxlbnRpbiBDb3JmdSA8dmFsZW50aW54LmNvcmZ1QGludGVs
-LmNvbT4KRGF0ZTogRnJpLCAyOCBGZWIgMjAxNCAxMDoyOTowMSAtMDUwMApTdWJqZWN0OiBbUEFU
-Q0hdIEFsbG93IG51bWJlciBvZiBjaGFubmVscwoKVGhlIG1vZGlmaWNhdGlvbiBhbGxvd3MgdG8g
-c3BlY2lmeSB0aGUgbnVtYmVyIG9mIGNoYW5uZWxzIGFzIHBhcmFtZXRlcnMKaW4gdGhlIGNvbmZp
-Z3VyYXRpb24gZmlsZS4gVGhlIGdpdmVuIG51bWJlciBvZiBjaGFubmVscyBhcmUgdGhlbiBjcmVh
-dGVkCmJ1dCBub3QgY29ubmVjdGVkCgpTaWduZWQtb2ZmLWJ5OiBWYWxlbnRpbiBDb3JmdSA8dmFs
-ZW50aW54LmNvcmZ1QGludGVsLmNvbT4KCmRpZmYgLS1naXQgYS9qYWNrL3BjbV9qYWNrLmMgYi9q
-YWNrL3BjbV9qYWNrLmMKaW5kZXggNDIxMzcwOC4uMDU5YzYwZCAxMDA2NDQKLS0tIGEvamFjay9w
-Y21famFjay5jCisrKyBiL2phY2svcGNtX2phY2suYwpAQCAtMzI1LDcgKzMyNSw3IEBAIHN0YXRp
-YyBpbnQgbWFrZV9ub25ibG9jayhpbnQgZmQpCiBzdGF0aWMgaW50IHNuZF9wY21famFja19vcGVu
-KHNuZF9wY21fdCAqKnBjbXAsIGNvbnN0IGNoYXIgKm5hbWUsCiAJCQkgICAgIHNuZF9jb25maWdf
-dCAqcGxheWJhY2tfY29uZiwKIAkJCSAgICAgc25kX2NvbmZpZ190ICpjYXB0dXJlX2NvbmYsCi0J
-CQkgICAgIHNuZF9wY21fc3RyZWFtX3Qgc3RyZWFtLCBpbnQgbW9kZSkKKwkJCSAgICAgc25kX3Bj
-bV9zdHJlYW1fdCBzdHJlYW0sIGludCBtb2RlLCB1bnNpZ25lZCBpbnQgbnVtX2NoYW5uZWxzKQog
-ewogCXNuZF9wY21famFja190ICpqYWNrOwogCWludCBlcnI7CkBAIC0zNDEsMTEgKzM0MSwyMSBA
-QCBzdGF0aWMgaW50IHNuZF9wY21famFja19vcGVuKHNuZF9wY21fdCAqKnBjbXAsIGNvbnN0IGNo
-YXIgKm5hbWUsCiAJamFjay0+ZmQgPSAtMTsKIAlqYWNrLT5pby5wb2xsX2ZkID0gLTE7CiAKLQll
-cnIgPSBwYXJzZV9wb3J0cyhqYWNrLCBzdHJlYW0gPT0gU05EX1BDTV9TVFJFQU1fUExBWUJBQ0sg
-PwotCQkJICBwbGF5YmFja19jb25mIDogY2FwdHVyZV9jb25mKTsKLQlpZiAoZXJyKSB7Ci0JCXNu
-ZF9wY21famFja19mcmVlKGphY2spOwotCQlyZXR1cm4gZXJyOworCWlmIChudW1fY2hhbm5lbHMg
-PiAwKSB7CisJCWphY2stPm51bV9wb3J0cyA9IG51bV9jaGFubmVsczsKKwkJamFjay0+cG9ydF9u
-YW1lcyA9IGNhbGxvYyhudW1fY2hhbm5lbHMsIHNpemVvZihjaGFyKikpOworCQlpZiAoamFjay0+
-cG9ydF9uYW1lcyA9PSBOVUxMKSB7CisJCQlzbmRfcGNtX2phY2tfZnJlZShqYWNrKTsKKwkJCXJl
-dHVybiAtRU5PTUVNOworCQl9CisJfQorCWVsc2UgeworCQllcnIgPSBwYXJzZV9wb3J0cyhqYWNr
-LCBzdHJlYW0gPT0gU05EX1BDTV9TVFJFQU1fUExBWUJBQ0sgPworCQkJCXBsYXliYWNrX2NvbmYg
-OiBjYXB0dXJlX2NvbmYpOworCQlpZiAoZXJyKSB7CisJCQlzbmRfcGNtX2phY2tfZnJlZShqYWNr
-KTsKKwkJCXJldHVybiBlcnI7CisJCX0KIAl9CiAKIAlqYWNrLT5jaGFubmVscyA9IGphY2stPm51
-bV9wb3J0czsKQEAgLTQyMiw2ICs0MzIsNyBAQCBTTkRfUENNX1BMVUdJTl9ERUZJTkVfRlVOQyhq
-YWNrKQogCXNuZF9jb25maWdfdCAqcGxheWJhY2tfY29uZiA9IE5VTEw7CiAJc25kX2NvbmZpZ190
-ICpjYXB0dXJlX2NvbmYgPSBOVUxMOwogCWludCBlcnI7CisJdW5zaWduZWQgaW50IG51bV9jaGFu
-bmVscyA9IDA7CiAJCiAJc25kX2NvbmZpZ19mb3JfZWFjaChpLCBuZXh0LCBjb25mKSB7CiAJCXNu
-ZF9jb25maWdfdCAqbiA9IHNuZF9jb25maWdfaXRlcmF0b3JfZW50cnkoaSk7CkBAIC00MzQsNiAr
-NDQ1LDEwIEBAIFNORF9QQ01fUExVR0lOX0RFRklORV9GVU5DKGphY2spCiAJCQlzbmRfY29uZmln
-X2dldF9zdHJpbmcobiwgJm5hbWUpOwogCQkJY29udGludWU7CiAJCX0KKwkJaWYgKHN0cmNtcChp
-ZCwgImNoYW5uZWxzIikgPT0gMCkgeworCQkJc25kX2NvbmZpZ19nZXRfaW50ZWdlcihuLCAmbnVt
-X2NoYW5uZWxzKTsKKwkJCWNvbnRpbnVlOworCQl9CiAJCWlmIChzdHJjbXAoaWQsICJwbGF5YmFj
-a19wb3J0cyIpID09IDApIHsKIAkJCWlmIChzbmRfY29uZmlnX2dldF90eXBlKG4pICE9IFNORF9D
-T05GSUdfVFlQRV9DT01QT1VORCkgewogCQkJCVNOREVSUigiSW52YWxpZCB0eXBlIGZvciAlcyIs
-IGlkKTsKQEAgLTQ1NCw3ICs0NjksNyBAQCBTTkRfUENNX1BMVUdJTl9ERUZJTkVfRlVOQyhqYWNr
-KQogCQlyZXR1cm4gLUVJTlZBTDsKIAl9CiAKLQllcnIgPSBzbmRfcGNtX2phY2tfb3BlbihwY21w
-LCBuYW1lLCBwbGF5YmFja19jb25mLCBjYXB0dXJlX2NvbmYsIHN0cmVhbSwgbW9kZSk7CisJZXJy
-ID0gc25kX3BjbV9qYWNrX29wZW4ocGNtcCwgbmFtZSwgcGxheWJhY2tfY29uZiwgY2FwdHVyZV9j
-b25mLCBzdHJlYW0sIG1vZGUsIG51bV9jaGFubmVscyk7CiAKIAlyZXR1cm4gZXJyOwogfQotLSAK
-MS44LjEuNAoK
-
---_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3F8BIRSMSX104gercorpi_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3F8BIRSMSX104gercorpi_--
+greg k-h
