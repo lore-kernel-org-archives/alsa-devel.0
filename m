@@ -1,16 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 22/39] fireworks: Add proc interface for
-	debugging purpose
-Date: Fri, 28 Feb 2014 12:27:35 +0900
-Message-ID: <1393558072-25926-23-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 23/39] fireworks: Add MIDI interface
+Date: Fri, 28 Feb 2014 12:27:36 +0900
+Message-ID: <1393558072-25926-24-git-send-email-o-takashi@sakamocchi.jp>
 References: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 7710A2650F8
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:28:26 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CC1A26513C
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:28:27 +0100 (CET)
 In-Reply-To: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,298 +24,244 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds proc interface to output infomation for debugging.
- - firmware information
- - sampling rate and clock source
- - physical metering (linear value)
+This commit adds a functionality to capture/playback MIDI messages.
+
+When no AMDTP streams are running, this driver starts AMDTP stream for MIDI
+stream at current sampling rate.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/Makefile         |   2 +-
- sound/firewire/fireworks/fireworks.c      |  14 ++-
- sound/firewire/fireworks/fireworks.h      |  11 ++
- sound/firewire/fireworks/fireworks_proc.c | 189 ++++++++++++++++++++++++++++++
- 4 files changed, 213 insertions(+), 3 deletions(-)
- create mode 100644 sound/firewire/fireworks/fireworks_proc.c
+ sound/firewire/Kconfig                    |   1 +
+ sound/firewire/fireworks/Makefile         |   3 +-
+ sound/firewire/fireworks/fireworks.c      |   6 ++
+ sound/firewire/fireworks/fireworks.h      |   3 +
+ sound/firewire/fireworks/fireworks_midi.c | 158 ++++++++++++++++++++++++++++++
+ 5 files changed, 170 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/fireworks/fireworks_midi.c
 
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 0b85ebd..36a1212 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -64,6 +64,7 @@ config SND_SCS1X
+ config SND_FIREWORKS
+ 	tristate "Echo Fireworks board module support"
+ 	select SND_FIREWIRE_LIB
++	select SND_RAWMIDI
+ 	help
+ 	  Say Y here to include support for FireWire devices based
+ 	  on Echo Digital Audio Fireworks board:
 diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-index 1bccb65..52bd15e 100644
+index 52bd15e..a2cecc6 100644
 --- a/sound/firewire/fireworks/Makefile
 +++ b/sound/firewire/fireworks/Makefile
-@@ -1,3 +1,3 @@
+@@ -1,3 +1,4 @@
  snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
--		      fireworks_stream.o fireworks.o
-+		      fireworks_stream.o fireworks_proc.o fireworks.o
+-		      fireworks_stream.o fireworks_proc.o fireworks.o
++		      fireworks_stream.o fireworks_proc.o fireworks_midi.o \
++		      fireworks.o
  obj-m += snd-fireworks.o
 diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index 6d7de19..e370204 100644
+index e370204..5537773 100644
 --- a/sound/firewire/fireworks/fireworks.c
 +++ b/sound/firewire/fireworks/fireworks.c
-@@ -130,6 +130,16 @@ get_hardware_info(struct snd_efw *efw)
- 	efw->pcm_playback_channels[0] = hwinfo->amdtp_rx_pcm_channels;
- 	efw->pcm_playback_channels[1] = hwinfo->amdtp_rx_pcm_channels_2x;
- 	efw->pcm_playback_channels[2] = hwinfo->amdtp_rx_pcm_channels_4x;
-+
-+	/* hardware metering */
-+	efw->phys_out = hwinfo->phys_out;
-+	efw->phys_in = hwinfo->phys_in;
-+	efw->phys_out_grp_count = hwinfo->phys_out_grp_count;
-+	efw->phys_in_grp_count = hwinfo->phys_in_grp_count;
-+	memcpy(&efw->phys_out_grps, hwinfo->phys_out_grps,
-+	       sizeof(struct snd_efw_phys_grp) * HWINFO_MAX_CAPS_GROUPS);
-+	memcpy(&efw->phys_in_grps, hwinfo->phys_in_grps,
-+	       sizeof(struct snd_efw_phys_grp) * HWINFO_MAX_CAPS_GROUPS);
- end:
- 	kfree(hwinfo);
- 	return err;
-@@ -189,6 +199,8 @@ efw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
+@@ -201,6 +201,12 @@ efw_probe(struct fw_unit *unit,
  
-+	snd_efw_proc_init(efw);
+ 	snd_efw_proc_init(efw);
+ 
++	if (efw->midi_out_ports || efw->midi_in_ports) {
++		err = snd_efw_create_midi_devices(efw);
++		if (err < 0)
++			goto error;
++	}
 +
  	err = snd_card_register(card);
  	if (err < 0)
  		goto error;
-@@ -211,8 +223,6 @@ static void efw_update(struct fw_unit *unit)
- 
- 	snd_efw_transaction_bus_reset(efw->unit);
- 	snd_efw_stream_update_duplex(efw);
--
--	return;
- }
- 
- static void efw_remove(struct fw_unit *unit)
 diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index c022c71..4d69c0d 100644
+index 4d69c0d..0dfed97 100644
 --- a/sound/firewire/fireworks/fireworks.h
 +++ b/sound/firewire/fireworks/fireworks.h
-@@ -21,6 +21,7 @@
- #include <sound/core.h>
+@@ -22,6 +22,7 @@
  #include <sound/initval.h>
  #include <sound/pcm.h>
-+#include <sound/info.h>
+ #include <sound/info.h>
++#include <sound/rawmidi.h>
  
  #include "../packets-buffer.h"
  #include "../iso-resources.h"
-@@ -65,6 +66,14 @@ struct snd_efw {
- 	struct cmp_connection in_conn;
- 	unsigned int capture_substreams;
- 	unsigned int playback_substreams;
-+
-+	/* hardware metering parameters */
-+	unsigned int phys_out;
-+	unsigned int phys_in;
-+	unsigned int phys_out_grp_count;
-+	unsigned int phys_in_grp_count;
-+	struct snd_efw_phys_grp phys_out_grps[HWINFO_MAX_CAPS_GROUPS];
-+	struct snd_efw_phys_grp phys_in_grps[HWINFO_MAX_CAPS_GROUPS];
- };
+@@ -189,6 +190,8 @@ void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
  
- struct snd_efw_transaction {
-@@ -178,6 +187,8 @@ int snd_efw_stream_stop_duplex(struct snd_efw *efw);
- void snd_efw_stream_update_duplex(struct snd_efw *efw);
- void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
+ void snd_efw_proc_init(struct snd_efw *efw);
  
-+void snd_efw_proc_init(struct snd_efw *efw);
++int snd_efw_create_midi_devices(struct snd_efw *efw);
 +
  #define SND_EFW_DEV_ENTRY(vendor, model) \
  { \
  	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/fireworks/fireworks_proc.c b/sound/firewire/fireworks/fireworks_proc.c
+diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
 new file mode 100644
-index 0000000..62f758b
+index 0000000..a950fd1
 --- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_proc.c
-@@ -0,0 +1,189 @@
++++ b/sound/firewire/fireworks/fireworks_midi.c
+@@ -0,0 +1,158 @@
 +/*
-+ * fireworks_proc.c - a part of driver for Fireworks based devices
++ * fireworks_midi.c - a part of driver for Fireworks based devices
 + *
 + * Copyright (c) 2009-2010 Clemens Ladisch
 + * Copyright (c) 2013 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
++#include "fireworks.h"
 +
-+#include "./fireworks.h"
-+
-+static inline const char*
-+get_phys_name(struct snd_efw_phys_grp *grp)
++static int midi_capture_open(struct snd_rawmidi_substream *substream)
 +{
-+	const char *ch_type[] = {
-+		"Analog", "S/PDIF", "ADAT", "S/PDIF or ADAT",
-+		"Mirroring", "Headphones", "I2S", "Guitar",
-+		"Pirzo Guitar", "Guitar String", "Virtual", "Dummy"
-+	};
++	struct snd_efw *efw = substream->rmidi->private_data;
 +
-+	if (grp->type < 10)
-+		return ch_type[grp->type];
-+	else if (grp->type == 0x10000)
-+		return ch_type[10];
++	efw->capture_substreams++;
++	return snd_efw_stream_start_duplex(efw, &efw->tx_stream, 0);
++}
++
++static int midi_playback_open(struct snd_rawmidi_substream *substream)
++{
++	struct snd_efw *efw = substream->rmidi->private_data;
++
++	efw->playback_substreams++;
++	return snd_efw_stream_start_duplex(efw, &efw->rx_stream, 0);
++}
++
++static int midi_capture_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_efw *efw = substream->rmidi->private_data;
++
++	efw->capture_substreams--;
++	snd_efw_stream_stop_duplex(efw);
++
++	return 0;
++}
++
++static int midi_playback_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_efw *efw = substream->rmidi->private_data;
++
++	efw->playback_substreams--;
++	snd_efw_stream_stop_duplex(efw);
++
++	return 0;
++}
++
++static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_efw *efw = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&efw->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&efw->tx_stream,
++					  substrm->number, substrm);
 +	else
-+		return ch_type[11];
++		amdtp_stream_midi_trigger(&efw->tx_stream,
++					  substrm->number, NULL);
++
++	spin_unlock_irqrestore(&efw->lock, flags);
 +}
 +
-+static void
-+proc_read_hwinfo(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
++static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
 +{
-+	struct snd_efw *efw = entry->private_data;
-+	unsigned short i;
-+	struct snd_efw_hwinfo *hwinfo;
++	struct snd_efw *efw = substrm->rmidi->private_data;
++	unsigned long flags;
 +
-+	hwinfo = kmalloc(sizeof(struct snd_efw_hwinfo), GFP_KERNEL);
-+	if (hwinfo == NULL)
-+		return;
++	spin_lock_irqsave(&efw->lock, flags);
 +
-+	if (snd_efw_command_get_hwinfo(efw, hwinfo) < 0)
-+		goto end;
++	if (up)
++		amdtp_stream_midi_trigger(&efw->rx_stream,
++					  substrm->number, substrm);
++	else
++		amdtp_stream_midi_trigger(&efw->rx_stream,
++					  substrm->number, NULL);
 +
-+	snd_iprintf(buffer, "guid_hi: 0x%X\n", hwinfo->guid_hi);
-+	snd_iprintf(buffer, "guid_lo: 0x%X\n", hwinfo->guid_lo);
-+	snd_iprintf(buffer, "type: 0x%X\n", hwinfo->type);
-+	snd_iprintf(buffer, "version: 0x%X\n", hwinfo->version);
-+	snd_iprintf(buffer, "vendor_name: %s\n", hwinfo->vendor_name);
-+	snd_iprintf(buffer, "model_name: %s\n", hwinfo->model_name);
++	spin_unlock_irqrestore(&efw->lock, flags);
++}
 +
-+	snd_iprintf(buffer, "dsp_version: 0x%X\n", hwinfo->dsp_version);
-+	snd_iprintf(buffer, "arm_version: 0x%X\n", hwinfo->arm_version);
-+	snd_iprintf(buffer, "fpga_version: 0x%X\n", hwinfo->fpga_version);
++static struct snd_rawmidi_ops midi_capture_ops = {
++	.open		= midi_capture_open,
++	.close		= midi_capture_close,
++	.trigger	= midi_capture_trigger,
++};
 +
-+	snd_iprintf(buffer, "flags: 0x%X\n", hwinfo->flags);
++static struct snd_rawmidi_ops midi_playback_ops = {
++	.open		= midi_playback_open,
++	.close		= midi_playback_close,
++	.trigger	= midi_playback_trigger,
++};
 +
-+	snd_iprintf(buffer, "max_sample_rate: 0x%X\n", hwinfo->max_sample_rate);
-+	snd_iprintf(buffer, "min_sample_rate: 0x%X\n", hwinfo->min_sample_rate);
-+	snd_iprintf(buffer, "supported_clock: 0x%X\n",
-+		    hwinfo->supported_clocks);
++static void set_midi_substream_names(struct snd_efw *efw,
++				     struct snd_rawmidi_str *str)
++{
++	struct snd_rawmidi_substream *subs;
 +
-+	snd_iprintf(buffer, "phys out: 0x%X\n", hwinfo->phys_out);
-+	snd_iprintf(buffer, "phys in: 0x%X\n", hwinfo->phys_in);
-+
-+	snd_iprintf(buffer, "phys in grps: 0x%X\n",
-+		    hwinfo->phys_in_grp_count);
-+	for (i = 0; i < hwinfo->phys_in_grp_count; i++) {
-+		snd_iprintf(buffer,
-+			    "phys in grp[0x%d]: type 0x%d, count 0x%d\n",
-+			    i, hwinfo->phys_out_grps[i].type,
-+			    hwinfo->phys_out_grps[i].count);
++	list_for_each_entry(subs, &str->substreams, list) {
++		snprintf(subs->name, sizeof(subs->name),
++			 "%s MIDI %d", efw->card->shortname, subs->number + 1);
 +	}
-+
-+	snd_iprintf(buffer, "phys out grps: 0x%X\n",
-+		    hwinfo->phys_out_grp_count);
-+	for (i = 0; i < hwinfo->phys_out_grp_count; i++) {
-+		snd_iprintf(buffer,
-+			    "phys out grps[0x%d]: type 0x%d, count 0x%d\n",
-+			    i, hwinfo->phys_out_grps[i].type,
-+			    hwinfo->phys_out_grps[i].count);
-+	}
-+
-+	snd_iprintf(buffer, "amdtp rx pcm channels 1x: 0x%X\n",
-+		    hwinfo->amdtp_rx_pcm_channels);
-+	snd_iprintf(buffer, "amdtp tx pcm channels 1x: 0x%X\n",
-+		    hwinfo->amdtp_tx_pcm_channels);
-+	snd_iprintf(buffer, "amdtp rx pcm channels 2x: 0x%X\n",
-+		    hwinfo->amdtp_rx_pcm_channels_2x);
-+	snd_iprintf(buffer, "amdtp tx pcm channels 2x: 0x%X\n",
-+		    hwinfo->amdtp_tx_pcm_channels_2x);
-+	snd_iprintf(buffer, "amdtp rx pcm channels 4x: 0x%X\n",
-+		    hwinfo->amdtp_rx_pcm_channels_4x);
-+	snd_iprintf(buffer, "amdtp tx pcm channels 4x: 0x%X\n",
-+		    hwinfo->amdtp_tx_pcm_channels_4x);
-+
-+	snd_iprintf(buffer, "midi out ports: 0x%X\n", hwinfo->midi_out_ports);
-+	snd_iprintf(buffer, "midi in ports: 0x%X\n", hwinfo->midi_in_ports);
-+
-+	snd_iprintf(buffer, "mixer playback channels: 0x%X\n",
-+		    hwinfo->mixer_playback_channels);
-+	snd_iprintf(buffer, "mixer capture channels: 0x%X\n",
-+		    hwinfo->mixer_capture_channels);
-+end:
-+	kfree(hwinfo);
 +}
 +
-+static void
-+proc_read_clock(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
++int snd_efw_create_midi_devices(struct snd_efw *efw)
 +{
-+	struct snd_efw *efw = entry->private_data;
-+	enum snd_efw_clock_source clock_source;
-+	unsigned int sampling_rate;
-+
-+	if (snd_efw_command_get_clock_source(efw, &clock_source) < 0)
-+		return;
-+
-+	if (snd_efw_command_get_sampling_rate(efw, &sampling_rate) < 0)
-+		return;
-+
-+	snd_iprintf(buffer, "Clock Source: %d\n", clock_source);
-+	snd_iprintf(buffer, "Sampling Rate: %d\n", sampling_rate);
-+}
-+
-+/*
-+ * NOTE:
-+ *  dB = 20 * log10(linear / 0x01000000)
-+ *  -144.0 dB when linear is 0
-+ */
-+static void
-+proc_read_phys_meters(struct snd_info_entry *entry,
-+		      struct snd_info_buffer *buffer)
-+{
-+	struct snd_efw *efw = entry->private_data;
-+	struct snd_efw_phys_meters *meters;
-+	unsigned int g, c, m, max, size;
-+	const char *name;
-+	u32 *linear;
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_str *str;
 +	int err;
 +
-+	size = sizeof(struct snd_efw_phys_meters) +
-+	       (efw->phys_in + efw->phys_out) * sizeof(u32);
-+	meters = kzalloc(size, GFP_KERNEL);
-+	if (meters == NULL)
-+		return;
++	/* check the number of midi stream */
++	if ((efw->midi_in_ports > SND_EFW_MAX_MIDI_IN_PORTS) |
++	    (efw->midi_out_ports > SND_EFW_MAX_MIDI_OUT_PORTS))
++		return -EIO;
 +
-+	err = snd_efw_command_get_phys_meters(efw, meters, size);
++	/* create midi ports */
++	err = snd_rawmidi_new(efw->card, efw->card->driver, 0,
++			      efw->midi_out_ports, efw->midi_in_ports,
++			      &rmidi);
 +	if (err < 0)
-+		goto end;
++		return err;
 +
-+	snd_iprintf(buffer, "Physical Meters:\n");
++	snprintf(rmidi->name, sizeof(rmidi->name),
++			"%s MIDI", efw->card->shortname);
++	rmidi->private_data = efw;
 +
-+	m = 0;
-+	max = min(efw->phys_out, meters->out_meters);
-+	linear = meters->values;
-+	snd_iprintf(buffer, " %d Outputs:\n", max);
-+	for (g = 0; g < efw->phys_out_grp_count; g++) {
-+		name = get_phys_name(&efw->phys_out_grps[g]);
-+		for (c = 0; c < efw->phys_out_grps[g].count; c++) {
-+			if (m < max)
-+				snd_iprintf(buffer, "\t%s [%d]: %d\n",
-+					    name, c, linear[m++]);
-+		}
++	if (efw->midi_in_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++					&midi_capture_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++
++		set_midi_substream_names(efw, str);
 +	}
 +
-+	m = 0;
-+	max = min(efw->phys_in, meters->in_meters);
-+	linear = meters->values + meters->out_meters;
-+	snd_iprintf(buffer, " %d Inputs:\n", max);
-+	for (g = 0; g < efw->phys_in_grp_count; g++) {
-+		name = get_phys_name(&efw->phys_in_grps[g]);
-+		for (c = 0; c < efw->phys_in_grps[g].count; c++)
-+			if (m < max)
-+				snd_iprintf(buffer, "\t%s [%d]: %d\n",
-+					    name, c, linear[m++]);
++	if (efw->midi_out_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
++					&midi_playback_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++
++		set_midi_substream_names(efw, str);
++
++		/*
++		 * Fireworks ignores MIDI messages in greater than first 8 data
++		 * blocks of an AMDTP packet.
++		 */
++		efw->rx_stream.blocks_for_midi = 8;
 +	}
-+end:
-+	kfree(meters);
-+}
 +
-+void snd_efw_proc_init(struct snd_efw *efw)
-+{
-+	struct snd_info_entry *entry;
++	if ((efw->midi_out_ports > 0) && (efw->midi_in_ports > 0))
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
 +
-+	if (!snd_card_proc_new(efw->card, "#firmware", &entry))
-+		snd_info_set_text_ops(entry, efw, proc_read_hwinfo);
-+	if (!snd_card_proc_new(efw->card, "#clock", &entry))
-+		snd_info_set_text_ops(entry, efw, proc_read_clock);
-+	if (!snd_card_proc_new(efw->card, "#meters", &entry))
-+		snd_info_set_text_ops(entry, efw, proc_read_phys_meters);
++	return 0;
 +}
 -- 
 1.8.3.2
