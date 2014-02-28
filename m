@@ -1,16 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: PCM rules for FireWave in speaker.c
-Date: Fri, 28 Feb 2014 10:58:00 +0100
-Message-ID: <53105DA8.1090607@ladisch.de>
-References: <530FFF88.1040606@sakamocchi.jp>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCHv2 0/3] Simplify the CODEC ASoC probe code.
+Date: Fri, 28 Feb 2014 17:04:24 +0800
+Message-ID: <1393578267-18255-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 14E24264FBA
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 10:58:09 +0100 (CET)
-In-Reply-To: <530FFF88.1040606@sakamocchi.jp>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe001.messaging.microsoft.com [213.199.154.204])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8562264FE8
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 11:10:31 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,37 +19,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stefan Richter <stefanr@s5r6.in-berlin.de>, Jay Fenlason <fenlason@redhat.com>
+To: broonie@kernel.org, lars@metafoo.de
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> Current speaker.c have a rule for PCM channels/rates below:
->  - 6ch PCM at 32.0/44.1kHz
->  - 2ch PCM at 48.0/96.0kHz
+Xiubo Li (3):
+  ASoC: codec: Simplify ASoC probe code.
+  ASoC: io: New signature for snd_soc_codec_set_cache_io()
+  ASoC: core: Fix check before setting default I/O up try regmap
 
-The current rules in speakers.c disallow rates less than 48 kHz if there
-are less than six channels, and disallow two channels if the rate is
-less than 48 kHz.  This means that the allowed parameter combinations
-are 2ch at 48/96 kHz, and 6ch at 32/44.1/48/96 kHz.
+ include/sound/soc.h              |  7 +-----
+ sound/soc/codecs/ad193x.c        |  7 ------
+ sound/soc/codecs/adau1373.c      |  6 -----
+ sound/soc/codecs/adav80x.c       |  6 -----
+ sound/soc/codecs/ak4535.c        |  6 -----
+ sound/soc/codecs/ak4641.c        |  6 -----
+ sound/soc/codecs/ak4642.c        |  6 -----
+ sound/soc/codecs/ak4671.c        |  6 -----
+ sound/soc/codecs/alc5623.c       |  7 ------
+ sound/soc/codecs/alc5632.c       |  8 -------
+ sound/soc/codecs/cq93vc.c        |  3 +--
+ sound/soc/codecs/cs4270.c        |  9 --------
+ sound/soc/codecs/cs42l51.c       |  6 -----
+ sound/soc/codecs/cs42l52.c       |  6 -----
+ sound/soc/codecs/cs42l73.c       |  8 -------
+ sound/soc/codecs/da7210.c        |  7 ------
+ sound/soc/codecs/da7213.c        |  7 ------
+ sound/soc/codecs/da732x.c        |  8 -------
+ sound/soc/codecs/da9055.c        |  7 ------
+ sound/soc/codecs/isabelle.c      | 16 --------------
+ sound/soc/codecs/lm49453.c       | 17 ---------------
+ sound/soc/codecs/max9768.c       |  5 -----
+ sound/soc/codecs/max98088.c      |  6 -----
+ sound/soc/codecs/max98090.c      |  8 -------
+ sound/soc/codecs/max98095.c      |  6 -----
+ sound/soc/codecs/max9850.c       |  6 -----
+ sound/soc/codecs/mc13783.c       |  4 ++--
+ sound/soc/codecs/ml26124.c       |  7 ------
+ sound/soc/codecs/rt5631.c        |  8 -------
+ sound/soc/codecs/rt5640.c        |  7 ------
+ sound/soc/codecs/sn95031.c       |  2 --
+ sound/soc/codecs/ssm2518.c       |  7 ------
+ sound/soc/codecs/ssm2602.c       |  7 ------
+ sound/soc/codecs/sta32x.c        | 10 ---------
+ sound/soc/codecs/sta529.c        |  7 ------
+ sound/soc/codecs/tlv320aic23.c   |  6 -----
+ sound/soc/codecs/tlv320aic26.c   |  2 --
+ sound/soc/codecs/tlv320aic32x4.c |  2 --
+ sound/soc/codecs/tlv320aic3x.c   |  6 -----
+ sound/soc/codecs/tlv320dac33.c   |  1 -
+ sound/soc/codecs/wm2000.c        |  2 --
+ sound/soc/codecs/wm2200.c        |  7 ------
+ sound/soc/codecs/wm5100.c        |  7 ------
+ sound/soc/codecs/wm5102.c        |  4 +---
+ sound/soc/codecs/wm5110.c        |  3 +--
+ sound/soc/codecs/wm8350.c        |  4 +---
+ sound/soc/codecs/wm8400.c        |  3 +--
+ sound/soc/codecs/wm8510.c        |  6 -----
+ sound/soc/codecs/wm8523.c        |  6 -----
+ sound/soc/codecs/wm8580.c        |  6 -----
+ sound/soc/codecs/wm8711.c        |  6 -----
+ sound/soc/codecs/wm8728.c        |  7 ------
+ sound/soc/codecs/wm8731.c        |  7 ------
+ sound/soc/codecs/wm8737.c        |  6 -----
+ sound/soc/codecs/wm8741.c        |  6 -----
+ sound/soc/codecs/wm8750.c        |  6 -----
+ sound/soc/codecs/wm8753.c        |  7 ------
+ sound/soc/codecs/wm8770.c        |  6 -----
+ sound/soc/codecs/wm8776.c        |  6 -----
+ sound/soc/codecs/wm8804.c        |  8 -------
+ sound/soc/codecs/wm8900.c        |  6 -----
+ sound/soc/codecs/wm8903.c        |  7 ------
+ sound/soc/codecs/wm8904.c        |  8 -------
+ sound/soc/codecs/wm8940.c        |  6 -----
+ sound/soc/codecs/wm8955.c        |  8 -------
+ sound/soc/codecs/wm8960.c        |  6 -----
+ sound/soc/codecs/wm8961.c        |  6 -----
+ sound/soc/codecs/wm8962.c        |  7 ------
+ sound/soc/codecs/wm8971.c        |  6 -----
+ sound/soc/codecs/wm8974.c        |  6 -----
+ sound/soc/codecs/wm8978.c        |  6 -----
+ sound/soc/codecs/wm8983.c        |  6 -----
+ sound/soc/codecs/wm8985.c        |  7 ------
+ sound/soc/codecs/wm8988.c        |  7 ------
+ sound/soc/codecs/wm8990.c        |  6 -----
+ sound/soc/codecs/wm8991.c        |  6 -----
+ sound/soc/codecs/wm8993.c        |  7 ------
+ sound/soc/codecs/wm8994.c        |  3 +--
+ sound/soc/codecs/wm8995.c        |  7 ------
+ sound/soc/codecs/wm8996.c        |  8 -------
+ sound/soc/codecs/wm8997.c        |  4 +---
+ sound/soc/codecs/wm9081.c        |  8 -------
+ sound/soc/codecs/wm9090.c        |  7 ------
+ sound/soc/soc-core.c             | 12 +++++++---
+ sound/soc/soc-io.c               | 47 +++++++++++++++++-----------------------
+ 85 files changed, 39 insertions(+), 547 deletions(-)
 
-> Recently, with Jay Fenlason's help, I got some information about its
-> stream format. I'll show them in the end of this message.
->
-> As a result, I realized FireWave has stream formats below:
->  - 6ch PCM at 32.0/44.1/48.0/96.0kHz
->  - 2ch IEC 60958-3 at 32.0/44.1/48.0kHz
->
-> Although there are no stream formats for 2ch PCM at 48.0/96.0kHz, the
-> driver has it. Do you know the reason? Are there any model quirks?
-
-I don't have any of the AV/C audio specifications; these rules were
-determined experimentally.  In other words, when the sample rate is set
-to 48 or 96 kHz, sending a stream with two PCM channels appears to work.
-
-If you wanted to support these undocumented formats in your driver, you
-would have to add some kind of quirk.
-
-
-Regards,
-Clemens
+-- 
+1.8.4
