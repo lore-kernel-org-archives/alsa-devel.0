@@ -1,15 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 25/39] fireworks: Add hwdep interface
-Date: Fri, 28 Feb 2014 12:27:38 +0900
-Message-ID: <1393558072-25926-26-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 27/39] bebob: Add skelton for BeBoB based
+	devices
+Date: Fri, 28 Feb 2014 12:27:40 +0900
+Message-ID: <1393558072-25926-28-git-send-email-o-takashi@sakamocchi.jp>
 References: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id E76922651AC
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:28:29 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 263D3264F1D
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:28:32 +0100 (CET)
 In-Reply-To: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,153 +25,124 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This interface is designed for mixer/control application. To use hwdep
-interface, the application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+This commit add a new driver for BeBoB based devices with no functionality. This driver just create/remove
+card instance according to callbacks.
 
+BeBoB is 'BridgeCo enhanced Breakout Box'. This is installed to firewire devices with
+DM1000/1000E/1100/1500 chipset. It gives common way for host system to handle BeBoB based devices.
+
+Current supported devices:
+ - Edirol FA-66/FA-101
+ - PreSonus FIREBOX/FIREPOD/FP10/Inspire1394
+ - BridgeCo RDAudio1/Audio5
+ - Mackie Onyx 1220/1620/1640 (Firewire I/O Card)
+ - Mackie d.2 (Firewire Option)
+ - Stanton FinalScratch 2 (ScratchAmp)
+ - Tascam IF-FW DM
+ - Behringer XENIX UFX 1204/1604
+ - Behringer Digital Mixer X32 series (X-UF Card)
+ - Apogee Rosetta 200/Rosetta 400 (X-FireWire card)
+ - Apogee DA-16X/AD-16X/DD-16X (X-FireWire card)
+ - Apogee Ensemble
+ - ESI Quotafire610
+ - AcousticReality eARMasterOne
+ - CME MatrixKFW
+ - Phonix Helix Board 12 MkII/18 MkII/24 MkII
+ - Phonic Helix Board 12 Universal/18 Universal/24 Universal
+ - Lynx Aurora 8/16 (LT-FW)
+ - ICON FireXon
+ - PrismSound Orpheus/ADA-8XR
+
+Devices possible to be supported if identifying IDs:
+ - Apogee Mini-Me Firewire/Mini-DAC Firewire
+ - Behringer F-Control Audio 610/1616
+ - Cakewalk Sonar Power Studio 66
+ - CME UF400e
+ - ESI Quotafire XL
+ - Infrasonic DewX/Windy6
+ - Mackie Digital X Bus x.200/400
+ - Phonic Helix Board 12/18/24
+ - Phonic FireFly 202/302
+ - Rolf Spuler Firewire Guitar
+
+Tested-by: Maximilian Engelhardt <maxi@daemonizer.de>
+Tested-by: David Henningsson <david.henningsson@canonical.com>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h                 |   3 +-
- include/uapi/sound/firewire.h               |   3 +-
- sound/firewire/Kconfig                      |   1 +
- sound/firewire/fireworks/Makefile           |   2 +-
- sound/firewire/fireworks/fireworks.c        |   5 +
- sound/firewire/fireworks/fireworks.h        |  12 ++
- sound/firewire/fireworks/fireworks_hwdep.c  | 197 ++++++++++++++++++++++++++++
- sound/firewire/fireworks/fireworks_midi.c   |  25 +++-
- sound/firewire/fireworks/fireworks_pcm.c    |  15 ++-
- sound/firewire/fireworks/fireworks_stream.c |  39 ++++++
- 10 files changed, 294 insertions(+), 8 deletions(-)
- create mode 100644 sound/firewire/fireworks/fireworks_hwdep.c
+ sound/firewire/Kconfig        |  30 +++++
+ sound/firewire/Makefile       |   1 +
+ sound/firewire/bebob/Makefile |   2 +
+ sound/firewire/bebob/bebob.c  | 296 ++++++++++++++++++++++++++++++++++++++++++
+ sound/firewire/bebob/bebob.h  |  64 +++++++++
+ 5 files changed, 393 insertions(+)
+ create mode 100644 sound/firewire/bebob/Makefile
+ create mode 100644 sound/firewire/bebob/bebob.c
+ create mode 100644 sound/firewire/bebob/bebob.h
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 9fc6219..5dfbfdf 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -94,9 +94,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_HDA,		/* HD-audio */
- 	SNDRV_HWDEP_IFACE_USB_STREAM,	/* direct access to usb stream */
- 	SNDRV_HWDEP_IFACE_FW_DICE,	/* TC DICE FireWire device */
-+	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_DICE
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_FIREWORKS
- };
- 
- struct snd_hwdep_info {
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index 59f5961..fc9afb2 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -34,7 +34,8 @@ union snd_firewire_event {
- #define SNDRV_FIREWIRE_IOCTL_UNLOCK    _IO('H', 0xfa)
- 
- #define SNDRV_FIREWIRE_TYPE_DICE	1
--/* Fireworks, AV/C, RME, MOTU, ... */
-+#define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
-+/* AV/C, RME, MOTU, ... */
- 
- struct snd_firewire_get_info {
- 	unsigned int type; /* SNDRV_FIREWIRE_TYPE_xxx */
 diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index fb39f9c..875af02 100644
+index 875af02..9027b23 100644
 --- a/sound/firewire/Kconfig
 +++ b/sound/firewire/Kconfig
-@@ -66,6 +66,7 @@ config SND_FIREWORKS
- 	select SND_FIREWIRE_LIB
- 	select SND_RAWMIDI
- 	select SND_PCM
-+	select SND_HWDEP
- 	help
- 	  Say Y here to include support for FireWire devices based
- 	  on Echo Digital Audio Fireworks board:
-diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-index d7ebf83..0c74408 100644
---- a/sound/firewire/fireworks/Makefile
-+++ b/sound/firewire/fireworks/Makefile
-@@ -1,4 +1,4 @@
- snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
- 		      fireworks_stream.o fireworks_proc.o fireworks_midi.o \
--		      fireworks_pcm.o fireworks.o
-+		      fireworks_pcm.o fireworks_hwdep.o fireworks.o
- obj-m += snd-fireworks.o
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index 3034744..38986c0 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -190,6 +190,7 @@ efw_probe(struct fw_unit *unit,
- 	efw->card_index = -1;
- 	mutex_init(&efw->mutex);
- 	spin_lock_init(&efw->lock);
-+	init_waitqueue_head(&efw->hwdep_wait);
+@@ -79,4 +79,34 @@ config SND_FIREWORKS
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-fireworks.
  
- 	err = get_hardware_info(efw);
- 	if (err < 0)
-@@ -211,6 +212,10 @@ efw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
- 
-+	err = snd_efw_create_hwdep_device(efw);
-+	if (err < 0)
-+		goto error;
++config SND_BEBOB
++	tristate "BridgeCo DM1000/1500 with BeBoB firmware"
++	select SND_FIREWIRE_LIB
++        help
++	 Say Y here to include support for FireWire devices based
++	 on BridgeCo DM1000/1500 with BeBoB firmware:
++	  * Edirol FA-66/FA-101
++	  * PreSonus FIREBOX/FIREPOD/FP10/Inspire1394
++	  * BridgeCo RDAudio1/Audio5
++	  * Mackie Onyx 1220/1620/1640 (Firewire I/O Card)
++	  * Mackie d.2 (Firewire Option)
++	  * Stanton FinalScratch 2 (ScratchAmp)
++	  * Tascam IF-FW/DM
++	  * Behringer XENIX UFX 1204/1604
++	  * Behringer Digital Mixer X32 series (X-UF Card)
++	  * Apogee Rosetta 200/400 (X-FireWire card)
++	  * Apogee DA/AD/DD-16X (X-FireWire card)
++	  * Apogee Ensemble
++	  * ESI Quotafire610
++	  * AcousticReality eARMasterOne
++	  * CME MatrixKFW
++	  * Phonic Helix Board 12 MkII/18 MkII/24 MkII
++	  * Phonic Helix Board 12 Universal/18 Universal/24 Universal
++	  * Lynx Aurora 8/16 (LT-FW)
++	  * ICON FireXon
++	  * PrismSound Orpheus/ADA-8XR
 +
- 	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 11d42cc..4ab4887 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -24,6 +24,8 @@
- #include <sound/info.h>
- #include <sound/rawmidi.h>
- #include <sound/pcm_params.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
- 
- #include "../packets-buffer.h"
- #include "../iso-resources.h"
-@@ -76,6 +78,11 @@ struct snd_efw {
- 	unsigned int phys_in_grp_count;
- 	struct snd_efw_phys_grp phys_out_grps[HWINFO_MAX_CAPS_GROUPS];
- 	struct snd_efw_phys_grp phys_in_grps[HWINFO_MAX_CAPS_GROUPS];
++          To compile this driver as a module, choose M here: the module
++          will be called snd-bebob.
 +
-+	/* for uapi */
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
- };
- 
- struct snd_efw_transaction {
-@@ -188,6 +195,9 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw,
- int snd_efw_stream_stop_duplex(struct snd_efw *efw);
- void snd_efw_stream_update_duplex(struct snd_efw *efw);
- void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
-+void snd_efw_stream_lock_changed(struct snd_efw *efw);
-+int snd_efw_stream_lock_try(struct snd_efw *efw);
-+void snd_efw_stream_lock_release(struct snd_efw *efw);
- 
- void snd_efw_proc_init(struct snd_efw *efw);
- 
-@@ -196,6 +206,8 @@ int snd_efw_create_midi_devices(struct snd_efw *efw);
- int snd_efw_create_pcm_devices(struct snd_efw *efw);
- int snd_efw_get_multiplier_mode(unsigned int sampling_rate, unsigned int *mode);
- 
-+int snd_efw_create_hwdep_device(struct snd_efw *efw);
-+
- #define SND_EFW_DEV_ENTRY(vendor, model) \
- { \
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/fireworks/fireworks_hwdep.c b/sound/firewire/fireworks/fireworks_hwdep.c
+ endif # SND_FIREWIRE
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index 5cd39dc..fad8d49 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -11,3 +11,4 @@ obj-$(CONFIG_SND_FIREWIRE_SPEAKERS) += snd-firewire-speakers.o
+ obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
+ obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
+ obj-$(CONFIG_SND_FIREWORKS) += fireworks/
++obj-$(CONFIG_SND_BEBOB) += bebob/
+diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
 new file mode 100644
-index 0000000..4c28b6c
+index 0000000..c6f0141
 --- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_hwdep.c
-@@ -0,0 +1,197 @@
++++ b/sound/firewire/bebob/Makefile
+@@ -0,0 +1,2 @@
++snd-bebob-objs := bebob.o
++obj-m += snd-bebob.o
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+new file mode 100644
+index 0000000..68301a7
+--- /dev/null
++++ b/sound/firewire/bebob/bebob.c
+@@ -0,0 +1,296 @@
 +/*
-+ * fireworks_hwdep.c - a part of driver for Fireworks based devices
++ * bebob.c - a part of driver for BeBoB based devices
 + *
 + * Copyright (c) 2013 Takashi Sakamoto
 + *
@@ -178,348 +150,362 @@ index 0000000..4c28b6c
 + */
 +
 +/*
-+ * This codes have three functionalities.
-+ *
-+ * 1.get information about firewire node
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock streaming
++ * BeBoB is 'BridgeCo enhanced Breakout Box'. This is installed to firewire
++ * devices with DM1000/1000E/1100/1500 chipset. It gives common way for host
++ * system to handle BeBoB based devices.
 + */
 +
-+#include "fireworks.h"
++#include "bebob.h"
 +
-+static long
-+hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
-+	   loff_t *offset)
-+{
-+	struct snd_efw *efw = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+	union snd_firewire_event event;
++MODULE_DESCRIPTION("BridgeCo BeBoB driver");
++MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
++MODULE_LICENSE("GPL v2");
 +
-+	spin_lock_irq(&efw->lock);
++static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
++static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
++static bool enable[SNDRV_CARDS]	= SNDRV_DEFAULT_ENABLE_PNP;
 +
-+	while (!efw->dev_lock_changed) {
-+		prepare_to_wait(&efw->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&efw->lock);
-+		schedule();
-+		finish_wait(&efw->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&efw->lock);
-+	}
++module_param_array(index, int, NULL, 0444);
++MODULE_PARM_DESC(index, "card index");
++module_param_array(id, charp, NULL, 0444);
++MODULE_PARM_DESC(id, "ID string");
++module_param_array(enable, bool, NULL, 0444);
++MODULE_PARM_DESC(enable, "enable BeBoB sound card");
 +
-+	memset(&event, 0, sizeof(event));
-+	if (efw->dev_lock_changed) {
-+		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+		event.lock_status.status = (efw->dev_lock_count > 0);
-+		efw->dev_lock_changed = false;
++static DEFINE_MUTEX(devices_mutex);
++static unsigned int devices_used;
 +
-+		count = min_t(long, count, sizeof(event.lock_status));
-+	}
++/* Offsets from information register. */
++#define INFO_OFFSET_GUID		0x10
++#define INFO_OFFSET_HW_MODEL_ID		0x18
++#define INFO_OFFSET_HW_MODEL_REVISION	0x1c
 +
-+	spin_unlock_irq(&efw->lock);
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static unsigned int
-+hwdep_poll(struct snd_hwdep *hwdep, struct file *file, poll_table *wait)
-+{
-+	struct snd_efw *efw = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &efw->hwdep_wait, wait);
-+
-+	spin_lock_irq(&efw->lock);
-+	if (efw->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&efw->lock);
-+
-+	return events;
-+}
++#define VEN_EDIROL	0x000040ab
++#define VEN_PRESONUS	0x00000a92
++#define VEN_BRIDGECO	0x000007f5
++#define VEN_MACKIE	0x0000000f
++#define VEN_STANTON	0x00001260
++#define VEN_TASCAM	0x0000022e
++#define VEN_BEHRINGER	0x00001564
++#define VEN_APOGEE	0x000003db
++#define VEN_ESI		0x00000f1b
++#define VEN_ACOUSTIC	0x00000002
++#define VEN_CME		0x0000000a
++#define VEN_PHONIC	0x00001496
++#define VEN_LYNX	0x000019e5
++#define VEN_ICON	0x00001a9e
++#define VEN_PRISMSOUND	0x00001198
 +
 +static int
-+hwdep_get_info(struct snd_efw *efw, void __user *arg)
++name_device(struct snd_bebob *bebob, unsigned int vendor_id)
 +{
-+	struct fw_device *dev = fw_parent_device(efw->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_FIREWORKS;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int
-+hwdep_lock(struct snd_efw *efw)
-+{
++	struct fw_device *fw_dev = fw_parent_device(bebob->unit);
++	char vendor[24] = {0};
++	char model[32] = {0};
++	u32 id;
++	u32 data[2] = {0};
++	u32 revision;
 +	int err;
 +
-+	spin_lock_irq(&efw->lock);
++	/* get vendor name from root directory */
++	err = fw_csr_string(fw_dev->config_rom + 5, CSR_VENDOR,
++			    vendor, sizeof(vendor));
++	if (err < 0)
++		goto end;
 +
-+	if (efw->dev_lock_count == 0) {
-+		efw->dev_lock_count = -1;
-+		err = 0;
-+	} else
-+		err = -EBUSY;
++	/* get model name from unit directory */
++	err = fw_csr_string(bebob->unit->directory, CSR_MODEL,
++			    model, sizeof(model));
++	if (err < 0)
++		goto end;
 +
-+	spin_unlock_irq(&efw->lock);
++	/* get hardware id */
++	err = snd_bebob_read_quad(bebob->unit, INFO_OFFSET_HW_MODEL_ID,
++				  &id);
++	if (err < 0)
++		goto end;
 +
++	/* get hardware revision */
++	err = snd_bebob_read_quad(bebob->unit, INFO_OFFSET_HW_MODEL_REVISION,
++				  &revision);
++	if (err < 0)
++		goto end;
++
++	/* get GUID */
++	err = snd_bebob_read_block(bebob->unit, INFO_OFFSET_GUID,
++				   data, sizeof(data));
++	if (err < 0)
++		goto end;
++
++	strcpy(bebob->card->driver, "BeBoB");
++	strcpy(bebob->card->shortname, model);
++	snprintf(bebob->card->longname, sizeof(bebob->card->longname),
++		 "%s %s (id:%d, rev:%d), GUID %08x%08x at %s, S%d",
++		 vendor, model, id, revision,
++		 data[0], data[1], dev_name(&bebob->unit->device),
++		 100 << fw_dev->max_speed);
++	strcpy(bebob->card->mixername, model);
++end:
 +	return err;
 +}
 +
-+static int
-+hwdep_unlock(struct snd_efw *efw)
++static void
++bebob_card_free(struct snd_card *card)
 +{
++	struct snd_bebob *bebob = card->private_data;
++
++	if (bebob->card_index >= 0) {
++		mutex_lock(&devices_mutex);
++		devices_used &= ~BIT(bebob->card_index);
++		mutex_unlock(&devices_mutex);
++	}
++
++	mutex_destroy(&bebob->mutex);
++}
++
++static int
++bebob_probe(struct fw_unit *unit,
++	    const struct ieee1394_device_id *entry)
++{
++	struct snd_card *card;
++	struct snd_bebob *bebob;
++	unsigned int card_index;
 +	int err;
 +
-+	spin_lock_irq(&efw->lock);
++	mutex_lock(&devices_mutex);
 +
-+	if (efw->dev_lock_count == -1) {
-+		efw->dev_lock_count = 0;
-+		err = 0;
-+	} else
-+		err = -EBADFD;
++	for (card_index = 0; card_index < SNDRV_CARDS; card_index++) {
++		if (!(devices_used & BIT(card_index)) && enable[card_index])
++			break;
++	}
++	if (card_index >= SNDRV_CARDS) {
++		err = -ENOENT;
++		goto end;
++	}
 +
-+	spin_unlock_irq(&efw->lock);
++	err = snd_card_new(&unit->device, index[card_index], id[card_index],
++			   THIS_MODULE, sizeof(struct snd_bebob), &card);
++	if (err < 0)
++		goto end;
++	card->private_free = bebob_card_free;
 +
++	bebob = card->private_data;
++	bebob->card = card;
++	bebob->unit = unit;
++	bebob->card_index = -1;
++	mutex_init(&bebob->mutex);
++	spin_lock_init(&bebob->lock);
++
++	err = name_device(bebob, entry->vendor_id);
++	if (err < 0)
++		goto error;
++
++	err = snd_card_register(card);
++	if (err < 0) {
++		snd_card_free(card);
++		goto error;
++	}
++	dev_set_drvdata(&unit->device, bebob);
++	devices_used |= BIT(card_index);
++	bebob->card_index = card_index;
++end:
++	mutex_unlock(&devices_mutex);
++	return err;
++error:
++	snd_card_free(card);
++	mutex_unlock(&devices_mutex);
 +	return err;
 +}
 +
-+static int
-+hwdep_release(struct snd_hwdep *hwdep, struct file *file)
++static void
++bebob_update(struct fw_unit *unit)
 +{
-+	struct snd_efw *efw = hwdep->private_data;
-+
-+	spin_lock_irq(&efw->lock);
-+	if (efw->dev_lock_count == -1)
-+		efw->dev_lock_count = 0;
-+	spin_unlock_irq(&efw->lock);
-+
-+	return 0;
++	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
++	fcp_bus_reset(bebob->unit);
 +}
 +
-+static int
-+hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+	    unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_efw *efw = hwdep->private_data;
 +
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(efw, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(efw);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(efw);
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
++static void bebob_remove(struct fw_unit *unit)
++{
++	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
++	snd_card_disconnect(bebob->card);
++	snd_card_free_when_closed(bebob->card);
 +}
 +
-+#ifdef CONFIG_COMPAT
-+static int
-+hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+		   unsigned int cmd, unsigned long arg)
-+{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
++static const struct ieee1394_device_id bebob_id_table[] = {
++	/* Edirol, FA-66 */
++	SND_BEBOB_DEV_ENTRY(VEN_EDIROL, 0x00010049),
++	/* Edirol, FA-101 */
++	SND_BEBOB_DEV_ENTRY(VEN_EDIROL, 0x00010048),
++	/* Presonus, FIREBOX */
++	SND_BEBOB_DEV_ENTRY(VEN_PRESONUS, 0x00010000),
++	/* PreSonus, FIREPOD/FP10 */
++	SND_BEBOB_DEV_ENTRY(VEN_PRESONUS, 0x00010066),
++	/* PreSonus, Inspire1394 */
++	SND_BEBOB_DEV_ENTRY(VEN_PRESONUS, 0x00010001),
++	/* BridgeCo, RDAudio1 */
++	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010048),
++	/* BridgeCo, Audio5 */
++	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010049),
++	/* Mackie, Onyx 1220/1620/1640 (Firewire I/O Card) */
++	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010065),
++	/* Mackie, d.2 (Firewire Option) */
++	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010067),
++	/* Stanton, ScratchAmp */
++	SND_BEBOB_DEV_ENTRY(VEN_STANTON, 0x00000001),
++	/* Tascam, IF-FW DM */
++	SND_BEBOB_DEV_ENTRY(VEN_TASCAM, 0x00010067),
++	/* Behringer, XENIX UFX 1204 */
++	SND_BEBOB_DEV_ENTRY(VEN_BEHRINGER, 0x00001204),
++	/* Behringer, XENIX UFX 1604 */
++	SND_BEBOB_DEV_ENTRY(VEN_BEHRINGER, 0x00001604),
++	/* Behringer, Digital Mixer X32 series (X-UF Card) */
++	SND_BEBOB_DEV_ENTRY(VEN_BEHRINGER, 0x00000006),
++	/* Apogee Electronics, Rosetta 200/400 (X-FireWire card) */
++	/* Apogee Electronics, DA/AD/DD-16X (X-FireWire card) */
++	SND_BEBOB_DEV_ENTRY(VEN_APOGEE, 0x00010048),
++	/* Apogee Electronics, Ensemble */
++	SND_BEBOB_DEV_ENTRY(VEN_APOGEE, 0x00001eee),
++	/* ESI, Quatafire610 */
++	SND_BEBOB_DEV_ENTRY(VEN_ESI, 0x00010064),
++	/* AcousticReality, eARMasterOne */
++	SND_BEBOB_DEV_ENTRY(VEN_ACOUSTIC, 0x00000002),
++	/* CME, MatrixKFW */
++	SND_BEBOB_DEV_ENTRY(VEN_CME, 0x00030000),
++	/* Phonic, Helix Board 12 MkII */
++	SND_BEBOB_DEV_ENTRY(VEN_PHONIC, 0x00050000),
++	/* Phonic, Helix Board 18 MkII */
++	SND_BEBOB_DEV_ENTRY(VEN_PHONIC, 0x00060000),
++	/* Phonic, Helix Board 24 MkII */
++	SND_BEBOB_DEV_ENTRY(VEN_PHONIC, 0x00070000),
++	/* Phonic, Helix Board 12 Universal/18 Universal/24 Universal */
++	SND_BEBOB_DEV_ENTRY(VEN_PHONIC, 0x00000000),
++	/* Lynx, Aurora 8/16 (LT-FW) */
++	SND_BEBOB_DEV_ENTRY(VEN_LYNX, 0x00000001),
++	/* ICON, FireXon */
++	SND_BEBOB_DEV_ENTRY(VEN_ICON, 0x00000001),
++	/* PrismSound, Orpheus */
++	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x00010048),
++	/* PrismSound, ADA-8XR */
++	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x0000ada8),
++	/* IDs are unknown but able to be supported */
++	/*  Apogee, Mini-ME Firewire */
++	/*  Apogee, Mini-DAC Firewire */
++	/*  Behringer, F-Control Audio 1616 */
++	/*  Behringer, F-Control Audio 610 */
++	/*  Cakawalk, Sonar Power Studio 66 */
++	/*  CME, UF400e */
++	/*  ESI, Quotafire XL */
++	/*  Infrasonic, DewX */
++	/*  Infrasonic, Windy6 */
++	/*  Mackie, Digital X Bus x.200 */
++	/*  Mackie, Digital X Bus x.400 */
++	/*  Phonic, HB 12 */
++	/*  Phonic, HB 24 */
++	/*  Phonic, HB 18 */
++	/*  Phonic, FireFly 202 */
++	/*  Phonic, FireFly 302 */
++	/*  Rolf Spuler, Firewire Guitar */
++	{}
++};
++MODULE_DEVICE_TABLE(ieee1394, bebob_id_table);
 +
-+static const struct snd_hwdep_ops hwdep_ops = {
-+	.read		= hwdep_read,
-+	.release	= hwdep_release,
-+	.poll		= hwdep_poll,
-+	.ioctl		= hwdep_ioctl,
-+	.ioctl_compat	= hwdep_compat_ioctl,
++static struct fw_driver bebob_driver = {
++	.driver = {
++		.owner	= THIS_MODULE,
++		.name	= "snd-bebob",
++		.bus	= &fw_bus_type,
++	},
++	.probe    = bebob_probe,
++	.update	  = bebob_update,
++	.remove   = bebob_remove,
++	.id_table = bebob_id_table,
 +};
 +
-+int snd_efw_create_hwdep_device(struct snd_efw *efw)
++static int __init
++snd_bebob_init(void)
 +{
-+	struct snd_hwdep *hwdep;
-+	int err;
-+
-+	err = snd_hwdep_new(efw->card, "Fireworks", 0, &hwdep);
-+	if (err < 0)
-+		goto end;
-+	strcpy(hwdep->name, "Fireworks");
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_FIREWORKS;
-+	hwdep->ops = hwdep_ops;
-+	hwdep->private_data = efw;
-+	hwdep->exclusive = true;
-+end:
-+	return err;
++	return driver_register(&bebob_driver.driver);
 +}
 +
-diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
-index a950fd1..2924599 100644
---- a/sound/firewire/fireworks/fireworks_midi.c
-+++ b/sound/firewire/fireworks/fireworks_midi.c
-@@ -11,17 +11,36 @@
- static int midi_capture_open(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_efw *efw = substream->rmidi->private_data;
-+	int err;
-+
-+	err = snd_efw_stream_lock_try(efw);
-+	if (err < 0)
-+		goto end;
- 
- 	efw->capture_substreams++;
--	return snd_efw_stream_start_duplex(efw, &efw->tx_stream, 0);
-+	err = snd_efw_stream_start_duplex(efw, &efw->tx_stream, 0);
-+	if (err < 0)
-+		snd_efw_stream_lock_release(efw);
-+
-+end:
-+	return err;
- }
- 
- static int midi_playback_open(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_efw *efw = substream->rmidi->private_data;
-+	int err;
-+
-+	err = snd_efw_stream_lock_try(efw);
-+	if (err < 0)
-+		goto end;
- 
- 	efw->playback_substreams++;
--	return snd_efw_stream_start_duplex(efw, &efw->rx_stream, 0);
-+	err = snd_efw_stream_start_duplex(efw, &efw->rx_stream, 0);
-+	if (err < 0)
-+		snd_efw_stream_lock_release(efw);
-+end:
-+	return err;
- }
- 
- static int midi_capture_close(struct snd_rawmidi_substream *substream)
-@@ -31,6 +50,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
- 	efw->capture_substreams--;
- 	snd_efw_stream_stop_duplex(efw);
- 
-+	snd_efw_stream_lock_release(efw);
- 	return 0;
- }
- 
-@@ -41,6 +61,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
- 	efw->playback_substreams--;
- 	snd_efw_stream_stop_duplex(efw);
- 
-+	snd_efw_stream_lock_release(efw);
- 	return 0;
- }
- 
-diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
-index 88c1d53..5ea33b9 100644
---- a/sound/firewire/fireworks/fireworks_pcm.c
-+++ b/sound/firewire/fireworks/fireworks_pcm.c
-@@ -273,13 +273,17 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	unsigned int clock_source;
- 	int err;
- 
--	err = pcm_init_hw_params(efw, substream);
-+	err = snd_efw_stream_lock_try(efw);
- 	if (err < 0)
- 		goto end;
- 
-+	err = pcm_init_hw_params(efw, substream);
-+	if (err < 0)
-+		goto err_locked;
-+
- 	err = snd_efw_command_get_clock_source(efw, &clock_source);
- 	if (err < 0)
--		goto end;
-+		goto err_locked;
- 
- 	/*
- 	 * When source of clock is not internal or any PCM streams are running,
-@@ -290,7 +294,7 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	    amdtp_stream_pcm_running(&efw->rx_stream)) {
- 		err = snd_efw_command_get_sampling_rate(efw, &sampling_rate);
- 		if (err < 0)
--			goto end;
-+			goto err_locked;
- 		substream->runtime->hw.rate_min = sampling_rate;
- 		substream->runtime->hw.rate_max = sampling_rate;
- 	}
-@@ -298,10 +302,15 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	snd_pcm_set_sync(substream);
- end:
- 	return err;
-+err_locked:
-+	snd_efw_stream_lock_release(efw);
-+	return err;
- }
- 
- static int pcm_close(struct snd_pcm_substream *substream)
- {
-+	struct snd_efw *efw = substream->private_data;
-+	snd_efw_stream_lock_release(efw);
- 	return 0;
- }
- 
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index 7ff4406..b07ea1e 100644
---- a/sound/firewire/fireworks/fireworks_stream.c
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -296,3 +296,42 @@ void snd_efw_stream_destroy_duplex(struct snd_efw *efw)
- 
- 	mutex_unlock(&efw->mutex);
- }
-+
-+void snd_efw_stream_lock_changed(struct snd_efw *efw)
++static void __exit
++snd_bebob_exit(void)
 +{
-+	efw->dev_lock_changed = true;
-+	wake_up(&efw->hwdep_wait);
++	driver_unregister(&bebob_driver.driver);
++	mutex_destroy(&devices_mutex);
 +}
 +
-+int snd_efw_stream_lock_try(struct snd_efw *efw)
++module_init(snd_bebob_init);
++module_exit(snd_bebob_exit);
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+new file mode 100644
+index 0000000..173f4558
+--- /dev/null
++++ b/sound/firewire/bebob/bebob.h
+@@ -0,0 +1,64 @@
++/*
++ * bebob.h - a part of driver for BeBoB based devices
++ *
++ * Copyright (c) 2013 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#ifndef SOUND_BEBOB_H_INCLUDED
++#define SOUND_BEBOB_H_INCLUDED
++
++#include <linux/compat.h>
++#include <linux/device.h>
++#include <linux/firewire.h>
++#include <linux/firewire-constants.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/delay.h>
++#include <linux/slab.h>
++
++#include <sound/core.h>
++#include <sound/initval.h>
++
++#include "../lib.h"
++#include "../fcp.h"
++
++/* basic register addresses on DM1000 */
++#define BEBOB_ADDR_REG_INFO	0xffffc8020000
++#define BEBOB_ADDR_REG_REQ	0xffffc8021000
++
++struct snd_bebob {
++	struct snd_card *card;
++	struct fw_unit *unit;
++	int card_index;
++
++	struct mutex mutex;
++	spinlock_t lock;
++};
++
++static inline int
++snd_bebob_read_block(struct fw_unit *unit, u64 addr, void *buf, int size)
 +{
-+	int err;
-+
-+	spin_lock_irq(&efw->lock);
-+
-+	/* user land lock this */
-+	if (efw->dev_lock_count < 0) {
-+		err = -EBUSY;
-+		goto end;
-+	}
-+
-+	/* this is the first time */
-+	if (efw->dev_lock_count++ == 0)
-+		snd_efw_stream_lock_changed(efw);
-+	err = 0;
-+end:
-+	spin_unlock_irq(&efw->lock);
-+	return err;
++	return snd_fw_transaction(unit, TCODE_READ_BLOCK_REQUEST,
++				  BEBOB_ADDR_REG_INFO + addr,
++				  buf, size, 0);
 +}
 +
-+void snd_efw_stream_lock_release(struct snd_efw *efw)
++static inline int
++snd_bebob_read_quad(struct fw_unit *unit, u64 addr, u32 *buf)
 +{
-+	spin_lock_irq(&efw->lock);
-+
-+	if (WARN_ON(efw->dev_lock_count <= 0))
-+		goto end;
-+	if (--efw->dev_lock_count == 0)
-+		snd_efw_stream_lock_changed(efw);
-+end:
-+	spin_unlock_irq(&efw->lock);
++	return snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
++				  BEBOB_ADDR_REG_INFO + addr,
++				  (void *)buf, sizeof(u32), 0);
 +}
++
++#define SND_BEBOB_DEV_ENTRY(vendor, model) \
++{ \
++	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
++			  IEEE1394_MATCH_MODEL_ID, \
++	.vendor_id	= vendor, \
++	.model_id	= model, \
++}
++
++#endif
 -- 
 1.8.3.2
