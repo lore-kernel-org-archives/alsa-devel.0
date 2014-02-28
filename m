@@ -1,18 +1,17 @@
 From: Dylan Reid <dgreid@chromium.org>
-Subject: [RFCv2 06/22] ALSA: hda - remove unused clear of
-	STATESTS
-Date: Fri, 28 Feb 2014 15:41:17 -0800
-Message-ID: <1393630893-29010-7-git-send-email-dgreid@chromium.org>
+Subject: [RFCv2 10/22] ALSA: hda - Add pcm_mmap_prepare op.
+Date: Fri, 28 Feb 2014 15:41:21 -0800
+Message-ID: <1393630893-29010-11-git-send-email-dgreid@chromium.org>
 References: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f201.google.com (mail-ig0-f201.google.com
- [209.85.213.201])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F3DA2659A1
+Received: from mail-qa0-f73.google.com (mail-qa0-f73.google.com
+ [209.85.216.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AD2B2659B4
  for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 00:42:52 +0100 (CET)
-Received: by mail-ig0-f201.google.com with SMTP id l13so323024iga.0
+Received: by mail-qa0-f73.google.com with SMTP id f11so228198qae.2
  for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 15:42:51 -0800 (PST)
 In-Reply-To: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,30 +27,79 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, swarren@wwwdotorg.org
 List-Id: alsa-devel@alsa-project.org
 
-Although the code was updated last year the "#if 0" surrounding it
-dates back to the original git commit.  The function will be moved to
-a new file, no need to carry the dead code.
+Adding this op allows the X86 specific mmap operation to help in
+hda_intel without needing a CONFIG_X86 in future non-PCI hda drivers.
 
 Signed-off-by: Dylan Reid <dgreid@chromium.org>
 ---
- sound/pci/hda/hda_intel.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/pci/hda/hda_intel.c | 20 ++++++++++++++------
+ sound/pci/hda/hda_priv.h  |  2 ++
+ 2 files changed, 16 insertions(+), 6 deletions(-)
 
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index c4b6447..7cdb4dd 100644
+index fa3a04c..aa8b765 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -1081,11 +1081,6 @@ static irqreturn_t azx_interrupt(int irq, void *dev_id)
- 		azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
- 	}
+@@ -2190,19 +2190,15 @@ static void azx_clear_irq_pending(struct azx *chip)
+ 	spin_unlock_irq(&chip->reg_lock);
+ }
  
--#if 0
--	/* clear state status int */
--	if (azx_readw(chip, STATESTS) & 0x04)
--		azx_writew(chip, STATESTS, 0x04);
+-#ifdef CONFIG_X86
+ static int azx_pcm_mmap(struct snd_pcm_substream *substream,
+ 			struct vm_area_struct *area)
+ {
+ 	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
+ 	struct azx *chip = apcm->chip;
+-	if (!azx_snoop(chip))
+-		area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
++	if (chip->ops->pcm_mmap_prepare)
++		chip->ops->pcm_mmap_prepare(substream, area);
+ 	return snd_pcm_lib_default_mmap(substream, area);
+ }
+-#else
+-#define azx_pcm_mmap	NULL
 -#endif
- 	spin_unlock(&chip->reg_lock);
- 	
- 	return IRQ_HANDLED;
+ 
+ static struct snd_pcm_ops azx_pcm_ops = {
+ 	.open = azx_pcm_open,
+@@ -3508,6 +3504,17 @@ static int substream_free_pages(struct azx *chip,
+ 	return snd_pcm_lib_free_pages(substream);
+ }
+ 
++static void pcm_mmap_prepare(struct snd_pcm_substream *substream,
++			     struct vm_area_struct *area)
++{
++#ifdef CONFIG_X86
++	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
++	struct azx *chip = apcm->chip;
++	if (!azx_snoop(chip))
++		area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
++#endif
++}
++
+ static const struct hda_controller_ops pci_hda_ops = {
+ 	.writel = pci_azx_writel,
+ 	.readl = pci_azx_readl,
+@@ -3520,6 +3527,7 @@ static const struct hda_controller_ops pci_hda_ops = {
+ 	.dma_free_pages = dma_free_pages,
+ 	.substream_alloc_pages = substream_alloc_pages,
+ 	.substream_free_pages = substream_free_pages,
++	.pcm_mmap_prepare = pcm_mmap_prepare,
+ };
+ 
+ static int azx_probe(struct pci_dev *pci,
+diff --git a/sound/pci/hda/hda_priv.h b/sound/pci/hda/hda_priv.h
+index 10bcec1..edbe2eb 100644
+--- a/sound/pci/hda/hda_priv.h
++++ b/sound/pci/hda/hda_priv.h
+@@ -309,6 +309,8 @@ struct hda_controller_ops {
+ 				     size_t size);
+ 	int (*substream_free_pages)(struct azx *chip,
+ 				    struct snd_pcm_substream *substream);
++	void (*pcm_mmap_prepare)(struct snd_pcm_substream *substream,
++				 struct vm_area_struct *area);
+ };
+ 
+ struct azx_pcm {
 -- 
 1.8.1.3.605.g02339dd
