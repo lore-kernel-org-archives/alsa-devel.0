@@ -1,16 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: PCM rules for FireWave in speaker.c
-Date: Fri, 28 Feb 2014 20:28:33 +0900
-Message-ID: <531072E1.6060603@sakamocchi.jp>
-References: <530FFF88.1040606@sakamocchi.jp> <53105DA8.1090607@ladisch.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix registration of beep input
+	device
+Date: Fri, 28 Feb 2014 13:46:34 +0100
+Message-ID: <1393591594-3346-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FBFD261A27
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 12:28:39 +0100 (CET)
-In-Reply-To: <53105DA8.1090607@ladisch.de>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC5EB261A27
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 13:46:34 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 71C2075016
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 12:46:34 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,46 +22,157 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stefan Richter <stefanr@s5r6.in-berlin.de>, Jay Fenlason <fenlason@redhat.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens,
+The beep input device is registered via input_register_device(), but
+this is called in snd_hda_attach_beep_device() where the sound devices
+aren't registered yet.  This leads to the binding to non-existing
+object, thus results in failure.  And, even if the binding worked
+(against the PCI object), it's still racy; the input device appears
+before the sound objects.
 
-> The current rules in speakers.c disallow rates less than 48 kHz if there
-> are less than six channels, and disallow two channels if the rate is
-> less than 48 kHz.  This means that the allowed parameter combinations
-> are 2ch at 48/96 kHz, and 6ch at 32/44.1/48/96 kHz.
+For fixing this, register the input device properly at dev_register
+ops of the codec object it's bound with.  Also, call
+snd_hda_detach_beep_device() at dev_disconnection so that it's
+detached at the right timing.  As a bonus, since it's called in the
+codec's ops, we can get rid of the further call from the other codec
+drivers.
 
-Oh, I misunderstood it...
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_beep.c       | 27 ++++++++++++++++++++-------
+ sound/pci/hda/hda_beep.h       |  5 +++++
+ sound/pci/hda/hda_codec.c      |  7 ++++++-
+ sound/pci/hda/hda_generic.c    |  1 -
+ sound/pci/hda/patch_conexant.c |  4 +---
+ 5 files changed, 32 insertions(+), 12 deletions(-)
 
->> Recently, with Jay Fenlason's help, I got some information about its
->> stream format. I'll show them in the end of this message.
->>
->> As a result, I realized FireWave has stream formats below:
->>   - 6ch PCM at 32.0/44.1/48.0/96.0kHz
->>   - 2ch IEC 60958-3 at 32.0/44.1/48.0kHz
->>
->> Although there are no stream formats for 2ch PCM at 48.0/96.0kHz, the
->> driver has it. Do you know the reason? Are there any model quirks?
->
-> I don't have any of the AV/C audio specifications; these rules were
-> determined experimentally.  In other words, when the sample rate is set
-> to 48 or 96 kHz, sending a stream with two PCM channels appears to work.
-
-OK. You confirmed it.
-
-> If you wanted to support these undocumented formats in your driver, you
-> would have to add some kind of quirk.
-
-Exactly. For PCM, I need to add hard-coded rule. On the other hand, I 
-want to omit IEC 60958-3 mode because I don't know whether ALSA has 
-proper interfaces for it. It will not be PCM.
-
-# I wonder why this mailman sometimes don't deliver my mail...
-
-
-Thanks
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+diff --git a/sound/pci/hda/hda_beep.c b/sound/pci/hda/hda_beep.c
+index 88bb08486f77..b9d3d0cd75c9 100644
+--- a/sound/pci/hda/hda_beep.c
++++ b/sound/pci/hda/hda_beep.c
+@@ -148,7 +148,6 @@ static int snd_hda_do_attach(struct hda_beep *beep)
+ {
+ 	struct input_dev *input_dev;
+ 	struct hda_codec *codec = beep->codec;
+-	int err;
+ 
+ 	input_dev = input_allocate_device();
+ 	if (!input_dev)
+@@ -169,12 +168,6 @@ static int snd_hda_do_attach(struct hda_beep *beep)
+ 	input_dev->dev.parent = &codec->dev;
+ 	input_set_drvdata(input_dev, beep);
+ 
+-	err = input_register_device(input_dev);
+-	if (err < 0) {
+-		input_free_device(input_dev);
+-		codec_err(codec, "hda_beep: unable to register input device\n");
+-		return err;
+-	}
+ 	beep->dev = input_dev;
+ 	return 0;
+ }
+@@ -244,6 +237,26 @@ void snd_hda_detach_beep_device(struct hda_codec *codec)
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_detach_beep_device);
+ 
++int snd_hda_register_beep_device(struct hda_codec *codec)
++{
++	struct hda_beep *beep = codec->beep;
++	int err;
++
++	if (!beep || !beep->dev)
++		return 0;
++
++	err = input_register_device(beep->dev);
++	if (err < 0) {
++		codec_err(codec, "hda_beep: unable to register input device\n");
++		input_free_device(beep->dev);
++		codec->beep = NULL;
++		kfree(beep);
++		return err;
++	}
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_hda_register_beep_device);
++
+ static bool ctl_has_mute(struct snd_kcontrol *kcontrol)
+ {
+ 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+diff --git a/sound/pci/hda/hda_beep.h b/sound/pci/hda/hda_beep.h
+index cb88464676b6..76eb8589fb9e 100644
+--- a/sound/pci/hda/hda_beep.h
++++ b/sound/pci/hda/hda_beep.h
+@@ -45,6 +45,7 @@ struct hda_beep {
+ int snd_hda_enable_beep_device(struct hda_codec *codec, int enable);
+ int snd_hda_attach_beep_device(struct hda_codec *codec, int nid);
+ void snd_hda_detach_beep_device(struct hda_codec *codec);
++int snd_hda_register_beep_device(struct hda_codec *codec);
+ #else
+ static inline int snd_hda_attach_beep_device(struct hda_codec *codec, int nid)
+ {
+@@ -53,5 +54,9 @@ static inline int snd_hda_attach_beep_device(struct hda_codec *codec, int nid)
+ static inline void snd_hda_detach_beep_device(struct hda_codec *codec)
+ {
+ }
++static inline int snd_hda_register_beep_device(struct hda_codec *codec)
++{
++	return 0;
++}
+ #endif
+ #endif
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 6db2dbcbf4d3..555e8c771cfd 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -1379,14 +1379,19 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
+ static int snd_hda_codec_dev_register(struct snd_device *device)
+ {
+ 	struct hda_codec *codec = device->device_data;
++	int err = device_add(&codec->dev);
+ 
+-	return device_add(&codec->dev);
++	if (err < 0)
++		return err;
++	snd_hda_register_beep_device(codec);
++	return 0;
+ }
+ 
+ static int snd_hda_codec_dev_disconnect(struct snd_device *device)
+ {
+ 	struct hda_codec *codec = device->device_data;
+ 
++	snd_hda_detach_beep_device(codec);
+ 	device_del(&codec->dev);
+ 	return 0;
+ }
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 9e0609a4b2ba..16133881e967 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -5350,7 +5350,6 @@ EXPORT_SYMBOL_GPL(snd_hda_gen_init);
+ void snd_hda_gen_free(struct hda_codec *codec)
+ {
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_FREE);
+-	snd_hda_detach_beep_device(codec);
+ 	snd_hda_gen_spec_free(codec->spec);
+ 	kfree(codec->spec);
+ 	codec->spec = NULL;
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 09d6d0db2b06..1dc7e974f3b1 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -445,9 +445,7 @@ static int conexant_init(struct hda_codec *codec)
+ 
+ static void conexant_free(struct hda_codec *codec)
+ {
+-	struct conexant_spec *spec = codec->spec;
+-	snd_hda_detach_beep_device(codec);
+-	kfree(spec);
++	kfree(codec->spec);
+ }
+ 
+ static const struct snd_kcontrol_new cxt_capture_mixers[] = {
+-- 
+1.9.0
