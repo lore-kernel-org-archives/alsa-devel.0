@@ -1,60 +1,106 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: core: Set the default I/O up try
- regmap.
-Date: Fri, 28 Feb 2014 08:15:19 +0100
-Message-ID: <53103787.2020702@metafoo.de>
-References: <1393494593-26310-1-git-send-email-Li.Xiubo@freescale.com> <1393494593-26310-3-git-send-email-Li.Xiubo@freescale.com> <20140228035244.GJ9383@sirena.org.uk> <c405df11848a40b7beda8d8fe747e7a7@BY2PR03MB505.namprd03.prod.outlook.com> <20140228052904.GP9383@sirena.org.uk> <1b89016263c84e0297655034a648032f@BY2PR03MB505.namprd03.prod.outlook.com> <53102EE4.80702@metafoo.de> <d872d0fd60eb4c01b38af98014c802aa@BY2PR03MB505.namprd03.prod.outlook.com> <531030C7.2060703@metafoo.de> <5d534c2ac77040d9bc373db9e43dde7c@BY2PR03MB505.namprd03.prod.outlook.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [RFC PATCH] ALSA: hda - Fix CORB reset to follow
+	specification
+Date: Fri, 28 Feb 2014 07:56:58 +0100
+Message-ID: <1393570618-13442-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5d534c2ac77040d9bc373db9e43dde7c@BY2PR03MB505.namprd03.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Cc: Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 985572659DF
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 07:57:01 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: mengdong.lin@intel.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/28/2014 08:08 AM, Li.Xiubo@freescale.com wrote:
->>>>>> Subject: Re: [PATCH 2/3] ASoC: core: Set the default I/O up try regmap.
->>>>>>
->>>>>> On Fri, Feb 28, 2014 at 04:00:38AM +0000, Li.Xiubo@freescale.com wrote:
->>>>>>
->>>>>>> I'll send another patches to applied to use this for another CODEC
->> drivers.
->>>>>>> And there almost 80 files, Should I send them in one patch or split them
->>>>>> into
->>>>>>> individual patch for each CODEC driver ?
->>>>>>
->>>>>> I'd suggest doing one patch that covers the boring drivers where the
->>>>>> first thing they do is call set_cache_io() but split out the others into
->>>>>> one patch per driver since the need more examination.
->>>>>
->>>>> Got it.
->>>>
->>>> Btw. be careful, just removing the set_cache_io() call will not work for
->> all
->>>> drivers. There are some MFD child devices which use regmap from the parent
->>>> device. So dev_get_regmap() will return NULL for those.
->>>>
->>>
->>> @Lars,
->>>
->>> Do you mean the CODEC drivers like wm5110 and wm8997 ?
->>>
->>
->>
->> Yes.
->>
->
-> I only found these two CODEC drivers using MFD who would get its parent's regmap.
->
-> Has I missed some ?
+According to the HDA spec, we must write 1 to bit 15 on a CORBRP
+reset, read back 1, then write 0, then read back 0. This must be
+done while the DMA is not running.
 
-A quick grep reveals:
-mc13783.c:	codec->control_data = dev_get_regmap(codec->dev->parent, NULL);
-si476x.c:	codec->control_data = dev_get_regmap(codec->dev->parent, NULL);
-wm5102.c:	codec->control_data = priv->core.arizona->regmap;
-wm5110.c:	codec->control_data = priv->core.arizona->regmap;
-wm8997.c:	codec->control_data = priv->core.arizona->regmap;
+We accidentaly ended up writing back the 0 by using a writel
+instead of a writew to CORBWP.
 
-But there might be more.
+This caused occasional controller failure on Bay Trail hardware.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_intel.c |   24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
+
+Hi Takashi,
+
+A while ago I researched a spurious response on some Bay Trail hardware,
+so I proofread some of our CORB/RIRB code and found the below.
+
+When applied, the spurious responses disappeared but other problems might
+have appeared instead. I don't have the hardware here so I'm not 100% sure.
+So I'm hesitant to actually apply it, especially as the existing non-compliant
+way seems to work for all other chips. Still wanted to show the issue to you.
+
+Also the timeout (1 ms) is completely arbitrarily as there are no time limits
+written in the HDA specification.
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index d8d9bf3..59156f1 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -775,6 +775,8 @@ static int azx_alloc_cmd_io(struct azx *chip)
+ 
+ static void azx_init_cmd_io(struct azx *chip)
+ {
++	int timeout;
++
+ 	spin_lock_irq(&chip->reg_lock);
+ 	/* CORB set up */
+ 	chip->corb.addr = chip->rb.addr;
+@@ -786,8 +788,28 @@ static void azx_init_cmd_io(struct azx *chip)
+ 	azx_writeb(chip, CORBSIZE, 0x02);
+ 	/* set the corb write pointer to 0 */
+ 	azx_writew(chip, CORBWP, 0);
++
+ 	/* reset the corb hw read pointer */
+ 	azx_writew(chip, CORBRP, ICH6_CORBRP_RST);
++	for (timeout = 1000; timeout > 0; timeout--) {
++		if ((azx_readw(chip, CORBRP) & ICH6_CORBRP_RST) == ICH6_CORBRP_RST)
++			break;
++		udelay(1);
++	}
++	if (timeout <= 0)
++		snd_printk(KERN_ERR SFX "%s: CORB reset timeout - CORBRP = %d\n",
++			   pci_name(chip->pci), (int) azx_readw(chip, CORBRP));
++
++	azx_writew(chip, CORBRP, 0);
++	for (timeout = 1000; timeout > 0; timeout--) {
++		if (azx_readw(chip, CORBRP) == 0)
++			break;
++		udelay(1);
++	}
++	if (timeout <= 0)
++		snd_printk(KERN_ERR SFX "%s: CORB reset timeout, CORBRP = %d\n",
++			   pci_name(chip->pci), azx_readw(chip, CORBRP));
++
+ 	/* enable corb dma */
+ 	azx_writeb(chip, CORBCTL, ICH6_CORBCTL_RUN);
+ 
+@@ -862,7 +884,7 @@ static int azx_corb_send_cmd(struct hda_bus *bus, u32 val)
+ 
+ 	chip->rirb.cmds[addr]++;
+ 	chip->corb.buf[wp] = cpu_to_le32(val);
+-	azx_writel(chip, CORBWP, wp);
++	azx_writew(chip, CORBWP, wp);
+ 
+ 	spin_unlock_irq(&chip->reg_lock);
+ 
+-- 
+1.7.9.5
