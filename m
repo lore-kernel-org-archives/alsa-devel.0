@@ -1,17 +1,21 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: Griffin FireWave stream format information
-Date: Fri, 28 Feb 2014 14:34:54 +0100
-Message-ID: <20140228143454.3abb69fa@stein>
-References: <530EB782.6090205@sakamocchi.jp> <20140228105632.1a436d21@stein>
- <53106DCF.5050903@sakamocchi.jp>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH v2 2/3] route: Select slave chmap based on
+ ttable information
+Date: Fri, 28 Feb 2014 21:49:57 +0800
+Message-ID: <CAN8cciY6OXQ2m0bU7rRfUVFGGxeeSTqZfgRraEEmVm8uRKUQEA@mail.gmail.com>
+References: <1393574227-25732-1-git-send-email-david.henningsson@canonical.com>
+ <1393574227-25732-3-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
- by alsa0.perex.cz (Postfix) with ESMTP id 8627B265141
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 14:34:56 +0100 (CET)
-In-Reply-To: <53106DCF.5050903@sakamocchi.jp>
+Received: from mail-qa0-f49.google.com (mail-qa0-f49.google.com
+ [209.85.216.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56C5126514A
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 14:49:58 +0100 (CET)
+Received: by mail-qa0-f49.google.com with SMTP id j7so639739qaq.36
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 05:49:57 -0800 (PST)
+In-Reply-To: <1393574227-25732-3-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,101 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jay Fenlason <fenlason@redhat.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Feb 28 Takashi Sakamoto wrote:
-> These are correct commands:
-> (for 32.0kHz)
-> $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400202010200
+2014-02-28 15:57 GMT+08:00 David Henningsson <
+david.henningsson@canonical.com>:
 
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400202010200
-response: 000: 09 ff bf c0 00 00 00 00 ff 00 90 40 02 02 01 02 ...........@....
-response: 010: 00                                              .
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x01ffbfc000000000ffffffff
-response: 000: 0c ff bf c0 00 00 00 00 ff 00 90 40 02 02 01 02 ...........@....
-response: 010: 00                                              .
+> It means we need to initialize this order:
+>
+>  1) Read the ttable to figure out which channels are present
+>  2) Open slave pcm and find a matching chmap
+>  3) Determine size of ttable (this can now depend on the chmap)
+>  4) Read ttable coefficients
+>  5) At prepare time, select the matching chmap
+>
 
-> (for 44.1kHz)
-> $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400302010200
+Do this patch assume the slave.pcm of the route plugin must have a channel
+map ?
 
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400302010200
-response: 000: 09 ff bf c0 00 00 00 00 ff 00 90 40 03 02 01 02 ...........@....
-response: 010: 00                                              .
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x01ffbfc000000000ffffffff
-response: 000: 0c ff bf c0 00 00 00 00 ff 00 90 40 03 02 01 02 ...........@....
-response: 010: 00                                              .
+are there any side effect when some of sound cards using route but does not
+have channel map ?
 
-> (for 48.0kHz)
-> $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400402010200
 
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400402010200
-response: 000: 09 ff bf c0 00 00 00 00 ff 00 90 40 04 02 01 02 ...........@....
-response: 010: 00                                              .
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x01ffbfc000000000ffffffff
-response: 000: 0c ff bf c0 00 00 00 00 ff 00 90 40 04 02 01 02 ...........@....
-response: 010: 00                                              .
 
-> If one of them are accepted, the stream format is changed for 2ch IEC 
-> 60958-3 at indicated rate. To confirm it, please execute this command again:
-> $ firewire-request /dev/fw8 fcp 0x01ffbfc000000000ffffffff
-> Response should be:
-> 0c ff bf c0 00 00 00 00 ff 00 90 40 0[234] 02 01 02 00
+e.g. ice1712,
 
-Yep, it is
-  0c ff bf c0 00 00 00 00 ff 00 90 40 0[234] 02 01 02 00.
+	playback.pcm {
+		type hooks
+		slave.pcm {
+			type route
+			ttable.0.8 1
+			ttable.1.9 1
+			slave.pcm {
+				type hw
+				card $CARD
+			}
+			slave.format S32_LE
+			slave.channels 10
+		}
 
-> To recover to 5.1ch surround, please execute this command:
-> (for 32.0kHz)
-> $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400202010200
 
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400202010200
-response: 000: 09 ff bf c0 00 00 00 00 ff 00 90 40 02 02 01 02 ...........@....
-response: 010: 00                                              .
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x01ffbfc000000000ffffffff
-response: 000: 0c ff bf c0 00 00 00 00 ff 00 90 40 02 02 01 02 ...........@....
-response: 010: 00                                              .
+rme9652, ....
 
-> (for 44.1kHz)
-> $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400302010200
-
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400302010200
-response: 000: 09 ff bf c0 00 00 00 00 ff 00 90 40 03 02 01 02 ...........@....
-response: 010: 00                                              .
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x01ffbfc000000000ffffffff
-response: 000: 0c ff bf c0 00 00 00 00 ff 00 90 40 03 02 01 02 ...........@....
-response: 010: 00                                              .
-
-> (for 48.0kHz)
-> $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400402010200
-
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400402010200
-response: 000: 09 ff bf c0 00 00 00 00 ff 00 90 40 04 02 01 02 ...........@....
-response: 010: 00                                              .
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x01ffbfc000000000ffffffff
-response: 000: 0c ff bf c0 00 00 00 00 ff 00 90 40 04 02 01 02 ...........@....
-response: 010: 00                                              .
-
-> (for 96.0kHz)
-> $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400502010200
-
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x00ffbfc000000000ff0090400502010200
-response: 000: 09 ff bf c0 00 00 00 00 ff 00 90 40 05 02 01 02 ...........@....
-response: 010: 00                                              .
-stefan@stein ~ $ firewire-request /dev/fw8 fcp 0x01ffbfc000000000ffffffff
-response: 000: 0c ff bf c0 00 00 00 00 ff 00 90 40 05 02 01 02 ...........@....
-response: 010: 00                                              .
-
-> To confirm it, please execute this command again:
-> $ firewire-request /dev/fw8 fcp 0x01ffbfc000000000ffffffff
-> 
-> Response should be:
-> 0c ff bf c0 00 00 00 00 ff 00 90 40 0[2345] 02 01 06 06
-
-Nope, it is only
-  0c ff bf c0 00 00 00 00 ff 00 90 40 0[2345] 02 01 02 00.
--- 
-Stefan Richter
--=====-====- --=- ===--
-http://arcgraph.de/sr/
+slave.pcm {
+		type route
+		slave {
+			pcm {
+				type hw
+				card $CARD
+			}
+			channels 26
+		}
+		ttable.0.24 1
+		ttable.1.25 1
