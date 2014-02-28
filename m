@@ -1,18 +1,18 @@
 From: Dylan Reid <dgreid@chromium.org>
-Subject: [RFCv2 05/22] ALSA: hda - Add function pointer for
-	disabling MSI
-Date: Fri, 28 Feb 2014 15:41:16 -0800
-Message-ID: <1393630893-29010-6-git-send-email-dgreid@chromium.org>
+Subject: [RFCv2 15/22] ALSA: hda - move alloc_cmd_io to
+	hda_controller
+Date: Fri, 28 Feb 2014 15:41:26 -0800
+Message-ID: <1393630893-29010-16-git-send-email-dgreid@chromium.org>
 References: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f201.google.com (mail-pd0-f201.google.com
- [209.85.192.201])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E99A2659B5
+Received: from mail-pb0-f73.google.com (mail-pb0-f73.google.com
+ [209.85.160.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id B18232659CC
  for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 00:42:52 +0100 (CET)
-Received: by mail-pd0-f201.google.com with SMTP id x10so174853pdj.0
+Received: by mail-pb0-f73.google.com with SMTP id rp16so173934pbb.0
  for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 15:42:51 -0800 (PST)
 In-Reply-To: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,85 +28,67 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, swarren@wwwdotorg.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a PCI-only feature, but adding a callback for it in the chip
-structure breaks the PCI dependency in the RIRB code allowing the
-logic there to be re-used by the platform HDA driver.
+Combining the call to alloc_cmd_io with the allocate pages function
+removes an extra interface between hda_intel and hda_controller.
 
 Signed-off-by: Dylan Reid <dgreid@chromium.org>
 ---
- sound/pci/hda/hda_intel.c | 23 ++++++++++++++++++-----
- sound/pci/hda/hda_priv.h  |  4 ++++
- 2 files changed, 22 insertions(+), 5 deletions(-)
+ sound/pci/hda/hda_controller.c | 7 ++++++-
+ sound/pci/hda/hda_controller.h | 1 -
+ sound/pci/hda/hda_intel.c      | 4 ----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 7630622..c4b6447 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -600,11 +600,8 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
- 		dev_warn(chip->card->dev,
- 			 "No response from codec, disabling MSI: last cmd=0x%08x\n",
- 			 chip->last_cmd[addr]);
--		free_irq(chip->irq, chip);
--		chip->irq = -1;
--		pci_disable_msi(chip->pci);
--		chip->msi = 0;
--		if (azx_acquire_irq(chip, 1) < 0) {
-+		if (chip->ops->disable_msi_reset_irq &&
-+		    chip->ops->disable_msi_reset_irq(chip) < 0) {
- 			bus->rirb_error = 1;
- 			return -1;
- 		}
-@@ -3469,6 +3466,21 @@ static u8 pci_azx_readb(u8 *addr)
- 	return readb(addr);
- }
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index ed76f81..a7c5a5d 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -1026,7 +1026,7 @@ EXPORT_SYMBOL_GPL(azx_attach_pcm_stream);
+ /*
+  * CORB / RIRB interface
+  */
+-int azx_alloc_cmd_io(struct azx *chip)
++static int azx_alloc_cmd_io(struct azx *chip)
+ {
+ 	int err;
  
-+static int disable_msi_reset_irq(struct azx *chip)
-+{
-+	int err;
+@@ -1549,6 +1549,11 @@ int azx_alloc_stream_pages(struct azx *chip)
+ 		dev_err(card->dev, "cannot allocate posbuf\n");
+ 		return -ENOMEM;
+ 	}
 +
-+	free_irq(chip->irq, chip);
-+	chip->irq = -1;
-+	pci_disable_msi(chip->pci);
-+	chip->msi = 0;
-+	err = azx_acquire_irq(chip, 1);
++	/* allocate CORB/RIRB */
++	err = azx_alloc_cmd_io(chip);
 +	if (err < 0)
 +		return err;
-+
-+	return 0;
-+}
-+
- static const struct hda_controller_ops pci_hda_ops = {
- 	.writel = pci_azx_writel,
- 	.readl = pci_azx_readl,
-@@ -3476,6 +3488,7 @@ static const struct hda_controller_ops pci_hda_ops = {
- 	.readw = pci_azx_readw,
- 	.writeb = pci_azx_writeb,
- 	.readb = pci_azx_readb,
-+	.disable_msi_reset_irq = disable_msi_reset_irq,
- };
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(azx_alloc_stream_pages);
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index fb0cddd..3a3d78e 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -50,7 +50,6 @@ void azx_free_stream_pages(struct azx *chip);
+ /*
+  * CORB / RIRB interface
+  */
+-int azx_alloc_cmd_io(struct azx *chip);
+ void azx_init_cmd_io(struct azx *chip);
+ void azx_free_cmd_io(struct azx *chip);
+ void azx_update_rirb(struct azx *chip);
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index a8af3d4..3d6ccb8 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1809,10 +1809,6 @@ static int azx_first_init(struct azx *chip)
+ 	err = azx_alloc_stream_pages(chip);
+ 	if (err < 0)
+ 		return err;
+-	/* allocate CORB/RIRB */
+-	err = azx_alloc_cmd_io(chip);
+-	if (err < 0)
+-		return err;
  
- static int azx_probe(struct pci_dev *pci,
-diff --git a/sound/pci/hda/hda_priv.h b/sound/pci/hda/hda_priv.h
-index 17afe90..c231c11 100644
---- a/sound/pci/hda/hda_priv.h
-+++ b/sound/pci/hda/hda_priv.h
-@@ -285,6 +285,8 @@ struct azx_rb {
- 	u32 res[AZX_MAX_CODECS];	/* last read value */
- };
- 
-+struct azx;
-+
- /* Functions to read/write to hda registers. */
- struct hda_controller_ops {
- 	/* Register Access */
-@@ -294,6 +296,8 @@ struct hda_controller_ops {
- 	u16 (*readw)(u16 *addr);
- 	void (*writeb)(u8 value, u8 *addr);
- 	u8 (*readb)(u8 *addr);
-+	/* Disable msi if supported, PCI only */
-+	int (*disable_msi_reset_irq)(struct azx *);
- };
- 
- struct azx_pcm {
+ 	/* initialize streams */
+ 	azx_init_stream(chip);
 -- 
 1.8.1.3.605.g02339dd
