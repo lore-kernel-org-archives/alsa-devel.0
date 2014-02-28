@@ -1,19 +1,19 @@
 From: Dylan Reid <dgreid@chromium.org>
-Subject: [RFCv2 19/22] ALSA: hda - Move codec create to
-	hda_controller
-Date: Fri, 28 Feb 2014 15:41:30 -0800
-Message-ID: <1393630893-29010-20-git-send-email-dgreid@chromium.org>
+Subject: [RFCv2 14/22] ALSA: hda - Relocate RIRB/CORB interface
+	to hda_controller
+Date: Fri, 28 Feb 2014 15:41:25 -0800
+Message-ID: <1393630893-29010-15-git-send-email-dgreid@chromium.org>
 References: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f201.google.com (mail-ob0-f201.google.com
- [209.85.214.201])
- by alsa0.perex.cz (Postfix) with ESMTP id BD42E2659D2
+Received: from mail-yh0-f74.google.com (mail-yh0-f74.google.com
+ [209.85.213.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA5B32659DD
  for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 00:42:52 +0100 (CET)
-Received: by mail-ob0-f201.google.com with SMTP id gq1so922004obb.0
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 15:42:52 -0800 (PST)
+Received: by mail-yh0-f74.google.com with SMTP id c41so172104yho.5
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 15:42:51 -0800 (PST)
 In-Reply-To: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,632 +28,827 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, swarren@wwwdotorg.org
 List-Id: alsa-devel@alsa-project.org
 
-Codec creation and stream initialization can be shared between
-hda_intel and hda platform drivers.  Move it and the static functions
-it depends on to hda_controller.c.
+This is done to allow an HDA platform driver to reuse the code.
+
+A few of the interfaces added to hda_controller will disappear in
+following commits as their users are also moved to hda_controller.
 
 Signed-off-by: Dylan Reid <dgreid@chromium.org>
 ---
- sound/pci/hda/hda_controller.c | 239 ++++++++++++++++++++++++++++++++++++++---
- sound/pci/hda/hda_controller.h |  26 ++---
- sound/pci/hda/hda_intel.c      | 218 -------------------------------------
- 3 files changed, 235 insertions(+), 248 deletions(-)
+ sound/pci/hda/hda_controller.c | 385 +++++++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_controller.h |  11 ++
+ sound/pci/hda/hda_intel.c      | 383 ----------------------------------------
+ 3 files changed, 396 insertions(+), 383 deletions(-)
 
 diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 43b99b4..6156d0a 100644
+index b637d2c..ed76f81 100644
 --- a/sound/pci/hda/hda_controller.c
 +++ b/sound/pci/hda/hda_controller.c
-@@ -25,6 +25,7 @@
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/pm_runtime.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/initval.h>
-@@ -1022,7 +1023,6 @@ int azx_attach_pcm_stream(struct hda_bus *bus, struct hda_codec *codec,
- 	pcm->dev = &codec->dev;
- 	return 0;
+@@ -1023,6 +1023,391 @@ int azx_attach_pcm_stream(struct hda_bus *bus, struct hda_codec *codec,
  }
--EXPORT_SYMBOL_GPL(azx_attach_pcm_stream);
- 
- /*
-  * CORB / RIRB interface
-@@ -1380,7 +1380,7 @@ static unsigned int azx_single_get_response(struct hda_bus *bus,
-  */
- 
- /* send a command */
--int azx_send_cmd(struct hda_bus *bus, unsigned int val)
-+static int azx_send_cmd(struct hda_bus *bus, unsigned int val)
- {
- 	struct azx *chip = bus->private_data;
- 
-@@ -1395,7 +1395,7 @@ int azx_send_cmd(struct hda_bus *bus, unsigned int val)
- EXPORT_SYMBOL_GPL(azx_send_cmd);
- 
- /* get a response */
--unsigned int azx_get_response(struct hda_bus *bus,
-+static unsigned int azx_get_response(struct hda_bus *bus,
- 				     unsigned int addr)
- {
- 	struct azx *chip = bus->private_data;
-@@ -1420,9 +1420,9 @@ azx_get_dsp_loader_dev(struct azx *chip)
- 	return &chip->azx_dev[chip->playback_index_offset];
- }
- 
--int azx_load_dsp_prepare(struct hda_bus *bus, unsigned int format,
--			 unsigned int byte_size,
--			 struct snd_dma_buffer *bufp)
-+static int azx_load_dsp_prepare(struct hda_bus *bus, unsigned int format,
-+				unsigned int byte_size,
-+				struct snd_dma_buffer *bufp)
- {
- 	u32 *bdl;
- 	struct azx *chip = bus->private_data;
-@@ -1480,9 +1480,8 @@ int azx_load_dsp_prepare(struct hda_bus *bus, unsigned int format,
- 	dsp_unlock(azx_dev);
- 	return err;
- }
--EXPORT_SYMBOL_GPL(azx_load_dsp_prepare);
- 
--void azx_load_dsp_trigger(struct hda_bus *bus, bool start)
-+static void azx_load_dsp_trigger(struct hda_bus *bus, bool start)
- {
- 	struct azx *chip = bus->private_data;
- 	struct azx_dev *azx_dev = azx_get_dsp_loader_dev(chip);
-@@ -1493,10 +1492,9 @@ void azx_load_dsp_trigger(struct hda_bus *bus, bool start)
- 		azx_stream_stop(chip, azx_dev);
- 	azx_dev->running = start;
- }
--EXPORT_SYMBOL_GPL(azx_load_dsp_trigger);
- 
--void azx_load_dsp_cleanup(struct hda_bus *bus,
--			  struct snd_dma_buffer *dmab)
-+static void azx_load_dsp_cleanup(struct hda_bus *bus,
-+				 struct snd_dma_buffer *dmab)
- {
- 	struct azx *chip = bus->private_data;
- 	struct azx_dev *azx_dev = azx_get_dsp_loader_dev(chip);
-@@ -1523,7 +1521,6 @@ void azx_load_dsp_cleanup(struct hda_bus *bus,
- 	spin_unlock_irq(&chip->reg_lock);
- 	dsp_unlock(azx_dev);
- }
--EXPORT_SYMBOL_GPL(azx_load_dsp_cleanup);
- #endif /* CONFIG_SND_HDA_DSP_LOADER */
- 
- int azx_alloc_stream_pages(struct azx *chip)
-@@ -1746,6 +1743,7 @@ void azx_stop_chip(struct azx *chip)
- 
- 	chip->initialized = 0;
- }
-+EXPORT_SYMBOL_GPL(azx_stop_chip);
- 
- /*
-  * interrupt handler
-@@ -1812,5 +1810,222 @@ irqreturn_t azx_interrupt(int irq, void *dev_id)
- }
- EXPORT_SYMBOL_GPL(azx_interrupt);
+ EXPORT_SYMBOL_GPL(azx_attach_pcm_stream);
  
 +/*
-+ * Codec initerface
++ * CORB / RIRB interface
 + */
-+
-+/*
-+ * Probe the given codec address
-+ */
-+static int probe_codec(struct azx *chip, int addr)
++int azx_alloc_cmd_io(struct azx *chip)
 +{
-+	unsigned int cmd = (addr << 28) | (AC_NODE_ROOT << 20) |
-+		(AC_VERB_PARAMETERS << 8) | AC_PAR_VENDOR_ID;
-+	unsigned int res;
++	int err;
 +
-+	mutex_lock(&chip->bus->cmd_mutex);
-+	chip->probing = 1;
-+	azx_send_cmd(chip->bus, cmd);
-+	res = azx_get_response(chip->bus, addr);
-+	chip->probing = 0;
-+	mutex_unlock(&chip->bus->cmd_mutex);
-+	if (res == -1)
-+		return -EIO;
-+	dev_dbg(chip->card->dev, "codec #%d probed OK\n", addr);
-+	return 0;
-+}
-+
-+static void azx_bus_reset(struct hda_bus *bus)
-+{
-+	struct azx *chip = bus->private_data;
-+
-+	bus->in_reset = 1;
-+	azx_stop_chip(chip);
-+	azx_init_chip(chip, 1);
-+#ifdef CONFIG_PM
-+	if (chip->initialized) {
-+		struct azx_pcm *p;
-+		list_for_each_entry(p, &chip->pcm_list, list)
-+			snd_pcm_suspend_all(p->pcm);
-+		snd_hda_suspend(chip->bus);
-+		snd_hda_resume(chip->bus);
-+	}
-+#endif
-+	bus->in_reset = 0;
-+}
-+
-+#ifdef CONFIG_PM
-+/* power-up/down the controller */
-+static void azx_power_notify(struct hda_bus *bus, bool power_up)
-+{
-+	struct azx *chip = bus->private_data;
-+
-+	if (!(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
-+		return;
-+
-+	if (power_up)
-+		pm_runtime_get_sync(chip->card->dev);
-+	else
-+		pm_runtime_put_sync(chip->card->dev);
-+}
-+#endif
-+
-+static int get_jackpoll_interval(struct azx *chip)
-+{
-+	int i;
-+	unsigned int j;
-+
-+	if (!chip->jackpoll_ms)
-+		return 0;
-+
-+	i = chip->jackpoll_ms[chip->dev_index];
-+	if (i == 0)
-+		return 0;
-+	if (i < 50 || i > 60000)
-+		j = 0;
-+	else
-+		j = msecs_to_jiffies(i);
-+	if (j == 0)
-+		dev_warn(chip->card->dev,
-+			 "jackpoll_ms value out of range: %d\n", i);
-+	return j;
-+}
-+
-+/* Codec initialization */
-+int azx_codec_create(struct azx *chip, const char *model,
-+		     unsigned int max_slots,
-+		     int *power_save_to)
-+{
-+	struct hda_bus_template bus_temp;
-+	int c, codecs, err;
-+
-+	memset(&bus_temp, 0, sizeof(bus_temp));
-+	bus_temp.private_data = chip;
-+	bus_temp.modelname = model;
-+	bus_temp.pci = chip->pci;
-+	bus_temp.ops.command = azx_send_cmd;
-+	bus_temp.ops.get_response = azx_get_response;
-+	bus_temp.ops.attach_pcm = azx_attach_pcm_stream;
-+	bus_temp.ops.bus_reset = azx_bus_reset;
-+#ifdef CONFIG_PM
-+	bus_temp.power_save = power_save_to;
-+	bus_temp.ops.pm_notify = azx_power_notify;
-+#endif
-+#ifdef CONFIG_SND_HDA_DSP_LOADER
-+	bus_temp.ops.load_dsp_prepare = azx_load_dsp_prepare;
-+	bus_temp.ops.load_dsp_trigger = azx_load_dsp_trigger;
-+	bus_temp.ops.load_dsp_cleanup = azx_load_dsp_cleanup;
-+#endif
-+
-+	err = snd_hda_bus_new(chip->card, &bus_temp, &chip->bus);
++	/* single page (at least 4096 bytes) must suffice for both ringbuffes */
++	err = chip->ops->dma_alloc_pages(chip, SNDRV_DMA_TYPE_DEV,
++					 PAGE_SIZE, &chip->rb);
 +	if (err < 0)
-+		return err;
++		dev_err(chip->card->dev, "cannot allocate CORB/RIRB\n");
++	return err;
++}
++EXPORT_SYMBOL_GPL(azx_alloc_cmd_io);
 +
-+	if (chip->driver_caps & AZX_DCAPS_RIRB_DELAY) {
-+		dev_dbg(chip->card->dev, "Enable delay in RIRB handling\n");
-+		chip->bus->needs_damn_long_delay = 1;
++void azx_init_cmd_io(struct azx *chip)
++{
++	int timeout;
++
++	spin_lock_irq(&chip->reg_lock);
++	/* CORB set up */
++	chip->corb.addr = chip->rb.addr;
++	chip->corb.buf = (u32 *)chip->rb.area;
++	azx_writel(chip, CORBLBASE, (u32)chip->corb.addr);
++	azx_writel(chip, CORBUBASE, upper_32_bits(chip->corb.addr));
++
++	/* set the corb size to 256 entries (ULI requires explicitly) */
++	azx_writeb(chip, CORBSIZE, 0x02);
++	/* set the corb write pointer to 0 */
++	azx_writew(chip, CORBWP, 0);
++
++	/* reset the corb hw read pointer */
++	azx_writew(chip, CORBRP, ICH6_CORBRP_RST);
++	for (timeout = 1000; timeout > 0; timeout--) {
++		if ((azx_readw(chip, CORBRP) & ICH6_CORBRP_RST) == ICH6_CORBRP_RST)
++			break;
++		udelay(1);
++	}
++	if (timeout <= 0)
++		dev_err(chip->card->dev, "CORB reset timeout#1, CORBRP = %d\n",
++			azx_readw(chip, CORBRP));
++
++	azx_writew(chip, CORBRP, 0);
++	for (timeout = 1000; timeout > 0; timeout--) {
++		if (azx_readw(chip, CORBRP) == 0)
++			break;
++		udelay(1);
++	}
++	if (timeout <= 0)
++		dev_err(chip->card->dev, "CORB reset timeout#2, CORBRP = %d\n",
++			azx_readw(chip, CORBRP));
++
++	/* enable corb dma */
++	azx_writeb(chip, CORBCTL, ICH6_CORBCTL_RUN);
++
++	/* RIRB set up */
++	chip->rirb.addr = chip->rb.addr + 2048;
++	chip->rirb.buf = (u32 *)(chip->rb.area + 2048);
++	chip->rirb.wp = chip->rirb.rp = 0;
++	memset(chip->rirb.cmds, 0, sizeof(chip->rirb.cmds));
++	azx_writel(chip, RIRBLBASE, (u32)chip->rirb.addr);
++	azx_writel(chip, RIRBUBASE, upper_32_bits(chip->rirb.addr));
++
++	/* set the rirb size to 256 entries (ULI requires explicitly) */
++	azx_writeb(chip, RIRBSIZE, 0x02);
++	/* reset the rirb hw write pointer */
++	azx_writew(chip, RIRBWP, ICH6_RIRBWP_RST);
++	/* set N=1, get RIRB response interrupt for new entry */
++	if (chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND)
++		azx_writew(chip, RINTCNT, 0xc0);
++	else
++		azx_writew(chip, RINTCNT, 1);
++	/* enable rirb dma and response irq */
++	azx_writeb(chip, RIRBCTL, ICH6_RBCTL_DMA_EN | ICH6_RBCTL_IRQ_EN);
++	spin_unlock_irq(&chip->reg_lock);
++}
++EXPORT_SYMBOL_GPL(azx_init_cmd_io);
++
++void azx_free_cmd_io(struct azx *chip)
++{
++	spin_lock_irq(&chip->reg_lock);
++	/* disable ringbuffer DMAs */
++	azx_writeb(chip, RIRBCTL, 0);
++	azx_writeb(chip, CORBCTL, 0);
++	spin_unlock_irq(&chip->reg_lock);
++}
++EXPORT_SYMBOL_GPL(azx_free_cmd_io);
++
++static unsigned int azx_command_addr(u32 cmd)
++{
++	unsigned int addr = cmd >> 28;
++
++	if (addr >= AZX_MAX_CODECS) {
++		snd_BUG();
++		addr = 0;
 +	}
 +
-+	codecs = 0;
-+	if (!max_slots)
-+		max_slots = AZX_DEFAULT_CODECS;
++	return addr;
++}
 +
-+	/* First try to probe all given codec slots */
-+	for (c = 0; c < max_slots; c++) {
-+		if ((chip->codec_mask & (1 << c)) & chip->codec_probe_mask) {
-+			if (probe_codec(chip, c) < 0) {
-+				/* Some BIOSen give you wrong codec addresses
-+				 * that don't exist
-+				 */
-+				dev_warn(chip->card->dev,
-+					 "Codec #%d probe error; disabling it...\n", c);
-+				chip->codec_mask &= ~(1 << c);
-+				/* More badly, accessing to a non-existing
-+				 * codec often screws up the controller chip,
-+				 * and disturbs the further communications.
-+				 * Thus if an error occurs during probing,
-+				 * better to reset the controller chip to
-+				 * get back to the sanity state.
-+				 */
-+				azx_stop_chip(chip);
-+				azx_init_chip(chip, 1);
-+			}
++/* send a command */
++static int azx_corb_send_cmd(struct hda_bus *bus, u32 val)
++{
++	struct azx *chip = bus->private_data;
++	unsigned int addr = azx_command_addr(val);
++	unsigned int wp, rp;
++
++	spin_lock_irq(&chip->reg_lock);
++
++	/* add command to corb */
++	wp = azx_readw(chip, CORBWP);
++	if (wp == 0xffff) {
++		/* something wrong, controller likely turned to D3 */
++		spin_unlock_irq(&chip->reg_lock);
++		return -EIO;
++	}
++	wp++;
++	wp %= ICH6_MAX_CORB_ENTRIES;
++
++	rp = azx_readw(chip, CORBRP);
++	if (wp == rp) {
++		/* oops, it's full */
++		spin_unlock_irq(&chip->reg_lock);
++		return -EAGAIN;
++	}
++
++	chip->rirb.cmds[addr]++;
++	chip->corb.buf[wp] = cpu_to_le32(val);
++	azx_writew(chip, CORBWP, wp);
++
++	spin_unlock_irq(&chip->reg_lock);
++
++	return 0;
++}
++
++#define ICH6_RIRB_EX_UNSOL_EV	(1<<4)
++
++/* retrieve RIRB entry - called from interrupt handler */
++void azx_update_rirb(struct azx *chip)
++{
++	unsigned int rp, wp;
++	unsigned int addr;
++	u32 res, res_ex;
++
++	wp = azx_readw(chip, RIRBWP);
++	if (wp == 0xffff) {
++		/* something wrong, controller likely turned to D3 */
++		return;
++	}
++
++	if (wp == chip->rirb.wp)
++		return;
++	chip->rirb.wp = wp;
++
++	while (chip->rirb.rp != wp) {
++		chip->rirb.rp++;
++		chip->rirb.rp %= ICH6_MAX_RIRB_ENTRIES;
++
++		rp = chip->rirb.rp << 1; /* an RIRB entry is 8-bytes */
++		res_ex = le32_to_cpu(chip->rirb.buf[rp + 1]);
++		res = le32_to_cpu(chip->rirb.buf[rp]);
++		addr = res_ex & 0xf;
++		if ((addr >= AZX_MAX_CODECS) || !(chip->codec_mask & (1 << addr))) {
++			dev_err(chip->card->dev, "spurious response %#x:%#x, rp = %d, wp = %d",
++				res, res_ex,
++				chip->rirb.rp, wp);
++			snd_BUG();
++		}
++		else if (res_ex & ICH6_RIRB_EX_UNSOL_EV)
++			snd_hda_queue_unsol_event(chip->bus, res, res_ex);
++		else if (chip->rirb.cmds[addr]) {
++			chip->rirb.res[addr] = res;
++			smp_wmb();
++			chip->rirb.cmds[addr]--;
++		} else if (printk_ratelimit()) {
++			dev_err(chip->card->dev, "spurious response %#x:%#x, last cmd=%#08x\n",
++				res, res_ex,
++				chip->last_cmd[addr]);
++		}
++	}
++}
++EXPORT_SYMBOL_GPL(azx_update_rirb);
++
++/* receive a response */
++static unsigned int azx_rirb_get_response(struct hda_bus *bus,
++					  unsigned int addr)
++{
++	struct azx *chip = bus->private_data;
++	unsigned long timeout;
++	unsigned long loopcounter;
++	int do_poll = 0;
++
++ again:
++	timeout = jiffies + msecs_to_jiffies(1000);
++
++	for (loopcounter = 0;; loopcounter++) {
++		if (chip->polling_mode || do_poll) {
++			spin_lock_irq(&chip->reg_lock);
++			azx_update_rirb(chip);
++			spin_unlock_irq(&chip->reg_lock);
++		}
++		if (!chip->rirb.cmds[addr]) {
++			smp_rmb();
++			bus->rirb_error = 0;
++
++			if (!do_poll)
++				chip->poll_count = 0;
++			return chip->rirb.res[addr]; /* the last value */
++		}
++		if (time_after(jiffies, timeout))
++			break;
++		if (bus->needs_damn_long_delay || loopcounter > 3000)
++			msleep(2); /* temporary workaround */
++		else {
++			udelay(10);
++			cond_resched();
 +		}
 +	}
 +
-+	/* AMD chipsets often cause the communication stalls upon certain
-+	 * sequence like the pin-detection.  It seems that forcing the synced
-+	 * access works around the stall.  Grrr...
-+	 */
-+	if (chip->driver_caps & AZX_DCAPS_SYNC_WRITE) {
-+		dev_dbg(chip->card->dev, "Enable sync_write for stable communication\n");
-+		chip->bus->sync_write = 1;
-+		chip->bus->allow_bus_reset = 1;
++	if (!bus->no_response_fallback)
++		return -1;
++
++	if (!chip->polling_mode && chip->poll_count < 2) {
++		dev_dbg(chip->card->dev,
++			"azx_get_response timeout, polling the codec once: last cmd=0x%08x\n",
++			chip->last_cmd[addr]);
++		do_poll = 1;
++		chip->poll_count++;
++		goto again;
 +	}
 +
-+	/* Then create codec instances */
-+	for (c = 0; c < max_slots; c++) {
-+		if ((chip->codec_mask & (1 << c)) & chip->codec_probe_mask) {
-+			struct hda_codec *codec;
-+			err = snd_hda_codec_new(chip->bus, c, &codec);
-+			if (err < 0)
-+				continue;
-+			codec->jackpoll_interval = get_jackpoll_interval(chip);
-+			codec->beep_mode = chip->beep_mode;
-+			codecs++;
++
++	if (!chip->polling_mode) {
++		dev_warn(chip->card->dev,
++			 "azx_get_response timeout, switching to polling mode: last cmd=0x%08x\n",
++			 chip->last_cmd[addr]);
++		chip->polling_mode = 1;
++		goto again;
++	}
++
++	if (chip->msi) {
++		dev_warn(chip->card->dev,
++			 "No response from codec, disabling MSI: last cmd=0x%08x\n",
++			 chip->last_cmd[addr]);
++		if (chip->ops->disable_msi_reset_irq(chip) &&
++		    chip->ops->disable_msi_reset_irq(chip) < 0) {
++			bus->rirb_error = 1;
++			return -1;
 +		}
++		goto again;
 +	}
-+	if (!codecs) {
-+		dev_err(chip->card->dev, "no codecs initialized\n");
-+		return -ENXIO;
++
++	if (chip->probing) {
++		/* If this critical timeout happens during the codec probing
++		 * phase, this is likely an access to a non-existing codec
++		 * slot.  Better to return an error and reset the system.
++		 */
++		return -1;
 +	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(azx_codec_create);
 +
-+/* configure each codec instance */
-+int azx_codec_configure(struct azx *chip)
-+{
-+	struct hda_codec *codec;
-+	list_for_each_entry(codec, &chip->bus->codec_list, list) {
-+		snd_hda_codec_configure(codec);
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(azx_codec_configure);
-+
-+/* mixer creation - all stuff is implemented in hda module */
-+int azx_mixer_create(struct azx *chip)
-+{
-+	return snd_hda_build_controls(chip->bus);
-+}
-+EXPORT_SYMBOL_GPL(azx_mixer_create);
-+
-+
-+/* initialize SD streams */
-+int azx_init_stream(struct azx *chip)
-+{
-+	int i;
-+
-+	/* initialize each stream (aka device)
-+	 * assign the starting bdl address to each stream (device)
-+	 * and initialize
++	/* a fatal communication error; need either to reset or to fallback
++	 * to the single_cmd mode
 +	 */
-+	for (i = 0; i < chip->num_streams; i++) {
-+		struct azx_dev *azx_dev = &chip->azx_dev[i];
-+		azx_dev->posbuf = (u32 __iomem *)(chip->posbuf.area + i * 8);
-+		/* offset: SDI0=0x80, SDI1=0xa0, ... SDO3=0x160 */
-+		azx_dev->sd_addr = chip->remap_addr + (0x20 * i + 0x80);
-+		/* int mask: SDI0=0x01, SDI1=0x02, ... SDO3=0x80 */
-+		azx_dev->sd_int_sta_mask = 1 << i;
-+		/* stream tag: must be non-zero and unique */
-+		azx_dev->index = i;
-+		azx_dev->stream_tag = i + 1;
++	bus->rirb_error = 1;
++	if (bus->allow_bus_reset && !bus->response_reset && !bus->in_reset) {
++		bus->response_reset = 1;
++		return -1; /* give a chance to retry */
 +	}
 +
-+	return 0;
++	dev_err(chip->card->dev,
++		"azx_get_response timeout, switching to single_cmd mode: last cmd=0x%08x\n",
++		chip->last_cmd[addr]);
++	chip->single_cmd = 1;
++	bus->response_reset = 0;
++	/* release CORB/RIRB */
++	azx_free_cmd_io(chip);
++	/* disable unsolicited responses */
++	azx_writel(chip, GCTL, azx_readl(chip, GCTL) & ~ICH6_GCTL_UNSOL);
++	return -1;
 +}
-+EXPORT_SYMBOL_GPL(azx_init_stream);
 +
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Common HDA driver funcitons");
++/*
++ * Use the single immediate command instead of CORB/RIRB for simplicity
++ *
++ * Note: according to Intel, this is not preferred use.  The command was
++ *       intended for the BIOS only, and may get confused with unsolicited
++ *       responses.  So, we shouldn't use it for normal operation from the
++ *       driver.
++ *       I left the codes, however, for debugging/testing purposes.
++ */
++
++/* receive a response */
++static int azx_single_wait_for_response(struct azx *chip, unsigned int addr)
++{
++	int timeout = 50;
++
++	while (timeout--) {
++		/* check IRV busy bit */
++		if (azx_readw(chip, IRS) & ICH6_IRS_VALID) {
++			/* reuse rirb.res as the response return value */
++			chip->rirb.res[addr] = azx_readl(chip, IR);
++			return 0;
++		}
++		udelay(1);
++	}
++	if (printk_ratelimit())
++		dev_dbg(chip->card->dev, "get_response timeout: IRS=0x%x\n",
++			azx_readw(chip, IRS));
++	chip->rirb.res[addr] = -1;
++	return -EIO;
++}
++
++/* send a command */
++static int azx_single_send_cmd(struct hda_bus *bus, u32 val)
++{
++	struct azx *chip = bus->private_data;
++	unsigned int addr = azx_command_addr(val);
++	int timeout = 50;
++
++	bus->rirb_error = 0;
++	while (timeout--) {
++		/* check ICB busy bit */
++		if (!((azx_readw(chip, IRS) & ICH6_IRS_BUSY))) {
++			/* Clear IRV valid bit */
++			azx_writew(chip, IRS, azx_readw(chip, IRS) |
++				   ICH6_IRS_VALID);
++			azx_writel(chip, IC, val);
++			azx_writew(chip, IRS, azx_readw(chip, IRS) |
++				   ICH6_IRS_BUSY);
++			return azx_single_wait_for_response(chip, addr);
++		}
++		udelay(1);
++	}
++	if (printk_ratelimit())
++		dev_dbg(chip->card->dev,
++			"send_cmd timeout: IRS=0x%x, val=0x%x\n",
++			azx_readw(chip, IRS), val);
++	return -EIO;
++}
++
++/* receive a response */
++static unsigned int azx_single_get_response(struct hda_bus *bus,
++					    unsigned int addr)
++{
++	struct azx *chip = bus->private_data;
++	return chip->rirb.res[addr];
++}
++
++/*
++ * The below are the main callbacks from hda_codec.
++ *
++ * They are just the skeleton to call sub-callbacks according to the
++ * current setting of chip->single_cmd.
++ */
++
++/* send a command */
++int azx_send_cmd(struct hda_bus *bus, unsigned int val)
++{
++	struct azx *chip = bus->private_data;
++
++	if (chip->disabled)
++		return 0;
++	chip->last_cmd[azx_command_addr(val)] = val;
++	if (chip->single_cmd)
++		return azx_single_send_cmd(bus, val);
++	else
++		return azx_corb_send_cmd(bus, val);
++}
++EXPORT_SYMBOL_GPL(azx_send_cmd);
++
++/* get a response */
++unsigned int azx_get_response(struct hda_bus *bus,
++				     unsigned int addr)
++{
++	struct azx *chip = bus->private_data;
++	if (chip->disabled)
++		return 0;
++	if (chip->single_cmd)
++		return azx_single_get_response(bus, addr);
++	else
++		return azx_rirb_get_response(bus, addr);
++}
++EXPORT_SYMBOL_GPL(azx_get_response);
++
+ #ifdef CONFIG_SND_HDA_DSP_LOADER
+ /*
+  * DSP loading code (e.g. for CA0132)
 diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
-index fac9299..1d2e3be 100644
+index 7c9c04d..fb0cddd 100644
 --- a/sound/pci/hda/hda_controller.h
 +++ b/sound/pci/hda/hda_controller.h
-@@ -21,8 +21,6 @@
- #include "hda_priv.h"
- 
- /* PCM setup */
--int azx_attach_pcm_stream(struct hda_bus *bus, struct hda_codec *codec,
--			  struct hda_pcm *cpcm);
- static inline struct azx_dev *get_azx_dev(struct snd_pcm_substream *substream)
- {
- 	return substream->runtime->private_data;
-@@ -34,30 +32,22 @@ unsigned int azx_get_position(struct azx *chip,
- /* Stream control. */
- void azx_stream_stop(struct azx *chip, struct azx_dev *azx_dev);
- 
--#ifdef CONFIG_SND_HDA_DSP_LOADER
--int azx_load_dsp_prepare(struct hda_bus *bus, unsigned int format,
--			 unsigned int byte_size,
--			 struct snd_dma_buffer *bufp);
--void azx_load_dsp_trigger(struct hda_bus *bus, bool start);
--void azx_load_dsp_cleanup(struct hda_bus *bus,
--			  struct snd_dma_buffer *dmab);
--#endif
--
- /* Allocation functions. */
+@@ -47,4 +47,15 @@ void azx_load_dsp_cleanup(struct hda_bus *bus,
  int azx_alloc_stream_pages(struct azx *chip);
  void azx_free_stream_pages(struct azx *chip);
  
--/*
-- * CORB / RIRB interface
-- */
--int azx_send_cmd(struct hda_bus *bus, unsigned int val);
--unsigned int azx_get_response(struct hda_bus *bus,
--			      unsigned int addr);
--
- /* Low level azx interface */
- void azx_init_chip(struct azx *chip, int full_reset);
- void azx_stop_chip(struct azx *chip);
- void azx_enter_link_reset(struct azx *chip);
- irqreturn_t azx_interrupt(int irq, void *dev_id);
- 
-+/* Codec interface */
-+int azx_codec_create(struct azx *chip, const char *model,
-+		     unsigned int max_slots,
-+		     int *power_save_to);
-+int azx_codec_configure(struct azx *chip);
-+int azx_mixer_create(struct azx *chip);
-+int azx_init_stream(struct azx *chip);
++/*
++ * CORB / RIRB interface
++ */
++int azx_alloc_cmd_io(struct azx *chip);
++void azx_init_cmd_io(struct azx *chip);
++void azx_free_cmd_io(struct azx *chip);
++void azx_update_rirb(struct azx *chip);
++int azx_send_cmd(struct hda_bus *bus, unsigned int val);
++unsigned int azx_get_response(struct hda_bus *bus,
++			      unsigned int addr);
 +
  #endif /* __SOUND_HDA_CONTROLLER_H */
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 96c22a3..b26eff3 100644
+index 80250b3..a8af3d4 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -336,10 +336,6 @@ static inline void mark_runtime_wc(struct azx *chip, struct azx_dev *azx_dev,
+@@ -335,389 +335,6 @@ static inline void mark_runtime_wc(struct azx *chip, struct azx_dev *azx_dev,
+ #endif
  
  static int azx_acquire_irq(struct azx *chip, int do_disconnect);
- 
--#ifdef CONFIG_PM
--static void azx_power_notify(struct hda_bus *bus, bool power_up);
--#endif
--
- /*
-  * initialize the PCI registers
-  */
-@@ -433,171 +429,6 @@ static int azx_position_check(struct azx *chip, struct azx_dev *azx_dev)
- }
- 
- /*
-- * Probe the given codec address
+-static int azx_send_cmd(struct hda_bus *bus, unsigned int val);
+-/*
+- * Interface for HD codec
 - */
--static int probe_codec(struct azx *chip, int addr)
--{
--	unsigned int cmd = (addr << 28) | (AC_NODE_ROOT << 20) |
--		(AC_VERB_PARAMETERS << 8) | AC_PAR_VENDOR_ID;
--	unsigned int res;
 -
--	mutex_lock(&chip->bus->cmd_mutex);
--	chip->probing = 1;
--	azx_send_cmd(chip->bus, cmd);
--	res = azx_get_response(chip->bus, addr);
--	chip->probing = 0;
--	mutex_unlock(&chip->bus->cmd_mutex);
--	if (res == -1)
+-/*
+- * CORB / RIRB interface
+- */
+-static int azx_alloc_cmd_io(struct azx *chip)
+-{
+-	int err;
+-
+-	/* single page (at least 4096 bytes) must suffice for both ringbuffes */
+-	err = chip->ops->dma_alloc_pages(chip, SNDRV_DMA_TYPE_DEV,
+-					 PAGE_SIZE, &chip->rb);
+-	if (err < 0)
+-		dev_err(chip->card->dev, "cannot allocate CORB/RIRB\n");
+-	return err;
+-}
+-
+-static void azx_init_cmd_io(struct azx *chip)
+-{
+-	int timeout;
+-
+-	spin_lock_irq(&chip->reg_lock);
+-	/* CORB set up */
+-	chip->corb.addr = chip->rb.addr;
+-	chip->corb.buf = (u32 *)chip->rb.area;
+-	azx_writel(chip, CORBLBASE, (u32)chip->corb.addr);
+-	azx_writel(chip, CORBUBASE, upper_32_bits(chip->corb.addr));
+-
+-	/* set the corb size to 256 entries (ULI requires explicitly) */
+-	azx_writeb(chip, CORBSIZE, 0x02);
+-	/* set the corb write pointer to 0 */
+-	azx_writew(chip, CORBWP, 0);
+-
+-	/* reset the corb hw read pointer */
+-	azx_writew(chip, CORBRP, ICH6_CORBRP_RST);
+-	for (timeout = 1000; timeout > 0; timeout--) {
+-		if ((azx_readw(chip, CORBRP) & ICH6_CORBRP_RST) == ICH6_CORBRP_RST)
+-			break;
+-		udelay(1);
+-	}
+-	if (timeout <= 0)
+-		dev_err(chip->card->dev, "CORB reset timeout#1, CORBRP = %d\n",
+-			azx_readw(chip, CORBRP));
+-
+-	azx_writew(chip, CORBRP, 0);
+-	for (timeout = 1000; timeout > 0; timeout--) {
+-		if (azx_readw(chip, CORBRP) == 0)
+-			break;
+-		udelay(1);
+-	}
+-	if (timeout <= 0)
+-		dev_err(chip->card->dev, "CORB reset timeout#2, CORBRP = %d\n",
+-			azx_readw(chip, CORBRP));
+-
+-	/* enable corb dma */
+-	azx_writeb(chip, CORBCTL, ICH6_CORBCTL_RUN);
+-
+-	/* RIRB set up */
+-	chip->rirb.addr = chip->rb.addr + 2048;
+-	chip->rirb.buf = (u32 *)(chip->rb.area + 2048);
+-	chip->rirb.wp = chip->rirb.rp = 0;
+-	memset(chip->rirb.cmds, 0, sizeof(chip->rirb.cmds));
+-	azx_writel(chip, RIRBLBASE, (u32)chip->rirb.addr);
+-	azx_writel(chip, RIRBUBASE, upper_32_bits(chip->rirb.addr));
+-
+-	/* set the rirb size to 256 entries (ULI requires explicitly) */
+-	azx_writeb(chip, RIRBSIZE, 0x02);
+-	/* reset the rirb hw write pointer */
+-	azx_writew(chip, RIRBWP, ICH6_RIRBWP_RST);
+-	/* set N=1, get RIRB response interrupt for new entry */
+-	if (chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND)
+-		azx_writew(chip, RINTCNT, 0xc0);
+-	else
+-		azx_writew(chip, RINTCNT, 1);
+-	/* enable rirb dma and response irq */
+-	azx_writeb(chip, RIRBCTL, ICH6_RBCTL_DMA_EN | ICH6_RBCTL_IRQ_EN);
+-	spin_unlock_irq(&chip->reg_lock);
+-}
+-
+-static void azx_free_cmd_io(struct azx *chip)
+-{
+-	spin_lock_irq(&chip->reg_lock);
+-	/* disable ringbuffer DMAs */
+-	azx_writeb(chip, RIRBCTL, 0);
+-	azx_writeb(chip, CORBCTL, 0);
+-	spin_unlock_irq(&chip->reg_lock);
+-}
+-
+-static unsigned int azx_command_addr(u32 cmd)
+-{
+-	unsigned int addr = cmd >> 28;
+-
+-	if (addr >= AZX_MAX_CODECS) {
+-		snd_BUG();
+-		addr = 0;
+-	}
+-
+-	return addr;
+-}
+-
+-/* send a command */
+-static int azx_corb_send_cmd(struct hda_bus *bus, u32 val)
+-{
+-	struct azx *chip = bus->private_data;
+-	unsigned int addr = azx_command_addr(val);
+-	unsigned int wp, rp;
+-
+-	spin_lock_irq(&chip->reg_lock);
+-
+-	/* add command to corb */
+-	wp = azx_readw(chip, CORBWP);
+-	if (wp == 0xffff) {
+-		/* something wrong, controller likely turned to D3 */
+-		spin_unlock_irq(&chip->reg_lock);
 -		return -EIO;
--	dev_dbg(chip->card->dev, "codec #%d probed OK\n", addr);
+-	}
+-	wp++;
+-	wp %= ICH6_MAX_CORB_ENTRIES;
+-
+-	rp = azx_readw(chip, CORBRP);
+-	if (wp == rp) {
+-		/* oops, it's full */
+-		spin_unlock_irq(&chip->reg_lock);
+-		return -EAGAIN;
+-	}
+-
+-	chip->rirb.cmds[addr]++;
+-	chip->corb.buf[wp] = cpu_to_le32(val);
+-	azx_writew(chip, CORBWP, wp);
+-
+-	spin_unlock_irq(&chip->reg_lock);
+-
 -	return 0;
 -}
 -
--static void azx_bus_reset(struct hda_bus *bus)
+-#define ICH6_RIRB_EX_UNSOL_EV	(1<<4)
+-
+-/* retrieve RIRB entry - called from interrupt handler */
+-static void azx_update_rirb(struct azx *chip)
+-{
+-	unsigned int rp, wp;
+-	unsigned int addr;
+-	u32 res, res_ex;
+-
+-	wp = azx_readw(chip, RIRBWP);
+-	if (wp == 0xffff) {
+-		/* something wrong, controller likely turned to D3 */
+-		return;
+-	}
+-
+-	if (wp == chip->rirb.wp)
+-		return;
+-	chip->rirb.wp = wp;
+-
+-	while (chip->rirb.rp != wp) {
+-		chip->rirb.rp++;
+-		chip->rirb.rp %= ICH6_MAX_RIRB_ENTRIES;
+-
+-		rp = chip->rirb.rp << 1; /* an RIRB entry is 8-bytes */
+-		res_ex = le32_to_cpu(chip->rirb.buf[rp + 1]);
+-		res = le32_to_cpu(chip->rirb.buf[rp]);
+-		addr = res_ex & 0xf;
+-		if ((addr >= AZX_MAX_CODECS) || !(chip->codec_mask & (1 << addr))) {
+-			dev_err(chip->card->dev, "spurious response %#x:%#x, rp = %d, wp = %d",
+-				res, res_ex,
+-				chip->rirb.rp, wp);
+-			snd_BUG();
+-		}
+-		else if (res_ex & ICH6_RIRB_EX_UNSOL_EV)
+-			snd_hda_queue_unsol_event(chip->bus, res, res_ex);
+-		else if (chip->rirb.cmds[addr]) {
+-			chip->rirb.res[addr] = res;
+-			smp_wmb();
+-			chip->rirb.cmds[addr]--;
+-		} else if (printk_ratelimit()) {
+-			dev_err(chip->card->dev, "spurious response %#x:%#x, last cmd=%#08x\n",
+-				res, res_ex,
+-				chip->last_cmd[addr]);
+-		}
+-	}
+-}
+-
+-/* receive a response */
+-static unsigned int azx_rirb_get_response(struct hda_bus *bus,
+-					  unsigned int addr)
+-{
+-	struct azx *chip = bus->private_data;
+-	unsigned long timeout;
+-	unsigned long loopcounter;
+-	int do_poll = 0;
+-
+- again:
+-	timeout = jiffies + msecs_to_jiffies(1000);
+-
+-	for (loopcounter = 0;; loopcounter++) {
+-		if (chip->polling_mode || do_poll) {
+-			spin_lock_irq(&chip->reg_lock);
+-			azx_update_rirb(chip);
+-			spin_unlock_irq(&chip->reg_lock);
+-		}
+-		if (!chip->rirb.cmds[addr]) {
+-			smp_rmb();
+-			bus->rirb_error = 0;
+-
+-			if (!do_poll)
+-				chip->poll_count = 0;
+-			return chip->rirb.res[addr]; /* the last value */
+-		}
+-		if (time_after(jiffies, timeout))
+-			break;
+-		if (bus->needs_damn_long_delay || loopcounter > 3000)
+-			msleep(2); /* temporary workaround */
+-		else {
+-			udelay(10);
+-			cond_resched();
+-		}
+-	}
+-
+-	if (!bus->no_response_fallback)
+-		return -1;
+-
+-	if (!chip->polling_mode && chip->poll_count < 2) {
+-		dev_dbg(chip->card->dev,
+-			"azx_get_response timeout, polling the codec once: last cmd=0x%08x\n",
+-			chip->last_cmd[addr]);
+-		do_poll = 1;
+-		chip->poll_count++;
+-		goto again;
+-	}
+-
+-
+-	if (!chip->polling_mode) {
+-		dev_warn(chip->card->dev,
+-			 "azx_get_response timeout, switching to polling mode: last cmd=0x%08x\n",
+-			 chip->last_cmd[addr]);
+-		chip->polling_mode = 1;
+-		goto again;
+-	}
+-
+-	if (chip->msi) {
+-		dev_warn(chip->card->dev,
+-			 "No response from codec, disabling MSI: last cmd=0x%08x\n",
+-			 chip->last_cmd[addr]);
+-		if (chip->ops->disable_msi_reset_irq &&
+-		    chip->ops->disable_msi_reset_irq(chip) < 0) {
+-			bus->rirb_error = 1;
+-			return -1;
+-		}
+-		goto again;
+-	}
+-
+-	if (chip->probing) {
+-		/* If this critical timeout happens during the codec probing
+-		 * phase, this is likely an access to a non-existing codec
+-		 * slot.  Better to return an error and reset the system.
+-		 */
+-		return -1;
+-	}
+-
+-	/* a fatal communication error; need either to reset or to fallback
+-	 * to the single_cmd mode
+-	 */
+-	bus->rirb_error = 1;
+-	if (bus->allow_bus_reset && !bus->response_reset && !bus->in_reset) {
+-		bus->response_reset = 1;
+-		return -1; /* give a chance to retry */
+-	}
+-
+-	dev_err(chip->card->dev,
+-		"azx_get_response timeout, switching to single_cmd mode: last cmd=0x%08x\n",
+-		chip->last_cmd[addr]);
+-	chip->single_cmd = 1;
+-	bus->response_reset = 0;
+-	/* release CORB/RIRB */
+-	azx_free_cmd_io(chip);
+-	/* disable unsolicited responses */
+-	azx_writel(chip, GCTL, azx_readl(chip, GCTL) & ~ICH6_GCTL_UNSOL);
+-	return -1;
+-}
+-
+-/*
+- * Use the single immediate command instead of CORB/RIRB for simplicity
+- *
+- * Note: according to Intel, this is not preferred use.  The command was
+- *       intended for the BIOS only, and may get confused with unsolicited
+- *       responses.  So, we shouldn't use it for normal operation from the
+- *       driver.
+- *       I left the codes, however, for debugging/testing purposes.
+- */
+-
+-/* receive a response */
+-static int azx_single_wait_for_response(struct azx *chip, unsigned int addr)
+-{
+-	int timeout = 50;
+-
+-	while (timeout--) {
+-		/* check IRV busy bit */
+-		if (azx_readw(chip, IRS) & ICH6_IRS_VALID) {
+-			/* reuse rirb.res as the response return value */
+-			chip->rirb.res[addr] = azx_readl(chip, IR);
+-			return 0;
+-		}
+-		udelay(1);
+-	}
+-	if (printk_ratelimit())
+-		dev_dbg(chip->card->dev, "get_response timeout: IRS=0x%x\n",
+-			azx_readw(chip, IRS));
+-	chip->rirb.res[addr] = -1;
+-	return -EIO;
+-}
+-
+-/* send a command */
+-static int azx_single_send_cmd(struct hda_bus *bus, u32 val)
+-{
+-	struct azx *chip = bus->private_data;
+-	unsigned int addr = azx_command_addr(val);
+-	int timeout = 50;
+-
+-	bus->rirb_error = 0;
+-	while (timeout--) {
+-		/* check ICB busy bit */
+-		if (!((azx_readw(chip, IRS) & ICH6_IRS_BUSY))) {
+-			/* Clear IRV valid bit */
+-			azx_writew(chip, IRS, azx_readw(chip, IRS) |
+-				   ICH6_IRS_VALID);
+-			azx_writel(chip, IC, val);
+-			azx_writew(chip, IRS, azx_readw(chip, IRS) |
+-				   ICH6_IRS_BUSY);
+-			return azx_single_wait_for_response(chip, addr);
+-		}
+-		udelay(1);
+-	}
+-	if (printk_ratelimit())
+-		dev_dbg(chip->card->dev,
+-			"send_cmd timeout: IRS=0x%x, val=0x%x\n",
+-			azx_readw(chip, IRS), val);
+-	return -EIO;
+-}
+-
+-/* receive a response */
+-static unsigned int azx_single_get_response(struct hda_bus *bus,
+-					    unsigned int addr)
+-{
+-	struct azx *chip = bus->private_data;
+-	return chip->rirb.res[addr];
+-}
+-
+-/*
+- * The below are the main callbacks from hda_codec.
+- *
+- * They are just the skeleton to call sub-callbacks according to the
+- * current setting of chip->single_cmd.
+- */
+-
+-/* send a command */
+-static int azx_send_cmd(struct hda_bus *bus, unsigned int val)
 -{
 -	struct azx *chip = bus->private_data;
 -
--	bus->in_reset = 1;
--	azx_stop_chip(chip);
--	azx_init_chip(chip, 1);
--#ifdef CONFIG_PM
--	if (chip->initialized) {
--		struct azx_pcm *p;
--		list_for_each_entry(p, &chip->pcm_list, list)
--			snd_pcm_suspend_all(p->pcm);
--		snd_hda_suspend(chip->bus);
--		snd_hda_resume(chip->bus);
--	}
--#endif
--	bus->in_reset = 0;
--}
--
--static int get_jackpoll_interval(struct azx *chip)
--{
--	int i;
--	unsigned int j;
--
--	if (!chip->jackpoll_ms)
+-	if (chip->disabled)
 -		return 0;
--
--	i = chip->jackpoll_ms[chip->dev_index];
--	if (i == 0)
--		return 0;
--	if (i < 50 || i > 60000)
--		j = 0;
+-	chip->last_cmd[azx_command_addr(val)] = val;
+-	if (chip->single_cmd)
+-		return azx_single_send_cmd(bus, val);
 -	else
--		j = msecs_to_jiffies(i);
--	if (j == 0)
--		dev_warn(chip->card->dev,
--			 "jackpoll_ms value out of range: %d\n", i);
--	return j;
+-		return azx_corb_send_cmd(bus, val);
 -}
 -
--/*
-- * Codec initialization
-- */
--
--static int azx_codec_create(struct azx *chip, const char *model,
--			    unsigned int max_slots,
--			    int *power_save_to)
+-/* get a response */
+-static unsigned int azx_get_response(struct hda_bus *bus,
+-				     unsigned int addr)
 -{
--	struct hda_bus_template bus_temp;
--	int c, codecs, err;
--
--	memset(&bus_temp, 0, sizeof(bus_temp));
--	bus_temp.private_data = chip;
--	bus_temp.modelname = model;
--	bus_temp.pci = chip->pci;
--	bus_temp.ops.command = azx_send_cmd;
--	bus_temp.ops.get_response = azx_get_response;
--	bus_temp.ops.attach_pcm = azx_attach_pcm_stream;
--	bus_temp.ops.bus_reset = azx_bus_reset;
--#ifdef CONFIG_PM
--	bus_temp.power_save = power_save_to;
--	bus_temp.ops.pm_notify = azx_power_notify;
--#endif
--#ifdef CONFIG_SND_HDA_DSP_LOADER
--	bus_temp.ops.load_dsp_prepare = azx_load_dsp_prepare;
--	bus_temp.ops.load_dsp_trigger = azx_load_dsp_trigger;
--	bus_temp.ops.load_dsp_cleanup = azx_load_dsp_cleanup;
--#endif
--
--	err = snd_hda_bus_new(chip->card, &bus_temp, &chip->bus);
--	if (err < 0)
--		return err;
--
--	if (chip->driver_caps & AZX_DCAPS_RIRB_DELAY) {
--		dev_dbg(chip->card->dev, "Enable delay in RIRB handling\n");
--		chip->bus->needs_damn_long_delay = 1;
--	}
--
--	codecs = 0;
--	if (!max_slots)
--		max_slots = AZX_DEFAULT_CODECS;
--
--	/* First try to probe all given codec slots */
--	for (c = 0; c < max_slots; c++) {
--		if ((chip->codec_mask & (1 << c)) & chip->codec_probe_mask) {
--			if (probe_codec(chip, c) < 0) {
--				/* Some BIOSen give you wrong codec addresses
--				 * that don't exist
--				 */
--				dev_warn(chip->card->dev,
--					 "Codec #%d probe error; disabling it...\n", c);
--				chip->codec_mask &= ~(1 << c);
--				/* More badly, accessing to a non-existing
--				 * codec often screws up the controller chip,
--				 * and disturbs the further communications.
--				 * Thus if an error occurs during probing,
--				 * better to reset the controller chip to
--				 * get back to the sanity state.
--				 */
--				azx_stop_chip(chip);
--				azx_init_chip(chip, 1);
--			}
--		}
--	}
--
--	/* AMD chipsets often cause the communication stalls upon certain
--	 * sequence like the pin-detection.  It seems that forcing the synced
--	 * access works around the stall.  Grrr...
--	 */
--	if (chip->driver_caps & AZX_DCAPS_SYNC_WRITE) {
--		dev_dbg(chip->card->dev, "Enable sync_write for stable communication\n");
--		chip->bus->sync_write = 1;
--		chip->bus->allow_bus_reset = 1;
--	}
--
--	/* Then create codec instances */
--	for (c = 0; c < max_slots; c++) {
--		if ((chip->codec_mask & (1 << c)) & chip->codec_probe_mask) {
--			struct hda_codec *codec;
--			err = snd_hda_codec_new(chip->bus, c, &codec);
--			if (err < 0)
--				continue;
--			codec->jackpoll_interval = get_jackpoll_interval(chip);
--			codec->beep_mode = chip->beep_mode;
--			codecs++;
--		}
--	}
--	if (!codecs) {
--		dev_err(chip->card->dev, "no codecs initialized\n");
--		return -ENXIO;
--	}
--	return 0;
+-	struct azx *chip = bus->private_data;
+-	if (chip->disabled)
+-		return 0;
+-	if (chip->single_cmd)
+-		return azx_single_get_response(bus, addr);
+-	else
+-		return azx_rirb_get_response(bus, addr);
 -}
--
--/* configure each codec instance */
--static int azx_codec_configure(struct azx *chip)
--{
--	struct hda_codec *codec;
--	list_for_each_entry(codec, &chip->bus->codec_list, list) {
--		snd_hda_codec_configure(codec);
--	}
--	return 0;
--}
--
--/*
-  * Check whether the current DMA position is acceptable for updating
-  * periods.  Returns non-zero if it's OK.
-  *
-@@ -681,41 +512,6 @@ static void azx_clear_irq_pending(struct azx *chip)
- 	spin_unlock_irq(&chip->reg_lock);
- }
- 
--/*
-- * mixer creation - all stuff is implemented in hda module
-- */
--static int azx_mixer_create(struct azx *chip)
--{
--	return snd_hda_build_controls(chip->bus);
--}
--
--
--/*
-- * initialize SD streams
-- */
--static int azx_init_stream(struct azx *chip)
--{
--	int i;
--
--	/* initialize each stream (aka device)
--	 * assign the starting bdl address to each stream (device)
--	 * and initialize
--	 */
--	for (i = 0; i < chip->num_streams; i++) {
--		struct azx_dev *azx_dev = &chip->azx_dev[i];
--		azx_dev->posbuf = (u32 __iomem *)(chip->posbuf.area + i * 8);
--		/* offset: SDI0=0x80, SDI1=0xa0, ... SDO3=0x160 */
--		azx_dev->sd_addr = chip->remap_addr + (0x20 * i + 0x80);
--		/* int mask: SDI0=0x01, SDI1=0x02, ... SDO3=0x80 */
--		azx_dev->sd_int_sta_mask = 1 << i;
--		/* stream tag: must be non-zero and unique */
--		azx_dev->index = i;
--		azx_dev->stream_tag = i + 1;
--	}
--
--	return 0;
--}
--
- static int azx_acquire_irq(struct azx *chip, int do_disconnect)
- {
- 	if (request_irq(chip->pci->irq, azx_interrupt,
-@@ -734,20 +530,6 @@ static int azx_acquire_irq(struct azx *chip, int do_disconnect)
- }
  
  #ifdef CONFIG_PM
--/* power-up/down the controller */
--static void azx_power_notify(struct hda_bus *bus, bool power_up)
--{
--	struct azx *chip = bus->private_data;
--
--	if (!(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
--		return;
--
--	if (power_up)
--		pm_runtime_get_sync(chip->card->dev);
--	else
--		pm_runtime_put_sync(chip->card->dev);
--}
--
- static DEFINE_MUTEX(card_list_lock);
- static LIST_HEAD(card_list);
- 
+ static void azx_power_notify(struct hda_bus *bus, bool power_up);
 -- 
 1.8.1.3.605.g02339dd
