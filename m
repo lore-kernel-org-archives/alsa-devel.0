@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 00/11] ASoC: Consolidate enum controls and
-	DAPM MUXs
-Date: Fri, 28 Feb 2014 08:31:01 +0100
-Message-ID: <1393572672-13937-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH v2 04/11] ASoC: Add macros for defining virtual
+	enums
+Date: Fri, 28 Feb 2014 08:31:05 +0100
+Message-ID: <1393572672-13937-5-git-send-email-lars@metafoo.de>
+References: <1393572672-13937-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-167.synserver.de (smtp-out-127.synserver.de
  [212.40.185.127])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BAA72650D5
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 08:30:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 910672658F2
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 08:30:53 +0100 (CET)
+In-Reply-To: <1393572672-13937-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,59 +26,50 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
+With the upcoming consolidation of normal MUXs and virtual MUXs we need to be
+able to distinguish between enums with and without a backing register at the
+enum level. Use the same approach as used for virtual mixer controls by setting
+the reg field of the enum to SND_SOC_NOPM for enums without a backing register.
+This patch adds a set of helper macros that can be used to define such enums.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
 Changes since v1:
-	* Rename the xmax parameter for the SOC_ENUM_SINGLE_VIRT() macro to xitems.
+	* Renamed xmax to xitems
+---
+ include/sound/soc.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Original cover letter below.
-
-We currently have 5 nearly identical implementations of enum controls. Two for
-normal controls and three for DAPM controls. The only difference between them is
-how and if the selected enum item is mapped to a register value.
-For normal enums there is a direct mapping of the selected item to the register
-value, for value enums there is an additional look-up table that maps the
-selected item to a register value. DAPM also as a virtual enum which is not
-backed by any hardware register and the enum is solely used to influence DAPM
-routing decisions. The different implementations can easily be consolidating by
-making a few small changes. The series first introduces two helper functions to
-translate between the selected item and the register value. These functions will
-do the right thing depending on whether the enum has a direct mapping or is a
-value enum. These functions will be used to consolidate enums and value enums as
-well as MUXs and value MUXs. The next step is consolidate MUXs and virtual MUXs.
-This requires enums that are only used as virtual enums to be marked as such.
-This is done the same way as for virtual mixer controls by setting reg to
-SND_SOC_NOPM. All users of virtual MUXs are updated accordingly and then virtual
-MUXs and MUXs are updated to share the same implementation. The last patch in
-the series does cleanup of dapm_set_path_status() on top of all this.
-
-Once this has been merged I'll send a second patch-set replacing and removing
-the now deprecated ENUM and MUX macros.
-
-The series depends on topic/dapm, topic/enum, topic/sign, topic/adau1373,
-topic/max98090, topic/mc13783, fix/wm8994, topic/wm899
-
-Lars-Peter Clausen (11):
-  ASoC: Remove unused 'reg2' field from soc_enum struct
-  ASoC: Consolidate enum and value enum controls
-  ASoC: dapm: Consolidate MUXs and value MUXs
-  ASoC: Add macros for defining virtual enums
-  ASoC: adau1373: Use SOC_ENUM_SINGLE_VIRT_DECL()
-  ASoC: max98090: Use SOC_ENUM_SINGLE_VIRT_DECL()
-  ASoC: mc13783: Use SOC_ENUM_SINGLE_VIRT_DECL()
-  ASoC: wm8994: Use SOC_ENUM_SINGLE_VIRT_DECL()
-  ASoC: wm8995: Use SOC_ENUM_SINGLE_VIRT_DECL()
-  ASoC: dapm: Consolidate MUXs and virtual MUXs
-  ASoC: dapm: Break dapm_set_path_status() appart
-
- include/sound/soc-dapm.h    |  38 +----
- include/sound/soc.h         |  41 +++--
- sound/soc/codecs/adau1373.c |   4 +-
- sound/soc/codecs/max98090.c |   2 +-
- sound/soc/codecs/mc13783.c  |   6 +-
- sound/soc/codecs/wm8994.c   |   3 +-
- sound/soc/codecs/wm8995.c   |   2 +-
- sound/soc/soc-core.c        | 101 ++----------
- sound/soc/soc-dapm.c        | 369 +++++++++-----------------------------------
- 9 files changed, 136 insertions(+), 430 deletions(-)
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 662e645..56c4c71 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -189,6 +189,8 @@
+ 	.mask = xmask, .items = xitems, .texts = xtexts, .values = xvalues}
+ #define SOC_VALUE_ENUM_SINGLE(xreg, xshift, xmask, xnitmes, xtexts, xvalues) \
+ 	SOC_VALUE_ENUM_DOUBLE(xreg, xshift, xshift, xmask, xnitmes, xtexts, xvalues)
++#define SOC_ENUM_SINGLE_VIRT(xitems, xtexts) \
++	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, xitems, xtexts)
+ #define SOC_ENUM(xname, xenum) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,\
+ 	.info = snd_soc_info_enum_double, \
+@@ -293,6 +295,8 @@
+ 							ARRAY_SIZE(xtexts), xtexts, xvalues)
+ #define SOC_VALUE_ENUM_SINGLE_DECL(name, xreg, xshift, xmask, xtexts, xvalues) \
+ 	SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xmask, xtexts, xvalues)
++#define SOC_ENUM_SINGLE_VIRT_DECL(name, xtexts) \
++	const struct soc_enum name = SOC_ENUM_SINGLE_VIRT(ARRAY_SIZE(xtexts), xtexts)
+ 
+ /*
+  * Component probe and remove ordering levels for components with runtime
+@@ -1091,7 +1095,7 @@ struct soc_mreg_control {
+ 
+ /* enumerated kcontrol */
+ struct soc_enum {
+-	unsigned short reg;
++	int reg;
+ 	unsigned char shift_l;
+ 	unsigned char shift_r;
+ 	unsigned int items;
 -- 
 1.8.0
