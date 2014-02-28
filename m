@@ -1,17 +1,17 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 02/11] ASoC: Consolidate enum and value enum
-	controls
-Date: Fri, 28 Feb 2014 08:31:03 +0100
-Message-ID: <1393572672-13937-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH v2 07/11] ASoC: mc13783: Use
+	SOC_ENUM_SINGLE_VIRT_DECL()
+Date: Fri, 28 Feb 2014 08:31:08 +0100
+Message-ID: <1393572672-13937-8-git-send-email-lars@metafoo.de>
 References: <1393572672-13937-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-167.synserver.de (smtp-out-127.synserver.de
  [212.40.185.127])
- by alsa0.perex.cz (Postfix) with ESMTP id 484302651F2
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 08:30:52 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 37BF926591D
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 08:30:55 +0100 (CET)
 In-Reply-To: <1393572672-13937-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,220 +26,27 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-The implementations for enum and value enum controls are almost identical. The
-only difference is that the value enum uses an additional look-up table to map
-the control value to the register value, while the enum control uses a direct
-mapping. Enums and value enums can easily be distinguished at runtime, for value
-enums the values field of the snd_soc_enum struct contains the look-up table,
-while for enums it is NULL. This patch adds two new small helper functions
-called snd_soc_enum_item_to_val() and snd_soc_enum_val_to_item() which map
-between register value and control item. If the items field of the snd_soc_enum
-struct is NULL the function will do a direct mapping otherwise they'll use the
-look-up table to do the mapping. Using these small helper functions it is
-possible to use the same kcontrol handlers for both enums and value enums. The
-functions are added a inline functions in soc.h so they can also be used by the
-DAPM code to accomplish similar consolidation.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
-No changes since v1
----
- include/sound/soc.h  |  34 ++++++++++++-----
- sound/soc/soc-core.c | 101 ++++++++-------------------------------------------
- 2 files changed, 41 insertions(+), 94 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 389ba73..662e645 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -195,11 +195,7 @@
- 	.get = snd_soc_get_enum_double, .put = snd_soc_put_enum_double, \
- 	.private_value = (unsigned long)&xenum }
- #define SOC_VALUE_ENUM(xname, xenum) \
--{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,\
--	.info = snd_soc_info_enum_double, \
--	.get = snd_soc_get_value_enum_double, \
--	.put = snd_soc_put_value_enum_double, \
--	.private_value = (unsigned long)&xenum }
-+	SOC_ENUM(xname, xenum)
- #define SOC_SINGLE_EXT(xname, xreg, xshift, xmax, xinvert,\
- 	 xhandler_get, xhandler_put) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-@@ -508,10 +504,6 @@ int snd_soc_get_enum_double(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
- int snd_soc_put_enum_double(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
--int snd_soc_get_value_enum_double(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol);
--int snd_soc_put_value_enum_double(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol);
- int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_info *uinfo);
- #define snd_soc_info_bool_ext		snd_ctl_boolean_mono_info
-@@ -1181,6 +1173,30 @@ static inline bool snd_soc_volsw_is_stereo(struct soc_mixer_control *mc)
- 	return 1;
- }
- 
-+static inline unsigned int snd_soc_enum_val_to_item(struct soc_enum *e,
-+	unsigned int val)
-+{
-+	unsigned int i;
-+
-+	if (!e->values)
-+		return val;
-+
-+	for (i = 0; i < e->items; i++)
-+		if (val == e->values[i])
-+			return i;
-+
-+	return 0;
-+}
-+
-+static inline unsigned int snd_soc_enum_item_to_val(struct soc_enum *e,
-+	unsigned int item)
-+{
-+	if (!e->values)
-+		return item;
-+
-+	return e->values[item];
-+}
-+
- int snd_soc_util_init(void);
- void snd_soc_util_exit(void);
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 0cd5347..9db64b9 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2596,14 +2596,18 @@ int snd_soc_get_enum_double(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
--	unsigned int val;
-+	unsigned int val, item;
-+	unsigned int reg_val;
- 
--	val = snd_soc_read(codec, e->reg);
--	ucontrol->value.enumerated.item[0]
--		= (val >> e->shift_l) & e->mask;
--	if (e->shift_l != e->shift_r)
--		ucontrol->value.enumerated.item[1] =
--			(val >> e->shift_r) & e->mask;
-+	reg_val = snd_soc_read(codec, e->reg);
-+	val = (reg_val >> e->shift_l) & e->mask;
-+	item = snd_soc_enum_val_to_item(e, val);
-+	ucontrol->value.enumerated.item[0] = item;
-+	if (e->shift_l != e->shift_r) {
-+		val = (reg_val >> e->shift_l) & e->mask;
-+		item = snd_soc_enum_val_to_item(e, val);
-+		ucontrol->value.enumerated.item[1] = item;
-+	}
- 
- 	return 0;
- }
-@@ -2623,17 +2627,18 @@ int snd_soc_put_enum_double(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned int *item = ucontrol->value.enumerated.item;
- 	unsigned int val;
- 	unsigned int mask;
- 
--	if (ucontrol->value.enumerated.item[0] >= e->items)
-+	if (item[0] >= e->items)
- 		return -EINVAL;
--	val = ucontrol->value.enumerated.item[0] << e->shift_l;
-+	val = snd_soc_enum_item_to_val(e, item[0]) << e->shift_l;
- 	mask = e->mask << e->shift_l;
- 	if (e->shift_l != e->shift_r) {
--		if (ucontrol->value.enumerated.item[1] >= e->items)
-+		if (item[1] >= e->items)
- 			return -EINVAL;
--		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
-+		val |= snd_soc_enum_item_to_val(e, item[1]) << e->shift_r;
- 		mask |= e->mask << e->shift_r;
- 	}
- 
-@@ -2642,80 +2647,6 @@ int snd_soc_put_enum_double(struct snd_kcontrol *kcontrol,
- EXPORT_SYMBOL_GPL(snd_soc_put_enum_double);
- 
- /**
-- * snd_soc_get_value_enum_double - semi enumerated double mixer get callback
-- * @kcontrol: mixer control
-- * @ucontrol: control element information
-- *
-- * Callback to get the value of a double semi enumerated mixer.
-- *
-- * Semi enumerated mixer: the enumerated items are referred as values. Can be
-- * used for handling bitfield coded enumeration for example.
-- *
-- * Returns 0 for success.
-- */
--int snd_soc_get_value_enum_double(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
--	unsigned int reg_val, val, mux;
--
--	reg_val = snd_soc_read(codec, e->reg);
--	val = (reg_val >> e->shift_l) & e->mask;
--	for (mux = 0; mux < e->items; mux++) {
--		if (val == e->values[mux])
--			break;
--	}
--	ucontrol->value.enumerated.item[0] = mux;
--	if (e->shift_l != e->shift_r) {
--		val = (reg_val >> e->shift_r) & e->mask;
--		for (mux = 0; mux < e->items; mux++) {
--			if (val == e->values[mux])
--				break;
--		}
--		ucontrol->value.enumerated.item[1] = mux;
--	}
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(snd_soc_get_value_enum_double);
--
--/**
-- * snd_soc_put_value_enum_double - semi enumerated double mixer put callback
-- * @kcontrol: mixer control
-- * @ucontrol: control element information
-- *
-- * Callback to set the value of a double semi enumerated mixer.
-- *
-- * Semi enumerated mixer: the enumerated items are referred as values. Can be
-- * used for handling bitfield coded enumeration for example.
-- *
-- * Returns 0 for success.
-- */
--int snd_soc_put_value_enum_double(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
--	unsigned int val;
--	unsigned int mask;
--
--	if (ucontrol->value.enumerated.item[0] >= e->items)
--		return -EINVAL;
--	val = e->values[ucontrol->value.enumerated.item[0]] << e->shift_l;
--	mask = e->mask << e->shift_l;
--	if (e->shift_l != e->shift_r) {
--		if (ucontrol->value.enumerated.item[1] >= e->items)
--			return -EINVAL;
--		val |= e->values[ucontrol->value.enumerated.item[1]] << e->shift_r;
--		mask |= e->mask << e->shift_r;
--	}
--
--	return snd_soc_update_bits_locked(codec, e->reg, mask, val);
--}
--EXPORT_SYMBOL_GPL(snd_soc_put_value_enum_double);
--
--/**
-  * snd_soc_read_signed - Read a codec register and interprete as signed value
-  * @codec: codec
-  * @reg: Register to read
--- 
-1.8.0
+Rm9yIHRoZSB1cGNvbWluZyBjb25zb2xpZGF0aW9uIGZvciBNVVhzIGFuZCB2aXJ0dWFsIE1VWHMg
+d2UgbmVlZCB0byBtYXJrIHZpcnR1YWwKZW51bXMgYXMgc3VjaC4KClNpZ25lZC1vZmYtYnk6IExh
+cnMtUGV0ZXIgQ2xhdXNlbiA8bGFyc0BtZXRhZm9vLmRlPgpUZXN0ZWQtYnk6IFBoaWxpcHBlIFLD
+qXRvcm5heiA8cGhpbGlwcGUucmV0b3JuYXpAZXBmbC5jaD4KLS0tCk5vIGNoYW5nZXMgc2luY2Ug
+djEKLS0tCiBzb3VuZC9zb2MvY29kZWNzL21jMTM3ODMuYyB8IDYgKystLS0tCiAxIGZpbGUgY2hh
+bmdlZCwgMiBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5k
+L3NvYy9jb2RlY3MvbWMxMzc4My5jIGIvc291bmQvc29jL2NvZGVjcy9tYzEzNzgzLmMKaW5kZXgg
+YzYwNTAzNi4uZWM4OWI4ZiAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9tYzEzNzgzLmMK
+KysrIGIvc291bmQvc29jL2NvZGVjcy9tYzEzNzgzLmMKQEAgLTQwOCw4ICs0MDgsNyBAQCBzdGF0
+aWMgY29uc3QgY2hhciAqIGNvbnN0IGFkY2xfZW51bV90ZXh0W10gPSB7CiAJIk1DMUwiLCAiUlhJ
+TkwiLAogfTsKIAotc3RhdGljIFNPQ19FTlVNX1NJTkdMRV9ERUNMKGFkY2xfZW51bSwKLQkJCSAg
+ICAwLCAwLCBhZGNsX2VudW1fdGV4dCk7CitzdGF0aWMgU09DX0VOVU1fU0lOR0xFX1ZJUlRfREVD
+TChhZGNsX2VudW0sIGFkY2xfZW51bV90ZXh0KTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRf
+a2NvbnRyb2xfbmV3IGxlZnRfaW5wdXRfbXV4ID0KIAlTT0NfREFQTV9FTlVNX1ZJUlQoIlJvdXRl
+IiwgYWRjbF9lbnVtKTsKQEAgLTQxOCw4ICs0MTcsNyBAQCBzdGF0aWMgY29uc3QgY2hhciAqIGNv
+bnN0IGFkY3JfZW51bV90ZXh0W10gPSB7CiAJIk1DMVIiLCAiTUMyIiwgIlJYSU5SIiwgIlRYSU4i
+LAogfTsKIAotc3RhdGljIFNPQ19FTlVNX1NJTkdMRV9ERUNMKGFkY3JfZW51bSwKLQkJCSAgICAw
+LCAwLCBhZGNyX2VudW1fdGV4dCk7CitzdGF0aWMgU09DX0VOVU1fU0lOR0xFX1ZJUlRfREVDTChh
+ZGNyX2VudW0sIGFkY3JfZW51bV90ZXh0KTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2Nv
+bnRyb2xfbmV3IHJpZ2h0X2lucHV0X211eCA9CiAJU09DX0RBUE1fRU5VTV9WSVJUKCJSb3V0ZSIs
+IGFkY3JfZW51bSk7Ci0tIAoxLjguMAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
