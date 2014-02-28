@@ -1,21 +1,20 @@
-From: "'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>
-Subject: Re: change kmalloc into vmalloc for large memory
-	allocations
-Date: Fri, 28 Feb 2014 08:33:04 -0800
-Message-ID: <20140228163304.GA15614@kroah.com>
-References: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
- <53104ECA.4010702@freescale.com>
- <35FD53F367049845BC99AC72306C23D102844605F38D@CNBJMBX05.corpusers.net>
+From: Jason Cooper <jason@lakedaemon.net>
+Subject: Re: [PATCH 2/4] ARM: dove: prepare new Dove DT Kconfig
+	variable
+Date: Fri, 28 Feb 2014 11:34:48 -0500
+Message-ID: <20140228163448.GM1872@titan.lakedaemon.net>
+References: <1393536486-3827-1-git-send-email-sebastian.hesselbarth@gmail.com>
+ <1393536486-3827-3-git-send-email-sebastian.hesselbarth@gmail.com>
+ <20140228015310.GC9383@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
- [140.211.169.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 47BB6265218
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 17:31:28 +0100 (CET)
+Received: from mho-01-ewr.mailhop.org (mho-03-ewr.mailhop.org [204.13.248.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A2A12652AC
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 17:34:54 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <35FD53F367049845BC99AC72306C23D102844605F38D@CNBJMBX05.corpusers.net>
+In-Reply-To: <20140228015310.GC9383@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,27 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'broonie@opensource.wolfsonmicro.com'" <broonie@opensource.wolfsonmicro.com>, "'tiwai@suse.de'" <tiwai@suse.de>, "'fweisbec@gmail.com'" <fweisbec@gmail.com>, "'mingo@redhat.com'" <mingo@redhat.com>, "'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>, "'rydberg@euromail.se'" <rydberg@euromail.se>, "'lrg@ti.com'" <lrg@ti.com>, "'pablo@netfilter.org'" <pablo@netfilter.org>, "'coreteam@netfilter.org'" <coreteam@netfilter.org>, "'linux-arm-msm@vger.kernel.org'" <linux-arm-msm@vger.kernel.org>, "'rostedt@goodmis.org'" <rostedt@goodmis.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, "'linux-arm-kernel@lists.infradead.org'" <linux-arm-kernel@lists.infradead.org>, "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>, "'dmitry.torokhov@gmail.com'" <dmitry.torokhov@gmail.com>, 'linux-kern
+To: Mark Brown <broonie@kernel.org>
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Chris Ball <chris@printf.net>, Eduardo Valentin <eduardo.valentin@ti.com>, Wim Van Sebroeck <wim@iguana.be>, Gregory Clement <gregory.clement@free-electrons.com>, Zhang Rui <rui.zhang@intel.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 28, 2014 at 05:20:08PM +0800, Wang, Yalin wrote:
-> Hi  
+On Fri, Feb 28, 2014 at 10:53:10AM +0900, Mark Brown wrote:
+> On Thu, Feb 27, 2014 at 10:28:03PM +0100, Sebastian Hesselbarth wrote:
+> > DT-enabled Dove will move over from ARCH_DOVE in mach-dove to MACH_DOVE in
+> > mach-mvebu. As non-DT ARCH_DOVE will stay to rot for a while, add a new
+> > DT-only MACH_DOVE to mmc, thermal, wdt, and asoc Kconfigs.
 > 
-> 
-> Yeah,  
-> Dma buffer must be allocated by kmalloc,
-> 
-> But the modules I list should can all be changed to use
-> vmalloc, because the buffer is only used by software,
-> Not by any hardware .
+> I'd be much happier merging this sort of stuff individually through the
+> subsystems, we already have an annoying conflict here...  Is there some
+> bisection problem with doing that?
 
-Are you sure about that?  The USB gadget driver needs DMA memory from
-what I can tell, have you tried your change out on a system that does
-not allow the USB controller to access non-DMA memory?
+shouldn't be.  Since these changes || the old with the new config
+symbols.
 
-And I agree with Steve, just fix the individual drivers, don't do a
-"hidden" change of where the memory is allocated from, that's not a good
-idea and will cause problems later.
+Sebastian, can you split this up into individual patches?
 
-greg k-h
+thx,
+
+Jason.
