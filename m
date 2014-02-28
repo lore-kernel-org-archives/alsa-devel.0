@@ -1,16 +1,15 @@
-From: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
-Subject: change kmalloc into vmalloc for large memory
-	allocations
-Date: Fri, 28 Feb 2014 16:15:23 +0800
-Message-ID: <35FD53F367049845BC99AC72306C23D102844605F38C__28884.5646348365$1393577462$gmane$org@CNBJMBX05.corpusers.net>
+From: Vadim Izmalkov <Vadimi@wavesglobal.com>
+Subject: Audio passthrough on Pandaboard using ALSA API
+Date: Fri, 28 Feb 2014 08:47:27 +0000
+Message-ID: <918abfafedb24121b6e6f66e46b9b000@BY2PR06MB581.namprd06.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cnbjrel01.sonyericsson.com (cnbjrel01.sonyericsson.com
- [219.141.167.165])
- by alsa0.perex.cz (Postfix) with ESMTP id 88B1A26512B
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 09:15:29 +0100 (CET)
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2lp0204.outbound.protection.outlook.com [207.46.163.204])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A2BB264F1D
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 09:47:36 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,61 +20,240 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>, "'linux-arm-msm@vger.kernel.org'" <linux-arm-msm@vger.kernel.org>, "'linux-arm-kernel@lists.infradead.org'" <linux-arm-kernel@lists.infradead.org>, "'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>, "'balbi@ti.com'" <balbi@ti.com>, "'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>, "'lrg@ti.com'" <lrg@ti.com>, "'broonie@opensource.wolfsonmicro.com'" <broonie@opensource.wolfsonmicro.com>, "'perex@perex.cz'" <perex@perex.cz>, "'tiwai@suse.de'" <tiwai@suse.de>, "'pablo@netfilter.org'" <pablo@netfilter.org>, "'kaber@trash.net'" <kaber@trash.net>, "'davem@davemloft.net'" <davem@davemloft.net>, "'rostedt@goodmis.org'" <rostedt@goodmis.org>, "'fweisbec@gmail.com'" <fweisbec@gmail.com>, "'mingo@redhat.com'" <mingo@redhat.com>, "'dmitry.torokhov@gmail.com'" <dmitry.torokhov@gmail.com>, 'rydber
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi 
+Hello
+
+I created simple application that makes audio pass-through (from analog input to analog output),
+
+After 2-10 seconds get error like:
+AlsaPassthrough: pcm.c:693: snd_pcm_close: Assertion `pcm' failed.
+or
+write to audio interface failed (Broken pipe)
+
+Seems I have problem with buffer size/time or somethink like that.
+Parameters used:
+Buffer - 100 ms / 4800 frames / 19200 bytes
+Period - 10 ms / 480 frames / 1920 bytes
+
+Buffer length used 19200 bytes.
+char buffer[19200];
+
+Write/read function used as follow
+snd_pcm_readi(pcm, buffer, frames);
+snd_pcm_writei(pcm, buffer, frames);
+
+Have somebody any suggestion?
 
 
-I find there is some drivers use kmalloc to allocate large 
-Memorys during module_init,  some can be changed to use vmalloc
-To save some low mem, I add log in kernel to track ,
-And list them here:
-
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/drivers/usb/gadget/f_mass_storage.c?h=master#n2724
-
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/sound/soc/soc-core.c?h=master#n3772
-
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_ftp.c?h=master#n603
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_h323_main.c?h=master#n1849
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_irc.c?h=master#n247
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_sane.c?h=master#n195
-
-https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/drivers/input/evdev.c?h=master#n403
 
 
-they allocate large memory from 10k~64K , 
-this will use lots of low mem, instead if we use 
-vmalloc for these drivers , it will be good for some devices
-like smart phone, we often encounter some errors like kmalloc failed 
-because there is not enough low mem , especially when the device has physical 
-memory less than 1GB .
 
+Segments of the code you can find bellow.
 
-could this module change the memory allocation into vmalloc ?
+Alsamixer settings:
+amixer cset name='Analog Left Capture Route' 'Headset Mic'
+amixer cset name='Analog Right Capture Route' 'Headset Mic'
+amixer cset name='MUX_UL00' 'AMic0'
+amixer cset name='MUX_UL01' 'AMic1'
+amixer cset name='Headset Left Playback' 'HS DAC'
+amixer cset name='Headset Right Playback' 'HS DAC'
+amixer cset name='Headset Playback Volume' 100
+amixer cset name='DL1 Media' 120
 
-I was thinking that if we can introduce a helper function in kmalloc.h like this :
-
-Kmalloc(size, flags)
+Structure for the devices:
+typedef struct
 {
-	If (size > PAGE_SIZE && flags&CAN_USE_VMALLOC_FLAG)
-		return vmalloc(size);
-	Else
-		return real_kmalloc(size);
+    char *deviceName;
+
+    snd_pcm_t *pcm;
+    snd_pcm_hw_params_t *hwParams;
+    snd_pcm_stream_t stream;
+    snd_pcm_access_t access;
+    snd_pcm_format_t format;
+    snd_pcm_uframes_t frames;
+
+    int mode;
+
+    unsigned int sampleRate;
+
+    unsigned int bufferTime;
+    unsigned int periodTime;
+    unsigned int channels;
+
+} pcmDevice_t;
+
+Parameters for capture:
+pcmDevice_t* initRecordDevice()
+{
+    pcmDevice_t *device;
+
+    device = malloc(sizeof(pcmDevice_t));
+
+    device->deviceName = strdup("plughw:0,0");
+
+    device->stream = SND_PCM_STREAM_CAPTURE;
+    device->access = SND_PCM_ACCESS_RW_INTERLEAVED;
+    device->format = SND_PCM_FORMAT_S16_LE;
+    device->mode = 0; //SND_PCM_ASYNC; //SND_PCM_NONBLOCK;
+
+    device->sampleRate = 48000;
+    device->bufferTime = 100 * 1000; // 100 ms
+    device->periodTime = 10 * 1000; // 20ms
+    device->channels = 2;
+
+    return device;
 }
 
-Kfree(ptr)
+Parameters for playback:
+pcmDevice_t* initPlaybackDevice()
 {
-	If (is_vmalloc_addr(ptr))
-		Vfree(ptr);
-	Else
-		Kfree(ptr);
+    pcmDevice_t *device;
+
+    device = malloc(sizeof(pcmDevice_t));
+
+    device->deviceName = strdup("plughw:0,0");
+
+    device->stream = SND_PCM_STREAM_PLAYBACK;
+    device->access = SND_PCM_ACCESS_RW_INTERLEAVED;
+    device->format = SND_PCM_FORMAT_S16_LE;
+    device->mode = 0; //SND_PCM_ASYNC; //SND_PCM_NONBLOCK;
+
+    device->sampleRate = 48000;
+    device->bufferTime = 100 * 1000; // 100 ms
+    device->periodTime = 10 * 1000; // 20ms
+    device->channels = 2;
+
+    return device;
 }
 
+Setup devices:
+int setupDevice(pcmDevice_t *device)
+{
+    int err;
+    /* Open PCM. The last parameter of this function is the mode. */
+    /* If this is set to 0, the standard mode is used. Possible   */
+    /* other values are SND_PCM_NONBLOCK and SND_PCM_ASYNC.       */
+    /* If SND_PCM_NONBLOCK is used, read / write access to the    */
+    /* PCM device will return immediately. If SND_PCM_ASYNC is    */
+    /* specified, SIGIO will be emitted whenever a period has     */
+    /* been completely processed by the soundcard.                */
+    if ((err = snd_pcm_open(&device->pcm, device->deviceName, device->stream, device->mode)) < 0) {
+        fprintf (stderr, "cannot open audio device %s (%s)\n", device->deviceName, snd_strerror (err));
+        exit (1);
+    }
 
-But we need add some flags to ensure always use kmalloc for
-Some special use (dma etc..)
+    if ((err = snd_pcm_hw_params_malloc (&device->hwParams)) < 0) {
+        fprintf (stderr, "cannot allocate hardware parameter structure (%s)\n", snd_strerror (err));
+        exit (1);
+    }
 
-How do you think of it ?
+    if ((err = snd_pcm_hw_params_any (device->pcm, device->hwParams)) < 0) {
+        fprintf (stderr, "cannot initialize hardware parameter structure (%s)\n", snd_strerror (err));
+        exit (1);
+    }
 
-Thanks
+    if ((err = snd_pcm_hw_params_set_access (device->pcm, device->hwParams, device->access)) < 0) {
+        fprintf (stderr, "cannot set access type (%s)\n", snd_strerror (err));
+        exit (1);
+    }
+
+    if ((err = snd_pcm_hw_params_set_format (device->pcm, device->hwParams, device->format)) < 0) {
+        fprintf (stderr, "cannot set sample format (%s)\n", snd_strerror (err));
+        exit (1);
+    }
+
+    if ((err = snd_pcm_hw_params_set_buffer_time_near (device->pcm, device->hwParams, &device->bufferTime, NULL)) < 0) {
+        fprintf (stderr, "cannot set buffer size (%s)\n", snd_strerror (err));
+        exit (1);
+    } else {
+        /* Set buffer size (in frames). The resulting latency is given by */
+        /* latency = periodsize * periods / (rate * bytes_per_frame)      */
+        snd_pcm_hw_params_get_buffer_size(device->hwParams, &device->frames);
+    }
+
+    if ((err = snd_pcm_hw_params_set_period_time_near (device->pcm, device->hwParams, &device->periodTime, NULL)) < 0) {
+        fprintf (stderr, "cannot set period size (%s)\n", snd_strerror (err));
+        exit (1);
+    }
+
+    if ((err = snd_pcm_hw_params_set_rate_near (device->pcm, device->hwParams, &device->sampleRate, NULL)) < 0) {
+        fprintf (stderr, "cannot set sample rate (%s)\n", snd_strerror (err));
+        exit (1);
+    }
+
+    if ((err = snd_pcm_hw_params_set_channels (device->pcm, device->hwParams, device->channels)) < 0) {
+        fprintf (stderr, "cannot set channel count (%s)\n",     snd_strerror (err));
+        exit (1);
+    }
+
+    /* Apply HW parameter settings to */
+    /* PCM device and prepare device  */
+    if ((err = snd_pcm_hw_params (device->pcm, device->hwParams)) < 0) {
+        fprintf (stderr, "cannot set parameters (%s)\n", snd_strerror (err));
+        exit (1);
+    }
+
+    snd_pcm_hw_params_free (device->hwParams);
+
+    if ((err = snd_pcm_prepare (device->pcm)) < 0) {
+        fprintf (stderr, "cannot prepare audio interface for use (%s)\n", snd_strerror (err));
+        exit (1);
+    }
+
+    return 0;
+}
+
+Main:
+main (int argc, char *argv[])
+{
+    int i;
+    int err;
+
+    char buf[4800*4];
+
+    snd_pcm_t *capture_handle;
+    snd_pcm_hw_params_t *hw_params;
+    snd_pcm_uframes_t frames;
+
+    pcmDevice_t *pcmRecord;
+    pcmDevice_t *pcmPlayback;
+
+    pcmRecord    = initRecordDevice();
+    pcmPlayback = initPlaybackDevice();
+
+    printf("\n----------- RECORD DEVICE -----------\n");
+    setupDevice(pcmRecord);
+    showConfig(pcmRecord);
+
+    printf("\n---------- PLAYBACK DEVICE ----------\n");
+    setupDevice(pcmPlayback);
+    showConfig(pcmPlayback);
+
+    for (i = 0; i < 100; ++i) {
+        /* Read num_frames frames from the PCM device  */
+        /* pointed to by pcm_handle to buffer capdata. */
+        /* Returns the number of frames actually read. */
+        //if((err = snd_pcm_readi (pcmRecord->pcm, buf, pcmRecord->frames)) != pcmRecord->frames) {
+        if((err = snd_pcm_readi (pcmRecord->pcm, buf, 480)) != 480) {
+            fprintf (stderr, "read from audio interface failed (%s)\n", snd_strerror (err));
+            exit (1);
+        }
+
+        /* Write num_frames frames from buffer data to    */
+        /* the PCM device pointed to by pcm_handle.       */
+        /* Returns the number of frames actually written. */
+        if((err = snd_pcm_writei (pcmPlayback->pcm, buf, pcmRecord->frames)) != pcmRecord->frames) {
+            fprintf (stderr, "write to audio interface failed (%s)\n", snd_strerror (err));
+            exit (1);
+        }
+    }
+
+    snd_pcm_close (capture_handle);
+    exit (0);
+
+}?
+
+
+Best
