@@ -1,18 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 08/11] ASoC: wm8994: Use
-	SOC_ENUM_SINGLE_VIRT_DECL()
-Date: Fri, 28 Feb 2014 08:31:09 +0100
-Message-ID: <1393572672-13937-9-git-send-email-lars@metafoo.de>
-References: <1393572672-13937-1-git-send-email-lars@metafoo.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH v2 0/3] alsa-lib: Improve 2.1 surround support
+Date: Fri, 28 Feb 2014 08:57:04 +0100
+Message-ID: <1393574227-25732-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-167.synserver.de (smtp-out-127.synserver.de
- [212.40.185.127])
- by alsa0.perex.cz (Postfix) with ESMTP id 824BA265961
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 08:31:00 +0100 (CET)
-In-Reply-To: <1393572672-13937-1-git-send-email-lars@metafoo.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CDC62652DA
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 08:57:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-For the upcoming consolidation for MUXs and virtual MUXs we need to mark virtual
-enums as such.
+Thanks Takashi for your encouraging review,
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
-No changes since v1
----
- sound/soc/codecs/wm8994.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Diff since last version is only the things you remarked about in the first
+patch series.
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 699b527..79854cb 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -1344,8 +1344,7 @@ static const char *adc_mux_text[] = {
- 	"DMIC",
- };
- 
--static SOC_ENUM_SINGLE_DECL(adc_enum,
--			    0, 0, adc_mux_text);
-+static SOC_ENUM_SINGLE_VIRT_DECL(adc_enum, adc_mux_text);
- 
- static const struct snd_kcontrol_new adcl_mux =
- 	SOC_DAPM_ENUM_VIRT("ADCL Mux", adc_enum);
+ > Besides that, I find it also OK to just return the channel (>= 0) or a
+ > negative error.  But it's no big matter in which form is.
+
+This one I didn't change, just because then I would just have had to change it
+back in the second patch anyway.
+
+David Henningsson (3):
+  route: Allow chmap syntax for slave channels in ttable
+  route: Select slave chmap based on ttable information
+  conf: Allow 2.1 surround to use different number of channels
+
+ src/conf/pcm/surround21.conf |    7 +-
+ src/pcm/pcm_route.c          |  323 +++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 290 insertions(+), 40 deletions(-)
+
 -- 
-1.8.0
+1.7.9.5
