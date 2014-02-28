@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 02/39] firewire-lib: Add macros instead of
-	fixed value for AMDTP
-Date: Fri, 28 Feb 2014 12:27:15 +0900
-Message-ID: <1393558072-25926-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [GIT PULL][PATCH 00/39] Enhancement of support for
+	Firewire devices
+Date: Fri, 28 Feb 2014 12:27:13 +0900
+Message-ID: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id B40BA264F1D
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:28:00 +0100 (CET)
-In-Reply-To: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C359264F29
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:28:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,49 +23,154 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCBhZGRzIHNvbWUgbWFjcm9zIGluc3RlYWQgb2YgZml4ZWQgdmFsdWUgZm9yIEFN
-RFRQIGluIElFQyA2MTg4My02LgpUaGVzZSBtYWNyb3Mgd2lsbCBhbHNvIGJlIHVzZWQgYnkgZm9s
-bG93ZWQgcGF0Y2hlcy4KClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNo
-aUBzYWthbW9jY2hpLmpwPgotLS0KIHNvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgfCAzMCArKysrKysr
-KysrKysrKysrKysrKysrKy0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCsp
-LCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgYi9z
-b3VuZC9maXJld2lyZS9hbWR0cC5jCmluZGV4IDE2ZmU4NTguLjM4MDEzZjkgMTAwNjQ0Ci0tLSBh
-L3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKKysrIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuYwpAQCAt
-MjAsMTIgKzIwLDI4IEBACiAKICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgyZTAwIC8q
-IDQ3OS4xNyDCtXMgKi8KIAorLyogaXNvY2hyb25vdXMgaGVhZGVyIHBhcmFtZXRlcnMgKi8KKyNk
-ZWZpbmUgSVNPX0RBVEFfTEVOR1RIX1NISUZUCTE2CiAjZGVmaW5lIFRBR19DSVAJCQkxCiAKKy8q
-IGNvbW1vbiBpc29jaHJvbm91cyBwYWNrZXQgaGVhZGVyIHBhcmFtZXRlcnMgKi8KICNkZWZpbmUg
-Q0lQX0VPSAkJCSgxdSA8PCAzMSkKKyNkZWZpbmUgQ0lQX0VPSF9NQVNLCQkweDgwMDAwMDAwCiAj
-ZGVmaW5lIENJUF9GTVRfQU0JCSgweDEwIDw8IDI0KQotI2RlZmluZSBBTURUUF9GREZfQU04MjQJ
-CSgwIDw8IDE5KQotI2RlZmluZSBBTURUUF9GREZfU0ZDX1NISUZUCTE2CisjZGVmaW5lIENJUF9G
-TVRfTUFTSwkJMHgzZjAwMDAwMAorI2RlZmluZSBDSVBfU1lUX01BU0sJCTB4MDAwMGZmZmYKKyNk
-ZWZpbmUgQ0lQX1NZVF9OT19JTkZPCQkweGZmZmYKKyNkZWZpbmUgQ0lQX0ZERl9NQVNLCQkweDAw
-ZmYwMDAwCisjZGVmaW5lIENJUF9GREZfU0ZDX1NISUZUCTE2CisKKy8qCisgKiBBdWRpbyBhbmQg
-TXVzaWMgdHJhbnNmZXIgcHJvdG9jb2wgc3BlY2lmaWMgcGFyYW1ldGVycworICogb25seSAiQ2xv
-Y2stYmFzZWQgcmF0ZSBjb250cm9sIG1vZGUiIGlzIHN1cHBvcnRlZAorICovCisjZGVmaW5lIEFN
-RFRQX0ZERl9BTTgyNAkJKDAgPDwgKENJUF9GREZfU0ZDX1NISUZUICsgMykpCisjZGVmaW5lIEFN
-RFRQX0RCU19NQVNLCQkweDAwZmYwMDAwCisjZGVmaW5lIEFNRFRQX0RCU19TSElGVAkJMTYKKyNk
-ZWZpbmUgQU1EVFBfREJDX01BU0sJCTB4MDAwMDAwZmYKIAogLyogVE9ETzogbWFrZSB0aGVzZSBj
-b25maWd1cmFibGUgKi8KICNkZWZpbmUgSU5URVJSVVBUX0lOVEVSVkFMCTE2CkBAIC0yODAsOSAr
-Mjk2LDkgQEAgc3RhdGljIHVuc2lnbmVkIGludCBjYWxjdWxhdGVfc3l0KHN0cnVjdCBhbWR0cF9z
-dHJlYW0gKnMsCiAJCXN5dCA9IChjeWNsZSArIHN5dF9vZmZzZXQgLyBUSUNLU19QRVJfQ1lDTEUp
-IDw8IDEyOwogCQlzeXQgKz0gc3l0X29mZnNldCAlIFRJQ0tTX1BFUl9DWUNMRTsKIAotCQlyZXR1
-cm4gc3l0ICYgMHhmZmZmOworCQlyZXR1cm4gc3l0ICYgQ0lQX1NZVF9NQVNLOwogCX0gZWxzZSB7
-Ci0JCXJldHVybiAweGZmZmY7IC8qIG5vIGluZm8gKi8KKwkJcmV0dXJuIENJUF9TWVRfTk9fSU5G
-TzsKIAl9CiB9CiAKQEAgLTQzOCwxNyArNDU0LDE3IEBAIHN0YXRpYyB2b2lkIHF1ZXVlX291dF9w
-YWNrZXQoc3RydWN0IGFtZHRwX3N0cmVhbSAqcywgdW5zaWduZWQgaW50IGN5Y2xlKQogCXN5dCA9
-IGNhbGN1bGF0ZV9zeXQocywgY3ljbGUpOwogCWlmICghKHMtPmZsYWdzICYgQ0lQX0JMT0NLSU5H
-KSkKIAkJZGF0YV9ibG9ja3MgPSBjYWxjdWxhdGVfZGF0YV9ibG9ja3Mocyk7Ci0JZWxzZSBpZiAo
-c3l0ICE9IDB4ZmZmZikKKwllbHNlIGlmIChzeXQgIT0gQ0lQX1NZVF9OT19JTkZPKQogCQlkYXRh
-X2Jsb2NrcyA9IHMtPnN5dF9pbnRlcnZhbDsKIAllbHNlCiAJCWRhdGFfYmxvY2tzID0gMDsKIAog
-CWJ1ZmZlciA9IHMtPmJ1ZmZlci5wYWNrZXRzW2luZGV4XS5idWZmZXI7CiAJYnVmZmVyWzBdID0g
-Y3B1X3RvX2JlMzIoQUNDRVNTX09OQ0Uocy0+c291cmNlX25vZGVfaWRfZmllbGQpIHwKLQkJCQko
-cy0+ZGF0YV9ibG9ja19xdWFkbGV0cyA8PCAxNikgfAorCQkJCShzLT5kYXRhX2Jsb2NrX3F1YWRs
-ZXRzIDw8IEFNRFRQX0RCU19TSElGVCkgfAogCQkJCXMtPmRhdGFfYmxvY2tfY291bnRlcik7CiAJ
-YnVmZmVyWzFdID0gY3B1X3RvX2JlMzIoQ0lQX0VPSCB8IENJUF9GTVRfQU0gfCBBTURUUF9GREZf
-QU04MjQgfAotCQkJCShzLT5zZmMgPDwgQU1EVFBfRkRGX1NGQ19TSElGVCkgfCBzeXQpOworCQkJ
-CShzLT5zZmMgPDwgQ0lQX0ZERl9TRkNfU0hJRlQpIHwgc3l0KTsKIAlidWZmZXIgKz0gMjsKIAog
-CXBjbSA9IEFDQ0VTU19PTkNFKHMtPnBjbSk7Ci0tIAoxLjguMy4yCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+This is a pull-request of my 39 patches to enhance support for Firewire
+devices. These patches extend firewire-lib, add new drivers (fireworks/bebob).
+
+These drivers can handle playback/capture of PCM samples/MIDI messages and
+can support 70-80 models totally.
+
+These drivers are designed not to interrupt FFADO (user-land driver project)
+functionality except for playbacking/capturing.
+
+These drivers basically give no way to control device's internal mixer. For
+this purpose, users need to use applications such like
+ffado-dbus-server/ffado-mixer, or develop software to execute AV/C commands
+and device specific commands.
+
+
+Updates since RFC v3:
+[alsa-devel] [RFC v3] [PATCH 00/52] Enhancement for support of firewire devices
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071820.html 
+
+firewire-lib:
+ - improve operation for oPCR
+ - add fallbacks at transaction timeout for device's quirk
+
+fireworks:
+ - add counter to maintain streams
+ - use memdup_user() for hwdep interface
+
+bebob:
+ - add counter to maintain streams
+ - fix failure to handle bus reset
+
+----------------------------------------------------------------
+
+The following changes since commit dde9c38779c1f30253485a160facc211b20ca222:
+
+  Merge branch 'for-linus' (2014-02-27 12:46:40 +0100)
+
+are available in the git repository at:
+
+
+  https://github.com/takaswie/sound.git request
+
+for you to fetch changes up to 0ed07c65fef2f80fcfc6223b0d689fca56fa6323:
+
+  bebob: Add support for M-Audio special Firewire series (2014-02-28 11:30:52 +0900)
+
+----------------------------------------------------------------
+Takashi Sakamoto (39):
+      firewire-lib: Rename functions, structure, member for AMDTP
+      firewire-lib: Add macros instead of fixed value for AMDTP
+      firewire-lib: Add 'direction' member to 'amdtp_stream' structure
+      firewire-lib: Split some codes into functions to reuse for both streams
+      firewire-lib: Add support for AMDTP in-stream and PCM capture
+      firewire-lib: Add support for MIDI capture/playback
+      firewire-lib: Give syt value as parameter to handle_out_packet()
+      firewire-lib: Add support for duplex streams synchronization in blocking mode
+      firewire-lib: Add sort function for transmitted packet
+      firewire-lib: Add transfer delay to synchronized duplex streams
+      firewire-lib: Add support for channel mapping
+      firewire-lib: Rename macros, variables and functions for CMP
+      firewire-lib: Add 'direction' member to 'cmp_connection' structure
+      firewire-lib: Add handling output connection by CMP
+      firewire-lib: Add a new function to check others' connection
+      firewire-lib: Add some AV/C general commands
+      firewire-lib: Add quirks for Fireworks
+      firewire-lib: Add a fallback at RCODE_CANCELLED
+      fireworks: Add skelton for Fireworks based devices
+      fireworks: Add transaction and some commands
+      fireworks: Add connection and stream management
+      fireworks: Add proc interface for debugging purpose
+      fireworks: Add MIDI interface
+      fireworks: Add PCM interface
+      fireworks: Add hwdep interface
+      fireworks: Add command/response functionality into hwdep interface
+      bebob: Add skelton for BeBoB based devices
+      bebob: Add commands and connections/streams management
+      bebob: Add proc interface for debugging purpose
+      bebob: Add MIDI interface
+      bebob: Add PCM interface
+      bebob: Add hwdep interface
+      bebob: Prepare for device specific operations
+      bebob: Add support for Terratec PHASE, EWS series and Aureon
+      bebob: Add support for Yamaha GO series
+      bebob: Add support for Focusrite Saffire/SaffirePro series
+      bebob: Add support for M-Audio usual Firewire series
+      bebob: Send a cue to load firmware for M-Audio Firewire series
+      bebob: Add support for M-Audio special Firewire series
+
+ include/uapi/sound/asound.h                      |   4 +-
+ include/uapi/sound/firewire.h                    |  22 +-
+ sound/firewire/Kconfig                           |  59 ++
+ sound/firewire/Makefile                          |   2 +
+ sound/firewire/amdtp.c                           | 891 ++++++++++++++++------
+ sound/firewire/amdtp.h                           | 175 ++++-
+ sound/firewire/bebob/Makefile                    |   4 +
+ sound/firewire/bebob/bebob.c                     | 450 +++++++++++
+ sound/firewire/bebob/bebob.h                     | 262 +++++++
+ sound/firewire/bebob/bebob_command.c             | 354 +++++++++
+ sound/firewire/bebob/bebob_focusrite.c           | 289 +++++++
+ sound/firewire/bebob/bebob_hwdep.c               | 197 +++++
+ sound/firewire/bebob/bebob_maudio.c              | 922 +++++++++++++++++++++++
+ sound/firewire/bebob/bebob_midi.c                | 170 +++++
+ sound/firewire/bebob/bebob_pcm.c                 | 451 +++++++++++
+ sound/firewire/bebob/bebob_proc.c                | 179 +++++
+ sound/firewire/bebob/bebob_stream.c              | 869 +++++++++++++++++++++
+ sound/firewire/bebob/bebob_terratec.c            |  68 ++
+ sound/firewire/bebob/bebob_yamaha.c              |  50 ++
+ sound/firewire/cmp.c                             | 229 ++++--
+ sound/firewire/cmp.h                             |  14 +-
+ sound/firewire/dice.c                            |  46 +-
+ sound/firewire/fcp.c                             | 160 +++-
+ sound/firewire/fcp.h                             |  21 +
+ sound/firewire/fireworks/Makefile                |   4 +
+ sound/firewire/fireworks/fireworks.c             | 324 ++++++++
+ sound/firewire/fireworks/fireworks.h             | 223 ++++++
+ sound/firewire/fireworks/fireworks_command.c     | 397 ++++++++++
+ sound/firewire/fireworks/fireworks_hwdep.c       | 294 ++++++++
+ sound/firewire/fireworks/fireworks_midi.c        | 179 +++++
+ sound/firewire/fireworks/fireworks_pcm.c         | 477 ++++++++++++
+ sound/firewire/fireworks/fireworks_proc.c        | 208 +++++
+ sound/firewire/fireworks/fireworks_stream.c      | 337 +++++++++
+ sound/firewire/fireworks/fireworks_transaction.c | 327 ++++++++
+ sound/firewire/lib.c                             |   6 +-
+ sound/firewire/lib.h                             |   1 +
+ sound/firewire/speakers.c                        |  93 +--
+ 37 files changed, 8356 insertions(+), 402 deletions(-)
+ create mode 100644 sound/firewire/bebob/Makefile
+ create mode 100644 sound/firewire/bebob/bebob.c
+ create mode 100644 sound/firewire/bebob/bebob.h
+ create mode 100644 sound/firewire/bebob/bebob_command.c
+ create mode 100644 sound/firewire/bebob/bebob_focusrite.c
+ create mode 100644 sound/firewire/bebob/bebob_hwdep.c
+ create mode 100644 sound/firewire/bebob/bebob_maudio.c
+ create mode 100644 sound/firewire/bebob/bebob_midi.c
+ create mode 100644 sound/firewire/bebob/bebob_pcm.c
+ create mode 100644 sound/firewire/bebob/bebob_proc.c
+ create mode 100644 sound/firewire/bebob/bebob_stream.c
+ create mode 100644 sound/firewire/bebob/bebob_terratec.c
+ create mode 100644 sound/firewire/bebob/bebob_yamaha.c
+ create mode 100644 sound/firewire/fireworks/Makefile
+ create mode 100644 sound/firewire/fireworks/fireworks.c
+ create mode 100644 sound/firewire/fireworks/fireworks.h
+ create mode 100644 sound/firewire/fireworks/fireworks_command.c
+ create mode 100644 sound/firewire/fireworks/fireworks_hwdep.c
+ create mode 100644 sound/firewire/fireworks/fireworks_midi.c
+ create mode 100644 sound/firewire/fireworks/fireworks_pcm.c
+ create mode 100644 sound/firewire/fireworks/fireworks_proc.c
+ create mode 100644 sound/firewire/fireworks/fireworks_stream.c
+ create mode 100644 sound/firewire/fireworks/fireworks_transaction.c
+-- 
+1.8.3.2
