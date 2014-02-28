@@ -1,20 +1,12 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 19/39] fireworks: Add skelton for Fireworks
- based devices
-Date: Sat, 01 Mar 2014 00:36:50 +0900
-Message-ID: <5310AD12.9080503@sakamocchi.jp>
-References: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
- <1393558072-25926-20-git-send-email-o-takashi@sakamocchi.jp>
- <s5h7g8fn30m.wl%tiwai@suse.de> <5310A5C6.2060602@sakamocchi.jp>
- <s5hfvn3b7d1.wl%tiwai@suse.de>
+From: "Corfu, ValentinX" <valentinx.corfu@intel.com>
+Subject: [alsa-plugins] [PATCH 1/1] Allow number of channels
+Date: Fri, 28 Feb 2014 16:24:47 +0000
+Message-ID: <9900E8BE2ADAAB43B2A4471493EDB7F94B3F8B@IRSMSX104.ger.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3F8BIRSMSX104gercorpi_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 762C02652B7
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 16:36:54 +0100 (CET)
-In-Reply-To: <s5hfvn3b7d1.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,23 +16,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: "patch@alsa-project.org" <patch@alsa-project.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Trandafir,
+ IonutX" <ionutx.trandafir@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Iwai-san,
-
-(Mar 01 2014 00:10), Takashi Iwai wrote:
-> Just take a look at linux/bitmap.h :)
-
-OK. Now I get what you mean.
-
-I seek some examples under /sound but there are no drivers which uses 
-bitmap functions for this purpose. I guess we probably need further work 
-for this, to prevent from buffer over run under CONFIG_SND_MAX_CARDS > 32.
+--_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3F8BIRSMSX104gercorpi_
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 
 
-Thanks
+Intel GmbH
+Dornacher Strasse 1
+85622 Feldkirchen/Muenchen, Deutschland
+Sitz der Gesellschaft: Feldkirchen bei Muenchen
+Geschaeftsfuehrer: Christian Lamprechter, Hannes Schwaderer, Douglas Lusk
+Registergericht: Muenchen HRB 47456
+Ust.-IdNr./VAT Registration No.: DE129385895
+Citibank Frankfurt a.M. (BLZ 502 109 00) 600119052
 
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+--_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3F8BIRSMSX104gercorpi_
+Content-Type: text/x-patch; name="0001-Allow-number-of-channels.patch"
+Content-Description: 0001-Allow-number-of-channels.patch
+Content-Disposition: attachment;
+	filename="0001-Allow-number-of-channels.patch"; size=2517;
+	creation-date="Fri, 28 Feb 2014 16:24:33 GMT";
+	modification-date="Fri, 28 Feb 2014 16:24:33 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSBmODBkNTY2NWZkYzFjNWM0MmYyNjE2ZWFjYmU1NDhjMWQwZTdhYmE2IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBWYWxlbnRpbiBDb3JmdSA8dmFsZW50aW54LmNvcmZ1QGludGVs
+LmNvbT4KRGF0ZTogRnJpLCAyOCBGZWIgMjAxNCAxMDoyOTowMSAtMDUwMApTdWJqZWN0OiBbUEFU
+Q0hdIEFsbG93IG51bWJlciBvZiBjaGFubmVscwoKVGhlIG1vZGlmaWNhdGlvbiBhbGxvd3MgdG8g
+c3BlY2lmeSB0aGUgbnVtYmVyIG9mIGNoYW5uZWxzIGFzIHBhcmFtZXRlcnMKaW4gdGhlIGNvbmZp
+Z3VyYXRpb24gZmlsZS4gVGhlIGdpdmVuIG51bWJlciBvZiBjaGFubmVscyBhcmUgdGhlbiBjcmVh
+dGVkCmJ1dCBub3QgY29ubmVjdGVkCgpTaWduZWQtb2ZmLWJ5OiBWYWxlbnRpbiBDb3JmdSA8dmFs
+ZW50aW54LmNvcmZ1QGludGVsLmNvbT4KCmRpZmYgLS1naXQgYS9qYWNrL3BjbV9qYWNrLmMgYi9q
+YWNrL3BjbV9qYWNrLmMKaW5kZXggNDIxMzcwOC4uMDU5YzYwZCAxMDA2NDQKLS0tIGEvamFjay9w
+Y21famFjay5jCisrKyBiL2phY2svcGNtX2phY2suYwpAQCAtMzI1LDcgKzMyNSw3IEBAIHN0YXRp
+YyBpbnQgbWFrZV9ub25ibG9jayhpbnQgZmQpCiBzdGF0aWMgaW50IHNuZF9wY21famFja19vcGVu
+KHNuZF9wY21fdCAqKnBjbXAsIGNvbnN0IGNoYXIgKm5hbWUsCiAJCQkgICAgIHNuZF9jb25maWdf
+dCAqcGxheWJhY2tfY29uZiwKIAkJCSAgICAgc25kX2NvbmZpZ190ICpjYXB0dXJlX2NvbmYsCi0J
+CQkgICAgIHNuZF9wY21fc3RyZWFtX3Qgc3RyZWFtLCBpbnQgbW9kZSkKKwkJCSAgICAgc25kX3Bj
+bV9zdHJlYW1fdCBzdHJlYW0sIGludCBtb2RlLCB1bnNpZ25lZCBpbnQgbnVtX2NoYW5uZWxzKQog
+ewogCXNuZF9wY21famFja190ICpqYWNrOwogCWludCBlcnI7CkBAIC0zNDEsMTEgKzM0MSwyMSBA
+QCBzdGF0aWMgaW50IHNuZF9wY21famFja19vcGVuKHNuZF9wY21fdCAqKnBjbXAsIGNvbnN0IGNo
+YXIgKm5hbWUsCiAJamFjay0+ZmQgPSAtMTsKIAlqYWNrLT5pby5wb2xsX2ZkID0gLTE7CiAKLQll
+cnIgPSBwYXJzZV9wb3J0cyhqYWNrLCBzdHJlYW0gPT0gU05EX1BDTV9TVFJFQU1fUExBWUJBQ0sg
+PwotCQkJICBwbGF5YmFja19jb25mIDogY2FwdHVyZV9jb25mKTsKLQlpZiAoZXJyKSB7Ci0JCXNu
+ZF9wY21famFja19mcmVlKGphY2spOwotCQlyZXR1cm4gZXJyOworCWlmIChudW1fY2hhbm5lbHMg
+PiAwKSB7CisJCWphY2stPm51bV9wb3J0cyA9IG51bV9jaGFubmVsczsKKwkJamFjay0+cG9ydF9u
+YW1lcyA9IGNhbGxvYyhudW1fY2hhbm5lbHMsIHNpemVvZihjaGFyKikpOworCQlpZiAoamFjay0+
+cG9ydF9uYW1lcyA9PSBOVUxMKSB7CisJCQlzbmRfcGNtX2phY2tfZnJlZShqYWNrKTsKKwkJCXJl
+dHVybiAtRU5PTUVNOworCQl9CisJfQorCWVsc2UgeworCQllcnIgPSBwYXJzZV9wb3J0cyhqYWNr
+LCBzdHJlYW0gPT0gU05EX1BDTV9TVFJFQU1fUExBWUJBQ0sgPworCQkJCXBsYXliYWNrX2NvbmYg
+OiBjYXB0dXJlX2NvbmYpOworCQlpZiAoZXJyKSB7CisJCQlzbmRfcGNtX2phY2tfZnJlZShqYWNr
+KTsKKwkJCXJldHVybiBlcnI7CisJCX0KIAl9CiAKIAlqYWNrLT5jaGFubmVscyA9IGphY2stPm51
+bV9wb3J0czsKQEAgLTQyMiw2ICs0MzIsNyBAQCBTTkRfUENNX1BMVUdJTl9ERUZJTkVfRlVOQyhq
+YWNrKQogCXNuZF9jb25maWdfdCAqcGxheWJhY2tfY29uZiA9IE5VTEw7CiAJc25kX2NvbmZpZ190
+ICpjYXB0dXJlX2NvbmYgPSBOVUxMOwogCWludCBlcnI7CisJdW5zaWduZWQgaW50IG51bV9jaGFu
+bmVscyA9IDA7CiAJCiAJc25kX2NvbmZpZ19mb3JfZWFjaChpLCBuZXh0LCBjb25mKSB7CiAJCXNu
+ZF9jb25maWdfdCAqbiA9IHNuZF9jb25maWdfaXRlcmF0b3JfZW50cnkoaSk7CkBAIC00MzQsNiAr
+NDQ1LDEwIEBAIFNORF9QQ01fUExVR0lOX0RFRklORV9GVU5DKGphY2spCiAJCQlzbmRfY29uZmln
+X2dldF9zdHJpbmcobiwgJm5hbWUpOwogCQkJY29udGludWU7CiAJCX0KKwkJaWYgKHN0cmNtcChp
+ZCwgImNoYW5uZWxzIikgPT0gMCkgeworCQkJc25kX2NvbmZpZ19nZXRfaW50ZWdlcihuLCAmbnVt
+X2NoYW5uZWxzKTsKKwkJCWNvbnRpbnVlOworCQl9CiAJCWlmIChzdHJjbXAoaWQsICJwbGF5YmFj
+a19wb3J0cyIpID09IDApIHsKIAkJCWlmIChzbmRfY29uZmlnX2dldF90eXBlKG4pICE9IFNORF9D
+T05GSUdfVFlQRV9DT01QT1VORCkgewogCQkJCVNOREVSUigiSW52YWxpZCB0eXBlIGZvciAlcyIs
+IGlkKTsKQEAgLTQ1NCw3ICs0NjksNyBAQCBTTkRfUENNX1BMVUdJTl9ERUZJTkVfRlVOQyhqYWNr
+KQogCQlyZXR1cm4gLUVJTlZBTDsKIAl9CiAKLQllcnIgPSBzbmRfcGNtX2phY2tfb3BlbihwY21w
+LCBuYW1lLCBwbGF5YmFja19jb25mLCBjYXB0dXJlX2NvbmYsIHN0cmVhbSwgbW9kZSk7CisJZXJy
+ID0gc25kX3BjbV9qYWNrX29wZW4ocGNtcCwgbmFtZSwgcGxheWJhY2tfY29uZiwgY2FwdHVyZV9j
+b25mLCBzdHJlYW0sIG1vZGUsIG51bV9jaGFubmVscyk7CiAKIAlyZXR1cm4gZXJyOwogfQotLSAK
+MS44LjEuNAoK
+
+--_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3F8BIRSMSX104gercorpi_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_002_9900E8BE2ADAAB43B2A4471493EDB7F94B3F8BIRSMSX104gercorpi_--
