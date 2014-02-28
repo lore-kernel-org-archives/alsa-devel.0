@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 13/39] firewire-lib: Add 'direction' member to
-	'cmp_connection' structure
-Date: Fri, 28 Feb 2014 12:27:26 +0900
-Message-ID: <1393558072-25926-14-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 14/39] firewire-lib: Add handling output
+	connection by CMP
+Date: Fri, 28 Feb 2014 12:27:27 +0900
+Message-ID: <1393558072-25926-15-git-send-email-o-takashi@sakamocchi.jp>
 References: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BE84265071
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:28:15 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B58A265090
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:28:17 +0100 (CET)
 In-Reply-To: <1393558072-25926-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,85 +25,179 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds 'direction' member to 'cmp_connection' structure to indicate
-the direction of connection. This patch also adds 'direction' argument to
-cmp_connection_init() function to determine the direction.
-
-The cmp_connection_init() function is exported and used in snd-firewire-speakers
-so this patch also affect it.
-
-This patch just add them. Actual implementation will be done by followed
-patches.
+This patch adds some macros, codes with condition of direction and new functions
+to handle output connection. Once cmp_connection_init() is executed with its
+direction, CMP input and output connection can be handled by the same way.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/cmp.c      | 3 ++-
- sound/firewire/cmp.h      | 7 +++++++
- sound/firewire/speakers.c | 2 +-
- 3 files changed, 10 insertions(+), 2 deletions(-)
+ sound/firewire/cmp.c | 102 ++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 93 insertions(+), 9 deletions(-)
 
 diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
-index 17ad4f2..c7f7a31 100644
+index c7f7a31..60d2e17 100644
 --- a/sound/firewire/cmp.c
 +++ b/sound/firewire/cmp.c
-@@ -94,6 +94,7 @@ static int pcr_modify(struct cmp_connection *c,
-  */
- int cmp_connection_init(struct cmp_connection *c,
- 			struct fw_unit *unit,
-+			enum cmp_direction direction,
- 			unsigned int pcr_index)
- {
- 	__be32 mpr_be;
-@@ -153,7 +154,7 @@ static __be32 ipcr_set_modify(struct cmp_connection *c, __be32 ipcr)
+@@ -29,6 +29,14 @@
+ #define PCR_CHANNEL_MASK	0x003f0000
+ #define PCR_CHANNEL_SHIFT	16
+ 
++/* oPCR specific fields */
++#define OPCR_XSPEED_MASK	0x00C00000
++#define OPCR_XSPEED_SHIFT	22
++#define OPCR_SPEED_MASK		0x0000C000
++#define OPCR_SPEED_SHIFT	14
++#define OPCR_OVERHEAD_ID_MASK	0x00003C00
++#define OPCR_OVERHEAD_ID_SHIFT	10
++
+ enum bus_reset_handling {
+ 	ABORT_ON_BUS_RESET,
+ 	SUCCEED_ON_BUS_RESET,
+@@ -41,10 +49,30 @@ void cmp_error(struct cmp_connection *c, const char *fmt, ...)
+ 
+ 	va_start(va, fmt);
+ 	dev_err(&c->resources.unit->device, "%cPCR%u: %pV",
+-		'i', c->pcr_index, &(struct va_format){ fmt, &va });
++		(c->direction == CMP_INPUT) ? 'i' : 'o',
++		c->pcr_index, &(struct va_format){ fmt, &va });
+ 	va_end(va);
+ }
+ 
++static unsigned long long get_offset(struct cmp_connection *c, bool master)
++{
++	unsigned long long offset = CSR_REGISTER_BASE;
++
++	if (!master) {
++		if (c->direction == CMP_INPUT)
++			offset += CSR_IPCR(c->pcr_index);
++		else
++			offset += CSR_OPCR(c->pcr_index);
++	} else {
++		if (c->direction == CMP_INPUT)
++			offset += CSR_IMPR;
++		else
++			offset += CSR_OMPR;
++	}
++
++	return offset;
++}
++
+ static int pcr_modify(struct cmp_connection *c,
+ 		      __be32 (*modify)(struct cmp_connection *c, __be32 old),
+ 		      int (*check)(struct cmp_connection *c, __be32 pcr),
+@@ -60,8 +88,7 @@ static int pcr_modify(struct cmp_connection *c,
+ 
+ 		err = snd_fw_transaction(
+ 				c->resources.unit, TCODE_LOCK_COMPARE_SWAP,
+-				CSR_REGISTER_BASE + CSR_IPCR(c->pcr_index),
+-				buffer, 8,
++				get_offset(c, false), buffer, 8,
+ 				FW_FIXED_GENERATION | c->resources.generation);
+ 
+ 		if (err < 0) {
+@@ -102,8 +129,7 @@ int cmp_connection_init(struct cmp_connection *c,
+ 	int err;
+ 
+ 	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
+-				 CSR_REGISTER_BASE + CSR_IMPR,
+-				 &mpr_be, 4, 0);
++				 get_offset(c, true), &mpr_be, 4, 0);
+ 	if (err < 0)
+ 		return err;
+ 	mpr = be32_to_cpu(mpr_be);
+@@ -122,6 +148,7 @@ int cmp_connection_init(struct cmp_connection *c,
+ 	c->max_speed = (mpr & MPR_SPEED_MASK) >> MPR_SPEED_SHIFT;
+ 	if (c->max_speed == SCODE_BETA)
+ 		c->max_speed += (mpr & MPR_XSPEED_MASK) >> MPR_XSPEED_SHIFT;
++	c->direction = direction;
+ 
+ 	return 0;
+ }
+@@ -151,6 +178,53 @@ static __be32 ipcr_set_modify(struct cmp_connection *c, __be32 ipcr)
+ 	return ipcr;
+ }
+ 
++static int get_overhead_id(struct cmp_connection *c)
++{
++	int id;
++
++	/*
++	 * apply "oPCR overhead ID encoding"
++	 * the encoding table can convert up to 512.
++	 * here the value over 512 is converted as the same way as 512.
++	 */
++	for (id = 1; id < 16; id++) {
++		if (c->resources.bandwidth_overhead < (id << 5))
++			break;
++	}
++	if (id == 16)
++		id = 0;
++
++	return id;
++}
++
++static __be32 opcr_set_modify(struct cmp_connection *c, __be32 opcr)
++{
++	unsigned int spd, xspd;
++
++	/* generate speed and extended speed field value */
++	if (c->speed > SCODE_400) {
++		spd  = SCODE_800;
++		xspd = c->speed - SCODE_800;
++	} else {
++		spd = c->speed;
++		xspd = 0;
++	}
++
++	opcr &= ~cpu_to_be32(PCR_BCAST_CONN |
++			     PCR_P2P_CONN_MASK |
++			     OPCR_XSPEED_MASK |
++			     PCR_CHANNEL_MASK |
++			     OPCR_SPEED_MASK |
++			     OPCR_OVERHEAD_ID_MASK);
++	opcr |= cpu_to_be32(1 << PCR_P2P_CONN_SHIFT);
++	opcr |= cpu_to_be32(xspd << OPCR_XSPEED_SHIFT);
++	opcr |= cpu_to_be32(c->resources.channel << PCR_CHANNEL_SHIFT);
++	opcr |= cpu_to_be32(spd << OPCR_SPEED_SHIFT);
++	opcr |= cpu_to_be32(get_overhead_id(c) << OPCR_OVERHEAD_ID_SHIFT);
++
++	return opcr;
++}
++
  static int pcr_set_check(struct cmp_connection *c, __be32 pcr)
  {
  	if (pcr & cpu_to_be32(PCR_BCAST_CONN |
--			       PCR_P2P_CONN_MASK)) {
-+			      PCR_P2P_CONN_MASK)) {
- 		cmp_error(c, "plug is already in use\n");
- 		return -EBUSY;
- 	}
-diff --git a/sound/firewire/cmp.h b/sound/firewire/cmp.h
-index 2320cd4..9b58448 100644
---- a/sound/firewire/cmp.h
-+++ b/sound/firewire/cmp.h
-@@ -7,6 +7,11 @@
- 
- struct fw_unit;
- 
-+enum cmp_direction {
-+	CMP_INPUT = 0,
-+	CMP_OUTPUT,
-+};
-+
- /**
-  * struct cmp_connection - manages an isochronous connection to a device
-  * @speed: the connection's actual speed
-@@ -26,10 +31,12 @@ struct cmp_connection {
- 	__be32 last_pcr_value;
- 	unsigned int pcr_index;
- 	unsigned int max_speed;
-+	enum cmp_direction direction;
- };
- 
- int cmp_connection_init(struct cmp_connection *connection,
- 			struct fw_unit *unit,
-+			enum cmp_direction direction,
- 			unsigned int pcr_index);
- void cmp_connection_destroy(struct cmp_connection *connection);
- 
-diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
-index c07e7cd..4a9b48b 100644
---- a/sound/firewire/speakers.c
-+++ b/sound/firewire/speakers.c
-@@ -679,7 +679,7 @@ static int fwspk_probe(struct fw_unit *unit,
- 	fwspk->unit = fw_unit_get(unit);
- 	fwspk->device_info = (const struct device_info *)id->driver_data;
- 
--	err = cmp_connection_init(&fwspk->connection, unit, 0);
-+	err = cmp_connection_init(&fwspk->connection, unit, CMP_INPUT, 0);
+@@ -196,8 +270,13 @@ retry_after_bus_reset:
  	if (err < 0)
- 		goto err_unit;
+ 		goto err_mutex;
+ 
+-	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+-			 ABORT_ON_BUS_RESET);
++	if (c->direction == CMP_OUTPUT)
++		err = pcr_modify(c, opcr_set_modify, pcr_set_check,
++				 ABORT_ON_BUS_RESET);
++	else
++		err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
++				 ABORT_ON_BUS_RESET);
++
+ 	if (err == -EAGAIN) {
+ 		fw_iso_resources_free(&c->resources);
+ 		goto retry_after_bus_reset;
+@@ -245,8 +324,13 @@ int cmp_connection_update(struct cmp_connection *c)
+ 	if (err < 0)
+ 		goto err_unconnect;
+ 
+-	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+-			 SUCCEED_ON_BUS_RESET);
++	if (c->direction == CMP_OUTPUT)
++		err = pcr_modify(c, opcr_set_modify, pcr_set_check,
++				 SUCCEED_ON_BUS_RESET);
++	else
++		err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
++				 SUCCEED_ON_BUS_RESET);
++
+ 	if (err < 0)
+ 		goto err_resources;
  
 -- 
 1.8.3.2
