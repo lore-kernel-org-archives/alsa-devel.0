@@ -1,20 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: simple-card: cpu_dai_name creates
- confusion when DT case
-Date: Fri, 28 Feb 2014 12:53:57 +0900
-Message-ID: <20140228035357.GL9383@sirena.org.uk>
-References: <87eh2r9169.wl%kuninori.morimoto.gx@gmail.com>
- <20140227050726.GR9383@sirena.org.uk>
- <87ios0etzw.wl%kuninori.morimoto.gx@gmail.com>
- <87ppm87z3i.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: Add driver for CLPS711X DAI
+	interface
+Date: Fri, 28 Feb 2014 12:57:44 +0900
+Message-ID: <20140228035744.GM9383@sirena.org.uk>
+References: <1393430741-16272-1-git-send-email-shc_work@mail.ru>
+ <1393430741-16272-2-git-send-email-shc_work@mail.ru>
+ <20140227034430.GB9383@sirena.org.uk>
+ <1393485447.431844445@f286.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6926004132303644987=="
+Content-Type: multipart/mixed; boundary="===============2207468952414369627=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BDEC926592E
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:54:00 +0100 (CET)
-In-Reply-To: <87ppm87z3i.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A006264F53
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 04:57:49 +0100 (CET)
+In-Reply-To: <1393485447.431844445@f286.i.mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,62 +24,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Olof Johansson <olof@lixom.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6926004132303644987==
+--===============2207468952414369627==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="waoCbV9fObw3XsrB"
+	protocol="application/pgp-signature"; boundary="xrRZJmfMt0dTT4Ad"
 Content-Disposition: inline
 
 
---waoCbV9fObw3XsrB
-Content-Type: text/plain; charset=us-ascii
+--xrRZJmfMt0dTT4Ad
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 27, 2014 at 06:25:24PM -0800, Kuninori Morimoto wrote:
+On Thu, Feb 27, 2014 at 11:17:27AM +0400, Alexander Shiyan wrote:
+> =D0=A7=D0=B5=D1=82=D0=B2=D0=B5=D1=80=D0=B3, 27 =D1=84=D0=B5=D0=B2=D1=80=
+=D0=B0=D0=BB=D1=8F 2014, 12:44 +09:00 =D0=BE=D1=82 Mark Brown <broonie@kern=
+el.org>:
 
-> +	 * see
-> +	 *	fmt_single_name()
-> +	 *	fmt_multiple_name()
-> +	 */
-> +	dai_link->cpu_dai_name = NULL;
-> +
+> > I'm wondering if the FIQ code can be shared with the i.MX FIQ code?  Not
+> > something that should block merging but it seems like it might be
+> > helpful for other platforms that need to use FIQ support.
 
-Why do this by overwriting rather than at the point where the variable
-gets assigned?
+> This FIQ implementation and i.MX FIQ is totally different.
+> I am fully confident that we can not use any common features/calls.
 
---waoCbV9fObw3XsrB
+The timer stuff looked a bit familiar...
+
+> > > +#if defined(CONFIG_SND_CLPS711X_SOC_MODULE)
+> > > +irqreturn_t no_action(int irq, void *dev_id)
+> > > +{
+> > > +	return IRQ_NONE;
+> > > +}
+> > > +#endif
+
+> > Eh?  Waht's this about?
+
+> In case using this driver as non-module, "no_action" handler is used
+> from kernel/irq/handle.c, but since it is not exported it cannot be used
+> in module case.
+> I'll remade this to use own empty handler always.
+
+Please don't do this, fix the problem properly (for example by exporting
+it if that's the sensible thing to do).
+
+--xrRZJmfMt0dTT4Ad
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTEAhSAAoJELSic+t+oim9AuIP+gMQh0LnUNTtKPp01SZWd7t4
-yKgIv3TcaHKVk86y3x3RxUa3inKuJXFplCMMInBs8LaeaVHo2Wb/7hZn8aWcXf1F
-EOeWtdS3THLFNgKAhNN7OBIDu5Qb34fNDbTG62KiV9ngh1fHrUqnfQtIJn4hBlEb
-7Xtnvtt18rzaTUCQDb3qjQWBduNeLemayRUnU+37dHSBF3SuMN6BX5CBrsOHHWwH
-ylfsGMeR4DQiKCFMogY+j8Er79hwRPZrKhmOdU+TVFelO6HNyqLGXKqCfpuACxkw
-s9hAY8mxsq12/UwQfleE4mslu0cf9Z29OfU2mus+HcHwVbXrIA3te0nyg6O35p3V
-N8QRwVunjcsWrnd2EK5FtVd0W1WV0Uo4BsYtH6GI2RxFICcUA74UI5M+HyY3b9my
-7QF3LkEVYMh4vZhM/PiKNvwd5XWjBhdqugm7miAsC4eFJXAo+mOhfwTluxdui2O5
-kBuUOkxg9uz7lZ259xv3KNeiglQ5w4uFzh0cm2pBBn0Ji7zSyPSGfnY5OGokliER
-I33FBVv6T08ZNUtdHKAF7ipByYCIFRyfP0D6vn+V84nlk3XIfQQL6veWCWg84QBo
-ACmOt4PkcVZ3VlyT8A+Ob3RNmcR+1bFtCPAhyTKBcRp81er1mpKoIErvtCj8JM86
-auZsSfb+mHMQDg9/DYG7
-=pLB9
+iQIcBAEBAgAGBQJTEAk0AAoJELSic+t+oim9cbEP/RIJbZP6u/YCc+rb8aD5ytbJ
+EszJR/NEBfQApT08SHlNiIKUa6Bj50DLk8UZYwymtLW0OqVeu66+Hf5VkoQxFe3I
+tNlpmOlLGTvGaGmIQU27eh5vZMtcZWyaW1kV7qFfyowMlRsndthHi3hlWcoDfPs2
+yIyuYeqTJtIr01L4rrcVncPz5WlZG2NzVQsJIV6uG2sKRfFRg1CUMNXgFIJneZaI
+8TW5J6eZmG8Cr/S8RoCWZl3t06G/mPbtAnnFTarmJBc4jJPTM0R+xdYJfgV9qMyi
+TrOd07yp6WI/zYkI0pGZu3PIFkFyPrhN9HcjL2f1ZsDtEL/ylYAf+OOIx/PM9dV9
+WV6jCOx7ElpeIb0Tcht8kNHAE0cT++MvCzlCW6CVEFD3xV74moY304b8svPbG2Jl
+0v99hfdxWmMH9zl41Q0AK/5zO2U9XvPK7B5EVe1HcYU7W6rmCMwqfuulwT/6AV5V
+Fk27El/Ew9dG4Jt1UfL25zXKcaAwBbdu4PXetuRAaaJI0UBnZAsUvjEFLu6Xutrx
+txtCRN1S8PHc/Y9R6Hao6ochbMe9DvvcJrW6Bot/+LgeRgCGiN3sAZtI0qq6/gbk
+GsbB9uhmQhiclnUtblUCSNnoKqsW1bsNU+q0rA9SDGOZxpCGVXxvEP9s6irQcyno
+mV0TmcxBkn+JuZu6MYm9
+=a0n1
 -----END PGP SIGNATURE-----
 
---waoCbV9fObw3XsrB--
+--xrRZJmfMt0dTT4Ad--
 
---===============6926004132303644987==
+--===============2207468952414369627==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6926004132303644987==--
+--===============2207468952414369627==--
