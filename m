@@ -1,9 +1,15 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-From: erik@caspar.alsa-project.org
-Date: Sat, 22 Feb 2014 16:09:57 -0800
-Message-Id: <1393114197-4581-1-git-send-email-erik>
-Subject: [alsa-devel] [PATCH - speaker-test 1/1] speaker-test: add
-	--force-frequency option to allow hz outside range
+Received: from cnbjrel01.sonyericsson.com (cnbjrel01.sonyericsson.com
+ [219.141.167.165])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88B1A26512B
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 09:15:29 +0100 (CET)
+From: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
+Date: Fri, 28 Feb 2014 16:15:23 +0800
+Message-ID: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
+Content-Language: en-US
+MIME-Version: 1.0
+Subject: [alsa-devel] change kmalloc into vmalloc for large memory
+	allocations
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -11,89 +17,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Erik Ackermann <domohawk@gmail.com>
+To: "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>, "'linux-arm-msm@vger.kernel.org'" <linux-arm-msm@vger.kernel.org>, "'linux-arm-kernel@lists.infradead.org'" <linux-arm-kernel@lists.infradead.org>, "'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>, "'balbi@ti.com'" <balbi@ti.com>, "'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>, "'lrg@ti.com'" <lrg@ti.com>, "'broonie@opensource.wolfsonmicro.com'" <broonie@opensource.wolfsonmicro.com>, "'perex@perex.cz'" <perex@perex.cz>, "'tiwai@suse.de'" <tiwai@suse.de>, "'pablo@netfilter.org'" <pablo@netfilter.org>, "'kaber@trash.net'" <kaber@trash.net>, "'davem@davemloft.net'" <davem@davemloft.net>, "'rostedt@goodmis.org'" <rostedt@goodmis.org>, "'fweisbec@gmail.com'" <fweisbec@gmail.com>, "'mingo@redhat.com'" <mingo@redhat.com>, "'dmitry.torokhov@gmail.com'" <dmitry.torokhov@gmail.com>, "'rydberg@euromail.se'" <rydberg@euromail.se>, "'linux-usb@vger.kernel.org'" <linux-usb@vger.kernel.org>"'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'netfilter-devel@vger.kernel.org'" <netfilter-devel@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, "'coreteam@netfilter.org'" <coreteam@netfilter.org>, "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>"'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>
 List-ID: <alsa-devel@alsa-project.org>
 
-From: Erik Ackermann <domohawk@gmail.com>
+Hi 
 
-Signed-off-by: Erik Ackermann <domohawk@gmail.com>
 
-diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
-index 261f399..22927f2 100644
---- a/speaker-test/speaker-test.c
-+++ b/speaker-test/speaker-test.c
-@@ -106,6 +106,7 @@ static snd_pcm_uframes_t  period_size;
- static const char *given_test_wav_file = NULL;
- static char *wav_file_dir = SOUNDSDIR;
- static int debug = 0;
-+static int force_frequency = 0;
- static int in_aborting = 0;
- static snd_pcm_t *pcm_handle = NULL;
- 
-@@ -1015,6 +1016,7 @@ static void help(void)
- 	   "-w,--wavfile	Use the given WAV file as a test sound\n"
- 	   "-W,--wavdir	Specify the directory containing WAV files\n"
- 	   "-m,--chmap	Specify the channel map to override\n"
-+	   "-X,--force-frequency	force frequencies outside the 30-5000hz range\n"
- 	   "\n"));
-   printf(_("Recognized sample formats are:"));
-   for (fmt = supported_formats; *fmt >= 0; fmt++) {
-@@ -1057,6 +1059,7 @@ int main(int argc, char *argv[]) {
-     {"wavfile",   1, NULL, 'w'},
-     {"wavdir",    1, NULL, 'W'},
-     {"debug",	  0, NULL, 'd'},
-+    {"force-frequncy",	  1, NULL, 'X'},
- #ifdef CONFIG_SUPPORT_CHMAP
-     {"chmap",	  1, NULL, 'm'},
- #endif
-@@ -1078,7 +1081,7 @@ int main(int argc, char *argv[]) {
-   while (1) {
-     int c;
-     
--    if ((c = getopt_long(argc, argv, "hD:r:c:f:F:b:p:P:t:l:s:w:W:d"
-+    if ((c = getopt_long(argc, argv, "hD:r:c:f:F:b:p:P:t:l:s:w:W:d:X"
- #ifdef CONFIG_SUPPORT_CHMAP
- 			 "m:"
- #endif
-@@ -1114,8 +1117,6 @@ int main(int argc, char *argv[]) {
-       break;
-     case 'f':
-       freq = atof(optarg);
--      freq = freq < 30.0 ? 30.0 : freq;
--      freq = freq > 5000.0 ? 5000.0 : freq;
-       break;
-     case 'b':
-       buffer_time = atoi(optarg);
-@@ -1173,6 +1174,9 @@ int main(int argc, char *argv[]) {
-     case 'd':
-       debug = 1;
-       break;
-+    case 'X':
-+      force_frequency = 1;
-+      break;
- #ifdef CONFIG_SUPPORT_CHMAP
-     case 'm':
-       chmap = optarg;
-@@ -1190,6 +1194,11 @@ int main(int argc, char *argv[]) {
-     exit(EXIT_SUCCESS);
-   }
- 
-+  if (!force_frequency) {
-+    freq = freq < 30.0 ? 30.0 : freq;
-+    freq = freq > 5000.0 ? 5000.0 : freq;
-+  }
-+
-   if (test_type == TEST_WAV)
-     format = SND_PCM_FORMAT_S16_LE; /* fixed format */
- 
--- 
-1.8.3.2
+I find there is some drivers use kmalloc to allocate large 
+Memorys during module_init,  some can be changed to use vmalloc
+To save some low mem, I add log in kernel to track ,
+And list them here:
+
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/drivers/usb/gadget/f_mass_storage.c?h=master#n2724
+
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/sound/soc/soc-core.c?h=master#n3772
+
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_ftp.c?h=master#n603
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_h323_main.c?h=master#n1849
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_irc.c?h=master#n247
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_sane.c?h=master#n195
+
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/drivers/input/evdev.c?h=master#n403
+
+
+they allocate large memory from 10k~64K , 
+this will use lots of low mem, instead if we use 
+vmalloc for these drivers , it will be good for some devices
+like smart phone, we often encounter some errors like kmalloc failed 
+because there is not enough low mem , especially when the device has physical 
+memory less than 1GB .
+
+
+could this module change the memory allocation into vmalloc ?
+
+I was thinking that if we can introduce a helper function in kmalloc.h like this :
+
+Kmalloc(size, flags)
+{
+	If (size > PAGE_SIZE && flags&CAN_USE_VMALLOC_FLAG)
+		return vmalloc(size);
+	Else
+		return real_kmalloc(size);
+}
+
+Kfree(ptr)
+{
+	If (is_vmalloc_addr(ptr))
+		Vfree(ptr);
+	Else
+		Kfree(ptr);
+}
+
+
+But we need add some flags to ensure always use kmalloc for
+Some special use (dma etc..)
+
+How do you think of it ?
+
+Thanks
+
+
 
 _______________________________________________
 Alsa-devel mailing list
