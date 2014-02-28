@@ -1,51 +1,58 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: Re: [PATCH 14/28] Remove MACH_SMDKC210
-Date: Fri, 28 Feb 2014 22:43:09 +0100
-Message-ID: <1393623789.4052.17.camel@x220>
-References: <1391971686-9517-1-git-send-email-richard@nod.at>
-	 <1391971686-9517-15-git-send-email-richard@nod.at>
-	 <20140210114154.GQ1757@sirena.org.uk> <1392039072.3585.15.camel@x220>
-	 <20140210141255.GI1757@sirena.org.uk> <1392046242.3585.41.camel@x220>
-	 <20140210163621.GA13533@sirena.org.uk> <1392070159.27939.34.camel@x220>
-	 <20140212160431.GB28112@sirena.org.uk>
+From: Maarten Baert <maarten-baert@hotmail.com>
+Subject: Re: Audio passthrough on Pandaboard using ALSA API
+Date: Fri, 28 Feb 2014 22:53:40 +0100
+Message-ID: <BLU0-SMTP1962DEBCF39E61EE38F75C4E2820@phx.gbl>
+References: <918abfafedb24121b6e6f66e46b9b000@BY2PR06MB581.namprd06.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20140212160431.GB28112@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from blu0-omc3-s20.blu0.hotmail.com (blu0-omc3-s20.blu0.hotmail.com
+ [65.55.116.95]) by alsa0.perex.cz (Postfix) with ESMTP id 2D22A2651FD
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 22:53:45 +0100 (CET)
+In-Reply-To: <918abfafedb24121b6e6f66e46b9b000@BY2PR06MB581.namprd06.prod.outlook.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Vadimi@wavesglobal.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2014-02-12 at 16:04 +0000, Mark Brown wrote:
-> On Mon, Feb 10, 2014 at 11:09:19PM +0100, Paul Bolle wrote:
-> > See, if you scan v3.10:arch/arm/mach-exynos/mach-smdkv310.c you'll
-> > notice the string "smdk-audio". If you grep that string you get a few
-> > hits. But none in v3.10:sound/soc/samsung/smdk_wm9713.c. And if you scan
-> > v3.10:sound/soc/samsung/smdk_wm9713.c for strings you'll find stuff like
-> > "wm9713-hifi",  "wm9713-codec", and "soc-audio". But these don't show up
-> > in v3.10:arch/arm/mach-exynos/mach-smdkv310.c. So it's not obvious how
-> > these two files relate.
-> 
-> > And I'm left wondering why SND_SOC_SAMSUNG_SMDK_WM9713 actually depends
-> > on (among other symbols) MACH_SMDKV310 and MACH_SMDKC210 in v3.10.
-> 
-> The hardware is physically present on those boards but must be selected
-> with DIP switches, the device registration needs to be changed in the
-> kernel when that happens (as the DT must be when it is in use).
+Your application does not handle overruns and underruns (EPIPE indicates
+that either of these is happening). It also doesn't have any drift
+correction, so overruns/underruns are to be expected (the sample rate of
+the capture and playback stream is not guaranteed to be exactly matched).
 
-In v3.14-rc4 these two symbols suddenly got removed, see commit
-eaff64705dd5 ("ASoC: samsung: Remove invalid dependencies"). It does
-exactly what I proposed last year, see
-https://lkml.org/lkml/2013/7/14/27 . (That link currently shows a rather
-empty page; is lkml.org having problems again?)
+By the way, there is a tool called 'alsaloop' (from alsa-utils) which
+does exactly the same thing, but with drift correction and more options ...
 
-That commit is fine with me, of course. I now see no reason to continue
-my, rather slowly progressing, search for the problem that you wanted to
-get properly fixed. I suppose another commit already fixed it.
+Maarten Baert
 
-Thanks,
-
-
-Paul Bolle
+On 28/02/14 09:47, Vadim Izmalkov wrote:
+> Hello
+>
+> I created simple application that makes audio pass-through (from analog input to analog output),
+>
+> After 2-10 seconds get error like:
+> AlsaPassthrough: pcm.c:693: snd_pcm_close: Assertion `pcm' failed.
+> or
+> write to audio interface failed (Broken pipe)
+>
+> Seems I have problem with buffer size/time or somethink like that.
+> Parameters used:
+> Buffer - 100 ms / 4800 frames / 19200 bytes
+> Period - 10 ms / 480 frames / 1920 bytes
+>
+> Buffer length used 19200 bytes.
+> char buffer[19200];
+>
+> Write/read function used as follow
+> snd_pcm_readi(pcm, buffer, frames);
+> snd_pcm_writei(pcm, buffer, frames);
+>
+> Have somebody any suggestion?
