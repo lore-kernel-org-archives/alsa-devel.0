@@ -1,21 +1,18 @@
-From: Rongjun Ying <Rongjun.Ying@csr.com>
-Subject: Re: [PATCH v4-resend 1/7] ASoC: sirf: Add SiRF
- internal audio codec driver
-Date: Fri, 28 Feb 2014 01:52:32 +0000
-Message-ID: <86130EF012BDF348AA0D464A4F449478012AE51755@SHAASIEXM01.ASIA.ROOT.PRI>
-References: <1393399342-31177-1-git-send-email-rongjun.ying@csr.com>
- <1393399342-31177-2-git-send-email-rongjun.ying@csr.com>
- <20140227053339.GU9383@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/4] ARM: dove: prepare new Dove DT Kconfig
+	variable
+Date: Fri, 28 Feb 2014 10:53:10 +0900
+Message-ID: <20140228015310.GC9383@sirena.org.uk>
+References: <1393536486-3827-1-git-send-email-sebastian.hesselbarth@gmail.com>
+ <1393536486-3827-3-git-send-email-sebastian.hesselbarth@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3770382774025675570=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cluster-g.mailcontrol.com (cluster-g.mailcontrol.com
- [208.87.233.190])
- by alsa0.perex.cz (Postfix) with ESMTP id A44872658FC
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 02:52:41 +0100 (CET)
-In-Reply-To: <20140227053339.GU9383@sirena.org.uk>
-Content-Language: zh-CN
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B930265906
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 02:53:42 +0100 (CET)
+In-Reply-To: <1393536486-3827-3-git-send-email-sebastian.hesselbarth@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,127 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, RongJun Ying <rjying@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, DL-SHA-WorkGroupLinux <DL-SHA-WorkGroupLinux@internal.csr.com>
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, Chris Ball <chris@printf.net>, Liam Girdwood <lgirdwood@gmail.com>, Eduardo Valentin <eduardo.valentin@ti.com>, Wim Van Sebroeck <wim@iguana.be>, Gregory Clement <gregory.clement@free-electrons.com>, Zhang Rui <rui.zhang@intel.com>, linux-arm-kernel@lists.infradead.org, linux-watchdog@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
-
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Thursday, February 27, 2014 1:34 PM
-> To: RongJun Ying
-> Cc: Liam Girdwood; Jaroslav Kysela; Takashi Iwai; alsa-devel@alsa-
-> project.org; DL-SHA-WorkGroupLinux; Rongjun Ying
-> Subject: Re: [PATCH v4-resend 1/7] ASoC: sirf: Add SiRF internal audio
-> codec driver
-> 
-> On Wed, Feb 26, 2014 at 03:22:16PM +0800, RongJun Ying wrote:
-> 
-> Overall looks fairly good, a few issues below but they're quite small.
-> 
-> > +static struct sirf_audio_codec_reg_bits
-> sirf_audio_codec_reg_bits_prima2 = {
-> > +	.dig_mic_en_bits = 20,
-> > +	.dig_mic_freq_bits = 21,
-> > +	.adc14b_12_bits = 22,
-> > +	.firdac_hsl_en_bits = 23,
-> > +	.firdac_hsr_en_bits = 24,
-> > +	.firdac_lout_en_bits = 25,
-> > +	.por_bits = 26,
-> > +	.codec_clk_en_bits = 27,
-> > +};
-> 
-> This looks like the sort of thing that the regmap_field layer was
-> supposed to hide?
-> 
-
-Do you mean I need use the regmap_field_read/write to hide these?
-
-> > +static int adc_event(struct snd_soc_dapm_widget *w,
-> > +		struct snd_kcontrol *kcontrol, int event) {
-> > +	struct snd_soc_codec *codec = w->codec;
-> > +	struct sirf_audio_codec *sirf_audio_codec =
-> dev_get_drvdata(codec->dev);
-> > +	u32 val;
-> > +
-> > +	val = sirfsoc_rtc_iobrg_readl(sirf_audio_codec->sys_pwrc_reg_base
-> +
-> > +			PWRC_PDN_CTRL_OFFSET);
-> > +	switch (event) {
-> > +	case SND_SOC_DAPM_POST_PMU:
-> > +		/* Enable capture power of codec*/
-> > +		val |= (1 << AUDIO_POWER_EN_BIT);
-> > +		break;
-> 
-> Looking at this code (and many of the other controls) I can't help but
-> feel that there's some room for more abstraction here.  The controls
-> are all setting two bits rather than just one but for example...
-> 
-> > +	case SND_SOC_DAPM_PRE_PMU:
-> > +		val = (1 << sirf_audio_codec->reg_bits->firdac_hsl_en_bits);
-> > +		break;
-> 
-> ...this looks like a supply widget could be used to manage the bits
-> controlled by the pre and post PMU events?  The same is true for most
-> of the events.
-> 
-
-Ok, I will use supply widget.
-
-> > +	dn = of_find_compatible_node(dn, NULL, "sirf,prima2-pwrc");
-> > +	if (!dn) {
-> > +		dev_err(&pdev->dev, "Failed to get sirf,prima2-pwrc
-> node!\n");
-> > +		return -ENODEV;
-> > +	}
-> > +
-> > +	ret = of_property_read_u32(dn, "reg", &sirf_audio_codec-
-> >sys_pwrc_reg_base);
-> > +	if (ret < 0) {
-> > +		dev_err(&pdev->dev, "Failed tp get pwrc register base
-> address\n");
-> > +		return -EINVAL;
-> > +	}
-> 
-> Should prima2-pwrc be a syscon?  Not a blocker for merging this.
-> 
-> > +#ifdef CONFIG_PM_RUNTIME
-> > +static int sirf_audio_codec_runtime_suspend(struct device *dev) {
-> > +	struct sirf_audio_codec *sirf_audio_codec = dev_get_drvdata(dev);
-> > +	regmap_update_bits(sirf_audio_codec->regmap, AUDIO_IC_CODEC_CTRL1,
-> > +		(1 << sirf_audio_codec->reg_bits->codec_clk_en_bits),
-> > +		0);
-> > +	return 0;
-> > +}
-> 
-> Can you disable the clock in the clock API as well?  This might allow
-> further supply clocks to be disabled and is genarally good practice.
-> 
-
-This is a workaround. The capture ADC and touch ADC use a same power supply,
-The codec ADC's change pump set or clear will impact touch ADC unstable.
-So It's need enable codec clock and set change pump when the Audio driver init.
-
-Thanks
-RongJun Ying
-
-> > +static int sirf_audio_codec_suspend(struct device *dev) {
-> > +	struct sirf_audio_codec *sirf_audio_codec = dev_get_drvdata(dev);
-> > +
-> > +	regmap_read(sirf_audio_codec->regmap, AUDIO_IC_CODEC_CTRL0,
-> > +		&sirf_audio_codec->reg_ctrl0);
-> > +	regmap_read(sirf_audio_codec->regmap, AUDIO_IC_CODEC_CTRL1,
-> > +		&sirf_audio_codec->reg_ctrl1);
-> > +	sirf_audio_codec_runtime_suspend(dev);
-> 
-> Have you seen the series Ulf has been posting regarding the integration
-> of runtime PM and system suspend?  There's all sorts of nasty cases
-> with this stuff unfortunately.  Not sure it should be a blocker for
-> merging though since we haven't really figured out how this stuff is
-> supposed to work.
+--===============3770382774025675570==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tUxbtEzdJc4sX0sj"
+Content-Disposition: inline
 
 
-Member of the CSR plc group of companies. CSR plc registered in England and Wales, registered number 4187346, registered office Churchill House, Cambridge Business Park, Cowley Road, Cambridge, CB4 0WZ, United Kingdom
-More information can be found at www.csr.com. Keep up to date with CSR on our technical blog, www.csr.com/blog, CSR people blog, www.csr.com/people, YouTube, www.youtube.com/user/CSRplc, Facebook, www.facebook.com/pages/CSR/191038434253534, or follow us on Twitter at www.twitter.com/CSR_plc.
-New for 2014, you can now access the wide range of products powered by aptX at www.aptx.com.
+--tUxbtEzdJc4sX0sj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Feb 27, 2014 at 10:28:03PM +0100, Sebastian Hesselbarth wrote:
+> DT-enabled Dove will move over from ARCH_DOVE in mach-dove to MACH_DOVE in
+> mach-mvebu. As non-DT ARCH_DOVE will stay to rot for a while, add a new
+> DT-only MACH_DOVE to mmc, thermal, wdt, and asoc Kconfigs.
+
+I'd be much happier merging this sort of stuff individually through the
+subsystems, we already have an annoying conflict here...  Is there some
+bisection problem with doing that?
+
+--tUxbtEzdJc4sX0sj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTD+wCAAoJELSic+t+oim9SEEP/1dJP3BuVMcQbukxUy5f13cO
+42+7SE32MruC+GG4JGjZnatJWYyQJp0kqqrcTSgIMDzeobR+Pw4yKcKuZ+jWOVyO
+Wj4auHvwgNl19l8spX3Un78yUkOxQ9pleauSNz6TnjJwdgYf04LsZD8o4D9bgWIX
+ALbMtaK9wvHZv74gILwTFSS+p9DMNOqaZv8bNh62fU8+beVHNRboYQ9RVeVIoQvR
+AtVHD1eo+LrNjQrsSqEFJ5qWKOpxBdaOXXLzcPjosMjkQBG9nvgGHnG8ttXWHzCl
+9F+6yHVGgKVpD0xbEmk6rv6z8DuJLuTCJYS6OxV4YT1/tOHmcF3ZSsTyxCstxhCb
+iQyH8Apu+OPzHbpBjtgdj1bcQAs+I7IgQgDJ+Y3UJ99tsk3DV3rX6DvaJCzUdUVZ
+SGej68k03AZ1EkP9lwQcjjO529ysu44SYVMH/zK0a0roAcAfbzvzwaE70rlEEmsb
+RQpDhwFc4hDknZJc9JY+FgfyWs7Umxru6bVnycfFL6bQOtEgtFT2N4vpLgybko80
+e+oShZ0VdZSqdUi0DvLDd/O64A0angoiBQ8MzDbQMFoIe4nm0uV1yOR1NO0B1vYu
+cOjFewsTB+FC+mOQCzJ8CARQxdyDaAfLVXhLnFL5BtUn0c/TK3u28hAGItJocAow
+PRSrWqdlY+LRnAJBUtz+
+=XrZQ
+-----END PGP SIGNATURE-----
+
+--tUxbtEzdJc4sX0sj--
+
+--===============3770382774025675570==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3770382774025675570==--
