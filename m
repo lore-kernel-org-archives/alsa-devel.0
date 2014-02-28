@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 06/11] ASoC: max98090: Use
+Subject: [PATCH v2 05/11] ASoC: adau1373: Use
 	SOC_ENUM_SINGLE_VIRT_DECL()
-Date: Fri, 28 Feb 2014 08:31:07 +0100
-Message-ID: <1393572672-13937-7-git-send-email-lars@metafoo.de>
+Date: Fri, 28 Feb 2014 08:31:06 +0100
+Message-ID: <1393572672-13937-6-git-send-email-lars@metafoo.de>
 References: <1393572672-13937-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-167.synserver.de (smtp-out-127.synserver.de
  [212.40.185.127])
- by alsa0.perex.cz (Postfix) with ESMTP id 38133265947
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 08:30:55 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8966326591B
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 08:30:54 +0100 (CET)
 In-Reply-To: <1393572672-13937-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,21 +33,23 @@ Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
 No changes since v1
 ---
- sound/soc/codecs/max98090.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/adau1373.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index a75752f..f363de1 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -872,7 +872,7 @@ static const struct snd_kcontrol_new max98090_mic2_mux =
+diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
+index 5765c22..5223800 100644
+--- a/sound/soc/codecs/adau1373.c
++++ b/sound/soc/codecs/adau1373.c
+@@ -576,8 +576,8 @@ static const char *adau1373_decimator_text[] = {
+ 	"DMIC1",
+ };
  
- static const char *dmic_mux_text[] = { "ADC", "DMIC" };
+-static SOC_ENUM_SINGLE_DECL(adau1373_decimator_enum,
+-			    0, 0, adau1373_decimator_text);
++static SOC_ENUM_SINGLE_VIRT_DECL(adau1373_decimator_enum,
++	adau1373_decimator_text);
  
--static SOC_ENUM_SINGLE_EXT_DECL(dmic_mux_enum, dmic_mux_text);
-+static SOC_ENUM_SINGLE_VIRT_DECL(dmic_mux_enum, dmic_mux_text);
- 
- static const struct snd_kcontrol_new max98090_dmic_mux =
- 	SOC_DAPM_ENUM_VIRT("DMIC Mux", dmic_mux_enum);
+ static const struct snd_kcontrol_new adau1373_decimator_mux =
+ 	SOC_DAPM_ENUM_VIRT("Decimator Mux", adau1373_decimator_enum);
 -- 
 1.8.0
