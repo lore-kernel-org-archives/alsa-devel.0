@@ -1,58 +1,82 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [alsa-devel] [PATCH 2/3] ASoC: core: Set the default I/O up try
- regmap.
-Date: Fri, 28 Feb 2014 06:40:37 +0000
-Message-ID: <d872d0fd60eb4c01b38af98014c802aa@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1393494593-26310-1-git-send-email-Li.Xiubo@freescale.com>
- <1393494593-26310-3-git-send-email-Li.Xiubo@freescale.com>
- <20140228035244.GJ9383@sirena.org.uk>
- <c405df11848a40b7beda8d8fe747e7a7@BY2PR03MB505.namprd03.prod.outlook.com>
- <20140228052904.GP9383@sirena.org.uk>
- <1b89016263c84e0297655034a648032f@BY2PR03MB505.namprd03.prod.outlook.com>
- <53102EE4.80702@metafoo.de>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [RFC 14/19] ALSA: hda - Add jackpoll_ms to struct azx
+Date: Thu, 27 Feb 2014 22:35:57 -0800
+Message-ID: <1393569362-27285-15-git-send-email-dgreid@chromium.org>
+References: <1393569362-27285-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <53102EE4.80702@metafoo.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qa0-f74.google.com (mail-qa0-f74.google.com
+ [209.85.216.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id 792F826509A
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 07:37:13 +0100 (CET)
+Received: by mail-qa0-f74.google.com with SMTP id cm18so34193qab.3
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2014 22:37:12 -0800 (PST)
+In-Reply-To: <1393569362-27285-1-git-send-email-dgreid@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, swarren@wwwdotorg.org
 List-Id: alsa-devel@alsa-project.org
 
+Keeping a pointer to the jackpoll_ms array in the chip will allow
+azx_codec_create to be shared between hda_intel and hda_platform
+drivers.  Also modify get_jackpoll_ms to make the jackpoll_ms member
+optional, this way a platform driver can leave it out if it's not
+needed.
 
-> Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: core: Set the default I/O up try
-> regmap.
-> 
-> On 02/28/2014 06:56 AM, Li.Xiubo@freescale.com wrote:
-> >> Subject: Re: [PATCH 2/3] ASoC: core: Set the default I/O up try regmap.
-> >>
-> >> On Fri, Feb 28, 2014 at 04:00:38AM +0000, Li.Xiubo@freescale.com wrote:
-> >>
-> >>> I'll send another patches to applied to use this for another CODEC drivers.
-> >>> And there almost 80 files, Should I send them in one patch or split them
-> >> into
-> >>> individual patch for each CODEC driver ?
-> >>
-> >> I'd suggest doing one patch that covers the boring drivers where the
-> >> first thing they do is call set_cache_io() but split out the others into
-> >> one patch per driver since the need more examination.
-> >
-> > Got it.
-> 
-> Btw. be careful, just removing the set_cache_io() call will not work for all
-> drivers. There are some MFD child devices which use regmap from the parent
-> device. So dev_get_regmap() will return NULL for those.
-> 
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+ sound/pci/hda/hda_intel.c | 8 +++++++-
+ sound/pci/hda/hda_priv.h  | 1 +
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-@Lars,
-
-Do you mean the CODEC drivers like wm5110 and wm8997 ?
-
-Thanks,
-
---
-Best Regards,
-Xiubo
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index da5c7d2..4fa4da1 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -435,8 +435,13 @@ static void azx_bus_reset(struct hda_bus *bus)
  
+ static int get_jackpoll_interval(struct azx *chip)
+ {
+-	int i = jackpoll_ms[chip->dev_index];
++	int i;
+ 	unsigned int j;
++
++	if (!chip->jackpoll_ms)
++		return 0;
++
++	i = chip->jackpoll_ms[chip->dev_index];
+ 	if (i == 0)
+ 		return 0;
+ 	if (i < 50 || i > 60000)
+@@ -1305,6 +1310,7 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	check_msi(chip);
+ 	chip->dev_index = dev;
+ 	chip->disable_msi_reset_irq = disable_msi_reset_irq;
++	chip->jackpoll_ms = jackpoll_ms;
+ 	INIT_WORK(&chip->irq_pending_work, azx_irq_pending_work);
+ 	INIT_LIST_HEAD(&chip->pcm_list);
+ 	INIT_LIST_HEAD(&chip->list);
+diff --git a/sound/pci/hda/hda_priv.h b/sound/pci/hda/hda_priv.h
+index f1fa6f4..6d32367 100644
+--- a/sound/pci/hda/hda_priv.h
++++ b/sound/pci/hda/hda_priv.h
+@@ -316,6 +316,7 @@ struct azx {
+ 	int capture_streams;
+ 	int capture_index_offset;
+ 	int num_streams;
++	const int *jackpoll_ms; /* per-card jack poll interval */
+ 
+ 	/* Register interaction. */
+ 	const struct azx_reg_ops *reg_ops;
+-- 
+1.8.1.3.605.g02339dd
