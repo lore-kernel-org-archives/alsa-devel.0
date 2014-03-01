@@ -1,96 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 14/28] Remove MACH_SMDKC210
-Date: Sat, 1 Mar 2014 12:53:39 +0900
-Message-ID: <20140301035339.GK29849@sirena.org.uk>
-References: <1391971686-9517-1-git-send-email-richard@nod.at>
- <1391971686-9517-15-git-send-email-richard@nod.at>
- <20140210114154.GQ1757@sirena.org.uk>
- <1392039072.3585.15.camel@x220>
- <20140210141255.GI1757@sirena.org.uk>
- <1392046242.3585.41.camel@x220>
- <20140210163621.GA13533@sirena.org.uk>
- <1392070159.27939.34.camel@x220>
- <20140212160431.GB28112@sirena.org.uk>
- <1393623789.4052.17.camel@x220>
+Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: core: Set the default I/O up try
+ regmap.
+Date: Sat, 1 Mar 2014 13:07:02 +0900
+Message-ID: <20140301040702.GM29849@sirena.org.uk>
+References: <c405df11848a40b7beda8d8fe747e7a7@BY2PR03MB505.namprd03.prod.outlook.com>
+ <20140228052904.GP9383@sirena.org.uk>
+ <1b89016263c84e0297655034a648032f@BY2PR03MB505.namprd03.prod.outlook.com>
+ <53102EE4.80702@metafoo.de>
+ <d872d0fd60eb4c01b38af98014c802aa@BY2PR03MB505.namprd03.prod.outlook.com>
+ <531030C7.2060703@metafoo.de>
+ <5d534c2ac77040d9bc373db9e43dde7c@BY2PR03MB505.namprd03.prod.outlook.com>
+ <53103787.2020702@metafoo.de>
+ <049024c359df495fb8acedd96e574ce2@BY2PR03MB505.namprd03.prod.outlook.com>
+ <531045A9.3010502@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3962212965927967114=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C54BA265232
- for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 04:54:13 +0100 (CET)
-In-Reply-To: <1393623789.4052.17.camel@x220>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, linux-kernel@vger.kernel.org, Sangbeom Kim <sbkim73@samsung.com>, Richard Weinberger <richard@nod.at>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-samsung-soc@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Z1Z8UV8BNhgCynIS"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <531045A9.3010502@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3962212965927967114==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+HmK7y6O+lKZIGkr"
-Content-Disposition: inline
-
-
---+HmK7y6O+lKZIGkr
+--Z1Z8UV8BNhgCynIS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Feb 28, 2014 at 10:43:09PM +0100, Paul Bolle wrote:
+On Fri, Feb 28, 2014 at 09:15:37AM +0100, Lars-Peter Clausen wrote:
 
-> That commit is fine with me, of course. I now see no reason to continue
-> my, rather slowly progressing, search for the problem that you wanted to
-> get properly fixed. I suppose another commit already fixed it.
+> Yes, I think that's almost all of them. si476x is missing, but I
+> think that one is currently broken, as it doesn't call
+> snd_soc_codec_set_cache_io() at all.
 
-No, but it's someone from Samsung (Sachin works with the Samsung landing
-team at Linaro) not caring about those drivers on these boards any more
-and mentioning the DT conversion which is rather different to someone
-doing mechanical cleanup with no mention of where the symbols went.
+Probably, yeah - there were other problems with that driver that make me
+question if it ever worked properly IIRC.  There is a default call to
+set cache I/O already but it relies on dev_get_regmap().
 
-It should be fairly obvious that if the reason symbols are being removed
-due to DT conversion of the platforms then the default thing should be
-that the drivers be being converted to DT and appropriate DT entries
-being added to the board DTS files, but more generally the important
-thing is that some understanding is shown as to why the symbols vanished
-and why the mechanical fix suggested is OK.
+> As to how to handle those, I think there was a plan to add the
+> possibility to assign a regmap to a device, so that dev_get_regmap()
+> returns the regmap struct that should be used, even though the
+> device itself did not allocate the regmap. But I can't find the
+> details. Mark may know more about this.
 
---+HmK7y6O+lKZIGkr
+That's not for this and is likely to create confusion - that's for
+handling early init with syscon type devices, allowing the regmap to be
+created with no device and then have the device attached later.  I'd
+need to look through and see what happens if two devices share a regmap,
+perhaps it'd actually be OK, but we can always just allow the regmap to
+be overridden at the ASoC level.
+
+--Z1Z8UV8BNhgCynIS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTEVnAAAoJELSic+t+oim9UeAP/3AbCx0eUSUgyA/4YbVeg6L0
-9YJ9ENAhOqioM6FxchvKxAFRUJ5bbEt3dYl0jzsdjcQMM0DGjunY/MHnAiaEXYaQ
-JYE0ccDRdNSZUf8HWGv1O4rrwfiPQespwImgYT+JSq6GrFCQdHVwbGjX+XCW9kDD
-LP1ywiNn3JdPHPi6N9yX8THDIefu475zc7i0UqBEhnliRIi6I2TfUutXczdKg3wI
-TnyE7eXHIr9lctDTkaIHbfVyntXrUZy2GHgVjBitNObSrmccfG/R2/3e3d/uyblS
-QmkyLpdi/7GdjZI3JrwmdLEf6tUwNon/0j9gaWZbrKGEN77ub5BKUdJN9toj986f
-82/yt922OfnksAQVNlEL8OC/nxrRPXG0pe7b6fn6dUxN829l5upBBX62bBrwHqw1
-MON0nuv5EEsxLAFt60wO+vjI8W+FZnRSry2RjRPhkehTrILsqcp/HNnX0k2mduex
-Rz9aDxF1INXIcwci5lGZgLKzzk9LWS2MVC3Z3GhV/7N5em8yD6uilvPU+gu4mLtF
-y1hcNNTefJ6/Ioy7Nr/yoU2aLdc80aAA15lNQrqgIzD212JRXTBElU5h21OLJeaP
-1q0/ROANqiNDP0yk7pLLQzZLj3TT7rotldRWONk+1zi1o32Pi7YwQKFO1BUgeLkT
-0TzOhwSK4IfG+ULtqc9D
-=TpnJ
+iQIcBAEBAgAGBQJTEVzjAAoJELSic+t+oim9kt8P/iPN9NUjdEMq9T/zn9ANsaQ1
+YiVb11Kn+DmU1vmph7wWtGzVhOkznAFh6rpGNbN1BXHqVh8oDHgIOiAA+rj8UKjG
+HhOI8P0yk4dRaTpBY7KPYAooJgVRrgZEc/ARla+k6A1EyTB8K7hPdlemMkXgKybC
+s38Lp0SMG1fTNZ80LUg45FJ3NrjKLNpA02TBUurE/Pc4FiFh7ofKiUk2aI3TtMBN
+poUI7d7FXcnNyVWVVdE+IiCjMQYoF7Urwz9gVePYu8jKjQBr5XRWWt+3/tV5/U6u
+0xqEf8l15/fRfSvzMEG7JlRIyELSgQU2vKGyi+y35iVVgjT0kTfjD6uVBwGXoA/o
+wAC/BuhhVF8HzNq2hXbTyjeVy4Wp24XxLD7/Zdu7LbxQvJvCqeIhZjPfi7VJAfVE
+eigkOSQKqhfAE886pa06l6xtuLDCCVGN/fNDPyNgNOO+tsz5bMd4+4WxWwy3BMkY
+Zbq73N2BqpB8T8EV9vsm93s3dFMl2rXeKaFLT+WNRXcFDXg7caVFKFdi5D2fgwOj
+9PQ31cCJQ0qvet58ld5NShWQQARaxUJbR+BuIH3KbXH1zVxs9R6SHm2en0LQlYYi
++Pi8SokDX2VoRSHuZMi2E8AQMNqSjvrepqWIZiQ5rt/nwT1YV7m8J6NDr56nL2V+
+N5DHKPe94v4nhogSD+2B
+=0quB
 -----END PGP SIGNATURE-----
 
---+HmK7y6O+lKZIGkr--
-
---===============3962212965927967114==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3962212965927967114==--
+--Z1Z8UV8BNhgCynIS--
