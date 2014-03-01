@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4-resend 2/7] ASoC: sirf: Add SiRF audio
- port driver is used by SiRF internal audio codec
-Date: Sat, 1 Mar 2014 13:49:43 +0900
-Message-ID: <20140301044943.GS29849@sirena.org.uk>
-References: <1393399342-31177-1-git-send-email-rongjun.ying@csr.com>
- <1393399342-31177-3-git-send-email-rongjun.ying@csr.com>
+From: Damien Zammit <damien.zammit@gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio - Capture and duplex
+ support for Digidesign Mbox 1 sound card.
+Date: Sat, 01 Mar 2014 18:40:31 +1100
+Message-ID: <53118EEF.8060304@gmail.com>
+References: <52E5254A.8090308@gmail.com> <52E53D57.3010700@ladisch.de>
+ <52E5CC2E.1010000@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1265188349187759552=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C4AD626522D
- for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 05:49:53 +0100 (CET)
-In-Reply-To: <1393399342-31177-3-git-send-email-rongjun.ying@csr.com>
+Received: from mail-pd0-f179.google.com (mail-pd0-f179.google.com
+ [209.85.192.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48BF526529F
+ for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 08:41:08 +0100 (CET)
+Received: by mail-pd0-f179.google.com with SMTP id w10so1681231pde.24
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 23:41:06 -0800 (PST)
+In-Reply-To: <52E5CC2E.1010000@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +25,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: RongJun Ying <rjying@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, workgroup.linux@csr.com, Rongjun Ying <rongjun.ying@csr.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Clemens,
 
---===============1265188349187759552==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZcSDOt7TZFizttpn"
-Content-Disposition: inline
+I wish to bring to your attention that the patch I submitted previously
+(0001-Cleaned-up-Digidesign-Mbox-1-patch.patch) has been working for the
+last two months on my device and other people have also reported
+complete success with it. (see http://www.zamaudio.com/?p=953 for details).
 
+We discovered and fixed an issue with outdated firmware causing sporadic
+white noise on the device; Avid (the manufacturer) provided an update
+which fixed this issue entirely (v0.22).  Unfortunately, the firmware
+update can only be applied using a Mac computer since it is bundled in a
+.dmg installer.
 
---ZcSDOt7TZFizttpn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+If users do not apply the firmware update, the device will still work
+with linux, but every second or third time they open a playback stream
+there is a loud fuzzing noise which could possibly damage external
+equipment.  I suppose it is caused by a bug in the firmware.
 
-On Wed, Feb 26, 2014 at 03:22:17PM +0800, RongJun Ying wrote:
+Therefore, with the official updated firmware and my usb-audio quirk
+provided in the previous post, I am pleased to say that Digidesign Mbox
+1 (0dba:1000) works well in duplex mode, in both 44100 and 48000Hz modes
+(SPDIF untested).
 
-A couple of very small issues below but otherwise looks good.
+I am keen to get my patch into the kernel with your recommendations for
+cleaning up the code.
 
-> index d62ce48..23946c2 100644
-> --- a/sound/soc/Kconfig
-> +++ b/sound/soc/Kconfig
-> @@ -54,6 +54,7 @@ source "sound/soc/spear/Kconfig"
->  source "sound/soc/tegra/Kconfig"
->  source "sound/soc/txx9/Kconfig"
->  source "sound/soc/ux500/Kconfig"
-> +source "sound/soc/sirf/Kconfig"
+Although I have not inspected the inside of the unit, in my opinion it
+has higher quality converters and preamps than the second generation
+models.  Also, even though it is powered by dirty USB power, it is
+surprisingly quiet on the main outputs when silence is playing.
 
-Keep Kconfig and Makefile sorted.
+Regards,
+Damien
 
-> +static inline void sirf_audio_port_tx_enable(struct sirf_audio_port *port)
-
-Drop the inlines, let the compiler do it if it decides it's worthwhile.
-
---ZcSDOt7TZFizttpn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTEWbfAAoJELSic+t+oim92tIP/3M9W2Vnpu495ds9W2ofs/0O
-Yb64n+e4gIF0y1TXute2cR2EvqNdak5QnK86BwSloatgJ44ftRn+Gae4LjNMpgNd
-k1qU3lO9O8L4UBL8uOZJsJOqyciQJlr4uQZxqSgGHFjigv6mWwvJ7mowpsCZDUrn
-h1xMQsG1q2czUlRKnJKc40WcecCCIIeVIDHfyVjgNUZ4PtKGv9Dx8n8pCVwtrnP+
-HAyUrBM4EMaDugYyxaFrr++R6GMq6j8+E3FrgKBJVAU3ijAbQ47lSJRMss6+9pNw
-2nvBIIEz2uLtUbt6Mk5vXLw2097gdElZwHto+g1braxOZKW1u7N4Gm1Nd1LZCOmK
-DhDASHU0FKEcxKukzWBvDhwbAfjTcDSxUbtRnKVRoPGlwTRZPtegD0r1IM54MFuG
-nT9EGikkNyz0ET5KbANqXFQVtDkBOAuYBJOziDim4tkk1UisOX1N+2RRlcfhJHG8
-M29GV5LvGFVhvDCzKCZ96VQtb8MTEzM3XW9qSwiRh8urMzATMPAMWPIpeZ/JB8y+
-pV6pgPlmYuHWOJ9q/XUrMbn2k0WukaOg7qqgB/707WYaGoeEGqPCbAskG+HEo3Pk
-w+pGx+U2NIqbJ9vhMP8QG14JPAF6QOo/YtKJxFClKmgiyB+2bwHuZEiSX1hpLov9
-F2Fzqqh9E+F5OTGn5sl3
-=u50x
------END PGP SIGNATURE-----
-
---ZcSDOt7TZFizttpn--
-
---===============1265188349187759552==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1265188349187759552==--
+On 27/01/14 14:02, Damien Zammit wrote:
+> On 27/01/14 03:52, Clemens Ladisch wrote:
+>>> This patch creates a dual endpoint quirk.
+>>> >The quirk interface needs a second audioformat struct for this to work
+>>> >which I called ".data2".
+>> Couldn't you just let .data point to an array of two structs?
+> 
+> Thanks Clemens, I have created a new patch using this suggestion.
+> 
+> Damien
