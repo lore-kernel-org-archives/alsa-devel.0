@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 7/8] ASoC: pxa: tosa: Convert to table based
-	DAPM and control setup
-Date: Sat,  1 Mar 2014 15:48:19 +0100
-Message-ID: <1393685300-5307-7-git-send-email-lars@metafoo.de>
+Subject: [PATCH 5/8] ASoC: pxa: magician: Convert to table
+	based DAPM and control setup
+Date: Sat,  1 Mar 2014 15:48:17 +0100
+Message-ID: <1393685300-5307-5-git-send-email-lars@metafoo.de>
 References: <1393685300-5307-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-167.synserver.de (smtp-out-192.synserver.de
  [212.40.185.192])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B8CC2654A6
- for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 15:47:58 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 745532654A4
+ for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 15:47:56 +0100 (CET)
 In-Reply-To: <1393685300-5307-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,107 +33,109 @@ in the CODEC's DAPM context.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/pxa/tosa.c | 36 +++++++++++++-----------------------
- 1 file changed, 13 insertions(+), 23 deletions(-)
+ sound/soc/pxa/magician.c | 35 ++++++++++++-----------------------
+ 1 file changed, 12 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
-index cead165..4570725 100644
---- a/sound/soc/pxa/tosa.c
-+++ b/sound/soc/pxa/tosa.c
-@@ -44,10 +44,8 @@
- static int tosa_jack_func;
- static int tosa_spk_func;
+diff --git a/sound/soc/pxa/magician.c b/sound/soc/pxa/magician.c
+index 41ab6678..6296059 100644
+--- a/sound/soc/pxa/magician.c
++++ b/sound/soc/pxa/magician.c
+@@ -41,10 +41,8 @@ static int magician_hp_switch;
+ static int magician_spk_switch = 1;
+ static int magician_in_sel = MAGICIAN_MIC;
  
--static void tosa_ext_control(struct snd_soc_codec *codec)
-+static void tosa_ext_control(struct snd_soc_dapm_context *dapm)
+-static void magician_ext_control(struct snd_soc_codec *codec)
++static void magician_ext_control(struct snd_soc_dapm_context *dapm)
  {
 -	struct snd_soc_dapm_context *dapm = &codec->dapm;
 -
  	snd_soc_dapm_mutex_lock(dapm);
  
- 	/* set up jack connection */
-@@ -82,10 +80,9 @@ static void tosa_ext_control(struct snd_soc_codec *codec)
- static int tosa_startup(struct snd_pcm_substream *substream)
+ 	if (magician_spk_switch)
+@@ -75,10 +73,9 @@ static void magician_ext_control(struct snd_soc_codec *codec)
+ static int magician_startup(struct snd_pcm_substream *substream)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_codec *codec = rtd->codec;
  
  	/* check the jack status at stream startup */
--	tosa_ext_control(codec);
-+	tosa_ext_control(&rtd->card->dapm);
+-	magician_ext_control(codec);
++	magician_ext_control(&rtd->card->dapm);
  
  	return 0;
  }
-@@ -104,13 +101,13 @@ static int tosa_get_jack(struct snd_kcontrol *kcontrol,
- static int tosa_set_jack(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
+@@ -277,13 +274,13 @@ static int magician_get_hp(struct snd_kcontrol *kcontrol,
+ static int magician_set_hp(struct snd_kcontrol *kcontrol,
+ 			     struct snd_ctl_elem_value *ucontrol)
  {
--	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 +	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
  
- 	if (tosa_jack_func == ucontrol->value.integer.value[0])
+ 	if (magician_hp_switch == ucontrol->value.integer.value[0])
  		return 0;
  
- 	tosa_jack_func = ucontrol->value.integer.value[0];
--	tosa_ext_control(codec);
-+	tosa_ext_control(&card->dapm);
+ 	magician_hp_switch = ucontrol->value.integer.value[0];
+-	magician_ext_control(codec);
++	magician_ext_control(&card->dapm);
  	return 1;
  }
  
-@@ -124,13 +121,13 @@ static int tosa_get_spk(struct snd_kcontrol *kcontrol,
- static int tosa_set_spk(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
+@@ -297,13 +294,13 @@ static int magician_get_spk(struct snd_kcontrol *kcontrol,
+ static int magician_set_spk(struct snd_kcontrol *kcontrol,
+ 			    struct snd_ctl_elem_value *ucontrol)
  {
--	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 +	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
  
- 	if (tosa_spk_func == ucontrol->value.integer.value[0])
+ 	if (magician_spk_switch == ucontrol->value.integer.value[0])
  		return 0;
  
- 	tosa_spk_func = ucontrol->value.integer.value[0];
--	tosa_ext_control(codec);
-+	tosa_ext_control(&card->dapm);
+ 	magician_spk_switch = ucontrol->value.integer.value[0];
+-	magician_ext_control(codec);
++	magician_ext_control(&card->dapm);
  	return 1;
  }
  
-@@ -191,24 +188,10 @@ static int tosa_ac97_init(struct snd_soc_pcm_runtime *rtd)
+@@ -400,7 +397,6 @@ static int magician_uda1380_init(struct snd_soc_pcm_runtime *rtd)
  {
  	struct snd_soc_codec *codec = rtd->codec;
  	struct snd_soc_dapm_context *dapm = &codec->dapm;
 -	int err;
  
- 	snd_soc_dapm_nc_pin(dapm, "OUT3");
- 	snd_soc_dapm_nc_pin(dapm, "MONOOUT");
+ 	/* NC codec pins */
+ 	snd_soc_dapm_nc_pin(dapm, "VOUTLHP");
+@@ -410,19 +406,6 @@ static int magician_uda1380_init(struct snd_soc_pcm_runtime *rtd)
+ 	snd_soc_dapm_nc_pin(dapm, "VINL");
+ 	snd_soc_dapm_nc_pin(dapm, "VINR");
  
--	/* add tosa specific controls */
--	err = snd_soc_add_codec_controls(codec, tosa_controls,
--				ARRAY_SIZE(tosa_controls));
+-	/* Add magician specific controls */
+-	err = snd_soc_add_codec_controls(codec, uda1380_magician_controls,
+-				ARRAY_SIZE(uda1380_magician_controls));
 -	if (err < 0)
 -		return err;
 -
--	/* add tosa specific widgets */
--	snd_soc_dapm_new_controls(dapm, tosa_dapm_widgets,
--				  ARRAY_SIZE(tosa_dapm_widgets));
+-	/* Add magician specific widgets */
+-	snd_soc_dapm_new_controls(dapm, uda1380_dapm_widgets,
+-				  ARRAY_SIZE(uda1380_dapm_widgets));
 -
--	/* set up tosa specific audio path audio_map */
+-	/* Set up magician specific audio path interconnects */
 -	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 -
  	return 0;
  }
  
-@@ -239,6 +222,13 @@ static struct snd_soc_card tosa = {
- 	.owner = THIS_MODULE,
- 	.dai_link = tosa_dai,
- 	.num_links = ARRAY_SIZE(tosa_dai),
-+
-+	.controls = tosa_controls,
-+	.num_controls = ARRAY_SIZE(tosa_controls),
-+	.dapm_widgets = tosa_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(tosa_dapm_widgets),
+@@ -456,6 +439,12 @@ static struct snd_soc_card snd_soc_card_magician = {
+ 	.dai_link = magician_dai,
+ 	.num_links = ARRAY_SIZE(magician_dai),
+ 
++	.controls = uda1380_magician_controls,
++	.num_controls = ARRAY_SIZE(uda1380_magician_controls),
++	.dapm_widgets = uda1380_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(uda1380_dapm_widgets),
 +	.dapm_routes = audio_map,
 +	.num_dapm_routes = ARRAY_SIZE(audio_map),
  };
  
- static int tosa_probe(struct platform_device *pdev)
+ static struct platform_device *magician_snd_device;
 -- 
 1.8.0
