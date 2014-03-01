@@ -1,16 +1,20 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: wm8753: Remove superfluous
-	'codec->cache_sync = 1'
-Date: Sat,  1 Mar 2014 13:46:44 +0100
-Message-ID: <1393678004-17427-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCHv2 2/3] ASoC: io: New signature for
+	snd_soc_codec_set_cache_io()
+Date: Sat, 01 Mar 2014 14:05:34 +0100
+Message-ID: <5311DB1E.30008@metafoo.de>
+References: <1393578267-18255-1-git-send-email-Li.Xiubo@freescale.com>
+ <1393578267-18255-3-git-send-email-Li.Xiubo@freescale.com>
+ <20140301043458.GR29849@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-167.synserver.de (smtp-out-185.synserver.de
- [212.40.185.185])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E32E26531F
- for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 13:46:20 +0100 (CET)
+Received: from smtp-out-167.synserver.de (smtp-out-186.synserver.de
+ [212.40.185.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id D58E0265334
+ for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 14:05:08 +0100 (CET)
+In-Reply-To: <20140301043458.GR29849@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,32 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The wm8763 driver uses regmap for IO which means that codec->cache_sync is not
-used. The line was added in commit d3398ff ('ASoC: Convert WM8753 to direct
-regmap API usage'). Presumably this was meant to be regcache_mark_dirty(), but
-since we already call regcache_mark_dirty() in the core when suspending the
-CODEC it is safe to just remove the line.
+On 03/01/2014 05:34 AM, Mark Brown wrote:
+> On Fri, Feb 28, 2014 at 05:04:26PM +0800, Xiubo Li wrote:
+>> Now that all users have been converted to regmap and the config.reg_bits
+>> and config.val_bits can be setted by each user through regmap core API.
+>> So these two params are redundant here.
+>
+> Actually, I think the way to fix the issue with CODECs doing I/O in
+> probe is to provide a way for drivers to specify a regmap when
+> registering the CODEC (rather than during probe) and then move the
+> initialisation of the regmap before the probe function is called.  That
+> would make set_cache_io() go away entirely.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/wm8753.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index be85da9..a02e76c 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -1440,7 +1440,6 @@ static void wm8753_work(struct work_struct *work)
- static int wm8753_suspend(struct snd_soc_codec *codec)
- {
- 	wm8753_set_bias_level(codec, SND_SOC_BIAS_OFF);
--	codec->cache_sync = 1;
- 	return 0;
- }
- 
--- 
-1.8.0
+Yep, that's actually my preference as well.
