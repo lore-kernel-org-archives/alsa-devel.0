@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/8] ASoC: pxa: e750_wm9705: Convert to table
+Subject: [PATCH 2/8] ASoC: pxa: e740_wm9705: Convert to table
 	based DAPM setup
-Date: Sat,  1 Mar 2014 15:48:15 +0100
-Message-ID: <1393685300-5307-3-git-send-email-lars@metafoo.de>
+Date: Sat,  1 Mar 2014 15:48:14 +0100
+Message-ID: <1393685300-5307-2-git-send-email-lars@metafoo.de>
 References: <1393685300-5307-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-167.synserver.de (smtp-out-192.synserver.de
  [212.40.185.192])
- by alsa0.perex.cz (Postfix) with ESMTP id 74481265278
- for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 15:47:54 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 91C1F2654A2
+ for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 15:47:53 +0100 (CET)
 In-Reply-To: <1393685300-5307-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,36 +33,36 @@ context.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/pxa/e750_wm9705.c | 10 +++++-----
+ sound/soc/pxa/e740_wm9705.c | 10 +++++-----
  1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/pxa/e750_wm9705.c b/sound/soc/pxa/e750_wm9705.c
-index c34e447..ee36aba 100644
---- a/sound/soc/pxa/e750_wm9705.c
-+++ b/sound/soc/pxa/e750_wm9705.c
-@@ -85,11 +85,6 @@ static int e750_ac97_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/pxa/e740_wm9705.c b/sound/soc/pxa/e740_wm9705.c
+index 44b5c09..c29feda 100644
+--- a/sound/soc/pxa/e740_wm9705.c
++++ b/sound/soc/pxa/e740_wm9705.c
+@@ -103,11 +103,6 @@ static int e740_ac97_init(struct snd_soc_pcm_runtime *rtd)
  	snd_soc_dapm_nc_pin(dapm, "PCBEEP");
  	snd_soc_dapm_nc_pin(dapm, "MIC2");
  
--	snd_soc_dapm_new_controls(dapm, e750_dapm_widgets,
--					ARRAY_SIZE(e750_dapm_widgets));
+-	snd_soc_dapm_new_controls(dapm, e740_dapm_widgets,
+-					ARRAY_SIZE(e740_dapm_widgets));
 -
 -	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 -
  	return 0;
  }
  
-@@ -119,6 +114,11 @@ static struct snd_soc_card e750 = {
+@@ -136,6 +131,11 @@ static struct snd_soc_card e740 = {
  	.owner = THIS_MODULE,
- 	.dai_link = e750_dai,
- 	.num_links = ARRAY_SIZE(e750_dai),
+ 	.dai_link = e740_dai,
+ 	.num_links = ARRAY_SIZE(e740_dai),
 +
-+	.dapm_widgets = e750_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(e750_dapm_widgets),
++	.dapm_widgets = e740_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(e740_dapm_widgets),
 +	.dapm_routes = audio_map,
 +	.num_dapm_routes = ARRAY_SIZE(audio_map),
  };
  
- static struct gpio e750_audio_gpios[] = {
+ static struct gpio e740_audio_gpios[] = {
 -- 
 1.8.0
