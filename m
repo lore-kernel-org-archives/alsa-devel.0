@@ -1,21 +1,19 @@
-From: Damien Zammit <damien.zammit@gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio - Capture and duplex
- support for Digidesign Mbox 1 sound card.
-Date: Sat, 01 Mar 2014 18:40:31 +1100
-Message-ID: <53118EEF.8060304@gmail.com>
-References: <52E5254A.8090308@gmail.com> <52E53D57.3010700@ladisch.de>
- <52E5CC2E.1010000@gmail.com>
+From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: [PATCH v2 1/5] ASoC: kirkwood: prepare new Dove DT
+	Kconfig variable
+Date: Sat,  1 Mar 2014 09:33:17 +0100
+Message-ID: <1393662801-17950-1-git-send-email-sebastian.hesselbarth@gmail.com>
+References: <1393536486-3827-3-git-send-email-sebastian.hesselbarth@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f179.google.com (mail-pd0-f179.google.com
- [209.85.192.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 48BF526529F
- for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 08:41:08 +0100 (CET)
-Received: by mail-pd0-f179.google.com with SMTP id w10so1681231pde.24
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 23:41:06 -0800 (PST)
-In-Reply-To: <52E5CC2E.1010000@gmail.com>
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F2E42652CE
+ for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 09:33:34 +0100 (CET)
+Received: by mail-ee0-f51.google.com with SMTP id c13so841517eek.10
+ for <alsa-devel@alsa-project.org>; Sat, 01 Mar 2014 00:33:33 -0800 (PST)
+In-Reply-To: <1393536486-3827-3-git-send-email-sebastian.hesselbarth@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,51 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+DT-enabled Dove will move over from ARCH_DOVE in mach-dove to MACH_DOVE in
+mach-mvebu. As non-DT ARCH_DOVE will stay to rot for a while, add a new
+DT-only MACH_DOVE Kconfig.
 
-I wish to bring to your attention that the patch I submitted previously
-(0001-Cleaned-up-Digidesign-Mbox-1-patch.patch) has been working for the
-last two months on my device and other people have also reported
-complete success with it. (see http://www.zamaudio.com/?p=953 for details).
+Signed-off-by: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+---
+Mark, as requested, this is the ASoC only patch touching Kconfig for
+Marvell Dove to mach-mvebu conversion.
 
-We discovered and fixed an issue with outdated firmware causing sporadic
-white noise on the device; Avid (the manufacturer) provided an update
-which fixed this issue entirely (v0.22).  Unfortunately, the firmware
-update can only be applied using a Mac computer since it is bundled in a
-.dmg installer.
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Gregory Clement <gregory.clement@free-electrons.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+---
+ sound/soc/kirkwood/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If users do not apply the firmware update, the device will still work
-with linux, but every second or third time they open a playback stream
-there is a loud fuzzing noise which could possibly damage external
-equipment.  I suppose it is caused by a bug in the firmware.
-
-Therefore, with the official updated firmware and my usb-audio quirk
-provided in the previous post, I am pleased to say that Digidesign Mbox
-1 (0dba:1000) works well in duplex mode, in both 44100 and 48000Hz modes
-(SPDIF untested).
-
-I am keen to get my patch into the kernel with your recommendations for
-cleaning up the code.
-
-Although I have not inspected the inside of the unit, in my opinion it
-has higher quality converters and preamps than the second generation
-models.  Also, even though it is powered by dirty USB power, it is
-surprisingly quiet on the main outputs when silence is playing.
-
-Regards,
-Damien
-
-On 27/01/14 14:02, Damien Zammit wrote:
-> On 27/01/14 03:52, Clemens Ladisch wrote:
->>> This patch creates a dual endpoint quirk.
->>> >The quirk interface needs a second audioformat struct for this to work
->>> >which I called ".data2".
->> Couldn't you just let .data point to an array of two structs?
-> 
-> Thanks Clemens, I have created a new patch using this suggestion.
-> 
-> Damien
+diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
+index 78ed4a42ad21..a1506d57e646 100644
+--- a/sound/soc/kirkwood/Kconfig
++++ b/sound/soc/kirkwood/Kconfig
+@@ -1,6 +1,6 @@
+ config SND_KIRKWOOD_SOC
+ 	tristate "SoC Audio for the Marvell Kirkwood and Dove chips"
+-	depends on ARCH_KIRKWOOD || ARCH_DOVE || COMPILE_TEST
++	depends on ARCH_KIRKWOOD || ARCH_DOVE || MACH_DOVE || COMPILE_TEST
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the Kirkwood I2S interface. You will also need to select the
+-- 
+1.8.5.3
