@@ -1,17 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 00/11] ASoC: Consolidate enum controls
-	and DAPM MUXs
-Date: Sat, 1 Mar 2014 12:10:14 +0900
-Message-ID: <20140301031014.GH29849@sirena.org.uk>
-References: <1393572672-13937-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH v4-resend 1/7] ASoC: sirf: Add SiRF
+ internal audio codec driver
+Date: Sat, 1 Mar 2014 12:16:46 +0900
+Message-ID: <20140301031646.GJ29849@sirena.org.uk>
+References: <1393399342-31177-1-git-send-email-rongjun.ying@csr.com>
+ <1393399342-31177-2-git-send-email-rongjun.ying@csr.com>
+ <20140227053339.GU9383@sirena.org.uk>
+ <86130EF012BDF348AA0D464A4F449478012AE51755@SHAASIEXM01.ASIA.ROOT.PRI>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7079189923470309095=="
+Content-Type: multipart/mixed; boundary="===============3592236404086324477=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 472B1265292
- for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 04:10:49 +0100 (CET)
-In-Reply-To: <1393572672-13937-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id E7EB0265976
+ for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 04:16:55 +0100 (CET)
+In-Reply-To: <86130EF012BDF348AA0D464A4F449478012AE51755@SHAASIEXM01.ASIA.ROOT.PRI>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +24,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>
+To: Rongjun Ying <Rongjun.Ying@csr.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, DL-SHA-WorkGroupLinux <DL-SHA-WorkGroupLinux@internal.csr.com>, Liam Girdwood <lgirdwood@gmail.com>, RongJun Ying <rjying@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7079189923470309095==
+--===============3592236404086324477==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="J/zg8ciPNcraoWb6"
+	protocol="application/pgp-signature"; boundary="ONvqYzh+7ST5RsLk"
 Content-Disposition: inline
 
 
---J/zg8ciPNcraoWb6
+--ONvqYzh+7ST5RsLk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Feb 28, 2014 at 08:31:01AM +0100, Lars-Peter Clausen wrote:
+On Fri, Feb 28, 2014 at 01:52:32AM +0000, Rongjun Ying wrote:
 
-> The series depends on topic/dapm, topic/enum, topic/sign, topic/adau1373,
-> topic/max98090, topic/mc13783, fix/wm8994, topic/wm899
+> > > +static struct sirf_audio_codec_reg_bits
+> > sirf_audio_codec_reg_bits_prima2 = {
+> > > +	.dig_mic_en_bits = 20,
+> > > +	.dig_mic_freq_bits = 21,
 
-Applied all, thanks.  For serieses like this it's probably worth
-considering sending a pull request (with a signed tag) which includes
-the required merge as well as posting the patches.
+> > This looks like the sort of thing that the regmap_field layer was
+> > supposed to hide?
 
---J/zg8ciPNcraoWb6
+> Do you mean I need use the regmap_field_read/write to hide these?
+
+You should certainly consider it and if it's not a good approach
+understanding why may help us improve that API.
+
+> > > +static int sirf_audio_codec_runtime_suspend(struct device *dev) {
+> > > +	struct sirf_audio_codec *sirf_audio_codec = dev_get_drvdata(dev);
+> > > +	regmap_update_bits(sirf_audio_codec->regmap, AUDIO_IC_CODEC_CTRL1,
+> > > +		(1 << sirf_audio_codec->reg_bits->codec_clk_en_bits),
+> > > +		0);
+> > > +	return 0;
+> > > +}
+
+> > Can you disable the clock in the clock API as well?  This might allow
+> > further supply clocks to be disabled and is genarally good practice.
+
+> This is a workaround. The capture ADC and touch ADC use a same power supply,
+> The codec ADC's change pump set or clear will impact touch ADC unstable.
+> So It's need enable codec clock and set change pump when the Audio driver init.
+
+That doesn't really answer the question for me - I wasn't asking why the
+clock was being disabled, I was asking why the disable wasn't also being
+done at the clock API level.
+
+--ONvqYzh+7ST5RsLk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTEU+OAAoJELSic+t+oim9y+YP/Rmkvd1qUnCHmch1EwGm6uZY
-KPnkdUwJwCxq15SF4Z9iJQJHvgTGPWvyYHhtdetIPEJZ4huaBqAZh3qNiQxVKPxy
-jnRGL5ZRT4Bavmce4OQLGPgHsVk0pLpYbZUX3YgwRkpUrZLV4AWqQSEpYGnXnSEw
-q22bFjbFt1ekHsRc3Neef3/6HEBzIhLdv7yVoZjom5pnWLWOERNP03OkdEDbPOEN
-++MCkQ+Rl32pD3A/EEN04gpLX9fliO9EaIdjqr0w98uACRgnYZ2PZ8+XgF13wjrS
-NkYe6OSv/hj21sOT2/HGxwkU2cq6aXN0Eg8wLwAzCZYh/ZVwjGv+N4jLJNalGv90
-PrNDgGF5h0TiHOFX/H5J5LEloHBVhrRAAfOMLafSIu7dEgEgWLMBcE8eaVht2Mf2
-vTgTKgRK6JBeCr79+PYrPG27SYXgBsB461DrDDTSgiV088UAG6/jeVeCpTPk/zIA
-xfuhApSpM7G67rReAf7X5JtMvdKF4W1kOY8MGzbmjdD+KxA1our8gLLCppvP3Ibd
-UxGoLT+0qht59ZpL1xvc1kbZF1WlrAB9yn3zY+Gx9Jwnh5m1VW0VKvdlIU/RLzjc
-Z0TiOihIF2djucQPkHmZCRoyaxeWqCFEMdfgJJl3QWUc5P3fBECioT0boicupodv
-xGscye2vc90LygMr7YQW
-=0C+j
+iQIcBAEBAgAGBQJTEVEbAAoJELSic+t+oim9rVQP/10g0PT35jk8WxUJLKXUNprY
+uvw7RUWT5dT2krRYRhCAQ9428GrRu/PWyXm4dEgPZZfOdtuYmSwZNEGPNg04kix0
+OVp4+9OQVPvjhRwJQnS5ZiwDcSc+mgH85611bpyPC5PUzytFnEIGaowJ0PJpdBWr
+LpXzBDpsSlA6uG0RtRBZprJpsP/Ix1/oNXET4XsvxRwEFrqpzz/WsC1dbxUfhAOf
+bC9ke7TH9TjKvXy3q5L/p/54OJ/ynlCtxOo39pfNS+7fJqCajTiMhZrUzJAdbJue
+Ktp1fjfcQBIZmtDdVl2qf71YL0RxQA5mjseOEmqRSekArI5zJxnkTY0SWShGxX2v
+/Yj0BpcGiptG+FpQ5UUx0eB6yU3LOc6txNZJjcP8eODm+g7x8tO9j40xdhuN8edr
+iWkMti23FGdQHBMscYh8IAF4Gxl2hHZ6p22h7gsaclSuCEy7yWua5FyLKY6RbYe4
+IOIiHtQXoHXUsOadyYNF6O0a4zvMtoghT9HpfR+ABNcj95N8zRuvSCKOT85aCZaH
+OHxhyzH145MkdQnRQjmHXTpLmHmF/lCGU8vT3sTRaztySYY0oLuDmFXB9lD8gpqy
+ENGYNRI3kZJfTlmWW0IW94cQjjIeULtKgZ0DfoSwM8XPU8WFIM4aCYIJ4Sgr+858
+aNYyNLHjq9T/FaIJI1lo
+=IwdW
 -----END PGP SIGNATURE-----
 
---J/zg8ciPNcraoWb6--
+--ONvqYzh+7ST5RsLk--
 
---===============7079189923470309095==
+--===============3592236404086324477==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7079189923470309095==--
+--===============3592236404086324477==--
