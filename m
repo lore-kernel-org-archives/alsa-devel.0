@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/8] ASoC: pxa: Pass correct DAPM context to
-	{corgi, poodle, spitz}_ext_control
-Date: Sat,  1 Mar 2014 15:48:13 +0100
-Message-ID: <1393685300-5307-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 3/8] ASoC: pxa: e750_wm9705: Convert to table
+	based DAPM setup
+Date: Sat,  1 Mar 2014 15:48:15 +0100
+Message-ID: <1393685300-5307-3-git-send-email-lars@metafoo.de>
+References: <1393685300-5307-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-167.synserver.de (smtp-out-192.synserver.de
  [212.40.185.192])
- by alsa0.perex.cz (Postfix) with ESMTP id DFF3826536B
- for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 15:47:52 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 74481265278
+ for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 15:47:54 +0100 (CET)
+In-Reply-To: <1393685300-5307-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,65 +26,43 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-When calling {corgi,poodle,spitz}_ext_control() from the startup callback we
-pass the CODEC's DAPM context instead of the card's DAPM context. This is not a
-problem per se since all the DAPM functions in ext_control() fallback to widgets
-from other DAPM contexts, but passing the card's context is more consistent.
+Use table based setup to register the DAPM widgets and routes. This on one hand
+makes the code a bit cleaner and on the other hand the board level DAPM elements
+get registered in the card's DAPM context rather than in the CODEC's DAPM
+context.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/pxa/corgi.c  | 3 +--
- sound/soc/pxa/poodle.c | 3 +--
- sound/soc/pxa/spitz.c  | 3 +--
- 3 files changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/pxa/e750_wm9705.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
-index b4db3b9..5a88136 100644
---- a/sound/soc/pxa/corgi.c
-+++ b/sound/soc/pxa/corgi.c
-@@ -101,10 +101,9 @@ static void corgi_ext_control(struct snd_soc_dapm_context *dapm)
- static int corgi_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
+diff --git a/sound/soc/pxa/e750_wm9705.c b/sound/soc/pxa/e750_wm9705.c
+index c34e447..ee36aba 100644
+--- a/sound/soc/pxa/e750_wm9705.c
++++ b/sound/soc/pxa/e750_wm9705.c
+@@ -85,11 +85,6 @@ static int e750_ac97_init(struct snd_soc_pcm_runtime *rtd)
+ 	snd_soc_dapm_nc_pin(dapm, "PCBEEP");
+ 	snd_soc_dapm_nc_pin(dapm, "MIC2");
  
- 	/* check the jack status at stream startup */
--	corgi_ext_control(&codec->dapm);
-+	corgi_ext_control(&rtd->card->dapm);
- 
+-	snd_soc_dapm_new_controls(dapm, e750_dapm_widgets,
+-					ARRAY_SIZE(e750_dapm_widgets));
+-
+-	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-
  	return 0;
  }
-diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
-index 27c6c03..c6bdc6c 100644
---- a/sound/soc/pxa/poodle.c
-+++ b/sound/soc/pxa/poodle.c
-@@ -74,10 +74,9 @@ static void poodle_ext_control(struct snd_soc_dapm_context *dapm)
- static int poodle_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
  
- 	/* check the jack status at stream startup */
--	poodle_ext_control(&codec->dapm);
-+	poodle_ext_control(&rtd->card->dapm);
+@@ -119,6 +114,11 @@ static struct snd_soc_card e750 = {
+ 	.owner = THIS_MODULE,
+ 	.dai_link = e750_dai,
+ 	.num_links = ARRAY_SIZE(e750_dai),
++
++	.dapm_widgets = e750_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(e750_dapm_widgets),
++	.dapm_routes = audio_map,
++	.num_dapm_routes = ARRAY_SIZE(audio_map),
+ };
  
- 	return 0;
- }
-diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
-index a3a13c9..1373b01 100644
---- a/sound/soc/pxa/spitz.c
-+++ b/sound/soc/pxa/spitz.c
-@@ -111,10 +111,9 @@ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
- static int spitz_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
- 
- 	/* check the jack status at stream startup */
--	spitz_ext_control(&codec->dapm);
-+	spitz_ext_control(&rtd->card->dapm);
- 
- 	return 0;
- }
+ static struct gpio e750_audio_gpios[] = {
 -- 
 1.8.0
