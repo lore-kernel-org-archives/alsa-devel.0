@@ -1,20 +1,17 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: [RFCv2 21/22] ALSA: hda - remove PCI dependency in
-	Kconfig
-Date: Fri, 28 Feb 2014 15:41:32 -0800
-Message-ID: <1393630893-29010-22-git-send-email-dgreid@chromium.org>
-References: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 00/11] ASoC: Consolidate enum controls
+	and DAPM MUXs
+Date: Sat, 1 Mar 2014 12:10:14 +0900
+Message-ID: <20140301031014.GH29849@sirena.org.uk>
+References: <1393572672-13937-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7079189923470309095=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ve0-f201.google.com (mail-ve0-f201.google.com
- [209.85.128.201])
- by alsa0.perex.cz (Postfix) with ESMTP id 282662659E0
- for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 00:42:55 +0100 (CET)
-Received: by mail-ve0-f201.google.com with SMTP id jy13so173114veb.0
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2014 15:42:52 -0800 (PST)
-In-Reply-To: <1393630893-29010-1-git-send-email-dgreid@chromium.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 472B1265292
+ for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 04:10:49 +0100 (CET)
+In-Reply-To: <1393572672-13937-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,214 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, swarren@wwwdotorg.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Remove the dependency on CONFIG_PCI for building hda codec drivers so
-that platforms with HDA attach via means other than PCI can use them.
-This was as suggested by tiwai.
 
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
----
- sound/pci/Kconfig      |  4 ++--
- sound/pci/hda/Kconfig  | 41 +++++++++++++++++++++++++----------------
- sound/pci/hda/Makefile |  6 ++++--
- 3 files changed, 31 insertions(+), 20 deletions(-)
+--===============7079189923470309095==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="J/zg8ciPNcraoWb6"
+Content-Disposition: inline
 
-diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index 8756c8e..56d93bf 100644
---- a/sound/pci/Kconfig
-+++ b/sound/pci/Kconfig
-@@ -578,8 +578,6 @@ config SND_FM801_TEA575X_BOOL
- 	  FM801 chip with a TEA5757 tuner (MediaForte SF256-PCS, SF256-PCP and
- 	  SF64-PCR) into the snd-fm801 driver.
- 
--source "sound/pci/hda/Kconfig"
--
- config SND_HDSP
- 	tristate "RME Hammerfall DSP Audio"
- 	select FW_LOADER
-@@ -889,3 +887,5 @@ config SND_YMFPCI
- 	  will be called snd-ymfpci.
- 
- endif	# SND_PCI
-+
-+source "sound/pci/hda/Kconfig"
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index f2032dd..ac17c3f 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -1,8 +1,15 @@
--menuconfig SND_HDA_INTEL
--	tristate "Intel HD Audio"
-+menu "HD-Audio"
-+
-+config SND_HDA
-+	tristate
- 	select SND_PCM
- 	select SND_VMASTER
- 	select SND_KCTL_JACK
-+
-+config SND_HDA_INTEL
-+	tristate "HD Audio PCI"
-+	depends on SND_PCI
-+	select SND_HDA
- 	help
- 	  Say Y here to include support for Intel "High Definition
- 	  Audio" (Azalia) and its compatible devices.
-@@ -13,7 +20,7 @@ menuconfig SND_HDA_INTEL
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-hda-intel.
- 
--if SND_HDA_INTEL
-+if SND_HDA
- 
- config SND_HDA_DSP_LOADER
- 	bool
-@@ -49,7 +56,7 @@ config SND_HDA_RECONFIG
- 
- config SND_HDA_INPUT_BEEP
- 	bool "Support digital beep via input layer"
--	depends on INPUT=y || INPUT=SND_HDA_INTEL
-+	depends on INPUT=y || INPUT=SND_HDA
- 	help
- 	  Say Y here to build a digital beep interface for HD-audio
- 	  driver. This interface is used to generate digital beeps.
-@@ -90,7 +97,7 @@ config SND_HDA_CODEC_REALTEK
- 	  snd-hda-intel driver, such as ALC880.
- 
- comment "Set to Y if you want auto-loading the codec driver"
--	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_REALTEK=m
-+	depends on SND_HDA=y && SND_HDA_CODEC_REALTEK=m
- 
- config SND_HDA_CODEC_ANALOG
- 	tristate "Build Analog Device HD-audio codec support"
-@@ -100,7 +107,7 @@ config SND_HDA_CODEC_ANALOG
- 	  snd-hda-intel driver, such as AD1986A.
- 
- comment "Set to Y if you want auto-loading the codec driver"
--	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_ANALOG=m
-+	depends on SND_HDA=y && SND_HDA_CODEC_ANALOG=m
- 
- config SND_HDA_CODEC_SIGMATEL
- 	tristate "Build IDT/Sigmatel HD-audio codec support"
-@@ -110,7 +117,7 @@ config SND_HDA_CODEC_SIGMATEL
- 	  snd-hda-intel driver, such as STAC9200.
- 
- comment "Set to Y if you want auto-loading the codec driver"
--	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_SIGMATEL=m
-+	depends on SND_HDA=y && SND_HDA_CODEC_SIGMATEL=m
- 
- config SND_HDA_CODEC_VIA
- 	tristate "Build VIA HD-audio codec support"
-@@ -120,7 +127,7 @@ config SND_HDA_CODEC_VIA
- 	  snd-hda-intel driver, such as VT1708.
- 
- comment "Set to Y if you want auto-loading the codec driver"
--	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_VIA=m
-+	depends on SND_HDA=y && SND_HDA_CODEC_VIA=m
- 
- config SND_HDA_CODEC_HDMI
- 	tristate "Build HDMI/DisplayPort HD-audio codec support"
-@@ -130,7 +137,7 @@ config SND_HDA_CODEC_HDMI
- 	  Intel and Nvidia HDMI/DisplayPort codecs.
- 
- comment "Set to Y if you want auto-loading the codec driver"
--	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_HDMI=m
-+	depends on SND_HDA=y && SND_HDA_CODEC_HDMI=m
- 
- config SND_HDA_I915
- 	bool
-@@ -145,7 +152,7 @@ config SND_HDA_CODEC_CIRRUS
- 	  snd-hda-intel driver, such as CS4206.
- 
- comment "Set to Y if you want auto-loading the codec driver"
--	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CIRRUS=m
-+	depends on SND_HDA=y && SND_HDA_CODEC_CIRRUS=m
- 
- config SND_HDA_CODEC_CONEXANT
- 	tristate "Build Conexant HD-audio codec support"
-@@ -155,7 +162,7 @@ config SND_HDA_CODEC_CONEXANT
- 	  snd-hda-intel driver, such as CX20549.
- 
- comment "Set to Y if you want auto-loading the codec driver"
--	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CONEXANT=m
-+	depends on SND_HDA=y && SND_HDA_CODEC_CONEXANT=m
- 
- config SND_HDA_CODEC_CA0110
- 	tristate "Build Creative CA0110-IBG codec support"
-@@ -165,7 +172,7 @@ config SND_HDA_CODEC_CA0110
- 	  snd-hda-intel driver, found on some Creative X-Fi cards.
- 
- comment "Set to Y if you want auto-loading the codec driver"
--	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CA0110=m
-+	depends on SND_HDA=y && SND_HDA_CODEC_CA0110=m
- 
- config SND_HDA_CODEC_CA0132
- 	tristate "Build Creative CA0132 codec support"
-@@ -174,7 +181,7 @@ config SND_HDA_CODEC_CA0132
- 	  snd-hda-intel driver.
- 
- comment "Set to Y if you want auto-loading the codec driver"
--	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CA0132=m
-+	depends on SND_HDA=y && SND_HDA_CODEC_CA0132=m
- 
- config SND_HDA_CODEC_CA0132_DSP
- 	bool "Support new DSP code for CA0132 codec"
-@@ -196,7 +203,7 @@ config SND_HDA_CODEC_CMEDIA
- 	  snd-hda-intel driver, such as CMI9880.
- 
- comment "Set to Y if you want auto-loading the codec driver"
--	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_CMEDIA=m
-+	depends on SND_HDA=y && SND_HDA_CODEC_CMEDIA=m
- 
- config SND_HDA_CODEC_SI3054
- 	tristate "Build Silicon Labs 3054 HD-modem codec support"
-@@ -205,7 +212,7 @@ config SND_HDA_CODEC_SI3054
- 	  (and compatibles) support in snd-hda-intel driver.
- 
- comment "Set to Y if you want auto-loading the codec driver"
--	depends on SND_HDA_INTEL=y && SND_HDA_CODEC_SI3054=m
-+	depends on SND_HDA=y && SND_HDA_CODEC_SI3054=m
- 
- config SND_HDA_GENERIC
- 	tristate "Enable generic HD-audio codec parser"
-@@ -214,7 +221,7 @@ config SND_HDA_GENERIC
- 	  in snd-hda-intel driver.
- 
- comment "Set to Y if you want auto-loading the codec driver"
--	depends on SND_HDA_INTEL=y && SND_HDA_GENERIC=m
-+	depends on SND_HDA=y && SND_HDA_GENERIC=m
- 
- config SND_HDA_POWER_SAVE_DEFAULT
- 	int "Default time-out for HD-audio power-save mode"
-@@ -225,3 +232,5 @@ config SND_HDA_POWER_SAVE_DEFAULT
- 	  power-save mode.  0 means to disable the power-save mode.
- 
- endif
-+
-+endmenu
-diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
-index 5deef4f..d0d0c19 100644
---- a/sound/pci/hda/Makefile
-+++ b/sound/pci/hda/Makefile
-@@ -1,4 +1,5 @@
--snd-hda-intel-objs := hda_controller.o hda_intel.o
-+snd-hda-intel-objs := hda_intel.o
-+snd-hda-controller-objs := hda_controller.o
- # for haswell power well
- snd-hda-intel-$(CONFIG_SND_HDA_I915) +=	hda_i915.o
- 
-@@ -25,7 +26,8 @@ snd-hda-codec-via-objs :=	patch_via.o
- snd-hda-codec-hdmi-objs :=	patch_hdmi.o hda_eld.o
- 
- # common driver
--obj-$(CONFIG_SND_HDA_INTEL) := snd-hda-codec.o
-+obj-$(CONFIG_SND_HDA) := snd-hda-codec.o
-+obj-$(CONFIG_SND_HDA) += snd-hda-controller.o
- 
- # codec drivers
- obj-$(CONFIG_SND_HDA_GENERIC) += snd-hda-codec-generic.o
--- 
-1.8.1.3.605.g02339dd
+
+--J/zg8ciPNcraoWb6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Feb 28, 2014 at 08:31:01AM +0100, Lars-Peter Clausen wrote:
+
+> The series depends on topic/dapm, topic/enum, topic/sign, topic/adau1373,
+> topic/max98090, topic/mc13783, fix/wm8994, topic/wm899
+
+Applied all, thanks.  For serieses like this it's probably worth
+considering sending a pull request (with a signed tag) which includes
+the required merge as well as posting the patches.
+
+--J/zg8ciPNcraoWb6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTEU+OAAoJELSic+t+oim9y+YP/Rmkvd1qUnCHmch1EwGm6uZY
+KPnkdUwJwCxq15SF4Z9iJQJHvgTGPWvyYHhtdetIPEJZ4huaBqAZh3qNiQxVKPxy
+jnRGL5ZRT4Bavmce4OQLGPgHsVk0pLpYbZUX3YgwRkpUrZLV4AWqQSEpYGnXnSEw
+q22bFjbFt1ekHsRc3Neef3/6HEBzIhLdv7yVoZjom5pnWLWOERNP03OkdEDbPOEN
+++MCkQ+Rl32pD3A/EEN04gpLX9fliO9EaIdjqr0w98uACRgnYZ2PZ8+XgF13wjrS
+NkYe6OSv/hj21sOT2/HGxwkU2cq6aXN0Eg8wLwAzCZYh/ZVwjGv+N4jLJNalGv90
+PrNDgGF5h0TiHOFX/H5J5LEloHBVhrRAAfOMLafSIu7dEgEgWLMBcE8eaVht2Mf2
+vTgTKgRK6JBeCr79+PYrPG27SYXgBsB461DrDDTSgiV088UAG6/jeVeCpTPk/zIA
+xfuhApSpM7G67rReAf7X5JtMvdKF4W1kOY8MGzbmjdD+KxA1our8gLLCppvP3Ibd
+UxGoLT+0qht59ZpL1xvc1kbZF1WlrAB9yn3zY+Gx9Jwnh5m1VW0VKvdlIU/RLzjc
+Z0TiOihIF2djucQPkHmZCRoyaxeWqCFEMdfgJJl3QWUc5P3fBECioT0boicupodv
+xGscye2vc90LygMr7YQW
+=0C+j
+-----END PGP SIGNATURE-----
+
+--J/zg8ciPNcraoWb6--
+
+--===============7079189923470309095==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7079189923470309095==--
