@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 8/8] ASoC: pxa: zylonite: Convert to table
-	based DAPM setup
-Date: Sat,  1 Mar 2014 15:48:20 +0100
-Message-ID: <1393685300-5307-8-git-send-email-lars@metafoo.de>
+Subject: [PATCH 6/8] ASoC: pxa: mioa701_wm9713: Convert to
+	table based DAPM setup
+Date: Sat,  1 Mar 2014 15:48:18 +0100
+Message-ID: <1393685300-5307-6-git-send-email-lars@metafoo.de>
 References: <1393685300-5307-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-167.synserver.de (smtp-out-192.synserver.de
  [212.40.185.192])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CAD92654AE
- for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 15:47:59 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F25C26534C
+ for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 15:47:57 +0100 (CET)
 In-Reply-To: <1393685300-5307-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,52 +31,59 @@ makes the code a bit cleaner and on the other hand the board level DAPM elements
 get registered in the card's DAPM context rather than in the CODEC's DAPM
 context.
 
-Also drop the two snd_soc_dapm_enable_pin() since pins are enabled by default
-and there is no matching snd_soc_dapm_disable_pin() in the driver.
+Also remove the snd_soc_dapm_enable_pin() calls, since pins are enabled by
+default and there are no matching snd_soc_dapm_disable_pin() calls.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/pxa/zylonite.c | 17 +++++------------
- 1 file changed, 5 insertions(+), 12 deletions(-)
+ sound/soc/pxa/mioa701_wm9713.c | 19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/pxa/zylonite.c b/sound/soc/pxa/zylonite.c
-index db8aadf..23bf991 100644
---- a/sound/soc/pxa/zylonite.c
-+++ b/sound/soc/pxa/zylonite.c
-@@ -71,22 +71,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 
- static int zylonite_wm9713_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
+index 160c524..595eee3 100644
+--- a/sound/soc/pxa/mioa701_wm9713.c
++++ b/sound/soc/pxa/mioa701_wm9713.c
+@@ -127,16 +127,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ static int mioa701_wm9713_init(struct snd_soc_pcm_runtime *rtd)
  {
--	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_codec *codec = rtd->codec;
 -	struct snd_soc_dapm_context *dapm = &codec->dapm;
--
- 	if (clk_pout)
- 		snd_soc_dai_set_pll(rtd->codec_dai, 0, 0,
- 				    clk_get_rate(pout), 0);
+ 	unsigned short reg;
  
--	snd_soc_dapm_new_controls(dapm, zylonite_dapm_widgets,
--				  ARRAY_SIZE(zylonite_dapm_widgets));
+-	/* Add mioa701 specific widgets */
+-	snd_soc_dapm_new_controls(dapm, mioa701_dapm_widgets,
+-				  ARRAY_SIZE(mioa701_dapm_widgets));
 -
+-	/* Set up mioa701 specific audio path audio_mapnects */
 -	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 -
--	/* Static setup for now */
--	snd_soc_dapm_enable_pin(dapm, "Headphone");
--	snd_soc_dapm_enable_pin(dapm, "Headset Earpiece");
+ 	/* Prepare GPIO8 for rear speaker amplifier */
+ 	reg = codec->driver->read(codec, AC97_GPIO_CFG);
+ 	codec->driver->write(codec, AC97_GPIO_CFG, reg | 0x0100);
+@@ -145,12 +137,6 @@ static int mioa701_wm9713_init(struct snd_soc_pcm_runtime *rtd)
+ 	reg = codec->driver->read(codec, AC97_3D_CONTROL);
+ 	codec->driver->write(codec, AC97_3D_CONTROL, reg | 0xc000);
+ 
+-	snd_soc_dapm_enable_pin(dapm, "Front Speaker");
+-	snd_soc_dapm_enable_pin(dapm, "Rear Speaker");
+-	snd_soc_dapm_enable_pin(dapm, "Front Mic");
+-	snd_soc_dapm_enable_pin(dapm, "GSM Line In");
+-	snd_soc_dapm_enable_pin(dapm, "GSM Line Out");
 -
  	return 0;
  }
  
-@@ -256,6 +244,11 @@ static struct snd_soc_card zylonite = {
- 	.resume_pre = &zylonite_resume_pre,
- 	.dai_link = zylonite_dai,
- 	.num_links = ARRAY_SIZE(zylonite_dai),
+@@ -183,6 +169,11 @@ static struct snd_soc_card mioa701 = {
+ 	.owner = THIS_MODULE,
+ 	.dai_link = mioa701_dai,
+ 	.num_links = ARRAY_SIZE(mioa701_dai),
 +
-+	.dapm_widgets = zylonite_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(zylonite_dapm_widgets),
++	.dapm_widgets = mioa701_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(mioa701_dapm_widgets),
 +	.dapm_routes = audio_map,
 +	.num_dapm_routes = ARRAY_SIZE(audio_map),
  };
  
- static struct platform_device *zylonite_snd_ac97_device;
+ static int mioa701_wm9713_probe(struct platform_device *pdev)
 -- 
 1.8.0
