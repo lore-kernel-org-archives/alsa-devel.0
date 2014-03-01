@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv2 2/3] ASoC: io: New signature for
- snd_soc_codec_set_cache_io()
-Date: Sat, 1 Mar 2014 13:34:58 +0900
-Message-ID: <20140301043458.GR29849@sirena.org.uk>
-References: <1393578267-18255-1-git-send-email-Li.Xiubo@freescale.com>
- <1393578267-18255-3-git-send-email-Li.Xiubo@freescale.com>
+Subject: Re: [PATCH v4-resend 2/7] ASoC: sirf: Add SiRF audio
+ port driver is used by SiRF internal audio codec
+Date: Sat, 1 Mar 2014 13:49:43 +0900
+Message-ID: <20140301044943.GS29849@sirena.org.uk>
+References: <1393399342-31177-1-git-send-email-rongjun.ying@csr.com>
+ <1393399342-31177-3-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8069212095115580802=="
+Content-Type: multipart/mixed; boundary="===============1265188349187759552=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8674626522D
- for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 05:35:03 +0100 (CET)
-In-Reply-To: <1393578267-18255-3-git-send-email-Li.Xiubo@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C4AD626522D
+ for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2014 05:49:53 +0100 (CET)
+In-Reply-To: <1393399342-31177-3-git-send-email-rongjun.ying@csr.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, linux-kernel@vger.kernel.org
+To: RongJun Ying <rjying@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, workgroup.linux@csr.com, Rongjun Ying <rongjun.ying@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8069212095115580802==
+--===============1265188349187759552==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RpDyejMaDGJhP2PU"
+	protocol="application/pgp-signature"; boundary="ZcSDOt7TZFizttpn"
 Content-Disposition: inline
 
 
---RpDyejMaDGJhP2PU
+--ZcSDOt7TZFizttpn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Feb 28, 2014 at 05:04:26PM +0800, Xiubo Li wrote:
-> Now that all users have been converted to regmap and the config.reg_bits
-> and config.val_bits can be setted by each user through regmap core API.
-> So these two params are redundant here.
+On Wed, Feb 26, 2014 at 03:22:17PM +0800, RongJun Ying wrote:
 
-Actually, I think the way to fix the issue with CODECs doing I/O in
-probe is to provide a way for drivers to specify a regmap when
-registering the CODEC (rather than during probe) and then move the
-initialisation of the regmap before the probe function is called.  That
-would make set_cache_io() go away entirely.
+A couple of very small issues below but otherwise looks good.
 
---RpDyejMaDGJhP2PU
+> index d62ce48..23946c2 100644
+> --- a/sound/soc/Kconfig
+> +++ b/sound/soc/Kconfig
+> @@ -54,6 +54,7 @@ source "sound/soc/spear/Kconfig"
+>  source "sound/soc/tegra/Kconfig"
+>  source "sound/soc/txx9/Kconfig"
+>  source "sound/soc/ux500/Kconfig"
+> +source "sound/soc/sirf/Kconfig"
+
+Keep Kconfig and Makefile sorted.
+
+> +static inline void sirf_audio_port_tx_enable(struct sirf_audio_port *port)
+
+Drop the inlines, let the compiler do it if it decides it's worthwhile.
+
+--ZcSDOt7TZFizttpn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTEWNqAAoJELSic+t+oim9c4QP/jL6yuE+Yh4zOeu80Y46621C
-rd4gXZjXrXpNwYtKILLFQbiaMcRw8+Y4RM8fB2ysyOCYG5nadHOg7Oo81pP5AOVU
-QQS6Z9cbsq6GGxeRfz9XDzGPUyHCEuDstGQBgodYC+fYRpthlvXafCeDWaxIYhqX
-F5d4W7gKqGNWFcE2fmztCg2gLw3945Cn7wTjLzmftvb9yIpFcvJaqNV2sohe5Wo6
-wQ69Ym73FN6fs+uQrjxxaC+lJe79K2xtrk8kzTCVHd1dMkSzp7/Pv18XtCMXBrin
-BWGHUfQcgjzAoz3cx4gTNrllUsMG8jGRtdqx+NHjcE5dvhitD8MMk3JD/hHw/ANM
-7HOcQeG8/h1eq/3nqMy+cP2IB96eKrWeLPi92/5YZpsWvd59vOOAOUNj5bYUW78Y
-D84PbLBAcDUPpioRVLZEtDTLr0kc5Hf2AAGQoOGddjia8k3DEc3hNZCzUiQ2FZv2
-b0cIvYvyU2HuWQenbb+GIjKgcAPFJHVVPVmbm0TjRAqPOkw0Hqd2hzZJCC/d6K4E
-azYuzyptVmRAc4vcwYk5yq3YKxKojxvhh09sIiaCIP3ff2rV3tO2ra4NliHILxDs
-05+sHFaK+IGXQ+3laL4nQI/7ACnitvWVue/L/H9o/vLvo+orNp9oSdsPzbEVqEik
-6woyF/tasx+VsSw7vRms
-=6X7Z
+iQIcBAEBAgAGBQJTEWbfAAoJELSic+t+oim92tIP/3M9W2Vnpu495ds9W2ofs/0O
+Yb64n+e4gIF0y1TXute2cR2EvqNdak5QnK86BwSloatgJ44ftRn+Gae4LjNMpgNd
+k1qU3lO9O8L4UBL8uOZJsJOqyciQJlr4uQZxqSgGHFjigv6mWwvJ7mowpsCZDUrn
+h1xMQsG1q2czUlRKnJKc40WcecCCIIeVIDHfyVjgNUZ4PtKGv9Dx8n8pCVwtrnP+
+HAyUrBM4EMaDugYyxaFrr++R6GMq6j8+E3FrgKBJVAU3ijAbQ47lSJRMss6+9pNw
+2nvBIIEz2uLtUbt6Mk5vXLw2097gdElZwHto+g1braxOZKW1u7N4Gm1Nd1LZCOmK
+DhDASHU0FKEcxKukzWBvDhwbAfjTcDSxUbtRnKVRoPGlwTRZPtegD0r1IM54MFuG
+nT9EGikkNyz0ET5KbANqXFQVtDkBOAuYBJOziDim4tkk1UisOX1N+2RRlcfhJHG8
+M29GV5LvGFVhvDCzKCZ96VQtb8MTEzM3XW9qSwiRh8urMzATMPAMWPIpeZ/JB8y+
+pV6pgPlmYuHWOJ9q/XUrMbn2k0WukaOg7qqgB/707WYaGoeEGqPCbAskG+HEo3Pk
+w+pGx+U2NIqbJ9vhMP8QG14JPAF6QOo/YtKJxFClKmgiyB+2bwHuZEiSX1hpLov9
+F2Fzqqh9E+F5OTGn5sl3
+=u50x
 -----END PGP SIGNATURE-----
 
---RpDyejMaDGJhP2PU--
+--ZcSDOt7TZFizttpn--
 
---===============8069212095115580802==
+--===============1265188349187759552==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8069212095115580802==--
+--===============1265188349187759552==--
