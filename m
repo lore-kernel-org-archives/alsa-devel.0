@@ -1,15 +1,15 @@
 From: Patrick Lai <plai@codeaurora.org>
 Subject: [PATCH] ASoC: pcm: free path list before exiting from
 	error conditions
-Date: Sun,  2 Mar 2014 11:47:03 -0800
-Message-ID: <1393789623-27682-1-git-send-email-plai@codeaurora.org>
+Date: Sun,  2 Mar 2014 11:52:57 -0800
+Message-ID: <1393789977-29091-1-git-send-email-plai@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.11.231])
- by alsa0.perex.cz (Postfix) with ESMTP id 89C2D265482
- for <alsa-devel@alsa-project.org>; Sun,  2 Mar 2014 20:47:11 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 63B2E265482
+ for <alsa-devel@alsa-project.org>; Sun,  2 Mar 2014 20:53:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,8 +24,8 @@ Cc: alsa-devel@alsa-project.org, Patrick Lai <plai@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
 dpcm_path_get() allocates dynamic memory to hold path list.
-Corresponding dpcm_get_path() must be called to free the memory.
-dpcm_get_path() is not called under several error conditions.
+Corresponding dpcm_path_put() must be called to free the memory.
+dpcm_path_put() is not called under several error conditions.
 This leads to memory leak.
 
 Signed-off-by: Patrick Lai <plai@codeaurora.org>
