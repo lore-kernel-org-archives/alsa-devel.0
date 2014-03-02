@@ -1,17 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: 7.1 surround not working on ALC892/ Ubuntu 13.04
-Date: Sun, 2 Mar 2014 12:04:35 +0800
-Message-ID: <CAN8ccibQ6msuO1M9W=+7uYSF=FAabegNwFPb4+yPrn0PAqAWxw@mail.gmail.com>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: [PATCH] ASoC: pcm: free path list before exiting from
+	error conditions
+Date: Sun,  2 Mar 2014 11:47:03 -0800
+Message-ID: <1393789623-27682-1-git-send-email-plai@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f172.google.com (mail-qc0-f172.google.com
- [209.85.216.172])
- by alsa0.perex.cz (Postfix) with ESMTP id EB6BD260816
- for <alsa-devel@alsa-project.org>; Sun,  2 Mar 2014 05:04:36 +0100 (CET)
-Received: by mail-qc0-f172.google.com with SMTP id i8so2477089qcq.17
- for <alsa-devel@alsa-project.org>; Sat, 01 Mar 2014 20:04:36 -0800 (PST)
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.11.231])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89C2D265482
+ for <alsa-devel@alsa-project.org>; Sun,  2 Mar 2014 20:47:11 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,45 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Subodh Chiwate <subodh.austin@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, liam.r.girdwood@linux.intel.com
+Cc: alsa-devel@alsa-project.org, Patrick Lai <plai@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-> I am unable to get 7.1 surround sound option on my system.
-> Alsamixer is not giving me any option to choose 8 channels.
-> Surround 5.1 is working correctly.
-> I am not sure how to configure the system to get the 8 channel setup
-working.
->
- >Distributor ID: Ubuntu
->Description: Ubuntu 13.04
->Release: 13.04
->Codename: raring
+dpcm_path_get() allocates dynamic memory to hold path list.
+Corresponding dpcm_get_path() must be called to free the memory.
+dpcm_get_path() is not called under several error conditions.
+This leads to memory leak.
 
->Attaching all the sound-card information I could gather from the system.
->Please let me know in case any additional information is needed to debug
-the issue.
+Signed-off-by: Patrick Lai <plai@codeaurora.org>
+---
+ sound/soc/soc-pcm.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-> user1 <at> user1-MI970VF:~/ufouser$ cat /proc/asound/card0/codec#* | grep
-Codec
-> Codec: Realtek ALC892
-
-For motherboard with 3 audio jacks at rear panel and 10 channels HDA codec
-
-you need to retask headphone at front panel as side line out
-
-the easy way is to use hdajackretask (advanced override) or early patching
-to retask
-
-if green line out at rear panel has sequence 1 in pin default.
-
-1) blue line jack as Line Out with sequence 2
-2) pink mic jack as Line Out with sequence 3
-3) front panel headphone to Line out with sequence 4
-
-the three retasked line out should have same default association as the
-green line out
-
-in theory, it is possible to add the retask of headphone to line out into
-the existing channel mode (8ch) when the codec has extra DAC and volume
-control using multi_Ios pin butt need to hack the jack detection control,
-disable auto mute and independent headphone when the headphone is retasked
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 47e1ce7..28522bd 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1989,6 +1989,7 @@ int soc_dpcm_runtime_update(struct snd_soc_card *card)
+ 
+ 		paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_PLAYBACK, &list);
+ 		if (paths < 0) {
++			dpcm_path_put(&list);
+ 			dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
+ 					fe->dai_link->name,  "playback");
+ 			mutex_unlock(&card->mutex);
+@@ -2018,6 +2019,7 @@ capture:
+ 
+ 		paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_CAPTURE, &list);
+ 		if (paths < 0) {
++			dpcm_path_put(&list);
+ 			dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
+ 					fe->dai_link->name,  "capture");
+ 			mutex_unlock(&card->mutex);
+@@ -2082,6 +2084,7 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
+ 	fe->dpcm[stream].runtime = fe_substream->runtime;
+ 
+ 	if (dpcm_path_get(fe, stream, &list) <= 0) {
++		dpcm_path_put(&list);
+ 		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
+ 			fe->dai_link->name, stream ? "capture" : "playback");
+ 	}
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+hosted by The Linux Foundation
