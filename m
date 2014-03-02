@@ -1,37 +1,65 @@
-From: Aaro Koskinen <aaro.koskinen@iki.fi>
-Subject: [PATCH] sound: omap: n810: fix init with DT boot
-Date: Sat,  1 Mar 2014 20:08:37 +0200
-Message-ID: <1393697317-16733-1-git-send-email-aaro.koskinen@iki.fi>
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: 7.1 surround not working on ALC892/ Ubuntu 13.04
+Date: Sun, 2 Mar 2014 12:04:35 +0800
+Message-ID: <CAN8ccibQ6msuO1M9W=+7uYSF=FAabegNwFPb4+yPrn0PAqAWxw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f172.google.com (mail-qc0-f172.google.com
+ [209.85.216.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB6BD260816
+ for <alsa-devel@alsa-project.org>; Sun,  2 Mar 2014 05:04:36 +0100 (CET)
+Received: by mail-qc0-f172.google.com with SMTP id i8so2477089qcq.17
+ for <alsa-devel@alsa-project.org>; Sat, 01 Mar 2014 20:04:36 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Subodh Chiwate <subodh.austin@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Since 3.14-rc1 only DT boot has been supported on N810. Make a minimal
-fix to retain functionality. This file should be properly converted
-to DT in longer term.
+> I am unable to get 7.1 surround sound option on my system.
+> Alsamixer is not giving me any option to choose 8 channels.
+> Surround 5.1 is working correctly.
+> I am not sure how to configure the system to get the 8 channel setup
+working.
+>
+ >Distributor ID: Ubuntu
+>Description: Ubuntu 13.04
+>Release: 13.04
+>Codename: raring
 
-Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
----
- sound/soc/omap/n810.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+>Attaching all the sound-card information I could gather from the system.
+>Please let me know in case any additional information is needed to debug
+the issue.
 
-diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
-index 3fde9e4..d163e18 100644
---- a/sound/soc/omap/n810.c
-+++ b/sound/soc/omap/n810.c
-@@ -305,7 +305,9 @@ static int __init n810_soc_init(void)
- 	int err;
- 	struct device *dev;
- 
--	if (!(machine_is_nokia_n810() || machine_is_nokia_n810_wimax()))
-+	if (!of_have_populated_dt() ||
-+	    (!of_machine_is_compatible("nokia,n810") &&
-+	     !of_machine_is_compatible("nokia,n810-wimax")))
- 		return -ENODEV;
- 
- 	n810_snd_device = platform_device_alloc("soc-audio", -1);
--- 
-1.8.3.3
+> user1 <at> user1-MI970VF:~/ufouser$ cat /proc/asound/card0/codec#* | grep
+Codec
+> Codec: Realtek ALC892
 
+For motherboard with 3 audio jacks at rear panel and 10 channels HDA codec
+
+you need to retask headphone at front panel as side line out
+
+the easy way is to use hdajackretask (advanced override) or early patching
+to retask
+
+if green line out at rear panel has sequence 1 in pin default.
+
+1) blue line jack as Line Out with sequence 2
+2) pink mic jack as Line Out with sequence 3
+3) front panel headphone to Line out with sequence 4
+
+the three retasked line out should have same default association as the
+green line out
+
+in theory, it is possible to add the retask of headphone to line out into
+the existing channel mode (8ch) when the codec has extra DAC and volume
+control using multi_Ios pin butt need to hack the jack detection control,
+disable auto mute and independent headphone when the headphone is retasked
