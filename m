@@ -1,58 +1,57 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [PATCHv2 1/3] ASoC: codec: Simplify ASoC probe code.
-Date: Mon, 3 Mar 2014 03:01:52 +0000
-Message-ID: <ea3da7fbf6564020b12bcd8b4878ae4a@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1393578267-18255-1-git-send-email-Li.Xiubo@freescale.com>
- <1393578267-18255-2-git-send-email-Li.Xiubo@freescale.com>
- <20140301042818.GP29849@sirena.org.uk>
+From: "'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>
+Subject: Re: change kmalloc into vmalloc for large memory
+	allocations
+Date: Sun, 2 Mar 2014 19:08:21 -0800
+Message-ID: <20140303030821.GA16732@kroah.com>
+References: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
+ <53104ECA.4010702@freescale.com>
+ <35FD53F367049845BC99AC72306C23D102844605F38D@CNBJMBX05.corpusers.net>
+ <20140228163304.GA15614@kroah.com>
+ <35FD53F367049845BC99AC72306C23D102844605F38F@CNBJMBX05.corpusers.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140301042818.GP29849@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "lars@metafoo.de" <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
+ [140.211.169.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EF692654D4
+ for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 04:08:15 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <35FD53F367049845BC99AC72306C23D102844605F38F@CNBJMBX05.corpusers.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'broonie@opensource.wolfsonmicro.com'" <broonie@opensource.wolfsonmicro.com>, "'tiwai@suse.de'" <tiwai@suse.de>, "'fweisbec@gmail.com'" <fweisbec@gmail.com>, "'mingo@redhat.com'" <mingo@redhat.com>, "'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>, "'rydberg@euromail.se'" <rydberg@euromail.se>, "'lrg@ti.com'" <lrg@ti.com>, "'pablo@netfilter.org'" <pablo@netfilter.org>, "'coreteam@netfilter.org'" <coreteam@netfilter.org>, "'linux-arm-msm@vger.kernel.org'" <linux-arm-msm@vger.kernel.org>, "'rostedt@goodmis.org'" <rostedt@goodmis.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, "'linux-arm-kernel@lists.infradead.org'" <linux-arm-kernel@lists.infradead.org>, "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>, "'dmitry.torokhov@gmail.com'" <dmitry.torokhov@gmail.com>, 'linux-kern
 List-Id: alsa-devel@alsa-project.org
 
-> > "Just removing the set_cache_io() call will not work for all
-> > drivers. There are some MFD child devices which use regmap from the parent
-> > device. So dev_get_regmap() will return NULL for those."
-> 
-> This is the sort of thing that I was referring to when talking about
-> doing the non-boring drivers separately.  As well as the warnings Lars
-> mentioned there's a bisection issue here:
-> 
-> > -	codec->control_data = da7213->regmap;
-> > -	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
-> > -	if (ret < 0) {
-> > -		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-> > -		return ret;
-> > -	}
-> > -
-> >  	/* Default to using ALC auto offset calibration mode. */
-> >  	snd_soc_update_bits(codec, DA7213_ALC_CTRL1,
-> >  			    DA7213_ALC_CALIB_MODE_MAN, 0);
-> 
-> Unless the core sets up the I/O before calling probe() the above is
-> going to mean that the snd_soc_update_bits() call fails since the I/O
-> operations won't have been set up.  There is a defualt call to set a
-> regmap up but it's only done after the probe.
-
-Yes, like the SGTL5000 CODEC driver, which needs to read the chip information
-in main probe. And then it must use the regmap core APIs directly.
-
-And I have do another research early, all the CODEC drivers who are calling
-set_cache_io() in ASoC probes, and before that they all are using the regmap core
-APIs instead of ASoC ones if needed. 
-
-I think we should move the set_cache_io() calling more earlier as we discussed
-before, but need much more research and testing. Splitting them into another
-separate patch later will be much better and easier to be reviewed.
-
-Thanks,
-
---
-Best Regards,
-Xiubo
+T24gTW9uLCBNYXIgMDMsIDIwMTQgYXQgMTA6NTE6MjNBTSArMDgwMCwgV2FuZywgWWFsaW4gd3Jv
+dGU6Cj4gSGkgIGdyZWcsCj4gCj4gSSBhbSBzb3JyeSwKPiBJIG1ha2UgYSBtaXN0YWtlICwKPiBZ
+b3UgYXJlIHJpZ2h0ICwKPiBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2VybmVs
+L2dpdC93aWxsL2xpbnV4LmdpdC90cmVlL2RyaXZlcnMvdXNiL2dhZGdldC9mX21hc3Nfc3RvcmFn
+ZS5jP2g9bWFzdGVyI24yNzI0Cj4gCj4gdGhpcyBvbmUgc2hvdWxkIG5vdCBjaGFuZ2VkIHRvIHVz
+ZSB2bWFsbG9jLAo+IHRoZSBidWZmZXIgd2lsbCBiZSB1c2VkIGJ5IERNQe+8jAoKV2hpY2ggaXMg
+d2h5IGEgd3JhcHBlciBmdW5jdGlvbiB3aWxsIG5ldmVyIHdvcmsuCgo+IG90aGVycyBzaG91bGQg
+YmUgc2FmZSB0byBjaGFuZ2U6Cj4gCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4
+L2tlcm5lbC9naXQvd2lsbC9saW51eC5naXQvdHJlZS9zb3VuZC9zb2Mvc29jLWNvcmUuYz9oPW1h
+c3RlciNuMzc3Mgo+IAo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwv
+Z2l0L3dpbGwvbGludXguZ2l0L3RyZWUvbmV0L25ldGZpbHRlci9uZl9jb25udHJhY2tfZnRwLmM/
+aD1tYXN0ZXIjbjYwMwo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwv
+Z2l0L3dpbGwvbGludXguZ2l0L3RyZWUvbmV0L25ldGZpbHRlci9uZl9jb25udHJhY2tfaDMyM19t
+YWluLmM/aD1tYXN0ZXIjbjE4NDkKPiBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgv
+a2VybmVsL2dpdC93aWxsL2xpbnV4LmdpdC90cmVlL25ldC9uZXRmaWx0ZXIvbmZfY29ubnRyYWNr
+X2lyYy5jP2g9bWFzdGVyI24yNDcKPiBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgv
+a2VybmVsL2dpdC93aWxsL2xpbnV4LmdpdC90cmVlL25ldC9uZXRmaWx0ZXIvbmZfY29ubnRyYWNr
+X3NhbmUuYz9oPW1hc3RlciNuMTk1Cj4gCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xp
+bnV4L2tlcm5lbC9naXQvd2lsbC9saW51eC5naXQvdHJlZS9kcml2ZXJzL2lucHV0L2V2ZGV2LmM/
+aD1tYXN0ZXIjbjQwMwoKVGhlbiBzZW5kIGluZGl2aWR1YWwgcGF0Y2hlcyBmb3IgdGhlc2UgYW5k
+IHNlZSB3aGF0IGhhcHBlbnMuCgpncmVnIGstaApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
