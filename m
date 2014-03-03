@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 08/19] ASoC: rsnd: run rsnd_path_init()
- when probe() timing
-Date: Mon, 3 Mar 2014 10:22:01 +0900
-Message-ID: <20140303012201.GH2411@sirena.org.uk>
+Subject: Re: [PATCH 03/19] ASoC: rsnd: remove verbose function
+	parameter
+Date: Mon, 3 Mar 2014 10:19:53 +0900
+Message-ID: <20140303011953.GD2411@sirena.org.uk>
 References: <87d2ib90t9.wl%kuninori.morimoto.gx@gmail.com>
- <871tyr90qe.wl%kuninori.morimoto.gx@gmail.com>
+ <878usz90ri.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4083249720916221146=="
+Content-Type: multipart/mixed; boundary="===============0379523888213785269=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 880032654D4
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 02:59:27 +0100 (CET)
-In-Reply-To: <871tyr90qe.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 855E6265534
+ for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 02:59:25 +0100 (CET)
+In-Reply-To: <878usz90ri.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,57 +27,54 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam G
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4083249720916221146==
+--===============0379523888213785269==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZYOWEO2dMm2Af3e3"
+	protocol="application/pgp-signature"; boundary="kvUQC+jR9YzypDnK"
 Content-Disposition: inline
 
 
---ZYOWEO2dMm2Af3e3
+--kvUQC+jR9YzypDnK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 24, 2014 at 10:15:40PM -0800, Kuninori Morimoto wrote:
+On Mon, Feb 24, 2014 at 10:15:00PM -0800, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
-> Current rsnd SSIU/SSI/SCU/SRU path is set
-> when playback/capture starts up.
-> But it is meaningless method, since the path is based
-> on platform and can be set in probe() timing.
-> This patch sets the path on probe() timing.
+> priv has rcar_snd_info pointer.
+> having priv and info in same time is verbose.
 
-This is fine but it depends on the set_sysclk() patch.
+Applied, thanks.
 
---ZYOWEO2dMm2Af3e3
+--kvUQC+jR9YzypDnK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTE9k2AAoJELSic+t+oim9AzUQAIILAAieaLGpuf0P5TzuVme9
-CNXaBHqbY2bOTF3RoX94/QT3VsYNv9zRl5pE60POBKNW8PcaDBaEA37jz/e/aaaH
-qXdiaXrytCto5yUd8SlSlF36xXNeDrIvMN2vGS3vX2DPHUjV2qKqIS2yiax3QOT+
-ClZkOmutC6epfVHt8fUiCpF35jrgRmqRL12SkwiJstWZ6FEkxESPPqYaugSucy4E
-lfOLt3WPvB+HuYwOjmWSaihCM/thNAFAJbu9K8rcUFd51NPTu1gMJCaIVWL9lpgs
-Vl08r1i4+FylSOMNxBXUZb9p4uDU88vabmn+5/iV0IOSweGYSv7mNWI9Yr7uW0T4
-aQtxxoLWMJANn5emI5N6q2uZvmnqeqxHXfBG5jLFya/bKEczW+uOj8376uYgK09T
-HEUbCgS7WOdf4U4xEtVR4PcR+CtqF5ubHi6U0tJvQn1GcB3TYG2N+X18pSLT0jzU
-iaVBDp6GrOHuzhrA/b/0KLFeZBqFLGTl2FQiEkXPO3uy8+2iGKmjXVvaeuF6l4oG
-1O26TJ4sp30VuzPuT5HCWZuadBFX+xJkInXZnGOVpcVJXj7644UoUV/9vVCEtypq
-Wcus4dxCpPUYCp5/FmVb+xsXxDlw+qWxOuLw+0lVhH9FDzbWZWlGU1XHCocRJIZs
-dZ5bx+ZJ8LLIBIUyEycN
-=CRmR
+iQIcBAEBAgAGBQJTE9i2AAoJELSic+t+oim9ISkP/R+n8DunHQTvAV0yObCcoHCy
+MeV918tIPn7Qk4zhmyJtlNDgGtQ9+d5pPtglZr6wrEe5xUk3Fc7K0YwztERp2uB+
+OMN22/3wS3CPJQBdAtUFrrtbLiLyXqOd4sJCEflC6MtAec80wT82KHDRRtFeUhTJ
+uAuph3HEc73zOHNt0DXu2goaA3B4FcmcYxByvIjL5IjdwjsE4+EDFWVHKKk6nPY9
+Jz82Csl64hDbHf8sy8Hi1lY7PuF0FOzlW4oDNzdNYWKht+In3JUAkNiRGCG3foRP
+ogjytrgOjepk7QvT75qLr+C1lFSzqIsdVxS9kLqTKYH5THiFZb5HWhNhp9NGMh/0
+TamhJwujvN2NMXi4B0wASE2WGt/xqVURgDRkEJxPAjI29Z7DdVnZzlGsHNR0obl5
+aXYGVAhN1qIcTuU9e+S9tVVx1A61XC3fark8M7j6qrscZC49hT071KjZgIkUZXF8
+GkxUOMKMcxgxjn4T/Xrel0YnSUDpDRq86jzeRmuw+beK2Z8YqqseJMLcCj5oQH1s
+npMr07hMrbnshpJHH+aTlGRB9OTF8g8Z+2LLdo7ht6XMsyx+LAE26XzsJqGxcQJg
+jMxoM31/6uPEfRcD5HLcserA6Dl3prMspBDd2RlQzpAQmic2iArN/RQszwArUd3O
+Vje8qDuSHzpphaR5dphi
+=7UeY
 -----END PGP SIGNATURE-----
 
---ZYOWEO2dMm2Af3e3--
+--kvUQC+jR9YzypDnK--
 
---===============4083249720916221146==
+--===============0379523888213785269==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4083249720916221146==--
+--===============0379523888213785269==--
