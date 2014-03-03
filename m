@@ -1,80 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 05/19] ASoC: rsnd: unify rdai naming
-Date: Mon, 3 Mar 2014 10:20:18 +0900
-Message-ID: <20140303012018.GF2411@sirena.org.uk>
-References: <87d2ib90t9.wl%kuninori.morimoto.gx@gmail.com>
- <8761o390r3.wl%kuninori.morimoto.gx@gmail.com>
+From: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
+Subject: RE: change kmalloc into vmalloc for large memory allocations
+Date: Mon, 3 Mar 2014 10:51:23 +0800
+Message-ID: <35FD53F367049845BC99AC72306C23D102844605F38F@CNBJMBX05.corpusers.net>
+References: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
+ <53104ECA.4010702@freescale.com>
+ <35FD53F367049845BC99AC72306C23D102844605F38D@CNBJMBX05.corpusers.net>
+ <20140228163304.GA15614@kroah.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0028237081653947591=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AFFB02654D3
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 03:23:20 +0100 (CET)
-In-Reply-To: <8761o390r3.wl%kuninori.morimoto.gx@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20140228163304.GA15614@kroah.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: "'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'broonie@opensource.wolfsonmicro.com'" <broonie@opensource.wolfsonmicro.com>, "'tiwai@suse.de'" <tiwai@suse.de>, "'fweisbec@gmail.com'" <fweisbec@gmail.com>, "'perex@perex.cz'" <perex@perex.cz>, "'mingo@redhat.com'" <mingo@redhat.com>, "'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>, "'rydberg@euromail.se'" <rydberg@euromail.se>, "'lrg@ti.com'" <lrg@ti.com>, "'pablo@netfilter.org'" <pablo@netfilter.org>, "'coreteam@netfilter.org'" <coreteam@netfilter.org>, "'linux-arm-msm@vger.kernel.org'" <linux-arm-msm@vger.kernel.org>, "'rostedt@goodmis.org'" <rostedt@goodmis.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, "'linux-arm-kernel@lists.infradead.org'" <linux-arm-kernel@lists.infradead.org>, "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>, "'dmitry.torokhov@gmail.com'" <dmit>
 List-Id: alsa-devel@alsa-project.org
 
+Hi  greg,
 
---===============0028237081653947591==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XStn23h1fwudRqtG"
-Content-Disposition: inline
+I am sorry,
+I make a mistake ,
+You are right ,
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/drivers/usb/gadget/f_mass_storage.c?h=master#n2724
 
+this one should not changed to use vmalloc,
+the buffer will be used by DMA，
 
---XStn23h1fwudRqtG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+others should be safe to change:
 
-On Mon, Feb 24, 2014 at 10:15:18PM -0800, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> struct rsnd_dai is called as "rdai",
-> but its size has been called as "dai_nr".
-> Unify these as "rdai"
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/sound/soc/soc-core.c?h=master#n3772
 
-Applied, thanks.
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_ftp.c?h=master#n603
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_h323_main.c?h=master#n1849
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_irc.c?h=master#n247
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/netfilter/nf_conntrack_sane.c?h=master#n195
 
---XStn23h1fwudRqtG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTE9jPAAoJELSic+t+oim9uRwQAJOgU2pM5BLhacjUD7WHCsHR
-WS15b6/1XhFR3eM4NEownF8zoazSRd1G1wlLcPtzmlsRlLUpjcd65g/Go3fNTVPx
-y6PcjLIT71jVD6Nmwxh9Icmdk6xMxXspM9D6BjRgeDRtvpbgQSEYbcWgsQ0VEKCZ
-pZBMySJ2iaLV7P1u2i7mih1HCtPV8YtVJEx4DYaPQeAbnp9PBnd/3N+GEt38pKOj
-uBzvLYzOSDNbrPzrPmUtdwmvGlpAD9wNsioGTNJX5cPSOIMRFlw3GWMsWcaB+QEw
-qDRVCviZDN/NAE3nQgB4ZY87a5hEjXj72QVu9yBeChdiQSWWZNswhuagYCReWD4x
-0WR/YVEqvI1BNFmC0CmMtFZydn6rHYDO/0eebQm1SP6r8d0XwL+xCqKBsc+z7KgD
-ezYvaqYXNhenVOeFQo/yRZlXV6Oj38QSdEtTQN4vJQoYFTNTUsp06oVJKn6XixVS
-HpP2ksa0I+C3rD1OH+iGd100NSkoye9XYr9IfBdlPa3dF/qSHIK4WuL0qftVnsco
-7NK2xHBEh480L3N3NsC2KApj4VA1whUjREMkGWvkRw9JmCy50l76IhHY+Zldlsa2
-4ijOo5olFyzbuDShC2Mk95Gf340NjK9bIeI4ELV9ztS8eKXz7wGcyq7JSlCvJZwQ
-g8Nv4B/sRofmjZoCS8N7
-=yXwk
------END PGP SIGNATURE-----
-
---XStn23h1fwudRqtG--
-
---===============0028237081653947591==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/drivers/input/evdev.c?h=master#n403
 
 
---===============0028237081653947591==--
+Thanks 
+-----Original Message-----
+From: 'gregkh@linuxfoundation.org' [mailto:gregkh@linuxfoundation.org] 
+Sent: Saturday, March 01, 2014 12:33 AM
+To: Wang, Yalin
+Cc: 'Huang Shijie'; 'linux-kernel@vger.kernel.org'; 'linux-arm-msm@vger.kernel.org'; 'linux-arm-kernel@lists.infradead.org'; 'linux-input@vger.kernel.org'; 'balbi@ti.com'; 'lrg@ti.com'; 'broonie@opensource.wolfsonmicro.com'; 'perex@perex.cz'; 'tiwai@suse.de'; 'pablo@netfilter.org'; 'kaber@trash.net'; 'davem@davemloft.net'; 'rostedt@goodmis.org'; 'fweisbec@gmail.com'; 'mingo@redhat.com'; 'dmitry.torokhov@gmail.com'; 'rydberg@euromail.se'; 'linux-usb@vger.kernel.org'; 'alsa-devel@alsa-project.org'; 'netfilter-devel@vger.kernel.org'; 'netfilter@vger.kernel.org'; 'coreteam@netfilter.org'; 'netdev@vger.kernel.org'
+Subject: Re: change kmalloc into vmalloc for large memory allocations
+
+On Fri, Feb 28, 2014 at 05:20:08PM +0800, Wang, Yalin wrote:
+> Hi
+> 
+> 
+> Yeah,
+> Dma buffer must be allocated by kmalloc,
+> 
+> But the modules I list should can all be changed to use vmalloc, 
+> because the buffer is only used by software, Not by any hardware .
+
+Are you sure about that?  The USB gadget driver needs DMA memory from what I can tell, have you tried your change out on a system that does not allow the USB controller to access non-DMA memory?
+
+And I agree with Steve, just fix the individual drivers, don't do a "hidden" change of where the memory is allocated from, that's not a good idea and will cause problems later.
+
+greg k-h
