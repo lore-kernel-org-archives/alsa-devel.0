@@ -1,24 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: change kmalloc into vmalloc for large memory
-	allocations
-Date: Mon, 03 Mar 2014 12:45:51 +0100
-Message-ID: <53146B6F.4000601@metafoo.de>
-References: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
- <s5hlhwvb9q8.wl%tiwai@suse.de>
- <35FD53F367049845BC99AC72306C23D102844605F38E@CNBJMBX05.corpusers.net>
- <s5hob1nabb5.wl%tiwai@suse.de> <s5hmwh7ab5w.wl%tiwai@suse.de>
- <35FD53F367049845BC99AC72306C23D102844605F392@CNBJMBX05.corpusers.net>
- <531468CA.6040302@metafoo.de>
- <35FD53F367049845BC99AC72306C23D102844605F393@CNBJMBX05.corpusers.net>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [TINYCOMPRESS][PATCH 1/1] compress: no need to	set
+	metadata before calling next_track
+Date: Mon, 3 Mar 2014 13:25:47 +0000
+Message-ID: <20140303132547.GA20710@opensource.wolfsonmicro.com>
+References: <20140226142829.GB2002@opensource.wolfsonmicro.com>
+ <530F62CA.6080002@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-014.synserver.de (smtp-out-144.synserver.de
- [212.40.185.144])
- by alsa0.perex.cz (Postfix) with ESMTP id D785D265608
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 12:45:18 +0100 (CET)
-In-Reply-To: <35FD53F367049845BC99AC72306C23D102844605F393@CNBJMBX05.corpusers.net>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DCA07265621
+ for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 14:25:52 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <530F62CA.6080002@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,217 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
-Cc: 'Takashi Iwai' <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>, Liam Girdwood <liam.r.girdwood@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: vinod.koul@intel.com, ckeepax@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, elaurent@google.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/03/2014 12:36 PM, Wang, Yalin wrote:
-> Hi
+On Thu, Feb 27, 2014 at 10:07:38AM -0600, Pierre-Louis Bossart wrote:
+> On 2/26/14 8:29 AM, Richard Fitzgerald wrote:
+>> The metadata is mainly for MP3 gapless playback, since
+>> the MP3 audio stream does not contain enough information
+>> to enable gapless. Other audio formats do not necessarily
+>> require any additional metadata so we should allow next_track
+>> to be called without any metadata.
 >
-> I am curious what number range is correct here for card->num_links ?
+> Metadata is required for both MP3 and AAC gapless playback. Can you  
+> clarify what 'other formats' you are referring to? And rather than  
+> removing the check that makes sense for these popular formats, why not  
+> send metadata to set the # of samples to skip to zero?
+> Thanks,
+> -Pierre
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-It depends on your board. But typically I'd say <= 5, for most boards it's 
-either 1 or 2.
+Any format, or any use-case, where we don't need to send metadata. I said "other formats do not 
+_necessarily_ require any additional metadata". I'm not saying that _no_ other format needs metadata, 
+just that it's not something that's always going to be mandatory. Also you shouldn't think only in 
+terms of gapless play, you can chain track together for other reasons than gapless (for example to 
+make best use of the DSP buffering and allow maximum host sleep time across multiple tracs) and still 
+want to be able to do partial drains to know when the DSP starts decoding the next track.
 
->
->
-> Thanks
->
-> -----Original Message-----
-> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
-> Sent: Monday, March 03, 2014 7:35 PM
-> To: Wang, Yalin
-> Cc: 'Takashi Iwai'; 'alsa-devel@alsa-project.org'; Mark Brown; 'linux-kernel@vger.kernel.org'; Liam Girdwood
-> Subject: Re: [alsa-devel] change kmalloc into vmalloc for large memory allocations
->
-> On 03/03/2014 12:13 PM, Wang, Yalin wrote:
->> Hi
->>
->>
->> I add logs in kernel , the result is :
->>
->> 532 <4>[    5.690094] @@ sizeof(struct snd_soc_pcm_runtime)=1488 card->num_links=42 card->num_aux_devs=0
->>
->> card->num_links=42 , is it correct ?
->
-> Very unlikely. Make sure that it is properly initialized in your machine driver.
->
->>
->> our hardware is qcom msm8x26 platform .
->
-> This one doesn't seem to be in upstream.
->
->>
->> Thanks
->>
->> -----Original Message-----
->> From: Takashi Iwai [mailto:tiwai@suse.de]
->> Sent: Monday, March 03, 2014 5:23 PM
->> To: Wang, Yalin
->> Cc: 'linux-kernel@vger.kernel.org'; Mark Brown; 'perex@perex.cz';
->> 'alsa-devel@alsa-project.org'; Liam Girdwood
->> Subject: Re: change kmalloc into vmalloc for large memory allocations
->>
->> At Mon, 03 Mar 2014 10:19:58 +0100,
->> Takashi Iwai wrote:
->>>
->>> [Dropped unrelated subsystem MLs, and corrected Liam's address]
->>
->> Grrr, even Mark's address was obsoleted.  Here corrected.
->>
->>
->> Takashi
->>
->>>
->>> At Mon, 3 Mar 2014 09:55:15 +0800,
->>> Wang, Yalin wrote:
->>>>
->>>> Hi  Takashi,
->>>>
->>>> For this one:
->>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/sou
->>>> nd/soc/soc-core.c?h=master#n3772
->>>>
->>>> in my kernel log,
->>>> the allocation size 62496,
->>>> about 62KB,
->>>
->>> This looks way too much than expected.  I thought each struct
->>> snd_soc_pcm_runtime should be 1 or 2kB.  The code allocating an arary
->>> of snd_soc_pcm_runtime, so this might be due to some invalid values
->>> there.
->>>
->>>> I think need to  change to vmalloc .
->>>> How do you think of it ?
->>>
->>> This looks rather like a bug somewhere around it.
->>>
->>> Could you check the values there, sizeof(struct snd_soc_pcm_runtime),
->>> card->num_links and card->num_aux_devs?
->>>
->>> And, with which hardware is the issue examined?
->>>
->>>
->>> thanks,
->>>
->>> Takashi
->>>
->>>>
->>>> Logs:
->>>> <4>[   11.469789] ------------[ cut here ]------------
->>>> <4>[   11.469803] WARNING: at /media/00DE7FE2DE7FCE82/jb-mr2-yukon/kernel/include/linux/slub_def.h:265 __kmalloc+0x38/0x29c()
->>>> <4>[   11.469811] size=62496 flags=80d0
->>>> <4>[   11.469815] Modules linked in:
->>>> <4>[   11.469835] [<c010c534>] (unwind_backtrace+0x0/0x11c) from [<c018ab04>] (warn_slowpath_common+0x4c/0x64)
->>>> <4>[   11.469850] [<c018ab04>] (warn_slowpath_common+0x4c/0x64) from [<c018ab9c>] (warn_slowpath_fmt+0x2c/0x3c)
->>>> <4>[   11.469864] [<c018ab9c>] (warn_slowpath_fmt+0x2c/0x3c) from [<c0249ab4>] (__kmalloc+0x38/0x29c)
->>>> <4>[   11.469879] [<c0249ab4>] (__kmalloc+0x38/0x29c) from [<c06a0124>] (snd_soc_register_card+0x184/0x104c)
->>>> <4>[   11.469896] [<c06a0124>] (snd_soc_register_card+0x184/0x104c) from [<c088183c>] (msm8226_asoc_machine_probe+0x298/0x7f0)
->>>> <4>[   11.469913] [<c088183c>] (msm8226_asoc_machine_probe+0x298/0x7f0) from [<c044b1fc>] (platform_drv_probe+0x14/0x18)
->>>> <4>[   11.469927] [<c044b1fc>] (platform_drv_probe+0x14/0x18) from [<c0449f2c>] (driver_probe_device+0x134/0x334)
->>>> <4>[   11.469940] [<c0449f2c>] (driver_probe_device+0x134/0x334) from [<c044a194>] (__driver_attach+0x68/0x8c)
->>>> <4>[   11.469953] [<c044a194>] (__driver_attach+0x68/0x8c) from [<c044849c>] (bus_for_each_dev+0x48/0x80)
->>>> <4>[   11.469965] [<c044849c>] (bus_for_each_dev+0x48/0x80) from [<c0449528>] (bus_add_driver+0x100/0x26c)
->>>> <4>[   11.469978] [<c0449528>] (bus_add_driver+0x100/0x26c) from [<c044a66c>] (driver_register+0x9c/0x120)
->>>> <4>[   11.469992] [<c044a66c>] (driver_register+0x9c/0x120) from [<c010052c>] (do_one_initcall+0x90/0x160)
->>>> <4>[   11.470007] [<c010052c>] (do_one_initcall+0x90/0x160) from [<c0d00b74>] (kernel_init+0xec/0x1a8)
->>>> <4>[   11.470022] [<c0d00b74>] (kernel_init+0xec/0x1a8) from [<c0106aec>] (kernel_thread_exit+0x0/0x8)
->>>> <4>[   11.470030] ---[ end trace 1b75b31a2719ed4d ]---
->>>>
->>>> BRs/ Yalin
->>>> -----Original Message-----
->>>> From: Takashi Iwai [mailto:tiwai@suse.de]
->>>> Sent: Friday, February 28, 2014 10:20 PM
->>>> To: Wang, Yalin
->>>> Cc: 'linux-kernel@vger.kernel.org'; 'linux-arm-msm@vger.kernel.org'; 'linux-arm-kernel@lists.infradead.org'; 'linux-input@vger.kernel.org'; 'balbi@ti.com'; 'gregkh@linuxfoundation.org'; 'lrg@ti.com'; 'broonie@opensource.wolfsonmicro.com'; 'perex@perex.cz'; 'pablo@netfilter.org'; 'kaber@trash.net'; 'davem@davemloft.net'; 'rostedt@goodmis.org'; 'fweisbec@gmail.com'; 'mingo@redhat.com'; 'dmitry.torokhov@gmail.com'; 'rydberg@euromail.se'; 'linux-usb@vger.kernel.org'; 'alsa-devel@alsa-project.org'; 'netfilter-devel@vger.kernel.org'; 'netfilter@vger.kernel.org'; 'coreteam@netfilter.org'; 'netdev@vger.kernel.org'
->>>> Subject: Re: change kmalloc into vmalloc for large memory
->>>> allocations
->>>>
->>>> At Fri, 28 Feb 2014 16:15:23 +0800,
->>>> Wang, Yalin wrote:
->>>>>
->>>>> Hi
->>>>>
->>>>>
->>>>> I find there is some drivers use kmalloc to allocate large Memorys
->>>>> during module_init,  some can be changed to use vmalloc To save
->>>>> some low mem, I add log in kernel to track , And list them here:
->>>>>
->>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/d
->>>>> rive
->>>>> rs/usb/gadget/f_mass_storage.c?h=master#n2724
->>>>>
->>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/s
->>>>> ound
->>>>> /soc/soc-core.c?h=master#n3772
->>>>
->>>> At least the ASoC runtime case doesn't use the allocated memory as buffer, and they are allocated only once per device, thus it shouldn't be the problem you stated.  If it really consumes so much memory, we need to rethink, instead of allocating an array but allocate each object, for example.
->>>>
->>>>
->>>> thanks,
->>>>
->>>> Takashi
->>>>
->>>>
->>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/n
->>>>> et/n
->>>>> etfilter/nf_conntrack_ftp.c?h=master#n603
->>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/n
->>>>> et/n
->>>>> etfilter/nf_conntrack_h323_main.c?h=master#n1849
->>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/n
->>>>> et/n
->>>>> etfilter/nf_conntrack_irc.c?h=master#n247
->>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/n
->>>>> et/n
->>>>> etfilter/nf_conntrack_sane.c?h=master#n195
->>>>>
->>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/d
->>>>> rive
->>>>> rs/input/evdev.c?h=master#n403
->>>>>
->>>>>
->>>>> they allocate large memory from 10k~64K , this will use lots of low
->>>>> mem, instead if we use vmalloc for these drivers , it will be good
->>>>> for some devices like smart phone, we often encounter some errors
->>>>> like kmalloc failed because there is not enough low mem ,
->>>>> especially when the device has physical memory less than 1GB .
->>>>>
->>>>>
->>>>> could this module change the memory allocation into vmalloc ?
->>>>>
->>>>> I was thinking that if we can introduce a helper function in kmalloc.h like this :
->>>>>
->>>>> Kmalloc(size, flags)
->>>>> {
->>>>> 	If (size > PAGE_SIZE && flags&CAN_USE_VMALLOC_FLAG)
->>>>> 		return vmalloc(size);
->>>>> 	Else
->>>>> 		return real_kmalloc(size);
->>>>> }
->>>>>
->>>>> Kfree(ptr)
->>>>> {
->>>>> 	If (is_vmalloc_addr(ptr))
->>>>> 		Vfree(ptr);
->>>>> 	Else
->>>>> 		Kfree(ptr);
->>>>> }
->>>>>
->>>>>
->>>>> But we need add some flags to ensure always use kmalloc for Some
->>>>> special use (dma etc..)
->>>>>
->>>>> How do you think of it ?
->>>>>
->>>>> Thanks
->>>>>
->>>>>
->>>>>
->>>>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->
+It would be possible to send a dummy metadata, but why send dummy ioctls to make the API work 
+when we could just remove the check that isn't needed?
+
+Also there's no reason why the kernel should be enforcing this restriction - the core ALSA state 
+machine doesn't need the metadata so it should be left to the DSP driver and/or firmware to decide 
+whether metadata is mandatory in the current situation.
