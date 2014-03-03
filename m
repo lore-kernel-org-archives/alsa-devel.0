@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/8] ASoC: pxa: e800_wm9712: Convert to
- table based DAPM setup
-Date: Mon, 3 Mar 2014 10:05:14 +0800
-Message-ID: <20140303020514.GX2411@sirena.org.uk>
-References: <1393685300-5307-1-git-send-email-lars@metafoo.de>
- <1393685300-5307-4-git-send-email-lars@metafoo.de>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCHv3 0/3] Simplify the CODEC ASoC probe code.
+Date: Mon, 3 Mar 2014 10:42:21 +0800
+Message-ID: <1393814545-15002-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1808776695116687697=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3337F265588
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 04:36:24 +0100 (CET)
-In-Reply-To: <1393685300-5307-4-git-send-email-lars@metafoo.de>
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB9032654D4
+ for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 04:48:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +19,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>
+To: broonie@kernel.org, lars@metafoo.de, alsa-devel@alsa-project.org
+Cc: Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1808776695116687697==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="o/BvujNCPFVhiGON"
-Content-Disposition: inline
+Mainly fix the warnings about unused variables caused by the first
+patch.
 
+Xiubo Li (3):
+  ASoC: codec: Simplify ASoC probe code.
+  ASoC: io: New signature for snd_soc_codec_set_cache_io()
+  ASoC: core: Fix check before setting default I/O up try regmap
 
---o/BvujNCPFVhiGON
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ include/sound/soc.h              |  7 +-----
+ sound/soc/codecs/ad193x.c        | 10 +--------
+ sound/soc/codecs/adau1373.c      |  7 ------
+ sound/soc/codecs/adav80x.c       |  7 ------
+ sound/soc/codecs/ak4535.c        |  9 --------
+ sound/soc/codecs/ak4641.c        |  8 -------
+ sound/soc/codecs/ak4642.c        |  8 -------
+ sound/soc/codecs/ak4671.c        | 12 +---------
+ sound/soc/codecs/alc5623.c       |  7 ------
+ sound/soc/codecs/alc5632.c       |  8 -------
+ sound/soc/codecs/cq93vc.c        |  3 +--
+ sound/soc/codecs/cs4270.c        |  9 --------
+ sound/soc/codecs/cs42l51.c       |  6 -----
+ sound/soc/codecs/cs42l52.c       |  9 +-------
+ sound/soc/codecs/cs42l73.c       | 11 +---------
+ sound/soc/codecs/da7210.c        |  8 -------
+ sound/soc/codecs/da7213.c        |  8 -------
+ sound/soc/codecs/da732x.c        | 13 ++---------
+ sound/soc/codecs/da9055.c        |  8 -------
+ sound/soc/codecs/isabelle.c      | 16 --------------
+ sound/soc/codecs/lm49453.c       | 17 ---------------
+ sound/soc/codecs/max9768.c       |  5 -----
+ sound/soc/codecs/max98088.c      |  6 -----
+ sound/soc/codecs/max98090.c      |  8 -------
+ sound/soc/codecs/max98095.c      |  6 -----
+ sound/soc/codecs/max9850.c       |  8 -------
+ sound/soc/codecs/mc13783.c       |  4 ++--
+ sound/soc/codecs/ml26124.c       | 10 ---------
+ sound/soc/codecs/rt5631.c        |  9 --------
+ sound/soc/codecs/rt5640.c        |  8 -------
+ sound/soc/codecs/sn95031.c       |  2 --
+ sound/soc/codecs/ssm2518.c       | 10 ---------
+ sound/soc/codecs/ssm2602.c       |  7 ------
+ sound/soc/codecs/sta32x.c        | 14 ------------
+ sound/soc/codecs/sta529.c        | 10 ---------
+ sound/soc/codecs/tlv320aic23.c   |  8 -------
+ sound/soc/codecs/tlv320aic26.c   |  2 --
+ sound/soc/codecs/tlv320aic32x4.c |  2 --
+ sound/soc/codecs/tlv320aic3x.c   |  6 -----
+ sound/soc/codecs/tlv320dac33.c   |  1 -
+ sound/soc/codecs/wm2000.c        |  2 --
+ sound/soc/codecs/wm2200.c        |  7 ------
+ sound/soc/codecs/wm5100.c        |  7 ------
+ sound/soc/codecs/wm5102.c        |  4 +---
+ sound/soc/codecs/wm5110.c        |  3 +--
+ sound/soc/codecs/wm8350.c        |  4 +---
+ sound/soc/codecs/wm8400.c        |  3 +--
+ sound/soc/codecs/wm8510.c        | 10 +--------
+ sound/soc/codecs/wm8523.c        |  7 ------
+ sound/soc/codecs/wm8580.c        |  6 -----
+ sound/soc/codecs/wm8711.c        |  6 -----
+ sound/soc/codecs/wm8728.c        | 11 +---------
+ sound/soc/codecs/wm8731.c        |  7 ------
+ sound/soc/codecs/wm8737.c        |  6 -----
+ sound/soc/codecs/wm8741.c        |  6 -----
+ sound/soc/codecs/wm8750.c        |  6 -----
+ sound/soc/codecs/wm8753.c        |  7 ------
+ sound/soc/codecs/wm8770.c        |  6 -----
+ sound/soc/codecs/wm8776.c        |  6 -----
+ sound/soc/codecs/wm8804.c        |  8 -------
+ sound/soc/codecs/wm8900.c        |  8 +------
+ sound/soc/codecs/wm8903.c        | 10 +--------
+ sound/soc/codecs/wm8904.c        |  9 --------
+ sound/soc/codecs/wm8940.c        |  6 -----
+ sound/soc/codecs/wm8955.c        |  8 -------
+ sound/soc/codecs/wm8960.c        |  6 -----
+ sound/soc/codecs/wm8961.c        |  7 ------
+ sound/soc/codecs/wm8962.c        |  7 ------
+ sound/soc/codecs/wm8971.c        |  6 -----
+ sound/soc/codecs/wm8974.c        |  6 -----
+ sound/soc/codecs/wm8978.c        |  8 +------
+ sound/soc/codecs/wm8983.c        |  6 -----
+ sound/soc/codecs/wm8985.c        |  7 ------
+ sound/soc/codecs/wm8988.c        |  8 -------
+ sound/soc/codecs/wm8990.c        |  8 -------
+ sound/soc/codecs/wm8991.c        |  8 -------
+ sound/soc/codecs/wm8993.c        |  7 ------
+ sound/soc/codecs/wm8994.c        |  3 +--
+ sound/soc/codecs/wm8995.c        |  7 ------
+ sound/soc/codecs/wm8996.c        | 12 +---------
+ sound/soc/codecs/wm8997.c        |  4 +---
+ sound/soc/codecs/wm9081.c        | 11 +---------
+ sound/soc/codecs/wm9090.c        | 10 ---------
+ sound/soc/soc-core.c             | 12 +++++++---
+ sound/soc/soc-io.c               | 47 +++++++++++++++++-----------------------
+ 85 files changed, 52 insertions(+), 618 deletions(-)
 
-On Sat, Mar 01, 2014 at 03:48:16PM +0100, Lars-Peter Clausen wrote:
-> Use table based setup to register the DAPM widgets and routes. This on one hand
-> makes the code a bit cleaner and on the other hand the board level DAPM elements
-> get registered in the card's DAPM context rather than in the CODEC's DAPM
-> context.
-
-Applied, thanks.
-
---o/BvujNCPFVhiGON
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTE+NXAAoJELSic+t+oim9lTUP/i5ntCtdd3OrUyFcncpHU9eQ
-geAt3tcQjjx7ph8yv/7MhMGyc9VIqABMENVPilPHbvoXUF/dhoqWxIxSb+V1pTiK
-/VT+CHZGU/sV6w1N2+1v7MD9cmhNXL8/F8TaNYNKvTCJc156qP8st0R5i2LBLfI9
-+3Cb152DoFVv+d8EC0aL7VehFerxn/CwQ2dFhQUuLRmVF+8zjiaDnSEXzuzfQl1B
-QwYxkLItXGbdGtqPorQTEMR8iGh1ONigje+rNvQ4pOxaqjUK+ePOw87SJnEbNYCl
-/c/jMUz3DEgYFbyrBVZz4BLjYX3aXQoVQ6W/eZoL43uKqHlwWZKfERDo7Ze/HFft
-CE9PyzoI5yb3kwaiNBoLWfynRawe3MIKR3lHF9qMp5QnfGcfCSasRwefee17yk7r
-SmFk5K7wmUqjBOOlE1UCHSsjnQD7AX+K9bogyTG2y4wagHkmbgJhixEJivwtEJK6
-bBZwOowEHnb/8A84cAmTB9EVM3qqSCMhkHY57jZdn2FyRKRVj+kIXYbJLzlEuY7H
-3PE9IS9h56RelXNFWg++WOSyjXUg8tm4rfTS4pm2AFtqMA8wXYleup/C44dqOHdr
-jAtZBLojXVzMbbhDGZ0LBURq+nWbfzV6Ql9sdUSYXwaMxCd3uvspvGECcmJgkHOE
-ndNlOMPyljHePGWiVpiu
-=3Agz
------END PGP SIGNATURE-----
-
---o/BvujNCPFVhiGON--
-
---===============1808776695116687697==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1808776695116687697==--
+-- 
+1.8.4
