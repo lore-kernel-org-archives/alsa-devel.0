@@ -1,60 +1,81 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC 3/5] ASoC: tlv320aic31xx: Add DT binding document
-Date: Mon, 3 Mar 2014 14:38:19 +0800
-Message-ID: <20140303063819.GS2411@sirena.org.uk>
-References: <cover.1393405575.git.jsarha@ti.com>
- <a72a69de5c86ee9e0931bac8d42cd72e4bee1a6b.1393405575.git.jsarha@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: snappercl15: Convert to table based DAPM
+	setup
+Date: Mon,  3 Mar 2014 08:10:35 +0100
+Message-ID: <1393830635-17279-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YHEjEQMqr9bPKtC0"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <a72a69de5c86ee9e0931bac8d42cd72e4bee1a6b.1393405575.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, bcousson@baylibre.com, peter.ujfalusi@ti.com, detheridge@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-014.synserver.de (smtp-out-125.synserver.de
+ [212.40.185.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B5E5265470
+ for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 08:10:10 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Ryan Mallon <ryan@bluewatersys.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Use table based setup to register the DAPM widgets and routes.  This on one hand
+makes the code a bit shorter and cleaner and on the other hand the board level
+DAPM elements get registered in the card's DAPM context rather than in the
+CODEC's DAPM context.
 
---YHEjEQMqr9bPKtC0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/cirrus/snappercl15.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
-On Wed, Feb 26, 2014 at 11:14:27AM +0200, Jyri Sarha wrote:
-
-> +- ai31xx-micbias-vg - MicBias Voltage required.
-> +	1 - MICBIAS output is powered to 2.0V,
-> +	2 - MICBIAS output is powered to 2.5V,
-> +	3 - MICBIAS output is connected to AVDD,
-> +	If this node is not mentioned or if the value is incorrect, then MicBias
-> +	is powered down.
-
-Please provide defines for these as part of the binding.  It's not clear
-to me why leaving the micbias powered down is a sane default, it'll only
-be powered up if it's connected to something and used which doesn't seem
-altogether sane.  I'd suggest picking 2.0V (the lowest voltage so least
-likely to cause damage).
-
---YHEjEQMqr9bPKtC0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTFCNYAAoJELSic+t+oim9IXsP/3+uG/OfbmudlM7w0fBFPk/f
-zG7oEQ4j/aBDVZPMYJhqq0Mz5hGLh79W63533nLQg57G2RQzIrRzSdU8/VGq3Nab
-6dns3kvS1hiZF9GqbSesXyYSXfTgWrH0kguke8OmS1Tb59TtdZWJG7RQ9tfWAOut
-q/pppQEYvh1i8dncuCRmezaU10QNAzyGbSbw/hOX4/YtQfVClA4m9gbehhu6IPX7
-5XJyugD/ysbDN/nCfOLS3W2xul0II4npqVOwnSc/nSrcZ3bbsLZ37sj15NOpkX9e
-41WZcHiucb07HQO8K8KJMs027PdHqk2mqx6CDsjhncZU0J2w0/9XgHBI8a80GzuE
-FssBne+OVGN5kK4w3DX3ElCNVdXxZn8TlbCw7AGtxnnPB0KCRln38a9JanZM9SXv
-2L289c6NvPsAtGB5zpCG9XzktVavtBnPnDMj6HOGuGA8hzpI++mryFuTqVMhzBuJ
-RlFalBXDC7QEsSMGexWuSoxZvmC7AKXUpi0lk06OjYqHHQ58bm6CkL7Yr8go25eF
-HeWv3mjcWN58mwNIg0vUrRn3A2B8VbvsdHkb0JxsktCB648yuPJjaufYaSEhoTbj
-80ycLXNeCeGjPKYujIdUB9AYpMBMI8TsdWamfOrG2wRJQsB3PJadnumZYqzf6Ral
-arAxpp31byG5iB8Nbc3V
-=BW/b
------END PGP SIGNATURE-----
-
---YHEjEQMqr9bPKtC0--
+diff --git a/sound/soc/cirrus/snappercl15.c b/sound/soc/cirrus/snappercl15.c
+index 29238a7..bdc88e5 100644
+--- a/sound/soc/cirrus/snappercl15.c
++++ b/sound/soc/cirrus/snappercl15.c
+@@ -65,18 +65,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"MICIN", NULL, "Mic Jack"},
+ };
+ 
+-static int snappercl15_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_soc_codec *codec = rtd->codec;
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-
+-	snd_soc_dapm_new_controls(dapm, tlv320aic23_dapm_widgets,
+-				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
+-
+-	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-	return 0;
+-}
+-
+ static struct snd_soc_dai_link snappercl15_dai = {
+ 	.name		= "tlv320aic23",
+ 	.stream_name	= "AIC23",
+@@ -84,7 +72,6 @@ static struct snd_soc_dai_link snappercl15_dai = {
+ 	.codec_dai_name	= "tlv320aic23-hifi",
+ 	.codec_name	= "tlv320aic23-codec.0-001a",
+ 	.platform_name	= "ep93xx-i2s",
+-	.init		= snappercl15_tlv320aic23_init,
+ 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
+ 			  SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops		= &snappercl15_ops,
+@@ -95,6 +82,11 @@ static struct snd_soc_card snd_soc_snappercl15 = {
+ 	.owner		= THIS_MODULE,
+ 	.dai_link	= &snappercl15_dai,
+ 	.num_links	= 1,
++
++	.dapm_widgets = tlv320aic23_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
++	.dapm_routes = audio_map,
++	.num_dapm_routes = ARRAY_SIZE(audio_map),
+ };
+ 
+ static int snappercl15_probe(struct platform_device *pdev)
+-- 
+1.8.0
