@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/19] ASoC: rsnd: move priv member
-	settings to upper side
-Date: Mon, 3 Mar 2014 10:19:33 +0900
-Message-ID: <20140303011933.GB2411@sirena.org.uk>
-References: <87d2ib90t9.wl%kuninori.morimoto.gx@gmail.com>
- <87bnxv90s9.wl%kuninori.morimoto.gx@gmail.com>
+From: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
+Subject: Re: change kmalloc into vmalloc for large memory
+	allocations
+Date: Mon, 3 Mar 2014 09:55:15 +0800
+Message-ID: <35FD53F367049845BC99AC72306C23D102844605F38E@CNBJMBX05.corpusers.net>
+References: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
+ <s5hlhwvb9q8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0260577741308948286=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C611E2654D3
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 02:53:38 +0100 (CET)
-In-Reply-To: <87bnxv90s9.wl%kuninori.morimoto.gx@gmail.com>
+Received: from cnbjrel02.sonyericsson.com (cnbjrel02.sonyericsson.com
+ [219.141.167.166])
+ by alsa0.perex.cz (Postfix) with ESMTP id 557492654D3
+ for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 02:55:24 +0100 (CET)
+In-Reply-To: <s5hlhwvb9q8.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +24,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'broonie@opensource.wolfsonmicro.com'" <broonie@opensource.wolfsonmicro.com>, "'fweisbec@gmail.com'" <fweisbec@gmail.com>, "'dmitry.torokhov@gmail.com'" <dmitry.torokhov@gmail.com>, "'coreteam@netfilter.org'" <coreteam@netfilter.org>, "'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>, "'rydberg@euromail.se'" <rydberg@euromail.se>, "'lrg@ti.com'" <lrg@ti.com>, "'pablo@netfilter.org'" <pablo@netfilter.org>, "'linux-arm-msm@vger.kernel.org'" <linux-arm-msm@vger.kernel.org>, "'rostedt@goodmis.org'" <rostedt@goodmis.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, "'mingo@redhat.com'" <mingo@redhat.com>, "'linux-arm-kernel@lists.infradead.org'" <linux-arm-kernel@lists.infradead.org>, "'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>, "'linux-usb@vger.kernel.org'" <linux-us>
 List-Id: alsa-devel@alsa-project.org
 
+Hi  Takashi,
 
---===============0260577741308948286==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NMuMz9nt05w80d4+"
-Content-Disposition: inline
+For this one:
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/sound/soc/soc-core.c?h=master#n3772
+
+in my kernel log,
+the allocation size 62496,
+about 62KB,
+I think need to  change to vmalloc .
+How do you think of it ?
+
+Logs:
+<4>[   11.469789] ------------[ cut here ]------------
+<4>[   11.469803] WARNING: at /media/00DE7FE2DE7FCE82/jb-mr2-yukon/kernel/include/linux/slub_def.h:265 __kmalloc+0x38/0x29c()
+<4>[   11.469811] size=62496 flags=80d0
+<4>[   11.469815] Modules linked in:
+<4>[   11.469835] [<c010c534>] (unwind_backtrace+0x0/0x11c) from [<c018ab04>] (warn_slowpath_common+0x4c/0x64)
+<4>[   11.469850] [<c018ab04>] (warn_slowpath_common+0x4c/0x64) from [<c018ab9c>] (warn_slowpath_fmt+0x2c/0x3c)
+<4>[   11.469864] [<c018ab9c>] (warn_slowpath_fmt+0x2c/0x3c) from [<c0249ab4>] (__kmalloc+0x38/0x29c)
+<4>[   11.469879] [<c0249ab4>] (__kmalloc+0x38/0x29c) from [<c06a0124>] (snd_soc_register_card+0x184/0x104c)
+<4>[   11.469896] [<c06a0124>] (snd_soc_register_card+0x184/0x104c) from [<c088183c>] (msm8226_asoc_machine_probe+0x298/0x7f0)
+<4>[   11.469913] [<c088183c>] (msm8226_asoc_machine_probe+0x298/0x7f0) from [<c044b1fc>] (platform_drv_probe+0x14/0x18)
+<4>[   11.469927] [<c044b1fc>] (platform_drv_probe+0x14/0x18) from [<c0449f2c>] (driver_probe_device+0x134/0x334)
+<4>[   11.469940] [<c0449f2c>] (driver_probe_device+0x134/0x334) from [<c044a194>] (__driver_attach+0x68/0x8c)
+<4>[   11.469953] [<c044a194>] (__driver_attach+0x68/0x8c) from [<c044849c>] (bus_for_each_dev+0x48/0x80)
+<4>[   11.469965] [<c044849c>] (bus_for_each_dev+0x48/0x80) from [<c0449528>] (bus_add_driver+0x100/0x26c)
+<4>[   11.469978] [<c0449528>] (bus_add_driver+0x100/0x26c) from [<c044a66c>] (driver_register+0x9c/0x120)
+<4>[   11.469992] [<c044a66c>] (driver_register+0x9c/0x120) from [<c010052c>] (do_one_initcall+0x90/0x160)
+<4>[   11.470007] [<c010052c>] (do_one_initcall+0x90/0x160) from [<c0d00b74>] (kernel_init+0xec/0x1a8)
+<4>[   11.470022] [<c0d00b74>] (kernel_init+0xec/0x1a8) from [<c0106aec>] (kernel_thread_exit+0x0/0x8)
+<4>[   11.470030] ---[ end trace 1b75b31a2719ed4d ]---
+
+BRs/ Yalin
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de] 
+Sent: Friday, February 28, 2014 10:20 PM
+To: Wang, Yalin
+Cc: 'linux-kernel@vger.kernel.org'; 'linux-arm-msm@vger.kernel.org'; 'linux-arm-kernel@lists.infradead.org'; 'linux-input@vger.kernel.org'; 'balbi@ti.com'; 'gregkh@linuxfoundation.org'; 'lrg@ti.com'; 'broonie@opensource.wolfsonmicro.com'; 'perex@perex.cz'; 'pablo@netfilter.org'; 'kaber@trash.net'; 'davem@davemloft.net'; 'rostedt@goodmis.org'; 'fweisbec@gmail.com'; 'mingo@redhat.com'; 'dmitry.torokhov@gmail.com'; 'rydberg@euromail.se'; 'linux-usb@vger.kernel.org'; 'alsa-devel@alsa-project.org'; 'netfilter-devel@vger.kernel.org'; 'netfilter@vger.kernel.org'; 'coreteam@netfilter.org'; 'netdev@vger.kernel.org'
+Subject: Re: change kmalloc into vmalloc for large memory allocations
+
+At Fri, 28 Feb 2014 16:15:23 +0800,
+Wang, Yalin wrote:
+> 
+> Hi
+> 
+> 
+> I find there is some drivers use kmalloc to allocate large Memorys 
+> during module_init,  some can be changed to use vmalloc To save some 
+> low mem, I add log in kernel to track , And list them here:
+> 
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/drive
+> rs/usb/gadget/f_mass_storage.c?h=master#n2724
+> 
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/sound
+> /soc/soc-core.c?h=master#n3772
+
+At least the ASoC runtime case doesn't use the allocated memory as buffer, and they are allocated only once per device, thus it shouldn't be the problem you stated.  If it really consumes so much memory, we need to rethink, instead of allocating an array but allocate each object, for example.
 
 
---NMuMz9nt05w80d4+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+thanks,
 
-On Mon, Feb 24, 2014 at 10:14:33PM -0800, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> There is no big meaning, but preparation for platform dai support
-
-Applied, thanks.
-
---NMuMz9nt05w80d4+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTE9iiAAoJELSic+t+oim9AdsP/if0VphCaVo9VX84APZ5trq7
-nndHSPeyddtLlBoeb3eRymNasXevT+HNyV27aOBNYBe5RjriPubx0iW4sUjfyCp4
-a8+oCedCj8dFyCegoVFOXuMGflX+tbJ5/Z1LBoA/BHA9l353Maw0Bmrzgu6CGaXR
-okj4hb7VBtHgQQqPYzbxg7dGZQ/vqD0D7IExW9fRHoUKXgOpZvU/D+f/20xBdXht
-gc0TGPytkMxpwhSuDn6rIUNj1gOD+X2iisQQ4KvItpw+vafd/Tp5xEzqjPAplrbU
-v+CbFHJ+i1PZzyrdoFJfECR74BNDmyl+sHcTQnX+wotHUVS1ha+YMNp5K7TP9hbI
-5p3kNeSsmR1LWP9pmDgGHIaUgyGL7UIhGcRZXN+1hqtdrcPtfkF6OK1HKaME6d7b
-v7bWNXErv7+AAVeXZevoLXbP6TH8wLbXtfngRzyyrCTS1JQUGIVMFmXrTXhsITdb
-59ejhFQoy5k/iy2AvBQ5dnfik73rawGRMvmQb9F0EPIH0loxFrxle/1wCGpLVvbg
-9kIRwHVkyshSDyPGd/t0WAD4i5XFSVbMl4U70AiyctIZaKgGVyLDQUxs/Cs9A7Xn
-ePfsdzdhBaZHmIs9/QW+GQk6MDtR9oVSbziXxAcff602sK3t1JPCDu02Q7o/piw2
-xVDKP0ycI+ixuooYV2ZM
-=Fgxt
------END PGP SIGNATURE-----
-
---NMuMz9nt05w80d4+--
-
---===============0260577741308948286==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Takashi
 
 
---===============0260577741308948286==--
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/n
+> etfilter/nf_conntrack_ftp.c?h=master#n603
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/n
+> etfilter/nf_conntrack_h323_main.c?h=master#n1849
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/n
+> etfilter/nf_conntrack_irc.c?h=master#n247
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/n
+> etfilter/nf_conntrack_sane.c?h=master#n195
+> 
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/drive
+> rs/input/evdev.c?h=master#n403
+> 
+> 
+> they allocate large memory from 10k~64K , this will use lots of low 
+> mem, instead if we use vmalloc for these drivers , it will be good for 
+> some devices like smart phone, we often encounter some errors like 
+> kmalloc failed because there is not enough low mem , especially when 
+> the device has physical memory less than 1GB .
+> 
+> 
+> could this module change the memory allocation into vmalloc ?
+> 
+> I was thinking that if we can introduce a helper function in kmalloc.h like this :
+> 
+> Kmalloc(size, flags)
+> {
+> 	If (size > PAGE_SIZE && flags&CAN_USE_VMALLOC_FLAG)
+> 		return vmalloc(size);
+> 	Else
+> 		return real_kmalloc(size);
+> }
+> 
+> Kfree(ptr)
+> {
+> 	If (is_vmalloc_addr(ptr))
+> 		Vfree(ptr);
+> 	Else
+> 		Kfree(ptr);
+> }
+> 
+> 
+> But we need add some flags to ensure always use kmalloc for Some 
+> special use (dma etc..)
+> 
+> How do you think of it ?
+> 
+> Thanks
+> 
+> 
+> 
