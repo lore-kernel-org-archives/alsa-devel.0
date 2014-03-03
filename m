@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 6/8] ASoC: pxa: mioa701_wm9713: Convert to
- table based DAPM setup
-Date: Mon, 3 Mar 2014 11:01:17 +0900
-Message-ID: <20140303020116.GP2411@sirena.org.uk>
+Subject: Re: [PATCH 1/8] ASoC: pxa: Pass correct DAPM context
+ to {corgi, poodle, spitz}_ext_control
+Date: Mon, 3 Mar 2014 10:04:43 +0800
+Message-ID: <20140303020443.GU2411@sirena.org.uk>
 References: <1393685300-5307-1-git-send-email-lars@metafoo.de>
- <1393685300-5307-6-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3472661011973067832=="
+Content-Type: multipart/mixed; boundary="===============4970627177370028706=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EDB0265532
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 04:35:42 +0100 (CET)
-In-Reply-To: <1393685300-5307-6-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FF042654D5
+ for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 04:35:43 +0100 (CET)
+In-Reply-To: <1393685300-5307-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,53 +26,53 @@ Cc: Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Mia
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3472661011973067832==
+--===============4970627177370028706==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HrsILUyxNtiOryfc"
+	protocol="application/pgp-signature"; boundary="xku3GkZTJumTa1rO"
 Content-Disposition: inline
 
 
---HrsILUyxNtiOryfc
+--xku3GkZTJumTa1rO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Mar 01, 2014 at 03:48:18PM +0100, Lars-Peter Clausen wrote:
-> Use table based setup to register the DAPM widgets and routes. This on one hand
-> makes the code a bit cleaner and on the other hand the board level DAPM elements
-> get registered in the card's DAPM context rather than in the CODEC's DAPM
-> context.
+On Sat, Mar 01, 2014 at 03:48:13PM +0100, Lars-Peter Clausen wrote:
+> When calling {corgi,poodle,spitz}_ext_control() from the startup callback we
+> pass the CODEC's DAPM context instead of the card's DAPM context. This is not a
+> problem per se since all the DAPM functions in ext_control() fallback to widgets
+> from other DAPM contexts, but passing the card's context is more consistent.
 
-This doesn't apply, please check and resend.
+Applied, thanks.
 
---HrsILUyxNtiOryfc
+--xku3GkZTJumTa1rO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTE+JpAAoJELSic+t+oim9CEwP/161/X8I59TK+p4BjRC09Bnb
-YxJSmo0cLq0gZgWKFDjOAkjHBoCyTVUDka/hRG+BaeGhwCM7McSfLz//FJbUl3J0
-RLn6Qex8gE5vU0LbYEg4CuzGKCazDC4eSilgMWeGf9ssdi2YvwZskZpaoNMJsVkV
-uPQCsv9yJpoXSuDWCc34B91L5a4MMYW7KetLc9YfE/9cbraM5geQ3J7qzVWKJoyG
-7IrCn+pw9bUjxyrlhRUtUH+V1OGJ/vNe+UgAbhTtxapfAIvF3LXrQ+/+G7iPICYf
-LysZiix+CtAvZmDIqS/zUmFVApytIc01nwSXUtZGPAIh37DTZYNmGnmh/2aUm+U+
-uoAE58AkZPDpmoAEzxNs7F9kgiacG6hl40l6TkfjWEmFJSs5N/3yAa7lplrms3zE
-irCXgeqN+LYOi82VnSU+dKrgD+xSDxK63ImkrMZn3eBOOxJlPfCoOONLZqYs/UJt
-kTydwyFJ9qvWc6wJN0gebPlxYT+EJZbvkAlYkx/b7/AtNnsjJkHbgqspwbehuQ0H
-ggW57uoqxlTzAqUvyEK9XSyhLilvQruym5ZcqcTXOHgIv58ch0WD/NknAa2WXjX6
-ljpKUnEfozZoWjD+dy80XdMdfHcPqz/HWC0eyt+CZ9cZLudPuABg0zEntXG6rjAd
-zmBtwbv1hHf9N+mIT0HM
-=7OIv
+iQIcBAEBAgAGBQJTE+M4AAoJELSic+t+oim9B6IP/ipAX+m+h+Wwt3nvmGkhluVV
+a8meOtdIy8NVrVnSkYPkJwitjnBDp9TTmddX5P+eY0D07ea37i0VYOkCtzdegfeb
+MAvpG8IaO3uiaOx+uGbArV6GY5xlARUwGWFLr4gS/YXyznfYEQfq+pVa/nsV3So4
+wLcE51pUWvQAYBno3WGgwwH8whIjWi4WI+gSm7zWDffz21wGmQQjUWFc7noiImNn
+SF64hTiWcXqXrs4ky02lYAs6YZohUYt/3BOu+adMFyben2s60qdQyNRbfydLGDUq
+3cIFZioMi/ErGEY3+YMTg+hTU9W6yogiEywHOmJB3R0BHb1VZPIufvfEeZwtZuYM
+ja5kJXBc6JEQeHMZwArErAs5mW3Y7wOHzne45cRtE7h0C2V/HI5nV5dn1xs0NRzY
+xXslNCyMx5KBM/SRCvIiGFyW+NdPHTFe4luZUzlkHFixL9C3lM2AcAYuiJJ+Q1mN
+OHYSZJfeUKH053Yj0IaaecyUQAVg5Ykokvt67U6S3DUf3/miyY6dkm558zz6zpLd
+0uoyLuTjPNhbxY/OtCQb60NaHLd/UDY59tnw7OSUqi648CeLE3ncUnzf6SpUrcKX
+416pn2PWkdSc3iwgZaDdTNhsotXyI20ivFY/1yPdVnzgHhOAE40at4MLTCMeS5If
+jJvyiPAnmKPmgHOJUYsd
+=BtEh
 -----END PGP SIGNATURE-----
 
---HrsILUyxNtiOryfc--
+--xku3GkZTJumTa1rO--
 
---===============3472661011973067832==
+--===============4970627177370028706==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3472661011973067832==--
+--===============4970627177370028706==--
