@@ -1,32 +1,63 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] change kmalloc into vmalloc for large memory allocations
-Date: Mon, 03 Mar 2014 15:22:47 +0100
-Message-ID: <53149037.20305@metafoo.de>
-References: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net> <s5hlhwvb9q8.wl%tiwai@suse.de> <35FD53F367049845BC99AC72306C23D102844605F38E@CNBJMBX05.corpusers.net> <s5hob1nabb5.wl%tiwai@suse.de> <s5hmwh7ab5w.wl%tiwai@suse.de> <35FD53F367049845BC99AC72306C23D102844605F392@CNBJMBX05.corpusers.net> <531468CA.6040302@metafoo.de> <35FD53F367049845BC99AC72306C23D102844605F393@CNBJMBX05.corpusers.net> <53146B6F.4000601@metafoo.de> <35FD53F367049845BC99AC72306C23D102844605F394@CNBJMBX05.corpusers.net>
+From: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
+Subject: RE: [alsa-devel] change kmalloc into vmalloc for large memory
+ allocations
+Date: Mon, 3 Mar 2014 22:29:19 +0800
+Message-ID: <35FD53F367049845BC99AC72306C23D102844605F395@CNBJMBX05.corpusers.net>
+References: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
+ <s5hlhwvb9q8.wl%tiwai@suse.de>
+ <35FD53F367049845BC99AC72306C23D102844605F38E@CNBJMBX05.corpusers.net>
+ <s5hob1nabb5.wl%tiwai@suse.de> <s5hmwh7ab5w.wl%tiwai@suse.de>
+ <35FD53F367049845BC99AC72306C23D102844605F392@CNBJMBX05.corpusers.net>
+ <531468CA.6040302@metafoo.de>
+ <35FD53F367049845BC99AC72306C23D102844605F393@CNBJMBX05.corpusers.net>
+ <53146B6F.4000601@metafoo.de>
+ <35FD53F367049845BC99AC72306C23D102844605F394@CNBJMBX05.corpusers.net>
+ <53149037.20305@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <35FD53F367049845BC99AC72306C23D102844605F394@CNBJMBX05.corpusers.net>
+In-Reply-To: <53149037.20305@metafoo.de>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
+To: 'Lars-Peter Clausen' <lars@metafoo.de>
 Cc: 'Takashi Iwai' <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>, Liam Girdwood <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
+
+Hi  
+
+I see,
+Is it possible to change this part:
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/sound/soc/soc-core.c?h=master#n3772
+
+
+so that it use vmalloc if it need allocate large memory for
+struct snd_soc_pcm_runtime ?
+
+Thanks 
+
+-----Original Message-----
+From: Lars-Peter Clausen [mailto:lars@metafoo.de] 
+Sent: Monday, March 03, 2014 10:23 PM
+To: Wang, Yalin
+Cc: 'Takashi Iwai'; 'alsa-devel@alsa-project.org'; Mark Brown; 'linux-kernel@vger.kernel.org'; Liam Girdwood
+Subject: Re: [alsa-devel] change kmalloc into vmalloc for large memory allocations
 
 On 03/03/2014 02:29 PM, Wang, Yalin wrote:
 > Hi
 >
 >
 > I find the num_links are defined here:
-> https://www.codeaurora.org/cgit/quic/la/kernel/msm-3.10/tree/sound/soc/msm/msm8226.c?h=msm-3.10&id=d681c8e79c597a5e1ae79803dc0215d02df8fe34#n1812
+> https://www.codeaurora.org/cgit/quic/la/kernel/msm-3.10/tree/sound/soc
+> /msm/msm8226.c?h=msm-3.10&id=d681c8e79c597a5e1ae79803dc0215d02df8fe34#
+> n1812
 >
 >
 > the ARRAY_SIZE is 42 , you mean the driver can't define so many elements ?
 > how to implement it if we can't do like this ?
 >
 
-Looks like your platform is a bit special in this regard and requires quite 
-a few more links than usual.
+Looks like your platform is a bit special in this regard and requires quite a few more links than usual.
 
 > Thanks
 >
@@ -34,8 +65,10 @@ a few more links than usual.
 > From: Lars-Peter Clausen [mailto:lars@metafoo.de]
 > Sent: Monday, March 03, 2014 7:46 PM
 > To: Wang, Yalin
-> Cc: 'Takashi Iwai'; 'alsa-devel@alsa-project.org'; Mark Brown; 'linux-kernel@vger.kernel.org'; Liam Girdwood
-> Subject: Re: [alsa-devel] change kmalloc into vmalloc for large memory allocations
+> Cc: 'Takashi Iwai'; 'alsa-devel@alsa-project.org'; Mark Brown; 
+> 'linux-kernel@vger.kernel.org'; Liam Girdwood
+> Subject: Re: [alsa-devel] change kmalloc into vmalloc for large memory 
+> allocations
 >
 > On 03/03/2014 12:36 PM, Wang, Yalin wrote:
 >> Hi
@@ -52,10 +85,10 @@ a few more links than usual.
 >> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
 >> Sent: Monday, March 03, 2014 7:35 PM
 >> To: Wang, Yalin
->> Cc: 'Takashi Iwai'; 'alsa-devel@alsa-project.org'; Mark Brown;
+>> Cc: 'Takashi Iwai'; 'alsa-devel@alsa-project.org'; Mark Brown; 
 >> 'linux-kernel@vger.kernel.org'; Liam Girdwood
->> Subject: Re: [alsa-devel] change kmalloc into vmalloc for large memory
->> allocations
+>> Subject: Re: [alsa-devel] change kmalloc into vmalloc for large 
+>> memory allocations
 >>
 >> On 03/03/2014 12:13 PM, Wang, Yalin wrote:
 >>> Hi
@@ -81,9 +114,10 @@ a few more links than usual.
 >>> From: Takashi Iwai [mailto:tiwai@suse.de]
 >>> Sent: Monday, March 03, 2014 5:23 PM
 >>> To: Wang, Yalin
->>> Cc: 'linux-kernel@vger.kernel.org'; Mark Brown; 'perex@perex.cz';
+>>> Cc: 'linux-kernel@vger.kernel.org'; Mark Brown; 'perex@perex.cz'; 
 >>> 'alsa-devel@alsa-project.org'; Liam Girdwood
->>> Subject: Re: change kmalloc into vmalloc for large memory allocations
+>>> Subject: Re: change kmalloc into vmalloc for large memory 
+>>> allocations
 >>>
 >>> At Mon, 03 Mar 2014 10:19:58 +0100,
 >>> Takashi Iwai wrote:
@@ -102,7 +136,8 @@ a few more links than usual.
 >>>>> Hi  Takashi,
 >>>>>
 >>>>> For this one:
->>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/so
+>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/s
+>>>>> o
 >>>>> u
 >>>>> nd/soc/soc-core.c?h=master#n3772
 >>>>>
@@ -110,9 +145,9 @@ a few more links than usual.
 >>>>> the allocation size 62496,
 >>>>> about 62KB,
 >>>>
->>>> This looks way too much than expected.  I thought each struct
->>>> snd_soc_pcm_runtime should be 1 or 2kB.  The code allocating an
->>>> arary of snd_soc_pcm_runtime, so this might be due to some invalid
+>>>> This looks way too much than expected.  I thought each struct 
+>>>> snd_soc_pcm_runtime should be 1 or 2kB.  The code allocating an 
+>>>> arary of snd_soc_pcm_runtime, so this might be due to some invalid 
 >>>> values there.
 >>>>
 >>>>> I think need to  change to vmalloc .
@@ -120,7 +155,7 @@ a few more links than usual.
 >>>>
 >>>> This looks rather like a bug somewhere around it.
 >>>>
->>>> Could you check the values there, sizeof(struct
+>>>> Could you check the values there, sizeof(struct 
 >>>> snd_soc_pcm_runtime),
 >>>> card->num_links and card->num_aux_devs?
 >>>>
@@ -159,7 +194,7 @@ a few more links than usual.
 >>>>> Sent: Friday, February 28, 2014 10:20 PM
 >>>>> To: Wang, Yalin
 >>>>> Cc: 'linux-kernel@vger.kernel.org'; 'linux-arm-msm@vger.kernel.org'; 'linux-arm-kernel@lists.infradead.org'; 'linux-input@vger.kernel.org'; 'balbi@ti.com'; 'gregkh@linuxfoundation.org'; 'lrg@ti.com'; 'broonie@opensource.wolfsonmicro.com'; 'perex@perex.cz'; 'pablo@netfilter.org'; 'kaber@trash.net'; 'davem@davemloft.net'; 'rostedt@goodmis.org'; 'fweisbec@gmail.com'; 'mingo@redhat.com'; 'dmitry.torokhov@gmail.com'; 'rydberg@euromail.se'; 'linux-usb@vger.kernel.org'; 'alsa-devel@alsa-project.org'; 'netfilter-devel@vger.kernel.org'; 'netfilter@vger.kernel.org'; 'coreteam@netfilter.org'; 'netdev@vger.kernel.org'
->>>>> Subject: Re: change kmalloc into vmalloc for large memory
+>>>>> Subject: Re: change kmalloc into vmalloc for large memory 
 >>>>> allocations
 >>>>>
 >>>>> At Fri, 28 Feb 2014 16:15:23 +0800, Wang, Yalin wrote:
@@ -167,15 +202,17 @@ a few more links than usual.
 >>>>>> Hi
 >>>>>>
 >>>>>>
->>>>>> I find there is some drivers use kmalloc to allocate large Memorys
->>>>>> during module_init,  some can be changed to use vmalloc To save
->>>>>> some low mem, I add log in kernel to track , And list them here:
+>>>>>> I find there is some drivers use kmalloc to allocate large 
+>>>>>> Memorys during module_init,  some can be changed to use vmalloc 
+>>>>>> To save some low mem, I add log in kernel to track , And list them here:
 >>>>>>
->>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/d
+>>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/
+>>>>>> d
 >>>>>> rive
 >>>>>> rs/usb/gadget/f_mass_storage.c?h=master#n2724
 >>>>>>
->>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/s
+>>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/
+>>>>>> s
 >>>>>> ound
 >>>>>> /soc/soc-core.c?h=master#n3772
 >>>>>
@@ -187,28 +224,33 @@ a few more links than usual.
 >>>>> Takashi
 >>>>>
 >>>>>
->>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/n
+>>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/
+>>>>>> n
 >>>>>> et/n
 >>>>>> etfilter/nf_conntrack_ftp.c?h=master#n603
->>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/n
+>>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/
+>>>>>> n
 >>>>>> et/n
 >>>>>> etfilter/nf_conntrack_h323_main.c?h=master#n1849
->>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/n
+>>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/
+>>>>>> n
 >>>>>> et/n
 >>>>>> etfilter/nf_conntrack_irc.c?h=master#n247
->>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/n
+>>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/
+>>>>>> n
 >>>>>> et/n
 >>>>>> etfilter/nf_conntrack_sane.c?h=master#n195
 >>>>>>
->>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/d
+>>>>>> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/
+>>>>>> d
 >>>>>> rive
 >>>>>> rs/input/evdev.c?h=master#n403
 >>>>>>
 >>>>>>
->>>>>> they allocate large memory from 10k~64K , this will use lots of
->>>>>> low mem, instead if we use vmalloc for these drivers , it will be
->>>>>> good for some devices like smart phone, we often encounter some
->>>>>> errors like kmalloc failed because there is not enough low mem ,
+>>>>>> they allocate large memory from 10k~64K , this will use lots of 
+>>>>>> low mem, instead if we use vmalloc for these drivers , it will be 
+>>>>>> good for some devices like smart phone, we often encounter some 
+>>>>>> errors like kmalloc failed because there is not enough low mem , 
 >>>>>> especially when the device has physical memory less than 1GB .
 >>>>>>
 >>>>>>
@@ -233,7 +275,7 @@ a few more links than usual.
 >>>>>> }
 >>>>>>
 >>>>>>
->>>>>> But we need add some flags to ensure always use kmalloc for Some
+>>>>>> But we need add some flags to ensure always use kmalloc for Some 
 >>>>>> special use (dma etc..)
 >>>>>>
 >>>>>> How do you think of it ?
