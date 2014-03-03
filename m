@@ -1,64 +1,46 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH] ALSA: usb-audio - Capture and duplex
- support for Digidesign Mbox 1 sound card.
-Date: Mon, 03 Mar 2014 22:01:21 +0100
-Message-ID: <5314EDA1.5040101@zonque.org>
-References: <52E5254A.8090308@gmail.com> <52E53D57.3010700@ladisch.de>
- <52E5CC2E.1010000@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id C8163265695
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 22:01:22 +0100 (CET)
-In-Reply-To: <52E5CC2E.1010000@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Damien Zammit <damien.zammit@gmail.com>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: [PATCH RESEND] sound: omap: n810: fix init with DT boot
+Date: Tue,  4 Mar 2014 00:45:18 +0200
+Message-ID: <1393886718-1817-1-git-send-email-aaro.koskinen@iki.fi>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Aaro Koskinen <aaro.koskinen@iki.fi>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Damien,
+Since 3.14-rc1 only DT boot has been supported on N810, so this
+file fails to init. Make a minimal fix to retain functionality.
+This file should be properly converted to DT in longer term.
 
-Thanks for your patch! See my two comments below.
+There seems to be still other unresolved issues with N810 audio support,
+but this patch is needed at minimum as otherwise the machine driver
+probing would completely fail.
 
-On 01/27/2014 04:02 AM, Damien Zammit wrote:
-> On 27/01/14 03:52, Clemens Ladisch wrote:
->>> >> This patch creates a dual endpoint quirk.
->>>> >> >The quirk interface needs a second audioformat struct for this to work
->>>> >> >which I called ".data2".
->> > Couldn't you just let .data point to an array of two structs?
-> Thanks Clemens, I have created a new patch using this suggestion.
+Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+---
 
-[...]
+	Previous discussion:
+	http://marc.info/?l=linux-omap&m=139387208426122&w=2
 
-> +	fp2 = kmemdup((const struct audioformat*)(quirk->data + sizeof(const struct audioformat)), sizeof(*fp2), GFP_KERNEL);
-> +	if (!fp2) {
-> +		snd_printk(KERN_ERR "cannot memdup 2\n");
-> +		return -ENOMEM;
-> +	}
-> +	if (fp1->nr_rates > MAX_NR_RATES) {
-> +		kfree(fp1);
-> +		kfree(fp2);
+ sound/soc/omap/n810.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Please do proper error unwinding here with jump labels rather than
-open-coding the kfree() calls from multiple places.
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index 3fde9e4..d163e18 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -305,7 +305,9 @@ static int __init n810_soc_init(void)
+ 	int err;
+ 	struct device *dev;
+ 
+-	if (!(machine_is_nokia_n810() || machine_is_nokia_n810_wimax()))
++	if (!of_have_populated_dt() ||
++	    (!of_machine_is_compatible("nokia,n810") &&
++	     !of_machine_is_compatible("nokia,n810-wimax")))
+ 		return -ENODEV;
+ 
+ 	n810_snd_device = platform_device_alloc("soc-audio", -1);
+-- 
+1.9.0
 
-Also, I wonder whether a more generic quirk type to set up a dynamic
-number of fixed interfaces wouldn't be nicer. IOW, add a field to struct
-snd_usb_audio_quirk to denote the number of array members in quirk->data
-and call the quirk type QUIRK_AUDIO_FIXED_MULTI_ENDPOINT or something.
-Then, rewrite the logic to iterate over the interfaces in a loop. That
-might also make the code more readable.
-
-
-Thanks,
-Daniel
