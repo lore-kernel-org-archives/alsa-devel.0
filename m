@@ -1,23 +1,18 @@
-From: "'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>
-Subject: Re: change kmalloc into vmalloc for large memory
-	allocations
-Date: Sun, 2 Mar 2014 19:08:21 -0800
-Message-ID: <20140303030821.GA16732@kroah.com>
-References: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
- <53104ECA.4010702@freescale.com>
- <35FD53F367049845BC99AC72306C23D102844605F38D@CNBJMBX05.corpusers.net>
- <20140228163304.GA15614@kroah.com>
- <35FD53F367049845BC99AC72306C23D102844605F38F@CNBJMBX05.corpusers.net>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/8] ASoC: pxa: e740_wm9705: Convert to
+ table based DAPM setup
+Date: Mon, 3 Mar 2014 10:04:54 +0800
+Message-ID: <20140303020454.GV2411@sirena.org.uk>
+References: <1393685300-5307-1-git-send-email-lars@metafoo.de>
+ <1393685300-5307-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6224265952295673854=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
- [140.211.169.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EF692654D4
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 04:08:15 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <35FD53F367049845BC99AC72306C23D102844605F38F@CNBJMBX05.corpusers.net>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E31412654D4
+ for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 04:35:31 +0100 (CET)
+In-Reply-To: <1393685300-5307-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,31 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'broonie@opensource.wolfsonmicro.com'" <broonie@opensource.wolfsonmicro.com>, "'tiwai@suse.de'" <tiwai@suse.de>, "'fweisbec@gmail.com'" <fweisbec@gmail.com>, "'mingo@redhat.com'" <mingo@redhat.com>, "'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>, "'rydberg@euromail.se'" <rydberg@euromail.se>, "'lrg@ti.com'" <lrg@ti.com>, "'pablo@netfilter.org'" <pablo@netfilter.org>, "'coreteam@netfilter.org'" <coreteam@netfilter.org>, "'linux-arm-msm@vger.kernel.org'" <linux-arm-msm@vger.kernel.org>, "'rostedt@goodmis.org'" <rostedt@goodmis.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, "'linux-arm-kernel@lists.infradead.org'" <linux-arm-kernel@lists.infradead.org>, "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>, "'dmitry.torokhov@gmail.com'" <dmitry.torokhov@gmail.com>, 'linux-kern
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBNYXIgMDMsIDIwMTQgYXQgMTA6NTE6MjNBTSArMDgwMCwgV2FuZywgWWFsaW4gd3Jv
-dGU6Cj4gSGkgIGdyZWcsCj4gCj4gSSBhbSBzb3JyeSwKPiBJIG1ha2UgYSBtaXN0YWtlICwKPiBZ
-b3UgYXJlIHJpZ2h0ICwKPiBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2VybmVs
-L2dpdC93aWxsL2xpbnV4LmdpdC90cmVlL2RyaXZlcnMvdXNiL2dhZGdldC9mX21hc3Nfc3RvcmFn
-ZS5jP2g9bWFzdGVyI24yNzI0Cj4gCj4gdGhpcyBvbmUgc2hvdWxkIG5vdCBjaGFuZ2VkIHRvIHVz
-ZSB2bWFsbG9jLAo+IHRoZSBidWZmZXIgd2lsbCBiZSB1c2VkIGJ5IERNQe+8jAoKV2hpY2ggaXMg
-d2h5IGEgd3JhcHBlciBmdW5jdGlvbiB3aWxsIG5ldmVyIHdvcmsuCgo+IG90aGVycyBzaG91bGQg
-YmUgc2FmZSB0byBjaGFuZ2U6Cj4gCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4
-L2tlcm5lbC9naXQvd2lsbC9saW51eC5naXQvdHJlZS9zb3VuZC9zb2Mvc29jLWNvcmUuYz9oPW1h
-c3RlciNuMzc3Mgo+IAo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwv
-Z2l0L3dpbGwvbGludXguZ2l0L3RyZWUvbmV0L25ldGZpbHRlci9uZl9jb25udHJhY2tfZnRwLmM/
-aD1tYXN0ZXIjbjYwMwo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwv
-Z2l0L3dpbGwvbGludXguZ2l0L3RyZWUvbmV0L25ldGZpbHRlci9uZl9jb25udHJhY2tfaDMyM19t
-YWluLmM/aD1tYXN0ZXIjbjE4NDkKPiBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgv
-a2VybmVsL2dpdC93aWxsL2xpbnV4LmdpdC90cmVlL25ldC9uZXRmaWx0ZXIvbmZfY29ubnRyYWNr
-X2lyYy5jP2g9bWFzdGVyI24yNDcKPiBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgv
-a2VybmVsL2dpdC93aWxsL2xpbnV4LmdpdC90cmVlL25ldC9uZXRmaWx0ZXIvbmZfY29ubnRyYWNr
-X3NhbmUuYz9oPW1hc3RlciNuMTk1Cj4gCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xp
-bnV4L2tlcm5lbC9naXQvd2lsbC9saW51eC5naXQvdHJlZS9kcml2ZXJzL2lucHV0L2V2ZGV2LmM/
-aD1tYXN0ZXIjbjQwMwoKVGhlbiBzZW5kIGluZGl2aWR1YWwgcGF0Y2hlcyBmb3IgdGhlc2UgYW5k
-IHNlZSB3aGF0IGhhcHBlbnMuCgpncmVnIGstaApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============6224265952295673854==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="dIV3CY5swYZsO92m"
+Content-Disposition: inline
+
+
+--dIV3CY5swYZsO92m
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Mar 01, 2014 at 03:48:14PM +0100, Lars-Peter Clausen wrote:
+> Use table based setup to register the DAPM widgets and routes. This on one hand
+> makes the code a bit cleaner and on the other hand the board level DAPM elements
+> get registered in the card's DAPM context rather than in the CODEC's DAPM
+> context.
+
+Applied, thanks.
+
+--dIV3CY5swYZsO92m
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTE+NCAAoJELSic+t+oim9VvUP/2ll4xajGktyW1/A4jHzF1r6
+4zs1GDV2aL5/W0pmHYuaPR8YnoZh/fDhISK3xpP+K+ADLkvcFVw4HzJ0NN9l991i
+X5vLC9jAUYe/hMyhU+y/LIURQh5IwyBhuL2xzG+LZUadY43lJeo6vN7MZ1j3kZVv
+e3O6AfsTNsIcO4FdwmtVyDrplTiO8CSVMCDiXepk2MNgfiIpoHZZm6Bs6s68jrcL
+k8idNlTxBnHkZH4W6o2aTYa534c6ZbdxSpd7rtng+mcep33/qE3B+wvzf3i/Lr27
+EQYPWdPglXY0Y1y/iJu+Qz7yT2dz9MruBF6fLyWc/8MjeowdCzfZ02fGIis5M+kB
+mypm8dcy5AYa8TmUC1l8TGdTPQNe5cRBmFdKBgeXU0K2Lz2wAQ/npkIKB3d0KrHb
+FsABLMWOh9ZQnXaqUP6bCqR3SdQQR5H78TRsUnTxdj3yXcuIWrydozCoxyFj38WT
+PRQ/pP9fYPhcRE1nyQ1HW7+MUfkJjJMMtUf7vLGDvmPb6uPrgLSoyIz5gcjbexDd
+CSDm/YjY7IGQE6ZO1UHDuwzQfft6uwgJDKZX6MtLcUOV61nv2BG45xURn91EJnwX
+bZArdclB02u1o2hKEdsfpU3RfKgd/RJkSZIf8MqMCmNdhgoWu/0TkiHfoDXzqok7
+oS1kS0t4xhMZm1JEjlZX
+=NulR
+-----END PGP SIGNATURE-----
+
+--dIV3CY5swYZsO92m--
+
+--===============6224265952295673854==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6224265952295673854==--
