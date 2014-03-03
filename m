@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 02/19] ASoC: rsnd: move rsnd_mod_call()
-	macro
-Date: Mon, 3 Mar 2014 10:19:42 +0900
-Message-ID: <20140303011942.GC2411@sirena.org.uk>
+Subject: Re: [PATCH 06/19] ASoC: rsnd: add .set_sysclk on
+	snd_soc_dai_ops
+Date: Mon, 3 Mar 2014 10:18:44 +0900
+Message-ID: <20140303011844.GA2411@sirena.org.uk>
 References: <87d2ib90t9.wl%kuninori.morimoto.gx@gmail.com>
- <87a9df90s1.wl%kuninori.morimoto.gx@gmail.com>
+ <874n3n90qt.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7206269875505587056=="
+Content-Type: multipart/mixed; boundary="===============3737434929325076587=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 71ADE265514
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 02:59:07 +0100 (CET)
-In-Reply-To: <87a9df90s1.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8493D265532
+ for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 02:59:21 +0100 (CET)
+In-Reply-To: <874n3n90qt.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,54 +27,58 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam G
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7206269875505587056==
+--===============3737434929325076587==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lMM8JwqTlfDpEaS6"
+	protocol="application/pgp-signature"; boundary="XsQoSWH+UP9D9v3l"
 Content-Disposition: inline
 
 
---lMM8JwqTlfDpEaS6
+--XsQoSWH+UP9D9v3l
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 24, 2014 at 10:14:41PM -0800, Kuninori Morimoto wrote:
+On Mon, Feb 24, 2014 at 10:15:25PM -0800, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
-> core.c is the only user of rsnd_mod_call() macro.
-> Move it to core.c from rsnd.h
+> This patch adds struct snd_soc_dai_ops :: set_sysclk.
+> But, it do nothing, since rsnd sysclk is controlled by ADG.
+> Without this patch, simple-card init will be failed
+> if DT case.
 
-Applied, thanks.
+We should fix the simple-card code so that it does not need this rather
+than adding empty functions to all the drivers - I'd expect it to handle
+-ENOTSUPP as not an error.
 
---lMM8JwqTlfDpEaS6
+--XsQoSWH+UP9D9v3l
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTE9irAAoJELSic+t+oim9OQIQAIFAMUz15f31kW8Fy4HhgEMH
-CIxN3RM4heVbMeCaGy4/TBAEvKBdqDBoxTIvHGBFKtsvHPyBjoNs9H5J7H6Kjbzq
-UJ0nlzRrgZcxd5NLDPB1YM2A67CRYi74/yFwrjmgSXlSeuDL9d/TNVatQMj8eiqy
-n3tdC7CIvcHYkDz3zCNPQn7iEanOfNu08T4hK9Qq3RwmMwnPS9jsis24/RL/DgE2
-nxXWoL9pHgLw6k3RMyHt3F6PQv3Vr5GaJoe6vrp4ng35bPY2dP+rk5RJsLVTlvlV
-BxGaxCAry4a+x4OHh8zzqpIgmbuTIbFfzCD+6zOtve9tiJfNNMtnpQCP71vXKXVM
-jdItsKMQZ3//mrMstd6v+0XaievhIE+DMpUr7I6EEsdeNNWw/QRUwo3j1mDXMOKF
-57/+lwSQpTHvn4q9eD14D37Ul4eKsbsOnecQ7jxzwnb7x6wQw/PRVW6zYm9SGXJg
-GkIH8v7McxlBFv2ml1rRNNkHMZEeiS5lpNlnKwnusn1MMM+2A4T9D4QkEk02IjTt
-otyFnOlYe9ul829/4ch+FEopbec1lloXcTV4Q5cxzruLlhKi4irBi9ePecHgYal4
-ipX3lXMsJapDrxk41Kwzqf38SUIKyvPQWMAzgYwZnLFmNarazVjNZF9R81W/9H6q
-5FYTYUSh9QXE+TJHOela
-=FgZZ
+iQIcBAEBAgAGBQJTE9hrAAoJELSic+t+oim947wQAIgsH1h4VV7STWgrTHXAYeY6
+foWoKWGCvoyIFyF/Z0O23W2INRYQBEyhmRrJV2hPG9f3VJQtGWReJC45oaCubtXQ
+17TPUJIdhcZoKLst0giM9HxHt5ixMSuw3WNegC3/Z1GCoYx8oQUbk98mBT9WeAbS
+4oLiMdziarWTjodWWpZgztIJNzCa+5geJersuwQlVkaRHZ4d6uXLGNewR4enS94T
+yJx0GDHQLyQAoHkmF3QTo+BdJSF4JzSPE96rwjGVaKX6gjz4kBSH/ZeaBDE/NsM1
+1h1alZtttaT34zEtipPNlE/fZVdUae5vqqEMOnXgArneWzexFqpG2WPWWRrmwSlB
+s2ObvkCNtg5ueFUV5pPDcSVDjY0fgalCdPhCNOO7PeHuaij15qPkt7hNWELzi5MC
+xSptwn80i4IaHenKSol4q2L1xhWa+9Gt9WbvmgRvSycf+DEnylwPQuMfAfma7BCT
+uPkCaoYLN6tOnkQpRruK9I7wozyXaSnP+S6LEdHP3+eAiBUDObLAnLpOhKIHWRj/
+i4p40ueGjjUtzhBJWMPEDWkm1dEJLl8wILQ+ph3olhIbt0rhScK+X3yEX/2HvhBw
+Dx7i4scVmCDD/nE5QGvBlBbbcQjcvMImefXIRHkxc8Xz58PaKxEsg2c8DUXlsl4k
+GCQZEkPPoa2uw8FmRbov
+=D+8Q
 -----END PGP SIGNATURE-----
 
---lMM8JwqTlfDpEaS6--
+--XsQoSWH+UP9D9v3l--
 
---===============7206269875505587056==
+--===============3737434929325076587==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7206269875505587056==--
+--===============3737434929325076587==--
