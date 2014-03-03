@@ -1,84 +1,52 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: davinci-evm: Register machine level DAPM
-	elements with the card
-Date: Mon,  3 Mar 2014 08:20:55 +0100
-Message-ID: <1393831255-18033-1-git-send-email-lars@metafoo.de>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [PATCHv3 1/3] ASoC: codec: Simplify ASoC probe code.
+Date: Mon, 3 Mar 2014 07:24:36 +0000
+Message-ID: <5bc570ec866541a68df5813ffbe3168e@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1393814545-15002-1-git-send-email-Li.Xiubo@freescale.com>
+ <1393814545-15002-2-git-send-email-Li.Xiubo@freescale.com>
+ <20140303045952.GO2411@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-014.synserver.de (smtp-out-125.synserver.de
- [212.40.185.125])
- by alsa0.perex.cz (Postfix) with ESMTP id 382732654CE
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 08:20:26 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140303045952.GO2411@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "lars@metafoo.de" <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Machine level DAPM widgets and routes should be registered in the card's DAPM
-context, rather than in the CODEC's context.
+> >  static int ak4535_probe(struct snd_soc_codec *codec)
+> >  {
+> > -	struct ak4535_priv *ak4535 = snd_soc_codec_get_drvdata(codec);
+> > -	int ret;
+> > -
+> > -	codec->control_data = ak4535->regmap;
+> > -	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
+> > -	if (ret < 0) {
+> > -		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+> > -		return ret;
+> > -	}
+> >  	/* power on device */
+> >  	ak4535_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+> 
+> Are you sure that the set_bias_level() call doesn't do anything with
+> I/O?  Can I suggest sending a patch that just does the drivers that only
+> do set_cache_io() and nothing else in probe - that would be really quick
+> and simple to fix.
+> 
+> > -	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
+> > -	if (ret < 0) {
+> > -		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+> > -		return ret;
+> > -	}
+> > -
+> >  	/* Default to using ALC auto offset calibration mode. */
+> >  	snd_soc_update_bits(codec, DA7213_ALC_CTRL1,
+> >  			    DA7213_ALC_CALIB_MODE_MAN, 0);
+> 
+> This one will fail.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/davinci/davinci-evm.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index 5e3bc3c..8d10244 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -95,23 +95,24 @@ static const struct snd_soc_dapm_route audio_map[] = {
- /* Logic for a aic3x as connected on a davinci-evm */
- static int evm_aic3x_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_card *card = rtd->card;
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	struct device_node *np = codec->card->dev->of_node;
- 	int ret;
- 
- 	/* Add davinci-evm specific widgets */
--	snd_soc_dapm_new_controls(dapm, aic3x_dapm_widgets,
-+	snd_soc_dapm_new_controls(&card->dapm, aic3x_dapm_widgets,
- 				  ARRAY_SIZE(aic3x_dapm_widgets));
- 
- 	if (np) {
--		ret = snd_soc_of_parse_audio_routing(codec->card,
--							"ti,audio-routing");
-+		ret = snd_soc_of_parse_audio_routing(card, "ti,audio-routing");
- 		if (ret)
- 			return ret;
- 	} else {
- 		/* Set up davinci-evm specific audio path audio_map */
--		snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
-+		snd_soc_dapm_add_routes(&card->dapm, audio_map,
-+					ARRAY_SIZE(audio_map));
- 	}
- 
- 	/* not connected */
-@@ -120,10 +121,10 @@ static int evm_aic3x_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_disable_pin(dapm, "HPRCOM");
- 
- 	/* always connected */
--	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
--	snd_soc_dapm_enable_pin(dapm, "Line Out");
--	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
--	snd_soc_dapm_enable_pin(dapm, "Line In");
-+	snd_soc_dapm_enable_pin(&card->dapm, "Headphone Jack");
-+	snd_soc_dapm_enable_pin(&card->dapm, "Line Out");
-+	snd_soc_dapm_enable_pin(&card->dapm, "Mic Jack");
-+	snd_soc_dapm_enable_pin(&card->dapm, "Line In");
- 
- 	return 0;
- }
--- 
-1.8.0
+Sorry, I'm not very understand why will this fail ? Before the ASoC probe,
+the ASoC core will set the I/O. 
+:)
