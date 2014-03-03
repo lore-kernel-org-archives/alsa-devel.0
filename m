@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: neo1973_wm8753: Post gta01
- support removal cleanup
-Date: Mon, 3 Mar 2014 10:35:22 +0900
-Message-ID: <20140303013522.GJ2411@sirena.org.uk>
-References: <1393687023-17584-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 01/19] ASoC: rsnd: move priv member
+	settings to upper side
+Date: Mon, 3 Mar 2014 10:19:33 +0900
+Message-ID: <20140303011933.GB2411@sirena.org.uk>
+References: <87d2ib90t9.wl%kuninori.morimoto.gx@gmail.com>
+ <87bnxv90s9.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6121382381493244946=="
+Content-Type: multipart/mixed; boundary="===============0260577741308948286=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C14E42654BC
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 02:35:34 +0100 (CET)
-In-Reply-To: <1393687023-17584-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id C611E2654D3
+ for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 02:53:38 +0100 (CET)
+In-Reply-To: <87bnxv90s9.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6121382381493244946==
+--===============0260577741308948286==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="enLffk0M6cffIOOh"
+	protocol="application/pgp-signature"; boundary="NMuMz9nt05w80d4+"
 Content-Disposition: inline
 
 
---enLffk0M6cffIOOh
+--NMuMz9nt05w80d4+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 01, 2014 at 04:17:02PM +0100, Lars-Peter Clausen wrote:
-> With GTA01 support gone from the driver there is no need to keep a separate
-> initilization routine for the GTA02 specific bits.
+On Mon, Feb 24, 2014 at 10:14:33PM -0800, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> There is no big meaning, but preparation for platform dai support
 
-Applied both, thanks.
+Applied, thanks.
 
---enLffk0M6cffIOOh
+--NMuMz9nt05w80d4+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTE9xWAAoJELSic+t+oim9CBQP/3P4KQ+U8uRgAcq8wyhxZqcH
-CQHaweWWdYtFDNCxiG8QDcmdoM0ZtrdesH+G74ZP/aB6LZlZSXKQgwsrSisNQ/7T
-Hr0sN9h4Kz3k1hCbjLBkUU6Mwrui6dPOTRd8IYMFf/jmAE0e49I8hdZkSaTjtnaB
-NZxwVQo8y7G6kCSCrEUKxRRFTF1yalJUXuDvlqOmJRMpvESi5aDur63NGYjAn1P+
-E8Sqo3vKr6f8noBNv4IWX2CKUKiwdNRK6djmvd1+WYFgxyF5D+GzRDqWRT4HVamT
-oNfAHZZvwieXW0Pm2qeTcrjA+zQFwOpX4q3twgaueBhBFz4ksxtMne6uabBJfZ74
-haXVy893JC7g/r35aScxOz4yBIIfJ744o7j5DT3lmbImbmiy52B3rwMsnGG4TzDq
-u0Mxfabc6vOSpjVFF7iT1Tw/n2k0Ng+zH/IR/Fup3EMeIIAt8iNjjs/l/UWD4K2/
-2GJWGiJREGY8DKeJBCICXmGeZ/bmH7jd89cDy/pOa+IgM4hGxp5ii7by6beOqmx+
-cjb8pzlaNcGsS0688vzhqIxtuuAhjBSbbIAKiZPe4NoGqbY+PRsxiBrT8QJAbIKo
-fJeloP1IetQXV7PwkSqGLKJ7ZGm9aJC/QrCSHtGhSVMMr2aZQEDyZTd1ugLcZFGM
-RBkeCkEsVUrL1EZYRIsG
-=ILIF
+iQIcBAEBAgAGBQJTE9iiAAoJELSic+t+oim9AdsP/if0VphCaVo9VX84APZ5trq7
+nndHSPeyddtLlBoeb3eRymNasXevT+HNyV27aOBNYBe5RjriPubx0iW4sUjfyCp4
+a8+oCedCj8dFyCegoVFOXuMGflX+tbJ5/Z1LBoA/BHA9l353Maw0Bmrzgu6CGaXR
+okj4hb7VBtHgQQqPYzbxg7dGZQ/vqD0D7IExW9fRHoUKXgOpZvU/D+f/20xBdXht
+gc0TGPytkMxpwhSuDn6rIUNj1gOD+X2iisQQ4KvItpw+vafd/Tp5xEzqjPAplrbU
+v+CbFHJ+i1PZzyrdoFJfECR74BNDmyl+sHcTQnX+wotHUVS1ha+YMNp5K7TP9hbI
+5p3kNeSsmR1LWP9pmDgGHIaUgyGL7UIhGcRZXN+1hqtdrcPtfkF6OK1HKaME6d7b
+v7bWNXErv7+AAVeXZevoLXbP6TH8wLbXtfngRzyyrCTS1JQUGIVMFmXrTXhsITdb
+59ejhFQoy5k/iy2AvBQ5dnfik73rawGRMvmQb9F0EPIH0loxFrxle/1wCGpLVvbg
+9kIRwHVkyshSDyPGd/t0WAD4i5XFSVbMl4U70AiyctIZaKgGVyLDQUxs/Cs9A7Xn
+ePfsdzdhBaZHmIs9/QW+GQk6MDtR9oVSbziXxAcff602sK3t1JPCDu02Q7o/piw2
+xVDKP0ycI+ixuooYV2ZM
+=Fgxt
 -----END PGP SIGNATURE-----
 
---enLffk0M6cffIOOh--
+--NMuMz9nt05w80d4+--
 
---===============6121382381493244946==
+--===============0260577741308948286==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6121382381493244946==--
+--===============0260577741308948286==--
