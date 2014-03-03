@@ -1,19 +1,18 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: [PATCH 3/3] ALSA: hda - Mark reg op args as iomem
-Date: Sun,  2 Mar 2014 20:44:01 -0800
-Message-ID: <1393821841-4133-3-git-send-email-dgreid@chromium.org>
-References: <1393821841-4133-1-git-send-email-dgreid@chromium.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: dapm: Reorder the bias update
+	sequence
+Date: Mon, 3 Mar 2014 12:48:09 +0800
+Message-ID: <20140303044809.GM2411@sirena.org.uk>
+References: <1393689843-22916-1-git-send-email-xiaoxiang@xiaomi.com>
+ <1393689843-22916-2-git-send-email-xiaoxiang@xiaomi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7908397161426995767=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f74.google.com (mail-oa0-f74.google.com
- [209.85.219.74])
- by alsa0.perex.cz (Postfix) with ESMTP id EAE3426553C
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 05:44:27 +0100 (CET)
-Received: by mail-oa0-f74.google.com with SMTP id i7so222716oag.5
- for <alsa-devel@alsa-project.org>; Sun, 02 Mar 2014 20:44:27 -0800 (PST)
-In-Reply-To: <1393821841-4133-1-git-send-email-dgreid@chromium.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 043642654D5
+ for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 05:48:27 +0100 (CET)
+In-Reply-To: <1393689843-22916-2-git-send-email-xiaoxiang@xiaomi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,84 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>
+To: Xiang Xiao <xiaoxiang@xiaomi.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The ops to read and write registers should take pointers labeled as
-__iomem.  Thanks to the sparse bot for catching this.
 
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
----
- sound/pci/hda/hda_intel.c | 12 ++++++------
- sound/pci/hda/hda_priv.h  | 12 ++++++------
- 2 files changed, 12 insertions(+), 12 deletions(-)
+--===============7908397161426995767==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vR/vnstCraLpx+OT"
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 149c00b..77ca894 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1431,32 +1431,32 @@ static void azx_firmware_cb(const struct firmware *fw, void *context)
-  */
- 
- /* PCI register access. */
--static void pci_azx_writel(u32 value, u32 *addr)
-+static void pci_azx_writel(u32 value, u32 __iomem *addr)
- {
- 	writel(value, addr);
- }
- 
--static u32 pci_azx_readl(u32 *addr)
-+static u32 pci_azx_readl(u32 __iomem *addr)
- {
- 	return readl(addr);
- }
- 
--static void pci_azx_writew(u16 value, u16 *addr)
-+static void pci_azx_writew(u16 value, u16 __iomem *addr)
- {
- 	writew(value, addr);
- }
- 
--static u16 pci_azx_readw(u16 *addr)
-+static u16 pci_azx_readw(u16 __iomem *addr)
- {
- 	return readw(addr);
- }
- 
--static void pci_azx_writeb(u8 value, u8 *addr)
-+static void pci_azx_writeb(u8 value, u8 __iomem *addr)
- {
- 	writeb(value, addr);
- }
- 
--static u8 pci_azx_readb(u8 *addr)
-+static u8 pci_azx_readb(u8 __iomem *addr)
- {
- 	return readb(addr);
- }
-diff --git a/sound/pci/hda/hda_priv.h b/sound/pci/hda/hda_priv.h
-index 198fa82..ba38b81 100644
---- a/sound/pci/hda/hda_priv.h
-+++ b/sound/pci/hda/hda_priv.h
-@@ -290,12 +290,12 @@ struct azx;
- /* Functions to read/write to hda registers. */
- struct hda_controller_ops {
- 	/* Register Access */
--	void (*reg_writel)(u32 value, u32 *addr);
--	u32 (*reg_readl)(u32 *addr);
--	void (*reg_writew)(u16 value, u16 *addr);
--	u16 (*reg_readw)(u16 *addr);
--	void (*reg_writeb)(u8 value, u8 *addr);
--	u8 (*reg_readb)(u8 *addr);
-+	void (*reg_writel)(u32 value, u32 __iomem *addr);
-+	u32 (*reg_readl)(u32 __iomem *addr);
-+	void (*reg_writew)(u16 value, u16 __iomem *addr);
-+	u16 (*reg_readw)(u16 __iomem *addr);
-+	void (*reg_writeb)(u8 value, u8 __iomem *addr);
-+	u8 (*reg_readb)(u8 __iomem *addr);
- 	/* Disable msi if supported, PCI only */
- 	int (*disable_msi_reset_irq)(struct azx *);
- 	/* Allocation ops */
--- 
-1.8.1.3.605.g02339dd
+
+--vR/vnstCraLpx+OT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Mar 02, 2014 at 12:04:03AM +0800, Xiang Xiao wrote:
+> The new sequence ensure that dapm_pre_sequence_async work on
+> the card before all codecs and dapm_post_sequence_async work
+> on the card after all codecs.
+> So the machine driver could utilize the determinate sequence
+> to do the gloabl setup and teardown in the right place.
+
+Applied, thanks.
+
+--vR/vnstCraLpx+OT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTFAmGAAoJELSic+t+oim96lkP/0zBOdCXkeEUeIVR27EoEerj
+tTFFxnGyNOsoZFtjheILDs1xysPEawG/72wlceFrhbpP6NapwgUefTPnnkl7TLuY
+q5/CsDUe7IsftSKQ84z90ZQ0zTPaHe19jgADRZ7h3IOu+c5SSvpbkJxxyhMbPdgq
+6F+iTe7VtzzRUOteStAjgXFRU9FQIS0FA2/my9W4MXbHnOztO2IglJc1nJNINxtC
+tOyZBn1Axs5j+kYd2obEvW1rQgauL17Nvg38d8Arc+QG4FAds1bpICo3fVASNkbo
+HhiwnT4ch2TvsJqCFZtwu6+kyuuNZHJvLQqswbcgj++k/e+ePO0VOLxEWSGHUmnE
+6bG5AD+dgkf3NlHC6v4h4pbOKfiBUVyoW02A29YZzdEsqvP9xQnzkJF5PTx8cPVx
+IT53FjtexHD4sxFT5XrVJWhnTX9dSoK1Z9WJet5di0dUJ8LZyXH6wLHcTuRkEBf5
+IZT4Q4xswqCHvjMUG9U1qhybTcm7qRLhSK0Qsn/PcD8glKQ3rdnAm+VPO6S01lwg
+P/EvCmIV9ffAdsPvjNe55Z5+xaRwyORZw3TstF7ioOZo/ZEwu3YyrQ6+9hIW4N4h
+4AE/oVD6wiifSQZwjbRVjsjLsePYu2cmbiUskaaBJQBQfF8CGSV7/Q6xfLNegXOE
+CHn22TBSQgMbuYebbd4Q
+=/2td
+-----END PGP SIGNATURE-----
+
+--vR/vnstCraLpx+OT--
+
+--===============7908397161426995767==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7908397161426995767==--
