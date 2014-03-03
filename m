@@ -1,87 +1,64 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4-resend 1/7] ASoC: sirf: Add SiRF
- internal audio codec driver
-Date: Mon, 3 Mar 2014 13:07:45 +0800
-Message-ID: <20140303050745.GP2411@sirena.org.uk>
-References: <1393399342-31177-1-git-send-email-rongjun.ying@csr.com>
- <1393399342-31177-2-git-send-email-rongjun.ying@csr.com>
- <20140227053339.GU9383@sirena.org.uk>
- <86130EF012BDF348AA0D464A4F449478012AE51755@SHAASIEXM01.ASIA.ROOT.PRI>
- <20140301031646.GJ29849@sirena.org.uk>
- <86130EF012BDF348AA0D464A4F449478012AE52440@SHAASIEXM01.ASIA.ROOT.PRI>
+Subject: Re: [PATCH RFC 2/5] ASoC: tlv320aic31xx: Add codec driver to
+ Makefile and Kconfig
+Date: Mon, 3 Mar 2014 13:09:31 +0800
+Message-ID: <20140303050931.GQ2411@sirena.org.uk>
+References: <cover.1393405575.git.jsarha@ti.com>
+ <e5ddd051ac319649d50da0da804750c1c6619edb.1393405575.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1833680676849974963=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B6302654D5
- for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2014 06:08:02 +0100 (CET)
-In-Reply-To: <86130EF012BDF348AA0D464A4F449478012AE52440@SHAASIEXM01.ASIA.ROOT.PRI>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rongjun Ying <Rongjun.Ying@csr.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, DL-SHA-WorkGroupLinux <DL-SHA-WorkGroupLinux@internal.csr.com>, Liam Girdwood <lgirdwood@gmail.com>, RongJun Ying <rjying@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KZa8Qkr7Zx+i11wB"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <e5ddd051ac319649d50da0da804750c1c6619edb.1393405575.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, bcousson@baylibre.com, peter.ujfalusi@ti.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1833680676849974963==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZXg5XZblsOcYBG3r"
-Content-Disposition: inline
-
-
---ZXg5XZblsOcYBG3r
+--KZa8Qkr7Zx+i11wB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 03, 2014 at 02:15:17AM +0000, Rongjun Ying wrote:
+On Wed, Feb 26, 2014 at 11:14:26AM +0200, Jyri Sarha wrote:
 
-> The codec clock is only used by this driver. And this clock is not manage=
-d by
-> clock controller. The Audio controller codec is always enable. So I think=
-=20
-> it is not need abstract to general clock API.
+> --- a/sound/soc/codecs/Kconfig
+> +++ b/sound/soc/codecs/Kconfig
+> @@ -74,6 +74,7 @@ config SND_SOC_ALL_CODECS
+>  	select SND_SOC_TLV320AIC23 if I2C
+>  	select SND_SOC_TLV320AIC26 if SPI_MASTER
+>  	select SND_SOC_TLV320AIC32X4 if I2C
+> +	select SND_SOC_TLV320AIC31XX if I2C
+>  	select SND_SOC_TLV320AIC3X if I2C
+>  	select SND_SOC_TPA6130A2 if I2C
+>  	select SND_SOC_TLV320DAC33 if I2C
 
-No, you're still missing the point.  You are requesting external clocks,
-why are you not managing those here?
+Keep these files sorted and don't send the build infrastructure as a
+separate patch unless the driver as a whole is split into multiple
+patches - there is no value unless the driver is being built up over
+several patches, it just raises a review question on the driver patch.
 
---ZXg5XZblsOcYBG3r
+--KZa8Qkr7Zx+i11wB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTFA4eAAoJELSic+t+oim9uLcP/Rd6sCuRlqqOgbdGTOI8IVp8
-Rg4i25cOKwKmEhJDVOSpEsW+S3AOaSQBSXd0h8JippVyRzHeLs35gVsfuTwPSVqG
-Ms5yvAZL3EHi4An277mX3qnATmPrFcSHQkkuMobIY30z51tUPBCPdHLD0cpVTUnB
-BxpfwdWjRxs9pR25biW4l/N3xX9dSDQiVPdmRN9O+3bTT1pdb4Oj5qQSvC3BZnH9
-rWdyZGVHoq8XFrQ3m5LWP0bH8E3S6MMZ2S7PiYSAfm+Catq7zvZEY0xoSAio96T8
-4i2j7+AjQBhZeg+dyIAhx0KauXoXCUI1Os+TAmwhm5GIEt1Ro/vO+70Uxfl684rx
-MSbruqFmruXfeEjAkik9zG0sQloE2VBNLBTOJ3HSHR16jh7Z4EqSe7gzpZ9Vogsd
-zDPpQvh2y1gPNKl8+UGthZGLElfCPnh1iZn7yXbckwC0BnE61W7mLeFtWEx7Fa0Z
-mJeRR44x+YgfleXGO2KE+vMuyII67/mHn+xLR3ecFYcAPB1iOuLTq3zzltLztitV
-C5sRiqP9GY+9OjwbPAxUKzrhqmMcK4a9IBciDoEiai5rl5FOgTqCAGYOZ1cIZ8/L
-C5fd36WgReowExgTeDSzUBYj0fLt6Z6l7HOdaimxIUtIPLgJwqgT5TO+sVJ+7TY7
-lvb/5x6MHZ7QEGCHHYMr
-=2Vwi
+iQIcBAEBAgAGBQJTFA6IAAoJELSic+t+oim9JwcP/ioC6TFOTfJQRQBYFGsDFKXX
+GIUE4wnOremY889iMVkKHNPBgOzwuQ83BL1MdXpIQR3K6fE5Uv5PnfJBs06UnBtp
+qWICjAF0Mgr7FoFY1Fg543GmCqkwIFu9OxeulYdgZuArRv/jSRNUJBRhBAfyl5tH
+1Msu0K2Zfx/SPIMcsJSZlm0TMI110pk29jJv3ntYOk0OMkyb8oOLLELoDd3CQ0Iq
+HZToO69HFdsDDrJ3IOOcsq9lLx7JZPjrXI7HitN0B/yDlCrEmbkzxSHxrhQz8GQC
+ximNHdoRj2sv+S9JEDOs19gJ2bI9/H2uSSHFxVZSWuOjhe8wFx+REY8iFrqmIRwa
+8JKqESPet9t0xWZ8/EWMhKVmhYsMG9Uhpn++YbCmWZJv0yzc04YAQ2/DvHV2zyrC
+vEufB8OvqeDQG4K7dnnA/rBmjUTzPrZfX3ytl8+dCwE1Xfjkb4hTFia/L6Db0JvY
+VpSgdL251w42+JSCcBk9SD0cR+n1unnWxk3xuABEabPnLBYdAhVsF0HXjPcAzI8u
++R/Fsp4VgZujATXA4Y0Ok3e7YAoQrCgy5fcy2NpfcG2EFmgN8V+4qLz7G5Gnzdvn
+N+hnrTebGiU1X5yAlRa8XVbs/y3hB6dYnshIcNlkWKTKvQTfLExWsFhbU8ip1LES
+2snxtMcbcxL58OyiVdca
+=QoOQ
 -----END PGP SIGNATURE-----
 
---ZXg5XZblsOcYBG3r--
-
---===============1833680676849974963==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1833680676849974963==--
+--KZa8Qkr7Zx+i11wB--
