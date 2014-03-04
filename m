@@ -1,49 +1,37 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: ak4104: Remove superfluous
-	codec->control_data initialization
-Date: Tue,  4 Mar 2014 09:19:37 +0100
-Message-ID: <1393921177-24294-1-git-send-email-lars@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-014.synserver.de (smtp-out-147.synserver.de
- [212.40.185.147])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EB27261AC7
- for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2014 09:19:11 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Daniel Mack <zonque@gmail.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - add automute fix for another dell AIO model
+Date: Tue,  4 Mar 2014 16:20:18 +0800
+Message-ID: <1393921218-30651-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-The driver uses automatic IO setup, which will also initialize the control_data
-field of the CODEC, no need to do it manually.
+When plugging a headphone or headset, lots of noise is heard from
+internal speaker, after changing the automute via amp instead of
+pinctl, the noise disappears.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+BugLink: https://bugs.launchpad.net/bugs/1268468
+Cc: David Henningsson <david.henningsson@canonical.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/soc/codecs/ak4104.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/pci/hda/patch_realtek.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
-index b4819dc..10adf25 100644
---- a/sound/soc/codecs/ak4104.c
-+++ b/sound/soc/codecs/ak4104.c
-@@ -174,8 +174,6 @@ static int ak4104_probe(struct snd_soc_codec *codec)
- 	struct ak4104_private *ak4104 = snd_soc_codec_get_drvdata(codec);
- 	int ret;
- 
--	codec->control_data = ak4104->regmap;
--
- 	/* set power-up and non-reset bits */
- 	ret = regmap_update_bits(ak4104->regmap, AK4104_REG_CONTROL1,
- 				 AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 2056b7e..b501141 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5263,7 +5263,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0625, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0626, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0628, "Dell", ALC668_FIXUP_AUTO_MUTE),
+-	SND_PCI_QUIRK(0x1028, 0x064e, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x064e, "Dell", ALC668_FIXUP_AUTO_MUTE),
+ 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
+ 	SND_PCI_QUIRK(0x1043, 0x11cd, "Asus N550", ALC662_FIXUP_BASS_1A),
+ 	SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ", ALC662_FIXUP_BASS_MODE4_CHMAP),
 -- 
-1.8.0
+1.8.1.2
