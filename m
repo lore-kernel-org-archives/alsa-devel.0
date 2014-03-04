@@ -1,61 +1,49 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 2/4] ASoC: davinci-evm: Add
- AM43xx-EPOS-EVM audio support
-Date: Tue, 04 Mar 2014 15:12:17 +0100
-Message-ID: <5315DF41.1090302@metafoo.de>
-References: <cover.1393941102.git.jsarha@ti.com>
- <39776dc2fc736ef92f58eac83bce52a11fbbd6c3.1393941102.git.jsarha@ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: SNDRV_PCM_INFO_BATCH
+Date: Tue, 04 Mar 2014 15:20:08 +0100
+Message-ID: <5315E118.7060809@canonical.com>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-014.synserver.de (smtp-out-147.synserver.de
- [212.40.185.147])
- by alsa0.perex.cz (Postfix) with ESMTP id 1638D265765
- for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2014 15:12:04 +0100 (CET)
-In-Reply-To: <39776dc2fc736ef92f58eac83bce52a11fbbd6c3.1393941102.git.jsarha@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, detheridge@ti.com, broonie@kernel.org, bcousson@baylibre.com
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
+So, PulseAudio removed timer scheduling for drivers with
+SNDRV_PCM_INFO_BATCH, and released 5.0. Meanwhile, USB drivers still
+have SNDRV_PCM_INFO_BATCH, so this leads to performance regressions for
+USB sound cards.
 
-> +static const struct snd_soc_dapm_widget aic31xx_dapm_widgets[] = {
-> +	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-> +	SND_SOC_DAPM_SPK("Speaker", NULL),
-> +	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-> +};
-> +
-> +/* Logic for EVMs with an aic31xx */
-> +static int evm_aic31xx_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	struct snd_soc_codec *codec = rtd->codec;
-> +	struct snd_soc_dapm_context *dapm = &codec->dapm;
+The question remains - what does SNDRV_PCM_INFO_BATCH really mean?
 
-Machine level DAPM elements should go into the card's DAPM context, not the 
-CODEC context. Also use rtd->card to get a pointer to the card instead of 
-rtd->codec->card.
+In the documentation, we have this:
+"int snd_pcm_hw_params_is_batch (const snd_pcm_hw_params_t *params) 	
+Check, if hardware does double buffering for data transfers for given
+configuration."
 
-> +	struct device_node *np = codec->card->dev->of_node;
-> +	int ret;
-> +
-> +	snd_soc_dapm_new_controls(dapm, aic31xx_dapm_widgets,
-> +				  ARRAY_SIZE(aic31xx_dapm_widgets));
-> +
-> +	if (np) {
-> +		ret = snd_soc_of_parse_audio_routing(codec->card,
-> +						     "ti,audio-routing");
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
+What PulseAudio was looking for was more something like "what accuracy
+does the pointer callback give us". When we asked this question at the
+latest audio meeting, SNDRV_PCM_INFO_BATCH was given as the answer, i e,
+if this flag is set, pointer callback have no more accuracy than period
+boundaries. At least that's how I understood it.
+
+So, either the documentation for snd_pcm_hw_params_is_batch is correct,
+in which case PulseAudio should revert the tsched patch. Or the answer
+given at the audio meeting was correct, in which case we need to fix the
+USB driver to stop sending the SNDRV_PCM_INFO_BATCH flag.
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
