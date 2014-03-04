@@ -1,19 +1,20 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: io: Remove hw_read() operation
-Date: Tue, 04 Mar 2014 12:25:59 +0100
-Message-ID: <5315B847.3040203@metafoo.de>
-References: <1393924251-6754-1-git-send-email-broonie@kernel.org>
- <53159AD0.5000800@metafoo.de> <20140304092723.GH13126@sirena.org.uk>
- <5315A0CB.1020300@metafoo.de> <20140304101135.GJ13126@sirena.org.uk>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH] ASoC: ak4104: Remove superfluous
+ codec->control_data initialization
+Date: Tue, 04 Mar 2014 12:48:19 +0100
+Message-ID: <5315BD83.2090504@gmail.com>
+References: <1393921177-24294-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-014.synserver.de (smtp-out-147.synserver.de
- [212.40.185.147])
- by alsa0.perex.cz (Postfix) with ESMTP id D8A4026575F
- for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2014 12:25:26 +0100 (CET)
-In-Reply-To: <20140304101135.GJ13126@sirena.org.uk>
+Received: from mail-we0-f170.google.com (mail-we0-f170.google.com
+ [74.125.82.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FDEB265765
+ for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2014 12:48:23 +0100 (CET)
+Received: by mail-we0-f170.google.com with SMTP id w61so4766454wes.29
+ for <alsa-devel@alsa-project.org>; Tue, 04 Mar 2014 03:48:22 -0800 (PST)
+In-Reply-To: <1393921177-24294-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,48 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/04/2014 11:11 AM, Mark Brown wrote:
-> On Tue, Mar 04, 2014 at 10:45:47AM +0100, Lars-Peter Clausen wrote:
->
->> Yea, but we are not in a hurry. My plan was to get all the small
->
-> YM "yes".  :)
->
->> independent driver cleanups necessary for componetization merged for
->> 3.15 and then for 3.16 do the componetnization in the ASoC core.
->
-> I'm keen to avoid getting lots of people sitting on unmerged patches,
-> it's a risk source due to interaction issues.
->
->> So what the patchset does is add a regmap pointer to the component
->> struct. For now it also adds
->> snd_soc_component_{read,write,update_bits,
->> update_bits_async} wrapper functions which have the same signature
->> as the matching regmap function. Internally it does check if the
->> regmap field of the component is set, if yes, just forwards the call
->> to the matching regmap function. If not it falls back to the read,
->> write callbacks setup by CODEC or platform drivers. Once every
->> driver has been converted to regmap we can remove the fallback and
->> make the function static inline.
->
-> Yes, that's what I'd expect and roughly what I was suggesting doing
-> anyway inside the existing implementation (ie, not the new function
-> but making the edit inside the existing functions).
->
-> I'm not sure I like the _component_ naming since it's getting a bit
-> verbose, but on the other hand it probably should only be the core
-> using this stuff (the drivers ought to be able to find their own
-> regmaps, or at least doing the same lookup) so probably it doesn't
-> matter terribly much.
->
+On 03/04/2014 09:19 AM, Lars-Peter Clausen wrote:
+> The driver uses automatic IO setup, which will also initialize the control_data
+> field of the CODEC, no need to do it manually.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-Yes, it's only used in the core. There is still snd_soc_write(codec) and 
-friends which wraps them like snd_soc_component_write(&codec->component). 
-But on the long run I'd like to see all snd_soc_writes be removed from 
-driver code.
+Acked-by: Daniel Mack <daniel@zonque.org>
 
-- Lars
+
+Thanks!
+Daniel
+
+
+> ---
+>  sound/soc/codecs/ak4104.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
+> index b4819dc..10adf25 100644
+> --- a/sound/soc/codecs/ak4104.c
+> +++ b/sound/soc/codecs/ak4104.c
+> @@ -174,8 +174,6 @@ static int ak4104_probe(struct snd_soc_codec *codec)
+>  	struct ak4104_private *ak4104 = snd_soc_codec_get_drvdata(codec);
+>  	int ret;
+>  
+> -	codec->control_data = ak4104->regmap;
+> -
+>  	/* set power-up and non-reset bits */
+>  	ret = regmap_update_bits(ak4104->regmap, AK4104_REG_CONTROL1,
+>  				 AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN,
+> 
