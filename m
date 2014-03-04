@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/5] ASoC: kirkwood: prepare new Dove DT
- Kconfig variable
-Date: Tue, 4 Mar 2014 12:03:14 +0800
-Message-ID: <20140304040314.GC2411@sirena.org.uk>
-References: <1393536486-3827-3-git-send-email-sebastian.hesselbarth@gmail.com>
- <1393662801-17950-1-git-send-email-sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH] ASoC: wm8753: Remove superfluous
+	'codec->cache_sync = 1'
+Date: Tue, 4 Mar 2014 12:04:50 +0800
+Message-ID: <20140304040450.GD2411@sirena.org.uk>
+References: <1393678004-17427-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5825719562695934076=="
+Content-Type: multipart/mixed; boundary="===============8277112669464478462=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A276B2656B4
- for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2014 05:03:38 +0100 (CET)
-In-Reply-To: <1393662801-17950-1-git-send-email-sebastian.hesselbarth@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B28DA2656CE
+ for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2014 05:05:03 +0100 (CET)
+In-Reply-To: <1393678004-17427-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5825719562695934076==
+--===============8277112669464478462==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5AMDinkw1evBROKu"
+	protocol="application/pgp-signature"; boundary="lS0Z/zpizLfakKcP"
 Content-Disposition: inline
 
 
---5AMDinkw1evBROKu
+--lS0Z/zpizLfakKcP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Mar 01, 2014 at 09:33:17AM +0100, Sebastian Hesselbarth wrote:
-> DT-enabled Dove will move over from ARCH_DOVE in mach-dove to MACH_DOVE in
-> mach-mvebu. As non-DT ARCH_DOVE will stay to rot for a while, add a new
-> DT-only MACH_DOVE Kconfig.
+On Sat, Mar 01, 2014 at 01:46:44PM +0100, Lars-Peter Clausen wrote:
+> The wm8763 driver uses regmap for IO which means that codec->cache_sync is not
+> used. The line was added in commit d3398ff ('ASoC: Convert WM8753 to direct
+> regmap API usage'). Presumably this was meant to be regcache_mark_dirty(), but
+> since we already call regcache_mark_dirty() in the core when suspending the
+> CODEC it is safe to just remove the line.
 
-This doesn't apply against current ASoC, please check and resend.
+Applied, thanks.
 
---5AMDinkw1evBROKu
+--lS0Z/zpizLfakKcP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTFVB+AAoJELSic+t+oim95nwP/1uyEm3ESYlgB3peebEZKl1T
-Pmqq4L8g/mE78JLRE5iLYbmIlDQ5KVVFRLHba4wG/ODNrobAAtYuGKPea9XcpHFA
-a4HQknEjvfYa+Wx6Um2Dzq5OXXc0SoW66CLZON/1Zv5zfSO/2k8kv4RtV8w14mlL
-/o0ybTWSthvWCw/xaNLEXlQc16xpLZAfApQexi62ykNAawE/K7V3j6ZC9PrzQomv
-CG8hA0s/8EY3wWmB1KvUYY59qodKuzanP9vd68LzW/0mHUA8cACKlIzT0GFeNFW3
-LAFYFk32Vt3lilcWBB580o6VOHLNDS/Xs+ALYy7UpUZffesGT+BsuIwB8gFSE3kT
-0rSGgYTicKx4GBeFkjes4dm081SffHk7nwBjkUzWrk+n+0KgdKNUVHLXlUxAwBb+
-NVy8tqouvd+xgq5GTwBBH43w+MQbGAPhHEzX7kjElIlMLwKfgUMt02+lvxALVgSP
-3zM2bA3HZoTadvVck+V2Td7h6U+HSFZ+ZrNOiDfT2xkkhZI+ZdEp1uVs9NT1egWc
-if4aljVYvCEXTo9UY4JXINa/de/N26UeHlKNRPCP0lOl2gdKoTSmHos+teRNUJgK
-Qb5xzvu8Q6Ii1vRwbt3HowHAjunflqkTWCSvv7mPOtlAGks1bCrwVaU5mbzOu5PM
-IXxhHOGb/p3FQBD6D4aM
-=06RQ
+iQIcBAEBAgAGBQJTFVDfAAoJELSic+t+oim9DbEP/RP+eY5x3OXj1DxYn1f1Tgu/
+J1JyaMYf7kbohiTMdOUBsVYIGstwu311VLaYLtxnjyYExSwjHxKA5cDBAJeMiBvu
+y18tnXYChiQng8M66lAiS7vvlq+e+Y6YI7Q37VbWrcsRZUHzslOgj7UoApTs65lC
+Z607muOn+Uhu57qUy62pPzzr8kVL5R/ZgpR7Wa4CgliQI2c+qeVNHeRASwynvkCB
+3JZzxTEByZW/dmfNoPfZ/PX6RMci0CvGGFYnXvwiw7rH/21kN3JQmQo8eEMJsLtD
+ozHRFuw4VVmRX4iJQwra6yKiafuY5rTkwbsjFmal5DtaJTHgdArkrXKFt3Blc7Sq
+T6eb5sLb0ZUK1sLBVOGAdWx3rH3s+N1meU1V21KgAzM0BUfoj1d3LsLL/zISDdb3
+Hfo9bR6PIuN80RhbCn7ywzlQKvuzJNoCOGjpN1uniCbBJ/okQw5YdMUwRC8iOsgu
+XIPXFp7rTKP2dn+V0faYPHHt38sZcIZVa7KX3OEMUoF9kLmRQaFQg5wjTS7U0Hp8
+uG1pYP6OtAUgTrcunGTNRx71O8hhWkhA1w9Ye7KhxM7/9zmksd4BEE2bT9PYXPW5
+/csMQmKh5q+DzXfLPsqZvs0rPOLhFl1XRRKcDeXOeZTpQQ88Wy8eOkPGQmotWgFY
+9+9EGGbMQPlQRIKshcLm
+=z9D7
 -----END PGP SIGNATURE-----
 
---5AMDinkw1evBROKu--
+--lS0Z/zpizLfakKcP--
 
---===============5825719562695934076==
+--===============8277112669464478462==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5825719562695934076==--
+--===============8277112669464478462==--
