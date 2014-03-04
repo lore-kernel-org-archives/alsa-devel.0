@@ -1,20 +1,17 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH] ASoC: ak4104: Remove superfluous
- codec->control_data initialization
-Date: Tue, 04 Mar 2014 12:48:19 +0100
-Message-ID: <5315BD83.2090504@gmail.com>
-References: <1393921177-24294-1-git-send-email-lars@metafoo.de>
+From: "MONTANARO Luciano (MM)" <luciano.montanaro@magnetimarelli.com>
+Subject: Fix for busy loop at boundary wrapping with ioplug
+	based plugins
+Date: Tue, 4 Mar 2014 12:50:24 +0100
+Message-ID: <67BA5DEFFBE7BF46B4C53F7E5FC5AD44344700ED7B@MXCL13.fgremc.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f170.google.com (mail-we0-f170.google.com
- [74.125.82.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 3FDEB265765
- for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2014 12:48:23 +0100 (CET)
-Received: by mail-we0-f170.google.com with SMTP id w61so4766454wes.29
- for <alsa-devel@alsa-project.org>; Tue, 04 Mar 2014 03:48:22 -0800 (PST)
-In-Reply-To: <1393921177-24294-1-git-send-email-lars@metafoo.de>
+Received: from mx2.ex2007.fiatgroup.com (mx1.ex2007.fiatgroup.com
+ [129.35.118.116])
+ by alsa0.perex.cz (Postfix) with ESMTP id 840E22656E9
+ for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2014 12:50:25 +0100 (CET)
+Content-Language: it-IT
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,38 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/04/2014 09:19 AM, Lars-Peter Clausen wrote:
-> The driver uses automatic IO setup, which will also initialize the control_data
-> field of the CODEC, no need to do it manually.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Hello everybody,
 
-Acked-by: Daniel Mack <daniel@zonque.org>
+I have found an odd problem during long testing of our device, that suddenly starts misbehaving after several hours of use.
+
+What happened is:
+A client opens a device based on the jack plugin for reading, and keeps reading from it.
+After 10 hours 55 minutes, the snd_pcm_readi() functions starts to report data to be always available for read, and makes the reader use all the cpu it can.
+
+My patch will follow shortly, please tell me what you think of it.
+
+Best regards,
+Luciano
 
 
-Thanks!
-Daniel
+--
+Luciano Montanaro
+EntryNAV - Audio Software Integrator
+Magneti Marelli Electronic Systems
+Viale Carlo Emanuele II 150, Venaria Reale (To) Tel. (+39) 011 6879765
 
 
-> ---
->  sound/soc/codecs/ak4104.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
-> index b4819dc..10adf25 100644
-> --- a/sound/soc/codecs/ak4104.c
-> +++ b/sound/soc/codecs/ak4104.c
-> @@ -174,8 +174,6 @@ static int ak4104_probe(struct snd_soc_codec *codec)
->  	struct ak4104_private *ak4104 = snd_soc_codec_get_drvdata(codec);
->  	int ret;
->  
-> -	codec->control_data = ak4104->regmap;
-> -
->  	/* set power-up and non-reset bits */
->  	ret = regmap_update_bits(ak4104->regmap, AK4104_REG_CONTROL1,
->  				 AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN,
-> 
+
+VISITA IL NOSTRO NUOVO SITO WEB! - VISIT OUR NEW WEB SITE!   www.magnetimarelli.com
+
+Confidential Notice: This message - including its attachments - may contain proprietary, confidential and/or legally protected information and is intended solely for the use of the designated addressee(s) above. If you are not the intended recipient be aware that any downloading, copying, disclosure, distribution or use of the contents of the above information is strictly prohibited.
+If you have received this communication by mistake, please forward the message back to the sender at the email address above, delete the message from all mailboxes and any other electronic storage medium and destroy all copies.
+Disclaimer Notice: Internet communications cannot be guaranteed to be safe or error-free. Therefore we do not assure that this message is complete or accurate and we do not accept liability for any errors or omissions in the contents of this message.
