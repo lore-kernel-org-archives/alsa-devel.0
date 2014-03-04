@@ -1,7 +1,7 @@
 From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH v2 4/4] ASoC: tlv320aic32x4: Sort Makefile in alphabetic order
-Date: Tue, 4 Mar 2014 15:54:52 +0200
-Message-ID: <80b0f9ecd29b8bfb52fed22a0ca059591f89683d.1393941102.git.jsarha@ti.com>
+Subject: [PATCH v2 3/4] ASoC: davinci: Add SND_AM43XX_SOC_EPOS_EVM build option
+Date: Tue, 4 Mar 2014 15:54:51 +0200
+Message-ID: <1c376b7219e364b419fa57610f381dddfdde4a53.1393941102.git.jsarha@ti.com>
 References: <cover.1393941102.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,37 +12,47 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76
 Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The tlv320aic32x4 related files were wrongly placed after tlv320aic3x files.
+Add support for am335x and am43x based boards with tlv320aic31xx
+compatible codec connected to McASP.
 
 Signed-off-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 ---
- sound/soc/codecs/Makefile |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/davinci/Kconfig  |   12 ++++++++++++
+ sound/soc/davinci/Makefile |    1 +
+ 2 files changed, 13 insertions(+)
 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 23f8042..ff1775c 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -65,8 +65,8 @@ snd-soc-tas5086-objs := tas5086.o
- snd-soc-tlv320aic23-objs := tlv320aic23.o
- snd-soc-tlv320aic26-objs := tlv320aic26.o
- snd-soc-tlv320aic31xx-objs := tlv320aic31xx.o
--snd-soc-tlv320aic3x-objs := tlv320aic3x.o
- snd-soc-tlv320aic32x4-objs := tlv320aic32x4.o
-+snd-soc-tlv320aic3x-objs := tlv320aic3x.o
- snd-soc-tlv320dac33-objs := tlv320dac33.o
- snd-soc-twl4030-objs := twl4030.o
- snd-soc-twl6040-objs := twl6040.o
-@@ -196,8 +196,8 @@ obj-$(CONFIG_SND_SOC_TAS5086)	+= snd-soc-tas5086.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
- obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
- obj-$(CONFIG_SND_SOC_TLV320AIC31XX)     += snd-soc-tlv320aic31xx.o
--obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
- obj-$(CONFIG_SND_SOC_TLV320AIC32X4)     += snd-soc-tlv320aic32x4.o
-+obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
- obj-$(CONFIG_SND_SOC_TLV320DAC33)	+= snd-soc-tlv320dac33.o
- obj-$(CONFIG_SND_SOC_TWL4030)	+= snd-soc-twl4030.o
- obj-$(CONFIG_SND_SOC_TWL6040)	+= snd-soc-twl6040.o
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index a8ec1fc..e1e3663 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -26,6 +26,18 @@ config SND_AM33XX_SOC_EVM
+ 	  AM335X-EVMSK, and BeagelBone with AudioCape boards have this
+ 	  setup.
+ 
++config SND_AM43XX_SOC_EPOS_EVM
++	tristate "SoC Audio for the AM33XX/AM43XX and TLV320AIC31XX based board"
++	depends on SND_DAVINCI_SOC
++	depends on SOC_AM33XX || SOC_AM43XX
++	select SND_SOC_TLV320AIC31XX
++	select SND_DAVINCI_SOC_MCASP
++	help
++	  Say Y or M if you want to add support for SoC audio on
++	  AM335X/AM43XX boards using McASP to connect to a codec of
++	  TLV320AIC31XX series. For example AM43XX-EPOS-EVM has such a
++	  setup.
++
+ config SND_DAVINCI_SOC_EVM
+ 	tristate "SoC Audio support for DaVinci DM6446, DM355 or DM365 EVM"
+ 	depends on SND_DAVINCI_SOC
+diff --git a/sound/soc/davinci/Makefile b/sound/soc/davinci/Makefile
+index 744d4d9..d61998f 100644
+--- a/sound/soc/davinci/Makefile
++++ b/sound/soc/davinci/Makefile
+@@ -13,3 +13,4 @@ obj-$(CONFIG_SND_DAVINCI_SOC_VCIF) += snd-soc-davinci-vcif.o
+ snd-soc-evm-objs := davinci-evm.o
+ 
+ obj-$(CONFIG_SND_DAVINCI_SOC_GENERIC_EVM) += snd-soc-evm.o
++obj-$(CONFIG_SND_AM43XX_SOC_EPOS_EVM) += snd-soc-evm.o
 -- 
 1.7.9.5
 
