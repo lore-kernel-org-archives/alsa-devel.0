@@ -1,42 +1,43 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: SNDRV_PCM_INFO_BATCH
-Date: Tue, 04 Mar 2014 15:50:04 +0100
-Message-ID: <5315E81C.2010704@ladisch.de>
-References: <5315E118.7060809@canonical.com>
+From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 2/4] ASoC: davinci-evm: Add AM43xx-EPOS-EVM
+ audio support
+Date: Tue, 4 Mar 2014 17:40:44 +0200
+Message-ID: <5315F3FC.5070101@ti.com>
+References: <cover.1393941102.git.jsarha@ti.com> <39776dc2fc736ef92f58eac83bce52a11fbbd6c3.1393941102.git.jsarha@ti.com> <5315DF41.1090302@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 1B54B265774
- for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2014 15:50:06 +0100 (CET)
-In-Reply-To: <5315E118.7060809@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <5315DF41.1090302-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-David Henningsson wrote:
-> So, PulseAudio removed timer scheduling for drivers with
-> SNDRV_PCM_INFO_BATCH, and released 5.0. Meanwhile, USB drivers still
-> have SNDRV_PCM_INFO_BATCH, so this leads to performance regressions for
-> USB sound cards.
+On 03/04/2014 04:12 PM, Lars-Peter Clausen wrote:
 >
-> The question remains - what does SNDRV_PCM_INFO_BATCH really mean?
+>> +static const struct snd_soc_dapm_widget aic31xx_dapm_widgets[] = {
+>> +    SND_SOC_DAPM_HP("Headphone Jack", NULL),
+>> +    SND_SOC_DAPM_SPK("Speaker", NULL),
+>> +    SND_SOC_DAPM_MIC("Mic Jack", NULL),
+>> +};
+>> +
+>> +/* Logic for EVMs with an aic31xx */
+>> +static int evm_aic31xx_init(struct snd_soc_pcm_runtime *rtd)
+>> +{
+>> +    struct snd_soc_codec *codec = rtd->codec;
+>> +    struct snd_soc_dapm_context *dapm = &codec->dapm;
+>
+> Machine level DAPM elements should go into the card's DAPM context, not
+> the CODEC context. Also use rtd->card to get a pointer to the card
+> instead of rtd->codec->card.
+>
 
-For your purposes, it means that the pointer accuracy is likely to be
-worse than that of other sound cards.
+Thanks, I'll fix those.
 
-There should be a mechanism to report the actual granularity.
-
-
-Regards,
-Clemens
+Best regards,
+Jyri
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
