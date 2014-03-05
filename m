@@ -1,17 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [GIT PULL v2] Enhancement of support for Firewire
-	devices
-Date: Wed, 05 Mar 2014 20:00:00 +0900
-Message-ID: <531703B0.3050503@sakamocchi.jp>
-References: <5316963F.1000206@sakamocchi.jp> <s5hk3c9i33s.wl%tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 2/2] ALSA: hda - Use analog beep for Thinkpads
+	with AD1984 codecs
+Date: Wed,  5 Mar 2014 12:02:16 +0100
+Message-ID: <1394017336-23422-2-git-send-email-tiwai@suse.de>
+References: <1394017336-23422-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 30973265CC5
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 12:00:07 +0100 (CET)
-In-Reply-To: <s5hk3c9i33s.wl%tiwai@suse.de>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D8AD265CF2
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 12:02:17 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id A441FACCC
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 11:02:16 +0000 (UTC)
+In-Reply-To: <1394017336-23422-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,30 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Iwa-san,
+For making the driver behavior compatible with the earlier kernels,
+use the analog beep in the loopback path instead of the digital beep.
 
-(Mar 5 2014 15:14), Takashi Iwai wrote:
- > Could you submit v2 patches to ML?  The patches need review, and I
- > want get them acked by Clemens before applying.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_analog.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-OK. I sent patches now to this thread.
-
-(Feb 28 2014 15:36), Takashi Iwai wrote:
- > The end-result patches must be identical, so you don't have
- > to resend them to ML, though.
-
-I think to have misunderstood what you mean in this message.
-Did you ask me not to send patches with 'GIT PULL' because you can read 
-commits in repository?
-
-# And this mailman ignored my message again...
-
-
-Regards
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
+index 498971095869..8ed0bcc01386 100644
+--- a/sound/pci/hda/patch_analog.c
++++ b/sound/pci/hda/patch_analog.c
+@@ -1026,6 +1026,9 @@ static void ad1884_fixup_thinkpad(struct hda_codec *codec,
+ 		spec->gen.keep_eapd_on = 1;
+ 		spec->gen.vmaster_mute.hook = ad_vmaster_eapd_hook;
+ 		spec->eapd_nid = 0x12;
++		/* Analog PC Beeper - allow firmware/ACPI beeps */
++		spec->beep_amp = HDA_COMPOSE_AMP_VAL(0x20, 3, 3, HDA_INPUT);
++		spec->gen.beep_nid = 0; /* no digital beep */
+ 	}
+ }
+ 
+-- 
+1.9.0
