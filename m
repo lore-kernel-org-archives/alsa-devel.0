@@ -1,21 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: io: Remove hw_read() operation
-Date: Wed, 5 Mar 2014 09:25:04 +0800
-Message-ID: <20140305012504.GO13126@sirena.org.uk>
-References: <1393924251-6754-1-git-send-email-broonie@kernel.org>
- <53159AD0.5000800@metafoo.de>
- <20140304092723.GH13126@sirena.org.uk>
- <5315A0CB.1020300@metafoo.de>
- <20140304101135.GJ13126@sirena.org.uk>
- <5315B847.3040203@metafoo.de>
+Subject: Re: [PATCH] ASoC: ak4104: Remove superfluous
+ codec->control_data initialization
+Date: Wed, 5 Mar 2014 09:25:50 +0800
+Message-ID: <20140305012550.GP13126@sirena.org.uk>
+References: <1393921177-24294-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7378460425587050507=="
+Content-Type: multipart/mixed; boundary="===============6408383668912531430=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 10B3426582E
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 02:25:15 +0100 (CET)
-In-Reply-To: <5315B847.3040203@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 186CD265833
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 02:26:06 +0100 (CET)
+In-Reply-To: <1393921177-24294-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,60 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7378460425587050507==
+--===============6408383668912531430==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="iEWWOZ/QYGWEaBRW"
+	protocol="application/pgp-signature"; boundary="AwNVUpjOmSj7UnwZ"
 Content-Disposition: inline
 
 
---iEWWOZ/QYGWEaBRW
+--AwNVUpjOmSj7UnwZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 04, 2014 at 12:25:59PM +0100, Lars-Peter Clausen wrote:
+On Tue, Mar 04, 2014 at 09:19:37AM +0100, Lars-Peter Clausen wrote:
+> The driver uses automatic IO setup, which will also initialize the control_data
+> field of the CODEC, no need to do it manually.
 
-> Yes, it's only used in the core. There is still snd_soc_write(codec)
-> and friends which wraps them like
-> snd_soc_component_write(&codec->component). But on the long run I'd
-> like to see all snd_soc_writes be removed from driver code.
+Applied, thanks.
 
-I'm not entirely sure there - the repeated indirections we have aren't
-always the most pretty bit of the code we have, helpers wrapping the
-lookups can be useful.
-
---iEWWOZ/QYGWEaBRW
+--AwNVUpjOmSj7UnwZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTFnzsAAoJELSic+t+oim9pmYP/1K73ygKJP5VpaYIZePiVoQE
-eDaCgdb570Wxghrim6oa8IdTeq7MBZYUY0QcI0RgS2e65MCqsSv58Ul4X9OmiLFv
-3rmcwNFW4EfJryX/oOvUFoT+lwh0Tw/56t1mtpDv80rU3wh56Q3mx/bvdM5Lf9JU
-5GOyrwOpfyLekVgOxdKo8TKtj7EyA1OR8c4/GkeDrWuFb+krR1xYE2yR5C50IBbG
-eMshEqB9aNxTiLpaluAxYhaVNZ5nd8qnR9a2h0iCyo9L5ggGwt5g0qMm1dlzr1rM
-Nz6wPSoGNCROHrV/CvxBaGx/JHP2OXJtEGIIzqQcpABWvqINM1H1OdRKIgh+xErT
-SQlLVctO/oYuIoY1gpv9QL5lYy9OWDrjfG/1LisOnWla8GY9IbPROBN9I13Xo/jd
-Fi7nUiO3nUocpbil7ydPt5nh8HPaeegBCSOZ5z/SaVSF8jSNitx3rckieGpRBdDd
-reQHN1sVK+o0Ux0GlPB5cnGzRBoC4spGSyTj3B9jG0aBKQ2oy15jQcPvYtoMX4pu
-f4sHgXpBM3AB6Ly1FGB8qDQxh7wD7SidjLdvT94ipwivrbUE5j+M8bAZbLaRsULz
-q8fQt8GNXy3RaTMca3NKUIIDSo5J7KVc0KjBKl2m6Inpz9CDFnGonWceKu/J8uCV
-XH5r1mOtD94acHiBNjNy
-=2l98
+iQIcBAEBAgAGBQJTFn0bAAoJELSic+t+oim9LMEP/1BowQCwCdhXOHxrZ2Lr+Wjk
+b8F7RwpBT2y1dklAc33AKBB9N+dt2NzmqnDdqQ3wtlpxR+wkpR64LcjRk2qepsOY
+1cAgrFIG4Kv1PisbRWRxLCQnMld3AFleXDIZb5WNH9fv+9hAskIdHUh05xhKVlLX
+YKvVCZ4jJk2+KXwnxF/W5YdqszMRxzr5nG8VyiX/FopKoRoJdrDQv51Gcx5laai7
+2tfew9aoj4PMNTHjm4IRzlkF/yZnEGZ3FHA9E4F3jr697dqz8LLVoQ2C75FkY8uc
+W1IfdXUGG65dKD5R11u+EPjwilc1C01vtOra8S9tBI6s2r4jmu7IL5hu51va4s+4
+iw8t+d3cSPBygt5xNZxABE4zbqdNntox94x3i3c88uZowEIH1bT5aM8r3OcnOcBl
+/4w4S6br0O75MPg0ZI0tJm/9cayJoZ2W2gbwnA/z3adnqdzsX6ASXdSi3yVJ9wGU
+AD57XuefQ7pNV79ksD4THANMIQ49qJgRVM5Fn4zgVDpQ7U8DsSlh+n9Z05RKbGCr
+V9IaN9Ub1qJjBJF69KBx5HFRsc49pUwhPz4+9v6SYefJCTZz2u/AdZ8e+H7hdbve
+mQhSYHmkrw1yyZNlkSHTqBH92DmwHheHK8v2lJNEqkt42ys/qpbSM1YU+Lbml9af
+zN3GtExCjje3dnJ5/GOt
+=PH/u
 -----END PGP SIGNATURE-----
 
---iEWWOZ/QYGWEaBRW--
+--AwNVUpjOmSj7UnwZ--
 
---===============7378460425587050507==
+--===============6408383668912531430==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7378460425587050507==--
+--===============6408383668912531430==--
