@@ -1,19 +1,18 @@
 From: RongJun Ying <rjying@gmail.com>
-Subject: [PATCH v5-resend 2/7] ASoC: sirf: Add SiRF audio port
-	driver is used by SiRF internal audio codec
-Date: Wed,  5 Mar 2014 16:34:35 +0800
-Message-ID: <1394008480-29135-3-git-send-email-rongjun.ying@csr.com>
+Subject: [PATCH v5-resend 3/7] ASoC: sirf: Add SiRF audio card
+Date: Wed,  5 Mar 2014 16:34:36 +0800
+Message-ID: <1394008480-29135-4-git-send-email-rongjun.ying@csr.com>
 References: <1394008480-29135-1-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f49.google.com (mail-pa0-f49.google.com
- [209.85.220.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 95C08265883
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 09:35:28 +0100 (CET)
-Received: by mail-pa0-f49.google.com with SMTP id lj1so792104pab.36
- for <alsa-devel@alsa-project.org>; Wed, 05 Mar 2014 00:35:27 -0800 (PST)
+Received: from mail-pb0-f53.google.com (mail-pb0-f53.google.com
+ [209.85.160.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC587265890
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 09:35:36 +0100 (CET)
+Received: by mail-pb0-f53.google.com with SMTP id rp16so772910pbb.26
+ for <alsa-devel@alsa-project.org>; Wed, 05 Mar 2014 00:35:36 -0800 (PST)
 In-Reply-To: <1394008480-29135-1-git-send-email-rongjun.ying@csr.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,367 +29,254 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Rongjun Ying <rongjun.ying@csr.com>
 
-This driver is used by SIRF internal audio codec.
-Use dedicated SiRF audio port TXFIFO and RXFIFO
-Supports two DMA channels for SiRF audio port TXFIFO and RXFIFO
-The audio port like as audio bus such as i2s.
+This connects platform DAI, SiRF internal audio codec DAI  and
+SiRF auido port DAI together and works as a mach driver.
 
 Signed-off-by: Rongjun Ying <rongjun.ying@csr.com>
 ---
- .../devicetree/bindings/sound/sirf-audio-port.txt  |   20 ++
- sound/soc/Kconfig                                  |    1 +
- sound/soc/Makefile                                 |    1 +
- sound/soc/sirf/Kconfig                             |    8 +
- sound/soc/sirf/Makefile                            |    3 +
- sound/soc/sirf/sirf-audio-port.c                   |  194 ++++++++++++++++++++
- sound/soc/sirf/sirf-audio-port.h                   |   62 +++++++
- 7 files changed, 289 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio-port.txt
- create mode 100644 sound/soc/sirf/Kconfig
- create mode 100644 sound/soc/sirf/Makefile
- create mode 100644 sound/soc/sirf/sirf-audio-port.c
- create mode 100644 sound/soc/sirf/sirf-audio-port.h
+ .../devicetree/bindings/sound/sirf-audio.txt       |   41 +++++
+ sound/soc/sirf/Kconfig                             |    6 +
+ sound/soc/sirf/Makefile                            |    2 +
+ sound/soc/sirf/sirf-audio.c                        |  156 ++++++++++++++++++++
+ 4 files changed, 205 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio.txt
+ create mode 100644 sound/soc/sirf/sirf-audio.c
 
-diff --git a/Documentation/devicetree/bindings/sound/sirf-audio-port.txt b/Documentation/devicetree/bindings/sound/sirf-audio-port.txt
+diff --git a/Documentation/devicetree/bindings/sound/sirf-audio.txt b/Documentation/devicetree/bindings/sound/sirf-audio.txt
 new file mode 100644
-index 0000000..1f66de3
+index 0000000..c88882c
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sirf-audio-port.txt
-@@ -0,0 +1,20 @@
-+* SiRF SoC audio port
++++ b/Documentation/devicetree/bindings/sound/sirf-audio.txt
+@@ -0,0 +1,41 @@
++* SiRF atlas6 and prima2 internal audio codec and port based audio setups
 +
 +Required properties:
-+- compatible: "sirf,audio-port"
-+- reg: Base address and size entries:
-+- dmas: List of DMA controller phandle and DMA request line ordered pairs.
-+- dma-names: Identifier string for each DMA request line in the dmas property.
-+  These strings correspond 1:1 with the ordered pairs in dmas.
++- compatible: "sirf,sirf-audio-card"
++- sirf,audio-platform: phandle for the platform node
++- sirf,audio-codec: phandle for the SiRF internal codec node
 +
-+  One of the DMA channels will be responsible for transmission (should be
-+  named "tx") and one for reception (should be named "rx").
++Optional properties:
++- hp-pa-gpios: Need to be present if the board need control external
++  headphone amplifier.
++- spk-pa-gpios: Need to be present if the board need control external
++  speaker amplifier.
++- hp-switch-gpios: Need to be present if the board capable to detect jack
++  insertion, removal.
++
++Available audio endpoints for the audio-routing table:
++
++Board connectors:
++ * Headset Stereophone
++ * Ext Spk
++ * Line In
++ * Mic
++
++SiRF internal audio codec pins:
++ * HPOUTL
++ * HPOUTR
++ * SPKOUT
++ * Ext Mic
++ * Mic Bias
 +
 +Example:
 +
-+audioport: audioport@b0040000 {
-+	compatible = "sirf,audio-port";
-+	reg = <0xb0040000 0x10000>;
-+	dmas = <&dmac1 3>, <&dmac1 8>;
-+	dma-names = "rx", "tx";
++sound {
++		compatible = "sirf,sirf-audio-card";
++		sirf,audio-codec = <&audiocodec>;
++		sirf,audio-platform = <&audioport>;
++		hp-pa-gpios = <&gpio 44 0>;
++		spk-pa-gpios = <&gpio 46 0>;
++		hp-switch-gpios = <&gpio 45 0>;
 +};
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index d62ce48..0060b31 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -50,6 +50,7 @@ source "sound/soc/pxa/Kconfig"
- source "sound/soc/samsung/Kconfig"
- source "sound/soc/s6000/Kconfig"
- source "sound/soc/sh/Kconfig"
-+source "sound/soc/sirf/Kconfig"
- source "sound/soc/spear/Kconfig"
- source "sound/soc/tegra/Kconfig"
- source "sound/soc/txx9/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 62a1822..5f1df02 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -27,6 +27,7 @@ obj-$(CONFIG_SND_SOC)	+= pxa/
- obj-$(CONFIG_SND_SOC)	+= samsung/
- obj-$(CONFIG_SND_SOC)	+= s6000/
- obj-$(CONFIG_SND_SOC)	+= sh/
-+obj-$(CONFIG_SND_SOC)	+= sirf/
- obj-$(CONFIG_SND_SOC)	+= spear/
- obj-$(CONFIG_SND_SOC)	+= tegra/
- obj-$(CONFIG_SND_SOC)	+= txx9/
++
 diff --git a/sound/soc/sirf/Kconfig b/sound/soc/sirf/Kconfig
-new file mode 100644
-index 0000000..75b0344
---- /dev/null
+index 75b0344..89e8942 100644
+--- a/sound/soc/sirf/Kconfig
 +++ b/sound/soc/sirf/Kconfig
-@@ -0,0 +1,8 @@
-+config SND_SOC_SIRF
-+	tristate "SoC Audio for the SiRF SoC chips"
-+	depends on ARCH_SIRF || COMPILE_TEST
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
+@@ -3,6 +3,12 @@ config SND_SOC_SIRF
+ 	depends on ARCH_SIRF || COMPILE_TEST
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 
++config SND_SOC_SIRF_AUDIO
++	tristate "SoC Audio support for SiRF internal audio codec"
++	depends on SND_SOC_SIRF
++	select SND_SOC_SIRF_AUDIO_CODEC
++	select SND_SOC_SIRF_AUDIO_PORT
 +
-+config SND_SOC_SIRF_AUDIO_PORT
-+	select REGMAP_MMIO
-+	tristate
+ config SND_SOC_SIRF_AUDIO_PORT
+ 	select REGMAP_MMIO
+ 	tristate
 diff --git a/sound/soc/sirf/Makefile b/sound/soc/sirf/Makefile
-new file mode 100644
-index 0000000..fb012c8
---- /dev/null
+index fb012c8..913b932 100644
+--- a/sound/soc/sirf/Makefile
 +++ b/sound/soc/sirf/Makefile
-@@ -0,0 +1,3 @@
-+snd-soc-sirf-audio-port-objs := sirf-audio-port.o
-+
-+obj-$(CONFIG_SND_SOC_SIRF_AUDIO_PORT) += snd-soc-sirf-audio-port.o
-diff --git a/sound/soc/sirf/sirf-audio-port.c b/sound/soc/sirf/sirf-audio-port.c
+@@ -1,3 +1,5 @@
++snd-soc-sirf-audio-objs := sirf-audio.o
+ snd-soc-sirf-audio-port-objs := sirf-audio-port.o
+ 
++obj-$(CONFIG_SND_SOC_SIRF_AUDIO) += snd-soc-sirf-audio.o
+ obj-$(CONFIG_SND_SOC_SIRF_AUDIO_PORT) += snd-soc-sirf-audio-port.o
+diff --git a/sound/soc/sirf/sirf-audio.c b/sound/soc/sirf/sirf-audio.c
 new file mode 100644
-index 0000000..b04a53f
+index 0000000..ecef510
 --- /dev/null
-+++ b/sound/soc/sirf/sirf-audio-port.c
-@@ -0,0 +1,194 @@
++++ b/sound/soc/sirf/sirf-audio.c
+@@ -0,0 +1,156 @@
 +/*
-+ * SiRF Audio port driver
++ * SiRF audio card driver
 + *
 + * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
 + *
 + * Licensed under GPLv2 or later.
 + */
++
++#include <linux/platform_device.h>
 +#include <linux/module.h>
-+#include <linux/io.h>
-+#include <linux/regmap.h>
++#include <linux/of.h>
++#include <linux/gpio.h>
++#include <linux/of_gpio.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
 +#include <sound/soc.h>
-+#include <sound/dmaengine_pcm.h>
 +
-+#include "sirf-audio-port.h"
-+
-+struct sirf_audio_port {
-+	struct regmap *regmap;
-+	struct snd_dmaengine_dai_dma_data playback_dma_data;
-+	struct snd_dmaengine_dai_dma_data capture_dma_data;
++struct sirf_audio_card {
++	unsigned int            gpio_hp_pa;
++	unsigned int            gpio_spk_pa;
 +};
 +
-+static void sirf_audio_port_tx_enable(struct sirf_audio_port *port)
++static int sirf_audio_hp_event(struct snd_soc_dapm_widget *w,
++				struct snd_kcontrol *ctrl, int event)
 +{
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_TXFIFO_OP,
-+		AUDIO_FIFO_RESET, AUDIO_FIFO_RESET);
-+	regmap_write(port->regmap, AUDIO_PORT_IC_TXFIFO_INT_MSK, 0);
-+	regmap_write(port->regmap, AUDIO_PORT_IC_TXFIFO_OP, 0);
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_TXFIFO_OP,
-+		AUDIO_FIFO_START, AUDIO_FIFO_START);
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_CODEC_TX_CTRL,
-+		IC_TX_ENABLE, IC_TX_ENABLE);
-+}
-+
-+static void sirf_audio_port_tx_disable(struct sirf_audio_port *port)
-+{
-+	regmap_write(port->regmap, AUDIO_PORT_IC_TXFIFO_OP, 0);
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_CODEC_TX_CTRL,
-+		IC_TX_ENABLE, ~IC_TX_ENABLE);
-+}
-+
-+static void sirf_audio_port_rx_enable(struct sirf_audio_port *port,
-+	int channels)
-+{
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_RXFIFO_OP,
-+		AUDIO_FIFO_RESET, AUDIO_FIFO_RESET);
-+	regmap_write(port->regmap, AUDIO_PORT_IC_RXFIFO_INT_MSK, 0);
-+	regmap_write(port->regmap, AUDIO_PORT_IC_RXFIFO_OP, 0);
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_RXFIFO_OP,
-+		AUDIO_FIFO_START, AUDIO_FIFO_START);
-+	if (channels == 1)
-+		regmap_update_bits(port->regmap, AUDIO_PORT_IC_CODEC_RX_CTRL,
-+			IC_RX_ENABLE_MONO, IC_RX_ENABLE_MONO);
-+	else
-+		regmap_update_bits(port->regmap, AUDIO_PORT_IC_CODEC_RX_CTRL,
-+			IC_RX_ENABLE_STEREO, IC_RX_ENABLE_STEREO);
-+}
-+
-+static void sirf_audio_port_rx_disable(struct sirf_audio_port *port)
-+{
-+	regmap_update_bits(port->regmap, AUDIO_PORT_IC_CODEC_RX_CTRL,
-+			IC_RX_ENABLE_STEREO, ~IC_RX_ENABLE_STEREO);
-+}
-+
-+static int sirf_audio_port_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct sirf_audio_port *port = snd_soc_dai_get_drvdata(dai);
-+	snd_soc_dai_init_dma_data(dai, &port->playback_dma_data,
-+			&port->capture_dma_data);
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct sirf_audio_card *sirf_audio_card = snd_soc_card_get_drvdata(card);
++	int on = !SND_SOC_DAPM_EVENT_OFF(event);
++	if (gpio_is_valid(sirf_audio_card->gpio_hp_pa))
++		gpio_set_value(sirf_audio_card->gpio_hp_pa, on);
 +	return 0;
 +}
 +
-+static int sirf_audio_port_trigger(struct snd_pcm_substream *substream, int cmd,
-+	struct snd_soc_dai *dai)
++static int sirf_audio_spk_event(struct snd_soc_dapm_widget *w,
++				struct snd_kcontrol *ctrl, int event)
 +{
-+	struct sirf_audio_port *port = snd_soc_dai_get_drvdata(dai);
-+	int playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct sirf_audio_card *sirf_audio_card = snd_soc_card_get_drvdata(card);
++	int on = !SND_SOC_DAPM_EVENT_OFF(event);
 +
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		if (playback)
-+			sirf_audio_port_tx_disable(port);
-+		else
-+			sirf_audio_port_rx_disable(port);
-+		break;
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		if (playback)
-+			sirf_audio_port_tx_enable(port);
-+		else
-+			sirf_audio_port_rx_enable(port,
-+				substream->runtime->channels);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
++	if (gpio_is_valid(sirf_audio_card->gpio_spk_pa))
++		gpio_set_value(sirf_audio_card->gpio_spk_pa, on);
 +
 +	return 0;
 +}
-+
-+static const struct snd_soc_dai_ops sirf_audio_port_dai_ops = {
-+	.trigger = sirf_audio_port_trigger,
++static const struct snd_soc_dapm_widget sirf_audio_dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Hp", sirf_audio_hp_event),
++	SND_SOC_DAPM_SPK("Ext Spk", sirf_audio_spk_event),
++	SND_SOC_DAPM_MIC("Ext Mic", NULL),
 +};
 +
-+static struct snd_soc_dai_driver sirf_audio_port_dai = {
-+	.probe = sirf_audio_port_dai_probe,
-+	.name = "sirf-audio-port",
-+	.id = 0,
-+	.playback = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++static const struct snd_soc_dapm_route intercon[] = {
++	{"Hp", NULL, "HPOUTL"},
++	{"Hp", NULL, "HPOUTR"},
++	{"Ext Spk", NULL, "SPKOUT"},
++	{"MICIN1", NULL, "Mic Bias"},
++	{"Mic Bias", NULL, "Ext Mic"},
++};
++
++/* Digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link sirf_audio_dai_link[] = {
++	{
++		.name = "SiRF audio card",
++		.stream_name = "SiRF audio HiFi",
++		.codec_dai_name = "sirf-audio-codec",
 +	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.ops = &sirf_audio_port_dai_ops,
 +};
 +
-+static const struct snd_soc_component_driver sirf_audio_port_component = {
-+	.name       = "sirf-audio-port",
++/* Audio machine driver */
++static struct snd_soc_card snd_soc_sirf_audio_card = {
++	.name = "SiRF audio card",
++	.owner = THIS_MODULE,
++	.dai_link = sirf_audio_dai_link,
++	.num_links = ARRAY_SIZE(sirf_audio_dai_link),
++	.dapm_widgets = sirf_audio_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(sirf_audio_dapm_widgets),
++	.dapm_routes = intercon,
++	.num_dapm_routes = ARRAY_SIZE(intercon),
 +};
 +
-+static const struct regmap_config sirf_audio_port_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = AUDIO_PORT_IC_RXFIFO_INT_MSK,
-+	.cache_type = REGCACHE_NONE,
-+};
-+
-+static int sirf_audio_port_probe(struct platform_device *pdev)
++static int sirf_audio_probe(struct platform_device *pdev)
 +{
++	struct snd_soc_card *card = &snd_soc_sirf_audio_card;
++	struct sirf_audio_card *sirf_audio_card;
 +	int ret;
-+	struct sirf_audio_port *port;
-+	void __iomem *base;
-+	struct resource *mem_res;
 +
-+	port = devm_kzalloc(&pdev->dev,
-+			sizeof(struct sirf_audio_port), GFP_KERNEL);
-+	if (!port)
++	sirf_audio_card = devm_kzalloc(&pdev->dev, sizeof(struct sirf_audio_card),
++			GFP_KERNEL);
++	if (sirf_audio_card == NULL)
 +		return -ENOMEM;
 +
-+	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem_res) {
-+		dev_err(&pdev->dev, "no mem resource?\n");
-+		return -ENODEV;
++	sirf_audio_dai_link[0].cpu_of_node =
++		of_parse_phandle(pdev->dev.of_node, "sirf,audio-platform", 0);
++	sirf_audio_dai_link[0].platform_of_node =
++		of_parse_phandle(pdev->dev.of_node, "sirf,audio-platform", 0);
++	sirf_audio_dai_link[0].codec_of_node =
++		of_parse_phandle(pdev->dev.of_node, "sirf,audio-codec", 0);
++	sirf_audio_card->gpio_spk_pa = of_get_named_gpio(pdev->dev.of_node,
++			"spk-pa-gpios", 0);
++	sirf_audio_card->gpio_hp_pa =  of_get_named_gpio(pdev->dev.of_node,
++			"hp-pa-gpios", 0);
++	if (gpio_is_valid(sirf_audio_card->gpio_spk_pa)) {
++		ret = devm_gpio_request_one(&pdev->dev,
++				sirf_audio_card->gpio_spk_pa,
++				GPIOF_OUT_INIT_LOW, "SPA_PA_SD");
++		if (ret) {
++			dev_err(&pdev->dev,
++				"Failed to request GPIO_%d for reset: %d\n",
++				sirf_audio_card->gpio_spk_pa, ret);
++			return ret;
++		}
++	}
++	if (gpio_is_valid(sirf_audio_card->gpio_hp_pa)) {
++		ret = devm_gpio_request_one(&pdev->dev,
++				sirf_audio_card->gpio_hp_pa,
++				GPIOF_OUT_INIT_LOW, "HP_PA_SD");
++		if (ret) {
++			dev_err(&pdev->dev,
++				"Failed to request GPIO_%d for reset: %d\n",
++				sirf_audio_card->gpio_hp_pa, ret);
++			return ret;
++		}
 +	}
 +
-+	base = devm_ioremap(&pdev->dev, mem_res->start,
-+			resource_size(mem_res));
-+	if (base == NULL)
-+		return -ENOMEM;
++	card->dev = &pdev->dev;
++	snd_soc_card_set_drvdata(card, sirf_audio_card);
 +
-+	port->regmap = devm_regmap_init_mmio(&pdev->dev, base,
-+					    &sirf_audio_port_regmap_config);
-+	if (IS_ERR(port->regmap))
-+		return PTR_ERR(port->regmap);
-+
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+			&sirf_audio_port_component, &sirf_audio_port_dai, 1);
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
 +	if (ret)
-+		return ret;
++		dev_err(&pdev->dev, "snd_soc_register_card() failed:%d\n", ret);
 +
-+	platform_set_drvdata(pdev, port);
-+	return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	return ret;
 +}
 +
-+static const struct of_device_id sirf_audio_port_of_match[] = {
-+	{ .compatible = "sirf,audio-port", },
-+	{}
++static const struct of_device_id sirf_audio_of_match[] = {
++	{.compatible = "sirf,sirf-audio-card", },
++	{ },
 +};
-+MODULE_DEVICE_TABLE(of, sirf_audio_port_of_match);
++MODULE_DEVICE_TABLE(of, sirf_audio_of_match);
 +
-+static struct platform_driver sirf_audio_port_driver = {
++static struct platform_driver sirf_audio_driver = {
 +	.driver = {
-+		.name = "sirf-audio-port",
++		.name = "sirf-audio-card",
 +		.owner = THIS_MODULE,
-+		.of_match_table = sirf_audio_port_of_match,
++		.pm = &snd_soc_pm_ops,
++		.of_match_table = sirf_audio_of_match,
 +	},
-+	.probe = sirf_audio_port_probe,
++	.probe = sirf_audio_probe,
 +};
++module_platform_driver(sirf_audio_driver);
 +
-+module_platform_driver(sirf_audio_port_driver);
-+
-+MODULE_DESCRIPTION("SiRF Audio Port driver");
-+MODULE_AUTHOR("RongJun Ying <Rongjun.Ying@csr.com>");
++MODULE_AUTHOR("RongJun Ying <RongJun.Ying@csr.com>");
++MODULE_DESCRIPTION("ALSA SoC SIRF audio card driver");
 +MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/sirf/sirf-audio-port.h b/sound/soc/sirf/sirf-audio-port.h
-new file mode 100644
-index 0000000..f32dc54
---- /dev/null
-+++ b/sound/soc/sirf/sirf-audio-port.h
-@@ -0,0 +1,62 @@
-+/*
-+ * SiRF Audio port controllers define
-+ *
-+ * Copyright (c) 2011 Cambridge Silicon Radio Limited, a CSR plc group company.
-+ *
-+ * Licensed under GPLv2 or later.
-+ */
-+
-+#ifndef _SIRF_AUDIO_PORT_H
-+#define _SIRF_AUDIO_PORT_H
-+
-+#define AUDIO_PORT_TX_FIFO_LEVEL_CHECK_MASK     0x3F
-+#define AUDIO_PORT_TX_FIFO_SC_OFFSET    0
-+#define AUDIO_PORT_TX_FIFO_LC_OFFSET    10
-+#define AUDIO_PORT_TX_FIFO_HC_OFFSET    20
-+
-+#define TX_FIFO_SC(x)           (((x) & AUDIO_PORT_TX_FIFO_LEVEL_CHECK_MASK) \
-+				<< AUDIO_PORT_TX_FIFO_SC_OFFSET)
-+#define TX_FIFO_LC(x)           (((x) & AUDIO_PORT_TX_FIFO_LEVEL_CHECK_MASK) \
-+				<< AUDIO_PORT_TX_FIFO_LC_OFFSET)
-+#define TX_FIFO_HC(x)           (((x) & AUDIO_PORT_TX_FIFO_LEVEL_CHECK_MASK) \
-+				<< AUDIO_PORT_TX_FIFO_HC_OFFSET)
-+
-+#define AUDIO_PORT_RX_FIFO_LEVEL_CHECK_MASK     0x0F
-+#define AUDIO_PORT_RX_FIFO_SC_OFFSET    0
-+#define AUDIO_PORT_RX_FIFO_LC_OFFSET    10
-+#define AUDIO_PORT_RX_FIFO_HC_OFFSET    20
-+
-+#define RX_FIFO_SC(x)           (((x) & AUDIO_PORT_RX_FIFO_LEVEL_CHECK_MASK) \
-+				<< AUDIO_PORT_RX_FIFO_SC_OFFSET)
-+#define RX_FIFO_LC(x)           (((x) & AUDIO_PORT_RX_FIFO_LEVEL_CHECK_MASK) \
-+				<< AUDIO_PORT_RX_FIFO_LC_OFFSET)
-+#define RX_FIFO_HC(x)           (((x) & AUDIO_PORT_RX_FIFO_LEVEL_CHECK_MASK) \
-+				<< AUDIO_PORT_RX_FIFO_HC_OFFSET)
-+#define AUDIO_PORT_IC_CODEC_TX_CTRL		(0x00F4)
-+#define AUDIO_PORT_IC_CODEC_RX_CTRL		(0x00F8)
-+
-+#define AUDIO_PORT_IC_TXFIFO_OP			(0x00FC)
-+#define AUDIO_PORT_IC_TXFIFO_LEV_CHK		(0x0100)
-+#define AUDIO_PORT_IC_TXFIFO_STS		(0x0104)
-+#define AUDIO_PORT_IC_TXFIFO_INT		(0x0108)
-+#define AUDIO_PORT_IC_TXFIFO_INT_MSK		(0x010C)
-+
-+#define AUDIO_PORT_IC_RXFIFO_OP			(0x0110)
-+#define AUDIO_PORT_IC_RXFIFO_LEV_CHK		(0x0114)
-+#define AUDIO_PORT_IC_RXFIFO_STS		(0x0118)
-+#define AUDIO_PORT_IC_RXFIFO_INT		(0x011C)
-+#define AUDIO_PORT_IC_RXFIFO_INT_MSK		(0x0120)
-+
-+#define AUDIO_FIFO_START		(1 << 0)
-+#define AUDIO_FIFO_RESET		(1 << 1)
-+
-+#define AUDIO_FIFO_FULL			(1 << 0)
-+#define AUDIO_FIFO_EMPTY		(1 << 1)
-+#define AUDIO_FIFO_OFLOW		(1 << 2)
-+#define AUDIO_FIFO_UFLOW		(1 << 3)
-+
-+#define IC_TX_ENABLE		(0x03)
-+#define IC_RX_ENABLE_MONO	(0x01)
-+#define IC_RX_ENABLE_STEREO	(0x03)
-+
-+#endif /*__SIRF_AUDIO_PORT_H*/
 -- 
 1.7.5.4
