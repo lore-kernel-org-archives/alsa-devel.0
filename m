@@ -1,76 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ak4104: Remove superfluous
- codec->control_data initialization
-Date: Wed, 5 Mar 2014 09:25:50 +0800
-Message-ID: <20140305012550.GP13126@sirena.org.uk>
-References: <1393921177-24294-1-git-send-email-lars@metafoo.de>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [alsa-devel] [RFC][PATCH 1/3] ASoC: core: Move the default
+ regmap I/O setting to snd_soc_register_codec()
+Date: Wed, 5 Mar 2014 01:32:55 +0000
+Message-ID: <6957e65a46b94957a9192f1145f8a79c@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1393921529-28985-1-git-send-email-Li.Xiubo@freescale.com>
+ <1393921529-28985-2-git-send-email-Li.Xiubo@freescale.com>
+ <5315A203.2060103@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6408383668912531430=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 186CD265833
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 02:26:06 +0100 (CET)
-In-Reply-To: <1393921177-24294-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5315A203.2060103@metafoo.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <zonque@gmail.com>
+Cc: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6408383668912531430==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AwNVUpjOmSj7UnwZ"
-Content-Disposition: inline
+> Subject: Re: [alsa-devel] [RFC][PATCH 1/3] ASoC: core: Move the default regmap
+> I/O setting to snd_soc_register_codec()
+> 
+> On 03/04/2014 09:25 AM, Xiubo Li wrote:
+> > Add the default regmap I/O setting to snd_soc_register_codec() while
+> > the CODEC is initialising, which will be called by CODEC driver device
+> > probe(), and then we can make set_cache_io() go away entirely from each
+> > CODEC ASoC probe.
+> >
+> > Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+> > ---
+> >   include/sound/soc.h  |  3 +++
+> >   sound/soc/soc-core.c | 11 +++++++++++
+> >   2 files changed, 14 insertions(+)
+> >
+> > diff --git a/include/sound/soc.h b/include/sound/soc.h
+> > index 4c4d7e1..94bc1c4 100644
+> > --- a/include/sound/soc.h
+> > +++ b/include/sound/soc.h
+> > @@ -749,6 +749,9 @@ struct snd_soc_codec_driver {
+> >   	int (*set_pll)(struct snd_soc_codec *codec, int pll_id, int source,
+> >   		unsigned int freq_in, unsigned int freq_out);
+> >
+> > +	/* codec regmap */
+> > +	struct regmap *regmap;
+> > +
+> 
+> Nope. The driver struct is globally shared between all device instances, the
+> regmap struct is device instance specific. The proper way to solve this is
+> to have a function like snd_soc_register_codec_with_io() which takes a
+> pointer to the regmap struct.
+> 
 
+@Lars
+Yes, this maybe a better choice, and I will think of it.
 
---AwNVUpjOmSj7UnwZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks very much,
 
-On Tue, Mar 04, 2014 at 09:19:37AM +0100, Lars-Peter Clausen wrote:
-> The driver uses automatic IO setup, which will also initialize the control_data
-> field of the CODEC, no need to do it manually.
-
-Applied, thanks.
-
---AwNVUpjOmSj7UnwZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTFn0bAAoJELSic+t+oim9LMEP/1BowQCwCdhXOHxrZ2Lr+Wjk
-b8F7RwpBT2y1dklAc33AKBB9N+dt2NzmqnDdqQ3wtlpxR+wkpR64LcjRk2qepsOY
-1cAgrFIG4Kv1PisbRWRxLCQnMld3AFleXDIZb5WNH9fv+9hAskIdHUh05xhKVlLX
-YKvVCZ4jJk2+KXwnxF/W5YdqszMRxzr5nG8VyiX/FopKoRoJdrDQv51Gcx5laai7
-2tfew9aoj4PMNTHjm4IRzlkF/yZnEGZ3FHA9E4F3jr697dqz8LLVoQ2C75FkY8uc
-W1IfdXUGG65dKD5R11u+EPjwilc1C01vtOra8S9tBI6s2r4jmu7IL5hu51va4s+4
-iw8t+d3cSPBygt5xNZxABE4zbqdNntox94x3i3c88uZowEIH1bT5aM8r3OcnOcBl
-/4w4S6br0O75MPg0ZI0tJm/9cayJoZ2W2gbwnA/z3adnqdzsX6ASXdSi3yVJ9wGU
-AD57XuefQ7pNV79ksD4THANMIQ49qJgRVM5Fn4zgVDpQ7U8DsSlh+n9Z05RKbGCr
-V9IaN9Ub1qJjBJF69KBx5HFRsc49pUwhPz4+9v6SYefJCTZz2u/AdZ8e+H7hdbve
-mQhSYHmkrw1yyZNlkSHTqBH92DmwHheHK8v2lJNEqkt42ys/qpbSM1YU+Lbml9af
-zN3GtExCjje3dnJ5/GOt
-=PH/u
------END PGP SIGNATURE-----
-
---AwNVUpjOmSj7UnwZ--
-
---===============6408383668912531430==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6408383668912531430==--
+--
+Best Regards,
+Xiubo
