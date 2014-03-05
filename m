@@ -1,81 +1,93 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 10/11] ASoC: rsnd: rename scu to src
-Date: Wed, 5 Mar 2014 14:08:23 +0800
-Message-ID: <20140305060823.GQ13126@sirena.org.uk>
-References: <87d2ib90t9.wl%kuninori.morimoto.gx@gmail.com>
- <878usq1scd.wl%kuninori.morimoto.gx@gmail.com>
- <87siqyzhvd.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH 01/15] ASoC: fsl-ssi: Use regmap
+Date: Wed, 5 Mar 2014 14:21:14 +0800
+Message-ID: <20140305062114.GT13126@sirena.org.uk>
+References: <1393430538-32333-1-git-send-email-mpa@pengutronix.de>
+ <1393430538-32333-2-git-send-email-mpa@pengutronix.de>
+ <6dc5873dcdf54e13aecbf7c6be03f8bf@BY2PR03MB505.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4243048666198277768=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 10134264F02
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 07:28:40 +0100 (CET)
-In-Reply-To: <87siqyzhvd.wl%kuninori.morimoto.gx@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: multipart/mixed; boundary="===============0013832744309674078=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <6dc5873dcdf54e13aecbf7c6be03f8bf@BY2PR03MB505.namprd03.prod.outlook.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4243048666198277768==
+--===============0013832744309674078==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="De7JZ5cYyW/PeqB+"
+	protocol="application/pgp-signature"; boundary="aiJlF+TB2UsRxGRQ"
 Content-Disposition: inline
 
 
---De7JZ5cYyW/PeqB+
+--aiJlF+TB2UsRxGRQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 03, 2014 at 08:51:21PM -0800, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> R-Car sound has SCU unit which has SRC/CTU/MIX/DVC,
-> and current rsnd driver has scu.c and scu module.
-> Current scu.c has SRC support only.
+On Thu, Feb 27, 2014 at 02:08:45AM +0000, Li.Xiubo@freescale.com wrote:
 
-Applied all up to here, thanks.
+> > +static const struct regmap_config fsl_ssi_regconfig = {
+> > +	.max_register = CCSR_SSI_SACCDIS,
+> > +	.reg_bits = 32,
+> > +	.val_bits = 32,
+> > +	.reg_stride = 4,
+> > +#ifdef PPC
+> > +	.val_format_endian = REGMAP_ENDIAN_BIG,
+> > +#endif
 
---De7JZ5cYyW/PeqB+
+> Is this really needed for your PPC platforms?
+
+> If so, I think this should depend on one specified platform, which
+> the CPU is in LE mode while the SSI is in BE mode...
+
+Since the entire series depends on this patch due to the fact that it
+makes changes throughout the driver we need this resolving to make any
+progress here.  Perhaps it makes sense to restructure the series so that
+this is at the end rather than start of the series?
+
+--aiJlF+TB2UsRxGRQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTFr9UAAoJELSic+t+oim9+pEQAICG+petQuGNfBOyDqX6U9xD
-3Ke1MT3/LF2SYq8pLzJ72tb9yvuM1lRZgfP4O3Qa1G9OOVNtzXOjO421MoaFFRv9
-oqRYc6iYVyWBDsmhUjdrWWWAvizLmzrACh3FaaMMjbdB9pz6n/QIhAhJ9nWTyDlG
-0cLPeHtg59n3qYmzZzwq4YEYeLdrirL99a91v0D96285DmCVTtTKMCzDKqAROpoT
-E28Gv3QN+km5cUi8eog2Sk0M6qzNRDUIqdFLoSVp8QGXPEdyVQCoIQBAZDbZZhZU
-o/ChbRkniwOX9cQ2aSiWCDMYIW1YPBkHlaYNtFUH0Iuee+Ec5v2tYVFfzkYczaz7
-nOLPBhmwcQ8jwxH8nAALAG1kbNs07HNUNbqnZ8KbeOVKsuCHKEm3ctZW7BxUaaem
-/LonC6tBroXLh6VbvF9azbBreDoXD+iIwVNJssuh2ibw66P5nA0557Lm1IQWQ09w
-XesARPPL5sMmcRM0/Lnr0FalsxlwHUf7xoZXIY6x5VUVMPkIm2CjNCdk7QklNN1l
-+sn4HoYeFkOI2l6w65CXkYrYBExWbyivtlvqS+yJUjHEUcjUiMnzMoggeTRdgXD8
-WVNOyexviyHg56PQJ+rSqzz84vc74RpPb368ucRIlYv1DLGdsR9wVylu1RNwgw3W
-SQW31eNeyPnIjy55PAwV
-=Cbil
+iQIcBAEBAgAGBQJTFsJXAAoJELSic+t+oim9EhsQAIYkSnW5wnSqHeTml69Weacp
+KGvAFKjFGRMcT5lOFD9SD2JE1i8/TLMLgzRkZzVIcKcxGiECUpqT8FVu0RV8zzU6
+pQr5OAghDxI0TjTMCAJ8CMhOtoRJT/xd21hcMlSHRCtzmRGBHzBWfMD9jJDU8DNZ
+g9O9H6DoBYET6+3duC4NKeLcYYQ96g81W0j1w/4aIBRflI//8OCs3vJ4y2jykmJ4
+iCe5SiouBqqEsmTpZoFj4dSyVa8sapIDeO9f2kJOOtuEyJ1v+Y0y1vilWgBur8w4
+lorJHier4L6gUW0Ma4q3vGxoUBZJq7p+B+SiBVu4jhF6rUqYF02hAl9A7CA7wLmF
+nk8n/z/HVlFDeytKqOVqD0cCxnmhG4wfKafimh1JPEdXrJ45Kf+pr1ZblRJgC8Om
+JdrFDCm434PL2XOp8x1BCMu5WZvwRGDsjxlnjOBis/fUQKONvYHAVgLMGb8LzS8R
+yA50ShbVjwfTvibtVl/htWc+mnUIlSkr4S6v0qqkfsc1BXe0k1tKTsZCRrTfKov9
+9OLDnb6bYiq9ja0p5qlqusS3TUOdaOuCIlpSorknPe58BFWntMySx4a+slhNO4wp
+ep6DXAMoaC4TmpJ97tdSicJib/KcsoOREdsZnERZZPVl9fkHInyq9lmxonahtcwx
+rqvWkTpGXmHAvzfJ37bZ
+=gqRU
 -----END PGP SIGNATURE-----
 
---De7JZ5cYyW/PeqB+--
+--aiJlF+TB2UsRxGRQ--
 
---===============4243048666198277768==
+
+--===============0013832744309674078==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============4243048666198277768==--
+--===============0013832744309674078==--
