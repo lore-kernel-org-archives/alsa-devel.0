@@ -1,15 +1,15 @@
-From: "Banajit Goswami" <bgoswami@codeaurora.org>
-Subject: Re: Question on compress offload framework memory
- corruption
-Date: Tue, 4 Mar 2014 22:19:20 -0000
-Message-ID: <f7340ae1f345dc53c799ff8c02321ed1.squirrel@www.codeaurora.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: fsl: Don't select FIQ from Eukrea
+Date: Wed,  5 Mar 2014 09:14:40 +0800
+Message-ID: <1393982080-11357-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.11.231])
- by alsa0.perex.cz (Postfix) with ESMTP id 32B7C264F10
- for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2014 23:26:08 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B71C265824
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 02:14:56 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,81 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Liam <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, gsantosh@codeaurora.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Denis Carikli <denis@eukrea.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Liam,
+From: Mark Brown <broonie@linaro.org>
 
-> On Thu, Dec 19, 2013 at 10:55:08AM +0000, Mark Brown wrote:
-> > On Wed, Dec 18, 2013 at 01:17:51PM -0000, gsantosh@codeaurora.org wrote:
-> > > Hi,
-> > >
-> > > I have following questions in the compressed offload framework API.
-> > >
-> > > static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
-> > > 					struct snd_compr_params *params) { ...
-> > > 	hw_params = kzalloc(sizeof(*hw_params), GFP_KERNEL);
-> > > 	if (hw_params == NULL)
-> > > 		return -ENOMEM;
-> > > /*1st question is, what is the use of above allocated memory I do
-> > > not see this being used in this function*/
-> >
-> > The code you're quoting there isn't in mainline.  I've also added
-> > Vinod to the CCs, you probably want to include him in any discussion
-> > of the compressed API.
->
-> That's right, this is from DPCM compressed updated done by Liam, so he
-is > the best person to comment on this bit, and somehow his address in
-CC has > gone bad, i have added him in to list
+There is no point in using FIQ if DMA is available (it is selected) and
+selecting FIQ currently breaks the build on non-i.MX platforms.  If FIQ
+is actually required the build will need to be restricted or have a
+select for the relevant FIQ code adding.
 
-> But yes looking at the source, i agree that two are interlinked.
-> I guess we need to poupulate the hw_params and then use that to copy, that
-> would be the right thing to do here and yes this is not correct and not
-> sure how this is working...
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/fsl/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-
-Continuing the discussion on the "memcpy" function in Santosh's 2nd question-
-
-> > >        memcpy(&fe->dpcm[fe_substream->stream].hw_params, params,
-> > >                       sizeof(struct snd_pcm_hw_params));
-> > >
-> > > /* 2nd question is
-> > > in above memcpy there is parameter mismatch
-> > > &fe->dpcm[fe_substream->stream].hw_params is of structure type struct
-> > > snd_pcm_hw_params
-> > >
-> > > params argument is of the structure type struct snd_compr_params
-> > > the definition of the two structures are different, how this is
-> > > working?
-> > > this will over right the destination with junk value which will return
-> > > in error when this memory is accessed, after memcpy this cpu_dai
-> > > hw_params
-> > > returing with EINVAL error, please explain why this is done this way.
-> > > */
-
-I can see that a later version of the patch adds the function
-soc_compr_set_params_fe() at-
-    http://permalink.gmane.org/gmane.linux.alsa.devel/117716
-
-with the below code replaces the "memcpy" function with a "memset"-
-+	/*
-+	 * Create an empty hw_params for the BE as the machine driver must
-+	 * fix this up to match DSP decoder and ASRC configuration.
-+	 * I.e. machine driver fixup for compressed BE is mandatory.
-+	 */
-+	memset(&fe->dpcm[fe_substream->stream].hw_params, 0,
-+		sizeof(struct snd_pcm_hw_params));
-
-It's evident that the code relies on machine driver fixup function to
-populate the parameters of hw_params before propagating those to back-end.
-I think rather than that, like Vinod also mentioned, the hw_params should
-have been populated with individual parameters which are relevant.
-
-Let me know your comment on this.
-
-Thanks,
-Banajit
-
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-hosted by The Linux Foundation
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index a7d6ab6..b244830 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -175,7 +175,6 @@ config SND_SOC_EUKREA_TLV320
+ 		|| (OF && ARM)
+ 	depends on I2C
+ 	select SND_SOC_TLV320AIC23
+-	select SND_SOC_IMX_PCM_FIQ
+ 	select SND_SOC_IMX_AUDMUX
+ 	select SND_SOC_IMX_SSI
+ 	select SND_SOC_FSL_SSI
+-- 
+1.9.0
