@@ -1,55 +1,74 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 4/4] ASoC: tlv320aic32x4: Sort Makefile in alphabetic
- order
-Date: Wed, 5 Mar 2014 11:28:08 +0800
-Message-ID: <20140305032808.GW13126@sirena.org.uk>
-References: <cover.1393941102.git.jsarha@ti.com>
- <80b0f9ecd29b8bfb52fed22a0ca059591f89683d.1393941102.git.jsarha@ti.com>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH 01/10] ASoC: core: Add
+ snd_soc_dai_set_tdm_slot_xlate().
+Date: Wed, 5 Mar 2014 03:55:50 +0000
+Message-ID: <6991b4aaf2a34f8180b24f7a2ae8355a@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1393387175-15539-1-git-send-email-Li.Xiubo@freescale.com>
+ <1393387175-15539-2-git-send-email-Li.Xiubo@freescale.com>
+ <5311DE70.7000901@metafoo.de> <20140305033935.GY13126@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nqu5fpgjE+BQlEdo"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <80b0f9ecd29b8bfb52fed22a0ca059591f89683d.1393941102.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0244.outbound.protection.outlook.com [207.46.163.244])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9145264F02
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 04:55:55 +0100 (CET)
+In-Reply-To: <20140305033935.GY13126@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "moinejf@free.fr" <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "timur@tabi.org" <timur@tabi.org>, "denis@eukrea.com" <denis@eukrea.com>, "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "mpa@pengutronix.de" <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---nqu5fpgjE+BQlEdo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Subject: Re: [alsa-devel] [PATCH 01/10] ASoC: core: Add
+> snd_soc_dai_set_tdm_slot_xlate().
+> 
+> On Sat, Mar 01, 2014 at 02:19:44PM +0100, Lars-Peter Clausen wrote:
+> 
+> > I'm not quite sure I fully understand what this patch is trying to
+> > solve. It adds a variant snd_soc_dai_set_tdm_slot() that instead of
+> > taking a rx and tx mask calculates the masks based on the number of
+> > slots? In that case I don't really see how the xlate in the name
+> > relates to that. xlate is something you'd typically expect in a
+> > devicetree context. Maybe one should be called
+> > snd_soc_dai_set_tdm_slot() and the other
+> > snd_soc_dai_set_tdm_slot_and_masks()?
+> 
+> > But another question is do we really need this? I don't see the
+> > problem that is solved by this patchset.
+> 
+> My understanding is that the patch set aims to provide a way of using
+> the TDM features of drivers from DT, providing a standardised format for
+> expressing the TDM setup in the DT.  I've not looked at the actual code
+> yet though.
 
-On Tue, Mar 04, 2014 at 03:54:52PM +0200, Jyri Sarha wrote:
-> The tlv320aic32x4 related files were wrongly placed after tlv320aic3x files.
+@Lars,
 
-This doesn't apply against current code, please check and resend.
+Sorry for late, many mails had been discard by my outlook, including the
+Last one.
 
---nqu5fpgjE+BQlEdo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+@Mark, @Lars,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+This adds the function of snd_soc_dai_set_tdm_slot_xlate, which is almost
+One new signature of snd_soc_dai_set_tdm_slot discarding the mask
+Parameters, which could be generated by itself.
 
-iQIcBAEBAgAGBQJTFpnEAAoJELSic+t+oim9NFcP/1qsGndO15v8IETAbHKO3FW2
-3kxmuVB3b7lorRjUjil64HrLVOQWwpO/t2ycCrnet7eElf/rOlnaaNp0klLyqnEq
-VObU2DJYugBLf0GK7SFS6+xtC27n1lJ+ub2eh8GfVBneJ9QevU7E6KHjZfWWupf9
-KArdUfCoCoc66d+csamaZ5fo0S5jFrN6Ugc+ANu0P12ZJwAGK+zJvACYccT/4t6D
-byzcYRTxirpbf2RxOe3vq5D7tw5QddVKMGZOdy0gjji5+qY5VHxA1ZYPVZzs+0M2
-R3l7sydZl8mcfny1s53vVryNRSz0SbgsjDqXuO8S1rH0gfCKvnuqB3T8oEzWn9nD
-/D71tfLsv+xIbgq8K7txIhCPyAxH01HCnprrZDr6NXIcq3fpEmyczAn8VJ2I6V8s
-vs8GfS5NB/5IpceskkDgolpR9hdRBuFckveVArNu6/4tmlNTyGpV3H4DFPDCW8rC
-lw1t4S26rqApnMH1LYmsPXtn/HWmcxZOI530DZloSnVagechaN2U+GKrPn4C2fkK
-6AepMudbpQ8m9p+5sk3n8NeUa07grRZ/1S5KS5dcWA5G/Igr4rWkSARzpX0vTHrB
-R4xjAjHXdyMe6TBZ2F5Mes/tUa1mB2TMpaPj7cuOzZTXoyrH5F0iQ9oGZ9zcR5r9
-rbkNP+TzOy4M6DIgxLmD
-=RfI0
------END PGP SIGNATURE-----
+And I want to provide one standard method for the drivers who are parsing
+The TDM information from the DT node. 
 
---nqu5fpgjE+BQlEdo--
+
+Thanks,
+
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Best Regards,
+Xiubo
