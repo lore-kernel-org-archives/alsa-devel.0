@@ -1,29 +1,17 @@
-From: Chris M <cmanougian@yahoo.com>
-Subject: Re: Update patch for codecs alias name for Dell
-Date: Wed, 5 Mar 2014 07:16:43 +0000 (UTC)
-Message-ID: <loom.20140305T080332-615@post.gmane.org>
-References: <8837DB3485424EB4ADE016301C6D7DF6@realtek.com.tw>
- <s5hhaay6rsk.wl%tiwai@suse.de>
- <13CB35BE00B34161858F09AF4314495C@realtek.com.tw>
- <s5heh604wws.wl%tiwai@suse.de> <loom.20140202T011505-437@post.gmane.org>
- <loom.20140218T221659-931@post.gmane.org> <s5h1tywv7n1.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: About snd_dmaengine_pcm_trigger()
+Date: Wed, 05 Mar 2014 08:42:26 +0100
+Message-ID: <5316D562.3010901@metafoo.de>
+References: <87eh2hql03.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 1280A265026
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 08:17:10 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1WL64j-0000h1-3M
- for alsa-devel@alsa-project.org; Wed, 05 Mar 2014 08:17:09 +0100
-Received: from pool-173-79-166-34.washdc.fios.verizon.net ([173.79.166.34])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Wed, 05 Mar 2014 08:17:09 +0100
-Received: from cmanougian by pool-173-79-166-34.washdc.fios.verizon.net with
- local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Wed, 05 Mar 2014 08:17:09 +0100
+Received: from smtp-out-014.synserver.de (smtp-out-163.synserver.de
+ [212.40.185.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id 509E126500A
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 08:41:57 +0100 (CET)
+In-Reply-To: <87eh2hql03.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,121 +21,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Simon <horms@verge.net.au>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai <at> suse.de> writes:
+On 03/05/2014 06:20 AM, Kuninori Morimoto wrote:
+> Hi Mark, Lars and all
+>
+> I need your opinion
+>
+> Now, I'm working for ${LINUX}/sound/soc/sh/fsi and ${LINUX}/sound/soc/sh/rcar drirvers.
+> These drivers are supporting DMAEngine transfer,
+> but it is using original DMAEngine method,
+> not using snd_dmaengine_pcm_trigger() or snd_dmaengine_pcm_register().
+> I was requested to use it from Mark.
+>
+> The reason why I couldn't use it was our DMAEngine
+> didn't have "cyclic" tranfer support which is used on
+> dmaengine_pcm_prepare_and_submit()
+> But now, I created cyclic support on our DMA driver (on my local PC at this point)
+>
+> Then, I noticed our drivers still can't use snd_dmaengine_pcm_xxx() method.
+>
+> 1st, our device needs PIO tranfer support too.
+> Current PIO/DMA transfer are sharing many methods/functions.
+> Code will become difficult to read if it is separated forcibly.
+> (to using snd_dmaengine_pcm_xxx())
 
-> 
-> At Tue, 18 Feb 2014 21:31:07 +0000 (UTC),
-> Chris M wrote:
-> > 
-> > Chris M <cmanougian <at> yahoo.com> writes:
-> > 
-> > > 
-> > > Takashi Iwai <tiwai <at> suse.de> writes:
-> > > 
-> > > > 
-> > > > At Thu, 28 Nov 2013 15:30:56 +0800,
-> > > > Kailang wrote:
-> > > > > 
-> > > > > Hi Takashi,
-> > > > > 
-> > > > > I remodified the code as belowing.
-> > > > > 
-> > > > > >From 888b51395ebab411660401f856e3af7988d9240b Mon Sep 17 00:00:00
-2001
-> > > > > From: Kailang Yang <kailang <at> realtek.com>
-> > > > > Date: Thu, 28 Nov 2013 15:23:20 +0800
-> > > > > Subject: [PATCH] ALSA: hda/realtek - Add more codecs alias name
-for Dell
-> > > > > 
-> > > > > Dell assigned alias name for more codecs.
-> > > > > ALC3220 ALC3221 ALC3223 ALC3226 ALC3234 ALC3661.
-> > > > > 
-> > > > > Signed-off-by: Kailang Yang <kailang <at> realtek.com>
-> > > > 
-> > > > Thanks, applied now, but it's targeted for 3.14 kernel, as this is no
-> > > > urgent fixes.  You can find it in for-next branch of sound git tree.
-> > > > 
-> > > > Takashi
-> > > > 
-> > > 
-> > > Sorry for asking this on a developer forum, but I'm pretty sure I finally
-> > > found the answer here. I had considered the need to wait it out for a
-kernel
-> > > upgrade (beyond 3.12 in Debian Testing/Jessie). I have no sound right now.
-> > > How do I apply this patch? When I installed Debian Testing, I installed a
-> > > targeted initrd, and I was considering retrying with a generic initrd -
-> > > although I think this thread just saved me from that. Will an established
-> > > initrd come into play? Will I have to recompile the 3.12 kernel?
-> > > 
-> > > The Dell codec alias name is ALC3223.
-> > > 
-> > > Thanks
-> > 
-> > This is a follow up question for anyone.
-> > 
-> > This boils down to a general question about new kernel compilation.
-> > 
-> > To try and solve my no sound issue, I waited until 3.14-rc3 kernel went
-live.
-> > 
-> > In the 3.14-rc3 kernel source folder, this patch is located at:
-> > sound/pci/hda/patch_realtek.c
-> > 
-> > I thought that simply compiling the latest kernel, and then installing it,
-> > would apply all relevant patches (more than the realtek patch may be in
-> > play), but now I'm not so sure.
-> > 
-> > The question is this: Does a 3.14-rc3 compiled kernel already include the
-> > above patch? Or, because it is labeled as a "patch" within the source, do I
-> > have to actually patch the source before compiling?
-> 
-> Yes, it's already included in 3.14-rc3.
-> 
-> But I doubt it'll help anything for your "audio" problem.  The patch
-> merely changes the codec name string, nothing else.  You're chasing a
-> wrong fish.
-> 
-> Takashi
+Ideally from a high level abstraction point of few PIO and DMA would be two 
+completely separate components that can be used interchangeably. There might 
+be hardware restrictions though that do not allow this.
 
-Takashi, yes, the new codec did show up in alsamixer. I'm pretty sure it's
-hardware recognition.  My card in debian testing with the latest RC5 kernel is:
+>
+> 2nd, our device DMA ON/OFF timing has relation ship to other register settings.
+> Unfortunately, our device is picky, it needs like this
+>
+>                 HW init setting -> DMA ON -> HW start setting
 
-chris@inspiron:~$ inxi -A
-Audio: Card-1: Intel Lynx Point-LP HD Audio Controller driver: snd_hda_intel
-Sound: ALSA ver: k3.14.0-rc3
-Card-2: Intel Haswell-ULT HD Audio Controller driver: snd_hda_intel
+What kind of HW init is this?
 
+>
+> It can be solved if snd_dmaengine_pcm_xxx() has callbacks,
+> but many callbacks are needed...
 
-If I boot up in Xubuntu, the codec is "wrong", but the listed hardware makes
-more sense given that Dell's Inspiron 7000 audio driver is a realtek driver.
-alsamixer shows:
+You can wrap the snd_dmaengine_pcm functions in your pcm_ops callbacks, like 
+this:
 
-HDA Intel MID
-Intel Haswell HDMA
+int sh_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+{
+	init hw ...
+	
+	snd_dmaengine_pcm_trigger(substream, cmd);
 
-HDA Intel PHC
-Realtek ALC283
+	start hw ...
+}
 
+Each of the snd_dmaengine_pcm functions does pretty much one specific task. 
+There is not much room for inserting callbacks.
 
-Can this be solely addressed in /etc/modprobe.d/alsa-base.conf file? The
-addition of "option snd-hda-intel model=*something*" is the focus right now. 
+>
+> 3rd, our device needs special method on snd_pcm_ops
+> int the future.
+>
 
-Any suggestions?
+What kind of special ops?
 
-> 
-> > IOW, does the patch get compiled, or does anything labeled as a patch within
-> > the source still have to be manually patched against the kernel?
-> > 
-> > Thanks to anyone who can answer this.  I complied and installed the 3.14-rc3
-> > kernel without a problem. It was the default kernel in grub. But I'm still
-> > dealing with the exact same no sound issue as if booting into 3.12.
-> > 
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel <at> alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > 
-> 
+>  From my point of view,
+> our driver can replace to use "cyclic" DMA transfer
+> instead of current original DMAEngine method.
+> I guess, it is not difficult.
+> But, using snd_dmaengine_pcm_xxx() is difficult.
+>
+
+I don't think using the snd_dmaengine_pcm helpers should be difficult, 
+since, as I said, each of them perform one very specific task. If you'd 
+directly call the dmaengine API you'd end up with pretty much the same code 
+as the dmaengine PCM helpers. What's more of a challenge would be to use the 
+generic dmaengine PCM driver.
+
+I think the issue with the sound/soc/sh/ code is that there never was a 
+clean separation between the DMA/PIO and the DAI configuration code. And 
+especially with rcar you seem to be reimplementing a ASoC-like framework 
+on-top of ASoC. Which makes it rather hard to reused generic code, since the 
+generic code doesn't know about all the custom hooks and callbacks. The ASoC 
+framework is not set in stone, if there is something missing to properly 
+support your hardware you should try to extend the framework to support this 
+rather than working around it in your drivers.
+
+- Lars
