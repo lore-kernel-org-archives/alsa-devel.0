@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 37/39] bebob: Add support for M-Audio usual
-	Firewire series
-Date: Wed,  5 Mar 2014 19:48:25 +0900
-Message-ID: <1394016507-15761-38-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 36/39] bebob: Add support for Focusrite
+	Saffire/SaffirePro series
+Date: Wed,  5 Mar 2014 19:48:24 +0900
+Message-ID: <1394016507-15761-37-git-send-email-o-takashi@sakamocchi.jp>
 References: <5316963F.1000206@sakamocchi.jp>
  <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
@@ -10,8 +10,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 8889F26591D
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 11:49:30 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 204C5265916
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 11:49:29 +0100 (CET)
 In-Reply-To: <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,189 +26,136 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit allows this driver to support some models which M-Audio produces
-with DM1000/DM1000E with usual firmware. They are:
- - Firewire 410
- - Firewire AudioPhile
- - Firewire Solo
- - Ozonic
- - NRV10
- - FirewireLightBridge
+This commit allows this driver to support all of models which Focusrite
+produces with DM1000/BeBoB. They are:
+ - Saffire
+ - Saffire LE
+ - SaffirePro 10 I/O
+ - SaffirePro 26 I/O
 
-According to person of BridgeCo, Some models are produced with 'Pre-BeBoB'. This
-means that these products were released before BeBoB was officially produced. So
-these models have some quirks.
+This commit adds Focusrite specific operations:
+1. Get source of clock
+2. Get/Set sampling frequency
+3. Get metering information
 
-M-Audio usual firmware quirks:
- - Just after powering on, 'Firewire 410' waits to download firmware. This
-   state is changed when receiving cue. Then bus reset is generated and the
-   device is recognized as a different model with the uploaded firmware.
- - 'Firewire Audiophile' also waits to download firmware but its
-   vendor id/model id is the same as the one after loading firmware.
- - The information of channel mapping for MIDI conformant data channel is
-   invalid against BridgeCo specification.
-
-This commit adds some codes for these quirks but don't support to upload
-firmware.
-
-This commit also adds specific operations to get metering information. The
-metering information also includes status of clock synchronization if the model
-supports to switch source of clock.
-
-The specification of FirewireLightBridge is unknown. So in this time, normal
-operations are applied for this model.
+The driver uses these functionalities to read/write specific address by async
+transaction.
 ---
- sound/firewire/Kconfig              |   2 +
- sound/firewire/bebob/Makefile       |   2 +-
- sound/firewire/bebob/bebob.c        |  45 ++++++++-
- sound/firewire/bebob/bebob.h        |   5 +
- sound/firewire/bebob/bebob_maudio.c | 180 ++++++++++++++++++++++++++++++++++++
- sound/firewire/bebob/bebob_stream.c |   9 ++
- 6 files changed, 240 insertions(+), 3 deletions(-)
- create mode 100644 sound/firewire/bebob/bebob_maudio.c
+ sound/firewire/Kconfig                 |   1 +
+ sound/firewire/bebob/Makefile          |   2 +-
+ sound/firewire/bebob/bebob.c           |  30 +++-
+ sound/firewire/bebob/bebob.h           |   4 +
+ sound/firewire/bebob/bebob_focusrite.c | 287 +++++++++++++++++++++++++++++++++
+ 5 files changed, 322 insertions(+), 2 deletions(-)
+ create mode 100644 sound/firewire/bebob/bebob_focusrite.c
 
 diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 14ae19c..f9aa176 100644
+index e7605ff..14ae19c 100644
 --- a/sound/firewire/Kconfig
 +++ b/sound/firewire/Kconfig
-@@ -113,6 +113,8 @@ config SND_BEBOB
+@@ -112,6 +112,7 @@ config SND_BEBOB
+ 	  * Terratec EWS MIC2/EWS MIC4
  	  * Terratec Aureon 7.1 Firewire
  	  * Yamaha GO44/GO46
- 	  * Focusrite Saffire/Saffire LE/SaffirePro10 IO/SaffirePro26 IO
-+	  * M-Audio Firewire410/AudioPhile/Solo
-+	  * M-Audio Ozonic/NRV10/ProfireLightBridge
++	  * Focusrite Saffire/Saffire LE/SaffirePro10 IO/SaffirePro26 IO
  
            To compile this driver as a module, choose M here: the module
            will be called snd-bebob.
 diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-index 6565420..6cf470c 100644
+index c35eee1..6565420 100644
 --- a/sound/firewire/bebob/Makefile
 +++ b/sound/firewire/bebob/Makefile
 @@ -1,4 +1,4 @@
  snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
  		  bebob_pcm.o bebob_hwdep.o bebob_terratec.o bebob_yamaha.o \
--		  bebob_focusrite.o bebob.o
-+		  bebob_focusrite.o bebob_maudio.o bebob.o
+-		  bebob.o
++		  bebob_focusrite.o bebob.o
  obj-m += snd-bebob.o
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 9ffba70..e8a22e6 100644
+index 3efb620..9ffba70 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -55,8 +55,11 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
+@@ -54,6 +54,9 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
+ #define VEN_PRISMSOUND	0x00001198
  #define VEN_TERRATEC	0x00000aac
  #define VEN_YAMAHA	0x0000a0de
- #define VEN_FOCUSRITE	0x0000130e
-+#define VEN_MAUDIO1	0x00000d6c
-+#define VEN_MAUDIO2	0x000007f5
- 
- #define MODEL_FOCUSRITE_SAFFIRE_BOTH	0x00000000
-+#define MODEL_MAUDIO_AUDIOPHILE_BOTH	0x00010060
++#define VEN_FOCUSRITE	0x0000130e
++
++#define MODEL_FOCUSRITE_SAFFIRE_BOTH	0x00000000
  
  static int
  name_device(struct snd_bebob *bebob, unsigned int vendor_id)
-@@ -139,6 +142,17 @@ get_saffire_spec(struct fw_unit *unit)
- 		return &saffire_spec;
+@@ -122,6 +125,20 @@ bebob_card_free(struct snd_card *card)
+ 	mutex_destroy(&bebob->mutex);
  }
  
-+static bool
-+check_audiophile_booted(struct fw_unit *unit)
++static const struct snd_bebob_spec *
++get_saffire_spec(struct fw_unit *unit)
 +{
 +	char name[24] = {0};
 +
 +	if (fw_csr_string(unit->directory, CSR_MODEL, name, sizeof(name)) < 0)
-+		return false;
++		return NULL;
 +
-+	return strncmp(name, "FW Audiophile Bootloader", 15) != 0;
++	if (strcmp(name, "SaffireLE") == 0)
++		return &saffire_le_spec;
++	else
++		return &saffire_spec;
 +}
 +
  static int
  bebob_probe(struct fw_unit *unit,
  	    const struct ieee1394_device_id *entry)
-@@ -161,10 +175,16 @@ bebob_probe(struct fw_unit *unit,
+@@ -143,7 +160,11 @@ bebob_probe(struct fw_unit *unit,
+ 		goto end;
  	}
  
- 	if ((entry->vendor_id == VEN_FOCUSRITE) &&
--	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH))
-+	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH)) {
- 		spec = get_saffire_spec(unit);
--	else
-+	} else if ((entry->vendor_id == VEN_MAUDIO1) &&
-+		   (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
-+		   !check_audiophile_booted(unit)) {
-+			err = 0;
-+			goto end;
-+	} else {
- 		spec = (const struct snd_bebob_spec *)entry->driver_data;
-+	}
+-	spec = (const struct snd_bebob_spec *)entry->driver_data;
++	if ((entry->vendor_id == VEN_FOCUSRITE) &&
++	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH))
++		spec = get_saffire_spec(unit);
++	else
++		spec = (const struct snd_bebob_spec *)entry->driver_data;
  	if (spec == NULL) {
  		err = -ENOSYS;
  		goto end;
-@@ -235,6 +255,10 @@ static void
- bebob_update(struct fw_unit *unit)
- {
- 	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
-+
-+	if (bebob == NULL)
-+		return;
-+
- 	fcp_bus_reset(bebob->unit);
- 	snd_bebob_stream_update_duplex(bebob);
- }
-@@ -243,6 +267,10 @@ bebob_update(struct fw_unit *unit)
- static void bebob_remove(struct fw_unit *unit)
- {
- 	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
-+
-+	if (bebob == NULL)
-+		return;
-+
- 	snd_bebob_stream_destroy_duplex(bebob);
- 	snd_card_disconnect(bebob->card);
- 	snd_card_free_when_closed(bebob->card);
-@@ -335,6 +363,19 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	/* Focusrite, Saffire(no label and LE) */
- 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
- 			    &saffire_spec),
-+	/* M-Audio, Firewire 410 */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010046, &maudio_fw410_spec),
-+	/* M-Audio, Firewire Audiophile */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_AUDIOPHILE_BOTH,
-+			    &maudio_audiophile_spec),
-+	/* M-Audio, Firewire Solo */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010062, &maudio_solo_spec),
-+	/* M-Audio, Ozonic */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x0000000a, &maudio_ozonic_spec),
-+	/* M-Audio NRV10 */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010081, &maudio_nrv10_spec),
-+	/* M-Audio, ProFireLightbridge */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x000100a1, &spec_normal),
+@@ -307,6 +328,13 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	SND_BEBOB_DEV_ENTRY(VEN_YAMAHA, 0x0010000b, &yamaha_go_spec),
+ 	/* YAMAHA, GO46 */
+ 	SND_BEBOB_DEV_ENTRY(VEN_YAMAHA, 0x0010000c, &yamaha_go_spec),
++	/* Focusrite, SaffirePro 26 I/O */
++	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, 0x00000003, &saffirepro_26_spec),
++	/* Focusrite, SaffirePro 10 I/O */
++	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, 0x00000006, &saffirepro_10_spec),
++	/* Focusrite, Saffire(no label and LE) */
++	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
++			    &saffire_spec),
  	/* IDs are unknown but able to be supported */
  	/*  Apogee, Mini-ME Firewire */
  	/*  Apogee, Mini-DAC Firewire */
 diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 8e5b0da..1e9af0e 100644
+index 8192da4..8e5b0da 100644
 --- a/sound/firewire/bebob/bebob.h
 +++ b/sound/firewire/bebob/bebob.h
-@@ -236,6 +236,11 @@ extern struct snd_bebob_spec saffirepro_26_spec;
- extern struct snd_bebob_spec saffirepro_10_spec;
- extern struct snd_bebob_spec saffire_le_spec;
- extern struct snd_bebob_spec saffire_spec;
-+extern struct snd_bebob_spec maudio_fw410_spec;
-+extern struct snd_bebob_spec maudio_audiophile_spec;
-+extern struct snd_bebob_spec maudio_solo_spec;
-+extern struct snd_bebob_spec maudio_ozonic_spec;
-+extern struct snd_bebob_spec maudio_nrv10_spec;
+@@ -232,6 +232,10 @@ int snd_bebob_create_hwdep_device(struct snd_bebob *bebob);
+ extern struct snd_bebob_spec phase88_rack_spec;
+ extern struct snd_bebob_spec phase24_series_spec;
+ extern struct snd_bebob_spec yamaha_go_spec;
++extern struct snd_bebob_spec saffirepro_26_spec;
++extern struct snd_bebob_spec saffirepro_10_spec;
++extern struct snd_bebob_spec saffire_le_spec;
++extern struct snd_bebob_spec saffire_spec;
  
  #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
  { \
-diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
+diff --git a/sound/firewire/bebob/bebob_focusrite.c b/sound/firewire/bebob/bebob_focusrite.c
 new file mode 100644
-index 0000000..fbbe8d4
+index 0000000..aa0cb35
 --- /dev/null
-+++ b/sound/firewire/bebob/bebob_maudio.c
-@@ -0,0 +1,180 @@
++++ b/sound/firewire/bebob/bebob_focusrite.c
+@@ -0,0 +1,287 @@
 +/*
-+ * bebob_maudio.c - a part of driver for BeBoB based devices
++ * bebob_focusrite.c - a part of driver for BeBoB based devices
 + *
 + * Copyright (c) 2013 Takashi Sakamoto
 + *
@@ -217,195 +164,282 @@ index 0000000..fbbe8d4
 +
 +#include "./bebob.h"
 +
-+/*
-+ * Just powering on, Firewire 410/Audiophile wait to
-+ * download firmware blob. To enable these devices, drivers should upload
-+ * firmware blob and send a command to initialize configuration to factory
-+ * settings when completing uploading. Then these devices generate bus reset
-+ * and are recognized as new devices with the firmware.
-+ *
-+ * For streaming, both of output and input streams are needed for Firewire 410
-+ * and Ozonic. The single stream is OK for the other devices even if the clock
-+ * source is not SYT-Match (I note no devices use SYT-Match).
-+ *
-+ * Without streaming, the devices except for Firewire Audiophile can mix any
-+ * input and output. For this reason, Audiophile cannot be used as standalone
-+ * mixer.
-+ */
++#define ANA_IN	"Analog In"
++#define DIG_IN	"Digital In"
++#define ANA_OUT	"Analog Out"
++#define DIG_OUT	"Digital Out"
++#define STM_IN	"Stream In"
 +
-+#define MAUDIO_SPECIFIC_ADDRESS	0xffc700000000
++#define SAFFIRE_ADDRESS_BASE			0x000100000000
 +
-+#define METER_OFFSET		0x00600000
++#define SAFFIRE_OFFSET_CLOCK_SOURCE		0x0000000000f8
++#define SAFFIREPRO_OFFSET_CLOCK_SOURCE		0x000000000174
 +
-+/* some device has sync info after metering data */
-+#define METER_SIZE_FW410	76	/* with sync info */
-+#define METER_SIZE_AUDIOPHILE	60	/* with sync info */
-+#define METER_SIZE_SOLO		52	/* with sync info */
-+#define METER_SIZE_OZONIC	48
-+#define METER_SIZE_NRV10	80
++/* whether sync to external device or not */
++#define SAFFIRE_OFFSET_CLOCK_SYNC_EXT		0x00000000013c
++#define SAFFIRE_LE_OFFSET_CLOCK_SYNC_EXT	0x000000000432
++#define SAFFIREPRO_OFFSET_CLOCK_SYNC_EXT	0x000000000164
 +
-+/* labels for metering */
-+#define ANA_IN		"Analog In"
-+#define ANA_OUT		"Analog Out"
-+#define DIG_IN		"Digital In"
-+#define SPDIF_IN	"S/PDIF In"
-+#define ADAT_IN		"ADAT In"
-+#define DIG_OUT		"Digital Out"
-+#define SPDIF_OUT	"S/PDIF Out"
-+#define ADAT_OUT	"ADAT Out"
-+#define STRM_IN		"Stream In"
-+#define AUX_OUT		"Aux Out"
-+#define HP_OUT		"HP Out"
-+/* for NRV */
-+#define UNKNOWN_METER	"Unknown"
++#define SAFFIRE_CLOCK_SOURCE_INTERNAL		0
++#define SAFFIRE_CLOCK_SOURCE_SPDIF		1
++
++/* '1' is absent, why... */
++#define SAFFIREPRO_CLOCK_SOURCE_INTERNAL	0
++#define SAFFIREPRO_CLOCK_SOURCE_SPDIF		2
++#define SAFFIREPRO_CLOCK_SOURCE_ADAT1		3
++#define SAFFIREPRO_CLOCK_SOURCE_ADAT2		4
++#define SAFFIREPRO_CLOCK_SOURCE_WORDCLOCK	5
++
++/* S/PDIF, ADAT1, ADAT2 is enabled or not. three quadlets */
++#define SAFFIREPRO_ENABLE_DIG_IFACES		0x0000000001a4
++
++/* saffirepro has its own parameter for sampling frequency */
++#define SAFFIREPRO_RATE_NOREBOOT		0x0000000001cc
++/* index is the value for this register */
++static const unsigned int rates[] = {
++	[0] = 0,
++	[1] = 44100,
++	[2] = 48000,
++	[3] = 88200,
++	[4] = 96000,
++	[5] = 176400,
++	[6] = 192000
++};
++
++/* saffire(no label)/saffire LE has metering */
++#define SAFFIRE_OFFSET_METER			0x000000000100
++#define SAFFIRE_LE_OFFSET_METER			0x000000000168
 +
 +static inline int
-+get_meter(struct snd_bebob *bebob, void *buf, unsigned int size)
++saffire_read_block(struct snd_bebob *bebob, u64 offset,
++		   u32 *buf, unsigned int size)
 +{
-+	return snd_fw_transaction(bebob->unit, TCODE_READ_BLOCK_REQUEST,
-+				  MAUDIO_SPECIFIC_ADDRESS + METER_OFFSET,
-+				  buf, size, 0);
-+}
-+
-+/* last 4 bytes are omitted because it's clock info. */
-+static char *fw410_meter_labels[] = {
-+	ANA_IN, DIG_IN,
-+	ANA_OUT, ANA_OUT, ANA_OUT, ANA_OUT, DIG_OUT,
-+	HP_OUT
-+};
-+static char *audiophile_meter_labels[] = {
-+	ANA_IN, DIG_IN,
-+	ANA_OUT, ANA_OUT, DIG_OUT,
-+	HP_OUT, AUX_OUT,
-+};
-+static char *solo_meter_labels[] = {
-+	ANA_IN, DIG_IN,
-+	STRM_IN, STRM_IN,
-+	ANA_OUT, DIG_OUT
-+};
-+
-+/* no clock info */
-+static char *ozonic_meter_labels[] = {
-+	ANA_IN, ANA_IN,
-+	STRM_IN, STRM_IN,
-+	ANA_OUT, ANA_OUT
-+};
-+/* TODO: need testers. these positions are based on authour's assumption */
-+static char *nrv10_meter_labels[] = {
-+	ANA_IN, ANA_IN, ANA_IN, ANA_IN,
-+	DIG_IN,
-+	ANA_OUT, ANA_OUT, ANA_OUT, ANA_OUT,
-+	DIG_IN
-+};
-+static int
-+normal_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
-+{
-+	struct snd_bebob_meter_spec *spec = bebob->spec->meter;
-+	unsigned int c, channels;
++	unsigned int i;
 +	int err;
++	__be32 *tmp = (__be32 *)buf;
 +
-+	channels = spec->num * 2;
-+	if (size < channels * sizeof(u32))
-+		return -EINVAL;
-+
-+	err = get_meter(bebob, (void *)buf, size);
++	err =  snd_fw_transaction(bebob->unit, TCODE_READ_BLOCK_REQUEST,
++				  SAFFIRE_ADDRESS_BASE + offset,
++				  tmp, size, 0);
 +	if (err < 0)
 +		goto end;
 +
-+	for (c = 0; c < channels; c++)
-+		be32_to_cpus(&buf[c]);
++	for (i = 0; i < size / sizeof(u32); i++)
++		buf[i] = be32_to_cpu(tmp[i]);
++end:
++	return err;
++}
 +
-+	/* swap stream channels because inverted */
-+	if (spec->labels == solo_meter_labels) {
-+		swap(buf[4], buf[6]);
-+		swap(buf[5], buf[7]);
++static inline int
++saffire_read_quad(struct snd_bebob *bebob, u64 offset, u32 *value)
++{
++	int err;
++	__be32 tmp;
++
++	err = snd_fw_transaction(bebob->unit, TCODE_READ_QUADLET_REQUEST,
++				 SAFFIRE_ADDRESS_BASE + offset,
++				 &tmp, sizeof(__be32), 0);
++	if (err < 0)
++		goto end;
++
++	*value = be32_to_cpu(tmp);
++end:
++	return err;
++}
++
++static inline int
++saffire_write_quad(struct snd_bebob *bebob, u64 offset, u32 value)
++{
++	__be32 data = cpu_to_be32(value);
++
++	return snd_fw_transaction(bebob->unit, TCODE_WRITE_QUADLET_REQUEST,
++				  SAFFIRE_ADDRESS_BASE + offset,
++				  &data, sizeof(__be32), 0);
++}
++
++static char *saffirepro_26_clk_src_labels[] = {
++	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF", "ADAT1", "ADAT2", "Word Clock"
++};
++
++static char *saffirepro_10_clk_src_labels[] = {
++	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF", "Word Clock"
++};
++static int
++saffirepro_both_clk_freq_get(struct snd_bebob *bebob, unsigned int *rate)
++{
++	u32 id;
++	int err;
++
++	err = saffire_read_quad(bebob, SAFFIREPRO_RATE_NOREBOOT, &id);
++	if (err < 0)
++		goto end;
++	if (id >= ARRAY_SIZE(rates)) {
++		err = -EIO;
++		goto end;
++	}
++
++	*rate = rates[id];
++end:
++	return err;
++}
++static int
++saffirepro_both_clk_freq_set(struct snd_bebob *bebob, unsigned int rate)
++{
++	u32 id;
++	bool flag;
++
++	flag = false;
++	for (id = 0; id < ARRAY_SIZE(rates); id++) {
++		if (rates[id] == rate)
++			flag = true;
++	}
++	if (!flag)
++		return -EINVAL;
++
++	return saffire_write_quad(bebob, SAFFIREPRO_RATE_NOREBOOT, id);
++}
++static int
++saffirepro_both_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
++{
++	int err;
++	u32 value;
++
++	err = saffire_read_quad(bebob, SAFFIREPRO_OFFSET_CLOCK_SOURCE, &value);
++	if (err < 0)
++		goto end;
++
++	if (bebob->spec->clock->labels == saffirepro_10_clk_src_labels) {
++		if (value == SAFFIREPRO_CLOCK_SOURCE_WORDCLOCK)
++			*id = 2;
++		else if (value == SAFFIREPRO_CLOCK_SOURCE_SPDIF)
++			*id = 1;
++	} else if (value > 1)
++		*id = value - 1;
++end:
++	return err;
++}
++
++struct snd_bebob_spec saffire_le_spec;
++static char *saffire_both_clk_src_labels[] = {
++	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF"
++};
++static int
++saffire_both_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
++{
++	int err;
++	u32 value;
++
++	err = saffire_read_quad(bebob, SAFFIRE_OFFSET_CLOCK_SOURCE, &value);
++	if (err < 0)
++		goto end;
++
++	*id = 0xff & value;
++end:
++	return err;
++};
++static char *saffire_le_meter_labels[] = {
++	ANA_IN, ANA_IN, DIG_IN,
++	ANA_OUT, ANA_OUT, ANA_OUT, ANA_OUT,
++	STM_IN, STM_IN
++};
++static char *saffire_meter_labels[] = {
++	ANA_IN, ANA_IN,
++	STM_IN, STM_IN, STM_IN, STM_IN, STM_IN,
++};
++static int
++saffire_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
++{
++	struct snd_bebob_meter_spec *spec = bebob->spec->meter;
++	unsigned int channels;
++	u64 offset;
++	int err;
++
++	if (spec->labels == saffire_le_meter_labels)
++		offset = SAFFIRE_LE_OFFSET_METER;
++	else
++		offset = SAFFIRE_OFFSET_METER;
++
++	channels = spec->num * 2;
++	if (size < channels * sizeof(u32))
++		return -EIO;
++
++	err = saffire_read_block(bebob, offset, buf, size);
++	if (err < 0)
++		goto end;
++
++	if (spec->labels == saffire_le_meter_labels) {
++		swap(buf[1], buf[3]);
++		swap(buf[2], buf[3]);
++		swap(buf[3], buf[4]);
++
++		swap(buf[7], buf[10]);
++		swap(buf[8], buf[10]);
++		swap(buf[9], buf[11]);
++		swap(buf[11], buf[12]);
++
++		swap(buf[15], buf[16]);
 +	}
 +end:
 +	return err;
 +}
 +
-+/* Firewire 410 specification */
-+static struct snd_bebob_rate_spec usual_rate_spec = {
++/* Saffire Pro 26 I/O  */
++static struct snd_bebob_rate_spec saffirepro_both_rate_spec = {
++	.get	= &saffirepro_both_clk_freq_get,
++	.set	= &saffirepro_both_clk_freq_set,
++};
++static struct snd_bebob_clock_spec saffirepro_26_clk_spec = {
++	.num	= ARRAY_SIZE(saffirepro_26_clk_src_labels),
++	.labels	= saffirepro_26_clk_src_labels,
++	.get	= &saffirepro_both_clk_src_get,
++};
++struct snd_bebob_spec saffirepro_26_spec = {
++	.clock	= &saffirepro_26_clk_spec,
++	.rate	= &saffirepro_both_rate_spec,
++	.meter	= NULL
++};
++/* Saffire Pro 10 I/O */
++static struct snd_bebob_clock_spec saffirepro_10_clk_spec = {
++	.num	= ARRAY_SIZE(saffirepro_10_clk_src_labels),
++	.labels	= saffirepro_10_clk_src_labels,
++	.get	= &saffirepro_both_clk_src_get,
++};
++struct snd_bebob_spec saffirepro_10_spec = {
++	.clock	= &saffirepro_10_clk_spec,
++	.rate	= &saffirepro_both_rate_spec,
++	.meter	= NULL
++};
++
++/* Saffire LE */
++static struct snd_bebob_rate_spec saffire_both_rate_spec = {
 +	.get	= &snd_bebob_stream_get_rate,
 +	.set	= &snd_bebob_stream_set_rate,
 +};
-+static struct snd_bebob_meter_spec fw410_meter_spec = {
-+	.num	= ARRAY_SIZE(fw410_meter_labels),
-+	.labels	= fw410_meter_labels,
-+	.get	= &normal_meter_get
++static struct snd_bebob_clock_spec saffire_both_clk_spec = {
++	.num	= ARRAY_SIZE(saffire_both_clk_src_labels),
++	.labels	= saffire_both_clk_src_labels,
++	.get	= &saffire_both_clk_src_get,
 +};
-+struct snd_bebob_spec maudio_fw410_spec = {
-+	.clock	= NULL,
-+	.rate	= &usual_rate_spec,
-+	.meter	= &fw410_meter_spec
++struct snd_bebob_meter_spec saffire_le_meter_spec = {
++	.num	= ARRAY_SIZE(saffire_le_meter_labels),
++	.labels	= saffire_le_meter_labels,
++	.get	= &saffire_meter_get,
 +};
-+
-+/* Firewire Audiophile specification */
-+static struct snd_bebob_meter_spec audiophile_meter_spec = {
-+	.num	= ARRAY_SIZE(audiophile_meter_labels),
-+	.labels	= audiophile_meter_labels,
-+	.get	= &normal_meter_get
++struct snd_bebob_spec saffire_le_spec = {
++	.clock	= &saffire_both_clk_spec,
++	.rate	= &saffire_both_rate_spec,
++	.meter	= &saffire_le_meter_spec
 +};
-+struct snd_bebob_spec maudio_audiophile_spec = {
-+	.clock	= NULL,
-+	.rate	= &usual_rate_spec,
-+	.meter	= &audiophile_meter_spec
++/* Saffire */
++struct snd_bebob_meter_spec saffire_meter_spec = {
++	.num	= ARRAY_SIZE(saffire_meter_labels),
++	.labels	= saffire_meter_labels,
++	.get	= &saffire_meter_get,
 +};
-+
-+/* Firewire Solo specification */
-+static struct snd_bebob_meter_spec solo_meter_spec = {
-+	.num	= ARRAY_SIZE(solo_meter_labels),
-+	.labels	= solo_meter_labels,
-+	.get	= &normal_meter_get
++struct snd_bebob_spec saffire_spec = {
++	.clock	= &saffire_both_clk_spec,
++	.rate	= &saffire_both_rate_spec,
++	.meter	= &saffire_meter_spec
 +};
-+struct snd_bebob_spec maudio_solo_spec = {
-+	.clock	= NULL,
-+	.rate	= &usual_rate_spec,
-+	.meter	= &solo_meter_spec
-+};
-+
-+/* Ozonic specification */
-+static struct snd_bebob_meter_spec ozonic_meter_spec = {
-+	.num	= ARRAY_SIZE(ozonic_meter_labels),
-+	.labels	= ozonic_meter_labels,
-+	.get	= &normal_meter_get
-+};
-+struct snd_bebob_spec maudio_ozonic_spec = {
-+	.clock	= NULL,
-+	.rate	= &usual_rate_spec,
-+	.meter	= &ozonic_meter_spec
-+};
-+
-+/* NRV10 specification */
-+static struct snd_bebob_meter_spec nrv10_meter_spec = {
-+	.num	= ARRAY_SIZE(nrv10_meter_labels),
-+	.labels	= nrv10_meter_labels,
-+	.get	= &normal_meter_get
-+};
-+struct snd_bebob_spec maudio_nrv10_spec = {
-+	.clock	= NULL,
-+	.rate	= &usual_rate_spec,
-+	.meter	= &nrv10_meter_spec
-+};
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index de80756..92e91a7 100644
---- a/sound/firewire/bebob/bebob_stream.c
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -216,6 +216,15 @@ map_data_channels(struct snd_bebob *bebob, struct amdtp_stream *s)
- 			/* location of this channel in this section */
- 			sec_loc = buf[pos++] - 1;
- 
-+			/*
-+			 * Basically the number of location is within the
-+			 * number of channels in this section. But some models
-+			 * of M-Audio don't follow this. Its location for MIDI
-+			 * is the position of MIDI channels in AMDTP packet.
-+			 */
-+			if (sec_loc >= channels)
-+				sec_loc = ch;
-+
- 			switch (type) {
- 			/* for MIDI conformant data channel */
- 			case 0x0a:
 -- 
 1.8.3.2
