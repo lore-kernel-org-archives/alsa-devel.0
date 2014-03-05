@@ -1,17 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: About snd_dmaengine_pcm_trigger()
-Date: Wed, 05 Mar 2014 08:42:26 +0100
-Message-ID: <5316D562.3010901@metafoo.de>
-References: <87eh2hql03.wl%kuninori.morimoto.gx@gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: Question on compress offload framework memory
+ corruption
+Date: Wed, 5 Mar 2014 13:21:04 +0530
+Message-ID: <20140305075104.GI10628@intel.com>
+References: <f7340ae1f345dc53c799ff8c02321ed1.squirrel@www.codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-014.synserver.de (smtp-out-163.synserver.de
- [212.40.185.163])
- by alsa0.perex.cz (Postfix) with ESMTP id 509E126500A
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 08:41:57 +0100 (CET)
-In-Reply-To: <87eh2hql03.wl%kuninori.morimoto.gx@gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 835DD26500A
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 08:54:48 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <f7340ae1f345dc53c799ff8c02321ed1.squirrel@www.codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,91 +22,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Simon <horms@verge.net.au>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Banajit Goswami <bgoswami@codeaurora.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam <lgirdwood@gmail.com>, gsantosh@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/05/2014 06:20 AM, Kuninori Morimoto wrote:
-> Hi Mark, Lars and all
->
-> I need your opinion
->
-> Now, I'm working for ${LINUX}/sound/soc/sh/fsi and ${LINUX}/sound/soc/sh/rcar drirvers.
-> These drivers are supporting DMAEngine transfer,
-> but it is using original DMAEngine method,
-> not using snd_dmaengine_pcm_trigger() or snd_dmaengine_pcm_register().
-> I was requested to use it from Mark.
->
-> The reason why I couldn't use it was our DMAEngine
-> didn't have "cyclic" tranfer support which is used on
-> dmaengine_pcm_prepare_and_submit()
-> But now, I created cyclic support on our DMA driver (on my local PC at this point)
->
-> Then, I noticed our drivers still can't use snd_dmaengine_pcm_xxx() method.
->
-> 1st, our device needs PIO tranfer support too.
-> Current PIO/DMA transfer are sharing many methods/functions.
-> Code will become difficult to read if it is separated forcibly.
-> (to using snd_dmaengine_pcm_xxx())
+On Tue, Mar 04, 2014 at 10:19:20PM +0000, Banajit Goswami wrote:
+> Hi Liam,
+> 
+> > On Thu, Dec 19, 2013 at 10:55:08AM +0000, Mark Brown wrote:
+> > > On Wed, Dec 18, 2013 at 01:17:51PM -0000, gsantosh@codeaurora.org wrote:
+> > > > Hi,
+> > > >
+> > > > I have following questions in the compressed offload framework API.
+> > > >
+> > > > static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+> > > > 					struct snd_compr_params *params) { ...
+> > > > 	hw_params = kzalloc(sizeof(*hw_params), GFP_KERNEL);
+> > > > 	if (hw_params == NULL)
+> > > > 		return -ENOMEM;
+> > > > /*1st question is, what is the use of above allocated memory I do
+> > > > not see this being used in this function*/
+> > >
+> > > The code you're quoting there isn't in mainline.  I've also added
+> > > Vinod to the CCs, you probably want to include him in any discussion
+> > > of the compressed API.
+> >
+> > That's right, this is from DPCM compressed updated done by Liam, so he
+> is > the best person to comment on this bit, and somehow his address in
+> CC has > gone bad, i have added him in to list
+> 
+> > But yes looking at the source, i agree that two are interlinked.
+> > I guess we need to poupulate the hw_params and then use that to copy, that
+> > would be the right thing to do here and yes this is not correct and not
+> > sure how this is working...
+> 
+> 
+> Continuing the discussion on the "memcpy" function in Santosh's 2nd question-
+> 
+> > > >        memcpy(&fe->dpcm[fe_substream->stream].hw_params, params,
+> > > >                       sizeof(struct snd_pcm_hw_params));
+> > > >
+> > > > /* 2nd question is
+> > > > in above memcpy there is parameter mismatch
+> > > > &fe->dpcm[fe_substream->stream].hw_params is of structure type struct
+> > > > snd_pcm_hw_params
+> > > >
+> > > > params argument is of the structure type struct snd_compr_params
+> > > > the definition of the two structures are different, how this is
+> > > > working?
+> > > > this will over right the destination with junk value which will return
+> > > > in error when this memory is accessed, after memcpy this cpu_dai
+> > > > hw_params
+> > > > returing with EINVAL error, please explain why this is done this way.
+> > > > */
+> 
+> I can see that a later version of the patch adds the function
+> soc_compr_set_params_fe() at-
+>     http://permalink.gmane.org/gmane.linux.alsa.devel/117716
+> 
+> with the below code replaces the "memcpy" function with a "memset"-
+> +	/*
+> +	 * Create an empty hw_params for the BE as the machine driver must
+> +	 * fix this up to match DSP decoder and ASRC configuration.
+> +	 * I.e. machine driver fixup for compressed BE is mandatory.
+> +	 */
+> +	memset(&fe->dpcm[fe_substream->stream].hw_params, 0,
+> +		sizeof(struct snd_pcm_hw_params));
+> 
+> It's evident that the code relies on machine driver fixup function to
+> populate the parameters of hw_params before propagating those to back-end.
+> I think rather than that, like Vinod also mentioned, the hw_params should
+> have been populated with individual parameters which are relevant.
 
-Ideally from a high level abstraction point of few PIO and DMA would be two 
-completely separate components that can be used interchangeably. There might 
-be hardware restrictions though that do not allow this.
+Yes I did mention that hw_params should be populated and even gave it a shot.
+But this is not so simple. It depends on how decoder is done. The file may tell
+you few PCM format details (only for few lucky formats) not all. It wont tell
+you PCM word length!  Also you may or may not have SRCs... 
 
->
-> 2nd, our device DMA ON/OFF timing has relation ship to other register settings.
-> Unfortunately, our device is picky, it needs like this
->
->                 HW init setting -> DMA ON -> HW start setting
+Hence we thought it does not make sense and since we are talking about a DSP we
+will end up having some fixed format to which you will process and render data.
+So that format would be sensible to be put it fixup.
 
-What kind of HW init is this?
+If you have an idea how to solve this, am all ears :)
 
->
-> It can be solved if snd_dmaengine_pcm_xxx() has callbacks,
-> but many callbacks are needed...
-
-You can wrap the snd_dmaengine_pcm functions in your pcm_ops callbacks, like 
-this:
-
-int sh_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-{
-	init hw ...
-	
-	snd_dmaengine_pcm_trigger(substream, cmd);
-
-	start hw ...
-}
-
-Each of the snd_dmaengine_pcm functions does pretty much one specific task. 
-There is not much room for inserting callbacks.
-
->
-> 3rd, our device needs special method on snd_pcm_ops
-> int the future.
->
-
-What kind of special ops?
-
->  From my point of view,
-> our driver can replace to use "cyclic" DMA transfer
-> instead of current original DMAEngine method.
-> I guess, it is not difficult.
-> But, using snd_dmaengine_pcm_xxx() is difficult.
->
-
-I don't think using the snd_dmaengine_pcm helpers should be difficult, 
-since, as I said, each of them perform one very specific task. If you'd 
-directly call the dmaengine API you'd end up with pretty much the same code 
-as the dmaengine PCM helpers. What's more of a challenge would be to use the 
-generic dmaengine PCM driver.
-
-I think the issue with the sound/soc/sh/ code is that there never was a 
-clean separation between the DMA/PIO and the DAI configuration code. And 
-especially with rcar you seem to be reimplementing a ASoC-like framework 
-on-top of ASoC. Which makes it rather hard to reused generic code, since the 
-generic code doesn't know about all the custom hooks and callbacks. The ASoC 
-framework is not set in stone, if there is something missing to properly 
-support your hardware you should try to extend the framework to support this 
-rather than working around it in your drivers.
-
-- Lars
+-- 
+~Vinod
