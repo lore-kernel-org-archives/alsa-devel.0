@@ -1,17 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 03/39] firewire-lib: Add 'direction' member to
-	'amdtp_stream' structure
-Date: Wed,  5 Mar 2014 19:47:51 +0900
-Message-ID: <1394016507-15761-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 02/39] firewire-lib: Add macros instead of
+	fixed value for AMDTP
+Date: Wed,  5 Mar 2014 19:47:50 +0900
+Message-ID: <1394016507-15761-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <5316963F.1000206@sakamocchi.jp>
  <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B6FA2650AC
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 11:48:49 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DC965264FBA
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 11:48:47 +0100 (CET)
 In-Reply-To: <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,96 +26,48 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds 'direction' member to amdtp_stream structure to indicate its
-direction. This patch also adds 'direction' argument to amdtp_stream_init()
-function to determine its direction.
-
-The amdtp_stream_init() function is exported and used by firewire-speakers and
-dice so this patch also affects them.
-
-This patch just add them. Actual implementation will be done by followed
-patches.
----
- sound/firewire/amdtp.c    | 4 +++-
- sound/firewire/amdtp.h    | 7 +++++++
- sound/firewire/dice.c     | 2 +-
- sound/firewire/speakers.c | 3 ++-
- 4 files changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 38013f9..95c5a15 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -53,12 +53,14 @@ static void pcm_period_tasklet(unsigned long data);
-  * amdtp_stream_init - initialize an AMDTP stream structure
-  * @s: the AMDTP stream to initialize
-  * @unit: the target of the stream
-+ * @dir: the direction of stream
-  * @flags: the packet transmission method to use
-  */
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--		      enum cip_flags flags)
-+		      enum amdtp_stream_direction dir, enum cip_flags flags)
- {
- 	s->unit = fw_unit_get(unit);
-+	s->direction = dir;
- 	s->flags = flags;
- 	s->context = ERR_PTR(-1);
- 	mutex_init(&s->mutex);
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 60028c7..019134e 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -48,9 +48,15 @@ struct fw_unit;
- struct fw_iso_context;
- struct snd_pcm_substream;
- 
-+enum amdtp_stream_direction {
-+	AMDTP_OUT_STREAM = 0,
-+	AMDTP_IN_STREAM
-+};
-+
- struct amdtp_stream {
- 	struct fw_unit *unit;
- 	enum cip_flags flags;
-+	enum amdtp_stream_direction direction;
- 	struct fw_iso_context *context;
- 	struct mutex mutex;
- 
-@@ -85,6 +91,7 @@ struct amdtp_stream {
- };
- 
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
-+		      enum amdtp_stream_direction dir,
- 		      enum cip_flags flags);
- void amdtp_stream_destroy(struct amdtp_stream *s);
- 
-diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index ca12fcb..26b2158 100644
---- a/sound/firewire/dice.c
-+++ b/sound/firewire/dice.c
-@@ -1360,7 +1360,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 		goto err_owner;
- 	dice->resources.channels_mask = 0x00000000ffffffffuLL;
- 
--	err = amdtp_stream_init(&dice->stream, unit,
-+	err = amdtp_stream_init(&dice->stream, unit, AMDTP_OUT_STREAM,
- 				CIP_BLOCKING | CIP_HI_DUALWIRE);
- 	if (err < 0)
- 		goto err_resources;
-diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
-index 2096ad7..c07e7cd 100644
---- a/sound/firewire/speakers.c
-+++ b/sound/firewire/speakers.c
-@@ -683,7 +683,8 @@ static int fwspk_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto err_unit;
- 
--	err = amdtp_stream_init(&fwspk->stream, unit, CIP_NONBLOCKING);
-+	err = amdtp_stream_init(&fwspk->stream, unit, AMDTP_OUT_STREAM,
-+				CIP_NONBLOCKING);
- 	if (err < 0)
- 		goto err_connection;
- 
--- 
-1.8.3.2
+VGhpcyBwYXRjaCBhZGRzIHNvbWUgbWFjcm9zIGluc3RlYWQgb2YgZml4ZWQgdmFsdWUgZm9yIEFN
+RFRQIGluIElFQyA2MTg4My02LgpUaGVzZSBtYWNyb3Mgd2lsbCBhbHNvIGJlIHVzZWQgYnkgZm9s
+bG93ZWQgcGF0Y2hlcy4KLS0tCiBzb3VuZC9maXJld2lyZS9hbWR0cC5jIHwgMzAgKysrKysrKysr
+KysrKysrKysrKysrKystLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMjMgaW5zZXJ0aW9ucygrKSwg
+NyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9maXJld2lyZS9hbWR0cC5jIGIvc291
+bmQvZmlyZXdpcmUvYW1kdHAuYwppbmRleCAxNmZlODU4Li4zODAxM2Y5IDEwMDY0NAotLS0gYS9z
+b3VuZC9maXJld2lyZS9hbWR0cC5jCisrKyBiL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKQEAgLTIw
+LDEyICsyMCwyOCBAQAogCiAjZGVmaW5lIFRSQU5TRkVSX0RFTEFZX1RJQ0tTCTB4MmUwMCAvKiA0
+NzkuMTcgwrVzICovCiAKKy8qIGlzb2Nocm9ub3VzIGhlYWRlciBwYXJhbWV0ZXJzICovCisjZGVm
+aW5lIElTT19EQVRBX0xFTkdUSF9TSElGVAkxNgogI2RlZmluZSBUQUdfQ0lQCQkJMQogCisvKiBj
+b21tb24gaXNvY2hyb25vdXMgcGFja2V0IGhlYWRlciBwYXJhbWV0ZXJzICovCiAjZGVmaW5lIENJ
+UF9FT0gJCQkoMXUgPDwgMzEpCisjZGVmaW5lIENJUF9FT0hfTUFTSwkJMHg4MDAwMDAwMAogI2Rl
+ZmluZSBDSVBfRk1UX0FNCQkoMHgxMCA8PCAyNCkKLSNkZWZpbmUgQU1EVFBfRkRGX0FNODI0CQko
+MCA8PCAxOSkKLSNkZWZpbmUgQU1EVFBfRkRGX1NGQ19TSElGVAkxNgorI2RlZmluZSBDSVBfRk1U
+X01BU0sJCTB4M2YwMDAwMDAKKyNkZWZpbmUgQ0lQX1NZVF9NQVNLCQkweDAwMDBmZmZmCisjZGVm
+aW5lIENJUF9TWVRfTk9fSU5GTwkJMHhmZmZmCisjZGVmaW5lIENJUF9GREZfTUFTSwkJMHgwMGZm
+MDAwMAorI2RlZmluZSBDSVBfRkRGX1NGQ19TSElGVAkxNgorCisvKgorICogQXVkaW8gYW5kIE11
+c2ljIHRyYW5zZmVyIHByb3RvY29sIHNwZWNpZmljIHBhcmFtZXRlcnMKKyAqIG9ubHkgIkNsb2Nr
+LWJhc2VkIHJhdGUgY29udHJvbCBtb2RlIiBpcyBzdXBwb3J0ZWQKKyAqLworI2RlZmluZSBBTURU
+UF9GREZfQU04MjQJCSgwIDw8IChDSVBfRkRGX1NGQ19TSElGVCArIDMpKQorI2RlZmluZSBBTURU
+UF9EQlNfTUFTSwkJMHgwMGZmMDAwMAorI2RlZmluZSBBTURUUF9EQlNfU0hJRlQJCTE2CisjZGVm
+aW5lIEFNRFRQX0RCQ19NQVNLCQkweDAwMDAwMGZmCiAKIC8qIFRPRE86IG1ha2UgdGhlc2UgY29u
+ZmlndXJhYmxlICovCiAjZGVmaW5lIElOVEVSUlVQVF9JTlRFUlZBTAkxNgpAQCAtMjgwLDkgKzI5
+Niw5IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgY2FsY3VsYXRlX3N5dChzdHJ1Y3QgYW1kdHBfc3Ry
+ZWFtICpzLAogCQlzeXQgPSAoY3ljbGUgKyBzeXRfb2Zmc2V0IC8gVElDS1NfUEVSX0NZQ0xFKSA8
+PCAxMjsKIAkJc3l0ICs9IHN5dF9vZmZzZXQgJSBUSUNLU19QRVJfQ1lDTEU7CiAKLQkJcmV0dXJu
+IHN5dCAmIDB4ZmZmZjsKKwkJcmV0dXJuIHN5dCAmIENJUF9TWVRfTUFTSzsKIAl9IGVsc2Ugewot
+CQlyZXR1cm4gMHhmZmZmOyAvKiBubyBpbmZvICovCisJCXJldHVybiBDSVBfU1lUX05PX0lORk87
+CiAJfQogfQogCkBAIC00MzgsMTcgKzQ1NCwxNyBAQCBzdGF0aWMgdm9pZCBxdWV1ZV9vdXRfcGFj
+a2V0KHN0cnVjdCBhbWR0cF9zdHJlYW0gKnMsIHVuc2lnbmVkIGludCBjeWNsZSkKIAlzeXQgPSBj
+YWxjdWxhdGVfc3l0KHMsIGN5Y2xlKTsKIAlpZiAoIShzLT5mbGFncyAmIENJUF9CTE9DS0lORykp
+CiAJCWRhdGFfYmxvY2tzID0gY2FsY3VsYXRlX2RhdGFfYmxvY2tzKHMpOwotCWVsc2UgaWYgKHN5
+dCAhPSAweGZmZmYpCisJZWxzZSBpZiAoc3l0ICE9IENJUF9TWVRfTk9fSU5GTykKIAkJZGF0YV9i
+bG9ja3MgPSBzLT5zeXRfaW50ZXJ2YWw7CiAJZWxzZQogCQlkYXRhX2Jsb2NrcyA9IDA7CiAKIAli
+dWZmZXIgPSBzLT5idWZmZXIucGFja2V0c1tpbmRleF0uYnVmZmVyOwogCWJ1ZmZlclswXSA9IGNw
+dV90b19iZTMyKEFDQ0VTU19PTkNFKHMtPnNvdXJjZV9ub2RlX2lkX2ZpZWxkKSB8Ci0JCQkJKHMt
+PmRhdGFfYmxvY2tfcXVhZGxldHMgPDwgMTYpIHwKKwkJCQkocy0+ZGF0YV9ibG9ja19xdWFkbGV0
+cyA8PCBBTURUUF9EQlNfU0hJRlQpIHwKIAkJCQlzLT5kYXRhX2Jsb2NrX2NvdW50ZXIpOwogCWJ1
+ZmZlclsxXSA9IGNwdV90b19iZTMyKENJUF9FT0ggfCBDSVBfRk1UX0FNIHwgQU1EVFBfRkRGX0FN
+ODI0IHwKLQkJCQkocy0+c2ZjIDw8IEFNRFRQX0ZERl9TRkNfU0hJRlQpIHwgc3l0KTsKKwkJCQko
+cy0+c2ZjIDw8IENJUF9GREZfU0ZDX1NISUZUKSB8IHN5dCk7CiAJYnVmZmVyICs9IDI7CiAKIAlw
+Y20gPSBBQ0NFU1NfT05DRShzLT5wY20pOwotLSAKMS44LjMuMgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
