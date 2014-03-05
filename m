@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 09/39] firewire-lib: Add sort function for
-	transmitted packet
-Date: Wed,  5 Mar 2014 19:47:57 +0900
-Message-ID: <1394016507-15761-10-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/39] firewire-lib: Give syt value as
+	parameter to handle_out_packet()
+Date: Wed,  5 Mar 2014 19:47:55 +0900
+Message-ID: <1394016507-15761-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <5316963F.1000206@sakamocchi.jp>
  <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
@@ -10,8 +10,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 56D5926507F
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 11:48:56 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 41EE02650F8
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 11:48:53 +0100 (CET)
 In-Reply-To: <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,237 +26,80 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit is to assure the continuity of timestamp in in-packets
-transmitted by devices.
-
-Fireworks with firmware version 5.5 or former is a type of device which
-transmits packets with a bit disorder.
-
-This commit add sorting of in-packets. When callback of receive-context
-is processed, the parameters of in-packets are stored in sort table and
-sorted by its value of data block counter. The sort algorism works faster
-in ordered sequence than in messy sequence. This is convinient for this
-purpose because the sequence is assumed not to be so messy. After sorting,
-packets are processed except for a last few packets in sort table. These
-packets are stored in buffer once and used in next cycle.
+For duplex streams with synchronization, drivers should pick up
+'presentation timestamp' from in-packets and use the timestamp for
+out-packets. This commit is preparation for this.
 ---
- sound/firewire/amdtp.c | 129 +++++++++++++++++++++++++++++++++++++++++++------
- sound/firewire/amdtp.h |   4 ++
- 2 files changed, 119 insertions(+), 14 deletions(-)
+ sound/firewire/amdtp.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 9415992..d3cf7bf 100644
+index ad3521f..56b01c8 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -45,6 +45,7 @@
- #define AMDTP_DBS_MASK		0x00ff0000
- #define AMDTP_DBS_SHIFT		16
- #define AMDTP_DBC_MASK		0x000000ff
-+#define DBC_THRESHOLD		(AMDTP_DBC_MASK / 2)
+@@ -256,7 +256,9 @@ static unsigned int calculate_data_blocks(struct amdtp_stream *s)
+ {
+ 	unsigned int phase, data_blocks;
  
- /* TODO: make these configurable */
- #define INTERRUPT_INTERVAL	16
-@@ -53,6 +54,13 @@
- #define IN_PACKET_HEADER_SIZE	4
- #define OUT_PACKET_HEADER_SIZE	0
- 
-+/* for re-ordering receive packets */
-+struct sort_table {
-+	unsigned int id;
-+	unsigned int dbc;
-+	unsigned int payload_size;
-+};
-+
- static void pcm_period_tasklet(unsigned long data);
- 
- /**
-@@ -77,6 +85,9 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
- 	s->callbacked = false;
- 	s->sync_slave = ERR_PTR(-1);
- 
-+	s->sort_table = NULL;
-+	s->left_packets = NULL;
-+
- 	return 0;
- }
- EXPORT_SYMBOL(amdtp_stream_init);
-@@ -735,6 +746,34 @@ static void handle_in_packet(struct amdtp_stream *s,
- 		update_pcm_pointers(s, pcm, data_blocks);
+-	if (!cip_sfc_is_base_44100(s->sfc)) {
++	if (s->flags & CIP_BLOCKING)
++		data_blocks = s->syt_interval;
++	else if (!cip_sfc_is_base_44100(s->sfc)) {
+ 		/* Sample_rate / 8000 is an integer, and precomputed. */
+ 		data_blocks = s->data_block_state;
+ 	} else {
+@@ -620,26 +622,22 @@ static inline int queue_in_packet(struct amdtp_stream *s)
+ 			    amdtp_stream_get_max_payload(s), false);
  }
  
-+static void packet_sort(struct sort_table *tbl, unsigned int len)
-+{
-+	unsigned int i, j, k;
-+
-+	i = 0;
-+	do {
-+		for (j = i + 1; j < len; j++) {
-+			if (((tbl[i].dbc > tbl[j].dbc) &&
-+			     (tbl[i].dbc - tbl[j].dbc < DBC_THRESHOLD))) {
-+				swap(tbl[i], tbl[j]);
-+			} else if ((tbl[j].dbc > tbl[i].dbc) &&
-+				   (tbl[j].dbc - tbl[i].dbc >
-+							DBC_THRESHOLD)) {
-+				for (k = i; k > 0; k--) {
-+					if ((tbl[k].dbc > tbl[j].dbc) ||
-+					    (tbl[j].dbc - tbl[k].dbc >
-+							DBC_THRESHOLD)) {
-+						swap(tbl[j], tbl[k]);
-+					}
-+					break;
-+				}
-+			}
-+			break;
-+		}
-+		i = j;
-+	} while (i < len);
-+}
-+
- static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
- 				size_t header_length, void *header,
+-static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
++static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
+ {
+ 	__be32 *buffer;
+-	unsigned int index, data_blocks, syt, payload_length;
++	unsigned int data_blocks, payload_length;
+ 	struct snd_pcm_substream *pcm;
+ 
+ 	if (s->packet_index < 0)
+ 		return;
+-	index = s->packet_index;
+ 
+ 	/* this module generate empty packet for 'no data' */
+-	syt = calculate_syt(s, cycle);
+-	if (!(s->flags & CIP_BLOCKING))
++	if (!(s->flags & CIP_BLOCKING) || (syt != CIP_SYT_NO_INFO))
+ 		data_blocks = calculate_data_blocks(s);
+-	else if (syt != CIP_SYT_NO_INFO)
+-		data_blocks = s->syt_interval;
+ 	else
+ 		data_blocks = 0;
+ 
+-	buffer = s->buffer.packets[index].buffer;
++	buffer = s->buffer.packets[s->packet_index].buffer;
+ 	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
+ 				(s->data_block_quadlets << AMDTP_DBS_SHIFT) |
+ 				s->data_block_counter);
+@@ -737,7 +735,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
  				void *private_data)
-@@ -761,30 +800,66 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
- 			       void *private_data)
  {
  	struct amdtp_stream *s = private_data;
--	unsigned int p, packets, syt, data_quadlets;
-+	struct sort_table *entry, *tbl = s->sort_table;
-+	unsigned int i, j, k, index, packets, syt, remain_packets;
- 	__be32 *buffer, *headers = header;
+-	unsigned int i, packets = header_length / 4;
++	unsigned int i, syt, packets = header_length / 4;
  
- 	/* The number of packets in buffer */
- 	packets = header_length / IN_PACKET_HEADER_SIZE;
+ 	/*
+ 	 * Compute the cycle of the last queued packet.
+@@ -746,8 +744,10 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 	 */
+ 	cycle += QUEUE_LENGTH - packets;
  
--	for (p = 0; p < packets; p++) {
--		buffer = s->buffer.packets[s->packet_index].buffer;
-+	/* Store into sort table and sort. */
-+	for (i = 0; i < packets; i++) {
-+		entry = &tbl[s->remain_packets + i];
-+		entry->id = i;
-+
-+		index = s->packet_index + i;
-+		if (index >= QUEUE_LENGTH)
-+			index -= QUEUE_LENGTH;
-+		buffer = s->buffer.packets[index].buffer;
-+		entry->dbc = be32_to_cpu(buffer[0]) & AMDTP_DBC_MASK;
- 
--		/* The number of quadlets in this packet */
--		data_quadlets =
--			(be32_to_cpu(headers[p]) >> ISO_DATA_LENGTH_SHIFT) / 4;
-+		entry->payload_size = be32_to_cpu(headers[i]) >>
-+				      ISO_DATA_LENGTH_SHIFT;
+-	for (i = 0; i < packets; ++i)
+-		handle_out_packet(s, ++cycle);
++	for (i = 0; i < packets; ++i) {
++		syt = calculate_syt(s, ++cycle);
++		handle_out_packet(s, syt);
 +	}
-+	packet_sort(tbl, packets + s->remain_packets);
+ 	fw_iso_context_queue_flush(s->context);
+ }
  
--		/* Process sync slave stream */
--		if ((s->flags & CIP_BLOCKING) &&
--		    (s->flags & CIP_SYNC_TO_DEVICE) &&
--		    s->sync_slave->callbacked) {
--			syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
--			handle_out_packet(s->sync_slave, syt);
-+	/*
-+	 * for convinience, tbl[i].id >= QUEUE_LENGTH is a label to identify
-+	 * previous packets in buffer.
-+	 */
-+	remain_packets = s->remain_packets;
-+	s->remain_packets = packets / 4;
-+	for (i = 0, j = 0, k = 0; i < remain_packets + packets; i++) {
-+		if (tbl[i].id < QUEUE_LENGTH) {
-+			index = s->packet_index + tbl[i].id;
-+			if (index >= QUEUE_LENGTH)
-+				index -= QUEUE_LENGTH;
-+			buffer = s->buffer.packets[index].buffer;
-+		} else {
-+			buffer = s->left_packets +
-+				 amdtp_stream_get_max_payload(s) * j++;
- 		}
- 
--		/* handle each packet data */
--		handle_in_packet(s, data_quadlets, buffer);
-+		if (i < remain_packets + packets - s->remain_packets) {
-+			/* Process sync slave stream */
-+			if ((s->flags & CIP_BLOCKING) &&
-+			    (s->flags & CIP_SYNC_TO_DEVICE) &&
-+			    s->sync_slave->callbacked) {
-+				syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
-+				handle_out_packet(s->sync_slave, syt);
-+			}
-+			handle_in_packet(s, tbl[i].payload_size / 4, buffer);
-+		} else {
-+			tbl[k].id = tbl[i].id + QUEUE_LENGTH;
-+			tbl[k].dbc = tbl[i].dbc;
-+			tbl[k].payload_size = tbl[i].payload_size;
-+			memcpy(s->left_packets +
-+					amdtp_stream_get_max_payload(s) * k++,
-+			       buffer, tbl[i].payload_size);
-+		}
-+	}
- 
-+	for (i = 0; i < packets; i++) {
- 		if (queue_in_packet(s) < 0) {
- 			amdtp_stream_pcm_abort(s);
- 			return;
-@@ -888,6 +963,19 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	if (err < 0)
- 		goto err_unlock;
- 
-+	/* for sorting transmitted packets */
-+	if (s->direction == AMDTP_IN_STREAM) {
-+		s->remain_packets = 0;
-+		s->sort_table = kzalloc(sizeof(struct sort_table) *
-+					QUEUE_LENGTH, GFP_KERNEL);
-+		if (s->sort_table == NULL)
-+			goto err_buffer;
-+		s->left_packets = kzalloc(amdtp_stream_get_max_payload(s) *
-+					  QUEUE_LENGTH / 4, GFP_KERNEL);
-+		if (s->left_packets == NULL)
-+			goto err_buffer;
-+	}
-+
- 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
- 					   type, channel, speed, header_size,
- 					   amdtp_stream_callback, s);
-@@ -927,6 +1015,12 @@ err_context:
- 	fw_iso_context_destroy(s->context);
- 	s->context = ERR_PTR(-1);
- err_buffer:
-+	if (s->sort_table != NULL)
-+		kfree(s->sort_table);
-+	if (s->left_packets != NULL)
-+		kfree(s->left_packets);
-+	s->sort_table = NULL;
-+	s->left_packets = NULL;
- 	iso_packets_buffer_destroy(&s->buffer, s->unit);
- err_unlock:
- 	mutex_unlock(&s->mutex);
-@@ -986,6 +1080,13 @@ void amdtp_stream_stop(struct amdtp_stream *s)
- 	s->context = ERR_PTR(-1);
- 	iso_packets_buffer_destroy(&s->buffer, s->unit);
- 
-+	if (s->sort_table != NULL)
-+		kfree(s->sort_table);
-+	if (s->left_packets != NULL)
-+		kfree(s->left_packets);
-+	s->sort_table = NULL;
-+	s->left_packets = NULL;
-+
- 	s->callbacked = false;
- 
- 	mutex_unlock(&s->mutex);
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index efa2d25..d502646 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -109,6 +109,10 @@ struct amdtp_stream {
- 	bool callbacked;
- 	wait_queue_head_t callback_wait;
- 	struct amdtp_stream *sync_slave;
-+
-+	void *sort_table;
-+	void *left_packets;
-+	unsigned int remain_packets;
- };
- 
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
 -- 
 1.8.3.2
