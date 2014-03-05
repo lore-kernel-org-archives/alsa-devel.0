@@ -1,16 +1,16 @@
-From: Daniel Mack <daniel@zonque.org>
+From: Brian Austin <brian.austin@cirrus.com>
 Subject: Re: [PATCH] ASoC: cs4271: Fix build error without
-	CONFIG_SPI_MASTER
-Date: Wed, 05 Mar 2014 18:03:16 +0100
-Message-ID: <531758D4.8000008@zonque.org>
+ CONFIG_SPI_MASTER
+Date: Wed, 5 Mar 2014 11:03:59 -0600
+Message-ID: <alpine.DEB.2.02.1403051103261.16441@heelrod>
 References: <1394038411-11045-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="8323329-1282489265-1394039040=:16441"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 88D4026511F
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 18:03:17 +0100 (CET)
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38F7E2650FE
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 18:03:58 +0100 (CET)
 In-Reply-To: <1394038411-11045-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,48 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDMvMDUvMjAxNCAwNTo1MyBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IGNzNDI3MV9jb21t
-b25fcHJvYmUoKSBpcyBjYWxsZWQgZnJvbSBjczQyNzFfaTJjX3Byb2JlKCkgYnV0IGRlZmluZWQg
-aW4KPiBDT05GSUdfU1BJX01BU1RFUiBibG9jaywgdGh1cyBpdCByZXN1bHRzIGluIGEgYnVpbGQg
-ZXJyb3Igd2hlbgo+IENPTkZJR19TUElfTUFTVEVSPW46Cj4gICBzb3VuZC9zb2MvY29kZWNzL2Nz
-NDI3MS5jOjcyMToyOiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCY
-Y3M0MjcxX2NvbW1vbl9wcm9iZeKAmSBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJh
-dGlvbl0KPiAKPiBNb3ZlIHRoZSBmdW5jdGlvbiBvdXQgb2YgI2lmIGJsb2NrLgo+IAo+IEZpeGVz
-OiBkNmNmODllZTA3Y2IgKCdBU29DOiBjczQyNzE6IGNsYWltIHJlc2V0IEdQSU8gaW4gYnVzIHBy
-b2JlIGZ1bmN0aW9uJykKPiBTaWduZWQtb2ZmLWJ5OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2Uu
-ZGU+CgpUaGFua3MhCgpBY2tlZC1ieTogRGFuaWVsIE1hY2sgPGRhbmllbEB6b25xdWUub3JnPgoK
-PiAtLS0KPiAgc291bmQvc29jL2NvZGVjcy9jczQyNzEuYyB8IDMyICsrKysrKysrKysrKysrKyst
-LS0tLS0tLS0tLS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAxNiBpbnNlcnRpb25zKCspLCAxNiBk
-ZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9jczQyNzEuYyBi
-L3NvdW5kL3NvYy9jb2RlY3MvY3M0MjcxLmMKPiBpbmRleCA5NmMzMDk3NzcyMDguLmFlZjQ5NjU3
-NTBjNyAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL2NzNDI3MS5jCj4gKysrIGIvc291
-bmQvc29jL2NvZGVjcy9jczQyNzEuYwo+IEBAIC02MTIsMjIgKzYxMiw2IEBAIHN0YXRpYyBzdHJ1
-Y3Qgc25kX3NvY19jb2RlY19kcml2ZXIgc29jX2NvZGVjX2Rldl9jczQyNzEgPSB7Cj4gIAkubnVt
-X2RhcG1fcm91dGVzCT0gQVJSQVlfU0laRShjczQyNzFfZGFwbV9yb3V0ZXMpLAo+ICB9Owo+ICAK
-PiAtI2lmIGRlZmluZWQoQ09ORklHX1NQSV9NQVNURVIpCj4gLQo+IC1zdGF0aWMgY29uc3Qgc3Ry
-dWN0IHJlZ21hcF9jb25maWcgY3M0MjcxX3NwaV9yZWdtYXAgPSB7Cj4gLQkucmVnX2JpdHMgPSAx
-NiwKPiAtCS52YWxfYml0cyA9IDgsCj4gLQkubWF4X3JlZ2lzdGVyID0gQ1M0MjcxX0xBU1RSRUcs
-Cj4gLQkucmVhZF9mbGFnX21hc2sgPSAweDIxLAo+IC0JLndyaXRlX2ZsYWdfbWFzayA9IDB4MjAs
-Cj4gLQo+IC0JLnJlZ19kZWZhdWx0cyA9IGNzNDI3MV9yZWdfZGVmYXVsdHMsCj4gLQkubnVtX3Jl
-Z19kZWZhdWx0cyA9IEFSUkFZX1NJWkUoY3M0MjcxX3JlZ19kZWZhdWx0cyksCj4gLQkuY2FjaGVf
-dHlwZSA9IFJFR0NBQ0hFX1JCVFJFRSwKPiAtCj4gLQkudm9sYXRpbGVfcmVnID0gY3M0MjcxX3Zv
-bGF0aWxlX3JlZywKPiAtfTsKPiAtCj4gIHN0YXRpYyBpbnQgY3M0MjcxX2NvbW1vbl9wcm9iZShz
-dHJ1Y3QgZGV2aWNlICpkZXYsCj4gIAkJCSAgICAgICBzdHJ1Y3QgY3M0MjcxX3ByaXZhdGUgKipj
-KQo+ICB7Cj4gQEAgLTY1OCw2ICs2NDIsMjIgQEAgc3RhdGljIGludCBjczQyNzFfY29tbW9uX3By
-b2JlKHN0cnVjdCBkZXZpY2UgKmRldiwKPiAgCXJldHVybiAwOwo+ICB9Cj4gIAo+ICsjaWYgZGVm
-aW5lZChDT05GSUdfU1BJX01BU1RFUikKPiArCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgcmVnbWFw
-X2NvbmZpZyBjczQyNzFfc3BpX3JlZ21hcCA9IHsKPiArCS5yZWdfYml0cyA9IDE2LAo+ICsJLnZh
-bF9iaXRzID0gOCwKPiArCS5tYXhfcmVnaXN0ZXIgPSBDUzQyNzFfTEFTVFJFRywKPiArCS5yZWFk
-X2ZsYWdfbWFzayA9IDB4MjEsCj4gKwkud3JpdGVfZmxhZ19tYXNrID0gMHgyMCwKPiArCj4gKwku
-cmVnX2RlZmF1bHRzID0gY3M0MjcxX3JlZ19kZWZhdWx0cywKPiArCS5udW1fcmVnX2RlZmF1bHRz
-ID0gQVJSQVlfU0laRShjczQyNzFfcmVnX2RlZmF1bHRzKSwKPiArCS5jYWNoZV90eXBlID0gUkVH
-Q0FDSEVfUkJUUkVFLAo+ICsKPiArCS52b2xhdGlsZV9yZWcgPSBjczQyNzFfdm9sYXRpbGVfcmVn
-LAo+ICt9Owo+ICsKPiAgc3RhdGljIGludCBjczQyNzFfc3BpX3Byb2JlKHN0cnVjdCBzcGlfZGV2
-aWNlICpzcGkpCj4gIHsKPiAgCXN0cnVjdCBjczQyNzFfcHJpdmF0ZSAqY3M0MjcxOwo+IAoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+--8323329-1282489265-1394039040=:16441
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 5 Mar 2014, Takashi Iwai wrote:
+
+> cs4271_common_probe() is called from cs4271_i2c_probe() but defined in
+> CONFIG_SPI_MASTER block, thus it results in a build error when
+> CONFIG_SPI_MASTER=3Dn:
+>  sound/soc/codecs/cs4271.c:721:2: error: implicit declaration of functi=
+on =E2=80=98cs4271_common_probe=E2=80=99 [-Werror=3Dimplicit-function-dec=
+laration]
+>
+> Move the function out of #if block.
+>
+> Fixes: d6cf89ee07cb ('ASoC: cs4271: claim reset GPIO in bus probe funct=
+ion')
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+Acked-by: Brian Austin <brian.austin@cirrus.com>
+
+--8323329-1282489265-1394039040=:16441
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--8323329-1282489265-1394039040=:16441--
