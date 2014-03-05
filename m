@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/7] ASoC: Add helper functions for PCM runtime
-	'active' management
-Date: Wed,  5 Mar 2014 13:17:43 +0100
-Message-ID: <1394021868-11860-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 6/7] ASoC: Move active count from CODEC to
+	component
+Date: Wed,  5 Mar 2014 13:17:47 +0100
+Message-ID: <1394021868-11860-6-git-send-email-lars@metafoo.de>
 References: <1394021868-11860-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-014.synserver.de (smtp-out-163.synserver.de
  [212.40.185.163])
- by alsa0.perex.cz (Postfix) with ESMTP id 2585226507D
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 13:17:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E2A0F2650D1
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 13:17:22 +0100 (CET)
 In-Reply-To: <1394021868-11860-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,264 +26,84 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Viresh Kumar <viresh.kumar@linaro.org>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-We have the same code that increments and decrements the active field of the
-various PCM runtime components (all with the same bugs). Factor this out into
-common helper functions.
+There is no reason why active count tracking should only be done for CODECs but
+not for other components. Moving the active count from the snd_soc_codec struct
+to the snd_soc_component struct reduces the differences between CODECs and other
+components and will eventually allow component to component DAI links (Which is
+a prerequisite for converting CODECs to components).
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc.h      |  2 ++
- sound/soc/soc-compress.c | 62 +++++++---------------------------
- sound/soc/soc-pcm.c      | 86 +++++++++++++++++++++++++++++++++++-------------
- 3 files changed, 78 insertions(+), 72 deletions(-)
+ include/sound/soc.h | 12 ++++++++++--
+ sound/soc/soc-pcm.c | 10 ++++------
+ 2 files changed, 14 insertions(+), 8 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 93c31c7..53d15e0 100644
+index 5c2b4f4..0495b4a 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -414,6 +414,8 @@ struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
- 		const char *dai_link);
+@@ -660,6 +660,9 @@ struct snd_soc_component {
+ 	const char *name;
+ 	int id;
+ 	struct device *dev;
++
++	unsigned int active;
++
+ 	struct list_head list;
  
- bool snd_soc_runtime_ignore_pmdown_time(struct snd_soc_pcm_runtime *rtd);
-+void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream);
-+void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
+ 	struct snd_soc_dai_driver *dai_drv;
+@@ -687,7 +690,6 @@ struct snd_soc_codec {
  
- /* Utility functions to get clock rates from various things */
- int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index ef585af..91083e6 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -30,8 +30,6 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+ 	/* runtime */
+ 	struct snd_ac97 *ac97;  /* for ad-hoc ac97 devices */
+-	unsigned int active;
+ 	unsigned int cache_bypass:1; /* Suppress access to the cache */
+ 	unsigned int suspended:1; /* Codec is in suspend PM state */
+ 	unsigned int probed:1; /* Codec has been probed */
+@@ -1172,9 +1174,15 @@ static inline bool snd_soc_volsw_is_stereo(struct soc_mixer_control *mc)
+ 	return 1;
+ }
+ 
++static inline bool snd_soc_component_is_active(
++	struct snd_soc_component *component)
++{
++	return component->active != 0;
++}
++
+ static inline bool snd_soc_codec_is_active(struct snd_soc_codec *codec)
  {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_platform *platform = rtd->platform;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int ret = 0;
+-	return codec->active != 0;
++	return snd_soc_component_is_active(&codec->component);
+ }
  
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
-@@ -52,17 +50,7 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
- 		}
- 	}
- 
--	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
--		cpu_dai->playback_active++;
--		codec_dai->playback_active++;
--	} else {
--		cpu_dai->capture_active++;
--		codec_dai->capture_active++;
--	}
--
--	cpu_dai->active++;
--	codec_dai->active++;
--	rtd->codec->active++;
-+	snd_soc_runtime_activate(rtd, cstream->direction);
- 
- 	mutex_unlock(&rtd->pcm_mutex);
- 
-@@ -81,8 +69,6 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
- 	struct snd_pcm_substream *fe_substream = fe->pcm->streams[0].substream;
- 	struct snd_soc_platform *platform = fe->platform;
--	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
--	struct snd_soc_dai *codec_dai = fe->codec_dai;
- 	struct snd_soc_dpcm *dpcm;
- 	struct snd_soc_dapm_widget_list *list;
- 	int stream;
-@@ -140,17 +126,7 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_OPEN;
- 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
- 
--	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
--		cpu_dai->playback_active++;
--		codec_dai->playback_active++;
--	} else {
--		cpu_dai->capture_active++;
--		codec_dai->capture_active++;
--	}
--
--	cpu_dai->active++;
--	codec_dai->active++;
--	fe->codec->active++;
-+	snd_soc_runtime_activate(fe, stream);
- 
- 	mutex_unlock(&fe->card->mutex);
- 
-@@ -202,23 +178,18 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
- 	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_codec *codec = rtd->codec;
-+	int stream;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
--	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
--		cpu_dai->playback_active--;
--		codec_dai->playback_active--;
--	} else {
--		cpu_dai->capture_active--;
--		codec_dai->capture_active--;
--	}
-+	if (cstream->direction == SND_COMPRESS_PLAYBACK)
-+		stream = SNDRV_PCM_STREAM_PLAYBACK;
-+	else
-+		stream = SNDRV_PCM_STREAM_CAPTURE;
- 
--	snd_soc_dai_digital_mute(codec_dai, 1, cstream->direction);
-+	snd_soc_runtime_deactivate(rtd, stream);
- 
--	cpu_dai->active--;
--	codec_dai->active--;
--	codec->active--;
-+	snd_soc_dai_digital_mute(codec_dai, 1, cstream->direction);
- 
- 	if (!cpu_dai->active)
- 		cpu_dai->rate = 0;
-@@ -260,26 +231,17 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
- {
- 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
- 	struct snd_soc_platform *platform = fe->platform;
--	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
--	struct snd_soc_dai *codec_dai = fe->codec_dai;
- 	struct snd_soc_dpcm *dpcm;
- 	int stream, ret;
- 
- 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
- 
--	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
-+	if (cstream->direction == SND_COMPRESS_PLAYBACK)
- 		stream = SNDRV_PCM_STREAM_PLAYBACK;
--		cpu_dai->playback_active--;
--		codec_dai->playback_active--;
--	} else {
-+	else
- 		stream = SNDRV_PCM_STREAM_CAPTURE;
--		cpu_dai->capture_active--;
--		codec_dai->capture_active--;
--	}
- 
--	cpu_dai->active--;
--	codec_dai->active--;
--	fe->codec->active--;
-+	snd_soc_runtime_deactivate(fe, stream);
- 
- 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
- 
+ int snd_soc_util_init(void);
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index f098c80..1a98575 100644
+index 71a01dd..98b4629 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -35,6 +35,66 @@
- #define DPCM_MAX_BE_USERS	8
+@@ -61,9 +61,8 @@ void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
+ 
+ 	cpu_dai->active++;
+ 	codec_dai->active++;
+-	if (cpu_dai->codec)
+-		cpu_dai->codec->active++;
+-	codec_dai->codec->active++;
++	cpu_dai->component->active++;
++	codec_dai->component->active++;
+ }
  
  /**
-+ * snd_soc_runtime_activate() - Increment active count for PCM runtime components
-+ * @rtd: ASoC PCM runtime that is activated
-+ * @stream: Direction of the PCM stream
-+ *
-+ * Increments the active count for all the DAIs and components attached to a PCM
-+ * runtime. Should typically be called when a stream is opened.
-+ *
-+ * Must be called with the rtd->pcm_mutex being held
-+ */
-+void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
-+{
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+
-+	lockdep_assert_held(&rtd->pcm_mutex);
-+
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		cpu_dai->playback_active++;
-+		codec_dai->playback_active++;
-+	} else {
-+		cpu_dai->capture_active++;
-+		codec_dai->capture_active++;
-+	}
-+
-+	cpu_dai->active++;
-+	codec_dai->active++;
-+	rtd->codec->active++;
-+}
-+
-+/**
-+ * snd_soc_runtime_deactivate() - Decrement active count for PCM runtime components
-+ * @rtd: ASoC PCM runtime that is deactivated
-+ * @stream: Direction of the PCM stream
-+ *
-+ * Decrements the active count for all the DAIs and components attached to a PCM
-+ * runtime. Should typically be called when a stream is closed.
-+ *
-+ * Must be called with the rtd->pcm_mutex being held
-+ */
-+void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream)
-+{
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+
-+	lockdep_assert_held(&rtd->pcm_mutex);
-+
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		cpu_dai->playback_active--;
-+		codec_dai->playback_active--;
-+	} else {
-+		cpu_dai->capture_active--;
-+		codec_dai->capture_active--;
-+	}
-+
-+	cpu_dai->active--;
-+	codec_dai->active--;
-+	rtd->codec->active--;
-+}
-+
-+/**
-  * snd_soc_runtime_ignore_pmdown_time() - Check whether to ignore the power down delay
-  * @rtd: The ASoC PCM runtime that should be checked.
-  *
-@@ -402,16 +462,9 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 		 runtime->hw.rate_max);
+@@ -93,9 +92,8 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream)
  
- dynamic:
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		cpu_dai->playback_active++;
--		codec_dai->playback_active++;
--	} else {
--		cpu_dai->capture_active++;
--		codec_dai->capture_active++;
--	}
--	cpu_dai->active++;
--	codec_dai->active++;
--	rtd->codec->active++;
-+
-+	snd_soc_runtime_activate(rtd, substream->stream);
-+
- 	mutex_unlock(&rtd->pcm_mutex);
- 	return 0;
+ 	cpu_dai->active--;
+ 	codec_dai->active--;
+-	if (cpu_dai->codec)
+-		cpu_dai->codec->active--;
+-	codec_dai->codec->active--;
++	cpu_dai->component->active--;
++	codec_dai->component->active--;
+ }
  
-@@ -483,21 +536,10 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
- 	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_codec *codec = rtd->codec;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		cpu_dai->playback_active--;
--		codec_dai->playback_active--;
--	} else {
--		cpu_dai->capture_active--;
--		codec_dai->capture_active--;
--	}
--
--	cpu_dai->active--;
--	codec_dai->active--;
--	codec->active--;
-+	snd_soc_runtime_deactivate(rtd, substream->stream);
- 
- 	/* clear the corresponding DAIs rate when inactive */
- 	if (!cpu_dai->active)
+ /**
 -- 
 1.8.0
