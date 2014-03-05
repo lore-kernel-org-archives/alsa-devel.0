@@ -1,66 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 01/10] ASoC: core: Add
- snd_soc_dai_set_tdm_slot_xlate().
-Date: Wed, 5 Mar 2014 11:39:35 +0800
-Message-ID: <20140305033935.GY13126@sirena.org.uk>
-References: <1393387175-15539-1-git-send-email-Li.Xiubo@freescale.com>
- <1393387175-15539-2-git-send-email-Li.Xiubo@freescale.com>
- <5311DE70.7000901@metafoo.de>
+Subject: Re: [PATCH] ASoC: pcm: free path list before exiting
+ from error conditions
+Date: Wed, 5 Mar 2014 11:47:06 +0800
+Message-ID: <20140305034706.GZ13126@sirena.org.uk>
+References: <1393789977-29091-1-git-send-email-plai@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tAdHiH28s3ybHVSb"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5311DE70.7000901@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Xiubo Li <Li.Xiubo@freescale.com>, lgirdwood@gmail.com, fabio.estevam@freescale.com, moinejf@free.fr, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, tiwai@suse.de, s.hauer@pengutronix.de, timur@tabi.org, linux-kernel@vger.kernel.org, denis@eukrea.com, Guangyu.Chen@freescale.com, mpa@pengutronix.de, shawn.guo@linaro.org
+Content-Type: multipart/mixed; boundary="===============4341290470180712061=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 107DE264F02
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 04:47:30 +0100 (CET)
+In-Reply-To: <1393789977-29091-1-git-send-email-plai@codeaurora.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Patrick Lai <plai@codeaurora.org>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---tAdHiH28s3ybHVSb
+--===============4341290470180712061==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PjJwPjbdn5RfZuWK"
+Content-Disposition: inline
+
+
+--PjJwPjbdn5RfZuWK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Mar 01, 2014 at 02:19:44PM +0100, Lars-Peter Clausen wrote:
+On Sun, Mar 02, 2014 at 11:52:57AM -0800, Patrick Lai wrote:
+> dpcm_path_get() allocates dynamic memory to hold path list.
+> Corresponding dpcm_path_put() must be called to free the memory.
+> dpcm_path_put() is not called under several error conditions.
+> This leads to memory leak.
 
-> I'm not quite sure I fully understand what this patch is trying to
-> solve. It adds a variant snd_soc_dai_set_tdm_slot() that instead of
-> taking a rx and tx mask calculates the masks based on the number of
-> slots? In that case I don't really see how the xlate in the name
-> relates to that. xlate is something you'd typically expect in a
-> devicetree context. Maybe one should be called
-> snd_soc_dai_set_tdm_slot() and the other
-> snd_soc_dai_set_tdm_slot_and_masks()?
+Applied, thanks.
 
-> But another question is do we really need this? I don't see the
-> problem that is solved by this patchset.
-
-My understanding is that the patch set aims to provide a way of using
-the TDM features of drivers from DT, providing a standardised format for
-expressing the TDM setup in the DT.  I've not looked at the actual code
-yet though.
-
---tAdHiH28s3ybHVSb
+--PjJwPjbdn5RfZuWK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTFpx0AAoJELSic+t+oim9SbAP/0HT7RHMIYW0jx9cScjgEoZN
-HC31kblOQQdIn1WVPWk2NLp26F3OFufvwj173SVkO4QZ+A8QK5VGaqW4J2aomBiS
-/4u4rjpP97P3i6MYgzolJI8B3aEQl6yFOmvkloCvMQuGvEaRHMYXuSAx6bUOCv4i
-ddDhHgqVnE5qdq3dv7IDSC6YD0nJZJpzUZqecehDakFttBujXZ0cvyaYiab/sgkc
-oGzqjnIgEmlERIoyIZ4c+5TvQSlMKhXTorRytrmmSmuNerLsFXtyRXoyUy14l7d2
-MBoTDuFNa2iPa0bGEgbKcUsK0j3BnESjBHdvw/T8XrJuntjot6/oqeMU++eYm+rp
-job+tbWXKlaJPIuZqMNTeEbbjBswQlHlBAYYQAMWr7+2dm5vdpTVSFy2TykFB2GY
-sFANYuYeQ5fPPtBt1P4M0fsTxr9dJgI2jU+M1Wb/i8pn6K/S/9H2vvxPbjPPHSu7
-SpzpE6GvIDfUzv62wAZgRUegdsTHR96TEq8Snz/t7Scu1GKRYZSV2HzSrkr9TF/h
-vnrB+iGzoIpXPJ/dvzdChFa+T2KjOb/qLmq6A3QRQVikZck17f1w5hz46dl9P8ew
-1Zi9w9KBsit6ono0jHMru3PfaLnkTJOKbAgkKiMFAzZT6ooUhU4O/+a9RTNh0UhD
-9H8C0+Ij+HgkZvqBGH1j
-=yGOo
+iQIcBAEBAgAGBQJTFp43AAoJELSic+t+oim9wnoP/izYNSQVh6Br1vCdAY4k0N7L
+fr/BVCHo3KryccfL5k2jwPuUVdZfViGvisUd7wAdVEgJj82Fz2wcwxgFrLdubjK/
+rnNpl2i7dr6s6oYHpACIE98ZjU5rxf37cQh282tYDcfsmpKPTEi/gz4hKScvJB3j
+7ndopNKjjXt6JK4yL+AQ8ql1a9Ft2Grh32nUnjnwOi6hVwtCSSud6cgrJuk0XdWP
+fFzgzJvaUm+n3l3Okwr5ZFfsWwgPpp9fjMMhRpj4eSrDqA/19ggA6ruElg2wDKep
+g+0LaZ4JUNjqbSc/hPV1rI3ex0KljNBmSKZm2fXWSsXMWm7WB3inS93TwDT/39O/
+pq6dS4JdsQvXSmloeTPHlhYx3NCLZEbok5CPjTR55NaUtogPpclY2RLrB9KaaDsp
+x99zbM5jFXlnrhqfLwL+3I+JUPn56qKBI+4EBpVvpKITxgm0QZEaRG0Zyv8DL9Sk
+20klmVt4SZdedA0L6Im/G7PAQSgELhRIzWFU5B/xJ2HW4N4aDbkbbrlyf+WTT93b
+svRSiJXo3HZsxmVVxe+hLLw1Je4TOx6izV4DrMt8nGfxymd36AK5O2DOdEXVMhMD
+Qzgbt+V6cyemePXeZTinrKFVozqUywId7QssVmi9oCvoXXv3SGESYkoedl+XzGtc
++O8Hz7+4YeOzLQoSJCwC
+=Ympx
 -----END PGP SIGNATURE-----
 
---tAdHiH28s3ybHVSb--
+--PjJwPjbdn5RfZuWK--
+
+--===============4341290470180712061==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4341290470180712061==--
