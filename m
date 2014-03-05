@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 18/39] firewire-lib: Add a fallback at
-	RCODE_CANCELLED
-Date: Wed,  5 Mar 2014 19:48:06 +0900
-Message-ID: <1394016507-15761-19-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 19/39] fireworks: Add skelton for Fireworks
+	based devices
+Date: Wed,  5 Mar 2014 19:48:07 +0900
+Message-ID: <1394016507-15761-20-git-send-email-o-takashi@sakamocchi.jp>
 References: <5316963F.1000206@sakamocchi.jp>
  <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
@@ -10,8 +10,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id E56432658A3
- for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 11:49:06 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 213882650D3
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 11:49:08 +0100 (CET)
 In-Reply-To: <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,124 +26,304 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-I confirm that some devices often send no response against driver's
-request even if the devices handle the request. In this case, drivers
-should not retry the request because it's not clear whether the devices
-already handled an operation of the request or not. The second request
-may bring errors or make no sence if the request was handled.
+This commit adds a new driver with no functionality. This driver just
+creates/removes card instance according to callbacks.
 
-This patch adds a flag, FW_RETURN_TIMEOUT, for snd_fw_transaction().
-With this flag, this function returns -ETIMEOUT when fw_run_transaction()
-returns RCODE_CALCELLED.
+Fireworks is a board module which Echo Audio produced. This module consists
+of three chipsets:
+ - Communication chipset for IEEE1394 PHY/Link and IEC 61883-1/6
+ - DSP or/and FPGA for signal processing
+ - Flash Memory to store firmwares
 
-For FCP, this patch modifies fcp_avc_transaction() with this flag. The
--ETIMEDOUT is handled as success. Linux Firewire Subsystem currently gives
-2,000msec for default timeout (See DEFAULT_SPLIT_TIMEOUT in core-card.c).
-firewire-lib gives 125msec for wait_event_timeout(). As a result, in worst
-case that all of three retries are timeout and devices don't send responses,
-fcp_avc_transaction() returns 6sec later ((2000 + 125) msec * 3 times). But
-this is rare.
-
-For CMP, this patch modifies pcr_modify() with this flag. The -ETIMEOUT
-generates another read transaction to check current value of PCR. If this
-read transaction returns errors, then pcr_modify() returns the error code.
+Current supported devices:
+ - Mackie Onyx 400F/1200F
+ - Echo AudioFire12/8(until 2009 July)
+ - Echo AudioFire2/4/Pre8/8(since 2009 July)
+ - Echo Fireworks 8/HDMI
+ - Gibson Robot Interface pack/GoldTop
 ---
- sound/firewire/cmp.c | 23 +++++++++++++++++++++--
- sound/firewire/fcp.c |  5 +++--
- sound/firewire/lib.c |  6 +++++-
- sound/firewire/lib.h |  1 +
- 4 files changed, 30 insertions(+), 5 deletions(-)
+ sound/firewire/Kconfig               |  14 +++
+ sound/firewire/Makefile              |   1 +
+ sound/firewire/fireworks/Makefile    |   2 +
+ sound/firewire/fireworks/fireworks.c | 180 +++++++++++++++++++++++++++++++++++
+ sound/firewire/fireworks/fireworks.h |  41 ++++++++
+ 5 files changed, 238 insertions(+)
+ create mode 100644 sound/firewire/fireworks/Makefile
+ create mode 100644 sound/firewire/fireworks/fireworks.c
+ create mode 100644 sound/firewire/fireworks/fireworks.h
 
-diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
-index a8199fd..73f5f26 100644
---- a/sound/firewire/cmp.c
-+++ b/sound/firewire/cmp.c
-@@ -89,13 +89,32 @@ static int pcr_modify(struct cmp_connection *c,
- 		err = snd_fw_transaction(
- 				c->resources.unit, TCODE_LOCK_COMPARE_SWAP,
- 				get_offset(c, false), buffer, 8,
--				FW_FIXED_GENERATION | c->resources.generation);
-+				FW_FIXED_GENERATION | c->resources.generation |
-+				FW_RETURN_TIMEOUT);
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index b3e274f..8cd4f1f 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -61,4 +61,18 @@ config SND_SCS1X
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-scs1x.
  
- 		if (err < 0) {
- 			if (err == -EAGAIN &&
- 			    bus_reset_handling == SUCCEED_ON_BUS_RESET)
- 				err = 0;
--			return err;
++config SND_FIREWORKS
++	tristate "Echo Fireworks board module support"
++	help
++	  Say Y here to include support for FireWire devices based
++	  on Echo Digital Audio Fireworks board:
++	   * Mackie Onyx 400F/1200F
++	   * Echo AudioFire12/8(until 2009 July)
++	   * Echo AudioFire2/4/Pre8/8(since 2009 July)
++	   * Echo Fireworks 8/HDMI
++	   * Gibson Robot Interface Pack/GoldTop
 +
-+			if (err != -ETIMEDOUT)
-+				return err;
++	  To compile this driver as a module, choose M here: the module
++	  will be called snd-fireworks.
 +
-+			/* Check current PCR. */
-+			err = snd_fw_transaction(
-+				c->resources.unit, TCODE_READ_QUADLET_REQUEST,
-+				get_offset(c, false), buffer, 4,
-+				FW_FIXED_GENERATION | c->resources.generation);
-+			if (err < 0)
-+				return err;
+ endif # SND_FIREWIRE
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index 5099550..5cd39dc 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -10,3 +10,4 @@ obj-$(CONFIG_SND_DICE) += snd-dice.o
+ obj-$(CONFIG_SND_FIREWIRE_SPEAKERS) += snd-firewire-speakers.o
+ obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
+ obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
++obj-$(CONFIG_SND_FIREWORKS) += fireworks/
+diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
+new file mode 100644
+index 0000000..99f6fc3
+--- /dev/null
++++ b/sound/firewire/fireworks/Makefile
+@@ -0,0 +1,2 @@
++snd-fireworks-objs := fireworks.o
++obj-m += snd-fireworks.o
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+new file mode 100644
+index 0000000..7005c7e
+--- /dev/null
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -0,0 +1,180 @@
++/*
++ * fireworks.c - a part of driver for Fireworks based devices
++ *
++ * Copyright (c) 2009-2010 Clemens Ladisch
++ * Copyright (c) 2013 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
 +
-+			/* The lock transaction may be failed, retry */
-+			if (buffer[0] != buffer[1]) {
-+				buffer[0] = c->last_pcr_value;
-+				continue;
-+			}
++/*
++ * Fireworks is a board module which Echo Audio produced. This module consists
++ * of three chipsets:
++ *  - Communication chipset for IEEE1394 PHY/Link and IEC 61883-1/6
++ *  - DSP or/and FPGA for signal processing
++ *  - Flash Memory to store firmwares
++ */
 +
++#include "fireworks.h"
++
++MODULE_DESCRIPTION("Echo Fireworks driver");
++MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
++MODULE_LICENSE("GPL v2");
++
++static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
++static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
++static bool enable[SNDRV_CARDS]	= SNDRV_DEFAULT_ENABLE_PNP;
++
++module_param_array(index, int, NULL, 0444);
++MODULE_PARM_DESC(index, "card index");
++module_param_array(id, charp, NULL, 0444);
++MODULE_PARM_DESC(id, "ID string");
++module_param_array(enable, bool, NULL, 0444);
++MODULE_PARM_DESC(enable, "enable Fireworks sound card");
++
++static DEFINE_MUTEX(devices_mutex);
++static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
++
++#define VENDOR_LOUD			0x000ff2
++#define  MODEL_MACKIE_400F		0x00400f
++#define  MODEL_MACKIE_1200F		0x01200f
++
++#define VENDOR_ECHO			0x001486
++#define  MODEL_ECHO_AUDIOFIRE_12	0x00af12
++#define  MODEL_ECHO_AUDIOFIRE_12HD	0x0af12d
++#define  MODEL_ECHO_AUDIOFIRE_12_APPLE	0x0af12a
++/* This is applied for AudioFire8 (until 2009 July) */
++#define  MODEL_ECHO_AUDIOFIRE_8		0x000af8
++#define  MODEL_ECHO_AUDIOFIRE_2		0x000af2
++#define  MODEL_ECHO_AUDIOFIRE_4		0x000af4
++/* AudioFire9 is applied for AudioFire8(since 2009 July) and AudioFirePre8 */
++#define  MODEL_ECHO_AUDIOFIRE_9		0x000af9
++/* unknown as product */
++#define  MODEL_ECHO_FIREWORKS_8		0x0000f8
++#define  MODEL_ECHO_FIREWORKS_HDMI	0x00afd1
++
++#define VENDOR_GIBSON			0x00075b
++/* for Robot Interface Pack of Dark Fire, Dusk Tiger, Les Paul Standard 2010 */
++#define  MODEL_GIBSON_RIP		0x00afb2
++/* unknown as product */
++#define  MODEL_GIBSON_GOLDTOP		0x00afb9
++
++static void
++efw_card_free(struct snd_card *card)
++{
++	struct snd_efw *efw = card->private_data;
++
++	if (efw->card_index >= 0) {
++		mutex_lock(&devices_mutex);
++		clear_bit(efw->card_index, devices_used);
++		mutex_unlock(&devices_mutex);
++	}
++
++	mutex_destroy(&efw->mutex);
++}
++
++static int
++efw_probe(struct fw_unit *unit,
++	  const struct ieee1394_device_id *entry)
++{
++	struct snd_card *card;
++	struct snd_efw *efw;
++	int card_index, err;
++
++	mutex_lock(&devices_mutex);
++
++	/* check registered cards */
++	for (card_index = 0; card_index < SNDRV_CARDS; ++card_index)
++		if (!test_bit(card_index, devices_used) && enable[card_index])
 +			break;
- 		}
- 
- 		if (buffer[0] == old_arg) /* success? */
-diff --git a/sound/firewire/fcp.c b/sound/firewire/fcp.c
-index e903ddb..6fc813f 100644
---- a/sound/firewire/fcp.c
-+++ b/sound/firewire/fcp.c
-@@ -245,8 +245,9 @@ int fcp_avc_transaction(struct fw_unit *unit,
- 					  : TCODE_WRITE_BLOCK_REQUEST;
- 		ret = snd_fw_transaction(t.unit, tcode,
- 					 CSR_REGISTER_BASE + CSR_FCP_COMMAND,
--					 (void *)command, command_size, 0);
--		if (ret < 0)
-+					 (void *)command, command_size,
-+					 FW_RETURN_TIMEOUT);
-+		if ((ret < 0) && (ret != -ETIMEDOUT))
- 			break;
- 
- 		wait_event_timeout(t.wait, t.state != STATE_PENDING,
-diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
-index 7409edb..de42748 100644
---- a/sound/firewire/lib.c
-+++ b/sound/firewire/lib.c
-@@ -22,7 +22,7 @@
-  * @length: length of @buffer
-  * @flags: use %FW_FIXED_GENERATION and add the generation value to attempt the
-  *         request only in that generation; use %FW_QUIET to suppress error
-- *         messages
-+ *         messages; use %FW_RETURN_TIMEOUT to avoid retry at RCODE_CANCELLED
-  *
-  * Submits an asynchronous request to the target device, and waits for the
-  * response.  The node ID and the current generation are derived from @unit.
-@@ -53,6 +53,10 @@ int snd_fw_transaction(struct fw_unit *unit, int tcode,
- 		if (rcode == RCODE_GENERATION && (flags & FW_FIXED_GENERATION))
- 			return -EAGAIN;
- 
-+		/* timeout */
-+		if ((rcode == RCODE_CANCELLED) && (flags & FW_RETURN_TIMEOUT))
-+			return -ETIMEDOUT;
++	if (card_index >= SNDRV_CARDS) {
++		err = -ENOENT;
++		goto end;
++	}
 +
- 		if (rcode_is_permanent_error(rcode) || ++tries >= 3) {
- 			if (!(flags & FW_QUIET))
- 				dev_err(&unit->device,
-diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
-index 02cfabc..b8ea90b 100644
---- a/sound/firewire/lib.h
-+++ b/sound/firewire/lib.h
-@@ -9,6 +9,7 @@ struct fw_unit;
- #define FW_GENERATION_MASK	0x00ff
- #define FW_FIXED_GENERATION	0x0100
- #define FW_QUIET		0x0200
-+#define FW_RETURN_TIMEOUT	0x0400
- 
- int snd_fw_transaction(struct fw_unit *unit, int tcode,
- 		       u64 offset, void *buffer, size_t length,
++	err = snd_card_new(&unit->device, index[card_index], id[card_index],
++			   THIS_MODULE, sizeof(struct snd_efw), &card);
++	if (err < 0)
++		goto end;
++	card->private_free = efw_card_free;
++
++	efw = card->private_data;
++	efw->card = card;
++	efw->unit = unit;
++	efw->card_index = -1;
++	mutex_init(&efw->mutex);
++	spin_lock_init(&efw->lock);
++
++	strcpy(efw->card->driver, "Fireworks");
++	strcpy(efw->card->shortname, "Fireworks");
++	strcpy(efw->card->longname, "Fireworks");
++	strcpy(efw->card->mixername, "Fireworks");
++
++	err = snd_card_register(card);
++	if (err < 0) {
++		snd_card_free(card);
++		goto end;
++	}
++	dev_set_drvdata(&unit->device, efw);
++	set_bit(card_index, devices_used);
++	efw->card_index = card_index;
++end:
++	mutex_unlock(&devices_mutex);
++	return err;
++}
++
++static void efw_update(struct fw_unit *unit)
++{
++	return;
++}
++
++static void efw_remove(struct fw_unit *unit)
++{
++	struct snd_efw *efw = dev_get_drvdata(&unit->device);
++	snd_card_disconnect(efw->card);
++	snd_card_free_when_closed(efw->card);
++}
++
++static const struct ieee1394_device_id efw_id_table[] = {
++	SND_EFW_DEV_ENTRY(VENDOR_LOUD, MODEL_MACKIE_400F),
++	SND_EFW_DEV_ENTRY(VENDOR_LOUD, MODEL_MACKIE_1200F),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_8),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_12),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_12HD),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_12_APPLE),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_2),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_4),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_9),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_FIREWORKS_8),
++	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_FIREWORKS_HDMI),
++	SND_EFW_DEV_ENTRY(VENDOR_GIBSON, MODEL_GIBSON_RIP),
++	SND_EFW_DEV_ENTRY(VENDOR_GIBSON, MODEL_GIBSON_GOLDTOP),
++	{}
++};
++MODULE_DEVICE_TABLE(ieee1394, efw_id_table);
++
++static struct fw_driver efw_driver = {
++	.driver = {
++		.owner = THIS_MODULE,
++		.name = "snd-fireworks",
++		.bus = &fw_bus_type,
++	},
++	.probe    = efw_probe,
++	.update   = efw_update,
++	.remove   = efw_remove,
++	.id_table = efw_id_table,
++};
++
++static int __init snd_efw_init(void)
++{
++	return driver_register(&efw_driver.driver);
++}
++
++static void __exit snd_efw_exit(void)
++{
++	driver_unregister(&efw_driver.driver);
++	mutex_destroy(&devices_mutex);
++}
++
++module_init(snd_efw_init);
++module_exit(snd_efw_exit);
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+new file mode 100644
+index 0000000..9e29ee4
+--- /dev/null
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -0,0 +1,41 @@
++/*
++ * fireworks.h - a part of driver for Fireworks based devices
++ *
++ * Copyright (c) 2009-2010 Clemens Ladisch
++ * Copyright (c) 2013 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++#ifndef SOUND_FIREWORKS_H_INCLUDED
++#define SOUND_FIREWORKS_H_INCLUDED
++
++#include <linux/compat.h>
++#include <linux/device.h>
++#include <linux/firewire.h>
++#include <linux/firewire-constants.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/delay.h>
++#include <linux/slab.h>
++
++#include <sound/core.h>
++#include <sound/initval.h>
++
++struct snd_efw {
++	struct snd_card *card;
++	struct fw_unit *unit;
++	int card_index;
++
++	struct mutex mutex;
++	spinlock_t lock;
++};
++
++#define SND_EFW_DEV_ENTRY(vendor, model) \
++{ \
++	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
++			  IEEE1394_MATCH_MODEL_ID, \
++	.vendor_id	= vendor,\
++	.model_id	= model \
++}
++
++#endif
 -- 
 1.8.3.2
