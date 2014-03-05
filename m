@@ -1,91 +1,104 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 1/4] ASoC: tlv320aic31xx: Add basic codec driver
- implementation
-Date: Wed, 5 Mar 2014 09:55:01 +0800
-Message-ID: <20140305015501.GS13126@sirena.org.uk>
-References: <cover.1393941102.git.jsarha@ti.com>
- <ba9718f573ca9195c80075a15fe114e0d4557da0.1393941102.git.jsarha@ti.com>
+From: RongJun Ying <rjying@gmail.com>
+Subject: [PATCH v5 0/7] ASoC: add CSR SiRFSoC sound drivers
+Date: Wed,  5 Mar 2014 10:36:20 +0800
+Message-ID: <1393986987-20505-1-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Cbvl/UgeRTPlujdB"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <ba9718f573ca9195c80075a15fe114e0d4557da0.1393941102.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pb0-f54.google.com (mail-pb0-f54.google.com
+ [209.85.160.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id D459F26583C
+ for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2014 03:37:00 +0100 (CET)
+Received: by mail-pb0-f54.google.com with SMTP id ma3so409658pbc.41
+ for <alsa-devel@alsa-project.org>; Tue, 04 Mar 2014 18:36:59 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, rjying@gmail.com
+Cc: Takashi Iwai <tiwai@suse.de>, Rongjun Ying <rongjun.ying@csr.com>, alsa-devel@alsa-project.org, workgroup.linux@csr.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Rongjun Ying <rongjun.ying@csr.com>
 
---Cbvl/UgeRTPlujdB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patchset adds CSR SiRFSoC sound drivers including:
+1. The SiRF internal audio codec driver
+2. The SiRF audio port driver
+3. The SiRF internal audio card driver
+4. The SiRF I2S controller driver
+5. The SiRF hdmi card driver
+6. The SiRF USP controller(DSP mode) driver
+7. The SiRF bt-sco card driver
 
-On Tue, Mar 04, 2014 at 03:54:49PM +0200, Jyri Sarha wrote:
+-v5:
+1. Drop all inlines.
+2. Reordering the Kconfig and Makefile
+3. Remove the sirf_audio_codec_reg_bits struct, use the new controls instead it.
+4. Add some SND_SOC_DAPM_OUT_DRV instead of HP and SPK enable driver
+5. Add audio codec clock supply instead of adc event callback
+6. Fixed playback and capture can't concurrent work bug.
 
-> +- ai31xx-micbias-vg - MicBias Voltage required.
-> +        MICBIAS_OFF - MICBIAS output it not powered
+Rongjun Ying (7):
+  ASoC: sirf: Add SiRF internal audio codec driver
+  ASoC: sirf: Add SiRF audio port driver is used by SiRF internal audio
+    codec
+  ASoC: sirf: Add SiRF audio card
+  ASoC: sirf: Add SiRF I2S driver
+  ASoC: sirf: Add hdmi card
+  ASoC: sirf: Add usp driver which is used by dsp mode
+  ASoC: sirf: Add bt-sco card
 
-Same comment as last time - why is this something which can be selected
-in the binding?
+ .../devicetree/bindings/sound/sirf-audio-codec.txt |   17 +
+ .../devicetree/bindings/sound/sirf-audio-port.txt  |   20 +
+ .../devicetree/bindings/sound/sirf-audio.txt       |   41 ++
+ .../devicetree/bindings/sound/sirf-bt-sco.txt      |   18 +
+ .../devicetree/bindings/sound/sirf-hdmi.txt        |   15 +
+ .../devicetree/bindings/sound/sirf-i2s.txt         |   27 +
+ .../devicetree/bindings/sound/sirf-usp.txt         |   27 +
+ sound/soc/Kconfig                                  |    1 +
+ sound/soc/Makefile                                 |    1 +
+ sound/soc/codecs/Kconfig                           |    6 +-
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/sirf-audio-codec.c                |  534 ++++++++++++++++++++
+ sound/soc/codecs/sirf-audio-codec.h                |   75 +++
+ sound/soc/sirf/Kconfig                             |   34 ++
+ sound/soc/sirf/Makefile                            |   13 +
+ sound/soc/sirf/sirf-audio-port.c                   |  194 +++++++
+ sound/soc/sirf/sirf-audio-port.h                   |   62 +++
+ sound/soc/sirf/sirf-audio.c                        |  156 ++++++
+ sound/soc/sirf/sirf-bt-sco.c                       |   99 ++++
+ sound/soc/sirf/sirf-hdmi.c                         |   98 ++++
+ sound/soc/sirf/sirf-i2s.c                          |  434 ++++++++++++++++
+ sound/soc/sirf/sirf-i2s.h                          |   88 ++++
+ sound/soc/sirf/sirf-usp.c                          |  448 ++++++++++++++++
+ sound/soc/sirf/sirf-usp.h                          |  282 +++++++++++
+ 24 files changed, 2691 insertions(+), 1 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio-codec.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio-port.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-bt-sco.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-hdmi.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-i2s.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-usp.txt
+ create mode 100644 sound/soc/codecs/sirf-audio-codec.c
+ create mode 100644 sound/soc/codecs/sirf-audio-codec.h
+ create mode 100644 sound/soc/sirf/Kconfig
+ create mode 100644 sound/soc/sirf/Makefile
+ create mode 100644 sound/soc/sirf/sirf-audio-port.c
+ create mode 100644 sound/soc/sirf/sirf-audio-port.h
+ create mode 100644 sound/soc/sirf/sirf-audio.c
+ create mode 100644 sound/soc/sirf/sirf-bt-sco.c
+ create mode 100644 sound/soc/sirf/sirf-hdmi.c
+ create mode 100644 sound/soc/sirf/sirf-i2s.c
+ create mode 100644 sound/soc/sirf/sirf-i2s.h
+ create mode 100644 sound/soc/sirf/sirf-usp.c
+ create mode 100644 sound/soc/sirf/sirf-usp.h
 
-> +        MICBIAS_2_0V - MICBIAS output is powered to 2.0V
-> +        MICBIAS_2_5V - MICBIAS output is powered to 2.5V
-> +        MICBIAS_AVDD - MICBIAS output is connected to AVDD
-
-The numbers still need to be defined in the binding, the point with the
-defines is to make both code and DTs more readable but we need to know
-what is actually going to go into the binary.
-
-> +	/* Mic Bias */
-> +	SND_SOC_DAPM_SUPPLY("Mic Bias", SND_SOC_NOPM, 0, 0, mic_bias_event,
-> +			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-
-The idiomatic thing would be to use the pin name.
-
-> +	/* Make ADC turn on when recording even if not mixed from any inputs */
-> +	{"ADC", NULL, "Internal ADC Source"},
-
-Don't do this (or the equivalent from the DACs) - we don't do this for
-any other drivers, we shouldn't do it for this one.  If we're going to
-do something like this it should be generic not per driver hacks.
-
-> +	case SND_SOC_BIAS_STANDBY:
-> +		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
-> +			aic31xx_set_power(codec, 1);
-> +		break;
-> +	case SND_SOC_BIAS_OFF:
-> +		aic31xx_set_power(codec, 0);
-> +		break;
-
-Just inline the set power function, or at the very least split it into
-separate on and off functions - there is zero shared code between the
-power on and off paths.
-
---Cbvl/UgeRTPlujdB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTFoPyAAoJELSic+t+oim9/lsQAJJxdUHcqmEjN1zX7CeZXTTP
-KzTU7cvi1+WToD/WDpDn5mYUHomJBPv+bxsPoU/PLLPanffkO5McVv+TH7oo075g
-s2JDKKGWhvngttz8nE7a64dHw5zf84uFTuBZVXsd/WguuNsHvWTPp5MDr7mJtR32
-i6ZQfq+BglhoMX/6LHPd3RMiXnzryvVVGpBNX3Rii7lOafawvCVwfttVjZzBaf5r
-IRY99V5P4G5p5jwtvIaSrOTwk1aqgV35PnZtgKU8iMxcOfipfI/MrlpboZCXnL63
-x3EXyYHWJq0ThlJ5ZFRpjYuvEhs+HCd0bw+bJ2Yl+9V4ZcY+jUDtLKJLvA+yNQrE
-AOIQjJby5NhKLulk+UwcJ/qWUja8hAC15v5lDF4mqfZhqk1XRjMBRpFo8uTk0FwV
-eiyLllUNo7eTxRhybtlVhSZFYfkOqeT4qOgS+gTIc6p8Iss0Da6hkmQu1rh4zB9t
-5NVRe6/FDNhaYkDtLhbhwn+HxxvPcNe76WBzFltF+BRmLCFo9XNvc8e4N0Q0KsK2
-iwJ+168f3XZuX1xckSzH+tXwbl+SXatrGeIk/AxM2n68fEJHOeo/xsO59YjpngO1
-FOx4ILoyHkXN9duZqPukqR3MF1lerY8znxVJyIFMhfAFs4y61mC6K7DFAH7IZXVq
-UgEGm7Ou0MBKZsOpVggr
-=6MKt
------END PGP SIGNATURE-----
-
---Cbvl/UgeRTPlujdB--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+1.7.5.4
