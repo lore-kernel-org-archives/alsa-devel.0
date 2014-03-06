@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs4271: Fix build error without
-	CONFIG_SPI_MASTER
-Date: Thu, 6 Mar 2014 12:31:58 +0800
-Message-ID: <20140306043158.GB13126@sirena.org.uk>
-References: <1394038411-11045-1-git-send-email-tiwai@suse.de>
+Subject: Re: [PATCH] ASoC: wm_adsp: Split firmware load into
+	smaller chunks
+Date: Thu, 6 Mar 2014 12:35:21 +0800
+Message-ID: <20140306043521.GC13126@sirena.org.uk>
+References: <1394029696-25975-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9139092653816555351=="
+Content-Type: multipart/mixed; boundary="===============5466306513997124470=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9BDC8265232
- for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2014 05:32:04 +0100 (CET)
-In-Reply-To: <1394038411-11045-1-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C484265232
+ for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2014 05:35:31 +0100 (CET)
+In-Reply-To: <1394029696-25975-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9139092653816555351==
+--===============5466306513997124470==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BASZjVINLS+tv9G4"
+	protocol="application/pgp-signature"; boundary="yFtQr8VNODwu6Dbr"
 Content-Disposition: inline
 
 
---BASZjVINLS+tv9G4
-Content-Type: text/plain; charset=utf-8
+--yFtQr8VNODwu6Dbr
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 05, 2014 at 05:53:31PM +0100, Takashi Iwai wrote:
-> cs4271_common_probe() is called from cs4271_i2c_probe() but defined in
-> CONFIG_SPI_MASTER block, thus it results in a build error when
-> CONFIG_SPI_MASTER=3Dn:
->   sound/soc/codecs/cs4271.c:721:2: error: implicit declaration of functio=
-n =E2=80=98cs4271_common_probe=E2=80=99 [-Werror=3Dimplicit-function-declar=
-ation]
+On Wed, Mar 05, 2014 at 02:28:16PM +0000, Charles Keepax wrote:
+> The firmware files can be quite large and allocating the whole firmware
+> a single DMA safe buffer can be problematic if the system is under a
+> high memory load. Ease the requirements slightly by writing the firmware
+> out in page sized chunks.
 
 Applied, thanks.
 
---BASZjVINLS+tv9G4
+--yFtQr8VNODwu6Dbr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTF/o7AAoJELSic+t+oim9PIIP/RTGQc48w+/Ty8ZAyGM4zS/h
-qL0Nhc9RjanHVF3w1DpclBrgzN8SYx2yPFlw8uyGPr+Ejzvz+QRrqtFoh34eWchW
-XBYbLAloQWRMHdtBkYU+YEv/08ZYH3iQ2a5QrO6ZnzAC5De+J8NbMaj3lSOlQ/Ah
-HwsWhR1fJpmZQCOtAjqZNd7HRjd0pA0fggen55jYPFlL9xtwpxBGivGyPotezexi
-mqZK3btukSKkaJxJbVL1kHCskFic26k21QwgyuPte4RfZyJ8g5oZ3pk/Y9sHPqzY
-5OeTTcUR0uZlyx8WBMQACZrGnJWMIPoYibV/kgPdq+l/Whr7Ja9Xu19nAgD2oZD/
-WQfRHz9hhuz0JU5E5aWSnSsZ7o/WAZjecombRKRYOG1GdsKi8xyrpk4B+wNZxUWQ
-YC5ZqM6A8ramlODBxcI/s923hh5Oq/JXma77iHQNQyMCbzi/VsSXQHZVgK658Vxa
-TZuBCd8mD7o9CWzzr1B1TiAm/ZJx/kSkCgKCCUgJO9cfO9w3ah/3RAI+blT/O71g
-j5vowdUABV4eS1R1PuF8ya4EXN5dxWPN9M2WBPRYTR8ZeP7H1fDWRlDXZ03Id2AC
-tuQaR88EzaB+UnYWcpNM/5u502IHn4hUAgFY8caNEGNZJSMQBSxF2rCjYvkgnhDe
-ZsRxHQM+3fIKme+iZGBr
-=QoS2
+iQIcBAEBAgAGBQJTF/sGAAoJELSic+t+oim9qOcP/0AvOIRAO7uAwLZKJnWja3lk
+ppCH9nx/Zqjw5og10KB3HW1DkjtbsRkNqVEmiNi/sW0rEqzuO//BsJJRxwccPqGt
+yR4Yj+RlGkfrs77vJkC3AkNWp2Vi04y/h0l0GSBxjCr75fuSuxbrcqYlwWksXEmm
+UJPQcmp8Ysuo3IW2eOhvpyLZv+wOilZXUUaHcVhprDFyYfn6jkUD5GKzM3wMTkrM
+rGIX7NpeegmNmb1W5eDmtKvLBO8VbfI5YTTTsXKBYQ5jlzV6v1lY/t4gM8ckZv/t
+An86LnaUE/vAnpTh7DOaBDweAUdlpVKd0Fmft/SocvGt2wuhGJTkKxVtGI5VsiHH
+MZjOUWR8IhT/u8/XHHsyOfHoDsoBl5uSTWYePJXRBcreS2PSq3Lqo/K5vOgxzGsd
+K/K9JyO6ZPobhma6yf29Ykz9UN9mHgMuDmUnZMZHI6au6oMk08re2KsNd+de5dA5
+aDQM94ZCI2w2g4dKQF5ZkfEuF1INTuvENkL3CpTnHNOZeMXnLczRhejt/y41gDcD
+1FrGGeYTgx2P/mh2AZZw5qhnhUZwenINHKXnhyYI9DUxBZU3+BRU6zcIFPeDXEm7
+ipw5pjzf//6cf+Qd/cFn9s/AgnmGxYoq/YniMHeZ8lzmXDJoX3zxMVpTZRTDUMN7
+f4t1qER7HHz45n3d6jMB
+=TaPf
 -----END PGP SIGNATURE-----
 
---BASZjVINLS+tv9G4--
+--yFtQr8VNODwu6Dbr--
 
---===============9139092653816555351==
+--===============5466306513997124470==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9139092653816555351==--
+--===============5466306513997124470==--
