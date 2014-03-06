@@ -1,130 +1,52 @@
-From: Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH] ASoC: tlv320aic23: add support for SPI control mode
-Date: Thu,  6 Mar 2014 11:44:22 +0400
-Message-ID: <1394091862-13603-1-git-send-email-jcmvbkbc@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: tlv320aic23: add support for SPI control mode
+Date: Thu, 6 Mar 2014 16:07:20 +0800
+Message-ID: <20140306080720.GI13126@sirena.org.uk>
+References: <1394091862-13603-1-git-send-email-jcmvbkbc@gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="IcjzwMCQyeqbz4V/"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1394091862-13603-1-git-send-email-jcmvbkbc@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Max Filippov <jcmvbkbc@gmail.com>
+To: Max Filippov <jcmvbkbc@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-tlv320aic23 chip control interface may work in either I2C or SPI mode
-depending on the MODE pin state. Functionality and register layout are
-independent of the control mode.
 
-Provide i2c and spi driver entry points when CONFIG_I2C and
-CONFIG_SPI_MASTER are enabled respectively.
+--IcjzwMCQyeqbz4V/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
----
- sound/soc/codecs/Kconfig       |  2 +-
- sound/soc/codecs/tlv320aic23.c | 58 +++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 56 insertions(+), 4 deletions(-)
+On Thu, Mar 06, 2014 at 11:44:22AM +0400, Max Filippov wrote:
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 983d087a..6d82de5 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -71,7 +71,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_STA529 if I2C
- 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
- 	select SND_SOC_TAS5086 if I2C
--	select SND_SOC_TLV320AIC23 if I2C
-+	select SND_SOC_TLV320AIC23 if SND_SOC_I2C_AND_SPI
- 	select SND_SOC_TLV320AIC26 if SPI_MASTER
- 	select SND_SOC_TLV320AIC32X4 if I2C
- 	select SND_SOC_TLV320AIC3X if I2C
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index 5d430cc..2418260 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -26,6 +26,7 @@
- #include <linux/i2c.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
-+#include <linux/spi/spi.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -617,12 +618,13 @@ static struct snd_soc_codec_driver soc_codec_dev_tlv320aic23 = {
- 	.num_dapm_routes = ARRAY_SIZE(tlv320aic23_intercon),
- };
- 
-+#ifdef CONFIG_I2C
- /*
-  * If the i2c layer weren't so broken, we could pass this kind of data
-  * around
-  */
--static int tlv320aic23_codec_probe(struct i2c_client *i2c,
--				   const struct i2c_device_id *i2c_id)
-+static int tlv320aic23_i2c_probe(struct i2c_client *i2c,
-+				 const struct i2c_device_id *i2c_id)
- {
- 	struct aic23 *aic23;
- 	int ret;
-@@ -661,12 +663,62 @@ static struct i2c_driver tlv320aic23_i2c_driver = {
- 	.driver = {
- 		   .name = "tlv320aic23-codec",
- 		   },
--	.probe = tlv320aic23_codec_probe,
-+	.probe = tlv320aic23_i2c_probe,
- 	.remove = __exit_p(tlv320aic23_i2c_remove),
- 	.id_table = tlv320aic23_id,
- };
- 
- module_i2c_driver(tlv320aic23_i2c_driver);
-+#endif /* CONFIG_I2C */
-+
-+#ifdef CONFIG_SPI_MASTER
-+static int aic23_spi_probe(struct spi_device *spi)
-+{
-+	struct aic23 *aic23;
-+	int ret;
-+
-+	dev_dbg(&spi->dev, "probing tlv320aic23 spi device\n");
-+
-+	spi->bits_per_word = 16;
-+	spi->mode = SPI_MODE_0;
-+	ret = spi_setup(spi);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Allocate driver data */
-+	aic23 = devm_kzalloc(&spi->dev, sizeof(struct aic23), GFP_KERNEL);
-+	if (!aic23)
-+		return -ENOMEM;
-+
-+	aic23->regmap = devm_regmap_init_spi(spi, &tlv320aic23_regmap);
-+	if (IS_ERR(aic23->regmap))
-+		return PTR_ERR(aic23->regmap);
-+
-+	/* Initialize the driver data */
-+	dev_set_drvdata(&spi->dev, aic23);
-+
-+	ret = snd_soc_register_codec(&spi->dev,
-+			&soc_codec_dev_tlv320aic23, &tlv320aic23_dai, 1);
-+	return ret;
-+}
-+
-+static int aic23_spi_remove(struct spi_device *spi)
-+{
-+	snd_soc_unregister_codec(&spi->dev);
-+	return 0;
-+}
-+
-+static struct spi_driver aic23_spi = {
-+	.driver = {
-+		.name = "tlv320aic23",
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = aic23_spi_probe,
-+	.remove = aic23_spi_remove,
-+};
-+
-+module_spi_driver(aic23_spi);
-+#endif /* CONFIG_SPI_MASTER */
- 
- MODULE_DESCRIPTION("ASoC TLV320AIC23 codec driver");
- MODULE_AUTHOR("Arun KS <arunks@mistralsolutions.com>");
--- 
-1.8.1.4
+> -	select SND_SOC_TLV320AIC23 if I2C
+> +	select SND_SOC_TLV320AIC23 if SND_SOC_I2C_AND_SPI
+
+We're moving towards having drivers have separate bus drivers rather
+than in one file - take a look at how drivers like ad193x handle this.
+
+--IcjzwMCQyeqbz4V/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTGCywAAoJELSic+t+oim9+BAP/3WU574i1RxBs+3Wb8xnE1Qu
+acHRW2c7klNJu/QbnmDFqQAfcWlADt70XID32Udy5srnhaPt0nepGMOd3u+iKSrC
+lsiMQ8pJPLGNMv+K+PL+HCFUfAu39i8euf22URqhzuzWMPBpmg5ThbSXNdaZHhaM
+4Sfz79208ff3kreHW+DhunRd9RczrDw7frXcRMhfeK5rxYHdBb+EdQ9gy/kc/p8N
+G3VhgU8axM1T74U2mcqh7HC03jaKhpmQ0Vw2IHCo5dS5yIx6A49+FSP0cc1F2fwW
+zwsxBenXY7fE4KRzv5ARqoLVvR+RcpPmnZ5zE56bGjYxCesQwlFYfPdc/suhtDtD
+C3gh8eW4HbCLQ7KV/eH6jYoGpPGjlCrAXjS0E6yyNzdMlGv/HFhssjLtrHq5Qwwp
+HMU60w2T2s6An15zjBo05QvV51e8pEyWQyJn86RHiUqqz1Ztatn+jXO2FqnPt7LY
+7FNMw1Rlz4JZI07hFA2VrNt/sehyZ2cPDxDWBbeQPQ4BraHnkz+B4hqP/QCJk4Iq
+MJw7zjijis2xdAuT+JMyOMXapEP5dqOgvrUvipmwAKSb2CWyI23GjbSWhMVC/5+4
+xXimH8LtU4ShkxsTRITengTdzUHzhK1OJJhv7ty9NkCoQMU3fK29QdeyRALPLc+4
+HqG/oCp9cXOZPzi2c/VB
+=XWzH
+-----END PGP SIGNATURE-----
+
+--IcjzwMCQyeqbz4V/--
