@@ -1,15 +1,17 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: Check Haswell IPC
-	process_reply/notification return value.
-Date: Thu,  6 Mar 2014 14:56:04 +0000
-Message-ID: <1394117766-7242-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: Use .dai_fmt for setting Haswell
+	BE format.
+Date: Thu,  6 Mar 2014 14:56:05 +0000
+Message-ID: <1394117766-7242-2-git-send-email-liam.r.girdwood@linux.intel.com>
+References: <1394117766-7242-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id AB4E4265388
- for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2014 15:56:37 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AA77C26533D
+ for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2014 15:56:38 +0100 (CET)
+In-Reply-To: <1394117766-7242-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +25,41 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Check the return value for error when processing replies and notifications.
+Update the Haswell driver to use .dai_fmt in DAI link to set the
+format.
 
-The patch 22981243589c: "ASoC: Intel: Add Haswell/Broadwell IPC" from
-> Feb 20, 2014, leads to the following imaginary static checker warning:
->
-> 	sound/soc/intel/sst-haswell-ipc.c:898 hsw_irq_thread()
-> 	warn: this is always true.
->
-> sound/soc/intel/sst-haswell-ipc.c
->    895                  /* Handle Immediate reply from DSP Core */
->    896                  handled = hsw_process_reply(hsw, ipcx);
->                                   ^^^^^^^^^^^^^^^^^
-> Returns 1 on success/error and -EIO on error.
->
->    897
->    898                  if (handled) {
->    899                          /* clear DONE bit - tell DSP we have completed */
->    900                          sst_dsp_shim_update_bits_unlocked(sst, SST_IPCX,
->    901                                  SST_IPCX_DONE, 0);
->    902
->    903                          /* unmask Done interrupt */
->    904                          sst_dsp_shim_update_bits_unlocked(sst, SST_IMRX,
->    905                                  SST_IMRX_DONE, 0);
->    906                  }
->
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/sst-haswell-ipc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/haswell.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 1f1576a..f46bb4d 100644
---- a/sound/soc/intel/sst-haswell-ipc.c
-+++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -895,7 +895,7 @@ static irqreturn_t hsw_irq_thread(int irq, void *context)
- 		/* Handle Immediate reply from DSP Core */
- 		handled = hsw_process_reply(hsw, ipcx);
+diff --git a/sound/soc/intel/haswell.c b/sound/soc/intel/haswell.c
+index 0d61197..54345a2 100644
+--- a/sound/soc/intel/haswell.c
++++ b/sound/soc/intel/haswell.c
+@@ -69,14 +69,6 @@ static int haswell_rt5640_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	int ret;
  
--		if (handled) {
-+		if (handled > 0) {
- 			/* clear DONE bit - tell DSP we have completed */
- 			sst_dsp_shim_update_bits_unlocked(sst, SST_IPCX,
- 				SST_IPCX_DONE, 0);
-@@ -913,7 +913,7 @@ static irqreturn_t hsw_irq_thread(int irq, void *context)
- 		handled = hsw_process_notification(hsw);
+-	/* Set codec DAI configuration */
+-	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+-			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "can't set codec DAI configuration\n");
+-		return ret;
+-	}
+-
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_MCLK, 12288000,
+ 		SND_SOC_CLOCK_IN);
  
- 		/* clear BUSY bit and set DONE bit - accept new messages */
--		if (handled) {
-+		if (handled > 0) {
- 			sst_dsp_shim_update_bits_unlocked(sst, SST_IPCD,
- 				SST_IPCD_BUSY | SST_IPCD_DONE, SST_IPCD_DONE);
- 
+@@ -188,6 +180,8 @@ static struct snd_soc_dai_link haswell_rt5640_dais[] = {
+ 		.no_pcm = 1,
+ 		.codec_name = "i2c-INT33CA:00",
+ 		.codec_dai_name = "rt5640-aif1",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
+ 		.ignore_suspend = 1,
+ 		.ignore_pmdown_time = 1,
+ 		.be_hw_params_fixup = haswell_ssp0_fixup,
 -- 
 1.8.3.2
