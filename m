@@ -1,71 +1,34 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: dapm: Staticise dapm_mark_dirty()
-Date: Thu,  6 Mar 2014 16:19:39 +0800
-Message-ID: <1394093979-25623-1-git-send-email-broonie@kernel.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: tlv320aic23: add support for SPI control
+ mode
+Date: Thu, 06 Mar 2014 09:33:57 +0100
+Message-ID: <531832F5.4030000@metafoo.de>
+References: <1394091862-13603-1-git-send-email-jcmvbkbc@gmail.com> <20140306080720.GI13126@sirena.org.uk> <CAMo8BfJit6Bgafi7Fwgwmtn36QZH6XsHucdPdeffjgJn0byDpw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 731122658BA
- for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2014 09:32:32 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAMo8BfJit6Bgafi7Fwgwmtn36QZH6XsHucdPdeffjgJn0byDpw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On 03/06/2014 09:26 AM, Max Filippov wrote:
+> Hi Mark,
+>
+> On Thu, Mar 6, 2014 at 12:07 PM, Mark Brown <broonie@kernel.org> wrote:
+>> On Thu, Mar 06, 2014 at 11:44:22AM +0400, Max Filippov wrote:
+>>
+>>> -     select SND_SOC_TLV320AIC23 if I2C
+>>> +     select SND_SOC_TLV320AIC23 if SND_SOC_I2C_AND_SPI
+>>
+>> We're moving towards having drivers have separate bus drivers rather
+>> than in one file - take a look at how drivers like ad193x handle this.
+>
+> Thanks for the pointer, but... ad193x has spi and i2c in single source
+> in both linus and alsa-kernel trees. Confused.
+>
 
-The function is not called outside soc-dapm.c so there is no need for it
-to be exported.
-
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- include/sound/soc-dapm.h | 1 -
- sound/soc/soc-dapm.c     | 3 +--
- 2 files changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 04d32d8..ef78f56 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -449,7 +449,6 @@ int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
- void snd_soc_dapm_auto_nc_codec_pins(struct snd_soc_codec *codec);
- 
- /* Mostly internal - should not normally be used */
--void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason);
- void dapm_mark_io_dirty(struct snd_soc_dapm_context *dapm);
- 
- /* dapm path query */
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 0d8ba30..3728e21 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -142,7 +142,7 @@ static bool dapm_dirty_widget(struct snd_soc_dapm_widget *w)
- 	return !list_empty(&w->dirty);
- }
- 
--void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason)
-+static void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason)
- {
- 	if (!dapm_dirty_widget(w)) {
- 		dev_vdbg(w->dapm->dev, "Marking %s dirty due to %s\n",
-@@ -150,7 +150,6 @@ void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason)
- 		list_add_tail(&w->dirty, &w->dapm->card->dapm_dirty);
- 	}
- }
--EXPORT_SYMBOL_GPL(dapm_mark_dirty);
- 
- void dapm_mark_io_dirty(struct snd_soc_dapm_context *dapm)
- {
--- 
-1.9.0
+It's in the ASoC tree: 
+http://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/sound/soc/codecs/?h=for-next&id=6c3d713e6d32706999689e379a9098afb4cd8a2c
