@@ -1,17 +1,19 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: Clean up indentation for Haswell
-	machine driver/Kconfig
-Date: Thu,  6 Mar 2014 14:56:06 +0000
-Message-ID: <1394117766-7242-3-git-send-email-liam.r.girdwood@linux.intel.com>
-References: <1394117766-7242-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Olivier Langlois <olivier@trillion01.com>
+Subject: Controlling the cards order
+Date: Thu, 06 Mar 2014 12:42:14 -0500
+Message-ID: <1394127734.15237.20.camel@Wailaba2>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 8AADF265442
- for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2014 15:56:44 +0100 (CET)
-In-Reply-To: <1394117766-7242-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from oproxy18-pub.mail.unifiedlayer.com
+ (oproxy18-pub.mail.unifiedlayer.com [69.89.17.20])
+ by alsa0.perex.cz (Postfix) with SMTP id 40D67265467
+ for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2014 18:42:23 +0100 (CET)
+Received: from [173.179.63.169] (port=37059 helo=[192.168.1.150])
+ by box610.bluehost.com with esmtpsa (SSLv3:RC4-SHA:128) (Exim 4.80)
+ (envelope-from <olivier@trillion01.com>) id 1WLcJE-00049Q-VF
+ for alsa-devel@alsa-project.org; Thu, 06 Mar 2014 10:42:17 -0700
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clean up some indentation.
+Hi,
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
- sound/soc/intel/Kconfig           | 10 +++++-----
- sound/soc/intel/sst-haswell-dsp.c |  2 +-
- 2 files changed, 6 insertions(+), 6 deletions(-)
+I have added a second sound device in my system and it unexpectedly took
+the first card slot.
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 274af16..4577b69 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -31,15 +31,15 @@ config SND_SOC_INTEL_BAYTRAIL
- 	tristate
- 
- config SND_SOC_INTEL_HASWELL_MACH
--        tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
--        depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS
-+	tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
-+	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS
- 	select SND_SOC_INTEL_HASWELL
- 	select SND_SOC_RT5640
- 	help
--          This adds support for the Lynxpoint Audio DSP on Intel(R) Haswell
-+	  This adds support for the Lynxpoint Audio DSP on Intel(R) Haswell
- 	  Ultrabook platforms.
--          Say Y if you have such a device
--          If unsure select "N".
-+	  Say Y if you have such a device
-+	  If unsure select "N".
- 
- config SND_SOC_INTEL_BYT_RT5640_MACH
- 	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
-diff --git a/sound/soc/intel/sst-haswell-dsp.c b/sound/soc/intel/sst-haswell-dsp.c
-index 12f7317..f5ebf36 100644
---- a/sound/soc/intel/sst-haswell-dsp.c
-+++ b/sound/soc/intel/sst-haswell-dsp.c
-@@ -503,7 +503,7 @@ static void hsw_free(struct sst_dsp *sst)
- 
- struct sst_ops haswell_ops = {
- 	.reset = hsw_reset,
--        .boot = hsw_boot,
-+	.boot = hsw_boot,
- 	.write = sst_shim32_write,
- 	.read = sst_shim32_read,
- 	.write64 = sst_shim32_write64,
--- 
-1.8.3.2
+I have found that it is easy to control the order as long as the devices
+use different drivers by modifying
+
+/etc/modprobe.d/alsa.conf
+
+( http://alsa.opensrc.org/MultipleCards )
+
+but in my situation I have 2 different devices using the same driver. I
+think that there is hope that I find an answer by digging the more
+general topic of ordering PCI devices drivers loading but if someone has
+few pointers to share, any help is welcome!
+
+Here are my 2 devices that I would like to change the order:
+
+lano1106@whippet2 /proc/asound $ cat cards
+ 0 [PCH            ]: HDA-Intel - HDA Intel PCH
+                      HDA Intel PCH at 0xfbf20000 irq 84
+ 1 [HDMI           ]: HDA-Intel - HDA ATI HDMI
+                      HDA ATI HDMI at 0xfbe60000 irq 88
+
+thank you for your time,
+Olivier
