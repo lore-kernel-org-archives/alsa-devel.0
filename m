@@ -1,72 +1,81 @@
-From: Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: ASoC: wm5110: Extend SYSCLK patch file for rev D
-Date: Thu, 06 Mar 2014 12:20:20 +0000
-Message-ID: <1394108420.2861.38.camel@deadeye.wl.decadent.org.uk>
-References: <1394070425.2861.35.camel@deadeye.wl.decadent.org.uk>
-	 <20140306093247.GI8570@opensource.wolfsonmicro.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: Check Haswell IPC
+	process_reply/notification return value.
+Date: Thu,  6 Mar 2014 14:56:04 +0000
+Message-ID: <1394117766-7242-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-LYc7PGXyLbuzIhMsFnCf"
-Return-path: <bounce-debian-kernel=glddk-debian-kernel=m.gmane.org@lists.debian.org>
-In-Reply-To: <20140306093247.GI8570@opensource.wolfsonmicro.com>
-Resent-Message-ID: <2gyQmYd1LME.A.ZcB.cgGGTB@bendel>
-List-URL: <http://lists.debian.org/debian-kernel/>
-List-Post: <mailto:debian-kernel@lists.debian.org>
-List-Help: <mailto:debian-kernel-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-kernel-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-kernel-request@lists.debian.org?subject=unsubscribe>
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Mark Brown <broonie@linaro.org>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Debian kernel maintainers <debian-kernel@lists.debian.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB4E4265388
+ for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2014 15:56:37 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Check the return value for error when processing replies and notifications.
 
---=-LYc7PGXyLbuzIhMsFnCf
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+The patch 22981243589c: "ASoC: Intel: Add Haswell/Broadwell IPC" from
+> Feb 20, 2014, leads to the following imaginary static checker warning:
+>
+> 	sound/soc/intel/sst-haswell-ipc.c:898 hsw_irq_thread()
+> 	warn: this is always true.
+>
+> sound/soc/intel/sst-haswell-ipc.c
+>    895                  /* Handle Immediate reply from DSP Core */
+>    896                  handled = hsw_process_reply(hsw, ipcx);
+>                                   ^^^^^^^^^^^^^^^^^
+> Returns 1 on success/error and -EIO on error.
+>
+>    897
+>    898                  if (handled) {
+>    899                          /* clear DONE bit - tell DSP we have completed */
+>    900                          sst_dsp_shim_update_bits_unlocked(sst, SST_IPCX,
+>    901                                  SST_IPCX_DONE, 0);
+>    902
+>    903                          /* unmask Done interrupt */
+>    904                          sst_dsp_shim_update_bits_unlocked(sst, SST_IMRX,
+>    905                                  SST_IMRX_DONE, 0);
+>    906                  }
+>
 
-On Thu, 2014-03-06 at 09:32 +0000, Charles Keepax wrote:
-> On Thu, Mar 06, 2014 at 01:47:05AM +0000, Ben Hutchings wrote:
-> > I'm looking at commit 34354792432b6e0a3b156819a1a19716c50d3473 and
-> > include/linux/mfd/arizona/registers.h, and wondering what exactly this
-> > the register patch is changing.
-> >=20
-> > It looks like there are some registers not named elsewhere (addresses
-> > 0x0049, 0x004a, 0x0057, 0x0058).  What about the higher addresses?  Are
-> > these more registers, or is this patching firmware in device memory?
->=20
-> These are all internal registers that we don't usually expose, in
-> the case of the Rev D some of these are not initialised to
-> optimum values by the hardware the patch provides better audio
-> performance and path transitions.
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ sound/soc/intel/sst-haswell-ipc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks.
-
-Ben.
-
---=20
-Ben Hutchings
-The world is coming to an end.	Please log off.
-
---=-LYc7PGXyLbuzIhMsFnCf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIVAwUAUxhoBOe/yOyVhhEJAQowDQ//YqMRwN8YlNZkJS5UEcGubR9Yy6nZxyji
-8Nx9k9VOOQahMBXSqmZZ6eV4fOeDnYNKyCPpTmm+IVkSNTn+kSmrd9jnY64jp3p0
-KhtUd8RBDzwnhr1pLdpMZvi960d7iFVx6d4PJoO3no2B6/M6B30ZDJKAmNRW6mvc
-CsfeI0B3YaoX5jhPmnlli0ihIVQNg/fK86YFkhCSmMhWl2FJDECZAEwzRg5wXbWG
-F0IkFv+M2BdqhkplUzCeSXLJi0nQOusxXV165DJubh0rd9iFgRZ9Ishul2lYACaS
-equhSqw/wWvhj2524G6AwFCfjodT/uJJKz9vD4UZSX1oLxyIs0miXPNa5JHHW2ns
-Jwr2elowtg3kep9wrNVhpMAz/pzHdMUti/bI+Lbbi5uG8Xo16wkEDT+iMHAcUJ9F
-7OqdtHl2sSZwwq4LV+1XUOx8q0Y9gPM+Ik8W2Em+kN4eXZti9qxoLIe1PSk/BjgW
-jUGtvD+7/Qr+Q94zOOFkM79wJ2fhsQ2R+7Thj00xst4ofNgAJr4HJLanfmltstXq
-P4jwhyT++O13xik8j5meITEw/Rv4w0ZV/PL6rphMC1I6vmnTowKA6UYK4xqS/xrA
-OlkSTimwagr6a6dF5OZbkhbdO3NNotBdf6XLPmiP2EJj3pogarY8otTB7jCrCAWJ
-VL8ZX6AIC6s=
-=21nG
------END PGP SIGNATURE-----
-
---=-LYc7PGXyLbuzIhMsFnCf--
+diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
+index 1f1576a..f46bb4d 100644
+--- a/sound/soc/intel/sst-haswell-ipc.c
++++ b/sound/soc/intel/sst-haswell-ipc.c
+@@ -895,7 +895,7 @@ static irqreturn_t hsw_irq_thread(int irq, void *context)
+ 		/* Handle Immediate reply from DSP Core */
+ 		handled = hsw_process_reply(hsw, ipcx);
+ 
+-		if (handled) {
++		if (handled > 0) {
+ 			/* clear DONE bit - tell DSP we have completed */
+ 			sst_dsp_shim_update_bits_unlocked(sst, SST_IPCX,
+ 				SST_IPCX_DONE, 0);
+@@ -913,7 +913,7 @@ static irqreturn_t hsw_irq_thread(int irq, void *context)
+ 		handled = hsw_process_notification(hsw);
+ 
+ 		/* clear BUSY bit and set DONE bit - accept new messages */
+-		if (handled) {
++		if (handled > 0) {
+ 			sst_dsp_shim_update_bits_unlocked(sst, SST_IPCD,
+ 				SST_IPCD_BUSY | SST_IPCD_DONE, SST_IPCD_DONE);
+ 
+-- 
+1.8.3.2
