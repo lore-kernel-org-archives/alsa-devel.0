@@ -1,20 +1,14 @@
-From: Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH v2 1/2] ASoC: tlv320aic23: add support for SPI
-	control mode
-Date: Thu,  6 Mar 2014 14:04:41 +0400
-Message-ID: <1394100282-27404-2-git-send-email-jcmvbkbc@gmail.com>
-References: <1394100282-27404-1-git-send-email-jcmvbkbc@gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm_adsp: Correct type specifier in printf
+Date: Thu,  6 Mar 2014 10:00:18 +0000
+Message-ID: <1394100018-20692-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f174.google.com (mail-lb0-f174.google.com
- [209.85.217.174])
- by alsa0.perex.cz (Postfix) with ESMTP id D7814265372
- for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2014 11:04:56 +0100 (CET)
-Received: by mail-lb0-f174.google.com with SMTP id u14so1577646lbd.33
- for <alsa-devel@alsa-project.org>; Thu, 06 Mar 2014 02:04:56 -0800 (PST)
-In-Reply-To: <1394100282-27404-1-git-send-email-jcmvbkbc@gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A50F92652FC
+ for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2014 11:08:39 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,332 +18,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>, Mark Brown <broonie@kernel.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-tlv320aic23 chip control interface may work in either I2C or SPI mode
-depending on the MODE pin state. Functionality and register layout are
-independent of the control mode.
-
-Implement bus-specific parts as separate modules.
-
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
-Changes v1->v2:
-- split i2c interface into separate file;
-- implement spi interface in a separate file.
+ sound/soc/codecs/wm_adsp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
- sound/soc/codecs/Kconfig           | 11 ++++++-
- sound/soc/codecs/Makefile          |  4 +++
- sound/soc/codecs/tlv320aic23-i2c.c | 59 ++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/tlv320aic23-spi.c | 57 ++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/tlv320aic23.c     | 55 +++++++----------------------------
- sound/soc/codecs/tlv320aic23.h     |  6 ++++
- 6 files changed, 147 insertions(+), 45 deletions(-)
- create mode 100644 sound/soc/codecs/tlv320aic23-i2c.c
- create mode 100644 sound/soc/codecs/tlv320aic23-spi.c
-
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 983d087a..5e4fc04 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -71,7 +71,8 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_STA529 if I2C
- 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
- 	select SND_SOC_TAS5086 if I2C
--	select SND_SOC_TLV320AIC23 if I2C
-+	select SND_SOC_TLV320AIC23_I2C if I2C
-+	select SND_SOC_TLV320AIC23_SPI if SPI_MASTER
- 	select SND_SOC_TLV320AIC26 if SPI_MASTER
- 	select SND_SOC_TLV320AIC32X4 if I2C
- 	select SND_SOC_TLV320AIC3X if I2C
-@@ -357,6 +358,14 @@ config SND_SOC_TAS5086
- config SND_SOC_TLV320AIC23
- 	tristate
- 
-+config SND_SOC_TLV320AIC23_I2C
-+	tristate
-+	select SND_SOC_TLV320AIC23
-+
-+config SND_SOC_TLV320AIC23_SPI
-+	tristate
-+	select SND_SOC_TLV320AIC23
-+
- config SND_SOC_TLV320AIC26
- 	tristate
- 	depends on SPI
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index bc12676..ed1fd89 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -63,6 +63,8 @@ snd-soc-sta529-objs := sta529.o
- snd-soc-stac9766-objs := stac9766.o
- snd-soc-tas5086-objs := tas5086.o
- snd-soc-tlv320aic23-objs := tlv320aic23.o
-+snd-soc-tlv320aic23-i2c-objs := tlv320aic23-i2c.o
-+snd-soc-tlv320aic23-spi-objs := tlv320aic23-spi.o
- snd-soc-tlv320aic26-objs := tlv320aic26.o
- snd-soc-tlv320aic3x-objs := tlv320aic3x.o
- snd-soc-tlv320aic32x4-objs := tlv320aic32x4.o
-@@ -193,6 +195,8 @@ obj-$(CONFIG_SND_SOC_STA529)   += snd-soc-sta529.o
- obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
- obj-$(CONFIG_SND_SOC_TAS5086)	+= snd-soc-tas5086.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
-+obj-$(CONFIG_SND_SOC_TLV320AIC23_I2C)	+= snd-soc-tlv320aic23-i2c.o
-+obj-$(CONFIG_SND_SOC_TLV320AIC23_SPI)	+= snd-soc-tlv320aic23-spi.o
- obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
- obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
- obj-$(CONFIG_SND_SOC_TLV320AIC32X4)     += snd-soc-tlv320aic32x4.o
-diff --git a/sound/soc/codecs/tlv320aic23-i2c.c b/sound/soc/codecs/tlv320aic23-i2c.c
-new file mode 100644
-index 0000000..20fc460
---- /dev/null
-+++ b/sound/soc/codecs/tlv320aic23-i2c.c
-@@ -0,0 +1,59 @@
-+/*
-+ * ALSA SoC TLV320AIC23 codec driver I2C interface
-+ *
-+ * Author:      Arun KS, <arunks@mistralsolutions.com>
-+ * Copyright:   (C) 2008 Mistral Solutions Pvt Ltd.,
-+ *
-+ * Based on sound/soc/codecs/wm8731.c by Richard Purdie
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <sound/soc.h>
-+
-+#include "tlv320aic23.h"
-+
-+static int tlv320aic23_i2c_probe(struct i2c_client *i2c,
-+				 const struct i2c_device_id *i2c_id)
-+{
-+	struct regmap *regmap;
-+
-+	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
-+		return -EINVAL;
-+
-+	regmap = devm_regmap_init_i2c(i2c, &tlv320aic23_regmap);
-+	return tlv320aic23_probe(&i2c->dev, regmap);
-+}
-+
-+static int __exit tlv320aic23_i2c_remove(struct i2c_client *i2c)
-+{
-+	snd_soc_unregister_codec(&i2c->dev);
-+	return 0;
-+}
-+
-+static const struct i2c_device_id tlv320aic23_id[] = {
-+	{"tlv320aic23", 0},
-+	{}
-+};
-+
-+MODULE_DEVICE_TABLE(i2c, tlv320aic23_id);
-+
-+static struct i2c_driver tlv320aic23_i2c_driver = {
-+	.driver = {
-+		   .name = "tlv320aic23-codec",
-+		   },
-+	.probe = tlv320aic23_i2c_probe,
-+	.remove = __exit_p(tlv320aic23_i2c_remove),
-+	.id_table = tlv320aic23_id,
-+};
-+
-+module_i2c_driver(tlv320aic23_i2c_driver);
-+
-+MODULE_DESCRIPTION("ASoC TLV320AIC23 codec driver I2C");
-+MODULE_AUTHOR("Arun KS <arunks@mistralsolutions.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/tlv320aic23-spi.c b/sound/soc/codecs/tlv320aic23-spi.c
-new file mode 100644
-index 0000000..585aea4
---- /dev/null
-+++ b/sound/soc/codecs/tlv320aic23-spi.c
-@@ -0,0 +1,57 @@
-+/*
-+ * ALSA SoC TLV320AIC23 codec driver SPI interface
-+ *
-+ * Author:      Arun KS, <arunks@mistralsolutions.com>
-+ * Copyright:   (C) 2008 Mistral Solutions Pvt Ltd.,
-+ *
-+ * Based on sound/soc/codecs/wm8731.c by Richard Purdie
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/spi/spi.h>
-+#include <sound/soc.h>
-+
-+#include "tlv320aic23.h"
-+
-+static int aic23_spi_probe(struct spi_device *spi)
-+{
-+	int ret;
-+	struct regmap *regmap;
-+
-+	dev_dbg(&spi->dev, "probing tlv320aic23 spi device\n");
-+
-+	spi->bits_per_word = 16;
-+	spi->mode = SPI_MODE_0;
-+	ret = spi_setup(spi);
-+	if (ret < 0)
-+		return ret;
-+
-+	regmap = devm_regmap_init_spi(spi, &tlv320aic23_regmap);
-+	return tlv320aic23_probe(&spi->dev, regmap);
-+}
-+
-+static int aic23_spi_remove(struct spi_device *spi)
-+{
-+	snd_soc_unregister_codec(&spi->dev);
-+	return 0;
-+}
-+
-+static struct spi_driver aic23_spi = {
-+	.driver = {
-+		.name = "tlv320aic23",
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = aic23_spi_probe,
-+	.remove = aic23_spi_remove,
-+};
-+
-+module_spi_driver(aic23_spi);
-+
-+MODULE_DESCRIPTION("ASoC TLV320AIC23 codec driver SPI");
-+MODULE_AUTHOR("Arun KS <arunks@mistralsolutions.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index 5d430cc..455250f 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -23,7 +23,6 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
--#include <linux/i2c.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
- #include <sound/core.h>
-@@ -51,7 +50,7 @@ static const struct reg_default tlv320aic23_reg[] = {
- 	{  9, 0x0000 },
- };
- 
--static const struct regmap_config tlv320aic23_regmap = {
-+const struct regmap_config tlv320aic23_regmap = {
- 	.reg_bits = 7,
- 	.val_bits = 9,
- 
-@@ -557,7 +556,7 @@ static int tlv320aic23_resume(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--static int tlv320aic23_probe(struct snd_soc_codec *codec)
-+static int tlv320aic23_codec_probe(struct snd_soc_codec *codec)
- {
- 	int ret;
- 
-@@ -604,7 +603,7 @@ static int tlv320aic23_remove(struct snd_soc_codec *codec)
- }
- 
- static struct snd_soc_codec_driver soc_codec_dev_tlv320aic23 = {
--	.probe = tlv320aic23_probe,
-+	.probe = tlv320aic23_codec_probe,
- 	.remove = tlv320aic23_remove,
- 	.suspend = tlv320aic23_suspend,
- 	.resume = tlv320aic23_resume,
-@@ -617,57 +616,25 @@ static struct snd_soc_codec_driver soc_codec_dev_tlv320aic23 = {
- 	.num_dapm_routes = ARRAY_SIZE(tlv320aic23_intercon),
- };
- 
--/*
-- * If the i2c layer weren't so broken, we could pass this kind of data
-- * around
-- */
--static int tlv320aic23_codec_probe(struct i2c_client *i2c,
--				   const struct i2c_device_id *i2c_id)
-+int tlv320aic23_probe(struct device *dev, struct regmap *regmap)
- {
- 	struct aic23 *aic23;
--	int ret;
- 
--	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
--		return -EINVAL;
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
- 
--	aic23 = devm_kzalloc(&i2c->dev, sizeof(struct aic23), GFP_KERNEL);
-+	aic23 = devm_kzalloc(dev, sizeof(struct aic23), GFP_KERNEL);
- 	if (aic23 == NULL)
- 		return -ENOMEM;
- 
--	aic23->regmap = devm_regmap_init_i2c(i2c, &tlv320aic23_regmap);
--	if (IS_ERR(aic23->regmap))
--		return PTR_ERR(aic23->regmap);
-+	aic23->regmap = regmap;
- 
--	i2c_set_clientdata(i2c, aic23);
-+	dev_set_drvdata(dev, aic23);
- 
--	ret =  snd_soc_register_codec(&i2c->dev,
--			&soc_codec_dev_tlv320aic23, &tlv320aic23_dai, 1);
--	return ret;
--}
--static int __exit tlv320aic23_i2c_remove(struct i2c_client *i2c)
--{
--	snd_soc_unregister_codec(&i2c->dev);
--	return 0;
-+	return snd_soc_register_codec(dev, &soc_codec_dev_tlv320aic23,
-+				      &tlv320aic23_dai, 1);
- }
- 
--static const struct i2c_device_id tlv320aic23_id[] = {
--	{"tlv320aic23", 0},
--	{}
--};
--
--MODULE_DEVICE_TABLE(i2c, tlv320aic23_id);
--
--static struct i2c_driver tlv320aic23_i2c_driver = {
--	.driver = {
--		   .name = "tlv320aic23-codec",
--		   },
--	.probe = tlv320aic23_codec_probe,
--	.remove = __exit_p(tlv320aic23_i2c_remove),
--	.id_table = tlv320aic23_id,
--};
--
--module_i2c_driver(tlv320aic23_i2c_driver);
--
- MODULE_DESCRIPTION("ASoC TLV320AIC23 codec driver");
- MODULE_AUTHOR("Arun KS <arunks@mistralsolutions.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/tlv320aic23.h b/sound/soc/codecs/tlv320aic23.h
-index e804120..3a7235a 100644
---- a/sound/soc/codecs/tlv320aic23.h
-+++ b/sound/soc/codecs/tlv320aic23.h
-@@ -12,6 +12,12 @@
- #ifndef _TLV320AIC23_H
- #define _TLV320AIC23_H
- 
-+struct device;
-+struct regmap_config;
-+
-+extern const struct regmap_config tlv320aic23_regmap;
-+int tlv320aic23_probe(struct device *dev, struct regmap *regmap);
-+
- /* Codec TLV320AIC23 */
- #define TLV320AIC23_LINVOL		0x00
- #define TLV320AIC23_RINVOL		0x01
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 937af6f..bb5f7b4 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -706,7 +706,7 @@ static int wm_adsp_load(struct wm_adsp *dsp)
+ 							     to_write);
+ 				if (ret != 0) {
+ 					adsp_err(dsp,
+-						"%s.%d: Failed to write %d bytes at %d in %s: %d\n",
++						"%s.%d: Failed to write %zd bytes at %d in %s: %d\n",
+ 						file, regions,
+ 						to_write, offset,
+ 						region_name, ret);
 -- 
-1.8.1.4
+1.7.2.5
