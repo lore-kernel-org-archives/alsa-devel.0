@@ -1,18 +1,23 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix loud click noise with IdeaPad
-	410Y
-Date: Fri,  7 Mar 2014 14:53:43 +0100
-Message-ID: <1394200423-30506-1-git-send-email-tiwai@suse.de>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [TINYCOMPRESS][PATCH 1/1] compress: no need to	set
+	metadata before calling next_track
+Date: Fri, 7 Mar 2014 14:32:59 +0000
+Message-ID: <20140307143259.GA7431@opensource.wolfsonmicro.com>
+References: <20140226142829.GB2002@opensource.wolfsonmicro.com>
+ <530F62CA.6080002@linux.intel.com>
+ <20140303132547.GA20710@opensource.wolfsonmicro.com>
+ <53149846.3040104@linux.intel.com>
+ <20140303163653.GA8461@opensource.wolfsonmicro.com>
+ <5314DA9E.40704@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3305B2659E8
- for <alsa-devel@alsa-project.org>; Fri,  7 Mar 2014 14:53:44 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 93FBCAB9F
- for <alsa-devel@alsa-project.org>; Fri,  7 Mar 2014 13:53:43 +0000 (UTC)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2ACB02659FD
+ for <alsa-devel@alsa-project.org>; Fri,  7 Mar 2014 15:33:04 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <5314DA9E.40704@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +27,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: vinod.koul@intel.com, ckeepax@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, elaurent@google.com
 List-Id: alsa-devel@alsa-project.org
 
-Lenovo IdeaPad 410Y with ALC282 codec makes loud click noises at boot
-and shutdown.  Also, it wrongly misdetects the acpi_thinkpad hook.
-This patch adds a device-specific fixup for disabling the shutup
-callback that is the cause of the click noise and also avoiding the
-thinpad_helper calls.
+If you think about the current behaviour, it enforces that you must send some metadata, but it doesn't check what 
+that metadata is. You can send totally the wrong metadata and it will be happy but that's no use to the codec. So, 
+either the lower layers have to check that they get the metadata they need - which makes the framework check 
+redundant. Or the codec needs to be robust against not receiving the metadata it needs - which makes the framework 
+check unnecessary.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=71511
-Reported-and-tested-by: Guilherme Amadio <guilherme.amadio@gmail.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Also the current behviour is inconsistent, like you say the framework doesn't currently know what the codec actually 
+supports. But in some cases (pause, metadata, next_track, partial_drain) it assumes it supports it and allowed. In
+other cases (next_track without metadata, partial_drain without next_track) it assumes it doesn't support and denies.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 850296a1e0ff..8d0a84436674 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3616,6 +3616,19 @@ static void alc_fixup_auto_mute_via_amp(struct hda_codec *codec,
- 	}
- }
- 
-+static void alc_no_shutup(struct hda_codec *codec)
-+{
-+}
-+
-+static void alc_fixup_no_shutup(struct hda_codec *codec,
-+				const struct hda_fixup *fix, int action)
-+{
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-+		struct alc_spec *spec = codec->spec;
-+		spec->shutup = alc_no_shutup;
-+	}
-+}
-+
- static void alc_fixup_headset_mode_alc668(struct hda_codec *codec,
- 				const struct hda_fixup *fix, int action)
- {
-@@ -3844,6 +3857,7 @@ enum {
- 	ALC269_FIXUP_HP_GPIO_LED,
- 	ALC269_FIXUP_INV_DMIC,
- 	ALC269_FIXUP_LENOVO_DOCK,
-+	ALC269_FIXUP_NO_SHUTUP,
- 	ALC286_FIXUP_SONY_MIC_NO_PRESENCE,
- 	ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT,
- 	ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
-@@ -4020,6 +4034,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_inv_dmic_0x12,
- 	},
-+	[ALC269_FIXUP_NO_SHUTUP] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_no_shutup,
-+	},
- 	[ALC269_FIXUP_LENOVO_DOCK] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -4405,6 +4423,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x2212, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-+	SND_PCI_QUIRK(0x17aa, 0x3978, "IdeaPad Y410P", ALC269_FIXUP_NO_SHUTUP),
- 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x501a, "Thinkpad", ALC283_FIXUP_INT_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x5026, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
--- 
-1.9.0
+The test isn't even consistent with the case it was designed for - it just denies next_track without metadata but 
+there's no reason why the codec should crash and burn if it gets another MP3 track without some gapless metadata.
+
+>
+> It is totally about what the decoder implementation supports and no I am  
+> not thinking about gapless only. There is currently nothing that tells  
+> you next_track is supported and if metadata is supported/needed. You are  
+> making assumptions for your specific implementation that may or may not  
+> be true in other cases. My suggestion is to add flags, e.g.
+>
+> #define COMPRESS_SUPPORTS_NEXT_TRACK      	 (1<<0)
+> #define COMPRESS_SUPPORTS_METADATA               (1<<1)
+> #define COMPRESS_REQUIRES_METADATA_ON_NEXT_TRACK (1<<2)
+>
+> and do the relevant tests in tinycompress. That way we have a consistent  
+> behavior and you don't have to send information that isn't needed.
+
+However, it's not that simple for a number of reasons.
+
+1. there's the problem mentioned above, there's not much point verifying that you're sending just any metadata, it's 
+got to be the right metadata. But you can't reasonably check every possible metadata for every possible codec for 
+every possible use case in the generic framework, or encode them all in flags. And so if the codec does need to 
+check for the correct metadata it's going to have to check its specific case itself.
+
+2. The required behaviour is not necessarily a fixed feature of the codec that can be defined by a static 'feature 
+flag'. Whether you need a particular sequence or behaviour might depend on what the user application (or human user) 
+was expecting rather than any requirements of the codec. Take MP3 - metadata before next track is only mandataory if 
+you wanted gapless play, if you don't need gapless you can do without. Of course it's not all about 
+the metadata-before-next_track case, I'm just using that as an example.
+
+3. There's many possible combinations that might apply to different codecs. Using the metadata example again,
+does the codec need metadata before any audio data, or just before next_track? Do I need to send any metadata before 
+pause? Is metadata needed for every track? Are there one-off metadatas that are sent before any tracks? How many 
+metadatas are needed? Does any of this depend on what's in the data stream (like metadata needed for certain 
+sub-types and not others)?
+
+Even operations we've assumed are always there could be optional. If you're not implementing a music player 
+you might not need pause, or drain, or partial_drain.
+
+So there are a lot of possible combinations of things that need checking and I think we need to be selective about 
+which can sensibly be checked in the generic framework and which of them either need to be checked by the codec, or 
+are too variable to have a simple if (!x) {return -EINVAL;} check.
