@@ -1,16 +1,15 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/9] ASoC: arizona: Move set of OUTDIV in to
-	arizona_apply_fll
-Date: Fri,  7 Mar 2014 16:34:19 +0000
-Message-ID: <1394210065-23941-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 6/9] ASoC: arizona: Calculate OUTDIV first
+Date: Fri,  7 Mar 2014 16:34:22 +0000
+Message-ID: <1394210065-23941-7-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1394210065-23941-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA687265A1A
- for <alsa-devel@alsa-project.org>; Fri,  7 Mar 2014 17:42:50 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D37452659F3
+ for <alsa-devel@alsa-project.org>; Fri,  7 Mar 2014 17:42:53 +0100 (CET)
 In-Reply-To: <1394210065-23941-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,67 +24,55 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, lgirdwood@gmail.com, sameo@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Since we know in arizona_apply_fll if we are setting the sync or ref
-path there is no need to set the outdiv seperately anymore. This patch
-moves this from arizona_enable_fll to arizona_apply_fll.
+OUTDIV will remain unchanged whilst the rest of the FLL configuration is
+calculated so do this first.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/arizona.c |   28 ++++++++++++----------------
- 1 files changed, 12 insertions(+), 16 deletions(-)
+ sound/soc/codecs/arizona.c |   24 ++++++++++++------------
+ 1 files changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index e6f8290..6b53c3c 100644
+index e9488cd..175e230 100644
 --- a/sound/soc/codecs/arizona.c
 +++ b/sound/soc/codecs/arizona.c
-@@ -1511,14 +1511,18 @@ static void arizona_apply_fll(struct arizona *arizona, unsigned int base,
- 				 cfg->refdiv << ARIZONA_FLL1_CLK_REF_DIV_SHIFT |
- 				 source << ARIZONA_FLL1_CLK_REF_SRC_SHIFT);
+@@ -1424,6 +1424,18 @@ static int arizona_calc_fll(struct arizona_fll *fll,
  
--	if (sync)
--		regmap_update_bits_async(arizona->regmap, base + 0x7,
--					 ARIZONA_FLL1_GAIN_MASK,
--					 cfg->gain << ARIZONA_FLL1_GAIN_SHIFT);
--	else
--		regmap_update_bits_async(arizona->regmap, base + 0x9,
--					 ARIZONA_FLL1_GAIN_MASK,
--					 cfg->gain << ARIZONA_FLL1_GAIN_SHIFT);
-+	if (sync) {
-+		regmap_update_bits(arizona->regmap, base + 0x7,
-+				   ARIZONA_FLL1_GAIN_MASK,
-+				   cfg->gain << ARIZONA_FLL1_GAIN_SHIFT);
-+	} else {
-+		regmap_update_bits(arizona->regmap, base + 0x5,
-+				   ARIZONA_FLL1_OUTDIV_MASK,
-+				   cfg->outdiv << ARIZONA_FLL1_OUTDIV_SHIFT);
-+		regmap_update_bits(arizona->regmap, base + 0x9,
-+				   ARIZONA_FLL1_GAIN_MASK,
-+				   cfg->gain << ARIZONA_FLL1_GAIN_SHIFT);
+ 	arizona_fll_dbg(fll, "Fref=%u Fout=%u\n", Fref, fll->fout);
+ 
++	/* Fvco should be over the targt; don't check the upper bound */
++	div = ARIZONA_FLL_MIN_OUTDIV;
++	while (fll->fout * div < ARIZONA_FLL_MIN_FVCO * fll->vco_mult) {
++		div++;
++		if (div > ARIZONA_FLL_MAX_OUTDIV)
++			return -EINVAL;
 +	}
++	target = fll->fout * div / fll->vco_mult;
++	cfg->outdiv = div;
++
++	arizona_fll_dbg(fll, "Fvco=%dHz\n", target);
++
+ 	/* Fref must be <=13.5MHz */
+ 	div = 1;
+ 	cfg->refdiv = 0;
+@@ -1438,18 +1450,6 @@ static int arizona_calc_fll(struct arizona_fll *fll,
+ 	/* Apply the division for our remaining calculations */
+ 	Fref /= div;
  
- 	regmap_update_bits_async(arizona->regmap, base + 2,
- 				 ARIZONA_FLL1_CTRL_UPD | ARIZONA_FLL1_N_MASK,
-@@ -1555,10 +1559,6 @@ static void arizona_enable_fll(struct arizona_fll *fll,
- 	 */
- 	if (fll->ref_src >= 0 && fll->ref_freq &&
- 	    fll->ref_src != fll->sync_src) {
--		regmap_update_bits_async(arizona->regmap, fll->base + 5,
--					 ARIZONA_FLL1_OUTDIV_MASK,
--					 ref->outdiv << ARIZONA_FLL1_OUTDIV_SHIFT);
+-	/* Fvco should be over the targt; don't check the upper bound */
+-	div = ARIZONA_FLL_MIN_OUTDIV;
+-	while (fll->fout * div < ARIZONA_FLL_MIN_FVCO * fll->vco_mult) {
+-		div++;
+-		if (div > ARIZONA_FLL_MAX_OUTDIV)
+-			return -EINVAL;
+-	}
+-	target = fll->fout * div / fll->vco_mult;
+-	cfg->outdiv = div;
 -
- 		arizona_apply_fll(arizona, fll->base, ref, fll->ref_src,
- 				  false);
- 		if (fll->sync_src >= 0) {
-@@ -1567,10 +1567,6 @@ static void arizona_enable_fll(struct arizona_fll *fll,
- 			use_sync = true;
- 		}
- 	} else if (fll->sync_src >= 0) {
--		regmap_update_bits_async(arizona->regmap, fll->base + 5,
--					 ARIZONA_FLL1_OUTDIV_MASK,
--					 sync->outdiv << ARIZONA_FLL1_OUTDIV_SHIFT);
+-	arizona_fll_dbg(fll, "Fvco=%dHz\n", target);
 -
- 		arizona_apply_fll(arizona, fll->base, sync,
- 				  fll->sync_src, false);
- 
+ 	/* Find an appropraite FLL_FRATIO and factor it out of the target */
+ 	for (i = 0; i < ARRAY_SIZE(fll_fratios); i++) {
+ 		if (fll_fratios[i].min <= Fref && Fref <= fll_fratios[i].max) {
 -- 
 1.7.2.5
