@@ -1,16 +1,16 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 5/9] ASoC: arizona: Don't pass Fout into
-	arizona_calc_fll
-Date: Fri,  7 Mar 2014 16:34:21 +0000
-Message-ID: <1394210065-23941-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/9] ASoC: arizona: Add defines for FLL
+	configuration constants
+Date: Fri,  7 Mar 2014 16:34:18 +0000
+Message-ID: <1394210065-23941-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1394210065-23941-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8EF08265A1C
- for <alsa-devel@alsa-project.org>; Fri,  7 Mar 2014 17:42:52 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E17D3265A19
+ for <alsa-devel@alsa-project.org>; Fri,  7 Mar 2014 17:42:49 +0100 (CET)
 In-Reply-To: <1394210065-23941-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,72 +25,58 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, lgirdwood@gmail.com, sameo@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-As we now calculate the FLL configuration at a later stage in the
-process the fout member of the FLL structure will contain the desired
-Fout frequency so no need to pass this in seperately.
+Improve readability by adding defines for some of the constants
+associated with FLL configuration.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/arizona.c |   15 +++++++--------
- 1 files changed, 7 insertions(+), 8 deletions(-)
+ sound/soc/codecs/arizona.c |   16 +++++++++++-----
+ 1 files changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index c9cae8e..e9488cd 100644
+index e4c1c9e..e6f8290 100644
 --- a/sound/soc/codecs/arizona.c
 +++ b/sound/soc/codecs/arizona.c
-@@ -1417,13 +1417,12 @@ static int arizona_validate_fll(struct arizona_fll *fll,
+@@ -53,6 +53,12 @@
+ #define ARIZONA_AIF_RX_ENABLES                  0x1A
+ #define ARIZONA_AIF_FORCE_WRITE                 0x1B
  
- static int arizona_calc_fll(struct arizona_fll *fll,
- 			    struct arizona_fll_cfg *cfg,
--			    unsigned int Fref,
--			    unsigned int Fout)
-+			    unsigned int Fref)
- {
- 	unsigned int target, div, gcd_fll;
- 	int i, ratio;
- 
--	arizona_fll_dbg(fll, "Fref=%u Fout=%u\n", Fref, Fout);
-+	arizona_fll_dbg(fll, "Fref=%u Fout=%u\n", Fref, fll->fout);
- 
++#define ARIZONA_FLL_MAX_FREF   13500000
++#define ARIZONA_FLL_MIN_FVCO   90000000
++#define ARIZONA_FLL_MAX_REFDIV 8
++#define ARIZONA_FLL_MIN_OUTDIV 2
++#define ARIZONA_FLL_MAX_OUTDIV 7
++
+ #define arizona_fll_err(_fll, fmt, ...) \
+ 	dev_err(_fll->arizona->dev, "FLL%d: " fmt, _fll->id, ##__VA_ARGS__)
+ #define arizona_fll_warn(_fll, fmt, ...) \
+@@ -1399,11 +1405,11 @@ static int arizona_calc_fll(struct arizona_fll *fll,
  	/* Fref must be <=13.5MHz */
  	div = 1;
-@@ -1441,12 +1440,12 @@ static int arizona_calc_fll(struct arizona_fll *fll,
+ 	cfg->refdiv = 0;
+-	while ((Fref / div) > 13500000) {
++	while ((Fref / div) > ARIZONA_FLL_MAX_FREF) {
+ 		div *= 2;
+ 		cfg->refdiv++;
+ 
+-		if (div > 8) {
++		if (div > ARIZONA_FLL_MAX_REFDIV) {
+ 			arizona_fll_err(fll,
+ 					"Can't scale %dMHz in to <=13.5MHz\n",
+ 					Fref);
+@@ -1415,10 +1421,10 @@ static int arizona_calc_fll(struct arizona_fll *fll,
+ 	Fref /= div;
  
  	/* Fvco should be over the targt; don't check the upper bound */
- 	div = ARIZONA_FLL_MIN_OUTDIV;
--	while (Fout * div < ARIZONA_FLL_MIN_FVCO * fll->vco_mult) {
-+	while (fll->fout * div < ARIZONA_FLL_MIN_FVCO * fll->vco_mult) {
+-	div = 2;
+-	while (Fout * div < 90000000 * fll->vco_mult) {
++	div = ARIZONA_FLL_MIN_OUTDIV;
++	while (Fout * div < ARIZONA_FLL_MIN_FVCO * fll->vco_mult) {
  		div++;
- 		if (div > ARIZONA_FLL_MAX_OUTDIV)
+-		if (div > 7) {
++		if (div > ARIZONA_FLL_MAX_OUTDIV) {
+ 			arizona_fll_err(fll, "No FLL_OUTDIV for Fout=%uHz\n",
+ 					Fout);
  			return -EINVAL;
- 	}
--	target = Fout * div / fll->vco_mult;
-+	target = fll->fout * div / fll->vco_mult;
- 	cfg->outdiv = div;
- 
- 	arizona_fll_dbg(fll, "Fvco=%dHz\n", target);
-@@ -1574,19 +1573,19 @@ static void arizona_enable_fll(struct arizona_fll *fll)
- 	 */
- 	if (fll->ref_src >= 0 && fll->ref_freq &&
- 	    fll->ref_src != fll->sync_src) {
--		arizona_calc_fll(fll, &cfg, fll->ref_freq, fll->fout);
-+		arizona_calc_fll(fll, &cfg, fll->ref_freq);
- 
- 		arizona_apply_fll(arizona, fll->base, &cfg, fll->ref_src,
- 				  false);
- 		if (fll->sync_src >= 0) {
--			arizona_calc_fll(fll, &cfg, fll->sync_freq, fll->fout);
-+			arizona_calc_fll(fll, &cfg, fll->sync_freq);
- 
- 			arizona_apply_fll(arizona, fll->base + 0x10, &cfg,
- 					  fll->sync_src, true);
- 			use_sync = true;
- 		}
- 	} else if (fll->sync_src >= 0) {
--		arizona_calc_fll(fll, &cfg, fll->sync_freq, fll->fout);
-+		arizona_calc_fll(fll, &cfg, fll->sync_freq);
- 
- 		arizona_apply_fll(arizona, fll->base, &cfg,
- 				  fll->sync_src, false);
 -- 
 1.7.2.5
