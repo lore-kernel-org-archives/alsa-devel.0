@@ -1,85 +1,90 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v3] ASoC: davinci-evm: Add AM43xx-EPOS-EVM
-	audio support
-Date: Fri, 7 Mar 2014 14:45:27 +0200
-Message-ID: <5319BF67.3060403@ti.com>
-References: <5315DF41.1090302@metafoo.de>
- <1393947831-26116-1-git-send-email-jsarha@ti.com>
- <20140305014259.GR13126@sirena.org.uk>
+From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Subject: Re: [PATCH v2 1/4] ASoC: tlv320aic31xx: Add basic codec driver implementation
+Date: Fri, 7 Mar 2014 14:53:15 +0200
+Message-ID: <5319C13B.4090101@ti.com>
+References: <cover.1393941102.git.jsarha@ti.com> <ba9718f573ca9195c80075a15fe114e0d4557da0.1393941102.git.jsarha@ti.com> <20140305015501.GS13126@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 09287265465
- for <alsa-devel@alsa-project.org>; Fri,  7 Mar 2014 13:45:31 +0100 (CET)
-In-Reply-To: <20140305014259.GR13126@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, lars@metafoo.de, detheridge@ti.com
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20140305015501.GS13126-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/05/2014 03:42 AM, Mark Brown wrote:
-> On Tue, Mar 04, 2014 at 05:43:51PM +0200, Jyri Sarha wrote:
->> Add machine driver support for AM43xx-ePOS-EVM and update associated
->> device tree binding document.
+On 03/05/2014 03:55 AM, Mark Brown wrote:
+> On Tue, Mar 04, 2014 at 03:54:49PM +0200, Jyri Sarha wrote:
 >
-> Don't send new patches in replies to the middle of threads, that is just
-> confusing and hard to follow.  Send a new series.
+>> +- ai31xx-micbias-vg - MicBias Voltage required.
+>> +        MICBIAS_OFF - MICBIAS output it not powered
 >
-Ok, won't do that anymore.
-
->> +/* Logic for EVMs with an aic31xx */
->> +static int evm_aic31xx_init(struct snd_soc_pcm_runtime *rtd)
->> +{
->> +	struct snd_soc_codec *codec = rtd->codec;
->> +	struct snd_soc_card *card = rtd->card;
->> +	struct snd_soc_dapm_context *dapm = &card->dapm;
->> +	struct device_node *np = card->dev->of_node;
->> +	int ret;
->> +
->> +	snd_soc_dapm_new_controls(dapm, aic31xx_dapm_widgets,
->> +				  ARRAY_SIZE(aic31xx_dapm_widgets));
->> +
->> +	if (np) {
->> +		ret = snd_soc_of_parse_audio_routing(codec->card,
->> +						     "ti,audio-routing");
->> +		if (ret)
->> +			return ret;
->> +	}
->
-> Why not add the DAPM widget table to...
->
->> +	{
->> +		.compatible = "ti,am43xx-epos-evm-audio",
->> +		.data = &evm_dai_tlv320aic3111,
->> +	},
->
-> ...the data here?
->
-> Or alternatively should support for the widgets binding that was
-> recently added by added to the kernel - that way the binding becomes
-> more general and doesnn't need individual boards adding?  Indeed ideally
-> the simple-card binding (which that was added for) could just be used
-> for these boards.
+> Same comment as last time - why is this something which can be selected
+> in the binding?
 >
 
-I got am43x-epos-evm audio working on simple-card directly. I guess we 
-can forget about this patch.
+Fixed.
 
-However, I think there is a problem with simple-card. It does not invert 
-bitclock-master and frame-master values when converting them to CB[SM] 
-and CF[SM] for cpu_dai as I think it should. I can get around it by 
-setting the both cpu-dai and the codec as bclk and frame masters in the 
-sound node. I volunteer to fix this if you agree.
+>> +        MICBIAS_2_0V - MICBIAS output is powered to 2.0V
+>> +        MICBIAS_2_5V - MICBIAS output is powered to 2.5V
+>> +        MICBIAS_AVDD - MICBIAS output is connected to AVDD
+>
+> The numbers still need to be defined in the binding, the point with the
+> defines is to make both code and DTs more readable but we need to know
+> what is actually going to go into the binary.
+>
+
+Numbers added.
+
+>> +	/* Mic Bias */
+>> +	SND_SOC_DAPM_SUPPLY("Mic Bias", SND_SOC_NOPM, 0, 0, mic_bias_event,
+>> +			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+>
+> The idiomatic thing would be to use the pin name.
+>
+
+In this case the mic bias comes out of the chip trough a separate pin 
+and it is up to board designer to connect it with any (or all) of the 
+three mic pins.
+
+>> +	/* Make ADC turn on when recording even if not mixed from any inputs */
+>> +	{"ADC", NULL, "Internal ADC Source"},
+>
+> Don't do this (or the equivalent from the DACs) - we don't do this for
+> any other drivers, we shouldn't do it for this one.  If we're going to
+> do something like this it should be generic not per driver hacks.
+>
+
+Similar approach is used at least in wm8400.c, wm8990.c, wm8991.c, and 
+in ab8500-codec.c. But I see your point. I'll roll back that change. I 
+moved the clock enable/disable code to set_bias_level() to avoid 
+unwanted behavior (codec clocks not turning on at playback/capture start 
+if damp switches are not set correctly).
+
+>> +	case SND_SOC_BIAS_STANDBY:
+>> +		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
+>> +			aic31xx_set_power(codec, 1);
+>> +		break;
+>> +	case SND_SOC_BIAS_OFF:
+>> +		aic31xx_set_power(codec, 0);
+>> +		break;
+>
+> Just inline the set power function, or at the very least split it into
+> separate on and off functions - there is zero shared code between the
+> power on and off paths.
+>
+
+After adding the clock enable/disable code to set_bias_level, it started 
+to look hairy when everything was inlined. I split the set_power 
+function to *_on and *_off functions.
+
+In addition to these, after rebasing on top of linux-next branch, I 
+started to use use the new SOC_DOUBLE_R_S_TLV macro for the signed 
+integer mixers.
 
 Best regards,
 Jyri
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
