@@ -1,20 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5-resend 2/7] ASoC: sirf: Add SiRF audio
- port driver is used by SiRF internal audio codec
-Date: Fri, 7 Mar 2014 09:49:57 +0800
-Message-ID: <20140307014957.GR13126@sirena.org.uk>
-References: <1394008480-29135-1-git-send-email-rongjun.ying@csr.com>
- <1394008480-29135-3-git-send-email-rongjun.ying@csr.com>
- <20140306092007.GL13126@sirena.org.uk>
- <CAByv0RN0NBfaMA4TZgeB6f+MmTQ+CE6ztQ_DHXKZdTxQ7tkwQg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: Intel: Check Haswell IPC
+ process_reply/notification return value.
+Date: Fri, 7 Mar 2014 10:51:18 +0800
+Message-ID: <20140307025118.GW13126@sirena.org.uk>
+References: <1394117766-7242-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7974811777120165695=="
+Content-Type: multipart/mixed; boundary="===============9066656200996016347=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8438826590C
- for <alsa-devel@alsa-project.org>; Fri,  7 Mar 2014 02:50:14 +0100 (CET)
-In-Reply-To: <CAByv0RN0NBfaMA4TZgeB6f+MmTQ+CE6ztQ_DHXKZdTxQ7tkwQg@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CD02026591C
+ for <alsa-devel@alsa-project.org>; Fri,  7 Mar 2014 03:51:30 +0100 (CET)
+In-Reply-To: <1394117766-7242-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,64 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: RongJun Ying <rjying@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, DL-SHA-WorkGroupLinux <workgroup.linux@csr.com>, Rongjun Ying <rongjun.ying@csr.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7974811777120165695==
+--===============9066656200996016347==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="l8HeubOa6/3yq29t"
+	protocol="application/pgp-signature"; boundary="I+ctuiCfVAvadeQ/"
 Content-Disposition: inline
 
 
---l8HeubOa6/3yq29t
+--I+ctuiCfVAvadeQ/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 06, 2014 at 05:51:43PM +0800, RongJun Ying wrote:
-> 2014-03-06 17:20 GMT+08:00 Mark Brown <broonie@kernel.org>:
+On Thu, Mar 06, 2014 at 02:56:04PM +0000, Liam Girdwood wrote:
 
-> > ...use devm_ioremap_resource() instead, please send a followup patch
-> > fixing this.
+> Check the return value for error when processing replies and notifications.
 
-> The i2s, internal audio codec and audio port use same register physics address
-> and size. So if one driver use the devm_ioremap_resource instead.
-> The other driver will invoke devm_ioremap_resource failed.
+Applied, thanks.
 
-That's buggy - there should only be one device for each register range,
-you should have a core MFD driver which gets the hardware resource and
-shares the regmap with the client drivers.
-
---l8HeubOa6/3yq29t
+--I+ctuiCfVAvadeQ/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTGSW9AAoJELSic+t+oim9Y9gP/38jv+j+3u+N8JewiVzhzHRz
-akHPkVGXU4QzrnaSxn+4ej/CW843ATZlhvg7HAHMB/kbQ1NFa7xSzUUNsQHGXRPe
-awHJV08w7IOCmkHfwzqOd5xZ3M6JNYr6ZD4zEute6QY/wK6RtV9dAKT3RqBcsDgF
-8HZ5dlVbiMfm2v0Ov3ax9YmBqVheOy6SaGVwSQj9HWAnOdeJ5gd5zk4HQ7DjoeBs
-7nBb4KG6yq14wnyPnM/psQGpWWlDQxwBNsvxUHq9bAnhW7GkevXPOTKBVqcIGAXx
-30ZWMM4+GUyqrHq/m4K/tlzfGKB3SJ2KxHpI2jnOlP3U5hLLC/2amOKljy4V2A/9
-IJlOeplIqCLoLew+HxKV2Mfj5AsAKqlc8fCjEyMX8qUZIzLQ6ivH3z5YuIjBrnbj
-IJnUXetvvg9+oeKUq0GIoPBOJ6WczYvem2dI/HNNwa/DGiO//7UUc5wLFwUOqQPy
-Yn+u9bUtlZQsh/1B4x8O8lVuwfRM0xcFlQZyR3AubuQNfU3HXmRpKwkpb/KfVrwB
-CGwFhTTE57xzVrLS76sc/I2m5ankorVhg8YMHqGYJzGO6IfKwuthPhix/XE5yAVV
-zB3DicjOj8C4UAgYZ/jz3ksIr2BY/hnxfpyYABtXlgr/GCIR/wWOyhFUmursxstj
-VWTIi72GCS8s/T6nwvby
-=Yh8S
+iQIcBAEBAgAGBQJTGTQjAAoJELSic+t+oim9LgwQAIHatqT0qK1JjRgLSi/FcV9l
+zgLIMR4zxwldqt2aeuT8rC+Pao+pe1Fb+X/2rrO23S8G+gl4TnLBXBVYPhyjOFP7
+Vz2oHjMbrHlzdPDObqJOLTXyQd4+0T2HQkDzi7mfQAWdcLHhSAc+rNe/w9GSgqcb
+6+aOmQQRYgsy4ymr6duuPdtB9rPM0IfI3wYXz+aClso0mgYaZ7fq+5cHbbrtk0hR
+DpdJnv9Bcom7B3y55VWawkG96x1s14lhuL0qQZg2OKRuV6lk0QxUX/cWxaWUAfJH
+qINjOiDrJGQbDKHh1CMuVXfuXY/wF9PItSaUiYvczroQxRbR605Ey7jmi6FMeWDy
+RS7MU84d7kfIe1LpGWfhSYUiLWg5d89gBdA5LwNv1e2iEV5vLGV3kYtlkIiFQ5wJ
+vVc3aRyXAAoUheL1/DT33aD0P0tUy587znxg/DDtBDviMRgNpwgjVO4dEw+e1PvG
+XhN+Ct67EztRgPfNxMIvSKVGUoYc1l8DYh+zSClecyBuXHCxlZyUimJ/EXfh4dTG
+86x35UNoqS+YZPMRJL8Wnz8+2D4DYDFhp9Hs5l141GVPdFmAdfJi37r4L0VyeQ4x
+YTFndpe2cBXTrZoqLl39YjNKgiE5WPNAgYHfHlBIlSbpRTWy1OmH3xQsQ4QvHYf3
++9Tb9UE2ivPYiT1FDhX+
+=jgnn
 -----END PGP SIGNATURE-----
 
---l8HeubOa6/3yq29t--
+--I+ctuiCfVAvadeQ/--
 
---===============7974811777120165695==
+--===============9066656200996016347==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7974811777120165695==--
+--===============9066656200996016347==--
