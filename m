@@ -1,19 +1,19 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 11/39] firewire-lib: Add support for
- channel mapping
-Date: Sun, 09 Mar 2014 22:20:42 +0100
-Message-ID: <531CDB2A.8020304@ladisch.de>
+Subject: Re: [PATCH 14/39] firewire-lib: Add handling output
+ connection by CMP
+Date: Sun, 09 Mar 2014 22:27:17 +0100
+Message-ID: <531CDCB5.7040908@ladisch.de>
 References: <5316963F.1000206@sakamocchi.jp>
  <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
- <1394016507-15761-12-git-send-email-o-takashi@sakamocchi.jp>
+ <1394016507-15761-15-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 4F7252655D4
- for <alsa-devel@alsa-project.org>; Sun,  9 Mar 2014 22:21:22 +0100 (CET)
-In-Reply-To: <1394016507-15761-12-git-send-email-o-takashi@sakamocchi.jp>
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id A2BA02655DF
+ for <alsa-devel@alsa-project.org>; Sun,  9 Mar 2014 22:27:54 +0100 (CET)
+In-Reply-To: <1394016507-15761-15-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,47 +28,48 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Sakamoto wrote:
-> Some devices arrange the position of PCM/MIDI data channel in AMDTP packet.
-> This commit allows drivers to set channel mapping.
->
-> To be simple, the mapping table is an array with fixed length. Then the number
-> of channels for PCM is restricted by 64 channels.
+> This patch adds some macros, codes with condition of direction and new functions
+> to handle output connection. Once cmp_connection_init() is executed with its
+> direction, CMP input and output connection can be handled by the same way.
 
-> +++ b/sound/firewire/amdtp.c
-> @@ -351,22 +358,20 @@ static void amdtp_write_s32(struct amdtp_stream *s,
->  			    __be32 *buffer, unsigned int frames)
->  {
->  	struct snd_pcm_runtime *runtime = pcm->runtime;
-> -	unsigned int channels, remaining_frames, frame_step, i, c;
-> +	unsigned int remaining_frames, i, c;
->  	const u32 *src;
->
-> -	channels = s->pcm_channels;
+> +++ b/sound/firewire/cmp.c
+> +static unsigned long long get_offset(struct cmp_connection *c, bool master)
+> +{
+> +	unsigned long long offset = CSR_REGISTER_BASE;
+> +
+> +	if (!master) {
+> +		if (c->direction == CMP_INPUT)
+> +			offset += CSR_IPCR(c->pcr_index);
+> +		else
+> +			offset += CSR_OPCR(c->pcr_index);
+> +	} else {
+> +		if (c->direction == CMP_INPUT)
+> +			offset += CSR_IMPR;
+> +		else
+> +			offset += CSR_OMPR;
+> +	}
+> +
+> +	return offset;
+> +}
 
-This change is not necessary.  I used a separate local variable
-deliberately to allow the compiler to recognize that it cannot be
-aliased with the buffer contents.
+This function is always used with a constant master parameter, and the
+two branches don't really share much code.  Two functions would be simpler:
 
-> @@ -403,29 +406,29 @@ static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
->  	for (i = 0; i < frames; ++i) {
->  		for (c = 0; c < channels; ++c) {
-> +			buffer[s->pcm_positions[c] * 2] =
-> +					cpu_to_be32((*src >> 8) | 0x40000000);
->  			src++;
->  		}
-> +		buffer += 1;
->  		for (c = 0; c < channels; ++c) {
-> +			buffer[s->pcm_positions[c] * 2] =
-> +					cpu_to_be32((*src >> 8) | 0x40000000);
->  			src++;
->  		}
-> +		buffer += s->data_block_quadlets - 1;
-> +		if (--remaining_frames == 0)
-> +			src = (void *)runtime->dma_area;
->  	}
+static u64 mpr_address(struct cmp_connection *c)
+{
+	if (c->direction == CMP_INPUT)
+		return CSR_REGISTER_BASE + CSR_IMPR;
+	else
+		return CSR_REGISTER_BASE + CSR_OMPR;
+}
 
-AFAICS the dual-wire format could be handled easier by setting pcm_positions[]
-in the dice driver.
+static u64 pcr_address(struct cmp_connection *c)
+{
+	if (c->direction == CMP_INPUT)
+		return CSR_REGISTER_BASE + CSR_IPCR(c->pcr_index);
+	else
+		return CSR_REGISTER_BASE + CSR_OPCR(c->pcr_index);
+}
 
 
 Regards,
