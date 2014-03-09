@@ -1,19 +1,19 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 05/39] firewire-lib: Add support for AMDTP
- in-stream and PCM capture
-Date: Sun, 09 Mar 2014 21:37:14 +0100
-Message-ID: <531CD0FA.9090506@ladisch.de>
+Subject: Re: [PATCH 06/39] firewire-lib: Add support for MIDI
+ capture/playback
+Date: Sun, 09 Mar 2014 21:48:26 +0100
+Message-ID: <531CD39A.9090100@ladisch.de>
 References: <5316963F.1000206@sakamocchi.jp>
  <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
- <1394016507-15761-6-git-send-email-o-takashi@sakamocchi.jp>
+ <1394016507-15761-7-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 698992655CD
- for <alsa-devel@alsa-project.org>; Sun,  9 Mar 2014 21:37:53 +0100 (CET)
-In-Reply-To: <1394016507-15761-6-git-send-email-o-takashi@sakamocchi.jp>
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 5B94C2655CD
+ for <alsa-devel@alsa-project.org>; Sun,  9 Mar 2014 21:49:05 +0100 (CET)
+In-Reply-To: <1394016507-15761-7-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,45 +28,72 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Sakamoto wrote:
-> For capturing PCM, this commit adds the functionality to handle in-stream.
-> This is also applied for dual-wire mode.
+> For capturing/playbacking MIDI messages, this commit adds one MIDI conformant
+> data channel. This channel supports 8 MPX-MIDI data streams then maximum number
+> of supported MIDI ports is limited by 8.
+>
+> And this commit allows to set PCM format even if AMDTP stream already starts.
+> I suppose the case that PCM stream is going to be joined into AMDTP streams after
+> AMDTP stream is already started by MIDI. Each driver must count how many MIDI
+> substreams use AMDTP stream to stop AMDTP stream.
+>
+> IEC 61883-6 refers to AMEI/MMA RP-027 for implementation of MIDI conformant
+> data. In the specification, 'MIDI1.0-2x/3x-SPEED' mode are described with
+> 'negotiation procedure' and 'encapsulation details'. But there is no
+> specifications to define them. This module implement 'MIDI1.0-1x-SPEED' mode.
 
 > +++ b/sound/firewire/amdtp.c
-> @@ -200,16 +208,26 @@ void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
-> +		if (s->direction == AMDTP_OUT_STREAM) {
-> +			if (s->dual_wire)
-> +				s->transfer_samples = amdtp_write_s32_dualwire;
-> +			else
-> +				s->transfer_samples = amdtp_write_s32;
-> +		} else if (s->dual_wire) {
-> +			s->transfer_samples = amdtp_read_s32_dualwire;
-> +		} else {
-> +			s->transfer_samples = amdtp_read_s32;
-> +		}
+> @@ -505,11 +509,46 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
+>  static void amdtp_fill_midi(struct amdtp_stream *s,
 
-Please format the if/else branches in the same way.
+> +	unsigned int f, port;
+> +	u8 *b;
+> +
+> +	for (f = 0; f < frames; f++) {
+> +		buffer[s->pcm_channels + 1] = 0x00;
 
-> +static void handle_in_packet(struct amdtp_stream *s,
+This is a 32-bit value.
+
+> +		b = (u8 *)&buffer[s->pcm_channels + 1];
+> +
+> +		port = (s->data_block_counter + f) % 8;
+> +		if ((s->midi[port] == NULL) ||
+> +		    (snd_rawmidi_transmit(s->midi[port], b + 1, 1) <= 0)) {
+> +			b[0] = 0x80;
+> +			b[1] = 0x00;	/* confirm to be zero */
+
+snd_rawmidi_transmit() will not write an unsused byte, and in any
+case, zero can be a valid MIDI data byte.
+
+> +static void amdtp_pull_midi(struct amdtp_stream *s,
+> +			    __be32 *buffer, unsigned int frames)
+> +{
+> +	for (f = 0; f < frames; f++) {
 > ...
-> +	/* ignore empty CIP packet or NO-DATA AMDTP packet */
-> +	if ((payload_quadlets < 3) ||
-> +	    (((cip_header[1] & CIP_FDF_MASK) >> CIP_FDF_SFC_SHIFT) ==
-> +							AMDTP_FDF_NO_DATA))
+> +		if (s->midi[port] == NULL)
+> +			continue;
+> +
+> +		snd_rawmidi_receive(s->midi[port], b + 1, len);
+> +		buffer += s->data_block_quadlets;
+> +	}
 
-(AMDTP_FDF_NO_DATA << CIP_FDF_SFC_SHIFT) would be a constant that could
-be computed at compile time.
+The buffer pointer must be increased even when there is no active port.
 
-> +	/* check packet continuity */
-> +	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
-> +	if (s->data_block_counter != data_block_counter) {
-> +		dev_info_ratelimited(&s->unit->device,
-> +				     "Detect uncontinuity of CIP packets\n");
-> +		s->data_block_counter = data_block_counter;
-> +		return;
+> +++ b/sound/firewire/amdtp.h
+>  /**
+> + * amdtp_stream_pcm_running - check PCM stream is running or not
+> + * @s: the AMDTP stream
+> + *
+> + * If this function returns true, PCM stream in the stream is running.
+> + */
+> +static inline bool amdtp_stream_pcm_running(struct amdtp_stream *s)
+> +{
+> +	return !IS_ERR_OR_NULL(s->pcm);
+> +}
 
-In practice, this error means that a packet was dropped.  I guess this
-doesn't actually happen too often, but eventually, we should handle
-this either by inserting some samples or by stopping the stream.
+fw_iso_context_create() can return an error code, but for s->pcm,
+all the IS_ERR stuff is not necessary.  This should be a plain NULL
+check.
 
 
 Regards,
