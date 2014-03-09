@@ -1,19 +1,19 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 10/39] firewire-lib: Add transfer delay to
- synchronized duplex streams
-Date: Sun, 09 Mar 2014 22:13:30 +0100
-Message-ID: <531CD97A.6040507@ladisch.de>
+Subject: Re: [PATCH 11/39] firewire-lib: Add support for
+ channel mapping
+Date: Sun, 09 Mar 2014 22:20:42 +0100
+Message-ID: <531CDB2A.8020304@ladisch.de>
 References: <5316963F.1000206@sakamocchi.jp>
  <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
- <1394016507-15761-11-git-send-email-o-takashi@sakamocchi.jp>
+ <1394016507-15761-12-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 35BE42655D2
- for <alsa-devel@alsa-project.org>; Sun,  9 Mar 2014 22:14:10 +0100 (CET)
-In-Reply-To: <1394016507-15761-11-git-send-email-o-takashi@sakamocchi.jp>
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 4F7252655D4
+ for <alsa-devel@alsa-project.org>; Sun,  9 Mar 2014 22:21:22 +0100 (CET)
+In-Reply-To: <1394016507-15761-12-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,26 +28,47 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Sakamoto wrote:
-> Currently, in duplex streams with synchronization mode, this module just pass
-> 'presentation timestamp' from in-packets to out-packets. This is enough to
-> handle actual device but logically the timestamp should include
-> 'transfer delay' and 'processing time'. This means the timestamp in out-packet
-> should be at future.
+> Some devices arrange the position of PCM/MIDI data channel in AMDTP packet.
+> This commit allows drivers to set channel mapping.
 >
-> To be simple, this commit add only 'transfer delay'.
+> To be simple, the mapping table is an array with fixed length. Then the number
+> of channels for PCM is restricted by 64 channels.
 
-> +		*syt += (s->transfer_delay / TICKS_PER_CYCLE) << 12;
-> +		*syt += s->transfer_delay % TICKS_PER_CYCLE;
-> +		*syt &= CIP_SYT_MASK;
+> +++ b/sound/firewire/amdtp.c
+> @@ -351,22 +358,20 @@ static void amdtp_write_s32(struct amdtp_stream *s,
+>  			    __be32 *buffer, unsigned int frames)
+>  {
+>  	struct snd_pcm_runtime *runtime = pcm->runtime;
+> -	unsigned int channels, remaining_frames, frame_step, i, c;
+> +	unsigned int remaining_frames, i, c;
+>  	const u32 *src;
+>
+> -	channels = s->pcm_channels;
 
-The transfer delay is the offset between the frame in which the packet
-is transmitted and the intended presentation time.  This delay was
-already added by the device when it sent the input packets, so we
-don't need to send it again.
+This change is not necessary.  I used a separate local variable
+deliberately to allow the compiler to recognize that it cannot be
+aliased with the buffer contents.
 
-The frame in which the out-packet will be sent is QUEUE_LENGTH
-frames later than that of the in-packet, so we need to adjust the
-SYT by that amount.  (However, 48 % 16 == 0.)
+> @@ -403,29 +406,29 @@ static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
+>  	for (i = 0; i < frames; ++i) {
+>  		for (c = 0; c < channels; ++c) {
+> +			buffer[s->pcm_positions[c] * 2] =
+> +					cpu_to_be32((*src >> 8) | 0x40000000);
+>  			src++;
+>  		}
+> +		buffer += 1;
+>  		for (c = 0; c < channels; ++c) {
+> +			buffer[s->pcm_positions[c] * 2] =
+> +					cpu_to_be32((*src >> 8) | 0x40000000);
+>  			src++;
+>  		}
+> +		buffer += s->data_block_quadlets - 1;
+> +		if (--remaining_frames == 0)
+> +			src = (void *)runtime->dma_area;
+>  	}
+
+AFAICS the dual-wire format could be handled easier by setting pcm_positions[]
+in the dice driver.
 
 
 Regards,
