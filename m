@@ -1,50 +1,41 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/3] ASoC: omap-abe-twl6040: No need to
- register DMIC routes seperatly
-Date: Mon, 10 Mar 2014 09:18:50 +0100
-Message-ID: <531D756A.6000505@metafoo.de>
-References: <1394302616-15991-1-git-send-email-lars@metafoo.de>
- <531D7427.5020006@ti.com>
+From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Subject: Re: [PATCH v2 1/4] ASoC: tlv320aic31xx: Add basic codec driver implementation
+Date: Mon, 10 Mar 2014 10:47:15 +0200
+Message-ID: <531D7C13.4050007@ti.com>
+References: <cover.1393941102.git.jsarha@ti.com> <ba9718f573ca9195c80075a15fe114e0d4557da0.1393941102.git.jsarha@ti.com> <20140305015501.GS13126@sirena.org.uk> <5319C13B.4090101@ti.com> <20140309081229.GM28112@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-129.synserver.de (smtp-out-220.synserver.de
- [212.40.185.220])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F176264F29
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 09:18:14 +0100 (CET)
-In-Reply-To: <531D7427.5020006@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grazvydas Ignotas <notasas@gmail.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20140309081229.GM28112-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/10/2014 09:13 AM, Peter Ujfalusi wrote:
-> Hi,
+On 03/09/2014 10:12 AM, Mark Brown wrote:
+> On Fri, Mar 07, 2014 at 02:53:15PM +0200, Jyri Sarha wrote:
+>> On 03/05/2014 03:55 AM, Mark Brown wrote:
 >
-> On 03/08/2014 08:16 PM, Lars-Peter Clausen wrote:
->> When using table based DAPM setup there is no need to register DAPM elements for
->> different sub-components separately. The widgets will be registered before the
->> first sub-component is initialized, the routes are only added after the last
->> sub-component has been initialized, meaning everything will be available when it
->> is needed.
+>>>> +	/* Mic Bias */
+>>>> +	SND_SOC_DAPM_SUPPLY("Mic Bias", SND_SOC_NOPM, 0, 0, mic_bias_event,
+>>>> +			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
 >
-> The reason why we add the DMIC routes in the way we do is that not all boards
-> have DMIC in use. PandaBoards does not have DMIC while SDP/Blaze have. On
-> PandaBoard we do not register the dmic dai link so the widgets are not going
-> to be added and also the dmic DAI and codec will be not loaded on PandaBoards.
-> I think this will cause some warning because of missing "DMic" widget?
+>>> The idiomatic thing would be to use the pin name.
+>
+>> In this case the mic bias comes out of the chip trough a separate
+>> pin and it is up to board designer to connect it with any (or all)
+>> of the three mic pins.
+>
+> Yes, exactly - you should be using the name of the pin that supplies the
+> bias.  This is how essentially all microphone biases work.
 >
 
-Hm, ok, missed that part. Makes sense. I'll respin the patch to just use the 
-card's DAPM context when registering the DMIC DAPM routes.
+Changed widget name from "Mic Bias" to "MICBIAS".
 
-- Lars
+BR,
+Jyri
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
