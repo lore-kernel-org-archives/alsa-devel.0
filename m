@@ -1,20 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 06/39] firewire-lib: Add support for MIDI
-	capture/playback
-Date: Mon, 10 Mar 2014 13:13:44 +0900
-Message-ID: <531D3BF8.3090909@sakamocchi.jp>
-References: <5316963F.1000206@sakamocchi.jp>
- <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
- <1394016507-15761-7-git-send-email-o-takashi@sakamocchi.jp>
- <531CD39A.9090100@ladisch.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: About ALSA SoC cpu/codec asymmetry
+Date: Mon, 10 Mar 2014 07:42:28 +0100
+Message-ID: <531D5ED4.4090208@metafoo.de>
+References: <8738iqst0t.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F509265044
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 05:13:48 +0100 (CET)
-In-Reply-To: <531CD39A.9090100@ladisch.de>
+Received: from smtp-out-129.synserver.de (smtp-out-220.synserver.de
+ [212.40.185.220])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE54D264F4A
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 07:41:56 +0100 (CET)
+In-Reply-To: <8738iqst0t.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Stephen Warren <swarren@wwwdotorg.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-(Mar 10 2014 05:48), Clemens Ladisch wrote:
-> This is a 32-bit value.
+On 03/10/2014 03:10 AM, Kuninori Morimoto wrote:
+>
+> Hi Mark, Stephen, Lars
+>
+> Now, ALSA SoC is using "component" style, and its image is like this.
+>
+> ALSA SoC
+>   - platform
+>   - component (as CPU)
+>   - codec
+>      - component
+>
+> It is still not symmetry, and confusable.
+> I guess this is understandable.
+>
+> ALSA SoC
+>   - platform
+>   - cpu
+>      - component
+>   - codec
+>      - component
+>
+> If we add "cpu", it needs "cpu name", same as current "codec name"
+> on soc_bind_dai_link().
+> I guess it can keep compatible if it allows "NULL" name on "cpu name" at this point.
+> (but print warning ?)
 
-OK.
+There is already a cpu_name field for the DAI link struct and it is ignored 
+when it is NULL. See 
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/sound/soc/soc-core.c#n870
 
-Is it OK to use an assignment conversion here? Like:
-for (f = 0; f < frames; f++) {
-+		buffer[s->pcm_channels + 1] = 0x00;
+I have a patch that makes using cpu_name mandatory for new component 
+drivers. And then we can slowly start to convert old platforms.
 
-> snd_rawmidi_transmit() will not write an unsused byte, and in any
-> case, zero can be a valid MIDI data byte.
-
-OK. The line is needless.
-
-> The buffer pointer must be increased even when there is no active port.
-
-Exactly. I confirm M-Audio Ozonic (opens two MIDI ports) receives wrong 
-sequence of MIDI data because of this bug...
-
-> fw_iso_context_create() can return an error code, but for s->pcm,
-> all the IS_ERR stuff is not necessary.  This should be a plain NULL
-> check.
-
-OK.
-
-
-Thanks
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+- Lars
