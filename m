@@ -1,15 +1,19 @@
-From: Cyrus Harmon <cyrus@bobobeach.com>
-Subject: [PATCH] add Steinberg UR44 USB Audio Interface support
-	to quirks-table.
-Date: Mon, 10 Mar 2014 08:37:55 -0700
-Message-ID: <1394465875-3932-1-git-send-email-cyrus@bobobeach.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] add Steinberg UR44 USB Audio Interface
+ support to quirks-table
+Date: Mon, 10 Mar 2014 16:40:52 +0100
+Message-ID: <531DDD04.5050902@ladisch.de>
+References: <1394388767-23658-1-git-send-email-cyrus@bobobeach.com>
+ <531DAB14.5080201@ladisch.de>
+ <76F78615-8762-4A6C-B601-97380805F450@bobobeach.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.cyrusharmon.org (unknown [206.125.171.163])
- by alsa0.perex.cz (Postfix) with ESMTP id 2224926571F
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 16:38:15 +0100 (CET)
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id DE11726571F
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 16:40:53 +0100 (CET)
+In-Reply-To: <76F78615-8762-4A6C-B601-97380805F450@bobobeach.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,68 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Cyrus Harmon <cyrus@bobobeach.com>
+To: Cyrus Harmon <cyrus@bobobeach.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- * The patch is based on Clemens Ladisch's patch to support the UR22
-   (http://linuxaudio.org/mailarchive/lad/2013/2/23/197831), with the
-   device ID modified for the UR44. The patch was tested with kernel
-   versions 3.12.11 and 3.12.12 and a PREEMPT RT-patched 3.12.12-rt
-   kernel. Basic recording and playback appear to work.
+Cyrus Harmon wrote:
+> The attached patch provides support for the Steinberg UR44 USB Audio
+> Interface. It=92s nothing more than Clemens=92 patch to support the UR22,
+> with the device ID modified for the UR44. The patch was tested with
+> kernel versions 3.12.11 and 3.12.12 and I have primarily used it with
+> a PREEMPT RT-patched 3.12.12-rt kernel.
 
- * NB: On one of the systems that I used to test the patch, I was
-   never able to achieve xrun-free JACK performance at -p256 -n3 as I
-   would invariably see xruns roughly once every minute. But this is a
-   new box (Intel haswell NUC) and it seems there are many possible
-   sources of the unacceptable latency. On an older i3 box, the
-   performance was much better.
+In theory, kernel 3.11 and later should support this device without
+a quirk entry.  I guess it actually does not?
 
-Signed-off-by: Cyrus Harmon <cyrus@bobobeach.com>
----
- sound/usb/quirks-table.h | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+> I should note that on one of the systems that I used to test the patch
+> I was never able to achieve xrun-free JACK performance at -p256 -n3 as
+> I would invariably see xruns roughly once every minute.
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index f652b10..987ca01 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -436,6 +436,36 @@ YAMAHA_DEVICE(0x105d, NULL),
- 		}
- 	}
- },
-+{
-+	USB_DEVICE(0x0499, 0x150e),
-+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		/* .vendor_name = "Yamaha", */
-+		/* .product_name = "Steinberg UR44", */
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				.ifnum = 3,
-+				.type = QUIRK_MIDI_YAMAHA
-+			},
-+			{
-+				.ifnum = 4,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
- YAMAHA_DEVICE(0x2000, "DGP-7"),
- YAMAHA_DEVICE(0x2001, "DGP-5"),
- YAMAHA_DEVICE(0x2002, NULL),
--- 
-1.8.3.2
+This sounds as if the playback stream needs to be synchronized to the
+recording stream.
+
+What is the output of "lsusb -v" for this device?
+
+
+Regards,
+Clemens
