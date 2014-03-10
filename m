@@ -1,16 +1,20 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: integration into ASoC
-Date: Mon, 10 Mar 2014 10:50:39 +0100
-Message-ID: <20140310095039.GC2815@lukather>
-References: <20140307165335.GT607@lukather>
- <5319FE01.3070909@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: omap-abe-twl6040: No need to
+ register DMIC routes seperatly
+Date: Mon, 10 Mar 2014 10:10:38 +0000
+Message-ID: <20140310101038.GO28112@sirena.org.uk>
+References: <1394302616-15991-1-git-send-email-lars@metafoo.de>
+ <531D7427.5020006@ti.com> <531D756A.6000505@metafoo.de>
+ <20140310091250.GD28112@sirena.org.uk>
+ <531D84E1.8050706@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3867492280785083395=="
+Content-Type: multipart/mixed; boundary="===============8771021461193178995=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
- by alsa0.perex.cz (Postfix) with ESMTP id C77462656B9
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 10:55:19 +0100 (CET)
-In-Reply-To: <5319FE01.3070909@metafoo.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 53412265071
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 11:10:55 +0100 (CET)
+In-Reply-To: <531D84E1.8050706@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,130 +25,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, zhuzhenhua@allwinnertech.com, Mark Brown <broonie@kernel.org>, kevin.z.m.zh@gmail.com, sunny@allwinnertech.com, shuge@allwinnertech.com
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3867492280785083395==
+--===============8771021461193178995==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XWOWbaMNXpFDWE00"
+	protocol="application/pgp-signature"; boundary="Afp4e3CscGk5BalI"
 Content-Disposition: inline
 
 
---XWOWbaMNXpFDWE00
+--Afp4e3CscGk5BalI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Lars,
+On Mon, Mar 10, 2014 at 10:24:49AM +0100, Lars-Peter Clausen wrote:
+> On 03/10/2014 10:12 AM, Mark Brown wrote:
 
-On Fri, Mar 07, 2014 at 06:12:33PM +0100, Lars-Peter Clausen wrote:
-> On 03/07/2014 05:53 PM, Maxime Ripard wrote:
-> >Hi Liam, Mark,
-> >
-> >I have a sound IP that is part of an SoC that I'm willing to write a
-> >driver for.
->=20
-> Which SoC is this?
+> >In general anything keying this stuff off DT is going to have that sort
+> >of thing going on - most if not all of the things that are registering
+> >in several chunks are doing so because some of it is conditional.
 
-Allwinner A31.
+> Before we had the support for card table based setup you'd had to
+> register them in chunks, because the components became available one
+> after another and you couldn't register DAPM elements for one
+> component in the callback of another one. When using the table based
+> setup the widgets are registered before all components are
+> registered and the routes are registered after all the components
+> have been registered.
 
-Unfortunately, the datasheet for this SoC is not public, but most of
-the other Allwinner SoCs have an IP that behaves pretty much in the
-same way.
+No, that's not the case at all - what makes you think that's the case?
+All table based setup did was move things from code to data, I'm not
+sure what you mean by registering DAPM elements from one component in
+the callback for another.  The only thing that should be registering
+things for other components is the card and the general idea was to
+register everything in late_probe().
 
-You can find a datasheet for the A20 here:
-http://dl.linux-sunxi.org/A20/A20%20User%20Manual%202013-03-22.pdf,
-starting page 172.
-
-The A31 has a slightly different IP, but from an architectural
-standpoint, it's pretty much the same thing.
-
-> >This IP is made of a few registers to control the sampling rate, if
-> >we're using mono/stereo, plus two fifos, one for playback, one for
-> >capture, that can be seed with data. The data are then taken, go
-> >through a DAC, and the outer interface of the IP are directly analog
-> >signals (so the DAC/ADC are directly in the SoC, and the only
-> >interface we have is plain registers).
-> >
-> > From what I understood from ASoC, you have mostly three components,
-> >the DAI, the codec and the platform that plumbers the two first
-> >together. Here, my understanding is that it's pretty much the whole
-> >three in a single IP.
->=20
-> The platform component usually takes care of transferring data from
-> memory to your IP. It sounds as if this is still separate on your
-> platform. Quite possibly you can use the generic dmaengine PCM
-> driver.
-
-You really have two intertwined sets of registers, one for the FIFO
-themselves (and you will obviously use DMA for that, I'll keep in mind
-the dmaengine PCM driver), and the control registers, so you can't
-really split it into two separate drivers (at least, not easily).
-
-> Right now ASoC expects you to specify a DAI link for a PCM
-> device. The DAI link connects the DAIs of two components typically
-> the SoC side and a external CODEC. In your case you do not have the
-> external CODEC. You can solve this by using a dummy CODEC or
-> splitting things up and register both the CODEC and the CPU DAI from
-> the same driver.
-
-That would probably be the best solution, yes.
-
-> But I'm currently working on a patchset that will eventually allow
-> these kind of devices to be supported more naturally. It will allow
-> to register them as one component that won't need the CODEC
-> component to work.
-
-Great! Do you have a branch with that work somewhere?
-
-> >Should such a hardware block be handled into ASoC, and if yes, how?
-> >If not, which other framework should be used?
->=20
-> It makes sense to use ASoC if there are components where the driver
-> can be shared e.g. the DMA in your case. Otherwise you can also use
-> plain old ALSA.
-
-The DMA controller this IP will use is a system-wide DMA master, so
-I don't think this driver will provide something to other drivers.
-
-Thanks!
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
-
---XWOWbaMNXpFDWE00
+--Afp4e3CscGk5BalI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTHYruAAoJEBx+YmzsjxAgqKUQALDxmfHxwGWk2CE5+wRwZ5K2
-+IxumsVno/DKT0LcuOL9dpwfNY29LikxQjMQQZTWGBVN1y79iNT4GTzSo//RLAFb
-/A3Tkh1wh0ao6iV8PC9JA45enyd42fqXP4Yd5Tr71yj53M8gKzH7xGa6IqYGjyQk
-aESY2T8hWicHxrVcDcusE7KVIg3Cy9gL1t7fiyVkPUiZGPsMcBBg6bKjtlsibCah
-wXFOP9vNpRCwfDcLbRVvQKiRmzl74RMlYukEDM4iy+ZN5y+0G8xM959csaNZT67I
-QRPzgg/IcrXkGRLglt6Qjgs/ikBy92E7uU+uFUvK3K7n/4YsIfWOuyO8orelrm3K
-qWfCbYjwuDmtjhBMEZAhZs+/ub7XgpTfibEqnFwh3Nu1AT95HKlyDjbtQ5ZSSEAf
-Ax1Kbn2zZl9gLfPDLrIZBBTu+yTEdmtFKS1cN5iNmpHT791WWVslA6NrZffjffR5
-9o9ZcWtU7uF9kDxgP2vhNruEugOMsqRf6+HP2+hXT0/yFSzLhDJqTaxQSjqC3pFt
-LnvqhqWVjjnnA0TcmzHjZTtzYJnIHbli1ZaT1AnKEF1HCa8tbCwta+ve5QneT5II
-sEhUAWW4QG9WtwhBGLBi+btOfpnxEL0PfFMJWFUWVvOoHdeahLKnBl+N5CaYUvfX
-IZxo1LG+EHELUjTaPAaf
-=/bL/
+iQIcBAEBAgAGBQJTHY+bAAoJELSic+t+oim9S7QP/RfgoCPBkxqIcbtSCpP1BOT1
+SFKwc6hojyWLMNeDIz/ym5iFjLxCwSZLw7ydrAWIW0dVsBUX7v3vPGQgAXZKoKUn
+DkoT8ejckodYeHav4kobmaw4ML+l66VD6M1vwKjeUSJYG9JhDQWefEbylKwOR84Y
+u6ymyDAuSvyFHPSmY6bw3n8eOiMUp5ugBm3LoTfjv8pfUqbTt7JokiE4qi0QvWC/
++AQp5+nbAxH+W+6y1DAF+iIE8mduEhS08vg9+RkikNeiryWfUqV1I0IsP6yYX5jK
+OzmHJ4+NhCcd69Qb7bCIamwDhv9umxN62GtUnmOcX+nm1PXDH7zTRORHrjdvVWqt
+YdpLgAwJcweyiCtsrZbO1eViIDm/XEJqQnmqxbPCExMxd7pmn0Js+sbq/AV/Ptif
+C/OYtu/1a+8KaMbxt3xS8G4bhQ5faGM/gW81H93EdIzX8rYE2yfoQZt5mrYNNBOu
+koPCssJ7T9RR3X19P1EGZFOilffiYh2Q65UaLh3OxVDdKKfqiBbhwSSCq5aEBK3A
+eWvlt9H5+xkKC5QAm947Ee30KOexY7LSqkBlhJYNEG1C9zLFgWgRR1YYo6cP5nNm
+K7NqHj3vF9Daoez2yTIG/BKyiOlQY95M0vQu8SHMsNIwGzWBIO8y2mdEtweeClfH
+7bp2peNCZA7YpIIPeC0D
+=iwxj
 -----END PGP SIGNATURE-----
 
---XWOWbaMNXpFDWE00--
+--Afp4e3CscGk5BalI--
 
---===============3867492280785083395==
+--===============8771021461193178995==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3867492280785083395==--
+--===============8771021461193178995==--
