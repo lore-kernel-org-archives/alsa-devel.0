@@ -1,60 +1,37 @@
-From: Jean Delvare <jdelvare@suse.de>
-Subject: [PATCH] ALSA: cs553*: Fix dependencies
-Date: Mon, 10 Mar 2014 21:12:26 +0100
-Message-ID: <20140310211226.17ad03c6@endymion.delvare>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2318F2602AD
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 21:12:29 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Jaya Kumar <jayakumar.alsa@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] Revert "ALSA: emu10k1: Fix warning: "CCR" redefined"
+Date: Mon, 10 Mar 2014 21:20:55 +0100
+Message-ID: <1394482855-18836-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-sh-owner@vger.kernel.org>
+Sender: linux-sh-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.yj@renesas.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: alsa-devel@alsa-project.org
 
-The CS5530, CS5535 and CS5536 chipsets are companions of the Geode
-series of processors, which are 32-bit x86 processors. So the
-snd-cs5530 and snd-cs5535audio drivers are only needed on this
-architecture, except for build testing purpose.
+This reverts commit 83fc3bc09518d42e8f5073e2a65884701dfadf19.
 
-Signed-off-by: Jean Delvare <jdelvare@suse.de>
-Cc: Jaya Kumar <jayakumar.alsa@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
+sh-specific "CCR" and "CCR2" have been prefixed by "SH_" in commit
+a5f6ea29f9a918403629f8369ae55fac6b09cb53 ('sh: prefix sh-specific "CCR" and
+"CCR2" by "SH_"').
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- sound/pci/Kconfig |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/sound/emu10k1.h |    2 --
+ 1 file changed, 2 deletions(-)
 
---- linux-3.14-rc6.orig/sound/pci/Kconfig	2014-02-09 16:53:07.699734368 +0100
-+++ linux-3.14-rc6/sound/pci/Kconfig	2014-03-10 20:52:21.908690341 +0100
-@@ -276,7 +276,7 @@ config SND_CS46XX_NEW_DSP
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index dfb42ca6d043..c46908c1bb3f 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -436,8 +436,6 @@
+ #define CCCA_CURRADDR_MASK	0x00ffffff	/* Current address of the selected channel		*/
+ #define CCCA_CURRADDR		0x18000008
  
- config SND_CS5530
- 	tristate "CS5530 Audio"
--	depends on ISA_DMA_API
-+	depends on ISA_DMA_API && (X86_32 || COMPILE_TEST)
- 	select SND_SB16_DSP
- 	help
- 	  Say Y here to include support for audio on Cyrix/NatSemi CS5530 chips.
-@@ -286,6 +286,7 @@ config SND_CS5530
- 
- config SND_CS5535AUDIO
- 	tristate "CS5535/CS5536 Audio"
-+	depends on X86_32 || COMPILE_TEST
- 	select SND_PCM
- 	select SND_AC97_CODEC
- 	help
-
+-/* undefine CCR to avoid conflict with the definition for SH */
+-#undef CCR
+ #define CCR			0x09		/* Cache control register				*/
+ #define CCR_CACHEINVALIDSIZE	0x07190009
+ #define CCR_CACHEINVALIDSIZE_MASK	0xfe000000	/* Number of invalid samples cache for this channel    	*/
 -- 
-Jean Delvare
-SUSE L3 Support
+1.7.9.5
+
