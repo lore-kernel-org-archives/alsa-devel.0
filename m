@@ -1,20 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: davinci-evm: Add AM43xx-EPOS-EVM
-	audio support
-Date: Mon, 10 Mar 2014 11:09:26 +0000
-Message-ID: <20140310110926.GX28112@sirena.org.uk>
-References: <5315DF41.1090302@metafoo.de>
- <1393947831-26116-1-git-send-email-jsarha@ti.com>
- <20140305014259.GR13126@sirena.org.uk> <5319BF67.3060403@ti.com>
- <20140309081102.GL28112@sirena.org.uk> <531D98D4.7080806@ti.com>
+Subject: Re: [PATCH] ASoC: si476x: Fix IO setup
+Date: Mon, 10 Mar 2014 11:26:16 +0000
+Message-ID: <20140310112616.GB28112@sirena.org.uk>
+References: <1393922513-31824-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4405393151126461446=="
+Content-Type: multipart/mixed; boundary="===============3508478544910593408=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 287992650AC
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 12:09:32 +0100 (CET)
-In-Reply-To: <531D98D4.7080806@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 151E126507F
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 12:26:35 +0100 (CET)
+In-Reply-To: <1393922513-31824-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,65 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, lars@metafoo.de, detheridge@ti.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Andrey Smirnov <andrey.smirnov@convergeddevices.net>, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4405393151126461446==
+--===============3508478544910593408==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oFYJDJkv0E+Y9r9L"
+	protocol="application/pgp-signature"; boundary="LxaJkMtlT1pByyLD"
 Content-Disposition: inline
 
 
---oFYJDJkv0E+Y9r9L
+--LxaJkMtlT1pByyLD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 10, 2014 at 12:49:56PM +0200, Jyri Sarha wrote:
-> On 03/09/2014 10:11 AM, Mark Brown wrote:
+On Tue, Mar 04, 2014 at 09:41:53AM +0100, Lars-Peter Clausen wrote:
+> The si476x is a MFD device and the CODEC driver is using the regmap struct of
+> the parent device, hence automatic IO setup will not work and we need to
+> manually call snd_soc_codec_set_cache_io(). The issue was introduced commit
+> d6173df35f ("ASoC: si476x: Remove custom register I/O implementation")
 
-> >No, it shouldn't do any inversion.  If inversion is required one of the
-> >drivers is buggy, they are CODEC bit master and CPU bit master so for a
-> >CPU driver the sense should be inverted when parsing.
+Applied, thanks.  Please if you're listing which commit is being fixed
+do it using a Fixes tag - it makes it easier to apply.
 
-> Yes, that is the problem. The same code in simple-card parses the
-> codec node and cpu-dai node and they produce the same
-> SND_SOC_DAIFMT_C??_C?? flags for both codec and cpu-dai drivers.
-
-Sorry, thinko above - the master flags are specified in terms of the
-CODEC.  Anything interpreting them that isn't a CODEC needs to be
-inverting the sense.
-
---oFYJDJkv0E+Y9r9L
+--LxaJkMtlT1pByyLD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTHZ1iAAoJELSic+t+oim9w+8QAIr/ZVIvmgx7zQbTl7Kbo7Xm
-9BkCY9Dn0nRo7CpwQKzP712CdjwsLVgorZm0wpFvT5Gci4PyH37TP9unhV9R+B8k
-uWBp5KCW5LC/mp4vVWqjSDEAnCSGdfL70k4zYm93iQJByHQossPPxCmjJn/ImHPB
-S6+JnfYluror4SLDvtwQ047V7NGsxROKuTzbsTBOjDJ8kGKBLFDaE6OCUGzpzy+o
-4iUqse9C7M1SIgWgmYm8OTzR0PasYlbnl89jWB+UUFZRhDDRpN48jghk6OcS19nj
-XsXYmSkwxhOXyLm4fnTCHZmhsh34ZtniK0gIw5+On5Gea+tUbF2muZoscIFCm4nn
-L+meWyWy5pms2J49P+eRlH4H9UCZHxD5kmlksSLZu/5uynLQhOos+1nLvxEz7MDh
-kp2k2tDFwwQjuZStAkUauEam6+KNhYhG1R+wAcXMAuzHEktNNg8Cb89IMAHIHc5l
-4RAd+B/Qk+VfX6F62ZjLfpXMciD4qne57jiPLURXshBVGjfpebuTu9F867ti6rPY
-3yQMEZRd0X7xw/YKgpHwnmVDuVFkjCxAPtXwermH0I9HkVHn4pg/4+EO6OL4ExVx
-RMAOJWXc/Z/Vo4Y7SMLt4r0MqTJdx7NfyWVVVpOIbUdqr/D3uzTWWu9DsMuW1JEj
-gpeBmL+RzlveSTIX5fCM
-=NEYO
+iQIcBAEBAgAGBQJTHaFVAAoJELSic+t+oim91PkP/A56bbj6X2W5o7zqs4y4dvuu
+0Sb4hwQ8kCquXizuA5SY45N4ZCLGeCl0zDJYMySbJE4Zx2tO28YJuGM2py83Bix8
+oq4V13JrfURcZJ0hEcMZt3AztlzLNdc62wTT4b3mVvi1znigl2r4vS8d9FPQu4m7
+89Ez8TYfQQxGXp/MibazYkA2GkLz+TlFdlH46DvIh9TOemvkOm3Fgrp9EPeGYaGf
+nj6Dpx0bbEDf2TvKb1EQUdvtHZVkrC9LHjKQxZ+M700MUgV4gRJNSKY0J6gKDtyj
+sfTWXOH1rFNZFvdWY65aJ7Ty1tjAJJLoLaUrY7ELZLbNPzlvBlwQfa5eSH9Pd2jO
+oV1TXSXVz0J5H8S1+hW06WQvwbmmfmtcIw0Wm6uycnhIXlzQkeJAS5CulTGMLkv9
+pl+I3F3ahXZd6ZmPh7hSwBTzLLNKozKlslWZWnAunW0Oth0ROKZDnNsyLvsR0DR5
+5HEmWQ+3LAsP82xB8OOdmauUH+y0hVbghsfjp4bjFklB2K+k7/OXHT1MKQF76XKO
+DeRoCUhBnsKnU4Ky9KQ+fuCE0ao4KP1mBbnpINUflGn3PR/vj44or+w4EoGcupSY
+HGQF/x4E5HapFSEdMVQ5Al9vLxdK/FCPIufxO0Dn2X7cHBK1QE/kD5geZdYYT4uY
+XFf7w7ElMlBPQY+HAaXI
+=HeRH
 -----END PGP SIGNATURE-----
 
---oFYJDJkv0E+Y9r9L--
+--LxaJkMtlT1pByyLD--
 
---===============4405393151126461446==
+--===============3508478544910593408==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4405393151126461446==--
+--===============3508478544910593408==--
