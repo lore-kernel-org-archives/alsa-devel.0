@@ -1,40 +1,61 @@
-From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH v4] ASoC: tlv320aic31xx: Add basic codec driver implementation
-Date: Mon, 10 Mar 2014 15:25:41 +0200
-Message-ID: <531DBD55.6030008@ti.com>
-References: <cover.1394440470.git.jsarha@ti.com> <dc68ce35a3f44b5c8a55be928e06f72f463338fa.1394440470.git.jsarha@ti.com> <20140310125848.GI28112@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/9] ASoC: arizona: Move calculation of
+	FLL	configuration
+Date: Mon, 10 Mar 2014 13:27:22 +0000
+Message-ID: <20140310132722.GM8570@opensource.wolfsonmicro.com>
+References: <1394210065-23941-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1394210065-23941-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20140309082649.GO28112@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140310125848.GI28112-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 035DC265167
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 14:27:23 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20140309082649.GO28112@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, lgirdwood@gmail.com, sameo@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/10/2014 02:58 PM, Mark Brown wrote:
-> On Mon, Mar 10, 2014 at 10:52:21AM +0200, Jyri Sarha wrote:
->
->> >+- ai31xx-micbias-vg - MicBias Voltage setting
->> >+        0 or MICBIAS_OFF - MICBIAS output it not powered
-> So, on every other version of this patch set I've suggested removing
-> this as there's no reason why the bias would be wired up but disabled.
-> Each time you seem to agree that the option should be removed yet here
-> it is again...
->
+On Sun, Mar 09, 2014 at 08:26:49AM +0000, Mark Brown wrote:
+> On Fri, Mar 07, 2014 at 04:34:20PM +0000, Charles Keepax wrote:
+> > Currently the FLL configuration is calculated before it is known which
+> > FLL path the configuration will be applied to. Newer versions of the IP
+> > have differences in the configuration required for each FLL path, which
+> > makes it complicated to calculate the FLL configuration in advance.
+> > 
+> > This patch simply checks the validity of a requested input and output
+> > frequency before we know which FLL path they will be applied to and
+> > saves the actual calculation of the configuration until we know where
+> > the settings will be applied.
+> 
+> I'll apply this but are you sure that this validity check is actually
+> accurate?  For some of the devices there were input/output
+> configurations that couldn't be reached due to constraints in the system
+> even though both input and output were in range.
 
-I agreed on not to have it as the default. I can still imagine couple of 
-reason to have this option around. For instance, if the board designer 
-decides to pull the bias voltage from outside of the chip completely, or 
-like in my test setup when I feed the mic input from a headset output of 
-another device, because I do not have a microphone around ATM.
+Only thing I can find directly is sub 5kHz as an input clock
+would be a problem  on some parts but that is unlikely to ever happen
+in practice. Naturally there is the granularity of the multipliers
+as well but the step on that appears small enough that I wouldn't
+be overly concerned about the error, given there is ~46-bits
+worth of options there.
 
-But if you want it removed, I'll do it.
+Also the error checking matches what was there before the patch,
+ie. anything that pass here would also have passed the old
+implementation. So even if I am missing something it should be as
+robust as the old solution.
 
-Best regards,
-Jyri
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Charles
