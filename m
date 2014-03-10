@@ -1,48 +1,87 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [PATCHv3 1/3] ASoC: codec: Simplify ASoC probe code.
-Date: Mon, 10 Mar 2014 03:51:40 +0000
-Message-ID: <0dbba1debfd149a6a5e3985349a95793@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1393814545-15002-1-git-send-email-Li.Xiubo@freescale.com>
- <1393814545-15002-2-git-send-email-Li.Xiubo@freescale.com>
- <20140303045952.GO2411@sirena.org.uk>
- <5bc570ec866541a68df5813ffbe3168e@BY2PR03MB505.namprd03.prod.outlook.com>
- <20140304043603.GI2411@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 05/39] firewire-lib: Add support for AMDTP
+ in-stream and PCM capture
+Date: Mon, 10 Mar 2014 12:55:59 +0900
+Message-ID: <531D37CF.406@sakamocchi.jp>
+References: <5316963F.1000206@sakamocchi.jp>
+ <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1394016507-15761-6-git-send-email-o-takashi@sakamocchi.jp>
+ <531CD0FA.9090506@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140304043603.GI2411@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB1F1265607
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 04:56:05 +0100 (CET)
+In-Reply-To: <531CD0FA.9090506@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-> Subject: Re: [PATCHv3 1/3] ASoC: codec: Simplify ASoC probe code.
-> 
-> On Mon, Mar 03, 2014 at 07:24:36AM +0000, Li.Xiubo@freescale.com wrote:
-> 
-> > > >  	/* Default to using ALC auto offset calibration mode. */
-> > > >  	snd_soc_update_bits(codec, DA7213_ALC_CTRL1,
-> > > >  			    DA7213_ALC_CALIB_MODE_MAN, 0);
-> 
-> > > This one will fail.
-> 
-> > Sorry, I'm not very understand why will this fail ? Before the ASoC probe,
-> > the ASoC core will set the I/O.
-> > :)
-> 
-> OK, that's now been refactored.
+(Mar 10 2014 05:37), Clemens Ladisch wrote:
+> Please format the if/else branches in the same way.
 
-@Mark, @Lars,
+Do you mean these codes should be like this?:
+###
+if (s->direction == AMDTP_OUT_STREAM) {
+	if (s->dual_wire)
+		s->transfer_samples = amdtp_write_s32_dualwire;
+	else
+		s->transfer_samples = amdtp_write_s32;
+} else {
+	if (s->dual_wire)
+		s->transfer_samples = amdtp_read_s32_dualwire;
+	else
+		s->transfer_samples = amdtp_read_s32;
+}
+###
 
-Has there any other problems about this patch series? And this I had tested on
-our Vybrid-Twr board based on SGTL5000 codec and SAI drivers. If not, I can
-continue with my second patches series about " Remove set_cache_io entirely from
-ASoC probe".
+> (AMDTP_FDF_NO_DATA << CIP_FDF_SFC_SHIFT) would be a constant that could
+> be computed at compile time.
 
-Thanks very much.
+It's nice, OK.
 
---
-Best Regards,
-Xiubo
+> In practice, this error means that a packet was dropped.
+
+In theory, it's true.
+
+But BeBoB based devices have a quirk related to this. (I forgot to 
+mention about it.) Just after connecting, they transmit packets with 
+0x00 for its DBC field.
+
+Yamaha GO46:
+[13803.762518] 00050000 9001ffff
+[13803.762523] 00050000 9001ffff
+[13803.762525] 00050000 9001ffff
+[13803.762527] 00050000 9001ffff
+...
+[13804.737925] 00050000 90014a1d
+[13804.737927] 00050008 90016387
+[13804.737929] 00050010 9001ffff
+...
+
+ > I guess this doesn't actually happen too often, but eventually, we should
+> handle this either by inserting some samples or by stopping the stream.
+
+So if doing something for this state, we shouldn't stop streams (of 
+cource, we can add a flag for BeBoB.) We should insert some zero PCM 
+samples or zero MIDI messages.
+
+But this idea forces PCM/MIDI functionality to work for these 
+meaningless data. I think it's a waste of resources.
+
+
+Thanks
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
