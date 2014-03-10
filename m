@@ -1,76 +1,69 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH RFC 2/2] ASoC: simple-card: Take snd_soc_of_parse_daifmt() change in to account
-Date: Mon, 10 Mar 2014 13:28:38 +0200
-Message-ID: <17e88098b67762008c06709afa5933212d94715d.1394450178.git.jsarha@ti.com>
-References: <cover.1394450178.git.jsarha@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/3] ASoC: omap-abe-twl6040: No need to
+ register DMIC routes seperatly
+Date: Mon, 10 Mar 2014 12:29:33 +0100
+Message-ID: <531DA21D.5080402@metafoo.de>
+References: <1394302616-15991-1-git-send-email-lars@metafoo.de>
+ <531D7427.5020006@ti.com> <531D756A.6000505@metafoo.de>
+ <20140310091250.GD28112@sirena.org.uk> <531D84E1.8050706@metafoo.de>
+ <20140310101038.GO28112@sirena.org.uk> <531D939B.4050102@metafoo.de>
+ <20140310110502.GW28112@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <cover.1394450178.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, detheridge@ti.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-129.synserver.de (smtp-out-220.synserver.de
+ [212.40.185.220])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92E5526507F
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 12:28:56 +0100 (CET)
+In-Reply-To: <20140310110502.GW28112@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-snd_soc_of_parse_daifmt() needs to know if it is parsing a cpu-dai node.
+On 03/10/2014 12:05 PM, Mark Brown wrote:
+> On Mon, Mar 10, 2014 at 11:27:39AM +0100, Lars-Peter Clausen wrote:
+>> On 03/10/2014 11:10 AM, Mark Brown wrote:
+>
+>>> The only thing that should be registering
+>>> things for other components is the card and the general idea was to
+>>> register everything in late_probe().
+>
+>> What most machine drivers did before card table based setup is to
+>> have a per-component callback in which they did register the card
+>> DAPM elements associated with that component. E.g. routes from the
+>> CODEC output to a speaker, etc. You couldn't register the card level
+>> DAPM elements for one component in the init callback component of
+>> another one since the routes depend on the widgets being registered
+>> first. So those board drivers kept separate routes and widget tables
+>> for separate components. With table based setup for the card the
+>
+> I'm sorry but this just isn't what was happening at all.  Remember that
+> most of the code that you're looking at only ever had one component so
+> it really never made any difference which callback people happened to
+> pick so long as it was one of the ones that ran after the CODEC was up.
+>
+> The only driver that I can think of which did anything like what you
+> describe was smdk-wm8580 and that was still only using one component,
+> it's just that Jassi preferred to split the input and output paths since
+> the DAIs were separate on the CODEC and he felt that was clearer.  It
+> didn't make any practical difference, it certainly wasn't due to startup
+> ordering.
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- sound/soc/generic/simple-card.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+Take a look at e.g. omap/rx51.c it's doing what I'm describing and I presume 
+it does this for the reasons I described.
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 7cabcc5..7cbbf44 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -87,7 +87,8 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 			      unsigned int daifmt,
- 			      struct asoc_simple_dai *dai,
- 			      const struct device_node **p_node,
--			      const char **name)
-+			      const char **name,
-+			      bool is_cpu_dai_node)
- {
- 	struct device_node *node;
- 	struct clk *clk;
-@@ -117,7 +118,7 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 	 * bitclock-master,    frame-master
- 	 * and specific "format" if it has
- 	 */
--	dai->fmt = snd_soc_of_parse_daifmt(np, NULL);
-+	dai->fmt = snd_soc_of_parse_daifmt(np, NULL, is_cpu_dai_node);
- 	dai->fmt |= daifmt;
- 
- 	/*
-@@ -165,7 +166,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	snd_soc_of_parse_card_name(&priv->snd_card, "simple-audio-card,name");
- 
- 	/* get CPU/CODEC common format via simple-audio-card,format */
--	priv->daifmt = snd_soc_of_parse_daifmt(node, "simple-audio-card,") &
-+	priv->daifmt = snd_soc_of_parse_daifmt(node, "simple-audio-card,", 0) &
- 		(SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_INV_MASK);
- 
- 	/* off-codec widgets */
-@@ -191,7 +192,8 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
- 						  &priv->cpu_dai,
- 						  &dai_link->cpu_of_node,
--						  &dai_link->cpu_dai_name);
-+						  &dai_link->cpu_dai_name,
-+						  true);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -202,7 +204,8 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
- 						  &priv->codec_dai,
- 						  &dai_link->codec_of_node,
--						  &dai_link->codec_dai_name);
-+						  &dai_link->codec_dai_name,
-+						  false);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-1.7.9.5
+But it doesn't really matter. The important thing about this series is that 
+card level DAPM elements and controls should be registered with the card not 
+the CODEC and I think we can agree on that one.
 
+- Lars
