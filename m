@@ -1,22 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/3] ASoC: omap-abe-twl6040: No need to
- register DMIC routes seperatly
-Date: Mon, 10 Mar 2014 12:29:33 +0100
-Message-ID: <531DA21D.5080402@metafoo.de>
-References: <1394302616-15991-1-git-send-email-lars@metafoo.de>
- <531D7427.5020006@ti.com> <531D756A.6000505@metafoo.de>
- <20140310091250.GD28112@sirena.org.uk> <531D84E1.8050706@metafoo.de>
- <20140310101038.GO28112@sirena.org.uk> <531D939B.4050102@metafoo.de>
- <20140310110502.GW28112@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: 88pm860: Fix IO setup
+Date: Mon, 10 Mar 2014 11:29:38 +0000
+Message-ID: <20140310112938.GC28112@sirena.org.uk>
+References: <1393922364-31624-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9200909599141380221=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-129.synserver.de (smtp-out-220.synserver.de
- [212.40.185.220])
- by alsa0.perex.cz (Postfix) with ESMTP id 92E5526507F
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 12:28:56 +0100 (CET)
-In-Reply-To: <20140310110502.GW28112@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 232CC2656EF
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 12:29:45 +0100 (CET)
+In-Reply-To: <1393922364-31624-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,44 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grazvydas Ignotas <notasas@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/10/2014 12:05 PM, Mark Brown wrote:
-> On Mon, Mar 10, 2014 at 11:27:39AM +0100, Lars-Peter Clausen wrote:
->> On 03/10/2014 11:10 AM, Mark Brown wrote:
->
->>> The only thing that should be registering
->>> things for other components is the card and the general idea was to
->>> register everything in late_probe().
->
->> What most machine drivers did before card table based setup is to
->> have a per-component callback in which they did register the card
->> DAPM elements associated with that component. E.g. routes from the
->> CODEC output to a speaker, etc. You couldn't register the card level
->> DAPM elements for one component in the init callback component of
->> another one since the routes depend on the widgets being registered
->> first. So those board drivers kept separate routes and widget tables
->> for separate components. With table based setup for the card the
->
-> I'm sorry but this just isn't what was happening at all.  Remember that
-> most of the code that you're looking at only ever had one component so
-> it really never made any difference which callback people happened to
-> pick so long as it was one of the ones that ran after the CODEC was up.
->
-> The only driver that I can think of which did anything like what you
-> describe was smdk-wm8580 and that was still only using one component,
-> it's just that Jassi preferred to split the input and output paths since
-> the DAIs were separate on the CODEC and he felt that was clearer.  It
-> didn't make any practical difference, it certainly wasn't due to startup
-> ordering.
 
-Take a look at e.g. omap/rx51.c it's doing what I'm describing and I presume 
-it does this for the reasons I described.
+--===============9200909599141380221==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aCdJlaQyeKyXI/LY"
+Content-Disposition: inline
 
-But it doesn't really matter. The important thing about this series is that 
-card level DAPM elements and controls should be registered with the card not 
-the CODEC and I think we can agree on that one.
 
-- Lars
+--aCdJlaQyeKyXI/LY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Mar 04, 2014 at 09:39:24AM +0100, Lars-Peter Clausen wrote:
+> The 88pm860 is a MFD device and the CODEC driver is using the regmap struct of
+> the parent device, hence automatic IO setup will not work and we need to
+> manually call snd_soc_codec_set_cache_io(). The issue was introduced in commit
+> f9ded3b2e7 ("ASoC: 88pm860x: Use regmap for I/O").
+
+Applied, thanks.  Please do use Fixes:
+
+--aCdJlaQyeKyXI/LY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTHaIfAAoJELSic+t+oim9I3oP/iwFnRSzoUT5EgpVdAS61r2q
+acRa8prDApbZ0MGZgrNCka0x/TjTixi4ef2K6EtYXBhaazOGNcSzZTrEflzU5xs+
+tYMto6SZngpaSTDd2Is3PjtTQGbm/J7LkoV5Dscp31f/Fg9GwIUtFujUSGWMnvBj
+YSU0ymwkCAnC2Ume4FRtsFlCf47JGg4Rw0rwIDwXSIKRmK1TZ6LI4c3E79w7icWN
+ZOH002DfAwdnx8K7yB137AbSH/wtUOC6SnibDeDbRJpOw0UrwQnP9ASzLMYrv+5H
+dE3P9Q5vSe1laVJ6PfLONHeXQL+KzwOh5o/b57pDzFDBvwGCVrXmMY4SuHA5TbWJ
+AEFhNSOyCgEM8urMHo1sIBB8A97Bnpb38URBVNtxXcdePjWxNe/67yjwX0rpvNcQ
+qK9hloGfURIsYRCP/u1POCzcZEG2nO9r7xd2qyLR7F+DSf9SGZ2Sygsd+D/RNU4J
+RBglKmnYlPZd+8BhWSPC87lyMTeR8L9g6D/XZCEu60OPfOzfTTB+YwXvavNEsF35
+g2joa7EwlxFotVt8oHaEOqlLvTU7crVL7CdoScJyHK8xpCqDLkZt+JrKs7f0QOMQ
+grj758kgaLpYKuRMZs/3i3se3SKEzzKRzGKJbcbNUl3egsg2VbPgxxiWiHc+Q3cN
+/azs5bqSZici/PpN7dSZ
+=+LMr
+-----END PGP SIGNATURE-----
+
+--aCdJlaQyeKyXI/LY--
+
+--===============9200909599141380221==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9200909599141380221==--
