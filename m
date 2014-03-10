@@ -1,20 +1,22 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v3] ASoC: davinci-evm: Add AM43xx-EPOS-EVM
-	audio support
-Date: Mon, 10 Mar 2014 12:49:56 +0200
-Message-ID: <531D98D4.7080806@ti.com>
-References: <5315DF41.1090302@metafoo.de>
- <1393947831-26116-1-git-send-email-jsarha@ti.com>
- <20140305014259.GR13126@sirena.org.uk> <5319BF67.3060403@ti.com>
- <20140309081102.GL28112@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: omap-abe-twl6040: No need to
+ register DMIC routes seperatly
+Date: Mon, 10 Mar 2014 11:05:03 +0000
+Message-ID: <20140310110502.GW28112@sirena.org.uk>
+References: <1394302616-15991-1-git-send-email-lars@metafoo.de>
+ <531D7427.5020006@ti.com> <531D756A.6000505@metafoo.de>
+ <20140310091250.GD28112@sirena.org.uk>
+ <531D84E1.8050706@metafoo.de>
+ <20140310101038.GO28112@sirena.org.uk>
+ <531D939B.4050102@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4973538633005903527=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F34B265113
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 11:50:01 +0100 (CET)
-In-Reply-To: <20140309081102.GL28112@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6407F265132
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 12:05:23 +0100 (CET)
+In-Reply-To: <531D939B.4050102@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,40 +26,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, lars@metafoo.de, detheridge@ti.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/09/2014 10:11 AM, Mark Brown wrote:
-> On Fri, Mar 07, 2014 at 02:45:27PM +0200, Jyri Sarha wrote:
->
->> >However, I think there is a problem with simple-card. It does not
->> >invert bitclock-master and frame-master values when converting them
->> >to CB[SM] and CF[SM] for cpu_dai as I think it should. I can get
->> >around it by setting the both cpu-dai and the codec as bclk and
->> >frame masters in the sound node. I volunteer to fix this if you
->> >agree.
-> No, it shouldn't do any inversion.  If inversion is required one of the
-> drivers is buggy, they are CODEC bit master and CPU bit master so for a
-> CPU driver the sense should be inverted when parsing.
 
-Yes, that is the problem. The same code in simple-card parses the codec 
-node and cpu-dai node and they produce the same SND_SOC_DAIFMT_C??_C?? 
-flags for both codec and cpu-dai drivers.
+--===============4973538633005903527==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="U52+7H1OQL9AQ16A"
+Content-Disposition: inline
 
-For example:
 
-	simple-audio-card,cpu {
-		sound-dai = <&mcasp1>;
-	};
+--U52+7H1OQL9AQ16A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-causes SND_SOC_DAIFMT_CBS_CFS flags to be set to mcasp driver in 
-set_dai_fmt() call. So omitting the bitclock-master and frame-master 
-parameters from cpu-dai node strangely indicates that the cpu-dai should 
-be the bitclock and frame master. Can this be right?
+On Mon, Mar 10, 2014 at 11:27:39AM +0100, Lars-Peter Clausen wrote:
+> On 03/10/2014 11:10 AM, Mark Brown wrote:
 
-If you do not want to have the inversion, could we at least call the 
-parameters codec-bitclock-master and codec-frame-master.
+> >The only thing that should be registering
+> >things for other components is the card and the general idea was to
+> >register everything in late_probe().
 
-Best regards,
-Jyri
+> What most machine drivers did before card table based setup is to
+> have a per-component callback in which they did register the card
+> DAPM elements associated with that component. E.g. routes from the
+> CODEC output to a speaker, etc. You couldn't register the card level
+> DAPM elements for one component in the init callback component of
+> another one since the routes depend on the widgets being registered
+> first. So those board drivers kept separate routes and widget tables
+> for separate components. With table based setup for the card the
+
+I'm sorry but this just isn't what was happening at all.  Remember that
+most of the code that you're looking at only ever had one component so
+it really never made any difference which callback people happened to
+pick so long as it was one of the ones that ran after the CODEC was up.
+
+The only driver that I can think of which did anything like what you
+describe was smdk-wm8580 and that was still only using one component,
+it's just that Jassi preferred to split the input and output paths since
+the DAIs were separate on the CODEC and he felt that was clearer.  It
+didn't make any practical difference, it certainly wasn't due to startup
+ordering.
+
+> routes are registered after all components have been registered,
+> which means you can register all the routes via one table since all
+> the dependencies are ready. Same is true if you use the card's
+> late_probe callback to register the DAPM routes and widgets.
+
+Right, anything that actually cared would be using the late_probe()
+callback.
+
+--U52+7H1OQL9AQ16A
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTHZxbAAoJELSic+t+oim9Bn4P/2bBM6MFSDsvic/LkZNrnf2U
+9SK1i5c80o7gaj6g7rbiQxihBvFl3mNnn+DL70wMdbVltektdggTgqfLJAP8FsDG
+r1fPBrY+Q3Rx5okjbv6EKY4rjpykPnE+omrTltkpZ14fjr8iDo3TRC0YvTCi0Erp
+wMtKb/euxdGpXKFGaxAC+Mn8sTe6sqcDBrhDP7PlcOR3zJ9IsVStNX99zvYnJnFu
+rK+IdgHtOQTMcEC+ZVUq5oNKcDxAJIyfEr4U32BbB4Spe88SCNBwWP0hKZ1EoRDW
+2vfZveyamFLGikVspWF1/JYhMavBY6DT7+70AVIuiSzXLhpI4YjC25HUXA0+fjMu
+9MX/xzcUBhHEurK0TTjqvgotUQ4Mj8f29v0hQkU30RC3DJhcEjrYQoXnpEaX+LYu
+EoWDPKLuJ+uAdrdjDnHIUG3W28HOMxNAbC1C6kBqkxJ6mE7I8JnmOauaOoQN6net
+bsoOj8UEc1CtGDq/O6x4nhK+TK6G6ZIvlMEksZqqolPy3fQlJOiBbIIl0CnXWGZ+
+yqYDD9f1nL0HCZU6CSZ4b5ve156RO3AFQfE/+ojL0tNHvRl1cl3kAwzBI0gGywt4
+iuFgNWwKWNp6fy+ATHMG1+E2/0/u8Ci7kkjhpkvu77DW1quAzTrT7J1+Re/2DHax
+9Kje+uqnxBCrGN5l2mTB
+=Z2VY
+-----END PGP SIGNATURE-----
+
+--U52+7H1OQL9AQ16A--
+
+--===============4973538633005903527==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4973538633005903527==--
