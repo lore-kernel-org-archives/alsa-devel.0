@@ -1,62 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4] ASoC: tlv320aic31xx: Add basic codec driver
- implementation
-Date: Mon, 10 Mar 2014 12:11:49 +0000
-Message-ID: <20140310121149.GF28112@sirena.org.uk>
-References: <cover.1394440470.git.jsarha@ti.com>
- <dc68ce35a3f44b5c8a55be928e06f72f463338fa.1394440470.git.jsarha@ti.com>
- <20140310120938.GJ14999@e106331-lin.cambridge.arm.com>
+Subject: Re: [PATCH v2 1/3] ASoC: Consolidate
+ snd_soc_register_dai() and snd_soc_register_dais()
+Date: Mon, 10 Mar 2014 12:19:15 +0000
+Message-ID: <20140310121915.GH28112@sirena.org.uk>
+References: <1394383307-7224-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7+J38Rf7xqVaSgUf"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140310120938.GJ14999@e106331-lin.cambridge.arm.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Jyri Sarha <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "detheridge@ti.com" <detheridge@ti.com>
+Content-Type: multipart/mixed; boundary="===============8320791246755303452=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9775D265113
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 13:19:23 +0100 (CET)
+In-Reply-To: <1394383307-7224-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---7+J38Rf7xqVaSgUf
+--===============8320791246755303452==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aq8B+PobjgurrfqM"
+Content-Disposition: inline
+
+
+--aq8B+PobjgurrfqM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 10, 2014 at 12:09:38PM +0000, Mark Rutland wrote:
-> On Mon, Mar 10, 2014 at 08:52:21AM +0000, Jyri Sarha wrote:
+On Sun, Mar 09, 2014 at 05:41:45PM +0100, Lars-Peter Clausen wrote:
+> snd_soc_register_dais() has basically the same code as snd_soc_register_dai(),
+> but running in a loop. The only difference is that snd_soc_register_dai() calls
 
-> > +        1 or MICBIAS_2_0V - MICBIAS output is powered to 2.0V
-> > +        2 or MICBIAS_2_5V - MICBIAS output is powered to 2.5V
-> > +        3 or MICBIAS_AVDD - MICBIAS output is connected to AVDD
-> > +       If this node is not mentioned or if the value is unknown, then
-> > +       micbias is set to 2.0V.
+Applied all, thanks.
 
-> Why does the dts write need to select these -- what prevents this
-> getting selected dynamically?
-
-It's a property of the system integration - the board will be designed
-to bias the microphone at some voltage.
-
---7+J38Rf7xqVaSgUf
+--aq8B+PobjgurrfqM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTHawCAAoJELSic+t+oim9uoEP/iOpX1L8a/ZT0Il6IzHtmk43
-sRRUcTsv5Z/w8mjtNgHbXJz9g27oeYHtk5qqkQQ+gSiVG85E6yj+Qw8RwtCC1CrE
-0obNDXvLsa8moS/h7TCbX/8q4aZBddQ3RvBxv+CX/cF5u0eNqgQCAIzYra5fMh8I
-RgBIFduJViPDsuJbUJ8dktO3V7xGRrb0Dz8aTWKk3IXOUZWMW0/9RdfLz2jU/zpx
-KqMLvWxRVhXMPXTbAOREqWNSxncM1cbef5jHJ9jbgF6Z3ZISjtHymrdshNupmVue
-l5ui9HMQUuqbljz4yvR8cTbLD8i1YNp6sSgzDsebo3x3wgEI+AbwaDb/HxAp/9Py
-ImT2CuMbSPBBnXZL6w9ST4O5aSAYeV/DItSxIK9YFaLnEO57WTODtQXboMR8OeVj
-eAGGKZJsGyeobC7yclkd6EYmbgyScxfpb6t2x/ZIo551kVRiI7uNEISLPF4phVvp
-GC6WFd/+Yr8+9SBasuWZ1PmNgY2SPy6XSnmDGCKzjQsHUW26MfDztWj70MPYKW7Z
-VyaYR7VprhAmJU1NgaAkVwFh7F3HKlzC2Ux3xT4MJMdyMGO69Zls5cGmG7dmJUXJ
-3zRmE1rqe0zrjt/KdxH5wTSsCrevqyNkIedONj4or8lLzxsqObur2wjTHzXgZgBA
-8R16mnO9SxUfqdMuKfdO
-=tl+G
+iQIcBAEBAgAGBQJTHa3AAAoJELSic+t+oim92I8P/iKSgQFAChxb4KZbQTI7PPr/
+D1vIT16Mk1QFU3AVa7gKuDmm77AbfWk7gWfxTo7+TBkOeEeBPdI59hyQkd3XhzJ4
+U9FPsHYyrXRRoU6UaXre0PDos6cQs8HrMgF1yXhcalNr3FY3urwCy9Aso54DMtZ5
+QhNDBy9xH2TDVruh0lm21WubwLBurcOucpJnixeY+kecHNYAHBPOflSidPFNRMOx
+rxMKMR0qIk864EOj3fq3KKis7IIaoTlnWtTDVRhPDUtzyJi77V+EmEgOQQsdt19J
+zQRvJimrfwIMkU9y9UAKR54sLiLeYCf+JtigHHa3V7HgP5Py7lTpTa/M0lKf8gSP
+YFw83WuNuvISHCakieKj9C1FakfhMTd5iINMw+VOMdexvJC4i0n2PTL3/tE5B7PR
+V4DVmEI9WPlE0uccmjKuNnXWfyk2D0iSCoooQrSvJo77gXCvYqlL6UnOh4YBLVum
+rfEr9QRy3w7DomhgXF0itamM+zOXselELhIkzRvjiDfXh0VBBfEF2DH+7D6lwUqt
+IW/JK5tfb5jL39sl1oTFZUq5sV1FbVGeM5TKuHPDfh3HPgn6SUbKBWUs9ykGUfxg
+WWIP3kCr1f4OfwT4IUi9r4uFbpHHrtEDrNdOoCSKTVwXveuGYuL1Z5sRR36rjunn
+ihar1K1TMJNpPCSooYoz
+=STAc
 -----END PGP SIGNATURE-----
 
---7+J38Rf7xqVaSgUf--
+--aq8B+PobjgurrfqM--
+
+--===============8320791246755303452==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8320791246755303452==--
