@@ -1,56 +1,63 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: About ALSA SoC cpu/codec asymmetry
-Date: Mon, 10 Mar 2014 08:56:08 +0100
-Message-ID: <531D7018.4020108@metafoo.de>
-References: <8738iqst0t.wl%kuninori.morimoto.gx@gmail.com>
- <531D5ED4.4090208@metafoo.de> <8761nmsffx.wl%kuninori.morimoto.gx@gmail.com>
- <531D664E.705@metafoo.de> <8738iqseoe.wl%kuninori.morimoto.gx@gmail.com>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [alsa-devel] [PATCHv3 1/3] ASoC: codec: Simplify ASoC probe
+ code.
+Date: Mon, 10 Mar 2014 07:56:17 +0000
+Message-ID: <dda8dfdd78154f9ab68a2b1639727493@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1393814545-15002-1-git-send-email-Li.Xiubo@freescale.com>
+ <1393814545-15002-2-git-send-email-Li.Xiubo@freescale.com>
+ <20140303045952.GO2411@sirena.org.uk>
+ <5bc570ec866541a68df5813ffbe3168e@BY2PR03MB505.namprd03.prod.outlook.com>
+ <20140304043603.GI2411@sirena.org.uk>
+ <0dbba1debfd149a6a5e3985349a95793@BY2PR03MB505.namprd03.prod.outlook.com>
+ <531D6262.3070201@metafoo.de> <20140310073826.GA28112@sirena.org.uk>
+ <531D6E2A.9060606@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-129.synserver.de (smtp-out-220.synserver.de
- [212.40.185.220])
- by alsa0.perex.cz (Postfix) with ESMTP id EBCAE264F8D
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 08:55:40 +0100 (CET)
-In-Reply-To: <8738iqseoe.wl%kuninori.morimoto.gx@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Stephen Warren <swarren@wwwdotorg.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <531D6E2A.9060606@metafoo.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/10/2014 08:20 AM, Kuninori Morimoto wrote:
->
-> Hi Lars
->
->>> I would like to have new "struct snd_soc_cpu" and "snd_soc_register_cpu()"
->>> instead of current "component" if possible.
->>> It is understandable.
->>
->> The patchset I'm working goes the other direction. The idea is to eventually
->> remove snd_soc_codec and only have snd_soc_component. With modern SoCs the
->> CPU side isn't just a dumb DAI anymore, but you often have signal routing
->> and mixing capabilities, sample rate converters, sometimes even a full DSP.
->> And then there are also those SoCs which have a DAC and/or ADC directly
->> built-in. This makes them complexity wise similar to the CODEC side and
->> having things like DAPM and our set of standard predefined kcontrols makes
->> it easier to manage them.
->
-> Ahh, very nice !
-> I can 100% agree to your idea :)
-> Sorry for my noise, I didn't know your (or ALSA SoC ?) plan
->
-> Please let me know if you need my help (maybe some test ?)
->
 
-Sure, I'll keep you on Cc for the patches.
+> Subject: Re: [alsa-devel] [PATCHv3 1/3] ASoC: codec: Simplify ASoC probe code.
+> 
+> On 03/10/2014 08:38 AM, Mark Brown wrote:
+> > On Mon, Mar 10, 2014 at 07:57:38AM +0100, Lars-Peter Clausen wrote:
+> >> On 03/10/2014 04:51 AM, Li.Xiubo@freescale.com wrote:
+> >
+> >>> Has there any other problems about this patch series? And this I had
+> tested on
+> >>> our Vybrid-Twr board based on SGTL5000 codec and SAI drivers. If not, I
+> can
+> >>> continue with my second patches series about " Remove set_cache_io
+> entirely from
+> >>> ASoC probe".
+> >
+> >> It looks good to me.
+> >
+> > I don't have the patches any more.
+> 
+> Xiubo, when you resend the patch series can you make refresh your patch 3
+> against these two patches. They should preferably go in before we change the
+> signature.
+> 
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/073785.html
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/073786.html
+> 
 
-- Lars
+@Lars,
+Yes, certainly.
+
+@Mark, @Lars,
+This two patch above should be applied firstly. And I will resent my patch
+Series later.
+
+Thanks,
+
+--
+Best Regards,
+Xiubo
