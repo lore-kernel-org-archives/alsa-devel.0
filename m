@@ -1,37 +1,58 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] Revert "ALSA: emu10k1: Fix warning: "CCR" redefined"
-Date: Mon, 10 Mar 2014 21:20:55 +0100
-Message-ID: <1394482855-18836-1-git-send-email-geert@linux-m68k.org>
-Return-path: <linux-sh-owner@vger.kernel.org>
-Sender: linux-sh-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.yj@renesas.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Zoom R16
+Date: Mon, 10 Mar 2014 20:28:41 +0000
+Message-ID: <201403102028.41556.gineera@aspect135.co.uk>
+References: <CAPrbH=vnQ-xXsRDoj30nra7hB_hDEaF6u3ov0XuDG_ZpFzb3bA@mail.gmail.com>
+ <CAPrbH=uHUhWMYiGcHKLwFYiWwGhahNqAWjio1RKECM_dUnNN6A@mail.gmail.com>
+ <CAPrbH=tQ3H1wUnK2417ap5jHSSO=y7vkBcCXBJqWn2V9sqbGHQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1.ip05ir2.opaltelecom.net (out1.ip05ir2.opaltelecom.net
+ [62.24.128.241])
+ by alsa0.perex.cz (Postfix) with ESMTP id D39D52602AD
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 21:29:15 +0100 (CET)
+In-Reply-To: <CAPrbH=tQ3H1wUnK2417ap5jHSSO=y7vkBcCXBJqWn2V9sqbGHQ@mail.gmail.com>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jason Mancine <jason@mancine.net>
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit 83fc3bc09518d42e8f5073e2a65884701dfadf19.
+On Monday 10 March 2014 14:36, Jason Mancine wrote:
+> I am still working on trying to get the R16 to work for playback.
 
-sh-specific "CCR" and "CCR2" have been prefixed by "SH_" in commit
-a5f6ea29f9a918403629f8369ae55fac6b09cb53 ('sh: prefix sh-specific "CCR" and
-"CCR2" by "SH_"').
+> So, the main question is how do I force ALSA to initialize this device at
+> 24 bit integer?
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- include/sound/emu10k1.h |    2 --
- 1 file changed, 2 deletions(-)
+Isn't the answer in Takashi's original reply...?
 
-diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
-index dfb42ca6d043..c46908c1bb3f 100644
---- a/include/sound/emu10k1.h
-+++ b/include/sound/emu10k1.h
-@@ -436,8 +436,6 @@
- #define CCCA_CURRADDR_MASK	0x00ffffff	/* Current address of the selected channel		*/
- #define CCCA_CURRADDR		0x18000008
- 
--/* undefine CCR to avoid conflict with the definition for SH */
--#undef CCR
- #define CCR			0x09		/* Cache control register				*/
- #define CCR_CACHEINVALIDSIZE	0x07190009
- #define CCR_CACHEINVALIDSIZE_MASK	0xfe000000	/* Number of invalid samples cache for this channel    	*/
--- 
-1.7.9.5
+> >  On Dec 6, 2013 11:25 AM, "Takashi Iwai" <tiwai@suse.de> wrote:
+> >> Do you mean the 24bit physical size, i.e. each frame is packed in 3
+> >> bytes?  If so, you used a wrong format.  SNDRV_PCM_FMTBIT_S24_LE is
+> >> for 24bit format packed in 32bit frame.  If you need a 3-bytes frame,
+> >> use SNDRV_PCM_FMTBIT_S24_3LE instead.
 
+Many USB devices have this...
+
+>                                 .type = QUIRK_AUDIO_FIXED_ENDPOINT,
+>                                 .data = & (const struct audioformat) {
+>                                 .formats = SNDRV_PCM_FMTBIT_S24_LE,
+
+                                 .formats = SNDRV_PCM_FMTBIT_S24_3LE,
+
+instead.  That would apply for capture also.  Or is that what you have been 
+trying?
+
+Regards
+
+Alan
