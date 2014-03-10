@@ -1,20 +1,20 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 05/39] firewire-lib: Add support for AMDTP
- in-stream and PCM capture
-Date: Mon, 10 Mar 2014 12:55:59 +0900
-Message-ID: <531D37CF.406@sakamocchi.jp>
+Subject: Re: [PATCH 06/39] firewire-lib: Add support for MIDI
+	capture/playback
+Date: Mon, 10 Mar 2014 13:13:44 +0900
+Message-ID: <531D3BF8.3090909@sakamocchi.jp>
 References: <5316963F.1000206@sakamocchi.jp>
  <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
- <1394016507-15761-6-git-send-email-o-takashi@sakamocchi.jp>
- <531CD0FA.9090506@ladisch.de>
+ <1394016507-15761-7-git-send-email-o-takashi@sakamocchi.jp>
+ <531CD39A.9090100@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id DB1F1265607
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 04:56:05 +0100 (CET)
-In-Reply-To: <531CD0FA.9090506@ladisch.de>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F509265044
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 05:13:48 +0100 (CET)
+In-Reply-To: <531CD39A.9090100@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,57 +28,30 @@ To: Clemens Ladisch <clemens@ladisch.de>
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-(Mar 10 2014 05:37), Clemens Ladisch wrote:
-> Please format the if/else branches in the same way.
+(Mar 10 2014 05:48), Clemens Ladisch wrote:
+> This is a 32-bit value.
 
-Do you mean these codes should be like this?:
-###
-if (s->direction == AMDTP_OUT_STREAM) {
-	if (s->dual_wire)
-		s->transfer_samples = amdtp_write_s32_dualwire;
-	else
-		s->transfer_samples = amdtp_write_s32;
-} else {
-	if (s->dual_wire)
-		s->transfer_samples = amdtp_read_s32_dualwire;
-	else
-		s->transfer_samples = amdtp_read_s32;
-}
-###
+OK.
 
-> (AMDTP_FDF_NO_DATA << CIP_FDF_SFC_SHIFT) would be a constant that could
-> be computed at compile time.
+Is it OK to use an assignment conversion here? Like:
+for (f = 0; f < frames; f++) {
++		buffer[s->pcm_channels + 1] = 0x00;
 
-It's nice, OK.
+> snd_rawmidi_transmit() will not write an unsused byte, and in any
+> case, zero can be a valid MIDI data byte.
 
-> In practice, this error means that a packet was dropped.
+OK. The line is needless.
 
-In theory, it's true.
+> The buffer pointer must be increased even when there is no active port.
 
-But BeBoB based devices have a quirk related to this. (I forgot to 
-mention about it.) Just after connecting, they transmit packets with 
-0x00 for its DBC field.
+Exactly. I confirm M-Audio Ozonic (opens two MIDI ports) receives wrong 
+sequence of MIDI data because of this bug...
 
-Yamaha GO46:
-[13803.762518] 00050000 9001ffff
-[13803.762523] 00050000 9001ffff
-[13803.762525] 00050000 9001ffff
-[13803.762527] 00050000 9001ffff
-...
-[13804.737925] 00050000 90014a1d
-[13804.737927] 00050008 90016387
-[13804.737929] 00050010 9001ffff
-...
+> fw_iso_context_create() can return an error code, but for s->pcm,
+> all the IS_ERR stuff is not necessary.  This should be a plain NULL
+> check.
 
- > I guess this doesn't actually happen too often, but eventually, we should
-> handle this either by inserting some samples or by stopping the stream.
-
-So if doing something for this state, we shouldn't stop streams (of 
-cource, we can add a flag for BeBoB.) We should insert some zero PCM 
-samples or zero MIDI messages.
-
-But this idea forces PCM/MIDI functionality to work for these 
-meaningless data. I think it's a waste of resources.
+OK.
 
 
 Thanks
