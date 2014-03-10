@@ -1,53 +1,47 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4] AM43xx-ePOS-EVM audio support with TLV320AIC31XX
- driver
-Date: Mon, 10 Mar 2014 09:13:50 +0000
-Message-ID: <20140310091350.GE28112@sirena.org.uk>
-References: <cover.1394440470.git.jsarha@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/3] ASoC: omap-abe-twl6040: No need to
+ register DMIC routes seperatly
+Date: Mon, 10 Mar 2014 10:24:49 +0100
+Message-ID: <531D84E1.8050706@metafoo.de>
+References: <1394302616-15991-1-git-send-email-lars@metafoo.de>
+ <531D7427.5020006@ti.com> <531D756A.6000505@metafoo.de>
+ <20140310091250.GD28112@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SkORD/+6TY6lrvPo"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <cover.1394440470.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, detheridge@ti.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-129.synserver.de (smtp-out-220.synserver.de
+ [212.40.185.220])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C1C3265200
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 10:24:12 +0100 (CET)
+In-Reply-To: <20140310091250.GD28112@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 03/10/2014 10:12 AM, Mark Brown wrote:
+> On Mon, Mar 10, 2014 at 09:18:50AM +0100, Lars-Peter Clausen wrote:
+>
+>> Hm, ok, missed that part. Makes sense. I'll respin the patch to just
+>> use the card's DAPM context when registering the DMIC DAPM routes.
+>
+> In general anything keying this stuff off DT is going to have that sort
+> of thing going on - most if not all of the things that are registering
+> in several chunks are doing so because some of it is conditional.
+>
 
---SkORD/+6TY6lrvPo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 10, 2014 at 10:52:20AM +0200, Jyri Sarha wrote:
-> Since the v3 version of the patches:
-> - Dropped "ASoC: tlv320aic32x4: Sort Makefile in alphabetic order" out=20
-
-Please don't send cover letters for single patches, if there's anything
-important put it in the patch after the --- (or in the changelog).
-
---SkORD/+6TY6lrvPo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTHYJKAAoJELSic+t+oim9El4P/im6/FQeqcEc9QGIQdtojHII
-HfTeGoRe3zzDb7P4SSn2ow+SqK2JH41LEmaqRv4VqaGNonKwkCZ2zxysa03fXuiT
-aZwWFqri9GikBJ98foKyVV/k3urpwqgFuw20pT8Y/8hbAdK6Jk5hGUuomMJqAwfo
-qQXsTXF2h9OkeH4k+/Lp+U02P1P3+79DUa6ttJeulnI+lcABQG80k+OBDKdWpyNh
-sE5HRgNvh5Jv1OF+h3HQpWFrbrUFv0qT3jE5UIhZ1D0A/d/+Wr08vwIvfFl3vJTx
-u1WoEWzACuMsdQ8PZ4VbCV9x/3VOwa3y7MIl9JkrvVbv8+TSeL5Euw7v2rMidZXU
-tDwUWMFTZXJbIjndApZF47mnDAXTiUETz4/rj7J8gmAXXPHOWFUo0IKCNBeF7Mtc
-Fkl7t/KUsc7+3XLvs7qQyE3ylkRshHWKHe1Sg6ixU4SgntowPnt3M4Sbun/tkDIk
-TMahtOSDVwk9V9CXqTZ7ygKKG2HZawzPcXHwLlaRGEjJWb4LwaORhUYgEOaZehLn
-oO92fB3U2P5/a3PIaauN0AKVMJybnAXiq2rDk9WZwnUREsN9IKoFKcS86j6ucwD9
-ZBEW6SlaPhAjzOSZh57guuh6TVRQN+e9KGLyF+heLzayDHtxwp1vaHRSw22u+T2r
-WLBd17vkXoUSygS9aia6
-=Hzrb
------END PGP SIGNATURE-----
-
---SkORD/+6TY6lrvPo--
+Before we had the support for card table based setup you'd had to register 
+them in chunks, because the components became available one after another 
+and you couldn't register DAPM elements for one component in the callback of 
+another one. When using the table based setup the widgets are registered 
+before all components are registered and the routes are registered after all 
+the components have been registered.
