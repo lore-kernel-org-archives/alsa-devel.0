@@ -1,62 +1,86 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4] ASoC: tlv320aic31xx: Add basic codec driver
- implementation
-Date: Mon, 10 Mar 2014 09:45:44 +0000
-Message-ID: <20140310094544.GM28112@sirena.org.uk>
-References: <cover.1394440470.git.jsarha@ti.com>
- <dc68ce35a3f44b5c8a55be928e06f72f463338fa.1394440470.git.jsarha@ti.com>
- <531D885C.5010104@ti.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: simple-card: Fix property name for
+	simple-audio-card, format
+Date: Mon, 10 Mar 2014 11:54:38 +0200
+Message-ID: <531D8BDE.9070507@ti.com>
+References: <1394194711-32009-1-git-send-email-peter.ujfalusi@ti.com>
+ <ca5458a9aa144c20b8c5987fa29f74a8@BY2PR03MB505.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XNnk+1bw058nV8qh"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <531D885C.5010104@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Lokesh Vutla <lokeshvutla@ti.com>
-Cc: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, detheridge@ti.com
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5FF62650BA
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 10:54:42 +0100 (CET)
+In-Reply-To: <ca5458a9aa144c20b8c5987fa29f74a8@BY2PR03MB505.namprd03.prod.outlook.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: "moinejf@free.fr" <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 03/10/2014 04:25 AM, Li.Xiubo@freescale.com wrote:
+>> --- a/sound/soc/generic/simple-card.c
+>> +++ b/sound/soc/generic/simple-card.c
+>> @@ -165,7 +165,7 @@ static int asoc_simple_card_parse_of(struct device_n=
+ode
+>> *node,
+>>  	snd_soc_of_parse_card_name(&priv->snd_card, "simple-audio-card,name");
+>>
+>>  	/* get CPU/CODEC common format via simple-audio-card,format */
+>> -	priv->daifmt =3D snd_soc_of_parse_daifmt(node, "simple-audio-card,") &
+>> +	priv->daifmt =3D snd_soc_of_parse_daifmt(node, "simple-audio-card,form=
+at")
+> =
 
---XNnk+1bw058nV8qh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> =
 
-On Mon, Mar 10, 2014 at 03:09:40PM +0530, Lokesh Vutla wrote:
-> Hi Jyri,
->=20
-> Just a few minor comments...
-> On Monday 10 March 2014 02:22 PM, Jyri Sarha wrote:
-> > This commit adds a bare bones driver support for TLV320AIC31XX family
-> > audio codecs. The driver adds basic stereo playback trough headphone
-> > and speaker outputs and mono capture trough microphone inputs.
+> @Peter
+> =
 
-You've quoted the entire mail here but added only (as far as I can tell)
-three lines of content - don't do that, it makes it harder to find what
-you've added to the mail.  Instead delete context that you're not
-replying to from the mail.
+> Sorry, the interface of snd_soc_of_parse_daifmt(struct device_node *np,
+> const char *prefix), it's intended not only to parse the 'XXX,format', bu=
+t also
+> 'XXX,continuous-clock', 'XXX, bitclock-inversion', 'XXX, frame-inversion',
+> 'XXX,bitclock-master' and 'XXX,frame-master' at the same time.
 
---XNnk+1bw058nV8qh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Yes, I overlooked that. I have not checked the snd_soc_of_parse_daifmt() be=
+fore.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+> Maybe just the comment here is not very correct.
 
-iQIcBAEBAgAGBQJTHYnEAAoJELSic+t+oim93lQP/17Zwcu64J9tbqC2bmtWpN66
-nyxuT/3JWagvh7O3KbUwcuxsAMeJGyX9kisx5b5o4Mn16oPUXtwtjklLuYqywFBW
-77h3m2PODLux6kAY1UdFRBKmv6ZLhL0uFqUJwggEnsrKlJx6imh7P3TcGBM63kMN
-4zXqWBq+/PDR1oNurJ/unG/FkYI3Jc+q3b1V24CTW6JZ7rEMIvI3GFyObY9x4vtp
-jxPA3sc1mWj78+MkkCBFPX+v9FICQHBYJfIC2MUmYlzIj0inVLHkZPFhoDdcryGT
-SJ1MJAJRpgHEHR0vUGttdUrs5Lq/sZTh2uX3cp9Ehw/SdR5VerxJcIgYrxWdpoHE
-/pm9+RSJh7hhT7DWaOKZgN3tCAAkzORh9sZqa/XXuwgdGqqmUr1NclcFs5+PAjMJ
-ZaJZHWV/GU/2IOtGsMt/QmhYOH7vOkGhFQEwPwnsGNK3AzYT/uIzuleFQy+BWW0g
-FL5a4mysfMJWgyno+ms7s3eMURMlajmM1MnNO4rgOPJ3Ixh05i75QM61hlt3EdLZ
-wUYtw8zFGgncFlz5bo8ymcUJwVtS2eJXhxUK/EKhWr5rD2LMB9jVJGDXle2NwMFp
-jBvtA1baFfn9e4e2NK0AlCAir/U5XmsU4VaMxqdIH+It07Ykjd5NR6lZgYGWJyYp
-jIme2CAqbXg838jDO6cj
-=FEmz
------END PGP SIGNATURE-----
+Probably it would be better to re-word it since the code at this point only
+interested on the i2s coding and the bit/frame inversion.
 
---XNnk+1bw058nV8qh--
+> Thanks,
+> =
+
+> --
+> Best Regards,
+> Xiubo
+> =
+
+> =
+
+>> &
+>>  		(SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_INV_MASK);
+>>
+>>  	/* off-codec widgets */
+>> --
+>> 1.9.0
+>>
+>>
+> =
+
+
+
+-- =
+
+P=E9ter
