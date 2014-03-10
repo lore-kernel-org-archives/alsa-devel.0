@@ -1,113 +1,45 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v3.14
-Date: Mon, 10 Mar 2014 18:23:09 +0000
-Message-ID: <20140310182309.GC28112@sirena.org.uk>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v4] ASoC: tlv320aic31xx: Add basic codec driver implementation
+Date: Mon, 10 Mar 2014 21:23:40 +0200
+Message-ID: <531E113C.30106@ti.com>
+References: <cover.1394440470.git.jsarha@ti.com> <dc68ce35a3f44b5c8a55be928e06f72f463338fa.1394440470.git.jsarha@ti.com> <20140310125848.GI28112@sirena.org.uk> <531DBD55.6030008@ti.com> <20140310154744.GJ28112@sirena.org.uk> <531DE2CF.7060708@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7573869740176773759=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DFBFA2657CF
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 19:23:17 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <531DE2CF.7060708@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+On 03/10/2014 06:05 PM, Jyri Sarha wrote:
+> On 03/10/2014 05:47 PM, Mark Brown wrote:
+>> On Mon, Mar 10, 2014 at 03:25:41PM +0200, Jyri Sarha wrote:
+>>> On 03/10/2014 02:58 PM, Mark Brown wrote:
+>>>> On Mon, Mar 10, 2014 at 10:52:21AM +0200, Jyri Sarha wrote:
+> ...
+>>
+>>> I agreed on not to have it as the default. I can still imagine
+>>> couple of reason to have this option around. For instance, if the
+>>> board designer decides to pull the bias voltage from outside of the
+>>> chip completely, or like in my test setup when I feed the mic input
+>>> from a headset output of another device, because I do not have a
+>>> microphone around ATM.
+>>
+>> To repeat what I said first time around in those cases the pin wouldn't
+>> be connected at all so why would it ever be enabled?  You're not
+>> specifying that it's going to be always enabled at a given voltage.
+>>
+>
+> What ever. My laptop headset output does not seem to mind about bias
+> voltage being fed to it. In the first case the pin wouldn't be connected
+> so it does not matter. I'll remove the option.
+>
 
---===============7573869740176773759==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fnNg3ex06DkJ0Ygf"
-Content-Disposition: inline
+Damn, I finally understood what you meant. I removed the explicit route 
+to MICBIAS from the codec driver and left it to be added by a machine 
+driver. Also removed all references to MIBIAS_OFF DT parameter.
 
-
---fnNg3ex06DkJ0Ygf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-The following changes since commit fa389e220254c69ffae0d403eac4146171062d08:
-
-  Linux 3.14-rc6 (2014-03-09 19:41:57 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.14-rc6
-
-for you to fetch changes up to 7f35afd44b14a39307757629ebc0a199aade52d9:
-
-  Merge remote-tracking branches 'asoc/fix/88pm860', 'asoc/fix/omap' and 'asoc/fix/si476x' into asoc-linus (2014-03-10 11:30:56 +0000)
-
-----------------------------------------------------------------
-
-ASoC: Fixes for v3.14
-
-A few things here:
- - Avoid memory leaks in error cases with DPCM, this code has never been
-   that well tested in mainline due to the lack of mainline drivers but
-   we now have one queued for the merge window!
- - Fix the N810 audio driver to load when booted with DT since the
-   platform was converted to DT during the merge window.
- - Fixes for initialisation of some MFD drivers that are probably unused
-   in mainline
-
-----------------------------------------------------------------
-Aaro Koskinen (1):
-      ASoC: n810: fix init with DT boot
-
-Lars-Peter Clausen (2):
-      ASoC: si476x: Fix IO setup
-      ASoC: 88pm860: Fix IO setup
-
-Mark Brown (2):
-      Merge remote-tracking branch 'asoc/fix/pcm' into asoc-linus
-      Merge remote-tracking branches 'asoc/fix/88pm860', 'asoc/fix/omap' and 'asoc/fix/si476x' into asoc-linus
-
-Patrick Lai (1):
-      ASoC: pcm: free path list before exiting from error conditions
-
- sound/soc/codecs/88pm860x-codec.c | 3 +++
- sound/soc/codecs/si476x.c         | 2 +-
- sound/soc/omap/n810.c             | 4 +++-
- sound/soc/soc-pcm.c               | 3 +++
- 4 files changed, 10 insertions(+), 2 deletions(-)
-
---fnNg3ex06DkJ0Ygf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTHgMKAAoJELSic+t+oim9XqcP/1RxMdnCOR76fIAevIY8Lw71
-O4Jbn88dN525tdJ2zcmwjYaDvygocxFvUzeyHO9shoHb1kIuy9LGr4N3u4FUYeUM
-+YqCUFggCTK3uEItVOYAw7s1bGEa/2HwKEFzhUEutg5vs/mh0aQssJJi5H1u4w1S
-t8IzIRP8n6QLm9bgXD4FRH3+AyGPfUhe2pshn6tNK6JSHHPdzZsGfA0hehUZxISp
-dtIiDyZgLJy+Nj7m/x0XSkxdf0EgQt8h2nxxa9zS3m+85eF2LUIvaRpM6+8v/IJg
-h/sA3X3fCi0KNbkCmVFcFrlfBQzCGEbYC8dfd5SLH/ovS3IHvEeobcAv0hTPEiGl
-ztryg0V8QpiK6jHPkrprubcoqqS0cwSlngifV4WWZYbRFLOsKXdCm0DbqcYmC/sB
-6PvlcXAedpfD4oX2n+BF0bNQ7xGTTvt7fTPvbr05KKDvoOybPbg/fYRTyceR7OU0
-rinQrxPjpTf0IURDov33zGQw0s2GYPl8RzOMVJaec+nhLwr8hvcG57aJVTZSe8wh
-BwZPgsFpMxh+Vr5F93flIRRy3HGZrlqOYTrM5r+Qd5AiFpqHVFZZ8y8xcmd3yPSL
-dxli6Ea/lXHQtpqCFJiD+kVmLsEa+vVwX5Cu+VqcCOuhIx/mlfJJzT8Uw9zFkpI+
-jjyIDGVeOsE6VsmI4I8o
-=rKlh
------END PGP SIGNATURE-----
-
---fnNg3ex06DkJ0Ygf--
-
---===============7573869740176773759==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7573869740176773759==--
+Best regards,
+Jyri
