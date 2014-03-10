@@ -1,20 +1,20 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/9] ASoC: arizona: Move calculation of
-	FLL	configuration
-Date: Mon, 10 Mar 2014 13:27:22 +0000
-Message-ID: <20140310132722.GM8570@opensource.wolfsonmicro.com>
-References: <1394210065-23941-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1394210065-23941-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20140309082649.GO28112@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 09/39] firewire-lib: Add sort function for
+ transmitted packet
+Date: Mon, 10 Mar 2014 22:29:44 +0900
+Message-ID: <531DBE48.7040800@sakamocchi.jp>
+References: <5316963F.1000206@sakamocchi.jp>
+ <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1394016507-15761-10-git-send-email-o-takashi@sakamocchi.jp>
+ <531CD7F9.1000303@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 035DC265167
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 14:27:23 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20140309082649.GO28112@sirena.org.uk>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id E609A2650EE
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 14:29:49 +0100 (CET)
+In-Reply-To: <531CD7F9.1000303@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,38 +24,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, lgirdwood@gmail.com, sameo@linux.intel.com
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Mar 09, 2014 at 08:26:49AM +0000, Mark Brown wrote:
-> On Fri, Mar 07, 2014 at 04:34:20PM +0000, Charles Keepax wrote:
-> > Currently the FLL configuration is calculated before it is known which
-> > FLL path the configuration will be applied to. Newer versions of the IP
-> > have differences in the configuration required for each FLL path, which
-> > makes it complicated to calculate the FLL configuration in advance.
-> > 
-> > This patch simply checks the validity of a requested input and output
-> > frequency before we know which FLL path they will be applied to and
-> > saves the actual calculation of the configuration until we know where
-> > the settings will be applied.
-> 
-> I'll apply this but are you sure that this validity check is actually
-> accurate?  For some of the devices there were input/output
-> configurations that couldn't be reached due to constraints in the system
-> even though both input and output were in range.
+(Mar 10 2014 06:07), Clemens Ladisch wrote:
+> Then this should be done only when we actually have one of these known
+> devices (and only when this error is known to happen, i.e., directly
+> after a no-data packet); otherwise, this could, in theory, interfere with
+> dropped packets.
+>
+>> This commit add sorting of in-packets. When callback of receive-context
+>> is processed, the parameters of in-packets are stored in sort table and
+>> sorted by its value of data block counter. The sort algorism works faster
+>> in ordered sequence than in messy sequence. This is convinient for this
+>> purpose because the sequence is assumed not to be so messy. After sorting,
+>> packets are processed except for a last few packets in sort table. These
+>> packets are stored in buffer once and used in next cycle.
+>
+> Only a single packet is out of order, i.e., only two packets are exchanged.
+> So it is not necessary to run a general-purpose sorting algorithm; it would
+> be sufficient to store a single packet if it is out of order.
 
-Only thing I can find directly is sub 5kHz as an input clock
-would be a problem  on some parts but that is unlikely to ever happen
-in practice. Naturally there is the granularity of the multipliers
-as well but the step on that appears small enough that I wouldn't
-be overly concerned about the error, given there is ~46-bits
-worth of options there.
+I cannot prove 'there are only two packets are exchanged'. What I can 
+prove is 'the sequence of packets includes a bit disorder'.
 
-Also the error checking matches what was there before the patch,
-ie. anything that pass here would also have passed the old
-implementation. So even if I am missing something it should be as
-robust as the old solution.
+I think keeping packet sequence is important to all of devices. So here 
+I applied generic processing for this purpose.
 
-Thanks,
-Charles
+(I wonder why I received nothing about my RFC in November...)
+
+> A NULL check is not necessary for kfree().
+
+I did read /mm/slab.c and realize it.
+
+
+Thanks
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
