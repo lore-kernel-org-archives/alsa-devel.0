@@ -1,18 +1,14 @@
-From: Ben Dooks <ben@trinity.fluff.org>
-Subject: Re: [PATCH 0/19] ASoC: rsnd: new module path method
- and DT support
-Date: Mon, 10 Mar 2014 16:28:55 +0000
-Message-ID: <20140310162855.GK4400@trinity.fluff.org>
-References: <87d2ib90t9.wl%kuninori.morimoto.gx@gmail.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: [PATCH] ASoC: Intel: don't select RT5640 if !I2C
+Date: Mon, 10 Mar 2014 10:38:40 -0600
+Message-ID: <1394469520-22504-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
- by alsa0.perex.cz (Postfix) with ESMTP id D3835265772
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 17:28:58 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <87d2ib90t9.wl%kuninori.morimoto.gx@gmail.com>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31D36265772
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 17:38:50 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +18,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Jim Davis <jim.epost@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 24, 2014 at 10:13:57PM -0800, Kuninori Morimoto wrote:
-> 
-> Hi Mark
-> 
-> These are Renesas R-Car sound driver patches.
-> #1 - #7 are clean up patches.
-> #8 - #18 adds new module path method
-> #19 adds DT support
-> 
-> Now, Mark's ALSA branch doesn't include SH-ARM platform branch.
-> Thus, these patches are keeping compatible for it at this point.
-> Compatible code will be removed after merge.
-
-I've merged the rcar branch that Mark Brown has pushed out, which has
-all of these except #19 and have been trying to get it to work.
-
-I am currently seeing issues where the CODEC fails to start, thus there
-is no audio produced due to no audio bit or word clocks on the I2S bus
-(the CODEC is the clock master).
-
--- 
-Ben Dooks, ben@fluff.org, http://www.fluff.org/ben/
-
-Large Hadron Colada: A large Pina Colada that makes the universe disappear.
+RnJvbTogU3RlcGhlbiBXYXJyZW4gPHN3YXJyZW5AbnZpZGlhLmNvbT4KClRoZSBydDU2NDAgZHJp
+dmVyIHdvbid0IGNvbXBpbGUgd2l0aG91dCBJMkMgZW5hYmxlZC4gSGVuY2UsIHRoZSBJbnRlbApI
+YXN3ZWxsIGFuZCBCYXl0cmFpbCtSVDU2NDAgQVNvQyBkcml2ZXJzIG11c3QgYWxzbyBkZXBlbmQg
+b24gSTJDLCBzaW5jZQp0aGVzZSBzZWxlY3QgUlQ1NjQwLgoKVGhpcyBzb2x2ZXM6CnNvdW5kL3Nv
+Yy9jb2RlY3MvcnQ1NjQwLmM6MjIyMDoxOiB3YXJuaW5nOiBkYXRhIGRlZmluaXRpb24gaGFzIG5v
+IHR5cGUgb3Igc3RvcmFnZSBjbGFzcyBbZW5hYmxlZCBieSBkZWZhdWx0XQpzb3VuZC9zb2MvY29k
+ZWNzL3J0NTY0MC5jOjIyMjA6MTogZXJyb3I6IHR5cGUgZGVmYXVsdHMgdG8g4oCYaW504oCZIGlu
+IGRlY2xhcmF0aW9uIG9mIOKAmG1vZHVsZV9pMmNfZHJpdmVy4oCZIFstV2Vycm9yPWltcGxpY2l0
+LWludF0Kc291bmQvc29jL2NvZGVjcy9ydDU2NDAuYzoyMjIwOjE6IHdhcm5pbmc6IHBhcmFtZXRl
+ciBuYW1lcyAod2l0aG91dCB0eXBlcykgaW4gZnVuY3Rpb24gZGVjbGFyYXRpb24gW2VuYWJsZWQg
+YnkgZGVmYXVsdF0Kc291bmQvc29jL2NvZGVjcy9ydDU2NDAuYzoyMjEwOjI2OiB3YXJuaW5nOiDi
+gJhydDU2NDBfaTJjX2RyaXZlcuKAmSBkZWZpbmVkIGJ1dCBub3QgdXNlZCBbLVd1bnVzZWQtdmFy
+aWFibGVdCgpSZXBvcnRlZC1ieTogSmltIERhdmlzIDxqaW0uZXBvc3RAZ21haWwuY29tPgpTaWdu
+ZWQtb2ZmLWJ5OiBTdGVwaGVuIFdhcnJlbiA8c3dhcnJlbkBudmlkaWEuY29tPgotLS0KIHNvdW5k
+L3NvYy9pbnRlbC9LY29uZmlnIHwgNCArKy0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25z
+KCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9LY29uZmln
+IGIvc291bmQvc29jL2ludGVsL0tjb25maWcKaW5kZXggNDU3N2I2OWZjZjJjLi4zYzgxYjM4OTEy
+MDkgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9pbnRlbC9LY29uZmlnCisrKyBiL3NvdW5kL3NvYy9p
+bnRlbC9LY29uZmlnCkBAIC0zMiw3ICszMiw3IEBAIGNvbmZpZyBTTkRfU09DX0lOVEVMX0JBWVRS
+QUlMCiAKIGNvbmZpZyBTTkRfU09DX0lOVEVMX0hBU1dFTExfTUFDSAogCXRyaXN0YXRlICJBU29D
+IEF1ZGlvIERTUCBzdXBwb3J0IGZvciBJbnRlbCBIYXN3ZWxsIEx5bnhwb2ludCIKLQlkZXBlbmRz
+IG9uIFNORF9TT0NfSU5URUxfU1NUICYmIFg4Nl9JTlRFTF9MUFNTCisJZGVwZW5kcyBvbiBTTkRf
+U09DX0lOVEVMX1NTVCAmJiBYODZfSU5URUxfTFBTUyAmJiBJMkMKIAlzZWxlY3QgU05EX1NPQ19J
+TlRFTF9IQVNXRUxMCiAJc2VsZWN0IFNORF9TT0NfUlQ1NjQwCiAJaGVscApAQCAtNDMsNyArNDMs
+NyBAQCBjb25maWcgU05EX1NPQ19JTlRFTF9IQVNXRUxMX01BQ0gKIAogY29uZmlnIFNORF9TT0Nf
+SU5URUxfQllUX1JUNTY0MF9NQUNICiAJdHJpc3RhdGUgIkFTb0MgQXVkaW8gZHJpdmVyIGZvciBJ
+bnRlbCBCYXl0cmFpbCB3aXRoIFJUNTY0MCBjb2RlYyIKLQlkZXBlbmRzIG9uIFNORF9TT0NfSU5U
+RUxfU1NUICYmIFg4Nl9JTlRFTF9MUFNTCisJZGVwZW5kcyBvbiBTTkRfU09DX0lOVEVMX1NTVCAm
+JiBYODZfSU5URUxfTFBTUyAmJiBJMkMKIAlzZWxlY3QgU05EX1NPQ19JTlRFTF9CQVlUUkFJTAog
+CXNlbGVjdCBTTkRfU09DX1JUNTY0MAogCWhlbHAKLS0gCjEuOC4xLjUKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
