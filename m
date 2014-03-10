@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: si476x: Fix IO setup
-Date: Mon, 10 Mar 2014 11:26:16 +0000
-Message-ID: <20140310112616.GB28112@sirena.org.uk>
-References: <1393922513-31824-1-git-send-email-lars@metafoo.de>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH RFC 0/2] Fix simple-card *-master DT parameter
+	handling
+Date: Mon, 10 Mar 2014 13:28:36 +0200
+Message-ID: <cover.1394450178.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3508478544910593408=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 151E126507F
- for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 12:26:35 +0100 (CET)
-In-Reply-To: <1393922513-31824-1-git-send-email-lars@metafoo.de>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0305226507F
+ for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2014 12:28:43 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Andrey Smirnov <andrey.smirnov@convergeddevices.net>, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: liam.r.girdwood@linux.intel.com, detheridge@ti.com, Jyri Sarha <jsarha@ti.com>, peter.ujfalusi@ti.com, broonie@kernel.org, bcousson@baylibre.com
 List-Id: alsa-devel@alsa-project.org
 
+The schematics of bitclock-master and frame-master DT parameters
+should depend on whether they are found from a cpu-dai or codec
+sub-node.
 
---===============3508478544910593408==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LxaJkMtlT1pByyLD"
-Content-Disposition: inline
+- bitclock-master in cpu-dai node means Codec-Bitclock-Slave
+- frame-master in cpu-dai node means Codec-Frame-Slave
+- bitclock-master in codec node means Codec-Bitclock-Master
+- frame-master in codec node means Codec-Frame-Master
 
+For example in a cpu-dai mode bitclock-master parameter should produce
+SND_SOC_DAIFMT_CBS_* daifmt flags and a codec node
+SND_SOC_DAIFMT_CBM_* flags.
 
---LxaJkMtlT1pByyLD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Best regards,
+Jyri
 
-On Tue, Mar 04, 2014 at 09:41:53AM +0100, Lars-Peter Clausen wrote:
-> The si476x is a MFD device and the CODEC driver is using the regmap struct of
-> the parent device, hence automatic IO setup will not work and we need to
-> manually call snd_soc_codec_set_cache_io(). The issue was introduced commit
-> d6173df35f ("ASoC: si476x: Remove custom register I/O implementation")
+Jyri Sarha (2):
+  ASoC: core: Add is_cpu_dai_node-parameter to
+    snd_soc_of_parse_daifmt()
+  ASoC: simple-card: Take snd_soc_of_parse_daifmt() change in to
+    account
 
-Applied, thanks.  Please if you're listing which commit is being fixed
-do it using a Fixes tag - it makes it easier to apply.
+ sound/soc/generic/simple-card.c |   13 ++++++++-----
+ sound/soc/soc-core.c            |    8 +++++++-
+ 2 files changed, 15 insertions(+), 6 deletions(-)
 
---LxaJkMtlT1pByyLD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTHaFVAAoJELSic+t+oim91PkP/A56bbj6X2W5o7zqs4y4dvuu
-0Sb4hwQ8kCquXizuA5SY45N4ZCLGeCl0zDJYMySbJE4Zx2tO28YJuGM2py83Bix8
-oq4V13JrfURcZJ0hEcMZt3AztlzLNdc62wTT4b3mVvi1znigl2r4vS8d9FPQu4m7
-89Ez8TYfQQxGXp/MibazYkA2GkLz+TlFdlH46DvIh9TOemvkOm3Fgrp9EPeGYaGf
-nj6Dpx0bbEDf2TvKb1EQUdvtHZVkrC9LHjKQxZ+M700MUgV4gRJNSKY0J6gKDtyj
-sfTWXOH1rFNZFvdWY65aJ7Ty1tjAJJLoLaUrY7ELZLbNPzlvBlwQfa5eSH9Pd2jO
-oV1TXSXVz0J5H8S1+hW06WQvwbmmfmtcIw0Wm6uycnhIXlzQkeJAS5CulTGMLkv9
-pl+I3F3ahXZd6ZmPh7hSwBTzLLNKozKlslWZWnAunW0Oth0ROKZDnNsyLvsR0DR5
-5HEmWQ+3LAsP82xB8OOdmauUH+y0hVbghsfjp4bjFklB2K+k7/OXHT1MKQF76XKO
-DeRoCUhBnsKnU4Ky9KQ+fuCE0ao4KP1mBbnpINUflGn3PR/vj44or+w4EoGcupSY
-HGQF/x4E5HapFSEdMVQ5Al9vLxdK/FCPIufxO0Dn2X7cHBK1QE/kD5geZdYYT4uY
-XFf7w7ElMlBPQY+HAaXI
-=HeRH
------END PGP SIGNATURE-----
-
---LxaJkMtlT1pByyLD--
-
---===============3508478544910593408==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3508478544910593408==--
+-- 
+1.7.9.5
