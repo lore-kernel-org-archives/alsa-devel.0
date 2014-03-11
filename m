@@ -1,15 +1,20 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH] ALSA: hda - initialize audio InfoFrame to be
-	all zero
-Date: Tue, 11 Mar 2014 17:12:52 -0400
-Message-ID: <f37b3349bd0a4f5989cf503f578e25ad0f7d160e.1394572173.git.mengdong.lin@intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 09/39] firewire-lib: Add sort function for
+ transmitted packet
+Date: Tue, 11 Mar 2014 09:11:34 +0100
+Message-ID: <531EC536.5020201@ladisch.de>
+References: <5316963F.1000206@sakamocchi.jp>
+ <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1394016507-15761-10-git-send-email-o-takashi@sakamocchi.jp>
+ <531CD7F9.1000303@ladisch.de> <531DBE48.7040800@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 676B4261092
- for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2014 09:11:10 +0100 (CET)
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 6EE962615FC
+ for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2014 09:11:35 +0100 (CET)
+In-Reply-To: <531DBE48.7040800@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,28 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+Takashi Sakamoto wrote:
+> (Mar 10 2014 06:07), Clemens Ladisch wrote:
+>>> This commit add sorting of in-packets. [...]
+>>
+>> Only a single packet is out of order, i.e., only two packets are exchanged.
+>> So it is not necessary to run a general-purpose sorting algorithm; it would
+>> be sufficient to store a single packet if it is out of order.
+>
+> I cannot prove 'there are only two packets are exchanged'. What I can
+> prove is 'the sequence of packets includes a bit disorder'.
 
-This patch initialized the local audio InfoFrame variable 'ai' to be all zero,
-thus the data bytes will indicate "Refer to Stream Header" by default.
+AFAIK this error happens only on some specific devices with some
+specific (now outdated) firmware versions, and two exchanged packets is
+all that is actually observed.  Furthermore, hardware implementations of
+IEC 16883-6 construct packets in nearly real time and _cannot_ store
+many packets.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+Thus, I think it is extremely unlikely that we will ever see more than
+two exchanged packets.
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 5ef9503..3ab7063 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1062,6 +1062,7 @@ static void hdmi_pin_setup_infoframe(struct hda_codec *codec,
- {
- 	union audio_infoframe ai;
- 
-+	memset(&ai, 0, sizeof(ai));
- 	if (conn_type == 0) { /* HDMI */
- 		struct hdmi_audio_infoframe *hdmi_ai = &ai.hdmi;
- 
--- 
-1.8.1.2
+> I think keeping packet sequence is important to all of devices.
+
+But there is no other device with a similar bug.  I think the driver
+should keep the ability to detect dropped packets.
+
+
+Regards,
+Clemens
