@@ -1,94 +1,67 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: [PATCH] ASoC: simple-card: overwrite DAIFMT_MASTER of cpu_dai->fmt
-Date: Tue, 11 Mar 2014 20:54:32 +0800
-Message-ID: <1394542472-16580-1-git-send-email-Guangyu.Chen@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: simple-card: overwrite DAIFMT_MASTER of
+ cpu_dai->fmt
+Date: Tue, 11 Mar 2014 13:25:53 +0000
+Message-ID: <20140311132553.GR28112@sirena.org.uk>
+References: <1394542472-16580-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mNjSOha/DCXOSUzN"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1394542472-16580-1-git-send-email-Guangyu.Chen@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com, moinejf@free.fr, Li.Xiubo@freescale.com, lgirdwood@gmail.com
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com, moinejf@free.fr, Li.Xiubo@freescale.com, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The current simple-card driver separates the daimft for cpu_dai and codec_dai.
-So we might get different values for them (0x4003 and 0x1003 for example):
 
-asoc-simple-card sound-cs42888.12: cpu : 2024000.esai / 4003 / 132000000
-asoc-simple-card sound-cs42888.12: codec : cs42888 / 1003 / 24576000
-asoc-simple-card sound-cs42888.12: cs42888 <-> 2024000.esai mapping ok
+--mNjSOha/DCXOSUzN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It's pretty fair to do it for DAIFMT_INV since two dais might have differnt
-definitions in their drivers even though it'd be better to keep it same if
-we could.
+On Tue, Mar 11, 2014 at 08:54:32PM +0800, Nicolin Chen wrote:
 
-But for DAIFMT_MASTER bit, we should keep them identical. Otherwise, it'll
-make one of dai work in an incorrect mode.
+Adding Jyri who's been looking at this as well but not added anyone else
+working on simple-card so you might've missed his mails.
 
-Thus this patch fixes it by overwriting the DAIFMT_MASTER bit of cpu_dai->fmt
-with the one of codec_dai->fmt since we defined DAIFMT_MASTER basing on CODEC
-at the first place.
+> It's pretty fair to do it for DAIFMT_INV since two dais might have differnt
+> definitions in their drivers even though it'd be better to keep it same if
+> we could.
 
-Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
----
- sound/soc/generic/simple-card.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+No, that's not at all OK - anything that requires this is broken.  The
+same DAI format should be usable by both ends of the link unless the
+board itself is inverting one of the signals or something.
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 5dd4769..f9a3c8a 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -157,6 +157,8 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 				     struct device *dev)
- {
- 	struct snd_soc_dai_link *dai_link = priv->snd_card.dai_link;
-+	struct asoc_simple_dai *codec_dai = &priv->codec_dai;
-+	struct asoc_simple_dai *cpu_dai = &priv->cpu_dai;
- 	struct device_node *np;
- 	char *name;
- 	int ret;
-@@ -189,7 +191,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	np = of_get_child_by_name(node, "simple-audio-card,cpu");
- 	if (np)
- 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
--						  &priv->cpu_dai,
-+						  cpu_dai,
- 						  &dai_link->cpu_of_node,
- 						  &dai_link->cpu_dai_name);
- 	if (ret < 0)
-@@ -200,12 +202,16 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	np = of_get_child_by_name(node, "simple-audio-card,codec");
- 	if (np)
- 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
--						  &priv->codec_dai,
-+						  codec_dai,
- 						  &dai_link->codec_of_node,
- 						  &dai_link->codec_dai_name);
- 	if (ret < 0)
- 		return ret;
- 
-+	/* overwrite DAIFMT_MASTER of cpu_dai since it's based on CODEC */
-+	cpu_dai->fmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
-+	cpu_dai->fmt |= codec_dai->fmt & SND_SOC_DAIFMT_MASTER_MASK;
-+
- 	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name)
- 		return -EINVAL;
- 
-@@ -227,12 +233,12 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	dev_dbg(dev, "platform : %04x\n", priv->daifmt);
- 	dev_dbg(dev, "cpu : %s / %04x / %d\n",
- 		dai_link->cpu_dai_name,
--		priv->cpu_dai.fmt,
--		priv->cpu_dai.sysclk);
-+		cpu_dai->fmt,
-+		cpu_dai->sysclk);
- 	dev_dbg(dev, "codec : %s / %04x / %d\n",
- 		dai_link->codec_dai_name,
--		priv->codec_dai.fmt,
--		priv->codec_dai.sysclk);
-+		codec_dai->fmt,
-+		codec_dai->sysclk);
- 
- 	/*
- 	 * soc_bind_dai_link() will check cpu name
--- 
-1.8.4
+> Thus this patch fixes it by overwriting the DAIFMT_MASTER bit of cpu_dai->fmt
+> with the one of codec_dai->fmt since we defined DAIFMT_MASTER basing on CODEC
+> at the first place.
+
+This seems closer to what I'd expect for something like this but it does
+mean that any format settings on the CPU DAI will be ignored (rather
+than say warning or something).  I'm not sure this is a bad thing
+though, probably wants the binding documenting at least.
+
+--mNjSOha/DCXOSUzN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTHw7eAAoJELSic+t+oim9JekP/0Xpe0vQTHaXnfV/ryBhaacS
+lRRAby85yvszOgAzjR3ycuCP9HtRCY8WJaAun4ziMdooo6ODz67tmAuSDUWtYAJi
+j/HKC3qrn8fngmC+8TWLrjbsQOmfXd7VtPz8lD6JTWUAuoIW17amwfyoZHwEsclq
+oThjnHe+zNAuJfFrHnBF1M7toH/4pyBFEg+hOYWvNsasIJ6u6+NkV6vNrr7YF7sl
+B+wftFZw5LrTSbteePP6Y5n6qorI0ATD1daiKvXx+13MyoFfexRnGh4zbfofiKxN
+okEiIqzqu0H2jKn5ZF8fhu1Z8N1Lf2Sv7XgsJocfv2ceYzi1B8NC61M3YbvofZQf
+zZId/ToMDCD41cG2N8Srd5K1/TVSKo1aw+EcMZeozgoAoMxtRIF3Vgxj5x5yuE6x
+ux5SpVJf/Ja0YkCG3dXwE8IaPomYiyD9KYDVfjC79+t0kgPveB00QNsEzdK6sB1g
+R9kZfH8IGzmMFbmgfgABFVG8igUg+7ja66kxa7TUbMwKh7AtJxEMV16YtMIKf7GC
+UfKPJHA/Gb+6vXPNzetP67CEVMZusUynXUuHlClGkWogzyQ5BgyzUh2vlRPf9pct
+TAZ7gCvA6CMrdz8RyBrvPbztsX+RzTp3fRNTqwMR7wmO1zMeCjBeBZhPPYftHfx/
+XRHIa9M+bcyqHCY/vVk1
+=iGzZ
+-----END PGP SIGNATURE-----
+
+--mNjSOha/DCXOSUzN--
