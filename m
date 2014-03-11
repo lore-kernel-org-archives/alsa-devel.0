@@ -1,101 +1,63 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ak4642: show error if register write fails
-Date: Tue, 11 Mar 2014 18:44:37 +0000
-Message-ID: <20140311184437.GV28112@sirena.org.uk>
-References: <1394475355-7069-1-git-send-email-ben.dooks@codethink.co.uk>
- <20140310234038.GE28112@sirena.org.uk>
- <531EF106.3020809@codethink.co.uk>
- <20140311112112.GP28112@sirena.org.uk> <531F16DB.30200@metafoo.de>
- <20140311142138.GU28112@sirena.org.uk>
- <s5heh2822dm.wl%tiwai@suse.de>
+Subject: Re: [PATCH v2] ASoC: cs42888: Add codec driver support
+Date: Tue, 11 Mar 2014 18:46:06 +0000
+Message-ID: <20140311184606.GW28112@sirena.org.uk>
+References: <1394536791-8381-1-git-send-email-Guangyu.Chen@freescale.com>
+ <alpine.DEB.2.02.1403111026280.3558@heelrod>
+ <531F320E.70605@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7853049455492147082=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C460261AB0
- for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2014 19:44:56 +0100 (CET)
-In-Reply-To: <s5heh2822dm.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, Ben Dooks <ben.dooks@codethink.co.uk>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="MUSEnV6akQk4QhdD"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <531F320E.70605@metafoo.de>
+Sender: linux-doc-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Brian Austin <brian.austin@cirrus.com>, Nicolin Chen <Guangyu.Chen@freescale.com>, Paul.Handrigan@cirrus.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net, lgirdwood@gmail.com, grant.likely@linaro.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7853049455492147082==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3WNG/pnnEPQXt+KF"
-Content-Disposition: inline
-
-
---3WNG/pnnEPQXt+KF
+--MUSEnV6akQk4QhdD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 11, 2014 at 04:15:01PM +0100, Takashi Iwai wrote:
+On Tue, Mar 11, 2014 at 04:55:58PM +0100, Lars-Peter Clausen wrote:
+> On 03/11/2014 04:41 PM, Brian Austin wrote:
 
-> This should be decided for each case, and I agree with the usefulness
-> of error logging for this particular case.  The I/O errors are
-> basically exceptions, and shouldn't happen in normal operations.
+> >So WRT the CS42888, this is one device in a series of 2 devices that are
+> >register compatible with the only difference being that the CS42488 has 2
+> >extra ADC's. Same die and same DeviceID.
 
-Quite.
+> >Would it make more sense to submit the driver with the extra ADC's to make
+> >it feature complete for both devices? Wouldn't be odd to have 2 drivers that
+> >do the same for 98% of the code.
 
-> That said, if the driver behavior depends on such lowlevel errors,
-> its design is wrong, must be fixed in anyway.
+> This should be in one driver. But support for the second device can
+> always be added in a follow up patch.
 
-Indeed, this shouldn't be something that happens in normal operation.
-Usually you'd see this during board bringup if you'd got something like
-I2C, regulators or reset GPIOs hooked up wrongly or missing, though you
-can see things like incorrectly handled ramp or reset times triggering
-it too.  By the time the system is actually in use it shouldn't happen
-which is why we've not been having problems with ignoring errors.
+Yes, we can add support later.  It might be helpful to name the driver
+with some generic name I guess.
 
-> Still an open question is whether it should be dev_err() or
-> dev_dbg().  Ideally speaking, dev_dbg() should be used, while
-> dev_err() would be more practical.
-
-I think given that it's generally a sign of substantial hardware failure
-dev_err() is justified, probably the user will be noticing other issues
-and it'll help a lot with root causing.  I'd guess Ben had something
-like one of the situations above and needed this to figure it out.
-
---3WNG/pnnEPQXt+KF
+--MUSEnV6akQk4QhdD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTH1mSAAoJELSic+t+oim9yq4P+wVTJwtqnBhOUNrueffJnEtW
-n0m4yrh1R1lILok1wTheZhowNDbPrv64VLfdd1oqKearCM+Cb7gEB+RMI4BV0zva
-YUVmCt2Fa3ZJeGLRdvUTFh/tWepTTnsLO8IKbwLjqF/hM08SiEGfi31CTVyDH7Yl
-OrYJlKFavMwlpB3wM8z28Zonikm/ToSKcTK57Izyk5YEAfx3ZKCejbP3BaToMxhU
-WPFoJDyo5JfuHYlBcClVyrzfNFghZfordejLLTamXa0SKHI6e2M2JlCGtE8lA+Zg
-wWPWlmGtfEx53ZIGpH/jKW5eOIq0mW1yYCfvXdjBocAfuogiIaSZ5gApE0yTn0Uy
-J02VHpkKgQOIw9+Gi0b1KZABcPsyofGKRrNLFwzXnBWdnLwR/Zp1NralVG3Vh9iZ
-xGYHQUC637qvE4c1yANPmLn3CyIxaDn4DxckQUf068MCx19L+tYjevQ6JYT2FQ4a
-A/I1PnA0DymeF0kxfChVNRm35BcKOQuVTDdfi52uqna++ufjn5KQLAYQFcXeGz1c
-SZJaW103L9dVJT+jx4IKLP40tEfRUsn1ndR5OrZ9hsenHd21uFMQDpwYdz/1NNKu
-Q8m1zCaO/2U79KH3beqM7JpS0kLndjnDXADBLkgna8nWl/lxjNWFNS9SbtFh8EQV
-AOVIv7hj+K+c9HknNkmH
-=F1sv
+iQIcBAEBAgAGBQJTH1nqAAoJELSic+t+oim9C/gP/i5BAh0i6DINdS77d401B9NC
+PQQulo2Wjz08u6THrD0oASQB+4wOaM6xI1U+YMyXBtXbw4zYW0isO/3MmXTGhFcm
+Kj7+MMtZcSaLuxm/17n9WDNiErgqmxCwsBaemnIN3fLHX8mrJd8r9MBkGOI5Puc5
+RTn1fgig48xlGcnD+Or+14oUyUIGrZlKAZ7ybLBOlj6DEsLBAY6lja1Uc68qyC/f
+5wsijto7NLacEbQULXO3pxiAd4m3D4NO8btb7xWk8YTw2omyJFhOepzmGdaUFESU
+938ngC8XyWc5+BVWDnt29hBHP0vuzDq0Qvzsge6wEVsz/2XUl/Bm83mxxYW+q2kw
+5MB0+t6QJUeOWncvmd1mlNAo13QaXeXcD3KZiC+If7Zgpq2SoVAGqAgvxBDntY8x
+ukBbnLLVnEAr1uugmdNUvsz0O4AOdaEiYJycNRQQAszQxMEeBogyGMn/LJEjXY9U
+JqCHNGNIyiU2ptFXE9ISIDI9d1BzUFxfWjVY3zgWRqvTn2795X5Wdb1jwVcqv+Rb
+wasU2ncCCy43+ICORRCRACTQozmR5hfsDAxZNBf8oojg7us4CIhcDGDOM2EU7yLa
+UuSkEPWrzGi8KomI8zKlqnPeAYbNVmRlVHVfoe6pL+4H92EECgAHlnKoIuntw1os
+2PKpZFYXjt43jn4wkfvB
+=WB+k
 -----END PGP SIGNATURE-----
 
---3WNG/pnnEPQXt+KF--
-
---===============7853049455492147082==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7853049455492147082==--
+--MUSEnV6akQk4QhdD--
