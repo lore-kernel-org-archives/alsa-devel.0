@@ -1,48 +1,144 @@
 From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v2 0/4] ASoC: simple-card: DT fix and multi DAI
-	links extension
-Date: Tue, 11 Mar 2014 11:27:20 +0100
-Message-ID: <cover.1394533640.git.moinejf@free.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
- by alsa0.perex.cz (Postfix) with ESMTP id D96BA261696
- for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2014 11:40:56 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH v2 1/4] ASoC: simple-card: Fix the reference count of device
+ nodes
+Date: Tue, 11 Mar 2014 10:03:40 +0100
+Message-ID: <bfb5bfeb1b934384d84fab0045ce65c9b2766f31.1394533640.git.moinejf@free.fr>
+References: <cover.1394533640.git.moinejf@free.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1394533640.git.moinejf@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch series fixes a small problem about node device locks and also
-extends the simple card driver to handle many DAI links as this exists
-in the Cubox audio subsystem.
+The reference count of some device nodes is not correctly reset
+at end of card probe.
 
-- v2
-	- change subject/comment about device node reference count
-		(Mark Brown)
-	- use a null size array instead of an implicit area for the DAI links
-		(Li Xiubo)
-	- update the reference count of the device node at end of probe
+Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
+---
+ sound/soc/generic/simple-card.c | 50 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 37 insertions(+), 13 deletions(-)
 
-Jean-Francois Moine (4):
-  ASoC: simple-card: Fix the reference count of device nodes
-  ASoC: simple-card: dynamically allocate the DAI link array
-  ASoC: simple-card: accept many DAI links
-  ASoC: simple-card: Add DT documentation for multi-DAI links
-
- .../devicetree/bindings/sound/simple-card.txt      |  34 +++-
- sound/soc/generic/simple-card.c                    | 174 ++++++++++++++-------
- 2 files changed, 152 insertions(+), 56 deletions(-)
-
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 5dd4769..dcf37fb 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -105,12 +105,12 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 	/* get dai->name */
+ 	ret = snd_soc_of_get_dai_name(np, name);
+ 	if (ret < 0)
+-		goto parse_error;
++		return ret;
+ 
+ 	/* parse TDM slot */
+ 	ret = snd_soc_of_parse_tdm_slot(np, &dai->slots, &dai->slot_width);
+ 	if (ret)
+-		goto parse_error;
++		return ret;
+ 
+ 	/*
+ 	 * bitclock-inversion, frame-inversion
+@@ -130,7 +130,7 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 		clk = of_clk_get(np, 0);
+ 		if (IS_ERR(clk)) {
+ 			ret = PTR_ERR(clk);
+-			goto parse_error;
++			return ret;
+ 		}
+ 
+ 		dai->sysclk = clk_get_rate(clk);
+@@ -144,12 +144,7 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 			dai->sysclk = clk_get_rate(clk);
+ 	}
+ 
+-	ret = 0;
+-
+-parse_error:
+-	of_node_put(node);
+-
+-	return ret;
++	return 0;
+ }
+ 
+ static int asoc_simple_card_parse_of(struct device_node *node,
+@@ -187,22 +182,26 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	/* CPU sub-node */
+ 	ret = -EINVAL;
+ 	np = of_get_child_by_name(node, "simple-audio-card,cpu");
+-	if (np)
++	if (np) {
+ 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
+ 						  &priv->cpu_dai,
+ 						  &dai_link->cpu_of_node,
+ 						  &dai_link->cpu_dai_name);
++		of_node_put(np);
++	}
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* CODEC sub-node */
+ 	ret = -EINVAL;
+ 	np = of_get_child_by_name(node, "simple-audio-card,codec");
+-	if (np)
++	if (np) {
+ 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
+ 						  &priv->codec_dai,
+ 						  &dai_link->codec_of_node,
+ 						  &dai_link->codec_dai_name);
++		of_node_put(np);
++	}
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -248,6 +247,27 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	return 0;
+ }
+ 
++/* update the reference count of the devices nodes at end of probe */
++static int asoc_simple_card_unref(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct snd_soc_dai_link *dai_link;
++	struct device_node *np;
++	int num_links;
++
++	for (num_links = 0, dai_link = card->dai_link;
++	     num_links < card->num_links;
++	     num_links++, dai_link++) {
++		np = (struct device_node *) dai_link->cpu_of_node;
++		if (np)
++			of_node_put(np);
++		np = (struct device_node *) dai_link->codec_of_node;
++		if (np)
++			of_node_put(np);
++	}
++	return 0;
++}
++
+ static int asoc_simple_card_probe(struct platform_device *pdev)
+ {
+ 	struct simple_card_data *priv;
+@@ -275,7 +295,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 		if (ret < 0) {
+ 			if (ret != -EPROBE_DEFER)
+ 				dev_err(dev, "parse error %d\n", ret);
+-			return ret;
++			goto err;
+ 		}
+ 	} else {
+ 		struct asoc_simple_card_info *cinfo;
+@@ -318,7 +338,11 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 
+ 	snd_soc_card_set_drvdata(&priv->snd_card, priv);
+ 
+-	return devm_snd_soc_register_card(&pdev->dev, &priv->snd_card);
++	ret = devm_snd_soc_register_card(&pdev->dev, &priv->snd_card);
++
++err:
++	asoc_simple_card_unref(pdev);
++	return ret;
+ }
+ 
+ static const struct of_device_id asoc_simple_of_match[] = {
 -- 
 1.9.0
