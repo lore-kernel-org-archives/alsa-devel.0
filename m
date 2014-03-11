@@ -1,79 +1,68 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v2 4/4] ASoC: simple-card: Add DT documentation for multi-DAI
- links
-Date: Tue, 11 Mar 2014 10:58:33 +0100
-Message-ID: <bc0e25f6c042c8b99c8e83c6876ce0c8f7c3ab36.1394533640.git.moinejf@free.fr>
-References: <cover.1394533640.git.moinejf@free.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1394533640.git.moinejf@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RFC v2 0/2] Fix simple-card *-master DT parameter handling
+Date: Tue, 11 Mar 2014 10:50:20 +0000
+Message-ID: <20140311105020.GO28112@sirena.org.uk>
+References: <cover.1394451329.git.jsarha@ti.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fnSZu+x/QQRjdWqq"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <cover.1394451329.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, detheridge@ti.com, Xiubo Li <Li.Xiubo@freescale.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-There may be many couples of CPU/CODEC DAI links.
-The example 2 is extracted from the Cubox DT.
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- .../devicetree/bindings/sound/simple-card.txt      | 34 +++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+--fnSZu+x/QQRjdWqq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index b30c222..a872e7b 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -26,6 +26,9 @@ Required subnodes:
- - simple-audio-card,cpu			: CPU   sub-node
- - simple-audio-card,codec		: CODEC sub-node
- 
-+  There may be one or many couples (simple-audio-card,cpu, simple-audio-card,codec)
-+  (see example 2).
-+
- Required CPU/CODEC subnodes properties:
- 
- - sound-dai				: phandle and port of CPU/CODEC
-@@ -43,7 +46,7 @@ Optional CPU/CODEC subnodes properties:
- 					  clock node (= common clock), or "system-clock-frequency"
- 					  (if system doens't support common clock)
- 
--Example:
-+Example 1:
- 
- sound {
- 	compatible = "simple-audio-card";
-@@ -88,3 +91,32 @@ sh_fsi2: sh_fsi2@ec230000 {
- 	interrupt-parent = <&gic>;
- 	interrupts = <0 146 0x4>;
- };
-+
-+Example 2:
-+
-+sound {
-+	compatible = "simple-audio-card";
-+	simple-audio-card,name = "Cubox Audio";
-+
-+	simple-audio-card,cpu@0 {		/* I2S - HDMI */
-+		sound-dai = <&audio1 0>;
-+		format = "i2s";
-+	};
-+	simple-audio-card,codec@0 {
-+		sound-dai = <&tda998x 0>;
-+	};
-+
-+	simple-audio-card,cpu@1 {		/* S/PDIF - HDMI */
-+		sound-dai = <&audio1 1>;
-+	};
-+	simple-audio-card,codec@1 {
-+		sound-dai = <&tda998x 1>;
-+	};
-+
-+	simple-audio-card,cpu@2 {		/* S/PDIF - S/PDIF */
-+		sound-dai = <&audio1 1>;
-+	};
-+	simple-audio-card,codec@2 {
-+		sound-dai = <&spdif_codec>;
-+	};
-+};
--- 
-1.9.0
+On Mon, Mar 10, 2014 at 01:41:14PM +0200, Jyri Sarha wrote:
+> Since RFC:
+> - fixed commit msg typo
+> - added include/sound/soc.h changes too
+>=20
+> The sematics of bitclock-master and frame-master DT parameters
+> should depend on whether they are found from a cpu-dai or codec
+> sub-node.
+>=20
+> - bitclock-master in cpu-dai node means Codec-Bitclock-Slave
+> - frame-master in cpu-dai node means Codec-Frame-Slave
+> - bitclock-master in codec node means Codec-Bitclock-Master
+> - frame-master in codec node means Codec-Frame-Master
+>=20
+> For example in a cpu-dai mode bitclock-master parameter should produce
+> SND_SOC_DAIFMT_CBS_* daifmt flags and a codec node
+> SND_SOC_DAIFMT_CBM_* flags.
+
+I've added Morimoto-san and Xiubo to the CCs - can you please have a
+look at this?  I can't see any in tree users but presumably there are
+some existing out of tree users of the binding that use it without
+current problems.
+
+--fnSZu+x/QQRjdWqq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTHuppAAoJELSic+t+oim9lhcP/RFsHYs9T1K6MDRroYdq8nY0
+1a0s8GKZC1/80BBO+cOSFNvfOr6+SfopL9ECT0YYZsF2ht5azipVbaSyJSWD0zp2
+2GyaD2UdJM4AWz8x/OGmv78gu2NOL8fVTkSO0qHYRUkYsZyR25NdepzarjAsZiI1
+GHjEsAQJCSQpBCFzWqpnZo3la5sMebgGhvGBVHzuw4JLv9EByTID66mWfV6UJ9Ox
+BMTgjzo3RInQQhWid+CQBScItJmqOB6niOrdTxhotwCkagvubUey/HV+xZiszTWo
+2gsWYJUfDcAxCzQfGc++9LHI0FAXwS8BYtJcFJOdu1Tbd9WpAHZYbXNrYUO4i0Pu
+EsingVO5bQR0lyOFK5uh3VOURIFmzWSkgKPfYNDbTDaQSCFhUzhw/9BgHLmrjgoe
+xIQkz10+9bvoy1aUAWWO3I69rx4pvLPHKx4YbYbqgO5urWLaDtqdU5OOuyEvosxp
+FcMoEG6LvQnYznpnl113pvc7l89t8AJq1DnWZvIlh2ByBeGnho8Ll+ATVOFWDTxK
+QrrRPrKs+rm3R65jlgcIzd7nnBhE3tmaRKxSSzw5fHlVU27AboaqhGo8bGPmbcTO
+IURJGXz5YdVwEF9pA/Vfydqd0ECxf/DrhXqA/OIZbNggCAXbHtn/F/dZ+Rf8gGKF
+ArkIJcpy6HMsRowjb28e
+=iCjv
+-----END PGP SIGNATURE-----
+
+--fnSZu+x/QQRjdWqq--
