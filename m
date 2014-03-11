@@ -1,40 +1,57 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2] ASoC: cs42888: Add codec driver support
-Date: Tue, 11 Mar 2014 16:55:58 +0100
-Message-ID: <531F320E.70605@metafoo.de>
-References: <1394536791-8381-1-git-send-email-Guangyu.Chen@freescale.com> <alpine.DEB.2.02.1403111026280.3558@heelrod>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 11/39] firewire-lib: Add support for
+	channel mapping
+Date: Wed, 12 Mar 2014 01:03:13 +0900
+Message-ID: <531F33C1.90200@sakamocchi.jp>
+References: <5316963F.1000206@sakamocchi.jp>
+ <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1394016507-15761-12-git-send-email-o-takashi@sakamocchi.jp>
+ <531CDB2A.8020304@ladisch.de> <531DB002.9030801@sakamocchi.jp>
+ <531EC7F7.7030405@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.02.1403111026280.3558@heelrod>
-Sender: linux-doc-owner@vger.kernel.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: Nicolin Chen <Guangyu.Chen@freescale.com>, broonie@kernel.org, Paul.Handrigan@cirrus.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net, lgirdwood@gmail.com, grant.likely@linaro.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73511261AB7
+ for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2014 17:03:22 +0100 (CET)
+In-Reply-To: <531EC7F7.7030405@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 03/11/2014 04:41 PM, Brian Austin wrote:
+(Mar 11 2014 17:23), Clemens Ladisch wrote:
+> In code like this:
 >
-> On Tue, 11 Mar 2014, Nicolin Chen wrote:
+>          for (... s->channels ...)
+>              buffer[i] = ...;
 >
->> This patch adds support for the Cirrus Logic CS42888 Audio CODEC that
->> has four 24-bit A/D and eight 24-bit D/A converters.
->>
->> [ CS42888 supports both I2C and SPI control ports. As initial patch,
->>  this patch only adds the support for I2C. ]
->>
->> Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
->> ---
-> So WRT the CS42888, this is one device in a series of 2 devices that are
-> register compatible with the only difference being that the CS42488 has 2
-> extra ADC's. Same die and same DeviceID.
+> it is, as far as the compiler knows, possible that &buffer[i] and
+> &s->channels actually point to the same variable, so s->channels must
+> be reloaded in every loop iteration.  A local variable avoids that.
 >
-> Would it make more sense to submit the driver with the extra ADC's to make
-> it feature complete for both devices? Wouldn't be odd to have 2 drivers that
-> do the same for 98% of the code.
+> (Whether this optimization is worth it is another question ...)
 
-This should be in one driver. But support for the second device can always 
-be added in a follow up patch.
+As long as I test with simple codes and gcc, this optimization reduce 
+one opcode in a loop. Codes with your way compares address content to a 
+register, but codes with my way once push address content to another 
+register and compare the two registers.
 
-- Lars
+The read/write functions are called the most freqently, so shorter codes 
+are preferable. I realize I should keep it what you wrote. Thanks for 
+your indication.
 
+
+Thanks
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
