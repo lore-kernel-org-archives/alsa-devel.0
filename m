@@ -1,48 +1,75 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: HDA jack retask for Debian 7.4 NOT working
-Date: Tue, 11 Mar 2014 19:25:36 +0800
-Message-ID: <CAN8cciYkcwtOv17kFxNsPXXoye=P3yk4d5YbCoSbQYk_6+R0ng@mail.gmail.com>
-References: <CAAh=20RH3jg+W0PQOnu2NU+HPVpp9GT=ZOnd46PZr4mgweGJJg@mail.gmail.com>
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2] ASoC: cs42888: Add codec driver support
+Date: Tue, 11 Mar 2014 11:30:53 +0000
+Message-ID: <20140311113053.GA1036@e106331-lin.cambridge.arm.com>
+References: <1394536791-8381-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f47.google.com (mail-qg0-f47.google.com
- [209.85.192.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CEA4261696
- for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2014 12:25:37 +0100 (CET)
-Received: by mail-qg0-f47.google.com with SMTP id 63so5917284qgz.6
- for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2014 04:25:36 -0700 (PDT)
-In-Reply-To: <CAAh=20RH3jg+W0PQOnu2NU+HPVpp9GT=ZOnd46PZr4mgweGJJg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Subodh Chiwate <subodh.austin@gmail.com>
-Cc: alsa-user@lists.sourceforge.net, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1394536791-8381-1-git-send-email-Guangyu.Chen@freescale.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: "broonie@kernel.org" <broonie@kernel.org>, "brian.austin@cirrus.com" <brian.austin@cirrus.com>, "Paul.Handrigan@cirrus.com" <Paul.Handrigan@cirrus.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, Pawel Moll <Pawel.Moll@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "rob@landley.net" <rob@landley.net>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-> Hi,
-> I am trying to get surround 7.1 on debian 7.4 Wheezy.
-> As guided by hda-jack-retask readme I built it from source on my system.
-> But the changes are not reflecting and no errors by utility as well.
->
-> I am getting Alsa 1.0.25 from the repository.
+On Tue, Mar 11, 2014 at 11:19:51AM +0000, Nicolin Chen wrote:
+> This patch adds support for the Cirrus Logic CS42888 Audio CODEC that
+> has four 24-bit A/D and eight 24-bit D/A converters.
+> 
+> [ CS42888 supports both I2C and SPI control ports. As initial patch,
+>   this patch only adds the support for I2C. ]
+> 
+> Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+> ---
+> 
+> Changelog
+> v2:
+>  * Separated driver into I2C and main part drivers.
+>  * Added error out if failed to get clock.
+>  * Enabled Auto-mute function as default.
+>  * Disabled runtime-pm in remove().
+>  * Added return value checking for regcache_sync().
+>  * Fixed some trival parts like 'const' as Lars mentioned.
+> 
+>  .../devicetree/bindings/sound/cs42888.txt          |  27 ++
+>  sound/soc/codecs/Kconfig                           |  10 +
+>  sound/soc/codecs/Makefile                          |   4 +
+>  sound/soc/codecs/cs42888-i2c.c                     |  68 +++
+>  sound/soc/codecs/cs42888.c                         | 536 +++++++++++++++++++++
+>  sound/soc/codecs/cs42888.h                         | 213 ++++++++
+>  6 files changed, 858 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/cs42888.txt
+>  create mode 100644 sound/soc/codecs/cs42888-i2c.c
+>  create mode 100644 sound/soc/codecs/cs42888.c
+>  create mode 100644 sound/soc/codecs/cs42888.h
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/cs42888.txt b/Documentation/devicetree/bindings/sound/cs42888.txt
+> new file mode 100644
+> index 0000000..7736527
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/cs42888.txt
+> @@ -0,0 +1,27 @@
+> +CS42888 audio CODEC
+> +
+> +Required properties:
+> +
+> +  - compatible : "cirrus,cs42888"
+> +
+> +  - reg : the I2C address of the device for I2C
+> +
+> +  - clocks : phandle to the clock source for MCLK
+> +
+> +  - clock-names : must contain "mclk".
 
-You need alsa driver 1.0.27 or later which hda driver use auto generic
-parser instead of using static quirk if you need retasking headphone to
-side line out
+If you use clock-names, please define the clocks property in terms of
+clock-names to avoid redundancy. e.g.
 
-> Do I need to build the latest version from source to get hdajackretask as
-part of alsa-tools ?
-> Any other suggestions to get the 7.1 working are welcome.
+- clocks: a list of phandles + clock-specifiers, one for each entry in
+  clock-names.
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/Documentation/sound/alsa/HD-Audio.txt
+It makes the relationship between the two clearer, and makes it far
+easier to alter the binding in future if required.
 
-hdajackretask just a GUI program to create a firmware file for fixup pincfg
-by early patching
+Cheers,
+Mark.
