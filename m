@@ -1,14 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC updates for v3.15
-Date: Wed, 12 Mar 2014 23:14:37 +0000
-Message-ID: <20140312231437.GA28112@sirena.org.uk>
+Subject: Re: tlv320aic32x4 Codec ADC and DAC must shutdown to
+ alter clocks
+Date: Wed, 12 Mar 2014 23:31:37 +0000
+Message-ID: <20140312233137.GB28112@sirena.org.uk>
+References: <53207878.2060107@topic.nl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7244469194443972438=="
+Content-Type: multipart/mixed; boundary="===============7926798077566663603=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 63D7B265079
- for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 00:14:49 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C5B9526509A
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 00:31:45 +0100 (CET)
+In-Reply-To: <53207878.2060107@topic.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,773 +21,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7244469194443972438==
+--===============7926798077566663603==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/MDAAvgDg55PPszM"
+	protocol="application/pgp-signature"; boundary="BpK73wlLlEVLFqq7"
 Content-Disposition: inline
 
 
---/MDAAvgDg55PPszM
+--BpK73wlLlEVLFqq7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-The following changes since commit fa389e220254c69ffae0d403eac4146171062d08:
+On Wed, Mar 12, 2014 at 04:08:40PM +0100, Mike Looijmans wrote:
 
-  Linux 3.14-rc6 (2014-03-09 19:41:57 -0700)
+> What I cannot fix is that changing the parameters (like clock
+> frequency) must stop the DAC core.
 
-are available in the git repository at:
+> The DAPM framework just sets the BIAS to "ON" only once, and does
+> not shut down until after a time out. Which is good.
+> But if the next stream to play needs a different clock setting, the
+> DAC must be stopped first, the code must wait until the DAC has
+> powered down, and then the clocks can be stopped and altered. When
+> all settings are done, the DAC can be restarted.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.15
+As a first order fix the driver should just refuse to reconfigure if the
+clocks are active.
 
-for you to fetch changes up to deeed33850c8a376addabbf971df433b2a1ba74c:
+> I can detect the change in the hw_params, and on the first stream to
+> play, this is called while still in STANDBY or lower levels.
+> However, when the codec is already in ON bias level, how do I tell
+> DAPM that I had to shut down the DAC in order to change the
+> parameters? Just toggling the related bits will keep the DAC powered
+> down. A routine to store and restore the power state is possible,
+> but very ineffective. Especially since the "I must shutdown"
+> conclusion can also be in the clock setting routine. That would
+> result in multiple down-up cycles.
 
-  Merge remote-tracking branches 'asoc/topic/wm8996', 'asoc/topic/wm9081' and 'asoc/topic/wm9705' into asoc-next (2014-03-12 23:05:31 +0000)
+The big problem with shutting down is disruption to other activity - if
+there's something going on using the clocks.  For some devices that
+don't have long startup times ignore_pmdow_time may help a lot.
 
-----------------------------------------------------------------
-
-ASoC: Updates for v3.15
-
-Quite a busy release for ASoC this time, more on janitorial work than
-exciting new features but welcome nontheless:
-
- - Lots of cleanups from Takashi for enumerations; the original API for
-   these was error prone so he's refactored lots of code to use more
-   modern APIs which avoid issues.
- - Elimination of the ASoC level wrappers for I2C and SPI moving us
-   closer to converting to regmap completely and avoiding some
-   randconfig hassle.
- - Provide both manually and transparently locked DAPM APIs rather than
-   a mix of the two fixing some concurrency issues.
- - Start converting CODEC drivers to use separate bus interface drivers
-   rather than having them all in one file helping avoid dependency
-   issues.
- - DPCM support for Intel Haswell and Bay Trail platforms.
- - Lots of work on improvements for simple-card, DaVinci and the Renesas
-   rcar drivers.
- - New drivers for Analog Devices ADAU1977, TI PCM512x and parts of the
-   CSR SiRF SoC.
-
-----------------------------------------------------------------
-Aaro Koskinen (1):
-      ASoC: n810: fix init with DT boot
-
-Adam Thomson (1):
-      ASoC: da9055: Add DT support for CODEC
-
-Alexander Shiyan (1):
-      ASoC: cirrus: Remove excess dependencies on SND_SOC
-
-Bo Shen (2):
-      ASoC: atmel_ssc_dai: make option to choose clock
-      Binding: atmel-ssc: add option to choose clock
-
-Charles Keepax (33):
-      ASoC: wm5102: Improve EQ coefficient controls
-      ASoC: wm5110: Improve EQ coefficient controls
-      ASoC: wm8997: Improve EQ coefficient controls
-      ASoC: wm_adsp: Add debug print to note that the DSP has shutdown
-      ASoC: wm5102: Correct typo in EQ coefficient sizes
-      ASoC: wm5110: Correct type in EQ coefficient sizes
-      ASoC: wm8997: Correct typo in EQ coefficient sizes
-      ASoC: dapm: Add helpers to lock/unlock DAPM mutex
-      ASoC: dapm: Add unlocked version of snd_soc_dapm_sync
-      ASoC: adav80x: Update locking around use of DAPM pin API
-      ASoC: wm5100: Update locking around use of DAPM pin API
-      ASoC: wm8962: Update locking around use of DAPM pin API
-      ASoC: wm8994: Update locking around use of DAPM pin API
-      ASoC: wm8996: Update locking around use of DAPM pin API
-      ASoC: mfld_machine: Update locking around use of DAPM pin API
-      ASoC: ams-delta: Update locking around use of DAPM pin API
-      ASoC: omap: n810: Update locking around use of DAPM pin API
-      ASoC: omap: rx51: Update locking around use of DAPM pin API
-      ASoC: pxa: corgi: Update locking around use of DAPM pin API
-      ASoC: pxa: magician: Update locking around use of DAPM pin API
-      ASoC: pxa: spitz: Update locking around use of DAPM pin API
-      ASoC: pxa: tosa: Update locking around use of DAPM pin API
-      ASoC: wm_adsp: Split firmware load into smaller chunks
-      ASoC: wm_adsp: Correct type specifier in printf
-      ASoC: arizona: An OUTDIV of 1 is not valid, avoid this
-      ASoC: arizona: Add defines for FLL configuration constants
-      ASoC: arizona: Move set of OUTDIV in to arizona_apply_fll
-      ASoC: arizona: Move calculation of FLL configuration
-      ASoC: arizona: Don't pass Fout into arizona_calc_fll
-      ASoC: arizona: Calculate OUTDIV first
-      ASoC: arizona: Calculate FLL gain last
-      mfd: arizona: Add support for new fratio encoding
-      ASoC: arizona: Support new fratio encoding on the wm5110 rev D
-
-Christian Engelmayer (3):
-      ASoC: wm8991: Remove unused pointer in wm8991_probe()
-      ASoC: wm8995: Remove unused pointer in hp_supply_event()
-      ASoC: wm8993: Remove unused pointer in wm8993_remove()
-
-Daniel Mack (1):
-      ASoC: cs4271: claim reset GPIO in bus probe function
-
-Denis Carikli (1):
-      ASoC: eukrea-tlv320: Add DT support.
-
-Fabio Estevam (4):
-      ASoC: wm8737: Use IS_ENABLED() macro
-      ASoC: wm8983: Use IS_ENABLED() macro
-      ASoC: fsl_esai: Check the return value from clk_prepare_enable()
-      ASoC: fsl: imx-pcm-fiq: Remove unneeded 'out' label
-
-Jean-Francois Moine (8):
-      ASoC: simple-card: simplify code
-      ASoC: simple-card: simplify code
-      ASoC: simple-card: simplify code
-      ASoC: simple-card: simplify code
-      ASoC: simple-card: simplify code
-      ASoC: simple-card: simplify code
-      ASoC: simple-card: simplify code
-      ASoC: simple-card: simplify code
-
-Jyri Sarha (3):
-      ASoC: davinci-evm: Add named clock reference to DT bindings
-      ASoC: davinci-mcasp: Set BCLK divider if McASP is BCLK master
-      ASoC: tlv320aic32x4: Sort Makefile in alphabetic order
-
-Kuninori Morimoto (58):
-      ASoC: rsnd: tidyup register naming of BUSIF_MODE
-      ASoC: rsnd: cleanup debug information method
-      ASoC: rsnd: remove meaningless rsnd_ssi_non()
-      ASoC: rsnd: control SCU ops in probe timing
-      ASoC: rsnd: add rsnd_scu_init(), and separate init/start
-      ASoC: rsnd: remove meaningless function parameter
-      ASoC: rsnd: merge rsnd_scu_start/stop() and rsnd_scu_transfer_start/stop()
-      ASoC: rsnd: rsnd_dai_is_clk_master() can be shared
-      ASoC: rsnd: remove pin sync option
-      ASoC: rsnd: SSI_MODE0/1 settings goes to scu.c
-      ASoC: rsnd: remove ssiu from ssi.c
-      ASoC: rsnd: rename rsnd_scu_convert_rate_ctrl()
-      ASoC: rsnd: explain SRC bypass mode settings in comment
-      ASoC: rsnd: remove duplicate *priv from rsnd_dma
-      ASoC: rsnd: non 0 is error on probe
-      ASoC: rsnd: fixup Gen2 module naming
-      ASoC: rsnd: don't use schedule_work() when rsnd_dma_start()
-      ASoC: rsnd: SCU should be called before SSI
-      ASoC: rsnd: clarify scu.c area
-      ASoC: rsnd: Merge macros in scu.c
-      ASoC: rsnd: rsnd_scu_hpbif_is_enable() become macro
-      ASoC: rsnd: merge SRC clock timing/setting
-      ASoC: rsnd: add rsnd_ssi_is_play()
-      ASoC: rsnd: extracts Gen1/Gen2 common parts
-      ASoC: rsnd: remove SSI dependent DMAEngine callback
-      ASoC: rsnd: rsnd_ssi_probe() goes forwarder than rsnd_scu_probe()
-      ASoC: rsnd: add Gen2 SRC and DMAEngine support
-      ASoC: rsnd: use device dependency clock
-      ASoC: rsnd: tidyup original for_each_rsnd_xxx macro
-      ASoC: rsnd: set DIV_EN register on rsnd_adg_set_convert_clk_gen2()
-      ASoC: rsnd: print error if there is SRC settings mismatch
-      ASoC: simple-card: cpu_dai_name creates confusion when DT case
-      ASoC: rsnd: move priv member settings to upper side
-      ASoC: rsnd: move rsnd_mod_call() macro
-      ASoC: rsnd: remove verbose function parameter
-      ASoC: rsnd: remove verbose debug message from scu/ssi
-      ASoC: rsnd: unify rdai naming
-      ASoC: rsnd: tidyup RSND_SSI_xxx flags
-      ASoC: rsnd: run rsnd_path_init() when probe() timing
-      ASoC: rsnd: use mod array instead of list on rdai
-      ASoC: rsnd: get ssi/scu from rsnd_dai_stream
-      ASoC: rsnd: use devm_clk_get() instead of clk_get()
-      ASoC: rsnd: use function pointer for each probe
-      ASoC: rsnd: remove unused SSI_CONTROL
-      ASoC: rsnd: modify rsnd_adg_ssi_ws_timing_gen2() parameter
-      ASoC: rsnd: share reg_field and reduce memory
-      ASoC: rsnd: add struct rsnd_dai_platform_info
-      ASoC: rsnd: Get correct SCU ID
-      ASoC: rsnd: add rsnd_scu_enable_ssi_irq()
-      ASoC: rsnd: call rsnd_scu_ssi_mode_init() from SSI
-      ASoC: rsnd: add probe/remove callback on rsnd_mod_ops
-      ASoC: rsnd: use mod probe method on SCU
-      ASoC: rsnd: use mod probe method on SSI
-      ASoC: rsnd: nothing to do on rsnd_dai_remove()
-      ASoC: rsnd: remove all rsnd_xxx_remove()
-      ASoC: rsnd: rename scu to src
-      ASoC: simple-card: tidyup cpu/codec dai_fmt settings for non-DT
-      ASoC: simple-card: card name can be option
-
-Lars-Peter Clausen (58):
-      ASoC: h1940_uda1380: Don't modify runtime->hw
-      ASoC: rx1950_uda1380: Don't modify runtime->hw
-      ASoC: cs4271: Remove outdated comment
-      ASoC: cs42l73: Don't mix SNDRV_PCM_RATE_KNOT with specific rates
-      ASoC: cs42l73: Constify rate constraints
-      ASoC: ssm2602: Constify rate constraints
-      ASoC: twl6040: Constify rate constraints
-      ASoC: wm8741: Constify rate constraints
-      ASoC: wm8988: Constify rate constraints
-      ASoC: dapm: Consistently use unsigned int for register values
-      ASoC: ad193x: Split SPI and I2C code into different modules
-      ASoC: ssm2602: Split SPI and I2C code into different modules
-      ASoC: adav80x: Use devm_kzalloc()
-      ASoC: adav80x: Split SPI and I2C code into different modules
-      ASoC: Add ADAU1977 CODEC driver
-      ASoC: pxa: Remove superfluous locking
-      ASoC: da732x: Use da732x->regmap instead of codec->control_data
-      ASoC: wm8996: Replace codec->control_data with wm8996->regmap
-      ASoC: wm8962: Replace codec->control_data with wm8962->regmap
-      ASoC: Remove unused 'reg2' field from soc_enum struct
-      ASoC: Consolidate enum and value enum controls
-      ASoC: dapm: Consolidate MUXs and value MUXs
-      ASoC: Add macros for defining virtual enums
-      ASoC: adau1373: Use SOC_ENUM_SINGLE_VIRT_DECL()
-      ASoC: max98090: Use SOC_ENUM_SINGLE_VIRT_DECL()
-      ASoC: mc13783: Use SOC_ENUM_SINGLE_VIRT_DECL()
-      ASoC: wm8994: Use SOC_ENUM_SINGLE_VIRT_DECL()
-      ASoC: wm8995: Use SOC_ENUM_SINGLE_VIRT_DECL()
-      ASoC: dapm: Consolidate MUXs and virtual MUXs
-      ASoC: dapm: Break dapm_set_path_status() appart
-      ASoC: neo1973_wm8753: Post gta01 support removal cleanup
-      ASoC: neo1973_wm8753: Convert to table based setup
-      ASoC: pxa: Pass correct DAPM context to {corgi,poodle,spitz}_ext_control
-      ASoC: pxa: e740_wm9705: Convert to table based DAPM setup
-      ASoC: pxa: e750_wm9705: Convert to table based DAPM setup
-      ASoC: pxa: e800_wm9712: Convert to table based DAPM setup
-      ASoC: pxa: mioa701_wm9713: Convert to table based DAPM setup
-      ASoC: pxa: zylonite: Convert to table based DAPM setup
-      ASoC: wm1133-ev1: Convert to table based DAPM setup
-      ASoC: wm8753: Remove superfluous 'codec->cache_sync = 1'
-      ASoC: wm{5102, 5110, 8997}: Replace codec->control_data with arizona->regmap
-      ASoC: ak4104: Remove superfluous codec->control_data initialization
-      ASoC: Handle ignore_pmdown_time for CODEC to CODEC links
-      ASoC: Add helper functions for PCM runtime 'active' management
-      ASoC: Fix active count tracking for CODEC to CODEC links
-      ASoC: Add helper function to check whether a CODEC is active
-      ASoC: Add component pointer to the DAI struct
-      ASoC: Move active count from CODEC to component
-      ASoC: Move ignore_pmdown_time from CODEC to component
-      ASoC: sam9g20_wm8731: Convert to table based DAPM setup
-      ASoC: si476x: Fix IO setup
-      ASoC: 88pm860: Fix IO setup
-      ASoC: Consolidate snd_soc_register_dai() and snd_soc_register_dais()
-      ASoC: Pass CODEC to snd_soc_register_dais()
-      ASoC: Add a per component dai list
-      ASoC: migor: Convert to table based DAPM setup
-      ASoC: spear: spdif_out: Fix mute control
-      ASoC: Fix use after free
-
-Mark Brown (60):
-      Merge branch 'fix/davinci' of git://git.kernel.org/.../broonie/sound into HEAD
-      Merge branch 'topic/sign' of git://git.kernel.org/.../broonie/sound into asoc-tlv320aic32x4
-      ASoC: wm8962: Hold a runtime PM reference while handling interrupts
-      ASoC: wm8962: Check if we runtime resume the device when starting FLL
-      ASoC: wm8962: Clean up error handling for failed FLL start
-      ASoC: wm8962: Reinitialise the IRQ completion rather than just trying it
-      ASoC: ak4554: Add to SND_SOC_ALL_CODECS
-      ASoC: pcm1681: Convert to params_width()
-      ASoC: pcm1792a: Convert to params_width()
-      ASoC: codecs: Make OF supported CODECs visible in Kconfig
-      ASoC: pcm512x: Add PCM512x driver
-      ASoC: pcm512x: More constification
-      ASoC: codecs: Put the CODEC drivers in a menu
-      ASoC: wm8770: Depend on SPI only
-      ASoC: pcm512x: Implement paging support
-      ASoC: pcm512x: Implement analogue volume control
-      Merge branch 'topic/of' of git://git.kernel.org/.../broonie/sound into asoc-simple
-      ASoC: tobermory: Stop the FLL if we fail to switch SYSCLK to it
-      ASoC: cs42l51: Don't log if we fail to allocate memory
-      ASoC: cs42l51: Convert to direct regmap API usage
-      ASoC: ak4671: Convert to table based control init
-      ASoC: ak4671: Convert to direct regmap API usage
-      ASoC: pcm512x: Add regmap select
-      Merge remote-tracking branch 'asoc/topic/adav80x' into asoc-adau1977
-      ALSA: Export snd_pcm_constraint_mask64()
-      Merge branch 'fix/dapm' of git://git.kernel.org/.../broonie/sound into asoc-dapm
-      ASoC: alc5623: Convert to direct regmap API usage
-      Merge branch 'topic/of' of git://git.kernel.org/.../broonie/sound into asoc-simple
-      ASoC: da732x: Remove leftover cache size setting
-      Merge branches 'topic/dapm', 'topic/sign', 'topic/adau1373', 'topic/max98090', 'topic/mc13783', 'fix/wm8994' and 'topic/wm8995' of git://git.kernel.org/.../broonie/sound into asoc-enum
-      ASoC: fsl: Don't select FIQ from Eukrea
-      Merge branch 'topic/pcm' of git://git.kernel.org/.../broonie/sound into asoc-enum
-      Merge tag 'parse-val' of git://git.kernel.org/.../broonie/regmap into asoc-core
-      Merge branch 'topic/tlv320aic23' of git://git.kernel.org/.../broonie/sound into asoc-samsung
-      Merge branch 'topic/tlv320aic23' of git://git.kernel.org/.../broonie/sound into asoc-fsl
-      ASoC: pcm512x: Split out bus drivers
-      ASoC: pcm512x: Fix duplicate const warning
-      Merge remote-tracking branch 'asoc/fix/pcm' into asoc-linus
-      Merge remote-tracking branches 'asoc/fix/88pm860', 'asoc/fix/omap' and 'asoc/fix/si476x' into asoc-linus
-      Merge branch 'topic/pcm' of git://git.kernel.org/.../broonie/sound into asoc-core
-      ASoC: dapm: Staticise dapm_mark_dirty()
-      ASoC: dapm: Sprinkle lockdep asserts through the code
-      ASoC: tlv320aic23: Remove spurious bits per word setting
-      Merge tag 'asoc-v3.14-rc6' into asoc-linus
-      Merge remote-tracking branch 'asoc/fix/spear' into asoc-linus
-      Merge remote-tracking branch 'asoc/topic/core' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/dapm' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/enum' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/pcm1681' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/pcm1792a' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/pcm512x' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/88pm860x', 'asoc/topic/ad1836', 'asoc/topic/ad193x', 'asoc/topic/adau1977', 'asoc/topic/ak4104', 'asoc/topic/ak4641', 'asoc/topic/ak4671' and 'asoc/topic/alc5623' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/arizona', 'asoc/topic/atmel', 'asoc/topic/cirrus', 'asoc/topic/cs4271', 'asoc/topic/cs42l51', 'asoc/topic/cs42l52', 'asoc/topic/cs42l73' and 'asoc/topic/da7210' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/da7213', 'asoc/topic/da732x', 'asoc/topic/da9055', 'asoc/topic/davinci', 'asoc/topic/fsl', 'asoc/topic/fsl-esai', 'asoc/topic/fsl-sai' and 'asoc/topic/fsl-spdif' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/ml26124', 'asoc/topic/of', 'asoc/topic/omap', 'asoc/topic/pxa' and 'asoc/topic/rcar' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/samsung', 'asoc/topic/sgtl5000', 'asoc/topic/sh', 'asoc/topic/simple', 'asoc/topic/sirf', 'asoc/topic/sn95031', 'asoc/topic/ssm2602' and 'asoc/topic/stac9766' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/tlv320aic23', 'asoc/topic/tlv320aic26', 'asoc/topic/tlv320aic32x4', 'asoc/topic/tlv320aic3x', 'asoc/topic/tlv320dac33', 'asoc/topic/twl4030', 'asoc/topic/twl6040', 'asoc/topic/uda1380', 'asoc/topic/wl1273' and 'asoc/topic/wm2200' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/wm5100', 'asoc/topic/wm8523', 'asoc/topic/wm8731', 'asoc/topic/wm8737', 'asoc/topic/wm8741', 'asoc/topic/wm8753', 'asoc/topic/wm8903', 'asoc/topic/wm8904', 'asoc/topic/wm8940' and 'asoc/topic/wm8955' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/wm8961', 'asoc/topic/wm8962', 'asoc/topic/wm8974', 'asoc/topic/wm8983', 'asoc/topic/wm8988', 'asoc/topic/wm8990', 'asoc/topic/wm8991', 'asoc/topic/wm8993' and 'asoc/topic/wm8994' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/wm8996', 'asoc/topic/wm9081' and 'asoc/topic/wm9705' into asoc-next
-
-Markus Pargmann (9):
-      ASoC: core: Add signed register volume control logic
-      ASoC: core: Add SOC_DOUBLE_R_S_TLV
-      ASoC: tlv320aic32x4: Use gpio_is_valid
-      ASoC: tlv320aic32x4: Use signed int mixer controls
-      ASoC: tlv320aic32x4: DT support
-      ASoC: tlv320aic32x4: Support for master clock
-      ASoC: tlv320aic32x4: Support for regulators
-      ASoC: tlv320aic32x4: Rearrange clock tree shutdown
-      ASoC: tlv320aic3x: Remove tlv320aic32x4 from compatibles of tlv320aic3x
-
-Max Filippov (3):
-      ASoC: tlv320aic23: add support for SPI control mode
-      ASoC: update Kconfig of AIC23 users to select I2C variant
-      ASoC: tlv320aic23: add missing EXPORT_SYMBOLs
-
-Nenghua Cao (3):
-      ASoC: core: fix coccinelle warnings
-      regmap: add regmap_parse_val api
-      ASoC: core: use regmap's parse_val to do endian translation
-
-Patrick Lai (1):
-      ASoC: pcm: free path list before exiting from error conditions
-
-Paul Bolle (1):
-      ASoC: smdk_wm8994: Fix typo "wm8894"
-
-Peter Ujfalusi (6):
-      ASoC: davinci-mcasp: Return value handling cleanup for mcasp_common_hw_param()
-      ASoC: davinci-mcasp: Move pm callbacks from platform device to soc_dai_driver
-      ASoC: davinci-mcasp: Code cleanup in davinci_mcasp_hw_params()
-      ASoC: davinci-mcasp: Rename platform data struct
-      ASoC: davinci-mcasp: Remove long lines from suspend/resume callbacks
-      ASoC: davinci-mcasp: Rename the pointer to davinci dma_params as dma_params
-
-Rongjun Ying (3):
-      ASoC: sirf: Add SiRF internal audio codec driver
-      ASoC: sirf: Add SiRF audio port driver is used by SiRF internal audio codec
-      ASoC: sirf: Add SiRF audio card
-
-Sachin Kamat (6):
-      ASoC: samsung: h1940_uda1380: Remove unused variable
-      ASoC: samsung: h1940_uda1380: Fix build warning
-      ASoC: samsung: rx1950_uda1380: Remove unused variable
-      ASoC: cs42l51: Remove unused variable
-      ASoC: samsung: Remove invalid file reference
-      ASoC: s3c24xx: Remove invalid file reference
-
-Takashi Iwai (72):
-      ASoC: da732x: Remove superfluous DA732X_SOC_ENUM_DOUBLE_R()
-      ASoC: ssm2602: Omit superfluous elements in input select array
-      ASoC: wm8990: Fix the wrong number of enum items
-      ASoC: wm8991: Fix the wrong number of enum items
-      ASoC: ad193x: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: Rename soc_enum.max field with items
-      ASoC: twl4030: Clean up duplicated code
-      ALSA: da732x: Remove superfluous DA732X_SOC_ENUM_DOUBLE_R()
-      ASoC: Add const to SOC_ENUM_*_DECL() macros
-      ASoC: adau1373: Remove superfluous const
-      ASoC: lm49453: Remove superfluous const
-      ASoC: mc13783: Remove superfluous const
-      ASoC: rt5631: Remove superfluous const
-      ASoC: rt5640: Remove superfluous const
-      ASoC: ssm2518: Remove superfluous const
-      ASoC: sta529: Remove superfluous const
-      ASoC: wm8804: Remove superfluous const
-      ASoC: wm8978: Remove superfluous const
-      ASoC: wm8983: Remove superfluous const
-      ASoC: wm8985: Remove superfluous const
-      ASoC: wm8995: Remove superfluous const
-      ASoC: arizona: Fix wrong number of items in enum ctls
-      ASoC: adau1373: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: alc5623: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: cs42l52: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: da7210: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: da7213: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: da9055: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: max98090: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: mc13783: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: sgtl5000: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: sn95031: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: stac9766: Use SOC_ENUM_{SINGLE|DOUBLE}_DECL()
-      ASoC: tlv320aic26: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: twl4030: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: twl6040: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: uda1380: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wl1273: Use SOC_ENUM_SINGLE_EXT_DECL()
-      ASoC: wm2200: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8523: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8731: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8737: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8903: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8904: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8940: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8961: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8962: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8974: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8993: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8995: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8996: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm_hubs: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: omap: Use SOC_ENUM_SINGLE_EXT_DECL()
-      ASoC: 88pm860x: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: ak4641: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: ak4671: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: alc5632: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm2200: Use SOC_ENUM_SINGLE_*_DECL()
-      ASoC: da732x: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: ml26124: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: tlv320aic23: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm5100: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8955: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm8988: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm9081: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: wm9705: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: ad1836: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: cs42l73: Use SOC_ENUM_SINGLE_DECL()
-      ASoC: tlv320dac33: Use SOC_ENUM_SINGLE_*_DECL()
-      ASoC: wm5102: Use ARRAY_SIZE() for SOC_VALUE_ENUM_SINGLE()
-      ASoC: wm8997: Use ARRAY_SIZE() for SOC_VALUE_ENUM_SINGLE()
-      ASoC: cs4271: Fix build error without CONFIG_SPI_MASTER
-
-Thomas Petazzoni (1):
-      ASoC: cs42l51: add Device Tree binding to cs42l51
-
-Xiang Xiao (2):
-      ASoC: dapm: Power off all widgets in the snd_soc_dapm_shutdown
-      ASoC: dapm: Reorder the bias update sequence
-
-Xiubo Li (19):
-      ASoC: core: set_tdm_slot() will return -ENOTSUPP if no operation provided
-      ASoC: fsl: use snd_soc_dai_init_dma_data()
-      ASoC: simple-card: fix __asoc_simple_card_dai_init
-      ASoC: simple-card: simplify the daifmt code
-      ASoC: simple-card: Add snd_card's name parsing from DT node support
-      ASoC: fsl-sai: convert to use regmap API for Freeacale SAI
-      ASoC: add snd_soc_of_parse_audio_simple_widgets for DT
-      ASoC: binding: add widgets.txt
-      ASoC: simple-card: add off-codec widgets supports.
-      ASoC: simple-card: for new properties documenting and usage
-      ASoC: fsl: make sure the regmap-mmio is actually enabled
-      ASoC: fsl-spdif: big-endian support
-      ASoC: fsl-esai: big-endian support
-      ASoC: binding: add tdm-slot.txt
-      ASoC: core: add TDM slot parsing from DT supports
-      ASoC: simple-card: add slot information parsing supports
-      ASoC: fsl-sai: fix Freescale SAI DAI format setting.
-      ASoC: fsl-sai: Add SND_SOC_DAIFMT_DSP_A/B support.
-      ASoC: cache: Do the codec->reg_cache zero pionter check
-
- .../devicetree/bindings/i2c/trivial-devices.txt    |    1 +
- .../devicetree/bindings/misc/atmel-ssc.txt         |    8 +
- Documentation/devicetree/bindings/sound/da9055.txt |   22 +
- .../bindings/sound/davinci-evm-audio.txt           |    9 +-
- .../devicetree/bindings/sound/eukrea-tlv320.txt    |   21 +
- .../devicetree/bindings/sound/fsl,esai.txt         |    5 +
- .../devicetree/bindings/sound/fsl,spdif.txt        |    5 +
- .../devicetree/bindings/sound/pcm512x.txt          |   30 +
- .../devicetree/bindings/sound/simple-card.txt      |   17 +-
- .../devicetree/bindings/sound/sirf-audio-codec.txt |   17 +
- .../devicetree/bindings/sound/sirf-audio-port.txt  |   20 +
- .../devicetree/bindings/sound/sirf-audio.txt       |   41 +
- .../devicetree/bindings/sound/tdm-slot.txt         |   20 +
- .../devicetree/bindings/sound/tlv320aic32x4.txt    |   30 +
- .../devicetree/bindings/sound/tlv320aic3x.txt      |    1 -
- .../devicetree/bindings/sound/widgets.txt          |   20 +
- drivers/base/regmap/regmap.c                       |   12 +
- drivers/misc/atmel-ssc.c                           |    6 +
- include/linux/atmel-ssc.h                          |    1 +
- include/linux/mfd/arizona/registers.h              |    6 +-
- include/linux/platform_data/adau1977.h             |   45 +
- include/linux/platform_data/asoc-s3c.h             |    3 +-
- include/linux/platform_data/asoc-s3c24xx_simtec.h  |    3 +-
- include/linux/platform_data/davinci_asp.h          |    4 +-
- include/linux/regmap.h                             |    9 +
- include/sound/rcar_snd.h                           |   36 +-
- include/sound/simple_card.h                        |    6 +-
- include/sound/soc-dai.h                            |    3 +
- include/sound/soc-dapm.h                           |   40 +-
- include/sound/soc.h                                |  126 +-
- include/trace/events/hswadsp.h                     |  384 +++++
- include/trace/events/intel-sst.h                   |  148 ++
- sound/core/pcm_lib.c                               |    1 +
- sound/soc/Kconfig                                  |    1 +
- sound/soc/Makefile                                 |    1 +
- sound/soc/atmel/Kconfig                            |    2 +-
- sound/soc/atmel/atmel_ssc_dai.c                    |   13 +-
- sound/soc/atmel/sam9g20_wm8731.c                   |   20 +-
- sound/soc/blackfin/Kconfig                         |    9 +-
- sound/soc/cirrus/Kconfig                           |    4 +-
- sound/soc/codecs/88pm860x-codec.c                  |  119 +-
- sound/soc/codecs/Kconfig                           |  183 +-
- sound/soc/codecs/Makefile                          |   33 +-
- sound/soc/codecs/ad1836.c                          |    4 +-
- sound/soc/codecs/ad193x-i2c.c                      |   54 +
- sound/soc/codecs/ad193x-spi.c                      |   48 +
- sound/soc/codecs/ad193x.c                          |  144 +-
- sound/soc/codecs/ad193x.h                          |    7 +
- sound/soc/codecs/adau1373.c                        |   32 +-
- sound/soc/codecs/adau1977-i2c.c                    |   59 +
- sound/soc/codecs/adau1977-spi.c                    |   76 +
- sound/soc/codecs/adau1977.c                        | 1018 +++++++++++
- sound/soc/codecs/adau1977.h                        |   37 +
- sound/soc/codecs/adav801.c                         |   53 +
- sound/soc/codecs/adav803.c                         |   50 +
- sound/soc/codecs/adav80x.c                         |  152 +-
- sound/soc/codecs/adav80x.h                         |    7 +
- sound/soc/codecs/ak4104.c                          |    2 -
- sound/soc/codecs/ak4641.c                          |   16 +-
- sound/soc/codecs/ak4671.c                          |  240 ++-
- sound/soc/codecs/ak4671.h                          |    2 -
- sound/soc/codecs/alc5623.c                         |  117 +-
- sound/soc/codecs/alc5632.c                         |   40 +-
- sound/soc/codecs/arizona.c                         |  325 ++--
- sound/soc/codecs/cs4271.c                          |   63 +-
- sound/soc/codecs/cs42l51.c                         |   86 +-
- sound/soc/codecs/cs42l52.c                         |   92 +-
- sound/soc/codecs/cs42l73.c                         |   55 +-
- sound/soc/codecs/da7210.c                          |   20 +-
- sound/soc/codecs/da7213.c                          |  151 +-
- sound/soc/codecs/da732x.c                          |  167 +-
- sound/soc/codecs/da732x.h                          |    3 -
- sound/soc/codecs/da9055.c                          |   92 +-
- sound/soc/codecs/lm49453.c                         |   16 +-
- sound/soc/codecs/max98088.c                        |    2 +-
- sound/soc/codecs/max98090.c                        |  172 +-
- sound/soc/codecs/max98095.c                        |    4 +-
- sound/soc/codecs/mc13783.c                         |   20 +-
- sound/soc/codecs/ml26124.c                         |   12 +-
- sound/soc/codecs/pcm1681.c                         |   15 +-
- sound/soc/codecs/pcm1792a.c                        |   33 +-
- sound/soc/codecs/pcm512x-i2c.c                     |   71 +
- sound/soc/codecs/pcm512x-spi.c                     |   69 +
- sound/soc/codecs/pcm512x.c                         |  589 +++++++
- sound/soc/codecs/pcm512x.h                         |  171 ++
- sound/soc/codecs/rt5631.c                          |   75 +-
- sound/soc/codecs/rt5640.c                          |   75 +-
- sound/soc/codecs/sgtl5000.c                        |   10 +-
- sound/soc/codecs/si476x.c                          |    2 +-
- sound/soc/codecs/sirf-audio-codec.c                |  533 ++++++
- sound/soc/codecs/sirf-audio-codec.h                |   75 +
- sound/soc/codecs/sn95031.c                         |   44 +-
- sound/soc/codecs/ssm2518.c                         |   14 +-
- sound/soc/codecs/ssm2602-i2c.c                     |   57 +
- sound/soc/codecs/ssm2602-spi.c                     |   41 +
- sound/soc/codecs/ssm2602.c                         |  173 +-
- sound/soc/codecs/ssm2602.h                         |   14 +
- sound/soc/codecs/sta529.c                          |    2 +-
- sound/soc/codecs/stac9766.c                        |   38 +-
- sound/soc/codecs/tlv320aic23-i2c.c                 |   59 +
- sound/soc/codecs/tlv320aic23-spi.c                 |   56 +
- sound/soc/codecs/tlv320aic23.c                     |   71 +-
- sound/soc/codecs/tlv320aic23.h                     |    6 +
- sound/soc/codecs/tlv320aic26.c                     |    5 +-
- sound/soc/codecs/tlv320aic32x4.c                   |  232 ++-
- sound/soc/codecs/tlv320dac33.c                     |   34 +-
- sound/soc/codecs/twl4030.c                         |  101 +-
- sound/soc/codecs/twl6040.c                         |   17 +-
- sound/soc/codecs/uda1380.c                         |   40 +-
- sound/soc/codecs/wl1273.c                          |    9 +-
- sound/soc/codecs/wm2200.c                          |   18 +-
- sound/soc/codecs/wm5100.c                          |   36 +-
- sound/soc/codecs/wm5102.c                          |   28 +-
- sound/soc/codecs/wm5110.c                          |   19 +-
- sound/soc/codecs/wm8523.c                          |    4 +-
- sound/soc/codecs/wm8711.c                          |    2 +-
- sound/soc/codecs/wm8731.c                          |    4 +-
- sound/soc/codecs/wm8737.c                          |   50 +-
- sound/soc/codecs/wm8741.c                          |   34 +-
- sound/soc/codecs/wm8753.c                          |    5 +-
- sound/soc/codecs/wm8804.c                          |    2 +-
- sound/soc/codecs/wm8903.c                          |  108 +-
- sound/soc/codecs/wm8904.c                          |   77 +-
- sound/soc/codecs/wm8940.c                          |   20 +-
- sound/soc/codecs/wm8955.c                          |   11 +-
- sound/soc/codecs/wm8958-dsp2.c                     |    8 +-
- sound/soc/codecs/wm8961.c                          |   16 +-
- sound/soc/codecs/wm8962.c                          |   80 +-
- sound/soc/codecs/wm8974.c                          |    4 +-
- sound/soc/codecs/wm8978.c                          |   30 +-
- sound/soc/codecs/wm8983.c                          |   45 +-
- sound/soc/codecs/wm8985.c                          |   39 +-
- sound/soc/codecs/wm8988.c                          |   62 +-
- sound/soc/codecs/wm8990.c                          |   41 +-
- sound/soc/codecs/wm8991.c                          |   44 +-
- sound/soc/codecs/wm8993.c                          |   66 +-
- sound/soc/codecs/wm8994.c                          |   52 +-
- sound/soc/codecs/wm8995.c                          |   43 +-
- sound/soc/codecs/wm8996.c                          |   75 +-
- sound/soc/codecs/wm8997.c                          |   25 +-
- sound/soc/codecs/wm9081.c                          |   23 +-
- sound/soc/codecs/wm9705.c                          |   12 +-
- sound/soc/codecs/wm_adsp.c                         |   50 +-
- sound/soc/codecs/wm_hubs.c                         |   16 +-
- sound/soc/davinci/davinci-evm.c                    |   58 +-
- sound/soc/davinci/davinci-mcasp.c                  |  196 ++-
- sound/soc/fsl/Kconfig                              |   12 +-
- sound/soc/fsl/eukrea-tlv320.c                      |  108 +-
- sound/soc/fsl/fsl_esai.c                           |   32 +-
- sound/soc/fsl/fsl_sai.c                            |  332 ++--
- sound/soc/fsl/fsl_sai.h                            |   48 +-
- sound/soc/fsl/fsl_spdif.c                          |    9 +-
- sound/soc/fsl/imx-pcm-fiq.c                        |    7 +-
- sound/soc/fsl/wm1133-ev1.c                         |   11 +-
- sound/soc/generic/simple-card.c                    |  245 +--
- sound/soc/intel/Kconfig                            |   42 +-
- sound/soc/intel/Makefile                           |   27 +-
- sound/soc/intel/byt-rt5640.c                       |  187 ++
- sound/soc/intel/haswell.c                          |  235 +++
- sound/soc/intel/mfld_machine.c                     |   65 +-
- sound/soc/intel/sst-acpi.c                         |  284 ++++
- sound/soc/intel/sst-baytrail-dsp.c                 |  372 ++++
- sound/soc/intel/sst-baytrail-ipc.c                 |  867 ++++++++++
- sound/soc/intel/sst-baytrail-ipc.h                 |   69 +
- sound/soc/intel/sst-baytrail-pcm.c                 |  422 +++++
- sound/soc/intel/sst-dsp-priv.h                     |  309 ++++
- sound/soc/intel/sst-dsp.c                          |  385 +++++
- sound/soc/intel/sst-dsp.h                          |  233 +++
- sound/soc/intel/sst-firmware.c                     |  587 +++++++
- sound/soc/intel/sst-haswell-dsp.c                  |  517 ++++++
- sound/soc/intel/sst-haswell-ipc.c                  | 1785 ++++++++++++++++++++
- sound/soc/intel/sst-haswell-ipc.h                  |  488 ++++++
- sound/soc/intel/sst-haswell-pcm.c                  |  872 ++++++++++
- sound/soc/intel/{sst_dsp.h => sst-mfld-dsp.h}      |    8 +-
- .../intel/{sst_platform.c => sst-mfld-platform.c}  |    8 +-
- .../intel/{sst_platform.h => sst-mfld-platform.h}  |    4 +-
- sound/soc/omap/Kconfig                             |    4 +-
- sound/soc/omap/ams-delta.c                         |   55 +-
- sound/soc/omap/n810.c                              |   26 +-
- sound/soc/omap/rx51.c                              |   22 +-
- sound/soc/pxa/corgi.c                              |   49 +-
- sound/soc/pxa/e740_wm9705.c                        |   10 +-
- sound/soc/pxa/e750_wm9705.c                        |   10 +-
- sound/soc/pxa/e800_wm9712.c                        |   19 +-
- sound/soc/pxa/magician.c                           |   26 +-
- sound/soc/pxa/mioa701_wm9713.c                     |   19 +-
- sound/soc/pxa/poodle.c                             |    7 +-
- sound/soc/pxa/spitz.c                              |   58 +-
- sound/soc/pxa/tosa.c                               |   32 +-
- sound/soc/pxa/zylonite.c                           |   17 +-
- sound/soc/samsung/Kconfig                          |    2 +-
- sound/soc/samsung/h1940_uda1380.c                  |    7 +-
- sound/soc/samsung/neo1973_wm8753.c                 |  168 +-
- sound/soc/samsung/rx1950_uda1380.c                 |    5 -
- sound/soc/samsung/smdk_wm8994.c                    |    2 +-
- sound/soc/samsung/tobermory.c                      |    2 +
- sound/soc/sh/migor.c                               |   19 +-
- sound/soc/sh/rcar/Makefile                         |    2 +-
- sound/soc/sh/rcar/adg.c                            |  228 ++-
- sound/soc/sh/rcar/core.c                           |  306 ++--
- sound/soc/sh/rcar/gen.c                            |   98 +-
- sound/soc/sh/rcar/rsnd.h                           |  195 ++-
- sound/soc/sh/rcar/scu.c                            |  384 -----
- sound/soc/sh/rcar/src.c                            |  687 ++++++++
- sound/soc/sh/rcar/ssi.c                            |  332 ++--
- sound/soc/sirf/Kconfig                             |   14 +
- sound/soc/sirf/Makefile                            |    5 +
- sound/soc/sirf/sirf-audio-port.c                   |  194 +++
- sound/soc/sirf/sirf-audio-port.h                   |   62 +
- sound/soc/sirf/sirf-audio.c                        |  156 ++
- sound/soc/soc-cache.c                              |   13 +-
- sound/soc/soc-compress.c                           |   65 +-
- sound/soc/soc-core.c                               |  582 ++++---
- sound/soc/soc-dapm.c                               |  465 ++---
- sound/soc/soc-pcm.c                                |  112 +-
- sound/soc/spear/spdif_out.c                        |   10 +-
- sound/soc/tegra/Kconfig                            |    2 +-
- 217 files changed, 17528 insertions(+), 4570 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/da9055.txt
- create mode 100644 Documentation/devicetree/bindings/sound/eukrea-tlv320.txt
- create mode 100644 Documentation/devicetree/bindings/sound/pcm512x.txt
- create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio-codec.txt
- create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio-port.txt
- create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio.txt
- create mode 100644 Documentation/devicetree/bindings/sound/tdm-slot.txt
- create mode 100644 Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
- create mode 100644 Documentation/devicetree/bindings/sound/widgets.txt
- create mode 100644 include/linux/platform_data/adau1977.h
- create mode 100644 include/trace/events/hswadsp.h
- create mode 100644 include/trace/events/intel-sst.h
- create mode 100644 sound/soc/codecs/ad193x-i2c.c
- create mode 100644 sound/soc/codecs/ad193x-spi.c
- create mode 100644 sound/soc/codecs/adau1977-i2c.c
- create mode 100644 sound/soc/codecs/adau1977-spi.c
- create mode 100644 sound/soc/codecs/adau1977.c
- create mode 100644 sound/soc/codecs/adau1977.h
- create mode 100644 sound/soc/codecs/adav801.c
- create mode 100644 sound/soc/codecs/adav803.c
- create mode 100644 sound/soc/codecs/pcm512x-i2c.c
- create mode 100644 sound/soc/codecs/pcm512x-spi.c
- create mode 100644 sound/soc/codecs/pcm512x.c
- create mode 100644 sound/soc/codecs/pcm512x.h
- create mode 100644 sound/soc/codecs/sirf-audio-codec.c
- create mode 100644 sound/soc/codecs/sirf-audio-codec.h
- create mode 100644 sound/soc/codecs/ssm2602-i2c.c
- create mode 100644 sound/soc/codecs/ssm2602-spi.c
- create mode 100644 sound/soc/codecs/tlv320aic23-i2c.c
- create mode 100644 sound/soc/codecs/tlv320aic23-spi.c
- create mode 100644 sound/soc/intel/byt-rt5640.c
- create mode 100644 sound/soc/intel/haswell.c
- create mode 100644 sound/soc/intel/sst-acpi.c
- create mode 100644 sound/soc/intel/sst-baytrail-dsp.c
- create mode 100644 sound/soc/intel/sst-baytrail-ipc.c
- create mode 100644 sound/soc/intel/sst-baytrail-ipc.h
- create mode 100644 sound/soc/intel/sst-baytrail-pcm.c
- create mode 100644 sound/soc/intel/sst-dsp-priv.h
- create mode 100644 sound/soc/intel/sst-dsp.c
- create mode 100644 sound/soc/intel/sst-dsp.h
- create mode 100644 sound/soc/intel/sst-firmware.c
- create mode 100644 sound/soc/intel/sst-haswell-dsp.c
- create mode 100644 sound/soc/intel/sst-haswell-ipc.c
- create mode 100644 sound/soc/intel/sst-haswell-ipc.h
- create mode 100644 sound/soc/intel/sst-haswell-pcm.c
- rename sound/soc/intel/{sst_dsp.h => sst-mfld-dsp.h} (96%)
- rename sound/soc/intel/{sst_platform.c => sst-mfld-platform.c} (99%)
- rename sound/soc/intel/{sst_platform.h => sst-mfld-platform.h} (97%)
- delete mode 100644 sound/soc/sh/rcar/scu.c
- create mode 100644 sound/soc/sh/rcar/src.c
- create mode 100644 sound/soc/sirf/Kconfig
- create mode 100644 sound/soc/sirf/Makefile
- create mode 100644 sound/soc/sirf/sirf-audio-port.c
- create mode 100644 sound/soc/sirf/sirf-audio-port.h
- create mode 100644 sound/soc/sirf/sirf-audio.c
-
---/MDAAvgDg55PPszM
+--BpK73wlLlEVLFqq7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTIOpaAAoJELSic+t+oim9OowP/Ahy4y4oius3ua8pih0jjXBp
-5qOvlMu2eZIXIrKPmiGrMzkMDFa+haHNKAXehfx8fmcs+ndb3gH39bLKa8cFVWF1
-3BwraPpAMzpQRaoHX3mZ/2IlZZx5rhWtZQn9bFTklHAndWfLyUmtqkcKSdmV3Xmq
-WAZP1X9SIfffw7gPVHEMljbJHUVg1FSdwGkm2lBw3i7rCLBiRwswbeWS+mpmTPiz
-Uj31MJiNB5Bhcu0GcqDCdqlCKGd9J2FVihrQgrK3gy9odHtsBjKLqSLlUwPTkaSJ
-yOiFYYSU5avCc9SZcpbpaKBg44qFnTx0Qd0tUC5FB04AE7W6EQzoaoVocfMI4JrT
-4VuIZuQFDrFwgKlXOb0CgriYl2LKkTBD7QVTM19/PaA5QX1LjL4VQgaIL3185rvN
-RWytKQNpPoMMBClE3KfxCkpORFkKza98n42+A0CW5fsFXt0KQ1m+bcR7njCa2aSD
-an8An9yxxAGQZZgEJC8Q7Jgwjk99dO8aXaOZyhGX5UOPJWcWN2XgrRyELOt78Gbf
-ItYqJ3FIPPw362XpFC9GVC4uk6bIlwG64e1EMckPIpfEMvCd4Yuy4YDD7KC6slUL
-KFLfkwBFZ0ULvpb+5m49Z5EJNWal9UqgJ5wz2MkgzUfcAJ0ks9neWRMtNKQk/nms
-iE7KLZWA3eHnjAVIr1ne
-=U7a4
+iQIcBAEBAgAGBQJTIO5WAAoJELSic+t+oim9wnQQAJNkl6FUxaoqDnGd+wrwbKot
++O9cE/qXHi6s9zbeB9qTBtXOIatW+cx4vwZ9DnyywfIdLJoJrycEKYdWFbRVWQ+B
+PWPDldzypIosbpqEnIAlxBIuJ5K0gdQ1COCtk5Yvs3Q0ZB751VIHHazIJD/OTh/X
+b034Q3PQVEsqZuAiujTHlvg4Zs/Rs445fcldKfHhY4cy6xl7IuZx0x+tPzku68Ho
+EUqEPL0FdeCekQMDAobER7WTR3ZPbwINr0KHBGb/yVAUr5xKZd/mq8k50mUm6Lx5
+PateDWip+mGXK2oUBKGvhVjo7LT+Ilu0Kj38r82ayaCZVXvU5xs4rOJ6/diieP7d
+35pDpTo1R4R0rtCKbOzwx1Q7ljzMUhKGeB1zK45sd7xq8ZmZDJ8BssFrd5iM3s3G
+uaCVwtEx1WYySi+qjk3pclvQ6QfWYaVsLkIerjqfxO8CCO4bgrEFITNr9wj+xNQe
+VOmdKKvGJhnQF9keo3Z6lkEzLPwNmylqM5h6rFUHM/SZiI+kqlI8wgTdy7dz93y0
+gXuqdjNau/9U9lM+KgkmBpFXWpL7bNDTTUbzHPQPCLL9VPY6K+zm8EAUzVihu1mY
+QmCqJhmy3wiOnfYPkjbg2xJd+oydRXapZ/g1+F71nAD0C2Dar1uup6vjaKQ6QYoR
+bVPCErdg/KcjCz5HCJLR
+=bCVL
 -----END PGP SIGNATURE-----
 
---/MDAAvgDg55PPszM--
+--BpK73wlLlEVLFqq7--
 
---===============7244469194443972438==
+--===============7926798077566663603==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7244469194443972438==--
+--===============7926798077566663603==--
