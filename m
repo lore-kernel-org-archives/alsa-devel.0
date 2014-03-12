@@ -1,95 +1,118 @@
-From: Matt Kleffner <kleffner@gmail.com>
-Subject: Creating single-card driver for multi-codec
- (TLV320AIC34) board - is it possible at the machine level?
-Date: Tue, 11 Mar 2014 21:55:33 -0500
-Message-ID: <CA+1ObOwk2rzvsfpReChdh+f5YqaNMUrJPzEueWxqO7DzwQ+6KQ@mail.gmail.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: [PATCH v2] ASoC: simple-card: overwrite cpu_dai->fmt with codec_dai->fmt
+Date: Wed, 12 Mar 2014 11:02:11 +0800
+Message-ID: <1394593331-22867-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f66.google.com (mail-oa0-f66.google.com
- [209.85.219.66])
- by alsa0.perex.cz (Postfix) with ESMTP id F31BA261AB1
- for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 03:55:35 +0100 (CET)
-Received: by mail-oa0-f66.google.com with SMTP id g12so3695868oah.1
- for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2014 19:55:33 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-doc-owner@vger.kernel.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, devicetree@vger.kernel.org, Li.Xiubo@freescale.com, moinejf@free.fr, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi ALSA developers,
+The current simple-card driver separates the daimft for cpu_dai and codec_dai.
+So we might get different values for them (0x4003 and 0x1003 for example):
 
-I'm developing an ALSA driver for a new board with two TLV320AIC34 chips,
-which to a driver is the equivalent of 4 TLV320AIC31/2/3 (TLV320AIC3X
-driver) codecs. The platform is OMAP4, with the OMAP as I2C master.
+asoc-simple-card sound-cs42888.12: cpu : 2024000.esai / 4003 / 132000000
+asoc-simple-card sound-cs42888.12: codec : cs42888 / 1003 / 24576000
+asoc-simple-card sound-cs42888.12: cs42888 <-> 2024000.esai mapping ok
 
-TDM mode with one McBSP port is used, and it is desired that the four
-codecs appear as one 8-channel codec (clocks are shared and data buses are
-connected together). It is OK if there are 4 separate mixers, one for each
-codec. However, when starting/stopping audio all codecs should act together
-and audio data presented to the ALSA user interface just as with a single
-8-channel sound card.
+This is not allowed at all as we need to keep the DAIFMT settings identical
+for both the ends of the link.
 
-My questions have two parts: one on binding together the codecs into a
-"single card", and another on alterations to support an external
-sample-clock generator.
+Thus this patch fixes it by overwriting the cpu_dai->fmt with codec_dai->fmt
+since we defined the DAIFMT_MASTER basing on CODEC at the first place while
+the other bits are same.
 
-BONDING CODECS TOGETHER
+Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+---
 
-It is desired to write the driver at the "machine" level (ignore the
-external-clock modification for now), without modifying the ALSA SoC core
-or the TLV320AIC3X driver. Is this possible? I've searched the internet and
-looked through the source code, and I have the following gaps in
-understanding:
+Changelog
+v2:
+ * Keep the fmt identical for both CPU and CODEC sides.
+ * Appended warning to binding doc.
 
-The following TI link seems to suggest such TLV320AIC34 operation may
-already be possible with ALSA:
-http://e2e.ti.com/support/data_converters/audio_converters/w/design_notes/2361.tlv320aic34-tdm-mode-driver-questions-vocera.aspx
+ .../devicetree/bindings/sound/simple-card.txt        |  6 ++++++
+ sound/soc/generic/simple-card.c                      | 20 ++++++++++++++------
+ 2 files changed, 20 insertions(+), 6 deletions(-)
 
-However, one of the threads pointed in that link:
-http://comments.gmane.org/gmane.linux.alsa.devel/84899
-suggests such support is not in the ALSA SoC core or the TLV320AIC3X
-driver. While it is mentioned that if configured appropriately, "you'll end
-up with a single card", later it is mentioned that
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+index b30c222..881914b1 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -43,6 +43,12 @@ Optional CPU/CODEC subnodes properties:
+ 					  clock node (= common clock), or "system-clock-frequency"
+ 					  (if system doens't support common clock)
+ 
++Note:
++ * For 'format', 'frame-master', 'bitclock-master', 'bitclock-inversion' and
++   'frame-inversion', the simple card will use the settings of CODEC for both
++   CPU and CODEC sides as we need to keep the settings identical for both ends
++   of the link.
++
+ Example:
+ 
+ sound {
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 5dd4769..09591ab 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -157,6 +157,8 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 				     struct device *dev)
+ {
+ 	struct snd_soc_dai_link *dai_link = priv->snd_card.dai_link;
++	struct asoc_simple_dai *codec_dai = &priv->codec_dai;
++	struct asoc_simple_dai *cpu_dai = &priv->cpu_dai;
+ 	struct device_node *np;
+ 	char *name;
+ 	int ret;
+@@ -189,7 +191,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	np = of_get_child_by_name(node, "simple-audio-card,cpu");
+ 	if (np)
+ 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
+-						  &priv->cpu_dai,
++						  cpu_dai,
+ 						  &dai_link->cpu_of_node,
+ 						  &dai_link->cpu_dai_name);
+ 	if (ret < 0)
+@@ -200,12 +202,18 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	np = of_get_child_by_name(node, "simple-audio-card,codec");
+ 	if (np)
+ 		ret = asoc_simple_card_sub_parse_of(np, priv->daifmt,
+-						  &priv->codec_dai,
++						  codec_dai,
+ 						  &dai_link->codec_of_node,
+ 						  &dai_link->codec_dai_name);
+ 	if (ret < 0)
+ 		return ret;
+ 
++	/*
++	 * overwrite cpu_dai->fmt as its DAIFMT_MASTER bit is based on CODEC
++	 * while the other bits should be identical unless buggy SW/HW design.
++	 */
++	cpu_dai->fmt = codec_dai->fmt;
++
+ 	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name)
+ 		return -EINVAL;
+ 
+@@ -227,12 +235,12 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	dev_dbg(dev, "platform : %04x\n", priv->daifmt);
+ 	dev_dbg(dev, "cpu : %s / %04x / %d\n",
+ 		dai_link->cpu_dai_name,
+-		priv->cpu_dai.fmt,
+-		priv->cpu_dai.sysclk);
++		cpu_dai->fmt,
++		cpu_dai->sysclk);
+ 	dev_dbg(dev, "codec : %s / %04x / %d\n",
+ 		dai_link->codec_dai_name,
+-		priv->codec_dai.fmt,
+-		priv->codec_dai.sysclk);
++		codec_dai->fmt,
++		codec_dai->sysclk);
+ 
+ 	/*
+ 	 * soc_bind_dai_link() will check cpu name
+-- 
+1.8.4
 
-"you're probably trying to break new ground here. You're trying to bind all
-the CODECs together and treat them as one digital interface, currently the
-code does a series of point to point links multiplexed on a bus only."
 
-What does point-to-point link mean in this context? What does "you'll end
-up with a single card" mean if all 8 channels are not exposed in one card?
-If it is new ground, then what does the rx51 driver do (it is often
-referenced as a starting point for this type of binding effort), which
-interfaces to an AIC34 codec?
-
-The threads referenced are a few years old. Is it now possible to write
-such a driver at the machine level, or must I additionally either modify
-the core or write a new codec driver (as the original poster did)?
-
-ALTERATIONS TO SUPPORT AN EXTERNAL SAMPLE-CLOCK GENERATOR
-
-The sample clock is being generated by a single, I2C-configurable clock
-chip. So any sample-rate configuration must be sent to the clock chip. Can
-this be handled purely in the machine layer, or do I need to modify the
-AIC3X driver? I understand I need to use the regmap API to do such things,
-and ALSA uses this API, but I do not yet know much about it. Any pointers
-to documentation on doing this besides the source code are appreciated.
-
-A key newbie question on regmap (and Linux I2C) as needed by the driver the
-following:
-Does the regmap-i2c or i2c driver "own" the I2C bus so that the each device
-on the bus can be read from/written to via the regmap-i2c or i2c driver
-without the device's driver having to request-take-release the bus on each
-access?
-
-Thanks,
-
- - Matt
