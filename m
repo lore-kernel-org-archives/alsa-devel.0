@@ -1,18 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 11/12] ASoC: pxa: tosa: Convert to table
-	based DAPM and control setup
-Date: Wed, 12 Mar 2014 15:27:39 +0100
-Message-ID: <1394634460-15889-12-git-send-email-lars@metafoo.de>
-References: <1394634460-15889-1-git-send-email-lars@metafoo.de>
+From: Mike Looijmans <mike.looijmans@topic.nl>
+Subject: tlv320aic32x4 Codec ADC and DAC must shutdown to alter
+	clocks
+Date: Wed, 12 Mar 2014 16:08:40 +0100
+Message-ID: <53207878.2060107@topic.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-175.synserver.de (smtp-out-200.synserver.de
- [212.40.185.200])
- by alsa0.perex.cz (Postfix) with ESMTP id DBA7326500A
- for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 15:27:26 +0100 (CET)
-In-Reply-To: <1394634460-15889-1-git-send-email-lars@metafoo.de>
+Received: from smtp09.online.nl (smtp09.online.nl [194.134.42.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE1A3264F07
+ for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 16:08:40 +0100 (CET)
+Received: from smtp09.online.nl (localhost [127.0.0.1])
+ by smtp09.online.nl (Postfix) with ESMTP id 5ACEC1E162
+ for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 16:08:40 +0100 (CET)
+Received: from [192.168.1.11] (s55969068.adsl.online.nl [85.150.144.104])
+ by smtp09.online.nl (Postfix) with ESMTP
+ for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 16:08:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,117 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Ryan Mallon <rmallon@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, =?UTF-8?q?Daniel=20Gl=C3=B6ckner?= <daniel-gl@gmx.net>, Benoit Cousson <bcousson@baylibre.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use table based setup to register the controls and DAPM widgets and routes. This
-on one hand makes the code a bit shorter and cleaner and on the other hand the
-board level DAPM elements get registered in the card's DAPM context rather than
-in the CODEC's DAPM context.
+My general question: If "my" codec needs to alter the state of the DAPM 
+tree, how can the codec ask or inform the DAPM components of this?
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/pxa/tosa.c | 35 +++++++++++++----------------------
- 1 file changed, 13 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
-index cead165..4a956d1 100644
---- a/sound/soc/pxa/tosa.c
-+++ b/sound/soc/pxa/tosa.c
-@@ -44,9 +44,8 @@
- static int tosa_jack_func;
- static int tosa_spk_func;
- 
--static void tosa_ext_control(struct snd_soc_codec *codec)
-+static void tosa_ext_control(struct snd_soc_dapm_context *dapm)
- {
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 
- 	snd_soc_dapm_mutex_lock(dapm);
- 
-@@ -82,10 +81,9 @@ static void tosa_ext_control(struct snd_soc_codec *codec)
- static int tosa_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
- 
- 	/* check the jack status at stream startup */
--	tosa_ext_control(codec);
-+	tosa_ext_control(&rtd->card->dapm);
- 
- 	return 0;
- }
-@@ -104,13 +102,13 @@ static int tosa_get_jack(struct snd_kcontrol *kcontrol,
- static int tosa_set_jack(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
- 
- 	if (tosa_jack_func == ucontrol->value.integer.value[0])
- 		return 0;
- 
- 	tosa_jack_func = ucontrol->value.integer.value[0];
--	tosa_ext_control(codec);
-+	tosa_ext_control(&card->dapm);
- 	return 1;
- }
- 
-@@ -124,13 +122,13 @@ static int tosa_get_spk(struct snd_kcontrol *kcontrol,
- static int tosa_set_spk(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
- 
- 	if (tosa_spk_func == ucontrol->value.integer.value[0])
- 		return 0;
- 
- 	tosa_spk_func = ucontrol->value.integer.value[0];
--	tosa_ext_control(codec);
-+	tosa_ext_control(&card->dapm);
- 	return 1;
- }
- 
-@@ -191,24 +189,10 @@ static int tosa_ac97_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
--	int err;
- 
- 	snd_soc_dapm_nc_pin(dapm, "OUT3");
- 	snd_soc_dapm_nc_pin(dapm, "MONOOUT");
- 
--	/* add tosa specific controls */
--	err = snd_soc_add_codec_controls(codec, tosa_controls,
--				ARRAY_SIZE(tosa_controls));
--	if (err < 0)
--		return err;
--
--	/* add tosa specific widgets */
--	snd_soc_dapm_new_controls(dapm, tosa_dapm_widgets,
--				  ARRAY_SIZE(tosa_dapm_widgets));
--
--	/* set up tosa specific audio path audio_map */
--	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
--
- 	return 0;
- }
- 
-@@ -239,6 +223,13 @@ static struct snd_soc_card tosa = {
- 	.owner = THIS_MODULE,
- 	.dai_link = tosa_dai,
- 	.num_links = ARRAY_SIZE(tosa_dai),
-+
-+	.controls = tosa_controls,
-+	.num_controls = ARRAY_SIZE(tosa_controls),
-+	.dapm_widgets = tosa_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(tosa_dapm_widgets),
-+	.dapm_routes = audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(audio_map),
- };
- 
- static int tosa_probe(struct platform_device *pdev)
+This problem occurs on tlv320aic32x4 codecs, but probably applies to 
+many others as well.
+
+Using the tlv320aic32x4 a simple loop like this may "crash" the codec:
+
+while true
+do
+    speaker-test -c 2 -t sine -l 1 -r 48000 > /dev/null
+    speaker-test -c 2 -t sine -l 1 -r 44100 > /dev/null
+done 
+
+
+A "crash" means, in this respect that the chip loses some of its 
+settings, malfunctions and often it results in NACKs on I2C commands.
+
+I've been trying to properly fix this, but it just won't fit in the 
+framework.
+
+The cause is that the DAPM starts the DAC and/or ADC cores while the 
+clocks aren't running, and stops the clocks before shutting down the cores.
+
+There is the overall bug of the driver that starts and stops all the 
+clocks in the aic32x4_set_bias_level in the wrong order - it should 
+start them from source to sink, and stop them in the opposite direction, 
+so the PLL must be the first to start and last to stop. Apparently this 
+isn't really critical as I've never observed failure as a result of this.
+
+What I cannot fix is that changing the parameters (like clock frequency) 
+must stop the DAC core.
+
+The DAPM framework just sets the BIAS to "ON" only once, and does not 
+shut down until after a time out. Which is good.
+But if the next stream to play needs a different clock setting, the DAC 
+must be stopped first, the code must wait until the DAC has powered 
+down, and then the clocks can be stopped and altered. When all settings 
+are done, the DAC can be restarted.
+
+Starting the DAC is the DAPM's task, it's this line that does the job:
+
+SND_SOC_DAPM_DAC("Left DAC", "Left Playback", AIC32X4_DACSETUP, 7, 0),
+
+I can detect the change in the hw_params, and on the first stream to 
+play, this is called while still in STANDBY or lower levels. However, 
+when the codec is already in ON bias level, how do I tell DAPM that I 
+had to shut down the DAC in order to change the parameters? Just 
+toggling the related bits will keep the DAC powered down. A routine to 
+store and restore the power state is possible, but very ineffective. 
+Especially since the "I must shutdown" conclusion can also be in the 
+clock setting routine. That would result in multiple down-up cycles.
+
+
 -- 
-1.8.0
+Mike Looijmans
