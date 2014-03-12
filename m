@@ -1,71 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH RFC v2 0/2] Fix simple-card *-master DT
- parameter handling
-Date: Wed, 12 Mar 2014 12:30:23 +0000
-Message-ID: <20140312123023.GP28112@sirena.org.uk>
-References: <cover.1394451329.git.jsarha@ti.com>
- <877g80rzgg.wl%kuninori.morimoto.gx@gmail.com>
- <CAHPCO9FmL__LmUyMRhsy2mnPNAV0h--aMY=GBJjL9TBrAqWSFw@mail.gmail.com>
+Subject: [PATCH] ASoC: tlv320aic23: Remove spurious bits per
+	word setting
+Date: Wed, 12 Mar 2014 13:33:15 +0000
+Message-ID: <1394631195-10480-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="X5d84+NUkZX3FbP/"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAHPCO9FmL__LmUyMRhsy2mnPNAV0h--aMY=GBJjL9TBrAqWSFw@mail.gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Richard Lee <superlibj8301@gmail.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, liam.r.girdwood@linux.intel.com, detheridge@ti.com, peter.ujfalusi@ti.com, bcousson@baylibre.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F9D6262626
+ for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 14:33:31 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Max Filippov <jcmvbkbc@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+From: Mark Brown <broonie@linaro.org>
 
---X5d84+NUkZX3FbP/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+regmap should handle any byte ordering issues required, it is looking for
+a byte stream from the bus, so don't set 16 bits per word. This is likely
+to have tested out OK due to use of an unmerged SPI controller driver.
 
-On Wed, Mar 12, 2014 at 01:00:02PM +0800, Richard Lee wrote:
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/tlv320aic23-spi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> But, IMO, if you want the CPU DAI be CBS_CFS and CODEC be CBM_CFM,
-> you could just do it like this:
->          simple-audio-card,cpu {
->                  ...
->          };
->=20
->          simple-audio-card,codec {
->                  ...
->                  bitclock-master;
->                  frame-master;
->          };
-
-> and vice versa.
-
-> Thanks,
-
-> (I could find this mails in my Freescale acount, so I will reply it here.)
-
-Yes, that'd been what I'd thought the binding did (and it's what Jyri's
-patch makes it do).
-
---X5d84+NUkZX3FbP/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTIFNbAAoJELSic+t+oim9xXQP/30AiyGMsrU6iIKlmF+x56xd
-BDcmTNdecYO2SrcY8MkFAZnHqR26gtE0H9QwVCrPXryFy/uICga3P645kvYcvaF6
-c9PPvXX8+U+XOYht8fv3EKt1VBXydCMSQfCTvqJPYFWpS4A7AKzI0PCWX8jT20pf
-4dDFl+YZ3XOqhuXGf1GvnFdm/se6CaJfJBAKvRXNmAI94Grl2XwChqsAkFydxvzc
-Al803SwJMz4oNm1fmCiqniZdLWpPHVgkaKGZu0qshMbxwJgWPBndkQOtFPX9wbpC
-NTURHfaXLlTXx04Abi7lgRREPk/qkPINkVdYN62vXBXSoacacGBjK0H7wF46jvHE
-SoS+7RByiOSxTpb/Ua+Cej77eFe1CCdSJreH4jzFZQ45C8Ld+yAmmcnjJdURFg2A
-HoVsTMIo6vdv9K+8Kc3pvZTDv45pJkwJcROw0pHsHzVU44bjv+iWnCxp9shW8Re+
-EI9GEGxsephhvC82AIRivZ34AlVCQyUd4D7+n14GTb4N+ElgKD1ynDM7mUZ4xGrk
-Up5xCsd6y6RfInCBbRP9+XOqx0hJHYkEYEsvzUf5CKW2oHJQ2gcGccm4S51vbobd
-Br3Pa/XKcea4MNMBWAElgR2BAulClU9nXBFUkEL8dlbA+klCLHeuErUV8ncH0GlL
-3WD4PAhcm0dxDsDgXKGu
-=Dqwd
------END PGP SIGNATURE-----
-
---X5d84+NUkZX3FbP/--
+diff --git a/sound/soc/codecs/tlv320aic23-spi.c b/sound/soc/codecs/tlv320aic23-spi.c
+index 585aea436c6a..3b387e41d75d 100644
+--- a/sound/soc/codecs/tlv320aic23-spi.c
++++ b/sound/soc/codecs/tlv320aic23-spi.c
+@@ -25,7 +25,6 @@ static int aic23_spi_probe(struct spi_device *spi)
+ 
+ 	dev_dbg(&spi->dev, "probing tlv320aic23 spi device\n");
+ 
+-	spi->bits_per_word = 16;
+ 	spi->mode = SPI_MODE_0;
+ 	ret = spi_setup(spi);
+ 	if (ret < 0)
+-- 
+1.9.0
