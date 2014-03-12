@@ -1,56 +1,95 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH v2] ASoC: cs42888: Add codec driver support
-Date: Wed, 12 Mar 2014 10:03:35 +0800
-Message-ID: <20140312020334.GD1177@MrMyself>
-References: <1394536791-8381-1-git-send-email-Guangyu.Chen@freescale.com>
- <alpine.DEB.2.02.1403111026280.3558@heelrod>
- <531F320E.70605@metafoo.de>
- <20140311184606.GW28112@sirena.org.uk>
- <03E7E694-045D-4C8B-A1A4-98CC306D6D63@cirrus.com>
+From: Matt Kleffner <kleffner@gmail.com>
+Subject: Creating single-card driver for multi-codec
+ (TLV320AIC34) board - is it possible at the machine level?
+Date: Tue, 11 Mar 2014 21:55:33 -0500
+Message-ID: <CA+1ObOwk2rzvsfpReChdh+f5YqaNMUrJPzEueWxqO7DzwQ+6KQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <03E7E694-045D-4C8B-A1A4-98CC306D6D63@cirrus.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: "Austin, Brian" <Brian.Austin@cirrus.com>
-Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, "Handrigan, Paul" <Paul.Handrigan@cirrus.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "rob@landley.net" <rob@landley.net>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oa0-f66.google.com (mail-oa0-f66.google.com
+ [209.85.219.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id F31BA261AB1
+ for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 03:55:35 +0100 (CET)
+Received: by mail-oa0-f66.google.com with SMTP id g12so3695868oah.1
+ for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2014 19:55:33 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Brian,
+Hi ALSA developers,
 
-On Wed, Mar 12, 2014 at 02:05:00AM +0000, Austin, Brian wrote:
-> 
-> 
-> >> On Mar 11, 2014, at 13:46, "Mark Brown" <broonie@kernel.org> wrote:
-> >> 
-> >> On Tue, Mar 11, 2014 at 04:55:58PM +0100, Lars-Peter Clausen wrote:
-> >> On 03/11/2014 04:41 PM, Brian Austin wrote:
-> > 
-> >>> So WRT the CS42888, this is one device in a series of 2 devices that are
-> >>> register compatible with the only difference being that the CS42488 has 2
-> >>> extra ADC's. Same die and same DeviceID.
-> > 
-> >>> Would it make more sense to submit the driver with the extra ADC's to make
-> >>> it feature complete for both devices? Wouldn't be odd to have 2 drivers that
-> >>> do the same for 98% of the code.
-> > 
-> >> This should be in one driver. But support for the second device can
-> >> always be added in a follow up patch.
-> > 
-> > Yes, we can add support later.  It might be helpful to name the driver
-> > with some generic name I guess.
-> CS42xx8 would work.
-> 
-> We have a CS42448 and the CS42888. The difference is the 2 extra ADC's on the CS42448. I can add those later.
-> 
-> I still would like to go over some of the v2 code though before a v3 is sent.
+I'm developing an ALSA driver for a new board with two TLV320AIC34 chips,
+which to a driver is the equivalent of 4 TLV320AIC31/2/3 (TLV320AIC3X
+driver) codecs. The platform is OMAP4, with the OMAP as I2C master.
 
-Actually I've already sent v3 right after this v2 due to some doc updating.
+TDM mode with one McBSP port is used, and it is desired that the four
+codecs appear as one 8-channel codec (clocks are shared and data buses are
+connected together). It is OK if there are 4 separate mixers, one for each
+codec. However, when starting/stopping audio all codecs should act together
+and audio data presented to the ALSA user interface just as with a single
+8-channel sound card.
 
-Anyway, I'd love to wait for your comments against the patch before I send v3.
+My questions have two parts: one on binding together the codecs into a
+"single card", and another on alterations to support an external
+sample-clock generator.
 
-Thank you,
-Nicolin
+BONDING CODECS TOGETHER
 
+It is desired to write the driver at the "machine" level (ignore the
+external-clock modification for now), without modifying the ALSA SoC core
+or the TLV320AIC3X driver. Is this possible? I've searched the internet and
+looked through the source code, and I have the following gaps in
+understanding:
 
+The following TI link seems to suggest such TLV320AIC34 operation may
+already be possible with ALSA:
+http://e2e.ti.com/support/data_converters/audio_converters/w/design_notes/2361.tlv320aic34-tdm-mode-driver-questions-vocera.aspx
+
+However, one of the threads pointed in that link:
+http://comments.gmane.org/gmane.linux.alsa.devel/84899
+suggests such support is not in the ALSA SoC core or the TLV320AIC3X
+driver. While it is mentioned that if configured appropriately, "you'll end
+up with a single card", later it is mentioned that
+
+"you're probably trying to break new ground here. You're trying to bind all
+the CODECs together and treat them as one digital interface, currently the
+code does a series of point to point links multiplexed on a bus only."
+
+What does point-to-point link mean in this context? What does "you'll end
+up with a single card" mean if all 8 channels are not exposed in one card?
+If it is new ground, then what does the rx51 driver do (it is often
+referenced as a starting point for this type of binding effort), which
+interfaces to an AIC34 codec?
+
+The threads referenced are a few years old. Is it now possible to write
+such a driver at the machine level, or must I additionally either modify
+the core or write a new codec driver (as the original poster did)?
+
+ALTERATIONS TO SUPPORT AN EXTERNAL SAMPLE-CLOCK GENERATOR
+
+The sample clock is being generated by a single, I2C-configurable clock
+chip. So any sample-rate configuration must be sent to the clock chip. Can
+this be handled purely in the machine layer, or do I need to modify the
+AIC3X driver? I understand I need to use the regmap API to do such things,
+and ALSA uses this API, but I do not yet know much about it. Any pointers
+to documentation on doing this besides the source code are appreciated.
+
+A key newbie question on regmap (and Linux I2C) as needed by the driver the
+following:
+Does the regmap-i2c or i2c driver "own" the I2C bus so that the each device
+on the bus can be read from/written to via the regmap-i2c or i2c driver
+without the device's driver having to request-take-release the bus on each
+access?
+
+Thanks,
+
+ - Matt
