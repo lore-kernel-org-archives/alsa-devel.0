@@ -1,19 +1,20 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm_adsp: Split firmware load into
-	smaller chunks
-Date: Wed, 12 Mar 2014 15:31:21 +0000
-Message-ID: <20140312153121.GO8570@opensource.wolfsonmicro.com>
-References: <1394029696-25975-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20140312002906.GA4063@sirena.org.uk>
+From: Max Filippov <jcmvbkbc@gmail.com>
+Subject: Re: [PATCH] ASoC: tlv320aic23: Remove spurious bits
+	per word setting
+Date: Wed, 12 Mar 2014 21:30:30 +0400
+Message-ID: <CAMo8BfLxDUC=wFKdcp2X0X2Fu6XdjyL30mF7Not2uMxddaOEqA@mail.gmail.com>
+References: <1394631195-10480-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 70444264F09
- for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 16:31:26 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20140312002906.GA4063@sirena.org.uk>
+Received: from mail-oa0-f46.google.com (mail-oa0-f46.google.com
+ [209.85.219.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 257DA264F4B
+ for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 18:30:32 +0100 (CET)
+Received: by mail-oa0-f46.google.com with SMTP id i7so10548199oag.33
+ for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 10:30:30 -0700 (PDT)
+In-Reply-To: <1394631195-10480-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,25 +25,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 12, 2014 at 12:29:06AM +0000, Mark Brown wrote:
-> On Wed, Mar 05, 2014 at 02:28:16PM +0000, Charles Keepax wrote:
-> > The firmware files can be quite large and allocating the whole firmware
-> > a single DMA safe buffer can be problematic if the system is under a
-> > high memory load. Ease the requirements slightly by writing the firmware
-> > out in page sized chunks.
-> 
-> While looking at some other related stuff it occurred to me that while
-> this is probably what you want for your backported code for upstream you
-> probably want to just convert to vmalloc() - SPI will do DMA mappings in
-> page sized chunks in order to support this so you get a similar effect
-> but without needing to split into multiple physical writes so it can all
-> be pushed down into hardware for best performance.
+On Wed, Mar 12, 2014 at 5:33 PM, Mark Brown <broonie@kernel.org> wrote:
+> From: Mark Brown <broonie@linaro.org>
+>
+> regmap should handle any byte ordering issues required, it is looking for
+> a byte stream from the bus, so don't set 16 bits per word. This is likely
+> to have tested out OK due to use of an unmerged SPI controller driver.
+>
+> Signed-off-by: Mark Brown <broonie@linaro.org>
+> ---
+>  sound/soc/codecs/tlv320aic23-spi.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-Sounds sensible I will look at testing this and doing a patch for
-it.
+Tested-by: Max Filippov <jcmvbkbc@gmail.com>
 
-Thanks,
-Charles
+> diff --git a/sound/soc/codecs/tlv320aic23-spi.c b/sound/soc/codecs/tlv320aic23-spi.c
+> index 585aea436c6a..3b387e41d75d 100644
+> --- a/sound/soc/codecs/tlv320aic23-spi.c
+> +++ b/sound/soc/codecs/tlv320aic23-spi.c
+> @@ -25,7 +25,6 @@ static int aic23_spi_probe(struct spi_device *spi)
+>
+>         dev_dbg(&spi->dev, "probing tlv320aic23 spi device\n");
+>
+> -       spi->bits_per_word = 16;
+>         spi->mode = SPI_MODE_0;
+>         ret = spi_setup(spi);
+>         if (ret < 0)
+> --
+> 1.9.0
+>
+
+-- 
+Thanks.
+-- Max
