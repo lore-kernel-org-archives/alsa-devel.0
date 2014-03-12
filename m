@@ -1,67 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: simple-card: overwrite DAIFMT_MASTER
- of	cpu_dai->fmt
-Date: Wed, 12 Mar 2014 01:49:27 +0000
-Message-ID: <20140312014927.GK28112@sirena.org.uk>
-References: <1394542472-16580-1-git-send-email-Guangyu.Chen@freescale.com>
- <8761nkryky.wl%kuninori.morimoto.gx@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 05/39] firewire-lib: Add support for AMDTP
+ in-stream and PCM capture
+Date: Wed, 12 Mar 2014 11:00:04 +0900
+Message-ID: <531FBFA4.2040106@sakamocchi.jp>
+References: <5316963F.1000206@sakamocchi.jp>
+ <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1394016507-15761-6-git-send-email-o-takashi@sakamocchi.jp>
+ <531CD0FA.9090506@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="duiWCIIjnNnpV3+H"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <8761nkryky.wl%kuninori.morimoto.gx@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Nicolin Chen <Guangyu.Chen@freescale.com>, moinejf@free.fr, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Li.Xiubo@freescale.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id D94A4261ADB
+ for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 03:00:09 +0100 (CET)
+In-Reply-To: <531CD0FA.9090506@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+(Mar 10 2014 05:37), Clemens Ladisch wrote:
+> In practice, this error means that a packet was dropped.  I guess this
+> doesn't actually happen too often, but eventually, we should handle
+> this either by inserting some samples or by stopping the stream.
 
---duiWCIIjnNnpV3+H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For inserting some samples, I realize that there are some difficulties:
+  - In non-blocking mode, assuming the number of PCM samples in dropped 
+packets is difficult because specification just define '0 <= N <= 
+SYT_INTERVAL' (N = the number of events in packet). Each device can have 
+different sequence of N in packets.
+  - In blocking mode, assuming the value of syt in dropped packets is 
+difficult because it's related to timing.
 
-On Tue, Mar 11, 2014 at 06:32:32PM -0700, Kuninori Morimoto wrote:
-> > The current simple-card driver separates the daimft for cpu_dai and cod=
-ec_dai.
-> > So we might get different values for them (0x4003 and 0x1003 for exampl=
-e):
-> >=20
-> > asoc-simple-card sound-cs42888.12: cpu : 2024000.esai / 4003 / 132000000
-> > asoc-simple-card sound-cs42888.12: codec : cs42888 / 1003 / 24576000
-> > asoc-simple-card sound-cs42888.12: cs42888 <-> 2024000.esai mapping ok
+So I give up to think about recovering from dropped packets and make 
+firewire-lib stops streaming when detecting this state.
 
-> cpu   =3D 4003 : SND_SOC_DAIFMT_CBS_CFS | SND_SOC_DAIFMT_LEFT_J
-> codec =3D 1003 : SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_LEFT_J
+But this is not better for BeBoB based devices as I mentioned in 
+previous message. So I'll add some flags and codes for BeBoB.
 
-> codec is master, cpu is slave...
-> what is problem ??
-> Am I misunderstanding ?
 
-The C in those constants stands for CODEC and the values should be
-identical for both ends of the link.
+Regards
 
---duiWCIIjnNnpV3+H
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTH70jAAoJELSic+t+oim956oP/iprbn1oSZIhFchn3pxZALEx
-qtS8hfw7mf7zCtPdJNZO5C6SyQyTnchAGzDw8iiQQd7tM7vnbyHR06rMmNYXek2d
-IGOKzmMbTj0Nh4C6+bFRzJhamfCQ+aos2Cb6VfV/Lg/d8YuBasio2Mp/HBf2NAUd
-2bsUEOvbQAN6Dk5raZIx7AtECVuj23MzPv0Vkl5g/FL7CpuZmHwMX0JduRIF4kxs
-RKWoYPObeDR7k1d8Wk+GezPk972u/eNLTxW94Nzn/3xiOiDhYErBWr1GUesVmL60
-NwPu9jAmfN4Iq/B8pWQrBkMbU6hvMVn/0wxwkA9GHaVTmG2tugcZBBrXFO709jcE
-/HlB0GYZG4Xgc1Vm93Jz5+F9aG3+h2UMo4rgavSWi5wg3w3sk8b7x3fs1W9X24EA
-8SQi11/LJhh6ycYMT7EejS2wNd/zToxusEFKEICIQ0xcrH224OAWv3MplLR2g+dC
-4ZhYc18T91EFUftpzbXDnpNVCtL05Vz+MsnPggn0IFUkaYpnjIWojSXE/l/QTlpZ
-n1++XkqB0SrgMpiRcpN7H6VRP5fPUNrwM3ZN2XevgCJ9QF37790NrB6AjnTUKAiT
-UIwoXkBlw2M2dwAvBKBxaH8YR1PlBtwVHjy3KPeyUKieJ+YBKkQ70N3KVm6XWqcd
-Z1zcpOzSZB6L76crwefF
-=5V1Y
------END PGP SIGNATURE-----
-
---duiWCIIjnNnpV3+H--
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
