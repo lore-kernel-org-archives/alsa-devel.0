@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 09/12] ASoC: s6105-ipcam: Convert to table
+Subject: [PATCH v2 08/12] ASoC: snappercl15: Convert to table
 	based DAPM setup
-Date: Wed, 12 Mar 2014 15:27:37 +0100
-Message-ID: <1394634460-15889-10-git-send-email-lars@metafoo.de>
+Date: Wed, 12 Mar 2014 15:27:36 +0100
+Message-ID: <1394634460-15889-9-git-send-email-lars@metafoo.de>
 References: <1394634460-15889-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-175.synserver.de (smtp-out-200.synserver.de
  [212.40.185.200])
- by alsa0.perex.cz (Postfix) with ESMTP id 86A33264F22
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A322264ECA
  for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 15:27:20 +0100 (CET)
 In-Reply-To: <1394634460-15889-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,82 +26,58 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Ryan Mallon <rmallon@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, =?UTF-8?q?Daniel=20Gl=C3=B6ckner?= <daniel-gl@gmx.net>, Benoit Cousson <bcousson@baylibre.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use table based setup to register the DAPM widgets and routes. This on one hand
+Use table based setup to register the DAPM widgets and routes.  This on one hand
 makes the code a bit shorter and cleaner and on the other hand the board level
 DAPM elements get registered in the card's DAPM context rather than in the
 CODEC's DAPM context.
 
-While we are at it also remove the snd_soc_dapm_enable_pin() in the init
-callback, since pins are enabled by default. Also drop the snd_soc_dapm_sync()
-calls, since they are ignored by the core anyway until the card has been fully
-instantiated.
-
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/s6000/s6105-ipcam.c | 28 ++++++++++------------------
- 1 file changed, 10 insertions(+), 18 deletions(-)
+ sound/soc/cirrus/snappercl15.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/s6000/s6105-ipcam.c b/sound/soc/s6000/s6105-ipcam.c
-index 945e8ab..0b21d1d 100644
---- a/sound/soc/s6000/s6105-ipcam.c
-+++ b/sound/soc/s6000/s6105-ipcam.c
-@@ -104,8 +104,8 @@ static int output_type_get(struct snd_kcontrol *kcontrol,
- static int output_type_put(struct snd_kcontrol *kcontrol,
- 			   struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = kcontrol->private_data;
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	struct snd_soc_card *card = kcontrol->private_data;
-+	struct snd_soc_dapm_context *dapm = &card->dapm;
- 	unsigned int val = (ucontrol->value.enumerated.item[0] != 0);
- 	char *differential = "Audio Out Differential";
- 	char *stereo = "Audio Out Stereo";
-@@ -137,13 +137,7 @@ static int s6105_aic3x_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
--
--	/* Add s6105 specific widgets */
--	snd_soc_dapm_new_controls(dapm, aic3x_dapm_widgets,
--				  ARRAY_SIZE(aic3x_dapm_widgets));
--
--	/* Set up s6105 specific audio path audio_map */
--	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
-+	struct snd_soc_card *card = rtd->card;
- 
- 	/* not present */
- 	snd_soc_dapm_nc_pin(dapm, "MONO_LOUT");
-@@ -157,17 +151,10 @@ static int s6105_aic3x_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_nc_pin(dapm, "RLOUT");
- 	snd_soc_dapm_nc_pin(dapm, "HPRCOM");
- 
--	/* always connected */
--	snd_soc_dapm_enable_pin(dapm, "Audio In");
--
- 	/* must correspond to audio_out_mux.private_value initializer */
--	snd_soc_dapm_disable_pin(dapm, "Audio Out Differential");
--	snd_soc_dapm_sync(dapm);
--	snd_soc_dapm_enable_pin(dapm, "Audio Out Stereo");
--
--	snd_soc_dapm_sync(dapm);
-+	snd_soc_dapm_disable_pin(&card->dapm, "Audio Out Differential");
- 
--	snd_ctl_add(codec->card->snd_card, snd_ctl_new1(&audio_out_mux, codec));
-+	snd_ctl_add(card->snd_card, snd_ctl_new1(&audio_out_mux, card));
- 
- 	return 0;
- }
-@@ -190,6 +177,11 @@ static struct snd_soc_card snd_soc_card_s6105 = {
- 	.owner = THIS_MODULE,
- 	.dai_link = &s6105_dai,
- 	.num_links = 1,
-+
-+	.dapm_widgets = aic3x_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(aic3x_dapm_widgets),
-+	.dapm_routes = audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(audio_map),
+diff --git a/sound/soc/cirrus/snappercl15.c b/sound/soc/cirrus/snappercl15.c
+index 29238a7..5b68b10 100644
+--- a/sound/soc/cirrus/snappercl15.c
++++ b/sound/soc/cirrus/snappercl15.c
+@@ -65,18 +65,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"MICIN", NULL, "Mic Jack"},
  };
  
- static struct s6000_snd_platform_data s6105_snd_data __initdata = {
+-static int snappercl15_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_soc_codec *codec = rtd->codec;
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-
+-	snd_soc_dapm_new_controls(dapm, tlv320aic23_dapm_widgets,
+-				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
+-
+-	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-	return 0;
+-}
+-
+ static struct snd_soc_dai_link snappercl15_dai = {
+ 	.name		= "tlv320aic23",
+ 	.stream_name	= "AIC23",
+@@ -84,7 +72,6 @@ static struct snd_soc_dai_link snappercl15_dai = {
+ 	.codec_dai_name	= "tlv320aic23-hifi",
+ 	.codec_name	= "tlv320aic23-codec.0-001a",
+ 	.platform_name	= "ep93xx-i2s",
+-	.init		= snappercl15_tlv320aic23_init,
+ 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
+ 			  SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops		= &snappercl15_ops,
+@@ -95,6 +82,11 @@ static struct snd_soc_card snd_soc_snappercl15 = {
+ 	.owner		= THIS_MODULE,
+ 	.dai_link	= &snappercl15_dai,
+ 	.num_links	= 1,
++
++	.dapm_widgets		= tlv320aic23_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(tlv320aic23_dapm_widgets),
++	.dapm_routes		= audio_map,
++	.num_dapm_routes	= ARRAY_SIZE(audio_map),
+ };
+ 
+ static int snappercl15_probe(struct platform_device *pdev)
 -- 
 1.8.0
