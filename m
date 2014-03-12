@@ -1,79 +1,58 @@
-From: Nicolin Chen <Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v2] ASoC: simple-card: overwrite
- cpu_dai->fmt with codec_dai->fmt
-Date: Wed, 12 Mar 2014 17:33:54 +0800
-Message-ID: <20140312093353.GH1177@MrMyself>
-References: <1394593331-22867-1-git-send-email-Guangyu.Chen@freescale.com>
- <5320280C.6080004@ti.com>
+From: RongJun Ying <rjying@gmail.com>
+Subject: Re: [PATCH v5-resend 2/7] ASoC: sirf: Add SiRF audio
+ port driver is used by SiRF internal audio codec
+Date: Wed, 12 Mar 2014 17:56:27 +0800
+Message-ID: <CAByv0RNa6b5U_Y6=6h0zOEuRQ2RK4MNuTs64mPqo2wC6L=7XeA@mail.gmail.com>
+References: <1394008480-29135-1-git-send-email-rongjun.ying@csr.com>
+ <1394008480-29135-3-git-send-email-rongjun.ying@csr.com>
+ <20140306092007.GL13126@sirena.org.uk>
+ <CAByv0RN0NBfaMA4TZgeB6f+MmTQ+CE6ztQ_DHXKZdTxQ7tkwQg@mail.gmail.com>
+ <20140307014957.GR13126@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <5320280C.6080004-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, moinejf-GANU6spQydw@public.gmane.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qa0-f52.google.com (mail-qa0-f52.google.com
+ [209.85.216.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F6C3260862
+ for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 10:56:28 +0100 (CET)
+Received: by mail-qa0-f52.google.com with SMTP id m5so9576266qaj.39
+ for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2014 02:56:27 -0700 (PDT)
+In-Reply-To: <20140307014957.GR13126@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, DL-SHA-WorkGroupLinux <workgroup.linux@csr.com>, Rongjun Ying <rongjun.ying@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 12, 2014 at 11:25:32AM +0200, Jyri Sarha wrote:
-> On 03/12/2014 05:02 AM, Nicolin Chen wrote:
-> >The current simple-card driver separates the daimft for cpu_dai and codec_dai.
-> >So we might get different values for them (0x4003 and 0x1003 for example):
-> >
-> >asoc-simple-card sound-cs42888.12: cpu : 2024000.esai / 4003 / 132000000
-> >asoc-simple-card sound-cs42888.12: codec : cs42888 / 1003 / 24576000
-> >asoc-simple-card sound-cs42888.12: cs42888 <-> 2024000.esai mapping ok
-> >
-> >This is not allowed at all as we need to keep the DAIFMT settings identical
-> >for both the ends of the link.
-> >
-> >Thus this patch fixes it by overwriting the cpu_dai->fmt with codec_dai->fmt
-> >since we defined the DAIFMT_MASTER basing on CODEC at the first place while
-> >the other bits are same.
-> >
-> >Signed-off-by: Nicolin Chen <Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-> >---
-> Hi Nicolin,
-> This patch is an improvement, but in my opinion the binding is still
-> a bit confusing.
-> 
-> How about changing 'frame-master' and 'bitclock-master' to
-> 'codec-frame-master' and 'codec-bitclock-master'. We could possibly
-> keep the old names as aliases until all the .dts files out there
-> have been fixed.
-> 
-> At the same go we could add SND_SOC_DAIFMT_MASTER_MASK here:
-> 
-> > /* get CPU/CODEC common format via simple-audio-card,format */
-> > priv->daifmt = snd_soc_of_parse_daifmt(node, "simple-audio-card,") &
-> >		(SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_INV_MASK);
-> 
-> or leave the masking out all together. Can't see why
-> SND_SOC_DAIFMT_CONT/GATED could not be defined at dai-link level
-> too.
-> 
-> This way the norm would be defining the daifmt at link level. We
-> could still keep the possibility to overwrite the setting at dai
-> level if there is need for that.
+2014-03-07 9:49 GMT+08:00 Mark Brown <broonie@kernel.org>:
+> On Thu, Mar 06, 2014 at 05:51:43PM +0800, RongJun Ying wrote:
+>> 2014-03-06 17:20 GMT+08:00 Mark Brown <broonie@kernel.org>:
+>
+>> > ...use devm_ioremap_resource() instead, please send a followup patch
+>> > fixing this.
+>
+>> The i2s, internal audio codec and audio port use same register physics address
+>> and size. So if one driver use the devm_ioremap_resource instead.
+>> The other driver will invoke devm_ioremap_resource failed.
+>
+> That's buggy - there should only be one device for each register range,
+> you should have a core MFD driver which gets the hardware resource and
+> shares the regmap with the client drivers.
 
-Hi Jyri,
+The I2S, internal audio codec and audio port share same register address space.
+Do you suggest that I write a MFD driver or write sirf-audio-core .c
+to share the regmap and register child audio devices (I2S, internal
+codec and port)?
 
-After looking at Morimoto-san's mail, I think there might be a better
-solution for this issue as he suggested: We may move the fmt from
-struct asoc_simple_dai to a common place for both CPU and CODEC.
-
-I'm not sure if there's any defect from this idea, but as long as we
-keep DAIFMT settings identical for both dai-link ends, it'll be a
-neater way.
-
-So I'd like to pend this patch and wait for further solution from that
-topic.
-
-Thank you,
-Nicolin Chen
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks
+-- 
+------------------------------
+Rongjun Ying
