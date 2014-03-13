@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 07/12] ASoC: davinci-evm: Register
- machine level DAPM elements with the card
-Date: Thu, 13 Mar 2014 19:11:32 +0000
-Message-ID: <20140313191132.GI366@sirena.org.uk>
-References: <1394634460-15889-1-git-send-email-lars@metafoo.de>
- <1394634460-15889-8-git-send-email-lars@metafoo.de>
+Subject: Re: [RFC] ASoC: core: Add support for DAI multicodec
+Date: Thu, 13 Mar 2014 19:22:30 +0000
+Message-ID: <20140313192230.GJ366@sirena.org.uk>
+References: <1394536644-21438-1-git-send-email-bcousson@baylibre.com>
+ <20140312225125.GZ28112@sirena.org.uk>
+ <53219AA3.2060305@baylibre.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2622247434456601133=="
+Content-Type: multipart/mixed; boundary="===============6576638025072091291=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 80CB72654AB
- for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 20:11:48 +0100 (CET)
-In-Reply-To: <1394634460-15889-8-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B7AC26545F
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 20:22:40 +0100 (CET)
+In-Reply-To: <53219AA3.2060305@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +22,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Ryan Mallon <rmallon@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Daniel =?iso-8859-1?Q?Gl=F6ckner?= <daniel-gl@gmx.net>, Benoit Cousson <bcousson@baylibre.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Benoit Cousson <bcousson@baylibre.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2622247434456601133==
+--===============6576638025072091291==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="R0UoHh4jwSc8qXKC"
+	protocol="application/pgp-signature"; boundary="CPQPFrYXiKmg9EuQ"
 Content-Disposition: inline
 
 
---R0UoHh4jwSc8qXKC
+--CPQPFrYXiKmg9EuQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 12, 2014 at 03:27:35PM +0100, Lars-Peter Clausen wrote:
-> Machine level DAPM widgets and routes should be registered in the card's DAPM
-> context, rather than in the CODEC's context.
+On Thu, Mar 13, 2014 at 12:46:43PM +0100, Benoit Cousson wrote:
+> On 12/03/2014 23:51, Mark Brown wrote:
+> >On Tue, Mar 11, 2014 at 12:17:24PM +0100, Benoit Cousson wrote:
 
-Applied, thanks.
+> >is handy.  Instead of having a fixup function if we specified a TDM
+> >and channel map configuration then the core core could override the
+> >params so that the channel count was clamped by how many channels are
+> >actually being sent to the device - so if there's two TDM slots active
+> >the device would be told to play stereo.  Would that work for your use
+> >cases?
 
---R0UoHh4jwSc8qXKC
+> Yes, I think so. My current setup is pretty basic: 2 mono Class D amplifiers
+> connected to the same I2S link to build a stereo card.
+
+> OK, so I'll rebase the patch to asoc/next. I'll try to split the huge patch
+> at least into a series of 2 or 3 patches, and I'll remove the fixup part.
+
+Sounds good.  We will need some configuration here so I think adding TDM
+parameters to the various structs (I guess slot size and overall counts
+should go in the link rather than per CODEC) but we could probably even
+get away with doing this after the core patch.
+
+--CPQPFrYXiKmg9EuQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTIgLgAAoJELSic+t+oim9KYQP/0X+AqeB2ZOV+LRWr4EPbNE/
-W44nogCscb/fv1MEmoeuSWlferDkL/gEdfUWms8WzxjYDyHmDZkhvtW6PC7sz4qu
-JgwPOdEzjAJgbLpEPDJ7AFzSGq09F59O2MHn10vqhGF4QLVf8crJtkJJAnsgBm9O
-m7RiFY4kXwDh0xw5aZ4Kt4/jooxH7NxOw+MbpH1RRRPEuNbevS/ykTgQf+EUB0Db
-IS5LxxyFWhZWwsqfQt/U2mtYZMtRmqq08/A6uvdYjoNPZPrUZH3w1Hu13mx4+Hyj
-ouXXdFg8gddzuiRvH6i780ygtOB15uTQQ4msh/EOGVJdNrGsVGRnuZBMsYlO7H7B
-dx6et7jA7seWKj8/OFqTGGThi52thMCakX2SzIdn9Ex+ygif1Mm9EicLJdc6HgOj
-/CKzqll29Wk9VL+LThfnF/9niYAoRo/mzxY5QsrXarx8pnp3ohKHbSbF9ouT3fUp
-ozUw2kqI/a2hEQNIjblmmfKoaCv0lSEJhLymV1i+TZ+Eif4sgUzVyx0a18JqtXHW
-Mf0JtO1YDqkPZV7vC+zeyU3ikLtzP1rNSFT+dTEevW4AbJB3LiheKNUk6PdDuwIk
-bvEktwExXfJlNFh4YAtO2CuQxP1NjDYDKYAfgZTXEk+/ceGwwXgcolM1npgbCqsU
-EXjrpzuGGheIFy1+nT0H
-=c1j6
+iQIcBAEBAgAGBQJTIgVzAAoJELSic+t+oim9reYP/jY/wdQS1s/hzeKmxe0DKZ6g
+uo+BRNJ358csTaBoO03hATusiHbtNbqZB0zFDiqHexPvD4FUmi0h5yiF+w6zxB2H
+IzZdtfTrDyxZt1DKdyVOdIhShoo9OiaGfn1YqttlbueyWzq7MiropanbuRHQgngy
+7RVJE9Ifnr+WYplV9o0euXRoWGQP/KNOiuPphI+uSZzYOmWP9Z8tu1A0Te7wrxhw
+UbWXdH6frHdOcuRk2eILJR80ED/Scxid4MDh2qoh6jkzJyhWNkJ6GmQIeV49ecud
+toeYQNHljZay6AJ1txm8gJip1mbK0cZIw7D1FMuMyRQ+vtZd7q3fq8JGKEEOqUow
+uEErBCHLTvkZAr3t2iSKsc58ie8bV4CDE1lgERua9lJrTeiDKk/O/VRFtHLL7KRA
+KtIrxAEJOlyxVZ/OZzx5RGAxShPG1Q2CHoC4Yt7AZJjLmoJO85XrpxbTRdu/nPHH
+tSJRxFwEj/EuHVQtf33rixxFWcva1qWiz51pdxGTsit22JhEU4PrHqVVhQ1j0hFg
+um4shKryu86JZAy74nDM0qsUPyRrPdnPZrooVUvFdTwggzVBi9AMqKAUF5J0lp65
+/5+g6/NKXMU6AgjXKng+/285FWuEXrn106MvZzngMKbnbEAowwGC+yXfCNNswTS7
+gTNu4PIXo+w0cZ6wdA3G
+=y4ze
 -----END PGP SIGNATURE-----
 
---R0UoHh4jwSc8qXKC--
+--CPQPFrYXiKmg9EuQ--
 
---===============2622247434456601133==
+--===============6576638025072091291==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2622247434456601133==--
+--===============6576638025072091291==--
