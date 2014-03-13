@@ -1,74 +1,42 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2] ASoC: simple-card: overwrite
- cpu_dai->fmt with codec_dai->fmt
-Date: Thu, 13 Mar 2014 21:20:55 +0000
-Message-ID: <20140313212055.GN366@sirena.org.uk>
-References: <1394593331-22867-1-git-send-email-Guangyu.Chen@freescale.com>
- <5320280C.6080004@ti.com>
- <20140312093353.GH1177@MrMyself>
+From: James Miller <jamesstewartmiller@gmail.com>
+Subject: please ignore my earlier message regarding R16 quirks
+Date: Thu, 13 Mar 2014 23:27:55 +0000
+Message-ID: <CAKJvYZE+qPTLYr06ydB06st4pAKud8xd+e3HCUxr4s7V4DOoFA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="c6397Mob2532IpCX"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140312093353.GH1177@MrMyself>
-Sender: linux-doc-owner@vger.kernel.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: Jyri Sarha <jsarha@ti.com>, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Li.Xiubo@freescale.com, linux-doc@vger.kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, rob@landley.net, galak@codeaurora.org, moinejf@free.fr
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oa0-f52.google.com (mail-oa0-f52.google.com
+ [209.85.219.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id B60F82654AF
+ for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2014 00:27:56 +0100 (CET)
+Received: by mail-oa0-f52.google.com with SMTP id l6so1849569oag.11
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 16:27:55 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I'm sorry for my ignorance, but I realised that the device has been
+reporting itself as 1.1 due to the usb hub being 1.1.
 
---c6397Mob2532IpCX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is my first week of looking at usb, and its been a steep learning
+curve, I am finding my way around the code though, and hope to have
+something working at some point in the near future.
 
-On Wed, Mar 12, 2014 at 05:33:54PM +0800, Nicolin Chen wrote:
+I notice that some cards have boot up quirk functions and I am wondering if
+that is the problem as the R16 can be switched between its audio interface
+and a card reader.
 
-> I'm not sure if there's any defect from this idea, but as long as we
-> keep DAIFMT settings identical for both dai-link ends, it'll be a
-> neater way.
+If I have any more questions, is this the correct list to ask them?
 
-> So I'd like to pend this patch and wait for further solution from that
-> topic.
+Many thanks,
 
-My understanding of the binding had been that exactly one of the devices
-on the link would have each master flag set and the code was parsing
-both devices together in order to come up with the setting.  Obviously I
-didn't check the code closely enough here.  It seems that the Renesas
-devices actually do this, though just due to a bug in the master/slave
-handling.  The patch you posted would essentially implement that
-(without validating the settings on the CPU side, but that could be
-added).
-
-The above suggestion would also work though it *is* a change in the
-binding and right now we don't have code for it.  We need something here
-very soon, the merge window is going to open shortly and we ought to
-avoid having the problematic code in v3.15 if we can - indeed I'd really
-prefer to get something into v3.14 if possible (though this patch
-doesn't apply cleanly there and it's *very* late).
-
-Thoughts?
-
---c6397Mob2532IpCX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTIiE0AAoJELSic+t+oim9MTwP/iIqldFiWtJrJf0jh4W9uJ3A
-gl3AVyXfFJ2K9IL/vaOdISreKa8DBqDrXbKTyofGL6WSC79jvKdgVQpOvTH+2fYm
-M6wXR/Z6KZCujdPPbe92W3mbfhvVbJ31tOX/asDn5KkBKxwaYUml0Pxqno1NG7fi
-UuO5biq4t9v7ofdkK99CareN11Lvgn+IFqsafRnT222YJx6bFzCgYgQaftbjxa/9
-NxQvFKYK/SH+PUifH9nnqYKEwZzWmHjPFTNfEE6SuQ5gZ11ZK5/sAeRblgr079YH
-j/8uOuizME3cuwo21qqrRWz72gBOVp5X/pBPFzoalz+Fu5jWtg4xBfwvauileSHJ
-Lgzr+9RlY4JgtAa+7HnHV9QteVCceYbEefe/hEl+AhKiayLUge66+TiUJLhueno6
-Xtiz/syOYirPkBbIRmiJmWLZ0wTb9YMlCh4Wq1lr+KZ+huY/uyrjupRC9DotRPVZ
-YI3DCSxa1H+XhtDTPftcW2Wqg4hrbfoCVQ14Er2Hg/awLsxQ2afdRA8LAMDCN0gX
-C3oItFUSvrnTjnp7W8t7XCuIrvD1cmDGKK71IKdJVMY+R+j4xQgNnUXY/L++gHgZ
-mnqBOe9M3TMRHBrIAnJrEwDgUOfkdybkxuiiSXB8wu0CNfG4IcRiOi4XZNrZgVjh
-EK1ytWVQR3v7tlUYmU+p
-=ZYFF
------END PGP SIGNATURE-----
-
---c6397Mob2532IpCX--
+James
