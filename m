@@ -1,97 +1,74 @@
-From: Benoit Cousson <bcousson@baylibre.com>
-Subject: Re: [RFC] ASoC: core: Add support for DAI multicodec
-Date: Thu, 13 Mar 2014 11:42:50 +0100
-Message-ID: <53218BAA.9000600@baylibre.com>
-References: <1394536644-21438-1-git-send-email-bcousson@baylibre.com>
- <20140312002821.GD28112@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/2][RFC] ASoC: fsi/rcar: fixup SND_SOC_DAIFMT_CBx_CFx
+ flags
+Date: Thu, 13 Mar 2014 10:48:36 +0000
+Message-ID: <20140313104836.GN366@sirena.org.uk>
+References: <87txb3rjzw.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f50.google.com (mail-wg0-f50.google.com [74.125.82.50])
- by alsa0.perex.cz (Postfix) with ESMTP id C612A265176
- for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 11:42:53 +0100 (CET)
-Received: by mail-wg0-f50.google.com with SMTP id x13so654080wgg.21
- for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 03:42:53 -0700 (PDT)
-In-Reply-To: <20140312002821.GD28112@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Misael Lopez Cruz <misael.lopez@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="b/Q3JWIUAuLE0ZFy"
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87txb3rjzw.wl%kuninori.morimoto.gx@gmail.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Simon <horms@verge.net.au>, Morimoto <kuninori.morimoto.gx@renesas.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On 12/03/2014 01:28, Mark Brown wrote:
-> On Tue, Mar 11, 2014 at 12:17:24PM +0100, Benoit Cousson wrote:
->> From: Misael Lopez Cruz <misael.lopez@ti.com>
->>
->> DAI link assumes a one to one mapping between CPU DAI and CODEC. In
->> some cases, the same CPU DAI can be connected to several codecs.
->> This is the case for example, if you connect two mono codecs to the
->> same I2S link in order to have a stereo card.
->> The current ASoC implementation does not allow such setup.
->
-> First up thanks for working on this, it's a feature which has been
-> requested for a long time but nobody stepped forward to do it before
-> now.
->
-> This is rather large so I've not had time to review it today, I'll try
-> to get at least a first pass at that done tomorrow.  I did notice that
-> in your comment about rebasing you mentioned a series - it'd be good if
-> we could see this as a series, splitting it up would make review easier.
+--b/Q3JWIUAuLE0ZFy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yeah, I know. The issue is that the original series was done on a 3.8 =
+On Tue, Mar 11, 2014 at 11:47:36PM -0700, Kuninori Morimoto wrote:
+>=20
+> Hi Mark, Simon
+>=20
+> These patches fixup Renesas fsi/rcar driver's
+> SND_SOC_DAIFMT_CBx_CFx flag settings.
+>=20
+> I had misunderstand these settings...
+> But this is still [RFC], since it modifies DT side code too.
+>=20
+> >> Mark
+>=20
+> #1 patch depends on Jyri's
+> "Fix simple-card *-master DT parameter handling"
+> if it was accepted
+>=20
+> >> Simon
+>=20
+> Can you check #1 patch which modifys SH-ARM platform ?
 
-Android branch with few refactor patches before that one to introduce =
+So, we need to do something quickly here since this affects DT bindings
+but it would be *much* better to avoid having to set the master flags on
+both ends of the link since that's going to make the binding confusing
+if we're stuck with it as an ABI.
 
-some helpers. During the 3.8 -> 3.13 rebase then 3.13 -> 3.14 rebase, a =
+Simon, are you OK with the arch side of cleanups for this going via my
+tree?
 
-lot of them did not survive due to internal asoc changes and cleanups =
+--b/Q3JWIUAuLE0ZFy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-that happened since 3.8.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-At least, there are still few helpers that can be introduced sooner, but =
+iQIcBAEBAgAGBQJTIY0BAAoJELSic+t+oim9gtYP/Rrwc7orr733cewkV8fNN4u0
+9IHWleWqE5JxA6/OZvVf6T2S0H3vNRbdZNl3i9JrFInsAl1743WybQenBM3yuA1j
+wUV1CMxvY5Gn0favBWJj1RKS6fE35+dlN0OO0iEEbo0V1NDodpEzuxF+TwqTl5nH
+9MeCKA8QXepfD1oWdg2pXLh833BIl2uesUXj2VfUnrvg9oAKURjzQ4ISR2uGLR+P
+HRYgrEt+RyJX4PdjoGWlo/efgENtHINQ+9B8BZPgfIHN3L7TVkBamJW9l8H4YODd
++loh8rkn7XZcSdfJ0ObYXi0r9Vv1L+tY6jsxj4acN8QKtJ1crziM7PYE6mN4R8TU
+Qz+hBDk48+6PPSTL/BlbY8nrTGNWBiZdmL4P6nvrxnw7nLZdoSvhe5dEeST7OFgG
+pelYIm6bd/TB0hkzbmKKu4LAHVNPDk/vqKdSj2rpK+a51tur5bSuM43uHgl/hAc1
+GDtbvNwHzFRbpkRt1vufG7QbxYjGHNrD5nNo0S2YIEzuavoFCCagkPsRxLFI4pF7
+Vzqwffqup+KybnfrSVDN+vDverOUZFqIc9Ce2E6j66pPJL4Q89MjC86aI8MeEb0l
+I3O9to/rxw6AGsUufJzJ5DdrWjB0Gw0D4EhDIoqQHOPyBdf5DDR+KbjWX65xGKO5
+t3TkpLNFzBA7TpJwW8Yb
+=iA/6
+-----END PGP SIGNATURE-----
 
-it will still make the main patch pretty huge. I don't think we can make =
-
-the transition in smaller chunks.
-
->> CPU DAI in a multicodec DAI link can have more channels than what each
->> CODEC has. The number of channels each CODEC is responsible for is
->> machine specific, hence it's fixed up in machine drivers in a similar
->> way to what DPCM does.
->
-> This one is interesting.  It feels like most things will want a static
-> mapping because that's what the hardware does but there will doubtless
-> be things that could use flexibility.  Liam has looked at this in the
-> past (more for TDM IIRC, I thought about it for that as well and I seem
-> to recall Liam's ideas covering it).  It feels like we should start out
-> with static mappings and build up dynamic later on but equally well
-> getting something merged would mean we could improve on it.
->
->> The patch is based on 3.14-rc6.
->
-> For such an invasive set of changes it's probably worth working off
-> -next, I forsee conflicts.
-
-Indeed, I've just tried rebasing it on asoc/next and it does conflict :-(
-But not a major conflict anyway. I'll do that for the repost.
-
-Thanks for the comments,
-Benoit
-
-
--- =
-
-Beno=EEt Cousson
-BayLibre
-Embedded Linux Technology Lab
-www.baylibre.com
+--b/Q3JWIUAuLE0ZFy--
