@@ -1,49 +1,52 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH] ASoC: tlv320aic31xx: Remove snd_soc_codec_set_cache_io() call
-Date: Thu, 13 Mar 2014 18:22:35 +0200
-Message-ID: <1394727755-7091-1-git-send-email-jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6] ASoC: tlv320aic31xx: Add basic codec driver
+ implementation
+Date: Thu, 13 Mar 2014 17:30:52 +0000
+Message-ID: <20140313173052.GA366@sirena.org.uk>
+References: <1394721344-10152-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Re7H+V5lQR2Zv/pu"
 Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1394721344-10152-1-git-send-email-jsarha@ti.com>
 Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: broonie@kernel.org, lgirdwood@gmail.com, lars@metafoo.de, tiwai@suse.de, Jyri Sarha <jsarha@ti.com>
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Remove snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP) call
-and codec->control_data = aic31xx->regmap assignment since that
-already done by core.
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
-This patch should fix the last minute breakkage of v3.15 ASoC updates build.
+--Re7H+V5lQR2Zv/pu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- sound/soc/codecs/tlv320aic31xx.c |    9 ---------
- 1 file changed, 9 deletions(-)
+On Thu, Mar 13, 2014 at 04:35:44PM +0200, Jyri Sarha wrote:
+> This commit adds a bare bones driver support for TLV320AIC31XX family
+> audio codecs. The driver adds basic stereo playback trough headphone
+> and speaker outputs and mono capture trough microphone inputs.
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index c9f6989..625b184 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1051,18 +1051,9 @@ static int aic31xx_codec_probe(struct snd_soc_codec *codec)
- 	dev_dbg(aic31xx->dev, "## %s\n", __func__);
- 
- 	aic31xx = snd_soc_codec_get_drvdata(codec);
--	codec->control_data = aic31xx->regmap;
- 
- 	aic31xx->codec = codec;
- 
--	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
--
--	if (ret != 0) {
--		dev_err(codec->dev, "snd_soc_codec_set_cache_io failed %d\n",
--			ret);
--		return ret;
--	}
--
- 	for (i = 0; i < ARRAY_SIZE(aic31xx->supplies); i++) {
- 		aic31xx->disable_nb[i].nb.notifier_call =
- 			aic31xx_regulator_event;
--- 
-1.7.9.5
+Please don't resend patches that have already been applied.
 
+--Re7H+V5lQR2Zv/pu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTIetJAAoJELSic+t+oim9GGcP/jybQ9o+2BSnEWK8ql5FaJDt
+2n0+cb2PLnnBuU3SmftEj92wxgrJMxc+97eKD4Y5GlAsGqtwG5vYb3EqCJgN9ChO
+jezgg3dvfwGlIeQQ/4ijIRSS52BtSimw5CRAYagxculuiiw+sxCR2pQPmCL4WKfW
+FFqBFGofW1ehIEY9U6F1R53oeodk/Oo1cj/pjy4pXajxcmQfCHaW2nd/KS6/kUJQ
+jubttZKlKt3Mv9o0t6mq3M1wXU0ZKpMvWchtbhR67D/blTO0ljNWD2joQa331ZX8
+HLkZpJwxJeOG/0TvJouroXW2B1bgm3cWOphr2wb0UxundW3S9qJuHVUq+d1CnrM+
+QkO3QMLAWfNQ7Bf5Dtkin1quMPALLjjm9/wSzz12uOeV/4vwiPdTvo0Q6pgu2UrP
+BbiHyA9Zq3JIfG54n4xHLjEzSZcHwziJhN/UlZd8ZAE5QnfPVnJxzWm1MoXiQEOp
++0qCuKGeVMdDBK7mMQwNGG2OQMoaQNyEHGpxyYzuKX95+FjJwPUbAGJxvGV7PScO
+RtqJ95Y9zajnNuhCqNUxypcpaYB5T9qDsDlScE9/se2VO3L0QgFLj3CAU1UrQuKa
+ayA0An8Moi32GAMl5yrzN7xMnVIKj29x3AZOx9d+CCK4TbH4U/dSrszoqx0/1nvN
+3i3HLAz/wS18X3Z+AVQ8
+=kwcD
+-----END PGP SIGNATURE-----
+
+--Re7H+V5lQR2Zv/pu--
