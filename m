@@ -1,43 +1,76 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 14/18] ASoC: davinci: Add edma dmaengine
- platform driver
-Date: Thu, 13 Mar 2014 13:09:30 +0100
-Message-ID: <53219FFA.3030204@metafoo.de>
-References: <1394702320-21743-1-git-send-email-peter.ujfalusi@ti.com> <1394702320-21743-15-git-send-email-peter.ujfalusi@ti.com> <53218835.3080909@metafoo.de> <53219D08.9070308@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v5] ASoC: tlv320aic31xx: Add basic codec driver
+ implementation
+Date: Thu, 13 Mar 2014 12:20:07 +0000
+Message-ID: <20140313122007.GQ366@sirena.org.uk>
+References: <1394535452-17865-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <53219D08.9070308@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, joelf@ti.com, vinod.koul@intel.com, nsekhar@ti.com, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, mporter@linaro.org, dmaengine@vger.kernel.org, dan.j.williams@intel.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cnBsrynPgIOyCJkL"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1394535452-17865-1-git-send-email-jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/13/2014 12:56 PM, Peter Ujfalusi wrote:
-> On 03/13/2014 12:28 PM, Lars-Peter Clausen wrote:
->> On 03/13/2014 10:18 AM, Peter Ujfalusi wrote: [...]
->>> +static const struct snd_pcm_hardware edma_pcm_hardware = { +    .info
->>> = SNDRV_PCM_INFO_MMAP | +                  SNDRV_PCM_INFO_MMAP_VALID | +
->>> SNDRV_PCM_INFO_BATCH | +                  SNDRV_PCM_INFO_PAUSE |
->>> SNDRV_PCM_INFO_RESUME | +                  SNDRV_PCM_INFO_INTERLEAVED, +
->>> .buffer_bytes_max    = 128 * 1024, +    .period_bytes_min    = 32, +
->>> .period_bytes_max    = 64 * 1024, +    .periods_min        = 2, +
->>> .periods_max        = 19, /* Limit by edma dmaengine driver */ +};
->>
->> The idea is that we can auto-discover all the things using the
->> dma_slave_caps API. Too bad we removed the possibility to specify the
->> maximum number of segments from the API. Maybe we need to add it back. Is
->> the 19 a hard-limit or could it be worked around by software in the
->> dmaengine driver?
->
-> The edma dmaengine driver will refuse to configure more than 20 paRAM slots (1
-> for the channel + 19 for the periods). Depending on the SoC we might have
-> different number of paRAM entries available. The intention with the limit was
-> to prevent cases when we run out of paRAM entires for other devices because
-> audio took most of them.
 
-The reason why we removed the max_segments field from the slave_caps struct 
-was because we though it should be possible to, even when the hardware only 
-supports a fixed amount of segments, emulate support for more in software. 
-If this is not the case with the edma, we need to bring this field back.
+--cnBsrynPgIOyCJkL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Mar 11, 2014 at 12:57:32PM +0200, Jyri Sarha wrote:
+> This commit adds a bare bones driver support for TLV320AIC31XX family
+> audio codecs. The driver adds basic stereo playback trough headphone
+> and speaker outputs and mono capture trough microphone inputs.
+
+Applied, thanks.  One thing it'd be good to fix:
+
+> +Optional properties:
+> +
+> +- gpio-reset - gpio pin number used for codec reset
+> +- ai31xx-micbias-vg - MicBias Voltage setting
+
+This is optional but...
+
+> +	of_property_read_u32(np, "ai31xx-micbias-vg", &value);
+> +	switch (value) {
+> +	case MICBIAS_2_0V:
+> +	case MICBIAS_2_5V:
+> +	case MICBIAS_AVDDV:
+> +		aic31xx->pdata.micbias_vg = value;
+> +		break;
+> +	default:
+> +		dev_err(aic31xx->dev,
+> +			"Bad ai31xx-micbias-vg value %d DT\n",
+> +			value);
+> +		aic31xx->pdata.micbias_vg = MICBIAS_2_0V;
+> +	}
+
+...you'll get an error if it's missing (and an uninitialised memory
+read).
+
+--cnBsrynPgIOyCJkL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTIaJ0AAoJELSic+t+oim9zFIQAJi/CDeMM6X/riLxySVGLPa8
+gKhESbL6Ka4j9cfI54fdfeDS3KWEB7kW9DhcZoE892Zu9/PyY3RyB13ryQh8YEuX
+B2r4xAVuLdoPn0YMDBNAlATWCJjDJFSFlo6nglCM8jgvoZKVPMPql3mMmxZPP6Mo
+LSOVuj1GyKKa0mfEZEIazuqWaknv183L7nCbKoV+O0Szts/gauWfg/8pE7NhZkYS
+X051Nsn1iYSxgfD3fsABKGR+j7jljxJ04H7QXV77h23prthKmQ7dFGAvJWSACIiD
+zVTjAVd9EeWYl7XAl60tpxBO9FZy04oGnxe4bOUyDsPX4jMQO0Md/dbBAg7iGmm4
+2IdlQR60LzEL6SqkrgMKMU6gh4B7jpDVmh2LztmaN+0w6w5v9Q31UM45DfAoaXze
+Sqd2CAxft8z0HmB6V2rD0HbOBycIDZTaG4PMPCH+kNXvfBYu51Fal48GeB6CvPYa
+6VKEZS/aqSVf7FEe4mQ7qfvF5GjcicwzHmI71gXZ/T9QjOS1zOnnJD1Ifk0pV9oH
+ns+GWnyYBpJOi21nKLGJbmH/iWZQn9llLpg2qHcHF0bH/EqsE2HPkOV8nNXT3w83
+0ycM6VoJbKqaxH15SRTbVv45n/zfsPwIccPL1QqB/g8NAfcbQAsMctc4OfxtyZCC
+oFAon0a8Un3v6drjpo9C
+=ZKc6
+-----END PGP SIGNATURE-----
+
+--cnBsrynPgIOyCJkL--
