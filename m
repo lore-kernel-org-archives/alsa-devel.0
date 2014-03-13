@@ -1,83 +1,58 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC updates for v3.15
-Date: Thu, 13 Mar 2014 13:43:03 +0000
-Message-ID: <20140313134303.GT366@sirena.org.uk>
-References: <20140312231437.GA28112@sirena.org.uk>
- <53216128.7040705@metafoo.de>
+Subject: Re: [PATCH 00/18] edma/ASoC: dmaengine PCM for AM335x and AM447x
+Date: Thu, 13 Mar 2014 13:46:01 +0000
+Message-ID: <20140313134601.GU366@sirena.org.uk>
+References: <1394702320-21743-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2289565958196354563=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F2F72651F1
- for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 14:43:14 +0100 (CET)
-In-Reply-To: <53216128.7040705@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="L2YZAWjVjAQ1Un1Q"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1394702320-21743-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, joelf@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>, nsekhar@ti.com, Jyri Sarha <jsarha@ti.com>, mporter@linaro.org, vinod.koul@intel.com, dan.j.williams@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2289565958196354563==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bn6XL8m8Y51x7rzV"
-Content-Disposition: inline
-
-
---bn6XL8m8Y51x7rzV
+--L2YZAWjVjAQ1Un1Q
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 13, 2014 at 08:41:28AM +0100, Lars-Peter Clausen wrote:
-> On 03/13/2014 12:14 AM, Mark Brown wrote:
-> >       Merge remote-tracking branches 'asoc/topic/da7213', 'asoc/topic/da732x', 'asoc/topic/da9055', 'asoc/topic/davinci', 'asoc/topic/fsl', 'asoc/topic/fsl-esai', 'asoc/topic/fsl-sai' and 'asoc/topic/fsl-spdif' into asoc-next
+On Thu, Mar 13, 2014 at 11:18:22AM +0200, Peter Ujfalusi wrote:
 
-> I think you forgot to merge the branches that come between the one above and
-> below:
+> With this series AM335x and AM447x will use the dmaengine PCM for audio. The
+> daVinci devices will keep using the davinci-pcm for now since I do not have
+> means to test them but the code is written in a way that they can be switched
+> to use the edma-pcm easily (DA850/OMAP-L138 has been tested and audio was
+> working fine).
 
-> 'asoc/topic/intel', 'asoc/topic/io', 'asoc/topic/jack',
-> 'asoc/topic/kirkwood', 'asoc/topic/lm4857', 'asoc/topic/lm49453',
-> 'asoc/topic/maintainers', 'asoc/topic/max98088' and 'asoc/topic/max98095'
+Can you please not resend the ASoC portions of this series until the
+EDMA portion is stable (and ideally committed)?  I'm not quite sure why
+but every EDMA patch series seems to go through lots of iterations which
+gets rather noisy - my initial reaction to seeing EDMA in a subject is
+to just delete the thread.
 
-This is all scripted - I don't do this stuff by hand.
-
---bn6XL8m8Y51x7rzV
+--L2YZAWjVjAQ1Un1Q
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTIbXkAAoJELSic+t+oim9ddUP/A/jKYRWmywScEuRD74/FagL
-frnHEPqVdFw50BRxk9pbdvgz1urF+QAcD8mMm8oJy3fi8wowSd1ASfPReAJhLGE6
-Km9sUYiE4WG6G/pQuoNHtC7ywM0JNr5rZmFiEXkHaqfR2b77gnXEd3BB4rCeLgWQ
-itMTsen63Ji8CXwNihRO8le5rRpr1GISlCHh2tLYOt4HyWX/dSPLh/AADuMmnlKw
-i8xlpL+oEhOZBgPwpABiG+sUxdQu0a7ukfM9P1y1nHVLnQqoyxR/LTHz4G2z5aA0
-olSJ+6pRLNsERj0Bve31ql9xDDBHk5LKn5efXxdzOKaOSXVoIJjShlJcv3ZUOjzl
-oocRuV7dC1EtyWYpvOKlMqQejV8tYcEvptAXOuZh7Q2SsDoT+COKHLOIIe6RJKF/
-Ls3IsGHHhUVA30qf0mHvXAIcoLJOS4RrYFFQ7QBoMTWF9kgVwvyhxsFddpSihu0h
-9OQq+tz4RrKRT33iQKiwGx1C9M/0rFEbAEwaa8YFk7g4XlvN/YBL20I5JlT9iaEu
-iZ+iGXDaMjZmMeZy5107EywldOurqvsY/UoUik+tMvJ5xEmAeRCAhDcWh1ODTXxt
-mu+trvOT1LvolQao1taDkVz1QjCeQRt3VZ3LHGj/mfZ+oxx7iqNZMCFyqxEIwXwt
-/BGwYO1soUJzUZeH+a9D
-=k8k3
+iQIcBAEBAgAGBQJTIbaWAAoJELSic+t+oim9nV0P/jZm8E1g0rPBCTOkKqf9ombY
+Hdqm9g6GzkSN8Pga8f5Q1UN3lVpIReLCiwsYxoRTT//Ovtmy8y2mOZ4FlwmlOyaU
+hWw0QENFV6Tk/SsAliX2gSgIrqbnLUF/RsEaubA2DWPx3kpATEI+5+YijjAxJHfs
+0fIApxzB/x94EC/wcCPJIpSBP+bwW9UCRjN1iF7yX60nO3A7iXBbBUx2UnJPK4Oi
+Z8Hto5G78cQIMpowTukO74cUqTvqrrdQXgIKhcPBfRl0aL9qWpMVPxuDlnE/ofne
+37zZeq4I0DwvDRSRSAqwhEJXVz89hc565Zh7PwdE2NAK3fCJQjH8/L5s3S/eTVPP
+kpVkKZzwNEJ4WtPQs2aFocfJFnnTMhF4TVTbl/XCUTn1sM+VHkwiFZb2MzfgVX/c
+opPJT5uW5ovp/4XvCHmRZrhr4bnXNgX5+ri+AbOXlvLywsHSHxYoTHypVM+op6ad
+U4RYE5dx6fANKcq8efrxj0Kiqjgb5opd/YPsgL/u5fQ7Sk7nuWJvVEXhmPwN3QZv
+6konQYpMlAZVNHBltxxfpY1rbXAJ9Q03/hIAAm0vdfzYoui7bNGFBFHI6/ZZ9mQl
+UEooOae6mAemGS6WQYh35TBLgoSMy1FssrDCzVQcvCpBX5xikCG4wlcYHxtnBi+c
+UIV7ENhW3HZkfw2jFD6g
+=bZlj
 -----END PGP SIGNATURE-----
 
---bn6XL8m8Y51x7rzV--
-
---===============2289565958196354563==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2289565958196354563==--
+--L2YZAWjVjAQ1Un1Q--
