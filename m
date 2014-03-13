@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] ASoC: core: Add support for DAI multicodec
-Date: Thu, 13 Mar 2014 19:22:30 +0000
-Message-ID: <20140313192230.GJ366@sirena.org.uk>
-References: <1394536644-21438-1-git-send-email-bcousson@baylibre.com>
- <20140312225125.GZ28112@sirena.org.uk>
- <53219AA3.2060305@baylibre.com>
+Subject: Re: [PATCH v5] ASoC: add RT286 CODEC driver
+Date: Thu, 13 Mar 2014 19:29:02 +0000
+Message-ID: <20140313192902.GL366@sirena.org.uk>
+References: <1394521896-27721-1-git-send-email-bardliao@realtek.com>
+ <5320CE8C.8090608@metafoo.de>
+ <ABFD875FF5FB574BA706497D987D48D7398652@RTITMBSV03.realtek.com.tw>
+ <53216DDC.9090502@metafoo.de> <s5h61nizdj5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6576638025072091291=="
+Content-Type: multipart/mixed; boundary="===============2776620615885615258=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B7AC26545F
- for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 20:22:40 +0100 (CET)
-In-Reply-To: <53219AA3.2060305@baylibre.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D481C26545F
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 20:29:12 +0100 (CET)
+In-Reply-To: <s5h61nizdj5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,72 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Benoit Cousson <bcousson@baylibre.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6576638025072091291==
+--===============2776620615885615258==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CPQPFrYXiKmg9EuQ"
+	protocol="application/pgp-signature"; boundary="ISA6zNVXmTIvvkD5"
 Content-Disposition: inline
 
 
---CPQPFrYXiKmg9EuQ
+--ISA6zNVXmTIvvkD5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 13, 2014 at 12:46:43PM +0100, Benoit Cousson wrote:
-> On 12/03/2014 23:51, Mark Brown wrote:
-> >On Tue, Mar 11, 2014 at 12:17:24PM +0100, Benoit Cousson wrote:
+On Thu, Mar 13, 2014 at 09:52:14AM +0100, Takashi Iwai wrote:
 
-> >is handy.  Instead of having a fixup function if we specified a TDM
-> >and channel map configuration then the core core could override the
-> >params so that the channel count was clamped by how many channels are
-> >actually being sent to the device - so if there's two TDM slots active
-> >the device would be told to play stereo.  Would that work for your use
-> >cases?
+> different values for get and set.  And, yet more tricky part is the
+> amplifier verbs.  These aren't suitable with regmap caching,
+> unfortunately.
 
-> Yes, I think so. My current setup is pretty basic: 2 mono Class D amplifiers
-> connected to the same I2S link to build a stereo card.
+We don't really *need* the cache, it just makes it easier to do resume
+and gives a bit of a performance boost.
 
-> OK, so I'll rebase the patch to asoc/next. I'll try to split the huge patch
-> at least into a series of 2 or 3 patches, and I'll remove the fixup part.
-
-Sounds good.  We will need some configuration here so I think adding TDM
-parameters to the various structs (I guess slot size and overall counts
-should go in the link rather than per CODEC) but we could probably even
-get away with doing this after the core patch.
-
---CPQPFrYXiKmg9EuQ
+--ISA6zNVXmTIvvkD5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTIgVzAAoJELSic+t+oim9reYP/jY/wdQS1s/hzeKmxe0DKZ6g
-uo+BRNJ358csTaBoO03hATusiHbtNbqZB0zFDiqHexPvD4FUmi0h5yiF+w6zxB2H
-IzZdtfTrDyxZt1DKdyVOdIhShoo9OiaGfn1YqttlbueyWzq7MiropanbuRHQgngy
-7RVJE9Ifnr+WYplV9o0euXRoWGQP/KNOiuPphI+uSZzYOmWP9Z8tu1A0Te7wrxhw
-UbWXdH6frHdOcuRk2eILJR80ED/Scxid4MDh2qoh6jkzJyhWNkJ6GmQIeV49ecud
-toeYQNHljZay6AJ1txm8gJip1mbK0cZIw7D1FMuMyRQ+vtZd7q3fq8JGKEEOqUow
-uEErBCHLTvkZAr3t2iSKsc58ie8bV4CDE1lgERua9lJrTeiDKk/O/VRFtHLL7KRA
-KtIrxAEJOlyxVZ/OZzx5RGAxShPG1Q2CHoC4Yt7AZJjLmoJO85XrpxbTRdu/nPHH
-tSJRxFwEj/EuHVQtf33rixxFWcva1qWiz51pdxGTsit22JhEU4PrHqVVhQ1j0hFg
-um4shKryu86JZAy74nDM0qsUPyRrPdnPZrooVUvFdTwggzVBi9AMqKAUF5J0lp65
-/5+g6/NKXMU6AgjXKng+/285FWuEXrn106MvZzngMKbnbEAowwGC+yXfCNNswTS7
-gTNu4PIXo+w0cZ6wdA3G
-=y4ze
+iQIcBAEBAgAGBQJTIgb7AAoJELSic+t+oim9Ma0P/2riFtxva3EpiR4Vr3y+APx3
+28WbDRHXqNuvw1/pCfDx1GM3I0W5FEiO7zz4+yr8MqPJmyZD3a2Mheg96V0RPYxb
+gmpCgR3urmLgVsTgwN533HjmFHRGI9JDSYyFXg+PVKzFyewrbxqJk7X0IrlK1Eq9
+DH9x35t/N85cm1EEGHedNO0/nw4pFMSu0IcWZrGRGVOfdMHACa7Jlup+0NR5P70w
+d7z0g1vUtK+37tyMghetOHnxyKYp32dYxvsL4i62SPVrntPlE1RJ6MCOhVELV3c5
+S7p+q2jNNYSDOGnnuFoSxzJrJGIMpROHrfOwkbFap/z07xScm6kdkR1yNQliQ8hK
+mx9poq34xkrGs9/MZE2loGJpDrt/wk9qBRBzNg7nhviAURfzoYMFvsefnWu6ze92
+fvZ0nL8Q+sQ0w+GYFDbOG7cni/KV+WqHWGHp4eOytS8HKA7x+qJ85NLkF+pau5+m
+r7KYSLBcptIweZe9tgt++7I468ZagrDaMLKoq7rQ+SkvM1hRoVrI5NisEBGlk9mY
+4sYkIlv3/RDWprw0b8d/shraEb6zvxOSAROnm5bgr1ZSaKQ0gQXpPZBMkjKOToio
+8YUVMHJ+7hgUpiYg8SPj/ZSLBVfRbEaMQmCPIuXFgGmKKl2hvNycrg3d6wkksrsj
+QAWbwkLQp+TgTl/RM3Rl
+=xe8H
 -----END PGP SIGNATURE-----
 
---CPQPFrYXiKmg9EuQ--
+--ISA6zNVXmTIvvkD5--
 
---===============6576638025072091291==
+--===============2776620615885615258==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6576638025072091291==--
+--===============2776620615885615258==--
