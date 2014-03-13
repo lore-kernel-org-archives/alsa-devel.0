@@ -1,34 +1,68 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH v6] ASoC: tlv320aic31xx: Fix unused variable warning from aic31xx_clk_off
-Date: Thu, 13 Mar 2014 17:37:52 +0200
-Message-ID: <1394725072-10584-1-git-send-email-jsarha@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: ASoC updates for v3.15
+Date: Thu, 13 Mar 2014 16:31:30 +0100
+Message-ID: <5321CF52.1070708@metafoo.de>
+References: <20140313142939.GZ366@sirena.org.uk> <s5hd2hqxiz4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-088.synserver.de (smtp-out-116.synserver.de
+ [212.40.185.116])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D5FF26527F
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 16:43:04 +0100 (CET)
+In-Reply-To: <s5hd2hqxiz4.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix "warning: unused variable 'aic31xx'" from function 'aic31xx_clk_off'.
-
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- sound/soc/codecs/tlv320aic31xx.c |    1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index e626b56..c9f6989 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -945,7 +945,6 @@ static void aic31xx_clk_on(struct snd_soc_codec *codec)
- 
- static void aic31xx_clk_off(struct snd_soc_codec *codec)
- {
--	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
- 	u8 mask = AIC31XX_PM_MASK;
- 	u8 off = 0;
- 
--- 
-1.7.9.5
-
+T24gMDMvMTMvMjAxNCAwMzozNyBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgpbLi4uXQo+IFNvbWV0
+aGluZyBicm9rZW4gaW4gdGhpcyB1cGRhdGUuICBOb3cgSSBnZXQgdGhlIGJ1aWxkIGVycm9yczoK
+Pgo+ICAgIENDIFtNXSAgc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4Lm8KPiBzb3VuZC9z
+b2MvY29kZWNzL3RsdjMyMGFpYzMxeHguYzogSW4gZnVuY3Rpb24g4oCYYWljMzF4eF9jbGtfb2Zm
+4oCZOgo+IHNvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljMzF4eC5jOjk0NjoyMzogd2FybmluZzog
+dW51c2VkIHZhcmlhYmxlIOKAmGFpYzMxeHjigJkgWy1XdW51c2VkLXZhcmlhYmxlXQo+ICAgIHN0
+cnVjdCBhaWMzMXh4X3ByaXYgKmFpYzMxeHggPSBzbmRfc29jX2NvZGVjX2dldF9kcnZkYXRhKGNv
+ZGVjKTsKPiAgICAgICAgICAgICAgICAgICAgICAgICBeCj4gc291bmQvc29jL2NvZGVjcy90bHYz
+MjBhaWMzMXh4LmM6IEluIGZ1bmN0aW9uIOKAmGFpYzMxeHhfY29kZWNfcHJvYmXigJk6Cj4gc291
+bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzMXh4LmM6MTA1Nzo0ODogZXJyb3I6IOKAmFNORF9TT0Nf
+UkVHTUFQ4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQo+ICAgIHJl
+dCA9IHNuZF9zb2NfY29kZWNfc2V0X2NhY2hlX2lvKGNvZGVjLCA4LCA4LCBTTkRfU09DX1JFR01B
+UCk7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4K
+PiBzb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzMxeHguYzoxMDU3OjQ4OiBub3RlOiBlYWNoIHVu
+ZGVjbGFyZWQgaWRlbnRpZmllciBpcyByZXBvcnRlZCBvbmx5IG9uY2UgZm9yIGVhY2ggZnVuY3Rp
+b24gaXQgYXBwZWFycyBpbgo+IHNvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljMzF4eC5jOjEwNTc6
+Mjogd2FybmluZzogcGFzc2luZyBhcmd1bWVudCAyIG9mIOKAmHNuZF9zb2NfY29kZWNfc2V0X2Nh
+Y2hlX2lv4oCZIG1ha2VzIHBvaW50ZXIgZnJvbSBpbnRlZ2VyIHdpdGhvdXQgYSBjYXN0IFtlbmFi
+bGVkIGJ5IGRlZmF1bHRdCj4gICAgcmV0ID0gc25kX3NvY19jb2RlY19zZXRfY2FjaGVfaW8oY29k
+ZWMsIDgsIDgsIFNORF9TT0NfUkVHTUFQKTsKPiAgICBeCj4gSW4gZmlsZSBpbmNsdWRlZCBmcm9t
+IHNvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljMzF4eC5jOjM2OjA6Cj4gaW5jbHVkZS9zb3VuZC9z
+b2MuaDo0MDI6NTogbm90ZTogZXhwZWN0ZWQg4oCYc3RydWN0IHJlZ21hcCAq4oCZIGJ1dCBhcmd1
+bWVudCBpcyBvZiB0eXBlIOKAmGludOKAmQo+ICAgaW50IHNuZF9zb2NfY29kZWNfc2V0X2NhY2hl
+X2lvKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYywKPiAgICAgICBeCj4gc291bmQvc29jL2Nv
+ZGVjcy90bHYzMjBhaWMzMXh4LmM6MTA1NzoyOiBlcnJvcjogdG9vIG1hbnkgYXJndW1lbnRzIHRv
+IGZ1bmN0aW9uIOKAmHNuZF9zb2NfY29kZWNfc2V0X2NhY2hlX2lv4oCZCj4gICAgcmV0ID0gc25k
+X3NvY19jb2RlY19zZXRfY2FjaGVfaW8oY29kZWMsIDgsIDgsIFNORF9TT0NfUkVHTUFQKTsKPiAg
+ICBeCj4gSW4gZmlsZSBpbmNsdWRlZCBmcm9tIHNvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljMzF4
+eC5jOjM2OjA6Cj4gaW5jbHVkZS9zb3VuZC9zb2MuaDo0MDI6NTogbm90ZTogZGVjbGFyZWQgaGVy
+ZQo+ICAgaW50IHNuZF9zb2NfY29kZWNfc2V0X2NhY2hlX2lvKHN0cnVjdCBzbmRfc29jX2NvZGVj
+ICpjb2RlYywKPiAgICAgICBeCj4gbWFrZVszXTogKioqIFtzb3VuZC9zb2MvY29kZWNzL3RsdjMy
+MGFpYzMxeHgub10gRXJyb3IgMQoKQWRkaW5nIEp5cmkgdG8gQ2MuIEp5cmkgY2FuIHlvdSBzZW5k
+IGEgcGF0Y2ggdGhhdCBmaXhlcyB0aGlzIHVwPyBUaGVyZSB3YXMgYSAKb3ZlcmxhcCBiZXR3ZWVu
+IHlvdXIgcGF0Y2ggYW5kIGEgY2xlYW51cCB0aGF0IGNoYW5nZWQgdGhlIHNpZ25hdHVyZSBvZiAK
+c25kX3NvY19jb2RlY19zZXRfY2FjaGVfaW8oKS4gTm90ZSB0aGF0IHlvdSBjYW4ganVzdCBkcm9w
+IGJvdGggdGhlIApjb250cm9sX2RhdGEgYXNzaWdubWVudCBhbmQgdGhlIHNuZF9zb2NfY29kZWNf
+c2V0X2NhY2hlX2lvKCkgY2FsbCBmcm9tIHlvdXIgCmNvZGVjIHByb2JlIGZ1bmN0aW9uIHNpbmNl
+IHRoaXMgaXMgbm93IGRvbmUgYXV0b21hdGljYWxseSBieSB0aGUgY29yZS4KCi0gTGFycwoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
