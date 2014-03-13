@@ -1,18 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 04/12] ASoC: omap-abe-twl6040: Register
- machine level DMIC DAPM routes with the card
-Date: Thu, 13 Mar 2014 12:06:42 +0200
-Message-ID: <53218332.5050200@ti.com>
+Subject: Re: [PATCH v2 07/12] ASoC: davinci-evm: Register
+ machine level DAPM elements with the card
+Date: Thu, 13 Mar 2014 12:07:41 +0200
+Message-ID: <5321836D.7030901@ti.com>
 References: <1394634460-15889-1-git-send-email-lars@metafoo.de>
- <1394634460-15889-5-git-send-email-lars@metafoo.de>
+ <1394634460-15889-8-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A87826513F
- for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 11:06:48 +0100 (CET)
-In-Reply-To: <1394634460-15889-5-git-send-email-lars@metafoo.de>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 023F826516B
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 11:07:46 +0100 (CET)
+In-Reply-To: <1394634460-15889-8-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,40 +32,79 @@ DAPM
 > context, rather than in the CODEC's context.
 > =
 
+> While we are at it also drop the snd_soc_dapm_enable_pin() calls, since p=
+ins are
+> enabled by default and also turn the snd_soc_dapm_disable_pin() calls into
+> snd_soc_dapm_nc_pin() calls for unconnected pins.
+> =
+
 > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
 Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-> =
-
 > ---
 > Changes since v1:
-> 	* Only register DMIC DAPM routes with the card, do not join the two rout=
-es
-> 	  tables into one.
+> 	* Remove snd_soc_dapm_enable_pin() calls
+> 	* Change snd_soc_dapm_disable_pin() calles into snd_soc_dapm_nc_pin()
 > ---
->  sound/soc/omap/omap-abe-twl6040.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  sound/soc/davinci/davinci-evm.c | 22 ++++++++--------------
+>  1 file changed, 8 insertions(+), 14 deletions(-)
 > =
 
-> diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-=
-twl6040.c
-> index ebb1390..024dafc 100644
-> --- a/sound/soc/omap/omap-abe-twl6040.c
-> +++ b/sound/soc/omap/omap-abe-twl6040.c
-> @@ -203,8 +203,7 @@ static const struct snd_soc_dapm_route dmic_audio_map=
-[] =3D {
->  =
-
->  static int omap_abe_dmic_init(struct snd_soc_pcm_runtime *rtd)
+> diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-=
+evm.c
+> index 70ff377..9c296f7 100644
+> --- a/sound/soc/davinci/davinci-evm.c
+> +++ b/sound/soc/davinci/davinci-evm.c
+> @@ -95,35 +95,29 @@ static const struct snd_soc_dapm_route audio_map[] =
+=3D {
+>  /* Logic for a aic3x as connected on a davinci-evm */
+>  static int evm_aic3x_init(struct snd_soc_pcm_runtime *rtd)
 >  {
-> -	struct snd_soc_codec *codec =3D rtd->codec;
+> +	struct snd_soc_card *card =3D rtd->card;
+>  	struct snd_soc_codec *codec =3D rtd->codec;
 > -	struct snd_soc_dapm_context *dapm =3D &codec->dapm;
-> +	struct snd_soc_dapm_context *dapm =3D &rtd->card->dapm;
+>  	struct device_node *np =3D codec->card->dev->of_node;
+>  	int ret;
 >  =
 
->  	return snd_soc_dapm_add_routes(dapm, dmic_audio_map,
->  				ARRAY_SIZE(dmic_audio_map));
+>  	/* Add davinci-evm specific widgets */
+> -	snd_soc_dapm_new_controls(dapm, aic3x_dapm_widgets,
+> +	snd_soc_dapm_new_controls(&card->dapm, aic3x_dapm_widgets,
+>  				  ARRAY_SIZE(aic3x_dapm_widgets));
+>  =
+
+>  	if (np) {
+> -		ret =3D snd_soc_of_parse_audio_routing(codec->card,
+> -							"ti,audio-routing");
+> +		ret =3D snd_soc_of_parse_audio_routing(card, "ti,audio-routing");
+>  		if (ret)
+>  			return ret;
+>  	} else {
+>  		/* Set up davinci-evm specific audio path audio_map */
+> -		snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+> +		snd_soc_dapm_add_routes(&card->dapm, audio_map,
+> +					ARRAY_SIZE(audio_map));
+>  	}
+>  =
+
+>  	/* not connected */
+> -	snd_soc_dapm_disable_pin(dapm, "MONO_LOUT");
+> -	snd_soc_dapm_disable_pin(dapm, "HPLCOM");
+> -	snd_soc_dapm_disable_pin(dapm, "HPRCOM");
+> -
+> -	/* always connected */
+> -	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
+> -	snd_soc_dapm_enable_pin(dapm, "Line Out");
+> -	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
+> -	snd_soc_dapm_enable_pin(dapm, "Line In");
+> +	snd_soc_dapm_nc_pin(&codec->dapm, "MONO_LOUT");
+> +	snd_soc_dapm_nc_pin(&codec->dapm, "HPLCOM");
+> +	snd_soc_dapm_nc_pin(&codec->dapm, "HPRCOM");
+>  =
+
+>  	return 0;
+>  }
 > =
 
 
