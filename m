@@ -1,57 +1,79 @@
-From: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH 09/18] dma: edma: Simplify direction configuration in
-	edma_config_pset()
-Date: Thu, 13 Mar 2014 11:18:31 +0200
-Message-ID: <1394702320-21743-10-git-send-email-peter.ujfalusi@ti.com>
-References: <1394702320-21743-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 08/12] ASoC: snappercl15: Convert to
+ table based DAPM setup
+Date: Thu, 13 Mar 2014 09:38:47 +0000
+Message-ID: <20140313093847.GE366@sirena.org.uk>
+References: <1394634460-15889-1-git-send-email-lars@metafoo.de>
+ <1394634460-15889-9-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <1394702320-21743-1-git-send-email-peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, joelf-l0cyMroinI0@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, mporter-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============1409356125845757039=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E6D32652AC
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 10:39:18 +0100 (CET)
+In-Reply-To: <1394634460-15889-9-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Ryan Mallon <rmallon@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Daniel =?iso-8859-1?Q?Gl=F6ckner?= <daniel-gl@gmx.net>, Benoit Cousson <bcousson@baylibre.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-We only support DEV_TO_MEM or MEM_TO_DEV directions with edma driver and the
-check for the direction has been already done in the function calling
-edma_config_pset().
-The error reporting is redundant and also the "else if ()" can be removed.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
----
- drivers/dma/edma.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+--===============1409356125845757039==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Ns7jmDPpOpCD+GE/"
+Content-Disposition: inline
 
-diff --git a/drivers/dma/edma.c b/drivers/dma/edma.c
-index 1877319379fc..e4f4a0cef58c 100644
---- a/drivers/dma/edma.c
-+++ b/drivers/dma/edma.c
-@@ -368,14 +368,12 @@ static int edma_config_pset(struct dma_chan *chan, struct edmacc_param *pset,
- 		src_cidx = cidx;
- 		dst_bidx = 0;
- 		dst_cidx = 0;
--	} else if (direction == DMA_DEV_TO_MEM)  {
-+	} else {
-+		/* DMA_DEV_TO_MEM */
- 		src_bidx = 0;
- 		src_cidx = 0;
- 		dst_bidx = acnt;
- 		dst_cidx = cidx;
--	} else {
--		dev_err(dev, "%s: direction not implemented yet\n", __func__);
--		return -EINVAL;
- 	}
- 
- 	pset->opt = EDMA_TCC(EDMA_CHAN_SLOT(echan->ch_num));
--- 
-1.9.0
+
+--Ns7jmDPpOpCD+GE/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Mar 12, 2014 at 03:27:36PM +0100, Lars-Peter Clausen wrote:
+> Use table based setup to register the DAPM widgets and routes.  This on one hand
+> makes the code a bit shorter and cleaner and on the other hand the board level
+> DAPM elements get registered in the card's DAPM context rather than in the
+> CODEC's DAPM context.
+
+Applied, thanks.
+
+--Ns7jmDPpOpCD+GE/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTIXykAAoJELSic+t+oim9jgIP/jdL2L50LJzIMqJc8iuqMu65
+LuiumFO5AzqyjW4V+I6CC3z9QPYSSZbeQmIGKmg+l01J32wWnv1EaAnq+u+VwDf5
+Gd5BjPK99Vjm7oX/VuJQgJ2Cu9pzSAeAg9TJQgYdv14bUcDa89s+ZfhbZ0rQylKL
+lEPzmvJiHWbpChTSQQzz1J2gx82XdtpY1QK8jbbuBTlDsvaqyPsjmx6UV0ncs/XW
+6/AGaLZ2zn6m/nTkq6ksujaMRvl+bH0Hw+sLAwggprt8LYeSWMbN6QCPE5hz3gFP
+L7ZuUone2+Cb/6W5uL71xW6p+VlJv6qGjg5+2DQdbt6p5ep/gRpHX10vZOP1k9Ki
+1jG2q8aBl6ie0Agl/s0+L8NL7Dl34qWkF+ySe8O09aPMF3vS2aCCUMcIno3AkUv/
+x7j39tkTFQiZf3jty/lv3MCrw+suQCLc8NApGyseiGwQnt3xEpxDj67xcMbuZJp2
+Q6R1If6iSCw1iT2In1AqUuh4SaI8i0i8vknKhovEMsELjaHhDzOLh3dE/QRw93YM
+207Vp8rXb2+cUO9MXnLjMrMDWrcYyZIAFxMjwNmEI9QSLwBcLenJUb2lJlMBi1WC
+AToZe8gZhSYHfg8ugLEw7ZxKgAUTw4R1RGTflFBhDZ3aZ8RKTZRdYMeepMD38aZo
+Y59R1Mmn2Vs5WAilpDOQ
+=Ljgb
+-----END PGP SIGNATURE-----
+
+--Ns7jmDPpOpCD+GE/--
+
+--===============1409356125845757039==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1409356125845757039==--
