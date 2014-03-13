@@ -1,16 +1,20 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: codecs: Replace instances of rtd->codec
-	with dai->codec
-Date: Thu, 13 Mar 2014 21:24:54 +0100
-Message-ID: <1394742294-14698-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v5] ASoC: add RT286 CODEC driver
+Date: Thu, 13 Mar 2014 20:43:23 +0000
+Message-ID: <20140313204323.GM366@sirena.org.uk>
+References: <1394521896-27721-1-git-send-email-bardliao@realtek.com>
+ <5320CE8C.8090608@metafoo.de>
+ <ABFD875FF5FB574BA706497D987D48D7398652@RTITMBSV03.realtek.com.tw>
+ <53216DDC.9090502@metafoo.de> <s5h61nizdj5.wl%tiwai@suse.de>
+ <20140313192902.GL366@sirena.org.uk> <s5hzjkteufy.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2149227878079844805=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-088.synserver.de (smtp-out-118.synserver.de
- [212.40.185.118])
- by alsa0.perex.cz (Postfix) with ESMTP id 45A9F265482
- for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 21:24:26 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 839D826547E
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 21:43:37 +0100 (CET)
+In-Reply-To: <s5hzjkteufy.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,150 +24,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, patches@opensource.wolfsonmicro.com, Jyri Sarha <jsarha@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, Lars-Peter Clausen <lars@metafoo.de>, M R Swami Reddy <mr.swami.reddy@ti.com>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-With CODEC to CODEC links rtd->codec does not necessarily point to the driver's
-CODEC. CODEC drivers should always use dai->codec and never even look at the PCM
-runtime.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/isabelle.c      | 3 +--
- sound/soc/codecs/mc13783.c       | 6 ++----
- sound/soc/codecs/rt5640.c        | 3 +--
- sound/soc/codecs/sta529.c        | 3 +--
- sound/soc/codecs/tlv320aic31xx.c | 5 ++---
- sound/soc/codecs/uda134x.c       | 3 +--
- sound/soc/codecs/uda1380.c       | 3 +--
- sound/soc/codecs/wm8580.c        | 3 +--
- 8 files changed, 10 insertions(+), 19 deletions(-)
+--===============2149227878079844805==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JjpRhe3EFs1LrwYV"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/isabelle.c b/sound/soc/codecs/isabelle.c
-index 3e264a7..3a89ce6 100644
---- a/sound/soc/codecs/isabelle.c
-+++ b/sound/soc/codecs/isabelle.c
-@@ -918,8 +918,7 @@ static int isabelle_hw_params(struct snd_pcm_substream *substream,
- 			      struct snd_pcm_hw_params *params,
- 			      struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_codec *codec = dai->codec;
- 	u16 aif = 0;
- 	unsigned int fs_val = 0;
- 
-diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
-index 37d737e..2c59b1f 100644
---- a/sound/soc/codecs/mc13783.c
-+++ b/sound/soc/codecs/mc13783.c
-@@ -106,8 +106,7 @@ static int mc13783_pcm_hw_params_dac(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_codec *codec = dai->codec;
- 	unsigned int rate = params_rate(params);
- 	int i;
- 
-@@ -126,8 +125,7 @@ static int mc13783_pcm_hw_params_codec(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_codec *codec = dai->codec;
- 	unsigned int rate = params_rate(params);
- 	unsigned int val;
- 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 13ccee4..0061ae6 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -1594,8 +1594,7 @@ static int get_clk_info(int sclk, int rate)
- static int rt5640_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_codec *codec = dai->codec;
- 	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int val_len = 0, val_clk, mask_clk;
- 	int dai_sel, pre_div, bclk_ms, frame_size;
-diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
-index a3c61d3..a40c4b0 100644
---- a/sound/soc/codecs/sta529.c
-+++ b/sound/soc/codecs/sta529.c
-@@ -193,8 +193,7 @@ static int sta529_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params,
- 		struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_codec *codec = dai->codec;
- 	int pdata, play_freq_val, record_freq_val;
- 	int bclk_to_fs_ratio;
- 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index d3517a9..cc1c9c2 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -753,10 +753,9 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
- 
- static int aic31xx_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params,
--			     struct snd_soc_dai *tmp)
-+			     struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_codec *codec = dai->codec;
- 	u8 data = 0;
- 
- 	dev_dbg(codec->dev, "## %s: format %d width %d rate %d\n",
-diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
-index c94d4c1..edf27ac 100644
---- a/sound/soc/codecs/uda134x.c
-+++ b/sound/soc/codecs/uda134x.c
-@@ -203,8 +203,7 @@ static int uda134x_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params,
- 	struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_codec *codec = dai->codec;
- 	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
- 	u8 hw_params;
- 
-diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-index 4dadaa8..e62e707 100644
---- a/sound/soc/codecs/uda1380.c
-+++ b/sound/soc/codecs/uda1380.c
-@@ -566,8 +566,7 @@ static int uda1380_pcm_hw_params(struct snd_pcm_substream *substream,
- static void uda1380_pcm_shutdown(struct snd_pcm_substream *substream,
- 				 struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_codec *codec = dai->codec;
- 	u16 clk = uda1380_read_reg_cache(codec, UDA1380_CLK);
- 
- 	/* shut down WSPLL power if running from this clock */
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index 7558c83..af7ed8b 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -504,8 +504,7 @@ static int wm8580_paif_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params,
- 				 struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_codec *codec = dai->codec;
- 	struct wm8580_priv *wm8580 = snd_soc_codec_get_drvdata(codec);
- 	u16 paifa = 0;
- 	u16 paifb = 0;
--- 
-1.8.0
+
+--JjpRhe3EFs1LrwYV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Mar 13, 2014 at 09:04:49PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
+
+> > We don't really *need* the cache, it just makes it easier to do resume
+> > and gives a bit of a performance boost.
+
+> Well, the caching isn't just a bit.  Without caching, you'd have to
+> whip the sound hardware powered up/down at each time querying the
+> current mixer value.
+
+Realistically most hardware can't actually do that - there's a couple of
+the idle_bias_off devices that have built in LDOs which can but it's
+relatively unusual to be able to remove enough power to loose register
+I/O (and in any case you wind up needing to cache the values per control
+or something in order to do system suspend).
+
+--JjpRhe3EFs1LrwYV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTIhhoAAoJELSic+t+oim9DhEP/2wrfSviMG4kWfvUaT+fWaCX
+Q3C5WjKZuJpHX/AGWtHxQhHazD3zxYTy6Mt7w0AH0iwMJyzaNNnZrPRYd6pSOO0a
+gjBh0d0BfTrDokIYZhD4OcBU7l+jFmqbdOIoBxSVpZIa+dyFE1sfLRIuC+dcJ3aF
+u/uHqBr5Awa7WeB0MV5mR73vYtJLdiP9lAqd2Ji1JVYJobTQyCsQ+YGIFQwrwfP6
+8JxgINzQg/TPtpFtJ0w0JQNaEtIUayiGG7HLjUMfSJr8sWyedgegO6YRXSQo+hqz
+XHnejE62/C7jnlhtwrymyp7M6z5aaLj8oYzHZSHU/Todz1BKJ1nGoSPUqEbhrzfH
+yifq87q9HS3UwgC+V+IABEPvKMabx4wQJc6UN6btn4ShBYdsbJ+jh3CO0nTQfIHM
+GXxVSlI3okOtyZcYvXVBk7hC/DMOSCY4ub5mKyon42/t9pT0rShLCnUzDRczyC21
+n9peS1vuHmk/TibGT63/HkS7E8F44O58B4Hc70Y3Tb3HUNV4vMxtme1pOt1LFMrD
+CQi9e6mQwcyzAXmcLY4vmmDDLV7UnqYOcvbmqktRyAUuhEzUzu/si7MoErn+tBm2
+A5PcVfeb8RW6LXyciec8vV9EbX/2uH+eReAI5Yy/H775q6c5yuou61Lc4H5wNI9w
+Z/kC7pt8bEMwHp/Y6LxV
+=w2Zv
+-----END PGP SIGNATURE-----
+
+--JjpRhe3EFs1LrwYV--
+
+--===============2149227878079844805==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2149227878079844805==--
