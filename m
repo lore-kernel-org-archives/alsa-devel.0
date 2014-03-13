@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 09/12] ASoC: s6105-ipcam: Convert to
- table based DAPM setup
-Date: Thu, 13 Mar 2014 11:43:45 +0000
-Message-ID: <20140313114345.GP366@sirena.org.uk>
-References: <1394634460-15889-1-git-send-email-lars@metafoo.de>
- <1394634460-15889-10-git-send-email-lars@metafoo.de>
+From: Benoit Cousson <bcousson@baylibre.com>
+Subject: Re: [RFC] ASoC: core: Add support for DAI multicodec
+Date: Thu, 13 Mar 2014 12:46:43 +0100
+Message-ID: <53219AA3.2060305@baylibre.com>
+References: <1394536644-21438-1-git-send-email-bcousson@baylibre.com>
+ <20140312225125.GZ28112@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4071320527428415352=="
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D970026519B
- for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 12:44:03 +0100 (CET)
-In-Reply-To: <1394634460-15889-10-git-send-email-lars@metafoo.de>
+Received: from mail-we0-f173.google.com (mail-we0-f173.google.com
+ [74.125.82.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC0D426519B
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 12:46:45 +0100 (CET)
+Received: by mail-we0-f173.google.com with SMTP id w61so727231wes.4
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 04:46:45 -0700 (PDT)
+In-Reply-To: <20140312225125.GZ28112@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +24,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Ryan Mallon <rmallon@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Daniel =?iso-8859-1?Q?Gl=F6ckner?= <daniel-gl@gmx.net>, Benoit Cousson <bcousson@baylibre.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 12/03/2014 23:51, Mark Brown wrote:
+> On Tue, Mar 11, 2014 at 12:17:24PM +0100, Benoit Cousson wrote:
+>
+>> +struct snd_soc_dai_link_codec {
+>> +	const char *codec_name;
+>> +	const struct device_node *codec_of_node;
+>> +	const char *codec_dai_name;
+>> +
+>> +	struct snd_soc_codec *codec;
+>> +	struct snd_soc_dai *codec_dai;
+>> +
+>> +	int (*hw_params_fixup)(struct snd_soc_pcm_runtime *rtd,
+>> +			       struct snd_pcm_hw_params *params);
+>> +	struct snd_pcm_hw_params hw_params;
+>> +};
+>
+> The implementation looks basically fine, it's possible there's something
+> nasty in there but the patch is rather large and not quite repetitive
+> enough.
 
---===============4071320527428415352==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="h9WqFG8zn/Mwlkpe"
-Content-Disposition: inline
+I think some non-regression tests on that series will be good, because, =
 
+so far it was used on Misa platform (dra7-evm AFAIR) and my own BBB + =
 
---h9WqFG8zn/Mwlkpe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+audio cape platform and BBB + 2 mono Codecs from NXP (to be upstreamed =
 
-On Wed, Mar 12, 2014 at 03:27:37PM +0100, Lars-Peter Clausen wrote:
-> Use table based setup to register the DAPM widgets and routes. This on one hand
-> makes the code a bit shorter and cleaner and on the other hand the board level
-> DAPM elements get registered in the card's DAPM context rather than in the
-> CODEC's DAPM context.
+soon :-)).
 
-Applied, thanks.
+We need to ensure that it will not break the thousand ASoC =
 
---h9WqFG8zn/Mwlkpe
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+implementations we have in mainline today.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+> Most of the interface seems good - I'm not super thrilled with
+> having the separate CODECs list but equally well the idea of updating
+> all the machine drivers isn't super awesome either and should be punted
+> for a cleanup run later.
 
-iQIcBAEBAgAGBQJTIZnuAAoJELSic+t+oim9zscQAJe8zYZ/+RJ737ezXSsaxkmG
-kkfXzE3tugebhzLk/HtqBH3GC0x96OXgUXHFBY0Nlf7ZD4xXYTI6wlRgIqtjZMQY
-hrH0Fu2Pm3UCJfdT2FW3k/QXF9h49Yf3AVlrRsIps/6ZUCZtXiQ0mGdvYKWM+8D2
-mT1UZSOXTk7F/rDTvWZmWYuAFI3UMF5vGR9rpDsc3JsafOuWMXbCmKu/zBbSCSLE
-Hqb54oiK375E6Ze45Z5+uXfN9n/gBnuTP0L3Z8mVBGiVfWiZyFuTqIoUeS9RQhYb
-J4KPjJMQmYifBCk7IGk/nEgXgcfkJ/FItYwqaE/eORmI7liz3dcZW0GRHlx0ZjQR
-9+HHV0z41q6L+B82OdIZxnIdllK/JZ09obNHZmmv9wQBl/lPOjlVwHYNel4XcYGG
-GWssS2aI2CDUTp3I8gou8j9NWO6yT8vCzoBOubWI7+rkAYVIrX12DJPWAeevhi1a
-xUgM4aZse62yHH0ph9s6y2QGyYzYmkOheVwT+xvAdhzpF4mw5SKLy7zmnh2O8/mP
-1jTygviU7cqSM6bB2UiPlaadG3hAxikkzEzSNRGX1XKRSvqkQG2butfmajvZkcOT
-A5yADzyfaQs0TnTseC1oaZM8JTJeBgcrCI5BFc9dYYg7qxKrWcfhX7bUMA61Ulfj
-L/zKkOdE9BGnMcP9/ALu
-=/hDA
------END PGP SIGNATURE-----
+Yes, that's as well the point I don't like, but couldn't find an easy =
 
---h9WqFG8zn/Mwlkpe--
+and smooth transition solution. And I guess Misa had the same concern =
 
---===============4071320527428415352==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+before.
 
+> I would like to see something nicer for the fixup though - I think we
+> can avoid doing it if we use the TDM API to specify the slots that are
+> in use by a CODEC.  Xiubo has done some nice work there recently which
+> is handy.  Instead of having a fixup function if we specified a TDM
+> and channel map configuration then the core core could override the
+> params so that the channel count was clamped by how many channels are
+> actually being sent to the device - so if there's two TDM slots active
+> the device would be told to play stereo.  Would that work for your use
+> cases?
 
---===============4071320527428415352==--
+Yes, I think so. My current setup is pretty basic: 2 mono Class D =
+
+amplifiers connected to the same I2S link to build a stereo card.
+
+OK, so I'll rebase the patch to asoc/next. I'll try to split the huge =
+
+patch at least into a series of 2 or 3 patches, and I'll remove the =
+
+fixup part.
+
+Thanks,
+Benoit
+
+-- =
+
+Beno=EEt Cousson
+BayLibre
+Embedded Linux Technology Lab
+www.baylibre.com
