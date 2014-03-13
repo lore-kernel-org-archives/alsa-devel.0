@@ -1,58 +1,114 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/18] edma/ASoC: dmaengine PCM for AM335x and AM447x
-Date: Thu, 13 Mar 2014 13:46:01 +0000
-Message-ID: <20140313134601.GU366@sirena.org.uk>
-References: <1394702320-21743-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: tlv320aic32x4 Codec ADC and DAC must shutdown to
+ alter clocks
+Date: Thu, 13 Mar 2014 14:04:10 +0000
+Message-ID: <20140313140410.GV366@sirena.org.uk>
+References: <53207878.2060107@topic.nl> <20140312233137.GB28112@sirena.org.uk>
+ <532159A5.20200@topic.nl>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="L2YZAWjVjAQ1Un1Q"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1394702320-21743-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, joelf@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>, nsekhar@ti.com, Jyri Sarha <jsarha@ti.com>, mporter@linaro.org, vinod.koul@intel.com, dan.j.williams@intel.com
+Content-Type: multipart/mixed; boundary="===============2642000433256447883=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A13C22651F1
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 15:04:21 +0100 (CET)
+In-Reply-To: <532159A5.20200@topic.nl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---L2YZAWjVjAQ1Un1Q
-Content-Type: text/plain; charset=us-ascii
+--===============2642000433256447883==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3a/Z8KDuKqDOIvAo"
 Content-Disposition: inline
 
-On Thu, Mar 13, 2014 at 11:18:22AM +0200, Peter Ujfalusi wrote:
 
-> With this series AM335x and AM447x will use the dmaengine PCM for audio. The
-> daVinci devices will keep using the davinci-pcm for now since I do not have
-> means to test them but the code is written in a way that they can be switched
-> to use the edma-pcm easily (DA850/OMAP-L138 has been tested and audio was
-> working fine).
+--3a/Z8KDuKqDOIvAo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Can you please not resend the ASoC portions of this series until the
-EDMA portion is stable (and ideally committed)?  I'm not quite sure why
-but every EDMA patch series seems to go through lots of iterations which
-gets rather noisy - my initial reaction to seeing EDMA in a subject is
-to just delete the thread.
+On Thu, Mar 13, 2014 at 08:09:25AM +0100, Mike Looijmans wrote:
+> On 03/13/2014 12:31 AM, Mark Brown wrote:
 
---L2YZAWjVjAQ1Un1Q
+> >As a first order fix the driver should just refuse to reconfigure if the
+> >clocks are active.
+
+> Which would result in the driver often failing to work and the user having
+> no clue why.
+
+Print an error message.
+
+> >The big problem with shutting down is disruption to other activity - if
+> >there's something going on using the clocks.  For some devices that
+> >don't have long startup times ignore_pmdow_time may help a lot.
+
+> The bias level can remain where it is, it's just the DACSETUP or ADCSETUP
+> bits that need toggling. They're independent, so only the affected parts
+> need to stop. Using ignore_pmdow_time would result in the codec going to a
+> lower bias state, and that is not what should happen here. Restarting the
+> ADC or DAC is just a matter of milliseconds, but a complete power-down wi=
+ll
+> result in reference voltage instability and capacitors recharging, and it
+> may take several minutes for the system to completely recover from that.
+
+*Any* glitch in an active digital audio path will be noticable to users,=20
+
+If you're taking several minutes to do a bias level transition there's
+something seriously wrong with either the hardware or with the way it's
+being managed by the driver.
+
+> I'm mostly asking to think about the "big picture" here. As a generic cas=
+e,
+> not specific to this codec.
+
+The general solution here is essentially don't do that; if the hardware
+is fragile on reconfiguration you will tend to end up hitting cases
+where trying to do a reconfiguration will glitch or fail so the sound
+server will generally fix the configuration and handle things in
+software.  Otherwise pmdown_time is the general solution for modern
+devices with quick startup/shutdown times, older devices probably need
+some custom hacks.
+
+--3a/Z8KDuKqDOIvAo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTIbaWAAoJELSic+t+oim9nV0P/jZm8E1g0rPBCTOkKqf9ombY
-Hdqm9g6GzkSN8Pga8f5Q1UN3lVpIReLCiwsYxoRTT//Ovtmy8y2mOZ4FlwmlOyaU
-hWw0QENFV6Tk/SsAliX2gSgIrqbnLUF/RsEaubA2DWPx3kpATEI+5+YijjAxJHfs
-0fIApxzB/x94EC/wcCPJIpSBP+bwW9UCRjN1iF7yX60nO3A7iXBbBUx2UnJPK4Oi
-Z8Hto5G78cQIMpowTukO74cUqTvqrrdQXgIKhcPBfRl0aL9qWpMVPxuDlnE/ofne
-37zZeq4I0DwvDRSRSAqwhEJXVz89hc565Zh7PwdE2NAK3fCJQjH8/L5s3S/eTVPP
-kpVkKZzwNEJ4WtPQs2aFocfJFnnTMhF4TVTbl/XCUTn1sM+VHkwiFZb2MzfgVX/c
-opPJT5uW5ovp/4XvCHmRZrhr4bnXNgX5+ri+AbOXlvLywsHSHxYoTHypVM+op6ad
-U4RYE5dx6fANKcq8efrxj0Kiqjgb5opd/YPsgL/u5fQ7Sk7nuWJvVEXhmPwN3QZv
-6konQYpMlAZVNHBltxxfpY1rbXAJ9Q03/hIAAm0vdfzYoui7bNGFBFHI6/ZZ9mQl
-UEooOae6mAemGS6WQYh35TBLgoSMy1FssrDCzVQcvCpBX5xikCG4wlcYHxtnBi+c
-UIV7ENhW3HZkfw2jFD6g
-=bZlj
+iQIcBAEBAgAGBQJTIbrWAAoJELSic+t+oim91YgQAII5w1AUUPT6W8S02ucFa0Vt
+qVEJroLbtwjTqA5RfdttIf/YdNqebAUjxtw9vHvr9zpTZyCJwGygNREgviZaL1/P
+c+lSVoYYHbuM4Wky1smnfjCdwrW229M8U0xzXbQYsz7jvb5P7EZ8AS4NKzXN/zvE
+XoP6PSCc7V/s20PjTkz60gzPsqIVTdQzNQUc8EG/VAh/8bDrKwzqsOj15zbmclQ9
+McqpannhHK7HMWOC12Fx49JwIOOrmpL8zs0dotyFwLoOl+xedMR2oFJQEgaJEuRl
+XFFO9mKDjxcY5llrs2uAh2zi22Y3dk7kcmt9AJH5TyJfxlAdsJPk5AhmsVTJglQx
+r2Q3Iox8rd5I5+do7e1iCNd1XUE92ifmXeRXQLV+SLrXSxbEhCqWcDR1qB9hPtHo
+kSIGadcPkYbCCHxpb2SfXJqHcoU/LyHrg+JfawHOrfH0QV0D2A8QnLwyjXwzzAcc
+4NV3+Ht4rwOwlijn0nwnciwlp2it85cbm1AelsxcoClt/Y2IsaQGH6pXhj/ellvq
+IkDFry1T1DtfbTmnCEvX8ae9gIlb9H8dNjkAXziLPlTtXprFKudLP5Z2hWF7kk7r
+8atHBmWA8AvSdlAuXTgR3Rg+Vm+wLwh0pfx1OBULe9KXsxLSgOYDeL9Hdi+tB21Y
+t/a9liKnlaJ/53nknO+8
+=DCDH
 -----END PGP SIGNATURE-----
 
---L2YZAWjVjAQ1Un1Q--
+--3a/Z8KDuKqDOIvAo--
+
+--===============2642000433256447883==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2642000433256447883==--
