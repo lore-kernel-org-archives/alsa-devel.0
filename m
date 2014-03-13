@@ -1,20 +1,19 @@
-From: RongJun Ying <rjying@gmail.com>
-Subject: [PATCH 2/2] Documentation: Describe the SiRF audio hub
-	Device Tree bindings
-Date: Thu, 13 Mar 2014 18:38:31 +0800
-Message-ID: <1394707111-9539-3-git-send-email-rongjun.ying@csr.com>
-References: <1394707111-9539-1-git-send-email-rongjun.ying@csr.com>
+From: Benoit Cousson <bcousson@baylibre.com>
+Subject: Re: [RFC] ASoC: core: Add support for DAI multicodec
+Date: Thu, 13 Mar 2014 11:42:50 +0100
+Message-ID: <53218BAA.9000600@baylibre.com>
+References: <1394536644-21438-1-git-send-email-bcousson@baylibre.com>
+ <20140312002821.GD28112@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f50.google.com (mail-pa0-f50.google.com
- [209.85.220.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E9BF265173
- for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 11:39:52 +0100 (CET)
-Received: by mail-pa0-f50.google.com with SMTP id kq14so938668pab.9
- for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 03:39:51 -0700 (PDT)
-In-Reply-To: <1394707111-9539-1-git-send-email-rongjun.ying@csr.com>
+Received: from mail-wg0-f50.google.com (mail-wg0-f50.google.com [74.125.82.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id C612A265176
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 11:42:53 +0100 (CET)
+Received: by mail-wg0-f50.google.com with SMTP id x13so654080wgg.21
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 03:42:53 -0700 (PDT)
+In-Reply-To: <20140312002821.GD28112@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,75 +23,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, rjying@gmail.com
-Cc: Takashi Iwai <tiwai@suse.de>, Rongjun Ying <rongjun.ying@csr.com>, alsa-devel@alsa-project.org, workgroup.linux@csr.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Rongjun Ying <rongjun.ying@csr.com>
+Hi Mark,
 
-Signed-off-by: Rongjun Ying <rongjun.ying@csr.com>
----
- .../devicetree/bindings/sound/sirf-audio-hub.txt   |   52 ++++++++++++++++++++
- 1 files changed, 52 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio-hub.txt
+On 12/03/2014 01:28, Mark Brown wrote:
+> On Tue, Mar 11, 2014 at 12:17:24PM +0100, Benoit Cousson wrote:
+>> From: Misael Lopez Cruz <misael.lopez@ti.com>
+>>
+>> DAI link assumes a one to one mapping between CPU DAI and CODEC. In
+>> some cases, the same CPU DAI can be connected to several codecs.
+>> This is the case for example, if you connect two mono codecs to the
+>> same I2S link in order to have a stereo card.
+>> The current ASoC implementation does not allow such setup.
+>
+> First up thanks for working on this, it's a feature which has been
+> requested for a long time but nobody stepped forward to do it before
+> now.
+>
+> This is rather large so I've not had time to review it today, I'll try
+> to get at least a first pass at that done tomorrow.  I did notice that
+> in your comment about rebasing you mentioned a series - it'd be good if
+> we could see this as a series, splitting it up would make review easier.
 
-diff --git a/Documentation/devicetree/bindings/sound/sirf-audio-hub.txt b/Documentation/devicetree/bindings/sound/sirf-audio-hub.txt
-new file mode 100644
-index 0000000..4f148a1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sirf-audio-hub.txt
-@@ -0,0 +1,52 @@
-+SiRF audio hub
-+
-+The audio hub is the consist of an internal audio codec, internal
-+audio port and i2s controller. There are sharing same register
-+address space.
-+
-+Required properties:
-+- compatible: Must be "sirf,audio-hub"
-+- reg : The register address of the device
-+- #address-cells: Must be 1
-+- #size-cells: Must be 1
-+
-+Nodes:
-+Internal audio codec:
-+- compatible : "sirf,atlas6-audio-codec" or "sirf,prima2-audio-codec"
-+- clocks: A phandle reference to the SiRF internal audio codec clock
-+
-+Internal audio port:
-+- compatible: "sirf,audio-port"
-+
-+I2S controller:
-+- compatible: "sirf,prima2-i2s"
-+- clocks: A phandle reference to the SiRF I2S controller clock
-+
-+Example:
-+sirf_audio_hub: audio_hub@b0040000 {
-+	compatible = "sirf,audio-hub";
-+	reg = <0xb0040000 0x10000>;
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+
-+	audiocodec: audiocodec {
-+		compatible = "sirf,atlas6-audio-codec";
-+		interrupts = <35>;
-+		clocks = <&clks 27>;
-+	};
-+
-+	audioport: audioport {
-+		compatible = "sirf,audio-port";
-+		dmas = <&dmac1 3>, <&dmac1 8>;
-+		dma-names = "rx", "tx";
-+	};
-+
-+	i2s: i2s {
-+		compatible = "sirf,prima2-i2s";
-+		dmas = <&dmac1 6>, <&dmac1 12>;
-+		dma-names = "rx", "tx";
-+		clocks = <&clks 27>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&i2s_pins_a>;
-+	};
-+};
--- 
-1.7.5.4
+Yeah, I know. The issue is that the original series was done on a 3.8 =
+
+Android branch with few refactor patches before that one to introduce =
+
+some helpers. During the 3.8 -> 3.13 rebase then 3.13 -> 3.14 rebase, a =
+
+lot of them did not survive due to internal asoc changes and cleanups =
+
+that happened since 3.8.
+
+At least, there are still few helpers that can be introduced sooner, but =
+
+it will still make the main patch pretty huge. I don't think we can make =
+
+the transition in smaller chunks.
+
+>> CPU DAI in a multicodec DAI link can have more channels than what each
+>> CODEC has. The number of channels each CODEC is responsible for is
+>> machine specific, hence it's fixed up in machine drivers in a similar
+>> way to what DPCM does.
+>
+> This one is interesting.  It feels like most things will want a static
+> mapping because that's what the hardware does but there will doubtless
+> be things that could use flexibility.  Liam has looked at this in the
+> past (more for TDM IIRC, I thought about it for that as well and I seem
+> to recall Liam's ideas covering it).  It feels like we should start out
+> with static mappings and build up dynamic later on but equally well
+> getting something merged would mean we could improve on it.
+>
+>> The patch is based on 3.14-rc6.
+>
+> For such an invasive set of changes it's probably worth working off
+> -next, I forsee conflicts.
+
+Indeed, I've just tried rebasing it on asoc/next and it does conflict :-(
+But not a major conflict anyway. I'll do that for the repost.
+
+Thanks for the comments,
+Benoit
+
+
+-- =
+
+Beno=EEt Cousson
+BayLibre
+Embedded Linux Technology Lab
+www.baylibre.com
