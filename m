@@ -1,87 +1,52 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 14/18] ASoC: davinci: Add edma dmaengine
- platform driver
-Date: Thu, 13 Mar 2014 11:28:05 +0100
-Message-ID: <53218835.3080909@metafoo.de>
-References: <1394702320-21743-1-git-send-email-peter.ujfalusi@ti.com> <1394702320-21743-15-git-send-email-peter.ujfalusi@ti.com>
+From: RongJun Ying <rjying@gmail.com>
+Subject: [PATCH 0/2] ASoC: sirf: Add sirf audio hub driver and
+	use it.
+Date: Thu, 13 Mar 2014 18:38:29 +0800
+Message-ID: <1394707111-9539-1-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1394702320-21743-15-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, joelf@ti.com, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, mporter@linaro.org, dan.j.williams@intel.com, vinod.koul@intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
+ [209.85.192.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A1D526516B
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 11:39:31 +0100 (CET)
+Received: by mail-pd0-f172.google.com with SMTP id p10so902008pdj.17
+ for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2014 03:39:30 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, rjying@gmail.com
+Cc: Takashi Iwai <tiwai@suse.de>, Rongjun Ying <rongjun.ying@csr.com>, alsa-devel@alsa-project.org, workgroup.linux@csr.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/13/2014 10:18 AM, Peter Ujfalusi wrote:
-[...]
-> +static const struct snd_pcm_hardware edma_pcm_hardware = {
-> +	.info			= SNDRV_PCM_INFO_MMAP |
-> +				  SNDRV_PCM_INFO_MMAP_VALID |
-> +				  SNDRV_PCM_INFO_BATCH |
-> +				  SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME |
-> +				  SNDRV_PCM_INFO_INTERLEAVED,
-> +	.buffer_bytes_max	= 128 * 1024,
-> +	.period_bytes_min	= 32,
-> +	.period_bytes_max	= 64 * 1024,
-> +	.periods_min		= 2,
-> +	.periods_max		= 19, /* Limit by edma dmaengine driver */
-> +};
+From: Rongjun Ying <rongjun.ying@csr.com>
 
-The idea is that we can auto-discover all the things using the 
-dma_slave_caps API. Too bad we removed the possibility to specify the 
-maximum number of segments from the API. Maybe we need to add it back. Is 
-the 19 a hard-limit or could it be worked around by software in the 
-dmaengine driver?
+This patchset adds including:
+1. SiRF audio hub driver
+2. The internal codec and port get regmap form audio hub driver
+3. Add SiRF audio hub binding document
 
-> +
-> +static const struct snd_dmaengine_pcm_config edma_dmaengine_pcm_config = {
-> +	.pcm_hardware = &edma_pcm_hardware,
-> +	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-> +	.prealloc_buffer_size = 128 * 1024,
+Rongjun Ying (2):
+  ASoC: sirf: Add sirf audio hub driver for sharing same register
+    address space
+  Documentation: Describe the SiRF audio hub Device Tree bindings
 
-Unless there is a very good reason for exactly this size, just leave it 0 
-and let the generic dmaengine driver use the default.
+ .../devicetree/bindings/sound/sirf-audio-hub.txt   |   52 +++++++++++++++
+ sound/soc/codecs/sirf-audio-codec.c                |   32 ++--------
+ sound/soc/sirf/Kconfig                             |    5 ++
+ sound/soc/sirf/Makefile                            |    2 +
+ sound/soc/sirf/sirf-audio-hub.c                    |   66 ++++++++++++++++++++
+ sound/soc/sirf/sirf-audio-port.c                   |   26 +--------
+ 6 files changed, 131 insertions(+), 52 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio-hub.txt
+ create mode 100644 sound/soc/sirf/sirf-audio-hub.c
 
-> +};
-> +
-> +static const struct snd_dmaengine_pcm_config edma_compat_dmaengine_pcm_config = {
-> +	.pcm_hardware = &edma_pcm_hardware,
-> +	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-> +	.compat_filter_fn = edma_filter_fn,
-> +	.prealloc_buffer_size = 128 * 1024,
-> +};
-
-There is no need for different configs for DT and non-DT.
-
-> +
-> +int edma_pcm_platform_register(struct device *dev)
-> +{
-> +	if (dev->of_node)
-> +		return snd_dmaengine_pcm_register(dev,
-> +					&edma_dmaengine_pcm_config,
-> +					SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
-
-Since the edma dmaengine driver implements the slave cap API there is no 
-need to manually specify SND_DMAENGINE_PCM_FLAG_NO_RESIDUE manually. But 
-since the edma driver sets the granularity to 
-DMA_RESIDUE_GRANULARITY_DESCRIPTOR in this case the generic dmaengine will 
-not set SND_DMAENGINE_PCM_FLAG_NO_RESIDUE automatically since it assumes 
-that the dmaengine driver is capable of properly reporting the DMA position.
-
-> +	else
-> +		return snd_dmaengine_pcm_register(dev,
-> +					&edma_compat_dmaengine_pcm_config,
-> +					SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
-> +					SND_DMAENGINE_PCM_FLAG_NO_DT |
-> +					SND_DMAENGINE_PCM_FLAG_COMPAT);
-
-
-If you set the flags to just SND_DMAENGINE_PCM_FLAG_COMPAT it will do the 
-right thing in the generic dmaengine driver depending on whether 
-dev->of_node is set or not.
-
-
-There is also a devm_ version of snd_dmaengine_pcm_register() it probably 
-makes sense to use it here.
+-- 
+1.7.5.4
