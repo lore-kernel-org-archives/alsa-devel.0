@@ -1,19 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/2] ASoC: sirf-audio-codec: Remove
- snd_soc_codec_set_cache_io() call
-Date: Fri, 14 Mar 2014 11:21:44 +0100
-Message-ID: <5322D838.5000901@metafoo.de>
-References: <1394785572-28315-1-git-send-email-lars@metafoo.de>
- <86130EF012BDF348AA0D464A4F449478012AE585CE@SHAASIEXM01.ASIA.ROOT.PRI>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: tlv320aic31xx: Staticise
+ non-exported symbols
+Date: Fri, 14 Mar 2014 10:23:38 +0000
+Message-ID: <20140314102338.GS366@sirena.org.uk>
+References: <1394732900-17182-1-git-send-email-broonie@kernel.org>
+ <5322B93C.8080403@ti.com> <5322BE70.9030809@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2926373227312239982=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-088.synserver.de (smtp-out-118.synserver.de
- [212.40.185.118])
- by alsa0.perex.cz (Postfix) with ESMTP id E6A852650C2
- for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2014 11:21:05 +0100 (CET)
-In-Reply-To: <86130EF012BDF348AA0D464A4F449478012AE585CE@SHAASIEXM01.ASIA.ROOT.PRI>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03DFE26518D
+ for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2014 11:23:47 +0100 (CET)
+In-Reply-To: <5322BE70.9030809@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,84 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rongjun Ying <Rongjun.Ying@csr.com>
-Cc: Barry Song <baohua@kernel.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/14/2014 11:16 AM, Rongjun Ying wrote:
->
->
->> -----Original Message-----
->> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
->> Sent: Friday, March 14, 2014 4:26 PM
->> To: Mark Brown; Liam Girdwood
->> Cc: Rongjun Ying; Barry Song; alsa-devel@alsa-project.org; Lars-Peter
->> Clausen
->> Subject: [PATCH 1/2] ASoC: sirf-audio-codec: Remove
->> snd_soc_codec_set_cache_io() call
->>
->> There was a overlap between the snd_soc_codec_set_cache_io() cleanup
->> and the addition of the sirf-audio-codec resulting in the sirf-audio-
->> codec driver still using the old signature of
->> snd_soc_codec_set_cache_io(), which will cause a compile error. Since
->> the core is able to automatically setup IO for this driver we can just
->> remove both the snd_soc_set_cache_io() call and the control_data
->> assignment.
->>
->> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->> ---
->>   sound/soc/codecs/sirf-audio-codec.c | 9 ---------
->>   1 file changed, 9 deletions(-)
->>
->> diff --git a/sound/soc/codecs/sirf-audio-codec.c
->> b/sound/soc/codecs/sirf-audio-codec.c
->> index 90e3a22..58e7c1f 100644
->> --- a/sound/soc/codecs/sirf-audio-codec.c
->> +++ b/sound/soc/codecs/sirf-audio-codec.c
->> @@ -337,18 +337,9 @@ struct snd_soc_dai_driver sirf_audio_codec_dai = {
->>
->>   static int sirf_audio_codec_probe(struct snd_soc_codec *codec)  {
->> -	int ret;
->>   	struct snd_soc_dapm_context *dapm = &codec->dapm;
->> -	struct sirf_audio_codec *sirf_audio_codec =
->> snd_soc_codec_get_drvdata(codec);
->>
->>   	pm_runtime_enable(codec->dev);
->> -	codec->control_data = sirf_audio_codec->regmap;
->> -
->> -	ret = snd_soc_codec_set_cache_io(codec, 0, 0, SND_SOC_REGMAP);
->> -	if (ret != 0) {
->> -		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
->> -		return ret;
->> -	}
->>
->
-> May be need invoke snd_soc_codec_set_cache_io(codec, sirf_audio_codec->regmap)?
 
-No, this is done automatically by the ASoC core.
+--===============2926373227312239982==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yZuF+CWsFPFxEfM2"
+Content-Disposition: inline
 
->
->>   	if (of_device_is_compatible(codec->dev->of_node, "sirf,prima2-
->> audio-codec")) {
->>   		snd_soc_dapm_new_controls(dapm,
->> --
->> 1.8.0
->>
->>
->>
->>   To report this email as spam click
->> https://www.mailcontrol.com/sr/MZbqvYs5QwJvpeaetUwhCQ==
->> 7ZVumiOHvh5meKBFThUi75+9byUhoVPh5vdkxH4nYzTQYQ== .
->
-> Thanks
-> RongJun Ying
->
->
-> Member of the CSR plc group of companies. CSR plc registered in England and Wales, registered number 4187346, registered office Churchill House, Cambridge Business Park, Cowley Road, Cambridge, CB4 0WZ, United Kingdom
-> More information can be found at www.csr.com. Keep up to date with CSR on our technical blog, www.csr.com/blog, CSR people blog, www.csr.com/people, YouTube, www.youtube.com/user/CSRplc, Facebook, www.facebook.com/pages/CSR/191038434253534, or follow us on Twitter at www.twitter.com/CSR_plc.
-> New for 2014, you can now access the wide range of products powered by aptX at www.aptx.com.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+
+--yZuF+CWsFPFxEfM2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Mar 14, 2014 at 09:31:44AM +0100, Lars-Peter Clausen wrote:
+> On 03/14/2014 09:09 AM, Jyri Sarha wrote:
+
+> >/me has added one more thing to his patch sending check list.
+
+> What I typically try to do before submitting a patch is run
+
+> make C=2 .../driver.o
+> make C=2 CHECK=scripts/coccicheck .../driver.o
+> make C=2 CHECK="smatch --full-path -p=kernel" .../driver.o
+
+> that will typically catch these little mistakes. Also of course
+> scripts/checkpatch.pl on the patch itself.
+
+Make sure you're running against the latest development code when you do
+this too.
+
+--yZuF+CWsFPFxEfM2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTItinAAoJELSic+t+oim9h20P/3wwXNestgRyixXsp3LBWjQz
+NpUxhY43xwPx+6Z4WRIuJO1ODEL8MH9kwxzJUaO056S5VxjvOeNQkNnPWw4nn++2
+eiTslK+tmY66cmrskMtsRL2PINfXSNKScflnGLBvkOc1BwrTC7k330ItU2terj4h
+bJGRY/fvRs/PTSFGkL9sdIkx0h2qZY3wr7IwPeqpQpz5ahSTSrj4sR9A3HPi7iPl
+KaEoloTzYmzrYaTBE/clIoUdEmZUwsFWn9zQ5hVhAR9XHVAZhIlQli79pzyJ5EPn
+5yKvQWlD7MAgjbjfKiSd4+ljFv5SBLB9PkyvajqJ+6Or4uLcbHO3ALc2LiAMa4IW
+UOha+L5wzjxc4R9bVU0+8oH/1eDXGH/VQH3LbJlN5P7/Wkbmkflg7knjJaDZmZ1M
+QCYYrfi8ZADjl2uV+MhxJxPHHwuKmZba4vCFDLuwH6ovJYwUjAX7j0Kc5+IidVX4
+UO8vpEMz3q0bdz7kImBZAeQDw6iap2ONESbV9vAi8O/tagW61y33rOy1yr/7gJV2
+zGZTs2yI/BiHsBbUw74B+ZjI5ZF5snIgwG3bqvmk6irdPp2BdcflCryVRnLmPUrF
+iG0k9tl1KYdItLPd/zOJfkubxb3haahFeOiPc2D25LWT1WlvlVMe0NhFD8dIPfuY
+SX03cqa6l8wydZVk8NSq
+=nsHQ
+-----END PGP SIGNATURE-----
+
+--yZuF+CWsFPFxEfM2--
+
+--===============2926373227312239982==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2926373227312239982==--
