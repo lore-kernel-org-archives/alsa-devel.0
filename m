@@ -1,55 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: rcar: fixup SND_SOC_DAIFMT_CBx_CFx flags
-Date: Fri, 14 Mar 2014 19:34:45 +0000
-Message-ID: <20140314193445.GG366@sirena.org.uk>
-References: <87txb3rjzw.wl%kuninori.morimoto.gx@gmail.com>
- <87d2hpppk3.wl%kuninori.morimoto.gx@gmail.com>
- <87a9ctpph2.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH v2 1/4] ASoC: simple-card: Fix the reference count of
+ device nodes
+Date: Fri, 14 Mar 2014 19:57:10 +0000
+Message-ID: <20140314195710.GH366@sirena.org.uk>
+References: <cover.1394533640.git.moinejf@free.fr>
+ <bfb5bfeb1b934384d84fab0045ce65c9b2766f31.1394533640.git.moinejf@free.fr>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="C6nHA5rIg3zAawEK"
-Return-path: <linux-sh-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="YvpLBQJFkgiI+gkH"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <87a9ctpph2.wl%kuninori.morimoto.gx@gmail.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Simon <horms@verge.net.au>, Morimoto <kuninori.morimoto.gx@renesas.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <bfb5bfeb1b934384d84fab0045ce65c9b2766f31.1394533640.git.moinejf@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---C6nHA5rIg3zAawEK
+--YvpLBQJFkgiI+gkH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 13, 2014 at 05:56:43PM -0700, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> SND_SOC_DAIFMT_CBx_CFx means "codec" side master/slave mode.
-> Then, rcar will be master mode if it was SND_SOC_DAIFMT_CBS_CFS.
+On Tue, Mar 11, 2014 at 10:03:40AM +0100, Jean-Francois Moine wrote:
+> The reference count of some device nodes is not correctly reset
+> at end of card probe.
 
 Applied, thanks.
 
---C6nHA5rIg3zAawEK
+--YvpLBQJFkgiI+gkH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTI1nSAAoJELSic+t+oim9cYEP/iz/SrbiAlumIaYaQ1dpM3Rr
-CyRZZvrGEUeIvX11NMp9ik4ex8np6nS3t41mcjl8qONKX+RoyBowkzQbk9IuRSmr
-hUlYt6K01Fr87Vy2Csibb1REJPpJ2YAWa/MZStTsiNKYh9fGmuYmmlqdPAfFM6gm
-JFNTyjVS7dnVTAdR4+1l/x+D5ICobNyMX/nk0IvP1Ydyiqn+9ogXOk3uqc2gtyDq
-oybOoqmgdCMvNQI9UmZs4HVWWxDjmvPOhxmP4iHsiV/D3QlB+b7pC2mV8dWxIXip
-kvXZN8NZFyYfYZbfuvABr8PyffCvbxmALGBanMwHcd9+BYk1MFktjmHKZYOpWE8d
-xI3qF2rDcBOsamEWTpY0bR7p4nXQfsbZ4nOwXoZL1BNNFXjkvvb8BLwNLKrEsLyr
-FrYXzKeLT6w02Er6DExDnEKQplDDrA00OV/pY1ivANSJd9ZZTzGOejgi+cj71c4R
-sM1/nUscc2W1LzOOJ55ESA8cx/0we7Vj5lBdh29ZCCDYwA0h0VykLBnXeXVAX70C
-U0AjGdZJS7aIPAguvm/MPr9k5E7cXXvwgsilt9u91Gd0UK1paBd8xhUI3dNXPYMx
-qBLrBH7BUGpQfPW3GdCqY3WieYPq5lDppfXFBpWn5f8NyXP+XHVxt0MSmdNpBjN5
-7ce0DSwzgvYNd8oGjkwy
-=Ery8
+iQIcBAEBAgAGBQJTI18TAAoJELSic+t+oim99jIP/1ZoMbP1Fs2+xIVLjA9s+cQD
+44jkodX2PAkl2zc0W6hWP1E8nrD1ugXhMSsBhjQg2mdfbwTPcTVNVSIzUUNFMvdZ
+LnTOPGRr/Xzs5IcjVhPra19AeDgQkaQwaNBofS7GeXHDom4bOWKo0tSIUv21v6MY
+yPMHVo9NriHynIt2Wh+OH+x3UaRK9R5wDSC8p3S2gqyRE8/vq3UxFno438vtVN8m
+vh5vnG/HY4zeFgKiuXxrjMM0E/l8MMCajq5DCJftd5PmGorl7Fuh7UXKIU6MgsV1
+qL1ah3TQSdH7DpWCVqyQdC6d3Yq35LE1B0lG7G8ceMIJlrOEYwYghB2Qe29Tcr0F
+gPOsQkwlYaiwgUaLnu2EZrMPEmAA3gcivvDbwBrdtRRdOh6o02OkYPyRZQt6M4w0
+K14R1B7onGNNCWHNXzmQtI+BVmI9nbw0T6Oxzn5A2OKpz/1GUHpkVhogEKzSndNd
+ERHw8We1YkO+AZ2fKM+o0j+dD7p83VPCcWvgXL7zJ+2wvd5pmCE/xabn3duHU23t
+HQs/xVE46HIhFZDdVUvf0BQZokegagdq1q5TjKkExYi7GhyuE9TlD+FWf0lgDiGq
+xdaHiNQQWOV3G1icbTLPf06jGH7j5ZUnD0IHYgv+MQZCWz4enkySg6/3H71N/lvw
+QIWQtgtC/NLE7OCA7l9E
+=DajL
 -----END PGP SIGNATURE-----
 
---C6nHA5rIg3zAawEK--
+--YvpLBQJFkgiI+gkH--
