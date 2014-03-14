@@ -1,55 +1,55 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2 v2] ASoC: fsi: fixup SND_SOC_DAIFMT_CBx_CFx flags
-Date: Fri, 14 Mar 2014 19:31:28 +0000
-Message-ID: <20140314193128.GE366@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: rcar: fixup SND_SOC_DAIFMT_CBx_CFx flags
+Date: Fri, 14 Mar 2014 19:34:45 +0000
+Message-ID: <20140314193445.GG366@sirena.org.uk>
 References: <87txb3rjzw.wl%kuninori.morimoto.gx@gmail.com>
  <87d2hpppk3.wl%kuninori.morimoto.gx@gmail.com>
- <87bnx9pphk.wl%kuninori.morimoto.gx@gmail.com>
+ <87a9ctpph2.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Mpco6AjI66RzYq4w"
+	protocol="application/pgp-signature"; boundary="C6nHA5rIg3zAawEK"
 Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <87bnx9pphk.wl%kuninori.morimoto.gx@gmail.com>
+In-Reply-To: <87a9ctpph2.wl%kuninori.morimoto.gx@gmail.com>
 Sender: linux-sh-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 Cc: Simon <horms@verge.net.au>, Morimoto <kuninori.morimoto.gx@renesas.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---Mpco6AjI66RzYq4w
+--C6nHA5rIg3zAawEK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 13, 2014 at 05:56:25PM -0700, Kuninori Morimoto wrote:
+On Thu, Mar 13, 2014 at 05:56:43PM -0700, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
 > SND_SOC_DAIFMT_CBx_CFx means "codec" side master/slave mode.
-> Then, FSI will be master mode if it was SND_SOC_DAIFMT_CBS_CFS.
+> Then, rcar will be master mode if it was SND_SOC_DAIFMT_CBS_CFS.
 
 Applied, thanks.
 
---Mpco6AjI66RzYq4w
+--C6nHA5rIg3zAawEK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIbBAEBAgAGBQJTI1kNAAoJELSic+t+oim96lwP92HLRuGhtiSxkLwu5vbKd/Kb
-IHCpRoDom1xnys0h4YVxhrrHNfh1lYSnqjQmwwwY4IvUoWzW3qlJ/Es3CNL9P4qs
-eh/ard4iDQaUMck8Lpadfdiy83ZxypNZr2S+P07MUblWn3/lQKOAuj4oSPetIXzj
-hN24jiPY6WfoDfEt09YvPaL2N/88v8StJxvYvXeo/84Cu6DOpOMCzh0n2M4/PsbX
-Ww4YBLQLzaj8UoxkQ9a7pNRcuGBIjReOFn0tcEwPFRXxmqJ0BRKocZzloCGTYaCJ
-tF/HbuukUvuXG+1ksRP2UOEfpO7jaCcWfts4ckMbxFGXAssdKKhWy8yik19MXYO6
-mD6zdYWb+EPn3gJZVRFG1o1VdHJyiu6atFvwx042VdMJcRCaYYox7CScy/rmCSqb
-TS6r9vs8IaF70ENDkRYjZQcbGyKzhdZ7+8rZYkESPsnvx7fa66qRmYt4t+890XTM
-WdtWCBD9DKfrbOB7v3jA+pzZD6NItD9Vit2PCD4wEBjVrRIUH6P9NRoPQblXFUas
-BWHFXW5liRrLqIr6YqJ/TRZPNKjfBUTyCzm6MPsaN8WICJ9phS1hgJtveNQimE28
-zReLKTNj0mfkPud5o1RE2GQl/ZefnaegpCKJbS3bZzO81Z4r9tcC0KZKkja81bVZ
-sUwjNddNXtOqzVzaNMA=
-=/cbw
+iQIcBAEBAgAGBQJTI1nSAAoJELSic+t+oim9cYEP/iz/SrbiAlumIaYaQ1dpM3Rr
+CyRZZvrGEUeIvX11NMp9ik4ex8np6nS3t41mcjl8qONKX+RoyBowkzQbk9IuRSmr
+hUlYt6K01Fr87Vy2Csibb1REJPpJ2YAWa/MZStTsiNKYh9fGmuYmmlqdPAfFM6gm
+JFNTyjVS7dnVTAdR4+1l/x+D5ICobNyMX/nk0IvP1Ydyiqn+9ogXOk3uqc2gtyDq
+oybOoqmgdCMvNQI9UmZs4HVWWxDjmvPOhxmP4iHsiV/D3QlB+b7pC2mV8dWxIXip
+kvXZN8NZFyYfYZbfuvABr8PyffCvbxmALGBanMwHcd9+BYk1MFktjmHKZYOpWE8d
+xI3qF2rDcBOsamEWTpY0bR7p4nXQfsbZ4nOwXoZL1BNNFXjkvvb8BLwNLKrEsLyr
+FrYXzKeLT6w02Er6DExDnEKQplDDrA00OV/pY1ivANSJd9ZZTzGOejgi+cj71c4R
+sM1/nUscc2W1LzOOJ55ESA8cx/0we7Vj5lBdh29ZCCDYwA0h0VykLBnXeXVAX70C
+U0AjGdZJS7aIPAguvm/MPr9k5E7cXXvwgsilt9u91Gd0UK1paBd8xhUI3dNXPYMx
+qBLrBH7BUGpQfPW3GdCqY3WieYPq5lDppfXFBpWn5f8NyXP+XHVxt0MSmdNpBjN5
+7ce0DSwzgvYNd8oGjkwy
+=Ery8
 -----END PGP SIGNATURE-----
 
---Mpco6AjI66RzYq4w--
+--C6nHA5rIg3zAawEK--
