@@ -1,69 +1,101 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 00/18] edma/ASoC: dmaengine PCM for AM335x and AM447x
-Date: Fri, 14 Mar 2014 11:38:58 +0200
-Message-ID: <5322CE32.2000102@ti.com>
-References: <1394702320-21743-1-git-send-email-peter.ujfalusi@ti.com>
- <20140313134601.GU366@sirena.org.uk>
+From: Mike Looijmans <mike.looijmans@topic.nl>
+Subject: Re: tlv320aic32x4 Codec ADC and DAC must shutdown to
+ alter clocks
+Date: Fri, 14 Mar 2014 10:47:50 +0100
+Message-ID: <5322D046.9090400@topic.nl>
+References: <53207878.2060107@topic.nl> <20140312233137.GB28112@sirena.org.uk>
+ <532159A5.20200@topic.nl> <20140313140410.GV366@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20140313134601.GU366@sirena.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>
-Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, joelf@ti.com, vinod.koul@intel.com, nsekhar@ti.com, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>, mporter@linaro.org, dmaengine@vger.kernel.org, dan.j.williams@intel.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp103.mer-nm.internl.net (smtp103.mer-nm.internl.net
+ [217.149.192.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11A9B264FF9
+ for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2014 10:47:53 +0100 (CET)
+Received: from amavisd-new (mailscanner03.wrt-nm.internl.net [217.149.192.96])
+ by smtp103.mer-nm.internl.net (Postfix) with ESMTP id 9209A3F6ED
+ for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2014 10:47:52 +0100 (CET)
+Received: from smtp103.mer-nm.internl.net ([217.149.192.139])
+ by amavisd-new (mailscanner03.wrt-nm.internl.net [217.149.192.160])
+ (amavisd-new, port 10024)
+ with ESMTP for <alsa-devel@alsa-project.org>;
+ Fri, 14 Mar 2014 10:47:51 +0100 (CET)
+Received: from TOP-EX01.TOPIC.LOCAL (mail.topic.nl [82.204.13.182])
+ (using TLSv1 with cipher AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by smtp103.mer-nm.internl.net (Postfix) with ESMTPS
+ for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2014 10:47:51 +0100 (CET)
+In-Reply-To: <20140313140410.GV366@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/13/2014 03:46 PM, Mark Brown wrote:
-> On Thu, Mar 13, 2014 at 11:18:22AM +0200, Peter Ujfalusi wrote:
-> =
-
->> With this series AM335x and AM447x will use the dmaengine PCM for audio.=
- The
->> daVinci devices will keep using the davinci-pcm for now since I do not h=
-ave
->> means to test them but the code is written in a way that they can be swi=
-tched
->> to use the edma-pcm easily (DA850/OMAP-L138 has been tested and audio was
->> working fine).
-> =
-
-> Can you please not resend the ASoC portions of this series until the
-> EDMA portion is stable (and ideally committed)?  I'm not quite sure why
-> but every EDMA patch series seems to go through lots of iterations which
-> gets rather noisy - my initial reaction to seeing EDMA in a subject is
-> to just delete the thread.
-
-Sure, I'm not planning to spam alsa-devel however the switch to dmaengine P=
-CM
-for AM335x/AM447x needs the edma patches, otherwise it is not going to work.
-AFAIK I have not sent patch to edma as of now so I have no idea how long it
-takes to get stuff in (the good thing is that the edma part does not touch =
-DT,
-which is alone can reduce the number of iterations).
-Anyway, what I can - and already did is:
-Reorder the ASoC patches and I can leave out the switch to dmaengine PCM pa=
-tch
-for davinci-mcasp for now. The edma-pcm and the other patches for McASP can=
- go
-in right away (I will not add the edma-pcm to the Makefile/Kconfig to avoid
-issues).
-
-I will detach the edma stuff and follow it up outside of alsa-devel.
-
-The only thing I'm afraid off is that it is going to take two release cycle=
- to
-get this in: first cycle edma part, next cycle for the ASoC to switch to use
-the edma-pcm.
-
--- =
-
-P=E9ter
+77u/T24gMDMvMTMvMjAxNCAwMzowNCBQTSwgTWFyayBCcm93biB3cm90ZToKPiBPbiBUaHUsIE1h
+ciAxMywgMjAxNCBhdCAwODowOToyNUFNICswMTAwLCBNaWtlIExvb2lqbWFucyB3cm90ZToKPj4g
+T24gMDMvMTMvMjAxNCAxMjozMSBBTSwgTWFyayBCcm93biB3cm90ZToKPgo+Pj4gQXMgYSBmaXJz
+dCBvcmRlciBmaXggdGhlIGRyaXZlciBzaG91bGQganVzdCByZWZ1c2UgdG8gcmVjb25maWd1cmUg
+aWYgdGhlCj4+PiBjbG9ja3MgYXJlIGFjdGl2ZS4KPgo+PiBXaGljaCB3b3VsZCByZXN1bHQgaW4g
+dGhlIGRyaXZlciBvZnRlbiBmYWlsaW5nIHRvIHdvcmsgYW5kIHRoZSB1c2VyIGhhdmluZwo+PiBu
+byBjbHVlIHdoeS4KPgo+IFByaW50IGFuIGVycm9yIG1lc3NhZ2UuCj4KPj4+IFRoZSBiaWcgcHJv
+YmxlbSB3aXRoIHNodXR0aW5nIGRvd24gaXMgZGlzcnVwdGlvbiB0byBvdGhlciBhY3Rpdml0eSAt
+IGlmCj4+PiB0aGVyZSdzIHNvbWV0aGluZyBnb2luZyBvbiB1c2luZyB0aGUgY2xvY2tzLiAgRm9y
+IHNvbWUgZGV2aWNlcyB0aGF0Cj4+PiBkb24ndCBoYXZlIGxvbmcgc3RhcnR1cCB0aW1lcyBpZ25v
+cmVfcG1kb3dfdGltZSBtYXkgaGVscCBhIGxvdC4KPgo+PiBUaGUgYmlhcyBsZXZlbCBjYW4gcmVt
+YWluIHdoZXJlIGl0IGlzLCBpdCdzIGp1c3QgdGhlIERBQ1NFVFVQIG9yIEFEQ1NFVFVQCj4+IGJp
+dHMgdGhhdCBuZWVkIHRvZ2dsaW5nLiBUaGV5J3JlIGluZGVwZW5kZW50LCBzbyBvbmx5IHRoZSBh
+ZmZlY3RlZCBwYXJ0cwo+PiBuZWVkIHRvIHN0b3AuIFVzaW5nIGlnbm9yZV9wbWRvd190aW1lIHdv
+dWxkIHJlc3VsdCBpbiB0aGUgY29kZWMgZ29pbmcgdG8gYQo+PiBsb3dlciBiaWFzIHN0YXRlLCBh
+bmQgdGhhdCBpcyBub3Qgd2hhdCBzaG91bGQgaGFwcGVuIGhlcmUuIFJlc3RhcnRpbmcgdGhlCj4+
+IEFEQyBvciBEQUMgaXMganVzdCBhIG1hdHRlciBvZiBtaWxsaXNlY29uZHMsIGJ1dCBhIGNvbXBs
+ZXRlIHBvd2VyLWRvd24gd2lsbAo+PiByZXN1bHQgaW4gcmVmZXJlbmNlIHZvbHRhZ2UgaW5zdGFi
+aWxpdHkgYW5kIGNhcGFjaXRvcnMgcmVjaGFyZ2luZywgYW5kIGl0Cj4+IG1heSB0YWtlIHNldmVy
+YWwgbWludXRlcyBmb3IgdGhlIHN5c3RlbSB0byBjb21wbGV0ZWx5IHJlY292ZXIgZnJvbSB0aGF0
+Lgo+Cj4gKkFueSogZ2xpdGNoIGluIGFuIGFjdGl2ZSBkaWdpdGFsIGF1ZGlvIHBhdGggd2lsbCBi
+ZSBub3RpY2FibGUgdG8gdXNlcnMsCgpUaGUgcmVjb25maWd1cmF0aW9uIG9ubHkgb2NjdXJzIHdo
+ZW4gc3dpdGNoaW5nIGZyb20gc2F5IDQ0MTAwIHRvIDQ4MDAwIApzYW1wbGluZyByYXRlcyAoYnV0
+IG5vdCB3aGVuIGdvaW5nIGZyb20gMjQgdG8gMTYgYml0cywgZm9yIGV4YW1wbGUpLiBJIGRvbid0
+IAp0aGluayB1c2VycyB3aWxsIGFjdHVhbGx5IGV4cGVjdCBhIHN3aXRjaCBmcm9tIG9uZSBzYW1w
+bGluZyByYXRlIHRvIGFub3RoZXIgdG8gCnByb2NlZWQgd2l0aG91dCBhbnkgZ2xpdGNoIG9yIGRl
+bGF5LgoKPiBJZiB5b3UncmUgdGFraW5nIHNldmVyYWwgbWludXRlcyB0byBkbyBhIGJpYXMgbGV2
+ZWwgdHJhbnNpdGlvbiB0aGVyZSdzCj4gc29tZXRoaW5nIHNlcmlvdXNseSB3cm9uZyB3aXRoIGVp
+dGhlciB0aGUgaGFyZHdhcmUgb3Igd2l0aCB0aGUgd2F5IGl0J3MKPiBiZWluZyBtYW5hZ2VkIGJ5
+IHRoZSBkcml2ZXIuCgpHb29kIGVub3VnaCBmb3IgaHVtYW4gZWFycywgYnV0IHRoaXMgcHJvamVj
+dCB1c2VzIGNvZGVjcyBmb3IgbWVhc3VyZW1lbnQgYW5kIAppcyBzZW5zaXRpdmUgdG8gbWljcm92
+b2x0IGNoYW5nZXMgaW4gcmVmZXJlbmNlIHZvbHRhZ2VzIGFuZCBzdWNoLiBUaGUgYXVkaWJsZSAK
+ZWZmZWN0cyBhcmUgZ29uZSBpbiBsZXNzIHRoYW4gYSBzZWNvbmQsIGJ1dCB0aGUgbWVhc3VyYWJs
+ZSBlZmZlY3RzIGxhc3QgYSBsb3QgCmxvbmdlci4KCgo+PiBJJ20gbW9zdGx5IGFza2luZyB0byB0
+aGluayBhYm91dCB0aGUgImJpZyBwaWN0dXJlIiBoZXJlLiBBcyBhIGdlbmVyaWMgY2FzZSwKPj4g
+bm90IHNwZWNpZmljIHRvIHRoaXMgY29kZWMuCj4KPiBUaGUgZ2VuZXJhbCBzb2x1dGlvbiBoZXJl
+IGlzIGVzc2VudGlhbGx5IGRvbid0IGRvIHRoYXQ7IGlmIHRoZSBoYXJkd2FyZQo+IGlzIGZyYWdp
+bGUgb24gcmVjb25maWd1cmF0aW9uIHlvdSB3aWxsIHRlbmQgdG8gZW5kIHVwIGhpdHRpbmcgY2Fz
+ZXMKPiB3aGVyZSB0cnlpbmcgdG8gZG8gYSByZWNvbmZpZ3VyYXRpb24gd2lsbCBnbGl0Y2ggb3Ig
+ZmFpbCBzbyB0aGUgc291bmQKPiBzZXJ2ZXIgd2lsbCBnZW5lcmFsbHkgZml4IHRoZSBjb25maWd1
+cmF0aW9uIGFuZCBoYW5kbGUgdGhpbmdzIGluCj4gc29mdHdhcmUuICBPdGhlcndpc2UgcG1kb3du
+X3RpbWUgaXMgdGhlIGdlbmVyYWwgc29sdXRpb24gZm9yIG1vZGVybgo+IGRldmljZXMgd2l0aCBx
+dWljayBzdGFydHVwL3NodXRkb3duIHRpbWVzLCBvbGRlciBkZXZpY2VzIHByb2JhYmx5IG5lZWQK
+PiBzb21lIGN1c3RvbSBoYWNrcy4KCkl0J3Mgbm90IGFib3V0ICJmcmFnaWxlIiwgaXQncyBhYm91
+dCBtYW5hZ2luZyBjb2RlYyBwb3dlciBzdGF0ZXMuIEZvciBzb21lIAp0cmFuc2lzdGlvbnMsIGxp
+a2UgY2xvY2sgY2hhbmdlcywgYSBjb2RlYyB3aWxsIGxpa2VseSBuZWVkIHRvIGdvIHRvIGEgbG93
+ZXIgCnN0YXRlLiBUaGUgY3VycmVudCBjb3JlIGRvZXMgbm90IGV2ZW4gYXR0ZW1wdCB0byBtdXRl
+IHRoZSBEQUMgZm9yIGV4YW1wbGUuCgpXZWxsLCBjdXN0b20gaGFja3MgaXMgOTUlIG9mIHdoYXQg
+aSd2ZSBkb25lIHRvIHRoZSBkcml2ZXIgKGFuZCBJIGhhY2tlZCBhIGZldyAKbGluZXMgaW4gdGhl
+IGNvcmUgYXMgd2VsbCB0byBnZXQgd2hhdCBJIHdhbnRlZCkuIEkgd2FzIGhvcGluZyB0byBsb3dl
+ciB0aGUgCiJjdXN0b20iIHBhcnQgYSBiaXQgaW4gZnV0dXJlLgoKCgpNZXQgdnJpZW5kZWxpamtl
+IGdyb2V0IC8ga2luZCByZWdhcmRzLAoKTWlrZSBMb29pam1hbnMKClRPUElDIEVtYmVkZGVkIFN5
+c3RlbXMKRWluZGhvdmVuc2V3ZWcgMzItQywgTkwtNTY4MyBLSCBCZXN0ClBvc3RidXMgNDQwLCBO
+TC01NjgwIEFLIEJlc3QKVGVsZWZvb246ICgrMzEpICgwKSA0OTkgMzMgNjkgNzkKVGVsZWZheDog
+ICgrMzEpICgwKSA0OTkgMzMgNjkgNzAKRS1tYWlsOiBtaWtlLmxvb2lqbWFuc0B0b3BpYy5ubApX
+ZWJzaXRlOiB3d3cudG9waWMubmwKClBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVm
+b3JlIHByaW50aW5nIHRoaXMgZS1tYWlsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
