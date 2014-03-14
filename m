@@ -1,52 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/4] ASoC: simple-card: Fix the reference count of
- device nodes
-Date: Fri, 14 Mar 2014 19:57:10 +0000
-Message-ID: <20140314195710.GH366@sirena.org.uk>
-References: <cover.1394533640.git.moinejf@free.fr>
- <bfb5bfeb1b934384d84fab0045ce65c9b2766f31.1394533640.git.moinejf@free.fr>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 16/39] firewire-lib: Add some AV/C general
+ commands
+Date: Fri, 14 Mar 2014 23:18:32 +0100
+Message-ID: <53238038.9020900@ladisch.de>
+References: <5316963F.1000206@sakamocchi.jp>
+ <1394016507-15761-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1394016507-15761-17-git-send-email-o-takashi@sakamocchi.jp>
+ <531CDE06.40604@ladisch.de> <53230DF0.6090105@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YvpLBQJFkgiI+gkH"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <bfb5bfeb1b934384d84fab0045ce65c9b2766f31.1394533640.git.moinejf@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B550F262610
+ for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2014 23:19:12 +0100 (CET)
+In-Reply-To: <53230DF0.6090105@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Sakamoto wrote:
+> can I request your comments about corresponding between response codes and Linux error codes?
+>
+> Current my idea is below.
+>
+> Return codes of CONTROL command:
+> if (err != 8) /* length of response is out of specification */
+>     err = -EIO;
+> else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
+>     err = -ENOSYS;
+> else if (buf[0] == 0x0a) /* REJECTED */
+>     err = -EINVAL;
+>
+> Return codes of STATUS command:
+> if (err != 8)  /* length of response is not our expectation */
+>     err = -EIO;
+> else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
+>     err = -ENOSYS;
+> else if (buf[0] == 0x0a) /* REJECTED */
+>     err = -EINVAL;
+> else if (buf[0] == 0x0b) /* IN TRANSITION */
+>     err = -EAGAIN;
+>
+> Are these better?
 
---YvpLBQJFkgiI+gkH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes, these look like the codes that match best.
 
-On Tue, Mar 11, 2014 at 10:03:40AM +0100, Jean-Francois Moine wrote:
-> The reference count of some device nodes is not correctly reset
-> at end of card probe.
 
-Applied, thanks.
-
---YvpLBQJFkgiI+gkH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTI18TAAoJELSic+t+oim99jIP/1ZoMbP1Fs2+xIVLjA9s+cQD
-44jkodX2PAkl2zc0W6hWP1E8nrD1ugXhMSsBhjQg2mdfbwTPcTVNVSIzUUNFMvdZ
-LnTOPGRr/Xzs5IcjVhPra19AeDgQkaQwaNBofS7GeXHDom4bOWKo0tSIUv21v6MY
-yPMHVo9NriHynIt2Wh+OH+x3UaRK9R5wDSC8p3S2gqyRE8/vq3UxFno438vtVN8m
-vh5vnG/HY4zeFgKiuXxrjMM0E/l8MMCajq5DCJftd5PmGorl7Fuh7UXKIU6MgsV1
-qL1ah3TQSdH7DpWCVqyQdC6d3Yq35LE1B0lG7G8ceMIJlrOEYwYghB2Qe29Tcr0F
-gPOsQkwlYaiwgUaLnu2EZrMPEmAA3gcivvDbwBrdtRRdOh6o02OkYPyRZQt6M4w0
-K14R1B7onGNNCWHNXzmQtI+BVmI9nbw0T6Oxzn5A2OKpz/1GUHpkVhogEKzSndNd
-ERHw8We1YkO+AZ2fKM+o0j+dD7p83VPCcWvgXL7zJ+2wvd5pmCE/xabn3duHU23t
-HQs/xVE46HIhFZDdVUvf0BQZokegagdq1q5TjKkExYi7GhyuE9TlD+FWf0lgDiGq
-xdaHiNQQWOV3G1icbTLPf06jGH7j5ZUnD0IHYgv+MQZCWz4enkySg6/3H71N/lvw
-QIWQtgtC/NLE7OCA7l9E
-=DajL
------END PGP SIGNATURE-----
-
---YvpLBQJFkgiI+gkH--
+Regards,
+Clemens
