@@ -1,55 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/18] edma/ASoC: dmaengine PCM for AM335x and AM447x
-Date: Fri, 14 Mar 2014 10:13:38 +0000
-Message-ID: <20140314101338.GP366@sirena.org.uk>
-References: <1394702320-21743-1-git-send-email-peter.ujfalusi@ti.com>
- <20140313134601.GU366@sirena.org.uk>
- <5322CE32.2000102@ti.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH] ASoC: codecs: Replace instances of
+	rtd->codec with dai->codec
+Date: Fri, 14 Mar 2014 12:15:20 +0200
+Message-ID: <5322D6B8.2080604@ti.com>
+References: <1394742294-14698-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zpKbRLlnGgG674Bt"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5322CE32.2000102@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, joelf@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>, nsekhar@ti.com, Jyri Sarha <jsarha@ti.com>, mporter@linaro.org, vinod.koul@intel.com, dan.j.williams@intel.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0215626518D
+ for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2014 11:15:30 +0100 (CET)
+In-Reply-To: <1394742294-14698-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, patches@opensource.wolfsonmicro.com, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 03/13/2014 10:24 PM, Lars-Peter Clausen wrote:
+> With CODEC to CODEC links rtd->codec does not necessarily point to the driver's
+> CODEC. CODEC drivers should always use dai->codec and never even look at the PCM
+> runtime.
+>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+[...]
+> diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+> index d3517a9..cc1c9c2 100644
+> --- a/sound/soc/codecs/tlv320aic31xx.c
+> +++ b/sound/soc/codecs/tlv320aic31xx.c
+> @@ -753,10 +753,9 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
+>
+>   static int aic31xx_hw_params(struct snd_pcm_substream *substream,
+>   			     struct snd_pcm_hw_params *params,
+> -			     struct snd_soc_dai *tmp)
+> +			     struct snd_soc_dai *dai)
+>   {
+> -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> -	struct snd_soc_codec *codec = rtd->codec;
+> +	struct snd_soc_codec *codec = dai->codec;
+>   	u8 data = 0;
+>
+>   	dev_dbg(codec->dev, "## %s: format %d width %d rate %d\n",
+[...]
 
---zpKbRLlnGgG674Bt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Concerning the part above.
 
-On Fri, Mar 14, 2014 at 11:38:58AM +0200, Peter Ujfalusi wrote:
+Acked-by: Jyri Sarha <jsarha@ti.com>
 
-> The only thing I'm afraid off is that it is going to take two release cycle to
-> get this in: first cycle edma part, next cycle for the ASoC to switch to use
-> the edma-pcm.
-
-We can do a cross tree merge, or the EDMA code can be applied to ASoC
-directly if that's what people want.
-
---zpKbRLlnGgG674Bt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTItZPAAoJELSic+t+oim9p3sP/RND7EuvcSdbk1Ak3hsE3IP7
-YjoMVcIc3vEs9r8xoY5VVWKAonl2lQ7ltW8bOCGQu2zWQox49MURpk0W2vnw9lp6
-T6i+3yqIoIVvEkgQYFmL+vZUSst00lzyqKzt8vnm/PSZ8FHHQ10AYvF/uZifRx1E
-a6gGwEQ+EIEGVplebczWfpHs40DBOhvWF/3cJaz21fxLsRhEg1SDcODAoZJYRSY7
-fcdKAAVHHNX0EOA5sz9dreq/rV5qzaljvkHEVTrfkl8LrdP54fgZvjp1wy/P9nSD
-LpJ8WBVmzUIbmGoqFJJi2QsoGVbcyv5gTNMNjPre35Go4V62t68W4EmspcRCiMW2
-zawOh66rXcNJ0GhuTHGNEmahR8azubvGG+Z+ik0Ej98WsGxmKicxVLHaJeW2LgKE
-JpT2GVIbyjPQ8ky/zgsLtx+RHBgRK8UkXwrK2kyaNldwXl05VF+eqioikmdRxFtf
-tbCHpwUEbbnWMT/VuyhGn7oWiiz+wohtRU2B6NqvmRLbXG7zPxfLODxw/GNILpj8
-GgQAFuiD3QJeXVpaR9aScJZoc8RmH88oyeYFQ5mCjP8akgWzgctqSBEqOyt/GkIM
-IGne9KxEkrigX21F51W+7x6F3DjJXxNJ2USYma1i0nAQ6v2nelx+c1mkwBuwTNLn
-IK8T+iAZfpasvr50NlEW
-=e4Zm
------END PGP SIGNATURE-----
-
---zpKbRLlnGgG674Bt--
+Best regards,
+Jyri
