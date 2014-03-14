@@ -1,73 +1,51 @@
 From: Jean-Francois Moine <moinejf@free.fr>
 Subject: Re: [alsa-devel] [PATCH v2 3/4] ASoC: simple-card: accept many DAI
  links
-Date: Fri, 14 Mar 2014 19:40:37 +0100
-Message-ID: <20140314194037.7da888cd@armhf>
+Date: Fri, 14 Mar 2014 19:58:19 +0100
+Message-ID: <20140314195819.2012c44b@armhf>
 References: <cover.1394533640.git.moinejf@free.fr>
 	<d71a2b62b331302772d35b3cd35c6dc5da1e9e5d.1394533640.git.moinejf@free.fr>
-	<5322E4FC.7060605@ti.com>
+	<2e7647de940f400a916e2f6c43f9811f@BY2PR03MB505.namprd03.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5322E4FC.7060605@ti.com>
+In-Reply-To: <2e7647de940f400a916e2f6c43f9811f@BY2PR03MB505.namprd03.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, Jyri Sarha <jsarha@ti.com>
+Cc: Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 14 Mar 2014 13:16:12 +0200
-Jyri Sarha <jsarha@ti.com> wrote:
+On Wed, 12 Mar 2014 05:20:17 +0000
+"Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com> wrote:
 
-> On 03/11/2014 11:36 AM, Jean-Francois Moine wrote:
-> > Some simple audio cards may have many DAI links.
-> > This patch extends the simple-card driver for handling such cards.
-> >
-> > Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
-> > ---
-> [...]
+> I'm not sure why only the first link needs parsing the DAIFMT ?
+
+In my machine, there is only one audio device and the CODECs don't need
+any format, sysclk or TDM slot.
+
+But, as Jyri asked it too, I will add these properties.
+
+> On my LS1 platform there are two CODECs and two CPU SAI deivces,
+> SGTL5000 <---> SAI
+> CS42888  <---> ESAI
 >=20
-> Why can't you just use two simple-card instances in your setup?
+> Could the many dai links feature support this case?=20
 
-My machine has only one audio device (kirkwood). This one has two
-outputs. The first one (I2S) is connected to the HDMI transmitter, and
-the other one (S/PDIF) is connected to both the HDMI transmitter and th=
-e
-S/PDIF connector. There can be only one playback stream, either via
-I2S, or S/PDIF, or both, with the final output either to HDMI or S/PDIF
-or both:
+As Jyri said: why not two simple-cards?
 
-           /--> I2S -----+-> HDMI
-platform -+             /
-           \-> S/PDIF -+
-                        \--> S/PDIF
+> I my understanding is correct here, this patch will support the
+> Board, in which board there maybe only one CODEC supporting many
+> DAIs...
 
-DPCM permits to activate both I2S and S/PDIF, but it does not handle
-the format and rate constraints (both outputs are always activated with
-the platform constraints).
+The audio (platform) device of my machine has two outputs (I2S and
+S/PDIF =3D CPU DAIs) which are connected to different CODECs (HDMI
+transmitter and S/PDIF connector).
 
-So, the actual solution I use is 3 DAI links (=3D 3 PCMs):
-- HDMI via I2S
-- HDMI via S/PDIF (no S/PDIF output)
-- S/PDIF via S/PDIF (no HDMI output)
+There must be two different HDMI CODECs because the format and rate
+constraints of the wires (I2S and S/PDIF) are different.
 
-> You need to update the DT-binding document too when you are changing =
-the=20
-> binding. That way it would also be easier to follow what you are tryi=
-ng=20
-> to accomplish here.
-
-Some people want to have 2 different patchs: one for the code and the
-other one for the DT change. Some other people like you want only one
-patch. Which is the right way?
-
-> The sysclk and tdm properties appear to only work in the dais of the=20
-> first dai-link and __asoc_simple_card_dai_init() will not be called f=
-or=20
-> other dais at all. The DT-binding of this implementation would look=20
-> pretty hairy to me.
-
-I will add an other dynamic structure for these properties.
+There is only one playback stream.
 
 --=20
 Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
