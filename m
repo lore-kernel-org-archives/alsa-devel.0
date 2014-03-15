@@ -1,244 +1,83 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v2 08/16] ASoC: fsl-ssi: Cleanup probe function
-Date: Sat, 15 Mar 2014 13:44:16 +0100
-Message-ID: <1394887464-969-9-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v2 15/16] ASoC: fsl-ssi: Update binding
+	documentation
+Date: Sat, 15 Mar 2014 13:44:23 +0100
+Message-ID: <1394887464-969-16-git-send-email-mpa@pengutronix.de>
 References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id C70892650D7
+ for <alsa-devel@alsa-project.org>; Sat, 15 Mar 2014 13:45:59 +0100 (CET)
 In-Reply-To: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Reorder the probe function to be able to move the second imx-specific
-block to the seperate imx probe function. The patch also removes some
-comments/variables/code that are not used anymore or could be simply
-replaced by other variables.
+A lot of bindings where changed without an update of the binding
+documentation. This patch adds those changes to the documentation.
 
 Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 109 ++++++++++++++++++++++--------------------------
- 1 file changed, 49 insertions(+), 60 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl,ssi.txt | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 663ac8b..b0c04ef 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -159,7 +159,6 @@ struct fsl_ssi_private {
- 	bool imx_ac97;
- 	bool use_dma;
- 	bool baudclk_locked;
--	bool irq_stats;
- 	bool offline_config;
- 	bool use_dual_fifo;
- 	u8 i2s_mode;
-@@ -961,7 +960,7 @@ static void make_lowercase(char *s)
- }
+diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+index b93e9a9..3aa4a8f 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+@@ -20,15 +20,6 @@ Required properties:
+                     have.
+ - interrupt-parent: The phandle for the interrupt controller that
+                     services interrupts for this device.
+-- fsl,mode:         The operating mode for the SSI interface.
+-                    "i2s-slave" - I2S mode, SSI is clock slave
+-                    "i2s-master" - I2S mode, SSI is clock master
+-                    "lj-slave" - left-justified mode, SSI is clock slave
+-                    "lj-master" - l.j. mode, SSI is clock master
+-                    "rj-slave" - right-justified mode, SSI is clock slave
+-                    "rj-master" - r.j., SSI is clock master
+-                    "ac97-slave" - AC97 mode, SSI is clock slave
+-                    "ac97-master" - AC97 mode, SSI is clock master
+ - fsl,playback-dma: Phandle to a node for the DMA channel to use for
+                     playback of audio.  This is typically dictated by SOC
+                     design.  See the notes below.
+@@ -47,6 +38,9 @@ Required properties:
+                     be connected together, and SRFS and STFS be connected
+                     together.  This would still allow different sample sizes,
+                     but not different sample rates.
++ - clocks:          "ipg" - Required clock for the SSI unit
++                    "baud" - Required clock for SSI master mode. Otherwise this
++		      clock is not used
  
- static int fsl_ssi_imx_probe(struct platform_device *pdev,
--		struct fsl_ssi_private *ssi_private)
-+		struct fsl_ssi_private *ssi_private, void __iomem *iomem)
- {
- 	struct device_node *np = pdev->dev.of_node;
- 	u32 dmas[4];
-@@ -1019,8 +1018,37 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 		ssi_private->dma_params_rx.maxburst &= ~0x1;
- 	}
+ Required are also ac97 link bindings if ac97 is used. See
+ Documentation/devicetree/bindings/sound/soc-ac97link.txt for the necessary
+@@ -64,6 +58,15 @@ Optional properties:
+ 		    Documentation/devicetree/bindings/dma/dma.txt.
+ - dma-names:	    Two dmas have to be defined, "tx" and "rx", if fsl,imx-fiq
+ 		    is not defined.
++- fsl,mode:         The operating mode for the SSI interface.
++                    "i2s-slave" - I2S mode, SSI is clock slave
++                    "i2s-master" - I2S mode, SSI is clock master
++                    "lj-slave" - left-justified mode, SSI is clock slave
++                    "lj-master" - l.j. mode, SSI is clock master
++                    "rj-slave" - right-justified mode, SSI is clock slave
++                    "rj-master" - r.j., SSI is clock master
++                    "ac97-slave" - AC97 mode, SSI is clock slave
++                    "ac97-master" - AC97 mode, SSI is clock master
  
-+	if (!ssi_private->use_dma) {
-+
-+		/*
-+		 * Some boards use an incompatible codec. To get it
-+		 * working, we are using imx-fiq-pcm-audio, that
-+		 * can handle those codecs. DMA is not possible in this
-+		 * situation.
-+		 */
-+
-+		ssi_private->fiq_params.irq = ssi_private->irq;
-+		ssi_private->fiq_params.base = iomem;
-+		ssi_private->fiq_params.dma_params_rx =
-+			&ssi_private->dma_params_rx;
-+		ssi_private->fiq_params.dma_params_tx =
-+			&ssi_private->dma_params_tx;
-+
-+		ret = imx_pcm_fiq_init(pdev, &ssi_private->fiq_params);
-+		if (ret)
-+			goto error_pcm;
-+	} else {
-+		ret = imx_pcm_dma_init(pdev);
-+		if (ret)
-+			goto error_pcm;
-+	}
-+
- 	return 0;
- 
-+error_pcm:
-+	if (!IS_ERR(ssi_private->baudclk))
-+		clk_disable_unprepare(ssi_private->baudclk);
-+
- error_baud_clk:
- 	clk_disable_unprepare(ssi_private->clk);
- 
-@@ -1030,6 +1058,8 @@ error_baud_clk:
- static void fsl_ssi_imx_clean(struct platform_device *pdev,
- 		struct fsl_ssi_private *ssi_private)
- {
-+	if (!ssi_private->use_dma)
-+		imx_pcm_fiq_exit(pdev);
- 	if (!IS_ERR(ssi_private->baudclk))
- 		clk_disable_unprepare(ssi_private->baudclk);
- 	clk_disable_unprepare(ssi_private->clk);
-@@ -1039,7 +1069,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- {
- 	struct fsl_ssi_private *ssi_private;
- 	int ret = 0;
--	struct device_attribute *dev_attr = NULL;
- 	struct device_node *np = pdev->dev.of_node;
- 	const struct of_device_id *of_id;
- 	enum fsl_ssi_type hw_type;
-@@ -1132,6 +1161,8 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	ssi_private->baudclk_locked = false;
- 	spin_lock_init(&ssi_private->baudclk_lock);
- 
-+	dev_set_drvdata(&pdev->dev, ssi_private);
-+
- 	/*
- 	 * imx51 and later SoCs have a slightly different IP that allows the
- 	 * SSI configuration while the SSI unit is running.
-@@ -1162,20 +1193,22 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 			hw_type == FSL_SSI_MX35) {
- 		ssi_private->ssi_on_imx = true;
- 
--		ret = fsl_ssi_imx_probe(pdev, ssi_private);
-+		ret = fsl_ssi_imx_probe(pdev, ssi_private, ssi_private->ssi);
- 		if (ret)
- 			goto error_irqmap;
- 	}
- 
--	/*
--	 * Enable interrupts only for MCP8610 and MX51. The other MXs have
--	 * different writeable interrupt status registers.
--	 */
-+	ret = snd_soc_register_component(&pdev->dev, &fsl_ssi_component,
-+					 &ssi_private->cpu_dai_drv, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to register DAI: %d\n", ret);
-+		goto error_asoc_register;
-+	}
-+
- 	if (ssi_private->use_dma) {
- 		ret = devm_request_irq(&pdev->dev, ssi_private->irq,
- 					fsl_ssi_isr, 0, ssi_private->name,
- 					ssi_private);
--		ssi_private->irq_stats = true;
- 		if (ret < 0) {
- 			dev_err(&pdev->dev, "could not claim irq %u\n",
- 					ssi_private->irq);
-@@ -1183,46 +1216,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	/* Register with ASoC */
--	dev_set_drvdata(&pdev->dev, ssi_private);
--
--	ret = snd_soc_register_component(&pdev->dev, &fsl_ssi_component,
--					 &ssi_private->cpu_dai_drv, 1);
--	if (ret) {
--		dev_err(&pdev->dev, "failed to register DAI: %d\n", ret);
--		goto error_dev;
--	}
--
- 	ret = fsl_ssi_debugfs_create(&ssi_private->dbg_stats, &pdev->dev);
- 	if (ret)
--		goto error_dbgfs;
--
--	if (ssi_private->ssi_on_imx) {
--		if (!ssi_private->use_dma) {
--
--			/*
--			 * Some boards use an incompatible codec. To get it
--			 * working, we are using imx-fiq-pcm-audio, that
--			 * can handle those codecs. DMA is not possible in this
--			 * situation.
--			 */
--
--			ssi_private->fiq_params.irq = ssi_private->irq;
--			ssi_private->fiq_params.base = ssi_private->ssi;
--			ssi_private->fiq_params.dma_params_rx =
--				&ssi_private->dma_params_rx;
--			ssi_private->fiq_params.dma_params_tx =
--				&ssi_private->dma_params_tx;
--
--			ret = imx_pcm_fiq_init(pdev, &ssi_private->fiq_params);
--			if (ret)
--				goto error_pcm;
--		} else {
--			ret = imx_pcm_dma_init(pdev);
--			if (ret)
--				goto error_pcm;
--		}
--	}
-+		goto error_asoc_register;
- 
- 	/*
- 	 * If codec-handle property is missing from SSI node, we assume
-@@ -1252,32 +1248,25 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	if (IS_ERR(ssi_private->pdev)) {
- 		ret = PTR_ERR(ssi_private->pdev);
- 		dev_err(&pdev->dev, "failed to register platform: %d\n", ret);
--		goto error_dai;
-+		goto error_sound_card;
- 	}
- 
- done:
- 	return 0;
- 
--error_dai:
--	if (ssi_private->ssi_on_imx && !ssi_private->use_dma)
--		imx_pcm_fiq_exit(pdev);
--
--error_pcm:
-+error_sound_card:
- 	fsl_ssi_debugfs_remove(&ssi_private->dbg_stats);
- 
--error_dbgfs:
-+error_irq:
- 	snd_soc_unregister_component(&pdev->dev);
- 
--error_dev:
--	device_remove_file(&pdev->dev, dev_attr);
--
--error_irq:
-+error_asoc_register:
- 	if (ssi_private->ssi_on_imx) {
- 		fsl_ssi_imx_clean(pdev, ssi_private);
- 	}
- 
- error_irqmap:
--	if (ssi_private->irq_stats)
-+	if (ssi_private->use_dma)
- 		irq_dispose_mapping(ssi_private->irq);
- 
- 	return ret;
-@@ -1296,7 +1285,7 @@ static int fsl_ssi_remove(struct platform_device *pdev)
- 	if (ssi_private->ssi_on_imx)
- 		fsl_ssi_imx_clean(pdev, ssi_private);
- 
--	if (ssi_private->irq_stats)
-+	if (ssi_private->use_dma)
- 		irq_dispose_mapping(ssi_private->irq);
- 
- 	return 0;
+ Child 'codec' node required properties:
+ - compatible:       Compatible list, contains the name of the codec
 -- 
 1.9.0
