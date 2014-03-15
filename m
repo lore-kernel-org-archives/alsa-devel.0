@@ -1,71 +1,78 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v2 00/16] ASoC: fsl-ssi: Driver cleanup
-Date: Sat, 15 Mar 2014 13:44:08 +0100
-Message-ID: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v2 04/16] ASoC: fsl-ssi: Use dev_name for DAI
+	driver struct
+Date: Sat, 15 Mar 2014 13:44:12 +0100
+Message-ID: <1394887464-969-5-git-send-email-mpa@pengutronix.de>
+References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 18C312650D8
+ for <alsa-devel@alsa-project.org>; Sat, 15 Mar 2014 13:45:50 +0100 (CET)
+In-Reply-To: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Instead of creating a name using string manipulation functions, we can
+simply use the device name for the DAI driver struct.
 
-This new version of the cleanup is mainly a reordering of the patches. It moves
-the regmap patch to the end of the series so none of the other patches depend
-on it. This also fixes a bug I introduced in "Remove fsl_ssi_setup" which also
-removed the switching between network and normal mode depending on the number
-of channels. I reversed this code removal. Another new patch was added "Fix
-i2s_mode variable setup" which fixes the i2s_mode assignment in set_dai_fmt().
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
+ sound/soc/fsl/fsl_ssi.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-Best regards,
-
-Markus
-
-
-Changes in v2:
- - Move "Use regmap" patch to the end of the series
- - Add normal/network mode switching code to again (previously removed in
-   "Remove fsl_ssi_setup"
- - Add patch "Fix i2s_mode variable setup"
-
-
-Markus Pargmann (16):
-  ASoC: fsl-ssi: Remove fsl_ssi_setup
-  ASoC: fsl-ssi: Fix i2s_mode variable setup
-  ASoC: fsl-ssi: Move debugging to seperate file
-  ASoC: fsl-ssi: Use dev_name for DAI driver struct
-  ASoC: fsl-ssi: Move imx-specific probe to seperate function
-  ASoC: fsl-ssi: Remove useless DMA code
-  ASoC: fsl-ssi: baud clock error handling
-  ASoC: fsl-ssi: Cleanup probe function
-  ASoC: fsl-ssi: Remove unnecessary variables from ssi_private
-  ASoC: fsl-ssi: reorder and document fsl_ssi_private
-  ASoC: fsl-ssi: Fix register values when disabling
-  ASoC: fsl-ssi: Only enable baudclk when used
-  ASoC: fsl-ssi: Set default dai-fmts
-  ASoC: fsl-ssi: Transmit enable synchronization
-  ASoC: fsl-ssi: Update binding documentation
-  ASoC: fsl-ssi: Use regmap
-
- .../devicetree/bindings/sound/fsl,ssi.txt          |   21 +-
- sound/soc/fsl/Kconfig                              |    1 +
- sound/soc/fsl/Makefile                             |    2 +
- sound/soc/fsl/fsl_ssi.c                            | 1173 +++++++++-----------
- sound/soc/fsl/fsl_ssi.h                            |  112 +-
- sound/soc/fsl/fsl_ssi_dbg.c                        |  163 +++
- 6 files changed, 759 insertions(+), 713 deletions(-)
- create mode 100644 sound/soc/fsl/fsl_ssi_dbg.c
-
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 6b198f3..f31bd15 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -997,17 +997,13 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	if (!strcmp(sprop, "ac97-slave"))
+ 		ac97 = true;
+ 
+-	/* The DAI name is the last part of the full name of the node. */
+-	p = strrchr(np->full_name, '/') + 1;
+-	ssi_private = devm_kzalloc(&pdev->dev, sizeof(*ssi_private) + strlen(p),
+-			      GFP_KERNEL);
++	ssi_private = devm_kzalloc(&pdev->dev, sizeof(*ssi_private),
++			GFP_KERNEL);
+ 	if (!ssi_private) {
+ 		dev_err(&pdev->dev, "could not allocate DAI object\n");
+ 		return -ENOMEM;
+ 	}
+ 
+-	strcpy(ssi_private->name, p);
+-
+ 	ssi_private->use_dma = !of_property_read_bool(np,
+ 			"fsl,fiq-stream-filter");
+ 	ssi_private->hw_type = hw_type;
+@@ -1025,7 +1021,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
+ 		       sizeof(fsl_ssi_dai_template));
+ 	}
+-	ssi_private->cpu_dai_drv.name = ssi_private->name;
++	ssi_private->cpu_dai_drv.name = dev_name(&pdev->dev);
+ 
+ 	/* Get the addresses and IRQ */
+ 	ret = of_address_to_resource(np, 0, &res);
+@@ -1173,7 +1169,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	 * different writeable interrupt status registers.
+ 	 */
+ 	if (ssi_private->use_dma) {
+-		/* The 'name' should not have any slashes in it. */
+ 		ret = devm_request_irq(&pdev->dev, ssi_private->irq,
+ 					fsl_ssi_isr, 0, ssi_private->name,
+ 					ssi_private);
 -- 
 1.9.0
