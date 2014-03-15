@@ -1,16 +1,16 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v2 04/16] ASoC: fsl-ssi: Use dev_name for DAI
-	driver struct
-Date: Sat, 15 Mar 2014 13:44:12 +0100
-Message-ID: <1394887464-969-5-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v2 14/16] ASoC: fsl-ssi: Transmit enable
+	synchronization
+Date: Sat, 15 Mar 2014 13:44:22 +0100
+Message-ID: <1394887464-969-15-git-send-email-mpa@pengutronix.de>
 References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 18C312650D8
- for <alsa-devel@alsa-project.org>; Sat, 15 Mar 2014 13:45:50 +0100 (CET)
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 5147E2650AC
+ for <alsa-devel@alsa-project.org>; Sat, 15 Mar 2014 13:45:54 +0100 (CET)
 In-Reply-To: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,54 +25,42 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Instead of creating a name using string manipulation functions, we can
-simply use the device name for the DAI driver struct.
+When the fsl-ssi unit is used in i2s slave mode, it is possible that the
+SSI unit starts transmitting data on the wrong channel. This happens
+because the SSI does not synchronize with the left-right-clock by
+default.
+
+This patch enables transmit enable synchronization.
 
 Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 1 +
+ sound/soc/fsl/fsl_ssi.h | 1 +
+ 2 files changed, 2 insertions(+)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 6b198f3..f31bd15 100644
+index bb6d607..6095a15 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -997,17 +997,13 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	if (!strcmp(sprop, "ac97-slave"))
- 		ac97 = true;
+@@ -615,6 +615,7 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi_private *ssi_private,
+ 	fsl_ssi_setup_reg_vals(ssi_private);
  
--	/* The DAI name is the last part of the full name of the node. */
--	p = strrchr(np->full_name, '/') + 1;
--	ssi_private = devm_kzalloc(&pdev->dev, sizeof(*ssi_private) + strlen(p),
--			      GFP_KERNEL);
-+	ssi_private = devm_kzalloc(&pdev->dev, sizeof(*ssi_private),
-+			GFP_KERNEL);
- 	if (!ssi_private) {
- 		dev_err(&pdev->dev, "could not allocate DAI object\n");
- 		return -ENOMEM;
- 	}
+ 	scr = read_ssi(&ssi->scr) & ~(CCSR_SSI_SCR_SYN | CCSR_SSI_SCR_I2S_MODE_MASK);
++	scr |= CCSR_SSI_SCR_SYNC_TX_FS;
  
--	strcpy(ssi_private->name, p);
--
- 	ssi_private->use_dma = !of_property_read_bool(np,
- 			"fsl,fiq-stream-filter");
- 	ssi_private->hw_type = hw_type;
-@@ -1025,7 +1021,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
- 		       sizeof(fsl_ssi_dai_template));
- 	}
--	ssi_private->cpu_dai_drv.name = ssi_private->name;
-+	ssi_private->cpu_dai_drv.name = dev_name(&pdev->dev);
+ 	mask = CCSR_SSI_STCR_TXBIT0 | CCSR_SSI_STCR_TFDIR | CCSR_SSI_STCR_TXDIR |
+ 		CCSR_SSI_STCR_TSCKP | CCSR_SSI_STCR_TFSI | CCSR_SSI_STCR_TFSL |
+diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
+index 2e95dd7..71c3e7e 100644
+--- a/sound/soc/fsl/fsl_ssi.h
++++ b/sound/soc/fsl/fsl_ssi.h
+@@ -39,6 +39,7 @@ struct ccsr_ssi {
+ 	__be32 saccdis; /* 0x.0058 - SSI AC97 Channel Disable Register */
+ };
  
- 	/* Get the addresses and IRQ */
- 	ret = of_address_to_resource(np, 0, &res);
-@@ -1173,7 +1169,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	 * different writeable interrupt status registers.
- 	 */
- 	if (ssi_private->use_dma) {
--		/* The 'name' should not have any slashes in it. */
- 		ret = devm_request_irq(&pdev->dev, ssi_private->irq,
- 					fsl_ssi_isr, 0, ssi_private->name,
- 					ssi_private);
++#define CCSR_SSI_SCR_SYNC_TX_FS		0x00001000
+ #define CCSR_SSI_SCR_RFR_CLK_DIS	0x00000800
+ #define CCSR_SSI_SCR_TFR_CLK_DIS	0x00000400
+ #define CCSR_SSI_SCR_TCH_EN		0x00000100
 -- 
 1.9.0
