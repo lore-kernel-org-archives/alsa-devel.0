@@ -1,134 +1,120 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v2 13/16] ASoC: fsl-ssi: Set default dai-fmts
-Date: Sat, 15 Mar 2014 13:44:21 +0100
-Message-ID: <1394887464-969-14-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v2 11/16] ASoC: fsl-ssi: Fix register values
+	when disabling
+Date: Sat, 15 Mar 2014 13:44:19 +0100
+Message-ID: <1394887464-969-12-git-send-email-mpa@pengutronix.de>
 References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B0D932650BA
+ for <alsa-devel@alsa-project.org>; Sat, 15 Mar 2014 13:45:47 +0100 (CET)
 In-Reply-To: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The old fsl_ssi_setup function was replaced by a set_dai_fmt function.
-As the fsl-ssi driver has a 'fsl,mode' DT binding we should keep the
-backward compatibility for the moment.
+The bits we have to clear when disabling are different when the other
+stream is still active.
 
-This patch sets default dai-fmt for backwards compatibility and
-initializes the DAI using _fsl_ssi_set_dai_fmt().
-
-The fsl,mode property parsing is moved, so it can directly set the
-correct dai-fmt in ssi_private.
+This patch fixes the calculation of new register values after disabling
+one stream. It also adds a more detailed description of the new register
+value calculation.
 
 Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 43 ++++++++++++++++++++++++++++---------------
- 1 file changed, 28 insertions(+), 15 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 40 +++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 35 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index ab17055..bb6d607 100644
+index c8002d3..0d10b7e 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -600,12 +600,9 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
+@@ -329,6 +329,26 @@ static void fsl_ssi_rxtx_config(struct fsl_ssi_private *ssi_private,
  }
  
--/**
-- * fsl_ssi_set_dai_fmt - configure Digital Audio Interface Format.
-- */
--static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
-+static int _fsl_ssi_set_dai_fmt(struct fsl_ssi_private *ssi_private,
-+		unsigned int fmt)
- {
--	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
- 	u32 strcr = 0, stcr, srcr, scr, mask;
- 	u8 wm;
-@@ -746,6 +743,17 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- 		fsl_ssi_setup_ac97(ssi_private);
- 
- 	return 0;
-+
-+}
-+
-+/**
-+ * fsl_ssi_set_dai_fmt - configure Digital Audio Interface Format.
+ /*
++ * Calculate the bits that have to be disabled for the current stream that is
++ * getting disabled. This keeps the bits enabled that are necessary for the
++ * second stream to work if 'stream_active' is true.
++ *
++ * Detailed calculation:
++ * These are the values that need to be active after disabling. For non-active
++ * second stream, this is 0:
++ *	vals_stream * !!stream_active
++ *
++ * The following computes the overall differences between the setup for the
++ * to-disable stream and the active stream, a simple XOR:
++ *	vals_disable ^ (vals_stream * !!(stream_active))
++ *
++ * The full expression adds a mask on all values we care about
 + */
-+static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
-+{
-+	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
++#define fsl_ssi_disable_val(vals_disable, vals_stream, stream_active) \
++	((vals_disable) & \
++	 ((vals_disable) ^ ((vals_stream) * (u32)!!(stream_active))))
 +
-+	return _fsl_ssi_set_dai_fmt(ssi_private, fmt);
- }
++/*
+  * Enable/Disable a ssi configuration. You have to pass either
+  * ssi_private->rxtx_reg_val.rx or tx as vals parameter.
+  */
+@@ -340,6 +360,12 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
+ 	u32 scr_val = read_ssi(&ssi->scr);
+ 	int nr_active_streams = !!(scr_val & CCSR_SSI_SCR_TE) +
+ 				!!(scr_val & CCSR_SSI_SCR_RE);
++	int keep_active;
++
++	if (nr_active_streams - 1 > 0)
++		keep_active = 1;
++	else
++		keep_active = 0;
  
- /**
-@@ -1199,7 +1207,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	const uint32_t *iprop;
- 	struct resource res;
- 	char name[64];
--	bool ac97 = false;
+ 	/* Find the other direction values rx or tx which we do not want to
+ 	 * modify */
+@@ -350,7 +376,8 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
  
- 	/* SSIs that are not connected on the board should have a
- 	 *      status = "disabled"
-@@ -1213,14 +1220,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	hw_type = (enum fsl_ssi_type) of_id->data;
- 
--	sprop = of_get_property(np, "fsl,mode", NULL);
--	if (!sprop) {
--		dev_err(&pdev->dev, "fsl,mode property is necessary\n");
--		return -EINVAL;
--	}
--	if (!strcmp(sprop, "ac97-slave"))
--		ac97 = true;
--
- 	ssi_private = devm_kzalloc(&pdev->dev, sizeof(*ssi_private),
- 			GFP_KERNEL);
- 	if (!ssi_private) {
-@@ -1228,11 +1227,22 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+ 	/* If vals should be disabled, start with disabling the unit */
+ 	if (!enable) {
+-		u32 scr = vals->scr & (vals->scr ^ avals->scr);
++		u32 scr = fsl_ssi_disable_val(vals->scr, avals->scr,
++				keep_active);
+ 		write_ssi_mask(&ssi->scr, scr, 0);
  	}
  
-+	sprop = of_get_property(np, "fsl,mode", NULL);
-+	if (!sprop) {
-+		dev_err(&pdev->dev, "fsl,mode property is necessary\n");
-+		return -EINVAL;
-+	}
-+	if (!strcmp(sprop, "ac97-slave"))
-+		ssi_private->dai_fmt = SND_SOC_DAIFMT_AC97;
-+	else if (!strcmp(sprop, "i2s-slave"))
-+		ssi_private->dai_fmt = SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_CBM_CFM;
-+
- 	ssi_private->use_dma = !of_property_read_bool(np,
- 			"fsl,fiq-stream-filter");
- 	ssi_private->hw_type = hw_type;
+@@ -361,7 +388,7 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
+ 	 */
+ 	if (fsl_ssi_offline_config(ssi_private)) {
+ 		if ((enable && !nr_active_streams) ||
+-				(!enable && nr_active_streams == 1))
++				(!enable && !keep_active))
+ 			fsl_ssi_rxtx_config(ssi_private, enable);
  
--	if (ac97) {
-+	if (fsl_ssi_is_ac97(ssi_private)) {
- 		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_ac97_dai,
- 				sizeof(fsl_ssi_ac97_dai));
+ 		goto config_done;
+@@ -390,9 +417,12 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
+ 		 */
  
-@@ -1342,6 +1352,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	}
+ 		/* These assignments are simply vals without bits set in avals*/
+-		sier = vals->sier & (vals->sier ^ avals->sier);
+-		srcr = vals->srcr & (vals->srcr ^ avals->srcr);
+-		stcr = vals->stcr & (vals->stcr ^ avals->stcr);
++		sier = fsl_ssi_disable_val(vals->sier, avals->sier,
++				keep_active);
++		srcr = fsl_ssi_disable_val(vals->srcr, avals->srcr,
++				keep_active);
++		stcr = fsl_ssi_disable_val(vals->stcr, avals->stcr,
++				keep_active);
  
- done:
-+	if (ssi_private->dai_fmt)
-+		_fsl_ssi_set_dai_fmt(ssi_private, ssi_private->dai_fmt);
-+
- 	return 0;
- 
- error_sound_card:
+ 		write_ssi_mask(&ssi->srcr, srcr, 0);
+ 		write_ssi_mask(&ssi->stcr, stcr, 0);
 -- 
 1.9.0
