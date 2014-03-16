@@ -1,15 +1,17 @@
 From: Alexander Shiyan <shc_work@mail.ru>
-Subject: [PATCH RESEND 1/2] ASoC: fsl: Separation of the main
-	audio options and boards
-Date: Sun, 16 Mar 2014 08:21:34 +0400
-Message-ID: <1394943695-22845-1-git-send-email-shc_work@mail.ru>
+Subject: [PATCH RESEND 2/2] ASoC: fsl: Allow to select
+	individual common options
+Date: Sun, 16 Mar 2014 08:21:35 +0400
+Message-ID: <1394943695-22845-2-git-send-email-shc_work@mail.ru>
+References: <1394943695-22845-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp17.mail.ru (smtp17.mail.ru [94.100.176.154])
- by alsa0.perex.cz (Postfix) with ESMTP id D2E672608B7
- for <alsa-devel@alsa-project.org>; Sun, 16 Mar 2014 05:21:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A86C2608C7
+ for <alsa-devel@alsa-project.org>; Sun, 16 Mar 2014 05:21:51 +0100 (CET)
+In-Reply-To: <1394943695-22845-1-git-send-email-shc_work@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,94 +25,62 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-This patch provide separation of the main audio options and boards.
+This patch allow to select individual common sound options and
+as a result allow using sound cards/codecs based on DT description.
 
 Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- sound/soc/fsl/Kconfig | 36 ++++++++++++++++++++++--------------
- 1 file changed, 22 insertions(+), 14 deletions(-)
+ sound/soc/fsl/Kconfig | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 597962e..94c9350 100644
+index 94c9350..14216da 100644
 --- a/sound/soc/fsl/Kconfig
 +++ b/sound/soc/fsl/Kconfig
-@@ -1,3 +1,5 @@
-+menu "SoC Audio for Freescale CPUs"
+@@ -1,16 +1,28 @@
+ menu "SoC Audio for Freescale CPUs"
+ 
++comment "Common SoC Audio options for Freescale CPUs:"
 +
  config SND_SOC_FSL_SAI
  	tristate
  	select REGMAP_MMIO
-@@ -17,13 +19,27 @@ config SND_SOC_FSL_ESAI
- config SND_SOC_FSL_UTILS
- 	tristate
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
  
--menuconfig SND_POWERPC_SOC
-+config SND_SOC_IMX_PCM_DMA
-+	tristate
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+
-+config SND_SOC_IMX_AUDMUX
-+	tristate
-+
-+config SND_POWERPC_SOC
- 	tristate "SoC Audio for Freescale PowerPC CPUs"
- 	depends on FSL_SOC || PPC_MPC52xx
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the PowerPC CPUs.
- 
-+config SND_IMX_SOC
-+	tristate "SoC Audio for Freescale i.MX CPUs"
-+	depends on ARCH_MXC || COMPILE_TEST
+ config SND_SOC_FSL_SSI
+-	tristate
++	tristate "Synchronous Serial Interface module support"
 +	help
-+	  Say Y or M if you want to add support for codecs attached to
-+	  the i.MX CPUs.
-+
- if SND_POWERPC_SOC
++	  Say Y if you want to add Synchronous Serial Interface (SSI)
++	  support for the Freescale CPUs.
++	  This option is only useful for out-of-tree drivers since
++	  in-tree drivers select it automatically.
  
- config SND_MPC52xx_DMA
-@@ -32,6 +48,8 @@ config SND_MPC52xx_DMA
- config SND_SOC_POWERPC_DMA
- 	tristate
- 
-+comment "SoC Audio support for Freescale PPC boards:"
-+
- config SND_SOC_MPC8610_HPCD
- 	tristate "ALSA SoC support for the Freescale MPC8610 HPCD board"
- 	# I2C is necessary for the CS4270 driver
-@@ -109,13 +127,6 @@ config SND_MPC52xx_SOC_EFIKA
- 
- endif # SND_POWERPC_SOC
- 
--menuconfig SND_IMX_SOC
--	tristate "SoC Audio for Freescale i.MX CPUs"
--	depends on ARCH_MXC || COMPILE_TEST
--	help
--	  Say Y or M if you want to add support for codecs attached to
--	  the i.MX CPUs.
--
- if SND_IMX_SOC
- 
- config SND_SOC_IMX_SSI
-@@ -125,12 +136,7 @@ config SND_SOC_IMX_PCM_FIQ
- 	tristate
- 	select FIQ
- 
--config SND_SOC_IMX_PCM_DMA
+ config SND_SOC_FSL_SPDIF
 -	tristate
--	select SND_SOC_GENERIC_DMAENGINE_PCM
--
--config SND_SOC_IMX_AUDMUX
++	tristate "Sony/Philips Digital Interface module support"
+ 	select REGMAP_MMIO
++	help
++	  Say Y if you want to add Sony/Philips Digital Interface (SPDIF)
++	  support for the Freescale CPUs.
++	  This option is only useful for out-of-tree drivers since
++	  in-tree drivers select it automatically.
+ 
+ config SND_SOC_FSL_ESAI
+ 	tristate
+@@ -24,7 +36,12 @@ config SND_SOC_IMX_PCM_DMA
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 
+ config SND_SOC_IMX_AUDMUX
 -	tristate
-+comment "SoC Audio support for Freescale i.MX boards:"
++	tristate "Digital Audio Mux module support"
++	help
++	  Say Y if you want to add Digital Audio Mux (AUDMUX) support
++	  for the ARM i.MX CPUs.
++	  This option is only useful for out-of-tree drivers since
++	  in-tree drivers select it automatically.
  
- config SND_MXC_SOC_WM1133_EV1
- 	tristate "Audio on the i.MX31ADS with WM1133-EV1 fitted"
-@@ -223,3 +229,5 @@ config SND_SOC_IMX_MC13783
- 	select SND_SOC_IMX_PCM_DMA
- 
- endif # SND_IMX_SOC
-+
-+endmenu
+ config SND_POWERPC_SOC
+ 	tristate "SoC Audio for Freescale PowerPC CPUs"
 -- 
 1.8.3.2
