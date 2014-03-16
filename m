@@ -1,20 +1,15 @@
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-Subject: Re:
- =?utf-8?q?=5BPATCH_v2_16/16=5D_ASoC=3A_fsl-ssi=3A_Us?=
- =?utf-8?q?e_regmap?=
-Date: Sat, 15 Mar 2014 18:43:36 +0400
-Message-ID: <1394894616.578942243@f331.i.mail.ru>
-References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
- <1394887464-969-17-git-send-email-mpa@pengutronix.de>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+From: Alexander Shiyan <shc_work@mail.ru>
+Subject: [PATCH RESEND 1/2] ASoC: fsl: Separation of the main
+	audio options and boards
+Date: Sun, 16 Mar 2014 08:21:34 +0400
+Message-ID: <1394943695-22845-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from f331.i.mail.ru (f331.i.mail.ru [217.69.140.227])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C8FD265112
- for <alsa-devel@alsa-project.org>; Sat, 15 Mar 2014 15:43:39 +0100 (CET)
-In-Reply-To: <1394887464-969-17-git-send-email-mpa@pengutronix.de>
+Received: from smtp17.mail.ru (smtp17.mail.ru [94.100.176.154])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2E672608B7
+ for <alsa-devel@alsa-project.org>; Sun, 16 Mar 2014 05:21:50 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,22 +19,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?TWFya3VzIFBhcmdtYW5u?= <mpa@pengutronix.de>
-Cc: =?UTF-8?B?RmFiaW8gRXN0ZXZhbQ==?= <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, =?UTF-8?B?VGltdXIgVGFiaQ==?= <timur@tabi.org>, =?UTF-8?B?TWFyayBCcm93bg==?= <broonie@kernel.org>, kernel@pengutronix.de, =?UTF-8?B?Tmljb2xpbiBDaGVu?= <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-0KHRg9Cx0LHQvtGC0LAsIDE1INC80LDRgNGC0LAgMjAxNCwgMTM6NDQgKzAxOjAwINC+0YIgTWFy
-a3VzIFBhcmdtYW5uIDxtcGFAcGVuZ3V0cm9uaXguZGU+Ogo+IFRoaXMgcGF0Y2ggcmVwbGFjZXMg
-dGhlIHNzaSBzcGVjaWZpYyBmdW5jdGlvbnMgd3JpdGVfc3NpLCByZWFkX3NzaSBhbmQKPiB3cml0
-ZV9zc2lfbWFzayBieSBzdGFuZGFyZCByZWdtYXAgZnVuY3Rpb24gY2FsbHMuCi4uLgo+IGRpZmYg
-LS1naXQgYS9zb3VuZC9zb2MvZnNsL2ZzbF9zc2kuYyBiL3NvdW5kL3NvYy9mc2wvZnNsX3NzaS5j
-Ci4uLgo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHJlZ21hcF9jb25maWcgZnNsX3NzaV9yZWdjb25m
-aWcgPSB7Cj4gKwkubWF4X3JlZ2lzdGVyID0gQ0NTUl9TU0lfU0FDQ0RJUywKPiArCS5yZWdfYml0
-cyA9IDMyLAo+ICsJLnZhbF9iaXRzID0gMzIsCj4gKwkucmVnX3N0cmlkZSA9IDQsCj4gKyNpZmRl
-ZiBQUEMKPiArCS52YWxfZm9ybWF0X2VuZGlhbiA9IFJFR01BUF9FTkRJQU5fQklHLAo+ICsjZW5k
-aWYKPiArfTsKCldoeSB3ZSBjYW5ub3QgdXNlIFJFR01BUF9FTkRJQU5fTkFUSVZFIGhlcmUgZm9y
-IGFsbCBjYXNlcz8KVGhlb3JldGljYWxseSwgd2UgY2FuIHVzZSBmb3IgaS5NWCBTT0NzIHdpdGgg
-ZGlmZmVyZW50IGVuZGlhbm5lc3MsCnNvIHRoaXMgd2lsbCBoZWxwIHVzLgoKLS0tCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This patch provide separation of the main audio options and boards.
+
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ sound/soc/fsl/Kconfig | 36 ++++++++++++++++++++++--------------
+ 1 file changed, 22 insertions(+), 14 deletions(-)
+
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 597962e..94c9350 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -1,3 +1,5 @@
++menu "SoC Audio for Freescale CPUs"
++
+ config SND_SOC_FSL_SAI
+ 	tristate
+ 	select REGMAP_MMIO
+@@ -17,13 +19,27 @@ config SND_SOC_FSL_ESAI
+ config SND_SOC_FSL_UTILS
+ 	tristate
+ 
+-menuconfig SND_POWERPC_SOC
++config SND_SOC_IMX_PCM_DMA
++	tristate
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++
++config SND_SOC_IMX_AUDMUX
++	tristate
++
++config SND_POWERPC_SOC
+ 	tristate "SoC Audio for Freescale PowerPC CPUs"
+ 	depends on FSL_SOC || PPC_MPC52xx
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the PowerPC CPUs.
+ 
++config SND_IMX_SOC
++	tristate "SoC Audio for Freescale i.MX CPUs"
++	depends on ARCH_MXC || COMPILE_TEST
++	help
++	  Say Y or M if you want to add support for codecs attached to
++	  the i.MX CPUs.
++
+ if SND_POWERPC_SOC
+ 
+ config SND_MPC52xx_DMA
+@@ -32,6 +48,8 @@ config SND_MPC52xx_DMA
+ config SND_SOC_POWERPC_DMA
+ 	tristate
+ 
++comment "SoC Audio support for Freescale PPC boards:"
++
+ config SND_SOC_MPC8610_HPCD
+ 	tristate "ALSA SoC support for the Freescale MPC8610 HPCD board"
+ 	# I2C is necessary for the CS4270 driver
+@@ -109,13 +127,6 @@ config SND_MPC52xx_SOC_EFIKA
+ 
+ endif # SND_POWERPC_SOC
+ 
+-menuconfig SND_IMX_SOC
+-	tristate "SoC Audio for Freescale i.MX CPUs"
+-	depends on ARCH_MXC || COMPILE_TEST
+-	help
+-	  Say Y or M if you want to add support for codecs attached to
+-	  the i.MX CPUs.
+-
+ if SND_IMX_SOC
+ 
+ config SND_SOC_IMX_SSI
+@@ -125,12 +136,7 @@ config SND_SOC_IMX_PCM_FIQ
+ 	tristate
+ 	select FIQ
+ 
+-config SND_SOC_IMX_PCM_DMA
+-	tristate
+-	select SND_SOC_GENERIC_DMAENGINE_PCM
+-
+-config SND_SOC_IMX_AUDMUX
+-	tristate
++comment "SoC Audio support for Freescale i.MX boards:"
+ 
+ config SND_MXC_SOC_WM1133_EV1
+ 	tristate "Audio on the i.MX31ADS with WM1133-EV1 fitted"
+@@ -223,3 +229,5 @@ config SND_SOC_IMX_MC13783
+ 	select SND_SOC_IMX_PCM_DMA
+ 
+ endif # SND_IMX_SOC
++
++endmenu
+-- 
+1.8.3.2
