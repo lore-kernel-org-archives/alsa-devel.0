@@ -1,140 +1,80 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 3/4] ASoC: davinci-mcasp: Constraint on
- the period and buffer size based on FIFO usage
-Date: Mon, 17 Mar 2014 15:28:49 +0200
-Message-ID: <5326F891.7090906@ti.com>
-References: <1394808168-32608-1-git-send-email-peter.ujfalusi@ti.com>
- <1394808168-32608-4-git-send-email-peter.ujfalusi@ti.com>
- <532588A3.4050301@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v2 3/4] ASoC: simple-card: accept many DAI
+ links
+Date: Mon, 17 Mar 2014 16:19:16 +0000
+Message-ID: <20140317161916.GL11706@sirena.org.uk>
+References: <cover.1394533640.git.moinejf@free.fr>
+ <d71a2b62b331302772d35b3cd35c6dc5da1e9e5d.1394533640.git.moinejf@free.fr>
+ <5322E4FC.7060605@ti.com>
+ <20140314194037.7da888cd@armhf>
+ <cbc30d6fcafead46267347269cbabfb7@kapsi.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DF1D26171B
- for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 14:28:53 +0100 (CET)
-In-Reply-To: <532588A3.4050301@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com, Mark Brown <broonie@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qo7zVO9a9OQ5oQtr"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <cbc30d6fcafead46267347269cbabfb7@kapsi.fi>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, Xiubo Li <Li.Xiubo@freescale.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/16/2014 01:18 PM, Lars-Peter Clausen wrote:
-> On 03/14/2014 03:42 PM, Peter Ujfalusi wrote:
->> We need to place constraint on the period and buffer size if the read
->> or write AFIFO is enabled and it is configured for more than one word
->> otherwise the DMA will fail in buffer configuration where the sizes
->> are not aligned with the requested FIFO configuration.
->>
->> Some application (like mplayer) needs the constraint placed on the
->> buffer size as well. If only period size is constrained they might
->> fail to figure out the allowed buffer configuration.
-> =
 
-> Hm... the sound like there is still a bug somewhere. We constrain the buf=
-fer
-> size to be a multiple of the period size. If the period size is constrain=
-t to
-> be a multiple of a constant then the buffer size should automatically be
-> constrained to be a multiple of constant * period count. And just constra=
-ining
-> the buffer size to be a multiple of the burst size still allows buffer si=
-zes
-> that are not a multiple of burst size * period count.
+--qo7zVO9a9OQ5oQtr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yeah, aplay, PA is fine. mplayer however does things in a different manner.=
- I
-use mplayer mainly to test PA (with -ao pulse) but sometimes I use it throu=
-gh
-ALSA and this is where I noticed the issue.
+On Sat, Mar 15, 2014 at 11:14:13AM +0200, Jyri Sarha wrote:
+> On 2014-03-14 20:40, Jean-Francois Moine wrote:
 
-If I constrain only period_size mplayer will fail to set hw_params. If I on=
-ly
-constrain the buffer_size than we can have period_size which does not allign
-with the FIFO settings.
+> >So, the actual solution I use is 3 DAI links (= 3 PCMs):
+> >- HDMI via I2S
+> >- HDMI via S/PDIF (no S/PDIF output)
+> >- S/PDIF via S/PDIF (no HDMI output)
 
-I also tried to have snd_pcm_hw_rule_add() and using the snd_interval_step(=
-) -
-which need to be exported but mplayer fails with that also. It fails even i=
-f I
-add the rule for period and buffer size.
+> Maybe a HW specific machine-driver would serve your case better. Of course
+> it would be great to have a generic implementation that can handle this case
+> too, but I am not sure if it should be called a simple-card anymore :).
 
-Also the constraint as it is currently is not optimal since it does not take
-into account the number of channels as you pointed out.
+I am a bit concerned about that I have to say.
 
->>
->> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> ---
->>   sound/soc/davinci/davinci-mcasp.c | 16 ++++++++++++++++
->>   1 file changed, 16 insertions(+)
->>
->> diff --git a/sound/soc/davinci/davinci-mcasp.c
->> b/sound/soc/davinci/davinci-mcasp.c
->> index a01ae97c90aa..3ca6e8c4568a 100644
->> --- a/sound/soc/davinci/davinci-mcasp.c
->> +++ b/sound/soc/davinci/davinci-mcasp.c
->> @@ -720,6 +720,7 @@ static int davinci_mcasp_startup(struct
->> snd_pcm_substream *substream,
->>                    struct snd_soc_dai *dai)
->>   {
->>       struct davinci_mcasp *mcasp =3D snd_soc_dai_get_drvdata(dai);
->> +    int afifo_numevt;
->>
->>       if (mcasp->version =3D=3D MCASP_VERSION_4)
->>           snd_soc_dai_set_dma_data(dai, substream,
->> @@ -727,6 +728,21 @@ static int davinci_mcasp_startup(struct
->> snd_pcm_substream *substream,
->>       else
->>           snd_soc_dai_set_dma_data(dai, substream, mcasp->dma_params);
->>
->> +    if (substream->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK)
->> +        afifo_numevt =3D mcasp->txnumevt;
->> +    else
->> +        afifo_numevt =3D mcasp->rxnumevt;
-> =
+> >>You need to update the DT-binding document too when you are changing the
+> >>binding. That way it would also be easier to follow what you are trying
+> >>to accomplish here.
 
-> Shouldn't this use the same calculation that's used to set dma_data->maxb=
-urst?
-> Also we should add this to the dmaengine PCM driver, since there will most
-> likely be more DMA controllers with this restriction, doesn't necessarily=
- need
-> to be done in this patch series though.
+> >Some people want to have 2 different patchs: one for the code and the
+> >other one for the DT change. Some other people like you want only one
+> >patch. Which is the right way?
 
-At startup time we do not know the number of channels going to be used. I'm
-planning to improve this constraint handling in a coming series.
-Using the afifo_numevt as step is not optimal since in case of stereo stream
-the step should be (afifo_numevt / 2). afifo_numevt is the sample count and
-not the frame count.
+> I did not mean it should be in the same patch. Part of the same series is
+> fine with me. It is up to maintainer to decide these things anyway. I would
+> just like to compare the document with the implementation.
 
-> =
+If the binding is being changed in the code the documentation absolutely
+must be updated as part of the same patch series if it's not already
+been changed previously.  You can have documentation without code but
+not code without documentation.
 
->> +
->> +    if (afifo_numevt > 1) {
->> +        snd_pcm_hw_constraint_step(substream->runtime, 0,
->> +                       SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
->> +                       afifo_numevt);
->> +
->> +        snd_pcm_hw_constraint_step(substream->runtime, 0,
->> +                       SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
->> +                       afifo_numevt);
->> +    }
->> +
->>       return 0;
->>   }
->>
->>
-> =
+--qo7zVO9a9OQ5oQtr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
+iQIcBAEBAgAGBQJTJyCBAAoJELSic+t+oim94SgP/3tG55DrJ+yCCxM06NeXkpCq
+UmLoYKzwdLEeH26Pfb8Q4X/ddn9A30uWeKWThSKsXt5LKWRFAu+sea+VzMqKd8Ey
+r4EOYXnrVStMhkJEhVpkb+xIfGuxwtJEMhbVraWpqus3kBXrZr8RocU4914GiE5j
+fu9GZlmTbySlsxbqusywSgdOVqtnZNsuVO85xSeovXLyZsv1I6mrdv9e8XwlrD8u
+2K7/hgbmxLAsw9hw+dVmbtMehusL/bx7ms2av971+nBSfadTgqu+suS7Km7r0UOd
+b1d6EVWUOJYVhoLtjKk3UtqWpOTsZ7bWW6jXGM9ZLhBUhwTumh9sodQGNGUdalu2
+eqpU9lBdwcK4GWvjf3f1S9xlwwGB8WrSNXHOSsHug4tg58CJMHgawO14GedUeOSm
+UxsLtLarpFCzHFMCIsux/kLwKbafaLF1gURJO1F5C5EYGCA+nOjgITwr0Ih13TZ9
+wcToJGs3xMJVH6wUVCym9+YZftYO8CEsWS3gDKGLpQ9utzESIYiKO+LRev2yTTnU
+vYOHdd/4b/672iZSsNBIectxoFSo67JrYGtN8184jFCuEJTMYnuPbPrRzzFILP4P
+rOuBOqP/ic/tACYKjG+QlX0b6rCeVkRn2oNjKtehHBipIFmvnQ9wzJFNkTseFGQl
+sI/Gir9VO271fk7EarRK
+=NakR
+-----END PGP SIGNATURE-----
 
--- =
-
-P=E9ter
+--qo7zVO9a9OQ5oQtr--
