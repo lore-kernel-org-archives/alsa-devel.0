@@ -1,18 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: sirf-audio-codec: Add missing
-	Makefile entry
-Date: Mon, 17 Mar 2014 17:00:49 +0000
-Message-ID: <20140317170049.GV11706@sirena.org.uk>
-References: <1394785572-28315-1-git-send-email-lars@metafoo.de>
- <1394785572-28315-2-git-send-email-lars@metafoo.de>
+From: Matthias Larisch <mail@matthias-larisch.de>
+Subject: [RFC PATCH] alsa-lib: Call LADSPA activate after all
+ ports are setup
+Date: Mon, 17 Mar 2014 19:40:00 +0100
+Message-ID: <20140317194000.5fa76393@purefruit.fritz.box>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7493721065244928725=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ED8802619F7
- for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 18:01:02 +0100 (CET)
-In-Reply-To: <1394785572-28315-2-git-send-email-lars@metafoo.de>
+Received: from mail.mlh-server.de (mail.mlh-server.de [5.9.104.232])
+ by alsa0.perex.cz (Postfix) with ESMTP id D46B7261A48
+ for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 19:40:02 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by mail.mlh-server.de (Postfix) with ESMTP id 852F73074D7
+ for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 19:40:02 +0100 (CET)
+Received: from mail.mlh-server.de ([127.0.0.1])
+ by localhost (mail.mlh-server.de [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Am9FTZmWTRlZ for <alsa-devel@alsa-project.org>;
+ Mon, 17 Mar 2014 19:40:02 +0100 (CET)
+Received: from purefruit.fritz.box (dslb-092-076-230-060.pools.arcor-ip.net
+ [92.76.230.60]) (Authenticated sender: mail@matthias-larisch.de)
+ by mail.mlh-server.de (Postfix) with ESMTPSA id 3A7E4300137
+ for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 19:40:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +30,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Rongjun Ying <rongjun.ying@csr.com>, Barry Song <baohua@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hey there,
 
---===============7493721065244928725==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uOZhbHG+Ruum37TI"
-Content-Disposition: inline
+I notices mainly swh-plugins (like butterworth_1902) to crash on seek with
+mplayer or mpd. This is due to their behaviour on relying on the activate call
+after the control inputs are set.
 
+This is not right by LADSPA API description but I see no point in NOT calling
+activate as late as possible in alsa-lib.
 
---uOZhbHG+Ruum37TI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Comments?
 
-On Fri, Mar 14, 2014 at 09:26:12AM +0100, Lars-Peter Clausen wrote:
-> Without this the driver can't be built.
+Regards,
 
-Yeah.  On the other hand until the issue with sharing the registers
-between the CODEC and DAI drivers is resolved I'm not sure this is a bad
-thing.  There were some patches for that which I didn't look at yet
-though.
+Matthias
 
---uOZhbHG+Ruum37TI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>From f7f5d920c845fc54ffef208f68f568b06e8fadd1 Mon Sep 17 00:00:00 2001
+From: Matthias Larisch <mail@matthias-larisch.de>
+Date: Mon, 17 Mar 2014 19:37:01 +0100
+Subject: [PATCH] call ladspa activate as late as possible to work around wrong
+ plugin behaviour
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+---
+ src/pcm/pcm_ladspa.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-iQIcBAEBAgAGBQJTJyo+AAoJELSic+t+oim9DC8QAIEykGp42Q/JhsoV2fDmNSEg
-WV+dl9RhzslpUCYjtYzHMAv2UskSZQY63s6NBIbVJ9Jzob2+iD3ZwqMjCl0dwHWp
-TQAIoNa7shpsgGVU7ytxu/4yaIcpQ2oYCRYtKv0XwelUYl3PyJAVzR0x/433RZOy
-R8QSsnWkJ35znHl7uvy/WCg2xuH52IoKIGasR5lvGBRDHXmzaymu2JjwF36UTfOP
-jmDYoruW5GgSh60OjyusAjKPkvK7kL/cMTG8LX/Gz7NF2CNlGBSvzzZ4bHX24a41
-TgUM7FqOApQHoGkqFDqQWrAXrDr9SIrgjP/MCwTjSeA+OXXivomG/v/x19LvKULE
-wSXyQIXZlIOe/Yoh67CNMMKg89+fZo6wXXAm+uHpWv8Pe/VPnwv97FZLcd8CQftr
-q0O39CulxcOypPuy7tLipcslmTA/c6EHDBNUaRtt4XkR90JDN6w+sRGYixooPkVf
-YcbslKQTCvZaPpL3YE2wpTASc1+bVbQf2Wg5YvClbpwKJMnt4VsAgXnJj0/RiPtj
-cJrexSSmWyg04rKh3A3sLeq/8lRrZSHr5UegWMNnRD2l3aVPxpuGGr7DWjhgkhfe
-+OWm2TycNTkVPOiDS6EyXIHKCfFdqWCavyHq60o/l2F5Sh38RfVqOZ6AWApPSKnU
-yO38dqOKQASDANU6TXDB
-=NXcR
------END PGP SIGNATURE-----
-
---uOZhbHG+Ruum37TI--
-
---===============7493721065244928725==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7493721065244928725==--
+diff --git a/src/pcm/pcm_ladspa.c b/src/pcm/pcm_ladspa.c
+index 9ce5242..7d1e3df 100644
+--- a/src/pcm/pcm_ladspa.c
++++ b/src/pcm/pcm_ladspa.c
+@@ -645,8 +645,6 @@ static int snd_pcm_ladspa_allocate_instances(snd_pcm_t *pcm, snd_pcm_ladspa_t *l
+ 				return -EINVAL;
+ 			}
+ 			list_add_tail(&instance->list, &plugin->instances);
+-			if (plugin->desc->activate)
+-				plugin->desc->activate(instance->handle);
+ 			if (plugin->policy == SND_PCM_LADSPA_POLICY_DUPLICATE) {
+ 				err = snd_pcm_ladspa_connect_plugin_duplicate(plugin, &plugin->input, &plugin->output, instance, idx);
+ 				if (err < 0) {
+@@ -664,6 +662,8 @@ static int snd_pcm_ladspa_allocate_instances(snd_pcm_t *pcm, snd_pcm_ladspa_t *l
+ 			assert(err >= 0);
+ 			err = snd_pcm_ladspa_connect_controls(plugin, &plugin->output, instance);
+ 			assert(err >= 0);
++			if (plugin->desc->activate)
++				plugin->desc->activate(instance->handle);
+ 		}
+ 		err = snd_pcm_ladspa_check_connect(plugin, &plugin->input, &instance->input, depth);
+ 		if (err < 0)
+-- 
+1.9.0
