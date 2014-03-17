@@ -1,74 +1,51 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [alsa-devel] [PATCH v3 2/4] ASoC: simple-card: dynamically allocate
- the DAI link and properties
-Date: Mon, 17 Mar 2014 11:29:42 +0200
-Message-ID: <5326C086.6080609@ti.com>
-References: <cover.1394883134.git.moinejf@free.fr> <1cf50fea2306bcb05987533042dbf1495b2c6f07.1394883134.git.moinejf@free.fr>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH 0/8] ARM: at91: sama5d3: enable sound support
+Date: Mon, 17 Mar 2014 17:45:33 +0800
+Message-ID: <1395049541-28128-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1cf50fea2306bcb05987533042dbf1495b2c6f07.1394883134.git.moinejf@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8AD0260799
+ for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 10:47:34 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, nicolas.ferre@atmel.com
+Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>, Wolfram Sang <wsa@the-dreams.de>, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, Russell King <linux@arm.linux.org.uk>, linux-doc@vger.kernel.org, Boris BREZILLON <b.brezillon@overkiz.com>, Takashi Iwai <tiwai@suse.de>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>, Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/15/2014 01:09 PM, Jean-Francois Moine wrote:
-> The DAI link array and the properties (fmt, sysclk slots) are
-> hard-coded for a single CPU / CODEC link.
->
-> This patch dynamically allocates the DAI link array and the
-> properties with the aim of supporting many DAI links.
->
-> Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
-> ---
->   sound/soc/generic/simple-card.c | 49 +++++++++++++++++++++++++----------------
->   1 file changed, 30 insertions(+), 19 deletions(-)
->
-> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-> index ca7e63e..a55dc46 100644
-> --- a/sound/soc/generic/simple-card.c
-> +++ b/sound/soc/generic/simple-card.c
-> @@ -20,9 +20,11 @@
->
->   struct simple_card_data {
->   	struct snd_soc_card snd_card;
-> -	struct asoc_simple_dai cpu_dai;
-> -	struct asoc_simple_dai codec_dai;
-> -	struct snd_soc_dai_link snd_link;
-> +	struct simple_dais {
-> +		struct asoc_simple_dai cpu_dai;
-> +		struct asoc_simple_dai codec_dai;
-> +	} *dais;
-> +	struct snd_soc_dai_link dai_link[];	/* dynamically allocated */
->   };
->
+This patch add sound support on sama5d3xek board.
 
-This is only an implementation detail, but wouldn't it produce a cleaner 
-implementation if you would write the above structure like this:
+This patch series based on the following patch set:
+  clk: at91: better support for the PCKs
+  http://comments.gmane.org/gmane.linux.kernel/1664477
 
-   struct simple_card_data {
-   	struct snd_soc_card snd_card;
-	struct simple_dai_links {
-		struct snd_soc_dai_link dai_link;
-		struct asoc_simple_dai cpu_dai;
-		struct asoc_simple_dai codec_dai;
-	} *dai_links;
-   };
 
-or even
+Bo Shen (5):
+  ARM: at91: sama5d3: add DMA property for SSC devices
+  ARM: at91: sama5d3: disable sound by default
+  ARM: at91: sama5d3: correct the sound compatible string
+  ARM: at91: sama5d3: add the missing property
+  ARM: at91: sama5d3: clock for ssc from rk pin
 
-   struct simple_card_data {
-   	struct snd_soc_card snd_card;
-	struct simple_dai_links {
-		struct snd_soc_dai_link dai_link;
-		struct asoc_simple_dai cpu_dai;
-		struct asoc_simple_dai codec_dai;
-	} dai_links[]; /* dynamically allocated */
-   };
+Boris BREZILLON (3):
+  ASoC: atmel: support CCF based clks
+  ASoC: atmel: document clock properties of the wm8904 driver
+  ARM: at91/dt: add clock properties to the wm8904 codec node
 
-But, as said this only an implementation detail.
+ .../devicetree/bindings/sound/atmel-wm8904.txt     |  2 ++
+ arch/arm/boot/dts/sama5d3.dtsi                     |  6 ++++++
+ arch/arm/boot/dts/sama5d3xmb.dtsi                  | 11 +++++++++-
+ sound/soc/atmel/atmel_wm8904.c                     | 25 +++++++++++-----------
+ 4 files changed, 31 insertions(+), 13 deletions(-)
 
-Best regards,
-Jyri
+-- 
+1.8.5.2
