@@ -1,14 +1,16 @@
 From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH 0/8] ARM: at91: sama5d3: enable sound support
-Date: Mon, 17 Mar 2014 17:45:33 +0800
-Message-ID: <1395049541-28128-1-git-send-email-voice.shen@atmel.com>
+Subject: [PATCH 6/8] ASoC: atmel: support CCF based clks
+Date: Mon, 17 Mar 2014 17:45:39 +0800
+Message-ID: <1395049541-28128-7-git-send-email-voice.shen@atmel.com>
+References: <1395049541-28128-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
- by alsa0.perex.cz (Postfix) with ESMTP id B8AD0260799
- for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 10:47:34 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A51D1260799
+ for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 10:47:55 +0100 (CET)
+In-Reply-To: <1395049541-28128-1-git-send-email-voice.shen@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,33 +21,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, nicolas.ferre@atmel.com
-Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>, Wolfram Sang <wsa@the-dreams.de>, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, Russell King <linux@arm.linux.org.uk>, linux-doc@vger.kernel.org, Boris BREZILLON <b.brezillon@overkiz.com>, Takashi Iwai <tiwai@suse.de>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>, Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>
+Cc: alsa-devel@alsa-project.org, Wolfram Sang <wsa@the-dreams.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, Boris BREZILLON <b.brezillon@overkiz.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch add sound support on sama5d3xek board.
+From: Boris BREZILLON <b.brezillon@overkiz.com>
 
-This patch series based on the following patch set:
-  clk: at91: better support for the PCKs
-  http://comments.gmane.org/gmane.linux.kernel/1664477
+Provide dev to clk_get function if we're using CCF based clks.
+CCF based prog clks support automatic parent selection when asking for a
+specific rate: remove the clk32k clk retrieval if we're using these clks.
 
+Signed-off-by: Boris BREZILLON <b.brezillon@overkiz.com>
+[voice.shen@atmel.com: switch to devm manage function]
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
 
-Bo Shen (5):
-  ARM: at91: sama5d3: add DMA property for SSC devices
-  ARM: at91: sama5d3: disable sound by default
-  ARM: at91: sama5d3: correct the sound compatible string
-  ARM: at91: sama5d3: add the missing property
-  ARM: at91: sama5d3: clock for ssc from rk pin
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
+---
 
-Boris BREZILLON (3):
-  ASoC: atmel: support CCF based clks
-  ASoC: atmel: document clock properties of the wm8904 driver
-  ARM: at91/dt: add clock properties to the wm8904 codec node
+ sound/soc/atmel/atmel_wm8904.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
- .../devicetree/bindings/sound/atmel-wm8904.txt     |  2 ++
- arch/arm/boot/dts/sama5d3.dtsi                     |  6 ++++++
- arch/arm/boot/dts/sama5d3xmb.dtsi                  | 11 +++++++++-
- sound/soc/atmel/atmel_wm8904.c                     | 25 +++++++++++-----------
- 4 files changed, 31 insertions(+), 13 deletions(-)
-
+diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
+index b4e3690..a797d33 100644
+--- a/sound/soc/atmel/atmel_wm8904.c
++++ b/sound/soc/atmel/atmel_wm8904.c
+@@ -170,25 +170,26 @@ static int atmel_asoc_wm8904_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	mclk = clk_get(NULL, "pck0");
++	mclk = devm_clk_get(&pdev->dev, "pck0");
+ 	if (IS_ERR(mclk)) {
+ 		dev_err(&pdev->dev, "failed to get pck0\n");
+ 		ret = PTR_ERR(mclk);
+ 		goto err_set_audio;
+ 	}
+ 
+-	clk_src = clk_get(NULL, "clk32k");
+-	if (IS_ERR(clk_src)) {
+-		dev_err(&pdev->dev, "failed to get clk32k\n");
+-		ret = PTR_ERR(clk_src);
+-		goto err_set_audio;
+-	}
++	if (!IS_ENABLED(CONFIG_COMMON_CLK)) {
++		clk_src = devm_clk_get(&pdev->dev, "clk32k");
++		if (IS_ERR(clk_src)) {
++			dev_err(&pdev->dev, "failed to get clk32k\n");
++			ret = PTR_ERR(clk_src);
++			goto err_set_audio;
++		}
+ 
+-	ret = clk_set_parent(mclk, clk_src);
+-	clk_put(clk_src);
+-	if (ret != 0) {
+-		dev_err(&pdev->dev, "failed to set MCLK parent\n");
+-		goto err_set_audio;
++		ret = clk_set_parent(mclk, clk_src);
++		if (ret != 0) {
++			dev_err(&pdev->dev, "failed to set MCLK parent\n");
++			goto err_set_audio;
++		}
+ 	}
+ 
+ 	dev_info(&pdev->dev, "setting pck0 to %dHz\n", MCLK_RATE);
 -- 
 1.8.5.2
