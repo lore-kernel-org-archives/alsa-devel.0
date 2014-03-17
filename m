@@ -1,79 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/4] ASoC: davinci-mcasp: Provide
- correct filter_data for dmaengine for non-DT boot
-Date: Mon, 17 Mar 2014 16:21:47 +0000
-Message-ID: <20140317162147.GN11706@sirena.org.uk>
-References: <1394808168-32608-1-git-send-email-peter.ujfalusi@ti.com>
- <1394808168-32608-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 1/4] ASoC: simple-card: Simplify code
+Date: Mon, 17 Mar 2014 16:24:29 +0000
+Message-ID: <20140317162429.GO11706@sirena.org.uk>
+References: <cover.1394883134.git.moinejf@free.fr>
+ <c74668c9277d538b105ab93affe7d33a64342ee9.1394883134.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5380420615886348115=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BCEE261A0A
- for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 17:21:56 +0100 (CET)
-In-Reply-To: <1394808168-32608-3-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZmZU9S7l/XJx5q9b"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <c74668c9277d538b105ab93affe7d33a64342ee9.1394883134.git.moinejf@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5380420615886348115==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Rzq/nSLlHy1djmXS"
-Content-Disposition: inline
-
-
---Rzq/nSLlHy1djmXS
+--ZmZU9S7l/XJx5q9b
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 14, 2014 at 04:42:46PM +0200, Peter Ujfalusi wrote:
-> When we boot with non-DT mode the damengine will need the channel number and
-> a filter function in order to get the channel.
-> The filter_data is filled in the DAI driver while the filter_function will
-> be provided by the edma-pcm driver.
+On Sat, Mar 15, 2014 at 11:32:42AM +0100, Jean-Francois Moine wrote:
+> The global DAI format is used only in the function
+> asoc_simple_card_parse_of(). So, move it from the private data
+> to the stack.
 
 Applied, thanks.
 
---Rzq/nSLlHy1djmXS
+--ZmZU9S7l/XJx5q9b
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTJyEYAAoJELSic+t+oim9xpoQAIvjQHpLveSMuIhCFOSaJcsp
-6Y0GX8VQWyUmPFdVc7gcRHKrqVW+9RJMh+w8aO/6dOlSquci1iI+08WCoc8EjwUX
-/aqMdV0/arGuAcJSvhZm4bUX/VhoiyGdTy7wc6GCLOfCl9ZtsbxD/nSq8yg9z95L
-vWTawI5MOi8hZNA0j7vAv4w49HohiqyfbLwyJgEceiuUa6OqP9wysRhH3tnEmmXm
-x8jW/WeEr/fq74IlbYGMR6ad0WfeqNx4KCkyv7Kb2Ch1JH4JiopeJCSPHr6Da14d
-7slPQWQJIGf3tcq2PMGu+8EIFDSkpJWkQomaUf9OIpp3LjHhGdqYqXRBej2Yhu/F
-BqpwMgbigFOeVqJ5pbeHaRMgOhty+R9f1rp7rlCuO7qwSxsWp/lgh+cJK6OeCiov
-RUBI7f2YJgQBb9ThKx4mXdIxzCo5fXoUypQtbbqJVKn8c4Mc71iryV21ADwUGlEF
-+eQzY5Xw19wFr6raHrsAOFpnwi5gVDwKRb+2urI09L7PTKyO34kzIh5cNL37oHXb
-lVujdHUdScd849q6Jt16PR+V9klUTwybMjuxNZL9LM8dy+YotKE/1OKFzAx9OGZb
-fu9akcOAH4NEEjLgMHKoEe4pijXmBXTusdzsijnY/vSU+K9ZAHIaceD+NGwKWMZv
-uJBOP5JffwIgx2FSNw2j
-=Ncmu
+iQIcBAEBAgAGBQJTJyG6AAoJELSic+t+oim91gQQAIKf40P8EO2BMSQ4se/bCcdK
+LLzRJSybjhLFs6M8rcRFMf2of5TCpAzBoFWa3Wt3c12A1hRN/hGs6Zq4YS0EfjRw
+oPKeoDyKsm45Vs3SEBi+mUsHa4D2hwr4L3NpKHtP5RIBXPnefHIxaG9ztUp5cwhz
+29sSwf3Uv8GncMK8H2mZ64xyOulJHwji6YjjkK+2Qp1u1/2l4eIlLFznNcjnvPpy
+bm10/AegD5adbEqeS6Q68Kracn2IS0OygZT1oReLT1ofBgHQflB4Gz6QnWaLc35Y
+NMaUw2kS0zPzGDHgAdYg6n5hUbAY+cQnPmJsCABjj1qlPHVwdooVsX1LFYi6Eh5t
+16bNrqHgxLZiAlS1xEdAhWr5Qtsevbykt7P+wB/iWL3jUBI7UEjHNEqQ6PLskzef
+ltqfQobmBydtprN9sOqymIbPwjXQDG8fX9Tg0s+ni1YNIxgwO201NOfeuhVPaMpq
+ay1Jh1QlPaQLQnbixaKxb6gpxUIu2iGAJXveXV7ai+kvAyjsxCbzk7vjsEayq/jU
+6HNLSScwoBoLTpkKG5vDKz734JFpIR86lnbRmX/Qa9GwuTpzbXbmU+BXTwOausrk
+bzFKbP46ZGw0Be22YGZpqPNjCfpwOTA+8QTwQ+pGkUSMkCi8BHgajBgqMZBGbeU3
+KE65qNX/pzB1WVYwP7td
+=1S8r
 -----END PGP SIGNATURE-----
 
---Rzq/nSLlHy1djmXS--
-
---===============5380420615886348115==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5380420615886348115==--
+--ZmZU9S7l/XJx5q9b--
