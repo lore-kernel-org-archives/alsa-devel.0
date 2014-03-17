@@ -1,70 +1,27 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH v3 2/4] ASoC: simple-card: dynamically
- allocate the DAI link and properties
-Date: Mon, 17 Mar 2014 11:23:32 +0100
-Message-ID: <20140317112332.4a0700d8@armhf>
-References: <cover.1394883134.git.moinejf@free.fr>
- <1cf50fea2306bcb05987533042dbf1495b2c6f07.1394883134.git.moinejf@free.fr>
- <5326C086.6080609@ti.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [alsa-devel] [PATCH v3 2/4] ASoC: simple-card: dynamically allocate
+ the DAI link and properties
+Date: Mon, 17 Mar 2014 12:27:16 +0200
+Message-ID: <5326CE04.2090504@ti.com>
+References: <cover.1394883134.git.moinejf@free.fr>	<1cf50fea2306bcb05987533042dbf1495b2c6f07.1394883134.git.moinejf@free.fr>	<5326C086.6080609@ti.com> <20140317112332.4a0700d8@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
- by alsa0.perex.cz (Postfix) with ESMTP id ACE6B26087D
- for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 11:23:24 +0100 (CET)
-In-Reply-To: <5326C086.6080609@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: Xiubo Li <Li.Xiubo@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140317112332.4a0700d8@armhf>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAxNyBNYXIgMjAxNCAxMToyOTo0MiArMDIwMApKeXJpIFNhcmhhIDxqc2FyaGFAdGku
-Y29tPiB3cm90ZToKCj4gT24gMDMvMTUvMjAxNCAwMTowOSBQTSwgSmVhbi1GcmFuY29pcyBNb2lu
-ZSB3cm90ZToKPiA+IFRoZSBEQUkgbGluayBhcnJheSBhbmQgdGhlIHByb3BlcnRpZXMgKGZtdCwg
-c3lzY2xrIHNsb3RzKSBhcmUKPiA+IGhhcmQtY29kZWQgZm9yIGEgc2luZ2xlIENQVSAvIENPREVD
-IGxpbmsuCj4gPgo+ID4gVGhpcyBwYXRjaCBkeW5hbWljYWxseSBhbGxvY2F0ZXMgdGhlIERBSSBs
-aW5rIGFycmF5IGFuZCB0aGUKPiA+IHByb3BlcnRpZXMgd2l0aCB0aGUgYWltIG9mIHN1cHBvcnRp
-bmcgbWFueSBEQUkgbGlua3MuCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogSmVhbi1GcmFuY29pcyBN
-b2luZSA8bW9pbmVqZkBmcmVlLmZyPgo+ID4gLS0tCj4gPiAgIHNvdW5kL3NvYy9nZW5lcmljL3Np
-bXBsZS1jYXJkLmMgfCA0OSArKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0t
-LQo+ID4gICAxIGZpbGUgY2hhbmdlZCwgMzAgaW5zZXJ0aW9ucygrKSwgMTkgZGVsZXRpb25zKC0p
-Cj4gPgo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9nZW5lcmljL3NpbXBsZS1jYXJkLmMgYi9z
-b3VuZC9zb2MvZ2VuZXJpYy9zaW1wbGUtY2FyZC5jCj4gPiBpbmRleCBjYTdlNjNlLi5hNTVkYzQ2
-IDEwMDY0NAo+ID4gLS0tIGEvc291bmQvc29jL2dlbmVyaWMvc2ltcGxlLWNhcmQuYwo+ID4gKysr
-IGIvc291bmQvc29jL2dlbmVyaWMvc2ltcGxlLWNhcmQuYwo+ID4gQEAgLTIwLDkgKzIwLDExIEBA
-Cj4gPgo+ID4gICBzdHJ1Y3Qgc2ltcGxlX2NhcmRfZGF0YSB7Cj4gPiAgIAlzdHJ1Y3Qgc25kX3Nv
-Y19jYXJkIHNuZF9jYXJkOwo+ID4gLQlzdHJ1Y3QgYXNvY19zaW1wbGVfZGFpIGNwdV9kYWk7Cj4g
-PiAtCXN0cnVjdCBhc29jX3NpbXBsZV9kYWkgY29kZWNfZGFpOwo+ID4gLQlzdHJ1Y3Qgc25kX3Nv
-Y19kYWlfbGluayBzbmRfbGluazsKPiA+ICsJc3RydWN0IHNpbXBsZV9kYWlzIHsKPiA+ICsJCXN0
-cnVjdCBhc29jX3NpbXBsZV9kYWkgY3B1X2RhaTsKPiA+ICsJCXN0cnVjdCBhc29jX3NpbXBsZV9k
-YWkgY29kZWNfZGFpOwo+ID4gKwl9ICpkYWlzOwo+ID4gKwlzdHJ1Y3Qgc25kX3NvY19kYWlfbGlu
-ayBkYWlfbGlua1tdOwkvKiBkeW5hbWljYWxseSBhbGxvY2F0ZWQgKi8KPiA+ICAgfTsKPiA+Cj4g
-Cj4gVGhpcyBpcyBvbmx5IGFuIGltcGxlbWVudGF0aW9uIGRldGFpbCwgYnV0IHdvdWxkbid0IGl0
-IHByb2R1Y2UgYSBjbGVhbmVyIAo+IGltcGxlbWVudGF0aW9uIGlmIHlvdSB3b3VsZCB3cml0ZSB0
-aGUgYWJvdmUgc3RydWN0dXJlIGxpa2UgdGhpczoKPiAKPiAgICBzdHJ1Y3Qgc2ltcGxlX2NhcmRf
-ZGF0YSB7Cj4gICAgCXN0cnVjdCBzbmRfc29jX2NhcmQgc25kX2NhcmQ7Cj4gCXN0cnVjdCBzaW1w
-bGVfZGFpX2xpbmtzIHsKPiAJCXN0cnVjdCBzbmRfc29jX2RhaV9saW5rIGRhaV9saW5rOwo+IAkJ
-c3RydWN0IGFzb2Nfc2ltcGxlX2RhaSBjcHVfZGFpOwo+IAkJc3RydWN0IGFzb2Nfc2ltcGxlX2Rh
-aSBjb2RlY19kYWk7Cj4gCX0gKmRhaV9saW5rczsKPiAgICB9Owo+IAo+IG9yIGV2ZW4KPiAKPiAg
-ICBzdHJ1Y3Qgc2ltcGxlX2NhcmRfZGF0YSB7Cj4gICAgCXN0cnVjdCBzbmRfc29jX2NhcmQgc25k
-X2NhcmQ7Cj4gCXN0cnVjdCBzaW1wbGVfZGFpX2xpbmtzIHsKPiAJCXN0cnVjdCBzbmRfc29jX2Rh
-aV9saW5rIGRhaV9saW5rOwo+IAkJc3RydWN0IGFzb2Nfc2ltcGxlX2RhaSBjcHVfZGFpOwo+IAkJ
-c3RydWN0IGFzb2Nfc2ltcGxlX2RhaSBjb2RlY19kYWk7Cj4gCX0gZGFpX2xpbmtzW107IC8qIGR5
-bmFtaWNhbGx5IGFsbG9jYXRlZCAqLwo+ICAgIH07Cj4gCj4gQnV0LCBhcyBzYWlkIHRoaXMgb25s
-eSBhbiBpbXBsZW1lbnRhdGlvbiBkZXRhaWwuCgpKeXJpLAoKTm8sIHRoaXMgd291bGQgbm90IHdv
-cmsuIFRoZSBEQUkgbGluayBpbiB0aGUgc3RydWN0IHNuZF9zb2NfY2FyZCBpcyBhbgphcnJheSBv
-ZiBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluay4gVGhlcmUgY2Fubm90IGJlIGFueXRoaW5nIGJldHdl
-ZW4gdGhlCmVsZW1lbnRzIQoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAqKiBCcmVpemgg
-aGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZyLwpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 03/17/2014 12:23 PM, Jean-Francois Moine wrote:
+> Jyri,
+>
+> No, this would not work. The DAI link in the struct snd_soc_card is an
+> array of struct snd_soc_dai_link. There cannot be anything between the
+> elements!
+
+Oh.. did not go deep enough. Forget about this comment.
+
+Best regards,
+Jyri
