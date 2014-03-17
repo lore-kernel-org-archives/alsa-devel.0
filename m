@@ -1,26 +1,15 @@
-From: Matthias Larisch <mail@matthias-larisch.de>
-Subject: [RFC PATCH] alsa-lib: Call LADSPA activate after all
- ports are setup
-Date: Mon, 17 Mar 2014 19:40:00 +0100
-Message-ID: <20140317194000.5fa76393@purefruit.fritz.box>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH RFC] ALSA: oxygen: Xonar DG(X): fix Stereo
+	Upmixing regression
+Date: Mon, 17 Mar 2014 22:12:54 +0100
+Message-ID: <53276556.20107@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.mlh-server.de (mail.mlh-server.de [5.9.104.232])
- by alsa0.perex.cz (Postfix) with ESMTP id D46B7261A48
- for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 19:40:02 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by mail.mlh-server.de (Postfix) with ESMTP id 852F73074D7
- for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 19:40:02 +0100 (CET)
-Received: from mail.mlh-server.de ([127.0.0.1])
- by localhost (mail.mlh-server.de [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id Am9FTZmWTRlZ for <alsa-devel@alsa-project.org>;
- Mon, 17 Mar 2014 19:40:02 +0100 (CET)
-Received: from purefruit.fritz.box (dslb-092-076-230-060.pools.arcor-ip.net
- [92.76.230.60]) (Authenticated sender: mail@matthias-larisch.de)
- by mail.mlh-server.de (Postfix) with ESMTPSA id 3A7E4300137
- for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 19:40:02 +0100 (CET)
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 977BD261A40
+ for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 22:13:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,55 +19,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Roman Volkov <v1ron@mail.ru>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hey there,
+The code introduced in commit 1f91ecc14dee ("ALSA: oxygen: modify
+adjust_dg_dac_routing function") accidentally disregarded the old value
+of the playback routing register, so it broke the "Stereo Upmixing"
+mixer control.
 
-I notices mainly swh-plugins (like butterworth_1902) to crash on seek with
-mplayer or mpd. This is due to their behaviour on relying on the activate call
-after the control inputs are set.
+The unmuted parts of the channel routing are the same for all settings
+of the output destination, so it suffices to revert that part of the
+patch.
 
-This is not right by LADSPA API description but I see no point in NOT calling
-activate as late as possible in alsa-lib.
-
-Comments?
-
-Regards,
-
-Matthias
-
->From f7f5d920c845fc54ffef208f68f568b06e8fadd1 Mon Sep 17 00:00:00 2001
-From: Matthias Larisch <mail@matthias-larisch.de>
-Date: Mon, 17 Mar 2014 19:37:01 +0100
-Subject: [PATCH] call ladspa activate as late as possible to work around wrong
- plugin behaviour
-
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- src/pcm/pcm_ladspa.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/oxygen/xonar_dg.c |   30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
 
-diff --git a/src/pcm/pcm_ladspa.c b/src/pcm/pcm_ladspa.c
-index 9ce5242..7d1e3df 100644
---- a/src/pcm/pcm_ladspa.c
-+++ b/src/pcm/pcm_ladspa.c
-@@ -645,8 +645,6 @@ static int snd_pcm_ladspa_allocate_instances(snd_pcm_t *pcm, snd_pcm_ladspa_t *l
- 				return -EINVAL;
- 			}
- 			list_add_tail(&instance->list, &plugin->instances);
--			if (plugin->desc->activate)
--				plugin->desc->activate(instance->handle);
- 			if (plugin->policy == SND_PCM_LADSPA_POLICY_DUPLICATE) {
- 				err = snd_pcm_ladspa_connect_plugin_duplicate(plugin, &plugin->input, &plugin->output, instance, idx);
- 				if (err < 0) {
-@@ -664,6 +662,8 @@ static int snd_pcm_ladspa_allocate_instances(snd_pcm_t *pcm, snd_pcm_ladspa_t *l
- 			assert(err >= 0);
- 			err = snd_pcm_ladspa_connect_controls(plugin, &plugin->output, instance);
- 			assert(err >= 0);
-+			if (plugin->desc->activate)
-+				plugin->desc->activate(instance->handle);
- 		}
- 		err = snd_pcm_ladspa_check_connect(plugin, &plugin->input, &instance->input, depth);
- 		if (err < 0)
--- 
-1.9.0
+
+Roman, could you please test this patch, and add your Tested-by?
+
+
+diff --git a/sound/pci/oxygen/xonar_dg.c b/sound/pci/oxygen/xonar_dg.c
+index ed6f199..4cf3200 100644
+--- a/sound/pci/oxygen/xonar_dg.c
++++ b/sound/pci/oxygen/xonar_dg.c
+@@ -238,11 +238,21 @@ void set_cs4245_adc_params(struct oxygen *chip,
+ 	cs4245_write_spi(chip, CS4245_MCLK_FREQ);
+ }
+
++static inline unsigned int shift_bits(unsigned int value,
++				      unsigned int shift_from,
++				      unsigned int shift_to,
++				      unsigned int mask)
++{
++	if (shift_from < shift_to)
++		return (value << (shift_to - shift_from)) & mask;
++	else
++		return (value >> (shift_from - shift_to)) & mask;
++}
++
+ unsigned int adjust_dg_dac_routing(struct oxygen *chip,
+ 					  unsigned int play_routing)
+ {
+ 	struct dg *data = chip->model_data;
+-	unsigned int routing = 0;
+
+ 	switch (data->output_sel) {
+ 	case PLAYBACK_DST_HP:
+@@ -252,15 +262,23 @@ unsigned int adjust_dg_dac_routing(struct oxygen *chip,
+ 			OXYGEN_PLAY_MUTE67, OXYGEN_PLAY_MUTE_MASK);
+ 		break;
+ 	case PLAYBACK_DST_MULTICH:
+-		routing = (0 << OXYGEN_PLAY_DAC0_SOURCE_SHIFT) |
+-			  (2 << OXYGEN_PLAY_DAC1_SOURCE_SHIFT) |
+-			  (1 << OXYGEN_PLAY_DAC2_SOURCE_SHIFT) |
+-			  (0 << OXYGEN_PLAY_DAC3_SOURCE_SHIFT);
+ 		oxygen_write8_masked(chip, OXYGEN_PLAY_ROUTING,
+ 			OXYGEN_PLAY_MUTE01, OXYGEN_PLAY_MUTE_MASK);
+ 		break;
+ 	}
+-	return routing;
++	return (play_routing & OXYGEN_PLAY_DAC0_SOURCE_MASK) |
++	       shift_bits(play_routing,
++			  OXYGEN_PLAY_DAC2_SOURCE_SHIFT,
++			  OXYGEN_PLAY_DAC1_SOURCE_SHIFT,
++			  OXYGEN_PLAY_DAC1_SOURCE_MASK) |
++	       shift_bits(play_routing,
++			  OXYGEN_PLAY_DAC1_SOURCE_SHIFT,
++			  OXYGEN_PLAY_DAC2_SOURCE_SHIFT,
++			  OXYGEN_PLAY_DAC2_SOURCE_MASK) |
++	       shift_bits(play_routing,
++			  OXYGEN_PLAY_DAC0_SOURCE_SHIFT,
++			  OXYGEN_PLAY_DAC3_SOURCE_SHIFT,
++			  OXYGEN_PLAY_DAC3_SOURCE_MASK);
+ }
+
+ void dump_cs4245_registers(struct oxygen *chip,
