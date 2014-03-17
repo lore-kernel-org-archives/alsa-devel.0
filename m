@@ -1,91 +1,78 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3 4/4] ASoC: simple-card: Add DT documentation for
- multi-DAI links
-Date: Mon, 17 Mar 2014 16:43:39 +0000
-Message-ID: <20140317164339.GR11706@sirena.org.uk>
-References: <cover.1394883134.git.moinejf@free.fr>
- <d054780a0edf4b2338a52e48bff9144e19aa614f.1394883134.git.moinejf@free.fr>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 4/4] ASoC: davinci-mcasp: Assign the
+ dma_data earlier in dai_probe callback
+Date: Mon, 17 Mar 2014 16:44:16 +0000
+Message-ID: <20140317164416.GS11706@sirena.org.uk>
+References: <1394808168-32608-1-git-send-email-peter.ujfalusi@ti.com>
+ <1394808168-32608-5-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xJjS+Ds6jmpBvWv0"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <d054780a0edf4b2338a52e48bff9144e19aa614f.1394883134.git.moinejf-GANU6spQydw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============1753834194992232666=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D130261A22
+ for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 17:44:27 +0100 (CET)
+In-Reply-To: <1394808168-32608-5-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---xJjS+Ds6jmpBvWv0
+--===============1753834194992232666==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="58yjuNbz5lCTNNJH"
+Content-Disposition: inline
+
+
+--58yjuNbz5lCTNNJH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Mar 15, 2014 at 12:30:05PM +0100, Jean-Francois Moine wrote:
-> There may be many couples of CPU/CODEC DAI links.
-> The example 2 is extracted from the Cubox DT.
+On Fri, Mar 14, 2014 at 04:42:48PM +0200, Peter Ujfalusi wrote:
+> Set up the playback_dma_data/capture_dma_data for the dai at probe
+> time since the generic dmaengine PCM stack needs to have access to
+> this information early.
 
-Oh, here's some documentation - please include the documentation
-before the code, without the documentation the reader is going to have
-no idea what the code is supposed to be implementing.
+This is OK but depends on patch 3.
 
-> +  There may be one or many couples (simple-audio-card,cpu, simple-audio-card,codec)
-> +  (see example 2).
-
-This doesn't mention how they're matched up.
-
-> +sound {
-> +	compatible = "simple-audio-card";
-> +	simple-audio-card,name = "Cubox Audio";
-> +
-> +	simple-audio-card,cpu@0 {		/* I2S - HDMI */
-> +		sound-dai = <&audio1 0>;
-> +		format = "i2s";
-> +	};
-> +	simple-audio-card,codec@0 {
-> +		sound-dai = <&tda998x 0>;
-> +	};
-> +
-> +	simple-audio-card,cpu@1 {		/* S/PDIF - HDMI */
-> +		sound-dai = <&audio1 1>;
-> +	};
-> +	simple-audio-card,codec@1 {
-> +		sound-dai = <&tda998x 1>;
-> +	};
-
-So, this is not exactly pretty as a binding.  I would expect to see the
-links explicitly represented in the DT so you see the two DAIs in each
-link grouped into a container, the above isn't very easy to read and as
-Jyri says this lack of clarity also causes practical problems in that
-there's nowhere to place link specific parameters.
-
-I think what I'd expect to see here is that the simple card can either
-be a container with a link in it directly or a container of links.
-
---xJjS+Ds6jmpBvWv0
+--58yjuNbz5lCTNNJH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTJyY4AAoJELSic+t+oim9OS4P/2khiA2POaSMU0iHK/NHMpS0
-w0OGadBvfHJT+zLr1L8wC/RCxtkWQh58nGLpf6a2YoOtH3YM/tCT+RjQAc+N7zuq
-IjKQUKUNmLGhFoLvJcIyO6ivaMoAiAFSLFkcwOvf4AMiYkgtxgYZ3wAXJok2rs6N
-Ubpr+wyPCz6omF9jYIvNHVkh5nGvGZuNHemZDx0CnnmICAfXsdb4tA3nrE98Qfbv
-ouIC3mlMZgddxRzmyMM4OyoIL2bxnykhtf3WZkd35IrRGoVrALF7k4/C7o2OlqFX
-OfrhgtzaM6IUjyZmu4q2DvvAsnEuYKtqxDSzOEMK/4a9/+zIEs+veMY41JTkrjUL
-01J4jEm1k7qZtOYQbRdbxrj78K+nzCwd4gelBqVzz37cjgj/OegMpQibgLFHrIGl
-8tndd6Dw35+EpKzIfLe4yQAXgJpxconRu8KC1Y5CWT78ZtCO/HvM6I8oYAwv/r/h
-zaykERe5sEgj5l0KANI8AsZ0vdQkIDIsYG2bJzMuOTutnsrRXIhxaT4m8O/jF55Y
-JM9+xaurD4v4eAxg/eotpx2Vfyj68ekiZxGhytkaEAKTq0JH+UzKSyv4OUiVwmPI
-h5KTNpSZhTq1ZdQxk1wAbq1dbh+qgT1GqYpU5BPZ64W9TfJKT09WWQG+MP+DqDse
-y08KQgCQhsweq0ZdBPWZ
-=DYEL
+iQIcBAEBAgAGBQJTJyZdAAoJELSic+t+oim9t1UP/iHbLTB6tH9z9pKNcS4mjLvt
+OGju/BG3Kwtg0gLVPxXn6Xpjmnev9dbMEOLq+QmzxOxQv5PM8wJF+gkWYKSrvT8W
+5FTrpHUHqyEMqKp5ZrTXGdSHWWIu183uAHBKrWtXStlaMAdmgw9+zTqNQ7depvfC
+XUoB8/jvgB0VojVvuWMFbtvjAh5HLdst98BtfTX+dIUnPK6zNLMTseYYV7r6fDmT
+N6pWu6SfAXJOGg1mh7e+tS/avP9aHxwQGaY+AaNdsYoLFMhd2HDp925ST4G0Zkpg
+6tTihmbMfQzHOMuIUhrLwo19sM+ibOqARL5Idd5iQxOzb4cXgxDJfQmls4Q88QW0
+kSNPuPzWLlq6wrDW/iw8cwozsw1T/v4e/4UPYKjzXIXJNIvbvbYc8wECMsH9ejeg
+NOuKREEO2QUox8zHWEroT9H68rf2zG7ejYrC2NpHhktif7gteiVObo3moF7TxFbB
+QQcAs2vBYAMRpEbXjIYLwcy1Fcs3m/v8o2xfGYV0MlcGHPHCEyYGvH7dm6b2+sJc
+yft4p5v5a3jhg8OxPpI3BE8kSOAMdofLvfsf9+8Zcz9RzwNSE8y4f72VG8stt651
+4ZIhGyvnW9sO7+2tjdnVds+szemeJvOxsB6zB5dc1/J/pKEvQ6ZAkxdRVUthbkKu
+vsYUMmjPNJ/fWPVh7bFO
+=j+2+
 -----END PGP SIGNATURE-----
 
---xJjS+Ds6jmpBvWv0--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--58yjuNbz5lCTNNJH--
+
+--===============1753834194992232666==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1753834194992232666==--
