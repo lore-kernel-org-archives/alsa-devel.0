@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 4/4] ASoC: davinci-mcasp: Assign the
- dma_data earlier in dai_probe callback
-Date: Mon, 17 Mar 2014 16:44:16 +0000
-Message-ID: <20140317164416.GS11706@sirena.org.uk>
+Subject: Re: [PATCH v2 3/4] ASoC: davinci-mcasp: Constraint on
+ the period and buffer size based on FIFO usage
+Date: Mon, 17 Mar 2014 16:52:14 +0000
+Message-ID: <20140317165214.GT11706@sirena.org.uk>
 References: <1394808168-32608-1-git-send-email-peter.ujfalusi@ti.com>
- <1394808168-32608-5-git-send-email-peter.ujfalusi@ti.com>
+ <1394808168-32608-4-git-send-email-peter.ujfalusi@ti.com>
+ <532588A3.4050301@metafoo.de> <5326F891.7090906@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1753834194992232666=="
+Content-Type: multipart/mixed; boundary="===============7885323032904473115=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D130261A22
- for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 17:44:27 +0100 (CET)
-In-Reply-To: <1394808168-32608-5-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C4B362619F7
+ for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 17:52:19 +0100 (CET)
+In-Reply-To: <5326F891.7090906@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +24,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1753834194992232666==
+--===============7885323032904473115==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="58yjuNbz5lCTNNJH"
+	protocol="application/pgp-signature"; boundary="ScUgq5oMe+fJq4F1"
 Content-Disposition: inline
 
 
---58yjuNbz5lCTNNJH
+--ScUgq5oMe+fJq4F1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 14, 2014 at 04:42:48PM +0200, Peter Ujfalusi wrote:
-> Set up the playback_dma_data/capture_dma_data for the dai at probe
-> time since the generic dmaengine PCM stack needs to have access to
-> this information early.
+On Mon, Mar 17, 2014 at 03:28:49PM +0200, Peter Ujfalusi wrote:
+> On 03/16/2014 01:18 PM, Lars-Peter Clausen wrote:
 
-This is OK but depends on patch 3.
+> > Hm... the sound like there is still a bug somewhere. We constrain the buffer
+> > size to be a multiple of the period size. If the period size is constraint to
+> > be a multiple of a constant then the buffer size should automatically be
+> > constrained to be a multiple of constant * period count. And just constraining
+> > the buffer size to be a multiple of the burst size still allows buffer sizes
+> > that are not a multiple of burst size * period count.
 
---58yjuNbz5lCTNNJH
+> Yeah, aplay, PA is fine. mplayer however does things in a different manner. I
+> use mplayer mainly to test PA (with -ao pulse) but sometimes I use it through
+> ALSA and this is where I noticed the issue.
+
+> If I constrain only period_size mplayer will fail to set hw_params. If I only
+> constrain the buffer_size than we can have period_size which does not allign
+> with the FIFO settings.
+
+> I also tried to have snd_pcm_hw_rule_add() and using the snd_interval_step() -
+> which need to be exported but mplayer fails with that also. It fails even if I
+> add the rule for period and buffer size.
+
+> Also the constraint as it is currently is not optimal since it does not take
+> into account the number of channels as you pointed out.
+
+This is all sounding like the thing that needs to be looked at here is
+mplayer so we understand what's going wrong with regard to the buffer
+sizes.  It's sounding like if we should be doing it this is a general
+thing which we should be constraining presumably it'd apply to all
+drivers, not just this one, and so shouldn't be being fixed in the
+driver but it's not obvious to me why the period constraint isn't
+sufficient.
+
+--ScUgq5oMe+fJq4F1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTJyZdAAoJELSic+t+oim9t1UP/iHbLTB6tH9z9pKNcS4mjLvt
-OGju/BG3Kwtg0gLVPxXn6Xpjmnev9dbMEOLq+QmzxOxQv5PM8wJF+gkWYKSrvT8W
-5FTrpHUHqyEMqKp5ZrTXGdSHWWIu183uAHBKrWtXStlaMAdmgw9+zTqNQ7depvfC
-XUoB8/jvgB0VojVvuWMFbtvjAh5HLdst98BtfTX+dIUnPK6zNLMTseYYV7r6fDmT
-N6pWu6SfAXJOGg1mh7e+tS/avP9aHxwQGaY+AaNdsYoLFMhd2HDp925ST4G0Zkpg
-6tTihmbMfQzHOMuIUhrLwo19sM+ibOqARL5Idd5iQxOzb4cXgxDJfQmls4Q88QW0
-kSNPuPzWLlq6wrDW/iw8cwozsw1T/v4e/4UPYKjzXIXJNIvbvbYc8wECMsH9ejeg
-NOuKREEO2QUox8zHWEroT9H68rf2zG7ejYrC2NpHhktif7gteiVObo3moF7TxFbB
-QQcAs2vBYAMRpEbXjIYLwcy1Fcs3m/v8o2xfGYV0MlcGHPHCEyYGvH7dm6b2+sJc
-yft4p5v5a3jhg8OxPpI3BE8kSOAMdofLvfsf9+8Zcz9RzwNSE8y4f72VG8stt651
-4ZIhGyvnW9sO7+2tjdnVds+szemeJvOxsB6zB5dc1/J/pKEvQ6ZAkxdRVUthbkKu
-vsYUMmjPNJ/fWPVh7bFO
-=j+2+
+iQIcBAEBAgAGBQJTJyg6AAoJELSic+t+oim9cG4QAJkSKcLjfgds0KxxeUDsbO4D
+6LkUGrN7ReWZewXvYUbGP/KoW8sBmWjGR76vgKgqbv9qy6hCTH+kv0aOU4L4SFsY
+lUwOe2KoRD9DbszMBpD9hZWxKeQwu13BLAHIjziDn7CAGHZqogMhL2xwl4hey+eb
+ZW+24RYPFe1LrNM7oqj6hcqUVc/tDytqSdLDH32LE+JwScCj5XY3JCSyM8JdiUt1
+FnX6/WVNnRmVLZPJr8h+gIeplwFLDFLtmDHPcnyVec+NjrWfiDuwNNcseg1p/68P
+62nlsUV4tOMnKnGYACwoOnlAmg7ORedWYbyoyoP4GZOh8uCXYaWtnucOjRvcsQom
+YdjaFXMdetV2dfYP9xn3cIVJRc7L+500h8Jq3LubkhHeho18K5eIhayJQNods2QQ
+HUisJqnYsMfgHMktQzebnxLXO2tgcQ1CvBAzsF0Q9r+jdVU8lGzzMQI1rdnTQpSy
+1kzcC0b7ruDT+PX3g6snz8+qQ12A8tJOov8GSFHJQayMWgHqdmX5RDOspGIAFvxK
+jt2pYk5zxES0KI+G1qCxpg0Q8WuNInpaqkr5Q197DxspkyZdloDsJV0PKbRwcF4H
+ososY8st6c0Vyhu/E+3PfkzUYSqF6bnAHqsIfrk8mBXoIuQB4iJbQGZYsWqEDRyk
+SxEtutjgrtfY6LDTuPz5
+=3un1
 -----END PGP SIGNATURE-----
 
---58yjuNbz5lCTNNJH--
+--ScUgq5oMe+fJq4F1--
 
---===============1753834194992232666==
+--===============7885323032904473115==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1753834194992232666==--
+--===============7885323032904473115==--
