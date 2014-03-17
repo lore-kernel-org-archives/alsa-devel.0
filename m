@@ -1,54 +1,85 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 3/4] ASoC: simple-card: Handle many DAI links
-Date: Mon, 17 Mar 2014 16:29:22 +0000
-Message-ID: <20140317162922.GQ11706@sirena.org.uk>
-References: <cover.1394883134.git.moinejf@free.fr>
- <0d648a81b7dd3fbd3ec769cb77bce0af5b39d699.1394883134.git.moinejf@free.fr>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="z87VqPJ/HsYrR2WM"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <0d648a81b7dd3fbd3ec769cb77bce0af5b39d699.1394883134.git.moinejf@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
+From: Cyrus Harmon <cyrus@bobobeach.com>
+Subject: Re: [PATCH] add Steinberg UR44 USB Audio Interface
+	support to quirks-table
+Date: Mon, 17 Mar 2014 09:29:34 -0700
+Message-ID: <88C9DBF9-92A3-4885-87C5-A9966C326D0F@bobobeach.com>
+References: <1394388767-23658-1-git-send-email-cyrus@bobobeach.com>
+ <531DAB14.5080201@ladisch.de>
+ <76F78615-8762-4A6C-B601-97380805F450@bobobeach.com>
+ <531DDD04.5050902@ladisch.de>
+ <0EFBCC9F-93CA-4368-9530-B9049B3743FB@bobobeach.com>
+ <531EC9CC.4060203@ladisch.de>
+Mime-Version: 1.0 (Mac OS X Mail 7.2 \(1874\))
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.cyrusharmon.org (unknown [206.125.171.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0BE52619D8
+ for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 17:29:32 +0100 (CET)
+In-Reply-To: <531EC9CC.4060203@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---z87VqPJ/HsYrR2WM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mar 11, 2014, at 1:31 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
 
-On Sat, Mar 15, 2014 at 12:26:54PM +0100, Jean-Francois Moine wrote:
-> Some simple audio cards may have many DAI links.
-> This patch extends the simple-card driver for handling such cards.
+> Cyrus Harmon wrote:
+>> On Mar 10, 2014, at 8:40 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+>>> In theory, kernel 3.11 and later should support this device without
+>>> a quirk entry.  I guess it actually does not?
+>> =
 
-This appears to be updating the device tree binding but there is no
-documentation update to go with it.  Given that there are exactly two
-DAI subnodes specified explicitly by name in the binding it's not at all
-clear how this is intended to work.
+>> no, the stock kernel doesn=92t support this device.
+> =
 
---z87VqPJ/HsYrR2WM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> Strange; in theory, the driver should be able to pick up these
+> descriptors.
+> =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+> Are there any error messages in the system log when you plug it in or
+> reload the unpatch snd-usb-audio driver?
 
-iQIcBAEBAgAGBQJTJyLeAAoJELSic+t+oim9Q4AP/0w8t2XWKgZ2tw4CUVcVgnZg
-S8og4I6W8IuSsJcDpxTdtGxKnjeSuldH9SJFFc4L8RJ1VpKeuSBJDePOkpHnNo/h
-Ck6+uN9C7/55UhWTkbUE0CIdLVozaYCgsykUAz6g05rxhQ/h0bEb/RoqtX1oDFuw
-XJPd7IUYCxvTasJE+IDUgZOOnNMgTQYzrKnl7XjXMgeQHfTUbwldnRL5HUUzJvKl
-BhJbjMBUK5QF6qhuihiPBtSdd08f+P+t4nx76w/WOCbmt0H4Ozw0X/QQWrmUjJ6b
-KOtZJL77KHuq/zYr/+mSmwojCz+PA5XgNW35XG482a5TEV55QpwnCzPqamqEwswK
-2A20nZ7L+/11BDntxDzRWUsIAr79V5c+LkzclnzXQp31pJPegfkdduxkzU1nVnTb
-q7oV2swW8ibtyaQmvxJk8HL4qb9ojsdeiAQgL4ffq8Hu41c0edBzOx461+fhkix0
-FGRNdpvKDCXh8/GUYJPSPC/g9bmHXCNZs1FBN59ewGpCz1HZmzILT3r4SUtMh+Jr
-eYcOi2PzMAlVG9B6yiW7q0EDrjicXlLxXQqbUWh0ILt3Midg14C8tU0sUPfOheir
-mm9fGMqQQflqQie6v7R69AHn9PUbM5HZ1iBY8/T7vG8WtA6O9ejjmWO2HT/RYx6o
-Ld4yY8mqvmjlWAcRC3cU
-=Tpvn
------END PGP SIGNATURE-----
+Following up on this from last week, here=92s the error message I see with =
+an unpatched kernel:
 
---z87VqPJ/HsYrR2WM--
+Mar 11 02:25:11 cbox kernel: [   82.426640] usb 2-1.6: new high-speed USB d=
+evice number 4 using ehci-pci
+Mar 11 02:25:12 cbox kernel: [   82.515364] usb 2-1.6: New USB device found=
+, idVendor=3D0499, idProduct=3D150e
+Mar 11 02:25:12 cbox kernel: [   82.515368] usb 2-1.6: New USB device strin=
+gs: Mfr=3D1, Product=3D2, SerialNumber=3D0
+Mar 11 02:25:12 cbox kernel: [   82.515370] usb 2-1.6: Product: Steinberg U=
+R44
+Mar 11 02:25:12 cbox kernel: [   82.515372] usb 2-1.6: Manufacturer: Yamaha=
+ Corporation
+Mar 11 02:25:12 cbox kernel: [   82.518134] snd-usb-audio: probe of 2-1.6:1=
+.0 failed with error -5
+Mar 11 02:25:12 cbox kernel: [   82.523317] snd-usb-audio: probe of 2-1.6:1=
+.1 failed with error -5
+Mar 11 02:25:12 cbox mtp-probe: checking bus 2, device 4: "/sys/devices/pci=
+0000:00/0000:00:1d.0/usb2/2-1/2-1.6"
+Mar 11 02:25:12 cbox mtp-probe: bus: 2, device: 4 was not an MTP device
+
+Any suggestions for further debugging this?
+
+Also, from an earlier message,
+
+On Mar 10, 2014, at 8:40 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+
+> This sounds as if the playback stream needs to be synchronized to the
+> recording stream
+
+Any pointers on where I might look to figure out how to do this?
+
+thanks again,
+
+Cyrus
