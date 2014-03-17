@@ -1,85 +1,91 @@
-From: Cyrus Harmon <cyrus@bobobeach.com>
-Subject: Re: [PATCH] add Steinberg UR44 USB Audio Interface
-	support to quirks-table
-Date: Mon, 17 Mar 2014 09:29:34 -0700
-Message-ID: <88C9DBF9-92A3-4885-87C5-A9966C326D0F@bobobeach.com>
-References: <1394388767-23658-1-git-send-email-cyrus@bobobeach.com>
- <531DAB14.5080201@ladisch.de>
- <76F78615-8762-4A6C-B601-97380805F450@bobobeach.com>
- <531DDD04.5050902@ladisch.de>
- <0EFBCC9F-93CA-4368-9530-B9049B3743FB@bobobeach.com>
- <531EC9CC.4060203@ladisch.de>
-Mime-Version: 1.0 (Mac OS X Mail 7.2 \(1874\))
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.cyrusharmon.org (unknown [206.125.171.163])
- by alsa0.perex.cz (Postfix) with ESMTP id B0BE52619D8
- for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 17:29:32 +0100 (CET)
-In-Reply-To: <531EC9CC.4060203@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 4/4] ASoC: simple-card: Add DT documentation for
+ multi-DAI links
+Date: Mon, 17 Mar 2014 16:43:39 +0000
+Message-ID: <20140317164339.GR11706@sirena.org.uk>
+References: <cover.1394883134.git.moinejf@free.fr>
+ <d054780a0edf4b2338a52e48bff9144e19aa614f.1394883134.git.moinejf@free.fr>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xJjS+Ds6jmpBvWv0"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <d054780a0edf4b2338a52e48bff9144e19aa614f.1394883134.git.moinejf-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-On Mar 11, 2014, at 1:31 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+--xJjS+Ds6jmpBvWv0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Cyrus Harmon wrote:
->> On Mar 10, 2014, at 8:40 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
->>> In theory, kernel 3.11 and later should support this device without
->>> a quirk entry.  I guess it actually does not?
->> =
+On Sat, Mar 15, 2014 at 12:30:05PM +0100, Jean-Francois Moine wrote:
+> There may be many couples of CPU/CODEC DAI links.
+> The example 2 is extracted from the Cubox DT.
 
->> no, the stock kernel doesn=92t support this device.
-> =
+Oh, here's some documentation - please include the documentation
+before the code, without the documentation the reader is going to have
+no idea what the code is supposed to be implementing.
 
-> Strange; in theory, the driver should be able to pick up these
-> descriptors.
-> =
+> +  There may be one or many couples (simple-audio-card,cpu, simple-audio-card,codec)
+> +  (see example 2).
 
-> Are there any error messages in the system log when you plug it in or
-> reload the unpatch snd-usb-audio driver?
+This doesn't mention how they're matched up.
 
-Following up on this from last week, here=92s the error message I see with =
-an unpatched kernel:
+> +sound {
+> +	compatible = "simple-audio-card";
+> +	simple-audio-card,name = "Cubox Audio";
+> +
+> +	simple-audio-card,cpu@0 {		/* I2S - HDMI */
+> +		sound-dai = <&audio1 0>;
+> +		format = "i2s";
+> +	};
+> +	simple-audio-card,codec@0 {
+> +		sound-dai = <&tda998x 0>;
+> +	};
+> +
+> +	simple-audio-card,cpu@1 {		/* S/PDIF - HDMI */
+> +		sound-dai = <&audio1 1>;
+> +	};
+> +	simple-audio-card,codec@1 {
+> +		sound-dai = <&tda998x 1>;
+> +	};
 
-Mar 11 02:25:11 cbox kernel: [   82.426640] usb 2-1.6: new high-speed USB d=
-evice number 4 using ehci-pci
-Mar 11 02:25:12 cbox kernel: [   82.515364] usb 2-1.6: New USB device found=
-, idVendor=3D0499, idProduct=3D150e
-Mar 11 02:25:12 cbox kernel: [   82.515368] usb 2-1.6: New USB device strin=
-gs: Mfr=3D1, Product=3D2, SerialNumber=3D0
-Mar 11 02:25:12 cbox kernel: [   82.515370] usb 2-1.6: Product: Steinberg U=
-R44
-Mar 11 02:25:12 cbox kernel: [   82.515372] usb 2-1.6: Manufacturer: Yamaha=
- Corporation
-Mar 11 02:25:12 cbox kernel: [   82.518134] snd-usb-audio: probe of 2-1.6:1=
-.0 failed with error -5
-Mar 11 02:25:12 cbox kernel: [   82.523317] snd-usb-audio: probe of 2-1.6:1=
-.1 failed with error -5
-Mar 11 02:25:12 cbox mtp-probe: checking bus 2, device 4: "/sys/devices/pci=
-0000:00/0000:00:1d.0/usb2/2-1/2-1.6"
-Mar 11 02:25:12 cbox mtp-probe: bus: 2, device: 4 was not an MTP device
+So, this is not exactly pretty as a binding.  I would expect to see the
+links explicitly represented in the DT so you see the two DAIs in each
+link grouped into a container, the above isn't very easy to read and as
+Jyri says this lack of clarity also causes practical problems in that
+there's nowhere to place link specific parameters.
 
-Any suggestions for further debugging this?
+I think what I'd expect to see here is that the simple card can either
+be a container with a link in it directly or a container of links.
 
-Also, from an earlier message,
+--xJjS+Ds6jmpBvWv0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-On Mar 10, 2014, at 8:40 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-> This sounds as if the playback stream needs to be synchronized to the
-> recording stream
+iQIcBAEBAgAGBQJTJyY4AAoJELSic+t+oim9OS4P/2khiA2POaSMU0iHK/NHMpS0
+w0OGadBvfHJT+zLr1L8wC/RCxtkWQh58nGLpf6a2YoOtH3YM/tCT+RjQAc+N7zuq
+IjKQUKUNmLGhFoLvJcIyO6ivaMoAiAFSLFkcwOvf4AMiYkgtxgYZ3wAXJok2rs6N
+Ubpr+wyPCz6omF9jYIvNHVkh5nGvGZuNHemZDx0CnnmICAfXsdb4tA3nrE98Qfbv
+ouIC3mlMZgddxRzmyMM4OyoIL2bxnykhtf3WZkd35IrRGoVrALF7k4/C7o2OlqFX
+OfrhgtzaM6IUjyZmu4q2DvvAsnEuYKtqxDSzOEMK/4a9/+zIEs+veMY41JTkrjUL
+01J4jEm1k7qZtOYQbRdbxrj78K+nzCwd4gelBqVzz37cjgj/OegMpQibgLFHrIGl
+8tndd6Dw35+EpKzIfLe4yQAXgJpxconRu8KC1Y5CWT78ZtCO/HvM6I8oYAwv/r/h
+zaykERe5sEgj5l0KANI8AsZ0vdQkIDIsYG2bJzMuOTutnsrRXIhxaT4m8O/jF55Y
+JM9+xaurD4v4eAxg/eotpx2Vfyj68ekiZxGhytkaEAKTq0JH+UzKSyv4OUiVwmPI
+h5KTNpSZhTq1ZdQxk1wAbq1dbh+qgT1GqYpU5BPZ64W9TfJKT09WWQG+MP+DqDse
+y08KQgCQhsweq0ZdBPWZ
+=DYEL
+-----END PGP SIGNATURE-----
 
-Any pointers on where I might look to figure out how to do this?
-
-thanks again,
-
-Cyrus
+--xJjS+Ds6jmpBvWv0--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
