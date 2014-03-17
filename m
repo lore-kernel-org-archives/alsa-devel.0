@@ -1,80 +1,79 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 3/4] ASoC: simple-card: accept many DAI
- links
-Date: Mon, 17 Mar 2014 16:19:16 +0000
-Message-ID: <20140317161916.GL11706@sirena.org.uk>
-References: <cover.1394533640.git.moinejf@free.fr>
- <d71a2b62b331302772d35b3cd35c6dc5da1e9e5d.1394533640.git.moinejf@free.fr>
- <5322E4FC.7060605@ti.com>
- <20140314194037.7da888cd@armhf>
- <cbc30d6fcafead46267347269cbabfb7@kapsi.fi>
+Subject: Re: [PATCH v2 1/4] ASoC: davinci: Add edma dmaengine
+	platform driver
+Date: Mon, 17 Mar 2014 16:20:56 +0000
+Message-ID: <20140317162056.GM11706@sirena.org.uk>
+References: <1394808168-32608-1-git-send-email-peter.ujfalusi@ti.com>
+ <1394808168-32608-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qo7zVO9a9OQ5oQtr"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <cbc30d6fcafead46267347269cbabfb7@kapsi.fi>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, Xiubo Li <Li.Xiubo@freescale.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: multipart/mixed; boundary="===============6176186618652764248=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E5B92617A4
+ for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 17:21:07 +0100 (CET)
+In-Reply-To: <1394808168-32608-2-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---qo7zVO9a9OQ5oQtr
+--===============6176186618652764248==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5V5c01chtBAiSHoy"
+Content-Disposition: inline
+
+
+--5V5c01chtBAiSHoy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Mar 15, 2014 at 11:14:13AM +0200, Jyri Sarha wrote:
-> On 2014-03-14 20:40, Jean-Francois Moine wrote:
+On Fri, Mar 14, 2014 at 04:42:45PM +0200, Peter Ujfalusi wrote:
+> Platform driver glue for SoC using eDMA3 to use dmaengine PCM.
+> The maximum number of periods need to be limited to 19 since the
+> edma dmaengine driver limits the paRAM slot use for audio at
+> in cyclic mode.
 
-> >So, the actual solution I use is 3 DAI links (= 3 PCMs):
-> >- HDMI via I2S
-> >- HDMI via S/PDIF (no S/PDIF output)
-> >- S/PDIF via S/PDIF (no HDMI output)
+Applied, thanks.
 
-> Maybe a HW specific machine-driver would serve your case better. Of course
-> it would be great to have a generic implementation that can handle this case
-> too, but I am not sure if it should be called a simple-card anymore :).
-
-I am a bit concerned about that I have to say.
-
-> >>You need to update the DT-binding document too when you are changing the
-> >>binding. That way it would also be easier to follow what you are trying
-> >>to accomplish here.
-
-> >Some people want to have 2 different patchs: one for the code and the
-> >other one for the DT change. Some other people like you want only one
-> >patch. Which is the right way?
-
-> I did not mean it should be in the same patch. Part of the same series is
-> fine with me. It is up to maintainer to decide these things anyway. I would
-> just like to compare the document with the implementation.
-
-If the binding is being changed in the code the documentation absolutely
-must be updated as part of the same patch series if it's not already
-been changed previously.  You can have documentation without code but
-not code without documentation.
-
---qo7zVO9a9OQ5oQtr
+--5V5c01chtBAiSHoy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTJyCBAAoJELSic+t+oim94SgP/3tG55DrJ+yCCxM06NeXkpCq
-UmLoYKzwdLEeH26Pfb8Q4X/ddn9A30uWeKWThSKsXt5LKWRFAu+sea+VzMqKd8Ey
-r4EOYXnrVStMhkJEhVpkb+xIfGuxwtJEMhbVraWpqus3kBXrZr8RocU4914GiE5j
-fu9GZlmTbySlsxbqusywSgdOVqtnZNsuVO85xSeovXLyZsv1I6mrdv9e8XwlrD8u
-2K7/hgbmxLAsw9hw+dVmbtMehusL/bx7ms2av971+nBSfadTgqu+suS7Km7r0UOd
-b1d6EVWUOJYVhoLtjKk3UtqWpOTsZ7bWW6jXGM9ZLhBUhwTumh9sodQGNGUdalu2
-eqpU9lBdwcK4GWvjf3f1S9xlwwGB8WrSNXHOSsHug4tg58CJMHgawO14GedUeOSm
-UxsLtLarpFCzHFMCIsux/kLwKbafaLF1gURJO1F5C5EYGCA+nOjgITwr0Ih13TZ9
-wcToJGs3xMJVH6wUVCym9+YZftYO8CEsWS3gDKGLpQ9utzESIYiKO+LRev2yTTnU
-vYOHdd/4b/672iZSsNBIectxoFSo67JrYGtN8184jFCuEJTMYnuPbPrRzzFILP4P
-rOuBOqP/ic/tACYKjG+QlX0b6rCeVkRn2oNjKtehHBipIFmvnQ9wzJFNkTseFGQl
-sI/Gir9VO271fk7EarRK
-=NakR
+iQIcBAEBAgAGBQJTJyDkAAoJELSic+t+oim9fj0P/AwsE3ufxg2Mbtpssif6elB6
+ZlglWQ+KjQOsQPPJAF6i0D4EChKv1EEh0glAv1VoxMAMrxWTk7j3qVPYx7G/MPh9
++cNCwdTaHR6qI4QDSMdxkr2ebJ2FB4RWZkc83k/4Ag7vjBGP1AHQtiUb21VEke4f
+dwdSICJ8E5YUYfdjgSEdyd9CbPx/ECJ52dtX7I6tS2nnYD/1MdLK3D1oKDn1S1f6
+q0tW8lU6QZjXrgkeNK8aKvRS/HztBDHXSsITDLhagD95v2BJ96VjOvghATKS2IKE
++EoIDRSD4zLTqJBzGtu0SZwvmk+togSSEqGradQInnekTdwnOcDNJ9vRKV5+72Tx
+jRxZXNT0lhw5bCkCH5xfd/psqfcFfOq+kT1Qgn1yrDf1Mr9HX1s8D6sDI3VPazR4
+OWwH1tW5qW1bifysEJ9465yee6JiYMTBUObYRTcHEtzW2PCuyIg0inplU7h3EFcB
+f4KiKi2UCBC5MUn1WV2zo/JJo8TMlAAYtoc8TTGkvztCOm3wVl42htw9CA7EkcwB
+L/E1/Zjtz9sWfDu8iQ3fC2g4Anocrh4nA7nF2Rby/uPR7ui32y6s2mQv0FJqYYmM
+yowZjWapVx6q4hCzxHdgK1yHL0Q10T9kEzoUnzEr/jwp8rwSgjWJYGhdpf1vOku9
+3aUrQhC7AJRIQl7prwEA
+=SXv3
 -----END PGP SIGNATURE-----
 
---qo7zVO9a9OQ5oQtr--
+--5V5c01chtBAiSHoy--
+
+--===============6176186618652764248==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6176186618652764248==--
