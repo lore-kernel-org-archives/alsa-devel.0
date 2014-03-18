@@ -1,50 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: cs42888: Add codec driver support
-Date: Tue, 18 Mar 2014 13:10:33 +0000
-Message-ID: <20140318131033.GC11706@sirena.org.uk>
-References: <1394538091-19513-1-git-send-email-Guangyu.Chen@freescale.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v3 0/3] ASoC: davinci: perparation for eDMA
+	dmaengine PCM
+Date: Tue, 18 Mar 2014 15:20:34 +0200
+Message-ID: <1395148837-20850-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qmxOb2Rj2UkcatHw"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1394538091-19513-1-git-send-email-Guangyu.Chen@freescale.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net, lgirdwood@gmail.com, grant.likely@linaro.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id BABF026072A
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 14:20:44 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, nsekhar@ti.com, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---qmxOb2Rj2UkcatHw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Changes since v2:
+- Constraint only placed for the period size [1]
+- Patch for davinci-pcm.h to add empty function in case of !DAVINCI platforms
 
-On Tue, Mar 11, 2014 at 07:41:31PM +0800, Nicolin Chen wrote:
-> This patch adds support for the Cirrus Logic CS42888 Audio CODEC that
-> has four 24-bit A/D and eight 24-bit D/A converters.
+When the edma arch and dmaengine patches has been taken only one patch is needed
+to switch AM335x/AM437x to use the edma-pcm.
 
-Brian, Paul - any review comments on this?
+[1]. I was not able to reporoduce the issue I have seen with mplayer anymore.
+     As it was thought constraint for the period size is enough and there's no
+     need to place the same constraint on buffer size.
 
---qmxOb2Rj2UkcatHw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Regards,
+Peter
+---
+Peter Ujfalusi (3):
+  ASoC: davinci-mcasp: Constraint on the period and buffer size based on
+    FIFO usage
+  ASoC: davinci-mcasp: Assign the dma_data earlier in dai_probe callback
+  ASoC: davinci-pcm: Add empty functions for !CONFIG_SND_DAVINCI_SOC
+    builds
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+ sound/soc/davinci/davinci-mcasp.c | 33 +++++++++++++++++++++++++++++----
+ sound/soc/davinci/davinci-pcm.h   | 10 ++++++++++
+ 2 files changed, 39 insertions(+), 4 deletions(-)
 
-iQIcBAEBAgAGBQJTKEXGAAoJELSic+t+oim9H10P/3U4FQW+bXFpOhAYpOB9WIWa
-zkI7sUWKN53Ok64Q5Q1iPP5jVW4gRzyt/P/RVLemqNNkl64SaOMwR34DraSoY350
-R2g5tJD4xn/zLN9TI5/fAvPgQEi58pXsmA15IpwT0i7VHwt35Ezn76tleurldinv
-NYyFF0PkT2HNg37kmXaytRXyy2U8H/GKGPSsxnw+gkJR1CzGEPUczBgNFALP9edV
-rcf+H1sIERaaVTfB4z+HrDnfMEJIVX+cxmRBYwiX79hQtMCWHh2DvvYk3gWwAOsO
-GDpw3y2iXquUA7SL8hTxUK0fAPtp/VeCnfQNEdr419vY+V1w7ELzIwtnPUPbdN9/
-sQX1V1n1Yd6BOkWE9zkKT4+SeGkKqBfv75bZYatOCZqgSMdG1O8FkMCn93+YigYu
-1q7j75jPn5ItLNJOMlE6UZppvyKxMdaNQZJ4l/qfqDC0FVW7qEWOnvVasckwhixu
-+3VvtkrFmtXhMs9p4iUEJSZme5Zs111EcDskeJgvLYS/ipzbS0u1VKqfdWAHpRuK
-Jm3dSuiv1btcSxXcDGQUqKXeENDS9CyOVJ1sF1STi+0N7aKBnXeTYvVrxOUXx9S/
-A23iDtjTMOzqE22DE7RXos6PnzuXgAU9DarBsrMzFVDSzlKgtivc9FD2u90vRsS6
-1WIFGF07W5SOVN4vsKzH
-=onGK
------END PGP SIGNATURE-----
-
---qmxOb2Rj2UkcatHw--
+-- 
+1.9.0
