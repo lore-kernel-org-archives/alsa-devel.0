@@ -1,16 +1,19 @@
-From: Maarten Baert <maarten-baert@hotmail.com>
-Subject: [PATCH] Use jack_client_open instead of deprecated
-	jack_client_new.
-Date: Tue, 18 Mar 2014 17:55:14 +0100
-Message-ID: <BLU0-SMTP43AF44544297B1681F68AE27C0@phx.gbl>
+From: Paul Handrigan <paul.handrigan@cirrus.com>
+Subject: Re: [PATCH v3] ASoC: cs42888: Add codec driver support
+Date: Tue, 18 Mar 2014 12:08:02 -0500
+Message-ID: <alpine.DEB.2.00.1403181202310.7177@phandrigan-desktop>
+References: <1394538091-19513-1-git-send-email-Guangyu.Chen@freescale.com>
+ <20140318131033.GC11706@sirena.org.uk>
+ <alpine.DEB.2.02.1403180936200.14838@heelrod>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from blu0-omc3-s29.blu0.hotmail.com (blu0-omc3-s29.blu0.hotmail.com
- [65.55.116.104])
- by alsa0.perex.cz (Postfix) with ESMTP id C8D9C2615DC
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 17:55:21 +0100 (CET)
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0080.outbound.protection.outlook.com [65.55.169.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id 676A326158B
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 18:06:37 +0100 (CET)
+In-Reply-To: <alpine.DEB.2.02.1403180936200.14838@heelrod>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,26 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Mark Brown <broonie@kernel.org>, galak@codeaurora.org, linux-doc@vger.kernel.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, rob@landley.net, Nicolin Chen <Guangyu.Chen@freescale.com>, grant.likely@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Maarten Baert <maarten-baert@hotmail.com>
----
- jack/pcm_jack.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index 4213708..7a8b24d 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -370,7 +370,7 @@ static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
- 			__func__, jack_client_name, (int)strlen(jack_client_name));
- 	}
- 
--	jack->client = jack_client_new(jack_client_name);
-+	jack->client = jack_client_open(jack_client_name, JackNoStartServer, NULL);
- 
- 	if (jack->client == 0) {
- 		snd_pcm_jack_free(jack);
--- 
-1.9.0
+On Tue, 18 Mar 2014, Brian Austin wrote:
+
+> On Tue, 18 Mar 2014, Mark Brown wrote:
+>
+>> On Tue, Mar 11, 2014 at 07:41:31PM +0800, Nicolin Chen wrote:
+>>> This patch adds support for the Cirrus Logic CS42888 Audio CODEC that
+>>> has four 24-bit A/D and eight 24-bit D/A converters.
+>> 
+>> Brian, Paul - any review comments on this?
+>> 
+> Driver looks good to me. I think we should name it the cs42xx8 since this 
+> actually covers CS42448 and CS42888. The CS42888 is derived from the CS42448.
+>
+V3 looks good. As Brian said, the name should be changed to cs42xx8.
