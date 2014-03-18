@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 10/13] ASoC: Move IO abstraction to the
-	component level
-Date: Tue, 18 Mar 2014 09:02:13 +0100
-Message-ID: <1395129736-11938-11-git-send-email-lars@metafoo.de>
+Subject: [PATCH 11/13] ASoC: Move standard kcontrol helpers to
+	the component level
+Date: Tue, 18 Mar 2014 09:02:14 +0100
+Message-ID: <1395129736-11938-12-git-send-email-lars@metafoo.de>
 References: <1395129736-11938-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-224.synserver.de (smtp-out-230.synserver.de
  [212.40.185.230])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C018261ADF
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 09:01:49 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 56ECE261B2B
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 09:01:51 +0100 (CET)
 In-Reply-To: <1395129736-11938-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,723 +26,665 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-We currently have two very similar IO abstractions in ASoC, one for CODECs, the
-other for platforms. Moving this to the component level will allow us to unify
-those two. It will also enable us to move the standard kcontrol helpers as well
-as DAPM support to the component level.
-
-The new component level abstraction layer is primarily build around regmap.
-There is a per component pointer for the regmap instance for the underlying
-device. There are four new function snd_soc_component_read(),
-snd_soc_component_write(), snd_soc_component_update_bits() and
-snd_soc_component_update_bits_async(). They have the same signature as their
-regmap counter-part and will internally forward the call one-to-one to regmap.
-If the component it not using regmap it will fallback to using the custom IO
-callbacks. This is done to be able to support drivers that haven't been
-converted to regmap yet, but it is expected that this will eventually be removed
-in the future once all component drivers have been converted to regmap.
+After moving the IO layer inside ASoC to the component level we can now easily
+move the standard control helpers also to the component level. This allows to
+reuse the same standard helper control implementations for other components.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc-dapm.h |   1 +
- include/sound/soc.h      |  24 ++++--
- sound/soc/soc-core.c     |  91 +++++++++++++++------
- sound/soc/soc-dapm.c     |  84 +++----------------
- sound/soc/soc-io.c       | 204 ++++++++++++++++++++++++++++-------------------
- 5 files changed, 222 insertions(+), 182 deletions(-)
+ include/sound/soc.h  |  21 ++++-
+ sound/soc/soc-core.c | 221 ++++++++++++++++++++++++++++++++-------------------
+ 2 files changed, 156 insertions(+), 86 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index ef78f56..75020f5 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -606,6 +606,7 @@ struct snd_soc_dapm_context {
- 			     enum snd_soc_dapm_type, int);
- 
- 	struct device *dev; /* from parent - for debug */
-+	struct snd_soc_component *component; /* parent component */
- 	struct snd_soc_codec *codec; /* parent codec */
- 	struct snd_soc_platform *platform; /* parent platform */
- 	struct snd_soc_card *card; /* parent card */
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 94a2dc2..c70ddbf 100644
+index c70ddbf..cb98cd6 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -672,6 +672,14 @@ struct snd_soc_component {
- 	const struct snd_soc_component_driver *driver;
+@@ -1246,6 +1246,21 @@ static inline bool snd_soc_codec_is_active(struct snd_soc_codec *codec)
+ }
  
- 	struct list_head dai_list;
+ /**
++ * snd_soc_kcontrol_component() - Returns the component that registered the control
++ * @kcontrol: The control for which to get the component
++ *
++ * Note: This function will work correctly if the control has been registered
++ * for a component. Either with snd_soc_add_codec_controls() or
++ * snd_soc_add_platform_controls() or via  table based setup for either a CODEC
++ * or a platform driver. Otherwise the behavior is undefined.
++ */
++static inline struct snd_soc_component *snd_soc_kcontrol_component(
++	struct snd_kcontrol *kcontrol)
++{
++	return snd_kcontrol_chip(kcontrol);
++}
 +
-+	int (*read)(struct snd_soc_component *, unsigned int, unsigned int *);
-+	int (*write)(struct snd_soc_component *, unsigned int, unsigned int);
-+
-+	struct regmap *regmap;
-+	int val_bytes;
-+
-+	struct mutex mutex;
- };
++/**
+  * snd_soc_kcontrol_codec() - Returns the CODEC that registered the control
+  * @kcontrol: The control for which to get the CODEC
+  *
+@@ -1256,7 +1271,7 @@ static inline bool snd_soc_codec_is_active(struct snd_soc_codec *codec)
+ static inline struct snd_soc_codec *snd_soc_kcontrol_codec(
+ 	struct snd_kcontrol *kcontrol)
+ {
+-	return snd_kcontrol_chip(kcontrol);
++	return snd_soc_component_to_codec(snd_soc_kcontrol_component(kcontrol));
+ }
  
- /* SoC Audio Codec device */
-@@ -696,18 +704,14 @@ struct snd_soc_codec {
- 	unsigned int ac97_registered:1; /* Codec has been AC97 registered */
- 	unsigned int ac97_created:1; /* Codec has been created by SoC */
- 	unsigned int cache_init:1; /* codec cache has been initialized */
--	unsigned int using_regmap:1; /* using regmap access */
- 	u32 cache_only;  /* Suppress writes to hardware */
- 	u32 cache_sync; /* Cache needs to be synced to hardware */
+ /**
+@@ -1267,10 +1282,10 @@ static inline struct snd_soc_codec *snd_soc_kcontrol_codec(
+  * registered with snd_soc_add_platform_controls() or via table based setup of
+  * a snd_soc_platform_driver. Otherwise the behavior is undefined.
+  */
+-static inline struct snd_soc_codec *snd_soc_kcontrol_platform(
++static inline struct snd_soc_platform *snd_soc_kcontrol_platform(
+ 	struct snd_kcontrol *kcontrol)
+ {
+-	return snd_kcontrol_chip(kcontrol);
++	return snd_soc_component_to_platform(snd_soc_kcontrol_component(kcontrol));
+ }
  
- 	/* codec IO */
- 	void *control_data; /* codec control (i2c/3wire) data */
- 	hw_write_t hw_write;
--	unsigned int (*read)(struct snd_soc_codec *, unsigned int);
--	int (*write)(struct snd_soc_codec *, unsigned int, unsigned int);
- 	void *reg_cache;
- 	struct mutex cache_rw_mutex;
--	int val_bytes;
- 
- 	/* component */
- 	struct snd_soc_component component;
-@@ -823,7 +827,6 @@ struct snd_soc_platform {
- 	int id;
- 	struct device *dev;
- 	const struct snd_soc_platform_driver *driver;
--	struct mutex mutex;
- 
- 	unsigned int suspended:1; /* platform is suspended */
- 	unsigned int probed:1;
-@@ -1128,6 +1131,17 @@ unsigned int snd_soc_read(struct snd_soc_codec *codec, unsigned int reg);
- unsigned int snd_soc_write(struct snd_soc_codec *codec,
- 			   unsigned int reg, unsigned int val);
- 
-+/* component IO */
-+int snd_soc_component_read(struct snd_soc_component *component,
-+	unsigned int reg, unsigned int *val);
-+int snd_soc_component_write(struct snd_soc_component *component,
-+	unsigned int reg, unsigned int val);
-+int snd_soc_component_update_bits(struct snd_soc_component *component,
-+	unsigned int reg, unsigned int mask, unsigned int val);
-+int snd_soc_component_update_bits_async(struct snd_soc_component *component,
-+	unsigned int reg, unsigned int mask, unsigned int val);
-+void snd_soc_component_async_complete(struct snd_soc_component *component);
-+
- /* device driver data */
- 
- static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
+ int snd_soc_util_init(void);
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3a07e6f..cb3811a 100644
+index cb3811a..e15d8ec 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -656,8 +656,8 @@ int snd_soc_suspend(struct device *dev)
- 				codec->driver->suspend(codec);
- 				codec->suspended = 1;
- 				codec->cache_sync = 1;
--				if (codec->using_regmap)
--					regcache_mark_dirty(codec->control_data);
-+				if (codec->component.regmap)
-+					regcache_mark_dirty(codec->component.regmap);
- 				/* deactivate pins to sleep state */
- 				pinctrl_pm_select_sleep_state(codec->dev);
- 				break;
-@@ -1130,7 +1130,7 @@ static int soc_probe_codec(struct snd_soc_card *card,
+@@ -2292,7 +2292,7 @@ int snd_soc_add_codec_controls(struct snd_soc_codec *codec,
+ 	struct snd_card *card = codec->card->snd_card;
  
- 	codec->dapm.idle_bias_off = driver->idle_bias_off;
+ 	return snd_soc_add_controls(card, codec->dev, controls, num_controls,
+-			codec->name_prefix, codec);
++			codec->name_prefix, &codec->component);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_add_codec_controls);
  
--	if (!codec->write && dev_get_regmap(codec->dev, NULL)) {
-+	if (!codec->component.write && dev_get_regmap(codec->dev, NULL)) {
- 		/* Set the default I/O up try regmap */
- 		ret = snd_soc_codec_set_cache_io(codec, NULL);
- 		if (ret < 0) {
-@@ -2972,7 +2972,7 @@ int snd_soc_bytes_info(struct snd_kcontrol *kcontrol,
- 	struct soc_bytes *params = (void *)kcontrol->private_value;
+@@ -2312,7 +2312,7 @@ int snd_soc_add_platform_controls(struct snd_soc_platform *platform,
+ 	struct snd_card *card = platform->card->snd_card;
  
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
--	uinfo->count = params->num_regs * codec->val_bytes;
-+	uinfo->count = params->num_regs * codec->component.val_bytes;
+ 	return snd_soc_add_controls(card, platform->dev, controls, num_controls,
+-			NULL, platform);
++			NULL, &platform->component);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_add_platform_controls);
+ 
+@@ -2396,12 +2396,15 @@ EXPORT_SYMBOL_GPL(snd_soc_info_enum_double);
+ int snd_soc_get_enum_double(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+ 	unsigned int val, item;
+ 	unsigned int reg_val;
++	int ret;
+ 
+-	reg_val = snd_soc_read(codec, e->reg);
++	ret = snd_soc_component_read(component, e->reg, &reg_val);
++	if (ret)
++		return ret;
+ 	val = (reg_val >> e->shift_l) & e->mask;
+ 	item = snd_soc_enum_val_to_item(e, val);
+ 	ucontrol->value.enumerated.item[0] = item;
+@@ -2427,7 +2430,7 @@ EXPORT_SYMBOL_GPL(snd_soc_get_enum_double);
+ int snd_soc_put_enum_double(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+ 	unsigned int *item = ucontrol->value.enumerated.item;
+ 	unsigned int val;
+@@ -2444,38 +2447,48 @@ int snd_soc_put_enum_double(struct snd_kcontrol *kcontrol,
+ 		mask |= e->mask << e->shift_r;
+ 	}
+ 
+-	return snd_soc_update_bits_locked(codec, e->reg, mask, val);
++	return snd_soc_component_update_bits(component, e->reg, mask, val);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_put_enum_double);
+ 
+ /**
+  * snd_soc_read_signed - Read a codec register and interprete as signed value
+- * @codec: codec
++ * @component: component
+  * @reg: Register to read
+  * @mask: Mask to use after shifting the register value
+  * @shift: Right shift of register value
+  * @sign_bit: Bit that describes if a number is negative or not.
++ * @signed_val: Pointer to where the read value should be stored
+  *
+  * This functions reads a codec register. The register value is shifted right
+  * by 'shift' bits and masked with the given 'mask'. Afterwards it translates
+  * the given registervalue into a signed integer if sign_bit is non-zero.
+  *
+- * Returns the register value as signed int.
++ * Returns 0 on sucess, otherwise an error value
+  */
+-static int snd_soc_read_signed(struct snd_soc_codec *codec, unsigned int reg,
+-		unsigned int mask, unsigned int shift, unsigned int sign_bit)
++static int snd_soc_read_signed(struct snd_soc_component *component,
++	unsigned int reg, unsigned int mask, unsigned int shift,
++	unsigned int sign_bit, int *signed_val)
+ {
+ 	int ret;
+ 	unsigned int val;
+ 
+-	val = (snd_soc_read(codec, reg) >> shift) & mask;
++	ret = snd_soc_component_read(component, reg, &val);
++	if (ret < 0)
++		return ret;
++
++	val = (val >> shift) & mask;
+ 
+-	if (!sign_bit)
+-		return val;
++	if (!sign_bit) {
++		*signed_val = val;
++		return 0;
++	}
+ 
+ 	/* non-negative number */
+-	if (!(val & BIT(sign_bit)))
+-		return val;
++	if (!(val & BIT(sign_bit))) {
++		*signed_val = val;
++		return 0;
++	}
+ 
+ 	ret = val;
+ 
+@@ -2487,7 +2500,9 @@ static int snd_soc_read_signed(struct snd_soc_codec *codec, unsigned int reg,
+ 	 */
+ 	ret |= ~((int)(BIT(sign_bit) - 1));
+ 
+-	return ret;
++	*signed_val = ret;
++
++	return 0;
+ }
+ 
+ /**
+@@ -2536,9 +2551,9 @@ EXPORT_SYMBOL_GPL(snd_soc_info_volsw);
+ int snd_soc_get_volsw(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	unsigned int reg = mc->reg;
+ 	unsigned int reg2 = mc->rreg;
+ 	unsigned int shift = mc->shift;
+@@ -2548,25 +2563,32 @@ int snd_soc_get_volsw(struct snd_kcontrol *kcontrol,
+ 	int sign_bit = mc->sign_bit;
+ 	unsigned int mask = (1 << fls(max)) - 1;
+ 	unsigned int invert = mc->invert;
++	int val;
++	int ret;
+ 
+ 	if (sign_bit)
+ 		mask = BIT(sign_bit + 1) - 1;
+ 
+-	ucontrol->value.integer.value[0] = snd_soc_read_signed(codec, reg, mask,
+-			shift, sign_bit) - min;
++	ret = snd_soc_read_signed(component, reg, mask, shift, sign_bit, &val);
++	if (ret)
++		return ret;
++
++	ucontrol->value.integer.value[0] = val - min;
+ 	if (invert)
+ 		ucontrol->value.integer.value[0] =
+ 			max - ucontrol->value.integer.value[0];
+ 
+ 	if (snd_soc_volsw_is_stereo(mc)) {
+ 		if (reg == reg2)
+-			ucontrol->value.integer.value[1] =
+-				snd_soc_read_signed(codec, reg, mask, rshift,
+-						sign_bit) - min;
++			ret = snd_soc_read_signed(component, reg, mask, rshift,
++				sign_bit, &val);
+ 		else
+-			ucontrol->value.integer.value[1] =
+-				snd_soc_read_signed(codec, reg2, mask, shift,
+-						sign_bit) - min;
++			ret = snd_soc_read_signed(component, reg2, mask, shift,
++				sign_bit, &val);
++		if (ret)
++			return ret;
++
++		ucontrol->value.integer.value[1] = val - min;
+ 		if (invert)
+ 			ucontrol->value.integer.value[1] =
+ 				max - ucontrol->value.integer.value[1];
+@@ -2589,9 +2611,9 @@ EXPORT_SYMBOL_GPL(snd_soc_get_volsw);
+ int snd_soc_put_volsw(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	unsigned int reg = mc->reg;
+ 	unsigned int reg2 = mc->rreg;
+ 	unsigned int shift = mc->shift;
+@@ -2626,12 +2648,13 @@ int snd_soc_put_volsw(struct snd_kcontrol *kcontrol,
+ 			type_2r = true;
+ 		}
+ 	}
+-	err = snd_soc_update_bits_locked(codec, reg, val_mask, val);
++	err = snd_soc_component_update_bits(component, reg, val_mask, val);
+ 	if (err < 0)
+ 		return err;
+ 
+ 	if (type_2r)
+-		err = snd_soc_update_bits_locked(codec, reg2, val_mask, val2);
++		err = snd_soc_component_update_bits(component, reg2, val_mask,
++			val2);
+ 
+ 	return err;
+ }
+@@ -2650,10 +2673,9 @@ EXPORT_SYMBOL_GPL(snd_soc_put_volsw);
+ int snd_soc_get_volsw_sx(struct snd_kcontrol *kcontrol,
+ 		      struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_mixer_control *mc =
+ 	    (struct soc_mixer_control *)kcontrol->private_value;
+-
+ 	unsigned int reg = mc->reg;
+ 	unsigned int reg2 = mc->rreg;
+ 	unsigned int shift = mc->shift;
+@@ -2661,13 +2683,23 @@ int snd_soc_get_volsw_sx(struct snd_kcontrol *kcontrol,
+ 	int max = mc->max;
+ 	int min = mc->min;
+ 	int mask = (1 << (fls(min + max) - 1)) - 1;
++	unsigned int val;
++	int ret;
+ 
+-	ucontrol->value.integer.value[0] =
+-	    ((snd_soc_read(codec, reg) >> shift) - min) & mask;
++	ret = snd_soc_component_read(component, reg, &val);
++	if (ret < 0)
++		return ret;
+ 
+-	if (snd_soc_volsw_is_stereo(mc))
+-		ucontrol->value.integer.value[1] =
+-			((snd_soc_read(codec, reg2) >> rshift) - min) & mask;
++	ucontrol->value.integer.value[0] = ((val >> shift) - min) & mask;
++
++	if (snd_soc_volsw_is_stereo(mc)) {
++		ret = snd_soc_component_read(component, reg2, &val);
++		if (ret < 0)
++			return ret;
++
++		val = ((val >> rshift) - min) & mask;
++		ucontrol->value.integer.value[1] = val;
++	}
  
  	return 0;
  }
-@@ -2985,16 +2985,16 @@ int snd_soc_bytes_get(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+@@ -2685,7 +2717,7 @@ EXPORT_SYMBOL_GPL(snd_soc_get_volsw_sx);
+ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
+ 			 struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_mixer_control *mc =
+ 	    (struct soc_mixer_control *)kcontrol->private_value;
+ 
+@@ -2703,7 +2735,7 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
+ 	val = (ucontrol->value.integer.value[0] + min) & mask;
+ 	val = val << shift;
+ 
+-	err = snd_soc_update_bits_locked(codec, reg, val_mask, val);
++	err = snd_soc_component_update_bits(component, reg, val_mask, val);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -2712,10 +2744,10 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
+ 		val2 = (ucontrol->value.integer.value[1] + min) & mask;
+ 		val2 = val2 << rshift;
+ 
+-		if (snd_soc_update_bits_locked(codec, reg2, val_mask, val2))
+-			return err;
++		err = snd_soc_component_update_bits(component, reg2, val_mask,
++			val2);
+ 	}
+-	return 0;
++	return err;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_put_volsw_sx);
+ 
+@@ -2762,10 +2794,15 @@ int snd_soc_get_volsw_s8(struct snd_kcontrol *kcontrol,
+ {
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	unsigned int reg = mc->reg;
++	unsigned int val;
+ 	int min = mc->min;
+-	int val = snd_soc_read(codec, reg);
++	int ret;
++
++	ret = snd_soc_component_read(component, reg, &val);
++	if (ret)
++		return ret;
+ 
+ 	ucontrol->value.integer.value[0] =
+ 		((signed char)(val & 0xff))-min;
+@@ -2789,7 +2826,7 @@ int snd_soc_put_volsw_s8(struct snd_kcontrol *kcontrol,
+ {
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	unsigned int reg = mc->reg;
+ 	int min = mc->min;
+ 	unsigned int val;
+@@ -2797,7 +2834,7 @@ int snd_soc_put_volsw_s8(struct snd_kcontrol *kcontrol,
+ 	val = (ucontrol->value.integer.value[0]+min) & 0xff;
+ 	val |= ((ucontrol->value.integer.value[1]+min) & 0xff) << 8;
+ 
+-	return snd_soc_update_bits_locked(codec, reg, 0xffff, val);
++	return snd_soc_component_update_bits(component, reg, 0xffff, val);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_put_volsw_s8);
+ 
+@@ -2846,7 +2883,7 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
+ {
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	unsigned int reg = mc->reg;
+ 	unsigned int rreg = mc->rreg;
+ 	unsigned int shift = mc->shift;
+@@ -2863,7 +2900,7 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
+ 	val_mask = mask << shift;
+ 	val = val << shift;
+ 
+-	ret = snd_soc_update_bits_locked(codec, reg, val_mask, val);
++	ret = snd_soc_component_update_bits(component, reg, val_mask, val);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -2874,7 +2911,8 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
+ 		val_mask = mask << shift;
+ 		val = val << shift;
+ 
+-		ret = snd_soc_update_bits_locked(codec, rreg, val_mask, val);
++		ret = snd_soc_component_update_bits(component, rreg, val_mask,
++			val);
+ 	}
+ 
+ 	return ret;
+@@ -2893,9 +2931,9 @@ EXPORT_SYMBOL_GPL(snd_soc_put_volsw_range);
+ int snd_soc_get_volsw_range(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	unsigned int reg = mc->reg;
+ 	unsigned int rreg = mc->rreg;
+ 	unsigned int shift = mc->shift;
+@@ -2903,9 +2941,14 @@ int snd_soc_get_volsw_range(struct snd_kcontrol *kcontrol,
+ 	int max = mc->max;
+ 	unsigned int mask = (1 << fls(max)) - 1;
+ 	unsigned int invert = mc->invert;
++	unsigned int val;
++	int ret;
+ 
+-	ucontrol->value.integer.value[0] =
+-		(snd_soc_read(codec, reg) >> shift) & mask;
++	ret = snd_soc_component_read(component, reg, &val);
++	if (ret)
++		return ret;
++
++	ucontrol->value.integer.value[0] = (val >> shift) & mask;
+ 	if (invert)
+ 		ucontrol->value.integer.value[0] =
+ 			max - ucontrol->value.integer.value[0];
+@@ -2913,8 +2956,11 @@ int snd_soc_get_volsw_range(struct snd_kcontrol *kcontrol,
+ 		ucontrol->value.integer.value[0] - min;
+ 
+ 	if (snd_soc_volsw_is_stereo(mc)) {
+-		ucontrol->value.integer.value[1] =
+-			(snd_soc_read(codec, rreg) >> shift) & mask;
++		ret = snd_soc_component_read(component, rreg, &val);
++		if (ret)
++			return ret;
++
++		ucontrol->value.integer.value[1] = (val >> shift) & mask;
+ 		if (invert)
+ 			ucontrol->value.integer.value[1] =
+ 				max - ucontrol->value.integer.value[1];
+@@ -2968,11 +3014,11 @@ EXPORT_SYMBOL_GPL(snd_soc_limit_volume);
+ int snd_soc_bytes_info(struct snd_kcontrol *kcontrol,
+ 		       struct snd_ctl_elem_info *uinfo)
+ {
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_bytes *params = (void *)kcontrol->private_value;
+ 
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
+-	uinfo->count = params->num_regs * codec->component.val_bytes;
++	uinfo->count = params->num_regs * component->val_bytes;
+ 
+ 	return 0;
+ }
+@@ -2981,20 +3027,20 @@ EXPORT_SYMBOL_GPL(snd_soc_bytes_info);
+ int snd_soc_bytes_get(struct snd_kcontrol *kcontrol,
+ 		      struct snd_ctl_elem_value *ucontrol)
+ {
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_bytes *params = (void *)kcontrol->private_value;
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
  	int ret;
  
--	if (codec->using_regmap)
--		ret = regmap_raw_read(codec->control_data, params->base,
-+	if (codec->component.regmap)
-+		ret = regmap_raw_read(codec->component.regmap, params->base,
+-	if (codec->component.regmap)
+-		ret = regmap_raw_read(codec->component.regmap, params->base,
++	if (component->regmap)
++		ret = regmap_raw_read(component->regmap, params->base,
  				      ucontrol->value.bytes.data,
--				      params->num_regs * codec->val_bytes);
-+				      params->num_regs * codec->component.val_bytes);
+-				      params->num_regs * codec->component.val_bytes);
++				      params->num_regs * component->val_bytes);
  	else
  		ret = -EINVAL;
  
  	/* Hide any masked bytes to ensure consistent data reporting */
  	if (ret == 0 && params->mask) {
--		switch (codec->val_bytes) {
-+		switch (codec->component.val_bytes) {
+-		switch (codec->component.val_bytes) {
++		switch (component->val_bytes) {
  		case 1:
  			ucontrol->value.bytes.data[0] &= ~params->mask;
  			break;
-@@ -3024,10 +3024,10 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
+@@ -3018,16 +3064,16 @@ EXPORT_SYMBOL_GPL(snd_soc_bytes_get);
+ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
+ 		      struct snd_ctl_elem_value *ucontrol)
+ {
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_bytes *params = (void *)kcontrol->private_value;
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	int ret, len;
  	unsigned int val, mask;
  	void *data;
  
--	if (!codec->using_regmap)
-+	if (!codec->component.regmap)
+-	if (!codec->component.regmap)
++	if (!component->regmap)
  		return -EINVAL;
  
--	len = params->num_regs * codec->val_bytes;
-+	len = params->num_regs * codec->component.val_bytes;
+-	len = params->num_regs * codec->component.val_bytes;
++	len = params->num_regs * component->val_bytes;
  
  	data = kmemdup(ucontrol->value.bytes.data, len, GFP_KERNEL | GFP_DMA);
  	if (!data)
-@@ -3039,27 +3039,27 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
+@@ -3039,27 +3085,27 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
  	 * copy.
  	 */
  	if (params->mask) {
--		ret = regmap_read(codec->control_data, params->base, &val);
-+		ret = regmap_read(codec->component.regmap, params->base, &val);
+-		ret = regmap_read(codec->component.regmap, params->base, &val);
++		ret = regmap_read(component->regmap, params->base, &val);
  		if (ret != 0)
  			goto out;
  
  		val &= params->mask;
  
--		switch (codec->val_bytes) {
-+		switch (codec->component.val_bytes) {
+-		switch (codec->component.val_bytes) {
++		switch (component->val_bytes) {
  		case 1:
  			((u8 *)data)[0] &= ~params->mask;
  			((u8 *)data)[0] |= val;
  			break;
  		case 2:
  			mask = ~params->mask;
--			ret = regmap_parse_val(codec->control_data,
-+			ret = regmap_parse_val(codec->component.regmap,
+-			ret = regmap_parse_val(codec->component.regmap,
++			ret = regmap_parse_val(component->regmap,
  							&mask, &mask);
  			if (ret != 0)
  				goto out;
  
  			((u16 *)data)[0] &= mask;
  
--			ret = regmap_parse_val(codec->control_data,
-+			ret = regmap_parse_val(codec->component.regmap,
+-			ret = regmap_parse_val(codec->component.regmap,
++			ret = regmap_parse_val(component->regmap,
  							&val, &val);
  			if (ret != 0)
  				goto out;
-@@ -3068,14 +3068,14 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
+@@ -3068,14 +3114,14 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
  			break;
  		case 4:
  			mask = ~params->mask;
--			ret = regmap_parse_val(codec->control_data,
-+			ret = regmap_parse_val(codec->component.regmap,
+-			ret = regmap_parse_val(codec->component.regmap,
++			ret = regmap_parse_val(component->regmap,
  							&mask, &mask);
  			if (ret != 0)
  				goto out;
  
  			((u32 *)data)[0] &= mask;
  
--			ret = regmap_parse_val(codec->control_data,
-+			ret = regmap_parse_val(codec->component.regmap,
+-			ret = regmap_parse_val(codec->component.regmap,
++			ret = regmap_parse_val(component->regmap,
  							&val, &val);
  			if (ret != 0)
  				goto out;
-@@ -3088,7 +3088,7 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
+@@ -3088,7 +3134,7 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
  		}
  	}
  
--	ret = regmap_raw_write(codec->control_data, params->base,
-+	ret = regmap_raw_write(codec->component.regmap, params->base,
+-	ret = regmap_raw_write(codec->component.regmap, params->base,
++	ret = regmap_raw_write(component->regmap, params->base,
  			       data, len);
  
  out:
-@@ -3144,7 +3144,7 @@ int snd_soc_get_xr_sx(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+@@ -3139,24 +3185,27 @@ EXPORT_SYMBOL_GPL(snd_soc_info_xr_sx);
+ int snd_soc_get_xr_sx(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_mreg_control *mc =
+ 		(struct soc_mreg_control *)kcontrol->private_value;
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
  	unsigned int regbase = mc->regbase;
  	unsigned int regcount = mc->regcount;
--	unsigned int regwshift = codec->val_bytes * BITS_PER_BYTE;
-+	unsigned int regwshift = codec->component.val_bytes * BITS_PER_BYTE;
+-	unsigned int regwshift = codec->component.val_bytes * BITS_PER_BYTE;
++	unsigned int regwshift = component->val_bytes * BITS_PER_BYTE;
  	unsigned int regwmask = (1<<regwshift)-1;
  	unsigned int invert = mc->invert;
  	unsigned long mask = (1UL<<mc->nbits)-1;
-@@ -3190,7 +3190,7 @@ int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	long min = mc->min;
+ 	long max = mc->max;
+ 	long val = 0;
+-	unsigned long regval;
++	unsigned int regval;
+ 	unsigned int i;
++	int ret;
+ 
+ 	for (i = 0; i < regcount; i++) {
+-		regval = snd_soc_read(codec, regbase+i) & regwmask;
+-		val |= regval << (regwshift*(regcount-i-1));
++		ret = snd_soc_component_read(component, regbase+i, &regval);
++		if (ret)
++			return ret;
++		val |= (regval & regwmask) << (regwshift*(regcount-i-1));
+ 	}
+ 	val &= mask;
+ 	if (min < 0 && val > max)
+@@ -3185,12 +3234,12 @@ EXPORT_SYMBOL_GPL(snd_soc_get_xr_sx);
+ int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_mreg_control *mc =
+ 		(struct soc_mreg_control *)kcontrol->private_value;
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
  	unsigned int regbase = mc->regbase;
  	unsigned int regcount = mc->regcount;
--	unsigned int regwshift = codec->val_bytes * BITS_PER_BYTE;
-+	unsigned int regwshift = codec->component.val_bytes * BITS_PER_BYTE;
+-	unsigned int regwshift = codec->component.val_bytes * BITS_PER_BYTE;
++	unsigned int regwshift = component->val_bytes * BITS_PER_BYTE;
  	unsigned int regwmask = (1<<regwshift)-1;
  	unsigned int invert = mc->invert;
  	unsigned long mask = (1UL<<mc->nbits)-1;
-@@ -3838,6 +3838,8 @@ __snd_soc_register_component(struct device *dev,
- 		return -ENOMEM;
- 	}
- 
-+	mutex_init(&cmpnt->mutex);
-+
- 	cmpnt->name = fmt_single_name(dev, &cmpnt->id);
- 	if (!cmpnt->name) {
- 		dev_err(dev, "ASoC: Failed to simplifying name\n");
-@@ -3918,6 +3920,24 @@ found:
- }
- EXPORT_SYMBOL_GPL(snd_soc_unregister_component);
- 
-+static int snd_soc_platform_drv_write(struct snd_soc_component *component,
-+	unsigned int reg, unsigned int val)
-+{
-+	struct snd_soc_platform *platform = snd_soc_component_to_platform(component);
-+
-+	return platform->driver->write(platform, reg, val);
-+}
-+
-+static int snd_soc_platform_drv_read(struct snd_soc_component *component,
-+	unsigned int reg, unsigned int *val)
-+{
-+	struct snd_soc_platform *platform = snd_soc_component_to_platform(component);
-+
-+	*val = platform->driver->read(platform, reg);
-+
-+	return 0;
-+}
-+
- /**
-  * snd_soc_add_platform - Add a platform to the ASoC core
-  * @dev: The parent device for the platform
-@@ -3938,8 +3958,12 @@ int snd_soc_add_platform(struct device *dev, struct snd_soc_platform *platform,
- 	platform->driver = platform_drv;
- 	platform->dapm.dev = dev;
- 	platform->dapm.platform = platform;
-+	platform->dapm.component = &platform->component;
- 	platform->dapm.stream_event = platform_drv->stream_event;
--	mutex_init(&platform->mutex);
-+	if (platform_drv->write)
-+		platform->component.write = snd_soc_platform_drv_write;
-+	if (platform_drv->read)
-+		platform->component.read = snd_soc_platform_drv_read;
- 
- 	/* register component */
- 	ret = __snd_soc_register_component(dev, &platform->component,
-@@ -4068,6 +4092,24 @@ static void fixup_codec_formats(struct snd_soc_pcm_stream *stream)
- 			stream->formats |= codec_format_map[i];
- }
- 
-+static int snd_soc_codec_drv_write(struct snd_soc_component *component,
-+	unsigned int reg, unsigned int val)
-+{
-+	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
-+
-+	return codec->driver->write(codec, reg, val);
-+}
-+
-+static int snd_soc_codec_drv_read(struct snd_soc_component *component,
-+	unsigned int reg, unsigned int *val)
-+{
-+	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
-+
-+	*val = codec->driver->read(codec, reg);
-+
-+	return 0;
-+}
-+
- /**
-  * snd_soc_register_codec - Register a codec with the ASoC core
-  *
-@@ -4094,18 +4136,21 @@ int snd_soc_register_codec(struct device *dev,
- 		goto fail_codec;
- 	}
- 
--	codec->write = codec_drv->write;
--	codec->read = codec_drv->read;
-+	if (codec_drv->write)
-+		codec->component.write = snd_soc_codec_drv_write;
-+	if (codec_drv->read)
-+		codec->component.read = snd_soc_codec_drv_read;
- 	codec->component.ignore_pmdown_time = codec_drv->ignore_pmdown_time;
- 	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
- 	codec->dapm.dev = dev;
- 	codec->dapm.codec = codec;
-+	codec->dapm.component = &codec->component;
- 	codec->dapm.seq_notifier = codec_drv->seq_notifier;
- 	codec->dapm.stream_event = codec_drv->stream_event;
- 	codec->dev = dev;
- 	codec->driver = codec_drv;
- 	codec->num_dai = num_dai;
--	codec->val_bytes = codec_drv->reg_word_size;
-+	codec->component.val_bytes = codec_drv->reg_word_size;
- 	mutex_init(&codec->mutex);
- 
- 	for (i = 0; i < num_dai; i++) {
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index c8a780d..506ee73 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -379,86 +379,24 @@ static void dapm_reset(struct snd_soc_card *card)
- static int soc_widget_read(struct snd_soc_dapm_widget *w, int reg,
- 	unsigned int *value)
+@@ -3205,7 +3254,7 @@ int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
+ 	for (i = 0; i < regcount; i++) {
+ 		regval = (val >> (regwshift*(regcount-i-1))) & regwmask;
+ 		regmask = (mask >> (regwshift*(regcount-i-1))) & regwmask;
+-		err = snd_soc_update_bits_locked(codec, regbase+i,
++		err = snd_soc_component_update_bits(component, regbase+i,
+ 				regmask, regval);
+ 		if (err < 0)
+ 			return err;
+@@ -3227,14 +3276,21 @@ EXPORT_SYMBOL_GPL(snd_soc_put_xr_sx);
+ int snd_soc_get_strobe(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
  {
--	if (w->codec) {
--		*value = snd_soc_read(w->codec, reg);
--		return 0;
--	} else if (w->platform) {
--		*value = snd_soc_platform_read(w->platform, reg);
--		return 0;
--	}
--
--	dev_err(w->dapm->dev, "ASoC: no valid widget read method\n");
--	return -1;
--}
--
--static int soc_widget_write(struct snd_soc_dapm_widget *w, int reg,
--	unsigned int val)
--{
--	if (w->codec)
--		return snd_soc_write(w->codec, reg, val);
--	else if (w->platform)
--		return snd_soc_platform_write(w->platform, reg, val);
--
--	dev_err(w->dapm->dev, "ASoC: no valid widget write method\n");
--	return -1;
--}
--
--static inline void soc_widget_lock(struct snd_soc_dapm_widget *w)
--{
--	if (w->codec && !w->codec->using_regmap)
--		mutex_lock(&w->codec->mutex);
--	else if (w->platform)
--		mutex_lock(&w->platform->mutex);
-+	if (!w->dapm->component)
-+		return -EIO;
-+	return snd_soc_component_read(w->dapm->component, reg, value);
- }
- 
--static inline void soc_widget_unlock(struct snd_soc_dapm_widget *w)
-+static int soc_widget_update_bits_locked(struct snd_soc_dapm_widget *w,
-+	unsigned short reg, unsigned int mask, unsigned int value)
- {
--	if (w->codec && !w->codec->using_regmap)
--		mutex_unlock(&w->codec->mutex);
--	else if (w->platform)
--		mutex_unlock(&w->platform->mutex);
-+	if (!w->dapm->component)
-+		return -EIO;
-+	return snd_soc_component_update_bits_async(w->dapm->component, reg,
-+		mask, value);
- }
- 
- static void soc_dapm_async_complete(struct snd_soc_dapm_context *dapm)
- {
--	if (dapm->codec && dapm->codec->using_regmap)
--		regmap_async_complete(dapm->codec->control_data);
--}
--
--static int soc_widget_update_bits_locked(struct snd_soc_dapm_widget *w,
--	unsigned short reg, unsigned int mask, unsigned int value)
--{
--	bool change;
--	unsigned int old, new;
--	int ret;
--
--	if (w->codec && w->codec->using_regmap) {
--		ret = regmap_update_bits_check_async(w->codec->control_data,
--						     reg, mask, value,
--						     &change);
--		if (ret != 0)
--			return ret;
--	} else {
--		soc_widget_lock(w);
--		ret = soc_widget_read(w, reg, &old);
--		if (ret < 0) {
--			soc_widget_unlock(w);
--			return ret;
--		}
--
--		new = (old & ~mask) | (value & mask);
--		change = old != new;
--		if (change) {
--			ret = soc_widget_write(w, reg, new);
--			if (ret < 0) {
--				soc_widget_unlock(w);
--				return ret;
--			}
--		}
--		soc_widget_unlock(w);
--	}
--
--	return change;
-+	if (dapm->component)
-+		snd_soc_component_async_complete(dapm->component);
- }
- 
- /**
-diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
-index a66bc17..762bcbc 100644
---- a/sound/soc/soc-io.c
-+++ b/sound/soc/soc-io.c
-@@ -19,24 +19,125 @@
- 
- #include <trace/events/asoc.h>
- 
--unsigned int snd_soc_read(struct snd_soc_codec *codec, unsigned int reg)
-+int snd_soc_component_read(struct snd_soc_component *component,
-+	unsigned int reg, unsigned int *val)
- {
--	unsigned int ret;
-+	int ret;
-+
-+	if (component->regmap)
-+		ret = regmap_read(component->regmap, reg, val);
-+	else if (component->read)
-+		ret = component->read(component, reg, val);
-+	else
-+		ret = -EIO;
-+
-+	dev_dbg(component->dev, "read %x => %x\n", reg, *val);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_component_read);
-+
-+int snd_soc_component_write(struct snd_soc_component *component,
-+	unsigned int reg, unsigned int val)
-+{
-+	dev_dbg(component->dev, "write %x = %x\n", reg, val);
-+
-+	if (component->regmap)
-+		return regmap_write(component->regmap, reg, val);
-+	else if (component->write)
-+		return component->write(component, reg, val);
-+	else
-+		return -EIO;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_component_write);
-+
-+static int snd_soc_component_update_bits_legacy(
-+	struct snd_soc_component *component, unsigned int reg,
-+	unsigned int mask, unsigned int val, bool *change)
-+{
-+	unsigned int old, new;
-+	int ret;
-+
-+	if (!component->read || !component->write)
-+		return -EIO;
-+
-+	mutex_lock(&component->mutex);
-+
-+	ret = component->read(component, reg, &old);
-+	if (ret < 0)
-+		goto out_unlock;
- 
--	ret = codec->read(codec, reg);
--	dev_dbg(codec->dev, "read %x => %x\n", reg, ret);
--	trace_snd_soc_reg_read(codec, reg, ret);
-+	new = (old & ~mask) | (val & mask);
-+	*change = old != new;
-+	if (*change)
-+		ret = component->write(component, reg, new);
-+out_unlock:
-+	mutex_unlock(&component->mutex);
- 
- 	return ret;
- }
-+
-+int snd_soc_component_update_bits(struct snd_soc_component *component,
-+	unsigned int reg, unsigned int mask, unsigned int val)
-+{
-+	bool change;
-+	int ret;
-+
-+	if (component->regmap)
-+		ret = regmap_update_bits_check(component->regmap, reg, mask,
-+			val, &change);
-+	else
-+		ret = snd_soc_component_update_bits_legacy(component, reg,
-+			mask, val, &change);
-+
-+	if (ret < 0)
-+		return ret;
-+	return change;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_component_update_bits);
-+
-+int snd_soc_component_update_bits_async(struct snd_soc_component *component,
-+	unsigned int reg, unsigned int mask, unsigned int val)
-+{
-+	bool change;
-+	int ret;
-+
-+	if (component->regmap)
-+		ret = regmap_update_bits_check_async(component->regmap, reg,
-+			mask, val, &change);
-+	else
-+		ret = snd_soc_component_update_bits_legacy(component, reg,
-+			mask, val, &change);
-+
-+	if (ret < 0)
-+		return ret;
-+	return change;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_component_update_bits_async);
-+
-+void snd_soc_component_async_complete(struct snd_soc_component *component)
-+{
-+	if (component->regmap)
-+		regmap_async_complete(component->regmap);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_component_async_complete);
-+
-+unsigned int snd_soc_read(struct snd_soc_codec *codec, unsigned int reg)
-+{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	unsigned int reg = mc->reg;
+ 	unsigned int shift = mc->shift;
+ 	unsigned int mask = 1 << shift;
+ 	unsigned int invert = mc->invert != 0;
+-	unsigned int val = snd_soc_read(codec, reg) & mask;
 +	unsigned int val;
++	int ret;
 +
-+	snd_soc_component_read(&codec->component, reg, &val);
-+	trace_snd_soc_reg_read(codec, reg, val);
++	ret = snd_soc_component_read(component, reg, &val);
++	if (ret)
++		return ret;
 +
-+	return val;
-+}
- EXPORT_SYMBOL_GPL(snd_soc_read);
++	val &= mask;
  
- unsigned int snd_soc_write(struct snd_soc_codec *codec,
- 			   unsigned int reg, unsigned int val)
+ 	if (shift != 0 && val != 0)
+ 		val = val >> shift;
+@@ -3257,9 +3313,9 @@ EXPORT_SYMBOL_GPL(snd_soc_get_strobe);
+ int snd_soc_put_strobe(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
  {
--	dev_dbg(codec->dev, "write %x = %x\n", reg, val);
- 	trace_snd_soc_reg_write(codec, reg, val);
--	return codec->write(codec, reg, val);
-+	return snd_soc_component_write(&codec->component, reg, val);
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	unsigned int reg = mc->reg;
+ 	unsigned int shift = mc->shift;
+ 	unsigned int mask = 1 << shift;
+@@ -3269,12 +3325,11 @@ int snd_soc_put_strobe(struct snd_kcontrol *kcontrol,
+ 	unsigned int val2 = (strobe ^ invert) ? 0 : mask;
+ 	int err;
+ 
+-	err = snd_soc_update_bits_locked(codec, reg, mask, val1);
++	err = snd_soc_component_update_bits(component, reg, mask, val1);
+ 	if (err < 0)
+ 		return err;
+ 
+-	err = snd_soc_update_bits_locked(codec, reg, mask, val2);
+-	return err;
++	return snd_soc_component_update_bits(component, reg, mask, val2);
  }
- EXPORT_SYMBOL_GPL(snd_soc_write);
+ EXPORT_SYMBOL_GPL(snd_soc_put_strobe);
  
-@@ -54,29 +155,8 @@ EXPORT_SYMBOL_GPL(snd_soc_write);
- int snd_soc_update_bits(struct snd_soc_codec *codec, unsigned short reg,
- 				unsigned int mask, unsigned int value)
- {
--	bool change;
--	unsigned int old, new;
--	int ret;
--
--	if (codec->using_regmap) {
--		ret = regmap_update_bits_check(codec->control_data, reg,
--					       mask, value, &change);
--	} else {
--		ret = snd_soc_read(codec, reg);
--		if (ret < 0)
--			return ret;
--
--		old = ret;
--		new = (old & ~mask) | (value & mask);
--		change = old != new;
--		if (change)
--			ret = snd_soc_write(codec, reg, new);
--	}
--
--	if (ret < 0)
--		return ret;
--
--	return change;
-+	return snd_soc_component_update_bits(&codec->component, reg, mask,
-+		value);
- }
- EXPORT_SYMBOL_GPL(snd_soc_update_bits);
- 
-@@ -95,13 +175,8 @@ int snd_soc_update_bits_locked(struct snd_soc_codec *codec,
- 			       unsigned short reg, unsigned int mask,
- 			       unsigned int value)
- {
--	int change;
--
--	mutex_lock(&codec->mutex);
--	change = snd_soc_update_bits(codec, reg, mask, value);
--	mutex_unlock(&codec->mutex);
--
--	return change;
-+	return snd_soc_component_update_bits(&codec->component, reg, mask,
-+		value);
- }
- EXPORT_SYMBOL_GPL(snd_soc_update_bits_locked);
- 
-@@ -134,53 +209,25 @@ EXPORT_SYMBOL_GPL(snd_soc_test_bits);
- int snd_soc_platform_read(struct snd_soc_platform *platform,
- 					unsigned int reg)
- {
--	unsigned int ret;
-+	unsigned int val;
- 
--	if (!platform->driver->read) {
--		dev_err(platform->dev, "ASoC: platform has no read back\n");
--		return -1;
--	}
-+	snd_soc_component_read(&platform->component, reg, &val);
- 
--	ret = platform->driver->read(platform, reg);
--	dev_dbg(platform->dev, "read %x => %x\n", reg, ret);
--	trace_snd_soc_preg_read(platform, reg, ret);
-+	trace_snd_soc_preg_read(platform, reg, val);
- 
--	return ret;
-+	return val;
- }
- EXPORT_SYMBOL_GPL(snd_soc_platform_read);
- 
- int snd_soc_platform_write(struct snd_soc_platform *platform,
- 					 unsigned int reg, unsigned int val)
- {
--	if (!platform->driver->write) {
--		dev_err(platform->dev, "ASoC: platform has no write back\n");
--		return -1;
--	}
--
--	dev_dbg(platform->dev, "write %x = %x\n", reg, val);
- 	trace_snd_soc_preg_write(platform, reg, val);
--	return platform->driver->write(platform, reg, val);
-+	return snd_soc_component_write(&platform->component, reg, val);
- }
- EXPORT_SYMBOL_GPL(snd_soc_platform_write);
- 
- #ifdef CONFIG_REGMAP
--static int hw_write(struct snd_soc_codec *codec, unsigned int reg,
--		    unsigned int value)
--{
--	return regmap_write(codec->control_data, reg, value);
--}
--
--static unsigned int hw_read(struct snd_soc_codec *codec, unsigned int reg)
--{
--	unsigned int val;
--	int ret;
--
--	ret = regmap_read(codec->control_data, reg, &val);
--	if (ret != 0)
--		return -1;
--	return val;
--}
--
- /**
-  * snd_soc_codec_set_cache_io: Set up standard I/O functions.
-  *
-@@ -205,23 +252,18 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 
- 	/* Device has made its own regmap arrangements */
- 	if (!regmap)
--		codec->control_data = dev_get_regmap(codec->dev, NULL);
--	else
--		codec->control_data = regmap;
--
--	if (IS_ERR(codec->control_data))
--		return PTR_ERR(codec->control_data);
-+		regmap = dev_get_regmap(codec->dev, NULL);
- 
--	codec->write = hw_write;
--	codec->read = hw_read;
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
- 
--	ret = regmap_get_val_bytes(codec->control_data);
-+	ret = regmap_get_val_bytes(regmap);
- 	/* Errors are legitimate for non-integer byte
- 	 * multiples */
- 	if (ret > 0)
--		codec->val_bytes = ret;
-+		codec->component.val_bytes = ret;
- 
--	codec->using_regmap = true;
-+	codec->component.regmap = regmap;
- 
- 	return 0;
- }
 -- 
 1.8.0
