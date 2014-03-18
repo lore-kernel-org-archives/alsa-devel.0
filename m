@@ -1,75 +1,59 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs42l52: Fix mask bits for
-	SOC_VALUE_ENUM_SINGLE
-Date: Tue, 18 Mar 2014 19:45:01 +0000
-Message-ID: <20140318194501.GP11706@sirena.org.uk>
-References: <1395169307-2048-1-git-send-email-brian.austin@cirrus.com>
+Subject: Re: [PATCH v3] ASoC: cs42888: Add codec driver support
+Date: Tue, 18 Mar 2014 19:51:59 +0000
+Message-ID: <20140318195159.GQ11706@sirena.org.uk>
+References: <1394538091-19513-1-git-send-email-Guangyu.Chen@freescale.com>
+ <20140318131033.GC11706@sirena.org.uk>
+ <alpine.DEB.2.02.1403180936200.14838@heelrod>
+ <alpine.DEB.2.00.1403181202310.7177@phandrigan-desktop>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1234987608512285604=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AB2B5261685
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 20:45:07 +0100 (CET)
-In-Reply-To: <1395169307-2048-1-git-send-email-brian.austin@cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com, paul.handrigan@cirrus.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="W2IRJ2e1E3eviBXu"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.00.1403181202310.7177@phandrigan-desktop>
+Sender: linux-doc-owner@vger.kernel.org
+To: Paul Handrigan <paul.handrigan@cirrus.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Nicolin Chen <Guangyu.Chen@freescale.com>, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rob@landley.net, lgirdwood@gmail.com, grant.likely@linaro.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1234987608512285604==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lak8Uquzb3CMtnm+"
-Content-Disposition: inline
-
-
---lak8Uquzb3CMtnm+
+--W2IRJ2e1E3eviBXu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 18, 2014 at 02:01:47PM -0500, Brian Austin wrote:
-> The mask bits values were wrong for the SOC_VALUE_ENUM_SINGLE for the PCM/ADC Swap controls
+On Tue, Mar 18, 2014 at 12:08:02PM -0500, Paul Handrigan wrote:
+> On Tue, 18 Mar 2014, Brian Austin wrote:
 
-Applied, thanks.
+> >Driver looks good to me. I think we should name it the cs42xx8 since this
+> >actually covers CS42448 and CS42888. The CS42888 is derived from the
+> >CS42448.
 
---lak8Uquzb3CMtnm+
+> V3 looks good. As Brian said, the name should be changed to cs42xx8.
+
+Great, so if Nicolin resubmits with the rename when he gets back he can
+add acks from both of you?  The driver looked fine to me too.
+
+--W2IRJ2e1E3eviBXu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTKKI6AAoJELSic+t+oim9XIYP/RvpY2q6MXxC6wBlA4BPryLF
-l6bMHoREKGf8y3OarbUJaSaBr44liAPdQRgq4s+f8pDGHHxNUVwmSmF2a7mB1uNJ
-1cgToq0/pjotqOZ0PZX1H+A4dFEXgfCNcgALuvGCiDD7S3N5YeLnxQ+kkXyXNraZ
-zBzaPk2Ml9Ue0eY+IiPCJ5/Y8Rjh87bN06ZyAcZcEKTriQKGuuy/qpEqgokFaOu6
-AYGLw3QHZuNJiBHeoAERb8+95fa29y5bqUuatxpfsDSJxoMmhFbJ4vhajAf/s+3C
-uK0rZGJqepUUJcfW63WPBKN2GSxgHWhdx1jD+kfSjRHgdAdKcBO7l29fm95LUSc0
-VlSsVS/+YxrdRUIYVloFoUtKRgywtzRkpsgCEo9ygg8n+sYPt4SMmWPhC9ZGTWUd
-VXtroMTeeLQjw2f81NHpYgXAAd5TbCel5Azg3j1/BzUUbxFQ58pQ8lVQ1KPxEJYK
-RBYVQo5UOyc9i30BDSIpFGaJISLHp9E6kBAC3yHu9WAJEphuD5UcThujq/jVLZ98
-THPo5JshbFtw97VphaqoVS6bpGjdhNDXMxiKsQ9rG1mTxpMMsuv+T8A6HGPho6xX
-seElbTupISdT66TSLX+Jt57qNLTZN+0zQGiby1ooBImf8zmdFjW7HMpGN0qsDhA2
-k7gNSDY0xATppQ9Zkmem
-=v48/
+iQIcBAEBAgAGBQJTKKPcAAoJELSic+t+oim9Hf0P/3rELI7VwR3LxlMlYZU+9r6B
+sgnvrD/uHk5LbNY5qAflhMdPFZ21652qQ7gMFZWuvU/TslS56B3vh5Ps79AyxLt3
+IjjWPZcjYR/FOdZYEikh6eSuWzBXXZhlJovCLI7Bk5yikpgqO2BoJvSfllfPq6MO
+6azixef+wLPYqxmb7SDQVPWEggwOm49D/8OaG4rrneSGWJ0rheH7OxQOBXXixjO1
+RxY5riSQuMXNeYwuO05MueNtMfMZR83ZFMKrR6h34oqEWEoEG69fCCas7lwoSW5X
+ZqrTOuaWn1N0eq1UqH8X6WRthrbTK9XYldAmee7VY78E+9rCyPz9EjfUE/tzdAzH
+OlYMGKlxb6Q06shngFL/6jNbqd3hKQtTmyJSupWsWka4WxcR7gzh+E8HiLtDlNgq
+L9+ub00dXyqWBzTYpUAiCRq7WxyRsjOU1YWrkFO97txWnp+KP2fRTY8ApkKkV1La
+f5yduYlsw1wS3NDTlL5R9x58XRtJXxfkpjgl+T/mRFyzMOA/HGpQ4M8qPaIeC4td
+MpQiPAwbuazUlXTOg0dni/FjQAii0ZAw+euY1YFRmOLsE8fEfXOc2eo2pmjgTM+R
+56kOa0q3qbUW4Q7qYzWMM8Gi8EFWwg4YBnM1ZtLhvRoDMjeIGwdk4Zq+ldU4AzQM
+8cAd0dPkmZAgjZVcNXcc
+=+khg
 -----END PGP SIGNATURE-----
 
---lak8Uquzb3CMtnm+--
-
---===============1234987608512285604==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1234987608512285604==--
+--W2IRJ2e1E3eviBXu--
