@@ -1,15 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH RFC] ALSA: oxygen: Xonar DG(X): fix Stereo
-	Upmixing regression
-Date: Mon, 17 Mar 2014 22:12:54 +0100
-Message-ID: <53276556.20107@ladisch.de>
+From: Rongjun Ying <Rongjun.Ying@csr.com>
+Subject: Re: [PATCH 2/2] ASoC: sirf-audio-codec: Add missing
+	Makefile entry
+Date: Tue, 18 Mar 2014 02:04:34 +0000
+Message-ID: <86130EF012BDF348AA0D464A4F449478012AE59413@SHAASIEXM01.ASIA.ROOT.PRI>
+References: <1394785572-28315-1-git-send-email-lars@metafoo.de>
+ <1394785572-28315-2-git-send-email-lars@metafoo.de>
+ <20140317170049.GV11706@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 977BD261A40
- for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2014 22:13:36 +0100 (CET)
+Received: from cluster-d.mailcontrol.com (cluster-d.mailcontrol.com
+ [85.115.60.190])
+ by alsa0.perex.cz (Postfix) with ESMTP id 84C48261A84
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 03:04:47 +0100 (CET)
+In-Reply-To: <20140317170049.GV11706@sirena.org.uk>
+Content-Language: zh-CN
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,81 +25,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Roman Volkov <v1ron@mail.ru>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: Barry Song <baohua@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The code introduced in commit 1f91ecc14dee ("ALSA: oxygen: modify
-adjust_dg_dac_routing function") accidentally disregarded the old value
-of the playback routing register, so it broke the "Stereo Upmixing"
-mixer control.
-
-The unmuted parts of the channel routing are the same for all settings
-of the output destination, so it suffices to revert that part of the
-patch.
-
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
----
- sound/pci/oxygen/xonar_dg.c |   30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
 
 
-Roman, could you please test this patch, and add your Tested-by?
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Tuesday, March 18, 2014 1:01 AM
+> To: Lars-Peter Clausen
+> Cc: Liam Girdwood; Rongjun Ying; Barry Song; alsa-devel@alsa-
+> project.org
+> Subject: Re: [PATCH 2/2] ASoC: sirf-audio-codec: Add missing Makefile
+> entry
+> 
+> On Fri, Mar 14, 2014 at 09:26:12AM +0100, Lars-Peter Clausen wrote:
+> > Without this the driver can't be built.
+> 
+> Yeah.  On the other hand until the issue with sharing the registers
+> between the CODEC and DAI drivers is resolved I'm not sure this is a
+> bad thing.  There were some patches for that which I didn't look at yet
+> though.
+
+Hi Mark:
+I have implemented audio hub driver to sharing the register for internal codec, port and I2S controller.
+Please help to review it.
+
+Thanks.
+RongJun Ying 
 
 
-diff --git a/sound/pci/oxygen/xonar_dg.c b/sound/pci/oxygen/xonar_dg.c
-index ed6f199..4cf3200 100644
---- a/sound/pci/oxygen/xonar_dg.c
-+++ b/sound/pci/oxygen/xonar_dg.c
-@@ -238,11 +238,21 @@ void set_cs4245_adc_params(struct oxygen *chip,
- 	cs4245_write_spi(chip, CS4245_MCLK_FREQ);
- }
-
-+static inline unsigned int shift_bits(unsigned int value,
-+				      unsigned int shift_from,
-+				      unsigned int shift_to,
-+				      unsigned int mask)
-+{
-+	if (shift_from < shift_to)
-+		return (value << (shift_to - shift_from)) & mask;
-+	else
-+		return (value >> (shift_from - shift_to)) & mask;
-+}
-+
- unsigned int adjust_dg_dac_routing(struct oxygen *chip,
- 					  unsigned int play_routing)
- {
- 	struct dg *data = chip->model_data;
--	unsigned int routing = 0;
-
- 	switch (data->output_sel) {
- 	case PLAYBACK_DST_HP:
-@@ -252,15 +262,23 @@ unsigned int adjust_dg_dac_routing(struct oxygen *chip,
- 			OXYGEN_PLAY_MUTE67, OXYGEN_PLAY_MUTE_MASK);
- 		break;
- 	case PLAYBACK_DST_MULTICH:
--		routing = (0 << OXYGEN_PLAY_DAC0_SOURCE_SHIFT) |
--			  (2 << OXYGEN_PLAY_DAC1_SOURCE_SHIFT) |
--			  (1 << OXYGEN_PLAY_DAC2_SOURCE_SHIFT) |
--			  (0 << OXYGEN_PLAY_DAC3_SOURCE_SHIFT);
- 		oxygen_write8_masked(chip, OXYGEN_PLAY_ROUTING,
- 			OXYGEN_PLAY_MUTE01, OXYGEN_PLAY_MUTE_MASK);
- 		break;
- 	}
--	return routing;
-+	return (play_routing & OXYGEN_PLAY_DAC0_SOURCE_MASK) |
-+	       shift_bits(play_routing,
-+			  OXYGEN_PLAY_DAC2_SOURCE_SHIFT,
-+			  OXYGEN_PLAY_DAC1_SOURCE_SHIFT,
-+			  OXYGEN_PLAY_DAC1_SOURCE_MASK) |
-+	       shift_bits(play_routing,
-+			  OXYGEN_PLAY_DAC1_SOURCE_SHIFT,
-+			  OXYGEN_PLAY_DAC2_SOURCE_SHIFT,
-+			  OXYGEN_PLAY_DAC2_SOURCE_MASK) |
-+	       shift_bits(play_routing,
-+			  OXYGEN_PLAY_DAC0_SOURCE_SHIFT,
-+			  OXYGEN_PLAY_DAC3_SOURCE_SHIFT,
-+			  OXYGEN_PLAY_DAC3_SOURCE_MASK);
- }
-
- void dump_cs4245_registers(struct oxygen *chip,
+Member of the CSR plc group of companies. CSR plc registered in England and Wales, registered number 4187346, registered office Churchill House, Cambridge Business Park, Cowley Road, Cambridge, CB4 0WZ, United Kingdom
+More information can be found at www.csr.com. Keep up to date with CSR on our technical blog, www.csr.com/blog, CSR people blog, www.csr.com/people, YouTube, www.youtube.com/user/CSRplc, Facebook, www.facebook.com/pages/CSR/191038434253534, or follow us on Twitter at www.twitter.com/CSR_plc.
+New for 2014, you can now access the wide range of products powered by aptX at www.aptx.com.
