@@ -1,76 +1,53 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: tlv320aic31xx: Don't call kfree
- for memory allocated by devm_kzalloc
-Date: Tue, 18 Mar 2014 12:00:44 +0000
-Message-ID: <20140318120044.GO11706@sirena.org.uk>
-References: <1394982385.19788.4.camel@phoenix>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 2/2] remgap: Fix possible sleep-in-atomic in
+ regmap_register_patch()
+Date: Tue, 18 Mar 2014 12:03:12 +0000
+Message-ID: <20140318120312.GP11706@sirena.org.uk>
+References: <1395143914-26929-1-git-send-email-tiwai@suse.de>
+ <1395143914-26929-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4230275927453840201=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 994B9260202
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 13:00:53 +0100 (CET)
-In-Reply-To: <1394982385.19788.4.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qdlkwHn4NkwSqFTO"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1395143914-26929-2-git-send-email-tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4230275927453840201==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+OvhQd+MVTzxy63P"
-Content-Disposition: inline
-
-
---+OvhQd+MVTzxy63P
+--qdlkwHn4NkwSqFTO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Mar 16, 2014 at 11:06:25PM +0800, Axel Lin wrote:
-> The kfree call is not necessary, but we need to call snd_soc_unregister_codec()
-> in remove().
+On Tue, Mar 18, 2014 at 12:58:34PM +0100, Takashi Iwai wrote:
+> Just like the previous, fix the possible sleep-in-atomic in
+> regmap_register_patch() by moving the allocation out of the lock.
 
-Applied, thanks.
+Sorry, I guess I wasn't clear - I already have essentially the same
+patch locally.
 
---+OvhQd+MVTzxy63P
+--qdlkwHn4NkwSqFTO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTKDVpAAoJELSic+t+oim9BJUQAIiL/72+5K/bRaOjh/iTkwtw
-5DdEuO3P+XTPUhPP5cUBQSeOo2M4IuyvTiEaSoDdHdKPogM1PNboLw/Qhb2Ay+wz
-m8qR8zObUdRsQltmWHLv0yjZaZg/YwNhfFKInyC/kB+JNHxGLGUskGUpFzrAZuy5
-jNZ/QYEt6FboKM/Y0/SnLHheafqjcpYl+JK3AJzFHOfkf6K6+2WRyvH5Unh0KaOs
-mGU+DSL2Vu7f7XyoX+COF3J9OgX2QoYDZQ0E7G756SqrQACCpCYH5S1dZQYFQMpX
-mYKNdXqBxQFHPMtwDDXDcnflC6eTd9bN0g795S7KxO2+zlEnFGhUh0mTzgjPiMOz
-SvD4lQ8rhtXmQY/1FYjfGw+1UzNx2gGHhDkWpLSpzsaJzV0cpedYavwt7HTf627X
-3Ss3DyN0a4VgcN8s9RLn1Guskf37IijiUjKqtCKea5R/djBluOhp/SW3JlMkPHua
-d70TTBPj/jpcDvlo8YqWg1RxhbmGw9m9mHP33RhkP2p/FgArynZ67ILyFuYqcfOy
-wGzGwCwBxtNi7FK1dFPPhfm8J2pcRu9St/C5dAh0N2dcN65hmbYMiP5K+R91uVq8
-9cQyBl9gH6+iVMOsAAsDZ4B+B9iXDsdWZ4GsIUTwNSkTGIMFk9gB2S30DjrpYs6f
-Xpj3naeXVo57jLnWOXDT
-=om44
+iQIcBAEBAgAGBQJTKDX9AAoJELSic+t+oim9eusP/3V0qv4z8u3tR3SMS/a3jzEE
++N50YkkkH+eFO1hNQtd/kM6wGSNsV3KYTT3bLT6Qvs/gSih3MEuD0NZUW44X1jWc
+06GTW6QsTtGS4IK4TnB43huy9q7/ER8gQ/U4kdtxQEgUaVzJcNmBG6CRIBSYgKF8
+YkJ9byu3mWafor/z8IYhPaz8JcTr0SPuiZAWBxZI9yG/nVAuF1SvMHlqUf6gQbI8
+kSnmFuRNMBfhFta7Q4cbCr82xT+R7G0lYxGjBPDysHWzzLnvncpI1RjwKT0QAR62
+ouVVuw00anuuHvq0i67r1O3CUUdFYLNt1OK6q030tJru/b16GzwGtYk/OWgiUoUx
+00QydEMqGTo9FrZvZmimez60dCwiULy30l2lLzW4sSiSxLiVSSrsIW2Cm4M/tqgP
+EcDUycc8+E2VoWe5GHIahcDvqStkwJdLRUYVr82zcXINb0/pyJcBvEB4DVxpyMLv
+XzwBI4Hd5vMjz9AsBtczzF0Ht0n+Xt11MDDRjkmjzt34ZZKevj+AyyGbvHVTaF47
+YyncrTvpfG/44chxb/j0x36MiCh9ItxTRJkRsD17PYQWHzJzUtDUYDGKDVyQ8CK6
+bfUBb470vTjTsQjjBEbpGH6Ft1jWiiVbySvJsebCzuvunMbASV+G56YIud0WVpvj
+IT2yKJjn+/eTlNBVBkqC
+=+PZp
 -----END PGP SIGNATURE-----
 
---+OvhQd+MVTzxy63P--
-
---===============4230275927453840201==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4230275927453840201==--
+--qdlkwHn4NkwSqFTO--
