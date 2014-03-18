@@ -1,16 +1,18 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [RFC] ASoC: samsung: don't build pcm and spdif on
-	exynos
-Date: Tue, 18 Mar 2014 17:18:02 +0100
-Message-ID: <201403181718.02780.arnd@arndb.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] pcm: route: Don't handle no matching chmap
+ as a serious error
+Date: Tue, 18 Mar 2014 17:19:29 +0100
+Message-ID: <53287211.1040803@canonical.com>
+References: <1395152876-28480-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
- [212.227.126.130])
- by alsa0.perex.cz (Postfix) with ESMTP id A49DB26163C
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 17:18:16 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FEDB261AE9
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 17:19:31 +0100 (CET)
+In-Reply-To: <1395152876-28480-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Padmavathi Venna <padma.v@samsung.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, Sangsu Park <sangsu4u.park@samsung.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In commit d37bdf736d9b "ASoC: samsung: Use ASoC dmaengine code where
-possible", Mark Brown changed the EXYNOS ASoC code to no longer
-use the private dma interfaces that are standing in the way of
-multiplatform enablement.
+On 03/18/2014 03:27 PM, Takashi Iwai wrote:
+> When find_matching_chmap() returns an error for the non-matching
+> chmap, the caller, snd_pcm_route_open(), also returns an error
+> although it shouldn't be handled as the fatal error.  This results in
+> the probe error with PulseAudio and it gives no real output in the
+> end.
 
-However, in 313367e7bfa "ASoC: Samsung: Update Kconfig for I2S,SPDIF
-and PCM audio", two new users of that interface appeared, since it
-is now possible to enable SND_SOC_SAMSUNG_SMDK_SPDIF and
-SND_SOC_SMDK_WM8994_PCM on all Samsung SoCs including EXYNOS.
+Hmm, could you give a more specific example? In case the driver does not
+support channel maps at all, that case is handled in the beginning of
+the function.
 
-This patch does a partial revert of 313367e7bfa by allowing these
-drivers on all samsung platforms except EXYNOS, so we can proceed
-with the multiplatform patches.
+So this only happens if the driver supports channel maps, but only
+non-compatible with the requested map. In which case I believe it's
+correct that the probing should fail...?
 
-If support for these drivers is actually needed on EXYNOS machines,
-the drivers should probably first be moved over to use the dmaengine
-code.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  src/pcm/pcm_route.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
+> index ab17fa78be2c..ac11bdc8adfd 100644
+> --- a/src/pcm/pcm_route.c
+> +++ b/src/pcm/pcm_route.c
+> @@ -940,10 +940,8 @@ static int find_matching_chmap(snd_pcm_t *spcm, snd_pcm_chmap_t *tt_chmap,
+>  
+>  	snd_pcm_free_chmaps(chmaps);
+>  
+> -	if (*found_chmap == NULL) {
+> +	if (*found_chmap == NULL)
+>  		SNDERR("Found no matching channel map");
+> -		return -EINVAL;
+> -	}
+>  	return 0;
+>  }
+>  
+> 
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Sangsu Park <sangsu4u.park@samsung.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>
-Cc: Padmavathi Venna <padma.v@samsung.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
-Padma, could you comment on this? When you did the patch that introduced
-the usage of these drivers on EXYNOS, did you actually need that for
-a particular machine that would get broken by this revert?
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 7b610a8..efc01e0 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -167,7 +167,7 @@ config SND_SOC_GONI_AQUILA_WM8994
- 
- config SND_SOC_SAMSUNG_SMDK_SPDIF
- 	tristate "SoC S/PDIF Audio support for SMDK"
--	depends on SND_SOC_SAMSUNG
-+	depends on SND_SOC_SAMSUNG && !ARCH_EXYNOS
- 	select SND_SAMSUNG_SPDIF
- 	help
- 	  Say Y if you want to add support for SoC S/PDIF audio on the SMDK.
-@@ -183,7 +183,7 @@ config SND_SOC_SMDK_WM8580_PCM
- 
- config SND_SOC_SMDK_WM8994_PCM
- 	tristate "SoC PCM Audio support for WM8994 on SMDK"
--	depends on SND_SOC_SAMSUNG
-+	depends on SND_SOC_SAMSUNG && !ARCH_EXYNOS
- 	depends on I2C=y
- 	select MFD_WM8994
- 	select SND_SOC_WM8994
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
