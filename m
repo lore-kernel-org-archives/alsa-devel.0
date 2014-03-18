@@ -1,89 +1,63 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 4/4] ASoC: simple-card: Add DT
- documentation for multi-DAI links
-Date: Tue, 18 Mar 2014 10:41:59 +0000
-Message-ID: <20140318104159.GF11706@sirena.org.uk>
-References: <cover.1394883134.git.moinejf@free.fr>
- <d054780a0edf4b2338a52e48bff9144e19aa614f.1394883134.git.moinejf@free.fr>
- <20140317164339.GR11706@sirena.org.uk>
- <20140318091728.1d2240ca@armhf>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: tegra: Use flat regcache.
+Date: Tue, 18 Mar 2014 10:44:09 +0000
+Message-ID: <20140318104409.GG11706@sirena.org.uk>
+References: <1395115139-22243-1-git-send-email-dgreid@chromium.org>
+ <s5hha6wdmxa.wl%tiwai@suse.de>
+ <20140318102858.GE11706@sirena.org.uk>
+ <s5h4n2vssnu.wl%tiwai@suse.de>
+ <53282262.2030300@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6369137305049575965=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DD01A261ACE
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 11:42:05 +0100 (CET)
-In-Reply-To: <20140318091728.1d2240ca@armhf>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oocIzbZBDVZKHAzi"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <53282262.2030300-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6369137305049575965==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MZQ2DoTi1EizrxJt"
-Content-Disposition: inline
-
-
---MZQ2DoTi1EizrxJt
+--oocIzbZBDVZKHAzi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 18, 2014 at 09:17:28AM +0100, Jean-Francois Moine wrote:
+On Tue, Mar 18, 2014 at 11:39:30AM +0100, Lars-Peter Clausen wrote:
+> On 03/18/2014 11:33 AM, Takashi Iwai wrote:
 
-> The 2nd syntax is simpler and clearer, but the properties of the CPU
-> DAI and of the CODEC DAI are the same in the container (format, clock
-> and PCM slots). Is this a problem?
+> >Right.  OTOH, it's still better than papering over with GFP_ATOMIC, I
+> >think.  We can just give a proper note in the function description,
+> >for example.
 
-Yes, things like clocks might be different.  We need a way to specify
-DAI specific properties.
+> We should still hold the log over the _regmap_write portion of
+> regmap_register_patch(), but I think we should otherwise be fine if we make
+> it a API requirement that the caller needs to make sure that
+> regmap_register_patch() is not called concurrently to itself or to
+> regcache_sync().
 
-> BTW, there is a 'dai_fmt' in the DAI link, but this format is not used
-> in the simple-card. Why?
+Yes, it's just the (re)alloc I was talking about there.
 
-Could you be more specific please?  If you mean the dai_fmt feature of
-the generic dai_link struct then because of the confusion about what
-the DAI formats mean which you'll have seen on the list.
-
---MZQ2DoTi1EizrxJt
+--oocIzbZBDVZKHAzi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTKCL0AAoJELSic+t+oim9M9cP/1CXPHzDtDYkZAMh6E3JSpuV
-u8dazvw2YmRyXYu9B7LSFdpSz9Rb+vi0zM7cwmWAvGjZNvvyKbV4lEliWiYzKh7f
-pctkya3dYjn2wB1791Z2/CqMQ5NNyRK7Lf1D07uD34/B0A4Dcew7LxhI7uifd28q
-mFl9IbWQ7IK6rSpwMxfiQQj8H0P3FnkwfrJVZRSUxTDxpwSIXyPXAQm9jKebpwpl
-pGIZWd6khDLv/L3AlEHpw/2Nv38FvnALYCvVpqHwnHkWmqokP3Lv0dTD9JWTukHn
-VyKfO2b6IfM3nAHCTJpK/HsO7QG76O0euf0Cg7KS5wdFT2Yc0FZdH0qSJZva+UIv
-b75paYe3atp+Fs2yf1VD/tlxp64nMxdXPUTt2jUz8TAQKlM+s6jl9pdf5wdl75IY
-eblnyQYG9TXUjz7U19A9r9yu6cGQOuY1OO2bkKnuPi1cqy72fVwRIF+myPYZ7TmZ
-UqCJ2vrpyGfoqe/TuZjOFwS4TqeSoFgKDbb+iYZKqAqILG1q4LlaCsVcHa5IYikl
-7pDPnydTqt2UDixIMBf3iw4X/1fRiW473Vga6um4TOcEEfwXo8KxjPhfSm/wG1aL
-cgAGtxWAnyaJ3I0xnP26GqnsJDtsUXkQ+rI+ZjjkzJPCQ6H2+smb8Pt9LGfmAjfL
-BwN+6BlI+RASVHpBBi+l
-=ZG4j
+iQIcBAEBAgAGBQJTKCN2AAoJELSic+t+oim9fkwP/AqLACQ2BduOpQwxmBFdcQ8S
+YHQfq2oN9sMPZbdmGORBxmA3AxKTlIAc4Iv5uMLFMkDcwBI/O2DqI2ru6sVyf/yC
+nq+9blm/dd6ht3lqZEV51bRP1Py2mPlfefV2m6KhfTt2K/xsyZT5yhV6CEEXVg+n
+6tiO7b7T1SUPU4Uwpt7/Zwr3wvNKarOuch0RKNaVjZu1VP27ys8zv0vQprsYeW9M
+ZFB595KLpmZfhWRDGyLDCxKvDufT2o8x85FO0rmdIx8JzFZvN4ZHMYAJTyEG45vj
+nzomCHQzE00zT3sXxdb0rOwyJyONZJDwemzAPw0f1ILvswxuZ1ktW3kBj2xFNUp5
+SbAZHxShwL3erLfIEgNzAqRyq7RzP1EuXkaQ6QeFteEpL0ijXBXED0SvPQi0UsJ0
+7nrUFw/cgCJ25ghdJ9NEgwRMA66nlv3nX40Rzp8YdLVbL4G7+zdr/EoH6J5LlhVm
+vtxkKPm728WfiNxX0mfth0M8aujtCYPdzEfGOEoG0i1Pcu38s8ap8FO4SU8Wytxs
+kz+W48fRInnO3iRI7riYdTVB7HQytWVUqCnCpy0Vbbop6FZmEfQCyJEwvLoG4lzw
+y+ZjfIuPC3Rxz3AoLMShHxlDr+eXIGa7kpSRpniaeSfsGEwsnUwe3Ehd6MjEVlWO
+CIKXcOfk4HWlBzgOODEK
+=OgfN
 -----END PGP SIGNATURE-----
 
---MZQ2DoTi1EizrxJt--
-
---===============6369137305049575965==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6369137305049575965==--
+--oocIzbZBDVZKHAzi--
