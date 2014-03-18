@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 00/16] ASoC: fsl-ssi: Driver cleanup
-Date: Tue, 18 Mar 2014 12:44:54 +0000
-Message-ID: <20140318124454.GX11706@sirena.org.uk>
-References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
+Subject: Re: [PATCH] ASoC: codecs: Replace instances of
+ rtd->codec with dai->codec
+Date: Tue, 18 Mar 2014 12:46:41 +0000
+Message-ID: <20140318124641.GY11706@sirena.org.uk>
+References: <1394742294-14698-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3168629279634444290=="
+Content-Type: multipart/mixed; boundary="===============1881715701494971090=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CB05726072A
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 13:45:05 +0100 (CET)
-In-Reply-To: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 27E8326072A
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 13:46:58 +0100 (CET)
+In-Reply-To: <1394742294-14698-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,62 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3168629279634444290==
+--===============1881715701494971090==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="37S+gaNFgaAMSwRw"
+	protocol="application/pgp-signature"; boundary="gWFRGQTl+JkoOcqx"
 Content-Disposition: inline
 
 
---37S+gaNFgaAMSwRw
+--gWFRGQTl+JkoOcqx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Mar 15, 2014 at 01:44:08PM +0100, Markus Pargmann wrote:
+On Thu, Mar 13, 2014 at 09:24:54PM +0100, Lars-Peter Clausen wrote:
+> With CODEC to CODEC links rtd->codec does not necessarily point to the driver's
+> CODEC. CODEC drivers should always use dai->codec and never even look at the PCM
+> runtime.
 
-> This new version of the cleanup is mainly a reordering of the patches. It moves
-> the regmap patch to the end of the series so none of the other patches depend
-> on it. This also fixes a bug I introduced in "Remove fsl_ssi_setup" which also
-> removed the switching between network and normal mode depending on the number
-> of channels. I reversed this code removal. Another new patch was added "Fix
-> i2s_mode variable setup" which fixes the i2s_mode assignment in set_dai_fmt().
+Applied, thanks.
 
-I'd really like to see some review/testin from other users on this
-series.
-
---37S+gaNFgaAMSwRw
+--gWFRGQTl+JkoOcqx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTKD/DAAoJELSic+t+oim9780P/2NLcNZ2EovjQXZ7QqMFGNt7
-IWqtLQs5nCUm8rQI6eBC5DsUwN7b0wz9WZTNc5pRMM8acmfrNDsIWzFbKIUPXkrp
-NOQmpO2VBziVwtGiFFfM4vqULU4F2GY+sC7C7apGqcymoowuxtHb2/x50Bfdhv+J
-f7rzZxq9W3RGmwErLeOvN7OhjHWNPZ/eAtzP1Q8KBWWhK/1p+8pg6zAWNAopalLk
-x1OrM7ksAmjoWgj0hm4tYxxW/be+RExhLqn3ntxNuMgXlY9raAA4eI/SXqkr0r+z
-TjdAO6/+QfPIzJIB456JRB0CWMm1f9huWoPLW6tcDwhPbFIsXwReRw9QZl5W3CzF
-iYtIAfFLKdWGftr/kfYGW8fOV8rz276U7el/TR90KYRyoR64/G+xyB7sx1ygd/Jh
-5p5gt0ccN/LOKGIsmwuFuNmfpvtjReCz7WoyZqQ+ut4eZ7FtuhHNmaI3Vd1ZLkQ0
-uX2mWnDY7DEzK1rDmXojJeKCPu4Ub777nIolRyB46TR1tAe47GJ2IhhSCE8ynX7b
-TkcG+YEgOogSB40cZFn1dVq5xXei4hFRSugmV9fWHBro0/SkHV0dguhw6i/Ng8AJ
-O1jqb3L2lU7Yd4h0qTrYTQHqB6U6ChCGIjYi9xy9kLjy9AmC50a+9pavpkM75rgf
-fvKJE+/2ZI6ZNdv86xNw
-=yXof
+iQIcBAEBAgAGBQJTKEAtAAoJELSic+t+oim9vgoP/jTEzNOdadtmXBFTX7iNwN7v
+5XS/BHe5khBi1KRg7X5J8X1EuZwQxnyptnjLbwNo1uc+M5Us3GLc7Pqvz18iIOSG
+6G8Q+Ipc5QDZC9gzyPAEFBB1SubV6qFqjO6yiA04GmhtnvYH0qpiFkFub4SHEQ08
+c00Gr6k4Awgccrs3JD5GKkhlmLezKHleiuVTHtkrihEs/NfmLR414tnQd7VFxx5R
+Ng8i++T26dLm3Q34RLlsIHye2/PNLUGcPIbCymsFLUkfBmPgNK7/ninfKo27+rto
+PpZyLtkkQZwduBuLuq+L8HF+yaocz9+lx1A6mPc7yphu3c9TJWF2LDvqei9Pq24S
+0UDR/qkbbOeki/WwkHi5FjqSoCT7+gvZVAZLluORq2pKcnJGkyPsbihQa5rDMXkW
+uwVke0VsgpHDlKtJoP6QDR/+FGhWGEX0ruD05kZfMWHqIvPwE146PJ4MR6ZzXYrg
+r6E9FfwgX5aOL55U1b80RAu/CyOAK0nL2Q5i55Mwup77NoJvnbVTA/4v7wS3FEUG
+bzm3E5O62g7o36PsrowLGkj3ubd4HpZk5MSyfL00KEJYq2YY+rGGHS5TRSWyT1os
+Meognewd2LiG/P8euk1xpD6Is8cj/w85VoOH6UqhNLuJ69YceDHMfEXYesMvpy4V
+J8FLes7OnpVNmlRNugH8
+=8xdL
 -----END PGP SIGNATURE-----
 
---37S+gaNFgaAMSwRw--
+--gWFRGQTl+JkoOcqx--
 
---===============3168629279634444290==
+--===============1881715701494971090==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3168629279634444290==--
+--===============1881715701494971090==--
