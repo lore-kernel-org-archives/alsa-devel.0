@@ -1,111 +1,79 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH v2 16/16] ASoC: fsl-ssi: Use regmap
-Date: Tue, 18 Mar 2014 09:10:19 +0100
-Message-ID: <20140318081019.GJ11360@pengutronix.de>
-References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
- <1394887464-969-17-git-send-email-mpa@pengutronix.de>
- <1394894616.578942243@f331.i.mail.ru>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 13/13] ASoC: dapm: Rename
+	soc_widget_update_bits_locked() to soc_widget_update_bits()
+Date: Tue, 18 Mar 2014 09:02:16 +0100
+Message-ID: <1395129736-11938-14-git-send-email-lars@metafoo.de>
+References: <1395129736-11938-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3279153891023298740=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1394894616.578942243@f331.i.mail.ru>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-224.synserver.de (smtp-out-230.synserver.de
+ [212.40.185.230])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39F64261B35
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 09:01:56 +0100 (CET)
+In-Reply-To: <1395129736-11938-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+There is no unlocked version of soc_widget_update_bits_locked() and there is no
+plan to introduce it in the near future, so drop the _locked suffix.
 
---===============3279153891023298740==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="poemUeGtc2GQvHuH"
-Content-Disposition: inline
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/soc-dapm.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-
---poemUeGtc2GQvHuH
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Mar 15, 2014 at 06:43:36PM +0400, Alexander Shiyan wrote:
-> =D0=A1=D1=83=D0=B1=D0=B1=D0=BE=D1=82=D0=B0, 15 =D0=BC=D0=B0=D1=80=D1=82=
-=D0=B0 2014, 13:44 +01:00 =D0=BE=D1=82 Markus Pargmann <mpa@pengutronix.de>:
-> > This patch replaces the ssi specific functions write_ssi, read_ssi and
-> > write_ssi_mask by standard regmap function calls.
-> ...
-> > diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> ...
-> > +static const struct regmap_config fsl_ssi_regconfig =3D {
-> > +	.max_register =3D CCSR_SSI_SACCDIS,
-> > +	.reg_bits =3D 32,
-> > +	.val_bits =3D 32,
-> > +	.reg_stride =3D 4,
-> > +#ifdef PPC
-> > +	.val_format_endian =3D REGMAP_ENDIAN_BIG,
-> > +#endif
-> > +};
->=20
-> Why we cannot use REGMAP_ENDIAN_NATIVE here for all cases?
-> Theoretically, we can use for i.MX SOCs with different endianness,
-> so this will help us.
-
-I can change and test it on i.MX, but I am not sure if it helps with the
-PPC situation as I don't have the hardware.
-
-Regards,
-
-Markus
-
->=20
-> ---
-
---=20
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---poemUeGtc2GQvHuH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTJ/9rAAoJEEpcgKtcEGQQq5EP/RegGeg0cHhKSjNGelafOgGQ
-HDpFANhGi5d/Yz1Lfe6vTTlQSRWp2yauWjVzBw756uw+64K9RFImm+RyL7lh57rr
-8vRTAKy6o9DlHB/pxBWCpj49Qan6sAWJCdmLhy1FUj5WWCQ0jzTIRPnOJ+4SSiq0
-iPkwJhH7HuVIdSMreDSzfVdVteZKcbIW1xzMLlCvCTj8JrMNs9oGGvMw+uDEqamT
-iSCgo9WTe07LiE1FZstylFpkjyWpZc4Hv1OYcJSYrS4CzxhcQWkN2VrAZf56uUpr
-uIusYmkekHld1fzgG0QBBXc+ltUIqvulzZP2G+QbepOVfkVMzIRdPG8DbcbR2uNw
-he+XPoyWz3X3kvv7Xe1OzyqvRnHpSws/m6y8nyKwt9K7hwG4kFKYloSYp/CulFCf
-NN5Tub68I/yIR7y7JFKNhIOwUgSRh08y/mFiIQWtDfEb3+hCajJqtasFW2GlzAmj
-eeTjdd14e2vlpV60UgGpDIzeXnQiAVkA3v+ZL3Hphk1rod+8FMQpDZv7So/2qXTa
-ZzPaUvP5G8gwFwRdlTZk/BBhThicrTtdPZU/G9Wp7CTUpjwgUAxUnnDu/dJmVQsd
-3wBzvFPdxt+c5ho35y089e8k9OiTX0uuu4msfXYIlleKcy8pEeX4KEcxSnecV2k4
-GJoQAcNjQLx7Y9oSHz/P
-=dx6y
------END PGP SIGNATURE-----
-
---poemUeGtc2GQvHuH--
-
-
---===============3279153891023298740==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============3279153891023298740==--
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 506ee73..b7f8e9a 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -384,7 +384,7 @@ static int soc_widget_read(struct snd_soc_dapm_widget *w, int reg,
+ 	return snd_soc_component_read(w->dapm->component, reg, value);
+ }
+ 
+-static int soc_widget_update_bits_locked(struct snd_soc_dapm_widget *w,
++static int soc_widget_update_bits(struct snd_soc_dapm_widget *w,
+ 	unsigned short reg, unsigned int mask, unsigned int value)
+ {
+ 	if (!w->dapm->component)
+@@ -1071,7 +1071,7 @@ int dapm_reg_event(struct snd_soc_dapm_widget *w,
+ 	else
+ 		val = w->off_val;
+ 
+-	soc_widget_update_bits_locked(w, -(w->reg + 1),
++	soc_widget_update_bits(w, -(w->reg + 1),
+ 			    w->mask << w->shift, val << w->shift);
+ 
+ 	return 0;
+@@ -1367,7 +1367,7 @@ static void dapm_seq_run_coalesced(struct snd_soc_card *card,
+ 			"pop test : Applying 0x%x/0x%x to %x in %dms\n",
+ 			value, mask, reg, card->pop_time);
+ 		pop_wait(card->pop_time);
+-		soc_widget_update_bits_locked(w, reg, mask, value);
++		soc_widget_update_bits(w, reg, mask, value);
+ 	}
+ 
+ 	list_for_each_entry(w, pending, power_list) {
+@@ -1513,8 +1513,7 @@ static void dapm_widget_update(struct snd_soc_card *card)
+ 	if (!w)
+ 		return;
+ 
+-	ret = soc_widget_update_bits_locked(w, update->reg, update->mask,
+-				  update->val);
++	ret = soc_widget_update_bits(w, update->reg, update->mask, update->val);
+ 	if (ret < 0)
+ 		dev_err(w->dapm->dev, "ASoC: %s DAPM update failed: %d\n",
+ 			w->name, ret);
+-- 
+1.8.0
