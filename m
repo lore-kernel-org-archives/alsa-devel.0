@@ -1,79 +1,111 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 13/13] ASoC: dapm: Rename
-	soc_widget_update_bits_locked() to soc_widget_update_bits()
-Date: Tue, 18 Mar 2014 09:02:16 +0100
-Message-ID: <1395129736-11938-14-git-send-email-lars@metafoo.de>
-References: <1395129736-11938-1-git-send-email-lars@metafoo.de>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v3 4/4] ASoC: simple-card: Add DT documentation for
+ multi-DAI links
+Date: Tue, 18 Mar 2014 09:17:28 +0100
+Message-ID: <20140318091728.1d2240ca@armhf>
+References: <cover.1394883134.git.moinejf@free.fr>
+	<d054780a0edf4b2338a52e48bff9144e19aa614f.1394883134.git.moinejf@free.fr>
+	<20140317164339.GR11706@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-224.synserver.de (smtp-out-230.synserver.de
- [212.40.185.230])
- by alsa0.perex.cz (Postfix) with ESMTP id 39F64261B35
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 09:01:56 +0100 (CET)
-In-Reply-To: <1395129736-11938-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140317164339.GR11706@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is no unlocked version of soc_widget_update_bits_locked() and there is no
-plan to introduce it in the near future, so drop the _locked suffix.
+On Mon, 17 Mar 2014 16:43:39 +0000
+Mark Brown <broonie@kernel.org> wrote:
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-dapm.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+> On Sat, Mar 15, 2014 at 12:30:05PM +0100, Jean-Francois Moine wrote:
+	[snip]
+> > +sound {
+> > +	compatible =3D "simple-audio-card";
+> > +	simple-audio-card,name =3D "Cubox Audio";
+> > +
+> > +	simple-audio-card,cpu@0 {		/* I2S - HDMI */
+> > +		sound-dai =3D <&audio1 0>;
+> > +		format =3D "i2s";
+> > +	};
+> > +	simple-audio-card,codec@0 {
+> > +		sound-dai =3D <&tda998x 0>;
+> > +	};
+> > +
+> > +	simple-audio-card,cpu@1 {		/* S/PDIF - HDMI */
+> > +		sound-dai =3D <&audio1 1>;
+> > +	};
+> > +	simple-audio-card,codec@1 {
+> > +		sound-dai =3D <&tda998x 1>;
+> > +	};
+>=20
+> So, this is not exactly pretty as a binding.  I would expect to see t=
+he
+> links explicitly represented in the DT so you see the two DAIs in eac=
+h
+> link grouped into a container, the above isn't very easy to read and =
+as
+> Jyri says this lack of clarity also causes practical problems in that
+> there's nowhere to place link specific parameters.
+>=20
+> I think what I'd expect to see here is that the simple card can eithe=
+r
+> be a container with a link in it directly or a container of links.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 506ee73..b7f8e9a 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -384,7 +384,7 @@ static int soc_widget_read(struct snd_soc_dapm_widget *w, int reg,
- 	return snd_soc_component_read(w->dapm->component, reg, value);
- }
- 
--static int soc_widget_update_bits_locked(struct snd_soc_dapm_widget *w,
-+static int soc_widget_update_bits(struct snd_soc_dapm_widget *w,
- 	unsigned short reg, unsigned int mask, unsigned int value)
- {
- 	if (!w->dapm->component)
-@@ -1071,7 +1071,7 @@ int dapm_reg_event(struct snd_soc_dapm_widget *w,
- 	else
- 		val = w->off_val;
- 
--	soc_widget_update_bits_locked(w, -(w->reg + 1),
-+	soc_widget_update_bits(w, -(w->reg + 1),
- 			    w->mask << w->shift, val << w->shift);
- 
- 	return 0;
-@@ -1367,7 +1367,7 @@ static void dapm_seq_run_coalesced(struct snd_soc_card *card,
- 			"pop test : Applying 0x%x/0x%x to %x in %dms\n",
- 			value, mask, reg, card->pop_time);
- 		pop_wait(card->pop_time);
--		soc_widget_update_bits_locked(w, reg, mask, value);
-+		soc_widget_update_bits(w, reg, mask, value);
- 	}
- 
- 	list_for_each_entry(w, pending, power_list) {
-@@ -1513,8 +1513,7 @@ static void dapm_widget_update(struct snd_soc_card *card)
- 	if (!w)
- 		return;
- 
--	ret = soc_widget_update_bits_locked(w, update->reg, update->mask,
--				  update->val);
-+	ret = soc_widget_update_bits(w, update->reg, update->mask, update->val);
- 	if (ret < 0)
- 		dev_err(w->dapm->dev, "ASoC: %s DAPM update failed: %d\n",
- 			w->name, ret);
--- 
-1.8.0
+I agree. I see two possible syntaxes:
+
+1) keep the same definitions in the containers:
+
+sound {
+	compatible =3D "simple-audio-card";
+	simple-audio-card,name =3D "Cubox Audio";
+
+	simple-audio-card,dai-link@0 {		/* I2S - HDMI */
+		simple-audio-card,cpu {
+			sound-dai =3D <&audio1 0>;
+			format =3D "i2s";
+		};
+		simple-audio-card,codec {
+			sound-dai =3D <&tda998x 0>;
+		};
+	};
+
+	simple-audio-card,dai-link@1 {		/* S/PDIF - HDMI */
+		simple-audio-card,cpu {
+			sound-dai =3D <&audio1 1>;
+		};
+		simple-audio-card,codec {
+			sound-dai =3D <&tda998x 1>;
+		}
+	};
+	...
+
+2) new definitions in the container
+
+sound {
+	compatible =3D "simple-audio-card";
+	simple-audio-card,name =3D "Cubox Audio";
+
+	simple-audio-card,dai-link@0 {		/* I2S - HDMI */
+		format =3D "i2s";
+		cpu-dai  =3D <&audio1 0>;
+		codec-dai =3D <&tda998x 0>;
+	};
+
+	simple-audio-card,dai-link@1 {		/* S/PDIF - HDMI */
+		cpu-dai =3D <&audio1 1>;
+		codec-dai =3D <&tda998x 1>;
+	};
+	...
+
+The 2nd syntax is simpler and clearer, but the properties of the CPU
+DAI and of the CODEC DAI are the same in the container (format, clock
+and PCM slots). Is this a problem?
+
+BTW, there is a 'dai_fmt' in the DAI link, but this format is not used
+in the simple-card. Why?
+
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
