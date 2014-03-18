@@ -1,83 +1,111 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 12/13] ASoC: Remove snd_soc_update_bits_locked()
-Date: Tue, 18 Mar 2014 09:02:15 +0100
-Message-ID: <1395129736-11938-13-git-send-email-lars@metafoo.de>
-References: <1395129736-11938-1-git-send-email-lars@metafoo.de>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH v2 16/16] ASoC: fsl-ssi: Use regmap
+Date: Tue, 18 Mar 2014 09:10:19 +0100
+Message-ID: <20140318081019.GJ11360@pengutronix.de>
+References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
+ <1394887464-969-17-git-send-email-mpa@pengutronix.de>
+ <1394894616.578942243@f331.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-224.synserver.de (smtp-out-230.synserver.de
- [212.40.185.230])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BEA8261B2D
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 09:01:52 +0100 (CET)
-In-Reply-To: <1395129736-11938-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: multipart/mixed; boundary="===============3279153891023298740=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1394894616.578942243@f331.i.mail.ru>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-There are no users of snd_soc_update_bits_locked() left and it is identical to
-snd_soc_update_bits(). So it can be removed.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- include/sound/soc.h |  3 ---
- sound/soc/soc-io.c  | 20 --------------------
- 2 files changed, 23 deletions(-)
+--===============3279153891023298740==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="poemUeGtc2GQvHuH"
+Content-Disposition: inline
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index cb98cd6..4485688 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -465,9 +465,6 @@ static inline void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
- /* codec register bit access */
- int snd_soc_update_bits(struct snd_soc_codec *codec, unsigned short reg,
- 				unsigned int mask, unsigned int value);
--int snd_soc_update_bits_locked(struct snd_soc_codec *codec,
--			       unsigned short reg, unsigned int mask,
--			       unsigned int value);
- int snd_soc_test_bits(struct snd_soc_codec *codec, unsigned short reg,
- 				unsigned int mask, unsigned int value);
- 
-diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
-index 762bcbc..4b87e42 100644
---- a/sound/soc/soc-io.c
-+++ b/sound/soc/soc-io.c
-@@ -161,26 +161,6 @@ int snd_soc_update_bits(struct snd_soc_codec *codec, unsigned short reg,
- EXPORT_SYMBOL_GPL(snd_soc_update_bits);
- 
- /**
-- * snd_soc_update_bits_locked - update codec register bits
-- * @codec: audio codec
-- * @reg: codec register
-- * @mask: register mask
-- * @value: new value
-- *
-- * Writes new register value, and takes the codec mutex.
-- *
-- * Returns 1 for change else 0.
-- */
--int snd_soc_update_bits_locked(struct snd_soc_codec *codec,
--			       unsigned short reg, unsigned int mask,
--			       unsigned int value)
--{
--	return snd_soc_component_update_bits(&codec->component, reg, mask,
--		value);
--}
--EXPORT_SYMBOL_GPL(snd_soc_update_bits_locked);
--
--/**
-  * snd_soc_test_bits - test register for change
-  * @codec: audio codec
-  * @reg: codec register
--- 
-1.8.0
+
+--poemUeGtc2GQvHuH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Mar 15, 2014 at 06:43:36PM +0400, Alexander Shiyan wrote:
+> =D0=A1=D1=83=D0=B1=D0=B1=D0=BE=D1=82=D0=B0, 15 =D0=BC=D0=B0=D1=80=D1=82=
+=D0=B0 2014, 13:44 +01:00 =D0=BE=D1=82 Markus Pargmann <mpa@pengutronix.de>:
+> > This patch replaces the ssi specific functions write_ssi, read_ssi and
+> > write_ssi_mask by standard regmap function calls.
+> ...
+> > diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> ...
+> > +static const struct regmap_config fsl_ssi_regconfig =3D {
+> > +	.max_register =3D CCSR_SSI_SACCDIS,
+> > +	.reg_bits =3D 32,
+> > +	.val_bits =3D 32,
+> > +	.reg_stride =3D 4,
+> > +#ifdef PPC
+> > +	.val_format_endian =3D REGMAP_ENDIAN_BIG,
+> > +#endif
+> > +};
+>=20
+> Why we cannot use REGMAP_ENDIAN_NATIVE here for all cases?
+> Theoretically, we can use for i.MX SOCs with different endianness,
+> so this will help us.
+
+I can change and test it on i.MX, but I am not sure if it helps with the
+PPC situation as I don't have the hardware.
+
+Regards,
+
+Markus
+
+>=20
+> ---
+
+--=20
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--poemUeGtc2GQvHuH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTJ/9rAAoJEEpcgKtcEGQQq5EP/RegGeg0cHhKSjNGelafOgGQ
+HDpFANhGi5d/Yz1Lfe6vTTlQSRWp2yauWjVzBw756uw+64K9RFImm+RyL7lh57rr
+8vRTAKy6o9DlHB/pxBWCpj49Qan6sAWJCdmLhy1FUj5WWCQ0jzTIRPnOJ+4SSiq0
+iPkwJhH7HuVIdSMreDSzfVdVteZKcbIW1xzMLlCvCTj8JrMNs9oGGvMw+uDEqamT
+iSCgo9WTe07LiE1FZstylFpkjyWpZc4Hv1OYcJSYrS4CzxhcQWkN2VrAZf56uUpr
+uIusYmkekHld1fzgG0QBBXc+ltUIqvulzZP2G+QbepOVfkVMzIRdPG8DbcbR2uNw
+he+XPoyWz3X3kvv7Xe1OzyqvRnHpSws/m6y8nyKwt9K7hwG4kFKYloSYp/CulFCf
+NN5Tub68I/yIR7y7JFKNhIOwUgSRh08y/mFiIQWtDfEb3+hCajJqtasFW2GlzAmj
+eeTjdd14e2vlpV60UgGpDIzeXnQiAVkA3v+ZL3Hphk1rod+8FMQpDZv7So/2qXTa
+ZzPaUvP5G8gwFwRdlTZk/BBhThicrTtdPZU/G9Wp7CTUpjwgUAxUnnDu/dJmVQsd
+3wBzvFPdxt+c5ho35y089e8k9OiTX0uuu4msfXYIlleKcy8pEeX4KEcxSnecV2k4
+GJoQAcNjQLx7Y9oSHz/P
+=dx6y
+-----END PGP SIGNATURE-----
+
+--poemUeGtc2GQvHuH--
+
+
+--===============3279153891023298740==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============3279153891023298740==--
