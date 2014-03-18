@@ -1,70 +1,88 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 1/2] remgap: Fix possible sleep-in-atomic in
- regmap_bulk_write()
-Date: Tue, 18 Mar 2014 12:22:18 +0000
-Message-ID: <20140318122218.GQ11706@sirena.org.uk>
-References: <1395143914-26929-1-git-send-email-tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2 3/4] ASoC: davinci-mcasp: Constraint on
+ the period and buffer size based on FIFO usage
+Date: Tue, 18 Mar 2014 14:35:48 +0200
+Message-ID: <53283DA4.2080609@ti.com>
+References: <1394808168-32608-1-git-send-email-peter.ujfalusi@ti.com>
+ <1394808168-32608-4-git-send-email-peter.ujfalusi@ti.com>
+ <532588A3.4050301@metafoo.de> <5326F891.7090906@ti.com>
+ <20140317165214.GT11706@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7//HIyYuZny8+TsE"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1395143914-26929-1-git-send-email-tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9999B26072A
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 13:35:54 +0100 (CET)
+In-Reply-To: <20140317165214.GT11706@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On 03/17/2014 06:52 PM, Mark Brown wrote:
+> This is all sounding like the thing that needs to be looked at here is
+> mplayer so we understand what's going wrong with regard to the buffer
+> sizes.
 
---7//HIyYuZny8+TsE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The error which was printed by mplayer was the snd_pcm_hw_params() failure.
+Prior to this call it calls number of snd_pcm_hw_params_set_* including:
+snd_pcm_hw_params_set_buffer_time_near()
+snd_pcm_hw_params_set_periods_near()
 
-On Tue, Mar 18, 2014 at 12:58:33PM +0100, Takashi Iwai wrote:
+all without error.
 
->  		wval =3D kmemdup(val, val_count * val_bytes, GFP_KERNEL);
->  		if (!wval) {
-> -			ret =3D -ENOMEM;
->  			dev_err(map->dev, "Error in memory allocation\n");
-> -			goto out;
-> +			return -ENOMEM;
->  		}
-> +		map->lock(map->lock_arg);
->  		for (i =3D 0; i < val_count * val_bytes; i +=3D val_bytes)
->  			map->format.parse_inplace(wval + i);
-> =20
->  		ret =3D _regmap_raw_write(map, reg, wval, val_bytes * val_count);
-> +		map->unlock(map->lock_arg);
+So I recompiled alsa-lib with debug and compiled mplayer on the board as we=
+ll.
+I only kept the constraint for the period size from this patch (no constrai=
+nt
+on buffer size).
 
-If we're reducing the locking region here then we should take the lock
-after doing the parse_inplace() to reduce the locked region.  Nothing
-else can be referring to the data since we only just allocated it.  I'll
-fix that by hand and apply.
+The compiled and original mplayer binary is working fine, no errors :o
+Then I recompiled alsa-lib without debug (as it was before): same thing, mo=
+th
+mplayer binary works fine and it picks correct buffer configuration.
 
-Please also send things to the list for the subsystem (linux-kernel if
-there's not a specific one).
+I'll resend the last two patch and place the constraint only to the period =
+size.
 
---7//HIyYuZny8+TsE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> It's sounding like if we should be doing it this is a general
+> thing which we should be constraining presumably it'd apply to all
+> drivers, not just this one, and so shouldn't be being fixed in the
+> driver but it's not obvious to me why the period constraint isn't
+> sufficient.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+It can only be done if we have fixed FIFO for the dai. Right now this is ki=
+nd
+of true for McASP. In HW we actually have 64 32bit word FIFO and currently =
+you
+can set the desired FIFO depth via DT/pdata. I'm not really happy about this
+since it creates this constraint on the buffer allocation when the SoC is
+using eDMA (when sDMA is in used with McASP we do not have such issue).
+McBSP also have FIFO on OMAPs, but there I do not lock the FIFO depth, it is
+adaptive based on the period/buffer size.
 
-iQIcBAEBAgAGBQJTKDp3AAoJELSic+t+oim9Y3cP/irMS4WnHiwDD0cG50Wg38ZD
-MINxVu8ThekEFCzZ5SaWwCcYKW2XM58NG0bqXEZsrfT2bpnQWn+F1ju0wKW+uMGe
-R/nHCxX240K23da+AbjtvfbLenBZjhXMaxFjrN5SVp3vbD/zX8EmNDN8Kfia9Cd2
-NDUBllYThayXHvO6BjzbhGCE1kSilYGCiYuhI7CRBthLE9KG7RSxo3kwvbZd1TOu
-u/5rvM9JTFMpNsO+hl2Pa20Y+8Iz0N6bArAdEenGOgyKAbuAiLUdUGeELoulOFy7
-54Nl9hd5DZxKW42wPMN8HsSEJMVAit00xgLBsX5P6kUemS5qD00dGw/OEobProBf
-AXD1heQsscTToa5Mo8hsZC9vdz9FVZeZTnJs7SBWqCTafpAZ3zt2qvBpT8zyqiU/
-Bd6pS6N9vUvS1S6UDjS/g/LVA70RDkGuLRq/BCPlPoXsEteq8bCfjL8bSDOEPS0I
-egldycVBKu1SzA0kX/xgVGtFEifyohlXz7ltR0nTnn7DcKfQlP/1Oa+I5I8yKWuT
-HDSeunFvPmytPnyjjsAYORL0nyJno7TEnzbmpNP1ZJWVLechQ6sFR//yuOnu1T3+
-yL3UM+kyEFUCx7soTBsFlZZBicnc/mKwSfK5XFIUqIA/uCGZf3RVHyjdRi+77LRO
-ZMx/sezMsamXPTTQvxyw
-=kL8K
------END PGP SIGNATURE-----
+If we have more device with fixed FIFO depth then it make sense to handle t=
+he
+constraint in the core.
 
---7//HIyYuZny8+TsE--
+However in case of McASP it is still not that straight forward. The DMA bur=
+st
+size depends on the number of channels, number of used serializers and the
+AFIFO's depth configuration. At the end the period size need to be constrai=
+nt
+to be steps of DMA burst size for eDMA.
+
+Not sure if this is applicable for other SoCs.
+
+-- =
+
+P=E9ter
