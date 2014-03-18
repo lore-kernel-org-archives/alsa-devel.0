@@ -1,19 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 00/13] ASoC: Move IO and kcontrols to the
- component level
-Date: Tue, 18 Mar 2014 09:25:11 +0100
-Message-ID: <532802E7.2060309@metafoo.de>
-References: <1395129736-11938-1-git-send-email-lars@metafoo.de>
- <s5h4n2wdj75.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] ALSA: oxygen: Xonar DG(X): fix Stereo Upmixing
+	regression
+Date: Tue, 18 Mar 2014 09:31:18 +0100
+Message-ID: <53280456.5010002@ladisch.de>
+References: <53276556.20107@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-224.synserver.de (smtp-out-230.synserver.de
- [212.40.185.230])
- by alsa0.perex.cz (Postfix) with ESMTP id D4CDC265091
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 09:24:33 +0100 (CET)
-In-Reply-To: <s5h4n2wdj75.wl%tiwai@suse.de>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 4E7B9261ADE
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 09:31:20 +0100 (CET)
+In-Reply-To: <53276556.20107@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +22,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: alsa-devel@alsa-project.org, Roman Volkov <v1ron@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/18/2014 09:06 AM, Takashi Iwai wrote:
-> At Tue, 18 Mar 2014 09:02:03 +0100,
-> Lars-Peter Clausen wrote:
->>
->> Hi,
->>
->> This series is the first step towards full componentisation of the ASoC core. It
->> moves both the IO abstraction layers within ASoC as well as the standard set of
->> kcontrols to the component level. This for example means we can get rid of
->> constructs like
->>
->> 	if (w->codec)
->> 		snd_soc_read(....)
->> 	else if(w->platform)
->> 		snd_soc_platform_read(...)
->>
->> Moving the kcontrols to the component level means we can use the same
->> implementation also for other non-CODEC components. E.g. there seems to be an
->> increasing amount of CPU components that have basic signal processing and things
->> like volume controls etc. whose register layout is similar to those used in
->> CODECs. Currently each CPU component driver re-implements these controls by
->> hand.
->>
->> The first two patches introduce two new helper functions which hide the actual
->> implementation on how the CODEC or platform struct that register a control can
->> be obtained from the control. This means that when the actual implementation is
->> changed only the two helper functions need to be updated and not every single
->> driver. The patches that follow that are just cleanups removing unused IO stuff
->> and move all IO functions to soc-io.c. The next step is to make platforms also
->> components. And then finally first the IO abstraction layers in ASoC are unified
->> at the component level and then on top of that the kcontrol helpers are moved to
->> the component level.
->>
->> The series depends on quite a few topic branches related to changes to the core
->> and cleanups for individual drivers. It is probably best to place it on top of
->> asoc-v3.15-2. The patch that moves the kcontrols to the component level also has
->> a runtime dependency on the not yet applied patches that move the ams-delta and
->> mfld_machine controls to the card level.
->
-> I'd love to have seen this one or two weeks ago, if this is intended
-> for 3.15 upstream.  But I guess it's still OK if anyone can test the
-> stuff well.
+The code introduced in commit 1f91ecc14dee ("ALSA: oxygen: modify
+adjust_dg_dac_routing function") accidentally disregarded the old value
+of the playback routing register, so it broke the "Stereo Upmixing"
+mixer control.
 
-My initial plan was to submit it after the 3.15 merge window, but I realized 
-that that's probably still one month away and I already mentioned the 
-patches a few, so its probably better to have them send out to the ml. They 
-don't have to go into 3.15. It would be good if the first two patches could 
-make it though, they are trivial and having them merged before the rest 
-gives a bit more time for not yet merged drivers to update to the new helper 
-functions.
+The unmuted parts of the channel routing are the same for all settings
+of the output destination, so it suffices to revert that part of the
+patch.
 
-- Lars
+Tested-by: Roman Volkov <v1ron@mail.ru>
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/pci/oxygen/xonar_dg.c |   30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
+
+--- a/sound/pci/oxygen/xonar_dg.c
++++ b/sound/pci/oxygen/xonar_dg.c
+@@ -238,11 +238,21 @@ void set_cs4245_adc_params(struct oxygen *chip,
+ 	cs4245_write_spi(chip, CS4245_MCLK_FREQ);
+ }
+
++static inline unsigned int shift_bits(unsigned int value,
++				      unsigned int shift_from,
++				      unsigned int shift_to,
++				      unsigned int mask)
++{
++	if (shift_from < shift_to)
++		return (value << (shift_to - shift_from)) & mask;
++	else
++		return (value >> (shift_from - shift_to)) & mask;
++}
++
+ unsigned int adjust_dg_dac_routing(struct oxygen *chip,
+ 					  unsigned int play_routing)
+ {
+ 	struct dg *data = chip->model_data;
+-	unsigned int routing = 0;
+
+ 	switch (data->output_sel) {
+ 	case PLAYBACK_DST_HP:
+@@ -252,15 +262,23 @@ unsigned int adjust_dg_dac_routing(struct oxygen *chip,
+ 			OXYGEN_PLAY_MUTE67, OXYGEN_PLAY_MUTE_MASK);
+ 		break;
+ 	case PLAYBACK_DST_MULTICH:
+-		routing = (0 << OXYGEN_PLAY_DAC0_SOURCE_SHIFT) |
+-			  (2 << OXYGEN_PLAY_DAC1_SOURCE_SHIFT) |
+-			  (1 << OXYGEN_PLAY_DAC2_SOURCE_SHIFT) |
+-			  (0 << OXYGEN_PLAY_DAC3_SOURCE_SHIFT);
+ 		oxygen_write8_masked(chip, OXYGEN_PLAY_ROUTING,
+ 			OXYGEN_PLAY_MUTE01, OXYGEN_PLAY_MUTE_MASK);
+ 		break;
+ 	}
+-	return routing;
++	return (play_routing & OXYGEN_PLAY_DAC0_SOURCE_MASK) |
++	       shift_bits(play_routing,
++			  OXYGEN_PLAY_DAC2_SOURCE_SHIFT,
++			  OXYGEN_PLAY_DAC1_SOURCE_SHIFT,
++			  OXYGEN_PLAY_DAC1_SOURCE_MASK) |
++	       shift_bits(play_routing,
++			  OXYGEN_PLAY_DAC1_SOURCE_SHIFT,
++			  OXYGEN_PLAY_DAC2_SOURCE_SHIFT,
++			  OXYGEN_PLAY_DAC2_SOURCE_MASK) |
++	       shift_bits(play_routing,
++			  OXYGEN_PLAY_DAC0_SOURCE_SHIFT,
++			  OXYGEN_PLAY_DAC3_SOURCE_SHIFT,
++			  OXYGEN_PLAY_DAC3_SOURCE_MASK);
+ }
+
+ void dump_cs4245_registers(struct oxygen *chip,
