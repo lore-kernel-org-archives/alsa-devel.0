@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/3] ASoC: davinci-mcasp: Constraint on
- the period and buffer size based on FIFO usage
-Date: Tue, 18 Mar 2014 18:07:32 +0000
-Message-ID: <20140318180732.GJ11706@sirena.org.uk>
-References: <1395148837-20850-1-git-send-email-peter.ujfalusi@ti.com>
- <1395148837-20850-2-git-send-email-peter.ujfalusi@ti.com>
- <532848D5.30806@ti.com> <53285827.1070709@ti.com>
+Subject: Re: [PATCH v2 2/7] sound: ASoC: add S/PDIF support to
+ Armada 370 DB ASoC driver
+Date: Tue, 18 Mar 2014 18:38:50 +0000
+Message-ID: <20140318183850.GN11706@sirena.org.uk>
+References: <1392225662-20431-1-git-send-email-thomas.petazzoni@free-electrons.com>
+ <1392225662-20431-3-git-send-email-thomas.petazzoni@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5525249502208288205=="
+Content-Type: multipart/mixed; boundary="===============3990589903134725084=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 711DC2615FC
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 19:07:44 +0100 (CET)
-In-Reply-To: <53285827.1070709@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 336CA26165C
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 19:39:11 +0100 (CET)
+In-Reply-To: <1392225662-20431-3-git-send-email-thomas.petazzoni@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,73 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>, Liam Girdwood <lgirdwood@gmail.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5525249502208288205==
+--===============3990589903134725084==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xf1frN3LpSrbXX2S"
+	protocol="application/pgp-signature"; boundary="p2RPQY0WN3yNjQaZ"
 Content-Disposition: inline
 
 
---xf1frN3LpSrbXX2S
+--p2RPQY0WN3yNjQaZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 18, 2014 at 04:28:55PM +0200, Peter Ujfalusi wrote:
-> On 03/18/2014 03:23 PM, Peter Ujfalusi wrote:
+On Wed, Feb 12, 2014 at 06:20:57PM +0100, Thomas Petazzoni wrote:
+> The Armada 370 DB board not only has analog audio input/output, but
+> also S/PDIF input/output. This commit adds support for S/PDIF in the
+> ASoC machine driver of the Armada 370 DB platform, and adjusts the
+> Device Tree bindings documentation accordingly.
 
-> > Oh, I edited the commit message and removed the text related to buffer size
-> > but I failed to do that for the commit title :(
+Applied, thanks.
 
-> Actually I still have issue with the constraint.
-
-OK, so is the patch an improvement or not?  If it fixes some cases it's
-probably worth applying even if further fixes are still needed.  No need
-to resend for the subject, I can fix that up.
-
-> It seams that I need to place the same constraint step to both period size and
-> buffer size.
-> For some reason snd_pcm_hw_params_set_buffer_time_near() fails in case of
-> 44.1KHz when asking for 0.5s buffer when I placed step 32 constraint to period
-> size. Placing the same 32 steps constraint to the buffer size as well will
-> make things working (for mplayer at least)
-
-That seems like the constraint code is failing, at a guess probably
-looking for too near a value of near if you see what I mean.  I don't
-really have the time/enthusiasm to investigate this right now, sorry.
-
---xf1frN3LpSrbXX2S
+--p2RPQY0WN3yNjQaZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTKIthAAoJELSic+t+oim9IXUQAJnQbQp8uKrE2NtKK7U0Z6+t
-vPmHPsXJ+75xrEodqwPrx6XQdV390Za/Tx6YySwl6Xqb1mIgLdeui9l4KmnAsXkh
-vss74uJaike1zYMHBruQXZmop8S4IqEkOdZ44NcfCM9iBIQjdNWfhwhe6OYJ3IbU
-+7Oo3VLP8FCoo30TcHjHGJbFsXheCpEl8lD9o0495NHu5i8XUUT7PeG6lbLCFryB
-JL57Nd2itSCzCxd4r2oJL7MT5wzWiHvPsm6qFDy5eRAwYVPeU01u9EdnAlGkREVP
-5GBMCR3czDJfnoM/JaHapkyq0hQd5VbFwn474C4b+4ggtSU/zpY8Apiq0IpJZ7pF
-6fjtt/CqMgjqWTR+mXGubFTEdgsEEt27UxGiwD4zbz82qmoePgOX2wwluFYxk6Vg
-Ofhp9ztHTnyFVjKUb16wiLUtio/HmPbaL1tpjZ1JNgkFUz7D40chQ1GuEuf8oqdp
-70cUpq+e1QF1zLHpVBp8kPsfxutjQv3ze2qOFuAlhgfCjUqUXVdkbnk+NzSa3Nvc
-5yXwE/72FyHd3wyb1mYGAq7GAMpDSylUtmEsw771Nm936r++DCPGFEJAbssavp++
-DHi3c4n/JtnMoUCdvDq5fyk6lRtDcxWqXSOVnA8+ygzvewuEabhgjZ9HxqsFEIPI
-9XfzGLqmQv8DxugbimAP
-=2HVD
+iQIcBAEBAgAGBQJTKJK3AAoJELSic+t+oim9RRsP/2aR4qttimrPboOq8pQfg7kg
+HO0xGmvnbN0EM9d4HNzIV5TD94K+9vWiMhJJOefFF/K2/vpU2vzLNF8gW5CRcS0O
+01BRjpHNWY9fjyl3G+rvpRaemKSnRzCWPWPG0NEi0g361Yw0l2D1TQKX3K1YEkE6
+TdbXruV1NlBRywJbDOK3idKy1Tjnsx+d7LQQ2weUX467gGnDoN8h5/PoXSafB+VP
+MKfVRm/xf0eLi1Q4yUEV80Paa8/ZFNI45p/+oMyu5GZ7KU7OivPlh5JremvhgJLP
+5z3KVrwHnZhsVMaEL40l6EJnffl7NYfw4J9C7/sf9F3GqaiUDU3Twam/OO2xqvPs
+89vRRS2863A6qEdONs/3iE46cumBGyipacr/79G3LWJsnOTyMn7Gldn1F+aAydsB
+T1JghW4XLdhuxxQ3pa8IqJ571xftYtIHmzzssZgvdK7WZDY2Wvi2nBUuVd2ctONK
+8EKQfGzvLag44QZh5eMXLUNc8QDlLOBjwyaQfz8wwcSlAf6zB2gAaesuehFySqeb
+9+bzE0QDpZ11xP9E3NOrppGLDaDGEaLMEt7kIl/Lpgoxypy4wBwBcDQQpmJIrHUf
+wKhf/70grFZx1uMXnecT0fnQSbYHlCI4wEihTxvF+2QtrB1qw7OQ2RVVCFl3YDuX
+bmzrVfG2dAZQ5KEd0PxL
+=/HVz
 -----END PGP SIGNATURE-----
 
---xf1frN3LpSrbXX2S--
+--p2RPQY0WN3yNjQaZ--
 
---===============5525249502208288205==
+--===============3990589903134725084==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5525249502208288205==--
+--===============3990589903134725084==--
