@@ -1,110 +1,78 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5] ASoC: add RT286 CODEC driver
-Date: Tue, 18 Mar 2014 13:01:37 +0000
-Message-ID: <20140318130137.GZ11706@sirena.org.uk>
-References: <1394521896-27721-1-git-send-email-bardliao@realtek.com>
- <20140314191244.GZ366@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D73A0212@RTITMBSV03.realtek.com.tw>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 1/2] remgap: Fix possible sleep-in-atomic in
+ regmap_bulk_write()
+Date: Tue, 18 Mar 2014 13:04:26 +0000
+Message-ID: <20140318130426.GA11706@sirena.org.uk>
+References: <1395143914-26929-1-git-send-email-tiwai@suse.de>
+ <20140318122218.GQ11706@sirena.org.uk>
+ <s5hr45zr7f1.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9061317482161327570=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F18AE26072A
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 14:01:47 +0100 (CET)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D73A0212@RTITMBSV03.realtek.com.tw>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7lclw+czRZDHN64H"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <s5hr45zr7f1.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9061317482161327570==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="quagH4H09id5XL2e"
-Content-Disposition: inline
-
-
---quagH4H09id5XL2e
+--7lclw+czRZDHN64H
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 18, 2014 at 12:41:41PM +0000, Bard Liao wrote:
+On Tue, Mar 18, 2014 at 01:57:22PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
+> > On Tue, Mar 18, 2014 at 12:58:33PM +0100, Takashi Iwai wrote:
 
-Please fix your mailer to word wrap within paragraphs, this will make
-your mail more legible.
+> > > +		map->lock(map->lock_arg);
+> > >  		for (i =3D 0; i < val_count * val_bytes; i +=3D val_bytes)
+> > >  			map->format.parse_inplace(wval + i);
+> > > =20
+> > >  		ret =3D _regmap_raw_write(map, reg, wval, val_bytes * val_count);
+> > > +		map->unlock(map->lock_arg);
 
-> A verb command contains three parts, NID, VID, and PID.
-> For example, if I want to unmute headphone, I should set:
-> VID =3D 3'h (Set Amplifier Gain)
-> NID =3D 22'h (headphone)
-> PID =3D b000'h (Set left, right output unmute)
+> > If we're reducing the locking region here then we should take the lock
+> > after doing the parse_inplace() to reduce the locked region.  Nothing
+> > else can be referring to the data since we only just allocated it.  I'll
+> > fix that by hand and apply.
 
-So VID+NID is an address and PID is a value?
+> I thought of that, too, but didn't take it because covering the lock
+> there doesn't change the fact that it's still fundamentally racy.
 
-> > - if you need more let's extend them.  Storing data in virtual register=
-s just
-> > makes things confusing and fragile.  Some older CODEC drivers did it and
-> > they're harder to work with now than they should be.
+I'm not sure what you mean here - what do you mean yb "covering the
+lock"?
 
-> Use SOC_DAPM_SINGLE_VIRT?
+> > Please also send things to the list for the subsystem (linux-kernel if
+> > there's not a specific one).
 
-Yes, that'd be a much better fit.
+> OK, I just copied the previous recipient of the thread...
 
-> If I combine NID and VID to be used as a register address, and let PID as=
- register value,
-> it will be very difficult to define(or use) a _update_btis function.
-> Because I need to put all NID, VID and PID in the register address area w=
-hen I issue a I2C read command.
+Sure, but if there's another subsystem adding that subsystem helps
+things along.
 
-I don't see how this follows at all - all update_bits() is doing is a
-read/modify/write so if you can implement write and read then it comes
-along for free.  It sounds like you need to do a cache read to get the
-current PID to do a read but it's not at all obvious what that has to do
-with update_bits() or how putting the value into the address avoids
-having to know the current value to do a read?=20
-
-I think what you're saying above is that your read needs to have a cache
-read in it to function if you use normal register values?
-
---quagH4H09id5XL2e
+--7lclw+czRZDHN64H
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTKEOtAAoJELSic+t+oim9kKYP/RXvprzjga2D4exMTDORgnl1
-boVdiLGzLs7ZiTYE3PU4RaHCpK8ody/vX7ylGbZuKRLVL9M1ihhjIwqdYkWBVuis
-lDQb/BMDjlPt2Afem5/ndXYnrQOzyJLa+zFysQLig9XutDIW+h4alut1UQc7puuf
-QIOEi/Tz7K/g6x6+8VHzx3fPk/KoGhKeweDaQRNTKov7SDPMd5XPNSapQrfzqB9t
-N1qyZ2ZjCl1vOGgAf6gDcMwd2DPjW1N8vsRkJpVBsyRsuwCffVyvrjEyUK7svPOu
-qVntGICr1oktXMwBBfjCfhCKlY2qaRkEiD9J0okIHmwNdrvPtoUws5S3a3qN1nFK
-xwKNJrsXWHL6kRJxO0uH8yW+N1aB9G7mMNK+luEZ8YXqjnMS6pM+T64ziQei1GUl
-JRSfSdMhTaaovjrBH9pMsawOgdil7TGkCjtqtBNi/mSuyzbZn5Jx9wqlpxUGrQ3D
-gUNHxXqCoSzYmck57NyAba7050LOHsKvRZIVqI+UHn5F0NeC2RHBPEghGXLOHoh+
-3l610XLGhOdTZr9fpluzpCTpSJcb1ncMlXyorCYrd65vNeI06rzdwhY4+WZCc/xt
-aRW08pkyQk3P0jdFF7OGqNL2OTnaF5pnSU2IYw0a8s/TkwZFnCW9Ya66QboBvalH
-I+rYWcJgdHb7XA+eZt6q
-=XvQl
+iQIcBAEBAgAGBQJTKERXAAoJELSic+t+oim9MPgP/iQzSHC2I1Mb80Yc6eE3BjJf
+rNy13kN4ZpxWBMxCy20bK+A1fDOZU80NEYGXlKvup+imC9uG+kNjaPYs7x47p+rV
+0vexP9TDV1odwig5qROA9ELeV/bqxE63/QzP9I93Jwf2d6NhSu4sHv1KEbhhdqWi
+qVZdLOgMhRpqx3bzrdRewdadFneh3ly6tV5JWFBJhW6R4kFGdQnNqHxQjsjla6Zy
+mAtC9JnBb+2HBwruOuzJtyNP41HohGgP9Wf9MdfWLNHSe/IohfrG6W5IM+/EdxbD
+u/EtYJ6QdUKV3lyVbgDq045c6BH9payTV1KBBbJqIOel50MTYSZ3gVjtzVDAzkiM
+olfU8oZXMaV5FK1P2vHxWlQfw4Sg1mJpjb/PCEuSBLuiD/VxwQH0445dGV73pIUB
+9HFV3L0ep8EZRhsvhLoYDxdUXOfSHyR0/xoeVRN7LECcTGoe1viWUUrNSq9rhHv2
+iyve6p5T6CjT0JUg3muXQloCo6UrWYHokAm6QH+6kMWScjyV5JVmcGZE9owlnoR9
+h6avXIhPHU4ONvAzyv59ZBgMcHHLYxcPBzsE1nEnEtLCapQXfAT7sfMvrr+AjaG3
+uE+lZcHOzvSbBpj7ElBQDRq/7MOlJryaZYmedWYYVvj6aA0tlUu+zXB2UCBQNDWA
+Wr3nuuz/CZbgZU0Sr1Kh
+=SWFL
 -----END PGP SIGNATURE-----
 
---quagH4H09id5XL2e--
-
---===============9061317482161327570==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9061317482161327570==--
+--7lclw+czRZDHN64H--
