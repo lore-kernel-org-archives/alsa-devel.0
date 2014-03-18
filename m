@@ -1,160 +1,161 @@
-From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Subject: [PATCH v3] ASOC: tegra: move AC97 clock handling to the machine driver
-Date: Tue, 18 Mar 2014 21:30:49 +0100
-Message-ID: <1395174649-1493-1-git-send-email-dev@lynxeye.de>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Stefan Agner <stefan-XLVq0VzYD2Y@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] pcm: route: Don't handle no matching chmap
+ as a serious error
+Date: Tue, 18 Mar 2014 23:13:02 +0100
+Message-ID: <5328C4EE.4010807@canonical.com>
+References: <1395152876-28480-1-git-send-email-tiwai@suse.de>	<53287211.1040803@canonical.com>
+ <s5h1txzpisl.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------040201000709000607070303"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 152B1261B20
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 23:13:03 +0100 (CET)
+In-Reply-To: <s5h1txzpisl.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tegra the convention is to have a single machine driver
-that's controlling the whole audio subsystem. This was
-introduced after the AC97 driver was merged and ever since
-AC97 has been broken.
+This is a multi-part message in MIME format.
+--------------040201000709000607070303
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Move the clock handling to the machine driver, to be in line
-with the other Tegra drivers and give the machine driver
-full control over the single Tegra audio PLL.
+On 03/18/2014 05:34 PM, Takashi Iwai wrote:
+> At Tue, 18 Mar 2014 17:19:29 +0100,
+> David Henningsson wrote:
+>>
+>> On 03/18/2014 03:27 PM, Takashi Iwai wrote:
+>>> When find_matching_chmap() returns an error for the non-matching
+>>> chmap, the caller, snd_pcm_route_open(), also returns an error
+>>> although it shouldn't be handled as the fatal error.  This results in
+>>> the probe error with PulseAudio and it gives no real output in the
+>>> end.
+>>
+>> Hmm, could you give a more specific example? In case the driver does not
+>> support channel maps at all, that case is handled in the beginning of
+>> the function.
+> 
+> Well, the problem is that PulseAudio doesn't work at all with the
+> current alsa-lib git prior to the commit in some cases.  That is, the
+> commit brought some incompatibility.
 
-Signed-off-by: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Acked-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
---
-v2:
-- remove redundant clock rate setting
-- defer removal of err_clk_put label to avoid conflict with Stephens
-  dma channel cleanup
-v3:
-- rebased to 3.14-rc1
-- no functional change
-- reword commit message
+Hmm, then the error should be somewhere in determine_chmap instead.
+tt_chmap should be NULL (i e, find_matching_chmap is never called) for
+using the standard number syntax instead of the new chmap syntax.
 
-CC: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-CC: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-CC: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-CC: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-CC: Stefan Agner <stefan-XLVq0VzYD2Y@public.gmane.org>
-CC: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
----
- sound/soc/tegra/tegra20_ac97.c | 15 +--------------
- sound/soc/tegra/tegra20_ac97.h |  1 -
- sound/soc/tegra/tegra_wm9712.c | 17 ++++++++++++++++-
- 3 files changed, 17 insertions(+), 16 deletions(-)
+What about the patch attached instead (untested) ?
 
-diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
-index cf5e1cf..29f8832 100644
---- a/sound/soc/tegra/tegra20_ac97.c
-+++ b/sound/soc/tegra/tegra20_ac97.c
-@@ -37,7 +37,6 @@
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
- 
--#include "tegra_asoc_utils.h"
- #include "tegra20_ac97.h"
- 
- #define DRV_NAME "tegra20-ac97"
-@@ -376,18 +375,10 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
- 	ac97->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 	ac97->playback_dma_data.maxburst = 4;
- 
--	ret = tegra_asoc_utils_init(&ac97->util_data, &pdev->dev);
--	if (ret)
--		goto err_clk_put;
--
--	ret = tegra_asoc_utils_set_ac97_rate(&ac97->util_data);
--	if (ret)
--		goto err_asoc_utils_fini;
--
- 	ret = clk_prepare_enable(ac97->clk_ac97);
- 	if (ret) {
- 		dev_err(&pdev->dev, "clk_enable failed: %d\n", ret);
--		goto err_asoc_utils_fini;
-+		goto err;
- 	}
- 
- 	ret = snd_soc_set_ac97_ops(&tegra20_ac97_ops);
-@@ -419,8 +410,6 @@ err_unregister_component:
- 	snd_soc_unregister_component(&pdev->dev);
- err_clk_disable_unprepare:
- 	clk_disable_unprepare(ac97->clk_ac97);
--err_asoc_utils_fini:
--	tegra_asoc_utils_fini(&ac97->util_data);
- err_clk_put:
- err:
- 	snd_soc_set_ac97_ops(NULL);
-@@ -434,8 +423,6 @@ static int tegra20_ac97_platform_remove(struct platform_device *pdev)
- 	tegra_pcm_platform_unregister(&pdev->dev);
- 	snd_soc_unregister_component(&pdev->dev);
- 
--	tegra_asoc_utils_fini(&ac97->util_data);
--
- 	clk_disable_unprepare(ac97->clk_ac97);
- 
- 	snd_soc_set_ac97_ops(NULL);
-diff --git a/sound/soc/tegra/tegra20_ac97.h b/sound/soc/tegra/tegra20_ac97.h
-index 4acb3aa..0a39d82 100644
---- a/sound/soc/tegra/tegra20_ac97.h
-+++ b/sound/soc/tegra/tegra20_ac97.h
-@@ -90,6 +90,5 @@ struct tegra20_ac97 {
- 	struct regmap *regmap;
- 	int reset_gpio;
- 	int sync_gpio;
--	struct tegra_asoc_utils_data util_data;
- };
- #endif /* __TEGRA20_AC97_H__ */
-diff --git a/sound/soc/tegra/tegra_wm9712.c b/sound/soc/tegra/tegra_wm9712.c
-index 45b5789..25a7f82 100644
---- a/sound/soc/tegra/tegra_wm9712.c
-+++ b/sound/soc/tegra/tegra_wm9712.c
-@@ -29,10 +29,13 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- 
-+#include "tegra_asoc_utils.h"
-+
- #define DRV_NAME "tegra-snd-wm9712"
- 
- struct tegra_wm9712 {
- 	struct platform_device *codec;
-+	struct tegra_asoc_utils_data util_data;
- };
- 
- static const struct snd_soc_dapm_widget tegra_wm9712_dapm_widgets[] = {
-@@ -118,15 +121,25 @@ static int tegra_wm9712_driver_probe(struct platform_device *pdev)
- 
- 	tegra_wm9712_dai.platform_of_node = tegra_wm9712_dai.cpu_of_node;
- 
-+	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
-+	if (ret)
-+		goto codec_unregister;
-+
-+	ret = tegra_asoc_utils_set_ac97_rate(&machine->util_data);
-+	if (ret)
-+		goto asoc_utils_fini;
-+
- 	ret = snd_soc_register_card(card);
- 	if (ret) {
- 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
- 			ret);
--		goto codec_unregister;
-+		goto asoc_utils_fini;
- 	}
- 
- 	return 0;
- 
-+asoc_utils_fini:
-+	tegra_asoc_utils_fini(&machine->util_data);
- codec_unregister:
- 	platform_device_del(machine->codec);
- codec_put:
-@@ -141,6 +154,8 @@ static int tegra_wm9712_driver_remove(struct platform_device *pdev)
- 
- 	snd_soc_unregister_card(card);
- 
-+	tegra_asoc_utils_fini(&machine->util_data);
-+
- 	platform_device_unregister(machine->codec);
- 
- 	return 0;
+>> So this only happens if the driver supports channel maps, but only
+>> non-compatible with the requested map. In which case I believe it's
+>> correct that the probing should fail...?
+> 
+> Could you check whether PA 5.0 works as is with alsa-lib git (before
+> the last fix)?  It could be seen on some desktop machines.
+
+Let me know if the attached patch works for you. In case it does not I
+will do this testing later.
+
+> 
+> 
+> Takashi
+> 
+>>
+>>>
+>>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>> ---
+>>>  src/pcm/pcm_route.c | 4 +---
+>>>  1 file changed, 1 insertion(+), 3 deletions(-)
+>>>
+>>> diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
+>>> index ab17fa78be2c..ac11bdc8adfd 100644
+>>> --- a/src/pcm/pcm_route.c
+>>> +++ b/src/pcm/pcm_route.c
+>>> @@ -940,10 +940,8 @@ static int find_matching_chmap(snd_pcm_t *spcm, snd_pcm_chmap_t *tt_chmap,
+>>>  
+>>>  	snd_pcm_free_chmaps(chmaps);
+>>>  
+>>> -	if (*found_chmap == NULL) {
+>>> +	if (*found_chmap == NULL)
+>>>  		SNDERR("Found no matching channel map");
+>>> -		return -EINVAL;
+>>> -	}
+>>>  	return 0;
+>>>  }
+>>>  
+>>>
+>>
+>>
+>>
+>> -- 
+>> David Henningsson, Canonical Ltd.
+>> https://launchpad.net/~diwic
+>>
+> 
+
+
+
 -- 
-1.8.5.3
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
+
+--------------040201000709000607070303
+Content-Type: text/x-patch;
+ name="0001-route-Return-NULL-in-case-of-zero-found-channels-in-.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-route-Return-NULL-in-case-of-zero-found-channels-in-.pa";
+ filename*1="tch"
+
+>From 746358818ead057a32330f7c8510cb65a7059e86 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Tue, 18 Mar 2014 23:07:19 +0100
+Subject: [PATCH] route: Return NULL in case of zero found channels in
+ determine_chmap
+
+This should fix the problem where the old route syntax can no longer
+be opened.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ src/pcm/pcm_route.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
+index ac11bdc..a9097ca 100644
+--- a/src/pcm/pcm_route.c
++++ b/src/pcm/pcm_route.c
+@@ -883,7 +883,10 @@ static int determine_chmap(snd_config_t *tt, snd_pcm_chmap_t **tt_chmap)
+ 		}
+ 	}
+ 
+-
++	if (chmap->channels == 0) {
++		free(chmap);
++		chmap = NULL;
++	}
+ 	*tt_chmap = chmap;
+ 	return 0;
+ 
+-- 
+1.7.9.5
+
+
+--------------040201000709000607070303
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------040201000709000607070303--
