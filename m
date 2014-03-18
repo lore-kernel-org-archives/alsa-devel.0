@@ -1,17 +1,16 @@
-From: Roman Volkov <v1ron@mail.ru>
-Subject: Re: [PATCH RFC] ALSA: oxygen: Xonar DG(X): fix Stereo
- Upmixing regression
-Date: Tue, 18 Mar 2014 11:35:39 +0400
-Message-ID: <20140318113539.5340579f@v1ron-desktop>
-References: <53276556.20107@ladisch.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 00/13] ASoC: Move IO and kcontrols to the
+	component level
+Date: Tue, 18 Mar 2014 09:02:03 +0100
+Message-ID: <1395129736-11938-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp45.i.mail.ru (smtp45.i.mail.ru [94.100.177.105])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FD55261AAB
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 08:35:46 +0100 (CET)
-In-Reply-To: <53276556.20107@ladisch.de>
+Received: from smtp-out-224.synserver.de (smtp-out-230.synserver.de
+ [212.40.185.230])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C38A261ADE
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 09:01:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +20,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-0JIgTW9uLCAxNyBNYXIgMjAxNCAyMjoxMjo1NCArMDEwMApDbGVtZW5zIExhZGlzY2ggPGNsZW1l
-bnNAbGFkaXNjaC5kZT4g0L/QuNGI0LXRgjoKCj4gVGhlIGNvZGUgaW50cm9kdWNlZCBpbiBjb21t
-aXQgMWY5MWVjYzE0ZGVlICgiQUxTQTogb3h5Z2VuOiBtb2RpZnkKPiBhZGp1c3RfZGdfZGFjX3Jv
-dXRpbmcgZnVuY3Rpb24iKSBhY2NpZGVudGFsbHkgZGlzcmVnYXJkZWQgdGhlIG9sZAo+IHZhbHVl
-IG9mIHRoZSBwbGF5YmFjayByb3V0aW5nIHJlZ2lzdGVyLCBzbyBpdCBicm9rZSB0aGUgIlN0ZXJl
-bwo+IFVwbWl4aW5nIiBtaXhlciBjb250cm9sLgo+IAo+IFRoZSB1bm11dGVkIHBhcnRzIG9mIHRo
-ZSBjaGFubmVsIHJvdXRpbmcgYXJlIHRoZSBzYW1lIGZvciBhbGwgc2V0dGluZ3MKPiBvZiB0aGUg
-b3V0cHV0IGRlc3RpbmF0aW9uLCBzbyBpdCBzdWZmaWNlcyB0byByZXZlcnQgdGhhdCBwYXJ0IG9m
-IHRoZQo+IHBhdGNoLgo+IAo+IFNpZ25lZC1vZmYtYnk6IENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVu
-c0BsYWRpc2NoLmRlPgo+IC0tLQo+ICBzb3VuZC9wY2kvb3h5Z2VuL3hvbmFyX2RnLmMgfCAgIDMw
-ICsrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgMjQgaW5z
-ZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPiAKPiAKPiBSb21hbiwgY291bGQgeW91IHBsZWFz
-ZSB0ZXN0IHRoaXMgcGF0Y2gsIGFuZCBhZGQgeW91ciBUZXN0ZWQtYnk/Cj4gCj4gCj4gZGlmZiAt
-LWdpdCBhL3NvdW5kL3BjaS9veHlnZW4veG9uYXJfZGcuYyBiL3NvdW5kL3BjaS9veHlnZW4veG9u
-YXJfZGcuYwo+IGluZGV4IGVkNmYxOTkuLjRjZjMyMDAgMTAwNjQ0Cj4gLS0tIGEvc291bmQvcGNp
-L294eWdlbi94b25hcl9kZy5jCj4gKysrIGIvc291bmQvcGNpL294eWdlbi94b25hcl9kZy5jCj4g
-QEAgLTIzOCwxMSArMjM4LDIxIEBAIHZvaWQgc2V0X2NzNDI0NV9hZGNfcGFyYW1zKHN0cnVjdCBv
-eHlnZW4gKmNoaXAsCj4gIAljczQyNDVfd3JpdGVfc3BpKGNoaXAsIENTNDI0NV9NQ0xLX0ZSRVEp
-Owo+ICB9Cj4gCj4gK3N0YXRpYyBpbmxpbmUgdW5zaWduZWQgaW50IHNoaWZ0X2JpdHModW5zaWdu
-ZWQgaW50IHZhbHVlLAo+ICsJCQkJICAgICAgdW5zaWduZWQgaW50IHNoaWZ0X2Zyb20sCj4gKwkJ
-CQkgICAgICB1bnNpZ25lZCBpbnQgc2hpZnRfdG8sCj4gKwkJCQkgICAgICB1bnNpZ25lZCBpbnQg
-bWFzaykKPiArewo+ICsJaWYgKHNoaWZ0X2Zyb20gPCBzaGlmdF90bykKPiArCQlyZXR1cm4gKHZh
-bHVlIDw8IChzaGlmdF90byAtIHNoaWZ0X2Zyb20pKSAmIG1hc2s7Cj4gKwllbHNlCj4gKwkJcmV0
-dXJuICh2YWx1ZSA+PiAoc2hpZnRfZnJvbSAtIHNoaWZ0X3RvKSkgJiBtYXNrOwo+ICt9Cj4gKwo+
-ICB1bnNpZ25lZCBpbnQgYWRqdXN0X2RnX2RhY19yb3V0aW5nKHN0cnVjdCBveHlnZW4gKmNoaXAs
-Cj4gIAkJCQkJICB1bnNpZ25lZCBpbnQgcGxheV9yb3V0aW5nKQo+ICB7Cj4gIAlzdHJ1Y3QgZGcg
-KmRhdGEgPSBjaGlwLT5tb2RlbF9kYXRhOwo+IC0JdW5zaWduZWQgaW50IHJvdXRpbmcgPSAwOwo+
-IAo+ICAJc3dpdGNoIChkYXRhLT5vdXRwdXRfc2VsKSB7Cj4gIAljYXNlIFBMQVlCQUNLX0RTVF9I
-UDoKPiBAQCAtMjUyLDE1ICsyNjIsMjMgQEAgdW5zaWduZWQgaW50IGFkanVzdF9kZ19kYWNfcm91
-dGluZyhzdHJ1Y3QKPiBveHlnZW4gKmNoaXAsIE9YWUdFTl9QTEFZX01VVEU2NywgT1hZR0VOX1BM
-QVlfTVVURV9NQVNLKTsKPiAgCQlicmVhazsKPiAgCWNhc2UgUExBWUJBQ0tfRFNUX01VTFRJQ0g6
-Cj4gLQkJcm91dGluZyA9ICgwIDw8IE9YWUdFTl9QTEFZX0RBQzBfU09VUkNFX1NISUZUKSB8Cj4g
-LQkJCSAgKDIgPDwgT1hZR0VOX1BMQVlfREFDMV9TT1VSQ0VfU0hJRlQpIHwKPiAtCQkJICAoMSA8
-PCBPWFlHRU5fUExBWV9EQUMyX1NPVVJDRV9TSElGVCkgfAo+IC0JCQkgICgwIDw8IE9YWUdFTl9Q
-TEFZX0RBQzNfU09VUkNFX1NISUZUKTsKPiAgCQlveHlnZW5fd3JpdGU4X21hc2tlZChjaGlwLCBP
-WFlHRU5fUExBWV9ST1VUSU5HLAo+ICAJCQlPWFlHRU5fUExBWV9NVVRFMDEsIE9YWUdFTl9QTEFZ
-X01VVEVfTUFTSyk7Cj4gIAkJYnJlYWs7Cj4gIAl9Cj4gLQlyZXR1cm4gcm91dGluZzsKPiArCXJl
-dHVybiAocGxheV9yb3V0aW5nICYgT1hZR0VOX1BMQVlfREFDMF9TT1VSQ0VfTUFTSykgfAo+ICsJ
-ICAgICAgIHNoaWZ0X2JpdHMocGxheV9yb3V0aW5nLAo+ICsJCQkgIE9YWUdFTl9QTEFZX0RBQzJf
-U09VUkNFX1NISUZULAo+ICsJCQkgIE9YWUdFTl9QTEFZX0RBQzFfU09VUkNFX1NISUZULAo+ICsJ
-CQkgIE9YWUdFTl9QTEFZX0RBQzFfU09VUkNFX01BU0spIHwKPiArCSAgICAgICBzaGlmdF9iaXRz
-KHBsYXlfcm91dGluZywKPiArCQkJICBPWFlHRU5fUExBWV9EQUMxX1NPVVJDRV9TSElGVCwKPiAr
-CQkJICBPWFlHRU5fUExBWV9EQUMyX1NPVVJDRV9TSElGVCwKPiArCQkJICBPWFlHRU5fUExBWV9E
-QUMyX1NPVVJDRV9NQVNLKSB8Cj4gKwkgICAgICAgc2hpZnRfYml0cyhwbGF5X3JvdXRpbmcsCj4g
-KwkJCSAgT1hZR0VOX1BMQVlfREFDMF9TT1VSQ0VfU0hJRlQsCj4gKwkJCSAgT1hZR0VOX1BMQVlf
-REFDM19TT1VSQ0VfU0hJRlQsCj4gKwkJCSAgT1hZR0VOX1BMQVlfREFDM19TT1VSQ0VfTUFTSyk7
-Cj4gIH0KPiAKPiAgdm9pZCBkdW1wX2NzNDI0NV9yZWdpc3RlcnMoc3RydWN0IG94eWdlbiAqY2hp
-cCwKPiAKCkhlbGxvIENsZW1lbnMsCgpJIGhhdmUgcHJvYmxlbXMgd2l0aCBhcHBseWluZyB0aGlz
-IHBhdGNoIG9uIG15IGxvY2FsIHJlcG8uIENvdWxkIHlvdQpwbGVhc2UgdGVsbCBtZSB3aGljaCBn
-aXQgcmVwbyBhcmUgeW91IHVzaW5nPwoKSSBoYXZlIG1hbnVhbGx5IHJlcHJvZHVjZWQgdGhlIHBh
-dGNoIG9uIG15IGxvY2FsIHJlcG8gYW5kIHRlc3RlZCBpdC4gSQpjYW4gY29uZmlybSB0aGF0IHRo
-ZSAiU3RlcmVvIFVwbWl4aW5nIiBjb250cm9sIHdhcyBicm9rZW4gYW5kIHRoZQpwYXRjaCB5b3Ug
-YXR0YWNoZWQgc29sdmVzIHRoaXMgcHJvYmxlbS4gSSB0aGluayB3ZSBjYW4gYXBwbHkgdGhpcwpm
-aXguCgotLSAKS2luZCByZWdhcmRzLApSb21hbiBWb2xrb3YsCnYxcm9uQG1haWwucnUKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi,
+
+This series is the first step towards full componentisation of the ASoC core. It
+moves both the IO abstraction layers within ASoC as well as the standard set of
+kcontrols to the component level. This for example means we can get rid of
+constructs like
+
+	if (w->codec)
+		snd_soc_read(....)
+	else if(w->platform)
+		snd_soc_platform_read(...)
+
+Moving the kcontrols to the component level means we can use the same
+implementation also for other non-CODEC components. E.g. there seems to be an
+increasing amount of CPU components that have basic signal processing and things
+like volume controls etc. whose register layout is similar to those used in
+CODECs. Currently each CPU component driver re-implements these controls by
+hand.
+
+The first two patches introduce two new helper functions which hide the actual
+implementation on how the CODEC or platform struct that register a control can
+be obtained from the control. This means that when the actual implementation is
+changed only the two helper functions need to be updated and not every single
+driver. The patches that follow that are just cleanups removing unused IO stuff
+and move all IO functions to soc-io.c. The next step is to make platforms also
+components. And then finally first the IO abstraction layers in ASoC are unified
+at the component level and then on top of that the kcontrol helpers are moved to
+the component level.
+
+The series depends on quite a few topic branches related to changes to the core
+and cleanups for individual drivers. It is probably best to place it on top of
+asoc-v3.15-2. The patch that moves the kcontrols to the component level also has
+a runtime dependency on the not yet applied patches that move the ams-delta and
+mfld_machine controls to the card level.
+
+- Lars
+
+Lars-Peter Clausen (13):
+  ASoC: Add snd_soc_kcontrol_codec() helper function
+  ASoC: Add snd_soc_kcontrol_platform() helper function
+  ASoC: Prepare SOC_SINGLE_XR_SX controls for regmap
+  ASoC: Move IO functions to soc-io.c
+  ASoC: Drop ASoC level caching from hw_write/hw_read
+  ASoC: Remove IO register modifier callbacks
+  ASoC: Add helper function to cast component back to CODEC
+  ASoC: Track which components have been registered with
+    snd_soc_register_component()
+  ASoC: Let snd_soc_platform subclass snd_soc_component
+  ASoC: Move IO abstraction to the component level
+  ASoC: Move standard kcontrol helpers to the component level
+  ASoC: Remove snd_soc_update_bits_locked()
+  ASoC: dapm: Rename soc_widget_update_bits_locked() to
+    soc_widget_update_bits()
+
+ include/sound/soc-dapm.h          |   1 +
+ include/sound/soc.h               | 114 +++++++--
+ sound/soc/codecs/88pm860x-codec.c |   8 +-
+ sound/soc/codecs/ab8500-codec.c   |  12 +-
+ sound/soc/codecs/adav80x.c        |   4 +-
+ sound/soc/codecs/ak4641.c         |   4 +-
+ sound/soc/codecs/cs4270.c         |   2 +-
+ sound/soc/codecs/cs4271.c         |   4 +-
+ sound/soc/codecs/cs42l51.c        |   4 +-
+ sound/soc/codecs/da7210.c         |   4 +-
+ sound/soc/codecs/da7213.c         |   4 +-
+ sound/soc/codecs/da732x.c         |   4 +-
+ sound/soc/codecs/da9055.c         |   2 +-
+ sound/soc/codecs/lm4857.c         |   4 +-
+ sound/soc/codecs/max9768.c        |   4 +-
+ sound/soc/codecs/max98088.c       |  12 +-
+ sound/soc/codecs/max98090.c       |   4 +-
+ sound/soc/codecs/max98095.c       |  16 +-
+ sound/soc/codecs/pcm1681.c        |   4 +-
+ sound/soc/codecs/rt5631.c         |   4 +-
+ sound/soc/codecs/sgtl5000.c       |   4 +-
+ sound/soc/codecs/sta32x.c         |   4 +-
+ sound/soc/codecs/tas5086.c        |   4 +-
+ sound/soc/codecs/tlv320aic23.c    |   4 +-
+ sound/soc/codecs/tlv320dac33.c    |   4 +-
+ sound/soc/codecs/twl4030.c        |  10 +-
+ sound/soc/codecs/twl6040.c        |   8 +-
+ sound/soc/codecs/wl1273.c         |  12 +-
+ sound/soc/codecs/wm2000.c         |   8 +-
+ sound/soc/codecs/wm8350.c         |   4 +-
+ sound/soc/codecs/wm8400.c         |   2 +-
+ sound/soc/codecs/wm8580.c         |   2 +-
+ sound/soc/codecs/wm8731.c         |   4 +-
+ sound/soc/codecs/wm8753.c         |   4 +-
+ sound/soc/codecs/wm8804.c         |   4 +-
+ sound/soc/codecs/wm8903.c         |   4 +-
+ sound/soc/codecs/wm8904.c         |  14 +-
+ sound/soc/codecs/wm8955.c         |   4 +-
+ sound/soc/codecs/wm8958-dsp2.c    |  32 +--
+ sound/soc/codecs/wm8960.c         |   4 +-
+ sound/soc/codecs/wm8962.c         |   8 +-
+ sound/soc/codecs/wm8983.c         |   4 +-
+ sound/soc/codecs/wm8985.c         |   4 +-
+ sound/soc/codecs/wm8990.c         |   2 +-
+ sound/soc/codecs/wm8991.c         |   2 +-
+ sound/soc/codecs/wm8994.c         |  10 +-
+ sound/soc/codecs/wm8996.c         |   4 +-
+ sound/soc/codecs/wm9081.c         |   4 +-
+ sound/soc/codecs/wm_adsp.c        |   4 +-
+ sound/soc/codecs/wm_hubs.c        |   2 +-
+ sound/soc/intel/sst-haswell-pcm.c |   8 +-
+ sound/soc/soc-cache.c             |   2 -
+ sound/soc/soc-core.c              | 520 ++++++++++++++++----------------------
+ sound/soc/soc-dapm.c              |  91 +------
+ sound/soc/soc-io.c                | 220 +++++++++++++---
+ 55 files changed, 644 insertions(+), 592 deletions(-)
+
+-- 
+1.8.0
