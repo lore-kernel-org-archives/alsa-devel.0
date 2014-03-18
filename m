@@ -1,77 +1,76 @@
-From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Subject: [PATCH v2 2/2] remgap: Fix possible sleep-in-atomic in regmap_register_patch()
-Date: Tue, 18 Mar 2014 12:58:34 +0100
-Message-ID: <1395143914-26929-2-git-send-email-tiwai@suse.de>
-References: <1395143914-26929-1-git-send-email-tiwai@suse.de>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1395143914-26929-1-git-send-email-tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: tlv320aic31xx: Don't call kfree
+ for memory allocated by devm_kzalloc
+Date: Tue, 18 Mar 2014 12:00:44 +0000
+Message-ID: <20140318120044.GO11706@sirena.org.uk>
+References: <1394982385.19788.4.camel@phoenix>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============4230275927453840201=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 994B9260202
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 13:00:53 +0100 (CET)
+In-Reply-To: <1394982385.19788.4.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Just like the previous, fix the possible sleep-in-atomic in
-regmap_register_patch() by moving the allocation out of the lock.
 
-This makes the function unsafe for concurrent access as map->patch and
-map->patch_regs are changed without lock now.  But such a use case
-must be very rare, thus we take rather simplicity over complexity, and
-add a note in the function description mentioning this restriction.
+--===============4230275927453840201==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+OvhQd+MVTzxy63P"
+Content-Disposition: inline
 
-Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
----
- drivers/base/regmap/regmap.c | 25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 6d134a3cbfd3..e6827cee29a3 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -2174,6 +2174,10 @@ EXPORT_SYMBOL_GPL(regmap_async_complete);
-  * apply them immediately.  Typically this is used to apply
-  * corrections to be applied to the device defaults on startup, such
-  * as the updates some vendors provide to undocumented registers.
-+ *
-+ * Note that the function gives no protection over concurrent access
-+ * to map->patch and map->patch_regs.  If needed, apply some lock in
-+ * the caller side.
-  */
- int regmap_register_patch(struct regmap *map, const struct reg_default *regs,
- 			  int num_regs)
-@@ -2186,6 +2190,16 @@ int regmap_register_patch(struct regmap *map, const struct reg_default *regs,
- 	    num_regs))
- 		return 0;
- 
-+	p = krealloc(map->patch,
-+		     sizeof(struct reg_default) * (map->patch_regs + num_regs),
-+		     GFP_KERNEL);
-+	if (!p)
-+		return -ENOMEM;
-+
-+	memcpy(p + map->patch_regs, regs, num_regs * sizeof(*regs));
-+	map->patch = p;
-+	map->patch_regs += num_regs;
-+
- 	map->lock(map->lock_arg);
- 
- 	bypass = map->cache_bypass;
-@@ -2203,17 +2217,6 @@ int regmap_register_patch(struct regmap *map, const struct reg_default *regs,
- 		}
- 	}
- 
--	p = krealloc(map->patch,
--		     sizeof(struct reg_default) * (map->patch_regs + num_regs),
--		     GFP_KERNEL);
--	if (p) {
--		memcpy(p + map->patch_regs, regs, num_regs * sizeof(*regs));
--		map->patch = p;
--		map->patch_regs += num_regs;
--	} else {
--		ret = -ENOMEM;
--	}
--
- out:
- 	map->async = false;
- 	map->cache_bypass = bypass;
--- 
-1.9.0
+--+OvhQd+MVTzxy63P
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Mar 16, 2014 at 11:06:25PM +0800, Axel Lin wrote:
+> The kfree call is not necessary, but we need to call snd_soc_unregister_codec()
+> in remove().
+
+Applied, thanks.
+
+--+OvhQd+MVTzxy63P
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTKDVpAAoJELSic+t+oim9BJUQAIiL/72+5K/bRaOjh/iTkwtw
+5DdEuO3P+XTPUhPP5cUBQSeOo2M4IuyvTiEaSoDdHdKPogM1PNboLw/Qhb2Ay+wz
+m8qR8zObUdRsQltmWHLv0yjZaZg/YwNhfFKInyC/kB+JNHxGLGUskGUpFzrAZuy5
+jNZ/QYEt6FboKM/Y0/SnLHheafqjcpYl+JK3AJzFHOfkf6K6+2WRyvH5Unh0KaOs
+mGU+DSL2Vu7f7XyoX+COF3J9OgX2QoYDZQ0E7G756SqrQACCpCYH5S1dZQYFQMpX
+mYKNdXqBxQFHPMtwDDXDcnflC6eTd9bN0g795S7KxO2+zlEnFGhUh0mTzgjPiMOz
+SvD4lQ8rhtXmQY/1FYjfGw+1UzNx2gGHhDkWpLSpzsaJzV0cpedYavwt7HTf627X
+3Ss3DyN0a4VgcN8s9RLn1Guskf37IijiUjKqtCKea5R/djBluOhp/SW3JlMkPHua
+d70TTBPj/jpcDvlo8YqWg1RxhbmGw9m9mHP33RhkP2p/FgArynZ67ILyFuYqcfOy
+wGzGwCwBxtNi7FK1dFPPhfm8J2pcRu9St/C5dAh0N2dcN65hmbYMiP5K+R91uVq8
+9cQyBl9gH6+iVMOsAAsDZ4B+B9iXDsdWZ4GsIUTwNSkTGIMFk9gB2S30DjrpYs6f
+Xpj3naeXVo57jLnWOXDT
+=om44
+-----END PGP SIGNATURE-----
+
+--+OvhQd+MVTzxy63P--
+
+--===============4230275927453840201==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4230275927453840201==--
