@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 02/13] ASoC: Add snd_soc_kcontrol_platform()
-	helper function
-Date: Tue, 18 Mar 2014 09:02:05 +0100
-Message-ID: <1395129736-11938-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 03/13] ASoC: Prepare SOC_SINGLE_XR_SX controls
+	for regmap
+Date: Tue, 18 Mar 2014 09:02:06 +0100
+Message-ID: <1395129736-11938-4-git-send-email-lars@metafoo.de>
 References: <1395129736-11938-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-224.synserver.de (smtp-out-230.synserver.de
  [212.40.185.230])
- by alsa0.perex.cz (Postfix) with ESMTP id F26DC261AEC
- for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 09:01:39 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B998261AFC
+ for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2014 09:01:41 +0100 (CET)
 In-Reply-To: <1395129736-11938-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,85 +26,49 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-For platform controls snd_kcontrol_chip() currently returns a pointer to the
-platform that registered the control. With the upcoming consolidation of
-platform and CODEC controls this will change. Prepare for this by introducing
-the snd_soc_kcontrol_platform() helper function that will hide the
-implementation details of how the platform for a control can be obtained. This
-will allow us to change this easily in the future.
-
-The patch also updates all platforms to use this new helper function.
+SOC_SINGLE_XR_SX controls currently only work with CODECs that set the
+'reg_word_size' field in their snd_soc_codec_driver struct. Going forward
+support for ASoC level IO will eventually be removed and all drivers will be
+converted to regmap. Preparing for the transition this patch adds support for
+CODECs using regmap for IO to the SOC_SINGLE_XR_SX control. We already have the
+val_bytes field in the CODEC struct which holds the number of bytes per word,
+but it is only initialized when regmap is used. Also initialize it for drivers
+still using legacy IO and update the SOC_SINGLE_XR_SX handlers to use it.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc.h               | 14 ++++++++++++++
- sound/soc/intel/sst-haswell-pcm.c |  8 ++++----
- 2 files changed, 18 insertions(+), 4 deletions(-)
+ sound/soc/soc-core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index d7cef6b..0233cd3 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1229,6 +1229,20 @@ static inline struct snd_soc_codec *snd_soc_kcontrol_codec(
- 	return snd_kcontrol_chip(kcontrol);
- }
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b322cf29..0a39031 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3349,7 +3349,7 @@ int snd_soc_get_xr_sx(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	unsigned int regbase = mc->regbase;
+ 	unsigned int regcount = mc->regcount;
+-	unsigned int regwshift = codec->driver->reg_word_size * BITS_PER_BYTE;
++	unsigned int regwshift = codec->val_bytes * BITS_PER_BYTE;
+ 	unsigned int regwmask = (1<<regwshift)-1;
+ 	unsigned int invert = mc->invert;
+ 	unsigned long mask = (1UL<<mc->nbits)-1;
+@@ -3395,7 +3395,7 @@ int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	unsigned int regbase = mc->regbase;
+ 	unsigned int regcount = mc->regcount;
+-	unsigned int regwshift = codec->driver->reg_word_size * BITS_PER_BYTE;
++	unsigned int regwshift = codec->val_bytes * BITS_PER_BYTE;
+ 	unsigned int regwmask = (1<<regwshift)-1;
+ 	unsigned int invert = mc->invert;
+ 	unsigned long mask = (1UL<<mc->nbits)-1;
+@@ -4298,6 +4298,7 @@ int snd_soc_register_codec(struct device *dev,
+ 	codec->dev = dev;
+ 	codec->driver = codec_drv;
+ 	codec->num_dai = num_dai;
++	codec->val_bytes = codec_drv->reg_word_size;
+ 	mutex_init(&codec->mutex);
  
-+/**
-+ * snd_soc_kcontrol_platform() - Returns the platform that registerd the control
-+ * @kcontrol: The control for which to get the platform
-+ *
-+ * Note: This function will only work correctly if the control has been
-+ * registered with snd_soc_add_platform_controls() or via table based setup of
-+ * a snd_soc_platform_driver. Otherwise the behavior is undefined.
-+ */
-+static inline struct snd_soc_codec *snd_soc_kcontrol_platform(
-+	struct snd_kcontrol *kcontrol)
-+{
-+	return snd_kcontrol_chip(kcontrol);
-+}
-+
- int snd_soc_util_init(void);
- void snd_soc_util_exit(void);
- 
-diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index 0a32dd1..67a5eb3 100644
---- a/sound/soc/intel/sst-haswell-pcm.c
-+++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -136,7 +136,7 @@ static inline unsigned int hsw_ipc_to_mixer(u32 value)
- static int hsw_stream_volume_put(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_platform *platform = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
- 	struct soc_mixer_control *mc =
- 		(struct soc_mixer_control *)kcontrol->private_value;
- 	struct hsw_priv_data *pdata =
-@@ -174,7 +174,7 @@ static int hsw_stream_volume_put(struct snd_kcontrol *kcontrol,
- static int hsw_stream_volume_get(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_platform *platform = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
- 	struct soc_mixer_control *mc =
- 		(struct soc_mixer_control *)kcontrol->private_value;
- 	struct hsw_priv_data *pdata =
-@@ -206,7 +206,7 @@ static int hsw_stream_volume_get(struct snd_kcontrol *kcontrol,
- static int hsw_volume_put(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_platform *platform = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
- 	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
- 	struct sst_hsw *hsw = pdata->hsw;
- 	u32 volume;
-@@ -231,7 +231,7 @@ static int hsw_volume_put(struct snd_kcontrol *kcontrol,
- static int hsw_volume_get(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_platform *platform = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
- 	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
- 	struct sst_hsw *hsw = pdata->hsw;
- 	unsigned int volume = 0;
+ 	for (i = 0; i < num_dai; i++) {
 -- 
 1.8.0
