@@ -1,58 +1,76 @@
-From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: Re: [PATCH v3 4/4] ASoC: simple-card: Add DT documentation for
- multi-DAI links
-Date: Wed, 19 Mar 2014 17:07:10 +0100
-Message-ID: <20140319170710.19fc5a1d@armhf>
-References: <cover.1394883134.git.moinejf@free.fr>
-	<d054780a0edf4b2338a52e48bff9144e19aa614f.1394883134.git.moinejf@free.fr>
-	<20140317164339.GR11706@sirena.org.uk>
-	<20140318091728.1d2240ca@armhf>
-	<53296CB7.1000909@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: cs42l51: Fix SOC_DOUBLE_R_SX_TLV
+ shift values for ADC, PCM, and Analog kcontrols
+Date: Wed, 19 Mar 2014 16:38:28 +0000
+Message-ID: <20140319163828.GQ11706@sirena.org.uk>
+References: <1395243602-18012-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <53296CB7.1000909-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============3740447007239462704=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A08426510C
+ for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2014 17:38:39 +0100 (CET)
+In-Reply-To: <1395243602-18012-1-git-send-email-brian.austin@cirrus.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: thomas.petazzoni@free-electrons.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, paul.handrigan@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 19 Mar 2014 12:08:55 +0200
-Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org> wrote:
 
-> sound {
-> 	compatible =3D "simple-audio-card";
-> 	simple-audio-card,name =3D "Simple Audio";
-> 	simple-audio-card,widgets =3D ...
-> 	simple-audio-card,routing =3D ...
->=20
-> 	simple-audio-card,dai-link@0 {		/* I2S - codec */
-> 		format =3D "i2s";
-> 		bitclock-master =3D "codec";
-> 		frame-master =3D "codec";
-> 		bitclock-inversion =3D <1>;
-> 		simple-audio-card,cpu {
-> 			sound-dai =3D <&audio1 0>;
-> 			bitclock-inversion =3D <0>;
-> 		};
-> 		simple-audio-card,codec {
-> 			sound-dai =3D <&codec 0>;
-> 			system-clock-frequency =3D <12000000>;
-> 		};
-> 	};
-> ...
->=20
-> I can participate in the implementation too.
+--===============3740447007239462704==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JT6IvOBpLOBXA07e"
+Content-Disposition: inline
 
-Thanks. I will prepare the multi DAI links and send you the first
-patches.
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--JT6IvOBpLOBXA07e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Mar 19, 2014 at 10:40:02AM -0500, Brian Austin wrote:
+> The shift values for the ADC,PCM, and Analog kcontrols were wrong causing wrong values for the SOC_DOUBLE_R_SX_TLV macros
+> Fixed the TLV for aout_tlv to show -102dB correctly
+
+Applied, thanks.
+
+--JT6IvOBpLOBXA07e
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTKcgAAAoJELSic+t+oim95uIP/jFoNsY6Yw5NTKEb9ZG3cU36
+Za3lUqhQtErN58aLtbEWcKL8+F7fATtexJDE/gGl9zX3q+Vkd4dgdCIAXCTlY+8M
+BpGB/6Apos1GSddINYhx7Z7nnXedsBWUHNE4KvUcQ43nG9WplcItxt6SiS2U7L4l
+OTYOo/jy6HTvkUBl3uu/jE7oJyp9Vg82z+2Qx/loOfTe1kFkmXGSLCgQv3qO3fj8
+UANyxNTLZYoLuMv3791hHlJazlJmuG1eXFDlxJ1i3UPF1GfcIu5uUogDCxDoqJwC
+akSrqL1rs5dZ5AtVOcCQpPTpcH8PX75tmMkjAG83PVDu2uaIVi0DKnWmnvtXfr5U
+U8Kby9ZrpqlnROxJh2uhzUkAsswQ88sdVKEw6wdJ+sJ9TwmBfxiDwHV8EjRVrJd+
+B6Yym8DSFoxEPK/4MQoI7rT+P+WB760n96ifhmevs3mRDd1t8ATLrD79VYHJwN0Q
+kzgBqTAK62vaMk8zmpeaG8EILKvzXxH2D/2xFp6bBODfwU54FALzPnIDKYS86eW/
+heDpBiGGSxXqOhpn/KY08eIS05JNZlFP7klCv0ySf0vmMgiHkupfERJwZXnlJA2u
+fQ/SEYOxbmvd3jTCbl97ZWeDVxRng25TVZG8z+kjiCQhtG6J8amy01VBGbMDj179
+11tKtiVDY9m/7WxWpjjy
+=OznA
+-----END PGP SIGNATURE-----
+
+--JT6IvOBpLOBXA07e--
+
+--===============3740447007239462704==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3740447007239462704==--
