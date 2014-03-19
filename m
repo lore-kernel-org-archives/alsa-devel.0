@@ -1,69 +1,67 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3 4/4] ASoC: simple-card: Add DT documentation for
- multi-DAI links
-Date: Wed, 19 Mar 2014 13:46:25 +0000
-Message-ID: <20140319134625.GN11706@sirena.org.uk>
-References: <cover.1394883134.git.moinejf@free.fr>
- <d054780a0edf4b2338a52e48bff9144e19aa614f.1394883134.git.moinejf@free.fr>
- <20140317164339.GR11706@sirena.org.uk>
- <20140318091728.1d2240ca@armhf>
- <53296CB7.1000909@ti.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ALSA: compress: Pass through return value
+ of open ops callback
+Date: Wed, 19 Mar 2014 20:06:33 +0530
+Message-ID: <20140319143633.GH1976@intel.com>
+References: <1395233979-7675-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YAMuP2N37TMqsqKK"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89FD72650D1
+ for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2014 15:42:12 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <53296CB7.1000909-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+In-Reply-To: <1395233979-7675-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Mar 19, 2014 at 12:59:39PM +0000, Charles Keepax wrote:
+> The snd_compr_open function would always return 0 even if the compressed
+> ops open function failed, obviously this is incorrect. Looks like this
+> was introduced by a small typo in:
+> 
+> commit a0830dbd4e42b38aefdf3fb61ba5019a1a99ea85
+> ALSA: Add a reference counter to card instance
+> 
+> This patch returns the value from the compressed op as it should.
+> 
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
---YAMuP2N37TMqsqKK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Acked-by: Vinod Koul <vinod.koul@intel..com>
 
-On Wed, Mar 19, 2014 at 12:08:55PM +0200, Jyri Sarha wrote:
+-- 
+~Vinod
 
-> While we are at it we could update the bitclock-master and frame-master
-> syntax to be like this:
+> ---
+>  sound/core/compress_offload.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+> index 7a20897..7403f34 100644
+> --- a/sound/core/compress_offload.c
+> +++ b/sound/core/compress_offload.c
+> @@ -133,7 +133,7 @@ static int snd_compr_open(struct inode *inode, struct file *f)
+>  		kfree(data);
+>  	}
+>  	snd_card_unref(compr->card);
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  static int snd_compr_free(struct inode *inode, struct file *f)
+> -- 
+> 1.7.2.5
+> 
 
-> bitclock-master = "cpu"
-> frame-master = "codec"
-
-> With the above explicit definition all the daifmt settings could be defined
-> in link level. For backwards compatibility we could still define that
-> omitting the value equals "codec" and omitting the property equals "cpu".
-
-It seems it'd be a bit more idiomatic to do that with a phandle rather
-than with a string in order to allow extensions for things like TDM (the
-I2S to mono speaker driver use case for example).
-
---YAMuP2N37TMqsqKK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTKZ+uAAoJELSic+t+oim9CuwP/1KTlhb26QwK5jKyfD9gviXE
-pVQRXQQ0lY8D4bpW5SQFJvBq02Zcut+dZu/SMwCmKgEv55pFU9NY694pdNBKfmR0
-oFB+BMIh/lFBO8+ob18x3nUff0zZx2oLazAt2iD8Lf0aQJNuwjd4WYJTyvlHZ6pd
-Af9XXsmHmOn4K6nzZLyt8LZB13Qrapexol9YzPJ/E4kittDU6ntc6p4PlVeD0kW5
-s7cL7+AHY0yZ1MmJESNhx87PFjxf5iGrUsC4pgJASvvNMqBecD2nBYHsfsuD0nZj
-5tJvmRk88vPxxpMxiupoOomotQUBCbsbffmgDldQETR+OEv+UHXZmBvhJUY1YCFj
-RiG/3NsWNsbY5Fcm7dkMtSDFrz6PmvoWEFEpLbbCe5TauUyNty4N49LvuL5Fx8BB
-RdQ+5quc4Cw602NB/26E/vbplFEBWuFHr5kwAlMT+2kAhyVIqD28PtfpfvXvtcrv
-6CQRSCqcYSviSiZYyXeX19jF9OuJ0zPTx2moz2p2Z/TFmcxpEAqnIO6CGavxz6Z2
-fdOqKuCgAcwSEr8H+0uDrPaYwP2Q8KrOdGMoF0qFl88wr4el5pMAflvbxwMSepvU
-60lgwna9IlhY4gU5cKKlWjH0Bh4ikSI6u+usAhLwG9fKYhG6iZsNgrv2zWfkKLNC
-sYjB9lC6xAlh9Idp1drR
-=90SH
------END PGP SIGNATURE-----
-
---YAMuP2N37TMqsqKK--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
