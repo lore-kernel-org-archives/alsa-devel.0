@@ -1,19 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] pcm: route: Don't handle no matching chmap
- as a serious error
-Date: Wed, 19 Mar 2014 13:10:55 +0100
-Message-ID: <5329894F.6040303@canonical.com>
-References: <1395152876-28480-1-git-send-email-tiwai@suse.de>	<53287211.1040803@canonical.com>	<s5h1txzpisl.wl%tiwai@suse.de>	<5328C4EE.4010807@canonical.com>
- <s5hk3bqo6ht.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 05/13] ASoC: Drop ASoC level caching from
+	hw_write/hw_read
+Date: Wed, 19 Mar 2014 12:58:50 +0000
+Message-ID: <20140319125850.GF11706@sirena.org.uk>
+References: <1395129736-11938-1-git-send-email-lars@metafoo.de>
+ <1395129736-11938-6-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1415567669225774538=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id CCDCC265095
- for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2014 13:10:56 +0100 (CET)
-In-Reply-To: <s5hk3bqo6ht.wl%tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34CEA26506D
+ for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2014 13:59:11 +0100 (CET)
+In-Reply-To: <1395129736-11938-6-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/19/2014 10:57 AM, Takashi Iwai wrote:
-> At Tue, 18 Mar 2014 23:13:02 +0100,
-> David Henningsson wrote:
->>
->> On 03/18/2014 05:34 PM, Takashi Iwai wrote:
->>> At Tue, 18 Mar 2014 17:19:29 +0100,
->>> David Henningsson wrote:
->>>>
->>>> On 03/18/2014 03:27 PM, Takashi Iwai wrote:
->>>>> When find_matching_chmap() returns an error for the non-matching
->>>>> chmap, the caller, snd_pcm_route_open(), also returns an error
->>>>> although it shouldn't be handled as the fatal error.  This results in
->>>>> the probe error with PulseAudio and it gives no real output in the
->>>>> end.
->>>>
->>>> Hmm, could you give a more specific example? In case the driver does not
->>>> support channel maps at all, that case is handled in the beginning of
->>>> the function.
->>>
->>> Well, the problem is that PulseAudio doesn't work at all with the
->>> current alsa-lib git prior to the commit in some cases.  That is, the
->>> commit brought some incompatibility.
->>
->> Hmm, then the error should be somewhere in determine_chmap instead.
->> tt_chmap should be NULL (i e, find_matching_chmap is never called) for
->> using the standard number syntax instead of the new chmap syntax.
->>
->> What about the patch attached instead (untested) ?
->>
->>>> So this only happens if the driver supports channel maps, but only
->>>> non-compatible with the requested map. In which case I believe it's
->>>> correct that the probing should fail...?
->>>
->>> Could you check whether PA 5.0 works as is with alsa-lib git (before
->>> the last fix)?  It could be seen on some desktop machines.
->>
->> Let me know if the attached patch works for you. In case it does not I
->> will do this testing later.
-> 
-> It seems working, but it revealed another bug, too.  I fixed it in git
-> tree, and reverted my last patch along with it.
 
-I don't think the patch "route: Fix invalid pointer access" is necessary
-because determine_chmap is always called before any usage of tt_chmap,
-and the function always assigns a value to tt_chmap. But it does not
-hurt either, of course.
+--===============1415567669225774538==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qIIpL/PjEPCxtmPP"
+Content-Disposition: inline
 
-Thanks for the testing!
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+--qIIpL/PjEPCxtmPP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Mar 18, 2014 at 09:02:08AM +0100, Lars-Peter Clausen wrote:
+> All drivers using these functions now do regmap level caching. So this is dead
+> code and can be removed.
+
+I actually have a version of this in my tree already, a cleaned up
+version of the patch I posted while I was travelling which I couldn't
+test at the time.  Since this one seems to depend on other stuff in your
+series which I don't want to apply before the merge window I'm thinking
+applying the version I have already - OK?
+
+--qIIpL/PjEPCxtmPP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTKZSHAAoJELSic+t+oim9LgUQAIep8YJcD3eHrqcaAPPkACvm
+3qrioiYAo5gSShXnGD+ZaRzzCjMmv/f7NOLaqQjMgcqm67Mum++Lhsxd2hK66Tfq
+gz0JRmFQMi5Hsjli7Dwad8SiVjzelERN8gQ6oGpRVJ0fwIDvEB1viTmO9SP2WzEX
+sg7rO4aK1nyAWRgVkLTkZ+mt+ku8kT5tIDEqYxUHvg9XMtgwxeRHLWXvwCun6FtI
+aKPKtsUZz0sgcC7UCb2mhaobLOkUg91urFuflU9EXKz4HWpkZm30ezSYLzZ9MXBv
+2zE7Z4XZS/Jcr79V4its3B/qysMhShHRAem/tWl2fpPves7EhQ8PB/cYQzfIJhpp
+l7JahciPZc9S25z7zsazQFWantiTE/8NKphpGfhluwmwM1uVUjxgFF8YCiuOynQt
+eMLsgw+YSn1ouSqzFV997TzmVX9PtLAXYF9uzuAKcXK4XfOMgz4jFunDjFpi1BM4
+M6yMputaSYfa7rLu+5ILmEHIRy+FrxfT4kQR+Nf6tPTnobUxHVj+44aRR3kuuywL
+QF/YSwVdzh0HT3zNUR4f94zqne/eXWeHve1Dflfb2geUT8lT+GxCViSb6ieiuCsz
+A/zTpitU77GQjgvGyYhQnRyPGmKtyjuJM1d1kFz1Dmn8cEoslXdcZTafLrXbp/ab
+uUhOEcNGpI7NHHgktdqO
+=rpvv
+-----END PGP SIGNATURE-----
+
+--qIIpL/PjEPCxtmPP--
+
+--===============1415567669225774538==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1415567669225774538==--
