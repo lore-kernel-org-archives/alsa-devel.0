@@ -1,17 +1,27 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs42l51: Fix SOC_DOUBLE_R_SX_TLV
- shift values for ADC, PCM, and Analog kcontrols
-Date: Wed, 19 Mar 2014 16:38:28 +0000
-Message-ID: <20140319163828.GQ11706@sirena.org.uk>
-References: <1395243602-18012-1-git-send-email-brian.austin@cirrus.com>
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: Re: Regression caused by "ASoC: core: Rework
+ SOC_DOUBLE_R_SX_TLV add SOC_SINGLE_SX_TLV"
+Date: Wed, 19 Mar 2014 17:46:02 +0100
+Message-ID: <20140319174602.667f04ba@skate>
+References: <20140130144807.5b102b28@skate>
+ <alpine.DEB.2.10.1401300856050.10630@heelrod.ad.cirrus.com>
+ <20140130160554.694a8a84@skate>
+ <alpine.DEB.2.10.1401300922150.10630@heelrod.ad.cirrus.com>
+ <alpine.DEB.2.10.1401300934340.10630@heelrod.ad.cirrus.com>
+ <20140130175658.11469081@skate>
+ <alpine.DEB.2.10.1401301108450.10630@heelrod.ad.cirrus.com>
+ <20140130181607.6a694b8f@skate>
+ <alpine.DEB.2.10.1401301122200.10630@heelrod.ad.cirrus.com>
+ <20140210152244.19f9d647@skate>
+ <alpine.DEB.2.02.1403191030070.14838@heelrod>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3740447007239462704=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A08426510C
- for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2014 17:38:39 +0100 (CET)
-In-Reply-To: <1395243602-18012-1-git-send-email-brian.austin@cirrus.com>
+Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id C46B326510C
+ for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2014 17:46:08 +0100 (CET)
+In-Reply-To: <alpine.DEB.2.02.1403191030070.14838@heelrod>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +32,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Brian Austin <brian.austin@cirrus.com>
-Cc: thomas.petazzoni@free-electrons.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, paul.handrigan@cirrus.com
+Cc: Lior Amsalem <alior@marvell.com>, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory =?UTF-8?B?Q2zDqW1lbnQ=?= <gregory.clement@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
+Dear Brian Austin,
 
---===============3740447007239462704==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JT6IvOBpLOBXA07e"
-Content-Disposition: inline
+On Wed, 19 Mar 2014 10:31:12 -0500, Brian Austin wrote:
 
+> I found the issue WRT the CS42L51. It was actually the shift values for 
+> the kcontrols were wrong :)
+> 
+> I have the changes and will be sending the patch shortly.  Your CC'd as 
+> reporter if that's OK.
 
---JT6IvOBpLOBXA07e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Excellent! Thanks for the investigation. I'll be testing your patch
+next week as I get access to the appropriate platform.
 
-On Wed, Mar 19, 2014 at 10:40:02AM -0500, Brian Austin wrote:
-> The shift values for the ADC,PCM, and Analog kcontrols were wrong causing wrong values for the SOC_DOUBLE_R_SX_TLV macros
-> Fixed the TLV for aout_tlv to show -102dB correctly
+Can you ensure to Cc: stable@ to get the patch included in the
+appropriate previous kernel releases?
 
-Applied, thanks.
+Thanks a lot!
 
---JT6IvOBpLOBXA07e
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTKcgAAAoJELSic+t+oim95uIP/jFoNsY6Yw5NTKEb9ZG3cU36
-Za3lUqhQtErN58aLtbEWcKL8+F7fATtexJDE/gGl9zX3q+Vkd4dgdCIAXCTlY+8M
-BpGB/6Apos1GSddINYhx7Z7nnXedsBWUHNE4KvUcQ43nG9WplcItxt6SiS2U7L4l
-OTYOo/jy6HTvkUBl3uu/jE7oJyp9Vg82z+2Qx/loOfTe1kFkmXGSLCgQv3qO3fj8
-UANyxNTLZYoLuMv3791hHlJazlJmuG1eXFDlxJ1i3UPF1GfcIu5uUogDCxDoqJwC
-akSrqL1rs5dZ5AtVOcCQpPTpcH8PX75tmMkjAG83PVDu2uaIVi0DKnWmnvtXfr5U
-U8Kby9ZrpqlnROxJh2uhzUkAsswQ88sdVKEw6wdJ+sJ9TwmBfxiDwHV8EjRVrJd+
-B6Yym8DSFoxEPK/4MQoI7rT+P+WB760n96ifhmevs3mRDd1t8ATLrD79VYHJwN0Q
-kzgBqTAK62vaMk8zmpeaG8EILKvzXxH2D/2xFp6bBODfwU54FALzPnIDKYS86eW/
-heDpBiGGSxXqOhpn/KY08eIS05JNZlFP7klCv0ySf0vmMgiHkupfERJwZXnlJA2u
-fQ/SEYOxbmvd3jTCbl97ZWeDVxRng25TVZG8z+kjiCQhtG6J8amy01VBGbMDj179
-11tKtiVDY9m/7WxWpjjy
-=OznA
------END PGP SIGNATURE-----
-
---JT6IvOBpLOBXA07e--
-
---===============3740447007239462704==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3740447007239462704==--
+Thomas
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
