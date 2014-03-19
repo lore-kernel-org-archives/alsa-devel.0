@@ -1,50 +1,141 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2] ASoC: tegra: Use flat regcache.
-Date: Wed, 19 Mar 2014 23:10:20 +0000
-Message-ID: <20140319231020.GA11706@sirena.org.uk>
-References: <1395119329-30721-1-git-send-email-dgreid@chromium.org>
+From: Arun Shamanna Lakshmi <aruns@nvidia.com>
+Subject: RE: [PATCH] ASoC: Add support for multi register mux
+Date: Wed, 19 Mar 2014 16:44:00 -0700
+Message-ID: <781A12BB53C15A4BB37291FDE08C03F3A05CB21E46@HQMAIL02.nvidia.com>
+References: <1395186692-11735-1-git-send-email-aruns@nvidia.com>
+ <20140318235941.GT11706@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LWrJum1q/OvHB6h/"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1395119329-30721-1-git-send-email-dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140318235941.GT11706@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Songhee Baek <sbaek@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
+If each bit of a 32 bit register maps to an input of a mux, then with the current 'soc_enum' structure we cannot have more than 64 inputs for the mux (because of reg and reg2 only).
+In such cases, we need more than 2 registers to select the input of the mux. This is referred to as 'multi register mux' 
 
---LWrJum1q/OvHB6h/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For instance, the audio xbar (AXBAR) module acts as a mux selecting various inputs (reference: Tegra K1 manual).
 
-On Mon, Mar 17, 2014 at 10:08:49PM -0700, Dylan Reid wrote:
-> When using an rbtree cache, there can be allocations the first time a
-> register is accessed.  This can cause an attempt to schedule while
+The number of such inputs increases with future Tegra chips and so will be the need to control multiple registers per mux in DAPM.  We have 2 options to achieve that.
 
-Applied, thanks.
+Option 1: Using custom get and put functions something similar to below inside AXBAR tegra driver.
 
---LWrJum1q/OvHB6h/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+	int tegra_xbar_get_value_enum(struct snd_kcontrol *kcontrol,
+				struct snd_ctl_elem_value *ucontrol)
+	{
+		struct snd_soc_dapm_widget_list *wlist = snd_kcontrol_chip(kcontrol);
+		struct snd_soc_dapm_widget *widget = wlist->widgets[0];
+		struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+		unsigned int reg_val, mux, find, reg_idx;
+		unsigned int num_regs = 3, regs[3];
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+		/* control 3 registers that has a common STRIDE */
+		regs[0] = e-> reg;
+		regs[1] = regs[0] + MUX_REG_STRIDE;
+		regs[2] = regs[1] + MUX_REG_STRIDE;
 
-iQIcBAEBAgAGBQJTKiPZAAoJELSic+t+oim99kcP/j0n4Dcush9QAAjsmyWt/GC3
-Mr7b/mGUAgUYTLfUkNCKZ7gkMJpWY5d25LJpKzueJfmfUfigQww19uwCfGhObfRs
-Tn5s+SU8qWMilTr/avJ9rpBzt5AT5tbQOvDwndDTr/bEVfkeoV0fr9tpPNJO9sMV
-fq9Dt+/9l0uLWS+kVmPMWWo+yNlR71XEvPxFMQaru+cx6kB0AfI9Rk/s5wqLz4/K
-3L9RaUGFkh6kjKlCSbSuq9s3QQHC9NmmbshLjXFMxbR+ps7/nmahBWokjawd66qj
-6jctl01t98p+pg7RUBJeUBmpgdJbSK7461npwLNORmdAyWJV6pr4DGH9VXT8RKU9
-lgJNoWFKJOb1kQJoHT9aRT+1vZMq7itAMYky4kKcPTYOrtV975YP2vmawWUQgkwE
-PL9U2imWYfw1fttUJPGKIgO0nvyy7Jn1F5JIiHwyZZ+5Uca85PS1+iSNuEEb0d9I
-J3lNh7yoDnSdbnfXwGuh85/vXSxUoH6WnwyfTWeE2MVTmwA6SQtjkTqS54IJRCJv
-k+4++STRaDxmuukvlXQFp2Q1fkeDA+r7Z050xU3dJL3cA4TYQCaCK9M9067WcKPs
-qmaDbaF1qNbCFNXIMUiPmQobERvu1dljzqzuggtY/VnM/4RthWNMMHhAtuVELFts
-qzk0cXBpkQiqI69XjYG/
-=wuX1
------END PGP SIGNATURE-----
+		for (mux = 0; mux < e->max; mux++) {
+			find = 0;
+			for (reg_idx = 0; reg_idx < num_regs; reg_idx++) {
+				regmap_read(widget->codec->control_data,
+						regs[reg_idx], &reg_val);
+				if (reg_val ==  e->values[mux * num_regs + reg_idx])
+					find++;
+			}
+			if (find == num_regs)
+				break;
+		}
+		ucontrol->value.enumerated.item[0] = mux;
+		return 0;
+	}
 
---LWrJum1q/OvHB6h/--
+	int tegra_xbar_put_value_enum(struct snd_kcontrol *kcontrol,
+				struct snd_ctl_elem_value *ucontrol)
+	{
+		struct snd_soc_dapm_widget_list *wlist = snd_kcontrol_chip(kcontrol);
+		struct snd_soc_dapm_widget *widget = wlist->widgets[0];
+		struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+		unsigned int value, mux, old, reg_idx;
+		struct snd_soc_dapm_update update;
+		   unsigned int num_regs = 3, regs[3], masks[3] = { 0xf1f03ff, 0x3f30031f, 0xff1cf313};
+		int wi;
+
+		regs[0] = e-> reg;
+		regs[1] = regs[0] + MUX_REG_STRIDE;
+		regs[2] = regs[1] + MUX_REG_STRIDE;
+
+		if (ucontrol->value.enumerated.item[0] > e->max - 1)
+			return -EINVAL;
+
+		mux = ucontrol->value.enumerated.item[0];
+
+		for (reg_idx = 0; reg_idx < num_regs; reg_idx++) {
+			value = e->values[ucontrol->value.enumerated.item[0] * num_regs + reg_idx];
+			regmap_read(widget->codec->control_data, regs[reg_idx], &old);
+
+			if (value != old) {
+				for (wi = 0; wi < wlist->num_widgets; wi++) {
+					widget = wlist->widgets[wi];
+					widget->value = value;
+					update.kcontrol = kcontrol;
+					update.widget = widget;
+					update.reg = regs[reg_idx];
+					update.mask = masks[reg_idx];
+					update.val = value;
+					widget->dapm->update = &update;
+					snd_soc_dapm_mux_update_power(widget, kcontrol, mux, e);
+					widget->dapm->update = NULL;
+				}
+			}
+		}
+		return 0;
+	}
+
+Option 2: Modify soc_enum structure and make 'reg' variable as reg[MAX_REG]
+
+This would also mean that we should edit all the macros in soc.h, soc-dapm.c and soc-core.c to use 'reg[0]' instead of 'reg'
+Our goal is to eventually add support to do multi register mux in get and put handlers inside soc-dapm.c upstream.
+
+With Option1, we don't need to change any code in upstream as each register among the multiple registers has a common STRIDE (address offset). Thus, option1 is not generic enough.
+If you suggest Option1, we wanted to check if upstream will be okay with such a structure. (it will be tegra specific though).
+
+With Option2, it  becomes easy to add new macros for multi register mux in soc.h and then, add new get and put handlers in dapm.c
+
+Thanks,
+Arun
+
+-----Original Message-----
+From: Mark Brown [mailto:broonie@kernel.org] 
+Sent: Tuesday, March 18, 2014 5:00 PM
+To: Arun Shamanna Lakshmi
+Cc: lgirdwood@gmail.com; perex@perex.cz; tiwai@suse.de; alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org; Songhee Baek
+Subject: Re: [PATCH] ASoC: Add support for multi register mux
+
+* PGP Signed by an unknown key
+
+On Tue, Mar 18, 2014 at 04:51:32PM -0700, Arun Shamanna Lakshmi wrote:
+
+> Currently soc_enum structure supports only 2 registers (reg, reg2) for 
+> kcontrol. However, it is possible to have multiple registers per mux. 
+> This change allows us to control these multiple registers.
+
+I'd want to see a user along with this and...
+
+> @@ -1093,6 +1093,9 @@ struct soc_enum {
+>  	unsigned int mask;
+>  	const char * const *texts;
+>  	const unsigned int *values;
+> +	unsigned int *regs;
+> +	unsigned int *masks;
+> +	unsigned int num_regs;
+
+...it duplicates and generally isn't joined up with the existing members of the structure, and has no support in the helpers (for example, converting the existing stereo controls to be two element arrays which I'd expect to see).  Helpers would count as users here.
+
+Note that we don't support double register enums or muxes - only numerical controls are supported.  It's not clear what a multi-register enum would mean.
+
+* Unknown Key
+* 0x7EA229BD
