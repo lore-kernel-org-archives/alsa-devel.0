@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 04/13] ASoC: Move IO functions to soc-io.c
-Date: Wed, 19 Mar 2014 11:10:57 +0000
-Message-ID: <20140319111057.GA11706@sirena.org.uk>
-References: <1395129736-11938-1-git-send-email-lars@metafoo.de>
- <1395129736-11938-5-git-send-email-lars@metafoo.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 1/3] ASoC: davinci-mcasp: Constraint on
+ the period and buffer size based on FIFO usage
+Date: Wed, 19 Mar 2014 13:13:50 +0200
+Message-ID: <53297BEE.4050903@ti.com>
+References: <1395148837-20850-1-git-send-email-peter.ujfalusi@ti.com>
+ <1395148837-20850-2-git-send-email-peter.ujfalusi@ti.com>
+ <532848D5.30806@ti.com> <53285827.1070709@ti.com>
+ <20140318180732.GJ11706@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9132944296903304579=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 07ABE265043
- for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2014 12:11:18 +0100 (CET)
-In-Reply-To: <1395129736-11938-5-git-send-email-lars@metafoo.de>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72186265044
+ for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2014 12:13:55 +0100 (CET)
+In-Reply-To: <20140318180732.GJ11706@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,73 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Maxime Ripard <maxime.ripard@free-electrons.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On 03/18/2014 08:07 PM, Mark Brown wrote:
+> On Tue, Mar 18, 2014 at 04:28:55PM +0200, Peter Ujfalusi wrote:
+>> On 03/18/2014 03:23 PM, Peter Ujfalusi wrote:
+> =
 
---===============9132944296903304579==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FgNmq+ZeolcS4uuG"
-Content-Disposition: inline
+>>> Oh, I edited the commit message and removed the text related to buffer =
+size
+>>> but I failed to do that for the commit title :(
+> =
 
+>> Actually I still have issue with the constraint.
+> =
 
---FgNmq+ZeolcS4uuG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> OK, so is the patch an improvement or not?  If it fixes some cases it's
+> probably worth applying even if further fixes are still needed.
 
-On Tue, Mar 18, 2014 at 09:02:07AM +0100, Lars-Peter Clausen wrote:
-> soc-core.c is getting quite crowded. Move all IO related functions that are
-> still in soc-core.c to soc-io.c
+Some application might fail (like mplayer with 44.1KHz) with constraint on =
+the
+period size only. Without the constraint we will have constant pops at every
+period when non aligned size has been selected - if the FIFO depth is
+configured to more than 1, which is not yet the case in upstream.
 
-No, we're trying to make soc-io smaller!  Besides, if this stuff is
-getting cleaned up then:
+> No need to resend for the subject, I can fix that up.
+> =
 
-> -unsigned int snd_soc_read(struct snd_soc_codec *codec, unsigned int reg)
-> -{
-> -	unsigned int ret;
-> -
-> -	ret = codec->read(codec, reg);
-> -	dev_dbg(codec->dev, "read %x => %x\n", reg, ret);
-> -	trace_snd_soc_reg_read(codec, reg, ret);
-> -
-> -	return ret;
-> -}
-> -EXPORT_SYMBOL_GPL(snd_soc_read);
+>> It seams that I need to place the same constraint step to both period si=
+ze and
+>> buffer size.
+>> For some reason snd_pcm_hw_params_set_buffer_time_near() fails in case of
+>> 44.1KHz when asking for 0.5s buffer when I placed step 32 constraint to =
+period
+>> size. Placing the same 32 steps constraint to the buffer size as well wi=
+ll
+>> make things working (for mplayer at least)
+> =
 
-...making small things like this static inlines in a header is probably a
-better move (we can probably drop the trace - I don't think anything in
-active development doesn't use regmap and it's a carrot to push people).
+> That seems like the constraint code is failing, at a guess probably
+> looking for too near a value of near if you see what I mean.  I don't
+> really have the time/enthusiasm to investigate this right now, sorry.
 
---FgNmq+ZeolcS4uuG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Yep, this needs to be investigated. Me or Jyri will take a look at this for
+sure since it is somehow odd.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+-- =
 
-iQIcBAEBAgAGBQJTKXs+AAoJELSic+t+oim9bskP/25OwvjjoL/QcyRPPfuvyEMU
-VHp5BsliJmUcydnmpP9WUMgLUWI+F06zuYMuBpZGqDpFMgA9tc+HrXszSJ58ACRy
-9yH1cT1+C9JgFf1IRV0Fq8f5XfKQpoZQ85gdOQdLx5sb0izERwPNhYu5cU+Ie9yo
-MsfcWY8/ZPcpGhlHL+20RK2Bjvhf2yqheKP4Rf5Y8TwzNYI/qYt0AbAyWUZvpI3L
-4jFkE7fnt5SqZUOl5r500JLyJYUvfFk+3HrNNMvLnyNlqf5IclmwaCQY0e9fmopp
-6qQ4Hk3jtKuFG/QvItQeCi8V1G/s5ZtcYPaiKiNIBIWXcHddWE2hvaYozw6F3UHd
-vLkKcenTLVXwxVveC/yugQGHmz6UFhPYZke1JxdASsw7IN5TXgDzTSDNWvlZYZpE
-RBuEw7uJTt890iMGLbZajlNJxeuNUPJ6+bvLEd1T8P2fcQbrVJqUDD3LzM77V4K/
-1LDwBB6+10lUEUMpO/OZsCxFcwBUMXpN0/OpFpHlV8ibtokYL55ayNU/ytbzgmBm
-AKRNYyZItvfStcrPO1Mn2L809/u+23snhzT7KuUL9vucKarBR+4PgiUDlDSzu/bZ
-wXms01buCYWo7Uxi0fOIkPpOCtNVv/TMtsHpGwYEu48osfL3X4wwmnpRhiKOcqgp
-aCCZ/kNz+CDSDrdvIu5b
-=zv22
------END PGP SIGNATURE-----
-
---FgNmq+ZeolcS4uuG--
-
---===============9132944296903304579==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9132944296903304579==--
+P=E9ter
