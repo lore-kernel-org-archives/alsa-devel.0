@@ -1,107 +1,93 @@
-From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH v3 4/4] ASoC: simple-card: Add DT documentation for multi-DAI
- links
-Date: Wed, 19 Mar 2014 12:08:55 +0200
-Message-ID: <53296CB7.1000909@ti.com>
-References: <cover.1394883134.git.moinejf@free.fr>	<d054780a0edf4b2338a52e48bff9144e19aa614f.1394883134.git.moinejf@free.fr>	<20140317164339.GR11706@sirena.org.uk> <20140318091728.1d2240ca@armhf>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 04/13] ASoC: Move IO functions to soc-io.c
+Date: Wed, 19 Mar 2014 11:10:57 +0000
+Message-ID: <20140319111057.GA11706@sirena.org.uk>
+References: <1395129736-11938-1-git-send-email-lars@metafoo.de>
+ <1395129736-11938-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140318091728.1d2240ca@armhf>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============9132944296903304579=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07ABE265043
+ for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2014 12:11:18 +0100 (CET)
+In-Reply-To: <1395129736-11938-5-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/18/2014 10:17 AM, Jean-Francois Moine wrote:
-> On Mon, 17 Mar 2014 16:43:39 +0000
-> Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
->
->> On Sat, Mar 15, 2014 at 12:30:05PM +0100, Jean-Francois Moine wrote:
-> 	[snip]
-...
 
->
-> I agree. I see two possible syntaxes:
->
-> 1) keep the same definitions in the containers:
->
-> sound {
-> 	compatible = "simple-audio-card";
-> 	simple-audio-card,name = "Cubox Audio";
->
-> 	simple-audio-card,dai-link@0 {		/* I2S - HDMI */
-> 		simple-audio-card,cpu {
-> 			sound-dai = <&audio1 0>;
-> 			format = "i2s";
-> 		};
-> 		simple-audio-card,codec {
-> 			sound-dai = <&tda998x 0>;
-> 		};
-> 	};
->
-> 	simple-audio-card,dai-link@1 {		/* S/PDIF - HDMI */
-> 		simple-audio-card,cpu {
-> 			sound-dai = <&audio1 1>;
-> 		};
-> 		simple-audio-card,codec {
-> 			sound-dai = <&tda998x 1>;
-> 		}
-> 	};
-> 	...
->
+--===============9132944296903304579==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="FgNmq+ZeolcS4uuG"
+Content-Disposition: inline
 
-I vote for the version above. As Mark said there is need for dai 
-specific properties.
 
-While we are at it we could update the bitclock-master and frame-master 
-syntax to be like this:
+--FgNmq+ZeolcS4uuG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-bitclock-master = "cpu"
-frame-master = "codec"
+On Tue, Mar 18, 2014 at 09:02:07AM +0100, Lars-Peter Clausen wrote:
+> soc-core.c is getting quite crowded. Move all IO related functions that are
+> still in soc-core.c to soc-io.c
 
-With the above explicit definition all the daifmt settings could be 
-defined in link level. For backwards compatibility we could still define 
-that omitting the value equals "codec" and omitting the property equals 
-"cpu".
+No, we're trying to make soc-io smaller!  Besides, if this stuff is
+getting cleaned up then:
 
-It may sometimes be helpful to allow overwriting link level settings in 
-dai level. In order to do that it should be possible to write all daifmt 
-settings explicitly like this:
+> -unsigned int snd_soc_read(struct snd_soc_codec *codec, unsigned int reg)
+> -{
+> -	unsigned int ret;
+> -
+> -	ret = codec->read(codec, reg);
+> -	dev_dbg(codec->dev, "read %x => %x\n", reg, ret);
+> -	trace_snd_soc_reg_read(codec, reg, ret);
+> -
+> -	return ret;
+> -}
+> -EXPORT_SYMBOL_GPL(snd_soc_read);
 
-bitclock-inversion = <0>; /* <0> = no bitclock-inversion */
+...making small things like this static inlines in a header is probably a
+better move (we can probably drop the trace - I don't think anything in
+active development doesn't use regmap and it's a carrot to push people).
 
-If backward compatibility is necessary we could recognize the syntax 
-version from the existence dai-link node.
+--FgNmq+ZeolcS4uuG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-sound {
-	compatible = "simple-audio-card";
-	simple-audio-card,name = "Simple Audio";
-	simple-audio-card,widgets = ...
-	simple-audio-card,routing = ...
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-	simple-audio-card,dai-link@0 {		/* I2S - codec */
-		format = "i2s";
-		bitclock-master = "codec";
-		frame-master = "codec";
-		bitclock-inversion = <1>;
-		simple-audio-card,cpu {
-			sound-dai = <&audio1 0>;
-			bitclock-inversion = <0>;
-		};
-		simple-audio-card,codec {
-			sound-dai = <&codec 0>;
-			system-clock-frequency = <12000000>;
-		};
-	};
-...
+iQIcBAEBAgAGBQJTKXs+AAoJELSic+t+oim9bskP/25OwvjjoL/QcyRPPfuvyEMU
+VHp5BsliJmUcydnmpP9WUMgLUWI+F06zuYMuBpZGqDpFMgA9tc+HrXszSJ58ACRy
+9yH1cT1+C9JgFf1IRV0Fq8f5XfKQpoZQ85gdOQdLx5sb0izERwPNhYu5cU+Ie9yo
+MsfcWY8/ZPcpGhlHL+20RK2Bjvhf2yqheKP4Rf5Y8TwzNYI/qYt0AbAyWUZvpI3L
+4jFkE7fnt5SqZUOl5r500JLyJYUvfFk+3HrNNMvLnyNlqf5IclmwaCQY0e9fmopp
+6qQ4Hk3jtKuFG/QvItQeCi8V1G/s5ZtcYPaiKiNIBIWXcHddWE2hvaYozw6F3UHd
+vLkKcenTLVXwxVveC/yugQGHmz6UFhPYZke1JxdASsw7IN5TXgDzTSDNWvlZYZpE
+RBuEw7uJTt890iMGLbZajlNJxeuNUPJ6+bvLEd1T8P2fcQbrVJqUDD3LzM77V4K/
+1LDwBB6+10lUEUMpO/OZsCxFcwBUMXpN0/OpFpHlV8ibtokYL55ayNU/ytbzgmBm
+AKRNYyZItvfStcrPO1Mn2L809/u+23snhzT7KuUL9vucKarBR+4PgiUDlDSzu/bZ
+wXms01buCYWo7Uxi0fOIkPpOCtNVv/TMtsHpGwYEu48osfL3X4wwmnpRhiKOcqgp
+aCCZ/kNz+CDSDrdvIu5b
+=zv22
+-----END PGP SIGNATURE-----
 
-I can participate in the implementation too.
+--FgNmq+ZeolcS4uuG--
 
-Best regards,
-Jyro
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--===============9132944296903304579==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9132944296903304579==--
