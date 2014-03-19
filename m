@@ -1,79 +1,69 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 2/3] ASoC: davinci-mcasp: Assign the
- dma_data earlier in dai_probe callback
-Date: Wed, 19 Mar 2014 13:19:06 +0000
-Message-ID: <20140319131906.GM11706@sirena.org.uk>
-References: <1395148837-20850-1-git-send-email-peter.ujfalusi@ti.com>
- <1395148837-20850-3-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 4/4] ASoC: simple-card: Add DT documentation for
+ multi-DAI links
+Date: Wed, 19 Mar 2014 13:46:25 +0000
+Message-ID: <20140319134625.GN11706@sirena.org.uk>
+References: <cover.1394883134.git.moinejf@free.fr>
+ <d054780a0edf4b2338a52e48bff9144e19aa614f.1394883134.git.moinejf@free.fr>
+ <20140317164339.GR11706@sirena.org.uk>
+ <20140318091728.1d2240ca@armhf>
+ <53296CB7.1000909@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7928819173497717262=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D5A2265087
- for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2014 14:19:14 +0100 (CET)
-In-Reply-To: <1395148837-20850-3-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YAMuP2N37TMqsqKK"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <53296CB7.1000909-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7928819173497717262==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xy34oCnk+Kho6V6v"
-Content-Disposition: inline
-
-
---xy34oCnk+Kho6V6v
+--YAMuP2N37TMqsqKK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 18, 2014 at 03:20:36PM +0200, Peter Ujfalusi wrote:
-> Set up the playback_dma_data/capture_dma_data for the dai at probe
-> time since the generic dmaengine PCM stack needs to have access to
-> this information early.
+On Wed, Mar 19, 2014 at 12:08:55PM +0200, Jyri Sarha wrote:
 
-This looks good but seems to depend on the first patch so I'll skip it
-for now.
+> While we are at it we could update the bitclock-master and frame-master
+> syntax to be like this:
 
---xy34oCnk+Kho6V6v
+> bitclock-master = "cpu"
+> frame-master = "codec"
+
+> With the above explicit definition all the daifmt settings could be defined
+> in link level. For backwards compatibility we could still define that
+> omitting the value equals "codec" and omitting the property equals "cpu".
+
+It seems it'd be a bit more idiomatic to do that with a phandle rather
+than with a string in order to allow extensions for things like TDM (the
+I2S to mono speaker driver use case for example).
+
+--YAMuP2N37TMqsqKK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTKZlGAAoJELSic+t+oim960sP/RYdIYepmZ/lQl6fyFgs6rlW
-rioiMnNYxEviDgZ/aJo2IYH3oQLplpMZb4HR6Ft5qGY2/z47lXjij+LHO+mXaM3b
-qYV229G3w86vjA/5o52rXw0JBZCN0s6paUZoRFOBaxUoenqwQesBRTGx+vXHlZNu
-IrqOX3xXlqklECFcLUBidb56jSvtctIsrzYTpug3PaKBz3gJQWqM35YNR4M/K/oC
-dZZI1CnQ1UgBc0R58L5pStp0MzGty2QL7tj0yVHJGkblfNxCnuZtAyIiTVJvy9WC
-4TY+aH+cs2sMvuT1Huw3J/iqB6l0SCiyeCRTu4schiyBsFH9eInYP3eeVrCvfd5W
-rk4eIoxtTFZdQJTFB/aQIAipqCNsQYsL7I55Y7debo/YBTJwy3CNSljRsnnv9SQW
-dP/5LwHcRaFioFzqKu3M+JX4fpCVL546VvmAYkG80qDc2cD7Vd5Z1rI1/ujjIQXC
-Bf6y0w9gE5MyQR/T/8akPe/hZvTXF0HmRiqOa7eTD0NeqrtdCdDYa5BMyXS2n4Wv
-/rNdLxJ9jvDZG/wn4/57Yhf7Bvfqm4NMf0fo/KB9/DenExPrYIT7SfZW57Cpuw6n
-Jv77ZR0p6Gs4o4b1bZFSka1d971jwJ1dmd97m6KEN0h8izq3I/UhuSIMomGCdxL0
-yu0J5Mgl2foZTiigIU1s
-=eCYi
+iQIcBAEBAgAGBQJTKZ+uAAoJELSic+t+oim9CuwP/1KTlhb26QwK5jKyfD9gviXE
+pVQRXQQ0lY8D4bpW5SQFJvBq02Zcut+dZu/SMwCmKgEv55pFU9NY694pdNBKfmR0
+oFB+BMIh/lFBO8+ob18x3nUff0zZx2oLazAt2iD8Lf0aQJNuwjd4WYJTyvlHZ6pd
+Af9XXsmHmOn4K6nzZLyt8LZB13Qrapexol9YzPJ/E4kittDU6ntc6p4PlVeD0kW5
+s7cL7+AHY0yZ1MmJESNhx87PFjxf5iGrUsC4pgJASvvNMqBecD2nBYHsfsuD0nZj
+5tJvmRk88vPxxpMxiupoOomotQUBCbsbffmgDldQETR+OEv+UHXZmBvhJUY1YCFj
+RiG/3NsWNsbY5Fcm7dkMtSDFrz6PmvoWEFEpLbbCe5TauUyNty4N49LvuL5Fx8BB
+RdQ+5quc4Cw602NB/26E/vbplFEBWuFHr5kwAlMT+2kAhyVIqD28PtfpfvXvtcrv
+6CQRSCqcYSviSiZYyXeX19jF9OuJ0zPTx2moz2p2Z/TFmcxpEAqnIO6CGavxz6Z2
+fdOqKuCgAcwSEr8H+0uDrPaYwP2Q8KrOdGMoF0qFl88wr4el5pMAflvbxwMSepvU
+60lgwna9IlhY4gU5cKKlWjH0Bh4ikSI6u+usAhLwG9fKYhG6iZsNgrv2zWfkKLNC
+sYjB9lC6xAlh9Idp1drR
+=90SH
 -----END PGP SIGNATURE-----
 
---xy34oCnk+Kho6V6v--
-
---===============7928819173497717262==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7928819173497717262==--
+--YAMuP2N37TMqsqKK--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
