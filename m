@@ -1,83 +1,71 @@
-From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v3 4/4] ASoC: simple-card: Add DT documentation
- for multi-DAI links
-Date: Thu, 20 Mar 2014 13:24:22 +0200
-Message-ID: <532ACFE6.5060703@ti.com>
-References: <cover.1394883134.git.moinejf@free.fr> <d054780a0edf4b2338a52e48bff9144e19aa614f.1394883134.git.moinejf@free.fr> <20140317164339.GR11706@sirena.org.uk> <20140318091728.1d2240ca@armhf> <53296CB7.1000909@ti.com> <5329E749.6070900@metafoo.de> <5329ECC2.7040803@ti.com> <20140319192157.GW11706@sirena.org.uk> <5329F0A1.8020801@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Add support for multi register mux
+Date: Thu, 20 Mar 2014 11:48:29 +0000
+Message-ID: <20140320114829.GC11706@sirena.org.uk>
+References: <1395186692-11735-1-git-send-email-aruns@nvidia.com>
+ <20140318235941.GT11706@sirena.org.uk>
+ <781A12BB53C15A4BB37291FDE08C03F3A05CB21E46@HQMAIL02.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <5329F0A1.8020801-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tHoXcMLEIE7biFzN"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <781A12BB53C15A4BB37291FDE08C03F3A05CB21E46@HQMAIL02.nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arun Shamanna Lakshmi <aruns@nvidia.com>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Songhee Baek <sbaek@nvidia.com>, srwarren@wwwdotorg.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/19/2014 09:31 PM, Lars-Peter Clausen wrote:
-> On 03/19/2014 08:21 PM, Mark Brown wrote:
->> On Wed, Mar 19, 2014 at 09:15:14PM +0200, Jyri Sarha wrote:
->>> On 03/19/2014 08:51 PM, Lars-Peter Clausen wrote:
->>
->>>> When does this make sense? Either the bitclock is inverted for all of
->>>> them or for none.
->>
->>> Definition of clock signal and it's inversion varies between chip
->>> manufacturers and sometimes it may not be possible to get all the dai
->>> drivers to work identically in this respect. Because of this in some
->>> cases
->>> there may be a need to set the inversion bit only at one end of the
->>> link.
->>
->> No, Linux has a definition of all the clock modes which applies to all
->> devices regardless of what the manufacturer documents in their
->> datasheet.
->>
->
-> Yep. The clock properties are well defined for the different modes that
-> can be specified in the format property. It's up to the driver to
-> translate this to driver specific settings. If two drivers behave
-> differently for the same mode one of them (or both) are broken.
->
 
-After a little thinking it is clear to me too that only reason to have 
-this overwrite capability is a badly written dai driver. Even with buggy 
-HW it should always be possible to present the working modes in daifmt 
-terms. Ok, let's remove it.
+--tHoXcMLEIE7biFzN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Here is an updated DT example with updated phandle for master settings:
+On Wed, Mar 19, 2014 at 04:44:00PM -0700, Arun Shamanna Lakshmi wrote:
 
-sound {
-     compatible = "simple-audio-card";
-     simple-audio-card,name = "Simple Audio";
-     simple-audio-card,widgets = ...
-     simple-audio-card,routing = ...
+Don't top post and fix your mailer to word wrap within paragraphs, your
+mail is very hard to read.
 
-     simple-audio-card,dai-link@0 {        /* I2S - codec */
-         format = "i2s";
-         bitclock-master = <&dai_link_master>
-         frame-master = <&dai_link_master>;
-         bitclock-inversion;
-         simple-audio-card,cpu {
-             sound-dai = <&audio1 0>;
-         };
-         dai_link_master: simple-audio-card,codec {
-             sound-dai = <&codec 0>;
-             system-clock-frequency = <12000000>;
-         };
-     };
-...
+> If each bit of a 32 bit register maps to an input of a mux, then with
+> the current 'soc_enum' structure we cannot have more than 64 inputs
+> for the mux (because of reg and reg2 only).
 
+What makes you say that?  We currently have devices in mainline which
+have well over 32 inputs to muxes.
 
-> We should probably add the definitions for the different formats to the
-> DT bindings. E.g. what is default, what is inverted polarity, etc.
->
+> For instance, the audio xbar (AXBAR) module acts as a mux selecting
+> various inputs (reference: Tegra K1 manual).
 
-That is a good idea.
+I don't have access to non-public nVidia documents...
 
-Best regards,
-Jyri
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> The number of such inputs increases with future Tegra chips and so
+> will be the need to control multiple registers per mux in DAPM.  We
+> have 2 options to achieve that.
+
+Like I said in my previous reply I would expect to see some users along
+with the code, extending the standard helpers to support this would be a
+much better idea than doing something driver custom.
+
+--tHoXcMLEIE7biFzN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTKtWKAAoJELSic+t+oim9fR4P/RlVhbBfCdEcVzStyG0k7QHP
+B6kPoG2PvUSiJxtmpUguV0ocWt292Gnn0IJwKSv5bZedxG0RL5zLDd2zyN1UEngd
+qcGUbMyrYb79bx/Yq86mK7jlikLSfXClqbkauPb0CzHnixA5xnf+1ZVPJnaUFPP6
+xUqOJcOpWr75AOX3tzCktD34CQRshQ4GJIyl3AzyIt5bqVjZlBmwLh4YKVfPphOe
+3UTua36Kv36oZvBbaiPIRKUWu5K7wcAmAIFAMjiRYW8QFrlzJhXTNL/YsKbPR28e
+zU27QZWTIpvagWUW/rqSY+9O76pDJc6az+SwbgFaFLpkBwZfKjmi56pjEDW5UIYE
+uWBLCglzDCZNm8SN9vtqflKnlf3Cf+VV6MwzkNU2lipP5pKEvLkhZx0PiDEKq0lU
+WJfmM1b6+24YYnWSt+6gCF99KAdfUGahnEN6iDcBWbKX8H8iI8+340wtVj7TXywG
+K89QskWUDANHfm2giX/EDeIGzLdaMs9/dc6BA4A7v65jkzyjA8F5V9/mLPwDDbkE
+en+B2AvJGwc/4aAxE0fDGz8MPVg32le4AZRvrOOintK7mz5yW9ZNrKT7vwP0iJEt
+6xPLttf+pIKsAiud+6+3XUZBRjUg6hGkQsoFhStdZkLO77iUijbMCgoJrdr81Fbi
+CsmUbDfrzQk27jtSF5aL
+=/EgB
+-----END PGP SIGNATURE-----
+
+--tHoXcMLEIE7biFzN--
