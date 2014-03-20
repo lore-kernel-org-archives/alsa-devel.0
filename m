@@ -1,22 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v3 1/3] ASoC: davinci-mcasp: Constraint on
- the period and buffer size based on FIFO usage
-Date: Thu, 20 Mar 2014 15:15:03 +0100
-Message-ID: <532AF7E7.8060702@metafoo.de>
-References: <1395148837-20850-1-git-send-email-peter.ujfalusi@ti.com>
- <1395148837-20850-2-git-send-email-peter.ujfalusi@ti.com>
- <532848D5.30806@ti.com> <53285827.1070709@ti.com>
- <20140318180732.GJ11706@sirena.org.uk> <53297BEE.4050903@ti.com>
- <20140319131457.GK11706@sirena.org.uk> <532AF15A.4090506@ti.com>
+From: Leonardo Gabrielli <l.gabrielli@univpm.it>
+Subject: Re: twl4030 latency update
+Date: Thu, 20 Mar 2014 15:31:57 +0100
+Message-ID: <532AFBDD.8040407@univpm.it>
+References: <532ACD4A.3080508@univpm.it> <532AEEA6.20704@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-020.synserver.de (smtp-out-020.synserver.de
- [212.40.185.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 28EBB265249
- for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2014 15:14:25 +0100 (CET)
-In-Reply-To: <532AF15A.4090506@ti.com>
+Received: from mail-wg0-f50.google.com (mail-wg0-f50.google.com [74.125.82.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECC112651A2
+ for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2014 15:32:05 +0100 (CET)
+Received: by mail-wg0-f50.google.com with SMTP id x13so657182wgg.33
+ for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2014 07:32:05 -0700 (PDT)
+In-Reply-To: <532AEEA6.20704@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,68 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com, Mark Brown <broonie@kernel.org>
+Cc: Edgar Berdahl <eberdahl@ccrma.Stanford.EDU>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/20/2014 02:47 PM, Peter Ujfalusi wrote:
-> Hi Mark,
->
-> On 03/19/2014 03:14 PM, Mark Brown wrote:
->> On Wed, Mar 19, 2014 at 01:13:50PM +0200, Peter Ujfalusi wrote:
->>> On 03/18/2014 08:07 PM, Mark Brown wrote:
->>
->>>> OK, so is the patch an improvement or not?  If it fixes some cases it's
->>>> probably worth applying even if further fixes are still needed.
->>
->>> Some application might fail (like mplayer with 44.1KHz) with constraint on the
->>> period size only. Without the constraint we will have constant pops at every
->>> period when non aligned size has been selected - if the FIFO depth is
->>> configured to more than 1, which is not yet the case in upstream.
->>
->> OK, given that the FIFO depth change isn't yet upstream it'd be a step
->> backwards so I'll leave this for now.
->
-> I have looked at the issue and I found some clues on why mplayer fails:
-> it try to set the snd_pcm_hw_params_set_buffer_time_near() first followed by
-> the snd_pcm_hw_params_set_periods_near(). And this fails in some cases when we
-> have constraint step on the period only.
-> Other applications set the period param first followed by the buffer (aplay
-> and various alsa test tools as well).
-> PA however have a fallback mechanism:
-> 1. buffer first followed by period
-> 2. period first followed by buffer
-> 3. buffer only
-> 4. period only
-> 5. no period, no buffer params
->
-> When I have step constraint on period PA fails with the first, second (because
-> there's a bug in the PA code here) and third method but going to succeed with
-> four.
->
-> I have looked around in the kernel and other drivers do set both period and
-> buffer step constraint, for example:
->
-> sound/arm/pxa2xx-pcm-lib.c (_BYTES)
-> sound/drivers/vx/vx_pcm.c (_BYTES)
-> sound/pci/echoaudio/echoaudio.c (_SIZE)
-> sound/pci/ice1712/ice1724.c (_BYTES)
-> sound/pci/lola/lola_pcm.c (_SIZE)
-> sound/soc/kirkwood/kirkwood-dma.c (_BYTES)
-> sound/soc/s6000/s6000-pcm.c (_BYTES)
-> ...
->
-> I still don't know why buffer size fails (in some cases) if we only have step
-> constraint on the period size, but it looks to me that others also encountered
-> with similar issues and the fix they have is the same what I had in the first
-> version of the patch.
+Dear Peter,
+thanks, I'm not sure I understand all the details but after a fast find 
+in my beagleboard /sys I found
 
-That sounds like a bug in either the kernel or alsa-lib. We do have a rule 
-in place that specifies that the buffer size needs to be a integer multiple 
-of the period size and we have a rule in place that the period size needs to 
-be a multiple of a constant C. Hence ALSA should be able to deduce that the 
-buffer size needs to be at least a multiple of min_periods * C. We probably 
-should fix this for good and not workaround it in individual drivers. Do you 
-think you can put together a small standalone test application that shows 
-the issue?
+./sys/devices/68000000.ocp/49026000.mcbsp/dma_op_mode
+./sys/devices/68000000.ocp/49022000.mcbsp/dma_op_mode
+./sys/devices/68000000.ocp/49024000.mcbsp/dma_op_mode
+./sys/devices/68000000.ocp/48096000.mcbsp/dma_op_mode
+./sys/devices/68000000.ocp/48074000.mcbsp/dma_op_mode
 
-- Lars
+All of these are already set as threshold:
+cat sys/devices/68000000.ocp/49022000.mcbsp/dma_op_mode
+[element] threshold
+
+Probably I found the FIFOs to be shortened in order to reduce latency: 
+all of the thresholds are 112 besides one of the devices which has:
+cat sys/devices/68000000.ocp/49022000.mcbsp/max_rx_thres
+1264
+for both tx and rx. Maybe that's the ALSA playback samples queue.
+
+In fact I find:
+cat /proc/device-tree/ocp/mcbsp\@49022000/ti\,hwmods
+mcbsp2mcbsp2_sidetone
+
+So it's the McBSP2 which you mentioned.
+
+Now, I'm not sure how to change the threshold, I guess I have to patch 
+some kernel module and rebuild?
+
+
+On 20/03/2014 14:35, Peter Ujfalusi wrote:
+> Hi Leonardo,
+>
+> On 03/20/2014 01:13 PM, Leonardo Gabrielli wrote:
+>> Dear Peter,
+>> I was investigating on TWL4030 high playback latency and stumbled in an old
+>> thread started by Edgar
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2011-October/045173.html
+>> where I read this is related to McBSP2 buffer length
+>> Recent kernels seems to have the same behavior (I have a debian beagleboardxM
+>> with 3.13.3-armv7-x10)
+>> Did you manage to get a fix to this problem? Would it be possible?
+> The 'misusing/configuring the McBSP, and sDMA' did not worked :(
+> However the mcbsp code went through quite a bit of change since than
+> concerning the McBSP FIFO/sDMA configuration.
+>
+> If we have FIFO the sDMA is always in packet mode.
+> The default is to transfer one sample with sDMA per DMA request.
+> You can switch the McBSP to 'threshold' mode and set the maximum FIFO
+> threshold you want to use. The code will figure out the optimal FIFO/burst
+> size based on the period size and the max threshold you have set.
+> This is done via a sysfs file under the mcbsp, the file is dma_op_mode if I
+> recall correctly.
+> Playing with the max tx/rx threshold you might be able to get better latency.
+>
