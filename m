@@ -1,141 +1,114 @@
-From: Arun Shamanna Lakshmi <aruns@nvidia.com>
-Subject: RE: [PATCH] ASoC: Add support for multi register mux
-Date: Wed, 19 Mar 2014 16:44:00 -0700
-Message-ID: <781A12BB53C15A4BB37291FDE08C03F3A05CB21E46@HQMAIL02.nvidia.com>
-References: <1395186692-11735-1-git-send-email-aruns@nvidia.com>
- <20140318235941.GT11706@sirena.org.uk>
+From: mengdong.lin@intel.com
+Subject: [PATCH v2] ALSA: hda - verify pin:cvt connection on
+	preparing a stream for Intel HDMI codec
+Date: Thu, 20 Mar 2014 13:01:06 +0800
+Message-ID: <ae7e1c58c756e7149bc8b93f648bc56fd7af73d1.1395291484.git.mengdong.lin@intel.com>
+References: <c8336299f64f1fda9e0d0488fbef5e90a67e287b.1395135128.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140318235941.GT11706@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Songhee Baek <sbaek@nvidia.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 188592651B2
+ for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2014 06:01:19 +0100 (CET)
+In-Reply-To: <c8336299f64f1fda9e0d0488fbef5e90a67e287b.1395135128.git.mengdong.lin@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-If each bit of a 32 bit register maps to an input of a mux, then with the current 'soc_enum' structure we cannot have more than 64 inputs for the mux (because of reg and reg2 only).
-In such cases, we need more than 2 registers to select the input of the mux. This is referred to as 'multi register mux' 
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-For instance, the audio xbar (AXBAR) module acts as a mux selecting various inputs (reference: Tegra K1 manual).
+This is a temporary fix for some Intel HDMI codecs to avoid no sound output for
+a resuming playback after S3.
 
-The number of such inputs increases with future Tegra chips and so will be the need to control multiple registers per mux in DAPM.  We have 2 options to achieve that.
+After S3, the audio driver restores pin:cvt connection selections by
+snd_hda_codec_resume_cache(). However this can happen before the gfx side is
+ready and such connect selection is overlooked by HW. After gfx is ready, the
+pins make the default selection again. And this will cause multiple pins share
+a same convertor and mute control will affect each other. Thus a resumed audio
+playback become silent after S3.
 
-Option 1: Using custom get and put functions something similar to below inside AXBAR tegra driver.
+This patch verifies pin:cvt connection on preparing a stream, to assure the pin
+selects the right convetor and an assigned convertor is not shared by other
+unused pins. Apply this fix-up on Haswell, Broadwell and Valleyview (Baytrail).
 
-	int tegra_xbar_get_value_enum(struct snd_kcontrol *kcontrol,
-				struct snd_ctl_elem_value *ucontrol)
-	{
-		struct snd_soc_dapm_widget_list *wlist = snd_kcontrol_chip(kcontrol);
-		struct snd_soc_dapm_widget *widget = wlist->widgets[0];
-		struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-		unsigned int reg_val, mux, find, reg_idx;
-		unsigned int num_regs = 3, regs[3];
+We need this temporary fix before a reliable software communication channel is
+established between audio and gfx, to sync audio/gfx operations.
 
-		/* control 3 registers that has a common STRIDE */
-		regs[0] = e-> reg;
-		regs[1] = regs[0] + MUX_REG_STRIDE;
-		regs[2] = regs[1] + MUX_REG_STRIDE;
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-		for (mux = 0; mux < e->max; mux++) {
-			find = 0;
-			for (reg_idx = 0; reg_idx < num_regs; reg_idx++) {
-				regmap_read(widget->codec->control_data,
-						regs[reg_idx], &reg_val);
-				if (reg_val ==  e->values[mux * num_regs + reg_idx])
-					find++;
-			}
-			if (find == num_regs)
-				break;
-		}
-		ucontrol->value.enumerated.item[0] = mux;
-		return 0;
-	}
-
-	int tegra_xbar_put_value_enum(struct snd_kcontrol *kcontrol,
-				struct snd_ctl_elem_value *ucontrol)
-	{
-		struct snd_soc_dapm_widget_list *wlist = snd_kcontrol_chip(kcontrol);
-		struct snd_soc_dapm_widget *widget = wlist->widgets[0];
-		struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-		unsigned int value, mux, old, reg_idx;
-		struct snd_soc_dapm_update update;
-		   unsigned int num_regs = 3, regs[3], masks[3] = { 0xf1f03ff, 0x3f30031f, 0xff1cf313};
-		int wi;
-
-		regs[0] = e-> reg;
-		regs[1] = regs[0] + MUX_REG_STRIDE;
-		regs[2] = regs[1] + MUX_REG_STRIDE;
-
-		if (ucontrol->value.enumerated.item[0] > e->max - 1)
-			return -EINVAL;
-
-		mux = ucontrol->value.enumerated.item[0];
-
-		for (reg_idx = 0; reg_idx < num_regs; reg_idx++) {
-			value = e->values[ucontrol->value.enumerated.item[0] * num_regs + reg_idx];
-			regmap_read(widget->codec->control_data, regs[reg_idx], &old);
-
-			if (value != old) {
-				for (wi = 0; wi < wlist->num_widgets; wi++) {
-					widget = wlist->widgets[wi];
-					widget->value = value;
-					update.kcontrol = kcontrol;
-					update.widget = widget;
-					update.reg = regs[reg_idx];
-					update.mask = masks[reg_idx];
-					update.val = value;
-					widget->dapm->update = &update;
-					snd_soc_dapm_mux_update_power(widget, kcontrol, mux, e);
-					widget->dapm->update = NULL;
-				}
-			}
-		}
-		return 0;
-	}
-
-Option 2: Modify soc_enum structure and make 'reg' variable as reg[MAX_REG]
-
-This would also mean that we should edit all the macros in soc.h, soc-dapm.c and soc-core.c to use 'reg[0]' instead of 'reg'
-Our goal is to eventually add support to do multi register mux in get and put handlers inside soc-dapm.c upstream.
-
-With Option1, we don't need to change any code in upstream as each register among the multiple registers has a common STRIDE (address offset). Thus, option1 is not generic enough.
-If you suggest Option1, we wanted to check if upstream will be okay with such a structure. (it will be tegra specific though).
-
-With Option2, it  becomes easy to add new macros for multi register mux in soc.h and then, add new get and put handlers in dapm.c
-
-Thanks,
-Arun
-
------Original Message-----
-From: Mark Brown [mailto:broonie@kernel.org] 
-Sent: Tuesday, March 18, 2014 5:00 PM
-To: Arun Shamanna Lakshmi
-Cc: lgirdwood@gmail.com; perex@perex.cz; tiwai@suse.de; alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org; Songhee Baek
-Subject: Re: [PATCH] ASoC: Add support for multi register mux
-
-* PGP Signed by an unknown key
-
-On Tue, Mar 18, 2014 at 04:51:32PM -0700, Arun Shamanna Lakshmi wrote:
-
-> Currently soc_enum structure supports only 2 registers (reg, reg2) for 
-> kcontrol. However, it is possible to have multiple registers per mux. 
-> This change allows us to control these multiple registers.
-
-I'd want to see a user along with this and...
-
-> @@ -1093,6 +1093,9 @@ struct soc_enum {
->  	unsigned int mask;
->  	const char * const *texts;
->  	const unsigned int *values;
-> +	unsigned int *regs;
-> +	unsigned int *masks;
-> +	unsigned int num_regs;
-
-...it duplicates and generally isn't joined up with the existing members of the structure, and has no support in the helpers (for example, converting the existing stereo controls to be two element arrays which I'd expect to see).  Helpers would count as users here.
-
-Note that we don't support double register enums or muxes - only numerical controls are supported.  It's not clear what a multi-register enum would mean.
-
-* Unknown Key
-* 0x7EA229BD
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 3ab7063..585c271 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -68,6 +68,7 @@ struct hdmi_spec_per_pin {
+ 	hda_nid_t pin_nid;
+ 	int num_mux_nids;
+ 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
++	int mux_idx;
+ 	hda_nid_t cvt_nid;
+ 
+ 	struct hda_codec *codec;
+@@ -1342,6 +1343,8 @@ static int hdmi_choose_cvt(struct hda_codec *codec,
+ 	if (cvt_idx == spec->num_cvts)
+ 		return -ENODEV;
+ 
++	per_pin->mux_idx = mux_idx;
++
+ 	if (cvt_id)
+ 		*cvt_id = cvt_idx;
+ 	if (mux_id)
+@@ -1350,6 +1353,22 @@ static int hdmi_choose_cvt(struct hda_codec *codec,
+ 	return 0;
+ }
+ 
++/* Assure the pin select the right convetor */
++static void intel_verify_pin_cvt_connect(struct hda_codec *codec,
++			struct hdmi_spec_per_pin *per_pin)
++{
++	hda_nid_t pin_nid = per_pin->pin_nid;
++	int mux_idx, curr;
++
++	mux_idx = per_pin->mux_idx;
++	curr = snd_hda_codec_read(codec, pin_nid, 0,
++					  AC_VERB_GET_CONNECT_SEL, 0);
++	if (curr != mux_idx)
++		snd_hda_codec_write_cache(codec, pin_nid, 0,
++					    AC_VERB_SET_CONNECT_SEL,
++					    mux_idx);
++}
++
+ /* Intel HDMI workaround to fix audio routing issue:
+  * For some Intel display codecs, pins share the same connection list.
+  * So a conveter can be selected by multiple pins and playback on any of these
+@@ -1751,6 +1770,19 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 	bool non_pcm;
+ 	int pinctl;
+ 
++	if (is_haswell_plus(codec) || is_valleyview(codec)) {
++		/* Verify pin:cvt selections to avoid silent audio after S3.
++		 * After S3, the audio driver restores pin:cvt selections
++		 * but this can happen before gfx is ready and such selection
++		 * is overlooked by HW. Thus multiple pins can share a same
++		 * default convertor and mute control will affect each other,
++		 * which can cause a resumed audio playback become silent
++		 * after S3.
++		 */
++		intel_verify_pin_cvt_connect(codec, per_pin);
++		intel_not_share_assigned_cvt(codec, pin_nid, per_pin->mux_idx);
++	}
++
+ 	non_pcm = check_non_pcm_per_cvt(codec, cvt_nid);
+ 	mutex_lock(&per_pin->lock);
+ 	per_pin->channels = substream->runtime->channels;
+-- 
+1.8.1.2
