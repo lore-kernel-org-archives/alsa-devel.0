@@ -1,21 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v3 1/3] ASoC: davinci-mcasp: Constraint on
- the period and buffer size based on FIFO usage
-Date: Thu, 20 Mar 2014 15:47:06 +0200
-Message-ID: <532AF15A.4090506@ti.com>
-References: <1395148837-20850-1-git-send-email-peter.ujfalusi@ti.com>
- <1395148837-20850-2-git-send-email-peter.ujfalusi@ti.com>
- <532848D5.30806@ti.com> <53285827.1070709@ti.com>
- <20140318180732.GJ11706@sirena.org.uk> <53297BEE.4050903@ti.com>
- <20140319131457.GK11706@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: [PATCH - ALSA-LIB 1/1] Remove 2.1 ,
+	4.1 and 5.0 from EMU10K1.conf
+Date: Thu, 20 Mar 2014 21:51:34 +0800
+Message-ID: <CAN8ccia+7m76D+E-UvXPTX0HqM1puZPgWGKH+kM-dtztbpSjJA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary=001a11c15fa63ff43004f50a1144
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 87029265119
- for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2014 14:47:11 +0100 (CET)
-In-Reply-To: <20140319131457.GK11706@sirena.org.uk>
+Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
+ [209.85.216.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD84A26515C
+ for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2014 14:51:35 +0100 (CET)
+Received: by mail-qa0-f51.google.com with SMTP id j7so870399qaq.10
+ for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2014 06:51:34 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,72 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com
+To: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+--001a11c15fa63ff43004f50a1144
+Content-Type: text/plain; charset=UTF-8
 
-On 03/19/2014 03:14 PM, Mark Brown wrote:
-> On Wed, Mar 19, 2014 at 01:13:50PM +0200, Peter Ujfalusi wrote:
->> On 03/18/2014 08:07 PM, Mark Brown wrote:
-> =
+- Creative 4.1 Speaker only have green and black jacks
+- Those creative sound cards using 4.1 speakers does not support 6 channels
 
->>> OK, so is the patch an improvement or not?  If it fixes some cases it's
->>> probably worth applying even if further fixes are still needed.
-> =
+--001a11c15fa63ff43004f50a1144
+Content-Type: text/x-diff; charset=US-ASCII;
+	name="0001-Remove-2.1-4.1-and-5.0-from-EMU10K1.conf.patch"
+Content-Disposition: attachment;
+	filename="0001-Remove-2.1-4.1-and-5.0-from-EMU10K1.conf.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ht03fps60
 
->> Some application might fail (like mplayer with 44.1KHz) with constraint =
-on the
->> period size only. Without the constraint we will have constant pops at e=
-very
->> period when non aligned size has been selected - if the FIFO depth is
->> configured to more than 1, which is not yet the case in upstream.
-> =
+RnJvbSAzMzBlY2NhNGUwNjEyM2Y4ZTgyM2NmZmM5OGJkY2YwZDEwMDEyMjIxIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
+Y29uPgpEYXRlOiBUaHUsIDIwIE1hciAyMDE0IDExOjA4OjE1ICswODAwClN1YmplY3Q6IFtQQVRD
+SCAtIEFMU0EtTElCIDEvMV0gUmVtb3ZlIDIuMSAsIDQuMSBhbmQgNS4wIGZyb20gRU1VMTBLMS5j
+b25mCgotIENyZWF0aXZlIDQuMSBTcGVha2VyIG9ubHkgaGF2ZSBncmVlbiBhbmQgYmxhY2sgamFj
+a3MKLSBUaG9zZSBjcmVhdGl2ZSBzb3VuZCBjYXJkcyB1c2luZyA0LjEgc3BlYWtlcnMgZG9lcyBu
+b3Qgc3VwcG9ydCA2IGNoYW5uZWxzCgpTaWduZWQtb2ZmLWJ5OiBSYXltb25kIFlhdSA8c3VwZXJx
+dWFkLnZvcnRleDJAZ21haWwuY29uPgoKZGlmZiAtLWdpdCBhL3NyYy9jb25mL2NhcmRzL0VNVTEw
+SzEuY29uZiBiL3NyYy9jb25mL2NhcmRzL0VNVTEwSzEuY29uZgppbmRleCBlZjE5M2ZlLi43MGNh
+NjZlIDEwMDY0NAotLS0gYS9zcmMvY29uZi9jYXJkcy9FTVUxMEsxLmNvbmYKKysrIGIvc3JjL2Nv
+bmYvY2FyZHMvRU1VMTBLMS5jb25mCkBAIC0yMTcsOSArMjE3LDYgQEAgRU1VMTBLMS5wY20uc3Vy
+cm91bmQ0MC4wIHsKIAldCiB9CiAKLTxjb25mZGlyOnBjbS9zdXJyb3VuZDIxLmNvbmY+Ci08Y29u
+ZmRpcjpwY20vc3Vycm91bmQ0MS5jb25mPgotPGNvbmZkaXI6cGNtL3N1cnJvdW5kNTAuY29uZj4K
+IDxjb25mZGlyOnBjbS9zdXJyb3VuZDUxLmNvbmY+CiAKIEVNVTEwSzEucGNtLnN1cnJvdW5kNTEu
+MCB7Ci0tIAoxLjguMy4yCgo=
+--001a11c15fa63ff43004f50a1144
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> OK, given that the FIFO depth change isn't yet upstream it'd be a step
-> backwards so I'll leave this for now.
 
-I have looked at the issue and I found some clues on why mplayer fails:
-it try to set the snd_pcm_hw_params_set_buffer_time_near() first followed by
-the snd_pcm_hw_params_set_periods_near(). And this fails in some cases when=
- we
-have constraint step on the period only.
-Other applications set the period param first followed by the buffer (aplay
-and various alsa test tools as well).
-PA however have a fallback mechanism:
-1. buffer first followed by period
-2. period first followed by buffer
-3. buffer only
-4. period only
-5. no period, no buffer params
-
-When I have step constraint on period PA fails with the first, second (beca=
-use
-there's a bug in the PA code here) and third method but going to succeed wi=
-th
-four.
-
-I have looked around in the kernel and other drivers do set both period and
-buffer step constraint, for example:
-
-sound/arm/pxa2xx-pcm-lib.c (_BYTES)
-sound/drivers/vx/vx_pcm.c (_BYTES)
-sound/pci/echoaudio/echoaudio.c (_SIZE)
-sound/pci/ice1712/ice1724.c (_BYTES)
-sound/pci/lola/lola_pcm.c (_SIZE)
-sound/soc/kirkwood/kirkwood-dma.c (_BYTES)
-sound/soc/s6000/s6000-pcm.c (_BYTES)
-...
-
-I still don't know why buffer size fails (in some cases) if we only have st=
-ep
-constraint on the period size, but it looks to me that others also encounte=
-red
-with similar issues and the fix they have is the same what I had in the fir=
-st
-version of the patch.
-
--- =
-
-P=E9ter
+--001a11c15fa63ff43004f50a1144--
