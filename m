@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 10/44] firewire-lib: Rename macros,
-	variables and functions for CMP
-Date: Fri, 21 Mar 2014 20:09:55 +0900
-Message-ID: <1395400229-22957-11-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 24/44] fireworks: Add MIDI interface
+Date: Fri, 21 Mar 2014 20:10:09 +0900
+Message-ID: <1395400229-22957-25-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,233 +20,239 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Referring to IEC 61883-1, oMPR and iMPR, oPCR and iPCR have some fields with
-the same role in the same position. This patch renames some macros, variables
-and function arguments with "i" in its prefix to reuse them between oMPR and
-iMPR, oPCR and iPCR.
+This commit adds a functionality to capture/playback MIDI messages.
+
+When no AMDTP streams are running, this driver starts AMDTP stream for MIDI
+stream at current sampling rate.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/cmp.c | 91 ++++++++++++++++++++++++++--------------------------
- sound/firewire/cmp.h |  6 ++--
- 2 files changed, 49 insertions(+), 48 deletions(-)
+ sound/firewire/Kconfig                    |   1 +
+ sound/firewire/fireworks/Makefile         |   3 +-
+ sound/firewire/fireworks/fireworks.c      |   6 ++
+ sound/firewire/fireworks/fireworks.h      |   3 +
+ sound/firewire/fireworks/fireworks_midi.c | 152 ++++++++++++++++++++++++++++++
+ 5 files changed, 164 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/fireworks/fireworks_midi.c
 
-diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
-index efdbf58..17ad4f2 100644
---- a/sound/firewire/cmp.c
-+++ b/sound/firewire/cmp.c
-@@ -14,18 +14,20 @@
- #include "iso-resources.h"
- #include "cmp.h"
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 0b85ebd..36a1212 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -64,6 +64,7 @@ config SND_SCS1X
+ config SND_FIREWORKS
+ 	tristate "Echo Fireworks board module support"
+ 	select SND_FIREWIRE_LIB
++	select SND_RAWMIDI
+ 	help
+ 	  Say Y here to include support for FireWire devices based
+ 	  on Echo Digital Audio Fireworks board:
+diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
+index 52bd15e..a2cecc6 100644
+--- a/sound/firewire/fireworks/Makefile
++++ b/sound/firewire/fireworks/Makefile
+@@ -1,3 +1,4 @@
+ snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
+-		      fireworks_stream.o fireworks_proc.o fireworks.o
++		      fireworks_stream.o fireworks_proc.o fireworks_midi.o \
++		      fireworks.o
+ obj-m += snd-fireworks.o
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index f2dc12e..ca3cf41 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -208,6 +208,12 @@ efw_probe(struct fw_unit *unit,
  
--#define IMPR_SPEED_MASK		0xc0000000
--#define IMPR_SPEED_SHIFT	30
--#define IMPR_XSPEED_MASK	0x00000060
--#define IMPR_XSPEED_SHIFT	5
--#define IMPR_PLUGS_MASK		0x0000001f
--
--#define IPCR_ONLINE		0x80000000
--#define IPCR_BCAST_CONN		0x40000000
--#define IPCR_P2P_CONN_MASK	0x3f000000
--#define IPCR_P2P_CONN_SHIFT	24
--#define IPCR_CHANNEL_MASK	0x003f0000
--#define IPCR_CHANNEL_SHIFT	16
-+/* MPR common fields */
-+#define MPR_SPEED_MASK		0xc0000000
-+#define MPR_SPEED_SHIFT		30
-+#define MPR_XSPEED_MASK		0x00000060
-+#define MPR_XSPEED_SHIFT	5
-+#define MPR_PLUGS_MASK		0x0000001f
+ 	snd_efw_proc_init(efw);
+ 
++	if (efw->midi_out_ports || efw->midi_in_ports) {
++		err = snd_efw_create_midi_devices(efw);
++		if (err < 0)
++			goto error;
++	}
 +
-+/* PCR common fields */
-+#define PCR_ONLINE		0x80000000
-+#define PCR_BCAST_CONN		0x40000000
-+#define PCR_P2P_CONN_MASK	0x3f000000
-+#define PCR_P2P_CONN_SHIFT	24
-+#define PCR_CHANNEL_MASK	0x003f0000
-+#define PCR_CHANNEL_SHIFT	16
- 
- enum bus_reset_handling {
- 	ABORT_ON_BUS_RESET,
-@@ -88,24 +90,24 @@ static int pcr_modify(struct cmp_connection *c,
-  * cmp_connection_init - initializes a connection manager
-  * @c: the connection manager to initialize
-  * @unit: a unit of the target device
-- * @ipcr_index: the index of the iPCR on the target device
-+ * @pcr_index: the index of the iPCR/oPCR on the target device
-  */
- int cmp_connection_init(struct cmp_connection *c,
- 			struct fw_unit *unit,
--			unsigned int ipcr_index)
-+			unsigned int pcr_index)
- {
--	__be32 impr_be;
--	u32 impr;
-+	__be32 mpr_be;
-+	u32 mpr;
- 	int err;
- 
- 	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
- 				 CSR_REGISTER_BASE + CSR_IMPR,
--				 &impr_be, 4, 0);
-+				 &mpr_be, 4, 0);
+ 	err = snd_card_register(card);
  	if (err < 0)
- 		return err;
--	impr = be32_to_cpu(impr_be);
-+	mpr = be32_to_cpu(mpr_be);
+ 		goto error;
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index d32724f..426cbeb 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -22,6 +22,7 @@
+ #include <sound/initval.h>
+ #include <sound/pcm.h>
+ #include <sound/info.h>
++#include <sound/rawmidi.h>
  
--	if (ipcr_index >= (impr & IMPR_PLUGS_MASK))
-+	if (pcr_index >= (mpr & MPR_PLUGS_MASK))
- 		return -EINVAL;
+ #include "../packets-buffer.h"
+ #include "../iso-resources.h"
+@@ -193,6 +194,8 @@ void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
  
- 	err = fw_iso_resources_init(&c->resources, unit);
-@@ -115,10 +117,10 @@ int cmp_connection_init(struct cmp_connection *c,
- 	c->connected = false;
- 	mutex_init(&c->mutex);
- 	c->last_pcr_value = cpu_to_be32(0x80000000);
--	c->pcr_index = ipcr_index;
--	c->max_speed = (impr & IMPR_SPEED_MASK) >> IMPR_SPEED_SHIFT;
-+	c->pcr_index = pcr_index;
-+	c->max_speed = (mpr & MPR_SPEED_MASK) >> MPR_SPEED_SHIFT;
- 	if (c->max_speed == SCODE_BETA)
--		c->max_speed += (impr & IMPR_XSPEED_MASK) >> IMPR_XSPEED_SHIFT;
-+		c->max_speed += (mpr & MPR_XSPEED_MASK) >> MPR_XSPEED_SHIFT;
+ void snd_efw_proc_init(struct snd_efw *efw);
  
- 	return 0;
- }
-@@ -139,23 +141,23 @@ EXPORT_SYMBOL(cmp_connection_destroy);
- 
- static __be32 ipcr_set_modify(struct cmp_connection *c, __be32 ipcr)
- {
--	ipcr &= ~cpu_to_be32(IPCR_BCAST_CONN |
--			     IPCR_P2P_CONN_MASK |
--			     IPCR_CHANNEL_MASK);
--	ipcr |= cpu_to_be32(1 << IPCR_P2P_CONN_SHIFT);
--	ipcr |= cpu_to_be32(c->resources.channel << IPCR_CHANNEL_SHIFT);
-+	ipcr &= ~cpu_to_be32(PCR_BCAST_CONN |
-+			     PCR_P2P_CONN_MASK |
-+			     PCR_CHANNEL_MASK);
-+	ipcr |= cpu_to_be32(1 << PCR_P2P_CONN_SHIFT);
-+	ipcr |= cpu_to_be32(c->resources.channel << PCR_CHANNEL_SHIFT);
- 
- 	return ipcr;
- }
- 
--static int ipcr_set_check(struct cmp_connection *c, __be32 ipcr)
-+static int pcr_set_check(struct cmp_connection *c, __be32 pcr)
- {
--	if (ipcr & cpu_to_be32(IPCR_BCAST_CONN |
--			       IPCR_P2P_CONN_MASK)) {
-+	if (pcr & cpu_to_be32(PCR_BCAST_CONN |
-+			       PCR_P2P_CONN_MASK)) {
- 		cmp_error(c, "plug is already in use\n");
- 		return -EBUSY;
- 	}
--	if (!(ipcr & cpu_to_be32(IPCR_ONLINE))) {
-+	if (!(pcr & cpu_to_be32(PCR_ONLINE))) {
- 		cmp_error(c, "plug is not on-line\n");
- 		return -ECONNREFUSED;
- 	}
-@@ -170,9 +172,9 @@ static int ipcr_set_check(struct cmp_connection *c, __be32 ipcr)
-  *
-  * This function establishes a point-to-point connection from the local
-  * computer to the target by allocating isochronous resources (channel and
-- * bandwidth) and setting the target's input plug control register.  When this
-- * function succeeds, the caller is responsible for starting transmitting
-- * packets.
-+ * bandwidth) and setting the target's input/output plug control register.
-+ * When this function succeeds, the caller is responsible for starting
-+ * transmitting packets.
-  */
- int cmp_connection_establish(struct cmp_connection *c,
- 			     unsigned int max_payload_bytes)
-@@ -193,7 +195,7 @@ retry_after_bus_reset:
- 	if (err < 0)
- 		goto err_mutex;
- 
--	err = pcr_modify(c, ipcr_set_modify, ipcr_set_check,
-+	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
- 			 ABORT_ON_BUS_RESET);
- 	if (err == -EAGAIN) {
- 		fw_iso_resources_free(&c->resources);
-@@ -221,8 +223,8 @@ EXPORT_SYMBOL(cmp_connection_establish);
-  * cmp_connection_update - update the connection after a bus reset
-  * @c: the connection manager
-  *
-- * This function must be called from the driver's .update handler to reestablish
-- * any connection that might have been active.
-+ * This function must be called from the driver's .update handler to
-+ * reestablish any connection that might have been active.
-  *
-  * Returns zero on success, or a negative error code.  On an error, the
-  * connection is broken and the caller must stop transmitting iso packets.
-@@ -242,7 +244,7 @@ int cmp_connection_update(struct cmp_connection *c)
- 	if (err < 0)
- 		goto err_unconnect;
- 
--	err = pcr_modify(c, ipcr_set_modify, ipcr_set_check,
-+	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
- 			 SUCCEED_ON_BUS_RESET);
- 	if (err < 0)
- 		goto err_resources;
-@@ -261,19 +263,18 @@ err_unconnect:
- }
- EXPORT_SYMBOL(cmp_connection_update);
- 
--
--static __be32 ipcr_break_modify(struct cmp_connection *c, __be32 ipcr)
-+static __be32 pcr_break_modify(struct cmp_connection *c, __be32 pcr)
- {
--	return ipcr & ~cpu_to_be32(IPCR_BCAST_CONN | IPCR_P2P_CONN_MASK);
-+	return pcr & ~cpu_to_be32(PCR_BCAST_CONN | PCR_P2P_CONN_MASK);
- }
- 
- /**
-  * cmp_connection_break - break the connection to the target
-  * @c: the connection manager
-  *
-- * This function deactives the connection in the target's input plug control
-- * register, and frees the isochronous resources of the connection.  Before
-- * calling this function, the caller should cease transmitting packets.
-+ * This function deactives the connection in the target's input/output plug
-+ * control register, and frees the isochronous resources of the connection.
-+ * Before calling this function, the caller should cease transmitting packets.
-  */
- void cmp_connection_break(struct cmp_connection *c)
- {
-@@ -286,7 +287,7 @@ void cmp_connection_break(struct cmp_connection *c)
- 		return;
- 	}
- 
--	err = pcr_modify(c, ipcr_break_modify, NULL, SUCCEED_ON_BUS_RESET);
-+	err = pcr_modify(c, pcr_break_modify, NULL, SUCCEED_ON_BUS_RESET);
- 	if (err < 0)
- 		cmp_error(c, "plug is still connected\n");
- 
-diff --git a/sound/firewire/cmp.h b/sound/firewire/cmp.h
-index f47de08..2320cd4 100644
---- a/sound/firewire/cmp.h
-+++ b/sound/firewire/cmp.h
-@@ -11,8 +11,8 @@ struct fw_unit;
-  * struct cmp_connection - manages an isochronous connection to a device
-  * @speed: the connection's actual speed
-  *
-- * This structure manages (using CMP) an isochronous stream from the local
-- * computer to a device's input plug (iPCR).
-+ * This structure manages (using CMP) an isochronous stream between the local
-+ * computer and a device's input plug (iPCR) and output plug (oPCR).
-  *
-  * There is no corresponding oPCR created on the local computer, so it is not
-  * possible to overlay connections on top of this one.
-@@ -30,7 +30,7 @@ struct cmp_connection {
- 
- int cmp_connection_init(struct cmp_connection *connection,
- 			struct fw_unit *unit,
--			unsigned int ipcr_index);
-+			unsigned int pcr_index);
- void cmp_connection_destroy(struct cmp_connection *connection);
- 
- int cmp_connection_establish(struct cmp_connection *connection,
++int snd_efw_create_midi_devices(struct snd_efw *efw);
++
+ #define SND_EFW_DEV_ENTRY(vendor, model) \
+ { \
+ 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
+diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
+new file mode 100644
+index 0000000..27a0c8d
+--- /dev/null
++++ b/sound/firewire/fireworks/fireworks_midi.c
+@@ -0,0 +1,152 @@
++/*
++ * fireworks_midi.c - a part of driver for Fireworks based devices
++ *
++ * Copyright (c) 2009-2010 Clemens Ladisch
++ * Copyright (c) 2013 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++#include "fireworks.h"
++
++static int midi_capture_open(struct snd_rawmidi_substream *substream)
++{
++	struct snd_efw *efw = substream->rmidi->private_data;
++
++	efw->capture_substreams++;
++	return snd_efw_stream_start_duplex(efw, &efw->tx_stream, 0);
++}
++
++static int midi_playback_open(struct snd_rawmidi_substream *substream)
++{
++	struct snd_efw *efw = substream->rmidi->private_data;
++
++	efw->playback_substreams++;
++	return snd_efw_stream_start_duplex(efw, &efw->rx_stream, 0);
++}
++
++static int midi_capture_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_efw *efw = substream->rmidi->private_data;
++
++	efw->capture_substreams--;
++	snd_efw_stream_stop_duplex(efw);
++
++	return 0;
++}
++
++static int midi_playback_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_efw *efw = substream->rmidi->private_data;
++
++	efw->playback_substreams--;
++	snd_efw_stream_stop_duplex(efw);
++
++	return 0;
++}
++
++static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_efw *efw = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&efw->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&efw->tx_stream,
++					  substrm->number, substrm);
++	else
++		amdtp_stream_midi_trigger(&efw->tx_stream,
++					  substrm->number, NULL);
++
++	spin_unlock_irqrestore(&efw->lock, flags);
++}
++
++static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_efw *efw = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&efw->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&efw->rx_stream,
++					  substrm->number, substrm);
++	else
++		amdtp_stream_midi_trigger(&efw->rx_stream,
++					  substrm->number, NULL);
++
++	spin_unlock_irqrestore(&efw->lock, flags);
++}
++
++static struct snd_rawmidi_ops midi_capture_ops = {
++	.open		= midi_capture_open,
++	.close		= midi_capture_close,
++	.trigger	= midi_capture_trigger,
++};
++
++static struct snd_rawmidi_ops midi_playback_ops = {
++	.open		= midi_playback_open,
++	.close		= midi_playback_close,
++	.trigger	= midi_playback_trigger,
++};
++
++static void set_midi_substream_names(struct snd_efw *efw,
++				     struct snd_rawmidi_str *str)
++{
++	struct snd_rawmidi_substream *subs;
++
++	list_for_each_entry(subs, &str->substreams, list) {
++		snprintf(subs->name, sizeof(subs->name),
++			 "%s MIDI %d", efw->card->shortname, subs->number + 1);
++	}
++}
++
++int snd_efw_create_midi_devices(struct snd_efw *efw)
++{
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_str *str;
++	int err;
++
++	/* check the number of midi stream */
++	if ((efw->midi_in_ports > SND_EFW_MAX_MIDI_IN_PORTS) |
++	    (efw->midi_out_ports > SND_EFW_MAX_MIDI_OUT_PORTS))
++		return -EIO;
++
++	/* create midi ports */
++	err = snd_rawmidi_new(efw->card, efw->card->driver, 0,
++			      efw->midi_out_ports, efw->midi_in_ports,
++			      &rmidi);
++	if (err < 0)
++		return err;
++
++	snprintf(rmidi->name, sizeof(rmidi->name),
++			"%s MIDI", efw->card->shortname);
++	rmidi->private_data = efw;
++
++	if (efw->midi_in_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++					&midi_capture_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++
++		set_midi_substream_names(efw, str);
++	}
++
++	if (efw->midi_out_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
++					&midi_playback_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++
++		set_midi_substream_names(efw, str);
++	}
++
++	if ((efw->midi_out_ports > 0) && (efw->midi_in_ports > 0))
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
++
++	return 0;
++}
 -- 
 1.8.3.2
 
