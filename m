@@ -1,79 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 03/12] ASoC: mfld_machine: Convert to
- table based DAPM and control setup
-Date: Fri, 21 Mar 2014 18:04:33 +0000
-Message-ID: <20140321180433.GJ552@sirena.org.uk>
-References: <1394634460-15889-1-git-send-email-lars@metafoo.de>
- <1394634460-15889-4-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2] ASoC: rsnd: add DeviceTree support
+Date: Fri, 21 Mar 2014 18:18:13 +0000
+Message-ID: <20140321181813.GP552@sirena.org.uk>
+References: <87d2ib90t9.wl%kuninori.morimoto.gx@gmail.com>
+ <878usq1scd.wl%kuninori.morimoto.gx@gmail.com>
+ <87r46izhv5.wl%kuninori.morimoto.gx@gmail.com>
+ <877g89qhdo.wl%kuninori.morimoto.gx@gmail.com>
+ <20140310145254.GJ4400@trinity.fluff.org>
+ <87fvmlpqi1.wl%kuninori.morimoto.gx@gmail.com>
+ <87ob14jl2d.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2085046838888295143=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D5812610D6
- for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 19:04:48 +0100 (CET)
-In-Reply-To: <1394634460-15889-4-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Ryan Mallon <rmallon@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Daniel =?iso-8859-1?Q?Gl=F6ckner?= <daniel-gl@gmx.net>, Benoit Cousson <bcousson@baylibre.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HrsILUyxNtiOryfc"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <87ob14jl2d.wl%kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2085046838888295143==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="enLffk0M6cffIOOh"
-Content-Disposition: inline
-
-
---enLffk0M6cffIOOh
+--HrsILUyxNtiOryfc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 12, 2014 at 03:27:31PM +0100, Lars-Peter Clausen wrote:
-> Use table based setup to register the controls and DAPM widgets and routes.
-> This on one hand makes the code a bit cleaner and on the other hand
-> the board level DAPM elements get registered in the card's DAPM context rather
-> than in the CODEC's DAPM context.
+On Mon, Mar 17, 2014 at 07:29:55PM -0700, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+>=20
+> Support for loading the Renesas R-Car sound driver via DeviceTree.
 
-Applied, thanks.
+So, I've applied this but it needs some improvement - please do that
+incrementally.  One thing you should have done here is CC the binding to
+the DT list and maintainers for review.
 
---enLffk0M6cffIOOh
+> +- rcar_sound,ssi		: SSI subnode
+> +- rcar_sound,scu		: SCU subnode
+> +- rcar_sound,dai		: DAI subnode
+
+This needs clearer documentation saying what the subnodes are - they're
+actually collections of further nodes, each of which represents
+something in the hardware.  The examples are fairly clear but the text
+needs more than just "subnode".  Someone should be able to tell how to
+write the DT just given the datasheet and this document.
+
+--HrsILUyxNtiOryfc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTLH8uAAoJELSic+t+oim92cYP/RlQbjdO94oLhf0Z8Nn3db8F
-fLoki0KrJnBdycfz+QgXSBEdMQqReZrWBlYY80h3Si9eNu8g6faQVjSo7OEZLTaY
-rJdMPPE6YoSXfWGojDD3DTl5kgUpKRKf1Vffjf/uI5p/QQNxcxzHLZroV0dzgeNv
-lJZblCzS3go7vvvnfXllcomewIGHSKmVe8xqfFjsgoVMjMILuX3XYC9a8oUR80tI
-4Hi8Oa13YNtZq4BZTzA+0dL/YgtteBnxeXZYYbMeh5/a7jXNrfCEzoi0q0Bs2bjN
-77mZ5jKlUC1/B/xTHczD4TCQOLWitgTeFRqNL/LuB44Z/ZiaxZ7WOMA4NHy8TKO+
-x9aPZhBzfeOf0UpuATg34YjYyT8W2jyGGB6/VUy3B8ANs8ZLXaQ0U/Gt+pBbfqIi
-Z2IM3dxR7fDqPkLrVYvnUqPdMqeqqxWhKEuuidy/ueUJxoobsVjRyaWb9LEubjab
-bAq+e1TDAeeIlgx3TCt/XXdO9pGSlLy8NlDYcNxyEJTYG6JMwCIJTaktld2K5Ksj
-W8NbzLLny6qxVLRsDAgrXgZheBmQu+NeV7mggASeQSiuFPnGLh/6R1hh54JWNiTT
-JZs8LybA3HtUGCsdN3Ttg6/kCfITvmXGV9u17Kov6U83QHCzaX3MptKR4pKq93G+
-6d28MnwbRIk3lZ57FMeO
-=zI5U
+iQIcBAEBAgAGBQJTLIJiAAoJELSic+t+oim9apYP/A4MffB93uF8TTbdtzgale7z
+h84DWW3yopo0bQZUV0PdQ+isa6a/nBB0YUBTnkPTnaGgSoEtDsHPQJecJsC1HIzG
+n32C4GXuQVMoVnBxBPNYQYqrDKrEvVaGEst8ebxPdqUb84/VMITcByNZ5k1Dl1Sf
+XOlgB8oZFv/pu20Wqqre+F2peN8blwln4DiiUTaLC5ihHHcdOFSotOU+8xZdtvAD
+ZhwyDgIfjEQBC4hWM8UpmTRZVzEvWaeVOFKzU//Z0KZkeUN1cTsyhsv2qg9+ZkkO
+z5dyLx2AQ/U+ptntgarAmaNJJe3KzYYtNijcQzp1JWkvYg+cWIUpH9vnyjwt2pSD
+V6LtuDD/IOcNH0wJcs/OKwKX9u6J1sG3qqZpVvtKeQicz+IZFpHLr1Mpzc3gzGyF
+6Cdox+eMb8WoftxAn13rpNmQVgV+13J4AYCoDjdFRKM+lnwQBdSr0Oh9lWsPcMnn
+MJ6VcfxM5Ncr13zxLxe3pRa0zSdz3cJ1/evDgYkoiJbTSyJ32UCyKIZQudSTYWgt
+e/E11thKaDmkHGce55tIpGumm23BrmliZp1k78OaVb4Jx2Yx+NWhdT51yWEr93Kt
+c3q10He6Kn9G0t/frRVQHAavOT1lfUQEBbV/7evPQIRTSf2fZ0KbAlMScsHpO/5V
+V0Wh5di1bczM480J9JsE
+=kRHH
 -----END PGP SIGNATURE-----
 
---enLffk0M6cffIOOh--
-
---===============2085046838888295143==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2085046838888295143==--
+--HrsILUyxNtiOryfc--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
