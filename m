@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 31/44] bebob/firewire-lib: Add a quirk for discontinuity at
-	bus reset
-Date: Fri, 21 Mar 2014 20:10:16 +0900
-Message-ID: <1395400229-22957-32-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 33/44] bebob: Add MIDI interface
+Date: Fri, 21 Mar 2014 20:10:18 +0900
+Message-ID: <1395400229-22957-34-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,178 +20,235 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a flag, which has an effect to skip checking continuity
-for first packet. This flag is useful for BeBoB quirk.
+This commit adds a functionality to capture/playback MIDI messages.
 
-Normal BeBoB firmware has a quirk. When receiving bus reset, it transmit
-packets with discontinuous value in dbc field.
-
-This causes two situation, one is to abort streaming by firewire-lib as a
-result of detecting the discontinuity. Another is to call driver's .update().
-These two is generated separately. (The former depends on isochronous stream
-and the latter depends on IEEE1394 bus driver.)
-
-When BeBoB driver works with XRUN-recoverable applications, this situation
-looks like stream_update_duplex() call following to stream_start_duplex() call
-(because applications will call snd_pcm_prepare() immediately).
-
-We shouldn't break connections in stream_update_duplex() or
-stream_start_duplex() at bus reset because of this quirk. When breaking
-connections, stream_start_duplex() re-establish them, streams immediately
-have packets with discontinuity, then firewire-lib generates XRUN,
-applications call snd_pcm_prepare() and stream_start_duplex() is called
-again, breaking connections, re-establishing connections...(loop)
-
-To avoid this situation, this commit allows BeBoB driver to start streams
-during transmitting packets, without breaking connections. The flag is used
-for this purpose.
+When no AMDTP streams are running, this module starts AMDTP stream at current
+sampling rate for MIDI stream.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c              |  8 ++++++--
- sound/firewire/amdtp.h              |  3 +++
- sound/firewire/bebob/bebob.h        |  1 +
- sound/firewire/bebob/bebob_stream.c | 39 ++++++++++++++++++++++++++++++++++---
- 4 files changed, 46 insertions(+), 5 deletions(-)
+ sound/firewire/Kconfig            |   1 +
+ sound/firewire/bebob/Makefile     |   3 +-
+ sound/firewire/bebob/bebob.c      |   7 ++
+ sound/firewire/bebob/bebob.h      |   3 +
+ sound/firewire/bebob/bebob_midi.c | 148 ++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 161 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/bebob/bebob_midi.c
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 51a13c8..820d790 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -756,7 +756,7 @@ static void handle_in_packet(struct amdtp_stream *s,
- 		lost = data_block_counter !=
- 		       ((s->data_block_counter + dbc_interval) & 0xff);
- 	}
--	if (lost) {
-+	if (lost && s->data_block_counter != UINT_MAX) {
- 		dev_info(&s->unit->device,
- 			 "Detect discontinuity of CIP: %02X %02X\n",
- 			 s->data_block_counter, data_block_counter);
-@@ -922,7 +922,11 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 		goto err_unlock;
- 	}
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 9027b23..8081ca1 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -82,6 +82,7 @@ config SND_FIREWORKS
+ config SND_BEBOB
+ 	tristate "BridgeCo DM1000/1500 with BeBoB firmware"
+ 	select SND_FIREWIRE_LIB
++	select SND_RAWMIDI
+         help
+ 	 Say Y here to include support for FireWire devices based
+ 	 on BridgeCo DM1000/1500 with BeBoB firmware:
+diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
+index 757c40e..1e39e59 100644
+--- a/sound/firewire/bebob/Makefile
++++ b/sound/firewire/bebob/Makefile
+@@ -1,2 +1,3 @@
+-snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob.o
++snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
++		  bebob.o
+ obj-m += snd-bebob.o
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index a4f8a29..75abb26 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -169,6 +169,13 @@ bebob_probe(struct fw_unit *unit,
  
--	s->data_block_counter = 0;
-+	if (s->direction == AMDTP_IN_STREAM &&
-+	    s->flags & CIP_SKIP_INIT_DBC_CHECK)
-+		s->data_block_counter = UINT_MAX;
-+	else
-+		s->data_block_counter = 0;
- 	s->data_block_state = initial_state[s->sfc].data_block;
- 	s->syt_offset_state = initial_state[s->sfc].syt_offset;
- 	s->last_syt_offset = TICKS_PER_CYCLE;
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 5414157..e3ee739 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -27,6 +27,8 @@
-  *	corresponds to the end of event in the packet. Out of IEC 61883.
-  * @CIP_WRONG_DBS: Only for in-stream. The value of dbs is wrong in in-packets.
-  *	The value of data_block_quadlets is used instead of reported value.
-+ * @CIP_SKIP_INIT_DBC_CHECK: Only for in-stream. The value of dbc in first
-+ *	packet is not continuous from an initial value.
-  */
- enum cip_flags {
- 	CIP_NONBLOCKING		= 0x00,
-@@ -36,6 +38,7 @@ enum cip_flags {
- 	CIP_EMPTY_WITH_TAG0	= 0x08,
- 	CIP_DBC_IS_END_EVENT	= 0x10,
- 	CIP_WRONG_DBS		= 0x20,
-+	CIP_SKIP_INIT_DBC_CHECK	= 0x40,
- };
+ 	snd_bebob_proc_init(bebob);
  
- /**
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 550ccdc..590a49e 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -53,6 +53,7 @@ struct snd_bebob {
- 	unsigned int midi_input_ports;
- 	unsigned int midi_output_ports;
- 
-+	bool connected;
- 	struct cmp_connection out_conn;
- 	struct amdtp_stream tx_stream;
- 	struct cmp_connection in_conn;
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index 9375454..f57fdd7 100644
---- a/sound/firewire/bebob/bebob_stream.c
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -308,7 +308,10 @@ check_connection_used_by_others(struct snd_bebob *bebob, struct amdtp_stream *s)
- static int
- make_both_connections(struct snd_bebob *bebob, unsigned int rate)
- {
--	int index, pcm_channels, midi_channels, err;
-+	int index, pcm_channels, midi_channels, err = 0;
-+
-+	if (bebob->connected)
-+		goto end;
- 
- 	/* confirm params for both streams */
- 	index = get_formation_index(rate);
-@@ -328,8 +331,12 @@ make_both_connections(struct snd_bebob *bebob, unsigned int rate)
- 		goto end;
- 	err = cmp_connection_establish(&bebob->in_conn,
- 			amdtp_stream_get_max_payload(&bebob->rx_stream));
--	if (err < 0)
-+	if (err < 0) {
- 		cmp_connection_break(&bebob->out_conn);
-+		goto end;
++	if ((bebob->midi_input_ports > 0) ||
++	    (bebob->midi_output_ports > 0)) {
++		err = snd_bebob_create_midi_devices(bebob);
++		if (err < 0)
++			goto error;
 +	}
 +
-+	bebob->connected = true;
- end:
- 	return err;
- }
-@@ -339,6 +346,8 @@ break_both_connections(struct snd_bebob *bebob)
- {
- 	cmp_connection_break(&bebob->in_conn);
- 	cmp_connection_break(&bebob->out_conn);
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+ 		goto error;
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index e641e90..ba76026 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -21,6 +21,7 @@
+ #include <sound/core.h>
+ #include <sound/initval.h>
+ #include <sound/info.h>
++#include <sound/rawmidi.h>
+ 
+ #include "../lib.h"
+ #include "../fcp.h"
+@@ -174,6 +175,8 @@ void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob);
+ 
+ void snd_bebob_proc_init(struct snd_bebob *bebob);
+ 
++int snd_bebob_create_midi_devices(struct snd_bebob *bebob);
 +
-+	bebob->connected = false;
- }
- 
- static void
-@@ -401,6 +410,8 @@ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
- 		destroy_both_connections(bebob);
- 		goto end;
- 	}
-+	/* See comments in next function */
-+	bebob->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK;
- 
- 	err = amdtp_stream_init(&bebob->rx_stream, bebob->unit,
- 				AMDTP_OUT_STREAM, CIP_BLOCKING);
-@@ -439,7 +450,29 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob,
- 	/* need to touch slave stream */
- 	slave_flag = (request == slave) || amdtp_stream_running(slave);
- 
--	/* packet queueing error */
-+	/*
-+	 * packet queueing error or detecting discontinuity
-+	 *
-+	 * Normal BeBoB firmware has a quirk at bus reset to transfers packets
-+	 * with discontinuous value in dbc field.
-+	 *
-+	 * When this driver works with XRUN-recoverable applications, this
-+	 * situation looks like stream_update_duplex() call following to
-+	 * stream_start_duplex() call (because applications will call
-+	 * snd_pcm_prepare() immediately).
-+	 *
-+	 * If breaking/re-establishing connections here, new streams are also
-+	 * involved in bus reset and transfers packets with discontinuity.
-+	 * Connections should be handled by a way defined in IEC 61883-1.
-+	 *
-+	 * But if breaking no connections here, AMDTP packets also has
-+	 * discontinuity because isochronous context starts during
-+	 * transmitting packets. This is a reason to use SKIP_INIT_DBC_CHECK
-+	 * flag.
-+	 *
-+	 * As a result, when encounter bus reset, some received packets are
-+	 * lost and some data already in buffer for out-packet is also lost.
-+	 */
- 	if (amdtp_streaming_error(master)) {
- 		amdtp_stream_stop(master);
- 		amdtp_stream_stop(slave);
+ #define SND_BEBOB_DEV_ENTRY(vendor, model) \
+ { \
+ 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
+diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
+new file mode 100644
+index 0000000..9312b34
+--- /dev/null
++++ b/sound/firewire/bebob/bebob_midi.c
+@@ -0,0 +1,148 @@
++/*
++ * bebob_midi.c - a part of driver for BeBoB based devices
++ *
++ * Copyright (c) 2013 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "bebob.h"
++
++static int midi_capture_open(struct snd_rawmidi_substream *substream)
++{
++	struct snd_bebob *bebob = substream->rmidi->private_data;
++
++	bebob->capture_substreams++;
++	return snd_bebob_stream_start_duplex(bebob, &bebob->tx_stream, 0);
++}
++
++static int midi_playback_open(struct snd_rawmidi_substream *substream)
++{
++	struct snd_bebob *bebob = substream->rmidi->private_data;
++
++	bebob->playback_substreams++;
++	return snd_bebob_stream_start_duplex(bebob, &bebob->rx_stream, 0);
++}
++
++static int midi_capture_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_bebob *bebob = substream->rmidi->private_data;
++
++	bebob->capture_substreams--;
++	snd_bebob_stream_stop_duplex(bebob);
++
++	return 0;
++}
++
++static int midi_playback_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_bebob *bebob = substream->rmidi->private_data;
++
++	bebob->playback_substreams--;
++	snd_bebob_stream_stop_duplex(bebob);
++
++	return 0;
++}
++
++static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_bebob *bebob = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&bebob->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&bebob->tx_stream,
++					  substrm->number, substrm);
++	else
++		amdtp_stream_midi_trigger(&bebob->tx_stream,
++					  substrm->number, NULL);
++
++	spin_unlock_irqrestore(&bebob->lock, flags);
++}
++
++static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_bebob *bebob = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&bebob->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&bebob->rx_stream,
++					  substrm->number, substrm);
++	else
++		amdtp_stream_midi_trigger(&bebob->rx_stream,
++					  substrm->number, NULL);
++
++	spin_unlock_irqrestore(&bebob->lock, flags);
++}
++
++static struct snd_rawmidi_ops midi_capture_ops = {
++	.open		= midi_capture_open,
++	.close		= midi_capture_close,
++	.trigger	= midi_capture_trigger,
++};
++
++static struct snd_rawmidi_ops midi_playback_ops = {
++	.open		= midi_playback_open,
++	.close		= midi_playback_close,
++	.trigger	= midi_playback_trigger,
++};
++
++static void set_midi_substream_names(struct snd_bebob *bebob,
++				     struct snd_rawmidi_str *str)
++{
++	struct snd_rawmidi_substream *subs;
++
++	list_for_each_entry(subs, &str->substreams, list) {
++		snprintf(subs->name, sizeof(subs->name),
++			 "%s MIDI %d",
++			 bebob->card->shortname, subs->number + 1);
++	}
++}
++
++int snd_bebob_create_midi_devices(struct snd_bebob *bebob)
++{
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_str *str;
++	int err;
++
++	/* create midi ports */
++	err = snd_rawmidi_new(bebob->card, bebob->card->driver, 0,
++			      bebob->midi_output_ports, bebob->midi_input_ports,
++			      &rmidi);
++	if (err < 0)
++		return err;
++
++	snprintf(rmidi->name, sizeof(rmidi->name),
++			"%s MIDI", bebob->card->shortname);
++	rmidi->private_data = bebob;
++
++	if (bebob->midi_input_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++					&midi_capture_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++
++		set_midi_substream_names(bebob, str);
++	}
++
++	if (bebob->midi_output_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
++					&midi_playback_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++
++		set_midi_substream_names(bebob, str);
++	}
++
++	if ((bebob->midi_output_ports > 0) && (bebob->midi_input_ports > 0))
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
++
++	return 0;
++}
 -- 
 1.8.3.2
 
