@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 06/44] firewire-lib: Give syt value as parameter to
-	handle_out_packet()
-Date: Fri, 21 Mar 2014 20:09:51 +0900
-Message-ID: <1395400229-22957-7-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 03/44] firewire-lib: Split some codes into functions to reuse
+	for both streams
+Date: Fri, 21 Mar 2014 20:09:48 +0900
+Message-ID: <1395400229-22957-4-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,83 +21,236 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-For duplex streams with synchronization, drivers should pick up
-'presentation timestamp' from in-packets and use the timestamp for
-out-packets. This commit is preparation for this.
+Some codes can be reused to handle in stream. This commit adds new functions.
+This commit also renames some functions to keep naming consistency.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ sound/firewire/amdtp.c | 154 ++++++++++++++++++++++++++-----------------------
+ 1 file changed, 81 insertions(+), 73 deletions(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 221a65f..2b70de0 100644
+index 95c5a15..74b1045 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -257,7 +257,9 @@ static unsigned int calculate_data_blocks(struct amdtp_stream *s)
- {
- 	unsigned int phase, data_blocks;
+@@ -47,6 +47,8 @@
+ #define INTERRUPT_INTERVAL	16
+ #define QUEUE_LENGTH		48
  
--	if (!cip_sfc_is_base_44100(s->sfc)) {
-+	if (s->flags & CIP_BLOCKING)
-+		data_blocks = s->syt_interval;
-+	else if (!cip_sfc_is_base_44100(s->sfc)) {
- 		/* Sample_rate / 8000 is an integer, and precomputed. */
- 		data_blocks = s->data_block_state;
- 	} else {
-@@ -616,26 +618,22 @@ static inline int queue_in_packet(struct amdtp_stream *s)
- 			    amdtp_stream_get_max_payload(s), false);
++#define OUT_PACKET_HEADER_SIZE	0
++
+ static void pcm_period_tasklet(unsigned long data);
+ 
+ /**
+@@ -440,13 +442,73 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 						cpu_to_be32(0x80000000);
  }
  
--static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
-+static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
+-static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
++static void update_pcm_pointers(struct amdtp_stream *s,
++				struct snd_pcm_substream *pcm,
++				unsigned int frames)
++{	unsigned int ptr;
++
++	if (s->dual_wire)
++		frames *= 2;
++
++	ptr = s->pcm_buffer_pointer + frames;
++	if (ptr >= pcm->runtime->buffer_size)
++		ptr -= pcm->runtime->buffer_size;
++	ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
++
++	s->pcm_period_pointer += frames;
++	if (s->pcm_period_pointer >= pcm->runtime->period_size) {
++		s->pcm_period_pointer -= pcm->runtime->period_size;
++		s->pointer_flush = false;
++		tasklet_hi_schedule(&s->period_tasklet);
++	}
++}
++
++static void pcm_period_tasklet(unsigned long data)
++{
++	struct amdtp_stream *s = (void *)data;
++	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
++
++	if (pcm)
++		snd_pcm_period_elapsed(pcm);
++}
++
++static int queue_packet(struct amdtp_stream *s,
++			unsigned int header_length,
++			unsigned int payload_length, bool skip)
++{
++	struct fw_iso_packet p = {0};
++	int err;
++
++	p.interrupt = IS_ALIGNED(s->packet_index + 1, INTERRUPT_INTERVAL);
++	p.tag = TAG_CIP;
++	p.header_length = header_length;
++	p.payload_length = (!skip) ? payload_length : 0;
++	p.skip = skip;
++	err = fw_iso_context_queue(s->context, &p, &s->buffer.iso_buffer,
++				   s->buffer.packets[s->packet_index].offset);
++	if (err < 0) {
++		dev_err(&s->unit->device, "queueing error: %d\n", err);
++		goto end;
++	}
++
++	if (++s->packet_index >= QUEUE_LENGTH)
++		s->packet_index = 0;
++end:
++	return err;
++}
++
++static inline int queue_out_packet(struct amdtp_stream *s,
++				   unsigned int payload_length, bool skip)
++{
++	return queue_packet(s, OUT_PACKET_HEADER_SIZE,
++			    payload_length, skip);
++}
++
++static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
  {
  	__be32 *buffer;
--	unsigned int index, data_blocks, syt, payload_length;
-+	unsigned int data_blocks, payload_length;
+-	unsigned int index, data_blocks, syt, ptr;
++	unsigned int index, data_blocks, syt, payload_length;
  	struct snd_pcm_substream *pcm;
+-	struct fw_iso_packet packet;
+-	int err;
  
  	if (s->packet_index < 0)
  		return;
--	index = s->packet_index;
+@@ -479,55 +541,20 @@ static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
  
- 	/* this module generate empty packet for 'no data' */
--	syt = calculate_syt(s, cycle);
--	if (!(s->flags & CIP_BLOCKING))
-+	if (!(s->flags & CIP_BLOCKING) || (syt != CIP_SYT_NO_INFO))
- 		data_blocks = calculate_data_blocks(s);
--	else if (syt != CIP_SYT_NO_INFO)
--		data_blocks = s->syt_interval;
- 	else
- 		data_blocks = 0;
+ 	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
  
--	buffer = s->buffer.packets[index].buffer;
-+	buffer = s->buffer.packets[s->packet_index].buffer;
- 	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
- 				(s->data_block_quadlets << AMDTP_DBS_SHIFT) |
- 				s->data_block_counter);
-@@ -746,7 +744,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
- 				void *private_data)
+-	packet.payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
+-	packet.interrupt = IS_ALIGNED(index + 1, INTERRUPT_INTERVAL);
+-	packet.skip = 0;
+-	packet.tag = TAG_CIP;
+-	packet.sy = 0;
+-	packet.header_length = 0;
+-
+-	err = fw_iso_context_queue(s->context, &packet, &s->buffer.iso_buffer,
+-				   s->buffer.packets[index].offset);
+-	if (err < 0) {
+-		dev_err(&s->unit->device, "queueing error: %d\n", err);
++	payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
++	if (queue_out_packet(s, payload_length, false) < 0) {
+ 		s->packet_index = -1;
+ 		amdtp_stream_pcm_abort(s);
+ 		return;
+ 	}
+ 
+-	if (++index >= QUEUE_LENGTH)
+-		index = 0;
+-	s->packet_index = index;
+-
+-	if (pcm) {
+-		if (s->dual_wire)
+-			data_blocks *= 2;
+-
+-		ptr = s->pcm_buffer_pointer + data_blocks;
+-		if (ptr >= pcm->runtime->buffer_size)
+-			ptr -= pcm->runtime->buffer_size;
+-		ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
+-
+-		s->pcm_period_pointer += data_blocks;
+-		if (s->pcm_period_pointer >= pcm->runtime->period_size) {
+-			s->pcm_period_pointer -= pcm->runtime->period_size;
+-			s->pointer_flush = false;
+-			tasklet_hi_schedule(&s->period_tasklet);
+-		}
+-	}
+-}
+-
+-static void pcm_period_tasklet(unsigned long data)
+-{
+-	struct amdtp_stream *s = (void *)data;
+-	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
+-
+ 	if (pcm)
+-		snd_pcm_period_elapsed(pcm);
++		update_pcm_pointers(s, pcm, data_blocks);
+ }
+ 
+-static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
+-			size_t header_length, void *header, void *private_data)
++static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
++				size_t header_length, void *header,
++				void *private_data)
  {
  	struct amdtp_stream *s = private_data;
--	unsigned int i, packets = header_length / 4;
-+	unsigned int i, syt, packets = header_length / 4;
- 
- 	/*
- 	 * Compute the cycle of the last queued packet.
-@@ -755,8 +753,10 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
- 	 */
+ 	unsigned int i, packets = header_length / 4;
+@@ -540,31 +567,10 @@ static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
  	cycle += QUEUE_LENGTH - packets;
  
--	for (i = 0; i < packets; ++i)
--		handle_out_packet(s, ++cycle);
-+	for (i = 0; i < packets; ++i) {
-+		syt = calculate_syt(s, ++cycle);
-+		handle_out_packet(s, syt);
-+	}
+ 	for (i = 0; i < packets; ++i)
+-		queue_out_packet(s, ++cycle);
++		handle_out_packet(s, ++cycle);
  	fw_iso_context_queue_flush(s->context);
  }
  
+-static int queue_initial_skip_packets(struct amdtp_stream *s)
+-{
+-	struct fw_iso_packet skip_packet = {
+-		.skip = 1,
+-	};
+-	unsigned int i;
+-	int err;
+-
+-	for (i = 0; i < QUEUE_LENGTH; ++i) {
+-		skip_packet.interrupt = IS_ALIGNED(s->packet_index + 1,
+-						   INTERRUPT_INTERVAL);
+-		err = fw_iso_context_queue(s->context, &skip_packet, NULL, 0);
+-		if (err < 0)
+-			return err;
+-		if (++s->packet_index >= QUEUE_LENGTH)
+-			s->packet_index = 0;
+-	}
+-
+-	return 0;
+-}
+-
+ /**
+  * amdtp_stream_start - start transferring packets
+  * @s: the AMDTP stream to start
+@@ -594,7 +600,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	mutex_lock(&s->mutex);
+ 
+ 	if (WARN_ON(amdtp_stream_running(s) ||
+-		    (!s->pcm_channels && !s->midi_ports))) {
++		    (s->data_block_quadlets < 1))) {
+ 		err = -EBADFD;
+ 		goto err_unlock;
+ 	}
+@@ -612,7 +618,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
+ 					   FW_ISO_CONTEXT_TRANSMIT,
+ 					   channel, speed, 0,
+-					   out_packet_callback, s);
++					   out_stream_callback, s);
+ 	if (IS_ERR(s->context)) {
+ 		err = PTR_ERR(s->context);
+ 		if (err == -EBUSY)
+@@ -624,11 +630,13 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	amdtp_stream_update(s);
+ 
+ 	s->packet_index = 0;
+-	s->data_block_counter = 0;
+-	err = queue_initial_skip_packets(s);
+-	if (err < 0)
+-		goto err_context;
++	do {
++		err = queue_out_packet(s, 0, true);
++		if (err < 0)
++			goto err_context;
++	} while (s->packet_index > 0);
+ 
++	s->data_block_counter = 0;
+ 	err = fw_iso_context_start(s->context, -1, 0, 0);
+ 	if (err < 0)
+ 		goto err_context;
 -- 
 1.8.3.2
 
