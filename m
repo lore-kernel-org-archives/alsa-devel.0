@@ -1,18 +1,19 @@
 From: Benoit Cousson <bcousson@baylibre.com>
-Subject: [RFT v2 1/6] ASoC: core: Add helpers for codec and
-	codec_dai search
-Date: Fri, 21 Mar 2014 16:27:25 +0100
-Message-ID: <1395415650-20045-2-git-send-email-bcousson@baylibre.com>
+Subject: [RFT v2 2/6] ASoC: core: Add helpers for codec DAI
+	probe & remove
+Date: Fri, 21 Mar 2014 16:27:26 +0100
+Message-ID: <1395415650-20045-3-git-send-email-bcousson@baylibre.com>
 References: <1395415650-20045-1-git-send-email-bcousson@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
- by alsa0.perex.cz (Postfix) with ESMTP id B05882610A7
- for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 16:28:01 +0100 (CET)
-Received: by mail-wg0-f52.google.com with SMTP id k14so1735309wgh.35
- for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 08:28:01 -0700 (PDT)
+Received: from mail-wi0-f178.google.com (mail-wi0-f178.google.com
+ [209.85.212.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D1DA265373
+ for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 16:28:22 +0100 (CET)
+Received: by mail-wi0-f178.google.com with SMTP id bs8so623469wib.17
+ for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 08:28:22 -0700 (PDT)
 In-Reply-To: <1395415650-20045-1-git-send-email-bcousson@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,131 +30,127 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Misael Lopez Cruz <misael.lopez@ti.com>
 
-Add dedicated helpers for codec and codec_dai search in preparation
-for DAI-multicodec. It will help reducing the extra indentation
-that will be introduced by the iteration over multiple codecs.
+Add helper functions for codec DAI probe and remove in
+preparation for DAI-multicodec support.
 
-Previous implementation unnecessarily kept searching for a matching
-codec in the remaining register codecs even if it was already found.
-
-Fix that by returning in case of matching.
+No functional change.
 
 Signed-off-by: Misael Lopez Cruz <misael.lopez@ti.com>
 [fparent@baylibre.com: Adapt to 3.14+]
 Signed-off-by: Fabien Parent <fparent@baylibre.com>
 Signed-off-by: Benoit Cousson <bcousson@baylibre.com>
 ---
- sound/soc/soc-core.c | 79 +++++++++++++++++++++++++++++++---------------------
- 1 file changed, 47 insertions(+), 32 deletions(-)
+ sound/soc/soc-core.c | 74 +++++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 47 insertions(+), 27 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b322cf2..ab65137 100644
+index ab65137..1bcc446 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -854,14 +854,47 @@ EXPORT_SYMBOL_GPL(snd_soc_resume);
- static const struct snd_soc_dai_ops null_dai_ops = {
- };
+@@ -1010,21 +1010,10 @@ static void soc_remove_codec(struct snd_soc_codec *codec)
+ 	module_put(codec->dev->driver->owner);
+ }
  
-+static struct snd_soc_codec *soc_find_codec(const struct device_node *codec_of_node,
-+					    const char *codec_name)
-+{
-+	struct snd_soc_codec *codec;
-+
-+	list_for_each_entry(codec, &codec_list, list) {
-+		if (codec_of_node) {
-+			if (codec->dev->of_node != codec_of_node)
-+				continue;
-+		} else {
-+			if (strcmp(codec->name, codec_name))
-+				continue;
-+		}
-+
-+		return codec;
-+	}
-+
-+	return NULL;
+-static void soc_remove_link_dais(struct snd_soc_card *card, int num, int order)
++static void soc_remove_codec_dai(struct snd_soc_dai *codec_dai, int order)
+ {
+-	struct snd_soc_pcm_runtime *rtd = &card->rtd[num];
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai, *cpu_dai = rtd->cpu_dai;
+ 	int err;
+ 
+-	/* unregister the rtd device */
+-	if (rtd->dev_registered) {
+-		device_remove_file(rtd->dev, &dev_attr_pmdown_time);
+-		device_remove_file(rtd->dev, &dev_attr_codec_reg);
+-		device_unregister(rtd->dev);
+-		rtd->dev_registered = 0;
+-	}
+-
+-	/* remove the CODEC DAI */
+ 	if (codec_dai && codec_dai->probed &&
+ 			codec_dai->driver->remove_order == order) {
+ 		if (codec_dai->driver->remove) {
+@@ -1037,6 +1026,24 @@ static void soc_remove_link_dais(struct snd_soc_card *card, int num, int order)
+ 		codec_dai->probed = 0;
+ 		list_del(&codec_dai->card_list);
+ 	}
 +}
 +
-+static struct snd_soc_dai *soc_find_codec_dai(struct snd_soc_codec *codec,
-+					      const char *codec_dai_name)
++static void soc_remove_link_dais(struct snd_soc_card *card, int num, int order)
 +{
-+	struct snd_soc_dai *codec_dai;
++	struct snd_soc_pcm_runtime *rtd = &card->rtd[num];
++	struct snd_soc_dai *codec_dai = rtd->codec_dai, *cpu_dai = rtd->cpu_dai;
++	int err;
 +
-+	list_for_each_entry(codec_dai, &codec->component.dai_list, list) {
-+		if (!strcmp(codec_dai->name, codec_dai_name)) {
-+			return codec_dai;
-+		}
++	/* unregister the rtd device */
++	if (rtd->dev_registered) {
++		device_remove_file(rtd->dev, &dev_attr_pmdown_time);
++		device_remove_file(rtd->dev, &dev_attr_codec_reg);
++		device_unregister(rtd->dev);
++		rtd->dev_registered = 0;
 +	}
 +
-+	return NULL;
++	/* remove the CODEC DAI */
++	soc_remove_codec_dai(codec_dai, order);
+ 
+ 	/* remove the cpu_dai */
+ 	if (cpu_dai && cpu_dai->probed &&
+@@ -1386,6 +1393,31 @@ static int soc_probe_link_components(struct snd_soc_card *card, int num,
+ 	return 0;
+ }
+ 
++static int soc_probe_codec_dai(struct snd_soc_card *card,
++			       struct snd_soc_dai *codec_dai,
++			       int order)
++{
++	int ret;
++
++	if (!codec_dai->probed && codec_dai->driver->probe_order == order) {
++		if (codec_dai->driver->probe) {
++			ret = codec_dai->driver->probe(codec_dai);
++			if (ret < 0) {
++				dev_err(codec_dai->dev,
++					"ASoC: failed to probe CODEC DAI %s: %d\n",
++					codec_dai->name, ret);
++				return ret;
++			}
++		}
++
++		/* mark codec_dai as probed and add to card dai list */
++		codec_dai->probed = 1;
++		list_add(&codec_dai->card_list, &card->dai_dev_list);
++	}
++
++	return 0;
 +}
 +
- static int soc_bind_dai_link(struct snd_soc_card *card, int num)
+ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
  {
  	struct snd_soc_dai_link *dai_link = &card->dai_link[num];
- 	struct snd_soc_pcm_runtime *rtd = &card->rtd[num];
- 	struct snd_soc_component *component;
--	struct snd_soc_codec *codec;
- 	struct snd_soc_platform *platform;
--	struct snd_soc_dai *codec_dai, *cpu_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	const char *platform_name;
- 
- 	dev_dbg(card->dev, "ASoC: binding %s at idx %d\n", dai_link->name, num);
-@@ -889,42 +922,24 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
- 		return -EPROBE_DEFER;
+@@ -1435,21 +1467,9 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
  	}
  
--	/* Find CODEC from registered CODECs */
--	list_for_each_entry(codec, &codec_list, list) {
--		if (dai_link->codec_of_node) {
--			if (codec->dev->of_node != dai_link->codec_of_node)
--				continue;
--		} else {
--			if (strcmp(codec->name, dai_link->codec_name))
--				continue;
--		}
--
--		rtd->codec = codec;
--
--		/*
--		 * CODEC found, so find CODEC DAI from registered DAIs from
--		 * this CODEC
--		 */
--		list_for_each_entry(codec_dai, &codec->component.dai_list, list) {
--			if (!strcmp(codec_dai->name, dai_link->codec_dai_name)) {
--				rtd->codec_dai = codec_dai;
--				break;
+ 	/* probe the CODEC DAI */
+-	if (!codec_dai->probed && codec_dai->driver->probe_order == order) {
+-		if (codec_dai->driver->probe) {
+-			ret = codec_dai->driver->probe(codec_dai);
+-			if (ret < 0) {
+-				dev_err(codec_dai->dev,
+-					"ASoC: failed to probe CODEC DAI %s: %d\n",
+-					codec_dai->name, ret);
+-				return ret;
 -			}
 -		}
 -
--		if (!rtd->codec_dai) {
--			dev_err(card->dev, "ASoC: CODEC DAI %s not registered\n",
--				dai_link->codec_dai_name);
--			return -EPROBE_DEFER;
--		}
+-		/* mark codec_dai as probed and add to card dai list */
+-		codec_dai->probed = 1;
+-		list_add(&codec_dai->card_list, &card->dai_dev_list);
 -	}
--
-+	/* Find CODEC from registered list */
-+	rtd->codec = soc_find_codec(dai_link->codec_of_node,
-+				    dai_link->codec_name);
- 	if (!rtd->codec) {
- 		dev_err(card->dev, "ASoC: CODEC %s not registered\n",
- 			dai_link->codec_name);
- 		return -EPROBE_DEFER;
- 	}
++	ret = soc_probe_codec_dai(card, codec_dai, order);
++	if (ret)
++		return ret;
  
-+	/* Find CODEC DAI from registered list */
-+	rtd->codec_dai = soc_find_codec_dai(rtd->codec,
-+					    dai_link->codec_dai_name);
-+	if (!rtd->codec_dai) {
-+		dev_err(card->dev, "ASoC: CODEC DAI %s not registered\n",
-+			dai_link->codec_dai_name);
-+		return -EPROBE_DEFER;
-+	}
-+
- 	/* if there's no platform we match on the empty platform */
- 	platform_name = dai_link->platform_name;
- 	if (!platform_name && !dai_link->platform_of_node)
+ 	/* complete DAI probe during last probe */
+ 	if (order != SND_SOC_COMP_ORDER_LAST)
 -- 
 1.8.3.2
