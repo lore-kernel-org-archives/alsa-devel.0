@@ -1,23 +1,18 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: Re: [PATCH v2 16/16] ASoC: fsl-ssi: Use regmap
-Date: Fri, 21 Mar 2014 09:19:13 +0000
-Message-ID: <94d67ae23a9f4458ba7ed00ec4c748c2@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
- <1394887464-969-17-git-send-email-mpa@pengutronix.de>
- <1394894616.578942243@f331.i.mail.ru>
- <20140318081019.GJ11360@pengutronix.de>
- <5b62326226b54b1da0addf839cbcd104@BY2PR03MB505.namprd03.prod.outlook.com>
- <532B04D1.9000405@tabi.org> <20140321084537.GA30910@pengutronix.de>
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [RFC PATCH] ASoC: wm8904: add CCF support
+Date: Fri, 21 Mar 2014 10:37:47 +0000
+Message-ID: <20140321103747.GK23372@e106331-lin.cambridge.arm.com>
+References: <1395370262-23305-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2lp0203.outbound.protection.outlook.com [207.46.163.203])
- by alsa0.perex.cz (Postfix) with ESMTP id 63320265313
- for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 10:19:23 +0100 (CET)
-In-Reply-To: <20140321084537.GA30910@pengutronix.de>
-Content-Language: en-US
+Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
+ [217.140.96.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id C79F5265329
+ for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 11:37:48 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1395370262-23305-1-git-send-email-voice.shen@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,62 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>, Timur Tabi <timur@tabi.org>
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexander Shiyan <shc_work@mail.ru>, Mark Brown <broonie@kernel.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Bo Shen <voice.shen@atmel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "b.brezillon.dev@gmail.com" <b.brezillon.dev@gmail.com>, "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>, "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-> Subject: Re: [PATCH v2 16/16] ASoC: fsl-ssi: Use regmap
+On Fri, Mar 21, 2014 at 02:51:02AM +0000, Bo Shen wrote:
+> Enable WM8904 to support common clock framework.
+> And also supports different clk configuration.
 > 
-> Hi,
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> ---
 > 
-> On Thu, Mar 20, 2014 at 10:10:09AM -0500, Timur Tabi wrote:
-> > On 03/20/2014 01:07 AM, Li.Xiubo@freescale.com wrote:
-> > >While for the scenario like our LS1(ARM) platform.
-> > >CPU		SSI
-> > >LE		BE	then should we set the .val_format_endian to
-> > >			REGMAP_ENDIAN_BIG
-> > >
-> > >
-> > >And so not only for PowerPC, but also maybe for ARM platforms.
-> > >So here how about just adding one Boolean property like 'big-endian' in DT
-> node
-> > >to learn the endianness of the devices dynamically ?
-> >
-> > That's not a bad idea.  The property should be something like,
-> > "fsl,ssi-endian" and is should be set to "big", "little", or
-> > "native". In the absence of the property, it should default to
-> > native endian.
+>  Documentation/devicetree/bindings/sound/wm8904.txt | 57 ++++++++++++++++++++++
+>  sound/soc/codecs/wm8904.c                          | 39 +++++++++++++++
+>  2 files changed, 96 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/wm8904.txt
 > 
-> Perhaps it is better to create some generic binding for that? There may
-> be other drivers/components that have the same strange combinations and
-> need a similar binding to use for regmap.
-> 
-> We could use something like an "endian" property with "big", "little"
-> and "native" which is then parsed by some function of the regmap
-> framework. It could directly fill those information into the
-> struct regmap_config.
-> 
-> Thanks,
-> 
-> Markus
-> 
+> diff --git a/Documentation/devicetree/bindings/sound/wm8904.txt b/Documentation/devicetree/bindings/sound/wm8904.txt
+> new file mode 100644
+> index 0000000..039374d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/wm8904.txt
+> @@ -0,0 +1,57 @@
+> +WM8904 audio CODEC
+> +
+> +This device supports I2C only.
+> +
+> +Required properties:
+> +  - compatible: "wlf,wm8904"
+> +  - reg: the I2C address of the device.
+> +
+> +  if work with CCF, the following properties as required:
 
-Yes, actually the fsl-sai, fsl-esai and fsl-spdif have already supported
-this. In our Platforms of Vybird, LS1 and LS2 will support different endianess
-of these devices and also many other IP blocks.
+The DT shouldn't care about the software stack. You don't need to refer
+to the CCF, just the clock bindings.
 
-But I used the Boolean property like "big-endian" and this is enough, because
-for now the regmap core does not support the following scenario:
+> +  - wlf,sysclk-from-mclk: set the sys clock is driven from mclk,
 
-CPU		IP
-------------------
-BE		LE
+Why can the kernel not decide this?
 
-:)
+> +    - wlf,mclk-use-xtal: if the mclk is generated by crystal.
+> +      if without this property, the mclk is generated from SOC.
 
-Thanks,
---
+Huh? What exact property do you actually are about here?
 
-Best Regards,
-Xiubo
+> +      - clocks: which clock generated clock to mclk.
+> +      - clock-names: the clock names use for retrieve.
+
+NO. Is you wish to use clock-names, then define the set of names you
+expect; clock-names are the names of the _input_ lines. The
+documentation sets this out clearly. Take a look at
+Documentation/devicetree/bindings/clock/clock-bindings.txt.
+
+> +    - wlf,mclk-freq: mclk's frequency
+
+If you expect mclk, you should be able to query this from it. You don't
+need a separate property.
+
+Unless this is a frequency to set it to? If so, why can the kernel not
+choose this?
+
+Chers,
+Mark.
