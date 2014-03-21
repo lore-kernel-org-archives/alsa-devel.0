@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 42/44] bebob/firewire-lib: Add a quirk of wrong dbc in empty
-	packet for M-Audio special Firewire series
-Date: Fri, 21 Mar 2014 20:10:27 +0900
-Message-ID: <1395400229-22957-43-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 43/44] bebob: Send a cue to load firmware for M-Audio Firewire
+	series
+Date: Fri, 21 Mar 2014 20:10:28 +0900
+Message-ID: <1395400229-22957-44-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,95 +21,180 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-M-Audio Firewire 1814 has a quirk, ProjectMix I/O also has. They transmit
-empty packet with wrong value of dbc incremented by 8 at high sampling rate.
-According to IEC 61883-1, this value should be the same as the one in
-previous packet.
+Just powering on, these devices below wait to download firmware.
+ - Firewire Audiophile
+ - Firewire 410
+ - Firewire 1814
+ - ProjectMix I/O
 
-This commit adds a flag named as CIP_EMPTY_HAS_WRONG_DBC. With flag, the value
-of dbc in empty packet is overwittern by the one in expected value.
-
-This is an example of this quirk:
-CIP Header 0	CIP Header 1	Payload size
-010D0000	9004F759	210
-010D0010	90040B59	210
-010D0020	90042359	210
-01020028	9004FFFF	2  <-
-010D0030	90043759	210
-010D0040	90044B59	210
-010D0050	90046359	210
-01020058	9004FFFF	2  <-
-010D0060	90047759	210
-010D0070	90048B59	210
-010D0080	9004A359	210
-01020088	9004FFFF	2  <-
-010D0090	9004B759	210
-010D00A0	9004CB59	210
-010D00B0	9004E359	210
-010200B8	9004FFFF	2  <-
-010D00C0	9004F759	210
-010D00D0	90040B59	210
-010D00E0	90042359	210
+But firmware version 5058 or later, flash memory in the device stores the
+firmware. So this driver can enable these devices by sending a certain cue to
+load the firmware.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c              | 2 ++
- sound/firewire/amdtp.h              | 3 +++
- sound/firewire/bebob/bebob_stream.c | 7 +++++++
- 3 files changed, 12 insertions(+)
+ sound/firewire/bebob/bebob.c        | 23 ++++++++-----
+ sound/firewire/bebob/bebob.h        |  1 +
+ sound/firewire/bebob/bebob_maudio.c | 69 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 84 insertions(+), 9 deletions(-)
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 820d790..c443a3a 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -745,6 +745,8 @@ static void handle_in_packet(struct amdtp_stream *s,
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index b745ddc..d5cc98f 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -177,18 +177,21 @@ bebob_probe(struct fw_unit *unit,
+ 	}
  
- 	/* Check data block counter continuity */
- 	data_block_counter = cip_header[0] & AMDTP_DBC_MASK;
-+	if (data_blocks == 0 && (s->flags & CIP_EMPTY_HAS_WRONG_DBC))
-+		data_block_counter = s->data_block_counter;
- 	if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
- 		lost = data_block_counter != s->data_block_counter;
- 	} else {
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index e3ee739..7981f4d 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -29,6 +29,8 @@
-  *	The value of data_block_quadlets is used instead of reported value.
-  * @CIP_SKIP_INIT_DBC_CHECK: Only for in-stream. The value of dbc in first
-  *	packet is not continuous from an initial value.
-+ * @CIP_EMPTY_HAS_WRONG_DBC: Only for in-stream. The value of dbc in empty
-+ *	packet is wrong but the others are correct.
+ 	if ((entry->vendor_id == VEN_FOCUSRITE) &&
+-	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH)) {
++	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH))
+ 		spec = get_saffire_spec(unit);
+-	} else if ((entry->vendor_id == VEN_MAUDIO1) &&
+-		   (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
+-		   !check_audiophile_booted(unit)) {
+-			err = 0;
+-			goto end;
+-	} else {
++	else if ((entry->vendor_id == VEN_MAUDIO1) &&
++		 (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
++		 !check_audiophile_booted(unit))
++		spec = NULL;
++	else
+ 		spec = (const struct snd_bebob_spec *)entry->driver_data;
+-	}
++
+ 	if (spec == NULL) {
+-		err = -ENOSYS;
++		if ((entry->vendor_id == VEN_MAUDIO1) ||
++		    (entry->vendor_id == VEN_MAUDIO2))
++			err = snd_bebob_maudio_load_firmware(unit);
++		else
++			err = -ENOSYS;
+ 		goto end;
+ 	}
+ 
+@@ -373,6 +376,7 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
+ 			    &saffire_spec),
+ 	/* M-Audio, Firewire 410 */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010058, NULL),	/* bootloader */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010046, &maudio_fw410_spec),
+ 	/* M-Audio, Firewire Audiophile */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_AUDIOPHILE_BOTH,
+@@ -386,6 +390,7 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	/* M-Audio, ProFireLightbridge */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x000100a1, &spec_normal),
+ 	/* Firewire 1814 */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010070, NULL),	/* bootloader */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_FW1814,
+ 			    &maudio_special_spec),
+ 	/* M-Audio ProjectMix */
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index 057c9d4..6dad0d0 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -242,6 +242,7 @@ extern struct snd_bebob_spec maudio_ozonic_spec;
+ extern struct snd_bebob_spec maudio_nrv10_spec;
+ extern struct snd_bebob_spec maudio_special_spec;
+ int snd_bebob_maudio_special_discover(struct snd_bebob *bebob, bool is1814);
++int snd_bebob_maudio_load_firmware(struct fw_unit *unit);
+ 
+ #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
+ { \
+diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
+index 56d4f17..4c44d1e 100644
+--- a/sound/firewire/bebob/bebob_maudio.c
++++ b/sound/firewire/bebob/bebob_maudio.c
+@@ -16,6 +16,15 @@
+  * settings when completing uploading. Then these devices generate bus reset
+  * and are recognized as new devices with the firmware.
+  *
++ * But with firmware version 5058 or later, the firmware is stored to flash
++ * memory in the device and drivers can tell DM1000 to load the firmware by
++ * sending a cue. This cue must be sent one time.
++ *
++ * If the firmware blobs are in alsa-firmware package, this driver can support
++ * these devices with any firmware versions. (Then this driver need codes to
++ * upload the firmware blob.) But for this, the license of firmware blob needs
++ * to be considered.
++ *
+  * For streaming, both of output and input streams are needed for Firewire 410
+  * and Ozonic. The single stream is OK for the other devices even if the clock
+  * source is not SYT-Match (I note no devices use SYT-Match).
+@@ -31,6 +40,20 @@
+  * functionality is between 0xffc700700000 to 0xffc70070009c.
   */
- enum cip_flags {
- 	CIP_NONBLOCKING		= 0x00,
-@@ -39,6 +41,7 @@ enum cip_flags {
- 	CIP_DBC_IS_END_EVENT	= 0x10,
- 	CIP_WRONG_DBS		= 0x20,
- 	CIP_SKIP_INIT_DBC_CHECK	= 0x40,
-+	CIP_EMPTY_HAS_WRONG_DBC	= 0x80,
+ 
++/* Offset from information register */
++#define INFO_OFFSET_SW_DATE	0x20
++
++/* Bootloader Protocol Version 1 */
++#define MAUDIO_BOOTLOADER_CUE1	0x00000001
++/*
++ * Initializing configuration to factory settings (= 0x1101), (swapped in line),
++ * Command code is zero (= 0x00),
++ * the number of operands is zero (= 0x00)(at least significant byte)
++ */
++#define MAUDIO_BOOTLOADER_CUE2	0x01110000
++/* padding */
++#define MAUDIO_BOOTLOADER_CUE3	0x00000000
++
+ #define MAUDIO_SPECIFIC_ADDRESS	0xffc700000000
+ 
+ #define METER_OFFSET		0x00600000
+@@ -67,6 +90,52 @@ struct special_params {
+ 	struct snd_ctl_elem_id *ctl_id_sync;
  };
  
- /**
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index 95d82f4..5be82f1 100644
---- a/sound/firewire/bebob/bebob_stream.c
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -436,6 +436,13 @@ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
- 	}
- 	/* See comments in next function */
- 	bebob->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK;
++/*
++ * For some M-Audio devices, this module just send cue to load firmware. After
++ * loading, the device generates bus reset and newly detected.
++ *
++ * If we make any transactions to load firmware, the operation may failed.
++ */
++int snd_bebob_maudio_load_firmware(struct fw_unit *unit)
++{
++	struct fw_device *device = fw_parent_device(unit);
++	int err, rcode;
++	u64 date;
++	__be32 cues[3] = {
++		MAUDIO_BOOTLOADER_CUE1,
++		MAUDIO_BOOTLOADER_CUE2,
++		MAUDIO_BOOTLOADER_CUE3
++	};
++
++	/* check date of software used to build */
++	err = snd_bebob_read_block(unit, INFO_OFFSET_SW_DATE,
++				   &date, sizeof(u64));
++	if (err < 0)
++		goto end;
 +	/*
-+	 * At high sampling rate, M-Audio special firmware transmits empty
-+	 * packet with the value of dbc incremented by 8 but the others are
-+	 * valid to IEC 61883-1.
++	 * firmware version 5058 or later has date later than "20070401", but
++	 * 'date' is not null-terminated.
 +	 */
-+	if (bebob->maudio_special_quirk)
-+		bebob->tx_stream.flags |= CIP_EMPTY_HAS_WRONG_DBC;
- 
- 	err = amdtp_stream_init(&bebob->rx_stream, bebob->unit,
- 				AMDTP_OUT_STREAM, CIP_BLOCKING);
++	if (date < 0x3230303730343031) {
++		dev_err(&unit->device,
++			"Use firmware version 5058 or later\n");
++		err = -ENOSYS;
++		goto end;
++	}
++
++	rcode = fw_run_transaction(device->card, TCODE_WRITE_BLOCK_REQUEST,
++				   device->node_id, device->generation,
++				   device->max_speed, BEBOB_ADDR_REG_REQ,
++				   cues, sizeof(cues));
++	if (rcode != RCODE_COMPLETE) {
++		dev_err(&unit->device,
++			"Failed to send a cue to load firmware\n");
++		err = -EIO;
++	}
++end:
++	return err;
++}
++
+ static inline int
+ get_meter(struct snd_bebob *bebob, void *buf, unsigned int size)
+ {
 -- 
 1.8.3.2
 
