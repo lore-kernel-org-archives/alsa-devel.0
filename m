@@ -1,15 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: mfld_machine: Fix compile error
-Date: Fri, 21 Mar 2014 20:23:51 +0100
-Message-ID: <1395429831-22561-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: mfld_machine: Fix compile error
+Date: Fri, 21 Mar 2014 19:33:52 +0000
+Message-ID: <20140321193352.GT552@sirena.org.uk>
+References: <1395429831-22561-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7112238614101400343=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-054.synserver.de (smtp-out-054.synserver.de
- [212.40.185.54])
- by alsa0.perex.cz (Postfix) with ESMTP id A5A39265044
- for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 20:23:23 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F9F4265148
+ for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 20:34:03 +0100 (CET)
+In-Reply-To: <1395429831-22561-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,29 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fixes: 115f3f8 ("ASoC: mfld_machine: Convert to table based DAPM and control setup")
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/intel/mfld_machine.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/mfld_machine.c b/sound/soc/intel/mfld_machine.c
-index 4616942..031d787 100644
---- a/sound/soc/intel/mfld_machine.c
-+++ b/sound/soc/intel/mfld_machine.c
-@@ -254,7 +254,7 @@ static int mfld_init(struct snd_soc_pcm_runtime *runtime)
- 	snd_soc_dapm_disable_pin(dapm, "LINEINR");
- 
- 	/* Headset and button jack detection */
--	ret_val = snd_soc_jack_new(codec, "Intel(R) MID Audio Jack",
-+	ret_val = snd_soc_jack_new(mfld_codec, "Intel(R) MID Audio Jack",
- 			SND_JACK_HEADSET | SND_JACK_BTN_0 |
- 			SND_JACK_BTN_1, &mfld_jack);
- 	if (ret_val) {
--- 
-1.8.0
+--===============7112238614101400343==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BVQ1RKc6+nLPB5pT"
+Content-Disposition: inline
+
+
+--BVQ1RKc6+nLPB5pT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Mar 21, 2014 at 08:23:51PM +0100, Lars-Peter Clausen wrote:
+> Fixes: 115f3f8 ("ASoC: mfld_machine: Convert to table based DAPM and control setup")
+> Reported-by: kbuild test robot <fengguang.wu@intel.com>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+
+Applied, thanks.
+
+--BVQ1RKc6+nLPB5pT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTLJQdAAoJELSic+t+oim9ZpgP/2w/kaJD+4mK4hLudWI+7zQl
+dS50TnnmDdTZ8PNAzqGZ/OrXHWN7MDDmQlwwEa16k2Xp6yfpQ3VuMYdBvCAQvLem
+8+PkC7sTdhy662Tg/80aa6qR1ev58IDIUhOrIRURosBy21M7vrA6vi0GQ5Q1t7Xc
+gUs6h52pbbBiJXXjQof2GM6ko3R5+CjjXaBcxU94qOvfSuqQPe32NE80KXRo216r
+lssomvYYfpOQk9iBcBfF1tYn1Zt7C8cMpM/JRto6s3F2xvE5JLGH+1t8m4l9hvfr
+LozABCROHysRQ357yN1gLk6nBIVZpffCy7qSaNowvk0M1Qnlrq+Hekbn+e6pTYA/
+acjHa8det69j6WYekLw9benyd6lmfmzocrPTDsBxTcJXNWTjq+VDsfzSKbOcuGIE
+6fQ1LAMAFRithvlwUukhCEZKBsmO50xoqVxe0gqEozSmPa/U/f8L59VuIK7qfeL/
+U15ECa7AKGH0KCjHuJPfUdIHu8TxtpmjGzgfZaA/N9UjVeJUrpin3Do0y76irR6o
+4NMzno/KmuN8ScnR07lsJhCIG4S2ehmM8dzDAS+nUTUtQYJts/CLb4y4fO4Wb/GF
+T6C+jaL1Byw6gNAL1ev1dz9LMxjthdgt1i/DSrR8klOBkSnOlmYOWPdIcbOuvnOU
+tjNHXorHutLvzFnPngur
+=X6qZ
+-----END PGP SIGNATURE-----
+
+--BVQ1RKc6+nLPB5pT--
+
+--===============7112238614101400343==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7112238614101400343==--
