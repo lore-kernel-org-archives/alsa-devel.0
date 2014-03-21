@@ -1,17 +1,17 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH 2/4] ASoC: fsl-utils: Add
-	fsl_asoc_xlate_tdm_slot_mask() support.
-Date: Fri, 21 Mar 2014 14:17:13 +0800
-Message-ID: <1395382635-16349-3-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCH 3/4] ASoC: fsl-esai: Add .xlate_tdm_slot_mask()
+	support.
+Date: Fri, 21 Mar 2014 14:17:14 +0800
+Message-ID: <1395382635-16349-4-git-send-email-Li.Xiubo@freescale.com>
 References: <1395382635-16349-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe001.messaging.microsoft.com [207.46.163.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C8E3265313
- for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 08:01:11 +0100 (CET)
+ (co9ehsobe003.messaging.microsoft.com [207.46.163.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3FCA2610AA
+ for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 08:01:14 +0100 (CET)
 In-Reply-To: <1395382635-16349-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,68 +26,46 @@ To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, lars@metafoo.de, Xiubo Li <Li.Xiubo@freescale.com>, Guangyu.Chen@freescale.com, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch add fsl_asoc_xlate_tdm_slot_mask() support for utils.
-For the some spcified DAI driver, this will be used to generate the
-TDM slot TX/RX mask. And the TX/RX mask will use a 0 bit for an active
-slot as default, and the default active bits are at the LSB of
-the masks.
+This patch add .xlate_tdm_slot_mask support for ESAI, and this will
+generate the TDM slot TX and RX masks.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/fsl/fsl_utils.c | 27 +++++++++++++++++++++++++++
- sound/soc/fsl/fsl_utils.h |  4 +++-
- 2 files changed, 30 insertions(+), 1 deletion(-)
+ sound/soc/fsl/Kconfig    | 1 +
+ sound/soc/fsl/fsl_esai.c | 2 ++
+ 2 files changed, 3 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
-index b9e42b5..2ac7755 100644
---- a/sound/soc/fsl/fsl_utils.c
-+++ b/sound/soc/fsl/fsl_utils.c
-@@ -86,6 +86,33 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np,
- }
- EXPORT_SYMBOL(fsl_asoc_get_dma_channel);
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 597962e..789bc4d 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -13,6 +13,7 @@ config SND_SOC_FSL_SPDIF
+ config SND_SOC_FSL_ESAI
+ 	tristate
+ 	select REGMAP_MMIO
++	select SND_SOC_FSL_UTILS
  
-+/**
-+ * fsl_asoc_xlate_tdm_slot_mask - generate TDM slot TX/RX mask.
-+ *
-+ * @slots: Number of slots in use.
-+ * @tx_mask: bitmask representing active TX slots.
-+ * @rx_mask: bitmask representing active RX slots.
-+ *
-+ * This function used to generate the TDM slot TX/RX mask. And the TX/RX
-+ * mask will use a 0 bit for an active slot as default, and the default
-+ * active bits are at the LSB of the mask value.
-+ */
-+int fsl_asoc_xlate_tdm_slot_mask(unsigned int slots,
-+				    unsigned int *tx_mask,
-+				    unsigned int *rx_mask)
-+{
-+	if (!slots)
-+		return -EINVAL;
-+
-+	if (tx_mask)
-+		*tx_mask = ~((1 << slots) - 1);
-+	if (rx_mask)
-+		*rx_mask = ~((1 << slots) - 1);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(fsl_asoc_xlate_tdm_slot_mask);
-+
- MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
- MODULE_DESCRIPTION("Freescale ASoC utility code");
- MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/fsl/fsl_utils.h b/sound/soc/fsl/fsl_utils.h
-index b295112..df535db 100644
---- a/sound/soc/fsl/fsl_utils.h
-+++ b/sound/soc/fsl/fsl_utils.h
-@@ -22,5 +22,7 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np, const char *name,
- 			     struct snd_soc_dai_link *dai,
- 			     unsigned int *dma_channel_id,
- 			     unsigned int *dma_id);
--
-+int fsl_asoc_xlate_tdm_slot_mask(unsigned int slots,
-+				    unsigned int *tx_mask,
-+				    unsigned int *rx_mask);
- #endif /* _FSL_UTILS_H */
+ config SND_SOC_FSL_UTILS
+ 	tristate
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 0ba3700..c8e5db1 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -18,6 +18,7 @@
+ 
+ #include "fsl_esai.h"
+ #include "imx-pcm.h"
++#include "fsl_utils.h"
+ 
+ #define FSL_ESAI_RATES		SNDRV_PCM_RATE_8000_192000
+ #define FSL_ESAI_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
+@@ -581,6 +582,7 @@ static struct snd_soc_dai_ops fsl_esai_dai_ops = {
+ 	.hw_params = fsl_esai_hw_params,
+ 	.set_sysclk = fsl_esai_set_dai_sysclk,
+ 	.set_fmt = fsl_esai_set_dai_fmt,
++	.xlate_tdm_slot_mask = fsl_asoc_xlate_tdm_slot_mask,
+ 	.set_tdm_slot = fsl_esai_set_dai_tdm_slot,
+ };
+ 
 -- 
 1.8.4
