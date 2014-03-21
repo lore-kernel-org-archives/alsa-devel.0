@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 27/44] fireworks: Add hwdep interface
-Date: Fri, 21 Mar 2014 20:10:12 +0900
-Message-ID: <1395400229-22957-28-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 31/44] bebob/firewire-lib: Add a quirk for discontinuity at
+	bus reset
+Date: Fri, 21 Mar 2014 20:10:16 +0900
+Message-ID: <1395400229-22957-32-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,503 +21,178 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This interface is designed for mixer/control application. To use hwdep
-interface, the application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+This commit adds a flag, which has an effect to skip checking continuity
+for first packet. This flag is useful for BeBoB quirk.
+
+Normal BeBoB firmware has a quirk. When receiving bus reset, it transmit
+packets with discontinuous value in dbc field.
+
+This causes two situation, one is to abort streaming by firewire-lib as a
+result of detecting the discontinuity. Another is to call driver's .update().
+These two is generated separately. (The former depends on isochronous stream
+and the latter depends on IEEE1394 bus driver.)
+
+When BeBoB driver works with XRUN-recoverable applications, this situation
+looks like stream_update_duplex() call following to stream_start_duplex() call
+(because applications will call snd_pcm_prepare() immediately).
+
+We shouldn't break connections in stream_update_duplex() or
+stream_start_duplex() at bus reset because of this quirk. When breaking
+connections, stream_start_duplex() re-establish them, streams immediately
+have packets with discontinuity, then firewire-lib generates XRUN,
+applications call snd_pcm_prepare() and stream_start_duplex() is called
+again, breaking connections, re-establishing connections...(loop)
+
+To avoid this situation, this commit allows BeBoB driver to start streams
+during transmitting packets, without breaking connections. The flag is used
+for this purpose.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h                 |   3 +-
- include/uapi/sound/firewire.h               |   3 +-
- sound/firewire/Kconfig                      |   1 +
- sound/firewire/fireworks/Makefile           |   2 +-
- sound/firewire/fireworks/fireworks.c        |   5 +
- sound/firewire/fireworks/fireworks.h        |  12 ++
- sound/firewire/fireworks/fireworks_hwdep.c  | 197 ++++++++++++++++++++++++++++
- sound/firewire/fireworks/fireworks_midi.c   |  25 +++-
- sound/firewire/fireworks/fireworks_pcm.c    |  15 ++-
- sound/firewire/fireworks/fireworks_stream.c |  39 ++++++
- 10 files changed, 294 insertions(+), 8 deletions(-)
- create mode 100644 sound/firewire/fireworks/fireworks_hwdep.c
+ sound/firewire/amdtp.c              |  8 ++++++--
+ sound/firewire/amdtp.h              |  3 +++
+ sound/firewire/bebob/bebob.h        |  1 +
+ sound/firewire/bebob/bebob_stream.c | 39 ++++++++++++++++++++++++++++++++++---
+ 4 files changed, 46 insertions(+), 5 deletions(-)
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 9fc6219..5dfbfdf 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -94,9 +94,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_HDA,		/* HD-audio */
- 	SNDRV_HWDEP_IFACE_USB_STREAM,	/* direct access to usb stream */
- 	SNDRV_HWDEP_IFACE_FW_DICE,	/* TC DICE FireWire device */
-+	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_DICE
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_FIREWORKS
- };
- 
- struct snd_hwdep_info {
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index 59f5961..fc9afb2 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -34,7 +34,8 @@ union snd_firewire_event {
- #define SNDRV_FIREWIRE_IOCTL_UNLOCK    _IO('H', 0xfa)
- 
- #define SNDRV_FIREWIRE_TYPE_DICE	1
--/* Fireworks, AV/C, RME, MOTU, ... */
-+#define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
-+/* AV/C, RME, MOTU, ... */
- 
- struct snd_firewire_get_info {
- 	unsigned int type; /* SNDRV_FIREWIRE_TYPE_xxx */
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index fb39f9c..875af02 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -66,6 +66,7 @@ config SND_FIREWORKS
- 	select SND_FIREWIRE_LIB
- 	select SND_RAWMIDI
- 	select SND_PCM
-+	select SND_HWDEP
- 	help
- 	  Say Y here to include support for FireWire devices based
- 	  on Echo Digital Audio Fireworks board:
-diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-index d7ebf83..0c74408 100644
---- a/sound/firewire/fireworks/Makefile
-+++ b/sound/firewire/fireworks/Makefile
-@@ -1,4 +1,4 @@
- snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
- 		      fireworks_stream.o fireworks_proc.o fireworks_midi.o \
--		      fireworks_pcm.o fireworks.o
-+		      fireworks_pcm.o fireworks_hwdep.o fireworks.o
- obj-m += snd-fireworks.o
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index 3c4351f..2c7ef3a 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -195,6 +195,7 @@ efw_probe(struct fw_unit *unit,
- 	efw->card_index = -1;
- 	mutex_init(&efw->mutex);
- 	spin_lock_init(&efw->lock);
-+	init_waitqueue_head(&efw->hwdep_wait);
- 
- 	err = get_hardware_info(efw);
- 	if (err < 0)
-@@ -218,6 +219,10 @@ efw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
- 
-+	err = snd_efw_create_hwdep_device(efw);
-+	if (err < 0)
-+		goto error;
-+
- 	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 86d6cfb..9c57dbe 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -24,6 +24,8 @@
- #include <sound/info.h>
- #include <sound/rawmidi.h>
- #include <sound/pcm_params.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
- 
- #include "../packets-buffer.h"
- #include "../iso-resources.h"
-@@ -80,6 +82,11 @@ struct snd_efw {
- 	unsigned int phys_in_grp_count;
- 	struct snd_efw_phys_grp phys_out_grps[HWINFO_MAX_CAPS_GROUPS];
- 	struct snd_efw_phys_grp phys_in_grps[HWINFO_MAX_CAPS_GROUPS];
-+
-+	/* for uapi */
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
- };
- 
- struct snd_efw_transaction {
-@@ -192,6 +199,9 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw,
- int snd_efw_stream_stop_duplex(struct snd_efw *efw);
- void snd_efw_stream_update_duplex(struct snd_efw *efw);
- void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
-+void snd_efw_stream_lock_changed(struct snd_efw *efw);
-+int snd_efw_stream_lock_try(struct snd_efw *efw);
-+void snd_efw_stream_lock_release(struct snd_efw *efw);
- 
- void snd_efw_proc_init(struct snd_efw *efw);
- 
-@@ -200,6 +210,8 @@ int snd_efw_create_midi_devices(struct snd_efw *efw);
- int snd_efw_create_pcm_devices(struct snd_efw *efw);
- int snd_efw_get_multiplier_mode(unsigned int sampling_rate, unsigned int *mode);
- 
-+int snd_efw_create_hwdep_device(struct snd_efw *efw);
-+
- #define SND_EFW_DEV_ENTRY(vendor, model) \
- { \
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/fireworks/fireworks_hwdep.c b/sound/firewire/fireworks/fireworks_hwdep.c
-new file mode 100644
-index 0000000..4c28b6c
---- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_hwdep.c
-@@ -0,0 +1,197 @@
-+/*
-+ * fireworks_hwdep.c - a part of driver for Fireworks based devices
-+ *
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+/*
-+ * This codes have three functionalities.
-+ *
-+ * 1.get information about firewire node
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock streaming
-+ */
-+
-+#include "fireworks.h"
-+
-+static long
-+hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
-+	   loff_t *offset)
-+{
-+	struct snd_efw *efw = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+	union snd_firewire_event event;
-+
-+	spin_lock_irq(&efw->lock);
-+
-+	while (!efw->dev_lock_changed) {
-+		prepare_to_wait(&efw->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&efw->lock);
-+		schedule();
-+		finish_wait(&efw->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&efw->lock);
-+	}
-+
-+	memset(&event, 0, sizeof(event));
-+	if (efw->dev_lock_changed) {
-+		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+		event.lock_status.status = (efw->dev_lock_count > 0);
-+		efw->dev_lock_changed = false;
-+
-+		count = min_t(long, count, sizeof(event.lock_status));
-+	}
-+
-+	spin_unlock_irq(&efw->lock);
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static unsigned int
-+hwdep_poll(struct snd_hwdep *hwdep, struct file *file, poll_table *wait)
-+{
-+	struct snd_efw *efw = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &efw->hwdep_wait, wait);
-+
-+	spin_lock_irq(&efw->lock);
-+	if (efw->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&efw->lock);
-+
-+	return events;
-+}
-+
-+static int
-+hwdep_get_info(struct snd_efw *efw, void __user *arg)
-+{
-+	struct fw_device *dev = fw_parent_device(efw->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_FIREWORKS;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int
-+hwdep_lock(struct snd_efw *efw)
-+{
-+	int err;
-+
-+	spin_lock_irq(&efw->lock);
-+
-+	if (efw->dev_lock_count == 0) {
-+		efw->dev_lock_count = -1;
-+		err = 0;
-+	} else
-+		err = -EBUSY;
-+
-+	spin_unlock_irq(&efw->lock);
-+
-+	return err;
-+}
-+
-+static int
-+hwdep_unlock(struct snd_efw *efw)
-+{
-+	int err;
-+
-+	spin_lock_irq(&efw->lock);
-+
-+	if (efw->dev_lock_count == -1) {
-+		efw->dev_lock_count = 0;
-+		err = 0;
-+	} else
-+		err = -EBADFD;
-+
-+	spin_unlock_irq(&efw->lock);
-+
-+	return err;
-+}
-+
-+static int
-+hwdep_release(struct snd_hwdep *hwdep, struct file *file)
-+{
-+	struct snd_efw *efw = hwdep->private_data;
-+
-+	spin_lock_irq(&efw->lock);
-+	if (efw->dev_lock_count == -1)
-+		efw->dev_lock_count = 0;
-+	spin_unlock_irq(&efw->lock);
-+
-+	return 0;
-+}
-+
-+static int
-+hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+	    unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_efw *efw = hwdep->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(efw, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(efw);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(efw);
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
-+}
-+
-+#ifdef CONFIG_COMPAT
-+static int
-+hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+		   unsigned int cmd, unsigned long arg)
-+{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
-+
-+static const struct snd_hwdep_ops hwdep_ops = {
-+	.read		= hwdep_read,
-+	.release	= hwdep_release,
-+	.poll		= hwdep_poll,
-+	.ioctl		= hwdep_ioctl,
-+	.ioctl_compat	= hwdep_compat_ioctl,
-+};
-+
-+int snd_efw_create_hwdep_device(struct snd_efw *efw)
-+{
-+	struct snd_hwdep *hwdep;
-+	int err;
-+
-+	err = snd_hwdep_new(efw->card, "Fireworks", 0, &hwdep);
-+	if (err < 0)
-+		goto end;
-+	strcpy(hwdep->name, "Fireworks");
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_FIREWORKS;
-+	hwdep->ops = hwdep_ops;
-+	hwdep->private_data = efw;
-+	hwdep->exclusive = true;
-+end:
-+	return err;
-+}
-+
-diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
-index d96840f..05a12ed 100644
---- a/sound/firewire/fireworks/fireworks_midi.c
-+++ b/sound/firewire/fireworks/fireworks_midi.c
-@@ -11,17 +11,36 @@
- static int midi_capture_open(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_efw *efw = substream->rmidi->private_data;
-+	int err;
-+
-+	err = snd_efw_stream_lock_try(efw);
-+	if (err < 0)
-+		goto end;
- 
- 	efw->capture_substreams++;
--	return snd_efw_stream_start_duplex(efw, &efw->tx_stream, 0);
-+	err = snd_efw_stream_start_duplex(efw, &efw->tx_stream, 0);
-+	if (err < 0)
-+		snd_efw_stream_lock_release(efw);
-+
-+end:
-+	return err;
- }
- 
- static int midi_playback_open(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_efw *efw = substream->rmidi->private_data;
-+	int err;
-+
-+	err = snd_efw_stream_lock_try(efw);
-+	if (err < 0)
-+		goto end;
- 
- 	efw->playback_substreams++;
--	return snd_efw_stream_start_duplex(efw, &efw->rx_stream, 0);
-+	err = snd_efw_stream_start_duplex(efw, &efw->rx_stream, 0);
-+	if (err < 0)
-+		snd_efw_stream_lock_release(efw);
-+end:
-+	return err;
- }
- 
- static int midi_capture_close(struct snd_rawmidi_substream *substream)
-@@ -31,6 +50,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
- 	efw->capture_substreams--;
- 	snd_efw_stream_stop_duplex(efw);
- 
-+	snd_efw_stream_lock_release(efw);
- 	return 0;
- }
- 
-@@ -41,6 +61,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
- 	efw->playback_substreams--;
- 	snd_efw_stream_stop_duplex(efw);
- 
-+	snd_efw_stream_lock_release(efw);
- 	return 0;
- }
- 
-diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
-index 88c1d53..5ea33b9 100644
---- a/sound/firewire/fireworks/fireworks_pcm.c
-+++ b/sound/firewire/fireworks/fireworks_pcm.c
-@@ -273,13 +273,17 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	unsigned int clock_source;
- 	int err;
- 
--	err = pcm_init_hw_params(efw, substream);
-+	err = snd_efw_stream_lock_try(efw);
- 	if (err < 0)
- 		goto end;
- 
-+	err = pcm_init_hw_params(efw, substream);
-+	if (err < 0)
-+		goto err_locked;
-+
- 	err = snd_efw_command_get_clock_source(efw, &clock_source);
- 	if (err < 0)
--		goto end;
-+		goto err_locked;
- 
- 	/*
- 	 * When source of clock is not internal or any PCM streams are running,
-@@ -290,7 +294,7 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	    amdtp_stream_pcm_running(&efw->rx_stream)) {
- 		err = snd_efw_command_get_sampling_rate(efw, &sampling_rate);
- 		if (err < 0)
--			goto end;
-+			goto err_locked;
- 		substream->runtime->hw.rate_min = sampling_rate;
- 		substream->runtime->hw.rate_max = sampling_rate;
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 51a13c8..820d790 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -756,7 +756,7 @@ static void handle_in_packet(struct amdtp_stream *s,
+ 		lost = data_block_counter !=
+ 		       ((s->data_block_counter + dbc_interval) & 0xff);
  	}
-@@ -298,10 +302,15 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	snd_pcm_set_sync(substream);
+-	if (lost) {
++	if (lost && s->data_block_counter != UINT_MAX) {
+ 		dev_info(&s->unit->device,
+ 			 "Detect discontinuity of CIP: %02X %02X\n",
+ 			 s->data_block_counter, data_block_counter);
+@@ -922,7 +922,11 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 		goto err_unlock;
+ 	}
+ 
+-	s->data_block_counter = 0;
++	if (s->direction == AMDTP_IN_STREAM &&
++	    s->flags & CIP_SKIP_INIT_DBC_CHECK)
++		s->data_block_counter = UINT_MAX;
++	else
++		s->data_block_counter = 0;
+ 	s->data_block_state = initial_state[s->sfc].data_block;
+ 	s->syt_offset_state = initial_state[s->sfc].syt_offset;
+ 	s->last_syt_offset = TICKS_PER_CYCLE;
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index 5414157..e3ee739 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -27,6 +27,8 @@
+  *	corresponds to the end of event in the packet. Out of IEC 61883.
+  * @CIP_WRONG_DBS: Only for in-stream. The value of dbs is wrong in in-packets.
+  *	The value of data_block_quadlets is used instead of reported value.
++ * @CIP_SKIP_INIT_DBC_CHECK: Only for in-stream. The value of dbc in first
++ *	packet is not continuous from an initial value.
+  */
+ enum cip_flags {
+ 	CIP_NONBLOCKING		= 0x00,
+@@ -36,6 +38,7 @@ enum cip_flags {
+ 	CIP_EMPTY_WITH_TAG0	= 0x08,
+ 	CIP_DBC_IS_END_EVENT	= 0x10,
+ 	CIP_WRONG_DBS		= 0x20,
++	CIP_SKIP_INIT_DBC_CHECK	= 0x40,
+ };
+ 
+ /**
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index 550ccdc..590a49e 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -53,6 +53,7 @@ struct snd_bebob {
+ 	unsigned int midi_input_ports;
+ 	unsigned int midi_output_ports;
+ 
++	bool connected;
+ 	struct cmp_connection out_conn;
+ 	struct amdtp_stream tx_stream;
+ 	struct cmp_connection in_conn;
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 9375454..f57fdd7 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -308,7 +308,10 @@ check_connection_used_by_others(struct snd_bebob *bebob, struct amdtp_stream *s)
+ static int
+ make_both_connections(struct snd_bebob *bebob, unsigned int rate)
+ {
+-	int index, pcm_channels, midi_channels, err;
++	int index, pcm_channels, midi_channels, err = 0;
++
++	if (bebob->connected)
++		goto end;
+ 
+ 	/* confirm params for both streams */
+ 	index = get_formation_index(rate);
+@@ -328,8 +331,12 @@ make_both_connections(struct snd_bebob *bebob, unsigned int rate)
+ 		goto end;
+ 	err = cmp_connection_establish(&bebob->in_conn,
+ 			amdtp_stream_get_max_payload(&bebob->rx_stream));
+-	if (err < 0)
++	if (err < 0) {
+ 		cmp_connection_break(&bebob->out_conn);
++		goto end;
++	}
++
++	bebob->connected = true;
  end:
  	return err;
-+err_locked:
-+	snd_efw_stream_lock_release(efw);
-+	return err;
  }
- 
- static int pcm_close(struct snd_pcm_substream *substream)
+@@ -339,6 +346,8 @@ break_both_connections(struct snd_bebob *bebob)
  {
-+	struct snd_efw *efw = substream->private_data;
-+	snd_efw_stream_lock_release(efw);
- 	return 0;
+ 	cmp_connection_break(&bebob->in_conn);
+ 	cmp_connection_break(&bebob->out_conn);
++
++	bebob->connected = false;
  }
  
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index d6adb22..63e12f3 100644
---- a/sound/firewire/fireworks/fireworks_stream.c
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -306,3 +306,42 @@ void snd_efw_stream_destroy_duplex(struct snd_efw *efw)
+ static void
+@@ -401,6 +410,8 @@ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
+ 		destroy_both_connections(bebob);
+ 		goto end;
+ 	}
++	/* See comments in next function */
++	bebob->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK;
  
- 	mutex_unlock(&efw->mutex);
- }
-+
-+void snd_efw_stream_lock_changed(struct snd_efw *efw)
-+{
-+	efw->dev_lock_changed = true;
-+	wake_up(&efw->hwdep_wait);
-+}
-+
-+int snd_efw_stream_lock_try(struct snd_efw *efw)
-+{
-+	int err;
-+
-+	spin_lock_irq(&efw->lock);
-+
-+	/* user land lock this */
-+	if (efw->dev_lock_count < 0) {
-+		err = -EBUSY;
-+		goto end;
-+	}
-+
-+	/* this is the first time */
-+	if (efw->dev_lock_count++ == 0)
-+		snd_efw_stream_lock_changed(efw);
-+	err = 0;
-+end:
-+	spin_unlock_irq(&efw->lock);
-+	return err;
-+}
-+
-+void snd_efw_stream_lock_release(struct snd_efw *efw)
-+{
-+	spin_lock_irq(&efw->lock);
-+
-+	if (WARN_ON(efw->dev_lock_count <= 0))
-+		goto end;
-+	if (--efw->dev_lock_count == 0)
-+		snd_efw_stream_lock_changed(efw);
-+end:
-+	spin_unlock_irq(&efw->lock);
-+}
+ 	err = amdtp_stream_init(&bebob->rx_stream, bebob->unit,
+ 				AMDTP_OUT_STREAM, CIP_BLOCKING);
+@@ -439,7 +450,29 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob,
+ 	/* need to touch slave stream */
+ 	slave_flag = (request == slave) || amdtp_stream_running(slave);
+ 
+-	/* packet queueing error */
++	/*
++	 * packet queueing error or detecting discontinuity
++	 *
++	 * Normal BeBoB firmware has a quirk at bus reset to transfers packets
++	 * with discontinuous value in dbc field.
++	 *
++	 * When this driver works with XRUN-recoverable applications, this
++	 * situation looks like stream_update_duplex() call following to
++	 * stream_start_duplex() call (because applications will call
++	 * snd_pcm_prepare() immediately).
++	 *
++	 * If breaking/re-establishing connections here, new streams are also
++	 * involved in bus reset and transfers packets with discontinuity.
++	 * Connections should be handled by a way defined in IEC 61883-1.
++	 *
++	 * But if breaking no connections here, AMDTP packets also has
++	 * discontinuity because isochronous context starts during
++	 * transmitting packets. This is a reason to use SKIP_INIT_DBC_CHECK
++	 * flag.
++	 *
++	 * As a result, when encounter bus reset, some received packets are
++	 * lost and some data already in buffer for out-packet is also lost.
++	 */
+ 	if (amdtp_streaming_error(master)) {
+ 		amdtp_stream_stop(master);
+ 		amdtp_stream_stop(slave);
 -- 
 1.8.3.2
 
