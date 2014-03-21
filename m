@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/44] firewire-lib: Add support for AMDTP in-stream and PCM
-	capture
-Date: Fri, 21 Mar 2014 20:09:49 +0900
-Message-ID: <1395400229-22957-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 17/44] fireworks: Add transaction and some commands
+Date: Fri, 21 Mar 2014 20:10:02 +0900
+Message-ID: <1395400229-22957-18-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,345 +20,912 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-For capturing PCM, this commit adds the functionality to handle in-stream.
-This is also applied for dual-wire mode.
+Fireworks uses own command and response. This commit adds functionality to
+transact and adds some commands required for sound card instance and kernel
+streaming.
 
-Currently, capturing 32bit samples are supported.
+There are two ways to deliver substance of this transaction:
+1.AV/C vendor dependent command for command/response
+2.Async transaction to specific addresses for command/response
 
-When the sequence of in-packet has discontinuity of dbc, in-stream isn't handled
-and amdtp_streaming_error() returns true.
+By way 1, I confirm AudioFire12 cannot correctly response to some commands with
+firmware version 5.0 or later. This is also confirmed by FFADO. So this driver
+implement way 2.
+
+The address for response gives an issue. When this driver allocate own callback
+function into the address, then no one can allocate its own callback function.
+This situation is not good for applications in user-land. This issue is solved
+in later commit.
+
+I note there is a command to change the address for response if the device
+supports. But this driver uses default value. So users should not execute this
+command as long as hoping this driver works correctly.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 231 +++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 213 insertions(+), 18 deletions(-)
+ sound/firewire/Kconfig                           |   1 +
+ sound/firewire/fireworks/Makefile                |   2 +-
+ sound/firewire/fireworks/fireworks.c             |  77 ++++-
+ sound/firewire/fireworks/fireworks.h             | 120 +++++++
+ sound/firewire/fireworks/fireworks_command.c     | 395 +++++++++++++++++++++++
+ sound/firewire/fireworks/fireworks_transaction.c | 191 +++++++++++
+ 6 files changed, 775 insertions(+), 11 deletions(-)
+ create mode 100644 sound/firewire/fireworks/fireworks_command.c
+ create mode 100644 sound/firewire/fireworks/fireworks_transaction.c
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 74b1045..be1aabc 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -39,6 +39,7 @@
-  * only "Clock-based rate control mode" is supported
-  */
- #define AMDTP_FDF_AM824		(0 << (CIP_FDF_SFC_SHIFT + 3))
-+#define AMDTP_FDF_NO_DATA	0xff
- #define AMDTP_DBS_MASK		0x00ff0000
- #define AMDTP_DBS_SHIFT		16
- #define AMDTP_DBC_MASK		0x000000ff
-@@ -47,6 +48,7 @@
- #define INTERRUPT_INTERVAL	16
- #define QUEUE_LENGTH		48
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 8cd4f1f..0b85ebd 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -63,6 +63,7 @@ config SND_SCS1X
  
-+#define IN_PACKET_HEADER_SIZE	4
- #define OUT_PACKET_HEADER_SIZE	0
+ config SND_FIREWORKS
+ 	tristate "Echo Fireworks board module support"
++	select SND_FIREWIRE_LIB
+ 	help
+ 	  Say Y here to include support for FireWire devices based
+ 	  on Echo Digital Audio Fireworks board:
+diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
+index 99f6fc3..a6ce214 100644
+--- a/sound/firewire/fireworks/Makefile
++++ b/sound/firewire/fireworks/Makefile
+@@ -1,2 +1,2 @@
+-snd-fireworks-objs := fireworks.o
++snd-fireworks-objs := fireworks_transaction.o fireworks_command.o fireworks.o
+ obj-m += snd-fireworks.o
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index 4ee22c8..c7e7f46 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -59,6 +59,48 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
+ /* unknown as product */
+ #define  MODEL_GIBSON_GOLDTOP		0x00afb9
  
- static void pcm_period_tasklet(unsigned long data);
-@@ -179,6 +181,12 @@ static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
- static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
- 				     struct snd_pcm_substream *pcm,
- 				     __be32 *buffer, unsigned int frames);
-+static void amdtp_read_s32(struct amdtp_stream *s,
-+			   struct snd_pcm_substream *pcm,
-+			   __be32 *buffer, unsigned int frames);
-+static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
-+				    struct snd_pcm_substream *pcm,
-+				    __be32 *buffer, unsigned int frames);
- 
- /**
-  * amdtp_stream_set_pcm_format - set the PCM format
-@@ -200,16 +208,27 @@ void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
- 		WARN_ON(1);
- 		/* fall through */
- 	case SNDRV_PCM_FORMAT_S16:
--		if (s->dual_wire)
--			s->transfer_samples = amdtp_write_s16_dualwire;
--		else
--			s->transfer_samples = amdtp_write_s16;
--		break;
-+		if (s->direction == AMDTP_OUT_STREAM) {
-+			if (s->dual_wire)
-+				s->transfer_samples = amdtp_write_s16_dualwire;
-+			else
-+				s->transfer_samples = amdtp_write_s16;
-+			break;
-+		}
-+		WARN_ON(1);
-+		/* fall through */
- 	case SNDRV_PCM_FORMAT_S32:
--		if (s->dual_wire)
--			s->transfer_samples = amdtp_write_s32_dualwire;
--		else
--			s->transfer_samples = amdtp_write_s32;
-+		if (s->direction == AMDTP_OUT_STREAM) {
-+			if (s->dual_wire)
-+				s->transfer_samples = amdtp_write_s32_dualwire;
-+			else
-+				s->transfer_samples = amdtp_write_s32;
-+		} else {
-+			if (s->dual_wire)
-+				s->transfer_samples = amdtp_read_s32_dualwire;
-+			else
-+				s->transfer_samples = amdtp_read_s32;
-+		}
- 		break;
- 	}
- }
-@@ -420,6 +439,59 @@ static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
- 	}
- }
- 
-+static void amdtp_read_s32(struct amdtp_stream *s,
-+			   struct snd_pcm_substream *pcm,
-+			   __be32 *buffer, unsigned int frames)
++/* part of hardware capability flags */
++#define FLAG_RESP_ADDR_CHANGABLE	0
++
++static int
++get_hardware_info(struct snd_efw *efw)
 +{
-+	struct snd_pcm_runtime *runtime = pcm->runtime;
-+	unsigned int channels, remaining_frames, i, c;
-+	u32 *dst;
++	struct fw_device *fw_dev = fw_parent_device(efw->unit);
++	struct snd_efw_hwinfo *hwinfo;
++	char version[12] = {0};
++	int err;
 +
-+	channels = s->pcm_channels;
-+	dst  = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++	hwinfo = kzalloc(sizeof(struct snd_efw_hwinfo), GFP_KERNEL);
++	if (hwinfo == NULL)
++		return -ENOMEM;
 +
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			*dst = be32_to_cpu(buffer[c]) << 8;
-+			dst++;
-+		}
-+		buffer += s->data_block_quadlets;
-+		if (--remaining_frames == 0)
-+			dst = (void *)runtime->dma_area;
-+	}
++	err = snd_efw_command_get_hwinfo(efw, hwinfo);
++	if (err < 0)
++		goto end;
++
++	/* firmware version for communication chipset */
++	err = snprintf(version, sizeof(version), "%u.%u",
++		      (hwinfo->arm_version >> 24) & 0xff,
++		      (hwinfo->arm_version >> 16) & 0xff);
++	if (err < 0)
++		goto end;
++
++	strcpy(efw->card->driver, "Fireworks");
++	strcpy(efw->card->shortname, hwinfo->model_name);
++	snprintf(efw->card->longname, sizeof(efw->card->longname),
++		 "%s %s v%s, GUID %08x%08x at %s, S%d",
++		 hwinfo->vendor_name, hwinfo->model_name, version,
++		 hwinfo->guid_hi, hwinfo->guid_lo,
++		 dev_name(&efw->unit->device), 100 << fw_dev->max_speed);
++	strcpy(efw->card->mixername, hwinfo->model_name);
++
++	if (hwinfo->flags & BIT(FLAG_RESP_ADDR_CHANGABLE))
++		efw->resp_addr_changable = true;
++end:
++	kfree(hwinfo);
++	return err;
 +}
 +
-+static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
-+				    struct snd_pcm_substream *pcm,
-+				    __be32 *buffer, unsigned int frames)
-+{
-+	struct snd_pcm_runtime *runtime = pcm->runtime;
-+	unsigned int channels, remaining_frames, i, c;
-+	u32 *dst;
-+
-+	dst = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+	channels = s->pcm_channels / 2;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			*dst = be32_to_cpu(buffer[c * 2]) << 8;
-+			dst++;
-+		}
-+		buffer += 1;
-+		for (c = 0; c < channels; ++c) {
-+			*dst = be32_to_cpu(buffer[c * 2]) << 8;
-+			dst++;
-+		}
-+		buffer += s->data_block_quadlets - 1;
-+		if (--remaining_frames == 0)
-+			dst = (void *)runtime->dma_area;
-+	}
-+}
-+
- static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
- 				   __be32 *buffer, unsigned int frames)
+ static void
+ efw_card_free(struct snd_card *card)
  {
-@@ -504,6 +576,12 @@ static inline int queue_out_packet(struct amdtp_stream *s,
- 			    payload_length, skip);
+@@ -107,25 +149,28 @@ efw_probe(struct fw_unit *unit,
+ 	mutex_init(&efw->mutex);
+ 	spin_lock_init(&efw->lock);
+ 
+-	strcpy(efw->card->driver, "Fireworks");
+-	strcpy(efw->card->shortname, "Fireworks");
+-	strcpy(efw->card->longname, "Fireworks");
+-	strcpy(efw->card->mixername, "Fireworks");
++	err = get_hardware_info(efw);
++	if (err < 0)
++		goto error;
+ 
+ 	err = snd_card_register(card);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		goto end;
+-	}
++	if (err < 0)
++		goto error;
++
+ 	dev_set_drvdata(&unit->device, efw);
+ end:
+ 	mutex_unlock(&devices_mutex);
+ 	return err;
++error:
++	snd_card_free(card);
++	mutex_unlock(&devices_mutex);
++	return err;
  }
  
-+static inline int queue_in_packet(struct amdtp_stream *s)
-+{
-+	return queue_packet(s, IN_PACKET_HEADER_SIZE,
-+			    amdtp_stream_get_max_payload(s), false);
-+}
-+
- static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
+ static void efw_update(struct fw_unit *unit)
  {
- 	__be32 *buffer;
-@@ -552,6 +630,80 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
- 		update_pcm_pointers(s, pcm, data_blocks);
+-	return;
++	struct snd_efw *efw = dev_get_drvdata(&unit->device);
++	snd_efw_transaction_bus_reset(efw->unit);
  }
  
-+static void handle_in_packet(struct amdtp_stream *s,
-+			     unsigned int payload_quadlets,
-+			     __be32 *buffer)
+ static void efw_remove(struct fw_unit *unit)
+@@ -167,11 +212,23 @@ static struct fw_driver efw_driver = {
+ 
+ static int __init snd_efw_init(void)
+ {
+-	return driver_register(&efw_driver.driver);
++	int err;
++
++	err = snd_efw_transaction_register();
++	if (err < 0)
++		goto end;
++
++	err = driver_register(&efw_driver.driver);
++	if (err < 0)
++		snd_efw_transaction_unregister();
++
++end:
++	return err;
+ }
+ 
+ static void __exit snd_efw_exit(void)
+ {
++	snd_efw_transaction_unregister();
+ 	driver_unregister(&efw_driver.driver);
+ 	mutex_destroy(&devices_mutex);
+ }
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index 9e29ee4..751302d 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -20,6 +20,19 @@
+ 
+ #include <sound/core.h>
+ #include <sound/initval.h>
++#include <sound/pcm.h>
++
++#include "../cmp.h"
++#include "../lib.h"
++
++#define SND_EFW_MUITIPLIER_MODES	3
++#define HWINFO_NAME_SIZE_BYTES		32
++#define HWINFO_MAX_CAPS_GROUPS		8
++
++struct snd_efw_phys_grp {
++	u8 type;	/* see enum snd_efw_grp_type */
++	u8 count;
++} __packed;
+ 
+ struct snd_efw {
+ 	struct snd_card *card;
+@@ -28,7 +41,114 @@ struct snd_efw {
+ 
+ 	struct mutex mutex;
+ 	spinlock_t lock;
++
++	/* for transaction */
++	u32 seqnum;
++	bool resp_addr_changable;
++};
++
++struct snd_efw_transaction {
++	u32 length;
++	u32 version;
++	u32 seqnum;
++	u32 category;
++	u32 command;
++	u32 status;
++	u32 params[0];
++};
++int snd_efw_transaction_run(struct fw_unit *unit,
++			    const void *cmd, unsigned int cmd_size,
++			    void *resp, unsigned int resp_size, u32 seqnum);
++int snd_efw_transaction_register(void);
++void snd_efw_transaction_unregister(void);
++void snd_efw_transaction_bus_reset(struct fw_unit *unit);
++
++struct snd_efw_hwinfo {
++	u32 flags;
++	u32 guid_hi;
++	u32 guid_lo;
++	u32 type;
++	u32 version;
++	char vendor_name[HWINFO_NAME_SIZE_BYTES];
++	char model_name[HWINFO_NAME_SIZE_BYTES];
++	u32 supported_clocks;
++	u32 amdtp_rx_pcm_channels;
++	u32 amdtp_tx_pcm_channels;
++	u32 phys_out;
++	u32 phys_in;
++	u32 phys_out_grp_count;
++	struct snd_efw_phys_grp phys_out_grps[HWINFO_MAX_CAPS_GROUPS];
++	u32 phys_in_grp_count;
++	struct snd_efw_phys_grp phys_in_grps[HWINFO_MAX_CAPS_GROUPS];
++	u32 midi_out_ports;
++	u32 midi_in_ports;
++	u32 max_sample_rate;
++	u32 min_sample_rate;
++	u32 dsp_version;
++	u32 arm_version;
++	u32 mixer_playback_channels;
++	u32 mixer_capture_channels;
++	u32 fpga_version;
++	u32 amdtp_rx_pcm_channels_2x;
++	u32 amdtp_tx_pcm_channels_2x;
++	u32 amdtp_rx_pcm_channels_4x;
++	u32 amdtp_tx_pcm_channels_4x;
++	u32 reserved[16];
++} __packed;
++enum snd_efw_grp_type {
++	SND_EFW_CH_TYPE_ANALOG			= 0,
++	SND_EFW_CH_TYPE_SPDIF			= 1,
++	SND_EFW_CH_TYPE_ADAT			= 2,
++	SND_EFW_CH_TYPE_SPDIF_OR_ADAT		= 3,
++	SND_EFW_CH_TYPE_ANALOG_MIRRORING	= 4,
++	SND_EFW_CH_TYPE_HEADPHONES		= 5,
++	SND_EFW_CH_TYPE_I2S			= 6,
++	SND_EFW_CH_TYPE_GUITAR			= 7,
++	SND_EFW_CH_TYPE_PIEZO_GUITAR		= 8,
++	SND_EFW_CH_TYPE_GUITAR_STRING		= 9,
++	SND_EFW_CH_TYPE_VIRTUAL			= 0x10000,
++	SND_EFW_CH_TYPE_DUMMY
++};
++struct snd_efw_phys_meters {
++	u32 status;	/* guitar state/midi signal/clock input detect */
++	u32 reserved0;
++	u32 reserved1;
++	u32 reserved2;
++	u32 reserved3;
++	u32 out_meters;
++	u32 in_meters;
++	u32 reserved4;
++	u32 reserved5;
++	u32 values[0];
++} __packed;
++enum snd_efw_clock_source {
++	SND_EFW_CLOCK_SOURCE_INTERNAL	= 0,
++	SND_EFW_CLOCK_SOURCE_SYTMATCH	= 1,
++	SND_EFW_CLOCK_SOURCE_WORDCLOCK	= 2,
++	SND_EFW_CLOCK_SOURCE_SPDIF	= 3,
++	SND_EFW_CLOCK_SOURCE_ADAT_1	= 4,
++	SND_EFW_CLOCK_SOURCE_ADAT_2	= 5,
++	SND_EFW_CLOCK_SOURCE_CONTINUOUS	= 6	/* internal variable clock */
++};
++enum snd_efw_transport_mode {
++	SND_EFW_TRANSPORT_MODE_WINDOWS	= 0,
++	SND_EFW_TRANSPORT_MODE_IEC61883	= 1,
+ };
++int snd_efw_command_identify(struct snd_efw *efw);
++int snd_efw_command_set_resp_addr(struct snd_efw *efw,
++				  u16 addr_high, u32 addr_low);
++int snd_efw_command_set_tx_mode(struct snd_efw *efw, unsigned int mode);
++int snd_efw_command_get_hwinfo(struct snd_efw *efw,
++			       struct snd_efw_hwinfo *hwinfo);
++int snd_efw_command_get_phys_meters(struct snd_efw *efw,
++				    struct snd_efw_phys_meters *meters,
++				    unsigned int len);
++int snd_efw_command_get_clock_source(struct snd_efw *efw,
++				     enum snd_efw_clock_source *source);
++int snd_efw_command_set_clock_source(struct snd_efw *efw,
++				     enum snd_efw_clock_source source);
++int snd_efw_command_get_sampling_rate(struct snd_efw *efw, unsigned int *rate);
++int snd_efw_command_set_sampling_rate(struct snd_efw *efw, unsigned int rate);
+ 
+ #define SND_EFW_DEV_ENTRY(vendor, model) \
+ { \
+diff --git a/sound/firewire/fireworks/fireworks_command.c b/sound/firewire/fireworks/fireworks_command.c
+new file mode 100644
+index 0000000..9b19e3e
+--- /dev/null
++++ b/sound/firewire/fireworks/fireworks_command.c
+@@ -0,0 +1,395 @@
++/*
++ * fireworks_command.c - a part of driver for Fireworks based devices
++ *
++ * Copyright (c) 2013 Takashi Sakamoto <o-takashi@sakmocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "./fireworks.h"
++
++/*
++ * This driver uses transaction version 1 or later to use extended hardware
++ * information. Then too old devices are not available.
++ *
++ * Each commands are not required to have continuous sequence numbers. This
++ * number is just used to match command and response.
++ *
++ * This module support a part of commands. Please see FFADO if you want to see
++ * whole commands. But there are some commands which FFADO don't implement.
++ *
++ * Fireworks also supports AV/C general commands and AV/C Stream Format
++ * Information commands. But this module don't use them.
++ */
++
++#define EFW_TRANSACTION_SEQNUM_MAX	((u32)~0)
++
++/* for clock source and sampling rate */
++struct efc_clock {
++	u32 source;
++	u32 sampling_rate;
++	u32 index;
++};
++
++/* command categories */
++enum efc_category {
++	EFC_CAT_HWINFO		= 0,
++	EFC_CAT_TRANSPORT	= 2,
++	EFC_CAT_HWCTL		= 3,
++};
++
++/* hardware info category commands */
++enum efc_cmd_hwinfo {
++	EFC_CMD_HWINFO_GET_CAPS		= 0,
++	EFC_CMD_HWINFO_GET_POLLED	= 1,
++	EFC_CMD_HWINFO_SET_RESP_ADDR	= 2
++};
++
++enum efc_cmd_transport {
++	EFC_CMD_TRANSPORT_SET_TX_MODE	= 0
++};
++
++/* hardware control category commands */
++enum efc_cmd_hwctl {
++	EFC_CMD_HWCTL_SET_CLOCK		= 0,
++	EFC_CMD_HWCTL_GET_CLOCK		= 1,
++	EFC_CMD_HWCTL_IDENTIFY		= 5
++};
++
++/* return values in response */
++enum efr_status {
++	EFC_RETVAL_OK			= 0,
++	EFC_RETVAL_BAD			= 1,
++	EFC_RETVAL_BAD_COMMAND		= 2,
++	EFC_RETVAL_COMM_ERR		= 3,
++	EFC_RETVAL_BAD_QUAD_COUNT	= 4,
++	EFC_RETVAL_UNSUPPORTED		= 5,
++	EFC_RETVAL_1394_TIMEOUT		= 6,
++	EFC_RETVAL_DSP_TIMEOUT		= 7,
++	EFC_RETVAL_BAD_RATE		= 8,
++	EFC_RETVAL_BAD_CLOCK		= 9,
++	EFC_RETVAL_BAD_CHANNEL		= 10,
++	EFC_RETVAL_BAD_PAN		= 11,
++	EFC_RETVAL_FLASH_BUSY		= 12,
++	EFC_RETVAL_BAD_MIRROR		= 13,
++	EFC_RETVAL_BAD_LED		= 14,
++	EFC_RETVAL_BAD_PARAMETER	= 15,
++	EFC_RETVAL_INCOMPLETE		= 0x80000000
++};
++
++static const char *const efr_status_names[] = {
++	[EFC_RETVAL_OK]			= "OK",
++	[EFC_RETVAL_BAD]		= "bad",
++	[EFC_RETVAL_BAD_COMMAND]	= "bad command",
++	[EFC_RETVAL_COMM_ERR]		= "comm err",
++	[EFC_RETVAL_BAD_QUAD_COUNT]	= "bad quad count",
++	[EFC_RETVAL_UNSUPPORTED]	= "unsupported",
++	[EFC_RETVAL_1394_TIMEOUT]	= "1394 timeout",
++	[EFC_RETVAL_DSP_TIMEOUT]	= "DSP timeout",
++	[EFC_RETVAL_BAD_RATE]		= "bad rate",
++	[EFC_RETVAL_BAD_CLOCK]		= "bad clock",
++	[EFC_RETVAL_BAD_CHANNEL]	= "bad channel",
++	[EFC_RETVAL_BAD_PAN]		= "bad pan",
++	[EFC_RETVAL_FLASH_BUSY]		= "flash busy",
++	[EFC_RETVAL_BAD_MIRROR]		= "bad mirror",
++	[EFC_RETVAL_BAD_LED]		= "bad LED",
++	[EFC_RETVAL_BAD_PARAMETER]	= "bad parameter",
++	[EFC_RETVAL_BAD_PARAMETER + 1]	= "incomplete"
++};
++
++static int
++efw_transaction(struct snd_efw *efw, unsigned int category,
++		unsigned int command,
++		const __be32 *params, unsigned int param_quads,
++		const __be32 *resp, unsigned int resp_quads)
 +{
-+	u32 cip_header[2];
-+	unsigned int data_blocks, data_block_quadlets, data_block_counter;
-+	struct snd_pcm_substream *pcm = NULL;
++	struct snd_efw_transaction *header;
++	__be32 *buf;
++	u32 seqnum;
++	unsigned int i, buf_bytes, cmd_bytes;
++	int err;
 +
-+	cip_header[0] = be32_to_cpu(buffer[0]);
-+	cip_header[1] = be32_to_cpu(buffer[1]);
++	/* calculate buffer size*/
++	buf_bytes = sizeof(struct snd_efw_transaction) +
++		    max(param_quads, resp_quads) * sizeof(u32);
 +
-+	/*
-+	 * This module supports 'Two-quadlet CIP header with SYT field'.
-+	 * For convinience, also check FMT field is AM824 or not.
-+	 */
-+	if (((cip_header[0] & CIP_EOH_MASK) == CIP_EOH) ||
-+	    ((cip_header[1] & CIP_EOH_MASK) != CIP_EOH) ||
-+	    ((cip_header[1] & CIP_FMT_MASK) != CIP_FMT_AM)) {
-+		dev_info_ratelimited(&s->unit->device,
-+				"Invalid CIP header for AMDTP: %08X:%08X\n",
-+				cip_header[0], cip_header[1]);
++	/* keep buffer */
++	buf = kzalloc(buf_bytes, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	/* to keep consistency of sequence number */
++	spin_lock(&efw->lock);
++	if (efw->seqnum + 1 >= EFW_TRANSACTION_SEQNUM_MAX)
++		efw->seqnum = 0;
++	else
++		efw->seqnum += 2;
++	seqnum = efw->seqnum;
++	spin_unlock(&efw->lock);
++
++	/* fill transaction header fields */
++	cmd_bytes = sizeof(struct snd_efw_transaction) +
++		    param_quads * sizeof(u32);
++	header = (struct snd_efw_transaction *)buf;
++	header->length	 = cmd_bytes / sizeof(u32);
++	header->version	 = 1;
++	header->seqnum	 = seqnum;
++	header->category = category;
++	header->command	 = command;
++	header->status	 = 0;
++	for (i = 0; i < sizeof(struct snd_efw_transaction) / sizeof(u32); i++)
++		cpu_to_be32s(&buf[i]);
++
++	/* fill transaction command parameters */
++	for (i = 0; i < param_quads; i++)
++		header->params[i] = params[i];
++
++	err = snd_efw_transaction_run(efw->unit, buf, cmd_bytes,
++				      buf, buf_bytes, seqnum);
++	if (err < 0)
++		goto end;
++
++	/* check transaction header fields */
++	for (i = 0; i < sizeof(struct snd_efw_transaction) / sizeof(u32); i++)
++		be32_to_cpus(&buf[i]);
++	if ((header->version  < 1) ||
++	    (header->category != category) ||
++	    (header->command  != command) ||
++	    (header->status   != EFC_RETVAL_OK)) {
++		dev_err(&efw->unit->device, "EFC failed [%u/%u]: %s\n",
++			header->category, header->command,
++			efr_status_names[header->status]);
++		err = -EIO;
 +		goto end;
 +	}
 +
-+	/* Calculate data blocks */
-+	if (payload_quadlets < 3 ||
-+	    ((cip_header[1] & CIP_FDF_MASK) ==
-+				(AMDTP_FDF_NO_DATA << CIP_FDF_SFC_SHIFT))) {
-+		data_blocks = 0;
-+	} else {
-+		data_block_quadlets =
-+			(cip_header[0] & AMDTP_DBS_MASK) >> AMDTP_DBS_SHIFT;
-+		/* avoid division by zero */
-+		if (data_block_quadlets == 0) {
-+			dev_info_ratelimited(&s->unit->device,
-+				"Detect invalid value in dbs field: %08X\n",
-+				cip_header[0]);
-+			goto err;
-+		}
-+
-+		data_blocks = (payload_quadlets - 2) / data_block_quadlets;
++	/* fill transaction response parameters */
++	if (resp != NULL) {
++		memset((void *)resp, 0, resp_quads * sizeof(u32));
++		resp_quads = min_t(unsigned int, resp_quads,
++				   header->length -
++				    sizeof(struct snd_efw_transaction) /
++				    sizeof(u32));
++		memcpy((void *)resp, &buf[6], resp_quads * sizeof(u32));
 +	}
-+
-+	/* Check data block counter continuity */
-+	data_block_counter = cip_header[0] & AMDTP_DBC_MASK;
-+	if (data_block_counter != s->data_block_counter) {
-+		dev_info(&s->unit->device,
-+			 "Detect discontinuity of CIP: %02X %02X\n",
-+			 s->data_block_counter, data_block_counter);
-+		goto err;
-+	}
-+
-+	if (data_blocks > 0) {
-+		buffer += 2;
-+
-+		pcm = ACCESS_ONCE(s->pcm);
-+		if (pcm)
-+			s->transfer_samples(s, pcm, buffer, data_blocks);
-+	}
-+
-+	s->data_block_counter = (data_block_counter + data_blocks) & 0xff;
 +end:
-+	if (queue_in_packet(s) < 0)
-+		goto err;
-+
-+	if (pcm)
-+		update_pcm_pointers(s, pcm, data_blocks);
-+
-+	return;
-+err:
-+	s->packet_index = -1;
-+	amdtp_stream_pcm_abort(s);
++	kfree(buf);
++	return err;
 +}
 +
- static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
- 				size_t header_length, void *header,
- 				void *private_data)
-@@ -571,6 +723,31 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
- 	fw_iso_context_queue_flush(s->context);
- }
- 
-+static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
-+			       size_t header_length, void *header,
-+			       void *private_data)
++/* just blink LEDs on the device */
++int snd_efw_command_identify(struct snd_efw *efw)
 +{
-+	struct amdtp_stream *s = private_data;
-+	unsigned int p, packets, payload_quadlets;
-+	__be32 *buffer, *headers = header;
-+
-+	/* The number of packets in buffer */
-+	packets = header_length / IN_PACKET_HEADER_SIZE;
-+
-+	for (p = 0; p < packets; p++) {
-+		if (s->packet_index < 0)
-+			return;
-+		buffer = s->buffer.packets[s->packet_index].buffer;
-+
-+		/* The number of quadlets in this packet */
-+		payload_quadlets =
-+			(be32_to_cpu(headers[p]) >> ISO_DATA_LENGTH_SHIFT) / 4;
-+		handle_in_packet(s, payload_quadlets, buffer);
-+	}
-+
-+	fw_iso_context_queue_flush(s->context);
++	return efw_transaction(efw, EFC_CAT_HWCTL,
++			       EFC_CMD_HWCTL_IDENTIFY,
++			       NULL, 0, NULL, 0);
 +}
 +
- /**
-  * amdtp_stream_start - start transferring packets
-  * @s: the AMDTP stream to start
-@@ -595,7 +772,10 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 		[CIP_SFC_88200]  = {  0,   67 },
- 		[CIP_SFC_176400] = {  0,   67 },
- 	};
--	int err;
-+	unsigned int header_size;
-+	enum dma_data_direction dir;
-+	fw_iso_callback_t cb;
-+	int type, err;
- 
- 	mutex_lock(&s->mutex);
- 
-@@ -605,20 +785,31 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 		goto err_unlock;
- 	}
- 
-+	s->data_block_counter = 0;
- 	s->data_block_state = initial_state[s->sfc].data_block;
- 	s->syt_offset_state = initial_state[s->sfc].syt_offset;
- 	s->last_syt_offset = TICKS_PER_CYCLE;
- 
-+	/* initialize packet buffer */
-+	if (s->direction == AMDTP_IN_STREAM) {
-+		dir = DMA_FROM_DEVICE;
-+		type = FW_ISO_CONTEXT_RECEIVE;
-+		header_size = IN_PACKET_HEADER_SIZE;
-+		cb = in_stream_callback;
-+	} else {
-+		dir = DMA_TO_DEVICE;
-+		type = FW_ISO_CONTEXT_TRANSMIT;
-+		header_size = OUT_PACKET_HEADER_SIZE;
-+		cb = out_stream_callback;
++/*
++ * The address in host system for EFC response is changable when the device
++ * supports. struct hwinfo.flags includes its flag. The default is
++ * INITIAL_MEMORY_SPACE_EFC_RESPONSE
++ */
++int snd_efw_command_set_resp_addr(struct snd_efw *efw,
++				  u16 addr_high, u32 addr_low)
++{
++	__be32 addr[2];
++
++	addr[0] = cpu_to_be32(addr_high);
++	addr[1] = cpu_to_be32(addr_low);
++
++	if (!efw->resp_addr_changable)
++		return -ENOSYS;
++
++	return efw_transaction(efw, EFC_CAT_HWCTL,
++			       EFC_CMD_HWINFO_SET_RESP_ADDR,
++			       addr, 2, NULL, 0);
++}
++
++/*
++ * This is for timestamp processing. In Windows mode, all 32bit fields of second
++ * CIP header in AMDTP transmit packet is used for 'presentation timestamp'. In
++ * 'no data' packet the value of this field is 0x90ffffff.
++ */
++int snd_efw_command_set_tx_mode(struct snd_efw *efw,
++				enum snd_efw_transport_mode mode)
++{
++	__be32 param = cpu_to_be32(mode);
++	return efw_transaction(efw, EFC_CAT_TRANSPORT,
++			       EFC_CMD_TRANSPORT_SET_TX_MODE,
++			       &param, 1, NULL, 0);
++}
++
++int snd_efw_command_get_hwinfo(struct snd_efw *efw,
++			       struct snd_efw_hwinfo *hwinfo)
++{
++	int err;
++
++	err  = efw_transaction(efw, EFC_CAT_HWINFO,
++			       EFC_CMD_HWINFO_GET_CAPS,
++			       NULL, 0, (__be32 *)hwinfo,
++			       sizeof(*hwinfo) / sizeof(u32));
++	if (err < 0)
++		goto end;
++
++	be32_to_cpus(&hwinfo->flags);
++	be32_to_cpus(&hwinfo->guid_hi);
++	be32_to_cpus(&hwinfo->guid_lo);
++	be32_to_cpus(&hwinfo->type);
++	be32_to_cpus(&hwinfo->version);
++	be32_to_cpus(&hwinfo->supported_clocks);
++	be32_to_cpus(&hwinfo->amdtp_rx_pcm_channels);
++	be32_to_cpus(&hwinfo->amdtp_tx_pcm_channels);
++	be32_to_cpus(&hwinfo->phys_out);
++	be32_to_cpus(&hwinfo->phys_in);
++	be32_to_cpus(&hwinfo->phys_out_grp_count);
++	be32_to_cpus(&hwinfo->phys_in_grp_count);
++	be32_to_cpus(&hwinfo->midi_out_ports);
++	be32_to_cpus(&hwinfo->midi_in_ports);
++	be32_to_cpus(&hwinfo->max_sample_rate);
++	be32_to_cpus(&hwinfo->min_sample_rate);
++	be32_to_cpus(&hwinfo->dsp_version);
++	be32_to_cpus(&hwinfo->arm_version);
++	be32_to_cpus(&hwinfo->mixer_playback_channels);
++	be32_to_cpus(&hwinfo->mixer_capture_channels);
++	be32_to_cpus(&hwinfo->fpga_version);
++	be32_to_cpus(&hwinfo->amdtp_rx_pcm_channels_2x);
++	be32_to_cpus(&hwinfo->amdtp_tx_pcm_channels_2x);
++	be32_to_cpus(&hwinfo->amdtp_rx_pcm_channels_4x);
++	be32_to_cpus(&hwinfo->amdtp_tx_pcm_channels_4x);
++
++	/* ensure terminated */
++	hwinfo->vendor_name[HWINFO_NAME_SIZE_BYTES - 1] = '\0';
++	hwinfo->model_name[HWINFO_NAME_SIZE_BYTES  - 1] = '\0';
++end:
++	return err;
++}
++
++int snd_efw_command_get_phys_meters(struct snd_efw *efw,
++				    struct snd_efw_phys_meters *meters,
++				    unsigned int len)
++{
++	__be32 *buf = (__be32 *)meters;
++	unsigned int i;
++	int err;
++
++	err = efw_transaction(efw, EFC_CAT_HWINFO,
++			      EFC_CMD_HWINFO_GET_POLLED,
++			      NULL, 0, (__be32 *)meters, len / sizeof(u32));
++	if (err >= 0)
++		for (i = 0; i < len / sizeof(u32); i++)
++			be32_to_cpus(&buf[i]);
++
++	return err;
++}
++
++static int
++command_get_clock(struct snd_efw *efw, struct efc_clock *clock)
++{
++	int err;
++
++	err = efw_transaction(efw, EFC_CAT_HWCTL,
++			      EFC_CMD_HWCTL_GET_CLOCK,
++			      NULL, 0,
++			      (__be32 *)clock,
++			      sizeof(struct efc_clock) / sizeof(u32));
++	if (err >= 0) {
++		be32_to_cpus(&clock->source);
++		be32_to_cpus(&clock->sampling_rate);
++		be32_to_cpus(&clock->index);
 +	}
- 	err = iso_packets_buffer_init(&s->buffer, s->unit, QUEUE_LENGTH,
--				      amdtp_stream_get_max_payload(s),
--				      DMA_TO_DEVICE);
-+				      amdtp_stream_get_max_payload(s), dir);
- 	if (err < 0)
- 		goto err_unlock;
- 
- 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
--					   FW_ISO_CONTEXT_TRANSMIT,
--					   channel, speed, 0,
--					   out_stream_callback, s);
-+					   type, channel, speed, header_size,
-+					   cb, s);
- 	if (IS_ERR(s->context)) {
- 		err = PTR_ERR(s->context);
- 		if (err == -EBUSY)
-@@ -631,13 +822,17 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 
- 	s->packet_index = 0;
- 	do {
--		err = queue_out_packet(s, 0, true);
-+		if (s->direction == AMDTP_IN_STREAM)
-+			err = queue_in_packet(s);
-+		else
-+			err = queue_out_packet(s, 0, true);
- 		if (err < 0)
- 			goto err_context;
- 	} while (s->packet_index > 0);
- 
--	s->data_block_counter = 0;
--	err = fw_iso_context_start(s->context, -1, 0, 0);
-+	/* NOTE: TAG1 matches CIP. This just affects in stream. */
-+	err = fw_iso_context_start(s->context, -1, 0,
-+				   FW_ISO_CONTEXT_MATCH_TAG1);
- 	if (err < 0)
- 		goto err_context;
- 
++
++	return err;
++}
++
++/* give UINT_MAX if set nothing */
++static int
++command_set_clock(struct snd_efw *efw,
++		  unsigned int source, unsigned int rate)
++{
++	struct efc_clock clock = {0};
++	int err;
++
++	/* check arguments */
++	if ((source == UINT_MAX) && (rate == UINT_MAX)) {
++		err = -EINVAL;
++		goto end;
++	}
++
++	/* get current status */
++	err = command_get_clock(efw, &clock);
++	if (err < 0)
++		goto end;
++
++	/* no need */
++	if ((clock.source == source) && (clock.sampling_rate == rate))
++		goto end;
++
++	/* set params */
++	if ((source != UINT_MAX) && (clock.source != source))
++		clock.source = source;
++	if ((rate != UINT_MAX) && (clock.sampling_rate != rate))
++		clock.sampling_rate = rate;
++	clock.index = 0;
++
++	cpu_to_be32s(&clock.source);
++	cpu_to_be32s(&clock.sampling_rate);
++	cpu_to_be32s(&clock.index);
++
++	err = efw_transaction(efw, EFC_CAT_HWCTL,
++			      EFC_CMD_HWCTL_SET_CLOCK,
++			      (__be32 *)&clock,
++			      sizeof(struct efc_clock) / sizeof(u32),
++			      NULL, 0);
++	if (err < 0)
++		goto end;
++
++	/*
++	 * With firmware version 5.8, just after changing clock state, these
++	 * parameters are not immediately retrieved by get command. In my
++	 * trial, there needs to be 100msec to get changed parameters.
++	 */
++	msleep(150);
++end:
++	return err;
++}
++
++int snd_efw_command_get_clock_source(struct snd_efw *efw,
++				     enum snd_efw_clock_source *source)
++{
++	int err;
++	struct efc_clock clock = {0};
++
++	err = command_get_clock(efw, &clock);
++	if (err >= 0)
++		*source = clock.source;
++
++	return err;
++}
++
++int snd_efw_command_set_clock_source(struct snd_efw *efw,
++				     enum snd_efw_clock_source source)
++{
++	return command_set_clock(efw, source, UINT_MAX);
++}
++
++int snd_efw_command_get_sampling_rate(struct snd_efw *efw,
++				      unsigned int *rate)
++{
++	int err;
++	struct efc_clock clock = {0};
++
++	err = command_get_clock(efw, &clock);
++	if (err >= 0)
++		*rate = clock.sampling_rate;
++
++	return err;
++}
++
++int
++snd_efw_command_set_sampling_rate(struct snd_efw *efw,
++				  unsigned int rate)
++{
++	return command_set_clock(efw, UINT_MAX, rate);
++}
++
+diff --git a/sound/firewire/fireworks/fireworks_transaction.c b/sound/firewire/fireworks/fireworks_transaction.c
+new file mode 100644
+index 0000000..c2f499e
+--- /dev/null
++++ b/sound/firewire/fireworks/fireworks_transaction.c
+@@ -0,0 +1,191 @@
++/*
++ * fireworks_transaction.c - a part of driver for Fireworks based devices
++ *
++ * Copyright (c) 2013 Takashi Sakamoto <o-takashi@sakmocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++/*
++ * Fireworks have its own transaction. The transaction can be delivered by AV/C
++ * Vendor Specific command. But at least Windows driver and firmware version 5.5
++ * or later don't use it.
++ *
++ * Transaction substance:
++ *  At first, 6 data exist. Following to the 6 data, parameters for each
++ *  commands exists. All of parameters are 32 bit alighed to big endian.
++ *   data[0]:	Length of transaction substance
++ *   data[1]:	Transaction version
++ *   data[2]:	Sequence number. This is incremented by the device
++ *   data[3]:	transaction category
++ *   data[4]:	transaction command
++ *   data[5]:	return value in response.
++ *   data[6-]:	parameters
++ *
++ * Transaction address:
++ *  command:	0xecc000000000
++ *  response:	0xecc080000000 (default)
++ *
++ * I note that the address for response can be changed by command. But this
++ * module uses the default address.
++ */
++#include "./fireworks.h"
++
++#define MEMORY_SPACE_EFW_COMMAND	0xecc000000000
++#define MEMORY_SPACE_EFW_RESPONSE	0xecc080000000
++/* this is for juju convinience? */
++#define MEMORY_SPACE_EFW_END		0xecc080000200
++
++#define ERROR_RETRIES 3
++#define ERROR_DELAY_MS 5
++#define EFC_TIMEOUT_MS 125
++
++static DEFINE_SPINLOCK(transaction_queues_lock);
++static LIST_HEAD(transaction_queues);
++
++enum transaction_queue_state {
++	STATE_PENDING,
++	STATE_BUS_RESET,
++	STATE_COMPLETE
++};
++
++struct transaction_queue {
++	struct list_head list;
++	struct fw_unit *unit;
++	void *buf;
++	unsigned int size;
++	u32 seqnum;
++	enum transaction_queue_state state;
++	wait_queue_head_t wait;
++};
++
++int snd_efw_transaction_run(struct fw_unit *unit,
++			    const void *cmd, unsigned int cmd_size,
++			    void *resp, unsigned int resp_size, u32 seqnum)
++{
++	struct transaction_queue t;
++	unsigned int tries;
++	int ret;
++
++	t.unit = unit;
++	t.buf = resp;
++	t.size = resp_size;
++	t.seqnum = seqnum + 1;
++	t.state = STATE_PENDING;
++	init_waitqueue_head(&t.wait);
++
++	spin_lock_irq(&transaction_queues_lock);
++	list_add_tail(&t.list, &transaction_queues);
++	spin_unlock_irq(&transaction_queues_lock);
++
++	tries = 0;
++	do {
++		ret = snd_fw_transaction(unit, TCODE_WRITE_BLOCK_REQUEST,
++					 MEMORY_SPACE_EFW_COMMAND,
++					 (void *)cmd, cmd_size, 0);
++		if (ret < 0)
++			break;
++
++		wait_event_timeout(t.wait, t.state != STATE_PENDING,
++				   msecs_to_jiffies(EFC_TIMEOUT_MS));
++
++		if (t.state == STATE_COMPLETE) {
++			ret = t.size;
++			break;
++		} else if (t.state == STATE_BUS_RESET) {
++			msleep(ERROR_DELAY_MS);
++		} else if (++tries >= ERROR_RETRIES) {
++			dev_err(&t.unit->device, "EFC command timed out\n");
++			ret = -EIO;
++			break;
++		}
++	} while (1);
++
++	spin_lock_irq(&transaction_queues_lock);
++	list_del(&t.list);
++	spin_unlock_irq(&transaction_queues_lock);
++
++	return ret;
++}
++
++static void
++efw_response(struct fw_card *card, struct fw_request *request,
++	     int tcode, int destination, int source,
++	     int generation, unsigned long long offset,
++	     void *data, size_t length, void *callback_data)
++{
++	struct fw_device *device;
++	struct transaction_queue *t;
++	unsigned long flags;
++	int rcode;
++	u32 seqnum;
++
++	rcode = RCODE_TYPE_ERROR;
++	if (length < sizeof(struct snd_efw_transaction)) {
++		rcode = RCODE_DATA_ERROR;
++		goto end;
++	} else if (offset != MEMORY_SPACE_EFW_RESPONSE) {
++		rcode = RCODE_ADDRESS_ERROR;
++		goto end;
++	}
++
++	seqnum = be32_to_cpu(((struct snd_efw_transaction *)data)->seqnum);
++
++	spin_lock_irqsave(&transaction_queues_lock, flags);
++	list_for_each_entry(t, &transaction_queues, list) {
++		device = fw_parent_device(t->unit);
++		if ((device->card != card) ||
++		    (device->generation != generation))
++			continue;
++		smp_rmb();	/* node_id vs. generation */
++		if (device->node_id != source)
++			continue;
++
++		if ((t->state == STATE_PENDING) && (t->seqnum == seqnum)) {
++			t->state = STATE_COMPLETE;
++			t->size = min_t(unsigned int, length, t->size);
++			memcpy(t->buf, data, t->size);
++			wake_up(&t->wait);
++			rcode = RCODE_COMPLETE;
++		}
++	}
++	spin_unlock_irqrestore(&transaction_queues_lock, flags);
++end:
++	fw_send_response(card, request, rcode);
++}
++
++void snd_efw_transaction_bus_reset(struct fw_unit *unit)
++{
++	struct transaction_queue *t;
++
++	spin_lock_irq(&transaction_queues_lock);
++	list_for_each_entry(t, &transaction_queues, list) {
++		if ((t->unit == unit) &&
++		    (t->state == STATE_PENDING)) {
++			t->state = STATE_BUS_RESET;
++			wake_up(&t->wait);
++		}
++	}
++	spin_unlock_irq(&transaction_queues_lock);
++}
++
++static struct fw_address_handler resp_register_handler = {
++	.length = MEMORY_SPACE_EFW_END - MEMORY_SPACE_EFW_RESPONSE,
++	.address_callback = efw_response
++};
++
++int snd_efw_transaction_register(void)
++{
++	static const struct fw_address_region resp_register_region = {
++		.start	= MEMORY_SPACE_EFW_RESPONSE,
++		.end	= MEMORY_SPACE_EFW_END
++	};
++	return fw_core_add_address_handler(&resp_register_handler,
++					   &resp_register_region);
++}
++
++void snd_efw_transaction_unregister(void)
++{
++	WARN_ON(!list_empty(&transaction_queues));
++	fw_core_remove_address_handler(&resp_register_handler);
++}
 -- 
 1.8.3.2
 
