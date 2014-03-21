@@ -1,17 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: twl4030 latency update
-Date: Fri, 21 Mar 2014 09:08:58 +0200
-Message-ID: <532BE58A.2010701@ti.com>
-References: <532ACD4A.3080508@univpm.it> <532AEEA6.20704@ti.com>
- <532AFBDD.8040407@univpm.it>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH v2 16/16] ASoC: fsl-ssi: Use regmap
+Date: Fri, 21 Mar 2014 09:45:37 +0100
+Message-ID: <20140321084537.GA30910@pengutronix.de>
+References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
+ <1394887464-969-17-git-send-email-mpa@pengutronix.de>
+ <1394894616.578942243@f331.i.mail.ru>
+ <20140318081019.GJ11360@pengutronix.de>
+ <5b62326226b54b1da0addf839cbcd104@BY2PR03MB505.namprd03.prod.outlook.com>
+ <532B04D1.9000405@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============8684112471360935705=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D5E22610AA
- for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 08:09:02 +0100 (CET)
-In-Reply-To: <532AFBDD.8040407@univpm.it>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id AEA7D265314
+ for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 09:45:50 +0100 (CET)
+In-Reply-To: <532B04D1.9000405@tabi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,109 +24,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Leonardo Gabrielli <l.gabrielli@univpm.it>
-Cc: Edgar Berdahl <eberdahl@ccrma.Stanford.EDU>, alsa-devel@alsa-project.org
+To: Timur Tabi <timur@tabi.org>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexander Shiyan <shc_work@mail.ru>, Mark Brown <broonie@kernel.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/20/2014 04:31 PM, Leonardo Gabrielli wrote:
-> Dear Peter,
-> thanks, I'm not sure I understand all the details but after a fast find i=
-n my
-> beagleboard /sys I found
-> =
 
-> ./sys/devices/68000000.ocp/49026000.mcbsp/dma_op_mode
-> ./sys/devices/68000000.ocp/49022000.mcbsp/dma_op_mode
-> ./sys/devices/68000000.ocp/49024000.mcbsp/dma_op_mode
-> ./sys/devices/68000000.ocp/48096000.mcbsp/dma_op_mode
-> ./sys/devices/68000000.ocp/48074000.mcbsp/dma_op_mode
-> =
-
-> All of these are already set as threshold:
-> cat sys/devices/68000000.ocp/49022000.mcbsp/dma_op_mode
-> [element] threshold
-
-it is in 'element' mode, the [] shows the selected mode.
-You can change it:
-echo threshold > /sys/devices/68000000.ocp/49022000.mcbsp/dma_op_mode
-
-> Probably I found the FIFOs to be shortened in order to reduce latency: al=
-l of
-> the thresholds are 112 besides one of the devices which has:
-> cat sys/devices/68000000.ocp/49022000.mcbsp/max_rx_thres
-> 1264
-> for both tx and rx. Maybe that's the ALSA playback samples queue.
-
-This is for the threshold mode. With this value you can set the maximum slo=
-ts
-you want to use in the McBSP FIFO.
-
-To change it:
-echo 320 > /sys/devices/68000000.ocp/49022000.mcbsp/max_tx_thres
-echo 320 > /sys/devices/68000000.ocp/49022000.mcbsp/max_ex_thres
-
-for example.
-
-At the end with this value you can limit the sDMA burst sizes and the McBSP
-FIFO level. The threshold means: generate DMA request if threshold number of
-slots are free in the FIFO (playback) or when threshold amount of data
-available in the FIFO (capture).
-
-> =
-
-> In fact I find:
-> cat /proc/device-tree/ocp/mcbsp\@49022000/ti\,hwmods
-> mcbsp2mcbsp2_sidetone
-> =
-
-> So it's the McBSP2 which you mentioned.
-> =
-
-> Now, I'm not sure how to change the threshold, I guess I have to patch so=
-me
-> kernel module and rebuild?
-
-No, you do not need to recompile anything. See my previous comment.
-
-> =
-
-> =
-
-> On 20/03/2014 14:35, Peter Ujfalusi wrote:
->> Hi Leonardo,
->>
->> On 03/20/2014 01:13 PM, Leonardo Gabrielli wrote:
->>> Dear Peter,
->>> I was investigating on TWL4030 high playback latency and stumbled in an=
- old
->>> thread started by Edgar
->>> http://mailman.alsa-project.org/pipermail/alsa-devel/2011-October/04517=
-3.html
->>> where I read this is related to McBSP2 buffer length
->>> Recent kernels seems to have the same behavior (I have a debian beagleb=
-oardxM
->>> with 3.13.3-armv7-x10)
->>> Did you manage to get a fix to this problem? Would it be possible?
->> The 'misusing/configuring the McBSP, and sDMA' did not worked :(
->> However the mcbsp code went through quite a bit of change since than
->> concerning the McBSP FIFO/sDMA configuration.
->>
->> If we have FIFO the sDMA is always in packet mode.
->> The default is to transfer one sample with sDMA per DMA request.
->> You can switch the McBSP to 'threshold' mode and set the maximum FIFO
->> threshold you want to use. The code will figure out the optimal FIFO/bur=
-st
->> size based on the period size and the max threshold you have set.
->> This is done via a sysfs file under the mcbsp, the file is dma_op_mode i=
-f I
->> recall correctly.
->> Playing with the max tx/rx threshold you might be able to get better lat=
-ency.
->>
-> =
+--===============8684112471360935705==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
+Content-Disposition: inline
 
 
+--4Ckj6UjgE2iN1+kY
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- =
+Hi,
 
-P=E9ter
+On Thu, Mar 20, 2014 at 10:10:09AM -0500, Timur Tabi wrote:
+> On 03/20/2014 01:07 AM, Li.Xiubo@freescale.com wrote:
+> >While for the scenario like our LS1(ARM) platform.
+> >CPU		SSI
+> >LE		BE	then should we set the .val_format_endian to
+> >			REGMAP_ENDIAN_BIG
+> >
+> >
+> >And so not only for PowerPC, but also maybe for ARM platforms.
+> >So here how about just adding one Boolean property like 'big-endian' in =
+DT node
+> >to learn the endianness of the devices dynamically ?
+>=20
+> That's not a bad idea.  The property should be something like,
+> "fsl,ssi-endian" and is should be set to "big", "little", or
+> "native". In the absence of the property, it should default to
+> native endian.
+
+Perhaps it is better to create some generic binding for that? There may
+be other drivers/components that have the same strange combinations and
+need a similar binding to use for regmap.
+
+We could use something like an "endian" property with "big", "little"
+and "native" which is then parsed by some function of the regmap
+framework. It could directly fill those information into the
+struct regmap_config.
+
+Thanks,
+
+Markus
+
+--=20
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--4Ckj6UjgE2iN1+kY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTK/wxAAoJEEpcgKtcEGQQOMEP/Rnrl7d4jLhjhyUYkMm1vkbj
+guwSk5xKFFYX5lmMEIQlOCdU3tqzOV9SBG1sM/U7BoCYW+OXE4DN+lbQzVi4et7g
+RrWywA6PjiM+XHxg+Wfjz415m0sKAGya4Aj5qWzPGRI3pn7jc2MB54eM6gTFTPJi
+NEB4M529a+j2UtzJQjAtuXOfaT3kP8zpO3xg0U26mOznKY/zB5b6dtOuCbivWtVB
+i/V6fVooPSjqzlzIp1xu+oj5T4Stv8RKzUxLrGDjpOLCD4EdOc1p0jLOaIOQHVyS
+9XRN/rlPfQqfvJEBOJxqNFlUBJTsAxUPKqKTyF7qbzovR3k/rwUQagQrnr82GjRE
+OvlKLyznZ8r6JyGRXnXwczgziNeAm6txuduC2UQ7iVPBSbd2dHxbK+QwvjgQRE+/
+J0sdTMHZUZ5ZVcXxrSDQnKBN3tHL3fZr4PCfiiiTGAQM4maW+C8kZOuuRj84drca
+gHt1p2zDBz7xbYfWE6t9Za+nADFuJmhwHzzvLyVbmtyaJxdCSp7BrYl7j6MiwAfa
+pVZj1z58tW5JeXZOgHFlU2iFWSpnEX/H3InriAGj0BIF48Q7exN6xMTPBUjilfTt
+Ssn5Si5bZ3Zi6vsNC5XspKfhCjcipr0kKZ6WO+ZQsjkoTW5BPqcmkDcTmrCRsvZJ
+12uxmKGGvnCiqwNT+7bv
+=DuLI
+-----END PGP SIGNATURE-----
+
+--4Ckj6UjgE2iN1+kY--
+
+--===============8684112471360935705==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8684112471360935705==--
