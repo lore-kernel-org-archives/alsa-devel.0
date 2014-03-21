@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 44/44] firewire/bebob: Add a workaround for M-Audio special
-	Firewire series
-Date: Fri, 21 Mar 2014 20:10:29 +0900
-Message-ID: <1395400229-22957-45-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 42/44] bebob/firewire-lib: Add a quirk of wrong dbc in empty
+	packet for M-Audio special Firewire series
+Date: Fri, 21 Mar 2014 20:10:27 +0900
+Message-ID: <1395400229-22957-43-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,113 +21,95 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In post commit, a quirk of this firmware about transactions is reported.
-This commit apply a workaround for this quirk.
+M-Audio Firewire 1814 has a quirk, ProjectMix I/O also has. They transmit
+empty packet with wrong value of dbc incremented by 8 at high sampling rate.
+According to IEC 61883-1, this value should be the same as the one in
+previous packet.
 
-They often fail transactions due to gap_count mismatch. This state is changed
-by generating bus reset.
+This commit adds a flag named as CIP_EMPTY_HAS_WRONG_DBC. With flag, the value
+of dbc in empty packet is overwittern by the one in expected value.
 
-The fw_schedule_bus_reset() is an exported symbol in firewire-core. But there
-are no header for public. This commit moves its prototype from
-drivers/firewire/core.h to include/linux/firewire.h.
-
-This mismatch still affects bus management before generating this bus reset.
-It still takes a time to call driver's probe() because transactions are still
-often failed.
+This is an example of this quirk:
+CIP Header 0	CIP Header 1	Payload size
+010D0000	9004F759	210
+010D0010	90040B59	210
+010D0020	90042359	210
+01020028	9004FFFF	2  <-
+010D0030	90043759	210
+010D0040	90044B59	210
+010D0050	90046359	210
+01020058	9004FFFF	2  <-
+010D0060	90047759	210
+010D0070	90048B59	210
+010D0080	9004A359	210
+01020088	9004FFFF	2  <-
+010D0090	9004B759	210
+010D00A0	9004CB59	210
+010D00B0	9004E359	210
+010200B8	9004FFFF	2  <-
+010D00C0	9004F759	210
+010D00D0	90040B59	210
+010D00E0	90042359	210
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- drivers/firewire/core.h      |  1 -
- include/linux/firewire.h     |  3 +++
- sound/firewire/bebob/bebob.c | 29 ++++++++++++++++++++++++++---
- sound/firewire/bebob/bebob.h |  1 +
- 4 files changed, 30 insertions(+), 4 deletions(-)
+ sound/firewire/amdtp.c              | 2 ++
+ sound/firewire/amdtp.h              | 3 +++
+ sound/firewire/bebob/bebob_stream.c | 7 +++++++
+ 3 files changed, 12 insertions(+)
 
-diff --git a/drivers/firewire/core.h b/drivers/firewire/core.h
-index c98764a..870044e 100644
---- a/drivers/firewire/core.h
-+++ b/drivers/firewire/core.h
-@@ -118,7 +118,6 @@ int fw_card_add(struct fw_card *card,
- 		u32 max_receive, u32 link_speed, u64 guid);
- void fw_core_remove_card(struct fw_card *card);
- int fw_compute_block_crc(__be32 *block);
--void fw_schedule_bus_reset(struct fw_card *card, bool delayed, bool short_reset);
- void fw_schedule_bm_work(struct fw_card *card, unsigned long delay);
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 820d790..c443a3a 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -745,6 +745,8 @@ static void handle_in_packet(struct amdtp_stream *s,
  
- /* -cdev */
-diff --git a/include/linux/firewire.h b/include/linux/firewire.h
-index c3683bd..d4b7683 100644
---- a/include/linux/firewire.h
-+++ b/include/linux/firewire.h
-@@ -367,6 +367,9 @@ static inline int fw_stream_packet_destination_id(int tag, int channel, int sy)
- 	return tag << 14 | channel << 8 | sy;
- }
- 
-+void fw_schedule_bus_reset(struct fw_card *card, bool delayed,
-+			   bool short_reset);
-+
- struct fw_descriptor {
- 	struct list_head link;
- 	size_t length;
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index d5cc98f..c250b17 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -248,9 +248,26 @@ bebob_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
- 
--	err = snd_card_register(card);
--	if (err < 0)
--		goto error;
-+	if (!bebob->maudio_special_quirk) {
-+		err = snd_card_register(card);
-+		if (err < 0)
-+			goto error;
-+	} else {
-+		/*
-+		 * This is a workaround. This bus reset seems to have an effect
-+		 * to make devices correctly handling transactions. Without
-+		 * this, the devices have gap_count mismatch. This causes much
-+		 * failure of transaction.
-+		 *
-+		 * Just after registration, user-land application receive
-+		 * signals from dbus and starts I/Os. To avoid I/Os till the
-+		 * future bus reset, registration is done in next update().
-+		 */
-+		bebob->deferred_registration = true;
-+		fw_schedule_bus_reset(fw_parent_device(bebob->unit)->card,
-+				      false, true);
-+	}
-+
- 	dev_set_drvdata(&unit->device, bebob);
- end:
- 	mutex_unlock(&devices_mutex);
-@@ -271,6 +288,12 @@ bebob_update(struct fw_unit *unit)
- 
- 	fcp_bus_reset(bebob->unit);
- 	snd_bebob_stream_update_duplex(bebob);
-+
-+	if (bebob->deferred_registration) {
-+		if (snd_card_register(bebob->card) < 0)
-+			snd_card_free(bebob->card);
-+		bebob->deferred_registration = false;
-+	}
- }
- 
- 
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 6dad0d0..99ed26f 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -105,6 +105,7 @@ struct snd_bebob {
- 
- 	/* for M-Audio special devices */
- 	void *maudio_special_quirk;
-+	bool deferred_registration;
+ 	/* Check data block counter continuity */
+ 	data_block_counter = cip_header[0] & AMDTP_DBC_MASK;
++	if (data_blocks == 0 && (s->flags & CIP_EMPTY_HAS_WRONG_DBC))
++		data_block_counter = s->data_block_counter;
+ 	if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
+ 		lost = data_block_counter != s->data_block_counter;
+ 	} else {
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index e3ee739..7981f4d 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -29,6 +29,8 @@
+  *	The value of data_block_quadlets is used instead of reported value.
+  * @CIP_SKIP_INIT_DBC_CHECK: Only for in-stream. The value of dbc in first
+  *	packet is not continuous from an initial value.
++ * @CIP_EMPTY_HAS_WRONG_DBC: Only for in-stream. The value of dbc in empty
++ *	packet is wrong but the others are correct.
+  */
+ enum cip_flags {
+ 	CIP_NONBLOCKING		= 0x00,
+@@ -39,6 +41,7 @@ enum cip_flags {
+ 	CIP_DBC_IS_END_EVENT	= 0x10,
+ 	CIP_WRONG_DBS		= 0x20,
+ 	CIP_SKIP_INIT_DBC_CHECK	= 0x40,
++	CIP_EMPTY_HAS_WRONG_DBC	= 0x80,
  };
  
- static inline int
+ /**
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 95d82f4..5be82f1 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -436,6 +436,13 @@ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
+ 	}
+ 	/* See comments in next function */
+ 	bebob->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK;
++	/*
++	 * At high sampling rate, M-Audio special firmware transmits empty
++	 * packet with the value of dbc incremented by 8 but the others are
++	 * valid to IEC 61883-1.
++	 */
++	if (bebob->maudio_special_quirk)
++		bebob->tx_stream.flags |= CIP_EMPTY_HAS_WRONG_DBC;
+ 
+ 	err = amdtp_stream_init(&bebob->rx_stream, bebob->unit,
+ 				AMDTP_OUT_STREAM, CIP_BLOCKING);
 -- 
 1.8.3.2
 
