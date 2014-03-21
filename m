@@ -1,12 +1,12 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 02/44] firewire-lib: Add 'direction' member to 'amdtp_stream'
-	structure
-Date: Fri, 21 Mar 2014 20:09:47 +0900
-Message-ID: <1395400229-22957-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 01/44] firewire-lib: Add macros instead of fixed value for
+	AMDTP
+Date: Fri, 21 Mar 2014 20:09:46 +0900
+Message-ID: <1395400229-22957-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
 In-Reply-To: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
@@ -21,106 +21,56 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds 'direction' member to amdtp_stream structure to indicate its
-direction. This patch also adds 'direction' argument to amdtp_stream_init()
-function to determine its direction.
-
-The amdtp_stream_init() function is exported and used by firewire-speakers and
-dice so this patch also affects them.
-
-This patch just add them. Actual implementation will be done by followed
-patches.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp.c    | 4 +++-
- sound/firewire/amdtp.h    | 7 +++++++
- sound/firewire/dice.c     | 2 +-
- sound/firewire/speakers.c | 3 ++-
- 4 files changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 38013f9..95c5a15 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -53,12 +53,14 @@ static void pcm_period_tasklet(unsigned long data);
-  * amdtp_stream_init - initialize an AMDTP stream structure
-  * @s: the AMDTP stream to initialize
-  * @unit: the target of the stream
-+ * @dir: the direction of stream
-  * @flags: the packet transmission method to use
-  */
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--		      enum cip_flags flags)
-+		      enum amdtp_stream_direction dir, enum cip_flags flags)
- {
- 	s->unit = fw_unit_get(unit);
-+	s->direction = dir;
- 	s->flags = flags;
- 	s->context = ERR_PTR(-1);
- 	mutex_init(&s->mutex);
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 60028c7..019134e 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -48,9 +48,15 @@ struct fw_unit;
- struct fw_iso_context;
- struct snd_pcm_substream;
- 
-+enum amdtp_stream_direction {
-+	AMDTP_OUT_STREAM = 0,
-+	AMDTP_IN_STREAM
-+};
-+
- struct amdtp_stream {
- 	struct fw_unit *unit;
- 	enum cip_flags flags;
-+	enum amdtp_stream_direction direction;
- 	struct fw_iso_context *context;
- 	struct mutex mutex;
- 
-@@ -85,6 +91,7 @@ struct amdtp_stream {
- };
- 
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
-+		      enum amdtp_stream_direction dir,
- 		      enum cip_flags flags);
- void amdtp_stream_destroy(struct amdtp_stream *s);
- 
-diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index ca12fcb..26b2158 100644
---- a/sound/firewire/dice.c
-+++ b/sound/firewire/dice.c
-@@ -1360,7 +1360,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 		goto err_owner;
- 	dice->resources.channels_mask = 0x00000000ffffffffuLL;
- 
--	err = amdtp_stream_init(&dice->stream, unit,
-+	err = amdtp_stream_init(&dice->stream, unit, AMDTP_OUT_STREAM,
- 				CIP_BLOCKING | CIP_HI_DUALWIRE);
- 	if (err < 0)
- 		goto err_resources;
-diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
-index 2096ad7..c07e7cd 100644
---- a/sound/firewire/speakers.c
-+++ b/sound/firewire/speakers.c
-@@ -683,7 +683,8 @@ static int fwspk_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto err_unit;
- 
--	err = amdtp_stream_init(&fwspk->stream, unit, CIP_NONBLOCKING);
-+	err = amdtp_stream_init(&fwspk->stream, unit, AMDTP_OUT_STREAM,
-+				CIP_NONBLOCKING);
- 	if (err < 0)
- 		goto err_connection;
- 
--- 
-1.8.3.2
-
-
-------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their
-applications. Written by three acclaimed leaders in the field,
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/13534_NeoTech
+VGhpcyBwYXRjaCBhZGRzIHNvbWUgbWFjcm9zIGluc3RlYWQgb2YgZml4ZWQgdmFsdWUgZm9yIEFN
+RFRQIGluIElFQyA2MTg4My02LgpUaGVzZSBtYWNyb3Mgd2lsbCBhbHNvIGJlIHVzZWQgYnkgZm9s
+bG93ZWQgcGF0Y2hlcy4KClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNo
+aUBzYWthbW9jY2hpLmpwPgotLS0KIHNvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgfCAzMCArKysrKysr
+KysrKysrKysrKysrKysrKy0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCsp
+LCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgYi9z
+b3VuZC9maXJld2lyZS9hbWR0cC5jCmluZGV4IDE2ZmU4NTguLjM4MDEzZjkgMTAwNjQ0Ci0tLSBh
+L3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKKysrIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuYwpAQCAt
+MjAsMTIgKzIwLDI4IEBACiAKICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgyZTAwIC8q
+IDQ3OS4xNyDCtXMgKi8KIAorLyogaXNvY2hyb25vdXMgaGVhZGVyIHBhcmFtZXRlcnMgKi8KKyNk
+ZWZpbmUgSVNPX0RBVEFfTEVOR1RIX1NISUZUCTE2CiAjZGVmaW5lIFRBR19DSVAJCQkxCiAKKy8q
+IGNvbW1vbiBpc29jaHJvbm91cyBwYWNrZXQgaGVhZGVyIHBhcmFtZXRlcnMgKi8KICNkZWZpbmUg
+Q0lQX0VPSAkJCSgxdSA8PCAzMSkKKyNkZWZpbmUgQ0lQX0VPSF9NQVNLCQkweDgwMDAwMDAwCiAj
+ZGVmaW5lIENJUF9GTVRfQU0JCSgweDEwIDw8IDI0KQotI2RlZmluZSBBTURUUF9GREZfQU04MjQJ
+CSgwIDw8IDE5KQotI2RlZmluZSBBTURUUF9GREZfU0ZDX1NISUZUCTE2CisjZGVmaW5lIENJUF9G
+TVRfTUFTSwkJMHgzZjAwMDAwMAorI2RlZmluZSBDSVBfU1lUX01BU0sJCTB4MDAwMGZmZmYKKyNk
+ZWZpbmUgQ0lQX1NZVF9OT19JTkZPCQkweGZmZmYKKyNkZWZpbmUgQ0lQX0ZERl9NQVNLCQkweDAw
+ZmYwMDAwCisjZGVmaW5lIENJUF9GREZfU0ZDX1NISUZUCTE2CisKKy8qCisgKiBBdWRpbyBhbmQg
+TXVzaWMgdHJhbnNmZXIgcHJvdG9jb2wgc3BlY2lmaWMgcGFyYW1ldGVycworICogb25seSAiQ2xv
+Y2stYmFzZWQgcmF0ZSBjb250cm9sIG1vZGUiIGlzIHN1cHBvcnRlZAorICovCisjZGVmaW5lIEFN
+RFRQX0ZERl9BTTgyNAkJKDAgPDwgKENJUF9GREZfU0ZDX1NISUZUICsgMykpCisjZGVmaW5lIEFN
+RFRQX0RCU19NQVNLCQkweDAwZmYwMDAwCisjZGVmaW5lIEFNRFRQX0RCU19TSElGVAkJMTYKKyNk
+ZWZpbmUgQU1EVFBfREJDX01BU0sJCTB4MDAwMDAwZmYKIAogLyogVE9ETzogbWFrZSB0aGVzZSBj
+b25maWd1cmFibGUgKi8KICNkZWZpbmUgSU5URVJSVVBUX0lOVEVSVkFMCTE2CkBAIC0yODAsOSAr
+Mjk2LDkgQEAgc3RhdGljIHVuc2lnbmVkIGludCBjYWxjdWxhdGVfc3l0KHN0cnVjdCBhbWR0cF9z
+dHJlYW0gKnMsCiAJCXN5dCA9IChjeWNsZSArIHN5dF9vZmZzZXQgLyBUSUNLU19QRVJfQ1lDTEUp
+IDw8IDEyOwogCQlzeXQgKz0gc3l0X29mZnNldCAlIFRJQ0tTX1BFUl9DWUNMRTsKIAotCQlyZXR1
+cm4gc3l0ICYgMHhmZmZmOworCQlyZXR1cm4gc3l0ICYgQ0lQX1NZVF9NQVNLOwogCX0gZWxzZSB7
+Ci0JCXJldHVybiAweGZmZmY7IC8qIG5vIGluZm8gKi8KKwkJcmV0dXJuIENJUF9TWVRfTk9fSU5G
+TzsKIAl9CiB9CiAKQEAgLTQzOCwxNyArNDU0LDE3IEBAIHN0YXRpYyB2b2lkIHF1ZXVlX291dF9w
+YWNrZXQoc3RydWN0IGFtZHRwX3N0cmVhbSAqcywgdW5zaWduZWQgaW50IGN5Y2xlKQogCXN5dCA9
+IGNhbGN1bGF0ZV9zeXQocywgY3ljbGUpOwogCWlmICghKHMtPmZsYWdzICYgQ0lQX0JMT0NLSU5H
+KSkKIAkJZGF0YV9ibG9ja3MgPSBjYWxjdWxhdGVfZGF0YV9ibG9ja3Mocyk7Ci0JZWxzZSBpZiAo
+c3l0ICE9IDB4ZmZmZikKKwllbHNlIGlmIChzeXQgIT0gQ0lQX1NZVF9OT19JTkZPKQogCQlkYXRh
+X2Jsb2NrcyA9IHMtPnN5dF9pbnRlcnZhbDsKIAllbHNlCiAJCWRhdGFfYmxvY2tzID0gMDsKIAog
+CWJ1ZmZlciA9IHMtPmJ1ZmZlci5wYWNrZXRzW2luZGV4XS5idWZmZXI7CiAJYnVmZmVyWzBdID0g
+Y3B1X3RvX2JlMzIoQUNDRVNTX09OQ0Uocy0+c291cmNlX25vZGVfaWRfZmllbGQpIHwKLQkJCQko
+cy0+ZGF0YV9ibG9ja19xdWFkbGV0cyA8PCAxNikgfAorCQkJCShzLT5kYXRhX2Jsb2NrX3F1YWRs
+ZXRzIDw8IEFNRFRQX0RCU19TSElGVCkgfAogCQkJCXMtPmRhdGFfYmxvY2tfY291bnRlcik7CiAJ
+YnVmZmVyWzFdID0gY3B1X3RvX2JlMzIoQ0lQX0VPSCB8IENJUF9GTVRfQU0gfCBBTURUUF9GREZf
+QU04MjQgfAotCQkJCShzLT5zZmMgPDwgQU1EVFBfRkRGX1NGQ19TSElGVCkgfCBzeXQpOworCQkJ
+CShzLT5zZmMgPDwgQ0lQX0ZERl9TRkNfU0hJRlQpIHwgc3l0KTsKIAlidWZmZXIgKz0gMjsKIAog
+CXBjbSA9IEFDQ0VTU19PTkNFKHMtPnBjbSk7Ci0tIAoxLjguMy4yCgoKLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCkxlYXJuIEdyYXBoIERhdGFiYXNlcyAtIERvd25sb2FkIEZSRUUgTydSZWlsbHkgQm9v
+awoiR3JhcGggRGF0YWJhc2VzIiBpcyB0aGUgZGVmaW5pdGl2ZSBuZXcgZ3VpZGUgdG8gZ3JhcGgg
+ZGF0YWJhc2VzIGFuZCB0aGVpcgphcHBsaWNhdGlvbnMuIFdyaXR0ZW4gYnkgdGhyZWUgYWNjbGFp
+bWVkIGxlYWRlcnMgaW4gdGhlIGZpZWxkLAp0aGlzIGZpcnN0IGVkaXRpb24gaXMgbm93IGF2YWls
+YWJsZS4gRG93bmxvYWQgeW91ciBmcmVlIGJvb2sgdG9kYXkhCmh0dHA6Ly9wLnNmLm5ldC9zZnUv
+MTM1MzRfTmVvVGVjaApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwptYWlsaW5nIGxpc3QgbGludXgxMzk0LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApo
+dHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9saW51eDEzOTQtZGV2
+ZWwK
