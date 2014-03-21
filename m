@@ -1,18 +1,19 @@
 From: Benoit Cousson <bcousson@baylibre.com>
-Subject: [RFT v2 3/6] ASoC: core: Add helper for DAI widgets
-	linking
-Date: Fri, 21 Mar 2014 16:27:27 +0100
-Message-ID: <1395415650-20045-4-git-send-email-bcousson@baylibre.com>
+Subject: [RFT v2 4/6] ASoC: core: Add function for ac97 codec
+	registration
+Date: Fri, 21 Mar 2014 16:27:28 +0100
+Message-ID: <1395415650-20045-5-git-send-email-bcousson@baylibre.com>
 References: <1395415650-20045-1-git-send-email-bcousson@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CDEE265460
- for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 16:28:23 +0100 (CET)
-Received: by mail-wg0-f52.google.com with SMTP id k14so1698861wgh.11
- for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 08:28:23 -0700 (PDT)
+Received: from mail-wi0-f182.google.com (mail-wi0-f182.google.com
+ [209.85.212.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05A27265461
+ for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 16:28:24 +0100 (CET)
+Received: by mail-wi0-f182.google.com with SMTP id d1so624326wiv.15
+ for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 08:28:24 -0700 (PDT)
 In-Reply-To: <1395415650-20045-1-git-send-email-bcousson@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,8 +30,8 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Misael Lopez Cruz <misael.lopez@ti.com>
 
-Add a helper for DAI widgets linking in preparation for
-DAI-multicodec support.
+Add codec registration specific function in preparation
+for DAI-multicodec support.
 
 No functional change.
 
@@ -39,97 +40,92 @@ Signed-off-by: Misael Lopez Cruz <misael.lopez@ti.com>
 Signed-off-by: Fabien Parent <fparent@baylibre.com>
 Signed-off-by: Benoit Cousson <bcousson@baylibre.com>
 ---
- sound/soc/soc-core.c | 64 ++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 40 insertions(+), 24 deletions(-)
+ sound/soc/soc-core.c | 29 ++++++++++++++++++++---------
+ 1 file changed, 20 insertions(+), 9 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 1bcc446..1debe3d 100644
+index 1debe3d..76fdf43 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1418,6 +1418,42 @@ static int soc_probe_codec_dai(struct snd_soc_card *card,
+@@ -1557,14 +1557,15 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
+ }
+ 
+ #ifdef CONFIG_SND_SOC_AC97_BUS
+-static int soc_register_ac97_dai_link(struct snd_soc_pcm_runtime *rtd)
++static int soc_register_ac97_codec(struct snd_soc_codec *codec,
++				   struct snd_soc_dai *codec_dai)
+ {
+ 	int ret;
+ 
+ 	/* Only instantiate AC97 if not already done by the adaptor
+ 	 * for the generic AC97 subsystem.
+ 	 */
+-	if (rtd->codec_dai->driver->ac97_control && !rtd->codec->ac97_registered) {
++	if (codec_dai->driver->ac97_control && !codec->ac97_registered) {
+ 		/*
+ 		 * It is possible that the AC97 device is already registered to
+ 		 * the device subsystem. This happens when the device is created
+@@ -1573,28 +1574,38 @@ static int soc_register_ac97_dai_link(struct snd_soc_pcm_runtime *rtd)
+ 		 *
+ 		 * In those cases we don't try to register the device again.
+ 		 */
+-		if (!rtd->codec->ac97_created)
++		if (!codec->ac97_created)
+ 			return 0;
+ 
+-		ret = soc_ac97_dev_register(rtd->codec);
++		ret = soc_ac97_dev_register(codec);
+ 		if (ret < 0) {
+-			dev_err(rtd->codec->dev,
++			dev_err(codec->dev,
+ 				"ASoC: AC97 device register failed: %d\n", ret);
+ 			return ret;
+ 		}
+ 
+-		rtd->codec->ac97_registered = 1;
++		codec->ac97_registered = 1;
+ 	}
  	return 0;
  }
  
-+static int soc_link_dai_widgets(struct snd_soc_card *card,
-+				struct snd_soc_dai_link *dai_link,
-+				struct snd_soc_dai *cpu_dai,
-+				struct snd_soc_dai *codec_dai)
+-static void soc_unregister_ac97_dai_link(struct snd_soc_codec *codec)
++static int soc_register_ac97_dai_link(struct snd_soc_pcm_runtime *rtd)
 +{
-+	struct snd_soc_dapm_widget *play_w, *capture_w;
-+	int ret;
-+
-+	/* link the DAI widgets */
-+	play_w = codec_dai->playback_widget;
-+	capture_w = cpu_dai->capture_widget;
-+	if (play_w && capture_w) {
-+		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
-+					   capture_w, play_w);
-+		if (ret != 0) {
-+			dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
-+				play_w->name, capture_w->name, ret);
-+			return ret;
-+		}
-+	}
-+
-+	play_w = cpu_dai->playback_widget;
-+	capture_w = codec_dai->capture_widget;
-+	if (play_w && capture_w) {
-+		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
-+					   capture_w, play_w);
-+		if (ret != 0) {
-+			dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
-+				play_w->name, capture_w->name, ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
++	return soc_register_ac97_codec(rtd->codec, rtd->codec_dai);
 +}
 +
- static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
++static void soc_unregister_ac97_codec(struct snd_soc_codec *codec)
  {
- 	struct snd_soc_dai_link *dai_link = &card->dai_link[num];
-@@ -1426,7 +1462,6 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
- 	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_dapm_widget *play_w, *capture_w;
- 	int ret;
+ 	if (codec->ac97_registered) {
+ 		soc_ac97_dev_unregister(codec);
+ 		codec->ac97_registered = 0;
+ 	}
+ }
++
++static void soc_unregister_ac97_dai_link(struct snd_soc_pcm_runtime *rtd)
++{
++	soc_unregister_ac97_codec(rtd->codec);
++}
+ #endif
  
- 	dev_dbg(card->dev, "ASoC: probe %s dai link %d late %d\n",
-@@ -1507,29 +1542,10 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
- 						codec2codec_close_delayed_work);
- 
- 			/* link the DAI widgets */
--			play_w = codec_dai->playback_widget;
--			capture_w = cpu_dai->capture_widget;
--			if (play_w && capture_w) {
--				ret = snd_soc_dapm_new_pcm(card, dai_link->params,
--						   capture_w, play_w);
--				if (ret != 0) {
--					dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
--						play_w->name, capture_w->name, ret);
--					return ret;
--				}
--			}
--
--			play_w = cpu_dai->playback_widget;
--			capture_w = codec_dai->capture_widget;
--			if (play_w && capture_w) {
--				ret = snd_soc_dapm_new_pcm(card, dai_link->params,
--						   capture_w, play_w);
--				if (ret != 0) {
--					dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
--						play_w->name, capture_w->name, ret);
--					return ret;
--				}
--			}
-+			ret = soc_link_dai_widgets(card, dai_link,
-+					cpu_dai, codec_dai);
-+			if (ret)
-+				return ret;
+ static int soc_check_aux_dev(struct snd_soc_card *card, int num)
+@@ -1894,7 +1905,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 			dev_err(card->dev,
+ 				"ASoC: failed to register AC97: %d\n", ret);
+ 			while (--i >= 0)
+-				soc_unregister_ac97_dai_link(card->rtd[i].codec);
++				soc_unregister_ac97_dai_link(&card->rtd[i]);
+ 			goto probe_aux_dev_err;
  		}
  	}
- 
+@@ -2330,7 +2341,7 @@ void snd_soc_free_ac97_codec(struct snd_soc_codec *codec)
+ {
+ 	mutex_lock(&codec->mutex);
+ #ifdef CONFIG_SND_SOC_AC97_BUS
+-	soc_unregister_ac97_dai_link(codec);
++	soc_unregister_ac97_codec(codec);
+ #endif
+ 	kfree(codec->ac97->bus);
+ 	kfree(codec->ac97);
 -- 
 1.8.3.2
