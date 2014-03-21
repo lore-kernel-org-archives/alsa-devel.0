@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 40/44] bebob: Add support for M-Audio usual Firewire series
-Date: Fri, 21 Mar 2014 20:10:25 +0900
-Message-ID: <1395400229-22957-41-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 44/44] firewire/bebob: Add a workaround for M-Audio special
+	Firewire series
+Date: Fri, 21 Mar 2014 20:10:29 +0900
+Message-ID: <1395400229-22957-45-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,389 +21,113 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit allows this driver to support some models which M-Audio produces
-with DM1000/DM1000E with usual firmware. They are:
- - Firewire 410
- - Firewire AudioPhile
- - Firewire Solo
- - Ozonic
- - NRV10
- - FirewireLightBridge
+In post commit, a quirk of this firmware about transactions is reported.
+This commit apply a workaround for this quirk.
 
-According to person of BridgeCo, Some models are produced with 'Pre-BeBoB'. This
-means that these products were released before BeBoB was officially produced. So
-these models have some quirks.
+They often fail transactions due to gap_count mismatch. This state is changed
+by generating bus reset.
 
-M-Audio usual firmware quirks:
- - Just after powering on, 'Firewire 410' waits to download firmware. This
-   state is changed when receiving cue. Then bus reset is generated and the
-   device is recognized as a different model with the uploaded firmware.
- - 'Firewire Audiophile' also waits to download firmware but its
-   vendor id/model id is the same as the one after loading firmware.
- - The information of channel mapping for MIDI conformant data channel is
-   invalid against BridgeCo specification.
+The fw_schedule_bus_reset() is an exported symbol in firewire-core. But there
+are no header for public. This commit moves its prototype from
+drivers/firewire/core.h to include/linux/firewire.h.
 
-This commit adds some codes for these quirks but don't support to upload
-firmware.
-
-This commit also adds specific operations to get metering information. The
-metering information also includes status of clock synchronization if the model
-supports to switch source of clock.
-
-The specification of FirewireLightBridge is unknown. So in this time, normal
-operations are applied for this model.
+This mismatch still affects bus management before generating this bus reset.
+It still takes a time to call driver's probe() because transactions are still
+often failed.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig              |   2 +
- sound/firewire/bebob/Makefile       |   2 +-
- sound/firewire/bebob/bebob.c        |  45 ++++++++-
- sound/firewire/bebob/bebob.h        |   5 +
- sound/firewire/bebob/bebob_maudio.c | 180 ++++++++++++++++++++++++++++++++++++
- sound/firewire/bebob/bebob_stream.c |   9 ++
- 6 files changed, 240 insertions(+), 3 deletions(-)
- create mode 100644 sound/firewire/bebob/bebob_maudio.c
+ drivers/firewire/core.h      |  1 -
+ include/linux/firewire.h     |  3 +++
+ sound/firewire/bebob/bebob.c | 29 ++++++++++++++++++++++++++---
+ sound/firewire/bebob/bebob.h |  1 +
+ 4 files changed, 30 insertions(+), 4 deletions(-)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 14ae19c..f9aa176 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -113,6 +113,8 @@ config SND_BEBOB
- 	  * Terratec Aureon 7.1 Firewire
- 	  * Yamaha GO44/GO46
- 	  * Focusrite Saffire/Saffire LE/SaffirePro10 IO/SaffirePro26 IO
-+	  * M-Audio Firewire410/AudioPhile/Solo
-+	  * M-Audio Ozonic/NRV10/ProfireLightBridge
+diff --git a/drivers/firewire/core.h b/drivers/firewire/core.h
+index c98764a..870044e 100644
+--- a/drivers/firewire/core.h
++++ b/drivers/firewire/core.h
+@@ -118,7 +118,6 @@ int fw_card_add(struct fw_card *card,
+ 		u32 max_receive, u32 link_speed, u64 guid);
+ void fw_core_remove_card(struct fw_card *card);
+ int fw_compute_block_crc(__be32 *block);
+-void fw_schedule_bus_reset(struct fw_card *card, bool delayed, bool short_reset);
+ void fw_schedule_bm_work(struct fw_card *card, unsigned long delay);
  
-           To compile this driver as a module, choose M here: the module
-           will be called snd-bebob.
-diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-index 6565420..6cf470c 100644
---- a/sound/firewire/bebob/Makefile
-+++ b/sound/firewire/bebob/Makefile
-@@ -1,4 +1,4 @@
- snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
- 		  bebob_pcm.o bebob_hwdep.o bebob_terratec.o bebob_yamaha.o \
--		  bebob_focusrite.o bebob.o
-+		  bebob_focusrite.o bebob_maudio.o bebob.o
- obj-m += snd-bebob.o
+ /* -cdev */
+diff --git a/include/linux/firewire.h b/include/linux/firewire.h
+index c3683bd..d4b7683 100644
+--- a/include/linux/firewire.h
++++ b/include/linux/firewire.h
+@@ -367,6 +367,9 @@ static inline int fw_stream_packet_destination_id(int tag, int channel, int sy)
+ 	return tag << 14 | channel << 8 | sy;
+ }
+ 
++void fw_schedule_bus_reset(struct fw_card *card, bool delayed,
++			   bool short_reset);
++
+ struct fw_descriptor {
+ 	struct list_head link;
+ 	size_t length;
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index c15b00fc..c4eb7b1 100644
+index d5cc98f..c250b17 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -55,8 +55,11 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
- #define VEN_TERRATEC	0x00000aac
- #define VEN_YAMAHA	0x0000a0de
- #define VEN_FOCUSRITE	0x0000130e
-+#define VEN_MAUDIO1	0x00000d6c
-+#define VEN_MAUDIO2	0x000007f5
+@@ -248,9 +248,26 @@ bebob_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
  
- #define MODEL_FOCUSRITE_SAFFIRE_BOTH	0x00000000
-+#define MODEL_MAUDIO_AUDIOPHILE_BOTH	0x00010060
- 
- static int
- name_device(struct snd_bebob *bebob, unsigned int vendor_id)
-@@ -139,6 +142,17 @@ get_saffire_spec(struct fw_unit *unit)
- 		return &saffire_spec;
- }
- 
-+static bool
-+check_audiophile_booted(struct fw_unit *unit)
-+{
-+	char name[24] = {0};
-+
-+	if (fw_csr_string(unit->directory, CSR_MODEL, name, sizeof(name)) < 0)
-+		return false;
-+
-+	return strncmp(name, "FW Audiophile Bootloader", 15) != 0;
-+}
-+
- static int
- bebob_probe(struct fw_unit *unit,
- 	    const struct ieee1394_device_id *entry)
-@@ -161,10 +175,16 @@ bebob_probe(struct fw_unit *unit,
- 	}
- 
- 	if ((entry->vendor_id == VEN_FOCUSRITE) &&
--	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH))
-+	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH)) {
- 		spec = get_saffire_spec(unit);
--	else
-+	} else if ((entry->vendor_id == VEN_MAUDIO1) &&
-+		   (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
-+		   !check_audiophile_booted(unit)) {
-+			err = 0;
-+			goto end;
+-	err = snd_card_register(card);
+-	if (err < 0)
+-		goto error;
++	if (!bebob->maudio_special_quirk) {
++		err = snd_card_register(card);
++		if (err < 0)
++			goto error;
 +	} else {
- 		spec = (const struct snd_bebob_spec *)entry->driver_data;
++		/*
++		 * This is a workaround. This bus reset seems to have an effect
++		 * to make devices correctly handling transactions. Without
++		 * this, the devices have gap_count mismatch. This causes much
++		 * failure of transaction.
++		 *
++		 * Just after registration, user-land application receive
++		 * signals from dbus and starts I/Os. To avoid I/Os till the
++		 * future bus reset, registration is done in next update().
++		 */
++		bebob->deferred_registration = true;
++		fw_schedule_bus_reset(fw_parent_device(bebob->unit)->card,
++				      false, true);
 +	}
- 	if (spec == NULL) {
- 		err = -ENOSYS;
- 		goto end;
-@@ -233,6 +253,10 @@ static void
- bebob_update(struct fw_unit *unit)
- {
- 	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
 +
-+	if (bebob == NULL)
-+		return;
-+
+ 	dev_set_drvdata(&unit->device, bebob);
+ end:
+ 	mutex_unlock(&devices_mutex);
+@@ -271,6 +288,12 @@ bebob_update(struct fw_unit *unit)
+ 
  	fcp_bus_reset(bebob->unit);
  	snd_bebob_stream_update_duplex(bebob);
++
++	if (bebob->deferred_registration) {
++		if (snd_card_register(bebob->card) < 0)
++			snd_card_free(bebob->card);
++		bebob->deferred_registration = false;
++	}
  }
-@@ -241,6 +265,10 @@ bebob_update(struct fw_unit *unit)
- static void bebob_remove(struct fw_unit *unit)
- {
- 	struct snd_bebob *bebob = dev_get_drvdata(&unit->device);
-+
-+	if (bebob == NULL)
-+		return;
-+
- 	snd_bebob_stream_destroy_duplex(bebob);
- 	snd_card_disconnect(bebob->card);
- 	snd_card_free_when_closed(bebob->card);
-@@ -333,6 +361,19 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	/* Focusrite, Saffire(no label and LE) */
- 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
- 			    &saffire_spec),
-+	/* M-Audio, Firewire 410 */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010046, &maudio_fw410_spec),
-+	/* M-Audio, Firewire Audiophile */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_AUDIOPHILE_BOTH,
-+			    &maudio_audiophile_spec),
-+	/* M-Audio, Firewire Solo */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010062, &maudio_solo_spec),
-+	/* M-Audio, Ozonic */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x0000000a, &maudio_ozonic_spec),
-+	/* M-Audio NRV10 */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010081, &maudio_nrv10_spec),
-+	/* M-Audio, ProFireLightbridge */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x000100a1, &spec_normal),
- 	/* IDs are unknown but able to be supported */
- 	/*  Apogee, Mini-ME Firewire */
- 	/*  Apogee, Mini-DAC Firewire */
+ 
+ 
 diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 4940432..2e99baf 100644
+index 6dad0d0..99ed26f 100644
 --- a/sound/firewire/bebob/bebob.h
 +++ b/sound/firewire/bebob/bebob.h
-@@ -232,6 +232,11 @@ extern struct snd_bebob_spec saffirepro_26_spec;
- extern struct snd_bebob_spec saffirepro_10_spec;
- extern struct snd_bebob_spec saffire_le_spec;
- extern struct snd_bebob_spec saffire_spec;
-+extern struct snd_bebob_spec maudio_fw410_spec;
-+extern struct snd_bebob_spec maudio_audiophile_spec;
-+extern struct snd_bebob_spec maudio_solo_spec;
-+extern struct snd_bebob_spec maudio_ozonic_spec;
-+extern struct snd_bebob_spec maudio_nrv10_spec;
+@@ -105,6 +105,7 @@ struct snd_bebob {
  
- #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
- { \
-diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
-new file mode 100644
-index 0000000..fbbe8d4
---- /dev/null
-+++ b/sound/firewire/bebob/bebob_maudio.c
-@@ -0,0 +1,180 @@
-+/*
-+ * bebob_maudio.c - a part of driver for BeBoB based devices
-+ *
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "./bebob.h"
-+
-+/*
-+ * Just powering on, Firewire 410/Audiophile wait to
-+ * download firmware blob. To enable these devices, drivers should upload
-+ * firmware blob and send a command to initialize configuration to factory
-+ * settings when completing uploading. Then these devices generate bus reset
-+ * and are recognized as new devices with the firmware.
-+ *
-+ * For streaming, both of output and input streams are needed for Firewire 410
-+ * and Ozonic. The single stream is OK for the other devices even if the clock
-+ * source is not SYT-Match (I note no devices use SYT-Match).
-+ *
-+ * Without streaming, the devices except for Firewire Audiophile can mix any
-+ * input and output. For this reason, Audiophile cannot be used as standalone
-+ * mixer.
-+ */
-+
-+#define MAUDIO_SPECIFIC_ADDRESS	0xffc700000000
-+
-+#define METER_OFFSET		0x00600000
-+
-+/* some device has sync info after metering data */
-+#define METER_SIZE_FW410	76	/* with sync info */
-+#define METER_SIZE_AUDIOPHILE	60	/* with sync info */
-+#define METER_SIZE_SOLO		52	/* with sync info */
-+#define METER_SIZE_OZONIC	48
-+#define METER_SIZE_NRV10	80
-+
-+/* labels for metering */
-+#define ANA_IN		"Analog In"
-+#define ANA_OUT		"Analog Out"
-+#define DIG_IN		"Digital In"
-+#define SPDIF_IN	"S/PDIF In"
-+#define ADAT_IN		"ADAT In"
-+#define DIG_OUT		"Digital Out"
-+#define SPDIF_OUT	"S/PDIF Out"
-+#define ADAT_OUT	"ADAT Out"
-+#define STRM_IN		"Stream In"
-+#define AUX_OUT		"Aux Out"
-+#define HP_OUT		"HP Out"
-+/* for NRV */
-+#define UNKNOWN_METER	"Unknown"
-+
-+static inline int
-+get_meter(struct snd_bebob *bebob, void *buf, unsigned int size)
-+{
-+	return snd_fw_transaction(bebob->unit, TCODE_READ_BLOCK_REQUEST,
-+				  MAUDIO_SPECIFIC_ADDRESS + METER_OFFSET,
-+				  buf, size, 0);
-+}
-+
-+/* last 4 bytes are omitted because it's clock info. */
-+static char *fw410_meter_labels[] = {
-+	ANA_IN, DIG_IN,
-+	ANA_OUT, ANA_OUT, ANA_OUT, ANA_OUT, DIG_OUT,
-+	HP_OUT
-+};
-+static char *audiophile_meter_labels[] = {
-+	ANA_IN, DIG_IN,
-+	ANA_OUT, ANA_OUT, DIG_OUT,
-+	HP_OUT, AUX_OUT,
-+};
-+static char *solo_meter_labels[] = {
-+	ANA_IN, DIG_IN,
-+	STRM_IN, STRM_IN,
-+	ANA_OUT, DIG_OUT
-+};
-+
-+/* no clock info */
-+static char *ozonic_meter_labels[] = {
-+	ANA_IN, ANA_IN,
-+	STRM_IN, STRM_IN,
-+	ANA_OUT, ANA_OUT
-+};
-+/* TODO: need testers. these positions are based on authour's assumption */
-+static char *nrv10_meter_labels[] = {
-+	ANA_IN, ANA_IN, ANA_IN, ANA_IN,
-+	DIG_IN,
-+	ANA_OUT, ANA_OUT, ANA_OUT, ANA_OUT,
-+	DIG_IN
-+};
-+static int
-+normal_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
-+{
-+	struct snd_bebob_meter_spec *spec = bebob->spec->meter;
-+	unsigned int c, channels;
-+	int err;
-+
-+	channels = spec->num * 2;
-+	if (size < channels * sizeof(u32))
-+		return -EINVAL;
-+
-+	err = get_meter(bebob, (void *)buf, size);
-+	if (err < 0)
-+		goto end;
-+
-+	for (c = 0; c < channels; c++)
-+		be32_to_cpus(&buf[c]);
-+
-+	/* swap stream channels because inverted */
-+	if (spec->labels == solo_meter_labels) {
-+		swap(buf[4], buf[6]);
-+		swap(buf[5], buf[7]);
-+	}
-+end:
-+	return err;
-+}
-+
-+/* Firewire 410 specification */
-+static struct snd_bebob_rate_spec usual_rate_spec = {
-+	.get	= &snd_bebob_stream_get_rate,
-+	.set	= &snd_bebob_stream_set_rate,
-+};
-+static struct snd_bebob_meter_spec fw410_meter_spec = {
-+	.num	= ARRAY_SIZE(fw410_meter_labels),
-+	.labels	= fw410_meter_labels,
-+	.get	= &normal_meter_get
-+};
-+struct snd_bebob_spec maudio_fw410_spec = {
-+	.clock	= NULL,
-+	.rate	= &usual_rate_spec,
-+	.meter	= &fw410_meter_spec
-+};
-+
-+/* Firewire Audiophile specification */
-+static struct snd_bebob_meter_spec audiophile_meter_spec = {
-+	.num	= ARRAY_SIZE(audiophile_meter_labels),
-+	.labels	= audiophile_meter_labels,
-+	.get	= &normal_meter_get
-+};
-+struct snd_bebob_spec maudio_audiophile_spec = {
-+	.clock	= NULL,
-+	.rate	= &usual_rate_spec,
-+	.meter	= &audiophile_meter_spec
-+};
-+
-+/* Firewire Solo specification */
-+static struct snd_bebob_meter_spec solo_meter_spec = {
-+	.num	= ARRAY_SIZE(solo_meter_labels),
-+	.labels	= solo_meter_labels,
-+	.get	= &normal_meter_get
-+};
-+struct snd_bebob_spec maudio_solo_spec = {
-+	.clock	= NULL,
-+	.rate	= &usual_rate_spec,
-+	.meter	= &solo_meter_spec
-+};
-+
-+/* Ozonic specification */
-+static struct snd_bebob_meter_spec ozonic_meter_spec = {
-+	.num	= ARRAY_SIZE(ozonic_meter_labels),
-+	.labels	= ozonic_meter_labels,
-+	.get	= &normal_meter_get
-+};
-+struct snd_bebob_spec maudio_ozonic_spec = {
-+	.clock	= NULL,
-+	.rate	= &usual_rate_spec,
-+	.meter	= &ozonic_meter_spec
-+};
-+
-+/* NRV10 specification */
-+static struct snd_bebob_meter_spec nrv10_meter_spec = {
-+	.num	= ARRAY_SIZE(nrv10_meter_labels),
-+	.labels	= nrv10_meter_labels,
-+	.get	= &normal_meter_get
-+};
-+struct snd_bebob_spec maudio_nrv10_spec = {
-+	.clock	= NULL,
-+	.rate	= &usual_rate_spec,
-+	.meter	= &nrv10_meter_spec
-+};
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index a0ee437..b64f65e 100644
---- a/sound/firewire/bebob/bebob_stream.c
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -233,6 +233,15 @@ map_data_channels(struct snd_bebob *bebob, struct amdtp_stream *s)
- 			/* location of this channel in this section */
- 			sec_loc = buf[pos++] - 1;
+ 	/* for M-Audio special devices */
+ 	void *maudio_special_quirk;
++	bool deferred_registration;
+ };
  
-+			/*
-+			 * Basically the number of location is within the
-+			 * number of channels in this section. But some models
-+			 * of M-Audio don't follow this. Its location for MIDI
-+			 * is the position of MIDI channels in AMDTP packet.
-+			 */
-+			if (sec_loc >= channels)
-+				sec_loc = ch;
-+
- 			switch (type) {
- 			/* for MIDI conformant data channel */
- 			case 0x0a:
+ static inline int
 -- 
 1.8.3.2
 
