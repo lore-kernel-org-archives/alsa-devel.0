@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 18/44] fireworks: Add connection and stream management
-Date: Fri, 21 Mar 2014 20:10:03 +0900
-Message-ID: <1395400229-22957-19-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 26/44] fireworks: Add PCM interface
+Date: Fri, 21 Mar 2014 20:10:11 +0900
+Message-ID: <1395400229-22957-27-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,189 +20,117 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Fireworks manages connections by CMP and can transmit/receive AMDTP streams
-with a few quirks. This commit adds functionality to start/stop the streams.
+This commit adds a functionality to capture/playback PCM samples.
 
-Major Fireworks products don't support 'SYT-Match' modes, except for
-AudioFire12/8(till 2009 July) with firmware version 1.0. Already in previous
-commit, this driver don't support such old firmwares. So this commit adds
-support for non 'SYT-Match' modes.
-
-I note that this driver has a short gap for MIDI streams when starting PCM
-stream. When AMDTP streams are running only for MIDI data and PCM data is
-going to be joined at different sampling rate, then AMDTP streams are
-stopped once and started again after changing sampling rate.
-
-Unfortunately, Fireworks is not fully compliant to IEC 61883-1/6. Some commits
-following to this commit add these quirks.
+When AMDTP stream is already running for PCM or the source of clock is not
+internal, available sampling rate is limited at current one.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/Makefile           |   3 +-
- sound/firewire/fireworks/fireworks.c        |  45 ++++
- sound/firewire/fireworks/fireworks.h        |  28 +++
- sound/firewire/fireworks/fireworks_stream.c | 331 ++++++++++++++++++++++++++++
- 4 files changed, 406 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/fireworks/fireworks_stream.c
+ sound/firewire/Kconfig                      |   1 +
+ sound/firewire/fireworks/Makefile           |   2 +-
+ sound/firewire/fireworks/fireworks.c        |   4 +
+ sound/firewire/fireworks/fireworks.h        |   4 +
+ sound/firewire/fireworks/fireworks_pcm.c    | 468 ++++++++++++++++++++++++++++
+ sound/firewire/fireworks/fireworks_stream.c |  33 --
+ 6 files changed, 478 insertions(+), 34 deletions(-)
+ create mode 100644 sound/firewire/fireworks/fireworks_pcm.c
 
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 36a1212..fb39f9c 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -65,6 +65,7 @@ config SND_FIREWORKS
+ 	tristate "Echo Fireworks board module support"
+ 	select SND_FIREWIRE_LIB
+ 	select SND_RAWMIDI
++	select SND_PCM
+ 	help
+ 	  Say Y here to include support for FireWire devices based
+ 	  on Echo Digital Audio Fireworks board:
 diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-index a6ce214..1bccb65 100644
+index a2cecc6..d7ebf83 100644
 --- a/sound/firewire/fireworks/Makefile
 +++ b/sound/firewire/fireworks/Makefile
-@@ -1,2 +1,3 @@
--snd-fireworks-objs := fireworks_transaction.o fireworks_command.o fireworks.o
-+snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
-+		      fireworks_stream.o fireworks.o
+@@ -1,4 +1,4 @@
+ snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
+ 		      fireworks_stream.o fireworks_proc.o fireworks_midi.o \
+-		      fireworks.o
++		      fireworks_pcm.o fireworks.o
  obj-m += snd-fireworks.o
 diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index c7e7f46..af83204 100644
+index ca3cf41..3c4351f 100644
 --- a/sound/firewire/fireworks/fireworks.c
 +++ b/sound/firewire/fireworks/fireworks.c
-@@ -96,6 +96,42 @@ get_hardware_info(struct snd_efw *efw)
+@@ -214,6 +214,10 @@ efw_probe(struct fw_unit *unit,
+ 			goto error;
+ 	}
  
- 	if (hwinfo->flags & BIT(FLAG_RESP_ADDR_CHANGABLE))
- 		efw->resp_addr_changable = true;
-+
-+	efw->supported_sampling_rate = 0;
-+	if ((hwinfo->min_sample_rate <= 22050)
-+	 && (22050 <= hwinfo->max_sample_rate))
-+		efw->supported_sampling_rate |= SNDRV_PCM_RATE_22050;
-+	if ((hwinfo->min_sample_rate <= 32000)
-+	 && (32000 <= hwinfo->max_sample_rate))
-+		efw->supported_sampling_rate |= SNDRV_PCM_RATE_32000;
-+	if ((hwinfo->min_sample_rate <= 44100)
-+	 && (44100 <= hwinfo->max_sample_rate))
-+		efw->supported_sampling_rate |= SNDRV_PCM_RATE_44100;
-+	if ((hwinfo->min_sample_rate <= 48000)
-+	 && (48000 <= hwinfo->max_sample_rate))
-+		efw->supported_sampling_rate |= SNDRV_PCM_RATE_48000;
-+	if ((hwinfo->min_sample_rate <= 88200)
-+	 && (88200 <= hwinfo->max_sample_rate))
-+		efw->supported_sampling_rate |= SNDRV_PCM_RATE_88200;
-+	if ((hwinfo->min_sample_rate <= 96000)
-+	 && (96000 <= hwinfo->max_sample_rate))
-+		efw->supported_sampling_rate |= SNDRV_PCM_RATE_96000;
-+	if ((hwinfo->min_sample_rate <= 176400)
-+	 && (176400 <= hwinfo->max_sample_rate))
-+		efw->supported_sampling_rate |= SNDRV_PCM_RATE_176400;
-+	if ((hwinfo->min_sample_rate <= 192000)
-+	 && (192000 <= hwinfo->max_sample_rate))
-+		efw->supported_sampling_rate |= SNDRV_PCM_RATE_192000;
-+
-+	efw->midi_out_ports = hwinfo->midi_out_ports;
-+	efw->midi_in_ports = hwinfo->midi_in_ports;
-+
-+	efw->pcm_capture_channels[0] = hwinfo->amdtp_tx_pcm_channels;
-+	efw->pcm_capture_channels[1] = hwinfo->amdtp_tx_pcm_channels_2x;
-+	efw->pcm_capture_channels[2] = hwinfo->amdtp_tx_pcm_channels_4x;
-+	efw->pcm_playback_channels[0] = hwinfo->amdtp_rx_pcm_channels;
-+	efw->pcm_playback_channels[1] = hwinfo->amdtp_rx_pcm_channels_2x;
-+	efw->pcm_playback_channels[2] = hwinfo->amdtp_rx_pcm_channels_4x;
- end:
- 	kfree(hwinfo);
- 	return err;
-@@ -153,6 +189,10 @@ efw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
- 
-+	err = snd_efw_stream_init_duplex(efw);
++	err = snd_efw_create_pcm_devices(efw);
 +	if (err < 0)
 +		goto error;
 +
  	err = snd_card_register(card);
  	if (err < 0)
  		goto error;
-@@ -170,12 +210,17 @@ error:
- static void efw_update(struct fw_unit *unit)
- {
- 	struct snd_efw *efw = dev_get_drvdata(&unit->device);
-+
- 	snd_efw_transaction_bus_reset(efw->unit);
-+	snd_efw_stream_update_duplex(efw);
- }
- 
- static void efw_remove(struct fw_unit *unit)
- {
- 	struct snd_efw *efw = dev_get_drvdata(&unit->device);
-+
-+	snd_efw_stream_destroy_duplex(efw);
-+
- 	snd_card_disconnect(efw->card);
- 	snd_card_free_when_closed(efw->card);
- }
 diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 751302d..c022c71 100644
+index 426cbeb..86d6cfb 100644
 --- a/sound/firewire/fireworks/fireworks.h
 +++ b/sound/firewire/fireworks/fireworks.h
-@@ -22,9 +22,15 @@
- #include <sound/initval.h>
+@@ -23,6 +23,7 @@
  #include <sound/pcm.h>
+ #include <sound/info.h>
+ #include <sound/rawmidi.h>
++#include <sound/pcm_params.h>
  
-+#include "../packets-buffer.h"
-+#include "../iso-resources.h"
-+#include "../amdtp.h"
- #include "../cmp.h"
- #include "../lib.h"
+ #include "../packets-buffer.h"
+ #include "../iso-resources.h"
+@@ -196,6 +197,9 @@ void snd_efw_proc_init(struct snd_efw *efw);
  
-+#define SND_EFW_MAX_MIDI_OUT_PORTS	2
-+#define SND_EFW_MAX_MIDI_IN_PORTS	2
-+
- #define SND_EFW_MUITIPLIER_MODES	3
- #define HWINFO_NAME_SIZE_BYTES		32
- #define HWINFO_MAX_CAPS_GROUPS		8
-@@ -45,6 +51,20 @@ struct snd_efw {
- 	/* for transaction */
- 	u32 seqnum;
- 	bool resp_addr_changable;
-+
-+	unsigned int midi_in_ports;
-+	unsigned int midi_out_ports;
-+
-+	unsigned int supported_sampling_rate;
-+	unsigned int pcm_capture_channels[SND_EFW_MUITIPLIER_MODES];
-+	unsigned int pcm_playback_channels[SND_EFW_MUITIPLIER_MODES];
-+
-+	struct amdtp_stream tx_stream;
-+	struct amdtp_stream rx_stream;
-+	struct cmp_connection out_conn;
-+	struct cmp_connection in_conn;
-+	unsigned int capture_substreams;
-+	unsigned int playback_substreams;
- };
+ int snd_efw_create_midi_devices(struct snd_efw *efw);
  
- struct snd_efw_transaction {
-@@ -150,6 +170,14 @@ int snd_efw_command_set_clock_source(struct snd_efw *efw,
- int snd_efw_command_get_sampling_rate(struct snd_efw *efw, unsigned int *rate);
- int snd_efw_command_set_sampling_rate(struct snd_efw *efw, unsigned int rate);
- 
-+int snd_efw_stream_init_duplex(struct snd_efw *efw);
-+int snd_efw_stream_start_duplex(struct snd_efw *efw,
-+				struct amdtp_stream *request,
-+				int sampling_rate);
-+int snd_efw_stream_stop_duplex(struct snd_efw *efw);
-+void snd_efw_stream_update_duplex(struct snd_efw *efw);
-+void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
++int snd_efw_create_pcm_devices(struct snd_efw *efw);
++int snd_efw_get_multiplier_mode(unsigned int sampling_rate, unsigned int *mode);
 +
  #define SND_EFW_DEV_ENTRY(vendor, model) \
  { \
  	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
 new file mode 100644
-index 0000000..f41aee4
+index 0000000..88c1d53
 --- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -0,0 +1,331 @@
++++ b/sound/firewire/fireworks/fireworks_pcm.c
+@@ -0,0 +1,468 @@
 +/*
-+ * fireworks_stream.c - a part of driver for Fireworks based devices
++ * fireworks_pcm.c - a part of driver for Fireworks based devices
 + *
++ * Copyright (c) 2009-2010 Clemens Ladisch
 + * Copyright (c) 2013 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +#include "./fireworks.h"
 +
-+#define CALLBACK_TIMEOUT	100
-+
++/*
++ * NOTE:
++ * Fireworks changes its AMDTP channels for PCM data according to its sampling
++ * rate. There are three modes. Here _XX is either _rx or _tx.
++ *  0:  32.0- 48.0 kHz then snd_efw_hwinfo.amdtp_XX_pcm_channels applied
++ *  1:  88.2- 96.0 kHz then snd_efw_hwinfo.amdtp_XX_pcm_channels_2x applied
++ *  2: 176.4-192.0 kHz then snd_efw_hwinfo.amdtp_XX_pcm_channels_4x applied
++ *
++ * The number of PCM channels for analog input and output are always fixed but
++ * the number of PCM channels for digital input and output are differed.
++ *
++ * Additionally, according to "AudioFire Owner's Manual Version 2.2", in some
++ * model, the number of PCM channels for digital input has more restriction
++ * depending on which digital interface is selected.
++ *  - S/PDIF coaxial and optical	: use input 1-2
++ *  - ADAT optical at 32.0-48.0 kHz	: use input 1-8
++ *  - ADAT optical at 88.2-96.0 kHz	: use input 1-4 (S/MUX format)
++ *
++ * The data in AMDTP channels for blank PCM channels are zero.
++ */
 +static unsigned int freq_table[] = {
 +	/* multiplier mode 0 */
 +	[0] = 32000,
@@ -237,292 +165,454 @@ index 0000000..f41aee4
 +}
 +
 +static int
-+init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
++hw_rule_rate(struct snd_pcm_hw_params *params,
++	     struct snd_pcm_hw_rule *rule,
++	     struct snd_efw *efw, unsigned int *channels)
 +{
-+	struct cmp_connection *conn;
-+	enum cmp_direction c_dir;
-+	enum amdtp_stream_direction s_dir;
-+	int err;
++	struct snd_interval *r =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	const struct snd_interval *c =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval t = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int i, mode, rate_bit;
 +
-+	if (stream == &efw->tx_stream) {
-+		conn = &efw->out_conn;
-+		c_dir = CMP_OUTPUT;
-+		s_dir = AMDTP_IN_STREAM;
-+	} else {
-+		conn = &efw->in_conn;
-+		c_dir = CMP_INPUT;
-+		s_dir = AMDTP_OUT_STREAM;
++	for (i = 0; i < ARRAY_SIZE(freq_table); i++) {
++		/* skip unsupported sampling rate */
++		rate_bit = snd_pcm_rate_to_rate_bit(freq_table[i]);
++		if (!(efw->supported_sampling_rate & rate_bit))
++			continue;
++
++		mode = get_multiplier_mode_with_index(i);
++		if (!snd_interval_test(c, channels[mode]))
++			continue;
++
++		t.min = min(t.min, freq_table[i]);
++		t.max = max(t.max, freq_table[i]);
++
 +	}
 +
-+	err = cmp_connection_init(conn, efw->unit, c_dir, 0);
++	return snd_interval_refine(r, &t);
++}
++
++static int
++hw_rule_channels(struct snd_pcm_hw_params *params,
++		 struct snd_pcm_hw_rule *rule,
++		 struct snd_efw *efw, unsigned int *channels)
++{
++	struct snd_interval *c =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	const struct snd_interval *r =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval t = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int i, mode, rate_bit;
++
++	for (i = 0; i < ARRAY_SIZE(freq_table); i++) {
++		/* skip unsupported sampling rate */
++		rate_bit = snd_pcm_rate_to_rate_bit(freq_table[i]);
++		if (!(efw->supported_sampling_rate & rate_bit))
++			continue;
++
++		mode = get_multiplier_mode_with_index(i);
++		if (!snd_interval_test(r, freq_table[i]))
++			continue;
++
++		t.min = min(t.min, channels[mode]);
++		t.max = max(t.max, channels[mode]);
++
++	}
++
++	return snd_interval_refine(c, &t);
++}
++
++static inline int
++hw_rule_capture_rate(struct snd_pcm_hw_params *params,
++		     struct snd_pcm_hw_rule *rule)
++{
++	struct snd_efw *efw = rule->private;
++	return hw_rule_rate(params, rule, efw,
++				efw->pcm_capture_channels);
++}
++
++static inline int
++hw_rule_playback_rate(struct snd_pcm_hw_params *params,
++		      struct snd_pcm_hw_rule *rule)
++{
++	struct snd_efw *efw = rule->private;
++	return hw_rule_rate(params, rule, efw,
++				efw->pcm_playback_channels);
++}
++
++static inline int
++hw_rule_capture_channels(struct snd_pcm_hw_params *params,
++			 struct snd_pcm_hw_rule *rule)
++{
++	struct snd_efw *efw = rule->private;
++	return hw_rule_channels(params, rule, efw,
++				efw->pcm_capture_channels);
++}
++
++static inline int
++hw_rule_playback_channels(struct snd_pcm_hw_params *params,
++			  struct snd_pcm_hw_rule *rule)
++{
++	struct snd_efw *efw = rule->private;
++	return hw_rule_channels(params, rule, efw,
++				efw->pcm_playback_channels);
++}
++
++static int
++pcm_init_hw_params(struct snd_efw *efw,
++		   struct snd_pcm_substream *substream)
++{
++	unsigned int i, *pcm_channels, rate_bit, mode;
++	int err;
++
++	struct snd_pcm_hardware hardware = {
++		.info = SNDRV_PCM_INFO_BATCH |
++			SNDRV_PCM_INFO_BLOCK_TRANSFER |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_JOINT_DUPLEX |
++			SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID,
++		.rates = efw->supported_sampling_rate,
++		/* set up later */
++		.rate_min = UINT_MAX,
++		.rate_max = 0,
++		/* set up later */
++		.channels_min = UINT_MAX,
++		.channels_max = 0,
++		.buffer_bytes_max = 4 * 34 * 2048 * 2,
++		.period_bytes_min = 1,
++		.period_bytes_max = 4 * 34 * 2048,
++		.periods_min = 2,
++		.periods_max = UINT_MAX,
++	};
++
++	substream->runtime->hw = hardware;
++
++	/* add rule between channels and sampling rate */
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		substream->runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
++		snd_pcm_hw_rule_add(substream->runtime, 0,
++				    SNDRV_PCM_HW_PARAM_CHANNELS,
++				    hw_rule_capture_channels, efw,
++				    SNDRV_PCM_HW_PARAM_RATE, -1);
++		snd_pcm_hw_rule_add(substream->runtime, 0,
++				    SNDRV_PCM_HW_PARAM_RATE,
++				    hw_rule_capture_rate, efw,
++				    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++		pcm_channels = efw->pcm_capture_channels;
++	} else {
++		substream->runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
++		snd_pcm_hw_rule_add(substream->runtime, 0,
++				    SNDRV_PCM_HW_PARAM_CHANNELS,
++				    hw_rule_playback_channels, efw,
++				    SNDRV_PCM_HW_PARAM_RATE, -1);
++		snd_pcm_hw_rule_add(substream->runtime, 0,
++				    SNDRV_PCM_HW_PARAM_RATE,
++				    hw_rule_playback_rate, efw,
++				    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++		pcm_channels = efw->pcm_playback_channels;
++	}
++
++	/* limitation for min/max sampling rate */
++	snd_pcm_limit_hw_rates(substream->runtime);
++
++	/* limitation for the number of channels */
++	for (i = 0; i < ARRAY_SIZE(freq_table); i++) {
++		/* skip unsupported sampling rate */
++		rate_bit = snd_pcm_rate_to_rate_bit(freq_table[i]);
++		if (!(efw->supported_sampling_rate & rate_bit))
++			continue;
++
++		mode = get_multiplier_mode_with_index(i);
++		if (pcm_channels[mode] == 0)
++			continue;
++		substream->runtime->hw.channels_min =
++				min(substream->runtime->hw.channels_min,
++				    pcm_channels[mode]);
++		substream->runtime->hw.channels_max =
++				max(substream->runtime->hw.channels_max,
++				    pcm_channels[mode]);
++	}
++
++	/* AM824 in IEC 61883-6 can deliver 24bit data */
++	err = snd_pcm_hw_constraint_msbits(substream->runtime, 0, 32, 24);
 +	if (err < 0)
 +		goto end;
 +
-+	err = amdtp_stream_init(stream, efw->unit, s_dir, CIP_BLOCKING);
++	/*
++	 * AMDTP functionality in firewire-lib require periods to be aligned to
++	 * 16 bit, or 24bit inner 32bit.
++	 */
++	err = snd_pcm_hw_constraint_step(substream->runtime, 0,
++					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
 +	if (err < 0)
-+		cmp_connection_destroy(conn);
++		goto end;
++	err = snd_pcm_hw_constraint_step(substream->runtime, 0,
++					 SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 32);
++	if (err < 0)
++		goto end;
++
++	/*
++	 * Currently INTERRUPT_INTERVAL in amdtp.c is 16.
++	 * So snd_pcm_period_elapsed() can be called every 2m sec.
++	 */
++	err = snd_pcm_hw_constraint_minmax(substream->runtime,
++					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
++					   2000, UINT_MAX);
 +end:
 +	return err;
 +}
 +
-+static void
-+stop_stream(struct snd_efw *efw, struct amdtp_stream *stream)
++static int pcm_open(struct snd_pcm_substream *substream)
 +{
-+	amdtp_stream_stop(stream);
-+
-+	if (stream == &efw->tx_stream)
-+		cmp_connection_break(&efw->out_conn);
-+	else
-+		cmp_connection_break(&efw->in_conn);
-+}
-+
-+static int
-+start_stream(struct snd_efw *efw, struct amdtp_stream *stream,
-+	     unsigned int sampling_rate)
-+{
-+	struct cmp_connection *conn;
-+	unsigned int mode, pcm_channels, midi_ports;
++	struct snd_efw *efw = substream->private_data;
++	int sampling_rate;
++	unsigned int clock_source;
 +	int err;
 +
-+	err = snd_efw_get_multiplier_mode(sampling_rate, &mode);
++	err = pcm_init_hw_params(efw, substream);
 +	if (err < 0)
 +		goto end;
-+	if (stream == &efw->tx_stream) {
-+		conn = &efw->out_conn;
-+		pcm_channels = efw->pcm_capture_channels[mode];
-+		midi_ports = efw->midi_out_ports;
-+	} else {
-+		conn = &efw->in_conn;
-+		pcm_channels = efw->pcm_playback_channels[mode];
-+		midi_ports = efw->midi_in_ports;
-+	}
-+
-+	amdtp_stream_set_parameters(stream, sampling_rate,
-+				    pcm_channels, midi_ports);
-+
-+	/*  establish connection via CMP */
-+	err = cmp_connection_establish(conn,
-+				amdtp_stream_get_max_payload(stream));
-+	if (err < 0)
-+		goto end;
-+
-+	/* start amdtp stream */
-+	err = amdtp_stream_start(stream,
-+				 conn->resources.channel,
-+				 conn->speed);
-+	if (err < 0)
-+		stop_stream(efw, stream);
-+
-+	/* wait first callback */
-+	if (!amdtp_stream_wait_callback(stream, CALLBACK_TIMEOUT)) {
-+		stop_stream(efw, stream);
-+		err = -ETIMEDOUT;
-+	}
-+end:
-+	return err;
-+}
-+
-+static int
-+get_roles(struct snd_efw *efw, enum cip_flags *sync_mode,
-+	  struct amdtp_stream **master, struct amdtp_stream **slave)
-+{
-+	enum snd_efw_clock_source clock_source;
-+	int err;
 +
 +	err = snd_efw_command_get_clock_source(efw, &clock_source);
 +	if (err < 0)
 +		goto end;
 +
-+	if (clock_source != SND_EFW_CLOCK_SOURCE_SYTMATCH) {
-+		*master = &efw->tx_stream;
-+		*slave = &efw->rx_stream;
-+		*sync_mode = CIP_SYNC_TO_DEVICE;
-+	} else {
-+		err = -ENOSYS;
-+	}
-+end:
-+	return err;
-+}
-+
-+static int
-+check_connection_used_by_others(struct snd_efw *efw, struct amdtp_stream *s)
-+{
-+	struct cmp_connection *conn;
-+	bool used;
-+	int err;
-+
-+	if (s == &efw->tx_stream)
-+		conn = &efw->out_conn;
-+	else
-+		conn = &efw->in_conn;
-+
-+	err = cmp_connection_check_used(conn, &used);
-+	if ((err >= 0) && used && !amdtp_stream_running(s)) {
-+		dev_err(&efw->unit->device,
-+			"Connection established by others: %cPCR[%d]\n",
-+			(conn->direction == CMP_OUTPUT) ? 'o' : 'i',
-+			conn->pcr_index);
-+		err = -EBUSY;
-+	}
-+
-+	return err;
-+}
-+
-+int snd_efw_stream_init_duplex(struct snd_efw *efw)
-+{
-+	int err;
-+
-+	err = init_stream(efw, &efw->tx_stream);
-+	if (err < 0)
-+		goto end;
-+
-+	err = init_stream(efw, &efw->rx_stream);
-+	if (err < 0)
-+		goto end;
-+
-+	/* set IEC61883 compliant mode */
-+	err = snd_efw_command_set_tx_mode(efw, SND_EFW_TRANSPORT_MODE_IEC61883);
-+end:
-+	return err;
-+}
-+
-+int snd_efw_stream_start_duplex(struct snd_efw *efw,
-+				struct amdtp_stream *request,
-+				int rate)
-+{
-+	struct amdtp_stream *master, *slave;
-+	enum cip_flags sync_mode;
-+	unsigned int curr_rate;
-+	bool slave_flag;
-+	int err;
-+
-+	mutex_lock(&efw->mutex);
-+
-+	err = get_roles(efw, &sync_mode, &master, &slave);
-+	if (err < 0)
-+		goto end;
-+
 +	/*
-+	 * Considering JACK/FFADO streaming:
-+	 * TODO: This can be removed hwdep functionality becomes popular.
++	 * When source of clock is not internal or any PCM streams are running,
++	 * available sampling rate is limited at current sampling rate.
 +	 */
-+	err = check_connection_used_by_others(efw, master);
-+	if (err < 0)
-+		goto end;
-+
-+	/* need to touch slave stream */
-+	slave_flag = (request == slave) || amdtp_stream_running(slave);
-+
-+	/* packet queueing error */
-+	if (amdtp_streaming_error(slave))
-+		stop_stream(efw, slave);
-+	if (amdtp_streaming_error(master))
-+		stop_stream(efw, master);
-+
-+	/* stop streams if rate is different */
-+	err = snd_efw_command_get_sampling_rate(efw, &curr_rate);
-+	if (err < 0)
-+		goto end;
-+	if (rate == 0)
-+		rate = curr_rate;
-+	if (rate != curr_rate) {
-+		stop_stream(efw, slave);
-+		stop_stream(efw, master);
-+	}
-+
-+	/* master should be always running */
-+	if (!amdtp_stream_running(master)) {
-+		amdtp_stream_set_sync(sync_mode, master, slave);
-+
-+		err = snd_efw_command_set_sampling_rate(efw, rate);
++	if ((clock_source != SND_EFW_CLOCK_SOURCE_INTERNAL) ||
++	    amdtp_stream_pcm_running(&efw->tx_stream) ||
++	    amdtp_stream_pcm_running(&efw->rx_stream)) {
++		err = snd_efw_command_get_sampling_rate(efw, &sampling_rate);
 +		if (err < 0)
 +			goto end;
-+
-+		err = start_stream(efw, master, rate);
-+		if (err < 0) {
-+			dev_err(&efw->unit->device,
-+				"fail to start AMDTP master stream:%d\n", err);
-+			goto end;
-+		}
++		substream->runtime->hw.rate_min = sampling_rate;
++		substream->runtime->hw.rate_max = sampling_rate;
 +	}
 +
-+	/* start slave if needed */
-+	if (slave_flag && !amdtp_stream_running(slave)) {
-+		err = start_stream(efw, slave, rate);
-+		if (err < 0) {
-+			dev_err(&efw->unit->device,
-+				"fail to start AMDTP slave stream:%d\n", err);
-+			stop_stream(efw, master);
-+		}
-+	}
++	snd_pcm_set_sync(substream);
 +end:
-+	mutex_unlock(&efw->mutex);
 +	return err;
 +}
 +
-+int snd_efw_stream_stop_duplex(struct snd_efw *efw)
++static int pcm_close(struct snd_pcm_substream *substream)
 +{
-+	struct amdtp_stream *master, *slave;
-+	enum cip_flags sync_mode;
-+	unsigned int slave_substreams;
++	return 0;
++}
++
++static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_efw *efw = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
++		efw->capture_substreams++;
++	amdtp_stream_set_pcm_format(&efw->tx_stream, params_format(hw_params));
++
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_efw *efw = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
++		efw->playback_substreams++;
++	amdtp_stream_set_pcm_format(&efw->rx_stream, params_format(hw_params));
++
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++
++static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_efw *efw = substream->private_data;
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		efw->capture_substreams--;
++
++	snd_efw_stream_stop_duplex(efw);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_efw *efw = substream->private_data;
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		efw->playback_substreams--;
++
++	snd_efw_stream_stop_duplex(efw);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int pcm_capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_efw *efw = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
 +	int err;
 +
-+	mutex_lock(&efw->mutex);
++	err = snd_efw_stream_start_duplex(efw, &efw->tx_stream, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&efw->tx_stream);
 +
-+	err = get_roles(efw, &sync_mode, &master, &slave);
++	return err;
++}
++static int pcm_playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_efw *efw = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	err = snd_efw_stream_start_duplex(efw, &efw->rx_stream, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&efw->rx_stream);
++
++	return err;
++}
++
++static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_efw *efw = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&efw->tx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&efw->tx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_efw *efw = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&efw->rx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&efw->rx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_efw *efw = sbstrm->private_data;
++	return amdtp_stream_pcm_pointer(&efw->tx_stream);
++}
++static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_efw *efw = sbstrm->private_data;
++	return amdtp_stream_pcm_pointer(&efw->rx_stream);
++}
++
++static const struct snd_pcm_ops pcm_capture_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_capture_hw_params,
++	.hw_free	= pcm_capture_hw_free,
++	.prepare	= pcm_capture_prepare,
++	.trigger	= pcm_capture_trigger,
++	.pointer	= pcm_capture_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++};
++
++static const struct snd_pcm_ops pcm_playback_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_playback_hw_params,
++	.hw_free	= pcm_playback_hw_free,
++	.prepare	= pcm_playback_prepare,
++	.trigger	= pcm_playback_trigger,
++	.pointer	= pcm_playback_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++	.mmap		= snd_pcm_lib_mmap_vmalloc,
++};
++
++int snd_efw_create_pcm_devices(struct snd_efw *efw)
++{
++	struct snd_pcm *pcm;
++	int err;
++
++	err = snd_pcm_new(efw->card, efw->card->driver, 0, 1, 1, &pcm);
 +	if (err < 0)
 +		goto end;
 +
-+	if (slave == &efw->tx_stream)
-+		slave_substreams = efw->capture_substreams;
-+	else
-+		slave_substreams = efw->playback_substreams;
-+
-+	if (slave_substreams > 0)
-+		goto end;
-+
-+	stop_stream(efw, slave);
-+
-+	if ((efw->capture_substreams > 0) || (efw->playback_substreams > 0))
-+		goto end;
-+
-+	stop_stream(efw, master);
++	pcm->private_data = efw;
++	snprintf(pcm->name, sizeof(pcm->name), "%s PCM", efw->card->shortname);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
 +end:
-+	mutex_unlock(&efw->mutex);
 +	return err;
 +}
 +
-+void snd_efw_stream_update_duplex(struct snd_efw *efw)
-+{
-+	if ((cmp_connection_update(&efw->out_conn) < 0) ||
-+	    (cmp_connection_update(&efw->in_conn) < 0)) {
-+		amdtp_stream_pcm_abort(&efw->rx_stream);
-+		amdtp_stream_pcm_abort(&efw->tx_stream);
-+		mutex_lock(&efw->mutex);
-+		stop_stream(efw, &efw->rx_stream);
-+		stop_stream(efw, &efw->tx_stream);
-+		mutex_unlock(&efw->mutex);
-+	} else {
-+		amdtp_stream_update(&efw->rx_stream);
-+		amdtp_stream_update(&efw->tx_stream);
-+	}
-+}
-+
-+void snd_efw_stream_destroy_duplex(struct snd_efw *efw)
-+{
-+	mutex_lock(&efw->mutex);
-+
-+	amdtp_stream_pcm_abort(&efw->rx_stream);
-+	amdtp_stream_pcm_abort(&efw->tx_stream);
-+
-+	stop_stream(efw, &efw->tx_stream);
-+	cmp_connection_destroy(&efw->out_conn);
-+
-+	stop_stream(efw, &efw->rx_stream);
-+	cmp_connection_destroy(&efw->in_conn);
-+
-+	mutex_unlock(&efw->mutex);
-+}
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index ee9a038..d6adb22 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -9,39 +9,6 @@
+ 
+ #define CALLBACK_TIMEOUT	100
+ 
+-static unsigned int freq_table[] = {
+-	/* multiplier mode 0 */
+-	[0] = 32000,
+-	[1] = 44100,
+-	[2] = 48000,
+-	/* multiplier mode 1 */
+-	[3] = 88200,
+-	[4] = 96000,
+-	/* multiplier mode 2 */
+-	[5] = 176400,
+-	[6] = 192000,
+-};
+-
+-static inline unsigned int
+-get_multiplier_mode_with_index(unsigned int index)
+-{
+-	return ((int)index - 1) / 2;
+-}
+-
+-int snd_efw_get_multiplier_mode(unsigned int sampling_rate, unsigned int *mode)
+-{
+-	unsigned int i;
+-
+-	for (i = 0; i < sizeof(freq_table); i++) {
+-		if (freq_table[i] == sampling_rate) {
+-			*mode = get_multiplier_mode_with_index(i);
+-			return 0;
+-		}
+-	}
+-
+-	return -EINVAL;
+-}
+-
+ static int
+ init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+ {
 -- 
 1.8.3.2
 
