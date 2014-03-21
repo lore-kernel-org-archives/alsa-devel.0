@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 22/44] fireworks/firewire-libs: Add a quirk for fixed interval
-	of reported dbc
-Date: Fri, 21 Mar 2014 20:10:07 +0900
-Message-ID: <1395400229-22957-23-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 25/44] fireworks/firewire-lib: Add a quirk for data blocks for
+	MIDI in out-stream
+Date: Fri, 21 Mar 2014 20:10:10 +0900
+Message-ID: <1395400229-22957-26-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,119 +21,71 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Fireworks firmware version 5.5 reports fix interval for dbc in each packet.
-
-For example, AudioFire4:
-CIP0     CIP1     Payload
-00070000 900484FF 72
-00070008 9004A8FF 72
-00070008 90FFFFFF 02
-00070010 9004D0FF 72
-00070018 9004C4FF 72
-00070020 9004E8FF 72
-00070020 90FFFFFF 02
-00070028 900410FE 72
-
-The interval of each dbc should be 16 except for empty packet but it's still 8.
-
-This commit adds a flag for this quirk and codes to refer to a fixed value.
+Fireworks has a quirk to ignore MIDI messages in data blocks more than 8.
+This commit adds a flag for this quirk and codes to skip 8 or more data
+blocks to transfer MIDI messages.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c                      | 15 +++++++++++----
- sound/firewire/amdtp.h                      |  3 +++
- sound/firewire/fireworks/fireworks.c        |  1 +
- sound/firewire/fireworks/fireworks.h        |  1 +
- sound/firewire/fireworks/fireworks_stream.c |  3 +++
- 5 files changed, 19 insertions(+), 4 deletions(-)
+ sound/firewire/amdtp.c                    | 5 ++++-
+ sound/firewire/amdtp.h                    | 3 +++
+ sound/firewire/fireworks/fireworks_midi.c | 6 ++++++
+ 3 files changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 33501b4..53a7845 100644
+index 53a7845..51a13c8 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -698,7 +698,8 @@ static void handle_in_packet(struct amdtp_stream *s,
- 			     __be32 *buffer)
- {
- 	u32 cip_header[2];
--	unsigned int data_blocks, data_block_quadlets, data_block_counter;
-+	unsigned int data_blocks, data_block_quadlets, data_block_counter,
-+		     dbc_interval;
- 	struct snd_pcm_substream *pcm = NULL;
- 	bool lost;
+@@ -77,6 +77,8 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 	s->callbacked = false;
+ 	s->sync_slave = NULL;
  
-@@ -741,11 +742,17 @@ static void handle_in_packet(struct amdtp_stream *s,
- 
- 	/* Check data block counter continuity */
- 	data_block_counter = cip_header[0] & AMDTP_DBC_MASK;
--	if (!(s->flags & CIP_DBC_IS_END_EVENT))
-+	if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
- 		lost = data_block_counter != s->data_block_counter;
--	else
-+	} else {
-+		if ((data_blocks > 0) && (s->tx_dbc_interval > 0))
-+			dbc_interval = s->tx_dbc_interval;
-+		else
-+			dbc_interval = data_blocks;
++	s->rx_blocks_for_midi = UINT_MAX;
 +
- 		lost = data_block_counter !=
--		       ((s->data_block_counter + data_blocks) & 0xff);
-+		       ((s->data_block_counter + dbc_interval) & 0xff);
-+	}
- 	if (lost) {
- 		dev_info(&s->unit->device,
- 			 "Detect discontinuity of CIP: %02X %02X\n",
+ 	return 0;
+ }
+ EXPORT_SYMBOL(amdtp_stream_init);
+@@ -550,7 +552,8 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 		b = (u8 *)&buffer[s->midi_position];
+ 
+ 		port = (s->data_block_counter + f) % 8;
+-		if ((s->midi[port] == NULL) ||
++		if ((f >= s->rx_blocks_for_midi) ||
++		    (s->midi[port] == NULL) ||
+ 		    (snd_rawmidi_transmit(s->midi[port], b + 1, 1) <= 0))
+ 			b[0] = 0x80;
+ 		else
 diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 99e9644..4a703d4 100644
+index 4a703d4..5414157 100644
 --- a/sound/firewire/amdtp.h
 +++ b/sound/firewire/amdtp.h
-@@ -122,6 +122,9 @@ struct amdtp_stream {
+@@ -125,6 +125,9 @@ struct amdtp_stream {
+ 	/* quirk: fixed interval of dbc between previos/current packets. */
+ 	unsigned int tx_dbc_interval;
  
- 	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
- 
-+	/* quirk: fixed interval of dbc between previos/current packets. */
-+	unsigned int tx_dbc_interval;
++	/* quirk: the first count of data blocks in an rx packet for MIDI */
++	unsigned int rx_blocks_for_midi;
 +
  	bool callbacked;
  	wait_queue_head_t callback_wait;
  	struct amdtp_stream *sync_slave;
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index 51f1117..f7bce25 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -84,6 +84,7 @@ get_hardware_info(struct snd_efw *efw)
- 		      (hwinfo->arm_version >> 16) & 0xff);
- 	if (err < 0)
- 		goto end;
-+	efw->firmware_version = hwinfo->arm_version;
+diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
+index 27a0c8d..d96840f 100644
+--- a/sound/firewire/fireworks/fireworks_midi.c
++++ b/sound/firewire/fireworks/fireworks_midi.c
+@@ -143,6 +143,12 @@ int snd_efw_create_midi_devices(struct snd_efw *efw)
+ 		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
  
- 	strcpy(efw->card->driver, "Fireworks");
- 	strcpy(efw->card->shortname, hwinfo->model_name);
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index c5f9885..49547b9 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -54,6 +54,7 @@ struct snd_efw {
+ 		set_midi_substream_names(efw, str);
++
++		/*
++		 * Fireworks ignores MIDI messages in more than first 8 data
++		 * blocks of an received AMDTP packet.
++		 */
++		efw->rx_stream.rx_blocks_for_midi = 8;
+ 	}
  
- 	/* for quirks */
- 	bool is_af9;
-+	u32 firmware_version;
- 
- 	unsigned int midi_in_ports;
- 	unsigned int midi_out_ports;
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index f7a5ad5..ee9a038 100644
---- a/sound/firewire/fireworks/fireworks_stream.c
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -188,6 +188,9 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
- 	/* AudioFire9 always reports wrong dbs. */
- 	if (efw->is_af9)
- 		efw->tx_stream.flags |= CIP_WRONG_DBS;
-+	/* Firmware version 5.5 reports fixed interval for dbc. */
-+	if (efw->firmware_version == 0x5050000)
-+		efw->tx_stream.tx_dbc_interval = 8;
- 
- 	err = init_stream(efw, &efw->rx_stream);
- 	if (err < 0)
+ 	if ((efw->midi_out_ports > 0) && (efw->midi_in_ports > 0))
 -- 
 1.8.3.2
 
