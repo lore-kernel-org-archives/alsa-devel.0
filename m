@@ -1,18 +1,17 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH 4/4] ASoC: imx-ssi: Add .xlate_tdm_slot_mask()
-	support.
-Date: Fri, 21 Mar 2014 14:17:15 +0800
-Message-ID: <1395382635-16349-5-git-send-email-Li.Xiubo@freescale.com>
-References: <1395382635-16349-1-git-send-email-Li.Xiubo@freescale.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: twl4030 latency update
+Date: Fri, 21 Mar 2014 09:08:58 +0200
+Message-ID: <532BE58A.2010701@ti.com>
+References: <532ACD4A.3080508@univpm.it> <532AEEA6.20704@ti.com>
+ <532AFBDD.8040407@univpm.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe002.messaging.microsoft.com [65.55.88.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 61C0726536F
- for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 08:01:29 +0100 (CET)
-In-Reply-To: <1395382635-16349-1-git-send-email-Li.Xiubo@freescale.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D5E22610AA
+ for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2014 08:09:02 +0100 (CET)
+In-Reply-To: <532AFBDD.8040407@univpm.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +21,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, lars@metafoo.de, Xiubo Li <Li.Xiubo@freescale.com>, Guangyu.Chen@freescale.com, shawn.guo@linaro.org
+To: Leonardo Gabrielli <l.gabrielli@univpm.it>
+Cc: Edgar Berdahl <eberdahl@ccrma.Stanford.EDU>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch add .xlate_tdm_slot_mask support for IMX SSI, and this
-will generate the TDM slot TX and RX masks.
+On 03/20/2014 04:31 PM, Leonardo Gabrielli wrote:
+> Dear Peter,
+> thanks, I'm not sure I understand all the details but after a fast find i=
+n my
+> beagleboard /sys I found
+> =
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
----
- sound/soc/fsl/Kconfig   | 1 +
- sound/soc/fsl/imx-ssi.c | 2 ++
- 2 files changed, 3 insertions(+)
+> ./sys/devices/68000000.ocp/49026000.mcbsp/dma_op_mode
+> ./sys/devices/68000000.ocp/49022000.mcbsp/dma_op_mode
+> ./sys/devices/68000000.ocp/49024000.mcbsp/dma_op_mode
+> ./sys/devices/68000000.ocp/48096000.mcbsp/dma_op_mode
+> ./sys/devices/68000000.ocp/48074000.mcbsp/dma_op_mode
+> =
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 789bc4d..338a916 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -121,6 +121,7 @@ if SND_IMX_SOC
- 
- config SND_SOC_IMX_SSI
- 	tristate
-+	select SND_SOC_FSL_UTILS
- 
- config SND_SOC_IMX_PCM_FIQ
- 	tristate
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index df552fa..ab2fdd7 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -50,6 +50,7 @@
- #include <linux/platform_data/asoc-imx-ssi.h>
- 
- #include "imx-ssi.h"
-+#include "fsl_utils.h"
- 
- #define SSI_SACNT_DEFAULT (SSI_SACNT_AC97EN | SSI_SACNT_FV)
- 
-@@ -339,6 +340,7 @@ static const struct snd_soc_dai_ops imx_ssi_pcm_dai_ops = {
- 	.set_fmt	= imx_ssi_set_dai_fmt,
- 	.set_clkdiv	= imx_ssi_set_dai_clkdiv,
- 	.set_sysclk	= imx_ssi_set_dai_sysclk,
-+	.xlate_tdm_slot_mask = fsl_asoc_xlate_tdm_slot_mask,
- 	.set_tdm_slot	= imx_ssi_set_dai_tdm_slot,
- 	.trigger	= imx_ssi_trigger,
- };
--- 
-1.8.4
+> All of these are already set as threshold:
+> cat sys/devices/68000000.ocp/49022000.mcbsp/dma_op_mode
+> [element] threshold
+
+it is in 'element' mode, the [] shows the selected mode.
+You can change it:
+echo threshold > /sys/devices/68000000.ocp/49022000.mcbsp/dma_op_mode
+
+> Probably I found the FIFOs to be shortened in order to reduce latency: al=
+l of
+> the thresholds are 112 besides one of the devices which has:
+> cat sys/devices/68000000.ocp/49022000.mcbsp/max_rx_thres
+> 1264
+> for both tx and rx. Maybe that's the ALSA playback samples queue.
+
+This is for the threshold mode. With this value you can set the maximum slo=
+ts
+you want to use in the McBSP FIFO.
+
+To change it:
+echo 320 > /sys/devices/68000000.ocp/49022000.mcbsp/max_tx_thres
+echo 320 > /sys/devices/68000000.ocp/49022000.mcbsp/max_ex_thres
+
+for example.
+
+At the end with this value you can limit the sDMA burst sizes and the McBSP
+FIFO level. The threshold means: generate DMA request if threshold number of
+slots are free in the FIFO (playback) or when threshold amount of data
+available in the FIFO (capture).
+
+> =
+
+> In fact I find:
+> cat /proc/device-tree/ocp/mcbsp\@49022000/ti\,hwmods
+> mcbsp2mcbsp2_sidetone
+> =
+
+> So it's the McBSP2 which you mentioned.
+> =
+
+> Now, I'm not sure how to change the threshold, I guess I have to patch so=
+me
+> kernel module and rebuild?
+
+No, you do not need to recompile anything. See my previous comment.
+
+> =
+
+> =
+
+> On 20/03/2014 14:35, Peter Ujfalusi wrote:
+>> Hi Leonardo,
+>>
+>> On 03/20/2014 01:13 PM, Leonardo Gabrielli wrote:
+>>> Dear Peter,
+>>> I was investigating on TWL4030 high playback latency and stumbled in an=
+ old
+>>> thread started by Edgar
+>>> http://mailman.alsa-project.org/pipermail/alsa-devel/2011-October/04517=
+3.html
+>>> where I read this is related to McBSP2 buffer length
+>>> Recent kernels seems to have the same behavior (I have a debian beagleb=
+oardxM
+>>> with 3.13.3-armv7-x10)
+>>> Did you manage to get a fix to this problem? Would it be possible?
+>> The 'misusing/configuring the McBSP, and sDMA' did not worked :(
+>> However the mcbsp code went through quite a bit of change since than
+>> concerning the McBSP FIFO/sDMA configuration.
+>>
+>> If we have FIFO the sDMA is always in packet mode.
+>> The default is to transfer one sample with sDMA per DMA request.
+>> You can switch the McBSP to 'threshold' mode and set the maximum FIFO
+>> threshold you want to use. The code will figure out the optimal FIFO/bur=
+st
+>> size based on the period size and the max threshold you have set.
+>> This is done via a sysfs file under the mcbsp, the file is dma_op_mode i=
+f I
+>> recall correctly.
+>> Playing with the max tx/rx threshold you might be able to get better lat=
+ency.
+>>
+> =
+
+
+
+-- =
+
+P=E9ter
