@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 24/44] fireworks: Add MIDI interface
-Date: Fri, 21 Mar 2014 20:10:09 +0900
-Message-ID: <1395400229-22957-25-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 11/44] firewire-lib: Add 'direction' member to
+	'cmp_connection' structure
+Date: Fri, 21 Mar 2014 20:09:56 +0900
+Message-ID: <1395400229-22957-12-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,239 +21,86 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a functionality to capture/playback MIDI messages.
+This patch adds 'direction' member to 'cmp_connection' structure to indicate
+the direction of connection. This patch also adds 'direction' argument to
+cmp_connection_init() function to determine the direction.
 
-When no AMDTP streams are running, this driver starts AMDTP stream for MIDI
-stream at current sampling rate.
+The cmp_connection_init() function is exported and used in snd-firewire-speakers
+so this patch also affect it.
+
+This patch just add them. Actual implementation will be done by followed
+patches.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig                    |   1 +
- sound/firewire/fireworks/Makefile         |   3 +-
- sound/firewire/fireworks/fireworks.c      |   6 ++
- sound/firewire/fireworks/fireworks.h      |   3 +
- sound/firewire/fireworks/fireworks_midi.c | 152 ++++++++++++++++++++++++++++++
- 5 files changed, 164 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/fireworks/fireworks_midi.c
+ sound/firewire/cmp.c      | 3 ++-
+ sound/firewire/cmp.h      | 7 +++++++
+ sound/firewire/speakers.c | 2 +-
+ 3 files changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 0b85ebd..36a1212 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -64,6 +64,7 @@ config SND_SCS1X
- config SND_FIREWORKS
- 	tristate "Echo Fireworks board module support"
- 	select SND_FIREWIRE_LIB
-+	select SND_RAWMIDI
- 	help
- 	  Say Y here to include support for FireWire devices based
- 	  on Echo Digital Audio Fireworks board:
-diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-index 52bd15e..a2cecc6 100644
---- a/sound/firewire/fireworks/Makefile
-+++ b/sound/firewire/fireworks/Makefile
-@@ -1,3 +1,4 @@
- snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
--		      fireworks_stream.o fireworks_proc.o fireworks.o
-+		      fireworks_stream.o fireworks_proc.o fireworks_midi.o \
-+		      fireworks.o
- obj-m += snd-fireworks.o
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index f2dc12e..ca3cf41 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -208,6 +208,12 @@ efw_probe(struct fw_unit *unit,
+diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
+index 17ad4f2..c7f7a31 100644
+--- a/sound/firewire/cmp.c
++++ b/sound/firewire/cmp.c
+@@ -94,6 +94,7 @@ static int pcr_modify(struct cmp_connection *c,
+  */
+ int cmp_connection_init(struct cmp_connection *c,
+ 			struct fw_unit *unit,
++			enum cmp_direction direction,
+ 			unsigned int pcr_index)
+ {
+ 	__be32 mpr_be;
+@@ -153,7 +154,7 @@ static __be32 ipcr_set_modify(struct cmp_connection *c, __be32 ipcr)
+ static int pcr_set_check(struct cmp_connection *c, __be32 pcr)
+ {
+ 	if (pcr & cpu_to_be32(PCR_BCAST_CONN |
+-			       PCR_P2P_CONN_MASK)) {
++			      PCR_P2P_CONN_MASK)) {
+ 		cmp_error(c, "plug is already in use\n");
+ 		return -EBUSY;
+ 	}
+diff --git a/sound/firewire/cmp.h b/sound/firewire/cmp.h
+index 2320cd4..9b58448 100644
+--- a/sound/firewire/cmp.h
++++ b/sound/firewire/cmp.h
+@@ -7,6 +7,11 @@
  
- 	snd_efw_proc_init(efw);
+ struct fw_unit;
  
-+	if (efw->midi_out_ports || efw->midi_in_ports) {
-+		err = snd_efw_create_midi_devices(efw);
-+		if (err < 0)
-+			goto error;
-+	}
++enum cmp_direction {
++	CMP_INPUT = 0,
++	CMP_OUTPUT,
++};
 +
- 	err = snd_card_register(card);
+ /**
+  * struct cmp_connection - manages an isochronous connection to a device
+  * @speed: the connection's actual speed
+@@ -26,10 +31,12 @@ struct cmp_connection {
+ 	__be32 last_pcr_value;
+ 	unsigned int pcr_index;
+ 	unsigned int max_speed;
++	enum cmp_direction direction;
+ };
+ 
+ int cmp_connection_init(struct cmp_connection *connection,
+ 			struct fw_unit *unit,
++			enum cmp_direction direction,
+ 			unsigned int pcr_index);
+ void cmp_connection_destroy(struct cmp_connection *connection);
+ 
+diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
+index c07e7cd..4a9b48b 100644
+--- a/sound/firewire/speakers.c
++++ b/sound/firewire/speakers.c
+@@ -679,7 +679,7 @@ static int fwspk_probe(struct fw_unit *unit,
+ 	fwspk->unit = fw_unit_get(unit);
+ 	fwspk->device_info = (const struct device_info *)id->driver_data;
+ 
+-	err = cmp_connection_init(&fwspk->connection, unit, 0);
++	err = cmp_connection_init(&fwspk->connection, unit, CMP_INPUT, 0);
  	if (err < 0)
- 		goto error;
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index d32724f..426cbeb 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -22,6 +22,7 @@
- #include <sound/initval.h>
- #include <sound/pcm.h>
- #include <sound/info.h>
-+#include <sound/rawmidi.h>
+ 		goto err_unit;
  
- #include "../packets-buffer.h"
- #include "../iso-resources.h"
-@@ -193,6 +194,8 @@ void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
- 
- void snd_efw_proc_init(struct snd_efw *efw);
- 
-+int snd_efw_create_midi_devices(struct snd_efw *efw);
-+
- #define SND_EFW_DEV_ENTRY(vendor, model) \
- { \
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
-new file mode 100644
-index 0000000..27a0c8d
---- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_midi.c
-@@ -0,0 +1,152 @@
-+/*
-+ * fireworks_midi.c - a part of driver for Fireworks based devices
-+ *
-+ * Copyright (c) 2009-2010 Clemens Ladisch
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+#include "fireworks.h"
-+
-+static int midi_capture_open(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_efw *efw = substream->rmidi->private_data;
-+
-+	efw->capture_substreams++;
-+	return snd_efw_stream_start_duplex(efw, &efw->tx_stream, 0);
-+}
-+
-+static int midi_playback_open(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_efw *efw = substream->rmidi->private_data;
-+
-+	efw->playback_substreams++;
-+	return snd_efw_stream_start_duplex(efw, &efw->rx_stream, 0);
-+}
-+
-+static int midi_capture_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_efw *efw = substream->rmidi->private_data;
-+
-+	efw->capture_substreams--;
-+	snd_efw_stream_stop_duplex(efw);
-+
-+	return 0;
-+}
-+
-+static int midi_playback_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_efw *efw = substream->rmidi->private_data;
-+
-+	efw->playback_substreams--;
-+	snd_efw_stream_stop_duplex(efw);
-+
-+	return 0;
-+}
-+
-+static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct snd_efw *efw = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&efw->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&efw->tx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&efw->tx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&efw->lock, flags);
-+}
-+
-+static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct snd_efw *efw = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&efw->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&efw->rx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&efw->rx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&efw->lock, flags);
-+}
-+
-+static struct snd_rawmidi_ops midi_capture_ops = {
-+	.open		= midi_capture_open,
-+	.close		= midi_capture_close,
-+	.trigger	= midi_capture_trigger,
-+};
-+
-+static struct snd_rawmidi_ops midi_playback_ops = {
-+	.open		= midi_playback_open,
-+	.close		= midi_playback_close,
-+	.trigger	= midi_playback_trigger,
-+};
-+
-+static void set_midi_substream_names(struct snd_efw *efw,
-+				     struct snd_rawmidi_str *str)
-+{
-+	struct snd_rawmidi_substream *subs;
-+
-+	list_for_each_entry(subs, &str->substreams, list) {
-+		snprintf(subs->name, sizeof(subs->name),
-+			 "%s MIDI %d", efw->card->shortname, subs->number + 1);
-+	}
-+}
-+
-+int snd_efw_create_midi_devices(struct snd_efw *efw)
-+{
-+	struct snd_rawmidi *rmidi;
-+	struct snd_rawmidi_str *str;
-+	int err;
-+
-+	/* check the number of midi stream */
-+	if ((efw->midi_in_ports > SND_EFW_MAX_MIDI_IN_PORTS) |
-+	    (efw->midi_out_ports > SND_EFW_MAX_MIDI_OUT_PORTS))
-+		return -EIO;
-+
-+	/* create midi ports */
-+	err = snd_rawmidi_new(efw->card, efw->card->driver, 0,
-+			      efw->midi_out_ports, efw->midi_in_ports,
-+			      &rmidi);
-+	if (err < 0)
-+		return err;
-+
-+	snprintf(rmidi->name, sizeof(rmidi->name),
-+			"%s MIDI", efw->card->shortname);
-+	rmidi->private_data = efw;
-+
-+	if (efw->midi_in_ports > 0) {
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
-+
-+		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-+					&midi_capture_ops);
-+
-+		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
-+
-+		set_midi_substream_names(efw, str);
-+	}
-+
-+	if (efw->midi_out_ports > 0) {
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
-+
-+		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
-+					&midi_playback_ops);
-+
-+		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
-+
-+		set_midi_substream_names(efw, str);
-+	}
-+
-+	if ((efw->midi_out_ports > 0) && (efw->midi_in_ports > 0))
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
-+
-+	return 0;
-+}
 -- 
 1.8.3.2
 
