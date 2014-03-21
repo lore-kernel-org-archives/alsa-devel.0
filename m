@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 23/44] fireworks: Add proc interface for debugging purpose
-Date: Fri, 21 Mar 2014 20:10:08 +0900
-Message-ID: <1395400229-22957-24-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/44] firewire-lib: Rename macros,
+	variables and functions for CMP
+Date: Fri, 21 Mar 2014 20:09:55 +0900
+Message-ID: <1395400229-22957-11-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,316 +21,233 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds proc interface to output infomation for debugging.
- - firmware information
- - sampling rate and clock source
- - physical metering (linear value)
+Referring to IEC 61883-1, oMPR and iMPR, oPCR and iPCR have some fields with
+the same role in the same position. This patch renames some macros, variables
+and function arguments with "i" in its prefix to reuse them between oMPR and
+iMPR, oPCR and iPCR.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/Makefile         |   2 +-
- sound/firewire/fireworks/fireworks.c      |  12 ++
- sound/firewire/fireworks/fireworks.h      |  11 ++
- sound/firewire/fireworks/fireworks_proc.c | 215 ++++++++++++++++++++++++++++++
- 4 files changed, 239 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/fireworks/fireworks_proc.c
+ sound/firewire/cmp.c | 91 ++++++++++++++++++++++++++--------------------------
+ sound/firewire/cmp.h |  6 ++--
+ 2 files changed, 49 insertions(+), 48 deletions(-)
 
-diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-index 1bccb65..52bd15e 100644
---- a/sound/firewire/fireworks/Makefile
-+++ b/sound/firewire/fireworks/Makefile
-@@ -1,3 +1,3 @@
- snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
--		      fireworks_stream.o fireworks.o
-+		      fireworks_stream.o fireworks_proc.o fireworks.o
- obj-m += snd-fireworks.o
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index f7bce25..f2dc12e 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -133,6 +133,16 @@ get_hardware_info(struct snd_efw *efw)
- 	efw->pcm_playback_channels[0] = hwinfo->amdtp_rx_pcm_channels;
- 	efw->pcm_playback_channels[1] = hwinfo->amdtp_rx_pcm_channels_2x;
- 	efw->pcm_playback_channels[2] = hwinfo->amdtp_rx_pcm_channels_4x;
+diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
+index efdbf58..17ad4f2 100644
+--- a/sound/firewire/cmp.c
++++ b/sound/firewire/cmp.c
+@@ -14,18 +14,20 @@
+ #include "iso-resources.h"
+ #include "cmp.h"
+ 
+-#define IMPR_SPEED_MASK		0xc0000000
+-#define IMPR_SPEED_SHIFT	30
+-#define IMPR_XSPEED_MASK	0x00000060
+-#define IMPR_XSPEED_SHIFT	5
+-#define IMPR_PLUGS_MASK		0x0000001f
+-
+-#define IPCR_ONLINE		0x80000000
+-#define IPCR_BCAST_CONN		0x40000000
+-#define IPCR_P2P_CONN_MASK	0x3f000000
+-#define IPCR_P2P_CONN_SHIFT	24
+-#define IPCR_CHANNEL_MASK	0x003f0000
+-#define IPCR_CHANNEL_SHIFT	16
++/* MPR common fields */
++#define MPR_SPEED_MASK		0xc0000000
++#define MPR_SPEED_SHIFT		30
++#define MPR_XSPEED_MASK		0x00000060
++#define MPR_XSPEED_SHIFT	5
++#define MPR_PLUGS_MASK		0x0000001f
 +
-+	/* hardware metering */
-+	efw->phys_out = hwinfo->phys_out;
-+	efw->phys_in = hwinfo->phys_in;
-+	efw->phys_out_grp_count = hwinfo->phys_out_grp_count;
-+	efw->phys_in_grp_count = hwinfo->phys_in_grp_count;
-+	memcpy(&efw->phys_out_grps, hwinfo->phys_out_grps,
-+	       sizeof(struct snd_efw_phys_grp) * HWINFO_MAX_CAPS_GROUPS);
-+	memcpy(&efw->phys_in_grps, hwinfo->phys_in_grps,
-+	       sizeof(struct snd_efw_phys_grp) * HWINFO_MAX_CAPS_GROUPS);
- end:
- 	kfree(hwinfo);
- 	return err;
-@@ -196,6 +206,8 @@ efw_probe(struct fw_unit *unit,
++/* PCR common fields */
++#define PCR_ONLINE		0x80000000
++#define PCR_BCAST_CONN		0x40000000
++#define PCR_P2P_CONN_MASK	0x3f000000
++#define PCR_P2P_CONN_SHIFT	24
++#define PCR_CHANNEL_MASK	0x003f0000
++#define PCR_CHANNEL_SHIFT	16
+ 
+ enum bus_reset_handling {
+ 	ABORT_ON_BUS_RESET,
+@@ -88,24 +90,24 @@ static int pcr_modify(struct cmp_connection *c,
+  * cmp_connection_init - initializes a connection manager
+  * @c: the connection manager to initialize
+  * @unit: a unit of the target device
+- * @ipcr_index: the index of the iPCR on the target device
++ * @pcr_index: the index of the iPCR/oPCR on the target device
+  */
+ int cmp_connection_init(struct cmp_connection *c,
+ 			struct fw_unit *unit,
+-			unsigned int ipcr_index)
++			unsigned int pcr_index)
+ {
+-	__be32 impr_be;
+-	u32 impr;
++	__be32 mpr_be;
++	u32 mpr;
+ 	int err;
+ 
+ 	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
+ 				 CSR_REGISTER_BASE + CSR_IMPR,
+-				 &impr_be, 4, 0);
++				 &mpr_be, 4, 0);
  	if (err < 0)
- 		goto error;
+ 		return err;
+-	impr = be32_to_cpu(impr_be);
++	mpr = be32_to_cpu(mpr_be);
  
-+	snd_efw_proc_init(efw);
-+
- 	err = snd_card_register(card);
+-	if (ipcr_index >= (impr & IMPR_PLUGS_MASK))
++	if (pcr_index >= (mpr & MPR_PLUGS_MASK))
+ 		return -EINVAL;
+ 
+ 	err = fw_iso_resources_init(&c->resources, unit);
+@@ -115,10 +117,10 @@ int cmp_connection_init(struct cmp_connection *c,
+ 	c->connected = false;
+ 	mutex_init(&c->mutex);
+ 	c->last_pcr_value = cpu_to_be32(0x80000000);
+-	c->pcr_index = ipcr_index;
+-	c->max_speed = (impr & IMPR_SPEED_MASK) >> IMPR_SPEED_SHIFT;
++	c->pcr_index = pcr_index;
++	c->max_speed = (mpr & MPR_SPEED_MASK) >> MPR_SPEED_SHIFT;
+ 	if (c->max_speed == SCODE_BETA)
+-		c->max_speed += (impr & IMPR_XSPEED_MASK) >> IMPR_XSPEED_SHIFT;
++		c->max_speed += (mpr & MPR_XSPEED_MASK) >> MPR_XSPEED_SHIFT;
+ 
+ 	return 0;
+ }
+@@ -139,23 +141,23 @@ EXPORT_SYMBOL(cmp_connection_destroy);
+ 
+ static __be32 ipcr_set_modify(struct cmp_connection *c, __be32 ipcr)
+ {
+-	ipcr &= ~cpu_to_be32(IPCR_BCAST_CONN |
+-			     IPCR_P2P_CONN_MASK |
+-			     IPCR_CHANNEL_MASK);
+-	ipcr |= cpu_to_be32(1 << IPCR_P2P_CONN_SHIFT);
+-	ipcr |= cpu_to_be32(c->resources.channel << IPCR_CHANNEL_SHIFT);
++	ipcr &= ~cpu_to_be32(PCR_BCAST_CONN |
++			     PCR_P2P_CONN_MASK |
++			     PCR_CHANNEL_MASK);
++	ipcr |= cpu_to_be32(1 << PCR_P2P_CONN_SHIFT);
++	ipcr |= cpu_to_be32(c->resources.channel << PCR_CHANNEL_SHIFT);
+ 
+ 	return ipcr;
+ }
+ 
+-static int ipcr_set_check(struct cmp_connection *c, __be32 ipcr)
++static int pcr_set_check(struct cmp_connection *c, __be32 pcr)
+ {
+-	if (ipcr & cpu_to_be32(IPCR_BCAST_CONN |
+-			       IPCR_P2P_CONN_MASK)) {
++	if (pcr & cpu_to_be32(PCR_BCAST_CONN |
++			       PCR_P2P_CONN_MASK)) {
+ 		cmp_error(c, "plug is already in use\n");
+ 		return -EBUSY;
+ 	}
+-	if (!(ipcr & cpu_to_be32(IPCR_ONLINE))) {
++	if (!(pcr & cpu_to_be32(PCR_ONLINE))) {
+ 		cmp_error(c, "plug is not on-line\n");
+ 		return -ECONNREFUSED;
+ 	}
+@@ -170,9 +172,9 @@ static int ipcr_set_check(struct cmp_connection *c, __be32 ipcr)
+  *
+  * This function establishes a point-to-point connection from the local
+  * computer to the target by allocating isochronous resources (channel and
+- * bandwidth) and setting the target's input plug control register.  When this
+- * function succeeds, the caller is responsible for starting transmitting
+- * packets.
++ * bandwidth) and setting the target's input/output plug control register.
++ * When this function succeeds, the caller is responsible for starting
++ * transmitting packets.
+  */
+ int cmp_connection_establish(struct cmp_connection *c,
+ 			     unsigned int max_payload_bytes)
+@@ -193,7 +195,7 @@ retry_after_bus_reset:
  	if (err < 0)
- 		goto error;
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 49547b9..d32724f 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -21,6 +21,7 @@
- #include <sound/core.h>
- #include <sound/initval.h>
- #include <sound/pcm.h>
-+#include <sound/info.h>
+ 		goto err_mutex;
  
- #include "../packets-buffer.h"
- #include "../iso-resources.h"
-@@ -69,6 +70,14 @@ struct snd_efw {
- 	struct cmp_connection in_conn;
- 	unsigned int capture_substreams;
- 	unsigned int playback_substreams;
-+
-+	/* hardware metering parameters */
-+	unsigned int phys_out;
-+	unsigned int phys_in;
-+	unsigned int phys_out_grp_count;
-+	unsigned int phys_in_grp_count;
-+	struct snd_efw_phys_grp phys_out_grps[HWINFO_MAX_CAPS_GROUPS];
-+	struct snd_efw_phys_grp phys_in_grps[HWINFO_MAX_CAPS_GROUPS];
- };
+-	err = pcr_modify(c, ipcr_set_modify, ipcr_set_check,
++	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+ 			 ABORT_ON_BUS_RESET);
+ 	if (err == -EAGAIN) {
+ 		fw_iso_resources_free(&c->resources);
+@@ -221,8 +223,8 @@ EXPORT_SYMBOL(cmp_connection_establish);
+  * cmp_connection_update - update the connection after a bus reset
+  * @c: the connection manager
+  *
+- * This function must be called from the driver's .update handler to reestablish
+- * any connection that might have been active.
++ * This function must be called from the driver's .update handler to
++ * reestablish any connection that might have been active.
+  *
+  * Returns zero on success, or a negative error code.  On an error, the
+  * connection is broken and the caller must stop transmitting iso packets.
+@@ -242,7 +244,7 @@ int cmp_connection_update(struct cmp_connection *c)
+ 	if (err < 0)
+ 		goto err_unconnect;
  
- struct snd_efw_transaction {
-@@ -182,6 +191,8 @@ int snd_efw_stream_stop_duplex(struct snd_efw *efw);
- void snd_efw_stream_update_duplex(struct snd_efw *efw);
- void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
+-	err = pcr_modify(c, ipcr_set_modify, ipcr_set_check,
++	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+ 			 SUCCEED_ON_BUS_RESET);
+ 	if (err < 0)
+ 		goto err_resources;
+@@ -261,19 +263,18 @@ err_unconnect:
+ }
+ EXPORT_SYMBOL(cmp_connection_update);
  
-+void snd_efw_proc_init(struct snd_efw *efw);
-+
- #define SND_EFW_DEV_ENTRY(vendor, model) \
- { \
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/fireworks/fireworks_proc.c b/sound/firewire/fireworks/fireworks_proc.c
-new file mode 100644
-index 0000000..54b2ee0
---- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_proc.c
-@@ -0,0 +1,215 @@
-+/*
-+ * fireworks_proc.c - a part of driver for Fireworks based devices
-+ *
-+ * Copyright (c) 2009-2010 Clemens Ladisch
-+ * Copyright (c) 2013 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "./fireworks.h"
-+
-+static inline const char*
-+get_phys_name(struct snd_efw_phys_grp *grp)
-+{
-+	const char *ch_type[] = {
-+		"Analog", "S/PDIF", "ADAT", "S/PDIF or ADAT",
-+		"Mirroring", "Headphones", "I2S", "Guitar",
-+		"Pirzo Guitar", "Guitar String", "Virtual", "Dummy"
-+	};
-+
-+	if (grp->type < 10)
-+		return ch_type[grp->type];
-+	else if (grp->type == 0x10000)
-+		return ch_type[10];
-+	else
-+		return ch_type[11];
-+}
-+
-+static void
-+proc_read_hwinfo(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
-+{
-+	struct snd_efw *efw = entry->private_data;
-+	unsigned short i;
-+	struct snd_efw_hwinfo *hwinfo;
-+
-+	hwinfo = kmalloc(sizeof(struct snd_efw_hwinfo), GFP_KERNEL);
-+	if (hwinfo == NULL)
-+		return;
-+
-+	if (snd_efw_command_get_hwinfo(efw, hwinfo) < 0)
-+		goto end;
-+
-+	snd_iprintf(buffer, "guid_hi: 0x%X\n", hwinfo->guid_hi);
-+	snd_iprintf(buffer, "guid_lo: 0x%X\n", hwinfo->guid_lo);
-+	snd_iprintf(buffer, "type: 0x%X\n", hwinfo->type);
-+	snd_iprintf(buffer, "version: 0x%X\n", hwinfo->version);
-+	snd_iprintf(buffer, "vendor_name: %s\n", hwinfo->vendor_name);
-+	snd_iprintf(buffer, "model_name: %s\n", hwinfo->model_name);
-+
-+	snd_iprintf(buffer, "dsp_version: 0x%X\n", hwinfo->dsp_version);
-+	snd_iprintf(buffer, "arm_version: 0x%X\n", hwinfo->arm_version);
-+	snd_iprintf(buffer, "fpga_version: 0x%X\n", hwinfo->fpga_version);
-+
-+	snd_iprintf(buffer, "flags: 0x%X\n", hwinfo->flags);
-+
-+	snd_iprintf(buffer, "max_sample_rate: 0x%X\n", hwinfo->max_sample_rate);
-+	snd_iprintf(buffer, "min_sample_rate: 0x%X\n", hwinfo->min_sample_rate);
-+	snd_iprintf(buffer, "supported_clock: 0x%X\n",
-+		    hwinfo->supported_clocks);
-+
-+	snd_iprintf(buffer, "phys out: 0x%X\n", hwinfo->phys_out);
-+	snd_iprintf(buffer, "phys in: 0x%X\n", hwinfo->phys_in);
-+
-+	snd_iprintf(buffer, "phys in grps: 0x%X\n",
-+		    hwinfo->phys_in_grp_count);
-+	for (i = 0; i < hwinfo->phys_in_grp_count; i++) {
-+		snd_iprintf(buffer,
-+			    "phys in grp[0x%d]: type 0x%d, count 0x%d\n",
-+			    i, hwinfo->phys_out_grps[i].type,
-+			    hwinfo->phys_out_grps[i].count);
-+	}
-+
-+	snd_iprintf(buffer, "phys out grps: 0x%X\n",
-+		    hwinfo->phys_out_grp_count);
-+	for (i = 0; i < hwinfo->phys_out_grp_count; i++) {
-+		snd_iprintf(buffer,
-+			    "phys out grps[0x%d]: type 0x%d, count 0x%d\n",
-+			    i, hwinfo->phys_out_grps[i].type,
-+			    hwinfo->phys_out_grps[i].count);
-+	}
-+
-+	snd_iprintf(buffer, "amdtp rx pcm channels 1x: 0x%X\n",
-+		    hwinfo->amdtp_rx_pcm_channels);
-+	snd_iprintf(buffer, "amdtp tx pcm channels 1x: 0x%X\n",
-+		    hwinfo->amdtp_tx_pcm_channels);
-+	snd_iprintf(buffer, "amdtp rx pcm channels 2x: 0x%X\n",
-+		    hwinfo->amdtp_rx_pcm_channels_2x);
-+	snd_iprintf(buffer, "amdtp tx pcm channels 2x: 0x%X\n",
-+		    hwinfo->amdtp_tx_pcm_channels_2x);
-+	snd_iprintf(buffer, "amdtp rx pcm channels 4x: 0x%X\n",
-+		    hwinfo->amdtp_rx_pcm_channels_4x);
-+	snd_iprintf(buffer, "amdtp tx pcm channels 4x: 0x%X\n",
-+		    hwinfo->amdtp_tx_pcm_channels_4x);
-+
-+	snd_iprintf(buffer, "midi out ports: 0x%X\n", hwinfo->midi_out_ports);
-+	snd_iprintf(buffer, "midi in ports: 0x%X\n", hwinfo->midi_in_ports);
-+
-+	snd_iprintf(buffer, "mixer playback channels: 0x%X\n",
-+		    hwinfo->mixer_playback_channels);
-+	snd_iprintf(buffer, "mixer capture channels: 0x%X\n",
-+		    hwinfo->mixer_capture_channels);
-+end:
-+	kfree(hwinfo);
-+}
-+
-+static void
-+proc_read_clock(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
-+{
-+	struct snd_efw *efw = entry->private_data;
-+	enum snd_efw_clock_source clock_source;
-+	unsigned int sampling_rate;
-+
-+	if (snd_efw_command_get_clock_source(efw, &clock_source) < 0)
-+		return;
-+
-+	if (snd_efw_command_get_sampling_rate(efw, &sampling_rate) < 0)
-+		return;
-+
-+	snd_iprintf(buffer, "Clock Source: %d\n", clock_source);
-+	snd_iprintf(buffer, "Sampling Rate: %d\n", sampling_rate);
-+}
-+
-+/*
-+ * NOTE:
-+ *  dB = 20 * log10(linear / 0x01000000)
-+ *  -144.0 dB when linear is 0
-+ */
-+static void
-+proc_read_phys_meters(struct snd_info_entry *entry,
-+		      struct snd_info_buffer *buffer)
-+{
-+	struct snd_efw *efw = entry->private_data;
-+	struct snd_efw_phys_meters *meters;
-+	unsigned int g, c, m, max, size;
-+	const char *name;
-+	u32 *linear;
-+	int err;
-+
-+	size = sizeof(struct snd_efw_phys_meters) +
-+	       (efw->phys_in + efw->phys_out) * sizeof(u32);
-+	meters = kzalloc(size, GFP_KERNEL);
-+	if (meters == NULL)
-+		return;
-+
-+	err = snd_efw_command_get_phys_meters(efw, meters, size);
-+	if (err < 0)
-+		goto end;
-+
-+	snd_iprintf(buffer, "Physical Meters:\n");
-+
-+	m = 0;
-+	max = min(efw->phys_out, meters->out_meters);
-+	linear = meters->values;
-+	snd_iprintf(buffer, " %d Outputs:\n", max);
-+	for (g = 0; g < efw->phys_out_grp_count; g++) {
-+		name = get_phys_name(&efw->phys_out_grps[g]);
-+		for (c = 0; c < efw->phys_out_grps[g].count; c++) {
-+			if (m < max)
-+				snd_iprintf(buffer, "\t%s [%d]: %d\n",
-+					    name, c, linear[m++]);
-+		}
-+	}
-+
-+	m = 0;
-+	max = min(efw->phys_in, meters->in_meters);
-+	linear = meters->values + meters->out_meters;
-+	snd_iprintf(buffer, " %d Inputs:\n", max);
-+	for (g = 0; g < efw->phys_in_grp_count; g++) {
-+		name = get_phys_name(&efw->phys_in_grps[g]);
-+		for (c = 0; c < efw->phys_in_grps[g].count; c++)
-+			if (m < max)
-+				snd_iprintf(buffer, "\t%s [%d]: %d\n",
-+					    name, c, linear[m++]);
-+	}
-+end:
-+	kfree(meters);
-+}
-+
-+static void
-+add_node(struct snd_efw *efw, struct snd_info_entry *root, const char *name,
-+	 void (*op)(struct snd_info_entry *e, struct snd_info_buffer *b))
-+{
-+	struct snd_info_entry *entry;
-+
-+	entry = snd_info_create_card_entry(efw->card, name, root);
-+	if (entry == NULL)
-+		return;
-+
-+	snd_info_set_text_ops(entry, efw, op);
-+	if (snd_info_register(entry) < 0)
-+		snd_info_free_entry(entry);
-+}
-+
-+void snd_efw_proc_init(struct snd_efw *efw)
-+{
-+	struct snd_info_entry *root;
-+
-+	/*
-+	 * All nodes are automatically removed at snd_card_disconnect(),
-+	 * by following to link list.
-+	 */
-+	root = snd_info_create_card_entry(efw->card, "firewire",
-+					  efw->card->proc_root);
-+	if (root == NULL)
-+		return;
-+	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
-+	if (snd_info_register(root) < 0) {
-+		snd_info_free_entry(root);
-+		return;
-+	}
-+
-+	add_node(efw, root, "clock", proc_read_clock);
-+	add_node(efw, root, "firmware", proc_read_hwinfo);
-+	add_node(efw, root, "meters", proc_read_phys_meters);
-+}
+-
+-static __be32 ipcr_break_modify(struct cmp_connection *c, __be32 ipcr)
++static __be32 pcr_break_modify(struct cmp_connection *c, __be32 pcr)
+ {
+-	return ipcr & ~cpu_to_be32(IPCR_BCAST_CONN | IPCR_P2P_CONN_MASK);
++	return pcr & ~cpu_to_be32(PCR_BCAST_CONN | PCR_P2P_CONN_MASK);
+ }
+ 
+ /**
+  * cmp_connection_break - break the connection to the target
+  * @c: the connection manager
+  *
+- * This function deactives the connection in the target's input plug control
+- * register, and frees the isochronous resources of the connection.  Before
+- * calling this function, the caller should cease transmitting packets.
++ * This function deactives the connection in the target's input/output plug
++ * control register, and frees the isochronous resources of the connection.
++ * Before calling this function, the caller should cease transmitting packets.
+  */
+ void cmp_connection_break(struct cmp_connection *c)
+ {
+@@ -286,7 +287,7 @@ void cmp_connection_break(struct cmp_connection *c)
+ 		return;
+ 	}
+ 
+-	err = pcr_modify(c, ipcr_break_modify, NULL, SUCCEED_ON_BUS_RESET);
++	err = pcr_modify(c, pcr_break_modify, NULL, SUCCEED_ON_BUS_RESET);
+ 	if (err < 0)
+ 		cmp_error(c, "plug is still connected\n");
+ 
+diff --git a/sound/firewire/cmp.h b/sound/firewire/cmp.h
+index f47de08..2320cd4 100644
+--- a/sound/firewire/cmp.h
++++ b/sound/firewire/cmp.h
+@@ -11,8 +11,8 @@ struct fw_unit;
+  * struct cmp_connection - manages an isochronous connection to a device
+  * @speed: the connection's actual speed
+  *
+- * This structure manages (using CMP) an isochronous stream from the local
+- * computer to a device's input plug (iPCR).
++ * This structure manages (using CMP) an isochronous stream between the local
++ * computer and a device's input plug (iPCR) and output plug (oPCR).
+  *
+  * There is no corresponding oPCR created on the local computer, so it is not
+  * possible to overlay connections on top of this one.
+@@ -30,7 +30,7 @@ struct cmp_connection {
+ 
+ int cmp_connection_init(struct cmp_connection *connection,
+ 			struct fw_unit *unit,
+-			unsigned int ipcr_index);
++			unsigned int pcr_index);
+ void cmp_connection_destroy(struct cmp_connection *connection);
+ 
+ int cmp_connection_establish(struct cmp_connection *connection,
 -- 
 1.8.3.2
 
