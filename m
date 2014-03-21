@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 13/44] firewire-lib: Add a new function to check others'
-	connection
-Date: Fri, 21 Mar 2014 20:09:58 +0900
-Message-ID: <1395400229-22957-14-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 15/44] firewire-lib: Add some AV/C general commands
+Date: Fri, 21 Mar 2014 20:10:00 +0900
+Message-ID: <1395400229-22957-16-git-send-email-o-takashi@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,64 +20,368 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Plug Control Registers have two fields related to the number of established
-connections, one is 'Broadcast connection counter' and another is
-'Point-to-point connection counter'. The driver can know there are established
-connections or not to check these fields.
+This commit adds three commands, which may be used by some firewire device
+drivers. These commands are defined in 'AV/C Digital Interface Command Set
+General Specification Version 4.2 (2004006, 1394TA)'.
 
-This is considering for JACK/FFADO streaming. Currently, when JACK/FFADO starts
-its streaming to the device, cmp_connection_establish() is failed expectedly.
-This seems to be enough but there are some devices which needs to change
-samplling frequency before trying to establish connections. For such devices,
-this functionality is needed.
+1. PLUG INFO command (10.1)
+2. INPUT PLUG SIGNAL FORMAT command (10.10)
+3. OUTPUT PLUG SIGNAL FORMAT command (10.11)
+
+By the command 1, the drivers can get the number of plugs for AV/C unit or
+subunit.
+By the command 2 and 3, the drivers can get/set sampling frequency.
+
+The 'firewire-speakers' already uses INPUT PLUG SIGNAL FORMAT command to set
+sampling rate. So this commit also affects the driver.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/cmp.c | 18 ++++++++++++++++++
- sound/firewire/cmp.h |  1 +
- 2 files changed, 19 insertions(+)
+ sound/firewire/amdtp.c    |  24 +++----
+ sound/firewire/amdtp.h    |   1 +
+ sound/firewire/fcp.c      | 157 ++++++++++++++++++++++++++++++++++++++++++++++
+ sound/firewire/fcp.h      |  21 +++++++
+ sound/firewire/speakers.c |  43 ++-----------
+ 5 files changed, 197 insertions(+), 49 deletions(-)
 
-diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
-index 9da40d9..d31a403 100644
---- a/sound/firewire/cmp.c
-+++ b/sound/firewire/cmp.c
-@@ -152,6 +152,24 @@ int cmp_connection_init(struct cmp_connection *c,
- EXPORT_SYMBOL(cmp_connection_init);
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index a216729..ef43b93 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -104,6 +104,17 @@ const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
+ };
+ EXPORT_SYMBOL(amdtp_syt_intervals);
+ 
++const unsigned int amdtp_rate_table[] = {
++	[CIP_SFC_32000]  =  32000,
++	[CIP_SFC_44100]  =  44100,
++	[CIP_SFC_48000]  =  48000,
++	[CIP_SFC_88200]  =  88200,
++	[CIP_SFC_96000]  =  96000,
++	[CIP_SFC_176400] = 176400,
++	[CIP_SFC_192000] = 192000,
++};
++EXPORT_SYMBOL(amdtp_rate_table);
++
+ /**
+  * amdtp_stream_set_parameters - set stream parameters
+  * @s: the AMDTP stream to configure
+@@ -120,15 +131,6 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
+ 				 unsigned int pcm_channels,
+ 				 unsigned int midi_ports)
+ {
+-	static const unsigned int rates[] = {
+-		[CIP_SFC_32000]  =  32000,
+-		[CIP_SFC_44100]  =  44100,
+-		[CIP_SFC_48000]  =  48000,
+-		[CIP_SFC_88200]  =  88200,
+-		[CIP_SFC_96000]  =  96000,
+-		[CIP_SFC_176400] = 176400,
+-		[CIP_SFC_192000] = 192000,
+-	};
+ 	unsigned int i, sfc, midi_channels;
+ 
+ 	midi_channels = DIV_ROUND_UP(midi_ports, 8);
+@@ -138,8 +140,8 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
+ 	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
+ 		return;
+ 
+-	for (sfc = 0; sfc < CIP_SFC_COUNT; ++sfc)
+-		if (rates[sfc] == rate)
++	for (sfc = 0; sfc < sizeof(amdtp_rate_table); ++sfc)
++		if (amdtp_rate_table[sfc] == rate)
+ 			goto sfc_found;
+ 	WARN_ON(1);
+ 	return;
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index 46ad53c..67c2f97 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -141,6 +141,7 @@ unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s);
+ void amdtp_stream_pcm_abort(struct amdtp_stream *s);
+ 
+ extern const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
++extern const unsigned int amdtp_rate_table[CIP_SFC_COUNT];
  
  /**
-+ * cmp_connection_check_used - check connection is already esablished or not
-+ * @c: the connection manager to be checked
-+ */
-+int cmp_connection_check_used(struct cmp_connection *c, bool *used)
+  * amdtp_stream_running - check stream is running or not
+diff --git a/sound/firewire/fcp.c b/sound/firewire/fcp.c
+index 6876bfa..ce2c482 100644
+--- a/sound/firewire/fcp.c
++++ b/sound/firewire/fcp.c
+@@ -10,12 +10,14 @@
+ #include <linux/firewire-constants.h>
+ #include <linux/list.h>
+ #include <linux/module.h>
++#include <linux/slab.h>
+ #include <linux/sched.h>
+ #include <linux/spinlock.h>
+ #include <linux/wait.h>
+ #include <linux/delay.h>
+ #include "fcp.h"
+ #include "lib.h"
++#include "amdtp.h"
+ 
+ #define CTS_AVC 0x00
+ 
+@@ -23,6 +25,161 @@
+ #define ERROR_DELAY_MS	5
+ #define FCP_TIMEOUT_MS	125
+ 
++int avc_general_set_sig_fmt(struct fw_unit *unit, unsigned int rate,
++			    enum avc_general_plug_dir dir,
++			    unsigned short pid)
 +{
-+	__be32 pcr;
++	unsigned int sfc;
++	u8 *buf;
++	bool flag;
 +	int err;
 +
-+	err = snd_fw_transaction(
-+			c->resources.unit, TCODE_READ_QUADLET_REQUEST,
-+			pcr_address(c), &pcr, 4, 0);
-+	if (err >= 0)
-+		*used = (pcr & cpu_to_be32(PCR_BCAST_CONN | PCR_P2P_CONN_MASK));
++	flag = false;
++	for (sfc = 0; sfc < CIP_SFC_COUNT; sfc++) {
++		if (amdtp_rate_table[sfc] == rate) {
++			flag = true;
++			break;
++		}
++	}
++	if (!flag)
++		return -EINVAL;
++
++	buf = kzalloc(8, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	buf[0] = 0x00;		/* AV/C CONTROL */
++	buf[1] = 0xff;		/* UNIT */
++	if (dir == AVC_GENERAL_PLUG_DIR_IN)
++		buf[2] = 0x19;	/* INPUT PLUG SIGNAL FORMAT */
++	else
++		buf[2] = 0x18;	/* OUTPUT PLUG SIGNAL FORMAT */
++	buf[3] = 0xff & pid;	/* plug id */
++	buf[4] = 0x90;		/* EOH_1, Form_1, FMT. AM824 */
++	buf[5] = 0x07 & sfc;	/* FDF-hi. AM824, frequency */
++	buf[6] = 0xff;		/* FDF-mid. AM824, SYT hi (not used)*/
++	buf[7] = 0xff;		/* FDF-low. AM824, SYT lo (not used) */
++
++	/* do transaction and check buf[1-5] are the same against command */
++	err = fcp_avc_transaction(unit, buf, 8, buf, 8,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5));
++	if (err > 0 && err < 8)
++		err = -EIO;
++	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
++		err = -ENOSYS;
++	else if (buf[0] == 0x0a) /* REJECTED */
++		err = -EINVAL;
++	if (err < 0)
++		goto end;
++
++	err = 0;
++end:
++	kfree(buf);
 +	return err;
 +}
-+EXPORT_SYMBOL(cmp_connection_check_used);
++EXPORT_SYMBOL(avc_general_set_sig_fmt);
 +
-+/**
-  * cmp_connection_destroy - free connection manager resources
-  * @c: the connection manager
-  */
-diff --git a/sound/firewire/cmp.h b/sound/firewire/cmp.h
-index 9b58448..ebcb484 100644
---- a/sound/firewire/cmp.h
-+++ b/sound/firewire/cmp.h
-@@ -38,6 +38,7 @@ int cmp_connection_init(struct cmp_connection *connection,
- 			struct fw_unit *unit,
- 			enum cmp_direction direction,
- 			unsigned int pcr_index);
-+int cmp_connection_check_used(struct cmp_connection *connection, bool *used);
- void cmp_connection_destroy(struct cmp_connection *connection);
++int avc_general_get_sig_fmt(struct fw_unit *unit, unsigned int *rate,
++			    enum avc_general_plug_dir dir,
++			    unsigned short pid)
++{
++	unsigned int sfc;
++	u8 *buf;
++	int err;
++
++	buf = kzalloc(8, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	buf[0] = 0x01;		/* AV/C STATUS */
++	buf[1] = 0xff;		/* Unit */
++	if (dir == AVC_GENERAL_PLUG_DIR_IN)
++		buf[2] = 0x19;	/* INPUT PLUG SIGNAL FORMAT */
++	else
++		buf[2] = 0x18;	/* OUTPUT PLUG SIGNAL FORMAT */
++	buf[3] = 0xff & pid;	/* plug id */
++	buf[4] = 0x90;		/* EOH_1, Form_1, FMT. AM824 */
++	buf[5] = 0xff;		/* FDF-hi. AM824, frequency */
++	buf[6] = 0xff;		/* FDF-mid. AM824, SYT hi (not used) */
++	buf[7] = 0xff;		/* FDF-low. AM824, SYT lo (not used) */
++
++	/* do transaction and check buf[1-4] are the same against command */
++	err = fcp_avc_transaction(unit, buf, 8, buf, 8,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4));
++	if (err > 0 && err < 8)
++		err = -EIO;
++	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
++		err = -ENOSYS;
++	else if (buf[0] == 0x0a) /* REJECTED */
++		err = -EINVAL;
++	else if (buf[0] == 0x0b) /* IN TRANSITION */
++		err = -EAGAIN;
++	if (err < 0)
++		goto end;
++
++	/* check sfc field and pick up rate */
++	sfc = 0x07 & buf[5];
++	if (sfc >= CIP_SFC_COUNT) {
++		err = -EAGAIN;	/* also in transition */
++		goto end;
++	}
++
++	*rate = amdtp_rate_table[sfc];
++	err = 0;
++end:
++	kfree(buf);
++	return err;
++}
++EXPORT_SYMBOL(avc_general_get_sig_fmt);
++
++int avc_general_get_plug_info(struct fw_unit *unit, unsigned int subunit_type,
++			      unsigned int subunit_id, unsigned int subfunction,
++			      u8 info[AVC_PLUG_INFO_BUF_COUNT])
++{
++	u8 *buf;
++	int err;
++
++	/* extended subunit in spec.4.2 is not supported */
++	if ((subunit_type == 0x1E) || (subunit_id == 5))
++		return -EINVAL;
++
++	buf = kzalloc(8, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	buf[0] = 0x01;	/* AV/C STATUS */
++	/* UNIT or Subunit, Functionblock */
++	buf[1] = ((subunit_type & 0x1f) << 3) | (subunit_id & 0x7);
++	buf[2] = 0x02;	/* PLUG INFO */
++	buf[3] = 0xff & subfunction;
++
++	err = fcp_avc_transaction(unit, buf, 8, buf, 8, BIT(1) | BIT(2));
++	if (err < 0)
++		goto end;
++
++	if (err != 8)
++		err = -EIO;
++	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
++		err = -ENOSYS;
++	else if (buf[0] == 0x0a) /* REJECTED */
++		err = -EINVAL;
++	else if (buf[0] == 0x0b) /* IN TRANSITION */
++		err = -EAGAIN;
++	if (err < 0)
++		goto end;
++
++	info[0] = buf[4];
++	info[1] = buf[5];
++	info[2] = buf[6];
++	info[3] = buf[7];
++
++	err = 0;
++end:
++	kfree(buf);
++	return err;
++}
++EXPORT_SYMBOL(avc_general_get_plug_info);
++
+ static DEFINE_SPINLOCK(transactions_lock);
+ static LIST_HEAD(transactions);
  
- int cmp_connection_establish(struct cmp_connection *connection,
+diff --git a/sound/firewire/fcp.h b/sound/firewire/fcp.h
+index 8659568..cb62eb6 100644
+--- a/sound/firewire/fcp.h
++++ b/sound/firewire/fcp.h
+@@ -1,8 +1,29 @@
+ #ifndef SOUND_FIREWIRE_FCP_H_INCLUDED
+ #define SOUND_FIREWIRE_FCP_H_INCLUDED
+ 
++#define	AVC_PLUG_INFO_BUF_COUNT	4
++
+ struct fw_unit;
+ 
++/*
++ * AV/C Digital Interface Command Set General Specification 4.2
++ * (Sep 2004, 1394TA)
++ */
++enum avc_general_plug_dir {
++	AVC_GENERAL_PLUG_DIR_IN		= 0,
++	AVC_GENERAL_PLUG_DIR_OUT	= 1,
++	AVC_GENERAL_PLUG_DIR_COUNT
++};
++int avc_general_set_sig_fmt(struct fw_unit *unit, unsigned int rate,
++			    enum avc_general_plug_dir dir,
++			    unsigned short plug);
++int avc_general_get_sig_fmt(struct fw_unit *unit, unsigned int *rate,
++			    enum avc_general_plug_dir dir,
++			    unsigned short plug);
++int avc_general_get_plug_info(struct fw_unit *unit, unsigned int subunit_type,
++			      unsigned int subunit_id, unsigned int subfunction,
++			      u8 info[AVC_PLUG_INFO_BUF_COUNT]);
++
+ int fcp_avc_transaction(struct fw_unit *unit,
+ 			const void *command, unsigned int command_size,
+ 			void *response, unsigned int response_size,
+diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
+index 4a9b48b..0180252 100644
+--- a/sound/firewire/speakers.c
++++ b/sound/firewire/speakers.c
+@@ -193,42 +193,6 @@ static void fwspk_stop_stream(struct fwspk *fwspk)
+ 	}
+ }
+ 
+-static int fwspk_set_rate(struct fwspk *fwspk, unsigned int sfc)
+-{
+-	u8 *buf;
+-	int err;
+-
+-	buf = kmalloc(8, GFP_KERNEL);
+-	if (!buf)
+-		return -ENOMEM;
+-
+-	buf[0] = 0x00;		/* AV/C, CONTROL */
+-	buf[1] = 0xff;		/* unit */
+-	buf[2] = 0x19;		/* INPUT PLUG SIGNAL FORMAT */
+-	buf[3] = 0x00;		/* plug 0 */
+-	buf[4] = 0x90;		/* format: audio */
+-	buf[5] = 0x00 | sfc;	/* AM824, frequency */
+-	buf[6] = 0xff;		/* SYT (not used) */
+-	buf[7] = 0xff;
+-
+-	err = fcp_avc_transaction(fwspk->unit, buf, 8, buf, 8,
+-				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5));
+-	if (err < 0)
+-		goto error;
+-	if (err < 6 || buf[0] != 0x09 /* ACCEPTED */) {
+-		dev_err(&fwspk->unit->device, "failed to set sample rate\n");
+-		err = -EIO;
+-		goto error;
+-	}
+-
+-	err = 0;
+-
+-error:
+-	kfree(buf);
+-
+-	return err;
+-}
+-
+ static int fwspk_hw_params(struct snd_pcm_substream *substream,
+ 			   struct snd_pcm_hw_params *hw_params)
+ {
+@@ -252,9 +216,12 @@ static int fwspk_hw_params(struct snd_pcm_substream *substream,
+ 	amdtp_stream_set_pcm_format(&fwspk->stream,
+ 				    params_format(hw_params));
+ 
+-	err = fwspk_set_rate(fwspk, fwspk->stream.sfc);
+-	if (err < 0)
++	err = avc_general_set_sig_fmt(fwspk->unit, params_rate(hw_params),
++				      AVC_GENERAL_PLUG_DIR_IN, 0);
++	if (err < 0) {
++		dev_err(&fwspk->unit->device, "failed to set sample rate\n");
+ 		goto err_buffer;
++	}
+ 
+ 	return 0;
+ 
 -- 
 1.8.3.2
 
