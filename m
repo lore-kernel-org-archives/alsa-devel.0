@@ -1,66 +1,61 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [RFC PATCH] ASoC: wm8904: add CCF support
-Date: Mon, 24 Mar 2014 11:06:16 +0000
-Message-ID: <20140324110616.GG2269@sirena.org.uk>
+Date: Mon, 24 Mar 2014 11:07:51 +0000
+Message-ID: <20140324110751.GH2269@sirena.org.uk>
 References: <1395370262-23305-1-git-send-email-voice.shen@atmel.com>
  <20140321103747.GK23372@e106331-lin.cambridge.arm.com>
  <20140321115511.GM11706@sirena.org.uk>
- <532F9557.2000402@atmel.com>
+ <532FFE7B.2040507@gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YH9Qf6Fh2G5kB/85"
+	protocol="application/pgp-signature"; boundary="6lXr1rPCNTf1w0X8"
 Return-path: <linux-sound-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <532F9557.2000402@atmel.com>
+In-Reply-To: <532FFE7B.2040507@gmail.com>
 Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "b.brezillon.dev@gmail.com" <b.brezillon.dev@gmail.com>, "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>, "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Bo Shen <voice.shen@atmel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>, "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---YH9Qf6Fh2G5kB/85
+--6lXr1rPCNTf1w0X8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 24, 2014 at 10:15:51AM +0800, Bo Shen wrote:
-> On 03/21/2014 07:55 PM, Mark Brown wrote:
-> >On Fri, Mar 21, 2014 at 10:37:47AM +0000, Mark Rutland wrote:
-> >>On Fri, Mar 21, 2014 at 02:51:02AM +0000, Bo Shen wrote:
+On Mon, Mar 24, 2014 at 10:44:27AM +0100, Boris BREZILLON wrote:
 
-> >>>+  - wlf,sysclk-from-mclk: set the sys clock is driven from mclk,
+> 1) Expose the wm8904 clock tree using the CCF (and its DT bindings)
 
-> >>Why can the kernel not decide this?
+We can't use the common clock framework in generic drivers since the
+common clock framework isn't generally available.
 
-> >It can.
+>     clocks {
+>         fll {
+>             compatible = "wolfson,wm8904-fll"
 
-> I really don't know how it decided by kernel (hardcode in machine driver ?),
-> can you point me directly? Thanks.
+If we're adding compatible strings for non-reusable subcomponents of a
+device like this we're doing something seriously broken.
 
-It can just look to see if there is a suitable system clock present,
-this shouldn't be hard.  If there's a clock connected at a suitable
-rate it should use that, otherwise if there's a clock at an unsuitable
-rate it should either change the rate of the clock or use the FLL.
-
---YH9Qf6Fh2G5kB/85
+--6lXr1rPCNTf1w0X8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTMBGlAAoJELSic+t+oim9YxMP/iffUyCyXX72fYi/Hvd0WMWU
-GUCdAaQZIDjjlFEZvD8cy2LpkudLQaKQkxcdtgmcnvXzKa0Cofdf5LKgreOgWaAB
-r2lKzm+2Otr/cFsxK8UW53uku2LWjLbv4WpzApuJzwSw19MGm7vFFZpqi+6O2M/f
-mps7gmercWZ1M/j3AaNSOYp1uUx343P+ZMjbdWRfDrIrLQqrIZT996x0nmJzv04G
-p/q+ajyboQvImSwLr0c92eC3sG8w1Jbl6CM2lak7CoGF/iFCeL9lrV7mGgOpozx7
-wZF3no4oIi+Y4iJUvoPTR/qNv2kaYESL85f6kzVBlUG3YLUFgyWZhEG4MKed6TkC
-2o7OlPHNAR2NxT4zuHbD3WVzh1jAsv2evgUBbFVNDAu09lUbKV99oSJRG+eVaYNS
-qkfWwHCvr9SNtgHHyxKE47/MPT6u1Uz3Z+/PGQjDMboeZf8pTPWGxheD1XBiWPVa
-ldKBdvNQVv8WWfjGErCwJGK3tYmZKOesfwH1JlrgoqzxHQypyDYwrhhxbUDCx3iv
-NsJJEtcV5TR+ByELrruFNcyJZz/lHLv3+I2SQxmloUD3hTuyvg/7VuBEzZz1hssk
-oczT52BT160fUFYKasFZ/KNR4pZ/Ga80G3G1kP+cMfXLzmMxGswSsoNYW8VtDWaW
-OIiw7Vt6gih7AnBEhckh
-=KYND
+iQIcBAEBAgAGBQJTMBIEAAoJELSic+t+oim9k44P/AychiNEmCCQ4zgOZFLFZVvN
+5vBEvkOWEBYZrobeqynmvVuVoO71hcEv08ZNBLgj4TjbP3Ct07NusF+vWsmE3ciC
+evNAx7T/HDYgL2qf1Ry3ai55cyVd/85sn4OBoRHAhBdKZ21yitLFnKUV9KkqwxDN
+hbA2XMHEWWRLEgrAO2dLvpfLJcPv9WDpwA+otr6E+Xdiqg/QD+V6QmZLHtLupeTF
+mZkqZmtpaGTH1CRsH+/zvTon7/HlDtv90sGVJlvpVvnWklxA9PrwnUdm3hm+/kA2
+uZpyvQ9emT7QDp88u7HpPtAu2J3WzZ7oY6qWvqpQ+KPEFWvgYUK8l8EDbVWLzw/h
+i3O0yAUQ7SqXdiMNWQlGpqg8G4LhfuprqWA31IswgOMnxawLU91MNy75aYg029Q9
+dVvNLp7CfZJjRpVqks0CDuq4NZTP7Bj/JdbeI62WnBToAZC+SOb2w4PDa5m3FLMY
+3qF2SQeMMJiXhO70Ql144vf6s3+WW30Y5oT0GvW5e0AdOCBfo9o8c5tFwsCuZRUM
+KZ+PgpBdhXGdwRZzg331215toxdKUdgEeGT5pATIEJj937vY5bjaULGbrLr0sTCE
+7Amx5P6yy5gOkd2geaGmwfpBXBm/1Q8EEPnqjyoSy4VjIyk1koJlw/T8ilsaNdqp
+5cT42EnZ7US142pRof6q
+=oFFi
 -----END PGP SIGNATURE-----
 
---YH9Qf6Fh2G5kB/85--
+--6lXr1rPCNTf1w0X8--
