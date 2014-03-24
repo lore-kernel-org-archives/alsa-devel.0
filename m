@@ -1,51 +1,79 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ARM: bockw: fixup SND_SOC_DAIFMT_CBx_CFx flags
-Date: Mon, 24 Mar 2014 10:41:55 +0000
-Message-ID: <20140324104155.GC2269@sirena.org.uk>
-References: <87ha6oi8dg.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH] ASoC: rcar: bugfix: it cares about the
+	non-src case
+Date: Mon, 24 Mar 2014 10:42:47 +0000
+Message-ID: <20140324104247.GD2269@sirena.org.uk>
+References: <87d2hci5rn.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GZVR6ND4mMseVXL/"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87ha6oi8dg.wl%kuninori.morimoto.gx@gmail.com>
-Sender: linux-sh-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4221709566262384854=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DC1D2616B4
+ for <alsa-devel@alsa-project.org>; Mon, 24 Mar 2014 11:42:52 +0100 (CET)
+In-Reply-To: <87d2hci5rn.wl%kuninori.morimoto.gx@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Simon <horms@verge.net.au>, linux-sh@vger.kernel.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---GZVR6ND4mMseVXL/
-Content-Type: text/plain; charset=us-ascii
+--===============4221709566262384854==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="F8dlzb82+Fcn6AgP"
 Content-Disposition: inline
 
-On Sun, Mar 23, 2014 at 08:27:30PM -0700, Kuninori Morimoto wrote:
 
-> This Subject is using "ARM: bockw:" prefix,
-> but, should it be "ASoC: rcar" ?
+--F8dlzb82+Fcn6AgP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No, this is good - applied, thanks.
+On Sun, Mar 23, 2014 at 09:23:42PM -0700, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> src might not exist.
+> kernel will be hung-up without this patch in such case.
 
---GZVR6ND4mMseVXL/
+Applied, thanks.
+
+--F8dlzb82+Fcn6AgP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTMAvwAAoJELSic+t+oim9DUsP/iDndr8MKY7/Nuadj+nFzvjR
-yMpiQDtaFEC2clPjRMKy0Mn9BDnaeuVRUSdznSjqlPfk982oF2I0go4hNuAh8woO
-hn29rQM0lo1gnPZGRKftl/YqMZOAZcHfzZ2yYmSZBv2nlfWT2XMMS3+u17rhjfWs
-qRrBadjBpD5HjIziYnJBx6qjILag/2aW67RzDKAqdVcFx9UUGqPC4b7/gBowPamr
-ruAVkEozMsaqY4lqrjayJ6pGnNQj1rkLWxq83tpfH/ud/lRWJLRmvnNehQ5O9U65
-k53eED2DlZ2H1lGDTOO+zEsg8z5jYhWRjz8nJK43gFe9FP+99PE5jLNc/+srvC5D
-aNaudZOVnGDG+ujVFbOe2xQ2luxxRogeDmBPSMcqpRk8PhHC+6tEObMELphiom7U
-DHnaN773Y4HW0lgDNYuMDgHnfC29KiZQf4l/rjgAUAN84DZmuWHZiZNRnY3GWY2x
-l5OJTigvJxlXmhzvFsoi70tG1Rfhaoxxlde21ma72To8X8XqM5IkruTn8UmOL1N5
-PMUW4hBY5Vu04Gmlin/sceKU1Tvph/jiFFJB+dnPgTthQ6rYOs+1t4LknXMBUGnA
-e0ZZBGE3meMk7npzwcmhMCvgqTHKY+VS10S+ZMT5qbkG74eG2gPOqTA+v4fD0TDC
-SReKM1dFlTG1YkokFVkU
-=gfEI
+iQIcBAEBAgAGBQJTMAwkAAoJELSic+t+oim9XqkP/0zl+GxCSdhOXpr3G7mx4ZHc
+ritfCEmLKBzrRdzWXjrpSwRD02XH75W73zw77pe4DiZ39c0XDge8vDBSo8hNWX/G
+ungKjfLpjxwjA4XuiWxqXeoA/YFnnLrt71Z+NbKhNp9q7bbYf1Rw4hGuD6y49AM5
+4NkPDU+Xo9kwmNy/Zn9Xg71Damb9hZDrcWPqwMtWHJadsKAOpleXxXwzJZki6r+6
+OTuaAw5DHbMgwcVCu1HDYBUaONpVWDeku9BG+h6iw1zRn9+scJkWAc40prSVDeHZ
++ljuobv2dDk91mdC8lZ+eE5YfE3d7RaFJn9p9+57HtdlkFVQODZC990GqKpqHwX+
+GbrX5tY3lPY5CII2cP52i+nYtQqiN2k2hHY2JKCxZaYHkDUkAm+jt6mB4VDI3G2U
+SE6R9tZ9WzcaX5eaC6e/MyCWAM52/HRF2Vm+YlE8cfCTh2pK7hT5uSYHdGM/2g6S
+tIkNKNAaFKNQXef3D3wIJ4CA9Vmwu8ClxtYCk0U8LpsF0lUgkKVrg6n+pFGkrJ7M
+/pMeSDhVIMFNlOYUS3uSNWbm/u9Q4F2jmHm/zI+QEysSJ/heEdXcmyjlaGkO7Vb1
+n0tQKqpgCezl8q83z97lodoiV0R8+gdXXY1NqosrIbXYzOFA6msbbJQEz+19XLp/
+QE6OLEkb6mgjag4vxZYu
+=64GR
 -----END PGP SIGNATURE-----
 
---GZVR6ND4mMseVXL/--
+--F8dlzb82+Fcn6AgP--
+
+--===============4221709566262384854==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4221709566262384854==--
