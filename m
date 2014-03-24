@@ -1,21 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 08/13] ASoC: Track which components have
- been registered with snd_soc_register_component()
-Date: Mon, 24 Mar 2014 12:26:18 +0000
-Message-ID: <20140324122618.GK2269@sirena.org.uk>
-References: <1395129736-11938-1-git-send-email-lars@metafoo.de>
- <1395129736-11938-9-git-send-email-lars@metafoo.de>
- <20140324111805.GI1665@opensource.wolfsonmicro.com>
- <533019C1.6090402@metafoo.de> <20140324114837.GJ2269@sirena.org.uk>
- <53301FEC.6090507@metafoo.de>
+Subject: Re: [PATCH 0/4] Add fsl_asoc_xlate_tdm_slot_mask()
+Date: Mon, 24 Mar 2014 21:07:17 +0000
+Message-ID: <20140324210717.GQ2269@sirena.org.uk>
+References: <1395382635-16349-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6929842875770249228=="
+Content-Type: multipart/mixed; boundary="===============3077424564106013052=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 608D12616B4
- for <alsa-devel@alsa-project.org>; Mon, 24 Mar 2014 13:26:42 +0100 (CET)
-In-Reply-To: <53301FEC.6090507@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id C6A17261A9A
+ for <alsa-devel@alsa-project.org>; Mon, 24 Mar 2014 22:07:31 +0100 (CET)
+In-Reply-To: <1395382635-16349-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,64 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Maxime Ripard <maxime.ripard@free-electrons.com>
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Guangyu.Chen@freescale.com, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6929842875770249228==
+--===============3077424564106013052==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OOq1TgGhe8eTwFBO"
+	protocol="application/pgp-signature"; boundary="jigfid2yHjNFZUTO"
 Content-Disposition: inline
 
 
---OOq1TgGhe8eTwFBO
+--jigfid2yHjNFZUTO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 24, 2014 at 01:07:08PM +0100, Lars-Peter Clausen wrote:
-> On 03/24/2014 12:48 PM, Mark Brown wrote:
+On Fri, Mar 21, 2014 at 02:17:11PM +0800, Xiubo Li wrote:
 
-> >The question there is why you'd ever want to only unregister a single
-> >thing that the device registered.  devm_ does make this a bit more
-> >academic but still.
+> Xiubo Li (4):
+>   ASoC: core: remove the 'of_' prefix of of_xlate_tdm_slot_mask.
+>   ASoC: fsl-utils: Add fsl_asoc_xlate_tdm_slot_mask() support.
+>   ASoC: fsl-esai: Add .xlate_tdm_slot_mask() support.
+>   ASoC: imx-ssi: Add .xlate_tdm_slot_mask() support.
 
-> I you probably wouldn't, but I think it makes the interface cleaner and devm
-> doesn't really care whether we store a pointer to the parent device or a
-> pointer to the component in the devm data.
+This looks OK but I'll wait until after the merge window to apply it
+since that should happen any day now (due to my scripts that means after
+the merge window opens).
 
-Yes, of course the other bit is not wanting to register multiple
-components in the first place (partly for this reason).
-
---OOq1TgGhe8eTwFBO
+--jigfid2yHjNFZUTO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTMCRmAAoJELSic+t+oim917UP/RoQuW5l4cVi19xcLQ9qf2I0
-R6WjG/Fcf3GL843P70PidiabidHY+lr6DM9W4TWBWGCArihwmrVHcoQeE4F7eBvf
-8g90oHWmk5+kJNTNRDKJIaB8mPhI1szsbWlKU9MfdB00UkXvqOuGK2zUziYejm3d
-jwmBA6c51JFM0h0runoIJ+3UBpGvTMgE0Vf6aluq9wt4wDoJAmclJaRxRsYCkUa8
-6agaORSOE4pAvMK98KjDvwYl3F3yZVkyRt5+YUpvgBQjbHjV7FOIW6fxc30axkf0
-P+bT9vRbAJOy5iRz79Q9I/Coeyens10Aod5SPd+mjBhQJKkb1sOZWSY+wCfw+Q0J
-g+zGfHyX3GTXjZ6YJdev0sFhWxv6bfMxUngT3QeGLp56zdry78jA0diqrMzS8rR9
-kq4qdiUjik822g8P83hNcF7U4VO5PiOQLvnFQM5GtVHiuSjUau0MysB2q/qAnW4w
-mY9PkQ5gZJ1nhFLP6DiOO4T1xhZbf52grnhTZgttCpNCTHIxI+7kytB3pU73iNv5
-yG7I3NvMLZINPiO+avzYYWIfiel/3uiDR3JO43T4NdDHfaW0th514+4VgiTeVH+Y
-ZGKV0Y3udZgtgrdoSqlK5Qt4gH3BMFdyhlZrRgX9mmNl5ZrLfffNRORcqOMmo6yu
-z7gKZ+beW4l25dkjZ3ft
-=tUmG
+iQIcBAEBAgAGBQJTMJ6CAAoJELSic+t+oim9ScEP/0v+w/2C5uQDVWumNhVUes0I
+ojqTwsbnGIsIelMzD/vpcwELEQ8VsI3BhkpgMuVYdUvw/KsVqsRdtplKn5vhqhKR
+o5SNXn7LYZ7teGj1Y7axGdETgLuTQxrhe8rVXzbnX0Lv7KJ7YTTq3Wk/Xpp9P+w2
+sUNwk+iDcYERu/lAqXv3UN4DzdLY/8R4aFw8LJpgqlEUKxx5GYSyRAHqElUnpvcs
+uMPJhNXOtj96N/o3vrvQPOKAa4t+b0kKToVIzVIM4phOaVnhWCZTCzjWgD5cv/H1
+KpYzaPFkXIoh9J6U4LPxMJylqvCnXKW8x2ZsqW7HXK7mQArvKR8Bx1b3BHnmN43e
+xvYVPQ8Gg6dDlTm5EPCumNDHQUAbLIb12dmCbRxfInqGxx3vOYZAKUAbZHpg5AgB
+XC9qi8KLtnTOZGZ/FjkLNTDIDiB6hYH6hMM6c6LBIbe/lOFtrIZaDwn1a7HiC4FS
+AKGzyi503wcT4UC/xeQ1A0g4Smp+ONJJ0AeF9FhPauej+++gCATpjYzfJzmKlSHy
+PaL8PHbn2A5WymJyxTGlTpHfMVixrwaGw5cphy8hjhZici7egDBNcaaNBGQmn8Gy
+E8GndpIPYaDyhioQvV0iH1KrRYocbo3Jf6soPu+A83X3q+c+gFffo6UpDqbpinDI
+2X34ZnLTW8SkjaK+V7Li
+=U2MT
 -----END PGP SIGNATURE-----
 
---OOq1TgGhe8eTwFBO--
+--jigfid2yHjNFZUTO--
 
---===============6929842875770249228==
+--===============3077424564106013052==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6929842875770249228==--
+--===============3077424564106013052==--
