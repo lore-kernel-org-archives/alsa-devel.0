@@ -1,14 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] More ASoC updates for v3.15
-Date: Sun, 23 Mar 2014 16:58:20 +0000
-Message-ID: <20140323165820.GB2269@sirena.org.uk>
+From: <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: add RT5639 CODEC driver
+Date: Mon, 24 Mar 2014 10:16:37 +0800
+Message-ID: <1395627397-6580-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0657591668716120495=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 940112608CF
- for <alsa-devel@alsa-project.org>; Sun, 23 Mar 2014 17:58:41 +0100 (CET)
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id D88012615B6
+ for <alsa-devel@alsa-project.org>; Mon, 24 Mar 2014 03:18:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,2391 +18,4134 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-
---===============0657591668716120495==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uZ3hkaAS1mZxFaxD"
-Content-Disposition: inline
-
-
---uZ3hkaAS1mZxFaxD
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-The following changes since commit 9296f4da3bafa23d8b9abc5cd271a66ea8f90cd2:
-
-  ASoC: tlv320aic31xx: Staticise non-exported symbols (2014-03-13 17:44:22 =
-+0000)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc=
--v3.15-3
-
-for you to fetch changes up to e090d5b6ad20056ec0ef58727e3ae95fd82be090:
-
-  Merge remote-tracking branches 'asoc/topic/simple' and 'asoc/topic/sirf' =
-into asoc-next (2014-03-23 14:00:59 +0000)
-
-----------------------------------------------------------------
-
-ASoC: Updates for v3.15
-
-A few more updates for the merge window:
-
- - Fixes for the simple-card DAI format DT mess.
- - A new driver for Cirrus cs42xx8 devices.
- - DT support for a couple more devices.
- - A revert of a previous buggy fix for soc-pcm, plus a few more fixes
-   and cleanups.
-
-----------------------------------------------------------------
-Al Viro (3):
-      ocfs2 syncs the wrong range...
-      sockfd_lookup_light(): switch to fdget^W^Waway from fget_light
-      get rid of fget_light()
-
-Ales Novak (1):
-      [SCSI] storvsc: NULL pointer dereference fix
-
-Alex Deucher (4):
-      drm/radeon: fix runpm disabling on non-PX harder
-      drm/radeon/cik: properly set sdma ring status on disable
-      drm/radeon/cik: stop the sdma engines in the enable() function
-      drm/radeon/cik: properly set compute ring status on disable
-
-Alexander Aring (1):
-      at86rf230: fix lockdep splats
-
-Alexei Starovoitov (1):
-      x86: bpf_jit: support negative offsets
-
-Amir Vadai (2):
-      net/mlx4_core: Fix memory access error in mlx4_QUERY_DEV_CAP_wrapper()
-      net/mlx4_core: mlx4_init_slave() shouldn't access comm channel before=
- PF is ready
-
-Amitkumar Karwar (2):
-      mwifiex: copy AP's HT capability info correctly
-      mwifiex: save and copy AP's VHT capability info correctly
-
-Andrew Lutomirski (1):
-      net: Improve SO_TIMESTAMPING documentation and fix a minor code bug
-
-Andrew Morton (1):
-      revert "kallsyms: fix absolute addresses for kASLR"
-
-Annie Li (1):
-      Xen-netback: Fix issue caused by using gso_type wrongly
-
-Anton Blanchard (2):
-      net: unix socket code abuses csum_partial
-      ibmveth: Fix endian issues with MAC addresses
-
-Anton Nayshtut (1):
-      ipv6: Fix exthdrs offload registration.
-
-Arnd Bergmann (1):
-      vmxnet3: fix building without CONFIG_PCI_MSI
-
-Artem Fetishev (1):
-      fs/proc/base.c: fix GPF in /proc/$PID/map_files
-
-Axel Lin (1):
-      ASoC: tlv320aic31xx: Don't call kfree for memory allocated by devm_kz=
-alloc
-
-Ben Hutchings (3):
-      perf trace: Decode architecture-specific signal numbers
-      bna: Replace large udelay() with mdelay()
-      mm/Kconfig: fix URL for zsmalloc benchmark
-
-Bjorn Helgaas (3):
-      phy: fix compiler array bounds warning on settings[]
-      PCI: Enable INTx in pci_reenable_device() only when MSI/MSI-X not ena=
-bled
-      PCI: Don't check resource_size() in pci_bus_alloc_resource()
-
-Brian Austin (3):
-      ASoC: cs42l73: Fix mask bits for SOC_VALUE_ENUM_SINGLE
-      ASoC: cs42l52: Fix mask bits for SOC_VALUE_ENUM_SINGLE
-      ASoC: cs42l51: Fix SOC_DOUBLE_R_SX_TLV shift values for ADC, PCM, and=
- Analog kcontrols
-
-Chad Dupuis (1):
-      [SCSI] qla2xxx: Fix multiqueue MSI-X registration.
-
-Colin Ian King (1):
-      tools/testing/selftests/ipc/msgque.c: handle msgget failure return co=
-rrectly
-
-Dan Williams (1):
-      [SCSI] isci: fix reset timeout handling
-
-Daniel Borkmann (2):
-      net: sctp: fix skb leakage in COOKIE ECHO path of chunk->auth_chunk
-      MAINTAINERS: add networking selftests to NETWORKING
-
-Daniel J Blueman (1):
-      x86/amd/numa: Fix northbridge quirk to assign correct NUMA node
-
-Dave Airlie (3):
-      Merge tag 'vmwgfx-fixes-3.14-2014-03-13' of git://people.freedesktop.=
-org/~thomash/linux into drm-fixes
-      Merge branch 'drm-fixes-3.14' of git://people.freedesktop.org/~agd5f/=
-linux into drm-fixes
-      Merge tag 'ttm-fixes-3.14-2014-03-12' of git://people.freedesktop.org=
-/~thomash/linux into drm-fixes
-
-Dave Jones (2):
-      perf/x86: Fix leak in uncore_type_init failure paths
-      x86: Remove CONFIG_X86_OOSTORE
-
-David S. Miller (5):
-      Merge branch 'tipc'
-      Merge branch 'for-davem' of git://git.kernel.org/.../linville/wireless
-      Merge branch 'stmmac'
-      Merge branch 'skb_frags'
-      Merge branch 'mlx4'
-
-Don Zickus (1):
-      perf machine: Use map as success in ip__resolve_ams
-
-Dylan Reid (1):
-      ASoC: tegra: Use flat regcache
-
-Eliad Peller (1):
-      mac80211: consider virtual mon when calculating min_def
-
-Emmanuel Grumbach (1):
-      iwlwifi: mvm: don't WARN when statistics are handled late
-
-Eric Dumazet (3):
-      pkt_sched: move the sanity test in qdisc_list_add()
-      pkt_sched: fq: do not hold qdisc lock while allocating memory
-      tcp: tcp_release_cb() should release socket ownership
-
-Eric W. Biederman (3):
-      audit: Use struct net not pid_t to remember the network namespce to r=
-eply in
-      audit: Send replies in the proper network namespace.
-      audit: Update kdoc for audit_send_reply and audit_list_rules_send
-
-Erik Hugne (3):
-      tipc: drop subscriber connection id invalidation
-      tipc: fix memory leak during module removal
-      tipc: don't log disabled tasklet handler errors
-
-Fernando Luis Vazquez Cao (1):
-      sched/clock: Prevent tracing recursion in sched_clock_cpu()
-
-Florian Westphal (1):
-      inet: frag: make sure forced eviction removes all frags
-
-Gavin Shan (1):
-      net/mlx4: Support shutdown() interface
-
-Geert Uytterhoeven (2):
-      cris: convert ffs from an object-like macro to a function-like macro
-      packet: doc: Spelling s/than/that/
-
-Giridhar Malavali (1):
-      [SCSI] qla2xxx: Poll during initialization for ISP25xx and ISP83xx
-
-Giuseppe CAVALLARO (4):
-      stmmac: disable at run-time the EEE if not supported
-      stmmac: fix and better tune the default buffer sizes
-      stmmac: fix chained mode
-      stmmac: dwmac-sti: fix broken STiD127 compatibility
-
-Guillaume Nault (2):
-      l2tp: fix manual sequencing (de)activation in L2TPv2
-      l2tp: fix userspace reception on plain L2TP sockets
-
-Haiyang Zhang (1):
-      hyperv: Move state setting for link query
-
-Heiner Kallweit (1):
-      ipv6: Avoid unnecessary temporary addresses being generated
-
-Heinz Mauelshagen (2):
-      dm cache: fix truncation bug when copying a block to/from >2TB fast d=
-evice
-      dm cache: fix access beyond end of origin device
-
-Ingo Molnar (1):
-      Merge tag 'perf-urgent-for-mingo' of git://git.kernel.org/.../acme/li=
-nux into perf/urgent
-
-Ivaylo Dimitrov (1):
-      wl1251: use skb_trim to make skb shorter
-
-Jean-Francois Moine (2):
-      ASoC: simple-card: Fix the reference count of device nodes
-      ASoC: simple-card: Simplify code
-
-Jeff Layton (2):
-      cifs: sanity check length of data to send before sending
-      cifs: mask off top byte in get_rfc1002_length()
-
-Jiri Olsa (1):
-      perf symbols: Fix crash in elf_section_by_name
-
-Johannes Berg (2):
-      cfg80211: remove racy beacon_interval assignment
-      mac80211: clear sequence/fragment number in QoS-null frames
-
-Johannes Weiner (1):
-      mm: fix GFP_THISNODE callers and clarify
-
-John W. Linville (3):
-      Merge branch 'for-john' of git://git.kernel.org/.../iwlwifi/iwlwifi-f=
-ixes
-      Merge branch 'for-john' of git://git.kernel.org/.../jberg/mac80211
-      Merge branch 'master' of git://git.kernel.org/.../linville/wireless i=
-nto for-davem
-
-Juri Lelli (1):
-      sched/deadline: Deny unprivileged users to set/change SCHED_DEADLINE =
-policy
-
-Jyri Sarha (1):
-      ASoC: tlv320aic31xx: Turn power off only once.
-
-Kuninori Morimoto (4):
-      ASoC: fsi: fixup SND_SOC_DAIFMT_CBx_CFx flags
-      ASoC: rcar: fixup SND_SOC_DAIFMT_CBx_CFx flags
-      ASoC: fsi: fixup compile error for simple-card
-      ASoC: rsnd: add DeviceTree support
-
-Lars-Peter Clausen (8):
-      ASoC: omap-abe-twl6040: Register machine level DMIC DAPM routes with =
-the card
-      ASoC: davinci-evm: Register machine level DAPM elements with the card
-      ASoC: max98090: Remove unused control_data field
-      ASoC: sirf-audio-codec: Remove snd_soc_codec_set_cache_io() call
-      ASoC: codecs: Replace instances of rtd->codec with dai->codec
-      ASoC: Add helper function to cast component back to CODEC
-      ASoC: mfld_machine: Convert to table based DAPM and control setup
-      ASoC: mfld_machine: Fix compile error
-
-Laura Abbott (1):
-      mm/compaction: break out of loop on !PageBuddy in isolate_freepages_b=
-lock
-
-Linus L=C3=BCssing (3):
-      bridge: multicast: add sanity check for query source addresses
-      bridge: multicast: add sanity check for general query destination
-      bridge: multicast: enable snooping on general queries only
-
-Linus Torvalds (19):
-      vfs: atomic f_pos accesses as per POSIX
-      Merge branch 'for-3.14-fixes' of git://git.kernel.org/.../tj/libata
-      Merge branch 'for-linus' of git://git.kernel.org/.../viro/vfs
-      Merge branch 'akpm' (patches from Andrew Morton)
-      Merge branch 'for-linus' of git://git.kernel.org/.../ebiederm/user-na=
-mespace
-      Merge branch 'for-next' of git://git.samba.org/sfrench/cifs-2.6
-      Merge tag 'sound-3.14-rc7' of git://git.kernel.org/.../tiwai/sound
-      Merge tag 'for-linus' of git://git.kernel.org/pub/scm/virt/kvm/kvm
-      Merge tag 'pci-v3.14-fixes-2' of git://git.kernel.org/.../helgaas/pci
-      Merge git://git.kernel.org/.../davem/net
-      Merge branch 'i2c/for-current' of git://git.kernel.org/.../wsa/linux
-      Merge branch 'drm-fixes' of git://people.freedesktop.org/~airlied/lin=
-ux
-      Merge tag 'dm-3.14-fixes-4' of git://git.kernel.org/.../device-mapper=
-/linux-dm
-      Merge tag 'pm+acpi-3.14-rc7' of git://git.kernel.org/.../rafael/linux=
--pm
-      Merge branch 'x86-urgent-for-linus' of git://git.kernel.org/.../tip/t=
-ip
-      Merge tag 'scsi-fixes' of git://git.kernel.org/.../jejb/scsi
-      Merge branch 'perf-urgent-for-linus' of git://git.kernel.org/.../tip/=
-tip
-      Merge branch 'sched-urgent-for-linus' of git://git.kernel.org/.../tip=
-/tip
-      Linux 3.14-rc7
-
-Lukasz Dorau (1):
-      [SCSI] isci: correct erroneous for_each_isci_host macro
-
-Marc Zyngier (1):
-      ARM: KVM: fix non-VGIC compilation
-
-Mark Brown (13):
-      ASoC: io: Remove support for ASoC cache in conjunction with regmap
-      ASoC: pcm: Drop incorrect double/extra frees
-      Merge remote-tracking branches 'asoc/fix/cs42l51', 'asoc/fix/cs42l52'=
-, 'asoc/fix/cs42l73', 'asoc/fix/rcar', 'asoc/fix/spear' and 'asoc/fix/tegra=
-' into asoc-linus
-      Merge tag 'asoc-v3.15' into asoc-next
-      Merge tag 'asoc-v3.15-2' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/core' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/codecs' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/cs42xx8' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/davinci' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/intel', 'asoc/topic/io' an=
-d 'asoc/topic/kirkwood' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/max98090' and 'asoc/topic/=
-omap' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/rcar' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/simple' and 'asoc/topic/si=
-rf' into asoc-next
-
-Markos Chandras (1):
-      tools/net/Makefile: Define PACKAGE to fix build problems
-
-Matthew Leach (1):
-      net: socket: error on a negative msg_namelen
-
-Michael Chan (1):
-      bnx2: Fix shutdown sequence
-
-Michael Kerrisk (1):
-      ipc: Fix 2 bugs in msgrcv() MSG_COPY implementation
-
-Michael Opdenacker (1):
-      MAINTAINERS: blackfin: add git repository
-
-Michael S. Tsirkin (5):
-      skbuff: skb_segment: s/frag/nskb_frag/
-      skbuff: skb_segment: s/skb_frag/frag/
-      skbuff: skb_segment: s/skb/head_skb/
-      skbuff: skb_segment: s/fskb/list_skb/
-      skbuff: skb_segment: orphan frags before copying
-
-Mike Christie (1):
-      [SCSI] be2iscsi: fix bad if expression
-
-Neil Horman (1):
-      vmxnet3: fix netpoll race condition
-
-Nenghua Cao (1):
-      asoc: soc-core: fix coccinelle warnings
-
-Nicolin Chen (2):
-      ASoC: simple-card: overwrite cpu_dai->fmt with codec_dai->fmt
-      ASoC: cs42xx8: Add codec driver support for CS42448/CS42888
-
-Nikolay Aleksandrov (1):
-      net: fix for a race condition in the inet frag code
-
-Or Gerlitz (4):
-      net/mlx4_core: Fix wrong dump of the vxlan offloads device capability
-      net/mlx4_en: Handle vxlan steering rules for mac address changes
-      net/mlx4_core: Load the IB driver when the device supports IBoE
-      net/mlx4_en: Deregister multicast vxlan steering rules when going down
-
-Oren Givon (1):
-      iwlwifi: fix and add 7265 series HW IDs
-
-Pavel Shilovsky (1):
-      CIFS: Fix wrong pos argument of cifs_find_lock_conflict
-
-Peter Bostr=C3=B6m (1):
-      vlan: Set correct source MAC address with TX VLAN offload enabled
-
-Peter Ujfalusi (2):
-      ASoC: davinci: Add edma dmaengine platform driver
-      ASoC: davinci-mcasp: Provide correct filter_data for dmaengine for no=
-n-DT boot
-
-Peter Zijlstra (1):
-      stop_machine: Fix^2 race between stop_two_cpus() and stop_cpus()
-
-Radim Kr=C4=8Dm=C3=A1=C5=99 (1):
-      KVM: SVM: fix cr8 intercept window
-
-Rafael J. Wysocki (4):
-      cpufreq: Skip current frequency initialization for ->setpolicy drivers
-      ACPI / init: Invoke early ACPI initialization later
-      ACPI / sleep: Add extra checks for HW Reduced ACPI mode sleep states
-      Merge branches 'pnp', 'acpi-init', 'acpi-sleep' and 'pm-cpufreq'
-
-Richard Weinberger (1):
-      i2c: Remove usage of orphaned symbol OF_I2C
-
-Rob Clark (1):
-      drm/ttm: don't oops if no invalidate_caches()
-
-Sabrina Dubroca (1):
-      ipv6: don't set DST_NOCOUNT for remotely added routes
-
-Sasha Levin (1):
-      bonding: correctly handle out of range parameters for lp_interval
-
-Sergei Antonov (1):
-      hfsplus: add HFSX subfolder count support
-
-Soren Brinkmann (2):
-      net: macb: Check DMA mappings for error
-      net: macb: DMA-unmap full rx-buffer
-
-Stefan Wahren (1):
-      eth: fec: Fix lost promiscuous mode after reconnecting cable
-
-Suresh Siddha (1):
-      x86, fpu: Check tsk_used_math() in kernel_fpu_end() for eager FPU
-
-Tejun Heo (1):
-      libata: use wider match for blacklisting Crucial M500
-
-Thomas Hellstrom (2):
-      drm/ttm: Work around performance regression with VM_PFNMAP
-      drm/vmwgfx: Fix a surface reference corner-case in legacy emulation m=
-ode
-
-Thomas Petazzoni (1):
-      ASoC: add S/PDIF support to Armada 370 DB ASoC driver
-
-Tobias Klauser (1):
-      MAINTAINERS: Add tools/net to NETWORKING [GENERAL]
-
-Wei Liu (1):
-      xen-netback: use skb_is_gso in xenvif_start_xmit
-
-Ying Xue (3):
-      tipc: allow connection shutdown callback to be invoked in advance
-      tipc: fix connection refcount leak
-      tipc: avoid to unnecessary process switch under non-block mode
-
-Zhang Rui (1):
-      PNP / ACPI: proper handling of ACPI IO/Memory resource parsing failur=
-es
-
-dingtianhong (1):
-      bonding: set correct vlan id for alb xmit path
-
-hayeswang (2):
-      r8152: disable the ECM mode
-      r8169: fix the incorrect tx descriptor version
-
- .gitignore                                         |    3 +
- Documentation/00-INDEX                             |   24 +-
- Documentation/PCI/MSI-HOWTO.txt                    |  119 +-
- Documentation/RCU/00-INDEX                         |    2 +
- Documentation/arm/00-INDEX                         |   14 +
- Documentation/blackfin/00-INDEX                    |    6 +-
- Documentation/block/00-INDEX                       |    2 +
- Documentation/device-mapper/cache.txt              |   11 +-
- Documentation/device-mapper/thin-provisioning.txt  |   34 +-
- Documentation/devicetree/00-INDEX                  |    2 +
- .../devicetree/bindings/arm/omap/omap.txt          |    2 +-
- .../bindings/clock/renesas,cpg-mstp-clocks.txt     |    4 +-
- .../devicetree/bindings/dma/fsl-imx-sdma.txt       |   16 +-
- .../devicetree/bindings/i2c/trivial-devices.txt    |    1 +
- .../interrupt-controller/lsi,zevio-intc.txt        |   18 +
- .../devicetree/bindings/misc/atmel-ssc.txt         |    8 +
- .../devicetree/bindings/mmc/atmel-hsmci.txt        |    5 +
- .../bindings/net/allwinner,sun4i-emac.txt          |    5 +-
- .../bindings/net/allwinner,sun4i-mdio.txt          |    5 +-
- .../devicetree/bindings/net/opencores-ethoc.txt    |   22 +
- .../devicetree/bindings/net/sti-dwmac.txt          |   58 +
- ...capri-pinctrl.txt =3D> brcm,bcm11351-pinctrl.txt} |    8 +-
- .../devicetree/bindings/power/bq2415x.txt          |   47 +
- .../bindings/sound/armada-370db-audio.txt          |   27 +
- .../devicetree/bindings/sound/cs42xx8.txt          |   28 +
- Documentation/devicetree/bindings/sound/da9055.txt |   22 +
- .../bindings/sound/davinci-evm-audio.txt           |    9 +-
- .../devicetree/bindings/sound/eukrea-tlv320.txt    |   21 +
- .../devicetree/bindings/sound/fsl,esai.txt         |    5 +
- .../devicetree/bindings/sound/fsl,spdif.txt        |    5 +
- .../devicetree/bindings/sound/mvebu-audio.txt      |    1 +
- .../devicetree/bindings/sound/pcm512x.txt          |   30 +
- .../devicetree/bindings/sound/renesas,rsnd.txt     |   96 ++
- .../devicetree/bindings/sound/simple-card.txt      |   23 +-
- .../devicetree/bindings/sound/sirf-audio-codec.txt |   17 +
- .../devicetree/bindings/sound/sirf-audio-port.txt  |   20 +
- .../devicetree/bindings/sound/sirf-audio.txt       |   41 +
- .../devicetree/bindings/sound/tdm-slot.txt         |   20 +
- .../devicetree/bindings/sound/tlv320aic3x.txt      |    1 -
- .../devicetree/bindings/sound/widgets.txt          |   20 +
- .../devicetree/bindings/spi/spi_atmel.txt          |    5 +
- .../devicetree/bindings/vendor-prefixes.txt        |    6 +-
- Documentation/dvb/contributors.txt                 |    2 +-
- Documentation/fb/00-INDEX                          |    6 +
- Documentation/filesystems/00-INDEX                 |    2 +
- Documentation/filesystems/nfs/00-INDEX             |    4 +-
- Documentation/i2c/instantiating-devices            |   41 +-
- Documentation/ide/00-INDEX                         |    2 +
- Documentation/kernel-parameters.txt                |    8 +-
- Documentation/laptops/00-INDEX                     |    6 +-
- Documentation/leds/00-INDEX                        |    8 +
- Documentation/m68k/00-INDEX                        |    2 +
- Documentation/networking/00-INDEX                  |   30 +-
- Documentation/networking/3c505.txt                 |   45 -
- Documentation/networking/can.txt                   |    6 -
- Documentation/networking/packet_mmap.txt           |    2 +-
- Documentation/networking/timestamping.txt          |   52 +-
- Documentation/phy.txt                              |   26 +-
- Documentation/power/00-INDEX                       |    6 +-
- Documentation/ptp/testptp.c                        |   11 +-
- Documentation/s390/00-INDEX                        |    8 +-
- Documentation/scheduler/00-INDEX                   |    2 +
- Documentation/scsi/00-INDEX                        |   16 +
- Documentation/serial/00-INDEX                      |    6 +-
- Documentation/spi/00-INDEX                         |   22 +
- Documentation/spi/spi-summary                      |   17 +-
- Documentation/timers/00-INDEX                      |    2 +
- Documentation/virtual/kvm/00-INDEX                 |    2 +
- Documentation/vm/00-INDEX                          |    4 +-
- Documentation/w1/masters/00-INDEX                  |    4 +-
- Documentation/w1/slaves/00-INDEX                   |    2 +
- Documentation/x86/00-INDEX                         |   18 +-
- Documentation/zh_CN/arm64/booting.txt              |   65 +-
- Documentation/zh_CN/arm64/memory.txt               |   46 +-
- Documentation/zh_CN/arm64/tagged-pointers.txt      |   52 +
- MAINTAINERS                                        |  168 +-
- Makefile                                           |   10 +-
- arch/arc/mm/cache_arc700.c                         |    4 +-
- arch/arm/Kconfig                                   |    3 +
- arch/arm/boot/compressed/.gitignore                |    1 +
- arch/arm/boot/dts/Makefile                         |    4 +-
- arch/arm/boot/dts/am335x-evmsk.dts                 |   11 +-
- arch/arm/boot/dts/armada-xp-mv78260.dtsi           |    3 +-
- arch/arm/boot/dts/at91-sama5d3_xplained.dts        |  229 +++
- arch/arm/boot/dts/at91sam9263.dtsi                 |    2 +-
- arch/arm/boot/dts/at91sam9n12ek.dts                |    4 +
- arch/arm/boot/dts/bcm11351.dtsi                    |    2 +-
- arch/arm/boot/dts/dove.dtsi                        |   11 -
- arch/arm/boot/dts/imx6dl-hummingboard.dts          |   10 +-
- arch/arm/boot/dts/imx6qdl-cubox-i.dtsi             |   10 +-
- arch/arm/boot/dts/keystone-clocks.dtsi             |    2 +-
- arch/arm/boot/dts/omap3-gta04.dts                  |    8 +-
- arch/arm/boot/dts/omap3-igep0020.dts               |    2 +-
- arch/arm/boot/dts/omap3-igep0030.dts               |    2 +-
- arch/arm/boot/dts/omap3-n9.dts                     |    2 +-
- arch/arm/boot/dts/omap3-n900.dts                   |    4 +-
- arch/arm/boot/dts/omap3-n950.dts                   |    2 +-
- arch/arm/boot/dts/omap3-overo-storm-tobi.dts       |   22 +
- ...omap3-tobi.dts =3D> omap3-overo-tobi-common.dtsi} |    3 -
- arch/arm/boot/dts/omap3-overo-tobi.dts             |   22 +
- arch/arm/boot/dts/omap3-overo.dtsi                 |    3 -
- arch/arm/boot/dts/sama5d3.dtsi                     |    2 +-
- arch/arm/boot/dts/ste-href.dtsi                    |    1 -
- arch/arm/boot/dts/sun4i-a10.dtsi                   |    6 +-
- arch/arm/boot/dts/sun5i-a10s.dtsi                  |    6 +-
- arch/arm/boot/dts/sun5i-a13.dtsi                   |    2 +-
- arch/arm/boot/dts/sun7i-a20.dtsi                   |   16 +-
- arch/arm/boot/dts/tegra114.dtsi                    |    4 +
- arch/arm/boot/dts/tegra20.dtsi                     |    4 +
- arch/arm/boot/dts/tegra30-cardhu.dtsi              |    2 +-
- arch/arm/boot/dts/tegra30.dtsi                     |    4 +
- arch/arm/boot/dts/testcases/tests.dtsi             |    2 -
- arch/arm/boot/dts/versatile-pb.dts                 |    4 +-
- arch/arm/configs/multi_v7_defconfig                |    1 +
- arch/arm/configs/tegra_defconfig                   |    3 +
- arch/arm/include/asm/cacheflush.h                  |    1 +
- arch/arm/include/asm/memory.h                      |    9 +-
- arch/arm/include/asm/pgtable-3level.h              |   15 +-
- arch/arm/include/asm/spinlock.h                    |   15 +-
- arch/arm/kernel/head-common.S                      |   12 +
- arch/arm/kernel/head.S                             |    2 +-
- arch/arm/kernel/setup.c                            |    2 +-
- arch/arm/kvm/arm.c                                 |    3 +-
- arch/arm/kvm/interrupts.S                          |   11 +-
- arch/arm/mach-hisi/Kconfig                         |    2 +-
- arch/arm/mach-imx/Makefile                         |    2 -
- arch/arm/mach-imx/clk-imx6q.c                      |    3 +
- arch/arm/mach-imx/clk-imx6sl.c                     |    3 +
- arch/arm/mach-imx/common.h                         |    4 +-
- arch/arm/mach-imx/pm-imx6q.c                       |    2 -
- arch/arm/mach-moxart/Kconfig                       |    1 -
- arch/arm/mach-omap1/board-nokia770.c               |    1 +
- arch/arm/mach-omap2/Kconfig                        |   10 +-
- arch/arm/mach-omap2/cclock3xxx_data.c              |    2 +
- arch/arm/mach-omap2/cpuidle44xx.c                  |    8 +-
- arch/arm/mach-omap2/dpll3xxx.c                     |   92 +-
- arch/arm/mach-omap2/gpmc.c                         |    4 +-
- arch/arm/mach-omap2/io.c                           |    9 -
- arch/arm/mach-omap2/omap_hwmod.c                   |   20 +-
- arch/arm/mach-omap2/omap_hwmod_7xx_data.c          |    9 +-
- arch/arm/mach-omap2/pdata-quirks.c                 |   21 +-
- arch/arm/mach-omap2/prminst44xx.c                  |    4 +-
- arch/arm/mach-pxa/am300epd.c                       |    1 +
- arch/arm/mach-pxa/include/mach/balloon3.h          |    2 +
- arch/arm/mach-pxa/include/mach/corgi.h             |    1 +
- arch/arm/mach-pxa/include/mach/csb726.h            |    2 +
- arch/arm/mach-pxa/include/mach/gumstix.h           |    1 +
- arch/arm/mach-pxa/include/mach/idp.h               |    1 +
- arch/arm/mach-pxa/include/mach/palmld.h            |    2 +
- arch/arm/mach-pxa/include/mach/palmt5.h            |    2 +
- arch/arm/mach-pxa/include/mach/palmtc.h            |    2 +
- arch/arm/mach-pxa/include/mach/palmtx.h            |    2 +
- arch/arm/mach-pxa/include/mach/pcm027.h            |    2 +
- arch/arm/mach-pxa/include/mach/pcm990_baseboard.h  |    1 +
- arch/arm/mach-pxa/include/mach/poodle.h            |    2 +
- arch/arm/mach-pxa/include/mach/spitz.h             |    2 +-
- arch/arm/mach-pxa/include/mach/tosa.h              |    2 +
- arch/arm/mach-pxa/include/mach/trizeps4.h          |    2 +
- arch/arm/mach-pxa/mioa701.c                        |    9 +
- arch/arm/mach-sa1100/include/mach/collie.h         |    2 +
- arch/arm/mach-shmobile/Kconfig                     |    2 +-
- arch/arm/mach-shmobile/board-armadillo800eva.c     |    4 +-
- arch/arm/mach-shmobile/board-kzm9g.c               |    4 +-
- arch/arm/mach-shmobile/board-mackerel.c            |    6 +-
- arch/arm/mach-tegra/pm.c                           |    1 +
- arch/arm/mach-tegra/tegra.c                        |   10 +
- arch/arm/mach-zynq/common.c                        |   14 +
- arch/arm/mm/dma-mapping.c                          |    2 +-
- arch/arm/mm/dump.c                                 |    3 +
- arch/arm/mm/mm.h                                   |    1 +
- arch/arm/mm/mmu.c                                  |    7 +-
- arch/arm/mm/proc-v6.S                              |    3 +-
- arch/arm/mm/proc-v7.S                              |    2 +-
- arch/arm64/Kconfig                                 |    1 +
- arch/arm64/configs/defconfig                       |   18 +-
- arch/arm64/include/asm/atomic.h                    |   53 +-
- arch/arm64/include/asm/barrier.h                   |    2 +-
- arch/arm64/include/asm/cacheflush.h                |    1 +
- arch/arm64/include/asm/cmpxchg.h                   |   17 +-
- arch/arm64/include/asm/esr.h                       |    2 +-
- arch/arm64/include/asm/futex.h                     |   10 +-
- arch/arm64/include/asm/kvm_arm.h                   |    2 +-
- arch/arm64/include/asm/percpu.h                    |    8 +
- arch/arm64/include/asm/pgtable.h                   |   10 +-
- arch/arm64/include/asm/spinlock.h                  |   10 +-
- arch/arm64/include/asm/unistd32.h                  |    5 +-
- arch/arm64/include/uapi/asm/kvm.h                  |    9 +
- arch/arm64/kernel/kuser32.S                        |    6 +-
- arch/arm64/kernel/stacktrace.c                     |    6 +-
- arch/arm64/kernel/vdso.c                           |    4 +-
- arch/arm64/kernel/vdso/Makefile                    |    2 +-
- arch/arm64/kernel/vdso/gettimeofday.S              |    7 +-
- arch/arm64/kvm/hyp.S                               |   27 +-
- arch/arm64/lib/bitops.S                            |    3 +-
- arch/arm64/mm/dma-mapping.c                        |    1 +
- arch/arm64/mm/mmu.c                                |   12 +-
- arch/arm64/mm/pgd.c                                |   11 +-
- arch/avr32/Makefile                                |    2 +-
- arch/avr32/boards/mimc200/fram.c                   |    1 +
- arch/avr32/include/asm/Kbuild                      |    1 +
- arch/avr32/include/asm/io.h                        |    2 +
- arch/c6x/include/asm/cache.h                       |    1 +
- arch/cris/include/asm/bitops.h                     |    2 +-
- arch/ia64/include/asm/unistd.h                     |    2 +-
- arch/ia64/include/uapi/asm/unistd.h                |    2 +
- arch/ia64/kernel/entry.S                           |    2 +
- arch/ia64/kernel/uncached.c                        |    2 +-
- arch/m68k/include/asm/Kbuild                       |    6 +-
- arch/m68k/include/asm/barrier.h                    |    8 -
- arch/m68k/include/asm/unistd.h                     |    2 +-
- arch/m68k/include/uapi/asm/unistd.h                |    2 +
- arch/m68k/kernel/syscalltable.S                    |    2 +
- arch/microblaze/include/asm/delay.h                |    2 +
- arch/microblaze/include/asm/io.h                   |    6 +
- arch/microblaze/kernel/head.S                      |    2 +-
- arch/mips/alchemy/devboards/db1000.c               |    7 +-
- arch/mips/include/asm/fpu.h                        |    2 +
- arch/mips/include/uapi/asm/unistd.h                |   18 +-
- arch/mips/kernel/scall32-o32.S                     |    2 +
- arch/mips/kernel/scall64-64.S                      |    2 +
- arch/mips/kernel/scall64-n32.S                     |    2 +
- arch/mips/kernel/scall64-o32.S                     |    2 +
- arch/parisc/hpux/fs.c                              |   15 +-
- arch/powerpc/include/asm/compat.h                  |    5 +-
- arch/powerpc/include/asm/dma-mapping.h             |    1 +
- arch/powerpc/include/asm/eeh.h                     |   21 +-
- arch/powerpc/include/asm/hugetlb.h                 |    2 +-
- arch/powerpc/include/asm/iommu.h                   |    1 +
- arch/powerpc/include/asm/opal.h                    |    4 +-
- arch/powerpc/include/asm/pgtable-ppc64.h           |   26 +-
- arch/powerpc/include/asm/pgtable.h                 |   22 +
- arch/powerpc/include/asm/ptrace.h                  |   16 +-
- arch/powerpc/include/asm/sections.h                |   12 +
- arch/powerpc/include/asm/vdso.h                    |    6 +-
- arch/powerpc/kernel/crash_dump.c                   |    8 +-
- arch/powerpc/kernel/dma.c                          |   10 +-
- arch/powerpc/kernel/eeh.c                          |   32 +-
- arch/powerpc/kernel/eeh_driver.c                   |    8 +-
- arch/powerpc/kernel/ftrace.c                       |    1 +
- arch/powerpc/kernel/iommu.c                        |   12 +
- arch/powerpc/kernel/irq.c                          |    5 +
- arch/powerpc/kernel/machine_kexec.c                |   14 +-
- arch/powerpc/kernel/machine_kexec_64.c             |    6 +-
- arch/powerpc/kernel/misc_32.S                      |    5 +-
- arch/powerpc/kernel/process.c                      |    9 +
- arch/powerpc/kernel/reloc_64.S                     |    5 +-
- arch/powerpc/kernel/setup_32.c                     |    5 +
- arch/powerpc/kernel/signal_64.c                    |    4 +-
- arch/powerpc/kernel/vdso32/vdso32_wrapper.S        |    2 +-
- arch/powerpc/kernel/vdso64/vdso64_wrapper.S        |    2 +-
- arch/powerpc/mm/hash_utils_64.c                    |   14 +
- arch/powerpc/mm/pgtable_64.c                       |   12 +-
- arch/powerpc/mm/subpage-prot.c                     |    2 +-
- arch/powerpc/perf/core-book3s.c                    |    5 +-
- arch/powerpc/perf/power8-pmu.c                     |  144 ++
- arch/powerpc/platforms/cell/ras.c                  |    3 +-
- arch/powerpc/platforms/powernv/eeh-ioda.c          |  128 +-
- arch/powerpc/platforms/powernv/eeh-powernv.c       |    2 +-
- arch/powerpc/platforms/powernv/opal-xscom.c        |   21 +-
- arch/powerpc/platforms/powernv/pci-ioda.c          |   84 +
- arch/powerpc/platforms/powernv/pci.c               |  230 +--
- arch/powerpc/platforms/powernv/pci.h               |    6 +-
- arch/powerpc/platforms/powernv/powernv.h           |    8 +
- arch/powerpc/platforms/powernv/setup.c             |    9 +
- arch/powerpc/platforms/pseries/Kconfig             |    1 +
- arch/powerpc/platforms/pseries/eeh_pseries.c       |    2 +-
- arch/powerpc/platforms/pseries/hotplug-cpu.c       |   22 +-
- arch/powerpc/platforms/pseries/pci.c               |   22 +-
- arch/powerpc/platforms/pseries/setup.c             |    3 +-
- arch/powerpc/sysdev/mpic.c                         |   38 +-
- arch/powerpc/xmon/xmon.c                           |   24 +-
- arch/s390/appldata/appldata_base.c                 |    1 +
- arch/s390/crypto/aes_s390.c                        |   65 +-
- arch/s390/crypto/des_s390.c                        |   95 +-
- arch/s390/kernel/compat_wrapper.S                  |    2 +-
- arch/s390/kernel/head64.S                          |    7 +-
- arch/s390/mm/page-states.c                         |   10 +
- arch/s390/pci/pci_dma.c                            |    8 +-
- arch/sh/boards/mach-ecovec24/setup.c               |    4 +-
- arch/sh/boards/mach-se/7724/setup.c                |    4 +-
- arch/sh/include/cpu-sh2/cpu/cache.h                |    2 +-
- arch/sh/include/cpu-sh2a/cpu/cache.h               |    4 +-
- arch/sh/include/cpu-sh3/cpu/cache.h                |    2 +-
- arch/sh/include/cpu-sh4/cpu/cache.h                |    2 +-
- arch/sh/kernel/cpu/init.c                          |    4 +-
- arch/sh/mm/cache-debugfs.c                         |    2 +-
- arch/sh/mm/cache-sh2.c                             |    4 +-
- arch/sh/mm/cache-sh2a.c                            |    6 +-
- arch/sh/mm/cache-sh4.c                             |    4 +-
- arch/sh/mm/cache-shx3.c                            |    4 +-
- arch/sh/mm/cache.c                                 |    4 +-
- arch/sparc/Kconfig                                 |    2 +-
- arch/sparc/mm/srmmu.c                              |    2 +
- arch/x86/Kconfig                                   |    7 +-
- arch/x86/Kconfig.cpu                               |    4 -
- arch/x86/Kconfig.debug                             |    1 +
- arch/x86/boot/compressed/aslr.c                    |    9 +-
- arch/x86/include/asm/amd_nb.h                      |    2 +-
- arch/x86/include/asm/barrier.h                     |    8 +-
- arch/x86/include/asm/efi.h                         |    3 +
- arch/x86/include/asm/io.h                          |    2 +-
- arch/x86/include/asm/pgtable.h                     |   14 +-
- arch/x86/include/asm/spinlock.h                    |    5 +-
- arch/x86/include/asm/tlbflush.h                    |    6 +-
- arch/x86/include/asm/tsc.h                         |    2 +-
- arch/x86/include/asm/xen/page.h                    |    5 +-
- arch/x86/kernel/amd_nb.c                           |    2 +-
- arch/x86/kernel/cpu/amd.c                          |    5 +-
- arch/x86/kernel/cpu/centaur.c                      |  272 ---
- arch/x86/kernel/cpu/common.c                       |    7 +-
- arch/x86/kernel/cpu/intel.c                        |   10 +-
- arch/x86/kernel/cpu/microcode/amd_early.c          |   43 +-
- arch/x86/kernel/cpu/mtrr/generic.c                 |    4 +-
- arch/x86/kernel/cpu/perf_event.c                   |   11 +-
- arch/x86/kernel/cpu/perf_event.h                   |    1 +
- arch/x86/kernel/cpu/perf_event_intel.c             |   11 +-
- arch/x86/kernel/cpu/perf_event_intel_uncore.c      |   13 +-
- arch/x86/kernel/cpu/perf_event_p6.c                |   48 +-
- arch/x86/kernel/ftrace.c                           |   83 +-
- arch/x86/kernel/head_32.S                          |    7 +-
- arch/x86/kernel/head_64.S                          |    6 +-
- arch/x86/kernel/i387.c                             |   15 +-
- arch/x86/kernel/irq.c                              |    9 +-
- arch/x86/kernel/machine_kexec_64.c                 |    2 +
- arch/x86/kernel/pci-dma.c                          |    4 +-
- arch/x86/kernel/quirks.c                           |   39 +-
- arch/x86/kernel/setup.c                            |   10 +-
- arch/x86/kernel/tsc.c                              |   11 +-
- arch/x86/kernel/tsc_msr.c                          |   30 +-
- arch/x86/kvm/mmu.c                                 |    1 +
- arch/x86/kvm/svm.c                                 |    6 +-
- arch/x86/kvm/vmx.c                                 |    2 +-
- arch/x86/kvm/x86.c                                 |    2 +-
- arch/x86/mm/fault.c                                |   61 +-
- arch/x86/mm/numa.c                                 |   21 +-
- arch/x86/mm/numa_32.c                              |    2 +
- arch/x86/mm/srat.c                                 |   16 +-
- arch/x86/mm/tlb.c                                  |   52 +-
- arch/x86/net/bpf_jit.S                             |    2 +-
- arch/x86/platform/efi/efi-bgrt.c                   |   12 +-
- arch/x86/platform/efi/efi.c                        |   25 +-
- arch/x86/platform/efi/efi_32.c                     |    6 +
- arch/x86/platform/efi/efi_64.c                     |    9 +
- arch/x86/um/asm/barrier.h                          |    4 -
- arch/x86/xen/enlighten.c                           |   12 +
- arch/x86/xen/mmu.c                                 |    4 +-
- arch/x86/xen/p2m.c                                 |   17 +-
- arch/xtensa/Kconfig                                |    3 +-
- arch/xtensa/boot/dts/xtfpga.dtsi                   |   12 +-
- arch/xtensa/include/asm/io.h                       |    2 +-
- arch/xtensa/include/asm/traps.h                    |   44 +-
- arch/xtensa/include/asm/vectors.h                  |    2 +-
- arch/xtensa/include/uapi/asm/unistd.h              |    7 +-
- arch/xtensa/kernel/entry.S                         |  449 ++---
- arch/xtensa/kernel/setup.c                         |    2 +
- arch/xtensa/kernel/time.c                          |    1 +
- arch/xtensa/kernel/vectors.S                       |    2 +-
- arch/xtensa/kernel/xtensa_ksyms.c                  |    2 -
- arch/xtensa/mm/init.c                              |   13 +-
- arch/xtensa/mm/mmu.c                               |    2 +-
- arch/xtensa/platforms/xtfpga/setup.c               |    7 +-
- arch/xtensa/variants/fsf/include/variant/tie.h     |    9 +-
- block/blk-core.c                                   |   20 +-
- block/blk-exec.c                                   |    2 +-
- block/blk-flush.c                                  |  105 +-
- block/blk-lib.c                                    |    8 +
- block/blk-merge.c                                  |   91 +-
- block/blk-mq-cpu.c                                 |   14 +-
- block/blk-mq-tag.c                                 |    2 +-
- block/blk-mq.c                                     |  237 ++-
- block/blk-mq.h                                     |    5 +-
- block/blk-sysfs.c                                  |    2 +
- block/blk-timeout.c                                |    2 +-
- block/blk.h                                        |    2 +-
- drivers/acpi/ac.c                                  |    2 +
- drivers/acpi/battery.c                             |    4 +-
- drivers/acpi/blacklist.c                           |   58 -
- drivers/acpi/button.c                              |    2 +
- drivers/acpi/container.c                           |    5 +-
- drivers/acpi/dock.c                                |   13 +-
- drivers/acpi/ec.c                                  |   64 +
- drivers/acpi/fan.c                                 |    3 +
- drivers/acpi/pci_irq.c                             |    1 +
- drivers/acpi/proc.c                                |    2 +-
- drivers/acpi/processor_throttling.c                |   69 +-
- drivers/acpi/resource.c                            |   10 +
- drivers/acpi/sbs.c                                 |    4 +-
- drivers/acpi/scan.c                                |    6 +-
- drivers/acpi/sleep.c                               |   32 +-
- drivers/acpi/thermal.c                             |    2 +
- drivers/acpi/utils.c                               |    4 -
- drivers/acpi/video.c                               |  147 +-
- drivers/acpi/video_detect.c                        |    8 -
- drivers/ata/Kconfig                                |    1 +
- drivers/ata/ahci.c                                 |   18 +-
- drivers/ata/libata-core.c                          |    3 +-
- drivers/ata/libata-pmp.c                           |    7 +-
- drivers/ata/pata_imx.c                             |    8 +-
- drivers/ata/sata_mv.c                              |   16 +-
- drivers/ata/sata_sil.c                             |    1 +
- drivers/base/component.c                           |    8 +
- drivers/base/dma-buf.c                             |   25 +-
- drivers/base/firmware_class.c                      |    1 +
- drivers/base/regmap/regmap.c                       |   12 +
- drivers/block/aoe/aoecmd.c                         |    4 +-
- drivers/block/mtip32xx/mtip32xx.h                  |    2 +-
- drivers/block/null_blk.c                           |   97 +-
- drivers/block/nvme-core.c                          |  610 +++++--
- drivers/block/nvme-scsi.c                          |  147 ++
- drivers/block/virtio_blk.c                         |    7 +-
- drivers/block/xen-blkback/blkback.c                |   81 +-
- drivers/block/xen-blkback/common.h                 |    5 +-
- drivers/block/xen-blkback/xenbus.c                 |   14 +
- drivers/block/xen-blkfront.c                       |   11 +-
- drivers/block/zram/zram_drv.c                      |    2 +
- drivers/char/Kconfig                               |    1 +
- drivers/char/raw.c                                 |    2 +-
- drivers/char/virtio_console.c                      |    9 +-
- drivers/clk/at91/clk-master.c                      |    2 +-
- drivers/clk/clk-nomadik.c                          |    3 +
- drivers/clk/clk.c                                  |   13 +-
- drivers/clk/keystone/gate.c                        |    1 +
- drivers/clk/mvebu/armada-370.c                     |   21 +-
- drivers/clk/mvebu/armada-xp.c                      |   20 +-
- drivers/clk/mvebu/dove.c                           |   19 +-
- drivers/clk/mvebu/kirkwood.c                       |   34 +-
- drivers/clk/shmobile/clk-rcar-gen2.c               |   48 +-
- drivers/clk/tegra/clk-divider.c                    |    2 +-
- drivers/clk/tegra/clk-id.h                         |    4 +
- drivers/clk/tegra/clk-tegra-periph.c               |   10 +-
- drivers/clk/tegra/clk-tegra-super-gen4.c           |    2 +-
- drivers/clk/tegra/clk-tegra114.c                   |    8 +-
- drivers/clk/tegra/clk-tegra124.c                   |   48 +-
- drivers/clk/tegra/clk-tegra20.c                    |    2 +
- drivers/clocksource/bcm_kona_timer.c               |   54 +-
- drivers/cpufreq/cpufreq.c                          |   58 +-
- drivers/cpufreq/intel_pstate.c                     |   61 +-
- drivers/cpufreq/powernow-k8.c                      |   10 +-
- drivers/crypto/nx/nx-842.c                         |   29 +-
- drivers/dma/Kconfig                                |    1 +
- drivers/dma/imx-sdma.c                             |    1 +
- drivers/dma/ioat/dma.c                             |   52 +-
- drivers/dma/ioat/dma.h                             |    1 +
- drivers/dma/ioat/dma_v2.c                          |   11 +-
- drivers/dma/ioat/dma_v3.c                          |    3 +
- drivers/dma/mv_xor.c                               |   24 +-
- drivers/dma/ste_dma40.c                            |    4 +-
- drivers/edac/edac_mc.c                             |   13 +-
- drivers/edac/edac_mc_sysfs.c                       |   10 +-
- drivers/edac/edac_module.h                         |    2 +-
- drivers/edac/i7300_edac.c                          |   38 +-
- drivers/edac/i7core_edac.c                         |    9 +-
- drivers/extcon/extcon-arizona.c                    |   12 -
- drivers/firewire/core-device.c                     |   22 +-
- drivers/firewire/net.c                             |    6 +-
- drivers/firewire/ohci.c                            |   15 +-
- drivers/firewire/sbp2.c                            |   17 +-
- drivers/fmc/fmc-write-eeprom.c                     |    2 +-
- drivers/gpio/Kconfig                               |    1 +
- drivers/gpio/gpio-bcm-kona.c                       |    4 +-
- drivers/gpio/gpio-clps711x.c                       |    1 +
- drivers/gpio/gpio-intel-mid.c                      |    4 +-
- drivers/gpio/gpio-xtensa.c                         |   16 +
- drivers/gpu/drm/armada/armada_drv.c                |   10 +-
- drivers/gpu/drm/ast/ast_fb.c                       |    2 +-
- drivers/gpu/drm/bochs/Kconfig                      |    1 +
- drivers/gpu/drm/cirrus/cirrus_fbdev.c              |    2 +-
- drivers/gpu/drm/drm_ioctl.c                        |   12 +
- drivers/gpu/drm/exynos/Kconfig                     |    4 +-
- drivers/gpu/drm/exynos/exynos_drm_drv.c            |   14 +-
- drivers/gpu/drm/exynos/exynos_drm_g2d.c            |    2 +-
- drivers/gpu/drm/exynos/exynos_drm_ipp.c            |    3 +-
- drivers/gpu/drm/exynos/exynos_hdmi.c               |   66 +-
- drivers/gpu/drm/i2c/tda998x_drv.c                  |   19 +-
- drivers/gpu/drm/i915/i915_drv.c                    |   23 +-
- drivers/gpu/drm/i915/i915_drv.h                    |    8 +
- drivers/gpu/drm/i915/i915_gem_stolen.c             |   19 +-
- drivers/gpu/drm/i915/i915_gpu_error.c              |    5 +-
- drivers/gpu/drm/i915/i915_irq.c                    |    3 +-
- drivers/gpu/drm/i915/intel_display.c               |   22 +-
- drivers/gpu/drm/i915/intel_dp.c                    |   31 +-
- drivers/gpu/drm/i915/intel_hdmi.c                  |    6 +-
- drivers/gpu/drm/i915/intel_i2c.c                   |    7 -
- drivers/gpu/drm/i915/intel_opregion.c              |    9 +-
- drivers/gpu/drm/i915/intel_panel.c                 |    4 +-
- drivers/gpu/drm/i915/intel_pm.c                    |    6 +-
- drivers/gpu/drm/i915/intel_ringbuffer.c            |   21 +
- drivers/gpu/drm/i915/intel_ringbuffer.h            |    1 +
- drivers/gpu/drm/mgag200/mgag200_fb.c               |    2 +-
- drivers/gpu/drm/mgag200/mgag200_mode.c             |    4 +-
- drivers/gpu/drm/msm/mdp/mdp4/mdp4_crtc.c           |  179 +-
- drivers/gpu/drm/msm/mdp/mdp4/mdp4_plane.c          |    4 +-
- drivers/gpu/drm/msm/mdp/mdp5/mdp5_crtc.c           |    7 +-
- drivers/gpu/drm/msm/msm_gem.c                      |    2 +-
- drivers/gpu/drm/msm/msm_gem_submit.c               |    9 +-
- drivers/gpu/drm/msm/msm_gpu.c                      |    3 -
- drivers/gpu/drm/nouveau/Makefile                   |    1 +
- drivers/gpu/drm/nouveau/core/engine/device/nv40.c  |   10 +-
- drivers/gpu/drm/nouveau/core/engine/disp/nv50.c    |    2 +-
- drivers/gpu/drm/nouveau/core/engine/fifo/nve0.c    |    2 +-
- drivers/gpu/drm/nouveau/core/engine/graph/nv50.c   |    2 +-
- drivers/gpu/drm/nouveau/core/include/subdev/mc.h   |    1 +
- drivers/gpu/drm/nouveau/core/subdev/bios/base.c    |    4 +
- drivers/gpu/drm/nouveau/core/subdev/fb/nv1a.c      |    2 +-
- drivers/gpu/drm/nouveau/core/subdev/mc/nv04.h      |    1 +
- drivers/gpu/drm/nouveau/core/subdev/mc/nv44.c      |    2 +-
- drivers/gpu/drm/nouveau/core/subdev/mc/nv4c.c      |   45 +
- drivers/gpu/drm/nouveau/nouveau_acpi.c             |   26 +-
- drivers/gpu/drm/nouveau/nouveau_bo.c               |    2 +-
- drivers/gpu/drm/nouveau/nouveau_drm.c              |    3 +
- drivers/gpu/drm/nouveau/nouveau_vga.c              |    4 +-
- drivers/gpu/drm/radeon/atombios_crtc.c             |   31 +-
- drivers/gpu/drm/radeon/atombios_encoders.c         |    9 +-
- drivers/gpu/drm/radeon/btc_dpm.c                   |   32 +
- drivers/gpu/drm/radeon/btcd.h                      |    4 +
- drivers/gpu/drm/radeon/cik.c                       |   10 +-
- drivers/gpu/drm/radeon/cik_sdma.c                  |   14 +-
- drivers/gpu/drm/radeon/dce6_afmt.c                 |   15 +-
- drivers/gpu/drm/radeon/evergreen.c                 |    7 +-
- drivers/gpu/drm/radeon/evergreen_hdmi.c            |   26 +-
- drivers/gpu/drm/radeon/evergreen_smc.h             |    2 +-
- drivers/gpu/drm/radeon/kv_dpm.c                    |    2 +-
- drivers/gpu/drm/radeon/ni.c                        |    3 +-
- drivers/gpu/drm/radeon/ni_dpm.c                    |   10 +-
- drivers/gpu/drm/radeon/r100.c                      |    2 -
- drivers/gpu/drm/radeon/r300.c                      |    2 -
- drivers/gpu/drm/radeon/r420.c                      |    2 -
- drivers/gpu/drm/radeon/r520.c                      |    2 -
- drivers/gpu/drm/radeon/r600.c                      |    7 +-
- drivers/gpu/drm/radeon/r600_audio.c                |   14 +-
- drivers/gpu/drm/radeon/r600_cs.c                   |   18 +-
- drivers/gpu/drm/radeon/r600_hdmi.c                 |   15 +-
- drivers/gpu/drm/radeon/radeon.h                    |   10 +-
- drivers/gpu/drm/radeon/radeon_asic.c               |    2 +-
- drivers/gpu/drm/radeon/radeon_asic.h               |    2 +
- drivers/gpu/drm/radeon/radeon_atpx_handler.c       |    3 +-
- drivers/gpu/drm/radeon/radeon_device.c             |    5 +-
- drivers/gpu/drm/radeon/radeon_display.c            |    2 +
- drivers/gpu/drm/radeon/radeon_drv.c                |    3 +-
- drivers/gpu/drm/radeon/radeon_kms.c                |   16 +-
- drivers/gpu/drm/radeon/radeon_ring.c               |    2 +-
- drivers/gpu/drm/radeon/radeon_semaphore.c          |   19 +-
- drivers/gpu/drm/radeon/radeon_ttm.c                |    5 +-
- drivers/gpu/drm/radeon/radeon_uvd.c                |    2 +
- drivers/gpu/drm/radeon/reg_srcs/r600               |    1 +
- drivers/gpu/drm/radeon/rs400.c                     |    2 -
- drivers/gpu/drm/radeon/rs600.c                     |    2 -
- drivers/gpu/drm/radeon/rs690.c                     |    2 -
- drivers/gpu/drm/radeon/rv515.c                     |    2 -
- drivers/gpu/drm/radeon/rv770.c                     |    5 +-
- drivers/gpu/drm/radeon/rv770_dpm.c                 |   14 +-
- drivers/gpu/drm/radeon/si.c                        |    7 +-
- drivers/gpu/drm/radeon/si_dpm.c                    |    5 +-
- drivers/gpu/drm/radeon/sumo_dpm.c                  |    2 +-
- drivers/gpu/drm/radeon/trinity_dpm.c               |    3 +-
- drivers/gpu/drm/radeon/uvd_v2_2.c                  |    1 -
- drivers/gpu/drm/tegra/drm.c                        |    2 +-
- drivers/gpu/drm/tegra/rgb.c                        |   11 +
- drivers/gpu/drm/ttm/ttm_agp_backend.c              |    1 +
- drivers/gpu/drm/ttm/ttm_bo.c                       |    8 +-
- drivers/gpu/drm/ttm/ttm_bo_vm.c                    |   12 +-
- drivers/gpu/drm/ttm/ttm_object.c                   |    2 +-
- drivers/gpu/drm/ttm/ttm_tt.c                       |    3 +
- drivers/gpu/drm/vmwgfx/svga3d_reg.h                |  153 +-
- drivers/gpu/drm/vmwgfx/svga3d_surfacedefs.h        |   11 +-
- drivers/gpu/drm/vmwgfx/svga_reg.h                  |    9 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_context.c            |  141 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c                |   10 +
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.h                |   38 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c            |  337 +++-
- drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c              |   96 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_mob.c                |   36 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c           |   14 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_shader.c             |  469 ++++-
- drivers/gpu/drm/vmwgfx/vmwgfx_surface.c            |   24 +-
- drivers/gpu/host1x/job.c                           |    2 +-
- drivers/hid/hid-apple.c                            |    3 +
- drivers/hid/hid-core.c                             |    3 +
- drivers/hid/hid-hyperv.c                           |   11 +-
- drivers/hid/hid-ids.h                              |    8 +
- drivers/hid/hid-input.c                            |    2 +-
- drivers/hid/hid-microsoft.c                        |    4 +
- drivers/hid/hid-multitouch.c                       |    5 +
- drivers/hid/hid-sensor-hub.c                       |    3 +
- drivers/hid/i2c-hid/i2c-hid.c                      |    2 +-
- drivers/hid/usbhid/hid-quirks.c                    |    1 +
- drivers/hv/connection.c                            |   13 +-
- drivers/hwmon/da9055-hwmon.c                       |    4 -
- drivers/hwmon/max1668.c                            |    2 +-
- drivers/hwmon/ntc_thermistor.c                     |    6 +-
- drivers/hwmon/pmbus/pmbus_core.c                   |   68 +-
- drivers/i2c/busses/Kconfig                         |    2 +-
- drivers/i2c/busses/i2c-mv64xxx.c                   |   33 +-
- drivers/iio/accel/bma180.c                         |   16 +-
- drivers/iio/adc/max1363.c                          |    2 +-
- drivers/iio/gyro/Kconfig                           |    2 +-
- drivers/iio/gyro/st_gyro.h                         |    1 -
- drivers/iio/gyro/st_gyro_core.c                    |    9 +-
- drivers/iio/gyro/st_gyro_i2c.c                     |    1 -
- drivers/iio/gyro/st_gyro_spi.c                     |    1 -
- drivers/iio/imu/adis16400.h                        |    1 +
- drivers/iio/imu/adis16400_core.c                   |   10 +-
- drivers/iio/light/cm32181.c                        |   16 +-
- drivers/iio/light/cm36651.c                        |   45 +-
- drivers/iio/light/tsl2563.c                        |   16 +-
- drivers/iio/magnetometer/ak8975.c                  |   16 +-
- drivers/iio/magnetometer/mag3110.c                 |    8 +-
- drivers/infiniband/hw/amso1100/c2.c                |    4 +-
- drivers/infiniband/hw/amso1100/c2_rnic.c           |    3 +-
- drivers/infiniband/hw/cxgb4/cm.c                   |    1 +
- drivers/infiniband/hw/mlx4/main.c                  |  189 ++-
- drivers/infiniband/hw/mlx5/Kconfig                 |    2 +-
- drivers/infiniband/hw/mlx5/main.c                  |   26 +-
- drivers/infiniband/hw/mlx5/qp.c                    |   18 +-
- drivers/infiniband/hw/mlx5/user.h                  |    7 +
- drivers/infiniband/hw/nes/nes.c                    |    5 +-
- drivers/infiniband/hw/ocrdma/ocrdma_main.c         |    2 +-
- drivers/infiniband/hw/ocrdma/ocrdma_verbs.c        |    4 +-
- drivers/infiniband/hw/qib/qib_iba7322.c            |    5 +
- drivers/infiniband/hw/usnic/usnic_ib_qp_grp.c      |    9 +-
- drivers/infiniband/ulp/iser/iser_initiator.c       |    3 +-
- drivers/infiniband/ulp/iser/iser_verbs.c           |   10 +-
- drivers/infiniband/ulp/isert/ib_isert.c            |  181 +-
- drivers/infiniband/ulp/isert/ib_isert.h            |    7 +-
- drivers/infiniband/ulp/srpt/ib_srpt.c              |   14 +-
- drivers/input/misc/arizona-haptics.c               |   19 -
- drivers/iommu/arm-smmu.c                           |  105 +-
- drivers/iommu/omap-iommu-debug.c                   |    4 +-
- drivers/irqchip/Makefile                           |    1 +
- drivers/irqchip/irq-armada-370-xp.c                |    4 +-
- drivers/irqchip/irq-metag-ext.c                    |    2 +-
- drivers/irqchip/irq-metag.c                        |    2 +-
- drivers/irqchip/irq-orion.c                        |   22 +-
- drivers/irqchip/irq-zevio.c                        |  127 ++
- drivers/isdn/hisax/q931.c                          |    2 +-
- drivers/md/Kconfig                                 |   10 -
- drivers/md/bcache/bcache.h                         |    4 +-
- drivers/md/bcache/bset.c                           |    7 +-
- drivers/md/bcache/btree.c                          |    4 +-
- drivers/md/bcache/extents.c                        |    2 +-
- drivers/md/bcache/request.c                        |    6 +-
- drivers/md/bcache/sysfs.c                          |    2 +-
- drivers/md/dm-cache-policy-mq.c                    |    4 +-
- drivers/md/dm-cache-target.c                       |   24 +-
- drivers/md/dm-io.c                                 |   23 +-
- drivers/md/dm-mpath.c                              |    7 +-
- drivers/md/dm-raid1.c                              |    3 +
- drivers/md/dm-snap-persistent.c                    |    3 +
- drivers/md/dm-thin-metadata.c                      |   58 +-
- drivers/md/dm-thin-metadata.h                      |   21 +-
- drivers/md/dm-thin.c                               |  343 +++-
- drivers/md/persistent-data/Kconfig                 |   10 +
- drivers/md/persistent-data/dm-space-map-metadata.c |  115 +-
- drivers/md/persistent-data/dm-space-map-metadata.h |   11 +
- drivers/md/raid1.c                                 |   13 +-
- drivers/md/raid5.c                                 |   90 +-
- drivers/media/dvb-frontends/cx24117.c              |   10 +-
- drivers/media/dvb-frontends/nxt200x.c              |    2 +-
- drivers/media/i2c/adv7842.c                        |    2 +-
- drivers/media/i2c/s5k5baf.c                        |   30 +-
- drivers/media/pci/bt8xx/bttv-cards.c               |    2 +-
- drivers/media/pci/bt8xx/bttv-gpio.c                |    2 +-
- drivers/media/pci/saa7134/saa7134-cards.c          |    2 +-
- drivers/media/platform/exynos4-is/fimc-core.c      |    5 +-
- drivers/media/platform/exynos4-is/fimc-lite.c      |    7 +-
- drivers/media/platform/s5p-jpeg/jpeg-core.c        |    8 +-
- drivers/media/usb/dvb-usb-v2/af9035.c              |    2 +
- drivers/media/usb/dvb-usb-v2/mxl111sf-demod.c      |    4 +-
- drivers/media/usb/dvb-usb-v2/mxl111sf-demod.h      |    2 +-
- drivers/media/usb/dvb-usb-v2/mxl111sf-gpio.c       |    2 +-
- drivers/media/usb/dvb-usb-v2/mxl111sf-gpio.h       |    2 +-
- drivers/media/usb/dvb-usb-v2/mxl111sf-i2c.c        |    2 +-
- drivers/media/usb/dvb-usb-v2/mxl111sf-i2c.h        |    2 +-
- drivers/media/usb/dvb-usb-v2/mxl111sf-phy.c        |    2 +-
- drivers/media/usb/dvb-usb-v2/mxl111sf-phy.h        |    2 +-
- drivers/media/usb/dvb-usb-v2/mxl111sf-reg.h        |    2 +-
- drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.c      |    4 +-
- drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.h      |    4 +-
- drivers/media/usb/dvb-usb-v2/mxl111sf.c            |    6 +-
- drivers/media/usb/dvb-usb-v2/mxl111sf.h            |    2 +-
- drivers/media/usb/hdpvr/hdpvr-core.c               |    4 +-
- drivers/media/v4l2-core/v4l2-dv-timings.c          |    1 +
- drivers/media/v4l2-core/videobuf-dma-contig.c      |   12 +-
- drivers/media/v4l2-core/videobuf-dma-sg.c          |   10 +-
- drivers/media/v4l2-core/videobuf-vmalloc.c         |   10 +-
- drivers/media/v4l2-core/videobuf2-core.c           |    5 +
- drivers/message/i2o/i2o_config.c                   |    4 +-
- drivers/mfd/da9055-i2c.c                           |   12 +-
- drivers/mfd/max14577.c                             |    2 +
- drivers/mfd/max8997.c                              |    6 +-
- drivers/mfd/max8998.c                              |    6 +-
- drivers/mfd/sec-core.c                             |    2 +
- drivers/mfd/tps65217.c                             |    4 +-
- drivers/mfd/wm8994-core.c                          |    2 +-
- drivers/misc/atmel-ssc.c                           |    6 +
- drivers/misc/genwqe/card_dev.c                     |    1 +
- drivers/misc/mei/client.c                          |   15 +-
- drivers/misc/mic/host/mic_virtio.c                 |    3 +-
- drivers/misc/sgi-gru/grukdump.c                    |   11 +-
- drivers/misc/sgi-xp/xpc_uv.c                       |    2 +-
- drivers/mmc/card/queue.c                           |    2 +-
- drivers/mtd/nand/nand_base.c                       |    2 +-
- drivers/mtd/nand/omap2.c                           |   61 +-
- drivers/mtd/ubi/fastmap.c                          |    8 +-
- drivers/net/Kconfig                                |    2 +-
- drivers/net/bonding/bond_3ad.c                     |   22 +-
- drivers/net/bonding/bond_3ad.h                     |    1 +
- drivers/net/bonding/bond_alb.c                     |    2 +-
- drivers/net/bonding/bond_main.c                    |  159 +-
- drivers/net/bonding/bond_options.c                 |    3 +-
- drivers/net/bonding/bonding.h                      |   47 +-
- drivers/net/can/Kconfig                            |    2 +-
- drivers/net/can/dev.c                              |   15 +-
- drivers/net/can/flexcan.c                          |  179 +-
- drivers/net/can/janz-ican3.c                       |   20 +-
- drivers/net/can/usb/kvaser_usb.c                   |    2 +
- drivers/net/can/vcan.c                             |    9 +-
- drivers/net/ethernet/3com/3c59x.c                  |    2 -
- drivers/net/ethernet/allwinner/sun4i-emac.c        |    3 +
- drivers/net/ethernet/atheros/alx/main.c            |    1 +
- drivers/net/ethernet/broadcom/b44.c                |   14 +-
- drivers/net/ethernet/broadcom/bnx2.c               |   39 +-
- drivers/net/ethernet/broadcom/bnx2.h               |    5 +
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c    |   13 +-
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h    |    4 +-
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c   |   12 +-
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c  |    6 +-
- drivers/net/ethernet/broadcom/tg3.c                |   20 +-
- drivers/net/ethernet/broadcom/tg3.h                |    6 +-
- drivers/net/ethernet/brocade/bna/bfa_ioc.c         |    2 +-
- drivers/net/ethernet/brocade/bna/bnad.c            |   40 +-
- drivers/net/ethernet/cadence/macb.c                |   16 +-
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c    |    1 +
- drivers/net/ethernet/dec/tulip/tulip_core.c        |    1 +
- drivers/net/ethernet/emulex/benet/be.h             |    4 +-
- drivers/net/ethernet/emulex/benet/be_main.c        |   84 +-
- drivers/net/ethernet/ethoc.c                       |  138 +-
- drivers/net/ethernet/freescale/fec_main.c          |   31 +-
- drivers/net/ethernet/ibm/ibmveth.c                 |   25 +-
- drivers/net/ethernet/ibm/ibmveth.h                 |    1 -
- drivers/net/ethernet/intel/e100.c                  |    2 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |    6 +-
- drivers/net/ethernet/lantiq_etop.c                 |    2 +-
- drivers/net/ethernet/marvell/Kconfig               |    6 +-
- drivers/net/ethernet/mellanox/mlx4/en_netdev.c     |   10 +
- drivers/net/ethernet/mellanox/mlx4/en_tx.c         |    4 +-
- drivers/net/ethernet/mellanox/mlx4/fw.c            |   11 +-
- drivers/net/ethernet/mellanox/mlx4/main.c          |   14 +-
- drivers/net/ethernet/mellanox/mlx4/mlx4.h          |    4 +-
- drivers/net/ethernet/mellanox/mlx4/mlx4_en.h       |    6 +-
- drivers/net/ethernet/mellanox/mlx5/core/Kconfig    |    2 +-
- drivers/net/ethernet/mellanox/mlx5/core/main.c     |    4 +-
- drivers/net/ethernet/neterion/vxge/vxge-main.c     |    6 -
- .../net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c    |    1 +
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.c    |    4 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c   |    5 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c   |    9 -
- drivers/net/ethernet/realtek/r8169.c               |    4 +-
- drivers/net/ethernet/sfc/ptp.c                     |    7 +
- drivers/net/ethernet/sfc/tx.c                      |    2 +
- drivers/net/ethernet/stmicro/stmmac/Kconfig        |   11 +
- drivers/net/ethernet/stmicro/stmmac/Makefile       |    1 +
- drivers/net/ethernet/stmicro/stmmac/chain_mode.c   |    2 +-
- drivers/net/ethernet/stmicro/stmmac/common.h       |   20 +-
- drivers/net/ethernet/stmicro/stmmac/dwmac-sti.c    |  330 ++++
- drivers/net/ethernet/stmicro/stmmac/ring_mode.c    |    9 +-
- drivers/net/ethernet/stmicro/stmmac/stmmac.h       |    3 +
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |   93 +-
- .../net/ethernet/stmicro/stmmac/stmmac_platform.c  |    5 +
- drivers/net/ethernet/ti/cpsw.c                     |   31 +-
- drivers/net/ethernet/tile/tilegx.c                 |    2 +-
- drivers/net/ethernet/xilinx/xilinx_axienet_main.c  |   13 +-
- drivers/net/hyperv/netvsc_drv.c                    |   53 +-
- drivers/net/hyperv/rndis_filter.c                  |   21 +-
- drivers/net/ieee802154/at86rf230.c                 |   11 +-
- drivers/net/irda/Kconfig                           |    7 -
- drivers/net/irda/Makefile                          |    1 -
- drivers/net/irda/ep7211-sir.c                      |   70 -
- drivers/net/irda/irtty-sir.c                       |    1 -
- drivers/net/macvlan.c                              |   12 +-
- drivers/net/phy/dp83640.c                          |   32 +-
- drivers/net/phy/mdio-sun4i.c                       |    3 +
- drivers/net/phy/phy.c                              |   11 +-
- drivers/net/phy/phy_device.c                       |   54 +-
- drivers/net/team/team.c                            |    2 +-
- drivers/net/tun.c                                  |    6 +-
- drivers/net/usb/Kconfig                            |   15 +
- drivers/net/usb/Makefile                           |    3 +-
- drivers/net/usb/asix_devices.c                     |    3 +-
- drivers/net/usb/ax88179_178a.c                     |   46 +-
- drivers/net/usb/cdc_ether.c                        |    7 +
- drivers/net/usb/gl620a.c                           |    4 +
- drivers/net/usb/hso.c                              |   32 +-
- drivers/net/usb/mcs7830.c                          |    5 +-
- drivers/net/usb/net1080.c                          |    4 +
- drivers/net/usb/qmi_wwan.c                         |   11 +-
- drivers/net/usb/r8152.c                            |   32 +-
- drivers/net/usb/r815x.c                            |  248 ---
- drivers/net/usb/rndis_host.c                       |    4 +
- drivers/net/usb/smsc75xx.c                         |    4 +
- drivers/net/usb/smsc95xx.c                         |    4 +
- drivers/net/usb/sr9800.c                           |  874 ++++++++++
- drivers/net/usb/sr9800.h                           |  202 +++
- drivers/net/usb/usbnet.c                           |   25 +-
- drivers/net/veth.c                                 |    3 +-
- drivers/net/virtio_net.c                           |    3 +-
- drivers/net/vmxnet3/vmxnet3_drv.c                  |   19 +-
- drivers/net/vxlan.c                                |    3 -
- drivers/net/wan/dlci.c                             |    5 -
- drivers/net/wireless/ath/ar5523/ar5523.c           |    2 +-
- drivers/net/wireless/ath/ath5k/phy.c               |    2 +-
- drivers/net/wireless/ath/ath9k/ar9003_eeprom.c     |    4 +
- .../net/wireless/ath/ath9k/ar9462_2p0_initvals.h   |    4 +-
- drivers/net/wireless/ath/ath9k/htc.h               |    2 +
- drivers/net/wireless/ath/ath9k/htc_drv_init.c      |    8 +-
- drivers/net/wireless/ath/ath9k/htc_drv_main.c      |   63 +-
- drivers/net/wireless/ath/ath9k/hw.c                |   13 +-
- drivers/net/wireless/ath/ath9k/init.c              |    8 +-
- drivers/net/wireless/ath/ath9k/recv.c              |   70 +-
- drivers/net/wireless/ath/ath9k/xmit.c              |   13 +-
- drivers/net/wireless/brcm80211/brcmfmac/dhd_sdio.c |   14 +-
- drivers/net/wireless/hostap/hostap_ap.c            |    2 +-
- drivers/net/wireless/hostap/hostap_proc.c          |    2 +-
- drivers/net/wireless/iwlwifi/dvm/mac80211.c        |   22 +-
- drivers/net/wireless/iwlwifi/dvm/sta.c             |    1 +
- drivers/net/wireless/iwlwifi/dvm/tx.c              |   14 +-
- drivers/net/wireless/iwlwifi/iwl-drv.c             |    2 +-
- drivers/net/wireless/iwlwifi/iwl-modparams.h       |   11 +-
- drivers/net/wireless/iwlwifi/iwl-nvm-parse.c       |    5 +
- drivers/net/wireless/iwlwifi/mvm/bt-coex.c         |    7 +-
- drivers/net/wireless/iwlwifi/mvm/fw-api-scan.h     |    4 +-
- drivers/net/wireless/iwlwifi/mvm/mac80211.c        |   24 +-
- drivers/net/wireless/iwlwifi/mvm/mvm.h             |    2 +-
- drivers/net/wireless/iwlwifi/mvm/scan.c            |    5 +-
- drivers/net/wireless/iwlwifi/mvm/sta.c             |    2 +-
- drivers/net/wireless/iwlwifi/mvm/tx.c              |   91 +-
- drivers/net/wireless/iwlwifi/mvm/utils.c           |    2 +
- drivers/net/wireless/iwlwifi/pcie/drv.c            |    8 +-
- drivers/net/wireless/libertas/cfg.c                |    2 +-
- drivers/net/wireless/mwifiex/11ac.c                |    3 +-
- drivers/net/wireless/mwifiex/11n.c                 |    3 +-
- drivers/net/wireless/mwifiex/main.c                |    2 +-
- drivers/net/wireless/mwifiex/pcie.c                |   34 +-
- drivers/net/wireless/mwifiex/scan.c                |    8 +-
- drivers/net/wireless/mwifiex/usb.c                 |   12 +-
- drivers/net/wireless/mwifiex/wmm.c                 |    3 +-
- drivers/net/wireless/rt2x00/rt2500pci.c            |    5 +
- drivers/net/wireless/rt2x00/rt2500usb.c            |    5 +
- drivers/net/wireless/rt2x00/rt2800lib.c            |    5 +-
- drivers/net/wireless/rtl818x/rtl8180/dev.c         |   23 +-
- drivers/net/wireless/rtl818x/rtl8187/rtl8187.h     |   10 +-
- drivers/net/wireless/rtlwifi/ps.c                  |    2 +-
- drivers/net/wireless/rtlwifi/rtl8192ce/hw.c        |   18 +-
- drivers/net/wireless/ti/wl1251/rx.c                |    2 +-
- drivers/net/xen-netback/common.h                   |    6 +-
- drivers/net/xen-netback/interface.c                |    4 +-
- drivers/net/xen-netback/netback.c                  |   55 +-
- drivers/net/xen-netfront.c                         |    6 +-
- drivers/of/address.c                               |    5 +-
- drivers/of/base.c                                  |  128 +-
- drivers/of/of_mdio.c                               |   22 +-
- drivers/of/selftest.c                              |   67 +
- drivers/of/testcase-data/testcases.dtsi            |    3 +
- .../of/testcase-data}/tests-interrupts.dtsi        |    0
- drivers/of/testcase-data/tests-match.dtsi          |   19 +
- .../of/testcase-data}/tests-phandle.dtsi           |    0
- drivers/pci/bus.c                                  |    2 -
- drivers/pci/host/pci-mvebu.c                       |   11 +-
- drivers/pci/hotplug/acpiphp_glue.c                 |   70 +-
- drivers/pci/msi.c                                  |   10 +-
- drivers/pci/pci.c                                  |   13 +
- drivers/phy/Kconfig                                |    3 +-
- drivers/phy/phy-core.c                             |   76 +-
- drivers/phy/phy-exynos-dp-video.c                  |    8 +-
- drivers/phy/phy-exynos-mipi-video.c                |   10 +-
- drivers/phy/phy-mvebu-sata.c                       |   10 +-
- drivers/phy/phy-omap-usb2.c                        |   10 +-
- drivers/phy/phy-twl4030-usb.c                      |   10 +-
- drivers/pinctrl/Kconfig                            |    2 +-
- drivers/pinctrl/core.c                             |    8 +-
- drivers/pinctrl/pinctrl-at91.c                     |   10 +-
- drivers/pinctrl/pinctrl-capri.c                    |    2 +-
- drivers/pinctrl/pinctrl-imx1-core.c                |   10 +-
- drivers/pinctrl/pinctrl-sunxi.c                    |    6 +-
- drivers/pinctrl/pinctrl-sunxi.h                    |    6 +-
- drivers/pinctrl/pinctrl-tegra.c                    |    2 +-
- drivers/pinctrl/sh-pfc/pfc-r8a7791.c               |    6 +-
- drivers/pinctrl/sirf/pinctrl-prima2.c              |    2 +-
- drivers/pinctrl/sirf/pinctrl-sirf.c                |    4 +-
- drivers/pinctrl/vt8500/pinctrl-wmt.c               |   15 +-
- drivers/pnp/pnpacpi/rsparser.c                     |   15 +-
- drivers/power/ds2782_battery.c                     |    2 +-
- drivers/power/isp1704_charger.c                    |    2 -
- drivers/power/max17040_battery.c                   |    5 +-
- drivers/pwm/pwm-lp3943.c                           |    4 +-
- drivers/rapidio/devices/tsi721.h                   |    1 +
- drivers/rapidio/devices/tsi721_dma.c               |   27 +-
- drivers/regulator/ab3100.c                         |    4 +-
- drivers/regulator/core.c                           |   59 +-
- drivers/regulator/da9055-regulator.c               |    4 +-
- drivers/regulator/da9063-regulator.c               |    4 +-
- drivers/regulator/max14577.c                       |   10 +-
- drivers/regulator/s2mps11.c                        |    1 +
- drivers/regulator/s5m8767.c                        |    4 +-
- drivers/rtc/rtc-s3c.c                              |   17 +-
- drivers/s390/cio/chsc.c                            |    1 +
- drivers/s390/cio/cio.c                             |   40 +-
- drivers/s390/cio/qdio.h                            |   14 +-
- drivers/s390/cio/qdio_main.c                       |    2 +-
- drivers/s390/crypto/zcrypt_msgtype6.c              |   24 +-
- drivers/s390/net/qeth_core_main.c                  |    5 +-
- drivers/s390/net/qeth_l2_main.c                    |    3 +
- drivers/s390/net/qeth_l3_main.c                    |    3 +
- drivers/sbus/char/jsflash.c                        |    1 -
- drivers/scsi/be2iscsi/be_main.c                    |    2 +-
- drivers/scsi/isci/host.h                           |    5 +-
- drivers/scsi/isci/port_config.c                    |    7 -
- drivers/scsi/isci/task.c                           |    2 +-
- drivers/scsi/qla2xxx/qla_def.h                     |    3 +-
- drivers/scsi/qla2xxx/qla_isr.c                     |   46 +-
- drivers/scsi/qla2xxx/qla_target.c                  |   44 +-
- drivers/scsi/qla2xxx/qla_target.h                  |    3 +-
- drivers/scsi/qla2xxx/tcm_qla2xxx.c                 |  158 +-
- drivers/scsi/qla2xxx/tcm_qla2xxx.h                 |    7 +-
- drivers/scsi/scsi_lib.c                            |    2 +-
- drivers/scsi/storvsc_drv.c                         |    3 +
- drivers/spi/Kconfig                                |    4 +-
- drivers/spi/spi-ath79.c                            |    4 +-
- drivers/spi/spi-atmel.c                            |   17 +-
- drivers/spi/spi-coldfire-qspi.c                    |    6 +-
- drivers/spi/spi-fsl-dspi.c                         |    6 +-
- drivers/spi/spi-imx.c                              |    4 +-
- drivers/spi/spi-nuc900.c                           |    2 +
- drivers/spi/spi-topcliff-pch.c                     |   15 +-
- drivers/spi/spi.c                                  |    4 +-
- drivers/staging/android/ashmem.c                   |   45 +-
- drivers/staging/android/binder.c                   |    3 +-
- drivers/staging/android/ion/compat_ion.c           |   26 +-
- drivers/staging/android/ion/ion_dummy_driver.c     |   12 +-
- drivers/staging/android/ion/ion_heap.c             |    2 +-
- drivers/staging/android/ion/ion_priv.h             |    1 +
- drivers/staging/android/ion/ion_system_heap.c      |    6 +-
- drivers/staging/android/sw_sync.h                  |   17 +
- drivers/staging/android/sync.c                     |   14 +-
- drivers/staging/bcm/Bcmnet.c                       |    2 +-
- drivers/staging/comedi/drivers.c                   |    2 -
- drivers/staging/comedi/drivers/adv_pci1710.c       |   17 +-
- drivers/staging/comedi/drivers/usbduxsigma.c       |    6 +-
- drivers/staging/cxt1e1/linux.c                     |    2 +
- drivers/staging/dgrp/dgrp_net_ops.c                |  330 ++--
- drivers/staging/gdm72xx/gdm_usb.c                  |    3 +
- drivers/staging/iio/Documentation/iio_utils.h      |    6 +-
- drivers/staging/iio/adc/ad799x_core.c              |   13 +-
- drivers/staging/iio/adc/mxs-lradc.c                |    7 +-
- drivers/staging/iio/impedance-analyzer/ad5933.c    |    2 +-
- drivers/staging/imx-drm/imx-drm-core.c             |   55 +-
- drivers/staging/imx-drm/imx-hdmi.c                 |   22 +-
- drivers/staging/lustre/TODO                        |    5 +-
- .../include/linux/libcfs/libcfs_kernelcomm.h       |    2 +
- .../lustre/include/linux/libcfs/libcfs_private.h   |    2 +-
- .../staging/lustre/lnet/klnds/o2iblnd/o2iblnd_cb.c |    2 +-
- .../staging/lustre/lnet/klnds/socklnd/socklnd_cb.c |    5 +-
- .../lustre/lustre/include/lustre/lustre_user.h     |    3 +-
- drivers/staging/lustre/lustre/llite/dir.c          |    2 +-
- drivers/staging/lustre/lustre/mdc/mdc_request.c    |    6 +-
- drivers/staging/media/go7007/go7007-loader.c       |    4 +-
- drivers/staging/netlogic/xlr_net.c                 |    7 +-
- drivers/staging/octeon-usb/octeon-hcd.c            |  273 ++-
- drivers/staging/ozwpan/ozproto.c                   |    3 +-
- drivers/staging/rtl8188eu/core/rtw_wlan_util.c     |   22 +-
- drivers/staging/rtl8188eu/os_dep/ioctl_linux.c     |   12 +-
- drivers/staging/rtl8188eu/os_dep/os_intfs.c        |    2 +-
- drivers/staging/rtl8188eu/os_dep/usb_intf.c        |    3 +-
- drivers/staging/rtl8821ae/Kconfig                  |    2 +-
- drivers/staging/rtl8821ae/wifi.h                   |    2 +-
- drivers/staging/usbip/userspace/libsrc/names.c     |    8 +-
- drivers/staging/usbip/vhci_sysfs.c                 |    3 +-
- drivers/staging/wlags49_h2/wl_wext.c               |    2 +-
- drivers/target/iscsi/iscsi_target.c                |   10 +-
- drivers/target/iscsi/iscsi_target_erl1.c           |    4 +-
- drivers/target/iscsi/iscsi_target_erl2.c           |   16 +-
- drivers/target/iscsi/iscsi_target_tpg.c            |    2 +-
- drivers/target/target_core_alua.c                  |    2 +-
- drivers/target/target_core_pr.c                    |   11 +-
- drivers/target/target_core_sbc.c                   |   39 +-
- drivers/target/target_core_spc.c                   |    4 +-
- drivers/target/target_core_transport.c             |    8 +-
- drivers/thermal/Kconfig                            |   13 +-
- drivers/thermal/thermal_core.c                     |   27 +-
- drivers/thermal/x86_pkg_temp_thermal.c             |   11 +-
- drivers/tty/hvc/hvc_opal.c                         |    8 +-
- drivers/tty/hvc/hvc_rtas.c                         |   12 +-
- drivers/tty/hvc/hvc_udbg.c                         |    9 +-
- drivers/tty/hvc/hvc_xen.c                          |   17 +-
- drivers/tty/n_gsm.c                                |   11 +
- drivers/tty/n_tty.c                                |   14 +-
- drivers/tty/serial/8250/8250_core.c                |   18 +
- drivers/tty/serial/8250/8250_dw.c                  |    4 +-
- drivers/tty/serial/8250/8250_pci.c                 |    3 +-
- drivers/tty/serial/omap-serial.c                   |   11 +-
- drivers/tty/serial/sirfsoc_uart.c                  |    4 +-
- drivers/tty/vt/vt.c                                |    2 +
- drivers/usb/chipidea/udc.c                         |    4 +-
- drivers/usb/core/config.c                          |    4 +
- drivers/usb/core/driver.c                          |   24 +-
- drivers/usb/core/hcd.c                             |    1 -
- drivers/usb/core/hub.c                             |    7 +-
- drivers/usb/core/quirks.c                          |    4 +
- drivers/usb/core/usb.h                             |    1 -
- drivers/usb/dwc2/core.c                            |    2 +-
- drivers/usb/dwc2/hcd.c                             |   11 -
- drivers/usb/dwc2/platform.c                        |    3 +
- drivers/usb/gadget/bcm63xx_udc.c                   |   58 +-
- drivers/usb/gadget/f_fs.c                          |    7 +-
- drivers/usb/gadget/printer.c                       |    2 +-
- drivers/usb/gadget/s3c2410_udc.c                   |    2 +-
- drivers/usb/host/ehci-hcd.c                        |   13 +-
- drivers/usb/host/ehci-hub.c                        |   26 +-
- drivers/usb/host/xhci-dbg.c                        |    6 +-
- drivers/usb/host/xhci-mem.c                        |   14 +-
- drivers/usb/host/xhci-pci.c                        |    5 +
- drivers/usb/host/xhci-ring.c                       |   68 +-
- drivers/usb/host/xhci.c                            |   24 +-
- drivers/usb/host/xhci.h                            |   41 +-
- drivers/usb/musb/musb_core.c                       |   15 +-
- drivers/usb/musb/musb_host.c                       |    3 +
- drivers/usb/musb/musb_virthub.c                    |   26 +-
- drivers/usb/musb/omap2430.c                        |    2 -
- drivers/usb/phy/phy-msm-usb.c                      |   57 +-
- drivers/usb/phy/phy.c                              |    8 +-
- drivers/usb/serial/ftdi_sio.c                      |    5 +
- drivers/usb/serial/ftdi_sio_ids.h                  |   13 +
- drivers/usb/serial/option.c                        |    6 +-
- drivers/usb/serial/qcserial.c                      |    3 +
- drivers/usb/serial/usb-serial-simple.c             |    3 +-
- drivers/usb/storage/Kconfig                        |    4 +-
- drivers/usb/storage/scsiglue.c                     |    6 +
- drivers/usb/storage/unusual_cypress.h              |    2 +-
- drivers/usb/storage/unusual_devs.h                 |    7 +
- drivers/vfio/vfio_iommu_type1.c                    |    4 +-
- drivers/vhost/net.c                                |   47 +-
- drivers/vhost/scsi.c                               |    6 +
- drivers/video/Kconfig                              |    2 +-
- drivers/video/exynos/Kconfig                       |    3 +-
- drivers/video/omap2/dss/dispc.c                    |   16 +-
- drivers/video/omap2/dss/dpi.c                      |    2 +-
- drivers/video/omap2/dss/sdi.c                      |    2 +-
- drivers/vme/bridges/vme_ca91cx42.c                 |    4 +-
- drivers/vme/bridges/vme_tsi148.c                   |    4 +-
- drivers/watchdog/Kconfig                           |    1 +
- drivers/watchdog/w83697hf_wdt.c                    |    2 +-
- drivers/xen/Makefile                               |    1 -
- drivers/xen/events/events_base.c                   |    2 +
- drivers/xen/gntdev.c                               |   13 +-
- drivers/xen/grant-table.c                          |   89 +-
- drivers/xen/xencomm.c                              |  219 ---
- fs/bio-integrity.c                                 |   18 +-
- fs/bio.c                                           |   15 +-
- fs/btrfs/check-integrity.c                         |    4 +-
- fs/btrfs/compression.c                             |    2 +
- fs/btrfs/disk-io.c                                 |    5 +-
- fs/btrfs/extent-tree.c                             |    1 +
- fs/btrfs/inode.c                                   |    4 +-
- fs/btrfs/ioctl.c                                   |   22 +-
- fs/btrfs/send.c                                    |   22 +-
- fs/btrfs/super.c                                   |   13 +-
- fs/btrfs/sysfs.c                                   |   10 +-
- fs/buffer.c                                        |    6 +-
- fs/ceph/acl.c                                      |   11 +-
- fs/ceph/dir.c                                      |   23 +-
- fs/ceph/file.c                                     |    1 +
- fs/ceph/super.c                                    |   32 +-
- fs/ceph/super.h                                    |    7 +-
- fs/ceph/xattr.c                                    |   54 +-
- fs/cifs/cifsacl.c                                  |   61 +-
- fs/cifs/cifsglob.h                                 |   13 +-
- fs/cifs/cifsproto.h                                |    9 +-
- fs/cifs/cifssmb.c                                  |   15 +-
- fs/cifs/dir.c                                      |    2 +-
- fs/cifs/file.c                                     |   94 +-
- fs/cifs/inode.c                                    |   15 +-
- fs/cifs/smb1ops.c                                  |    9 +
- fs/cifs/smb2glob.h                                 |    3 +
- fs/cifs/smb2ops.c                                  |   14 +-
- fs/cifs/smb2pdu.c                                  |    9 +-
- fs/cifs/smb2proto.h                                |    3 +-
- fs/cifs/transport.c                                |   29 +
- fs/cifs/xattr.c                                    |   15 +-
- fs/exec.c                                          |   45 +-
- fs/ext4/ext4.h                                     |    2 +
- fs/ext4/extents.c                                  |    1 +
- fs/ext4/file.c                                     |    2 +-
- fs/ext4/ioctl.c                                    |    3 +-
- fs/ext4/resize.c                                   |   34 +-
- fs/ext4/super.c                                    |   20 +-
- fs/file.c                                          |   58 +-
- fs/file_table.c                                    |    1 +
- fs/fs-writeback.c                                  |   33 +-
- fs/fscache/object-list.c                           |    5 +
- fs/fscache/object.c                                |    3 +
- fs/hfsplus/catalog.c                               |   41 +
- fs/hfsplus/hfsplus_fs.h                            |    1 +
- fs/hfsplus/hfsplus_raw.h                           |    6 +-
- fs/hfsplus/inode.c                                 |    9 +
- fs/hfsplus/options.c                               |    2 +-
- fs/jbd2/transaction.c                              |    6 +-
- fs/jfs/acl.c                                       |    2 +
- fs/jfs/xattr.c                                     |   14 +-
- fs/kernfs/dir.c                                    |   12 +-
- fs/kernfs/mount.c                                  |    8 +-
- fs/lockd/svclock.c                                 |    8 +
- fs/namei.c                                         |   32 +-
- fs/nfs/delegation.c                                |   11 +-
- fs/nfs/dir.c                                       |    5 +
- fs/nfs/inode.c                                     |   14 +-
- fs/nfs/internal.h                                  |   12 +-
- fs/nfs/nfs3acl.c                                   |   34 +-
- fs/nfs/nfs3proc.c                                  |    1 +
- fs/nfs/nfs4client.c                                |    9 +-
- fs/nfs/nfs4filelayout.c                            |   10 +-
- fs/nfs/nfs4namespace.c                             |   12 +-
- fs/nfs/nfs4proc.c                                  |   32 +-
- fs/nfs/nfs4session.c                               |   25 +-
- fs/nfs/nfs4session.h                               |    2 +-
- fs/nfs/nfs4state.c                                 |   19 +-
- fs/nfsd/nfs4acl.c                                  |    9 +-
- fs/notify/dnotify/dnotify.c                        |    2 +-
- fs/notify/fanotify/fanotify.c                      |    8 +-
- fs/notify/fanotify/fanotify_user.c                 |   13 +
- fs/notify/fsnotify.c                               |    2 +-
- fs/notify/group.c                                  |    8 +-
- fs/notify/inotify/inotify.h                        |    2 +-
- fs/notify/inotify/inotify_fsnotify.c               |    3 +-
- fs/notify/inotify/inotify_user.c                   |   14 +-
- fs/notify/notification.c                           |   20 +-
- fs/ntfs/file.c                                     |    2 +-
- fs/ocfs2/alloc.c                                   |   40 +-
- fs/ocfs2/file.c                                    |   60 +-
- fs/ocfs2/localalloc.c                              |   42 +
- fs/ocfs2/localalloc.h                              |    6 +
- fs/ocfs2/namei.c                                   |   17 +
- fs/ocfs2/quota_global.c                            |   27 +-
- fs/ocfs2/quota_local.c                             |    4 -
- fs/open.c                                          |    4 +
- fs/posix_acl.c                                     |   18 +-
- fs/proc/base.c                                     |    1 +
- fs/proc/page.c                                     |    5 +-
- fs/proc/vmcore.c                                   |   26 +-
- fs/quota/dquot.c                                   |   14 +-
- fs/read_write.c                                    |   40 +-
- fs/reiserfs/do_balan.c                             |  895 +++-------
- fs/sync.c                                          |   32 +-
- fs/sysfs/mount.c                                   |    5 +-
- fs/udf/file.c                                      |   14 +-
- fs/udf/inode.c                                     |    1 +
- fs/xfs/xfs_file.c                                  |    2 +-
- fs/xfs/xfs_iops.c                                  |   16 +-
- fs/xfs/xfs_log_cil.c                               |   19 +-
- fs/xfs/xfs_mount.c                                 |   24 +-
- fs/xfs/xfs_sb.c                                    |   10 +-
- fs/xfs/xfs_super.c                                 |    2 +-
- include/asm-generic/pgtable.h                      |   39 +
- include/drm/drmP.h                                 |    3 +
- include/drm/drm_crtc.h                             |    3 +
- include/drm/ttm/ttm_page_alloc.h                   |    2 +
- include/dt-bindings/clock/tegra124-car.h           |    4 +-
- include/kvm/arm_vgic.h                             |    5 +
- include/linux/atmel-ssc.h                          |    1 +
- include/linux/audit.h                              |    3 +-
- include/linux/binfmts.h                            |    1 -
- include/linux/bio.h                                |   12 +
- include/linux/blk-mq.h                             |   16 +-
- include/linux/blkdev.h                             |   11 +-
- include/linux/can/skb.h                            |   38 +
- include/linux/ceph/ceph_fs.h                       |    5 +-
- include/linux/cgroup.h                             |    2 +
- include/linux/clk/ti.h                             |    4 +
- include/linux/compiler-gcc4.h                      |    6 +-
- include/linux/dma-buf.h                            |    2 +-
- include/linux/file.h                               |   27 +-
- include/linux/firewire.h                           |    1 +
- include/linux/fs.h                                 |   17 +-
- include/linux/fsnotify_backend.h                   |    4 +-
- include/linux/gfp.h                                |    4 +
- include/linux/gpio/consumer.h                      |    4 +-
- include/linux/huge_mm.h                            |   41 -
- include/linux/hyperv.h                             |    2 +-
- include/linux/interrupt.h                          |    5 +
- include/linux/ipc_namespace.h                      |    2 -
- include/linux/kernfs.h                             |    9 +-
- include/linux/mfd/arizona/registers.h              |    6 +-
- include/linux/mfd/max8997-private.h                |    2 +-
- include/linux/mfd/max8998-private.h                |    2 +-
- include/linux/mfd/tps65217.h                       |    4 +-
- include/linux/mlx5/driver.h                        |    3 +
- include/linux/mm.h                                 |   20 +-
- include/linux/mmzone.h                             |    4 +-
- include/linux/netdevice.h                          |   36 +-
- include/linux/nfs_xdr.h                            |    7 +
- include/linux/nvme.h                               |    6 +-
- include/linux/of.h                                 |  153 +-
- include/linux/of_device.h                          |    4 +-
- include/linux/page-flags.h                         |    4 +-
- include/linux/pci.h                                |   20 +
- include/linux/phy/phy.h                            |   14 +
- include/linux/platform_data/adau1977.h             |   45 +
- include/linux/platform_data/asoc-s3c.h             |    3 +-
- include/linux/platform_data/asoc-s3c24xx_simtec.h  |    3 +-
- include/linux/platform_data/davinci_asp.h          |    4 +-
- include/linux/regmap.h                             |    9 +
- include/linux/sched.h                              |    3 +-
- include/linux/skbuff.h                             |   22 +-
- include/linux/slab.h                               |    2 +-
- include/linux/smp.h                                |    3 +
- include/linux/spi/spi.h                            |    7 +-
- include/linux/syscalls.h                           |    6 +-
- include/linux/tracepoint.h                         |    6 +
- include/linux/usb.h                                |    2 -
- include/linux/vm_event_item.h                      |    4 +-
- include/linux/vmstat.h                             |    8 +
- include/linux/workqueue.h                          |    5 +-
- include/linux/writeback.h                          |    2 +-
- include/net/datalink.h                             |    2 +
- include/net/dn.h                                   |    2 +
- include/net/dn_route.h                             |    2 +
- include/net/ethoc.h                                |    1 +
- include/net/ip_tunnels.h                           |    1 +
- include/net/ipx.h                                  |   11 +
- include/net/net_namespace.h                        |    8 +
- include/net/netfilter/nf_conntrack.h               |    2 +
- include/net/netfilter/nf_tables.h                  |    9 +-
- include/net/netfilter/nft_reject.h                 |   25 +
- include/net/sctp/structs.h                         |   14 +-
- include/net/sock.h                                 |    6 +-
- include/net/tcp.h                                  |    3 +-
- include/net/xfrm.h                                 |   11 +
- include/rdma/ib_verbs.h                            |    3 +-
- include/sound/rcar_snd.h                           |   36 +-
- include/sound/simple_card.h                        |    6 +-
- include/sound/soc-dai.h                            |    3 +
- include/sound/soc-dapm.h                           |   48 +-
- include/sound/soc.h                                |  137 +-
- include/target/iscsi/iscsi_transport.h             |    1 +
- include/target/target_core_base.h                  |    1 -
- include/trace/events/hswadsp.h                     |  384 +++++
- include/trace/events/intel-sst.h                   |  148 ++
- include/trace/events/power.h                       |    7 +-
- include/trace/events/sunrpc.h                      |    4 +-
- include/trace/events/writeback.h                   |    6 +-
- include/uapi/asm-generic/unistd.h                  |    6 +-
- include/uapi/drm/drm.h                             |    2 +
- include/uapi/drm/vmwgfx_drm.h                      |    1 +
- include/uapi/linux/btrfs.h                         |    1 -
- include/uapi/linux/in6.h                           |   23 +-
- include/uapi/linux/mic_ioctl.h                     |    2 +-
- include/uapi/linux/nvme.h                          |   11 +
- include/uapi/xen/Kbuild                            |    2 +
- include/{ =3D> uapi}/xen/gntalloc.h                  |    0
- include/{ =3D> uapi}/xen/gntdev.h                    |    0
- include/xen/grant_table.h                          |    8 +-
- include/xen/interface/io/blkif.h                   |   34 +-
- include/xen/interface/xencomm.h                    |   41 -
- include/xen/xencomm.h                              |   77 -
- init/main.c                                        |    4 +-
- ipc/mq_sysctl.c                                    |   18 +-
- ipc/mqueue.c                                       |    6 +-
- ipc/msg.c                                          |    2 +
- kernel/audit.c                                     |   31 +-
- kernel/audit.h                                     |    2 +-
- kernel/audit_tree.c                                |    2 +-
- kernel/audit_watch.c                               |    2 +-
- kernel/auditfilter.c                               |   10 +-
- kernel/auditsc.c                                   |    2 +-
- kernel/cgroup.c                                    |   60 +-
- kernel/cpuset.c                                    |   10 +-
- kernel/events/core.c                               |   12 +-
- kernel/irq/Kconfig                                 |    1 +
- kernel/irq/devres.c                                |   45 +
- kernel/irq/irqdesc.c                               |    1 +
- kernel/irq/irqdomain.c                             |    1 +
- kernel/irq/manage.c                                |    3 +-
- kernel/kmod.c                                      |    2 +-
- kernel/power/console.c                             |    1 +
- kernel/printk/printk.c                             |    2 -
- kernel/profile.c                                   |    4 +-
- kernel/sched/clock.c                               |    4 +-
- kernel/sched/core.c                                |   37 +-
- kernel/sched/cpudeadline.c                         |    6 +-
- kernel/sched/deadline.c                            |   20 +-
- kernel/sched/fair.c                                |   10 +-
- kernel/sched/rt.c                                  |    8 +
- kernel/sched/sched.h                               |    1 -
- kernel/stop_machine.c                              |    2 +-
- kernel/time/jiffies.c                              |    6 +
- kernel/time/sched_clock.c                          |   46 +-
- kernel/time/tick-broadcast.c                       |    1 +
- kernel/trace/ring_buffer.c                         |    7 +
- kernel/trace/trace_events.c                        |   10 +
- kernel/tracepoint.c                                |    7 +-
- kernel/user_namespace.c                            |    2 +-
- kernel/workqueue.c                                 |    7 +
- lib/Kconfig.debug                                  |    2 +-
- lib/Makefile                                       |    1 +
- lib/dma-debug.c                                    |  131 +-
- lib/percpu_ida.c                                   |    7 +-
- lib/radix-tree.c                                   |    4 +-
- mm/Kconfig                                         |    4 +-
- mm/compaction.c                                    |   20 +-
- mm/filemap.c                                       |    4 +-
- mm/huge_memory.c                                   |   20 +-
- mm/ksm.c                                           |    2 +-
- mm/memcontrol.c                                    |   20 +-
- mm/memory-failure.c                                |    8 +-
- mm/memory.c                                        |   15 +-
- mm/migrate.c                                       |   11 +-
- mm/mprotect.c                                      |   25 +-
- mm/page-writeback.c                                |    5 +-
- mm/page_alloc.c                                    |   30 +-
- mm/slub.c                                          |   38 +-
- mm/swap.c                                          |    4 +-
- mm/swap_state.c                                    |   63 +-
- mm/swapfile.c                                      |   11 +-
- mm/vmpressure.c                                    |    1 +
- mm/vmstat.c                                        |    4 +-
- net/8021q/vlan_dev.c                               |    3 +
- net/9p/client.c                                    |    2 +-
- net/9p/trans_virtio.c                              |    5 +-
- net/batman-adv/bat_iv_ogm.c                        |   30 +-
- net/batman-adv/hard-interface.c                    |   22 +-
- net/batman-adv/originator.c                        |   36 +
- net/batman-adv/originator.h                        |    4 +
- net/batman-adv/routing.c                           |    4 +-
- net/batman-adv/send.c                              |    9 +-
- net/batman-adv/translation-table.c                 |   23 +-
- net/bluetooth/hidp/core.c                          |   16 +-
- net/bluetooth/hidp/hidp.h                          |    4 +
- net/bridge/br_device.c                             |   54 +-
- net/bridge/br_fdb.c                                |  137 +-
- net/bridge/br_if.c                                 |    6 +-
- net/bridge/br_input.c                              |    4 +-
- net/bridge/br_multicast.c                          |   33 +-
- net/bridge/br_private.h                            |   13 +-
- net/bridge/br_stp_if.c                             |    2 +
- net/bridge/br_vlan.c                               |   27 +-
- net/caif/caif_dev.c                                |    1 +
- net/caif/cfsrvl.c                                  |    1 +
- net/can/af_can.c                                   |    3 +-
- net/can/bcm.c                                      |    4 +-
- net/can/raw.c                                      |   27 +-
- net/ceph/messenger.c                               |    8 +-
- net/ceph/osd_client.c                              |   84 +-
- net/core/dev.c                                     |   28 +-
- net/core/fib_rules.c                               |    7 +
- net/core/flow_dissector.c                          |   20 +-
- net/core/neighbour.c                               |    8 +-
- net/core/netpoll.c                                 |    4 +-
- net/core/rtnetlink.c                               |   21 +-
- net/core/skbuff.c                                  |  103 +-
- net/core/sock.c                                    |   11 +-
- net/dccp/ccids/lib/tfrc.c                          |    2 +-
- net/dccp/ccids/lib/tfrc.h                          |    1 +
- net/decnet/af_decnet.c                             |    5 -
- net/hsr/hsr_framereg.c                             |    2 +-
- net/ieee802154/6lowpan.c                           |   23 +-
- net/ipv4/af_inet.c                                 |    7 +-
- net/ipv4/devinet.c                                 |    3 +-
- net/ipv4/inet_fragment.c                           |    5 +-
- net/ipv4/ip_forward.c                              |   71 +-
- net/ipv4/ip_output.c                               |    3 -
- net/ipv4/ip_tunnel.c                               |   82 +-
- net/ipv4/ip_tunnel_core.c                          |   47 +-
- net/ipv4/ipconfig.c                                |    2 +-
- net/ipv4/netfilter/Kconfig                         |    5 +
- net/ipv4/netfilter/Makefile                        |    1 +
- net/ipv4/netfilter/nf_nat_h323.c                   |    5 +-
- net/ipv4/netfilter/nf_nat_snmp_basic.c             |    4 +-
- net/ipv4/netfilter/nft_reject_ipv4.c               |   75 +
- net/ipv4/route.c                                   |   13 +-
- net/ipv4/tcp.c                                     |   10 +-
- net/ipv4/tcp_cong.c                                |    3 +-
- net/ipv4/tcp_input.c                               |   21 +-
- net/ipv4/tcp_output.c                              |   48 +-
- net/ipv4/udp_offload.c                             |   17 +-
- net/ipv6/Kconfig                                   |    1 +
- net/ipv6/addrconf.c                                |    7 +-
- net/ipv6/exthdrs_core.c                            |    2 +-
- net/ipv6/exthdrs_offload.c                         |    4 +-
- net/ipv6/icmp.c                                    |    2 +-
- net/ipv6/ip6_offload.c                             |   20 +-
- net/ipv6/ip6_output.c                              |   20 +-
- net/ipv6/netfilter/Kconfig                         |    5 +
- net/ipv6/netfilter/Makefile                        |    1 +
- net/ipv6/netfilter/nft_reject_ipv6.c               |   76 +
- net/ipv6/ping.c                                    |    1 +
- net/ipv6/route.c                                   |    2 +-
- net/ipv6/sit.c                                     |   19 +
- net/ipv6/udp_offload.c                             |    2 +-
- net/ipx/af_ipx.c                                   |   22 +-
- net/ipx/ipx_route.c                                |    4 -
- net/l2tp/l2tp_core.c                               |    4 +-
- net/l2tp/l2tp_core.h                               |    1 +
- net/l2tp/l2tp_netlink.c                            |    4 +-
- net/l2tp/l2tp_ppp.c                                |   13 +-
- net/mac80211/cfg.c                                 |   44 +-
- net/mac80211/chan.c                                |    6 +
- net/mac80211/ht.c                                  |    4 +-
- net/mac80211/ibss.c                                |    5 +-
- net/mac80211/ieee80211_i.h                         |   10 +-
- net/mac80211/iface.c                               |   33 +-
- net/mac80211/mesh_ps.c                             |    1 +
- net/mac80211/mlme.c                                |   24 +
- net/mac80211/rx.c                                  |    7 +
- net/mac80211/sta_info.c                            |   67 +-
- net/mac80211/sta_info.h                            |    7 +-
- net/mac80211/tx.c                                  |   17 +-
- net/mac80211/util.c                                |   48 +-
- net/mac80211/wme.c                                 |    5 +
- net/netfilter/Kconfig                              |    6 +-
- net/netfilter/Makefile                             |    1 +
- net/netfilter/ipvs/ip_vs_conn.c                    |    8 +-
- net/netfilter/nf_conntrack_core.c                  |   55 +-
- net/netfilter/nf_conntrack_netlink.c               |   35 +-
- net/netfilter/nf_nat_core.c                        |   56 +-
- net/netfilter/nf_synproxy_core.c                   |    5 +-
- net/netfilter/nf_tables_api.c                      |   82 +-
- net/netfilter/nf_tables_core.c                     |    6 +-
- net/netfilter/nft_ct.c                             |   16 +-
- net/netfilter/nft_log.c                            |    5 +-
- net/netfilter/nft_lookup.c                         |    1 +
- net/netfilter/nft_meta.c                           |    4 +-
- net/netfilter/nft_payload.c                        |    3 +-
- net/netfilter/nft_queue.c                          |    4 +-
- net/netfilter/nft_rbtree.c                         |   16 +-
- net/netfilter/nft_reject.c                         |   89 +-
- net/netfilter/nft_reject_inet.c                    |   63 +
- net/netfilter/xt_CT.c                              |    7 +-
- net/netlink/af_netlink.c                           |    4 +-
- net/nfc/nci/core.c                                 |    2 +-
- net/openvswitch/datapath.c                         |   23 +-
- net/openvswitch/flow_table.c                       |   88 +-
- net/openvswitch/flow_table.h                       |    2 +-
- net/packet/af_packet.c                             |   26 +-
- net/sched/sch_api.c                                |    7 +-
- net/sched/sch_fq.c                                 |   21 +-
- net/sched/sch_pie.c                                |   21 +-
- net/sched/sch_tbf.c                                |   24 +-
- net/sctp/associola.c                               |  211 ++-
- net/sctp/ipv6.c                                    |    2 +
- net/sctp/sm_make_chunk.c                           |    4 +-
- net/sctp/sm_sideeffect.c                           |    7 +-
- net/sctp/sm_statefuns.c                            |   12 +-
- net/sctp/socket.c                                  |   47 +-
- net/sctp/sysctl.c                                  |   18 +-
- net/sctp/ulpevent.c                                |    8 +-
- net/socket.c                                       |   17 +-
- net/sunrpc/auth_gss/auth_gss.c                     |   19 +-
- net/sunrpc/backchannel_rqst.c                      |    6 +-
- net/sunrpc/svc_xprt.c                              |    6 +-
- net/sunrpc/xprtsock.c                              |    6 +-
- net/tipc/bearer.c                                  |    7 +-
- net/tipc/config.c                                  |   11 +-
- net/tipc/core.c                                    |  109 +-
- net/tipc/core.h                                    |    2 +-
- net/tipc/handler.c                                 |    1 -
- net/tipc/link.c                                    |    7 +
- net/tipc/name_table.c                              |   40 +-
- net/tipc/netlink.c                                 |    8 -
- net/tipc/ref.c                                     |    3 -
- net/tipc/server.c                                  |   19 +-
- net/tipc/server.h                                  |    2 -
- net/tipc/socket.c                                  |   12 +-
- net/tipc/subscr.c                                  |   19 +-
- net/unix/af_unix.c                                 |    3 +-
- net/wireless/core.c                                |   19 +-
- net/wireless/core.h                                |    4 +-
- net/wireless/nl80211.c                             |   32 +-
- net/wireless/nl80211.h                             |    8 +-
- net/wireless/reg.c                                 |   12 +-
- net/wireless/scan.c                                |   40 +-
- net/wireless/sme.c                                 |    2 +-
- net/xfrm/xfrm_policy.c                             |    2 +-
- net/xfrm/xfrm_state.c                              |   23 +-
- net/xfrm/xfrm_user.c                               |    5 -
- scripts/Makefile.lib                               |    1 +
- scripts/checkpatch.pl                              |    4 +-
- scripts/gen_initramfs_list.sh                      |    2 +-
- scripts/get_maintainer.pl                          |    2 +-
- scripts/mod/file2alias.c                           |    4 +-
- scripts/mod/modpost.c                              |   13 +
- security/Kconfig                                   |    2 +-
- security/keys/keyring.c                            |    6 +-
- security/selinux/nlmsgtab.c                        |    2 +
- security/selinux/ss/policydb.c                     |    8 +-
- security/selinux/ss/services.c                     |    4 +
- sound/core/pcm_lib.c                               |    1 +
- sound/pci/hda/hda_codec.c                          |   34 +-
- sound/pci/hda/hda_generic.c                        |    8 +-
- sound/pci/hda/hda_generic.h                        |    1 +
- sound/pci/hda/hda_intel.c                          |    2 +-
- sound/pci/hda/patch_analog.c                       |   31 +
- sound/pci/hda/patch_ca0132.c                       |   68 +-
- sound/pci/hda/patch_conexant.c                     |    3 +-
- sound/pci/hda/patch_realtek.c                      |   92 +-
- sound/pci/hda/patch_sigmatel.c                     |   60 +-
- sound/pci/hda/thinkpad_helper.c                    |    1 +
- sound/soc/Kconfig                                  |    1 +
- sound/soc/Makefile                                 |    1 +
- sound/soc/atmel/Kconfig                            |    2 +-
- sound/soc/atmel/atmel_ssc_dai.c                    |   13 +-
- sound/soc/atmel/sam9g20_wm8731.c                   |   20 +-
- sound/soc/blackfin/Kconfig                         |   20 +-
- sound/soc/cirrus/Kconfig                           |    4 +-
- sound/soc/cirrus/snappercl15.c                     |   18 +-
- sound/soc/codecs/88pm860x-codec.c                  |  120 +-
- sound/soc/codecs/Kconfig                           |  191 ++-
- sound/soc/codecs/Makefile                          |   33 +
- sound/soc/codecs/ad1836.c                          |    4 +-
- sound/soc/codecs/ad193x-i2c.c                      |   54 +
- sound/soc/codecs/ad193x-spi.c                      |   48 +
- sound/soc/codecs/ad193x.c                          |  154 +-
- sound/soc/codecs/ad193x.h                          |    7 +
- sound/soc/codecs/ad1980.c                          |    4 +-
- sound/soc/codecs/adau1373.c                        |   39 +-
- sound/soc/codecs/adau1977-i2c.c                    |   59 +
- sound/soc/codecs/adau1977-spi.c                    |   76 +
- sound/soc/codecs/adau1977.c                        | 1018 +++++++++++
- sound/soc/codecs/adau1977.h                        |   37 +
- sound/soc/codecs/adav801.c                         |   53 +
- sound/soc/codecs/adav803.c                         |   50 +
- sound/soc/codecs/adav80x.c                         |  159 +-
- sound/soc/codecs/adav80x.h                         |    7 +
- sound/soc/codecs/ak4104.c                          |    2 -
- sound/soc/codecs/ak4535.c                          |    9 -
- sound/soc/codecs/ak4641.c                          |   24 +-
- sound/soc/codecs/ak4642.c                          |    8 -
- sound/soc/codecs/ak4671.c                          |  250 ++-
- sound/soc/codecs/ak4671.h                          |    2 -
- sound/soc/codecs/alc5623.c                         |  120 +-
- sound/soc/codecs/alc5632.c                         |   48 +-
- sound/soc/codecs/arizona.c                         |  325 ++--
- sound/soc/codecs/cq93vc.c                          |    3 +-
- sound/soc/codecs/cs4270.c                          |    9 -
- sound/soc/codecs/cs4271.c                          |   63 +-
- sound/soc/codecs/cs42l51.c                         |   99 +-
- sound/soc/codecs/cs42l52.c                         |  109 +-
- sound/soc/codecs/cs42l73.c                         |   72 +-
- sound/soc/codecs/cs42xx8-i2c.c                     |   64 +
- sound/soc/codecs/cs42xx8.c                         |  602 +++++++
- sound/soc/codecs/cs42xx8.h                         |  238 +++
- sound/soc/codecs/da7210.c                          |   28 +-
- sound/soc/codecs/da7213.c                          |  159 +-
- sound/soc/codecs/da732x.c                          |  208 ++-
- sound/soc/codecs/da732x.h                          |    3 -
- sound/soc/codecs/da9055.c                          |  111 +-
- sound/soc/codecs/isabelle.c                        |   71 +-
- sound/soc/codecs/lm4857.c                          |    3 +-
- sound/soc/codecs/lm49453.c                         |   47 +-
- sound/soc/codecs/max9768.c                         |    5 -
- sound/soc/codecs/max98088.c                        |   47 +-
- sound/soc/codecs/max98090.c                        |  202 +--
- sound/soc/codecs/max98090.h                        |    1 -
- sound/soc/codecs/max98095.c                        |   60 +-
- sound/soc/codecs/max9850.c                         |    8 -
- sound/soc/codecs/mc13783.c                         |   30 +-
- sound/soc/codecs/ml26124.c                         |   22 +-
- sound/soc/codecs/pcm1681.c                         |   15 +-
- sound/soc/codecs/pcm1792a.c                        |   33 +-
- sound/soc/codecs/pcm512x-i2c.c                     |   71 +
- sound/soc/codecs/pcm512x-spi.c                     |   69 +
- sound/soc/codecs/pcm512x.c                         |  589 +++++++
- sound/soc/codecs/pcm512x.h                         |  171 ++
- sound/soc/codecs/rt5631.c                          |   84 +-
- sound/soc/codecs/rt5640.c                          |   87 +-
- sound/soc/codecs/sgtl5000.c                        |   18 +-
- sound/soc/codecs/si476x.c                          |    6 +-
- sound/soc/codecs/sirf-audio-codec.c                |  524 ++++++
- sound/soc/codecs/sirf-audio-codec.h                |   75 +
- sound/soc/codecs/sn95031.c                         |   46 +-
- sound/soc/codecs/ssm2518.c                         |   24 +-
- sound/soc/codecs/ssm2602-i2c.c                     |   57 +
- sound/soc/codecs/ssm2602-spi.c                     |   41 +
- sound/soc/codecs/ssm2602.c                         |  180 +-
- sound/soc/codecs/ssm2602.h                         |   14 +
- sound/soc/codecs/sta32x.c                          |   90 +-
- sound/soc/codecs/sta529.c                          |   15 +-
- sound/soc/codecs/stac9766.c                        |   38 +-
- sound/soc/codecs/tlv320aic23-i2c.c                 |   59 +
- sound/soc/codecs/tlv320aic23-spi.c                 |   56 +
- sound/soc/codecs/tlv320aic23.c                     |   79 +-
- sound/soc/codecs/tlv320aic23.h                     |    6 +
- sound/soc/codecs/tlv320aic26.c                     |    7 +-
- sound/soc/codecs/tlv320aic31xx.c                   |   19 +-
- sound/soc/codecs/tlv320aic32x4.c                   |    2 -
- sound/soc/codecs/tlv320aic3x.c                     |    6 -
- sound/soc/codecs/tlv320dac33.c                     |   35 +-
- sound/soc/codecs/twl4030.c                         |  101 +-
- sound/soc/codecs/twl6040.c                         |   17 +-
- sound/soc/codecs/uda134x.c                         |    3 +-
- sound/soc/codecs/uda1380.c                         |   43 +-
- sound/soc/codecs/wl1273.c                          |    9 +-
- sound/soc/codecs/wm2000.c                          |    2 -
- sound/soc/codecs/wm2200.c                          |   25 +-
- sound/soc/codecs/wm5100.c                          |   43 +-
- sound/soc/codecs/wm5102.c                          |   32 +-
- sound/soc/codecs/wm5110.c                          |   22 +-
- sound/soc/codecs/wm8350.c                          |    4 +-
- sound/soc/codecs/wm8400.c                          |   37 +-
- sound/soc/codecs/wm8510.c                          |   10 +-
- sound/soc/codecs/wm8523.c                          |   11 +-
- sound/soc/codecs/wm8580.c                          |    9 +-
- sound/soc/codecs/wm8711.c                          |    8 +-
- sound/soc/codecs/wm8728.c                          |   11 +-
- sound/soc/codecs/wm8731.c                          |   11 +-
- sound/soc/codecs/wm8737.c                          |   56 +-
- sound/soc/codecs/wm8741.c                          |   40 +-
- sound/soc/codecs/wm8750.c                          |    6 -
- sound/soc/codecs/wm8753.c                          |   12 +-
- sound/soc/codecs/wm8770.c                          |   10 +-
- sound/soc/codecs/wm8776.c                          |    6 -
- sound/soc/codecs/wm8804.c                          |   10 +-
- sound/soc/codecs/wm8900.c                          |   52 +-
- sound/soc/codecs/wm8903.c                          |  118 +-
- sound/soc/codecs/wm8904.c                          |   86 +-
- sound/soc/codecs/wm8940.c                          |   26 +-
- sound/soc/codecs/wm8955.c                          |   19 +-
- sound/soc/codecs/wm8958-dsp2.c                     |   10 +-
- sound/soc/codecs/wm8960.c                          |    6 -
- sound/soc/codecs/wm8961.c                          |   23 +-
- sound/soc/codecs/wm8962.c                          |   87 +-
- sound/soc/codecs/wm8971.c                          |    6 -
- sound/soc/codecs/wm8974.c                          |   10 +-
- sound/soc/codecs/wm8978.c                          |   38 +-
- sound/soc/codecs/wm8983.c                          |   51 +-
- sound/soc/codecs/wm8985.c                          |   46 +-
- sound/soc/codecs/wm8988.c                          |   70 +-
- sound/soc/codecs/wm8990.c                          |   49 +-
- sound/soc/codecs/wm8991.c                          |   52 +-
- sound/soc/codecs/wm8993.c                          |   74 +-
- sound/soc/codecs/wm8994.c                          |  186 +-
- sound/soc/codecs/wm8995.c                          |   50 +-
- sound/soc/codecs/wm8996.c                          |   87 +-
- sound/soc/codecs/wm8997.c                          |   29 +-
- sound/soc/codecs/wm9081.c                          |   34 +-
- sound/soc/codecs/wm9090.c                          |   10 -
- sound/soc/codecs/wm9705.c                          |   12 +-
- sound/soc/codecs/wm_adsp.c                         |   50 +-
- sound/soc/codecs/wm_hubs.c                         |   16 +-
- sound/soc/davinci/davinci-evm.c                    |   81 +-
- sound/soc/davinci/davinci-mcasp.c                  |  294 ++--
- sound/soc/davinci/edma-pcm.c                       |   57 +
- sound/soc/davinci/edma-pcm.h                       |   25 +
- sound/soc/fsl/Kconfig                              |   12 +-
- sound/soc/fsl/eukrea-tlv320.c                      |  108 +-
- sound/soc/fsl/fsl_esai.c                           |   36 +-
- sound/soc/fsl/fsl_esai.h                           |    2 +-
- sound/soc/fsl/fsl_sai.c                            |  332 ++--
- sound/soc/fsl/fsl_sai.h                            |   48 +-
- sound/soc/fsl/fsl_spdif.c                          |    9 +-
- sound/soc/fsl/imx-mc13783.c                        |    1 -
- sound/soc/fsl/imx-pcm-fiq.c                        |    7 +-
- sound/soc/fsl/imx-sgtl5000.c                       |   10 +-
- sound/soc/fsl/imx-wm8962.c                         |   11 +-
- sound/soc/fsl/wm1133-ev1.c                         |   11 +-
- sound/soc/generic/simple-card.c                    |  295 ++--
- sound/soc/intel/Kconfig                            |   42 +-
- sound/soc/intel/Makefile                           |   27 +-
- sound/soc/intel/byt-rt5640.c                       |  187 ++
- sound/soc/intel/haswell.c                          |  235 +++
- sound/soc/intel/mfld_machine.c                     |  108 +-
- sound/soc/intel/sst-acpi.c                         |  284 ++++
- sound/soc/intel/sst-baytrail-dsp.c                 |  372 ++++
- sound/soc/intel/sst-baytrail-ipc.c                 |  867 ++++++++++
- sound/soc/intel/sst-baytrail-ipc.h                 |   69 +
- sound/soc/intel/sst-baytrail-pcm.c                 |  422 +++++
- sound/soc/intel/sst-dsp-priv.h                     |  309 ++++
- sound/soc/intel/sst-dsp.c                          |  385 +++++
- sound/soc/intel/sst-dsp.h                          |  233 +++
- sound/soc/intel/sst-firmware.c                     |  587 +++++++
- sound/soc/intel/sst-haswell-dsp.c                  |  517 ++++++
- sound/soc/intel/sst-haswell-ipc.c                  | 1785 ++++++++++++++++=
-++++
- sound/soc/intel/sst-haswell-ipc.h                  |  488 ++++++
- sound/soc/intel/sst-haswell-pcm.c                  |  872 ++++++++++
- sound/soc/intel/{sst_dsp.h =3D> sst-mfld-dsp.h}      |    8 +-
- .../intel/{sst_platform.c =3D> sst-mfld-platform.c}  |    8 +-
- .../intel/{sst_platform.h =3D> sst-mfld-platform.h}  |    4 +-
- sound/soc/kirkwood/Kconfig                         |   11 +-
- sound/soc/kirkwood/Makefile                        |    2 +
- sound/soc/kirkwood/armada-370-db.c                 |  148 ++
- sound/soc/kirkwood/kirkwood-i2s.c                  |    1 +
- sound/soc/omap/Kconfig                             |    4 +-
- sound/soc/omap/ams-delta.c                         |   55 +-
- sound/soc/omap/n810.c                              |   26 +-
- sound/soc/omap/omap-abe-twl6040.c                  |    3 +-
- sound/soc/omap/rx51.c                              |   22 +-
- sound/soc/pxa/corgi.c                              |   49 +-
- sound/soc/pxa/e740_wm9705.c                        |   10 +-
- sound/soc/pxa/e750_wm9705.c                        |   10 +-
- sound/soc/pxa/e800_wm9712.c                        |   19 +-
- sound/soc/pxa/magician.c                           |   60 +-
- sound/soc/pxa/mioa701_wm9713.c                     |   19 +-
- sound/soc/pxa/poodle.c                             |    7 +-
- sound/soc/pxa/spitz.c                              |   58 +-
- sound/soc/pxa/tosa.c                               |   67 +-
- sound/soc/pxa/zylonite.c                           |   17 +-
- sound/soc/s6000/s6105-ipcam.c                      |   28 +-
- sound/soc/samsung/Kconfig                          |    8 +-
- sound/soc/samsung/h1940_uda1380.c                  |    7 +-
- sound/soc/samsung/neo1973_wm8753.c                 |  168 +-
- sound/soc/samsung/rx1950_uda1380.c                 |    5 -
- sound/soc/samsung/smdk_wm8994.c                    |    2 +-
- sound/soc/samsung/tobermory.c                      |    2 +
- sound/soc/sh/fsi.c                                 |    2 +-
- sound/soc/sh/migor.c                               |   19 +-
- sound/soc/sh/rcar/Makefile                         |    2 +-
- sound/soc/sh/rcar/adg.c                            |  229 ++-
- sound/soc/sh/rcar/core.c                           |  426 +++--
- sound/soc/sh/rcar/gen.c                            |  113 +-
- sound/soc/sh/rcar/rsnd.h                           |  206 ++-
- sound/soc/sh/rcar/scu.c                            |  384 -----
- sound/soc/sh/rcar/src.c                            |  723 ++++++++
- sound/soc/sh/rcar/ssi.c                            |  388 ++---
- sound/soc/sirf/Kconfig                             |   14 +
- sound/soc/sirf/Makefile                            |    5 +
- sound/soc/sirf/sirf-audio-port.c                   |  194 +++
- sound/soc/sirf/sirf-audio-port.h                   |   62 +
- sound/soc/sirf/sirf-audio.c                        |  156 ++
- sound/soc/soc-cache.c                              |   13 +-
- sound/soc/soc-compress.c                           |   65 +-
- sound/soc/soc-core.c                               |  552 +++---
- sound/soc/soc-dapm.c                               |  604 +++----
- sound/soc/soc-io.c                                 |   99 +-
- sound/soc/soc-jack.c                               |    5 +-
- sound/soc/soc-pcm.c                                |  109 +-
- sound/soc/spear/spdif_out.c                        |   10 +-
- sound/soc/tegra/Kconfig                            |    2 +-
- sound/soc/tegra/tegra20_ac97.c                     |    2 +-
- sound/soc/tegra/tegra20_das.c                      |    2 +-
- sound/soc/tegra/tegra20_i2s.c                      |    2 +-
- sound/soc/tegra/tegra20_spdif.c                    |    2 +-
- sound/soc/tegra/tegra30_ahub.c                     |    4 +-
- sound/soc/tegra/tegra30_i2s.c                      |    2 +-
- sound/soc/txx9/txx9aclc-ac97.c                     |    8 +-
- sound/usb/Kconfig                                  |    1 +
- sound/usb/mixer.c                                  |    1 +
- sound/usb/mixer_maps.c                             |    9 +
- tools/lib/lockdep/Makefile                         |    6 +-
- tools/lib/lockdep/preload.c                        |    2 +-
- tools/lib/lockdep/run_tests.sh                     |    0
- tools/lib/lockdep/uinclude/asm/hash.h              |    6 +
- tools/lib/lockdep/uinclude/linux/rcu.h             |    5 +
- tools/net/Makefile                                 |    2 +-
- tools/perf/builtin-buildid-cache.c                 |   33 +-
- tools/perf/builtin-record.c                        |   10 +-
- tools/perf/builtin-report.c                        |   40 +-
- tools/perf/builtin-top.c                           |    6 +-
- tools/perf/builtin-trace.c                         |   32 +-
- tools/perf/config/Makefile                         |    2 +-
- tools/perf/config/feature-checks/Makefile          |    2 +-
- tools/perf/design.txt                              |    1 -
- tools/perf/perf.h                                  |    4 +-
- tools/perf/tests/vmlinux-kallsyms.c                |   10 -
- tools/perf/util/annotate.c                         |    9 +-
- tools/perf/util/annotate.h                         |    2 +
- tools/perf/util/event.c                            |   36 +-
- tools/perf/util/event.h                            |    6 +-
- tools/perf/util/include/asm/hash.h                 |    6 +
- tools/perf/util/include/linux/bitops.h             |    4 +-
- tools/perf/util/machine.c                          |   44 +-
- tools/perf/util/machine.h                          |    2 +
- tools/perf/util/map.c                              |    5 +-
- tools/perf/util/map.h                              |    1 +
- tools/perf/util/parse-events.c                     |   17 +-
- tools/perf/util/probe-event.c                      |    2 +-
- tools/perf/util/session.c                          |    6 +
- tools/perf/util/symbol-elf.c                       |   10 +-
- tools/perf/util/symbol.c                           |   67 +-
- tools/testing/selftests/ipc/msgque.c               |    1 +
- virt/kvm/arm/vgic.c                                |    1 +
- virt/kvm/coalesced_mmio.c                          |    8 +-
- 1779 files changed, 37413 insertions(+), 15444 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/=
-lsi,zevio-intc.txt
- create mode 100644 Documentation/devicetree/bindings/net/opencores-ethoc.t=
-xt
- create mode 100644 Documentation/devicetree/bindings/net/sti-dwmac.txt
- rename Documentation/devicetree/bindings/pinctrl/{brcm,capri-pinctrl.txt =
-=3D> brcm,bcm11351-pinctrl.txt} (98%)
- create mode 100644 Documentation/devicetree/bindings/power/bq2415x.txt
- create mode 100644 Documentation/devicetree/bindings/sound/armada-370db-au=
-dio.txt
- create mode 100644 Documentation/devicetree/bindings/sound/cs42xx8.txt
- create mode 100644 Documentation/devicetree/bindings/sound/da9055.txt
- create mode 100644 Documentation/devicetree/bindings/sound/eukrea-tlv320.t=
-xt
- create mode 100644 Documentation/devicetree/bindings/sound/pcm512x.txt
- create mode 100644 Documentation/devicetree/bindings/sound/renesas,rsnd.txt
- create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio-code=
-c.txt
- create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio-port=
-=2Etxt
- create mode 100644 Documentation/devicetree/bindings/sound/sirf-audio.txt
- create mode 100644 Documentation/devicetree/bindings/sound/tdm-slot.txt
- create mode 100644 Documentation/devicetree/bindings/sound/widgets.txt
- delete mode 100644 Documentation/networking/3c505.txt
- create mode 100644 Documentation/spi/00-INDEX
- create mode 100644 Documentation/zh_CN/arm64/tagged-pointers.txt
- create mode 100644 arch/arm/boot/dts/at91-sama5d3_xplained.dts
- create mode 100644 arch/arm/boot/dts/omap3-overo-storm-tobi.dts
- rename arch/arm/boot/dts/{omap3-tobi.dts =3D> omap3-overo-tobi-common.dtsi=
-} (94%)
- create mode 100644 arch/arm/boot/dts/omap3-overo-tobi.dts
- delete mode 100644 arch/arm/boot/dts/testcases/tests.dtsi
- delete mode 100644 arch/m68k/include/asm/barrier.h
- create mode 100644 drivers/gpu/drm/nouveau/core/subdev/mc/nv4c.c
- create mode 100644 drivers/irqchip/irq-zevio.c
- create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-sti.c
- delete mode 100644 drivers/net/irda/ep7211-sir.c
- delete mode 100644 drivers/net/usb/r815x.c
- create mode 100644 drivers/net/usb/sr9800.c
- create mode 100644 drivers/net/usb/sr9800.h
- create mode 100644 drivers/of/testcase-data/testcases.dtsi
- rename {arch/arm/boot/dts/testcases =3D> drivers/of/testcase-data}/tests-i=
-nterrupts.dtsi (100%)
- create mode 100644 drivers/of/testcase-data/tests-match.dtsi
- rename {arch/arm/boot/dts/testcases =3D> drivers/of/testcase-data}/tests-p=
-handle.dtsi (100%)
- delete mode 100644 drivers/xen/xencomm.c
- create mode 100644 include/linux/platform_data/adau1977.h
- create mode 100644 include/net/netfilter/nft_reject.h
- create mode 100644 include/trace/events/hswadsp.h
- create mode 100644 include/trace/events/intel-sst.h
- rename include/{ =3D> uapi}/xen/gntalloc.h (100%)
- rename include/{ =3D> uapi}/xen/gntdev.h (100%)
- delete mode 100644 include/xen/interface/xencomm.h
- delete mode 100644 include/xen/xencomm.h
- create mode 100644 net/ipv4/netfilter/nft_reject_ipv4.c
- create mode 100644 net/ipv6/netfilter/nft_reject_ipv6.c
- create mode 100644 net/netfilter/nft_reject_inet.c
- create mode 100644 sound/soc/codecs/ad193x-i2c.c
- create mode 100644 sound/soc/codecs/ad193x-spi.c
- create mode 100644 sound/soc/codecs/adau1977-i2c.c
- create mode 100644 sound/soc/codecs/adau1977-spi.c
- create mode 100644 sound/soc/codecs/adau1977.c
- create mode 100644 sound/soc/codecs/adau1977.h
- create mode 100644 sound/soc/codecs/adav801.c
- create mode 100644 sound/soc/codecs/adav803.c
- create mode 100644 sound/soc/codecs/cs42xx8-i2c.c
- create mode 100644 sound/soc/codecs/cs42xx8.c
- create mode 100644 sound/soc/codecs/cs42xx8.h
- create mode 100644 sound/soc/codecs/pcm512x-i2c.c
- create mode 100644 sound/soc/codecs/pcm512x-spi.c
- create mode 100644 sound/soc/codecs/pcm512x.c
- create mode 100644 sound/soc/codecs/pcm512x.h
- create mode 100644 sound/soc/codecs/sirf-audio-codec.c
- create mode 100644 sound/soc/codecs/sirf-audio-codec.h
- create mode 100644 sound/soc/codecs/ssm2602-i2c.c
- create mode 100644 sound/soc/codecs/ssm2602-spi.c
- create mode 100644 sound/soc/codecs/tlv320aic23-i2c.c
- create mode 100644 sound/soc/codecs/tlv320aic23-spi.c
- create mode 100644 sound/soc/davinci/edma-pcm.c
- create mode 100644 sound/soc/davinci/edma-pcm.h
- create mode 100644 sound/soc/intel/byt-rt5640.c
- create mode 100644 sound/soc/intel/haswell.c
- create mode 100644 sound/soc/intel/sst-acpi.c
- create mode 100644 sound/soc/intel/sst-baytrail-dsp.c
- create mode 100644 sound/soc/intel/sst-baytrail-ipc.c
- create mode 100644 sound/soc/intel/sst-baytrail-ipc.h
- create mode 100644 sound/soc/intel/sst-baytrail-pcm.c
- create mode 100644 sound/soc/intel/sst-dsp-priv.h
- create mode 100644 sound/soc/intel/sst-dsp.c
- create mode 100644 sound/soc/intel/sst-dsp.h
- create mode 100644 sound/soc/intel/sst-firmware.c
- create mode 100644 sound/soc/intel/sst-haswell-dsp.c
- create mode 100644 sound/soc/intel/sst-haswell-ipc.c
- create mode 100644 sound/soc/intel/sst-haswell-ipc.h
- create mode 100644 sound/soc/intel/sst-haswell-pcm.c
- rename sound/soc/intel/{sst_dsp.h =3D> sst-mfld-dsp.h} (96%)
- rename sound/soc/intel/{sst_platform.c =3D> sst-mfld-platform.c} (99%)
- rename sound/soc/intel/{sst_platform.h =3D> sst-mfld-platform.h} (97%)
- create mode 100644 sound/soc/kirkwood/armada-370-db.c
- delete mode 100644 sound/soc/sh/rcar/scu.c
- create mode 100644 sound/soc/sh/rcar/src.c
- create mode 100644 sound/soc/sirf/Kconfig
- create mode 100644 sound/soc/sirf/Makefile
- create mode 100644 sound/soc/sirf/sirf-audio-port.c
- create mode 100644 sound/soc/sirf/sirf-audio-port.h
- create mode 100644 sound/soc/sirf/sirf-audio.c
- mode change 100644 =3D> 100755 tools/lib/lockdep/run_tests.sh
- create mode 100644 tools/lib/lockdep/uinclude/asm/hash.h
- create mode 100644 tools/perf/util/include/asm/hash.h
-
---uZ3hkaAS1mZxFaxD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIbBAEBAgAGBQJTLxKpAAoJELSic+t+oim9Le4P91aFJ1VOpbTcu2tLGH9ddvl2
-6xNqFOy+0NNQJ6+KF118NJyX/i4SLQT5lta1+5ixgrug/8FkJ1e5A/cjBT9/QPT5
-bA/iNOoVN0K21H8r1ZBKTjjcj/0UbFdQMh4Sz0oX6oo2eIR/qQYsZskghi96ayzA
-7w+3JE/1vC7TpqEvZwbol35mLeK7Tg8L4ecfrLEDj8wF9vsj6atqpWhJnxknMLzD
-kO7S5WAmCtsaqBHbJA0p2WRkKaoRXOZOA6+AwbVu/S5TejAzkDsnc82o5QjBDLfK
-oVZEFHK3y+51SBZU+DVxmVO/isWX4LxO0uEtaN8SIzors8mstxIh/7fkMws4adSY
-7Hjd4zePYynYzTueu6aJpEwR+985iHPxJ57/JEZjktVLFAQVzpkq/JIwHMQ4tFHv
-AG/xsizwzsr+J2KogTzYbr05JbctP9E5n4OA1PPnISW5bM/Cf69Ug8cTqO06jvaK
-aPid8zs/YoU199wXduIvk3g7FPIe1Wdxx/rJ4bsun9NZRxV9zNK94sSy05m6nBzs
-cCmUdz18dC8obsbIsKC78W0eVRW6D8TurA5MAYqSxnjL/BDL2C3kIBHPBhqOYqMG
-NXoUaIA13qeDPXK9zjtp9V9WYPGjy9b8sa8xaECzbTD8bPRwcMV+Q62RMTM9X9OX
-Py9ypMgJbu6VZU4nXlg=
-=thZi
------END PGP SIGNATURE-----
-
---uZ3hkaAS1mZxFaxD--
-
---===============0657591668716120495==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0657591668716120495==--
+From: Oder Chiou <oder_chiou@realtek.com>
+
+This patch adds the RT5639 codec driver.
+
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+
+---
+
+It is migrated from RT5640 codec driver,
+and modified for RT5639's specification.
+
+---
+ include/sound/rt5639.h    |   22 +
+ sound/soc/codecs/Kconfig  |    4 +
+ sound/soc/codecs/Makefile |    2 +
+ sound/soc/codecs/rt5639.c | 2092 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/rt5639.h | 1928 +++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 4048 insertions(+)
+ create mode 100644 include/sound/rt5639.h
+ create mode 100644 sound/soc/codecs/rt5639.c
+ create mode 100644 sound/soc/codecs/rt5639.h
+
+diff --git a/include/sound/rt5639.h b/include/sound/rt5639.h
+new file mode 100644
+index 0000000..7101120
+--- /dev/null
++++ b/include/sound/rt5639.h
+@@ -0,0 +1,22 @@
++/*
++ * linux/sound/rt5639.h -- Platform data for RT5639
++ *
++ * Copyright 2011 Realtek Microelectronics
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef __LINUX_SND_RT5639_H
++#define __LINUX_SND_RT5639_H
++
++struct rt5639_platform_data {
++	/* IN1 & IN2 can optionally be differential */
++	bool in1_diff;
++	bool in2_diff;
++
++	int ldo1_en; /* GPIO for LDO1_EN */
++};
++
++#endif
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 983d087a..ed791fb 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -60,6 +60,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_PCM1792A if SPI_MASTER
+ 	select SND_SOC_PCM3008
+ 	select SND_SOC_RT5631 if I2C
++	select SND_SOC_RT5639 if I2C
+ 	select SND_SOC_RT5640 if I2C
+ 	select SND_SOC_SGTL5000 if I2C
+ 	select SND_SOC_SI476X if MFD_SI476X_CORE
+@@ -316,6 +317,9 @@ config SND_SOC_PCM3008
+ config SND_SOC_RT5631
+ 	tristate
+ 
++config SND_SOC_RT5639
++	tristate
++
+ config SND_SOC_RT5640
+ 	tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index bc12676..051f3fb 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -47,6 +47,7 @@ snd-soc-pcm1681-objs := pcm1681.o
+ snd-soc-pcm1792a-codec-objs := pcm1792a.o
+ snd-soc-pcm3008-objs := pcm3008.o
+ snd-soc-rt5631-objs := rt5631.o
++snd-soc-rt5639-objs := rt5639.o
+ snd-soc-rt5640-objs := rt5640.o
+ snd-soc-sgtl5000-objs := sgtl5000.o
+ snd-soc-alc5623-objs := alc5623.o
+@@ -180,6 +181,7 @@ obj-$(CONFIG_SND_SOC_PCM1681)	+= snd-soc-pcm1681.o
+ obj-$(CONFIG_SND_SOC_PCM1792A)	+= snd-soc-pcm1792a-codec.o
+ obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
+ obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
++obj-$(CONFIG_SND_SOC_RT5639)	+= snd-soc-rt5639.o
+ obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
+ obj-$(CONFIG_SND_SOC_SGTL5000)  += snd-soc-sgtl5000.o
+ obj-$(CONFIG_SND_SOC_SIGMADSP)	+= snd-soc-sigmadsp.o
+diff --git a/sound/soc/codecs/rt5639.c b/sound/soc/codecs/rt5639.c
+new file mode 100644
+index 0000000..df8d307
+--- /dev/null
++++ b/sound/soc/codecs/rt5639.c
+@@ -0,0 +1,2092 @@
++/*
++ * rt5639.c  --  RT5639 ALSA SoC audio codec driver
++ *
++ * Copyright 2011 Realtek Semiconductor Corp.
++ * Author: Bard Liao <bardliao@realtek.com>
++ * Copyright (c) 2013, NVIDIA CORPORATION.  All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/pm.h>
++#include <linux/gpio.h>
++#include <linux/i2c.h>
++#include <linux/regmap.h>
++#include <linux/of_gpio.h>
++#include <linux/platform_device.h>
++#include <linux/spi/spi.h>
++#include <linux/acpi.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/initval.h>
++#include <sound/tlv.h>
++
++#include "rt5639.h"
++
++#define RT5639_DEVICE_ID 0x6231
++
++#define RT5639_PR_RANGE_BASE (0xff + 1)
++#define RT5639_PR_SPACING 0x100
++
++#define RT5639_PR_BASE (RT5639_PR_RANGE_BASE + (0 * RT5639_PR_SPACING))
++
++static const struct regmap_range_cfg rt5639_ranges[] = {
++	{ .name = "PR", .range_min = RT5639_PR_BASE,
++	  .range_max = RT5639_PR_BASE + 0xb4,
++	  .selector_reg = RT5639_PRIV_INDEX,
++	  .selector_mask = 0xff,
++	  .selector_shift = 0x0,
++	  .window_start = RT5639_PRIV_DATA,
++	  .window_len = 0x1, },
++};
++
++static struct reg_default init_list[] = {
++	{0x2e,	0x0c00},
++	{RT5639_PR_BASE + 0x3d,	0x3600},
++	{RT5639_PR_BASE + 0x12,	0x0aa8},
++	{RT5639_PR_BASE + 0x14,	0x0aaa},
++	{RT5639_PR_BASE + 0x20,	0x6110},
++	{RT5639_PR_BASE + 0x21,	0xe0e0},
++	{RT5639_PR_BASE + 0x23,	0x1804},
++};
++#define RT5639_INIT_REG_LEN ARRAY_SIZE(init_list)
++
++static const struct reg_default rt5639_reg[] = {
++	{ 0x00, 0x000e },
++	{ 0x01, 0xc8c8 },
++	{ 0x02, 0xc8c8 },
++	{ 0x03, 0xc8c8 },
++	{ 0x04, 0x8000 },
++	{ 0x0d, 0x0000 },
++	{ 0x0e, 0x0000 },
++	{ 0x0f, 0x0808 },
++	{ 0x19, 0xafaf },
++	{ 0x1a, 0xafaf },
++	{ 0x1b, 0x0000 },
++	{ 0x1c, 0x2f2f },
++	{ 0x1d, 0x2f2f },
++	{ 0x1e, 0x0000 },
++	{ 0x27, 0x7060 },
++	{ 0x28, 0x7070 },
++	{ 0x29, 0x8080 },
++	{ 0x2a, 0x5454 },
++	{ 0x2b, 0x5454 },
++	{ 0x2c, 0xaa00 },
++	{ 0x2d, 0x0000 },
++	{ 0x2e, 0xa000 },
++	{ 0x2f, 0x0000 },
++	{ 0x3b, 0x0000 },
++	{ 0x3c, 0x007f },
++	{ 0x3d, 0x0000 },
++	{ 0x3e, 0x007f },
++	{ 0x45, 0xe000 },
++	{ 0x46, 0x003e },
++	{ 0x47, 0x003e },
++	{ 0x48, 0xf800 },
++	{ 0x49, 0x3800 },
++	{ 0x4a, 0x0004 },
++	{ 0x4c, 0xfc00 },
++	{ 0x4d, 0x0000 },
++	{ 0x4f, 0x01ff },
++	{ 0x50, 0x0000 },
++	{ 0x51, 0x0000 },
++	{ 0x52, 0x01ff },
++	{ 0x53, 0xf000 },
++	{ 0x61, 0x0000 },
++	{ 0x62, 0x0000 },
++	{ 0x63, 0x00c0 },
++	{ 0x64, 0x0000 },
++	{ 0x65, 0x0000 },
++	{ 0x66, 0x0000 },
++	{ 0x6a, 0x0000 },
++	{ 0x6c, 0x0000 },
++	{ 0x70, 0x8000 },
++	{ 0x71, 0x8000 },
++	{ 0x72, 0x8000 },
++	{ 0x73, 0x1114 },
++	{ 0x74, 0x0c00 },
++	{ 0x75, 0x1d00 },
++	{ 0x80, 0x0000 },
++	{ 0x81, 0x0000 },
++	{ 0x82, 0x0000 },
++	{ 0x83, 0x0000 },
++	{ 0x84, 0x0000 },
++	{ 0x85, 0x0008 },
++	{ 0x89, 0x0000 },
++	{ 0x8a, 0x0000 },
++	{ 0x8b, 0x0600 },
++	{ 0x8c, 0x0228 },
++	{ 0x8d, 0xa000 },
++	{ 0x8e, 0x0004 },
++	{ 0x8f, 0x1100 },
++	{ 0x90, 0x0646 },
++	{ 0x91, 0x0c00 },
++	{ 0x92, 0x0000 },
++	{ 0x93, 0x3000 },
++	{ 0xb0, 0x2080 },
++	{ 0xb1, 0x0000 },
++	{ 0xb4, 0x2206 },
++	{ 0xb5, 0x1f00 },
++	{ 0xb6, 0x0000 },
++	{ 0xb8, 0x034b },
++	{ 0xb9, 0x0066 },
++	{ 0xba, 0x000b },
++	{ 0xbb, 0x0000 },
++	{ 0xbc, 0x0000 },
++	{ 0xbd, 0x0000 },
++	{ 0xbe, 0x0000 },
++	{ 0xbf, 0x0000 },
++	{ 0xc0, 0x0400 },
++	{ 0xc2, 0x0000 },
++	{ 0xc4, 0x0000 },
++	{ 0xc5, 0x0000 },
++	{ 0xc6, 0x2000 },
++	{ 0xc8, 0x0000 },
++	{ 0xc9, 0x0000 },
++	{ 0xca, 0x0000 },
++	{ 0xcb, 0x0000 },
++	{ 0xcc, 0x0000 },
++	{ 0xcf, 0x0013 },
++	{ 0xd0, 0x0680 },
++	{ 0xd1, 0x1c17 },
++	{ 0xd2, 0x8c00 },
++	{ 0xd3, 0xaa20 },
++	{ 0xd6, 0x0400 },
++	{ 0xd9, 0x0809 },
++	{ 0xfe, 0x10ec },
++	{ 0xff, 0x6231 },
++};
++
++static int rt5639_reset(struct snd_soc_codec *codec)
++{
++	return snd_soc_write(codec, RT5639_RESET, 0);
++}
++
++static bool rt5639_volatile_register(struct device *dev, unsigned int reg)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(rt5639_ranges); i++)
++		if ((reg >= rt5639_ranges[i].window_start &&
++		     reg <= rt5639_ranges[i].window_start +
++		     rt5639_ranges[i].window_len) ||
++		    (reg >= rt5639_ranges[i].range_min &&
++		     reg <= rt5639_ranges[i].range_max))
++			return true;
++
++	switch (reg) {
++	case RT5639_RESET:
++	case RT5639_ASRC_5:
++	case RT5639_EQ_CTRL1:
++	case RT5639_DRC_AGC_1:
++	case RT5639_IRQ_CTRL2:
++	case RT5639_INT_IRQ_ST:
++	case RT5639_PRIV_INDEX:
++	case RT5639_PRIV_DATA:
++	case RT5639_PGM_REG_ARR1:
++	case RT5639_PGM_REG_ARR3:
++	case RT5639_VENDOR_ID:
++	case RT5639_VENDOR_ID1:
++	case RT5639_VENDOR_ID2:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool rt5639_readable_register(struct device *dev, unsigned int reg)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(rt5639_ranges); i++)
++		if ((reg >= rt5639_ranges[i].window_start &&
++		     reg <= rt5639_ranges[i].window_start +
++		     rt5639_ranges[i].window_len) ||
++		    (reg >= rt5639_ranges[i].range_min &&
++		     reg <= rt5639_ranges[i].range_max))
++			return true;
++
++	switch (reg) {
++	case RT5639_RESET:
++	case RT5639_SPK_VOL:
++	case RT5639_HP_VOL:
++	case RT5639_OUTPUT:
++	case RT5639_IN1_IN2:
++	case RT5639_IN3_IN4:
++	case RT5639_INL_INR_VOL:
++	case RT5639_DAC1_DIG_VOL:
++	case RT5639_DAC2_DIG_VOL:
++	case RT5639_DAC2_CTRL:
++	case RT5639_ADC_DIG_VOL:
++	case RT5639_ADC_DATA:
++	case RT5639_ADC_BST_VOL:
++	case RT5639_STO_ADC_MIXER:
++	case RT5639_MONO_ADC_MIXER:
++	case RT5639_AD_DA_MIXER:
++	case RT5639_STO_DAC_MIXER:
++	case RT5639_MONO_DAC_MIXER:
++	case RT5639_DIG_MIXER:
++	case RT5639_DIG_INF_DATA:
++	case RT5639_REC_L1_MIXER:
++	case RT5639_REC_L2_MIXER:
++	case RT5639_REC_R1_MIXER:
++	case RT5639_REC_R2_MIXER:
++	case RT5639_HPO_MIXER:
++	case RT5639_SPK_L_MIXER:
++	case RT5639_SPK_R_MIXER:
++	case RT5639_SPO_L_MIXER:
++	case RT5639_SPO_R_MIXER:
++	case RT5639_SPO_CLSD_RATIO:
++	case RT5639_OUT_L1_MIXER:
++	case RT5639_OUT_L2_MIXER:
++	case RT5639_OUT_L3_MIXER:
++	case RT5639_OUT_R1_MIXER:
++	case RT5639_OUT_R2_MIXER:
++	case RT5639_OUT_R3_MIXER:
++	case RT5639_LOUT_MIXER:
++	case RT5639_PWR_DIG1:
++	case RT5639_PWR_DIG2:
++	case RT5639_PWR_ANLG1:
++	case RT5639_PWR_ANLG2:
++	case RT5639_PWR_MIXER:
++	case RT5639_PWR_VOL:
++	case RT5639_PRIV_INDEX:
++	case RT5639_PRIV_DATA:
++	case RT5639_I2S1_SDP:
++	case RT5639_I2S2_SDP:
++	case RT5639_ADDA_CLK1:
++	case RT5639_DMIC:
++	case RT5639_GLB_CLK:
++	case RT5639_PLL_CTRL1:
++	case RT5639_PLL_CTRL2:
++	case RT5639_ASRC_1:
++	case RT5639_ASRC_2:
++	case RT5639_ASRC_3:
++	case RT5639_ASRC_4:
++	case RT5639_ASRC_5:
++	case RT5639_CLS_D_OVCD:
++	case RT5639_CLS_D_OUT:
++	case RT5639_DEPOP_M1:
++	case RT5639_DEPOP_M2:
++	case RT5639_DEPOP_M3:
++	case RT5639_CHARGE_PUMP:
++	case RT5639_PV_DET_SPK_G:
++	case RT5639_MICBIAS:
++	case RT5639_EQ_CTRL1:
++	case RT5639_EQ_CTRL2:
++	case RT5639_WIND_FILTER:
++	case RT5639_DRC_AGC_1:
++	case RT5639_DRC_AGC_2:
++	case RT5639_DRC_AGC_3:
++	case RT5639_JD_CTRL:
++	case RT5639_IRQ_CTRL1:
++	case RT5639_IRQ_CTRL2:
++	case RT5639_INT_IRQ_ST:
++	case RT5639_GPIO_CTRL1:
++	case RT5639_GPIO_CTRL2:
++	case RT5639_PGM_REG_ARR1:
++	case RT5639_PGM_REG_ARR2:
++	case RT5639_PGM_REG_ARR3:
++	case RT5639_PGM_REG_ARR4:
++	case RT5639_PGM_REG_ARR5:
++	case RT5639_ADJ_HPF:
++	case RT5639_HP_CALIB_AMP_DET:
++	case RT5639_SV_ZCD1:
++	case RT5639_DUMMY1:
++	case RT5639_DUMMY2:
++	case RT5639_DUMMY3:
++	case RT5639_VENDOR_ID:
++	case RT5639_VENDOR_ID1:
++	case RT5639_VENDOR_ID2:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
++static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -65625, 375, 0);
++static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
++static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
++static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
++
++/* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
++static unsigned int bst_tlv[] = {
++	TLV_DB_RANGE_HEAD(7),
++	0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
++	1, 1, TLV_DB_SCALE_ITEM(2000, 0, 0),
++	2, 2, TLV_DB_SCALE_ITEM(2400, 0, 0),
++	3, 5, TLV_DB_SCALE_ITEM(3000, 500, 0),
++	6, 6, TLV_DB_SCALE_ITEM(4400, 0, 0),
++	7, 7, TLV_DB_SCALE_ITEM(5000, 0, 0),
++	8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0),
++};
++
++/* Interface data select */
++static const char * const rt5639_data_select[] = {
++	"Normal", "left copy to right", "right copy to left", "Swap"};
++
++static SOC_ENUM_SINGLE_DECL(rt5639_if1_dac_enum, RT5639_DIG_INF_DATA,
++	RT5639_IF1_DAC_SEL_SFT, rt5639_data_select);
++
++static SOC_ENUM_SINGLE_DECL(rt5639_if1_adc_enum, RT5639_DIG_INF_DATA,
++	RT5639_IF1_ADC_SEL_SFT, rt5639_data_select);
++
++static SOC_ENUM_SINGLE_DECL(rt5639_if2_dac_enum, RT5639_DIG_INF_DATA,
++	RT5639_IF2_DAC_SEL_SFT, rt5639_data_select);
++
++static SOC_ENUM_SINGLE_DECL(rt5639_if2_adc_enum, RT5639_DIG_INF_DATA,
++	RT5639_IF2_ADC_SEL_SFT, rt5639_data_select);
++
++/* Class D speaker gain ratio */
++static const char * const rt5639_clsd_spk_ratio[] = {"1.66x", "1.83x", "1.94x",
++	"2x", "2.11x", "2.22x", "2.33x", "2.44x", "2.55x", "2.66x", "2.77x"};
++
++static SOC_ENUM_SINGLE_DECL(rt5639_clsd_spk_ratio_enum,
++	RT5639_CLS_D_OUT, RT5639_CLSD_RATIO_SFT, rt5639_clsd_spk_ratio);
++
++static const struct snd_kcontrol_new rt5639_snd_controls[] = {
++	/* Speaker Output Volume */
++	SOC_DOUBLE("Speaker Channel Switch", RT5639_SPK_VOL,
++		RT5639_VOL_L_SFT, RT5639_VOL_R_SFT, 1, 1),
++	SOC_DOUBLE_TLV("Speaker Playback Volume", RT5639_SPK_VOL,
++		RT5639_L_VOL_SFT, RT5639_R_VOL_SFT, 39, 1, out_vol_tlv),
++
++	/* Headphone Output Volume */
++	SOC_DOUBLE("HP Channel Switch", RT5639_HP_VOL,
++		RT5639_VOL_L_SFT, RT5639_VOL_R_SFT, 1, 1),
++	SOC_DOUBLE_TLV("HP Playback Volume", RT5639_HP_VOL,
++		RT5639_L_VOL_SFT, RT5639_R_VOL_SFT, 39, 1, out_vol_tlv),
++
++	/* OUTPUT Control */
++	SOC_DOUBLE("OUT Playback Switch", RT5639_OUTPUT,
++		RT5639_L_MUTE_SFT, RT5639_R_MUTE_SFT, 1, 1),
++	SOC_DOUBLE("OUT Channel Switch", RT5639_OUTPUT,
++		RT5639_VOL_L_SFT, RT5639_VOL_R_SFT, 1, 1),
++	SOC_DOUBLE_TLV("OUT Playback Volume", RT5639_OUTPUT,
++		RT5639_L_VOL_SFT, RT5639_R_VOL_SFT, 39, 1, out_vol_tlv),
++
++	/* DAC Digital Volume */
++	SOC_DOUBLE("DAC2 Playback Switch", RT5639_DAC2_CTRL,
++		RT5639_M_DAC_L2_VOL_SFT, RT5639_M_DAC_R2_VOL_SFT, 1, 1),
++	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5639_DAC1_DIG_VOL,
++		RT5639_L_VOL_SFT, RT5639_R_VOL_SFT, 175, 0, dac_vol_tlv),
++
++	/* IN1/IN2 Control */
++	SOC_SINGLE_TLV("IN1 Boost", RT5639_IN1_IN2, RT5639_BST_SFT1, 8, 0,
++		bst_tlv),
++	SOC_SINGLE_TLV("IN2 Boost", RT5639_IN3_IN4, RT5639_BST_SFT2, 8, 0,
++		bst_tlv),
++
++	/* INL/INR Volume Control */
++	SOC_DOUBLE_TLV("IN Capture Volume", RT5639_INL_INR_VOL,
++		RT5639_INL_VOL_SFT, RT5639_INR_VOL_SFT, 31, 1, in_vol_tlv),
++
++	/* ADC Digital Volume Control */
++	SOC_DOUBLE("ADC Capture Switch", RT5639_ADC_DIG_VOL,
++		RT5639_L_MUTE_SFT, RT5639_R_MUTE_SFT, 1, 1),
++	SOC_DOUBLE_TLV("ADC Capture Volume", RT5639_ADC_DIG_VOL,
++		RT5639_L_VOL_SFT, RT5639_R_VOL_SFT, 127, 0, adc_vol_tlv),
++	SOC_DOUBLE_TLV("Mono ADC Capture Volume", RT5639_ADC_DATA,
++		RT5639_L_VOL_SFT, RT5639_R_VOL_SFT, 127, 0, adc_vol_tlv),
++
++	/* ADC Boost Volume Control */
++	SOC_DOUBLE_TLV("ADC Boost Gain", RT5639_ADC_BST_VOL,
++		RT5639_ADC_L_BST_SFT, RT5639_ADC_R_BST_SFT, 3, 0, adc_bst_tlv),
++
++	/* Class D speaker gain ratio */
++	SOC_ENUM("Class D SPK Ratio Control", rt5639_clsd_spk_ratio_enum),
++
++	/* Data Swap */
++	SOC_ENUM("ADC IF1 Data Switch", rt5639_if1_adc_enum),
++	SOC_ENUM("DAC IF1 Data Switch", rt5639_if1_dac_enum),
++	SOC_ENUM("ADC IF2 Data Switch", rt5639_if2_adc_enum),
++	SOC_ENUM("DAC IF2 Data Switch", rt5639_if2_dac_enum),
++};
++
++/**
++ * set_dmic_clk - Set parameter of dmic.
++ *
++ * @w: DAPM widget.
++ * @kcontrol: The kcontrol of this widget.
++ * @event: Event id.
++ *
++ * Choose dmic clock between 1MHz and 3MHz.
++ * It is better for clock to approximate 3MHz.
++ */
++static int set_dmic_clk(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++	int div[] = {2, 3, 4, 6, 8, 12};
++	int i, idx = -EINVAL;
++	int rate, red, bound, temp;
++
++	rate = rt5639->sysclk;
++	red = 3000000 * 12;
++	for (i = 0; i < ARRAY_SIZE(div); i++) {
++		bound = div[i] * 3000000;
++		if (rate > bound)
++			continue;
++		temp = bound - rate;
++		if (temp < red) {
++			red = temp;
++			idx = i;
++		}
++	}
++	if (idx < 0)
++		dev_err(codec->dev, "Failed to set DMIC clock\n");
++	else
++		snd_soc_update_bits(codec, RT5639_DMIC, RT5639_DMIC_CLK_MASK,
++					idx << RT5639_DMIC_CLK_SFT);
++	return idx;
++}
++
++static int is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
++			 struct snd_soc_dapm_widget *sink)
++{
++	unsigned int val;
++
++	val = snd_soc_read(source->codec, RT5639_GLB_CLK);
++	val &= RT5639_SCLK_SRC_MASK;
++	if (val == RT5639_SCLK_SRC_PLL1)
++		return 1;
++	else
++		return 0;
++}
++
++/* Digital Mixer */
++static const struct snd_kcontrol_new rt5639_sto_adc_l_mix[] = {
++	SOC_DAPM_SINGLE("ADC1 Switch", RT5639_STO_ADC_MIXER,
++			RT5639_M_ADC_L1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("ADC2 Switch", RT5639_STO_ADC_MIXER,
++			RT5639_M_ADC_L2_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_sto_adc_r_mix[] = {
++	SOC_DAPM_SINGLE("ADC1 Switch", RT5639_STO_ADC_MIXER,
++			RT5639_M_ADC_R1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("ADC2 Switch", RT5639_STO_ADC_MIXER,
++			RT5639_M_ADC_R2_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_mono_adc_l_mix[] = {
++	SOC_DAPM_SINGLE("ADC1 Switch", RT5639_MONO_ADC_MIXER,
++			RT5639_M_MONO_ADC_L1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("ADC2 Switch", RT5639_MONO_ADC_MIXER,
++			RT5639_M_MONO_ADC_L2_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_mono_adc_r_mix[] = {
++	SOC_DAPM_SINGLE("ADC1 Switch", RT5639_MONO_ADC_MIXER,
++			RT5639_M_MONO_ADC_R1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("ADC2 Switch", RT5639_MONO_ADC_MIXER,
++			RT5639_M_MONO_ADC_R2_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_dac_l_mix[] = {
++	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5639_AD_DA_MIXER,
++			RT5639_M_ADCMIX_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INF1 Switch", RT5639_AD_DA_MIXER,
++			RT5639_M_IF1_DAC_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_dac_r_mix[] = {
++	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5639_AD_DA_MIXER,
++			RT5639_M_ADCMIX_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INF1 Switch", RT5639_AD_DA_MIXER,
++			RT5639_M_IF1_DAC_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_sto_dac_l_mix[] = {
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5639_STO_DAC_MIXER,
++			RT5639_M_DAC_L1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5639_STO_DAC_MIXER,
++			RT5639_M_DAC_L2_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_sto_dac_r_mix[] = {
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5639_STO_DAC_MIXER,
++			RT5639_M_DAC_R1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5639_STO_DAC_MIXER,
++			RT5639_M_DAC_R2_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_mono_dac_l_mix[] = {
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5639_MONO_DAC_MIXER,
++			RT5639_M_DAC_L1_MONO_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5639_MONO_DAC_MIXER,
++			RT5639_M_DAC_L2_MONO_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5639_MONO_DAC_MIXER,
++			RT5639_M_DAC_R2_MONO_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_mono_dac_r_mix[] = {
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5639_MONO_DAC_MIXER,
++			RT5639_M_DAC_R1_MONO_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5639_MONO_DAC_MIXER,
++			RT5639_M_DAC_R2_MONO_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5639_MONO_DAC_MIXER,
++			RT5639_M_DAC_L2_MONO_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_dig_l_mix[] = {
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5639_DIG_MIXER,
++			RT5639_M_STO_L_DAC_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5639_DIG_MIXER,
++			RT5639_M_DAC_L2_DAC_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_dig_r_mix[] = {
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5639_DIG_MIXER,
++			RT5639_M_STO_R_DAC_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5639_DIG_MIXER,
++			RT5639_M_DAC_R2_DAC_R_SFT, 1, 1),
++};
++
++/* Analog Input Mixer */
++static const struct snd_kcontrol_new rt5639_rec_l_mix[] = {
++	SOC_DAPM_SINGLE("HPOL Switch", RT5639_REC_L2_MIXER,
++			RT5639_M_HP_L_RM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INL Switch", RT5639_REC_L2_MIXER,
++			RT5639_M_IN_L_RM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5639_REC_L2_MIXER,
++			RT5639_M_BST2_RM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST2 Switch", RT5639_REC_L2_MIXER,
++			RT5639_M_BST4_RM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5639_REC_L2_MIXER,
++			RT5639_M_BST1_RM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUT MIXL Switch", RT5639_REC_L2_MIXER,
++			RT5639_M_OM_L_RM_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_rec_r_mix[] = {
++	SOC_DAPM_SINGLE("HPOR Switch", RT5639_REC_R2_MIXER,
++			RT5639_M_HP_R_RM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INR Switch", RT5639_REC_R2_MIXER,
++			RT5639_M_IN_R_RM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5639_REC_R2_MIXER,
++			RT5639_M_BST2_RM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST2 Switch", RT5639_REC_R2_MIXER,
++			RT5639_M_BST4_RM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5639_REC_R2_MIXER,
++			RT5639_M_BST1_RM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUT MIXR Switch", RT5639_REC_R2_MIXER,
++			RT5639_M_OM_R_RM_R_SFT, 1, 1),
++};
++
++/* Analog Output Mixer */
++static const struct snd_kcontrol_new rt5639_spk_l_mix[] = {
++	SOC_DAPM_SINGLE("REC MIXL Switch", RT5639_SPK_L_MIXER,
++			RT5639_M_RM_L_SM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INL Switch", RT5639_SPK_L_MIXER,
++			RT5639_M_IN_L_SM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5639_SPK_L_MIXER,
++			RT5639_M_DAC_L1_SM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5639_SPK_L_MIXER,
++			RT5639_M_DAC_L2_SM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUT MIXL Switch", RT5639_SPK_L_MIXER,
++			RT5639_M_OM_L_SM_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_spk_r_mix[] = {
++	SOC_DAPM_SINGLE("REC MIXR Switch", RT5639_SPK_R_MIXER,
++			RT5639_M_RM_R_SM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INR Switch", RT5639_SPK_R_MIXER,
++			RT5639_M_IN_R_SM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5639_SPK_R_MIXER,
++			RT5639_M_DAC_R1_SM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5639_SPK_R_MIXER,
++			RT5639_M_DAC_R2_SM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUT MIXR Switch", RT5639_SPK_R_MIXER,
++			RT5639_M_OM_R_SM_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_out_l_mix[] = {
++	SOC_DAPM_SINGLE("BST1 Switch", RT5639_OUT_L3_MIXER,
++			RT5639_M_BST1_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INL Switch", RT5639_OUT_L3_MIXER,
++			RT5639_M_IN_L_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("REC MIXL Switch", RT5639_OUT_L3_MIXER,
++			RT5639_M_RM_L_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5639_OUT_L3_MIXER,
++			RT5639_M_DAC_R2_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5639_OUT_L3_MIXER,
++			RT5639_M_DAC_L2_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5639_OUT_L3_MIXER,
++			RT5639_M_DAC_L1_OM_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_out_r_mix[] = {
++	SOC_DAPM_SINGLE("BST2 Switch", RT5639_OUT_R3_MIXER,
++			RT5639_M_BST4_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5639_OUT_R3_MIXER,
++			RT5639_M_BST1_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INR Switch", RT5639_OUT_R3_MIXER,
++			RT5639_M_IN_R_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("REC MIXR Switch", RT5639_OUT_R3_MIXER,
++			RT5639_M_RM_R_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5639_OUT_R3_MIXER,
++			RT5639_M_DAC_L2_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5639_OUT_R3_MIXER,
++			RT5639_M_DAC_R2_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5639_OUT_R3_MIXER,
++			RT5639_M_DAC_R1_OM_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_spo_l_mix[] = {
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5639_SPO_L_MIXER,
++			RT5639_M_DAC_R1_SPM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5639_SPO_L_MIXER,
++			RT5639_M_DAC_L1_SPM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("SPKVOL R Switch", RT5639_SPO_L_MIXER,
++			RT5639_M_SV_R_SPM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("SPKVOL L Switch", RT5639_SPO_L_MIXER,
++			RT5639_M_SV_L_SPM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5639_SPO_L_MIXER,
++			RT5639_M_BST1_SPM_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_spo_r_mix[] = {
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5639_SPO_R_MIXER,
++			RT5639_M_DAC_R1_SPM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("SPKVOL R Switch", RT5639_SPO_R_MIXER,
++			RT5639_M_SV_R_SPM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5639_SPO_R_MIXER,
++			RT5639_M_BST1_SPM_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_hpo_mix[] = {
++	SOC_DAPM_SINGLE("HPO MIX DAC1 Switch", RT5639_HPO_MIXER,
++			RT5639_M_DAC1_HM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("HPO MIX HPVOL Switch", RT5639_HPO_MIXER,
++			RT5639_M_HPVOL_HM_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5639_lout_mix[] = {
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5639_LOUT_MIXER,
++			RT5639_M_DAC_L1_LM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5639_LOUT_MIXER,
++			RT5639_M_DAC_R1_LM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUTVOL L Switch", RT5639_LOUT_MIXER,
++			RT5639_M_OV_L_LM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUTVOL R Switch", RT5639_LOUT_MIXER,
++			RT5639_M_OV_R_LM_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new spk_l_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5639_SPK_VOL,
++		RT5639_L_MUTE_SFT, 1, 1);
++
++static const struct snd_kcontrol_new spk_r_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5639_SPK_VOL,
++		RT5639_R_MUTE_SFT, 1, 1);
++
++static const struct snd_kcontrol_new hp_l_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5639_HP_VOL,
++		RT5639_L_MUTE_SFT, 1, 1);
++
++static const struct snd_kcontrol_new hp_r_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5639_HP_VOL,
++		RT5639_R_MUTE_SFT, 1, 1);
++
++/* Stereo ADC source */
++static const char * const rt5639_stereo_adc1_src[] = {
++	"DIG MIX", "ADC"
++};
++
++static SOC_ENUM_SINGLE_DECL(rt5639_stereo_adc1_enum, RT5639_STO_ADC_MIXER,
++			    RT5639_ADC_1_SRC_SFT, rt5639_stereo_adc1_src);
++
++static const struct snd_kcontrol_new rt5639_sto_adc_1_mux =
++	SOC_DAPM_ENUM("Stereo ADC1 Mux", rt5639_stereo_adc1_enum);
++
++static const char * const rt5639_stereo_adc2_src[] = {
++	"DMIC1", "DMIC2", "DIG MIX"
++};
++
++static SOC_ENUM_SINGLE_DECL(rt5639_stereo_adc2_enum, RT5639_STO_ADC_MIXER,
++			    RT5639_ADC_2_SRC_SFT, rt5639_stereo_adc2_src);
++
++static const struct snd_kcontrol_new rt5639_sto_adc_2_mux =
++	SOC_DAPM_ENUM("Stereo ADC2 Mux", rt5639_stereo_adc2_enum);
++
++/* Mono ADC source */
++static const char * const rt5639_mono_adc_l1_src[] = {
++	"Mono DAC MIXL", "ADCL"
++};
++
++static SOC_ENUM_SINGLE_DECL(rt5639_mono_adc_l1_enum, RT5639_MONO_ADC_MIXER,
++			    RT5639_MONO_ADC_L1_SRC_SFT, rt5639_mono_adc_l1_src);
++
++static const struct snd_kcontrol_new rt5639_mono_adc_l1_mux =
++	SOC_DAPM_ENUM("Mono ADC1 left source", rt5639_mono_adc_l1_enum);
++
++static const char * const rt5639_mono_adc_l2_src[] = {
++	"DMIC L1", "DMIC L2", "Mono DAC MIXL"
++};
++
++static SOC_ENUM_SINGLE_DECL(rt5639_mono_adc_l2_enum, RT5639_MONO_ADC_MIXER,
++			    RT5639_MONO_ADC_L2_SRC_SFT, rt5639_mono_adc_l2_src);
++
++static const struct snd_kcontrol_new rt5639_mono_adc_l2_mux =
++	SOC_DAPM_ENUM("Mono ADC2 left source", rt5639_mono_adc_l2_enum);
++
++static const char * const rt5639_mono_adc_r1_src[] = {
++	"Mono DAC MIXR", "ADCR"
++};
++
++static SOC_ENUM_SINGLE_DECL(rt5639_mono_adc_r1_enum, RT5639_MONO_ADC_MIXER,
++			    RT5639_MONO_ADC_R1_SRC_SFT, rt5639_mono_adc_r1_src);
++
++static const struct snd_kcontrol_new rt5639_mono_adc_r1_mux =
++	SOC_DAPM_ENUM("Mono ADC1 right source", rt5639_mono_adc_r1_enum);
++
++static const char * const rt5639_mono_adc_r2_src[] = {
++	"DMIC R1", "DMIC R2", "Mono DAC MIXR"
++};
++
++static SOC_ENUM_SINGLE_DECL(rt5639_mono_adc_r2_enum, RT5639_MONO_ADC_MIXER,
++			    RT5639_MONO_ADC_R2_SRC_SFT, rt5639_mono_adc_r2_src);
++
++static const struct snd_kcontrol_new rt5639_mono_adc_r2_mux =
++	SOC_DAPM_ENUM("Mono ADC2 right source", rt5639_mono_adc_r2_enum);
++
++/* digital interface and iis interface map */
++static const char * const rt5639_dai_iis_map[] = {
++	"1:1|2:2", "1:2|2:1", "1:1|2:1", "1:2|2:2"
++};
++
++static int rt5639_dai_iis_map_values[] = {
++	0,
++	5,
++	6,
++	7,
++};
++
++static SOC_VALUE_ENUM_SINGLE_DECL(rt5639_dai_iis_map_enum,
++				  RT5639_I2S1_SDP, RT5639_I2S_IF_SFT,
++				  0x7, rt5639_dai_iis_map,
++				  rt5639_dai_iis_map_values);
++
++static const struct snd_kcontrol_new rt5639_dai_mux =
++	SOC_DAPM_VALUE_ENUM("DAI select", rt5639_dai_iis_map_enum);
++
++/* SDI select */
++static const char * const rt5639_sdi_sel[] = {
++	"IF1", "IF2"
++};
++
++static SOC_ENUM_SINGLE_DECL(rt5639_sdi_sel_enum, RT5639_I2S2_SDP,
++			    RT5639_I2S2_SDI_SFT, rt5639_sdi_sel);
++
++static const struct snd_kcontrol_new rt5639_sdi_mux =
++	SOC_DAPM_ENUM("SDI select", rt5639_sdi_sel_enum);
++
++static int rt5639_set_dmic1_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_update_bits(codec, RT5639_GPIO_CTRL1,
++			RT5639_GP2_PIN_MASK | RT5639_GP3_PIN_MASK,
++			RT5639_GP2_PIN_DMIC1_SCL | RT5639_GP3_PIN_DMIC1_SDA);
++		snd_soc_update_bits(codec, RT5639_DMIC,
++			RT5639_DMIC_1L_LH_MASK | RT5639_DMIC_1R_LH_MASK |
++			RT5639_DMIC_1_DP_MASK,
++			RT5639_DMIC_1L_LH_FALLING | RT5639_DMIC_1R_LH_RISING |
++			RT5639_DMIC_1_DP_IN1P);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static int rt5639_set_dmic2_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_update_bits(codec, RT5639_GPIO_CTRL1,
++			RT5639_GP2_PIN_MASK | RT5639_GP4_PIN_MASK,
++			RT5639_GP2_PIN_DMIC1_SCL | RT5639_GP4_PIN_DMIC2_SDA);
++		snd_soc_update_bits(codec, RT5639_DMIC,
++			RT5639_DMIC_2L_LH_MASK | RT5639_DMIC_2R_LH_MASK |
++			RT5639_DMIC_2_DP_MASK,
++			RT5639_DMIC_2L_LH_FALLING | RT5639_DMIC_2R_LH_RISING |
++			RT5639_DMIC_2_DP_IN1N);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static void hp_amp_power_on(struct snd_soc_codec *codec)
++{
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++
++	/* depop parameters */
++	regmap_update_bits(rt5639->regmap, RT5639_PR_BASE +
++		RT5639_CHPUMP_INT_REG1, 0x0700, 0x0200);
++	regmap_update_bits(rt5639->regmap, RT5639_DEPOP_M2,
++		RT5639_DEPOP_MASK, RT5639_DEPOP_MAN);
++	regmap_update_bits(rt5639->regmap, RT5639_DEPOP_M1,
++		RT5639_HP_CP_MASK | RT5639_HP_SG_MASK | RT5639_HP_CB_MASK,
++		RT5639_HP_CP_PU | RT5639_HP_SG_DIS | RT5639_HP_CB_PU);
++	regmap_write(rt5639->regmap, RT5639_PR_BASE + RT5639_HP_DCC_INT1,
++			   0x9f00);
++	/* headphone amp power on */
++	regmap_update_bits(rt5639->regmap, RT5639_PWR_ANLG1,
++		RT5639_PWR_FV1 | RT5639_PWR_FV2, 0);
++	regmap_update_bits(rt5639->regmap, RT5639_PWR_ANLG1,
++		RT5639_PWR_HA,
++		RT5639_PWR_HA);
++	usleep_range(10000, 15000);
++	regmap_update_bits(rt5639->regmap, RT5639_PWR_ANLG1,
++		RT5639_PWR_FV1 | RT5639_PWR_FV2 ,
++		RT5639_PWR_FV1 | RT5639_PWR_FV2);
++}
++
++static void rt5639_pmu_depop(struct snd_soc_codec *codec)
++{
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++
++	regmap_update_bits(rt5639->regmap, RT5639_DEPOP_M2,
++		RT5639_DEPOP_MASK | RT5639_DIG_DP_MASK,
++		RT5639_DEPOP_AUTO | RT5639_DIG_DP_EN);
++	regmap_update_bits(rt5639->regmap, RT5639_CHARGE_PUMP,
++		RT5639_PM_HP_MASK, RT5639_PM_HP_HV);
++
++	regmap_update_bits(rt5639->regmap, RT5639_DEPOP_M3,
++		RT5639_CP_FQ1_MASK | RT5639_CP_FQ2_MASK | RT5639_CP_FQ3_MASK,
++		(RT5639_CP_FQ_192_KHZ << RT5639_CP_FQ1_SFT) |
++		(RT5639_CP_FQ_12_KHZ << RT5639_CP_FQ2_SFT) |
++		(RT5639_CP_FQ_192_KHZ << RT5639_CP_FQ3_SFT));
++
++	regmap_write(rt5639->regmap, RT5639_PR_BASE +
++		RT5639_MAMP_INT_REG2, 0x1c00);
++	regmap_update_bits(rt5639->regmap, RT5639_DEPOP_M1,
++		RT5639_HP_CP_MASK | RT5639_HP_SG_MASK,
++		RT5639_HP_CP_PD | RT5639_HP_SG_EN);
++	regmap_update_bits(rt5639->regmap, RT5639_PR_BASE +
++		RT5639_CHPUMP_INT_REG1, 0x0700, 0x0400);
++}
++
++static int rt5639_hp_event(struct snd_soc_dapm_widget *w,
++			   struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		rt5639_pmu_depop(codec);
++		rt5639->hp_mute = 0;
++		break;
++
++	case SND_SOC_DAPM_PRE_PMD:
++		rt5639->hp_mute = 1;
++		usleep_range(70000, 75000);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static int rt5639_hp_power_event(struct snd_soc_dapm_widget *w,
++			   struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		hp_amp_power_on(codec);
++		break;
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static int rt5639_hp_post_event(struct snd_soc_dapm_widget *w,
++			   struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		if (!rt5639->hp_mute)
++			usleep_range(80000, 85000);
++
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget rt5639_dapm_widgets[] = {
++	SND_SOC_DAPM_SUPPLY("PLL1", RT5639_PWR_ANLG2, RT5639_PWR_PLL_BIT,
++		0, NULL, 0),
++	/* Input Side */
++	/* micbias */
++	SND_SOC_DAPM_SUPPLY("LDO2", RT5639_PWR_ANLG1, RT5639_PWR_LDO2_BIT,
++		0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("MICBIAS1", RT5639_PWR_ANLG2, RT5639_PWR_MB1_BIT,
++		0, NULL, 0),
++	/* Input Lines */
++	SND_SOC_DAPM_INPUT("DMIC1"),
++	SND_SOC_DAPM_INPUT("DMIC2"),
++	SND_SOC_DAPM_INPUT("IN1P"),
++	SND_SOC_DAPM_INPUT("IN1N"),
++	SND_SOC_DAPM_INPUT("IN2P"),
++	SND_SOC_DAPM_INPUT("IN2N"),
++	SND_SOC_DAPM_INPUT("IN3P"),
++	SND_SOC_DAPM_INPUT("IN3N"),
++	SND_SOC_DAPM_PGA("DMIC L1", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("DMIC R1", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("DMIC L2", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("DMIC R2", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++	SND_SOC_DAPM_SUPPLY("DMIC CLK", SND_SOC_NOPM, 0, 0,
++		set_dmic_clk, SND_SOC_DAPM_PRE_PMU),
++	SND_SOC_DAPM_SUPPLY("DMIC1 Power", RT5639_DMIC,
++		RT5639_DMIC_1_EN_SFT, 0, rt5639_set_dmic1_event,
++		SND_SOC_DAPM_PRE_PMU),
++	SND_SOC_DAPM_SUPPLY("DMIC2 Power", RT5639_DMIC,
++		RT5639_DMIC_2_EN_SFT, 0, rt5639_set_dmic2_event,
++		SND_SOC_DAPM_PRE_PMU),
++	/* Boost */
++	SND_SOC_DAPM_PGA("BST1", RT5639_PWR_ANLG2,
++		RT5639_PWR_BST1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("BST2", RT5639_PWR_ANLG2,
++		RT5639_PWR_BST4_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("BST3", RT5639_PWR_ANLG2,
++		RT5639_PWR_BST2_BIT, 0, NULL, 0),
++
++	/* Input Volume */
++	SND_SOC_DAPM_PGA("INL VOL", RT5639_PWR_VOL,
++		RT5639_PWR_IN_L_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("INR VOL", RT5639_PWR_VOL,
++		RT5639_PWR_IN_R_BIT, 0, NULL, 0),
++	/* REC Mixer */
++	SND_SOC_DAPM_MIXER("RECMIXL", RT5639_PWR_MIXER, RT5639_PWR_RM_L_BIT, 0,
++		rt5639_rec_l_mix, ARRAY_SIZE(rt5639_rec_l_mix)),
++	SND_SOC_DAPM_MIXER("RECMIXR", RT5639_PWR_MIXER, RT5639_PWR_RM_R_BIT, 0,
++		rt5639_rec_r_mix, ARRAY_SIZE(rt5639_rec_r_mix)),
++	/* ADCs */
++	SND_SOC_DAPM_ADC("ADC L", NULL, RT5639_PWR_DIG1, RT5639_PWR_ADC_L_BIT,
++		0),
++	SND_SOC_DAPM_ADC("ADC R", NULL, RT5639_PWR_DIG1, RT5639_PWR_ADC_R_BIT,
++		0),
++	/* ADC Mux */
++	SND_SOC_DAPM_MUX("Stereo ADC L2 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5639_sto_adc_2_mux),
++	SND_SOC_DAPM_MUX("Stereo ADC R2 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5639_sto_adc_2_mux),
++	SND_SOC_DAPM_MUX("Stereo ADC L1 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5639_sto_adc_1_mux),
++	SND_SOC_DAPM_MUX("Stereo ADC R1 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5639_sto_adc_1_mux),
++	SND_SOC_DAPM_MUX("Mono ADC L2 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5639_mono_adc_l2_mux),
++	SND_SOC_DAPM_MUX("Mono ADC L1 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5639_mono_adc_l1_mux),
++	SND_SOC_DAPM_MUX("Mono ADC R1 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5639_mono_adc_r1_mux),
++	SND_SOC_DAPM_MUX("Mono ADC R2 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5639_mono_adc_r2_mux),
++	/* ADC Mixer */
++	SND_SOC_DAPM_SUPPLY("Stereo Filter", RT5639_PWR_DIG2,
++		RT5639_PWR_ADC_SF_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Stereo ADC MIXL", SND_SOC_NOPM, 0, 0,
++		rt5639_sto_adc_l_mix, ARRAY_SIZE(rt5639_sto_adc_l_mix)),
++	SND_SOC_DAPM_MIXER("Stereo ADC MIXR", SND_SOC_NOPM, 0, 0,
++		rt5639_sto_adc_r_mix, ARRAY_SIZE(rt5639_sto_adc_r_mix)),
++	SND_SOC_DAPM_SUPPLY("Mono Left Filter", RT5639_PWR_DIG2,
++		RT5639_PWR_ADC_MF_L_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Mono ADC MIXL", SND_SOC_NOPM, 0, 0,
++		rt5639_mono_adc_l_mix, ARRAY_SIZE(rt5639_mono_adc_l_mix)),
++	SND_SOC_DAPM_SUPPLY("Mono Right Filter", RT5639_PWR_DIG2,
++		RT5639_PWR_ADC_MF_R_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Mono ADC MIXR", SND_SOC_NOPM, 0, 0,
++		rt5639_mono_adc_r_mix, ARRAY_SIZE(rt5639_mono_adc_r_mix)),
++
++	/* Digital Interface */
++	SND_SOC_DAPM_SUPPLY("I2S1", RT5639_PWR_DIG1,
++		RT5639_PWR_I2S1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 DAC L", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 DAC R", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 ADC L", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 ADC R", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("I2S2", RT5639_PWR_DIG1,
++		RT5639_PWR_I2S2_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF2 DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF2 DAC L", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF2 DAC R", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF2 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF2 ADC L", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF2 ADC R", SND_SOC_NOPM, 0, 0, NULL, 0),
++	/* Digital Interface Select */
++	SND_SOC_DAPM_MUX("DAI1 RX Mux", SND_SOC_NOPM, 0, 0, &rt5639_dai_mux),
++	SND_SOC_DAPM_MUX("DAI1 TX Mux", SND_SOC_NOPM, 0, 0, &rt5639_dai_mux),
++	SND_SOC_DAPM_MUX("DAI1 IF1 Mux", SND_SOC_NOPM, 0, 0, &rt5639_dai_mux),
++	SND_SOC_DAPM_MUX("DAI1 IF2 Mux", SND_SOC_NOPM, 0, 0, &rt5639_dai_mux),
++	SND_SOC_DAPM_MUX("SDI1 TX Mux", SND_SOC_NOPM, 0, 0, &rt5639_sdi_mux),
++	SND_SOC_DAPM_MUX("DAI2 RX Mux", SND_SOC_NOPM, 0, 0, &rt5639_dai_mux),
++	SND_SOC_DAPM_MUX("DAI2 TX Mux", SND_SOC_NOPM, 0, 0, &rt5639_dai_mux),
++	SND_SOC_DAPM_MUX("DAI2 IF1 Mux", SND_SOC_NOPM, 0, 0, &rt5639_dai_mux),
++	SND_SOC_DAPM_MUX("DAI2 IF2 Mux", SND_SOC_NOPM, 0, 0, &rt5639_dai_mux),
++	SND_SOC_DAPM_MUX("SDI2 TX Mux", SND_SOC_NOPM, 0, 0, &rt5639_sdi_mux),
++	/* Audio Interface */
++	SND_SOC_DAPM_AIF_IN("AIF1RX", "AIF1 Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("AIF1TX", "AIF1 Capture", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_IN("AIF2RX", "AIF2 Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("AIF2TX", "AIF2 Capture", 0, SND_SOC_NOPM, 0, 0),
++	/* Output Side */
++	/* DAC mixer before sound effect  */
++	SND_SOC_DAPM_MIXER("DAC MIXL", SND_SOC_NOPM, 0, 0,
++		rt5639_dac_l_mix, ARRAY_SIZE(rt5639_dac_l_mix)),
++	SND_SOC_DAPM_MIXER("DAC MIXR", SND_SOC_NOPM, 0, 0,
++		rt5639_dac_r_mix, ARRAY_SIZE(rt5639_dac_r_mix)),
++
++	/* DAC Mixer */
++	SND_SOC_DAPM_MIXER("Stereo DAC MIXL", SND_SOC_NOPM, 0, 0,
++		rt5639_sto_dac_l_mix, ARRAY_SIZE(rt5639_sto_dac_l_mix)),
++	SND_SOC_DAPM_MIXER("Stereo DAC MIXR", SND_SOC_NOPM, 0, 0,
++		rt5639_sto_dac_r_mix, ARRAY_SIZE(rt5639_sto_dac_r_mix)),
++	SND_SOC_DAPM_MIXER("Mono DAC MIXL", SND_SOC_NOPM, 0, 0,
++		rt5639_mono_dac_l_mix, ARRAY_SIZE(rt5639_mono_dac_l_mix)),
++	SND_SOC_DAPM_MIXER("Mono DAC MIXR", SND_SOC_NOPM, 0, 0,
++		rt5639_mono_dac_r_mix, ARRAY_SIZE(rt5639_mono_dac_r_mix)),
++	SND_SOC_DAPM_MIXER("DIG MIXL", SND_SOC_NOPM, 0, 0,
++		rt5639_dig_l_mix, ARRAY_SIZE(rt5639_dig_l_mix)),
++	SND_SOC_DAPM_MIXER("DIG MIXR", SND_SOC_NOPM, 0, 0,
++		rt5639_dig_r_mix, ARRAY_SIZE(rt5639_dig_r_mix)),
++	/* DACs */
++	SND_SOC_DAPM_DAC("DAC L1", NULL, RT5639_PWR_DIG1, RT5639_PWR_DAC_L1_BIT,
++		0),
++	SND_SOC_DAPM_DAC("DAC R1", NULL, RT5639_PWR_DIG1, RT5639_PWR_DAC_R1_BIT,
++		0),
++	SND_SOC_DAPM_SUPPLY("DAC L2 Filter", RT5639_PWR_DIG1,
++		RT5639_PWR_DAC_L2_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("DAC R2 Filter", RT5639_PWR_DIG1,
++		RT5639_PWR_DAC_R2_BIT, 0, NULL, 0),
++	/* SPK/OUT Mixer */
++	SND_SOC_DAPM_MIXER("SPK MIXL", RT5639_PWR_MIXER, RT5639_PWR_SM_L_BIT,
++		0, rt5639_spk_l_mix, ARRAY_SIZE(rt5639_spk_l_mix)),
++	SND_SOC_DAPM_MIXER("SPK MIXR", RT5639_PWR_MIXER, RT5639_PWR_SM_R_BIT,
++		0, rt5639_spk_r_mix, ARRAY_SIZE(rt5639_spk_r_mix)),
++	SND_SOC_DAPM_MIXER("OUT MIXL", RT5639_PWR_MIXER, RT5639_PWR_OM_L_BIT,
++		0, rt5639_out_l_mix, ARRAY_SIZE(rt5639_out_l_mix)),
++	SND_SOC_DAPM_MIXER("OUT MIXR", RT5639_PWR_MIXER, RT5639_PWR_OM_R_BIT,
++		0, rt5639_out_r_mix, ARRAY_SIZE(rt5639_out_r_mix)),
++	/* Ouput Volume */
++	SND_SOC_DAPM_PGA("SPKVOL L", RT5639_PWR_VOL,
++		RT5639_PWR_SV_L_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("SPKVOL R", RT5639_PWR_VOL,
++		RT5639_PWR_SV_R_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("OUTVOL L", RT5639_PWR_VOL,
++		RT5639_PWR_OV_L_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("OUTVOL R", RT5639_PWR_VOL,
++		RT5639_PWR_OV_R_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("HPOVOL L", RT5639_PWR_VOL,
++		RT5639_PWR_HV_L_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("HPOVOL R", RT5639_PWR_VOL,
++		RT5639_PWR_HV_R_BIT, 0, NULL, 0),
++	/* SPO/HPO/LOUT/Mono Mixer */
++	SND_SOC_DAPM_MIXER("SPOL MIX", SND_SOC_NOPM, 0,
++		0, rt5639_spo_l_mix, ARRAY_SIZE(rt5639_spo_l_mix)),
++	SND_SOC_DAPM_MIXER("SPOR MIX", SND_SOC_NOPM, 0,
++		0, rt5639_spo_r_mix, ARRAY_SIZE(rt5639_spo_r_mix)),
++	SND_SOC_DAPM_MIXER("HPO MIX L", SND_SOC_NOPM, 0, 0,
++		rt5639_hpo_mix, ARRAY_SIZE(rt5639_hpo_mix)),
++	SND_SOC_DAPM_MIXER("HPO MIX R", SND_SOC_NOPM, 0, 0,
++		rt5639_hpo_mix, ARRAY_SIZE(rt5639_hpo_mix)),
++	SND_SOC_DAPM_MIXER("LOUT MIX", RT5639_PWR_ANLG1, RT5639_PWR_LM_BIT, 0,
++		rt5639_lout_mix, ARRAY_SIZE(rt5639_lout_mix)),
++	SND_SOC_DAPM_SUPPLY_S("Improve HP Amp Drv", 1, SND_SOC_NOPM,
++		0, 0, rt5639_hp_power_event, SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_PGA_S("HP Amp", 1, SND_SOC_NOPM, 0, 0,
++		rt5639_hp_event,
++		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_SUPPLY("HP L Amp", RT5639_PWR_ANLG1,
++		RT5639_PWR_HP_L_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("HP R Amp", RT5639_PWR_ANLG1,
++		RT5639_PWR_HP_R_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("Improve SPK Amp Drv", RT5639_PWR_DIG1,
++		RT5639_PWR_CLS_D_BIT, 0, NULL, 0),
++
++	/* Output Switch */
++	SND_SOC_DAPM_SWITCH("Speaker L Playback", SND_SOC_NOPM, 0, 0,
++		&spk_l_enable_control),
++	SND_SOC_DAPM_SWITCH("Speaker R Playback", SND_SOC_NOPM, 0, 0,
++		&spk_r_enable_control),
++	SND_SOC_DAPM_SWITCH("HP L Playback", SND_SOC_NOPM, 0, 0,
++		&hp_l_enable_control),
++	SND_SOC_DAPM_SWITCH("HP R Playback", SND_SOC_NOPM, 0, 0,
++		&hp_r_enable_control),
++	SND_SOC_DAPM_POST("HP Post", rt5639_hp_post_event),
++
++	/* Output Lines */
++	SND_SOC_DAPM_OUTPUT("SPOLP"),
++	SND_SOC_DAPM_OUTPUT("SPOLN"),
++	SND_SOC_DAPM_OUTPUT("SPORP"),
++	SND_SOC_DAPM_OUTPUT("SPORN"),
++	SND_SOC_DAPM_OUTPUT("HPOL"),
++	SND_SOC_DAPM_OUTPUT("HPOR"),
++	SND_SOC_DAPM_OUTPUT("LOUTL"),
++	SND_SOC_DAPM_OUTPUT("LOUTR"),
++};
++
++static const struct snd_soc_dapm_route rt5639_dapm_routes[] = {
++	{"IN1P", NULL, "LDO2"},
++	{"IN2P", NULL, "LDO2"},
++	{"IN3P", NULL, "LDO2"},
++
++	{"DMIC L1", NULL, "DMIC1"},
++	{"DMIC R1", NULL, "DMIC1"},
++	{"DMIC L2", NULL, "DMIC2"},
++	{"DMIC R2", NULL, "DMIC2"},
++
++	{"BST1", NULL, "IN1P"},
++	{"BST1", NULL, "IN1N"},
++	{"BST2", NULL, "IN2P"},
++	{"BST2", NULL, "IN2N"},
++	{"BST3", NULL, "IN3P"},
++	{"BST3", NULL, "IN3N"},
++
++	{"INL VOL", NULL, "IN2P"},
++	{"INR VOL", NULL, "IN2N"},
++
++	{"RECMIXL", "HPOL Switch", "HPOL"},
++	{"RECMIXL", "INL Switch", "INL VOL"},
++	{"RECMIXL", "BST3 Switch", "BST3"},
++	{"RECMIXL", "BST2 Switch", "BST2"},
++	{"RECMIXL", "BST1 Switch", "BST1"},
++	{"RECMIXL", "OUT MIXL Switch", "OUT MIXL"},
++
++	{"RECMIXR", "HPOR Switch", "HPOR"},
++	{"RECMIXR", "INR Switch", "INR VOL"},
++	{"RECMIXR", "BST3 Switch", "BST3"},
++	{"RECMIXR", "BST2 Switch", "BST2"},
++	{"RECMIXR", "BST1 Switch", "BST1"},
++	{"RECMIXR", "OUT MIXR Switch", "OUT MIXR"},
++
++	{"ADC L", NULL, "RECMIXL"},
++	{"ADC R", NULL, "RECMIXR"},
++
++	{"DMIC L1", NULL, "DMIC CLK"},
++	{"DMIC L1", NULL, "DMIC1 Power"},
++	{"DMIC R1", NULL, "DMIC CLK"},
++	{"DMIC R1", NULL, "DMIC1 Power"},
++	{"DMIC L2", NULL, "DMIC CLK"},
++	{"DMIC L2", NULL, "DMIC2 Power"},
++	{"DMIC R2", NULL, "DMIC CLK"},
++	{"DMIC R2", NULL, "DMIC2 Power"},
++
++	{"Stereo ADC L2 Mux", "DMIC1", "DMIC L1"},
++	{"Stereo ADC L2 Mux", "DMIC2", "DMIC L2"},
++	{"Stereo ADC L2 Mux", "DIG MIX", "DIG MIXL"},
++	{"Stereo ADC L1 Mux", "ADC", "ADC L"},
++	{"Stereo ADC L1 Mux", "DIG MIX", "DIG MIXL"},
++
++	{"Stereo ADC R1 Mux", "ADC", "ADC R"},
++	{"Stereo ADC R1 Mux", "DIG MIX", "DIG MIXR"},
++	{"Stereo ADC R2 Mux", "DMIC1", "DMIC R1"},
++	{"Stereo ADC R2 Mux", "DMIC2", "DMIC R2"},
++	{"Stereo ADC R2 Mux", "DIG MIX", "DIG MIXR"},
++
++	{"Mono ADC L2 Mux", "DMIC L1", "DMIC L1"},
++	{"Mono ADC L2 Mux", "DMIC L2", "DMIC L2"},
++	{"Mono ADC L2 Mux", "Mono DAC MIXL", "Mono DAC MIXL"},
++	{"Mono ADC L1 Mux", "Mono DAC MIXL", "Mono DAC MIXL"},
++	{"Mono ADC L1 Mux", "ADCL", "ADC L"},
++
++	{"Mono ADC R1 Mux", "Mono DAC MIXR", "Mono DAC MIXR"},
++	{"Mono ADC R1 Mux", "ADCR", "ADC R"},
++	{"Mono ADC R2 Mux", "DMIC R1", "DMIC R1"},
++	{"Mono ADC R2 Mux", "DMIC R2", "DMIC R2"},
++	{"Mono ADC R2 Mux", "Mono DAC MIXR", "Mono DAC MIXR"},
++
++	{"Stereo ADC MIXL", "ADC1 Switch", "Stereo ADC L1 Mux"},
++	{"Stereo ADC MIXL", "ADC2 Switch", "Stereo ADC L2 Mux"},
++	{"Stereo ADC MIXL", NULL, "Stereo Filter"},
++	{"Stereo Filter", NULL, "PLL1", is_sys_clk_from_pll},
++
++	{"Stereo ADC MIXR", "ADC1 Switch", "Stereo ADC R1 Mux"},
++	{"Stereo ADC MIXR", "ADC2 Switch", "Stereo ADC R2 Mux"},
++	{"Stereo ADC MIXR", NULL, "Stereo Filter"},
++	{"Stereo Filter", NULL, "PLL1", is_sys_clk_from_pll},
++
++	{"Mono ADC MIXL", "ADC1 Switch", "Mono ADC L1 Mux"},
++	{"Mono ADC MIXL", "ADC2 Switch", "Mono ADC L2 Mux"},
++	{"Mono ADC MIXL", NULL, "Mono Left Filter"},
++	{"Mono Left Filter", NULL, "PLL1", is_sys_clk_from_pll},
++
++	{"Mono ADC MIXR", "ADC1 Switch", "Mono ADC R1 Mux"},
++	{"Mono ADC MIXR", "ADC2 Switch", "Mono ADC R2 Mux"},
++	{"Mono ADC MIXR", NULL, "Mono Right Filter"},
++	{"Mono Right Filter", NULL, "PLL1", is_sys_clk_from_pll},
++
++	{"IF2 ADC L", NULL, "Mono ADC MIXL"},
++	{"IF2 ADC R", NULL, "Mono ADC MIXR"},
++	{"IF1 ADC L", NULL, "Stereo ADC MIXL"},
++	{"IF1 ADC R", NULL, "Stereo ADC MIXR"},
++
++	{"IF1 ADC", NULL, "I2S1"},
++	{"IF1 ADC", NULL, "IF1 ADC L"},
++	{"IF1 ADC", NULL, "IF1 ADC R"},
++	{"IF2 ADC", NULL, "I2S2"},
++	{"IF2 ADC", NULL, "IF2 ADC L"},
++	{"IF2 ADC", NULL, "IF2 ADC R"},
++
++	{"DAI1 TX Mux", "1:1|2:2", "IF1 ADC"},
++	{"DAI1 TX Mux", "1:2|2:1", "IF2 ADC"},
++	{"DAI1 IF1 Mux", "1:1|2:1", "IF1 ADC"},
++	{"DAI1 IF2 Mux", "1:1|2:1", "IF2 ADC"},
++	{"SDI1 TX Mux", "IF1", "DAI1 IF1 Mux"},
++	{"SDI1 TX Mux", "IF2", "DAI1 IF2 Mux"},
++
++	{"DAI2 TX Mux", "1:2|2:1", "IF1 ADC"},
++	{"DAI2 TX Mux", "1:1|2:2", "IF2 ADC"},
++	{"DAI2 IF1 Mux", "1:2|2:2", "IF1 ADC"},
++	{"DAI2 IF2 Mux", "1:2|2:2", "IF2 ADC"},
++	{"SDI2 TX Mux", "IF1", "DAI2 IF1 Mux"},
++	{"SDI2 TX Mux", "IF2", "DAI2 IF2 Mux"},
++
++	{"AIF1TX", NULL, "DAI1 TX Mux"},
++	{"AIF1TX", NULL, "SDI1 TX Mux"},
++	{"AIF2TX", NULL, "DAI2 TX Mux"},
++	{"AIF2TX", NULL, "SDI2 TX Mux"},
++
++	{"DAI1 RX Mux", "1:1|2:2", "AIF1RX"},
++	{"DAI1 RX Mux", "1:1|2:1", "AIF1RX"},
++	{"DAI1 RX Mux", "1:2|2:1", "AIF2RX"},
++	{"DAI1 RX Mux", "1:2|2:2", "AIF2RX"},
++
++	{"DAI2 RX Mux", "1:2|2:1", "AIF1RX"},
++	{"DAI2 RX Mux", "1:1|2:1", "AIF1RX"},
++	{"DAI2 RX Mux", "1:1|2:2", "AIF2RX"},
++	{"DAI2 RX Mux", "1:2|2:2", "AIF2RX"},
++
++	{"IF1 DAC", NULL, "I2S1"},
++	{"IF1 DAC", NULL, "DAI1 RX Mux"},
++	{"IF2 DAC", NULL, "I2S2"},
++	{"IF2 DAC", NULL, "DAI2 RX Mux"},
++
++	{"IF1 DAC L", NULL, "IF1 DAC"},
++	{"IF1 DAC R", NULL, "IF1 DAC"},
++	{"IF2 DAC L", NULL, "IF2 DAC"},
++	{"IF2 DAC R", NULL, "IF2 DAC"},
++
++	{"DAC MIXL", "Stereo ADC Switch", "Stereo ADC MIXL"},
++	{"DAC MIXL", "INF1 Switch", "IF1 DAC L"},
++	{"DAC MIXR", "Stereo ADC Switch", "Stereo ADC MIXR"},
++	{"DAC MIXR", "INF1 Switch", "IF1 DAC R"},
++
++	{"Stereo DAC MIXL", "DAC L1 Switch", "DAC MIXL"},
++	{"Stereo DAC MIXL", "DAC L2 Switch", "IF2 DAC L"},
++	{"Stereo DAC MIXR", "DAC R1 Switch", "DAC MIXR"},
++	{"Stereo DAC MIXR", "DAC R2 Switch", "IF2 DAC R"},
++
++	{"Mono DAC MIXL", "DAC L1 Switch", "DAC MIXL"},
++	{"Mono DAC MIXL", "DAC L2 Switch", "IF2 DAC L"},
++	{"Mono DAC MIXL", "DAC R2 Switch", "IF2 DAC R"},
++	{"Mono DAC MIXR", "DAC R1 Switch", "DAC MIXR"},
++	{"Mono DAC MIXR", "DAC R2 Switch", "IF2 DAC R"},
++	{"Mono DAC MIXR", "DAC L2 Switch", "IF2 DAC L"},
++
++	{"DIG MIXL", "DAC L1 Switch", "DAC MIXL"},
++	{"DIG MIXL", "DAC L2 Switch", "IF2 DAC L"},
++	{"DIG MIXR", "DAC R1 Switch", "DAC MIXR"},
++	{"DIG MIXR", "DAC R2 Switch", "IF2 DAC R"},
++
++	{"IF2 DAC L", NULL, "DAC L2 Filter"},
++	{"IF2 DAC R", NULL, "DAC R2 Filter"},
++
++	{"DAC L1", NULL, "Stereo DAC MIXL"},
++	{"DAC L1", NULL, "PLL1", is_sys_clk_from_pll},
++	{"DAC R1", NULL, "Stereo DAC MIXR"},
++	{"DAC R1", NULL, "PLL1", is_sys_clk_from_pll},
++
++	{"SPK MIXL", "REC MIXL Switch", "RECMIXL"},
++	{"SPK MIXL", "INL Switch", "INL VOL"},
++	{"SPK MIXL", "DAC L1 Switch", "DAC L1"},
++	{"SPK MIXL", "OUT MIXL Switch", "OUT MIXL"},
++	{"SPK MIXR", "REC MIXR Switch", "RECMIXR"},
++	{"SPK MIXR", "INR Switch", "INR VOL"},
++	{"SPK MIXR", "DAC R1 Switch", "DAC R1"},
++	{"SPK MIXR", "OUT MIXR Switch", "OUT MIXR"},
++
++	{"OUT MIXL", "BST1 Switch", "BST1"},
++	{"OUT MIXL", "INL Switch", "INL VOL"},
++	{"OUT MIXL", "REC MIXL Switch", "RECMIXL"},
++	{"OUT MIXL", "DAC L1 Switch", "DAC L1"},
++
++	{"OUT MIXR", "BST2 Switch", "BST2"},
++	{"OUT MIXR", "BST1 Switch", "BST1"},
++	{"OUT MIXR", "INR Switch", "INR VOL"},
++	{"OUT MIXR", "REC MIXR Switch", "RECMIXR"},
++	{"OUT MIXR", "DAC R1 Switch", "DAC R1"},
++
++	{"SPKVOL L", NULL, "SPK MIXL"},
++	{"SPKVOL R", NULL, "SPK MIXR"},
++	{"HPOVOL L", NULL, "OUT MIXL"},
++	{"HPOVOL R", NULL, "OUT MIXR"},
++	{"OUTVOL L", NULL, "OUT MIXL"},
++	{"OUTVOL R", NULL, "OUT MIXR"},
++
++	{"SPOL MIX", "DAC R1 Switch", "DAC R1"},
++	{"SPOL MIX", "DAC L1 Switch", "DAC L1"},
++	{"SPOL MIX", "SPKVOL R Switch", "SPKVOL R"},
++	{"SPOL MIX", "SPKVOL L Switch", "SPKVOL L"},
++	{"SPOL MIX", "BST1 Switch", "BST1"},
++	{"SPOR MIX", "DAC R1 Switch", "DAC R1"},
++	{"SPOR MIX", "SPKVOL R Switch", "SPKVOL R"},
++	{"SPOR MIX", "BST1 Switch", "BST1"},
++
++	{"HPO MIX L", "HPO MIX DAC1 Switch", "DAC L1"},
++	{"HPO MIX L", "HPO MIX HPVOL Switch", "HPOVOL L"},
++	{"HPO MIX L", NULL, "HP L Amp"},
++	{"HPO MIX R", "HPO MIX DAC1 Switch", "DAC R1"},
++	{"HPO MIX R", "HPO MIX HPVOL Switch", "HPOVOL R"},
++	{"HPO MIX R", NULL, "HP R Amp"},
++
++	{"LOUT MIX", "DAC L1 Switch", "DAC L1"},
++	{"LOUT MIX", "DAC R1 Switch", "DAC R1"},
++	{"LOUT MIX", "OUTVOL L Switch", "OUTVOL L"},
++	{"LOUT MIX", "OUTVOL R Switch", "OUTVOL R"},
++
++	{"HP Amp", NULL, "HPO MIX L"},
++	{"HP Amp", NULL, "HPO MIX R"},
++
++	{"Speaker L Playback", "Switch", "SPOL MIX"},
++	{"Speaker R Playback", "Switch", "SPOR MIX"},
++	{"SPOLP", NULL, "Speaker L Playback"},
++	{"SPOLN", NULL, "Speaker L Playback"},
++	{"SPORP", NULL, "Speaker R Playback"},
++	{"SPORN", NULL, "Speaker R Playback"},
++
++	{"SPOLP", NULL, "Improve SPK Amp Drv"},
++	{"SPOLN", NULL, "Improve SPK Amp Drv"},
++	{"SPORP", NULL, "Improve SPK Amp Drv"},
++	{"SPORN", NULL, "Improve SPK Amp Drv"},
++
++	{"HPOL", NULL, "Improve HP Amp Drv"},
++	{"HPOR", NULL, "Improve HP Amp Drv"},
++
++	{"HP L Playback", "Switch", "HP Amp"},
++	{"HP R Playback", "Switch", "HP Amp"},
++	{"HPOL", NULL, "HP L Playback"},
++	{"HPOR", NULL, "HP R Playback"},
++	{"LOUTL", NULL, "LOUT MIX"},
++	{"LOUTR", NULL, "LOUT MIX"},
++};
++
++static int get_sdp_info(struct snd_soc_codec *codec, int dai_id)
++{
++	int ret = 0, val;
++
++	if (codec == NULL)
++		return -EINVAL;
++
++	val = snd_soc_read(codec, RT5639_I2S1_SDP);
++	val = (val & RT5639_I2S_IF_MASK) >> RT5639_I2S_IF_SFT;
++	switch (dai_id) {
++	case RT5639_AIF1:
++		switch (val) {
++		case RT5639_IF_123:
++		case RT5639_IF_132:
++			ret |= RT5639_U_IF1;
++			break;
++		case RT5639_IF_113:
++			ret |= RT5639_U_IF1;
++		case RT5639_IF_312:
++		case RT5639_IF_213:
++			ret |= RT5639_U_IF2;
++			break;
++		}
++		break;
++
++	case RT5639_AIF2:
++		switch (val) {
++		case RT5639_IF_231:
++		case RT5639_IF_213:
++			ret |= RT5639_U_IF1;
++			break;
++		case RT5639_IF_223:
++			ret |= RT5639_U_IF1;
++		case RT5639_IF_123:
++		case RT5639_IF_321:
++			ret |= RT5639_U_IF2;
++			break;
++		}
++		break;
++
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++static int get_clk_info(int sclk, int rate)
++{
++	int i, pd[] = {1, 2, 3, 4, 6, 8, 12, 16};
++
++	if (sclk <= 0 || rate <= 0)
++		return -EINVAL;
++
++	rate = rate << 8;
++	for (i = 0; i < ARRAY_SIZE(pd); i++)
++		if (sclk == rate * pd[i])
++			return i;
++
++	return -EINVAL;
++}
++
++static int rt5639_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++	unsigned int val_len = 0, val_clk, mask_clk;
++	int dai_sel, pre_div, bclk_ms, frame_size;
++
++	rt5639->lrck[dai->id] = params_rate(params);
++	pre_div = get_clk_info(rt5639->sysclk, rt5639->lrck[dai->id]);
++	if (pre_div < 0) {
++		dev_err(codec->dev, "Unsupported clock setting %d for DAI %d\n",
++			rt5639->lrck[dai->id], dai->id);
++		return -EINVAL;
++	}
++	frame_size = snd_soc_params_to_frame_size(params);
++	if (frame_size < 0) {
++		dev_err(codec->dev, "Unsupported frame size: %d\n", frame_size);
++		return frame_size;
++	}
++	if (frame_size > 32)
++		bclk_ms = 1;
++	else
++		bclk_ms = 0;
++	rt5639->bclk[dai->id] = rt5639->lrck[dai->id] * (32 << bclk_ms);
++
++	dev_dbg(dai->dev, "bclk is %dHz and lrck is %dHz\n",
++		rt5639->bclk[dai->id], rt5639->lrck[dai->id]);
++	dev_dbg(dai->dev, "bclk_ms is %d and pre_div is %d for iis %d\n",
++				bclk_ms, pre_div, dai->id);
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		break;
++	case SNDRV_PCM_FORMAT_S20_3LE:
++		val_len |= RT5639_I2S_DL_20;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		val_len |= RT5639_I2S_DL_24;
++		break;
++	case SNDRV_PCM_FORMAT_S8:
++		val_len |= RT5639_I2S_DL_8;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	dai_sel = get_sdp_info(codec, dai->id);
++	if (dai_sel < 0) {
++		dev_err(codec->dev, "Failed to get sdp info: %d\n", dai_sel);
++		return -EINVAL;
++	}
++	if (dai_sel & RT5639_U_IF1) {
++		mask_clk = RT5639_I2S_BCLK_MS1_MASK | RT5639_I2S_PD1_MASK;
++		val_clk = bclk_ms << RT5639_I2S_BCLK_MS1_SFT |
++			pre_div << RT5639_I2S_PD1_SFT;
++		snd_soc_update_bits(codec, RT5639_I2S1_SDP,
++			RT5639_I2S_DL_MASK, val_len);
++		snd_soc_update_bits(codec, RT5639_ADDA_CLK1, mask_clk, val_clk);
++	}
++	if (dai_sel & RT5639_U_IF2) {
++		mask_clk = RT5639_I2S_BCLK_MS2_MASK | RT5639_I2S_PD2_MASK;
++		val_clk = bclk_ms << RT5639_I2S_BCLK_MS2_SFT |
++			pre_div << RT5639_I2S_PD2_SFT;
++		snd_soc_update_bits(codec, RT5639_I2S2_SDP,
++			RT5639_I2S_DL_MASK, val_len);
++		snd_soc_update_bits(codec, RT5639_ADDA_CLK1, mask_clk, val_clk);
++	}
++
++	return 0;
++}
++
++static int rt5639_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++	unsigned int reg_val = 0;
++	int dai_sel;
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		rt5639->master[dai->id] = 1;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		reg_val |= RT5639_I2S_MS_S;
++		rt5639->master[dai->id] = 0;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		reg_val |= RT5639_I2S_BP_INV;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		reg_val |= RT5639_I2S_DF_LEFT;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		reg_val |= RT5639_I2S_DF_PCM_A;
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		reg_val  |= RT5639_I2S_DF_PCM_B;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	dai_sel = get_sdp_info(codec, dai->id);
++	if (dai_sel < 0) {
++		dev_err(codec->dev, "Failed to get sdp info: %d\n", dai_sel);
++		return -EINVAL;
++	}
++	if (dai_sel & RT5639_U_IF1) {
++		snd_soc_update_bits(codec, RT5639_I2S1_SDP,
++			RT5639_I2S_MS_MASK | RT5639_I2S_BP_MASK |
++			RT5639_I2S_DF_MASK, reg_val);
++	}
++	if (dai_sel & RT5639_U_IF2) {
++		snd_soc_update_bits(codec, RT5639_I2S2_SDP,
++			RT5639_I2S_MS_MASK | RT5639_I2S_BP_MASK |
++			RT5639_I2S_DF_MASK, reg_val);
++	}
++
++	return 0;
++}
++
++static int rt5639_set_dai_sysclk(struct snd_soc_dai *dai,
++		int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++	unsigned int reg_val = 0;
++
++	if (freq == rt5639->sysclk && clk_id == rt5639->sysclk_src)
++		return 0;
++
++	switch (clk_id) {
++	case RT5639_SCLK_S_MCLK:
++		reg_val |= RT5639_SCLK_SRC_MCLK;
++		break;
++	case RT5639_SCLK_S_PLL1:
++		reg_val |= RT5639_SCLK_SRC_PLL1;
++		break;
++	default:
++		dev_err(codec->dev, "Invalid clock id (%d)\n", clk_id);
++		return -EINVAL;
++	}
++	snd_soc_update_bits(codec, RT5639_GLB_CLK,
++		RT5639_SCLK_SRC_MASK, reg_val);
++	rt5639->sysclk = freq;
++	rt5639->sysclk_src = clk_id;
++
++	dev_dbg(dai->dev, "Sysclk is %dHz and clock id is %d\n", freq, clk_id);
++	return 0;
++}
++
++/**
++ * rt5639_pll_calc - Calculate PLL M/N/K code.
++ * @freq_in: external clock provided to codec.
++ * @freq_out: target clock which codec works on.
++ * @pll_code: Pointer to structure with M, N, K and bypass flag.
++ *
++ * Calculate M/N/K code to configure PLL for codec. And K is assigned to 2
++ * which make calculation more efficiently.
++ *
++ * Returns 0 for success or negative error code.
++ */
++static int rt5639_pll_calc(const unsigned int freq_in,
++	const unsigned int freq_out, struct rt5639_pll_code *pll_code)
++{
++	int max_n = RT5639_PLL_N_MAX, max_m = RT5639_PLL_M_MAX;
++	int n = 0, m = 0, red, n_t, m_t, in_t, out_t;
++	int red_t = abs(freq_out - freq_in);
++	bool bypass = false;
++
++	if (RT5639_PLL_INP_MAX < freq_in || RT5639_PLL_INP_MIN > freq_in)
++		return -EINVAL;
++
++	for (n_t = 0; n_t <= max_n; n_t++) {
++		in_t = (freq_in >> 1) + (freq_in >> 2) * n_t;
++		if (in_t < 0)
++			continue;
++		if (in_t == freq_out) {
++			bypass = true;
++			n = n_t;
++			goto code_find;
++		}
++		for (m_t = 0; m_t <= max_m; m_t++) {
++			out_t = in_t / (m_t + 2);
++			red = abs(out_t - freq_out);
++			if (red < red_t) {
++				n = n_t;
++				m = m_t;
++				if (red == 0)
++					goto code_find;
++				red_t = red;
++			}
++		}
++	}
++	pr_debug("Only get approximation about PLL\n");
++
++code_find:
++	pll_code->m_bp = bypass;
++	pll_code->m_code = m;
++	pll_code->n_code = n;
++	pll_code->k_code = 2;
++	return 0;
++}
++
++static int rt5639_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
++			unsigned int freq_in, unsigned int freq_out)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++	struct rt5639_pll_code *pll_code = &rt5639->pll_code;
++	int ret, dai_sel;
++
++	if (source == rt5639->pll_src && freq_in == rt5639->pll_in &&
++	    freq_out == rt5639->pll_out)
++		return 0;
++
++	if (!freq_in || !freq_out) {
++		dev_dbg(codec->dev, "PLL disabled\n");
++
++		rt5639->pll_in = 0;
++		rt5639->pll_out = 0;
++		snd_soc_update_bits(codec, RT5639_GLB_CLK,
++			RT5639_SCLK_SRC_MASK, RT5639_SCLK_SRC_MCLK);
++		return 0;
++	}
++
++	switch (source) {
++	case RT5639_PLL1_S_MCLK:
++		snd_soc_update_bits(codec, RT5639_GLB_CLK,
++			RT5639_PLL1_SRC_MASK, RT5639_PLL1_SRC_MCLK);
++		break;
++	case RT5639_PLL1_S_BCLK1:
++	case RT5639_PLL1_S_BCLK2:
++		dai_sel = get_sdp_info(codec, dai->id);
++		if (dai_sel < 0) {
++			dev_err(codec->dev,
++				"Failed to get sdp info: %d\n", dai_sel);
++			return -EINVAL;
++		}
++		if (dai_sel & RT5639_U_IF1) {
++			snd_soc_update_bits(codec, RT5639_GLB_CLK,
++				RT5639_PLL1_SRC_MASK, RT5639_PLL1_SRC_BCLK1);
++		}
++		if (dai_sel & RT5639_U_IF2) {
++			snd_soc_update_bits(codec, RT5639_GLB_CLK,
++				RT5639_PLL1_SRC_MASK, RT5639_PLL1_SRC_BCLK2);
++		}
++		break;
++	default:
++		dev_err(codec->dev, "Unknown PLL source %d\n", source);
++		return -EINVAL;
++	}
++
++	ret = rt5639_pll_calc(freq_in, freq_out, pll_code);
++	if (ret < 0) {
++		dev_err(codec->dev, "Unsupport input clock %d\n", freq_in);
++		return ret;
++	}
++
++	dev_dbg(codec->dev, "bypass=%d m=%d n=%d k=2\n", pll_code->m_bp,
++		(pll_code->m_bp ? 0 : pll_code->m_code), pll_code->n_code);
++
++	snd_soc_write(codec, RT5639_PLL_CTRL1,
++		pll_code->n_code << RT5639_PLL_N_SFT | pll_code->k_code);
++	snd_soc_write(codec, RT5639_PLL_CTRL2,
++		(pll_code->m_bp ? 0 : pll_code->m_code) << RT5639_PLL_M_SFT |
++		pll_code->m_bp << RT5639_PLL_M_BP_SFT);
++
++	rt5639->pll_in = freq_in;
++	rt5639->pll_out = freq_out;
++	rt5639->pll_src = source;
++
++	return 0;
++}
++
++static int rt5639_set_bias_level(struct snd_soc_codec *codec,
++			enum snd_soc_bias_level level)
++{
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++	switch (level) {
++	case SND_SOC_BIAS_STANDBY:
++		if (SND_SOC_BIAS_OFF == codec->dapm.bias_level) {
++			regcache_cache_only(rt5639->regmap, false);
++			snd_soc_update_bits(codec, RT5639_PWR_ANLG1,
++				RT5639_PWR_VREF1 | RT5639_PWR_MB |
++				RT5639_PWR_BG | RT5639_PWR_VREF2,
++				RT5639_PWR_VREF1 | RT5639_PWR_MB |
++				RT5639_PWR_BG | RT5639_PWR_VREF2);
++			usleep_range(10000, 15000);
++			snd_soc_update_bits(codec, RT5639_PWR_ANLG1,
++				RT5639_PWR_FV1 | RT5639_PWR_FV2,
++				RT5639_PWR_FV1 | RT5639_PWR_FV2);
++			regcache_sync(rt5639->regmap);
++			snd_soc_update_bits(codec, RT5639_DUMMY1,
++						0x0301, 0x0301);
++			snd_soc_update_bits(codec, RT5639_MICBIAS,
++						0x0030, 0x0030);
++		}
++		break;
++
++	case SND_SOC_BIAS_OFF:
++		snd_soc_write(codec, RT5639_DEPOP_M1, 0x0004);
++		snd_soc_write(codec, RT5639_DEPOP_M2, 0x1100);
++		snd_soc_update_bits(codec, RT5639_DUMMY1, 0x1, 0);
++		snd_soc_write(codec, RT5639_PWR_DIG1, 0x0000);
++		snd_soc_write(codec, RT5639_PWR_DIG2, 0x0000);
++		snd_soc_write(codec, RT5639_PWR_VOL, 0x0000);
++		snd_soc_write(codec, RT5639_PWR_MIXER, 0x0000);
++		snd_soc_write(codec, RT5639_PWR_ANLG1, 0x0000);
++		snd_soc_write(codec, RT5639_PWR_ANLG2, 0x0000);
++		break;
++
++	default:
++		break;
++	}
++	codec->dapm.bias_level = level;
++
++	return 0;
++}
++
++static int rt5639_probe(struct snd_soc_codec *codec)
++{
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++	int ret;
++
++	rt5639->codec = codec;
++	codec->control_data = rt5639->regmap;
++
++	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
++		return ret;
++	}
++
++	rt5639_set_bias_level(codec, SND_SOC_BIAS_OFF);
++
++	snd_soc_update_bits(codec, RT5639_DUMMY1, 0x0301, 0x0301);
++	snd_soc_update_bits(codec, RT5639_MICBIAS, 0x0030, 0x0030);
++
++	return 0;
++}
++
++static int rt5639_remove(struct snd_soc_codec *codec)
++{
++	rt5639_reset(codec);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int rt5639_suspend(struct snd_soc_codec *codec)
++{
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++
++	rt5639_set_bias_level(codec, SND_SOC_BIAS_OFF);
++	rt5639_reset(codec);
++	regcache_cache_only(rt5639->regmap, true);
++	regcache_mark_dirty(rt5639->regmap);
++	if (gpio_is_valid(rt5639->pdata.ldo1_en))
++		gpio_set_value_cansleep(rt5639->pdata.ldo1_en, 0);
++
++	return 0;
++}
++
++static int rt5639_resume(struct snd_soc_codec *codec)
++{
++	struct rt5639_priv *rt5639 = snd_soc_codec_get_drvdata(codec);
++
++	if (gpio_is_valid(rt5639->pdata.ldo1_en)) {
++		gpio_set_value_cansleep(rt5639->pdata.ldo1_en, 1);
++		msleep(400);
++	}
++
++	return 0;
++}
++#else
++#define rt5639_suspend NULL
++#define rt5639_resume NULL
++#endif
++
++#define RT5639_STEREO_RATES SNDRV_PCM_RATE_8000_96000
++#define RT5639_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
++			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
++
++static const struct snd_soc_dai_ops rt5639_aif_dai_ops = {
++	.hw_params = rt5639_hw_params,
++	.set_fmt = rt5639_set_dai_fmt,
++	.set_sysclk = rt5639_set_dai_sysclk,
++	.set_pll = rt5639_set_dai_pll,
++};
++
++static struct snd_soc_dai_driver rt5639_dai[] = {
++	{
++		.name = "rt5639-aif1",
++		.id = RT5639_AIF1,
++		.playback = {
++			.stream_name = "AIF1 Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT5639_STEREO_RATES,
++			.formats = RT5639_FORMATS,
++		},
++		.capture = {
++			.stream_name = "AIF1 Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT5639_STEREO_RATES,
++			.formats = RT5639_FORMATS,
++		},
++		.ops = &rt5639_aif_dai_ops,
++	},
++	{
++		.name = "rt5639-aif2",
++		.id = RT5639_AIF2,
++		.playback = {
++			.stream_name = "AIF2 Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT5639_STEREO_RATES,
++			.formats = RT5639_FORMATS,
++		},
++		.capture = {
++			.stream_name = "AIF2 Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT5639_STEREO_RATES,
++			.formats = RT5639_FORMATS,
++		},
++		.ops = &rt5639_aif_dai_ops,
++	},
++};
++
++static struct snd_soc_codec_driver soc_codec_dev_rt5639 = {
++	.probe = rt5639_probe,
++	.remove = rt5639_remove,
++	.suspend = rt5639_suspend,
++	.resume = rt5639_resume,
++	.set_bias_level = rt5639_set_bias_level,
++	.idle_bias_off = true,
++	.controls = rt5639_snd_controls,
++	.num_controls = ARRAY_SIZE(rt5639_snd_controls),
++	.dapm_widgets = rt5639_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(rt5639_dapm_widgets),
++	.dapm_routes = rt5639_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(rt5639_dapm_routes),
++};
++
++static const struct regmap_config rt5639_regmap = {
++	.reg_bits = 8,
++	.val_bits = 16,
++
++	.max_register = RT5639_VENDOR_ID2 + 1 + (ARRAY_SIZE(rt5639_ranges) *
++					       RT5639_PR_SPACING),
++	.volatile_reg = rt5639_volatile_register,
++	.readable_reg = rt5639_readable_register,
++
++	.cache_type = REGCACHE_RBTREE,
++	.reg_defaults = rt5639_reg,
++	.num_reg_defaults = ARRAY_SIZE(rt5639_reg),
++	.ranges = rt5639_ranges,
++	.num_ranges = ARRAY_SIZE(rt5639_ranges),
++};
++
++static const struct i2c_device_id rt5639_i2c_id[] = {
++	{ "rt5639", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, rt5639_i2c_id);
++
++static int rt5639_parse_dt(struct rt5639_priv *rt5639, struct device_node *np)
++{
++	rt5639->pdata.in1_diff = of_property_read_bool(np,
++					"realtek,in1-differential");
++	rt5639->pdata.in2_diff = of_property_read_bool(np,
++					"realtek,in2-differential");
++
++	rt5639->pdata.ldo1_en = of_get_named_gpio(np,
++					"realtek,ldo1-en-gpios", 0);
++	/*
++	 * LDO1_EN is optional (it may be statically tied on the board).
++	 * -ENOENT means that the property doesn't exist, i.e. there is no
++	 * GPIO, so is not an error. Any other error code means the property
++	 * exists, but could not be parsed.
++	 */
++	if (!gpio_is_valid(rt5639->pdata.ldo1_en) &&
++			(rt5639->pdata.ldo1_en != -ENOENT))
++		return rt5639->pdata.ldo1_en;
++
++	return 0;
++}
++
++static int rt5639_i2c_probe(struct i2c_client *i2c,
++		    const struct i2c_device_id *id)
++{
++	struct rt5639_platform_data *pdata = dev_get_platdata(&i2c->dev);
++	struct rt5639_priv *rt5639;
++	int ret;
++	unsigned int val;
++
++	rt5639 = devm_kzalloc(&i2c->dev,
++				sizeof(struct rt5639_priv),
++				GFP_KERNEL);
++	if (NULL == rt5639)
++		return -ENOMEM;
++	i2c_set_clientdata(i2c, rt5639);
++
++	if (pdata) {
++		rt5639->pdata = *pdata;
++		/*
++		 * Translate zero'd out (default) pdata value to an invalid
++		 * GPIO ID. This makes the pdata and DT paths consistent in
++		 * terms of the value left in this field when no GPIO is
++		 * specified, but means we can't actually use GPIO 0.
++		 */
++		if (!rt5639->pdata.ldo1_en)
++			rt5639->pdata.ldo1_en = -EINVAL;
++	} else if (i2c->dev.of_node) {
++		ret = rt5639_parse_dt(rt5639, i2c->dev.of_node);
++		if (ret)
++			return ret;
++	} else
++		rt5639->pdata.ldo1_en = -EINVAL;
++
++	rt5639->regmap = devm_regmap_init_i2c(i2c, &rt5639_regmap);
++	if (IS_ERR(rt5639->regmap)) {
++		ret = PTR_ERR(rt5639->regmap);
++		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
++			ret);
++		return ret;
++	}
++
++	if (gpio_is_valid(rt5639->pdata.ldo1_en)) {
++		ret = devm_gpio_request_one(&i2c->dev, rt5639->pdata.ldo1_en,
++					    GPIOF_OUT_INIT_HIGH,
++					    "RT5639 LDO1_EN");
++		if (ret < 0) {
++			dev_err(&i2c->dev, "Failed to request LDO1_EN %d: %d\n",
++				rt5639->pdata.ldo1_en, ret);
++			return ret;
++		}
++		msleep(400);
++	}
++
++	regmap_read(rt5639->regmap, RT5639_VENDOR_ID2, &val);
++	if (val != RT5639_DEVICE_ID) {
++		dev_err(&i2c->dev,
++			"Device with ID register %x is not rt5640/39\n", val);
++		return -ENODEV;
++	}
++
++	regmap_write(rt5639->regmap, RT5639_RESET, 0);
++
++	ret = regmap_register_patch(rt5639->regmap, init_list,
++				    ARRAY_SIZE(init_list));
++	if (ret != 0)
++		dev_warn(&i2c->dev, "Failed to apply regmap patch: %d\n", ret);
++
++	if (rt5639->pdata.in1_diff)
++		regmap_update_bits(rt5639->regmap, RT5639_IN1_IN2,
++					RT5639_IN_DF1, RT5639_IN_DF1);
++
++	if (rt5639->pdata.in2_diff)
++		regmap_update_bits(rt5639->regmap, RT5639_IN3_IN4,
++					RT5639_IN_DF2, RT5639_IN_DF2);
++
++	rt5639->hp_mute = 1;
++
++	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5639,
++			rt5639_dai, ARRAY_SIZE(rt5639_dai));
++	if (ret < 0)
++		goto err;
++
++	return 0;
++err:
++	return ret;
++}
++
++static int rt5639_i2c_remove(struct i2c_client *i2c)
++{
++	snd_soc_unregister_codec(&i2c->dev);
++
++	return 0;
++}
++
++static struct i2c_driver rt5639_i2c_driver = {
++	.driver = {
++		.name = "rt5639",
++		.owner = THIS_MODULE,
++		.acpi_match_table = ACPI_PTR(rt5639_acpi_match),
++	},
++	.probe = rt5639_i2c_probe,
++	.remove   = rt5639_i2c_remove,
++	.id_table = rt5639_i2c_id,
++};
++module_i2c_driver(rt5639_i2c_driver);
++
++MODULE_DESCRIPTION("ASoC RT5639 driver");
++MODULE_AUTHOR("Bard Liao <bardliao@realtek.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/rt5639.h b/sound/soc/codecs/rt5639.h
+new file mode 100644
+index 0000000..b9b7f4a
+--- /dev/null
++++ b/sound/soc/codecs/rt5639.h
+@@ -0,0 +1,1928 @@
++/*
++ * rt5639.h  --  RT5639 ALSA SoC audio driver
++ *
++ * Copyright 2011 Realtek Microelectronics
++ * Author: Bard Liao <bardliao@realtek.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef _RT5639_H
++#define _RT5639_H
++
++#include <sound/rt5639.h>
++
++/* Info */
++#define RT5639_RESET				0x00
++#define RT5639_VENDOR_ID			0xfd
++#define RT5639_VENDOR_ID1			0xfe
++#define RT5639_VENDOR_ID2			0xff
++/*  I/O - Output */
++#define RT5639_SPK_VOL				0x01
++#define RT5639_HP_VOL				0x02
++#define RT5639_OUTPUT				0x03
++/* I/O - Input */
++#define RT5639_IN1_IN2				0x0d
++#define RT5639_IN3_IN4				0x0e
++#define RT5639_INL_INR_VOL			0x0f
++/* I/O - ADC/DAC/DMIC */
++#define RT5639_DAC1_DIG_VOL			0x19
++#define RT5639_DAC2_DIG_VOL			0x1a
++#define RT5639_DAC2_CTRL			0x1b
++#define RT5639_ADC_DIG_VOL			0x1c
++#define RT5639_ADC_DATA				0x1d
++#define RT5639_ADC_BST_VOL			0x1e
++/* Mixer - D-D */
++#define RT5639_STO_ADC_MIXER			0x27
++#define RT5639_MONO_ADC_MIXER			0x28
++#define RT5639_AD_DA_MIXER			0x29
++#define RT5639_STO_DAC_MIXER			0x2a
++#define RT5639_MONO_DAC_MIXER			0x2b
++#define RT5639_DIG_MIXER			0x2c
++#define RT5639_DIG_INF_DATA			0x2f
++/* Mixer - ADC */
++#define RT5639_REC_L1_MIXER			0x3b
++#define RT5639_REC_L2_MIXER			0x3c
++#define RT5639_REC_R1_MIXER			0x3d
++#define RT5639_REC_R2_MIXER			0x3e
++/* Mixer - DAC */
++#define RT5639_HPO_MIXER			0x45
++#define RT5639_SPK_L_MIXER			0x46
++#define RT5639_SPK_R_MIXER			0x47
++#define RT5639_SPO_L_MIXER			0x48
++#define RT5639_SPO_R_MIXER			0x49
++#define RT5639_SPO_CLSD_RATIO			0x4a
++#define RT5639_OUT_L1_MIXER			0x4d
++#define RT5639_OUT_L2_MIXER			0x4e
++#define RT5639_OUT_L3_MIXER			0x4f
++#define RT5639_OUT_R1_MIXER			0x50
++#define RT5639_OUT_R2_MIXER			0x51
++#define RT5639_OUT_R3_MIXER			0x52
++#define RT5639_LOUT_MIXER			0x53
++/* Power */
++#define RT5639_PWR_DIG1				0x61
++#define RT5639_PWR_DIG2				0x62
++#define RT5639_PWR_ANLG1			0x63
++#define RT5639_PWR_ANLG2			0x64
++#define RT5639_PWR_MIXER			0x65
++#define RT5639_PWR_VOL				0x66
++/* Private Register Control */
++#define RT5639_PRIV_INDEX			0x6a
++#define RT5639_PRIV_DATA			0x6c
++/* Format - ADC/DAC */
++#define RT5639_I2S1_SDP				0x70
++#define RT5639_I2S2_SDP				0x71
++#define RT5639_ADDA_CLK1			0x73
++#define RT5639_DMIC				0x75
++/* Function - Analog */
++#define RT5639_GLB_CLK				0x80
++#define RT5639_PLL_CTRL1			0x81
++#define RT5639_PLL_CTRL2			0x82
++#define RT5639_ASRC_1				0x83
++#define RT5639_ASRC_2				0x84
++#define RT5639_ASRC_3				0x85
++#define RT5639_ASRC_4				0x89
++#define RT5639_ASRC_5				0x8a
++#define RT5639_CLS_D_OVCD			0x8c
++#define RT5639_CLS_D_OUT			0x8d
++#define RT5639_DEPOP_M1				0x8e
++#define RT5639_DEPOP_M2				0x8f
++#define RT5639_DEPOP_M3				0x90
++#define RT5639_CHARGE_PUMP			0x91
++#define RT5639_PV_DET_SPK_G			0x92
++#define RT5639_MICBIAS				0x93
++/* Function - Digital */
++#define RT5639_EQ_CTRL1				0xb0
++#define RT5639_EQ_CTRL2				0xb1
++#define RT5639_WIND_FILTER			0xb2
++#define RT5639_DRC_AGC_1			0xb4
++#define RT5639_DRC_AGC_2			0xb5
++#define RT5639_DRC_AGC_3			0xb6
++#define RT5639_JD_CTRL				0xbb
++#define RT5639_IRQ_CTRL1			0xbd
++#define RT5639_IRQ_CTRL2			0xbe
++#define RT5639_INT_IRQ_ST			0xbf
++#define RT5639_GPIO_CTRL1			0xc0
++#define RT5639_GPIO_CTRL2			0xc2
++#define RT5639_PGM_REG_ARR1			0xc8
++#define RT5639_PGM_REG_ARR2			0xc9
++#define RT5639_PGM_REG_ARR3			0xca
++#define RT5639_PGM_REG_ARR4			0xcb
++#define RT5639_PGM_REG_ARR5			0xcc
++#define RT5639_ADJ_HPF				0xd3
++#define RT5639_HP_CALIB_AMP_DET			0xd6
++#define RT5639_SV_ZCD1				0xd9
++/* Dummy Register */
++#define RT5639_DUMMY1				0xfa
++#define RT5639_DUMMY2				0xfb
++#define RT5639_DUMMY3				0xfc
++
++
++/* Index of Codec Private Register definition */
++#define RT5639_CHPUMP_INT_REG1			0x24
++#define RT5639_MAMP_INT_REG2			0x37
++#define RT5639_3D_SPK				0x63
++#define RT5639_WND_1				0x6c
++#define RT5639_WND_2				0x6d
++#define RT5639_WND_3				0x6e
++#define RT5639_WND_4				0x6f
++#define RT5639_WND_5				0x70
++#define RT5639_WND_8				0x73
++#define RT5639_DIP_SPK_INF			0x75
++#define RT5639_HP_DCC_INT1			0x77
++#define RT5639_EQ_BW_LOP			0xa0
++#define RT5639_EQ_GN_LOP			0xa1
++#define RT5639_EQ_FC_BP1			0xa2
++#define RT5639_EQ_BW_BP1			0xa3
++#define RT5639_EQ_GN_BP1			0xa4
++#define RT5639_EQ_FC_BP2			0xa5
++#define RT5639_EQ_BW_BP2			0xa6
++#define RT5639_EQ_GN_BP2			0xa7
++#define RT5639_EQ_FC_BP3			0xa8
++#define RT5639_EQ_BW_BP3			0xa9
++#define RT5639_EQ_GN_BP3			0xaa
++#define RT5639_EQ_FC_BP4			0xab
++#define RT5639_EQ_BW_BP4			0xac
++#define RT5639_EQ_GN_BP4			0xad
++#define RT5639_EQ_FC_HIP1			0xae
++#define RT5639_EQ_GN_HIP1			0xaf
++#define RT5639_EQ_FC_HIP2			0xb0
++#define RT5639_EQ_BW_HIP2			0xb1
++#define RT5639_EQ_GN_HIP2			0xb2
++#define RT5639_EQ_PRE_VOL			0xb3
++#define RT5639_EQ_PST_VOL			0xb4
++
++/* global definition */
++#define RT5639_L_MUTE				(0x1 << 15)
++#define RT5639_L_MUTE_SFT			15
++#define RT5639_VOL_L_MUTE			(0x1 << 14)
++#define RT5639_VOL_L_SFT			14
++#define RT5639_R_MUTE				(0x1 << 7)
++#define RT5639_R_MUTE_SFT			7
++#define RT5639_VOL_R_MUTE			(0x1 << 6)
++#define RT5639_VOL_R_SFT			6
++#define RT5639_L_VOL_MASK			(0x3f << 8)
++#define RT5639_L_VOL_SFT			8
++#define RT5639_R_VOL_MASK			(0x3f)
++#define RT5639_R_VOL_SFT			0
++
++/* IN1 and IN2 Control (0x0d) */
++/* IN3 and IN4 Control (0x0e) */
++#define RT5639_BST_SFT1				12
++#define RT5639_BST_SFT2				8
++#define RT5639_IN_DF1				(0x1 << 7)
++#define RT5639_IN_SFT1				7
++#define RT5639_IN_DF2				(0x1 << 6)
++#define RT5639_IN_SFT2				6
++
++/* INL and INR Volume Control (0x0f) */
++#define RT5639_INL_SEL_MASK			(0x1 << 15)
++#define RT5639_INL_SEL_SFT			15
++#define RT5639_INL_SEL_IN4P			(0x0 << 15)
++#define RT5639_INL_SEL_MONOP			(0x1 << 15)
++#define RT5639_INL_VOL_MASK			(0x1f << 8)
++#define RT5639_INL_VOL_SFT			8
++#define RT5639_INR_SEL_MASK			(0x1 << 7)
++#define RT5639_INR_SEL_SFT			7
++#define RT5639_INR_SEL_IN4N			(0x0 << 7)
++#define RT5639_INR_SEL_MONON			(0x1 << 7)
++#define RT5639_INR_VOL_MASK			(0x1f)
++#define RT5639_INR_VOL_SFT			0
++
++/* DAC1 Digital Volume (0x19) */
++#define RT5639_DAC_L1_VOL_MASK			(0xff << 8)
++#define RT5639_DAC_L1_VOL_SFT			8
++#define RT5639_DAC_R1_VOL_MASK			(0xff)
++#define RT5639_DAC_R1_VOL_SFT			0
++
++/* DAC2 Digital Volume (0x1a) */
++#define RT5639_DAC_L2_VOL_MASK			(0xff << 8)
++#define RT5639_DAC_L2_VOL_SFT			8
++#define RT5639_DAC_R2_VOL_MASK			(0xff)
++#define RT5639_DAC_R2_VOL_SFT			0
++
++/* DAC2 Control (0x1b) */
++#define RT5639_M_DAC_L2_VOL			(0x1 << 13)
++#define RT5639_M_DAC_L2_VOL_SFT			13
++#define RT5639_M_DAC_R2_VOL			(0x1 << 12)
++#define RT5639_M_DAC_R2_VOL_SFT			12
++
++/* ADC Digital Volume Control (0x1c) */
++#define RT5639_ADC_L_VOL_MASK			(0x7f << 8)
++#define RT5639_ADC_L_VOL_SFT			8
++#define RT5639_ADC_R_VOL_MASK			(0x7f)
++#define RT5639_ADC_R_VOL_SFT			0
++
++/* Mono ADC Digital Volume Control (0x1d) */
++#define RT5639_MONO_ADC_L_VOL_MASK		(0x7f << 8)
++#define RT5639_MONO_ADC_L_VOL_SFT		8
++#define RT5639_MONO_ADC_R_VOL_MASK		(0x7f)
++#define RT5639_MONO_ADC_R_VOL_SFT		0
++
++/* ADC Boost Volume Control (0x1e) */
++#define RT5639_ADC_L_BST_MASK			(0x3 << 14)
++#define RT5639_ADC_L_BST_SFT			14
++#define RT5639_ADC_R_BST_MASK			(0x3 << 12)
++#define RT5639_ADC_R_BST_SFT			12
++#define RT5639_ADC_COMP_MASK			(0x3 << 10)
++#define RT5639_ADC_COMP_SFT			10
++
++/* Stereo ADC Mixer Control (0x27) */
++#define RT5639_M_ADC_L1				(0x1 << 14)
++#define RT5639_M_ADC_L1_SFT			14
++#define RT5639_M_ADC_L2				(0x1 << 13)
++#define RT5639_M_ADC_L2_SFT			13
++#define RT5639_ADC_1_SRC_MASK			(0x1 << 12)
++#define RT5639_ADC_1_SRC_SFT			12
++#define RT5639_ADC_1_SRC_ADC			(0x1 << 12)
++#define RT5639_ADC_1_SRC_DACMIX			(0x0 << 12)
++#define RT5639_ADC_2_SRC_MASK			(0x3 << 10)
++#define RT5639_ADC_2_SRC_SFT			10
++#define RT5639_ADC_2_SRC_DMIC1			(0x0 << 10)
++#define RT5639_ADC_2_SRC_DMIC2			(0x1 << 10)
++#define RT5639_ADC_2_SRC_DACMIX			(0x2 << 10)
++#define RT5639_M_ADC_R1				(0x1 << 6)
++#define RT5639_M_ADC_R1_SFT			6
++#define RT5639_M_ADC_R2				(0x1 << 5)
++#define RT5639_M_ADC_R2_SFT			5
++
++/* Mono ADC Mixer Control (0x28) */
++#define RT5639_M_MONO_ADC_L1			(0x1 << 14)
++#define RT5639_M_MONO_ADC_L1_SFT		14
++#define RT5639_M_MONO_ADC_L2			(0x1 << 13)
++#define RT5639_M_MONO_ADC_L2_SFT		13
++#define RT5639_MONO_ADC_L1_SRC_MASK		(0x1 << 12)
++#define RT5639_MONO_ADC_L1_SRC_SFT		12
++#define RT5639_MONO_ADC_L1_SRC_DACMIXL		(0x0 << 12)
++#define RT5639_MONO_ADC_L1_SRC_ADCL		(0x1 << 12)
++#define RT5639_MONO_ADC_L2_SRC_MASK		(0x3 << 10)
++#define RT5639_MONO_ADC_L2_SRC_SFT		10
++#define RT5639_MONO_ADC_L2_SRC_DMIC_L1		(0x0 << 10)
++#define RT5639_MONO_ADC_L2_SRC_DMIC_L2		(0x1 << 10)
++#define RT5639_MONO_ADC_L2_SRC_DACMIXL		(0x2 << 10)
++#define RT5639_M_MONO_ADC_R1			(0x1 << 6)
++#define RT5639_M_MONO_ADC_R1_SFT		6
++#define RT5639_M_MONO_ADC_R2			(0x1 << 5)
++#define RT5639_M_MONO_ADC_R2_SFT		5
++#define RT5639_MONO_ADC_R1_SRC_MASK		(0x1 << 4)
++#define RT5639_MONO_ADC_R1_SRC_SFT		4
++#define RT5639_MONO_ADC_R1_SRC_ADCR		(0x1 << 4)
++#define RT5639_MONO_ADC_R1_SRC_DACMIXR		(0x0 << 4)
++#define RT5639_MONO_ADC_R2_SRC_MASK		(0x3 << 2)
++#define RT5639_MONO_ADC_R2_SRC_SFT		2
++#define RT5639_MONO_ADC_R2_SRC_DMIC_R1		(0x0 << 2)
++#define RT5639_MONO_ADC_R2_SRC_DMIC_R2		(0x1 << 2)
++#define RT5639_MONO_ADC_R2_SRC_DACMIXR		(0x2 << 2)
++
++/* ADC Mixer to DAC Mixer Control (0x29) */
++#define RT5639_M_ADCMIX_L			(0x1 << 15)
++#define RT5639_M_ADCMIX_L_SFT			15
++#define RT5639_M_IF1_DAC_L			(0x1 << 14)
++#define RT5639_M_IF1_DAC_L_SFT			14
++#define RT5639_M_ADCMIX_R			(0x1 << 7)
++#define RT5639_M_ADCMIX_R_SFT			7
++#define RT5639_M_IF1_DAC_R			(0x1 << 6)
++#define RT5639_M_IF1_DAC_R_SFT			6
++
++/* Stereo DAC Mixer Control (0x2a) */
++#define RT5639_M_DAC_L1				(0x1 << 14)
++#define RT5639_M_DAC_L1_SFT			14
++#define RT5639_DAC_L1_STO_L_VOL_MASK		(0x1 << 13)
++#define RT5639_DAC_L1_STO_L_VOL_SFT		13
++#define RT5639_M_DAC_L2				(0x1 << 12)
++#define RT5639_M_DAC_L2_SFT			12
++#define RT5639_DAC_L2_STO_L_VOL_MASK		(0x1 << 11)
++#define RT5639_DAC_L2_STO_L_VOL_SFT		11
++#define RT5639_M_DAC_R1				(0x1 << 6)
++#define RT5639_M_DAC_R1_SFT			6
++#define RT5639_DAC_R1_STO_R_VOL_MASK		(0x1 << 5)
++#define RT5639_DAC_R1_STO_R_VOL_SFT		5
++#define RT5639_M_DAC_R2				(0x1 << 4)
++#define RT5639_M_DAC_R2_SFT			4
++#define RT5639_DAC_R2_STO_R_VOL_MASK		(0x1 << 3)
++#define RT5639_DAC_R2_STO_R_VOL_SFT		3
++
++/* Mono DAC Mixer Control (0x2b) */
++#define RT5639_M_DAC_L1_MONO_L			(0x1 << 14)
++#define RT5639_M_DAC_L1_MONO_L_SFT		14
++#define RT5639_DAC_L1_MONO_L_VOL_MASK		(0x1 << 13)
++#define RT5639_DAC_L1_MONO_L_VOL_SFT		13
++#define RT5639_M_DAC_L2_MONO_L			(0x1 << 12)
++#define RT5639_M_DAC_L2_MONO_L_SFT		12
++#define RT5639_DAC_L2_MONO_L_VOL_MASK		(0x1 << 11)
++#define RT5639_DAC_L2_MONO_L_VOL_SFT		11
++#define RT5639_M_DAC_R2_MONO_L			(0x1 << 10)
++#define RT5639_M_DAC_R2_MONO_L_SFT		10
++#define RT5639_DAC_R2_MONO_L_VOL_MASK		(0x1 << 9)
++#define RT5639_DAC_R2_MONO_L_VOL_SFT		9
++#define RT5639_M_DAC_R1_MONO_R			(0x1 << 6)
++#define RT5639_M_DAC_R1_MONO_R_SFT		6
++#define RT5639_DAC_R1_MONO_R_VOL_MASK		(0x1 << 5)
++#define RT5639_DAC_R1_MONO_R_VOL_SFT		5
++#define RT5639_M_DAC_R2_MONO_R			(0x1 << 4)
++#define RT5639_M_DAC_R2_MONO_R_SFT		4
++#define RT5639_DAC_R2_MONO_R_VOL_MASK		(0x1 << 3)
++#define RT5639_DAC_R2_MONO_R_VOL_SFT		3
++#define RT5639_M_DAC_L2_MONO_R			(0x1 << 2)
++#define RT5639_M_DAC_L2_MONO_R_SFT		2
++#define RT5639_DAC_L2_MONO_R_VOL_MASK		(0x1 << 1)
++#define RT5639_DAC_L2_MONO_R_VOL_SFT		1
++
++/* Digital Mixer Control (0x2c) */
++#define RT5639_M_STO_L_DAC_L			(0x1 << 15)
++#define RT5639_M_STO_L_DAC_L_SFT		15
++#define RT5639_STO_L_DAC_L_VOL_MASK		(0x1 << 14)
++#define RT5639_STO_L_DAC_L_VOL_SFT		14
++#define RT5639_M_DAC_L2_DAC_L			(0x1 << 13)
++#define RT5639_M_DAC_L2_DAC_L_SFT		13
++#define RT5639_DAC_L2_DAC_L_VOL_MASK		(0x1 << 12)
++#define RT5639_DAC_L2_DAC_L_VOL_SFT		12
++#define RT5639_M_STO_R_DAC_R			(0x1 << 11)
++#define RT5639_M_STO_R_DAC_R_SFT		11
++#define RT5639_STO_R_DAC_R_VOL_MASK		(0x1 << 10)
++#define RT5639_STO_R_DAC_R_VOL_SFT		10
++#define RT5639_M_DAC_R2_DAC_R			(0x1 << 9)
++#define RT5639_M_DAC_R2_DAC_R_SFT		9
++#define RT5639_DAC_R2_DAC_R_VOL_MASK		(0x1 << 8)
++#define RT5639_DAC_R2_DAC_R_VOL_SFT		8
++
++/* DSP Path Control 2 (0x2e) */
++#define RT5639_DAC_L2_SEL_MASK			(0x3 << 14)
++#define RT5639_DAC_L2_SEL_SFT			14
++#define RT5639_DAC_L2_SEL_IF2			(0x0 << 14)
++#define RT5639_DAC_R2_SEL_MASK			(0x3 << 12)
++#define RT5639_DAC_R2_SEL_SFT			12
++#define RT5639_DAC_R2_SEL_IF2			(0x0 << 12)
++
++/* Digital Interface Data Control (0x2f) */
++#define RT5639_IF1_DAC_SEL_MASK			(0x3 << 14)
++#define RT5639_IF1_DAC_SEL_SFT			14
++#define RT5639_IF1_DAC_SEL_NOR			(0x0 << 14)
++#define RT5639_IF1_DAC_SEL_L2R			(0x1 << 14)
++#define RT5639_IF1_DAC_SEL_R2L			(0x2 << 14)
++#define RT5639_IF1_DAC_SEL_SWAP			(0x3 << 14)
++#define RT5639_IF1_ADC_SEL_MASK			(0x3 << 12)
++#define RT5639_IF1_ADC_SEL_SFT			12
++#define RT5639_IF1_ADC_SEL_NOR			(0x0 << 12)
++#define RT5639_IF1_ADC_SEL_L2R			(0x1 << 12)
++#define RT5639_IF1_ADC_SEL_R2L			(0x2 << 12)
++#define RT5639_IF1_ADC_SEL_SWAP			(0x3 << 12)
++#define RT5639_IF2_DAC_SEL_MASK			(0x3 << 10)
++#define RT5639_IF2_DAC_SEL_SFT			10
++#define RT5639_IF2_DAC_SEL_NOR			(0x0 << 10)
++#define RT5639_IF2_DAC_SEL_L2R			(0x1 << 10)
++#define RT5639_IF2_DAC_SEL_R2L			(0x2 << 10)
++#define RT5639_IF2_DAC_SEL_SWAP			(0x3 << 10)
++#define RT5639_IF2_ADC_SEL_MASK			(0x3 << 8)
++#define RT5639_IF2_ADC_SEL_SFT			8
++#define RT5639_IF2_ADC_SEL_NOR			(0x0 << 8)
++#define RT5639_IF2_ADC_SEL_L2R			(0x1 << 8)
++#define RT5639_IF2_ADC_SEL_R2L			(0x2 << 8)
++#define RT5639_IF2_ADC_SEL_SWAP			(0x3 << 8)
++#define RT5639_IF3_DAC_SEL_MASK			(0x3 << 6)
++#define RT5639_IF3_DAC_SEL_SFT			6
++#define RT5639_IF3_DAC_SEL_NOR			(0x0 << 6)
++#define RT5639_IF3_DAC_SEL_L2R			(0x1 << 6)
++#define RT5639_IF3_DAC_SEL_R2L			(0x2 << 6)
++#define RT5639_IF3_DAC_SEL_SWAP			(0x3 << 6)
++#define RT5639_IF3_ADC_SEL_MASK			(0x3 << 4)
++#define RT5639_IF3_ADC_SEL_SFT			4
++#define RT5639_IF3_ADC_SEL_NOR			(0x0 << 4)
++#define RT5639_IF3_ADC_SEL_L2R			(0x1 << 4)
++#define RT5639_IF3_ADC_SEL_R2L			(0x2 << 4)
++#define RT5639_IF3_ADC_SEL_SWAP			(0x3 << 4)
++
++/* REC Left Mixer Control 1 (0x3b) */
++#define RT5639_G_HP_L_RM_L_MASK			(0x7 << 13)
++#define RT5639_G_HP_L_RM_L_SFT			13
++#define RT5639_G_IN_L_RM_L_MASK			(0x7 << 10)
++#define RT5639_G_IN_L_RM_L_SFT			10
++#define RT5639_G_BST4_RM_L_MASK			(0x7 << 7)
++#define RT5639_G_BST4_RM_L_SFT			7
++#define RT5639_G_BST3_RM_L_MASK			(0x7 << 4)
++#define RT5639_G_BST3_RM_L_SFT			4
++#define RT5639_G_BST2_RM_L_MASK			(0x7 << 1)
++#define RT5639_G_BST2_RM_L_SFT			1
++
++/* REC Left Mixer Control 2 (0x3c) */
++#define RT5639_G_BST1_RM_L_MASK			(0x7 << 13)
++#define RT5639_G_BST1_RM_L_SFT			13
++#define RT5639_G_OM_L_RM_L_MASK			(0x7 << 10)
++#define RT5639_G_OM_L_RM_L_SFT			10
++#define RT5639_M_HP_L_RM_L			(0x1 << 6)
++#define RT5639_M_HP_L_RM_L_SFT			6
++#define RT5639_M_IN_L_RM_L			(0x1 << 5)
++#define RT5639_M_IN_L_RM_L_SFT			5
++#define RT5639_M_BST4_RM_L			(0x1 << 4)
++#define RT5639_M_BST4_RM_L_SFT			4
++#define RT5639_M_BST3_RM_L			(0x1 << 3)
++#define RT5639_M_BST3_RM_L_SFT			3
++#define RT5639_M_BST2_RM_L			(0x1 << 2)
++#define RT5639_M_BST2_RM_L_SFT			2
++#define RT5639_M_BST1_RM_L			(0x1 << 1)
++#define RT5639_M_BST1_RM_L_SFT			1
++#define RT5639_M_OM_L_RM_L			(0x1)
++#define RT5639_M_OM_L_RM_L_SFT			0
++
++/* REC Right Mixer Control 1 (0x3d) */
++#define RT5639_G_HP_R_RM_R_MASK			(0x7 << 13)
++#define RT5639_G_HP_R_RM_R_SFT			13
++#define RT5639_G_IN_R_RM_R_MASK			(0x7 << 10)
++#define RT5639_G_IN_R_RM_R_SFT			10
++#define RT5639_G_BST4_RM_R_MASK			(0x7 << 7)
++#define RT5639_G_BST4_RM_R_SFT			7
++#define RT5639_G_BST3_RM_R_MASK			(0x7 << 4)
++#define RT5639_G_BST3_RM_R_SFT			4
++#define RT5639_G_BST2_RM_R_MASK			(0x7 << 1)
++#define RT5639_G_BST2_RM_R_SFT			1
++
++/* REC Right Mixer Control 2 (0x3e) */
++#define RT5639_G_BST1_RM_R_MASK			(0x7 << 13)
++#define RT5639_G_BST1_RM_R_SFT			13
++#define RT5639_G_OM_R_RM_R_MASK			(0x7 << 10)
++#define RT5639_G_OM_R_RM_R_SFT			10
++#define RT5639_M_HP_R_RM_R			(0x1 << 6)
++#define RT5639_M_HP_R_RM_R_SFT			6
++#define RT5639_M_IN_R_RM_R			(0x1 << 5)
++#define RT5639_M_IN_R_RM_R_SFT			5
++#define RT5639_M_BST4_RM_R			(0x1 << 4)
++#define RT5639_M_BST4_RM_R_SFT			4
++#define RT5639_M_BST3_RM_R			(0x1 << 3)
++#define RT5639_M_BST3_RM_R_SFT			3
++#define RT5639_M_BST2_RM_R			(0x1 << 2)
++#define RT5639_M_BST2_RM_R_SFT			2
++#define RT5639_M_BST1_RM_R			(0x1 << 1)
++#define RT5639_M_BST1_RM_R_SFT			1
++#define RT5639_M_OM_R_RM_R			(0x1)
++#define RT5639_M_OM_R_RM_R_SFT			0
++
++/* HPMIX Control (0x45) */
++#define RT5639_M_DAC2_HM			(0x1 << 15)
++#define RT5639_M_DAC2_HM_SFT			15
++#define RT5639_M_DAC1_HM			(0x1 << 14)
++#define RT5639_M_DAC1_HM_SFT			14
++#define RT5639_M_HPVOL_HM			(0x1 << 13)
++#define RT5639_M_HPVOL_HM_SFT			13
++#define RT5639_G_HPOMIX_MASK			(0x1 << 12)
++#define RT5639_G_HPOMIX_SFT			12
++
++/* SPK Left Mixer Control (0x46) */
++#define RT5639_G_RM_L_SM_L_MASK			(0x3 << 14)
++#define RT5639_G_RM_L_SM_L_SFT			14
++#define RT5639_G_IN_L_SM_L_MASK			(0x3 << 12)
++#define RT5639_G_IN_L_SM_L_SFT			12
++#define RT5639_G_DAC_L1_SM_L_MASK		(0x3 << 10)
++#define RT5639_G_DAC_L1_SM_L_SFT		10
++#define RT5639_G_DAC_L2_SM_L_MASK		(0x3 << 8)
++#define RT5639_G_DAC_L2_SM_L_SFT		8
++#define RT5639_G_OM_L_SM_L_MASK			(0x3 << 6)
++#define RT5639_G_OM_L_SM_L_SFT			6
++#define RT5639_M_RM_L_SM_L			(0x1 << 5)
++#define RT5639_M_RM_L_SM_L_SFT			5
++#define RT5639_M_IN_L_SM_L			(0x1 << 4)
++#define RT5639_M_IN_L_SM_L_SFT			4
++#define RT5639_M_DAC_L1_SM_L			(0x1 << 3)
++#define RT5639_M_DAC_L1_SM_L_SFT		3
++#define RT5639_M_DAC_L2_SM_L			(0x1 << 2)
++#define RT5639_M_DAC_L2_SM_L_SFT		2
++#define RT5639_M_OM_L_SM_L			(0x1 << 1)
++#define RT5639_M_OM_L_SM_L_SFT		1
++
++/* SPK Right Mixer Control (0x47) */
++#define RT5639_G_RM_R_SM_R_MASK			(0x3 << 14)
++#define RT5639_G_RM_R_SM_R_SFT			14
++#define RT5639_G_IN_R_SM_R_MASK			(0x3 << 12)
++#define RT5639_G_IN_R_SM_R_SFT			12
++#define RT5639_G_DAC_R1_SM_R_MASK		(0x3 << 10)
++#define RT5639_G_DAC_R1_SM_R_SFT		10
++#define RT5639_G_DAC_R2_SM_R_MASK		(0x3 << 8)
++#define RT5639_G_DAC_R2_SM_R_SFT		8
++#define RT5639_G_OM_R_SM_R_MASK			(0x3 << 6)
++#define RT5639_G_OM_R_SM_R_SFT			6
++#define RT5639_M_RM_R_SM_R			(0x1 << 5)
++#define RT5639_M_RM_R_SM_R_SFT			5
++#define RT5639_M_IN_R_SM_R			(0x1 << 4)
++#define RT5639_M_IN_R_SM_R_SFT			4
++#define RT5639_M_DAC_R1_SM_R			(0x1 << 3)
++#define RT5639_M_DAC_R1_SM_R_SFT		3
++#define RT5639_M_DAC_R2_SM_R			(0x1 << 2)
++#define RT5639_M_DAC_R2_SM_R_SFT		2
++#define RT5639_M_OM_R_SM_R			(0x1 << 1)
++#define RT5639_M_OM_R_SM_R_SFT			1
++
++/* SPOLMIX Control (0x48) */
++#define RT5639_M_DAC_R1_SPM_L			(0x1 << 15)
++#define RT5639_M_DAC_R1_SPM_L_SFT		15
++#define RT5639_M_DAC_L1_SPM_L			(0x1 << 14)
++#define RT5639_M_DAC_L1_SPM_L_SFT		14
++#define RT5639_M_SV_R_SPM_L			(0x1 << 13)
++#define RT5639_M_SV_R_SPM_L_SFT			13
++#define RT5639_M_SV_L_SPM_L			(0x1 << 12)
++#define RT5639_M_SV_L_SPM_L_SFT			12
++#define RT5639_M_BST1_SPM_L			(0x1 << 11)
++#define RT5639_M_BST1_SPM_L_SFT			11
++
++/* SPORMIX Control (0x49) */
++#define RT5639_M_DAC_R1_SPM_R			(0x1 << 13)
++#define RT5639_M_DAC_R1_SPM_R_SFT		13
++#define RT5639_M_SV_R_SPM_R			(0x1 << 12)
++#define RT5639_M_SV_R_SPM_R_SFT			12
++#define RT5639_M_BST1_SPM_R			(0x1 << 11)
++#define RT5639_M_BST1_SPM_R_SFT			11
++
++/* SPOLMIX / SPORMIX Ratio Control (0x4a) */
++#define RT5639_SPO_CLSD_RATIO_MASK		(0x7)
++#define RT5639_SPO_CLSD_RATIO_SFT		0
++
++/* Output Left Mixer Control 1 (0x4d) */
++#define RT5639_G_BST3_OM_L_MASK			(0x7 << 13)
++#define RT5639_G_BST3_OM_L_SFT			13
++#define RT5639_G_BST2_OM_L_MASK			(0x7 << 10)
++#define RT5639_G_BST2_OM_L_SFT			10
++#define RT5639_G_BST1_OM_L_MASK			(0x7 << 7)
++#define RT5639_G_BST1_OM_L_SFT			7
++#define RT5639_G_IN_L_OM_L_MASK			(0x7 << 4)
++#define RT5639_G_IN_L_OM_L_SFT			4
++#define RT5639_G_RM_L_OM_L_MASK			(0x7 << 1)
++#define RT5639_G_RM_L_OM_L_SFT			1
++
++/* Output Left Mixer Control 2 (0x4e) */
++#define RT5639_G_DAC_R2_OM_L_MASK		(0x7 << 13)
++#define RT5639_G_DAC_R2_OM_L_SFT		13
++#define RT5639_G_DAC_L2_OM_L_MASK		(0x7 << 10)
++#define RT5639_G_DAC_L2_OM_L_SFT		10
++#define RT5639_G_DAC_L1_OM_L_MASK		(0x7 << 7)
++#define RT5639_G_DAC_L1_OM_L_SFT		7
++
++/* Output Left Mixer Control 3 (0x4f) */
++#define RT5639_M_BST3_OM_L			(0x1 << 7)
++#define RT5639_M_BST3_OM_L_SFT			7
++#define RT5639_M_BST2_OM_L			(0x1 << 6)
++#define RT5639_M_BST2_OM_L_SFT			6
++#define RT5639_M_BST1_OM_L			(0x1 << 5)
++#define RT5639_M_BST1_OM_L_SFT			5
++#define RT5639_M_IN_L_OM_L			(0x1 << 4)
++#define RT5639_M_IN_L_OM_L_SFT			4
++#define RT5639_M_RM_L_OM_L			(0x1 << 3)
++#define RT5639_M_RM_L_OM_L_SFT			3
++#define RT5639_M_DAC_R2_OM_L			(0x1 << 2)
++#define RT5639_M_DAC_R2_OM_L_SFT		2
++#define RT5639_M_DAC_L2_OM_L			(0x1 << 1)
++#define RT5639_M_DAC_L2_OM_L_SFT		1
++#define RT5639_M_DAC_L1_OM_L			(0x1)
++#define RT5639_M_DAC_L1_OM_L_SFT		0
++
++/* Output Right Mixer Control 1 (0x50) */
++#define RT5639_G_BST4_OM_R_MASK			(0x7 << 13)
++#define RT5639_G_BST4_OM_R_SFT			13
++#define RT5639_G_BST2_OM_R_MASK			(0x7 << 10)
++#define RT5639_G_BST2_OM_R_SFT			10
++#define RT5639_G_BST1_OM_R_MASK			(0x7 << 7)
++#define RT5639_G_BST1_OM_R_SFT			7
++#define RT5639_G_IN_R_OM_R_MASK			(0x7 << 4)
++#define RT5639_G_IN_R_OM_R_SFT			4
++#define RT5639_G_RM_R_OM_R_MASK			(0x7 << 1)
++#define RT5639_G_RM_R_OM_R_SFT			1
++
++/* Output Right Mixer Control 2 (0x51) */
++#define RT5639_G_DAC_L2_OM_R_MASK		(0x7 << 13)
++#define RT5639_G_DAC_L2_OM_R_SFT		13
++#define RT5639_G_DAC_R2_OM_R_MASK		(0x7 << 10)
++#define RT5639_G_DAC_R2_OM_R_SFT		10
++#define RT5639_G_DAC_R1_OM_R_MASK		(0x7 << 7)
++#define RT5639_G_DAC_R1_OM_R_SFT		7
++
++/* Output Right Mixer Control 3 (0x52) */
++#define RT5639_M_BST4_OM_R			(0x1 << 7)
++#define RT5639_M_BST4_OM_R_SFT			7
++#define RT5639_M_BST2_OM_R			(0x1 << 6)
++#define RT5639_M_BST2_OM_R_SFT			6
++#define RT5639_M_BST1_OM_R			(0x1 << 5)
++#define RT5639_M_BST1_OM_R_SFT			5
++#define RT5639_M_IN_R_OM_R			(0x1 << 4)
++#define RT5639_M_IN_R_OM_R_SFT			4
++#define RT5639_M_RM_R_OM_R			(0x1 << 3)
++#define RT5639_M_RM_R_OM_R_SFT			3
++#define RT5639_M_DAC_L2_OM_R			(0x1 << 2)
++#define RT5639_M_DAC_L2_OM_R_SFT		2
++#define RT5639_M_DAC_R2_OM_R			(0x1 << 1)
++#define RT5639_M_DAC_R2_OM_R_SFT		1
++#define RT5639_M_DAC_R1_OM_R			(0x1)
++#define RT5639_M_DAC_R1_OM_R_SFT		0
++
++/* LOUT Mixer Control (0x53) */
++#define RT5639_M_DAC_L1_LM			(0x1 << 15)
++#define RT5639_M_DAC_L1_LM_SFT			15
++#define RT5639_M_DAC_R1_LM			(0x1 << 14)
++#define RT5639_M_DAC_R1_LM_SFT			14
++#define RT5639_M_OV_L_LM			(0x1 << 13)
++#define RT5639_M_OV_L_LM_SFT			13
++#define RT5639_M_OV_R_LM			(0x1 << 12)
++#define RT5639_M_OV_R_LM_SFT			12
++#define RT5639_G_LOUTMIX_MASK			(0x1 << 11)
++#define RT5639_G_LOUTMIX_SFT			11
++
++/* Power Management for Digital 1 (0x61) */
++#define RT5639_PWR_I2S1				(0x1 << 15)
++#define RT5639_PWR_I2S1_BIT			15
++#define RT5639_PWR_I2S2				(0x1 << 14)
++#define RT5639_PWR_I2S2_BIT			14
++#define RT5639_PWR_DAC_L1			(0x1 << 12)
++#define RT5639_PWR_DAC_L1_BIT			12
++#define RT5639_PWR_DAC_R1			(0x1 << 11)
++#define RT5639_PWR_DAC_R1_BIT			11
++#define RT5639_PWR_DAC_L2			(0x1 << 7)
++#define RT5639_PWR_DAC_L2_BIT			7
++#define RT5639_PWR_DAC_R2			(0x1 << 6)
++#define RT5639_PWR_DAC_R2_BIT			6
++#define RT5639_PWR_ADC_L			(0x1 << 2)
++#define RT5639_PWR_ADC_L_BIT			2
++#define RT5639_PWR_ADC_R			(0x1 << 1)
++#define RT5639_PWR_ADC_R_BIT			1
++#define RT5639_PWR_CLS_D			(0x1)
++#define RT5639_PWR_CLS_D_BIT			0
++
++/* Power Management for Digital 2 (0x62) */
++#define RT5639_PWR_ADC_SF			(0x1 << 15)
++#define RT5639_PWR_ADC_SF_BIT			15
++#define RT5639_PWR_ADC_MF_L			(0x1 << 14)
++#define RT5639_PWR_ADC_MF_L_BIT			14
++#define RT5639_PWR_ADC_MF_R			(0x1 << 13)
++#define RT5639_PWR_ADC_MF_R_BIT			13
++#define RT5639_PWR_I2S_DSP			(0x1 << 12)
++#define RT5639_PWR_I2S_DSP_BIT			12
++
++/* Power Management for Analog 1 (0x63) */
++#define RT5639_PWR_VREF1			(0x1 << 15)
++#define RT5639_PWR_VREF1_BIT			15
++#define RT5639_PWR_FV1				(0x1 << 14)
++#define RT5639_PWR_FV1_BIT			14
++#define RT5639_PWR_MB				(0x1 << 13)
++#define RT5639_PWR_MB_BIT			13
++#define RT5639_PWR_LM				(0x1 << 12)
++#define RT5639_PWR_LM_BIT			12
++#define RT5639_PWR_BG				(0x1 << 11)
++#define RT5639_PWR_BG_BIT			11
++#define RT5639_PWR_MM				(0x1 << 10)
++#define RT5639_PWR_MM_BIT			10
++#define RT5639_PWR_MA				(0x1 << 8)
++#define RT5639_PWR_MA_BIT			8
++#define RT5639_PWR_HP_L				(0x1 << 7)
++#define RT5639_PWR_HP_L_BIT			7
++#define RT5639_PWR_HP_R				(0x1 << 6)
++#define RT5639_PWR_HP_R_BIT			6
++#define RT5639_PWR_HA				(0x1 << 5)
++#define RT5639_PWR_HA_BIT			5
++#define RT5639_PWR_VREF2			(0x1 << 4)
++#define RT5639_PWR_VREF2_BIT			4
++#define RT5639_PWR_FV2				(0x1 << 3)
++#define RT5639_PWR_FV2_BIT			3
++#define RT5639_PWR_LDO2				(0x1 << 2)
++#define RT5639_PWR_LDO2_BIT			2
++
++/* Power Management for Analog 2 (0x64) */
++#define RT5639_PWR_BST1				(0x1 << 15)
++#define RT5639_PWR_BST1_BIT			15
++#define RT5639_PWR_BST2				(0x1 << 14)
++#define RT5639_PWR_BST2_BIT			14
++#define RT5639_PWR_BST3				(0x1 << 13)
++#define RT5639_PWR_BST3_BIT			13
++#define RT5639_PWR_BST4				(0x1 << 12)
++#define RT5639_PWR_BST4_BIT			12
++#define RT5639_PWR_MB1				(0x1 << 11)
++#define RT5639_PWR_MB1_BIT			11
++#define RT5639_PWR_PLL				(0x1 << 9)
++#define RT5639_PWR_PLL_BIT			9
++
++/* Power Management for Mixer (0x65) */
++#define RT5639_PWR_OM_L				(0x1 << 15)
++#define RT5639_PWR_OM_L_BIT			15
++#define RT5639_PWR_OM_R				(0x1 << 14)
++#define RT5639_PWR_OM_R_BIT			14
++#define RT5639_PWR_SM_L				(0x1 << 13)
++#define RT5639_PWR_SM_L_BIT			13
++#define RT5639_PWR_SM_R				(0x1 << 12)
++#define RT5639_PWR_SM_R_BIT			12
++#define RT5639_PWR_RM_L				(0x1 << 11)
++#define RT5639_PWR_RM_L_BIT			11
++#define RT5639_PWR_RM_R				(0x1 << 10)
++#define RT5639_PWR_RM_R_BIT			10
++
++/* Power Management for Volume (0x66) */
++#define RT5639_PWR_SV_L				(0x1 << 15)
++#define RT5639_PWR_SV_L_BIT			15
++#define RT5639_PWR_SV_R				(0x1 << 14)
++#define RT5639_PWR_SV_R_BIT			14
++#define RT5639_PWR_OV_L				(0x1 << 13)
++#define RT5639_PWR_OV_L_BIT			13
++#define RT5639_PWR_OV_R				(0x1 << 12)
++#define RT5639_PWR_OV_R_BIT			12
++#define RT5639_PWR_HV_L				(0x1 << 11)
++#define RT5639_PWR_HV_L_BIT			11
++#define RT5639_PWR_HV_R				(0x1 << 10)
++#define RT5639_PWR_HV_R_BIT			10
++#define RT5639_PWR_IN_L				(0x1 << 9)
++#define RT5639_PWR_IN_L_BIT			9
++#define RT5639_PWR_IN_R				(0x1 << 8)
++#define RT5639_PWR_IN_R_BIT			8
++
++/* I2S1/2/3 Audio Serial Data Port Control (0x70 0x71 0x72) */
++#define RT5639_I2S_MS_MASK			(0x1 << 15)
++#define RT5639_I2S_MS_SFT			15
++#define RT5639_I2S_MS_M				(0x0 << 15)
++#define RT5639_I2S_MS_S				(0x1 << 15)
++#define RT5639_I2S_IF_MASK			(0x7 << 12)
++#define RT5639_I2S_IF_SFT			12
++#define RT5639_I2S_O_CP_MASK			(0x3 << 10)
++#define RT5639_I2S_O_CP_SFT			10
++#define RT5639_I2S_O_CP_OFF			(0x0 << 10)
++#define RT5639_I2S_O_CP_U_LAW			(0x1 << 10)
++#define RT5639_I2S_O_CP_A_LAW			(0x2 << 10)
++#define RT5639_I2S_I_CP_MASK			(0x3 << 8)
++#define RT5639_I2S_I_CP_SFT			8
++#define RT5639_I2S_I_CP_OFF			(0x0 << 8)
++#define RT5639_I2S_I_CP_U_LAW			(0x1 << 8)
++#define RT5639_I2S_I_CP_A_LAW			(0x2 << 8)
++#define RT5639_I2S_BP_MASK			(0x1 << 7)
++#define RT5639_I2S_BP_SFT			7
++#define RT5639_I2S_BP_NOR			(0x0 << 7)
++#define RT5639_I2S_BP_INV			(0x1 << 7)
++#define RT5639_I2S_DL_MASK			(0x3 << 2)
++#define RT5639_I2S_DL_SFT			2
++#define RT5639_I2S_DL_16			(0x0 << 2)
++#define RT5639_I2S_DL_20			(0x1 << 2)
++#define RT5639_I2S_DL_24			(0x2 << 2)
++#define RT5639_I2S_DL_8				(0x3 << 2)
++#define RT5639_I2S_DF_MASK			(0x3)
++#define RT5639_I2S_DF_SFT			0
++#define RT5639_I2S_DF_I2S			(0x0)
++#define RT5639_I2S_DF_LEFT			(0x1)
++#define RT5639_I2S_DF_PCM_A			(0x2)
++#define RT5639_I2S_DF_PCM_B			(0x3)
++
++/* I2S2 Audio Serial Data Port Control (0x71) */
++#define RT5639_I2S2_SDI_MASK			(0x1 << 6)
++#define RT5639_I2S2_SDI_SFT			6
++#define RT5639_I2S2_SDI_I2S1			(0x0 << 6)
++#define RT5639_I2S2_SDI_I2S2			(0x1 << 6)
++
++/* ADC/DAC Clock Control 1 (0x73) */
++#define RT5639_I2S_BCLK_MS1_MASK		(0x1 << 15)
++#define RT5639_I2S_BCLK_MS1_SFT			15
++#define RT5639_I2S_BCLK_MS1_32			(0x0 << 15)
++#define RT5639_I2S_BCLK_MS1_64			(0x1 << 15)
++#define RT5639_I2S_PD1_MASK			(0x7 << 12)
++#define RT5639_I2S_PD1_SFT			12
++#define RT5639_I2S_PD1_1			(0x0 << 12)
++#define RT5639_I2S_PD1_2			(0x1 << 12)
++#define RT5639_I2S_PD1_3			(0x2 << 12)
++#define RT5639_I2S_PD1_4			(0x3 << 12)
++#define RT5639_I2S_PD1_6			(0x4 << 12)
++#define RT5639_I2S_PD1_8			(0x5 << 12)
++#define RT5639_I2S_PD1_12			(0x6 << 12)
++#define RT5639_I2S_PD1_16			(0x7 << 12)
++#define RT5639_I2S_BCLK_MS2_MASK		(0x1 << 11)
++#define RT5639_I2S_BCLK_MS2_SFT			11
++#define RT5639_I2S_BCLK_MS2_32			(0x0 << 11)
++#define RT5639_I2S_BCLK_MS2_64			(0x1 << 11)
++#define RT5639_I2S_PD2_MASK			(0x7 << 8)
++#define RT5639_I2S_PD2_SFT			8
++#define RT5639_I2S_PD2_1			(0x0 << 8)
++#define RT5639_I2S_PD2_2			(0x1 << 8)
++#define RT5639_I2S_PD2_3			(0x2 << 8)
++#define RT5639_I2S_PD2_4			(0x3 << 8)
++#define RT5639_I2S_PD2_6			(0x4 << 8)
++#define RT5639_I2S_PD2_8			(0x5 << 8)
++#define RT5639_I2S_PD2_12			(0x6 << 8)
++#define RT5639_I2S_PD2_16			(0x7 << 8)
++#define RT5639_I2S_BCLK_MS3_MASK		(0x1 << 7)
++#define RT5639_I2S_BCLK_MS3_SFT			7
++#define RT5639_I2S_BCLK_MS3_32			(0x0 << 7)
++#define RT5639_I2S_BCLK_MS3_64			(0x1 << 7)
++#define RT5639_I2S_PD3_MASK			(0x7 << 4)
++#define RT5639_I2S_PD3_SFT			4
++#define RT5639_I2S_PD3_1			(0x0 << 4)
++#define RT5639_I2S_PD3_2			(0x1 << 4)
++#define RT5639_I2S_PD3_3			(0x2 << 4)
++#define RT5639_I2S_PD3_4			(0x3 << 4)
++#define RT5639_I2S_PD3_6			(0x4 << 4)
++#define RT5639_I2S_PD3_8			(0x5 << 4)
++#define RT5639_I2S_PD3_12			(0x6 << 4)
++#define RT5639_I2S_PD3_16			(0x7 << 4)
++#define RT5639_DAC_OSR_MASK			(0x3 << 2)
++#define RT5639_DAC_OSR_SFT			2
++#define RT5639_DAC_OSR_128			(0x0 << 2)
++#define RT5639_DAC_OSR_64			(0x1 << 2)
++#define RT5639_DAC_OSR_32			(0x2 << 2)
++#define RT5639_DAC_OSR_16			(0x3 << 2)
++#define RT5639_ADC_OSR_MASK			(0x3)
++#define RT5639_ADC_OSR_SFT			0
++#define RT5639_ADC_OSR_128			(0x0)
++#define RT5639_ADC_OSR_64			(0x1)
++#define RT5639_ADC_OSR_32			(0x2)
++#define RT5639_ADC_OSR_16			(0x3)
++
++/* ADC/DAC Clock Control 2 (0x74) */
++#define RT5639_DAC_L_OSR_MASK			(0x3 << 14)
++#define RT5639_DAC_L_OSR_SFT			14
++#define RT5639_DAC_L_OSR_128			(0x0 << 14)
++#define RT5639_DAC_L_OSR_64			(0x1 << 14)
++#define RT5639_DAC_L_OSR_32			(0x2 << 14)
++#define RT5639_DAC_L_OSR_16			(0x3 << 14)
++#define RT5639_ADC_R_OSR_MASK			(0x3 << 12)
++#define RT5639_ADC_R_OSR_SFT			12
++#define RT5639_ADC_R_OSR_128			(0x0 << 12)
++#define RT5639_ADC_R_OSR_64			(0x1 << 12)
++#define RT5639_ADC_R_OSR_32			(0x2 << 12)
++#define RT5639_ADC_R_OSR_16			(0x3 << 12)
++#define RT5639_DAHPF_EN				(0x1 << 11)
++#define RT5639_DAHPF_EN_SFT			11
++#define RT5639_ADHPF_EN				(0x1 << 10)
++#define RT5639_ADHPF_EN_SFT			10
++
++/* Digital Microphone Control (0x75) */
++#define RT5639_DMIC_1_EN_MASK			(0x1 << 15)
++#define RT5639_DMIC_1_EN_SFT			15
++#define RT5639_DMIC_1_DIS			(0x0 << 15)
++#define RT5639_DMIC_1_EN			(0x1 << 15)
++#define RT5639_DMIC_2_EN_MASK			(0x1 << 14)
++#define RT5639_DMIC_2_EN_SFT			14
++#define RT5639_DMIC_2_DIS			(0x0 << 14)
++#define RT5639_DMIC_2_EN			(0x1 << 14)
++#define RT5639_DMIC_1L_LH_MASK			(0x1 << 13)
++#define RT5639_DMIC_1L_LH_SFT			13
++#define RT5639_DMIC_1L_LH_FALLING		(0x0 << 13)
++#define RT5639_DMIC_1L_LH_RISING		(0x1 << 13)
++#define RT5639_DMIC_1R_LH_MASK			(0x1 << 12)
++#define RT5639_DMIC_1R_LH_SFT			12
++#define RT5639_DMIC_1R_LH_FALLING		(0x0 << 12)
++#define RT5639_DMIC_1R_LH_RISING		(0x1 << 12)
++#define RT5639_DMIC_1_DP_MASK			(0x1 << 11)
++#define RT5639_DMIC_1_DP_SFT			11
++#define RT5639_DMIC_1_DP_GPIO3			(0x0 << 11)
++#define RT5639_DMIC_1_DP_IN1P			(0x1 << 11)
++#define RT5639_DMIC_2_DP_MASK			(0x1 << 10)
++#define RT5639_DMIC_2_DP_SFT			10
++#define RT5639_DMIC_2_DP_GPIO4			(0x0 << 10)
++#define RT5639_DMIC_2_DP_IN1N			(0x1 << 10)
++#define RT5639_DMIC_2L_LH_MASK			(0x1 << 9)
++#define RT5639_DMIC_2L_LH_SFT			9
++#define RT5639_DMIC_2L_LH_FALLING		(0x0 << 9)
++#define RT5639_DMIC_2L_LH_RISING		(0x1 << 9)
++#define RT5639_DMIC_2R_LH_MASK			(0x1 << 8)
++#define RT5639_DMIC_2R_LH_SFT			8
++#define RT5639_DMIC_2R_LH_FALLING		(0x0 << 8)
++#define RT5639_DMIC_2R_LH_RISING		(0x1 << 8)
++#define RT5639_DMIC_CLK_MASK			(0x7 << 5)
++#define RT5639_DMIC_CLK_SFT			5
++
++/* Global Clock Control (0x80) */
++#define RT5639_SCLK_SRC_MASK			(0x3 << 14)
++#define RT5639_SCLK_SRC_SFT			14
++#define RT5639_SCLK_SRC_MCLK			(0x0 << 14)
++#define RT5639_SCLK_SRC_PLL1			(0x1 << 14)
++#define RT5639_PLL1_SRC_MASK			(0x3 << 12)
++#define RT5639_PLL1_SRC_SFT			12
++#define RT5639_PLL1_SRC_MCLK			(0x0 << 12)
++#define RT5639_PLL1_SRC_BCLK1			(0x1 << 12)
++#define RT5639_PLL1_SRC_BCLK2			(0x2 << 12)
++#define RT5639_PLL1_SRC_BCLK3			(0x3 << 12)
++#define RT5639_PLL1_PD_MASK			(0x1 << 3)
++#define RT5639_PLL1_PD_SFT			3
++#define RT5639_PLL1_PD_1			(0x0 << 3)
++#define RT5639_PLL1_PD_2			(0x1 << 3)
++
++#define RT5639_PLL_INP_MAX			40000000
++#define RT5639_PLL_INP_MIN			256000
++/* PLL M/N/K Code Control 1 (0x81) */
++#define RT5639_PLL_N_MAX			0x1ff
++#define RT5639_PLL_N_MASK			(RT5639_PLL_N_MAX << 7)
++#define RT5639_PLL_N_SFT			7
++#define RT5639_PLL_K_MAX			0x1f
++#define RT5639_PLL_K_MASK			(RT5639_PLL_K_MAX)
++#define RT5639_PLL_K_SFT			0
++
++/* PLL M/N/K Code Control 2 (0x82) */
++#define RT5639_PLL_M_MAX			0xf
++#define RT5639_PLL_M_MASK			(RT5639_PLL_M_MAX << 12)
++#define RT5639_PLL_M_SFT			12
++#define RT5639_PLL_M_BP				(0x1 << 11)
++#define RT5639_PLL_M_BP_SFT			11
++
++/* ASRC Control 1 (0x83) */
++#define RT5639_STO_T_MASK			(0x1 << 15)
++#define RT5639_STO_T_SFT			15
++#define RT5639_STO_T_SCLK			(0x0 << 15)
++#define RT5639_STO_T_LRCK1			(0x1 << 15)
++#define RT5639_M1_T_MASK			(0x1 << 14)
++#define RT5639_M1_T_SFT				14
++#define RT5639_M1_T_I2S2			(0x0 << 14)
++#define RT5639_M1_T_I2S2_D3			(0x1 << 14)
++#define RT5639_I2S2_F_MASK			(0x1 << 12)
++#define RT5639_I2S2_F_SFT			12
++#define RT5639_I2S2_F_I2S2_D2			(0x0 << 12)
++#define RT5639_I2S2_F_I2S1_TCLK			(0x1 << 12)
++#define RT5639_DMIC_1_M_MASK			(0x1 << 9)
++#define RT5639_DMIC_1_M_SFT			9
++#define RT5639_DMIC_1_M_NOR			(0x0 << 9)
++#define RT5639_DMIC_1_M_ASYN			(0x1 << 9)
++#define RT5639_DMIC_2_M_MASK			(0x1 << 8)
++#define RT5639_DMIC_2_M_SFT			8
++#define RT5639_DMIC_2_M_NOR			(0x0 << 8)
++#define RT5639_DMIC_2_M_ASYN			(0x1 << 8)
++
++/* ASRC Control 2 (0x84) */
++#define RT5639_MDA_L_M_MASK			(0x1 << 15)
++#define RT5639_MDA_L_M_SFT			15
++#define RT5639_MDA_L_M_NOR			(0x0 << 15)
++#define RT5639_MDA_L_M_ASYN			(0x1 << 15)
++#define RT5639_MDA_R_M_MASK			(0x1 << 14)
++#define RT5639_MDA_R_M_SFT			14
++#define RT5639_MDA_R_M_NOR			(0x0 << 14)
++#define RT5639_MDA_R_M_ASYN			(0x1 << 14)
++#define RT5639_MAD_L_M_MASK			(0x1 << 13)
++#define RT5639_MAD_L_M_SFT			13
++#define RT5639_MAD_L_M_NOR			(0x0 << 13)
++#define RT5639_MAD_L_M_ASYN			(0x1 << 13)
++#define RT5639_MAD_R_M_MASK			(0x1 << 12)
++#define RT5639_MAD_R_M_SFT			12
++#define RT5639_MAD_R_M_NOR			(0x0 << 12)
++#define RT5639_MAD_R_M_ASYN			(0x1 << 12)
++#define RT5639_ADC_M_MASK			(0x1 << 11)
++#define RT5639_ADC_M_SFT			11
++#define RT5639_ADC_M_NOR			(0x0 << 11)
++#define RT5639_ADC_M_ASYN			(0x1 << 11)
++#define RT5639_STO_DAC_M_MASK			(0x1 << 5)
++#define RT5639_STO_DAC_M_SFT			5
++#define RT5639_STO_DAC_M_NOR			(0x0 << 5)
++#define RT5639_STO_DAC_M_ASYN			(0x1 << 5)
++#define RT5639_I2S1_R_D_MASK			(0x1 << 4)
++#define RT5639_I2S1_R_D_SFT			4
++#define RT5639_I2S1_R_D_DIS			(0x0 << 4)
++#define RT5639_I2S1_R_D_EN			(0x1 << 4)
++#define RT5639_I2S2_R_D_MASK			(0x1 << 3)
++#define RT5639_I2S2_R_D_SFT			3
++#define RT5639_I2S2_R_D_DIS			(0x0 << 3)
++#define RT5639_I2S2_R_D_EN			(0x1 << 3)
++#define RT5639_PRE_SCLK_MASK			(0x3)
++#define RT5639_PRE_SCLK_SFT			0
++#define RT5639_PRE_SCLK_512			(0x0)
++#define RT5639_PRE_SCLK_1024			(0x1)
++#define RT5639_PRE_SCLK_2048			(0x2)
++
++/* ASRC Control 3 (0x85) */
++#define RT5639_I2S1_RATE_MASK			(0xf << 12)
++#define RT5639_I2S1_RATE_SFT			12
++#define RT5639_I2S2_RATE_MASK			(0xf << 8)
++#define RT5639_I2S2_RATE_SFT			8
++
++/* ASRC Control 4 (0x89) */
++#define RT5639_I2S1_PD_MASK			(0x7 << 12)
++#define RT5639_I2S1_PD_SFT			12
++#define RT5639_I2S2_PD_MASK			(0x7 << 8)
++#define RT5639_I2S2_PD_SFT			8
++
++/* HPOUT Over Current Detection (0x8b) */
++#define RT5639_HP_OVCD_MASK			(0x1 << 10)
++#define RT5639_HP_OVCD_SFT			10
++#define RT5639_HP_OVCD_DIS			(0x0 << 10)
++#define RT5639_HP_OVCD_EN			(0x1 << 10)
++#define RT5639_HP_OC_TH_MASK			(0x3 << 8)
++#define RT5639_HP_OC_TH_SFT			8
++#define RT5639_HP_OC_TH_90			(0x0 << 8)
++#define RT5639_HP_OC_TH_105			(0x1 << 8)
++#define RT5639_HP_OC_TH_120			(0x2 << 8)
++#define RT5639_HP_OC_TH_135			(0x3 << 8)
++
++/* Class D Over Current Control (0x8c) */
++#define RT5639_CLSD_OC_MASK			(0x1 << 9)
++#define RT5639_CLSD_OC_SFT			9
++#define RT5639_CLSD_OC_PU			(0x0 << 9)
++#define RT5639_CLSD_OC_PD			(0x1 << 9)
++#define RT5639_AUTO_PD_MASK			(0x1 << 8)
++#define RT5639_AUTO_PD_SFT			8
++#define RT5639_AUTO_PD_DIS			(0x0 << 8)
++#define RT5639_AUTO_PD_EN			(0x1 << 8)
++#define RT5639_CLSD_OC_TH_MASK			(0x3f)
++#define RT5639_CLSD_OC_TH_SFT			0
++
++/* Class D Output Control (0x8d) */
++#define RT5639_CLSD_RATIO_MASK			(0xf << 12)
++#define RT5639_CLSD_RATIO_SFT			12
++#define RT5639_CLSD_OM_MASK			(0x1 << 11)
++#define RT5639_CLSD_OM_SFT			11
++#define RT5639_CLSD_OM_MONO			(0x0 << 11)
++#define RT5639_CLSD_OM_STO			(0x1 << 11)
++#define RT5639_CLSD_SCH_MASK			(0x1 << 10)
++#define RT5639_CLSD_SCH_SFT			10
++#define RT5639_CLSD_SCH_L			(0x0 << 10)
++#define RT5639_CLSD_SCH_S			(0x1 << 10)
++
++/* Depop Mode Control 1 (0x8e) */
++#define RT5639_SMT_TRIG_MASK			(0x1 << 15)
++#define RT5639_SMT_TRIG_SFT			15
++#define RT5639_SMT_TRIG_DIS			(0x0 << 15)
++#define RT5639_SMT_TRIG_EN			(0x1 << 15)
++#define RT5639_HP_L_SMT_MASK			(0x1 << 9)
++#define RT5639_HP_L_SMT_SFT			9
++#define RT5639_HP_L_SMT_DIS			(0x0 << 9)
++#define RT5639_HP_L_SMT_EN			(0x1 << 9)
++#define RT5639_HP_R_SMT_MASK			(0x1 << 8)
++#define RT5639_HP_R_SMT_SFT			8
++#define RT5639_HP_R_SMT_DIS			(0x0 << 8)
++#define RT5639_HP_R_SMT_EN			(0x1 << 8)
++#define RT5639_HP_CD_PD_MASK			(0x1 << 7)
++#define RT5639_HP_CD_PD_SFT			7
++#define RT5639_HP_CD_PD_DIS			(0x0 << 7)
++#define RT5639_HP_CD_PD_EN			(0x1 << 7)
++#define RT5639_RSTN_MASK			(0x1 << 6)
++#define RT5639_RSTN_SFT				6
++#define RT5639_RSTN_DIS				(0x0 << 6)
++#define RT5639_RSTN_EN				(0x1 << 6)
++#define RT5639_RSTP_MASK			(0x1 << 5)
++#define RT5639_RSTP_SFT				5
++#define RT5639_RSTP_DIS				(0x0 << 5)
++#define RT5639_RSTP_EN				(0x1 << 5)
++#define RT5639_HP_CO_MASK			(0x1 << 4)
++#define RT5639_HP_CO_SFT			4
++#define RT5639_HP_CO_DIS			(0x0 << 4)
++#define RT5639_HP_CO_EN				(0x1 << 4)
++#define RT5639_HP_CP_MASK			(0x1 << 3)
++#define RT5639_HP_CP_SFT			3
++#define RT5639_HP_CP_PD				(0x0 << 3)
++#define RT5639_HP_CP_PU				(0x1 << 3)
++#define RT5639_HP_SG_MASK			(0x1 << 2)
++#define RT5639_HP_SG_SFT			2
++#define RT5639_HP_SG_DIS			(0x0 << 2)
++#define RT5639_HP_SG_EN				(0x1 << 2)
++#define RT5639_HP_DP_MASK			(0x1 << 1)
++#define RT5639_HP_DP_SFT			1
++#define RT5639_HP_DP_PD				(0x0 << 1)
++#define RT5639_HP_DP_PU				(0x1 << 1)
++#define RT5639_HP_CB_MASK			(0x1)
++#define RT5639_HP_CB_SFT			0
++#define RT5639_HP_CB_PD				(0x0)
++#define RT5639_HP_CB_PU				(0x1)
++
++/* Depop Mode Control 2 (0x8f) */
++#define RT5639_DEPOP_MASK			(0x1 << 13)
++#define RT5639_DEPOP_SFT			13
++#define RT5639_DEPOP_AUTO			(0x0 << 13)
++#define RT5639_DEPOP_MAN			(0x1 << 13)
++#define RT5639_RAMP_MASK			(0x1 << 12)
++#define RT5639_RAMP_SFT				12
++#define RT5639_RAMP_DIS				(0x0 << 12)
++#define RT5639_RAMP_EN				(0x1 << 12)
++#define RT5639_BPS_MASK				(0x1 << 11)
++#define RT5639_BPS_SFT				11
++#define RT5639_BPS_DIS				(0x0 << 11)
++#define RT5639_BPS_EN				(0x1 << 11)
++#define RT5639_FAST_UPDN_MASK			(0x1 << 10)
++#define RT5639_FAST_UPDN_SFT			10
++#define RT5639_FAST_UPDN_DIS			(0x0 << 10)
++#define RT5639_FAST_UPDN_EN			(0x1 << 10)
++#define RT5639_MRES_MASK			(0x3 << 8)
++#define RT5639_MRES_SFT				8
++#define RT5639_MRES_15MO			(0x0 << 8)
++#define RT5639_MRES_25MO			(0x1 << 8)
++#define RT5639_MRES_35MO			(0x2 << 8)
++#define RT5639_MRES_45MO			(0x3 << 8)
++#define RT5639_VLO_MASK				(0x1 << 7)
++#define RT5639_VLO_SFT				7
++#define RT5639_VLO_3V				(0x0 << 7)
++#define RT5639_VLO_32V				(0x1 << 7)
++#define RT5639_DIG_DP_MASK			(0x1 << 6)
++#define RT5639_DIG_DP_SFT			6
++#define RT5639_DIG_DP_DIS			(0x0 << 6)
++#define RT5639_DIG_DP_EN			(0x1 << 6)
++#define RT5639_DP_TH_MASK			(0x3 << 4)
++#define RT5639_DP_TH_SFT			4
++
++/* Depop Mode Control 3 (0x90) */
++#define RT5639_CP_SYS_MASK			(0x7 << 12)
++#define RT5639_CP_SYS_SFT			12
++#define RT5639_CP_FQ1_MASK			(0x7 << 8)
++#define RT5639_CP_FQ1_SFT			8
++#define RT5639_CP_FQ2_MASK			(0x7 << 4)
++#define RT5639_CP_FQ2_SFT			4
++#define RT5639_CP_FQ3_MASK			(0x7)
++#define RT5639_CP_FQ3_SFT			0
++#define RT5639_CP_FQ_1_5_KHZ			0
++#define RT5639_CP_FQ_3_KHZ			1
++#define RT5639_CP_FQ_6_KHZ			2
++#define RT5639_CP_FQ_12_KHZ			3
++#define RT5639_CP_FQ_24_KHZ			4
++#define RT5639_CP_FQ_48_KHZ			5
++#define RT5639_CP_FQ_96_KHZ			6
++#define RT5639_CP_FQ_192_KHZ			7
++
++/* HPOUT charge pump (0x91) */
++#define RT5639_OSW_L_MASK			(0x1 << 11)
++#define RT5639_OSW_L_SFT			11
++#define RT5639_OSW_L_DIS			(0x0 << 11)
++#define RT5639_OSW_L_EN				(0x1 << 11)
++#define RT5639_OSW_R_MASK			(0x1 << 10)
++#define RT5639_OSW_R_SFT			10
++#define RT5639_OSW_R_DIS			(0x0 << 10)
++#define RT5639_OSW_R_EN				(0x1 << 10)
++#define RT5639_PM_HP_MASK			(0x3 << 8)
++#define RT5639_PM_HP_SFT			8
++#define RT5639_PM_HP_LV				(0x0 << 8)
++#define RT5639_PM_HP_MV				(0x1 << 8)
++#define RT5639_PM_HP_HV				(0x2 << 8)
++#define RT5639_IB_HP_MASK			(0x3 << 6)
++#define RT5639_IB_HP_SFT			6
++#define RT5639_IB_HP_125IL			(0x0 << 6)
++#define RT5639_IB_HP_25IL			(0x1 << 6)
++#define RT5639_IB_HP_5IL			(0x2 << 6)
++#define RT5639_IB_HP_1IL			(0x3 << 6)
++
++/* PV detection and SPK gain control (0x92) */
++#define RT5639_PVDD_DET_MASK			(0x1 << 15)
++#define RT5639_PVDD_DET_SFT			15
++#define RT5639_PVDD_DET_DIS			(0x0 << 15)
++#define RT5639_PVDD_DET_EN			(0x1 << 15)
++#define RT5639_SPK_AG_MASK			(0x1 << 14)
++#define RT5639_SPK_AG_SFT			14
++#define RT5639_SPK_AG_DIS			(0x0 << 14)
++#define RT5639_SPK_AG_EN			(0x1 << 14)
++
++/* Micbias Control (0x93) */
++#define RT5639_MIC1_BS_MASK			(0x1 << 15)
++#define RT5639_MIC1_BS_SFT			15
++#define RT5639_MIC1_BS_9AV			(0x0 << 15)
++#define RT5639_MIC1_BS_75AV			(0x1 << 15)
++#define RT5639_MIC2_BS_MASK			(0x1 << 14)
++#define RT5639_MIC2_BS_SFT			14
++#define RT5639_MIC2_BS_9AV			(0x0 << 14)
++#define RT5639_MIC2_BS_75AV			(0x1 << 14)
++#define RT5639_MIC1_CLK_MASK			(0x1 << 13)
++#define RT5639_MIC1_CLK_SFT			13
++#define RT5639_MIC1_CLK_DIS			(0x0 << 13)
++#define RT5639_MIC1_CLK_EN			(0x1 << 13)
++#define RT5639_MIC2_CLK_MASK			(0x1 << 12)
++#define RT5639_MIC2_CLK_SFT			12
++#define RT5639_MIC2_CLK_DIS			(0x0 << 12)
++#define RT5639_MIC2_CLK_EN			(0x1 << 12)
++#define RT5639_MIC1_OVCD_MASK			(0x1 << 11)
++#define RT5639_MIC1_OVCD_SFT			11
++#define RT5639_MIC1_OVCD_DIS			(0x0 << 11)
++#define RT5639_MIC1_OVCD_EN			(0x1 << 11)
++#define RT5639_MIC1_OVTH_MASK			(0x3 << 9)
++#define RT5639_MIC1_OVTH_SFT			9
++#define RT5639_MIC1_OVTH_600UA			(0x0 << 9)
++#define RT5639_MIC1_OVTH_1500UA			(0x1 << 9)
++#define RT5639_MIC1_OVTH_2000UA			(0x2 << 9)
++#define RT5639_MIC2_OVCD_MASK			(0x1 << 8)
++#define RT5639_MIC2_OVCD_SFT			8
++#define RT5639_MIC2_OVCD_DIS			(0x0 << 8)
++#define RT5639_MIC2_OVCD_EN			(0x1 << 8)
++#define RT5639_MIC2_OVTH_MASK			(0x3 << 6)
++#define RT5639_MIC2_OVTH_SFT			6
++#define RT5639_MIC2_OVTH_600UA			(0x0 << 6)
++#define RT5639_MIC2_OVTH_1500UA			(0x1 << 6)
++#define RT5639_MIC2_OVTH_2000UA			(0x2 << 6)
++#define RT5639_PWR_MB_MASK			(0x1 << 5)
++#define RT5639_PWR_MB_SFT			5
++#define RT5639_PWR_MB_PD			(0x0 << 5)
++#define RT5639_PWR_MB_PU			(0x1 << 5)
++#define RT5639_PWR_CLK25M_MASK			(0x1 << 4)
++#define RT5639_PWR_CLK25M_SFT			4
++#define RT5639_PWR_CLK25M_PD			(0x0 << 4)
++#define RT5639_PWR_CLK25M_PU			(0x1 << 4)
++
++/* EQ Control 1 (0xb0) */
++#define RT5639_EQ_SRC_MASK			(0x1 << 15)
++#define RT5639_EQ_SRC_SFT			15
++#define RT5639_EQ_SRC_DAC			(0x0 << 15)
++#define RT5639_EQ_SRC_ADC			(0x1 << 15)
++#define RT5639_EQ_UPD				(0x1 << 14)
++#define RT5639_EQ_UPD_BIT			14
++#define RT5639_EQ_CD_MASK			(0x1 << 13)
++#define RT5639_EQ_CD_SFT			13
++#define RT5639_EQ_CD_DIS			(0x0 << 13)
++#define RT5639_EQ_CD_EN				(0x1 << 13)
++#define RT5639_EQ_DITH_MASK			(0x3 << 8)
++#define RT5639_EQ_DITH_SFT			8
++#define RT5639_EQ_DITH_NOR			(0x0 << 8)
++#define RT5639_EQ_DITH_LSB			(0x1 << 8)
++#define RT5639_EQ_DITH_LSB_1			(0x2 << 8)
++#define RT5639_EQ_DITH_LSB_2			(0x3 << 8)
++
++/* EQ Control 2 (0xb1) */
++#define RT5639_EQ_HPF1_M_MASK			(0x1 << 8)
++#define RT5639_EQ_HPF1_M_SFT			8
++#define RT5639_EQ_HPF1_M_HI			(0x0 << 8)
++#define RT5639_EQ_HPF1_M_1ST			(0x1 << 8)
++#define RT5639_EQ_LPF1_M_MASK			(0x1 << 7)
++#define RT5639_EQ_LPF1_M_SFT			7
++#define RT5639_EQ_LPF1_M_LO			(0x0 << 7)
++#define RT5639_EQ_LPF1_M_1ST			(0x1 << 7)
++#define RT5639_EQ_HPF2_MASK			(0x1 << 6)
++#define RT5639_EQ_HPF2_SFT			6
++#define RT5639_EQ_HPF2_DIS			(0x0 << 6)
++#define RT5639_EQ_HPF2_EN			(0x1 << 6)
++#define RT5639_EQ_HPF1_MASK			(0x1 << 5)
++#define RT5639_EQ_HPF1_SFT			5
++#define RT5639_EQ_HPF1_DIS			(0x0 << 5)
++#define RT5639_EQ_HPF1_EN			(0x1 << 5)
++#define RT5639_EQ_BPF4_MASK			(0x1 << 4)
++#define RT5639_EQ_BPF4_SFT			4
++#define RT5639_EQ_BPF4_DIS			(0x0 << 4)
++#define RT5639_EQ_BPF4_EN			(0x1 << 4)
++#define RT5639_EQ_BPF3_MASK			(0x1 << 3)
++#define RT5639_EQ_BPF3_SFT			3
++#define RT5639_EQ_BPF3_DIS			(0x0 << 3)
++#define RT5639_EQ_BPF3_EN			(0x1 << 3)
++#define RT5639_EQ_BPF2_MASK			(0x1 << 2)
++#define RT5639_EQ_BPF2_SFT			2
++#define RT5639_EQ_BPF2_DIS			(0x0 << 2)
++#define RT5639_EQ_BPF2_EN			(0x1 << 2)
++#define RT5639_EQ_BPF1_MASK			(0x1 << 1)
++#define RT5639_EQ_BPF1_SFT			1
++#define RT5639_EQ_BPF1_DIS			(0x0 << 1)
++#define RT5639_EQ_BPF1_EN			(0x1 << 1)
++#define RT5639_EQ_LPF_MASK			(0x1)
++#define RT5639_EQ_LPF_SFT			0
++#define RT5639_EQ_LPF_DIS			(0x0)
++#define RT5639_EQ_LPF_EN			(0x1)
++
++/* Memory Test (0xb2) */
++#define RT5639_MT_MASK				(0x1 << 15)
++#define RT5639_MT_SFT				15
++#define RT5639_MT_DIS				(0x0 << 15)
++#define RT5639_MT_EN				(0x1 << 15)
++
++/* DRC/AGC Control 1 (0xb4) */
++#define RT5639_DRC_AGC_P_MASK			(0x1 << 15)
++#define RT5639_DRC_AGC_P_SFT			15
++#define RT5639_DRC_AGC_P_DAC			(0x0 << 15)
++#define RT5639_DRC_AGC_P_ADC			(0x1 << 15)
++#define RT5639_DRC_AGC_MASK			(0x1 << 14)
++#define RT5639_DRC_AGC_SFT			14
++#define RT5639_DRC_AGC_DIS			(0x0 << 14)
++#define RT5639_DRC_AGC_EN			(0x1 << 14)
++#define RT5639_DRC_AGC_UPD			(0x1 << 13)
++#define RT5639_DRC_AGC_UPD_BIT			13
++#define RT5639_DRC_AGC_AR_MASK			(0x1f << 8)
++#define RT5639_DRC_AGC_AR_SFT			8
++#define RT5639_DRC_AGC_R_MASK			(0x7 << 5)
++#define RT5639_DRC_AGC_R_SFT			5
++#define RT5639_DRC_AGC_R_48K			(0x1 << 5)
++#define RT5639_DRC_AGC_R_96K			(0x2 << 5)
++#define RT5639_DRC_AGC_R_192K			(0x3 << 5)
++#define RT5639_DRC_AGC_R_441K			(0x5 << 5)
++#define RT5639_DRC_AGC_R_882K			(0x6 << 5)
++#define RT5639_DRC_AGC_R_1764K			(0x7 << 5)
++#define RT5639_DRC_AGC_RC_MASK			(0x1f)
++#define RT5639_DRC_AGC_RC_SFT			0
++
++/* DRC/AGC Control 2 (0xb5) */
++#define RT5639_DRC_AGC_POB_MASK			(0x3f << 8)
++#define RT5639_DRC_AGC_POB_SFT			8
++#define RT5639_DRC_AGC_CP_MASK			(0x1 << 7)
++#define RT5639_DRC_AGC_CP_SFT			7
++#define RT5639_DRC_AGC_CP_DIS			(0x0 << 7)
++#define RT5639_DRC_AGC_CP_EN			(0x1 << 7)
++#define RT5639_DRC_AGC_CPR_MASK			(0x3 << 5)
++#define RT5639_DRC_AGC_CPR_SFT			5
++#define RT5639_DRC_AGC_CPR_1_1			(0x0 << 5)
++#define RT5639_DRC_AGC_CPR_1_2			(0x1 << 5)
++#define RT5639_DRC_AGC_CPR_1_3			(0x2 << 5)
++#define RT5639_DRC_AGC_CPR_1_4			(0x3 << 5)
++#define RT5639_DRC_AGC_PRB_MASK			(0x1f)
++#define RT5639_DRC_AGC_PRB_SFT			0
++
++/* DRC/AGC Control 3 (0xb6) */
++#define RT5639_DRC_AGC_NGB_MASK			(0xf << 12)
++#define RT5639_DRC_AGC_NGB_SFT			12
++#define RT5639_DRC_AGC_TAR_MASK			(0x1f << 7)
++#define RT5639_DRC_AGC_TAR_SFT			7
++#define RT5639_DRC_AGC_NG_MASK			(0x1 << 6)
++#define RT5639_DRC_AGC_NG_SFT			6
++#define RT5639_DRC_AGC_NG_DIS			(0x0 << 6)
++#define RT5639_DRC_AGC_NG_EN			(0x1 << 6)
++#define RT5639_DRC_AGC_NGH_MASK			(0x1 << 5)
++#define RT5639_DRC_AGC_NGH_SFT			5
++#define RT5639_DRC_AGC_NGH_DIS			(0x0 << 5)
++#define RT5639_DRC_AGC_NGH_EN			(0x1 << 5)
++#define RT5639_DRC_AGC_NGT_MASK			(0x1f)
++#define RT5639_DRC_AGC_NGT_SFT			0
++
++/* Jack Detect Control (0xbb) */
++#define RT5639_JD_MASK				(0x7 << 13)
++#define RT5639_JD_SFT				13
++#define RT5639_JD_DIS				(0x0 << 13)
++#define RT5639_JD_GPIO1				(0x1 << 13)
++#define RT5639_JD_JD1_IN4P			(0x2 << 13)
++#define RT5639_JD_JD2_IN4N			(0x3 << 13)
++#define RT5639_JD_GPIO2				(0x4 << 13)
++#define RT5639_JD_GPIO3				(0x5 << 13)
++#define RT5639_JD_GPIO4				(0x6 << 13)
++#define RT5639_JD_HP_MASK			(0x1 << 11)
++#define RT5639_JD_HP_SFT			11
++#define RT5639_JD_HP_DIS			(0x0 << 11)
++#define RT5639_JD_HP_EN				(0x1 << 11)
++#define RT5639_JD_HP_TRG_MASK			(0x1 << 10)
++#define RT5639_JD_HP_TRG_SFT			10
++#define RT5639_JD_HP_TRG_LO			(0x0 << 10)
++#define RT5639_JD_HP_TRG_HI			(0x1 << 10)
++#define RT5639_JD_SPL_MASK			(0x1 << 9)
++#define RT5639_JD_SPL_SFT			9
++#define RT5639_JD_SPL_DIS			(0x0 << 9)
++#define RT5639_JD_SPL_EN			(0x1 << 9)
++#define RT5639_JD_SPL_TRG_MASK			(0x1 << 8)
++#define RT5639_JD_SPL_TRG_SFT			8
++#define RT5639_JD_SPL_TRG_LO			(0x0 << 8)
++#define RT5639_JD_SPL_TRG_HI			(0x1 << 8)
++#define RT5639_JD_SPR_MASK			(0x1 << 7)
++#define RT5639_JD_SPR_SFT			7
++#define RT5639_JD_SPR_DIS			(0x0 << 7)
++#define RT5639_JD_SPR_EN			(0x1 << 7)
++#define RT5639_JD_SPR_TRG_MASK			(0x1 << 6)
++#define RT5639_JD_SPR_TRG_SFT			6
++#define RT5639_JD_SPR_TRG_LO			(0x0 << 6)
++#define RT5639_JD_SPR_TRG_HI			(0x1 << 6)
++#define RT5639_JD_MO_MASK			(0x1 << 5)
++#define RT5639_JD_MO_SFT			5
++#define RT5639_JD_MO_DIS			(0x0 << 5)
++#define RT5639_JD_MO_EN				(0x1 << 5)
++#define RT5639_JD_MO_TRG_MASK			(0x1 << 4)
++#define RT5639_JD_MO_TRG_SFT			4
++#define RT5639_JD_MO_TRG_LO			(0x0 << 4)
++#define RT5639_JD_MO_TRG_HI			(0x1 << 4)
++#define RT5639_JD_LO_MASK			(0x1 << 3)
++#define RT5639_JD_LO_SFT			3
++#define RT5639_JD_LO_DIS			(0x0 << 3)
++#define RT5639_JD_LO_EN				(0x1 << 3)
++#define RT5639_JD_LO_TRG_MASK			(0x1 << 2)
++#define RT5639_JD_LO_TRG_SFT			2
++#define RT5639_JD_LO_TRG_LO			(0x0 << 2)
++#define RT5639_JD_LO_TRG_HI			(0x1 << 2)
++#define RT5639_JD1_IN4P_MASK			(0x1 << 1)
++#define RT5639_JD1_IN4P_SFT			1
++#define RT5639_JD1_IN4P_DIS			(0x0 << 1)
++#define RT5639_JD1_IN4P_EN			(0x1 << 1)
++#define RT5639_JD2_IN4N_MASK			(0x1)
++#define RT5639_JD2_IN4N_SFT			0
++#define RT5639_JD2_IN4N_DIS			(0x0)
++#define RT5639_JD2_IN4N_EN			(0x1)
++
++/* IRQ Control 1 (0xbd) */
++#define RT5639_IRQ_JD_MASK			(0x1 << 15)
++#define RT5639_IRQ_JD_SFT			15
++#define RT5639_IRQ_JD_BP			(0x0 << 15)
++#define RT5639_IRQ_JD_NOR			(0x1 << 15)
++#define RT5639_IRQ_OT_MASK			(0x1 << 14)
++#define RT5639_IRQ_OT_SFT			14
++#define RT5639_IRQ_OT_BP			(0x0 << 14)
++#define RT5639_IRQ_OT_NOR			(0x1 << 14)
++#define RT5639_JD_STKY_MASK			(0x1 << 13)
++#define RT5639_JD_STKY_SFT			13
++#define RT5639_JD_STKY_DIS			(0x0 << 13)
++#define RT5639_JD_STKY_EN			(0x1 << 13)
++#define RT5639_OT_STKY_MASK			(0x1 << 12)
++#define RT5639_OT_STKY_SFT			12
++#define RT5639_OT_STKY_DIS			(0x0 << 12)
++#define RT5639_OT_STKY_EN			(0x1 << 12)
++#define RT5639_JD_P_MASK			(0x1 << 11)
++#define RT5639_JD_P_SFT				11
++#define RT5639_JD_P_NOR				(0x0 << 11)
++#define RT5639_JD_P_INV				(0x1 << 11)
++#define RT5639_OT_P_MASK			(0x1 << 10)
++#define RT5639_OT_P_SFT				10
++#define RT5639_OT_P_NOR				(0x0 << 10)
++#define RT5639_OT_P_INV				(0x1 << 10)
++
++/* IRQ Control 2 (0xbe) */
++#define RT5639_IRQ_MB1_OC_MASK			(0x1 << 15)
++#define RT5639_IRQ_MB1_OC_SFT			15
++#define RT5639_IRQ_MB1_OC_BP			(0x0 << 15)
++#define RT5639_IRQ_MB1_OC_NOR			(0x1 << 15)
++#define RT5639_IRQ_MB2_OC_MASK			(0x1 << 14)
++#define RT5639_IRQ_MB2_OC_SFT			14
++#define RT5639_IRQ_MB2_OC_BP			(0x0 << 14)
++#define RT5639_IRQ_MB2_OC_NOR			(0x1 << 14)
++#define RT5639_MB1_OC_STKY_MASK			(0x1 << 11)
++#define RT5639_MB1_OC_STKY_SFT			11
++#define RT5639_MB1_OC_STKY_DIS			(0x0 << 11)
++#define RT5639_MB1_OC_STKY_EN			(0x1 << 11)
++#define RT5639_MB2_OC_STKY_MASK			(0x1 << 10)
++#define RT5639_MB2_OC_STKY_SFT			10
++#define RT5639_MB2_OC_STKY_DIS			(0x0 << 10)
++#define RT5639_MB2_OC_STKY_EN			(0x1 << 10)
++#define RT5639_MB1_OC_P_MASK			(0x1 << 7)
++#define RT5639_MB1_OC_P_SFT			7
++#define RT5639_MB1_OC_P_NOR			(0x0 << 7)
++#define RT5639_MB1_OC_P_INV			(0x1 << 7)
++#define RT5639_MB2_OC_P_MASK			(0x1 << 6)
++#define RT5639_MB2_OC_P_SFT			6
++#define RT5639_MB2_OC_P_NOR			(0x0 << 6)
++#define RT5639_MB2_OC_P_INV			(0x1 << 6)
++#define RT5639_MB1_OC_CLR			(0x1 << 3)
++#define RT5639_MB1_OC_CLR_SFT			3
++#define RT5639_MB2_OC_CLR			(0x1 << 2)
++#define RT5639_MB2_OC_CLR_SFT			2
++
++/* GPIO Control 1 (0xc0) */
++#define RT5639_GP1_PIN_MASK			(0x1 << 15)
++#define RT5639_GP1_PIN_SFT			15
++#define RT5639_GP1_PIN_GPIO1			(0x0 << 15)
++#define RT5639_GP1_PIN_IRQ			(0x1 << 15)
++#define RT5639_GP2_PIN_MASK			(0x1 << 14)
++#define RT5639_GP2_PIN_SFT			14
++#define RT5639_GP2_PIN_GPIO2			(0x0 << 14)
++#define RT5639_GP2_PIN_DMIC1_SCL		(0x1 << 14)
++#define RT5639_GP3_PIN_MASK			(0x3 << 12)
++#define RT5639_GP3_PIN_SFT			12
++#define RT5639_GP3_PIN_GPIO3			(0x0 << 12)
++#define RT5639_GP3_PIN_DMIC1_SDA		(0x1 << 12)
++#define RT5639_GP3_PIN_IRQ			(0x2 << 12)
++#define RT5639_GP4_PIN_MASK			(0x1 << 11)
++#define RT5639_GP4_PIN_SFT			11
++#define RT5639_GP4_PIN_GPIO4			(0x0 << 11)
++#define RT5639_GP4_PIN_DMIC2_SDA		(0x1 << 11)
++#define RT5639_DP_SIG_MASK			(0x1 << 10)
++#define RT5639_DP_SIG_SFT			10
++#define RT5639_DP_SIG_TEST			(0x0 << 10)
++#define RT5639_DP_SIG_AP			(0x1 << 10)
++#define RT5639_GPIO_M_MASK			(0x1 << 9)
++#define RT5639_GPIO_M_SFT			9
++#define RT5639_GPIO_M_FLT			(0x0 << 9)
++#define RT5639_GPIO_M_PH			(0x1 << 9)
++
++/* GPIO Control 3 (0xc2) */
++#define RT5639_GP4_PF_MASK			(0x1 << 11)
++#define RT5639_GP4_PF_SFT			11
++#define RT5639_GP4_PF_IN			(0x0 << 11)
++#define RT5639_GP4_PF_OUT			(0x1 << 11)
++#define RT5639_GP4_OUT_MASK			(0x1 << 10)
++#define RT5639_GP4_OUT_SFT			10
++#define RT5639_GP4_OUT_LO			(0x0 << 10)
++#define RT5639_GP4_OUT_HI			(0x1 << 10)
++#define RT5639_GP4_P_MASK			(0x1 << 9)
++#define RT5639_GP4_P_SFT			9
++#define RT5639_GP4_P_NOR			(0x0 << 9)
++#define RT5639_GP4_P_INV			(0x1 << 9)
++#define RT5639_GP3_PF_MASK			(0x1 << 8)
++#define RT5639_GP3_PF_SFT			8
++#define RT5639_GP3_PF_IN			(0x0 << 8)
++#define RT5639_GP3_PF_OUT			(0x1 << 8)
++#define RT5639_GP3_OUT_MASK			(0x1 << 7)
++#define RT5639_GP3_OUT_SFT			7
++#define RT5639_GP3_OUT_LO			(0x0 << 7)
++#define RT5639_GP3_OUT_HI			(0x1 << 7)
++#define RT5639_GP3_P_MASK			(0x1 << 6)
++#define RT5639_GP3_P_SFT			6
++#define RT5639_GP3_P_NOR			(0x0 << 6)
++#define RT5639_GP3_P_INV			(0x1 << 6)
++#define RT5639_GP2_PF_MASK			(0x1 << 5)
++#define RT5639_GP2_PF_SFT			5
++#define RT5639_GP2_PF_IN			(0x0 << 5)
++#define RT5639_GP2_PF_OUT			(0x1 << 5)
++#define RT5639_GP2_OUT_MASK			(0x1 << 4)
++#define RT5639_GP2_OUT_SFT			4
++#define RT5639_GP2_OUT_LO			(0x0 << 4)
++#define RT5639_GP2_OUT_HI			(0x1 << 4)
++#define RT5639_GP2_P_MASK			(0x1 << 3)
++#define RT5639_GP2_P_SFT			3
++#define RT5639_GP2_P_NOR			(0x0 << 3)
++#define RT5639_GP2_P_INV			(0x1 << 3)
++#define RT5639_GP1_PF_MASK			(0x1 << 2)
++#define RT5639_GP1_PF_SFT			2
++#define RT5639_GP1_PF_IN			(0x0 << 2)
++#define RT5639_GP1_PF_OUT			(0x1 << 2)
++#define RT5639_GP1_OUT_MASK			(0x1 << 1)
++#define RT5639_GP1_OUT_SFT			1
++#define RT5639_GP1_OUT_LO			(0x0 << 1)
++#define RT5639_GP1_OUT_HI			(0x1 << 1)
++#define RT5639_GP1_P_MASK			(0x1)
++#define RT5639_GP1_P_SFT			0
++#define RT5639_GP1_P_NOR			(0x0)
++#define RT5639_GP1_P_INV			(0x1)
++
++/* FM34-500 Register Control 1 (0xc4) */
++#define RT5639_DSP_ADD_SFT			0
++
++/* FM34-500 Register Control 2 (0xc5) */
++#define RT5639_DSP_DAT_SFT			0
++
++/* FM34-500 Register Control 3 (0xc6) */
++#define RT5639_DSP_BUSY_MASK			(0x1 << 15)
++#define RT5639_DSP_BUSY_BIT			15
++#define RT5639_DSP_DS_MASK			(0x1 << 14)
++#define RT5639_DSP_DS_SFT			14
++#define RT5639_DSP_DS_FM3010			(0x1 << 14)
++#define RT5639_DSP_DS_TEMP			(0x1 << 14)
++#define RT5639_DSP_CLK_MASK			(0x3 << 12)
++#define RT5639_DSP_CLK_SFT			12
++#define RT5639_DSP_CLK_384K			(0x0 << 12)
++#define RT5639_DSP_CLK_192K			(0x1 << 12)
++#define RT5639_DSP_CLK_96K			(0x2 << 12)
++#define RT5639_DSP_CLK_64K			(0x3 << 12)
++#define RT5639_DSP_PD_PIN_MASK			(0x1 << 11)
++#define RT5639_DSP_PD_PIN_SFT			11
++#define RT5639_DSP_PD_PIN_LO			(0x0 << 11)
++#define RT5639_DSP_PD_PIN_HI			(0x1 << 11)
++#define RT5639_DSP_RST_PIN_MASK			(0x1 << 10)
++#define RT5639_DSP_RST_PIN_SFT			10
++#define RT5639_DSP_RST_PIN_LO			(0x0 << 10)
++#define RT5639_DSP_RST_PIN_HI			(0x1 << 10)
++#define RT5639_DSP_R_EN				(0x1 << 9)
++#define RT5639_DSP_R_EN_BIT			9
++#define RT5639_DSP_W_EN				(0x1 << 8)
++#define RT5639_DSP_W_EN_BIT			8
++#define RT5639_DSP_CMD_MASK			(0xff)
++#define RT5639_DSP_CMD_SFT			0
++#define RT5639_DSP_CMD_MW			(0x3B)	/* Memory Write */
++#define RT5639_DSP_CMD_MR			(0x37)	/* Memory Read */
++#define RT5639_DSP_CMD_RR			(0x60)	/* Register Read */
++#define RT5639_DSP_CMD_RW			(0x68)	/* Register Write */
++
++/* Programmable Register Array Control 1 (0xc8) */
++#define RT5639_REG_SEQ_MASK			(0xf << 12)
++#define RT5639_REG_SEQ_SFT			12
++#define RT5639_SEQ1_ST_MASK			(0x1 << 11) /*RO*/
++#define RT5639_SEQ1_ST_SFT			11
++#define RT5639_SEQ1_ST_RUN			(0x0 << 11)
++#define RT5639_SEQ1_ST_FIN			(0x1 << 11)
++#define RT5639_SEQ2_ST_MASK			(0x1 << 10) /*RO*/
++#define RT5639_SEQ2_ST_SFT			10
++#define RT5639_SEQ2_ST_RUN			(0x0 << 10)
++#define RT5639_SEQ2_ST_FIN			(0x1 << 10)
++#define RT5639_REG_LV_MASK			(0x1 << 9)
++#define RT5639_REG_LV_SFT			9
++#define RT5639_REG_LV_MX			(0x0 << 9)
++#define RT5639_REG_LV_PR			(0x1 << 9)
++#define RT5639_SEQ_2_PT_MASK			(0x1 << 8)
++#define RT5639_SEQ_2_PT_BIT			8
++#define RT5639_REG_IDX_MASK			(0xff)
++#define RT5639_REG_IDX_SFT			0
++
++/* Programmable Register Array Control 2 (0xc9) */
++#define RT5639_REG_DAT_MASK			(0xffff)
++#define RT5639_REG_DAT_SFT			0
++
++/* Programmable Register Array Control 3 (0xca) */
++#define RT5639_SEQ_DLY_MASK			(0xff << 8)
++#define RT5639_SEQ_DLY_SFT			8
++#define RT5639_PROG_MASK			(0x1 << 7)
++#define RT5639_PROG_SFT				7
++#define RT5639_PROG_DIS				(0x0 << 7)
++#define RT5639_PROG_EN				(0x1 << 7)
++#define RT5639_SEQ1_PT_RUN			(0x1 << 6)
++#define RT5639_SEQ1_PT_RUN_BIT			6
++#define RT5639_SEQ2_PT_RUN			(0x1 << 5)
++#define RT5639_SEQ2_PT_RUN_BIT			5
++
++/* Programmable Register Array Control 4 (0xcb) */
++#define RT5639_SEQ1_START_MASK			(0xf << 8)
++#define RT5639_SEQ1_START_SFT			8
++#define RT5639_SEQ1_END_MASK			(0xf)
++#define RT5639_SEQ1_END_SFT			0
++
++/* Programmable Register Array Control 5 (0xcc) */
++#define RT5639_SEQ2_START_MASK			(0xf << 8)
++#define RT5639_SEQ2_START_SFT			8
++#define RT5639_SEQ2_END_MASK			(0xf)
++#define RT5639_SEQ2_END_SFT			0
++
++/* Scramble Function (0xcd) */
++#define RT5639_SCB_KEY_MASK			(0xff)
++#define RT5639_SCB_KEY_SFT			0
++
++/* Scramble Control (0xce) */
++#define RT5639_SCB_SWAP_MASK			(0x1 << 15)
++#define RT5639_SCB_SWAP_SFT			15
++#define RT5639_SCB_SWAP_DIS			(0x0 << 15)
++#define RT5639_SCB_SWAP_EN			(0x1 << 15)
++#define RT5639_SCB_MASK				(0x1 << 14)
++#define RT5639_SCB_SFT				14
++#define RT5639_SCB_DIS				(0x0 << 14)
++#define RT5639_SCB_EN				(0x1 << 14)
++
++/* Baseback Control (0xcf) */
++#define RT5639_BB_MASK				(0x1 << 15)
++#define RT5639_BB_SFT				15
++#define RT5639_BB_DIS				(0x0 << 15)
++#define RT5639_BB_EN				(0x1 << 15)
++#define RT5639_BB_CT_MASK			(0x7 << 12)
++#define RT5639_BB_CT_SFT			12
++#define RT5639_BB_CT_A				(0x0 << 12)
++#define RT5639_BB_CT_B				(0x1 << 12)
++#define RT5639_BB_CT_C				(0x2 << 12)
++#define RT5639_BB_CT_D				(0x3 << 12)
++#define RT5639_M_BB_L_MASK			(0x1 << 9)
++#define RT5639_M_BB_L_SFT			9
++#define RT5639_M_BB_R_MASK			(0x1 << 8)
++#define RT5639_M_BB_R_SFT			8
++#define RT5639_M_BB_HPF_L_MASK			(0x1 << 7)
++#define RT5639_M_BB_HPF_L_SFT			7
++#define RT5639_M_BB_HPF_R_MASK			(0x1 << 6)
++#define RT5639_M_BB_HPF_R_SFT			6
++#define RT5639_G_BB_BST_MASK			(0x3f)
++#define RT5639_G_BB_BST_SFT			0
++
++/* MP3 Plus Control 1 (0xd0) */
++#define RT5639_M_MP3_L_MASK			(0x1 << 15)
++#define RT5639_M_MP3_L_SFT			15
++#define RT5639_M_MP3_R_MASK			(0x1 << 14)
++#define RT5639_M_MP3_R_SFT			14
++#define RT5639_M_MP3_MASK			(0x1 << 13)
++#define RT5639_M_MP3_SFT			13
++#define RT5639_M_MP3_DIS			(0x0 << 13)
++#define RT5639_M_MP3_EN				(0x1 << 13)
++#define RT5639_EG_MP3_MASK			(0x1f << 8)
++#define RT5639_EG_MP3_SFT			8
++#define RT5639_MP3_HLP_MASK			(0x1 << 7)
++#define RT5639_MP3_HLP_SFT			7
++#define RT5639_MP3_HLP_DIS			(0x0 << 7)
++#define RT5639_MP3_HLP_EN			(0x1 << 7)
++#define RT5639_M_MP3_ORG_L_MASK			(0x1 << 6)
++#define RT5639_M_MP3_ORG_L_SFT			6
++#define RT5639_M_MP3_ORG_R_MASK			(0x1 << 5)
++#define RT5639_M_MP3_ORG_R_SFT			5
++
++/* MP3 Plus Control 2 (0xd1) */
++#define RT5639_MP3_WT_MASK			(0x1 << 13)
++#define RT5639_MP3_WT_SFT			13
++#define RT5639_MP3_WT_1_4			(0x0 << 13)
++#define RT5639_MP3_WT_1_2			(0x1 << 13)
++#define RT5639_OG_MP3_MASK			(0x1f << 8)
++#define RT5639_OG_MP3_SFT			8
++#define RT5639_HG_MP3_MASK			(0x3f)
++#define RT5639_HG_MP3_SFT			0
++
++/* 3D HP Control 1 (0xd2) */
++#define RT5639_3D_CF_MASK			(0x1 << 15)
++#define RT5639_3D_CF_SFT			15
++#define RT5639_3D_CF_DIS			(0x0 << 15)
++#define RT5639_3D_CF_EN				(0x1 << 15)
++#define RT5639_3D_HP_MASK			(0x1 << 14)
++#define RT5639_3D_HP_SFT			14
++#define RT5639_3D_HP_DIS			(0x0 << 14)
++#define RT5639_3D_HP_EN				(0x1 << 14)
++#define RT5639_3D_BT_MASK			(0x1 << 13)
++#define RT5639_3D_BT_SFT			13
++#define RT5639_3D_BT_DIS			(0x0 << 13)
++#define RT5639_3D_BT_EN				(0x1 << 13)
++#define RT5639_3D_1F_MIX_MASK			(0x3 << 11)
++#define RT5639_3D_1F_MIX_SFT			11
++#define RT5639_3D_HP_M_MASK			(0x1 << 10)
++#define RT5639_3D_HP_M_SFT			10
++#define RT5639_3D_HP_M_SUR			(0x0 << 10)
++#define RT5639_3D_HP_M_FRO			(0x1 << 10)
++#define RT5639_M_3D_HRTF_MASK			(0x1 << 9)
++#define RT5639_M_3D_HRTF_SFT			9
++#define RT5639_M_3D_D2H_MASK			(0x1 << 8)
++#define RT5639_M_3D_D2H_SFT			8
++#define RT5639_M_3D_D2R_MASK			(0x1 << 7)
++#define RT5639_M_3D_D2R_SFT			7
++#define RT5639_M_3D_REVB_MASK			(0x1 << 6)
++#define RT5639_M_3D_REVB_SFT			6
++
++/* Adjustable high pass filter control 1 (0xd3) */
++#define RT5639_2ND_HPF_MASK			(0x1 << 15)
++#define RT5639_2ND_HPF_SFT			15
++#define RT5639_2ND_HPF_DIS			(0x0 << 15)
++#define RT5639_2ND_HPF_EN			(0x1 << 15)
++#define RT5639_HPF_CF_L_MASK			(0x7 << 12)
++#define RT5639_HPF_CF_L_SFT			12
++#define RT5639_1ST_HPF_MASK			(0x1 << 11)
++#define RT5639_1ST_HPF_SFT			11
++#define RT5639_1ST_HPF_DIS			(0x0 << 11)
++#define RT5639_1ST_HPF_EN			(0x1 << 11)
++#define RT5639_HPF_CF_R_MASK			(0x7 << 8)
++#define RT5639_HPF_CF_R_SFT			8
++#define RT5639_ZD_T_MASK			(0x3 << 6)
++#define RT5639_ZD_T_SFT				6
++#define RT5639_ZD_F_MASK			(0x3 << 4)
++#define RT5639_ZD_F_SFT				4
++#define RT5639_ZD_F_IM				(0x0 << 4)
++#define RT5639_ZD_F_ZC_IM			(0x1 << 4)
++#define RT5639_ZD_F_ZC_IOD			(0x2 << 4)
++#define RT5639_ZD_F_UN				(0x3 << 4)
++
++/* HP calibration control and Amp detection (0xd6) */
++#define RT5639_SI_DAC_MASK			(0x1 << 11)
++#define RT5639_SI_DAC_SFT			11
++#define RT5639_SI_DAC_AUTO			(0x0 << 11)
++#define RT5639_SI_DAC_TEST			(0x1 << 11)
++#define RT5639_DC_CAL_M_MASK			(0x1 << 10)
++#define RT5639_DC_CAL_M_SFT			10
++#define RT5639_DC_CAL_M_CAL			(0x0 << 10)
++#define RT5639_DC_CAL_M_NOR			(0x1 << 10)
++#define RT5639_DC_CAL_MASK			(0x1 << 9)
++#define RT5639_DC_CAL_SFT			9
++#define RT5639_DC_CAL_DIS			(0x0 << 9)
++#define RT5639_DC_CAL_EN			(0x1 << 9)
++#define RT5639_HPD_RCV_MASK			(0x7 << 6)
++#define RT5639_HPD_RCV_SFT			6
++#define RT5639_HPD_PS_MASK			(0x1 << 5)
++#define RT5639_HPD_PS_SFT			5
++#define RT5639_HPD_PS_DIS			(0x0 << 5)
++#define RT5639_HPD_PS_EN			(0x1 << 5)
++#define RT5639_CAL_M_MASK			(0x1 << 4)
++#define RT5639_CAL_M_SFT			4
++#define RT5639_CAL_M_DEP			(0x0 << 4)
++#define RT5639_CAL_M_CAL			(0x1 << 4)
++#define RT5639_CAL_MASK				(0x1 << 3)
++#define RT5639_CAL_SFT				3
++#define RT5639_CAL_DIS				(0x0 << 3)
++#define RT5639_CAL_EN				(0x1 << 3)
++#define RT5639_CAL_TEST_MASK			(0x1 << 2)
++#define RT5639_CAL_TEST_SFT			2
++#define RT5639_CAL_TEST_DIS			(0x0 << 2)
++#define RT5639_CAL_TEST_EN			(0x1 << 2)
++#define RT5639_CAL_P_MASK			(0x3)
++#define RT5639_CAL_P_SFT			0
++#define RT5639_CAL_P_NONE			(0x0)
++#define RT5639_CAL_P_CAL			(0x1)
++#define RT5639_CAL_P_DAC_CAL			(0x2)
++
++/* Soft volume and zero cross control 1 (0xd9) */
++#define RT5639_SV_MASK				(0x1 << 15)
++#define RT5639_SV_SFT				15
++#define RT5639_SV_DIS				(0x0 << 15)
++#define RT5639_SV_EN				(0x1 << 15)
++#define RT5639_SPO_SV_MASK			(0x1 << 14)
++#define RT5639_SPO_SV_SFT			14
++#define RT5639_SPO_SV_DIS			(0x0 << 14)
++#define RT5639_SPO_SV_EN			(0x1 << 14)
++#define RT5639_OUT_SV_MASK			(0x1 << 13)
++#define RT5639_OUT_SV_SFT			13
++#define RT5639_OUT_SV_DIS			(0x0 << 13)
++#define RT5639_OUT_SV_EN			(0x1 << 13)
++#define RT5639_HP_SV_MASK			(0x1 << 12)
++#define RT5639_HP_SV_SFT			12
++#define RT5639_HP_SV_DIS			(0x0 << 12)
++#define RT5639_HP_SV_EN				(0x1 << 12)
++#define RT5639_ZCD_DIG_MASK			(0x1 << 11)
++#define RT5639_ZCD_DIG_SFT			11
++#define RT5639_ZCD_DIG_DIS			(0x0 << 11)
++#define RT5639_ZCD_DIG_EN			(0x1 << 11)
++#define RT5639_ZCD_MASK				(0x1 << 10)
++#define RT5639_ZCD_SFT				10
++#define RT5639_ZCD_PD				(0x0 << 10)
++#define RT5639_ZCD_PU				(0x1 << 10)
++#define RT5639_M_ZCD_MASK			(0x3f << 4)
++#define RT5639_M_ZCD_SFT			4
++#define RT5639_M_ZCD_RM_L			(0x1 << 9)
++#define RT5639_M_ZCD_RM_R			(0x1 << 8)
++#define RT5639_M_ZCD_SM_L			(0x1 << 7)
++#define RT5639_M_ZCD_SM_R			(0x1 << 6)
++#define RT5639_M_ZCD_OM_L			(0x1 << 5)
++#define RT5639_M_ZCD_OM_R			(0x1 << 4)
++#define RT5639_SV_DLY_MASK			(0xf)
++#define RT5639_SV_DLY_SFT			0
++
++/* Soft volume and zero cross control 2 (0xda) */
++#define RT5639_ZCD_HP_MASK			(0x1 << 15)
++#define RT5639_ZCD_HP_SFT			15
++#define RT5639_ZCD_HP_DIS			(0x0 << 15)
++#define RT5639_ZCD_HP_EN			(0x1 << 15)
++
++
++/* Codec Private Register definition */
++/* 3D Speaker Control (0x63) */
++#define RT5639_3D_SPK_MASK			(0x1 << 15)
++#define RT5639_3D_SPK_SFT			15
++#define RT5639_3D_SPK_DIS			(0x0 << 15)
++#define RT5639_3D_SPK_EN			(0x1 << 15)
++#define RT5639_3D_SPK_M_MASK			(0x3 << 13)
++#define RT5639_3D_SPK_M_SFT			13
++#define RT5639_3D_SPK_CG_MASK			(0x1f << 8)
++#define RT5639_3D_SPK_CG_SFT			8
++#define RT5639_3D_SPK_SG_MASK			(0x1f)
++#define RT5639_3D_SPK_SG_SFT			0
++
++/* Wind Noise Detection Control 1 (0x6c) */
++#define RT5639_WND_MASK				(0x1 << 15)
++#define RT5639_WND_SFT				15
++#define RT5639_WND_DIS				(0x0 << 15)
++#define RT5639_WND_EN				(0x1 << 15)
++
++/* Wind Noise Detection Control 2 (0x6d) */
++#define RT5639_WND_FC_NW_MASK			(0x3f << 10)
++#define RT5639_WND_FC_NW_SFT			10
++#define RT5639_WND_FC_WK_MASK			(0x3f << 4)
++#define RT5639_WND_FC_WK_SFT			4
++
++/* Wind Noise Detection Control 3 (0x6e) */
++#define RT5639_HPF_FC_MASK			(0x3f << 6)
++#define RT5639_HPF_FC_SFT			6
++#define RT5639_WND_FC_ST_MASK			(0x3f)
++#define RT5639_WND_FC_ST_SFT			0
++
++/* Wind Noise Detection Control 4 (0x6f) */
++#define RT5639_WND_TH_LO_MASK			(0x3ff)
++#define RT5639_WND_TH_LO_SFT			0
++
++/* Wind Noise Detection Control 5 (0x70) */
++#define RT5639_WND_TH_HI_MASK			(0x3ff)
++#define RT5639_WND_TH_HI_SFT			0
++
++/* Wind Noise Detection Control 8 (0x73) */
++#define RT5639_WND_WIND_MASK			(0x1 << 13) /* Read-Only */
++#define RT5639_WND_WIND_SFT			13
++#define RT5639_WND_STRONG_MASK			(0x1 << 12) /* Read-Only */
++#define RT5639_WND_STRONG_SFT			12
++enum {
++	RT5639_NO_WIND,
++	RT5639_BREEZE,
++	RT5639_STORM,
++};
++
++/* Dipole Speaker Interface (0x75) */
++#define RT5639_DP_ATT_MASK			(0x3 << 14)
++#define RT5639_DP_ATT_SFT			14
++#define RT5639_DP_SPK_MASK			(0x1 << 10)
++#define RT5639_DP_SPK_SFT			10
++#define RT5639_DP_SPK_DIS			(0x0 << 10)
++#define RT5639_DP_SPK_EN			(0x1 << 10)
++
++/* EQ Pre Volume Control (0xb3) */
++#define RT5639_EQ_PRE_VOL_MASK			(0xffff)
++#define RT5639_EQ_PRE_VOL_SFT			0
++
++/* EQ Post Volume Control (0xb4) */
++#define RT5639_EQ_PST_VOL_MASK			(0xffff)
++#define RT5639_EQ_PST_VOL_SFT			0
++
++#define RT5639_NO_JACK		BIT(0)
++#define RT5639_HEADSET_DET	BIT(1)
++#define RT5639_HEADPHO_DET	BIT(2)
++
++/* System Clock Source */
++#define RT5639_SCLK_S_MCLK	0
++#define RT5639_SCLK_S_PLL1	1
++#define RT5639_SCLK_S_PLL1_TK	2
++#define RT5639_SCLK_S_RCCLK	3
++
++/* PLL1 Source */
++#define RT5639_PLL1_S_MCLK	0
++#define RT5639_PLL1_S_BCLK1	1
++#define RT5639_PLL1_S_BCLK2	2
++#define RT5639_PLL1_S_BCLK3	3
++
++
++enum {
++	RT5639_AIF1,
++	RT5639_AIF2,
++	RT5639_AIF3,
++	RT5639_AIFS,
++};
++
++enum {
++	RT5639_U_IF1 = 0x1,
++	RT5639_U_IF2 = 0x2,
++	RT5639_U_IF3 = 0x4,
++};
++
++enum {
++	RT5639_IF_123,
++	RT5639_IF_132,
++	RT5639_IF_312,
++	RT5639_IF_321,
++	RT5639_IF_231,
++	RT5639_IF_213,
++	RT5639_IF_113,
++	RT5639_IF_223,
++	RT5639_IF_ALL,
++};
++
++enum {
++	RT5639_DMIC_DIS,
++	RT5639_DMIC1,
++	RT5639_DMIC2,
++};
++
++struct rt5639_pll_code {
++	bool m_bp; /* Indicates bypass m code or not. */
++	int m_code;
++	int n_code;
++	int k_code;
++};
++
++struct rt5639_priv {
++	struct snd_soc_codec *codec;
++	struct rt5639_platform_data pdata;
++	struct regmap *regmap;
++
++	int sysclk;
++	int sysclk_src;
++	int lrck[RT5639_AIFS];
++	int bclk[RT5639_AIFS];
++	int master[RT5639_AIFS];
++
++	struct rt5639_pll_code pll_code;
++	int pll_src;
++	int pll_in;
++	int pll_out;
++
++	bool hp_mute;
++};
++
++#endif
+-- 
+1.8.1.1.439.g50a6b54
