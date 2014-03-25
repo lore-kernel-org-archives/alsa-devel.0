@@ -1,77 +1,107 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [RFC PATCH] ASoC: wm8904: add CCF support
-Date: Tue, 25 Mar 2014 16:19:40 +0800
-Message-ID: <53313C1C.7000408@atmel.com>
-References: <1395370262-23305-1-git-send-email-voice.shen@atmel.com> <20140321103747.GK23372@e106331-lin.cambridge.arm.com> <20140321115511.GM11706@sirena.org.uk> <532F9557.2000402@atmel.com> <20140324110616.GG2269@sirena.org.uk> <533137D6.9010006@atmel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Inform the unexpectedly ignored
+	pins by auto-parser
+Date: Tue, 25 Mar 2014 10:04:40 +0100
+Message-ID: <1395738280-8021-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <533137D6.9010006@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "b.brezillon.dev@gmail.com" <b.brezillon.dev@gmail.com>, "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>, "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 973E62625D7
+ for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2014 10:04:42 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 51911AC91
+ for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2014 09:04:41 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+The auto-parser may ignore some pins that could be valid when they
+don't match with the assumption or if there are way too many pins
+assigned to the same output type.  So far, such a pin has been
+silently ignored, but it's better to leave a message, which would help
+for debugging and understanding the problem.
 
-On 03/25/2014 04:01 PM, Bo Shen wrote:
-> Hi Mark,
->
-> On 03/24/2014 07:06 PM, Mark Brown wrote:
->> On Mon, Mar 24, 2014 at 10:15:51AM +0800, Bo Shen wrote:
->>> On 03/21/2014 07:55 PM, Mark Brown wrote:
->>>> On Fri, Mar 21, 2014 at 10:37:47AM +0000, Mark Rutland wrote:
->>>>> On Fri, Mar 21, 2014 at 02:51:02AM +0000, Bo Shen wrote:
->>
->>>>>> +  - wlf,sysclk-from-mclk: set the sys clock is driven from mclk,
->>
->>>>> Why can the kernel not decide this?
->>
->>>> It can.
->>
->>> I really don't know how it decided by kernel (hardcode in machine
->>> driver ?),
->>> can you point me directly? Thanks.
->>
->> It can just look to see if there is a suitable system clock present,
->> this shouldn't be hard.  If there's a clock connected at a suitable
->> rate it should use that, otherwise if there's a clock at an unsuitable
->> rate it should either change the rate of the clock or use the FLL.
->
-> I try to implement this, I think we can write the wm8904 dt as simple as
-> following, can it be acceptable?
->
-> Case 1: using SoC provided clock
-> wm8904:wm8904@1a {
->      compatible = "wlf,wm8904";
->      reg = <0x1a>;
->      clocks = <&pck0>;
->      clock-name = "mclk";
-> }
->
-> Case 2: using external crystal (For this case, I have no idea to put to
-> CCF, so need "wlf,xtal-clk-freq" property).
-> wm8904:wm8904@1a {
->      compatible = "wlf,wm8904";
->      reg = <0x1a>;
->      wlf,xtal-clk-freq = <12000000>;
-> }
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_auto_parser.c | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
 
-Please forget this, with Boris's help, we can use clk-fixed-rate.c driver.
-
-So, I will try to implement another RFC patch.
-
-> Then we use these clocks to configure FLL.
->
-> Btw, I see the "wm2000.c" retrieve the clock, however not see the usage
-> cases for it.
->
-> Best Regards,
-> Bo Shen
->
->
-
-Best Regards,
-Bo Shen
-
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+index 8de7cfa460b9..90d2fda6c8f9 100644
+--- a/sound/pci/hda/hda_auto_parser.c
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -227,10 +227,18 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
+ 				continue;
+ 			if (!assoc_line_out)
+ 				assoc_line_out = assoc;
+-			else if (assoc_line_out != assoc)
++			else if (assoc_line_out != assoc) {
++				codec_info(codec,
++					   "ignore pin 0x%x with mismatching assoc# 0x%x vs 0x%x\n",
++					   nid, assoc, assoc_line_out);
+ 				continue;
+-			if (cfg->line_outs >= ARRAY_SIZE(cfg->line_out_pins))
++			}
++			if (cfg->line_outs >= ARRAY_SIZE(cfg->line_out_pins)) {
++				codec_info(codec,
++					   "ignore pin 0x%x, too many assigned pins\n",
++					   nid);
+ 				continue;
++			}
+ 			line_out[cfg->line_outs].pin = nid;
+ 			line_out[cfg->line_outs].seq = seq;
+ 			cfg->line_outs++;
+@@ -238,8 +246,12 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
+ 		case AC_JACK_SPEAKER:
+ 			seq = get_defcfg_sequence(def_conf);
+ 			assoc = get_defcfg_association(def_conf);
+-			if (cfg->speaker_outs >= ARRAY_SIZE(cfg->speaker_pins))
++			if (cfg->speaker_outs >= ARRAY_SIZE(cfg->speaker_pins)) {
++				codec_info(codec,
++					   "ignore pin 0x%x, too many assigned pins\n",
++					   nid);
+ 				continue;
++			}
+ 			speaker_out[cfg->speaker_outs].pin = nid;
+ 			speaker_out[cfg->speaker_outs].seq = (assoc << 4) | seq;
+ 			cfg->speaker_outs++;
+@@ -247,8 +259,12 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
+ 		case AC_JACK_HP_OUT:
+ 			seq = get_defcfg_sequence(def_conf);
+ 			assoc = get_defcfg_association(def_conf);
+-			if (cfg->hp_outs >= ARRAY_SIZE(cfg->hp_pins))
++			if (cfg->hp_outs >= ARRAY_SIZE(cfg->hp_pins)) {
++				codec_info(codec,
++					   "ignore pin 0x%x, too many assigned pins\n",
++					   nid);
+ 				continue;
++			}
+ 			hp_out[cfg->hp_outs].pin = nid;
+ 			hp_out[cfg->hp_outs].seq = (assoc << 4) | seq;
+ 			cfg->hp_outs++;
+@@ -267,8 +283,12 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
+ 			break;
+ 		case AC_JACK_SPDIF_OUT:
+ 		case AC_JACK_DIG_OTHER_OUT:
+-			if (cfg->dig_outs >= ARRAY_SIZE(cfg->dig_out_pins))
++			if (cfg->dig_outs >= ARRAY_SIZE(cfg->dig_out_pins)) {
++				codec_info(codec,
++					   "ignore pin 0x%x, too many assigned pins\n",
++					   nid);
+ 				continue;
++			}
+ 			cfg->dig_out_pins[cfg->dig_outs] = nid;
+ 			cfg->dig_out_type[cfg->dig_outs] =
+ 				(loc == AC_JACK_LOC_HDMI) ?
+-- 
+1.9.1
