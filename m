@@ -1,78 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 12/12] ASoC: Remove name_prefix unset
- during DAI link init hack
-Date: Tue, 25 Mar 2014 12:53:30 +0000
-Message-ID: <20140325125330.GT2269@sirena.org.uk>
-References: <1394634460-15889-1-git-send-email-lars@metafoo.de>
- <1394634460-15889-13-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: rcar: subnode tidyup for renesas,rsnd.txt
+Date: Tue, 25 Mar 2014 13:04:48 +0000
+Message-ID: <20140325130448.GW2269@sirena.org.uk>
+References: <87d2ib90t9.wl%kuninori.morimoto.gx@gmail.com>
+ <878usq1scd.wl%kuninori.morimoto.gx@gmail.com>
+ <87r46izhv5.wl%kuninori.morimoto.gx@gmail.com>
+ <877g89qhdo.wl%kuninori.morimoto.gx@gmail.com>
+ <20140310145254.GJ4400@trinity.fluff.org>
+ <87fvmlpqi1.wl%kuninori.morimoto.gx@gmail.com>
+ <87ob14jl2d.wl%kuninori.morimoto.gx@gmail.com>
+ <20140321181813.GP552@sirena.org.uk>
+ <87fvm8i8ah.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8112902109330107899=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9299E26260F
- for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2014 13:53:56 +0100 (CET)
-In-Reply-To: <1394634460-15889-13-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Ryan Mallon <rmallon@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Daniel =?iso-8859-1?Q?Gl=F6ckner?= <daniel-gl@gmx.net>, Benoit Cousson <bcousson@baylibre.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PyWBHxIrsGpYNMFw"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <87fvm8i8ah.wl%kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8112902109330107899==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="iiZKCn1f/U0ES2iY"
-Content-Disposition: inline
-
-
---iiZKCn1f/U0ES2iY
+--PyWBHxIrsGpYNMFw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 12, 2014 at 03:27:40PM +0100, Lars-Peter Clausen wrote:
-> Before we had card level support for DAPM and controls machine drivers would
-> register their controls and DAPM elements with the CODEC. This required us to
-> temporarily unset the name_prefix of a CODEC during the rtd init callback to
+On Sun, Mar 23, 2014 at 08:29:15PM -0700, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+>=20
+> rcar_sound,ssi/src/dai subnode documentation
+> become more cleaner
 
 Applied, thanks.
 
---iiZKCn1f/U0ES2iY
+--PyWBHxIrsGpYNMFw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTMXxGAAoJELSic+t+oim9t8IP/R6JlZrBivoNRKPrb5BRDTcS
-HLclsiKM5Zu9HIZUzz4TdQKK+05h11jftOMjL4PqdTKbWAkdjDWIdNhnWCnr8m6d
-KnSkrT+0HGEC4YWplY8FTju1OprfrA2j1aXHYcrLKyRblqT91hAn8liRvMXPQuhc
-ZjJGUx1tSj9NEsGhkzEgNrw1OQXmXdXeYIqM5W9vxIpX8eHah52Lfl3AWa1RkGjw
-o7sTVF5dRIZhCy+67IxUhEe6Cy0q/0QqUH1U39JaObnMPHOTrEd1sjnpevFe6eRK
-taQEGpNVu+HFsnuu6y2FRDmvBUFIwIhlkosUnYEGMM5Wa7wACi6dCLBi5RiHRcsG
-eMrRHivgjGP6//JTDrgMxEHmnSjvjCzQRVkSVBWNDq8Gk4QiLp3x/hPxVBaDwHFY
-qOKY1pVGMk4con4+jzbOLITB0TBuatN+imLn0/92p9x4q7cefqxU+lUm7Rv2tUXZ
-tzo5CQNMYcBilmSbuDO2vuQ3MIUUbJxc4f55IILeYuiOt50ku+i1Kmz/SPAtBvG/
-dm3t3OREOENStgkbuCcs6Oe2dsmWATd0/N8dJZgdXZGbfTMDR/g13+mwW7W4bA3F
-N569T8cvMRqqwo20kg23aoDYo9+gPZeqqWpKiVocKkbWlPeOHABLPxpqaW4rE4vP
-n1Gu2zCmjSH4zTxpQqzh
-=3noi
+iQIcBAEBAgAGBQJTMX7tAAoJELSic+t+oim9fIAQAIe/ZqhFur3jODail9mwFV2v
+1xCl7qHqjyDK87uZTMKAAtYFETnBlx+np4h1ua1KRNz+lC68CJy6n0XPZOdznk4d
+TMbQWQTYm2qcodigHYG6DxNQVegHXIQLnyktXorQzJrDyhUKkDmlZ+qL3mLyI3no
+Gm/S67EKgYxRwdSIyCH+c4euCjmy2xBgxQahAKWwTEvrAsOX5DZDLG6Qca7RZH/L
+DLPvxw+iqHjFQ2Mz4JEKdV5zjRC96EZ1sGHi0dLcrjoBHErU4ZRJLE5HnQNZ5Y3C
+QZhZMv+zjSRvo6vT8+IHBqj5Cxaod335cVicTIuRj9gJXy8G1vMJKu5cPWWyt4mV
+TNxTC25Tzy57cu77ZvgKnjWwWEgkYIAny8LKEMSgLlC+O5QXY6hX37KGnc8t/fxL
+wA/uZP1lW25xL7IrFDN5voN5HjkrWMXjMmjsMVBZlFgmHaIq4K/lCRkfLjtTZz3f
+/Yx34+HJsJsFVGVBaZ6SzIq173ca8SMQmxtFAWDhj9gM2pJVN37Sbvz67r/gJesr
+VAi6dBV07c7h3nshX5O9jxWr/bUy3oTPIwwW0P5RMLFbxtbt6CLT84n8fTVqeLdS
+nCh9pml09Lv91jrbZkb89G457s62Rix8IQ3hywgDKovB1KU96ee8dHdxZEZA1RXy
+XDg20qdO9ytj6EaJOfHw
+=aVed
 -----END PGP SIGNATURE-----
 
---iiZKCn1f/U0ES2iY--
-
---===============8112902109330107899==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8112902109330107899==--
+--PyWBHxIrsGpYNMFw--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
