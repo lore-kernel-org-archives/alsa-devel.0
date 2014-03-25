@@ -1,51 +1,65 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: Re: [PATCH 0/4] Add fsl_asoc_xlate_tdm_slot_mask()
-Date: Tue, 25 Mar 2014 03:16:51 +0000
-Message-ID: <57555edb7cab4a9ea1ad1be05b74ce22@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1395382635-16349-1-git-send-email-Li.Xiubo@freescale.com>
- <20140324210717.GQ2269@sirena.org.uk>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [RFC PATCH] ASoC: wm8904: add CCF support
+Date: Tue, 25 Mar 2014 16:01:26 +0800
+Message-ID: <533137D6.9010006@atmel.com>
+References: <1395370262-23305-1-git-send-email-voice.shen@atmel.com> <20140321103747.GK23372@e106331-lin.cambridge.arm.com> <20140321115511.GM11706@sirena.org.uk> <532F9557.2000402@atmel.com> <20140324110616.GG2269@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2lp0206.outbound.protection.outlook.com [207.46.163.206])
- by alsa0.perex.cz (Postfix) with ESMTP id D3921261B08
- for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2014 04:17:07 +0100 (CET)
-In-Reply-To: <20140324210717.GQ2269@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <20140324110616.GG2269@sirena.org.uk>
+Sender: linux-sound-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "b.brezillon.dev@gmail.com" <b.brezillon.dev@gmail.com>, "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>, "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-> Subject: Re: [PATCH 0/4] Add fsl_asoc_xlate_tdm_slot_mask()
-> 
-> On Fri, Mar 21, 2014 at 02:17:11PM +0800, Xiubo Li wrote:
-> 
-> > Xiubo Li (4):
-> >   ASoC: core: remove the 'of_' prefix of of_xlate_tdm_slot_mask.
-> >   ASoC: fsl-utils: Add fsl_asoc_xlate_tdm_slot_mask() support.
-> >   ASoC: fsl-esai: Add .xlate_tdm_slot_mask() support.
-> >   ASoC: imx-ssi: Add .xlate_tdm_slot_mask() support.
-> 
-> This looks OK but I'll wait until after the merge window to apply it
-> since that should happen any day now (due to my scripts that means after
-> the merge window opens).
+Hi Mark,
 
-Yes, That's okey.
-:)
+On 03/24/2014 07:06 PM, Mark Brown wrote:
+> On Mon, Mar 24, 2014 at 10:15:51AM +0800, Bo Shen wrote:
+>> On 03/21/2014 07:55 PM, Mark Brown wrote:
+>>> On Fri, Mar 21, 2014 at 10:37:47AM +0000, Mark Rutland wrote:
+>>>> On Fri, Mar 21, 2014 at 02:51:02AM +0000, Bo Shen wrote:
+>
+>>>>> +  - wlf,sysclk-from-mclk: set the sys clock is driven from mclk,
+>
+>>>> Why can the kernel not decide this?
+>
+>>> It can.
+>
+>> I really don't know how it decided by kernel (hardcode in machine driver ?),
+>> can you point me directly? Thanks.
+>
+> It can just look to see if there is a suitable system clock present,
+> this shouldn't be hard.  If there's a clock connected at a suitable
+> rate it should use that, otherwise if there's a clock at an unsuitable
+> rate it should either change the rate of the clock or use the FLL.
 
-Thanks very much,
---
+I try to implement this, I think we can write the wm8904 dt as simple as 
+following, can it be acceptable?
+
+Case 1: using SoC provided clock
+wm8904:wm8904@1a {
+	compatible = "wlf,wm8904";
+	reg = <0x1a>;
+	clocks = <&pck0>;
+	clock-name = "mclk";
+}
+
+Case 2: using external crystal (For this case, I have no idea to put to 
+CCF, so need "wlf,xtal-clk-freq" property).
+wm8904:wm8904@1a {
+	compatible = "wlf,wm8904";
+	reg = <0x1a>;
+	wlf,xtal-clk-freq = <12000000>;
+}
+
+Then we use these clocks to configure FLL.
+
+Btw, I see the "wm2000.c" retrieve the clock, however not see the usage 
+cases for it.
 
 Best Regards,
-Xiubo
+Bo Shen
+
+
