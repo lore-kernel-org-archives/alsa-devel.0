@@ -1,77 +1,304 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3] ASOC: tegra: move AC97 clock handling to the machine
- driver
-Date: Tue, 25 Mar 2014 18:54:41 +0000
-Message-ID: <20140325185441.GE2269@sirena.org.uk>
-References: <1395174649-1493-1-git-send-email-dev@lynxeye.de>
+From: <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: Fwd: Re: [alsa-devel] no reset_resume for driver snd-usb-audio
+ for logitech headset H600
+Date: Tue, 25 Mar 2014 20:21:34 +0100
+Message-ID: <BLU0-SMTP475521F4286A027768D8AB0A1650@phx.gbl>
+References: <527FA9B6.3000403@hotmail.com>	<BLU0-SMTP389A28B3B37C63ADEE0EE1AA1B20@phx.gbl>	<s5h61pow6hk.wl%tiwai@suse.de>	<BLU0-SMTP103D5034514D3C096609C3AA1BA0@phx.gbl>	<s5hiotfoxbt.wl%tiwai@suse.de>	<s5ha9eqab6s.wl%tiwai@suse.de>	<BLU0-SMTP858B91706D3BD97C1E57FBA1A70@phx.gbl> <s5hfvogj5t3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="m4E4Spob7u7JiHeu"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1395174649-1493-1-git-send-email-dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Stefan Agner <stefan-XLVq0VzYD2Y@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <s5hfvogj5t3.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On 2014-01-22 18:16 CET (UTC+1), Takashi Iwai wrote:
+> At Wed, 22 Jan 2014 18:12:45 +0100,
+> <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org> wrote:
+>>
+>> On 2014-01-20 17:07, Takashi Iwai wrote:
+>>> At Mon, 20 Jan 2014 09:45:58 +0100,
+>>> Takashi Iwai wrote:
+>>>>
+>>>> At Sun, 19 Jan 2014 21:30:58 +0100,
+>>>> <baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org> wrote:
+>>>>>
+>>>>> Hello,
+>>>>>
+>>>>> there must be a misunderstanding;
+>>>>>
+>>>>> There is a functional change, because with the line/patch ".reset_resume = usb_audio_resume," the mixer of the usb headset was not removed during suspend/resume and so the master channel in KDE Mixer was not changed (Headset), which is the correct behaviour.
+>>>>>
+>>>>> Without the line ".reset_resume = usb_audio_resume," in /sound/usb/card.c, the mixer was removed during suspend/resume and re-added, and so the master channel changed in KDE Mixer to the default onboard audio.
+>>>>>
+>>>>> I have tested kernel 3.13rc8, and as you mentioned, the "reset_resume"-messages are gone.
+>>>>> But the behaviour of removing the mixer of the usb_audio_headset occurs, which is, in my opinion, not the correct behaviour, because the chosen master channel/mixer should stay after suspend/resume.
+>>>>>
+>>>>> Could you please take a look at the issue again.
+>>
+>>>> Simply adding usb_audio-resume to reset_resume ops doesn't work
+>>>> properly as Clemens already suggested.  It misses the recovery of the
+>>>> current mixer values.  This might work in some cases like S3 (where
+>>>> the device is kept more or less powered on), but it'll be definitely
+>>>> broken in some cases like S4.
+>>
+>> For my USB Logitech Headset (ID 046d:0a29 Logitech, Inc. H600 [Wireless Headset]) S3 and S4 are working (mixer resume), when using the "reset_resume" line/patch.
+>
+> You didn't change the mixer value (e.g. mute), right?  Otherwise
+> you'll have to notice the difference after S4.
 
---m4E4Spob7u7JiHeu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I always let the last used mixer value stay (no mute), but I turn off the headset (power switch) before hibernate.
 
-On Tue, Mar 18, 2014 at 09:30:49PM +0100, Lucas Stach wrote:
-> On Tegra the convention is to have a single machine driver
-> that's controlling the whole audio subsystem. This was
-> introduced after the AC97 driver was merged and ever since
-> AC97 has been broken.
 
-Applied with a reworded commit message, but please in future use subject
-lines matching the style for the subsystem - as you have been
-specifically told before you should use "ASoC" for ASoC.
+>>> ... and below is a quick fix with mixer resume code.
+>>> It still doesn't handle some quirks, so it might break some devices.
+>>
+>> Thank you for your patch/quick fix, I'll try it.
+>>
+>> When can I expect a more complete solution for the mixer resume code, in the next kernel releases 3.14 or 3.15?
+>
+> Only after I get positive test reports.  If I get them earlier, it can
+> be in 3.14-rc1, as it's no too intrusive change.  If not, it'll be in
+> 3.15.
 
-> --
-> v2:
-> - remove redundant clock rate setting
-> - defer removal of err_clk_put label to avoid conflict with Stephens
->   dma channel cleanup
-> v3:
-> - rebased to 3.14-rc1
-> - no functional change
-> - reword commit message
->=20
-> CC: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> CC: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-> CC: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> CC: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-> CC: Stefan Agner <stefan-XLVq0VzYD2Y@public.gmane.org>
-> CC: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-> ---
+Thank you for your patch, it is working fine.
 
-Stuff like the above should go after the ---, not before it, so it
-doesn't end up in the changelog.
+It works with hibernate, the mixer value stays and the master channel "headset" (kmix) is selected after hibernate as it should be.
 
---m4E4Spob7u7JiHeu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+When will the patch be in mainline => 3.14? and backported to LTS-kernels?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+Do you know, what is the meaning of the following message in /var/log/Xorg.0.log ?
 
-iQIcBAEBAgAGBQJTMdDuAAoJELSic+t+oim9veoP/3UhPIDhh2cdGEn7z2/7z+kd
-MsHuF4BfeK8EEoUwOpE9ilSN6br5jmgD4GCIvBe0FIdLdZqSKnCDARBY2eUkq0OG
-ifSfdbSZth4t/hyDyFpI+LIGRJtbVPxhI7P41Q1KlH3KoVDQqTinJpyfc2vOnK4X
-yy8M0RlbBDTAQ2mqI2suV7KkB6sa8szchWnlDGt4FisfBeOvwZ6MTwBeiAo7sAiH
-WMOuHypOWv8LSVoliez3XFwEsBtFjiQ1AMuv1e8T10AJ0OKgeXNV273HtKELBnGR
-Quza7MK2j0gOPwMjbdbK8p1UDxkgPNA4o2KMcW36O6U9Inos6Nqedr/I20LOpxMH
-UVqQVE+LJPcCmZIBK+0kssqUVOYAXPeJUd1eBRjpzWFcExJpBEjXrFYanGzoUYzW
-Lrnj74JkrlPEVeCVlWRfllxqyB9d8zAVPXgYwmdaU3nrbqCgmgm0MUrSfGV3Qu5V
-WSq/AAkKlMGZbGWwvpr1y2FZ7+YolPxaPl6sU9tZjGTUX8zfKlrD6piRUbFU26Lx
-ppP+QvWKK+AaOIti9G1B1+BDGJdDJ546ir+WgET511r1llZ9qVA7Yhn6PxuOedIt
-TeE+PmP8hgE97ap1OhRCkt9qS8NiHJmNf4wxeIP829WfP5Ud5OIdQ0x1yjRQlfR8
-iMAnVkyhVkj/Lw8lsgXg
-=0B8T
------END PGP SIGNATURE-----
+(EE) [dix] Logitech Logitech Wireless Headset: unable to find touch point 0
 
---m4E4Spob7u7JiHeu--
+Thanks, Bernhard
+
+
+> Takashi
+>
+>
+>>
+>> Thanks, Bernhard
+>>
+>>> Takashi
+>>>
+>>> -- >8 --
+>>> From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+>>> Subject: [PATCH] ALSA: usb-audio: Resume mixer values properly
+>>>
+>>> Implement reset_resume callback so that the mixer values are properly
+>>> restored.  Still no boot quirks are called, so it might not work well
+>>> on some devices.
+>>>
+>>> Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+>>> ---
+>>>    sound/usb/card.c  | 18 ++++++++--
+>>>    sound/usb/mixer.c | 99 ++++++++++++++++++++++++++++++++++++++++++++-----------
+>>>    sound/usb/mixer.h |  7 ++--
+>>>    3 files changed, 99 insertions(+), 25 deletions(-)
+>>>
+>>> diff --git a/sound/usb/card.c b/sound/usb/card.c
+>>> index d979050e6a6a..025224136129 100644
+>>> --- a/sound/usb/card.c
+>>> +++ b/sound/usb/card.c
+>>> @@ -691,12 +691,12 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+>>>    	}
+>>>
+>>>    	list_for_each_entry(mixer, &chip->mixer_list, list)
+>>> -		snd_usb_mixer_inactivate(mixer);
+>>> +		snd_usb_mixer_suspend(mixer);
+>>>
+>>>    	return 0;
+>>>    }
+>>>
+>>> -static int usb_audio_resume(struct usb_interface *intf)
+>>> +static int __usb_audio_resume(struct usb_interface *intf, bool reset_resume)
+>>>    {
+>>>    	struct snd_usb_audio *chip = usb_get_intfdata(intf);
+>>>    	struct usb_mixer_interface *mixer;
+>>> @@ -711,7 +711,7 @@ static int usb_audio_resume(struct usb_interface *intf)
+>>>    	 * we just notify and restart the mixers
+>>>    	 */
+>>>    	list_for_each_entry(mixer, &chip->mixer_list, list) {
+>>> -		err = snd_usb_mixer_activate(mixer);
+>>> +		err = snd_usb_mixer_resume(mixer, reset_resume);
+>>>    		if (err < 0)
+>>>    			goto err_out;
+>>>    	}
+>>> @@ -723,9 +723,20 @@ static int usb_audio_resume(struct usb_interface *intf)
+>>>    err_out:
+>>>    	return err;
+>>>    }
+>>> +
+>>> +static int usb_audio_resume(struct usb_interface *intf)
+>>> +{
+>>> +	return __usb_audio_resume(intf, false);
+>>> +}
+>>> +
+>>> +static int usb_audio_reset_resume(struct usb_interface *intf)
+>>> +{
+>>> +	return __usb_audio_resume(intf, true);
+>>> +}
+>>>    #else
+>>>    #define usb_audio_suspend	NULL
+>>>    #define usb_audio_resume	NULL
+>>> +#define usb_audio_reset_resume	NULL
+>>>    #endif		/* CONFIG_PM */
+>>>
+>>>    static struct usb_device_id usb_audio_ids [] = {
+>>> @@ -747,6 +758,7 @@ static struct usb_driver usb_audio_driver = {
+>>>    	.disconnect =	usb_audio_disconnect,
+>>>    	.suspend =	usb_audio_suspend,
+>>>    	.resume =	usb_audio_resume,
+>>> +	.reset_resume =	usb_audio_reset_resume,
+>>>    	.id_table =	usb_audio_ids,
+>>>    	.supports_autosuspend = 1,
+>>>    };
+>>> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+>>> index 44b0ba4feab3..aa9bc19aae68 100644
+>>> --- a/sound/usb/mixer.c
+>>> +++ b/sound/usb/mixer.c
+>>> @@ -2299,26 +2299,6 @@ requeue:
+>>>    	}
+>>>    }
+>>>
+>>> -/* stop any bus activity of a mixer */
+>>> -void snd_usb_mixer_inactivate(struct usb_mixer_interface *mixer)
+>>> -{
+>>> -	usb_kill_urb(mixer->urb);
+>>> -	usb_kill_urb(mixer->rc_urb);
+>>> -}
+>>> -
+>>> -int snd_usb_mixer_activate(struct usb_mixer_interface *mixer)
+>>> -{
+>>> -	int err;
+>>> -
+>>> -	if (mixer->urb) {
+>>> -		err = usb_submit_urb(mixer->urb, GFP_NOIO);
+>>> -		if (err < 0)
+>>> -			return err;
+>>> -	}
+>>> -
+>>> -	return 0;
+>>> -}
+>>> -
+>>>    /* create the handler for the optional status interrupt endpoint */
+>>>    static int snd_usb_mixer_status_create(struct usb_mixer_interface *mixer)
+>>>    {
+>>> @@ -2417,3 +2397,82 @@ void snd_usb_mixer_disconnect(struct list_head *p)
+>>>    	usb_kill_urb(mixer->urb);
+>>>    	usb_kill_urb(mixer->rc_urb);
+>>>    }
+>>> +
+>>> +#ifdef CONFIG_PM
+>>> +/* stop any bus activity of a mixer */
+>>> +static void snd_usb_mixer_inactivate(struct usb_mixer_interface *mixer)
+>>> +{
+>>> +	usb_kill_urb(mixer->urb);
+>>> +	usb_kill_urb(mixer->rc_urb);
+>>> +}
+>>> +
+>>> +static int snd_usb_mixer_activate(struct usb_mixer_interface *mixer)
+>>> +{
+>>> +	int err;
+>>> +
+>>> +	if (mixer->urb) {
+>>> +		err = usb_submit_urb(mixer->urb, GFP_NOIO);
+>>> +		if (err < 0)
+>>> +			return err;
+>>> +	}
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +int snd_usb_mixer_suspend(struct usb_mixer_interface *mixer)
+>>> +{
+>>> +	snd_usb_mixer_inactivate(mixer);
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static int restore_mixer_value(struct usb_mixer_elem_info *cval)
+>>> +{
+>>> +	int c, err, idx;
+>>> +
+>>> +	if (cval->cmask) {
+>>> +		idx = 0;
+>>> +		for (c = 0; c < MAX_CHANNELS; c++) {
+>>> +			if (!(cval->cmask & (1 << c)))
+>>> +				continue;
+>>> +			if (cval->cached & (1 << c)) {
+>>> +				err = set_cur_mix_value(cval, c + 1, idx,
+>>> +							cval->cache_val[idx]);
+>>> +				if (err < 0)
+>>> +					return err;
+>>> +			}
+>>> +			idx++;
+>>> +		}
+>>> +	} else {
+>>> +		/* master */
+>>> +		if (cval->cached) {
+>>> +			err = set_cur_mix_value(cval, 0, 0, *cval->cache_val);
+>>> +			if (err < 0)
+>>> +				return err;
+>>> +		}
+>>> +	}
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
+>>> +{
+>>> +	struct usb_mixer_elem_info *cval;
+>>> +	int id, err;
+>>> +
+>>> +	/* FIXME: any mixer quirks? */
+>>> +
+>>> +	if (reset_resume) {
+>>> +		/* restore cached mixer values */
+>>> +		for (id = 0; id < MAX_ID_ELEMS; id++) {
+>>> +			for (cval = mixer->id_elems[id]; cval;
+>>> +			     cval = cval->next_id_elem) {
+>>> +				err = restore_mixer_value(cval);
+>>> +				if (err < 0)
+>>> +					return err;
+>>> +			}
+>>> +		}
+>>> +	}
+>>> +
+>>> +	return snd_usb_mixer_activate(mixer);
+>>> +}
+>>> +#endif
+>>> diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+>>> index aab80df201bd..73b1f649447b 100644
+>>> --- a/sound/usb/mixer.h
+>>> +++ b/sound/usb/mixer.h
+>>> @@ -63,8 +63,6 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid);
+>>>
+>>>    int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
+>>>    				int request, int validx, int value_set);
+>>> -void snd_usb_mixer_inactivate(struct usb_mixer_interface *mixer);
+>>> -int snd_usb_mixer_activate(struct usb_mixer_interface *mixer);
+>>>
+>>>    int snd_usb_mixer_add_control(struct usb_mixer_interface *mixer,
+>>>    			      struct snd_kcontrol *kctl);
+>>> @@ -72,4 +70,9 @@ int snd_usb_mixer_add_control(struct usb_mixer_interface *mixer,
+>>>    int snd_usb_mixer_vol_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+>>>    			  unsigned int size, unsigned int __user *_tlv);
+>>>
+>>> +#ifdef CONFIG_PM
+>>> +int snd_usb_mixer_suspend(struct usb_mixer_interface *mixer);
+>>> +int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume);
+>>> +#endif
+>>> +
+>>>    #endif /* __USBMIXER_H */
+>>>
+>>
+>
+>
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
