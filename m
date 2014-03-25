@@ -1,107 +1,136 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Inform the unexpectedly ignored
-	pins by auto-parser
-Date: Tue, 25 Mar 2014 10:04:40 +0100
-Message-ID: <1395738280-8021-1-git-send-email-tiwai@suse.de>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [RFC v2 PATCH] ASoC: wm8904: add CCF support
+Date: Tue, 25 Mar 2014 17:56:56 +0800
+Message-ID: <1395741416-23981-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 973E62625D7
- for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2014 10:04:42 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 51911AC91
- for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2014 09:04:41 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-sound-owner@vger.kernel.org>
+Sender: linux-sound-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: nicolas.ferre@atmel.com, b.brezillon.dev@gmail.com, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The auto-parser may ignore some pins that could be valid when they
-don't match with the assumption or if there are way too many pins
-assigned to the same output type.  So far, such a pin has been
-silently ignored, but it's better to leave a message, which would help
-for debugging and understanding the problem.
+Enable WM8904 to support common clock framework.
+  - Now it supports use SoC provided clock or external oscillator
+    as MCLK.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
 ---
- sound/pci/hda/hda_auto_parser.c | 30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
+ Documentation/devicetree/bindings/sound/wm8904.txt | 48 ++++++++++++++++++++++
+ sound/soc/codecs/wm8904.c                          | 17 ++++++++
+ 2 files changed, 65 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/wm8904.txt
 
-diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
-index 8de7cfa460b9..90d2fda6c8f9 100644
---- a/sound/pci/hda/hda_auto_parser.c
-+++ b/sound/pci/hda/hda_auto_parser.c
-@@ -227,10 +227,18 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
- 				continue;
- 			if (!assoc_line_out)
- 				assoc_line_out = assoc;
--			else if (assoc_line_out != assoc)
-+			else if (assoc_line_out != assoc) {
-+				codec_info(codec,
-+					   "ignore pin 0x%x with mismatching assoc# 0x%x vs 0x%x\n",
-+					   nid, assoc, assoc_line_out);
- 				continue;
--			if (cfg->line_outs >= ARRAY_SIZE(cfg->line_out_pins))
-+			}
-+			if (cfg->line_outs >= ARRAY_SIZE(cfg->line_out_pins)) {
-+				codec_info(codec,
-+					   "ignore pin 0x%x, too many assigned pins\n",
-+					   nid);
- 				continue;
-+			}
- 			line_out[cfg->line_outs].pin = nid;
- 			line_out[cfg->line_outs].seq = seq;
- 			cfg->line_outs++;
-@@ -238,8 +246,12 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
- 		case AC_JACK_SPEAKER:
- 			seq = get_defcfg_sequence(def_conf);
- 			assoc = get_defcfg_association(def_conf);
--			if (cfg->speaker_outs >= ARRAY_SIZE(cfg->speaker_pins))
-+			if (cfg->speaker_outs >= ARRAY_SIZE(cfg->speaker_pins)) {
-+				codec_info(codec,
-+					   "ignore pin 0x%x, too many assigned pins\n",
-+					   nid);
- 				continue;
-+			}
- 			speaker_out[cfg->speaker_outs].pin = nid;
- 			speaker_out[cfg->speaker_outs].seq = (assoc << 4) | seq;
- 			cfg->speaker_outs++;
-@@ -247,8 +259,12 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
- 		case AC_JACK_HP_OUT:
- 			seq = get_defcfg_sequence(def_conf);
- 			assoc = get_defcfg_association(def_conf);
--			if (cfg->hp_outs >= ARRAY_SIZE(cfg->hp_pins))
-+			if (cfg->hp_outs >= ARRAY_SIZE(cfg->hp_pins)) {
-+				codec_info(codec,
-+					   "ignore pin 0x%x, too many assigned pins\n",
-+					   nid);
- 				continue;
-+			}
- 			hp_out[cfg->hp_outs].pin = nid;
- 			hp_out[cfg->hp_outs].seq = (assoc << 4) | seq;
- 			cfg->hp_outs++;
-@@ -267,8 +283,12 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
- 			break;
- 		case AC_JACK_SPDIF_OUT:
- 		case AC_JACK_DIG_OTHER_OUT:
--			if (cfg->dig_outs >= ARRAY_SIZE(cfg->dig_out_pins))
-+			if (cfg->dig_outs >= ARRAY_SIZE(cfg->dig_out_pins)) {
-+				codec_info(codec,
-+					   "ignore pin 0x%x, too many assigned pins\n",
-+					   nid);
- 				continue;
-+			}
- 			cfg->dig_out_pins[cfg->dig_outs] = nid;
- 			cfg->dig_out_type[cfg->dig_outs] =
- 				(loc == AC_JACK_LOC_HDMI) ?
+diff --git a/Documentation/devicetree/bindings/sound/wm8904.txt b/Documentation/devicetree/bindings/sound/wm8904.txt
+new file mode 100644
+index 0000000..bcf4aa0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/wm8904.txt
+@@ -0,0 +1,48 @@
++WM8904 audio CODEC
++
++This device supports I2C only.
++
++Required properties:
++  - compatible: "wlf,wm8904"
++  - reg: the I2C address of the device.
++  - clocks and clock-names: reference to
++    <Documentation/devicetree/bindings/clock/clock-bindings.txt>
++
++Pins on the device (for linking into audio routes):
++
++  * IN1L
++  * IN1R
++  * IN2L
++  * IN2R
++  * IN3L
++  * IN3R
++  * HPOUTL
++  * HPOUTR
++  * LINEOUTL
++  * LINEOUTR
++  * MICBIAS
++
++Examples:
++
++1. Using SoC provided clock as mclk:
++codec: wm8904@1a {
++	compatible = "wlf,wm8904";
++	reg = <0x1a>;
++	clocks = <&pck0>;
++	clock-names = "mclk";
++};
++
++2. Using external oscillator as mclk:
++codec: wm8904@1a {
++	compatible = "wlf,wm8904";
++	reg = <0x1a>;
++
++	wm8904_osc {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		#clock-frequency = <12000000>;
++	}
++
++	clocks = <&wm8904_osc>;
++	clock-names = "mclk";
++};
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index 49c35c3..4db6a26 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -11,6 +11,7 @@
+  * published by the Free Software Foundation.
+  */
+ 
++#include <linux/clk.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/init.h>
+@@ -49,6 +50,7 @@ static const char *wm8904_supply_names[WM8904_NUM_SUPPLIES] = {
+ /* codec private data */
+ struct wm8904_priv {
+ 	struct regmap *regmap;
++	struct clk *mclk;
+ 
+ 	enum wm8904_type devtype;
+ 
+@@ -1828,6 +1830,9 @@ static int wm8904_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
++		if (IS_ENABLED(CONFIG_COMMON_CLK))
++			if (wm8904->mclk)
++				clk_prepare_enable(wm8904->mclk);
+ 		break;
+ 
+ 	case SND_SOC_BIAS_PREPARE:
+@@ -1894,6 +1899,9 @@ static int wm8904_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 		regulator_bulk_disable(ARRAY_SIZE(wm8904->supplies),
+ 				       wm8904->supplies);
++		if (IS_ENABLED(CONFIG_COMMON_CLK))
++			if (wm8904->mclk)
++				clk_disable_unprepare(wm8904->mclk);
+ 		break;
+ 	}
+ 	codec->dapm.bias_level = level;
+@@ -2139,6 +2147,15 @@ static int wm8904_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
++	if (IS_ENABLED(CONFIG_COMMON_CLK)) {
++		wm8904->mclk = devm_clk_get(&i2c->dev, "mclk");
++		if (IS_ERR(wm8904->mclk)) {
++			dev_err(&i2c->dev, "Failed to get MCLK\n");
++			ret = PTR_ERR(wm8904->mclk);
++			goto err_enable;
++		}
++	}
++
+ 	ret = regmap_read(wm8904->regmap, WM8904_SW_RESET_AND_ID, &val);
+ 	if (ret < 0) {
+ 		dev_err(&i2c->dev, "Failed to read ID register: %d\n", ret);
 -- 
-1.9.1
+1.8.5.2
+
