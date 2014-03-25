@@ -1,20 +1,18 @@
-From: Luis Alberto Sanchez <luisalbertosanchez3@gmail.com>
-Subject: Re: [RFC v2 PATCH] ASoC: wm8904: add CCF support
-Date: Tue, 25 Mar 2014 08:09:17 -0400
-Message-ID: <CANexs9pLzVMotCqaHkc2_QOGZqgF_zMWgA-G3D6s19ML+mLqxw@mail.gmail.com>
-References: <1395741416-23981-1-git-send-email-voice.shen@atmel.com>
- <53316F99.6080709@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 12/12] ASoC: Remove name_prefix unset
+ during DAI link init hack
+Date: Tue, 25 Mar 2014 12:53:30 +0000
+Message-ID: <20140325125330.GT2269@sirena.org.uk>
+References: <1394634460-15889-1-git-send-email-lars@metafoo.de>
+ <1394634460-15889-13-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============8112902109330107899=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f175.google.com (mail-ig0-f175.google.com
- [209.85.213.175])
- by alsa0.perex.cz (Postfix) with ESMTP id F03A0262618
- for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2014 13:09:18 +0100 (CET)
-Received: by mail-ig0-f175.google.com with SMTP id ur14so10468408igb.2
- for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2014 05:09:17 -0700 (PDT)
-In-Reply-To: <53316F99.6080709@gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9299E26260F
+ for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2014 13:53:56 +0100 (CET)
+In-Reply-To: <1394634460-15889-13-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,161 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Boris BREZILLON <b.brezillon.dev@gmail.com>
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, Mark Brown <broonie@kernel.org>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Ryan Mallon <rmallon@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Daniel =?iso-8859-1?Q?Gl=F6ckner?= <daniel-gl@gmx.net>, Benoit Cousson <bcousson@baylibre.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-El mar 25, 2014 7:59 AM, "Boris BREZILLON" <b.brezillon.dev@gmail.com>
-escribi=F3:
 
-> Hello Bo,
->
-> Le 25/03/2014 10:56, Bo Shen a =E9crit :
->
->> Enable WM8904 to support common clock framework.
->>    - Now it supports use SoC provided clock or external oscillator
->>      as MCLK.
->>
->> Signed-off-by: Bo Shen <voice.shen@atmel.com>
->> ---
->>   Documentation/devicetree/bindings/sound/wm8904.txt | 48
->> ++++++++++++++++++++++
->>   sound/soc/codecs/wm8904.c                          | 17 ++++++++
->>   2 files changed, 65 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/wm8904.txt
->>
->> diff --git a/Documentation/devicetree/bindings/sound/wm8904.txt
->> b/Documentation/devicetree/bindings/sound/wm8904.txt
->> new file mode 100644
->> index 0000000..bcf4aa0
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/wm8904.txt
->> @@ -0,0 +1,48 @@
->> +WM8904 audio CODEC
->> +
->> +This device supports I2C only.
->> +
->> +Required properties:
->> +  - compatible: "wlf,wm8904"
->> +  - reg: the I2C address of the device.
->> +  - clocks and clock-names: reference to
->> +    <Documentation/devicetree/bindings/clock/clock-bindings.txt>
->> +
->> +Pins on the device (for linking into audio routes):
->> +
->> +  * IN1L
->> +  * IN1R
->> +  * IN2L
->> +  * IN2R
->> +  * IN3L
->> +  * IN3R
->> +  * HPOUTL
->> +  * HPOUTR
->> +  * LINEOUTL
->> +  * LINEOUTR
->> +  * MICBIAS
->> +
->> +Examples:
->> +
->> +1. Using SoC provided clock as mclk:
->> +codec: wm8904@1a {
->> +       compatible =3D "wlf,wm8904";
->> +       reg =3D <0x1a>;
->> +       clocks =3D <&pck0>;
->> +       clock-names =3D "mclk";
->> +};
->>
->
->
->  +
->> +2. Using external oscillator as mclk:
->> +codec: wm8904@1a {
->> +       compatible =3D "wlf,wm8904";
->> +       reg =3D <0x1a>;
->> +
->> +       wm8904_osc {
->> +               compatible =3D "fixed-clock";
->> +               #clock-cells =3D <0>;
->> +               #clock-frequency =3D <12000000>;
->> +       }
->> +
->> +       clocks =3D <&wm8904_osc>;
->> +       clock-names =3D "mclk";
->> +};
->>
->
-> I think there is a misunderstanding here (and it certainly comes from my
-> explanations during our last talk :)): both cases should be handled the
-> same
-> way because an external oscillator is no more or less than an external clk
-> (we don't care how this clk is generated).
->
-> I suggested to put the osc node inside the wm8904 one but I thought you
-> were
-> trying to represent the internal 12MHz clk generated when using the fll
-> free
-> running mode.
->
->  diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
->> index 49c35c3..4db6a26 100644
->> --- a/sound/soc/codecs/wm8904.c
->> +++ b/sound/soc/codecs/wm8904.c
->> @@ -11,6 +11,7 @@
->>    * published by the Free Software Foundation.
->>    */
->>   +#include <linux/clk.h>
->>   #include <linux/module.h>
->>   #include <linux/moduleparam.h>
->>   #include <linux/init.h>
->> @@ -49,6 +50,7 @@ static const char *wm8904_supply_names[WM8904_NUM_SUPP=
-LIES]
->> =3D {
->>   /* codec private data */
->>   struct wm8904_priv {
->>         struct regmap *regmap;
->> +       struct clk *mclk;
->>         enum wm8904_type devtype;
->>   @@ -1828,6 +1830,9 @@ static int wm8904_set_bias_level(struct
->> snd_soc_codec *codec,
->>         switch (level) {
->>         case SND_SOC_BIAS_ON:
->> +               if (IS_ENABLED(CONFIG_COMMON_CLK))
->> +                       if (wm8904->mclk)
->> +                               clk_prepare_enable(wm8904->mclk);
->>                 break;
->>         case SND_SOC_BIAS_PREPARE:
->> @@ -1894,6 +1899,9 @@ static int wm8904_set_bias_level(struct
->> snd_soc_codec *codec,
->>                 regulator_bulk_disable(ARRAY_SIZE(wm8904->supplies),
->>                                        wm8904->supplies);
->> +               if (IS_ENABLED(CONFIG_COMMON_CLK))
->> +                       if (wm8904->mclk)
->> +                               clk_disable_unprepare(wm8904->mclk);
->>                 break;
->>         }
->>         codec->dapm.bias_level =3D level;
->> @@ -2139,6 +2147,15 @@ static int wm8904_i2c_probe(struct i2c_client *i2=
-c,
->>                 return ret;
->>         }
->>   +     if (IS_ENABLED(CONFIG_COMMON_CLK)) {
->> +               wm8904->mclk =3D devm_clk_get(&i2c->dev, "mclk");
->> +               if (IS_ERR(wm8904->mclk)) {
->> +                       dev_err(&i2c->dev, "Failed to get MCLK\n");
->> +                       ret =3D PTR_ERR(wm8904->mclk);
->> +                       goto err_enable;
->> +               }
->> +       }
->> +
->>         ret =3D regmap_read(wm8904->regmap, WM8904_SW_RESET_AND_ID, &val=
-);
->>         if (ret < 0) {
->>                 dev_err(&i2c->dev, "Failed to read ID register: %d\n",
->> ret);
->>
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+--===============8112902109330107899==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="iiZKCn1f/U0ES2iY"
+Content-Disposition: inline
+
+
+--iiZKCn1f/U0ES2iY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Mar 12, 2014 at 03:27:40PM +0100, Lars-Peter Clausen wrote:
+> Before we had card level support for DAPM and controls machine drivers would
+> register their controls and DAPM elements with the CODEC. This required us to
+> temporarily unset the name_prefix of a CODEC during the rtd init callback to
+
+Applied, thanks.
+
+--iiZKCn1f/U0ES2iY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTMXxGAAoJELSic+t+oim9t8IP/R6JlZrBivoNRKPrb5BRDTcS
+HLclsiKM5Zu9HIZUzz4TdQKK+05h11jftOMjL4PqdTKbWAkdjDWIdNhnWCnr8m6d
+KnSkrT+0HGEC4YWplY8FTju1OprfrA2j1aXHYcrLKyRblqT91hAn8liRvMXPQuhc
+ZjJGUx1tSj9NEsGhkzEgNrw1OQXmXdXeYIqM5W9vxIpX8eHah52Lfl3AWa1RkGjw
+o7sTVF5dRIZhCy+67IxUhEe6Cy0q/0QqUH1U39JaObnMPHOTrEd1sjnpevFe6eRK
+taQEGpNVu+HFsnuu6y2FRDmvBUFIwIhlkosUnYEGMM5Wa7wACi6dCLBi5RiHRcsG
+eMrRHivgjGP6//JTDrgMxEHmnSjvjCzQRVkSVBWNDq8Gk4QiLp3x/hPxVBaDwHFY
+qOKY1pVGMk4con4+jzbOLITB0TBuatN+imLn0/92p9x4q7cefqxU+lUm7Rv2tUXZ
+tzo5CQNMYcBilmSbuDO2vuQ3MIUUbJxc4f55IILeYuiOt50ku+i1Kmz/SPAtBvG/
+dm3t3OREOENStgkbuCcs6Oe2dsmWATd0/N8dJZgdXZGbfTMDR/g13+mwW7W4bA3F
+N569T8cvMRqqwo20kg23aoDYo9+gPZeqqWpKiVocKkbWlPeOHABLPxpqaW4rE4vP
+n1Gu2zCmjSH4zTxpQqzh
+=3noi
+-----END PGP SIGNATURE-----
+
+--iiZKCn1f/U0ES2iY--
+
+--===============8112902109330107899==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8112902109330107899==--
