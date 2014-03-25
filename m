@@ -1,136 +1,208 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [RFC v2 PATCH] ASoC: wm8904: add CCF support
-Date: Tue, 25 Mar 2014 17:56:56 +0800
-Message-ID: <1395741416-23981-1-git-send-email-voice.shen@atmel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 1/3] ASoC: davinci-mcasp: Constraint on
+ the period and buffer size based on FIFO usage
+Date: Tue, 25 Mar 2014 12:07:58 +0200
+Message-ID: <5331557E.9020908@ti.com>
+References: <1395148837-20850-1-git-send-email-peter.ujfalusi@ti.com>
+ <1395148837-20850-2-git-send-email-peter.ujfalusi@ti.com>
+ <532848D5.30806@ti.com> <53285827.1070709@ti.com>
+ <20140318180732.GJ11706@sirena.org.uk> <53297BEE.4050903@ti.com>
+ <20140319131457.GK11706@sirena.org.uk> <532AF15A.4090506@ti.com>
+ <532AF7E7.8060702@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-sound-owner@vger.kernel.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: nicolas.ferre@atmel.com, b.brezillon.dev@gmail.com, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, Bo Shen <voice.shen@atmel.com>
+Content-Type: multipart/mixed; boundary="------------010904050008030300050708"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDEF4262610
+ for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2014 11:08:04 +0100 (CET)
+In-Reply-To: <532AF7E7.8060702@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, zonque@gmail.com, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Enable WM8904 to support common clock framework.
-  - Now it supports use SoC provided clock or external oscillator
-    as MCLK.
+--------------010904050008030300050708
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
----
- Documentation/devicetree/bindings/sound/wm8904.txt | 48 ++++++++++++++++++++++
- sound/soc/codecs/wm8904.c                          | 17 ++++++++
- 2 files changed, 65 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/wm8904.txt
+On 03/20/2014 04:15 PM, Lars-Peter Clausen wrote:
+> That sounds like a bug in either the kernel or alsa-lib. We do have a r=
+ule in
+> place that specifies that the buffer size needs to be a integer multipl=
+e of
+> the period size and we have a rule in place that the period size needs =
+to be a
+> multiple of a constant C. Hence ALSA should be able to deduce that the =
+buffer
+> size needs to be at least a multiple of min_periods * C. We probably sh=
+ould
+> fix this for good and not workaround it in individual drivers. Do you t=
+hink
+> you can put together a small standalone test application that shows the=
+ issue?
 
-diff --git a/Documentation/devicetree/bindings/sound/wm8904.txt b/Documentation/devicetree/bindings/sound/wm8904.txt
-new file mode 100644
-index 0000000..bcf4aa0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wm8904.txt
-@@ -0,0 +1,48 @@
-+WM8904 audio CODEC
-+
-+This device supports I2C only.
-+
-+Required properties:
-+  - compatible: "wlf,wm8904"
-+  - reg: the I2C address of the device.
-+  - clocks and clock-names: reference to
-+    <Documentation/devicetree/bindings/clock/clock-bindings.txt>
-+
-+Pins on the device (for linking into audio routes):
-+
-+  * IN1L
-+  * IN1R
-+  * IN2L
-+  * IN2R
-+  * IN3L
-+  * IN3R
-+  * HPOUTL
-+  * HPOUTR
-+  * LINEOUTL
-+  * LINEOUTR
-+  * MICBIAS
-+
-+Examples:
-+
-+1. Using SoC provided clock as mclk:
-+codec: wm8904@1a {
-+	compatible = "wlf,wm8904";
-+	reg = <0x1a>;
-+	clocks = <&pck0>;
-+	clock-names = "mclk";
-+};
-+
-+2. Using external oscillator as mclk:
-+codec: wm8904@1a {
-+	compatible = "wlf,wm8904";
-+	reg = <0x1a>;
-+
-+	wm8904_osc {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		#clock-frequency = <12000000>;
-+	}
-+
-+	clocks = <&wm8904_osc>;
-+	clock-names = "mclk";
-+};
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index 49c35c3..4db6a26 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -11,6 +11,7 @@
-  * published by the Free Software Foundation.
-  */
- 
-+#include <linux/clk.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/init.h>
-@@ -49,6 +50,7 @@ static const char *wm8904_supply_names[WM8904_NUM_SUPPLIES] = {
- /* codec private data */
- struct wm8904_priv {
- 	struct regmap *regmap;
-+	struct clk *mclk;
- 
- 	enum wm8904_type devtype;
- 
-@@ -1828,6 +1830,9 @@ static int wm8904_set_bias_level(struct snd_soc_codec *codec,
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
-+		if (IS_ENABLED(CONFIG_COMMON_CLK))
-+			if (wm8904->mclk)
-+				clk_prepare_enable(wm8904->mclk);
- 		break;
- 
- 	case SND_SOC_BIAS_PREPARE:
-@@ -1894,6 +1899,9 @@ static int wm8904_set_bias_level(struct snd_soc_codec *codec,
- 
- 		regulator_bulk_disable(ARRAY_SIZE(wm8904->supplies),
- 				       wm8904->supplies);
-+		if (IS_ENABLED(CONFIG_COMMON_CLK))
-+			if (wm8904->mclk)
-+				clk_disable_unprepare(wm8904->mclk);
- 		break;
- 	}
- 	codec->dapm.bias_level = level;
-@@ -2139,6 +2147,15 @@ static int wm8904_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	if (IS_ENABLED(CONFIG_COMMON_CLK)) {
-+		wm8904->mclk = devm_clk_get(&i2c->dev, "mclk");
-+		if (IS_ERR(wm8904->mclk)) {
-+			dev_err(&i2c->dev, "Failed to get MCLK\n");
-+			ret = PTR_ERR(wm8904->mclk);
-+			goto err_enable;
-+		}
-+	}
-+
- 	ret = regmap_read(wm8904->regmap, WM8904_SW_RESET_AND_ID, &val);
- 	if (ret < 0) {
- 		dev_err(&i2c->dev, "Failed to read ID register: %d\n", ret);
--- 
-1.8.5.2
+Now that I have 'wasted' quite some time with this I ended up writing the=
+ tool
+to test the issue.
 
+It is a simple tool which:
+opens the hw:0,0 (you can pass another PCM to open).
+Goes and tests 44.1, 88.2, 48 and 96 KHz from 0.1s to 1s buffer time with
+0.005s steps.
+It prints the running test and tells if the combination failed or not. If=
+ it
+is OK, it is going to print the resulting buffer time.
+
+Since the output is long for email they are in pastebin.
+
+On am335x-evmsk only period_step =3D 32 constraint is placed by the McASP=
+ driver:
+http://pastebin.com/C81uQkJd
+
+When both period_step and buffer_step is set to 32:
+http://pastebin.com/D8hr3bQ1
+
+As a note: if I run this tool on my desktop/laptop it does fail in some
+combination there as well with hd_intel. What is even more interesting is=
+ that
+I have less failure cases with hda_intel on 64bit machines then on my old
+macbook1,1 which is 32bit Linux. Basically the mcabook,1,1 behaves simila=
+rly
+like my am335x (when I change the hda_intel driver to place only period_s=
+tep =3D
+32 constraint)
+
+--=20
+P=E9ter
+
+--------------010904050008030300050708
+Content-Type: text/x-csrc; name="constraint.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="constraint.c"
+
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
+#include <stdio.h>
+#include <alsa/asoundlib.h>
+
+#define BUFFER_TIME_MIN		(100000)
+#define BUFFER_TIME_MAX		(1000000)
+#define BUFFER_TIME_STEP	(5000)
+
+int try_alsa_setup(snd_pcm_t *pcm, unsigned int rate, unsigned int *buffer_time,
+		   unsigned int *periods)
+{
+	int r;
+	snd_pcm_hw_params_t *hwparams;
+
+	snd_pcm_hw_params_alloca (&hwparams);
+
+	r = snd_pcm_hw_params_any(pcm, hwparams);
+	if (r < 0)
+		return r;
+
+	r = snd_pcm_hw_params_set_rate_resample(pcm, hwparams, 0);
+	if (r < 0)
+		return r;
+
+	r = snd_pcm_hw_params_set_access(pcm, hwparams,
+	                                  SND_PCM_ACCESS_RW_INTERLEAVED);
+	if (r < 0)
+		return r;
+
+	r = snd_pcm_hw_params_set_format(pcm, hwparams,SND_PCM_FORMAT_S16_LE);
+	if (r < 0)
+		return r;
+
+	r = snd_pcm_hw_params_set_rate_near(pcm, hwparams, &rate, NULL);
+	if (r < 0)
+		return r;
+
+	r = snd_pcm_hw_params_set_channels(pcm, hwparams, 2);
+	if (r < 0)
+		return r;
+
+	r = snd_pcm_hw_params_set_buffer_time_near(pcm, hwparams, buffer_time,
+	                NULL);
+	if (r < 0)
+		return r;
+
+	r = snd_pcm_hw_params_set_periods_near(pcm, hwparams, periods, NULL);
+	if (r < 0)
+		return r;
+
+	r = snd_pcm_hw_params(pcm, hwparams);
+	if (r < 0)
+		return r;
+
+	r = snd_pcm_hw_params_current(pcm, hwparams);
+	if (r < 0)
+		return r;
+
+	return 0;
+}
+
+int main(int argc, char *argv[])
+{
+	const char *dev;
+	snd_pcm_t *pcm;
+	unsigned int rates[] = {44100, 88200, 48000, 96000, 0 };
+	unsigned int periods = 10;
+	unsigned int i;
+	int r;
+
+	dev = argc > 1 ? argv[1] : "hw:0,0";
+
+	printf("Opening %s\n\n", dev);
+	for (i = 0; rates[i]; i++) {
+		unsigned int time = BUFFER_TIME_MIN;
+		do {
+			unsigned int buffer_time = time;
+			r = snd_pcm_open(&pcm, dev, SND_PCM_STREAM_PLAYBACK, 0);
+			if (r < 0) {
+				printf("Failed to open %s\n", dev);
+				return -1;
+			}
+
+			printf("Try of %dHz, %u us buffer: ", rates[i],
+			       buffer_time);
+
+			r = try_alsa_setup(pcm, rates[i], &buffer_time,
+					   &periods);
+
+			if (r < 0)
+				printf("FAILED\n");
+			else
+				printf("OK (got %u us)\n", buffer_time);
+
+			r = snd_pcm_close(pcm);
+			if (r < 0) {
+				printf("snd_pcm_close() failed %d\n", r);
+				return r;
+			}
+			time += BUFFER_TIME_STEP;
+		} while (time <= BUFFER_TIME_MAX);
+	}
+
+	printf("Done with %s\n\n", dev);
+	return 0;
+}
+
+--------------010904050008030300050708
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------010904050008030300050708--
