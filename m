@@ -1,17 +1,17 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv2 02/11] ASoc: 88pm860x: Remove the
+Subject: [PATCHv2 03/11] ASoc: cq93vc: Remove the
 	set_cache_io() entirely from ASoC probe.
-Date: Wed, 26 Mar 2014 13:40:24 +0800
-Message-ID: <1395812433-26410-3-git-send-email-Li.Xiubo@freescale.com>
+Date: Wed, 26 Mar 2014 13:40:25 +0800
+Message-ID: <1395812433-26410-4-git-send-email-Li.Xiubo@freescale.com>
 References: <1395812433-26410-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
- by alsa0.perex.cz (Postfix) with ESMTP id C56B42650FE
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 07:27:57 +0100 (CET)
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe004.messaging.microsoft.com [207.46.163.27])
+ by alsa0.perex.cz (Postfix) with ESMTP id B807F2650E1
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 07:28:00 +0100 (CET)
 In-Reply-To: <1395812433-26410-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,42 +35,41 @@ CODEC ASoC probe as earily as possible.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/codecs/88pm860x-codec.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/codecs/cq93vc.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-index b07e171..dc9e6b9 100644
---- a/sound/soc/codecs/88pm860x-codec.c
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -1327,10 +1327,6 @@ static int pm860x_probe(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
+index 1e25c7a..5e5518d 100644
+--- a/sound/soc/codecs/cq93vc.c
++++ b/sound/soc/codecs/cq93vc.c
+@@ -139,8 +139,6 @@ static int cq93vc_probe(struct snd_soc_codec *codec)
  
- 	pm860x->codec = codec;
+ 	davinci_vc->cq93vc.codec = codec;
  
--	ret = snd_soc_codec_set_cache_io(codec, pm860x->regmap);
--	if (ret)
--		return ret;
+-	snd_soc_codec_set_cache_io(codec, davinci_vc->regmap);
 -
- 	for (i = 0; i < 4; i++) {
- 		ret = request_threaded_irq(pm860x->irq[i], NULL,
- 					   pm860x_codec_handler, IRQF_ONESHOT,
-@@ -1362,10 +1358,18 @@ static int pm860x_remove(struct snd_soc_codec *codec)
+ 	/* Off, with power on */
+ 	cq93vc_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+@@ -154,11 +152,19 @@ static int cq93vc_remove(struct snd_soc_codec *codec)
  	return 0;
  }
  
-+struct regmap *pm860x_get_regmap(struct device *dev)
++struct regmap *cq93vc_get_regmap(struct device *dev)
 +{
-+	struct pm860x_priv *pm860x = dev_get_drvdata(dev);
++	struct davinci_vc *davinci_vc = codec->dev->platform_data;
 +
-+	return pm860x->regmap;
++	return davinci_vc->regmap;
 +}
 +
- static struct snd_soc_codec_driver soc_codec_dev_pm860x = {
- 	.probe		= pm860x_probe,
- 	.remove		= pm860x_remove,
- 	.set_bias_level	= pm860x_set_bias_level,
-+	.get_regmap	= pm860x_get_regmap,
- 
- 	.controls = pm860x_snd_controls,
- 	.num_controls = ARRAY_SIZE(pm860x_snd_controls),
+ static struct snd_soc_codec_driver soc_codec_dev_cq93vc = {
+ 	.set_bias_level = cq93vc_set_bias_level,
+ 	.probe = cq93vc_probe,
+ 	.remove = cq93vc_remove,
+ 	.resume = cq93vc_resume,
++	.get_regmap = cq93vc_get_regmap,
+ 	.controls = cq93vc_snd_controls,
+ 	.num_controls = ARRAY_SIZE(cq93vc_snd_controls),
+ };
 -- 
 1.8.4
