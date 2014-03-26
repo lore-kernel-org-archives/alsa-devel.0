@@ -1,80 +1,83 @@
-From: <cfreeman@nvidia.com>
-Subject: [PATCH] ASoC: jack: export gpio detect
-Date: Wed, 26 Mar 2014 14:38:44 -0700
-Message-ID: <1395869924-32195-1-git-send-email-cfreeman@nvidia.com>
+From: Songhee Baek <sbaek@nvidia.com>
+Subject: RE: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
+Date: Wed, 26 Mar 2014 15:41:08 -0700
+Message-ID: <D6C615D3E4730340AE82D5BD856631C0A26CB319B2@HQMAIL02.nvidia.com>
+References: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
+ <53332CC7.6060800@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate16.nvidia.com (hqemgate16.nvidia.com [216.228.121.65])
- by alsa0.perex.cz (Postfix) with ESMTP id DF03A265133
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 22:38:49 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Christopher Freeman <cfreeman@nvidia.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <53332CC7.6060800@metafoo.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Arun Shamanna Lakshmi <aruns@nvidia.com>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Christopher Freeman <cfreeman@nvidia.com>
+> -----Original Message-----
+> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
+> Sent: Wednesday, March 26, 2014 12:39 PM
+> To: Arun Shamanna Lakshmi
+> Cc: lgirdwood@gmail.com; broonie@kernel.org; swarren@wwwdotorg.org;
+> Songhee Baek; alsa-devel@alsa-project.org; tiwai@suse.de; linux-
+> kernel@vger.kernel.org
+> Subject: Re: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
+> 
+> On 03/26/2014 01:02 AM, Arun Shamanna Lakshmi wrote:
+> > If the mux uses 1 bit position per input, and requires to set one
+> > single bit at a time, then an N bit register can support up to N
+> > inputs. In more recent Tegra chips, we have at least greater than
+> > 64 inputs which requires at least 2 .reg fields in struct soc_enum.
+> >
+> > Signed-off-by: Arun Shamanna Lakshmi <aruns@nvidia.com>
+> > Signed-off-by: Songhee Baek <sbaek@nvidia.com>
+> 
+> The way you describe this it seems to me that a value array for this kind of
+> mux would look like.
+> 
+> 0x00000000, 0x00000000, 0x00000001
+> 0x00000000, 0x00000000, 0x00000002
+> 0x00000000, 0x00000000, 0x00000003
+> 0x00000000, 0x00000000, 0x00000004
+> 0x00000000, 0x00000000, 0x00000008
+> ...
+> 
+> That seems to be extremely tedious. If the MUX uses a one hot encoding
+> how about storing the index of the bit in the values array and use (1 << value)
+> when writing the value to the register?
 
-Export the gpio detect function so machine drivers
-may call it.  Interrupts for the jack may be disabled
-during sleep, so this allows a machine driver to have
-the jack status updated during resume.
+If we store the index of the bit, the value will be duplicated for each registers inputs since register has 0 to 31bits to shift, then we need to decode the index to interpret value for which registers to set. If we need to interpret the decoded value of index, it is better to have custom put/get function in our driver, isn't it?
 
-Signed-off-by: Christopher Freeman <cfreeman@nvidia.com>
----
- include/sound/soc.h  | 1 +
- sound/soc/soc-jack.c | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> [...]
+> >   /* enumerated kcontrol */
+> >   struct soc_enum {
+> 
+> There doesn't actually be any code that is shared between normal enums
+> and wide enums. This patch doubles the size of the soc_enum struct, how
+> about having a separate struct for wide enums?
+> 
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index a6a059c..36383cb 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -442,6 +442,7 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
- 			struct snd_soc_jack_gpio *gpios);
- void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
- 			struct snd_soc_jack_gpio *gpios);
-+void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio);
- #endif
+We are using DAPM widgets for these muxes and DAPM uses soc_enum struct inside APIs, so we couldn't use additional struct for that. If there is the way to use additional struc in dapm, please guide me.
+
+> > -	int reg;
+> > +	int reg[SOC_ENUM_MAX_REGS];
+> >   	unsigned char shift_l;
+> >   	unsigned char shift_r;
+> >   	unsigned int items;
+> > -	unsigned int mask;
+> > +	unsigned int mask[SOC_ENUM_MAX_REGS];
+> 
+> If you make mask and reg pointers instead of arrays this should be much
+> more flexible and not be limited to 3 registers.
+>
  
- /* codec register bit access */
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index 0bb5ccc..fd97cc5 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -231,7 +231,7 @@ EXPORT_SYMBOL_GPL(snd_soc_jack_notifier_unregister);
- 
- #ifdef CONFIG_GPIOLIB
- /* gpio detect */
--static void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
-+void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
- {
- 	struct snd_soc_jack *jack = gpio->jack;
- 	int enable;
-@@ -251,6 +251,7 @@ static void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
- 
- 	snd_soc_jack_report(jack, report, gpio->report);
- }
-+EXPORT_SYMBOL_GPL(snd_soc_jack_gpio_detect);
- 
- /* irq handler for gpio pin */
- static irqreturn_t gpio_handler(int irq, void *data)
--- 
-1.8.3.2
+To use pointers instead of arrays, it will be flexible but I need to update SOC_ENUM SINGLE/DOUBLE macros.
+It will changes a lot in current soc-core.c and soc-dapm.c.
 
-
------------------------------------------------------------------------------------
-This email message is for the sole use of the intended recipient(s) and may contain
-confidential information.  Any unauthorized review, use, disclosure or distribution
-is prohibited.  If you are not the intended recipient, please contact the sender by
-reply email and destroy all copies of the original message.
------------------------------------------------------------------------------------
+> >   	const char * const *texts;
+> >   	const unsigned int *values;
+> > +	unsigned int num_regs;
+> >   };
+> >
