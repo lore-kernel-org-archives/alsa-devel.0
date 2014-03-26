@@ -1,17 +1,17 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv2 09/11] ASoc: wm8400: Remove the
+Subject: [PATCHv2 11/11] ASoc: wm8997: Remove the
 	set_cache_io() entirely from ASoC probe.
-Date: Wed, 26 Mar 2014 13:40:31 +0800
-Message-ID: <1395812433-26410-10-git-send-email-Li.Xiubo@freescale.com>
+Date: Wed, 26 Mar 2014 13:40:33 +0800
+Message-ID: <1395812433-26410-12-git-send-email-Li.Xiubo@freescale.com>
 References: <1395812433-26410-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
- by alsa0.perex.cz (Postfix) with ESMTP id D610326517C
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 07:28:35 +0100 (CET)
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe003.messaging.microsoft.com [207.46.163.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id B29D426518B
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 07:28:41 +0100 (CET)
 In-Reply-To: <1395812433-26410-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,41 +35,42 @@ CODEC ASoC probe as earily as possible.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/codecs/wm8400.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8997.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
-index 146564f..e6410f2 100644
---- a/sound/soc/codecs/wm8400.c
-+++ b/sound/soc/codecs/wm8400.c
-@@ -1318,8 +1318,6 @@ static int wm8400_codec_probe(struct snd_soc_codec *codec)
- 	priv->wm8400 = wm8400;
- 	priv->codec = codec;
- 
--	snd_soc_codec_set_cache_io(codec, wm8400->regmap);
+diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
+index 004186b..3d50621 100644
+--- a/sound/soc/codecs/wm8997.c
++++ b/sound/soc/codecs/wm8997.c
+@@ -1051,11 +1051,6 @@ static struct snd_soc_dai_driver wm8997_dai[] = {
+ static int wm8997_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct wm8997_priv *priv = snd_soc_codec_get_drvdata(codec);
+-	int ret;
 -
- 	ret = devm_regulator_bulk_get(wm8400->dev,
- 				 ARRAY_SIZE(power), &power[0]);
- 	if (ret != 0) {
-@@ -1361,11 +1359,19 @@ static int  wm8400_codec_remove(struct snd_soc_codec *codec)
- 	return 0;
- }
+-	ret = snd_soc_codec_set_cache_io(codec, priv->core.arizona->regmap);
+-	if (ret != 0)
+-		return ret;
  
-+struct regmap *wm8400_get_regmap(struct device *dev)
+ 	arizona_init_spk(codec);
+ 
+@@ -1086,9 +1081,17 @@ static unsigned int wm8997_digital_vu[] = {
+ 	ARIZONA_DAC_DIGITAL_VOLUME_5R,
+ };
+ 
++struct regmap *wm8997_get_regmap(struct device *dev)
 +{
-+	struct wm8400 *wm8400 = dev_get_platdata(dev);
++	struct wm8997_priv *priv = dev_get_drvdata(dev);
 +
-+	return wm8400->regmap;
++	return priv->core.arizona->regmap;
 +}
 +
- static struct snd_soc_codec_driver soc_codec_dev_wm8400 = {
- 	.probe =	wm8400_codec_probe,
- 	.remove =	wm8400_codec_remove,
- 	.suspend =	wm8400_suspend,
- 	.resume =	wm8400_resume,
-+	.get_regmap =	wm8400_get_regmap,
- 	.set_bias_level = wm8400_set_bias_level,
+ static struct snd_soc_codec_driver soc_codec_dev_wm8997 = {
+ 	.probe = wm8997_codec_probe,
+ 	.remove = wm8997_codec_remove,
++	.get_regmap =   wm8997_get_regmap,
  
- 	.controls = wm8400_snd_controls,
+ 	.idle_bias_off = true,
+ 
 -- 
 1.8.4
