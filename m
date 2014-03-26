@@ -1,55 +1,80 @@
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: linux-next: Tree for Mar 26 (sound/soc/codecs/cs42l52.c)
-Date: Wed, 26 Mar 2014 13:01:27 -0700
-Message-ID: <53333217.7090706@infradead.org>
-References: <20140326173539.543d4122020476c3aefc0137@canb.auug.org.au> <5332FE45.5030601@infradead.org>
+From: <cfreeman@nvidia.com>
+Subject: [PATCH] ASoC: jack: export gpio detect
+Date: Wed, 26 Mar 2014 14:38:44 -0700
+Message-ID: <1395869924-32195-1-git-send-email-cfreeman@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <5332FE45.5030601@infradead.org>
-Sender: linux-next-owner@vger.kernel.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, Georgi Vlaev <joe@nucleusys.com>, Brian Austin <brian.austin@cirrus.com>, moderated for non-subscribers <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hqemgate16.nvidia.com (hqemgate16.nvidia.com [216.228.121.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id DF03A265133
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 22:38:49 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Christopher Freeman <cfreeman@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/26/2014 09:20 AM, Randy Dunlap wrote:
-> On 03/25/2014 11:35 PM, Stephen Rothwell wrote:
->> Hi all,
->>
->> This tree still fails (more than usual) the powerpc allyesconfig build.
->>
->> Changes since 20140325:
->>
-> 
-> on x86_64:
-> 
-> when CONFIG_INPUT=m and
-> SNC_SOC_CS42L42=y:
+From: Christopher Freeman <cfreeman@nvidia.com>
 
-              L52
+Export the gpio detect function so machine drivers
+may call it.  Interrupts for the jack may be disabled
+during sleep, so this allows a machine driver to have
+the jack status updated during resume.
 
-> 
-> sound/built-in.o: In function `cs42l52_beep_set':
-> cs42l52.c:(.text+0xd4b01): undefined reference to `input_event'
-> sound/built-in.o: In function `cs42l52_probe':
-> cs42l52.c:(.text+0xd4beb): undefined reference to `devm_input_allocate_device'
-> cs42l52.c:(.text+0xd4d0c): undefined reference to `input_register_device'
-> sound/built-in.o: In function `wm8962_beep_set':
-> wm8962.c:(.text+0x116240): undefined reference to `input_event'
-> sound/built-in.o: In function `wm8962_probe':
-> wm8962.c:(.text+0x116cae): undefined reference to `devm_input_allocate_device'
-> wm8962.c:(.text+0x116e0e): undefined reference to `input_register_device'
-> 
-> 
-> Full randconfig file is attached.
-> 
+Signed-off-by: Christopher Freeman <cfreeman@nvidia.com>
+---
+ include/sound/soc.h  | 1 +
+ sound/soc/soc-jack.c | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-I think that this can be fixed by modifying the Kconfig file with:
-
-	depends on INPUT || INPUT=n
-
-This will restrict CS42L52 to =m if INPUT=m.
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index a6a059c..36383cb 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -442,6 +442,7 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 			struct snd_soc_jack_gpio *gpios);
+ void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
+ 			struct snd_soc_jack_gpio *gpios);
++void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio);
+ #endif
+ 
+ /* codec register bit access */
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index 0bb5ccc..fd97cc5 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -231,7 +231,7 @@ EXPORT_SYMBOL_GPL(snd_soc_jack_notifier_unregister);
+ 
+ #ifdef CONFIG_GPIOLIB
+ /* gpio detect */
+-static void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
++void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
+ {
+ 	struct snd_soc_jack *jack = gpio->jack;
+ 	int enable;
+@@ -251,6 +251,7 @@ static void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
+ 
+ 	snd_soc_jack_report(jack, report, gpio->report);
+ }
++EXPORT_SYMBOL_GPL(snd_soc_jack_gpio_detect);
+ 
+ /* irq handler for gpio pin */
+ static irqreturn_t gpio_handler(int irq, void *data)
 -- 
-~Randy
+1.8.3.2
+
+
+-----------------------------------------------------------------------------------
+This email message is for the sole use of the intended recipient(s) and may contain
+confidential information.  Any unauthorized review, use, disclosure or distribution
+is prohibited.  If you are not the intended recipient, please contact the sender by
+reply email and destroy all copies of the original message.
+-----------------------------------------------------------------------------------
