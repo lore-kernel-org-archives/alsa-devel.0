@@ -1,19 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Subject: Re: twl4030 latency update
-Date: Wed, 26 Mar 2014 14:28:41 +0200
-Message-ID: <5332C7F9.2040404@ti.com>
+Date: Wed, 26 Mar 2014 14:51:04 +0200
+Message-ID: <5332CD38.3070700@ti.com>
 References: <532ACD4A.3080508@univpm.it> <532AEEA6.20704@ti.com>
  <532AFBDD.8040407@univpm.it> <532BE58A.2010701@ti.com>
  <5331CFF9.20402@univpm.it> <53328F4C.8030205@ti.com>
- <53329F54.3030305@univpm.it>
+ <5332A1C9.3070802@univpm.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C41E26519F
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 13:28:46 +0100 (CET)
-In-Reply-To: <53329F54.3030305@univpm.it>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA9412651A4
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 13:51:08 +0100 (CET)
+In-Reply-To: <5332A1C9.3070802@univpm.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,80 +27,82 @@ To: Leonardo Gabrielli <l.gabrielli@univpm.it>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/26/2014 11:35 AM, Leonardo Gabrielli wrote:
+On 03/26/2014 11:45 AM, Leonardo Gabrielli wrote:
 > =
 
 > On 26/03/2014 09:26, Peter Ujfalusi wrote:
->> Can you elaborate on the corrupted/scrambled audio? I just don't see how=
- it
->> can happen. Can you get the /proc/asound/card0/pcm0p/sub0/hw_params when=
- you
->> have the audio quality issue?
-> Hello,
-> Here you are:
-> =
+>> The McBSP2 FIFO will be always there. There's nothing can be done on tha=
+t. The
+>> size on McBSP2 is 1280 words -> 640 stereo samples, ie ~29ms with 22050,
+>> 14.5ms with 44100.
+>>
+>> If you are staying in element mode this means that it is granted that the
+>> sample at the DMA pointer will out on the i2s line about the mentioned t=
+imes.
+>> This is the delay caused by the FIFO itself. From where the rest is comi=
+ng I'm
+>> not really sure.
 
-> cat /proc/asound/card0/pcm0p/sub0/hw_params
-> access: MMAP_INTERLEAVED
-> format: S16_LE
-> subformat: STD
-> channels: 2
-> rate: 22050 (22050/1)
-> period_size: 512
-> buffer_size: 1024
-> =
+> BTW: I forgot to mention: the latency listed in my previous email is
+> input+output (i.e. I record pulses from the beagleboard input jack and the
+> delayed version to the beagleboard output jack). The twl4030 analog and
+> digital loopback features have been of course disabled, in order to get t=
+he
+> total latency due from A/D to D/A.
 
-> And this is jack output:
-> =
+This means that the McBSP latency in worst case is 1280 + selected rx
+threshold in words (so /2 in case of stereo.) If you lower the rx threshold
+you decrease the latency on the capture side. On the playback side there's
+nothing can be done.
 
-> jackd -P62 -t2000 -dalsa -dhw:0 -r22050 -p512 -n2 -s -S -i2 -o2 &
+> So just to get confirm I understood the McBSP mechanism well: even though=
+ I
+> can transfer to/from DMA samples in bursts of <threshold> length, each sa=
+mple
+> will always "travel along" the whole FIFO buffer length, (as if in a delay
+> line) and thus they will always have 640samples delay?
 
-arecord -r 22050 -f S16_LE --period-size=3D512 --buffer-size=3D1024 -v | ap=
-lay -r
-22050 -f S16_LE  --period-size=3D512 --buffer-size=3D1024 -v
+On the playback side this is pretty much true. On capture side the threshold
+means that DMA will read from FIFO when threshold amount is available in it.
 
-and no issue on the headphone from Beagle.
+> Would it be possible to workaround this, e.g. by putting 4-channel audio
+> frames instead of stereo frames in the FIFO (with 2 channels unused), in =
+order
+> to fill up the FIFO more quickly and have less latency? Or is it pure cra=
+ze?
 
-> I can send you saomething to get it clearer. I recorded  a 10Hz sine wave=
- with
-> jaaa. The wave is totally scrambled (probably buffers are not read in ord=
-er).
-> But it may well be an issue with jack.
-> =
+>From the FIFO McBSP takes data word by word. If you play stereo, you need to
+have stereo data in the FIFO. You can not skip two words with McBSP.
 
-> When the output sounds correct (256 period) hw_param is:
-> cat /proc/asound/card0/pcm0p/sub0/hw_params
-> access: MMAP_INTERLEAVED
-> format: S16_LE
-> subformat: STD
-> channels: 2
-> rate: 22050 (22050/1)
-> period_size: 256
-> buffer_size: 768
+The thing I tried for playback and did not worked AFAIR:
+In general the idea was to configure DMA to send threshold/channel to every
+request while configuring the McBSP threshold register to be 1280 - thresho=
+ld.
+In case of threshold 80 (40 stereo samples) it would play out:
+transfer 40 samples to FIFO per DMA request
+assert the DMA request when we have space for 1260 (630 samples). The number
+is just a guess, keeping 10 samples in FIFO sounds safe enough
+This would keep the FIFO fill between 10 and 50 samples.
+But this does not work, I think McBSP is counting the received words also a=
+nd
+deasserts the DMA request based on this count and not the FIFO level.
 
-arecord -r 22050 -f S16_LE -v --period-size=3D256 --buffer-size=3D768 | apl=
-ay -r
-22050 -f S16_LE  --period-size=3D256 --buffer-size=3D768 -v
+Another thing which would be even more complicated is to play with the McBSP
+threshold runtime. With the same 40 sample:
+DMA is to transfer 40 samples per DMA requests.
+start
+1. McBSP threshold to 80
+2. in dma interrupt callback McBSP threshold to 1260
+3. in McBSP warning interrupt (that we will be reaching the threshold soon)
+back to 80
+4. goto 2
 
-again, audio is clear with this one as well
+If we could do the step between 3 and 4 within one sample time this might w=
+ork
+but as soon as you are late the thing will fail.
 
->> I can not run jackd on the board anymore (with linux-next at least):
->> FATAL: cannot locate cpu MHz in /proc/cpuinfo
-> =
-
-> Yes, there's been a recent fix to that (you can checkout the latest jackd=
- from
-> git repos, see this thread:
-> http://lists.jackaudio.org/private.cgi/jack-devel-jackaudio.org/2014-Marc=
-h/012167.html
-
-I also found this, but lazy to update my jack...
-
-> Or maybe you can just start jackd specifying a different clock with the -c
-> switch i.e.
-> jackd -P62 -t2000 -c s -dalsa -dhw:0 -r22050 -p512 -n2 -s -S -i2 -o2 &
-
-This does not work.
+I know this is working in realtime systems like in DSPs and non linux syste=
+ms...
 
 -- =
 
