@@ -1,21 +1,18 @@
-From: Leonardo Gabrielli <l.gabrielli@univpm.it>
-Subject: Re: twl4030 latency update
-Date: Wed, 26 Mar 2014 10:45:45 +0100
-Message-ID: <5332A1C9.3070802@univpm.it>
-References: <532ACD4A.3080508@univpm.it> <532AEEA6.20704@ti.com>
- <532AFBDD.8040407@univpm.it> <532BE58A.2010701@ti.com>
- <5331CFF9.20402@univpm.it> <53328F4C.8030205@ti.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 1/3] ASoC: ak5386: add regulator consumer
+	support
+Date: Wed, 26 Mar 2014 11:22:56 +0100
+Message-ID: <1395829378-13055-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
- [209.85.214.48])
- by alsa0.perex.cz (Postfix) with ESMTP id D86E6265119
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 10:45:48 +0100 (CET)
-Received: by mail-bk0-f48.google.com with SMTP id mx12so421294bkb.21
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 02:45:48 -0700 (PDT)
-In-Reply-To: <53328F4C.8030205@ti.com>
+Received: from mail-bk0-f54.google.com (mail-bk0-f54.google.com
+ [209.85.214.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED36C265130
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 11:23:05 +0100 (CET)
+Received: by mail-bk0-f54.google.com with SMTP id 6so453035bkj.13
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 03:23:05 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,35 +22,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The chip has two power supplies, VA and VDD. Register and enable them
+both.
 
-On 26/03/2014 09:26, Peter Ujfalusi wrote:
-> The McBSP2 FIFO will be always there. There's nothing can be done on that. The
-> size on McBSP2 is 1280 words -> 640 stereo samples, ie ~29ms with 22050,
-> 14.5ms with 44100.
->
-> If you are staying in element mode this means that it is granted that the
-> sample at the DMA pointer will out on the i2s line about the mentioned times.
-> This is the delay caused by the FIFO itself. From where the rest is coming I'm
-> not really sure.
-BTW: I forgot to mention: the latency listed in my previous email is 
-input+output (i.e. I record pulses from the beagleboard input jack and 
-the delayed version to the beagleboard output jack). The twl4030 analog 
-and digital loopback features have been of course disabled, in order to 
-get the total latency due from A/D to D/A.
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/soc/codecs/ak5386.c | 35 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 32 insertions(+), 3 deletions(-)
 
-So just to get confirm I understood the McBSP mechanism well: even 
-though I can transfer to/from DMA samples in bursts of <threshold> 
-length, each sample will always "travel along" the whole FIFO buffer 
-length, (as if in a delay line) and thus they will always have 
-640samples delay?
-
-Would it be possible to workaround this, e.g. by putting 4-channel audio 
-frames instead of stereo frames in the FIFO (with 2 channels unused), in 
-order to fill up the FIFO more quickly and have less latency? Or is it 
-pure craze?
-
-Cheers and thank you
+diff --git a/sound/soc/codecs/ak5386.c b/sound/soc/codecs/ak5386.c
+index 72e953b..99fb5db 100644
+--- a/sound/soc/codecs/ak5386.c
++++ b/sound/soc/codecs/ak5386.c
+@@ -14,12 +14,18 @@
+ #include <linux/of.h>
+ #include <linux/of_gpio.h>
+ #include <linux/of_device.h>
++#include <linux/regulator/consumer.h>
+ #include <sound/soc.h>
+ #include <sound/pcm.h>
+ #include <sound/initval.h>
+ 
++static const char *supply_names[] = {
++	"va", "vd"
++};
++
+ struct ak5386_priv {
+ 	int reset_gpio;
++	struct regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
+ };
+ 
+ static const struct snd_soc_dapm_widget ak5386_dapm_widgets[] = {
+@@ -122,6 +128,7 @@ static int ak5386_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct ak5386_priv *priv;
++	int ret, i;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -130,6 +137,19 @@ static int ak5386_probe(struct platform_device *pdev)
+ 	priv->reset_gpio = -EINVAL;
+ 	dev_set_drvdata(dev, priv);
+ 
++	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
++		priv->supplies[i].supply = supply_names[i];
++
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(priv->supplies),
++				      priv->supplies);
++	if (ret < 0)
++		return ret;
++
++	ret = regulator_bulk_enable(ARRAY_SIZE(priv->supplies),
++				    priv->supplies);
++	if (ret < 0)
++		return ret;
++
+ 	if (of_match_device(of_match_ptr(ak5386_dt_ids), dev))
+ 		priv->reset_gpio = of_get_named_gpio(dev->of_node,
+ 						      "reset-gpio", 0);
+@@ -140,13 +160,22 @@ static int ak5386_probe(struct platform_device *pdev)
+ 					  "AK5386 Reset"))
+ 			priv->reset_gpio = -EINVAL;
+ 
+-	return snd_soc_register_codec(dev, &soc_codec_ak5386,
+-				      &ak5386_dai, 1);
++	ret = snd_soc_register_codec(dev, &soc_codec_ak5386,
++				     &ak5386_dai, 1);
++	if (ret < 0)
++		regulator_bulk_disable(ARRAY_SIZE(priv->supplies),
++				       priv->supplies);
++	return ret;
+ }
+ 
+ static int ak5386_remove(struct platform_device *pdev)
+ {
+-	snd_soc_unregister_codec(&pdev->dev);
++	struct device *dev = &pdev->dev;
++	struct ak5386_priv *priv = dev_get_drvdata(dev);
++
++	snd_soc_unregister_codec(dev);
++	regulator_bulk_disable(ARRAY_SIZE(priv->supplies), priv->supplies);
++
+ 	return 0;
+ }
+ 
+-- 
+1.8.5.3
