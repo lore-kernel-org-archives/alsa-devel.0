@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: add RT5639 CODEC driver
-Date: Wed, 26 Mar 2014 10:52:24 +0000
-Message-ID: <20140326105224.GI2269@sirena.org.uk>
-References: <1395627397-6580-1-git-send-email-oder_chiou@realtek.com>
- <20140325133017.GY2269@sirena.org.uk>
- <7EB0DE829A537248AF2ED30C97D126943581B0@RTITMBSV03.realtek.com.tw>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: [PATCH] ASoC: fsl_sai: Add isr to deal with error flag
+Date: Wed, 26 Mar 2014 19:48:37 +0800
+Message-ID: <1395834517-16426-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8233988567594477834=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 91C91265130
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 11:52:29 +0100 (CET)
-In-Reply-To: <7EB0DE829A537248AF2ED30C97D126943581B0@RTITMBSV03.realtek.com.tw>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe006.messaging.microsoft.com [213.199.154.209])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B61B265184
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 12:47:43 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +19,156 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: Bard Liao <bardliao@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
+To: broonie@kernel.org, Li.Xiubo@freescale.com
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+It's quite cricial to clear error flags because SAI might hang if getting
+FIFO underrun during playback (I haven't confirmed the same issue on Rx
+overflow though).
 
---===============8233988567594477834==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Yvzb+MHGXtbPBi5F"
-Content-Disposition: inline
+So this patch enables those irq and adds isr() to clear the flags so as to
+keep playback entirely safe.
 
+Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+---
+ sound/soc/fsl/fsl_sai.c | 69 ++++++++++++++++++++++++++++++++++++++++++++++---
+ sound/soc/fsl/fsl_sai.h |  9 +++++++
+ 2 files changed, 75 insertions(+), 3 deletions(-)
 
---Yvzb+MHGXtbPBi5F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Mar 26, 2014 at 06:39:38AM +0000, Oder Chiou wrote:
-
-> > There have been some API changes here this release cycle, you should be able to
-> > just remove the cache_io() and regmap setting code here.
-
-> Do you mean that the cache_io() can be removed here?
-
-Yes.
-
-> Please tell us which codec driver can be for our reference, thank you.
-
-All of them, the API has been changed.
-
---Yvzb+MHGXtbPBi5F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTMrFlAAoJELSic+t+oim9GgEQAIQxaBrnttMC8KO2741qQR+p
-z4RTuElAtgwuL79/r6kho+pMr3SUwRZ57UPDXmFJQLHCyTSBuxS3drR6V9d4c0Zk
-klRUavvMGxjitG2tj/bfUkx40cU+KBs8mhYKITtns2CNhNcJnOSniRefBmwINi1h
-HpLNC/mUXIwl1scqlYly/fMcDx+iDvXC7g23x+NSspssZZcJjrixFYHvbkQS5Cfg
-mIKjcRjaaDRpRb29+oR0zFeQ/5gQkAGcU//95100AcPiyZdyPQUoGc2OgNp8oqCz
-fJjVYYxZ/1PjEvJpIOWME6FoTyX1SU1ZWCQ1urxj3DkOAWR6C1Muvq5zywARMeKk
-qcbEiUSPREWO2cTxDiGbv5qS3h1LqngVWUlETvr6ynLKgTH1cveNkZ2HdruIHHQL
-mHJsK7HgdEfpSEqeTmvZ1bJmeYSyNp8KvWHgaq/x0axsWkLUYMJ4WIqe7uPf2tm+
-ncvT/a2kcqy/OsCyMc9+0b+xojv8huMPL1qjIu3N4iQj8/ZJ4BxLZ17HFJxHWlVn
-pnAmEdRldoCHDnhh/y/swD7zPKYYfpBCuJLAFfiX9x1pGhCZYkJCSs57TUnz3zE0
-V3xsoApT2OdIUt29r7ArRgDWwqgPUtg66Bntm/3Es/gichByc31Zn3BX4l0HK1rg
-3TkrvCh94vGuRMZqCXX1
-=WW2+
------END PGP SIGNATURE-----
-
---Yvzb+MHGXtbPBi5F--
-
---===============8233988567594477834==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8233988567594477834==--
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index c4a4231..5f91aff 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -23,6 +23,55 @@
+ 
+ #include "fsl_sai.h"
+ 
++#define FSL_SAI_FLAGS (FSL_SAI_CSR_SEIE |\
++		       FSL_SAI_CSR_FEIE |\
++		       FSL_SAI_CSR_FWIE)
++
++static irqreturn_t fsl_sai_isr(int irq, void *devid)
++{
++	struct fsl_sai *sai = (struct fsl_sai *)devid;
++	struct device *dev = &sai->pdev->dev;
++	u32 xcsr;
++
++	regmap_read(sai->regmap, FSL_SAI_TCSR, &xcsr);
++	regmap_write(sai->regmap, FSL_SAI_TCSR, xcsr);
++
++	if (xcsr & FSL_SAI_CSR_WSF)
++		dev_dbg(dev, "isr: Start of Tx word detected\n");
++
++	if (xcsr & FSL_SAI_CSR_SEF)
++		dev_dbg(dev, "isr: Tx Frame sync error detected\n");
++
++	if (xcsr & FSL_SAI_CSR_FEF)
++		dev_dbg(dev, "isr: Transmit underrun detected\n");
++
++	if (xcsr & FSL_SAI_CSR_FWF)
++		dev_dbg(dev, "isr: Enabled transmit FIFO is empty\n");
++
++	if (xcsr & FSL_SAI_CSR_FRF)
++		dev_dbg(dev, "isr: Transmit FIFO watermark has been reached\n");
++
++	regmap_read(sai->regmap, FSL_SAI_RCSR, &xcsr);
++	regmap_write(sai->regmap, FSL_SAI_RCSR, xcsr);
++
++	if (xcsr & FSL_SAI_CSR_WSF)
++		dev_dbg(dev, "isr: Start of Rx word detected\n");
++
++	if (xcsr & FSL_SAI_CSR_SEF)
++		dev_dbg(dev, "isr: Rx Frame sync error detected\n");
++
++	if (xcsr & FSL_SAI_CSR_FEF)
++		dev_dbg(dev, "isr: Receive overflow detected\n");
++
++	if (xcsr & FSL_SAI_CSR_FWF)
++		dev_dbg(dev, "isr: Enabled receive FIFO is full\n");
++
++	if (xcsr & FSL_SAI_CSR_FRF)
++		dev_dbg(dev, "isr: Receive FIFO watermark has been reached\n");
++
++	return IRQ_HANDLED;
++}
++
+ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+ 		int clk_id, unsigned int freq, int fsl_dir)
+ {
+@@ -373,8 +422,8 @@ static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct fsl_sai *sai = dev_get_drvdata(cpu_dai->dev);
+ 
+-	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff, 0x0);
+-	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff, 0x0);
++	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff, FSL_SAI_FLAGS);
++	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff, FSL_SAI_FLAGS);
+ 	regmap_update_bits(sai->regmap, FSL_SAI_TCR1, FSL_SAI_CR1_RFW_MASK,
+ 			   FSL_SAI_MAXBURST_TX * 2);
+ 	regmap_update_bits(sai->regmap, FSL_SAI_RCR1, FSL_SAI_CR1_RFW_MASK,
+@@ -490,12 +539,14 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	struct fsl_sai *sai;
+ 	struct resource *res;
+ 	void __iomem *base;
+-	int ret;
++	int irq, ret;
+ 
+ 	sai = devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
+ 	if (!sai)
+ 		return -ENOMEM;
+ 
++	sai->pdev = pdev;
++
+ 	sai->big_endian_regs = of_property_read_bool(np, "big-endian-regs");
+ 	if (sai->big_endian_regs)
+ 		fsl_sai_regmap_config.val_format_endian = REGMAP_ENDIAN_BIG;
+@@ -514,6 +565,18 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		return PTR_ERR(sai->regmap);
+ 	}
+ 
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0) {
++		dev_err(&pdev->dev, "no irq for node %s\n", np->full_name);
++		return irq;
++	}
++
++	ret = devm_request_irq(&pdev->dev, irq, fsl_sai_isr, 0, np->name, sai);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to claim irq %u\n", irq);
++		return ret;
++	}
++
+ 	sai->dma_params_rx.addr = res->start + FSL_SAI_RDR;
+ 	sai->dma_params_tx.addr = res->start + FSL_SAI_TDR;
+ 	sai->dma_params_rx.maxburst = FSL_SAI_MAXBURST_RX;
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index e432260..05d1a1f 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -37,7 +37,15 @@
+ 
+ /* SAI Transmit/Recieve Control Register */
+ #define FSL_SAI_CSR_TERE	BIT(31)
++#define FSL_SAI_CSR_WSF		BIT(20)
++#define FSL_SAI_CSR_SEF		BIT(19)
++#define FSL_SAI_CSR_FEF		BIT(18)
+ #define FSL_SAI_CSR_FWF		BIT(17)
++#define FSL_SAI_CSR_FRF		BIT(16)
++#define FSL_SAI_CSR_WSIE	BIT(12)
++#define FSL_SAI_CSR_SEIE	BIT(11)
++#define FSL_SAI_CSR_FEIE	BIT(10)
++#define FSL_SAI_CSR_FWIE	BIT(9)
+ #define FSL_SAI_CSR_FRIE	BIT(8)
+ #define FSL_SAI_CSR_FRDE	BIT(0)
+ 
+@@ -99,6 +107,7 @@
+ #define FSL_SAI_MAXBURST_RX 6
+ 
+ struct fsl_sai {
++	struct platform_device *pdev;
+ 	struct regmap *regmap;
+ 
+ 	bool big_endian_regs;
+-- 
+1.8.4
