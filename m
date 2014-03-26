@@ -1,8 +1,8 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv2 07/11] ASoc: wm5110: Remove the
+Subject: [PATCHv2 08/11] ASoc: wm8350: Remove the
 	set_cache_io() entirely from ASoC probe.
-Date: Wed, 26 Mar 2014 13:40:29 +0800
-Message-ID: <1395812433-26410-8-git-send-email-Li.Xiubo@freescale.com>
+Date: Wed, 26 Mar 2014 13:40:30 +0800
+Message-ID: <1395812433-26410-9-git-send-email-Li.Xiubo@freescale.com>
 References: <1395812433-26410-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from co9outboundpool.messaging.microsoft.com
  (co9ehsobe003.messaging.microsoft.com [207.46.163.26])
- by alsa0.perex.cz (Postfix) with ESMTP id C80AF265134
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 07:28:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4992C265166
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 07:28:26 +0100 (CET)
 In-Reply-To: <1395812433-26410-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,41 +35,41 @@ CODEC ASoC probe as earily as possible.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/codecs/wm5110.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8350.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index df5a38d..4be5f99 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -1589,10 +1589,6 @@ static int wm5110_codec_probe(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index 757256b..6b31a9f 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -1505,8 +1505,6 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
+ 	if (ret != 0)
+ 		return ret;
  
- 	priv->core.arizona->dapm = &codec->dapm;
- 
--	ret = snd_soc_codec_set_cache_io(codec, priv->core.arizona->regmap);
--	if (ret != 0)
--		return ret;
+-	snd_soc_codec_set_cache_io(codec, wm8350->regmap);
 -
- 	arizona_init_spk(codec);
- 	arizona_init_gpio(codec);
+ 	/* Put the codec into reset if it wasn't already */
+ 	wm8350_clear_bits(wm8350, WM8350_POWER_MGMT_5, WM8350_CODEC_ENA);
  
-@@ -1633,9 +1629,17 @@ static unsigned int wm5110_digital_vu[] = {
- 	ARIZONA_DAC_DIGITAL_VOLUME_6R,
- };
+@@ -1608,11 +1606,19 @@ static int  wm8350_codec_remove(struct snd_soc_codec *codec)
+ 	return 0;
+ }
  
-+struct regmap *wm5110_get_regmap(struct device *dev)
++struct regmap *wm8350_get_regmap(struct device *dev)
 +{
-+	struct wm5110_priv *priv = dev_get_drvdata(dev);
++	struct wm8350 *wm8350 = dev_get_platdata(dev);
 +
-+	return priv->core.arizona->regmap;
++	return wm8350->regmap;
 +}
 +
- static struct snd_soc_codec_driver soc_codec_dev_wm5110 = {
- 	.probe = wm5110_codec_probe,
- 	.remove = wm5110_codec_remove,
-+	.get_regmap = wm5110_get_regmap,
+ static struct snd_soc_codec_driver soc_codec_dev_wm8350 = {
+ 	.probe =	wm8350_codec_probe,
+ 	.remove =	wm8350_codec_remove,
+ 	.suspend = 	wm8350_suspend,
+ 	.resume =	wm8350_resume,
++	.get_regmap =	wm8350_get_regmap,
+ 	.set_bias_level = wm8350_set_bias_level,
  
- 	.idle_bias_off = true,
- 
+ 	.controls = wm8350_snd_controls,
 -- 
 1.8.4
