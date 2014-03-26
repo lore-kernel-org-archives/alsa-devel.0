@@ -1,73 +1,62 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: Fwd: Re: [alsa-devel] no reset_resume for driver snd-usb-audio
- for logitech headset H600
-Date: Wed, 26 Mar 2014 14:43:35 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1403261441190.1382-100000@iolanthe.rowland.org>
-References: <BLU0-SMTP3798BADA0E8CD057CBF8403A1640@phx.gbl>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
+Date: Wed, 26 Mar 2014 20:38:47 +0100
+Message-ID: <53332CC7.6060800@metafoo.de>
+References: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <BLU0-SMTP3798BADA0E8CD057CBF8403A1640-MsuGFMq8XAE@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arun Shamanna Lakshmi <aruns@nvidia.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, swarren@wwwdotorg.org, Songhee Baek <sbaek@nvidia.com>, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 26 Mar 2014 baumber-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org wrote:
+On 03/26/2014 01:02 AM, Arun Shamanna Lakshmi wrote:
+> If the mux uses 1 bit position per input, and requires to set one
+> single bit at a time, then an N bit register can support up to N
+> inputs. In more recent Tegra chips, we have at least greater than
+> 64 inputs which requires at least 2 .reg fields in struct soc_enum.
+>
+> Signed-off-by: Arun Shamanna Lakshmi <aruns@nvidia.com>
+> Signed-off-by: Songhee Baek <sbaek@nvidia.com>
 
-> Another issue/problem with the headset occurs every ~10th - 20th hibernate cycle, but is not related to your patch.
-> The usb-headset (the usb transceiver part) disconnects and reconnects immediately after resume.
-> This behaviour was also before your patch and I interpreted this as device reset and as a problem of the device itself.
-> Because of this behaviour the master channel "headset" in kmix is also cleared and reset to the onboard one.
-> 
-> Do you know if this is a kernel bug or a device bug?
-> 
-> Bernhard
-> 
-> usb-headset disconnects/reconnects after resume;
-> ------------------------------------
-> [ 3901.627484] ata6.00: configured for UDMA/133
-> [ 3901.630579] ata5: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
-> [ 3901.630593] sd 7:0:0:0: [sdc] Starting disk
-> [ 3901.634755] ata5.00: configured for UDMA/133
-> [ 3901.646699] sd 5:0:0:0: [sdb] Starting disk
-> [ 3901.654656] sd 4:0:0:0: [sda] Starting disk
-> [ 3901.666459] firewire_core 0000:0c:03.0: rediscovered device fw0
-> [ 3901.670491] usb 2-1: reset high-speed USB device number 2 using ehci-pci
-> [ 3901.874780] usb 1-1.4: reset high-speed USB device number 3 using ehci-pci
-> [ 3902.271236] usb 2-1.2: reset low-speed USB device number 3 using ehci-pci
-> [ 3902.623801] usb 1-1.4.3: reset high-speed USB device number 4 using ehci-pci
-> [ 3902.996413] usb 1-1.4.3.4: reset full-speed USB device number 6 using ehci-pci
-> [ 3903.160598] usb 1-1.4.3.3: reset full-speed USB device number 5 using ehci-pci
-> [ 3903.329030] PM: restore of devices complete after 2234.676 msecs
-> [ 3903.329283] PM: Image restored successfully.
-> [ 3903.329284] Restarting tasks ... done.
-> [ 3903.336466] PM: Basic memory bitmaps freed
-> [ 3904.575113] r8169 0000:05:00.0 eth0: link down
-> [ 3904.575127] r8169 0000:05:00.0 eth0: link down
-> [ 3904.575153] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
-> [ 3906.277519] r8169 0000:05:00.0 eth0: link up
-> [ 3906.277531] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-> [ 3958.031248] usb 1-1.4.3.3: USB disconnect, device number 5
+The way you describe this it seems to me that a value array for this kind of 
+mux would look like.
 
-This is what you're referring to?
+0x00000000, 0x00000000, 0x00000001
+0x00000000, 0x00000000, 0x00000002
+0x00000000, 0x00000000, 0x00000003
+0x00000000, 0x00000000, 0x00000004
+0x00000000, 0x00000000, 0x00000008
+...
 
-> [ 3958.743798] usb 1-1.4.3.3: new full-speed USB device number 7 using ehci-pci
-> [ 3959.165798] usb 1-1.4.3.3: New USB device found, idVendor=046d, idProduct=0a29
-> [ 3959.165806] usb 1-1.4.3.3: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-> [ 3959.165810] usb 1-1.4.3.3: Product: Logitech Wireless Headset
-> [ 3959.165813] usb 1-1.4.3.3: Manufacturer: Logitech
-> [ 3959.165817] usb 1-1.4.3.3: SerialNumber: 000d44b20870
-> [ 3959.249740] input: Logitech Logitech Wireless Headset as /devices/pci0000:00/0000:00:1a.0/usb1/1-1/1-1.4/1-1.4.3/1-1.4.3.3/1-1.4.3.3:1.3/input/input17
-> [ 3959.250347] hid-generic 0003:046D:0A29.0007: input,hiddev0,hidraw1: USB HID v1.11 Device [Logitech Logitech Wireless Headset] on usb-0000:00:1a.0-1.4.3.3/input3
-> [ 3959.539837] hda-codec: out of range cmd 2:5:707:ffffffbf
+That seems to be extremely tedious. If the MUX uses a one hot encoding how 
+about storing the index of the bit in the values array and use (1 << value) 
+when writing the value to the register?
 
-It is most likely a bug in the device.  Given that happens no more than 
-10% of the time, it is very unlikely to be a bug in the kernel.
+[...]
+>   /* enumerated kcontrol */
+>   struct soc_enum {
 
-Alan Stern
+There doesn't actually be any code that is shared between normal enums and 
+wide enums. This patch doubles the size of the soc_enum struct, how about 
+having a separate struct for wide enums?
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> -	int reg;
+> +	int reg[SOC_ENUM_MAX_REGS];
+>   	unsigned char shift_l;
+>   	unsigned char shift_r;
+>   	unsigned int items;
+> -	unsigned int mask;
+> +	unsigned int mask[SOC_ENUM_MAX_REGS];
+
+If you make mask and reg pointers instead of arrays this should be much more 
+flexible and not be limited to 3 registers.
+
+>   	const char * const *texts;
+>   	const unsigned int *values;
+> +	unsigned int num_regs;
+>   };
+>
