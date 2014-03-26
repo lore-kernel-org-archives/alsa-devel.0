@@ -1,62 +1,55 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
-Date: Wed, 26 Mar 2014 20:38:47 +0100
-Message-ID: <53332CC7.6060800@metafoo.de>
-References: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: linux-next: Tree for Mar 26 (sound/soc/codecs/cs42l52.c)
+Date: Wed, 26 Mar 2014 13:01:27 -0700
+Message-ID: <53333217.7090706@infradead.org>
+References: <20140326173539.543d4122020476c3aefc0137@canb.auug.org.au> <5332FE45.5030601@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arun Shamanna Lakshmi <aruns@nvidia.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, swarren@wwwdotorg.org, Songhee Baek <sbaek@nvidia.com>, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <5332FE45.5030601@infradead.org>
+Sender: linux-next-owner@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, Georgi Vlaev <joe@nucleusys.com>, Brian Austin <brian.austin@cirrus.com>, moderated for non-subscribers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/26/2014 01:02 AM, Arun Shamanna Lakshmi wrote:
-> If the mux uses 1 bit position per input, and requires to set one
-> single bit at a time, then an N bit register can support up to N
-> inputs. In more recent Tegra chips, we have at least greater than
-> 64 inputs which requires at least 2 .reg fields in struct soc_enum.
->
-> Signed-off-by: Arun Shamanna Lakshmi <aruns@nvidia.com>
-> Signed-off-by: Songhee Baek <sbaek@nvidia.com>
+On 03/26/2014 09:20 AM, Randy Dunlap wrote:
+> On 03/25/2014 11:35 PM, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> This tree still fails (more than usual) the powerpc allyesconfig build.
+>>
+>> Changes since 20140325:
+>>
+> 
+> on x86_64:
+> 
+> when CONFIG_INPUT=m and
+> SNC_SOC_CS42L42=y:
 
-The way you describe this it seems to me that a value array for this kind of 
-mux would look like.
+              L52
 
-0x00000000, 0x00000000, 0x00000001
-0x00000000, 0x00000000, 0x00000002
-0x00000000, 0x00000000, 0x00000003
-0x00000000, 0x00000000, 0x00000004
-0x00000000, 0x00000000, 0x00000008
-...
+> 
+> sound/built-in.o: In function `cs42l52_beep_set':
+> cs42l52.c:(.text+0xd4b01): undefined reference to `input_event'
+> sound/built-in.o: In function `cs42l52_probe':
+> cs42l52.c:(.text+0xd4beb): undefined reference to `devm_input_allocate_device'
+> cs42l52.c:(.text+0xd4d0c): undefined reference to `input_register_device'
+> sound/built-in.o: In function `wm8962_beep_set':
+> wm8962.c:(.text+0x116240): undefined reference to `input_event'
+> sound/built-in.o: In function `wm8962_probe':
+> wm8962.c:(.text+0x116cae): undefined reference to `devm_input_allocate_device'
+> wm8962.c:(.text+0x116e0e): undefined reference to `input_register_device'
+> 
+> 
+> Full randconfig file is attached.
+> 
 
-That seems to be extremely tedious. If the MUX uses a one hot encoding how 
-about storing the index of the bit in the values array and use (1 << value) 
-when writing the value to the register?
+I think that this can be fixed by modifying the Kconfig file with:
 
-[...]
->   /* enumerated kcontrol */
->   struct soc_enum {
+	depends on INPUT || INPUT=n
 
-There doesn't actually be any code that is shared between normal enums and 
-wide enums. This patch doubles the size of the soc_enum struct, how about 
-having a separate struct for wide enums?
+This will restrict CS42L52 to =m if INPUT=m.
 
-> -	int reg;
-> +	int reg[SOC_ENUM_MAX_REGS];
->   	unsigned char shift_l;
->   	unsigned char shift_r;
->   	unsigned int items;
-> -	unsigned int mask;
-> +	unsigned int mask[SOC_ENUM_MAX_REGS];
-
-If you make mask and reg pointers instead of arrays this should be much more 
-flexible and not be limited to 3 registers.
-
->   	const char * const *texts;
->   	const unsigned int *values;
-> +	unsigned int num_regs;
->   };
->
+-- 
+~Randy
