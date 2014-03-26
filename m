@@ -1,18 +1,20 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 1/3] ASoC: ak5386: add regulator consumer
+Subject: [PATCH 2/3] ASoC: ak4104: add regulator consumer
 	support
-Date: Wed, 26 Mar 2014 11:22:56 +0100
-Message-ID: <1395829378-13055-1-git-send-email-zonque@gmail.com>
+Date: Wed, 26 Mar 2014 11:22:57 +0100
+Message-ID: <1395829378-13055-2-git-send-email-zonque@gmail.com>
+References: <1395829378-13055-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f54.google.com (mail-bk0-f54.google.com
- [209.85.214.54])
- by alsa0.perex.cz (Postfix) with ESMTP id ED36C265130
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 11:23:05 +0100 (CET)
-Received: by mail-bk0-f54.google.com with SMTP id 6so453035bkj.13
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 03:23:05 -0700 (PDT)
+Received: from mail-bk0-f52.google.com (mail-bk0-f52.google.com
+ [209.85.214.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52F53265134
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 11:23:07 +0100 (CET)
+Received: by mail-bk0-f52.google.com with SMTP id my13so446182bkb.25
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 03:23:07 -0700 (PDT)
+In-Reply-To: <1395829378-13055-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,90 +28,98 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The chip has two power supplies, VA and VDD. Register and enable them
-both.
+The AK4104 has only one power supply, called VDD. Make sure it is
+enabled during the life-time of the module.
 
 Signed-off-by: Daniel Mack <zonque@gmail.com>
 ---
- sound/soc/codecs/ak5386.c | 35 ++++++++++++++++++++++++++++++++---
- 1 file changed, 32 insertions(+), 3 deletions(-)
+ sound/soc/codecs/ak4104.c | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/ak5386.c b/sound/soc/codecs/ak5386.c
-index 72e953b..99fb5db 100644
---- a/sound/soc/codecs/ak5386.c
-+++ b/sound/soc/codecs/ak5386.c
-@@ -14,12 +14,18 @@
- #include <linux/of.h>
- #include <linux/of_gpio.h>
- #include <linux/of_device.h>
-+#include <linux/regulator/consumer.h>
- #include <sound/soc.h>
- #include <sound/pcm.h>
- #include <sound/initval.h>
+diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
+index b4819dc..c7a541d 100644
+--- a/sound/soc/codecs/ak4104.c
++++ b/sound/soc/codecs/ak4104.c
+@@ -11,13 +11,14 @@
  
-+static const char *supply_names[] = {
-+	"va", "vd"
-+};
-+
- struct ak5386_priv {
- 	int reset_gpio;
-+	struct regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
+ #include <linux/module.h>
+ #include <linux/slab.h>
+-#include <sound/core.h>
+-#include <sound/soc.h>
+-#include <sound/initval.h>
+ #include <linux/spi/spi.h>
+ #include <linux/of_device.h>
+ #include <linux/of_gpio.h>
++#include <linux/regulator/consumer.h>
+ #include <sound/asoundef.h>
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/initval.h>
+ 
+ /* AK4104 registers addresses */
+ #define AK4104_REG_CONTROL1		0x00
+@@ -47,6 +48,7 @@
+ 
+ struct ak4104_private {
+ 	struct regmap *regmap;
++	struct regulator *regulator;
  };
  
- static const struct snd_soc_dapm_widget ak5386_dapm_widgets[] = {
-@@ -122,6 +128,7 @@ static int ak5386_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct ak5386_priv *priv;
-+	int ret, i;
+ static const struct snd_soc_dapm_widget ak4104_dapm_widgets[] = {
+@@ -176,20 +178,30 @@ static int ak4104_probe(struct snd_soc_codec *codec)
  
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -130,6 +137,19 @@ static int ak5386_probe(struct platform_device *pdev)
- 	priv->reset_gpio = -EINVAL;
- 	dev_set_drvdata(dev, priv);
+ 	codec->control_data = ak4104->regmap;
  
-+	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
-+		priv->supplies[i].supply = supply_names[i];
-+
-+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(priv->supplies),
-+				      priv->supplies);
-+	if (ret < 0)
++	ret = regulator_enable(ak4104->regulator);
++	if (ret < 0) {
++		dev_err(codec->dev, "Unable to enable regulator: %d\n", ret);
 +		return ret;
++	}
 +
-+	ret = regulator_bulk_enable(ARRAY_SIZE(priv->supplies),
-+				    priv->supplies);
-+	if (ret < 0)
-+		return ret;
-+
- 	if (of_match_device(of_match_ptr(ak5386_dt_ids), dev))
- 		priv->reset_gpio = of_get_named_gpio(dev->of_node,
- 						      "reset-gpio", 0);
-@@ -140,13 +160,22 @@ static int ak5386_probe(struct platform_device *pdev)
- 					  "AK5386 Reset"))
- 			priv->reset_gpio = -EINVAL;
+ 	/* set power-up and non-reset bits */
+ 	ret = regmap_update_bits(ak4104->regmap, AK4104_REG_CONTROL1,
+ 				 AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN,
+ 				 AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN);
+ 	if (ret < 0)
+-		return ret;
++		goto exit_disable_regulator;
  
--	return snd_soc_register_codec(dev, &soc_codec_ak5386,
--				      &ak5386_dai, 1);
-+	ret = snd_soc_register_codec(dev, &soc_codec_ak5386,
-+				     &ak5386_dai, 1);
-+	if (ret < 0)
-+		regulator_bulk_disable(ARRAY_SIZE(priv->supplies),
-+				       priv->supplies);
+ 	/* enable transmitter */
+ 	ret = regmap_update_bits(ak4104->regmap, AK4104_REG_TX,
+ 				 AK4104_TX_TXE, AK4104_TX_TXE);
+ 	if (ret < 0)
+-		return ret;
++		goto exit_disable_regulator;
+ 
+ 	return 0;
++
++exit_disable_regulator:
++	regulator_disable(ak4104->regulator);
 +	return ret;
  }
  
- static int ak5386_remove(struct platform_device *pdev)
- {
--	snd_soc_unregister_codec(&pdev->dev);
-+	struct device *dev = &pdev->dev;
-+	struct ak5386_priv *priv = dev_get_drvdata(dev);
-+
-+	snd_soc_unregister_codec(dev);
-+	regulator_bulk_disable(ARRAY_SIZE(priv->supplies), priv->supplies);
-+
+ static int ak4104_remove(struct snd_soc_codec *codec)
+@@ -198,6 +210,7 @@ static int ak4104_remove(struct snd_soc_codec *codec)
+ 
+ 	regmap_update_bits(ak4104->regmap, AK4104_REG_CONTROL1,
+ 			   AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN, 0);
++	regulator_disable(ak4104->regulator);
+ 
  	return 0;
  }
+@@ -241,6 +254,13 @@ static int ak4104_spi_probe(struct spi_device *spi)
+ 	if (ak4104 == NULL)
+ 		return -ENOMEM;
  
++	ak4104->regulator = devm_regulator_get(&spi->dev, "vdd");
++	if (IS_ERR(ak4104->regulator)) {
++		ret = PTR_ERR(ak4104->regulator);
++		dev_err(&spi->dev, "Unable to get Vdd regulator: %d\n", ret);
++		return ret;
++	}
++
+ 	ak4104->regmap = devm_regmap_init_spi(spi, &ak4104_regmap);
+ 	if (IS_ERR(ak4104->regmap)) {
+ 		ret = PTR_ERR(ak4104->regmap);
 -- 
 1.8.5.3
