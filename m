@@ -1,8 +1,8 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv2 04/11] ASoc: mc13783: Remove the
+Subject: [PATCHv2 06/11] ASoc: wm5102: Remove the
 	set_cache_io() entirely from ASoC probe.
-Date: Wed, 26 Mar 2014 13:40:26 +0800
-Message-ID: <1395812433-26410-5-git-send-email-Li.Xiubo@freescale.com>
+Date: Wed, 26 Mar 2014 13:40:28 +0800
+Message-ID: <1395812433-26410-7-git-send-email-Li.Xiubo@freescale.com>
 References: <1395812433-26410-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from co9outboundpool.messaging.microsoft.com
  (co9ehsobe002.messaging.microsoft.com [207.46.163.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 733B92650F2
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 07:28:05 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 278F326513E
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 07:28:16 +0100 (CET)
 In-Reply-To: <1395812433-26410-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,43 +35,41 @@ CODEC ASoC probe as earily as possible.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/codecs/mc13783.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm5102.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
-index 2c59b1f..8c0cec3 100644
---- a/sound/soc/codecs/mc13783.c
-+++ b/sound/soc/codecs/mc13783.c
-@@ -608,14 +608,6 @@ static struct snd_kcontrol_new mc13783_control_list[] = {
- static int mc13783_probe(struct snd_soc_codec *codec)
- {
- 	struct mc13783_priv *priv = snd_soc_codec_get_drvdata(codec);
--	int ret;
--
--	ret = snd_soc_codec_set_cache_io(codec,
--			dev_get_regmap(codec->dev->parent, NULL));
--	if (ret != 0) {
--		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
--		return ret;
--	}
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index dcf1d12..aa60ba2 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -1760,10 +1760,6 @@ static int wm5102_codec_probe(struct snd_soc_codec *codec)
+ 	struct wm5102_priv *priv = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
  
- 	/* these are the reset values */
- 	mc13xxx_reg_write(priv->mc13xxx, MC13783_AUDIO_RX0, 0x25893);
-@@ -735,9 +727,15 @@ static struct snd_soc_dai_driver mc13783_dai_sync[] = {
- 	}
+-	ret = snd_soc_codec_set_cache_io(codec, priv->core.arizona->regmap);
+-	if (ret != 0)
+-		return ret;
+-
+ 	ret = snd_soc_add_codec_controls(codec, wm_adsp2_fw_controls, 2);
+ 	if (ret != 0)
+ 		return ret;
+@@ -1802,9 +1798,17 @@ static unsigned int wm5102_digital_vu[] = {
+ 	ARIZONA_DAC_DIGITAL_VOLUME_5R,
  };
  
-+struct regmap *mc13783_get_regmap(struct device *dev)
++struct regmap *wm5102_get_regmap(struct device *dev)
 +{
-+	return dev_get_regmap(dev->parent, NULL);
++	struct wm5102_priv *priv = dev_get_drvdata(dev);
++
++	return priv->core.arizona->regmap;
 +}
 +
- static struct snd_soc_codec_driver soc_codec_dev_mc13783 = {
- 	.probe		= mc13783_probe,
- 	.remove		= mc13783_remove,
-+	.get_regmap	= mc13783_get_regmap,
- 	.controls	= mc13783_control_list,
- 	.num_controls	= ARRAY_SIZE(mc13783_control_list),
- 	.dapm_widgets	= mc13783_dapm_widgets,
+ static struct snd_soc_codec_driver soc_codec_dev_wm5102 = {
+ 	.probe = wm5102_codec_probe,
+ 	.remove = wm5102_codec_remove,
++	.get_regmap = wm5102_get_regmap,
+ 
+ 	.idle_bias_off = true,
+ 
 -- 
 1.8.4
