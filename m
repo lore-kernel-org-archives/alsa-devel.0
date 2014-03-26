@@ -1,37 +1,39 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [alsa-devel] [RFC v2 PATCH] ASoC: wm8904: add CCF support
-Date: Wed, 26 Mar 2014 09:32:25 +0800
-Message-ID: <53322E29.3070000@atmel.com>
-References: <1395741416-23981-1-git-send-email-voice.shen@atmel.com> <20140325112716.GS2269@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <20140325112716.GS2269@sirena.org.uk>
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, b.brezillon.dev@gmail.com, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - add headset mic detect quirks for three Dell laptops
+Date: Wed, 26 Mar 2014 10:27:41 +0800
+Message-ID: <1395800861-2002-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+When we plug a 3-ring headset on the Dell machines (VID: 0x10ec0255,
+SID: 0x10280632; VID: 0x10ec0293, SID: 0x1028062c; VID: 0x10ec0293,
+SID: 0x1028062e), the headset mic can't be detected, after apply this
+patch, the headset mic can work well.
 
-On 03/25/2014 07:27 PM, Mark Brown wrote:
-> On Tue, Mar 25, 2014 at 05:56:56PM +0800, Bo Shen wrote:
->
->>   	case SND_SOC_BIAS_ON:
->> +		if (IS_ENABLED(CONFIG_COMMON_CLK))
->> +			if (wm8904->mclk)
->> +				clk_prepare_enable(wm8904->mclk);
->
-> No, this shouldn't depend on COMMON_CLK - there is no reason other clock
-> API implementations shouldn't be able to use this.  Providing a clock is
-> something you can only do with COMMON_CLK but using one doesn't need
-> that, generally using a clock is done unconditionally.
+BugLink: https://bugs.launchpad.net/bugs/1297581
+Cc: David Henningsson <david.henningsson@canonical.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Actually in probe function, it does this check, if not CCF support, the 
-wm8904->mclk is NULL. So, we can remove the CCF check here.
-
-Thanks.
-
-Best Regards,
-Bo Shen
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b0e25e5..af5f903 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4586,6 +4586,9 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0616, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
+ 	SND_PCI_QUIRK(0x1028, 0x061f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0629, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x062c, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x062e, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x0632, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS_HSJACK),
+ 	SND_PCI_QUIRK(0x1028, 0x063e, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x063f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+-- 
+1.8.1.2
