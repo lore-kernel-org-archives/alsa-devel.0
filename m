@@ -1,19 +1,19 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 2/3] ASoC: ak4104: add regulator consumer
+Subject: [PATCH 3/3] ASoC: tas5086: add regulator consumer
 	support
-Date: Wed, 26 Mar 2014 11:22:57 +0100
-Message-ID: <1395829378-13055-2-git-send-email-zonque@gmail.com>
+Date: Wed, 26 Mar 2014 11:22:58 +0100
+Message-ID: <1395829378-13055-3-git-send-email-zonque@gmail.com>
 References: <1395829378-13055-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f52.google.com (mail-bk0-f52.google.com
- [209.85.214.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 52F53265134
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 11:23:07 +0100 (CET)
-Received: by mail-bk0-f52.google.com with SMTP id my13so446182bkb.25
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 03:23:07 -0700 (PDT)
+Received: from mail-bk0-f53.google.com (mail-bk0-f53.google.com
+ [209.85.214.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DE2426513E
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 11:23:08 +0100 (CET)
+Received: by mail-bk0-f53.google.com with SMTP id r7so443751bkg.26
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 03:23:08 -0700 (PDT)
 In-Reply-To: <1395829378-13055-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,98 +28,125 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The AK4104 has only one power supply, called VDD. Make sure it is
-enabled during the life-time of the module.
+The TAS5086 has two power domains, DVDD and AVDD. Add support for
+regulators to the TAS5086 codec driver.
 
 Signed-off-by: Daniel Mack <zonque@gmail.com>
 ---
- sound/soc/codecs/ak4104.c | 30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
+ sound/soc/codecs/tas5086.c | 39 +++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 37 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
-index b4819dc..c7a541d 100644
---- a/sound/soc/codecs/ak4104.c
-+++ b/sound/soc/codecs/ak4104.c
-@@ -11,13 +11,14 @@
- 
- #include <linux/module.h>
- #include <linux/slab.h>
--#include <sound/core.h>
--#include <sound/soc.h>
--#include <sound/initval.h>
- #include <linux/spi/spi.h>
- #include <linux/of_device.h>
- #include <linux/of_gpio.h>
+diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
+index a895a5e..e87a577 100644
+--- a/sound/soc/codecs/tas5086.c
++++ b/sound/soc/codecs/tas5086.c
+@@ -36,6 +36,7 @@
+ #include <linux/gpio.h>
+ #include <linux/i2c.h>
+ #include <linux/regmap.h>
 +#include <linux/regulator/consumer.h>
- #include <sound/asoundef.h>
-+#include <sound/core.h>
-+#include <sound/soc.h>
-+#include <sound/initval.h>
+ #include <linux/spi/spi.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+@@ -240,6 +241,10 @@ static int tas5086_reg_read(void *context, unsigned int reg,
+ 	return 0;
+ }
  
- /* AK4104 registers addresses */
- #define AK4104_REG_CONTROL1		0x00
-@@ -47,6 +48,7 @@
- 
- struct ak4104_private {
- 	struct regmap *regmap;
-+	struct regulator *regulator;
++static const char *supply_names[] = {
++	"dvdd", "avdd"
++};
++
+ struct tas5086_private {
+ 	struct regmap	*regmap;
+ 	unsigned int	mclk, sclk;
+@@ -251,6 +256,7 @@ struct tas5086_private {
+ 	int		rate;
+ 	/* GPIO driving Reset pin, if any */
+ 	int		gpio_nreset;
++	struct		regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
  };
  
- static const struct snd_soc_dapm_widget ak4104_dapm_widgets[] = {
-@@ -176,20 +178,30 @@ static int ak4104_probe(struct snd_soc_codec *codec)
+ static int tas5086_deemph[] = { 0, 32000, 44100, 48000 };
+@@ -773,6 +779,8 @@ static int tas5086_soc_suspend(struct snd_soc_codec *codec)
+ 	if (ret < 0)
+ 		return ret;
  
- 	codec->control_data = ak4104->regmap;
++	regulator_bulk_disable(ARRAY_SIZE(priv->supplies), priv->supplies);
++
+ 	return 0;
+ }
  
-+	ret = regulator_enable(ak4104->regulator);
+@@ -781,6 +789,10 @@ static int tas5086_soc_resume(struct snd_soc_codec *codec)
+ 	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
+ 
++	ret = regulator_bulk_enable(ARRAY_SIZE(priv->supplies), priv->supplies);
++	if (ret < 0)
++		return ret;
++
+ 	tas5086_reset(priv);
+ 	regcache_mark_dirty(priv->regmap);
+ 
+@@ -812,6 +824,12 @@ static int tas5086_probe(struct snd_soc_codec *codec)
+ 	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
+ 	int i, ret;
+ 
++	ret = regulator_bulk_enable(ARRAY_SIZE(priv->supplies), priv->supplies);
 +	if (ret < 0) {
-+		dev_err(codec->dev, "Unable to enable regulator: %d\n", ret);
++		dev_err(codec->dev, "Failed to enable regulators: %d\n", ret);
 +		return ret;
 +	}
 +
- 	/* set power-up and non-reset bits */
- 	ret = regmap_update_bits(ak4104->regmap, AK4104_REG_CONTROL1,
- 				 AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN,
- 				 AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN);
- 	if (ret < 0)
--		return ret;
-+		goto exit_disable_regulator;
+ 	priv->pwm_start_mid_z = 0;
+ 	priv->charge_period = 1300000; /* hardware default is 1300 ms */
  
- 	/* enable transmitter */
- 	ret = regmap_update_bits(ak4104->regmap, AK4104_REG_TX,
- 				 AK4104_TX_TXE, AK4104_TX_TXE);
+@@ -834,14 +852,19 @@ static int tas5086_probe(struct snd_soc_codec *codec)
+ 
+ 	ret = tas5086_init(codec->dev, priv);
  	if (ret < 0)
 -		return ret;
-+		goto exit_disable_regulator;
++		goto exit_disable_regulators;
+ 
+ 	/* set master volume to 0 dB */
+ 	ret = regmap_write(priv->regmap, TAS5086_MASTER_VOL, 0x30);
+ 	if (ret < 0)
+-		return ret;
++		goto exit_disable_regulators;
  
  	return 0;
 +
-+exit_disable_regulator:
-+	regulator_disable(ak4104->regulator);
++exit_disable_regulators:
++	regulator_bulk_disable(ARRAY_SIZE(priv->supplies), priv->supplies);
++
 +	return ret;
  }
  
- static int ak4104_remove(struct snd_soc_codec *codec)
-@@ -198,6 +210,7 @@ static int ak4104_remove(struct snd_soc_codec *codec)
+ static int tas5086_remove(struct snd_soc_codec *codec)
+@@ -852,6 +875,8 @@ static int tas5086_remove(struct snd_soc_codec *codec)
+ 		/* Set codec to the reset state */
+ 		gpio_set_value(priv->gpio_nreset, 0);
  
- 	regmap_update_bits(ak4104->regmap, AK4104_REG_CONTROL1,
- 			   AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN, 0);
-+	regulator_disable(ak4104->regulator);
- 
++	regulator_bulk_disable(ARRAY_SIZE(priv->supplies), priv->supplies);
++
  	return 0;
- }
-@@ -241,6 +254,13 @@ static int ak4104_spi_probe(struct spi_device *spi)
- 	if (ak4104 == NULL)
+ };
+ 
+@@ -900,6 +925,16 @@ static int tas5086_i2c_probe(struct i2c_client *i2c,
+ 	if (!priv)
  		return -ENOMEM;
  
-+	ak4104->regulator = devm_regulator_get(&spi->dev, "vdd");
-+	if (IS_ERR(ak4104->regulator)) {
-+		ret = PTR_ERR(ak4104->regulator);
-+		dev_err(&spi->dev, "Unable to get Vdd regulator: %d\n", ret);
++	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
++		priv->supplies[i].supply = supply_names[i];
++
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(priv->supplies),
++				      priv->supplies);
++	if (ret < 0) {
++		dev_err(dev, "Failed to get regulators: %d\n", ret);
 +		return ret;
 +	}
 +
- 	ak4104->regmap = devm_regmap_init_spi(spi, &ak4104_regmap);
- 	if (IS_ERR(ak4104->regmap)) {
- 		ret = PTR_ERR(ak4104->regmap);
+ 	priv->regmap = devm_regmap_init(dev, NULL, i2c, &tas5086_regmap);
+ 	if (IS_ERR(priv->regmap)) {
+ 		ret = PTR_ERR(priv->regmap);
 -- 
 1.8.5.3
