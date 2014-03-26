@@ -1,53 +1,107 @@
-From: David Laight <David.Laight@ACULAB.COM>
-Subject: RE: [PATCH] ASoC: fsl_sai: Add isr to deal with error flag
-Date: Wed, 26 Mar 2014 11:59:53 +0000
-Message-ID: <063D6719AE5E284EB5DD2968C1650D6D0F6E958E@AcuExch.aculab.com>
-References: <1395834517-16426-1-git-send-email-Guangyu.Chen@freescale.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: twl4030 latency update
+Date: Wed, 26 Mar 2014 14:28:41 +0200
+Message-ID: <5332C7F9.2040404@ti.com>
+References: <532ACD4A.3080508@univpm.it> <532AEEA6.20704@ti.com>
+ <532AFBDD.8040407@univpm.it> <532BE58A.2010701@ti.com>
+ <5331CFF9.20402@univpm.it> <53328F4C.8030205@ti.com>
+ <53329F54.3030305@univpm.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1395834517-16426-1-git-send-email-Guangyu.Chen@freescale.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: 'Nicolin Chen' <Guangyu.Chen@freescale.com>, "broonie@kernel.org" <broonie@kernel.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C41E26519F
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 13:28:46 +0100 (CET)
+In-Reply-To: <53329F54.3030305@univpm.it>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Leonardo Gabrielli <l.gabrielli@univpm.it>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTmljb2xpbiBDaGVuDQo+IEl0J3MgcXVpdGUgY3JpY2lhbCB0byBjbGVhciBlcnJvciBm
-bGFncyBiZWNhdXNlIFNBSSBtaWdodCBoYW5nIGlmIGdldHRpbmcNCj4gRklGTyB1bmRlcnJ1biBk
-dXJpbmcgcGxheWJhY2sgKEkgaGF2ZW4ndCBjb25maXJtZWQgdGhlIHNhbWUgaXNzdWUgb24gUngN
-Cj4gb3ZlcmZsb3cgdGhvdWdoKS4NCj4gDQo+IFNvIHRoaXMgcGF0Y2ggZW5hYmxlcyB0aG9zZSBp
-cnEgYW5kIGFkZHMgaXNyKCkgdG8gY2xlYXIgdGhlIGZsYWdzIHNvIGFzIHRvDQo+IGtlZXAgcGxh
-eWJhY2sgZW50aXJlbHkgc2FmZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE5pY29saW4gQ2hlbiA8
-R3Vhbmd5dS5DaGVuQGZyZWVzY2FsZS5jb20+DQo+IC0tLQ0KPiAgc291bmQvc29jL2ZzbC9mc2xf
-c2FpLmMgfCA2OSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-LS0tDQo+ICBzb3VuZC9zb2MvZnNsL2ZzbF9zYWkuaCB8ICA5ICsrKysrKysNCj4gIDIgZmlsZXMg
-Y2hhbmdlZCwgNzUgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1n
-aXQgYS9zb3VuZC9zb2MvZnNsL2ZzbF9zYWkuYyBiL3NvdW5kL3NvYy9mc2wvZnNsX3NhaS5jDQo+
-IGluZGV4IGM0YTQyMzEuLjVmOTFhZmYgMTAwNjQ0DQo+IC0tLSBhL3NvdW5kL3NvYy9mc2wvZnNs
-X3NhaS5jDQo+ICsrKyBiL3NvdW5kL3NvYy9mc2wvZnNsX3NhaS5jDQo+IEBAIC0yMyw2ICsyMyw1
-NSBAQA0KPiANCj4gICNpbmNsdWRlICJmc2xfc2FpLmgiDQo+IA0KPiArI2RlZmluZSBGU0xfU0FJ
-X0ZMQUdTIChGU0xfU0FJX0NTUl9TRUlFIHxcDQo+ICsJCSAgICAgICBGU0xfU0FJX0NTUl9GRUlF
-IHxcDQo+ICsJCSAgICAgICBGU0xfU0FJX0NTUl9GV0lFKQ0KPiArDQo+ICtzdGF0aWMgaXJxcmV0
-dXJuX3QgZnNsX3NhaV9pc3IoaW50IGlycSwgdm9pZCAqZGV2aWQpDQo+ICt7DQo+ICsJc3RydWN0
-IGZzbF9zYWkgKnNhaSA9IChzdHJ1Y3QgZnNsX3NhaSAqKWRldmlkOw0KPiArCXN0cnVjdCBkZXZp
-Y2UgKmRldiA9ICZzYWktPnBkZXYtPmRldjsNCj4gKwl1MzIgeGNzcjsNCj4gKw0KPiArCXJlZ21h
-cF9yZWFkKHNhaS0+cmVnbWFwLCBGU0xfU0FJX1RDU1IsICZ4Y3NyKTsNCj4gKwlyZWdtYXBfd3Jp
-dGUoc2FpLT5yZWdtYXAsIEZTTF9TQUlfVENTUiwgeGNzcik7DQoNCkFzc3VtaW5nIHRoZXNlIGFy
-ZSAnd3JpdGUgdG8gY2xlYXInIGJpdHMsIHlvdSBtaWdodCB3YW50DQp0byBtYWtlIHRoZSB3cml0
-ZSAoYWJvdmUpIGFuZCBhbGwgdGhlIHRyYWNlcyAoYmVsb3cpDQpjb25kaXRpb25hbCBvbiB0aGUg
-dmFsdWUgYmVpbmcgbm9uLXplcm8uDQoNCj4gKwlpZiAoeGNzciAmIEZTTF9TQUlfQ1NSX1dTRikN
-Cj4gKwkJZGV2X2RiZyhkZXYsICJpc3I6IFN0YXJ0IG9mIFR4IHdvcmQgZGV0ZWN0ZWRcbiIpOw0K
-PiArDQo+ICsJaWYgKHhjc3IgJiBGU0xfU0FJX0NTUl9TRUYpDQo+ICsJCWRldl9kYmcoZGV2LCAi
-aXNyOiBUeCBGcmFtZSBzeW5jIGVycm9yIGRldGVjdGVkXG4iKTsNCj4gKw0KPiArCWlmICh4Y3Ny
-ICYgRlNMX1NBSV9DU1JfRkVGKQ0KPiArCQlkZXZfZGJnKGRldiwgImlzcjogVHJhbnNtaXQgdW5k
-ZXJydW4gZGV0ZWN0ZWRcbiIpOw0KPiArDQo+ICsJaWYgKHhjc3IgJiBGU0xfU0FJX0NTUl9GV0Yp
-DQo+ICsJCWRldl9kYmcoZGV2LCAiaXNyOiBFbmFibGVkIHRyYW5zbWl0IEZJRk8gaXMgZW1wdHlc
-biIpOw0KPiArDQo+ICsJaWYgKHhjc3IgJiBGU0xfU0FJX0NTUl9GUkYpDQo+ICsJCWRldl9kYmco
-ZGV2LCAiaXNyOiBUcmFuc21pdCBGSUZPIHdhdGVybWFyayBoYXMgYmVlbiByZWFjaGVkXG4iKTsN
-Cg0KU29tZSBvZiB0aG9zZSBsb29rIGxpa2UgJ25vcm1hbCcgaW50ZXJydXB0cywgb3RoZXJzIGFy
-ZSBjbGVhcmx5DQphYm5vcm1hbCBjb25kaXRpb25zLg0KTWF5YmUgdGhlIHRyYWNpbmcgc2hvdWxk
-IHJlZmxlY3QgdGhpcy4NCg0KPiArDQo+ICsJcmVnbWFwX3JlYWQoc2FpLT5yZWdtYXAsIEZTTF9T
-QUlfUkNTUiwgJnhjc3IpOw0KPiArCXJlZ21hcF93cml0ZShzYWktPnJlZ21hcCwgRlNMX1NBSV9S
-Q1NSLCB4Y3NyKTsNCg0KU2FtZSBjb21tZW50cyBhcHBseS4uLg0KDQoJRGF2aWQNCg0K
+On 03/26/2014 11:35 AM, Leonardo Gabrielli wrote:
+> =
+
+> On 26/03/2014 09:26, Peter Ujfalusi wrote:
+>> Can you elaborate on the corrupted/scrambled audio? I just don't see how=
+ it
+>> can happen. Can you get the /proc/asound/card0/pcm0p/sub0/hw_params when=
+ you
+>> have the audio quality issue?
+> Hello,
+> Here you are:
+> =
+
+> cat /proc/asound/card0/pcm0p/sub0/hw_params
+> access: MMAP_INTERLEAVED
+> format: S16_LE
+> subformat: STD
+> channels: 2
+> rate: 22050 (22050/1)
+> period_size: 512
+> buffer_size: 1024
+> =
+
+> And this is jack output:
+> =
+
+> jackd -P62 -t2000 -dalsa -dhw:0 -r22050 -p512 -n2 -s -S -i2 -o2 &
+
+arecord -r 22050 -f S16_LE --period-size=3D512 --buffer-size=3D1024 -v | ap=
+lay -r
+22050 -f S16_LE  --period-size=3D512 --buffer-size=3D1024 -v
+
+and no issue on the headphone from Beagle.
+
+> I can send you saomething to get it clearer. I recorded  a 10Hz sine wave=
+ with
+> jaaa. The wave is totally scrambled (probably buffers are not read in ord=
+er).
+> But it may well be an issue with jack.
+> =
+
+> When the output sounds correct (256 period) hw_param is:
+> cat /proc/asound/card0/pcm0p/sub0/hw_params
+> access: MMAP_INTERLEAVED
+> format: S16_LE
+> subformat: STD
+> channels: 2
+> rate: 22050 (22050/1)
+> period_size: 256
+> buffer_size: 768
+
+arecord -r 22050 -f S16_LE -v --period-size=3D256 --buffer-size=3D768 | apl=
+ay -r
+22050 -f S16_LE  --period-size=3D256 --buffer-size=3D768 -v
+
+again, audio is clear with this one as well
+
+>> I can not run jackd on the board anymore (with linux-next at least):
+>> FATAL: cannot locate cpu MHz in /proc/cpuinfo
+> =
+
+> Yes, there's been a recent fix to that (you can checkout the latest jackd=
+ from
+> git repos, see this thread:
+> http://lists.jackaudio.org/private.cgi/jack-devel-jackaudio.org/2014-Marc=
+h/012167.html
+
+I also found this, but lazy to update my jack...
+
+> Or maybe you can just start jackd specifying a different clock with the -c
+> switch i.e.
+> jackd -P62 -t2000 -c s -dalsa -dhw:0 -r22050 -p512 -n2 -s -S -i2 -o2 &
+
+This does not work.
+
+-- =
+
+P=E9ter
