@@ -1,51 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC v3 0/2] Move dai-link level properties away from dai
- subnodes
-Date: Thu, 27 Mar 2014 01:31:31 +0000
-Message-ID: <20140327013131.GD30768@sirena.org.uk>
-References: <cover.1395655868.git.jsarha@ti.com>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [PATCH] ASoC: fsl_sai: Add isr to deal with error flag
+Date: Thu, 27 Mar 2014 02:13:48 +0000
+Message-ID: <11a8271c31044515bd2657a93aefdaec@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1395834517-16426-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="48TaNjbzBVislYPb"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <cover.1395655868.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, detheridge@ti.com, moinejf@free.fr, Li.Xiubo@freescale.com, kuninori.morimoto.gx@renesas.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1395834517-16426-1-git-send-email-Guangyu.Chen@freescale.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+> +	regmap_read(sai->regmap, FSL_SAI_TCSR, &xcsr);
+> +	regmap_write(sai->regmap, FSL_SAI_TCSR, xcsr);
+> +
+> +	if (xcsr & FSL_SAI_CSR_WSF)
+> +		dev_dbg(dev, "isr: Start of Tx word detected\n");
+> +
+> +	if (xcsr & FSL_SAI_CSR_SEF)
+> +		dev_dbg(dev, "isr: Tx Frame sync error detected\n");
+> +
+> +	if (xcsr & FSL_SAI_CSR_FEF)
+> +		dev_dbg(dev, "isr: Transmit underrun detected\n");
+> +
 
---48TaNjbzBVislYPb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Actually, the above three isrs should to write a logic 1 to this field
+to clear this flag.
 
-On Mon, Mar 24, 2014 at 12:15:23PM +0200, Jyri Sarha wrote:
-> This patch is implemented on top of late patches from Jean-Francois
-> Moine [1].
 
-Applied both, thanks.
+> +	if (xcsr & FSL_SAI_CSR_FWF)
+> +		dev_dbg(dev, "isr: Enabled transmit FIFO is empty\n");
+> +
+> +	if (xcsr & FSL_SAI_CSR_FRF)
+> +		dev_dbg(dev, "isr: Transmit FIFO watermark has been reached\n");
+> +
 
---48TaNjbzBVislYPb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+While are these ones really needed to clear manually ?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTM39wAAoJELSic+t+oim952EP/jh4IejEW2N8xRZZ/QgDuDA9
-DJT22QiU9PbpjuadW7bxH+rQ4uZ6UBozfrw8XINoV1dpnVCCPMfd4aSL4xekcjRA
-GxySaCVPLbhDI/gWXiYzMVYo6LrcujOQaDlexBERIK4p8cWckeGybNRFjlpT0rWb
-aARyN1oS6KstAymJLmKB3hQW7Pu7Wfq9BPJgda0LrWtxlbwEXwR3sfSQ7JoHGsn2
-QQQlwmlSx2erRNNM+274Hw3GArg4/XLhI/2m/athyE5+gwuVGboMzarF+Z3BIFQR
-D8T6hloL11PtcoI+vXk5Y4fnlAEtnOZtTj4IhdTG3EBLUVgPa27u2fc1TmXq4ybJ
-mLftLZsUOlH3OTp8yASJWkXoAShAIJg0+Hw0VCZOkbvywPndbWLxDjr8OEiwp3UM
-d51InI4xr5ZXcGM6aHWSAZfLXVy2q1OkkGna2aUo+I1j/ADCpylKnw8f5btdn2GY
-Nv34YiPMIXZnCsti/f1zrrjnbqJozrC0iZ+gE385YgfzdFbH7FlkIW9vU4Tku/RJ
-s8GcssjFUOjYBpPCsVf5N8j+LzyE7ow6pAG/yosjrAQv4nTTfc40TWWZSW1z9Pmj
-g4xwRVLXMA1Mhu7/1tLLp9h/Y4p3XJfdVrGzMPbeVufSO6YLPn8CWFDSnd5IDmCi
-osW4QoFyGCNEmRqJJZPG
-=rF06
------END PGP SIGNATURE-----
+Thanks,
+--
 
---48TaNjbzBVislYPb--
+Best Regards,
+Xiubo
