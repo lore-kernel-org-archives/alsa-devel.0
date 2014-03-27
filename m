@@ -1,19 +1,16 @@
-From: RongJun Ying <rjying@gmail.com>
-Subject: [PATCH v6 2/2] ASoC: sirf: Add hdmi support
-Date: Thu, 27 Mar 2014 13:27:05 +0800
-Message-ID: <1395898025-5437-3-git-send-email-rongjun.ying@csr.com>
-References: <1395898025-5437-1-git-send-email-rongjun.ying@csr.com>
+From: Nevyan Neykov <nevyanmail@yahoo.com>
+Subject: Lenovo G580 mic noise when recording
+Date: Wed, 26 Mar 2014 23:21:45 -0700 (PDT)
+Message-ID: <1395901305.17217.YahooMailNeo@web125103.mail.ne1.yahoo.com>
+Reply-To: Nevyan Neykov <nevyanmail@yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
- [209.85.220.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C8592651CE
- for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 06:28:13 +0100 (CET)
-Received: by mail-pa0-f42.google.com with SMTP id fb1so2963827pad.15
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 22:28:12 -0700 (PDT)
-In-Reply-To: <1395898025-5437-1-git-send-email-rongjun.ying@csr.com>
+Received: from nm27-vm3.bullet.mail.ne1.yahoo.com
+ (nm27-vm3.bullet.mail.ne1.yahoo.com [98.138.91.157])
+ by alsa0.perex.cz (Postfix) with ESMTP id 915EB2651D3
+ for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 07:21:47 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +20,9 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, rjying@gmail.com
-Cc: Takashi Iwai <tiwai@suse.de>, Rongjun Ying <rongjun.ying@csr.com>, alsa-devel@alsa-project.org, workgroup.linux@csr.com
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Rongjun Ying <rongjun.ying@csr.com>
-
-Use the simple-card
-
-Signed-off-by: Rongjun Ying <rongjun.ying@csr.com>
----
--v6:
-Use the simple-card instead of hdmi card driver
-
- sound/soc/sirf/Kconfig |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/sirf/Kconfig b/sound/soc/sirf/Kconfig
-index e0b7157..ccbf571 100644
---- a/sound/soc/sirf/Kconfig
-+++ b/sound/soc/sirf/Kconfig
-@@ -13,6 +13,13 @@ config SND_SOC_SIRF_AUDIO_PORT
- 	select REGMAP_MMIO
- 	tristate
- 
-+config SND_SOC_SIRF_HDMI
-+	tristate "SoC Audio support for SiRF HDMI"
-+	depends on SND_SOC_SIRF
-+	select SND_SIMPLE_CARD
-+	select SND_SOC_SIRF_I2S
-+	select SND_SOC_HDMI_CODEC
-+
- config SND_SOC_SIRF_I2S
- 	select REGMAP_MMIO
- 	tristate
--- 
-1.7.5.4
+Hello, my lenovo g580(2189, 20150) laptop is using intel hd audio conexant driver( Intel Corporation 7 Series/C210 ) and experiencing lots of noise when trying to record from either external or internal microphone. If I lower mic volume / boost the voice get barely recorded. I am using this line in my alsa conf: options snd-hda-intel model=auto position_fix=2 also tried with model=asus etc..., when using position_fix=1 recording receives lots of cracking noise. 
+I must mention that both mics are working very well under win7/8.
+Regards.
