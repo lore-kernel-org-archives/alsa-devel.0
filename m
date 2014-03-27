@@ -1,21 +1,18 @@
-From: Daniel Mack <zonque@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Subject: Re: [PATCH] ASoC: davinci-mcasp: set up user bits for
 	S/PDIF mode
-Date: Thu, 27 Mar 2014 09:39:26 +0100
-Message-ID: <5333E3BE.80403@gmail.com>
+Date: Thu, 27 Mar 2014 11:10:46 +0200
+Message-ID: <5333EB16.2080603@ti.com>
 References: <1395846273-26025-1-git-send-email-zonque@gmail.com>
- <5333DE63.1010205@ti.com>
+ <5333DE63.1010205@ti.com> <5333E3BE.80403@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f52.google.com (mail-bk0-f52.google.com
- [209.85.214.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 95BF626524F
- for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 09:39:41 +0100 (CET)
-Received: by mail-bk0-f52.google.com with SMTP id my13so721576bkb.25
- for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 01:39:41 -0700 (PDT)
-In-Reply-To: <5333DE63.1010205@ti.com>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27FF32619EC
+ for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 10:10:50 +0100 (CET)
+In-Reply-To: <5333E3BE.80403@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,72 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, broonie@kernel.org
+To: Daniel Mack <zonque@gmail.com>, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
-
-Thanks for your review.
-
-On 03/27/2014 09:16 AM, Peter Ujfalusi wrote:
-> On 03/26/2014 05:04 PM, Daniel Mack wrote:
->> In DIT (S/PDIF) mode, program the transmitted user bits to reflect the
->> configured sample rate, along with some other details.
->>
->> Signed-off-by: Daniel Mack <zonque@gmail.com>
->> ---
->>  sound/soc/davinci/davinci-mcasp.c | 55 +++++++++++++++++++++++++++++++++++++--
->>  1 file changed, 53 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
->> index 712a7cd..ec0463a 100644
->> --- a/sound/soc/davinci/davinci-mcasp.c
->> +++ b/sound/soc/davinci/davinci-mcasp.c
->> @@ -27,6 +27,7 @@
->>  #include <linux/of_platform.h>
->>  #include <linux/of_device.h>
->>  
->> +#include <sound/asoundef.h>
->>  #include <sound/core.h>
->>  #include <sound/pcm.h>
->>  #include <sound/pcm_params.h>
->> @@ -566,8 +567,11 @@ static int mcasp_i2s_hw_param(struct davinci_mcasp *mcasp, int stream)
->>  }
->>  
->>  /* S/PDIF */
->> -static int mcasp_dit_hw_param(struct davinci_mcasp *mcasp)
->> +static int mcasp_dit_hw_param(struct davinci_mcasp *mcasp,
->> +			      unsigned int rate)
->>  {
->> +	u32 val = 0;
->> +
->>  	/* Set the TX format : 24 bit right rotation, 32 bit slot, Pad 0
->>  	   and LSB first */
->>  	mcasp_set_bits(mcasp, DAVINCI_MCASP_TXFMT_REG, TXROT(6) | TXSSZ(15));
->> @@ -589,6 +593,53 @@ static int mcasp_dit_hw_param(struct davinci_mcasp *mcasp)
->>  	/* Enable the DIT */
->>  	mcasp_set_bits(mcasp, DAVINCI_MCASP_TXDITCTL_REG, DITEN);
->>  
->> +	/* Set S/PDIF channel status bits */
->> +	mcasp_set_reg(mcasp, DAVINCI_MCASP_DITCSRA_REG + 0,
->> +		      IEC958_AES0_CON_NOT_COPYRIGHT);
-> 
-> I think it would be safer to set the channel status bits like:
-> u32 val = 0;
-> u8 *bytes = (u8*) &val;
-> 
-> byte[0] |= IEC958_AES0_CON_NOT_COPYRIGHT;
-> byte[1] |= IEC958_AES1_CON_PCM_CODER;
-
-No, these defines are mapped on to 32-bit values, as seen in
-include/sound/asounddef.h. Over all 6 registers, 192 bits can be stored,
-which is the full length of channel status bits. Hence, they really need
-an individual mcasp_set_reg() each.
-
-Also, I've measured the output of the S/PDIF port with external S/PDIF
-introspectors and the result is correct :)
-
-
-Thanks,
-Daniel
+T24gMDMvMjcvMjAxNCAxMDozOSBBTSwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4gSGkgUGV0ZXIsCj4g
+Cj4gVGhhbmtzIGZvciB5b3VyIHJldmlldy4KPiAKPiBPbiAwMy8yNy8yMDE0IDA5OjE2IEFNLCBQ
+ZXRlciBVamZhbHVzaSB3cm90ZToKPj4gT24gMDMvMjYvMjAxNCAwNTowNCBQTSwgRGFuaWVsIE1h
+Y2sgd3JvdGU6Cj4+PiBJbiBESVQgKFMvUERJRikgbW9kZSwgcHJvZ3JhbSB0aGUgdHJhbnNtaXR0
+ZWQgdXNlciBiaXRzIHRvIHJlZmxlY3QgdGhlCj4+PiBjb25maWd1cmVkIHNhbXBsZSByYXRlLCBh
+bG9uZyB3aXRoIHNvbWUgb3RoZXIgZGV0YWlscy4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBEYW5p
+ZWwgTWFjayA8em9ucXVlQGdtYWlsLmNvbT4KPj4+IC0tLQo+Pj4gIHNvdW5kL3NvYy9kYXZpbmNp
+L2RhdmluY2ktbWNhc3AuYyB8IDU1ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KystLQo+Pj4gIDEgZmlsZSBjaGFuZ2VkLCA1MyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygt
+KQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvZGF2aW5jaS9kYXZpbmNpLW1jYXNwLmMg
+Yi9zb3VuZC9zb2MvZGF2aW5jaS9kYXZpbmNpLW1jYXNwLmMKPj4+IGluZGV4IDcxMmE3Y2QuLmVj
+MDQ2M2EgMTAwNjQ0Cj4+PiAtLS0gYS9zb3VuZC9zb2MvZGF2aW5jaS9kYXZpbmNpLW1jYXNwLmMK
+Pj4+ICsrKyBiL3NvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktbWNhc3AuYwo+Pj4gQEAgLTI3LDYg
+KzI3LDcgQEAKPj4+ICAjaW5jbHVkZSA8bGludXgvb2ZfcGxhdGZvcm0uaD4KPj4+ICAjaW5jbHVk
+ZSA8bGludXgvb2ZfZGV2aWNlLmg+Cj4+PiAgCj4+PiArI2luY2x1ZGUgPHNvdW5kL2Fzb3VuZGVm
+Lmg+Cj4+PiAgI2luY2x1ZGUgPHNvdW5kL2NvcmUuaD4KPj4+ICAjaW5jbHVkZSA8c291bmQvcGNt
+Lmg+Cj4+PiAgI2luY2x1ZGUgPHNvdW5kL3BjbV9wYXJhbXMuaD4KPj4+IEBAIC01NjYsOCArNTY3
+LDExIEBAIHN0YXRpYyBpbnQgbWNhc3BfaTJzX2h3X3BhcmFtKHN0cnVjdCBkYXZpbmNpX21jYXNw
+ICptY2FzcCwgaW50IHN0cmVhbSkKPj4+ICB9Cj4+PiAgCj4+PiAgLyogUy9QRElGICovCj4+PiAt
+c3RhdGljIGludCBtY2FzcF9kaXRfaHdfcGFyYW0oc3RydWN0IGRhdmluY2lfbWNhc3AgKm1jYXNw
+KQo+Pj4gK3N0YXRpYyBpbnQgbWNhc3BfZGl0X2h3X3BhcmFtKHN0cnVjdCBkYXZpbmNpX21jYXNw
+ICptY2FzcCwKPj4+ICsJCQkgICAgICB1bnNpZ25lZCBpbnQgcmF0ZSkKPj4+ICB7Cj4+PiArCXUz
+MiB2YWwgPSAwOwo+Pj4gKwo+Pj4gIAkvKiBTZXQgdGhlIFRYIGZvcm1hdCA6IDI0IGJpdCByaWdo
+dCByb3RhdGlvbiwgMzIgYml0IHNsb3QsIFBhZCAwCj4+PiAgCSAgIGFuZCBMU0IgZmlyc3QgKi8K
+Pj4+ICAJbWNhc3Bfc2V0X2JpdHMobWNhc3AsIERBVklOQ0lfTUNBU1BfVFhGTVRfUkVHLCBUWFJP
+VCg2KSB8IFRYU1NaKDE1KSk7Cj4+PiBAQCAtNTg5LDYgKzU5Myw1MyBAQCBzdGF0aWMgaW50IG1j
+YXNwX2RpdF9od19wYXJhbShzdHJ1Y3QgZGF2aW5jaV9tY2FzcCAqbWNhc3ApCj4+PiAgCS8qIEVu
+YWJsZSB0aGUgRElUICovCj4+PiAgCW1jYXNwX3NldF9iaXRzKG1jYXNwLCBEQVZJTkNJX01DQVNQ
+X1RYRElUQ1RMX1JFRywgRElURU4pOwo+Pj4gIAo+Pj4gKwkvKiBTZXQgUy9QRElGIGNoYW5uZWwg
+c3RhdHVzIGJpdHMgKi8KPj4+ICsJbWNhc3Bfc2V0X3JlZyhtY2FzcCwgREFWSU5DSV9NQ0FTUF9E
+SVRDU1JBX1JFRyArIDAsCj4+PiArCQkgICAgICBJRUM5NThfQUVTMF9DT05fTk9UX0NPUFlSSUdI
+VCk7Cj4+Cj4+IEkgdGhpbmsgaXQgd291bGQgYmUgc2FmZXIgdG8gc2V0IHRoZSBjaGFubmVsIHN0
+YXR1cyBiaXRzIGxpa2U6Cj4+IHUzMiB2YWwgPSAwOwo+PiB1OCAqYnl0ZXMgPSAodTgqKSAmdmFs
+Owo+Pgo+PiBieXRlWzBdIHw9IElFQzk1OF9BRVMwX0NPTl9OT1RfQ09QWVJJR0hUOwo+PiBieXRl
+WzFdIHw9IElFQzk1OF9BRVMxX0NPTl9QQ01fQ09ERVI7Cj4gCj4gTm8sIHRoZXNlIGRlZmluZXMg
+YXJlIG1hcHBlZCBvbiB0byAzMi1iaXQgdmFsdWVzLCBhcyBzZWVuIGluCj4gaW5jbHVkZS9zb3Vu
+ZC9hc291bmRkZWYuaC4gT3ZlciBhbGwgNiByZWdpc3RlcnMsIDE5MiBiaXRzIGNhbiBiZSBzdG9y
+ZWQsCj4gd2hpY2ggaXMgdGhlIGZ1bGwgbGVuZ3RoIG9mIGNoYW5uZWwgc3RhdHVzIGJpdHMuIEhl
+bmNlLCB0aGV5IHJlYWxseSBuZWVkCj4gYW4gaW5kaXZpZHVhbCBtY2FzcF9zZXRfcmVnKCkgZWFj
+aC4KCkkgZG9uJ3QgdGhpbmsgdGhleSBhcmUgbWFwcGVkIGZvciB0aGUgMzJiaXQ6CiNkZWZpbmUg
+SUVDOTU4X0FFUzBfQ09OX05PVF9DT1BZUklHSFQgICAoMTw8MikKCiNkZWZpbmUgSUVDOTU4X0FF
+UzFfQ09OX0RJR0RJR0NPTlZfSUQgICAweDAyCiNkZWZpbmUgSUVDOTU4X0FFUzFfQ09OX1BDTV9D
+T0RFUiAgICAgICAoSUVDOTU4X0FFUzFfQ09OX0RJR0RJR0NPTlZfSUR8MHgwMCkKCiNkZWZpbmUg
+SUVDOTU4X0FFUzNfQ09OX0ZTXzQ4MDAwICAgICAgICAoMjw8MCkgIC8qIDQ4a0h6ICovCiNkZWZp
+bmUgSUVDOTU4X0FFUzNfQ09OX0ZTXzMyMDAwICAgICAgICAoMzw8MCkgIC8qIDMya0h6ICovCiNk
+ZWZpbmUgSUVDOTU4X0FFUzNfQ09OX0ZTXzIyMDUwICAgICAgICAoNDw8MCkgIC8qIDIyLjA1a0h6
+ICovCiNkZWZpbmUgSUVDOTU4X0FFUzNfQ09OX0ZTXzI0MDAwICAgICAgICAoNjw8MCkgIC8qIDI0
+a0h6ICovCgpGcm9tIHRoZSBBRVMzIHNwZWMgKGJ5dGUgbnVtYmVycyBhcmUgMSBiYXNlZCB3aGls
+ZSBiaXQgbnVtYmVycyBhcmUgMCBiYXNlZCBmb3IKc29tZSByZWFzb24gaW4gdGhlIHNwZWNzKToK
+Q29weXJpZ2h0IGJpdCBpcyBvbiBCeXRlMSdzIGJpdCAyCkJ5dGUyIGhhcyB0aGUgY2F0ZWdvcnkg
+Y29kZQphbmQgQnl0ZTQncyAwLTMgYml0cyBmb3IgdGhlIHNhbXBsaW5nIGZyZXF1ZW5jeS4KCkFs
+bCBvZiB0aGUgc2V0dGluZyB5b3UgYXJlIGNoYW5naW5nIGFyIGluIHRoZSBmaXJzdCAzMmJpdCBv
+ZiB0aGUgd2hvbGUKY2hhbm5lbHMgc3RhdHVzIGFycmF5LCB3aGljaCBpcyAyNCBieXRlIGxvbmcu
+Cgo+IEFsc28sIEkndmUgbWVhc3VyZWQgdGhlIG91dHB1dCBvZiB0aGUgUy9QRElGIHBvcnQgd2l0
+aCBleHRlcm5hbCBTL1BESUYKPiBpbnRyb3NwZWN0b3JzIGFuZCB0aGUgcmVzdWx0IGlzIGNvcnJl
+Y3QgOikKCldlbGwgeW91IGVzc2VudGlhbGx5IHdyaXRpbmcgdG8gdGhlIGNvcnJlY3QgYnl0ZSBv
+ZmZzZXQgYnV0IEkgZG9uJ3QgdGhpbmsgaW4gYQpjb3JyZWN0IHdheToKCndyaXRlIHRvIERBVklO
+Q0lfTUNBU1BfRElUQ1NSQV9SRUcgKyAwIGlzIGEgd3JpdGUgc3RhcnRpbmcgYXQgQnl0ZTEKd3Jp
+dGUgdG8gREFWSU5DSV9NQ0FTUF9ESVRDU1JBX1JFRyArIDEgaXMgYSB3cml0ZSBzdGFydGluZyBh
+dCBCeXRlMgp3cml0ZSB0byBEQVZJTkNJX01DQVNQX0RJVENTUkFfUkVHICsgMyBpcyBhIHdyaXRl
+IHN0YXJ0aW5nIGF0IEJ5dGU0CgpUaGUgaW50ZXJjb25uZWN0IEkgdGhpbmsgaXMgY2xldmVyIGVu
+b3VnaCB0byBmaWd1cmUgb3V0IHRoYXQgeW91IHRyeSB0byB3cml0ZQp0byBub24gMzJiaXQgYm91
+bmRhcnkgYW5kIGRvZXMgY29ycmVjdHMgdGhlIGFjY2VzcyAoc2hpZnRpbmcgdGhlIGRhdGEgdG8g
+aXQncwpjb3JyZWN0IHBsYWNlKSBidXQgSSBkb24ndCB0aGluayB3ZSBzaG91bGQgcmVseSBvbiB0
+aGF0LiBJdCBpcyBtdWNoIHNpbXBsZXIgdG8KY29uZmlndXJlIHRoZSBiaXRzIGZpcnN0IGFuZCB3
+cml0ZSBpdCBhcyBvbmUgMzJiaXQuCgoKLS0gClDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
