@@ -1,77 +1,102 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Invalid PCM pointer with CMI8738 and pcm.c buffer
-	underuns
-Date: Thu, 27 Mar 2014 07:23:30 +0800
-Message-ID: <CAN8cciYy4V4StjqRfPpgZ8JMEYZrvpJYCBjfZtNhcn_2enRx6g@mail.gmail.com>
-References: <loom.20140326T163743-253@post.gmane.org>
- <CAN8ccib45znh-JbH57EhfbPNQg_fginmX9Tbr=yKMmd4D=iygQ@mail.gmail.com>
- <CAN8cciZkGx5XBO+u0b7V9YN8VU_rz8ckL8B=6oBFJr+-Yg8cxw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
+Date: Thu, 27 Mar 2014 01:08:52 +0000
+Message-ID: <20140327010852.GA30768@sirena.org.uk>
+References: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
+ <53332CC7.6060800@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f43.google.com (mail-qa0-f43.google.com
- [209.85.216.43])
- by alsa0.perex.cz (Postfix) with ESMTP id B553A265171
- for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 00:23:31 +0100 (CET)
-Received: by mail-qa0-f43.google.com with SMTP id j15so3072872qaq.30
- for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 16:23:30 -0700 (PDT)
-In-Reply-To: <CAN8cciZkGx5XBO+u0b7V9YN8VU_rz8ckL8B=6oBFJr+-Yg8cxw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: andoru <andoru.blah@gmail.com>, tiwai@suse.de, clemens@ladisch.de, mnalis-alsadev@voyager.hr
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <53332CC7.6060800@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Arun Shamanna Lakshmi <aruns@nvidia.com>, lgirdwood@gmail.com, swarren@wwwdotorg.org, Songhee Baek <sbaek@nvidia.com>, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
->
-> I've previously posted under ALSA's user mailing list so to avoid the
-> clutter, the details about what's happening is here:
-> http://article.gmane.org/gmane.linux.alsa.user/38258
-> http://article.gmane.org/gmane.linux.alsa.user/38260
->
-> There was no debug info under /proc/asound/card0/ so nothing to give from
-> there unless you guys need something specific.
->
-> Output of alsa-debug.sh:
-> http://www.alsa-project.org/db/?f=26187faadd47f3626029ba667cb004e74695f2b2
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/cmipci.c?id=1c583063a5c769fe2ec604752e383972c69e6d9b
+--LZvS9be/3tNcYl/X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Seem cannot read valid value from register within three trials
+On Wed, Mar 26, 2014 at 08:38:47PM +0100, Lars-Peter Clausen wrote:
+> On 03/26/2014 01:02 AM, Arun Shamanna Lakshmi wrote:
 
-state.CMI8738 {
-control.1 {
-iface PCM
-device 2
-name 'Playback Channel Map'
-value.0 0
-value.1 0
-value.2 0
-value.3 0
-value.4 0
-value.5 0
-comment {
-access read
-type INTEGER
-count 6
-range '0 - 36'
-}
-}
+> The way you describe this it seems to me that a value array for this kind=
+ of
+> mux would look like.
 
-Seem bug in adding channel map to iec958 instead of analog
+> 0x00000000, 0x00000000, 0x00000001
+> 0x00000000, 0x00000000, 0x00000002
+> 0x00000000, 0x00000000, 0x00000003
+> 0x00000000, 0x00000000, 0x00000004
+> 0x00000000, 0x00000000, 0x00000008
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/cmipci.c?id=f49921b894ec338696e47d985acc09df3cddbfd1
+> That seems to be extremely tedious. If the MUX uses a one hot encoding how
+> about storing the index of the bit in the values array and use (1 << valu=
+e)
+> when writing the value to the register?
 
-pcm.!default {
-    type plug
-    slave.pcm "dmixer"
-}
+Or hide it behind utility macros at any rate; I've got this horrible
+feeling that as soon as we have this people will notice that they have
+more standard enums that are splatted over multiple registers (I think
+=66rom memory I've seen them but they got fudged).
 
-You need asym plugin for playback and capture when overwrite pcm.default
+> [...]
+> >  /* enumerated kcontrol */
+> >  struct soc_enum {
+
+> There doesn't actually be any code that is shared between normal enums and
+> wide enums. This patch doubles the size of the soc_enum struct, how about
+> having a separate struct for wide enums?
+
+Or if they are going to share the same struct then they shouldn't be
+duplicating the code and instead keying off num_regs (which was my first
+thought earlier on when I saw the separate functions).  We definitely
+shouldn't be sharing the data without also sharing the code I think.
+
+> >-	int reg;
+> >+	int reg[SOC_ENUM_MAX_REGS];
+> >  	unsigned char shift_l;
+> >  	unsigned char shift_r;
+> >  	unsigned int items;
+> >-	unsigned int mask;
+> >+	unsigned int mask[SOC_ENUM_MAX_REGS];
+
+> If you make mask and reg pointers instead of arrays this should be much m=
+ore
+> flexible and not be limited to 3 registers.
+
+Right, which pushes towards not sharing.  Though with an arrayified mask
+the specification by shift syntax would get to be slightly obscure (is
+it relative to the enums or the registers?) so perhaps we don't want to
+do that at all if we've got specification by shift.  If we do that then
+we could get away with a variable length array at the end of the struct
+though I think that may be painful for the static declarations.  Someone
+would need to look to see what works
+
+--LZvS9be/3tNcYl/X
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTM3obAAoJELSic+t+oim9Bs0QAJ0eqDsnijtkzYfHUXtnYLJ5
+jXUEAEiWzZ4Uyo+gvTOP/qOoA4cINMsJ8k8dZX0F3fx+d9OaSX8XUwbO+unjkxbR
+y1kuLU24eFaFNnB1t6FgzIBtLzoAw0RkhmyT4ALAyY5pdolfMZkTVt7IKYictDTd
+MR8ghUGPIyMZLeQyQjURGtj5u1b37gZBw/7/oeo7IweE6JQtDBqxMjYDow8jhH9q
+UTrAqZOwmG5OavDuur1RrnwPw1dKa9S8nCtRDi2gI96L0hs+SkXPPMBzo3uJYIy3
+Cj2gSaBHndrky2v0iJI4/4dIXaXeP9Pyy98E9c0RqxDqSANAsupL7Ad73wGGbnYM
+nsKok435fT1KGZyIZe8QeywQ8yqCE3HDJ45/yPN8PgX/YiJa5QowzpZFKUAeVhq0
++KdkUWinGca9Wq4H9Vh4HuVmOnF3ow19dA32+L0XCTIZh0wbZ0DVNTZHLiuWP0Ay
+K9pHCX41cAMHjchRUyluIJ9N32OMz2MhShWiUR3BgGewTRYmMNnOgEf472e5QwT3
+ChM0l5J9+Vlt66D0seQ3GZ9AH9EJNgg7i4j8PdLhRlHNw0HeUxTtGnjmTM1TN2pa
+0qELAxaV76vervqVId//EI7XNRvZW3al1FqgLdPhXjqhM9zR/EbULb01YWK9Uid9
+SnO6x2+2/xo77MJvL6ES
+=D05e
+-----END PGP SIGNATURE-----
+
+--LZvS9be/3tNcYl/X--
