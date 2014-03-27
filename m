@@ -1,19 +1,22 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: Add support for multi register mux
-Date: Thu, 27 Mar 2014 10:19:54 +0100
-Message-ID: <5333ED3A.7040908@metafoo.de>
-References: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
- <53332CC7.6060800@metafoo.de>
- <D6C615D3E4730340AE82D5BD856631C0A26CB319B2@HQMAIL02.nvidia.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH] ASoC: davinci-mcasp: set up user bits for
+	S/PDIF mode
+Date: Thu, 27 Mar 2014 10:31:26 +0100
+Message-ID: <5333EFEE.5090000@gmail.com>
+References: <1395846273-26025-1-git-send-email-zonque@gmail.com>
+ <5333DE63.1010205@ti.com> <5333E3BE.80403@gmail.com>
+ <5333EB16.2080603@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-085.synserver.de (smtp-out-246.synserver.de
- [212.40.185.246])
- by alsa0.perex.cz (Postfix) with ESMTP id 461772619EC
- for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 10:19:05 +0100 (CET)
-In-Reply-To: <D6C615D3E4730340AE82D5BD856631C0A26CB319B2@HQMAIL02.nvidia.com>
+Received: from mail-bk0-f49.google.com (mail-bk0-f49.google.com
+ [209.85.214.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7B4F261717
+ for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 10:31:41 +0100 (CET)
+Received: by mail-bk0-f49.google.com with SMTP id my13so734343bkb.36
+ for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 02:31:41 -0700 (PDT)
+In-Reply-To: <5333EB16.2080603@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,75 +26,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Songhee Baek <sbaek@nvidia.com>
-Cc: Arun Shamanna Lakshmi <aruns@nvidia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/26/2014 11:41 PM, Songhee Baek wrote:
->> -----Original Message-----
->> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
->> Sent: Wednesday, March 26, 2014 12:39 PM
->> To: Arun Shamanna Lakshmi
->> Cc: lgirdwood@gmail.com; broonie@kernel.org; swarren@wwwdotorg.org;
->> Songhee Baek; alsa-devel@alsa-project.org; tiwai@suse.de; linux-
->> kernel@vger.kernel.org
->> Subject: Re: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
->>
->> On 03/26/2014 01:02 AM, Arun Shamanna Lakshmi wrote:
->>> If the mux uses 1 bit position per input, and requires to set one
->>> single bit at a time, then an N bit register can support up to N
->>> inputs. In more recent Tegra chips, we have at least greater than
->>> 64 inputs which requires at least 2 .reg fields in struct soc_enum.
->>>
->>> Signed-off-by: Arun Shamanna Lakshmi <aruns@nvidia.com>
->>> Signed-off-by: Songhee Baek <sbaek@nvidia.com>
->>
->> The way you describe this it seems to me that a value array for this kind of
->> mux would look like.
->>
->> 0x00000000, 0x00000000, 0x00000001
->> 0x00000000, 0x00000000, 0x00000002
->> 0x00000000, 0x00000000, 0x00000003
->> 0x00000000, 0x00000000, 0x00000004
->> 0x00000000, 0x00000000, 0x00000008
->> ...
->>
->> That seems to be extremely tedious. If the MUX uses a one hot encoding
->> how about storing the index of the bit in the values array and use (1 << value)
->> when writing the value to the register?
->
-> If we store the index of the bit, the value will be duplicated for each registers inputs since register has 0 to 31bits to shift, then we need to decode the index to interpret value for which registers to set. If we need to interpret the decoded value of index, it is better to have custom put/get function in our driver, isn't it?
->
+On 03/27/2014 10:10 AM, Peter Ujfalusi wrote:
+> On 03/27/2014 10:39 AM, Daniel Mack wrote:
 
-I'm not sure I understand. If you use (val / 32) to pick the register and 
-(val % 32) to pick the bit in the register this should work just fine. Maybe 
-I'm missing something. Do you have a real world code example of of the this 
-type of enum is used?
+>> No, these defines are mapped on to 32-bit values, as seen in
+>> include/sound/asounddef.h. Over all 6 registers, 192 bits can be stored,
+>> which is the full length of channel status bits. Hence, they really need
+>> an individual mcasp_set_reg() each.
+> 
+> I don't think they are mapped for the 32bit:
+> #define IEC958_AES0_CON_NOT_COPYRIGHT   (1<<2)
+> 
+> #define IEC958_AES1_CON_DIGDIGCONV_ID   0x02
+> #define IEC958_AES1_CON_PCM_CODER       (IEC958_AES1_CON_DIGDIGCONV_ID|0x00)
+> 
+> #define IEC958_AES3_CON_FS_48000        (2<<0)  /* 48kHz */
+> #define IEC958_AES3_CON_FS_32000        (3<<0)  /* 32kHz */
+> #define IEC958_AES3_CON_FS_22050        (4<<0)  /* 22.05kHz */
+> #define IEC958_AES3_CON_FS_24000        (6<<0)  /* 24kHz */
 
->>> -	int reg;
->>> +	int reg[SOC_ENUM_MAX_REGS];
->>>    	unsigned char shift_l;
->>>    	unsigned char shift_r;
->>>    	unsigned int items;
->>> -	unsigned int mask;
->>> +	unsigned int mask[SOC_ENUM_MAX_REGS];
->>
->> If you make mask and reg pointers instead of arrays this should be much
->> more flexible and not be limited to 3 registers.
->>
->
-> To use pointers instead of arrays, it will be flexible but I need to update SOC_ENUM SINGLE/DOUBLE macros.
-> It will changes a lot in current soc-core.c and soc-dapm.c.
+Hmm, that's odd. What about this one then, which definitely needs a
+larger type than uint16?
 
-In the existing macros you can do something like this:
-	...
-	.reg = &(unsigned int){(xreg)},
-	...
+#define IEC958_AES4_CON_ORIGFS_44100	(15<<4)	/* 44.1kHz */
 
->
->>>    	const char * const *texts;
->>>    	const unsigned int *values;
->>> +	unsigned int num_regs;
->>>    };
->>>
->
+I considered DITCSRA0 to DITCSRA5 to carry 6 32 bit values, which map to
+the values defined as IEC958_AESX*.
+
+> From the AES3 spec (byte numbers are 1 based while bit numbers are 0 based for
+> some reason in the specs):
+> Copyright bit is on Byte1's bit 2
+
+"Byte 1" is the at index 0, right?
+
+#define IEC958_AES0_CON_NOT_COPYRIGHT	(1<<2)
+
+> Byte2 has the category code
+> and Byte4's 0-3 bits for the sampling frequency.
+
+#define IEC958_AES3_CON_FS_44100	(0<<0)
+...
+
+You're right that my register address calculation has to go in 32bit
+(DAVINCI_MCASP_DITCSRA_REG + 4, DAVINCI_MCASP_DITCSRA_REG + 8, ...), but
+I still don't think the u8-mapping is correct.
+
+I'm confused. :)
+
+
+Daniel
