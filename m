@@ -1,47 +1,90 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [PATCH] ASoC: fsl_sai: Add isr to deal with error flag
-Date: Thu, 27 Mar 2014 04:18:27 +0000
-Message-ID: <d77b7d1800884badbdb50564b8460267@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <1395834517-16426-1-git-send-email-Guangyu.Chen@freescale.com>
- <11a8271c31044515bd2657a93aefdaec@BY2PR03MB505.namprd03.prod.outlook.com>
- <20140327023617.GB16197@MrMyself>
- <1e2d210764724c7e834c5307b54c37ab@BY2PR03MB505.namprd03.prod.outlook.com>
- <20140327025647.GC16197@MrMyself>
- <12f887b3889a41849026965f0cf7db1f@BY2PR03MB505.namprd03.prod.outlook.com>
- <20140327033117.GD16197@MrMyself>
- <62630844c7434df6937ca25d3f47b656@BY2PR03MB505.namprd03.prod.outlook.com>
- <20140327035726.GA16359@MrMyself>
+From: Songhee Baek <sbaek@nvidia.com>
+Subject: RE: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
+Date: Wed, 26 Mar 2014 21:33:51 -0700
+Message-ID: <D6C615D3E4730340AE82D5BD856631C0A26CB31A6B@HQMAIL02.nvidia.com>
+References: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
+ <53332CC7.6060800@metafoo.de> <20140327010852.GA30768@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140327035726.GA16359@MrMyself>
+In-Reply-To: <20140327010852.GA30768@sirena.org.uk>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>
-Cc: "broonie@kernel.org" <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: Arun Shamanna Lakshmi <aruns@nvidia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > So let's just ignore the clearance of these bits in isr().
-> >
-> > +++++
-> > SAI Transmit Control Register (I2S1_TCSR) : 32 : R/W : 0000_0000h
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-
+> project.org] On Behalf Of Mark Brown
+> Sent: Wednesday, March 26, 2014 6:09 PM
+> To: Lars-Peter Clausen
+> Cc: Songhee Baek; Arun Shamanna Lakshmi; alsa-devel@alsa-project.org;
+> swarren@wwwdotorg.org; tiwai@suse.de; lgirdwood@gmail.com; linux-
+> kernel@vger.kernel.org
+> Subject: Re: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
 > 
-> I'm talking about FWF and FRF bits, not TCSR as a register.
+> * PGP Signed by an unknown key
 > 
-> > -----
-> >
-> > I have checked in the Vybrid and LS1 SoC datasheets, and they are all the
-> > Same as above, and nothing else.
-> >
-> > Have I missed ?
+> On Wed, Mar 26, 2014 at 08:38:47PM +0100, Lars-Peter Clausen wrote:
+> > On 03/26/2014 01:02 AM, Arun Shamanna Lakshmi wrote:
 > 
-> What i.MX IC team told me is SAI ignores what we do to FWF and FRF, so you
-> don't need to worry about it at all unless Vybrid makes them writable, in
-> which case we may also need to clear these bits and confirm with Vybrid IC
-> team if they're also W1C.
+> > The way you describe this it seems to me that a value array for this
+> > kind of mux would look like.
 > 
+> > 0x00000000, 0x00000000, 0x00000001
+> > 0x00000000, 0x00000000, 0x00000002
+> > 0x00000000, 0x00000000, 0x00000003
+> > 0x00000000, 0x00000000, 0x00000004
+> > 0x00000000, 0x00000000, 0x00000008
+> 
+> > That seems to be extremely tedious. If the MUX uses a one hot encoding
+> > how about storing the index of the bit in the values array and use (1
+> > << value) when writing the value to the register?
+> 
+> Or hide it behind utility macros at any rate; I've got this horrible feeling that as
+> soon as we have this people will notice that they have more standard enums
+> that are splatted over multiple registers (I think from memory I've seen them
+> but they got fudged).
+> 
+> > [...]
+> > >  /* enumerated kcontrol */
+> > >  struct soc_enum {
+> 
+> > There doesn't actually be any code that is shared between normal enums
+> > and wide enums. This patch doubles the size of the soc_enum struct,
+> > how about having a separate struct for wide enums?
+> 
+> Or if they are going to share the same struct then they shouldn't be duplicating
+> the code and instead keying off num_regs (which was my first thought earlier
+> on when I saw the separate functions).  We definitely shouldn't be sharing the
+> data without also sharing the code I think.
+> 
+> > >-	int reg;
+> > >+	int reg[SOC_ENUM_MAX_REGS];
+> > >  	unsigned char shift_l;
+> > >  	unsigned char shift_r;
+> > >  	unsigned int items;
+> > >-	unsigned int mask;
+> > >+	unsigned int mask[SOC_ENUM_MAX_REGS];
+> 
+> > If you make mask and reg pointers instead of arrays this should be
+> > much more flexible and not be limited to 3 registers.
+> 
+> Right, which pushes towards not sharing.  Though with an arrayified mask the
+> specification by shift syntax would get to be slightly obscure (is it relative to the
+> enums or the registers?) so perhaps we don't want to do that at all if we've got
+> specification by shift.  If we do that then we could get away with a variable
+> length array at the end of the struct though I think that may be painful for the
+> static declarations.  Someone would need to look to see what works
 
-Well, if so, that's fine.
+Making a separate soc_enum_wide is a better way compared to using soc_enum for this use case. If we add a separate soc_enum_wide, we need to update the following functions : 
+	dapm_connect_mux,
+	soc_dapm_mux_update_power
+	snd_soc_dapm_mux_update_power
+These functions are using texts field in soc_enum struct, I think that we can pass texts pointer instead of soc_enum struct pointer. I want to know whether it is Ok to do this.
 
-Thanks,
+> 
+> * Unknown Key
+> * 0x7EA229BD
