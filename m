@@ -1,144 +1,68 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v3] ASoC: davinci-mcasp: set up channel
- status bits for S/PDIF mode
-Date: Thu, 27 Mar 2014 12:29:10 +0200
-Message-ID: <5333FD76.5030705@ti.com>
-References: <1395916060-16234-1-git-send-email-zonque@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_sai: Add isr to deal with error flag
+Date: Thu, 27 Mar 2014 10:54:36 +0000
+Message-ID: <20140327105436.GF30768@sirena.org.uk>
+References: <1395834517-16426-1-git-send-email-Guangyu.Chen@freescale.com>
+ <11a8271c31044515bd2657a93aefdaec@BY2PR03MB505.namprd03.prod.outlook.com>
+ <20140327023617.GB16197@MrMyself>
+ <1e2d210764724c7e834c5307b54c37ab@BY2PR03MB505.namprd03.prod.outlook.com>
+ <20140327025647.GC16197@MrMyself>
+ <12f887b3889a41849026965f0cf7db1f@BY2PR03MB505.namprd03.prod.outlook.com>
+ <20140327033117.GD16197@MrMyself>
+ <62630844c7434df6937ca25d3f47b656@BY2PR03MB505.namprd03.prod.outlook.com>
+ <20140327035726.GA16359@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id E0A16265335
- for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 11:29:13 +0100 (CET)
-In-Reply-To: <1395916060-16234-1-git-send-email-zonque@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qftxBdZWiueWNAVY"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140327035726.GA16359@MrMyself>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: Xiubo Li-B47053 <Li.Xiubo@freescale.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/27/2014 12:27 PM, Daniel Mack wrote:
-> In DIT (S/PDIF) mode, program the transmitted user bits to reflect the
-> configured sample rate, along with some other details.
-> =
 
-> Signed-off-by: Daniel Mack <zonque@gmail.com>
+--qftxBdZWiueWNAVY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+On Thu, Mar 27, 2014 at 11:57:27AM +0800, Nicolin Chen wrote:
+> On Thu, Mar 27, 2014 at 12:06:53PM +0800, Xiubo Li-B47053 wrote:
 
-> ---
-> v3 just changes variable names.
-> =
+> > I have checked in the Vybrid and LS1 SoC datasheets, and they are all the
+> > Same as above, and nothing else.
 
->  sound/soc/davinci/davinci-mcasp.c | 49 +++++++++++++++++++++++++++++++++=
-++++--
->  1 file changed, 47 insertions(+), 2 deletions(-)
-> =
+> > Have I missed ?
 
-> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinc=
-i-mcasp.c
-> index 4500cf0..a21a7d4 100644
-> --- a/sound/soc/davinci/davinci-mcasp.c
-> +++ b/sound/soc/davinci/davinci-mcasp.c
-> @@ -27,6 +27,7 @@
->  #include <linux/of_platform.h>
->  #include <linux/of_device.h>
->  =
+> What i.MX IC team told me is SAI ignores what we do to FWF and FRF, so you
+> don't need to worry about it at all unless Vybrid makes them writable, in
+> which case we may also need to clear these bits and confirm with Vybrid IC
+> team if they're also W1C.
 
-> +#include <sound/asoundef.h>
->  #include <sound/core.h>
->  #include <sound/pcm.h>
->  #include <sound/pcm_params.h>
-> @@ -576,8 +577,12 @@ static int mcasp_i2s_hw_param(struct davinci_mcasp *=
-mcasp, int stream)
->  }
->  =
+And even if it payed attention I'd expect that a lot of the time they'd
+just be reasserted immediately as the condition still holds.
 
->  /* S/PDIF */
-> -static int mcasp_dit_hw_param(struct davinci_mcasp *mcasp)
-> +static int mcasp_dit_hw_param(struct davinci_mcasp *mcasp,
-> +			      unsigned int rate)
->  {
-> +	u32 cs_value =3D 0;
-> +	u8 *cs_bytes =3D (u8*) &cs_value;
-> +
->  	/* Set the TX format : 24 bit right rotation, 32 bit slot, Pad 0
->  	   and LSB first */
->  	mcasp_set_bits(mcasp, DAVINCI_MCASP_TXFMT_REG, TXROT(6) | TXSSZ(15));
-> @@ -599,6 +604,46 @@ static int mcasp_dit_hw_param(struct davinci_mcasp *=
-mcasp)
->  	/* Enable the DIT */
->  	mcasp_set_bits(mcasp, DAVINCI_MCASP_TXDITCTL_REG, DITEN);
->  =
+--qftxBdZWiueWNAVY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> +	/* Set S/PDIF channel status bits */
-> +	cs_bytes[0] =3D IEC958_AES0_CON_NOT_COPYRIGHT;
-> +	cs_bytes[1] =3D IEC958_AES1_CON_PCM_CODER;
-> +
-> +	switch (rate) {
-> +	case 22050:
-> +		cs_bytes[3] |=3D IEC958_AES3_CON_FS_22050;
-> +		break;
-> +	case 24000:
-> +		cs_bytes[3] |=3D IEC958_AES3_CON_FS_24000;
-> +		break;
-> +	case 32000:
-> +		cs_bytes[3] |=3D IEC958_AES3_CON_FS_32000;
-> +		break;
-> +	case 44100:
-> +		cs_bytes[3] |=3D IEC958_AES3_CON_FS_44100;
-> +		break;
-> +	case 48000:
-> +		cs_bytes[3] |=3D IEC958_AES3_CON_FS_48000;
-> +		break;
-> +	case 88200:
-> +		cs_bytes[3] |=3D IEC958_AES3_CON_FS_88200;
-> +		break;
-> +	case 96000:
-> +		cs_bytes[3] |=3D IEC958_AES3_CON_FS_96000;
-> +		break;
-> +	case 176400:
-> +		cs_bytes[3] |=3D IEC958_AES3_CON_FS_176400;
-> +		break;
-> +	case 192000:
-> +		cs_bytes[3] |=3D IEC958_AES3_CON_FS_192000;
-> +		break;
-> +	default:
-> +		printk(KERN_WARNING "unsupported sampling rate: %d\n", rate);
-> +		return -EINVAL;
-> +	}
-> +
-> +	mcasp_set_reg(mcasp, DAVINCI_MCASP_DITCSRA_REG, cs_value);
-> +	mcasp_set_reg(mcasp, DAVINCI_MCASP_DITCSRB_REG, cs_value);
-> +
->  	return 0;
->  }
->  =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-> @@ -634,7 +679,7 @@ static int davinci_mcasp_hw_params(struct snd_pcm_sub=
-stream *substream,
->  		return ret;
->  =
+iQIcBAEBAgAGBQJTNANpAAoJELSic+t+oim9r2cP/3dQQg6dU4Lij5ZiofJFGOjs
+bQorzEeQzHbKAY4Wb305d0zLJXSP7jdZ30oczgm9NjeUh1MQQKuMhwKOAVLkhVMd
+thCCEVltQiuFHvCFpg7FTjR6BJ+Zs0MHlCX9dRZ1Z9oukoqryqZA7bH7wu+7NKgp
+P/TV+edn0XKXJ1O0JT2NOQTHdbiLedZjM1YwZorWCxPZI58YZ//0bKl5gU1S5PuL
+huAYiuLHGMMzDF2RL+zBz+63LHbF6iuGHlQ3BdV/UTuakfijo/WEU23L94MOtydh
+c3Idk9CZav/mfp3aKatlcabcYgrgOA248Ghmt9TSbNXQj8A+u6E1raA35YC2Yky8
+J+tZ6ywqLpCqXjGDFK1B2GNMvdlBSLV9wFUINc3QHWtd0g8jpM5K/jVX8Pxh4bWc
+tbnsrZ7LGAhNRmPtEOKNxOGMhaVULXE+M+BXmeG2+QUaZj6GK99BzkgpP/Oy2Kij
+qb1II9xbGVAb2Kv6BgRWMx+vAlIQpamsdHDJhmyGqDoRXszQt1uW3Dv3M+Iz4S+N
+lHZRbfwtNn6KbnaGzLL6Y8hNrEL5YkHBCzutO8Xj4JwILFXWzdCcd70OrE1CE9Tl
+cOfbz/mF3pznrcuOl1cikhB7Zaz6V7LDhfi+aXNxa0eM1UCo87Ny/ESxt3n3dznO
++ws1n+FMe80NSiUqgDUr
+=mDGu
+-----END PGP SIGNATURE-----
 
->  	if (mcasp->op_mode =3D=3D DAVINCI_MCASP_DIT_MODE)
-> -		ret =3D mcasp_dit_hw_param(mcasp);
-> +		ret =3D mcasp_dit_hw_param(mcasp, params_rate(params));
->  	else
->  		ret =3D mcasp_i2s_hw_param(mcasp, substream->stream);
->  =
-
-> =
-
-
-
--- =
-
-P=E9ter
+--qftxBdZWiueWNAVY--
