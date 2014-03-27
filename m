@@ -1,90 +1,50 @@
-From: Songhee Baek <sbaek@nvidia.com>
-Subject: RE: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
-Date: Wed, 26 Mar 2014 21:33:51 -0700
-Message-ID: <D6C615D3E4730340AE82D5BD856631C0A26CB31A6B@HQMAIL02.nvidia.com>
-References: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
- <53332CC7.6060800@metafoo.de> <20140327010852.GA30768@sirena.org.uk>
+From: RongJun Ying <rjying@gmail.com>
+Subject: [PATCH v6 0/2] ASoC: Add SiRF I2S controller and hdmi
+	card drivers
+Date: Thu, 27 Mar 2014 13:27:03 +0800
+Message-ID: <1395898025-5437-1-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140327010852.GA30768@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: Arun Shamanna Lakshmi <aruns@nvidia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f175.google.com (mail-pd0-f175.google.com
+ [209.85.192.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 352502651CE
+ for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 06:28:05 +0100 (CET)
+Received: by mail-pd0-f175.google.com with SMTP id x10so2842662pdj.6
+ for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2014 22:28:03 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, rjying@gmail.com
+Cc: Takashi Iwai <tiwai@suse.de>, Rongjun Ying <rongjun.ying@csr.com>, alsa-devel@alsa-project.org, workgroup.linux@csr.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-
-> project.org] On Behalf Of Mark Brown
-> Sent: Wednesday, March 26, 2014 6:09 PM
-> To: Lars-Peter Clausen
-> Cc: Songhee Baek; Arun Shamanna Lakshmi; alsa-devel@alsa-project.org;
-> swarren@wwwdotorg.org; tiwai@suse.de; lgirdwood@gmail.com; linux-
-> kernel@vger.kernel.org
-> Subject: Re: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
-> 
-> * PGP Signed by an unknown key
-> 
-> On Wed, Mar 26, 2014 at 08:38:47PM +0100, Lars-Peter Clausen wrote:
-> > On 03/26/2014 01:02 AM, Arun Shamanna Lakshmi wrote:
-> 
-> > The way you describe this it seems to me that a value array for this
-> > kind of mux would look like.
-> 
-> > 0x00000000, 0x00000000, 0x00000001
-> > 0x00000000, 0x00000000, 0x00000002
-> > 0x00000000, 0x00000000, 0x00000003
-> > 0x00000000, 0x00000000, 0x00000004
-> > 0x00000000, 0x00000000, 0x00000008
-> 
-> > That seems to be extremely tedious. If the MUX uses a one hot encoding
-> > how about storing the index of the bit in the values array and use (1
-> > << value) when writing the value to the register?
-> 
-> Or hide it behind utility macros at any rate; I've got this horrible feeling that as
-> soon as we have this people will notice that they have more standard enums
-> that are splatted over multiple registers (I think from memory I've seen them
-> but they got fudged).
-> 
-> > [...]
-> > >  /* enumerated kcontrol */
-> > >  struct soc_enum {
-> 
-> > There doesn't actually be any code that is shared between normal enums
-> > and wide enums. This patch doubles the size of the soc_enum struct,
-> > how about having a separate struct for wide enums?
-> 
-> Or if they are going to share the same struct then they shouldn't be duplicating
-> the code and instead keying off num_regs (which was my first thought earlier
-> on when I saw the separate functions).  We definitely shouldn't be sharing the
-> data without also sharing the code I think.
-> 
-> > >-	int reg;
-> > >+	int reg[SOC_ENUM_MAX_REGS];
-> > >  	unsigned char shift_l;
-> > >  	unsigned char shift_r;
-> > >  	unsigned int items;
-> > >-	unsigned int mask;
-> > >+	unsigned int mask[SOC_ENUM_MAX_REGS];
-> 
-> > If you make mask and reg pointers instead of arrays this should be
-> > much more flexible and not be limited to 3 registers.
-> 
-> Right, which pushes towards not sharing.  Though with an arrayified mask the
-> specification by shift syntax would get to be slightly obscure (is it relative to the
-> enums or the registers?) so perhaps we don't want to do that at all if we've got
-> specification by shift.  If we do that then we could get away with a variable
-> length array at the end of the struct though I think that may be painful for the
-> static declarations.  Someone would need to look to see what works
+From: Rongjun Ying <rongjun.ying@csr.com>
 
-Making a separate soc_enum_wide is a better way compared to using soc_enum for this use case. If we add a separate soc_enum_wide, we need to update the following functions : 
-	dapm_connect_mux,
-	soc_dapm_mux_update_power
-	snd_soc_dapm_mux_update_power
-These functions are using texts field in soc_enum struct, I think that we can pass texts pointer instead of soc_enum struct pointer. I want to know whether it is Ok to do this.
+This patchset adds CSR SiRFSoC sound drivers including:
+4. The SiRF I2S controller driver
+5. The SiRF hdmi card driver
 
-> 
-> * Unknown Key
-> * 0x7EA229BD
+Rongjun Ying (2):
+  ASoC: sirf: Add SiRF I2S driver
+  ASoC: sirf: Add hdmi support
+
+ .../devicetree/bindings/sound/sirf-i2s.txt         |   27 ++
+ sound/soc/sirf/Kconfig                             |   11 +
+ sound/soc/sirf/Makefile                            |    2 +
+ sound/soc/sirf/sirf-i2s.c                          |  445 ++++++++++++++++++++
+ sound/soc/sirf/sirf-i2s.h                          |   93 ++++
+ 5 files changed, 578 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-i2s.txt
+ create mode 100644 sound/soc/sirf/sirf-i2s.c
+ create mode 100644 sound/soc/sirf/sirf-i2s.h
+
+-- 
+1.7.5.4
