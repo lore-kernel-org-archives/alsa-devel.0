@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_sai: Add isr to deal with error
-	flag
-Date: Thu, 27 Mar 2014 01:14:24 +0000
-Message-ID: <20140327011424.GB30768@sirena.org.uk>
-References: <1395834517-16426-1-git-send-email-Guangyu.Chen@freescale.com>
- <063D6719AE5E284EB5DD2968C1650D6D0F6E958E@AcuExch.aculab.com>
+Subject: Re: [PATCH] ASoC: Add support for multi register mux
+Date: Thu, 27 Mar 2014 01:29:13 +0000
+Message-ID: <20140327012913.GC30768@sirena.org.uk>
+References: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7695438491067252922=="
+Content-Type: multipart/mixed; boundary="===============1528878034484665630=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A6782651A4
- for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 02:15:56 +0100 (CET)
-In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6D0F6E958E@AcuExch.aculab.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A7AD526517E
+ for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 02:30:06 +0100 (CET)
+In-Reply-To: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +20,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Laight <David.Laight@ACULAB.COM>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 'Nicolin Chen' <Guangyu.Chen@freescale.com>
+To: Arun Shamanna Lakshmi <aruns@nvidia.com>
+Cc: Songhee Baek <sbaek@nvidia.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, swarren@wwwdotorg.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7695438491067252922==
+--===============1528878034484665630==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gatW/ieO32f1wygP"
+	protocol="application/pgp-signature"; boundary="Y5rl02BVI9TCfPar"
 Content-Disposition: inline
 
 
---gatW/ieO32f1wygP
+--Y5rl02BVI9TCfPar
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 26, 2014 at 11:59:53AM +0000, David Laight wrote:
-> From: Nicolin Chen
+On Tue, Mar 25, 2014 at 05:02:35PM -0700, Arun Shamanna Lakshmi wrote:
 
-> > +	regmap_read(sai->regmap, FSL_SAI_TCSR, &xcsr);
-> > +	regmap_write(sai->regmap, FSL_SAI_TCSR, xcsr);
+> +	}
+> +	if (!match) {
+> +		dev_err(codec->dev, "ASoC: Failed to find matched enum value\n");
+> +		return -EINVAL;
+> +	} else
+> +		ucontrol->value.enumerated.item[0] = i;
 
-> Assuming these are 'write to clear' bits, you might want
-> to make the write (above) and all the traces (below)
-> conditional on the value being non-zero.
+Coding style nit: if one side of the if has braces both should.  Most of
+this code could also use more blank lines.
 
-The trace is already conditional?  I'd also expect to see the driver
-only acknowledging sources it knows about and only reporting that the
-interrupt was handled if it saw one of them - right now all interrupts
-are unconditionally acknowleged.
+> +	for (reg_idx = 0; reg_idx < e->num_regs; reg_idx++) {
+> +		val = e->values[item * e->num_regs + reg_idx];
+> +		ret = snd_soc_update_bits_locked(codec, e->reg[reg_idx],
+> +						e->mask[reg_idx], val);
+> +		if (ret)
+> +			return ret;
+> +	}
 
---gatW/ieO32f1wygP
+So, this is a bit interesting.  It will update one register at a time
+which means that we are likely to transiently set an invalid value
+sometimes which might not make the hardware happy or may cause us to
+write a valid value with undesirable consequences.  I'd expect to see
+some handling of this, some combination of providing a safe value that
+the hardware could be reset to prior to change and doing a bulk write to
+all the registers simultaneously if we can (I know sometimes hardware
+has special handling for atomic updates of multi-register values in a
+single block transfer).
+
+--Y5rl02BVI9TCfPar
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTM3ttAAoJELSic+t+oim95MUP+gMsQMOBj7NRxd7FrKARq1Gm
-LUZUJOWHUzsG/KUzJHmWIkYmcDfQSFnME6ff8piAkhKNSTctMJJa+enfVdFABO9W
-v9nwruVF3qFbU29s8/G+V0PbaPyPgobUt2z5v223XLpqfGOcaAmhLtbZrJwSembu
-vplBpegifopzWpo+kdb4X0BdBuVfwEXrpPmpwIz/K2EfJtUINvNB/vtw7RmKE+Xt
-HamSfmEzjJsxowBNmRpgoTd7rwz1Tfudfy4ADwGHuZrr/mvUhGKWGyjxGU1+aFQj
-/nNjaHvbt1L+gIWbxgookmoorRMgR99iIN6Za0mER+ZLdKHPkQT7UTC7IlTwOeAO
-ZxMe0e6kgOVDvKIDstaFLsKN3d1N7GAXTapXRByjMg1QLgN8K060vs+z1XI4wxJb
-JbhnOqxsc6Vw0wgpKyvHEDb3M2wdk6NPgxopdi9qGoDyRIoplsmwwfFwCxAQ0a6B
-AW1H76dsqkOmeBdo8eHno+foNeD5Mx49BCL9RKiqc+nitzt1nrgwpMgE5axsex+F
-bnFam/NBcw7Q2y2jbwWqBbpQziVgTwZcvXbjXpLSAX/SjJFNYnTc6UTx8WD17Htu
-gAM9W6qJZqCm9Tgq+twff4xLiH0agnTZtQOf/Au2qMIR1XnGuJOzJsRerhFN48Bz
-XReN9qP/EFGKVV/Ij2e8
-=N62s
+iQIcBAEBAgAGBQJTM37mAAoJELSic+t+oim91JwP/1O6HzKdLQzCV9TXiRiLE+9B
+faDk5xuDbDHYD9btV0YExWP1iKnmMJBQ0E6X8+3pq2yPkLEcUBbAuPm3NClH5KTR
+hlnQIg8M8Ypssnh23x57/4+VKcIpMFJdr+wAlzCFMae0bPCSifxfwFaIutfRS3i2
+5EPckDHI6yAERgVYBiudgK3MqAG07o5UnIC6DEKybgL5cseABNj21d1XE1wkhIKR
+yeMAazWddeaA8gADPD2rP+gKqWojjEqNbGpkm7JXx3T/YRF5dhu2mbjqwzC2YHP1
+iLzPd6+XiKNyK6MN6/sPBh3AEN+xOGNLaKr4lLRBG89VPS7wSmapOhJuyAZtLaLq
+R/xVa56X4CXpVBZX9ML0eQvJFjSEuNIlBTxcO2692yt6xOD9oKN8CIzdprwdaYYW
+c89E5HKuPCseemNlT9DPWNFSPnOUL0WiEaY0+hR/YSzCzqa31oynJmfo2wHzu75I
+6NMIHX1KsVAZ3QesD0a2IxPO7pDDYFbnnJ3LkQ1OicNIc0rB3VeR9mFedDA9oxjH
+mJOd6PH7OOj0DUQK2Uor7DoX1W69TqNzYx4AKCVipUtXBSPlNljd6xbV0BPyTN5O
+vA9UP1Vi1m3RXf9LVHRaLt7vfVOlV6gPCqOWRKyQR76338/ohgmW7yDkq4oKpsmC
+4HUKiQosoQi1qAZhXguu
+=LJ5n
 -----END PGP SIGNATURE-----
 
---gatW/ieO32f1wygP--
+--Y5rl02BVI9TCfPar--
 
---===============7695438491067252922==
+--===============1528878034484665630==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7695438491067252922==--
+--===============1528878034484665630==--
