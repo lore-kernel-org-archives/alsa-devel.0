@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: Move cache sync() to resume()
-Date: Thu, 27 Mar 2014 11:09:55 +0000
-Message-ID: <20140327110955.GH30768@sirena.org.uk>
-References: <1395906947-27211-1-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [PATCH 1/1] ASoC: Samsung: Fix build on
+	multiplatform
+Date: Thu, 27 Mar 2014 11:14:32 +0000
+Message-ID: <20140327111432.GI30768@sirena.org.uk>
+References: <1395907197-12637-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8989726774006976119=="
+Content-Type: multipart/mixed; boundary="===============9019341435924724103=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F1282652E3
- for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 12:10:20 +0100 (CET)
-In-Reply-To: <1395906947-27211-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 19B562652DA
+ for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 12:14:52 +0100 (CET)
+In-Reply-To: <1395907197-12637-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8989726774006976119==
+--===============9019341435924724103==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="smOfPzt+Qjm5bNGJ"
+	protocol="application/pgp-signature"; boundary="X+nYw8KZ/oNxZ8JS"
 Content-Disposition: inline
 
 
---smOfPzt+Qjm5bNGJ
+--X+nYw8KZ/oNxZ8JS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 27, 2014 at 03:55:47PM +0800, Oder Chiou wrote:
-> The patch fixes the defect in case of resume which doesn't sync the cache.
+On Thu, Mar 27, 2014 at 01:29:57PM +0530, Sachin Kamat wrote:
+> PCM and S/PDIF drivers referenced mach headers for a trivial
+> data structure. This caused build errors on multiplatform builds
+> as machine headers are not accessible from driver files. Move the data
+> structure definition to the driver header and remove the dependency.
+> While at it rename the structure to avoid multiple definition errors
+> as the same structure is also used by the platform code.
 
 Applied, thanks.
 
---smOfPzt+Qjm5bNGJ
+--X+nYw8KZ/oNxZ8JS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTNAcAAAoJELSic+t+oim9bNcP/jxmsoWk7USsF+dEqj2M3JFp
-rIY4zQ/K0lkKjY5VBK2KP5uKT/534wi9fFFem/cP34z+1VbCuH+TFAYWy98Y1Oc7
-KQpcmPSZFvCkfcEJaBLzUvxzKVrgFcazOucyWHLvrouqZfjQj2d+CMY+zTac0K9x
-yC1Qt/mE0Xrtf0462JjVnEaSYP5bFBdE1ELkNSBITtF2OxdRToQPLIkTq36TKmRh
-n5lCJeUBVnNOvg3uRNCIieFn0Q4bCfyt2zJuKDU4bUth536BFyJWc2QnHDsa6BDF
-xieKKXhs+fTeQByiSG3gd6xOuzoDKVVPuIqJLpkC54KMz6RkkZDJOITjvhB37Agw
-jdOoXSs3d8UC1AyT27zyzuIIzEYnylIKTk3GlC2pB0BBi3WAG8uyuH3xy2Xi5aHx
-dAOzfRtgF/GNTakoq9UeR/o5Oyy4Qh11LQcBrpZIO6xC2iAFIq3eV0O9rHBCfkk2
-re/Mp1t5Fdfcos6KJ5GD4kCzFEsoq+fLx+tFUzvVu4F1X4ayHC18kEj3VmMf+YEm
-PS9aL1FKgzYubgSLqwN9mgr/cX/RM42C5paEr2I6oPep2yN9y6BEaPH13vyfHzS4
-NCg3WBVC/ZTouwH5/UGBorlUshp69lUM4OTHY0NP+OI+0C7hM0ZYA1moYB1rvWEt
-Oe5QDNLrgWrYzHyoFu5V
-=Mi0r
+iQIcBAEBAgAGBQJTNAgVAAoJELSic+t+oim9AloP/jvGxVOBfwgeAhz/sW9auTMd
+lJbhg2aDMXNmJBdCEAA4KqtTED8L74dx+v2i+8qNzPvd3DjFr//1zApx7QrRcTLk
+NDBXL9hgY7XaZFXFxMPWvaCQAQjtXS8xRmvSm6X1xVJwWD+z55taNtsvnOHEhtNj
+mpabIsKNcs4uemYjNoDUofJIquszROASBYgycf1yehP2FfaUjKKGUW8aFXLDi4/L
+VVvGhKl2usg+TBCq6rwrOsUs/lh05WND1rYNvbn2Ef7o68HOLNwmkCkh5G1Dimi8
+BwhwiIQi/n6CRkzkILpUwvotrNOTOybGj7lfLkk6Igk9IkG4B/MKbk6J8JLt4HXs
+eqVjIRowSe3foBsPo0A2wm845EBQHhBMlriqWyU/4DrA4iGWKaK501+7sFZBBqRK
+jsdoG93zA0oyd7XAy5wA22ofmmxgJXurv6fRukNTRxOywZGw/IPctAKXcno0n+Yl
+YXIobL7BywQl0vdv2TfnZzng5zrfjaYR0PIc2t0alLPogi9LLP4mgtvvu4CjmrWM
+lt8OqBUEsGH3ybZlxSRFI2K6RGfCpmUlK707WUlK6RzCpc9VGrESLOBzi7vghxMK
+SFlTx4rezVAlYGBrGXtd1o1eWnBIxlfZFIGEaOMiGUySSNmNHEtYbKnaLKAzed5Z
+5TmgvVHru4+rm8ui9rvi
+=2cse
 -----END PGP SIGNATURE-----
 
---smOfPzt+Qjm5bNGJ--
+--X+nYw8KZ/oNxZ8JS--
 
---===============8989726774006976119==
+--===============9019341435924724103==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8989726774006976119==--
+--===============9019341435924724103==--
