@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/6] ASoC: rt5640: Remove the pre-allocated
- size of reg_default
-Date: Fri, 28 Mar 2014 12:52:58 +0000
-Message-ID: <20140328125258.GJ30768@sirena.org.uk>
+Subject: Re: [PATCH 2/6] ASoC: rt5640: Rename the function of
+	clock checking
+Date: Fri, 28 Mar 2014 12:53:08 +0000
+Message-ID: <20140328125308.GK30768@sirena.org.uk>
 References: <1396009710-21324-1-git-send-email-oder_chiou@realtek.com>
+ <1396009710-21324-2-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7392169037623847195=="
+Content-Type: multipart/mixed; boundary="===============0940006038620641529=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 185702654BC
- for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 13:53:19 +0100 (CET)
-In-Reply-To: <1396009710-21324-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 151742654C1
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 13:53:20 +0100 (CET)
+In-Reply-To: <1396009710-21324-2-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +27,51 @@ Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flov
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7392169037623847195==
+--===============0940006038620641529==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8Ll2WeG2L2s3+nMg"
+	protocol="application/pgp-signature"; boundary="seGp1e/yLldw2teC"
 Content-Disposition: inline
 
 
---8Ll2WeG2L2s3+nMg
+--seGp1e/yLldw2teC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 28, 2014 at 08:28:25PM +0800, Oder Chiou wrote:
-> In order to prevent the redundant memory usage, the pre-allocated size of
-> reg_default should be remove.
+On Fri, Mar 28, 2014 at 08:28:26PM +0800, Oder Chiou wrote:
+> In order to identify clearly, the patch renames the function
+> "check_sysclk1_source" to "is_sys_clk_from_pll".
 
 Applied, thanks.
 
---8Ll2WeG2L2s3+nMg
+--seGp1e/yLldw2teC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTNXCmAAoJELSic+t+oim99q4QAIlB85bGw5XxA+FTJ2Rp0W3P
-zK2Drs356ZlYQHO4cw6mbABPmnAKjioYR0DmQlEigrYrgwhEtCuEs4HsvUKSQ8F6
-mh92IHc4uTq8k0n/hgKTf1n8EJEclzaBhsphoS18OejJw+UYkWR9tSYkTesCRsTP
-NS7W19YlAsAmNNAneYW8hHcuErAKqOdEGQjCjoU5tDK3rm44uo/UEi0clyFtpLDK
-pERjUmIaiubOlQHU5U1nn1qxV3jjXPc0zb7Ijikk/i3oYmlAF6a4YllSWGuM4KIQ
-y91V+Ri9Ki0+LeeHOteA7BMPuquggBXkYM3wDFiBmcjAeLtMUzQPrbB3de2VZnVo
-jD2C8ITYY0sGB6V313l7lAiRVTAaAsUo71azp8I9rLdsQ2/vEZslUQaPWsGRYjT7
-PHwLPbM9knY9Mq+vaDilPA3zIG8BGzvj9oqbneeOoJN5G/HS+VKRW+Ur2fxdUiTM
-A0nJ+lCOqoesQGCI9unwH0FM6oUcAvukLLngnVu3XR4zK85K/OOaNAnR/WnhEd3z
-IhKV2n2L2j1xk93cmBDKzrjLkRATgeKRUvsDsv2YKnAVVw9+/iLafjXJIY8j2deK
-kmu4cTxPubX3uEAKeGYuNFu4uHyeW8pqoaMmeGr/GQFsBU1l8pMq0PmV+Rn3I9PR
-tuxOmGCOE/+O9K5nghai
-=RhJZ
+iQIcBAEBAgAGBQJTNXCwAAoJELSic+t+oim9g+8P+wcl5ikw9kHj1oR9/AltjWEy
+fhaJxTRCW0A5xD7dnM9/Z5sDBp8qXaGRlkqo71A55/4eVuOmhuIfbH59UJO2pHSd
+YPik7vGM7NOjF1zMh/92+UfaUrMMhJIfL0ByzR/a10GBt2hhw8sYUszQPiXFmNxl
+wJ6Y79WEnJOyzOGcbA4XtnHBIuq4qJ8HLd5gJKtTLuCRVkqc7eroNzPHv/b4jWhF
+MHnsMzJlqBFFvh1MQzE1lHD6kh7LcmmBe5P+YUCPRYkmqVf98kHzAYy80ebQDspJ
+Cv0QU1OG2qz/3YblA/tH38Ow13kktqQfNx06e4XmNNxnKfuLbMKzhETDx5r4NZYN
+wowK4YDc7Mj5r4K9Gn3vHaU5aFHngAtu87F+TEfNMwayovTmFTvaaKQS4oc3jwcb
+Q6xmsEbekODGSXrAT8b3ABwwJwYcsqwVLwn3fHnzvi1J5Owr7Rru5hS/Tfsfl7hw
+1L68fSTL0zSb+HrHO6QbwkpKbzHzgKVUV90BBO0wC+qT7ZQ69eie/TWFMrsCJd+5
+M+iEsQOxdjeT76Ucb35t4E8Ugg29e2IIzpXp0Yx6sfck+VDZKygP1083fHUFICgI
+njPUjxfMjJbFqejl03ckhSi1g5C16yhWedp68ohcWbmE3WvwxT3EUdqt5jqqy16Z
+UH5OUPfLkl8ytl/6fMdX
+=sei3
 -----END PGP SIGNATURE-----
 
---8Ll2WeG2L2s3+nMg--
+--seGp1e/yLldw2teC--
 
---===============7392169037623847195==
+--===============0940006038620641529==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7392169037623847195==--
+--===============0940006038620641529==--
