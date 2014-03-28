@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 1/2] ASoC: davinci-mcasp: Correct TX start
+Subject: [PATCH 2/2] ASoC: davinci-mcasp: Correct RX start
 	sequence
-Date: Fri, 28 Mar 2014 09:18:29 +0200
-Message-ID: <1395991110-19280-2-git-send-email-peter.ujfalusi@ti.com>
+Date: Fri, 28 Mar 2014 09:18:30 +0200
+Message-ID: <1395991110-19280-3-git-send-email-peter.ujfalusi@ti.com>
 References: <1395991110-19280-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 669F2265497
- for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 08:18:38 +0100 (CET)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46D76265499
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 08:18:39 +0100 (CET)
 In-Reply-To: <1395991110-19280-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,77 +25,49 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, jsarha@ti.com, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Follow the sequence described in the TRMs when starting TX. This sequence
-will make sure that we are not facing with initial channel swap caused by
-no data available in McASP for transmit.
+Follow the sequence described in the TRMs when starting RX.
+Write to RXBUF register was not correct and there is no need to release the
+RX state machine/Receive frame sync generator twice.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/davinci/davinci-mcasp.c | 25 +++++++++----------------
- sound/soc/davinci/davinci-mcasp.h |  6 ++++++
- 2 files changed, 15 insertions(+), 16 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index a01ae97c90aa..c6f2a7b9b6f6 100644
+index c6f2a7b9b6f6..0250353dc6ab 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -165,31 +165,24 @@ static void mcasp_start_rx(struct davinci_mcasp *mcasp)
+@@ -136,9 +136,9 @@ static bool mcasp_is_synchronous(struct davinci_mcasp *mcasp)
  
- static void mcasp_start_tx(struct davinci_mcasp *mcasp)
+ static void mcasp_start_rx(struct davinci_mcasp *mcasp)
  {
--	u8 offset = 0, i;
- 	u32 cnt;
- 
 +	/* Start clocks */
- 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXHCLKRST);
- 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXCLKRST);
-+	/* Activate serializer(s) */
- 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXSERCLR);
--	mcasp_set_reg(mcasp, DAVINCI_MCASP_TXBUF_REG, 0);
- 
--	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXSMRST);
--	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXFSRST);
--	mcasp_set_reg(mcasp, DAVINCI_MCASP_TXBUF_REG, 0);
--	for (i = 0; i < mcasp->num_serializer; i++) {
--		if (mcasp->serial_dir[i] == TX_MODE) {
--			offset = i;
--			break;
--		}
--	}
+ 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXHCLKRST);
+ 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXCLKRST);
 -
--	/* wait for TX ready */
-+	/* wait for XDATA to be cleared */
- 	cnt = 0;
--	while (!(mcasp_get_reg(mcasp, DAVINCI_MCASP_XRSRCTL_REG(offset)) &
--		 TXSTATE) && (cnt < 100000))
-+	while (!(mcasp_get_reg(mcasp, DAVINCI_MCASP_TXSTAT_REG) &
-+		 ~XRDATA) && (cnt < 100000))
- 		cnt++;
+ 	/*
+ 	 * When ASYNC == 0 the transmit and receive sections operate
+ 	 * synchronously from the transmit clock and frame sync. We need to make
+@@ -149,16 +149,12 @@ static void mcasp_start_rx(struct davinci_mcasp *mcasp)
+ 		mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXCLKRST);
+ 	}
  
--	mcasp_set_reg(mcasp, DAVINCI_MCASP_TXBUF_REG, 0);
-+	/* Release TX state machine */
-+	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXSMRST);
++	/* Activate serializer(s) */
+ 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXSERCLR);
+-	mcasp_set_reg(mcasp, DAVINCI_MCASP_RXBUF_REG, 0);
+-
+-	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXSMRST);
+-	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXFSRST);
+-	mcasp_set_reg(mcasp, DAVINCI_MCASP_RXBUF_REG, 0);
+-
++	/* Release RX state machine */
+ 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXSMRST);
 +	/* Release Frame Sync generator */
-+	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXFSRST);
+ 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXFSRST);
+-
+ 	if (mcasp_is_synchronous(mcasp))
+ 		mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXFSRST);
  }
- 
- static void davinci_mcasp_start(struct davinci_mcasp *mcasp, int stream)
-diff --git a/sound/soc/davinci/davinci-mcasp.h b/sound/soc/davinci/davinci-mcasp.h
-index 8fed757d6087..53243c22818d 100644
---- a/sound/soc/davinci/davinci-mcasp.h
-+++ b/sound/soc/davinci/davinci-mcasp.h
-@@ -253,6 +253,12 @@
- #define TXFSRST		BIT(12)	/* Frame Sync Generator Reset */
- 
- /*
-+ * DAVINCI_MCASP_TXSTAT_REG - Transmitter Status Register Bits
-+ * DAVINCI_MCASP_RXSTAT_REG - Receiver Status Register Bits
-+ */
-+#define XRDATA		BIT(5) /* Transmit/Receive data ready */
-+
-+/*
-  * DAVINCI_MCASP_AMUTE_REG -  Mute Control Register Bits
-  */
- #define MUTENA(val)	(val)
 -- 
 1.9.1
