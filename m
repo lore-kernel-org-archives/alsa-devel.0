@@ -1,45 +1,76 @@
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-Subject: [PATCH] ASoC: rsnd: use fast_io for bus
-Date: Fri, 28 Mar 2014 11:20:59 +0000
-Message-ID: <1396005659-14557-1-git-send-email-ben.dooks@codethink.co.uk>
-Return-path: <linux-sh-owner@vger.kernel.org>
-Sender: linux-sh-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: kuninori.morimoto.gx@renesas.com, broonie@kernel.org, lgirdwood@gmail.com, linux-sh@vger.kernel.org, magnus.damm@opensource.se, Ben Dooks <ben.dooks@codethink.co.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3 v2] ASoC: ak5386: add regulator
+	consumer support
+Date: Fri, 28 Mar 2014 11:21:02 +0000
+Message-ID: <20140328112102.GY30768@sirena.org.uk>
+References: <1395952936-10670-1-git-send-email-zonque@gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============4271481905379697392=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98CD1261987
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 12:21:16 +0100 (CET)
+In-Reply-To: <1395952936-10670-1-git-send-email-zonque@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The rcar sound driver uses regmap to access registers in various parts
-of the block and uses regmap to manage mappings. The regmap is created
-without fast_io set, which means it locks with a mutex rather than a
-lighter-spinlock.
 
-The use of the mutex lock causes issues when the IRQ handler is entered
-as the code needs to read/write register values and thus with lock
-debugging enabled the system outputs a number of warnings such as:
+--===============4271481905379697392==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="npbjE3dh3wBH6WIP"
+Content-Disposition: inline
 
-BUG: sleeping function called from invalid context at rnel/locking/mutex.c:616
 
-The rcar registers are all connected via APB bus and thus not that slow
-to access. The fix is to set the fast_io in the code so that regmap creates
-the regmap structures using the faster spinlock functions.
+--npbjE3dh3wBH6WIP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
----
- sound/soc/sh/rcar/gen.c | 1 +
- 1 file changed, 1 insertion(+)
+On Thu, Mar 27, 2014 at 09:42:14PM +0100, Daniel Mack wrote:
+> The chip has two power supplies, VA and VDD. Enable them both as long
+> as the codec is in use.
 
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index 9094970..6468962 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -66,6 +66,7 @@ static int rsnd_regmap_read32(void *context,
- }
- 
- static struct regmap_bus rsnd_regmap_bus = {
-+	.fast_io			= true,
- 	.write				= rsnd_regmap_write32,
- 	.read				= rsnd_regmap_read32,
- 	.reg_format_endian_default	= REGMAP_ENDIAN_NATIVE,
--- 
-1.9.0
+Applied, though you need to update the DT bindings too.
 
+--npbjE3dh3wBH6WIP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTNVsbAAoJELSic+t+oim9QVUP/35UK5vvpmf/wcfhoOVAA6YW
+VNwiPd+0sOgcMPNaKm6XN0F0ht5lppLquaXUmhVVCv/kGlJdy3pLKvSiQqqA5naJ
+qjutA/zZglostaYPoBz05/ttwMPKoYVn3N7nOh2KYcwhDPcMRa/j6xTe9zec/JKy
+Hw3kH3gW7EtZRRprebMvyqHmCfY6JW8nHKud4CXr8CuoTVsx0Nkx2Sn5iXSs5uWY
+rGOeJgeM7FIOP0vT1DL/LDR2f1OUzifN6ThcGfJ/EK+r9aoyf6LZVcPYbmYUy9VF
+Ed6zyp6hDH7JGclBm64QrwGUoQzBO+fy3is7R5BQ05Y8DVQeebVQfFyLAKLgZLit
+WwsmSVrzjymWR8kllGtxCbtM/BNSyAfpwshs8zYMlHyNipcGPt5RoyfP4UehRHxh
+T7GEb95yvExMMuiCmdgs8NoNshw4v27UX9O4qWxuapYx+9vaxHW3Y2dDEQH+GMJm
+uOK5cZY7zQWG0BpfJLxDjjAnftCgAZCzsFDiPsc3jIReVtyKGQZ9OuTg8oQoeOsl
+lMl/0zNQvIV3N6xmJJ8AlhvOlaY0kLUvI+30LW6ehzAaDxAvctjA0CL54wdk+UVG
+kEG6rDdEs9AQEs15T+9vwUeflGmzbSErsi8QBqvLifV07RiDiaNuPdbv/t8F/YiM
+mGPs7UuMDhGJgvlqq/qz
+=+g43
+-----END PGP SIGNATURE-----
+
+--npbjE3dh3wBH6WIP--
+
+--===============4271481905379697392==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4271481905379697392==--
