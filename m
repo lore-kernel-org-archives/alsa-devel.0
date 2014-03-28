@@ -1,20 +1,24 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH v2] ASoC: fsl_sai: Add isr to deal with
-	error flag
-Date: Fri, 28 Mar 2014 10:41:00 +0800
-Message-ID: <20140328024059.GA18417@MrMyself>
-References: <1395918419-20739-1-git-send-email-Guangyu.Chen@freescale.com>
- <20140327132626.GN30768@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Invalid PCM pointer with CMI8738 and pcm.c buffer
+	underuns
+Date: Fri, 28 Mar 2014 12:46:49 +0800
+Message-ID: <CAN8ccibOwd24r-qCrcnrZXaPy5We6dB=GccDyTR_qS-rPns1uw@mail.gmail.com>
+References: <loom.20140326T163743-253@post.gmane.org>
+ <CAN8ccib45znh-JbH57EhfbPNQg_fginmX9Tbr=yKMmd4D=iygQ@mail.gmail.com>
+ <CAN8cciZkGx5XBO+u0b7V9YN8VU_rz8ckL8B=6oBFJr+-Yg8cxw@mail.gmail.com>
+ <CAN8cciYy4V4StjqRfPpgZ8JMEYZrvpJYCBjfZtNhcn_2enRx6g@mail.gmail.com>
+ <loom.20140327T213645-260@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 210D02619E9
- for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 04:03:02 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20140327132626.GN30768@sirena.org.uk>
+Received: from mail-qc0-f182.google.com (mail-qc0-f182.google.com
+ [209.85.216.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF99E261A22
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 05:46:50 +0100 (CET)
+Received: by mail-qc0-f182.google.com with SMTP id e16so5336419qcx.41
+ for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2014 21:46:49 -0700 (PDT)
+In-Reply-To: <loom.20140327T213645-260@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +28,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@tabi.org, Li.Xiubo@freescale.com, David.Laight@ACULAB.COM, linuxppc-dev@lists.ozlabs.org
+To: andoru <andoru.blah@gmail.com>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, cladisch@googlemail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 27, 2014 at 01:26:27PM +0000, Mark Brown wrote:
-> On Thu, Mar 27, 2014 at 07:06:59PM +0800, Nicolin Chen wrote:
-> > It's quite cricial to clear error flags because SAI might hang if getting
-> > FIFO underrun during playback (I haven't confirmed the same issue on Rx
-> > overflow though).
-> > 
-> > So this patch enables those irq and adds isr() to clear the flags so as to
-> > keep playback entirely safe.
-> 
-> So, I've applied this since we're (hopefully!) very near the merge
-> window opening and it seems like it should be an improvement overall.
-> However a few things below:
-> 
-> > +	/* Only handle those what we enabled */
-> > +	mask = (FSL_SAI_FLAGS >> FSL_SAI_CSR_xIE_SHIFT) << FSL_SAI_CSR_xF_SHIFT;
-> 
-> The shifting here could use a comment.
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/cmipci.c?id=1c583063a5c769fe2ec604752e383972c69e6d9b
 
-Will send an extra patch to cover it.
+you have to dump the value of the register and increase the number of
+trials to find out whether you can get a valid value
 
-> > +	regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
-> > +			   FSL_SAI_CSR_xF_W_MASK | FSL_SAI_CSR_FR, xcsr);
-> 
-> Using update_bits() is going to do an extra read, better to do this as:
-> 
-> 	if (xcsr)
-> 		regmap_write(sai->regmap, FSL_SAI_RCSR, xcsr);
 
-T/RCSR register stands for T/Rx Control (Status -- I guess) Register.
-It actually contains control bits, IRQ mask bits and IRQ status bits.
-Thus we can't regard it as a entire status register. That's why I try
-to update it partially for status bits only at this point.
+>
+> >
+> > state.CMI8738 {
+> > control.1 {
+> >
+> > [...]
+> >
+> > Seem bug in adding channel map to iec958 instead of analog
+>
+> What does that mean? What should I do with those patches?
+> Should I apply them and try to compile the latest ALSA version?
 
-But if it's just for saving this extra read instance, I may save those
-non-status bits from upper regmap_read() and then merge them into this
-regmap_write() over here.
+the patch did not channel map to the analog device
 
-> otherwise we might be ignoring any of the bits that are actually clear
-> on read (it seems like there are some?).
+control.1 {
+iface PCM
+device 2
+name 'Playback Channel Map'
+value.0 0
+value.1 0
+value.2 0
+value.3 0
+value.4 0
+value.5 0
+comment {
+access read
+type INTEGER
+count 6
+range '0 - 36'
+}
+}
 
-For all status flags bits, actually five for each, three of them are
-write-1-clear and the other two are self-clearance by SAI self -- so
-none of them are clear-on-read type.
+!!Aplay/Arecord output
+!!--------------------
 
-> > +	return IRQ_HANDLED;
-> 
-> I'd expect to see IRQ_NONE if we didn't actually see an interrupt
-> source.
+APLAY
 
-Will add this.
+**** List of PLAYBACK Hardware Devices ****
+card 0: CMI8738 [C-Media CMI8738], device 0: CMI8738-MC6 [C-Media PCI
+DAC/ADC]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: CMI8738 [C-Media CMI8738], device 1: CMI8738-MC6 [C-Media PCI 2nd
+DAC]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: CMI8738 [C-Media CMI8738], device 2: CMI8738-MC6 [C-Media PCI
+IEC958]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-Thank you,
-Nicolin
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/cmipci.c?id=1da177e4c3f41524e886b7f1b8a0c1fc7321cac2
+
+http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/conf/cards/CMI8738-MC6.conf;hb=HEAD
+
+CMI8738-MC6.pcm.rear.0 {
+
+         @args [ CARD ]
+         @args.CARD {
+                type string
+         }
+         type hw
+         card $CARD
+         device 1
+}
+
+device 0 seem emulate sb16 , you need to ask the author how this driver
+support multi-channels
+
+seem device 1 is used for multi-channels playback and device 2 is used for
+iec958
+>
+>
+> >
+> > pcm.!default {
+> >     type plug
+> >     slave.pcm "dmixer"
+> > }
+> >
+> > You need asym plugin for playback and capture when overwrite pcm.default
+> >
+>
+> Should I change my /etc/asound.conf like in the examples here?
+> http://alsa.opensrc.org/Asym
+>
+
+yes, you need define both playback and capture if you overwrite pcm.default
+ since dmix does not support capture
