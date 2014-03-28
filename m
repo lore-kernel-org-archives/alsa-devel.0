@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/6] ASoC: rt5640: Remove the unused field
-	in private data
-Date: Fri, 28 Mar 2014 12:53:28 +0000
-Message-ID: <20140328125328.GM30768@sirena.org.uk>
+Subject: Re: [PATCH 5/6] ASoC: rt5640: Remove the unnecessary
+	parentheses
+Date: Fri, 28 Mar 2014 12:53:37 +0000
+Message-ID: <20140328125337.GN30768@sirena.org.uk>
 References: <1396009710-21324-1-git-send-email-oder_chiou@realtek.com>
- <1396009710-21324-4-git-send-email-oder_chiou@realtek.com>
+ <1396009710-21324-5-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6534771020062760958=="
+Content-Type: multipart/mixed; boundary="===============2393049291120855423=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 23115265506
- for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 13:53:44 +0100 (CET)
-In-Reply-To: <1396009710-21324-4-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BECE2265511
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 13:53:49 +0100 (CET)
+In-Reply-To: <1396009710-21324-5-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,50 +27,50 @@ Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flov
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6534771020062760958==
+--===============2393049291120855423==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="i/fYSyEEP4aDNzVF"
+	protocol="application/pgp-signature"; boundary="V1NlN/V7gk8OJNgm"
 Content-Disposition: inline
 
 
---i/fYSyEEP4aDNzVF
+--V1NlN/V7gk8OJNgm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 28, 2014 at 08:28:28PM +0800, Oder Chiou wrote:
-> The patch removes the unused field in private data.
+On Fri, Mar 28, 2014 at 08:28:29PM +0800, Oder Chiou wrote:
+> The patch removes the unnecessary parentheses.
 
 Applied, thanks.
 
---i/fYSyEEP4aDNzVF
+--V1NlN/V7gk8OJNgm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTNXDFAAoJELSic+t+oim9zsEP/Rf0UoGaFKP2CzGEhqRnyqF4
-uWETgGhgELI0b3Ui3ZU3I0vUvM1e5i5jqhDpAgVOb4CNTYcu8jPcup1v2bQKOmX9
-BuOg+sPfjYAOBUcs9dyqGdB7naLPAZNlc/VOgYH8WuIPGoWmEcxOv/V6BC3cIkWN
-KNPKKNOlQvz8p4sbJljxmSUds2Hn83TcLezyrAMEXjCh3j9T8/RHUj4j/TtCSjBT
-JywbUchs+1cGGZjaJLnhd5DsWk6Gnf4tzWWt1IBTiRTB+oK6ovVbOE7v0Ny01G3A
-HZSDsnaT73Myu7Mn3gA4ZHcduhwo8TNZPdRxUKIaHwdyvr4cjqHm9CJIIAoQ68fW
-xbZtXlr4qyMmHpshZVxZwTq25yGGKl/o+M07+V6sThz4uUlIsOuBbCqUI28RNm6o
-YQ07BUty+i/jBrkzrxsP7Bezz3bE47JmXeoeQidTd2vUH0Go0phPH2qo6tntLi9f
-mLZHncghgTsxE6tNz8O5cxlAsc8oqU64YRvDbRq2mMxxiP6RVku/696zTOEt24Rb
-bSQioqQUA0d4F0YNLm9sF/G4Le+uoP8wj8qm4Mmg3N7XUvoBq7G4aGueSskLWijN
-PI7S2R8K+uUOZrk1SCetKVGUSKUZOcmdj4Y0kkPuxbhd+bsDG2H6Omj9JHvYeciI
-y57Mro8QpjbekvS8U1oP
-=qkh6
+iQIcBAEBAgAGBQJTNXDOAAoJELSic+t+oim9GTAP+weAe4NcBw1Y5GTq8NRlAcL8
+hjACbQqU4xbQi1SD5M3+WD9Y4kPbmIEI8fmmupXs6KNonLT0i5lF9enqdUtxHbcZ
+7905ACqM6+Ij12T5k4hgj17fUOPimZ5klRHMcY2rUInOCSfXgUbPK5dTb0ebSPGy
+brTVFh9J2qv1feJqy5J1ggJspXexe6GcFlNe41Rm03K+75lRqTyPCCgGtQbC1kXs
+VIWIWKH82OV8Ch3WspEZRzNZXLvh6yiadRagT9phmVtQe4LmoLNGJw01jDltyNI4
+MnssjQhMp0cDpPyoCx7OlApmVeoAtQJ/aVydW3N9sEZPtF+mswP10OqUlbonMAwa
+9DFxonY3Yuhp05qBctAm+3YByIIamJQYaD9aPLKwP8Q7VIzzHvFsNmuyRSrooPWr
+4qeCaHfeuupzTa0WvqiZvb39R03af5NWLuHNKqrWyF4Y3QEzePirD+qhMg2n6zvf
+cJHegoiuy1b5FetxuSvuUopX1OLKy/ma4QzX9ZQ3HR1dmgg6mRzfgT4fAkwhIEkd
+N1wuLLgTjs2BKX+dr1YCDJ2lpFIBOnnywgj8l+E71DMGAV1r3YzC+FMLy9D5VtDC
+H1om/kw9eOFhqLAQZEJ0iPzMbkgu8imWkKMUO/0IwkeU9RTOkjZ2eLAcJMdIHhrk
+SPzG4GP/El8hhh5jE5X1
+=eeMD
 -----END PGP SIGNATURE-----
 
---i/fYSyEEP4aDNzVF--
+--V1NlN/V7gk8OJNgm--
 
---===============6534771020062760958==
+--===============2393049291120855423==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6534771020062760958==--
+--===============2393049291120855423==--
