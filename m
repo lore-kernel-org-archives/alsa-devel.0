@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3 v2] ASoC: tas5086: add regulator
-	consumer support
-Date: Fri, 28 Mar 2014 11:35:21 +0000
-Message-ID: <20140328113521.GA30768@sirena.org.uk>
-References: <1395952936-10670-1-git-send-email-zonque@gmail.com>
- <1395952936-10670-3-git-send-email-zonque@gmail.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: [PATCH] ASoC: fsl_sai: Improve fsl_sai_isr()
+Date: Fri, 28 Mar 2014 19:39:25 +0800
+Message-ID: <1396006765-4527-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8192313366882953424=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7043A261987
- for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 12:35:33 +0100 (CET)
-In-Reply-To: <1395952936-10670-3-git-send-email-zonque@gmail.com>
+Received: from tx2outboundpool.messaging.microsoft.com
+ (tx2ehsobe004.messaging.microsoft.com [65.55.88.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F157261987
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 12:38:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +19,131 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org, Li.Xiubo@freescale.com
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
+This patch improves fsl_sai_isr() in these ways:
+1, Add comment for mask fetching code.
+2, Return IRQ_NONE if the IRQ is not for the device.
+3, Use regmap_write() instead of regmap_update_bits().
 
---===============8192313366882953424==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="q5wOvoHkaccQRDme"
-Content-Disposition: inline
+Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+---
+ sound/soc/fsl/fsl_sai.c | 64 ++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 45 insertions(+), 19 deletions(-)
 
-
---q5wOvoHkaccQRDme
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 27, 2014 at 09:42:16PM +0100, Daniel Mack wrote:
-> The TAS5086 has two power domains, DVDD and AVDD. Enable them both as
-> long as the codec is in use.
-
-DT binding update for this one as well please.
-
-> While at it, move the device identification from the i2c probe to the
-> codec probe, so we do it after the regulators have been enabled.
-
-It'd be better style to enable the regulators during probe to read the
-ID register rather than deferring.
-
---q5wOvoHkaccQRDme
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTNV51AAoJELSic+t+oim9WjoP/jSxRzVFngvIaVGfd1nwv6jf
-jAALQcJiqPKV7spnpOYGovfs7oY+8VLcJzD9qbfvvmrka2pglRN3WsnzoJc/qT88
-7rIp9F8nDFaxSR7D2uaBrzk30YNDmFGH5gCuSk0Mz1yPu9U7mMiogPShDGONhC9d
-MiYKFPmachs7s8KKRPlZJT3Re8uZc/DmZUypea9NsM07vr7ZkO43MAUqP92W0Kep
-JKD7NMTiPh8wK530EJNf/kLQhlyf6qpQyjVE1kDU1XCETuEaadOeHd2SwpBS5ea+
-0d9ohYEmQMwbx+WHfy1sX4J/tDcpbs2fnkr+KQPL/X+0OqZdTViZKDVPizBeAFrb
-FTp+HJCa7IJmBK9KPW29Omv4rJ8G4WL39mVF80euBOCMiMqK1VM5AL9uqVDwYzg1
-8s4VzysYDpPKa6H6+A9ozMAqvvGFrUh8Ol7gdaQ4DgRZ+pzFUctjyr21es3r+Ydo
-bBU7LvHWvrOAlwBkL1gB9PRXgzi6pS4tsPPx7mMp/9JE+nc90d/sBYabmyhFM+Pg
-8I0cawf5cQEyvx2zReqs2JxqR3igIXnjhkoZBjDtrd2q1FRSaoJKtX06maX1StiO
-ilxMh0qXabDdritvqcDxegljrDO+6nOiP6tH8tF1BC+BpKze3tSyow6A9Muh7QqR
-2WMPlBr+E7+aGqncQL1Z
-=iaWP
------END PGP SIGNATURE-----
-
---q5wOvoHkaccQRDme--
-
---===============8192313366882953424==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8192313366882953424==--
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 0bc98bb..f088545 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -30,62 +30,88 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
+ {
+ 	struct fsl_sai *sai = (struct fsl_sai *)devid;
+ 	struct device *dev = &sai->pdev->dev;
+-	u32 xcsr, mask;
++	u32 flags, xcsr, mask;
++	bool irq_none = true;
+ 
+-	/* Only handle those what we enabled */
++	/*
++	 * Both IRQ status bits and IRQ mask bits are in the xCSR but
++	 * different shifts. And we here create a mask only for those
++	 * IRQs that we activated.
++	 */
+ 	mask = (FSL_SAI_FLAGS >> FSL_SAI_CSR_xIE_SHIFT) << FSL_SAI_CSR_xF_SHIFT;
+ 
+ 	/* Tx IRQ */
+ 	regmap_read(sai->regmap, FSL_SAI_TCSR, &xcsr);
+-	xcsr &= mask;
++	flags = xcsr & mask;
+ 
+-	if (xcsr & FSL_SAI_CSR_WSF)
++	if (flags)
++		irq_none = false;
++	else
++		goto irq_rx;
++
++	if (flags & FSL_SAI_CSR_WSF)
+ 		dev_dbg(dev, "isr: Start of Tx word detected\n");
+ 
+-	if (xcsr & FSL_SAI_CSR_SEF)
++	if (flags & FSL_SAI_CSR_SEF)
+ 		dev_warn(dev, "isr: Tx Frame sync error detected\n");
+ 
+-	if (xcsr & FSL_SAI_CSR_FEF) {
++	if (flags & FSL_SAI_CSR_FEF) {
+ 		dev_warn(dev, "isr: Transmit underrun detected\n");
+ 		/* FIFO reset for safety */
+ 		xcsr |= FSL_SAI_CSR_FR;
+ 	}
+ 
+-	if (xcsr & FSL_SAI_CSR_FWF)
++	if (flags & FSL_SAI_CSR_FWF)
+ 		dev_dbg(dev, "isr: Enabled transmit FIFO is empty\n");
+ 
+-	if (xcsr & FSL_SAI_CSR_FRF)
++	if (flags & FSL_SAI_CSR_FRF)
+ 		dev_dbg(dev, "isr: Transmit FIFO watermark has been reached\n");
+ 
+-	regmap_update_bits(sai->regmap, FSL_SAI_TCSR,
+-			   FSL_SAI_CSR_xF_W_MASK | FSL_SAI_CSR_FR, xcsr);
++	flags &= FSL_SAI_CSR_xF_W_MASK;
++	xcsr &= ~FSL_SAI_CSR_xF_MASK;
++
++	if (flags)
++		regmap_write(sai->regmap, FSL_SAI_TCSR, flags | xcsr);
+ 
++irq_rx:
+ 	/* Rx IRQ */
+ 	regmap_read(sai->regmap, FSL_SAI_RCSR, &xcsr);
+-	xcsr &= mask;
++	flags = xcsr & mask;
+ 
+-	if (xcsr & FSL_SAI_CSR_WSF)
++	if (flags)
++		irq_none = false;
++	else
++		goto out;
++
++	if (flags & FSL_SAI_CSR_WSF)
+ 		dev_dbg(dev, "isr: Start of Rx word detected\n");
+ 
+-	if (xcsr & FSL_SAI_CSR_SEF)
++	if (flags & FSL_SAI_CSR_SEF)
+ 		dev_warn(dev, "isr: Rx Frame sync error detected\n");
+ 
+-	if (xcsr & FSL_SAI_CSR_FEF) {
++	if (flags & FSL_SAI_CSR_FEF) {
+ 		dev_warn(dev, "isr: Receive overflow detected\n");
+ 		/* FIFO reset for safety */
+ 		xcsr |= FSL_SAI_CSR_FR;
+ 	}
+ 
+-	if (xcsr & FSL_SAI_CSR_FWF)
++	if (flags & FSL_SAI_CSR_FWF)
+ 		dev_dbg(dev, "isr: Enabled receive FIFO is full\n");
+ 
+-	if (xcsr & FSL_SAI_CSR_FRF)
++	if (flags & FSL_SAI_CSR_FRF)
+ 		dev_dbg(dev, "isr: Receive FIFO watermark has been reached\n");
+ 
+-	regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
+-			   FSL_SAI_CSR_xF_W_MASK | FSL_SAI_CSR_FR, xcsr);
++	flags &= FSL_SAI_CSR_xF_W_MASK;
++	xcsr &= ~FSL_SAI_CSR_xF_MASK;
+ 
+-	return IRQ_HANDLED;
++	if (flags)
++		regmap_write(sai->regmap, FSL_SAI_TCSR, flags | xcsr);
++
++out:
++	if (irq_none)
++		return IRQ_NONE;
++	else
++		return IRQ_HANDLED;
+ }
+ 
+ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+-- 
+1.8.4
