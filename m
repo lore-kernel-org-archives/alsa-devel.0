@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 2/2] ASoC: sirf: Add hdmi support
-Date: Fri, 28 Mar 2014 12:38:14 +0000
-Message-ID: <20140328123814.GH30768@sirena.org.uk>
+Subject: Re: [PATCH v6 1/2] ASoC: sirf: Add SiRF I2S driver
+Date: Fri, 28 Mar 2014 12:39:06 +0000
+Message-ID: <20140328123906.GI30768@sirena.org.uk>
 References: <1395898025-5437-1-git-send-email-rongjun.ying@csr.com>
- <1395898025-5437-3-git-send-email-rongjun.ying@csr.com>
+ <1395898025-5437-2-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7536619519714493650=="
+Content-Type: multipart/mixed; boundary="===============3229657335032645393=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E1DB02654C1
- for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 13:38:35 +0100 (CET)
-In-Reply-To: <1395898025-5437-3-git-send-email-rongjun.ying@csr.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BF02265500
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 13:39:21 +0100 (CET)
+In-Reply-To: <1395898025-5437-2-git-send-email-rongjun.ying@csr.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,58 +26,53 @@ Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lg
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7536619519714493650==
+--===============3229657335032645393==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SIpeN1L2gmCc/JOo"
+	protocol="application/pgp-signature"; boundary="rPKw41Fi6dB0MaHy"
 Content-Disposition: inline
 
 
---SIpeN1L2gmCc/JOo
+--rPKw41Fi6dB0MaHy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 27, 2014 at 01:27:05PM +0800, RongJun Ying wrote:
+On Thu, Mar 27, 2014 at 01:27:04PM +0800, RongJun Ying wrote:
+> From: Rongjun Ying <rongjun.ying@csr.com>
+>=20
+> This patch adds ASoC support for SiRF SoCs I2S modules.
 
-> +config SND_SOC_SIRF_HDMI
-> +	tristate "SoC Audio support for SiRF HDMI"
-> +	depends on SND_SOC_SIRF
-> +	select SND_SIMPLE_CARD
-> +	select SND_SOC_SIRF_I2S
-> +	select SND_SOC_HDMI_CODEC
-> +
+Applied, thanks.
 
-Don't do this, just make all the individual drivers selectable directly
-in Kconfig.
-
---SIpeN1L2gmCc/JOo
+--rPKw41Fi6dB0MaHy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTNW0zAAoJELSic+t+oim9S1IQAJVtpfEA6207njlGm7y4VOz5
-0tFRTy5vFqK8Ety63ZVT3MLXuDdiUO71qth8nXHzHhodo6nw9ertICUL/nVsEj3Q
-nxabPz+vZk730Wm6XTI04lUiioM/s+QJs9uvP7QUx5cyl6enBq5SEVOQaIHE18fQ
-9PWTBu1beVAtmFfHGb4eGEjyOnEkVp+D7Ts5L2JzKEfsisSff1FAo7npS6b0bBum
-BFOO2Jj+criP5cwYXb7umMa0fE8lBRRyNT8mdggmWZ23bzj5JiAZsRLcHkvpSQh4
-7lWJ+9LVoPmcXZZOVLz4MsAN4Qg0hZtSU8rm0pmMpZ41rVI0Pm5mSGQK0ke35k1g
-RP+aw2yy1GBVpiCo64RNqQywK8HI+iGTBbhx5i4J+y8zgIqHUtXk0s0Y2u2SiHNa
-Fj8pKcOVc66T37uMB0Eq2qmG/Fq6WuHE9PTkbSC+C/xzc9mPuQqrSxfThbhX/BcT
-1uV6UPqOphdNvdiaB4ja91pm4xwoTDzWQgzM3PHiixfdouTdHTjzPwaSX1UpGda0
-6uhthdukkyLLjA+4gT/HXB7iNg/2MZgOh1Eet8WN1gFr7DjyZjlvQwsgo+1PevS2
-qOZ8JHurASEDBQ6UdY9jfUvNGhDZskdDS5vLiOa24QiEK5PZxLjsxuDGzti9AGIg
-MDoK8It+1tYHwC9NroNL
-=0c2G
+iQIcBAEBAgAGBQJTNW1nAAoJELSic+t+oim9t3YP/09DbT0JImwyNw040RwiPAXq
+4eWROVGpD6Mw8kB8rH7EZtG38fZfq5zLx0xW4BdQurVIQAFXGyGe0NGmnX2yTUka
+DgG5Tk7T4+U3spj5QLM9ipwgDFp5qf6aSQZXqzAsoRBTmC4P24B5lbW+JbI/962c
+D6SC855siYghiJWXNDwT2ScFu7FzANNc23EKPw/DdfBmruwQQX3+ihl71QOfqh4x
+2Sy54oY29c5o0pqqyGkSTYWuE6fLy9/PtquhTYQVPecLhisjbQ7GIuzWbiyp0enh
+kBWQCo3D3rqm1gxjpOkt1v6+G9aNCzR4DgdUL8S0R/RF2sC0ynSoNXopjLwN6YrC
+C0hqMJDMwioNxavZkCUPvPANfM9808NEBjVxZ5k4bMxx2895ZfO0jRvo5SfkOFtv
+kFdiSgv4+If4u7UeZeYYMjZ5XmEECtKqWlDmUuuv3sFsGu1IKI75nu4hxpouNowz
+pn3l6wz8R0ebxl58anrQ+bIz5xW2R7NB2Of+Ez42xIhlBruCb45H/v81Ynwirmaz
+W7tou4QoBNeEyhTqeo7JERvJ/KJWbD8FesiMbLTGE0+EtOTipG6yfXCxMHq5fdgQ
+qwzU/J0jDS4BEIGWWZKZo8To/u7O2Zq1KfLSHTWj0umzR+o1o1gbnkYPwmhqE2Xa
+P+z0ZhS2NUO+8NY41q/U
+=RWkM
 -----END PGP SIGNATURE-----
 
---SIpeN1L2gmCc/JOo--
+--rPKw41Fi6dB0MaHy--
 
---===============7536619519714493650==
+--===============3229657335032645393==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7536619519714493650==--
+--===============3229657335032645393==--
