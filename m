@@ -1,55 +1,48 @@
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-Subject: [PATCH] ASoC: rsnd: SSI needs to prepare clocks before enabling
-Date: Fri, 28 Mar 2014 12:27:06 +0000
-Message-ID: <1396009626-24699-1-git-send-email-ben.dooks@codethink.co.uk>
-Return-path: <linux-sh-owner@vger.kernel.org>
-Sender: linux-sh-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: kuninori.morimoto.gx@renesas.com, broonie@kernel.org, lgirdwood@gmail.com, linux-sh@vger.kernel.org, magnus.damm@opensource.se, linux-kernel@lists.codethink.co.uk, William Towle <william.towle@codethink.co.uk>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH 1/6] ASoC: rt5640: Remove the pre-allocated
+	size of reg_default
+Date: Fri, 28 Mar 2014 20:28:25 +0800
+Message-ID: <1396009710-21324-1-git-send-email-oder_chiou@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 453B62654B8
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 13:28:49 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: William Towle <william.towle@codethink.co.uk>
+In order to prevent the redundant memory usage, the pre-allocated size of
+reg_default should be remove.
 
-The rsnd_ssi_hw_{stop|start} functions need to call clk_prepare_enable()
-and clk_disable_unprepare(), otherwise the following warning occurs on
-attempt to play sound:
-
-WARNING: CPU: 2 PID: 1176 at drivers/clk/clk.c:926 __clk_enable+0x30/0x9c()
-
-due to drivers/clk/clk.c:
-
-    926         if (WARN_ON(clk->prepare_count == 0))
-    927                 return -ESHUTDOWN;
-
-Signed-off-by: William Towle <william.towle@codethink.co.uk>
-[ben.dooks@codethink.co.uk: add more bug info to report]
-Tested-by: Ben Dooks <ben.dooks@codethink.co.uk>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 ---
- sound/soc/sh/rcar/ssi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5640.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 4b8cf7c..1c07ef7 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -250,7 +250,7 @@ static void rsnd_ssi_hw_start(struct rsnd_ssi *ssi,
- 	u32 cr;
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index cf041e3..9427511 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -59,7 +59,7 @@ static struct reg_default init_list[] = {
+ };
+ #define RT5640_INIT_REG_LEN ARRAY_SIZE(init_list)
  
- 	if (0 == ssi->usrcnt) {
--		clk_enable(ssi->clk);
-+		clk_prepare_enable(ssi->clk);
- 
- 		if (rsnd_rdai_is_clk_master(rdai)) {
- 			if (rsnd_ssi_clk_from_parent(ssi))
-@@ -309,7 +309,7 @@ static void rsnd_ssi_hw_stop(struct rsnd_ssi *ssi,
- 				rsnd_ssi_master_clk_stop(ssi);
- 		}
- 
--		clk_disable(ssi->clk);
-+		clk_disable_unprepare(ssi->clk);
- 	}
- 
- 	dev_dbg(dev, "ssi%d hw stopped\n", rsnd_mod_id(&ssi->mod));
+-static const struct reg_default rt5640_reg[RT5640_VENDOR_ID2 + 1] = {
++static const struct reg_default rt5640_reg[] = {
+ 	{ 0x00, 0x000e },
+ 	{ 0x01, 0xc8c8 },
+ 	{ 0x02, 0xc8c8 },
 -- 
-1.9.0
-
+1.8.1.1.439.g50a6b54
