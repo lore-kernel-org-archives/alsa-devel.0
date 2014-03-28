@@ -1,18 +1,32 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 6/6] ASoC: rt5640: Change the setting
- method of idle_bias_off
-Date: Fri, 28 Mar 2014 12:54:00 +0000
-Message-ID: <20140328125400.GO30768@sirena.org.uk>
-References: <1396009710-21324-1-git-send-email-oder_chiou@realtek.com>
- <1396009710-21324-6-git-send-email-oder_chiou@realtek.com>
+From: andoru <andoru.blah@gmail.com>
+Subject: Re: Invalid PCM pointer with CMI8738 and pcm.c buffer
+	underuns
+Date: Fri, 28 Mar 2014 14:28:12 +0000 (UTC)
+Message-ID: <loom.20140328T152008-235@post.gmane.org>
+References: <loom.20140326T163743-253@post.gmane.org>
+ <CAN8ccib45znh-JbH57EhfbPNQg_fginmX9Tbr=yKMmd4D=iygQ@mail.gmail.com>
+ <CAN8cciZkGx5XBO+u0b7V9YN8VU_rz8ckL8B=6oBFJr+-Yg8cxw@mail.gmail.com>
+ <CAN8cciYy4V4StjqRfPpgZ8JMEYZrvpJYCBjfZtNhcn_2enRx6g@mail.gmail.com>
+ <loom.20140327T213645-260@post.gmane.org>
+ <CAN8ccibOwd24r-qCrcnrZXaPy5We6dB=GccDyTR_qS-rPns1uw@mail.gmail.com>
+ <5335360C.9060806@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1543227685987108801=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C5AEE2654ED
- for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 13:54:12 +0100 (CET)
-In-Reply-To: <1396009710-21324-6-git-send-email-oder_chiou@realtek.com>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA4902654D3
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 15:28:39 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1WTXlu-00086E-GV
+ for alsa-devel@alsa-project.org; Fri, 28 Mar 2014 15:28:38 +0100
+Received: from cl-86-125-141-116.cablelink.mures.rdsnet.ro ([86.125.141.116])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 15:28:38 +0100
+Received: from andoru.blah by cl-86-125-141-116.cablelink.mures.rdsnet.ro with
+ local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 15:28:38 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +36,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+> yes, you need define both playback and capture if you overwrite pcm.default
+> since dmix does not support capture
 
---===============1543227685987108801==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BVqADUpb46OwFRC+"
-Content-Disposition: inline
+I'm less concerned with the capture part of this card as I record audio
+through the mic of the webcam anyway. But having added that, it hasn't
+solved my previous problem with not being able to hear sounds from multiple
+sources, and also I can't use alsamixer now.
 
+> >>> Seem bug in adding channel map to iec958 instead of analog
+> >>
+> >> What does that mean?
+> 
+> Nothing relevant to this problem.
+> 
+> >> What should I do with those patches?
+> 
+> Nothing.
 
---BVqADUpb46OwFRC+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Mar 28, 2014 at 08:28:30PM +0800, Oder Chiou wrote:
-> The patch moves the idle_bias_off setting to struct "soc_codec_dev_rt5640".
-
-This doesn't seem to apply against current code, can you please check
-and resend?
-
---BVqADUpb46OwFRC+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTNXDkAAoJELSic+t+oim9JJgP/iLVQixOkMVpfv1/SsGEjckW
-Wo23xtvXI9gUxBmGP1NMPmpgmnH+vcDzhx2nSjG38bdvaSMN7paA9iShEA5Ieck9
-BSabPJ7Vd40f2R8lBSIi38cUfDW5qprxnXYnbnBu9HVAs6aY/oY8BohA1ydxKV7T
-/X7bd0GF9oT04JZKemSDEt/jET0IfiYHKTQreG0B3aT9xpVM1ibuY3CiO115AY3Y
-aEoNWWN1rJzFf5efqpx+FfnmrCYtARcWd/8/FgZY4PufxxrayOf0O+FmiD/nz8wi
-RRsKaDbK3sWiroV74Sv74Z56Pp9/xuQqbp5uXiUSttDnDVcrvmJnyEbTu7c7f6fw
-lqlL8N2/aeSQBxXvFpWxoq+NNumnBTs7lHyxdL1wFMKsFKD9BELUFKYvjX0vkmF1
-vdRpfgbgaEJmiFVWg94OvYc4JvRRw8NsIaTKjAxJKALjOoYMxlDwx0xTcPoOsCM2
-xPMXX4K5WcltHITFwuNS8LUkRiHmh7depImNZqTwDNZSupgTg/2Mja0Du6pJ0Gvr
-be8FOlrcJRnVMoR9+1iH4e68JGMmxN4KHBWXR+eUa9zwYT/NFKQblO3gAX74aaHi
-4TmZ+mMY8x22JpiFJEs2X5/DAs8n0iMAOpAtoFXtFMQUh3LEB1yqIezhMgX41HSN
-PwmxvLnKNb2Gr9/bFJVU
-=l8KF
------END PGP SIGNATURE-----
-
---BVqADUpb46OwFRC+--
-
---===============1543227685987108801==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1543227685987108801==--
+So I guess that means there aren't really any solutions to my bug? What
+happens next? (sorry for all the annoying questions)
