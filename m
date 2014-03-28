@@ -1,17 +1,17 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH 6/6] ASoC: rt5640: Change the setting method of
-	idle_bias_off
-Date: Fri, 28 Mar 2014 20:28:30 +0800
-Message-ID: <1396009710-21324-6-git-send-email-oder_chiou@realtek.com>
-References: <1396009710-21324-1-git-send-email-oder_chiou@realtek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6 2/2] ASoC: sirf: Add hdmi support
+Date: Fri, 28 Mar 2014 12:38:14 +0000
+Message-ID: <20140328123814.GH30768@sirena.org.uk>
+References: <1395898025-5437-1-git-send-email-rongjun.ying@csr.com>
+ <1395898025-5437-3-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7536619519714493650=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AC0B26550F
- for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 13:29:39 +0100 (CET)
-In-Reply-To: <1396009710-21324-1-git-send-email-oder_chiou@realtek.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E1DB02654C1
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 13:38:35 +0100 (CET)
+In-Reply-To: <1395898025-5437-3-git-send-email-rongjun.ying@csr.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,36 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
+To: RongJun Ying <rjying@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, workgroup.linux@csr.com, Rongjun Ying <rongjun.ying@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch moves the idle_bias_off setting to struct "soc_codec_dev_rt5640".
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5640.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--===============7536619519714493650==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SIpeN1L2gmCc/JOo"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index b5014a2..2a349b0 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -1879,7 +1879,6 @@ static int rt5640_probe(struct snd_soc_codec *codec)
- 
- 	rt5640->codec = codec;
- 
--	codec->dapm.idle_bias_off = 1;
- 	rt5640_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 
- 	snd_soc_update_bits(codec, RT5640_DUMMY1, 0x0301, 0x0301);
-@@ -1988,6 +1987,7 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5640 = {
- 	.suspend = rt5640_suspend,
- 	.resume = rt5640_resume,
- 	.set_bias_level = rt5640_set_bias_level,
-+	.idle_bias_off = true,
- 	.controls = rt5640_snd_controls,
- 	.num_controls = ARRAY_SIZE(rt5640_snd_controls),
- 	.dapm_widgets = rt5640_dapm_widgets,
--- 
-1.8.1.1.439.g50a6b54
+
+--SIpeN1L2gmCc/JOo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Mar 27, 2014 at 01:27:05PM +0800, RongJun Ying wrote:
+
+> +config SND_SOC_SIRF_HDMI
+> +	tristate "SoC Audio support for SiRF HDMI"
+> +	depends on SND_SOC_SIRF
+> +	select SND_SIMPLE_CARD
+> +	select SND_SOC_SIRF_I2S
+> +	select SND_SOC_HDMI_CODEC
+> +
+
+Don't do this, just make all the individual drivers selectable directly
+in Kconfig.
+
+--SIpeN1L2gmCc/JOo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTNW0zAAoJELSic+t+oim9S1IQAJVtpfEA6207njlGm7y4VOz5
+0tFRTy5vFqK8Ety63ZVT3MLXuDdiUO71qth8nXHzHhodo6nw9ertICUL/nVsEj3Q
+nxabPz+vZk730Wm6XTI04lUiioM/s+QJs9uvP7QUx5cyl6enBq5SEVOQaIHE18fQ
+9PWTBu1beVAtmFfHGb4eGEjyOnEkVp+D7Ts5L2JzKEfsisSff1FAo7npS6b0bBum
+BFOO2Jj+criP5cwYXb7umMa0fE8lBRRyNT8mdggmWZ23bzj5JiAZsRLcHkvpSQh4
+7lWJ+9LVoPmcXZZOVLz4MsAN4Qg0hZtSU8rm0pmMpZ41rVI0Pm5mSGQK0ke35k1g
+RP+aw2yy1GBVpiCo64RNqQywK8HI+iGTBbhx5i4J+y8zgIqHUtXk0s0Y2u2SiHNa
+Fj8pKcOVc66T37uMB0Eq2qmG/Fq6WuHE9PTkbSC+C/xzc9mPuQqrSxfThbhX/BcT
+1uV6UPqOphdNvdiaB4ja91pm4xwoTDzWQgzM3PHiixfdouTdHTjzPwaSX1UpGda0
+6uhthdukkyLLjA+4gT/HXB7iNg/2MZgOh1Eet8WN1gFr7DjyZjlvQwsgo+1PevS2
+qOZ8JHurASEDBQ6UdY9jfUvNGhDZskdDS5vLiOa24QiEK5PZxLjsxuDGzti9AGIg
+MDoK8It+1tYHwC9NroNL
+=0c2G
+-----END PGP SIGNATURE-----
+
+--SIpeN1L2gmCc/JOo--
+
+--===============7536619519714493650==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7536619519714493650==--
