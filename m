@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: Use the platform data for
-	DMIC settings
-Date: Fri, 28 Mar 2014 11:02:05 +0000
-Message-ID: <20140328110205.GV30768@sirena.org.uk>
-References: <1395974778-4217-1-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [PATCH v2 0/4] ASoC: davinci-mcasp: Correct
+	start/stop sequences
+Date: Fri, 28 Mar 2014 11:09:13 +0000
+Message-ID: <20140328110913.GW30768@sirena.org.uk>
+References: <1395998717-27067-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3828655913983227985=="
+Content-Type: multipart/mixed; boundary="===============2522210967921256314=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B301C261A88
- for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 12:02:20 +0100 (CET)
-In-Reply-To: <1395974778-4217-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D3D36261987
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 12:09:24 +0100 (CET)
+In-Reply-To: <1395998717-27067-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, jsarha@ti.com, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3828655913983227985==
+--===============2522210967921256314==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xVUAO+xN0VJlKSe3"
+	protocol="application/pgp-signature"; boundary="hSsVBZHIO2Q9XETc"
 Content-Disposition: inline
 
 
---xVUAO+xN0VJlKSe3
+--hSsVBZHIO2Q9XETc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 28, 2014 at 10:46:18AM +0800, Oder Chiou wrote:
-> The patch uses the platform data for DMIC settings.
+On Fri, Mar 28, 2014 at 11:25:13AM +0200, Peter Ujfalusi wrote:
 
-Applied, thanks.
+> The startup sequence for TX and RX was not correct, not following the
+> programming sequence from the TRM.
+> This could cause initial channel swap when starting TX.
+> When stopping the stream the AFIFO should be stopped as the last step to avoid
+> unpredictable behavior.
 
---xVUAO+xN0VJlKSe3
+> The change has been tested on AM335x and AM437x but it should be valid for all
+> devices.
+
+Applied all, thanks.
+
+--hSsVBZHIO2Q9XETc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTNVaqAAoJELSic+t+oim9znoP/1HZnEI+pBtKm8qGTpGuGjfS
-hUtpR/fKq/QUupzo+Z4lqI1j7i1YLpjLQo7d0K9DFLLPRp7DoZQ+lxGDQwuSZrwO
-97Eb/HlLCyGI/PMMY7dXE56gujNFzcDGF/DNJH4pPexWDHtzewTACSuKJq11dKLd
-TUtbf3oZih4o+7sGEb+00mCxbGumrAJPkWexOaizrzZGgSgpayrzVQHAbMoD3hmD
-QWnqVCdWSgi4o64TGOL6Up+7DuIDgTT59azazO2xFXWF6pHdMDDh5Mt1jDsG0lmi
-+FgrI9vpiCMGXjt4jhTea+uIbbrGriB07NPCUob+te+cPsj2xVlAgZ1tvnIwo8mM
-E0XFrnny1Q3WbRYu92nkAntrPqa+mUPskAYtFA9Vwl8RbfUP+1Lnlu2cy0RepX4V
-77aaDwlNo1+9Ncyi5ea/IlQ6SblTvk0zmkzGaSGlXrDNv0iuAAot9V2xdRrwlXWA
-DXUNOGZgBqZKnuVGOGjvZ6ZJnX3fqNnjyuEwtK7LHy8qrs/+pGM8/Rv9L5GVRQT5
-Py/4FQ23jgQ7jw9CiECY6yuD1LyG8U/A9L0RJlEIX0MGCcEMhzr/0wAw63Mcynqv
-gVeb1n15ten9E/TZdGnz+EYuXkTRhy5f8NLM2lYDhboURzg/2v/Xe7ShuqjIaxZd
-jKq1UCpljlvIhd5kaKyz
-=WXfZ
+iQIcBAEBAgAGBQJTNVhWAAoJELSic+t+oim9tWgQAIMA0uS1NBbEV+KC68Ke0N3G
+jmx9I/peOe3w19wVKJsOHX2L6keYwg9kASXjUHWRoC3g70QJ+K0andWLkDN/W7qU
+RCrMSSiT1hpTwsnf7nqK5vZR0OKZfwsGYzwUnREFOZqL0gbMTyKljIfbWh6jooHU
+YXD1JN5a3HUueOrG/GeD4xuI49srx1oB1oeGF89/ZCP4VhruSFoTeZoKU25j8j9X
+gZfa39YfNdfTCFNgT85oWtlfifIb6QaxuYDgxS1jHbTgJEea3YEYCSkKjY/F1x1B
+ADcsaw64Imere2+H0CZF2KN9Db6YRpD8gRZX1TCVQ8eUKX77maw9qRzySLotTRNI
++wm1l5ZxdTE3dY993FfrTWkvQ0veOwLcGCp7tca20HWxWq7eVUsfL6+iQ7pUYVnZ
+HHajZiosV4BCJw+jWp1sBofj4tG+/8PtW9HxbZzddwnpyc2ygPguhf28te64KaKX
+uIJVZmDU7MuvGyCoMbO7hEQ8AwnmxZs2nnYwo5ZgSIt2z0HgW17YcdWnKzN+v5xs
+D6XDTLamquxyVzDH9aP4vt/9hv3N07RbjD3ZU3xb/cJfbSSECsElc/Ox8FPUkIxb
+XLCD11hBLkRQVQLzGTXAcJoNOp3kK2LPaNr5sBsFzFOUHxPMe7QOKhIw6dPIkm09
+MDekWvvGOgLKfejhbn0Z
+=I60S
 -----END PGP SIGNATURE-----
 
---xVUAO+xN0VJlKSe3--
+--hSsVBZHIO2Q9XETc--
 
---===============3828655913983227985==
+--===============2522210967921256314==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3828655913983227985==--
+--===============2522210967921256314==--
