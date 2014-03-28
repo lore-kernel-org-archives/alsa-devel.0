@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 1/2] ASoC: sirf: Add SiRF I2S driver
-Date: Fri, 28 Mar 2014 12:39:06 +0000
-Message-ID: <20140328123906.GI30768@sirena.org.uk>
-References: <1395898025-5437-1-git-send-email-rongjun.ying@csr.com>
- <1395898025-5437-2-git-send-email-rongjun.ying@csr.com>
+Subject: Re: [PATCH 1/6] ASoC: rt5640: Remove the pre-allocated
+ size of reg_default
+Date: Fri, 28 Mar 2014 12:52:58 +0000
+Message-ID: <20140328125258.GJ30768@sirena.org.uk>
+References: <1396009710-21324-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3229657335032645393=="
+Content-Type: multipart/mixed; boundary="===============7392169037623847195=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BF02265500
- for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 13:39:21 +0100 (CET)
-In-Reply-To: <1395898025-5437-2-git-send-email-rongjun.ying@csr.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 185702654BC
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 13:53:19 +0100 (CET)
+In-Reply-To: <1396009710-21324-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: RongJun Ying <rjying@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, workgroup.linux@csr.com, Rongjun Ying <rongjun.ying@csr.com>
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3229657335032645393==
+--===============7392169037623847195==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rPKw41Fi6dB0MaHy"
+	protocol="application/pgp-signature"; boundary="8Ll2WeG2L2s3+nMg"
 Content-Disposition: inline
 
 
---rPKw41Fi6dB0MaHy
+--8Ll2WeG2L2s3+nMg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 27, 2014 at 01:27:04PM +0800, RongJun Ying wrote:
-> From: Rongjun Ying <rongjun.ying@csr.com>
->=20
-> This patch adds ASoC support for SiRF SoCs I2S modules.
+On Fri, Mar 28, 2014 at 08:28:25PM +0800, Oder Chiou wrote:
+> In order to prevent the redundant memory usage, the pre-allocated size of
+> reg_default should be remove.
 
 Applied, thanks.
 
---rPKw41Fi6dB0MaHy
+--8Ll2WeG2L2s3+nMg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTNW1nAAoJELSic+t+oim9t3YP/09DbT0JImwyNw040RwiPAXq
-4eWROVGpD6Mw8kB8rH7EZtG38fZfq5zLx0xW4BdQurVIQAFXGyGe0NGmnX2yTUka
-DgG5Tk7T4+U3spj5QLM9ipwgDFp5qf6aSQZXqzAsoRBTmC4P24B5lbW+JbI/962c
-D6SC855siYghiJWXNDwT2ScFu7FzANNc23EKPw/DdfBmruwQQX3+ihl71QOfqh4x
-2Sy54oY29c5o0pqqyGkSTYWuE6fLy9/PtquhTYQVPecLhisjbQ7GIuzWbiyp0enh
-kBWQCo3D3rqm1gxjpOkt1v6+G9aNCzR4DgdUL8S0R/RF2sC0ynSoNXopjLwN6YrC
-C0hqMJDMwioNxavZkCUPvPANfM9808NEBjVxZ5k4bMxx2895ZfO0jRvo5SfkOFtv
-kFdiSgv4+If4u7UeZeYYMjZ5XmEECtKqWlDmUuuv3sFsGu1IKI75nu4hxpouNowz
-pn3l6wz8R0ebxl58anrQ+bIz5xW2R7NB2Of+Ez42xIhlBruCb45H/v81Ynwirmaz
-W7tou4QoBNeEyhTqeo7JERvJ/KJWbD8FesiMbLTGE0+EtOTipG6yfXCxMHq5fdgQ
-qwzU/J0jDS4BEIGWWZKZo8To/u7O2Zq1KfLSHTWj0umzR+o1o1gbnkYPwmhqE2Xa
-P+z0ZhS2NUO+8NY41q/U
-=RWkM
+iQIcBAEBAgAGBQJTNXCmAAoJELSic+t+oim99q4QAIlB85bGw5XxA+FTJ2Rp0W3P
+zK2Drs356ZlYQHO4cw6mbABPmnAKjioYR0DmQlEigrYrgwhEtCuEs4HsvUKSQ8F6
+mh92IHc4uTq8k0n/hgKTf1n8EJEclzaBhsphoS18OejJw+UYkWR9tSYkTesCRsTP
+NS7W19YlAsAmNNAneYW8hHcuErAKqOdEGQjCjoU5tDK3rm44uo/UEi0clyFtpLDK
+pERjUmIaiubOlQHU5U1nn1qxV3jjXPc0zb7Ijikk/i3oYmlAF6a4YllSWGuM4KIQ
+y91V+Ri9Ki0+LeeHOteA7BMPuquggBXkYM3wDFiBmcjAeLtMUzQPrbB3de2VZnVo
+jD2C8ITYY0sGB6V313l7lAiRVTAaAsUo71azp8I9rLdsQ2/vEZslUQaPWsGRYjT7
+PHwLPbM9knY9Mq+vaDilPA3zIG8BGzvj9oqbneeOoJN5G/HS+VKRW+Ur2fxdUiTM
+A0nJ+lCOqoesQGCI9unwH0FM6oUcAvukLLngnVu3XR4zK85K/OOaNAnR/WnhEd3z
+IhKV2n2L2j1xk93cmBDKzrjLkRATgeKRUvsDsv2YKnAVVw9+/iLafjXJIY8j2deK
+kmu4cTxPubX3uEAKeGYuNFu4uHyeW8pqoaMmeGr/GQFsBU1l8pMq0PmV+Rn3I9PR
+tuxOmGCOE/+O9K5nghai
+=RhJZ
 -----END PGP SIGNATURE-----
 
---rPKw41Fi6dB0MaHy--
+--8Ll2WeG2L2s3+nMg--
 
---===============3229657335032645393==
+--===============7392169037623847195==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3229657335032645393==--
+--===============7392169037623847195==--
