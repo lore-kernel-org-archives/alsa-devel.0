@@ -1,15 +1,20 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5640: Use the platform data for DMIC
-	settings
-Date: Fri, 28 Mar 2014 10:46:18 +0800
-Message-ID: <1395974778-4217-1-git-send-email-oder_chiou@realtek.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH v2] ASoC: fsl_sai: Add isr to deal with
+	error flag
+Date: Fri, 28 Mar 2014 10:41:00 +0800
+Message-ID: <20140328024059.GA18417@MrMyself>
+References: <1395918419-20739-1-git-send-email-Guangyu.Chen@freescale.com>
+ <20140327132626.GN30768@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id AE5B82619E9
- for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 03:46:40 +0100 (CET)
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 210D02619E9
+ for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 04:03:02 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20140327132626.GN30768@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,134 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@tabi.org, Li.Xiubo@freescale.com, David.Laight@ACULAB.COM, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch uses the platform data for DMIC settings.
+On Thu, Mar 27, 2014 at 01:26:27PM +0000, Mark Brown wrote:
+> On Thu, Mar 27, 2014 at 07:06:59PM +0800, Nicolin Chen wrote:
+> > It's quite cricial to clear error flags because SAI might hang if getting
+> > FIFO underrun during playback (I haven't confirmed the same issue on Rx
+> > overflow though).
+> > 
+> > So this patch enables those irq and adds isr() to clear the flags so as to
+> > keep playback entirely safe.
+> 
+> So, I've applied this since we're (hopefully!) very near the merge
+> window opening and it seems like it should be an improvement overall.
+> However a few things below:
+> 
+> > +	/* Only handle those what we enabled */
+> > +	mask = (FSL_SAI_FLAGS >> FSL_SAI_CSR_xIE_SHIFT) << FSL_SAI_CSR_xF_SHIFT;
+> 
+> The shifting here could use a comment.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- include/sound/rt5640.h    |  4 +++
- sound/soc/codecs/rt5640.c | 77 ++++++++++++++---------------------------------
- 2 files changed, 27 insertions(+), 54 deletions(-)
+Will send an extra patch to cover it.
 
-diff --git a/include/sound/rt5640.h b/include/sound/rt5640.h
-index 27cc75e..59d26dd 100644
---- a/include/sound/rt5640.h
-+++ b/include/sound/rt5640.h
-@@ -16,6 +16,10 @@ struct rt5640_platform_data {
- 	bool in1_diff;
- 	bool in2_diff;
- 
-+	bool dmic_en;
-+	bool dmic1_data_pin; /* 0 = IN1P; 1 = GPIO3 */
-+	bool dmic2_data_pin; /* 0 = IN1N; 1 = GPIO4 */
-+
- 	int ldo1_en; /* GPIO for LDO1_EN */
- };
- 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index bcd6513..cf041e3 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -872,54 +872,6 @@ static SOC_ENUM_SINGLE_DECL(rt5640_sdi_sel_enum, RT5640_I2S2_SDP,
- static const struct snd_kcontrol_new rt5640_sdi_mux =
- 	SOC_DAPM_ENUM("SDI select", rt5640_sdi_sel_enum);
- 
--static int rt5640_set_dmic1_event(struct snd_soc_dapm_widget *w,
--	struct snd_kcontrol *kcontrol, int event)
--{
--	struct snd_soc_codec *codec = w->codec;
--
--	switch (event) {
--	case SND_SOC_DAPM_PRE_PMU:
--		snd_soc_update_bits(codec, RT5640_GPIO_CTRL1,
--			RT5640_GP2_PIN_MASK | RT5640_GP3_PIN_MASK,
--			RT5640_GP2_PIN_DMIC1_SCL | RT5640_GP3_PIN_DMIC1_SDA);
--		snd_soc_update_bits(codec, RT5640_DMIC,
--			RT5640_DMIC_1L_LH_MASK | RT5640_DMIC_1R_LH_MASK |
--			RT5640_DMIC_1_DP_MASK,
--			RT5640_DMIC_1L_LH_FALLING | RT5640_DMIC_1R_LH_RISING |
--			RT5640_DMIC_1_DP_IN1P);
--		break;
--
--	default:
--		return 0;
--	}
--
--	return 0;
--}
--
--static int rt5640_set_dmic2_event(struct snd_soc_dapm_widget *w,
--	struct snd_kcontrol *kcontrol, int event)
--{
--	struct snd_soc_codec *codec = w->codec;
--
--	switch (event) {
--	case SND_SOC_DAPM_PRE_PMU:
--		snd_soc_update_bits(codec, RT5640_GPIO_CTRL1,
--			RT5640_GP2_PIN_MASK | RT5640_GP4_PIN_MASK,
--			RT5640_GP2_PIN_DMIC1_SCL | RT5640_GP4_PIN_DMIC2_SDA);
--		snd_soc_update_bits(codec, RT5640_DMIC,
--			RT5640_DMIC_2L_LH_MASK | RT5640_DMIC_2R_LH_MASK |
--			RT5640_DMIC_2_DP_MASK,
--			RT5640_DMIC_2L_LH_FALLING | RT5640_DMIC_2R_LH_RISING |
--			RT5640_DMIC_2_DP_IN1N);
--		break;
--
--	default:
--		return 0;
--	}
--
--	return 0;
--}
--
- static void hp_amp_power_on(struct snd_soc_codec *codec)
- {
- 	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
-@@ -1054,12 +1006,10 @@ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
- 
- 	SND_SOC_DAPM_SUPPLY("DMIC CLK", SND_SOC_NOPM, 0, 0,
- 		set_dmic_clk, SND_SOC_DAPM_PRE_PMU),
--	SND_SOC_DAPM_SUPPLY("DMIC1 Power", RT5640_DMIC,
--		RT5640_DMIC_1_EN_SFT, 0, rt5640_set_dmic1_event,
--		SND_SOC_DAPM_PRE_PMU),
--	SND_SOC_DAPM_SUPPLY("DMIC2 Power", RT5640_DMIC,
--		RT5640_DMIC_2_EN_SFT, 0, rt5640_set_dmic2_event,
--		SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_SUPPLY("DMIC1 Power", RT5640_DMIC, RT5640_DMIC_1_EN_SFT, 0,
-+		NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("DMIC2 Power", RT5640_DMIC, RT5640_DMIC_2_EN_SFT, 0,
-+		NULL, 0),
- 	/* Boost */
- 	SND_SOC_DAPM_PGA("BST1", RT5640_PWR_ANLG2,
- 		RT5640_PWR_BST1_BIT, 0, NULL, 0),
-@@ -2179,6 +2129,25 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
- 		regmap_update_bits(rt5640->regmap, RT5640_IN3_IN4,
- 					RT5640_IN_DF2, RT5640_IN_DF2);
- 
-+	if (rt5640->pdata.dmic_en) {
-+		regmap_update_bits(rt5640->regmap, RT5640_GPIO_CTRL1,
-+			RT5640_GP2_PIN_MASK, RT5640_GP2_PIN_DMIC1_SCL);
-+
-+		if (rt5640->pdata.dmic1_data_pin) {
-+			regmap_update_bits(rt5640->regmap, RT5640_DMIC,
-+				RT5640_DMIC_1_DP_MASK, RT5640_DMIC_1_DP_GPIO3);
-+			regmap_update_bits(rt5640->regmap, RT5640_GPIO_CTRL1,
-+				RT5640_GP3_PIN_MASK, RT5640_GP3_PIN_DMIC1_SDA);
-+		}
-+
-+		if (rt5640->pdata.dmic2_data_pin) {
-+			regmap_update_bits(rt5640->regmap, RT5640_DMIC,
-+				RT5640_DMIC_2_DP_MASK, RT5640_DMIC_2_DP_GPIO4);
-+			regmap_update_bits(rt5640->regmap, RT5640_GPIO_CTRL1,
-+				RT5640_GP4_PIN_MASK, RT5640_GP4_PIN_DMIC2_SDA);
-+		}
-+	}
-+
- 	rt5640->hp_mute = 1;
- 
- 	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5640,
--- 
-1.8.1.1.439.g50a6b54
+> > +	regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
+> > +			   FSL_SAI_CSR_xF_W_MASK | FSL_SAI_CSR_FR, xcsr);
+> 
+> Using update_bits() is going to do an extra read, better to do this as:
+> 
+> 	if (xcsr)
+> 		regmap_write(sai->regmap, FSL_SAI_RCSR, xcsr);
+
+T/RCSR register stands for T/Rx Control (Status -- I guess) Register.
+It actually contains control bits, IRQ mask bits and IRQ status bits.
+Thus we can't regard it as a entire status register. That's why I try
+to update it partially for status bits only at this point.
+
+But if it's just for saving this extra read instance, I may save those
+non-status bits from upper regmap_read() and then merge them into this
+regmap_write() over here.
+
+> otherwise we might be ignoring any of the bits that are actually clear
+> on read (it seems like there are some?).
+
+For all status flags bits, actually five for each, three of them are
+write-1-clear and the other two are self-clearance by SAI self -- so
+none of them are clear-on-read type.
+
+> > +	return IRQ_HANDLED;
+> 
+> I'd expect to see IRQ_NONE if we didn't actually see an interrupt
+> source.
+
+Will add this.
+
+Thank you,
+Nicolin
