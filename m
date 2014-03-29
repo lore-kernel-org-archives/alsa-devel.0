@@ -1,59 +1,63 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: fix src clock prepare/unprepare
-Date: Sat, 29 Mar 2014 10:10:43 +0000
-Message-ID: <20140329101043.GF21628@sirena.org.uk>
-References: <1396018997-12390-1-git-send-email-ben.dooks@codethink.co.uk>
+Subject: Re: [PATCH] ASoC: rsnd: SSI needs to prepare clocks before enabling
+Date: Sat, 29 Mar 2014 10:09:06 +0000
+Message-ID: <20140329100906.GE21628@sirena.org.uk>
+References: <1396009626-24699-1-git-send-email-ben.dooks@codethink.co.uk>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cz6wLo+OExbGG7q/"
+	protocol="application/pgp-signature"; boundary="47eKBCiAZYFK5l32"
 Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1396018997-12390-1-git-send-email-ben.dooks@codethink.co.uk>
+In-Reply-To: <1396009626-24699-1-git-send-email-ben.dooks@codethink.co.uk>
 Sender: linux-sh-owner@vger.kernel.org
 To: Ben Dooks <ben.dooks@codethink.co.uk>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-sh@vger.kernel.org, magnus.damm@opensource.se, linux-kernel@lists.codethink.co.uk
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-sh@vger.kernel.org, magnus.damm@opensource.se, linux-kernel@lists.codethink.co.uk, William Towle <william.towle@codethink.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
 
---cz6wLo+OExbGG7q/
+--47eKBCiAZYFK5l32
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 28, 2014 at 03:03:17PM +0000, Ben Dooks wrote:
-> As with the previous commit, before a clock can be used it must be prepar=
-ed
-> for use. Change from clk_enable() and clk_disable() to the versions of the
-> calls which also prepare and un-prepare the clocks.
+On Fri, Mar 28, 2014 at 12:27:06PM +0000, Ben Dooks wrote:
+> From: William Towle <william.towle@codethink.co.uk>
 >=20
-> Will fix warnings from the clock code when this is used.
->=20
-> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> The rsnd_ssi_hw_{stop|start} functions need to call clk_prepare_enable()
+> and clk_disable_unprepare(), otherwise the following warning occurs on
+> attempt to play sound:
+
+This doesn't apply cleanly against current code, can you please check and
+resend - I can't apply this anyway since...
+
+> Signed-off-by: William Towle <william.towle@codethink.co.uk>
+> [ben.dooks@codethink.co.uk: add more bug info to report]
+> Tested-by: Ben Dooks <ben.dooks@codethink.co.uk>
 > ---
->  sound/soc/sh/rcar/scu.c | 4 ++--
 
-This doesn't apply against mainline, mainline doesn't have scu.c at all.
+=2E..you forgot to sign off.  I'm also not seeing the debug info you
+mention in the changelog, indeed there's no error checking.
 
---cz6wLo+OExbGG7q/
+--47eKBCiAZYFK5l32
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTNpwgAAoJELSic+t+oim9g7EP/jV5lNmQeW9wktstVX23pEsb
-IqdYIJ/+v5vZrGCqjbIJloaQtDkwJP7kMWlG+pX+DBsioBZuNCNPDS5ZI+v0JP8o
-/ky5WF6RpCJ2QE0q4zQ4TDG+dRuQYkqFDyjK1XS/HtxiKQVLFAMvuQxgMyA5e38s
-Ik4iOxNI4M+vR1T6+NwftuQIz2QBgFBHl0JlPKtknglysY0+6XE6gm61MNmHPFEl
-dnBATOjqn8TSfi+LKC81WgYKymyfoQfo46gqlhL0/kfHmphkscNmcHwvIdjfFAEq
-ZbGJKcwDI4vrBwgEQkixbOASu+auABuApSUMKPxIXPtrZFUlDMpXIlh6UgHwTpT3
-rozyG9botacPUSWGi60hpaYNWuU5IqensKS1r1i6RQahN0gTZWB8c0zxvfPwTvXY
-AUgT4xwpEb7QfRh81duHLUSQ59PN7bd3rYJO2xMJSk4hVvAQb9jO9SwCVieWoEN/
-0mFar+4sFzv4r3ab+T3vcWpsHmbPhj/91/bu6glJHH5FOusUJChveXpumCTorUsB
-eyOJiR92YxRN5S8MBc3aimn/JZchDEVmrVEwPTDusiZkAr4SlHp1pCG/n5DO1QuP
-KDBm5wsYiePrz/+chkJo+7ujz5PizsA57qZFS4pg87tu+UBtUQnYnpEZiQPRgbZd
-oUc0KLkjqk5AqGyNyYdw
-=eoh0
+iQIcBAEBAgAGBQJTNpu/AAoJELSic+t+oim9R+IP/A7WdVksu5G5IKiJYsaizLwn
+1EJz2Z2+Xnut3xxD8YI2PQ4AzSgMI1YrvzruUTIg+BGkWUtbmQrRmmc5bRwyBswZ
+uW8XDMFh0DcweigMdAn0soKs4M8CIJi7DTGnfSmDUkkXU+y46mOTUmh40xC/Ju1C
+F2iSO0G9HqPXw+apxvsaJgaPM+wifRU9TgRmgBzF4/H7Cp+DTFm5Y95vekc4mD83
+6RQE4K32Va4Y99FkOAuCWlV8NC9IeQQhMRVhJX2OM51CT9r6GqDluJNt6uMqRwy5
+8zU76Du11TKu58jiMfxQlsQZmzm47WpiO8JlmqEXLALyBY/nuwNQz7SIICqJPTjM
+j1FyIdYPEykPnyM0HoWQ5Otlt1kqb/yhfEEu4cGhIYuJPY6A833oCOC06tKhLSsS
+DToOSibV/YFuVCwXhBx/UVTH3qZEfJn/msOKHV+cpAN8yMUSZYDDiOJo2BjR+5m6
+4ogd3WYbtfJ/yXJX3d7nDmGCZZ2k8kGIG8HT3HItdc03vJWxKrz/CfDzNJV+bs0H
+troG23U+ek2+fGB/eQa5Ept14o4AVrcJwvOZdvRIMg82Tm5JP4kMFX1c8qtRCRgP
+cWRwTFZ6beelF/hp/ay68fWqroqubBbY2NGbqauVBL/tYHW+QEl1ue/tGVTVAW09
+G9aeYkFYcxBzdux2lhrQ
+=boXr
 -----END PGP SIGNATURE-----
 
---cz6wLo+OExbGG7q/--
+--47eKBCiAZYFK5l32--
