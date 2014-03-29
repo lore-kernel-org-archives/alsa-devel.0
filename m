@@ -1,63 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: SSI needs to prepare clocks before enabling
-Date: Sat, 29 Mar 2014 10:09:06 +0000
-Message-ID: <20140329100906.GE21628@sirena.org.uk>
-References: <1396009626-24699-1-git-send-email-ben.dooks@codethink.co.uk>
+Subject: Re: [PATCH 1/2] ASoC: ak5386: Add regulators to
+ documentation and fix sparse warning
+Date: Sat, 29 Mar 2014 10:17:08 +0000
+Message-ID: <20140329101708.GH21628@sirena.org.uk>
+References: <1396029905-6807-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="47eKBCiAZYFK5l32"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1396009626-24699-1-git-send-email-ben.dooks@codethink.co.uk>
-Sender: linux-sh-owner@vger.kernel.org
-To: Ben Dooks <ben.dooks@codethink.co.uk>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-sh@vger.kernel.org, magnus.damm@opensource.se, linux-kernel@lists.codethink.co.uk, William Towle <william.towle@codethink.co.uk>
+Content-Type: multipart/mixed; boundary="===============6109912375862479041=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E310D261698
+ for <alsa-devel@alsa-project.org>; Sat, 29 Mar 2014 11:44:24 +0100 (CET)
+In-Reply-To: <1396029905-6807-1-git-send-email-zonque@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---47eKBCiAZYFK5l32
+--===============6109912375862479041==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="e5bfZ/T2xnjpUIbw"
+Content-Disposition: inline
+
+
+--e5bfZ/T2xnjpUIbw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 28, 2014 at 12:27:06PM +0000, Ben Dooks wrote:
-> From: William Towle <william.towle@codethink.co.uk>
+On Fri, Mar 28, 2014 at 07:05:04PM +0100, Daniel Mack wrote:
+> Document the newly added regulators to the DT binding document.
 >=20
-> The rsnd_ssi_hw_{stop|start} functions need to call clk_prepare_enable()
-> and clk_disable_unprepare(), otherwise the following warning occurs on
-> attempt to play sound:
+> Also, "static const char const *x" is not identical to "static const
+> char * const x", which sparse now complains about. Fix it.
 
-This doesn't apply cleanly against current code, can you please check and
-resend - I can't apply this anyway since...
+Applied, though this should really have been two patches as there's no
+overlap.
 
-> Signed-off-by: William Towle <william.towle@codethink.co.uk>
-> [ben.dooks@codethink.co.uk: add more bug info to report]
-> Tested-by: Ben Dooks <ben.dooks@codethink.co.uk>
-> ---
-
-=2E..you forgot to sign off.  I'm also not seeing the debug info you
-mention in the changelog, indeed there's no error checking.
-
---47eKBCiAZYFK5l32
+--e5bfZ/T2xnjpUIbw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTNpu/AAoJELSic+t+oim9R+IP/A7WdVksu5G5IKiJYsaizLwn
-1EJz2Z2+Xnut3xxD8YI2PQ4AzSgMI1YrvzruUTIg+BGkWUtbmQrRmmc5bRwyBswZ
-uW8XDMFh0DcweigMdAn0soKs4M8CIJi7DTGnfSmDUkkXU+y46mOTUmh40xC/Ju1C
-F2iSO0G9HqPXw+apxvsaJgaPM+wifRU9TgRmgBzF4/H7Cp+DTFm5Y95vekc4mD83
-6RQE4K32Va4Y99FkOAuCWlV8NC9IeQQhMRVhJX2OM51CT9r6GqDluJNt6uMqRwy5
-8zU76Du11TKu58jiMfxQlsQZmzm47WpiO8JlmqEXLALyBY/nuwNQz7SIICqJPTjM
-j1FyIdYPEykPnyM0HoWQ5Otlt1kqb/yhfEEu4cGhIYuJPY6A833oCOC06tKhLSsS
-DToOSibV/YFuVCwXhBx/UVTH3qZEfJn/msOKHV+cpAN8yMUSZYDDiOJo2BjR+5m6
-4ogd3WYbtfJ/yXJX3d7nDmGCZZ2k8kGIG8HT3HItdc03vJWxKrz/CfDzNJV+bs0H
-troG23U+ek2+fGB/eQa5Ept14o4AVrcJwvOZdvRIMg82Tm5JP4kMFX1c8qtRCRgP
-cWRwTFZ6beelF/hp/ay68fWqroqubBbY2NGbqauVBL/tYHW+QEl1ue/tGVTVAW09
-G9aeYkFYcxBzdux2lhrQ
-=boXr
+iQIcBAEBAgAGBQJTNp2hAAoJELSic+t+oim9WCUQAIS7lvB8j1U78yZ60TzCZ9Tm
+X5/irOq39/qHVg8Smsq5RnYGMhZm7L9GAKTCoFEQ+hMf1miL66qOkJCkk+nHXJ45
+FZesFlSNiUEy38fCH9ONkISTGPucdO0pATyc6HqlINZqWUAt1UXlwWmLkP+BZKLO
+LZEPKjVc1qtWYvQ7KjwCOV1Ka8mP/2fJNkjy7hJRZt+tk/h/FW03tCCGWB/o5QrD
+9LKlzeQDtvw0/pMBGqQRFAnKuL+P/yApvfLQK27LNICYP/JfUc9CVN5e7w/C3j1K
+KiikVSXv8yYMtBezbvLbl/fbzxxDOxRjk+rovWPUd5iGStywnKE5Yh5HutjfPD/W
+nVtpeY5FjrR24jxM/S0CG4+SFlgIwzAkCCrE7wCow9dbo0cS1JJPEgFUewP1PqXP
+03cpztudapcvMRLAN9YG9XcO/R5jNesC/jTDzEGGMHec2L7zB41rQc8rTjegZkHS
+mHziy2FGkmQm/Cg0Ex4p6DGFNqzPHXlgfOM0Lmnv3JwNxkWMwmWdhgkpTxmpvU3u
+4jiygGcWhPnG1S7Zcs0KelR4GzadJSfmfv8bAMWgPI4aOV1JSjJv6sw0YVr9OwAQ
+Ui3Fy8erBapKi1Uzd2C0TWVoWDsavojd/qQ1cK5ZzL8nXQ6d9XKh1Cgbzbn9hinB
+uvFKO9krjHvFby053L+o
+=QLcN
 -----END PGP SIGNATURE-----
 
---47eKBCiAZYFK5l32--
+--e5bfZ/T2xnjpUIbw--
+
+--===============6109912375862479041==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6109912375862479041==--
