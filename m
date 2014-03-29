@@ -1,19 +1,17 @@
-From: Damien Zammit <damien.zammit@gmail.com>
+From: Mark Hills <mark@xwax.org>
 Subject: Re: [PATCH] ALSA: usb-audio - Capture and duplex
  support for Digidesign Mbox 1 sound card.
-Date: Sat, 29 Mar 2014 16:35:23 +1100
-Message-ID: <53365B9B.2050402@gmail.com>
+Date: Sat, 29 Mar 2014 01:01:45 -0400 (EDT)
+Message-ID: <1403282253300.13982@beth>
 References: <52E5254A.8090308@gmail.com> <52E53D57.3010700@ladisch.de>
  <52E5CC2E.1010000@gmail.com> <5314EDA1.5040101@zonque.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040205020705000905020300"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
- [209.85.220.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 82FC726164D
- for <alsa-devel@alsa-project.org>; Sat, 29 Mar 2014 06:36:06 +0100 (CET)
-Received: by mail-pa0-f42.google.com with SMTP id fb1so5894699pad.15
- for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2014 22:36:05 -0700 (PDT)
+Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 387BB261A3A
+ for <alsa-devel@alsa-project.org>; Sat, 29 Mar 2014 10:37:12 +0100 (CET)
 In-Reply-To: <5314EDA1.5040101@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,38 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
+To: Daniel Mack <daniel@zonque.org>, Damien Zammit <damien.zammit@gmail.com>
 Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040205020705000905020300
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+On Mon, 3 Mar 2014, Daniel Mack wrote:
 
-On 04/03/14 08:01, Daniel Mack wrote:
 > Hi Damien,
 > 
 > Thanks for your patch! See my two comments below.
 > 
 > On 01/27/2014 04:02 AM, Damien Zammit wrote:
->> On 27/01/14 03:52, Clemens Ladisch wrote:
->>>>>> This patch creates a dual endpoint quirk.
->>>>>>>> The quirk interface needs a second audioformat struct for this to work
->>>>>>>> which I called ".data2".
->>>> Couldn't you just let .data point to an array of two structs?
->> Thanks Clemens, I have created a new patch using this suggestion.
+> > On 27/01/14 03:52, Clemens Ladisch wrote:
+> >>> >> This patch creates a dual endpoint quirk.
+> >>>> >> >The quirk interface needs a second audioformat struct for this to work
+> >>>> >> >which I called ".data2".
+> >> > Couldn't you just let .data point to an array of two structs?
+> > Thanks Clemens, I have created a new patch using this suggestion.
 > 
 > [...]
 > 
->> +	fp2 = kmemdup((const struct audioformat*)(quirk->data + sizeof(const struct audioformat)), sizeof(*fp2), GFP_KERNEL);
->> +	if (!fp2) {
->> +		snd_printk(KERN_ERR "cannot memdup 2\n");
->> +		return -ENOMEM;
->> +	}
->> +	if (fp1->nr_rates > MAX_NR_RATES) {
->> +		kfree(fp1);
->> +		kfree(fp2);
+> > +	fp2 = kmemdup((const struct audioformat*)(quirk->data + sizeof(const struct audioformat)), sizeof(*fp2), GFP_KERNEL);
+> > +	if (!fp2) {
+> > +		snd_printk(KERN_ERR "cannot memdup 2\n");
+> > +		return -ENOMEM;
+> > +	}
+> > +	if (fp1->nr_rates > MAX_NR_RATES) {
+> > +		kfree(fp1);
+> > +		kfree(fp2);
 > 
 > Please do proper error unwinding here with jump labels rather than
 > open-coding the kfree() calls from multiple places.
@@ -67,248 +61,225 @@ On 04/03/14 08:01, Daniel Mack wrote:
 > Then, rewrite the logic to iterate over the interfaces in a loop. That
 > might also make the code more readable.
 
-Hi Daniel, Clemens,
-I have addressed the above issues, please find attached my new patch.
-I did a proper git log message that describes my changes.  I am keen to
-get this reviewed and hopefully accepted soon.
-I did a clean clone of Takashi's 'sound' (for-next) and applied my
-changes on top of that.
+I'm a bit late to this, but I think a more generic quirk is necessary.
 
-Damien
+The problem with the patch is that the new code still calls functions 
+hard-wired to the first endpoint on the interface, eg. 
+snd_usb_init_pitch(). Also parameters such as altsetting apply to the 
+interface, not endpoint.
+
+So whilst it may work in the given case, much of the quirk is ignored.
+
+This is worth fixing though, as there is the same limitation with the 
+Focusrite/Novation interfaces, and I suspect others too.
+
+A cleaner implementation is probably an array of endpoints in the quirk, 
+something like the patch below (untested)
+
+I found the problem is functions using an endpoint index (eg. 0) whereas 
+mainly the function uses the ID (eg. 0x81). What is the relationship 
+between the two?
+
+It's to replace calls such as:
+
+  usb_sndctrlpipe(dev, 0)
+  get_endpoint(alts, 0)
+
+Or does some kind of spec define that these should be applied to the first 
+endpoint and that all will be affected?
+
+Thanks
+
+-- 
+Mark
 
 
---------------040205020705000905020300
-Content-Type: text/x-patch;
- name="0001-PATCH-ALSA-usb-audio-Capture-and-duplex-support-for-.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-PATCH-ALSA-usb-audio-Capture-and-duplex-support-for-.pa";
- filename*1="tch"
-
->From c20460de3a3d5635451f030a966cb7666866a7a1 Mon Sep 17 00:00:00 2001
-From: Damien Zammit <damien@zamaudio.com>
-Date: Sat, 29 Mar 2014 16:01:47 +1100
-Subject: [PATCH] [PATCH] ALSA: usb-audio - Capture and duplex support for
- Digidesign Mbox 1 sound card
-
-A few revisions of this patch have been made.  This patch provides support for usb cards
-which have their streams on multiple endpoints within the same interface.
-In particular, it provides duplex mode support for Digidesign Mbox 1.
-
-I followed ALSA dev team's suggestion of making it work for N endpoints
-rather than hardcoding it to two, and improved error handling has been provided.
-An extra parameter has been added as requested to the usbaudio quirk struct 'epmulti'
-to give the number of endpoints within a multi interface.
-
-Signed-off-by: Damien Zammit <damien@zamaudio.com>
 ---
- sound/usb/quirks-table.h |   58 +++++++++++++++++++++++-----------
- sound/usb/quirks.c       |   79 ++++++++++++++++++++++++++++++++++++++++++++++
- sound/usb/usbaudio.h     |    2 ++
- 3 files changed, 121 insertions(+), 18 deletions(-)
+ sound/usb/card.h         |  2 ++
+ sound/usb/quirks-table.h |  5 ++++-
+ sound/usb/quirks.c       | 58 ++++++++++++++++++++++++++++++++++++------------
+ sound/usb/stream.c       |  5 +++--
+ sound/usb/stream.h       |  1 +
+ 5 files changed, 54 insertions(+), 17 deletions(-)
 
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 9867ab8..3398708 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -20,6 +20,8 @@ struct audioformat {
+ 	unsigned char attributes;	/* corresponding attributes of cs endpoint */
+ 	unsigned char endpoint;		/* endpoint */
+ 	unsigned char ep_attr;		/* endpoint attributes */
++	unsigned char nr_endpoints;     /* number of endpoint table entries */
++	unsigned char *endpoint_table;  /* endpoint table */
+ 	unsigned char datainterval;	/* log_2 of data packet interval */
+ 	unsigned char protocol;		/* UAC_VERSION_1/2 */
+ 	unsigned int maxpacksize;	/* max. packet size */
 diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index f652b10..e41b8a2 100644
+index f5f0595..ab64e50 100644
 --- a/sound/usb/quirks-table.h
 +++ b/sound/usb/quirks-table.h
-@@ -2889,23 +2889,46 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 			},
- 			{
- 				.ifnum = 1,
--				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
--				.data = &(const struct audioformat) {
--					.formats = SNDRV_PCM_FMTBIT_S24_3BE,
--					.channels = 2,
--					.iface = 1,
--					.altsetting = 1,
--					.altset_idx = 1,
--					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
+@@ -2807,7 +2807,10 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 					.altsetting = 1,
+ 					.altset_idx = 1,
+ 					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
 -					.endpoint = 0x02,
--					.ep_attr = 0x01,
--					.rates = SNDRV_PCM_RATE_44100 |
--						 SNDRV_PCM_RATE_48000,
--					.rate_min = 44100,
--					.rate_max = 48000,
--					.nr_rates = 2,
--					.rate_table = (unsigned int[]) {
--						44100, 48000
-+				.type = QUIRK_AUDIO_FIXED_MULTI_ENDPOINT,
-+				.epmulti = 2,
-+				.data = (const struct audioformat[]) {
-+					[0] = {
-+						.formats = SNDRV_PCM_FMTBIT_S24_3BE,
-+						.channels = 2,
-+						.iface = 1,
-+						.altsetting = 1,
-+						.altset_idx = 1,
-+						.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
-+						.endpoint = 0x02,
-+						.ep_attr = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_SYNC,
-+						.maxpacksize = 0x130,
-+						.rates = SNDRV_PCM_RATE_44100 |
-+							 SNDRV_PCM_RATE_48000,
-+						.rate_min = 44100,
-+						.rate_max = 48000,
-+						.nr_rates = 2,
-+						.rate_table = (unsigned int[]) {
-+							44100, 48000
-+						}
++					.nr_endpoints = 2,
++					.endpoint_table = (unsigned char[]) {
++						0x02, 0x81
 +					},
-+					[1] = {
-+						.formats = SNDRV_PCM_FMTBIT_S24_3BE,
-+						.channels = 2,
-+						.iface = 1,
-+						.altsetting = 1,
-+						.altset_idx = 1,
-+						.attributes = 0x00,
-+						.endpoint = 0x81,
-+						.ep_attr = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
-+						.maxpacksize = 0x130,
-+						.rates = SNDRV_PCM_RATE_44100 |
-+							 SNDRV_PCM_RATE_48000,
-+						.rate_min = 44100,
-+						.rate_max = 48000,
-+						.nr_rates = 2,
-+						.rate_table = (unsigned int[]) {
-+							44100, 48000
-+						}
- 					}
- 				}
- 			},
-@@ -2913,7 +2936,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 				.ifnum = -1
- 			}
- 		}
--
- 	}
- },
- 
+ 					.ep_attr = 0x01,
+ 					.rates = SNDRV_PCM_RATE_44100 |
+ 						 SNDRV_PCM_RATE_48000,
 diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 7c57f22..affbced 100644
+index 0df9ede..01c77e2 100644
 --- a/sound/usb/quirks.c
 +++ b/sound/usb/quirks.c
-@@ -180,6 +180,84 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+@@ -120,12 +120,12 @@ static int create_standard_audio_quirk(struct snd_usb_audio *chip,
+ }
+ 
+ /*
+- * create a stream for an endpoint/altsetting without proper descriptors
++ * create a stream using the given quirk and endpoint
+  */
+-static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
++static int create_stream_at_endpoint(struct snd_usb_audio *chip,
+ 				     struct usb_interface *iface,
+-				     struct usb_driver *driver,
+-				     const struct snd_usb_audio_quirk *quirk)
++				     unsigned char endpoint,
++				     const struct audioformat *quirk_data)
+ {
+ 	struct audioformat *fp;
+ 	struct usb_host_interface *alts;
+@@ -133,7 +133,7 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 	int stream, err;
+ 	unsigned *rate_table = NULL;
+ 
+-	fp = kmemdup(quirk->data, sizeof(*fp), GFP_KERNEL);
++	fp = kmemdup(quirk_data, sizeof(*fp), GFP_KERNEL);
+ 	if (!fp) {
+ 		snd_printk(KERN_ERR "cannot memdup\n");
+ 		return -ENOMEM;
+@@ -152,20 +152,14 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 		fp->rate_table = rate_table;
+ 	}
+ 
+-	stream = (fp->endpoint & USB_DIR_IN)
++	stream = (endpoint & USB_DIR_IN)
+ 		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
+-	err = snd_usb_add_audio_stream(chip, stream, fp);
++	err = snd_usb_add_audio_stream(chip, stream, endpoint, fp);
+ 	if (err < 0) {
+ 		kfree(fp);
+ 		kfree(rate_table);
+ 		return err;
+ 	}
+-	if (fp->iface != get_iface_desc(&iface->altsetting[0])->bInterfaceNumber ||
+-	    fp->altset_idx >= iface->num_altsetting) {
+-		kfree(fp);
+-		kfree(rate_table);
+-		return -EINVAL;
+-	}
+ 	alts = &iface->altsetting[fp->altset_idx];
+ 	altsd = get_iface_desc(alts);
+ 	fp->protocol = altsd->bInterfaceProtocol;
+@@ -174,9 +168,45 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 		fp->datainterval = snd_usb_parse_datainterval(chip, alts);
+ 	if (fp->maxpacksize == 0)
+ 		fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
++
++	return 0;
++}
++
++/*
++ * create a stream for an endpoint/altsetting without proper descriptors
++ */
++static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
++				     struct usb_interface *iface,
++				     struct usb_driver *driver,
++				     struct snd_usb_audio_quirk *quirk)
++{
++	struct audioformat *fp = quirk->data;
++	struct usb_host_interface *alts;
++	int n, err;
++
++	if (fp->iface != get_iface_desc(&iface->altsetting[0])->bInterfaceNumber ||
++	    fp->altset_idx >= iface->num_altsetting) {
++		return -EINVAL;
++	}
++
+ 	usb_set_interface(chip->dev, fp->iface, 0);
++
++	if (fp->nr_endpoints == 0) {
++		err = create_stream_at_endpoint(chip, iface, fp->endpoint, fp);
++		if (err < 0)
++			return err;
++	}
++	for (n = 0; n < fp->nr_endpoints; n++) {
++		err = create_stream_at_endpoint(chip, iface, fp->endpoint_table[n], fp);
++		if (err < 0)
++			return err;
++	}
++
++	/* FIXME: these functions fixed to the first endpoint */
++	alts = &iface->altsetting[fp->altset_idx];
+ 	snd_usb_init_pitch(chip, fp->iface, alts, fp);
+ 	snd_usb_init_sample_rate(chip, fp->iface, alts, fp, fp->rate_max);
++
  	return 0;
  }
  
-+/*
-+ * create N streams for an interface without proper descriptors but with multiple endpoints
-+ */
-+static int create_fixed_multi_stream_quirk(struct snd_usb_audio *chip,
-+				     struct usb_interface *iface,
-+				     struct usb_driver *driver,
-+				     const struct snd_usb_audio_quirk *quirk)
-+{
-+	struct audioformat **fp;
-+	struct usb_host_interface *alts = NULL;
-+	int *stream;
-+	int err, i;
-+	unsigned *rate_table = NULL;
-+	int rates_found;
-+	rates_found = 0;
-+
-+	stream = (int*) kmalloc(sizeof(int) * quirk->epmulti, GFP_KERNEL);
-+	if (!stream)
-+		goto err_mem;
-+	fp = (struct audioformat**) kmalloc(sizeof((const struct audioformat*)quirk->data) * quirk->epmulti, GFP_KERNEL);
-+	if (!(fp))
-+		goto err_mem;
-+
-+	for (i = 0; i < quirk->epmulti; ++i) {
-+		fp[i] = kmemdup((const struct audioformat*)(quirk->data + i*sizeof(const struct audioformat)), sizeof(*fp[i]), GFP_KERNEL);
-+		if (!(fp[i])) {
-+			usb_audio_err(chip, "cannot memdup %d\n", i);
-+			goto err_mem;
-+		}
-+		if (fp[i]->nr_rates > MAX_NR_RATES) {
-+			err = -EINVAL;
-+			goto err_rates;
-+		}
-+		if (fp[i]->nr_rates > 0 && !rates_found) {
-+			rate_table = kmemdup(fp[i]->rate_table,
-+				     sizeof(int) * fp[i]->nr_rates, GFP_KERNEL);
-+			rates_found = 1;
-+		}
-+		if (!rate_table) {
-+			err = -ENOMEM;
-+			goto err_rates;
-+		}
-+		fp[i]->rate_table = rate_table;
-+
-+		stream[i] = (fp[i]->endpoint & USB_DIR_IN)
-+			? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
-+
-+		err = snd_usb_add_audio_stream(chip, stream[i], fp[i]);
-+		if (err < 0)
-+			goto err_ratetable;
-+
-+		if (fp[i]->iface != get_iface_desc(&iface->altsetting[0])->bInterfaceNumber ||
-+		    fp[i]->altset_idx >= iface->num_altsetting) {
-+			err = -EINVAL;
-+			goto err_ratetable;
-+		}
-+		alts = &iface->altsetting[fp[0]->altset_idx];
-+		fp[i]->datainterval = snd_usb_parse_datainterval(chip, alts);
-+		fp[i]->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
-+	}
-+	usb_set_interface(chip->dev, fp[0]->iface, 0);
-+	snd_usb_init_pitch(chip, fp[0]->iface, alts, fp[0]);
-+	snd_usb_init_sample_rate(chip, fp[0]->iface, alts, fp[0], fp[0]->rate_max);
-+	return 0;
-+
-+err_mem:
-+	return -ENOMEM;
-+err_ratetable:
-+	kfree(rate_table);
-+err_rates:
-+	for (i = 0; i < quirk->epmulti; ++i)
-+		if(fp[i])
-+			kfree(fp[i]);
-+	kfree(fp);
-+	kfree(stream);
-+	return err;
-+}
-+
- static int create_auto_pcm_quirk(struct snd_usb_audio *chip,
- 				 struct usb_interface *iface,
- 				 struct usb_driver *driver)
-@@ -528,6 +606,7 @@ int snd_usb_create_quirk(struct snd_usb_audio *chip,
- 		[QUIRK_MIDI_FTDI] = create_any_midi_quirk,
- 		[QUIRK_AUDIO_STANDARD_INTERFACE] = create_standard_audio_quirk,
- 		[QUIRK_AUDIO_FIXED_ENDPOINT] = create_fixed_stream_quirk,
-+		[QUIRK_AUDIO_FIXED_MULTI_ENDPOINT] = create_fixed_multi_stream_quirk,
- 		[QUIRK_AUDIO_EDIROL_UAXX] = create_uaxx_quirk,
- 		[QUIRK_AUDIO_ALIGN_TRANSFER] = create_align_transfer_quirk,
- 		[QUIRK_AUDIO_STANDARD_MIXER] = create_standard_mixer_quirk,
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index 25c4c7e..a516ca3 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -95,6 +95,7 @@ enum quirk_type {
- 	QUIRK_MIDI_FTDI,
- 	QUIRK_AUDIO_STANDARD_INTERFACE,
- 	QUIRK_AUDIO_FIXED_ENDPOINT,
-+	QUIRK_AUDIO_FIXED_MULTI_ENDPOINT,
- 	QUIRK_AUDIO_EDIROL_UAXX,
- 	QUIRK_AUDIO_ALIGN_TRANSFER,
- 	QUIRK_AUDIO_STANDARD_MIXER,
-@@ -108,6 +109,7 @@ struct snd_usb_audio_quirk {
- 	int16_t ifnum;
- 	uint16_t type;
- 	const void *data;
-+	uint16_t epmulti;
- };
+@@ -471,7 +501,7 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
  
- #define combine_word(s)    ((*(s)) | ((unsigned int)(s)[1] << 8))
+ 	stream = (fp->endpoint & USB_DIR_IN)
+ 		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
+-	err = snd_usb_add_audio_stream(chip, stream, fp);
++	err = snd_usb_add_audio_stream(chip, stream, fp->endpoint, fp);
+ 	if (err < 0) {
+ 		kfree(fp);
+ 		return err;
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 2fb71be..34947db 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -319,6 +319,7 @@ static struct snd_pcm_chmap_elem *convert_chmap(int channels, unsigned int bits,
+  */
+ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
+ 			     int stream,
++			     unsigned char endpoint,
+ 			     struct audioformat *fp)
+ {
+ 	struct snd_usb_stream *as;
+@@ -330,7 +331,7 @@ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
+ 		if (as->fmt_type != fp->fmt_type)
+ 			continue;
+ 		subs = &as->substream[stream];
+-		if (subs->ep_num == fp->endpoint) {
++		if (subs->ep_num == endpoint) {
+ 			list_add_tail(&fp->list, &subs->fmt_list);
+ 			subs->num_formats++;
+ 			subs->formats |= fp->formats;
+@@ -708,7 +709,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 		fp->chmap = convert_chmap(fp->channels, chconfig, protocol);
+ 
+ 		snd_printdd(KERN_INFO "%d:%u:%d: add audio endpoint %#x\n", dev->devnum, iface_no, altno, fp->endpoint);
+-		err = snd_usb_add_audio_stream(chip, stream, fp);
++		err = snd_usb_add_audio_stream(chip, stream, fp->endpoint, fp);
+ 		if (err < 0) {
+ 			kfree(fp->rate_table);
+ 			kfree(fp->chmap);
+diff --git a/sound/usb/stream.h b/sound/usb/stream.h
+index c97f679..4c1b834 100644
+--- a/sound/usb/stream.h
++++ b/sound/usb/stream.h
+@@ -6,6 +6,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip,
+ 
+ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
+ 			     int stream,
++			     unsigned char endpoint,
+ 			     struct audioformat *fp);
+ 
+ #endif /* __USBAUDIO_STREAM_H */
 -- 
-1.7.9.5
-
-
---------------040205020705000905020300
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------040205020705000905020300--
+1.8.4
