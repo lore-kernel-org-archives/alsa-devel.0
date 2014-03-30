@@ -1,84 +1,60 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH 2/2] snd-ice1712: Add suspend support for
-	M-Audio ICE1712-based cards
-Date: Sun, 30 Mar 2014 23:37:31 +0200
-Message-ID: <1396215451-24128-2-git-send-email-linux@rainbow-software.org>
-References: <1396215451-24128-1-git-send-email-linux@rainbow-software.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rsnd: fix src clock prepare/unprepare
+Date: Sun, 30 Mar 2014 23:24:33 +0100
+Message-ID: <20140330222433.GJ2269@sirena.org.uk>
+References: <1396018997-12390-1-git-send-email-ben.dooks@codethink.co.uk>
+ <20140329101043.GF21628@sirena.org.uk>
+ <53381DE2.9050907@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-1.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
- by alsa0.perex.cz (Postfix) with ESMTP id EBC442650BA
- for <alsa-devel@alsa-project.org>; Sun, 30 Mar 2014 23:37:56 +0200 (CEST)
-In-Reply-To: <1396215451-24128-1-git-send-email-linux@rainbow-software.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JKvC8Wn6JllzUPdT"
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <53381DE2.9050907@codethink.co.uk>
+Sender: linux-sh-owner@vger.kernel.org
+To: Ben Dooks <ben.dooks@codethink.co.uk>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-sh@vger.kernel.org, magnus.damm@opensource.se, linux-kernel@lists.codethink.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Add suspend support for M-Audio cards based on ICE1712 chip.
-Tested with M-Audio Audiophile 24/96. S/PDIF will probably not work.
 
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
----
- sound/pci/ice1712/delta.c |   30 +++++++++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+--JKvC8Wn6JllzUPdT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/pci/ice1712/delta.c b/sound/pci/ice1712/delta.c
-index 9e28cc1..c19ae72 100644
---- a/sound/pci/ice1712/delta.c
-+++ b/sound/pci/ice1712/delta.c
-@@ -575,6 +575,30 @@ static struct snd_ak4xxx_private akm_vx442_priv = {
- 	.mask_flags = 0,
- };
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int snd_ice1712_delta_resume(struct snd_ice1712 *ice)
-+{
-+	unsigned char akm_backup[AK4XXX_IMAGE_SIZE];
-+	/* init codec and restore registers */
-+	if (ice->akm_codecs) {
-+		memcpy(akm_backup, ice->akm->images, sizeof(akm_backup));
-+		snd_akm4xxx_init(ice->akm);
-+		memcpy(ice->akm->images, akm_backup, sizeof(akm_backup));
-+		snd_akm4xxx_reset(ice->akm, 0);
-+	}
-+
-+	return 0;
-+}
-+
-+static int snd_ice1712_delta_suspend(struct snd_ice1712 *ice)
-+{
-+	if (ice->akm_codecs) /* reset & mute codec */
-+		snd_akm4xxx_reset(ice->akm, 1);
-+
-+	return 0;
-+}
-+#endif
-+
- static int snd_ice1712_delta_init(struct snd_ice1712 *ice)
- {
- 	int err;
-@@ -621,7 +645,11 @@ static int snd_ice1712_delta_init(struct snd_ice1712 *ice)
- 		ice->num_total_adcs = 4;
- 		break;
- 	}
--
-+#ifdef CONFIG_PM_SLEEP
-+	ice->pm_resume = snd_ice1712_delta_resume;
-+	ice->pm_suspend = snd_ice1712_delta_suspend;
-+	ice->pm_suspend_enabled = 1;
-+#endif
- 	/* initialize the SPI clock to high */
- 	tmp = snd_ice1712_read(ice, ICE1712_IREG_GPIO_DATA);
- 	tmp |= ICE1712_DELTA_AP_CCLK;
--- 
-Ondrej Zary
+On Sun, Mar 30, 2014 at 02:36:34PM +0100, Ben Dooks wrote:
+> On 29/03/14 10:10, Mark Brown wrote:
+> >> sound/soc/sh/rcar/scu.c | 4 ++--
+
+> It was against your current development branch which is
+> what we having been testing against (due to the large number
+> of commits in the rcar area)
+
+It would be easier to tell what you are talking about if you were to
+quote some context from what you are replying to...  I'm guessing this
+is the file that doesn't exist, the above path not present in linux-next
+so I don't know what you mean by my "current development branch".  Are
+you *sure* you're not using Linus' tree?
+
+--JKvC8Wn6JllzUPdT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTOJmZAAoJELSic+t+oim9Br8P/3XCyDb0zIfePrBtt40UolQU
+g9nUaoJBnnyexxG30L0k1A9WXppCX6SjwzR7Vj7cD40jyQi7WyZ7BdretzoeAgB/
+ykBg+74Pr3y/+LgyevpwagsHoki5LVMywy86Do7wX/dqYyK7BxS6QVxI+/mWQP/7
+q/poGqiHPvSv49RQCyQ04VAS2HXEBguw5pD7Ib2+zGYbj9KyaYKdhSIBc0ugKZf6
+hrovx+IKCvLMKSuxkSM1XuAdWG5hPWivabcSpDdW4GKNbHJPrTOELpfxXZx9kh3/
+trwvk6wpZBp8FVCKoNN6GqUldUjQDiF1Q29YproKPv2b6VnWCLtJQB33VmKerZGi
+LxKqaTGyp0a3cNcziy8cL+9CLB3DSY5ttl1lHiENMVSeBOWGGkH3vaxd1jtiKfKV
+s4HunmtxOnW7e3PpS7MhCfXcWN3tpYdXDkmZ4TjQHbMpPcdH10dm7gMSm95RaM4f
+wsLdvYVCaUwP2ogLV/ywx7L2Az999t3Ly2GmD3kI0mVyncyOCEzVcG5tGXycV7uE
+dRCQiJHxIeUX1TweeoMAJEs2tDVgl1Csu+y5GkGCw6FvqxI9fct5LmJCpDAvuYdq
+kgCNluDgaVRlLAlebOwGkUNH3V9B7P/kP3wWZX71KoLkT4o5S/oehHt8oPRkeMF+
+TsX4uPEGHBgAoRH7B/eX
+=lmWo
+-----END PGP SIGNATURE-----
+
+--JKvC8Wn6JllzUPdT--
