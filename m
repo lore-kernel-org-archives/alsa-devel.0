@@ -1,129 +1,116 @@
-From: Damien Zammit <damien.zammit@gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio - Capture and duplex
- support for Digidesign Mbox 1 sound card.
-Date: Sun, 30 Mar 2014 14:21:38 +1100
-Message-ID: <53378DC2.3090603@gmail.com>
-References: <52E5254A.8090308@gmail.com> <52E53D57.3010700@ladisch.de>
- <52E5CC2E.1010000@gmail.com> <5314EDA1.5040101@zonque.org>
- <1403282253300.13982@beth> <5336BC20.1050806@gmail.com>
- <1403292231190.1294@localhost>
+From: Arun Shamanna Lakshmi <aruns@nvidia.com>
+Subject: RE: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
+Date: Sat, 29 Mar 2014 23:12:30 -0700
+Message-ID: <781A12BB53C15A4BB37291FDE08C03F3A05CC6A11A@HQMAIL02.nvidia.com>
+References: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
+ <53332CC7.6060800@metafoo.de>
+ <D6C615D3E4730340AE82D5BD856631C0A26CB319B2@HQMAIL02.nvidia.com>
+ <5333ED3A.7040908@metafoo.de>
+ <5571431004A69147BCABABE4E097D66BA3EFF70CFC@HQMAIL02.nvidia.com>
+ <D6C615D3E4730340AE82D5BD856631C0A26CB31F48@HQMAIL02.nvidia.com>
+ <5336A619.5030007@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f178.google.com (mail-pd0-f178.google.com
- [209.85.192.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 283F3261B31
- for <alsa-devel@alsa-project.org>; Sun, 30 Mar 2014 05:22:20 +0200 (CEST)
-Received: by mail-pd0-f178.google.com with SMTP id x10so6510800pdj.37
- for <alsa-devel@alsa-project.org>; Sat, 29 Mar 2014 20:22:19 -0700 (PDT)
-In-Reply-To: <1403292231190.1294@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Hills <mark@xwax.org>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <daniel@zonque.org>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5336A619.5030007@metafoo.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Songhee Baek <sbaek@nvidia.com>
+Cc: "'lgirdwood@gmail.com'" <lgirdwood@gmail.com>, "'broonie@kernel.org'" <broonie@kernel.org>, "'swarren@wwwdotorg.org'" <swarren@wwwdotorg.org>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'tiwai@suse.de'" <tiwai@suse.de>, "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 30/03/14 09:57, Mark Hills wrote:
-> Thanks. I took a look and I think I have a similar concern to Daniel for 
-> readability. The code should really be shared with the quirk on a single 
-> endpoint.
-I guess a significant rewrite will be required.
 
-> The duplicate code in the patch already has different handling of 
-> maxpacksize and datainterval -- is that intentional? It's apparent because 
-> the new code ignores the values given in the quirk.
-Not intentional, maxpacksize and datainterval happened to be identical
-for both endpoints on the Mbox.
+> -----Original Message-----
+> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
+> Sent: Saturday, March 29, 2014 3:53 AM
+> To: Songhee Baek
+> Cc: Arun Shamanna Lakshmi; 'lgirdwood@gmail.com'; 'broonie@kernel.org';
+> 'swarren@wwwdotorg.org'; 'alsa-devel@alsa-project.org'; 'tiwai@suse.de';
+> 'linux-kernel@vger.kernel.org'
+> Subject: Re: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
+> 
+> On 03/29/2014 03:30 AM, Songhee Baek wrote:
+> >> -----Original Message-----
+> >> From: Songhee Baek
+> >> Sent: Friday, March 28, 2014 11:10 AM
+> >> To: 'Lars-Peter Clausen'
+> >> Cc: Arun Shamanna Lakshmi; 'lgirdwood@gmail.com';
+> >> 'broonie@kernel.org'; 'swarren@wwwdotorg.org';
+> >> 'alsa-devel@alsa-project.org'; 'tiwai@suse.de'; 'linux-
+> kernel@vger.kernel.org'
+> >> Subject: RE: [alsa-devel] [PATCH] ASoC: Add support for multi
+> >> register mux
+> >>
+> >>
+> >>>> On 03/26/2014 11:41 PM, Songhee Baek wrote:
+> >>>>>> On 03/26/2014 01:02 AM, Arun Shamanna Lakshmi wrote:
+> >>>>>>
+> >>>>>> The way you describe this it seems to me that a value array for
+> >>>>>> this kind of mux would look like.
+> >>>>>>
+> >>>>>> 0x00000000, 0x00000000, 0x00000001 0x00000000, 0x00000000,
+> >>>>>> 0x00000002 0x00000000, 0x00000000, 0x00000003 0x00000000,
+> >>>>>> 0x00000000, 0x00000004 0x00000000, 0x00000000, 0x00000008 ...
+> >>>>>>
+> >>>>>> That seems to be extremely tedious. If the MUX uses a one hot
+> >>>>>> encoding how about storing the index of the bit in the values
+> >>>>>> array and use (1 << value) when writing the value to the register?
+> >>>>>
+> >>>>> If we store the index of the bit, the value will be duplicated for
+> >>>>> each
+> >>>> registers inputs since register has 0 to 31bits to shift, then we
+> >>>> need to decode the index to interpret value for which registers to
+> >>>> set. If we need to interpret the decoded value of index, it is
+> >>>> better to have custom put/get function in our driver, isn't it?
+> >>>>>
+> >>>>
+> >>>> I'm not sure I understand. If you use (val / 32) to pick the
+> >>>> register and (val %
+> >>>> 32) to pick the bit in the register this should work just fine.
+> >>>> Maybe I'm missing something. Do you have a real world code example
+> >>>> of of the this type of enum is used?
+> >>>>
+> >>>
+> >>> I can use val/32 and val%32 for this multi register mux.
+> >>
+> > With this logic, put function would be easy however get function
+> > becomes tedious due to looping on each bit per register for 3 of them in our
+> case. Rather, it would be easy to identify a unique MUX_OFFSET to distinguish
+> between the 3 registers as shown in the code below.
+> 
+> I'm not sure I understand how that MUX_OFFSET would work. To get the
+> selected mux output you can use the ffs instruction.
+> 
+> foreach(reg) {
+> 	reg_val = read(reg) & mask;
+> 	if (reg_val != 0) {
+> 		val = __ffs(reg_val);
+> 		break;
+> 	}
+> }
+> 
 
-> If the data in the quirk is truly redundant, then really it should not be 
-> present, or have the structure to use it -- it is misleading like this.
-Yeah, I agree.  I have an idea.  The following is an excerpt from lsusb
-for the Mbox:
+There are 2 options to do this. The first option is what you specified above, in which case I think we cannot share get and put functions as they use the reg_val directly inside snd_soc_enum_val_to_item API (not the bit position being set). If we change to bit position like above, then the current users of these APIs should also change their soc_enum value table. And, the second option being the one that we proposed.
 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      0
-      bInterfaceProtocol      0
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0130  1x 304 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0130  1x 304 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
+That being said, MUX_OFFSET which is the second option works in the following way. We know that reg_val is a power of 2 (2^0  to 2^31) which is one hot code. This method adds a unique offset for this reg_val for each incremental register that we want to set (say 2^n + MUX_OFFSET(reg_id)) inside get function and does the reverse of it in put function. For current users of only one register, it doesn't change anything as we use reg_val.
 
-Looking at the current struct for a snd_usb_audio_quirk:
+> 	if (e->reg[0] != SND_SOC_NOPM) {
+> 		for (reg_idx = 0; reg_idx < e->num_regs; reg_idx++) {
+> 	    		reg_val = snd_soc_read(codec, e->reg[reg_idx]);
+> 			val = (reg_val >> e->shift_l) & e->mask[reg_idx];
+> 			if (val) {
+> 				val += MULTI_MUX_INPUT_OFFSET(reg_idx);
+> 				break;
+> 			}
+> 		}
+> 	} else {
+> 		reg_val = dapm_kcontrol_get_value(kcontrol);
+> 		val = (reg_val >> e->shift_l) & e->mask[0];
+> 	}
 
-struct snd_usb_audio_quirk {
-        const char *vendor_name;
-        const char *product_name;
-        int16_t ifnum;
-        uint16_t type;
-        const void *data;
-}
+Both the options are the same. The first one adds 32 or 64 to the bit position to identify uniquely for each register and the other adds a MUX_OFFSET to reg_val to achieve the same. The only advantage of the latter being that we can share the code with get_enum_double and put_enum_double which has been our goal since the beginning of this discussion (as we share the soc_enum struct)
 
-It is quite versatile, we shouldn't need to alter the quirk struct, just
-the data it holds.  Is an array of audioformats for this kind of
-interface the ideal choice?
+We have tested the second option to work well for our use case. Please let us know what works for you and we will make the necessary changes quickly.
 
-Also, maybe we can read bNumEndpoints to determine if it is a
-multi-endpoint interface and act accordingly, then we don't need an
-extra element in snd_usb_audio_quirk.
-
-How is a shared interface supposed to be initialised when it has
-different properties for each endpoint?
-
-> Yes, I dug out a Novation Twitch here. It uses different number of 
-> channels (and hence buffer sizes) on the record and playback endpoints. At 
-> very least other Focusrite devices will have this, too.
-Interesting.
-
-> It seems the assumption that an enpoint has sole ownership of the 
-> interface is quite deeply spread in the code. For example, set_format() 
-> called as part of snd_usb_pcm_prepare().
-I am still trying to wrap my head around this one, but it sounds like
-the major stumbling block with the current code?
-
-> But I'm suprised your Mbox deals with the prepare step, perhaps it is 
-> suprisingly tolerant. Did you confirm that you could start and stop a 
-> recording during playback and that both streams were truly working?
-Yes, I can start and stop recording while headphones are blasting, and
-my microphone works.
-
-> Specifically as snd_usb_pcm_close() shuts down the whole interface. Is 
-> your Mbox continuing smoothly when this happens on one of the streams?
-I use JACK so I'm not sure if the streams are ever closed until I
-shutdown the server.
-
-Damien
+- Arun
