@@ -1,65 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: fix src clock prepare/unprepare
-Date: Mon, 31 Mar 2014 11:18:27 +0100
-Message-ID: <20140331101827.GM2269@sirena.org.uk>
-References: <1396018997-12390-1-git-send-email-ben.dooks@codethink.co.uk>
- <20140329101043.GF21628@sirena.org.uk>
- <53381DE2.9050907@codethink.co.uk>
- <20140330222433.GJ2269@sirena.org.uk>
- <53393DEC.9060400@codethink.co.uk>
+From: "W. Trevor King" <wking@tremily.us>
+Subject: [PATCH] ALSA: hda - Enable beep for ASUS 1015E
+Date: Sat, 29 Mar 2014 17:47:24 -0700
+Message-ID: <172b1d641bab0f2b051e6a3b5ed960dea743ff28.1396140296.git.wking@tremily.us>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QeIEYJGnsH0eC7HY"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <53393DEC.9060400@codethink.co.uk>
-Sender: linux-sh-owner@vger.kernel.org
-To: Ben Dooks <ben.dooks@codethink.co.uk>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-sh@vger.kernel.org, magnus.damm@opensource.se, linux-kernel@lists.codethink.co.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from qmta12.westchester.pa.mail.comcast.net
+ (qmta12.westchester.pa.mail.comcast.net [76.96.59.227])
+ by alsa0.perex.cz (Postfix) with ESMTP id ADC04261AA5
+ for <alsa-devel@alsa-project.org>; Sun, 30 Mar 2014 01:50:25 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, "W. Trevor King" <wking@tremily.us>
 List-Id: alsa-devel@alsa-project.org
 
+The `lspci -nnvv` output contains (wrapped for line length):
 
---QeIEYJGnsH0eC7HY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+  00:1b.0 Audio device [0403]:
+    Intel Corporation 7 Series/C210 Series Chipset Family
+    High Definition Audio Controller [8086:1e20] (rev 04)
+        Subsystem: ASUSTeK Computer Inc. Device [1043:115d]
 
-On Mon, Mar 31, 2014 at 11:05:32AM +0100, Ben Dooks wrote:
-> On 30/03/14 23:24, Mark Brown wrote:
+Signed-off-by: W. Trevor King <wking@tremily.us>
+---
+This patch is against git://git.alsa-project.org/alsa-kernel.git
+master (currently e38d6d3, ALSA: hda - Add Dell headset detection
+quirk for three laptop models, 2013-12-13), but I imagine it will
+apply cleanly to any recent branch.  I'm happy to fill in any other
+information folks want, in case there's uncertainty about whether it's
+just a one-off quirk for my hardware instance, or if it's a general
+quirk for all 1043:115d devices.
 
-> >It would be easier to tell what you are talking about if you were to
-> >quote some context from what you are replying to...  I'm guessing this
-> >is the file that doesn't exist, the above path not present in linux-next
-> >so I don't know what you mean by my "current development branch".  Are
-> >you *sure* you're not using Linus' tree?
+Cheers,
+Trevor
 
-> Why would I be using Linus' tree, it just /does not work/ at all.
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> I used your sound.git tree to work on due to the number of patches
-> that where there.
-
-My git tree has many branches, which were you using?  I'm pretty sure it
-was neither the rcar topic branch nor for-next.
-
---QeIEYJGnsH0eC7HY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTOUDwAAoJELSic+t+oim9kGIP/2j+4OyUyAPSjRPb9Zqc19SA
-Y7WRGjIzoc0SX9nSlVPt8An9TOE2mtUVinfG2MzqJ+4VOvxYUELzN60Ig7c0af8f
-sFK8qCB6EoAc8WghLJtJDV/MTz8o9GuyLkwqNJH6qodgGFJ1Akn2dpoVk4It+D8M
-EVf4DWDv0pKW99+ANgCuWgikIi3oUwuZOUXho4k7QmnDC9WVLxp3UqhpLdRWUN4U
-i0rTx+N4iO1I/xkWzacnKmfExLjOXqmE81cGbrvgG0uhzhrsUCxAEb9G4ZPk7MCA
-XozNa5T63Nhhcho8xq3RzgBhrJ2EBwo5tOpjZtBS6hxW2VCfqqaMagggilmo121b
-KI6F2FUY/DSzfjnkNUYqnsqmN62G0XN+/S7ZoiA2A9kKnG32RwGJPFRtqEYym/OS
-vqR31PfggQcrtw+2Uo+YaKLXSOIO/3rfBcYmh1J2wtEds6eX6jaRKfZKzxzus8XK
-TVWCwojLajYINE7OdyNSwX96REEYZIGC9ZD97qydEmdjnEIuEfJgNs0OhIx+elOL
-svmh52SdEdAkhp7msYZNTxxn/kjt5AOKl0jf9RH5R3+oSZbO/m7jxmOYZlFTwOw8
-0QerqfBym6A/lEmkYML+wKK51ahxCxrhfSpXFhAOoCfCN+zJOohcFn+waKg3aZ1M
-9KQLNbOv5TYna4ucb9/H
-=mJNq
------END PGP SIGNATURE-----
-
---QeIEYJGnsH0eC7HY--
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 3578f11..7cfe209 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1001,6 +1001,7 @@ static int alc_codec_rename_from_preset(struct hda_codec *codec)
+ 
+ static const struct snd_pci_quirk beep_white_list[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x103c, "ASUS", 1),
++	SND_PCI_QUIRK(0x1043, 0x115d, "ASUS", 1),
+ 	SND_PCI_QUIRK(0x1043, 0x829f, "ASUS", 1),
+ 	SND_PCI_QUIRK(0x1043, 0x8376, "EeePC", 1),
+ 	SND_PCI_QUIRK(0x1043, 0x83ce, "EeePC", 1),
+-- 
+1.9.1.353.gc66d89d
