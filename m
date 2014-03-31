@@ -1,158 +1,82 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: [PATCH] ASoC: fsl_sai: Fix buggy configurations in trigger()
-Date: Mon, 31 Mar 2014 19:39:22 +0800
-Message-ID: <1396265962-19343-1-git-send-email-Guangyu.Chen@freescale.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
+Date: Mon, 31 Mar 2014 13:55:52 +0200
+Message-ID: <533957C8.2030105@metafoo.de>
+References: <1395792156-4178-1-git-send-email-aruns@nvidia.com> <53332CC7.6060800@metafoo.de> <D6C615D3E4730340AE82D5BD856631C0A26CB319B2@HQMAIL02.nvidia.com> <5333ED3A.7040908@metafoo.de> <5571431004A69147BCABABE4E097D66BA3EFF70CFC@HQMAIL02.nvidia.com> <D6C615D3E4730340AE82D5BD856631C0A26CB31F48@HQMAIL02.nvidia.com> <5336A619.5030007@metafoo.de> <781A12BB53C15A4BB37291FDE08C03F3A05CC6A11A@HQMAIL02.nvidia.com> <20140331112140.GO2269@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140331112140.GO2269@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Arun Shamanna Lakshmi <aruns@nvidia.com>, Songhee Baek <sbaek@nvidia.com>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'swarren@wwwdotorg.org'" <swarren@wwwdotorg.org>, "'tiwai@suse.de'" <tiwai@suse.de>, "'lgirdwood@gmail.com'" <lgirdwood@gmail.com>, "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The current trigger() has two crucial problems:
-1) The DMA request enabling operations (FSL_SAI_CSR_FRDE) for Tx and Rx are
-   now totally exclusive: It would fail to run simultaneous Tx-Rx cases.
-2) The TERE disabling operation depends on an incorrect condition -- active
-   reference count that only gets increased in snd_pcm_open() and decreased
-   in snd_pcm_close(): The TERE would never get cleared.
+On 03/31/2014 01:21 PM, Mark Brown wrote:
+> On Sat, Mar 29, 2014 at 11:12:30PM -0700, Arun Shamanna Lakshmi wrote:
+>
+> Fix your mailer to word wrap within paragraphs, your mails are
+> excessively hard to read.
+>
+>>> I'm not sure I understand how that MUX_OFFSET would work. To get the
+>>> selected mux output you can use the ffs instruction.
+>
+>>> foreach(reg) {
+>>> 	reg_val = read(reg) & mask;
+>>> 	if (reg_val != 0) {
+>>> 		val = __ffs(reg_val);
+>>> 		break;
+>>> 	}
+>>> }
+>
+>> There are 2 options to do this. The first option is what you specified
+>> above, in which case I think we cannot share get and put functions as
+>> they use the reg_val directly inside snd_soc_enum_val_to_item API (not
+>> the bit position being set). If we change to bit position like above,
+>> then the current users of these APIs should also change their soc_enum
+>> value table. And, the second option being the one that we proposed.
+>
+> Sharing the functions isn't the goal, coming up with a usable API is.
+>
+>> That being said, MUX_OFFSET which is the second option works in the
+>> following way. We know that reg_val is a power of 2 (2^0  to 2^31)
+>> which is one hot code. This method adds a unique offset for this
+>> reg_val for each incremental register that we want to set (say 2^n +
+>> MUX_OFFSET(reg_id)) inside get function and does the reverse of it in
+>> put function. For current users of only one register, it doesn't
+>> change anything as we use reg_val.
+>
+> I'm afraid I can't understand the above at all, sorry.  The code below
+> is quoted like Lars wrote it but I think it's actually written by you,
+> please check your quoting when replying:\
+>
+>>> 	if (e->reg[0] != SND_SOC_NOPM) {
+>>> 		for (reg_idx = 0; reg_idx < e->num_regs; reg_idx++) {
+>>> 	    		reg_val = snd_soc_read(codec, e->reg[reg_idx]);
+>>> 			val = (reg_val >> e->shift_l) & e->mask[reg_idx];
+>>> 			if (val) {
+>>> 				val += MULTI_MUX_INPUT_OFFSET(reg_idx);
+>>> 				break;
+>>> 			}
+>>> 		}
+>>> 	} else {
+>>> 		reg_val = dapm_kcontrol_get_value(kcontrol);
+>>> 		val = (reg_val >> e->shift_l) & e->mask[0];
+>>> 	}
+>
+> The above is a bit confusing...  partly this is because of a lack of
+> context (what is MULTI_MUX_INPUT_OFFSET?) and partly because it isn't
+> entirely obvious that stopping as soon as we see any value set is the
+> right choice, especially given the addition to rather than setting of
+> val.
 
-So this patch overwrites the trigger function by following these rules:
-A) We continue to support tx-async-while-rx-sync-to-tx case alone, which's
-   originally limited by this fsl_sai driver, but we make the code easy to
-   modify for the further support of the opposite case.
-B) We enable both TE and RE for PLAYBACK stream or CAPTURE stream but only
-   enabling the DMA request bit (FSL_SAI_CSR_FRDE) of the current direction
-   due to the requirement of SAI -- For tx-async-while-rx-sync-to-tx case,
-   the receiver is enabled only when both the transmitter and receiver are
-   enabled.
-C) We only enable one side interrupt for each stream since over/underrun
-   on the opposite stream would be resulted from what we've done in rule B:
-   enabling TERE but remaining FRDE disabled, even though the xrun on the
-   opposite direction will not break the current stream.
+I think the idea is that since we know that for one-hot encodings only 
+powers of two are valid values the other bits are used to encode the 
+register number. E.g 0x4 means bit 3 in register 0, 0x5 means bit 3 in 
+register 1, 0x6 means bit 3 in register 2 and so on. I guess it is possible 
+to make it work. But this seems to be quite hack-ish to me. You'd have to be 
+careful that MULTI_MUX_INPUT_OFFSET(reg_idx) never evaluates to a power of 
+two and there are probably some more pitfalls.
 
-Tested cases:
-a) aplay test.wav -d5
-b) arecord -r44100 -c2 -fS16_LE test.wav -d5
-c) arecord -r44100 -c2 -fS16_LE -d5 | aplay
-d) (aplay test2.wav &); sleep 1; arecord -r44100 -c2 -fS16_LE test.wav -d1
-e) (arecord -r44100 -c2 -fS16_LE test.wav -d5 &); sleep 1; aplay test.wav -d1
-
-Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
----
- sound/soc/fsl/fsl_sai.c | 43 +++++++++++++++++++++++--------------------
- sound/soc/fsl/fsl_sai.h | 11 +++++++++++
- 2 files changed, 34 insertions(+), 20 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index f088545..d64c33f 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -365,6 +365,7 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 		struct snd_soc_dai *cpu_dai)
- {
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
-+	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	u32 tcsr, rcsr;
- 
- 	/*
-@@ -379,14 +380,6 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	regmap_read(sai->regmap, FSL_SAI_TCSR, &tcsr);
- 	regmap_read(sai->regmap, FSL_SAI_RCSR, &rcsr);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		tcsr |= FSL_SAI_CSR_FRDE;
--		rcsr &= ~FSL_SAI_CSR_FRDE;
--	} else {
--		rcsr |= FSL_SAI_CSR_FRDE;
--		tcsr &= ~FSL_SAI_CSR_FRDE;
--	}
--
- 	/*
- 	 * It is recommended that the transmitter is the last enabled
- 	 * and the first disabled.
-@@ -395,22 +388,32 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		tcsr |= FSL_SAI_CSR_TERE;
--		rcsr |= FSL_SAI_CSR_TERE;
-+		if (!(tcsr & FSL_SAI_CSR_FRDE || rcsr & FSL_SAI_CSR_FRDE)) {
-+			regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
-+					   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
-+			regmap_update_bits(sai->regmap, FSL_SAI_TCSR,
-+					   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
-+		}
- 
--		regmap_write(sai->regmap, FSL_SAI_RCSR, rcsr);
--		regmap_write(sai->regmap, FSL_SAI_TCSR, tcsr);
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
-+				   FSL_SAI_CSR_xIE_MASK, FSL_SAI_FLAGS);
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
-+				   FSL_SAI_CSR_FRDE, FSL_SAI_CSR_FRDE);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		if (!(cpu_dai->playback_active || cpu_dai->capture_active)) {
--			tcsr &= ~FSL_SAI_CSR_TERE;
--			rcsr &= ~FSL_SAI_CSR_TERE;
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
-+				   FSL_SAI_CSR_FRDE, 0);
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
-+				   FSL_SAI_CSR_xIE_MASK, 0);
-+
-+		if (!(tcsr & FSL_SAI_CSR_FRDE || rcsr & FSL_SAI_CSR_FRDE)) {
-+			regmap_update_bits(sai->regmap, FSL_SAI_TCSR,
-+					   FSL_SAI_CSR_TERE, 0);
-+			regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
-+					   FSL_SAI_CSR_TERE, 0);
- 		}
--
--		regmap_write(sai->regmap, FSL_SAI_TCSR, tcsr);
--		regmap_write(sai->regmap, FSL_SAI_RCSR, rcsr);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -464,8 +467,8 @@ static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
- {
- 	struct fsl_sai *sai = dev_get_drvdata(cpu_dai->dev);
- 
--	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff, FSL_SAI_FLAGS);
--	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff, FSL_SAI_FLAGS);
-+	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff, 0x0);
-+	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff, 0x0);
- 	regmap_update_bits(sai->regmap, FSL_SAI_TCR1, FSL_SAI_CR1_RFW_MASK,
- 			   FSL_SAI_MAXBURST_TX * 2);
- 	regmap_update_bits(sai->regmap, FSL_SAI_RCR1, FSL_SAI_CR1_RFW_MASK,
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index a264185..be26d46 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -35,6 +35,16 @@
- #define FSL_SAI_RFR	0xc0 /* SAI Receive FIFO */
- #define FSL_SAI_RMR	0xe0 /* SAI Receive Mask */
- 
-+#define FSL_SAI_xCSR(tx)	(tx ? FSL_SAI_TCSR : FSL_SAI_RCSR)
-+#define FSL_SAI_xCR1(tx)	(tx ? FSL_SAI_TCR1 : FSL_SAI_RCR1)
-+#define FSL_SAI_xCR2(tx)	(tx ? FSL_SAI_TCR2 : FSL_SAI_RCR2)
-+#define FSL_SAI_xCR3(tx)	(tx ? FSL_SAI_TCR3 : FSL_SAI_RCR3)
-+#define FSL_SAI_xCR4(tx)	(tx ? FSL_SAI_TCR4 : FSL_SAI_RCR4)
-+#define FSL_SAI_xCR5(tx)	(tx ? FSL_SAI_TCR5 : FSL_SAI_RCR5)
-+#define FSL_SAI_xDR(tx)		(tx ? FSL_SAI_TDR : FSL_SAI_RDR)
-+#define FSL_SAI_xFR(tx)		(tx ? FSL_SAI_TFR : FSL_SAI_RFR)
-+#define FSL_SAI_xMR(tx)		(tx ? FSL_SAI_TMR : FSL_SAI_RMR)
-+
- /* SAI Transmit/Recieve Control Register */
- #define FSL_SAI_CSR_TERE	BIT(31)
- #define FSL_SAI_CSR_FR		BIT(25)
-@@ -48,6 +58,7 @@
- #define FSL_SAI_CSR_FWF		BIT(17)
- #define FSL_SAI_CSR_FRF		BIT(16)
- #define FSL_SAI_CSR_xIE_SHIFT	8
-+#define FSL_SAI_CSR_xIE_MASK	(0x1f << FSL_SAI_CSR_xIE_SHIFT)
- #define FSL_SAI_CSR_WSIE	BIT(12)
- #define FSL_SAI_CSR_SEIE	BIT(11)
- #define FSL_SAI_CSR_FEIE	BIT(10)
--- 
-1.8.4
+- Lars
