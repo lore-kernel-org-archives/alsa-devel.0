@@ -1,14 +1,16 @@
 From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH 1/3] ASoC: alc5632: add an of_match table
-Date: Mon, 31 Mar 2014 12:38:16 -0600
-Message-ID: <1396291098-13796-1-git-send-email-swarren@wwwdotorg.org>
+Subject: [PATCH 2/3] ASoC: tlv320aic23: add an of_match table
+Date: Mon, 31 Mar 2014 12:38:17 -0600
+Message-ID: <1396291098-13796-2-git-send-email-swarren@wwwdotorg.org>
+References: <1396291098-13796-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B718265176
- for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 20:38:36 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 246DF2651D6
+ for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 20:38:37 +0200 (CEST)
+In-Reply-To: <1396291098-13796-1-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,31 +33,29 @@ face of devices from different vendors with the same name.
 
 Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
- sound/soc/codecs/alc5632.c | 7 +++++++
+ sound/soc/codecs/tlv320aic23-i2c.c | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
-index 3ee8d4e41a99..85942ca36cbf 100644
---- a/sound/soc/codecs/alc5632.c
-+++ b/sound/soc/codecs/alc5632.c
-@@ -1190,11 +1190,18 @@ static const struct i2c_device_id alc5632_i2c_table[] = {
- };
- MODULE_DEVICE_TABLE(i2c, alc5632_i2c_table);
+diff --git a/sound/soc/codecs/tlv320aic23-i2c.c b/sound/soc/codecs/tlv320aic23-i2c.c
+index 20fc46092c2c..b73c94ebcc2a 100644
+--- a/sound/soc/codecs/tlv320aic23-i2c.c
++++ b/sound/soc/codecs/tlv320aic23-i2c.c
+@@ -43,9 +43,16 @@ static const struct i2c_device_id tlv320aic23_id[] = {
  
-+static const struct of_device_id alc5632_of_match[] = {
-+	{ .compatible = "realtek,alc5632", },
+ MODULE_DEVICE_TABLE(i2c, tlv320aic23_id);
+ 
++static const struct of_device_id tlv320aic23_of_match[] = {
++	{ .compatible = "ti,tlv320aic23", },
 +	{ }
 +};
-+MODULE_DEVICE_TABLE(of, alc5632_of_match);
++MODULE_DEVICE_TABLE(of, tlv320aic23_of_match);
 +
- /* i2c codec control layer */
- static struct i2c_driver alc5632_i2c_driver = {
+ static struct i2c_driver tlv320aic23_i2c_driver = {
  	.driver = {
- 		.name = "alc5632",
- 		.owner = THIS_MODULE,
-+		.of_match_table = of_match_ptr(alc5632_of_match),
- 	},
- 	.probe = alc5632_i2c_probe,
- 	.remove =  alc5632_i2c_remove,
+ 		   .name = "tlv320aic23-codec",
++		   .of_match_table = of_match_ptr(tlv320aic23_of_match),
+ 		   },
+ 	.probe = tlv320aic23_i2c_probe,
+ 	.remove = __exit_p(tlv320aic23_i2c_remove),
 -- 
 1.8.1.5
