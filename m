@@ -1,55 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_sai: Fix buggy configurations in trigger()
-Date: Mon, 31 Mar 2014 19:20:38 +0100
-Message-ID: <20140331182038.GB2269@sirena.org.uk>
-References: <1396265962-19343-1-git-send-email-Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH] ASoC: rt5640: Change the setting method of
+	idle_bias_off
+Date: Mon, 31 Mar 2014 19:29:19 +0100
+Message-ID: <20140331182919.GE2269@sirena.org.uk>
+References: <1396232470-11979-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pI6hLdwVzam1XFuA"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1396265962-19343-1-git-send-email-Guangyu.Chen@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com
+Content-Type: multipart/mixed; boundary="===============9076578769617580929=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81695265176
+ for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 20:29:32 +0200 (CEST)
+In-Reply-To: <1396232470-11979-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---pI6hLdwVzam1XFuA
+--===============9076578769617580929==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Tk7bxryrhVQGv1nz"
+Content-Disposition: inline
+
+
+--Tk7bxryrhVQGv1nz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 31, 2014 at 07:39:22PM +0800, Nicolin Chen wrote:
-> The current trigger() has two crucial problems:
-> 1) The DMA request enabling operations (FSL_SAI_CSR_FRDE) for Tx and Rx are
->    now totally exclusive: It would fail to run simultaneous Tx-Rx cases.
-> 2) The TERE disabling operation depends on an incorrect condition -- active
->    reference count that only gets increased in snd_pcm_open() and decreased
->    in snd_pcm_close(): The TERE would never get cleared.
+On Mon, Mar 31, 2014 at 10:21:10AM +0800, Oder Chiou wrote:
+> The patch moves the idle_bias_off setting to struct "soc_codec_dev_rt5640".
 
-Can you please check that this against my asoc-v3.15-4 tag - it doesn't
-seem to apply there?
+Applied, thanks.
 
---pI6hLdwVzam1XFuA
+--Tk7bxryrhVQGv1nz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTObHzAAoJELSic+t+oim9jC8P/1D0ToGXczPF/Cd/uG/SghaO
-KFNuNCBog1/3FOc1Zqkwh2qDtg131MNxdehZuJcCFIVEE04dIpoCTU1QaUCGyWMH
-56YydIpokLPC1DrrVgEC41t9Bbhgu5BtnLh13bXD6jDXswAgaMxf20jKs5vZlvS9
-wNQ/C4RqmXDNuSi7qUSI0J1sYOxVT/b7mW4SKt/v1Kn5hCx7Mw7MioRys77OYYHf
-KwPN7m5UjlNJvjnkL6leSV85NiWXp828vDRDOWSVECX9qXJK+YHVqlyEzrXCUFcb
-V6N0nmcNTW0cwqaCdaq7bQ/qNsUBlWz2tZkAzK145blkbV1BiyCSlG/FDulYit3P
-4wQha6CtjlMftjTg70fT9Y++BZH8DXYSCxAQg/ssuQXUyEG5hDbfRE2KEhzGPBM3
-w3X7Txp+qmqiUn6b5cPWy3nuVqDTroSbcnB5CAGWXwA1v+ZaE8fjucCCb02wCL+R
-XN8nuUsLQWbykz+kaS+iMNhDv3ujG+vPbXrVOwmrL5KWQnadAJ18P0EDTEkYBjRG
-s38A/g1DpQIXfwj41am10evjLOSBX/q47UU7LR23nFQdCGEJS2qERgOpMqMk0CVS
-H45wAprtl3ZXZbGQOeO3vq4qmim2GYj9ta4HfYXvg4D2+h3MJcv6bBfEYptUhHa7
-7id8Y+GUdtVHa8xMuqGx
-=vQbh
+iQIcBAEBAgAGBQJTObP7AAoJELSic+t+oim9xoAP/0EA5YMen8gXOcXGmeTnuxTI
+UPuMQcv6hce+ViQWMIWuDTp9Oyp2GNEeMseFnrURYZjHgDRwfOxkLiEPb+9wA3mm
+P66G0hdrHiUST47dYgVWhDDzifFAKt5RJrqUxPcPg4P0l8jfvk9y7PJra6aP8Q42
+aNO/u3UqiziXGJTQDlUCuPRUCuZ8HUD/gKaiQeKuASw1JjD1rJiAeRe4VM+e92Iq
+NssB1l3Yy9p3OAbu0x8YKqLgHSuzkH2/MLXxFiF9feR2mwpl6p4ZjAO6SLIUuyvm
+4ixRtBHLna1BGr9fsedL9nauOtHsKaUy0CYDzjE7ykvd06ZcowAq1iBmevl1QaBf
+R8zxUfBhxDRDCYzFxuu3XMcDO6fz+KuwdSrxeNU+C/uI4VQmGycd2S11NGr/SOfp
+C28xCtUVVHKbVnGBWA+u/tPPl/f1B/N3ECq5yzKmDfd1yKX8Gsqj9RO4gN4WZRkZ
+d48nq6C+P4oxUZxGlVV93WByl0/48iR0ooxLQ8r1qLoWwGpLiRhKjeuOCjEZ8sUC
+zX25sKhfh1tPr/FwI7ZQi06sGrzH3AbeIOqgRusLj+KH0lvDw+W7IACz6XrDHjb2
+VEiLyu5al8vat2hS+M7u0xHCz8S8jxSR6F9a1wVCAi4p48lteR3QPM6xN25CLNMe
+PJLyAILJm8d4rIGyp4D5
+=A86x
 -----END PGP SIGNATURE-----
 
---pI6hLdwVzam1XFuA--
+--Tk7bxryrhVQGv1nz--
+
+--===============9076578769617580929==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9076578769617580929==--
