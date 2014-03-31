@@ -1,177 +1,55 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH] ALSA: usb-audio - Capture and duplex
- support for Digidesign Mbox 1 sound card.
-Date: Mon, 31 Mar 2014 19:58:44 +0200
-Message-ID: <5339ACD4.5010208@zonque.org>
-References: <52E5254A.8090308@gmail.com> <52E53D57.3010700@ladisch.de>
- <52E5CC2E.1010000@gmail.com> <5314EDA1.5040101@zonque.org>
- <53365B9B.2050402@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_sai: Fix buggy configurations in trigger()
+Date: Mon, 31 Mar 2014 19:20:38 +0100
+Message-ID: <20140331182038.GB2269@sirena.org.uk>
+References: <1396265962-19343-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 173D7262618
- for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 19:58:47 +0200 (CEST)
-In-Reply-To: <53365B9B.2050402@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Damien Zammit <damien.zammit@gmail.com>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pI6hLdwVzam1XFuA"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1396265962-19343-1-git-send-email-Guangyu.Chen@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Damien,
 
-On 03/29/2014 06:35 AM, Damien Zammit wrote:
-> A few revisions of this patch have been made.  This patch provides support for usb cards
-> which have their streams on multiple endpoints within the same interface.
-> In particular, it provides duplex mode support for Digidesign Mbox 1.
-> 
-> I followed ALSA dev team's suggestion of making it work for N endpoints
-> rather than hardcoding it to two, and improved error handling has been provided.
-> An extra parameter has been added as requested to the usbaudio quirk struct 'epmulti'
-> to give the number of endpoints within a multi interface.
-> 
+--pI6hLdwVzam1XFuA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-A few style nits below, which you can fix for the next version. Most
-important, the error unwinder should be more in-line with other code in
-the kernel.
+On Mon, Mar 31, 2014 at 07:39:22PM +0800, Nicolin Chen wrote:
+> The current trigger() has two crucial problems:
+> 1) The DMA request enabling operations (FSL_SAI_CSR_FRDE) for Tx and Rx are
+>    now totally exclusive: It would fail to run simultaneous Tx-Rx cases.
+> 2) The TERE disabling operation depends on an incorrect condition -- active
+>    reference count that only gets increased in snd_pcm_open() and decreased
+>    in snd_pcm_close(): The TERE would never get cleared.
 
-> diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-> index 7c57f22..affbced 100644
-> --- a/sound/usb/quirks.c
-> +++ b/sound/usb/quirks.c
-> @@ -180,6 +180,84 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
->  	return 0;
->  }
->  
-> +/*
-> + * create N streams for an interface without proper descriptors but with multiple endpoints
-> + */
-> +static int create_fixed_multi_stream_quirk(struct snd_usb_audio *chip,
-> +				     struct usb_interface *iface,
-> +				     struct usb_driver *driver,
-> +				     const struct snd_usb_audio_quirk *quirk)
-> +{
-> +	struct audioformat **fp;
-> +	struct usb_host_interface *alts = NULL;
-> +	int *stream;
-> +	int err, i;
-> +	unsigned *rate_table = NULL;
-> +	int rates_found;
-> +	rates_found = 0;
-> +
-> +	stream = (int*) kmalloc(sizeof(int) * quirk->epmulti, GFP_KERNEL);
+Can you please check that this against my asoc-v3.15-4 tag - it doesn't
+seem to apply there?
 
-No need to cast the result of k[mzc]alloc. Same for other locations below.
+--pI6hLdwVzam1XFuA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> +	if (!stream)
-> +		goto err_mem;
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-err = -ENOMEM;
-goto exit_err;
+iQIcBAEBAgAGBQJTObHzAAoJELSic+t+oim9jC8P/1D0ToGXczPF/Cd/uG/SghaO
+KFNuNCBog1/3FOc1Zqkwh2qDtg131MNxdehZuJcCFIVEE04dIpoCTU1QaUCGyWMH
+56YydIpokLPC1DrrVgEC41t9Bbhgu5BtnLh13bXD6jDXswAgaMxf20jKs5vZlvS9
+wNQ/C4RqmXDNuSi7qUSI0J1sYOxVT/b7mW4SKt/v1Kn5hCx7Mw7MioRys77OYYHf
+KwPN7m5UjlNJvjnkL6leSV85NiWXp828vDRDOWSVECX9qXJK+YHVqlyEzrXCUFcb
+V6N0nmcNTW0cwqaCdaq7bQ/qNsUBlWz2tZkAzK145blkbV1BiyCSlG/FDulYit3P
+4wQha6CtjlMftjTg70fT9Y++BZH8DXYSCxAQg/ssuQXUyEG5hDbfRE2KEhzGPBM3
+w3X7Txp+qmqiUn6b5cPWy3nuVqDTroSbcnB5CAGWXwA1v+ZaE8fjucCCb02wCL+R
+XN8nuUsLQWbykz+kaS+iMNhDv3ujG+vPbXrVOwmrL5KWQnadAJ18P0EDTEkYBjRG
+s38A/g1DpQIXfwj41am10evjLOSBX/q47UU7LR23nFQdCGEJS2qERgOpMqMk0CVS
+H45wAprtl3ZXZbGQOeO3vq4qmim2GYj9ta4HfYXvg4D2+h3MJcv6bBfEYptUhHa7
+7id8Y+GUdtVHa8xMuqGx
+=vQbh
+-----END PGP SIGNATURE-----
 
-> +	fp = (struct audioformat**) kmalloc(sizeof((const struct audioformat*)quirk->data) * quirk->epmulti, GFP_KERNEL);
-> +	if (!(fp))
-
-Extra parenthesis not needed.
-
-> +		goto err_mem;
-> +
-> +	for (i = 0; i < quirk->epmulti; ++i) {
-
-i++ is prefered if the operation order doesn't matter. It's not
-important but a little more common in the kernel.
-
-> +		fp[i] = kmemdup((const struct audioformat*)(quirk->data + i*sizeof(const struct audioformat)), sizeof(*fp[i]), GFP_KERNEL);
-
-You need to do something about these overlong lines, as they're also
-quite unparsable for humans. One solution is to pre-calculate the size
-into a temporary variable.
-
-> +		if (!(fp[i])) {
-
-Extra parenthesis not needed.
-
-> +			usb_audio_err(chip, "cannot memdup %d\n", i);
-
-err = -ENOMEM;
-goto exit_err;
-
-> +			goto err_mem;
-> +		}
-> +		if (fp[i]->nr_rates > MAX_NR_RATES) {
-> +			err = -EINVAL;
-> +			goto err_rates;
-> +		}
-> +		if (fp[i]->nr_rates > 0 && !rates_found) {
-> +			rate_table = kmemdup(fp[i]->rate_table,
-> +				     sizeof(int) * fp[i]->nr_rates, GFP_KERNEL);
-> +			rates_found = 1;
-
-Not sure if I overlook anything, but isn't the extra variable
-rates_found redundant here, as can derive the same information by
-checking for (rate_table != NULL)?
-
-> +		}
-> +		if (!rate_table) {
-> +			err = -ENOMEM;
-> +			goto err_rates;
-> +		}
-
-This check makes more sense directly underneath the kmemdup().
-
-> +		fp[i]->rate_table = rate_table;
-> +
-> +		stream[i] = (fp[i]->endpoint & USB_DIR_IN)
-> +			? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
-> +
-> +		err = snd_usb_add_audio_stream(chip, stream[i], fp[i]);
-> +		if (err < 0)
-> +			goto err_ratetable;
-> +
-> +		if (fp[i]->iface != get_iface_desc(&iface->altsetting[0])->bInterfaceNumber ||
-> +		    fp[i]->altset_idx >= iface->num_altsetting) {
-> +			err = -EINVAL;
-> +			goto err_ratetable;
-> +		}
-> +		alts = &iface->altsetting[fp[0]->altset_idx];
-> +		fp[i]->datainterval = snd_usb_parse_datainterval(chip, alts);
-> +		fp[i]->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
-> +	}
-> +	usb_set_interface(chip->dev, fp[0]->iface, 0);
-> +	snd_usb_init_pitch(chip, fp[0]->iface, alts, fp[0]);
-> +	snd_usb_init_sample_rate(chip, fp[0]->iface, alts, fp[0], fp[0]->rate_max);
-> +	return 0;
-> +
-> +err_mem:
-> +	return -ENOMEM;
-
-You can drop this ...
-
-> +err_ratetable:
-> +	kfree(rate_table);
-> +err_rates:
-> +	for (i = 0; i < quirk->epmulti; ++i)
-> +		if(fp[i])
-> +			kfree(fp[i]);
-> +	kfree(fp);
-> +	kfree(stream);
-
-... and place another label here:
-
-exit_err:
-> +	return err;
-> +}
-> +
-
-
-Thanks,
-Daniel
+--pI6hLdwVzam1XFuA--
