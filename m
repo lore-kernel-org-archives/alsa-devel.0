@@ -1,15 +1,15 @@
 From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH 2/3] ASoC: tlv320aic23: add an of_match table
-Date: Mon, 31 Mar 2014 12:38:17 -0600
-Message-ID: <1396291098-13796-2-git-send-email-swarren@wwwdotorg.org>
+Subject: [PATCH 3/3] ASoC: max98090: add an of_match table
+Date: Mon, 31 Mar 2014 12:38:18 -0600
+Message-ID: <1396291098-13796-3-git-send-email-swarren@wwwdotorg.org>
 References: <1396291098-13796-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 246DF2651D6
- for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 20:38:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 21EE12651F3
+ for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 20:38:38 +0200 (CEST)
 In-Reply-To: <1396291098-13796-1-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,29 +33,31 @@ face of devices from different vendors with the same name.
 
 Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
- sound/soc/codecs/tlv320aic23-i2c.c | 7 +++++++
+ sound/soc/codecs/max98090.c | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320aic23-i2c.c b/sound/soc/codecs/tlv320aic23-i2c.c
-index 20fc46092c2c..b73c94ebcc2a 100644
---- a/sound/soc/codecs/tlv320aic23-i2c.c
-+++ b/sound/soc/codecs/tlv320aic23-i2c.c
-@@ -43,9 +43,16 @@ static const struct i2c_device_id tlv320aic23_id[] = {
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 98c6e104357c..f7b0b37aa858 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2399,11 +2399,18 @@ static const struct i2c_device_id max98090_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, max98090_i2c_id);
  
- MODULE_DEVICE_TABLE(i2c, tlv320aic23_id);
- 
-+static const struct of_device_id tlv320aic23_of_match[] = {
-+	{ .compatible = "ti,tlv320aic23", },
++static const struct of_device_id max98090_of_match[] = {
++	{ .compatible = "maxim,max98090", },
 +	{ }
 +};
-+MODULE_DEVICE_TABLE(of, tlv320aic23_of_match);
++MODULE_DEVICE_TABLE(of, max98090_of_match);
 +
- static struct i2c_driver tlv320aic23_i2c_driver = {
+ static struct i2c_driver max98090_i2c_driver = {
  	.driver = {
- 		   .name = "tlv320aic23-codec",
-+		   .of_match_table = of_match_ptr(tlv320aic23_of_match),
- 		   },
- 	.probe = tlv320aic23_i2c_probe,
- 	.remove = __exit_p(tlv320aic23_i2c_remove),
+ 		.name = "max98090",
+ 		.owner = THIS_MODULE,
+ 		.pm = &max98090_pm,
++		.of_match_table = of_match_ptr(max98090_of_match),
+ 	},
+ 	.probe  = max98090_i2c_probe,
+ 	.remove = max98090_i2c_remove,
 -- 
 1.8.1.5
