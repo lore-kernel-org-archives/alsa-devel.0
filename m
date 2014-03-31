@@ -1,16 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: add an of_match table
-Date: Mon, 31 Mar 2014 18:28:32 +0100
-Message-ID: <20140331172832.GA2269@sirena.org.uk>
-References: <1396285517-17892-1-git-send-email-swarren@wwwdotorg.org>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH] ALSA: usb-audio - Capture and duplex
+ support for Digidesign Mbox 1 sound card.
+Date: Mon, 31 Mar 2014 19:47:53 +0200
+Message-ID: <5339AA49.6060906@zonque.org>
+References: <52E5254A.8090308@gmail.com> <52E53D57.3010700@ladisch.de>
+ <52E5CC2E.1010000@gmail.com> <5314EDA1.5040101@zonque.org>
+ <1403282253300.13982@beth> <5336BC20.1050806@gmail.com>
+ <1403292231190.1294@localhost> <53378DC2.3090603@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0825263926495871628=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BE03261A7E
- for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 19:28:45 +0200 (CEST)
-In-Reply-To: <1396285517-17892-1-git-send-email-swarren@wwwdotorg.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86071262618
+ for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 19:47:54 +0200 (CEST)
+In-Reply-To: <53378DC2.3090603@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +24,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Damien Zammit <damien.zammit@gmail.com>, Mark Hills <mark@xwax.org>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Damien,
 
---===============0825263926495871628==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rMBvpMIlSQ3hWZ0K"
-Content-Disposition: inline
+On 03/30/2014 05:21 AM, Damien Zammit wrote:
+> On 30/03/14 09:57, Mark Hills wrote:
+>> Thanks. I took a look and I think I have a similar concern to Daniel for 
+>> readability. The code should really be shared with the quirk on a single 
+>> endpoint.
+> I guess a significant rewrite will be required.
+
+Yeah, now that you changed the code to handle an arbitrary amount of
+endpoints, you could as well change all user of
+QUIRK_AUDIO_FIXED_ENDPOINT over to the new one, and initialize .epmulti
+to 1. That should already work, right? (Though, I have to mention that
+I'm unhappy with the name of that variable :)).
+
+>> The duplicate code in the patch already has different handling of 
+>> maxpacksize and datainterval -- is that intentional? It's apparent because 
+>> the new code ignores the values given in the quirk.
+
+That souldn't be the case then, of course.
+
+> Not intentional, maxpacksize and datainterval happened to be identical
+> for both endpoints on the Mbox.
+
+So it's easy to change.
+
+> Looking at the current struct for a snd_usb_audio_quirk:
+> 
+> struct snd_usb_audio_quirk {
+>         const char *vendor_name;
+>         const char *product_name;
+>         int16_t ifnum;
+>         uint16_t type;
+>         const void *data;
+> }
+> 
+> It is quite versatile, we shouldn't need to alter the quirk struct, just
+> the data it holds.
+
+A const void* can hold any kind of struct, and you need to cast it back
+to your struct eventually anyway. Thinking about it again, I don't like
+the idea of an extra member in struct snd_usb_audio_quirk either. What
+would be nicer is to introduce something like this:
+
+struct audioformats {
+	unsigned int n_formats;
+	const struct audioformat *format;
+};
+
+... and then define the quirk like this:
+
+	.type = QUIRK_AUDIO_FIXED_MULTI_ENDPOINTS,
+	.data = (const struct audioformats) {
+		.n_formats = 2,
+		.format = (const struct audioformat[]) {
+			[0] = {
+				.formats = SNDRV_PCM_FMTBIT_S24_3BE,
+				...
+			},
+			[1] = {
+				.formats = SNDRV_PCM_FMTBIT_S24_3BE,
+				...
+			},
+		},
+	}
+
+IOW, encapsulate struct audioformat once more, so that the counter
+variable is specific to this kind of quirk.
+
+Also, you can write the actual quirk handler so that it loops over the
+array entries, so you can re-use the code for both
+QUIRK_AUDIO_FIXED_MULTI_ENDPOINTS and QUIRK_AUDIO_FIXED_ENDPOINT.
+
+Do you follow? :)
+
+>  Is an array of audioformats for this kind of
+> interface the ideal choice?
+
+Not sure whether I understand what you mean. Would be best to share a
+patch that implements your idea.
+
+> Also, maybe we can read bNumEndpoints to determine if it is a
+> multi-endpoint interface and act accordingly, then we don't need an
+> extra element in snd_usb_audio_quirk.
+
+I think adding an array type is the best way to handle it.
 
 
---rMBvpMIlSQ3hWZ0K
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 31, 2014 at 11:05:17AM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
->=20
-> Add a device tree match table. This serves to make the driver's support
-> of device tree more explicit. Perhaps the fallback for DT matching to
-> using the i2c_device_id table will go away one day, since it fails in
-> face of devices from different vendors with the same name.
-
-Applied, thanks.
-
---rMBvpMIlSQ3hWZ0K
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTOaW9AAoJELSic+t+oim9048P/0DsMeEf3K+AhkEB+WLsWa07
-wwp74QCMlIQMuVPNajKn7YTFcFt2izLPuB60EEb8iqc3re823+kYcHRPijdeyptf
-RPAaZl86+67QPbz82u98IcHEv5VuoKmpfcsR5QZJ6MWe1wq3LtSNq6vJmiIcTpAL
-6ps+iP0t79z44X6gszpNytadpxpNSQ3hcFC+GL7GVGs77oz574SuKZx3OHujju1M
-53fF0tYgcwWzp92B9G09x5p8SL74p49sdZNP2Mby7jYYL6Z2Co3Zr85dETBZLaci
-qCipeufHOih9DJcmvEM637mnaoZYnsNcDTOFYjheGZfGmC2TYELkdF8eyc46RcXq
-dFMnlpk7IHG9+5wNXTfIHG2RIkrXd+w858Tmu8G7bLruV8/xE1DFWNWNCJwG5u3F
-jwFh4Bvb/T9hm7ImNI+bNRpZ1ZcwTZCvzS5aolcMGvKkpETzsxJiCN1ll2fQGv07
-lYG8qJKWMUxmr37XAVTQvQ/9sLXSiWCpiFccFfFERZfZusrTdOuhLAFupW1AIHWE
-7iP2I3HaqtKotdTwDoQjfNQlBe5q6A8GUxJJaYry+UrMC5JHD3R6Z2h4LjmAFnwL
-POcxF5q2xSkGkhsEQrGiYxmrc7OLIUftzoaIo1uSqC1p7fFjyFbo9LMc5vakmcYi
-Ve2eQxfsn45Z+qtaIw1u
-=DsOk
------END PGP SIGNATURE-----
-
---rMBvpMIlSQ3hWZ0K--
-
---===============0825263926495871628==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0825263926495871628==--
+Thanks,
+Daniel
