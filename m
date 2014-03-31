@@ -1,22 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: Use the platform data for
- DMIC settings
-Date: Mon, 31 Mar 2014 18:26:22 +0100
-Message-ID: <20140331172622.GZ2269@sirena.org.uk>
-References: <1395974778-4217-1-git-send-email-oder_chiou@realtek.com>
- <53359DDD.7090900@wwwdotorg.org>
- <20140328234659.GA21628@sirena.org.uk>
- <53398D7D.3010507@wwwdotorg.org>
- <20140331160508.GU2269@sirena.org.uk>
- <533999D3.1060905@wwwdotorg.org>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH] ASoC: rt5640: add an of_match table
+Date: Mon, 31 Mar 2014 11:27:34 -0600
+Message-ID: <5339A586.70206@wwwdotorg.org>
+References: <1396285517-17892-1-git-send-email-swarren@wwwdotorg.org>
+ <CAOf5uwn=cr45QWG4iMoKrQX4jR=izopQn_iSa9AH+2Ojf8ifKw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4953400106745565436=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 403AB261A7E
- for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 19:26:38 +0200 (CEST)
-In-Reply-To: <533999D3.1060905@wwwdotorg.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id A94DF261A7E
+ for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 19:27:39 +0200 (CEST)
+In-Reply-To: <CAOf5uwn=cr45QWG4iMoKrQX4jR=izopQn_iSa9AH+2Ojf8ifKw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,77 +21,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 03/31/2014 11:14 AM, Michael Trimarchi wrote:
+> Hi
+> 
+> Il 31/mar/2014 19:05 "Stephen Warren" <swarren@wwwdotorg.org
+> <mailto:swarren@wwwdotorg.org>> ha scritto:
+>>
+>> From: Stephen Warren <swarren@nvidia.com <mailto:swarren@nvidia.com>>
+>>
+>> Add a device tree match table. This serves to make the driver's support
+>> of device tree more explicit. Perhaps the fallback for DT matching to
+>> using the i2c_device_id table will go away one day, since it fails in
+>> face of devices from different vendors with the same name.
+>>
+>> Signed-off-by: Stephen Warren <swarren@nvidia.com
+> <mailto:swarren@nvidia.com>>
+>> ---
+>>  sound/soc/codecs/rt5640.c | 9 +++++++++
+>>  1 file changed, 9 insertions(+)
+>>
+>> diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+>> index b5014a2024e2..b6a02c16f100 100644
+>> --- a/sound/soc/codecs/rt5640.c
+>> +++ b/sound/soc/codecs/rt5640.c
+>> @@ -2018,6 +2018,14 @@ static const struct i2c_device_id
+> rt5640_i2c_id[] = {
+>>  };
+>>  MODULE_DEVICE_TABLE(i2c, rt5640_i2c_id);
+>>
+>> +#if defined(CONFIG_OF)
+>> +static const struct of_device_id rt5640_of_match[] = {
+>> +       { .compatible = "realtek,rt5640", },
+>> +       {},
+>> +};
+>> +MODULE_DEVICE_TABLE(of, rt5640_of_match);
+>> +#endif
+> 
+> Are you sure that you need #if defined?
 
---===============4953400106745565436==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="70fLfmUGd5x0AJTB"
-Content-Disposition: inline
-
-
---70fLfmUGd5x0AJTB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Mar 31, 2014 at 10:37:39AM -0600, Stephen Warren wrote:
-
-> I really wish we would make up our minds about this.
-
-> For I2C (and SPI and perhaps others) the I2C match table works fine as a
-> replacement for the of_match table. The only issue might be different
-> manufacturers with the same chip names. If this is a problem, why is
-> fallback to the I2C match table even allowed any more; we should mandate
-> that OF matching only works via the OF match table.
-
-> When DT was young, Grant tried to require of_match for everything for
-> completeness, and then I tried enforcing that for reviews, and then
-> Grant said not to bother with that, so I stopped, and now you're saying
-> it's required again. I really wish I could get consistency in how this
-> kind of thing is supposed to work. It's difficult for contributors to
-> know what to do if reviewers keep flip-flopping over time.
-
-Well, *I've* not been flip flopping on this, frankly I was unaware that
-anyone thought it was a particularly good idea to actively not include
-the match table.  It's true that as a matter of practicality you don't
-need to bother at the minute but I think especially once you're adding
-any explicit code at all to the driver the explicit match strings ought
-to be there too.
-
-I suspect this may have been a pragmatic suggestion due to all the
-complaints about churn generated by DT.
-
---70fLfmUGd5x0AJTB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTOaU7AAoJELSic+t+oim9hW8QAJbzEpzlOWM8BWiaZkIzgNkQ
-wu7tvv1ClHcdEW5QB+E2bYss77JOhIodlQNwemaL9mDnN28GAy4XtJR812q6JCDa
-6BpFsfaE3sT2SKyCOt5iT/MkKb8S1LJW+mBLDShauNhJ4xg0lT3JzbjgRwm4F6B5
-j2Lf5DyCna3VQNsGLoi9EZ4qPNPcbMWPK0Xy99iGRelzSiRu1meWRDLIuUdSkCqq
-NHGn2y22BkdxGCD6rpXPzryPEjQ9fjDVHEECWkkMnTpLP8nb3SX6eLVvPs4TnokR
-egCSyjftIRclK+EBdOV6g4GQFxMYags7/5TpJzCs5d13lj66zTPZRf6eY1m+3xUD
-L1f5uhbiR1YS/6kyW34rlM/bWKQi5V3atohpeswiS05bimOMN/iejchF/Rw85F2O
-PkAWNfn1om8ChiAILGRPxOUyCSYTGpvax2uO0BMYYzFlsdRiLtU22KFC9lzprE7u
-NW5hsURrwjkj0PdJbxn0ZDMwNcExuAJVASXPFmj1LX3p9EO/WqbPyyOblo/uTAdm
-N4VyWHa37vaQCxZwDIzXZdxruY9Kl44GzoL7R6M8H59zb44sDMaoacBuw4Xz3sAe
-EbdmzuGiOUmCLaHXPLG3X6Yh/JcJ9XaGQ3b9YQhmqlBzlUaeMradTDDuX+egEiL0
-9NkdlPyXd3os0ib41ihZ
-=Mu8h
------END PGP SIGNATURE-----
-
---70fLfmUGd5x0AJTB--
-
---===============4953400106745565436==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4953400106745565436==--
+It may not be necessary, but it's for consistency with the ACPI table
+which is also #defined.
