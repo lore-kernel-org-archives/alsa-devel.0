@@ -1,42 +1,40 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: is 440 Hz the true harmonic wave
-Date: Mon, 31 Mar 2014 09:45:18 +0200
-Message-ID: <53391D0E.2000306@ladisch.de>
-References: <1396244213.3927.4.camel@debian>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ALSA: asihpi: fix some indenting in snd_card_asihpi_pcm_new()
+Date: Mon, 31 Mar 2014 10:49:15 +0300
+Message-ID: <20140331074915.GA24854@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 691DD26510F
- for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 09:45:19 +0200 (CEST)
-In-Reply-To: <1396244213.3927.4.camel@debian>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <joel@weedlight.ch>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Eldad Zack <eldad@fogrefinery.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Jo=EBl Kr=E4hemann wrote:
-> Is 440 Hz the true harmonic wave?
+This used to be a part of a condition until f3d145aac913 ('ALSA: asihpi:
+MMAP for non-busmaster cards') but now it's not and we can remove an
+indent level.
 
-440 Hz is a frequency, not a wave.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-A single sine wave does not have overtones, so it is not possible to
-apply the term "harmony".
-
-I do not understand what you mean with "true".
-
-> Is there a constant for it in glibc, like M_PI?
-
-What would be the use of a definition like "#define HZ_440 440"?
-
-
-Regards,
-Clemens
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index e4e42f2..901c949 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -1253,11 +1253,12 @@ static int snd_card_asihpi_pcm_new(struct snd_card_asihpi *asihpi, int device)
+ 			num_outstreams,	num_instreams, &pcm);
+ 	if (err < 0)
+ 		return err;
++
+ 	/* pointer to ops struct is stored, dont change ops afterwards! */
+-		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+-				&snd_card_asihpi_playback_mmap_ops);
+-		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
+-				&snd_card_asihpi_capture_mmap_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
++			&snd_card_asihpi_playback_mmap_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
++			&snd_card_asihpi_capture_mmap_ops);
+ 
+ 	pcm->private_data = asihpi;
+ 	pcm->info_flags = 0;
