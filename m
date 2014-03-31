@@ -1,16 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: RT priority 99 on soundcard
-Date: Mon, 31 Mar 2014 09:43:23 +0200
-Message-ID: <53391C9B.6000803@ladisch.de>
-References: <1396243087.3927.1.camel@debian>
+Subject: Re: is 440 Hz the true harmonic wave
+Date: Mon, 31 Mar 2014 09:45:18 +0200
+Message-ID: <53391D0E.2000306@ladisch.de>
+References: <1396244213.3927.4.camel@debian>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id A2CC926510F
- for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 09:43:24 +0200 (CEST)
-In-Reply-To: <1396243087.3927.1.camel@debian>
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 691DD26510F
+ for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 09:45:19 +0200 (CEST)
+In-Reply-To: <1396244213.3927.4.camel@debian>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,16 +24,18 @@ To: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <joel@weedlight.ch>, alsa-devel@alsa-pro
 List-Id: alsa-devel@alsa-project.org
 
 Jo=EBl Kr=E4hemann wrote:
-> Is running on top of soundcard with realtime priority 99 problematic?
+> Is 440 Hz the true harmonic wave?
 
-If that thread ever goes into an infinite loop, you won't be able to
-stop it easily.
+440 Hz is a frequency, not a wave.
 
-Please note that priorities are relative, i.e., your thread's priority
-needs to be higher than that of any other thread that you want to be
-able to interrupt, but less than that of a more important thread.
-How to order the specific threads on your particular system is your own
-decision.
+A single sine wave does not have overtones, so it is not possible to
+apply the term "harmony".
+
+I do not understand what you mean with "true".
+
+> Is there a constant for it in glibc, like M_PI?
+
+What would be the use of a definition like "#define HZ_440 440"?
 
 
 Regards,
