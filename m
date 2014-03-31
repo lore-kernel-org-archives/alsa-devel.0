@@ -1,20 +1,17 @@
-Return-Path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f46.google.com (mail-pb0-f46.google.com
- [209.85.160.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A5AB2610A0
- for <alsa-devel@alsa-project.org>; Sat, 29 Mar 2014 13:27:54 +0100 (CET)
-Received: by mail-pb0-f46.google.com with SMTP id rq2so6186495pbb.33
- for <alsa-devel@alsa-project.org>; Sat, 29 Mar 2014 05:27:53 -0700 (PDT)
-Message-ID: <5336BC20.1050806@gmail.com>
-Date: Sat, 29 Mar 2014 23:27:12 +1100
-From: Damien Zammit <damien.zammit@gmail.com>
-MIME-Version: 1.0
-References: <52E5254A.8090308@gmail.com> <52E53D57.3010700@ladisch.de>
- <52E5CC2E.1010000@gmail.com> <5314EDA1.5040101@zonque.org>
- <1403282253300.13982@beth>
-In-Reply-To: <1403282253300.13982@beth>
-Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio - Capture and duplex
- support for Digidesign Mbox 1 sound card.
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: alc5632: add an of_match table
+Date: Mon, 31 Mar 2014 23:45:20 +0100
+Message-ID: <20140331224520.GF2269@sirena.org.uk>
+References: <1396291098-13796-1-git-send-email-swarren@wwwdotorg.org>
+ <20140331192349.GA3431@mithrandir> <5339C638.5030303@wwwdotorg.org>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============1453525573079474444=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 580842651CF
+ for <alsa-devel@alsa-project.org>; Tue,  1 Apr 2014 00:45:38 +0200 (CEST)
+In-Reply-To: <5339C638.5030303@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +19,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Hills <mark@xwax.org>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <daniel@zonque.org>
-List-ID: <alsa-devel@alsa-project.org>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: alsa-devel@alsa-project.org, Thierry Reding <thierry.reding@gmail.com>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
+List-Id: alsa-devel@alsa-project.org
 
-On 29/03/14 16:01, Mark Hills wrote:
-> I'm a bit late to this, but I think a more generic quirk is necessary.
-Thanks Mark, I don't know much about other devices, but I have provided
-some comments about my latest code:
-http://mailman.alsa-project.org/pipermail/alsa-devel/attachments/20140329/bab4ce5a/attachment-0001.bin
 
-> Or does some kind of spec define that these should be applied to the first 
-> endpoint and that all will be affected?
-I used educated guesses to make the Mbox 1 functional:
+--===============1453525573079474444==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Hf72EjeiW3qFOybB"
+Content-Disposition: inline
 
-I set the altsetting of the interface based on the value provided in the
-first endpoint entry of the quirk, (since they must be all the same for
-a shared interface):
-+		alts = &iface->altsetting[fp[0]->altset_idx];
 
-This works for any device where the interface is shared across multiple
-endpoints, right?  Otherwise you wouldn't use this new quirk type.
+--Hf72EjeiW3qFOybB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-After reading all the quirk data and adding streams one by one, I went
-on to configure the interface based on the quirk data for the first entry:
-+	usb_set_interface(chip->dev, fp[0]->iface, 0);
-+	snd_usb_init_pitch(chip, fp[0]->iface, alts, fp[0]);
-+	snd_usb_init_sample_rate(chip, fp[0]->iface, alts, fp[0],
-fp[0]->rate_max);
+On Mon, Mar 31, 2014 at 01:47:04PM -0600, Stephen Warren wrote:
 
-I assumed that the supported rates for all interfaces was the same and
-that they could be read from the first endpoint entry in the quirk.
-I know, most of the quirk data is ignored, but they share the same
-interface so most of it is redundant anyway, isn't it?
+> There seems to be a mix of ifdef'ing the table and using of_match_ptr()
+> vs. the other way around in ASoC. Mark, do you have a preference which
+> way to go?
 
-I can't see what limitations this multi-endpoint quirk type has that
-might need to be adjusted for other devices.  Can you provide an example
-of a device that uses multiple endpoints within a single interface whose
-supported rates differ between endpoints?  If you can, then I also think
-we need a better model.  If you can't, is it because it is impossible?
+of_match_ptr() is supposed to avoid the warnings that the ifdefs fixed
+more prettily - I suspect you'll find that the ones that don't use it
+either predate of_match_ptr() or copied something that did.
 
-Damien
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+--Hf72EjeiW3qFOybB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTOe/9AAoJELSic+t+oim9HooP/1VEYhfP2dQ5qSNtBTnDrktY
+k0X693lzJ9jyhQ7TLeS1eLjFXzTTh1OiJ/OJuUYv7BGmhddAY7USDjKacnKtwSV5
+uPkkwjVEqApVXgo0BjDtLbyiEgs21Fq7XOeIw19A6Lbgn5S5T+hREdLzqr0QpTOg
+L9J1gVGhIfcvccZtbhZrpnEv+tG7xo/jn10yej/xKG5CGjY0ATgaMVQnNqFnZkLA
+3Ko0W6QeOz7LvMm1iwkKKG08AS7eC7HVfVxByzQ/Pe1UTEC2oEiftrtEzl7XH/I+
++30jVzeALytlmF14xrlnKpKVXnX44SFLMSNq5HxVeHSlBH5vfs60iebLFE9yBCA0
+cexDs7JGwr9PIK2Tt9Al888JnHzLnqL9/9yVlfyoiGVUjExv3uwg8OwE1QpL5aby
+R4GBWUT4mip3dLMD5Rutol+pFsrj38CClU4Zm0Hnm6NxvYvXGRhGNpMnNcv/5WHp
+gtMKZtdm3zz5vRue5AzKdYIMEbKS6SwCifUkIDfy9E30+Y4HxFIfH43eLX6KHDn+
+7HZBcRxGaagLE4oWX1DVipml5n0aOoCLKGmnn59Q9PaZXQwLtTtoFY7BYpXfbX1p
+9IonpDf5st7gMmlXdQz7OMbWYAA9qNivs62yfD8cBxbUhLlG1IBvkyKERbDMsFPS
+KeVoRgEuDOc3sBM5ZGf0
+=v2n/
+-----END PGP SIGNATURE-----
+
+--Hf72EjeiW3qFOybB--
+
+--===============1453525573079474444==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1453525573079474444==--
