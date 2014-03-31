@@ -1,60 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: fix src clock prepare/unprepare
-Date: Sun, 30 Mar 2014 23:24:33 +0100
-Message-ID: <20140330222433.GJ2269@sirena.org.uk>
-References: <1396018997-12390-1-git-send-email-ben.dooks@codethink.co.uk>
- <20140329101043.GF21628@sirena.org.uk>
- <53381DE2.9050907@codethink.co.uk>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5640: Change the setting method of
+	idle_bias_off
+Date: Mon, 31 Mar 2014 10:21:10 +0800
+Message-ID: <1396232470-11979-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JKvC8Wn6JllzUPdT"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <53381DE2.9050907@codethink.co.uk>
-Sender: linux-sh-owner@vger.kernel.org
-To: Ben Dooks <ben.dooks@codethink.co.uk>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-sh@vger.kernel.org, magnus.damm@opensource.se, linux-kernel@lists.codethink.co.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC0132650D4
+ for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 04:21:21 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch moves the idle_bias_off setting to struct "soc_codec_dev_rt5640".
 
---JKvC8Wn6JllzUPdT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5640.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Sun, Mar 30, 2014 at 02:36:34PM +0100, Ben Dooks wrote:
-> On 29/03/14 10:10, Mark Brown wrote:
-> >> sound/soc/sh/rcar/scu.c | 4 ++--
-
-> It was against your current development branch which is
-> what we having been testing against (due to the large number
-> of commits in the rcar area)
-
-It would be easier to tell what you are talking about if you were to
-quote some context from what you are replying to...  I'm guessing this
-is the file that doesn't exist, the above path not present in linux-next
-so I don't know what you mean by my "current development branch".  Are
-you *sure* you're not using Linus' tree?
-
---JKvC8Wn6JllzUPdT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTOJmZAAoJELSic+t+oim9Br8P/3XCyDb0zIfePrBtt40UolQU
-g9nUaoJBnnyexxG30L0k1A9WXppCX6SjwzR7Vj7cD40jyQi7WyZ7BdretzoeAgB/
-ykBg+74Pr3y/+LgyevpwagsHoki5LVMywy86Do7wX/dqYyK7BxS6QVxI+/mWQP/7
-q/poGqiHPvSv49RQCyQ04VAS2HXEBguw5pD7Ib2+zGYbj9KyaYKdhSIBc0ugKZf6
-hrovx+IKCvLMKSuxkSM1XuAdWG5hPWivabcSpDdW4GKNbHJPrTOELpfxXZx9kh3/
-trwvk6wpZBp8FVCKoNN6GqUldUjQDiF1Q29YproKPv2b6VnWCLtJQB33VmKerZGi
-LxKqaTGyp0a3cNcziy8cL+9CLB3DSY5ttl1lHiENMVSeBOWGGkH3vaxd1jtiKfKV
-s4HunmtxOnW7e3PpS7MhCfXcWN3tpYdXDkmZ4TjQHbMpPcdH10dm7gMSm95RaM4f
-wsLdvYVCaUwP2ogLV/ywx7L2Az999t3Ly2GmD3kI0mVyncyOCEzVcG5tGXycV7uE
-dRCQiJHxIeUX1TweeoMAJEs2tDVgl1Csu+y5GkGCw6FvqxI9fct5LmJCpDAvuYdq
-kgCNluDgaVRlLAlebOwGkUNH3V9B7P/kP3wWZX71KoLkT4o5S/oehHt8oPRkeMF+
-TsX4uPEGHBgAoRH7B/eX
-=lmWo
------END PGP SIGNATURE-----
-
---JKvC8Wn6JllzUPdT--
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index b088f14..6b8778f 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -1895,7 +1895,6 @@ static int rt5640_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 	}
+ 
+-	codec->dapm.idle_bias_off = 1;
+ 	rt5640_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 
+ 	snd_soc_update_bits(codec, RT5640_DUMMY1, 0x0301, 0x0301);
+@@ -2004,6 +2003,7 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5640 = {
+ 	.suspend = rt5640_suspend,
+ 	.resume = rt5640_resume,
+ 	.set_bias_level = rt5640_set_bias_level,
++	.idle_bias_off = true,
+ 	.controls = rt5640_snd_controls,
+ 	.num_controls = ARRAY_SIZE(rt5640_snd_controls),
+ 	.dapm_widgets = rt5640_dapm_widgets,
+-- 
+1.8.1.1.439.g50a6b54
