@@ -1,20 +1,19 @@
 From: Daniel Mack <daniel@zonque.org>
 Subject: Re: [PATCH] ALSA: usb-audio - Capture and duplex
  support for Digidesign Mbox 1 sound card.
-Date: Mon, 31 Mar 2014 19:47:53 +0200
-Message-ID: <5339AA49.6060906@zonque.org>
+Date: Mon, 31 Mar 2014 19:58:44 +0200
+Message-ID: <5339ACD4.5010208@zonque.org>
 References: <52E5254A.8090308@gmail.com> <52E53D57.3010700@ladisch.de>
  <52E5CC2E.1010000@gmail.com> <5314EDA1.5040101@zonque.org>
- <1403282253300.13982@beth> <5336BC20.1050806@gmail.com>
- <1403292231190.1294@localhost> <53378DC2.3090603@gmail.com>
+ <53365B9B.2050402@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 86071262618
- for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 19:47:54 +0200 (CEST)
-In-Reply-To: <53378DC2.3090603@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 173D7262618
+ for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 19:58:47 +0200 (CEST)
+In-Reply-To: <53365B9B.2050402@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,96 +23,154 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Damien Zammit <damien.zammit@gmail.com>, Mark Hills <mark@xwax.org>
+To: Damien Zammit <damien.zammit@gmail.com>
 Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
 Hi Damien,
 
-On 03/30/2014 05:21 AM, Damien Zammit wrote:
-> On 30/03/14 09:57, Mark Hills wrote:
->> Thanks. I took a look and I think I have a similar concern to Daniel for 
->> readability. The code should really be shared with the quirk on a single 
->> endpoint.
-> I guess a significant rewrite will be required.
-
-Yeah, now that you changed the code to handle an arbitrary amount of
-endpoints, you could as well change all user of
-QUIRK_AUDIO_FIXED_ENDPOINT over to the new one, and initialize .epmulti
-to 1. That should already work, right? (Though, I have to mention that
-I'm unhappy with the name of that variable :)).
-
->> The duplicate code in the patch already has different handling of 
->> maxpacksize and datainterval -- is that intentional? It's apparent because 
->> the new code ignores the values given in the quirk.
-
-That souldn't be the case then, of course.
-
-> Not intentional, maxpacksize and datainterval happened to be identical
-> for both endpoints on the Mbox.
-
-So it's easy to change.
-
-> Looking at the current struct for a snd_usb_audio_quirk:
+On 03/29/2014 06:35 AM, Damien Zammit wrote:
+> A few revisions of this patch have been made.  This patch provides support for usb cards
+> which have their streams on multiple endpoints within the same interface.
+> In particular, it provides duplex mode support for Digidesign Mbox 1.
 > 
-> struct snd_usb_audio_quirk {
->         const char *vendor_name;
->         const char *product_name;
->         int16_t ifnum;
->         uint16_t type;
->         const void *data;
-> }
+> I followed ALSA dev team's suggestion of making it work for N endpoints
+> rather than hardcoding it to two, and improved error handling has been provided.
+> An extra parameter has been added as requested to the usbaudio quirk struct 'epmulti'
+> to give the number of endpoints within a multi interface.
 > 
-> It is quite versatile, we shouldn't need to alter the quirk struct, just
-> the data it holds.
 
-A const void* can hold any kind of struct, and you need to cast it back
-to your struct eventually anyway. Thinking about it again, I don't like
-the idea of an extra member in struct snd_usb_audio_quirk either. What
-would be nicer is to introduce something like this:
+A few style nits below, which you can fix for the next version. Most
+important, the error unwinder should be more in-line with other code in
+the kernel.
 
-struct audioformats {
-	unsigned int n_formats;
-	const struct audioformat *format;
-};
+> diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+> index 7c57f22..affbced 100644
+> --- a/sound/usb/quirks.c
+> +++ b/sound/usb/quirks.c
+> @@ -180,6 +180,84 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+>  	return 0;
+>  }
+>  
+> +/*
+> + * create N streams for an interface without proper descriptors but with multiple endpoints
+> + */
+> +static int create_fixed_multi_stream_quirk(struct snd_usb_audio *chip,
+> +				     struct usb_interface *iface,
+> +				     struct usb_driver *driver,
+> +				     const struct snd_usb_audio_quirk *quirk)
+> +{
+> +	struct audioformat **fp;
+> +	struct usb_host_interface *alts = NULL;
+> +	int *stream;
+> +	int err, i;
+> +	unsigned *rate_table = NULL;
+> +	int rates_found;
+> +	rates_found = 0;
+> +
+> +	stream = (int*) kmalloc(sizeof(int) * quirk->epmulti, GFP_KERNEL);
 
-... and then define the quirk like this:
+No need to cast the result of k[mzc]alloc. Same for other locations below.
 
-	.type = QUIRK_AUDIO_FIXED_MULTI_ENDPOINTS,
-	.data = (const struct audioformats) {
-		.n_formats = 2,
-		.format = (const struct audioformat[]) {
-			[0] = {
-				.formats = SNDRV_PCM_FMTBIT_S24_3BE,
-				...
-			},
-			[1] = {
-				.formats = SNDRV_PCM_FMTBIT_S24_3BE,
-				...
-			},
-		},
-	}
+> +	if (!stream)
+> +		goto err_mem;
 
-IOW, encapsulate struct audioformat once more, so that the counter
-variable is specific to this kind of quirk.
+err = -ENOMEM;
+goto exit_err;
 
-Also, you can write the actual quirk handler so that it loops over the
-array entries, so you can re-use the code for both
-QUIRK_AUDIO_FIXED_MULTI_ENDPOINTS and QUIRK_AUDIO_FIXED_ENDPOINT.
+> +	fp = (struct audioformat**) kmalloc(sizeof((const struct audioformat*)quirk->data) * quirk->epmulti, GFP_KERNEL);
+> +	if (!(fp))
 
-Do you follow? :)
+Extra parenthesis not needed.
 
->  Is an array of audioformats for this kind of
-> interface the ideal choice?
+> +		goto err_mem;
+> +
+> +	for (i = 0; i < quirk->epmulti; ++i) {
 
-Not sure whether I understand what you mean. Would be best to share a
-patch that implements your idea.
+i++ is prefered if the operation order doesn't matter. It's not
+important but a little more common in the kernel.
 
-> Also, maybe we can read bNumEndpoints to determine if it is a
-> multi-endpoint interface and act accordingly, then we don't need an
-> extra element in snd_usb_audio_quirk.
+> +		fp[i] = kmemdup((const struct audioformat*)(quirk->data + i*sizeof(const struct audioformat)), sizeof(*fp[i]), GFP_KERNEL);
 
-I think adding an array type is the best way to handle it.
+You need to do something about these overlong lines, as they're also
+quite unparsable for humans. One solution is to pre-calculate the size
+into a temporary variable.
+
+> +		if (!(fp[i])) {
+
+Extra parenthesis not needed.
+
+> +			usb_audio_err(chip, "cannot memdup %d\n", i);
+
+err = -ENOMEM;
+goto exit_err;
+
+> +			goto err_mem;
+> +		}
+> +		if (fp[i]->nr_rates > MAX_NR_RATES) {
+> +			err = -EINVAL;
+> +			goto err_rates;
+> +		}
+> +		if (fp[i]->nr_rates > 0 && !rates_found) {
+> +			rate_table = kmemdup(fp[i]->rate_table,
+> +				     sizeof(int) * fp[i]->nr_rates, GFP_KERNEL);
+> +			rates_found = 1;
+
+Not sure if I overlook anything, but isn't the extra variable
+rates_found redundant here, as can derive the same information by
+checking for (rate_table != NULL)?
+
+> +		}
+> +		if (!rate_table) {
+> +			err = -ENOMEM;
+> +			goto err_rates;
+> +		}
+
+This check makes more sense directly underneath the kmemdup().
+
+> +		fp[i]->rate_table = rate_table;
+> +
+> +		stream[i] = (fp[i]->endpoint & USB_DIR_IN)
+> +			? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
+> +
+> +		err = snd_usb_add_audio_stream(chip, stream[i], fp[i]);
+> +		if (err < 0)
+> +			goto err_ratetable;
+> +
+> +		if (fp[i]->iface != get_iface_desc(&iface->altsetting[0])->bInterfaceNumber ||
+> +		    fp[i]->altset_idx >= iface->num_altsetting) {
+> +			err = -EINVAL;
+> +			goto err_ratetable;
+> +		}
+> +		alts = &iface->altsetting[fp[0]->altset_idx];
+> +		fp[i]->datainterval = snd_usb_parse_datainterval(chip, alts);
+> +		fp[i]->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
+> +	}
+> +	usb_set_interface(chip->dev, fp[0]->iface, 0);
+> +	snd_usb_init_pitch(chip, fp[0]->iface, alts, fp[0]);
+> +	snd_usb_init_sample_rate(chip, fp[0]->iface, alts, fp[0], fp[0]->rate_max);
+> +	return 0;
+> +
+> +err_mem:
+> +	return -ENOMEM;
+
+You can drop this ...
+
+> +err_ratetable:
+> +	kfree(rate_table);
+> +err_rates:
+> +	for (i = 0; i < quirk->epmulti; ++i)
+> +		if(fp[i])
+> +			kfree(fp[i]);
+> +	kfree(fp);
+> +	kfree(stream);
+
+... and place another label here:
+
+exit_err:
+> +	return err;
+> +}
+> +
 
 
 Thanks,
