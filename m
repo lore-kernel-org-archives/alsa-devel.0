@@ -1,16 +1,18 @@
-From: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: core: Fail probe if we fail to add dai
-	widgets
-Date: Mon, 31 Mar 2014 15:47:12 +0100
-Message-ID: <20140331144712.GA6263@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH] ASoC: rt5640: Use the platform data for
+ DMIC settings
+Date: Mon, 31 Mar 2014 09:45:01 -0600
+Message-ID: <53398D7D.3010507@wwwdotorg.org>
+References: <1395974778-4217-1-git-send-email-oder_chiou@realtek.com>
+ <53359DDD.7090900@wwwdotorg.org> <20140328234659.GA21628@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 010A1265171
- for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 17:04:22 +0200 (CEST)
-Content-Disposition: inline
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id B514726517C
+ for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 17:45:06 +0200 (CEST)
+In-Reply-To: <20140328234659.GA21628@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,36 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@wolfsonmicro.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
----
- sound/soc/soc-core.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+On 03/28/2014 05:46 PM, Mark Brown wrote:
+> On Fri, Mar 28, 2014 at 10:05:49AM -0600, Stephen Warren wrote:
+>> On 03/27/2014 08:46 PM, Oder Chiou wrote:
+> 
+>>> The patch uses the platform data for DMIC settings.
+> 
+>> Shouldn't this also support parsing the same information from device tree?
+> 
+> The driver has no DT support at all at the minute but if it's being used
+> on platforms using DT (which of course it is now I think about it - I
+> just looked for the DT support when reviewing) then yes it should.
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b322cf2..5cf7107 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1132,8 +1132,15 @@ static int soc_probe_codec(struct snd_soc_card *card,
- 					  driver->num_dapm_widgets);
- 
- 	/* Create DAPM widgets for each DAI stream */
--	list_for_each_entry(dai, &codec->component.dai_list, list)
--		snd_soc_dapm_new_dai_widgets(&codec->dapm, dai);
-+	list_for_each_entry(dai, &codec->component.dai_list, list) {
-+		ret = snd_soc_dapm_new_dai_widgets(&codec->dapm, dai);
-+
-+		if (ret != 0) {
-+			dev_err(codec->dev,
-+				"Failed to create DAI widgets %d\n", ret);
-+			goto err_probe;
-+		}
-+	}
- 
- 	codec->dapm.idle_bias_off = driver->idle_bias_off;
- 
--- 
-1.8.5.3
+The driver doesn't have an OF match table (I'll send a patch to fix that
+soon), but certainly does support DT; see rt5640_parse_dt().
