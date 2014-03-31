@@ -1,15 +1,14 @@
 From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH] ASoC: alc5632: fix uninit var in
-	alc5632_probe()
-Date: Mon, 31 Mar 2014 12:25:24 -0600
-Message-ID: <1396290324-6334-1-git-send-email-swarren@wwwdotorg.org>
+Subject: [PATCH 1/3] ASoC: alc5632: add an of_match table
+Date: Mon, 31 Mar 2014 12:38:16 -0600
+Message-ID: <1396291098-13796-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FA89265176
- for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 20:35:17 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B718265176
+ for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 20:38:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,45 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, Stephen Warren <swarren@nvidia.com>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Stephen Warren <swarren@nvidia.com>
 
-alc5632_probe() returns ret, yet it is not initialized or set anywhere.
-This ends up causing the function to appear to fail, and audio not to
-work on the Toshiba AC100, with my compiler at least.
+Add a device tree match table. This serves to make the driver's support
+of device tree more explicit. Perhaps the fallback for DT matching to
+using the i2c_device_id table will go away one day, since it fails in
+face of devices from different vendors with the same name.
 
-This function used to set ret in all cases, but recent cleanup removed
-that.
-
-Cc: Xiubo Li <Li.Xiubo@freescale.com>
-Fixes: 5d6be5aa6bec ("ASoC: codec: Simplify ASoC probe code.")
 Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
- sound/soc/codecs/alc5632.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/codecs/alc5632.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
-index ec071a6306ef..3ee8d4e41a99 100644
+index 3ee8d4e41a99..85942ca36cbf 100644
 --- a/sound/soc/codecs/alc5632.c
 +++ b/sound/soc/codecs/alc5632.c
-@@ -1061,7 +1061,6 @@ static int alc5632_resume(struct snd_soc_codec *codec)
- static int alc5632_probe(struct snd_soc_codec *codec)
- {
- 	struct alc5632_priv *alc5632 = snd_soc_codec_get_drvdata(codec);
--	int ret;
+@@ -1190,11 +1190,18 @@ static const struct i2c_device_id alc5632_i2c_table[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, alc5632_i2c_table);
  
- 	/* power on device  */
- 	alc5632_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-@@ -1075,7 +1074,7 @@ static int alc5632_probe(struct snd_soc_codec *codec)
- 		return -EINVAL;
- 	}
- 
--	return ret;
-+	return 0;
- }
- 
- /* power down chip */
++static const struct of_device_id alc5632_of_match[] = {
++	{ .compatible = "realtek,alc5632", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, alc5632_of_match);
++
+ /* i2c codec control layer */
+ static struct i2c_driver alc5632_i2c_driver = {
+ 	.driver = {
+ 		.name = "alc5632",
+ 		.owner = THIS_MODULE,
++		.of_match_table = of_match_ptr(alc5632_of_match),
+ 	},
+ 	.probe = alc5632_i2c_probe,
+ 	.remove =  alc5632_i2c_remove,
 -- 
 1.8.1.5
