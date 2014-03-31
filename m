@@ -1,19 +1,14 @@
 From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH] ASoC: rt5640: Use the platform data for
- DMIC settings
-Date: Mon, 31 Mar 2014 10:37:39 -0600
-Message-ID: <533999D3.1060905@wwwdotorg.org>
-References: <1395974778-4217-1-git-send-email-oder_chiou@realtek.com>
- <53359DDD.7090900@wwwdotorg.org> <20140328234659.GA21628@sirena.org.uk>
- <53398D7D.3010507@wwwdotorg.org> <20140331160508.GU2269@sirena.org.uk>
+Subject: [PATCH] ASoC: rt5640: add an of_match table
+Date: Mon, 31 Mar 2014 11:05:17 -0600
+Message-ID: <1396285517-17892-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B2F0265171
- for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 18:45:17 +0200 (CEST)
-In-Reply-To: <20140331160508.GU2269@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 22D0C2650D5
+ for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 19:05:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +18,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/31/2014 10:05 AM, Mark Brown wrote:
-> On Mon, Mar 31, 2014 at 09:45:01AM -0600, Stephen Warren wrote:
->> On 03/28/2014 05:46 PM, Mark Brown wrote:
-> 
->>> The driver has no DT support at all at the minute but if it's being used
->>> on platforms using DT (which of course it is now I think about it - I
->>> just looked for the DT support when reviewing) then yes it should.
-> 
->> The driver doesn't have an OF match table (I'll send a patch to fix that
->> soon), but certainly does support DT; see rt5640_parse_dt().
-> 
-> Oh, dear.  That's not clever and we do need the IDs adding, that's the
-> baseline thing needed for DT support.
+From: Stephen Warren <swarren@nvidia.com>
 
-I really wish we would make up our minds about this.
+Add a device tree match table. This serves to make the driver's support
+of device tree more explicit. Perhaps the fallback for DT matching to
+using the i2c_device_id table will go away one day, since it fails in
+face of devices from different vendors with the same name.
 
-For I2C (and SPI and perhaps others) the I2C match table works fine as a
-replacement for the of_match table. The only issue might be different
-manufacturers with the same chip names. If this is a problem, why is
-fallback to the I2C match table even allowed any more; we should mandate
-that OF matching only works via the OF match table.
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+---
+ sound/soc/codecs/rt5640.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-When DT was young, Grant tried to require of_match for everything for
-completeness, and then I tried enforcing that for reviews, and then
-Grant said not to bother with that, so I stopped, and now you're saying
-it's required again. I really wish I could get consistency in how this
-kind of thing is supposed to work. It's difficult for contributors to
-know what to do if reviewers keep flip-flopping over time.
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index b5014a2024e2..b6a02c16f100 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2018,6 +2018,14 @@ static const struct i2c_device_id rt5640_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5640_i2c_id);
+ 
++#if defined(CONFIG_OF)
++static const struct of_device_id rt5640_of_match[] = {
++	{ .compatible = "realtek,rt5640", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, rt5640_of_match);
++#endif
++
+ #ifdef CONFIG_ACPI
+ static struct acpi_device_id rt5640_acpi_match[] = {
+ 	{ "INT33CA", 0 },
+@@ -2166,6 +2174,7 @@ static struct i2c_driver rt5640_i2c_driver = {
+ 		.name = "rt5640",
+ 		.owner = THIS_MODULE,
+ 		.acpi_match_table = ACPI_PTR(rt5640_acpi_match),
++		.of_match_table = of_match_ptr(rt5640_of_match),
+ 	},
+ 	.probe = rt5640_i2c_probe,
+ 	.remove   = rt5640_i2c_remove,
+-- 
+1.8.1.5
