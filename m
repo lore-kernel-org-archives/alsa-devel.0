@@ -1,65 +1,38 @@
-From: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <joel@weedlight.ch>
-Subject: Re: is 440 Hz the true harmonic wave
-Date: Mon, 31 Mar 2014 11:57:41 +0200
-Message-ID: <1396259861.3923.24.camel@debian>
-References: <1396244213.3927.4.camel@debian> <53391D0E.2000306@ladisch.de>
- <1396254042.3923.2.camel@debian>
- <CAFz=ag7Xgvjq6JL7i=KMjCoh==3EDw2Y-NSoeBm3hnjKt2ZDrw@mail.gmail.com>
- <1396258256.3923.8.camel@debian> <1396259368.3923.22.camel@debian>
+From: Ben Dooks <ben.dooks@codethink.co.uk>
+Subject: Re: [PATCH] ASoC: rsnd: fix src clock prepare/unprepare
+Date: Mon, 31 Mar 2014 11:05:32 +0100
+Message-ID: <53393DEC.9060400@codethink.co.uk>
+References: <1396018997-12390-1-git-send-email-ben.dooks@codethink.co.uk> <20140329101043.GF21628@sirena.org.uk> <53381DE2.9050907@codethink.co.uk> <20140330222433.GJ2269@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from exsmtp04.agrinet.ch (exsmtp04.agrinet.ch [81.221.254.203])
- by alsa0.perex.cz (Postfix) with ESMTP id 10FFF26513B
- for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2014 11:57:46 +0200 (CEST)
-In-Reply-To: <1396259368.3923.22.camel@debian>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Felix Homann <linuxaudio@showlabor.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20140330222433.GJ2269@sirena.org.uk>
+Sender: linux-sh-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-sh@vger.kernel.org, magnus.damm@opensource.se, linux-kernel@lists.codethink.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAyMDE0LTAzLTMxIGF0IDExOjQ5ICswMjAwLCBKb8OrbCBLcsOkaGVtYW5uIHdyb3Rl
-Ogo+IE9uIE1vbiwgMjAxNC0wMy0zMSBhdCAxMTozMCArMDIwMCwgSm/Dq2wgS3LDpGhlbWFubiB3
-cm90ZToKPiA+IE9uIE1vbiwgMjAxNC0wMy0zMSBhdCAxMDoyNyArMDIwMCwgRmVsaXggSG9tYW5u
-IHdyb3RlOgo+ID4gPiAyMDE0LTAzLTMxIDEwOjIwIEdNVCswMjowMCBKb8OrbCBLcsOkaGVtYW5u
-IDxqb2VsQHdlZWRsaWdodC5jaD46Cj4gPiA+ICAgICAgICAgCj4gPiA+ICAgICAgICAgCj4gPiA+
-ICAgICAgICAgSSBiZWxpZXZlIHRoYXQgNDQwIEh6IGlzIGFuIGFwcHJveGltYXRpb24gcmF0aGVy
-IHRoYW4gdHJ1ZQo+ID4gPiAgICAgICAgIGhhcm1vbmljIG9uCj4gPiA+ICAgICAgICAgaXQncyBw
-cmVzc3VyZS4gT3IgYW0gSSB3cm9uZz8gU2luZSBpcyBoYXJtb25pYyBpbiBkZWZhdWx0IGFyYy4K
-PiA+ID4gICAgICAgICAKPiA+ID4gCj4gPiA+IAo+ID4gPiBXaGF0IGFyZSB5b3UgdGFsa2luZyBh
-Ym91dD8/PyAKPiA+IAo+ID4gQWJvdXQgc2NhbGUuIEFtIEkgd3Jvbmcgd2hlbiBJIGJlbGlldmUg
-NDQwIEh6IGhhcyBwaHlzaWNhbCBwcm9wZXJ0eSB0bwo+ID4gYmUgaGFybW9uaWM/Cj4gPiAKPiA+
-IAo+ID4gCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Xwo+ID4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwo+ID4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwKPiAKPiBOb3RlOiAxLzQ1IGlzIDkwIGRlZ3JlZS4KPiAKPiAoMjUwMDAwMDAw
-ICogKDEgLyA0NSkpIGNhbGN1bGF0ZWQgd2l0aCBjYWxjdWxhdG9yIG9uIEdOVS9MaW51eCBlcXVh
-bHM6Cj4gNTU1NTU1NS41NTU1NTU1NTYKPiAKPiBUaGlzLCBzb21lIGhhbmR5IHRocmVhZGluZyBm
-dW5jdGlvbnMgYW5kIG5hbm9zbGVlcCBtYWtlcyBteSBhcHBsaWNhdGlvbgo+IHJ1biB3aXRoIGEg
-dGhyZWFkIHRyZWUuCj4gCj4gc2YubmV0L3AvYWdzCj4gCj4gQXMgSSdtIHJlZmxlY3RpbmcgSSBy
-ZWNvZ25pemUgdGhhdCB0aGVyZSBhcmUgMTBeMyBtb3JlIHplcm8ncyBhcyBJCj4gd2FudGVkLiBJ
-IGdpdmUgaXQgYSB0cnkgd2l0aDogMjUwMDAwCj4gCj4gVGhhdCB3b3VsZCByZXN1bHQgYWJvdXQg
-NPCdnIdzCj4gCj4gVGhhdCBjb3VsZCB5b3UgaGF2ZSBzZWVuIGlmIHlvdSBkaWRuJ3QgYmFuIG1l
-IGZyb20KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOgo+IAo+IEdOVS9MaW51eCBpcyBn
-cmVhdCEKPiAKPiBUaGlzIGNoYW5nZWQgbXkgbGlmZToKPiAKPiAgICAgLyogYW5kIG5vdyBhc3lu
-YyAqLwo+ICAgICB7Cj4gICAgICAgc3RhdGljIGNvbnN0IHN0cnVjdCB0aW1lc3BlYyByZXEgPSB7
-Cj4gICAgICAgICAwLAo+ICAgICAgICAgKDI1MDAwMDAwMCAqIDEgLyA0NSksCj4gICAgICAgfTsK
-PiAKPiAgICAgICBpZighQUdTX0lTX0RFVk9VVF9USFJFQUQodGhyZWFkKSl7Cj4gICAgICAgICBu
-YW5vc2xlZXAoJnJlcSwgTlVMTCk7Cj4gICAgICAgfQo+ICAgICB9Cj4gCj4gX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCgpJdCBydW5zIGludG8gYSBk
-ZWFkbG9jayEgSXQgY291bGQgcHJhY3RpY2FsbHkgaW50ZWZlciB3aXRoIGFueSBzb2Z0d2FyZS4K
-QnV0IGJhY2sgdG8gdG9waWM6IEknbSBkb2luZyBzb2Z0c3ludGguCgoKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 30/03/14 23:24, Mark Brown wrote:
+> On Sun, Mar 30, 2014 at 02:36:34PM +0100, Ben Dooks wrote:
+>> On 29/03/14 10:10, Mark Brown wrote:
+>>>> sound/soc/sh/rcar/scu.c | 4 ++--
+>
+>> It was against your current development branch which is
+>> what we having been testing against (due to the large number
+>> of commits in the rcar area)
+>
+> It would be easier to tell what you are talking about if you were to
+> quote some context from what you are replying to...  I'm guessing this
+> is the file that doesn't exist, the above path not present in linux-next
+> so I don't know what you mean by my "current development branch".  Are
+> you *sure* you're not using Linus' tree?
+
+Why would I be using Linus' tree, it just /does not work/ at all.
+
+I used your sound.git tree to work on due to the number of patches
+that where there.
+
+-- 
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
