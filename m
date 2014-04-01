@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: tlv320aic23: add an of_match
-	table
-Date: Tue, 1 Apr 2014 12:45:22 +0100
-Message-ID: <20140401114522.GO2269@sirena.org.uk>
+Subject: Re: [PATCH 3/3] ASoC: max98090: add an of_match table
+Date: Tue, 1 Apr 2014 12:46:31 +0100
+Message-ID: <20140401114631.GP2269@sirena.org.uk>
 References: <1396291098-13796-1-git-send-email-swarren@wwwdotorg.org>
- <1396291098-13796-2-git-send-email-swarren@wwwdotorg.org>
+ <1396291098-13796-3-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1519062780500569536=="
+Content-Type: multipart/mixed; boundary="===============5029675290184086024=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E1242652B9
- for <alsa-devel@alsa-project.org>; Tue,  1 Apr 2014 13:45:33 +0200 (CEST)
-In-Reply-To: <1396291098-13796-2-git-send-email-swarren@wwwdotorg.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 44E65265328
+ for <alsa-devel@alsa-project.org>; Tue,  1 Apr 2014 13:46:42 +0200 (CEST)
+In-Reply-To: <1396291098-13796-3-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,18 +26,18 @@ Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdw
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1519062780500569536==
+--===============5029675290184086024==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TN6tpTzbxVxIV0OU"
+	protocol="application/pgp-signature"; boundary="2hpmsZ6F8OXGVmCg"
 Content-Disposition: inline
 
 
---TN6tpTzbxVxIV0OU
+--2hpmsZ6F8OXGVmCg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 31, 2014 at 12:38:17PM -0600, Stephen Warren wrote:
+On Mon, Mar 31, 2014 at 12:38:18PM -0600, Stephen Warren wrote:
 > From: Stephen Warren <swarren@nvidia.com>
 >=20
 > Add a device tree match table. This serves to make the driver's support
@@ -48,35 +47,35 @@ On Mon, Mar 31, 2014 at 12:38:17PM -0600, Stephen Warren wrote:
 
 Applied, thanks.
 
---TN6tpTzbxVxIV0OU
+--2hpmsZ6F8OXGVmCg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTOqbPAAoJELSic+t+oim90LYP/0f80N7/oyCnT4dBGIutdUVk
-wstT+r3kaft05Ah6SL16wYv6dV+rm468TShMIOlFUeaILg7kUpz+hfrDXwgJi1b9
-GGviL7DPWES9L7Ig+2aeG1lf+rJegPCDJNG+Otq3zWIgkeZYJD3Z1dLc0TZgjyXm
-UtlQxjl6Z5vXVbpMIUVLJLlhvTMNti/cHOfRUm5whmM0FNKQdGBCvFMWBWJykuqL
-ypEMA02iCCyVE1ZTDj/V8R8bBgevbiWjbk/uAy2NFCgsISvjalGu7qBSZcDIYiFP
-YcXBC9VeOPh/c1VRoGiYt0uvAVzDYTTki3vpozMLtV+ZG33VfAOm0X3+BYGEolHk
-MRHh2pztMyfkvWR2AnuCvnrVJyLu09ScoEYw0WkGqQkeN6Bnxl/yHha5Im/WG4eG
-OUU/U2MuyJotyBUk+fILqRbyJJTRLYS5GM1SldhTLUXaJkbpzqoOJmEMOinJkxWJ
-kad/uh4LqzK6meq1Ok1x+mm4TCWQNuL5AhAsvOXxpzW7pkotkE8mCDagcuSGSYf8
-CO6wEXr4NgDPmm8ntN9UXfFmDIl7RByb3XDdzZUGMko5b6ao8jjzjnWeXJrUcb+k
-IvdujsRJ0a86mgLjU2dcZ/ED9o1kN/mQAXb6PxG7M0Kn20x9dYzwtMuujDS4mtos
-78TPmKLQJEr58rTsFGpP
-=YY9B
+iQIcBAEBAgAGBQJTOqcUAAoJELSic+t+oim9RFIP/j4yfLllO+lQUs4KS0ii999C
+aQ9fhKscbXiY9WgYH9KtGTC/+EdCKvBJ/+tq8ow72qmrT/cylUqOeR+D6wv5QfcB
+PrjLMmHOH38baerwZzFRYUFYsoEpuU5ajhLJh2i9tQnwimeYEuwl+dAYLwFfg8qc
+BeqTwYMPKhl/AT8hRXck/JTlTBWhQfXeDJWJlDQcfshAyXkk1XAYqu7yAX1L9W55
+TEhdw20JaviA6Y5kYwYaxwPZwxQkE5BJyob9o/d6W3xayZSgCUYAFdmB4sQO6hEs
+gwbjMnpWupd+9WMWmTq6wFuAjfAb4ArT38Skaudw0k1vC+lvEWaiSR1JRX87AUCZ
+0u9eGbUvtAuyt5OHFeUaMiSnarV6FE8Fj5Vl8eMBuTf+K8A+Ot+aeZtE0+++/oUl
+cr6S7XLoKnL50cD/e1NRZ73LEeg2QAWrk2CIkrgY7V7B13GA9rYECkP2jVbfujk+
+p6CjESIzTx6jpSVshbNoqbyrpOIVJcY+1TszhffrALhM/7SA5LiWqOYvqEz+lBsl
+EdOfXykQdg1trryGq2mR/If0tSoYwAkeaWPRqWp+EmugajSiosJqBW1C3XLgtCON
+2ir05nzlPKP827qUB48AVYS+JaxJwXqCuc5rWhZmT5v9wxtFUdmgj56UswH+3S+h
+BpZpRL27414PQCak4QPh
+=Q3jC
 -----END PGP SIGNATURE-----
 
---TN6tpTzbxVxIV0OU--
+--2hpmsZ6F8OXGVmCg--
 
---===============1519062780500569536==
+--===============5029675290184086024==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1519062780500569536==--
+--===============5029675290184086024==--
