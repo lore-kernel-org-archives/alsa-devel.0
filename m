@@ -1,91 +1,182 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: alc5632: add an of_match table
-Date: Tue, 1 Apr 2014 00:05:17 +0100
-Message-ID: <20140331230517.GH2269@sirena.org.uk>
-References: <1396291098-13796-1-git-send-email-swarren@wwwdotorg.org>
- <20140331192349.GA3431@mithrandir> <5339C638.5030303@wwwdotorg.org>
- <20140331224520.GF2269@sirena.org.uk>
- <5339F205.50403@wwwdotorg.org>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [PATCH] ASoC: fsl_sai: Fix buggy configurations in trigger()
+Date: Tue, 1 Apr 2014 01:46:03 +0000
+Message-ID: <85f93f0cf3b943408e3fb221b30a2ece@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1396265962-19343-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1616933682978678086=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B2B952651CF
- for <alsa-devel@alsa-project.org>; Tue,  1 Apr 2014 01:05:33 +0200 (CEST)
-In-Reply-To: <5339F205.50403@wwwdotorg.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: alsa-devel@alsa-project.org, Thierry Reding <thierry.reding@gmail.com>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1396265962-19343-1-git-send-email-Guangyu.Chen@freescale.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@tabi.org" <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
+> Subject: [PATCH] ASoC: fsl_sai: Fix buggy configurations in trigger()
+> 
+> The current trigger() has two crucial problems:
+> 1) The DMA request enabling operations (FSL_SAI_CSR_FRDE) for Tx and Rx are
+>    now totally exclusive: It would fail to run simultaneous Tx-Rx cases.
+> 2) The TERE disabling operation depends on an incorrect condition -- active
+>    reference count that only gets increased in snd_pcm_open() and decreased
+>    in snd_pcm_close(): The TERE would never get cleared.
+> 
+> So this patch overwrites the trigger function by following these rules:
+> A) We continue to support tx-async-while-rx-sync-to-tx case alone, which's
+>    originally limited by this fsl_sai driver, but we make the code easy to
+>    modify for the further support of the opposite case.
+> B) We enable both TE and RE for PLAYBACK stream or CAPTURE stream but only
+>    enabling the DMA request bit (FSL_SAI_CSR_FRDE) of the current direction
+>    due to the requirement of SAI -- For tx-async-while-rx-sync-to-tx case,
+>    the receiver is enabled only when both the transmitter and receiver are
+>    enabled.
+> C) We only enable one side interrupt for each stream since over/underrun
+>    on the opposite stream would be resulted from what we've done in rule B:
+>    enabling TERE but remaining FRDE disabled, even though the xrun on the
+>    opposite direction will not break the current stream.
+> 
+> Tested cases:
+> a) aplay test.wav -d5
+> b) arecord -r44100 -c2 -fS16_LE test.wav -d5
+> c) arecord -r44100 -c2 -fS16_LE -d5 | aplay
+> d) (aplay test2.wav &); sleep 1; arecord -r44100 -c2 -fS16_LE test.wav -d1
+> e) (arecord -r44100 -c2 -fS16_LE test.wav -d5 &); sleep 1; aplay test.wav -d1
+> 
+> Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+> ---
 
---===============1616933682978678086==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fqI+47YoL7hbVrTK"
-Content-Disposition: inline
+I have test it on my Vybird board.
 
+Acked-by: Xiubo Li <Li.Xiubo@freescale.com>
 
---fqI+47YoL7hbVrTK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks,
 
-On Mon, Mar 31, 2014 at 04:53:57PM -0600, Stephen Warren wrote:
-> On 03/31/2014 04:45 PM, Mark Brown wrote:
-
-> > of_match_ptr() is supposed to avoid the warnings that the ifdefs fixed
-> > more prettily - I suspect you'll find that the ones that don't use it
-> > either predate of_match_ptr() or copied something that did.
-
-> I believe you either have the ifdef and the of_match_ptr(), or you have
-> neither. The use of of_match_ptr() is required when you wrap the
-> struct/array in an ifdef, so that the struct/array is only referenced
-> when it's declared.
-
-> I guess from your response you want the struct/array wrapped in an
-> ifdef, and to use of_match_ptr() when referencing it. I'll go ahead with
-> that; no need to reply if that's what you meant.
-
-No, what I'm saying is you shouldn't need the ifdef any more if you use
-of_match_ptr() and that's the more modern way to do things.
-
---fqI+47YoL7hbVrTK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTOfSqAAoJELSic+t+oim9QkoP/2Cd8kUe90juJugxkbmLzJFq
-/W704CfJfYtgK9vG2dIF7nkHivOkzHMLIG70H8HSQ+CzTB2mWW8fE2rML7OLgvi0
-C+j4We5kfIe1gS2Ger5bGt4xc//O50K67z4S1LKRWjXrKdrySNMyhQAmTde84LxM
-ipG0ZNXKy2UQkSCiKxAk1t/E+baAI3yqIjUQ6Hc3nJRr7KmVimLQiz+WL35YhtMN
-rm3jcnvGEXtgCGjyComXX0en7gayUFSgmmyPJTc4nE0p5A5NKSMvYDWSBOgYqDX8
-UHOeJ6VZM+LR9v7FnUgHtowqvD7HKV0Vj8nIIFW7pcu4IYlwkXR/SvkvfOHLa5Im
-qL6TFdEimiZtvyDuEnNtqLGBIah0/tDsoaAKGHRSfw/jNdRcIR0j4qwCIrQ5oV9o
-vL6hVPEj1DWJ9AnuC77+b0ekajfId2zSIAO6mZWIEsCtkn0/97IYNZKjV2ovFQeB
-0CAXV22xI87RSPpn+mlSyChO2KlXRe1ckzGmqwgwaYL40CTR7vqWV3SupLMC6vpN
-0YpAOOFiI0kSEpn5p+0rShlPVbwWVKpM/hP669xIuBitTCSUUttGMS/DfTsLssrx
-fXY0Cdx0Pxgu9s1K00Ak6Q/Q6pGloXWqYpTfdilxJ2H/LvU7s5Io1/yeWZVv1C4t
-8iWSPXr8B0o0WVgfJFip
-=KsUd
------END PGP SIGNATURE-----
-
---fqI+47YoL7hbVrTK--
-
---===============1616933682978678086==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+BRs
+Xiubo
 
 
---===============1616933682978678086==--
+
+>  sound/soc/fsl/fsl_sai.c | 43 +++++++++++++++++++++++--------------------
+>  sound/soc/fsl/fsl_sai.h | 11 +++++++++++
+>  2 files changed, 34 insertions(+), 20 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> index f088545..d64c33f 100644
+> --- a/sound/soc/fsl/fsl_sai.c
+> +++ b/sound/soc/fsl/fsl_sai.c
+> @@ -365,6 +365,7 @@ static int fsl_sai_trigger(struct snd_pcm_substream
+> *substream, int cmd,
+>  		struct snd_soc_dai *cpu_dai)
+>  {
+>  	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+> +	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+>  	u32 tcsr, rcsr;
+> 
+>  	/*
+> @@ -379,14 +380,6 @@ static int fsl_sai_trigger(struct snd_pcm_substream
+> *substream, int cmd,
+>  	regmap_read(sai->regmap, FSL_SAI_TCSR, &tcsr);
+>  	regmap_read(sai->regmap, FSL_SAI_RCSR, &rcsr);
+> 
+> -	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> -		tcsr |= FSL_SAI_CSR_FRDE;
+> -		rcsr &= ~FSL_SAI_CSR_FRDE;
+> -	} else {
+> -		rcsr |= FSL_SAI_CSR_FRDE;
+> -		tcsr &= ~FSL_SAI_CSR_FRDE;
+> -	}
+> -
+>  	/*
+>  	 * It is recommended that the transmitter is the last enabled
+>  	 * and the first disabled.
+> @@ -395,22 +388,32 @@ static int fsl_sai_trigger(struct snd_pcm_substream
+> *substream, int cmd,
+>  	case SNDRV_PCM_TRIGGER_START:
+>  	case SNDRV_PCM_TRIGGER_RESUME:
+>  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> -		tcsr |= FSL_SAI_CSR_TERE;
+> -		rcsr |= FSL_SAI_CSR_TERE;
+> +		if (!(tcsr & FSL_SAI_CSR_FRDE || rcsr & FSL_SAI_CSR_FRDE)) {
+> +			regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
+> +					   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
+> +			regmap_update_bits(sai->regmap, FSL_SAI_TCSR,
+> +					   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
+> +		}
+> 
+> -		regmap_write(sai->regmap, FSL_SAI_RCSR, rcsr);
+> -		regmap_write(sai->regmap, FSL_SAI_TCSR, tcsr);
+> +		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
+> +				   FSL_SAI_CSR_xIE_MASK, FSL_SAI_FLAGS);
+> +		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
+> +				   FSL_SAI_CSR_FRDE, FSL_SAI_CSR_FRDE);
+>  		break;
+>  	case SNDRV_PCM_TRIGGER_STOP:
+>  	case SNDRV_PCM_TRIGGER_SUSPEND:
+>  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> -		if (!(cpu_dai->playback_active || cpu_dai->capture_active)) {
+> -			tcsr &= ~FSL_SAI_CSR_TERE;
+> -			rcsr &= ~FSL_SAI_CSR_TERE;
+> +		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
+> +				   FSL_SAI_CSR_FRDE, 0);
+> +		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
+> +				   FSL_SAI_CSR_xIE_MASK, 0);
+> +
+> +		if (!(tcsr & FSL_SAI_CSR_FRDE || rcsr & FSL_SAI_CSR_FRDE)) {
+> +			regmap_update_bits(sai->regmap, FSL_SAI_TCSR,
+> +					   FSL_SAI_CSR_TERE, 0);
+> +			regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
+> +					   FSL_SAI_CSR_TERE, 0);
+>  		}
+> -
+> -		regmap_write(sai->regmap, FSL_SAI_TCSR, tcsr);
+> -		regmap_write(sai->regmap, FSL_SAI_RCSR, rcsr);
+>  		break;
+>  	default:
+>  		return -EINVAL;
+> @@ -464,8 +467,8 @@ static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
+>  {
+>  	struct fsl_sai *sai = dev_get_drvdata(cpu_dai->dev);
+> 
+> -	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff,
+> FSL_SAI_FLAGS);
+> -	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff,
+> FSL_SAI_FLAGS);
+> +	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff, 0x0);
+> +	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff, 0x0);
+>  	regmap_update_bits(sai->regmap, FSL_SAI_TCR1, FSL_SAI_CR1_RFW_MASK,
+>  			   FSL_SAI_MAXBURST_TX * 2);
+>  	regmap_update_bits(sai->regmap, FSL_SAI_RCR1, FSL_SAI_CR1_RFW_MASK,
+> diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+> index a264185..be26d46 100644
+> --- a/sound/soc/fsl/fsl_sai.h
+> +++ b/sound/soc/fsl/fsl_sai.h
+> @@ -35,6 +35,16 @@
+>  #define FSL_SAI_RFR	0xc0 /* SAI Receive FIFO */
+>  #define FSL_SAI_RMR	0xe0 /* SAI Receive Mask */
+> 
+> +#define FSL_SAI_xCSR(tx)	(tx ? FSL_SAI_TCSR : FSL_SAI_RCSR)
+> +#define FSL_SAI_xCR1(tx)	(tx ? FSL_SAI_TCR1 : FSL_SAI_RCR1)
+> +#define FSL_SAI_xCR2(tx)	(tx ? FSL_SAI_TCR2 : FSL_SAI_RCR2)
+> +#define FSL_SAI_xCR3(tx)	(tx ? FSL_SAI_TCR3 : FSL_SAI_RCR3)
+> +#define FSL_SAI_xCR4(tx)	(tx ? FSL_SAI_TCR4 : FSL_SAI_RCR4)
+> +#define FSL_SAI_xCR5(tx)	(tx ? FSL_SAI_TCR5 : FSL_SAI_RCR5)
+> +#define FSL_SAI_xDR(tx)		(tx ? FSL_SAI_TDR : FSL_SAI_RDR)
+> +#define FSL_SAI_xFR(tx)		(tx ? FSL_SAI_TFR : FSL_SAI_RFR)
+> +#define FSL_SAI_xMR(tx)		(tx ? FSL_SAI_TMR : FSL_SAI_RMR)
+> +
+>  /* SAI Transmit/Recieve Control Register */
+>  #define FSL_SAI_CSR_TERE	BIT(31)
+>  #define FSL_SAI_CSR_FR		BIT(25)
+> @@ -48,6 +58,7 @@
+>  #define FSL_SAI_CSR_FWF		BIT(17)
+>  #define FSL_SAI_CSR_FRF		BIT(16)
+>  #define FSL_SAI_CSR_xIE_SHIFT	8
+> +#define FSL_SAI_CSR_xIE_MASK	(0x1f << FSL_SAI_CSR_xIE_SHIFT)
+>  #define FSL_SAI_CSR_WSIE	BIT(12)
+>  #define FSL_SAI_CSR_SEIE	BIT(11)
+>  #define FSL_SAI_CSR_FEIE	BIT(10)
+> --
+> 1.8.4
+> 
