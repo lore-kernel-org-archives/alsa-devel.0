@@ -1,82 +1,59 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: DAPM: Add support for multi register mux
-Date: Wed, 02 Apr 2014 08:00:25 +0200
-Message-ID: <533BA779.9010005@metafoo.de>
-References: <1396333288-19113-1-git-send-email-aruns@nvidia.com> <533A6F4A.2060702@metafoo.de> <781A12BB53C15A4BB37291FDE08C03F3A05CDCD63B@HQMAIL02.nvidia.com> <781A12BB53C15A4BB37291FDE08C03F3A05CDCD659@HQMAIL02.nvidia.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Invalid PCM pointer with CMI8738 and pcm.c buffer
+	underuns
+Date: Wed, 2 Apr 2014 06:58:56 +0800
+Message-ID: <CAN8cciZpK4Opd7LAKg1quBYxKyD7+U3KhHXhFxJ4Ty+6AiGPaw@mail.gmail.com>
+References: <CAAvHfitJ2B1sr7_6h=ww_SVGgsuy4iNLGc3CjDyiNtwdpJTSUw@mail.gmail.com>
+ <533AA4F9.4040508@ladisch.de>
+ <loom.20140401T193432-364@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <781A12BB53C15A4BB37291FDE08C03F3A05CDCD659@HQMAIL02.nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arun Shamanna Lakshmi <aruns@nvidia.com>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Songhee Baek <sbaek@nvidia.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qa0-f46.google.com (mail-qa0-f46.google.com
+ [209.85.216.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C83C265482
+ for <alsa-devel@alsa-project.org>; Wed,  2 Apr 2014 00:58:58 +0200 (CEST)
+Received: by mail-qa0-f46.google.com with SMTP id i13so10132633qae.19
+ for <alsa-devel@alsa-project.org>; Tue, 01 Apr 2014 15:58:57 -0700 (PDT)
+In-Reply-To: <loom.20140401T193432-364@post.gmane.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: andoru <andoru.blah@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/01/2014 08:26 PM, Arun Shamanna Lakshmi wrote:
-[...]
->>> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c index
->>> c8a780d..4d2b35c 100644
->>> --- a/sound/soc/soc-dapm.c
->>> +++ b/sound/soc/soc-dapm.c
->>> @@ -514,9 +514,9 @@ static int dapm_connect_mux(struct
->> snd_soc_dapm_context *dapm,
->>>    	unsigned int val, item;
->>>    	int i;
->>>
->>> -	if (e->reg != SND_SOC_NOPM) {
->>> -		soc_widget_read(dest, e->reg, &val);
->>> -		val = (val >> e->shift_l) & e->mask;
->>> +	if (e->reg[0] != SND_SOC_NOPM) {
->>> +		soc_widget_read(dest, e->reg[0], &val);
->>> +		val = (val >> e->shift_l) & e->mask[0];
->>>    		item = snd_soc_enum_val_to_item(e, val);
->>
->> This probably should handle the new enum type as well. You'll probably
->> need some kind of flag in the struct to distinguish between the two
->> enum types.
 >
-> Any suggestion on the flag name ?
->
+> >
+> > Andoru wrote:
+> > > The last time you replied you said that it's a hardware error. If it
+> > > is that way then how come the card otherwise works flawlessly in
+> > > Windows, and this doesn't happen on Debian when watching videos or
+> > > with certain programs?
 
-How about 'onehot'?
+The Linux driver seem sharing two Dma channels with at least two playback
+devices and capture device
 
-[...]
->>> +		reg_val = BIT(bit_pos);
->>> +	}
->>> +
->>> +	for (i = 0; i < e->num_regs; i++) {
->>> +		if (i == reg_idx) {
->>> +			change = snd_soc_test_bits(codec, e->reg[i],
->>> +							e->mask[i],
->> reg_val);
->>> +
->>> +		} else {
->>> +			/* accumulate the change to update the DAPM
->> path
->>> +			    when none is selected */
->>> +			change += snd_soc_test_bits(codec, e->reg[i],
->>> +							e->mask[i], 0);
->>
->> change |=
->>
->>> +
->>> +			/* clear the register when not selected */
->>> +			snd_soc_write(codec, e->reg[i], 0);
->>
->> I think this should happen as part of the DAPM update sequence like
->> you had earlier. Some special care should probably be take to make
->> sure that you de-select the previous mux input before selecting the
->> new one if the new one is in a different register than the previous one.
->
-> I am not sure I follow this part. We are clearing the 'not selected'
-> registers before we set the one we want. Do you want us to loop the
-> logic of soc_dapm_mux_update_power for each register ? or do you
-> want to change the dapm_update structure so that it takes all the regs,
-> masks, and values together ?
+The logic seem allow
 
-The idea with the dapm_update struct is that the register updates are done 
-in the middle of the power-down and power-up sequence. So yes, change the 
-dapm_update struct to be able to hold all register updates and do all 
-register updates in dapm_widget_update. I think an earlier version of your 
-patch already had this.
+front and rear playing different audio but no capture
+Multi channel playback but no capture
+
+open three terminals and try different combination of
+
+speaker-test -c2 -t wav -D front
+
+speaker-test -c2 -t wav -D rear
+
+arecord -f dat -D plughw:0,0
+
+speaker-test -c4 -t wav -D surround40
+
+speaker-test -c6 -t wav -D surround51
