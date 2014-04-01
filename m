@@ -1,84 +1,93 @@
-From: "Dongsheng.Wang@freescale.com" <Dongsheng.Wang@freescale.com>
-Subject: RE: [PATCH bisect 2/2] ASoC: fsl_sai: Separately enable interrupts
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH bisect 2/2] ASoC: fsl_sai: Separately enable interrupts
  for Tx and Rx streams
-Date: Tue, 1 Apr 2014 03:48:16 +0000
-Message-ID: <034c8b9a3822441dac07512ae2bbb1e7@BN1PR03MB188.namprd03.prod.outlook.com>
+Date: Tue, 1 Apr 2014 11:37:59 +0800
+Message-ID: <20140401033758.GB26925@MrMyself>
 References: <1396322227-482-1-git-send-email-Guangyu.Chen@freescale.com>
  <1396322227-482-3-git-send-email-Guangyu.Chen@freescale.com>
  <d00e324f09954dcbb509f8c135ad51af@BN1PR03MB188.namprd03.prod.outlook.com>
  <20140401031409.GA26925@MrMyself>
+ <034c8b9a3822441dac07512ae2bbb1e7@BN1PR03MB188.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20140401031409.GA26925@MrMyself>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "timur@tabi.org" <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <034c8b9a3822441dac07512ae2bbb1e7@BN1PR03MB188.namprd03.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wang Dongsheng-B40534 <Dongsheng.Wang@freescale.com>
+Cc: "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li-B47053 <Li.Xiubo@freescale.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "timur@tabi.org" <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
-Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogTmljb2xpbiBDaGVuIFttYWls
-dG86R3Vhbmd5dS5DaGVuQGZyZWVzY2FsZS5jb21dCj4gU2VudDogVHVlc2RheSwgQXByaWwgMDEs
-IDIwMTQgMTE6MTQgQU0KPiBUbzogV2FuZyBEb25nc2hlbmctQjQwNTM0Cj4gQ2M6IGJyb29uaWVA
-a2VybmVsLm9yZzsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBYaXVibyBMaS1CNDcwNTM7
-IGxpbnV4cHBjLQo+IGRldkBsaXN0cy5vemxhYnMub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJu
-ZWwub3JnOyB0aW11ckB0YWJpLm9yZwo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggYmlzZWN0IDIvMl0g
-QVNvQzogZnNsX3NhaTogU2VwYXJhdGVseSBlbmFibGUgaW50ZXJydXB0cyBmb3IKPiBUeCBhbmQg
-Unggc3RyZWFtcwo+IAo+IE9uIFR1ZSwgQXByIDAxLCAyMDE0IGF0IDExOjI1OjAyQU0gKzA4MDAs
-IFdhbmcgRG9uZ3NoZW5nLUI0MDUzNCB3cm90ZToKPiA+ID4gU3ViamVjdDogW1BBVENIIGJpc2Vj
-dCAyLzJdIEFTb0M6IGZzbF9zYWk6IFNlcGFyYXRlbHkgZW5hYmxlIGludGVycnVwdHMgZm9yCj4g
-VHgKPiA+ID4gYW5kIFJ4IHN0cmVhbXMKPiA+ID4KPiA+ID4gV2Ugb25seSBlbmFibGUgb25lIHNp
-ZGUgaW50ZXJydXB0IGZvciBlYWNoIHN0cmVhbSBzaW5jZSBvdmVyL3VuZGVycnVuCj4gPiA+IG9u
-IHRoZSBvcHBvc2l0ZSBzdHJlYW0gd291bGQgYmUgcmVzdWx0ZWQgZnJvbSB3aGF0IHdlIHByZXZp
-b3VzbHkgZGlkLAo+ID4gPiBlbmFibGluZyBURVJFIGJ1dCByZW1haW5pbmcgRlJERSBkaXNhYmxl
-ZCwgZXZlbiB0aG91Z2ggdGhlIHhydW4gb24gdGhlCj4gPiA+IG9wcG9zaXRlIGRpcmVjdGlvbiB3
-aWxsIG5vdCBicmVhayB0aGUgY3VycmVudCBzdHJlYW0uCj4gPiA+Cj4gPiA+IFNpZ25lZC1vZmYt
-Ynk6IE5pY29saW4gQ2hlbiA8R3Vhbmd5dS5DaGVuQGZyZWVzY2FsZS5jb20+Cj4gPiA+IEFja2Vk
-LWJ5OiBYaXVibyBMaSA8TGkuWGl1Ym9AZnJlZXNjYWxlLmNvbT4KPiA+ID4gLS0tCj4gPiA+ICBz
-b3VuZC9zb2MvZnNsL2ZzbF9zYWkuYyB8IDggKysrKysrLS0KPiA+ID4gIHNvdW5kL3NvYy9mc2wv
-ZnNsX3NhaS5oIHwgMSArCj4gPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwg
-MiBkZWxldGlvbnMoLSkKPiA+ID4KPiA+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9mc2wvZnNs
-X3NhaS5jIGIvc291bmQvc29jL2ZzbC9mc2xfc2FpLmMKPiA+ID4gaW5kZXggYmRmZDQ5Ny4uZDY0
-YzMzZiAxMDA2NDQKPiA+ID4gLS0tIGEvc291bmQvc29jL2ZzbC9mc2xfc2FpLmMKPiA+ID4gKysr
-IGIvc291bmQvc29jL2ZzbC9mc2xfc2FpLmMKPiA+ID4gQEAgLTM5Nyw0ICszOTcsNiBAQCBzdGF0
-aWMgaW50IGZzbF9zYWlfdHJpZ2dlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0KPiA+ID4gKnN1
-YnN0cmVhbSwgaW50IGNtZCwKPiA+ID4KPiA+ID4gIAkJcmVnbWFwX3VwZGF0ZV9iaXRzKHNhaS0+
-cmVnbWFwLCBGU0xfU0FJX3hDU1IodHgpLAo+ID4gPiArCQkJCSAgIEZTTF9TQUlfQ1NSX3hJRV9N
-QVNLLCBGU0xfU0FJX0ZMQUdTKTsKPiA+ID4gKwkJcmVnbWFwX3VwZGF0ZV9iaXRzKHNhaS0+cmVn
-bWFwLCBGU0xfU0FJX3hDU1IodHgpLAo+ID4gPiAgCQkJCSAgIEZTTF9TQUlfQ1NSX0ZSREUsIEZT
-TF9TQUlfQ1NSX0ZSREUpOwo+ID4gPiAgCQlicmVhazsKPiA+ID4gQEAgLTQwNCw0ICs0MDYsNiBA
-QCBzdGF0aWMgaW50IGZzbF9zYWlfdHJpZ2dlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0KPiA+
-ID4gKnN1YnN0cmVhbSwgaW50IGNtZCwKPiA+ID4gIAkJcmVnbWFwX3VwZGF0ZV9iaXRzKHNhaS0+
-cmVnbWFwLCBGU0xfU0FJX3hDU1IodHgpLAo+ID4gPiAgCQkJCSAgIEZTTF9TQUlfQ1NSX0ZSREUs
-IDApOwo+ID4gPiArCQlyZWdtYXBfdXBkYXRlX2JpdHMoc2FpLT5yZWdtYXAsIEZTTF9TQUlfeENT
-Uih0eCksCj4gPiA+ICsJCQkJICAgRlNMX1NBSV9DU1JfeElFX01BU0ssIDApOwo+ID4gPgo+ID4g
-PiAgCQlpZiAoISh0Y3NyICYgRlNMX1NBSV9DU1JfRlJERSB8fCByY3NyICYgRlNMX1NBSV9DU1Jf
-RlJERSkpIHsKPiA+ID4gQEAgLTQ2NCw2ICs0NjgsNiBAQCBzdGF0aWMgaW50IGZzbF9zYWlfZGFp
-X3Byb2JlKHN0cnVjdCBzbmRfc29jX2RhaSAqY3B1X2RhaSkKPiA+ID4gIAlzdHJ1Y3QgZnNsX3Nh
-aSAqc2FpID0gZGV2X2dldF9kcnZkYXRhKGNwdV9kYWktPmRldik7Cj4gPiA+Cj4gPiA+IC0JcmVn
-bWFwX3VwZGF0ZV9iaXRzKHNhaS0+cmVnbWFwLCBGU0xfU0FJX1RDU1IsIDB4ZmZmZmZmZmYsIEZT
-TF9TQUlfRkxBR1MpOwo+ID4gPiAtCXJlZ21hcF91cGRhdGVfYml0cyhzYWktPnJlZ21hcCwgRlNM
-X1NBSV9SQ1NSLCAweGZmZmZmZmZmLCBGU0xfU0FJX0ZMQUdTKTsKPiA+ID4gKwlyZWdtYXBfdXBk
-YXRlX2JpdHMoc2FpLT5yZWdtYXAsIEZTTF9TQUlfVENTUiwgMHhmZmZmZmZmZiwgMHgwKTsKPiA+
-ID4gKwlyZWdtYXBfdXBkYXRlX2JpdHMoc2FpLT5yZWdtYXAsIEZTTF9TQUlfUkNTUiwgMHhmZmZm
-ZmZmZiwgMHgwKTsKPiA+Cj4gPiBXaHkgYXJlIHlvdSByZW1vdmUgdGhpcyBtYWNybz8gRG9uJ3Qg
-dXNlIG1hZ2ljIG51bWJlci4KPiAKPiBJdCdzIHByZXR0eSBjbGVhciB0aGF0IHRoZSBzby1jYWxs
-ZWQgbWFnaWMgbnVtYmVyIGlzIHRvIGNsZWFyIHRoZSBzZXR0aW5ncwo+IGluIHRoZSByZWdpc3Rl
-cnMgZm9yIGRyaXZlciBpbml0IGFzIHdoYXQgdGhpcyBkcml2ZXIgZGlkIGF0IHRoZSBmaXJzdCBw
-bGFjZQo+IC0tIG5vIG9mZmVuc2UgYnV0IEkgZG9uJ3QgdGhpbmsgeW91IHdvdWxkIGFzayB0aGlz
-IGlmIHlvdSBjaGVjayB0aGUgZ2l0LWxvZwo+IG9mIHRoZSBkcml2ZXIuCj4gCn5GU0xfU0FJX01B
-U0sgaXMgYmV0dGVyIHRoYW4gMHgwLiBBbmQgeW91IGFsc28gcmVwbGFjZSAweGZmZmZmZmZmLgoK
-UmVnYXJkcywKLURvbmdzaGVuZwoKPiBUaGFuayB5b3UsCj4gTmljb2xpbiBDaGVuCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eHBwYy1kZXYgbWFp
-bGluZyBsaXN0CkxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnCmh0dHBzOi8vbGlzdHMub3ps
-YWJzLm9yZy9saXN0aW5mby9saW51eHBwYy1kZXY=
+On Tue, Apr 01, 2014 at 11:48:16AM +0800, Wang Dongsheng-B40534 wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Nicolin Chen [mailto:Guangyu.Chen@freescale.com]
+> > Sent: Tuesday, April 01, 2014 11:14 AM
+> > To: Wang Dongsheng-B40534
+> > Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Xiubo Li-B47053; linuxppc-
+> > dev@lists.ozlabs.org; linux-kernel@vger.kernel.org; timur@tabi.org
+> > Subject: Re: [PATCH bisect 2/2] ASoC: fsl_sai: Separately enable interrupts for
+> > Tx and Rx streams
+> > 
+> > On Tue, Apr 01, 2014 at 11:25:02AM +0800, Wang Dongsheng-B40534 wrote:
+> > > > Subject: [PATCH bisect 2/2] ASoC: fsl_sai: Separately enable interrupts for
+> > Tx
+> > > > and Rx streams
+> > > >
+> > > > We only enable one side interrupt for each stream since over/underrun
+> > > > on the opposite stream would be resulted from what we previously did,
+> > > > enabling TERE but remaining FRDE disabled, even though the xrun on the
+> > > > opposite direction will not break the current stream.
+> > > >
+> > > > Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+> > > > Acked-by: Xiubo Li <Li.Xiubo@freescale.com>
+> > > > ---
+> > > >  sound/soc/fsl/fsl_sai.c | 8 ++++++--
+> > > >  sound/soc/fsl/fsl_sai.h | 1 +
+> > > >  2 files changed, 7 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> > > > index bdfd497..d64c33f 100644
+> > > > --- a/sound/soc/fsl/fsl_sai.c
+> > > > +++ b/sound/soc/fsl/fsl_sai.c
+> > > > @@ -397,4 +397,6 @@ static int fsl_sai_trigger(struct snd_pcm_substream
+> > > > *substream, int cmd,
+> > > >
+> > > >  		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
+> > > > +				   FSL_SAI_CSR_xIE_MASK, FSL_SAI_FLAGS);
+> > > > +		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
+> > > >  				   FSL_SAI_CSR_FRDE, FSL_SAI_CSR_FRDE);
+> > > >  		break;
+> > > > @@ -404,4 +406,6 @@ static int fsl_sai_trigger(struct snd_pcm_substream
+> > > > *substream, int cmd,
+> > > >  		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
+> > > >  				   FSL_SAI_CSR_FRDE, 0);
+> > > > +		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
+> > > > +				   FSL_SAI_CSR_xIE_MASK, 0);
+> > > >
+> > > >  		if (!(tcsr & FSL_SAI_CSR_FRDE || rcsr & FSL_SAI_CSR_FRDE)) {
+> > > > @@ -464,6 +468,6 @@ static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
+> > > >  	struct fsl_sai *sai = dev_get_drvdata(cpu_dai->dev);
+> > > >
+> > > > -	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff, FSL_SAI_FLAGS);
+> > > > -	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff, FSL_SAI_FLAGS);
+> > > > +	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff, 0x0);
+> > > > +	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff, 0x0);
+> > >
+> > > Why are you remove this macro? Don't use magic number.
+> > 
+> > It's pretty clear that the so-called magic number is to clear the settings
+> > in the registers for driver init as what this driver did at the first place
+> > -- no offense but I don't think you would ask this if you check the git-log
+> > of the driver.
+> > 
+> ~FSL_SAI_MASK is better than 0x0. And you also replace 0xffffffff.
+
+I would later send a patch to reset SAI for a true init instead of these lines
+but not within this patch as it's focusing on the interrupts enabling.
+
+So please don't grasp the mask here. Just let me continue.
+
+Thank you,
+Nicolin Chen
