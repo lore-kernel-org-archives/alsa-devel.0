@@ -1,15 +1,17 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: [PATCH] ASoC: fsl_sai: Add imx6sx platform support
-Date: Tue, 1 Apr 2014 19:34:09 +0800
-Message-ID: <1396352049-23554-1-git-send-email-Guangyu.Chen@freescale.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Invalid PCM pointer with CMI8738 and pcm.c buffer
+ underuns
+Date: Tue, 01 Apr 2014 13:37:29 +0200
+Message-ID: <533AA4F9.4040508@ladisch.de>
+References: <CAAvHfitJ2B1sr7_6h=ww_SVGgsuy4iNLGc3CjDyiNtwdpJTSUw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe003.messaging.microsoft.com [213.199.154.206])
- by alsa0.perex.cz (Postfix) with ESMTP id 199632652AD
- for <alsa-devel@alsa-project.org>; Tue,  1 Apr 2014 13:33:56 +0200 (CEST)
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id CB52A2652AC
+ for <alsa-devel@alsa-project.org>; Tue,  1 Apr 2014 13:37:30 +0200 (CEST)
+In-Reply-To: <CAAvHfitJ2B1sr7_6h=ww_SVGgsuy4iNLGc3CjDyiNtwdpJTSUw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,88 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, pawel.moll@arm.com, linux-doc@vger.kernel.org, ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org, robh+dt@kernel.org, timur@tabi.org, Li.Xiubo@freescale.com, rob@landley.net, galak@codeaurora.org, linuxppc-dev@lists.ozlabs.org
+To: Andoru <andoru.blah@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The next coming i.MX6 Solo X SoC also contains SAI module while we use
-imp_pcm_init() for i.MX platform.
+Andoru wrote:
+> The last time you replied you said that it's a hardware error. If it
+> is that way then how come the card otherwise works flawlessly in
+> Windows, and this doesn't happen on Debian when watching videos or
+> with certain programs?
 
-So this patch adds one compatible route for imx6sx and updates the DT
-doc accordingly.
+It's still a hardware error, but, apparently, it happens only when the
+Linux driver accesses it in a certain way.
 
-Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
----
- Documentation/devicetree/bindings/sound/fsl-sai.txt |  2 +-
- sound/soc/fsl/fsl_sai.c                             | 12 ++++++++++--
- sound/soc/fsl/fsl_sai.h                             |  1 +
- 3 files changed, 12 insertions(+), 3 deletions(-)
+Which programs work?  Which do not?
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-index 98611a6..35c09fe 100644
---- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-@@ -7,7 +7,7 @@ codec/DSP interfaces.
- 
- 
- Required properties:
--- compatible: Compatible list, contains "fsl,vf610-sai".
-+- compatible: Compatible list, contains "fsl,vf610-sai" or "fsl,imx6sx-sai".
- - reg: Offset and length of the register set for the device.
- - clocks: Must contain an entry for each entry in clock-names.
- - clock-names : Must include the "sai" entry.
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index d64c33f..9ed6795 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -22,6 +22,7 @@
- #include <sound/pcm_params.h>
- 
- #include "fsl_sai.h"
-+#include "imx-pcm.h"
- 
- #define FSL_SAI_FLAGS (FSL_SAI_CSR_SEIE |\
- 		       FSL_SAI_CSR_FEIE)
-@@ -592,6 +593,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 
- 	sai->pdev = pdev;
- 
-+	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai"))
-+		sai->sai_on_imx = true;
-+
- 	sai->big_endian_regs = of_property_read_bool(np, "big-endian-regs");
- 	if (sai->big_endian_regs)
- 		fsl_sai_regmap_config.val_format_endian = REGMAP_ENDIAN_BIG;
-@@ -634,12 +638,16 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL,
--			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
-+	if (sai->sai_on_imx)
-+		return imx_pcm_dma_init(pdev);
-+	else
-+		return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL,
-+				SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
- }
- 
- static const struct of_device_id fsl_sai_ids[] = {
- 	{ .compatible = "fsl,vf610-sai", },
-+	{ .compatible = "fsl,imx6sx-sai", },
- 	{ /* sentinel */ }
- };
- 
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index be26d46..677670d 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -130,6 +130,7 @@ struct fsl_sai {
- 	bool big_endian_regs;
- 	bool big_endian_data;
- 	bool is_dsp_mode;
-+	bool sai_on_imx;
- 
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
--- 
-1.8.4
+
+Regards,
+Clemens
