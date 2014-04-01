@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: core: Fail probe if we fail to add
-	dai widgets
-Date: Tue, 1 Apr 2014 13:30:46 +0100
-Message-ID: <20140401123046.GU2269@sirena.org.uk>
-References: <20140331144712.GA6263@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/6] ASoC: davinci-mcasp: Dynamic AFIFO and DMA
+	configuration
+Date: Tue, 1 Apr 2014 15:55:06 +0300
+Message-ID: <1396356912-30466-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3406637237241739322=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 34C232652BE
- for <alsa-devel@alsa-project.org>; Tue,  1 Apr 2014 14:30:57 +0200 (CEST)
-In-Reply-To: <20140331144712.GA6263@opensource.wolfsonmicro.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E7422652BE
+ for <alsa-devel@alsa-project.org>; Tue,  1 Apr 2014 14:55:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,71 +19,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: detheridge@ti.com, alsa-devel@alsa-project.org, nsekhar@ti.com, jsarha@ti.com, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============3406637237241739322==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BV9bEMyK3jSSO1UG"
-Content-Disposition: inline
+Apart from the first patch which is a rebased resend of a previous patch this
+series will change the way McASP driver will configure the AFIFO and thus the
+DMA burst.
 
+The AFIFO and DMA configuration will be in one function so it is going to be
+easier to see the code and debug if needed.
 
---BV9bEMyK3jSSO1UG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The main change is that instead of static tx/rx numevt (which is provided via DT
+or pdata) we are going to switch to dynamic configuration.
+With this setup we do not need to place any constraint on the period or buffer
+size since the AFIFO numevt and the corresponding DMA burst size will be picked
+according to period size, active serializers and the preferred numevt level.
+The only case when the code can fail if the period size in words can not be
+divided evenly by the active serializers, which is unlikely to happen.
 
-On Mon, Mar 31, 2014 at 03:47:12PM +0100, Nariman Poushin wrote:
-> Signed-off-by: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
+Regards,
+Peter
+---
+Peter Ujfalusi (6):
+  ASoC: davinci-mcasp: Assign the dma_data earlier in dai_probe callback
+  ASoC: davinci-mcasp: Fix debug typo in davinci_mcasp_hw_params()
+  ASoC: davinci-mcasp: Simplify and clean up the AFIFO configuration
+    code
+  ASoC: davinci-mcasp: Configure the AFIFO and DMA burst size at the
+    same place
+  ASoC: davinic-mcasp: Adopt the AFIFO/DMA configuration to the stream
+    (dynamic depth)
+  ASoC: davinci-mcasp: Fine tune and correct the DMA burst configuration
 
-So, I've applied this on the basis that it'll at least print an error
-but...
+ sound/soc/davinci/davinci-mcasp.c | 145 +++++++++++++++++++++++---------------
+ sound/soc/davinci/davinci-mcasp.h |   1 +
+ 2 files changed, 89 insertions(+), 57 deletions(-)
 
-> +	list_for_each_entry(dai, &codec->component.dai_list, list) {
-> +		ret = snd_soc_dapm_new_dai_widgets(&codec->dapm, dai);
-> +
-> +		if (ret != 0) {
-> +			dev_err(codec->dev,
-> +				"Failed to create DAI widgets %d\n", ret);
-> +			goto err_probe;
-> +		}
-> +	}
-
-...this doesn't actually do any cleanup of the widgets that were added
-if the failure isn't the first one in the loop (which is a prexisting
-bug with the handling of errors on probe()).  We're also not checking the
-_new_controls() immediately before (but again, that's a prexisting bug).
-
---BV9bEMyK3jSSO1UG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTOrFzAAoJELSic+t+oim9HO4QAINsB/mO94yqWJbvtwjfsM0f
-Q4PJb1qJb7Ymcq+lXmgueug7l/m1wyPqyu2qbVkcCsBGrWGM1UY1FgTV3gB3gUts
-tu0uoAhs5nZVMdM46zEPWECCMGjn7L3tT7DFMf79c0A7yZt7ndNAFpGnDHYfohdb
-eKgdqZ1wfL+xsbXDrxBNsL2b8C26ukWA+iAMmP9t62wyEoVfEpdtzYdjJi08fEJQ
-c4+yWuD8RskExOLkCRET8tFSsDFJV8fwogAjp0U85c9ln9EOyR+p13/4VyESp+mM
-B+w9d/CN/655ERw+YMZ4sNRcsIPpR57UAPBOL1PhlCafhyxSJqtZAA5NFSF6jwSG
-9Xrcy3OsKfEUsSrWbmvSuj2kckG5vvZCihCrnyKXNSyLfJW0Xsag/i245U2DKy2A
-efrniE4QUXhJ264FEwRCqik5OB++NlsORwcFJobdkIj6cIvKXi4n8+5wfiMVwZWa
-dE6KkjGikSjaTWc8BYq4/gm4pfo4bstn57orcymjhuIWG+TTrARd5FK0JJMvOfkb
-idCL4Zrj9WCCpZW3Zjmp7Vr31HZ6SejeyqOg6LcYX1+7sGWJZ/yNxiQ7VaE1bvCl
-lffDvpNhd+58U1hFJJXnE/oyOoHiSaOlLuIw0RTKmjQwewO6FtD/nyzTd+rCTxI0
-OsGZijkhpzC9HMLeqhrT
-=P0LK
------END PGP SIGNATURE-----
-
---BV9bEMyK3jSSO1UG--
-
---===============3406637237241739322==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3406637237241739322==--
+-- 
+1.9.1
