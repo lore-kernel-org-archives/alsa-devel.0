@@ -1,118 +1,62 @@
-From: "Dongsheng.Wang@freescale.com" <Dongsheng.Wang@freescale.com>
-Subject: RE: [PATCH bisect 2/2] ASoC: fsl_sai: Separately enable interrupts
- for Tx and Rx streams
-Date: Tue, 1 Apr 2014 04:19:17 +0000
-Message-ID: <f16e469a534e4d10ad3c6873758ae4a8@BN1PR03MB188.namprd03.prod.outlook.com>
-References: <1396322227-482-1-git-send-email-Guangyu.Chen@freescale.com>
- <1396322227-482-3-git-send-email-Guangyu.Chen@freescale.com>
- <d00e324f09954dcbb509f8c135ad51af@BN1PR03MB188.namprd03.prod.outlook.com>
- <20140401031409.GA26925@MrMyself>
- <034c8b9a3822441dac07512ae2bbb1e7@BN1PR03MB188.namprd03.prod.outlook.com>
- <20140401033758.GB26925@MrMyself>
+From: Arun Shamanna Lakshmi <aruns@nvidia.com>
+Subject: RE: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
+Date: Mon, 31 Mar 2014 23:08:42 -0700
+Message-ID: <781A12BB53C15A4BB37291FDE08C03F3A05CDCD520@HQMAIL02.nvidia.com>
+References: <1395792156-4178-1-git-send-email-aruns@nvidia.com>
+ <53332CC7.6060800@metafoo.de>
+ <D6C615D3E4730340AE82D5BD856631C0A26CB319B2@HQMAIL02.nvidia.com>
+ <5333ED3A.7040908@metafoo.de>
+ <5571431004A69147BCABABE4E097D66BA3EFF70CFC@HQMAIL02.nvidia.com>
+ <D6C615D3E4730340AE82D5BD856631C0A26CB31F48@HQMAIL02.nvidia.com>
+ <5336A619.5030007@metafoo.de>
+ <781A12BB53C15A4BB37291FDE08C03F3A05CC6A11A@HQMAIL02.nvidia.com>
+ <20140331112140.GO2269@sirena.org.uk> <533957C8.2030105@metafoo.de>
+ <20140331120748.GS2269@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140401033758.GB26925@MrMyself>
+In-Reply-To: <20140331120748.GS2269@sirena.org.uk>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>
-Cc: "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "timur@tabi.org" <timur@tabi.org>
+To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: Songhee Baek <sbaek@nvidia.com>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'swarren@wwwdotorg.org'" <swarren@wwwdotorg.org>, "'tiwai@suse.de'" <tiwai@suse.de>, "'lgirdwood@gmail.com'" <lgirdwood@gmail.com>, "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-
 > -----Original Message-----
-> From: Nicolin Chen [mailto:Guangyu.Chen@freescale.com]
-> Sent: Tuesday, April 01, 2014 11:38 AM
-> To: Wang Dongsheng-B40534
-> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Xiubo Li-B47053; linuxppc-
-> dev@lists.ozlabs.org; linux-kernel@vger.kernel.org; timur@tabi.org
-> Subject: Re: [PATCH bisect 2/2] ASoC: fsl_sai: Separately enable interrupts for
-> Tx and Rx streams
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Monday, March 31, 2014 5:08 AM
+> To: Lars-Peter Clausen
+> Cc: Arun Shamanna Lakshmi; Songhee Baek; 'alsa-devel@alsa-project.org';
+> 'swarren@wwwdotorg.org'; 'tiwai@suse.de'; 'lgirdwood@gmail.com'; 'linux-
+> kernel@vger.kernel.org'
+> Subject: Re: [alsa-devel] [PATCH] ASoC: Add support for multi register mux
 > 
-> On Tue, Apr 01, 2014 at 11:48:16AM +0800, Wang Dongsheng-B40534 wrote:
-> >
-> >
-> > > -----Original Message-----
-> > > From: Nicolin Chen [mailto:Guangyu.Chen@freescale.com]
-> > > Sent: Tuesday, April 01, 2014 11:14 AM
-> > > To: Wang Dongsheng-B40534
-> > > Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Xiubo Li-B47053;
-> linuxppc-
-> > > dev@lists.ozlabs.org; linux-kernel@vger.kernel.org; timur@tabi.org
-> > > Subject: Re: [PATCH bisect 2/2] ASoC: fsl_sai: Separately enable interrupts
-> for
-> > > Tx and Rx streams
-> > >
-> > > On Tue, Apr 01, 2014 at 11:25:02AM +0800, Wang Dongsheng-B40534 wrote:
-> > > > > Subject: [PATCH bisect 2/2] ASoC: fsl_sai: Separately enable interrupts
-> for
-> > > Tx
-> > > > > and Rx streams
-> > > > >
-> > > > > We only enable one side interrupt for each stream since over/underrun
-> > > > > on the opposite stream would be resulted from what we previously did,
-> > > > > enabling TERE but remaining FRDE disabled, even though the xrun on the
-> > > > > opposite direction will not break the current stream.
-> > > > >
-> > > > > Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
-> > > > > Acked-by: Xiubo Li <Li.Xiubo@freescale.com>
-> > > > > ---
-> > > > >  sound/soc/fsl/fsl_sai.c | 8 ++++++--
-> > > > >  sound/soc/fsl/fsl_sai.h | 1 +
-> > > > >  2 files changed, 7 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> > > > > index bdfd497..d64c33f 100644
-> > > > > --- a/sound/soc/fsl/fsl_sai.c
-> > > > > +++ b/sound/soc/fsl/fsl_sai.c
-> > > > > @@ -397,4 +397,6 @@ static int fsl_sai_trigger(struct snd_pcm_substream
-> > > > > *substream, int cmd,
-> > > > >
-> > > > >  		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
-> > > > > +				   FSL_SAI_CSR_xIE_MASK, FSL_SAI_FLAGS);
-> > > > > +		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
-> > > > >  				   FSL_SAI_CSR_FRDE, FSL_SAI_CSR_FRDE);
-> > > > >  		break;
-> > > > > @@ -404,4 +406,6 @@ static int fsl_sai_trigger(struct snd_pcm_substream
-> > > > > *substream, int cmd,
-> > > > >  		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
-> > > > >  				   FSL_SAI_CSR_FRDE, 0);
-> > > > > +		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
-> > > > > +				   FSL_SAI_CSR_xIE_MASK, 0);
-> > > > >
-> > > > >  		if (!(tcsr & FSL_SAI_CSR_FRDE || rcsr & FSL_SAI_CSR_FRDE)) {
-> > > > > @@ -464,6 +468,6 @@ static int fsl_sai_dai_probe(struct snd_soc_dai
-> *cpu_dai)
-> > > > >  	struct fsl_sai *sai = dev_get_drvdata(cpu_dai->dev);
-> > > > >
-> > > > > -	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff,
-> FSL_SAI_FLAGS);
-> > > > > -	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff,
-> FSL_SAI_FLAGS);
-> > > > > +	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff, 0x0);
-> > > > > +	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff, 0x0);
-> > > >
-> > > > Why are you remove this macro? Don't use magic number.
-> > >
-> > > It's pretty clear that the so-called magic number is to clear the settings
-> > > in the registers for driver init as what this driver did at the first place
-> > > -- no offense but I don't think you would ask this if you check the git-log
-> > > of the driver.
-> > >
-> > ~FSL_SAI_MASK is better than 0x0. And you also replace 0xffffffff.
+> * PGP Signed by an unknown key
 > 
-> I would later send a patch to reset SAI for a true init instead of these lines
-> but not within this patch as it's focusing on the interrupts enabling.
+> On Mon, Mar 31, 2014 at 01:55:52PM +0200, Lars-Peter Clausen wrote:
+> > On 03/31/2014 01:21 PM, Mark Brown wrote:
 > 
-> So please don't grasp the mask here. Just let me continue.
+> > >The above is a bit confusing...  partly this is because of a lack of
+> > >context (what is MULTI_MUX_INPUT_OFFSET?) and partly because it isn't
+> > >entirely obvious that stopping as soon as we see any value set is the
+> > >right choice, especially given the addition to rather than setting of
+> > >val.
 > 
+> > I think the idea is that since we know that for one-hot encodings only
+> > powers of two are valid values the other bits are used to encode the
+> > register number. E.g 0x4 means bit 3 in register 0, 0x5 means bit 3 in
+> > register 1, 0x6 means bit 3 in register 2 and so on. I guess it is
+> > possible to make it work. But this seems to be quite hack-ish to me.
+> > You'd have to be careful that MULTI_MUX_INPUT_OFFSET(reg_idx) never
+> > evaluates to a power of two and there are probably some more pitfalls.
+> 
+> Ugh, right.  The fact that I couldn't tell that this was what the code was trying to
+> do from looking at it is not a good sign here.
 
-:), fine.
+I will work on this and submit another patch. Thanks for all your feedback.
 
-Regards,
--Dongsheng
-
-> Thank you,
-> Nicolin Chen
+> 
+> * Unknown Key
+> * 0x7EA229BD
