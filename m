@@ -1,77 +1,77 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v2] drm/i915: move power domain init earlier
- during system resume
-Date: Tue, 1 Apr 2014 22:26:20 +0200
-Message-ID: <CAKMK7uGVowGt--qRoEGh2jdBsc_Qk23vonsnqW9dA5ZxZzc4EA@mail.gmail.com>
-References: <1395396631-12243-1-git-send-email-imre.deak@intel.com>
- <1396371322-13752-1-git-send-email-imre.deak@intel.com>
- <20140401174827.GO22327@phenom.ffwll.local>
- <1396378243.2488.10.camel@ideak-mobl>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_sai: Add imx6sx platform support
+Date: Wed, 2 Apr 2014 20:52:08 +0100
+Message-ID: <20140402195208.GM14763@sirena.org.uk>
+References: <1396352049-23554-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1396378243.2488.10.camel@ideak-mobl>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Imre Deak <imre.deak@intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: intel-gfx <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/mixed; boundary="===============7757092715319901619=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A1E126551B
+ for <alsa-devel@alsa-project.org>; Wed,  2 Apr 2014 21:52:24 +0200 (CEST)
+In-Reply-To: <1396352049-23554-1-git-send-email-Guangyu.Chen@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, pawel.moll@arm.com, linux-doc@vger.kernel.org, ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org, robh+dt@kernel.org, timur@tabi.org, Li.Xiubo@freescale.com, rob@landley.net, galak@codeaurora.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 01, 2014 at 09:50:43PM +0300, Imre Deak wrote:
-> On Tue, 2014-04-01 at 19:48 +0200, Daniel Vetter wrote:
-> > On Tue, Apr 01, 2014 at 07:55:22PM +0300, Imre Deak wrote:
-> > > During resume the intel hda audio driver depends on the i915 driver
-> > > reinitializing the audio power domain. Since the order of calling the
-> > > i915 resume handler wrt. that of the audio driver is not guaranteed,
-> > > move the power domain reinitialization step to the resume_early
-> > > handler. This is guaranteed to run before the resume handler of any
-> > > other driver.
-> > >
-> > > The power domain initialization in turn requires us to enable the i915
-> > > pci device first, so move that part earlier too.
-> > >
-> > > Accordingly disabling of the i915 pci device should happen after the
-> > > audio suspend handler ran. So move the disabling later from the i915
-> > > resume handler to the resume_late handler.
-> > >
-> > > v2:
-> > > - move intel_uncore_sanitize/early_sanitize earlier too, so they don't
-> > >   get reordered wrt. intel_power_domains_init_hw()
-> > >
-> > > Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=76152
-> > > Signed-off-by: Imre Deak <imre.deak@intel.com>
-> >
-> > So this is kinda why we should have gone with something proper, like a new
-> > hdmi sink platform device created by i915 and registered as a driver by
-> > snd-hda. Then the power domains stuff in the device core should take care
-> > of these kinds of ordering issues. Or at least snd-hda can tell it that it
-> > needs to wait for the hdmi-sink power domain to go on first before it can
-> > resume, I'm not really fluent on the details here.
-> >
-> > And having a hdmi sink bus would allow us to throw all kinds of crap into
-> > a clearly-defined interface, e.g. eld handling, hdcp synchronization, hpd
-> > forwarding and all the other fun stuff.
-> >
-> > So not sure what I should do with this here now.
->
-> Right, I'm not too happy about this solution either, so if anything it
-> could be considered only a stop-gap fix. What you suggest seems to be a
-> cleaner way but it'd require more time to investigate/implement at least
-> on my part (but I'm ok to put it on my TODO list).
 
-We'd definitely need to discuss this with Takashi Iwai, since it would
-only really be useful if it's good enough to solve the general pile of
-sound/gfx coordination issues we have with hdmi. Adding him and alsa-dev.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+--===============7757092715319901619==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="L/bWm/e7/ricERqM"
+Content-Disposition: inline
+
+
+--L/bWm/e7/ricERqM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Apr 01, 2014 at 07:34:09PM +0800, Nicolin Chen wrote:
+> The next coming i.MX6 Solo X SoC also contains SAI module while we use
+> imp_pcm_init() for i.MX platform.
+
+I've applied this, though obviously it'd be better if we had dmaengine
+support for this SoC so that it was just a compatible string update and
+didn't require any code.
+
+--L/bWm/e7/ricERqM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTPGplAAoJELSic+t+oim9WMoP/jw3mYBYR71+bc4LxmhDmoXB
+ZyGam2gLtQ10yNOR/EuH9yKVXS84kw2ixKSC3fUSrlxzpK2KZgei6HvI1jHza2bU
+lbJ2UP5/YgxOAqdwBPLhED100mgSkTbqyZN0YwvzimRfI39VQhKip2EmZ9CASFWt
+td6DydrruAQTwceiu3gyrbQ+K/2PvwNOjRHR7eRplYyM7BpJXRfYrBuy/5EhbJNJ
+X1lZ6tMrIt/ILbHw/3cWS3J+nfKdevY2IUOtipUekj6jO8PeK4VdqT7oXGg1qUvT
+A6IlMLiERc0Y5H6zlP6RA2MKShbh/6qfuJqvJ3pvwD4HnKWgmEIMgGpEmrzUtLRV
+SwYP+L7j7diZJNkD2T3EtlfSXaJzoEHiVEHZeV1vqgiq6E5YY2D/dJZPl2s5Y7vZ
+E5c7s0IOvH0Dr5YbJ9cvU5oQbu13mBTJ/eitqSWzQwR5/rjpi8b27SRBzgovAGzZ
+UIbKP0hpTLHU0c1M26twq5OTIPlBBeuNZjjcKeCPC5hg3PuvLvPNSa9d1W1icFl1
+/LWv5WYiB3OLFdzhQThZk1RMjjCAdQFusOBS7wUqGlPkolr7GVUz+TGLzFYxnpbM
+28o17R2LOjA6CfiQenkuz7kubgSAKI7LKTjyc/aV2xAMAIrO0sbOXWjUczVcrHic
+l+yze0UTzoGYtvc3ipr2
+=5s9g
+-----END PGP SIGNATURE-----
+
+--L/bWm/e7/ricERqM--
+
+--===============7757092715319901619==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7757092715319901619==--
