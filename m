@@ -1,44 +1,185 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH bisect 2/2] ASoC: fsl_sai: Separately enable interrupts
- for Tx and Rx streams
-Date: Wed, 2 Apr 2014 10:18:49 +0800
-Message-ID: <20140402021847.GC27586@MrMyself>
-References: <1396322227-482-1-git-send-email-Guangyu.Chen@freescale.com>
- <1396322227-482-3-git-send-email-Guangyu.Chen@freescale.com>
- <20140401120715.GR2269@sirena.org.uk>
- <20140401132156.GB27586@MrMyself>
- <20140401164254.GA2269@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: DAPM: Add support for multi register
+	mux
+Date: Wed, 02 Apr 2014 09:01:58 +0200
+Message-ID: <533BB5E6.7050004@metafoo.de>
+References: <1396333288-19113-1-git-send-email-aruns@nvidia.com>
+ <533A6F4A.2060702@metafoo.de>
+ <781A12BB53C15A4BB37291FDE08C03F3A05CDCD63B@HQMAIL02.nvidia.com>
+ <781A12BB53C15A4BB37291FDE08C03F3A05CDCD659@HQMAIL02.nvidia.com>
+ <533BA779.9010005@metafoo.de>
+ <D6C615D3E4730340AE82D5BD856631C0A26CB3252F@HQMAIL02.nvidia.com>
+ <533BB26B.3020503@metafoo.de>
+ <D6C615D3E4730340AE82D5BD856631C0A26CB32541@HQMAIL02.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Disposition: inline
-In-Reply-To: <20140401164254.GA2269@sirena.org.uk>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Li.Xiubo@freescale.com, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, timur@tabi.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-019.synserver.de (smtp-out-046.synserver.de
+ [212.40.185.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78B442654C8
+ for <alsa-devel@alsa-project.org>; Wed,  2 Apr 2014 09:01:01 +0200 (CEST)
+In-Reply-To: <D6C615D3E4730340AE82D5BD856631C0A26CB32541@HQMAIL02.nvidia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Songhee Baek <sbaek@nvidia.com>
+Cc: Arun Shamanna Lakshmi <aruns@nvidia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBBcHIgMDEsIDIwMTQgYXQgMDU6NDI6NTRQTSArMDEwMCwgTWFyayBCcm93biB3cm90
-ZToKPiBPbiBUdWUsIEFwciAwMSwgMjAxNCBhdCAwOToyMTo1N1BNICswODAwLCBOaWNvbGluIENo
-ZW4gd3JvdGU6Cj4gCj4gPiBTaXIsIEkganVzdCByZWJhc2VkIG15IGZvci1uZXh0IGJyYW5jaCBh
-Z2FpbiBhbmQgZm91bmQgdGhhdCBpdCdzIG1pc3NpbmcKPiA+IHR3byBhcHBsaWVkIHBhdGNoZXM6
-ICJBU29DOiBmc2xfc2FpOiBBZGQgaXNyIHRvIGRlYWwgd2l0aCBlcnJvciBmbGFnIiBhbmQKPiA+
-ICJBU29DOiBmc2xfc2FpOiBJbXByb3ZlIGZzbF9zYWlfaXNyKCkiLCBzbyB0aGF0J3Mgd2h5IHRo
-aXMgUEFUQ0gtMiBjb3VsZAo+ID4gbm90IGJlIGFwcGxpZWQgYWdhaW5zdCBpdCBhcyBpdCBuZWVk
-cyB0aGUgbWFjcm8gdGhhdCdzIGluY2x1ZGVkIGluIHRoZQo+ID4gcGF0Y2ggIkFTb0M6IGZzbF9z
-YWk6IEFkZCBpc3IgdG8gZGVhbCB3aXRoIGVycm9yIGZsYWciLgo+IAo+IEFoLCB0aG9zZSBkcm9w
-cGVkIG91dCBvZiAtbmV4dCBkdWUgdG8gdGhlIG1lcmdlIHdpbmRvdy4gIEkndmUgYXBwbGllZAo+
-IHlvdXIgbmV3IHBhdGNoIG5vdy4KCkkgY2FuIGZpbmQgdGhlbSBvbiB0aGUgZnNsLXNhaSB0b3Bp
-YyBub3cuIFRoYW5rIHlvdS4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4cHBjLWRldiBtYWlsaW5nIGxpc3QKTGludXhwcGMtZGV2QGxpc3RzLm96
-bGFicy5vcmcKaHR0cHM6Ly9saXN0cy5vemxhYnMub3JnL2xpc3RpbmZvL2xpbnV4cHBjLWRldg==
+On 04/02/2014 08:56 AM, Songhee Baek wrote:
+>
+>
+>> -----Original Message-----
+>> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
+>> Sent: Tuesday, April 01, 2014 11:47 PM
+>> To: Songhee Baek
+>> Cc: Arun Shamanna Lakshmi; lgirdwood@gmail.com; broonie@kernel.org;
+>> swarren@wwwdotorg.org; perex@perex.cz; tiwai@suse.de; alsa-
+>> devel@alsa-project.org; linux-kernel@vger.kernel.org
+>> Subject: Re: [PATCH] ASoC: DAPM: Add support for multi register mux
+>>
+>> On 04/02/2014 08:17 AM, Songhee Baek wrote:
+>>>> -----Original Message-----
+>>>> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
+>>>> Sent: Tuesday, April 01, 2014 11:00 PM
+>>>> To: Arun Shamanna Lakshmi
+>>>> Cc: lgirdwood@gmail.com; broonie@kernel.org;
+>> swarren@wwwdotorg.org;
+>>>> perex@perex.cz; tiwai@suse.de; alsa-devel@alsa-project.org; linux-
+>>>> kernel@vger.kernel.org; Songhee Baek
+>>>> Subject: Re: [PATCH] ASoC: DAPM: Add support for multi register mux
+>>>>
+>>>> On 04/01/2014 08:26 PM, Arun Shamanna Lakshmi wrote:
+>>>> [...]
+>>>>>>> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c index
+>>>>>>> c8a780d..4d2b35c 100644
+>>>>>>> --- a/sound/soc/soc-dapm.c
+>>>>>>> +++ b/sound/soc/soc-dapm.c
+>>>>>>> @@ -514,9 +514,9 @@ static int dapm_connect_mux(struct
+>>>>>> snd_soc_dapm_context *dapm,
+>>>>>>>      	unsigned int val, item;
+>>>>>>>      	int i;
+>>>>>>>
+>>>>>>> -	if (e->reg != SND_SOC_NOPM) {
+>>>>>>> -		soc_widget_read(dest, e->reg, &val);
+>>>>>>> -		val = (val >> e->shift_l) & e->mask;
+>>>>>>> +	if (e->reg[0] != SND_SOC_NOPM) {
+>>>>>>> +		soc_widget_read(dest, e->reg[0], &val);
+>>>>>>> +		val = (val >> e->shift_l) & e->mask[0];
+>>>>>>>      		item = snd_soc_enum_val_to_item(e, val);
+>>>>>>
+>>>>>> This probably should handle the new enum type as well. You'll
+>>>>>> probably need some kind of flag in the struct to distinguish
+>>>>>> between the two enum types.
+>>>>>
+>>>>> Any suggestion on the flag name ?
+>>>>>
+>>>>
+>>>> How about 'onehot'?
+>>>>
+>>>> [...]
+>>>>>>> +		reg_val = BIT(bit_pos);
+>>>>>>> +	}
+>>>>>>> +
+>>>>>>> +	for (i = 0; i < e->num_regs; i++) {
+>>>>>>> +		if (i == reg_idx) {
+>>>>>>> +			change = snd_soc_test_bits(codec, e->reg[i],
+>>>>>>> +							e->mask[i],
+>>>>>> reg_val);
+>>>>>>> +
+>>>>>>> +		} else {
+>>>>>>> +			/* accumulate the change to update the
+>> DAPM
+>>>>>> path
+>>>>>>> +			    when none is selected */
+>>>>>>> +			change += snd_soc_test_bits(codec, e-
+>>> reg[i],
+>>>>>>> +							e->mask[i], 0);
+>>>>>>
+>>>>>> change |=
+>>>>>>
+>>>>>>> +
+>>>>>>> +			/* clear the register when not selected */
+>>>>>>> +			snd_soc_write(codec, e->reg[i], 0);
+>>>>>>
+>>>>>> I think this should happen as part of the DAPM update sequence like
+>>>>>> you had earlier. Some special care should probably be take to make
+>>>>>> sure that you de-select the previous mux input before selecting the
+>>>>>> new one if the new one is in a different register than the previous one.
+>>>>>
+>>>>> I am not sure I follow this part. We are clearing the 'not selected'
+>>>>> registers before we set the one we want. Do you want us to loop the
+>>>>> logic of soc_dapm_mux_update_power for each register ? or do you
+>>>>> want to change the dapm_update structure so that it takes all the
+>>>>> regs, masks, and values together ?
+>>>>
+>>>> The idea with the dapm_update struct is that the register updates are
+>>>> done in the middle of the power-down and power-up sequence. So yes,
+>>>> change the dapm_update struct to be able to hold all register updates
+>>>> and do all register updates in dapm_widget_update. I think an earlier
+>>>> version of your patch already had this.
+>>>
+>>> Is the change similar to as shown below?
+>>>
+>>> for (reg_idx = 0; reg_idx < e->num_regs; reg_idx++) {
+>>> 	val = e->values[item * e->num_regs + reg_idx];
+>>> 	ret = snd_soc_update_bits_locked(codec, e->reg[reg_idx],
+>>> 				e->mask[reg_idx], val);
+>>> 	if (ret)
+>>> 	return ret;
+>>> }
+>>>
+>>> During updating of the register's value, the above change can create
+>>> non-zero value in two different registers (very short transition) as
+>>> Mark mentioned for that change so we need to clear register first
+>>> before writing the desired value in the register.
+>>>
+>>> Should we add the clearing all registers and write the mux value in
+>>> desired register in the update function?
+>>>
+>>
+>> In dapm_update_widget() you have this line:
+>>
+>>    ret = soc_widget_update_bits(w, update->reg, update->mask, update-
+>>> val);
+>>
+>> That needs to be done for every register update. When you setup the
+>> update struct you need to make sure that the register clears come before
+>> the register set.
+>>
+>> E.g. if you have register 0x3, 0x4, 0x5 and you select a bit in register 0x4 it
+>> should look like this.
+>>
+>> update->reg[0] = 0x3;
+>> update->val[0] = 0x0;
+>> update->reg[1] = 0x5;
+>> update->val[1] = 0x0;
+>> update->reg[2] = 0x4;
+>> update->val[2] = 0x8;
+>>
+>> When you set a bit in register 0x3 it should look like this:
+>>
+>> update->reg[0] = 0x4;
+>> update->val[0] = 0x0;
+>> update->reg[1] = 0x5;
+>> update->val[1] = 0x0;
+>> update->reg[2] = 0x3;
+>> update->val[2] = 0x1;
+>>
+>> So basically the write operation goes into update->reg[e->num_regs-1] the
+>> clear operations go into the other slots before that.
+>
+> Does update reg/val array have the writing sequence, is it correct?
+> And can I assume that update struct has reg/val/mask arrays not pointers?
+
+Right now the update struct does not have support for multiple register 
+writes. That's up to you to implement this. I guess making it an array for 
+now should be fine. But you need to add some safety checks to make sure that 
+num_regs is not larger or equal to the array size.
