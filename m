@@ -1,15 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: core: Only kmemdup binary control buffer
-	if masking
-Date: Wed,  2 Apr 2014 15:17:05 +0100
-Message-ID: <1396448225-19936-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 08/44] firewire-lib: Add support for
+ channel mapping
+Date: Wed, 02 Apr 2014 22:18:39 +0200
+Message-ID: <533C709F.3040109@ladisch.de>
+References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1395400229-22957-9-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 461F22654BA
- for <alsa-devel@alsa-project.org>; Wed,  2 Apr 2014 16:25:54 +0200 (CEST)
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 2666E26551E
+ for <alsa-devel@alsa-project.org>; Wed,  2 Apr 2014 22:18:45 +0200 (CEST)
+In-Reply-To: <1395400229-22957-9-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,134 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-When writing a binary control we may apply a mask to the first register,
-as this requires modifying the data the buffer is duplicated, currently
-this is done for all binary control writes. As most binary controls
-don't use the mask facility and thus can freely use the original buffer,
-avoid the kmemdup for these cases.
+Takashi Sakamoto wrote:
+> Some devices arrange the position of PCM/MIDI data channel in AMDTP packet.
+> This commit allows drivers to set channel mapping.
+>
+> +++ b/sound/firewire/amdtp.h
+>  /*
+> + * This module supports maximum 64 PCM channels for one PCM stream
+> + * This is for our convinience.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/soc-core.c |   86 ++++++++++++++++++++++++-------------------------
- 1 files changed, 42 insertions(+), 44 deletions(-)
+                      convenience
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index caebd63..275bd71 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3229,67 +3229,65 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
- 
- 	len = params->num_regs * codec->val_bytes;
- 
--	data = kmemdup(ucontrol->value.bytes.data, len, GFP_KERNEL | GFP_DMA);
--	if (!data)
--		return -ENOMEM;
-+	if (!params->mask)
-+		return regmap_raw_write(codec->control_data, params->base,
-+					ucontrol->value.bytes.data, len);
- 
- 	/*
- 	 * If we've got a mask then we need to preserve the register
- 	 * bits.  We shouldn't modify the incoming data so take a
- 	 * copy.
- 	 */
--	if (params->mask) {
--		ret = regmap_read(codec->control_data, params->base, &val);
--		if (ret != 0)
--			goto out;
-+	data = kmemdup(ucontrol->value.bytes.data, len,
-+		       GFP_KERNEL | GFP_DMA);
-+	if (!data)
-+		return -ENOMEM;
- 
--		val &= params->mask;
-+	ret = regmap_read(codec->control_data, params->base, &val);
-+	if (ret != 0)
-+		goto out;
- 
--		switch (codec->val_bytes) {
--		case 1:
--			((u8 *)data)[0] &= ~params->mask;
--			((u8 *)data)[0] |= val;
--			break;
--		case 2:
--			mask = ~params->mask;
--			ret = regmap_parse_val(codec->control_data,
--							&mask, &mask);
--			if (ret != 0)
--				goto out;
-+	val &= params->mask;
- 
--			((u16 *)data)[0] &= mask;
-+	switch (codec->val_bytes) {
-+	case 1:
-+		((u8 *)data)[0] &= ~params->mask;
-+		((u8 *)data)[0] |= val;
-+		break;
-+	case 2:
-+		mask = ~params->mask;
-+		ret = regmap_parse_val(codec->control_data, &mask, &mask);
-+		if (ret != 0)
-+			goto out;
- 
--			ret = regmap_parse_val(codec->control_data,
--							&val, &val);
--			if (ret != 0)
--				goto out;
-+		((u16 *)data)[0] &= mask;
- 
--			((u16 *)data)[0] |= val;
--			break;
--		case 4:
--			mask = ~params->mask;
--			ret = regmap_parse_val(codec->control_data,
--							&mask, &mask);
--			if (ret != 0)
--				goto out;
-+		ret = regmap_parse_val(codec->control_data, &val, &val);
-+		if (ret != 0)
-+			goto out;
- 
--			((u32 *)data)[0] &= mask;
-+		((u16 *)data)[0] |= val;
-+		break;
-+	case 4:
-+		mask = ~params->mask;
-+		ret = regmap_parse_val(codec->control_data, &mask, &mask);
-+		if (ret != 0)
-+			goto out;
- 
--			ret = regmap_parse_val(codec->control_data,
--							&val, &val);
--			if (ret != 0)
--				goto out;
-+		((u32 *)data)[0] &= mask;
- 
--			((u32 *)data)[0] |= val;
--			break;
--		default:
--			ret = -EINVAL;
-+		ret = regmap_parse_val(codec->control_data, &val, &val);
-+		if (ret != 0)
- 			goto out;
--		}
-+
-+		((u32 *)data)[0] |= val;
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		goto out;
- 	}
- 
--	ret = regmap_raw_write(codec->control_data, params->base,
--			       data, len);
-+	ret = regmap_raw_write(codec->control_data, params->base, data, len);
- 
- out:
- 	kfree(data);
--- 
-1.7.2.5
+
+Regards,
+Clemens
