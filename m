@@ -1,14 +1,26 @@
-From: Mario Kicherer <dev@kicherer.org>
-Subject: [PATCH v8] MIDI driver for Behringer BCD2000 USB device
-Date: Wed,  2 Apr 2014 17:56:53 +0200
-Message-ID: <1396454213-10863-1-git-send-email-dev@kicherer.org>
+From: Songhee Baek <sbaek@nvidia.com>
+Subject: Re: [PATCH] ASoC: DAPM: Add support for multi register
+	mux
+Date: Wed, 2 Apr 2014 00:06:06 -0700
+Message-ID: <D6C615D3E4730340AE82D5BD856631C0A26CB32547@HQMAIL02.nvidia.com>
+References: <1396333288-19113-1-git-send-email-aruns@nvidia.com>
+ <533A6F4A.2060702@metafoo.de>
+ <781A12BB53C15A4BB37291FDE08C03F3A05CDCD63B@HQMAIL02.nvidia.com>
+ <781A12BB53C15A4BB37291FDE08C03F3A05CDCD659@HQMAIL02.nvidia.com>
+ <533BA779.9010005@metafoo.de>
+ <D6C615D3E4730340AE82D5BD856631C0A26CB3252F@HQMAIL02.nvidia.com>
+ <533BB26B.3020503@metafoo.de>
+ <D6C615D3E4730340AE82D5BD856631C0A26CB32541@HQMAIL02.nvidia.com>
+ <533BB5E6.7050004@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zeus06.de (www.zeus06.de [194.117.254.36])
- by alsa0.perex.cz (Postfix) with ESMTP id B08A52654CF
- for <alsa-devel@alsa-project.org>; Wed,  2 Apr 2014 17:57:05 +0200 (CEST)
+Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D138265607
+ for <alsa-devel@alsa-project.org>; Wed,  2 Apr 2014 09:06:14 +0200 (CEST)
+In-Reply-To: <533BB5E6.7050004@metafoo.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,581 +30,170 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Mario Kicherer <dev@kicherer.org>, clemens@ladisch.de, daniel@zonque.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Arun Shamanna Lakshmi <aruns@nvidia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds initial support for the Behringer BCD2000 USB DJ controller.
-At the moment, only the MIDI part of the device is working, i.e. knobs,
-buttons and LEDs.
+> -----Original Message-----
+> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
+> Sent: Wednesday, April 02, 2014 12:02 AM
+> To: Songhee Baek
+> Cc: Arun Shamanna Lakshmi; lgirdwood@gmail.com; broonie@kernel.org;
+> swarren@wwwdotorg.org; perex@perex.cz; tiwai@suse.de; alsa-
+> devel@alsa-project.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] ASoC: DAPM: Add support for multi register mux
+> 
+> On 04/02/2014 08:56 AM, Songhee Baek wrote:
+> >
+> >
+> >> -----Original Message-----
+> >> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
+> >> Sent: Tuesday, April 01, 2014 11:47 PM
+> >> To: Songhee Baek
+> >> Cc: Arun Shamanna Lakshmi; lgirdwood@gmail.com; broonie@kernel.org;
+> >> swarren@wwwdotorg.org; perex@perex.cz; tiwai@suse.de; alsa-
+> >> devel@alsa-project.org; linux-kernel@vger.kernel.org
+> >> Subject: Re: [PATCH] ASoC: DAPM: Add support for multi register mux
+> >>
+> >> On 04/02/2014 08:17 AM, Songhee Baek wrote:
+> >>>> -----Original Message-----
+> >>>> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
+> >>>> Sent: Tuesday, April 01, 2014 11:00 PM
+> >>>> To: Arun Shamanna Lakshmi
+> >>>> Cc: lgirdwood@gmail.com; broonie@kernel.org;
+> >> swarren@wwwdotorg.org;
+> >>>> perex@perex.cz; tiwai@suse.de; alsa-devel@alsa-project.org; linux-
+> >>>> kernel@vger.kernel.org; Songhee Baek
+> >>>> Subject: Re: [PATCH] ASoC: DAPM: Add support for multi register mux
+> >>>>
+> >>>> On 04/01/2014 08:26 PM, Arun Shamanna Lakshmi wrote:
+> >>>> [...]
+> >>>>>>> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c index
+> >>>>>>> c8a780d..4d2b35c 100644
+> >>>>>>> --- a/sound/soc/soc-dapm.c
+> >>>>>>> +++ b/sound/soc/soc-dapm.c
+> >>>>>>> @@ -514,9 +514,9 @@ static int dapm_connect_mux(struct
+> >>>>>> snd_soc_dapm_context *dapm,
+> >>>>>>>      	unsigned int val, item;
+> >>>>>>>      	int i;
+> >>>>>>>
+> >>>>>>> -	if (e->reg != SND_SOC_NOPM) {
+> >>>>>>> -		soc_widget_read(dest, e->reg, &val);
+> >>>>>>> -		val = (val >> e->shift_l) & e->mask;
+> >>>>>>> +	if (e->reg[0] != SND_SOC_NOPM) {
+> >>>>>>> +		soc_widget_read(dest, e->reg[0], &val);
+> >>>>>>> +		val = (val >> e->shift_l) & e->mask[0];
+> >>>>>>>      		item = snd_soc_enum_val_to_item(e, val);
+> >>>>>>
+> >>>>>> This probably should handle the new enum type as well. You'll
+> >>>>>> probably need some kind of flag in the struct to distinguish
+> >>>>>> between the two enum types.
+> >>>>>
+> >>>>> Any suggestion on the flag name ?
+> >>>>>
+> >>>>
+> >>>> How about 'onehot'?
+> >>>>
+> >>>> [...]
+> >>>>>>> +		reg_val = BIT(bit_pos);
+> >>>>>>> +	}
+> >>>>>>> +
+> >>>>>>> +	for (i = 0; i < e->num_regs; i++) {
+> >>>>>>> +		if (i == reg_idx) {
+> >>>>>>> +			change = snd_soc_test_bits(codec, e->reg[i],
+> >>>>>>> +							e->mask[i],
+> >>>>>> reg_val);
+> >>>>>>> +
+> >>>>>>> +		} else {
+> >>>>>>> +			/* accumulate the change to update the
+> >> DAPM
+> >>>>>> path
+> >>>>>>> +			    when none is selected */
+> >>>>>>> +			change += snd_soc_test_bits(codec, e-
+> >>> reg[i],
+> >>>>>>> +							e->mask[i], 0);
+> >>>>>>
+> >>>>>> change |=
+> >>>>>>
+> >>>>>>> +
+> >>>>>>> +			/* clear the register when not selected */
+> >>>>>>> +			snd_soc_write(codec, e->reg[i], 0);
+> >>>>>>
+> >>>>>> I think this should happen as part of the DAPM update sequence
+> >>>>>> like you had earlier. Some special care should probably be take
+> >>>>>> to make sure that you de-select the previous mux input before
+> >>>>>> selecting the new one if the new one is in a different register than
+> the previous one.
+> >>>>>
+> >>>>> I am not sure I follow this part. We are clearing the 'not selected'
+> >>>>> registers before we set the one we want. Do you want us to loop
+> >>>>> the logic of soc_dapm_mux_update_power for each register ? or do
+> >>>>> you want to change the dapm_update structure so that it takes all
+> >>>>> the regs, masks, and values together ?
+> >>>>
+> >>>> The idea with the dapm_update struct is that the register updates
+> >>>> are done in the middle of the power-down and power-up sequence.
+> So
+> >>>> yes, change the dapm_update struct to be able to hold all register
+> >>>> updates and do all register updates in dapm_widget_update. I think
+> >>>> an earlier version of your patch already had this.
+> >>>
+> >>> Is the change similar to as shown below?
+> >>>
+> >>> for (reg_idx = 0; reg_idx < e->num_regs; reg_idx++) {
+> >>> 	val = e->values[item * e->num_regs + reg_idx];
+> >>> 	ret = snd_soc_update_bits_locked(codec, e->reg[reg_idx],
+> >>> 				e->mask[reg_idx], val);
+> >>> 	if (ret)
+> >>> 	return ret;
+> >>> }
+> >>>
+> >>> During updating of the register's value, the above change can create
+> >>> non-zero value in two different registers (very short transition) as
+> >>> Mark mentioned for that change so we need to clear register first
+> >>> before writing the desired value in the register.
+> >>>
+> >>> Should we add the clearing all registers and write the mux value in
+> >>> desired register in the update function?
+> >>>
+> >>
+> >> In dapm_update_widget() you have this line:
+> >>
+> >>    ret = soc_widget_update_bits(w, update->reg, update->mask, update-
+> >>> val);
+> >>
+> >> That needs to be done for every register update. When you setup the
+> >> update struct you need to make sure that the register clears come
+> >> before the register set.
+> >>
+> >> E.g. if you have register 0x3, 0x4, 0x5 and you select a bit in
+> >> register 0x4 it should look like this.
+> >>
+> >> update->reg[0] = 0x3;
+> >> update->val[0] = 0x0;
+> >> update->reg[1] = 0x5;
+> >> update->val[1] = 0x0;
+> >> update->reg[2] = 0x4;
+> >> update->val[2] = 0x8;
+> >>
+> >> When you set a bit in register 0x3 it should look like this:
+> >>
+> >> update->reg[0] = 0x4;
+> >> update->val[0] = 0x0;
+> >> update->reg[1] = 0x5;
+> >> update->val[1] = 0x0;
+> >> update->reg[2] = 0x3;
+> >> update->val[2] = 0x1;
+> >>
+> >> So basically the write operation goes into update->reg[e->num_regs-1]
+> >> the clear operations go into the other slots before that.
+> >
+> > Does update reg/val array have the writing sequence, is it correct?
+> > And can I assume that update struct has reg/val/mask arrays not pointers?
+> 
+> Right now the update struct does not have support for multiple register
+> writes. That's up to you to implement this. I guess making it an array for now
+> should be fine. But you need to add some safety checks to make sure that
+> num_regs is not larger or equal to the array size.
 
-I also plan to add support for the audio part, but I assume that this will
-require more effort than the rather simple MIDI interface. Progress can be
-tracked at https://github.com/anyc/snd-usb-bcd2000.
-
-Daniel or Clemens: could I get another ACK on this? Thank you both!
-
-Best regards,
-Mario
-
-Changes since v7:
-	- replaced snd_card_create with snd_card_new
-
-Changes since v6:
-        - applied more style improvements
-
-Changes since v5:
-	- use kernel bitmap functions for devices_used
-
-Changes since v4:
-	- devices_used as array to support arbitrary number of SNDRV_CARDS
-	- removed unused array "enable"
-
-Changes since v3:
-        - applied style and snd_printk changes as suggested by Daniel Mack
-
-Changes since v2:
-        - applied more changes from Daniel Mack and Clemens Ladisch
-
-Changes since v1:
-        - fixed the various code style issues, thanks to Daniel Mack and
-          checkpatch.pl.
-
-Signed-off-by: Mario Kicherer <dev@kicherer.org>
----
- sound/usb/Kconfig           |  13 ++
- sound/usb/Makefile          |   2 +-
- sound/usb/bcd2000/Makefile  |   3 +
- sound/usb/bcd2000/bcd2000.c | 477 ++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 494 insertions(+), 1 deletion(-)
- create mode 100644 sound/usb/bcd2000/Makefile
- create mode 100644 sound/usb/bcd2000/bcd2000.c
-
-diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
-index e05a86b..d393153 100644
---- a/sound/usb/Kconfig
-+++ b/sound/usb/Kconfig
-@@ -147,5 +147,18 @@ config SND_USB_HIFACE
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-usb-hiface.
- 
-+config SND_BCD2000
-+	tristate "Behringer BCD2000 MIDI driver"
-+	select SND_RAWMIDI
-+	help
-+	  Say Y here to include MIDI support for the Behringer BCD2000 DJ
-+	  controller.
-+
-+	  Audio support is still work-in-progress at
-+	  https://github.com/anyc/snd-usb-bcd2000
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called snd-bcd2000.
-+
- endif	# SND_USB
- 
-diff --git a/sound/usb/Makefile b/sound/usb/Makefile
-index abe668f..2b92f0d 100644
---- a/sound/usb/Makefile
-+++ b/sound/usb/Makefile
-@@ -23,4 +23,4 @@ obj-$(CONFIG_SND_USB_UA101) += snd-usbmidi-lib.o
- obj-$(CONFIG_SND_USB_USX2Y) += snd-usbmidi-lib.o
- obj-$(CONFIG_SND_USB_US122L) += snd-usbmidi-lib.o
- 
--obj-$(CONFIG_SND) += misc/ usx2y/ caiaq/ 6fire/ hiface/
-+obj-$(CONFIG_SND) += misc/ usx2y/ caiaq/ 6fire/ hiface/ bcd2000/
-diff --git a/sound/usb/bcd2000/Makefile b/sound/usb/bcd2000/Makefile
-new file mode 100644
-index 0000000..f09ccc0
---- /dev/null
-+++ b/sound/usb/bcd2000/Makefile
-@@ -0,0 +1,3 @@
-+snd-bcd2000-y := bcd2000.o
-+
-+obj-$(CONFIG_SND_BCD2000) += snd-bcd2000.o
-\ No newline at end of file
-diff --git a/sound/usb/bcd2000/bcd2000.c b/sound/usb/bcd2000/bcd2000.c
-new file mode 100644
-index 0000000..9fda92d
---- /dev/null
-+++ b/sound/usb/bcd2000/bcd2000.c
-@@ -0,0 +1,477 @@
-+/*
-+ * Behringer BCD2000 driver
-+ *
-+ *   Copyright (C) 2014 Mario Kicherer (dev@kicherer.org)
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/errno.h>
-+#include <linux/init.h>
-+#include <linux/slab.h>
-+#include <linux/module.h>
-+#include <linux/bitmap.h>
-+#include <linux/usb.h>
-+#include <linux/usb/audio.h>
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+#include <sound/rawmidi.h>
-+
-+#define PREFIX "snd-bcd2000: "
-+#define BUFSIZE 64
-+
-+static struct usb_device_id id_table[] = {
-+	{ USB_DEVICE(0x1397, 0x00bd) },
-+	{ },
-+};
-+
-+static unsigned char device_cmd_prefix[] = {0x03, 0x00};
-+
-+static unsigned char bcd2000_init_sequence[] = {
-+	0x07, 0x00, 0x00, 0x00, 0x78, 0x48, 0x1c, 0x81,
-+	0xc4, 0x00, 0x00, 0x00, 0x5e, 0x53, 0x4a, 0xf7,
-+	0x18, 0xfa, 0x11, 0xff, 0x6c, 0xf3, 0x90, 0xff,
-+	0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-+	0x18, 0xfa, 0x11, 0xff, 0x14, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00, 0xf2, 0x34, 0x4a, 0xf7,
-+	0x18, 0xfa, 0x11, 0xff
-+};
-+
-+struct bcd2000 {
-+	struct usb_device *dev;
-+	struct snd_card *card;
-+	struct usb_interface *intf;
-+	int card_index;
-+
-+	int midi_out_active;
-+	struct snd_rawmidi *rmidi;
-+	struct snd_rawmidi_substream *midi_receive_substream;
-+	struct snd_rawmidi_substream *midi_out_substream;
-+
-+	unsigned char midi_in_buf[BUFSIZE];
-+	unsigned char midi_out_buf[BUFSIZE];
-+
-+	struct urb *midi_out_urb;
-+	struct urb *midi_in_urb;
-+
-+	struct usb_anchor anchor;
-+};
-+
-+static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
-+static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
-+
-+static DEFINE_MUTEX(devices_mutex);
-+DECLARE_BITMAP(devices_used, SNDRV_CARDS);
-+static struct usb_driver bcd2000_driver;
-+
-+#ifdef CONFIG_SND_DEBUG
-+static void bcd2000_dump_buffer(const char *prefix, const char *buf, int len)
-+{
-+	print_hex_dump(KERN_DEBUG, prefix,
-+			DUMP_PREFIX_NONE, 16, 1,
-+			buf, len, false);
-+}
-+#else
-+static void bcd2000_dump_buffer(const char *prefix, const char *buf, int len) {}
-+#endif
-+
-+static int bcd2000_midi_input_open(struct snd_rawmidi_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static int bcd2000_midi_input_close(struct snd_rawmidi_substream *substream)
-+{
-+	return 0;
-+}
-+
-+/* register midi substream */
-+static void bcd2000_midi_input_trigger(struct snd_rawmidi_substream *substream,
-+						int up)
-+{
-+	struct bcd2000 *bcd2k = substream->rmidi->private_data;
-+	bcd2k->midi_receive_substream = up ? substream : NULL;
-+}
-+
-+static void bcd2000_midi_handle_input(struct bcd2000 *bcd2k,
-+				const unsigned char *buf, unsigned int buf_len)
-+{
-+	unsigned int payload_length, tocopy;
-+	struct snd_rawmidi_substream *midi_receive_substream;
-+
-+	midi_receive_substream = ACCESS_ONCE(bcd2k->midi_receive_substream);
-+	if (!midi_receive_substream)
-+		return;
-+
-+	bcd2000_dump_buffer(PREFIX "received from device: ", buf, buf_len);
-+
-+	if (buf_len < 2)
-+		return;
-+
-+	payload_length = buf[0];
-+
-+	/* ignore packets without payload */
-+	if (payload_length == 0)
-+		return;
-+
-+	tocopy = min(payload_length, buf_len-1);
-+
-+	bcd2000_dump_buffer(PREFIX "sending to userspace: ",
-+					&buf[1], tocopy);
-+
-+	snd_rawmidi_receive(midi_receive_substream,
-+					&buf[1], tocopy);
-+}
-+
-+static void bcd2000_midi_send(struct bcd2000 *bcd2k)
-+{
-+	int len, ret;
-+	struct snd_rawmidi_substream *midi_out_substream;
-+
-+	BUILD_BUG_ON(sizeof(device_cmd_prefix) >= BUFSIZE);
-+
-+	midi_out_substream = ACCESS_ONCE(bcd2k->midi_out_substream);
-+	if (!midi_out_substream)
-+		return;
-+
-+	/* copy command prefix bytes */
-+	memcpy(bcd2k->midi_out_buf, device_cmd_prefix,
-+		sizeof(device_cmd_prefix));
-+
-+	/*
-+	 * get MIDI packet and leave space for command prefix
-+	 * and payload length
-+	 */
-+	len = snd_rawmidi_transmit(midi_out_substream,
-+				bcd2k->midi_out_buf + 3, BUFSIZE - 3);
-+
-+	if (len < 0)
-+		dev_err(&bcd2k->dev->dev, "%s: snd_rawmidi_transmit error %d\n",
-+				__func__, len);
-+
-+	if (len <= 0)
-+		return;
-+
-+	/* set payload length */
-+	bcd2k->midi_out_buf[2] = len;
-+	bcd2k->midi_out_urb->transfer_buffer_length = BUFSIZE;
-+
-+	bcd2000_dump_buffer(PREFIX "sending to device: ",
-+			bcd2k->midi_out_buf, len+3);
-+
-+	/* send packet to the BCD2000 */
-+	ret = usb_submit_urb(bcd2k->midi_out_urb, GFP_ATOMIC);
-+	if (ret < 0)
-+		dev_err(&bcd2k->dev->dev, PREFIX
-+			"%s (%p): usb_submit_urb() failed, ret=%d, len=%d\n",
-+			__func__, midi_out_substream, ret, len);
-+	else
-+		bcd2k->midi_out_active = 1;
-+}
-+
-+static int bcd2000_midi_output_open(struct snd_rawmidi_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static int bcd2000_midi_output_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct bcd2000 *bcd2k = substream->rmidi->private_data;
-+
-+	if (bcd2k->midi_out_active) {
-+		usb_kill_urb(bcd2k->midi_out_urb);
-+		bcd2k->midi_out_active = 0;
-+	}
-+
-+	return 0;
-+}
-+
-+/* register midi substream */
-+static void bcd2000_midi_output_trigger(struct snd_rawmidi_substream *substream,
-+						int up)
-+{
-+	struct bcd2000 *bcd2k = substream->rmidi->private_data;
-+
-+	if (up) {
-+		bcd2k->midi_out_substream = substream;
-+		/* check if there is data userspace wants to send */
-+		if (!bcd2k->midi_out_active)
-+			bcd2000_midi_send(bcd2k);
-+	} else {
-+		bcd2k->midi_out_substream = NULL;
-+	}
-+}
-+
-+static void bcd2000_output_complete(struct urb *urb)
-+{
-+	struct bcd2000 *bcd2k = urb->context;
-+
-+	bcd2k->midi_out_active = 0;
-+
-+	if (urb->status)
-+		dev_warn(&urb->dev->dev,
-+			PREFIX "output urb->status: %d\n", urb->status);
-+
-+	if (urb->status == -ESHUTDOWN)
-+		return;
-+
-+	/* check if there is more data userspace wants to send */
-+	bcd2000_midi_send(bcd2k);
-+}
-+
-+static void bcd2000_input_complete(struct urb *urb)
-+{
-+	int ret;
-+	struct bcd2000 *bcd2k = urb->context;
-+
-+	if (urb->status)
-+		dev_warn(&urb->dev->dev,
-+			PREFIX "input urb->status: %i\n", urb->status);
-+
-+	if (!bcd2k || urb->status == -ESHUTDOWN)
-+		return;
-+
-+	if (urb->actual_length > 0)
-+		bcd2000_midi_handle_input(bcd2k, urb->transfer_buffer,
-+					urb->actual_length);
-+
-+	/* acknowledge received packet */
-+	ret = usb_submit_urb(bcd2k->midi_in_urb, GFP_ATOMIC);
-+	if (ret < 0)
-+		dev_err(&bcd2k->dev->dev, PREFIX
-+			"%s: usb_submit_urb() failed, ret=%d\n",
-+			__func__, ret);
-+}
-+
-+static struct snd_rawmidi_ops bcd2000_midi_output = {
-+	.open =    bcd2000_midi_output_open,
-+	.close =   bcd2000_midi_output_close,
-+	.trigger = bcd2000_midi_output_trigger,
-+};
-+
-+static struct snd_rawmidi_ops bcd2000_midi_input = {
-+	.open =    bcd2000_midi_input_open,
-+	.close =   bcd2000_midi_input_close,
-+	.trigger = bcd2000_midi_input_trigger,
-+};
-+
-+static void bcd2000_init_device(struct bcd2000 *bcd2k)
-+{
-+	int ret;
-+
-+	init_usb_anchor(&bcd2k->anchor);
-+	usb_anchor_urb(bcd2k->midi_out_urb, &bcd2k->anchor);
-+	usb_anchor_urb(bcd2k->midi_in_urb, &bcd2k->anchor);
-+
-+	/* copy init sequence into buffer */
-+	memcpy(bcd2k->midi_out_buf, bcd2000_init_sequence, 52);
-+	bcd2k->midi_out_urb->transfer_buffer_length = 52;
-+
-+	/* submit sequence */
-+	ret = usb_submit_urb(bcd2k->midi_out_urb, GFP_KERNEL);
-+	if (ret < 0)
-+		dev_err(&bcd2k->dev->dev, PREFIX
-+			"%s: usb_submit_urb() out failed, ret=%d: ",
-+			__func__, ret);
-+	else
-+		bcd2k->midi_out_active = 1;
-+
-+	/* send empty packet to enable button and controller events */
-+	ret = usb_submit_urb(bcd2k->midi_in_urb, GFP_KERNEL);
-+	if (ret < 0)
-+		dev_err(&bcd2k->dev->dev, PREFIX
-+			"%s: usb_submit_urb() in failed, ret=%d: ",
-+			__func__, ret);
-+
-+	/* ensure initialization is finished */
-+	usb_wait_anchor_empty_timeout(&bcd2k->anchor, 1000);
-+}
-+
-+static int bcd2000_init_midi(struct bcd2000 *bcd2k)
-+{
-+	int ret;
-+	struct snd_rawmidi *rmidi;
-+
-+	ret = snd_rawmidi_new(bcd2k->card, bcd2k->card->shortname, 0,
-+					1, /* output */
-+					1, /* input */
-+					&rmidi);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	strlcpy(rmidi->name, bcd2k->card->shortname, sizeof(rmidi->name));
-+
-+	rmidi->info_flags = SNDRV_RAWMIDI_INFO_DUPLEX;
-+	rmidi->private_data = bcd2k;
-+
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
-+					&bcd2000_midi_output);
-+
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-+					&bcd2000_midi_input);
-+
-+	bcd2k->rmidi = rmidi;
-+
-+	bcd2k->midi_in_urb = usb_alloc_urb(0, GFP_KERNEL);
-+	bcd2k->midi_out_urb = usb_alloc_urb(0, GFP_KERNEL);
-+
-+	if (!bcd2k->midi_in_urb || !bcd2k->midi_out_urb) {
-+		dev_err(&bcd2k->dev->dev, PREFIX "usb_alloc_urb failed\n");
-+		return -ENOMEM;
-+	}
-+
-+	usb_fill_int_urb(bcd2k->midi_in_urb, bcd2k->dev,
-+				usb_rcvintpipe(bcd2k->dev, 0x81),
-+				bcd2k->midi_in_buf, BUFSIZE,
-+				bcd2000_input_complete, bcd2k, 1);
-+
-+	usb_fill_int_urb(bcd2k->midi_out_urb, bcd2k->dev,
-+				usb_sndintpipe(bcd2k->dev, 0x1),
-+				bcd2k->midi_out_buf, BUFSIZE,
-+				bcd2000_output_complete, bcd2k, 1);
-+
-+	bcd2000_init_device(bcd2k);
-+
-+	return 0;
-+}
-+
-+static void bcd2000_free_usb_related_resources(struct bcd2000 *bcd2k,
-+						struct usb_interface *interface)
-+{
-+	/* usb_kill_urb not necessary, urb is aborted automatically */
-+
-+	usb_free_urb(bcd2k->midi_out_urb);
-+	usb_free_urb(bcd2k->midi_in_urb);
-+
-+	if (bcd2k->intf) {
-+		usb_set_intfdata(bcd2k->intf, NULL);
-+		bcd2k->intf = NULL;
-+	}
-+}
-+
-+static int bcd2000_probe(struct usb_interface *interface,
-+				const struct usb_device_id *usb_id)
-+{
-+	struct snd_card *card;
-+	struct bcd2000 *bcd2k;
-+	unsigned int card_index;
-+	char usb_path[32];
-+	int err;
-+
-+	mutex_lock(&devices_mutex);
-+
-+	for (card_index = 0; card_index < SNDRV_CARDS; ++card_index)
-+		if (!test_bit(card_index, devices_used))
-+			break;
-+
-+	if (card_index >= SNDRV_CARDS) {
-+		mutex_unlock(&devices_mutex);
-+		return -ENOENT;
-+	}
-+
-+	err = snd_card_new(&interface->dev, index[card_index], id[card_index],
-+			THIS_MODULE, sizeof(*bcd2k), &card);
-+	if (err < 0) {
-+		mutex_unlock(&devices_mutex);
-+		return err;
-+	}
-+
-+	bcd2k = card->private_data;
-+	bcd2k->dev = interface_to_usbdev(interface);
-+	bcd2k->card = card;
-+	bcd2k->card_index = card_index;
-+	bcd2k->intf = interface;
-+
-+	snd_card_set_dev(card, &interface->dev);
-+
-+	strncpy(card->driver, "snd-bcd2000", sizeof(card->driver));
-+	strncpy(card->shortname, "BCD2000", sizeof(card->shortname));
-+	usb_make_path(bcd2k->dev, usb_path, sizeof(usb_path));
-+	snprintf(bcd2k->card->longname, sizeof(bcd2k->card->longname),
-+		    "Behringer BCD2000 at %s",
-+			usb_path);
-+
-+	err = bcd2000_init_midi(bcd2k);
-+	if (err < 0)
-+		goto probe_error;
-+
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto probe_error;
-+
-+	usb_set_intfdata(interface, bcd2k);
-+	set_bit(card_index, devices_used);
-+
-+	mutex_unlock(&devices_mutex);
-+	return 0;
-+
-+probe_error:
-+	dev_info(&bcd2k->dev->dev, PREFIX "error during probing");
-+	bcd2000_free_usb_related_resources(bcd2k, interface);
-+	snd_card_free(card);
-+	mutex_unlock(&devices_mutex);
-+	return err;
-+}
-+
-+static void bcd2000_disconnect(struct usb_interface *interface)
-+{
-+	struct bcd2000 *bcd2k = usb_get_intfdata(interface);
-+
-+	if (!bcd2k)
-+		return;
-+
-+	mutex_lock(&devices_mutex);
-+
-+	/* make sure that userspace cannot create new requests */
-+	snd_card_disconnect(bcd2k->card);
-+
-+	bcd2000_free_usb_related_resources(bcd2k, interface);
-+
-+	clear_bit(bcd2k->card_index, devices_used);
-+
-+	snd_card_free_when_closed(bcd2k->card);
-+
-+	mutex_unlock(&devices_mutex);
-+}
-+
-+static struct usb_driver bcd2000_driver = {
-+	.name =	"snd-bcd2000",
-+	.probe =	bcd2000_probe,
-+	.disconnect =	bcd2000_disconnect,
-+	.id_table =	id_table,
-+};
-+
-+static int __init bcd2000_init(void)
-+{
-+	int retval = 0;
-+
-+	retval = usb_register(&bcd2000_driver);
-+	if (retval)
-+		pr_info(PREFIX "usb_register failed. Error: %d", retval);
-+	return retval;
-+}
-+
-+static void __exit bcd2000_exit(void)
-+{
-+	usb_deregister(&bcd2000_driver);
-+}
-+
-+module_init(bcd2000_init);
-+module_exit(bcd2000_exit);
-+
-+MODULE_DEVICE_TABLE(usb, id_table);
-+MODULE_AUTHOR("Mario Kicherer, dev@kicherer.org");
-+MODULE_DESCRIPTION("Behringer BCD2000 driver");
-+MODULE_LICENSE("GPL");
--- 
-1.8.3.2
+Thank you for the clarification. We will add this in dapm update struct.
