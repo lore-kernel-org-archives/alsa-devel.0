@@ -1,63 +1,110 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 00/44 v3] Enhancement of support for
- Firewire devices
-Date: Thu, 03 Apr 2014 21:17:27 +0200
-Message-ID: <533DB3C7.5010507@canonical.com>
-References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Arun Shamanna Lakshmi <aruns@nvidia.com>
+Subject: RE: [PATCH] ASoC: dapm: Add support for multi register mux
+Date: Thu, 3 Apr 2014 13:11:24 -0700
+Message-ID: <781A12BB53C15A4BB37291FDE08C03F3A05CDCDF9F@HQMAIL02.nvidia.com>
+References: <1396494710-20944-1-git-send-email-aruns@nvidia.com>
+ <533D1B65.3030405@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id D03AF2656B9
- for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 21:17:33 +0200 (CEST)
-In-Reply-To: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <533D1B65.3030405@metafoo.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Songhee Baek <sbaek@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/21/2014 12:09 PM, Takashi Sakamoto wrote:
-> This series is an update for my previous series:
-> [alsa-devel] [GIT PULL][PATCH 00/39 v2] Enhancement of support for Firewire
-> devices
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/073868.html
 
-Hi,
 
-I've tested Takashi's patches [1] with my one Firewire device (Presonus
-FP10) and I've found it to work well, both midi and audio.
-In addition, during my testing I've found Takashi Sakamoto to be very
-good to work with, and I'm confident he will continue to look after the
-driver for some time ahead.
+> -----Original Message-----
+> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
+> Sent: Thursday, April 03, 2014 1:27 AM
+> To: Arun Shamanna Lakshmi
+> Cc: lgirdwood@gmail.com; broonie@kernel.org;
+swarren@wwwdotorg.org;
+> perex@perex.cz; tiwai@suse.de; alsa- devel@alsa-project.org;
+> linux-kernel@vger.kernel.org; Songhee Baek
+> Subject: Re: [PATCH] ASoC: dapm: Add support for multi register mux
+>
+> On 04/03/2014 05:11 AM, Arun Shamanna Lakshmi wrote:
+>
+> This looks essentially good to me. A few minor issues, once those are
+> fixed things should be good to go.
+>
+> [...]
+> > @@ -2984,6 +3002,112 @@ int
+> snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+> >   EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_double);
+> >
+> >   /**
+> > + * snd_soc_dapm_get_enum_onehot - dapm enumerated onehot
+> mixer get
+> > +callback
+> > + * @kcontrol: mixer control
+> > + * @ucontrol: control element information
+> > + *
+> > + * Callback to get the value of a dapm enumerated onehot encoded
+> > +mixer control
+> > + *
+> > + * Returns 0 for success.
+> > + */
+> > +int snd_soc_dapm_get_enum_onehot(struct snd_kcontrol *kcontrol,
+> > +			struct snd_ctl_elem_value *ucontrol) {
+> > +	struct snd_soc_codec *codec =
+> snd_soc_dapm_kcontrol_codec(kcontrol);
+> > +	struct soc_enum *e = (struct soc_enum *)kcontrol-
+> >private_value;
+> > +	unsigned int reg_val, val, bit_pos = -1, reg_idx;
+>
+> Here as well, default for bit_pos should be 0.
 
-While I haven't looked through the patches in detail - after all, the
-firewire stack is not really my point of expertise (yet!) - but from a
-pragmatic view, having ALSA kernel support for firewire devices is a
-very welcome addition. (Although a late one, considering firewire's
-declining popularity.)
+This means when 'None' of the options are selected, by default, it
+enumerates to 0. Since we are using __ffs, BIT(0) of Register-0 also
+enumerates to 0. That's the reason why I used just ffs in the first place.
+Let me know your opinion. My value table looks like below.
 
-While not everything is perfect yet - e g PulseAudio and Audacity are
-two applications that would require some coding on either end to
-facilitate better integration - no driver is ever perfect, and the
-current driver is a big step in the right direction.
+#define MUX_VALUE(npart, nbit)	(nbit + 32 * npart)
+static const int mux_values[] = {
+	0,
+	MUX_VALUE(0, 0),
+	.
+	.
+	.
+	MUX_VALUE(0, 31),
+	/* above inputs are for part0 mux */
+	MUX_VALUE(1, 0),
+	.
+	.
+	.
+	MUX_VALUE(1, 31),
+	/* above inputs are for part1 mux */
+	MUX_VALUE(2, 0),
+	.
+	.
+	.
+	MUX_VALUE(2, 31),
+	/* above inputs are for part2 mux */
+};
 
-To sum up, from my pragmatic view I've found the patch series [1] to be
-stable enough to mainline, and I recommend merging this patch series for
-the 3.15 kernel merge window.
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
-
-[1] Not actually this patch series, but a later version of these
-patches, as can be found in Takashi Sakamoto's github tree.
+>
+> > +
+> > +	for (reg_idx = 0; reg_idx < e->num_regs; reg_idx++) {
+> > +		reg_val = snd_soc_read(codec, e->reg[reg_idx]);
+> > +		val = reg_val & e->mask[reg_idx];
+> > +		if (val != 0) {
+> > +			bit_pos = __ffs(val) + (8 * codec->val_bytes *
+> reg_idx);
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> > +	ucontrol->value.enumerated.item[0] =
+> > +			snd_soc_enum_val_to_item(e, bit_pos);
+> > +
+> > +	return 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(snd_soc_dapm_get_enum_onehot);
+> > +
+> > +/**
+> > +
