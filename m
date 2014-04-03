@@ -1,62 +1,46 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH 1/2] snd-ice1712: restore AK4xxx volumes on
-	resume
-Date: Thu,  3 Apr 2014 23:09:37 +0200
-Message-ID: <1396559378-23980-1-git-send-email-linux@rainbow-software.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-devel] [PATCH 23/44] fireworks: Add proc interface for
+	debugging purpose
+Date: Thu, 03 Apr 2014 23:16:49 +0200
+Message-ID: <533DCFC1.50300@ladisch.de>
+References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
+	<1395400229-22957-24-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-1.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
- by alsa0.perex.cz (Postfix) with ESMTP id A8E432656D8
- for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 23:09:53 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1395400229-22957-24-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-Also restore AK4xxx mixer volumes on resume for M-Audio ICE1712-based cards.
-This fixes incorrect (sound working) zero mixer volumes after resume.
+Takashi Sakamoto wrote:
+> This commit adds proc interface to output infomation for debugging.
+>  - firmware information
+>  - sampling rate and clock source
+>  - physical metering (linear value)
+>
+> +++ b/sound/firewire/fireworks/fireworks.c
+> @@ -133,6 +133,16 @@ get_hardware_info(struct snd_efw *efw)
+> +	/* hardware metering */
+> +	efw->phys_out = hwinfo->phys_out;
+> +	efw->phys_in = hwinfo->phys_in;
+> +	efw->phys_out_grp_count = hwinfo->phys_out_grp_count;
+> +	efw->phys_in_grp_count = hwinfo->phys_in_grp_count;
 
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
----
- sound/pci/ice1712/delta.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+The driver relies on these values being correct.  It will blow up
+if^H^Hwhen the firmware makes these values overflow.
 
-diff --git a/sound/pci/ice1712/delta.c b/sound/pci/ice1712/delta.c
-index 3764a27..bb34608 100644
---- a/sound/pci/ice1712/delta.c
-+++ b/sound/pci/ice1712/delta.c
-@@ -578,7 +578,8 @@ static struct snd_ak4xxx_private akm_vx442_priv = {
- #ifdef CONFIG_PM_SLEEP
- static int snd_ice1712_delta_resume(struct snd_ice1712 *ice)
- {
--	unsigned char akm_backup[AK4XXX_IMAGE_SIZE];
-+	unsigned char akm_img_bak[AK4XXX_IMAGE_SIZE];
-+	unsigned char akm_vol_bak[AK4XXX_IMAGE_SIZE];
- 
- 	/* init spdif */
- 	switch (ice->eeprom.subvendor) {
-@@ -603,9 +604,11 @@ static int snd_ice1712_delta_resume(struct snd_ice1712 *ice)
- 
- 	/* init codec and restore registers */
- 	if (ice->akm_codecs) {
--		memcpy(akm_backup, ice->akm->images, sizeof(akm_backup));
-+		memcpy(akm_img_bak, ice->akm->images, sizeof(akm_img_bak));
-+		memcpy(akm_vol_bak, ice->akm->volumes, sizeof(akm_vol_bak));
- 		snd_akm4xxx_init(ice->akm);
--		memcpy(ice->akm->images, akm_backup, sizeof(akm_backup));
-+		memcpy(ice->akm->images, akm_img_bak, sizeof(akm_img_bak));
-+		memcpy(ice->akm->volumes, akm_vol_bak, sizeof(akm_vol_bak));
- 		snd_akm4xxx_reset(ice->akm, 0);
- 	}
- 
--- 
-Ondrej Zary
+
+Regards,
+Clemens
+
+------------------------------------------------------------------------------
