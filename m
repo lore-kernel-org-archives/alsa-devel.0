@@ -1,20 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 05/44] firewire-lib: Add support for MIDI
-	capture/playback
-Date: Thu, 03 Apr 2014 19:08:16 +0900
-Message-ID: <533D3310.30005@sakamocchi.jp>
-References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
- <1395400229-22957-6-git-send-email-o-takashi@sakamocchi.jp>
- <533C6510.7000605@ladisch.de> <533D1CF4.1040302@sakamocchi.jp>
- <533D21DD.10400@ladisch.de>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH 1/4] ASoC: esai: fix buggy of 'ret' type
+	definition.
+Date: Thu, 3 Apr 2014 18:50:59 +0800
+Message-ID: <20140403105057.GA32081@MrMyself>
+References: <1396516257-25354-1-git-send-email-Li.Xiubo@freescale.com>
+ <1396516257-25354-2-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 231E2265685
- for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 12:08:28 +0200 (CEST)
-In-Reply-To: <533D21DD.10400@ladisch.de>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe002.messaging.microsoft.com [216.32.180.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A919265671
+ for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 13:00:15 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1396516257-25354-2-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,22 +24,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, Adrian Knoth <adi@drcomp.erfurt.thur.de>, jan.svitok@gmail.com
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-(Apr 03 2014 17:54), Clemens Ladisch wrote:
-> This is still wrong.  It should be:
->
-> 		len = b[0] - 0x80;
-> 		if (1 <= len && len <= 3 && s->midi[port])
+Hi Xiubo,
 
-Oops! Exactly.
+Could you please add some comments to describe where the bug is? If these
+cause function break on Vybrid or LS1, you should tell people what the
+root cause exactly is.
 
-I might be tired for this long developing...
+On Thu, Apr 03, 2014 at 05:10:54PM +0800, Xiubo Li wrote:
+> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+> ---
+>  sound/soc/fsl/fsl_esai.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+> index 912104f..8efc89e 100644
+> --- a/sound/soc/fsl/fsl_esai.c
+> +++ b/sound/soc/fsl/fsl_esai.c
+> @@ -209,8 +209,9 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+>  	struct clk *clksrc = esai_priv->extalclk;
+>  	bool tx = clk_id <= ESAI_HCKT_EXTAL;
+>  	bool in = dir == SND_SOC_CLOCK_IN;
+> -	u32 ret, ratio, ecr = 0;
+> +	u32 ratio, ecr = 0;
+>  	unsigned long clk_rate;
+> +	int ret;
 
+Using 'u32' instead of 'int' is just an expediency but not a crucial one.
+This doesn't make a lot of sense to me.
 
-Thank you
+>  
+>  	/* sck_div can be only bypassed if ETO/ERO=0 and SNC_SOC_CLOCK_OUT */
+>  	esai_priv->sck_div[tx] = true;
+> @@ -432,8 +433,8 @@ static int fsl_esai_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>  static int fsl_esai_startup(struct snd_pcm_substream *substream,
+>  			    struct snd_soc_dai *dai)
+>  {
+> -	int ret;
+>  	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+> +	int ret;
 
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+This looks fine.
+
+Nicolin
+
+>  
+>  	/*
+>  	 * Some platforms might use the same bit to gate all three or two of
+> @@ -491,7 +492,8 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
+>  	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+>  	u32 width = snd_pcm_format_width(params_format(params));
+>  	u32 channels = params_channels(params);
+> -	u32 bclk, mask, val, ret;
+> +	u32 bclk, mask, val;
+> +	int ret;
+>  
+>  	bclk = params_rate(params) * esai_priv->slot_width * 2;
+>  
+> -- 
+> 1.8.4
+> 
+> 
