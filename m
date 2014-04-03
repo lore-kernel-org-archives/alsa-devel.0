@@ -1,19 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: dapm: Add support for multi register
-	mux
-Date: Thu, 03 Apr 2014 15:31:58 +0200
-Message-ID: <533D62CE.5040907@metafoo.de>
-References: <1396494710-20944-1-git-send-email-aruns@nvidia.com>
- <s5h4n2asq1o.wl%tiwai@suse.de> <20140403095330.GS14763@sirena.org.uk>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 4/4] ASoC: spdif: Add Vybird and LS1+
+ compatibles support.
+Date: Thu, 3 Apr 2014 11:46:11 -0300
+Message-ID: <CAOMZO5DPbzK6_M=jzFGMKv1CFRd2xOYSEfyAUNi-XgKo17553Q@mail.gmail.com>
+References: <1396516257-25354-1-git-send-email-Li.Xiubo@freescale.com>
+ <1396516257-25354-5-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-019.synserver.de (smtp-out-105.synserver.de
- [212.40.185.105])
- by alsa0.perex.cz (Postfix) with ESMTP id E44A6261A80
- for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 15:31:05 +0200 (CEST)
-In-Reply-To: <20140403095330.GS14763@sirena.org.uk>
+Received: from mail-we0-f181.google.com (mail-we0-f181.google.com
+ [74.125.82.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AC8C2655B6
+ for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 16:46:12 +0200 (CEST)
+Received: by mail-we0-f181.google.com with SMTP id q58so1942766wes.40
+ for <alsa-devel@alsa-project.org>; Thu, 03 Apr 2014 07:46:11 -0700 (PDT)
+In-Reply-To: <1396516257-25354-5-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,31 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Songhee Baek <sbaek@nvidia.com>, Arun Shamanna Lakshmi <aruns@nvidia.com>, alsa-devel@alsa-project.org, swarren@wwwdotorg.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Nicolin Chen <Guangyu.Chen@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/03/2014 11:53 AM, Mark Brown wrote:
-> On Thu, Apr 03, 2014 at 11:47:15AM +0200, Takashi Iwai wrote:
+On Thu, Apr 3, 2014 at 6:10 AM, Xiubo Li <Li.Xiubo@freescale.com> wrote:
+> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+> ---
+>  sound/soc/fsl/fsl_spdif.c | 2 ++
+>  1 file changed, 2 insertions(+)
 >
->> I'm a bit late in the game, but I feel a bit uneasy through looking
->> at the whole changes.  My primary question is, whether do we really
->> need to share the same struct soc_enum for the onehot type?  What
->> makes hard to use a struct soc_enum_onehot for them?  You need
->> different individual get/put for each type.  We may still need to
->> change soc_dapm_update stuff, but it's different from sharing
->> soc_enum.
+> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+> index 173553c..5c958ca 100644
+> --- a/sound/soc/fsl/fsl_spdif.c
+> +++ b/sound/soc/fsl/fsl_spdif.c
+> @@ -1186,6 +1186,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
 >
-> Indeed, I had thought this was where the discussion was heading - not
-> looked at this version of the patch yet.
->
+>  static const struct of_device_id fsl_spdif_dt_ids[] = {
+>         { .compatible = "fsl,imx35-spdif", },
+> +       { .compatible = "fsl,vybird-spdif", },
 
-It would be nice, but it also requires some slight restructuring. The issue 
-we have right now is that there is  strictly speaking a bit of a layering 
-violation. The DAPM widgets should not need to know how the kcontrols that 
-are attached to the widget do their IO. What we essentially do in 
-dapm_connect_mux() (and also dapm_connect_mixer) is an open-coded version of 
-the controls get handler. Replacing that by calling the get handler instead 
-should allow us to use different structs for enums and onehot enums.
-
-- Lars
+I think you mean vybrid ;-)
