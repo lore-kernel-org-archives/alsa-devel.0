@@ -1,14 +1,18 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH 1/2] snd-cs8427: separate HW initialization
-Date: Wed,  2 Apr 2014 22:35:32 +0200
-Message-ID: <1396470933-2618-1-git-send-email-linux@rainbow-software.org>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH 1/4] ASoC: esai: fix buggy of 'ret' type
+	definition.
+Date: Thu, 3 Apr 2014 17:10:54 +0800
+Message-ID: <1396516257-25354-2-git-send-email-Li.Xiubo@freescale.com>
+References: <1396516257-25354-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-1.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
- by alsa0.perex.cz (Postfix) with ESMTP id 1090D26551E
- for <alsa-devel@alsa-project.org>; Wed,  2 Apr 2014 22:35:43 +0200 (CEST)
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe004.messaging.microsoft.com [216.32.180.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63668265687
+ for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 11:54:19 +0200 (CEST)
+In-Reply-To: <1396516257-25354-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,124 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com, timur@tabi.org, Guangyu.Chen@freescale.com
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Separate HW initialization from device creation.
-This is needed for suspend/resume support.
-
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- include/sound/cs8427.h |    1 +
- sound/i2c/cs8427.c     |   57 ++++++++++++++++++++++++++++++++----------------
- 2 files changed, 39 insertions(+), 19 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/cs8427.h b/include/sound/cs8427.h
-index f862cff..0b6a187 100644
---- a/include/sound/cs8427.h
-+++ b/include/sound/cs8427.h
-@@ -188,6 +188,7 @@
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 912104f..8efc89e 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -209,8 +209,9 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 	struct clk *clksrc = esai_priv->extalclk;
+ 	bool tx = clk_id <= ESAI_HCKT_EXTAL;
+ 	bool in = dir == SND_SOC_CLOCK_IN;
+-	u32 ret, ratio, ecr = 0;
++	u32 ratio, ecr = 0;
+ 	unsigned long clk_rate;
++	int ret;
  
- struct snd_pcm_substream;
- 
-+int snd_cs8427_init(struct snd_i2c_bus *bus, struct snd_i2c_device *device);
- int snd_cs8427_create(struct snd_i2c_bus *bus, unsigned char addr,
- 		      unsigned int reset_timeout, struct snd_i2c_device **r_cs8427);
- int snd_cs8427_reg_write(struct snd_i2c_device *device, unsigned char reg,
-diff --git a/sound/i2c/cs8427.c b/sound/i2c/cs8427.c
-index 6c2dc38..d9c15d9 100644
---- a/sound/i2c/cs8427.c
-+++ b/sound/i2c/cs8427.c
-@@ -150,10 +150,8 @@ static void snd_cs8427_free(struct snd_i2c_device *device)
- 	kfree(device->private_data);
- }
- 
--int snd_cs8427_create(struct snd_i2c_bus *bus,
--		      unsigned char addr,
--		      unsigned int reset_timeout,
--		      struct snd_i2c_device **r_cs8427)
-+int snd_cs8427_init(struct snd_i2c_bus *bus,
-+		    struct snd_i2c_device *device)
+ 	/* sck_div can be only bypassed if ETO/ERO=0 and SNC_SOC_CLOCK_OUT */
+ 	esai_priv->sck_div[tx] = true;
+@@ -432,8 +433,8 @@ static int fsl_esai_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ static int fsl_esai_startup(struct snd_pcm_substream *substream,
+ 			    struct snd_soc_dai *dai)
  {
- 	static unsigned char initvals1[] = {
- 	  CS8427_REG_CONTROL1 | CS8427_REG_AUTOINC,
-@@ -200,22 +198,10 @@ int snd_cs8427_create(struct snd_i2c_bus *bus,
- 	     Inhibit E->F transfers. */
- 	  CS8427_UD | CS8427_EFTUI | CS8427_DETUI,
- 	};
-+	struct cs8427 *chip = device->private_data;
- 	int err;
--	struct cs8427 *chip;
--	struct snd_i2c_device *device;
- 	unsigned char buf[24];
+-	int ret;
+ 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
++	int ret;
  
--	if ((err = snd_i2c_device_create(bus, "CS8427",
--					 CS8427_ADDR | (addr & 7),
--					 &device)) < 0)
--		return err;
--	chip = device->private_data = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (chip == NULL) {
--	      	snd_i2c_device_free(device);
--		return -ENOMEM;
--	}
--	device->private_free = snd_cs8427_free;
--	
- 	snd_i2c_lock(bus);
- 	err = snd_cs8427_reg_read(device, CS8427_REG_ID_AND_VER);
- 	if (err != CS8427_VER8427A) {
-@@ -264,10 +250,44 @@ int snd_cs8427_create(struct snd_i2c_bus *bus,
- 	snd_i2c_unlock(bus);
+ 	/*
+ 	 * Some platforms might use the same bit to gate all three or two of
+@@ -491,7 +492,8 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	u32 width = snd_pcm_format_width(params_format(params));
+ 	u32 channels = params_channels(params);
+-	u32 bclk, mask, val, ret;
++	u32 bclk, mask, val;
++	int ret;
  
- 	/* turn on run bit and rock'n'roll */
-+	snd_cs8427_reset(device);
-+
-+	return 0;
-+
-+      __fail:
-+	snd_i2c_unlock(bus);
-+
-+	return err;
-+}
-+
-+EXPORT_SYMBOL(snd_cs8427_init);
-+
-+int snd_cs8427_create(struct snd_i2c_bus *bus,
-+		      unsigned char addr,
-+		      unsigned int reset_timeout,
-+		      struct snd_i2c_device **r_cs8427)
-+{
-+	int err;
-+	struct cs8427 *chip;
-+	struct snd_i2c_device *device;
-+
-+	if ((err = snd_i2c_device_create(bus, "CS8427",
-+					 CS8427_ADDR | (addr & 7),
-+					 &device)) < 0)
-+		return err;
-+	chip = device->private_data = kzalloc(sizeof(*chip), GFP_KERNEL);
-+	if (chip == NULL) {
-+		snd_i2c_device_free(device);
-+		return -ENOMEM;
-+	}
-+	device->private_free = snd_cs8427_free;
-+
- 	if (reset_timeout < 1)
- 		reset_timeout = 1;
- 	chip->reset_timeout = reset_timeout;
--	snd_cs8427_reset(device);
-+
-+	if ((err = snd_cs8427_init(bus, device)))
-+		goto __fail;
+ 	bclk = params_rate(params) * esai_priv->slot_width * 2;
  
- #if 0	// it's nice for read tests
- 	{
-@@ -286,7 +306,6 @@ int snd_cs8427_create(struct snd_i2c_bus *bus,
- 	return 0;
- 
-       __fail:
--      	snd_i2c_unlock(bus);
-       	snd_i2c_device_free(device);
-       	return err < 0 ? err : -EIO;
- }
 -- 
-Ondrej Zary
+1.8.4
