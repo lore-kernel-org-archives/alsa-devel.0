@@ -1,82 +1,84 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Add support for multi register mux
-Date: Thu, 3 Apr 2014 17:02:54 +0100
-Message-ID: <20140403160254.GV14763@sirena.org.uk>
-References: <1396494710-20944-1-git-send-email-aruns@nvidia.com>
- <s5h4n2asq1o.wl%tiwai@suse.de>
- <20140403095330.GS14763@sirena.org.uk>
- <533D62CE.5040907@metafoo.de>
- <s5hr45epi4r.wl%tiwai@suse.de>
+From: Paul Handrigan <paul.handrigan@cirrus.com>
+Subject: Re: [PATCH] ASoC: cs42xx8: Check return value of
+ regmap_read and report correct chipid value
+Date: Thu, 3 Apr 2014 11:48:57 -0500
+Message-ID: <alpine.DEB.2.00.1404031147350.2043@phandrigan-desktop>
+References: <1396511616.30532.2.camel@phoenix>
+ <20140403153314.GB32327@MrMyself>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="A47bNRIYjYQgpFVi"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hr45epi4r.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Arun Shamanna Lakshmi <aruns@nvidia.com>, lgirdwood@gmail.com, swarren@wwwdotorg.org, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Songhee Baek <sbaek@nvidia.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1on0091.outbound.protection.outlook.com [157.56.110.91])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63DBD2656B9
+ for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 18:49:03 +0200 (CEST)
+In-Reply-To: <20140403153314.GB32327@MrMyself>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: alsa-devel@alsa-project.org, Axel Lin <axel.lin@ingics.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Acked-by: Paul Handrigan <paul.handrigan@cirrus.com>
 
---A47bNRIYjYQgpFVi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, 3 Apr 2014, Nicolin Chen wrote:
 
-On Thu, Apr 03, 2014 at 05:06:28PM +0200, Takashi Iwai wrote:
-> Lars-Peter Clausen wrote:
-
-> > It would be nice, but it also requires some slight restructuring. The i=
-ssue=20
-> > we have right now is that there is  strictly speaking a bit of a layeri=
-ng=20
-> > violation. The DAPM widgets should not need to know how the kcontrols t=
-hat=20
-> > are attached to the widget do their IO. What we essentially do in=20
-> > dapm_connect_mux() (and also dapm_connect_mixer) is an open-coded versi=
-on of=20
-> > the controls get handler. Replacing that by calling the get handler ins=
-tead=20
-> > should allow us to use different structs for enums and onehot enums.
-
-Right, that's because DAPM has always just reimplemented everything and
-the virtual controls were grafted on the side of the existing register
-stuff rather than adding an abstraction layer.
-
-> So, something like below?  It's totally untested, just a proof of
-> concept.
-
-Yes, that looks sensible to me but I didn't test it yet either.
-
-> If the performance matters, we can optimize it by checking
-> kcontrol->get =3D=3D snd_soc_dapm_get_enum_double or kcontrol->get =3D=3D
-> snd_soc_dapm_get_volsw and bypass to the current open-code functions
-> instead of the generic get/put callers.
-
-Performance isn't that big a deal, probably avoiding the alloc/frees
-by just keeping one around somewhere convenient would be useful too.
-
---A47bNRIYjYQgpFVi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTPYYqAAoJELSic+t+oim942gP/0cfOGPtl+SeM5sjve0R0uC7
-lu8mdn1VC5YJZSV2qzIuv9AxQgf547ou4h3OImr309Y2HwA4P6dN5i3efqhQ1O7m
-8le38Eh5Pmn/zR4FmSdmQeYCV9Ps/kI13mcCL6tnXn07idHWrgfsyV/vN4xUxCjZ
-Rlx7J63u14d93F0JTt9nX8fp8rpIR9DzODGoXL8O/xm/ajP8APz/9DDeKWbkHXhd
-g39NpDUEow575AIa9WNaQsRdLDhDm1c1oDeDK/pSyZ34JywP6DSABeiW2Gy1FuRP
-f+CAsuyz7JSzojHD/2Dt/IbSHFhOoozqn7sJPVSQFrpSHubnQVg91QTmfnbIRAxg
-VG79vPpHso5Nu4v4FlMXSs57w9S9o8yztDBnyrYgiY9oYEEuqwRawojQuwYd8SZW
-2PJmDb51PTG8QgSeMnz8d9UXYdz/l9a2+VdsluXYRPNL9GnmliwAmnuziH5E7vIv
-fYArotHVb88b0GGipdAidepd/YthU5Avvkjm+JKYnnTQnTaSN+vLkBsmeHc08Wuw
-8jvsTbhWQ8Pfkhav1eqqcU9F3l4I3vjjRYtmhCYD4nLdz4d+7KF2UBEGcjUsrW8y
-4nX6fdAlx2HrBNUJMreMOErv7m/TFHA4cPvjK/RX5aleoTcrlwuxB82PC43Qjz3j
-oCbnUyWgSeATt5/duD3Z
-=KeIg
------END PGP SIGNATURE-----
-
---A47bNRIYjYQgpFVi--
+> On Thu, Apr 03, 2014 at 03:53:36PM +0800, Axel Lin wrote:
+>> Fix checking return value of regmap_read().
+>> Also fix reporting the chip_id value. CS42XX8_CHIPID_CHIP_ID_MASK is 0xF0,
+>> so the chip_id value is (val & CS42XX8_CHIPID_CHIP_ID_MASK) >> 4).
+>>
+>> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+>> ---
+>>  sound/soc/codecs/cs42xx8.c | 9 ++++-----
+>>  1 file changed, 4 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
+>> index 082299a..b1606cf 100644
+>> --- a/sound/soc/codecs/cs42xx8.c
+>> +++ b/sound/soc/codecs/cs42xx8.c
+>> @@ -495,17 +495,16 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap)
+>>  	regcache_cache_bypass(cs42xx8->regmap, true);
+>>
+>>  	/* Validate the chip ID */
+>> -	regmap_read(cs42xx8->regmap, CS42XX8_CHIPID, &val);
+>> -	if (val < 0) {
+>> +	ret = regmap_read(cs42xx8->regmap, CS42XX8_CHIPID, &val);
+>> +	if (ret < 0) {
+>>  		dev_err(dev, "failed to get device ID: %x", val);
+>
+> %d and ret would be better here since val won't be useful in this case.
+>
+> Thank you for the fix.
+> Nicolin Chen
+>
+>> -		ret = -EINVAL;
+>>  		goto err_enable;
+>>  	}
+>>
+>>  	/* The top four bits of the chip ID should be 0000 */
+>> -	if ((val & CS42XX8_CHIPID_CHIP_ID_MASK) != 0x00) {
+>> +	if (((val & CS42XX8_CHIPID_CHIP_ID_MASK) >> 4) != 0x00) {
+>>  		dev_err(dev, "unmatched chip ID: %d\n",
+>> -				val & CS42XX8_CHIPID_CHIP_ID_MASK);
+>> +			(val & CS42XX8_CHIPID_CHIP_ID_MASK) >> 4);
+>>  		ret = -EINVAL;
+>>  		goto err_enable;
+>>  	}
+>> --
+>> 1.8.3.2
+>>
+>>
+>>
+>>
+>>
+>
+>
