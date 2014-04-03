@@ -1,26 +1,18 @@
-From: Songhee Baek <sbaek@nvidia.com>
-Subject: Re: [PATCH] ASoC: DAPM: Add support for multi register
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: dapm: Add support for multi register
 	mux
-Date: Wed, 2 Apr 2014 00:06:06 -0700
-Message-ID: <D6C615D3E4730340AE82D5BD856631C0A26CB32547@HQMAIL02.nvidia.com>
-References: <1396333288-19113-1-git-send-email-aruns@nvidia.com>
- <533A6F4A.2060702@metafoo.de>
- <781A12BB53C15A4BB37291FDE08C03F3A05CDCD63B@HQMAIL02.nvidia.com>
- <781A12BB53C15A4BB37291FDE08C03F3A05CDCD659@HQMAIL02.nvidia.com>
- <533BA779.9010005@metafoo.de>
- <D6C615D3E4730340AE82D5BD856631C0A26CB3252F@HQMAIL02.nvidia.com>
- <533BB26B.3020503@metafoo.de>
- <D6C615D3E4730340AE82D5BD856631C0A26CB32541@HQMAIL02.nvidia.com>
- <533BB5E6.7050004@metafoo.de>
+Date: Thu, 03 Apr 2014 10:27:17 +0200
+Message-ID: <533D1B65.3030405@metafoo.de>
+References: <1396494710-20944-1-git-send-email-aruns@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D138265607
- for <alsa-devel@alsa-project.org>; Wed,  2 Apr 2014 09:06:14 +0200 (CEST)
-In-Reply-To: <533BB5E6.7050004@metafoo.de>
-Content-Language: en-US
+Received: from smtp-out-019.synserver.de (smtp-out-102.synserver.de
+ [212.40.185.102])
+ by alsa0.perex.cz (Postfix) with ESMTP id 74136265558
+ for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 10:26:28 +0200 (CEST)
+In-Reply-To: <1396494710-20944-1-git-send-email-aruns@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,170 +22,204 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Arun Shamanna Lakshmi <aruns@nvidia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
+To: Arun Shamanna Lakshmi <aruns@nvidia.com>
+Cc: Songhee Baek <sbaek@nvidia.com>, alsa-devel@alsa-project.org, swarren@wwwdotorg.org, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
-> Sent: Wednesday, April 02, 2014 12:02 AM
-> To: Songhee Baek
-> Cc: Arun Shamanna Lakshmi; lgirdwood@gmail.com; broonie@kernel.org;
-> swarren@wwwdotorg.org; perex@perex.cz; tiwai@suse.de; alsa-
-> devel@alsa-project.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] ASoC: DAPM: Add support for multi register mux
-> 
-> On 04/02/2014 08:56 AM, Songhee Baek wrote:
-> >
-> >
-> >> -----Original Message-----
-> >> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
-> >> Sent: Tuesday, April 01, 2014 11:47 PM
-> >> To: Songhee Baek
-> >> Cc: Arun Shamanna Lakshmi; lgirdwood@gmail.com; broonie@kernel.org;
-> >> swarren@wwwdotorg.org; perex@perex.cz; tiwai@suse.de; alsa-
-> >> devel@alsa-project.org; linux-kernel@vger.kernel.org
-> >> Subject: Re: [PATCH] ASoC: DAPM: Add support for multi register mux
-> >>
-> >> On 04/02/2014 08:17 AM, Songhee Baek wrote:
-> >>>> -----Original Message-----
-> >>>> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
-> >>>> Sent: Tuesday, April 01, 2014 11:00 PM
-> >>>> To: Arun Shamanna Lakshmi
-> >>>> Cc: lgirdwood@gmail.com; broonie@kernel.org;
-> >> swarren@wwwdotorg.org;
-> >>>> perex@perex.cz; tiwai@suse.de; alsa-devel@alsa-project.org; linux-
-> >>>> kernel@vger.kernel.org; Songhee Baek
-> >>>> Subject: Re: [PATCH] ASoC: DAPM: Add support for multi register mux
-> >>>>
-> >>>> On 04/01/2014 08:26 PM, Arun Shamanna Lakshmi wrote:
-> >>>> [...]
-> >>>>>>> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c index
-> >>>>>>> c8a780d..4d2b35c 100644
-> >>>>>>> --- a/sound/soc/soc-dapm.c
-> >>>>>>> +++ b/sound/soc/soc-dapm.c
-> >>>>>>> @@ -514,9 +514,9 @@ static int dapm_connect_mux(struct
-> >>>>>> snd_soc_dapm_context *dapm,
-> >>>>>>>      	unsigned int val, item;
-> >>>>>>>      	int i;
-> >>>>>>>
-> >>>>>>> -	if (e->reg != SND_SOC_NOPM) {
-> >>>>>>> -		soc_widget_read(dest, e->reg, &val);
-> >>>>>>> -		val = (val >> e->shift_l) & e->mask;
-> >>>>>>> +	if (e->reg[0] != SND_SOC_NOPM) {
-> >>>>>>> +		soc_widget_read(dest, e->reg[0], &val);
-> >>>>>>> +		val = (val >> e->shift_l) & e->mask[0];
-> >>>>>>>      		item = snd_soc_enum_val_to_item(e, val);
-> >>>>>>
-> >>>>>> This probably should handle the new enum type as well. You'll
-> >>>>>> probably need some kind of flag in the struct to distinguish
-> >>>>>> between the two enum types.
-> >>>>>
-> >>>>> Any suggestion on the flag name ?
-> >>>>>
-> >>>>
-> >>>> How about 'onehot'?
-> >>>>
-> >>>> [...]
-> >>>>>>> +		reg_val = BIT(bit_pos);
-> >>>>>>> +	}
-> >>>>>>> +
-> >>>>>>> +	for (i = 0; i < e->num_regs; i++) {
-> >>>>>>> +		if (i == reg_idx) {
-> >>>>>>> +			change = snd_soc_test_bits(codec, e->reg[i],
-> >>>>>>> +							e->mask[i],
-> >>>>>> reg_val);
-> >>>>>>> +
-> >>>>>>> +		} else {
-> >>>>>>> +			/* accumulate the change to update the
-> >> DAPM
-> >>>>>> path
-> >>>>>>> +			    when none is selected */
-> >>>>>>> +			change += snd_soc_test_bits(codec, e-
-> >>> reg[i],
-> >>>>>>> +							e->mask[i], 0);
-> >>>>>>
-> >>>>>> change |=
-> >>>>>>
-> >>>>>>> +
-> >>>>>>> +			/* clear the register when not selected */
-> >>>>>>> +			snd_soc_write(codec, e->reg[i], 0);
-> >>>>>>
-> >>>>>> I think this should happen as part of the DAPM update sequence
-> >>>>>> like you had earlier. Some special care should probably be take
-> >>>>>> to make sure that you de-select the previous mux input before
-> >>>>>> selecting the new one if the new one is in a different register than
-> the previous one.
-> >>>>>
-> >>>>> I am not sure I follow this part. We are clearing the 'not selected'
-> >>>>> registers before we set the one we want. Do you want us to loop
-> >>>>> the logic of soc_dapm_mux_update_power for each register ? or do
-> >>>>> you want to change the dapm_update structure so that it takes all
-> >>>>> the regs, masks, and values together ?
-> >>>>
-> >>>> The idea with the dapm_update struct is that the register updates
-> >>>> are done in the middle of the power-down and power-up sequence.
-> So
-> >>>> yes, change the dapm_update struct to be able to hold all register
-> >>>> updates and do all register updates in dapm_widget_update. I think
-> >>>> an earlier version of your patch already had this.
-> >>>
-> >>> Is the change similar to as shown below?
-> >>>
-> >>> for (reg_idx = 0; reg_idx < e->num_regs; reg_idx++) {
-> >>> 	val = e->values[item * e->num_regs + reg_idx];
-> >>> 	ret = snd_soc_update_bits_locked(codec, e->reg[reg_idx],
-> >>> 				e->mask[reg_idx], val);
-> >>> 	if (ret)
-> >>> 	return ret;
-> >>> }
-> >>>
-> >>> During updating of the register's value, the above change can create
-> >>> non-zero value in two different registers (very short transition) as
-> >>> Mark mentioned for that change so we need to clear register first
-> >>> before writing the desired value in the register.
-> >>>
-> >>> Should we add the clearing all registers and write the mux value in
-> >>> desired register in the update function?
-> >>>
-> >>
-> >> In dapm_update_widget() you have this line:
-> >>
-> >>    ret = soc_widget_update_bits(w, update->reg, update->mask, update-
-> >>> val);
-> >>
-> >> That needs to be done for every register update. When you setup the
-> >> update struct you need to make sure that the register clears come
-> >> before the register set.
-> >>
-> >> E.g. if you have register 0x3, 0x4, 0x5 and you select a bit in
-> >> register 0x4 it should look like this.
-> >>
-> >> update->reg[0] = 0x3;
-> >> update->val[0] = 0x0;
-> >> update->reg[1] = 0x5;
-> >> update->val[1] = 0x0;
-> >> update->reg[2] = 0x4;
-> >> update->val[2] = 0x8;
-> >>
-> >> When you set a bit in register 0x3 it should look like this:
-> >>
-> >> update->reg[0] = 0x4;
-> >> update->val[0] = 0x0;
-> >> update->reg[1] = 0x5;
-> >> update->val[1] = 0x0;
-> >> update->reg[2] = 0x3;
-> >> update->val[2] = 0x1;
-> >>
-> >> So basically the write operation goes into update->reg[e->num_regs-1]
-> >> the clear operations go into the other slots before that.
-> >
-> > Does update reg/val array have the writing sequence, is it correct?
-> > And can I assume that update struct has reg/val/mask arrays not pointers?
-> 
-> Right now the update struct does not have support for multiple register
-> writes. That's up to you to implement this. I guess making it an array for now
-> should be fine. But you need to add some safety checks to make sure that
-> num_regs is not larger or equal to the array size.
+On 04/03/2014 05:11 AM, Arun Shamanna Lakshmi wrote:
 
-Thank you for the clarification. We will add this in dapm update struct.
+This looks essentially good to me. A few minor issues, once those are fixed 
+things should be good to go.
+
+[...]
+>   struct snd_soc_dapm_update {
+>   	struct snd_kcontrol *kcontrol;
+> -	int reg;
+> -	int mask;
+> -	int val;
+> +	int reg[3];
+> +	int mask[3];
+> +	int val[3];
+
+Make the 3 a define and check against it in the put handler.
+
+> +	int num_regs;
+
+unsigned int
+
+>   };
+[...]
+> +/*
+> + * Soc Enum Type
+> + *
+> + * @NONE:    soc_enum type for SINGLE, DOUBLE or VIRTUAL mux
+> + * @ONEHOT:  soc_enum type for one hot encoding mux
+> + */
+
+
+This should be kernel doc style so
+
+/**
+  * enum snd_soc_enum_type - Type of the ASoC enum control
+  * @SND_SOC_ENUM_NONE: ...
+  * ...
+  */
+
+
+> +enum snd_soc_enum_type {
+> +	SND_SOC_ENUM_NONE = 0,
+
+I'm not sure if NONE is the right term. Maybe BINARY is better.
+
+> +	SND_SOC_ENUM_ONEHOT = 1,
+> +};
+> +
+[...]
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index c8a780d..19b004a 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -511,13 +511,26 @@ static int dapm_connect_mux(struct snd_soc_dapm_context *dapm,
+>   	const struct snd_kcontrol_new *kcontrol)
+>   {
+>   	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+> -	unsigned int val, item;
+> +	unsigned int val, item, bit_pos = -1;
+
+default for bit_pos should probably be 0.
+
+[...]
+> @@ -1575,8 +1588,12 @@ static void dapm_widget_update(struct snd_soc_card *card)
+>   	if (!w)
+>   		return;
+>
+> -	ret = soc_widget_update_bits_locked(w, update->reg, update->mask,
+> -				  update->val);
+> +	/* dapm update for multiple registers */
+> +	for (i = 0; i < update->num_regs; i++) {
+> +		ret |= soc_widget_update_bits_locked(w, update->reg[i],
+> +					update->mask[i], update->val[i]);
+
+I'd prefer
+	ret = soc_widget_update_bits_locked(...);
+	if (ret < 0)
+		break;
+
+> +	}
+> +
+>   	if (ret < 0)
+>   		dev_err(w->dapm->dev, "ASoC: %s DAPM update failed: %d\n",
+>   			w->name, ret);
+[...]
+> @@ -2984,6 +3002,112 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+>   EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_double);
+>
+>   /**
+> + * snd_soc_dapm_get_enum_onehot - dapm enumerated onehot mixer get callback
+> + * @kcontrol: mixer control
+> + * @ucontrol: control element information
+> + *
+> + * Callback to get the value of a dapm enumerated onehot encoded mixer control
+> + *
+> + * Returns 0 for success.
+> + */
+> +int snd_soc_dapm_get_enum_onehot(struct snd_kcontrol *kcontrol,
+> +			struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
+> +	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+> +	unsigned int reg_val, val, bit_pos = -1, reg_idx;
+
+Here as well, default for bit_pos should be 0.
+
+> +
+> +	for (reg_idx = 0; reg_idx < e->num_regs; reg_idx++) {
+> +		reg_val = snd_soc_read(codec, e->reg[reg_idx]);
+> +		val = reg_val & e->mask[reg_idx];
+> +		if (val != 0) {
+> +			bit_pos = __ffs(val) + (8 * codec->val_bytes * reg_idx);
+> +			break;
+> +		}
+> +	}
+> +
+> +	ucontrol->value.enumerated.item[0] =
+> +			snd_soc_enum_val_to_item(e, bit_pos);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(snd_soc_dapm_get_enum_onehot);
+> +
+> +/**
+> + * snd_soc_dapm_put_enum_onehot - dapm enumerated onehot mixer put callback
+> + * @kcontrol: mixer control
+> + * @ucontrol: control element information
+> + *
+> + * Callback to put the value of a dapm enumerated onehot encoded mixer control
+> + *
+> + * Returns 0 for success.
+> + */
+> +int snd_soc_dapm_put_enum_onehot(struct snd_kcontrol *kcontrol,
+> +			struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
+> +	struct snd_soc_card *card = codec->card;
+> +	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+> +	unsigned int *item = ucontrol->value.enumerated.item;
+> +	unsigned int change = 0, reg_idx = 0, value, bit_pos;
+> +	struct snd_soc_dapm_update update;
+> +	int ret = 0, reg_val = 0, i, update_idx = 0;
+> +
+> +	if (item[0] >= e->items)
+> +		return -EINVAL;
+> +
+> +	value = snd_soc_enum_item_to_val(e, item[0]);
+> +
+> +	if (value >= 0) {
+
+value is unsigned int, so this is never false.
+
+> +		/* get the register index and value to set */
+> +		reg_idx = value / (8 * codec->val_bytes);
+> +		bit_pos = value % (8 * codec->val_bytes);
+> +		reg_val = BIT(bit_pos);
+> +	}
+> +
+> +	for (i = 0; i < e->num_regs; i++) {
+> +		if (i == reg_idx) {
+> +			change = snd_soc_test_bits(codec, e->reg[i],
+> +							e->mask[i], reg_val);
+
+change |=
+
+> +			/* set the selected register */
+> +			update.reg[e->num_regs - 1] = e->reg[reg_idx];
+> +			update.mask[e->num_regs - 1] = e->mask[reg_idx];
+> +			update.val[e->num_regs - 1] = reg_val;
+> +		} else {
+> +			/* accumulate the change to update the DAPM path
+> +			    when none is selected */
+> +			change |= snd_soc_test_bits(codec, e->reg[i],
+> +							e->mask[i], 0);
+> +
+> +			/* clear the register when not selected */
+> +			update.reg[update_idx] = e->reg[i];
+> +			update.mask[update_idx] = e->mask[i];
+> +			update.val[update_idx++] = 0;
+> +		}
+> +	}
+> +
+> +	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+> +
+> +	if (change) {
+> +		update.kcontrol = kcontrol;
+> +		update.num_regs = 3;
+
+Should be e->num_regs;
+
+> +		card->update = &update;
+> +
+> +		ret = soc_dapm_mux_update_power(card, kcontrol, item[0], e);
+> +
+> +		card->update = NULL;
+> +	}
+> +
