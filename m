@@ -1,20 +1,17 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH 3/4] ASoC: spdif: Sort the header files
-	alphabetically.
-Date: Thu, 3 Apr 2014 19:21:52 +0800
-Message-ID: <20140403112150.GC32081@MrMyself>
-References: <1396516257-25354-1-git-send-email-Li.Xiubo@freescale.com>
- <1396516257-25354-4-git-send-email-Li.Xiubo@freescale.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: da732x: Print correct major id
+Date: Thu, 03 Apr 2014 19:56:32 +0800
+Message-ID: <1396526192.12814.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
- by alsa0.perex.cz (Postfix) with ESMTP id B58E42619F4
- for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 13:33:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1396516257-25354-4-git-send-email-Li.Xiubo@freescale.com>
+Received: from mail-pb0-f49.google.com (mail-pb0-f49.google.com
+ [209.85.160.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB5F2265593
+ for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 13:56:38 +0200 (CEST)
+Received: by mail-pb0-f49.google.com with SMTP id jt11so1731223pbb.22
+ for <alsa-devel@alsa-project.org>; Thu, 03 Apr 2014 04:56:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,49 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, timur@tabi.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Michal Hajduk <michal.hajduk@diasemi.com>, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 03, 2014 at 05:10:56PM +0800, Xiubo Li wrote:
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+DA732X_ID_MAJOR_MASK is 0xF0, so the major id is
+(reg & DA732X_ID_MAJOR_MASK) >> 4.
 
-Acked-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/da732x.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thank you.
-
-> ---
->  sound/soc/fsl/fsl_spdif.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-> index 6452ca8..173553c 100644
-> --- a/sound/soc/fsl/fsl_spdif.c
-> +++ b/sound/soc/fsl/fsl_spdif.c
-> @@ -13,18 +13,18 @@
->   * kind, whether express or implied.
->   */
->  
-> -#include <linux/module.h>
-> +#include <linux/bitrev.h>
->  #include <linux/clk.h>
->  #include <linux/clk-private.h>
-> -#include <linux/bitrev.h>
-> -#include <linux/regmap.h>
-> +#include <linux/module.h>
->  #include <linux/of_address.h>
->  #include <linux/of_device.h>
->  #include <linux/of_irq.h>
-> +#include <linux/regmap.h>
->  
->  #include <sound/asoundef.h>
-> -#include <sound/soc.h>
->  #include <sound/dmaengine_pcm.h>
-> +#include <sound/soc.h>
->  
->  #include "fsl_spdif.h"
->  #include "imx-pcm.h"
-> -- 
-> 1.8.4
-> 
-> 
+diff --git a/sound/soc/codecs/da732x.c b/sound/soc/codecs/da732x.c
+index 7d168ec..48f3fef 100644
+--- a/sound/soc/codecs/da732x.c
++++ b/sound/soc/codecs/da732x.c
+@@ -1571,7 +1571,8 @@ static int da732x_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 
+ 	dev_info(&i2c->dev, "Revision: %d.%d\n",
+-		 (reg & DA732X_ID_MAJOR_MASK), (reg & DA732X_ID_MINOR_MASK));
++		 (reg & DA732X_ID_MAJOR_MASK) >> 4,
++		 (reg & DA732X_ID_MINOR_MASK));
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_da732x,
+ 				     da732x_dai, ARRAY_SIZE(da732x_dai));
+-- 
+1.8.3.2
