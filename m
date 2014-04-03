@@ -1,28 +1,19 @@
-From: andoru <andoru.blah@gmail.com>
-Subject: Re:
-	=?utf-8?q?Invalid_PCM_pointer_with_CMI8738_and_pcm?=
-	=?utf-8?q?=2Ec_buffer=09underuns?=
-Date: Wed, 2 Apr 2014 02:24:42 +0000 (UTC)
-Message-ID: <loom.20140402T041705-427@post.gmane.org>
-References: <CAAvHfitJ2B1sr7_6h=ww_SVGgsuy4iNLGc3CjDyiNtwdpJTSUw@mail.gmail.com>
- <533AA4F9.4040508@ladisch.de> <loom.20140401T193432-364@post.gmane.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: dapm: Add support for multi register
+	mux
+Date: Thu, 03 Apr 2014 15:31:58 +0200
+Message-ID: <533D62CE.5040907@metafoo.de>
+References: <1396494710-20944-1-git-send-email-aruns@nvidia.com>
+ <s5h4n2asq1o.wl%tiwai@suse.de> <20140403095330.GS14763@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 58368261A80
- for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 15:37:46 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1WVh66-0007tD-9W
- for alsa-devel@alsa-project.org; Thu, 03 Apr 2014 14:50:22 +0200
-Received: from cl-86-125-143-50.cablelink.mures.rdsnet.ro ([86.125.143.50])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 03 Apr 2014 14:50:22 +0200
-Received: from andoru.blah by cl-86-125-143-50.cablelink.mures.rdsnet.ro with
- local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 03 Apr 2014 14:50:22 +0200
+Received: from smtp-out-019.synserver.de (smtp-out-105.synserver.de
+ [212.40.185.105])
+ by alsa0.perex.cz (Postfix) with ESMTP id E44A6261A80
+ for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 15:31:05 +0200 (CEST)
+In-Reply-To: <20140403095330.GS14763@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,65 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Songhee Baek <sbaek@nvidia.com>, Arun Shamanna Lakshmi <aruns@nvidia.com>, alsa-devel@alsa-project.org, swarren@wwwdotorg.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-
-Raymond Yau wrote:
+On 04/03/2014 11:53 AM, Mark Brown wrote:
+> On Thu, Apr 03, 2014 at 11:47:15AM +0200, Takashi Iwai wrote:
 >
-> >
-> > Andoru wrote:
-> > > The last time you replied you said that it's a hardware error. If it
-> > > is that way then how come the card otherwise works flawlessly in
-> > > Windows, and this doesn't happen on Debian when watching videos or
-> > > with certain programs?
+>> I'm a bit late in the game, but I feel a bit uneasy through looking
+>> at the whole changes.  My primary question is, whether do we really
+>> need to share the same struct soc_enum for the onehot type?  What
+>> makes hard to use a struct soc_enum_onehot for them?  You need
+>> different individual get/put for each type.  We may still need to
+>> change soc_dapm_update stuff, but it's different from sharing
+>> soc_enum.
 >
-> The Linux driver seem sharing two Dma channels with at least two playback
-> devices and capture device
-> 
-> The logic seem allow front and rear playing different audio but no capture
-> Multi channel playback but no capture
-> 
-> open three terminals and try different combination of
-> 
-> speaker-test -c2 -t wav -D front
+> Indeed, I had thought this was where the discussion was heading - not
+> looked at this version of the patch yet.
+>
 
-This gives me: 
-___________________________________________________
+It would be nice, but it also requires some slight restructuring. The issue 
+we have right now is that there is  strictly speaking a bit of a layering 
+violation. The DAPM widgets should not need to know how the kcontrols that 
+are attached to the widget do their IO. What we essentially do in 
+dapm_connect_mux() (and also dapm_connect_mixer) is an open-coded version of 
+the controls get handler. Replacing that by calling the get handler instead 
+should allow us to use different structs for enums and onehot enums.
 
-speaker-test 1.0.27.2
-
-Playback device is front
-Stream parameters are 48000Hz, S16_LE, 2 channels
-WAV file(s)
-ALSA lib confmisc.c:768:(parse_card) cannot find card '1'
-ALSA lib conf.c:4248:(_snd_config_evaluate) function snd_func_card_driver
-returned error: No such file or directory
-ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
-ALSA lib conf.c:4248:(_snd_config_evaluate) function snd_func_concat
-returned error: No such file or directory
-ALSA lib confmisc.c:1251:(snd_func_refer) error evaluating name
-ALSA lib conf.c:4248:(_snd_config_evaluate) function snd_func_refer returned
-error: No such file or directory
-ALSA lib conf.c:4727:(snd_config_expand) Evaluate error: No such file or
-directory
-ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM front
-Playback open error: -2,No such file or directory
-____________________________________________________
-
-> speaker-test -c2 -t wav -D rear
-
-This gives me the same as above. (except the playback device is "rear" not
-"front", as expected)
-
-> arecord -f dat -D plughw:0,0
-
-This just prints a bunch of random characters continiously unless I quit.
-
-> speaker-test -c4 -t wav -D surround40
-
-Same as the first issued command.
-
-> speaker-test -c6 -t wav -D surround51
-
-As expected... same as above.
+- Lars
