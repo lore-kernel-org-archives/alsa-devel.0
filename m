@@ -1,109 +1,109 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v2] drm/i915: move power domain init earlier
- during system resume
-Date: Thu, 3 Apr 2014 23:06:13 +0200
-Message-ID: <20140403210613.GM7225@phenom.ffwll.local>
-References: <1395396631-12243-1-git-send-email-imre.deak@intel.com>
- <1396371322-13752-1-git-send-email-imre.deak@intel.com>
- <20140401174827.GO22327@phenom.ffwll.local>
- <1396378243.2488.10.camel@ideak-mobl>
- <CAKMK7uGVowGt--qRoEGh2jdBsc_Qk23vonsnqW9dA5ZxZzc4EA@mail.gmail.com>
- <s5hd2gzubsl.wl%tiwai@suse.de>
- <20140403152310.GH7225@phenom.ffwll.local>
- <s5hlhvmpgze.wl%tiwai@suse.de>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH 2/2] snd-ice1712: Save/restore routing and rate
+	registers
+Date: Thu,  3 Apr 2014 23:09:38 +0200
+Message-ID: <1396559378-23980-2-git-send-email-linux@rainbow-software.org>
+References: <1396559378-23980-1-git-send-email-linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5hlhvmpgze.wl%tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, intel-gfx <intel-gfx@lists.freedesktop.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-1.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8FCA2656F1
+ for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 23:09:53 +0200 (CEST)
+In-Reply-To: <1396559378-23980-1-git-send-email-linux@rainbow-software.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 03, 2014 at 05:31:17PM +0200, Takashi Iwai wrote:
-> At Thu, 3 Apr 2014 17:23:10 +0200,
-> Daniel Vetter wrote:
-> > 
-> > On Wed, Apr 02, 2014 at 02:59:54PM +0200, Takashi Iwai wrote:
-> > > At Tue, 1 Apr 2014 22:26:20 +0200,
-> > > Daniel Vetter wrote:
-> > > > 
-> > > > On Tue, Apr 01, 2014 at 09:50:43PM +0300, Imre Deak wrote:
-> > > > > On Tue, 2014-04-01 at 19:48 +0200, Daniel Vetter wrote:
-> > > > > > On Tue, Apr 01, 2014 at 07:55:22PM +0300, Imre Deak wrote:
-> > > > > > > During resume the intel hda audio driver depends on the i915 driver
-> > > > > > > reinitializing the audio power domain. Since the order of calling the
-> > > > > > > i915 resume handler wrt. that of the audio driver is not guaranteed,
-> > > > > > > move the power domain reinitialization step to the resume_early
-> > > > > > > handler. This is guaranteed to run before the resume handler of any
-> > > > > > > other driver.
-> > > > > > >
-> > > > > > > The power domain initialization in turn requires us to enable the i915
-> > > > > > > pci device first, so move that part earlier too.
-> > > > > > >
-> > > > > > > Accordingly disabling of the i915 pci device should happen after the
-> > > > > > > audio suspend handler ran. So move the disabling later from the i915
-> > > > > > > resume handler to the resume_late handler.
-> > > > > > >
-> > > > > > > v2:
-> > > > > > > - move intel_uncore_sanitize/early_sanitize earlier too, so they don't
-> > > > > > >   get reordered wrt. intel_power_domains_init_hw()
-> > > > > > >
-> > > > > > > Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=76152
-> > > > > > > Signed-off-by: Imre Deak <imre.deak@intel.com>
-> > > > > >
-> > > > > > So this is kinda why we should have gone with something proper, like a new
-> > > > > > hdmi sink platform device created by i915 and registered as a driver by
-> > > > > > snd-hda. Then the power domains stuff in the device core should take care
-> > > > > > of these kinds of ordering issues. Or at least snd-hda can tell it that it
-> > > > > > needs to wait for the hdmi-sink power domain to go on first before it can
-> > > > > > resume, I'm not really fluent on the details here.
-> > > > > >
-> > > > > > And having a hdmi sink bus would allow us to throw all kinds of crap into
-> > > > > > a clearly-defined interface, e.g. eld handling, hdcp synchronization, hpd
-> > > > > > forwarding and all the other fun stuff.
-> > > > > >
-> > > > > > So not sure what I should do with this here now.
-> > > > >
-> > > > > Right, I'm not too happy about this solution either, so if anything it
-> > > > > could be considered only a stop-gap fix. What you suggest seems to be a
-> > > > > cleaner way but it'd require more time to investigate/implement at least
-> > > > > on my part (but I'm ok to put it on my TODO list).
-> > > > 
-> > > > We'd definitely need to discuss this with Takashi Iwai, since it would
-> > > > only really be useful if it's good enough to solve the general pile of
-> > > > sound/gfx coordination issues we have with hdmi. Adding him and alsa-dev.
-> > > 
-> > > Yep, having a dedicated channel (hdmi sink bus or whatever) would be
-> > > definitely a better way to go.  OTOH, I agree that Imre's patch is
-> > > needed for the upcoming kernel.  The former implementation can't be
-> > > finished so quickly for 3.15.
-> > > 
-> > > I thought Mengdong started looking at (or working on) this, but
-> > > haven't heard the progress yet.  Mengdong, any news?
-> > 
-> > Ok, I'll splash a big honky FIXME over this so we don't forget ;-) Is the
-> > patch otherwise ok with you Takashi?
-> 
-> Yes, it's touching only i915 stuff in anyway ;)
-> Feel free to take my ack:
-> 	Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Save/restore routing and rate registers during suspend/resume.
+This fixes S/PDIF input being disabled after resume.
+Tested with Audiophile 24/96.
 
-Ok, I've pulled this into 3.15-fixes and added some big comments to the
-newly-added late/early hooks. I'll try to poke Mengmeng about the status
-of the hdmi infrastructure work.
--Daniel
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+---
+ sound/pci/ice1712/ice1712.c |   32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
+index dbb0f96..fcd46d9 100644
+--- a/sound/pci/ice1712/ice1712.c
++++ b/sound/pci/ice1712/ice1712.c
+@@ -1047,6 +1047,8 @@ __out:
+ 	old = inb(ICEMT(ice, RATE));
+ 	if (!force && old == val)
+ 		goto __out;
++
++	ice->cur_rate = rate;
+ 	outb(val, ICEMT(ice, RATE));
+ 	spin_unlock_irqrestore(&ice->reg_lock, flags);
+ 
+@@ -2826,6 +2828,12 @@ static int snd_ice1712_suspend(struct device *dev)
+ 	snd_pcm_suspend_all(ice->pcm_ds);
+ 	snd_ac97_suspend(ice->ac97);
+ 
++	spin_lock_irq(&ice->reg_lock);
++	ice->pm_saved_is_spdif_master = is_spdif_master(ice);
++	ice->pm_saved_spdif_ctrl = inw(ICEMT(ice, ROUTE_SPDOUT));
++	ice->pm_saved_route = inw(ICEMT(ice, ROUTE_PSDOUT03));
++	spin_unlock_irq(&ice->reg_lock);
++
+ 	if (ice->pm_suspend)
+ 		ice->pm_suspend(ice);
+ 
+@@ -2840,6 +2848,7 @@ static int snd_ice1712_resume(struct device *dev)
+ 	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct snd_ice1712 *ice = card->private_data;
++	int rate;
+ 
+ 	if (!ice->pm_suspend_enabled)
+ 		return 0;
+@@ -2854,14 +2863,37 @@ static int snd_ice1712_resume(struct device *dev)
+ 
+ 	pci_set_master(pci);
+ 
++	if (ice->cur_rate)
++		rate = ice->cur_rate;
++	else
++		rate = PRO_RATE_DEFAULT;
++
+ 	if (snd_ice1712_chip_init(ice) < 0) {
+ 		snd_card_disconnect(card);
+ 		return -EIO;
+ 	}
+ 
++	ice->cur_rate = rate;
++
+ 	if (ice->pm_resume)
+ 		ice->pm_resume(ice);
+ 
++	if (ice->pm_saved_is_spdif_master) {
++		/* switching to external clock via SPDIF */
++		spin_lock_irq(&ice->reg_lock);
++		outb(inb(ICEMT(ice, RATE)) | ICE1712_SPDIF_MASTER,
++			ICEMT(ice, RATE));
++		spin_unlock_irq(&ice->reg_lock);
++		snd_ice1712_set_input_clock_source(ice, 1);
++	} else {
++		/* internal on-card clock */
++		snd_ice1712_set_pro_rate(ice, rate, 1);
++		snd_ice1712_set_input_clock_source(ice, 0);
++	}
++
++	outw(ice->pm_saved_spdif_ctrl, ICEMT(ice, ROUTE_SPDOUT));
++	outw(ice->pm_saved_route, ICEMT(ice, ROUTE_PSDOUT03));
++
+ 	if (ice->ac97)
+ 		snd_ac97_resume(ice->ac97);
+ 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+Ondrej Zary
