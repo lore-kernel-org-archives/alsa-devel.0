@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Add support for multi register
-	mux
-Date: Thu, 3 Apr 2014 10:53:30 +0100
-Message-ID: <20140403095330.GS14763@sirena.org.uk>
-References: <1396494710-20944-1-git-send-email-aruns@nvidia.com>
- <s5h4n2asq1o.wl%tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 05/44] firewire-lib: Add support for MIDI
+	capture/playback
+Date: Thu, 03 Apr 2014 19:08:16 +0900
+Message-ID: <533D3310.30005@sakamocchi.jp>
+References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1395400229-22957-6-git-send-email-o-takashi@sakamocchi.jp>
+ <533C6510.7000605@ladisch.de> <533D1CF4.1040302@sakamocchi.jp>
+ <533D21DD.10400@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3975504367628397741=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E98726566F
- for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 11:53:51 +0200 (CEST)
-In-Reply-To: <s5h4n2asq1o.wl%tiwai@suse.de>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 231E2265685
+ for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 12:08:28 +0200 (CEST)
+In-Reply-To: <533D21DD.10400@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Songhee Baek <sbaek@nvidia.com>, Arun Shamanna Lakshmi <aruns@nvidia.com>, alsa-devel@alsa-project.org, lars@metafoo.de, swarren@wwwdotorg.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+To: Clemens Ladisch <clemens@ladisch.de>, Adrian Knoth <adi@drcomp.erfurt.thur.de>, jan.svitok@gmail.com
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+(Apr 03 2014 17:54), Clemens Ladisch wrote:
+> This is still wrong.  It should be:
+>
+> 		len = b[0] - 0x80;
+> 		if (1 <= len && len <= 3 && s->midi[port])
 
---===============3975504367628397741==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LmUdgXdNLPkN/XLh"
-Content-Disposition: inline
+Oops! Exactly.
 
-
---LmUdgXdNLPkN/XLh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Apr 03, 2014 at 11:47:15AM +0200, Takashi Iwai wrote:
-
-> I'm a bit late in the game, but I feel a bit uneasy through looking
-> at the whole changes.  My primary question is, whether do we really
-> need to share the same struct soc_enum for the onehot type?  What
-> makes hard to use a struct soc_enum_onehot for them?  You need
-> different individual get/put for each type.  We may still need to
-> change soc_dapm_update stuff, but it's different from sharing
-> soc_enum.
-
-Indeed, I had thought this was where the discussion was heading - not
-looked at this version of the patch yet.
-
---LmUdgXdNLPkN/XLh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTPS+XAAoJELSic+t+oim9lHwP/2uZ4nlylfyzTPNCpWjcQXeL
-WprHEKyxvF2Sa7mQHQc/MlyQk1yIT+KxkyZWg8GBbtIYgNzYcPGAq4USojFp8xRu
-mlBYbm99+ZcD29z6+1Dggfutym47CP5q7Y/dF2pwYOKf3TCXyCU+F1mXbEHibEIV
-hh6ohVewYuMlz3J1jGsMTkPkBcDKdSIPC+UP+mS3YQCb+SMhgON2huP+9uN0L2dD
-cYPN17nd4YchFew5FZb27CX3TZKS0BhM0uOuPfNqEp5w5tEgf9vCkbq57XvENWq7
-yDRzHjEX0VG6v+KhJcN7mImTrvawC53ac2OnCFcw+rX4UTYAQT3Oah1KxiFAgTu9
-AQ0cSgI/TOkKuYWyGeRhdzwUALzn2YrHD1tW43uKAfUNKb3rKjrgXGgrgzQQukTi
-0L6Qwz6FyJe37mQvBiYVe/Vch+W2Q3DQkQ68P75wTms5ETrLvm83fBfpItFMB5DW
-5HDSNWLLK/1aEd5DRR9vyyJNjwPGtyF4CUkxvnqDi0D6+pPNiRqvvdFPK+1HzjuO
-VTH09kGBqyzWphdgi087Y4PwWqnIHPQheaPB2mYuww6gev0/64G0ifYEnSU2wFcf
-XWiZmaHRTkpErVZ5hEuJ82tfYKW/rQEDZ41pKylN7xiwKMCRkLYbD2sqZS7QSJZL
-l/k0omz1xQu+sTbm/Q/0
-=7/vO
------END PGP SIGNATURE-----
-
---LmUdgXdNLPkN/XLh--
-
---===============3975504367628397741==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I might be tired for this long developing...
 
 
---===============3975504367628397741==--
+Thank you
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
