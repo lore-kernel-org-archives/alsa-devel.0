@@ -1,20 +1,16 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH 1/4] ASoC: esai: fix buggy of 'ret' type
-	definition.
-Date: Thu, 3 Apr 2014 18:50:59 +0800
-Message-ID: <20140403105057.GA32081@MrMyself>
-References: <1396516257-25354-1-git-send-email-Li.Xiubo@freescale.com>
- <1396516257-25354-2-git-send-email-Li.Xiubo@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: codec: fix the sparse check warnings.
+Date: Thu, 3 Apr 2014 11:56:16 +0100
+Message-ID: <20140403105616.GT14763@sirena.org.uk>
+References: <1396482839-27609-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5341797663634203118=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe002.messaging.microsoft.com [216.32.180.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A919265671
- for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 13:00:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1396516257-25354-2-git-send-email-Li.Xiubo@freescale.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52272265662
+ for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 12:56:44 +0200 (CEST)
+In-Reply-To: <1396482839-27609-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,66 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, timur@tabi.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Xiubo,
 
-Could you please add some comments to describe where the bug is? If these
-cause function break on Vybrid or LS1, you should tell people what the
-root cause exactly is.
+--===============5341797663634203118==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kG2acDqmwoBDcCHP"
+Content-Disposition: inline
 
-On Thu, Apr 03, 2014 at 05:10:54PM +0800, Xiubo Li wrote:
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-> ---
->  sound/soc/fsl/fsl_esai.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-> index 912104f..8efc89e 100644
-> --- a/sound/soc/fsl/fsl_esai.c
-> +++ b/sound/soc/fsl/fsl_esai.c
-> @@ -209,8 +209,9 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
->  	struct clk *clksrc = esai_priv->extalclk;
->  	bool tx = clk_id <= ESAI_HCKT_EXTAL;
->  	bool in = dir == SND_SOC_CLOCK_IN;
-> -	u32 ret, ratio, ecr = 0;
-> +	u32 ratio, ecr = 0;
->  	unsigned long clk_rate;
-> +	int ret;
 
-Using 'u32' instead of 'int' is just an expediency but not a crucial one.
-This doesn't make a lot of sense to me.
+--kG2acDqmwoBDcCHP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  
->  	/* sck_div can be only bypassed if ETO/ERO=0 and SNC_SOC_CLOCK_OUT */
->  	esai_priv->sck_div[tx] = true;
-> @@ -432,8 +433,8 @@ static int fsl_esai_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->  static int fsl_esai_startup(struct snd_pcm_substream *substream,
->  			    struct snd_soc_dai *dai)
->  {
-> -	int ret;
->  	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
-> +	int ret;
+On Thu, Apr 03, 2014 at 07:53:59AM +0800, Xiubo Li wrote:
+> Some thing Likes:
+>=20
+> reproduce: make C=3D1 CF=3D-D__CHECK_ENDIAN__
+>=20
+> sparse warnings: (new ones prefixed by >>)
 
-This looks fine.
+Applied, thanks.
 
-Nicolin
+--kG2acDqmwoBDcCHP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
->  
->  	/*
->  	 * Some platforms might use the same bit to gate all three or two of
-> @@ -491,7 +492,8 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
->  	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
->  	u32 width = snd_pcm_format_width(params_format(params));
->  	u32 channels = params_channels(params);
-> -	u32 bclk, mask, val, ret;
-> +	u32 bclk, mask, val;
-> +	int ret;
->  
->  	bclk = params_rate(params) * esai_priv->slot_width * 2;
->  
-> -- 
-> 1.8.4
-> 
-> 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTPT5NAAoJELSic+t+oim9bXkP/2SUaXhmAGJwcehUVUv9xRFx
+X80weuGJjXaTG1N4GH+opbaX0z5u4PziNBzTttPTlQEsd7nSsanvhoeUzXbB9E/p
+tsBb+Cr5T/Ka/REs1TaB56oXDEjB14P0pVWAOPQ/3OzPQFpN2PqcjwVwpB9+S9qC
+aDDI31Py2pSo+zNG9yOAk3rucSBHwLyl0H1/M14V0PsKJRFopbjlkVkLh6rmZiFE
+ZyWVEaYdnACsl6bt6p6gZnLinM7wIFrSpiw8nuJijVb4vM5mzrcMgJP+5pTrp8/r
+Rf+hJokR7mtCDLUaOKWJi/QFK8tc7vSfMbtoy84LrjAtVXDTOSZpJYEpVZCJ0xsJ
+oYjghlUiNnVZ2NSe0zl21YUeN6U0VAOssu1Mfa5gaON0+wP5L6K8NjSN8szbj4O9
+2gUhRflBycCgLgEu0vxO/IYn9ebmd8nfLjDwBVva4R/aPBplrATMvkOugf2xYSYD
+5IO+6rrwAukhodOlV5A+qXG0+fE05e03N2kRAfURoKFTvvY69I5GBpRywJANdB9I
+OwPvrTaeIvk5/+TV+gKdbpNSzJO0kAiIxpgEJANJGyxXqrKcEulOSEjg3baWFxrO
+hV2lHhuh1EW2aKpnMBNHzSZUkzxcq03Jr/pPrv2BJ3ZShlSl3qjX9wT1g8Yz7PyW
+W0QeOyNGB4dAN8otIPm2
+=MfOf
+-----END PGP SIGNATURE-----
+
+--kG2acDqmwoBDcCHP--
+
+--===============5341797663634203118==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5341797663634203118==--
