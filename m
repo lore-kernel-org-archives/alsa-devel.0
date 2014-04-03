@@ -1,18 +1,17 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH 4/4] ASoC: spdif: Add Vybird and LS1+
-	compatibles support.
-Date: Thu, 3 Apr 2014 17:10:57 +0800
-Message-ID: <1396516257-25354-5-git-send-email-Li.Xiubo@freescale.com>
-References: <1396516257-25354-1-git-send-email-Li.Xiubo@freescale.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH v2] snd-cs8427: separate HW initialization
+Date: Thu, 3 Apr 2014 09:13:40 +0200
+Message-ID: <201404030913.40921.linux@rainbow-software.org>
+References: <1396470933-2618-1-git-send-email-linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe005.messaging.microsoft.com [213.199.154.208])
- by alsa0.perex.cz (Postfix) with ESMTP id F099F2656A6
- for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 11:54:33 +0200 (CEST)
-In-Reply-To: <1396516257-25354-1-git-send-email-Li.Xiubo@freescale.com>
+Received: from mail-1.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C866265549
+ for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 09:13:45 +0200 (CEST)
+In-Reply-To: <1396470933-2618-1-git-send-email-linux@rainbow-software.org>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +21,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, timur@tabi.org, Guangyu.Chen@freescale.com
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
----
- sound/soc/fsl/fsl_spdif.c | 2 ++
- 1 file changed, 2 insertions(+)
+Separate HW initialization from device creation.
+This is needed for suspend/resume support.
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 173553c..5c958ca 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1186,6 +1186,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+---
+ include/sound/cs8427.h |    1 +
+ sound/i2c/cs8427.c     |   57 
+++++++++++++++++++++++++++++++++----------------
+ 2 files changed, 39 insertions(+), 19 deletions(-)
+
+diff --git a/include/sound/cs8427.h b/include/sound/cs8427.h
+index f862cff..0b6a187 100644
+--- a/include/sound/cs8427.h
++++ b/include/sound/cs8427.h
+@@ -188,6 +188,7 @@
  
- static const struct of_device_id fsl_spdif_dt_ids[] = {
- 	{ .compatible = "fsl,imx35-spdif", },
-+	{ .compatible = "fsl,vybird-spdif", },
-+	{ .compatible = "fsl,ls1+-spdif", },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, fsl_spdif_dt_ids);
+ struct snd_pcm_substream;
+ 
++int snd_cs8427_init(struct snd_i2c_bus *bus, struct snd_i2c_device *device);
+ int snd_cs8427_create(struct snd_i2c_bus *bus, unsigned char addr,
+ 		      unsigned int reset_timeout, struct snd_i2c_device **r_cs8427);
+ int snd_cs8427_reg_write(struct snd_i2c_device *device, unsigned char reg,
+diff --git a/sound/i2c/cs8427.c b/sound/i2c/cs8427.c
+index 6c2dc38..7e21621 100644
+--- a/sound/i2c/cs8427.c
++++ b/sound/i2c/cs8427.c
+@@ -150,10 +150,8 @@ static void snd_cs8427_free(struct snd_i2c_device 
+*device)
+ 	kfree(device->private_data);
+ }
+ 
+-int snd_cs8427_create(struct snd_i2c_bus *bus,
+-		      unsigned char addr,
+-		      unsigned int reset_timeout,
+-		      struct snd_i2c_device **r_cs8427)
++int snd_cs8427_init(struct snd_i2c_bus *bus,
++		    struct snd_i2c_device *device)
+ {
+ 	static unsigned char initvals1[] = {
+ 	  CS8427_REG_CONTROL1 | CS8427_REG_AUTOINC,
+@@ -200,22 +198,10 @@ int snd_cs8427_create(struct snd_i2c_bus *bus,
+ 	     Inhibit E->F transfers. */
+ 	  CS8427_UD | CS8427_EFTUI | CS8427_DETUI,
+ 	};
++	struct cs8427 *chip = device->private_data;
+ 	int err;
+-	struct cs8427 *chip;
+-	struct snd_i2c_device *device;
+ 	unsigned char buf[24];
+ 
+-	if ((err = snd_i2c_device_create(bus, "CS8427",
+-					 CS8427_ADDR | (addr & 7),
+-					 &device)) < 0)
+-		return err;
+-	chip = device->private_data = kzalloc(sizeof(*chip), GFP_KERNEL);
+-	if (chip == NULL) {
+-	      	snd_i2c_device_free(device);
+-		return -ENOMEM;
+-	}
+-	device->private_free = snd_cs8427_free;
+-	
+ 	snd_i2c_lock(bus);
+ 	err = snd_cs8427_reg_read(device, CS8427_REG_ID_AND_VER);
+ 	if (err != CS8427_VER8427A) {
+@@ -264,10 +250,44 @@ int snd_cs8427_create(struct snd_i2c_bus *bus,
+ 	snd_i2c_unlock(bus);
+ 
+ 	/* turn on run bit and rock'n'roll */
++	snd_cs8427_reset(device);
++
++	return 0;
++
++__fail:
++	snd_i2c_unlock(bus);
++
++	return err;
++}
++EXPORT_SYMBOL(snd_cs8427_init);
++
++int snd_cs8427_create(struct snd_i2c_bus *bus,
++		      unsigned char addr,
++		      unsigned int reset_timeout,
++		      struct snd_i2c_device **r_cs8427)
++{
++	int err;
++	struct cs8427 *chip;
++	struct snd_i2c_device *device;
++
++	err = snd_i2c_device_create(bus, "CS8427", CS8427_ADDR | (addr & 7),
++				    &device);
++	if (err < 0)
++		return err;
++	chip = device->private_data = kzalloc(sizeof(*chip), GFP_KERNEL);
++	if (chip == NULL) {
++		snd_i2c_device_free(device);
++		return -ENOMEM;
++	}
++	device->private_free = snd_cs8427_free;
++
+ 	if (reset_timeout < 1)
+ 		reset_timeout = 1;
+ 	chip->reset_timeout = reset_timeout;
+-	snd_cs8427_reset(device);
++
++	err = snd_cs8427_init(bus, device);
++	if (err)
++		goto __fail;
+ 
+ #if 0	// it's nice for read tests
+ 	{
+@@ -286,7 +306,6 @@ int snd_cs8427_create(struct snd_i2c_bus *bus,
+ 	return 0;
+ 
+       __fail:
+-      	snd_i2c_unlock(bus);
+       	snd_i2c_device_free(device);
+       	return err < 0 ? err : -EIO;
+ }
 -- 
-1.8.4
+Ondrej Zary
