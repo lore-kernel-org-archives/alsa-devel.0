@@ -1,44 +1,83 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] [PATCH 24/44] fireworks: Add MIDI interface
-Date: Thu, 03 Apr 2014 23:20:03 +0200
-Message-ID: <533DD083.10506@ladisch.de>
-References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
-	<1395400229-22957-25-git-send-email-o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: cs42xx8: Check return value of
+ regmap_read and report correct chipid value
+Date: Thu, 3 Apr 2014 22:33:39 +0100
+Message-ID: <20140403213339.GA14763@sirena.org.uk>
+References: <1396511616.30532.2.camel@phoenix>
+ <20140403153314.GB32327@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1395400229-22957-25-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net, perex@perex.cz
+Content-Type: multipart/mixed; boundary="===============1077084000063678828=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DEC7E2656DE
+ for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 23:33:58 +0200 (CEST)
+In-Reply-To: <20140403153314.GB32327@MrMyself>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Axel Lin <axel.lin@ingics.com>, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> This commit adds a functionality to capture/playback MIDI messages.
->
-> When no AMDTP streams are running, this driver starts AMDTP stream for MIDI
-> stream at current sampling rate.
->
-> +++ b/sound/firewire/fireworks/fireworks_midi.c
-> +static int midi_capture_open(struct snd_rawmidi_substream *substream)
-> +{
-> +	struct snd_efw *efw = substream->rmidi->private_data;
-> +
-> +	efw->capture_substreams++;
 
-The MIDI .open callback is not synchronized with the PCM callbacks;
-this might race and must be protected with a mutex.
+--===============1077084000063678828==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5cXpu7evJfjLw2dJ"
+Content-Disposition: inline
 
 
-Regards,
-Clemens
+--5cXpu7evJfjLw2dJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-------------------------------------------------------------------------------
+On Thu, Apr 03, 2014 at 11:33:15PM +0800, Nicolin Chen wrote:
+> On Thu, Apr 03, 2014 at 03:53:36PM +0800, Axel Lin wrote:
+
+> > +	ret = regmap_read(cs42xx8->regmap, CS42XX8_CHIPID, &val);
+> > +	if (ret < 0) {
+> >  		dev_err(dev, "failed to get device ID: %x", val);
+
+> %d and ret would be better here since val won't be useful in this case.
+
+Yes, they would - val won't have anything in particular in it if the I/O
+fails.
+
+--5cXpu7evJfjLw2dJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTPdOwAAoJELSic+t+oim9DTEQAJj0hr36ReK/o/RV9ze3T3jP
+XP+Hudhr8rmTjvc+rXhhVLx4umwGBzvnZfJiMxbxHU6lWJBmQ/3C9istE9La0eMd
+KqtDN5PYs6X08VCysRUs9Fj1RZEMUvsUHar54l/YXJrcUTXjLVok0xO0kYCl7llS
+u+sJqB6GoD/xFiPoRo/zXCcEQV2GFCk7XtxvuL82uw62F4d5+Lpbg/WKlinfEe/O
+rJRfV4fcsjam6RpcdCQN1IaAIODXKQI8aRudNorZa68yF107fQIHpSvdYEOL2tcI
+697Y3aZ+Lm6wUUHaRCKASmMQvOCixbJg2B9W1+HQrU6JZkOUaHLDSSEbXXaCf+zA
+HkOfYwIFMEAndjy747dehHMUYyQHI8oeqGHRyiipcCEbkOTJvuAi4htiUrks74jh
++UDGeOghGZlz/04dBWGa8y1Aouv+0sPapcy9AdfFPUKB9MO6P0nnHg1TzzvbSENL
+GqW1aMX8tY+iVhTAd43pYVHOPFIEfsVIfVgvH4FnSgHkntQYyknvF5UMYhTbJZOA
+k+KMZ1CxuBrEr6U4j+bRfw8ufaZTvuWRx5q2DnLQyBZZZHWGTB1VSwDgxg0kUqNq
+cy5L89R1ykBs5BaD2feXW9HsJLe95CXz9VFQBvAaZU+HAj5HO7GXdo3ZUGmlpUNQ
+paM8ZgGROhmtBVdEMzJc
+=wwmZ
+-----END PGP SIGNATURE-----
+
+--5cXpu7evJfjLw2dJ--
+
+--===============1077084000063678828==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1077084000063678828==--
