@@ -1,114 +1,109 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 18/44] fireworks: Add connection and stream
- management
-Date: Thu, 03 Apr 2014 22:56:40 +0200
-Message-ID: <533DCB08.3040404@ladisch.de>
-References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
- <1395400229-22957-19-git-send-email-o-takashi@sakamocchi.jp>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v2] drm/i915: move power domain init earlier
+ during system resume
+Date: Thu, 3 Apr 2014 23:06:13 +0200
+Message-ID: <20140403210613.GM7225@phenom.ffwll.local>
+References: <1395396631-12243-1-git-send-email-imre.deak@intel.com>
+ <1396371322-13752-1-git-send-email-imre.deak@intel.com>
+ <20140401174827.GO22327@phenom.ffwll.local>
+ <1396378243.2488.10.camel@ideak-mobl>
+ <CAKMK7uGVowGt--qRoEGh2jdBsc_Qk23vonsnqW9dA5ZxZzc4EA@mail.gmail.com>
+ <s5hd2gzubsl.wl%tiwai@suse.de>
+ <20140403152310.GH7225@phenom.ffwll.local>
+ <s5hlhvmpgze.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 290D22656D8
- for <alsa-devel@alsa-project.org>; Thu,  3 Apr 2014 22:56:45 +0200 (CEST)
-In-Reply-To: <1395400229-22957-19-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5hlhvmpgze.wl%tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, intel-gfx <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> Fireworks manages connections by CMP and can transmit/receive AMDTP streams
-> with a few quirks. This commit adds functionality to start/stop the streams.
->
-> +++ b/sound/firewire/fireworks/fireworks.c
-> +static int
-> +init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
-> +{
-> +	...
-> +	err = amdtp_stream_init(stream, efw->unit, s_dir, CIP_BLOCKING);
+On Thu, Apr 03, 2014 at 05:31:17PM +0200, Takashi Iwai wrote:
+> At Thu, 3 Apr 2014 17:23:10 +0200,
+> Daniel Vetter wrote:
+> > 
+> > On Wed, Apr 02, 2014 at 02:59:54PM +0200, Takashi Iwai wrote:
+> > > At Tue, 1 Apr 2014 22:26:20 +0200,
+> > > Daniel Vetter wrote:
+> > > > 
+> > > > On Tue, Apr 01, 2014 at 09:50:43PM +0300, Imre Deak wrote:
+> > > > > On Tue, 2014-04-01 at 19:48 +0200, Daniel Vetter wrote:
+> > > > > > On Tue, Apr 01, 2014 at 07:55:22PM +0300, Imre Deak wrote:
+> > > > > > > During resume the intel hda audio driver depends on the i915 driver
+> > > > > > > reinitializing the audio power domain. Since the order of calling the
+> > > > > > > i915 resume handler wrt. that of the audio driver is not guaranteed,
+> > > > > > > move the power domain reinitialization step to the resume_early
+> > > > > > > handler. This is guaranteed to run before the resume handler of any
+> > > > > > > other driver.
+> > > > > > >
+> > > > > > > The power domain initialization in turn requires us to enable the i915
+> > > > > > > pci device first, so move that part earlier too.
+> > > > > > >
+> > > > > > > Accordingly disabling of the i915 pci device should happen after the
+> > > > > > > audio suspend handler ran. So move the disabling later from the i915
+> > > > > > > resume handler to the resume_late handler.
+> > > > > > >
+> > > > > > > v2:
+> > > > > > > - move intel_uncore_sanitize/early_sanitize earlier too, so they don't
+> > > > > > >   get reordered wrt. intel_power_domains_init_hw()
+> > > > > > >
+> > > > > > > Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=76152
+> > > > > > > Signed-off-by: Imre Deak <imre.deak@intel.com>
+> > > > > >
+> > > > > > So this is kinda why we should have gone with something proper, like a new
+> > > > > > hdmi sink platform device created by i915 and registered as a driver by
+> > > > > > snd-hda. Then the power domains stuff in the device core should take care
+> > > > > > of these kinds of ordering issues. Or at least snd-hda can tell it that it
+> > > > > > needs to wait for the hdmi-sink power domain to go on first before it can
+> > > > > > resume, I'm not really fluent on the details here.
+> > > > > >
+> > > > > > And having a hdmi sink bus would allow us to throw all kinds of crap into
+> > > > > > a clearly-defined interface, e.g. eld handling, hdcp synchronization, hpd
+> > > > > > forwarding and all the other fun stuff.
+> > > > > >
+> > > > > > So not sure what I should do with this here now.
+> > > > >
+> > > > > Right, I'm not too happy about this solution either, so if anything it
+> > > > > could be considered only a stop-gap fix. What you suggest seems to be a
+> > > > > cleaner way but it'd require more time to investigate/implement at least
+> > > > > on my part (but I'm ok to put it on my TODO list).
+> > > > 
+> > > > We'd definitely need to discuss this with Takashi Iwai, since it would
+> > > > only really be useful if it's good enough to solve the general pile of
+> > > > sound/gfx coordination issues we have with hdmi. Adding him and alsa-dev.
+> > > 
+> > > Yep, having a dedicated channel (hdmi sink bus or whatever) would be
+> > > definitely a better way to go.  OTOH, I agree that Imre's patch is
+> > > needed for the upcoming kernel.  The former implementation can't be
+> > > finished so quickly for 3.15.
+> > > 
+> > > I thought Mengdong started looking at (or working on) this, but
+> > > haven't heard the progress yet.  Mengdong, any news?
+> > 
+> > Ok, I'll splash a big honky FIXME over this so we don't forget ;-) Is the
+> > patch otherwise ok with you Takashi?
+> 
+> Yes, it's touching only i915 stuff in anyway ;)
+> Feel free to take my ack:
+> 	Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
-amdtp_stream_destroy() must be called.
-
-> +static int
-> +start_stream(struct snd_efw *efw, struct amdtp_stream *stream,
-> +	     unsigned int sampling_rate)
-> +{
-> +	...
-> +	err = amdtp_stream_start(stream,
-> +				 conn->resources.channel,
-> +				 conn->speed);
-> +	if (err < 0)
-> +		stop_stream(efw, stream);
-> +
-> +	/* wait first callback */
-> +	if (!amdtp_stream_wait_callback(stream, CALLBACK_TIMEOUT)) {
-> +		stop_stream(efw, stream);
-> +		err = -ETIMEDOUT;
-> +	}
-> +end:
-> +	return err;
-> +}
-
-If amdtp_stream_start() fails, this function will try to wait for
-the stream anyway.
-
-> +int snd_efw_stream_init_duplex(struct snd_efw *efw)
-> +{
-> +	int err;
-> +
-> +	err = init_stream(efw, &efw->tx_stream);
-> +	if (err < 0)
-> +		goto end;
-> +
-> +	err = init_stream(efw, &efw->rx_stream);
-> +	if (err < 0)
-> +		goto end;
-
-If the second init_stream() fails, this function will return with only one
-of the streams initialized.
-
-> +
-> +	/* set IEC61883 compliant mode */
-> +	err = snd_efw_command_set_tx_mode(efw, SND_EFW_TRANSPORT_MODE_IEC61883);
-> +end:
-> +	return err;
-
-And if this fails, this function will return an error, but the two streams
-will still be initialized.
-
-In the error cases, any so-far initialized stream must be destroyed.
-
-> +int snd_efw_stream_stop_duplex(struct snd_efw *efw)
-> +{
-> +	struct amdtp_stream *master, *slave;
-> +	enum cip_flags sync_mode;
-> +	unsigned int slave_substreams;
-> +	int err;
-> +
-> +	mutex_lock(&efw->mutex);
-> +
-> +	err = get_roles(efw, &sync_mode, &master, &slave);
-> +	if (err < 0)
-> +		goto end;
-
-snd_efw_stream_stop_duplex() must always succeed so that the
-resources can be freed properly.  Therefore, it should not
-try to ask the device for anything (the device might be
-resetting or be unplugged).
-
-Either cache the master/slave pointers when starting the stream,
-or rewrite get_roles() so that it does not access the device.
-
-
-Regards,
-Clemens
+Ok, I've pulled this into 3.15-fixes and added some big comments to the
+newly-added late/early hooks. I'll try to poke Mengmeng about the status
+of the hdmi infrastructure work.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
