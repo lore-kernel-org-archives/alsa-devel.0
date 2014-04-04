@@ -1,17 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND 1/2] ASoC: fsl: Separation of the
- main audio options and boards
-Date: Thu, 3 Apr 2014 23:15:52 +0100
-Message-ID: <20140403221552.GJ14763@sirena.org.uk>
-References: <1394943695-22845-1-git-send-email-shc_work@mail.ru>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH 4/4] ASoC: spdif: Add Vybird and LS1+
+ compatibles support.
+Date: Fri, 4 Apr 2014 00:40:33 +0000
+Message-ID: <139a7614a5a54aebaadc505564fed34e@BY2PR03MB505.namprd03.prod.outlook.com>
+References: <1396516257-25354-1-git-send-email-Li.Xiubo@freescale.com>
+ <1396516257-25354-5-git-send-email-Li.Xiubo@freescale.com>
+ <CAOMZO5DPbzK6_M=jzFGMKv1CFRd2xOYSEfyAUNi-XgKo17553Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8616584745402461522=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 446A32656F1
- for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 00:16:07 +0200 (CEST)
-In-Reply-To: <1394943695-22845-1-git-send-email-shc_work@mail.ru>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1lp0140.outbound.protection.outlook.com [207.46.163.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8879265566
+ for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 02:40:58 +0200 (CEST)
+In-Reply-To: <CAOMZO5DPbzK6_M=jzFGMKv1CFRd2xOYSEfyAUNi-XgKo17553Q@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +25,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
+> Subject: Re: [alsa-devel] [PATCH 4/4] ASoC: spdif: Add Vybird and LS1+
+> compatibles support.
+> 
+> On Thu, Apr 3, 2014 at 6:10 AM, Xiubo Li <Li.Xiubo@freescale.com> wrote:
+> > Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+> > ---
+> >  sound/soc/fsl/fsl_spdif.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+> > index 173553c..5c958ca 100644
+> > --- a/sound/soc/fsl/fsl_spdif.c
+> > +++ b/sound/soc/fsl/fsl_spdif.c
+> > @@ -1186,6 +1186,8 @@ static int fsl_spdif_probe(struct platform_device
+> *pdev)
+> >
+> >  static const struct of_device_id fsl_spdif_dt_ids[] = {
+> >         { .compatible = "fsl,imx35-spdif", },
+> > +       { .compatible = "fsl,vybird-spdif", },
+> 
+> I think you mean vybrid ;-)
+> 
+Well yes, you are right.
 
---===============8616584745402461522==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LuMRVxdB65zydaDL"
-Content-Disposition: inline
+I will follow GuangYu's advice in another mail.
 
+Thanks,
 
---LuMRVxdB65zydaDL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sun, Mar 16, 2014 at 08:21:34AM +0400, Alexander Shiyan wrote:
-> This patch provide separation of the main audio options and boards.
-
-Applied both, thanks.
-
---LuMRVxdB65zydaDL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTPd2VAAoJELSic+t+oim9gQMP+gO/fyhVgd+G1G2tDe5xyX/u
-U5JvbJahSM04ocn5Zwp4agWKNeRubww0SdIAhNUFTktrRANvZQjySehF0hKlSdo2
-GtHiBQ0738I5cYjLbTPZwpf57E2JQKu66knQCltOthPg1vTvF3Oa77Ck+F+ZHO4K
-eDXiPsTSepOAr7BQhH2yU0h2sUo2Pn+gntfv9h2Tphgr8lXnCqtk7PYsyGlfC2v6
-JvzgQvH+q23qT0OEyPzvhA9lF0rcEFjF7vQM+OiDftHqV9Y50J3/zibTmT1tiiVO
-DID1OeRgqJoUsW1Sp2U2H9uI884uyA6E3twcdFOWog7gn0xMHI8kKmRtlm1MNVs2
-0ZaQTOtYmL9WdKY7T9VrwJ9vY2T6i1QukdvPmnc4iP/xIHtgaaHt4fLPY/sQuO0q
-9sxSraebAd382eKNekFZwgBuBAkYTJeYRPmP1M2KIZXXfYDWMFQuFd1Hy51nCNRP
-7Nj/cel/RBL55a0dIqTQe/GYm4evZXg+HquHOCAWE2bElBS2D+dEhmWsx86nxqIp
-lbEH4m1cRP6tFdTDpPlAkBgN/HlnkTy4UslbeZ02IctOwWfPRrQHxpLm7cc3yBVZ
-QrwEDhfgd9mDrjSQa4wMEPs9e43Wb7VJjoH04aa3vI8+A21iSdLdxYmrNZvcfmQ2
-zZ9c7rowCFGpixJDIOhC
-=yKRt
------END PGP SIGNATURE-----
-
---LuMRVxdB65zydaDL--
-
---===============8616584745402461522==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8616584745402461522==--
+Brs
+Xiubo
