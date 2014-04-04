@@ -1,17 +1,17 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv2 2/4] ASoC: spdif: Sort the header files
-	alphabetically.
-Date: Fri, 4 Apr 2014 15:10:27 +0800
-Message-ID: <1396595429-16629-3-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCHv2 3/4] ASoC: esai: Add VF610+ compatibles
+	support.
+Date: Fri, 4 Apr 2014 15:10:28 +0800
+Message-ID: <1396595429-16629-4-git-send-email-Li.Xiubo@freescale.com>
 References: <1396595429-16629-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe006.messaging.microsoft.com [213.199.154.209])
- by alsa0.perex.cz (Postfix) with ESMTP id 48DCA26573F
- for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 09:54:53 +0200 (CEST)
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe002.messaging.microsoft.com [216.32.180.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1467D265756
+ for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 09:54:57 +0200 (CEST)
 In-Reply-To: <1396595429-16629-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,37 +27,21 @@ Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, festevam@gma
 List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-Acked-by: Nicolin Chen <Guangyu.Chen@freescale.com>
 ---
- sound/soc/fsl/fsl_spdif.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 6452ca8..173553c 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -13,18 +13,18 @@
-  * kind, whether express or implied.
-  */
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 67d5417..b49b78d 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -818,6 +818,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
  
--#include <linux/module.h>
-+#include <linux/bitrev.h>
- #include <linux/clk.h>
- #include <linux/clk-private.h>
--#include <linux/bitrev.h>
--#include <linux/regmap.h>
-+#include <linux/module.h>
- #include <linux/of_address.h>
- #include <linux/of_device.h>
- #include <linux/of_irq.h>
-+#include <linux/regmap.h>
- 
- #include <sound/asoundef.h>
--#include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
-+#include <sound/soc.h>
- 
- #include "fsl_spdif.h"
- #include "imx-pcm.h"
+ static const struct of_device_id fsl_esai_dt_ids[] = {
+ 	{ .compatible = "fsl,imx35-esai", },
++	{ .compatible = "fsl,vf610-esai", },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, fsl_esai_dt_ids);
 -- 
 1.8.4
