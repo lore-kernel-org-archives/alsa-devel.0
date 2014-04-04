@@ -1,53 +1,37 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_sai: Fix Bit Clock Polarity configurations
-Date: Fri, 4 Apr 2014 11:05:32 +0100
-Message-ID: <20140404100532.GN14763@sirena.org.uk>
-References: <1396595387-4371-1-git-send-email-Guangyu.Chen@freescale.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: [PATCH v3 0/2] ASoC: fsl_sai: Add bus clock and mclks with clock controls
+Date: Fri, 4 Apr 2014 18:08:11 +0800
+Message-ID: <cover.1396605772.git.Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kY0AMSsGPnDJoAXR"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1396595387-4371-1-git-send-email-Guangyu.Chen@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: Li.Xiubo@freescale.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org
+Content-Type: text/plain
+Return-path: <linux-doc-owner@vger.kernel.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: broonie@kernel.org, shawn.guo@linaro.org
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, rob@landley.net, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+This series of patches add clock controls to fsl_sai driver and updates
+the vf610.dtsi accordingly.
 
---kY0AMSsGPnDJoAXR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Changelog
+v3:
+ * Use int type for ret instead of u32.
+ * Added Acked-by and Tested-by from Xiubo Li.
+v2:
+ * Appended two extra mclks to the driver since SAI actually has three.
+ * Renamed clock name to 'bus' and 'mclk' according to the reference manual.
 
-On Fri, Apr 04, 2014 at 03:09:47PM +0800, Nicolin Chen wrote:
-> The BCP bit in TCR4/RCR4 register rules as followings:
->   0 Bit clock is active high with drive outputs on rising edge
->     and sample inputs on falling edge.
->   1 Bit clock is active low with drive outputs on falling edge
->     and sample inputs on rising edge.
+Nicolin Chen (2):
+  ASoC: fsl_sai: Add clock controls for SAI
+  ARM: dts: Append clock bindings for sai2 on VF610 platform
 
-Applied, thanks.
+ .../devicetree/bindings/sound/fsl-sai.txt          |  8 ++--
+ arch/arm/boot/dts/vf610.dtsi                       |  6 ++-
+ sound/soc/fsl/fsl_sai.c                            | 51 ++++++++++++++++++++--
+ sound/soc/fsl/fsl_sai.h                            |  4 ++
+ 4 files changed, 60 insertions(+), 9 deletions(-)
 
---kY0AMSsGPnDJoAXR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+-- 
+1.8.4
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTPoPoAAoJELSic+t+oim9cqwP/0eylndow3ZrNrhmze/mgQHS
-SQmqXMDPwLQEH3Jb3i+s1KdvLwS318DgsFNfX9pCYNWeDlP/IkTMzNKxSjrEY69V
-z+0N5QUkYfUkWkjnAStiWKj40/2Vl/oN1g557czLa6H+1iREbrxS9aOhNj+i7gBh
-XgpFSbK84VRzQntlg75Iv5yfbfJ0zW3d/cV+CsJ8IRekGey6hd+r3riaWouUJ4BM
-ViflC6ypTht3ahLKPSrOXtI5Y5f+l4ueCdt8xtuv1Aj3EZf8hRaFJTzveDJce+7F
-bnIOx/bZv91yJSErE/+28bDcxJN7IkuXJMEgC1x3ktzgOfKACumaQjRfw6qMsaPK
-LUDzmT6NXn7ausjWFuFOG45UxOIZiPjUJMqs197hy+opbQRUW03SbHEdlrbO6eNa
-kLdCOSJIbjGBxPzx9Q+eXFsmQv7jXcLz464YyQVSTBuPFstF3WliQXpi6VqLXG/9
-+NzAmzdhN3j66A1REYK4/B9S+JrwUwo1nPXpp4hOwwQeQlZpwd0q6gmO4wJ7SyHB
-kA4CdMuaKBlvulYGXgYytdr8PyVu0/arAWaBgOcECk549z/4T+UHucQI22xchsAG
-+R8c43fkxcDMPZRbMgXlIoMeZbZkz0XXicsuV9CXn/iIe69d/Gdq1rj1jKAMaun+
-3Fe2Kz9TWQRojvvD8/ba
-=HM9U
------END PGP SIGNATURE-----
-
---kY0AMSsGPnDJoAXR--
