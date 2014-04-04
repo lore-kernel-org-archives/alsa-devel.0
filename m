@@ -1,15 +1,22 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: davinci-mcasp: Do not touch 0x04
-	register above McASP_VERSION_2
-Date: Fri, 4 Apr 2014 15:56:30 +0300
-Message-ID: <1396616190-3299-1-git-send-email-peter.ujfalusi@ti.com>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: [PATCH v2 00/16] ASoC: fsl-ssi: Driver cleanup
+Date: Fri, 4 Apr 2014 14:59:57 +0200
+Message-ID: <CAOf5uw=CGyk4tvGaUzQeF=z_VqEP_uB0=-ueHt-4cfULTbaQ_g@mail.gmail.com>
+References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
+ <20140403221406.GI14763@sirena.org.uk>
+ <20140404064932.GC20621@pengutronix.de>
+ <CAOf5uwkDdsDzRAMHV0e2ideR-R8Tztis1HxqosQAxefVQDE3oA@mail.gmail.com>
+ <20140404105910.GF20621@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 70EAF2657D3
- for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 14:56:36 +0200 (CEST)
+Received: from mail-wg0-f50.google.com (mail-wg0-f50.google.com [74.125.82.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3B5F2657D4
+ for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 14:59:57 +0200 (CEST)
+Received: by mail-wg0-f50.google.com with SMTP id x13so3493141wgg.9
+ for <alsa-devel@alsa-project.org>; Fri, 04 Apr 2014 05:59:57 -0700 (PDT)
+In-Reply-To: <20140404105910.GF20621@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,38 +26,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, jsarha@ti.com, zonque@gmail.com
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This register is not defined in TI81xx and on AM335x/AM437x it is the
-SYSCONFIG register which should not be touched by drivers since it is
-related to PM and handled by the generic PM code.
-This register write was there since the first time the davinci-mcasp driver
-was appeared in the kernel.
-The reason why it did not caused any issues on AM335x/AM437x is that it sets
-bit 1 in SYSCONFIG register which in turn will enable the smart-idle mode.
-This is the default mode and this is the mode McASP should be in also when
-in use.
-On TI81xx the register is not defined.
+Hi Markus
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/davinci/davinci-mcasp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Apr 4, 2014 at 12:59 PM, Markus Pargmann <mpa@pengutronix.de> wrote:
+> Hi Michael,
+>
+> On Fri, Apr 04, 2014 at 09:58:03AM +0200, Michael Trimarchi wrote:
+>> Hi Markus
+>>
+>> On Fri, Apr 4, 2014 at 8:49 AM, Markus Pargmann <mpa@pengutronix.de> wrote:
+>> > Hi,
+>> >
+>> > On Thu, Apr 03, 2014 at 11:14:06PM +0100, Mark Brown wrote:
+>> >> On Sat, Mar 15, 2014 at 01:44:08PM +0100, Markus Pargmann wrote:
+>> >> > Hi,
+>> >> >
+>> >> > This new version of the cleanup is mainly a reordering of the patches. It moves
+>> >> > the regmap patch to the end of the series so none of the other patches depend
+>> >> > on it. This also fixes a bug I introduced in "Remove fsl_ssi_setup" which also
+>> >> > removed the switching between network and normal mode depending on the number
+>> >> > of channels. I reversed this code removal. Another new patch was added "Fix
+>> >> > i2s_mode variable setup" which fixes the i2s_mode assignment in set_dai_fmt().
+>> >>
+>> >> It's been nearly three weeks with no response to this except for the
+>> >> last patch - I've got ahead and applied since it all looks sane (modulo
+>> >> the bugfix question), we can see if problems occur in -next after the
+>> >> merge window.  Thanks!
+>> >
+>> > Thanks for applying this series, but could you please drop it for the
+>> > moment? We found some issues with the baud clock setup for i2s master
+>> > mode and have some fixed patches for the series. So it would be nice to
+>> > get this in without fixups if that's still possible? I could send a v3
+>> > next week.
+>>
+>> We have tested a bit them on Wandboard and rebase our patches.
+>> I was busy in the last 2 weeks but they are fine so far.
+>
+> Thank you for testing. Can I add a Tested-by tag to the commits that
+> didn't change for the next version of this series?
+>
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index ce0e55a4304c..50a824d9dbb7 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -495,7 +495,7 @@ static int mcasp_common_hw_param(struct davinci_mcasp *mcasp, int stream,
- 	int active_serializers, numevt, n;
- 	u32 reg;
- 	/* Default configuration */
--	if (mcasp->version != MCASP_VERSION_4)
-+	if (mcasp->version < MCASP_VERSION_3)
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_PWREMUMGT_REG, MCASP_SOFT);
- 
- 	/* All PINS as McASP */
--- 
-1.9.1
+Yes you can add it.
+
+Michael
+
+> Regards,
+>
+> Markus
+>
+> --
+> Pengutronix e.K.                           |                             |
+> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
