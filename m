@@ -1,88 +1,85 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [PATCH v2 2/2] ARM: dts: Append clock bindings for sai2 on
- VF610 platform
-Date: Fri, 4 Apr 2014 09:52:48 +0000
-Message-ID: <1ce55f756ee04609a2d8ea1f14ad1f3f@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <cover.1396432924.git.Guangyu.Chen@freescale.com>
- <d09da3eb629143abd3f61ae037af4ddaf7286a83.1396432924.git.Guangyu.Chen@freescale.com>
- <20140402130302.GC8558@dragon> <20140402133955.GB29440@MrMyself>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 00/16] ASoC: fsl-ssi: Driver cleanup
+Date: Fri, 4 Apr 2014 11:03:51 +0100
+Message-ID: <20140404100351.GM14763@sirena.org.uk>
+References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
+ <20140403221406.GI14763@sirena.org.uk>
+ <20140404064932.GC20621@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <20140402133955.GB29440@MrMyself>
-Content-Language: en-US
-Sender: linux-doc-owner@vger.kernel.org
-To: "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
-Cc: "broonie@kernel.org" <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@tabi.org" <timur@tabi.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "rob@landley.net" <rob@landley.net>, "galak@codeaurora.org" <galak@codeaurora.org>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>
+Content-Type: multipart/mixed; boundary="===============3084601436600196575=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 514762657A3
+ for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 12:04:13 +0200 (CEST)
+In-Reply-To: <20140404064932.GC20621@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
-> Subject: Re: [PATCH v2 2/2] ARM: dts: Append clock bindings for sai2 on VF610
-> platform
-> 
-> Hi Shawn,
-> 
->    Thanks for the comments, but...
-> 
-> On Wed, Apr 02, 2014 at 09:03:04PM +0800, Shawn Guo wrote:
-> > On Wed, Apr 02, 2014 at 06:10:20PM +0800, Nicolin Chen wrote:
-> > > Since we added fours clock to the DT binding, we should update the current
-> > > SAI dts/dtsi so as not to break their functions.
-> > >
-> > > Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
-> > > ---
-> > >  arch/arm/boot/dts/vf610.dtsi | 6 ++++--
-> > >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/arch/arm/boot/dts/vf610.dtsi b/arch/arm/boot/dts/vf610.dtsi
-> > > index d31ce1b..9fd0007 100644
-> > > --- a/arch/arm/boot/dts/vf610.dtsi
-> > > +++ b/arch/arm/boot/dts/vf610.dtsi
-> > > @@ -139,8 +139,10 @@
-> > >  				compatible = "fsl,vf610-sai";
-> > >  				reg = <0x40031000 0x1000>;
-> > >  				interrupts = <0 86 0x04>;
-> > > -				clocks = <&clks VF610_CLK_SAI2>;
-> > > -				clock-names = "sai";
-> > > +				clocks = <&clks VF610_CLK_SAI2>,
-> > > +				       <&clks VF610_CLK_SAI2>,
-> > > +				       <&clks 0>, <&clks 0>;
-> >
-> > So it seems that SAI on vf610 does work with only one clock.  So the
-> > driver change will break old DTB for vf610?  If that's case, we will
-> > have to need a new compatible for cases where 4 clocks are needed.
-> 
-> According to Vybrid's RM Chapter 9.11.12 SAI clocking, the SoC actually
-> connects SAI with two clocks: SAI_CLK and Platform Bus Clock. So the DT
-> binding here still needs to be corrected even if ignoring driver change.
-> 
-> Besides, I've checked both SAI on imx and vf610 and found that they are
-> seemly identical, especially for the clock part -- "The transmitter and
-> receiver can independently select between the bus clock and up to three
-> audio master clocks to generate the bit clock." And the driver that was
-> designed for vf610 already contains the code to switch the clock between
-> Bus Clock and Three MCLKs. What I want to say is, even if SAI on vf610
-> does work with only one clock, it still doesn't have the full function
-> on vf610 -- driving clock from Platform Bus Clock unless we make this
-> improvement to the DT binding.
-> 
-> So I think it's fair to complete the code here for both platforms, even
-> though we might take the risk of merging conflict. And I understand
-> your point to avoid function break on those platform both of us aren't
-> convenient to test. But I've already involved Xiubo in the list. And
-> we can wait for his test result.
-> 
-
-This has been test on my Vybird-TWR board and it's fine.
-
-Thanks,
-
-Brs
-Xiubo
+--===============3084601436600196575==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xiGzRFbP+7h+smMw"
+Content-Disposition: inline
 
 
+--xiGzRFbP+7h+smMw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Hope you can understand the circumstance,
-> Nicolin
+On Fri, Apr 04, 2014 at 08:49:32AM +0200, Markus Pargmann wrote:
 
+> Thanks for applying this series, but could you please drop it for the
+> moment? We found some issues with the baud clock setup for i2s master
+> mode and have some fixed patches for the series. So it would be nice to
+> get this in without fixups if that's still possible? I could send a v3
+> next week.
+
+I've dropped everything after "fsl-ssi: Move debugging to a separate
+file" since that didn't compile anyway (though I'll add the binding
+document update as a fix).  In future please don't wait until after your
+patches have been applied before saying things like this, it's not good
+to rebase branches normally.
+
+--xiGzRFbP+7h+smMw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTPoOEAAoJELSic+t+oim9eBEQAI+U/fAb4cswofUD8ZCrO/K6
+Nq2KSC2zAcbIcZYp9MhVB36TWMXT2zpGNqblBVt8yvzUwnUKDde0a306IfZRT3Gd
+n2vSYhXdSrgHOfL4YsHfzdtUkqSVtuXQraPGN9IZDRsydQlZzf72++UL75jacHKZ
+UYSiP4Js/Ihh3GvWn7f3osucU0QF6etdO6Q+5a2zDcA8AJPln53gxV0vvVJuv40y
+8IAiUu+tViziTjWxIQlJ3qlPnhiRgURQZERBYx+3mYcHVd2N0HZC7NWFLIhn0d3e
+YI2EuT76JqB+iHLSCEgbIsJiBQECD/dmoPSxPy5lZL2W9FqY+JVHEjdkc50sKVi0
+z0NDvZ10yFQVJ/xk6szbg8IIHheR3YQLZuHfBAWgn1/Mw9ZDNvnqM4lH7Ut6uMQR
+57dFkuhq258YjwAUkofEu6qZ+txP9FpeYLWZd9rbIGJ6b5CQZhH0aP092dVYttSb
+nLGCNDcEROugWKHmJgzc0ybACuHEJK+00vML0z/mH+unMf634ldUZxKLqvOeKcaZ
+3hymbKbbZAYyeEup2OI0KvyGwVSWUFQmJc+4UzkJ2GTxZnczyCmzDoaL/kI5MNNw
+DTqfbKN4wi5YkQdsPo9U/6SURM54DfuCplwUjDT7Wgcj1cakfzP0dBuDeo3a4Pw4
+DVjeqVUGfrX9jiGyMD2F
+=CwO6
+-----END PGP SIGNATURE-----
+
+--xiGzRFbP+7h+smMw--
+
+--===============3084601436600196575==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3084601436600196575==--
