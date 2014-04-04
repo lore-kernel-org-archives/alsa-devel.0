@@ -1,37 +1,48 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: [PATCH v3 0/2] ASoC: fsl_sai: Add bus clock and mclks with clock controls
-Date: Fri, 4 Apr 2014 18:08:11 +0800
-Message-ID: <cover.1396605772.git.Guangyu.Chen@freescale.com>
+From: Nicolin Chen <Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Subject: [PATCH v3 2/2] ARM: dts: Append clock bindings for sai2 on VF610 platform
+Date: Fri, 4 Apr 2014 18:08:13 +0800
+Message-ID: <08ba57a2fdce1a404a6bcb61e21e25509fcd6b30.1396605772.git.Guangyu.Chen@freescale.com>
+References: <cover.1396605772.git.Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-doc-owner@vger.kernel.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: broonie@kernel.org, shawn.guo@linaro.org
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, rob@landley.net, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <cover.1396605772.git.Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This series of patches add clock controls to fsl_sai driver and updates
-the vf610.dtsi accordingly.
+Since we added fours clock to the DT binding, we should update the current
+SAI dts/dtsi so as not to break their functions.
 
-Changelog
-v3:
- * Use int type for ret instead of u32.
- * Added Acked-by and Tested-by from Xiubo Li.
-v2:
- * Appended two extra mclks to the driver since SAI actually has three.
- * Renamed clock name to 'bus' and 'mclk' according to the reference manual.
+Signed-off-by: Nicolin Chen <Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Tested-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+---
+ arch/arm/boot/dts/vf610.dtsi | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Nicolin Chen (2):
-  ASoC: fsl_sai: Add clock controls for SAI
-  ARM: dts: Append clock bindings for sai2 on VF610 platform
-
- .../devicetree/bindings/sound/fsl-sai.txt          |  8 ++--
- arch/arm/boot/dts/vf610.dtsi                       |  6 ++-
- sound/soc/fsl/fsl_sai.c                            | 51 ++++++++++++++++++++--
- sound/soc/fsl/fsl_sai.h                            |  4 ++
- 4 files changed, 60 insertions(+), 9 deletions(-)
-
+diff --git a/arch/arm/boot/dts/vf610.dtsi b/arch/arm/boot/dts/vf610.dtsi
+index d31ce1b..9fd0007 100644
+--- a/arch/arm/boot/dts/vf610.dtsi
++++ b/arch/arm/boot/dts/vf610.dtsi
+@@ -139,8 +139,10 @@
+ 				compatible = "fsl,vf610-sai";
+ 				reg = <0x40031000 0x1000>;
+ 				interrupts = <0 86 0x04>;
+-				clocks = <&clks VF610_CLK_SAI2>;
+-				clock-names = "sai";
++				clocks = <&clks VF610_CLK_SAI2>,
++				       <&clks VF610_CLK_SAI2>,
++				       <&clks 0>, <&clks 0>;
++				clock-names = "bus", "mclk1", "mclk2", "mclk3";
+ 				status = "disabled";
+ 			};
+ 
 -- 
 1.8.4
 
 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
