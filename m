@@ -1,61 +1,64 @@
-From: Ben Dooks <ben@trinity.fluff.org>
-Subject: Re: [PATCH] ASoC: rsnd: SSI needs to prepare clocks
- before enabling
-Date: Fri, 4 Apr 2014 12:42:50 +0100
-Message-ID: <20140404114250.GS4400@trinity.fluff.org>
-References: <1396009626-24699-1-git-send-email-ben.dooks@codethink.co.uk>
- <20140329100906.GE21628@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FA252657C9
- for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 13:42:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140329100906.GE21628@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, linux-sh@vger.kernel.org, lgirdwood@gmail.com, Ben Dooks <ben.dooks@codethink.co.uk>, magnus.damm@opensource.se, William Towle <william.towle@codethink.co.uk>
+From: Christoph Jaeger <christophjaeger@linux.com>
+Subject: [PATCH] ASoC: alc56(23|32): fix undefined return value of probing code
+Date: Fri,  4 Apr 2014 13:44:19 +0200
+Message-ID: <1396611859-719-1-git-send-email-christophjaeger@linux.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: tiwai@suse.de, perex@perex.cz, broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Christoph Jaeger <christophjaeger@linux.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 29, 2014 at 10:09:06AM +0000, Mark Brown wrote:
-> On Fri, Mar 28, 2014 at 12:27:06PM +0000, Ben Dooks wrote:
-> > From: William Towle <william.towle@codethink.co.uk>
-> > 
-> > The rsnd_ssi_hw_{stop|start} functions need to call clk_prepare_enable()
-> > and clk_disable_unprepare(), otherwise the following warning occurs on
-> > attempt to play sound:
-> 
-> This doesn't apply cleanly against current code, can you please check and
-> resend - I can't apply this anyway since...
-> 
-> > Signed-off-by: William Towle <william.towle@codethink.co.uk>
-> > [ben.dooks@codethink.co.uk: add more bug info to report]
-> > Tested-by: Ben Dooks <ben.dooks@codethink.co.uk>
-> > ---
-> 
-> ...you forgot to sign off.  I'm also not seeing the debug info you
-> mention in the changelog, indeed there's no error checking.
+Commit 5d6be5aa ("ASoC: codec: Simplify ASoC probe code.") left variable
+'ret', whose value is returned, uninitialized. Since it is not used
+otherwise, remove it.
 
-Ooops. 
+Signed-off-by: Christoph Jaeger <christophjaeger@linux.com>
+---
+ sound/soc/codecs/alc5623.c | 3 +--
+ sound/soc/codecs/alc5632.c | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-I need to re-do this anyway as we need to prepare the clock separately
-from the enable, as the enable code is occasionally being called from
-an interrupt context.
-
-I anm not sure what you mean by debug info... there is the log from
-the WARN_ON() which is trigger from the clock driver.
-
+diff --git a/sound/soc/codecs/alc5623.c b/sound/soc/codecs/alc5623.c
+index 09f7e77..f500905 100644
+--- a/sound/soc/codecs/alc5623.c
++++ b/sound/soc/codecs/alc5623.c
+@@ -902,7 +902,6 @@ static int alc5623_probe(struct snd_soc_codec *codec)
+ {
+ 	struct alc5623_priv *alc5623 = snd_soc_codec_get_drvdata(codec);
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-	int ret;
+ 
+ 	alc5623_reset(codec);
+ 
+@@ -961,7 +960,7 @@ static int alc5623_probe(struct snd_soc_codec *codec)
+ 		return -EINVAL;
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ /* power down chip */
+diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
+index ec071a6..3ee8d4e 100644
+--- a/sound/soc/codecs/alc5632.c
++++ b/sound/soc/codecs/alc5632.c
+@@ -1061,7 +1061,6 @@ static int alc5632_resume(struct snd_soc_codec *codec)
+ static int alc5632_probe(struct snd_soc_codec *codec)
+ {
+ 	struct alc5632_priv *alc5632 = snd_soc_codec_get_drvdata(codec);
+-	int ret;
+ 
+ 	/* power on device  */
+ 	alc5632_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+@@ -1075,7 +1074,7 @@ static int alc5632_probe(struct snd_soc_codec *codec)
+ 		return -EINVAL;
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ /* power down chip */
 -- 
-Ben Dooks, ben@fluff.org, http://www.fluff.org/ben/
-
-Large Hadron Colada: A large Pina Colada that makes the universe disappear.
+1.9.0
