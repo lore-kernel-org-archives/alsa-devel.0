@@ -1,59 +1,61 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 23/44] fireworks: Add proc interface for debugging purpose
-Date: Fri, 04 Apr 2014 20:16:57 +0900
-Message-ID: <533E94A9.20303@sakamocchi.jp>
-References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
-	<1395400229-22957-24-git-send-email-o-takashi@sakamocchi.jp>
-	<533DCFC1.50300@ladisch.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/7] ASoC:davinci-mcasp: bc polarity fix and
+	proper format support
+Date: Fri, 4 Apr 2014 14:31:40 +0300
+Message-ID: <1396611107-30765-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <533DCFC1.50300@ladisch.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69BA32657CE
+ for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 13:31:53 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, jsarha@ti.com, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+Hi,
 
-(Apr 04 2014 06:16), Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> This commit adds proc interface to output infomation for debugging.
->>   - firmware information
->>   - sampling rate and clock source
->>   - physical metering (linear value)
->>
->> +++ b/sound/firewire/fireworks/fireworks.c
->> @@ -133,6 +133,16 @@ get_hardware_info(struct snd_efw *efw)
->> +	/* hardware metering */
->> +	efw->phys_out = hwinfo->phys_out;
->> +	efw->phys_in = hwinfo->phys_in;
->> +	efw->phys_out_grp_count = hwinfo->phys_out_grp_count;
->> +	efw->phys_in_grp_count = hwinfo->phys_in_grp_count;
->
-> The driver relies on these values being correct.  It will blow up
-> if^H^Hwhen the firmware makes these values overflow.
+The bit clock polarity has been configured incorrectly in the McASP driver for a
+long time. IB_NF, NB_IF and IB_IF was not correct on the receive side since they
+were selecting the same edge as we used for the tx.
 
+The driver only had support for DSP_B mode (and probably AC97, but I can not
+test that). All other formats were broken (DSP_A, I2S, LEFT_J, etc).
+With this series the following formats will be supported by the McASP driver:
+- DSP_B
+- AC97
+- DSP_A (new)
+- I2S (new)
+- LEFT_J (new)
 
-Hm. Actually, the value of 'phys_xxx_grp_count' is expected less than 8 
-(HWINFO_MAX_CAPS_GROUPS). And I know the maximum number of 'phys_xxx' 
-for all of models.
+Non supported modes will return error from now on.
 
-So I'll add to check these numbers for this purpose.
+Regards,
+Peter
+---
+Peter Ujfalusi (7):
+  ASoC: davinci-mcasp: Fix bit clock polarity settings
+  ASoC: davinci-mcasp: Format data delay configuration enhancement
+  ASoC: davinci-mcasp: Support for DSP_A format
+  ASoC: davinci-mcasp: Move the FS polarity change out from the switch
+    case
+  ASoC: davinci-mcasp: Add support for I2S format
+  ASoC: davinci-mcasp: Support for LEFT_J format
+  ASoC: davinci-mcasp: Remove excess empty lines from
+    davinci_mcasp_set_dai_fmt()
 
+ sound/soc/davinci/davinci-mcasp.c | 76 +++++++++++++++++++++++++--------------
+ 1 file changed, 50 insertions(+), 26 deletions(-)
 
-Thank you
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
-
-
-------------------------------------------------------------------------------
+-- 
+1.9.1
