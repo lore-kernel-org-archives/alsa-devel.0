@@ -1,20 +1,20 @@
 From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
 Subject: Re: [PATCH 4/4] ASoC: spdif: Add Vybird and LS1+
  compatibles support.
-Date: Fri, 4 Apr 2014 00:40:33 +0000
-Message-ID: <139a7614a5a54aebaadc505564fed34e@BY2PR03MB505.namprd03.prod.outlook.com>
+Date: Fri, 4 Apr 2014 00:41:15 +0000
+Message-ID: <51116b79f828442e8245167f3c4dc7d8@BY2PR03MB505.namprd03.prod.outlook.com>
 References: <1396516257-25354-1-git-send-email-Li.Xiubo@freescale.com>
  <1396516257-25354-5-git-send-email-Li.Xiubo@freescale.com>
- <CAOMZO5DPbzK6_M=jzFGMKv1CFRd2xOYSEfyAUNi-XgKo17553Q@mail.gmail.com>
+ <20140403124514.GA32327@MrMyself>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1lp0140.outbound.protection.outlook.com [207.46.163.140])
- by alsa0.perex.cz (Postfix) with ESMTP id A8879265566
- for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 02:40:58 +0200 (CEST)
-In-Reply-To: <CAOMZO5DPbzK6_M=jzFGMKv1CFRd2xOYSEfyAUNi-XgKo17553Q@mail.gmail.com>
+ (mail-bn1lp0145.outbound.protection.outlook.com [207.46.163.145])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC3CB265728
+ for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 02:41:20 +0200 (CEST)
+In-Reply-To: <20140403124514.GA32327@MrMyself>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,14 +25,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
+To: "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "timur@tabi.org" <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
-> Subject: Re: [alsa-devel] [PATCH 4/4] ASoC: spdif: Add Vybird and LS1+
-> compatibles support.
+
+> Subject: Re: [PATCH 4/4] ASoC: spdif: Add Vybird and LS1+ compatibles support.
 > 
-> On Thu, Apr 3, 2014 at 6:10 AM, Xiubo Li <Li.Xiubo@freescale.com> wrote:
+> On Thu, Apr 03, 2014 at 05:10:57PM +0800, Xiubo Li wrote:
 > > Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 > > ---
 > >  sound/soc/fsl/fsl_spdif.c | 2 ++
@@ -46,16 +46,31 @@ List-Id: alsa-devel@alsa-project.org
 > *pdev)
 > >
 > >  static const struct of_device_id fsl_spdif_dt_ids[] = {
-> >         { .compatible = "fsl,imx35-spdif", },
-> > +       { .compatible = "fsl,vybird-spdif", },
+> >  	{ .compatible = "fsl,imx35-spdif", },
+> > +	{ .compatible = "fsl,vybird-spdif", },
+> > +	{ .compatible = "fsl,ls1+-spdif", },
 > 
-> I think you mean vybrid ;-)
+> Same comments here.
 > 
-Well yes, you are right.
+> And just a little reminder:
+> You are using "fsl,vf610-sai" for fsl_sai.c. I was wondering if you'd better
+> use "fsl,vf610-spdif" over here as well.
+> 
 
-I will follow GuangYu's advice in another mail.
+Please see the next version.
 
 Thanks,
 
-Brs
+BRs
 Xiubo
+
+> Best regards,
+> Nicolin
+> 
+> >  	{}
+> >  };
+> >  MODULE_DEVICE_TABLE(of, fsl_spdif_dt_ids);
+> > --
+> > 1.8.4
+> >
+> >
