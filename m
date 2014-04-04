@@ -1,107 +1,76 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [PATCH 1/2] ASoC: fsl_sai: Add clock control for SAI
-Date: Fri, 4 Apr 2014 09:24:39 +0000
-Message-ID: <49295d4f0f0f42c4b9c6de77583b978e@BY2PR03MB505.namprd03.prod.outlook.com>
-References: <cover.1396352401.git.Guangyu.Chen@freescale.com>
- <87d225a25812d730c0865f9d0bb733c67d8b3ed1.1396352401.git.Guangyu.Chen@freescale.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 28/44] fireworks: Add command/response
+ functionality into hwdep interface
+Date: Fri, 04 Apr 2014 11:31:45 +0200
+Message-ID: <533E7C01.8040000@ladisch.de>
+References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1395400229-22957-29-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <87d225a25812d730c0865f9d0bb733c67d8b3ed1.1396352401.git.Guangyu.Chen@freescale.com>
-Content-Language: en-US
-Sender: linux-doc-owner@vger.kernel.org
-To: "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "broonie@kernel.org" <broonie@kernel.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@tabi.org" <timur@tabi.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "rob@landley.net" <rob@landley.net>, "galak@codeaurora.org" <galak@codeaurora.org>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id AD04B26575F
+ for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 11:31:48 +0200 (CEST)
+In-Reply-To: <1395400229-22957-29-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Takashi Sakamoto wrote:
+> +++ b/include/uapi/sound/firewire.h
+>  #define SNDRV_FIREWIRE_EVENT_LOCK_STATUS	0x000010cc
+>  #define SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION	0xd1ce004e
+> +#define SNDRV_FIREWIRE_EVENT_EFW_RESPONSE	0x4e617475
 
-I have test this series on my Vybrid-TWR board and it works happily.
+Why "Natu"?  ;-)
 
-[...]
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 3847d2a..2d749df 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -428,5 +428,18 @@ static int fsl_sai_startup(struct snd_pcm_substream
-> *substream,
->  {
->  	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
-> -	u32 reg;
-> +	struct device *dev = &sai->pdev->dev;
-> +	u32 reg, ret;
-> +
+> +/* each field should be in big endian */
+> +struct snd_efw_transaction {
+> +	uint32_t length;
+> +	uint32_t version;
+> +	uint32_t seqnum;
+> +	uint32_t category;
+> +	uint32_t command;
+> +	uint32_t status;
+> +	uint32_t params[0];
+> +};
 
-I'd prefer:
-  +	int ret;
+uint32_t is not guaranteed to be available in a userspace header.
+Add <linux/types.h>, and use __u32.
 
+> +++ b/sound/firewire/fireworks/fireworks.c
+>  static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
+>  static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
+>  static bool enable[SNDRV_CARDS]	= SNDRV_DEFAULT_ENABLE_PNP;
+> +unsigned int resp_buf_size	= 1024;
+> +bool resp_buf_debug		= false;
 
-> +	ret = clk_prepare_enable(sai->ipg_clk);
-> +	if (ret) {
-> +		dev_err(dev, "failed to prepare and enable ipg clock\n");
-> +		return ret;
-> +	}
-> +
+When the driver is compiled into the kernel, these variable names could
+introduce conflicts.  Use a prefix like "efw_" or "fireworks_"; the
+parameter names can then be made pretty by using module_param_named().
 
-[...]
+> +static long
+> +hwdep_write(struct snd_hwdep *hwdep, const char __user *data, long count,
+> +	    loff_t *offset)
+> +{
+> +	...
+> +	if (count < sizeof(struct snd_efw_transaction))
+> +		return -EINVAL;
 
-> @@ -609,5 +630,5 @@ static int fsl_sai_probe(struct platform_device *pdev)
-> 
->  	sai->regmap = devm_regmap_init_mmio_clk(&pdev->dev,
-> -			"sai", base, &fsl_sai_regmap_config);
-> +			"ipg", base, &fsl_sai_regmap_config);
->  	if (IS_ERR(sai->regmap)) {
->  		dev_err(&pdev->dev, "regmap init failed\n");
-> @@ -615,4 +636,16 @@ static int fsl_sai_probe(struct platform_device *pdev)
->  	}
-> 
-> +	sai->ipg_clk = devm_clk_get(&pdev->dev, "ipg");
-> +	if (IS_ERR(sai->ipg_clk)) {
-> +		dev_err(&pdev->dev, "failed to get ipg clock\n");
-> +		return PTR_ERR(sai->ipg_clk);
-> +	}
-> +
-
-Since the 'ipg' clock is just intend to be used for registers accessing and
-We are using the regmap_init_mmio_clk(), so we can just drop it here and
-Let the regmap APIs to do the clock options properly.
-
-Otherwise it look good to me.
-
-After this:
-Acked-by: Xiubo Li <Li.Xiubo@freescale.com>
+The size must not be larger than allowed for a single write transaction.
+This would eventually be caught by the firewire core, but checking it
+here would avoid allocating lots of memory.
 
 
-
-Thanks,
-
-Brs,
-Xiubo
-
-
-
-
-> +	sai->sai_clk = devm_clk_get(&pdev->dev, "sai");
-> +	if (IS_ERR(sai->sai_clk)) {
-> +		dev_err(&pdev->dev, "failed to get sai clock\n");
-> +		return PTR_ERR(sai->sai_clk);
-> +	}
-> +
->  	irq = platform_get_irq(pdev, 0);
->  	if (irq < 0) {
-> diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-> index 677670d..cbaf114 100644
-> --- a/sound/soc/fsl/fsl_sai.h
-> +++ b/sound/soc/fsl/fsl_sai.h
-> @@ -127,4 +127,6 @@ struct fsl_sai {
->  	struct platform_device *pdev;
->  	struct regmap *regmap;
-> +	struct clk *ipg_clk;
-> +	struct clk *sai_clk;
-> 
->  	bool big_endian_regs;
-> --
-> 1.8.4
-> 
-
+Regards,
+Clemens
