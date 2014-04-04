@@ -1,53 +1,54 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] [PATCH 18/44] fireworks: Add connection and stream
-	management
-Date: Fri, 04 Apr 2014 17:05:06 +0200
-Message-ID: <533ECA22.5010509@ladisch.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 28/44] fireworks: Add command/response
+ functionality into hwdep interface
+Date: Sat, 05 Apr 2014 00:13:11 +0900
+Message-ID: <533ECC07.2060607@sakamocchi.jp>
 References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
-	<1395400229-22957-19-git-send-email-o-takashi@sakamocchi.jp>
-	<533DCB08.3040404@ladisch.de> <533EC039.7080907@sakamocchi.jp>
+ <1395400229-22957-29-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <533EC039.7080907@sakamocchi.jp>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00FB32657E4
+ for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 17:13:20 +0200 (CEST)
+In-Reply-To: <1395400229-22957-29-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> (Apr 04 2014 05:56), Clemens Ladisch wrote:
->> Takashi Sakamoto wrote:
->>> +++ b/sound/firewire/fireworks/fireworks.c
->>> +static int
->>> +init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
->>> +{
->>> +    ...
->>> +    err = amdtp_stream_init(stream, efw->unit, s_dir, CIP_BLOCKING);
->>
->> amdtp_stream_destroy() must be called.
->
-> For me, there is an ambiguous on what you said. Must it be called before
-> calling amdtp_stream_init() or in a case that the function returns error?
+Clemens,
 
-It must be called when the driver is disconnected normally (I guess in
-snd_efw_stream_destroy_duplex), or when driver amdtp_stream_init() has
-succeeded but driver loading aborts due to some other error.
+I realized this patch include another bug...
 
-> is it due to reference counter of firewire unit? (fw_unit_get/put)
+> +static long
+> +hwdep_write(struct snd_hwdep *hwdep, const char __user *data, long count,
+> +	    loff_t *offset)
+> +{
+> ...
+> +	/* check seqnum is not for kernel-land */
+> +	seqnum = ((struct snd_efw_transaction *)buf)->seqnum;
+> +	if (seqnum + 2 > SND_EFW_TRANSACTION_SEQNUM_MAX) {
+> +		count = -EINVAL;
+> +		goto end;
+> +	}
 
-Yes, and any other resources it might have allocated.
+I expect that the user data consists of __be32 array. So the correct way 
+to calculate seqnum is:
+
+seqnum = be32_to_cpu(((struct snd_efw_transaction *)buf)->seqnum);
 
 
-Regards,
-Clemens
+Regards
 
-------------------------------------------------------------------------------
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
