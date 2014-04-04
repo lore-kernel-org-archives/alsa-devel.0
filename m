@@ -1,17 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 7/7] ASoC: davinci-mcasp: Remove excess empty
-	lines from davinci_mcasp_set_dai_fmt()
-Date: Fri, 4 Apr 2014 14:31:47 +0300
-Message-ID: <1396611107-30765-8-git-send-email-peter.ujfalusi@ti.com>
-References: <1396611107-30765-1-git-send-email-peter.ujfalusi@ti.com>
+From: Ben Dooks <ben@trinity.fluff.org>
+Subject: Re: [PATCH] ASoC: rsnd: SSI needs to prepare clocks
+ before enabling
+Date: Fri, 4 Apr 2014 12:42:50 +0100
+Message-ID: <20140404114250.GS4400@trinity.fluff.org>
+References: <1396009626-24699-1-git-send-email-ben.dooks@codethink.co.uk>
+ <20140329100906.GE21628@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 8FE022657F3
- for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 13:32:06 +0200 (CEST)
-In-Reply-To: <1396611107-30765-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FA252657C9
+ for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 13:42:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20140329100906.GE21628@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, jsarha@ti.com, zonque@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, linux-sh@vger.kernel.org, lgirdwood@gmail.com, Ben Dooks <ben.dooks@codethink.co.uk>, magnus.damm@opensource.se, William Towle <william.towle@codethink.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-To make the code look uniform.
+On Sat, Mar 29, 2014 at 10:09:06AM +0000, Mark Brown wrote:
+> On Fri, Mar 28, 2014 at 12:27:06PM +0000, Ben Dooks wrote:
+> > From: William Towle <william.towle@codethink.co.uk>
+> > 
+> > The rsnd_ssi_hw_{stop|start} functions need to call clk_prepare_enable()
+> > and clk_disable_unprepare(), otherwise the following warning occurs on
+> > attempt to play sound:
+> 
+> This doesn't apply cleanly against current code, can you please check and
+> resend - I can't apply this anyway since...
+> 
+> > Signed-off-by: William Towle <william.towle@codethink.co.uk>
+> > [ben.dooks@codethink.co.uk: add more bug info to report]
+> > Tested-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> > ---
+> 
+> ...you forgot to sign off.  I'm also not seeing the debug info you
+> mention in the changelog, indeed there's no error checking.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/davinci/davinci-mcasp.c | 8 --------
- 1 file changed, 8 deletions(-)
+Ooops. 
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index da9533b8e2dd..ce0e55a4304c 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -273,7 +273,6 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 	case SND_SOC_DAIFMT_DSP_A:
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_TXFMCTL_REG, FSXDUR);
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG, FSRDUR);
--
- 		/* 1st data bit occur one ACLK cycle after the frame sync */
- 		data_delay = 1;
- 		break;
-@@ -281,7 +280,6 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 	case SND_SOC_DAIFMT_AC97:
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_TXFMCTL_REG, FSXDUR);
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG, FSRDUR);
--
- 		/* No delay after FS */
- 		data_delay = 0;
- 		break;
-@@ -289,7 +287,6 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		/* configure a full-word SYNC pulse (LRCLK) */
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_TXFMCTL_REG, FSXDUR);
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG, FSRDUR);
--
- 		/* 1st data bit occur one ACLK cycle after the frame sync */
- 		data_delay = 1;
- 		/* FS need to be inverted */
-@@ -349,7 +346,6 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 			       ACLKX | AHCLKX | AFSX | ACLKR | AHCLKR | AFSR);
- 		mcasp->bclk_master = 0;
- 		break;
--
- 	default:
- 		ret = -EINVAL;
- 		goto out;
-@@ -361,25 +357,21 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG, ACLKRPOL);
- 		fs_pol_rising = true;
- 		break;
--
- 	case SND_SOC_DAIFMT_NB_IF:
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_ACLKXCTL_REG, ACLKXPOL);
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG, ACLKRPOL);
- 		fs_pol_rising = false;
- 		break;
--
- 	case SND_SOC_DAIFMT_IB_IF:
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_ACLKXCTL_REG, ACLKXPOL);
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG, ACLKRPOL);
- 		fs_pol_rising = false;
- 		break;
--
- 	case SND_SOC_DAIFMT_NB_NF:
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_ACLKXCTL_REG, ACLKXPOL);
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG, ACLKRPOL);
- 		fs_pol_rising = true;
- 		break;
--
- 	default:
- 		ret = -EINVAL;
- 		goto out;
+I need to re-do this anyway as we need to prepare the clock separately
+from the enable, as the enable code is occasionally being called from
+an interrupt context.
+
+I anm not sure what you mean by debug info... there is the log from
+the WARN_ON() which is trigger from the clock driver.
+
 -- 
-1.9.1
+Ben Dooks, ben@fluff.org, http://www.fluff.org/ben/
+
+Large Hadron Colada: A large Pina Colada that makes the universe disappear.
