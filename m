@@ -1,48 +1,184 @@
-From: Nicolin Chen <Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: [PATCH v3 2/2] ARM: dts: Append clock bindings for sai2 on VF610 platform
-Date: Fri, 4 Apr 2014 18:08:13 +0800
-Message-ID: <08ba57a2fdce1a404a6bcb61e21e25509fcd6b30.1396605772.git.Guangyu.Chen@freescale.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: [PATCH v3 1/2] ASoC: fsl_sai: Add clock controls for SAI
+Date: Fri, 4 Apr 2014 18:08:12 +0800
+Message-ID: <53001e4f3749c3b0c3c6c110ae6779dbf992150b.1396605772.git.Guangyu.Chen@freescale.com>
 References: <cover.1396605772.git.Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <cover.1396605772.git.Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1396605772.git.Guangyu.Chen@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, shawn.guo@linaro.org
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, rob@landley.net, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Since we added fours clock to the DT binding, we should update the current
-SAI dts/dtsi so as not to break their functions.
+The SAI mainly has the following clocks:
+  bus clock
+    control and configuration registers and to generate synchronous
+    interrupts and DMA requests.
 
-Signed-off-by: Nicolin Chen <Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Tested-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+  mclk1, mclk2, mclk3
+    to generate the bit clock when the receiver or transmitter is
+    configured for an internally generated bit clock.
+
+So this patch adds these clocks to the driver and their clock controls.
+
+Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+Acked-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- arch/arm/boot/dts/vf610.dtsi | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/sound/fsl-sai.txt          |  8 ++--
+ sound/soc/fsl/fsl_sai.c                            | 51 ++++++++++++++++++++--
+ sound/soc/fsl/fsl_sai.h                            |  4 ++
+ 3 files changed, 56 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/boot/dts/vf610.dtsi b/arch/arm/boot/dts/vf610.dtsi
-index d31ce1b..9fd0007 100644
---- a/arch/arm/boot/dts/vf610.dtsi
-+++ b/arch/arm/boot/dts/vf610.dtsi
-@@ -139,8 +139,10 @@
- 				compatible = "fsl,vf610-sai";
- 				reg = <0x40031000 0x1000>;
- 				interrupts = <0 86 0x04>;
--				clocks = <&clks VF610_CLK_SAI2>;
--				clock-names = "sai";
-+				clocks = <&clks VF610_CLK_SAI2>,
-+				       <&clks VF610_CLK_SAI2>,
-+				       <&clks 0>, <&clks 0>;
-+				clock-names = "bus", "mclk1", "mclk2", "mclk3";
- 				status = "disabled";
- 			};
+diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+index 35c09fe..8a273bc 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+@@ -10,7 +10,8 @@ Required properties:
+ - compatible: Compatible list, contains "fsl,vf610-sai" or "fsl,imx6sx-sai".
+ - reg: Offset and length of the register set for the device.
+ - clocks: Must contain an entry for each entry in clock-names.
+-- clock-names : Must include the "sai" entry.
++- clock-names : Must include the "bus" for register access and "mclk1" "mclk2"
++  "mclk3" for bit clock and frame clock providing.
+ - dmas : Generic dma devicetree binding as described in
+   Documentation/devicetree/bindings/dma/dma.txt.
+ - dma-names : Two dmas have to be defined, "tx" and "rx".
+@@ -30,8 +31,9 @@ sai2: sai@40031000 {
+ 	      reg = <0x40031000 0x1000>;
+ 	      pinctrl-names = "default";
+ 	      pinctrl-0 = <&pinctrl_sai2_1>;
+-	      clocks = <&clks VF610_CLK_SAI2>;
+-	      clock-names = "sai";
++	      clocks = <&clks VF610_CLK_SAI2>, <&clks VF610_CLK_SAI2>
++		      <&clks 0>, <&clks 0>;
++	      clock-names = "bus", "mclk1", "mclk2", "mclk3";
+ 	      dma-names = "tx", "rx";
+ 	      dmas = <&edma0 0 VF610_EDMA_MUXID0_SAI2_TX>,
+ 		   <&edma0 0 VF610_EDMA_MUXID0_SAI2_RX>;
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 9cd1764..2dae440 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -401,7 +401,23 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *cpu_dai)
+ {
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+-	u32 reg;
++	struct device *dev = &sai->pdev->dev;
++	u32 reg, i;
++	int ret;
++
++	ret = clk_prepare_enable(sai->bus_clk);
++	if (ret) {
++		dev_err(dev, "failed to enable bus clock\n");
++		return ret;
++	}
++
++	for (i = 0; i < FSL_SAI_MCLK_MAX; i++) {
++		ret = clk_prepare_enable(sai->mclk_clk[i]);
++		if (ret) {
++			dev_err(dev, "failed to enable mclk%d clock\n", i + 1);
++			goto err;
++		}
++	}
  
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		reg = FSL_SAI_TCR3;
+@@ -412,13 +428,20 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
+ 			   FSL_SAI_CR3_TRCE);
+ 
+ 	return 0;
++
++err:
++	for (; i > 0; i--)
++		clk_disable_unprepare(sai->mclk_clk[i - 1]);
++	clk_disable_unprepare(sai->bus_clk);
++
++	return ret;
+ }
+ 
+ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *cpu_dai)
+ {
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+-	u32 reg;
++	u32 reg, i;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		reg = FSL_SAI_TCR3;
+@@ -427,6 +450,10 @@ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	regmap_update_bits(sai->regmap, reg, FSL_SAI_CR3_TRCE,
+ 			   ~FSL_SAI_CR3_TRCE);
++
++	for (i = 0; i < FSL_SAI_MCLK_MAX; i++)
++		clk_disable_unprepare(sai->mclk_clk[i]);
++	clk_disable_unprepare(sai->bus_clk);
+ }
+ 
+ static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
+@@ -559,7 +586,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	struct fsl_sai *sai;
+ 	struct resource *res;
+ 	void __iomem *base;
+-	int irq, ret;
++	char tmp[8];
++	int irq, ret, i;
+ 
+ 	sai = devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
+ 	if (!sai)
+@@ -582,12 +610,27 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		return PTR_ERR(base);
+ 
+ 	sai->regmap = devm_regmap_init_mmio_clk(&pdev->dev,
+-			"sai", base, &fsl_sai_regmap_config);
++			"bus", base, &fsl_sai_regmap_config);
+ 	if (IS_ERR(sai->regmap)) {
+ 		dev_err(&pdev->dev, "regmap init failed\n");
+ 		return PTR_ERR(sai->regmap);
+ 	}
+ 
++	sai->bus_clk = devm_clk_get(&pdev->dev, "bus");
++	if (IS_ERR(sai->bus_clk)) {
++		dev_err(&pdev->dev, "failed to get bus clock\n");
++		return PTR_ERR(sai->bus_clk);
++	}
++
++	for (i = 0; i < FSL_SAI_MCLK_MAX; i++) {
++		sprintf(tmp, "mclk%d", i + 1);
++		sai->mclk_clk[i] = devm_clk_get(&pdev->dev, tmp);
++		if (IS_ERR(sai->mclk_clk[i])) {
++			dev_err(&pdev->dev, "failed to get mclk%d clock\n", i + 1);
++			return PTR_ERR(sai->mclk_clk[i]);
++		}
++	}
++
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+ 		dev_err(&pdev->dev, "no irq for node %s\n", np->full_name);
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 677670d..0e6c9f5 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -119,6 +119,8 @@
+ #define FSL_SAI_CLK_MAST2	2
+ #define FSL_SAI_CLK_MAST3	3
+ 
++#define FSL_SAI_MCLK_MAX	3
++
+ /* SAI data transfer numbers per DMA request */
+ #define FSL_SAI_MAXBURST_TX 6
+ #define FSL_SAI_MAXBURST_RX 6
+@@ -126,6 +128,8 @@
+ struct fsl_sai {
+ 	struct platform_device *pdev;
+ 	struct regmap *regmap;
++	struct clk *bus_clk;
++	struct clk *mclk_clk[FSL_SAI_MCLK_MAX];
+ 
+ 	bool big_endian_regs;
+ 	bool big_endian_data;
 -- 
 1.8.4
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
