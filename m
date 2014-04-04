@@ -1,73 +1,112 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: [alsa-devel] [PATCH v2 00/16] ASoC: fsl-ssi: Driver cleanup
-Date: Fri, 4 Apr 2014 09:58:03 +0200
-Message-ID: <CAOf5uwkDdsDzRAMHV0e2ideR-R8Tztis1HxqosQAxefVQDE3oA@mail.gmail.com>
-References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
- <20140403221406.GI14763@sirena.org.uk>
- <20140404064932.GC20621@pengutronix.de>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Fix Bit Clock Polarity configurations
+Date: Fri, 4 Apr 2014 15:44:00 +0800
+Message-ID: <20140404074359.GA2599@MrMyself>
+References: <1396595387-4371-1-git-send-email-Guangyu.Chen@freescale.com>
+ <9cb53ac6e0e04c01bc0c6ae6a4d42557@BY2PR03MB505.namprd03.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20140404064932.GC20621@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <9cb53ac6e0e04c01bc0c6ae6a4d42557@BY2PR03MB505.namprd03.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Xiubo Li-B47053 <Li.Xiubo@freescale.com>
+Cc: "broonie@kernel.org" <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@tabi.org" <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Markus
+Hi Xiubo,
 
-On Fri, Apr 4, 2014 at 8:49 AM, Markus Pargmann <mpa@pengutronix.de> wrote:
-> Hi,
->
-> On Thu, Apr 03, 2014 at 11:14:06PM +0100, Mark Brown wrote:
->> On Sat, Mar 15, 2014 at 01:44:08PM +0100, Markus Pargmann wrote:
->> > Hi,
->> >
->> > This new version of the cleanup is mainly a reordering of the patches. It moves
->> > the regmap patch to the end of the series so none of the other patches depend
->> > on it. This also fixes a bug I introduced in "Remove fsl_ssi_setup" which also
->> > removed the switching between network and normal mode depending on the number
->> > of channels. I reversed this code removal. Another new patch was added "Fix
->> > i2s_mode variable setup" which fixes the i2s_mode assignment in set_dai_fmt().
->>
->> It's been nearly three weeks with no response to this except for the
->> last patch - I've got ahead and applied since it all looks sane (modulo
->> the bugfix question), we can see if problems occur in -next after the
->> merge window.  Thanks!
->
-> Thanks for applying this series, but could you please drop it for the
-> moment? We found some issues with the baud clock setup for i2s master
-> mode and have some fixed patches for the series. So it would be nice to
-> get this in without fixups if that's still possible? I could send a v3
-> next week.
-
-We have tested a bit them on Wandboard and rebase our patches.
-I was busy in the last 2 weeks but they are fine so far.
-
-Michael
-
->
+On Fri, Apr 04, 2014 at 03:37:00PM +0800, Xiubo Li-B47053 wrote:
+> 
+> > Subject: [PATCH] ASoC: fsl_sai: Fix Bit Clock Polarity configurations
+> > 
+> > The BCP bit in TCR4/RCR4 register rules as followings:
+> >   0 Bit clock is active high with drive outputs on rising edge
+> >     and sample inputs on falling edge.
+> >   1 Bit clock is active low with drive outputs on falling edge
+> >     and sample inputs on rising edge.
+> > 
+> > For all formats currently supported in the fsl_sai driver, they're exactly
+> > sending data on the falling edge and sampling on the rising edge.
+> > 
+> > However, the driver clears this BCP bit for all of them which results click
+> > noise when working with SGTL5000 and big noise with WM8962.
+> > 
+> > Thus this patch corrects the BCP settings for all the formats here to fix
+> > the nosie issue.
+> > 
+> > Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+> > ---
+> 
+> Good catch.
+> 
+> Acked-by: Xiubo Li <Li.Xiubo@freescale.com>
+> 
 > Thanks,
->
-> Markus
->
+
+Is that possible for you to test those two clock patches for fsl_sai?
+
+I think most of us are waiting for your reply to it. And I'd really
+like to move on to append clock dividing code into the driver so both
+of vybrid and imx can easily enable the DAI master mode.
+
+Thank you,
+Nicolin
+
 > --
-> Pengutronix e.K.                           |                             |
-> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+> 
+> BRs,
+> Xiubo
+> 
+> 
+> >  sound/soc/fsl/fsl_sai.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> > index 99051c7..9bbebea 100644
+> > --- a/sound/soc/fsl/fsl_sai.c
+> > +++ b/sound/soc/fsl/fsl_sai.c
+> > @@ -180,7 +180,7 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai
+> > *cpu_dai,
+> >  		 * that is, together with the last bit of the previous
+> >  		 * data word.
+> >  		 */
+> > -		val_cr2 &= ~FSL_SAI_CR2_BCP;
+> > +		val_cr2 |= FSL_SAI_CR2_BCP;
+> >  		val_cr4 |= FSL_SAI_CR4_FSE | FSL_SAI_CR4_FSP;
+> >  		break;
+> >  	case SND_SOC_DAIFMT_LEFT_J:
+> > @@ -188,7 +188,7 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai
+> > *cpu_dai,
+> >  		 * Frame high, one word length for frame sync,
+> >  		 * frame sync asserts with the first bit of the frame.
+> >  		 */
+> > -		val_cr2 &= ~FSL_SAI_CR2_BCP;
+> > +		val_cr2 |= FSL_SAI_CR2_BCP;
+> >  		val_cr4 &= ~(FSL_SAI_CR4_FSE | FSL_SAI_CR4_FSP);
+> >  		break;
+> >  	case SND_SOC_DAIFMT_DSP_A:
+> > @@ -198,7 +198,7 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai
+> > *cpu_dai,
+> >  		 * that is, together with the last bit of the previous
+> >  		 * data word.
+> >  		 */
+> > -		val_cr2 &= ~FSL_SAI_CR2_BCP;
+> > +		val_cr2 |= FSL_SAI_CR2_BCP;
+> >  		val_cr4 &= ~FSL_SAI_CR4_FSP;
+> >  		val_cr4 |= FSL_SAI_CR4_FSE;
+> >  		sai->is_dsp_mode = true;
+> > @@ -208,7 +208,7 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai
+> > *cpu_dai,
+> >  		 * Frame high, one bit for frame sync,
+> >  		 * frame sync asserts with the first bit of the frame.
+> >  		 */
+> > -		val_cr2 &= ~FSL_SAI_CR2_BCP;
+> > +		val_cr2 |= FSL_SAI_CR2_BCP;
+> >  		val_cr4 &= ~(FSL_SAI_CR4_FSE | FSL_SAI_CR4_FSP);
+> >  		sai->is_dsp_mode = true;
+> >  		break;
+> > --
+> > 1.8.4
+> > 
+> 
