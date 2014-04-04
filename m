@@ -1,66 +1,41 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: dapm: Add support for multi register mux
-Date: Fri, 04 Apr 2014 09:40:21 +0200
-Message-ID: <533E61E5.2080907@metafoo.de>
-References: <1396494710-20944-1-git-send-email-aruns@nvidia.com> <533D1B65.3030405@metafoo.de> <781A12BB53C15A4BB37291FDE08C03F3A05CDCDF9F@HQMAIL02.nvidia.com> <533E5FD4.8040403@metafoo.de> <781A12BB53C15A4BB37291FDE08C03F3A05CDCE1AA@HQMAIL02.nvidia.com>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCHv2 0/4] Add ESAI & SPDIF Vybrid and LS1+ support.
+Date: Fri, 4 Apr 2014 15:10:25 +0800
+Message-ID: <1396595429-16629-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <781A12BB53C15A4BB37291FDE08C03F3A05CDCE1AA@HQMAIL02.nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arun Shamanna Lakshmi <aruns@nvidia.com>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Songhee Baek <sbaek@nvidia.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe004.messaging.microsoft.com [213.199.154.207])
+ by alsa0.perex.cz (Postfix) with ESMTP id 095CF265726
+ for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 09:54:46 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, Guangyu.Chen@freescale.com
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 04/04/2014 09:34 AM, Arun Shamanna Lakshmi wrote:
->
->> -----Original Message-----
->> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
->> Sent: Friday, April 04, 2014 12:32 AM
->> To: Arun Shamanna Lakshmi
->> Cc: lgirdwood@gmail.com; broonie@kernel.org;
->> swarren@wwwdotorg.org; perex@perex.cz; tiwai@suse.de; alsa-
->> devel@alsa-project.org; linux-kernel@vger.kernel.org; Songhee Baek
->> Subject: Re: [PATCH] ASoC: dapm: Add support for multi register mux
->>
->> On 04/03/2014 10:11 PM, Arun Shamanna Lakshmi wrote:
->> [...]
->>>> Here as well, default for bit_pos should be 0.
->>>
->>> This means when 'None' of the options are selected, by default, it
->>> enumerates to 0. Since we are using __ffs, BIT(0) of Register-0 also
->>> enumerates to 0. That's the reason why I used just ffs in the first place.
->>> Let me know your opinion. My value table looks like below.
->>>
->>> #define MUX_VALUE(npart, nbit)	(nbit + 32 * npart)
->>> static const int mux_values[] = {
->>> 	0,
->>> 	MUX_VALUE(0, 0),
->>> 	.
->>> 	.
->>> 	.
->>> 	MUX_VALUE(0, 31),
->>> 	/* above inputs are for part0 mux */
->>> 	MUX_VALUE(1, 0),
->>> 	.
->>> 	.
->>> 	.
->>> 	MUX_VALUE(1, 31),
->>> 	/* above inputs are for part1 mux */
->>> 	MUX_VALUE(2, 0),
->>> 	.
->>> 	.
->>> 	.
->>> 	MUX_VALUE(2, 31),
->>> 	/* above inputs are for part2 mux */
->>> };
->>
->> Ok, so having none of the input selected should be a valid user selectable
->> option?
->
-> Yes. If 'None' is selected, it goes and clears the register. So, can we have ffs( )
-> instead of __ffs( ) ? It would fix this case.
+Changes in V2:
+- Revise some issue from Nicolin Chen and Fabio Estevam.
 
-Yes, but you need to make sure to handle it also correctly in the put 
-handler, since all of the registers need to be written to 0 in that case.
+
+Xiubo Li (4):
+  ASoC: esai: use the precise definition of 'ret'.
+  ASoC: spdif: Sort the header files alphabetically.
+  ASoC: esai: Add VF610+ compatibles support.
+  ASoC: spdif: Add VF610+ compatibles support.
+
+ sound/soc/fsl/fsl_esai.c  | 9 ++++++---
+ sound/soc/fsl/fsl_spdif.c | 9 +++++----
+ 2 files changed, 11 insertions(+), 7 deletions(-)
+
+-- 
+1.8.4
