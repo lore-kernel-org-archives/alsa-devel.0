@@ -1,17 +1,17 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv2 1/4] ASoC: esai: use the precise definition
-	of 'ret'.
-Date: Fri, 4 Apr 2014 15:10:26 +0800
-Message-ID: <1396595429-16629-2-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCHv2 2/4] ASoC: spdif: Sort the header files
+	alphabetically.
+Date: Fri, 4 Apr 2014 15:10:27 +0800
+Message-ID: <1396595429-16629-3-git-send-email-Li.Xiubo@freescale.com>
 References: <1396595429-16629-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe005.messaging.microsoft.com [216.32.180.31])
- by alsa0.perex.cz (Postfix) with ESMTP id F125526572A
- for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 09:54:49 +0200 (CEST)
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe006.messaging.microsoft.com [213.199.154.209])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48DCA26573F
+ for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 09:54:53 +0200 (CEST)
 In-Reply-To: <1396595429-16629-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,48 +26,38 @@ To: broonie@kernel.org, Guangyu.Chen@freescale.com
 Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Use the precise definition of 'ret', which will be used for
-the error check.
-
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+Acked-by: Nicolin Chen <Guangyu.Chen@freescale.com>
 ---
- sound/soc/fsl/fsl_esai.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/fsl/fsl_spdif.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index c8e5db1..67d5417 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -209,8 +209,9 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	struct clk *clksrc = esai_priv->extalclk;
- 	bool tx = clk_id <= ESAI_HCKT_EXTAL;
- 	bool in = dir == SND_SOC_CLOCK_IN;
--	u32 ret, ratio, ecr = 0;
-+	u32 ratio, ecr = 0;
- 	unsigned long clk_rate;
-+	int ret;
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 6452ca8..173553c 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -13,18 +13,18 @@
+  * kind, whether express or implied.
+  */
  
- 	/* sck_div can be only bypassed if ETO/ERO=0 and SNC_SOC_CLOCK_OUT */
- 	esai_priv->sck_div[tx] = true;
-@@ -432,8 +433,8 @@ static int fsl_esai_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- static int fsl_esai_startup(struct snd_pcm_substream *substream,
- 			    struct snd_soc_dai *dai)
- {
--	int ret;
- 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
-+	int ret;
+-#include <linux/module.h>
++#include <linux/bitrev.h>
+ #include <linux/clk.h>
+ #include <linux/clk-private.h>
+-#include <linux/bitrev.h>
+-#include <linux/regmap.h>
++#include <linux/module.h>
+ #include <linux/of_address.h>
+ #include <linux/of_device.h>
+ #include <linux/of_irq.h>
++#include <linux/regmap.h>
  
- 	/*
- 	 * Some platforms might use the same bit to gate all three or two of
-@@ -491,7 +492,8 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	u32 width = snd_pcm_format_width(params_format(params));
- 	u32 channels = params_channels(params);
--	u32 bclk, mask, val, ret;
-+	u32 bclk, mask, val;
-+	int ret;
+ #include <sound/asoundef.h>
+-#include <sound/soc.h>
+ #include <sound/dmaengine_pcm.h>
++#include <sound/soc.h>
  
- 	bclk = params_rate(params) * esai_priv->slot_width * 2;
- 
+ #include "fsl_spdif.h"
+ #include "imx-pcm.h"
 -- 
 1.8.4
