@@ -1,85 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 00/16] ASoC: fsl-ssi: Driver cleanup
-Date: Fri, 4 Apr 2014 11:03:51 +0100
-Message-ID: <20140404100351.GM14763@sirena.org.uk>
-References: <1394887464-969-1-git-send-email-mpa@pengutronix.de>
- <20140403221406.GI14763@sirena.org.uk>
- <20140404064932.GC20621@pengutronix.de>
+Subject: Re: [PATCH] ASoC: fsl_sai: Fix Bit Clock Polarity configurations
+Date: Fri, 4 Apr 2014 11:05:32 +0100
+Message-ID: <20140404100532.GN14763@sirena.org.uk>
+References: <1396595387-4371-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3084601436600196575=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 514762657A3
- for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2014 12:04:13 +0200 (CEST)
-In-Reply-To: <20140404064932.GC20621@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kY0AMSsGPnDJoAXR"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1396595387-4371-1-git-send-email-Guangyu.Chen@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: Li.Xiubo@freescale.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3084601436600196575==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xiGzRFbP+7h+smMw"
-Content-Disposition: inline
-
-
---xiGzRFbP+7h+smMw
+--kY0AMSsGPnDJoAXR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Apr 04, 2014 at 08:49:32AM +0200, Markus Pargmann wrote:
+On Fri, Apr 04, 2014 at 03:09:47PM +0800, Nicolin Chen wrote:
+> The BCP bit in TCR4/RCR4 register rules as followings:
+>   0 Bit clock is active high with drive outputs on rising edge
+>     and sample inputs on falling edge.
+>   1 Bit clock is active low with drive outputs on falling edge
+>     and sample inputs on rising edge.
 
-> Thanks for applying this series, but could you please drop it for the
-> moment? We found some issues with the baud clock setup for i2s master
-> mode and have some fixed patches for the series. So it would be nice to
-> get this in without fixups if that's still possible? I could send a v3
-> next week.
+Applied, thanks.
 
-I've dropped everything after "fsl-ssi: Move debugging to a separate
-file" since that didn't compile anyway (though I'll add the binding
-document update as a fix).  In future please don't wait until after your
-patches have been applied before saying things like this, it's not good
-to rebase branches normally.
-
---xiGzRFbP+7h+smMw
+--kY0AMSsGPnDJoAXR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTPoOEAAoJELSic+t+oim9eBEQAI+U/fAb4cswofUD8ZCrO/K6
-Nq2KSC2zAcbIcZYp9MhVB36TWMXT2zpGNqblBVt8yvzUwnUKDde0a306IfZRT3Gd
-n2vSYhXdSrgHOfL4YsHfzdtUkqSVtuXQraPGN9IZDRsydQlZzf72++UL75jacHKZ
-UYSiP4Js/Ihh3GvWn7f3osucU0QF6etdO6Q+5a2zDcA8AJPln53gxV0vvVJuv40y
-8IAiUu+tViziTjWxIQlJ3qlPnhiRgURQZERBYx+3mYcHVd2N0HZC7NWFLIhn0d3e
-YI2EuT76JqB+iHLSCEgbIsJiBQECD/dmoPSxPy5lZL2W9FqY+JVHEjdkc50sKVi0
-z0NDvZ10yFQVJ/xk6szbg8IIHheR3YQLZuHfBAWgn1/Mw9ZDNvnqM4lH7Ut6uMQR
-57dFkuhq258YjwAUkofEu6qZ+txP9FpeYLWZd9rbIGJ6b5CQZhH0aP092dVYttSb
-nLGCNDcEROugWKHmJgzc0ybACuHEJK+00vML0z/mH+unMf634ldUZxKLqvOeKcaZ
-3hymbKbbZAYyeEup2OI0KvyGwVSWUFQmJc+4UzkJ2GTxZnczyCmzDoaL/kI5MNNw
-DTqfbKN4wi5YkQdsPo9U/6SURM54DfuCplwUjDT7Wgcj1cakfzP0dBuDeo3a4Pw4
-DVjeqVUGfrX9jiGyMD2F
-=CwO6
+iQIcBAEBAgAGBQJTPoPoAAoJELSic+t+oim9cqwP/0eylndow3ZrNrhmze/mgQHS
+SQmqXMDPwLQEH3Jb3i+s1KdvLwS318DgsFNfX9pCYNWeDlP/IkTMzNKxSjrEY69V
+z+0N5QUkYfUkWkjnAStiWKj40/2Vl/oN1g557czLa6H+1iREbrxS9aOhNj+i7gBh
+XgpFSbK84VRzQntlg75Iv5yfbfJ0zW3d/cV+CsJ8IRekGey6hd+r3riaWouUJ4BM
+ViflC6ypTht3ahLKPSrOXtI5Y5f+l4ueCdt8xtuv1Aj3EZf8hRaFJTzveDJce+7F
+bnIOx/bZv91yJSErE/+28bDcxJN7IkuXJMEgC1x3ktzgOfKACumaQjRfw6qMsaPK
+LUDzmT6NXn7ausjWFuFOG45UxOIZiPjUJMqs197hy+opbQRUW03SbHEdlrbO6eNa
+kLdCOSJIbjGBxPzx9Q+eXFsmQv7jXcLz464YyQVSTBuPFstF3WliQXpi6VqLXG/9
++NzAmzdhN3j66A1REYK4/B9S+JrwUwo1nPXpp4hOwwQeQlZpwd0q6gmO4wJ7SyHB
+kA4CdMuaKBlvulYGXgYytdr8PyVu0/arAWaBgOcECk549z/4T+UHucQI22xchsAG
++R8c43fkxcDMPZRbMgXlIoMeZbZkz0XXicsuV9CXn/iIe69d/Gdq1rj1jKAMaun+
+3Fe2Kz9TWQRojvvD8/ba
+=HM9U
 -----END PGP SIGNATURE-----
 
---xiGzRFbP+7h+smMw--
-
---===============3084601436600196575==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3084601436600196575==--
+--kY0AMSsGPnDJoAXR--
