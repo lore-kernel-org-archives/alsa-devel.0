@@ -1,17 +1,28 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: cs42l52: Fix mask for REVID
-Date: Sun, 06 Apr 2014 00:04:35 +0800
-Message-ID: <1396713875.9878.0.camel@phoenix>
+From: andoru <andoru.blah@gmail.com>
+Subject: Re:
+	=?utf-8?q?Invalid_PCM_pointer_with_CMI8738_and_pcm?=
+	=?utf-8?q?=2Ec_buffer=09underuns?=
+Date: Sat, 5 Apr 2014 18:29:25 +0000 (UTC)
+Message-ID: <loom.20140405T202230-761@post.gmane.org>
+References: <loom.20140404T175952-945@post.gmane.org>
+ <CAN8cciaF9ZbyOoz4A3f3GyTkmzzbvskFtqqKUv2rjgVAXbjCcQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f179.google.com (mail-pd0-f179.google.com
- [209.85.192.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 8550C26513C
- for <alsa-devel@alsa-project.org>; Sat,  5 Apr 2014 18:58:26 +0200 (CEST)
-Received: by mail-pd0-f179.google.com with SMTP id w10so4686157pde.38
- for <alsa-devel@alsa-project.org>; Sat, 05 Apr 2014 09:58:25 -0700 (PDT)
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C4A526513A
+ for <alsa-devel@alsa-project.org>; Sat,  5 Apr 2014 20:29:38 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1WWVLV-0006DE-GR
+ for alsa-devel@alsa-project.org; Sat, 05 Apr 2014 20:29:37 +0200
+Received: from cl-86-125-143-65.cablelink.mures.rdsnet.ro ([86.125.143.65])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sat, 05 Apr 2014 20:29:37 +0200
+Received: from andoru.blah by cl-86-125-143-65.cablelink.mures.rdsnet.ro with
+ local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sat, 05 Apr 2014 20:29:37 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,44 +32,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-BIT[0:2] of register 01h is REVID, so the mask for REVID should be 0x7.
-Also updates the code to use CS42L52_CHIP_REV_MASK.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/cs42l52.c | 2 +-
- sound/soc/codecs/cs42l52.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Raymond Yau <superquad.vortex2 <at> gmail.com> writes:
+> 
+> does the hardware really support (16384/1764)
+> 9.27 periods?
+> does the error occur in the last period ?
 
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index f0ca6be..460d355 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -1259,7 +1259,7 @@ static int cs42l52_i2c_probe(struct i2c_client *i2c_client,
- 	}
- 
- 	dev_info(&i2c_client->dev, "Cirrus Logic CS42L52, Revision: %02X\n",
--			reg & 0xFF);
-+		 reg & CS42L52_CHIP_REV_MASK);
- 
- 	/* Set Platform Data */
- 	if (cs42l52->pdata.mica_diff_cfg)
-diff --git a/sound/soc/codecs/cs42l52.h b/sound/soc/codecs/cs42l52.h
-index 6fb8f00..ac445993 100644
---- a/sound/soc/codecs/cs42l52.h
-+++ b/sound/soc/codecs/cs42l52.h
-@@ -37,7 +37,7 @@
- #define CS42L52_CHIP_REV_A0			0x00
- #define CS42L52_CHIP_REV_A1			0x01
- #define CS42L52_CHIP_REV_B0			0x02
--#define CS42L52_CHIP_REV_MASK			0x03
-+#define CS42L52_CHIP_REV_MASK			0x07
- 
- #define CS42L52_PWRCTL1				0x02
- #define CS42L52_PWRCTL1_PDN_ALL			0x9F
--- 
-1.8.3.2
+I have no idea, how do I find out? What last period?
+
+> Do the clippping occur with oss emulation which use 
+> power of 2 period size
+> 
+> or
+> 
+> add
+> 
+> snd_pcm_hw_constraint_integer(runtime,
+> SNDRV_PCM_HW_PARAM_PERIODS)
+
+Add that line where? I'm not sure if I'm using oss emulation.
+_______________________________________________________________________
