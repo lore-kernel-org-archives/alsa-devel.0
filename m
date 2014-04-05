@@ -1,22 +1,17 @@
 From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH] ASoC: cs42l52: Report correct chip id and
-	revision
-Date: Sat, 5 Apr 2014 16:49:57 +0000
-Message-ID: <3CCD7D12-7F7D-485E-92A6-A6E90C9B6133@cirrus.com>
-References: <1396616889.13903.2.camel@phoenix>
- <alpine.DEB.2.02.1404041128380.3451@heelrod>
- <CAFRkauBYAZDrrbGkZH3jGKzMJHYMEN00yXgLWtk+9m_dwDqB_w@mail.gmail.com>
- <2009B58E-4C0C-456B-B7D3-5ADC68931CE5@cirrus.com>,
- <CAFRkauA_e1VPadEOwQgRjapErhK77FO=UVOV4CuNnmmq0sW1aA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: cs42l52: Fix mask for REVID
+Date: Sat, 5 Apr 2014 16:52:24 +0000
+Message-ID: <27D3AE79-5DF0-445A-8C37-52584F225020@cirrus.com>
+References: <1396713875.9878.0.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0091.outbound.protection.outlook.com [157.56.111.91])
- by alsa0.perex.cz (Postfix) with ESMTP id 095E0265056
- for <alsa-devel@alsa-project.org>; Sat,  5 Apr 2014 18:50:02 +0200 (CEST)
-In-Reply-To: <CAFRkauA_e1VPadEOwQgRjapErhK77FO=UVOV4CuNnmmq0sW1aA@mail.gmail.com>
+ (mail-bn1on0099.outbound.protection.outlook.com [157.56.110.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id 598D526517C
+ for <alsa-devel@alsa-project.org>; Sat,  5 Apr 2014 18:52:29 +0200 (CEST)
+In-Reply-To: <1396713875.9878.0.camel@phoenix>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,127 +28,13 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-> On Apr 5, 2014, at 11:33, "Axel Lin" <axel.lin@ingics.com> wrote:
+> On Apr 5, 2014, at 11:04, "Axel Lin" <axel.lin@ingics.com> wrote:
 > 
-> 2014-04-05 20:48 GMT+08:00 Austin, Brian <Brian.Austin@cirrus.com>:
->> 
->> On Apr 4, 2014, at 8:59 PM, Axel Lin <axel.lin@ingics.com> wrote:
->> 
->> 2014-04-05 1:00 GMT+08:00 Brian Austin <brian.austin@cirrus.com>:
->> 
->> On Fri, 4 Apr 2014, Axel Lin wrote:
->> 
->> 
->>       ret = regmap_read(cs42l52->regmap, CS42L52_CHIP, &reg);
->> -       devid = reg & CS42L52_CHIP_ID_MASK;
->> +       devid = (reg & CS42L52_CHIP_ID_MASK) >> 3;
->> 
->> 
->> 
->> What you added does the same thing as what was already there.
->> The CHIP_ID is E0.
->> 
->> 
->> Use CS42L52_CHIP_REV_A1 as example:
->> 11100001 -> CS42L52_CHIP_REV_A1
->> BIT[0:2] REVID
->> BIT[3:7] CHIPID (CS42L52: 11100)
->> 
->> Current code displays:
->> 0xE1 for REVID (because it uses 0xFF as mask)
->> 0xE0 for CHIPID
->> 
->> I would expect the driver displays:
->> 01 for REVID
->> 11100 (0x1C) for CHIPID.
->> 
->> Which it does not, but your addition of the  correct mask for REV_ID does.
->> But this block of code only checks devid to make sure we are this device.
->> Nothing more.
->> 
->> I think current code mixes REVID & CHIPID.
->> 
->> 
->> Only for the print statement. Not the DEVICE ID check.
->> 
->> That is why I change the define of CS42L52_CHIP_ID to 0x1C
->> and change CS42L52_CHIP_ID_MASK  to (0x1F << 3).
->> In my point of view, the chip id is 0x1C rather than 0xE0,
->> 
->> 
->> CHIP_ID is E0
+> BIT[0:2] of register 01h is REVID, so the mask for REVID should be 0x7.
+> Also updates the code to use CS42L52_CHIP_REV_MASK.
 > 
-> You still think the chipid is E0 here for CS42L52.
-> Then I'll say the way you interpret the chipid is inconsistent for different
-> Cirrus Logic chips.
-> 
-> For example:
-> CS42L51 also has similar bit difines for REV_ID and CHIP_ID.
-> 
-> BIT[0:2]: REV_ID
-> BIT[3:7]: CHIP_ID (The chip id fields in binary is: 11011)
-> 
-> In cs42l51.h:  it defines CS42L51_CHIP_ID to 0x1B rather than 0xDB.
-> 
-I did not write that driver and will be doing a review of cirrus devices to ensure they are consistent when I have time. 
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+Acked-by: Brian Austin <brian.austin@cirrus.com>
 
->> 
->> we got the chip id by reading BIT[3:7] of register 01h.
->> 
->> 
->> 
->> 
->>       if (devid != CS42L52_CHIP_ID) {
->>               ret = -ENODEV;
->>               dev_err(&i2c_client->dev,
->> @@ -1259,7 +1259,7 @@ static int cs42l52_i2c_probe(struct i2c_client
->> *i2c_client,
->>       }
->> 
->>       dev_info(&i2c_client->dev, "Cirrus Logic CS42L52, Revision:
->> %02X\n",
->> -                       reg & 0xFF);
->> +                       reg & CS42L52_CHIP_REV_MASK);
->> 
->> 
->> 
->> This works
->> 
->> 
->> 
->>       /* Set Platform Data */
->>       if (cs42l52->pdata.mica_diff_cfg)
->> -#define CS42L52_CHIP_ID                                0xE0
->> -#define CS42L52_CHIP_ID_MASK                   0xF8
->> +#define CS42L52_CHIP_ID                                0x1C
->> +#define CS42L52_CHIP_ID_MASK                   (0x1F << 3)
->> #define CS42L52_CHIP_REV_A0                     0x00
->> #define CS42L52_CHIP_REV_A1                     0x01
->> #define CS42L52_CHIP_REV_B0                     0x02
->> -#define CS42L52_CHIP_REV_MASK                  0x03
->> +#define CS42L52_CHIP_REV_B1                    0x03
->> 
->> 
->> 
->> If you used this it would be cool, but your not so I don't see the need for
->> it.
->> 
->> So if you want to add the code to actually display the REV_ID I would ack
->> that, but I dont see anything that this patch actually fixes.
->> 
->> 
->> I think to actually display the REV_ID or not is another topic.
->> This patch does is to fix the display value.
->> (see above example, both chipid and revid are different from original code).
->> 
->> 
->> Then just fix the display value. which is the 1 line that fixes the
->> REV_MASK. That's a bug
->> the rest of the current code works just fine.
-> 
-> Well, I sent a patch to simply fix the REV_MASK.
->> 
-Thanks!
-
->> Thanks
->> 
+Thanks 
