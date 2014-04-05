@@ -1,50 +1,60 @@
-From: Sebastian Reichel <sre@kernel.org>
-Subject: [PATCH 0/5] DT support for N900 soundcard (rx51-audio)
-Date: Sat,  5 Apr 2014 23:35:48 +0200
-Message-ID: <1396733753-9820-1-git-send-email-sre@kernel.org>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Invalid PCM pointer with CMI8738 and pcm.c buffer
+	underuns
+Date: Sun, 6 Apr 2014 05:55:31 +0800
+Message-ID: <CAN8ccia5hZi36dCaQ+pdSH7QaHzNopLKmcHbvK_Rfj93mgeQdA@mail.gmail.com>
+References: <loom.20140404T175952-945@post.gmane.org>
+ <CAN8cciaF9ZbyOoz4A3f3GyTkmzzbvskFtqqKUv2rjgVAXbjCcQ@mail.gmail.com>
+ <loom.20140405T202230-761@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sebastian Reichel <sre@ring0.de>, Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Sebastian Reichel <sre@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qg0-f49.google.com (mail-qg0-f49.google.com
+ [209.85.192.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45898265166
+ for <alsa-devel@alsa-project.org>; Sat,  5 Apr 2014 23:55:32 +0200 (CEST)
+Received: by mail-qg0-f49.google.com with SMTP id 63so1731028qgz.8
+ for <alsa-devel@alsa-project.org>; Sat, 05 Apr 2014 14:55:31 -0700 (PDT)
+In-Reply-To: <loom.20140405T202230-761@post.gmane.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: andoru <andoru.blah@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+> >
+> > does the hardware really support (16384/1764)
+> > 9.27 periods?
+> > does the error occur in the last period ?
+>
+> I have no idea, how do I find out? What last period?
 
-This patchset adds DT support in rx51-audio. I tested it on my
-Nokia N900 and was able to play a wav file using aplay. I have
-not tested the whole functionality, but output via speakers,
-headphones and the related enable controls seem to work.
+http://www.alsa-project.org/main/index.php/XRUN_Debug
 
-The patches can be applied cleanly to torvalds/linux.git:master
-and broonie/sound.git:for-next.
+# Enable basic debugging and dump stack, check hardware pointer on the
+period update
+# Usefull to just see, if PCM stream is stopped for a reason (usually wrong
+audio process timing from scheduler)
+# And to check the values from driver
 
--- Sebastian
+echo 11 > /proc/asound/card0/pcm0p/xrun_debug
 
-Pali Roh=C3=A1r (1):
-  ASoC: omap: rx51: Use devm_snd_soc_register_card
+Check the system log whether the hwptr position are correct in first nine
+periods and xrun  occur on 10th period since the buffer contain 9.27
+periods when running vlc?
 
-Sebastian Reichel (4):
-  ASoC: Allow Aux Codecs to be specified using DT
-  ASoC: RX-51: Add DT support to sound driver
-  ASoC: RX-51: Convert to table based DAPM setup
-  ASoC: tlv320aic3x: fix shared reset pin for DT
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/plain/Documentation/sound/alsa/CMIPCI.txt
 
- .../devicetree/bindings/sound/nokia,rx51.txt       |  27 +++
- include/sound/rx51.h                               |  18 ++
- include/sound/soc.h                                |  13 +-
- sound/soc/codecs/tlv320aic3x.c                     |   9 +-
- sound/soc/omap/omap-mcbsp.c                        |   5 +-
- sound/soc/omap/omap-mcbsp.h                        |   2 +-
- sound/soc/omap/rx51.c                              | 248 +++++++++++++=
---------
- sound/soc/soc-core.c                               |  68 +++---
- 8 files changed, 266 insertions(+), 124 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/nokia,rx51.=
-txt
- create mode 100644 include/sound/rx51.h
+cat /proc/asound/card0/cmipci
 
---=20
-1.9.1
+What is the model of your sound card ?
+
+Does it support 4 and 6 channels in windows ?
