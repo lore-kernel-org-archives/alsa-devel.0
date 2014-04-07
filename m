@@ -1,19 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 0/7] ASoC:davinci-mcasp: bc polarity fix
- and proper format support
-Date: Wed, 9 Apr 2014 15:51:35 +0300
-Message-ID: <53454257.6070000@ti.com>
-References: <1396611107-30765-1-git-send-email-peter.ujfalusi@ti.com>
- <533EB282.6080906@gmail.com> <533EDFFE.2060501@ti.com>
- <53453925.8040202@gmail.com>
+From: mick <mick37@gmx.de>
+Subject: Re: Tenor TE8802,
+ USB : clics and crackles during music play
+Date: Mon, 07 Apr 2014 16:43:28 +0200
+Message-ID: <op.xdya5wmiwx6sbz@ws00534.pq>
+References: <CA+T9nP_hcPQBoQwike7oB5TfECax2MvARv0dTG9qB-RdFMuy=w@mail.gmail.com>
+ <CA+T9nP-=ffsy9ftnxynUhdJK_Eev+S-MRznLz7CED-Yp3DiOjg@mail.gmail.com>
+ <20140114143417.GB23764@tamtam.fritz.box>
+ <loom.20140404T165417-983@post.gmane.org> <533ECF3C.3020404@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id B11FB26086C
- for <alsa-devel@alsa-project.org>; Wed,  9 Apr 2014 14:51:39 +0200 (CEST)
-In-Reply-To: <53453925.8040202@gmail.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE8A6261696
+ for <alsa-devel@alsa-project.org>; Mon,  7 Apr 2014 16:43:31 +0200 (CEST)
+In-Reply-To: <533ECF3C.3020404@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, jsarha@ti.com
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgRGFuaWVsLAoKT24gMDQvMDkvMjAxNCAwMzoxMiBQTSwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4g
-SGkgUGV0ZXIsCj4gCj4gT24gMDQvMDQvMjAxNCAwNjozOCBQTSwgUGV0ZXIgVWpmYWx1c2kgd3Jv
-dGU6Cj4+IE9uIDA0LzA0LzIwMTQgMDQ6MjQgUE0sIERhbmllbCBNYWNrIHdyb3RlOgo+IAo+Pj4g
-VGhlIGNsZWFudXBzIGxvb2sgc2FuZSwgdGhvdWdoLiBJIGNhbiB0ZXN0IHRoZW0gb24gQU0zM3h4
-IGJhc2VkIGhhcmR3YXJlCj4+PiBlYXJseSBuZXh0IHdlZWsuIElmIHlvdSBkb24ndCB3YW50IHRv
-IGhvbGQgdGhlbSBvZmYgdW50aWwgdGhlbiwgbm8KPj4+IHByb2JsZW0uIEkgY2FuIGFsc28gc2Vu
-ZCBmaXh1cHMgaW4gY2FzZSBJIHNwb3QgYSByZWdyZXNzaW9uLgo+Pgo+PiBUaGF0IHdvdWxkIGJl
-IGdyZWF0IGlmIHlvdSBjb3VsZCBhbHNvIHRlc3QgdGhlc2UuIEl0IHNlYW1zIHlvdSBoYXZlIHF1
-aXRlIGdvb2QKPj4gYXJyYXkgb2YgY29kZWNzIGF2YWlsYWJsZS4KPiAKPiBJIHRlc3RlZCB0aGlz
-IHNlcmllcyB3aXRoIGEgQ1M0MjcxIGNvZGVjIGluIEkyUyBtb2RlLCBhbmQgdGhpbmdzIHN0aWxs
-Cj4gd29yayBhcyBleHBlY3RlZCwgZXhjZXB0IGZvciB0aGUgZmFjdCB0aGF0IHRoZSBMUkNMSyBp
-cyBub3cgaW52ZXJ0ZWQgaW4KPiBjb21wYXJpc29uIHRvIHRoZSBvbGQgc3RhdGUuCgpZZXMsIHRo
-aXMgaXMgZXhwZWN0ZWQuIEkgdGhpbmsgeW91IHdlcmUgYXNraW5nIGZvciBOQl9JRiB3aXRoIHRo
-ZSBvbGQgY29kZSwKcmlnaHQ/IFRoZSBvbGQgY29kZSB3YXMgLSB3cm9uZ2x5IElNSE8gLSBjb25m
-aWd1cmVkIHRoZSBJMlMgbW9kZSdzIEZTIGluCmludmVydGVkIG1vZGU6IE5CX05GIHdvdWxkIGVu
-ZCB1cCB0byBzZW5kIHRoZSBsZWZ0IGNoYW5uZWwgd2hlbiB0aGUgRlMgaXMKaGlnaC4gVGhpcyBp
-cyBub3QgY29ycmVjdC4gTkJfTkYgbWVhbnMgaW4gSTJTIGlzIHRoYXQgbGVmdCBjaGFubmVsIGlz
-IHdoZW4gRlMKaXMgbG93LCByaWdodCBjaGFubmVsIGlzIHdoZW4gRlMgaXMgaGlnaC4KTW9zdCBv
-ZiB0aGUgZGFWaW5jaSBkZXZpY2UgdXNlZCBEU1BfQiwgd2hpY2ggd2FzIGNvcnJlY3QgaW4gdGVy
-bXMgb2YgRlMuClRoZSBOQl9JRiB3aXRoIGNzNDI3MSB3YXMgZmluZSBzaW5jZSB0aGUgY29kZWMg
-ZHJpdmVyIGRpZCBub3QgY2hlY2tlZCBmb3IKaW52ZXJ0IGl0IG9ubHkgY2FyZXMgYWJvdXQgdGhl
-IHByb3RvY29sLiBQYWdlIDIwIG9mIHRoZSBjczQyNzEgc2hvd3MgdGhlIEkyUy4KV2l0aCB0aGlz
-IHNlcmllcyB3ZSBjYW4gdXNlIHRoZSBjb3JyZWN0IERBSUZNVF9JMlMgKyBOQl9ORiB3aXRoIHN0
-YW5kYXJkCmNvbXBsaWFudCBjb2RlY3MuCgo+IEFmdGVyIHNvbWUgZGVidWdnaW5nLCBob3dldmVy
-LCBJIGhhdmUgY29uZmlkZW5jZSB0aGF0IHRoZSBiZWhhdmlvdXIgd2l0aAo+IHRoZSBwYXRjaGVz
-IGFwcGxpZWQgaXMgaW4gZmFjdCBjb3JyZWN0LCB3ZSBqdXN0IG5lZWQgdG8gZmxpcCB0aGUgYml0
-cyBpbgo+IG91ciBBU29DIG1hY2hpbmUgZHJpdmVyLCB3aGljaCBpcyBubyBiaWcgZGVhbC4KPiAK
-PiAKPiBUaGFua3MgZm9yIHRoZSBjbGVhbnVwcyBhZ2FpbiEKClRoYW5rcyBmb3IgdGVzdGluZyBp
-dCEKCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+Sorry, I thought there was a link to the patch somewhere in this thread  
+but some links are dead now.
+It can still be found at the bottom of the page here:  
+http://forums.slimdevices.com/showthread.php?93310-Async-USB-Dac-Experiments-testers-wanted/page30
+If this is not enough for you I can dig out the patched source I am  
+running.
+
+Regards,
+Mick
+
+
+
+On Fri, 04 Apr 2014 17:26:52 +0200, Clemens Ladisch <clemens@ladisch.de>  
+wrote:
+
+> Mick wrote:
+>> It is an issue of the TE8802 but can be fixed by a driver patch as  
+>> discussed here:
+>> http://www.head-fi.org/t/609062/te8802-asynchronous-dacs-on-linux-and-squeezebox-touch-supported-with-triodes-app-for-the-sbt/15
+>
+> What patch?  As far as I can see, that page discusses a firmware upgrade.
+>
+>
+> Regards,
+> Clemens
