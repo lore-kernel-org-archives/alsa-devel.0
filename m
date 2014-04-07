@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs42l52: Fix mask for REVID
-Date: Mon, 7 Apr 2014 10:48:59 +0100
-Message-ID: <20140407094859.GZ14763@sirena.org.uk>
-References: <1396713875.9878.0.camel@phoenix>
+Subject: Re: [PATCH] Allow snd_soc_update_bits use 32 bits
+	register
+Date: Mon, 7 Apr 2014 10:53:13 +0100
+Message-ID: <20140407095313.GA14763@sirena.org.uk>
+References: <1396769321-32694-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0162287251578541224=="
+Content-Type: multipart/mixed; boundary="===============7723150332386467241=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 010122608ED
- for <alsa-devel@alsa-project.org>; Mon,  7 Apr 2014 11:49:15 +0200 (CEST)
-In-Reply-To: <1396713875.9878.0.camel@phoenix>
+ by alsa0.perex.cz (Postfix) with ESMTP id D4E532610A8
+ for <alsa-devel@alsa-project.org>; Mon,  7 Apr 2014 11:53:24 +0200 (CEST)
+In-Reply-To: <1396769321-32694-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: bardliao@realtek.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0162287251578541224==
+--===============7723150332386467241==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8Y8a5CJOPM/zJV44"
+	protocol="application/pgp-signature"; boundary="NP+fiIeNjDlB/E6h"
 Content-Disposition: inline
 
 
---8Y8a5CJOPM/zJV44
+--NP+fiIeNjDlB/E6h
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 06, 2014 at 12:04:35AM +0800, Axel Lin wrote:
-> BIT[0:2] of register 01h is REVID, so the mask for REVID should be 0x7.
-> Also updates the code to use CS42L52_CHIP_REV_MASK.
+On Sun, Apr 06, 2014 at 03:28:41PM +0800, bardliao@realtek.com wrote:
+> From: Bard Liao <bardliao@realtek.com>
+>=20
+> Change reg's type from unsigned short to unsigned int. So that we can
+> use 32 bits reg value in snd_soc_update_bits.
 
-Applied, thanks.
+I've applied this since it's a move in the right direction but you've
+only done half the job - like I said previously you should be doing the
+same thing for _locked() too.  Please also use subject lines appropraite
+for the subsystem and word wrap within paragraphs in your commit
+message.
 
---8Y8a5CJOPM/zJV44
+--NP+fiIeNjDlB/E6h
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTQnSIAAoJELSic+t+oim9g+cP/29g6NkPEUgnDQnOE5o3KkXC
-SkjoHPNzf5FBy1cLI93VlBW3atPXeCfxxW7FKgWHa7Pde97wjrE0Xvn1iPLc6+zn
-Eby1zgULO4Q3N0KN+V7morVDgc7m+Yicdz+sQP94hUY91k2DuDm/mxJvgcr0oz9M
-GY+DGGwfylmleYzBBYnEegNxltvJVV856YMjgTYSfgIDRNBpT9dtuf1p6zOkAfl8
-W/UGqAybiGbsntN8q4/yqzY3SKER40CEqZE1TFKOjgwI7u5JWVinIvQQjMYR118W
-RXbf6nfcrf+ZVzuIHgMQw9Id6JLAwLD0J5vuldi5/WCgElsiPLhYIKepjdb9+01S
-mF53P2egTANHSi2uiebOtnC+CSRGm0LXQ30xqft9a0gUwcryDoOj8aqfxGE6X/A0
-9fTXBE/GQ+7dXHligClqWS+/Ri+2A7aEa2/7PBIrlg5FG9vwuPe/ug0iugRF9pTy
-SzxgAsv3rcpdN4dCpiLkVu1R1nc3/wVMoC7eVP9cfLAvhCFKKep0+S/+HpcYhIKt
-1XJadqL6nNkO4nubjlm6XnfvMJ8V0Eqr8HlyRcU6Gw3hyLIxHwzcnUVPDsgja+21
-xIedDtLEVwmh8AWRqjjwe2oCTaa0t9qRIIZva0gqoJn4cbyNRoK1WDA8Hdwn9Ugy
-3V1pyWnkBz08rMmz5sPv
-=OEh7
+iQIcBAEBAgAGBQJTQnWGAAoJELSic+t+oim94woQAIezbUDwjiSSsKvb3OUV0Dxx
+ccwYiSm91VD0GJ4FZliyDeQpMfEeQNd15074fUBQ3LJysiacjQiaoQoMB08U0SHh
+z10Ye70jeIBKR4QDF0/FA4JXpn3deu3El2hnm9xYMr1udv3LpHocBGk3GiM8+Ca/
+PIFVwppXgWC5a//NgHskt565ih78v7ADmgqOW1jRBAYaZw8PHnlJCEHb6aE3paPb
+l88o+hiGg+wpWvqZ7zI8hJfg3YVXcJIf0JEn9vK343QgoV/MmAdOMxLEepaHULTi
+zSXOz/nc1HNh+++pkTa6OzPNbaXBkCMv4UlTTREdIOCU7f1PYpSYWPB5yaUFvi4F
+u58ONfqO9l8yRZ0Hc+ki54hS7cJQqZ16KqbIUp4jRlbigIMmfZDg3dffQDN2TJUK
+2M6nR0hbAobrItWrQfxk1dAG3hkmPdRBPJ+ZniGXdSxE2nSPkJVVpYQETIbOLyz0
+r5mGKExIt3MRiuSRSiq5gwBTfbCHrDCl56FjzNMQmR6vwnzY5oRAm2RzK6axdvJM
+kgbsMZGn/EtH/l78/DZSYig9KjcvdfG2gmObsAAWc/PrD5Jk29w4dpmAl4hMLYz+
+qRcnjShHapY1R2/K535SuvMBAJpay94Vkkmnk3hVZvxq6wzbMG77nz8/C0uhMMKr
+5JYi7ZrMgViyzl5eARwb
+=DyiG
 -----END PGP SIGNATURE-----
 
---8Y8a5CJOPM/zJV44--
+--NP+fiIeNjDlB/E6h--
 
---===============0162287251578541224==
+--===============7723150332386467241==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0162287251578541224==--
+--===============7723150332386467241==--
