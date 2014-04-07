@@ -1,52 +1,91 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: move alc892 to patch_alc882
-Date: Mon, 7 Apr 2014 14:04:34 +0800
-Message-ID: <5C8998C298284925B0366DDAC8B6717F@realtek.com.tw>
-References: <2259125E6B6048C7B3DB0DD2F5BBD60D@realtek.com.tw><CAN8ccibu5kUnZoSbYXXZitXABzPA7C2SXvTZYanJoDDbekVCgA@mail.gmail.com>
- <s5hsipqdh4n.wl%tiwai@suse.de>
-Reply-To: Kailang <kailang@realtek.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 26/44] fireworks: Add PCM interface
+Date: Mon, 07 Apr 2014 16:20:14 +0900
+Message-ID: <534251AE.4020308@sakamocchi.jp>
+References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
+	<1395400229-22957-27-git-send-email-o-takashi@sakamocchi.jp>
+	<533E71C8.9030606@ladisch.de> <53414C45.2070006@sakamocchi.jp>
+	<53416A44.6070905@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id EAE442608D4
- for <alsa-devel@alsa-project.org>; Mon,  7 Apr 2014 08:04:39 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <53416A44.6070905@ladisch.de>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Clemens,
 
-> At Sat, 5 Apr 2014 14:52:24 +0800,
-> Raymond Yau wrote:
->> 
->> Hi Takashi,
->> 
->> >
->> > The original was patch to patch_alc662.
->> > Move it into patch_alc882.
->> >
->> >
->> is there any reason not including those PCI QUIRK for alc892 ?
-> 
-> Because it's not clarified why this must be applied.
-> I'm waiting for the updated patch from Kailang.
-> 
+(Apr 6 2014 23:52), Clemens Ladisch wrote:
+>>>> +static int pcm_open(struct snd_pcm_substream *substream)
+>>>> +{
+>>>> +    ...
+>>>> +    /*
+>>>> +     * When source of clock is not internal or any PCM streams are running,
+>>>> +     * available sampling rate is limited at current sampling rate.
+>>>> +     */
+>>>> +    if ((clock_source != SND_EFW_CLOCK_SOURCE_INTERNAL) ||
+>>>> +        amdtp_stream_pcm_running(&efw->tx_stream) ||
+>>>> +        amdtp_stream_pcm_running(&efw->rx_stream)) {
+>>>
+> There is already a mutex for everything in start_duplex(), so the only
+> unprotected piece of data is this counter.
 
-Sorry!
-I just aligned the channel count.
-So, move the alc892 to patch_alc882.
+Yes. I think atomic_t mostly solves the issue.
 
-> 
-> Takashi
-> 
-> ------Please consider the environment before printing this e-mail.
+
+But these codes (in PCM .open) includes another issue which brings a 
+great headache to me.
+
+The driver uses SNDRV_PCM_INFO_JOINT_DUPLEX. So sampling rate for 
+playback/capture should be the same. But there is a case to allow 
+applications to break this rule.
+
+Let's assume that two applications try to use PCM functionality. 
+Application 1 is for 48.0kHz playback, and Application 2 is for 88.2kHz 
+capture. In this case, Application 1 write 48.0kHz samples on 88.2kHz 
+streams:
+
+Application 1: snd_pcm_open() for playback
+Application 1: snd_pcm_hw_params() at 48.0kHz
+(snd_pcm_prepare() and AMDTP streams start)
+Application 2: snd_pcm_open() for capture
+Application 2: snd_pcm_hw_params() at 88.2kHz
+(snd_pcm_prepare() and AMDTP streams re-start)
+Application 2: read PCM samples
+Application 1: write PCM samples
+
+The reason to allow snd_pcm_prepare() to restart streams at different 
+sampling rate is to continue MIDI substreams at different sampling rate.
+
+I've been considering about this issue for several months but still have 
+no good ideas...
+
+But I think this is actually too rare. I assume most applications 
+write/read samples after snd_pcm_hw_params() as soon as possible and 
+most sound server uses the same sampling rate for its capturing/playbacking.
+
+So I hope this issue pending for my future work.
+
+
+Thanks
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
+
+
+------------------------------------------------------------------------------
+Put Bad Developers to Shame
+Dominate Development with Jenkins Continuous Integration
+Continuously Automate Build, Test & Deployment 
+Start a new project now. Try Jenkins in the cloud.
+http://p.sf.net/sfu/13600_Cloudbees_APR
