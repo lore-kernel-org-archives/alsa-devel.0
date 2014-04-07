@@ -1,75 +1,47 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: da732x: Print correct major id
-Date: Mon, 7 Apr 2014 12:58:07 +0100
-Message-ID: <20140407115807.GD14763@sirena.org.uk>
-References: <1396526192.12814.1.camel@phoenix>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: dapm: Add support for multi register mux
+Date: Mon, 07 Apr 2014 14:54:11 +0200
+Message-ID: <53429FF3.9060106@metafoo.de>
+References: <1396656730-30145-1-git-send-email-aruns@nvidia.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3218942392133626847=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0798A2615C0
- for <alsa-devel@alsa-project.org>; Mon,  7 Apr 2014 13:58:28 +0200 (CEST)
-In-Reply-To: <1396526192.12814.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Michal Hajduk <michal.hajduk@diasemi.com>, Support Opensource <support.opensource@diasemi.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1396656730-30145-1-git-send-email-aruns@nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arun Shamanna Lakshmi <aruns@nvidia.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, swarren@wwwdotorg.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Songhee Baek <sbaek@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 04/05/2014 02:12 AM, Arun Shamanna Lakshmi wrote:
+> 1. Modify soc_enum struct to handle pointers for reg and mask
+> 2. Add dapm get and put APIs for multi register one hot encoded mux
+> 3. Update snd_soc_dapm_update struct to support multiple reg update
+>
+> Signed-off-by: Arun S L <aruns@nvidia.com>
+> Signed-off-by: Songhee Baek <sbaek@nvidia.com>
 
---===============3218942392133626847==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IDa9Kr4PlLWO/T7L"
-Content-Disposition: inline
+Looks good to me, so:
 
-
---IDa9Kr4PlLWO/T7L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Apr 03, 2014 at 07:56:32PM +0800, Axel Lin wrote:
-> DA732X_ID_MAJOR_MASK is 0xF0, so the major id is
-> (reg & DA732X_ID_MAJOR_MASK) >> 4.
-
-Applied, thanks.
-
---IDa9Kr4PlLWO/T7L
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTQpLLAAoJELSic+t+oim9xTMP+wQaw51sV/vhjZxqSfaoZeHq
-fXBLfrxoGZz7BgjfGB79KEbMqnCiGN4KHsTbQSNQEOZlmmnrFiyQhMMXP8JunWWb
-/DyIcod+AkINLdSmcAs2RFrILAAqQoRmd5FuFnvb2qSDC8621C+gEbY/AAWDZ0is
-D6CrKGqTom8AvZLVmZ/MpDMB/4ubk/IUfmJJq3ArOe08ChmgS/zaG+6OSRKRWdMw
-V/0WXsT5nKgq5fBv1atvb2/D98sOCy+r2dWFg2q6I7Yddttn38NyL8FZim3Azuv+
-zQNieRokEpq5wCDmzZW50wvqeknz1UcdUtiHnfk4SfYBLhoQ8nSd5mWtHchcrK23
-HQKVU+WgdUk3Xyrg//HveqLCKS5f+7pJacZZOErRZPzmcjCZ+o8kJYCseHKOqHTE
-aZzYt12fPj9AGFZCcKSTYlTJW3JyRa+0St+MT6HPL2QoQKSYhjVwwiUlO0sgm3wQ
-DJAEJL9IWxgftYSaP3Q332SBx0p3NUUL39QqRAA88aM0oOHr0FLO5pwjrxlnYupx
-bhIRvmCRCxgBYmp6Ijvwv3F9xNBwkOdAsxFNUXRdWOYxFr2h7QcitQ3f4CS6QoPp
-4iNrBZG6IHmxorDYKe+wypqsSQarDamdPjiwSOLu+jiBXQAPN1cOtcfo5xVRwPr7
-43NC17lTNkkkxgawp5jx
-=wiUL
------END PGP SIGNATURE-----
-
---IDa9Kr4PlLWO/T7L--
-
---===============3218942392133626847==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
 
 
---===============3218942392133626847==--
+As Takashi said it is not that nice that there is a bit of code churn by 
+having to update all the existing users of e->reg and e->mask. But 
+implementing this properly seems to cause even more code churn. And I think 
+it will be done best in an effort to consolidate the kcontrol helpers and 
+the DAPM kcontrol helpers by adding an additional layer of abstraction 
+between the kcontrols and the hardware access that translates between the 
+logical value and the physical value(s).
+
+E.g. something like
+
+struct kcontrol_ops {
+	int (*read)(...);
+	int (*write)(...);
+};
+
+And then have one kind of ops for each kind of control type and at the high 
+level only have put and get handlers for enums and for switches/volumes.
+
+- Lars
