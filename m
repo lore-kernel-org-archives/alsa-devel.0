@@ -1,63 +1,64 @@
-From: Gilles <gilles@whospot.com>
-Subject: Re: Audio codec with multiple I2C devices
-Date: Mon, 7 Apr 2014 11:32:27 -0700
-Message-ID: <3C2805F4-7EB9-4E43-9140-98982932737C@whospot.com>
-References: <mailman.300.1396595329.806.alsa-devel@alsa-project.org>
- <C71C517D-B88B-48C3-9156-AB9DD40AE4C0@whospot.com>
- <53411B1F.5070004@metafoo.de> <20140407113710.GC14763@sirena.org.uk>
-Mime-Version: 1.0 (Mac OS X Mail 6.6 \(1510\))
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from p3plsmtpa08-04.prod.phx3.secureserver.net
- (p3plsmtpa08-04.prod.phx3.secureserver.net [173.201.193.105])
- by alsa0.perex.cz (Postfix) with ESMTP id 65026261A99
- for <alsa-devel@alsa-project.org>; Mon,  7 Apr 2014 20:32:33 +0200 (CEST)
-In-Reply-To: <20140407113710.GC14763@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH] ALSA: hda - Do not assign streams in reverse order
+Date: Mon,  7 Apr 2014 22:36:38 +0300
+Message-ID: <1396899398-1293-1-git-send-email-anssi.hannula@iki.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Alex Deucher <alexander.deucher@amd.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Currently stream numbers are assigned in reverse order.
 
-On Apr 7, 2014, at 04:37 , Mark Brown <broonie@kernel.org> wrote:
+Unfortunately commit 7546abfb8e1f9933b5 ("ALSA: hda - Increment
+default stream numbers for AMD HDMI controllers") assumed this was not
+the case (specifically, it had the "old cards had single device only"
+=3D> "extra unused stream numbers do not matter" assumption), causing
+non-working audio regressions for AMD Radeon HDMI users on v3.14.
 
-> On Sun, Apr 06, 2014 at 11:15:11AM +0200, Lars-Peter Clausen wrote:
->> On 04/05/2014 12:02 AM, Gilles wrote:
-> 
-> Always CC kernel related mails to relevant maintainers, it's very hit
-> and miss if things on the list only will get seen.
-> 
->>> I'm writing an ALSA SoC codec which uses a 3 distinct I2C devices (a
->>> DAC, a CAG for volume and a input selector) all 3 at different I2C
->>> addresses.
-> 
->> If those are 3 distinct devices you'd typically implement them as 3
->> different drivers and model the interconnections between them at the
->> board/machine driver level.
-> 
-> If they're hard wired together then i2c_new_dummy() allows a single
-> driver to control multiple slaves - have the driver instantiate from one
-> of the addresses and then register dummies for the other addresses.  The
-> framework is probably still going to want to see this registered as a
-> series of CODECs though unless that's extended.  In any case the
-> internal mappings for the devices ought to at least have helpers
-> available so machine drivers don't need to reinvent things.
+Change the stream numbers to be assigned in increasing order instead.
 
-Yes, it would make much more sense for it to be all in the same driver for two reasons. (1) The only reason why there are multiple I2C are because the adapter has a novelty way of providing certain functions (like Volume) and there are no Codec chips on the market with that built-in. And (2) the functionality of - say the secondary I2C device - is only a simple control (in this case, a general volume which happens to be at a different I2C address.
+Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=3D77002
+Reported-by: Christian G=C3=BCdel <cg@dmesg.ch>
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+Tested-by: Christian G=C3=BCdel <cg@dmesg.ch>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: <stable@vger.kernel.org> # 3.14
+---
 
-Doesn't it make perfect sense to have the Volume be a control of the Codec driver even if it's provided by a separate chip on the same sound card?
+Takashi, please check I didn't miss anything (I'm not that familiar
+with this low-level HDA code). :)
 
-I'm going to look into the suggested i2c_new_dummy(), I don't really want to write a separate volume codec. I was just wondering what would be the best way to make it DT friendly but I can see that's pretty much up to me to define my own DT property for the I2C address of the secondary chip.
 
-Thanks for the pointer.
-Gilles
-.
+ sound/pci/hda/hda_intel.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index e354ab1ec20f..7a7b7b10dddf 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1856,13 +1856,14 @@ azx_assign_device(struct azx *chip, struct snd_=
+pcm_substream *substream)
+ 		struct azx_dev *azx_dev =3D &chip->azx_dev[dev];
+ 		dsp_lock(azx_dev);
+ 		if (!azx_dev->opened && !dsp_is_locked(azx_dev)) {
+-			res =3D azx_dev;
+-			if (res->assigned_key =3D=3D key) {
+-				res->opened =3D 1;
+-				res->assigned_key =3D key;
++			if (azx_dev->assigned_key =3D=3D key) {
++				azx_dev->opened =3D 1;
++				azx_dev->assigned_key =3D key;
+ 				dsp_unlock(azx_dev);
+ 				return azx_dev;
+ 			}
++			if (!res)
++				res =3D azx_dev;
+ 		}
+ 		dsp_unlock(azx_dev);
+ 	}
+--=20
+1.8.4.5
