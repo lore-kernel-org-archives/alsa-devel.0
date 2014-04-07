@@ -1,20 +1,17 @@
-From: =?ISO-8859-15?Q?Richard_K=F6rber?= <alsa@ml.shredzone.de>
-Subject: SoundBlaster X-fi HD SPDIF fix
-Date: Sun, 06 Apr 2014 23:36:31 +0200
-Message-ID: <5341C8DF.9020604@ml.shredzone.de>
+From: Kailang <kailang@realtek.com>
+Subject: Improve hp pop noise
+Date: Mon, 7 Apr 2014 16:59:23 +0800
+Message-ID: <00A5C335971D4A02A0E52B6C7F5C64CF@realtek.com.tw>
+References: <2259125E6B6048C7B3DB0DD2F5BBD60D@realtek.com.tw><CAN8ccibu5kUnZoSbYXXZitXABzPA7C2SXvTZYanJoDDbekVCgA@mail.gmail.com><s5hsipqdh4n.wl%tiwai@suse.de><5C8998C298284925B0366DDAC8B6717F@realtek.com.tw>
+ <s5hmwfxmt5o.wl%tiwai@suse.de>
+Reply-To: Kailang <kailang@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed;
+ boundary="----=_NextPart_000_008E_01CF5282.BA0639B0"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arrietty.shredzone.net (arrietty.shredzone.net [176.9.40.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A7D7260859
- for <alsa-devel@alsa-project.org>; Sun,  6 Apr 2014 23:36:33 +0200 (CEST)
-Received: from xdsl-84-44-176-158.netcologne.de ([84.44.176.158]
- helo=localhost.localdomain)
- by arrietty.shredzone.net with esmtpsa (TLSv1:AES128-SHA:128)
- (Exim 4.72) (envelope-from <alsa@ml.shredzone.de>)
- id 1WWujw-0005gL-BD
- for alsa-devel@alsa-project.org; Sun, 06 Apr 2014 23:36:32 +0200
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DC7726007E
+ for <alsa-devel@alsa-project.org>; Mon,  7 Apr 2014 10:59:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+------=_NextPart_000_008E_01CF5282.BA0639B0
+Content-Type: text/plain; format=flowed; charset="ISO-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
 
-I own a Creative USB SoundBlaster X-fi HD and tried to use its SPDIF optical
-output. However it didn't work with ALSA out of the box. The reason is that
-for SPDIF output device #1 must be used.
+Hi Takashi,
 
-The fix is: In /usr/share/alsa/cards/USB-Audio.conf, change the iec958_devi=
-ce
-block like this:
+In our test, it is better to set Mic2-vref control to manual mode.
+It will have better result for HP pop noise.
+So, I fill it back in this patch.
 
-USB-Audio.pcm.iec958_device {
-        "USB Sound Blaster HD" 1
-}
+BR,
+Kailang
+------=_NextPart_000_008E_01CF5282.BA0639B0
+Content-Type: application/octet-stream;
+	name="0000-improve-hp-pop-noise.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment; filename="0000-improve-hp-pop-noise.patch"
 
-Digital output works fine for me after that.
+>From 91b5643db5db060f21808e22a416540d061181de Mon Sep 17 00:00:00 2001=0A=
+From: Kailang Yang <kailang@realtek.com>=0A=
+Date: Mon, 7 Apr 2014 16:41:52 +0800=0A=
+Subject: [PATCH] ALSA: hda/realtek - Improve HP depop when system change =
+power=0A=
+ state=0A=
+=0A=
+It is better to change Mic2-Vref to manual mode.=0A=
+Manual control Mic2-Vref will solve pop noise issue.=0A=
+It will improve pop noise for power on, power off=0A=
+,S3 and resume.=0A=
+=0A=
+Signed-off-by: Kailang Yang <kailang@realtek.com>=0A=
+=0A=
+diff --git a/sound/pci/hda/patch_realtek.c =
+b/sound/pci/hda/patch_realtek.c=0A=
+index 4ce744b..b36be20 100644=0A=
+--- a/sound/pci/hda/patch_realtek.c=0A=
++++ b/sound/pci/hda/patch_realtek.c=0A=
+@@ -4005,6 +4005,10 @@ static void alc283_fixup_chromebook(struct =
+hda_codec *codec,=0A=
+ 		spec->gen.mixer_nid =3D 0;=0A=
+ 		break;=0A=
+ 	case HDA_FIXUP_ACT_INIT:=0A=
++		/* MIC2-VREF control */=0A=
++		/* Set to manual mode */=0A=
++		val =3D alc_read_coef_idx(codec, 0x06);=0A=
++		alc_write_coef_idx(codec, 0x06, val & ~0x000c);=0A=
+ 		/* Enable Line1 input control by verb */=0A=
+ 		val =3D alc_read_coef_idx(codec, 0x1a);=0A=
+ 		alc_write_coef_idx(codec, 0x1a, val | (1 << 4));=0A=
 
-BTW, I tried this line in /etc/asound.conf
+------=_NextPart_000_008E_01CF5282.BA0639B0
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-  cards.USB-Audio.pcm.iec958_device."USB Sound Blaster HD" 1
 
-but it didn't have any effect. Why was that?
-
-Thank you!
-
-Regards
-Richard K=F6rber
+------=_NextPart_000_008E_01CF5282.BA0639B0--
