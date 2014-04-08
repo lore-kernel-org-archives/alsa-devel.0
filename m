@@ -1,90 +1,72 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH] ALSA: hda - Do not assign streams in reverse order
-Date: Mon, 07 Apr 2014 23:39:03 +0300
-Message-ID: <53430CE7.9060009@iki.fi>
-References: <1396899398-1293-1-git-send-email-anssi.hannula@iki.fi>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 28/44] fireworks: Add command/response functionality into
+	hwdep interface
+Date: Tue, 08 Apr 2014 11:45:28 +0900
+Message-ID: <534362C8.3060407@sakamocchi.jp>
+References: <1395400229-22957-1-git-send-email-o-takashi@sakamocchi.jp>
+	<1395400229-22957-29-git-send-email-o-takashi@sakamocchi.jp>
+	<533E7C01.8040000@ladisch.de> <533E9350.6090201@sakamocchi.jp>
+	<533EA254.3080202@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1396899398-1293-1-git-send-email-anssi.hannula@iki.fi>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alex Deucher <alexander.deucher@amd.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <533EA254.3080202@ladisch.de>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Anssi Hannula wrote:
-> Currently stream numbers are assigned in reverse order.
->=20
-> Unfortunately commit 7546abfb8e1f9933b5 ("ALSA: hda - Increment
-> default stream numbers for AMD HDMI controllers") assumed this was no=
-t
-> the case (specifically, it had the "old cards had single device only"
-> =3D> "extra unused stream numbers do not matter" assumption), causing
-> non-working audio regressions for AMD Radeon HDMI users on v3.14.
->=20
-> Change the stream numbers to be assigned in increasing order instead.
->=20
-> Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=3D77002
-> Reported-by: Christian G=FCdel <cg@dmesg.ch>
-> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
-> Tested-by: Christian G=FCdel <cg@dmesg.ch>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: <stable@vger.kernel.org> # 3.14
-> ---
->=20
-> Takashi, please check I didn't miss anything (I'm not that familiar
-> with this low-level HDA code). :)
+Hi Clemens,
 
-Alex wrote in the above bugreport now that the stream counts are:
-Kaveri:                4 streams, 7 endpoints
-Kabini:                2 streams, 3 endpoints
-Bonaire/Hawaii:        6 streams, 7 endpoints
-Trinity/Richland:      4 streams, 6 endpoints
-Oland:                 2 streams, 2 endpoints
-Tahiti/Pitcairn/Verde: 6 streams, 6 endpoints
+(Apr 4 2014 21:15), Clemens Ladisch wrote:
+> Headers should always be self-contained, i.e., they must include any
+> other headers they need.
 
-So we have cards with less streams than converters, if I understood
-correctly.
+Yes. If the header is publicly used, it must be self-contained. I decide 
+to replace uint32_t to __u32.
 
-I'd think my patch is still reasonable even if we'll have to fix the
-stream counts anyway, the pros and cons I see are:
-+ safer in case we/manufacturer get the stream count wrong for some car=
-d
-- easily hides too high stream count
+> As for the ISO C types, Linus Torvalds wrote:
+> | On Mon, 29 Nov 2004, Paul Mackerras wrote:
+>...
+> | In short: having the kernel use the same names as user space is ACTIVELY
+> | BAD, exactly because those names have standards-defined visibility, which
+> | means that the kernel _cannot_ use them in all places anyway. So don't
+> | even _try_.
+> <http://yarchive.net/comp/linux/kernel_headers.html>
 
-But your call :)
+Thanks for this pointer.
 
-
->  sound/pci/hda/hda_intel.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+> IEEE-1394 defines the maximum payload for asynchronous data packets (see
+> table 6-4); for S100/S200/S400/S800, it's 512/1024/2048/4096 bytes.
 >
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index e354ab1ec20f..7a7b7b10dddf 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -1856,13 +1856,14 @@ azx_assign_device(struct azx *chip, struct sn=
-d_pcm_substream *substream)
->  		struct azx_dev *azx_dev =3D &chip->azx_dev[dev];
->  		dsp_lock(azx_dev);
->  		if (!azx_dev->opened && !dsp_is_locked(azx_dev)) {
-> -			res =3D azx_dev;
-> -			if (res->assigned_key =3D=3D key) {
-> -				res->opened =3D 1;
-> -				res->assigned_key =3D key;
-> +			if (azx_dev->assigned_key =3D=3D key) {
-> +				azx_dev->opened =3D 1;
-> +				azx_dev->assigned_key =3D key;
->  				dsp_unlock(azx_dev);
->  				return azx_dev;
->  			}
-> +			if (!res)
-> +				res =3D azx_dev;
->  		}
->  		dsp_unlock(azx_dev);
->  	}
-> --=20
-> 1.8.4.5
+> Fireworks devices always are S400; just use the maximum of 0x200 bytes.
+> (Anything less risks incompatibilities with an old kernel when some
+> mixer application wants to use a new command introduced in some new
+> firmware version.)
 
---=20
-Anssi Hannula
+Here lesser length of address is preferable because it's exclusive 
+resource in host controller. And the risk (un-disclosed commands) seems 
+to be enough low because Fireworks is end of life.
+
+...But this is not so strong claim. I'm OK to use 0x200 because S400 
+unit must also support S100.
+
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
+
+
+------------------------------------------------------------------------------
+Put Bad Developers to Shame
+Dominate Development with Jenkins Continuous Integration
+Continuously Automate Build, Test & Deployment 
+Start a new project now. Try Jenkins in the cloud.
+http://p.sf.net/sfu/13600_Cloudbees
