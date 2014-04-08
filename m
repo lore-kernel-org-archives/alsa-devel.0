@@ -1,53 +1,168 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_sai: Fix Bit Clock Polarity configurations
-Date: Tue, 8 Apr 2014 12:50:53 +0100
-Message-ID: <20140408115053.GF6518@sirena.org.uk>
-References: <1396595387-4371-1-git-send-email-Guangyu.Chen@freescale.com>
- <20140404100532.GN14763@sirena.org.uk>
- <20140408110738.GA10745@MrMyself>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: [PATCH] sound: lx_core: Few misc cleanups
+Date: Tue,  8 Apr 2014 16:15:33 +0200
+Message-ID: <1396966533-505-1-git-send-email-maxime.ripard@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+jhVVhN62yS6hEJ8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140408110738.GA10745@MrMyself>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
+To: perex@perex.cz, iwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
+This file had a few comments in french that are now in english, and too=
+k the
+opportunity to cleanup a bunch of #if 0 .. #endif and commented out cod=
+e
 
---+jhVVhN62yS6hEJ8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+---
+ sound/pci/lx6464es/lx_core.c | 70 +++++++++++++++++-------------------=
+--------
+ 1 file changed, 27 insertions(+), 43 deletions(-)
 
-On Tue, Apr 08, 2014 at 07:07:40PM +0800, Nicolin Chen wrote:
-
-> Sir, I can't find this patch on any of the remote branches: for-next,
-> topic/fsl-sai and fix/fsl-sai. Where could I find it?
-
-It's in the fix branch.
-
---+jhVVhN62yS6hEJ8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTQ+KaAAoJELSic+t+oim9X5wQAJPVUimekxxWvBuV+u9NUJ1Q
-oG9Wr3ezYxOM4Xm0pOb1X56iRmPrWcnF5/KHscsXQXSnvpACxnFFyT81QlAqUVhM
-T7/8BmwfT2jZ2l22ulzW395nMsuM174VXEh03uA443ZZULFyDTFMdmeFVdNyd+Hq
-MufO08sEXg3qaBXJp1iDmOjKHHFJTExvRWzYk2rKWEEhlv/qBlGe1og1lbhv0V1Q
-OYF/t75eFUvmsN2n2TrG44XBtSnQ/4GKiTX/3M5up1p6/rM1aghJicL3cxczpS15
-BSdlr/0l2CH9y+TEj9I8IXUsy/HdzjyYqzSjU/oiNZLC7J2UXU8Cff1qpHxm24s1
-93SSR9rSOmRJ9hpG9WKqv6dLg9TuGrj18xvwjVMXhwzBHDs1jpgAEMOU+knk9QLR
-7ROI8uf7euDnJZX/EsylRjQi+Y9hZfsEk8PlTKeJmZ/n+TwAMfdm64ZHTsAWXtgq
-CMK5HiwH18o5pZ4u1PCH/JMpD/TR2uzJSYwW3NTnQCJ62h+jB4o2f0t0kIHXZuD0
-Ot45gkwF7Y9ZEcj2Vk8y8rfi3XMtDEmmBdoyu/7WUPN8RI21Zj7tr/CLAhRw3EAz
-ZocptY1c9KB76nFRS1FfZfJJ/GoSdPSB5Ft+HJphRTxeRLgNWtpxAGqh3zFwu3kD
-VUsWL3SrEZkharrBPKJB
-=gSbs
------END PGP SIGNATURE-----
-
---+jhVVhN62yS6hEJ8--
+diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.=
+c
+index 626ecad4dae7..002049770ff7 100644
+--- a/sound/pci/lx6464es/lx_core.c
++++ b/sound/pci/lx6464es/lx_core.c
+@@ -22,8 +22,7 @@
+  *
+  */
+=20
+-/* #define RMH_DEBUG 1 */
+-
++#include <linux/bitops.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
+ #include <linux/delay.h>
+@@ -496,15 +495,17 @@ int lx_dsp_es_check_pipeline(struct lx6464es *chi=
+p)
+ 	int i;
+=20
+ 	for (i =3D 0; i !=3D CSES_TIMEOUT; ++i) {
+-		/*
+-		 * le bit CSES_UPDATE_LDSV est =C3=83=C2=A0 1 d=C3=83=C2=A9s que le =
+macprog
+-		 * est pret. il re-passe =C3=83=C2=A0 0 lorsque le premier read a
+-		 * =C3=83=C2=A9t=C3=83=C2=A9 fait. pour l'instant on retire le test =
+car ce bit
+-		 * passe a 1 environ 200 =C3=83=C2=A0 400 ms apr=C3=83=C2=A9s que le=
+ registre
+-		 * confES =C3=83=C2=A0 =C3=83=C2=A9t=C3=83=C2=A9 =C3=83=C2=A9crit (k=
+ick du xilinx ES).
++		/*=20
++		 * The bit CSES_UPDATE_LDSV is set to 1 as soon as the
++		 * macprog is ready. He goes back to 0 whenever the
++		 * first read has been issued.
++		 *
++		 * For now, we don't bother testing this bit because
++		 * it's set to 1 between 200 to 400ms after the confES
++		 * register has been written to (xilinx ES kick).
+ 		 *
+-		 * On ne teste que le bit CE.
+-		 * */
++		 * We only test the CE bit.
++		 */
+=20
+ 		u32 cses =3D lx_dsp_reg_read(chip, eReg_CSES);
+=20
+@@ -602,8 +603,7 @@ int lx_buffer_ask(struct lx6464es *chip, u32 pipe, =
+int is_capture,
+ 				/* free */
+ 				*r_needed +=3D 1;
+ 		}
+-
+-#if 0
++#if DEBUG
+ 		snd_printdd(LXP "CMD_08_ASK_BUFFERS: needed %d, freed %d\n",
+ 			    *r_needed, *r_freed);
+ 		for (i =3D 0; i < MAX_STREAM_BUFFER; ++i) {
+@@ -1049,9 +1049,9 @@ int lx_level_peaks(struct lx6464es *chip, int is_=
+capture, int channels,
+=20
+ /* interrupt handling */
+ #define PCX_IRQ_NONE 0
+-#define IRQCS_ACTIVE_PCIDB  0x00002000L         /* Bit n=C3=83=C2=83=C3=
+=82=C2=B8 13 */
+-#define IRQCS_ENABLE_PCIIRQ 0x00000100L         /* Bit n=C3=83=C2=83=C3=
+=82=C2=B8 08 */
+-#define IRQCS_ENABLE_PCIDB  0x00000200L         /* Bit n=C3=83=C2=83=C3=
+=82=C2=B8 09 */
++#define IRQCS_ACTIVE_PCIDB	BIT(13)
++#define IRQCS_ENABLE_PCIIRQ	BIT(8)
++#define IRQCS_ENABLE_PCIDB	BIT(9)
+=20
+ static u32 lx_interrupt_test_ack(struct lx6464es *chip)
+ {
+@@ -1108,25 +1108,21 @@ static int lx_interrupt_handle_async_events(str=
+uct lx6464es *chip, u32 irqsrc,
+ 	int err;
+ 	u32 stat[9];		/* answer from CMD_04_GET_EVENT */
+=20
+-	/* On peut optimiser pour ne pas lire les evenements vides
+-	 * les mots de r=C3=83=C2=83=C3=82=C2=A9ponse sont dans l'ordre suiva=
+nt :
+-	 * Stat[0]	mot de status g=C3=83=C2=83=C3=82=C2=A9n=C3=83=C2=83=C3=82=
+=C2=A9ral
+-	 * Stat[1]	fin de buffer OUT pF
+-	 * Stat[2]	fin de buffer OUT pf
+-	 * Stat[3]	fin de buffer IN pF
+-	 * Stat[4]	fin de buffer IN pf
+-	 * Stat[5]	underrun poid fort
+-	 * Stat[6]	underrun poid faible
+-	 * Stat[7]	overrun poid fort
+-	 * Stat[8]	overrun poid faible
++	/* We can optimize this to not read dumb events.
++	 * Answer words are in the following order:
++	 * Stat[0]	general status
++	 * Stat[1]	end of buffer OUT pF
++	 * Stat[2]	end of buffer OUT pf
++	 * Stat[3]	end of buffer IN pF
++	 * Stat[4]	end of buffer IN pf
++	 * Stat[5]	MSB underrun
++	 * Stat[6]	LSB underrun
++	 * Stat[7]	MSB overrun
++	 * Stat[8]	LSB overrun
+ 	 * */
+=20
+ 	u64 orun_mask;
+ 	u64 urun_mask;
+-#if 0
+-	int has_underrun   =3D (irqsrc & MASK_SYS_STATUS_URUN) ? 1 : 0;
+-	int has_overrun    =3D (irqsrc & MASK_SYS_STATUS_ORUN) ? 1 : 0;
+-#endif
+ 	int eb_pending_out =3D (irqsrc & MASK_SYS_STATUS_EOBO) ? 1 : 0;
+ 	int eb_pending_in  =3D (irqsrc & MASK_SYS_STATUS_EOBI) ? 1 : 0;
+=20
+@@ -1272,7 +1268,7 @@ irqreturn_t lx_interrupt(int irq, void *dev_id)
+ 	if (irqsrc & MASK_SYS_STATUS_CMD_DONE)
+ 		goto exit;
+=20
+-#if 0
++#if DEBUG
+ 	if (irqsrc & MASK_SYS_STATUS_EOBI)
+ 		snd_printdd(LXP "interrupt: EOBI\n");
+=20
+@@ -1310,18 +1306,6 @@ irqreturn_t lx_interrupt(int irq, void *dev_id)
+ 				   "error during audio transfer\n");
+ 	}
+=20
+-	if (async_escmd) {
+-#if 0
+-		/* backdoor for ethersound commands
+-		 *
+-		 * for now, we do not need this
+-		 *
+-		 * */
+-
+-		snd_printdd("lx6464es: interrupt requests escmd handling\n");
+-#endif
+-	}
+-
+ exit:
+ 	spin_unlock(&chip->lock);
+ 	return IRQ_HANDLED;	/* this device caused the interrupt */
+--=20
+1.9.1
