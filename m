@@ -1,22 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Audio codec with multiple I2C devices
-Date: Tue, 08 Apr 2014 08:40:25 +0200
-Message-ID: <534399D9.3020709@metafoo.de>
-References: <mailman.300.1396595329.806.alsa-devel@alsa-project.org>
- <C71C517D-B88B-48C3-9156-AB9DD40AE4C0@whospot.com>
- <53411B1F.5070004@metafoo.de> <20140407113710.GC14763@sirena.org.uk>
- <3C2805F4-7EB9-4E43-9140-98982932737C@whospot.com>
- <5342F68B.9060801@metafoo.de>
- <81C8B318-CBB6-4862-A779-E0EBFACA48C6@whospot.com>
+From: Kailang <kailang@realtek.com>
+Subject: Change module name for Chrome
+Date: Tue, 8 Apr 2014 15:34:18 +0800
+Message-ID: <11F2A2679416461E8E3E3A151B84C12E@realtek.com.tw>
+References: <2259125E6B6048C7B3DB0DD2F5BBD60D@realtek.com.tw><CAN8ccibu5kUnZoSbYXXZitXABzPA7C2SXvTZYanJoDDbekVCgA@mail.gmail.com><s5hsipqdh4n.wl%tiwai@suse.de><5C8998C298284925B0366DDAC8B6717F@realtek.com.tw><s5hmwfxmt5o.wl%tiwai@suse.de><00A5C335971D4A02A0E52B6C7F5C64CF@realtek.com.tw>
+ <s5hy4zhl97y.wl%tiwai@suse.de>
+Reply-To: Kailang <kailang@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="----=_NextPart_000_0076_01CF5340.0146E730"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-115.synserver.de (smtp-out-230.synserver.de
- [212.40.185.230])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B560266F9E
- for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 08:40:24 +0200 (CEST)
-In-Reply-To: <81C8B318-CBB6-4862-A779-E0EBFACA48C6@whospot.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11F6C267243
+ for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 09:34:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,35 +21,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Gilles <gilles@whospot.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/07/2014 09:29 PM, Gilles wrote:
-> On Apr 7, 2014, at 12:03 , Lars-Peter Clausen <lars@metafoo.de> wrote:
->
->> On 04/07/2014 08:32 PM, Gilles wrote:
->> [...]
->>> Doesn't it make perfect sense to have the Volume be a control of the Codec driver even if it's provided by a separate chip on the same sound card?
->>
->> Not if they are standalone components that can also be used in different configurations on different sound cards. E.g. you code suggests that you are using a AK4113 and a DAC121C085. The CODEC driver is not the sound card driver, the sound card driver is the piece of code that glues all the different components that are found on the sound card together.
->>
->> i2c_new_dummy() is typically used for devices with multiple I2C addresses. Or where you have e.g. multiple devices with different addresses on the same die so they become a inseparable unit.
->>
->> - Lars
->
-> Yes, but the functionality is very specific to the way the components are wired on the hardware. They are wired to work in conjunction with the ASIC Codec.
->
-> The DAC121C085 is a very specific case as the DAC is actually wired to control the voltage of 4 quadrant multiplier which is hardwired to the Codec ASIC. This is a prototype. In the final product, the DAC chip may be built into the ASIC. For this one, I feel like the "Volume" should be a control of the same driver as the ASIC.
->
-> This said I see your point about the AK4113 which is a generic multi channel receiver. In this specific application it is wired so only inputs 1,2 and 3 are hard wired (this actually isn't a sound card, but rather a finished product using Linux as the SoC OS as can be seen on the home page of http://birdland.com right now).
->
-> There is already a working prototype, but as of now, the inputs are selected by the application talking directly to the I2C AKM. I'm just in the process of streamlining the code, and naturally, I envisioned the input selection be part of the sound card codec as I'd much rather have the sound card have a enum control with the 4 inputs shown by name show under amixer (this would enable my application to be more generic).
->
-> Can you please point me to an example of a Sound board driver that uses multiple codecs? I suppose I can modify my sound board driver to use a codec for the audio and another for the AKM input selector).
+------=_NextPart_000_0076_01CF5340.0146E730
+Content-Type: text/plain; format=flowed; charset="ISO-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
 
-Anything that uses aux devs. E.g. samsung/speyside.c
-There is also this series https://lkml.org/lkml/2014/4/5/92 which adds DT 
-support for aux devs.
+Hi Takashi,
 
-- Lars
+Chrome OS was use alc283-dac-wcaps module name as default in their kernel.
+I was create the change patch for future support.
+Thanks.
+
+BR,
+Kailang
+------=_NextPart_000_0076_01CF5340.0146E730
+Content-Type: application/octet-stream;
+	name="0000-change-module-name-for-chrome.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="0000-change-module-name-for-chrome.patch"
+
+>From 5ed939f4dde9b88af829c1bd25486edbea8f2da6 Mon Sep 17 00:00:00 2001=0A=
+From: Kailang Yang <kailang@realtek.com>=0A=
+Date: Tue, 8 Apr 2014 15:19:49 +0800=0A=
+Subject: [PATCH] ALSA: hda/realtek - Change module name alias for =
+ChromeOS=0A=
+=0A=
+Chrome OS was use module name of alc283-dac-wcaps for loading module as =
+default.=0A=
+Change the module name to same as module name of Chrome OS for future =
+support.=0A=
+=0A=
+Signed-off-by: Kailang Yang <kailang@realtek.com>=0A=
+=0A=
+diff --git a/sound/pci/hda/patch_realtek.c =
+b/sound/pci/hda/patch_realtek.c=0A=
+index b36be20..237867d 100644=0A=
+--- a/sound/pci/hda/patch_realtek.c=0A=
++++ b/sound/pci/hda/patch_realtek.c=0A=
+@@ -4783,7 +4783,7 @@ static const struct hda_model_fixup =
+alc269_fixup_models[] =3D {=0A=
+ 	{.id =3D ALC269_FIXUP_HP_GPIO_LED, .name =3D "hp-gpio-led"},=0A=
+ 	{.id =3D ALC269_FIXUP_DELL1_MIC_NO_PRESENCE, .name =3D =
+"dell-headset-multi"},=0A=
+ 	{.id =3D ALC269_FIXUP_DELL2_MIC_NO_PRESENCE, .name =3D =
+"dell-headset-dock"},=0A=
+-	{.id =3D ALC283_FIXUP_CHROME_BOOK, .name =3D "alc283-chrome"},=0A=
++	{.id =3D ALC283_FIXUP_CHROME_BOOK, .name =3D "alc283-dac-wcaps"},=0A=
+ 	{.id =3D ALC283_FIXUP_SENSE_COMBO_JACK, .name =3D =
+"alc283-sense-combo"},=0A=
+ 	{}=0A=
+ };=0A=
+
+------=_NextPart_000_0076_01CF5340.0146E730
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+------=_NextPart_000_0076_01CF5340.0146E730--
