@@ -1,20 +1,18 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 2/2] ASoC: cs42l73: Convert to use
-	devm_gpio_request_one
-Date: Tue, 08 Apr 2014 22:11:40 +0800
-Message-ID: <1396966300.14167.2.camel@phoenix>
-References: <1396966233.14167.1.camel@phoenix>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: ice1712: Fix boundary checks in PCM
+	pointer ops
+Date: Tue,  8 Apr 2014 17:03:03 +0200
+Message-ID: <1396969383-18683-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f173.google.com (mail-pd0-f173.google.com
- [209.85.192.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 65ED1268112
- for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 16:11:46 +0200 (CEST)
-Received: by mail-pd0-f173.google.com with SMTP id z10so1062626pdj.32
- for <alsa-devel@alsa-project.org>; Tue, 08 Apr 2014 07:11:45 -0700 (PDT)
-In-Reply-To: <1396966233.14167.1.camel@phoenix>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21E4A26854B
+ for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 17:03:03 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4F671AAF6
+ for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 15:03:03 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +22,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Current code missed a gpio_free() call in cs42l73_i2c_remove().
-Convert to use devm_gpio_request_one() to fix it.
+PCM pointer callbacks in ice1712 driver check the buffer size boundary
+wrongly between bytes and frames.  This leads to PCM core warnings
+like:
+   snd_pcm_update_hw_ptr0: 105 callbacks suppressed
+   ALSA pcm_lib.c:352 BUG: pcmC3D0c:0, pos = 5461, buffer size = 5461, period size = 2730
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+This patch fixes these checks to be placed after the proper unit
+conversions.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/cs42l73.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/pci/ice1712/ice1712.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 0ee60a1..ae37179 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -1443,8 +1443,10 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
- 	i2c_set_clientdata(i2c_client, cs42l73);
+diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
+index da005493f060..d9b9e4595f17 100644
+--- a/sound/pci/ice1712/ice1712.c
++++ b/sound/pci/ice1712/ice1712.c
+@@ -685,9 +685,10 @@ static snd_pcm_uframes_t snd_ice1712_playback_pointer(struct snd_pcm_substream *
+ 	if (!(snd_ice1712_read(ice, ICE1712_IREG_PBK_CTRL) & 1))
+ 		return 0;
+ 	ptr = runtime->buffer_size - inw(ice->ddma_port + 4);
++	ptr = bytes_to_frames(substream->runtime, ptr);
+ 	if (ptr == runtime->buffer_size)
+ 		ptr = 0;
+-	return bytes_to_frames(substream->runtime, ptr);
++	return ptr;
+ }
  
- 	if (cs42l73->pdata.reset_gpio) {
--		ret = gpio_request_one(cs42l73->pdata.reset_gpio,
--				       GPIOF_OUT_INIT_HIGH, "CS42L73 /RST");
-+		ret = devm_gpio_request_one(&i2c_client->dev,
-+					    cs42l73->pdata.reset_gpio,
-+					    GPIOF_OUT_INIT_HIGH,
-+					    "CS42L73 /RST");
- 		if (ret < 0) {
- 			dev_err(&i2c_client->dev, "Failed to request /RST %d: %d\n",
- 				cs42l73->pdata.reset_gpio, ret);
+ static snd_pcm_uframes_t snd_ice1712_playback_ds_pointer(struct snd_pcm_substream *substream)
+@@ -704,9 +705,10 @@ static snd_pcm_uframes_t snd_ice1712_playback_ds_pointer(struct snd_pcm_substrea
+ 		addr = ICE1712_DSC_ADDR0;
+ 	ptr = snd_ice1712_ds_read(ice, substream->number * 2, addr) -
+ 		ice->playback_con_virt_addr[substream->number];
++	ptr = bytes_to_frames(substream->runtime, ptr);
+ 	if (ptr == substream->runtime->buffer_size)
+ 		ptr = 0;
+-	return bytes_to_frames(substream->runtime, ptr);
++	return ptr;
+ }
+ 
+ static snd_pcm_uframes_t snd_ice1712_capture_pointer(struct snd_pcm_substream *substream)
+@@ -717,9 +719,10 @@ static snd_pcm_uframes_t snd_ice1712_capture_pointer(struct snd_pcm_substream *s
+ 	if (!(snd_ice1712_read(ice, ICE1712_IREG_CAP_CTRL) & 1))
+ 		return 0;
+ 	ptr = inl(ICEREG(ice, CONCAP_ADDR)) - ice->capture_con_virt_addr;
++	ptr = bytes_to_frames(substream->runtime, ptr);
+ 	if (ptr == substream->runtime->buffer_size)
+ 		ptr = 0;
+-	return bytes_to_frames(substream->runtime, ptr);
++	return ptr;
+ }
+ 
+ static const struct snd_pcm_hardware snd_ice1712_playback = {
+@@ -1116,9 +1119,10 @@ static snd_pcm_uframes_t snd_ice1712_playback_pro_pointer(struct snd_pcm_substre
+ 	if (!(inl(ICEMT(ice, PLAYBACK_CONTROL)) & ICE1712_PLAYBACK_START))
+ 		return 0;
+ 	ptr = ice->playback_pro_size - (inw(ICEMT(ice, PLAYBACK_SIZE)) << 2);
++	ptr = bytes_to_frames(substream->runtime, ptr);
+ 	if (ptr == substream->runtime->buffer_size)
+ 		ptr = 0;
+-	return bytes_to_frames(substream->runtime, ptr);
++	return ptr;
+ }
+ 
+ static snd_pcm_uframes_t snd_ice1712_capture_pro_pointer(struct snd_pcm_substream *substream)
+@@ -1129,9 +1133,10 @@ static snd_pcm_uframes_t snd_ice1712_capture_pro_pointer(struct snd_pcm_substrea
+ 	if (!(inl(ICEMT(ice, PLAYBACK_CONTROL)) & ICE1712_CAPTURE_START_SHADOW))
+ 		return 0;
+ 	ptr = ice->capture_pro_size - (inw(ICEMT(ice, CAPTURE_SIZE)) << 2);
++	ptr = bytes_to_frames(substream->runtime, ptr);
+ 	if (ptr == substream->runtime->buffer_size)
+ 		ptr = 0;
+-	return bytes_to_frames(substream->runtime, ptr);
++	return ptr;
+ }
+ 
+ static const struct snd_pcm_hardware snd_ice1712_playback_pro = {
 -- 
-1.8.3.2
+1.9.1
