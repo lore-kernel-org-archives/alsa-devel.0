@@ -1,18 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: ice1712: Fix boundary checks in PCM
-	pointer ops
-Date: Tue,  8 Apr 2014 17:03:03 +0200
-Message-ID: <1396969383-18683-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH Resend 1/1] ASoC: Samsung: Fix build on
+	multiplatform
+Date: Tue, 8 Apr 2014 18:38:16 +0100
+Message-ID: <20140408173816.GL6518@sirena.org.uk>
+References: <1396957264-2247-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7703256516233983701=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 21E4A26854B
- for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 17:03:03 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 4F671AAF6
- for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 15:03:03 +0000 (UTC)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3C2B261ABB
+ for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 19:38:34 +0200 (CEST)
+In-Reply-To: <1396957264-2247-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,87 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-PCM pointer callbacks in ice1712 driver check the buffer size boundary
-wrongly between bytes and frames.  This leads to PCM core warnings
-like:
-   snd_pcm_update_hw_ptr0: 105 callbacks suppressed
-   ALSA pcm_lib.c:352 BUG: pcmC3D0c:0, pos = 5461, buffer size = 5461, period size = 2730
 
-This patch fixes these checks to be placed after the proper unit
-conversions.
+--===============7703256516233983701==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Bzq2cJcN05fcPrs+"
+Content-Disposition: inline
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/ice1712/ice1712.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
-index da005493f060..d9b9e4595f17 100644
---- a/sound/pci/ice1712/ice1712.c
-+++ b/sound/pci/ice1712/ice1712.c
-@@ -685,9 +685,10 @@ static snd_pcm_uframes_t snd_ice1712_playback_pointer(struct snd_pcm_substream *
- 	if (!(snd_ice1712_read(ice, ICE1712_IREG_PBK_CTRL) & 1))
- 		return 0;
- 	ptr = runtime->buffer_size - inw(ice->ddma_port + 4);
-+	ptr = bytes_to_frames(substream->runtime, ptr);
- 	if (ptr == runtime->buffer_size)
- 		ptr = 0;
--	return bytes_to_frames(substream->runtime, ptr);
-+	return ptr;
- }
- 
- static snd_pcm_uframes_t snd_ice1712_playback_ds_pointer(struct snd_pcm_substream *substream)
-@@ -704,9 +705,10 @@ static snd_pcm_uframes_t snd_ice1712_playback_ds_pointer(struct snd_pcm_substrea
- 		addr = ICE1712_DSC_ADDR0;
- 	ptr = snd_ice1712_ds_read(ice, substream->number * 2, addr) -
- 		ice->playback_con_virt_addr[substream->number];
-+	ptr = bytes_to_frames(substream->runtime, ptr);
- 	if (ptr == substream->runtime->buffer_size)
- 		ptr = 0;
--	return bytes_to_frames(substream->runtime, ptr);
-+	return ptr;
- }
- 
- static snd_pcm_uframes_t snd_ice1712_capture_pointer(struct snd_pcm_substream *substream)
-@@ -717,9 +719,10 @@ static snd_pcm_uframes_t snd_ice1712_capture_pointer(struct snd_pcm_substream *s
- 	if (!(snd_ice1712_read(ice, ICE1712_IREG_CAP_CTRL) & 1))
- 		return 0;
- 	ptr = inl(ICEREG(ice, CONCAP_ADDR)) - ice->capture_con_virt_addr;
-+	ptr = bytes_to_frames(substream->runtime, ptr);
- 	if (ptr == substream->runtime->buffer_size)
- 		ptr = 0;
--	return bytes_to_frames(substream->runtime, ptr);
-+	return ptr;
- }
- 
- static const struct snd_pcm_hardware snd_ice1712_playback = {
-@@ -1116,9 +1119,10 @@ static snd_pcm_uframes_t snd_ice1712_playback_pro_pointer(struct snd_pcm_substre
- 	if (!(inl(ICEMT(ice, PLAYBACK_CONTROL)) & ICE1712_PLAYBACK_START))
- 		return 0;
- 	ptr = ice->playback_pro_size - (inw(ICEMT(ice, PLAYBACK_SIZE)) << 2);
-+	ptr = bytes_to_frames(substream->runtime, ptr);
- 	if (ptr == substream->runtime->buffer_size)
- 		ptr = 0;
--	return bytes_to_frames(substream->runtime, ptr);
-+	return ptr;
- }
- 
- static snd_pcm_uframes_t snd_ice1712_capture_pro_pointer(struct snd_pcm_substream *substream)
-@@ -1129,9 +1133,10 @@ static snd_pcm_uframes_t snd_ice1712_capture_pro_pointer(struct snd_pcm_substrea
- 	if (!(inl(ICEMT(ice, PLAYBACK_CONTROL)) & ICE1712_CAPTURE_START_SHADOW))
- 		return 0;
- 	ptr = ice->capture_pro_size - (inw(ICEMT(ice, CAPTURE_SIZE)) << 2);
-+	ptr = bytes_to_frames(substream->runtime, ptr);
- 	if (ptr == substream->runtime->buffer_size)
- 		ptr = 0;
--	return bytes_to_frames(substream->runtime, ptr);
-+	return ptr;
- }
- 
- static const struct snd_pcm_hardware snd_ice1712_playback_pro = {
--- 
-1.9.1
+--Bzq2cJcN05fcPrs+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Apr 08, 2014 at 05:11:04PM +0530, Sachin Kamat wrote:
+> PCM and S/PDIF drivers referenced mach headers for a trivial
+> data structure. This caused build errors on multiplatform builds
+> as machine headers are not accessible from driver files. Move the data
+> structure definition to the driver header and remove the dependency.
+> While at it rename the structure to avoid multiple definition errors
+> as the same structure is also used by the platform code.
+
+Applied, thanks.
+
+--Bzq2cJcN05fcPrs+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTRDQFAAoJELSic+t+oim9NpAP/36zlOfgbDfs7ZeDM8682G5N
+Clhu9+A/s32etJW6ROl3peZB0e/GJol8A2Ph8DvjyVZuawASTVSvarj9tN+6P7ow
+XcAnnGHTvY02aIs6cOKj8Xll6KSToFDD0tjS9GIZ8U2LUpbd8tn/J9mTa14b+eyU
+MTy0R+9kFbTCU/b2qGe6oYZltYwcPL9t9wlhV9YMI0yajjNaWqP4eg5dwbfRGbPZ
+b/3OEAvil75CFbdfvtttPLVp98ek/bGWnVL/Ur1S+hJIv6TFuE7x77ed+9sYoKV8
+fSxtEbsTUo0S4tF50p/FWQbk0mEK2Lu0ZZj1ar5GLjltMPJekXFBJb5xLLA7xDpo
+Q3wguk7QQlwMi7kqgTC1YNVzbKIicKn6UYzyApwoCf79MsjJ5EWsHWFnI9YMC1/c
+S3Zjh9+UFUmoZBDiwH0COQ2JcWX4ix/NO6BQGyIbrKelbiXVwB1cIyTaexJ3zo91
+2vBr5UAgE7ayvXed04l2GGVHTGdyTRFvBNYcvVcOMkmTFyX8aDtsZlFWxYYJivak
+dgwCr6rHyQD6JX12qAyMJ4MoXkKu0bOACOW6jpDX7gkC6kXOu670ALRWBMKU1Bfy
+X5LJYsc7Nr9n1mtRbK5gHYqEkkUYJjEETIQ4D52cx0QXKfY6EcPMwEyW6LneYpv3
+ilb1q7CN/AKvqZrvdoot
+=YA9s
+-----END PGP SIGNATURE-----
+
+--Bzq2cJcN05fcPrs+--
+
+--===============7703256516233983701==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7703256516233983701==--
