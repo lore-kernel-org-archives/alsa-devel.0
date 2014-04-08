@@ -1,17 +1,20 @@
-From: Christopher Freeman <cfreeman@nvidia.com>
-Subject: Re: [PATCH] ASoC: jack: export gpio detect
-Date: Tue, 8 Apr 2014 13:40:10 -0700
-Message-ID: <CF69AC38.3C92E%cfreeman@nvidia.com>
-References: <20140403220715.GG14763@sirena.org.uk>
+From: Tomas Black <tomas.black@gmail.com>
+Subject: Re: 2.1 audio not working in Kubuntu 13.10
+Date: Tue, 8 Apr 2014 18:20:15 -0300
+Message-ID: <CAL8wzGRodjLPznk8VTtMDgpuq4XcMSfgw6t66VDhsxNbkTyhFw@mail.gmail.com>
+References: <CAL8wzGRtAVhL2dioHRL-7rtZjSCRduBfWpdpZHTxEnp22i=ftA@mail.gmail.com>
+ <CAN8cciYEA3zo3KzqCrZwOZi+COc6itBpAnsD+8OiegXiBT9ryQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate14.nvidia.com (hqemgate14.nvidia.com [216.228.121.143])
- by alsa0.perex.cz (Postfix) with ESMTP id 28F3E265649
- for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 22:40:10 +0200 (CEST)
-In-Reply-To: <20140403220715.GG14763@sirena.org.uk>
-Content-Language: en-US
+Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
+ [209.85.220.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42C63266561
+ for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 23:20:37 +0200 (CEST)
+Received: by mail-pa0-f45.google.com with SMTP id kl14so1570888pab.18
+ for <alsa-devel@alsa-project.org>; Tue, 08 Apr 2014 14:20:35 -0700 (PDT)
+In-Reply-To: <CAN8cciYEA3zo3KzqCrZwOZi+COc6itBpAnsD+8OiegXiBT9ryQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,41 +24,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hello Raymond,
 
 
-On 4/3/14 3:07 PM, "Mark Brown" <broonie@kernel.org> wrote:
+thanks for your answer.
 
->* PGP Signed by an unknown key
->
->On Thu, Apr 03, 2014 at 03:03:55PM -0700, cfreeman@nvidia.com wrote:
->> From: Christopher Freeman <cfreeman@nvidia.com>
->> 
->> Export the gpio detect function so machine drivers
->> may call it.  Interrupts for the jack may be disabled
->> during sleep, so this allows a machine driver to have
->> the jack status updated during resume.
->
->It seems better to have explicit callbacks for this doesn't it, ideally
->ones that get triggered by the core without the machine driver having to
->do anything?  This is a common need so having to open code it would be a
->bit depressing.
+I checked the Dell thread and the Realtek datasheet. I see it's possible to
+connect to external 5.1 (or 2.1) sound system.
 
-Mark, do you have a suggestion on how to plumb this up?  The way I see it,
-the machine drivers own the context for the gpios and soc-jack acts as a
-helper library.  I don't see a way to do this from the core.
+However I want to make it work with the *internal *2 speakers + *internal *
+subwoofer.
 
+I've read tons of links and similar threas, it seems it is not possible
+under linux :-(
+
+Regards,
+
+
+Tomas Black
+
+
+On Sun, Apr 6, 2014 at 10:15 PM, Raymond Yau <superquad.vortex2@gmail.com>wrote:
 
 >
->* Unknown Key
->* 0x7EA229BD
-
------------------------------------------------------------------------------------
-This email message is for the sole use of the intended recipient(s) and may contain
-confidential information.  Any unauthorized review, use, disclosure or distribution
-is prohibited.  If you are not the intended recipient, please contact the sender by
-reply email and destroy all copies of the original message.
------------------------------------------------------------------------------------
+>
+>
+> 2014-04-03 2:44 GMT+08:00 Tomas Black <tomas.black@gmail.com>:
+>
+> Dear friends,
+>>
+>>
+>> I have a Dell L702X laptop which comes with a 2.1 sound configuration - 2
+>> speakers + subwoofer from JBL. Sound is suberb in Windows, but  I can't
+>> get
+>> the subwoofer to work in Linux!
+>>
+>
+>
+> http://www.realtek.com/products/productsView.aspx?Langid=1&PFid=37&Level=5&Conn=4&ProdID=252
+>
+> Take a look at datasheet,
+>
+> ALC655 is a 5.1 codec and a MONO out
+>
+> either the subwoofer is at the MONO node 0x17  or the right or left
+> channels of the other unconnected stereo nodes
+>
+> try hdajackretask to change the pin default of node 0x17 to [Fixed]
+> Speaker at Int
+>
+>
+> http://en.community.dell.com/support-forums/laptop/f/3517/t/19440542.aspx
+>
+> seem support 5.1 using two headphone jacks and mic jack
+>
+>
