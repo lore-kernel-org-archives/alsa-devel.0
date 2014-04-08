@@ -1,17 +1,18 @@
-From: Kailang <kailang@realtek.com>
-Subject: Add eapd shutup to alc283
-Date: Tue, 8 Apr 2014 17:22:21 +0800
-Message-ID: <B086C5BB8E334BD386E7D68003C02373@realtek.com.tw>
-References: <2259125E6B6048C7B3DB0DD2F5BBD60D@realtek.com.tw><CAN8ccibu5kUnZoSbYXXZitXABzPA7C2SXvTZYanJoDDbekVCgA@mail.gmail.com><s5hsipqdh4n.wl%tiwai@suse.de><5C8998C298284925B0366DDAC8B6717F@realtek.com.tw><s5hmwfxmt5o.wl%tiwai@suse.de><00A5C335971D4A02A0E52B6C7F5C64CF@realtek.com.tw><s5hy4zhl97y.wl%tiwai@suse.de><11F2A2679416461E8E3E3A151B84C12E@realtek.com.tw><s5hob0cqmkk.wl%tiwai@suse.de><F14645DC77054988BFE9667657F51B9C@realtek.com.tw>
- <s5hk3b0xlje.wl%tiwai@suse.de>
-Reply-To: Kailang <kailang@realtek.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH] ALSA: hda - Do not assign streams in reverse
+	order
+Date: Tue,  8 Apr 2014 12:36:42 +0300
+Message-ID: <1396949802-22065-1-git-send-email-anssi.hannula@iki.fi>
+References: <5343AA3A.6050405@iki.fi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=_NextPart_000_0137_01CF534F.19A884F0"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id CF6232674D9
- for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 11:22:26 +0200 (CEST)
+Received: from sinikuusama.dnainternet.net (sinikuusama.dnainternet.net
+ [83.102.40.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id E61BB2674FC
+ for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 11:36:47 +0200 (CEST)
+In-Reply-To: <5343AA3A.6050405@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: Alex Deucher <alexander.deucher@amd.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_NextPart_000_0137_01CF534F.19A884F0
-Content-Type: text/plain; format=flowed; charset="ISO-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
-
-Hi Takashi,
-
-Maybe internal speaker will have pop noise when system enter to suspend.
-Add eapd shutup to alc283_shutup.
-Thanks.
-
-BR,
-Kailang
-------=_NextPart_000_0137_01CF534F.19A884F0
-Content-Type: application/octet-stream;
-	name="0000-add-eapd-shutup-for-alc283.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="0000-add-eapd-shutup-for-alc283.patch"
-
->From 81b05a94bb3d9d29bf3f431766ba95b5cce43e68 Mon Sep 17 00:00:00 2001=0A=
-From: Kailang Yang <kailang@realtek.com>=0A=
-Date: Tue, 8 Apr 2014 17:14:14 +0800=0A=
-Subject: [PATCH] ALSA: hda/realtek - Add eapd shutup to ALC283=0A=
-=0A=
-Add eapd shutup function to alc283_shutup.=0A=
-It could avoid pop noise from speaker.=0A=
-=0A=
-Signed-off-by: Kailang Yang <kailang@realtek.com>=0A=
-=0A=
-diff --git a/sound/pci/hda/patch_realtek.c =
-b/sound/pci/hda/patch_realtek.c=0A=
-index ca1298a..5a9879a 100644=0A=
---- a/sound/pci/hda/patch_realtek.c=0A=
-+++ b/sound/pci/hda/patch_realtek.c=0A=
-@@ -3095,6 +3095,7 @@ static void alc283_shutup(struct hda_codec *codec)=0A=
- =0A=
- 	if (hp_pin_sense)=0A=
- 		msleep(100);=0A=
-+	alc_auto_setup_eapd(codec, false);=0A=
- 	snd_hda_shutup_pins(codec);=0A=
- 	alc_write_coef_idx(codec, 0x43, 0x9614);=0A=
- }=0A=
-
-------=_NextPart_000_0137_01CF534F.19A884F0
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
-------=_NextPart_000_0137_01CF534F.19A884F0--
+Q3VycmVudGx5IHN0cmVhbSBudW1iZXJzIGFyZSBhc3NpZ25lZCBpbiByZXZlcnNlIG9yZGVyLgoK
+VW5mb3J0dW5hdGVseSBjb21taXQgNzU0NmFiZmI4ZTFmOTkzM2I1ICgiQUxTQTogaGRhIC0gSW5j
+cmVtZW50CmRlZmF1bHQgc3RyZWFtIG51bWJlcnMgZm9yIEFNRCBIRE1JIGNvbnRyb2xsZXJzIikg
+YXNzdW1lZCB0aGlzIHdhcyBub3QKdGhlIGNhc2UgKHNwZWNpZmljYWxseSwgaXQgaGFkIHRoZSAi
+b2xkIGNhcmRzIGhhZCBzaW5nbGUgZGV2aWNlIG9ubHkiCj0+ICJleHRyYSB1bnVzZWQgc3RyZWFt
+IG51bWJlcnMgZG8gbm90IG1hdHRlciIgYXNzdW1wdGlvbiksIGNhdXNpbmcKbm9uLXdvcmtpbmcg
+YXVkaW8gcmVncmVzc2lvbnMgZm9yIEFNRCBSYWRlb24gSERNSSB1c2Vycy4KCkNoYW5nZSB0aGUg
+c3RyZWFtIG51bWJlcnMgdG8gYmUgYXNzaWduZWQgaW4gZm9yd2FyZCBvcmRlci4KClRoZSBiZW5l
+Zml0IGlzIHRoYXQgcmVndWxhciBhdWRpbyBwbGF5YmFjayB3aWxsIHN0aWxsIHdvcmsgZXZlbiBp
+ZiB0aGUKYXNzdW1lZCBzdHJlYW0gY291bnQgaXMgdG9vIGhpZ2gsIGRvd25zaWRlIGlzIHRoYXQg
+YSB0b28gaGlnaCBzdHJlYW0KY291bnQgbWF5IHJlbWFpbiBoaWRkZW4uCgpCdWd6aWxsYTogaHR0
+cHM6Ly9idWdzLmZyZWVkZXNrdG9wLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9NzcwMDIKUmVwb3J0ZWQt
+Ynk6IENocmlzdGlhbiBHw7xkZWwgPGNnQGRtZXNnLmNoPgpTaWduZWQtb2ZmLWJ5OiBBbnNzaSBI
+YW5udWxhIDxhbnNzaS5oYW5udWxhQGlraS5maT4KVGVzdGVkLWJ5OiBDaHJpc3RpYW4gR8O8ZGVs
+IDxjZ0BkbWVzZy5jaD4gIyAzLjE0CkNjOiBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVy
+QGFtZC5jb20+Ci0tLQoKUmViYXNlZCBmb3IgdjMuMTQuCgogc291bmQvcGNpL2hkYS9oZGFfY29u
+dHJvbGxlci5jIHwgOSArKysrKy0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyks
+IDQgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9oZGFfY29udHJvbGxl
+ci5jIGIvc291bmQvcGNpL2hkYS9oZGFfY29udHJvbGxlci5jCmluZGV4IDk3OTkzZTE3ZjQ2YS4u
+M2UwMDVlNTA5MTMxIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL2hkYV9jb250cm9sbGVyLmMK
+KysrIGIvc291bmQvcGNpL2hkYS9oZGFfY29udHJvbGxlci5jCkBAIC0xODcsMTMgKzE4NywxNCBA
+QCBhenhfYXNzaWduX2RldmljZShzdHJ1Y3QgYXp4ICpjaGlwLCBzdHJ1Y3Qgc25kX3BjbV9zdWJz
+dHJlYW0gKnN1YnN0cmVhbSkKIAkJc3RydWN0IGF6eF9kZXYgKmF6eF9kZXYgPSAmY2hpcC0+YXp4
+X2RldltkZXZdOwogCQlkc3BfbG9jayhhenhfZGV2KTsKIAkJaWYgKCFhenhfZGV2LT5vcGVuZWQg
+JiYgIWRzcF9pc19sb2NrZWQoYXp4X2RldikpIHsKLQkJCXJlcyA9IGF6eF9kZXY7Ci0JCQlpZiAo
+cmVzLT5hc3NpZ25lZF9rZXkgPT0ga2V5KSB7Ci0JCQkJcmVzLT5vcGVuZWQgPSAxOwotCQkJCXJl
+cy0+YXNzaWduZWRfa2V5ID0ga2V5OworCQkJaWYgKGF6eF9kZXYtPmFzc2lnbmVkX2tleSA9PSBr
+ZXkpIHsKKwkJCQlhenhfZGV2LT5vcGVuZWQgPSAxOworCQkJCWF6eF9kZXYtPmFzc2lnbmVkX2tl
+eSA9IGtleTsKIAkJCQlkc3BfdW5sb2NrKGF6eF9kZXYpOwogCQkJCXJldHVybiBhenhfZGV2Owog
+CQkJfQorCQkJaWYgKCFyZXMpCisJCQkJcmVzID0gYXp4X2RldjsKIAkJfQogCQlkc3BfdW5sb2Nr
+KGF6eF9kZXYpOwogCX0KLS0gCjEuOC40LjUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
