@@ -1,49 +1,54 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: core: Fix Sparse incompatible types warning
-Date: Wed, 09 Apr 2014 13:30:47 +0200
-Message-ID: <53452F67.3060400@metafoo.de>
-References: <1397028108-10976-1-git-send-email-k.kozlowski@samsung.com> <5345279F.6070005@metafoo.de> <1397041934.11424.2.camel@AMDC1943>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 0/7] ASoC:davinci-mcasp: bc polarity fix
+ and proper format support
+Date: Wed, 09 Apr 2014 14:12:21 +0200
+Message-ID: <53453925.8040202@gmail.com>
+References: <1396611107-30765-1-git-send-email-peter.ujfalusi@ti.com>
+ <533EB282.6080906@gmail.com> <533EDFFE.2060501@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1397041934.11424.2.camel@AMDC1943>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f52.google.com (mail-bk0-f52.google.com
+ [209.85.214.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49945261AEC
+ for <alsa-devel@alsa-project.org>; Wed,  9 Apr 2014 14:12:23 +0200 (CEST)
+Received: by mail-bk0-f52.google.com with SMTP id my13so2258220bkb.11
+ for <alsa-devel@alsa-project.org>; Wed, 09 Apr 2014 05:12:22 -0700 (PDT)
+In-Reply-To: <533EDFFE.2060501@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, jsarha@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On 04/09/2014 01:12 PM, Krzysztof Kozlowski wrote:
-> On =C5=9Bro, 2014-04-09 at 12:57 +0200, Lars-Peter Clausen wrote:
->> On 04/09/2014 09:21 AM, Krzysztof Kozlowski wrote:
->>> Fix following Sparse warning:
->>> sound/soc/soc-core.c:252:20: error: incompatible types in compariso=
-n expression (different type sizes)
->>>
->>> Signed-off-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
->>> ---
->>>    sound/soc/soc-core.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
->>> index 051c006281f5..41f6178249df 100644
->>> --- a/sound/soc/soc-core.c
->>> +++ b/sound/soc/soc-core.c
->>> @@ -249,7 +249,7 @@ static ssize_t codec_reg_write_file(struct file=
- *file,
->>>    	struct snd_soc_codec *codec =3D file->private_data;
->>>    	int ret;
->>>
->>> -	buf_size =3D min(count, (sizeof(buf)-1));
->>> +	buf_size =3D min(count, (size_t)(sizeof(buf)-1));
->>
->> But shouldn't the type of sizeof already be size_t?
->
-> Hmmm... yes it should. It looks like a false positive from Sparse so =
-the
-> commit message should be rather "Suppress" than "Fix".
+Hi Peter,
 
-I'm pretty sure it is a bug in sparse, we shouldn't suppress those, but=
-=20
-rather fix them in sparse itself.
+On 04/04/2014 06:38 PM, Peter Ujfalusi wrote:
+> On 04/04/2014 04:24 PM, Daniel Mack wrote:
+
+>> The cleanups look sane, though. I can test them on AM33xx based hardware
+>> early next week. If you don't want to hold them off until then, no
+>> problem. I can also send fixups in case I spot a regression.
+> 
+> That would be great if you could also test these. It seams you have quite good
+> array of codecs available.
+
+I tested this series with a CS4271 codec in I2S mode, and things still
+work as expected, except for the fact that the LRCLK is now inverted in
+comparison to the old state.
+
+After some debugging, however, I have confidence that the behaviour with
+the patches applied is in fact correct, we just need to flip the bits in
+our ASoC machine driver, which is no big deal.
+
+
+Thanks for the cleanups again!
+Daniel
