@@ -1,63 +1,46 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Add support for multi register mux
-Date: Wed, 9 Apr 2014 16:56:31 +0100
-Message-ID: <20140409155631.GP6518@sirena.org.uk>
-References: <1396656730-30145-1-git-send-email-aruns@nvidia.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="v9g2r9e2kvGs7M7R"
+From: Tim Gardner <tim.gardner@canonical.com>
+Subject: [PATCH linux-next] ALSA: usb-audio: Suppress repetitive debug messages from retire_playback_urb()
+Date: Wed,  9 Apr 2014 11:30:44 -0600
+Message-ID: <1397064644-71907-1-git-send-email-tim.gardner@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1396656730-30145-1-git-send-email-aruns@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arun Shamanna Lakshmi <aruns@nvidia.com>
-Cc: lars@metafoo.de, lgirdwood@gmail.com, swarren@wwwdotorg.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Songhee Baek <sbaek@nvidia.com>
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Tim Gardner <tim.gardner@canonical.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Eldad Zack <eldad@fogrefinery.com>, Daniel Mack <zonque@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
+BugLink: http://bugs.launchpad.net/bugs/1305133
 
---v9g2r9e2kvGs7M7R
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Malfunctioning or slow devices can cause a flood of dmesg SPAM.
 
-On Fri, Apr 04, 2014 at 05:12:10PM -0700, Arun Shamanna Lakshmi wrote:
-> 1. Modify soc_enum struct to handle pointers for reg and mask
-> 2. Add dapm get and put APIs for multi register one hot encoded mux
-> 3. Update snd_soc_dapm_update struct to support multiple reg update
+I've ignored checkpatch.pl complaints about the use of printk_ratelimit() in favour
+of prior art in sound/usb/pcm.c.
 
-If you've got several changes like this it's probably a sign that the
-change ought to be split into a patch series.
+WARNING: Prefer printk_ratelimited or pr_<level>_ratelimited to printk_ratelimit
++	if (printk_ratelimit() &&
 
-I'm still not seeing any handling of the issues with having invalid
-configurations written to the device during the process of carrying out
-multi register updates; I did raise this with one of the earlier
-versions but don't recall any response.
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Eldad Zack <eldad@fogrefinery.com>
+Cc: Daniel Mack <zonque@gmail.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+---
+ sound/usb/pcm.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I also think I agree with Takashi on this one - trying to implement this
-without adding an abstraction for the control values is making the code
-more complex than it needs to be, all the conditional paths for _ONEHOT
-aren't pretty (and don't use switches which is the usual idiom for this
-stuff if it's not indirected via functions).
-
---v9g2r9e2kvGs7M7R
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTRW2rAAoJELSic+t+oim9ka8P/1+sW/wjVzqIBZeVtR2iAX+T
-+1ZPAwXnaHyzimmvf0PImEJS+35hsTANy6kAaA7bE9qAKOV9RYQd8YK/OL3ZusxG
-skB9MmMIhUjJ85yg5eRJXSlvD4GhqnrOK2avjFtgVzGTZH/DjVQ9TUnpmhDYfvHu
-tDgKcg4MeGu9F+FmEsX3Fjn/7zr/BqTsMsjgh97vyJs5Li4qQ0HUO8/BDCeR5mox
-3ZQdy3Aqjh3SgXtDqlbdlUokfFFMQIW79Nfo4u/Jlr5ftuQrA3CR3BrEWm6ZqtAH
-HS972V+kQrTUMDdadOj9fFaP0WsIxMSCC5Wz5M/m3G76J2z5znXgphxoYvxFL3Y4
-02ATNK5Z++lWjZIfdxs1QN648F5CPMB9qDTbwV6ITSFJh/QY5sNv0D0MPjJx8pxW
-3aJcfY0NUc9fJrJtMZDHS7qm/9foAzYdhv5tYjS33chtQdT0dcrvZ8FSHjJ83DiR
-Ca9r3QHibi13E7WWOsE1JuIGMGaCkDBK0398ERW3wUFja7l3M6gVGHCuMmBbopOO
-ty2pgeBlHjFJyvSSUxB89vb/c+6oJ8tSBduD07nE20hKrskVFy0RnlARYF40OQZ6
-kXYsQnV9jpaTiTkuIMEkfhxWYOsLwSg6Im3uuoQ2msUhtQKXqbJEi3o3eDb1jOPg
-GkZPxk86eqDpISsP30Fk
-=bSny
------END PGP SIGNATURE-----
-
---v9g2r9e2kvGs7M7R--
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 49de5c1..131336d 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1501,7 +1501,8 @@ static void retire_playback_urb(struct snd_usb_substream *subs,
+ 	 * The error should be lower than 2ms since the estimate relies
+ 	 * on two reads of a counter updated every ms.
+ 	 */
+-	if (abs(est_delay - subs->last_delay) * 1000 > runtime->rate * 2)
++	if (printk_ratelimit() &&
++	    abs(est_delay - subs->last_delay) * 1000 > runtime->rate * 2)
+ 		dev_dbg(&subs->dev->dev,
+ 			"delay: estimated %d, actual %d\n",
+ 			est_delay, subs->last_delay);
+-- 
+1.7.9.5
