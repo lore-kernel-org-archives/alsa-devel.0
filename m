@@ -1,62 +1,33 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: move alc892 to patch_alc882
-Date: Wed, 9 Apr 2014 14:30:02 +0800
-Message-ID: <98B9BF421F8C483CA0DB8980D79BE86E@realtek.com.tw>
-References: <2259125E6B6048C7B3DB0DD2F5BBD60D@realtek.com.tw><CAN8ccibu5kUnZoSbYXXZitXABzPA7C2SXvTZYanJoDDbekVCgA@mail.gmail.com><s5hsipqdh4n.wl%tiwai@suse.de><5C8998C298284925B0366DDAC8B6717F@realtek.com.tw><s5hmwfxmt5o.wl%tiwai@suse.de><A1BA38FF1354405FAD7D43DEC4C1DEC8@realtek.com.tw><CAN8cciZDRX5ocMsQY2HEps5kBHyYytzku5KMRi2qJE7Ok0L5Bg@mail.gmail.com><CD6BB756DB7E4CE5BE9458B1523DBC82@realtek.com.tw>
- <CAN8cciaUMQgc_gq7Pm8HfU41PcQUDjMDwAhMQ5DfWXPO0Hkb4g@mail.gmail.com>
-Reply-To: Kailang <kailang@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id CEA71261606
- for <alsa-devel@alsa-project.org>; Wed,  9 Apr 2014 08:30:07 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Subject: [PATCH] ASoC: core: Fix Sparse incompatible types warning
+Date: Wed, 09 Apr 2014 09:21:48 +0200
+Message-ID: <1397028108-10976-1-git-send-email-k.kozlowski@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <k.kozlowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgUmF5bW9uZCwKCllvdXIgbXVsdGktc3RyZWFtaW5nIG1lYW5zIG11dGkgY2hhbm5lbCBvdXQg
-b3Igc2VwYXJhdGUgb3V0cHV0IGF0IHRoZSBzYW1lIHRpbWUuCgpCUiwKS2FpbGFuZwogIC0tLS0t
-IE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0gCiAg5a+E5Lu26ICFOiBSYXltb25kIFlhdSAKICDmlLbk
-u7bogIU6IEthaWxhbmcgCiAg5Ymv5pysOiBUYWthc2hpIEl3YWkgOyBBTFNBIERldmVsb3BtZW50
-IE1haWxpbmcgTGlzdCAKICDlgrPpgIHml6XmnJ86IDIwMTTlubQ05pyIOeaXpSDkuIvljYggMTI6
-NTMKICDkuLvml6g6IFJlOiBbYWxzYS1kZXZlbF0gbW92ZSBhbGM4OTIgdG8gcGF0Y2hfYWxjODgy
-CgoKCiAgPj4+PiA+PiA+PiA+CiAgPj4+PiA+PiA+IFRoZSBvcmlnaW5hbCB3YXMgcGF0Y2ggdG8g
-cGF0Y2hfYWxjNjYyLgogID4+Pj4gPj4gPiBNb3ZlIGl0IGludG8gcGF0Y2hfYWxjODgyLgogID4+
-Pj4gPj4gPgogID4+Pj4gPj4gPgogID4+Pj4gPj4gaXMgdGhlcmUgYW55IHJlYXNvbiBub3QgaW5j
-bHVkaW5nIHRob3NlIFBDSSBRVUlSSyBmb3IgYWxjODkyID8KICA+Pj4+ID4gPiBCZWNhdXNlIGl0
-J3Mgbm90IGNsYXJpZmllZCB3aHkgdGhpcyBtdXN0IGJlIGFwcGxpZWQuCiAgPj4+PiA+IEknbSB3
-YWl0aW5nIGZvciB0aGUgdXBkYXRlZCBwYXRjaCBmcm9tIEthaWxhbmcuCiAgPj4+PiA+CiAgPj4+
-PiBTb3JyeSEKICA+Pj4+IEkganVzdCBhbGlnbmVkIHRoZSBjaGFubmVsIGNvdW50LgogID4+Pj4g
-U28sIG1vdmUgdGhlIGFsYzg5MiB0byBwYXRjaF9hbGM4ODIuCiAgPj4+CiAgPj4+CiAgPj4+CiAg
-Pj4+IEFzIEkgYWxyZWFkeSBhc2tlZCwgY291bGQgeW91IHJlc3VibWl0IHRoZSBwYXRjaCB3aXRo
-IHRoZSBwcm9wZXIKICA+Pj4gY2hhbmdlbG9nPyAgWW91IGhhdmUgdG8gY2xhcmlmeSB3aHkgdGhl
-IHBhdGNoIGlzIG5lZWRlZCBhbmQgaG93IGl0J3MKICA+Pj4gc29sdmVkIGluIHRoZSBwYXRjaCBj
-aGFuZ2Vsb2cuCiAgPj4+CiAgPj4KICA+PiBZZXMsIGJ1dCBpdCBtYXliZSBkb2Vzbid0IHNvbHZl
-IGFueSB0aGluZy4KICA+PiBCdXQgSSByZW1lbWJlciBJIHNvbHZlIDhjaCBpc3N1ZSB3aGljaCBy
-dW4gZm9yIHBhdGNoX2FsYzg4Mi4KICA+PiBJIHdpbGwgY2hlY2sgYWxjODkyIGZvciBydW4gd2l0
-aCBwYXRjaF9hbGM4ODIuCiAgPj4gVGhhbmtzLgogID4+CiAgPgogID4+IGh0dHBzOi8vZ2l0Lmtl
-cm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC9jb21taXQvc291
-bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmM/aWQ9ZTE2ZmI2ZDE0MDhiY2EwYzBiMzZkNDkwNjg4
-ZWJhM2RjOTI0YjFmZAogID4KICA+CiAgPj4gKyB7IDB4MTBlYzA4OTIsIDB4ZmZmZiwgMHg4MDIw
-LCAiQUxDNjYxIiB9LAogID4+ICsgeyAweDEwZWMwODkyLCAweGZmZmYsIDB4ODAxMSwgIkFMQzY2
-MSIgfSwKICA+PiArIHsgMHgxMGVjMDg5MiwgMHhmZmZmLCAweDQwMTEsICJBTEM2NTYiIH0sCiAg
-Pj4gU2VlbSBzb21lIGNvZGVjIHdlcmUgcmVuYW1lZCBhcyBhbGM2NjEgYW5kIGFsYzY1NgogID4K
-ICA+CiAgPiBZZXMsIGl0J3MgdGhlIHNhbWUgYm9keS4gSUMgbWFyayBzaG93cyBkaWZmZXJlbnQu
-CiAgPgoKICBDYW4gdGhlIGRyaXZlciBhc3N1bWUgYWxsIGRlc2t0b3Agd2l0aCBhbGM4eHggY29k
-ZWNzIHN1cHBvcnQgbXVsdGlzdHJlYW1pbmcgcGxheWJhY2sgPwoKICBJdCBzZWVtIHRoYXQgYWxj
-Nnh4IGRvZXMgbm90IHN1cHBvcnQgbXVsdGlzdHJlYW1pbmcgcGxheWJhY2sKCgoKICAtLS0tLS1Q
-bGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFp
-bC4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Fix following Sparse warning:
+sound/soc/soc-core.c:252:20: error: incompatible types in comparison expression (different type sizes)
+
+Signed-off-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+---
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 051c006281f5..41f6178249df 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -249,7 +249,7 @@ static ssize_t codec_reg_write_file(struct file *file,
+ 	struct snd_soc_codec *codec = file->private_data;
+ 	int ret;
+ 
+-	buf_size = min(count, (sizeof(buf)-1));
++	buf_size = min(count, (size_t)(sizeof(buf)-1));
+ 	if (copy_from_user(buf, user_buf, buf_size))
+ 		return -EFAULT;
+ 	buf[buf_size] = 0;
+-- 
+1.8.3.2
