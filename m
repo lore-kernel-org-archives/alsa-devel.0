@@ -1,21 +1,26 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: 2.1 audio not working in Kubuntu 13.10
-Date: Wed, 9 Apr 2014 10:28:43 +0800
-Message-ID: <CAN8cciZhGuEbjmgOAHmYAY75iZeDBEfXDiD0UvryDtzofZiWcQ@mail.gmail.com>
-References: <CAL8wzGRtAVhL2dioHRL-7rtZjSCRduBfWpdpZHTxEnp22i=ftA@mail.gmail.com>
- <CAN8cciYEA3zo3KzqCrZwOZi+COc6itBpAnsD+8OiegXiBT9ryQ@mail.gmail.com>
- <CAL8wzGRodjLPznk8VTtMDgpuq4XcMSfgw6t66VDhsxNbkTyhFw@mail.gmail.com>
+Subject: Re: move alc892 to patch_alc882
+Date: Wed, 9 Apr 2014 12:53:48 +0800
+Message-ID: <CAN8cciaUMQgc_gq7Pm8HfU41PcQUDjMDwAhMQ5DfWXPO0Hkb4g@mail.gmail.com>
+References: <2259125E6B6048C7B3DB0DD2F5BBD60D@realtek.com.tw>
+ <CAN8ccibu5kUnZoSbYXXZitXABzPA7C2SXvTZYanJoDDbekVCgA@mail.gmail.com>
+ <s5hsipqdh4n.wl%tiwai@suse.de>
+ <5C8998C298284925B0366DDAC8B6717F@realtek.com.tw>
+ <s5hmwfxmt5o.wl%tiwai@suse.de>
+ <A1BA38FF1354405FAD7D43DEC4C1DEC8@realtek.com.tw>
+ <CAN8cciZDRX5ocMsQY2HEps5kBHyYytzku5KMRi2qJE7Ok0L5Bg@mail.gmail.com>
+ <CD6BB756DB7E4CE5BE9458B1523DBC82@realtek.com.tw>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f51.google.com (mail-qg0-f51.google.com
- [209.85.192.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 27B7B2656F7
- for <alsa-devel@alsa-project.org>; Wed,  9 Apr 2014 04:28:46 +0200 (CEST)
-Received: by mail-qg0-f51.google.com with SMTP id q108so1693730qgd.38
- for <alsa-devel@alsa-project.org>; Tue, 08 Apr 2014 19:28:43 -0700 (PDT)
-In-Reply-To: <CAL8wzGRodjLPznk8VTtMDgpuq4XcMSfgw6t66VDhsxNbkTyhFw@mail.gmail.com>
+Received: from mail-qc0-f182.google.com (mail-qc0-f182.google.com
+ [209.85.216.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7158261A74
+ for <alsa-devel@alsa-project.org>; Wed,  9 Apr 2014 06:53:49 +0200 (CEST)
+Received: by mail-qc0-f182.google.com with SMTP id e16so2219774qcx.13
+ for <alsa-devel@alsa-project.org>; Tue, 08 Apr 2014 21:53:48 -0700 (PDT)
+In-Reply-To: <CD6BB756DB7E4CE5BE9458B1523DBC82@realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,73 +30,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tomas Black <tomas.black@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Kailang <kailang@realtek.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-z
-
+>>>> >> >> >
+>>>> >> > The original was patch to patch_alc662.
+>>>> >> > Move it into patch_alc882.
+>>>> >> >
+>>>> >> >
+>>>> >> is there any reason not including those PCI QUIRK for alc892 ?
+>>>> > > Because it's not clarified why this must be applied.
+>>>> > I'm waiting for the updated patch from Kailang.
+>>>> >
+>>>> Sorry!
+>>>> I just aligned the channel count.
+>>>> So, move the alc892 to patch_alc882.
+>>>
+>>>
+>>>
+>>> As I already asked, could you resubmit the patch with the proper
+>>> changelog?  You have to clarify why the patch is needed and how it's
+>>> solved in the patch changelog.
+>>>
+>>
+>> Yes, but it maybe doesn't solve any thing.
+>> But I remember I solve 8ch issue which run for patch_alc882.
+>> I will check alc892 for run with patch_alc882.
+>> Thanks.
+>>
+>
+>>
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/patch_realtek.c?id=e16fb6d1408bca0c0b36d490688eba3dc924b1fd
 >
 >
-> thanks for your answer.
->
-> I checked the Dell thread and the Realtek datasheet. I see it's possible
-> to connect to external 5.1 (or 2.1) sound system.
->
-> However I want to make it work with the *internal *2 speakers + *internal
-> *subwoofer.
->
-> I've read tons of links and similar threas, it seems it is not possible
-> under linux :-(
+>> + { 0x10ec0892, 0xffff, 0x8020, "ALC661" },
+>> + { 0x10ec0892, 0xffff, 0x8011, "ALC661" },
+>> + { 0x10ec0892, 0xffff, 0x4011, "ALC656" },
+>> Seem some codec were renamed as alc661 and alc656
 >
 >
-how did you test 2.1 speakers ?
+> Yes, it's the same body. IC mark shows different.
+>
 
+Can the driver assume all desktop with alc8xx codecs support multistreaming
+playback ?
 
-http://voices.canonical.com/david.henningsson/2011/11/29/turn-your-mic-jack-into-a-headphone-jack/
-
-have you try hda-jack-retask to fix the pin default of missing subwoofer ?
-
-
-do you mean surround21 setup does not work ?
-
-http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=48f1b308cc66152eb6db66742dd0d08d888cda8d
-
-https://launchpadlibrarian.net/90274068/Card0.Codecs.codec.0.txt
-
-
-if node 0x17 does not work, you need to try the other unconnected stereo
-pin complex (e.g. node 0x16 , 0x18, 0x21)
-
-0x99130111
-
-using hda-emu with pin fixup,
-
-do you mean no sound when the two headphone jack share the same volume
-control ?
-
-
-autoconfig: line_outs=2 (0x15/0x17/0x0/0x0/0x0) type:speaker
-   speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-   hp_outs=2 (0x1b/0x19/0x0/0x0/0x0)
-   mono: mono_out=0x0
-   dig-out=0x1e/0x0
-   inputs:
-     Internal Mic=0x12
-     Mic=0x1a
-
-
-==> Best config: lo_type=1, wired=1, mio=1
-multi_outs = 15/17/0/0 : 3/2/0/0 (type SP)
-  out path: depth=3 :03:0d:15
-  out path: depth=3 :02:0f:17
-hp_outs = 1b/19/0/0 : 4/4/0/0
-  hp  path: depth=3 :04:0e:1b
-  hp  path: depth=3 :04:0e:19
-
-CTRL: add: Speaker Playback Volume:0
-CTRL: add: Speaker Playback Switch:0
-CTRL: add: Bass Speaker Playback Volume:0
-CTRL: add: Bass Speaker Playback Switch:0
-CTRL: add: Headphone Playback Volume:0
-CTRL: add: Headphone Playback Switch:0
-CTRL: add: Headphone Playback Switch:1
+It seem that alc6xx does not support multistreaming playback
