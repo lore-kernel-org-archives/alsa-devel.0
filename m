@@ -1,26 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
+From: Kailang <kailang@realtek.com>
 Subject: Re: move alc892 to patch_alc882
-Date: Wed, 9 Apr 2014 12:53:48 +0800
-Message-ID: <CAN8cciaUMQgc_gq7Pm8HfU41PcQUDjMDwAhMQ5DfWXPO0Hkb4g@mail.gmail.com>
-References: <2259125E6B6048C7B3DB0DD2F5BBD60D@realtek.com.tw>
- <CAN8ccibu5kUnZoSbYXXZitXABzPA7C2SXvTZYanJoDDbekVCgA@mail.gmail.com>
- <s5hsipqdh4n.wl%tiwai@suse.de>
- <5C8998C298284925B0366DDAC8B6717F@realtek.com.tw>
- <s5hmwfxmt5o.wl%tiwai@suse.de>
- <A1BA38FF1354405FAD7D43DEC4C1DEC8@realtek.com.tw>
- <CAN8cciZDRX5ocMsQY2HEps5kBHyYytzku5KMRi2qJE7Ok0L5Bg@mail.gmail.com>
- <CD6BB756DB7E4CE5BE9458B1523DBC82@realtek.com.tw>
+Date: Wed, 9 Apr 2014 14:30:02 +0800
+Message-ID: <98B9BF421F8C483CA0DB8980D79BE86E@realtek.com.tw>
+References: <2259125E6B6048C7B3DB0DD2F5BBD60D@realtek.com.tw><CAN8ccibu5kUnZoSbYXXZitXABzPA7C2SXvTZYanJoDDbekVCgA@mail.gmail.com><s5hsipqdh4n.wl%tiwai@suse.de><5C8998C298284925B0366DDAC8B6717F@realtek.com.tw><s5hmwfxmt5o.wl%tiwai@suse.de><A1BA38FF1354405FAD7D43DEC4C1DEC8@realtek.com.tw><CAN8cciZDRX5ocMsQY2HEps5kBHyYytzku5KMRi2qJE7Ok0L5Bg@mail.gmail.com><CD6BB756DB7E4CE5BE9458B1523DBC82@realtek.com.tw>
+ <CAN8cciaUMQgc_gq7Pm8HfU41PcQUDjMDwAhMQ5DfWXPO0Hkb4g@mail.gmail.com>
+Reply-To: Kailang <kailang@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f182.google.com (mail-qc0-f182.google.com
- [209.85.216.182])
- by alsa0.perex.cz (Postfix) with ESMTP id C7158261A74
- for <alsa-devel@alsa-project.org>; Wed,  9 Apr 2014 06:53:49 +0200 (CEST)
-Received: by mail-qc0-f182.google.com with SMTP id e16so2219774qcx.13
- for <alsa-devel@alsa-project.org>; Tue, 08 Apr 2014 21:53:48 -0700 (PDT)
-In-Reply-To: <CD6BB756DB7E4CE5BE9458B1523DBC82@realtek.com.tw>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEA71261606
+ for <alsa-devel@alsa-project.org>; Wed,  9 Apr 2014 08:30:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,50 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kailang <kailang@realtek.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
 Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->>>> >> >> >
->>>> >> > The original was patch to patch_alc662.
->>>> >> > Move it into patch_alc882.
->>>> >> >
->>>> >> >
->>>> >> is there any reason not including those PCI QUIRK for alc892 ?
->>>> > > Because it's not clarified why this must be applied.
->>>> > I'm waiting for the updated patch from Kailang.
->>>> >
->>>> Sorry!
->>>> I just aligned the channel count.
->>>> So, move the alc892 to patch_alc882.
->>>
->>>
->>>
->>> As I already asked, could you resubmit the patch with the proper
->>> changelog?  You have to clarify why the patch is needed and how it's
->>> solved in the patch changelog.
->>>
->>
->> Yes, but it maybe doesn't solve any thing.
->> But I remember I solve 8ch issue which run for patch_alc882.
->> I will check alc892 for run with patch_alc882.
->> Thanks.
->>
->
->>
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/patch_realtek.c?id=e16fb6d1408bca0c0b36d490688eba3dc924b1fd
->
->
->> + { 0x10ec0892, 0xffff, 0x8020, "ALC661" },
->> + { 0x10ec0892, 0xffff, 0x8011, "ALC661" },
->> + { 0x10ec0892, 0xffff, 0x4011, "ALC656" },
->> Seem some codec were renamed as alc661 and alc656
->
->
-> Yes, it's the same body. IC mark shows different.
->
-
-Can the driver assume all desktop with alc8xx codecs support multistreaming
-playback ?
-
-It seem that alc6xx does not support multistreaming playback
+SGkgUmF5bW9uZCwKCllvdXIgbXVsdGktc3RyZWFtaW5nIG1lYW5zIG11dGkgY2hhbm5lbCBvdXQg
+b3Igc2VwYXJhdGUgb3V0cHV0IGF0IHRoZSBzYW1lIHRpbWUuCgpCUiwKS2FpbGFuZwogIC0tLS0t
+IE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0gCiAg5a+E5Lu26ICFOiBSYXltb25kIFlhdSAKICDmlLbk
+u7bogIU6IEthaWxhbmcgCiAg5Ymv5pysOiBUYWthc2hpIEl3YWkgOyBBTFNBIERldmVsb3BtZW50
+IE1haWxpbmcgTGlzdCAKICDlgrPpgIHml6XmnJ86IDIwMTTlubQ05pyIOeaXpSDkuIvljYggMTI6
+NTMKICDkuLvml6g6IFJlOiBbYWxzYS1kZXZlbF0gbW92ZSBhbGM4OTIgdG8gcGF0Y2hfYWxjODgy
+CgoKCiAgPj4+PiA+PiA+PiA+CiAgPj4+PiA+PiA+IFRoZSBvcmlnaW5hbCB3YXMgcGF0Y2ggdG8g
+cGF0Y2hfYWxjNjYyLgogID4+Pj4gPj4gPiBNb3ZlIGl0IGludG8gcGF0Y2hfYWxjODgyLgogID4+
+Pj4gPj4gPgogID4+Pj4gPj4gPgogID4+Pj4gPj4gaXMgdGhlcmUgYW55IHJlYXNvbiBub3QgaW5j
+bHVkaW5nIHRob3NlIFBDSSBRVUlSSyBmb3IgYWxjODkyID8KICA+Pj4+ID4gPiBCZWNhdXNlIGl0
+J3Mgbm90IGNsYXJpZmllZCB3aHkgdGhpcyBtdXN0IGJlIGFwcGxpZWQuCiAgPj4+PiA+IEknbSB3
+YWl0aW5nIGZvciB0aGUgdXBkYXRlZCBwYXRjaCBmcm9tIEthaWxhbmcuCiAgPj4+PiA+CiAgPj4+
+PiBTb3JyeSEKICA+Pj4+IEkganVzdCBhbGlnbmVkIHRoZSBjaGFubmVsIGNvdW50LgogID4+Pj4g
+U28sIG1vdmUgdGhlIGFsYzg5MiB0byBwYXRjaF9hbGM4ODIuCiAgPj4+CiAgPj4+CiAgPj4+CiAg
+Pj4+IEFzIEkgYWxyZWFkeSBhc2tlZCwgY291bGQgeW91IHJlc3VibWl0IHRoZSBwYXRjaCB3aXRo
+IHRoZSBwcm9wZXIKICA+Pj4gY2hhbmdlbG9nPyAgWW91IGhhdmUgdG8gY2xhcmlmeSB3aHkgdGhl
+IHBhdGNoIGlzIG5lZWRlZCBhbmQgaG93IGl0J3MKICA+Pj4gc29sdmVkIGluIHRoZSBwYXRjaCBj
+aGFuZ2Vsb2cuCiAgPj4+CiAgPj4KICA+PiBZZXMsIGJ1dCBpdCBtYXliZSBkb2Vzbid0IHNvbHZl
+IGFueSB0aGluZy4KICA+PiBCdXQgSSByZW1lbWJlciBJIHNvbHZlIDhjaCBpc3N1ZSB3aGljaCBy
+dW4gZm9yIHBhdGNoX2FsYzg4Mi4KICA+PiBJIHdpbGwgY2hlY2sgYWxjODkyIGZvciBydW4gd2l0
+aCBwYXRjaF9hbGM4ODIuCiAgPj4gVGhhbmtzLgogID4+CiAgPgogID4+IGh0dHBzOi8vZ2l0Lmtl
+cm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC9jb21taXQvc291
+bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmM/aWQ9ZTE2ZmI2ZDE0MDhiY2EwYzBiMzZkNDkwNjg4
+ZWJhM2RjOTI0YjFmZAogID4KICA+CiAgPj4gKyB7IDB4MTBlYzA4OTIsIDB4ZmZmZiwgMHg4MDIw
+LCAiQUxDNjYxIiB9LAogID4+ICsgeyAweDEwZWMwODkyLCAweGZmZmYsIDB4ODAxMSwgIkFMQzY2
+MSIgfSwKICA+PiArIHsgMHgxMGVjMDg5MiwgMHhmZmZmLCAweDQwMTEsICJBTEM2NTYiIH0sCiAg
+Pj4gU2VlbSBzb21lIGNvZGVjIHdlcmUgcmVuYW1lZCBhcyBhbGM2NjEgYW5kIGFsYzY1NgogID4K
+ICA+CiAgPiBZZXMsIGl0J3MgdGhlIHNhbWUgYm9keS4gSUMgbWFyayBzaG93cyBkaWZmZXJlbnQu
+CiAgPgoKICBDYW4gdGhlIGRyaXZlciBhc3N1bWUgYWxsIGRlc2t0b3Agd2l0aCBhbGM4eHggY29k
+ZWNzIHN1cHBvcnQgbXVsdGlzdHJlYW1pbmcgcGxheWJhY2sgPwoKICBJdCBzZWVtIHRoYXQgYWxj
+Nnh4IGRvZXMgbm90IHN1cHBvcnQgbXVsdGlzdHJlYW1pbmcgcGxheWJhY2sKCgoKICAtLS0tLS1Q
+bGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFp
+bC4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
