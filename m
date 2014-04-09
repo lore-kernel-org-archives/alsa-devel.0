@@ -1,20 +1,21 @@
-From: Tomas Black <tomas.black@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: 2.1 audio not working in Kubuntu 13.10
-Date: Tue, 8 Apr 2014 18:20:15 -0300
-Message-ID: <CAL8wzGRodjLPznk8VTtMDgpuq4XcMSfgw6t66VDhsxNbkTyhFw@mail.gmail.com>
+Date: Wed, 9 Apr 2014 10:28:43 +0800
+Message-ID: <CAN8cciZhGuEbjmgOAHmYAY75iZeDBEfXDiD0UvryDtzofZiWcQ@mail.gmail.com>
 References: <CAL8wzGRtAVhL2dioHRL-7rtZjSCRduBfWpdpZHTxEnp22i=ftA@mail.gmail.com>
  <CAN8cciYEA3zo3KzqCrZwOZi+COc6itBpAnsD+8OiegXiBT9ryQ@mail.gmail.com>
+ <CAL8wzGRodjLPznk8VTtMDgpuq4XcMSfgw6t66VDhsxNbkTyhFw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
- [209.85.220.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 42C63266561
- for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2014 23:20:37 +0200 (CEST)
-Received: by mail-pa0-f45.google.com with SMTP id kl14so1570888pab.18
- for <alsa-devel@alsa-project.org>; Tue, 08 Apr 2014 14:20:35 -0700 (PDT)
-In-Reply-To: <CAN8cciYEA3zo3KzqCrZwOZi+COc6itBpAnsD+8OiegXiBT9ryQ@mail.gmail.com>
+Received: from mail-qg0-f51.google.com (mail-qg0-f51.google.com
+ [209.85.192.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27B7B2656F7
+ for <alsa-devel@alsa-project.org>; Wed,  9 Apr 2014 04:28:46 +0200 (CEST)
+Received: by mail-qg0-f51.google.com with SMTP id q108so1693730qgd.38
+ for <alsa-devel@alsa-project.org>; Tue, 08 Apr 2014 19:28:43 -0700 (PDT)
+In-Reply-To: <CAL8wzGRodjLPznk8VTtMDgpuq4XcMSfgw6t66VDhsxNbkTyhFw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,62 +25,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Tomas Black <tomas.black@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Raymond,
-
-
-thanks for your answer.
-
-I checked the Dell thread and the Realtek datasheet. I see it's possible to
-connect to external 5.1 (or 2.1) sound system.
-
-However I want to make it work with the *internal *2 speakers + *internal *
-subwoofer.
-
-I've read tons of links and similar threas, it seems it is not possible
-under linux :-(
-
-Regards,
-
-
-Tomas Black
-
-
-On Sun, Apr 6, 2014 at 10:15 PM, Raymond Yau <superquad.vortex2@gmail.com>wrote:
+z
 
 >
 >
+> thanks for your answer.
 >
-> 2014-04-03 2:44 GMT+08:00 Tomas Black <tomas.black@gmail.com>:
+> I checked the Dell thread and the Realtek datasheet. I see it's possible
+> to connect to external 5.1 (or 2.1) sound system.
 >
-> Dear friends,
->>
->>
->> I have a Dell L702X laptop which comes with a 2.1 sound configuration - 2
->> speakers + subwoofer from JBL. Sound is suberb in Windows, but  I can't
->> get
->> the subwoofer to work in Linux!
->>
+> However I want to make it work with the *internal *2 speakers + *internal
+> *subwoofer.
 >
->
-> http://www.realtek.com/products/productsView.aspx?Langid=1&PFid=37&Level=5&Conn=4&ProdID=252
->
-> Take a look at datasheet,
->
-> ALC655 is a 5.1 codec and a MONO out
->
-> either the subwoofer is at the MONO node 0x17  or the right or left
-> channels of the other unconnected stereo nodes
->
-> try hdajackretask to change the pin default of node 0x17 to [Fixed]
-> Speaker at Int
+> I've read tons of links and similar threas, it seems it is not possible
+> under linux :-(
 >
 >
-> http://en.community.dell.com/support-forums/laptop/f/3517/t/19440542.aspx
->
-> seem support 5.1 using two headphone jacks and mic jack
->
->
+how did you test 2.1 speakers ?
+
+
+http://voices.canonical.com/david.henningsson/2011/11/29/turn-your-mic-jack-into-a-headphone-jack/
+
+have you try hda-jack-retask to fix the pin default of missing subwoofer ?
+
+
+do you mean surround21 setup does not work ?
+
+http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=48f1b308cc66152eb6db66742dd0d08d888cda8d
+
+https://launchpadlibrarian.net/90274068/Card0.Codecs.codec.0.txt
+
+
+if node 0x17 does not work, you need to try the other unconnected stereo
+pin complex (e.g. node 0x16 , 0x18, 0x21)
+
+0x99130111
+
+using hda-emu with pin fixup,
+
+do you mean no sound when the two headphone jack share the same volume
+control ?
+
+
+autoconfig: line_outs=2 (0x15/0x17/0x0/0x0/0x0) type:speaker
+   speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+   hp_outs=2 (0x1b/0x19/0x0/0x0/0x0)
+   mono: mono_out=0x0
+   dig-out=0x1e/0x0
+   inputs:
+     Internal Mic=0x12
+     Mic=0x1a
+
+
+==> Best config: lo_type=1, wired=1, mio=1
+multi_outs = 15/17/0/0 : 3/2/0/0 (type SP)
+  out path: depth=3 :03:0d:15
+  out path: depth=3 :02:0f:17
+hp_outs = 1b/19/0/0 : 4/4/0/0
+  hp  path: depth=3 :04:0e:1b
+  hp  path: depth=3 :04:0e:19
+
+CTRL: add: Speaker Playback Volume:0
+CTRL: add: Speaker Playback Switch:0
+CTRL: add: Bass Speaker Playback Volume:0
+CTRL: add: Bass Speaker Playback Switch:0
+CTRL: add: Headphone Playback Volume:0
+CTRL: add: Headphone Playback Switch:0
+CTRL: add: Headphone Playback Switch:1
