@@ -1,23 +1,25 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Tenor TE8802,
- USB : clics and crackles during music play
-Date: Thu, 10 Apr 2014 11:23:37 +0200
-Message-ID: <53466319.7010606@ladisch.de>
-References: <CA+T9nP_hcPQBoQwike7oB5TfECax2MvARv0dTG9qB-RdFMuy=w@mail.gmail.com>
- <CA+T9nP-=ffsy9ftnxynUhdJK_Eev+S-MRznLz7CED-Yp3DiOjg@mail.gmail.com>
- <20140114143417.GB23764@tamtam.fritz.box>
- <loom.20140404T165417-983@post.gmane.org> <533ECF3C.3020404@ladisch.de>
- <op.xdya5wmiwx6sbz@ws00534.pq> <534305F1.8040805@ladisch.de>
- <op.xdznse1cwx6sbz@ws00534.pq> <5343CF9B.8020202@ladisch.de>
- <op.xd3dibs3wx6sbz@ws00534.pq>
+From: andoru <andoru.blah@gmail.com>
+Subject: Invalid PCM pointer with CMI8738 and pcm.c buffer
+	underuns
+Date: Thu, 10 Apr 2014 19:05:12 +0000 (UTC)
+Message-ID: <loom.20140410T210136-313@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id ABD6B265AD9
- for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2014 11:23:37 +0200 (CEST)
-In-Reply-To: <op.xd3dibs3wx6sbz@ws00534.pq>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 91D54268140
+ for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2014 21:05:30 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1WYKHt-0006Fv-8f
+ for alsa-devel@alsa-project.org; Thu, 10 Apr 2014 21:05:25 +0200
+Received: from cl-86-125-143-211.cablelink.mures.rdsnet.ro ([86.125.143.211])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2014 21:05:25 +0200
+Received: from andoru.blah by cl-86-125-143-211.cablelink.mures.rdsnet.ro with
+ local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2014 21:05:25 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,18 +29,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mick <mick37@gmx.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-mick wrote:
-> I tried the patch but it does not help. Still crackles.
+Continued from here: http://article.gmane.org/gmane.linux.alsa.devel/121575
 
-Do you get changing values, and any out-of-range values, when you execute
-this while it's playing?
+> http://www.alsa-project.org/main/index.php/XRUN_Debug
+> 
+> # Enable basic debugging and dump stack, check hardware pointer on the
+> period update
+> # Usefull to just see, if PCM stream is stopped for a reason (usually wrong
+> audio process timing from scheduler)
+> # And to check the values from driver
+> 
+> echo 11 > /proc/asound/card0/pcm0p/xrun_debug
 
-  (while sleep 0.123; do grep 'Momentary freq' /proc/asound/card*/stream0; done) | uniq
+Okay, I not compiled my own kernel with CONFIG_SND_PCM_XRUN_DEBUG,
+CONFIG_SND_VERBOSE_PROCFS, CONFIG_SND_DEBUG all enabled in the kernel
+configuration, I have an xrun_debug file, but it doesn't seem to list
+anything, then I also tried with cat instead of echo, and just a 0 showed up:
 
+___________________________________________________________________
+$ echo 11 > /proc/asound/card0/pcm0p/xrun_debug
+bash: /proc/asound/card0/pcm0p/xrun_debug: Permission denied
 
-Regards,
-Clemens
+# echo 11 > /proc/asound/card0/pcm0p/xrun_debug
+bash: /proc/asound/card0/pcm0p/xrun_debug: Permission denied
+
+$ cat /proc/asound/card0/pcm0p/xrun_debug
+0
+___________________________________________________________________
