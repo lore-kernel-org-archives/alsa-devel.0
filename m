@@ -1,23 +1,15 @@
-From: mick <mick37@gmx.de>
-Subject: Re: Tenor TE8802,
- USB : clics and crackles during music play
-Date: Mon, 14 Apr 2014 12:44:40 +0200
-Message-ID: <op.xeaysqhpwx6sbz@ws00534.pq>
-References: <CA+T9nP_hcPQBoQwike7oB5TfECax2MvARv0dTG9qB-RdFMuy=w@mail.gmail.com>
- <CA+T9nP-=ffsy9ftnxynUhdJK_Eev+S-MRznLz7CED-Yp3DiOjg@mail.gmail.com>
- <20140114143417.GB23764@tamtam.fritz.box>
- <loom.20140404T165417-983@post.gmane.org> <533ECF3C.3020404@ladisch.de>
- <op.xdya5wmiwx6sbz@ws00534.pq> <534305F1.8040805@ladisch.de>
- <op.xdznse1cwx6sbz@ws00534.pq> <5343CF9B.8020202@ladisch.de>
- <op.xd3dibs3wx6sbz@ws00534.pq> <53466319.7010606@ladisch.de>
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: Broken alc562x codec in linus/master
+Date: Thu, 10 Apr 2014 18:51:44 +0200
+Message-ID: <20140410165144.GI10240@lunn.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
- by alsa0.perex.cz (Postfix) with ESMTP id D165C26164C
- for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 12:44:43 +0200 (CEST)
-In-Reply-To: <53466319.7010606@ladisch.de>
+Received: from vps0.lunn.ch (vps0.lunn.ch [178.209.37.122])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4EDF7267767
+ for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2014 18:53:48 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,25 +19,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: broonie@linaro.org
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens,
+Hi Mark
 
-I figured out what the problem is.
-When I said the quirk code gets called I made a mistake. It did not.
-What happens is this:
-You are setting udh01_fb_quirk in the sync endpoint but at the line where
-you query it you are asking the data endpoint. So the patch of the patch  
-is:
+I found a few issues with the changes you have made to
+sound/soc/codecs/alc5623.c which is currently in linus master branch.
 
--	if (unlikely(ep->udh01_fb_quirk)) {
-+	if (unlikely(sender->udh01_fb_quirk)) {
+The patch causing the trouble seems to be:
 
-With this change everything works fine with my TEAC A-H01.
-The crackle is gone and grep for the momentary frequency shows no jumps  
-anymore.
+commit 0cd257bf9b9b0cbb4fa1a5c988a232506997867c
+Author: Mark Brown <broonie@linaro.org>
+Date:   Thu Feb 20 09:04:06 2014 +0900
 
-Regards,
-Mick
+    ASoC: alc5623: Convert to direct regmap API usage
+    
+    Convert to directly use the regmap API, allowing us to eliminate the last
+    user of the ASoC level I/O implementations (there are still open coded
+    I/O implementations in drivers), avoiding duplicating code in regmap.
+    
+    We no longer cache the entire CODEC register map on probe since the more
+    advanced cache infrastructure in regmap is able to fill the cache on
+    demand.
+    
+    Signed-off-by: Mark Brown <broonie@linaro.org>
+
+At boot i see:
+
+alc562x-codec 0-001a: unknown or wrong codec
+alc562x-codec 0-001a: Expected 10ec:21, got ec10:2103
+
+There are two issues here:
+
+-       vid1 = i2c_smbus_read_word_data(client, ALC5623_VENDOR_ID1);
++       ret = regmap_read(alc5623->regmap, ALC5623_VENDOR_ID1, &vid1);
+
+It looks like these are returning different endianness. This explains
+the 10ec vs ec10.
+
+Can the regmap flip the endianness?
+
+The second is:
+
+-       vid2 = i2c_smbus_read_byte_data(client, ALC5623_VENDOR_ID2);
+-       if (vid2 < 0) {
+-               dev_err(&client->dev, "failed to read I2C\n");
+-               return -EIO;
++       ret = regmap_read(alc5623->regmap, ALC5623_VENDOR_ID2, &vid2);
++       if (ret < 0) {
++               dev_err(&client->dev, "failed to read vendor ID2: %d\n", ret);
++               return ret;
+
+It was reading a byte, but now it seems to get a word.  Hence 21 vs
+2103. Once the endianness is sorted out, we can mask for the lower
+byte.
+
+      Thanks
+	Andrew
