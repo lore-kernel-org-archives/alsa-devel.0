@@ -1,81 +1,44 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH 2/2] ASoC: rt5640: Add the info of rt5639 to
-	the binding document
-Date: Thu, 10 Apr 2014 10:57:35 +0800
-Message-ID: <1397098655-21965-2-git-send-email-oder_chiou@realtek.com>
-References: <1397098655-21965-1-git-send-email-oder_chiou@realtek.com>
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Subject: Re: [PATCH] ASoC: core: Fix Sparse incompatible types warning
+Date: Thu, 10 Apr 2014 04:01:50 +0100
+Message-ID: <20140410030150.GC18016@ZenIV.linux.org.uk>
+References: <1397028108-10976-1-git-send-email-k.kozlowski@samsung.com>
+ <5345279F.6070005@metafoo.de>
+ <1397041934.11424.2.camel@AMDC1943>
+ <53452F67.3060400@metafoo.de>
+ <20140409202520.GQ6518@sirena.org.uk>
+ <5345AD8B.5050306@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B38D261A40
- for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2014 04:57:45 +0200 (CEST)
-In-Reply-To: <1397098655-21965-1-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5345AD8B.5050306@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch adds the info of rt5639 to the binding document.
+On Wed, Apr 09, 2014 at 10:28:59PM +0200, Lars-Peter Clausen wrote:
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- Documentation/devicetree/bindings/sound/rt5640.txt | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+> I had a look at the sparse code and the problem is that it sets the
+> default return type of sizeof according to the type of the host it
+> was compiled on (either unsigned int or unsigned long). It can be
+> overwritten by switches like -m32, but of course wont work when
+> cross compiling. So if your host system is 64bit, but your target
+> system is 32bit you'll get that warning.
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5640.txt b/Documentation/devicetree/bindings/sound/rt5640.txt
-index 068a114..bac4d9a 100644
---- a/Documentation/devicetree/bindings/sound/rt5640.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5640.txt
-@@ -1,10 +1,10 @@
--RT5640 audio CODEC
-+RT5640/RT5639 audio CODEC
- 
- This device supports I2C only.
- 
- Required properties:
- 
--- compatible : "realtek,rt5640".
-+- compatible : One of "realtek,rt5640" or "realtek,rt5639".
- 
- - reg : The I2C address of the device.
- 
-@@ -18,7 +18,7 @@ Optional properties:
- 
- - realtek,ldo1-en-gpios : The GPIO that controls the CODEC's LDO1_EN pin.
- 
--Pins on the device (for linking into audio routes):
-+Pins on the device (for linking into audio routes) for RT5639/RT5640:
- 
-   * DMIC1
-   * DMIC2
-@@ -31,13 +31,16 @@ Pins on the device (for linking into audio routes):
-   * HPOR
-   * LOUTL
-   * LOUTR
--  * MONOP
--  * MONON
-   * SPOLP
-   * SPOLN
-   * SPORP
-   * SPORN
- 
-+Additional pins on the device for RT5640:
-+
-+  * MONOP
-+  * MONON
-+
- Example:
- 
- rt5640 {
--- 
-1.8.1.1.439.g50a6b54
+Not that simple.  First of all, you *need* to tell sparse what target
+to expect; size_t is the least of your troubles - sizeof(long) has
+far more widespread impact.  If you don't get -m64 or -m32 in CFLAGS
+(and on quite a few cross-builds you get it, simply because the target
+is biarch and gcc itself needs to know what to generate), you need
+to set it in CHECKFLAGS, along with other target-specific things.
+Example:
+arch/ia64/Makefile:21:CHECKFLAGS        += -m64 -D__ia64=1 -D__ia64__=1 -D_LP64 -D__LP64__
+
+With the defaults being what they are (since commit 7aa79f "Adding default for
+m64/m32 handle"), we probably need explicit -m32 in CHECKFLAGS for a bunch
+of 32bit targets.  Defaults are iffy, BTW - it's not even "do as host does",
+it's "64bit if the host is amd64, 32bit otherwise" ;-/
+
+Again, CHECKFLAGS need to be set; that's normally done in arch/*/Makefile.
