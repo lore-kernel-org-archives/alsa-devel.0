@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: rt5640: Add the info of rt5639
- to the binding document
-Date: Thu, 10 Apr 2014 10:13:26 +0100
-Message-ID: <20140410091326.GW6518@sirena.org.uk>
-References: <1397098655-21965-1-git-send-email-oder_chiou@realtek.com>
- <1397098655-21965-2-git-send-email-oder_chiou@realtek.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Tenor TE8802,
+ USB : clics and crackles during music play
+Date: Thu, 10 Apr 2014 11:23:37 +0200
+Message-ID: <53466319.7010606@ladisch.de>
+References: <CA+T9nP_hcPQBoQwike7oB5TfECax2MvARv0dTG9qB-RdFMuy=w@mail.gmail.com>
+ <CA+T9nP-=ffsy9ftnxynUhdJK_Eev+S-MRznLz7CED-Yp3DiOjg@mail.gmail.com>
+ <20140114143417.GB23764@tamtam.fritz.box>
+ <loom.20140404T165417-983@post.gmane.org> <533ECF3C.3020404@ladisch.de>
+ <op.xdya5wmiwx6sbz@ws00534.pq> <534305F1.8040805@ladisch.de>
+ <op.xdznse1cwx6sbz@ws00534.pq> <5343CF9B.8020202@ladisch.de>
+ <op.xd3dibs3wx6sbz@ws00534.pq>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3779230962822938014=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 33B6826510A
- for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2014 11:13:38 +0200 (CEST)
-In-Reply-To: <1397098655-21965-2-git-send-email-oder_chiou@realtek.com>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id ABD6B265AD9
+ for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2014 11:23:37 +0200 (CEST)
+In-Reply-To: <op.xd3dibs3wx6sbz@ws00534.pq>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +27,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
+To: mick <mick37@gmx.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+mick wrote:
+> I tried the patch but it does not help. Still crackles.
 
---===============3779230962822938014==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1Wg5Vd7si6EhrIHA"
-Content-Disposition: inline
+Do you get changing values, and any out-of-range values, when you execute
+this while it's playing?
 
-
---1Wg5Vd7si6EhrIHA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Apr 10, 2014 at 10:57:35AM +0800, Oder Chiou wrote:
-> The patch adds the info of rt5639 to the binding document.
-
-Applied, thanks.
-
---1Wg5Vd7si6EhrIHA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTRmCzAAoJELSic+t+oim9JBgP/A7JuVinl1hphSh31IU9KfJ1
-R5tVv3NX5VCZWv8jep87kF8+x4dX1i8V1M4b3k12j3RrvWjfhNYSy7TOelHIs3Ki
-hVM2U6ldLxBAFtyVFDsxKX/+1EySGhIBxg9DosXvemrF7WocYGhWsQgtGqALtEJr
-WMqVNGGcZrw2epauE/Tt6fWYGOKzCulLbyALSUBJvWui7nuyy6SOhUvQj0wD+uWq
-umLYBi4Jmno2ZbXbi4NiP6XuiyMTAjfCn5n55tquiTmXheBQRBjRcw6aUf5Qhy9z
-LpssO8HqrrbC36lTI3YYowYqAnFvQ+PKaUqUULu8sLnHMCufu1js7Te2c++Cdzvy
-8NvFVGOVhoxqLTweLEsiCZ5dXOWBmjNHMMNyAAqrjix6WjukmiAxt0tFP52KQooI
-l3PYTHskJbYCrJO9sHFFHO+5dYy7Y+NJpnBZymZqxdI1i+vcCKTH4Tjs+LT+0QUZ
-pQE7V+JNSPjh/ycluDf752RQiXg1ap7GMQtx18qvpFOddjzZh8faauWIiOtDlKbz
-rMzowmdp78X3nPKl4cTmECJK1xSmKAv8GNBWt5r98/PxcqVhGR5QE+cv45+Kuseb
-R8jM6qM/6P/FJqzxnkvz/IsfgPc1h27Wmy+vXcCfP0DzAddz4GcFNDb27pj9w6tx
-nOY9U/PjK9YXHmmwdrEm
-=5KvE
------END PGP SIGNATURE-----
-
---1Wg5Vd7si6EhrIHA--
-
---===============3779230962822938014==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+  (while sleep 0.123; do grep 'Momentary freq' /proc/asound/card*/stream0; done) | uniq
 
 
---===============3779230962822938014==--
+Regards,
+Clemens
