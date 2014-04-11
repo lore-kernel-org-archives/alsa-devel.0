@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: jack: export gpio detect
-Date: Fri, 11 Apr 2014 11:12:45 +0100
-Message-ID: <20140411101245.GO6518@sirena.org.uk>
-References: <CF69AC38.3C92E%cfreeman@nvidia.com>
- <CF6C7514.3DC69%cfreeman@nvidia.com>
+Subject: Re: [PATCH] ASoC: rsnd: fix clock prepare/unprepare
+Date: Fri, 11 Apr 2014 11:14:04 +0100
+Message-ID: <20140411101404.GP6518@sirena.org.uk>
+References: <87ob08oebr.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9041234856108078909=="
+Content-Type: multipart/mixed; boundary="===============0240840827958765637=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CC9C7264F8D
- for <alsa-devel@alsa-project.org>; Fri, 11 Apr 2014 12:12:56 +0200 (CEST)
-In-Reply-To: <CF6C7514.3DC69%cfreeman@nvidia.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CDAC7265650
+ for <alsa-devel@alsa-project.org>; Fri, 11 Apr 2014 12:14:15 +0200 (CEST)
+In-Reply-To: <87ob08oebr.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +20,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christopher Freeman <cfreeman@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Ben Dooks <ben.dooks@codethink.co.uk>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9041234856108078909==
+--===============0240840827958765637==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="p5BJhDJf0owydRUK"
+	protocol="application/pgp-signature"; boundary="VZekXYd/M+CUZV2i"
 Content-Disposition: inline
 
 
---p5BJhDJf0owydRUK
-Content-Type: text/plain; charset=utf-8
+--VZekXYd/M+CUZV2i
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 10, 2014 at 04:24:58PM -0700, Christopher Freeman wrote:
-> On 4/8/14 1:40 PM, "Christopher Freeman" <cfreeman@nvidia.com> wrote:
+On Thu, Apr 10, 2014 at 06:16:33PM -0700, Kuninori Morimoto wrote:
+> From: Ben Dooks <ben.dooks@codethink.co.uk>
+>=20
+> As with the previous commit, before a clock can be used it must be prepar=
+ed
+> for use. Change from clk_enable() and clk_disable() to the versions of the
+> calls which also prepare and un-prepare the clocks.
+>=20
+> Will fix warnings from the clock code when this is used.
+>=20
+> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-> >Mark, do you have a suggestion on how to plumb this up?  The way I see i=
-t,
-> >the machine drivers own the context for the gpios and soc-jack acts as a
-> >helper library.  I don't see a way to do this from the core.
+This is written by you and sent by you but also signed off by
+Morimoto-san - what's going on there?
 
-> Any thoughts?  One idea would be to change things such that jacks are
-> registered with the core and the core is then allowed access to the gpio
-> detect function=C5=A0  This would make things common, but we're still ope=
-ning
-> up a function in the jack code.  I don't see another way.  (using the
-> existing interface, we could free and add gpios on suspend/resume=C5=A0 :=
--P)
-
-Please allow a reasonable time for replies, especially during the merge
-window.
-
---p5BJhDJf0owydRUK
+--VZekXYd/M+CUZV2i
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTR8AZAAoJELSic+t+oim9IUMP/jIjYl/QiLXiGITtngd5vGCH
-05zKJ8GSueY+bhHkucenJ7g947GkL9azKfJmMCl4aFO+wx00tEWvhFxlD/OVxTXi
-YzbfU6PifjdvvVQLzJmveGLC6YAKnht7MJLmSwqdrERJVrbOBGiOrIcyfr93UPcT
-6sBDOPkXS1eaF3xH6vkDAObUyGTN8jRsO6SUW7j2FA+DWSPVV1gmzald7U7zxdWe
-kwLZt9wLMIG00+1CagjVMdc7mDB4417Uedh8QRfZXo1WlzfMtBwGJ3/JmF94w2qH
-oKbHS2iKN1j9o29ok3Pb7AMtJdAQU18vSKB5EnXEZItH2/9CuK1RbGmeLq2Orhws
-Qqw/bxfT6NZLfTOF8oS0soy8q0epU+Tm33C1ujih43KcaydfErKwF/v5mmlIHARQ
-J1lPTqGcB2l6FtmcQ/VraALGRJ4/wTU5kDVD2BjfJEmSU01zjuq4gV9vkgLpqQWL
-rZCphVlIoFgKKhOkSGYUr5mNzRlU7Ydy5sfb8Tc+NTuGK6kwmpIceVrzN5EI11FB
-zsS+fBXqy+bsHP85OOZaiVxERgiUReD4n16spI7u4Ib0rBcbpxLfV7kowZUKYHbd
-UyCu43vPHrbB1Oz/gxHuGcsnFIrpwJyntVgaCrNjgl+PYX4f8mzckoeLVkOVKbC8
-UiF2wwGdzCtV6pFGyWNc
-=vs4X
+iQIcBAEBAgAGBQJTR8BpAAoJELSic+t+oim9eloP/i477gXLpWJ3tnZAaUZJ66EP
+8or78jT0SKYwQBFXjcLqIbWX8kadg5f0c+xs3MuLDkTU3UmfervHYUrk+5qB3Yoe
+Q6cq6HX/AXf1OQ2joN3eoWfZ6LZDwe0UxGuvQkI9djyQtfx0ZrAukuXjDxsuwf/N
+xAOp5meuWOtOvtEztNkHcm+ksNdrSibVw9SbJ6EBkdLWcfwUYO1ARZle24Oim2iM
+XEUFwkbQ5MxPfv9iCW3Hs/hcTIVl2pO4YFmNxxOGTiwMtgqs7rYuhqyylxLF5Iku
+bmnVubE8S/bC3chkpqJuHmkHQQnj8zOvHhoHyVuYiC/bFxvEQQQhWHxSl0eltqzi
+o1QtEP+AHdFKhiipXz56j7Sl65jlNVpdIOsbeEeaGtWjoyj65NWR2+As8CyHOKlZ
+nq+iSDyTTkdTVk0Zf2l+HaOZlkDZrcGkmQf8utBs9NZybtzZqxZoXNaiy5FCxl1j
+/RAuiJ6tCk4jSRVlRkj5WBe0tTRazNZG1csTat19lgPXNeIwFNv5wsf2xV2ESJ84
+TgykpgUWmA97DvTKihCpHz3/kpteYSa8t9NsMl/T49ubk0uSKewTTsrHWzHKVTYX
+JV1PbNwLsMC5+On3yNd5fXkVQ92V3ICqitNlHJ6xgIftQ5Gio9Hv9nNM+Up0i9jg
+234lrOIUizKXxRBlZmMi
+=VK5r
 -----END PGP SIGNATURE-----
 
---p5BJhDJf0owydRUK--
+--VZekXYd/M+CUZV2i--
 
---===============9041234856108078909==
+--===============0240840827958765637==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9041234856108078909==--
+--===============0240840827958765637==--
