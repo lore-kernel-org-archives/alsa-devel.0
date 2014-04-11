@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: rsnd: fix clock prepare/unprepare
-Date: Fri, 11 Apr 2014 11:14:04 +0100
-Message-ID: <20140411101404.GP6518@sirena.org.uk>
+Date: Fri, 11 Apr 2014 12:10:58 +0100
+Message-ID: <20140411111058.GB28800@sirena.org.uk>
 References: <87ob08oebr.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0240840827958765637=="
+Content-Type: multipart/mixed; boundary="===============6214372313461430292=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CDAC7265650
- for <alsa-devel@alsa-project.org>; Fri, 11 Apr 2014 12:14:15 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A4AD2656D9
+ for <alsa-devel@alsa-project.org>; Fri, 11 Apr 2014 13:11:10 +0200 (CEST)
 In-Reply-To: <87ob08oebr.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,13 +25,13 @@ Cc: Ben Dooks <ben.dooks@codethink.co.uk>, Linux-ALSA <alsa-devel@alsa-project.o
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0240840827958765637==
+--===============6214372313461430292==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VZekXYd/M+CUZV2i"
+	protocol="application/pgp-signature"; boundary="QTprm0S8XgL7H0Dt"
 Content-Disposition: inline
 
 
---VZekXYd/M+CUZV2i
+--QTprm0S8XgL7H0Dt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
@@ -49,38 +49,38 @@ ed
 > Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This is written by you and sent by you but also signed off by
-Morimoto-san - what's going on there?
+Sorry, for some reason I misread this as being sent by Ben - applied,
+thanks.
 
---VZekXYd/M+CUZV2i
+--QTprm0S8XgL7H0Dt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTR8BpAAoJELSic+t+oim9eloP/i477gXLpWJ3tnZAaUZJ66EP
-8or78jT0SKYwQBFXjcLqIbWX8kadg5f0c+xs3MuLDkTU3UmfervHYUrk+5qB3Yoe
-Q6cq6HX/AXf1OQ2joN3eoWfZ6LZDwe0UxGuvQkI9djyQtfx0ZrAukuXjDxsuwf/N
-xAOp5meuWOtOvtEztNkHcm+ksNdrSibVw9SbJ6EBkdLWcfwUYO1ARZle24Oim2iM
-XEUFwkbQ5MxPfv9iCW3Hs/hcTIVl2pO4YFmNxxOGTiwMtgqs7rYuhqyylxLF5Iku
-bmnVubE8S/bC3chkpqJuHmkHQQnj8zOvHhoHyVuYiC/bFxvEQQQhWHxSl0eltqzi
-o1QtEP+AHdFKhiipXz56j7Sl65jlNVpdIOsbeEeaGtWjoyj65NWR2+As8CyHOKlZ
-nq+iSDyTTkdTVk0Zf2l+HaOZlkDZrcGkmQf8utBs9NZybtzZqxZoXNaiy5FCxl1j
-/RAuiJ6tCk4jSRVlRkj5WBe0tTRazNZG1csTat19lgPXNeIwFNv5wsf2xV2ESJ84
-TgykpgUWmA97DvTKihCpHz3/kpteYSa8t9NsMl/T49ubk0uSKewTTsrHWzHKVTYX
-JV1PbNwLsMC5+On3yNd5fXkVQ92V3ICqitNlHJ6xgIftQ5Gio9Hv9nNM+Up0i9jg
-234lrOIUizKXxRBlZmMi
-=VK5r
+iQIcBAEBAgAGBQJTR82/AAoJELSic+t+oim90pcQAJz4kxTJRBenIsio+lrSdzq0
+xMqg21wglPFlSRzlNb92AJRNmQ44BgXHL9yHkBCG10KOMta5sp02ibNFR3epJmVI
+ZAPAn4KNez+Tdt6tjug7j0DoeDej4+BPrLjBAeSoxjPoWe4V2zgCeLZ4coirWLlq
+zGQMjuBpLTWB1N8G27y105NFybJ9LUjfKkeTiRG63o5t8Hdf2VFP2FDJf85uOHgE
+lfaT+IlW3LUHQwQO58Q5MqSt4TtiAtGz61V44fp/uTErmYCWUejjOEozgzfCp7bh
+mQbDS+QKVihU3AYzH1JOTurOmGOG0eRPeHDItb4+Aqpiioqoy4KAdL8uQjNOJt+D
+0h4wQbzRFZi2JuLuptFKvcifMjMb/uZmf8YulW1n6Kk2dEn7Zrtf1p8BlsQTjQWL
+1JVE97DiCucNmC/CfbAHFzyhNRITZoDbsOzIjM+UrwxIibATfMO1wcd463hxIeKB
+FqH9vZOVU3bVR3DezSJyWCIpNYe/uCjA4AQneIgt3tpn/xkFy1gn/IX5KN03reRe
+GvC1FxsgaX8voAg72ZC2QhSLzqWRnuE+XY1CoK/dpeVxk1odgklanbgmiIvEaPzy
+LB0YHAyp/FXP2OO1WKJjmY1A//hOnn4olTo42urrztZGTyO+h6jxD6VgMUcstsQK
+ULissi5ZuaY3IqI+3FpG
+=nfij
 -----END PGP SIGNATURE-----
 
---VZekXYd/M+CUZV2i--
+--QTprm0S8XgL7H0Dt--
 
---===============0240840827958765637==
+--===============6214372313461430292==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0240840827958765637==--
+--===============6214372313461430292==--
