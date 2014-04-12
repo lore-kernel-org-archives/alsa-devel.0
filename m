@@ -1,15 +1,28 @@
-From: Alexander Shiyan <shc_work@mail.ru>
-Subject: [PATCH v2 2/2] ASoC: cirrus: clps711x: Add bindings
-	documentation for the CLPS711X DAI
-Date: Sat, 12 Apr 2014 10:17:34 +0400
-Message-ID: <1397283454-684-1-git-send-email-shc_work@mail.ru>
+From: Andoru <andoru.blah@gmail.com>
+Subject: Re:
+	=?utf-8?q?Invalid_PCM_pointer_with_CMI8738_and_pcm?=
+	=?utf-8?q?=2Ec_buffer=09underuns?=
+Date: Sat, 12 Apr 2014 17:56:12 +0000 (UTC)
+Message-ID: <loom.20140412T194107-985@post.gmane.org>
+References: <loom.20140410T210136-313@post.gmane.org>
+ <CAN8cciazgm+X37KuTBWspC0q=DPPjr47kgkXFgSKJiXfGAr+5Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.mail.ru (smtp1.mail.ru [94.100.176.129])
- by alsa0.perex.cz (Postfix) with ESMTP id 52A372607B6
- for <alsa-devel@alsa-project.org>; Sat, 12 Apr 2014 08:17:43 +0200 (CEST)
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C7322610B9
+ for <alsa-devel@alsa-project.org>; Sat, 12 Apr 2014 19:56:29 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1WZ2AG-000501-F9
+ for alsa-devel@alsa-project.org; Sat, 12 Apr 2014 19:56:28 +0200
+Received: from cl-86-125-143-172.cablelink.mures.rdsnet.ro ([86.125.143.172])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sat, 12 Apr 2014 19:56:28 +0200
+Received: from andoru.blah by cl-86-125-143-172.cablelink.mures.rdsnet.ro with
+ local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sat, 12 Apr 2014 19:56:28 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,43 +33,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Grant Likely <grant.likely@linaro.org>, Mark Brown <broonie@kernel.org>, Alexander Shiyan <shc_work@mail.ru>, Kumar Gala <galak@codeaurora.org>, Olof Johansson <olof@lixom.net>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the devicetree documentation for the Cirrus Logic
-CLPS711X Digital Audio Interface (DAI).
+> 
+> You need root privilege to debug
+> 
+> sudo echo 11 > /proc/asound/card0/pcm0p/xrun_debug
 
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
----
- .../bindings/sound/cirrus,clps711x-dai.txt           | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cirrus,clps711x-dai.txt
+___________________________________________________________
+$ sudo echo 11 > /proc/asound/card0/pcm0p/xrun_debug
+___________________________________________________________
 
-diff --git a/Documentation/devicetree/bindings/sound/cirrus,clps711x-dai.txt b/Documentation/devicetree/bindings/sound/cirrus,clps711x-dai.txt
-new file mode 100644
-index 0000000..fd37774
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/cirrus,clps711x-dai.txt
-@@ -0,0 +1,20 @@
-+* Cirrus Logic CLPS711X Digital Audio Interface (DAI)
-+
-+Required properties:
-+- compatible:  Shall contain "cirrus,clps711x-dai".
-+- reg:         Should contain registers location and length.
-+- clocks:      phandle + clock specifier pair of the CPU PLL reference
-+               clock and (optionally) external MCLK reference clock.
-+- clock-names: The clock should be named "pll" for CPU PLL and "mclk"
-+               for external MCLK.
-+- interrupts:  Should contain DAI interrupt number.
-+
-+Example:
-+	dai: dai@80002000 {
-+		#sound-dai-cells = <0>;
-+		compatible = "cirrus,ep7312-dai", "cirrus,clps711x-dai";
-+		reg = <0x80002000 0x604>;
-+		clocks = <&clks 3>, <&clk12288>;
-+		clock-names = "pll", "mclk";
-+		interrupts = <32>;
-+	};
--- 
-1.8.3.2
+implies:
+___________________________________________________________
+# echo 11 > /proc/asound/card0/pcm0p/xrun_debug
+___________________________________________________________
+
+So I did have root priviledges when I executed that command, and it still
+gives me a Permission denied error.
+
+I tried the command under root and it accepted the command but didn't print
+anything after issuing the command. So I guess it worked?
+
+> Check the system log , you should find the hwptr change at 10ms interval if
+> vlc use period time of 10ms
+
+Again, what system log? Be a little bit more specific please.
+
+> Try different period time/size to verify that the hardware really support
+> any  arbitrary period time/size requested by the application ?
+
+VLC doesn't have any options or terminal parameters to be able to change the
+period as you mention.
