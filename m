@@ -1,55 +1,73 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 7/7] ASoC: rsnd: remove compatibility code
-Date: Mon, 14 Apr 2014 20:03:27 +0100
-Message-ID: <20140414190327.GE25182@sirena.org.uk>
-References: <87sipg20h1.wl%kuninori.morimoto.gx@gmail.com>
- <87ioqc20ei.wl%kuninori.morimoto.gx@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 00/17] Removed deprecated ENUM/MUX macros
+Date: Mon, 14 Apr 2014 21:30:55 +0200
+Message-ID: <1397503872-20864-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CGDBiGfvSTbxKZlW"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87ioqc20ei.wl%kuninori.morimoto.gx@gmail.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Simon <horms@verge.net.au>, Magnus <magnus.damm@gmail.com>, linux-sh@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-027.synserver.de (smtp-out-046.synserver.de
+ [212.40.185.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED6C82656AD
+ for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:31:19 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Jerry Wong <jerry.wong@maximintegrated.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---CGDBiGfvSTbxKZlW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is a follow-up to the enum consolidation series. It updates all users of
+the now redundant and deprecated macros and once that is done removes the
+macros.
 
-On Sun, Apr 13, 2014 at 05:57:27PM -0700, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Now, all platform is using new style rsnd_dai_platform_info.
-> Keeping compatibility is no longer needed.
-> We can cleanup code.
+- Lars
 
-This and the previous patch both look good.
+Lars-Peter Clausen (17):
+  ASoC: adau1373: Replace usage deprecated MUX/ENUM macros
+  ASoC: adav80x: Replace usage deprecated MUX/ENUM macros
+  ASoC: arizona: Replace usage deprecated MUX/ENUM macros
+  ASoC: max98090: Replace usage deprecated MUX/ENUM macros
+  ASoC: mc13783: Replace usage deprecated MUX/ENUM macros
+  ASoC: pcm512x: Replace usage deprecated SOC_VALUE_ENUM macro
+  ASoC: rt5640: Replace usage deprecated MUX/ENUM macros
+  ASoC: wm2200: Replace usage deprecated MUX/ENUM macros
+  ASoC: wm5100: Replace usage deprecated MUX/ENUM macros
+  ASoC: wm5102: Replace usage deprecated MUX/ENUM macros
+  ASoC: wm5110: Replace usage deprecated MUX/ENUM macros
+  ASoC: wm8988: Replace usage deprecated MUX/ENUM macros
+  ASoC: wm5102: Replace usage deprecated SOC_VALUE_ENUM macro
+  ASoC: wm8994: Replace usage deprecated MUX/ENUM macros
+  ASoC: wm8995: Replace usage deprecated MUX/ENUM macros
+  ASoC: wm8997: Replace usage deprecated MUX/ENUM macros
+  ASoC: Remove deprecated ENUM/MUX macros
 
---CGDBiGfvSTbxKZlW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ include/sound/soc-dapm.h    | 12 ------------
+ include/sound/soc.h         |  2 --
+ sound/soc/codecs/adau1373.c |  7 +++----
+ sound/soc/codecs/adav80x.c  |  8 ++++----
+ sound/soc/codecs/arizona.h  |  4 ++--
+ sound/soc/codecs/max98090.c |  5 ++---
+ sound/soc/codecs/mc13783.c  |  8 ++++----
+ sound/soc/codecs/pcm512x.c  |  2 +-
+ sound/soc/codecs/rt5640.c   |  4 ++--
+ sound/soc/codecs/wm2200.c   |  4 ++--
+ sound/soc/codecs/wm5100.c   |  4 ++--
+ sound/soc/codecs/wm5102.c   | 14 +++++++-------
+ sound/soc/codecs/wm5110.c   | 18 +++++++++---------
+ sound/soc/codecs/wm8988.c   |  8 ++++----
+ sound/soc/codecs/wm8994.c   | 12 ++++++------
+ sound/soc/codecs/wm8995.c   | 10 ++++------
+ sound/soc/codecs/wm8997.c   | 12 ++++++------
+ 17 files changed, 58 insertions(+), 76 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTTDD8AAoJELSic+t+oim9sI4QAIDgAaBP23UvyxIGo5U2c1Rc
-8u5CbCH3Z6u4EwtNRCT/hhaW3DABTEMfXHbtZnffdhtBYK/htd59dPiCZgontAwq
-iKvbAdMmDgSA0JADX2jXc1aVexvL27YhOnDv/W7kZ5qb+9hGC0cqfHnxrMR7Q5rR
-Jv+F1ZGbJqpXKeHNn4aZJMqwDrO2orBk5FKgDxnaweFbRerd41DAY3k5YBEEXfy1
-G5TSCq58RMlcnQh6g/orpxj07KtWXvrBPIgWhhHp0Lj2P7eJe5a+YakZNohkZtWp
-jk6ek/TzrTOcHML+RnndklH8zkFX4uVfUSZ4EKPkAsATwe8xqrbgj9pwU2sGL5H6
-caB21T7kGBkiRtSZKFkPiGkK13lNu0tHbfQ+fbC8ICblmVXp7Sb1ES8g4/nAxNJC
-0cE4aJ2Xo4q23zVosIAvyzHLSywxRrLoKYo6m1fQC2H3cfrpRyE2kVWCyk0mdyuM
-oKPQGSnHGtgD7ktGSuLqGqhcNwHgz1CPsdSlCF/GkMDlpCJjWVT5uCJ0rtrexFGQ
-o8Zb7CZGXZFhmVyHqt72JuByh5cKTZq8+TVKajxcFOL/boylVPJwdzadaAKA/hY8
-gYPF1+2Venb2VhLV8SHRPHujjAkp7lGg3HzTpvVth2I8iJL66BHBEYPwjmj60zb9
-CwRGSHLLIQeU5e/bD39C
-=lJRI
------END PGP SIGNATURE-----
-
---CGDBiGfvSTbxKZlW--
+-- 
+1.8.0
