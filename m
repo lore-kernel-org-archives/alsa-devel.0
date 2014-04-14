@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: don't skip evaluate the power
- of widget with force set
-Date: Mon, 14 Apr 2014 21:36:46 +0100
-Message-ID: <20140414203646.GC25182@sirena.org.uk>
-References: <1397378240-20821-1-git-send-email-xiaoxiang@xiaomi.com>
+Subject: Re: [PATCHv2 0/4] Add ESAI & SPDIF Vybrid and LS1+
+	support.
+Date: Mon, 14 Apr 2014 21:45:32 +0100
+Message-ID: <20140414204532.GF25182@sirena.org.uk>
+References: <1396595429-16629-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7308195683499952577=="
+Content-Type: multipart/mixed; boundary="===============7184146042595336228=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9353C2625DB
- for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 22:36:57 +0200 (CEST)
-In-Reply-To: <1397378240-20821-1-git-send-email-xiaoxiang@xiaomi.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 29E1B265044
+ for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 22:45:46 +0200 (CEST)
+In-Reply-To: <1396595429-16629-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xiang Xiao <xiaoxiang@xiaomi.com>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: alsa-devel@alsa-project.org, festevam@gmail.com, Guangyu.Chen@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7308195683499952577==
+--===============7184146042595336228==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6nSyB+bcl/pT7+kx"
+	protocol="application/pgp-signature"; boundary="qfesBOB4TKwppX3D"
 Content-Disposition: inline
 
 
---6nSyB+bcl/pT7+kx
+--qfesBOB4TKwppX3D
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Apr 13, 2014 at 04:37:20PM +0800, Xiang Xiao wrote:
-> Signed-off-by: Xiang Xiao <xiaoxiang@xiaomi.com>
+On Fri, Apr 04, 2014 at 03:10:25PM +0800, Xiubo Li wrote:
+> Changes in V2:
+> - Revise some issue from Nicolin Chen and Fabio Estevam.
 
-You should explain why you want to do this in the changelog - what's the
-problem that's being fixed or benefit?
+Applied all, thanks.
 
-> -	if (power != peer->power)
-> +	if (peer->force || power != peer->power)
->  		dapm_mark_dirty(peer, "peer state change");
-
-This doesn't correspond to your changelog - it *will* skip evaluating
-the widget power if the widget is forced.  It's not clear why this would
-be a benefit.
-
-> -	if (w->power == power)
-> +	if (!w->force && w->power == power)
->  		return;
-
-Similarly here.
-
---6nSyB+bcl/pT7+kx
+--qfesBOB4TKwppX3D
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTTEbaAAoJELSic+t+oim90jEP/RsNiYuHsh/GzmLvk/ivH1u8
-Gf9u4nyUK2p4hI3wWr1zh8caMJ6lg9gmBYByDBIm99tfOYyQwYTuqRbu8u9j5jtW
-AvADr+g1NdplGXX3q3exXJC2686lyjufwa8GBkCbHEZBIqFN7DuxtmhBzHyxKO1J
-s3dQuVb7E8z+jAVQbJuXYN5yO5tlYU/EWvFcfU/ksT72tVjryiKS984fzZ0yY6P8
-exLNY+uEWrreU40UyDh5T74Nyjw0NEi9XKvyvie7gmbwEp0V3UJkAc7kfvbTXF61
-lj9/p5TpoTxeQr982bUq6nSViWU2PWR2WcxkBBW+GOzELh0HLYA0wKDoKyFFNixT
-ubZig7vwyci2giq419PW3AI1X6BTb3FDjqDeSBdHPujKl6pwK7N0a7nJePA2zVTu
-P62znpmdparyhpO5jc66EcQ5nTt9XpsYR8N1BJ04klv3nATZK8xFfzYrD6RSOWm3
-GybtfA+8MjKQeGr70XCau6fMG+xWGagLH2jDrucICGxCtDaNbyd4c+NNJmjdmd2g
-sYQQFMIrLyPtTWs3FMSpvdbQkDSmJLZpgLlrH1hkog6B34xQsoUmVqRO4/9mEHu5
-o5uVPiyIq94LTapn7bW7t8bycQKAzy9hOgwpetlLnFt9IvE8IjWXTpqPGJ5aZhog
-GN/yj1fW+JM7N4bmJsSs
-=lhR7
+iQIcBAEBAgAGBQJTTEjpAAoJELSic+t+oim9q/cP+gPpg0KzcDK0PBn+YXExJLjX
+ssgmsEvgqB8UqSBQZFieMNP2uqZxHT7lekmcn6d06LklNQn+Te44pBgDBVZ+oQjN
+z8LfL7W4AA2UaLTG3Rdk7XJPZTNSNa0+rYzk8PYUN4Vl5/TuLn1qzMqMmPFeY9g2
+EZXdjZ4dk0ieSCdt1wMAoQZ1EJ/qEzoaBIPPWdSxxMDbHImnoDehEqsxnukfqPvz
+ySr/rL96Vk8sOeBrcx5t/iISuPc6tPOAJsDaWb/ws2ICKH2mYbPo4ZLhn7Kt1FGH
+WpHTImuZ3g3ePVVjSd4dKhGFSYMBi2V1FZpgwj2rSpnwa0WwS9Z7RsGSoja7AfLv
+txhlOrNerydR1iCQefkp4tv2dqHUOZP69Umx0PCcf8UBdMEZhnEDppkpRp01pc6U
+OfwAjGn5Oech+Goj86eVVFAVedUZxFfBEBeeGefTEGb85jJXAm/aLr4quB9AWMc5
+gcw/QdYVFuwzLYsXxD4mmzL6vS6gjtzET36s1VMs0QnhreN0UsXZ6fjVfRB6pLXI
+MkZbuS3lMlKMJnlUkV869FuVqBKLJs0yw/UiHzA2al/Hg3pb9BHFvT/tmzyUGz9n
+SVMRReUskieME1+/Z7YbHzSdp5ck+j/zI90IxrQ23FsY4oR+pAtQcPjUAX/0yBkc
+za2F4huBOgMiYw8E0IKi
+=j23E
 -----END PGP SIGNATURE-----
 
---6nSyB+bcl/pT7+kx--
+--qfesBOB4TKwppX3D--
 
---===============7308195683499952577==
+--===============7184146042595336228==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7308195683499952577==--
+--===============7184146042595336228==--
