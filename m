@@ -1,82 +1,56 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/7] ASoC:davinci-mcasp: bc polarity fix
- and proper format support
-Date: Mon, 14 Apr 2014 17:24:47 +0100
-Message-ID: <20140414162447.GA25182@sirena.org.uk>
-References: <1396611107-30765-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 0/7] ARM: shmobile: swtich audio settings to new style,
+ and remove compatibility code from driver
+Date: Mon, 14 Apr 2014 20:01:17 +0100
+Message-ID: <20140414190117.GD25182@sirena.org.uk>
+References: <87sipg20h1.wl%kuninori.morimoto.gx@gmail.com>
+ <20140414035610.GC1948@verge.net.au>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8241593584087586353=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B9E6C2656D9
- for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 18:25:01 +0200 (CEST)
-In-Reply-To: <1396611107-30765-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, jsarha@ti.com, zonque@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="T7mxYSe680VjQnyC"
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140414035610.GC1948@verge.net.au>
+Sender: linux-sh-owner@vger.kernel.org
+To: Simon Horman <horms@verge.net.au>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Magnus <magnus.damm@gmail.com>, linux-sh@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8241593584087586353==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
-Content-Disposition: inline
-
-
---mYCpIKhGyMATD0i+
+--T7mxYSe680VjQnyC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 04, 2014 at 02:31:40PM +0300, Peter Ujfalusi wrote:
-> Hi,
->=20
-> The bit clock polarity has been configured incorrectly in the McASP drive=
-r for a
-> long time. IB_NF, NB_IF and IB_IF was not correct on the receive side sin=
-ce they
-> were selecting the same edge as we used for the tx.
+On Mon, Apr 14, 2014 at 12:56:12PM +0900, Simon Horman wrote:
 
-Applied the rest, thanks.
+> The safest thing would be for me to wait until after the arm-soc
+> maintainers have pulled my branches. Otherwise there is a very
+> real chance that they will ask me to rebase something that Mark
+> is relying on. And that would be awkward to say the least.
 
---mYCpIKhGyMATD0i+
+OK, can someone send me a pull request and the new patches when that
+happens please?
+
+--T7mxYSe680VjQnyC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTTAvMAAoJELSic+t+oim9U9sP/2NED3ua2bj6GOJdPRHlthOp
-lCtycutgnjA/vsSEJSdkwJfBvCg/HFqi08m6JWQT7us24A+p1Krg1oGT6+CukLCf
-NHz8DoyckwOg/hI0bKC+h+4qcDYfzvBzEZzVS3xOxFvFEMlY7iet7TsB8DgcAXEw
-b0wCjlDTfh2rDeAqX7BgWgXLGsVWecK1N8GArRBrplxKvhzncvzqmCSTOs/9ZUzL
-LsksJE0Ojm9KD04CSWpbGa4VntW60bN+nc4RwcYivNaoMDLJhzDrSj+Fyh8egYPh
-LBfJhWwxKLntH1qzWasOxIoVQRoIwb2eCnwF+UPm/5oAAFQIYgBwKD8q3e6TaJF7
-22NwZaqByGWJg9h0lCSMbArg84zJZ+e4NDX8c61XSeDGXxXgMMS2VnoOC4aaSOvZ
-Q9V+qWjs0ztlikWs8/kIx/G2iRm7ur2JyIlf61XdYJnevTqyshCkEHzoLsGo2tvz
-08H6eJbRUqTyUTfzlN0DaA0Tenc1hxePD9PS1KQ6/ud8f2gKh/wTPDe3vZjeoWTg
-XrOVrCTNbHoiex03PD6aHMt6J//ZbIQC91g8TK7RCkMgaEf5jHB56D+I1Knr36qa
-QujeY2eWXfurWduTN1U4T4XMkJIpY6OuCQSlcMZG22v+Vhr/dt6vuRBUI+vrJASa
-yTzW0FMdqlJe2k2nDW71
-=ec7l
+iQIcBAEBAgAGBQJTTDB6AAoJELSic+t+oim9140P/RtSJaH0NV4BycGRrwSupQUd
+mqkHG69JM0UrHHMjwNslTs3o/oSukUbKLUHfDSkfSTHBQttRGD0gM4fglq5PfLdP
+4+l5yU8B+jW1zerjACz0DkcOVy2fCndcc7749FuXqb7Pkgwmi0f/F9U+IpxS5ENE
+XuFCmQvntT6vSqiJ6B0fWw3Ge5O4E3U7bh7N9jeWhZVi9LJI7fixPVYWFgDSM/TX
+qBCoqSei0sMVWE43n3Op+IbfseYl0uyS7lex/JjtkI5u8BFc344AWDleGnkVpsP4
+TW/J1EseNgxFpLvFBh4EN0LnlhjbNcoMzfsdhRKI7DWdbv067SGMoE9O6SKMq+ua
+mILr3FpOfCeyTaxa4RdYgPukQQFmUhHWs8cljxv0p23ZymzLwEESM6d85eFjXJfP
+yqvaYXvhkfiE/u6x9PUvla5uHU/0itk8Cwf4zrFfhZ7/qaJxw1knQoXbdU4nLg18
+C6uTwPqNOjkmzVkhaHH+bZNFUXRGVtn8asIGOmeQCe21nBbYl3J8gH+uA93b8vhq
+bODcCIn7Tv0IBmuEt6/zjhjOvcUgAQh/i7vgOZT7GR5+APYtkyydaiNekEdmIhJd
+PErvUVaSOKeZuIZP0Oc+U3y05C88hbGCiynz7rIhFXUBLiwXwg0obJePlHE6B0Gi
+DM4AJ2qdXGlTAhqVsjS9
+=10+H
 -----END PGP SIGNATURE-----
 
---mYCpIKhGyMATD0i+--
-
---===============8241593584087586353==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8241593584087586353==--
+--T7mxYSe680VjQnyC--
