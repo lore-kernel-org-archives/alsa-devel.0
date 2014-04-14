@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: davinci-mcasp: Do not touch 0x04
- register above McASP_VERSION_2
-Date: Mon, 14 Apr 2014 20:45:50 +0100
-Message-ID: <20140414194550.GP25182@sirena.org.uk>
-References: <1396616190-3299-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: jack: export gpio detect
+Date: Mon, 14 Apr 2014 20:55:01 +0100
+Message-ID: <20140414195501.GQ25182@sirena.org.uk>
+References: <20140403220715.GG14763@sirena.org.uk>
+ <CF69AC38.3C92E%cfreeman@nvidia.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5786723542335054768=="
+Content-Type: multipart/mixed; boundary="===============8007579216574684051=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FBEC26528F
- for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:46:01 +0200 (CEST)
-In-Reply-To: <1396616190-3299-1-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A2AC9265357
+ for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:55:14 +0200 (CEST)
+In-Reply-To: <CF69AC38.3C92E%cfreeman@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +21,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, jsarha@ti.com, zonque@gmail.com
+To: Christopher Freeman <cfreeman@nvidia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5786723542335054768==
+--===============8007579216574684051==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="24/piotZLKF/SXqU"
+	protocol="application/pgp-signature"; boundary="RCJLo13VlymhPcEi"
 Content-Disposition: inline
 
 
---24/piotZLKF/SXqU
+--RCJLo13VlymhPcEi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Apr 04, 2014 at 03:56:30PM +0300, Peter Ujfalusi wrote:
-> This register is not defined in TI81xx and on AM335x/AM437x it is the
-> SYSCONFIG register which should not be touched by drivers since it is
-> related to PM and handled by the generic PM code.
+On Tue, Apr 08, 2014 at 01:40:10PM -0700, Christopher Freeman wrote:
+> On 4/3/14 3:07 PM, "Mark Brown" <broonie@kernel.org> wrote:
 
-Applied, thanks.
+> >It seems better to have explicit callbacks for this doesn't it, ideally
+> >ones that get triggered by the core without the machine driver having to
+> >do anything?  This is a common need so having to open code it would be a
+> >bit depressing.
 
---24/piotZLKF/SXqU
+> Mark, do you have a suggestion on how to plumb this up?  The way I see it,
+> the machine drivers own the context for the gpios and soc-jack acts as a
+> helper library.  I don't see a way to do this from the core.
+
+Both the ALSA core and ASoC know that the jacks exist and at least ASoC
+already gets callbacks from the machine drivers during suspend (usually
+just through providing default PM operations for them).  We'd need to
+add code to actually keep track of them but if that's done then the core
+can walk the list of jacks at resume time and give them a callback.
+
+--RCJLo13VlymhPcEi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTTDrrAAoJELSic+t+oim9OaAP/jk1IItGGr6simUaRsQJ01ai
-hN5mOhOej8cWOvYvQhzO1coEz7fg2g4LUu7UCeeDqeVoFlS1Z+HZ0jDTB+9UcZnv
-3Be57qriPzrCeMQg60TBRUJiPTxwewlyhfTgoP8YPUzWJQJ54Z/V3iQh3jNXLyk6
-Fnt9nI+77qV5o2eO2Dn5W/JUU3sJZOaQLXm4TzkZ1kBTgP9bVCy92CSi2rDcv5qz
-kXDKh9/g3T2KLqu15P/Gx90FpmG1QxyG0vNdL7zLCoyNebC+uDmKrzS55+8rb8FP
-/qIUeDHebizLidzofRfeZqR4MsAzr5v/bxU9v881qGdtscl9+rAvFrRc+18x224N
-tzCJTxg54E/JRZj5/VVhQirvtn3dd6txO6x5roBydrpJ7Cu4R0OI84lNNmaFVqPG
-OHVYsTFAreDjDllUwQcTlI2oJ7PscvtWwXhGPzNenBSKaDs+ke+82JTTsoZnUqQI
-PIcGIErSl7ui0k5jE0v2W+jZpbRKVHDDJnDGvnIjWkxTeOFpc5FsjrU16JM70KXj
-LJXqAP0pGsAWbrrETf0eKwU8Eyw3bED4TE1Pf4EF1ktBDX/flfNPR9KJTkCSlnxQ
-jSD1T/nlYn7v+oHtgeQQlgNsb94SgPKYK+0g7oro9vITNYs8mErtkm3KX5BoqFCi
-+9eYrM5u1Lont8BUn8XS
-=jZ7S
+iQIcBAEBAgAGBQJTTD0SAAoJELSic+t+oim9mJMP/07tBlyTnjFVUS2Yypi3OEiX
+Cau1XWwrafVLh/8pyd23NK0UgXXXK+CVq6TL15O8CBLA848WWuzzZJq1Hiubr6BI
+M+9WIXlT84iwhbaGYvkPVBMwVCsvT/oGZdE+5WFGUsnrdqlf31NjLzuPKlgLrAH8
+Io6vBETIpeVLkNl9c3EB7nkgVm8BUgR7K9Jve1KUtEmCypZi7mzzzGt3AEsk4A6/
+c2f8oLkNUU5Wfja+VtjV73FacFisLnrOsBJWLg9wrlZaqeFIK86uVDnZfw8x7KBk
+tpD6R4VHnP2R+sEirdlVVZFK18YXH44MExwhFNFtkiu/Zswqn1hEX43Kry2efLVl
+BEb6FFzL354KXflIvQ/eSMZg4+w7uOE0qnUgRvsIJ4dhGDOOn1q9gMnqKfUlRuJj
+JGasEE1EaHJxDQU8kv5Sp/hpgRbLG/SikIx4uVKfd6nHIssszZh7kM0JfegHH1Wq
+LBgnfkr6TskfL19xtYwiKLbLK6m6Vd00VUcmC3VEpWjc/49JCUYdr6XIvu4gejfp
+H19qpe93BXtL+dGF1Uax3HvDg8dUJC3yZkoOXlaTEo7E3v7Zhlfu0By3NKaED+QG
+EoqPYTlSvAGRjtLcAh1yJyPy3dTLPeahu63NpyN6Jk2tKfjhuVscaiJThLcQgfMx
+Fvf6bMpEYDdwoL3trMT2
+=O2XY
 -----END PGP SIGNATURE-----
 
---24/piotZLKF/SXqU--
+--RCJLo13VlymhPcEi--
 
---===============5786723542335054768==
+--===============8007579216574684051==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5786723542335054768==--
+--===============8007579216574684051==--
