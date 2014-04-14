@@ -1,7 +1,7 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v3 03/18] ASoC: fsl-ssi: Use dev_name for DAI driver struct
-Date: Mon, 14 Apr 2014 15:35:33 +0200
-Message-ID: <1397482548-28463-4-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v3 05/18] ASoC: fsl-ssi: Remove useless DMA code
+Date: Mon, 14 Apr 2014 15:35:35 +0200
+Message-ID: <1397482548-28463-6-git-send-email-mpa@pengutronix.de>
 References: <1397482548-28463-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,54 +21,90 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, Timur Tabi <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Instead of creating a name using string manipulation functions, we can
-simply use the device name for the DAI driver struct.
+Simplify dma DT property handling. fsl,ssi-dma-events is not used
+anymore. It passes invalid data to imx_pcm_dma_params_init_data() which
+copies some data into an imx dma struct. This struct is never used in
+imx-dma or imx-sdma because of generic OF DMA handling. The
+"fsl,ssi-dma-events" is not used anywhere in dts files.
 
 Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 40 +++-------------------------------------
+ 1 file changed, 3 insertions(+), 37 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 344f752..65d9da1 100644
+index 418c646..8072926 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1027,17 +1027,13 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	if (!strcmp(sprop, "ac97-slave"))
- 		ac97 = true;
+@@ -168,8 +168,6 @@ struct fsl_ssi_private {
+ 	struct clk *clk;
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+-	struct imx_dma_data filter_data_tx;
+-	struct imx_dma_data filter_data_rx;
+ 	struct imx_pcm_fiq_params fiq_params;
+ 	/* Register values for rx/tx configuration */
+ 	struct fsl_ssi_rxtx_reg_val rxtx_reg_val;
+@@ -996,8 +994,7 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
+ 		struct fsl_ssi_private *ssi_private)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+-	u32 dma_events[2], dmas[4];
+-	bool shared;
++	u32 dmas[4];
+ 	int ret;
  
--	/* The DAI name is the last part of the full name of the node. */
--	p = strrchr(np->full_name, '/') + 1;
--	ssi_private = devm_kzalloc(&pdev->dev, sizeof(*ssi_private) + strlen(p),
--			      GFP_KERNEL);
-+	ssi_private = devm_kzalloc(&pdev->dev, sizeof(*ssi_private),
-+			GFP_KERNEL);
- 	if (!ssi_private) {
- 		dev_err(&pdev->dev, "could not allocate DAI object\n");
- 		return -ENOMEM;
+ 	ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
+@@ -1033,26 +1030,9 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
+ 			offsetof(struct ccsr_ssi, stx0);
+ 	ssi_private->dma_params_rx.addr = ssi_private->ssi_phys +
+ 			offsetof(struct ccsr_ssi, srx0);
+-	ssi_private->dma_params_tx.filter_data = &ssi_private->filter_data_tx;
+-	ssi_private->dma_params_rx.filter_data = &ssi_private->filter_data_rx;
+ 
+-	if (!of_property_read_bool(pdev->dev.of_node, "dmas") &&
+-			ssi_private->use_dma) {
+-		/*
+-		 * FIXME: This is a temporary solution until all
+-		 * necessary dma drivers support the generic dma
+-		 * bindings.
+-		 */
+-		ret = of_property_read_u32_array(pdev->dev.of_node,
+-				"fsl,ssi-dma-events", dma_events, 2);
+-		if (ret && ssi_private->use_dma) {
+-			dev_err(&pdev->dev, "could not get dma events but fsl-ssi is configured to use DMA\n");
+-			goto error_dma_events;
+-		}
+-	}
+-	/* Should this be merge with the above? */
+-	if (!of_property_read_u32_array(pdev->dev.of_node, "dmas", dmas, 4)
+-			&& dmas[2] == IMX_DMATYPE_SSI_DUAL) {
++	ret = !of_property_read_u32_array(np, "dmas", dmas, 4);
++	if (ssi_private->use_dma && !ret && dmas[2] == IMX_DMATYPE_SSI_DUAL) {
+ 		ssi_private->use_dual_fifo = true;
+ 		/* When using dual fifo mode, we need to keep watermark
+ 		 * as even numbers due to dma script limitation.
+@@ -1061,21 +1041,7 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
+ 		ssi_private->dma_params_rx.maxburst &= ~0x1;
  	}
  
--	strcpy(ssi_private->name, p);
+-	shared = of_device_is_compatible(of_get_parent(np), "fsl,spba-bus");
 -
- 	ssi_private->use_dma = !of_property_read_bool(np,
- 			"fsl,fiq-stream-filter");
- 	ssi_private->hw_type = hw_type;
-@@ -1055,7 +1051,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
- 		       sizeof(fsl_ssi_dai_template));
- 	}
--	ssi_private->cpu_dai_drv.name = ssi_private->name;
-+	ssi_private->cpu_dai_drv.name = dev_name(&pdev->dev);
+-	imx_pcm_dma_params_init_data(&ssi_private->filter_data_tx,
+-		dma_events[0], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
+-	imx_pcm_dma_params_init_data(&ssi_private->filter_data_rx,
+-		dma_events[1], shared ? IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI);
+-
+ 	return 0;
+-
+-error_dma_events:
+-	if (!IS_ERR(ssi_private->baudclk))
+-		clk_disable_unprepare(ssi_private->baudclk);
+-	clk_disable_unprepare(ssi_private->clk);
+-
+-	return ret;
+ }
  
- 	/* Get the addresses and IRQ */
- 	ret = of_address_to_resource(np, 0, &res);
-@@ -1203,7 +1199,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	 * different writeable interrupt status registers.
- 	 */
- 	if (ssi_private->use_dma) {
--		/* The 'name' should not have any slashes in it. */
- 		ret = devm_request_irq(&pdev->dev, ssi_private->irq,
- 					fsl_ssi_isr, 0, ssi_private->name,
- 					ssi_private);
+ static void fsl_ssi_imx_clean(struct platform_device *pdev,
 -- 
 1.9.1
