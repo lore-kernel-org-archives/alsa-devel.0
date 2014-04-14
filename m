@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 07/17] ASoC: rt5640: Replace usage deprecated
+Subject: [PATCH 08/17] ASoC: wm2200: Replace usage deprecated
 	MUX/ENUM macros
-Date: Mon, 14 Apr 2014 21:31:02 +0200
-Message-ID: <1397503872-20864-8-git-send-email-lars@metafoo.de>
+Date: Mon, 14 Apr 2014 21:31:03 +0200
+Message-ID: <1397503872-20864-9-git-send-email-lars@metafoo.de>
 References: <1397503872-20864-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-027.synserver.de (smtp-out-046.synserver.de
  [212.40.185.46])
- by alsa0.perex.cz (Postfix) with ESMTP id B53672656B7
- for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:31:24 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E7DF22656B9
+ for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:31:26 +0200 (CEST)
 In-Reply-To: <1397503872-20864-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,30 +32,30 @@ we can eventually remove their definition.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/rt5640.c | 4 ++--
+ sound/soc/codecs/wm2200.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 6674372..f27297a 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -873,7 +873,7 @@ static SOC_VALUE_ENUM_SINGLE_DECL(rt5640_dac_l2_enum,
- 				  0x3, rt5640_dac_l2_src, rt5640_dac_l2_values);
+diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
+index 2e721e0..cdea9d9 100644
+--- a/sound/soc/codecs/wm2200.c
++++ b/sound/soc/codecs/wm2200.c
+@@ -1083,7 +1083,7 @@ static int wm2200_mixer_values[] = {
  
- static const struct snd_kcontrol_new rt5640_dac_l2_mux =
--	SOC_DAPM_VALUE_ENUM("DAC2 left channel source", rt5640_dac_l2_enum);
-+	SOC_DAPM_ENUM("DAC2 left channel source", rt5640_dac_l2_enum);
+ #define WM2200_MUX_CTL_DECL(name) \
+ 	const struct snd_kcontrol_new name##_mux =	\
+-		SOC_DAPM_VALUE_ENUM("Route", name##_enum)
++		SOC_DAPM_ENUM("Route", name##_enum)
  
- static const char * const rt5640_dac_r2_src[] = {
- 	"IF2",
-@@ -908,7 +908,7 @@ static SOC_VALUE_ENUM_SINGLE_DECL(rt5640_dai_iis_map_enum,
- 				  rt5640_dai_iis_map_values);
+ #define WM2200_MIXER_ENUMS(name, base_reg) \
+ 	static WM2200_MUX_ENUM_DECL(name##_in1_enum, base_reg);	     \
+@@ -1207,7 +1207,7 @@ WM2200_MIXER_ENUMS(LHPF1, WM2200_LHPF1MIX_INPUT_1_SOURCE);
+ WM2200_MIXER_ENUMS(LHPF2, WM2200_LHPF2MIX_INPUT_1_SOURCE);
  
- static const struct snd_kcontrol_new rt5640_dai_mux =
--	SOC_DAPM_VALUE_ENUM("DAI select", rt5640_dai_iis_map_enum);
-+	SOC_DAPM_ENUM("DAI select", rt5640_dai_iis_map_enum);
+ #define WM2200_MUX(name, ctrl) \
+-	SND_SOC_DAPM_VALUE_MUX(name, SND_SOC_NOPM, 0, 0, ctrl)
++	SND_SOC_DAPM_MUX(name, SND_SOC_NOPM, 0, 0, ctrl)
  
- /* SDI select */
- static const char * const rt5640_sdi_sel[] = {
+ #define WM2200_MIXER_WIDGETS(name, name_str)	\
+ 	WM2200_MUX(name_str " Input 1", &name##_in1_mux), \
 -- 
 1.8.0
