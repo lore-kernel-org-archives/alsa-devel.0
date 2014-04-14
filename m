@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/6] ASoC: rt5640: Include of.h
-Date: Mon, 14 Apr 2014 20:35:34 +0100
-Message-ID: <20140414193534.GI25182@sirena.org.uk>
+Subject: Re: [PATCH 5/6] ASoC: tlv320aic23: Include of.h
+Date: Mon, 14 Apr 2014 20:35:44 +0100
+Message-ID: <20140414193544.GJ25182@sirena.org.uk>
 References: <1396591153-10924-1-git-send-email-sachin.kamat@linaro.org>
- <1396591153-10924-4-git-send-email-sachin.kamat@linaro.org>
+ <1396591153-10924-5-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2727106964917782347=="
+Content-Type: multipart/mixed; boundary="===============0424662902928003791=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 83E5826527F
- for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:35:39 +0200 (CEST)
-In-Reply-To: <1396591153-10924-4-git-send-email-sachin.kamat@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DD2B26570B
+ for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:35:55 +0200 (CEST)
+In-Reply-To: <1396591153-10924-5-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,50 +26,50 @@ Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2727106964917782347==
+--===============0424662902928003791==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="y96v7rNg6HAoELs5"
+	protocol="application/pgp-signature"; boundary="MzdA25v054BPvyZa"
 Content-Disposition: inline
 
 
---y96v7rNg6HAoELs5
+--MzdA25v054BPvyZa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Apr 04, 2014 at 11:29:11AM +0530, Sachin Kamat wrote:
+On Fri, Apr 04, 2014 at 11:29:12AM +0530, Sachin Kamat wrote:
 > of_match_ptr is defined in of.h. Include it explicitly.
 
 Applied, thanks.
 
---y96v7rNg6HAoELs5
+--MzdA25v054BPvyZa
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTTDiDAAoJELSic+t+oim9cUsQAJFlYI9TxRaPRbvWweAeQE9B
-xxQepWZ1SN36N5dmQ3v33HmyuKSJ9Xzy9/7KFYk+cR84MhSGAJTsDwlgLd5p1mjS
-TUpAViwYQc4AlmuRF7e8c5OnqfC2fXzweGGoSNlyDh/YqsWtoaizhY95RoL14EOg
-ei//Q86F/shbMceU/IjZRqLBFQ54ac4VwYIV17HA0yBqNakYXs+9MzJCcygIdM6q
-ANgO/MBRf8PCbvic4nF1dAuMnCXIYU3Z3siCQ+woU8ONW/LSiOIOHHiaJcD/anZj
-MUsO82wVOvKGkoArHfSEkkTL+WXl9YpNpZ3EZD2oaxXBxJfKdMyvlE2nd8x5HdTN
-RK1727iwt7KsbXOjEJ8E7ADEVVX92HoFAvCJ/N52RODfYBq0qs7TPtOej00CJoy9
-v45LQ19b9VWZ/7dv6jhZsahoyIZ4/8PgRKFty5z9WcSlgJO+0LbKgo5+LVAimRND
-qnHsTds3QYmrFPBgNWf/qBquzsMINiuKfcLVmJkBqw2ds6hjBbQ+xS4mQWUpOcZ0
-ThLrR6S9Jni1m7erQMvHulFdCB9i8SboU+eTRK+pqNwe8kAzfjVcRxza89yQ94aE
-U78S0WIEFbwSiTBmM9sT5DORojS9vlZ2UQntuZ7b4F2PJAVal6eCYKIiDOf4qNXc
-1CAxbMeJJROCF++tPaKh
-=Yy2j
+iQIcBAEBAgAGBQJTTDiNAAoJELSic+t+oim9AFoP/03xcRQzBkkLHyqDmMoaBjEG
+4Q3U+EUH63v1FPsMD+oI+Bj1hhyxYJdMnPMndI+xyC9VtSsUiU6QBYSvCeqBkQEH
+naS6WtjDXPtf64Lv5CcmLM7D8a1jR/VPYmAP9tkKbVNANlASjG9r/K9oA2qOsIyD
+2wp7eL+tt2Ix8oLkJPlGHoVfJGUT/5SdFF6sOb7lQuUWD/vdg1bCzWui0G4WnTya
+teZRRFJPBUXlolNLwdB1vmj1jE6GmvuawL9GUW7rEw1+jXyugXWqU2rcmOOLIsMp
+jsN8cuYjSACgxXlQsUPD+Y7HMxCUvog/NAf5xLJK47yPdqMQtulo+vXJd7Qf9p/T
+H8feKNz+Vg3ZJSDVTzpGRBwBGHGxUpEjGXAb4meW5IvC5z+vkTTzI/PBkZpvRz9k
+oXw4ZUOH9tpoXq+xA7wdq6UTqH2Fojz10a14G/YsnZ6JAwKWMeO71rTON+qkjqrV
+xzZyi7omNSPrG+OzXyXF1RsQKMu47sZvOY1/TRC4goXKyNasv4ONDjugcvznfxsu
+loDYaw0s38iL3cTngT/l01To5gy6P1xexpQzI2HyvJ/sq9uvy+KwtI1VuFrY4rmu
+H+Lk4DOkRUofyX7gqU4AqaQgBT74nMcuCkPf8y3lUNyz0UTYdDvPgdF+KibnpQzs
+SkdxZh9jz89KSaqBFTwk
+=/BZ+
 -----END PGP SIGNATURE-----
 
---y96v7rNg6HAoELs5--
+--MzdA25v054BPvyZa--
 
---===============2727106964917782347==
+--===============0424662902928003791==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2727106964917782347==--
+--===============0424662902928003791==--
