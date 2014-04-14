@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 13/17] ASoC: wm5102: Replace usage deprecated
-	SOC_VALUE_ENUM macro
-Date: Mon, 14 Apr 2014 21:31:08 +0200
-Message-ID: <1397503872-20864-14-git-send-email-lars@metafoo.de>
+Subject: [PATCH 12/17] ASoC: wm8988: Replace usage deprecated
+	MUX/ENUM macros
+Date: Mon, 14 Apr 2014 21:31:07 +0200
+Message-ID: <1397503872-20864-13-git-send-email-lars@metafoo.de>
 References: <1397503872-20864-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-027.synserver.de (smtp-out-046.synserver.de
  [212.40.185.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DA442656BF
- for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:31:32 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 56D8E2656BE
+ for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:31:31 +0200 (CEST)
 In-Reply-To: <1397503872-20864-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,41 +26,54 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Jerry Wong <jerry.wong@maximintegrated.com>
 List-Id: alsa-devel@alsa-project.org
 
-SOC_VALUE_ENUM is deprecated and merely an alias for SOC_EMUM. Replace the
-deprecated macros so we can eventually remove their definition.
+SND_SOC_DAPM_VALUE_MUX and SOC_DAPM_VALUE_ENUM are deprecated and merely an
+alias for SND_SOC_DAPM_MUX and SOC_DAPM_ENUM. Replace the deprecated macros so
+we can eventually remove their definition.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm5102.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wm8988.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 3c1dfeb..289b64d 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -764,8 +764,8 @@ SOC_ENUM("LHPF2 Mode", arizona_lhpf2_mode),
- SOC_ENUM("LHPF3 Mode", arizona_lhpf3_mode),
- SOC_ENUM("LHPF4 Mode", arizona_lhpf4_mode),
+diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
+index 3a1ae4f5..d3fea46 100644
+--- a/sound/soc/codecs/wm8988.c
++++ b/sound/soc/codecs/wm8988.c
+@@ -268,7 +268,7 @@ static const struct soc_enum wm8988_lline_enum =
+ 			      wm8988_line_texts,
+ 			      wm8988_line_values);
+ static const struct snd_kcontrol_new wm8988_left_line_controls =
+-	SOC_DAPM_VALUE_ENUM("Route", wm8988_lline_enum);
++	SOC_DAPM_ENUM("Route", wm8988_lline_enum);
  
--SOC_VALUE_ENUM("ISRC1 FSL", arizona_isrc_fsl[0]),
--SOC_VALUE_ENUM("ISRC2 FSL", arizona_isrc_fsl[1]),
-+SOC_ENUM("ISRC1 FSL", arizona_isrc_fsl[0]),
-+SOC_ENUM("ISRC2 FSL", arizona_isrc_fsl[1]),
+ static const struct soc_enum wm8988_rline_enum =
+ 	SOC_VALUE_ENUM_SINGLE(WM8988_ROUTM1, 0, 7,
+@@ -276,7 +276,7 @@ static const struct soc_enum wm8988_rline_enum =
+ 			      wm8988_line_texts,
+ 			      wm8988_line_values);
+ static const struct snd_kcontrol_new wm8988_right_line_controls =
+-	SOC_DAPM_VALUE_ENUM("Route", wm8988_lline_enum);
++	SOC_DAPM_ENUM("Route", wm8988_lline_enum);
  
- ARIZONA_MIXER_CONTROLS("Mic", ARIZONA_MICMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("Noise", ARIZONA_NOISEMIX_INPUT_1_SOURCE),
-@@ -814,9 +814,9 @@ SOC_DOUBLE_R_TLV("SPKDAT1 Digital Volume", ARIZONA_DAC_DIGITAL_VOLUME_5L,
- 		 ARIZONA_DAC_DIGITAL_VOLUME_5R, ARIZONA_OUT5L_VOL_SHIFT,
- 		 0xbf, 0, digital_tlv),
+ /* Left Mixer */
+ static const struct snd_kcontrol_new wm8988_left_mixer_controls[] = {
+@@ -304,7 +304,7 @@ static const struct soc_enum wm8988_lpga_enum =
+ 			      wm8988_pga_sel,
+ 			      wm8988_pga_val);
+ static const struct snd_kcontrol_new wm8988_left_pga_controls =
+-	SOC_DAPM_VALUE_ENUM("Route", wm8988_lpga_enum);
++	SOC_DAPM_ENUM("Route", wm8988_lpga_enum);
  
--SOC_VALUE_ENUM("HPOUT1 OSR", wm5102_hpout_osr[0]),
--SOC_VALUE_ENUM("HPOUT2 OSR", wm5102_hpout_osr[1]),
--SOC_VALUE_ENUM("EPOUT OSR", wm5102_hpout_osr[2]),
-+SOC_ENUM("HPOUT1 OSR", wm5102_hpout_osr[0]),
-+SOC_ENUM("HPOUT2 OSR", wm5102_hpout_osr[1]),
-+SOC_ENUM("EPOUT OSR", wm5102_hpout_osr[2]),
+ /* Right PGA Mux */
+ static const struct soc_enum wm8988_rpga_enum =
+@@ -313,7 +313,7 @@ static const struct soc_enum wm8988_rpga_enum =
+ 			      wm8988_pga_sel,
+ 			      wm8988_pga_val);
+ static const struct snd_kcontrol_new wm8988_right_pga_controls =
+-	SOC_DAPM_VALUE_ENUM("Route", wm8988_rpga_enum);
++	SOC_DAPM_ENUM("Route", wm8988_rpga_enum);
  
- SOC_DOUBLE("HPOUT1 DRE Switch", ARIZONA_DRE_ENABLE,
- 	   ARIZONA_DRE1L_ENA_SHIFT, ARIZONA_DRE1R_ENA_SHIFT, 1, 0),
+ /* Differential Mux */
+ static const char *wm8988_diff_sel[] = {"Line 1", "Line 2"};
 -- 
 1.8.0
