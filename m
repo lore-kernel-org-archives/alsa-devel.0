@@ -1,56 +1,55 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/7] ARM: shmobile: swtich audio settings to new style,
- and remove compatibility code from driver
-Date: Mon, 14 Apr 2014 20:01:17 +0100
-Message-ID: <20140414190117.GD25182@sirena.org.uk>
+Subject: Re: [PATCH 7/7] ASoC: rsnd: remove compatibility code
+Date: Mon, 14 Apr 2014 20:03:27 +0100
+Message-ID: <20140414190327.GE25182@sirena.org.uk>
 References: <87sipg20h1.wl%kuninori.morimoto.gx@gmail.com>
- <20140414035610.GC1948@verge.net.au>
+ <87ioqc20ei.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T7mxYSe680VjQnyC"
+	protocol="application/pgp-signature"; boundary="CGDBiGfvSTbxKZlW"
 Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140414035610.GC1948@verge.net.au>
+In-Reply-To: <87ioqc20ei.wl%kuninori.morimoto.gx@gmail.com>
 Sender: linux-sh-owner@vger.kernel.org
-To: Simon Horman <horms@verge.net.au>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Magnus <magnus.damm@gmail.com>, linux-sh@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Simon <horms@verge.net.au>, Magnus <magnus.damm@gmail.com>, linux-sh@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---T7mxYSe680VjQnyC
+--CGDBiGfvSTbxKZlW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 14, 2014 at 12:56:12PM +0900, Simon Horman wrote:
+On Sun, Apr 13, 2014 at 05:57:27PM -0700, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Now, all platform is using new style rsnd_dai_platform_info.
+> Keeping compatibility is no longer needed.
+> We can cleanup code.
 
-> The safest thing would be for me to wait until after the arm-soc
-> maintainers have pulled my branches. Otherwise there is a very
-> real chance that they will ask me to rebase something that Mark
-> is relying on. And that would be awkward to say the least.
+This and the previous patch both look good.
 
-OK, can someone send me a pull request and the new patches when that
-happens please?
-
---T7mxYSe680VjQnyC
+--CGDBiGfvSTbxKZlW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTTDB6AAoJELSic+t+oim9140P/RtSJaH0NV4BycGRrwSupQUd
-mqkHG69JM0UrHHMjwNslTs3o/oSukUbKLUHfDSkfSTHBQttRGD0gM4fglq5PfLdP
-4+l5yU8B+jW1zerjACz0DkcOVy2fCndcc7749FuXqb7Pkgwmi0f/F9U+IpxS5ENE
-XuFCmQvntT6vSqiJ6B0fWw3Ge5O4E3U7bh7N9jeWhZVi9LJI7fixPVYWFgDSM/TX
-qBCoqSei0sMVWE43n3Op+IbfseYl0uyS7lex/JjtkI5u8BFc344AWDleGnkVpsP4
-TW/J1EseNgxFpLvFBh4EN0LnlhjbNcoMzfsdhRKI7DWdbv067SGMoE9O6SKMq+ua
-mILr3FpOfCeyTaxa4RdYgPukQQFmUhHWs8cljxv0p23ZymzLwEESM6d85eFjXJfP
-yqvaYXvhkfiE/u6x9PUvla5uHU/0itk8Cwf4zrFfhZ7/qaJxw1knQoXbdU4nLg18
-C6uTwPqNOjkmzVkhaHH+bZNFUXRGVtn8asIGOmeQCe21nBbYl3J8gH+uA93b8vhq
-bODcCIn7Tv0IBmuEt6/zjhjOvcUgAQh/i7vgOZT7GR5+APYtkyydaiNekEdmIhJd
-PErvUVaSOKeZuIZP0Oc+U3y05C88hbGCiynz7rIhFXUBLiwXwg0obJePlHE6B0Gi
-DM4AJ2qdXGlTAhqVsjS9
-=10+H
+iQIcBAEBAgAGBQJTTDD8AAoJELSic+t+oim9sI4QAIDgAaBP23UvyxIGo5U2c1Rc
+8u5CbCH3Z6u4EwtNRCT/hhaW3DABTEMfXHbtZnffdhtBYK/htd59dPiCZgontAwq
+iKvbAdMmDgSA0JADX2jXc1aVexvL27YhOnDv/W7kZ5qb+9hGC0cqfHnxrMR7Q5rR
+Jv+F1ZGbJqpXKeHNn4aZJMqwDrO2orBk5FKgDxnaweFbRerd41DAY3k5YBEEXfy1
+G5TSCq58RMlcnQh6g/orpxj07KtWXvrBPIgWhhHp0Lj2P7eJe5a+YakZNohkZtWp
+jk6ek/TzrTOcHML+RnndklH8zkFX4uVfUSZ4EKPkAsATwe8xqrbgj9pwU2sGL5H6
+caB21T7kGBkiRtSZKFkPiGkK13lNu0tHbfQ+fbC8ICblmVXp7Sb1ES8g4/nAxNJC
+0cE4aJ2Xo4q23zVosIAvyzHLSywxRrLoKYo6m1fQC2H3cfrpRyE2kVWCyk0mdyuM
+oKPQGSnHGtgD7ktGSuLqGqhcNwHgz1CPsdSlCF/GkMDlpCJjWVT5uCJ0rtrexFGQ
+o8Zb7CZGXZFhmVyHqt72JuByh5cKTZq8+TVKajxcFOL/boylVPJwdzadaAKA/hY8
+gYPF1+2Venb2VhLV8SHRPHujjAkp7lGg3HzTpvVth2I8iJL66BHBEYPwjmj60zb9
+CwRGSHLLIQeU5e/bD39C
+=lJRI
 -----END PGP SIGNATURE-----
 
---T7mxYSe680VjQnyC--
+--CGDBiGfvSTbxKZlW--
