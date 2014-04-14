@@ -1,50 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_sai: Use FSL_SAI_xXR() and
- regmap_update_bits() to simplify code
-Date: Mon, 14 Apr 2014 21:47:12 +0100
-Message-ID: <20140414204712.GG25182@sirena.org.uk>
-References: <1397212209-7843-1-git-send-email-Guangyu.Chen@freescale.com>
+From: Benoit Cousson <bcousson@baylibre.com>
+Subject: Re: [RFT v2 5/6] ASoC: core: Add helpers for dai link
+ and aux dev init
+Date: Mon, 14 Apr 2014 22:12:43 +0200
+Message-ID: <534C413B.4010402@baylibre.com>
+References: <1395415650-20045-1-git-send-email-bcousson@baylibre.com>
+ <1395415650-20045-6-git-send-email-bcousson@baylibre.com>
+ <20140414193906.GL25182@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Guq+xBHXhbnAFmh4"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1397212209-7843-1-git-send-email-Guangyu.Chen@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f177.google.com (mail-wi0-f177.google.com
+ [209.85.212.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89216261A53
+ for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 22:12:48 +0200 (CEST)
+Received: by mail-wi0-f177.google.com with SMTP id cc10so4641247wib.4
+ for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 13:12:47 -0700 (PDT)
+In-Reply-To: <20140414193906.GL25182@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabien Parent <fparent@baylibre.com>, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---Guq+xBHXhbnAFmh4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 14/04/2014 21:39, Mark Brown wrote:
+> On Fri, Mar 21, 2014 at 04:27:29PM +0100, Benoit Cousson wrote:
+>> From: Misael Lopez Cruz <misael.lopez@ti.com>
+>>
+>> Separate DAI link and aux dev initialization in preparation for
+>> DAI multicodec support.
+>> Since aux dev will remain using single codecs but DAI links
+>> will be able to support multiple codecs.
+>
+> I applied everything up to here.  This one didn't apply, probably due to
+> context changes but I didn't make any real effort to understand the
+> issue.
 
-On Fri, Apr 11, 2014 at 06:30:09PM +0800, Nicolin Chen wrote:
-> By doing this, the driver can drop around 50 lines and become neater.
+Yep, I've just seen that. It is indeed a small move in the previous =
 
-Applied, thanks.
+context code.
 
---Guq+xBHXhbnAFmh4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I'm still in the process of updating the series based on Lars comments, =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+but was somehow too busy the last 2 weeks to complete the changes.
+I should be able to post the update this week.
 
-iQIcBAEBAgAGBQJTTElNAAoJELSic+t+oim9iXgP+weBmtyfBPeAKMJC/zleWfsp
-ReScJItytUOYqXncWS75lLIsr5wZ0TCa+t2xIrqLTqPYIfmJpCuU+tdtUElnPoSg
-YQecB5SRZTuOFlxfcN+WGT4u2jMITKX0Kyr4ZMxhun+a52RBltybvaLUEXkfVGFY
-ABv+blRda5+DYl4BUH9AX2XSXmxhqGRjmcjdXO1ZeUv2Z/R9U/6mE3xnX7BAanLZ
-Zfo3p48zGyVDJFDXlReTfA//XPSkjZ3NDsmJv+AW9ZUE8yPEd9BdyYbdPChaPd82
-klhQyy6o6pfu3t9kcLMpzm/zMsnwz25crchZYoL8LvOocs6k58wKIACp9vWPyZ+h
-6oZlRm7ymlW48jvM3LCaCQhWJaKtmr2C0Ou/PiLA+BMw35ZKFUS1jNcomhY4fXl7
-dETsMQQ4wkQO3GC5Kb18IGt/MJjKcM8AoNf23PGze01bDSVnpZa6nnfpOxau5B62
-VcQ3AZvZII+FrbfH0Zy6wDWY66snEk2ikqF6fm24CMi5Sn86YWtiLrNRabZRsuLl
-x3sGfrk26F4R7EyBpW/ahzCGwQNimEv3yRrXueRovFOzVda9OIfTPLapvuRjg/dZ
-XNgrv21rlJROOKQb1PVb/o4n3tkgZ61pjmV1PhA52LfnCmGwlm7vJk8vXGXTn67D
-6A3qw83BU1cVotT48CwI
-=Pn5J
------END PGP SIGNATURE-----
+Sorry for the delay.
 
---Guq+xBHXhbnAFmh4--
+Thanks,
+Benoit
+
+-- =
+
+Beno=EEt Cousson
+BayLibre
+Embedded Linux Technology Lab
+www.baylibre.com
