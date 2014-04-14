@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 04/17] ASoC: max98090: Replace usage deprecated
+Subject: [PATCH 05/17] ASoC: mc13783: Replace usage deprecated
 	MUX/ENUM macros
-Date: Mon, 14 Apr 2014 21:30:59 +0200
-Message-ID: <1397503872-20864-5-git-send-email-lars@metafoo.de>
+Date: Mon, 14 Apr 2014 21:31:00 +0200
+Message-ID: <1397503872-20864-6-git-send-email-lars@metafoo.de>
 References: <1397503872-20864-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-027.synserver.de (smtp-out-046.synserver.de
  [212.40.185.46])
- by alsa0.perex.cz (Postfix) with ESMTP id E1DC32656B1
- for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:31:21 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DD5F02656B2
+ for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:31:22 +0200 (CEST)
 In-Reply-To: <1397503872-20864-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,31 +32,42 @@ eventually remove their definition.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/max98090.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/mc13783.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 49d1238..810d42f 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -875,7 +875,7 @@ static const char *dmic_mux_text[] = { "ADC", "DMIC" };
- static SOC_ENUM_SINGLE_VIRT_DECL(dmic_mux_enum, dmic_mux_text);
+diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
+index 9029e20..0b0a4ca 100644
+--- a/sound/soc/codecs/mc13783.c
++++ b/sound/soc/codecs/mc13783.c
+@@ -409,7 +409,7 @@ static const char * const adcl_enum_text[] = {
+ static SOC_ENUM_SINGLE_VIRT_DECL(adcl_enum, adcl_enum_text);
  
- static const struct snd_kcontrol_new max98090_dmic_mux =
--	SOC_DAPM_ENUM_VIRT("DMIC Mux", dmic_mux_enum);
-+	SOC_DAPM_ENUM("DMIC Mux", dmic_mux_enum);
+ static const struct snd_kcontrol_new left_input_mux =
+-	SOC_DAPM_ENUM_VIRT("Route", adcl_enum);
++	SOC_DAPM_ENUM("Route", adcl_enum);
  
- static const char *max98090_micpre_text[] = { "Off", "On" };
+ static const char * const adcr_enum_text[] = {
+ 	"MC1R", "MC2", "RXINR", "TXIN",
+@@ -418,7 +418,7 @@ static const char * const adcr_enum_text[] = {
+ static SOC_ENUM_SINGLE_VIRT_DECL(adcr_enum, adcr_enum_text);
  
-@@ -1175,8 +1175,7 @@ static const struct snd_soc_dapm_widget max98090_dapm_widgets[] = {
- 	SND_SOC_DAPM_MUX("MIC2 Mux", SND_SOC_NOPM,
- 		0, 0, &max98090_mic2_mux),
+ static const struct snd_kcontrol_new right_input_mux =
+-	SOC_DAPM_ENUM_VIRT("Route", adcr_enum);
++	SOC_DAPM_ENUM("Route", adcr_enum);
  
--	SND_SOC_DAPM_VIRT_MUX("DMIC Mux", SND_SOC_NOPM,
--		0, 0, &max98090_dmic_mux),
-+	SND_SOC_DAPM_MUX("DMIC Mux", SND_SOC_NOPM, 0, 0, &max98090_dmic_mux),
+ static const struct snd_kcontrol_new samp_ctl =
+ 	SOC_DAPM_SINGLE("Switch", MC13783_AUDIO_RX0, 3, 1, 0);
+@@ -478,9 +478,9 @@ static const struct snd_soc_dapm_widget mc13783_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SWITCH("MC2 Amp", MC13783_AUDIO_TX, 9, 0, &mc2_amp_ctl),
+ 	SND_SOC_DAPM_SWITCH("TXIN Amp", MC13783_AUDIO_TX, 11, 0, &atx_amp_ctl),
  
- 	SND_SOC_DAPM_PGA_E("MIC1 Input", M98090_REG_MIC1_INPUT_LEVEL,
- 		M98090_MIC_PA1EN_SHIFT, 0, NULL, 0, max98090_micinput_event,
+-	SND_SOC_DAPM_VIRT_MUX("PGA Left Input Mux", SND_SOC_NOPM, 0, 0,
++	SND_SOC_DAPM_MUX("PGA Left Input Mux", SND_SOC_NOPM, 0, 0,
+ 			      &left_input_mux),
+-	SND_SOC_DAPM_VIRT_MUX("PGA Right Input Mux", SND_SOC_NOPM, 0, 0,
++	SND_SOC_DAPM_MUX("PGA Right Input Mux", SND_SOC_NOPM, 0, 0,
+ 			      &right_input_mux),
+ 
+ 	SND_SOC_DAPM_MUX("Speaker Amp Source MUX", SND_SOC_NOPM, 0, 0,
 -- 
 1.8.0
