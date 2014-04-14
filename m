@@ -1,88 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: jack: export gpio detect
-Date: Mon, 14 Apr 2014 20:55:01 +0100
-Message-ID: <20140414195501.GQ25182@sirena.org.uk>
-References: <20140403220715.GG14763@sirena.org.uk>
- <CF69AC38.3C92E%cfreeman@nvidia.com>
+Subject: Re: [PATCH v2 2/2] ARM: dts: Append clock bindings for sai2 on VF610
+ platform
+Date: Mon, 14 Apr 2014 21:38:51 +0100
+Message-ID: <20140414203851.GD25182@sirena.org.uk>
+References: <cover.1396432924.git.Guangyu.Chen@freescale.com>
+ <d09da3eb629143abd3f61ae037af4ddaf7286a83.1396432924.git.Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8007579216574684051=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A2AC9265357
- for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:55:14 +0200 (CEST)
-In-Reply-To: <CF69AC38.3C92E%cfreeman@nvidia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Christopher Freeman <cfreeman@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Content-Type: multipart/mixed; boundary="===============0318140547564076325=="
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <d09da3eb629143abd3f61ae037af4ddaf7286a83.1396432924.git.Guangyu.Chen@freescale.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, pawel.moll@arm.com, linux-doc@vger.kernel.org, ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org, robh+dt@kernel.org, timur@tabi.org, Li.Xiubo@freescale.com, rob@landley.net, galak@codeaurora.org, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8007579216574684051==
+--===============0318140547564076325==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RCJLo13VlymhPcEi"
+	protocol="application/pgp-signature"; boundary="bwMunqOr7B7rzQrh"
 Content-Disposition: inline
 
 
---RCJLo13VlymhPcEi
+--bwMunqOr7B7rzQrh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 08, 2014 at 01:40:10PM -0700, Christopher Freeman wrote:
-> On 4/3/14 3:07 PM, "Mark Brown" <broonie@kernel.org> wrote:
+On Wed, Apr 02, 2014 at 06:10:20PM +0800, Nicolin Chen wrote:
+> Since we added fours clock to the DT binding, we should update the current
+> SAI dts/dtsi so as not to break their functions.
 
-> >It seems better to have explicit callbacks for this doesn't it, ideally
-> >ones that get triggered by the core without the machine driver having to
-> >do anything?  This is a common need so having to open code it would be a
-> >bit depressing.
+This doesn't apply against v3.15-rc1, can you please check and resend?
 
-> Mark, do you have a suggestion on how to plumb this up?  The way I see it,
-> the machine drivers own the context for the gpios and soc-jack acts as a
-> helper library.  I don't see a way to do this from the core.
-
-Both the ALSA core and ASoC know that the jacks exist and at least ASoC
-already gets callbacks from the machine drivers during suspend (usually
-just through providing default PM operations for them).  We'd need to
-add code to actually keep track of them but if that's done then the core
-can walk the list of jacks at resume time and give them a callback.
-
---RCJLo13VlymhPcEi
+--bwMunqOr7B7rzQrh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTTD0SAAoJELSic+t+oim9mJMP/07tBlyTnjFVUS2Yypi3OEiX
-Cau1XWwrafVLh/8pyd23NK0UgXXXK+CVq6TL15O8CBLA848WWuzzZJq1Hiubr6BI
-M+9WIXlT84iwhbaGYvkPVBMwVCsvT/oGZdE+5WFGUsnrdqlf31NjLzuPKlgLrAH8
-Io6vBETIpeVLkNl9c3EB7nkgVm8BUgR7K9Jve1KUtEmCypZi7mzzzGt3AEsk4A6/
-c2f8oLkNUU5Wfja+VtjV73FacFisLnrOsBJWLg9wrlZaqeFIK86uVDnZfw8x7KBk
-tpD6R4VHnP2R+sEirdlVVZFK18YXH44MExwhFNFtkiu/Zswqn1hEX43Kry2efLVl
-BEb6FFzL354KXflIvQ/eSMZg4+w7uOE0qnUgRvsIJ4dhGDOOn1q9gMnqKfUlRuJj
-JGasEE1EaHJxDQU8kv5Sp/hpgRbLG/SikIx4uVKfd6nHIssszZh7kM0JfegHH1Wq
-LBgnfkr6TskfL19xtYwiKLbLK6m6Vd00VUcmC3VEpWjc/49JCUYdr6XIvu4gejfp
-H19qpe93BXtL+dGF1Uax3HvDg8dUJC3yZkoOXlaTEo7E3v7Zhlfu0By3NKaED+QG
-EoqPYTlSvAGRjtLcAh1yJyPy3dTLPeahu63NpyN6Jk2tKfjhuVscaiJThLcQgfMx
-Fvf6bMpEYDdwoL3trMT2
-=O2XY
+iQIcBAEBAgAGBQJTTEdYAAoJELSic+t+oim909YP/1fePSP/VU6q5ZG2V6LA+Ien
+nDePfbzPoLOsJA05Wg8OFj1xKg5TLpnk7ZAqRr/kg4dLxp8QdEO1LlpR9f/YNBdw
+5NKYyQDCGNf6x0Qglbr8v2vrXlrV7CeWIeZ2PLE3S2O/0YZUXWGw7vy6mz/aNjFL
+DqyNM/MQft/FNHN+A4odSGRT+zQkDM6chtAqCQa7/Xw0y4F9OsbWQCRXb4Q+KxL1
+bYwoc2xHonhUgZD01M0k80SXGcXfiAYDfx5a5l5u7+K3hz0HVGudsHclaSI/cy4T
+PUGi3sZ9i+oLwdmrYtNPAmmllcY60+VTbdWdK2EJrE9MUpaCUOhtvoqqcQ1WD7iC
+iWaDJ8CCer4rHo090cPQwejlnb62VVeLsZrjKyZXMT/XupxnJQo7Nbhs7gSbUwWb
+mi6q+A/+DvyaMhZMbKRdjQhoED6xoQjArirWLmKiNPH95FPKDAwMo+AyqYvPGJWy
+5KAoMjDIaV7zrTlZSRGefgpBhKzCGQBxg+P2NSmantEX94rKW43kwQng5OlMRhV2
+nSQ/x3Wj0xPZwxhfQS/KDaGpS32KSnj1lFCbwLRFuNciphzmXRHI2/4IeVoQzvvZ
+yi+sATUjrrcshPU4qLdsp8h2GRiC6Uz06+hmCPElI2Bvby3xt5E4k2zv49KzlsqB
+LMedOA0Rd2Lg6ygCIfYE
+=3HvM
 -----END PGP SIGNATURE-----
 
---RCJLo13VlymhPcEi--
+--bwMunqOr7B7rzQrh--
 
---===============8007579216574684051==
-Content-Type: text/plain; charset="us-ascii"
+--===============0318140547564076325==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Content-Disposition: inline
 
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXhwcGMt
+ZGV2IG1haWxpbmcgbGlzdApMaW51eHBwYy1kZXZAbGlzdHMub3psYWJzLm9yZwpodHRwczovL2xp
+c3RzLm96bGFicy5vcmcvbGlzdGluZm8vbGludXhwcGMtZGV2
 
---===============8007579216574684051==--
+--===============0318140547564076325==--
