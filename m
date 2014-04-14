@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 12/17] ASoC: wm8988: Replace usage deprecated
+Subject: [PATCH 14/17] ASoC: wm8994: Replace usage deprecated
 	MUX/ENUM macros
-Date: Mon, 14 Apr 2014 21:31:07 +0200
-Message-ID: <1397503872-20864-13-git-send-email-lars@metafoo.de>
+Date: Mon, 14 Apr 2014 21:31:09 +0200
+Message-ID: <1397503872-20864-15-git-send-email-lars@metafoo.de>
 References: <1397503872-20864-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-027.synserver.de (smtp-out-046.synserver.de
  [212.40.185.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 56D8E2656BE
- for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:31:31 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AA352656C2
+ for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2014 21:31:33 +0200 (CEST)
 In-Reply-To: <1397503872-20864-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,54 +26,52 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Jerry Wong <jerry.wong@maximintegrated.com>
 List-Id: alsa-devel@alsa-project.org
 
-SND_SOC_DAPM_VALUE_MUX and SOC_DAPM_VALUE_ENUM are deprecated and merely an
-alias for SND_SOC_DAPM_MUX and SOC_DAPM_ENUM. Replace the deprecated macros so
-we can eventually remove their definition.
+SND_SOC_DAPM_VIRT_MUX, SND_SOC_DAPM_VIRT_MUX_E and SOC_DAPM_ENUM_VIRT are
+deprecated and merely an alias for SND_SOC_DAPM_MUX, SND_SOC_DAPM_MUX_E and
+SOC_DAPM_ENUM. Replace the deprecated macros so we can eventually remove their
+definition.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8988.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8994.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
-index 3a1ae4f5..d3fea46 100644
---- a/sound/soc/codecs/wm8988.c
-+++ b/sound/soc/codecs/wm8988.c
-@@ -268,7 +268,7 @@ static const struct soc_enum wm8988_lline_enum =
- 			      wm8988_line_texts,
- 			      wm8988_line_values);
- static const struct snd_kcontrol_new wm8988_left_line_controls =
--	SOC_DAPM_VALUE_ENUM("Route", wm8988_lline_enum);
-+	SOC_DAPM_ENUM("Route", wm8988_lline_enum);
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 29f40a9..247b390 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -1347,10 +1347,10 @@ static const char *adc_mux_text[] = {
+ static SOC_ENUM_SINGLE_VIRT_DECL(adc_enum, adc_mux_text);
  
- static const struct soc_enum wm8988_rline_enum =
- 	SOC_VALUE_ENUM_SINGLE(WM8988_ROUTM1, 0, 7,
-@@ -276,7 +276,7 @@ static const struct soc_enum wm8988_rline_enum =
- 			      wm8988_line_texts,
- 			      wm8988_line_values);
- static const struct snd_kcontrol_new wm8988_right_line_controls =
--	SOC_DAPM_VALUE_ENUM("Route", wm8988_lline_enum);
-+	SOC_DAPM_ENUM("Route", wm8988_lline_enum);
+ static const struct snd_kcontrol_new adcl_mux =
+-	SOC_DAPM_ENUM_VIRT("ADCL Mux", adc_enum);
++	SOC_DAPM_ENUM("ADCL Mux", adc_enum);
  
- /* Left Mixer */
- static const struct snd_kcontrol_new wm8988_left_mixer_controls[] = {
-@@ -304,7 +304,7 @@ static const struct soc_enum wm8988_lpga_enum =
- 			      wm8988_pga_sel,
- 			      wm8988_pga_val);
- static const struct snd_kcontrol_new wm8988_left_pga_controls =
--	SOC_DAPM_VALUE_ENUM("Route", wm8988_lpga_enum);
-+	SOC_DAPM_ENUM("Route", wm8988_lpga_enum);
+ static const struct snd_kcontrol_new adcr_mux =
+-	SOC_DAPM_ENUM_VIRT("ADCR Mux", adc_enum);
++	SOC_DAPM_ENUM("ADCR Mux", adc_enum);
  
- /* Right PGA Mux */
- static const struct soc_enum wm8988_rpga_enum =
-@@ -313,7 +313,7 @@ static const struct soc_enum wm8988_rpga_enum =
- 			      wm8988_pga_sel,
- 			      wm8988_pga_val);
- static const struct snd_kcontrol_new wm8988_right_pga_controls =
--	SOC_DAPM_VALUE_ENUM("Route", wm8988_rpga_enum);
-+	SOC_DAPM_ENUM("Route", wm8988_rpga_enum);
+ static const struct snd_kcontrol_new left_speaker_mixer[] = {
+ SOC_DAPM_SINGLE("DAC2 Switch", WM8994_SPEAKER_MIXER, 9, 1, 0),
+@@ -1651,15 +1651,15 @@ SND_SOC_DAPM_DAC("DAC1R", NULL, WM8994_POWER_MANAGEMENT_5, 0, 0),
+ };
  
- /* Differential Mux */
- static const char *wm8988_diff_sel[] = {"Line 1", "Line 2"};
+ static const struct snd_soc_dapm_widget wm8994_adc_revd_widgets[] = {
+-SND_SOC_DAPM_VIRT_MUX_E("ADCL Mux", WM8994_POWER_MANAGEMENT_4, 1, 0, &adcl_mux,
++SND_SOC_DAPM_MUX_E("ADCL Mux", WM8994_POWER_MANAGEMENT_4, 1, 0, &adcl_mux,
+ 			adc_mux_ev, SND_SOC_DAPM_PRE_PMU),
+-SND_SOC_DAPM_VIRT_MUX_E("ADCR Mux", WM8994_POWER_MANAGEMENT_4, 0, 0, &adcr_mux,
++SND_SOC_DAPM_MUX_E("ADCR Mux", WM8994_POWER_MANAGEMENT_4, 0, 0, &adcr_mux,
+ 			adc_mux_ev, SND_SOC_DAPM_PRE_PMU),
+ };
+ 
+ static const struct snd_soc_dapm_widget wm8994_adc_widgets[] = {
+-SND_SOC_DAPM_VIRT_MUX("ADCL Mux", WM8994_POWER_MANAGEMENT_4, 1, 0, &adcl_mux),
+-SND_SOC_DAPM_VIRT_MUX("ADCR Mux", WM8994_POWER_MANAGEMENT_4, 0, 0, &adcr_mux),
++SND_SOC_DAPM_MUX("ADCL Mux", WM8994_POWER_MANAGEMENT_4, 1, 0, &adcl_mux),
++SND_SOC_DAPM_MUX("ADCR Mux", WM8994_POWER_MANAGEMENT_4, 0, 0, &adcr_mux),
+ };
+ 
+ static const struct snd_soc_dapm_widget wm8994_dapm_widgets[] = {
 -- 
 1.8.0
