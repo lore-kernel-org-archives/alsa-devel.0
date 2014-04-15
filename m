@@ -1,51 +1,58 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: Fix snd_soc_kcontrol_platform() return
-	type
-Date: Tue, 15 Apr 2014 22:24:21 +0200
-Message-ID: <1397593461-11369-1-git-send-email-lars@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-027.synserver.de (smtp-out-049.synserver.de
- [212.40.185.49])
- by alsa0.perex.cz (Postfix) with ESMTP id CD9F3265095
- for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2014 22:24:28 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+From: Christoph Jaeger <christophjaeger@linux.com>
+Subject: [PATCH] ASoC: core: use PTR_ERR instead of PTR_RET
+Date: Tue, 15 Apr 2014 22:39:01 +0200
+Message-ID: <1397594341-7817-1-git-send-email-christophjaeger@linux.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Christoph Jaeger <christophjaeger@linux.com>
 List-Id: alsa-devel@alsa-project.org
 
-This should obviously be snd_soc_platform * and not snd_soc_codec *
+PTR_RET is deprecated. PTR_ERR_OR_ZERO should be used instead. However,
+we already know that IS_ERR is true, and thus PTR_ERR_OR_ZERO would
+never yield zero, so we can use PTR_ERR here.
 
-Fixes: f6272ff8a5f4 ("ASoC: Add snd_soc_kcontrol_platform() helper function")
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Christoph Jaeger <christophjaeger@linux.com>
 ---
- include/sound/soc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 3396594..488e749 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1252,7 +1252,7 @@ static inline struct snd_soc_codec *snd_soc_kcontrol_codec(
-  * registered with snd_soc_add_platform_controls() or via table based setup of
-  * a snd_soc_platform_driver. Otherwise the behavior is undefined.
-  */
--static inline struct snd_soc_codec *snd_soc_kcontrol_platform(
-+static inline struct snd_soc_platform *snd_soc_kcontrol_platform(
- 	struct snd_kcontrol *kcontrol)
- {
- 	return snd_kcontrol_chip(kcontrol);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 051c006..2dc69845 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2153,28 +2153,28 @@ static int snd_soc_ac97_parse_pinctl(struct device *dev,
+ 	p = devm_pinctrl_get(dev);
+ 	if (IS_ERR(p)) {
+ 		dev_err(dev, "Failed to get pinctrl\n");
+-		return PTR_RET(p);
++		return PTR_ERR(p);
+ 	}
+ 	cfg->pctl = p;
+ 
+ 	state = pinctrl_lookup_state(p, "ac97-reset");
+ 	if (IS_ERR(state)) {
+ 		dev_err(dev, "Can't find pinctrl state ac97-reset\n");
+-		return PTR_RET(state);
++		return PTR_ERR(state);
+ 	}
+ 	cfg->pstate_reset = state;
+ 
+ 	state = pinctrl_lookup_state(p, "ac97-warm-reset");
+ 	if (IS_ERR(state)) {
+ 		dev_err(dev, "Can't find pinctrl state ac97-warm-reset\n");
+-		return PTR_RET(state);
++		return PTR_ERR(state);
+ 	}
+ 	cfg->pstate_warm_reset = state;
+ 
+ 	state = pinctrl_lookup_state(p, "ac97-running");
+ 	if (IS_ERR(state)) {
+ 		dev_err(dev, "Can't find pinctrl state ac97-running\n");
+-		return PTR_RET(state);
++		return PTR_ERR(state);
+ 	}
+ 	cfg->pstate_run = state;
+ 
 -- 
-1.8.0
+1.9.0
