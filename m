@@ -1,67 +1,83 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] ASoC: dapm: Fix widget double free with auto-disable DAPM kcontrol
-Date: Tue, 15 Apr 2014 16:58:09 +0300
-Message-ID: <1397570289-29215-1-git-send-email-jarkko.nikula@linux.intel.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: Using simple-card to replace kirkwood-t5325.c
+Date: Tue, 15 Apr 2014 18:13:02 +0200
+Message-ID: <20140415161302.GC1871@lunn.ch>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vps0.lunn.ch (vps0.lunn.ch [178.209.37.122])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD91D264FFF
+ for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2014 18:15:14 +0200 (CEST)
+Received: from lunn by vps0.lunn.ch with local (Exim 4.80)
+ (envelope-from <andrew@lunn.ch>) id 1Wa5yo-0000xP-K6
+ for alsa-devel@alsa-project.org; Tue, 15 Apr 2014 18:13:02 +0200
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, stable <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 9e1fda4ae158 ("ASoC: dapm: Implement mixer input auto-disable") is trying to
-free the widget it allocated by snd_soc_dapm_new_control() call in
-dapm_kcontrol_data_alloc() by adding kfree(data->widget) to dapm_kcontrol_free().
+Hi Folks
 
-This is causing a widget double free with auto-disabled DAPM kcontrols in sound card
-unregistration because widgets are already freed before dapm_kcontrol_free() is
-called.
+I'm an ALSA newbie, so if i say anything stupid, please let me know.
 
-Reason for that is all widgets are added into dapm->card->widgets list in
-snd_soc_dapm_new_control() and freed in dapm_free_widgets() during execution of
-snd_soc_dapm_free().
+I'm trying to replace sound/soc/kirkwood/kirkwood-t5325.c with DT,
+using simple-card. I can get near, but i'm missing two things:
 
-Now snd_soc_dapm_free() calls for different DAPM contexts happens before
-snd_card_free() call from where the call chain to dapm_kcontrol_free() begins:
+There does not appear to be a way to represent this in DT:
 
-soc_cleanup_card_resources()
-  soc_remove_dai_links()
-    soc_remove_link_dais()
-      snd_soc_dapm_free(&cpu_dai->dapm)
-    soc_remove_link_components()
-      soc_remove_platform()
-        snd_soc_dapm_free(&platform->dapm)
-      soc_remove_codec()
-        snd_soc_dapm_free(&codec->dapm)
-  snd_soc_dapm_free(&card->dapm)
-  snd_card_free()
-    snd_card_do_free()
-      snd_device_free_all()
-        snd_device_free()
-          snd_ctl_dev_free()
-            snd_ctl_remove()
-              snd_ctl_free_one()
-                dapm_kcontrol_free()
+static int t5325_dai_init(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_soc_codec *codec = rtd->codec;
+	struct snd_soc_dapm_context *dapm = &codec->dapm;
 
-This wasn't making harm with ordinary DAPM kcontrols since data->widget is NULL for
-them.
+	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
+	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
+	snd_soc_dapm_enable_pin(dapm, "Speaker");
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: stable <stable@vger.kernel.org> # 3.12+
----
- sound/soc/soc-dapm.c | 1 -
- 1 file changed, 1 deletion(-)
+	return 0;
+}
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index c8a780d0d057..7769b0a2bc5a 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -254,7 +254,6 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
- static void dapm_kcontrol_free(struct snd_kcontrol *kctl)
- {
- 	struct dapm_kcontrol_data *data = snd_kcontrol_chip(kctl);
--	kfree(data->widget);
- 	kfree(data->wlist);
- 	kfree(data);
- }
--- 
-1.9.1
+It appears that quite a few drivers need to enable pins. It also seems
+common to disable pins and to set them to NC. Is this a generic enough
+feature it could be added to the DT binding?
+
+The second thing i need is:
+
+static int t5325_hw_params(struct snd_pcm_substream *substream,
+       	   struct snd_pcm_hw_params *params)
+{
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+	unsigned int freq;
+
+	freq = params_rate(params) * 256;
+
+	return snd_soc_dai_set_sysclk(codec_dai, 0, freq, SND_SOC_CLOCK_IN);
+
+}
+
+static struct snd_soc_ops t5325_ops = {
+       .hw_params = t5325_hw_params,
+};
+
+
+This seems a lot less common requirements. All the Marvell SoCs need
+it, but not many others. So i don't think it makes sense to add it
+directly to simple-card, otherwise simple-card quickly becomes
+complex-card as everybody else wants there quirks adding.
+
+Has there been any thoughts about turning simple-card.c into a
+library, or adding hooks so that a driver can modify the created
+dai_link structures to add in ops like this?
+
+	 Thanks
+		Andrew
