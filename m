@@ -1,82 +1,67 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: [PATCH 1/5] ASoC: omap: rx51: Use
-	devm_snd_soc_register_card
-Date: Tue, 15 Apr 2014 19:09:13 +0530
-Message-ID: <534D3681.3010200@st.com>
-References: <1396733753-9820-1-git-send-email-sre@kernel.org>
- <1396733753-9820-2-git-send-email-sre@kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 834D8264F47
- for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2014 15:39:25 +0200 (CEST)
-In-Reply-To: <1396733753-9820-2-git-send-email-sre@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Reichel <sre@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Tony Lindgren <tony@atomide.com>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Sebastian Reichel <sre@ring0.de>, Mark Brown <broonie@kernel.org>, =?UTF-8?B?UGFsaSBSb2jDoXI=?= <pali.rohar@gmail.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH] ASoC: dapm: Fix widget double free with auto-disable DAPM kcontrol
+Date: Tue, 15 Apr 2014 16:58:09 +0300
+Message-ID: <1397570289-29215-1-git-send-email-jarkko.nikula@linux.intel.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, stable <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gNC82LzIwMTQgMzowNSBBTSwgU2ViYXN0aWFuIFJlaWNoZWwgd3JvdGU6Cj4gRnJvbTogUGFs
-aSBSb2jDoXIgPHBhbGkucm9oYXJAZ21haWwuY29tPgo+Cj4gVGhpcyBwYXRjaCBjb252ZXJ0cyB0
-aGUgcng1MSBBU29DIG1vZHVsZSB0byB1c2UKPiBkZXZtX3NuZF9zb2NfcmVnaXN0ZXJfY2FyZC4g
-SXQgYWxzbyBhZGRzIG1vZHVsZSBhbGlhcwo+IHRvIHN1cHBvcnQgZHJpdmVyIGF1dG9sb2FkaW5n
-Lgo+Cj4gU2lnbmVkLW9mZi1ieTogUGFsaSBSb2jDoXIgPHBhbGkucm9oYXJAZ21haWwuY29tPgo+
-IFNpZ25lZC1vZmYtYnk6IFNlYmFzdGlhbiBSZWljaGVsIDxzcmVAa2VybmVsLm9yZz4KPiAtLS0K
-PiAgIHNvdW5kL3NvYy9vbWFwL3J4NTEuYyB8IDQ4ICsrKysrKysrKysrKysrKysrKysrKysrKysr
-KystLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDI4IGluc2VydGlvbnMo
-KyksIDIwIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9vbWFwL3J4NTEu
-YyBiL3NvdW5kL3NvYy9vbWFwL3J4NTEuYwo+IGluZGV4IDdmYjNkNGIuLjU4ZjVlMTIgMTAwNjQ0
-Cj4gLS0tIGEvc291bmQvc29jL29tYXAvcng1MS5jCj4gKysrIGIvc291bmQvc29jL29tYXAvcng1
-MS5jCj4gQEAgLTM5NCwxMCArMzk0LDkgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2NhcmQgcng1
-MV9zb3VuZF9jYXJkID0gewo+ICAgCS5udW1fY29uZmlncyA9IEFSUkFZX1NJWkUocng1MV9jb2Rl
-Y19jb25mKSwKPiAgIH07Cj4KPiAtc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnJ4NTFf
-c25kX2RldmljZTsKPiAtCj4gLXN0YXRpYyBpbnQgX19pbml0IHJ4NTFfc29jX2luaXQodm9pZCkK
-PiArc3RhdGljIGludCByeDUxX3NvY19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2
-KQo+ICAgewo+ICsJc3RydWN0IHNuZF9zb2NfY2FyZCAqY2FyZCA9ICZyeDUxX3NvdW5kX2NhcmQ7
-Cj4gICAJaW50IGVycjsKPgo+ICAgCWlmICghbWFjaGluZV9pc19ub2tpYV9yeDUxKCkgJiYgIW9m
-X21hY2hpbmVfaXNfY29tcGF0aWJsZSgibm9raWEsb21hcDMtbjkwMCIpKQo+IEBAIC00MTIsMjIg
-KzQxMSwxNyBAQCBzdGF0aWMgaW50IF9faW5pdCByeDUxX3NvY19pbml0KHZvaWQpCj4gICAJaWYg
-KGVycikKPiAgIAkJZ290byBlcnJfZ3Bpb19lY2lfc3c7Cj4KPiAtCXJ4NTFfc25kX2RldmljZSA9
-IHBsYXRmb3JtX2RldmljZV9hbGxvYygic29jLWF1ZGlvIiwgLTEpOwo+IC0JaWYgKCFyeDUxX3Nu
-ZF9kZXZpY2UpIHsKPiAtCQllcnIgPSAtRU5PTUVNOwo+IC0JCWdvdG8gZXJyMTsKPiAtCX0KPiAt
-Cj4gLQlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShyeDUxX3NuZF9kZXZpY2UsICZyeDUxX3NvdW5kX2Nh
-cmQpOwo+ICsJY2FyZC0+ZGV2ID0gJnBkZXYtPmRldjsKPgo+IC0JZXJyID0gcGxhdGZvcm1fZGV2
-aWNlX2FkZChyeDUxX3NuZF9kZXZpY2UpOwo+IC0JaWYgKGVycikKPiAtCQlnb3RvIGVycjI7Cj4g
-KwllcnIgPSBkZXZtX3NuZF9zb2NfcmVnaXN0ZXJfY2FyZChjYXJkLT5kZXYsIGNhcmQpOwo+ICsJ
-aWYgKGVycikgewo+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwgInNuZF9zb2NfcmVnaXN0ZXJfY2Fy
-ZCBmYWlsZWQgKCVkKVxuIiwgZXJyKTsKPiArCQlnb3RvIGVycl9zbmQ7Cj4gKwl9Cj4KPiAgIAly
-ZXR1cm4gMDsKPiAtZXJyMjoKPiAtCXBsYXRmb3JtX2RldmljZV9wdXQocng1MV9zbmRfZGV2aWNl
-KTsKPiAtZXJyMToKPiArZXJyX3NuZDoKPiArCWNhcmQtPmRldiA9IE5VTEw7CgpXaHkgdGhpcyBp
-cyByZXF1aXJlZD8/PwoKflJhamVldgoKPiAgIAlncGlvX2ZyZWUoUlg1MV9FQ0lfU1dfR1BJTyk7
-Cj4gICBlcnJfZ3Bpb19lY2lfc3c6Cj4gICAJZ3Bpb19mcmVlKFJYNTFfVFZPVVRfU0VMX0dQSU8p
-Owo+IEBAIC00MzYsMTkgKzQzMCwzMyBAQCBlcnJfZ3Bpb190dm91dF9zZWw6Cj4gICAJcmV0dXJu
-IGVycjsKPiAgIH0KPgo+IC1zdGF0aWMgdm9pZCBfX2V4aXQgcng1MV9zb2NfZXhpdCh2b2lkKQo+
-ICtzdGF0aWMgaW50IHJ4NTFfc29jX3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2
-KQo+ICAgewo+ICsJc3RydWN0IHNuZF9zb2NfY2FyZCAqY2FyZCA9IHBsYXRmb3JtX2dldF9kcnZk
-YXRhKHBkZXYpOwo+ICsKPiAgIAlzbmRfc29jX2phY2tfZnJlZV9ncGlvcygmcng1MV9hdl9qYWNr
-LCBBUlJBWV9TSVpFKHJ4NTFfYXZfamFja19ncGlvcyksCj4gICAJCQkJcng1MV9hdl9qYWNrX2dw
-aW9zKTsKPgo+IC0JcGxhdGZvcm1fZGV2aWNlX3VucmVnaXN0ZXIocng1MV9zbmRfZGV2aWNlKTsK
-PiArCWNhcmQtPmRldiA9IE5VTEw7Cj4gKwo+ICAgCWdwaW9fZnJlZShSWDUxX0VDSV9TV19HUElP
-KTsKPiAgIAlncGlvX2ZyZWUoUlg1MV9UVk9VVF9TRUxfR1BJTyk7Cj4gKwo+ICsJcmV0dXJuIDA7
-Cj4gICB9Cj4KPiAtbW9kdWxlX2luaXQocng1MV9zb2NfaW5pdCk7Cj4gLW1vZHVsZV9leGl0KHJ4
-NTFfc29jX2V4aXQpOwo+ICtzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciByeDUxX3NvY19k
-cml2ZXIgPSB7Cj4gKwkuZHJpdmVyID0gewo+ICsJCS5uYW1lID0gInJ4NTEtYXVkaW8iLAo+ICsJ
-CS5vd25lciA9IFRISVNfTU9EVUxFLAo+ICsJfSwKPiArCS5wcm9iZSA9IHJ4NTFfc29jX3Byb2Jl
-LAo+ICsJLnJlbW92ZSA9IHJ4NTFfc29jX3JlbW92ZSwKPiArfTsKPiArCj4gK21vZHVsZV9wbGF0
-Zm9ybV9kcml2ZXIocng1MV9zb2NfZHJpdmVyKTsKPgo+ICAgTU9EVUxFX0FVVEhPUigiTm9raWEg
-Q29ycG9yYXRpb24iKTsKPiAgIE1PRFVMRV9ERVNDUklQVElPTigiQUxTQSBTb0MgTm9raWEgUlgt
-NTEiKTsKPiAgIE1PRFVMRV9MSUNFTlNFKCJHUEwiKTsKPiArTU9EVUxFX0FMSUFTKCJwbGF0Zm9y
-bTpyeDUxLWF1ZGlvIik7Cj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+Commit 9e1fda4ae158 ("ASoC: dapm: Implement mixer input auto-disable") is trying to
+free the widget it allocated by snd_soc_dapm_new_control() call in
+dapm_kcontrol_data_alloc() by adding kfree(data->widget) to dapm_kcontrol_free().
+
+This is causing a widget double free with auto-disabled DAPM kcontrols in sound card
+unregistration because widgets are already freed before dapm_kcontrol_free() is
+called.
+
+Reason for that is all widgets are added into dapm->card->widgets list in
+snd_soc_dapm_new_control() and freed in dapm_free_widgets() during execution of
+snd_soc_dapm_free().
+
+Now snd_soc_dapm_free() calls for different DAPM contexts happens before
+snd_card_free() call from where the call chain to dapm_kcontrol_free() begins:
+
+soc_cleanup_card_resources()
+  soc_remove_dai_links()
+    soc_remove_link_dais()
+      snd_soc_dapm_free(&cpu_dai->dapm)
+    soc_remove_link_components()
+      soc_remove_platform()
+        snd_soc_dapm_free(&platform->dapm)
+      soc_remove_codec()
+        snd_soc_dapm_free(&codec->dapm)
+  snd_soc_dapm_free(&card->dapm)
+  snd_card_free()
+    snd_card_do_free()
+      snd_device_free_all()
+        snd_device_free()
+          snd_ctl_dev_free()
+            snd_ctl_remove()
+              snd_ctl_free_one()
+                dapm_kcontrol_free()
+
+This wasn't making harm with ordinary DAPM kcontrols since data->widget is NULL for
+them.
+
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: stable <stable@vger.kernel.org> # 3.12+
+---
+ sound/soc/soc-dapm.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index c8a780d0d057..7769b0a2bc5a 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -254,7 +254,6 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
+ static void dapm_kcontrol_free(struct snd_kcontrol *kctl)
+ {
+ 	struct dapm_kcontrol_data *data = snd_kcontrol_chip(kctl);
+-	kfree(data->widget);
+ 	kfree(data->wlist);
+ 	kfree(data);
+ }
+-- 
+1.9.1
