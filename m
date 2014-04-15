@@ -1,52 +1,85 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Fix a self assignment in
- sst_mem_block_alloc_scratch()
-Date: Tue, 15 Apr 2014 12:13:27 +0100
-Message-ID: <20140415111327.GQ12304@sirena.org.uk>
-References: <20140413224631.1a1bdce1@spike>
+Subject: Re: [PATCH v6] ASoC: add RT286 CODEC driver
+Date: Tue, 15 Apr 2014 13:04:28 +0100
+Message-ID: <20140415120428.GU12304@sirena.org.uk>
+References: <1397455170-2701-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oDto3OTLsk6uOlQH"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140413224631.1a1bdce1@spike>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Christian Engelmayer <cengelma@gmx.at>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Dan Carpenter <dan.carpenter@oracle.com>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============2842706267641373310=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD9C4264FFF
+ for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2014 14:04:42 +0200 (CEST)
+In-Reply-To: <1397455170-2701-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: bardliao@realtek.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---oDto3OTLsk6uOlQH
+--===============2842706267641373310==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XSEVMyPRvc8xgDhM"
+Content-Disposition: inline
+
+
+--XSEVMyPRvc8xgDhM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Apr 13, 2014 at 10:46:31PM +0200, Christian Engelmayer wrote:
-> Remove a self assignment in sst_mem_block_alloc_scratch(). When calculating
-> buffer sizes there is no need for statements without effect. Detected by
-> Coverity: CID 1195249.
+On Mon, Apr 14, 2014 at 01:59:30PM +0800, bardliao@realtek.com wrote:
 
-Applied, thanks.
+> +static unsigned int rt286_hw_read(struct snd_soc_codec *codec,
+> +						unsigned int reg)
+> +{
 
---oDto3OTLsk6uOlQH
+> +static int rt286_hw_write(struct snd_soc_codec *codec,
+> +				unsigned int reg, unsigned int value)
+> +{
+
+To repeat what's been said before if you are implementing register I/O
+you *MUST* use regmap to do this.  What's not been clear is if this
+device has a control interface that looks enough like a register map to
+be implemented like one but since we're just guessing based on a
+combination of the code and the HDA spec it's not entirely clear.
+
+--XSEVMyPRvc8xgDhM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTTRRUAAoJELSic+t+oim9V9oP/1/TKltXRdsWAlCBGO4A6Bpw
-me9hmS+P0HMwL6FujHNh5CRg5ztnocIGjGqqDj9BjaOhWWkGj5EDv9Vxm9PByZIq
-rc+7hxRk6DCCyg4brnD1PARIA3NoufZ15bOkt50wAdnI+QblLXoxc0+Kl+Rg0imw
-qN8wbi6zTgpbZUhZabpGXNu8UfEWizrKCRHA3HZR7f0GH83nSQ+kVglLcQX9JQpC
-RxjPha6UQflHqveyR2z0AGD6x6MAKN57ot1ZJhWiC8M5aclilLtgx1y3mznUzFrh
-ZCqiD8OSc5Smq19Hkp/1F5o80Rdh09lwmOYE5q5OCYOBInNCpRhBaA+mKKtNfClo
-X5DBnYQDksEUNuNq8QVU4egFMlx7khSX/YaydylKlb/0RbgEPmG8tI6sVrXTsirB
-foIF4B/w+cCCBjkqrEO3dIRU7CtcvY23s8e6uMSK2mfv4ToZXlHeVBeQzB/Cc69Z
-wvn03mLURqgI9C5XiimDVd8qqOdRw8SanoE1ZtWFxqprTBJmTng7Gje6Ti/Wy+EW
-5k8KpVOj5JU/g0g/SVJHCYRsqpl2bBVzgg1sy60WDUFFxRMKNhhUE8sKCBS7b+hI
-FZINYX+QKK1bWvpSz4WeGmrFHOmECzIKZTPsstPbvDE6zc2JsN4yZiADiDEvDXld
-DzIQd0vbDyas7HpYl/Xx
-=nPPs
+iQIcBAEBAgAGBQJTTSBJAAoJELSic+t+oim9UekQAJlfwIMur5En5Lr/t2PR5c9v
+5tORRoszhM0gk4xTaH2X74NMWNmRg159TkxrtvOlgXySYHcfY/MjyUFhOJ6ZoLCt
+ukLfEZndZN8/2Me2HEB+qFA20pcECowNVc8cEGBwteFcBUFL6D5wBDIGr+dlU8hG
+2Kb4B9ETpV+DCr/Ho9JWE1EYeVe+x1zRpWa8DxXkp5X3FscLDDoPIX7Fy0jFiipQ
+47Ze5lOaHVlYa4V7vakpsf0ORFSypRG4eERxuOdSFdbfhXYzO0gfIENM8ipxUxMT
+NLF+Muuukn4K7k0AZydBCmCMql8XyqkWqXmcUz7YWdx4VfMmB/ZGws4EcUV0hrhM
+hnPYuEsl1dV4xEkRR5Py0wSk8saGJLkYbaSgmMoB7ewePZP/kX55pyU7qiVbihq4
+mESgXJX5w5LFheS8H6+7XUWwmfxCctuf+jvP4Y8YpuSImfUq6Nc6GkaBfIkeJu/2
+kY8oyIgvl4obw5ovpvkg2djp4Jkf4+mtV5cwQ6bL4Bf42Eu6LMuBGbNo0pdaG7Wl
+oRTDlCgb3dfGINf3FrsFBeCcOQMjj5ijIGuEDuDP/C6Z+rBk7rS+uPPSdc0S/CMz
+ZXNdBWsNsosmRw25shU0kkPVcG7jDaeqEVv7sFSHkZzRDULAmIsNO7pPiGtR/Psw
+1GlI/KogIsdm7Pkvau8D
+=d220
 -----END PGP SIGNATURE-----
 
---oDto3OTLsk6uOlQH--
+--XSEVMyPRvc8xgDhM--
+
+--===============2842706267641373310==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2842706267641373310==--
