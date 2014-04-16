@@ -1,18 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: alsa-utils aplay/arecord can't be interrupted when
- streaming is not active
-Date: Wed, 16 Apr 2014 10:58:40 +0200
-Message-ID: <534E4640.5010102@perex.cz>
-References: <534E3736.6070100@mentor.com> <534E39F3.4040200@perex.cz>
- <534E407C.10002@mentor.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 00/18] ASoC: omap: Bind the omap-pcm platform
+	driver to dai device
+Date: Wed, 16 Apr 2014 12:23:13 +0300
+Message-ID: <1397640211-15447-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id E91C5261A2F
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 10:58:40 +0200 (CEST)
-In-Reply-To: <534E407C.10002@mentor.com>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88E34261A2F
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 11:23:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,78 +19,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: jiwang <jiada_wang@mentor.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, notasas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Date 16.4.2014 10:34, jiwang wrote:
-> Hi Jaroslav
-> 
-> On 04/16/2014 05:06 PM, Jaroslav Kysela wrote:
->> Date 16.4.2014 09:54, jiwang wrote:
->>> Hi All
->>>
->>> With latest 1.0.27.2 alsa-utils, I am facing problem to interrupt
->>> aplay/arecord
->>> when the streaming is not active (no data can be written to or read from
->>> cards)
->>> further more, if I start aplay/arecord with "-N" nonblocking option,
->>> then aplay/arecord can never exit, unless I do a system reset
->> If I/O stalls it's usually problem in the driver. You don't write any
->> information about your configuration - post 'aplay -v' to see more.
-> This issue is caught when we were doing some tests,
-> test for both correct and incorrect configuration of driver
-> and we expect SIGINT can interrupt aplay/arecord in both cases
-> (which was the cause with the old version 1.0.26)
-> 
->> You may kill the process using the SIGABRT signal.. No reboot is required.
-> 
-> Yes, SIGABRT works,
-> But as in our case:
-> CPU dai device is waiting on a external clock,
-> but isnt provided caused the I/O stall
-> the driver is functioning properly and should still be SIGINT-ed in my 
-> opinion
+Hi,
 
-The user space received SIGINT, but the current aplay code tries to
-finish the device close sequence. Could you determine, in which syscall
-is the process after you sent SIGINT? A backtrace would be great.
+This should have been done a long time ago...
+Add support for binding the omap-pcm platform to a dai device. IN this way we
+can remove the 'omap-pcm-audio' platform device/driver need.
+The change will also going to simplify cases when we boot with DT and we can use
+the same node for cpu_dai and platform.
 
-> 
-> Thanks,
-> Jiada
-> 
->>> I found if I revert the following patch
->>>
->>> /commit 1d0042d7e948815f8015c62bc53143eed3b83206//
->>> //Author: Jaroslav Kysela <perex@perex.cz>//
->>> //Date:   Mon Apr 8 13:30:54 2013 +0200//
->>> //
->>> //    aplay/arecord: change the interrupt handling using snd_pcm_abort()//
->>> //    //
->>> //    It is required (exclude the fatal SIGABRT) to call snd_pcm_close()
->>> and//
->>> //    the end of work (outside of the interrupt handler). Use new
->>> snd_pcm_abort()//
->>> //    function to inform alsa-lib to not ignore EINTR and move the
->>> in_aborting//
->>> //    variable to the global scope to be checked in the i/o loops.//
->>> //    //
->>> //    Signed-off-by: Jaroslav Kysela <perex@perex.cz>//
->>> /
->>> http://git.alsa-project.org/?p=alsa-utils.git;a=commit;h=1d0042d7e948815f8015c62bc53143eed3b83206
->>>
->>> then aplay/arecord can be interrupted correctly
->>>
->>> Is it a defect in aplay.c or did I miss something?
->>>
->>> Thanks,
->>> Jiada
->>>
->>
+Regards,
+Peter
+---
+Peter Ujfalusi (18):
+  ASoC: omap-pcm: Support for binding the platform driver to dai devices
+  ASoC: omap-mcpdm: Assign the dai DMA data at earlier time
+  ASoC: omap-mcpdm: Bind the platform driver to the dai driver when
+    loading
+  ASoC: omap-mcbsp: Assign the dai DMA data at earlier time
+  ASoC: omap-mcbsp: Bind the platform driver to the dai driver when
+    loading
+  ASoC: omap-dmic: Assign the dai DMA data at earlier time
+  ASoC: omap-dmic: Bind the platform driver to the dai driver when
+    loading
+  ASoC: omap-hdmi: Bind the platform driver to the dai driver when
+    loading
+  ASoC: omap-abe-twl6040: Use the cpu_dai node to specify the platform
+    driver
+  ASoC: omap-twl4030: Use the same name/node for platform as the cpu_dai
+  ASoC: am3517evm: Use the same name for platform as the cpu_dai
+  ASoC: ams-delta: Use the same name for platform as the cpu_dai
+  ASoC: n810: Use the same name for platform as the cpu_dai
+  ASoC: omap3pandora: Use the same name for platform as the cpu_dai
+  ASoC: osk5912: Use the same name for platform as the cpu_dai
+  ASoC: rx51: Use the same name for platform as the cpu_dai
+  ASoC: omap-hdmi-card: Use the same name for platform as the cpu_dai
+  ASoC: omap-pcm: Drop the platform driver init code
 
+ sound/soc/omap/am3517evm.c        |  2 +-
+ sound/soc/omap/ams-delta.c        |  2 +-
+ sound/soc/omap/n810.c             |  2 +-
+ sound/soc/omap/omap-abe-twl6040.c |  8 ++------
+ sound/soc/omap/omap-dmic.c        | 10 +++++++++-
+ sound/soc/omap/omap-hdmi-card.c   |  2 +-
+ sound/soc/omap/omap-hdmi.c        |  7 ++++++-
+ sound/soc/omap/omap-mcbsp.c       | 19 ++++++++++++-------
+ sound/soc/omap/omap-mcpdm.c       | 15 +++++++++++----
+ sound/soc/omap/omap-pcm.c         | 25 ++++++-------------------
+ sound/soc/omap/omap-pcm.h         | 35 +++++++++++++++++++++++++++++++++++
+ sound/soc/omap/omap-twl4030.c     | 10 ++++++++--
+ sound/soc/omap/omap3pandora.c     |  4 ++--
+ sound/soc/omap/osk5912.c          |  2 +-
+ sound/soc/omap/rx51.c             |  2 +-
+ 15 files changed, 97 insertions(+), 48 deletions(-)
+ create mode 100644 sound/soc/omap/omap-pcm.h
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+1.9.2
