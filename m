@@ -1,19 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 01/18] ASoC: omap-pcm: Support for binding
- the platform driver to dai devices
-Date: Wed, 16 Apr 2014 14:01:51 +0300
-Message-ID: <534E631F.5090002@ti.com>
-References: <1397640211-15447-1-git-send-email-peter.ujfalusi@ti.com>
- <1397640211-15447-2-git-send-email-peter.ujfalusi@ti.com>
- <534E4DBC.3080208@ti.com>
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: Re: Using simple-card to replace kirkwood-t5325.c
+Date: Wed, 16 Apr 2014 13:13:33 +0200
+Message-ID: <20140416111333.GA11310@lunn.ch>
+References: <20140415161302.GC1871@lunn.ch>
+ <534D7D31.6040802@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 09D5E2651EC
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 13:01:55 +0200 (CEST)
-In-Reply-To: <534E4DBC.3080208@ti.com>
+Received: from vps0.lunn.ch (vps0.lunn.ch [178.209.37.122])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62D3326517B
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 13:15:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <534D7D31.6040802@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,27 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, Jyri Sarha <jsarha@ti.com>, notasas@gmail.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, Jean Delvare <khali@linux-fr.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/16/2014 12:30 PM, Peter Ujfalusi wrote:
->> +int omap_pcm_platform_register(struct device *dev)
->> +{
->> +	return snd_soc_register_platform(dev, &omap_soc_platform);
-> =
+On Tue, Apr 15, 2014 at 08:40:49PM +0200, Lars-Peter Clausen wrote:
+> On 04/15/2014 06:13 PM, Andrew Lunn wrote:
+> >Hi Folks
+> 
+> Adding a few people to Cc.
+> 
+> >
+> >I'm an ALSA newbie, so if i say anything stupid, please let me know.
+> >
+> >I'm trying to replace sound/soc/kirkwood/kirkwood-t5325.c with DT,
+> >using simple-card. I can get near, but i'm missing two things:
+> >
+> >There does not appear to be a way to represent this in DT:
+> >
+> >static int t5325_dai_init(struct snd_soc_pcm_runtime *rtd)
+> >{
+> >	struct snd_soc_codec *codec = rtd->codec;
+> >	struct snd_soc_dapm_context *dapm = &codec->dapm;
+> >
+> >	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
+> >	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
+> >	snd_soc_dapm_enable_pin(dapm, "Speaker");
+> >
+> >	return 0;
+> >}
+> >
+> >It appears that quite a few drivers need to enable pins.
+> 
+> I'm not sure where this got started, but this mostly seems to be
+> cargo-culting. External pins are enabled by default, there is no
+> need to call snd_soc_dapm_enable_pin() unless
+> snd_soc_dapm_disable_pin() has been called before for the same pin.
 
-> Aargh, I meant to use the devm_snd_soc_register_platform() so the unregis=
-ter
-> is not going to be needed and the subsequent patches are expecting that t=
-his
-> is devm_*
-> Will resend soon.
+Ah, thanks for saying this. I just tested without, and all is good.
 
-There's no devm variant for snd_soc_register_platform()
-Mark: would it make sens to add it? I can add a patch to v2 of this series =
-for it.
-
--- =
-
-P=E9ter
+Thanks
+	Andrew
