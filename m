@@ -1,17 +1,22 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: alsa-utils aplay/arecord can't be interrupted when
- streaming is not active
-Date: Wed, 16 Apr 2014 10:06:11 +0200
-Message-ID: <534E39F3.4040200@perex.cz>
-References: <534E3736.6070100@mentor.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH v3 09/18] ASoC: fsl-ssi: Only enable
+	baudclk when used
+Date: Wed, 16 Apr 2014 16:08:29 +0800
+Message-ID: <20140416080826.GA13449@MrMyself>
+References: <1397482548-28463-1-git-send-email-mpa@pengutronix.de>
+ <1397482548-28463-10-git-send-email-mpa@pengutronix.de>
+ <20140414152850.GB7197@MrMyself>
+ <20140416072738.GC6159@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 046DD2617B8
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 10:06:12 +0200 (CEST)
-In-Reply-To: <534E3736.6070100@mentor.com>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe006.messaging.microsoft.com [213.199.154.209])
+ by alsa0.perex.cz (Postfix) with ESMTP id D58F0261A66
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 10:21:15 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20140416072738.GC6159@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +26,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: jiwang <jiada_wang@mentor.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, Mark Brown <broonie@kernel.org>, Timur Tabi <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, kernel@pengutronix.de, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 16.4.2014 09:54, jiwang wrote:
-> Hi All
-> 
-> With latest 1.0.27.2 alsa-utils, I am facing problem to interrupt
-> aplay/arecord
-> when the streaming is not active (no data can be written to or read from
-> cards)
-> further more, if I start aplay/arecord with "-N" nonblocking option,
-> then aplay/arecord can never exit, unless I do a system reset
+Hi Markus,
 
-If I/O stalls it's usually problem in the driver. You don't write any
-information about your configuration - post 'aplay -v' to see more.
+Please allow me to drop some content.
 
-You may kill the process using the SIGABRT signal.. No reboot is required.
+On Wed, Apr 16, 2014 at 09:27:38AM +0200, Markus Pargmann wrote:
+> On Mon, Apr 14, 2014 at 11:28:51PM +0800, Nicolin Chen wrote:
+> > On Mon, Apr 14, 2014 at 03:35:39PM +0200, Markus Pargmann wrote:
+> > > +static bool fsl_ssi_is_i2s_master(struct fsl_ssi_private *ssi_private)
+> > > +{
+> > > +	return (ssi_private->dai_fmt & SND_SOC_DAIFMT_MASTER_MASK) ==
+> > > +		SND_SOC_DAIFMT_CBS_CFS;
+> > > +}
 
-> I found if I revert the following patch
-> 
-> /commit 1d0042d7e948815f8015c62bc53143eed3b83206//
-> //Author: Jaroslav Kysela <perex@perex.cz>//
-> //Date:   Mon Apr 8 13:30:54 2013 +0200//
-> //
-> //    aplay/arecord: change the interrupt handling using snd_pcm_abort()//
-> //    //
-> //    It is required (exclude the fatal SIGABRT) to call snd_pcm_close()
-> and//
-> //    the end of work (outside of the interrupt handler). Use new
-> snd_pcm_abort()//
-> //    function to inform alsa-lib to not ignore EINTR and move the
-> in_aborting//
-> //    variable to the global scope to be checked in the i/o loops.//
-> //    //
-> //    Signed-off-by: Jaroslav Kysela <perex@perex.cz>//
-> /
-> http://git.alsa-project.org/?p=alsa-utils.git;a=commit;h=1d0042d7e948815f8015c62bc53143eed3b83206
-> 
-> then aplay/arecord can be interrupted correctly
-> 
-> Is it a defect in aplay.c or did I miss something?
-> 
-> Thanks,
-> Jiada
-> 
+> > > @@ -496,6 +503,12 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
+> > >  		spin_unlock_irqrestore(&ssi_private->baudclk_lock, flags);
+> > >  	}
+> > >  
+> > > +	if (fsl_ssi_is_i2s_master(ssi_private)) {
+> > > +		ret = clk_prepare_enable(ssi_private->baudclk);
+> > > +		if (ret)
+> > > +			return ret;
+> > > +	}
 
+> > > +static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
+> > > +		struct snd_soc_dai *dai)
+> > > +{
+> > > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> > > +	struct fsl_ssi_private *ssi_private =
+> > > +		snd_soc_dai_get_drvdata(rtd->cpu_dai);
+> > > +
+> > > +	if (fsl_ssi_is_i2s_master(ssi_private))
+> > > +		clk_disable_unprepare(ssi_private->baudclk);
+> > > +}
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+> > > @@ -576,6 +600,11 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+> > >  
+> > >  	ssi_private->dai_fmt = fmt;
+> > >  
+> > > +	if (fsl_ssi_is_i2s_master(ssi_private) && IS_ERR(ssi_private->baudclk)) {
+> > > +		dev_err(cpu_dai->dev, "no baudclk needed for master mode\n");
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > 
+> > I was wondering what if machine driver doesn't set fmt to master during
+> > its probe(), in another word -- before fsl_ssi_startup(), but leave that
+> > into its hw_params() via snd_soc_dai_set_fmt() which then would run after
+> > fsl_ssi_startup() while having no baud clock enabled in this case.
+> > 
+> > A better solution may be to wrap clk_prepare_enable() and master mode
+> > clock dividing code into fsl_ssi_hw_params(), a bit like the ESAI driver
+> > even though it doesn't contain the clk_prepare_enable() part currently,
+> > and then to put clk_disable_unprepare() into hw_free() for symmetry.
+> > 
+> > Any suggestion?
+> 
+> Yes this is a problem. Although I am not really convinced of the concept
+> of setting up the DAIs in hw_params, we should support it as there are
+> some users.
+
+I think it might be an old fashion way. I saw quite a lot machine drivers
+doing the DAI format setting in its hw_params(). Even in the current tree
+we can also grep some out by using:
+
+find ./sound/soc/ -name "*.c" |xargs grep "snd_soc_dai_set_fmt"
+
+So it should be plausible considering there might be some special cases,
+using CBS_CFS for 44.1KHz groups and CBM_CFM for 48KHz groups for example.
+
+> Is there always exactly one hw_free call for one hw_params call? There
+> is a comment above the function:
+> "Frees resources allocated by hw_params, can be called multiple times",
+
+That's a good question. IIRC, snd_pcm_release_substream() would call its
+hw_free() right before calling snd_pcm_close(). So there would be at least
+twice for hw_free()'s execution.
+
+> so I am not sure if we can directly use clk_prepare_enable or if we need
+> to remember the clock state?
+
+We need to if applying that. Or put them into trigger() as an alternative
+approach even if it sounds weird to me.
+
+Thanks,
+Nicolin
