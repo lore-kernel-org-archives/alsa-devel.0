@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 01/20] ASoC: Add resource managed
-	snd_soc_register_platform()
-Date: Wed, 16 Apr 2014 15:46:11 +0300
-Message-ID: <1397652390-852-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 02/20] ASoC: omap-pcm: Support for binding
+	the platform driver to dai devices
+Date: Wed, 16 Apr 2014 15:46:12 +0300
+Message-ID: <1397652390-852-3-git-send-email-peter.ujfalusi@ti.com>
 References: <1397652390-852-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 2442D2652AC
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 14:46:39 +0200 (CEST)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44B8D2652FF
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 14:46:42 +0200 (CEST)
 In-Reply-To: <1397652390-852-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,73 +25,70 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Jyri Sarha <jsarha@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, notasas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Simplify error handling and remove repetitive (and rarely executed) code
-for unregistration by providing a devm_snd_soc_register_platform()
-platform.
+With the new calls it is going to be possible to bind the platform driver
+to a dai device which makes it easier for us in a long run to handle DT
+boots, and opens the possibility to move machine driver to generic simple
+card.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- include/sound/soc.h    |  2 ++
- sound/soc/soc-devres.c | 34 ++++++++++++++++++++++++++++++++++
+ sound/soc/omap/omap-pcm.c |  6 ++++++
+ sound/soc/omap/omap-pcm.h | 30 ++++++++++++++++++++++++++++++
  2 files changed, 36 insertions(+)
+ create mode 100644 sound/soc/omap/omap-pcm.h
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 33965946656c..9e214ec70c8a 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -375,6 +375,8 @@ int snd_soc_resume(struct device *dev);
- int snd_soc_poweroff(struct device *dev);
- int snd_soc_register_platform(struct device *dev,
- 		const struct snd_soc_platform_driver *platform_drv);
-+int devm_snd_soc_register_platform(struct device *dev,
-+		const struct snd_soc_platform_driver *platform_drv);
- void snd_soc_unregister_platform(struct device *dev);
- int snd_soc_add_platform(struct device *dev, struct snd_soc_platform *platform,
- 		const struct snd_soc_platform_driver *platform_drv);
-diff --git a/sound/soc/soc-devres.c b/sound/soc/soc-devres.c
-index 7ac745df1412..e94aa0277250 100644
---- a/sound/soc/soc-devres.c
-+++ b/sound/soc/soc-devres.c
-@@ -52,6 +52,40 @@ int devm_snd_soc_register_component(struct device *dev,
- }
- EXPORT_SYMBOL_GPL(devm_snd_soc_register_component);
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index 07b8b7bc9d20..c3711b582d5f 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -232,6 +232,12 @@ static struct snd_soc_platform_driver omap_soc_platform = {
+ 	.pcm_free	= omap_pcm_free_dma_buffers,
+ };
  
-+static void devm_platform_release(struct device *dev, void *res)
++int omap_pcm_platform_register(struct device *dev)
 +{
-+	snd_soc_unregister_platform(*(struct device **)res);
++	return devm_snd_soc_register_platform(dev, &omap_soc_platform);
 +}
++EXPORT_SYMBOL_GPL(omap_pcm_platform_register);
 +
-+/**
-+ * devm_snd_soc_register_platform - resource managed platform registration
-+ * @dev: Device used to manage platform
-+ * @platform: platform to register
-+ *
-+ * Register a platform driver with automatic unregistration when the device is
-+ * unregistered.
-+ */
-+int devm_snd_soc_register_platform(struct device *dev,
-+			const struct snd_soc_platform_driver *platform_drv)
-+{
-+	struct device **ptr;
-+	int ret;
-+
-+	ptr = devres_alloc(devm_platform_release, sizeof(*ptr), GFP_KERNEL);
-+	if (!ptr)
-+		return -ENOMEM;
-+
-+	ret = snd_soc_register_platform(dev, platform_drv);
-+	if (ret == 0) {
-+		*ptr = dev;
-+		devres_add(dev, ptr);
-+	} else {
-+		devres_free(ptr);
-+	}
-+
-+	return ret;
-+}
-+
- static void devm_card_release(struct device *dev, void *res)
+ static int omap_pcm_probe(struct platform_device *pdev)
  {
- 	snd_soc_unregister_card(*(struct snd_soc_card **)res);
+ 	return snd_soc_register_platform(&pdev->dev,
+diff --git a/sound/soc/omap/omap-pcm.h b/sound/soc/omap/omap-pcm.h
+new file mode 100644
+index 000000000000..c1d2f31d71e9
+--- /dev/null
++++ b/sound/soc/omap/omap-pcm.h
+@@ -0,0 +1,30 @@
++/*
++ * omap-pcm.h - OMAP PCM driver
++ *
++ * Copyright (C) 2014 Texas Instruments, Inc.
++ *
++ * Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ */
++
++#ifndef __OMAP_PCM_H__
++#define __OMAP_PCM_H__
++
++#if IS_ENABLED(CONFIG_SND_OMAP_SOC)
++int omap_pcm_platform_register(struct device *dev);
++#else
++static inline int omap_pcm_platform_register(struct device *dev)
++{
++	return 0;
++}
++#endif /* CONFIG_SND_OMAP_SOC */
++
++#endif /* __OMAP_PCM_H__ */
 -- 
 1.9.2
