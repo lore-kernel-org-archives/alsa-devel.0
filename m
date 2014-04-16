@@ -1,26 +1,21 @@
-From: Rob Herring <robherring2@gmail.com>
-Subject: Re: [PATCH] of: add empty of_find_node_by_path() for
-	!OF
-Date: Wed, 16 Apr 2014 12:39:04 -0500
-Message-ID: <CAL_Jsq+izG_YpQ2BLsyJkdPZhUZEX+T2FypHWak-x+FqeVV=-g@mail.gmail.com>
-References: <1397630960-26677-1-git-send-email-shc_work@mail.ru>
- <CAL_Jsq+MtkQcKs06xggrZkQHncSCBx6ABCaiud8HokEgAX2NMA@mail.gmail.com>
- <20140416142502.GR12304@sirena.org.uk>
- <CAL_JsqJNs5n8XmRe+-JWAcmunnTAoqeNFUwP2B6OitBd=QtXYQ@mail.gmail.com>
- <20140416160352.GS12304@sirena.org.uk>
- <CAL_JsqKPYiQpv8PDPsemSEuXJc_2Roqu-G3+8rV4dSHbXuHfDw@mail.gmail.com>
- <20140416171552.GU12304@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 09/18] ASoC: fsl-ssi: Only enable
+	baudclk when used
+Date: Wed, 16 Apr 2014 18:42:16 +0100
+Message-ID: <20140416174216.GW12304@sirena.org.uk>
+References: <1397482548-28463-1-git-send-email-mpa@pengutronix.de>
+ <1397482548-28463-10-git-send-email-mpa@pengutronix.de>
+ <20140414152850.GB7197@MrMyself>
+ <20140416072738.GC6159@pengutronix.de>
+ <20140416080826.GA13449@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3519271418627161080=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f172.google.com (mail-vc0-f172.google.com
- [209.85.220.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 1566D2654DD
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 19:39:05 +0200 (CEST)
-Received: by mail-vc0-f172.google.com with SMTP id la4so11114156vcb.17
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 10:39:04 -0700 (PDT)
-In-Reply-To: <20140416171552.GU12304@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 388C12654E0
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 19:42:38 +0200 (CEST)
+In-Reply-To: <20140416080826.GA13449@MrMyself>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,39 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Linux-ALSA <alsa-devel@alsa-project.org>, Alexander Shiyan <shc_work@mail.ru>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Timur Tabi <timur@tabi.org>, Rob Herring <robh+dt@kernel.org>, Grant Likely <grant.likely@linaro.org>
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, Sascha Hauer <s.hauer@pengutronix.de>, Timur Tabi <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, kernel@pengutronix.de, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 16, 2014 at 12:15 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Apr 16, 2014 at 11:10:15AM -0500, Rob Herring wrote:
->
->> Yes. If this going to be a common pattern, a
->> of_get_machine_compatible() helper might be useful. Usually, any code
->> searching by path makes me suspicious.
->
-> I've always been surprised we don't have more infrastructure for
-> quirking off machine type in a similar way to how ACPI systems use DMI.
 
-We used to have machine_is_blah which is kind of replaced by
-of_machine_is_compatible, but yes that is a bit limited. What the fsl
-ssi driver is doing isn't really a quirk anyway.
+--===============3519271418627161080==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ddJi1IsAv4W/kcDl"
+Content-Disposition: inline
 
-PCI also has a whole infrastructure for applying quirks. We could do
-something similar which could add/fix properties or do various setup.
-Then we'd be able to scatter calls everywhere:
 
-OF_FIXUP("some-compatible-str", fixup_function);
+--ddJi1IsAv4W/kcDl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I don't know that we want to encourge that, but would be a way to
-separate handling old/broken bindings separately from current code
-paths. I guess the question is whether we have many existing cases
-(PPC, I'm looking at you) that would benefit.
+On Wed, Apr 16, 2014 at 04:08:29PM +0800, Nicolin Chen wrote:
+> On Wed, Apr 16, 2014 at 09:27:38AM +0200, Markus Pargmann wrote:
 
-BTW, I did propose something similar with conditional initcalls a
-while back[1]. Perhaps as a fixup would be more acceptable than an
-initcall.
+> > Is there always exactly one hw_free call for one hw_params call? There
+> > is a comment above the function:
+> > "Frees resources allocated by hw_params, can be called multiple times",
 
-Rob
+> That's a good question. IIRC, snd_pcm_release_substream() would call its
+> hw_free() right before calling snd_pcm_close(). So there would be at least
+> twice for hw_free()'s execution.
 
-[1] http://comments.gmane.org/gmane.linux.drivers.devicetree/50117
+There may be any number of hw_params() calls.
+
+--ddJi1IsAv4W/kcDl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTTsD0AAoJELSic+t+oim9ij4P/2fTPRb+WaYMDSksemMFHmOE
+f3FLF7dEGlRlo8DKRHZJ/OJKHXqcZD/jCKMlqRF6o0NbERggG/jQIrUXYRY1KgLM
+Os6iMC97TLROZUoYSfQ3NIVwzIn5hRUq/QDZs7lTtHGcLmEhWOmLhVo6GhOirdXq
+yFDmPjajrMCKsLaXfCmXJ0uxA5Qo1l9Sp+idvZuJZAXz/UfZgjs7IPnP7QuGgVK9
+3tySmMoCNTcA2eomGjhPoFkGi3AmVZV97WFVD8NSHEI86JPYqkLNpRzkXKO14K+i
+iGStbytDkYqAZJIQLHjV/ZHx6xXmQ2JcYh9xl1JeXNN7rHkGcOQX/vDoNbH2n4NY
+dmG8N+orxL2J2fBZuvMdlFK5uueuvY9w1BPG8jDuoe6hkB4xQP0LqNJlDHzjA8qU
+GE2gnm2sx+iRrV6nKnkVzQWDqfJy4ixFLX58U6IH+we5wjL30CGZDn0Osq8NRU5K
+IkZ5FP3ocGqaesWPOk5/jIsx2rrisWfabOCrWsUDG2oZEjk1FU1bwwwdTckrCGq/
+X64Egj1KM31FXemHXvOJyX8sWqSOgx19joR6imk15P6cHK3X80JJ1N6YuHWXZWFI
+nHikyNP3EhNco334iKCHxDOa1qAePocl+Y++t7wRZd6szGFdM4zgIiRiKRE0S3ep
+xTCcKicREfSjz+RDdOp3
+=5rXM
+-----END PGP SIGNATURE-----
+
+--ddJi1IsAv4W/kcDl--
+
+--===============3519271418627161080==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3519271418627161080==--
