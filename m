@@ -1,58 +1,46 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH v6] ASoC: add RT286 CODEC driver
-Date: Wed, 16 Apr 2014 13:26:41 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D73AC302@RTITMBSV03.realtek.com.tw>
-References: <1397455170-2701-1-git-send-email-bardliao@realtek.com>
- <20140415120428.GU12304@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 04AE42652FF
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 15:37:18 +0200 (CEST)
-In-Reply-To: <20140415120428.GU12304@sirena.org.uk>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, Flove <flove@realtek.com>
+From: Tim Gardner <tim.gardner@canonical.com>
+Subject: [PATCH v2 linux-next] ALSA: pcm: 'BUG:' message unnecessarily triggers kerneloops
+Date: Wed, 16 Apr 2014 08:18:35 -0600
+Message-ID: <1397657915-5036-1-git-send-email-tim.gardner@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Tim Gardner <tim.gardner@canonical.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>, JongHo Kim <furmuwon@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Tuesday, April 15, 2014 8:04 PM
-> To: Bard Liao
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; lars@metafoo.de; Flove;
-> Oder Chiou; Gustaw Lewandowski
-> Subject: Re: [PATCH v6] ASoC: add RT286 CODEC driver
-> 
-> On Mon, Apr 14, 2014 at 01:59:30PM +0800, bardliao@realtek.com wrote:
-> 
-> > +static unsigned int rt286_hw_read(struct snd_soc_codec *codec,
-> > +						unsigned int reg)
-> > +{
-> 
-> > +static int rt286_hw_write(struct snd_soc_codec *codec,
-> > +				unsigned int reg, unsigned int value) {
-> 
-> To repeat what's been said before if you are implementing register I/O you
-> *MUST* use regmap to do this.  What's not been clear is if this device has a
-> control interface that looks enough like a register map to be implemented like one
-> but since we're just guessing based on a combination of the code and the HDA spec
-> it's not entirely clear.
+BugLink: http://bugs.launchpad.net/bugs/1305480
 
-I am a little bit confused about it. I thought you told me not using regmap.
-Actually, I don't know how to use dapm without implementing register I/O.
-Can I just convert rt286_hw_read/write to regmap?
+The kerneloops-daemon scans dmesg for common crash signatures, among
+which is 'BUG:'. The message emitted by the PCM library is really a
+warning, so the most expedient thing to do seems to be to change the
+string.
 
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Mark Brown <broonie@linaro.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: JongHo Kim <furmuwon@gmail.com>
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+---
 
-> 
-> ------Please consider the environment before printing this e-mail.
+v2: Changed string preface from "OVER RUN" to "XRUN". As Takashi pointed out,
+'Use a term "XRUN", as it's not always an overrun.'
+
+ sound/core/pcm_lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index ce83def..9acc77e 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -345,7 +345,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 			snd_pcm_debug_name(substream, name, sizeof(name));
+ 			xrun_log_show(substream);
+ 			pcm_err(substream->pcm,
+-				"BUG: %s, pos = %ld, buffer size = %ld, period size = %ld\n",
++				"XRUN: %s, pos = %ld, buffer size = %ld, period size = %ld\n",
+ 				name, pos, runtime->buffer_size,
+ 				runtime->period_size);
+ 		}
+-- 
+1.9.1
