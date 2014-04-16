@@ -1,15 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 00/18] ASoC: omap: Bind the omap-pcm platform
-	driver to dai device
-Date: Wed, 16 Apr 2014 12:23:13 +0300
-Message-ID: <1397640211-15447-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 01/18] ASoC: omap-pcm: Support for binding the
+	platform driver to dai devices
+Date: Wed, 16 Apr 2014 12:23:14 +0300
+Message-ID: <1397640211-15447-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1397640211-15447-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 88E34261A2F
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 11:23:38 +0200 (CEST)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 267E4261A9A
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 11:23:40 +0200 (CEST)
+In-Reply-To: <1397640211-15447-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +25,81 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, notasas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+With the new calls it is going to be possible to bind the platform driver
+to a dai device which makes it easier for us in a long run to handle DT
+boots, and opens the possibility to move machine driver to generic simple
+card.
 
-This should have been done a long time ago...
-Add support for binding the omap-pcm platform to a dai device. IN this way we
-can remove the 'omap-pcm-audio' platform device/driver need.
-The change will also going to simplify cases when we boot with DT and we can use
-the same node for cpu_dai and platform.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Peter Ujfalusi (18):
-  ASoC: omap-pcm: Support for binding the platform driver to dai devices
-  ASoC: omap-mcpdm: Assign the dai DMA data at earlier time
-  ASoC: omap-mcpdm: Bind the platform driver to the dai driver when
-    loading
-  ASoC: omap-mcbsp: Assign the dai DMA data at earlier time
-  ASoC: omap-mcbsp: Bind the platform driver to the dai driver when
-    loading
-  ASoC: omap-dmic: Assign the dai DMA data at earlier time
-  ASoC: omap-dmic: Bind the platform driver to the dai driver when
-    loading
-  ASoC: omap-hdmi: Bind the platform driver to the dai driver when
-    loading
-  ASoC: omap-abe-twl6040: Use the cpu_dai node to specify the platform
-    driver
-  ASoC: omap-twl4030: Use the same name/node for platform as the cpu_dai
-  ASoC: am3517evm: Use the same name for platform as the cpu_dai
-  ASoC: ams-delta: Use the same name for platform as the cpu_dai
-  ASoC: n810: Use the same name for platform as the cpu_dai
-  ASoC: omap3pandora: Use the same name for platform as the cpu_dai
-  ASoC: osk5912: Use the same name for platform as the cpu_dai
-  ASoC: rx51: Use the same name for platform as the cpu_dai
-  ASoC: omap-hdmi-card: Use the same name for platform as the cpu_dai
-  ASoC: omap-pcm: Drop the platform driver init code
-
- sound/soc/omap/am3517evm.c        |  2 +-
- sound/soc/omap/ams-delta.c        |  2 +-
- sound/soc/omap/n810.c             |  2 +-
- sound/soc/omap/omap-abe-twl6040.c |  8 ++------
- sound/soc/omap/omap-dmic.c        | 10 +++++++++-
- sound/soc/omap/omap-hdmi-card.c   |  2 +-
- sound/soc/omap/omap-hdmi.c        |  7 ++++++-
- sound/soc/omap/omap-mcbsp.c       | 19 ++++++++++++-------
- sound/soc/omap/omap-mcpdm.c       | 15 +++++++++++----
- sound/soc/omap/omap-pcm.c         | 25 ++++++-------------------
- sound/soc/omap/omap-pcm.h         | 35 +++++++++++++++++++++++++++++++++++
- sound/soc/omap/omap-twl4030.c     | 10 ++++++++--
- sound/soc/omap/omap3pandora.c     |  4 ++--
- sound/soc/omap/osk5912.c          |  2 +-
- sound/soc/omap/rx51.c             |  2 +-
- 15 files changed, 97 insertions(+), 48 deletions(-)
+ sound/soc/omap/omap-pcm.c | 12 ++++++++++++
+ sound/soc/omap/omap-pcm.h | 35 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 47 insertions(+)
  create mode 100644 sound/soc/omap/omap-pcm.h
 
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index 07b8b7bc9d20..5c4bc9ae974b 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -232,6 +232,18 @@ static struct snd_soc_platform_driver omap_soc_platform = {
+ 	.pcm_free	= omap_pcm_free_dma_buffers,
+ };
+ 
++int omap_pcm_platform_register(struct device *dev)
++{
++	return snd_soc_register_platform(dev, &omap_soc_platform);
++}
++EXPORT_SYMBOL_GPL(omap_pcm_platform_register);
++
++void omap_pcm_platform_unregister(struct device *dev)
++{
++	snd_soc_unregister_platform(dev);
++}
++EXPORT_SYMBOL_GPL(omap_pcm_platform_unregister);
++
+ static int omap_pcm_probe(struct platform_device *pdev)
+ {
+ 	return snd_soc_register_platform(&pdev->dev,
+diff --git a/sound/soc/omap/omap-pcm.h b/sound/soc/omap/omap-pcm.h
+new file mode 100644
+index 000000000000..148509eb4b63
+--- /dev/null
++++ b/sound/soc/omap/omap-pcm.h
+@@ -0,0 +1,35 @@
++/*
++ * omap-pcm.h - OMAP PCM driver
++ *
++ * Copyright (C) 2014 Texas Instruments, Inc.
++ *
++ * Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ */
++
++#ifndef __OMAP_PCM_H__
++#define __OMAP_PCM_H__
++
++#if IS_ENABLED(CONFIG_SND_OMAP_SOC)
++int omap_pcm_platform_register(struct device *dev);
++void omap_pcm_platform_unregister(struct device *dev);
++#else
++static inline int omap_pcm_platform_register(struct device *dev)
++{
++	return 0;
++}
++
++static inline void omap_pcm_platform_unregister(struct device *dev)
++{
++}
++#endif /* CONFIG_SND_OMAP_SOC */
++
++#endif /* __OMAP_PCM_H__ */
 -- 
 1.9.2
