@@ -1,15 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 00/20] ASoC: omap: Bind the omap-pcm
-	platform driver to dai device
-Date: Wed, 16 Apr 2014 15:46:10 +0300
-Message-ID: <1397652390-852-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 01/20] ASoC: Add resource managed
+	snd_soc_register_platform()
+Date: Wed, 16 Apr 2014 15:46:11 +0300
+Message-ID: <1397652390-852-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1397652390-852-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 99D6F26527F
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 14:46:37 +0200 (CEST)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2442D2652AC
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 14:46:39 +0200 (CEST)
+In-Reply-To: <1397652390-852-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,73 +25,73 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Jyri Sarha <jsarha@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, notasas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Simplify error handling and remove repetitive (and rarely executed) code
+for unregistration by providing a devm_snd_soc_register_platform()
+platform.
 
-Changes since v1:
-- Add resource managed snd_soc_register_platform()
-- Use snd_soc_dai_init_dma_data()
-- omap-pcm is using the devm_snd_soc_register_platform()
-- Patch for davinci-mcasp since Version4 is using omap-pcm
-
-Cover letter from v1:
-
-This should have been done a long time ago...
-Add support for binding the omap-pcm platform to a dai device. IN this way we
-can remove the 'omap-pcm-audio' platform device/driver need.
-The change will also going to simplify cases when we boot with DT and we can use
-the same node for cpu_dai and platform.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Peter Ujfalusi (20):
-  ASoC: Add resource managed snd_soc_register_platform()
-  ASoC: omap-pcm: Support for binding the platform driver to dai devices
-  ASoC: omap-mcpdm: Assign the dai DMA data at earlier time
-  ASoC: omap-mcpdm: Bind the platform driver to the dai driver when
-    loading
-  ASoC: omap-mcbsp: Assign the dai DMA data at earlier time
-  ASoC: omap-mcbsp: Bind the platform driver to the dai driver when
-    loading
-  ASoC: omap-dmic: Assign the dai DMA data at earlier time
-  ASoC: omap-dmic: Bind the platform driver to the dai driver when
-    loading
-  ASoC: omap-hdmi: Bind the platform driver to the dai driver when
-    loading
-  ASoC: davinci-mcasp: Update MCASP_VERSION_4 platform driver
-    registration
-  ASoC: omap-abe-twl6040: Use the cpu_dai node to specify the platform
-    driver
-  ASoC: omap-twl4030: Use the same name/node for platform as the cpu_dai
-  ASoC: am3517evm: Use the same name for platform as the cpu_dai
-  ASoC: ams-delta: Use the same name for platform as the cpu_dai
-  ASoC: n810: Use the same name for platform as the cpu_dai
-  ASoC: omap3pandora: Use the same name for platform as the cpu_dai
-  ASoC: osk5912: Use the same name for platform as the cpu_dai
-  ASoC: rx51: Use the same name for platform as the cpu_dai
-  ASoC: omap-hdmi-card: Use the same name for platform as the cpu_dai
-  ASoC: omap-pcm: Drop the platform driver init code
+ include/sound/soc.h    |  2 ++
+ sound/soc/soc-devres.c | 34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+)
 
- include/sound/soc.h               |  2 ++
- sound/soc/davinci/davinci-mcasp.c | 37 +++++++++++++++++++++++++++++++------
- sound/soc/omap/am3517evm.c        |  2 +-
- sound/soc/omap/ams-delta.c        |  2 +-
- sound/soc/omap/n810.c             |  2 +-
- sound/soc/omap/omap-abe-twl6040.c |  8 ++------
- sound/soc/omap/omap-dmic.c        |  9 ++++++++-
- sound/soc/omap/omap-hdmi-card.c   |  2 +-
- sound/soc/omap/omap-hdmi.c        |  7 ++++++-
- sound/soc/omap/omap-mcbsp.c       | 20 +++++++++++++-------
- sound/soc/omap/omap-mcpdm.c       | 16 ++++++++++++----
- sound/soc/omap/omap-pcm.c         | 25 +++----------------------
- sound/soc/omap/omap-pcm.h         | 30 ++++++++++++++++++++++++++++++
- sound/soc/omap/omap-twl4030.c     | 10 ++++++++--
- sound/soc/omap/omap3pandora.c     |  4 ++--
- sound/soc/omap/osk5912.c          |  2 +-
- sound/soc/omap/rx51.c             |  2 +-
- sound/soc/soc-devres.c            | 34 ++++++++++++++++++++++++++++++++++
- 18 files changed, 157 insertions(+), 57 deletions(-)
- create mode 100644 sound/soc/omap/omap-pcm.h
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 33965946656c..9e214ec70c8a 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -375,6 +375,8 @@ int snd_soc_resume(struct device *dev);
+ int snd_soc_poweroff(struct device *dev);
+ int snd_soc_register_platform(struct device *dev,
+ 		const struct snd_soc_platform_driver *platform_drv);
++int devm_snd_soc_register_platform(struct device *dev,
++		const struct snd_soc_platform_driver *platform_drv);
+ void snd_soc_unregister_platform(struct device *dev);
+ int snd_soc_add_platform(struct device *dev, struct snd_soc_platform *platform,
+ 		const struct snd_soc_platform_driver *platform_drv);
+diff --git a/sound/soc/soc-devres.c b/sound/soc/soc-devres.c
+index 7ac745df1412..e94aa0277250 100644
+--- a/sound/soc/soc-devres.c
++++ b/sound/soc/soc-devres.c
+@@ -52,6 +52,40 @@ int devm_snd_soc_register_component(struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(devm_snd_soc_register_component);
+ 
++static void devm_platform_release(struct device *dev, void *res)
++{
++	snd_soc_unregister_platform(*(struct device **)res);
++}
++
++/**
++ * devm_snd_soc_register_platform - resource managed platform registration
++ * @dev: Device used to manage platform
++ * @platform: platform to register
++ *
++ * Register a platform driver with automatic unregistration when the device is
++ * unregistered.
++ */
++int devm_snd_soc_register_platform(struct device *dev,
++			const struct snd_soc_platform_driver *platform_drv)
++{
++	struct device **ptr;
++	int ret;
++
++	ptr = devres_alloc(devm_platform_release, sizeof(*ptr), GFP_KERNEL);
++	if (!ptr)
++		return -ENOMEM;
++
++	ret = snd_soc_register_platform(dev, platform_drv);
++	if (ret == 0) {
++		*ptr = dev;
++		devres_add(dev, ptr);
++	} else {
++		devres_free(ptr);
++	}
++
++	return ret;
++}
++
+ static void devm_card_release(struct device *dev, void *res)
+ {
+ 	snd_soc_unregister_card(*(struct snd_soc_card **)res);
 -- 
 1.9.2
