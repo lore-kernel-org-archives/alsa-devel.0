@@ -1,83 +1,36 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] ASoC: fsl: Add explicit include of of.h
-Date: Wed, 16 Apr 2014 12:06:07 +1000
-Message-ID: <20140416120607.675e3877d217fc58c18ffd58@canb.auug.org.au>
-References: <1397560326-28268-1-git-send-email-broonie@kernel.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5210733832428165142=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ozlabs.org (ozlabs.org [103.22.144.67])
- by alsa0.perex.cz (Postfix) with ESMTP id EFEE6260859
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 04:06:16 +0200 (CEST)
-In-Reply-To: <1397560326-28268-1-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - add headset mic detect quirk for a Dell laptop
+Date: Wed, 16 Apr 2014 10:09:08 +0800
+Message-ID: <1397614148-10112-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
---===============5210733832428165142==
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA256";
- boundary="Signature=_Wed__16_Apr_2014_12_06_07_+1000_rRQCpQxbupQo6ZX7"
+When we plug a 3-ring headset on the Dell machine (VID: 0x10ec0255,
+SID: 0x1028067f), the headset mic can't be detected, after apply this
+patch, the headset mic can work well.
 
---Signature=_Wed__16_Apr_2014_12_06_07_+1000_rRQCpQxbupQo6ZX7
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+BugLink: https://bugs.launchpad.net/bugs/1297581
+Cc: David Henningsson <david.henningsson@canonical.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Hi Mark,
-
-On Tue, 15 Apr 2014 12:12:06 +0100 Mark Brown <broonie@kernel.org> wrote:
->
-> From: Mark Brown <broonie@linaro.org>
->=20
-> Hopefully fixing a build failure reported by Stephen Rothwell - though
-> quite why the other OF headers don't include this as well I'm not sure.
-
-This did not fix the problem.  The declarations (and presumably the
-implementations) all depend on CONFIG_OF which is not set for the x86_64
-allmodconfig build ...
-
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-
---Signature=_Wed__16_Apr_2014_12_06_07_+1000_rRQCpQxbupQo6ZX7
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBCAAGBQJTTeWTAAoJEMDTa8Ir7ZwVBEYQAJKb/HXc2EiblfmcQT/l+Ta8
-ndSqy4for8hVGPYW/En02CcoVN45V1Bu77AJeOi095EUIYLmectV8KTg0sCAClsZ
-O0555zcW8YWGHijdssSaKPVA93hErFKYHWjVeYcI5s7WDB2hVIffFaO8vkK/ZjDr
-J9Ty5AZEbEtWJx1ONWj8E5GWfnGNcGzwSsGfIhuWCmhE5XsYcaoaVZMl52eWB6zR
-sJwv1XQHQijOI2iRrh5N0H4hKjq0fCsqUuJHPV8P8TcxXehqZ4v/81YBQd1CZMtJ
-g9oYnIuV7TVgjnCwdzwGrkrtd1lHh5iVoRvXpmsTlwhn282P1Gnuh9HRz78cdDbc
-Nh+EBbZe9JPAwKVwSbn5a6hdoumYklJF85cummFAZSaQikV2KAvtNdoOTMf2dIC7
-zvt4M0AItuKMAAN+nAdfUsOa9YrZleAt0l5XZV5QuxHO+l/9FbWSCPHnVSDNFdrg
-EZTTN3D/zI6R3OQbc0xU5EPrsHxq3nW5nnMxvKJ4s1spUYy1VKqmiOrI3RZ+vTh9
-QMij6kJTQCusv1K/7S9BCG65hRVLjIhB7LY+qPTsIAxTLmc6Zj39cTGIQfFkkBnL
-odUT6m1n7Yh05SEVxV3hC+2EYduqd1lsFQQ7cHcizgsuZ//q+YIBVexF7+9LHJKk
-eczfY5j3UzL9gGknK/er
-=cvqR
------END PGP SIGNATURE-----
-
---Signature=_Wed__16_Apr_2014_12_06_07_+1000_rRQCpQxbupQo6ZX7--
-
---===============5210733832428165142==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5210733832428165142==--
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index f7766fe..26895d1 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4621,6 +4621,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0667, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0668, "Dell", ALC255_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0669, "Dell", ALC255_FIXUP_DELL2_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x067f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x15cc, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x15cd, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
+-- 
+1.8.1.2
