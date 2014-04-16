@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 03/18] ASoC: omap-mcpdm: Bind the platform
-	driver to the dai driver when loading
-Date: Wed, 16 Apr 2014 12:23:16 +0300
-Message-ID: <1397640211-15447-4-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 06/18] ASoC: omap-dmic: Assign the dai DMA data
+	at earlier time
+Date: Wed, 16 Apr 2014 12:23:19 +0300
+Message-ID: <1397640211-15447-7-git-send-email-peter.ujfalusi@ti.com>
 References: <1397640211-15447-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C589264F4B
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 11:23:45 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id BA883261A9A
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 11:23:51 +0200 (CEST)
 In-Reply-To: <1397640211-15447-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,48 +25,35 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, notasas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Use the same device for the platform driver when registering as the dai
-driver. This will enable us to clean up some DT booted cases.
+Assign the dai dma data at dai driver probe time, not in startup.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/omap/omap-mcpdm.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/omap/omap-dmic.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index 489cb1f972a6..f008eec9dd4b 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -42,6 +42,7 @@
- #include <sound/dmaengine_pcm.h>
+diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
+index 1bd531d718f9..350b4d524c86 100644
+--- a/sound/soc/omap/omap-dmic.c
++++ b/sound/soc/omap/omap-dmic.c
+@@ -113,7 +113,6 @@ static int omap_dmic_dai_startup(struct snd_pcm_substream *substream,
  
- #include "omap-mcpdm.h"
-+#include "omap-pcm.h"
+ 	mutex_unlock(&dmic->mutex);
  
- struct mcpdm_link_config {
- 	u32 link_mask; /* channel mask for the direction */
-@@ -461,6 +462,7 @@ static int asoc_mcpdm_probe(struct platform_device *pdev)
- {
- 	struct omap_mcpdm *mcpdm;
- 	struct resource *res;
-+	int ret;
- 
- 	mcpdm = devm_kzalloc(&pdev->dev, sizeof(struct omap_mcpdm), GFP_KERNEL);
- 	if (!mcpdm)
-@@ -491,9 +493,13 @@ static int asoc_mcpdm_probe(struct platform_device *pdev)
- 
- 	mcpdm->dev = &pdev->dev;
- 
--	return devm_snd_soc_register_component(&pdev->dev,
-+	ret =  devm_snd_soc_register_component(&pdev->dev,
- 					       &omap_mcpdm_component,
- 					       &omap_mcpdm_dai, 1);
-+	if (ret)
-+		return ret;
-+
-+	return omap_pcm_platform_register(&pdev->dev);
+-	snd_soc_dai_set_dma_data(dai, substream, &dmic->dma_data);
+ 	return ret;
  }
  
- static const struct of_device_id omap_mcpdm_of_match[] = {
+@@ -417,6 +416,10 @@ static int omap_dmic_probe(struct snd_soc_dai *dai)
+ 
+ 	/* Configure DMIC threshold value */
+ 	dmic->threshold = OMAP_DMIC_THRES_MAX - 3;
++
++	dai->playback_dma_data = NULL;
++	dai->capture_dma_data = &dmic->dma_data;
++
+ 	return 0;
+ }
+ 
 -- 
 1.9.2
