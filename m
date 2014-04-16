@@ -1,18 +1,18 @@
-From: Andrew Lunn <andrew@lunn.ch>
-Subject: Re: Using simple-card to replace kirkwood-t5325.c
-Date: Wed, 16 Apr 2014 13:17:04 +0200
-Message-ID: <20140416111704.GB11310@lunn.ch>
-References: <20140415161302.GC1871@lunn.ch> <534D7D31.6040802@metafoo.de>
- <20140415222902.GI12304@sirena.org.uk>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: Re: alsa-utils aplay/arecord can't be interrupted when
+ streaming is not active
+Date: Wed, 16 Apr 2014 05:00:48 -0700
+Message-ID: <534E70F0.10801@mentor.com>
+References: <534E3736.6070100@mentor.com> <534E39F3.4040200@perex.cz>
+ <534E407C.10002@mentor.com> <534E4640.5010102@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps0.lunn.ch (vps0.lunn.ch [178.209.37.122])
- by alsa0.perex.cz (Postfix) with ESMTP id C4B33265232
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 13:19:20 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140415222902.GI12304@sirena.org.uk>
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1604826522E
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 14:00:54 +0200 (CEST)
+In-Reply-To: <534E4640.5010102@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,32 +22,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Xiubo Li <Li.Xiubo@freescale.com>, Jean Delvare <khali@linux-fr.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > >static int t5325_hw_params(struct snd_pcm_substream *substream,
-> > >        	   struct snd_pcm_hw_params *params)
-> > >{
-> 
-> > >This seems a lot less common requirements. All the Marvell SoCs need
-> > >it, but not many others. So i don't think it makes sense to add it
-> > >directly to simple-card, otherwise simple-card quickly becomes
-> > >complex-card as everybody else wants there quirks adding.
-> 
-> > Maybe the drivers can be reworked to not require this anymore. The CODEC
-> > driver may be able to figure this out on its own.
-> 
-> I don't think it can, that looks like the CODEC MCLK being supplied by
-> the SoC (it's nothing to do with a requirement from the SoC really).
-> Ideally this would be handled through the clock API but that's a bit
-> fail at the minute for architecture neutral code.  It's a bit of a hack
-> but specifying the ratio in the DT (which I thought we supported in
-> simple-card already but don't seem to) would sidestep the issue.
+Hi Jaroslav
 
-I can go the hack route and add the ratio as a DT property. I just
-thought i would ask now, rather than get a NACK later when i submit
-the patch.
+On 04/16/2014 01:58 AM, Jaroslav Kysela wrote:
+> Date 16.4.2014 10:34, jiwang wrote:
+>> Hi Jaroslav
+>>
+>> On 04/16/2014 05:06 PM, Jaroslav Kysela wrote:
+>>> Date 16.4.2014 09:54, jiwang wrote:
+>>>> Hi All
+>>>>
+>>>> With latest 1.0.27.2 alsa-utils, I am facing problem to interrupt
+>>>> aplay/arecord
+>>>> when the streaming is not active (no data can be written to or read from
+>>>> cards)
+>>>> further more, if I start aplay/arecord with "-N" nonblocking option,
+>>>> then aplay/arecord can never exit, unless I do a system reset
+>>> If I/O stalls it's usually problem in the driver. You don't write any
+>>> information about your configuration - post 'aplay -v' to see more.
+>> This issue is caught when we were doing some tests,
+>> test for both correct and incorrect configuration of driver
+>> and we expect SIGINT can interrupt aplay/arecord in both cases
+>> (which was the cause with the old version 1.0.26)
+>>
+>>> You may kill the process using the SIGABRT signal.. No reboot is required.
+>>
+>> Yes, SIGABRT works,
+>> But as in our case:
+>> CPU dai device is waiting on a external clock,
+>> but isnt provided caused the I/O stall
+>> the driver is functioning properly and should still be SIGINT-ed in my
+>> opinion
+>
+> The user space received SIGINT, but the current aplay code tries to
+> finish the device close sequence. Could you determine, in which syscall
+> is the process after you sent SIGINT? A backtrace would be great.
+>
+Currently I don't have access to board,
 
-    Thanks
-	Andrew
+if I recall correctly
+when aplay/arecord work in blocking mode
+aplay is at:
+pcm_write
+--> writei_func(handle, data, count);
+arecord is at:
+pcm_read
+-->  readi_func(handle, data, count);
+
+when aplay/arecord work in nonblocking mode
+aplay is looping at
+pcm_write
+--> while (count > 0) { ... }
+arecord is looping at
+pcm_read
+--> while (count > 0) { ... }
+
+I will check it again when I have access to my board tomorrow
+
+Thanks,
+Jiada
+>>
+>> Thanks,
+>> Jiada
+>>
+>>>> I found if I revert the following patch
+>>>>
+>>>> /commit 1d0042d7e948815f8015c62bc53143eed3b83206//
+>>>> //Author: Jaroslav Kysela <perex@perex.cz>//
+>>>> //Date:   Mon Apr 8 13:30:54 2013 +0200//
+>>>> //
+>>>> //    aplay/arecord: change the interrupt handling using snd_pcm_abort()//
+>>>> //    //
+>>>> //    It is required (exclude the fatal SIGABRT) to call snd_pcm_close()
+>>>> and//
+>>>> //    the end of work (outside of the interrupt handler). Use new
+>>>> snd_pcm_abort()//
+>>>> //    function to inform alsa-lib to not ignore EINTR and move the
+>>>> in_aborting//
+>>>> //    variable to the global scope to be checked in the i/o loops.//
+>>>> //    //
+>>>> //    Signed-off-by: Jaroslav Kysela <perex@perex.cz>//
+>>>> /
+>>>> http://git.alsa-project.org/?p=alsa-utils.git;a=commit;h=1d0042d7e948815f8015c62bc53143eed3b83206
+>>>>
+>>>> then aplay/arecord can be interrupted correctly
+>>>>
+>>>> Is it a defect in aplay.c or did I miss something?
+>>>>
+>>>> Thanks,
+>>>> Jiada
+>>>>
+>>>
+>
+>
