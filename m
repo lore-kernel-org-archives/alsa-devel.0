@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 04/20] ASoC: omap-mcpdm: Bind the platform
-	driver to the dai driver when loading
-Date: Wed, 16 Apr 2014 15:46:14 +0300
-Message-ID: <1397652390-852-5-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 05/20] ASoC: omap-mcbsp: Assign the dai DMA
+	data at earlier time
+Date: Wed, 16 Apr 2014 15:46:15 +0300
+Message-ID: <1397652390-852-6-git-send-email-peter.ujfalusi@ti.com>
 References: <1397652390-852-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id DE96C26527F
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 14:46:45 +0200 (CEST)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98F0E2652AC
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 14:46:48 +0200 (CEST)
 In-Reply-To: <1397652390-852-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,48 +25,37 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Jyri Sarha <jsarha@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, notasas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Use the same device for the platform driver when registering as the dai
-driver. This will enable us to clean up some DT booted cases.
+Assign the dai dma data at dai driver probe time, not in startup.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/omap/omap-mcpdm.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/omap/omap-mcbsp.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index e984b0485e92..d8ebb52645a9 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -42,6 +42,7 @@
- #include <sound/dmaengine_pcm.h>
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 6c19bba23570..4525190d5599 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -149,9 +149,6 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
+ 					   SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 2);
+ 	}
  
- #include "omap-mcpdm.h"
-+#include "omap-pcm.h"
- 
- struct mcpdm_link_config {
- 	u32 link_mask; /* channel mask for the direction */
-@@ -462,6 +463,7 @@ static int asoc_mcpdm_probe(struct platform_device *pdev)
- {
- 	struct omap_mcpdm *mcpdm;
- 	struct resource *res;
-+	int ret;
- 
- 	mcpdm = devm_kzalloc(&pdev->dev, sizeof(struct omap_mcpdm), GFP_KERNEL);
- 	if (!mcpdm)
-@@ -492,9 +494,13 @@ static int asoc_mcpdm_probe(struct platform_device *pdev)
- 
- 	mcpdm->dev = &pdev->dev;
- 
--	return devm_snd_soc_register_component(&pdev->dev,
-+	ret =  devm_snd_soc_register_component(&pdev->dev,
- 					       &omap_mcpdm_component,
- 					       &omap_mcpdm_dai, 1);
-+	if (ret)
-+		return ret;
-+
-+	return omap_pcm_platform_register(&pdev->dev);
+-	snd_soc_dai_set_dma_data(cpu_dai, substream,
+-				 &mcbsp->dma_data[substream->stream]);
+-
+ 	return err;
  }
  
- static const struct of_device_id omap_mcpdm_of_match[] = {
+@@ -559,6 +556,10 @@ static int omap_mcbsp_probe(struct snd_soc_dai *dai)
+ 
+ 	pm_runtime_enable(mcbsp->dev);
+ 
++	snd_soc_dai_init_dma_data(dai,
++				  &mcbsp->dma_data[SNDRV_PCM_STREAM_PLAYBACK],
++				  &mcbsp->dma_data[SNDRV_PCM_STREAM_CAPTURE]);
++
+ 	return 0;
+ }
+ 
 -- 
 1.9.2
