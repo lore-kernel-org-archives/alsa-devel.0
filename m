@@ -1,18 +1,15 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH v2 1/2] ALSA: sound/atmel/ac97c.c: Convert
-	to module_platform_driver
-Date: Wed, 16 Apr 2014 09:39:06 +0200
-Message-ID: <534E339A.1090700@atmel.com>
-References: <1397293707-26890-1-git-send-email-alexanders83@web.de>
- <1397583537-4222-1-git-send-email-alexanders83@web.de>
+From: jiwang <jiada_wang@mentor.com>
+Subject: alsa-utils aplay/arecord can't be interrupted when
+ streaming is not active
+Date: Wed, 16 Apr 2014 16:54:30 +0900
+Message-ID: <534E3736.6070100@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eusmtp01.atmel.com (eusmtp01.atmel.com [212.144.249.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 518C726172C
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 09:39:24 +0200 (CEST)
-In-Reply-To: <1397583537-4222-1-git-send-email-alexanders83@web.de>
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0F022617B8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 09:54:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Stein <alexanders83@web.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: alsa-devel@alsa-project.org, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-On 15/04/2014 19:38, Alexander Stein :
-> This reduces some boilerplate code.
-> 
-> Signed-off-by: Alexander Stein <alexanders83@web.de>
-> Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Hi All
 
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-
-Thanks
-
-> ---
->  sound/atmel/ac97c.c | 15 ++-------------
->  1 file changed, 2 insertions(+), 13 deletions(-)
-> 
-> diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
-> index 05ec049..a04d2317 100644
-> --- a/sound/atmel/ac97c.c
-> +++ b/sound/atmel/ac97c.c
-> @@ -1198,6 +1198,7 @@ static int atmel_ac97c_remove(struct platform_device *pdev)
->  }
->  
->  static struct platform_driver atmel_ac97c_driver = {
-> +	.probe		= atmel_ac97c_probe,
->  	.remove		= atmel_ac97c_remove,
->  	.driver		= {
->  		.name	= "atmel_ac97c",
-> @@ -1205,19 +1206,7 @@ static struct platform_driver atmel_ac97c_driver = {
->  		.pm	= ATMEL_AC97C_PM_OPS,
->  	},
->  };
-> -
-> -static int __init atmel_ac97c_init(void)
-> -{
-> -	return platform_driver_probe(&atmel_ac97c_driver,
-> -			atmel_ac97c_probe);
-> -}
-> -module_init(atmel_ac97c_init);
-> -
-> -static void __exit atmel_ac97c_exit(void)
-> -{
-> -	platform_driver_unregister(&atmel_ac97c_driver);
-> -}
-> -module_exit(atmel_ac97c_exit);
-> +module_platform_driver(atmel_ac97c_driver);
->  
->  MODULE_LICENSE("GPL");
->  MODULE_DESCRIPTION("Driver for Atmel AC97 controller");
-> 
+With latest 1.0.27.2 alsa-utils, I am facing problem to interrupt 
+aplay/arecord
+when the streaming is not active (no data can be written to or read from 
+cards)
+further more, if I start aplay/arecord with "-N" nonblocking option,
+then aplay/arecord can never exit, unless I do a system reset
 
 
--- 
-Nicolas Ferre
+I found if I revert the following patch
+
+/commit 1d0042d7e948815f8015c62bc53143eed3b83206//
+//Author: Jaroslav Kysela <perex@perex.cz>//
+//Date:   Mon Apr 8 13:30:54 2013 +0200//
+//
+//    aplay/arecord: change the interrupt handling using snd_pcm_abort()//
+////
+//    It is required (exclude the fatal SIGABRT) to call snd_pcm_close() 
+and//
+//    the end of work (outside of the interrupt handler). Use new 
+snd_pcm_abort()//
+//    function to inform alsa-lib to not ignore EINTR and move the 
+in_aborting//
+//    variable to the global scope to be checked in the i/o loops.//
+////
+//    Signed-off-by: Jaroslav Kysela <perex@perex.cz>//
+/
+http://git.alsa-project.org/?p=alsa-utils.git;a=commit;h=1d0042d7e948815f8015c62bc53143eed3b83206
+
+then aplay/arecord can be interrupted correctly
+
+Is it a defect in aplay.c or did I miss something?
+
+Thanks,
+Jiada
