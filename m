@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 14/18] ASoC: omap3pandora: Use the same name
-	for platform as the cpu_dai
-Date: Wed, 16 Apr 2014 12:23:27 +0300
-Message-ID: <1397640211-15447-15-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 13/18] ASoC: n810: Use the same name for
+	platform as the cpu_dai
+Date: Wed, 16 Apr 2014 12:23:26 +0300
+Message-ID: <1397640211-15447-14-git-send-email-peter.ujfalusi@ti.com>
 References: <1397640211-15447-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C56A2650CE
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 11:24:11 +0200 (CEST)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3457265055
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 11:24:08 +0200 (CEST)
 In-Reply-To: <1397640211-15447-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,30 +30,21 @@ can use the same name for it.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/omap/omap3pandora.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/omap/n810.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
-index cf604a2faa18..3b7c39c93e78 100644
---- a/sound/soc/omap/omap3pandora.c
-+++ b/sound/soc/omap/omap3pandora.c
-@@ -215,7 +215,7 @@ static struct snd_soc_dai_link omap3pandora_dai[] = {
- 		.stream_name = "HiFi Out",
- 		.cpu_dai_name = "omap-mcbsp.2",
- 		.codec_dai_name = "twl4030-hifi",
--		.platform_name = "omap-pcm-audio",
-+		.platform_name = "omap-mcbsp.2",
- 		.codec_name = "twl4030-codec",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			   SND_SOC_DAIFMT_CBS_CFS,
-@@ -226,7 +226,7 @@ static struct snd_soc_dai_link omap3pandora_dai[] = {
- 		.stream_name = "Line/Mic In",
- 		.cpu_dai_name = "omap-mcbsp.4",
- 		.codec_dai_name = "twl4030-hifi",
--		.platform_name = "omap-pcm-audio",
-+		.platform_name = "omap-mcbsp.4",
- 		.codec_name = "twl4030-codec",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			   SND_SOC_DAIFMT_CBS_CFS,
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index fd4d9c809e50..5d7f9cebe041 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -278,7 +278,7 @@ static struct snd_soc_dai_link n810_dai = {
+ 	.name = "TLV320AIC33",
+ 	.stream_name = "AIC33",
+ 	.cpu_dai_name = "omap-mcbsp.2",
+-	.platform_name = "omap-pcm-audio",
++	.platform_name = "omap-mcbsp.2",
+ 	.codec_name = "tlv320aic3x-codec.2-0018",
+ 	.codec_dai_name = "tlv320aic3x-hifi",
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
 -- 
 1.9.2
