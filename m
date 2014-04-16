@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 01/18] ASoC: omap-pcm: Support for binding the
-	platform driver to dai devices
-Date: Wed, 16 Apr 2014 12:23:14 +0300
-Message-ID: <1397640211-15447-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 04/18] ASoC: omap-mcbsp: Assign the dai DMA
+	data at earlier time
+Date: Wed, 16 Apr 2014 12:23:17 +0300
+Message-ID: <1397640211-15447-5-git-send-email-peter.ujfalusi@ti.com>
 References: <1397640211-15447-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 267E4261A9A
- for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 11:23:40 +0200 (CEST)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8961261A2F
+ for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2014 11:23:46 +0200 (CEST)
 In-Reply-To: <1397640211-15447-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,81 +25,36 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, notasas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-With the new calls it is going to be possible to bind the platform driver
-to a dai device which makes it easier for us in a long run to handle DT
-boots, and opens the possibility to move machine driver to generic simple
-card.
+Assign the dai dma data at dai driver probe time, not in startup.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/omap/omap-pcm.c | 12 ++++++++++++
- sound/soc/omap/omap-pcm.h | 35 +++++++++++++++++++++++++++++++++++
- 2 files changed, 47 insertions(+)
- create mode 100644 sound/soc/omap/omap-pcm.h
+ sound/soc/omap/omap-mcbsp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index 07b8b7bc9d20..5c4bc9ae974b 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -232,6 +232,18 @@ static struct snd_soc_platform_driver omap_soc_platform = {
- 	.pcm_free	= omap_pcm_free_dma_buffers,
- };
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 6c19bba23570..c01a64619661 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -149,9 +149,6 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
+ 					   SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 2);
+ 	}
  
-+int omap_pcm_platform_register(struct device *dev)
-+{
-+	return snd_soc_register_platform(dev, &omap_soc_platform);
-+}
-+EXPORT_SYMBOL_GPL(omap_pcm_platform_register);
+-	snd_soc_dai_set_dma_data(cpu_dai, substream,
+-				 &mcbsp->dma_data[substream->stream]);
+-
+ 	return err;
+ }
+ 
+@@ -559,6 +556,9 @@ static int omap_mcbsp_probe(struct snd_soc_dai *dai)
+ 
+ 	pm_runtime_enable(mcbsp->dev);
+ 
++	dai->playback_dma_data = &mcbsp->dma_data[SNDRV_PCM_STREAM_PLAYBACK];
++	dai->capture_dma_data = &mcbsp->dma_data[SNDRV_PCM_STREAM_CAPTURE];
 +
-+void omap_pcm_platform_unregister(struct device *dev)
-+{
-+	snd_soc_unregister_platform(dev);
-+}
-+EXPORT_SYMBOL_GPL(omap_pcm_platform_unregister);
-+
- static int omap_pcm_probe(struct platform_device *pdev)
- {
- 	return snd_soc_register_platform(&pdev->dev,
-diff --git a/sound/soc/omap/omap-pcm.h b/sound/soc/omap/omap-pcm.h
-new file mode 100644
-index 000000000000..148509eb4b63
---- /dev/null
-+++ b/sound/soc/omap/omap-pcm.h
-@@ -0,0 +1,35 @@
-+/*
-+ * omap-pcm.h - OMAP PCM driver
-+ *
-+ * Copyright (C) 2014 Texas Instruments, Inc.
-+ *
-+ * Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ */
-+
-+#ifndef __OMAP_PCM_H__
-+#define __OMAP_PCM_H__
-+
-+#if IS_ENABLED(CONFIG_SND_OMAP_SOC)
-+int omap_pcm_platform_register(struct device *dev);
-+void omap_pcm_platform_unregister(struct device *dev);
-+#else
-+static inline int omap_pcm_platform_register(struct device *dev)
-+{
-+	return 0;
-+}
-+
-+static inline void omap_pcm_platform_unregister(struct device *dev)
-+{
-+}
-+#endif /* CONFIG_SND_OMAP_SOC */
-+
-+#endif /* __OMAP_PCM_H__ */
+ 	return 0;
+ }
+ 
 -- 
 1.9.2
