@@ -1,18 +1,16 @@
-From: jiwang <jiada_wang@mentor.com>
-Subject: Re: alsa-utils aplay/arecord can't be interrupted when
- streaming is not active
-Date: Thu, 17 Apr 2014 18:03:45 +0900
-Message-ID: <534F98F1.9030702@mentor.com>
-References: <534E3736.6070100@mentor.com> <534E39F3.4040200@perex.cz>
- <534E407C.10002@mentor.com> <534E4640.5010102@perex.cz>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: [PATCH 2/6] sound: lx_core: Switch to using BIT macro
+Date: Thu, 17 Apr 2014 11:51:17 +0200
+Message-ID: <1397728281-26050-2-git-send-email-maxime.ripard@free-electrons.com>
+References: <1397728281-26050-1-git-send-email-maxime.ripard@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 33740265062
- for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2014 11:03:55 +0200 (CEST)
-In-Reply-To: <534E4640.5010102@perex.cz>
+Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBF0A265062
+ for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2014 11:55:07 +0200 (CEST)
+In-Reply-To: <1397728281-26050-1-git-send-email-maxime.ripard@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,98 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: perex@perex.cz, iwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jaroslav
-
-On 04/16/2014 05:58 PM, Jaroslav Kysela wrote:
-> Date 16.4.2014 10:34, jiwang wrote:
->> Hi Jaroslav
->>
->> On 04/16/2014 05:06 PM, Jaroslav Kysela wrote:
->>> Date 16.4.2014 09:54, jiwang wrote:
->>>> Hi All
->>>>
->>>> With latest 1.0.27.2 alsa-utils, I am facing problem to interrupt
->>>> aplay/arecord
->>>> when the streaming is not active (no data can be written to or read from
->>>> cards)
->>>> further more, if I start aplay/arecord with "-N" nonblocking option,
->>>> then aplay/arecord can never exit, unless I do a system reset
->>> If I/O stalls it's usually problem in the driver. You don't write any
->>> information about your configuration - post 'aplay -v' to see more.
->> This issue is caught when we were doing some tests,
->> test for both correct and incorrect configuration of driver
->> and we expect SIGINT can interrupt aplay/arecord in both cases
->> (which was the cause with the old version 1.0.26)
->>
->>> You may kill the process using the SIGABRT signal.. No reboot is required.
->> Yes, SIGABRT works,
->> But as in our case:
->> CPU dai device is waiting on a external clock,
->> but isnt provided caused the I/O stall
->> the driver is functioning properly and should still be SIGINT-ed in my
->> opinion
-> The user space received SIGINT, but the current aplay code tries to
-> finish the device close sequence. Could you determine, in which syscall
-> is the process after you sent SIGINT? A backtrace would be great.
-I am not sure if this is want you wanted
-I got the following trace just after send SIGINT to blocking aplay
-
-cat trace | tail -10
-            aplay-648   [001] ...1  1677.882125: snd_pcm_sync_ptr 
-<-snd_pcm_common_ioctl1
-            aplay-648   [001] ...1  1677.882161: snd_pcm_playback_ioctl 
-<-vfs_ioctl
-            aplay-648   [001] ...1  1677.882162: snd_pcm_lib_write 
-<-snd_pcm_playback_ioctl1
-            aplay-648   [001] d..3  1677.882165: soc_pcm_pointer 
-<-snd_pcm_update_hw_ptr0
-            aplay-648   [001] d..3  1677.882167: 
-snd_dmaengine_pcm_pointer_no_residue <-soc_pcm_pointer
-           <idle>-0     [001] d.h4  1677.882321: fsl_esai_start_transmit 
-<-tx_startup_timer_callback
-            aplay-648   [000] ...1  1687.539380: snd_pcm_playback_ioctl 
-<-vfs_ioctl
-            aplay-648   [000] ...1  1687.539386: snd_pcm_lib_write 
-<-snd_pcm_playback_ioctl1
-            aplay-648   [000] d..3  1687.539391: soc_pcm_pointer 
-<-snd_pcm_update_hw_ptr0
-            aplay-648   [000] d..3  1687.539393: 
-snd_dmaengine_pcm_pointer_no_residue <-soc_pcm_pointer
-
-Thanks,
-Jiada
->> Thanks,
->> Jiada
->>
->>>> I found if I revert the following patch
->>>>
->>>> /commit 1d0042d7e948815f8015c62bc53143eed3b83206//
->>>> //Author: Jaroslav Kysela <perex@perex.cz>//
->>>> //Date:   Mon Apr 8 13:30:54 2013 +0200//
->>>> //
->>>> //    aplay/arecord: change the interrupt handling using snd_pcm_abort()//
->>>> //    //
->>>> //    It is required (exclude the fatal SIGABRT) to call snd_pcm_close()
->>>> and//
->>>> //    the end of work (outside of the interrupt handler). Use new
->>>> snd_pcm_abort()//
->>>> //    function to inform alsa-lib to not ignore EINTR and move the
->>>> in_aborting//
->>>> //    variable to the global scope to be checked in the i/o loops.//
->>>> //    //
->>>> //    Signed-off-by: Jaroslav Kysela <perex@perex.cz>//
->>>> /
->>>> http://git.alsa-project.org/?p=alsa-utils.git;a=commit;h=1d0042d7e948815f8015c62bc53143eed3b83206
->>>>
->>>> then aplay/arecord can be interrupted correctly
->>>>
->>>> Is it a defect in aplay.c or did I miss something?
->>>>
->>>> Thanks,
->>>> Jiada
->>>>
->
+TW92ZSB0byB1c2luZyB0aGUgQklUIG1hY3JvIGZvciBhIGZldyBkZWZpbmVzLiBJdCBhbHNvIGFs
+bG93cyB0byBkaXNjYXJkIHRoZQpmcmVuY2ggY29tbWVudCB0aGF0IHdhcyBzYXlpbmcgZXhhY3Rs
+eSB3aGF0IHRoZSBCSVQgbWFjcm8gaXMgbm93IHBvaW50aW5nIG91dC4KClNpZ25lZC1vZmYtYnk6
+IE1heGltZSBSaXBhcmQgPG1heGltZS5yaXBhcmRAZnJlZS1lbGVjdHJvbnMuY29tPgotLS0KIHNv
+dW5kL3BjaS9seDY0NjRlcy9seF9jb3JlLmMgfCA3ICsrKystLS0KIDEgZmlsZSBjaGFuZ2VkLCA0
+IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2x4
+NjQ2NGVzL2x4X2NvcmUuYyBiL3NvdW5kL3BjaS9seDY0NjRlcy9seF9jb3JlLmMKaW5kZXggNmEx
+ZDkwYTMwOGVhLi42NTJmNmRmYzdlMWEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9seDY0NjRlcy9s
+eF9jb3JlLmMKKysrIGIvc291bmQvcGNpL2x4NjQ2NGVzL2x4X2NvcmUuYwpAQCAtMjQsNiArMjQs
+NyBAQAogCiAvKiAjZGVmaW5lIFJNSF9ERUJVRyAxICovCiAKKyNpbmNsdWRlIDxsaW51eC9iaXRv
+cHMuaD4KICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4KICNpbmNsdWRlIDxsaW51eC9wY2kuaD4K
+ICNpbmNsdWRlIDxsaW51eC9kZWxheS5oPgpAQCAtOTY2LDkgKzk2Nyw5IEBAIGludCBseF9sZXZl
+bF9wZWFrcyhzdHJ1Y3QgbHg2NDY0ZXMgKmNoaXAsIGludCBpc19jYXB0dXJlLCBpbnQgY2hhbm5l
+bHMsCiAKIC8qIGludGVycnVwdCBoYW5kbGluZyAqLwogI2RlZmluZSBQQ1hfSVJRX05PTkUgMAot
+I2RlZmluZSBJUlFDU19BQ1RJVkVfUENJREIgIDB4MDAwMDIwMDBMICAgICAgICAgLyogQml0IG7D
+g8KDw4LCuCAxMyAqLwotI2RlZmluZSBJUlFDU19FTkFCTEVfUENJSVJRIDB4MDAwMDAxMDBMICAg
+ICAgICAgLyogQml0IG7Dg8KDw4LCuCAwOCAqLwotI2RlZmluZSBJUlFDU19FTkFCTEVfUENJREIg
+IDB4MDAwMDAyMDBMICAgICAgICAgLyogQml0IG7Dg8KDw4LCuCAwOSAqLworI2RlZmluZSBJUlFD
+U19BQ1RJVkVfUENJREIJQklUKDEzKQorI2RlZmluZSBJUlFDU19FTkFCTEVfUENJSVJRCUJJVCg4
+KQorI2RlZmluZSBJUlFDU19FTkFCTEVfUENJREIJQklUKDkpCiAKIHN0YXRpYyB1MzIgbHhfaW50
+ZXJydXB0X3Rlc3RfYWNrKHN0cnVjdCBseDY0NjRlcyAqY2hpcCkKIHsKLS0gCjEuOS4xCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
