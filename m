@@ -1,64 +1,50 @@
 From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: [PATCH 6/6] sound: lx_core: Translate comments from french to english
-Date: Thu, 17 Apr 2014 11:51:21 +0200
-Message-ID: <1397728281-26050-6-git-send-email-maxime.ripard@free-electrons.com>
+Subject: [PATCH 3/6] sound: lx_core: Fix dev_dbg typo
+Date: Thu, 17 Apr 2014 11:51:18 +0200
+Message-ID: <1397728281-26050-3-git-send-email-maxime.ripard@free-electrons.com>
 References: <1397728281-26050-1-git-send-email-maxime.ripard@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6DEF2608EA
+ for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2014 11:55:07 +0200 (CEST)
 In-Reply-To: <1397728281-26050-1-git-send-email-maxime.ripard@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: perex@perex.cz, iwai@suse.de
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-=46or some reason, some of the comments were actually in poorly encoded=
- french.
-Translate them in english like they should have been in the first place=
-=2E
+Commit be4e6d3c0fa0 ("ALSA: lx6464es: Use standard printk helpers") converted
+the custom printk helpers that were used before to standard dev_* functions.
+One of the dev_dbg calls had a typo, that was hidden away by an #if 0 .. #endif
 
 Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 ---
- sound/pci/lx6464es/lx_core.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ sound/pci/lx6464es/lx_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.=
-c
-index 7c070864dc62..e8f38e5df10a 100644
+diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
+index 652f6dfc7e1a..9e0acba82751 100644
 --- a/sound/pci/lx6464es/lx_core.c
 +++ b/sound/pci/lx6464es/lx_core.c
-@@ -1024,17 +1024,17 @@ static int lx_interrupt_handle_async_events(str=
-uct lx6464es *chip, u32 irqsrc,
- 	int err;
- 	u32 stat[9];		/* answer from CMD_04_GET_EVENT */
-=20
--	/* On peut optimiser pour ne pas lire les evenements vides
--	 * les mots de r=C3=83=C2=83=C3=82=C2=A9ponse sont dans l'ordre suiva=
-nt :
--	 * Stat[0]	mot de status g=C3=83=C2=83=C3=82=C2=A9n=C3=83=C2=83=C3=82=
-=C2=A9ral
--	 * Stat[1]	fin de buffer OUT pF
--	 * Stat[2]	fin de buffer OUT pf
--	 * Stat[3]	fin de buffer IN pF
--	 * Stat[4]	fin de buffer IN pf
--	 * Stat[5]	underrun poid fort
--	 * Stat[6]	underrun poid faible
--	 * Stat[7]	overrun poid fort
--	 * Stat[8]	overrun poid faible
-+	/* We can optimize this to not read dumb events.
-+	 * Answer words are in the following order:
-+	 * Stat[0]	general status
-+	 * Stat[1]	end of buffer OUT pF
-+	 * Stat[2]	end of buffer OUT pf
-+	 * Stat[3]	end of buffer IN pF
-+	 * Stat[4]	end of buffer IN pf
-+	 * Stat[5]	MSB underrun
-+	 * Stat[6]	LSB underrun
-+	 * Stat[7]	MSB overrun
-+	 * Stat[8]	LSB overrun
- 	 * */
-=20
- 	u64 orun_mask;
---=20
+@@ -1197,7 +1197,7 @@ irqreturn_t lx_interrupt(int irq, void *dev_id)
+ 
+ #if 0
+ 	if (irqsrc & MASK_SYS_STATUS_EOBI)
+-		dev_dgg(chip->card->dev, "interrupt: EOBI\n");
++		dev_dbg(chip->card->dev, "interrupt: EOBI\n");
+ 
+ 	if (irqsrc & MASK_SYS_STATUS_EOBO)
+ 		dev_dbg(chip->card->dev, "interrupt: EOBO\n");
+-- 
 1.9.1
