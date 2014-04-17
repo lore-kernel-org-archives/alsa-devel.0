@@ -1,19 +1,14 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH] ASoC: cs42l51: Fix SOC_DOUBLE_R_SX_TLV
- shift values for ADC, PCM, and Analog kcontrols
-Date: Thu, 17 Apr 2014 10:08:23 -0500
-Message-ID: <alpine.DEB.2.02.1404171007510.9674@heelrod>
-References: <1395243602-18012-1-git-send-email-brian.austin@cirrus.com>
- <20140417162625.21d072e7@skate>
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: [PATCH 0/5] Simple-audio-card support for HP t5325
+Date: Thu, 17 Apr 2014 17:53:09 +0200
+Message-ID: <1397749994-24983-1-git-send-email-andrew@lunn.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1on0097.outbound.protection.outlook.com [157.56.110.97])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E1BB2602F3
- for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2014 17:08:05 +0200 (CEST)
-In-Reply-To: <20140417162625.21d072e7@skate>
+Received: from vps0.lunn.ch (vps0.lunn.ch [178.209.37.122])
+ by alsa0.perex.cz (Postfix) with ESMTP id 698AF260376
+ for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2014 17:55:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,63 +18,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, broonie@kernel.org, alsa-devel@alsa-project.org, paul.handrigan@cirrus.com, lgirdwood@gmail.com
+To: Jason Cooper <jason@lakedaemon.net>, broonie@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux ARM <linux-arm-kernel@lists.infradead.org>, Andrew Lunn <andrew@lunn.ch>
 List-Id: alsa-devel@alsa-project.org
 
+This patchset allows the Kirkwood based HP t5325 device make use of
+simple-card to instantiate its audio hardware.
 
+Patch 1 Adds a DT binding to the ALC5623 codec
+Patch 2 Makes use of this new binding
+Patch 3 Add fixes up the kirkwood sound node in DT
+Patch 4 Extends simple-card to support the hw_params() needed
+        when using MVEBU sound hardware.
+Patch 5 Swaps t5323 to using DT, removing all need for C code.
 
-On Thu, 17 Apr 2014, Thomas Petazzoni wrote:
+Andrew Lunn (5):
+  ASoC: alc5623: Add device tree binding
+  ARM: Kirkwood: Use DT to instansiate codec
+  ARM: Kirkwood: DT: Add missing #sound-dai-cells property
+  ASoC: simple-card: Support setting mclk via a fixed factor
+  ARM: Kirkwood: t5325: Use simple-card to instantiate audio
 
-> Dear Brian Austin,
->
-> On Wed, 19 Mar 2014 10:40:02 -0500, Brian Austin wrote:
->> The shift values for the ADC,PCM, and Analog kcontrols were wrong causing wrong values for the SOC_DOUBLE_R_SX_TLV macros
->> Fixed the TLV for aout_tlv to show -102dB correctly
->>
->> Reported-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
->> Signed-off-by: Brian Austin <brian.austin@cirrus.com>
->> ---
->>  sound/soc/codecs/cs42l51.c |    9 ++++-----
->>  1 file changed, 4 insertions(+), 5 deletions(-)
->
-> Thanks for this patch. Unfortunately, it still doesn't solve completely
-> the situation. When I start alsamixer, it shows that:
->
-> * PCM is at 102 (so above the maximum 100 value)
-> * Both ADC Mixers are at 102
-> * Analog is at 174 (so way above the maximum 100 value)
->
-> Changing the value of PCM works (but of course I can then only change
-> it between 0 and 100, not up to 102). However, as soon as I change the
-> "Analog" value, even if I raise it up to 174, there isn't any sound
-> anymore. Probably because the alsamixer range 0-100 doesn't allow to
-> reach a high enough volume to be audible.
->
-> Here is the amixer output right after boot (without changing any
-> value) :
->
-can you try this quick check please?
+ .../devicetree/bindings/sound/alc5623.txt          | 23 ++++++++++++
+ .../devicetree/bindings/sound/simple-card.txt      |  2 ++
+ arch/arm/boot/dts/kirkwood-t5325.dts               | 33 +++++++++++++++++
+ arch/arm/boot/dts/kirkwood.dtsi                    |  1 +
+ arch/arm/mach-mvebu/board-t5325.c                  | 41 ----------------------
+ arch/arm/mach-mvebu/board.h                        |  6 ----
+ arch/arm/mach-mvebu/kirkwood.c                     |  3 --
+ sound/soc/codecs/alc5623.c                         | 13 +++++++
+ sound/soc/generic/simple-card.c                    | 28 +++++++++++++++
+ 9 files changed, 100 insertions(+), 50 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/alc5623.txt
+ delete mode 100644 arch/arm/mach-mvebu/board-t5325.c
 
-  static const struct snd_kcontrol_new cs42l51_snd_controls[] = {
-         SOC_DOUBLE_R_SX_TLV("PCM Playback Volume",
-                         CS42L51_PCMA_VOL, CS42L51_PCMB_VOL,
--                       0, 0x19, 0x7F, adc_pcm_tlv),
-+                       0, 0x19, 0x80, adc_pcm_tlv),
-         SOC_DOUBLE_R("PCM Playback Switch",
-                         CS42L51_PCMA_VOL, CS42L51_PCMB_VOL, 7, 1, 1),
-         SOC_DOUBLE_R_SX_TLV("Analog Playback Volume",
-                         CS42L51_AOUTA_VOL, CS42L51_AOUTB_VOL,
--                       0, 0x34, 0xE4, aout_tlv),
-+                       0, 0x34, 0xE5, aout_tlv),
-         SOC_DOUBLE_R_SX_TLV("ADC Mixer Volume",
-                         CS42L51_ADCA_VOL, CS42L51_ADCB_VOL,
--                       0, 0x19, 0x7F, adc_pcm_tlv),
-+                       0, 0x19, 0x80, adc_pcm_tlv),
-         SOC_DOUBLE_R("ADC Mixer Switch",
-                         CS42L51_ADCA_VOL, CS42L51_ADCB_VOL, 7, 1, 1),
-         SOC_SINGLE("Playback Deemphasis Switch", CS42L51_DAC_CTL, 3, 1, 
-0),
-
-
--Brian
+-- 
+1.9.2
