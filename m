@@ -1,17 +1,18 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: cs42l51: Fix mask for REVID
-Date: Thu, 17 Apr 2014 16:35:43 +0800
-Message-ID: <1397723743.601.0.camel@phoenix>
+From: jiwang <jiada_wang@mentor.com>
+Subject: Re: alsa-utils aplay/arecord can't be interrupted when
+ streaming is not active
+Date: Thu, 17 Apr 2014 18:03:45 +0900
+Message-ID: <534F98F1.9030702@mentor.com>
+References: <534E3736.6070100@mentor.com> <534E39F3.4040200@perex.cz>
+ <534E407C.10002@mentor.com> <534E4640.5010102@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f174.google.com (mail-vc0-f174.google.com
- [209.85.220.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 665D2265057
- for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2014 10:42:33 +0200 (CEST)
-Received: by mail-vc0-f174.google.com with SMTP id ld13so153835vcb.33
- for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2014 01:42:31 -0700 (PDT)
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33740265062
+ for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2014 11:03:55 +0200 (CEST)
+In-Reply-To: <534E4640.5010102@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,44 +22,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Arnaud Patard <arnaud.patard@rtp-net.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The REVID mask was changed by commit a1253ef6d3fa
-"ASoC: cs42l51: split i2c from codec driver". Fix it.
+Hi Jaroslav
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/cs42l51.c | 3 ++-
- sound/soc/codecs/cs42l51.h | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+On 04/16/2014 05:58 PM, Jaroslav Kysela wrote:
+> Date 16.4.2014 10:34, jiwang wrote:
+>> Hi Jaroslav
+>>
+>> On 04/16/2014 05:06 PM, Jaroslav Kysela wrote:
+>>> Date 16.4.2014 09:54, jiwang wrote:
+>>>> Hi All
+>>>>
+>>>> With latest 1.0.27.2 alsa-utils, I am facing problem to interrupt
+>>>> aplay/arecord
+>>>> when the streaming is not active (no data can be written to or read from
+>>>> cards)
+>>>> further more, if I start aplay/arecord with "-N" nonblocking option,
+>>>> then aplay/arecord can never exit, unless I do a system reset
+>>> If I/O stalls it's usually problem in the driver. You don't write any
+>>> information about your configuration - post 'aplay -v' to see more.
+>> This issue is caught when we were doing some tests,
+>> test for both correct and incorrect configuration of driver
+>> and we expect SIGINT can interrupt aplay/arecord in both cases
+>> (which was the cause with the old version 1.0.26)
+>>
+>>> You may kill the process using the SIGABRT signal.. No reboot is required.
+>> Yes, SIGABRT works,
+>> But as in our case:
+>> CPU dai device is waiting on a external clock,
+>> but isnt provided caused the I/O stall
+>> the driver is functioning properly and should still be SIGINT-ed in my
+>> opinion
+> The user space received SIGINT, but the current aplay code tries to
+> finish the device close sequence. Could you determine, in which syscall
+> is the process after you sent SIGINT? A backtrace would be great.
+I am not sure if this is want you wanted
+I got the following trace just after send SIGINT to blocking aplay
 
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index dadc20d..09488d9 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -548,7 +548,8 @@ int cs42l51_probe(struct device *dev, struct regmap *regmap)
- 		ret = -ENODEV;
- 		goto error;
- 	}
--	dev_info(dev, "Cirrus Logic CS42L51, Revision: %02X\n", val & 0xFF);
-+	dev_info(dev, "Cirrus Logic CS42L51, Revision: %02X\n",
-+		 val & CS42L51_CHIP_REV_MASK);
- 
- 	ret =  snd_soc_register_codec(dev,
- 			&soc_codec_device_cs42l51, &cs42l51_dai, 1);
-diff --git a/sound/soc/codecs/cs42l51.h b/sound/soc/codecs/cs42l51.h
-index 641ef18..8c55bf3 100644
---- a/sound/soc/codecs/cs42l51.h
-+++ b/sound/soc/codecs/cs42l51.h
-@@ -26,6 +26,7 @@ int cs42l51_probe(struct device *dev, struct regmap *regmap);
- #define CS42L51_CHIP_ID			0x1B
- #define CS42L51_CHIP_REV_A		0x00
- #define CS42L51_CHIP_REV_B		0x01
-+#define CS42L51_CHIP_REV_MASK		0x07
- 
- #define CS42L51_CHIP_REV_ID		0x01
- #define CS42L51_MK_CHIP_REV(a, b)	((a)<<3|(b))
--- 
-1.8.3.2
+cat trace | tail -10
+            aplay-648   [001] ...1  1677.882125: snd_pcm_sync_ptr 
+<-snd_pcm_common_ioctl1
+            aplay-648   [001] ...1  1677.882161: snd_pcm_playback_ioctl 
+<-vfs_ioctl
+            aplay-648   [001] ...1  1677.882162: snd_pcm_lib_write 
+<-snd_pcm_playback_ioctl1
+            aplay-648   [001] d..3  1677.882165: soc_pcm_pointer 
+<-snd_pcm_update_hw_ptr0
+            aplay-648   [001] d..3  1677.882167: 
+snd_dmaengine_pcm_pointer_no_residue <-soc_pcm_pointer
+           <idle>-0     [001] d.h4  1677.882321: fsl_esai_start_transmit 
+<-tx_startup_timer_callback
+            aplay-648   [000] ...1  1687.539380: snd_pcm_playback_ioctl 
+<-vfs_ioctl
+            aplay-648   [000] ...1  1687.539386: snd_pcm_lib_write 
+<-snd_pcm_playback_ioctl1
+            aplay-648   [000] d..3  1687.539391: soc_pcm_pointer 
+<-snd_pcm_update_hw_ptr0
+            aplay-648   [000] d..3  1687.539393: 
+snd_dmaengine_pcm_pointer_no_residue <-soc_pcm_pointer
+
+Thanks,
+Jiada
+>> Thanks,
+>> Jiada
+>>
+>>>> I found if I revert the following patch
+>>>>
+>>>> /commit 1d0042d7e948815f8015c62bc53143eed3b83206//
+>>>> //Author: Jaroslav Kysela <perex@perex.cz>//
+>>>> //Date:   Mon Apr 8 13:30:54 2013 +0200//
+>>>> //
+>>>> //    aplay/arecord: change the interrupt handling using snd_pcm_abort()//
+>>>> //    //
+>>>> //    It is required (exclude the fatal SIGABRT) to call snd_pcm_close()
+>>>> and//
+>>>> //    the end of work (outside of the interrupt handler). Use new
+>>>> snd_pcm_abort()//
+>>>> //    function to inform alsa-lib to not ignore EINTR and move the
+>>>> in_aborting//
+>>>> //    variable to the global scope to be checked in the i/o loops.//
+>>>> //    //
+>>>> //    Signed-off-by: Jaroslav Kysela <perex@perex.cz>//
+>>>> /
+>>>> http://git.alsa-project.org/?p=alsa-utils.git;a=commit;h=1d0042d7e948815f8015c62bc53143eed3b83206
+>>>>
+>>>> then aplay/arecord can be interrupted correctly
+>>>>
+>>>> Is it a defect in aplay.c or did I miss something?
+>>>>
+>>>> Thanks,
+>>>> Jiada
+>>>>
+>
