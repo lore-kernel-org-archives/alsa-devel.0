@@ -1,43 +1,44 @@
-From: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>
-Subject: Re: [PATCH 2/5] ARM: Kirkwood: Use DT to instansiate codec
-Date: Thu, 17 Apr 2014 17:37:01 -0400
-Message-ID: <20140417213701.GV28159@titan.lakedaemon.net>
-References: <1397749994-24983-1-git-send-email-andrew@lunn.ch>
- <1397749994-24983-3-git-send-email-andrew@lunn.ch>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1397749994-24983-3-git-send-email-andrew-g2DYL2Zd6BY@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux ARM <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: [PATCH] ASoC: tlv320aic31xx: document that the regulators are mandatory
+Date: Fri, 18 Apr 2014 02:06:30 +0200
+Message-ID: <1397779590-4128-1-git-send-email-alexandre.belloni@free-electrons.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-Andrew,
+The driver will not probe if regulators are not provided. Move the regulator
+properties to the required section.
 
-First, thanks for following through with the kirkwood DT conversion.
+Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+---
+ Documentation/devicetree/bindings/sound/tlv320aic31xx.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I have one small request below:
-
-On Thu, Apr 17, 2014 at 05:53:11PM +0200, Andrew Lunn wrote:
-> Now that the ALC5623 codec has a DT binding, instansiate it using DT
-> rather than a platform device.
-> 
-> Signed-off-by: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
-> ---
->  arch/arm/boot/dts/kirkwood-t5325.dts |  8 ++++++++
->  arch/arm/mach-mvebu/board-t5325.c    | 15 ---------------
->  2 files changed, 8 insertions(+), 15 deletions(-)
-
-Since the audio device isn't critical to boot, can we split this patch
-and the other DT patch in two?  That'll prevent branch
-dependency/merge conflicts between mvebu/dt and mvebu/soc.
-
-thx,
-
-Jason.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
+index 74c66dee3e14..eff12be5e789 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
++++ b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
+@@ -13,6 +13,9 @@ Required properties:
+     "ti,tlv320aic3111" - TLV320AIC3111 (stereo speaker amp, MiniDSP)
+ 
+ - reg - <int> -  I2C slave address
++- HPVDD-supply, SPRVDD-supply, SPLVDD-supply, AVDD-supply, IOVDD-supply,
++  DVDD-supply : power supplies for the device as covered in
++  Documentation/devicetree/bindings/regulator/regulator.txt
+ 
+ 
+ Optional properties:
+@@ -24,9 +27,6 @@ Optional properties:
+         3 or MICBIAS_AVDD - MICBIAS output is connected to AVDD
+ 	If this node is not mentioned or if the value is unknown, then
+ 	micbias	is set to 2.0V.
+-- HPVDD-supply, SPRVDD-supply, SPLVDD-supply, AVDD-supply, IOVDD-supply,
+-  DVDD-supply : power supplies for the device as covered in
+-  Documentation/devicetree/bindings/regulator/regulator.txt
+ 
+ CODEC output pins:
+   * HPL
+-- 
+1.8.3.2
