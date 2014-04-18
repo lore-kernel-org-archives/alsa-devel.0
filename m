@@ -1,70 +1,66 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/5] ASoC: alc5623: Add device tree binding
-Date: Fri, 18 Apr 2014 19:44:37 +0100
-Message-ID: <20140418184437.GZ12304@sirena.org.uk>
-References: <1397749994-24983-1-git-send-email-andrew@lunn.ch>
- <1397749994-24983-2-git-send-email-andrew@lunn.ch>
- <20140418163351.GI12304@sirena.org.uk>
- <20140418181735.GB32580@lunn.ch>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: rt5651: Staticise non-exported symbols
+Date: Fri, 18 Apr 2014 20:02:49 +0100
+Message-ID: <1397847769-28911-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yMZc7XcoawI0pdam"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20140418181735.GB32580-g2DYL2Zd6BY@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
-Cc: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, linux ARM <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 727142617AA
+ for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 21:03:02 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+From: Mark Brown <broonie@linaro.org>
 
---yMZc7XcoawI0pdam
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Make the dai_ops const too since we can.
 
-On Fri, Apr 18, 2014 at 08:17:35PM +0200, Andrew Lunn wrote:
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/rt5651.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> The driver already has:
-
-> static const struct i2c_device_id alc5623_i2c_table[] = {
->         {"alc5621", 0x21},
->         {"alc5622", 0x22},
->         {"alc5623", 0x23},
->         {}
-> };
-> MODULE_DEVICE_TABLE(i2c, alc5623_i2c_table);
-
-> which is enough for the i2c layer to load the driver when it walks the
-> nodes under the i2c bus driver in the DT.
-
-You still need to add the compatible strings to the driver explicitly,
-device names can be and are duplicated between manufacturers sometimes
-and it makes things directly greppable.
-
---yMZc7XcoawI0pdam
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTUXKSAAoJELSic+t+oim9CdMP/j30k6OYmgbHRF5+TwtXJSnO
-hGX/oVq5jimp6nziNlM8btCJWB1h9E3Y71nNZyGpllM+XVpzJlqYreI2/sO/PVIA
-/HFBbB/VaJcCExNIBNFk7Lm7qVgg8Sq30Wo0b5LmBciBF4AoJkywVzHHMjqgLWy+
-Lx/sfKuQWCyUASQ95coJOKLrrwuqMcISw9V/9xOqkmQfMLiuIqB1wI7ee4qkMscE
-aajUgzJ6GNyvnnV9ufnUfLNa0n4uipmvBt683IHWMiCLwW4xAIqFLpvEM7wnWi/N
-TE463mu6yeA6yDFCYz0gqQ2G1Uue4kYfhmRwSTa9cDJQXYLvxNWEDXMaHYMLf+gY
-4wY0vMDvUawIrwpufD4PQWHh9dSXA1N6+yvVk6KpyPRTJ859RAg713vffnXxmvHL
-3ojfocBPD5Lv8ObEQ1wZxt6SIQaA2h3dU2TTFxwABUTla1jFbbyJV1fxfzJOOaDV
-JtynZB+FZTxiNEuB6Umla2tgHRT8gvdmXbeXj28akHh98lQhq7eGsOSAeG+WSCR0
-h3e1sYU/MJAjB5snVQC8eWuuX9NR2sx64INfNnduwDUaxMuvy6NIJbzJsJcOfqwV
-Og25lmizmZVUyQhk3UL0aTUH26VAa9aTJmvWgn1R2UMf+5Bii3IXc7WiFPOiPdS/
-brbm+5Ctd/L1ziYC4aCU
-=SHJk
------END PGP SIGNATURE-----
-
---yMZc7XcoawI0pdam--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index a1577369c49c..f785b81238ae 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -1736,14 +1736,14 @@ static int rt5651_resume(struct snd_soc_codec *codec)
+ #define RT5651_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
+ 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
+ 
+-struct snd_soc_dai_ops rt5651_aif_dai_ops = {
++static const struct snd_soc_dai_ops rt5651_aif_dai_ops = {
+ 	.hw_params = rt5651_hw_params,
+ 	.set_fmt = rt5651_set_dai_fmt,
+ 	.set_sysclk = rt5651_set_dai_sysclk,
+ 	.set_pll = rt5651_set_dai_pll,
+ };
+ 
+-struct snd_soc_dai_driver rt5651_dai[] = {
++static struct snd_soc_dai_driver rt5651_dai[] = {
+ 	{
+ 		.name = "rt5651-aif1",
+ 		.id = RT5651_AIF1,
+@@ -1882,7 +1882,7 @@ static int rt5651_i2c_remove(struct i2c_client *i2c)
+ 	return 0;
+ }
+ 
+-struct i2c_driver rt5651_i2c_driver = {
++static struct i2c_driver rt5651_i2c_driver = {
+ 	.driver = {
+ 		.name = "rt5651",
+ 		.owner = THIS_MODULE,
+-- 
+1.9.2
