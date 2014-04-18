@@ -1,44 +1,64 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: [PATCH] ASoC: tlv320aic31xx: document that the regulators are mandatory
-Date: Fri, 18 Apr 2014 02:06:30 +0200
-Message-ID: <1397779590-4128-1-git-send-email-alexandre.belloni@free-electrons.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+From: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>
+Subject: Re: [PATCH 0/5] Simple-audio-card support for HP t5325
+Date: Thu, 17 Apr 2014 20:15:06 -0400
+Message-ID: <20140418001506.GW28159@titan.lakedaemon.net>
+References: <1397749994-24983-1-git-send-email-andrew@lunn.ch>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1397749994-24983-1-git-send-email-andrew-g2DYL2Zd6BY@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux ARM <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The driver will not probe if regulators are not provided. Move the regulator
-properties to the required section.
+Mark,
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
----
- Documentation/devicetree/bindings/sound/tlv320aic31xx.txt | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On Thu, Apr 17, 2014 at 05:53:09PM +0200, Andrew Lunn wrote:
+> This patchset allows the Kirkwood based HP t5325 device make use of
+> simple-card to instantiate its audio hardware.
+> 
+> Patch 1 Adds a DT binding to the ALC5623 codec
+> Patch 2 Makes use of this new binding
+> Patch 3 Add fixes up the kirkwood sound node in DT
+> Patch 4 Extends simple-card to support the hw_params() needed
+>         when using MVEBU sound hardware.
+> Patch 5 Swaps t5323 to using DT, removing all need for C code.
+> 
+> Andrew Lunn (5):
+>   ASoC: alc5623: Add device tree binding
+>   ARM: Kirkwood: Use DT to instansiate codec
+>   ARM: Kirkwood: DT: Add missing #sound-dai-cells property
+>   ASoC: simple-card: Support setting mclk via a fixed factor
+>   ARM: Kirkwood: t5325: Use simple-card to instantiate audio
+> 
+>  .../devicetree/bindings/sound/alc5623.txt          | 23 ++++++++++++
+>  .../devicetree/bindings/sound/simple-card.txt      |  2 ++
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-index 74c66dee3e14..eff12be5e789 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-@@ -13,6 +13,9 @@ Required properties:
-     "ti,tlv320aic3111" - TLV320AIC3111 (stereo speaker amp, MiniDSP)
- 
- - reg - <int> -  I2C slave address
-+- HPVDD-supply, SPRVDD-supply, SPLVDD-supply, AVDD-supply, IOVDD-supply,
-+  DVDD-supply : power supplies for the device as covered in
-+  Documentation/devicetree/bindings/regulator/regulator.txt
- 
- 
- Optional properties:
-@@ -24,9 +27,6 @@ Optional properties:
-         3 or MICBIAS_AVDD - MICBIAS output is connected to AVDD
- 	If this node is not mentioned or if the value is unknown, then
- 	micbias	is set to 2.0V.
--- HPVDD-supply, SPRVDD-supply, SPLVDD-supply, AVDD-supply, IOVDD-supply,
--  DVDD-supply : power supplies for the device as covered in
--  Documentation/devicetree/bindings/regulator/regulator.txt
- 
- CODEC output pins:
-   * HPL
--- 
-1.8.3.2
+Are you alright with taking the above,
+
+>  arch/arm/boot/dts/kirkwood-t5325.dts               | 33 +++++++++++++++++
+>  arch/arm/boot/dts/kirkwood.dtsi                    |  1 +
+>  arch/arm/mach-mvebu/board-t5325.c                  | 41 ----------------------
+>  arch/arm/mach-mvebu/board.h                        |  6 ----
+>  arch/arm/mach-mvebu/kirkwood.c                     |  3 --
+
+while I take these,
+
+>  sound/soc/codecs/alc5623.c                         | 13 +++++++
+>  sound/soc/generic/simple-card.c                    | 28 +++++++++++++++
+
+and you take these?
+
+That should be 1 and 4 for you and 2, 3, and 5 for me before Andrew does
+the patch split I asked for in my other response.
+
+thx,
+
+Jason.
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
