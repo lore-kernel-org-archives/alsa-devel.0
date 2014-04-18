@@ -1,66 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: rt5651: Staticise non-exported symbols
-Date: Fri, 18 Apr 2014 20:02:49 +0100
-Message-ID: <1397847769-28911-1-git-send-email-broonie@kernel.org>
+From: Nicolas Ferre <nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 0/8] ARM: at91: sama5d3: enable sound support
+Date: Fri, 18 Apr 2014 22:35:02 +0200
+Message-ID: <53518C76.2020005@atmel.com>
+References: <1395049541-28128-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 727142617AA
- for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 21:03:02 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1395049541-28128-1-git-send-email-voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, Boris BREZILLON <b.brezillon-ZNYIgs0QAGpBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jean-Christophe Plagniol-Villard <plagnioj-sclMFOaUSTBWk0Htik3J/w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Landley <rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On 17/03/2014 10:45, Bo Shen :
+> This patch add sound support on sama5d3xek board.
+> 
+> This patch series based on the following patch set:
+>   clk: at91: better support for the PCKs
+>   http://comments.gmane.org/gmane.linux.kernel/1664477
+> 
+> 
+> Bo Shen (5):
+>   ARM: at91: sama5d3: add DMA property for SSC devices
+>   ARM: at91: sama5d3: disable sound by default
+>   ARM: at91: sama5d3: correct the sound compatible string
+>   ARM: at91: sama5d3: add the missing property
+>   ARM: at91: sama5d3: clock for ssc from rk pin
+> 
+> Boris BREZILLON (3):
+>   ASoC: atmel: support CCF based clks
+>   ASoC: atmel: document clock properties of the wm8904 driver
+>   ARM: at91/dt: add clock properties to the wm8904 codec node
 
-Make the dai_ops const too since we can.
+Hi Voice and Boris,
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/codecs/rt5651.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+For this series I am a little bit puzzled: should I take the ASoC part
+of it? I see no acknowledgement from Mark and I also read some messages
+still discussing about CCF and wm8904 afterwards.
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index a1577369c49c..f785b81238ae 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -1736,14 +1736,14 @@ static int rt5651_resume(struct snd_soc_codec *codec)
- #define RT5651_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
- 
--struct snd_soc_dai_ops rt5651_aif_dai_ops = {
-+static const struct snd_soc_dai_ops rt5651_aif_dai_ops = {
- 	.hw_params = rt5651_hw_params,
- 	.set_fmt = rt5651_set_dai_fmt,
- 	.set_sysclk = rt5651_set_dai_sysclk,
- 	.set_pll = rt5651_set_dai_pll,
- };
- 
--struct snd_soc_dai_driver rt5651_dai[] = {
-+static struct snd_soc_dai_driver rt5651_dai[] = {
- 	{
- 		.name = "rt5651-aif1",
- 		.id = RT5651_AIF1,
-@@ -1882,7 +1882,7 @@ static int rt5651_i2c_remove(struct i2c_client *i2c)
- 	return 0;
- }
- 
--struct i2c_driver rt5651_i2c_driver = {
-+static struct i2c_driver rt5651_i2c_driver = {
- 	.driver = {
- 		.name = "rt5651",
- 		.owner = THIS_MODULE,
+So, I take the 5 patches by Voice Shen and tell me what is the proper
+sequence with this wm8904 work.
+
+I will be happy to stack more patches about this topic during the 3.16
+development phase.
+
+
+Otherwise, the 5 patches by Voice go into at91-3.16-dt branch.
+
+Thanks, bye.
+
+
+>  .../devicetree/bindings/sound/atmel-wm8904.txt     |  2 ++
+>  arch/arm/boot/dts/sama5d3.dtsi                     |  6 ++++++
+>  arch/arm/boot/dts/sama5d3xmb.dtsi                  | 11 +++++++++-
+>  sound/soc/atmel/atmel_wm8904.c                     | 25 +++++++++++-----------
+>  4 files changed, 31 insertions(+), 13 deletions(-)
+> 
+
+
 -- 
-1.9.2
+Nicolas Ferre
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
