@@ -1,137 +1,62 @@
-From: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Subject: Re: [PATCHv3 2/2] ALSA: hda - Add driver for Tegra SoC HDA
-Date: Fri, 18 Apr 2014 14:32:54 -0700
-Message-ID: <CAEUnVG71Bo=4CMDFR2q3=6qC=HsG+-dctxDpR4y6Fd+pXZgFDQ@mail.gmail.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [PATCHv4 1/2] ALSA: hda/hdmi - Add Nvidia Tegra124
+	HDMI support
+Date: Fri, 18 Apr 2014 14:43:49 -0700
+Message-ID: <1397857429-8984-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qa0-f74.google.com (mail-qa0-f74.google.com
+ [209.85.216.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F93A2619D0
+ for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 23:44:09 +0200 (CEST)
+Received: by mail-qa0-f74.google.com with SMTP id w8so356707qac.1
+ for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 14:44:08 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Sumit Bhattacharya <sumitb@nvidia.com>, Dylan Reid <dgreid@chromium.org>, thierry.reding@gmail.com, swarren@wwwdotorg.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 18, 2014 at 1:22 AM, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org> wrote:
-> At Wed, 16 Apr 2014 14:39:32 -0700,
-> Dylan Reid wrote:
->>
->> This adds a driver for the HDA block in Tegra SoCs.  The HDA bus is
->> used to communicate with the HDMI codec on Tegra124.
->>
->> Most of the code is re-used from the Intel/PCI HDA driver.  It brings
->> over only the power_save module parameter.
->>
->> Signed-off-by: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
->
-> Thanks, this looks better, but a few comments below.
-> Besides, I'd like to have a review in DT part.
+From: Sumit Bhattacharya <sumitb@nvidia.com>
 
+Add the Tegra 12x HDMI controller id to patch_hdmi.
 
-Thanks for looking.  I'll address the comments below and send a v4
-with some more DT maintainers CCed.
+Signed-off-by: Sumit Bhattacharya <sumitb@nvidia.com>
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+No changes since v1.
+---
+ sound/pci/hda/patch_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
->
->
->> +/*
->> + * Register access ops. Tegra HDA register access is DWORD only.
->> + */
->> +static void hda_tegra_writel(u32 value, u32 *addr)
->> +{
->> +     writel(value, addr);
->> +}
->> +
->> +static u32 hda_tegra_readl(u32 *addr)
->> +{
->> +     return readl(addr);
->> +}
->> +
->> +static void hda_tegra_writew(u16 value, u16 *addr)
->> +{
->> +     unsigned long shift = ((uintptr_t)(addr) & 0x3) << 3;
->> +     void *dword_addr = (void *)((uintptr_t)(addr) & ~0x3);
->> +     u32 v;
->> +
->> +     v = readl(dword_addr);
->> +     v &= ~(0xffff << shift);
->> +     v |= value << shift;
->> +     writel(v, dword_addr);
->> +}
->
-> The shift doesn't have to be long at all, and the cast in kernel is
-> usually just unsigned long instead of uintptr_t.
->
->
->> +#ifdef CONFIG_PM_SLEEP
->> +/*
->> + * power management
->> + */
->> +static int hda_tegra_suspend(struct device *dev)
->> +{
->> +     struct snd_card *card = dev_get_drvdata(dev);
->> +     struct azx *chip = card->private_data;
->> +     struct azx_pcm *p;
->> +     struct hda_tegra *hda = container_of(chip, struct hda_tegra, chip);
->> +
->> +     snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
->> +     list_for_each_entry(p, &chip->pcm_list, list)
->> +             snd_pcm_suspend_all(p->pcm);
->> +     if (chip->initialized)
->> +             snd_hda_suspend(chip->bus);
->> +
->> +     /* enable controller wake up event */
->> +     azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
->> +               STATESTS_INT_MASK);
->
-> I guess WAKEEN doesn't work for Tegra?
-
-I'm unsure, but this doesn't belong in the regular resume path, so it
-will disappear in v4.
-
->
->> +
->> +     azx_stop_chip(chip);
->> +     azx_enter_link_reset(chip);
->> +     hda_tegra_disable_clocks(hda);
->> +
->> +     return 0;
->> +}
->> +
->> +static int hda_tegra_resume(struct device *dev)
->> +{
->> +     struct snd_card *card = dev_get_drvdata(dev);
->> +     struct azx *chip = card->private_data;
->> +     struct hda_tegra *hda = container_of(chip, struct hda_tegra, chip);
->> +     int status;
->> +     struct hda_codec *codec;
->> +
->> +     hda_tegra_enable_clocks(hda);
->> +
->> +     /* Read STATESTS before controller reset */
->> +     status = azx_readw(chip, STATESTS);
->> +
->> +     hda_tegra_init(hda);
->> +
->> +     if (status && chip->bus) {
->> +             list_for_each_entry(codec, &chip->bus->codec_list, list)
->> +                     if (status & (1 << codec->addr))
->> +                             queue_delayed_work(codec->bus->workq,
->> +                                                &codec->jackpoll_work,
->> +                                                codec->jackpoll_interval);
->> +     }
->
-> This is superfluous for the regular resume.  It was some missing call
-> only in the runtime resume.
->
->> +
->> +     /* disable controller Wake Up event*/
->> +     azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) & ~STATESTS_INT_MASK);
->
-> This can be removed like the suspend.
->
->
-> thanks,
->
-> Takashi
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 0cb5b89..b5d1371 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -3322,6 +3322,7 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
+ { .id = 0x10de001a, .name = "GPU 1a HDMI/DP",	.patch = patch_nvhdmi },
+ { .id = 0x10de001b, .name = "GPU 1b HDMI/DP",	.patch = patch_nvhdmi },
+ { .id = 0x10de001c, .name = "GPU 1c HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0028, .name = "Tegra12x HDMI",	.patch = patch_nvhdmi },
+ { .id = 0x10de0040, .name = "GPU 40 HDMI/DP",	.patch = patch_nvhdmi },
+ { .id = 0x10de0041, .name = "GPU 41 HDMI/DP",	.patch = patch_nvhdmi },
+ { .id = 0x10de0042, .name = "GPU 42 HDMI/DP",	.patch = patch_nvhdmi },
+@@ -3377,6 +3378,7 @@ MODULE_ALIAS("snd-hda-codec-id:10de0019");
+ MODULE_ALIAS("snd-hda-codec-id:10de001a");
+ MODULE_ALIAS("snd-hda-codec-id:10de001b");
+ MODULE_ALIAS("snd-hda-codec-id:10de001c");
++MODULE_ALIAS("snd-hda-codec-id:10de0028");
+ MODULE_ALIAS("snd-hda-codec-id:10de0040");
+ MODULE_ALIAS("snd-hda-codec-id:10de0041");
+ MODULE_ALIAS("snd-hda-codec-id:10de0042");
+-- 
+1.8.1.3.605.g02339dd
