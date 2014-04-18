@@ -1,85 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: alc5623: Add device tree binding
-Date: Fri, 18 Apr 2014 17:33:51 +0100
-Message-ID: <20140418163351.GI12304@sirena.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 4/5] ASoC: simple-card: Support setting mclk via a fixed
+ factor
+Date: Fri, 18 Apr 2014 17:38:49 +0100
+Message-ID: <20140418163849.GJ12304@sirena.org.uk>
 References: <1397749994-24983-1-git-send-email-andrew@lunn.ch>
- <1397749994-24983-2-git-send-email-andrew@lunn.ch>
+ <1397749994-24983-5-git-send-email-andrew@lunn.ch>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9140759709424352458=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F5502616C9
- for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 18:34:12 +0200 (CEST)
-In-Reply-To: <1397749994-24983-2-git-send-email-andrew@lunn.ch>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wclo/YjJlGo4VkIX"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1397749994-24983-5-git-send-email-andrew-g2DYL2Zd6BY@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
+Cc: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, linux ARM <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9140759709424352458==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TRKAdR3hOZdGUkn3"
-Content-Disposition: inline
-
-
---TRKAdR3hOZdGUkn3
+--wclo/YjJlGo4VkIX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 17, 2014 at 05:53:10PM +0200, Andrew Lunn wrote:
+On Thu, Apr 17, 2014 at 05:53:13PM +0200, Andrew Lunn wrote:
 
-> + - compatible:	"realtek,alc5623"
+> +- simple-audio-card,mclk-factor		: Multiplication factor between stream rate and codec
+> +					  mclk.
 
-You've not added an ID table to the driver for this.
+The normal name for this is fs rather than factor.
 
-> +  - add-ctrl:	Default register value for Reg-40h, Additional Control Register.
-> +		If absent, the default is 0.
+> +	if (priv->mclk_factor) {
+> +		mclk = params_rate(params) * priv->mclk_factor;
+> +		ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
+> +					     SND_SOC_CLOCK_IN);
+> +	}
 
-> +  - jack-det-ctrl:	Default register value for Reg-5Ah, Jack Detect
-> +			Control Register. If absent, the default is 0.
+We also need to consider what happens in cases where a clock is
+specified via the clocks property.  I would expect this to be used to
+set the rate for that clock as well.
 
-I would expect the default for these to be to leave the hardware
-defaults untouched - why is it different, what does setting to zero mean?
-
---TRKAdR3hOZdGUkn3
+--wclo/YjJlGo4VkIX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTUVPsAAoJELSic+t+oim9ueMQAIr/ldfaKhLHIsCiU8T+dNZ4
-AqwSJD1C9g2OaopSVC0uXiawkrfYJ/HEyjL9khScds6qYwhoRpETXTitf1uLWH2n
-FXKUaBQsUZgMK81QX4HHa/E+2kUDyLmn71vpOCkU6R0xSVvATTiDkchTguJu7zUj
-VSx93j1KYL83x09gRPvwqeGBfmNZG6vabQ+psknbDCFNnzXiknjhm8Izm7uOwc7U
-kR0qKmsuPDWU208Ds4WFACEdxUub/hRvWZPvldrol+gqLCHdeswBtHiKdsRuaFLH
-UyT+Rtpmik2CHGZOhL1gU8qeuZZY/7e2g69X/25FNLqvV+JUloxR/oNl49HHDgaS
-H5/Tl7vqxh0mvK5PMsAm98//SVpMLOlJMgdjeknhzFqQT1Ozfy8QkfgVKbFRrJIn
-eBz36DBxuklnwsN0u4r9Vt7gFyN/iowIv2qcoWAyiVKb1UraH6hDOgyfnECRFQ3O
-QSZlQjt4DIHfh9AbcX9x86BJ2UbRsA910Riu80Gjm7/jwTAp8Y+LIptugAsR7mtB
-UOs4f2jMvarDoFY3lRDfzF0QYWoHkDlD/mdlkt4nX+eX5+0g3FIcrhuNy+5gDifq
-FT9Rfz1Psf2B3VrfmReDxMQ4zLQl3Jq+5EdnDqm3Gq/qGKpB0ja0FW72xaX8TzM/
-RJW+Y5c9lR9mLVsEGXu4
-=tdr9
+iQIcBAEBAgAGBQJTUVUWAAoJELSic+t+oim9FngP/jVTqF60anxTwol+iyGD2syf
+bzMQhon39+z3dPh76NR/jpbgWjQRRjW0OWJIrvCV5ype9NAPHoibx09J0gZ4Dhbw
+fpL3F7zyACRSRVaTQIpNWCXb4oS4tND+ellK75ydhDL99b03/XuRskj0jqVOe9JZ
+Fq9uWF65rcX5u7RQQVfzKbxTTmIB/STlaZ22xK9RTrnLcAaSu99ewK+57tRpfKW3
+yLIISbDdIqcBtw0KbkDiYSXJk5yjRUb3MXN2Tc9St5LRCJMGSCHSGrSEM+wUxm3A
+tqN2X/4AqO9vJbkrog01WfvyzoqNDyFzehU6PjTDSM/oDJoXPyjj4Y5MZSCfcyZN
+s2xgfH9NJxFaK3pZA8VtHWAqdwalImxmNxECF2FKQeVFHvfSd6WrBPbPFi+LlISq
+3I7Gd3x6TW3SIX1kkoPdX3SHvd5oeJRptb6tUoefM8xT+qupUb2BgB2pw3UEXGED
+a4KKx/3YcO7A84lDMug/NHPj7c0Y4he2a86u/STNxOC2kydhtbX2TC1EEnkdY/m1
+lxy7oykwr/p2IM/QuQZXdApYOWkOitEINDwfkttbrXCc70NBG9rnVDFqgS9G4zri
+o1snvpBq1hyQ/wgaDNIEfrdA475LTq3nvQm7po6AJgYFl68e6Hbi3YEjoFJq+ZYq
+5bLDCiqPJotOBQ1WZJj1
+=yAvg
 -----END PGP SIGNATURE-----
 
---TRKAdR3hOZdGUkn3--
-
---===============9140759709424352458==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9140759709424352458==--
+--wclo/YjJlGo4VkIX--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
