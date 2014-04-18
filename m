@@ -1,75 +1,54 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs42l51: Fix mask for REVID
-Date: Fri, 18 Apr 2014 15:59:19 +0100
-Message-ID: <20140418145919.GU12304@sirena.org.uk>
-References: <1397723743.601.0.camel@phoenix>
+Subject: Re: [patch] ASoC: Intel: some incorrect sizeof() usages
+Date: Fri, 18 Apr 2014 17:11:46 +0100
+Message-ID: <20140418161146.GE12304@sirena.org.uk>
+References: <20140413195636.32f31cb2@spike>
+ <20140416153811.GB16325@mwanda>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0052850084233332480=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 16EE22608CF
- for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 16:59:44 +0200 (CEST)
-In-Reply-To: <1397723743.601.0.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Arnaud Patard <arnaud.patard@rtp-net.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lAxbTa9qRtQJ0itf"
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140416153811.GB16325@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Christian Engelmayer <cengelma@gmx.at>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0052850084233332480==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="G2KkZ9Pjck/7DGR/"
-Content-Disposition: inline
-
-
---G2KkZ9Pjck/7DGR/
+--lAxbTa9qRtQJ0itf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 17, 2014 at 04:35:43PM +0800, Axel Lin wrote:
-> The REVID mask was changed by commit a1253ef6d3fa
-> "ASoC: cs42l51: split i2c from codec driver". Fix it.
+On Wed, Apr 16, 2014 at 06:38:11PM +0300, Dan Carpenter wrote:
+> The intent was to say "sizeof(*pos)" and not "sizeof(pos)".
+>=20
+> The sizeof(*pos) is 8 bytes so the bug won't show up on 64 bit systems.
+> The sizeof(*dx) is 172 bytes so that will be a bugfix.
 
 Applied, thanks.
 
---G2KkZ9Pjck/7DGR/
+--lAxbTa9qRtQJ0itf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTUT3EAAoJELSic+t+oim9CZUQAJQQByMxeGJAbpZfr15IrltX
-KQMVnmwsLP8BaakuT8/giUZs+8fCD9vPzTLMB70cNYK8TU3XYg4DBGodw4Qnu90l
-0ZY5NJjUS4vupSsf50H2NrIdrnVlgu5KJOQb4VQJvYGbOruqhE3mBHvpKK0P0HWD
-NpoU0AFtQ1niUtzFdsfQMpe3+DdSa0jl5ujFsVchClvqjHkGjXt9ZvwsMoZBHgIH
-8kx+yg/OHFItWAnlFCp3rw7fa4WJouCCxuEgg6bGVBLqYRxzP072D+hr1BtGjS1U
-jelPXG7+nWy1Uz1wlM5HP3Aflm/u+/jPW55dhV55PpcKCcRPmHJWc5OMYa1N6ecx
-XJIzMeMu8bzQgBp5y5IcHTAUl274g165E6T5d/OACluCHxwZPvgVx4RsE4A8FRb2
-pRBB8aRnTDrcUp3g5KUfdR7uQGlvQPDi8qWUwkDKFGeVTK7touJRZva+M0HGgqd2
-Q0BY5JeE5ZBv2QeCpzMDNv9cnV0VVz+R5UQhEASr5vq0SAQwY0zUt8qsKRWxFBEe
-r6X6E2tYrcaG7162oDkKX41xc459VtKb8QsrY84TTaqj9RoOOw4Ysju4XTBbhTNF
-W0Xcv5vs5VUXIvcmHBJ8bRSlb5Vh2pUc1/L/cmOzhoJEdSKViKPcResB7/Ao41+a
-yEc3GQgfewZLxDFdieRy
-=2d3m
+iQIcBAEBAgAGBQJTUU6/AAoJELSic+t+oim9sf8P/jkT+6GIAJcv105xIeY8SEVT
+bh7Oe+2WSa6znf87A+haAHBwCPKztt6rGkQ8iN/niZ+LKDIwAUaxRHeLzZndbO4R
+a76tNtK7Dk38a3vOkO9iqKZ2UDQAzX9ZlfZvfPCgU9N5gSLfchW0lz3qwBZKaeRo
+cV0ho02uiFUVcKH5SfM7318BL2sKrXsnLG6oVbMtxPVRi7Sso+uGVR7QNBGhLkEP
+3yham3L/h41q5/7KXK6eU6ZcQZBxsIra1d1TjoX8FG94y5GKsdSAfAcWmbMf1bBW
+iPoSB18rTGHgq1wz4U47hACjmaC/M/UkrXovQH6B9HHe6I3drdDo/i2/RV3v4yQG
+iQ2Di9Z+fiI9gVjflcgIEho4SmwMWz/a/gLBRqqlj6FjkfTSBkc5LVPpspVfSVaG
+MRQBAHibHrg333oUF+SAVzLetrEML2upGx/KJBjf0k83g84cVetwkVTfYitGheft
+o0idFms2a0tmiR8RyfJjjmkVqyV6EAtqC3iTP1B3D6/4p2ty4V7Z6L+hk+rpOijh
+znebd/zoAAj3l5Q0dfNv/yL/4pnYQReoh9gRu+RjAw7NPJShp1NH+fADrNc8tpVp
+NfUNRvyKs7GQbo3OuoRy36ooZJTtTdBY+a3lX7CqlDA96gqkLupfrHFg4JC8TcS/
+U1/i5mihZb5SSHyZRuO3
+=prr4
 -----END PGP SIGNATURE-----
 
---G2KkZ9Pjck/7DGR/--
-
---===============0052850084233332480==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0052850084233332480==--
+--lAxbTa9qRtQJ0itf--
