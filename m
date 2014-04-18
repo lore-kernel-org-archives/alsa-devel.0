@@ -1,21 +1,18 @@
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH] ASoC: cs42l51: Fix SOC_DOUBLE_R_SX_TLV
- shift values for ADC, PCM, and Analog kcontrols
-Date: Fri, 18 Apr 2014 16:21:18 +0200
-Message-ID: <20140418162118.1586ffd1@skate>
-References: <1395243602-18012-1-git-send-email-brian.austin@cirrus.com>
- <20140417162625.21d072e7@skate>
- <alpine.DEB.2.02.1404171007510.9674@heelrod>
- <20140418112355.4c1fe3ac@skate>
- <alpine.DEB.2.02.1404180851570.9674@heelrod>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: cs42l73: Convert to use
+	devm_gpio_request_one
+Date: Fri, 18 Apr 2014 15:38:59 +0100
+Message-ID: <20140418143859.GP12304@sirena.org.uk>
+References: <1396966233.14167.1.camel@phoenix>
+ <1396966300.14167.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6284098635432854824=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
- by alsa0.perex.cz (Postfix) with ESMTP id 0003826089A
- for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 16:21:20 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1404180851570.9674@heelrod>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECB2D2608CF
+ for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 16:39:19 +0200 (CEST)
+In-Reply-To: <1396966300.14167.2.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,35 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, paul.handrigan@cirrus.com
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Brian Austin,
 
-On Fri, 18 Apr 2014 09:00:35 -0500, Brian Austin wrote:
+--===============6284098635432854824==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7C2vBKXehPEvK3/Z"
+Content-Disposition: inline
 
-> My regmap output maps correctly too. Weird.
 
-Indeed, weird. Thanks a lot for doing all this testing.
+--7C2vBKXehPEvK3/Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> So lets get a few versions of some things to see what and where things 
-> went wrong.
-> 
-> What kernel version?
+On Tue, Apr 08, 2014 at 10:11:40PM +0800, Axel Lin wrote:
+> Current code missed a gpio_free() call in cs42l73_i2c_remove().
+> Convert to use devm_gpio_request_one() to fix it.
 
-3.15-rc1
+Applied, thanks.
 
-> Alsa-lib version?
+--7C2vBKXehPEvK3/Z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-1.0.26. This is not the latest, but certainly not that old either.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-> What distro are you using?
+iQIcBAEBAgAGBQJTUTkAAAoJELSic+t+oim9kZQP/RNNVoyPm18fyVa0kxJsqiN7
+Vtz3J3Nda4Gzz/CUR3oVXUJYyDMSQqYqehf4FI6wtRl0NQvhb3Dh3M4SXwCxJsOX
+zlcGPRxuTEZ6tcWQN+FWXYdeWKU4Mtir4FJFeB+apOnS+2NH0+XQko6iHdPdrJ0K
+zmzL2b54D8Fr8ZgIehpvESBqepSORjafi82OqnATEzvBksr6+Fq2BjJXrGj1xtga
+McIbN1A5FHYh+vyFsx953ftB79rj9hxqBAvmoQDnG3Lb0D54WEbMTO6rXD9sQpzg
+ZA6bplLN+G2lTKZFwxgDH6vIncnjfahMpo9mXyWLPxN8IY2ojVygu9SNv1pgyp+A
+7HWOJEz+Lv4n1OwU1uLWLCPpNeUFeMuOgGJlAjPnZhk7+f+QMecs2bApkBJ1f948
+BQISGB5tP2mBf+GTQTA2bMYNal8cjtGyHx6tRG3CTyKUQ8tMjtUImmqbYLSfvaGg
+4J8zTCIbQfWHNRHFTaEvpB8jlFl2i8z8Ac+eKAw8rm68+MD87ojybKrx65jhc7AD
+LkO1qm/5FMqdOZrhNZvhFw1hnilb78U4S4nvYtoH7dZYOqN3T4UfHbSsikQ5zZcL
+9e5sYyp17Ej3ROuEdvXYjHrlx0X8aYK2lr4ectuLbP3ualy/YgEDP64+U1VPQUfU
+Xqvv9EORrsEMuD6dk21d
+=ZaHD
+-----END PGP SIGNATURE-----
 
-Custom root filesystem built with Buildroot 2013.05.
+--7C2vBKXehPEvK3/Z--
 
-Thomas
--- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+--===============6284098635432854824==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6284098635432854824==--
