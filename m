@@ -1,81 +1,137 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/8] ARM: at91: sama5d3: enable sound
-	support
-Date: Fri, 18 Apr 2014 21:38:17 +0100
-Message-ID: <20140418203817.GA3479@sirena.org.uk>
-References: <1395049541-28128-1-git-send-email-voice.shen@atmel.com>
- <53518C76.2020005@atmel.com>
+From: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Subject: Re: [PATCHv3 2/2] ALSA: hda - Add driver for Tegra SoC HDA
+Date: Fri, 18 Apr 2014 14:32:54 -0700
+Message-ID: <CAEUnVG71Bo=4CMDFR2q3=6qC=HsG+-dctxDpR4y6Fd+pXZgFDQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7652774525258962109=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FD762617AA
- for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 22:38:48 +0200 (CEST)
-In-Reply-To: <53518C76.2020005@atmel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Bo Shen <voice.shen@atmel.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Boris BREZILLON <b.brezillon@overkiz.com>, Rob Landley <rob@landley.net>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============7652774525258962109==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fdj2RfSjLxBAspz7"
-Content-Disposition: inline
-
-
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Apr 18, 2014 at 10:35:02PM +0200, Nicolas Ferre wrote:
-
-> For this series I am a little bit puzzled: should I take the ASoC part
-> of it? I see no acknowledgement from Mark and I also read some messages
-> still discussing about CCF and wm8904 afterwards.
-
-I've not seen these patches, judging by where this message went they
-weren't sent to the address in MAINTAINERS (broonie@kernel.org) but to
-my work address instead.
-
---fdj2RfSjLxBAspz7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTUY02AAoJELSic+t+oim9N08P/A9BcAybl0fKUBUjU66UeF9u
-YL0gUySKSiF94XQw9CwD6Y4fX58BEDu6r1IdMXL0i8lAiopFwFffuLRyFN1viph1
-+kc2drdyw5N6VJOXNuxAXE76yrOA4SLenfX8HL4lojjEITujXbneRzgHYkBLawym
-3rZgIFjD9/tzYcSiO5Z2fJ6Bynr5I8DF648oDjeM8rSy+cjbHWGiYvreVCNObgfu
-4R9O6XvOmn60vFon91PJmMzdIIjGkVZ3QMdeYgeQRDANaTSYizlmjZ/gUTnrHW1o
-COSp+fpheFojVvojB3UUXmpPbaTg9s5LIrJS9eXVkONVYjkVy8T6mL3j/G6NHJaY
-hvg1FGXwRq0XO5YQ0UTSw6idAskVwzgP+g3t4v083vSxlHa8xr7vtQvliL3ZTEpt
-/pWvnIR8tPIuKyjc2lLfqRV7ccrmiqZKWe/IZ/fN6A/91p9smOz5Hi+fyHKFZTxS
-WlL/kI0AyDSDaStvq4qPGtUVRTJDYXOmN2BD6GvE3+qeoBijvhJ+z0zjlHRECN9R
-EJkOeAbTaMbOM+9ezRcwyS+YvVgwtV72eXOAy3Dag/uBMfHt4ufUDWbiaOHbFofN
-ndYZbnxQESnYNXufLnHWnRwXQP/jrZzdeB7CkqlPrfaAT5oatlXmUN+FToqrEQpd
-mtfLxnF1aCc5xpMbu8Pl
-=t7N5
------END PGP SIGNATURE-----
-
---fdj2RfSjLxBAspz7--
-
---===============7652774525258962109==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Fri, Apr 18, 2014 at 1:22 AM, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org> wrote:
+> At Wed, 16 Apr 2014 14:39:32 -0700,
+> Dylan Reid wrote:
+>>
+>> This adds a driver for the HDA block in Tegra SoCs.  The HDA bus is
+>> used to communicate with the HDMI codec on Tegra124.
+>>
+>> Most of the code is re-used from the Intel/PCI HDA driver.  It brings
+>> over only the power_save module parameter.
+>>
+>> Signed-off-by: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+>
+> Thanks, this looks better, but a few comments below.
+> Besides, I'd like to have a review in DT part.
 
 
---===============7652774525258962109==--
+Thanks for looking.  I'll address the comments below and send a v4
+with some more DT maintainers CCed.
+
+>
+>
+>> +/*
+>> + * Register access ops. Tegra HDA register access is DWORD only.
+>> + */
+>> +static void hda_tegra_writel(u32 value, u32 *addr)
+>> +{
+>> +     writel(value, addr);
+>> +}
+>> +
+>> +static u32 hda_tegra_readl(u32 *addr)
+>> +{
+>> +     return readl(addr);
+>> +}
+>> +
+>> +static void hda_tegra_writew(u16 value, u16 *addr)
+>> +{
+>> +     unsigned long shift = ((uintptr_t)(addr) & 0x3) << 3;
+>> +     void *dword_addr = (void *)((uintptr_t)(addr) & ~0x3);
+>> +     u32 v;
+>> +
+>> +     v = readl(dword_addr);
+>> +     v &= ~(0xffff << shift);
+>> +     v |= value << shift;
+>> +     writel(v, dword_addr);
+>> +}
+>
+> The shift doesn't have to be long at all, and the cast in kernel is
+> usually just unsigned long instead of uintptr_t.
+>
+>
+>> +#ifdef CONFIG_PM_SLEEP
+>> +/*
+>> + * power management
+>> + */
+>> +static int hda_tegra_suspend(struct device *dev)
+>> +{
+>> +     struct snd_card *card = dev_get_drvdata(dev);
+>> +     struct azx *chip = card->private_data;
+>> +     struct azx_pcm *p;
+>> +     struct hda_tegra *hda = container_of(chip, struct hda_tegra, chip);
+>> +
+>> +     snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+>> +     list_for_each_entry(p, &chip->pcm_list, list)
+>> +             snd_pcm_suspend_all(p->pcm);
+>> +     if (chip->initialized)
+>> +             snd_hda_suspend(chip->bus);
+>> +
+>> +     /* enable controller wake up event */
+>> +     azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
+>> +               STATESTS_INT_MASK);
+>
+> I guess WAKEEN doesn't work for Tegra?
+
+I'm unsure, but this doesn't belong in the regular resume path, so it
+will disappear in v4.
+
+>
+>> +
+>> +     azx_stop_chip(chip);
+>> +     azx_enter_link_reset(chip);
+>> +     hda_tegra_disable_clocks(hda);
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +static int hda_tegra_resume(struct device *dev)
+>> +{
+>> +     struct snd_card *card = dev_get_drvdata(dev);
+>> +     struct azx *chip = card->private_data;
+>> +     struct hda_tegra *hda = container_of(chip, struct hda_tegra, chip);
+>> +     int status;
+>> +     struct hda_codec *codec;
+>> +
+>> +     hda_tegra_enable_clocks(hda);
+>> +
+>> +     /* Read STATESTS before controller reset */
+>> +     status = azx_readw(chip, STATESTS);
+>> +
+>> +     hda_tegra_init(hda);
+>> +
+>> +     if (status && chip->bus) {
+>> +             list_for_each_entry(codec, &chip->bus->codec_list, list)
+>> +                     if (status & (1 << codec->addr))
+>> +                             queue_delayed_work(codec->bus->workq,
+>> +                                                &codec->jackpoll_work,
+>> +                                                codec->jackpoll_interval);
+>> +     }
+>
+> This is superfluous for the regular resume.  It was some missing call
+> only in the runtime resume.
+>
+>> +
+>> +     /* disable controller Wake Up event*/
+>> +     azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) & ~STATESTS_INT_MASK);
+>
+> This can be removed like the suspend.
+>
+>
+> thanks,
+>
+> Takashi
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
