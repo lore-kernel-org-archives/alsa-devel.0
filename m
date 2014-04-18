@@ -1,16 +1,20 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH 1/6] sound: lx_core: Remove unused defines
-Date: Fri, 18 Apr 2014 11:45:15 +0200
-Message-ID: <20140418094515.GF4132@lukather>
-References: <1397728281-26050-1-git-send-email-maxime.ripard@free-electrons.com>
- <s5hd2gfukvh.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6] ASoC: add RT286 CODEC driver
+Date: Fri, 18 Apr 2014 11:37:15 +0100
+Message-ID: <20140418103715.GJ12304@sirena.org.uk>
+References: <1397455170-2701-1-git-send-email-bardliao@realtek.com>
+ <20140415120428.GU12304@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D73AC302@RTITMBSV03.realtek.com.tw>
+ <20140416211145.GC12304@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D73AC511@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0821170385433177166=="
+Content-Type: multipart/mixed; boundary="===============7967889285939159058=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (top.free-electrons.com [176.31.233.9])
- by alsa0.perex.cz (Postfix) with ESMTP id 4010026166B
- for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 11:50:03 +0200 (CEST)
-In-Reply-To: <s5hd2gfukvh.wl%tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC84A261689
+ for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 12:37:37 +0200 (CEST)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D73AC511@RTITMBSV03.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,84 +24,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0821170385433177166==
+--===============7967889285939159058==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="w/VI3ydZO+RcZ3Ux"
+	protocol="application/pgp-signature"; boundary="HHGSYth2upt+0nQt"
 Content-Disposition: inline
 
 
---w/VI3ydZO+RcZ3Ux
+--HHGSYth2upt+0nQt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Thu, Apr 17, 2014 at 05:39:08AM +0000, Bard Liao wrote:
 
-On Fri, Apr 18, 2014 at 10:01:22AM +0200, Takashi Iwai wrote:
-> At Thu, 17 Apr 2014 11:51:16 +0200,
-> Maxime Ripard wrote:
-> >=20
-> > Commit f9367f3fbe3c ("ALSA: lx6464es: Remove unused
-> > function in pci/lx6464es/lx_core.c") removed the
-> > lx_dsp_es_check_pipeline function that was the only user
-> > of these defines.
-> >=20
-> > Since they're useless now, simply remove them.
-> >=20
-> > Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
->=20
-> Thanks, applied all patches now.
-> But, at the next time, please put my correct address to Cc.
+> > You can implement non-register DAPM widgets - look at the virtual contr=
+ols in the
+> > core, or things using SND_SOC_NOPM.
 
-Hmmm, yes, look like it was a typo on my side.. Sorry.
+> It means dapm widget will not control the codec directly, right?=20
+> I.e. Everything will be done by _event?
 
-> Also, for ALSA stuff (except for ASoC), we usually use "ALSA:"
-> prefix.
+The framework won't do anything directly, yes.
 
-Ok, I will.
+> For simplest the driver, can I not define .dapm_widgets and .dapm_routes?
+> All controls will be done in .controls.
 
-Thanks!
-Maxime
+It is mandatory to have at least some DAPM support, not having DAPM was
+such a constant source of bugs that we stopped supporting it.
 
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
-
---w/VI3ydZO+RcZ3Ux
+--HHGSYth2upt+0nQt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTUPQrAAoJEBx+YmzsjxAgX9YP/jZ7xhUk9GaBuGSe/nBylDTS
-oDIUnoV+o0SIRwrC1KCgIZ97naaN4+ODnyd4/sfcbHJnKLJsQUnW69IINetwyPxY
-EMLfzPMTWdE7RcNyWcUG0kVcIvblWnKF3EYKiDZFmDct1kH2i6hWltRUfKt5ft6R
-2AO6u1PLICBXlpi9F13f1ZCZgTEJU/eIjBF4rv0YSvJhM0IW9WJekHHglYtQ8Mn/
-pPp0ge6y3rB9EIC8S71It1eBk3irlU+yPbmlU9A1szDaJnmipWlBxqgHgfzEJETJ
-ne22GTXUOW9ihltA68TekmGz9OU9x9FRW+7GxKU9KXwBZxM5YsIp1DZKS2ccKPWL
-anqIjZOA+SKgFnf2T1n6XSNgsyUW4PLMREjQWUZQJng6hWTESfErKkcxFG20QRD4
-+qk67M+Zt0nNa339mfrb04eDoba9GVJdtzbWTgMayadlqzjVMRXgvH0AKl79H55b
-3gR7A61zEQHpHjv2AXnP3H1TC2m7lEIA9CY0Cfh7Li+swXl4b0GJ4PwvQL+LqeGf
-xW4gf2JQFJ6grAdscleiS8hSLuXWM4ekjnpt2EHDYpKKNeEAQ8pf6G4sNeg89DDM
-LhbmVj7OnwIE3ZJ27cJ6CPpdpwHkWcoB4wXGi9H6jE3BRRLRcOEZw+qheQ2PZKpj
-nhxVyMO4LNbj5W2XMbYY
-=Nlyv
+iQIcBAEBAgAGBQJTUQBYAAoJELSic+t+oim9jqwP/3qnrvxPiTxqpQdnjs6Yh+Ff
+nyqbzetZK0vmI/C11LOnKmd38uHntWLqQdqGnK9ITYv/DVatMVpZjpgx+mv7EUFD
+a4SKUgPHRESVFShHR+qrsGrvt/tiMMGXtCV7KDBVkLo2pf5SI93A+Dn+4CUxKp6F
+mQ+2cuvAM0t64GxKjKEfSkVwX/RXjs/Mp8pK2xokIPi93XTF5/0oHi3bPDkrnGBJ
+PcJ18wP38ju8/ilnNL/S286hxNG7PIhTBWtxTLL+j1g4FAD7piXI9yAhRoMz7nWu
+uEPXKBv88nimXvD+OBYd8L9GkxBhSLFwNDX5vjI5dWIoHB+jTldlFvjYgEbOaEYx
+FxNWaTDpvb4fFI+I/sxN299/CWjkYqZQrzyFlaNDc2AJk1hCcVwid9wsp/DXr/R4
+nRoccZ46btry3CgeDX2rob/4+qs1fEfRzR4myc0uSkYXtW3G0P/tRA2CZG3GJuX9
+/UQxWeDt5JQOCHsUHJEFvxyQbaCepKnonH4kJLlKC+OB+9pMmj2RitVZqJjEt0+B
+lUkx02zmPuhQUH8JUwNbNm7AHhS5fTWiHrgQMEqddZliMPjZWsgeCXvIxFj05CkQ
+ZCunq58CB7YeurLHx5/AUtwsh4bY2ExUVjH+qxD0+qamSNDH/sljm4w89DpJmJ+g
+aEuz4DIxMj2Tpt3KZXGz
+=Jeqe
 -----END PGP SIGNATURE-----
 
---w/VI3ydZO+RcZ3Ux--
+--HHGSYth2upt+0nQt--
 
---===============0821170385433177166==
+--===============7967889285939159058==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0821170385433177166==--
+--===============7967889285939159058==--
