@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6] ASoC: add RT286 CODEC driver
-Date: Fri, 18 Apr 2014 11:37:15 +0100
-Message-ID: <20140418103715.GJ12304@sirena.org.uk>
-References: <1397455170-2701-1-git-send-email-bardliao@realtek.com>
- <20140415120428.GU12304@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D73AC302@RTITMBSV03.realtek.com.tw>
- <20140416211145.GC12304@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D73AC511@RTITMBSV03.realtek.com.tw>
+From: "Austin, Brian" <Brian.Austin@cirrus.com>
+Subject: Re: [PATCH] ASoC: cs42l51: Fix SOC_DOUBLE_R_SX_TLV
+ shift values for ADC, PCM, and Analog kcontrols
+Date: Fri, 18 Apr 2014 12:22:27 +0000
+Message-ID: <93EDF7CC-8175-485C-BA9C-DE10BEC9DEC6@cirrus.com>
+References: <1395243602-18012-1-git-send-email-brian.austin@cirrus.com>
+ <20140417162625.21d072e7@skate>	<alpine.DEB.2.02.1404171007510.9674@heelrod>
+ <20140418112355.4c1fe3ac@skate>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7967889285939159058=="
+Content-Type: multipart/mixed; boundary="===============0556608886371221240=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AC84A261689
- for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 12:37:37 +0200 (CEST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D73AC511@RTITMBSV03.realtek.com.tw>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0088.outbound.protection.outlook.com [65.55.169.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 792DC2651A0
+ for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 14:22:38 +0200 (CEST)
+In-Reply-To: <20140418112355.4c1fe3ac@skate>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,68 +24,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, Flove <flove@realtek.com>
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Handrigan,
+ Paul" <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
+--===============0556608886371221240==
+Content-Language: en-US
+Content-Type: multipart/signed;
+	boundary="Apple-Mail=_FC1AA084-5156-4967-A512-7B7A729DFC03";
+	protocol="application/pgp-signature"; micalg=pgp-sha512
 
---===============7967889285939159058==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HHGSYth2upt+0nQt"
-Content-Disposition: inline
-
-
---HHGSYth2upt+0nQt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Apple-Mail=_FC1AA084-5156-4967-A512-7B7A729DFC03
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=windows-1252
 
-On Thu, Apr 17, 2014 at 05:39:08AM +0000, Bard Liao wrote:
 
-> > You can implement non-register DAPM widgets - look at the virtual contr=
-ols in the
-> > core, or things using SND_SOC_NOPM.
+On Apr 18, 2014, at 4:23 AM, Thomas Petazzoni =
+<thomas.petazzoni@free-electrons.com> wrote:
 
-> It means dapm widget will not control the codec directly, right?=20
-> I.e. Everything will be done by _event?
+> Dear Brian Austin,
+>=20
+> On Thu, 17 Apr 2014 10:08:23 -0500, Brian Austin wrote:
+>=20
+>> can you try this quick check please?
+>>=20
+>>  static const struct snd_kcontrol_new cs42l51_snd_controls[] =3D {
+>>         SOC_DOUBLE_R_SX_TLV("PCM Playback Volume",
+>>                         CS42L51_PCMA_VOL, CS42L51_PCMB_VOL,
+>> -                       0, 0x19, 0x7F, adc_pcm_tlv),
+>> +                       0, 0x19, 0x80, adc_pcm_tlv),
+>>         SOC_DOUBLE_R("PCM Playback Switch",
+>>                         CS42L51_PCMA_VOL, CS42L51_PCMB_VOL, 7, 1, 1),
+>>         SOC_DOUBLE_R_SX_TLV("Analog Playback Volume",
+>>                         CS42L51_AOUTA_VOL, CS42L51_AOUTB_VOL,
+>> -                       0, 0x34, 0xE4, aout_tlv),
+>> +                       0, 0x34, 0xE5, aout_tlv),
+>>         SOC_DOUBLE_R_SX_TLV("ADC Mixer Volume",
+>>                         CS42L51_ADCA_VOL, CS42L51_ADCB_VOL,
+>> -                       0, 0x19, 0x7F, adc_pcm_tlv),
+>> +                       0, 0x19, 0x80, adc_pcm_tlv),
+>>         SOC_DOUBLE_R("ADC Mixer Switch",
+>>                         CS42L51_ADCA_VOL, CS42L51_ADCB_VOL, 7, 1, 1),
+>>         SOC_SINGLE("Playback Deemphasis Switch", CS42L51_DAC_CTL, 3, =
+1,=20
+>> 0),
+>=20
+> Unfortunately, it still doesn't work: at boot time the PCM and ADC
+> mixer values are 100 which looks OK, but the Analog value is 170, =
+which
+> doesn't look ok. And inspecting the values set at the register level
+> for the PCM control seems to reveal that things are still not working
+> correctly (read on below).
+>=20
+> But this time around, I've collected a lot of debugging informations,
+> which hopefully will help understand the problem. My understanding is
+> that:
+>=20
+> 	SOC_DOUBLE_R_SX_TLV("Analog Playback Volume",
+> 			CS42L51_AOUTA_VOL, CS42L51_AOUTB_VOL,
+> 			0, 0x34, 0xE5, aout_tlv),
+>=20
+> cannot work, because it assumes that the range -102.0 dB to 12.0 dB
+> described in the datasheet is represented by using register values =
+from
+> 0x34 to 0xE5. Which misses the fact that when going from -102.0 dB to =
+0
+> dB, the register value goes from 0x34 to 0, and then when going from 0
+> to 12.0 dB, the register value should go from 0 to 0xE5.
+>=20
+>=20
+Ok, Thanks for the output.
+Something is for sure broken, but I could have sworn I checked this. =
+I=92ll hook up my L51 board today and see what the deal is.
 
-The framework won't do anything directly, yes.
+Thanks,
+Brian
 
-> For simplest the driver, can I not define .dapm_widgets and .dapm_routes?
-> All controls will be done in .controls.
 
-It is mandatory to have at least some DAPM support, not having DAPM was
-such a constant source of bugs that we stopped supporting it.
-
---HHGSYth2upt+0nQt
+--Apple-Mail=_FC1AA084-5156-4967-A512-7B7A729DFC03
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="signature.asc"
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: Message signed with OpenPGP using GPGMail
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+Comment: GPGTools - https://gpgtools.org
 
-iQIcBAEBAgAGBQJTUQBYAAoJELSic+t+oim9jqwP/3qnrvxPiTxqpQdnjs6Yh+Ff
-nyqbzetZK0vmI/C11LOnKmd38uHntWLqQdqGnK9ITYv/DVatMVpZjpgx+mv7EUFD
-a4SKUgPHRESVFShHR+qrsGrvt/tiMMGXtCV7KDBVkLo2pf5SI93A+Dn+4CUxKp6F
-mQ+2cuvAM0t64GxKjKEfSkVwX/RXjs/Mp8pK2xokIPi93XTF5/0oHi3bPDkrnGBJ
-PcJ18wP38ju8/ilnNL/S286hxNG7PIhTBWtxTLL+j1g4FAD7piXI9yAhRoMz7nWu
-uEPXKBv88nimXvD+OBYd8L9GkxBhSLFwNDX5vjI5dWIoHB+jTldlFvjYgEbOaEYx
-FxNWaTDpvb4fFI+I/sxN299/CWjkYqZQrzyFlaNDc2AJk1hCcVwid9wsp/DXr/R4
-nRoccZ46btry3CgeDX2rob/4+qs1fEfRzR4myc0uSkYXtW3G0P/tRA2CZG3GJuX9
-/UQxWeDt5JQOCHsUHJEFvxyQbaCepKnonH4kJLlKC+OB+9pMmj2RitVZqJjEt0+B
-lUkx02zmPuhQUH8JUwNbNm7AHhS5fTWiHrgQMEqddZliMPjZWsgeCXvIxFj05CkQ
-ZCunq58CB7YeurLHx5/AUtwsh4bY2ExUVjH+qxD0+qamSNDH/sljm4w89DpJmJ+g
-aEuz4DIxMj2Tpt3KZXGz
-=Jeqe
+iQEcBAEBCgAGBQJTURkEAAoJEHdXZdGWfiO7KnQH/20omFU+QcHkRI+YpQG8VHkD
+R1scl50BX3OwnR17ucq77eygkAyitrv+uh0wYFOs3LX6Iz44tXcZhFZaffjMQXRK
+oy5nTZ6F1B564Nd5+UdUGazG5YYmh9X+4GxycJvuiIHscdvSOrruzPgXtgU79gkd
+HiS+rAqAoH72aV4Yt7f2LPrZyaQIcNihQF91Z+CIl+5F/+SijVuXvpTBKS/xwLP6
+5/1AnczvnN/QRViNxGyY4vV87ir5Zt9SEHfte0PqO+Uf4VuINQlGPhmccGlW9EGF
+N6maudbROBr440CuYzD99tL4niJaS5Uj+55lpCPPX10+91WLTz51vDOmw2m9pg8=
+=WKuz
 -----END PGP SIGNATURE-----
 
---HHGSYth2upt+0nQt--
+--Apple-Mail=_FC1AA084-5156-4967-A512-7B7A729DFC03--
 
---===============7967889285939159058==
+--===============0556608886371221240==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7967889285939159058==--
+--===============0556608886371221240==--
