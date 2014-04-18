@@ -1,64 +1,28 @@
-From: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>
-Subject: Re: [PATCH 0/5] Simple-audio-card support for HP t5325
-Date: Thu, 17 Apr 2014 20:15:06 -0400
-Message-ID: <20140418001506.GW28159@titan.lakedaemon.net>
-References: <1397749994-24983-1-git-send-email-andrew@lunn.ch>
+From: Andrew Reyes <dsreyes1014@gmail.com>
+Subject: Behringer Uphoria UMC204 usb audio capture only pops
+	and clicks
+Date: Thu, 17 Apr 2014 23:30:37 -0500
+Message-ID: <CAEYsuVNtQs32HnNdzsjAfkPZ3E3Kc67aCz1zWnZMuND2+U_2Aw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1397749994-24983-1-git-send-email-andrew-g2DYL2Zd6BY@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux ARM <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f169.google.com (mail-qc0-f169.google.com
+ [209.85.216.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DAB52616B4
+ for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2014 06:30:38 +0200 (CEST)
+Received: by mail-qc0-f169.google.com with SMTP id i17so1336785qcy.0
+ for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2014 21:30:37 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-
-On Thu, Apr 17, 2014 at 05:53:09PM +0200, Andrew Lunn wrote:
-> This patchset allows the Kirkwood based HP t5325 device make use of
-> simple-card to instantiate its audio hardware.
-> 
-> Patch 1 Adds a DT binding to the ALC5623 codec
-> Patch 2 Makes use of this new binding
-> Patch 3 Add fixes up the kirkwood sound node in DT
-> Patch 4 Extends simple-card to support the hw_params() needed
->         when using MVEBU sound hardware.
-> Patch 5 Swaps t5323 to using DT, removing all need for C code.
-> 
-> Andrew Lunn (5):
->   ASoC: alc5623: Add device tree binding
->   ARM: Kirkwood: Use DT to instansiate codec
->   ARM: Kirkwood: DT: Add missing #sound-dai-cells property
->   ASoC: simple-card: Support setting mclk via a fixed factor
->   ARM: Kirkwood: t5325: Use simple-card to instantiate audio
-> 
->  .../devicetree/bindings/sound/alc5623.txt          | 23 ++++++++++++
->  .../devicetree/bindings/sound/simple-card.txt      |  2 ++
-
-Are you alright with taking the above,
-
->  arch/arm/boot/dts/kirkwood-t5325.dts               | 33 +++++++++++++++++
->  arch/arm/boot/dts/kirkwood.dtsi                    |  1 +
->  arch/arm/mach-mvebu/board-t5325.c                  | 41 ----------------------
->  arch/arm/mach-mvebu/board.h                        |  6 ----
->  arch/arm/mach-mvebu/kirkwood.c                     |  3 --
-
-while I take these,
-
->  sound/soc/codecs/alc5623.c                         | 13 +++++++
->  sound/soc/generic/simple-card.c                    | 28 +++++++++++++++
-
-and you take these?
-
-That should be 1 and 4 for you and 2, 3, and 5 for me before Andrew does
-the patch split I asked for in my other response.
-
-thx,
-
-Jason.
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Does the output help?
