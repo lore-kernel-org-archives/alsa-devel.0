@@ -1,7 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 7/7] ASoC: Remove ASoC level IO tracing
-Date: Sat, 19 Apr 2014 10:44:02 +0200
-Message-ID: <1397897042-20092-8-git-send-email-lars@metafoo.de>
+Subject: [PATCH 6/7] ASoC: dapm: Rename
+	soc_widget_update_bits_locked() to soc_widget_update_bits()
+Date: Sat, 19 Apr 2014 10:44:01 +0200
+Message-ID: <1397897042-20092-7-git-send-email-lars@metafoo.de>
 References: <1397897042-20092-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-073.synserver.de (smtp-out-120.synserver.de
  [212.40.185.120])
- by alsa0.perex.cz (Postfix) with ESMTP id DFDFE261A99
+ by alsa0.perex.cz (Postfix) with ESMTP id D56CE261A96
  for <alsa-devel@alsa-project.org>; Sat, 19 Apr 2014 10:44:14 +0200 (CEST)
 In-Reply-To: <1397897042-20092-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,191 +26,54 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Sven Brandau <brandau@gmx.de>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-The ASoC framework is in the process of migrating all IO operations to regmap.
-regmap has its own more sophisticated tracing infrastructure for IO operations,
-which means that the ASoC level IO tracing becomes redundant, hence this patch
-removes them. There are still a handful of ASoC drivers left that do not use
-regmap yet, but hopefully the removal of the ASoC IO tracing will be an
-additional incentive to switch to regmap.
+There is no unlocked version of soc_widget_update_bits_locked() and there is no
+plan to introduce it in the near future, so drop the _locked suffix.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
-New in v2
----
- include/trace/events/asoc.h | 92 ---------------------------------------------
- sound/soc/soc-io.c          | 11 ------
- 2 files changed, 103 deletions(-)
+ sound/soc/soc-dapm.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
-index 03996b2..c75c795 100644
---- a/include/trace/events/asoc.h
-+++ b/include/trace/events/asoc.h
-@@ -11,102 +11,10 @@
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 85a594f..a2475e1 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -383,7 +383,7 @@ static int soc_widget_read(struct snd_soc_dapm_widget *w, int reg,
+ 	return snd_soc_component_read(w->dapm->component, reg, value);
+ }
  
- struct snd_soc_jack;
- struct snd_soc_codec;
--struct snd_soc_platform;
- struct snd_soc_card;
- struct snd_soc_dapm_widget;
- struct snd_soc_dapm_path;
- 
--/*
-- * Log register events
-- */
--DECLARE_EVENT_CLASS(snd_soc_reg,
--
--	TP_PROTO(struct snd_soc_codec *codec, unsigned int reg,
--		 unsigned int val),
--
--	TP_ARGS(codec, reg, val),
--
--	TP_STRUCT__entry(
--		__string(	name,		codec->name	)
--		__field(	int,		id		)
--		__field(	unsigned int,	reg		)
--		__field(	unsigned int,	val		)
--	),
--
--	TP_fast_assign(
--		__assign_str(name, codec->name);
--		__entry->id = codec->id;
--		__entry->reg = reg;
--		__entry->val = val;
--	),
--
--	TP_printk("codec=%s.%d reg=%x val=%x", __get_str(name),
--		  (int)__entry->id, (unsigned int)__entry->reg,
--		  (unsigned int)__entry->val)
--);
--
--DEFINE_EVENT(snd_soc_reg, snd_soc_reg_write,
--
--	TP_PROTO(struct snd_soc_codec *codec, unsigned int reg,
--		 unsigned int val),
--
--	TP_ARGS(codec, reg, val)
--
--);
--
--DEFINE_EVENT(snd_soc_reg, snd_soc_reg_read,
--
--	TP_PROTO(struct snd_soc_codec *codec, unsigned int reg,
--		 unsigned int val),
--
--	TP_ARGS(codec, reg, val)
--
--);
--
--DECLARE_EVENT_CLASS(snd_soc_preg,
--
--	TP_PROTO(struct snd_soc_platform *platform, unsigned int reg,
--		 unsigned int val),
--
--	TP_ARGS(platform, reg, val),
--
--	TP_STRUCT__entry(
--		__string(	name,		platform->name	)
--		__field(	int,		id		)
--		__field(	unsigned int,	reg		)
--		__field(	unsigned int,	val		)
--	),
--
--	TP_fast_assign(
--		__assign_str(name, platform->name);
--		__entry->id = platform->id;
--		__entry->reg = reg;
--		__entry->val = val;
--	),
--
--	TP_printk("platform=%s.%d reg=%x val=%x", __get_str(name),
--		  (int)__entry->id, (unsigned int)__entry->reg,
--		  (unsigned int)__entry->val)
--);
--
--DEFINE_EVENT(snd_soc_preg, snd_soc_preg_write,
--
--	TP_PROTO(struct snd_soc_platform *platform, unsigned int reg,
--		 unsigned int val),
--
--	TP_ARGS(platform, reg, val)
--
--);
--
--DEFINE_EVENT(snd_soc_preg, snd_soc_preg_read,
--
--	TP_PROTO(struct snd_soc_platform *platform, unsigned int reg,
--		 unsigned int val),
--
--	TP_ARGS(platform, reg, val)
--
--);
--
- DECLARE_EVENT_CLASS(snd_soc_card,
- 
- 	TP_PROTO(struct snd_soc_card *card, int val),
-diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
-index 0e11410..389b3db 100644
---- a/sound/soc/soc-io.c
-+++ b/sound/soc/soc-io.c
-@@ -17,8 +17,6 @@
- #include <linux/export.h>
- #include <sound/soc.h>
- 
--#include <trace/events/asoc.h>
--
- /**
-  * snd_soc_component_read() - Read register value
-  * @component: Component to read from
-@@ -39,8 +37,6 @@ int snd_soc_component_read(struct snd_soc_component *component,
+-static int soc_widget_update_bits_locked(struct snd_soc_dapm_widget *w,
++static int soc_widget_update_bits(struct snd_soc_dapm_widget *w,
+ 	int reg, unsigned int mask, unsigned int value)
+ {
+ 	if (!w->dapm->component)
+@@ -1070,7 +1070,7 @@ int dapm_reg_event(struct snd_soc_dapm_widget *w,
  	else
- 		ret = -EIO;
+ 		val = w->off_val;
  
--	dev_dbg(component->dev, "read %x => %x\n", reg, *val);
--
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_read);
-@@ -56,8 +52,6 @@ EXPORT_SYMBOL_GPL(snd_soc_component_read);
- int snd_soc_component_write(struct snd_soc_component *component,
- 	unsigned int reg, unsigned int val)
- {
--	dev_dbg(component->dev, "write %x = %x\n", reg, val);
--
- 	if (component->regmap)
- 		return regmap_write(component->regmap, reg, val);
- 	else if (component->write)
-@@ -207,7 +201,6 @@ unsigned int snd_soc_read(struct snd_soc_codec *codec, unsigned int reg)
- 	ret = snd_soc_component_read(&codec->component, reg, &val);
+-	soc_widget_update_bits_locked(w, -(w->reg + 1),
++	soc_widget_update_bits(w, -(w->reg + 1),
+ 			    w->mask << w->shift, val << w->shift);
+ 
+ 	return 0;
+@@ -1366,7 +1366,7 @@ static void dapm_seq_run_coalesced(struct snd_soc_card *card,
+ 			"pop test : Applying 0x%x/0x%x to %x in %dms\n",
+ 			value, mask, reg, card->pop_time);
+ 		pop_wait(card->pop_time);
+-		soc_widget_update_bits_locked(w, reg, mask, value);
++		soc_widget_update_bits(w, reg, mask, value);
+ 	}
+ 
+ 	list_for_each_entry(w, pending, power_list) {
+@@ -1512,8 +1512,7 @@ static void dapm_widget_update(struct snd_soc_card *card)
+ 	if (!w)
+ 		return;
+ 
+-	ret = soc_widget_update_bits_locked(w, update->reg, update->mask,
+-				  update->val);
++	ret = soc_widget_update_bits(w, update->reg, update->mask, update->val);
  	if (ret < 0)
- 		return -1;
--	trace_snd_soc_reg_read(codec, reg, val);
- 
- 	return val;
- }
-@@ -216,7 +209,6 @@ EXPORT_SYMBOL_GPL(snd_soc_read);
- int snd_soc_write(struct snd_soc_codec *codec, unsigned int reg,
- 	unsigned int val)
- {
--	trace_snd_soc_reg_write(codec, reg, val);
- 	return snd_soc_component_write(&codec->component, reg, val);
- }
- EXPORT_SYMBOL_GPL(snd_soc_write);
-@@ -269,8 +261,6 @@ int snd_soc_platform_read(struct snd_soc_platform *platform,
- 	if (ret < 0)
- 		return -1;
- 
--	trace_snd_soc_preg_read(platform, reg, val);
--
- 	return val;
- }
- EXPORT_SYMBOL_GPL(snd_soc_platform_read);
-@@ -278,7 +268,6 @@ EXPORT_SYMBOL_GPL(snd_soc_platform_read);
- int snd_soc_platform_write(struct snd_soc_platform *platform,
- 					 unsigned int reg, unsigned int val)
- {
--	trace_snd_soc_preg_write(platform, reg, val);
- 	return snd_soc_component_write(&platform->component, reg, val);
- }
- EXPORT_SYMBOL_GPL(snd_soc_platform_write);
+ 		dev_err(w->dapm->dev, "ASoC: %s DAPM update failed: %d\n",
+ 			w->name, ret);
 -- 
 1.8.0
