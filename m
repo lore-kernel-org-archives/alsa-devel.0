@@ -1,80 +1,95 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH 0/8] ARM: at91: sama5d3: enable sound support
-Date: Sat, 19 Apr 2014 00:11:42 +0200
-Message-ID: <5351A31E.7080109@atmel.com>
-References: <1395049541-28128-1-git-send-email-voice.shen@atmel.com> <53518C76.2020005@atmel.com> <5351A1DE.9070801@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 0/7] ASoC: Move IO and kcontrols to the
+	component level
+Date: Sat, 19 Apr 2014 10:43:55 +0200
+Message-ID: <1397897042-20092-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5351A1DE.9070801@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Boris BREZILLON <b.brezillon.dev@gmail.com>, Bo Shen <voice.shen@atmel.com>, Boris BREZILLON <b.brezillon@overkiz.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, devicetree@vger.kernel.org, Rob Landley <rob@landley.net>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>, linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-073.synserver.de (smtp-out-120.synserver.de
+ [212.40.185.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAC42261718
+ for <alsa-devel@alsa-project.org>; Sat, 19 Apr 2014 10:44:09 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Sven Brandau <brandau@gmx.de>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 19/04/2014 00:06, Boris BREZILLON :
-> 
-> On 18/04/2014 22:35, Nicolas Ferre wrote:
->> On 17/03/2014 10:45, Bo Shen :
->>> This patch add sound support on sama5d3xek board.
->>>
->>> This patch series based on the following patch set:
->>>   clk: at91: better support for the PCKs
->>>   http://comments.gmane.org/gmane.linux.kernel/1664477
->>>
->>>
->>> Bo Shen (5):
->>>   ARM: at91: sama5d3: add DMA property for SSC devices
->>>   ARM: at91: sama5d3: disable sound by default
->>>   ARM: at91: sama5d3: correct the sound compatible string
->>>   ARM: at91: sama5d3: add the missing property
->>>   ARM: at91: sama5d3: clock for ssc from rk pin
->>>
->>> Boris BREZILLON (3):
->>>   ASoC: atmel: support CCF based clks
->>>   ASoC: atmel: document clock properties of the wm8904 driver
->>>   ARM: at91/dt: add clock properties to the wm8904 codec node
->> Hi Voice and Boris,
->>
->> For this series I am a little bit puzzled: should I take the ASoC part
->> of it? I see no acknowledgement from Mark and I also read some messages
->> still discussing about CCF and wm8904 afterwards.
->>
->> So, I take the 5 patches by Voice Shen and tell me what is the proper
->> sequence with this wm8904 work.
-> 
-> Bo was waiting for the "move sam9n12 SoC to the CCF" (which has been
-> submitted earlier this week) series before sending a new version of his
-> "wm8904: add CCF support" series.
+This series contains the remaining patches from the previous series that have
+not been applied yet. The series has been rebased ontop of asoc/for-next and
+depends on topic/sta350, topic/core, topic/dapm, topic/cache and
+topic/component.
 
-Ok, that makes perfect sense.
-So I have the whole dependency graph in mind now: we will have fun
-stacking everything in the proper order ;-)
+Some minor updates were made to the patches and three new patches:
+	* One new user of snd_kcontrol_chip() showed up, the patch converts it to
+	  snd_soc_kcontrol_codec()
+	* Change return type of snd_soc_write() from unsigned int to int
+	* Remove ASoC level tracing
 
-Thanks for the clarification, Bye.
+Original cover letter:
 
+This series is the first step towards full componentisation of the ASoC core. It
+moves both the IO abstraction layers within ASoC as well as the standard set of
+kcontrols to the component level. This for example means we can get rid of
+constructs like
 
->> I will be happy to stack more patches about this topic during the 3.16
->> development phase.
->>
->>
->> Otherwise, the 5 patches by Voice go into at91-3.16-dt branch.
->>
->> Thanks, bye.
->>
->>
->>>  .../devicetree/bindings/sound/atmel-wm8904.txt     |  2 ++
->>>  arch/arm/boot/dts/sama5d3.dtsi                     |  6 ++++++
->>>  arch/arm/boot/dts/sama5d3xmb.dtsi                  | 11 +++++++++-
->>>  sound/soc/atmel/atmel_wm8904.c                     | 25 +++++++++++-----------
->>>  4 files changed, 31 insertions(+), 13 deletions(-)
->>>
->>
-> 
-> 
-> 
+	if (w->codec)
+		snd_soc_read(....)
+	else if(w->platform)
+		snd_soc_platform_read(...)
 
+Moving the kcontrols to the component level means we can use the same
+implementation also for other non-CODEC components. E.g. there seems to be an
+increasing amount of CPU components that have basic signal processing and things
+like volume controls etc. whose register layout is similar to those used in
+CODECs. Currently each CPU component driver re-implements these controls by
+hand.
+
+The first two patches introduce two new helper functions which hide the actual
+implementation on how the CODEC or platform struct that register a control can
+be obtained from the control. This means that when the actual implementation is
+changed only the two helper functions need to be updated and not every single
+driver. The patches that follow that are just cleanups removing unused IO stuff
+and move all IO functions to soc-io.c. The next step is to make platforms also
+components. And then finally first the IO abstraction layers in ASoC are unified
+at the component level and then on top of that the kcontrol helpers are moved to
+the component level.
+
+The series depends on quite a few topic branches related to changes to the core
+and cleanups for individual drivers. It is probably best to place it on top of
+asoc-v3.15-2. The patch that moves the kcontrols to the component level also has
+a runtime dependency on the not yet applied patches that move the ams-delta and
+mfld_machine controls to the card level.
+
+- Lars
+
+Lars-Peter Clausen (7):
+  ASoC: sta350: Use snd_soc_kcontrol_codec()
+  ASoC: Change return type of snd_soc_write() to int
+  ASoC: Move IO abstraction to the component level
+  ASoC: Move standard kcontrol helpers to the component level
+  ASoC: Remove snd_soc_update_bits_locked()
+  ASoC: dapm: Rename soc_widget_update_bits_locked() to
+    soc_widget_update_bits()
+  ASoC: Remove ASoC level IO tracing
+
+ include/sound/soc-dapm.h    |   1 +
+ include/sound/soc.h         |  55 ++++++--
+ include/trace/events/asoc.h |  92 -------------
+ sound/soc/codecs/sta350.c   |   4 +-
+ sound/soc/soc-core.c        | 284 +++++++++++++++++++++++++-------------
+ sound/soc/soc-dapm.c        |  91 ++----------
+ sound/soc/soc-io.c          | 327 ++++++++++++++++++++++++++------------------
+ 7 files changed, 450 insertions(+), 404 deletions(-)
 
 -- 
-Nicolas Ferre
+1.8.0
