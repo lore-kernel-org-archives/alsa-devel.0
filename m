@@ -1,16 +1,17 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 0/7] ASoC: Move IO and kcontrols to the
-	component level
-Date: Sat, 19 Apr 2014 10:43:55 +0200
-Message-ID: <1397897042-20092-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 1/7] ASoC: sta350: Use snd_soc_kcontrol_codec()
+Date: Sat, 19 Apr 2014 10:43:56 +0200
+Message-ID: <1397897042-20092-2-git-send-email-lars@metafoo.de>
+References: <1397897042-20092-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-073.synserver.de (smtp-out-120.synserver.de
  [212.40.185.120])
- by alsa0.perex.cz (Postfix) with ESMTP id EAC42261718
- for <alsa-devel@alsa-project.org>; Sat, 19 Apr 2014 10:44:09 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DCBA426172D
+ for <alsa-devel@alsa-project.org>; Sat, 19 Apr 2014 10:44:10 +0200 (CEST)
+In-Reply-To: <1397897042-20092-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,72 +25,35 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Sven Brandau <brandau@gmx.de>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-This series contains the remaining patches from the previous series that have
-not been applied yet. The series has been rebased ontop of asoc/for-next and
-depends on topic/sta350, topic/core, topic/dapm, topic/cache and
-topic/component.
+In preparation for componentisation of the kcontrol helpers use
+snd_soc_kcontrol_codec() instead of snd_kcontrol_chip().
 
-Some minor updates were made to the patches and three new patches:
-	* One new user of snd_kcontrol_chip() showed up, the patch converts it to
-	  snd_soc_kcontrol_codec()
-	* Change return type of snd_soc_write() from unsigned int to int
-	* Remove ASoC level tracing
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/sta350.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Original cover letter:
-
-This series is the first step towards full componentisation of the ASoC core. It
-moves both the IO abstraction layers within ASoC as well as the standard set of
-kcontrols to the component level. This for example means we can get rid of
-constructs like
-
-	if (w->codec)
-		snd_soc_read(....)
-	else if(w->platform)
-		snd_soc_platform_read(...)
-
-Moving the kcontrols to the component level means we can use the same
-implementation also for other non-CODEC components. E.g. there seems to be an
-increasing amount of CPU components that have basic signal processing and things
-like volume controls etc. whose register layout is similar to those used in
-CODECs. Currently each CPU component driver re-implements these controls by
-hand.
-
-The first two patches introduce two new helper functions which hide the actual
-implementation on how the CODEC or platform struct that register a control can
-be obtained from the control. This means that when the actual implementation is
-changed only the two helper functions need to be updated and not every single
-driver. The patches that follow that are just cleanups removing unused IO stuff
-and move all IO functions to soc-io.c. The next step is to make platforms also
-components. And then finally first the IO abstraction layers in ASoC are unified
-at the component level and then on top of that the kcontrol helpers are moved to
-the component level.
-
-The series depends on quite a few topic branches related to changes to the core
-and cleanups for individual drivers. It is probably best to place it on top of
-asoc-v3.15-2. The patch that moves the kcontrols to the component level also has
-a runtime dependency on the not yet applied patches that move the ams-delta and
-mfld_machine controls to the card level.
-
-- Lars
-
-Lars-Peter Clausen (7):
-  ASoC: sta350: Use snd_soc_kcontrol_codec()
-  ASoC: Change return type of snd_soc_write() to int
-  ASoC: Move IO abstraction to the component level
-  ASoC: Move standard kcontrol helpers to the component level
-  ASoC: Remove snd_soc_update_bits_locked()
-  ASoC: dapm: Rename soc_widget_update_bits_locked() to
-    soc_widget_update_bits()
-  ASoC: Remove ASoC level IO tracing
-
- include/sound/soc-dapm.h    |   1 +
- include/sound/soc.h         |  55 ++++++--
- include/trace/events/asoc.h |  92 -------------
- sound/soc/codecs/sta350.c   |   4 +-
- sound/soc/soc-core.c        | 284 +++++++++++++++++++++++++-------------
- sound/soc/soc-dapm.c        |  91 ++----------
- sound/soc/soc-io.c          | 327 ++++++++++++++++++++++++++------------------
- 7 files changed, 450 insertions(+), 404 deletions(-)
-
+diff --git a/sound/soc/codecs/sta350.c b/sound/soc/codecs/sta350.c
+index 552e92a..12ebbaf 100644
+--- a/sound/soc/codecs/sta350.c
++++ b/sound/soc/codecs/sta350.c
+@@ -309,7 +309,7 @@ static int sta350_coefficient_info(struct snd_kcontrol *kcontrol,
+ static int sta350_coefficient_get(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+ 	struct sta350_priv *sta350 = snd_soc_codec_get_drvdata(codec);
+ 	int numcoef = kcontrol->private_value >> 16;
+ 	int index = kcontrol->private_value & 0xffff;
+@@ -351,7 +351,7 @@ exit_unlock:
+ static int sta350_coefficient_put(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+ 	struct sta350_priv *sta350 = snd_soc_codec_get_drvdata(codec);
+ 	int numcoef = kcontrol->private_value >> 16;
+ 	int index = kcontrol->private_value & 0xffff;
 -- 
 1.8.0
