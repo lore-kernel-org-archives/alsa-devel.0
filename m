@@ -1,25 +1,18 @@
-From: Andoru <andoru.blah@gmail.com>
-Subject: Invalid PCM pointer with CMI8738 and pcm.c buffer
-	underuns
-Date: Sun, 20 Apr 2014 15:04:48 +0000 (UTC)
-Message-ID: <loom.20140420T165832-72@post.gmane.org>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: Re: alsa-utils aplay/arecord can't be interrupted when
+ streaming is not active
+Date: Sun, 20 Apr 2014 20:01:48 -0700
+Message-ID: <53548A1C.4040407@mentor.com>
+References: <534E3736.6070100@mentor.com> <534E39F3.4040200@perex.cz>
+ <534E407C.10002@mentor.com> <534E4640.5010102@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id EA0E5261A57
- for <alsa-devel@alsa-project.org>; Sun, 20 Apr 2014 17:05:01 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1WbtIi-0000gB-0z
- for alsa-devel@alsa-project.org; Sun, 20 Apr 2014 17:05:00 +0200
-Received: from cl-86-125-139-41.cablelink.mures.rdsnet.ro ([86.125.139.41])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sun, 20 Apr 2014 17:05:00 +0200
-Received: from andoru.blah by cl-86-125-139-41.cablelink.mures.rdsnet.ro with
- local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sun, 20 Apr 2014 17:05:00 +0200
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id CFDDD260840
+ for <alsa-devel@alsa-project.org>; Mon, 21 Apr 2014 05:01:52 +0200 (CEST)
+In-Reply-To: <534E4640.5010102@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,17 +22,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-[Continued from here:
-http://news.gmane.org/find-root.php?message_id=loom.20140406T010044%2d863%40post.gmane.org]
+Hi Jaroslva
 
-Since I didn't get any answer again, I decided to try and build the latest
-ALSA snapshots myself (alsa-driver-1.0.25.3584.gb044d;
-alsa-firmware-1.0.27.2.gf21a8; alsa-lib-1.0.27.2; alsa-oss-1.0.25.2.g39df1;
-alsa-plugins-1.0.27.10.gb5917; alsa-utils-1.0.27.2.22.gb7ed4) and purge the
-Debian ALSA packages to see if I could do something at compile time or if it
-would fix the problems, but they're still there. The OS still slows down to
-a crawl at random times and I still have the issue with the volume control
-plus other quirks I mentioned in the previous threads...
+
+On 04/16/2014 01:58 AM, Jaroslav Kysela wrote:
+> Date 16.4.2014 10:34, jiwang wrote:
+>> Hi Jaroslav
+>>
+>> On 04/16/2014 05:06 PM, Jaroslav Kysela wrote:
+>>> Date 16.4.2014 09:54, jiwang wrote:
+>>>> Hi All
+>>>>
+>>>> With latest 1.0.27.2 alsa-utils, I am facing problem to interrupt
+>>>> aplay/arecord
+>>>> when the streaming is not active (no data can be written to or read from
+>>>> cards)
+>>>> further more, if I start aplay/arecord with "-N" nonblocking option,
+>>>> then aplay/arecord can never exit, unless I do a system reset
+>>> If I/O stalls it's usually problem in the driver. You don't write any
+>>> information about your configuration - post 'aplay -v' to see more.
+>> This issue is caught when we were doing some tests,
+>> test for both correct and incorrect configuration of driver
+>> and we expect SIGINT can interrupt aplay/arecord in both cases
+>> (which was the cause with the old version 1.0.26)
+>>
+>>> You may kill the process using the SIGABRT signal.. No reboot is required.
+>>
+>> Yes, SIGABRT works,
+>> But as in our case:
+>> CPU dai device is waiting on a external clock,
+>> but isnt provided caused the I/O stall
+>> the driver is functioning properly and should still be SIGINT-ed in my
+>> opinion
+>
+> The user space received SIGINT, but the current aplay code tries to
+> finish the device close sequence. Could you determine, in which syscall
+> is the process after you sent SIGINT? A backtrace would be great.
+>
+Do you have any update on this?
+is more log required? do you think it should be fixed in aplay?
+
+Thanks,
+Jiada
+>>
+>> Thanks,
+>> Jiada
+>>
+>>>> I found if I revert the following patch
+>>>>
+>>>> /commit 1d0042d7e948815f8015c62bc53143eed3b83206//
+>>>> //Author: Jaroslav Kysela <perex@perex.cz>//
+>>>> //Date:   Mon Apr 8 13:30:54 2013 +0200//
+>>>> //
+>>>> //    aplay/arecord: change the interrupt handling using snd_pcm_abort()//
+>>>> //    //
+>>>> //    It is required (exclude the fatal SIGABRT) to call snd_pcm_close()
+>>>> and//
+>>>> //    the end of work (outside of the interrupt handler). Use new
+>>>> snd_pcm_abort()//
+>>>> //    function to inform alsa-lib to not ignore EINTR and move the
+>>>> in_aborting//
+>>>> //    variable to the global scope to be checked in the i/o loops.//
+>>>> //    //
+>>>> //    Signed-off-by: Jaroslav Kysela <perex@perex.cz>//
+>>>> /
+>>>> http://git.alsa-project.org/?p=alsa-utils.git;a=commit;h=1d0042d7e948815f8015c62bc53143eed3b83206
+>>>>
+>>>> then aplay/arecord can be interrupted correctly
+>>>>
+>>>> Is it a defect in aplay.c or did I miss something?
+>>>>
+>>>> Thanks,
+>>>> Jiada
+>>>>
+>>>
+>
+>
