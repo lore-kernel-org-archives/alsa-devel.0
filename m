@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/7] ASoC: Change return type of
-	snd_soc_write() to int
-Date: Mon, 21 Apr 2014 11:36:49 +0100
-Message-ID: <20140421103649.GG12304@sirena.org.uk>
-References: <1397897042-20092-1-git-send-email-lars@metafoo.de>
- <1397897042-20092-3-git-send-email-lars@metafoo.de>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: [PATCH] ASoC: core: Don't break component searching if
+	both id and num_dai are 0
+Date: Mon, 21 Apr 2014 19:14:46 +0800
+Message-ID: <1398078886-31505-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5004434922969213483=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 33598261A98
- for <alsa-devel@alsa-project.org>; Mon, 21 Apr 2014 12:37:08 +0200 (CEST)
-In-Reply-To: <1397897042-20092-3-git-send-email-lars@metafoo.de>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1lp0145.outbound.protection.outlook.com [207.46.163.145])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF3622617B8
+ for <alsa-devel@alsa-project.org>; Mon, 21 Apr 2014 13:13:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Sven Brandau <brandau@gmx.de>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <daniel@zonque.org>
+To: broonie@kernel.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+The commit e41975ed (ASoC: core: Fix the DAI name getting) added a break
+within the "if (id < 0 || id >= pos->num_dai)" while the original design
+of the search didn't break the loop if that condition contented but only
+mark the ret error and let it go on to search the next component.
 
---===============5004434922969213483==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MQ0Pr/tyewiyxL8j"
-Content-Disposition: inline
+In a case like dmaengine which's not a dai but as a component sharing an
+identical name with a dai, both the id and pos->num_dai here could be 0.
+If we break the search, we may never find the dai we want as it might be
+placed behind its dmaengine in the component list.
 
+So this patch fixes the issue above by following the original design to
+let the search carry on.
 
---MQ0Pr/tyewiyxL8j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+---
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Sat, Apr 19, 2014 at 10:43:57AM +0200, Lars-Peter Clausen wrote:
-> The CODEC's write callback can return a negative error code, make sure to pass
-> that on correctly.
-
-Applied, thanks
-
---MQ0Pr/tyewiyxL8j
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTVPS+AAoJELSic+t+oim9uV4QAIE0cK+SKhUWHyMq0Oqevj1/
-BxtVlGGY9NKnpT7Eo8FYh1ypOcsX8QFKJOotsnoGhqTdrx3WozQTJmBJS6PWS8Ur
-+AnIUzqmL2eH2/G31CB2eDqk2lqTS8P5fmZ24vIRklxGQg4ucqD/ALOY5KF8Quk3
-KTb+xTh//1HZr9wc6vhpJeNZZnLq5o5NiAnBdaWQZM73fXPsyDCRe9i7Q3XCArt3
-EV3GB2EVlpJSIdi1Oyblb+TZnVgGoVAlv5nrpY3tuF+VeWcUduszQ6qxYY3iJUl/
-Xntv/Se0hYK1b8PmkV0Gj9KcqNFp5NpaBO+5ZXC/NEIG99wavLOiue8PKQ5XhfKj
-fBmOxnhLehddNofqNNs3MAry5pt5Z0r9dN+xqGIRJSSYZ/yYCtzUrBUpQDyBnOBF
-EstlUCKxkBfRJQs+GeO+sWotZ6RlyPsWBOdeKRrwp1H0K2Ld5KxUsm06Ouqtyzit
-dt/vp2UXn9lNispWKZs1GcR4crBRXWOI6JYb68gl3Dt9/ehcM58iv8R0+rofvf2m
-d+zjc7kmiAMzubPiBgzTIlj/MUxD/OVXvQC0OnLiBBxZeZdFYyLemI8L6Mg54U/4
-nLi2U0MkUPZPx2/8CpgvT+GbYLdKtpSvhGzHcwUv52i2j54AYHrFd31z+wumcH3O
-fjvk4lBPgie5zHWKHhA1
-=ZF5o
------END PGP SIGNATURE-----
-
---MQ0Pr/tyewiyxL8j--
-
---===============5004434922969213483==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5004434922969213483==--
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index a17c047..82e9fdf 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -4591,7 +4591,7 @@ int snd_soc_of_get_dai_name(struct device_node *of_node,
+ 
+ 			if (id < 0 || id >= pos->num_dai) {
+ 				ret = -EINVAL;
+-				break;
++				continue;
+ 			}
+ 
+ 			ret = 0;
+-- 
+1.8.4
