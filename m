@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: davinci-mcasp: Optimize
- pm_runtime usage and clean up the init code
-Date: Tue, 22 Apr 2014 12:47:12 +0100
-Message-ID: <20140422114712.GO12304@sirena.org.uk>
+Subject: Re: [PATCH 1/3] ASoC: davinci-pcm: Convert to use
+ devm_snd_soc_register_platform()
+Date: Tue, 22 Apr 2014 12:51:41 +0100
+Message-ID: <20140422115141.GP12304@sirena.org.uk>
 References: <1398164594-29169-1-git-send-email-peter.ujfalusi@ti.com>
- <1398164594-29169-4-git-send-email-peter.ujfalusi@ti.com>
+ <1398164594-29169-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5599399080864606566=="
+Content-Type: multipart/mixed; boundary="===============7291650060715497813=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 759F9261A9F
- for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 13:47:29 +0200 (CEST)
-In-Reply-To: <1398164594-29169-4-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FE1C261AB0
+ for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 13:51:53 +0200 (CEST)
+In-Reply-To: <1398164594-29169-2-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,56 +27,51 @@ Cc: daniel@zonque.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gma
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5599399080864606566==
+--===============7291650060715497813==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="v8Zo618bouc0601L"
+	protocol="application/pgp-signature"; boundary="+/nih4Q6YcCBn4mo"
 Content-Disposition: inline
 
 
---v8Zo618bouc0601L
+--+/nih4Q6YcCBn4mo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 22, 2014 at 02:03:14PM +0300, Peter Ujfalusi wrote:
-> Move the pm_runtime_enable/disable to dai driver probe/remove callbacks from
-> module probe/remove callbacks.
-> With this change we can remove the platform driver's remove function since
-> it became NULL.
+On Tue, Apr 22, 2014 at 02:03:12PM +0300, Peter Ujfalusi wrote:
+> Remove the cleanup code related to the platform from the DAI drivers at the
+> same time to avoid breakage.
 
-This does mean that if the device gets enumerated but isn't used in the
-system it won't go to runtime idle since the DAI level probe is only
-called when we're building a card.  That doesn't seem like it's a win.
-How about creating a devm_pm_runtime_enable() instead?
+Applied, thanks.
 
---v8Zo618bouc0601L
+--+/nih4Q6YcCBn4mo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTVla9AAoJELSic+t+oim99OUP/1LXysbxKu+JqsfPlnVWmc0y
-nQ0zWtbOr1X8hY+7yGzW1hng5k0jOkvdDaO3N+a8TBItc3CFBvhY97Hw4p8E2osn
-a8BNnAksCq4ktrWBSvWyPkGC0dRifLOULAflJ5asPi8d9PRXbb0vZhd9MY54POwW
-Z/l0jk9hqRT5H4Qvid/S7UM5BG0pzNCmM8cnX2c5v5cLyce7PyDF66I6S44XkwEV
-tH5D0xrWMUfCHc183fiFWKjqlw/MmbQHM71cJWzKGr/ggkZAJANvS6qg/5zEyHIL
-MnXoAtWFO2IdNs08XX4IWqOiJdXibD03dQbADLfyL4Kn4B6woRUGwgu8hxSKxjWS
-D9n9Fm0nzpxQ6E2cHe+El5BDNf0Ut+3vrUfCQyPO+uaBY5LQG0SmmOPpcm+V99xy
-moSq29/C2TuDhbbmdi2Spxhj44ET538glbQ4QrmUGDdptoOyJZEj5/yb8tYJZNU+
-evxtTg14VVIQ4um0/VZdZ/YhWSqUxvR2/W8GFnHIVNn1pBuOPfGzIBoSsZ0DhLb4
-0tontcBLmjU+uHD8g1NaMnPQXT1M0ZunfoFpayAEBuI/VGyzMGvw7DBMhcGtXPXx
-Ggx4gPp27meiD0Mam1FMY6RA2PrIUJ0bin2lDELdhvG0TO7Ru9W91TzHlzhUE20c
-oNacfIRj6KsfD6+/Ycu9
-=Bb8u
+iQIcBAEBAgAGBQJTVlfKAAoJELSic+t+oim9bjQP/27sVLog1T0IQRu1G7zKeE7r
+VaVnjXNCYzdqUYTrIFupfsd+Js3JhqIRqJwshozdYnR/ZW16qvSybnxXeyz5I/Tb
+JPJ66Lw2vVcbN/TvHWL2lJKyuVjxDKzMbPn/CW+b4HoaTXYcRFN+orrYC+0urmEf
+VXSVEa3OqyiG0KohcqT5hJcGmiy+nb/+VdZSwSWUqWoOMeR8JKNO0G2KMrwIq2JG
+Hr7xqMn02MXYQLmwYOKChIJOlooRPwRhBQ9tdzVCfk3h5xxjCXBujhK4CO//6DvG
+2ah/f2bH2Qza8xQ2kBmMr9xnM/h874rCDpkd+M+J3q92jdDwsVhXvuXtARQ+MhVv
+g7nxP7HVBnGbuDJsjB7+CSQswAPJ3npEEz/okSLGbA4iTA1nwTRHHFLVPSrywUlp
+DQ6wxSPAspqcPvGFdBUhRLhpQRQaTeOnuiQztFqY1QWsd3V6Cr1L2mrJuOly95xC
+LP4NTfnfwYbk5kfoYgEr6+i+fqtT1qQDzuDwLyDzSElyMfXixPgnMoctFayhw+K7
+leyQGUcJdWFanJI38u1ffrI5fqPMuMbGY4WW+6sfMOs4UrLbY0B2vqwcMrDPR37E
+AboYmD4D3SR1JqpeyOsO8B/KYqkECoBW89BITuw1fkVsXkyt10op3w4P/ho7yVA5
+OYt3y0PJ5sEQVVAVbCw+
+=CIBl
 -----END PGP SIGNATURE-----
 
---v8Zo618bouc0601L--
+--+/nih4Q6YcCBn4mo--
 
---===============5599399080864606566==
+--===============7291650060715497813==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5599399080864606566==--
+--===============7291650060715497813==--
