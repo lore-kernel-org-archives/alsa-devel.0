@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 2/5] ASoC: Move standard kcontrol
- helpers to the component level
-Date: Tue, 22 Apr 2014 13:38:48 +0100
-Message-ID: <20140422123848.GZ12304@sirena.org.uk>
-References: <1398165797-22997-1-git-send-email-lars@metafoo.de>
- <1398165797-22997-3-git-send-email-lars@metafoo.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: For firewire drivers,
+ reduce period time down to 2msec?
+Date: Tue, 22 Apr 2014 22:24:07 +0900
+Message-ID: <53566D77.8000207@sakamocchi.jp>
+References: <5355033F.7060606@sakamocchi.jp> <53557F6F.8080701@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8726630828411314013=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A3897261B2A
- for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 14:39:04 +0200 (CEST)
-In-Reply-To: <1398165797-22997-3-git-send-email-lars@metafoo.de>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id C64B8264F06
+ for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 15:24:16 +0200 (CEST)
+In-Reply-To: <53557F6F.8080701@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +21,151 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+(Apr 22 2014 05:28), Clemens Ladisch wrote:
+> Takashi Sakamoto wrote:
+>> Currently I'm working for next patchsets and I'll post them in Friday.
+>
+> I should be healthy again by then.
 
---===============8726630828411314013==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pih6jE/3rXCmn1YN"
-Content-Disposition: inline
+I should careflly prepare for these patches, without any bugs which I 
+can realize.
+
+>> I want to reduce this to 2msec. The reason of this '2msec' is:
+>>   - Currently firewire-lib process 16 packets in one time.
+>>   - This equals to 2msec (= INTERRUPT_INTERVAL / 8000 * 1000)
+>>   - During this 2msec, when pcm_period_pointer passes through period
+>> boundary, snd_pcm_period_elapsed() is scheduled with tasklet.
+>>   - But tasklet can execute one time even if the function is scheduled
+>> several times before executing it.
+>>   - The packetizing process is enough fast so the function can be
+>> scheduled before executing.
+>>   - As a result, snd_pcm_period_elapsed() can be called one time every 2msec.
+>>
+>> Actually my devices can work fine with period == 2msec or less than
+>> 5msec, without any disadvantage.
+>
+> ALSA actually uses a fixed period _size_.  When the period length is set
+> to exactly 2 ms, but the 16 packets between two FireWire interrupts
+> contain one sample less than needed, the ALSA period interupt is delayed
+> until the next FireWire interrupt.  In that case, Jack with two periods
+> is likely to underrun.
+>
+> The minimum time should be increased so that at least one FireWire
+> interrupt is guaranteed to happen for each period, even when there are
+> rounding errors and clock differences.
+
+I didn't consider about this case. Yes, exactly. I should remain 4msec 
+or more for period time.
+
+But against your expectation, the examples in my previous message are 
+got with jackd. Today I did easy tests with jackd again but I didn't 
+receive any XRUNs. Of cource, the size of period is nearly 2msec and the 
+number of periods in buffer is 2.
+
+I did also some tests with aplay/arecord. In this case, I can get 
+'overrun' with arecord and M(mmap) or/and N(nonblock) option, but aplay 
+works fine.
+
+If your expectation and my understanding are correct, all of 
+jackd/aplay/arecord should generate XRUNs. But actually not. Do you have 
+any ideas for these differences?
 
 
---pih6jE/3rXCmn1YN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks
 
-On Tue, Apr 22, 2014 at 01:23:14PM +0200, Lars-Peter Clausen wrote:
-> After moving the IO layer inside ASoC to the component level we can now easily
-> move the standard control helpers also to the component level. This allows to
-> reuse the same standard helper control implementations for other components.
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
 
-Applied, thanks.  This also depended on the multicodec changes.
-
---pih6jE/3rXCmn1YN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTVmLVAAoJELSic+t+oim9aloQAJVHdrj+vKWGC24xYefkkiVi
-lyu0toJ4YxtNEPKAHXFwk/vZVlDH5mqPmFL1xTjsfiSM/ZcCvU7pnHpaxmTe39U8
-JHE5rfetWAHHqkoCkYX1keHkBoZIRD6yR6U4oON6QJkRNXBtLFTivuy47ObH7Jfd
-VjOMP8oMkOTfjmg+LHlYz8z8a1sDXlHPoGYiclACQsPQgabBjB6wxRPIQNk9g1Gm
-TzFq+vre43qMyjyCwoUaRAJGiQhkrTGIWa/4gNS48d/zzB+hKf2kNiqSLt5Iy9ey
-JplMYUi2i1PRE4VM699TaTXYFcx4c7ncXtHMIWBj+duGTd9m32fICHNHE57OIkzO
-zqm/CZwvQTsdCKbmXBWsAfX8qj4DZdTDSZ+dPAv8HlC4D+wAIqUtjqWwDtJKmjfx
-I3NDC5bGmw8DX+/9tWlHyhl1RHQk1bF9C+Du3eU0MRcFyqpLX4RkUq2s9S86cA2g
-6VrWE24aNz3ACzhBOM+BgW8RupdCK7nVja15gtpsncQetKdnt6lDy2wKYHzzwoBW
-Q/Ufe7SH/CLLpNLFQufnNJY8mZr8x0ba1L0GYifaDu8A8sWEN4br+L4DoPHenfik
-EM13ZPqEeCy0JD5A5CkKUxiQlwkicl5ENN+NNfQpgQ/iueLi4MfIuqvnnVWCr1v6
-hGkih7MRMknnEtypjBQ5
-=/aUz
------END PGP SIGNATURE-----
-
---pih6jE/3rXCmn1YN--
-
---===============8726630828411314013==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8726630828411314013==--
+(Apr 21 2014 20:38), Takashi Sakamoto wrote:> Hi Clemens,
+ >
+ > Currently I'm working for next patchsets and I'll post them in Friday.
+ > In this time, I add some patches newly, including your idea to use
+ > channel mapping instead of CIP_HI_DUALWIRE for dice driver.
+ >
+ > The patchset also includes my idea to apply common PCM hw constraints to
+ > dice/speakers(oxfw)/fireworks/bebob. Currently the constraints includes:
+ > 1.Maximum bits for PCM sample is limited by 24.
+ > 2.Minimum time for period is currently 2msec.
+ > 3.In blocking mode, frames per period/buffer is aligned to SYT_INTERVAL
+ >
+ > I think you'll agree with 1 and 3. So I want to discuss the second one
+ > beforehand.
+ >
+ > Currently dice/speakers driver apply 5msec for period time. I want to
+ > reduce this to 2msec. The reason of this '2msec' is:
+ >   - Currently firewire-lib process 16 packets in one time.
+ >   - This equals to 2msec (= INTERRUPT_INTERVAL / 8000 * 1000)
+ >   - During this 2msec, when pcm_period_pointer passes through period
+ > boundary, snd_pcm_period_elapsed() is scheduled with tasklet.
+ >   - But tasklet can execute one time even if the function is scheduled
+ > several times before executing it.
+ >   - The packetizing process is enough fast so the function can be
+ > scheduled before executing.
+ >   - As a result, snd_pcm_period_elapsed() can be called one time 
+every 2msec.
+ >
+ > Actually my devices can work fine with period == 2msec or less than
+ > 5msec, without any disadvantage. For example:
+ >
+ > (snd-bebob)
+ > $ cat /proc/asound/GO46/pcm0p/sub0/hw_params
+ > access: MMAP_INTERLEAVED
+ > format: S32_LE
+ > subformat: STD
+ > channels: 6
+ > rate: 32000 (32000/1)
+ > period_size: 64
+ > buffer_size: 128
+ >
+ > period: 1/32000 *  64 / 1000 = 2.0 msec
+ > buffer: 1/32000 * 128 / 1000 = 4.0 msec
+ >
+ > $ cat /proc/asound/GO46/pcm0p/sub0/hw_params
+ > access: MMAP_INTERLEAVED
+ > format: S32_LE
+ > subformat: STD
+ > channels: 6
+ > rate: 48000 (48000/1)
+ > period_size: 128
+ > buffer_size: 256
+ >
+ > period: 1/48000 * 128 * 1000 = 2.7 msec
+ > buffer: 1/48000 * 256 * 1000 = 5.4 msec
+ >
+ > (snd-oxfw)
+ > $ cat /proc/asound/FCA202/pcm0p/sub0/hw_params
+ > access: MMAP_INTERLEAVED
+ > format: S32_LE
+ > subformat: STD
+ > channels: 2
+ > rate: 32000 (32000/1)
+ > period_size: 64
+ > buffer_size: 128
+ >
+ > period: 1/32000 *  64 / 1000 = 2.0 msec
+ > buffer: 1/32000 * 128 / 1000 = 4.0 msec
+ >
+ > $ cat /proc/asound/FCA202/pcm0p/sub0/hw_params
+ > access: MMAP_INTERLEAVED
+ > format: S32_LE
+ > subformat: STD
+ > channels: 2
+ > rate: 96000 (96000/1)
+ > period_size: 256
+ > buffer_size: 512
+ >
+ > period: 1/96000 * 256 * 1000 = 2.7 msec
+ > buffer: 1/96000 * 512 * 1000 = 5.4 msec
+ >
+ >
+ > How do you think about applyting these rules to dice/speakers?
+ >
+ >
+ > Regards
+ >
+ > Takashi Sakamoto
+ > o-takashi@sakamocchi.jp
