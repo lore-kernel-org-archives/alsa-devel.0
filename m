@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 5/5] ASoC: Remove ASoC level IO tracing
-Date: Tue, 22 Apr 2014 13:25:40 +0100
-Message-ID: <20140422122540.GY12304@sirena.org.uk>
+Subject: Re: [PATCH v4 2/5] ASoC: Move standard kcontrol
+ helpers to the component level
+Date: Tue, 22 Apr 2014 13:38:48 +0100
+Message-ID: <20140422123848.GZ12304@sirena.org.uk>
 References: <1398165797-22997-1-git-send-email-lars@metafoo.de>
- <1398165797-22997-6-git-send-email-lars@metafoo.de>
+ <1398165797-22997-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2134029809397183251=="
+Content-Type: multipart/mixed; boundary="===============8726630828411314013=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 880102625CF
- for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 14:25:52 +0200 (CEST)
-In-Reply-To: <1398165797-22997-6-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A3897261B2A
+ for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 14:39:04 +0200 (CEST)
+In-Reply-To: <1398165797-22997-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,55 +27,52 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2134029809397183251==
+--===============8726630828411314013==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vg2NstDvmsiE62Z7"
+	protocol="application/pgp-signature"; boundary="pih6jE/3rXCmn1YN"
 Content-Disposition: inline
 
 
---vg2NstDvmsiE62Z7
+--pih6jE/3rXCmn1YN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 22, 2014 at 01:23:17PM +0200, Lars-Peter Clausen wrote:
-> The ASoC framework is in the process of migrating all IO operations to regmap.
-> regmap has its own more sophisticated tracing infrastructure for IO operations,
-> which means that the ASoC level IO tracing becomes redundant, hence this patch
-> removes them. There are still a handful of ASoC drivers left that do not use
-> regmap yet, but hopefully the removal of the ASoC IO tracing will be an
-> additional incentive to switch to regmap.
+On Tue, Apr 22, 2014 at 01:23:14PM +0200, Lars-Peter Clausen wrote:
+> After moving the IO layer inside ASoC to the component level we can now easily
+> move the standard control helpers also to the component level. This allows to
+> reuse the same standard helper control implementations for other components.
 
-Applied, thanks.
+Applied, thanks.  This also depended on the multicodec changes.
 
---vg2NstDvmsiE62Z7
+--pih6jE/3rXCmn1YN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTVl/BAAoJELSic+t+oim9+kEQAIgp3bcIFji/xHizXxLynXf3
-YbK1f2BtPWfPOIB3cWIrNvxR3yEx6N9EgpFLAigPgk1nXnvXDF50dkfk8fdwsgQl
-naUtnU898SjqlkENAhOXXLq5I32tqC9tXHV0mKcLyx9CtGZLaC8mvu+swKsx1pyY
-cutzLEii18X5J9ebdfC00Hw29brkY1YB6CUvEfDFX5jACLdwC4PgRnTGX+HI7qxb
-C5uG953culZCD4QbOYDU/ei4PPkWDap1rJUYxw1Hh0c7AUlfmnbbjMlSIlSqa4PT
-gqJCpeXQVbfXnQ1LB1u0Ufk8MpICdQaZ5QI+19birXRlX09Ex2P8lJWVkW5Mwto/
-+S6m9Z1XqxIPYgNLdncQ66c9CFEYTKli+371aos/L9Lw8WYWkbzJjoAM/Tv7AwK/
-XTcBrydnjdlJXzhQOs1TR2FpmmJlrXXMod4o/AwvecVDtzXyYLBoDHbzOairpulA
-xg7540ELAZ4ofGBMTRYLpG4CjvUP7RannzQXeK6Sixz4P5oejIPhFiprE88Cwuqg
-IoxKdzc8H5DiMWqxcI9BIFmU3Hpib8a1RkcguAo9z0bxsQRCFenub/vljAG5Z8a2
-LJ7/dPhK8qqJueALD33Lk87ePE8EuvZVqVOJbHkZKrUsY7dSLwmzWVoncC4SNAPh
-L0OMw8dDKwHod6X15+Pg
-=z48c
+iQIcBAEBAgAGBQJTVmLVAAoJELSic+t+oim9aloQAJVHdrj+vKWGC24xYefkkiVi
+lyu0toJ4YxtNEPKAHXFwk/vZVlDH5mqPmFL1xTjsfiSM/ZcCvU7pnHpaxmTe39U8
+JHE5rfetWAHHqkoCkYX1keHkBoZIRD6yR6U4oON6QJkRNXBtLFTivuy47ObH7Jfd
+VjOMP8oMkOTfjmg+LHlYz8z8a1sDXlHPoGYiclACQsPQgabBjB6wxRPIQNk9g1Gm
+TzFq+vre43qMyjyCwoUaRAJGiQhkrTGIWa/4gNS48d/zzB+hKf2kNiqSLt5Iy9ey
+JplMYUi2i1PRE4VM699TaTXYFcx4c7ncXtHMIWBj+duGTd9m32fICHNHE57OIkzO
+zqm/CZwvQTsdCKbmXBWsAfX8qj4DZdTDSZ+dPAv8HlC4D+wAIqUtjqWwDtJKmjfx
+I3NDC5bGmw8DX+/9tWlHyhl1RHQk1bF9C+Du3eU0MRcFyqpLX4RkUq2s9S86cA2g
+6VrWE24aNz3ACzhBOM+BgW8RupdCK7nVja15gtpsncQetKdnt6lDy2wKYHzzwoBW
+Q/Ufe7SH/CLLpNLFQufnNJY8mZr8x0ba1L0GYifaDu8A8sWEN4br+L4DoPHenfik
+EM13ZPqEeCy0JD5A5CkKUxiQlwkicl5ENN+NNfQpgQ/iueLi4MfIuqvnnVWCr1v6
+hGkih7MRMknnEtypjBQ5
+=/aUz
 -----END PGP SIGNATURE-----
 
---vg2NstDvmsiE62Z7--
+--pih6jE/3rXCmn1YN--
 
---===============2134029809397183251==
+--===============8726630828411314013==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2134029809397183251==--
+--===============8726630828411314013==--
