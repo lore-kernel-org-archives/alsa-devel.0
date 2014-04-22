@@ -1,123 +1,81 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: SAMSUNG: Add sound card driver for Snow board
-Date: Tue, 22 Apr 2014 11:44:47 +0100
-Message-ID: <20140422104447.GK12304@sirena.org.uk>
-References: <1398153834-16199-1-git-send-email-tushar.behera@linaro.org>
+Subject: Re: [PATCH] ASoC: rt5645: Add codec driver
+Date: Tue, 22 Apr 2014 11:53:27 +0100
+Message-ID: <20140422105327.GL12304@sirena.org.uk>
+References: <1397212459-26495-1-git-send-email-oder_chiou@realtek.com>
+ <20140414202837.GA25182@sirena.org.uk>
+ <CAD+35SMEmaqRkytk7oGLLD0baq_n3GWsm2RZg1m4nRF7jcb0RQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cqUZ7tFrnhCvEBfZ"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1398153834-16199-1-git-send-email-tushar.behera@linaro.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: Tushar Behera <tushar.behera@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, rdunlap@infradead.org, robh+dt@kernel.org
+Content-Type: multipart/mixed; boundary="===============6942474760641003072=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4876D261A92
+ for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 12:53:38 +0200 (CEST)
+In-Reply-To: <CAD+35SMEmaqRkytk7oGLLD0baq_n3GWsm2RZg1m4nRF7jcb0RQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder <oder_chiou@realtek.com>
+Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---cqUZ7tFrnhCvEBfZ
+--===============6942474760641003072==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oSvtmtnH4bRUIYpj"
+Content-Disposition: inline
+
+
+--oSvtmtnH4bRUIYpj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 22, 2014 at 01:33:54PM +0530, Tushar Behera wrote:
+On Tue, Apr 22, 2014 at 09:10:19AM +0800, Oder wrote:
 
-> Added machine driver to instantiate I2S based sound card on Snow
-> board. It has MAX98095 audio codec on board.
+> > Since the device can power up and down very quickly it should make sense
+> > to set idle_bias_off for a power saving when idle.
 
-In general this isn't up to modern standards, please do try to check
-that new code is following best practices.  Did the support for setting
-the clocking up in the device tree get merged already?
+> We've set the idle_bias_off as true in struct "soc_codec_dev_rt5645",
+> is there any thing i miss it?
 
-Please do also pay attention to the CC lists when posting patches, this
-seems to have been sent to a fairly random selection of people and
-lists.
+No, nothing - sorry, I didn't notice that.
 
-> +	switch (params_format(params)) {
-
-params_width().
-
-> +	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-> +					     SND_SOC_DAIFMT_NB_NF |
-> +					     SND_SOC_DAIFMT_CBS_CFS);
-
-Set this in the dai_link.
-
-> +	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
-> +					FIN_PLL_RATE, SND_SOC_CLOCK_IN);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
-> +					0, SND_SOC_CLOCK_OUT);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = snd_soc_dai_set_clkdiv(cpu_dai, SAMSUNG_I2S_DIV_BCLK, bfs);
-> +	if (ret < 0)
-> +		return ret;
-
-Set this stuff up on probe.  I'm surprised that you need to set BCLK at
-all...
-
-> +static int snow_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	struct snd_soc_codec *codec = rtd->codec;
-> +	struct snd_soc_dapm_context *dapm = &codec->dapm;
-> +
-> +	snd_soc_dapm_sync(dapm);
-> +
-> +	return 0;
-> +}
-
-This does nothing, remove it.
-
-> +	if (!pdev->dev.platform_data && !pdev->dev.of_node) {
-> +		dev_err(&pdev->dev, "No platform data supplied\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	name = of_get_property(pdev->dev.of_node, "card-name", NULL);
-> +	if (name)
-> +		card->name = name;
-> +
-> +	i2s_node = of_parse_phandle(pdev->dev.of_node,
-> +				    "samsung,i2s-controller", 0);
-> +	if (!i2s_node) {
-> +		dev_err(&pdev->dev,
-> +			"Property 'i2s-controller' missing or invalid\n");
-> +		return -EINVAL;
-> +	}
-
-You're allowing platform data above but I see DT is mandatory here.
-
-> +	ret = snd_soc_register_card(card);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-> +		return ret;
-> +	}
-
-devm_snd_soc_register_card().
-
---cqUZ7tFrnhCvEBfZ
+--oSvtmtnH4bRUIYpj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTVkgcAAoJELSic+t+oim9gwYQAJBsHURQWvolGhdfIdpsyJ7j
-V53YeEWQBHQEq9R/FOdvHwjlbgc0Kl1dT7SwueuSBBigLx7tW1KfT32g8nV9oSgw
-2/7xL1EmOTZciOHgO8hLcD7Yv29hb4YLiqfyM/gSl6Ck5o16+zJSnLbZqUdg/ffW
-1gfdM7nArNl10xGdPh/3azX8R0wNUBIfRFYtuwRxjdzJHKKe0bJOyxlM6eoSYXCG
-ojKQSFEBIlAdqA7acMxp+w88ssxxJAjYN5wB0sOWuz2q5oIgrhCyMCWU/xcM78qq
-SQbWEEwsShAs1QxVM8zr1kU00TTzrPc8SRa4kuJo9RNXWzYnf2OymwI2qMjNNdpS
-2uISuVLqzLXI6dZFw6aMJMMLOYxHzrQg5HH8sEVoKy+pDhlQMNyM//zRBWxpbc96
-UIJt29yS+eheGFZcQF49WD0bQXG8ZFYp2xqRTlnbvuJMPs8lDo5hYJvtwiHR5kJA
-GNf9LkJQ09QeksLgXvwWBUy9M6G6KNx2bERUejf9LhSq0GImwL20e/hkRW8CQeB4
-x9+AIIG/7VKoXnIBpCs5o9n43SHKPBlBFTObxqj1G6I2tdgy0E5M67Q3K4t9lfOi
-rZhjIgJLkj1gi9LZbSqVFfryM5xKB1enM79aMnpaTJDray916zSrac9X1bth1fTZ
-cTfaHrEFGdLx440EM+Oq
-=nbGw
+iQIcBAEBAgAGBQJTVkokAAoJELSic+t+oim9FDYP/2p/tctuOmkOuf2sIHn5GDlD
+SlCi1XQbpsXxT/tVIdqfzmcjBtwdLN/e+TT3Ca3p2EWMQ96+1rLR6YNpRuPSNWAt
+cVXMScwQP7ywXjRGxdm1/jMo974zVO5WI9rvOLLbUD+iZ39GiE8xEwEclLsZvTXn
+wrU44nSEm7QuiwUeLnLHUDgQWuQ3d9Nbo425ufZDbqdzAOWVMB1r0wzrvzcHGDW8
+JPPSiLLbwh41cLJIh43Xs2rFK/AvIsRxtdJnzs2NkaG9XZ1lJ/laXHaHQzpicmYx
+lkTWNQPtVKUvJWyyqZL3R4b8QuOSVXzoH1IMzL55pQ364WPgaiJkfpnYYiZVYXdz
+GvYQwjZbXGV/nEIK+i9vT7e7LoNirOmi6k6lidTT4gRIk6yGYxikPnwNqyGijJNf
+NxOp6owQCdGUq6sHB6GEv37oLPw7kQ6saM5eldZxoJe5w1aaBHc9OXIewpfAqs2H
+CvgM7KwsYdyz1aLrMMbk6xNUNjMX+1EQV4vvt1CL+3xFl+9h3ZVZ1nygChQOoUnR
+VFghwyhtU9beHJYU328gCXTMcXetqHsQrmn2IherqUnoamu9QNO6+dqT5icm4ttG
+fZtUqqLW47wsyCNr/76uT9sTwX8ylhw2euxnKjTrN/m14LhVww9wqqtSQSHk+rqu
+MXCVd3igZFO357P0cSIe
+=bS3Z
 -----END PGP SIGNATURE-----
 
---cqUZ7tFrnhCvEBfZ--
+--oSvtmtnH4bRUIYpj--
+
+--===============6942474760641003072==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6942474760641003072==--
