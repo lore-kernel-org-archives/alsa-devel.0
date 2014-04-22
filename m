@@ -1,16 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: How to create a proc entry for an ASoc codec?
-Date: Mon, 21 Apr 2014 23:42:10 +0100
-Message-ID: <20140421224210.GJ12304@sirena.org.uk>
-References: <F46914AEC2663F4A9BB62374E5EEF8F82B3DB083@SHSMSX101.ccr.corp.intel.com>
+From: Oder <oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5645: Add codec driver
+Date: Tue, 22 Apr 2014 09:04:31 +0800
+Message-ID: <CAD+35SOp8qTv3OSHVj_L7Z-crsgq1kHHNrpAiekh6oOa7tXCSg@mail.gmail.com>
+References: <1397212459-26495-1-git-send-email-oder_chiou@realtek.com>
+ <20140414202837.GA25182@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4076378610130448518=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 868902608B7
- for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 00:42:22 +0200 (CEST)
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F82B3DB083@SHSMSX101.ccr.corp.intel.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id B77552608B7
+ for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 03:04:42 +0200 (CEST)
+Received: from mail.realtek.com (rtitcas11.realtek.com.tw[172.21.6.12])
+ by rtits2.realtek.com (8.14.5/2.37/5.60) with ESMTP id s3M14Yrt011572
+ (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NOT)
+ for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 09:04:35 +0800
+Received: by mail-la0-f52.google.com with SMTP id el20so317956lab.25
+ for <alsa-devel@alsa-project.org>; Mon, 21 Apr 2014 18:04:31 -0700
+ (PDT)
+In-Reply-To: <20140414202837.GA25182@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,67 +28,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4076378610130448518==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Qe7hL+wfWyneuNoc"
-Content-Disposition: inline
-
-
---Qe7hL+wfWyneuNoc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Apr 11, 2014 at 09:16:03AM +0000, Lin, Mengdong wrote:
-
-> How to create a proc entry for an ASoc codec under the sound card?
-
-> We hope to create an proc entry for an I2S codec under /proc/asound/cardx, to debug the codec status at runtime.
-
-> So after the machine driver calls snd_soc_register_card(&soc_card), I calls snd_card_proc_new(soc_card .snd_card, ....)
-> But no codec entry is created although dmesg shows this function succeeds.
-
-> How ASoC creates the proc entries such as 'id' for the sound card?
-
-In addition to what Liam said it's worth mentioning that due to the
-deprecation of /proc most of the ASoC diagnostics are exposed via
-debugfs (and for things using regmap that also has debugfs data too) -
-you're likely to get much more useful information that way.
-
---Qe7hL+wfWyneuNoc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTVZ6/AAoJELSic+t+oim9KdEP/iRZ/VEBDJdzsCm9m/5gsaTo
-sUcGtkIDhfXcdZ4xoQitGNp7tnCDDGPlvQouOGfPn5j+ahzFfuVIUvoKchOF8hgA
-NBbG4a+CqJlGBLUUvHyYsR6krC3WrPSXEX0Pytoc6gItDc+ofnLt/xMOZF9Vc/A6
-Q3OCS2a+2B2trDyrrjmRJGra4ybzqovfBKTVIxB6nni8/Z4XyIr9GyMByEcPj/nK
-RAxqdNqAhYu96Qt4lJFmmVBZKQ0CD7A/xe/38D4xTMSx3KppLt/y2NDPF4tnlAIX
-Do1eF4IBO+fv58pA2qHYB9E7CcotRcx1u8ZJvQI5IFt83KnULa/KT1o3fdVqG1XY
-nbKohceyLrqcFG6p/rm93hZlZ5N/tQ6QVenK+6zz+mxKZe3ZWzmgOf7Ubz0iu5Ox
-bund02cj7C0AeOSGiVyK0xuZ8Ld5k71ad2yJMw/fZfzK7u6ud6bZxGXwUO7/efPd
-FXixUKZbA9V/ycgeedfm9tyCS4pzzXNITIKmby0pnrPrQv4xUs+tFlsZkuMRqfaM
-1D4568uCcjEkYdDF/8PKsCJxa4X4F0Fj+fGMZhipwOFjzw07gme3yJdcJ8hI7IBC
-j729ggM5HvKbz/QL5GoBXLkqaP7wy65qxNj3aKuuOcwuQHSQYruQXlaMJOeh31ss
-tvM202zkTldq+mIad/nS
-=UBG+
------END PGP SIGNATURE-----
-
---Qe7hL+wfWyneuNoc--
-
---===============4076378610130448518==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+>
+> > +static int rt5645_set_bias_level(struct snd_soc_codec *codec,
+> > +                     enum snd_soc_bias_level level)
+> > +{
+> > +     switch (level) {
+> > +     case SND_SOC_BIAS_STANDBY:
+> > +             if (SND_SOC_BIAS_OFF == codec->dapm.bias_level) {
+> > +                     snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
+> > +                             RT5645_PWR_VREF1 | RT5645_PWR_MB |
+> > +                             RT5645_PWR_BG | RT5645_PWR_VREF2,
+> > +                             RT5645_PWR_VREF1 | RT5645_PWR_MB |
+> > +                             RT5645_PWR_BG | RT5645_PWR_VREF2);
+> > +                     mdelay(10);
+> > +                     snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
+> > +                             RT5645_PWR_FV1 | RT5645_PWR_FV2,
+> > +                             RT5645_PWR_FV1 | RT5645_PWR_FV2);
+> > +                     snd_soc_update_bits(codec, RT5645_GEN_CTRL1,
+> > +                             RT5645_DIG_GATE_CTRL,
+> RT5645_DIG_GATE_CTRL);
+> > +             }
+> > +             break;
+>
+> Since the device can power up and down very quickly it should make sense
+> to set idle_bias_off for a power saving when idle.
 
 
---===============4076378610130448518==--
+We've set the idle_bias_off as true in struct "soc_codec_dev_rt5645", is
+there any thing i miss it?
