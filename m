@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/5] ASoC: Move IO abstraction to the
-	component level
-Date: Tue, 22 Apr 2014 13:24:08 +0100
-Message-ID: <20140422122408.GV12304@sirena.org.uk>
+Subject: Re: [PATCH v4 3/5] ASoC: Remove
+	snd_soc_update_bits_locked()
+Date: Tue, 22 Apr 2014 13:25:18 +0100
+Message-ID: <20140422122518.GW12304@sirena.org.uk>
 References: <1398165797-22997-1-git-send-email-lars@metafoo.de>
- <1398165797-22997-2-git-send-email-lars@metafoo.de>
+ <1398165797-22997-4-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0273857815190388281=="
+Content-Type: multipart/mixed; boundary="===============2063213645996989634=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3446E2625C4
- for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 14:24:24 +0200 (CEST)
-In-Reply-To: <1398165797-22997-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id CA4D92625D7
+ for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 14:25:30 +0200 (CEST)
+In-Reply-To: <1398165797-22997-4-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,53 +27,51 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0273857815190388281==
+--===============2063213645996989634==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oIr4TYI69vhiwa6U"
+	protocol="application/pgp-signature"; boundary="kIWVDTJhVd8bNV9f"
 Content-Disposition: inline
 
 
---oIr4TYI69vhiwa6U
+--kIWVDTJhVd8bNV9f
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 22, 2014 at 01:23:13PM +0200, Lars-Peter Clausen wrote:
-> We currently have two very similar IO abstractions in ASoC, one for CODECs, the
-> other for platforms. Moving this to the component level will allow us to unify
-> those two. It will also enable us to move the standard kcontrol helpers as well
-> as DAPM support to the component level.
+On Tue, Apr 22, 2014 at 01:23:15PM +0200, Lars-Peter Clausen wrote:
+> There are no users of snd_soc_update_bits_locked() left and it is identical to
+> snd_soc_update_bits(). So it can be removed.
 
 Applied, thanks.
 
---oIr4TYI69vhiwa6U
+--kIWVDTJhVd8bNV9f
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTVl9kAAoJELSic+t+oim9Ey0P/00vtGhAydUTKcOnwdK1xF6Y
-e8q7V+0aRXIcTJo8/NowIso6lHWXXHHXZEhA6+Plia4WCVCQDiSAaj5FArtG7Z3H
-VPOAiSBN+74QzuD3JY5tOcRQXXfDB2nMx38fpkW24GFTQ8pUhtbJJDqKsVnVZDx+
-kPn9+rIsWpYyPv7IFGCcOCVubDa4l1UB6rDmZ8eO0ePLYIyvexKdMl/nKhbEmaee
-Lf6Ez+EGj9gHi2Mlv3nfLutstALNnrjjWmDHDLLY/g2NXPUqBUbcjxBuic2bkh/n
-V3dFdn62WO5PIPQkN2/SPu6xuEqZ0iAgCqoEATHMw4HmxESGilswlcUmQaPxdimk
-VpeleVg4YRBb/bIFZAsEFJVPF1y8/03LH2+Gz9k3MjuGtsYg4Q6hX4IXOFQS/gIC
-I1QwKyGKbVWI9VWO3lF6oWF5fM28Ji/ibsfXwPkyB85Hu8z60SRdApEWsgzQ/Xuj
-ohl8ipEnrFmK5zECUTx7v2PLvXQKfnjAF9gm9c4spG0APe2Hx+Sw/AyHTOIT9G23
-HNiFJN2x2+sT3faYq7jdAiiSUIUQDqDdhncO+k2mmmaM8g6w38Fw+IITHU8YJkaA
-CsZDJ7xlzqv4hb6m/pe6sI6d8KW7RB9lJAJaQz9YsATbrBHOUh1YPtq2CyWUbnxk
-khuxzYHM+zGsa3pxop3Z
-=CaRC
+iQIcBAEBAgAGBQJTVl+rAAoJELSic+t+oim9mPsP/jx3rkvw3MqajR1KIvIAG4Kh
+jWqq7pwos25+znyNEZY7lF/gpBUGJ6juAopUzqcnzBncrhU4dgRrhJ18n1IIWJp7
+JKy2RUaBIVwjPLuUVJTIXF/Yzodx2pfR1uxdcOim9s59l8W4pnJHZFpso9L7NqNT
+r6dl6MiYCaI7tnq10jDW2t6r8H3XMaBBPBNJaw9UM+t08KGapCrY4R/q5qwM86Yp
+2jtiCz+E7zcsJDVVA5+XlQGEUNI4NbMUOrkwuiCt42EMe+JhwPUE7H1hlMSXfHBW
+Fy5s02xsiEKcKvVnAWZ+EviMNmylHBdlu23+vxUuuPhE+AY0ipXEZ1xlb3TRpuyI
+uTNDcz3fufi4l1o81HcgArsdshHf92mWPmqhSgy/6O8oN1s60QZa59o8U+k+NKMF
+aaCyPHPxVEjAD9Y+wVY75yu+tmKw4UgPq0r1nVrnZhmu+cYPRShUxkZLR+M71EpQ
+Hctxx4Tzygt8LR7lMuJXMmXA0TYjDxqfxpGJfjfUz8BR9AeelQHb1jkzGi6wi95B
+KBPoWM9s/Jd4CE4FeY6vHwxtXUbTL8zNGvDBKpH/aG26a9bKiXx0HdMn+4Oh9EV1
+Yiz40Hkb7NupcZy/Q//VUWLtMFaFOE6ZE7kFVOsJtqN95qsU1fv56ZYbFWpLDgld
+ppyZMPFmEDNYnwuyCr97
+=KOnG
 -----END PGP SIGNATURE-----
 
---oIr4TYI69vhiwa6U--
+--kIWVDTJhVd8bNV9f--
 
---===============0273857815190388281==
+--===============2063213645996989634==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0273857815190388281==--
+--===============2063213645996989634==--
