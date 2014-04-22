@@ -1,18 +1,17 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: rt5640: Add minimal support for
-	RT5642
-Date: Tue, 22 Apr 2014 09:01:24 +0300
-Message-ID: <535605B4.3090009@linux.intel.com>
-References: <1397701446-11977-1-git-send-email-bardliao@realtek.com>
- <20140417190129.GH12304@sirena.org.uk>
+From: narayanan best <narayananbest@gmail.com>
+Subject: sound disappears or noise heard after long run
+Date: Tue, 22 Apr 2014 11:40:20 +0530
+Message-ID: <CADMz-rvOXL8jVUtny0Dcjh-QMFp-NNGvXUx6_smJTJxmtZpW5Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 40F70261A50
- for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 08:01:56 +0200 (CEST)
-In-Reply-To: <20140417190129.GH12304@sirena.org.uk>
+Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
+ [209.85.223.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 401DD261A2F
+ for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 08:10:22 +0200 (CEST)
+Received: by mail-ie0-f179.google.com with SMTP id lx4so4840457iec.10
+ for <alsa-devel@alsa-project.org>; Mon, 21 Apr 2014 23:10:21 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,19 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/17/2014 10:01 PM, Mark Brown wrote:
-> On Thu, Apr 17, 2014 at 10:24:06AM +0800, bardliao@realtek.com wrote:
->
->> From: Bard Liao <bardliao@realtek.com>
->> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
->> Signed-off-by: Bard Liao <bardliao@realtek.com>
-> Jarkko, are you OK with this (and the change in general)?
-Yes, it's effectively same as my patch with Bard's actual device ID bits 
-description in reset register.
+Hi,
+I am facing issue with alsa similar to the issue reported here
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-June/001726.html
 
--- 
-Jarkko
+This is seen with latest alsa library and driver. Alsa is configured at
+44100 (alsa.conf) and application plays at the rate of 48000. When the
+pointers cross the boundary value
+(after 6-7hrs), a continuous noise (jack hammer noise) or silence is heard.
+Issuing SIGSTOP and SIGCONT recovers the application and it starts playing
+normally.
+
+Pulseaudio is not running in our setup.
+
+It could be problem with calculation in the rate plugin.
+Let me know if you need further details.
