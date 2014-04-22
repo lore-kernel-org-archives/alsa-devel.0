@@ -1,82 +1,90 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: SAMSUNG: Add sound card driver for Snow board
-Date: Tue, 22 Apr 2014 19:33:10 +0100
-Message-ID: <20140422183310.GD12304@sirena.org.uk>
-References: <1398153834-16199-1-git-send-email-tushar.behera@linaro.org>
- <20140422104447.GK12304@sirena.org.uk>
- <CAHbNUh3G5HLaGXddPgjthWTu_VQ95xo=2Lii2BM6iSc-ipnm=w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ASoC: davinci-mcasp: Optimize
+ pm_runtime usage and clean up the init code
+Date: Tue, 22 Apr 2014 19:52:16 +0100
+Message-ID: <20140422185216.GE12304@sirena.org.uk>
+References: <1398164594-29169-1-git-send-email-peter.ujfalusi@ti.com>
+ <1398164594-29169-4-git-send-email-peter.ujfalusi@ti.com>
+ <20140422114712.GO12304@sirena.org.uk> <53565E91.9040200@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HrV55DujqS0rXGB5"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAHbNUh3G5HLaGXddPgjthWTu_VQ95xo=2Lii2BM6iSc-ipnm=w@mail.gmail.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Tushar Behera <tushar.behera@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, linux-doc@vger.kernel.org, devicetree <devicetree@vger.kernel.org>, rdunlap@infradead.org, "robh+dt@kernel.org" <robh+dt@kernel.org>
+Content-Type: multipart/mixed; boundary="===============5239977314151856578=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D4D30264F28
+ for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 20:52:35 +0200 (CEST)
+In-Reply-To: <53565E91.9040200@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: daniel@zonque.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---HrV55DujqS0rXGB5
+--===============5239977314151856578==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="s1oWHZVDl8DmrvUg"
+Content-Disposition: inline
+
+
+--s1oWHZVDl8DmrvUg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 22, 2014 at 07:17:54PM +0530, Tushar Behera wrote:
-> On 22 April 2014 16:14, Mark Brown <broonie@kernel.org> wrote:
+On Tue, Apr 22, 2014 at 03:20:33PM +0300, Peter Ujfalusi wrote:
+> On 04/22/2014 02:47 PM, Mark Brown wrote:
 
-> > In general this isn't up to modern standards, please do try to check
-> > that new code is following best practices.  Did the support for setting
-> > the clocking up in the device tree get merged already?
+> > This does mean that if the device gets enumerated but isn't used in the
+> > system it won't go to runtime idle since the DAI level probe is only
+> > called when we're building a card.
 
-> I didn't get this point. Would you please elaborate?
+> If the given mcasp is not used as part of a card, it should not have been
+> probed in the first place (at least with DT boot we can control this). If the
+> driver is probed for a mcasp instance and it is not part of any card than it
+> can be left disabled IMHO no need for runtime pm to take care of it.
+> I might missed something related to runtime pm, but this is my understanding.
 
-The out of tree driver for these boards has a bunch of code in it which
-reprograms the clock tree that parents the I2S block so that the I2S
-block has inputs at suitable rates to allow it to generate useful
-outputs.
+Sure, but you then also have the cases where for whatever reason the
+card doesn't probe (some other driver missing for example).  Probably
+almost all the time it's not going to make a practical difference but it
+just feels like a step in the wrong direction for a minimal gain.
 
-> > Please do also pay attention to the CC lists when posting patches, this
-> > seems to have been sent to a fairly random selection of people and
-> > lists.
-
-> Okay, I will update the CC list as per get_maintainer script during
-> next revision.
-
-Please think about the results when doing that - get_maintainers is very
-useful but it does generate false positives and miss people.
-
-> >> +     ret = snd_soc_dai_set_clkdiv(cpu_dai, SAMSUNG_I2S_DIV_BCLK, bfs);
-> >> +     if (ret < 0)
-> >> +             return ret;
-
-> > Set this stuff up on probe.  I'm surprised that you need to set BCLK at
-> > all...
-> >
-
-> Should I create a late_probe call for this (in line with tobermory.c)?
-
-Yes.
-
---HrV55DujqS0rXGB5
+--s1oWHZVDl8DmrvUg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTVrXjAAoJELSic+t+oim9G3sP/0ynfzYReiq/7tW6PKDDjU4K
-w9FZjFKdi5Vx5WCeChOW3QMwXv6BPLbMJMDvwkq2lE5YW8saqI0lwed8DL1ghf+O
-UnsfBk6nnUumk1UjwwOiK0pcIcwy3y/scEEne7ccnMp3Qku0TZ6eUlNrhYgym0VM
-O7mp+YvD+ous6mC+M6pptRRXUWNotzcIk9KoYU5j7kPqtFbXt+h2aUHw3YzLXVJD
-ws27lnfKdHtZ8gi9U0hSKOt7/RMmhzlaagw6oyAQBZsRpNjDYrzdtfik8ricaBx+
-sDa8MbWCJQ6VZGhZzECeiQpbPa5m4KUhx/zq3LDVle1sANfC3yM0mlHfqE0GwYyh
-Vtywso8bEs5fgCMrFZJ+MRW+elkdAACUy/+2ypPmuoHEGu7UJWU+z7KHGkrr5ySJ
-aKrZm59Tj3FuJUQAJ6a7pyErMPQp2U4cG5AAM3B2OtkpGBLPjDm/NVVNxXLhKZnA
-ST0faTDP5isFfx39ZkdjSvWPzp2XpO6iyVL1B1Ci+QahKXrYjZdLgxEkDbNZUxQ0
-tPfGePF5rSNcAcqN5vM2n+/pLZn+D7OUH1tEHme5R/p9EFtXAJuy/WswDJ5YA0SJ
-X78Is4ps+SIEGu+4gNnD4UpFzrgqnTTmafwbVxyMSTDJXH6zRle/lP2VZmR9v5vR
-iSAwFYhCYCcu7h7A7gZ8
-=5VUc
+iQIcBAEBAgAGBQJTVrpdAAoJELSic+t+oim9X40P/0VaBpuq0LBHgPDLTLScGCuR
+SSX0w6DQyJvLqLRMxy5xrcLH5S2essvIUz76IuJgubaQfu+tB7kcVDxPe/tRjffc
+B8H5S0kMPB2n6hjvPn1mdx6vggKUQo/KgM4xwYhDdO4ee4nKnVKOkNBgRQ/coucZ
+x/MbWgLEL5inGTcuSa8WeFgjEo8R+ri8epLMDmKqg5EaNXk8VWEZLMhTeWiAJwee
+Amfe2NCpq73wbn9SWf2rGWzuhEVrBudwDvnTFxEmSKwNiTdRzU4Uis6n/WU2Icgu
+N61WlEkLcm5nAHJ8i8K9lMSdfoUAO2pdUikvCTGE4lk9Wn5rltAkL6CybG5K1eMx
+wZz/7XKjmDr9DS1OyLAEv5blbKYyssbLOX8daiIw+WusuYz9dtESe37NVnSwA/Kt
+wAIxZ3+w/5cxVAfQi6BRGE1Vnn9Fdz7T+FM2HMGEd1Lw3VGiUcfbaWNbi2U809Yu
+JGGTonQl6yqxgOSU4E59lKpvfjns43izgoE8e+MNX8ugkgPtXGbjjgrQRlhG92IU
+L35dXjpZgOWSszkqVrtcVYHK34X+eV9sRQrR6AG8KRnJNdL9tcDv24VY9kvm3Bx6
+iaSWi42YbAb+93wlyl0a+tplwktVRP9vwYgUCoWH6PMLnpLHOUfAo+wi7kU7kt27
+Wk1BZoOcwNbFFBbqBKpU
+=BQD4
 -----END PGP SIGNATURE-----
 
---HrV55DujqS0rXGB5--
+--s1oWHZVDl8DmrvUg--
+
+--===============5239977314151856578==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5239977314151856578==--
