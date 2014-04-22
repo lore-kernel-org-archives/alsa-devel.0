@@ -1,83 +1,126 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: Fix audio crash due to negative
-	address offset
-Date: Tue, 22 Apr 2014 16:38:54 +0300
-Message-ID: <1398173934-20095-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: Re: [PATCH] ASoC: SAMSUNG: Add sound card driver for Snow board
+Date: Tue, 22 Apr 2014 19:17:54 +0530
+Message-ID: <CAHbNUh3G5HLaGXddPgjthWTu_VQ95xo=2Lii2BM6iSc-ipnm=w@mail.gmail.com>
+References: <1398153834-16199-1-git-send-email-tushar.behera@linaro.org>
+	<20140422104447.GK12304@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A81A264F09
- for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 15:39:13 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Wenkai Du <wenkai.du@intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <20140422104447.GK12304@sirena.org.uk>
+Sender: linux-doc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, linux-doc@vger.kernel.org, devicetree <devicetree@vger.kernel.org>, rdunlap@infradead.org, "robh+dt@kernel.org" <robh+dt@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Wenkai Du <wenkai.du@intel.com>
+On 22 April 2014 16:14, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Apr 22, 2014 at 01:33:54PM +0530, Tushar Behera wrote:
+>
+>> Added machine driver to instantiate I2S based sound card on Snow
+>> board. It has MAX98095 audio codec on board.
+>
+> In general this isn't up to modern standards, please do try to check
+> that new code is following best practices.  Did the support for setting
+> the clocking up in the device tree get merged already?
+>
 
-There were occasional ADSP crash during reboot testing:
+I didn't get this point. Would you please elaborate?
 
-[   11.883364] BUG: unable to handle kernel paging request at ffffc90121700000
-[   11.883380] IP: [<ffffffffc024d8bc>] sst_module_insert_fixed_block+0x24f/0x26d [snd_soc_sst_dsp]
-[   11.883397] PGD 7800b067 PUD 0
-[   11.883405] Oops: 0002 [#1] SMP
-[   11.886418] gsmi: Log Shutdown Reason 0x03
+> Please do also pay attention to the CC lists when posting patches, this
+> seems to have been sent to a fairly random selection of people and
+> lists.
+>
 
-The virtual address, ffffc90121700000, was out of range. The virtual
-address is calculated by adding LPE base address with an offset:
+Okay, I will update the CC list as per get_maintainer script during
+next revision.
 
-sst_memcpy32(dsp->addr.lpe + data->offset, data->data, data->size);
+>> +     switch (params_format(params)) {
+>
+> params_width().
+>
+>> +     ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+>> +                                          SND_SOC_DAIFMT_NB_NF |
+>> +                                          SND_SOC_DAIFMT_CBS_CFS);
+>
+> Set this in the dai_link.
+>
 
-The offset is calculated in sst_byt_parse_module, by subtraction of
-two virtual addresses dsp->addr.fw_ext and dsp->addr.lpe:
+Ok.
 
-block_data.offset = block->ram_offset + (dsp->addr.fw_ext - dsp->addr.lpe);
+However, setting this in dai_link is not working if I2S is running is
+master mode. The bug is with I2S driver as it is setting rclk_srcrate
+as 0 during startup. I will fix that in another patch.
 
-These virtual addresses are assigned by kernel from ioremap:
+>> +     ret = snd_soc_dai_set_sysclk(codec_dai, 0,
+>> +                                     FIN_PLL_RATE, SND_SOC_CLOCK_IN);
+>> +     if (ret < 0)
+>> +             return ret;
+>> +
+>> +     ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
+>> +                                     0, SND_SOC_CLOCK_OUT);
+>> +     if (ret < 0)
+>> +             return ret;
+>> +
+>> +     ret = snd_soc_dai_set_clkdiv(cpu_dai, SAMSUNG_I2S_DIV_BCLK, bfs);
+>> +     if (ret < 0)
+>> +             return ret;
+>
+> Set this stuff up on probe.  I'm surprised that you need to set BCLK at
+> all...
+>
 
-sst->addr.lpe = ioremap(pdata->lpe_base, pdata->lpe_size);
-sst->addr.fw_ext = ioremap(pdata->fw_base, pdata->fw_size);
+Should I create a late_probe call for this (in line with tobermory.c)?
 
-In current driver code, offset is defined as unsigned int32:
+Setting BCLK was an oversight, that is not required. I will remove that.
 
-struct sst_module_data {
-...
-	u32 offset;		/* offset in FW file */
-};
+>> +static int snow_init(struct snd_soc_pcm_runtime *rtd)
+>> +{
+>> +     struct snd_soc_codec *codec = rtd->codec;
+>> +     struct snd_soc_dapm_context *dapm = &codec->dapm;
+>> +
+>> +     snd_soc_dapm_sync(dapm);
+>> +
+>> +     return 0;
+>> +}
+>
+> This does nothing, remove it.
+>
 
-Most of the time kernel assigned virtual addresses with addr.fw_ext
-greater than addr.lpe. But sometimes it was the other way round.
+Sure.
 
-Fix the problem by declaring offset as signed int32_t.
+>> +     if (!pdev->dev.platform_data && !pdev->dev.of_node) {
+>> +             dev_err(&pdev->dev, "No platform data supplied\n");
+>> +             return -EINVAL;
+>> +     }
+>> +
+>> +     name = of_get_property(pdev->dev.of_node, "card-name", NULL);
+>> +     if (name)
+>> +             card->name = name;
+>> +
+>> +     i2s_node = of_parse_phandle(pdev->dev.of_node,
+>> +                                 "samsung,i2s-controller", 0);
+>> +     if (!i2s_node) {
+>> +             dev_err(&pdev->dev,
+>> +                     "Property 'i2s-controller' missing or invalid\n");
+>> +             return -EINVAL;
+>> +     }
+>
+> You're allowing platform data above but I see DT is mandatory here.
+>
 
-Signed-off-by: Wenkai Du <wenkai.du@intel.com>
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
- sound/soc/intel/sst-dsp-priv.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I will keep this as DT only, will remove the above check for platform data.
 
-diff --git a/sound/soc/intel/sst-dsp-priv.h b/sound/soc/intel/sst-dsp-priv.h
-index fe8e81aad646..30ca14a6a835 100644
---- a/sound/soc/intel/sst-dsp-priv.h
-+++ b/sound/soc/intel/sst-dsp-priv.h
-@@ -136,7 +136,7 @@ struct sst_module_data {
- 	enum sst_data_type data_type;	/* type of module data */
- 
- 	u32 size;		/* size in bytes */
--	u32 offset;		/* offset in FW file */
-+	int32_t offset;		/* offset in FW file */
- 	u32 data_offset;	/* offset in ADSP memory space */
- 	void *data;		/* module data */
- };
+>> +     ret = snd_soc_register_card(card);
+>> +     if (ret) {
+>> +             dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
+>> +             return ret;
+>> +     }
+>
+> devm_snd_soc_register_card().
+
+Ok.
+
+Thanks for reviewing.
+
 -- 
-1.9.2
+Tushar Behera
