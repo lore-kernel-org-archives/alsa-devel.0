@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 1/3] ASoC: davinci-pcm: Convert to use
-	devm_snd_soc_register_platform()
-Date: Tue, 22 Apr 2014 14:03:12 +0300
-Message-ID: <1398164594-29169-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 2/3] ASoC: davinci-mcasp: Convert to use
+	devm_snd_soc_register_component()
+Date: Tue, 22 Apr 2014 14:03:13 +0300
+Message-ID: <1398164594-29169-3-git-send-email-peter.ujfalusi@ti.com>
 References: <1398164594-29169-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id A7BFD261A9F
- for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 13:03:22 +0200 (CEST)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id B372F261AB0
+ for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 13:03:24 +0200 (CEST)
 In-Reply-To: <1398164594-29169-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,111 +25,67 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, daniel@zonque.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Remove the cleanup code related to the platform from the DAI drivers at the
-same time to avoid breakage.
+It allows to remove code from the cleanup paths.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/davinci/davinci-i2s.c   |  1 -
- sound/soc/davinci/davinci-mcasp.c | 15 ---------------
- sound/soc/davinci/davinci-pcm.c   |  8 +-------
- sound/soc/davinci/davinci-pcm.h   |  4 ----
- sound/soc/davinci/davinci-vcif.c  |  1 -
- 5 files changed, 1 insertion(+), 28 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index ebe82947bab3..7682af31d6e6 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -757,7 +757,6 @@ static int davinci_i2s_remove(struct platform_device *pdev)
- 	struct davinci_mcbsp_dev *dev = dev_get_drvdata(&pdev->dev);
- 
- 	snd_soc_unregister_component(&pdev->dev);
--	davinci_soc_platform_unregister(&pdev->dev);
- 
- 	clk_disable(dev->clk);
- 	clk_put(dev->clk);
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index d505fe7292a4..44a03840f76c 100644
+index 44a03840f76c..14058dc6eaf8 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1254,23 +1254,8 @@ err_release_clk:
+@@ -1134,7 +1134,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	if (!mcasp->base) {
+ 		dev_err(&pdev->dev, "ioremap failed\n");
+ 		ret = -ENOMEM;
+-		goto err_release_clk;
++		goto err;
+ 	}
+ 
+ 	mcasp->op_mode = pdata->op_mode;
+@@ -1215,11 +1215,12 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 
+ 	mcasp_reparent_fck(pdev);
+ 
+-	ret = snd_soc_register_component(&pdev->dev, &davinci_mcasp_component,
+-					 &davinci_mcasp_dai[pdata->op_mode], 1);
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					&davinci_mcasp_component,
++					&davinci_mcasp_dai[pdata->op_mode], 1);
+ 
+ 	if (ret != 0)
+-		goto err_release_clk;
++		goto err;
+ 
+ 	switch (mcasp->version) {
+ 	case MCASP_VERSION_1:
+@@ -1239,14 +1240,12 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
+-		goto err_unregister_component;
++		goto err;
+ 	}
+ 
+ 	return 0;
+ 
+-err_unregister_component:
+-	snd_soc_unregister_component(&pdev->dev);
+-err_release_clk:
++err:
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 	return ret;
+@@ -1254,8 +1253,6 @@ err_release_clk:
  
  static int davinci_mcasp_remove(struct platform_device *pdev)
  {
--	struct davinci_mcasp *mcasp = dev_get_drvdata(&pdev->dev);
--
- 	snd_soc_unregister_component(&pdev->dev);
- 
--	switch (mcasp->version) {
--	case MCASP_VERSION_1:
--	case MCASP_VERSION_2:
--	case MCASP_VERSION_3:
--		davinci_soc_platform_unregister(&pdev->dev);
--		break;
--	case MCASP_VERSION_4:
--		/* Using the resource managed omap-pcm as platform driver */
--		break;
--	default:
--		break;
--	}
+-	snd_soc_unregister_component(&pdev->dev);
 -
  	pm_runtime_put_sync(&pdev->dev);
  	pm_runtime_disable(&pdev->dev);
  
-diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-index 14145cdf8a11..7809e9d935fc 100644
---- a/sound/soc/davinci/davinci-pcm.c
-+++ b/sound/soc/davinci/davinci-pcm.c
-@@ -852,16 +852,10 @@ static struct snd_soc_platform_driver davinci_soc_platform = {
- 
- int davinci_soc_platform_register(struct device *dev)
- {
--	return snd_soc_register_platform(dev, &davinci_soc_platform);
-+	return devm_snd_soc_register_platform(dev, &davinci_soc_platform);
- }
- EXPORT_SYMBOL_GPL(davinci_soc_platform_register);
- 
--void davinci_soc_platform_unregister(struct device *dev)
--{
--	snd_soc_unregister_platform(dev);
--}
--EXPORT_SYMBOL_GPL(davinci_soc_platform_unregister);
--
- MODULE_AUTHOR("Vladimir Barinov");
- MODULE_DESCRIPTION("TI DAVINCI PCM DMA module");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/davinci/davinci-pcm.h b/sound/soc/davinci/davinci-pcm.h
-index 5fd4737ab398..0fe2346a9aa2 100644
---- a/sound/soc/davinci/davinci-pcm.h
-+++ b/sound/soc/davinci/davinci-pcm.h
-@@ -31,15 +31,11 @@ struct davinci_pcm_dma_params {
- 
- #if IS_ENABLED(CONFIG_SND_DAVINCI_SOC)
- int davinci_soc_platform_register(struct device *dev);
--void davinci_soc_platform_unregister(struct device *dev);
- #else
- static inline int davinci_soc_platform_register(struct device *dev)
- {
- 	return 0;
- }
--static inline void davinci_soc_platform_unregister(struct device *dev)
--{
--}
- #endif /* CONFIG_SND_DAVINCI_SOC */
- 
- #endif
-diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci-vcif.c
-index 30587c0cdbd2..77aef05588c3 100644
---- a/sound/soc/davinci/davinci-vcif.c
-+++ b/sound/soc/davinci/davinci-vcif.c
-@@ -258,7 +258,6 @@ static int davinci_vcif_probe(struct platform_device *pdev)
- static int davinci_vcif_remove(struct platform_device *pdev)
- {
- 	snd_soc_unregister_component(&pdev->dev);
--	davinci_soc_platform_unregister(&pdev->dev);
- 
- 	return 0;
- }
 -- 
 1.9.2
