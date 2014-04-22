@@ -1,59 +1,158 @@
-From: Oder <oder_chiou@realtek.com>
-Subject: Re: [PATCH] ASoC: rt5645: Add codec driver
-Date: Tue, 22 Apr 2014 09:10:19 +0800
-Message-ID: <CAD+35SMEmaqRkytk7oGLLD0baq_n3GWsm2RZg1m4nRF7jcb0RQ@mail.gmail.com>
-References: <1397212459-26495-1-git-send-email-oder_chiou@realtek.com>
- <20140414202837.GA25182@sirena.org.uk>
+From: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Subject: Re: [PATCHv4 2/2] ALSA: hda - Add driver for Tegra SoC HDA
+Date: Mon, 21 Apr 2014 20:49:59 -0700
+Message-ID: <CAEUnVG4m2MxeVrhAg4fXn7GxHJk1a3kKR9V8zmOJ6UPpNg0PEQ@mail.gmail.com>
+References: <1397857578-9340-1-git-send-email-dgreid@chromium.org> <5355793B.9040607@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D0BD2608B7
- for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 03:10:25 +0200 (CEST)
-Received: from mail.realtek.com (rtitcas11.realtek.com.tw[172.21.6.12])
- by rtits2.realtek.com (8.14.5/2.37/5.60) with ESMTP id s3M1ALju018783
- (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NOT)
- for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 09:10:22 +0800
-Received: by mail-la0-f47.google.com with SMTP id pn19so3714571lab.20
- for <alsa-devel@alsa-project.org>; Mon, 21 Apr 2014 18:10:19 -0700
- (PDT)
-In-Reply-To: <20140414202837.GA25182@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Flove <flove@realtek.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <5355793B.9040607-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, rdunlap-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
->> +static int rt5645_set_bias_level(struct snd_soc_codec *codec,
->> +                     enum snd_soc_bias_level level)
+On Mon, Apr 21, 2014 at 1:02 PM, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org> wrote:
+> On 04/18/2014 03:46 PM, Dylan Reid wrote:
+>> This adds a driver for the HDA block in Tegra SoCs.  The HDA bus is
+>> used to communicate with the HDMI codec on Tegra124.
+>>
+>> Most of the code is re-used from the Intel/PCI HDA driver.  It brings
+>> over only two of the module params, power_save and probe_mask.
+>
+> (I'm curious how this was tested using an upstream kernel considering we
+> don't have HDMI support on Tegra124 enabled yet. If you added 1 or 2
+> more CODEC IDs to patch 1/2, you could probably test on an earlier SoC
+> generation)
+
+Luckily this applies to our downstream tree with hdmi enabled.  The
+only change needed is switching back from snd_card_new to
+snd_card_create. So that's where I've been doing my testing.
+
+I think we've got a tegra30 eval board.  I'll dig it up tomorrow and
+give it a try on linux-next.
+
+>
+> Sorry for the slow review...
+>
+>> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.txt
+>
+>> +- compatible : "nvidia,tegra30-hda"
+>> +- reg : Should contain the HDA registers location and length.
+>> +- interrupts : The interrupt from the hda controller.
+>
+> hda should be capitalized.
+>
+>> +- clocks : Must contain an entry for each required entry in clock-names.
+>
+> Can you add the following line after that for consistency with other
+> Tegra bindings:
+>
+> See ../clocks/clock-bindings.txt for details.
+>
+>> +- clock-names : Must include the following entries: hda, hdacodec_2x, hda2hdmi
+>> +- resets : Must contain an entry for each entry in reset-names.
+>> +  See ../reset/reset.txt for details.
+>> +- reset-names : Must include the following entries: hda, hdacodec_2x, hda2hdmi
+>> +
+>> +Example:
+>> +
+>> +hda@70030000 {
+>
+> that should be named hda@0,70030000, since the reg property's value
+> below assumes the parent has #address-cells=<2>.
+>
+>> +     compatible = "nvidia,tegra124-hda", "nvidia,tegra30-hda";
+>> +     reg = <0x0 0x70030000 0x10000>;
+>
+> ... and here, since #address-cells=<2>, then #size-cells should be 2
+> too, so that should be:
+>
+>         reg = <0x0 0x70030000 0 0x10000>;
+>
+>> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+>
+>> +config SND_HDA_TEGRA
+>> +     tristate "NVIDIA Tegra HD Audio"
+>> +     depends on OF && ARCH_TEGRA
+>
+> OF is selected by ARCH_TEGRA, so this only needs to depend on ARCH_TEGRA.
+>
+> (Of course, you could make this depend on ARCH_TEGRA || (COMPILE_TEST &&
+> OF && ...)
+>
+>> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+>> +/*
+>> + *
+>> + * Implementation of primary alsa driver code base for NVIDIA Tegra HDA.
+>
+> ALSA should be capitalized.
+>
+>> +static void hda_tegra_init(struct hda_tegra *hda)
 >> +{
->> +     switch (level) {
->> +     case SND_SOC_BIAS_STANDBY:
->> +             if (SND_SOC_BIAS_OFF == codec->dapm.bias_level) {
->> +                     snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
->> +                             RT5645_PWR_VREF1 | RT5645_PWR_MB |
->> +                             RT5645_PWR_BG | RT5645_PWR_VREF2,
->> +                             RT5645_PWR_VREF1 | RT5645_PWR_MB |
->> +                             RT5645_PWR_BG | RT5645_PWR_VREF2);
->> +                     mdelay(10);
->> +                     snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
->> +                             RT5645_PWR_FV1 | RT5645_PWR_FV2,
->> +                             RT5645_PWR_FV1 | RT5645_PWR_FV2);
->> +                     snd_soc_update_bits(codec, RT5645_GEN_CTRL1,
->> +                             RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
->> +             }
->> +             break;
+>> +     u32 v;
+>> +
+>> +     /*Enable the PCI access */
 >
-> Since the device can power up and down very quickly it should make sense
-> to set idle_bias_off for a power saving when idle.
+> There should be a space after /*.
 >
-We've set the idle_bias_off as true in struct "soc_codec_dev_rt5645",
-is there any thing i miss it?
+>> +static int hda_tegra_init_chip(struct azx *chip, struct platform_device *pdev)
+>
+>> +     err = hda_tegra_enable_clocks(hda);
+>> +     if (err)
+>> +             return err;
+>
+> I'm not sure where the matching disable() occurs? Is the card assumed to
+> be started in a powered state, so the next PM transition would be
+> hda_tegra_suspend()? IIRC, other Tegra devices with PM start in a
+> power-saved state, and hence would leave clocks stopped after probe().
+> It's fine if that's the reason; it just looks different so I'm making
+> sure that's what is going on.
+
+Yes, this starts in a powered state.  The first chance to power down
+is after the call to "power_down_all_codecs" that might arm a
+power_save timeout and then power down the controller.  However the
+HDMI codec here doesn't report that it supports D3 stop clock so the
+controller will stay powered until it is suspended.
+
+>
+>> +static int hda_tegra_first_init(struct azx *chip, struct platform_device *pdev)
+>
+>> +     /* read number of streams from GCAP register instead of using
+>> +      * hardcoded value
+>> +      */
+>> +     chip->capture_streams = (gcap >> 8) & 0x0f;
+>> +     chip->playback_streams = (gcap >> 12) & 0x0f;
+>> +     if (!chip->playback_streams && !chip->capture_streams) {
+>> +             /* gcap didn't give any info, switching to old method */
+>> +             chip->playback_streams = ICH6_NUM_PLAYBACK;
+>> +             chip->capture_streams = ICH6_NUM_CAPTURE;
+>
+> Are ICH6_* defines appropriate for Tegra?
+>
+>> +static int hda_tegra_probe(struct platform_device *pdev)
+>
+>> +     of_id = of_match_device(hda_tegra_match, &pdev->dev);
+>> +     if (!of_id)
+>> +             return -ENODEV;
+>
+> Since of_id isn't used anywhere, there's no point calling
+> of_match_device() to look it up. The driver core won't call
+> hda_tegra_probe() unless there is a matching entry in the table.
+>
+>> +MODULE_DEVICE_TABLE(of, tegra_platform_hda_match);
+>
+> I think it's typical to put that line immediately after the table it
+> applies to. Not a big deal though.
+>
+> With those minor issues fixed,
+> Reviewed-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+
+Thanks for reviewing this Stephen, I'll run a test on the Tegra30
+tomorrow and post a new version.
+
+-Dylan
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
