@@ -1,60 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/6] ASoC: qi_lb60: Use devm_snd_soc_register_card()
-Date: Tue, 22 Apr 2014 21:54:10 +0100
-Message-ID: <20140422205410.GI12304@sirena.org.uk>
-References: <1398199596-23649-1-git-send-email-lars@metafoo.de>
- <1398199596-23649-4-git-send-email-lars@metafoo.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: Export devm_snd_soc_register_platform()
+Date: Tue, 22 Apr 2014 22:58:41 +0200
+Message-ID: <1398200321-4299-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="3/KfPELnh2c6u5MZ"
-Return-path: <linux-mips-bounce@linux-mips.org>
-Content-Disposition: inline
-In-Reply-To: <1398199596-23649-4-git-send-email-lars@metafoo.de>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-072.synserver.de (smtp-out-122.synserver.de
+ [212.40.185.122])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47041261663
+ for <alsa-devel@alsa-project.org>; Tue, 22 Apr 2014 22:58:44 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+devm_snd_soc_register_platform() is used in drivers which can be build as
+modules, so it needs to be exported to avoid linkers errors like:
 
---3/KfPELnh2c6u5MZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	ERROR: "devm_snd_soc_register_platform" [sound/soc/omap/snd-soc-omap.ko] undefined!
+	ERROR: "devm_snd_soc_register_platform" [sound/soc/davinci/snd-soc-davinci.ko] undefined!
 
-On Tue, Apr 22, 2014 at 10:46:34PM +0200, Lars-Peter Clausen wrote:
-> Makes the code a bit shorter and will also allow us to remove the drivers
-> remove() callback eventually.
+Fixes: 8931bf620 ("ASoC: Add resource managed snd_soc_register_platform()")
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/soc-devres.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Applied all the patches up to here, thanks.  Will wait for Ralf's review
-for the other two, they look good to me.
-
---3/KfPELnh2c6u5MZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTVtbvAAoJELSic+t+oim9g4IP/imAIIYp74x9bvnORKsvTwzf
-f1yfb4RAaOndTqG2IUodMXusgv1kLCHLyKFQJmYRoSJIShQ/Wm/JWyuDB1U82OFq
-DR/JIGkDPEb3rRJmkvOnrHSvKTisoiJnMcBAAGX7cdtsdaY6fvo0e0qFK9f+LQDF
-2danQSLoA/1Egw9rllI2fWbs8rslLDejG0jxkPlruzy+LqsCfn8JrvchrHbq33mq
-CM2yhTl6KKjVhoN5e1GFnn97BK0bEaA+0Jv+GZ7fB8JfAGQK6XbhY/BBfXE9m59d
-u+aXA6XDMY9SwtGB5Hb0Ztz58pA9uhypEY9IknoJVWaKoDr/MmyHjTB/sNWMEUyg
-cQLw7TB9MEnbyCQC5jIp4rmgH3MAkbvBNyxI4bsbdGx/IPTYC24+QhZbWvP01Jd+
-EceGkEu4AEnZUGjwRYPRSzX21BUE6GQfsAfigS2gI+lVWTp7vFuodwZCELJQvjUj
-wrv+qCLaa7qmFcl9JgWIgRqgRUj4zl0UmlFndgP62kj2GbUw8ILj1CfC4VvCZ1R0
-5Rzn+gOVmhmnO+xCzMf5Jt0dumij5V8l5vC3hb+Mc8KU0pyq1qQNvo+kmzxCkgRZ
-55zXNo4WgrMFrvIqfDSgqZaO/4AI6ULcJiRurcA1hTYu7kB0zEjMigWvc22F1V6Z
-ND6lJKTDWG6sJzgxO8pn
-=JdFI
------END PGP SIGNATURE-----
-
---3/KfPELnh2c6u5MZ--
+diff --git a/sound/soc/soc-devres.c b/sound/soc/soc-devres.c
+index e94aa02..057e5ef 100644
+--- a/sound/soc/soc-devres.c
++++ b/sound/soc/soc-devres.c
+@@ -85,6 +85,7 @@ int devm_snd_soc_register_platform(struct device *dev,
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(devm_snd_soc_register_platform);
+ 
+ static void devm_card_release(struct device *dev, void *res)
+ {
+-- 
+1.8.0
