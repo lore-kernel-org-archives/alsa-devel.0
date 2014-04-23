@@ -1,17 +1,19 @@
-From: Tushar Behera <tushar.behera@linaro.org>
-Subject: [PATCH] ASoC: max98095: Add an explicit of_match_table
-Date: Wed, 23 Apr 2014 14:43:58 +0530
-Message-ID: <1398244438-2124-1-git-send-email-tushar.behera@linaro.org>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: How to show hda trace events in a self-built
+	kernel?
+Date: Wed, 23 Apr 2014 09:21:07 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B3F45D9@SHSMSX101.ccr.corp.intel.com>
+References: <F46914AEC2663F4A9BB62374E5EEF8F82B3F4357@SHSMSX101.ccr.corp.intel.com>
+ <53577A6B.2060400@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f50.google.com (mail-pb0-f50.google.com
- [209.85.160.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 1436B2608EA
- for <alsa-devel@alsa-project.org>; Wed, 23 Apr 2014 11:15:07 +0200 (CEST)
-Received: by mail-pb0-f50.google.com with SMTP id md12so590050pbc.37
- for <alsa-devel@alsa-project.org>; Wed, 23 Apr 2014 02:15:06 -0700 (PDT)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC2AE261600
+ for <alsa-devel@alsa-project.org>; Wed, 23 Apr 2014 11:21:17 +0200 (CEST)
+In-Reply-To: <53577A6B.2060400@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +23,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org
-Cc: broonie@kernel.org, rdunlap@infradead.org, lgirdwood@gmail.com, robh+dt@kernel.org
+To: David Henningsson <david.henningsson@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Create an explicit of_match_table entry for MAX98095 codec. Also
-add a binding Documentation for this compatible string.
+Thanks, David!
 
-Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
----
- .../devicetree/bindings/sound/max98095.txt         |   16 ++++++++++++++++
- sound/soc/codecs/max98095.c                        |    7 +++++++
- 2 files changed, 23 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/max98095.txt
+tracing_on is '1' by default and current_tracer is 'nop', same for both kernels.
 
-diff --git a/Documentation/devicetree/bindings/sound/max98095.txt b/Documentation/devicetree/bindings/sound/max98095.txt
-new file mode 100644
-index 0000000..bacbeaa
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/max98095.txt
-@@ -0,0 +1,16 @@
-+MAX98095 audio CODEC
-+
-+This device supports I2C only.
-+
-+Required properties:
-+
-+- compatible : "maxim,max98095".
-+
-+- reg : The I2C address of the device.
-+
-+Example:
-+
-+max98095: codec@11 {
-+	compatible = "maxim,max98095";
-+	reg = <0x11>;
-+};
-diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-index 03f0536..8e548af 100644
---- a/sound/soc/codecs/max98095.c
-+++ b/sound/soc/codecs/max98095.c
-@@ -2399,10 +2399,17 @@ static const struct i2c_device_id max98095_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, max98095_i2c_id);
- 
-+static const struct of_device_id max98095_of_match[] = {
-+	{ .compatible = "maxim,max98095", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, max98095_of_match);
-+
- static struct i2c_driver max98095_i2c_driver = {
- 	.driver = {
- 		.name = "max98095",
- 		.owner = THIS_MODULE,
-+		.of_match_table = of_match_ptr(max98095_of_match),
- 	},
- 	.probe  = max98095_i2c_probe,
- 	.remove = max98095_i2c_remove,
--- 
-1.7.9.5
+I also notice the 'net' trace event output is okay on the same kernel on which I cannot get hda trace event output.
+
+Regards
+Mengdong
+
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Wednesday, April 23, 2014 4:32 PM
+> To: Lin, Mengdong; alsa-devel@alsa-project.org
+> Subject: Re: How to show hda trace events in a self-built kernel?
+> 
+> 
+> On 2014-04-23 09:35, Lin, Mengdong wrote:
+> > Hi,
+> >
+> > How to show hda trace events in a self-built kernel?
+> >
+> > With a self-built kernel under Ubuntu 13.04 or 13.10, I enabled hda
+> > trace events by
+> >
+> > #cd /sys/kernel/debug/tracing/
+> >
+> > #echo 1 > events/hda/enable
+> >
+> > #echo 1 > events/had_intel/enable
+> >
+> > Then I check the codec proc entry and run "cat trace". But I got no
+> > output of the hda trace events.
+> 
+> Did you forget to do:
+> # echo 1 > tracing_on
+
+> You might also want to set current_tracer to something.
+> 
+> Otherwise I don't know what the problem can be.
+> 
+> --
+> David Henningsson, Canonical Ltd.
+> https://launchpad.net/~diwic
