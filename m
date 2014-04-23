@@ -1,49 +1,74 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH 4/6] ASoC: qi_lb60: Use
-	devm_snd_soc_register_card()
-Date: Wed, 23 Apr 2014 00:06:05 +0200
-Message-ID: <20140422220605.GA5334@linux-mips.org>
-References: <1398199596-23649-1-git-send-email-lars@metafoo.de>
- <1398199596-23649-4-git-send-email-lars@metafoo.de>
- <20140422205410.GI12304@sirena.org.uk>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: Re: [PATCH] ASoC: SAMSUNG: Add sound card driver for Snow board
+Date: Wed, 23 Apr 2014 08:23:17 +0530
+Message-ID: <CAHbNUh0hHE2J=jb8o5ErOJqGj2oNu8kzZXs_Bp=4pn8Sy+K7Yg@mail.gmail.com>
+References: <1398153834-16199-1-git-send-email-tushar.behera@linaro.org>
+	<20140422104447.GK12304@sirena.org.uk>
+	<CAHbNUh3G5HLaGXddPgjthWTu_VQ95xo=2Lii2BM6iSc-ipnm=w@mail.gmail.com>
+	<20140422183310.GD12304@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from git.linux-mips.org (marvin.linux-mips.org [78.24.191.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 6785A265053
- for <alsa-devel@alsa-project.org>; Wed, 23 Apr 2014 00:06:11 +0200 (CEST)
-Received: from localhost.localdomain ([127.0.0.1]:35671 "EHLO linux-mips.org"
- rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
- id S6834662AbaDVWGK6j0UF (ORCPT
- <rfc822;alsa-devel@alsa-project.org>);
- Wed, 23 Apr 2014 00:06:10 +0200
-Content-Disposition: inline
-In-Reply-To: <20140422205410.GI12304@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20140422183310.GD12304@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, linux-doc@vger.kernel.org, devicetree <devicetree@vger.kernel.org>, rdunlap@infradead.org, "robh+dt@kernel.org" <robh+dt@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 22, 2014 at 09:54:10PM +0100, Mark Brown wrote:
+On 23 April 2014 00:03, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Apr 22, 2014 at 07:17:54PM +0530, Tushar Behera wrote:
+>> On 22 April 2014 16:14, Mark Brown <broonie@kernel.org> wrote:
+>
+>> > In general this isn't up to modern standards, please do try to check
+>> > that new code is following best practices.  Did the support for setting
+>> > the clocking up in the device tree get merged already?
+>
+>> I didn't get this point. Would you please elaborate?
+>
+> The out of tree driver for these boards has a bunch of code in it which
+> reprograms the clock tree that parents the I2S block so that the I2S
+> block has inputs at suitable rates to allow it to generate useful
+> outputs.
+>
 
-> On Tue, Apr 22, 2014 at 10:46:34PM +0200, Lars-Peter Clausen wrote:
-> > Makes the code a bit shorter and will also allow us to remove the drivers
-> > remove() callback eventually.
-> 
-> Applied all the patches up to here, thanks.  Will wait for Ralf's review
-> for the other two, they look good to me.
+Currently the clocks are configured through clk-exynos-audss.c. The
+reparenting of I2S bus clock is not done anymore, but is left to use
+the default value set in bootloader. With default setup (XXTI as the
+parent), I have tested wave files with various sample rates on Snow.
 
-Acked-by: Ralf Baechle <ralf@linux-mips.org>
+The missing part right now is setting XCLKOUT (mclk for the audio
+codec) properly. In internal tree, I have directly programmed the
+XCLKOUT register (we don't have a clock for it as this register is not
+part of clock domain). I am now working on preparing a clock provider
+for XCLKOUT.
 
-Really, the MIPS bits were trivial ...
+>> > Please do also pay attention to the CC lists when posting patches, this
+>> > seems to have been sent to a fairly random selection of people and
+>> > lists.
+>
+>> Okay, I will update the CC list as per get_maintainer script during
+>> next revision.
+>
+> Please think about the results when doing that - get_maintainers is very
+> useful but it does generate false positives and miss people.
+>
 
-  Ralf
+I will do my best to add relevant people in the discussion.
+
+>> >> +     ret = snd_soc_dai_set_clkdiv(cpu_dai, SAMSUNG_I2S_DIV_BCLK, bfs);
+>> >> +     if (ret < 0)
+>> >> +             return ret;
+>
+>> > Set this stuff up on probe.  I'm surprised that you need to set BCLK at
+>> > all...
+>> >
+>
+>> Should I create a late_probe call for this (in line with tobermory.c)?
+>
+> Yes.
+
+Ok.
+
+Thanks.
+-- 
+Tushar Behera
