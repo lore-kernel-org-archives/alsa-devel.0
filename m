@@ -1,140 +1,50 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: Fix audio crash due to race
-	condition in stream deletion
-Date: Wed, 23 Apr 2014 13:29:30 +0300
-Message-ID: <1398248970-13991-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: max98095: Add an explicit of_match_table
+Date: Wed, 23 Apr 2014 11:43:33 +0100
+Message-ID: <20140423104333.GN12304@sirena.org.uk>
+References: <1398244438-2124-1-git-send-email-tushar.behera@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 17E07261696
- for <alsa-devel@alsa-project.org>; Wed, 23 Apr 2014 12:29:43 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Wenkai Du <wenkai.du@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qPW0hKhZJZq3D5UJ"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1398244438-2124-1-git-send-email-tushar.behera@linaro.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, rdunlap@infradead.org, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Wenkai Du <wenkai.du@intel.com>
 
-There is a race between sst_byt_stream_free() and sst_byt_get_stream()
-if sst_byt_get_stream() called from sst_byt_irq_thread() context is
-accessing the byt->stream_list while a stream is deleted from the list.
+--qPW0hKhZJZq3D5UJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-A stream is added to byt->stream_list in sst_byt_stream_new() and deleted in
-sst_byt_stream_free(). sst_byt_get_stream() is always protected by
-sst->spinlock, but the stream addition and deletion are not protected.
+On Wed, Apr 23, 2014 at 02:43:58PM +0530, Tushar Behera wrote:
+> Create an explicit of_match_table entry for MAX98095 codec. Also
+> add a binding Documentation for this compatible string.
 
-The patch adds spinlock to both stream addition and deletion.
+Applied, thanks.
 
-[Jarkko: Same fix added to sst-haswell-ipc.c too]
+--qPW0hKhZJZq3D5UJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Signed-off-by: Wenkai Du <wenkai.du@intel.com>
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
- sound/soc/intel/sst-baytrail-ipc.c | 8 ++++++++
- sound/soc/intel/sst-haswell-ipc.c  | 8 ++++++++
- 2 files changed, 16 insertions(+)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-diff --git a/sound/soc/intel/sst-baytrail-ipc.c b/sound/soc/intel/sst-baytrail-ipc.c
-index d0eaeee21be4..0d31dbbf4806 100644
---- a/sound/soc/intel/sst-baytrail-ipc.c
-+++ b/sound/soc/intel/sst-baytrail-ipc.c
-@@ -542,16 +542,20 @@ struct sst_byt_stream *sst_byt_stream_new(struct sst_byt *byt, int id,
- 	void *data)
- {
- 	struct sst_byt_stream *stream;
-+	struct sst_dsp *sst = byt->dsp;
-+	unsigned long flags;
- 
- 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
- 	if (stream == NULL)
- 		return NULL;
- 
-+	spin_lock_irqsave(&sst->spinlock, flags);
- 	list_add(&stream->node, &byt->stream_list);
- 	stream->notify_position = notify_position;
- 	stream->pdata = data;
- 	stream->byt = byt;
- 	stream->str_id = id;
-+	spin_unlock_irqrestore(&sst->spinlock, flags);
- 
- 	return stream;
- }
-@@ -630,6 +634,8 @@ int sst_byt_stream_free(struct sst_byt *byt, struct sst_byt_stream *stream)
- {
- 	u64 header;
- 	int ret = 0;
-+	struct sst_dsp *sst = byt->dsp;
-+	unsigned long flags;
- 
- 	if (!stream->commited)
- 		goto out;
-@@ -644,8 +650,10 @@ int sst_byt_stream_free(struct sst_byt *byt, struct sst_byt_stream *stream)
- 
- 	stream->commited = false;
- out:
-+	spin_lock_irqsave(&sst->spinlock, flags);
- 	list_del(&stream->node);
- 	kfree(stream);
-+	spin_unlock_irqrestore(&sst->spinlock, flags);
- 
- 	return ret;
- }
-diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 50e4246d4b57..6c0b4f247a86 100644
---- a/sound/soc/intel/sst-haswell-ipc.c
-+++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -1159,11 +1159,14 @@ struct sst_hsw_stream *sst_hsw_stream_new(struct sst_hsw *hsw, int id,
- 	void *data)
- {
- 	struct sst_hsw_stream *stream;
-+	struct sst_dsp *sst = hsw->dsp;
-+	unsigned long flags;
- 
- 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
- 	if (stream == NULL)
- 		return NULL;
- 
-+	spin_lock_irqsave(&sst->spinlock, flags);
- 	list_add(&stream->node, &hsw->stream_list);
- 	stream->notify_position = notify_position;
- 	stream->pdata = data;
-@@ -1172,6 +1175,7 @@ struct sst_hsw_stream *sst_hsw_stream_new(struct sst_hsw *hsw, int id,
- 
- 	/* work to process notification messages */
- 	INIT_WORK(&stream->notify_work, hsw_notification_work);
-+	spin_unlock_irqrestore(&sst->spinlock, flags);
- 
- 	return stream;
- }
-@@ -1180,6 +1184,8 @@ int sst_hsw_stream_free(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
- {
- 	u32 header;
- 	int ret = 0;
-+	struct sst_dsp *sst = hsw->dsp;
-+	unsigned long flags;
- 
- 	/* dont free DSP streams that are not commited */
- 	if (!stream->commited)
-@@ -1201,8 +1207,10 @@ int sst_hsw_stream_free(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
- 	trace_hsw_stream_free_req(stream, &stream->free_req);
- 
- out:
-+	spin_lock_irqsave(&sst->spinlock, flags);
- 	list_del(&stream->node);
- 	kfree(stream);
-+	spin_unlock_irqrestore(&sst->spinlock, flags);
- 
- 	return ret;
- }
--- 
-1.9.2
+iQIcBAEBAgAGBQJTV5lRAAoJELSic+t+oim9fhEP/A5UBDatDCOnruQM7cVu8ftQ
+oya/NEwgMypJkkNLYaEm7HZilLl3XTv3QVYXWe2t43pcRAOP2o8Vqsm1x14QyEvi
+95xk6FEWxJ+YJGb5O87zeBPvOP2eIsiYX8n/uFSsqnC16Z3ql4mLI4kGT/5JGYeB
+/ymuPJUW0f2iUYBToKo785zQW7aVuyM41eJTGLZ2Ba7f/fy/3HI9edgfViOID4iz
+ubopCzxBNC4iHVGMMKU2zE3LRikCYZGoLMe8hlC+2prUNhFghL0MjdM8ptasB6ZY
+8clovvjS+HAjS2RyIF5Tk414QbXql1y8eaLLK23rSlAt1yB3aZy+cYLj5D5XsDx7
+N7nID6J51kpeWUxe6pX7Y9IaJYHGVOr0GNr6NMe4ji6yLvHm00llG5D+cBCQuO2Z
+qakTJst1y0aIZs//mLdVB7RCRo37SP7+WuHiLd8a174TlABVgZ1xItFIPAg+zjxx
+Tw5gIiamiRTqJhvWU0vHSZc/mgav2AqmYuU+xdigRH8BF3xj+rk/lx9NAdq0Svf7
+nzfn2p9PmJneP0yaiz1bhpLkvpJsVV1KVQk/iqMw95W3Ubk4yOzBJKKjDWzqMYjQ
+peDZmz63wvnQo/B6I+wjMtLThV8TaV6yLrxf1eZpaVx3sD3e0REHQ44AxdbuhaF+
+1qCmsPg0lK/+P85EGMvE
+=usOF
+-----END PGP SIGNATURE-----
+
+--qPW0hKhZJZq3D5UJ--
