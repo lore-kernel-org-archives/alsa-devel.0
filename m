@@ -1,14 +1,25 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC updates for v3.15
-Date: Wed, 23 Apr 2014 12:16:31 +0100
-Message-ID: <20140423111631.GO12304@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: rsnd: call rsnd_dai_pointer_update()
+ from outside of lock
+Date: Wed, 23 Apr 2014 12:17:25 +0100
+Message-ID: <20140423111725.GP12304@sirena.org.uk>
+References: <20140418.140133.428086893.ko-abe@nk4lx2>
+ <5350B75C.6030500@renesas.com>
+ <20140418.145315.172551492.ko-abe@nk4lx2>
+ <5350CD5D.9060800@renesas.com>
+ <5b6857d989484e3690995c92920930ac@HKXPR06MB040.apcprd06.prod.outlook.com>
+ <874n1kj3je.wl%kuninori.morimoto.gx@renesas.com>
+ <8738h4j2wo.wl%kuninori.morimoto.gx@renesas.com>
+ <3977b65ffbb84cc89b66739c5b13ebdd@HKXPR06MB040.apcprd06.prod.outlook.com>
+ <871twoio27.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7604881531894422180=="
+Content-Type: multipart/mixed; boundary="===============8965425878756615719=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C653A261A3B
- for <alsa-devel@alsa-project.org>; Wed, 23 Apr 2014 13:16:46 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 23F2B261A3B
+ for <alsa-devel@alsa-project.org>; Wed, 23 Apr 2014 13:17:35 +0200 (CEST)
+In-Reply-To: <871twoio27.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,124 +29,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: TOMOHARU FUKAWA <tomoharu.fukawa.eb@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Ryo Kataoka <ryo.kataoka.wt@renesas.com>, YOSHIFUMI HOSOYA <yoshifumi.hosoya.wj@renesas.com>, Ryusuke Sakato <ryusuke.sakato.bx@renesas.com>, Koei Abe <kouei.abe.cp@renesas.com>, Magnus <magnus.damm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, TOSHIAKI KOMATSU <toshiaki.komatsu.ud@renesas.com>, KHIEM NGUYEN <khiem.nguyen.xt@renesas.com>, Yusuke Goda <yusuke.goda.sx@renesas.com>, Simon <horms@verge.net.au>, "simon@horms.net" <simon@horms.net>, NAOYA SHIIBA <naoya.shiiba.nx@renesas.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, YOSHIYUKI ITO <yoshiyuki.ito.ub@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7604881531894422180==
+--===============8965425878756615719==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qaN/cnoOojZiWuMv"
+	protocol="application/pgp-signature"; boundary="NoillsJCK92BJ/Cw"
 Content-Disposition: inline
 
 
---qaN/cnoOojZiWuMv
+--NoillsJCK92BJ/Cw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The following changes since commit a798c10faf62a505d24e5f6213fbaf904a39623f:
+On Wed, Apr 23, 2014 at 02:59:12PM +0900, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> rsnd_soc_dai_trigger() will be called
+> after rsnd_dai_pointer_update() function
+> which is using rsnd_lock().
+> Thus, it should be called from outside of rsnd_lock().
+> Kernel will be hangup without this patch.
+> Special thanks to Kataoka-san
 
-  Linux 3.15-rc2 (2014-04-20 11:08:50 -0700)
+Applied, thanks.
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.15-rc2
-
-for you to fetch changes up to 98810a6dcf8af768d7b0b71e5075ff9c199f5196:
-
-  Merge remote-tracking branches 'asoc/fix/intel', 'asoc/fix/jz4740', 'asoc/fix/rcar', 'asoc/fix/tlv320aic31xx' and 'asoc/fix/tlv320aic3x' into asoc-linus (2014-04-22 22:01:07 +0100)
-
-----------------------------------------------------------------
-
-ASoC: Fixes for v3.15
-
-A smattering of driver-specific fixes here, nothing generic.  The Cirrus
-CODEC conversions to devm_ are leak fixes - the conversion adds missing
-error handling code.
-
-----------------------------------------------------------------
-Alexandre Belloni (1):
-      ASoC: tlv320aic31xx: document that the regulators are mandatory
-
-Andrew Lunn (1):
-      ASoC: alc5623: Fix regmap endianness
-
-Axel Lin (2):
-      ASoC: cs42l52: Convert to use devm_gpio_request_one
-      ASoC: cs42l73: Convert to use devm_gpio_request_one
-
-Ben Dooks (1):
-      ASoC: rsnd: fix clock prepare/unprepare
-
-Christian Engelmayer (1):
-      ASoC: Intel: Fix incorrect sizeof() in sst_hsw_stream_get_volume()
-
-Dan Carpenter (1):
-      ASoC: Intel: some incorrect sizeof() usages
-
-Jarkko Nikula (1):
-      ASoC: dapm: Fix widget double free with auto-disable DAPM kcontrol
-
-Lars-Peter Clausen (1):
-      ASoC: jz4740: Remove Makefile entry for removed file
-
-Mark Brown (3):
-      Merge remote-tracking branch 'asoc/fix/dapm' into asoc-linus
-      Merge remote-tracking branches 'asoc/fix/alc5623', 'asoc/fix/cs42l52', 'asoc/fix/cs42l73' and 'asoc/fix/fsl-spdif' into asoc-linus
-      Merge remote-tracking branches 'asoc/fix/intel', 'asoc/fix/jz4740', 'asoc/fix/rcar', 'asoc/fix/tlv320aic31xx' and 'asoc/fix/tlv320aic3x' into asoc-linus
-
-Nicolin Chen (1):
-      ASoC: fsl_spdif: Fix wrong OFFSET of STC_SYSCLK_DIV
-
-Sebastian Reichel (1):
-      ASoC: tlv320aic3x: fix shared reset pin for DT
-
-Wenkai Du (1):
-      ASoC: Intel: Fix audio crash due to negative address offset
-
- Documentation/devicetree/bindings/sound/tlv320aic31xx.txt | 6 +++---
- sound/soc/codecs/alc5623.c                                | 2 +-
- sound/soc/codecs/cs42l52.c                                | 6 ++++--
- sound/soc/codecs/cs42l73.c                                | 6 ++++--
- sound/soc/codecs/tlv320aic3x.c                            | 9 +++++++--
- sound/soc/fsl/fsl_spdif.h                                 | 4 ++--
- sound/soc/intel/sst-dsp-priv.h                            | 2 +-
- sound/soc/intel/sst-haswell-ipc.c                         | 7 ++++---
- sound/soc/jz4740/Makefile                                 | 2 --
- sound/soc/sh/rcar/src.c                                   | 4 ++--
- sound/soc/sh/rcar/ssi.c                                   | 4 ++--
- sound/soc/soc-dapm.c                                      | 1 -
- 12 files changed, 30 insertions(+), 23 deletions(-)
-
---qaN/cnoOojZiWuMv
+--NoillsJCK92BJ/Cw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTV6EMAAoJELSic+t+oim9uU8P/jFWIJq5FJrKm8TONDoOPFDw
-taiG9jG4s1QlpiGpjEQlSpJg1pJKCYTDwDTY+th83bgymdkj+AGhslHvyaC0t0cW
-dLk6bmq9x3eMx/uA0+oxAM2rV3oKkSxioRx3L23yP791IV1aPsYXxhilAWiI6tKW
-6NFwoGUEXtcJKwXTgDODyQiueO7kYYWQMoitl2xK1kI+Tp9RFJ72R3EbeNcvsmY/
-yzfJX+HpkfYsRuLoU2sGVqvYHW5w/W+VknoXO0Fcg+eizzg93G/bN4N4y8W3WgBJ
-1kyF9FqpIe5GgDhgX/N0KljPV+gmm6VdCT8wjVUbVLYT5Mt7CTbEcCGwl6GKjIzw
-by8Yscuhhd1Rr1Mg7fCJWN9ZUgQxyXurq5aTioyyywg67pFn4vFpK5iKfOeJAMEG
-o9HdKFlyZJYTGNGT9MA0LKsNM841mEKfVuA2QIjW/kqjtSHDFxdLxg36EhjHZ79a
-WgXNErbkSS2HoOCmQgR8Uvn9OQTslof23+JGgBJwkogHWEIH5tqXxZZ/OfF/m6xq
-azc+VNoQhCLahTAbb2OkwUc3l6pO39bFeqDnpTK6o0QDfPd4IwQfyePVCvSOXwsL
-1aF7IXgZZgzy644skpdsTfqkGkGLYLwxbjcZZPfTggcbeIiOhTzpeQ441flbbl3+
-KbTbmKkYPm7VomwDlBkU
-=ukJr
+iQIcBAEBAgAGBQJTV6FBAAoJELSic+t+oim9BYUQAI5QG32jnGfAQsPERwKeWZrE
+AZ2wY4V2ZiNAYwL/pes3R1muQ2oSHGsYGkR6A/4EjjhjJWvTP4mRB67h8Ol/8hCX
+pcWqs4Slay0xk6GL/GfQpfVrKasJCIPWLFeV+DXkm0yuTevSoGylsIbY1zWGkNav
+YVxKvSZbKVEDbPZ15Ba0/mGSIvW3mi5IZ89jB4O+LBqrD/TYh7dO2/Wg9J9srxZC
+CDkSJok5Kh/5eOZ9ioe1xf63mdEEIEJHFxeQrj5JUYNDYHBfozlkNhM0JjrjQhgD
+W0y4petbnXRQl/S5Jzyz71ylmf/5NyA/QkcreWgqPfEZdBdAcmLO4zeIlTzVzWZ9
+k8RrQJVhTVhmWl2fop6mIT+W3un/Fjg7xQnddwsTPbxkQugQi/CSRyP1dshxOsYW
+OGqSR0g160fTcNto1sEXsP0NFMvyk/vDkw/DzUM6XN4iIHoE36MMknE6KCVER7P1
+IEbodWajGlLWSsdAjAS3ZgP+C/unYYzNLANAJGlv6nE8WHFa/H+Tks+6CnuKiwxs
+e8NU5L8BHAf/PVxhMbPSGyYeu/tV2S7tMmJcWMBYLBR4fwcCZKR381IrygimmwqZ
+eW0DB4z1t0eieGDAf1Tpxd33OUfcrYmW9/aXYjIZgDgnjklcv4ub1X70+DXXWTND
+xFHIuY9tMUncYbyR8VHG
+=sTJ0
 -----END PGP SIGNATURE-----
 
---qaN/cnoOojZiWuMv--
+--NoillsJCK92BJ/Cw--
 
---===============7604881531894422180==
+--===============8965425878756615719==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7604881531894422180==--
+--===============8965425878756615719==--
