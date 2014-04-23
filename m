@@ -1,80 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Fix audio crash due to race
- condition in stream deletion
-Date: Wed, 23 Apr 2014 12:19:48 +0100
-Message-ID: <20140423111948.GS12304@sirena.org.uk>
-References: <1398248970-13991-1-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SAMSUNG: Don't clear clock setting during
+ i2s_startup
+Date: Wed, 23 Apr 2014 12:30:50 +0100
+Message-ID: <20140423113050.GU12304@sirena.org.uk>
+References: <1398240264-21285-1-git-send-email-tushar.behera@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6780825212102832313=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 67F96265146
- for <alsa-devel@alsa-project.org>; Wed, 23 Apr 2014 13:19:59 +0200 (CEST)
-In-Reply-To: <1398248970-13991-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Wenkai Du <wenkai.du@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zvRX+gpdrLDrHMsm"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1398240264-21285-1-git-send-email-tushar.behera@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, lgirdwood@gmail.com, sbkim73@samsung.com, jassisinghbrar@gmail.com, kgene.kim@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6780825212102832313==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="stZQFPZ4/fPI7QSY"
-Content-Disposition: inline
-
-
---stZQFPZ4/fPI7QSY
+--zvRX+gpdrLDrHMsm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 23, 2014 at 01:29:30PM +0300, Jarkko Nikula wrote:
-> From: Wenkai Du <wenkai.du@intel.com>
->=20
-> There is a race between sst_byt_stream_free() and sst_byt_get_stream()
-> if sst_byt_get_stream() called from sst_byt_irq_thread() context is
-> accessing the byt->stream_list while a stream is deleted from the list.
+On Wed, Apr 23, 2014 at 01:34:24PM +0530, Tushar Behera wrote:
+> In exiting kernel, if DAIFMT flags are set in dai_link and I2S is
+> set to run in master mode, the I2S clocks are not getting configured
+> resulting in no output.
 
 Applied, thanks.
 
---stZQFPZ4/fPI7QSY
+--zvRX+gpdrLDrHMsm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTV6HRAAoJELSic+t+oim98ucP/AtA+yjIfTDYVCIbj1YYpx4C
-z5t4Q4f8E8W3Lc80hZO/963awViGQtEHMwFUQtCq/nY0ZGBIlNTouzNkSmTMe5qB
-QeyNAnSU9wX6ViNwx4a5bhezL6cw+THrgy8Gy6cjssZ0nz+SQp9ZZ04oRm0BRLVj
-k2zrJboFcz0nD+4Q+kTg18rYTXWfNXPwGAIvzMkT7MPFCYnJQvoc09VnCIGlgYWy
-9Eu28t6vUwzu4MxXVxPAIU7BfCYb3QIYi5BwR09G+7gZf5VkyDE2getxV6+YXk58
-iMk81TJLTtGrgMckmqpqAVyh1beonjPcYkLrA4P03gYtye/LMcIzoQ9w8EFJZFcS
-HvD3aKA1giaZIK2BE+rSdG30rtUdwsDyc86HqP4iIGQNgA7eKn9nKunXfgx4pIjW
-BDFG871uh9OXz0JLjFCuhyCiVEnTO3wIFRaAieqmcVadnaNNlnQI1X18zEJSDY5s
-FgpgopErkZ1+G22Henu5L1U2RgZkXV5gTv3vi3cbfcUCJ93YNaDe0wrzep/dc/K1
-8FhY741mBG0n4coFz+IbNbN5yfCMzSihNpdBwID6DtFM1WgwFzCJzGorhlOdLmFc
-z9MYi29bjGOzrVtHe+AMHanM/xEWGd5nEXjqZQXexwyJlwyz75CUx8zMHutl0P4y
-RUprf6Wn9SKIC3EdkNyP
-=NcnM
+iQIcBAEBAgAGBQJTV6RnAAoJELSic+t+oim99NcP/Rb5XcfTKcV0/OSjQQneFRsP
+LROuCEy4O0ngUB3dgQ12rNCEUfVfFrwDI1ROX21Z1tnQjK903Q5aFkP05Pwatr2r
+IRuo687zG37FHY4xHodUBPL7ilhZ5XpsDiJrlHhrvS0K9pzFVE2MdhbtAuTQuaAH
+YN4Jyr6ifs+fyKpuxrKhiNQv3A9B/eLHXMjbHf986TEBEQTRi+Jdl5BU+JJZJXJI
+eCudbTTat0BDBdZaBuKDElTxlBNdoWpu8lvJBZrXzzaTlvftbUOFgMI9Cn9c68QT
+aQroU02xc3z4fpuzpaFMrXlhG+6tlnzokJWZD4XJXP/YC8thiEUWOu755F0lYoGY
+QVqPRQM0YiqDimcAgZ/ft53/VNwxn5ZppEQULiHwXXoCibbPzJbB1t4y6jlc6Gyi
+rQgLhGcWB3DXgkcl2QLqloSpeQsBZdBLSvj2VE2J6DkHQHmQwJsmEMS+0MP79wvp
+5aRPWFki6ktWhgeZTtZchlh5AeGMQE5tOdJu9vZUygGAeL0AkGWrFwMIgJTTZ+Nt
+Yfmbdh8qjOxvXKYZYRJkSwRbWZAu2JhHv58ifz75e0cb0akDoxPhj4+CaQZeSaH9
+aeKPFZG4KhDtpesSI0STl0bR9QbOQIn3f6MG0/kHuFscTnxuRHxMJWjq6Smp+ZK+
+GwGfSJhjbypYFagj1UIb
+=zjNv
 -----END PGP SIGNATURE-----
 
---stZQFPZ4/fPI7QSY--
-
---===============6780825212102832313==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6780825212102832313==--
+--zvRX+gpdrLDrHMsm--
