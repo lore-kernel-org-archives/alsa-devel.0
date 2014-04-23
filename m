@@ -1,25 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: call rsnd_dai_pointer_update()
- from outside of lock
-Date: Wed, 23 Apr 2014 12:17:25 +0100
-Message-ID: <20140423111725.GP12304@sirena.org.uk>
-References: <20140418.140133.428086893.ko-abe@nk4lx2>
- <5350B75C.6030500@renesas.com>
- <20140418.145315.172551492.ko-abe@nk4lx2>
- <5350CD5D.9060800@renesas.com>
- <5b6857d989484e3690995c92920930ac@HKXPR06MB040.apcprd06.prod.outlook.com>
- <874n1kj3je.wl%kuninori.morimoto.gx@renesas.com>
- <8738h4j2wo.wl%kuninori.morimoto.gx@renesas.com>
- <3977b65ffbb84cc89b66739c5b13ebdd@HKXPR06MB040.apcprd06.prod.outlook.com>
- <871twoio27.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 5/6] ASoC: qi_lb60: Use GPIO descriptor API
+Date: Wed, 23 Apr 2014 12:19:03 +0100
+Message-ID: <20140423111903.GQ12304@sirena.org.uk>
+References: <1398199596-23649-1-git-send-email-lars@metafoo.de>
+ <1398199596-23649-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8965425878756615719=="
+Content-Type: multipart/mixed; boundary="===============7537104676784618410=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 23F2B261A3B
- for <alsa-devel@alsa-project.org>; Wed, 23 Apr 2014 13:17:35 +0200 (CEST)
-In-Reply-To: <871twoio27.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 97FCD261A66
+ for <alsa-devel@alsa-project.org>; Wed, 23 Apr 2014 13:19:21 +0200 (CEST)
+In-Reply-To: <1398199596-23649-5-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,63 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: TOMOHARU FUKAWA <tomoharu.fukawa.eb@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Ryo Kataoka <ryo.kataoka.wt@renesas.com>, YOSHIFUMI HOSOYA <yoshifumi.hosoya.wj@renesas.com>, Ryusuke Sakato <ryusuke.sakato.bx@renesas.com>, Koei Abe <kouei.abe.cp@renesas.com>, Magnus <magnus.damm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, TOSHIAKI KOMATSU <toshiaki.komatsu.ud@renesas.com>, KHIEM NGUYEN <khiem.nguyen.xt@renesas.com>, Yusuke Goda <yusuke.goda.sx@renesas.com>, Simon <horms@verge.net.au>, "simon@horms.net" <simon@horms.net>, NAOYA SHIIBA <naoya.shiiba.nx@renesas.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, YOSHIYUKI ITO <yoshiyuki.ito.ub@renesas.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8965425878756615719==
+--===============7537104676784618410==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NoillsJCK92BJ/Cw"
+	protocol="application/pgp-signature"; boundary="6cefKH10kddc8n4c"
 Content-Disposition: inline
 
 
---NoillsJCK92BJ/Cw
+--6cefKH10kddc8n4c
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 23, 2014 at 02:59:12PM +0900, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> rsnd_soc_dai_trigger() will be called
-> after rsnd_dai_pointer_update() function
-> which is using rsnd_lock().
-> Thus, it should be called from outside of rsnd_lock().
-> Kernel will be hangup without this patch.
-> Special thanks to Kataoka-san
+On Tue, Apr 22, 2014 at 10:46:35PM +0200, Lars-Peter Clausen wrote:
+> The new GPIO descriptor API is now the preferred way for handling GPIOs. It also
+> allows us to separate the platform depended code from the platform independent
+> code (Which will make it possible to increase build test coverage of the
+> platform independent code).
 
 Applied, thanks.
 
---NoillsJCK92BJ/Cw
+--6cefKH10kddc8n4c
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTV6FBAAoJELSic+t+oim9BYUQAI5QG32jnGfAQsPERwKeWZrE
-AZ2wY4V2ZiNAYwL/pes3R1muQ2oSHGsYGkR6A/4EjjhjJWvTP4mRB67h8Ol/8hCX
-pcWqs4Slay0xk6GL/GfQpfVrKasJCIPWLFeV+DXkm0yuTevSoGylsIbY1zWGkNav
-YVxKvSZbKVEDbPZ15Ba0/mGSIvW3mi5IZ89jB4O+LBqrD/TYh7dO2/Wg9J9srxZC
-CDkSJok5Kh/5eOZ9ioe1xf63mdEEIEJHFxeQrj5JUYNDYHBfozlkNhM0JjrjQhgD
-W0y4petbnXRQl/S5Jzyz71ylmf/5NyA/QkcreWgqPfEZdBdAcmLO4zeIlTzVzWZ9
-k8RrQJVhTVhmWl2fop6mIT+W3un/Fjg7xQnddwsTPbxkQugQi/CSRyP1dshxOsYW
-OGqSR0g160fTcNto1sEXsP0NFMvyk/vDkw/DzUM6XN4iIHoE36MMknE6KCVER7P1
-IEbodWajGlLWSsdAjAS3ZgP+C/unYYzNLANAJGlv6nE8WHFa/H+Tks+6CnuKiwxs
-e8NU5L8BHAf/PVxhMbPSGyYeu/tV2S7tMmJcWMBYLBR4fwcCZKR381IrygimmwqZ
-eW0DB4z1t0eieGDAf1Tpxd33OUfcrYmW9/aXYjIZgDgnjklcv4ub1X70+DXXWTND
-xFHIuY9tMUncYbyR8VHG
-=sTJ0
+iQIcBAEBAgAGBQJTV6GkAAoJELSic+t+oim9IGUP/3quTPiKLPFnpEZ1sD/c4sya
+TbLPa5OMaWJGFgkUzbNhjyjzYxG2k7PWMpaV9bilPE+IWyX6COnssnnYPimikTtY
+6sEAz0Akg0TMvkoBf0GDJCyskV6blb8EEk43NGn+rvDebqCV2jO3rw+vEK2usV1n
+QeWZ5HfiFaehwv2RQo7ZC55Ag3hybcWh5Q7SYbgsCpmliMmEvFi6KedPD0HSlQj/
+nPfdRAkqLPQph3n2Y+PAPb/47KLkKBODhb1Kwk+NJWR5Qzai5Dmu8aekqw0Vh//i
+2BS1Vbzz4v1TZG6ywbAivx5aqj0jZbR9LRypAm1ILIjvxoBfeT4x845yif3viv7D
+q5fN7DQdvxCvFpQj/3hY4ffN4lg86KyTApXmwFhTm8/+AX5ZH0DSbOjkbmB3t7S+
+sMjGRf8ZErdI3lpvo4vCZSzoVK7T9BLU/IbtBms4BDOoAEG125qgf1higFT9LalS
+g6jRJRKevKc88N4WFPOzj6gBEoPHBXzv2J0yHKGVCBKvxIKlc+QhonInS/cpE4O4
+hUcmfF4UAvY54ToBxuCc3ejC7OZhLC+FCWXbGq0bhDbl45/ui86JkC7jJ4jlV7uO
+038g3OMxWruGJCl8iG3JrXE77DQz2otscB1Zz7Ki2TtlueRTGdktq0l3IK7fRf2y
+8ad+GB5igo4+UDMP1BjI
+=+TjX
 -----END PGP SIGNATURE-----
 
---NoillsJCK92BJ/Cw--
+--6cefKH10kddc8n4c--
 
---===============8965425878756615719==
+--===============7537104676784618410==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8965425878756615719==--
+--===============7537104676784618410==--
