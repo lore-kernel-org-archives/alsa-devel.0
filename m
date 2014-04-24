@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl: Drop formats limitation for
-	imx-pcm-dma.c
-Date: Thu, 24 Apr 2014 13:14:48 +0100
-Message-ID: <20140424121448.GR12304@sirena.org.uk>
-References: <1398339187-12097-1-git-send-email-Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH 0/3] Fix some minor issues in simple card
+	driver
+Date: Thu, 24 Apr 2014 13:20:25 +0100
+Message-ID: <20140424122025.GS12304@sirena.org.uk>
+References: <cover.1398337861.git.Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3918932491135339479=="
+Content-Type: multipart/mixed; boundary="===============0302510736974556180=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 55E7E2652B0
- for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 14:15:02 +0200 (CEST)
-In-Reply-To: <1398339187-12097-1-git-send-email-Guangyu.Chen@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E17C26526D
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 14:20:38 +0200 (CEST)
+In-Reply-To: <cover.1398337861.git.Guangyu.Chen@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, lgirdwood@gmail.com, kernel@pengutronix.de, shawn.guo@linaro.org
+Cc: moinejf@free.fr, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, tiwai@suse.de, lgirdwood@gmail.com, jsarha@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3918932491135339479==
+--===============0302510736974556180==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="afYSId37w55bXVbu"
+	protocol="application/pgp-signature"; boundary="o7XSIa7a3vlDf/d+"
 Content-Disposition: inline
 
 
---afYSId37w55bXVbu
+--o7XSIa7a3vlDf/d+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 24, 2014 at 07:33:07PM +0800, Nicolin Chen wrote:
-> Now ASoC core is getting the intersection of supported formats not only
-> from CPU and CODEC dai's but also from DMA's. However, there should be
-> no specific width limitation from SDMA side.
+On Thu, Apr 24, 2014 at 07:13:57PM +0800, Nicolin Chen wrote:
+> The series fixes one name limitation and code style problems.
 
-Applied, thanks.
+Applied all, thanks.
 
---afYSId37w55bXVbu
+--o7XSIa7a3vlDf/d+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTWQA1AAoJELSic+t+oim9PNkP/iT8a8f76ZYhkytSwlZgPLOh
-Wdc3hoSP0HDYUppFEfN4QoTBUNQouIyadib9Z+ueAob+SVOjbkR1NBlJ8oUSnum+
-1df4Xje17l9F1P9gaaxhUFYHK6jPH5r5zV0IXt2PG0gjtlYH8OsLbz8EUz/nyGCR
-YxLNNdHi/Mi7cTMcfwjS55l7ITRKCyn4uZyZaMcYaWdO2LCEY9/K4Nub3B27uB9O
-40r4NRb3pg0HS00qVBZYt2PsGVcozzqzw4DP+hIp23yGT1tteQ/qTTBC/pkC/unH
-lQ/RJ7SRIHMPBN0JAY3xQ5yn7UiP134SUVFJ0rCKcOIXjUZ+5K5dGFq+egRsznWK
-QdAGVE+W3C1ccGFOweeAh2o3xCfytrV/Ph2iObgKB57cQ44NMFHwUJ93DHM7fy/J
-8Ju36dAO37BTZ+WqrG9qo5iPxtJMEcSjL5gCqKcuLNRCfehy5hz3LZpMBVFx6h0s
-XAU1srdvqn2cWNMg68IlIoRttIl+NvpeZfDsCZUkOLPTRXmSB819CxPwTqdR7TOb
-2KeceFhkZTjATW0wtNkvtvV8k+oHS0WtvV1RGZXx0a2TuuVKsuAS5ZqSXnexlDps
-OkXOESZLgWBBiSLxOLlmIFsODGBXL1WxFeMT6OJYOkgtlddN3ZCi5d1+C2FFs+XT
-qajxGf7vDFcd6FO3xo0O
-=YNyM
+iQIcBAEBAgAGBQJTWQGGAAoJELSic+t+oim94vAP/3urJ/jVIKxnY6AEPnru1q6J
+GEi+1MXSyZcpo/XEUoVnDfI8lhgu1A9OphGxgH6DkT8sMR9riZlu0QM0wyLrTz+X
+om2cvw3jq4lh3Dh3qoqL5TM51u8zNWFuOo7fWldYfnKLf2wCUQGNS3yE5+LHZ1lo
+djWlavRRZJPOMh8JyfXbLhfrkdJ1zPx9Jo+G6pYAM91q3uBhb4+bT85k9prkuto+
+qrsnq03vf9QlSuwThbrY5KvAdswElgJI/XofRJzk1emMDZq5PMw5HMB8ug/TCMXI
+G2uJ52hR8RCyW1gWKOZG4vo0jQObDFgL31toaaBoaohaBukGadwbGrVL8BOJkHNE
+iy6jsMz/wtEHHTvTPxDXizBEhuLpeDOax2gGn/Eju7YzLZX97jl813MjVvwQ9VVc
+XVR7IPm9VWpXCpeXh+RMUjpveyKdCkKq9q+fe3UgELq3bCIE/IF+e9g2lD5d4GqY
+CMrEqa+ZiBR9+8Z/Pzh6FKOrWG+Wr+12eS1hWzYOkC2Zk9CcOunlg/ycE+2C3g5I
+MXGsBA6De4FPQax16SSGG2DKBaYdSaVAuVdB2yiPlztgdv0IMkrve3+QZr0zkt7P
+eDQVcU4X6EKQgzxVNPsg+776Xblr0E++qjQmr4g/lXufQHbCWuTs/u5DVf0iqYL2
+yEWmHmf5d3YNC6dCa/Gm
+=46GL
 -----END PGP SIGNATURE-----
 
---afYSId37w55bXVbu--
+--o7XSIa7a3vlDf/d+--
 
---===============3918932491135339479==
+--===============0302510736974556180==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3918932491135339479==--
+--===============0302510736974556180==--
