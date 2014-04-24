@@ -1,37 +1,19 @@
-From: Andrew Reyes <dsreyes1014@gmail.com>
-Subject: Re: Behringer Uphoria UMC204 usb audio capture only
- pops and clicks
-Date: Thu, 24 Apr 2014 09:14:58 -0500
-Message-ID: <CAEYsuVNa5_GXcXGwMNZ9S9DMy7unWHATbZNpTzMMnrGrEwEk7A@mail.gmail.com>
-References: <CAEYsuVOBOGMwqhzx8ZROJ8+vbmfD6Ty=fnAtzccMqkFUGKPM4A@mail.gmail.com>
- <53551C5B.5010002@zonque.org>
- <CAEYsuVP1pr87v0y5SuKL87bCRr5RpfgLiSfjsZb4mis1yE_w1g@mail.gmail.com>
- <CAEYsuVML1ZFGGP35KB=3im_JTgNSCoNfPg1aMnzT6mjR=u1cJA@mail.gmail.com>
- <5355431F.3000501@zonque.org>
- <CAEYsuVNvr3WE+RCgCHKZHrBKybAc8muhx3nMu1NgfRgVbj9z1g@mail.gmail.com>
- <53555A0F.4080406@zonque.org>
- <CAEYsuVOmTuJ7dHu8mvOF0currhfgwC9WO3hitbKEAgKRBj9eoQ@mail.gmail.com>
- <5355655B.3050705@zonque.org>
- <CAEYsuVNw11e1Lzkbiwoeiz=wiXVUpwJnO51UaBy0eohL9eReEg@mail.gmail.com>
- <CAEYsuVN2Z=7oa_VB1660JpiKihoA=DxMn+Vgv-R5upoRpyhxiQ@mail.gmail.com>
- <53556961.5060600@zonque.org>
- <CAEYsuVOb=Ai=qd2F05JuoE5Xrb3gSDDuxCPHW=vLM-dcuQzdkA@mail.gmail.com>
- <CAEYsuVP2w8rQYxVReYm9jaxM40Yyta+P9OJWzEYbwcSJ7BVDRQ@mail.gmail.com>
- <CAEYsuVMhzhY8oHUn6DmXeDHLDL3xrmQo8P+xhBrvwhZaBfiegw@mail.gmail.com>
- <93266364-0c59-429e-9f8a-fe9ec89347c0@email.android.com>
- <CAEYsuVPDw7bSLJCKjAWCzZCNeKNtX3tR-Wnv+YDETy=NDt48SA@mail.gmail.com>
- <CAEYsuVOrngrpBRw8au8H+9BAstvaD=aHcU3pcAzSGXuJaEEqDg@mail.gmail.com>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: [PATCH v2] Fix forward/rewind support in iec958 plugin
+Date: Thu, 24 Apr 2014 20:40:06 +0600
+Message-ID: <1398350406-10347-1-git-send-email-patrakov@gmail.com>
+References: <5358F356.3020701@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f169.google.com (mail-qc0-f169.google.com
- [209.85.216.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 492CE265272
- for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 16:15:00 +0200 (CEST)
-Received: by mail-qc0-f169.google.com with SMTP id i17so2583238qcy.0
- for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 07:14:59 -0700 (PDT)
-In-Reply-To: <CAEYsuVOrngrpBRw8au8H+9BAstvaD=aHcU3pcAzSGXuJaEEqDg@mail.gmail.com>
+Received: from mail-lb0-f176.google.com (mail-lb0-f176.google.com
+ [209.85.217.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6774B265272
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 16:43:37 +0200 (CEST)
+Received: by mail-lb0-f176.google.com with SMTP id 10so2079525lbg.35
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 07:43:37 -0700 (PDT)
+In-Reply-To: <5358F356.3020701@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -41,70 +23,134 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, "Alexander E. Patrakov" <patrakov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Daniel I got my hands on Windows 7 PC and installed the drivers from the
-website and it does the samething.  So now I'm leaning toward a defective
-soundcard.  I'm sending it back for a new one.
+When forwarding or rewinding, the frame counter was not updated. This
+could result in corrupted channel status words or misplaced Z-type
+preamble.
 
+Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
+---
+v2: As suggested by David Henningsson, patch a copy of
+snd_pcm_plugin_fast_ops at runtime instead of making all plugin finctions
+non-static. But, contrary to his proposal, I made fast_ops just a part of
+struct snd_pcm_iec958, because the needed lifetime is exactly the same.
 
-On Wed, Apr 23, 2014 at 11:18 AM, Andrew Reyes <dsreyes1014@gmail.com>wrote:
+I still have no hardware to test this, and I strongly suspect that the
+patch is wrong, because nobody else uses dynamic allocation of fast_ops.
+A potentially suspicious operation would be to place a plug on top of this,
+because plug copies fast_ops around. However, each time it closes a slave,
+it also resets fast_ops to something sane, or at least I think so.
 
-> Ok I got the two different logs and I don't what I'm looking for lol.
-> It's just raw data. My last option is to try using it on Windows or Mac
-> just to make sure it's not the interface.
->
->
-> On Wed, Apr 23, 2014 at 10:40 AM, Andrew Reyes <dsreyes1014@gmail.com>wrote:
->
->> > I can just give you a few more ideas to debug this, but that includes
->> more action from your side.
->>
->> > * First of all, try the same device on a different computer, and/or a
->> different USB port, especially if you're using an XHCI (USB3) port.
->>
->> > * Try the device on Mac OS X, without installing a driver and see if
->> you have the same problem here.
->>
->> > * Use usbmon and analyze the data stream when a pop occurs. Compare
->> that with settings that don't produce pops. There's good documentation on
->> usbmon in Documentation/usb/ in the Linux kernel.
->>
->> Ok cool. I'll get right on that. I did try the first suggestion on four
->> different computers and different ports and it's the same issue but just to
->> be thorough I'll check again.
->>
->>
->> On Wed, Apr 23, 2014 at 9:59 AM, Daniel Mack <daniel@zonque.org> wrote:
->>
->>>
->>>
->>> On April 23, 2014 4:40:07 PM CEST, Andrew Reyes <dsreyes1014@gmail.com>
->>> wrote:
->>> >Is there something else I could do to get to the problem?
->>>
->>> I can just give you a few more ideas to debug this, but that includes
->>> more action from your side.
->>>
->>> * First of all, try the same device on a different computer, and/or a
->>> different USB port, especially if you're using an XHCI (USB3) port.
->>>
->>> * Try the device on Mac OS X, without installing a driver and see if you
->>> have the same problem here.
->>>
->>> * Use usbmon and analyze the data stream when a pop occurs. Compare that
->>> with settings that don't produce pops. There's good documentation on usbmon
->>> in Documentation/usb/ in the Linux kernel.
->>>
->>>
->>> Best regards,
->>> Daniel
->>>
->>> --
->>> Sent from my Android phone with K-9 Mail. Please excuse my brevity.
->>>
->>
->>
->
+ src/pcm/pcm_iec958.c | 37 ++++++++++++++++++++++++++++++++++++-
+ src/pcm/pcm_plugin.c |  4 ++--
+ src/pcm/pcm_plugin.h |  6 ++++++
+ 3 files changed, 44 insertions(+), 3 deletions(-)
+
+diff --git a/src/pcm/pcm_iec958.c b/src/pcm/pcm_iec958.c
+index d81b0a1..0c61fc1 100644
+--- a/src/pcm/pcm_iec958.c
++++ b/src/pcm/pcm_iec958.c
+@@ -62,6 +62,7 @@ struct snd_pcm_iec958 {
+ 	unsigned char status[24];
+ 	unsigned int byteswap;
+ 	unsigned char preamble[3];	/* B/M/W or Z/X/Y */
++	snd_pcm_fast_ops_t fops;
+ };
+ 
+ enum { PREAMBLE_Z, PREAMBLE_X, PREAMBLE_Y };
+@@ -416,6 +417,35 @@ static void snd_pcm_iec958_dump(snd_pcm_t *pcm, snd_output_t *out)
+ 	snd_pcm_dump(iec->plug.gen.slave, out);
+ }
+ 
++static snd_pcm_sframes_t snd_pcm_iec958_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
++{
++	unsigned int counter_decrement;
++	snd_pcm_iec958_t *iec = pcm->private_data;
++	snd_pcm_sframes_t result = snd_pcm_plugin_rewind(pcm, frames);
++	if (result <= 0)
++		return result;
++
++	counter_decrement = result % 192;
++	iec->counter += 192 - counter_decrement;
++	iec->counter %= 192;
++	return result;
++}
++
++static snd_pcm_sframes_t snd_pcm_iec958_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
++
++{
++	unsigned int counter_increment;
++	snd_pcm_iec958_t *iec = pcm->private_data;
++	snd_pcm_sframes_t result = snd_pcm_plugin_rewind(pcm, frames);
++	if (result <= 0)
++		return result;
++
++	counter_increment = result % 192;
++	iec->counter += counter_increment;
++	iec->counter %= 192;
++	return result;
++}
++
+ static const snd_pcm_ops_t snd_pcm_iec958_ops = {
+ 	.close = snd_pcm_generic_close,
+ 	.info = snd_pcm_generic_info,
+@@ -495,7 +525,12 @@ int snd_pcm_iec958_open(snd_pcm_t **pcmp, const char *name, snd_pcm_format_t sfo
+ 		return err;
+ 	}
+ 	pcm->ops = &snd_pcm_iec958_ops;
+-	pcm->fast_ops = &snd_pcm_plugin_fast_ops;
++
++	iec->fops = snd_pcm_plugin_fast_ops;
++	iec->fops.rewind = snd_pcm_iec958_rewind;
++	iec->fops.forward = snd_pcm_iec958_forward;
++	pcm->fast_ops = &iec->fops;
++
+ 	pcm->private_data = iec;
+ 	pcm->poll_fd = slave->poll_fd;
+ 	pcm->poll_events = slave->poll_events;
+diff --git a/src/pcm/pcm_plugin.c b/src/pcm/pcm_plugin.c
+index 17157e8..4ddf10c 100644
+--- a/src/pcm/pcm_plugin.c
++++ b/src/pcm/pcm_plugin.c
+@@ -201,7 +201,7 @@ static snd_pcm_sframes_t snd_pcm_plugin_rewindable(snd_pcm_t *pcm)
+ 	return snd_pcm_mmap_hw_avail(pcm);
+ }
+ 
+-static snd_pcm_sframes_t snd_pcm_plugin_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
++snd_pcm_sframes_t snd_pcm_plugin_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
+ {
+ 	snd_pcm_plugin_t *plugin = pcm->private_data;
+ 	snd_pcm_sframes_t n = snd_pcm_mmap_hw_avail(pcm);
+@@ -229,7 +229,7 @@ static snd_pcm_sframes_t snd_pcm_plugin_forwardable(snd_pcm_t *pcm)
+ 	return snd_pcm_mmap_avail(pcm);
+ }
+ 
+-static snd_pcm_sframes_t snd_pcm_plugin_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
++snd_pcm_sframes_t snd_pcm_plugin_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
+ {
+ 	snd_pcm_plugin_t *plugin = pcm->private_data;
+ 	snd_pcm_sframes_t n = snd_pcm_mmap_avail(pcm);
+diff --git a/src/pcm/pcm_plugin.h b/src/pcm/pcm_plugin.h
+index 7ee7c7f..19e82c3 100644
+--- a/src/pcm/pcm_plugin.h
++++ b/src/pcm/pcm_plugin.h
+@@ -58,8 +58,14 @@ typedef struct {
+ 	snd1_pcm_plugin_undo_read_generic
+ #define snd_pcm_plugin_undo_write_generic \
+ 	snd1_pcm_plugin_undo_write_generic
++#define snd_pcm_plugin_rewind \
++	snd1_pcm_plugin_rewind
++#define snd_pcm_plugin_forward \
++	snd1_pcm_plugin_forward
+ 
+ void snd_pcm_plugin_init(snd_pcm_plugin_t *plugin);
++snd_pcm_sframes_t snd_pcm_plugin_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
++snd_pcm_sframes_t snd_pcm_plugin_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
+ 
+ extern const snd_pcm_fast_ops_t snd_pcm_plugin_fast_ops;
+ 
+-- 
+1.9.2
