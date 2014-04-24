@@ -1,84 +1,110 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
-Date: Thu, 24 Apr 2014 14:39:20 +0100
-Message-ID: <20140424133920.GA12304@sirena.org.uk>
-References: <1398243705-31151-1-git-send-email-tushar.behera@linaro.org>
+From: Andrew Reyes <dsreyes1014@gmail.com>
+Subject: Re: Behringer Uphoria UMC204 usb audio capture only
+ pops and clicks
+Date: Thu, 24 Apr 2014 09:14:58 -0500
+Message-ID: <CAEYsuVNa5_GXcXGwMNZ9S9DMy7unWHATbZNpTzMMnrGrEwEk7A@mail.gmail.com>
+References: <CAEYsuVOBOGMwqhzx8ZROJ8+vbmfD6Ty=fnAtzccMqkFUGKPM4A@mail.gmail.com>
+ <53551C5B.5010002@zonque.org>
+ <CAEYsuVP1pr87v0y5SuKL87bCRr5RpfgLiSfjsZb4mis1yE_w1g@mail.gmail.com>
+ <CAEYsuVML1ZFGGP35KB=3im_JTgNSCoNfPg1aMnzT6mjR=u1cJA@mail.gmail.com>
+ <5355431F.3000501@zonque.org>
+ <CAEYsuVNvr3WE+RCgCHKZHrBKybAc8muhx3nMu1NgfRgVbj9z1g@mail.gmail.com>
+ <53555A0F.4080406@zonque.org>
+ <CAEYsuVOmTuJ7dHu8mvOF0currhfgwC9WO3hitbKEAgKRBj9eoQ@mail.gmail.com>
+ <5355655B.3050705@zonque.org>
+ <CAEYsuVNw11e1Lzkbiwoeiz=wiXVUpwJnO51UaBy0eohL9eReEg@mail.gmail.com>
+ <CAEYsuVN2Z=7oa_VB1660JpiKihoA=DxMn+Vgv-R5upoRpyhxiQ@mail.gmail.com>
+ <53556961.5060600@zonque.org>
+ <CAEYsuVOb=Ai=qd2F05JuoE5Xrb3gSDDuxCPHW=vLM-dcuQzdkA@mail.gmail.com>
+ <CAEYsuVP2w8rQYxVReYm9jaxM40Yyta+P9OJWzEYbwcSJ7BVDRQ@mail.gmail.com>
+ <CAEYsuVMhzhY8oHUn6DmXeDHLDL3xrmQo8P+xhBrvwhZaBfiegw@mail.gmail.com>
+ <93266364-0c59-429e-9f8a-fe9ec89347c0@email.android.com>
+ <CAEYsuVPDw7bSLJCKjAWCzZCNeKNtX3tR-Wnv+YDETy=NDt48SA@mail.gmail.com>
+ <CAEYsuVOrngrpBRw8au8H+9BAstvaD=aHcU3pcAzSGXuJaEEqDg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fqxOrU+oVxTp8sLK"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1398243705-31151-1-git-send-email-tushar.behera@linaro.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: Tushar Behera <tushar.behera@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, sbkim73@samsung.com, rdunlap@infradead.org, dianders@chromium.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f169.google.com (mail-qc0-f169.google.com
+ [209.85.216.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 492CE265272
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 16:15:00 +0200 (CEST)
+Received: by mail-qc0-f169.google.com with SMTP id i17so2583238qcy.0
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 07:14:59 -0700 (PDT)
+In-Reply-To: <CAEYsuVOrngrpBRw8au8H+9BAstvaD=aHcU3pcAzSGXuJaEEqDg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@zonque.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Daniel I got my hands on Windows 7 PC and installed the drivers from the
+website and it does the samething.  So now I'm leaning toward a defective
+soundcard.  I'm sending it back for a new one.
 
---fqxOrU+oVxTp8sLK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Apr 23, 2014 at 02:31:45PM +0530, Tushar Behera wrote:
+On Wed, Apr 23, 2014 at 11:18 AM, Andrew Reyes <dsreyes1014@gmail.com>wrote:
 
-> +Required properties:
-> +- compatible : Can be one of the following,
-> +			"google,snow-audio-max98090" or
-> +			"google,snow-audio-max98095"
-> +- samsung,i2s-controller: The phandle of the Samsung I2S0 controller
-
-This should be any I2S controller, not just I2S0?
-
-> +- samsung,audio-codec: The phandle of the audio codec
-
-This binding only has one I2S controller and CODEC.  However...
-
-> +static struct snd_soc_dai_link snow_dai[] = {
-> +	{ /* Playback DAI i/f */
-> +		.name = "Playback",
-> +		.stream_name = "Playback",
-> +		.codec_dai_name = "HiFi",
-> +		.dai_fmt = SND_SOC_DAIFMT_I2S |
-> +				SND_SOC_DAIFMT_NB_NF |
-> +				SND_SOC_DAIFMT_CBS_CFS,
-> +	}, { /* Capture DAI i/f */
-> +		.name = "Capture",
-> +		.stream_name = "Capture",
-> +		.codec_dai_name = "HiFi",
-> +		.dai_fmt = SND_SOC_DAIFMT_I2S |
-> +				SND_SOC_DAIFMT_NB_NF |
-> +				SND_SOC_DAIFMT_CBS_CFS,
-> +	},
-> +};
-
-...for some reason we have separate capture and playback DAI links
-defined.  Why is that?  Also, why is the secondary I2S playback stream
-not supported (this may be a reason to restrict to only the one I2S
-interface)?
-
-Please also use subject lines consistent with the subsystem - NO NEED TO
-SHOUT.
-
---fqxOrU+oVxTp8sLK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTWRQFAAoJELSic+t+oim9FLEP/2a7HlgBLyAyhlBpVVq4cudI
-UXXiPqrnYEprtqB+UouodnWQDLcn7EuEIa2YiE9Z9YbzUmn/0rNusq1UBgzkgTZo
-OOSiKknpOqJmwHig39tXdoyW+Q3Gf2FP945rcHI38ogXDqYt6OVNCJ93wOutYBpf
-tKgejkbuSYLLB7ypk+x0xtmipWA6/0TLwf06CBGtICzWk7SoGdZP54rFtjacTEYJ
-x4XXlGMJX1Wp8vrRopSSHFWSMXet8m2lFvRgv8PIvHyQZsrvSGNS4v1hdSiqSoyH
-Vl0tp68YPcoK25RJojB0n4gPKoXi2ysqv1U3yvPtCXee+cUmaHv2P/HvR4VtVkMh
-uAaiDab6fbisJOPL3iSrZKgZulzLac9mUpO4Tqe09E7OdwJK4ffLXt/mBaPxh79A
-g+eScceRhWEpfy8nW5Kxe8/blRy8E/QX2H9Ray5e9k17tLCtfvnQ51uXM2bHt1EI
-bCDNz8wxJSRBWyU2UwjLqRTSAUYiC2HVEoYksDyIzycUZ+fyZyP1ryiPtEKZixgb
-fnRFyEeO5pn+HFH4ANxGp6UK2doZMLSFAvap6KSaIsHm4usZ9gLsgarMzdKCcLcL
-tmPea5SImfWgqKzh41Zy1pFmwzlyUhfoAD3AQgtcMQbkJHgFa1qFdRR53UApOyoh
-ncpz8pHpV7F85EYSLPwM
-=3Q3e
------END PGP SIGNATURE-----
-
---fqxOrU+oVxTp8sLK--
+> Ok I got the two different logs and I don't what I'm looking for lol.
+> It's just raw data. My last option is to try using it on Windows or Mac
+> just to make sure it's not the interface.
+>
+>
+> On Wed, Apr 23, 2014 at 10:40 AM, Andrew Reyes <dsreyes1014@gmail.com>wrote:
+>
+>> > I can just give you a few more ideas to debug this, but that includes
+>> more action from your side.
+>>
+>> > * First of all, try the same device on a different computer, and/or a
+>> different USB port, especially if you're using an XHCI (USB3) port.
+>>
+>> > * Try the device on Mac OS X, without installing a driver and see if
+>> you have the same problem here.
+>>
+>> > * Use usbmon and analyze the data stream when a pop occurs. Compare
+>> that with settings that don't produce pops. There's good documentation on
+>> usbmon in Documentation/usb/ in the Linux kernel.
+>>
+>> Ok cool. I'll get right on that. I did try the first suggestion on four
+>> different computers and different ports and it's the same issue but just to
+>> be thorough I'll check again.
+>>
+>>
+>> On Wed, Apr 23, 2014 at 9:59 AM, Daniel Mack <daniel@zonque.org> wrote:
+>>
+>>>
+>>>
+>>> On April 23, 2014 4:40:07 PM CEST, Andrew Reyes <dsreyes1014@gmail.com>
+>>> wrote:
+>>> >Is there something else I could do to get to the problem?
+>>>
+>>> I can just give you a few more ideas to debug this, but that includes
+>>> more action from your side.
+>>>
+>>> * First of all, try the same device on a different computer, and/or a
+>>> different USB port, especially if you're using an XHCI (USB3) port.
+>>>
+>>> * Try the device on Mac OS X, without installing a driver and see if you
+>>> have the same problem here.
+>>>
+>>> * Use usbmon and analyze the data stream when a pop occurs. Compare that
+>>> with settings that don't produce pops. There's good documentation on usbmon
+>>> in Documentation/usb/ in the Linux kernel.
+>>>
+>>>
+>>> Best regards,
+>>> Daniel
+>>>
+>>> --
+>>> Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+>>>
+>>
+>>
+>
