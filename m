@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFT v3 2/3] ASoC: core: Add one dai_get_widget
- helper instead of two rtd based ones
-Date: Thu, 24 Apr 2014 13:25:31 +0100
-Message-ID: <20140424122531.GU12304@sirena.org.uk>
-References: <1398340906-5017-1-git-send-email-bcousson@baylibre.com>
- <1398340906-5017-3-git-send-email-bcousson@baylibre.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH 1/3] ASoC: simple-card: Drop node->name
+	checking
+Date: Thu, 24 Apr 2014 15:47:59 +0300
+Message-ID: <535907FF.3040303@ti.com>
+References: <cover.1398337861.git.Guangyu.Chen@freescale.com>
+ <ef6f96d375c8771c93469168790e0098610bd250.1398337861.git.Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3807104962819301251=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2EB9E265272
- for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 14:25:45 +0200 (CEST)
-In-Reply-To: <1398340906-5017-3-git-send-email-bcousson@baylibre.com>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97F8C26524C
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 14:48:06 +0200 (CEST)
+In-Reply-To: <ef6f96d375c8771c93469168790e0098610bd250.1398337861.git.Guangyu.Chen@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Benoit Cousson <bcousson@baylibre.com>
-Cc: misael.lopez@ti.com, lars@metafoo.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>, broonie@kernel.org
+Cc: moinejf@free.fr, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, tiwai@suse.de, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On 04/24/2014 02:13 PM, Nicolin Chen wrote:
+> The current simple-card driver limits the DT node name to "sound".
+> Any of other names is forbidden while actually we should allow DT
+> to pass other node names.
+>
+> And if this function is being called, the node must already have
+> the compatible "simple-audio-card" in DTB. So there should be no
+> need to check the name here.
+>
+> Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+> ---
+>   sound/soc/generic/simple-card.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+> index 3f2e580..383a4a1 100644
+> --- a/sound/soc/generic/simple-card.c
+> +++ b/sound/soc/generic/simple-card.c
+> @@ -156,8 +156,7 @@ static int simple_card_dai_link_of(struct device_node *node,
+>   	char *prefix = "";
+>   	int ret;
+>
+> -	if (!strcmp("sound", node->name))
+> -		prefix = "simple-audio-card,";
+> +	prefix = "simple-audio-card,";
+>
+>   	daifmt = snd_soc_of_parse_daifmt(node, prefix,
+>   					 &bitclkmaster, &framemaster);
+>
 
---===============3807104962819301251==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+TJZ5BijLXVTLFft"
-Content-Disposition: inline
+I think you have missed the point of selecting the prefix based on the 
+node name.
 
+Before the change the "simple-audio-card,"-prefix was only needed for 
+dai-link properties and subnodes if the dai-link node was omitted in a 
+single dai-link setup.
 
---+TJZ5BijLXVTLFft
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+After your change the prefix is also needed for the properties and 
+subnodes inside dai-link subnodes.
 
-On Thu, Apr 24, 2014 at 02:01:45PM +0200, Benoit Cousson wrote:
-> Replace rtd_get_codec_widget() and rtd_get_cpu_widget() by a simple
-> dai_get_widget() in preparation for DAI-multicodec support, per Lars
-> suggestion.
+See the details in: Documentation/devicetree/bindings/sound/simple-card.txt
 
-Applied, thanks.
+Maybe the implementation could have been more explicit, but I think the 
+old behavior is more convenient. If we anyway decide to go with this 
+change then at least the DT binding document should be updated.
 
---+TJZ5BijLXVTLFft
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTWQK4AAoJELSic+t+oim9gNwP/jF75UGTUNK+S/NiFeFQc64Q
-Q9BDlGrXpCuNRFlvLigIEGSBG9PGW/G5gbn0PSxCUhR2DNQubagX9xwZPa1a1kzT
-NR6X+pJ2DqK3wRkIi6BjLU6v2oCCl9yGrpcifc+A7EZL5BvTgaqnzWY0iwr3++uQ
-6Ti5qmkhmezdPk5IRyTSG1zyk32IFsoHarlw7CQIU48VAkFip4+DpFLPS4UrDpXT
-KneCa1eu/Tw+a5hFiHAq+UR1N5d7a0wS1yoPpwwwt2a5fZJ9inzh2LEuusi05jF4
-xuYdIOhGfih4ZSnvxn/K1JoH2bLVMhlX0Nj1NB7jn9pfzn6EhCt/wu+Jnubu/D/Y
-C+ssN8pyisaNR5CvgBIGJtXPB+M4fO5d+cxpzpIorcXHik63BRnelZPfWks2N2Z0
-da7/EfdOG5pjOxPVRnHmB0ws4uPYTb+lxAoaKeTgT6t68Q7XcleHDkQUwUC+LgtL
-QVnmOc0/uM9+F9fpK5+Pk5/D4KY4PQYWWYzKg9pQszrTTDtfVZqoVLkk2yq1YKrn
-9ipTUy7V0P1lHBmciqJsNv6f8y8Sd2tb/rixCKXijDJC79ijXXu+4zYM4Dsoj85S
-CbPU9X3BFN8IprY/T8uLa+E4KYBz+GLFaq7zkVYlba1guobxCBZ7geR22s5my8Ys
-jWYk/OOrnKEYtJRLX6CG
-=AuMh
------END PGP SIGNATURE-----
-
---+TJZ5BijLXVTLFft--
-
---===============3807104962819301251==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3807104962819301251==--
+Best regards,
+Jyri
