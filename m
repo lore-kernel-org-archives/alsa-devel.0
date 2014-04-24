@@ -1,19 +1,15 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: [PATCH v2] Fix forward/rewind support in iec958 plugin
-Date: Thu, 24 Apr 2014 20:40:06 +0600
-Message-ID: <1398350406-10347-1-git-send-email-patrakov@gmail.com>
-References: <5358F356.3020701@canonical.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH] ASoC: simple-card: is_top_level_node parameter
+	to simple_card_dai_link_of()
+Date: Thu, 24 Apr 2014 19:42:00 +0300
+Message-ID: <1398357720-2000-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f176.google.com (mail-lb0-f176.google.com
- [209.85.217.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 6774B265272
- for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 16:43:37 +0200 (CEST)
-Received: by mail-lb0-f176.google.com with SMTP id 10so2079525lbg.35
- for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 07:43:37 -0700 (PDT)
-In-Reply-To: <5358F356.3020701@canonical.com>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id D858B2652E9
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 18:42:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,133 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: moinejf@free.fr, kuninori.morimoto.gx@renesas.com, tiwai@suse.de, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, broonie@kernel.org, Guangyu.Chen@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-When forwarding or rewinding, the frame counter was not updated. This
-could result in corrupted channel status words or misplaced Z-type
-preamble.
+Restore correct parsing of dai-link subnodes with more explicit
+implementation for applying the "simple-audio-card,"-prefix to
+dai-link property and subnode names.
 
-Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
 ---
-v2: As suggested by David Henningsson, patch a copy of
-snd_pcm_plugin_fast_ops at runtime instead of making all plugin finctions
-non-static. But, contrary to his proposal, I made fast_ops just a part of
-struct snd_pcm_iec958, because the needed lifetime is exactly the same.
+ sound/soc/generic/simple-card.c |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-I still have no hardware to test this, and I strongly suspect that the
-patch is wrong, because nobody else uses dynamic allocation of fast_ops.
-A potentially suspicious operation would be to place a plug on top of this,
-because plug copies fast_ops around. However, each time it closes a slave,
-it also resets fast_ops to something sane, or at least I think so.
-
- src/pcm/pcm_iec958.c | 37 ++++++++++++++++++++++++++++++++++++-
- src/pcm/pcm_plugin.c |  4 ++--
- src/pcm/pcm_plugin.h |  6 ++++++
- 3 files changed, 44 insertions(+), 3 deletions(-)
-
-diff --git a/src/pcm/pcm_iec958.c b/src/pcm/pcm_iec958.c
-index d81b0a1..0c61fc1 100644
---- a/src/pcm/pcm_iec958.c
-+++ b/src/pcm/pcm_iec958.c
-@@ -62,6 +62,7 @@ struct snd_pcm_iec958 {
- 	unsigned char status[24];
- 	unsigned int byteswap;
- 	unsigned char preamble[3];	/* B/M/W or Z/X/Y */
-+	snd_pcm_fast_ops_t fops;
- };
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 98f97e5..06fe0e2 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -144,7 +144,8 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ static int simple_card_dai_link_of(struct device_node *node,
+ 				   struct device *dev,
+ 				   struct snd_soc_dai_link *dai_link,
+-				   struct simple_dai_props *dai_props)
++				   struct simple_dai_props *dai_props,
++				   bool is_top_level_node)
+ {
+ 	struct device_node *np = NULL;
+ 	struct device_node *bitclkmaster = NULL;
+@@ -155,7 +156,8 @@ static int simple_card_dai_link_of(struct device_node *node,
+ 	char *prefix = "";
+ 	int ret;
  
- enum { PREAMBLE_Z, PREAMBLE_X, PREAMBLE_Y };
-@@ -416,6 +417,35 @@ static void snd_pcm_iec958_dump(snd_pcm_t *pcm, snd_output_t *out)
- 	snd_pcm_dump(iec->plug.gen.slave, out);
- }
+-	prefix = "simple-audio-card,";
++	if (is_top_level_node)
++		prefix = "simple-audio-card,";
  
-+static snd_pcm_sframes_t snd_pcm_iec958_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
-+{
-+	unsigned int counter_decrement;
-+	snd_pcm_iec958_t *iec = pcm->private_data;
-+	snd_pcm_sframes_t result = snd_pcm_plugin_rewind(pcm, frames);
-+	if (result <= 0)
-+		return result;
-+
-+	counter_decrement = result % 192;
-+	iec->counter += 192 - counter_decrement;
-+	iec->counter %= 192;
-+	return result;
-+}
-+
-+static snd_pcm_sframes_t snd_pcm_iec958_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
-+
-+{
-+	unsigned int counter_increment;
-+	snd_pcm_iec958_t *iec = pcm->private_data;
-+	snd_pcm_sframes_t result = snd_pcm_plugin_rewind(pcm, frames);
-+	if (result <= 0)
-+		return result;
-+
-+	counter_increment = result % 192;
-+	iec->counter += counter_increment;
-+	iec->counter %= 192;
-+	return result;
-+}
-+
- static const snd_pcm_ops_t snd_pcm_iec958_ops = {
- 	.close = snd_pcm_generic_close,
- 	.info = snd_pcm_generic_info,
-@@ -495,7 +525,12 @@ int snd_pcm_iec958_open(snd_pcm_t **pcmp, const char *name, snd_pcm_format_t sfo
- 		return err;
+ 	daifmt = snd_soc_of_parse_daifmt(node, prefix,
+ 					 &bitclkmaster, &framemaster);
+@@ -307,14 +309,15 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 		for (i = 0; (np = of_get_next_child(node, np)); i++) {
+ 			dev_dbg(dev, "\tlink %d:\n", i);
+ 			ret = simple_card_dai_link_of(np, dev, dai_link + i,
+-						      dai_props + i);
++						      dai_props + i, false);
+ 			if (ret < 0) {
+ 				of_node_put(np);
+ 				return ret;
+ 			}
+ 		}
+ 	} else {
+-		ret = simple_card_dai_link_of(node, dev, dai_link, dai_props);
++		ret = simple_card_dai_link_of(node, dev, dai_link, dai_props,
++					      true);
+ 		if (ret < 0)
+ 			return ret;
  	}
- 	pcm->ops = &snd_pcm_iec958_ops;
--	pcm->fast_ops = &snd_pcm_plugin_fast_ops;
-+
-+	iec->fops = snd_pcm_plugin_fast_ops;
-+	iec->fops.rewind = snd_pcm_iec958_rewind;
-+	iec->fops.forward = snd_pcm_iec958_forward;
-+	pcm->fast_ops = &iec->fops;
-+
- 	pcm->private_data = iec;
- 	pcm->poll_fd = slave->poll_fd;
- 	pcm->poll_events = slave->poll_events;
-diff --git a/src/pcm/pcm_plugin.c b/src/pcm/pcm_plugin.c
-index 17157e8..4ddf10c 100644
---- a/src/pcm/pcm_plugin.c
-+++ b/src/pcm/pcm_plugin.c
-@@ -201,7 +201,7 @@ static snd_pcm_sframes_t snd_pcm_plugin_rewindable(snd_pcm_t *pcm)
- 	return snd_pcm_mmap_hw_avail(pcm);
- }
- 
--static snd_pcm_sframes_t snd_pcm_plugin_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
-+snd_pcm_sframes_t snd_pcm_plugin_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
- {
- 	snd_pcm_plugin_t *plugin = pcm->private_data;
- 	snd_pcm_sframes_t n = snd_pcm_mmap_hw_avail(pcm);
-@@ -229,7 +229,7 @@ static snd_pcm_sframes_t snd_pcm_plugin_forwardable(snd_pcm_t *pcm)
- 	return snd_pcm_mmap_avail(pcm);
- }
- 
--static snd_pcm_sframes_t snd_pcm_plugin_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
-+snd_pcm_sframes_t snd_pcm_plugin_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
- {
- 	snd_pcm_plugin_t *plugin = pcm->private_data;
- 	snd_pcm_sframes_t n = snd_pcm_mmap_avail(pcm);
-diff --git a/src/pcm/pcm_plugin.h b/src/pcm/pcm_plugin.h
-index 7ee7c7f..19e82c3 100644
---- a/src/pcm/pcm_plugin.h
-+++ b/src/pcm/pcm_plugin.h
-@@ -58,8 +58,14 @@ typedef struct {
- 	snd1_pcm_plugin_undo_read_generic
- #define snd_pcm_plugin_undo_write_generic \
- 	snd1_pcm_plugin_undo_write_generic
-+#define snd_pcm_plugin_rewind \
-+	snd1_pcm_plugin_rewind
-+#define snd_pcm_plugin_forward \
-+	snd1_pcm_plugin_forward
- 
- void snd_pcm_plugin_init(snd_pcm_plugin_t *plugin);
-+snd_pcm_sframes_t snd_pcm_plugin_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
-+snd_pcm_sframes_t snd_pcm_plugin_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
- 
- extern const snd_pcm_fast_ops_t snd_pcm_plugin_fast_ops;
- 
 -- 
-1.9.2
+1.7.9.5
