@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: imx-audmux: Fix section mismatch
-Date: Thu, 24 Apr 2014 11:23:16 +0100
-Message-ID: <20140424102316.GI12304@sirena.org.uk>
-References: <1398320756-18123-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: Intel: Cancel hsw_notification_work
+ before freeing the stream
+Date: Thu, 24 Apr 2014 11:32:35 +0100
+Message-ID: <20140424103235.GK12304@sirena.org.uk>
+References: <1398324876-901-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3945091398948753700=="
+Content-Type: multipart/mixed; boundary="===============0700783368576917036=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 75968261B2D
- for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 12:23:41 +0200 (CEST)
-In-Reply-To: <1398320756-18123-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id C61A0261B2D
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 12:32:48 +0200 (CEST)
+In-Reply-To: <1398324876-901-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Wenkai Du <wenkai.du@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Derek Basehore <dbasehore@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3945091398948753700==
+--===============0700783368576917036==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="EJhpZT3muIGcMiNq"
+	protocol="application/pgp-signature"; boundary="EsUqgJ2q7deBNL+f"
 Content-Disposition: inline
 
 
---EJhpZT3muIGcMiNq
+--EsUqgJ2q7deBNL+f
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 24, 2014 at 08:25:56AM +0200, Lars-Peter Clausen wrote:
-> audmux_debugfs_init() is marked as __init, but is called from imx_audmux_probe()
-> which is not marked as __init. This creates a section mismatch and a potential
-> runtime crash (if imx_audmux_probe() is called after the .init section was
-> dropped). This patch removes the __init annotation from audmux_debugfs_init(),
-> which fixes the following warning:
+On Thu, Apr 24, 2014 at 10:34:36AM +0300, Jarkko Nikula wrote:
+> I suppose there is a possibility that hsw_notification_work() may run after
+> sst_hsw_stream_free() which can lead to a kernel crash since struct
+> sst_hsw_stream is freed at that point and
+> stream = container_of(work, struct sst_hsw_stream, notify_work) is not valid
+> when hsw_notification_work() is run.
 
 Applied, thanks.
 
---EJhpZT3muIGcMiNq
+--EsUqgJ2q7deBNL+f
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTWOYRAAoJELSic+t+oim9YmEQAI/Vq6BrQkftPSnjDpOGVzsX
-gvKab7kkUWOKUpIbYPvFkkyWTvArx3B9wJTBInNyjk3xVJGGHnm8iVyZkE0YA7zh
-j5zi1D6i1AZwIzRbp+zIRHOZuQZu3QdWnKX3A0ko92losbfxbwGUAhTMMdLzizP4
-TowixAnjV/O6/3WNDOTtNYGU80am4VrnPMDI0qiMV7WjY16Xs2BnKVv0g5DPLUR/
-QVlFykQ6yHK+7/24Pxix2IaMog8rXPaKYujdX/Sl1de/A96s7fsO5oFKppq0QcPo
-VwEGjCK2u2Dw5AcywYr6724VeFttV3KqLBrYdvZRloOZWm7nQVQhnTJZ/CaBJOrN
-P4aq218ZVqDIooO8bH84mzP1HxgqqcxSrKWmqVT9ZNy7ySCTu1MRPEvcEKHmvgmZ
-xIocu6WehczaLirBoP8t9uf9Rf5suIlrzdzZVOKarbYz9LpmrvtGA4/O8RubwmXs
-dvI9LMV9Jy6N4eUHLeQqHrlrRp9vFMMcQtOUZzQDdZKFV7VgEXPeiFOoNFpiyP3U
-afXHZ9O7J8p8IGaBFIN8caTJCb4vccis9xUSJEkdUrDvPSDCGw9dNzhRIlG7XW/M
-1XUzQsZhxX1p4Z2mysxHQ+lkGyb7y6eEfLMDduSGlp6Q5PmCFwNfq0m5He5OeJMP
-rLl6PlNqUWVzJcSvriRC
-=vCo1
+iQIcBAEBAgAGBQJTWOhAAAoJELSic+t+oim9NwkP/AtTbgn3uWswtKWkR16UEJcP
+nAlZKA5o2OuWkYnGCEfyBdIS5QZVRUL8EAqWQpYRLYmh2jLR+Y922RCMvtoSZYIq
+Wy4uA7CkGtru9KAbwcdD0jhPGkuhYHPEcFnaa6D/bE9jWsIgxAUcUQNs9Q78RRYh
+O8CZeIZfuVN/AHgJtwlxaxgzewPJ7ygzruGDkbqHgn4cgeLvuwjx56fhZjWLzAwy
+u985RrD8uMHWvCvqINVyiT5pglbBdZH81/dQtcR6XIR+ZYaEUnBCItksl7E8x4m/
+iWDXPTcjakFwc+ImXoZRNP89HkpG3lSyR6P9H7qPYjfbOnGLPeswqBwyaui6FeRS
+qSRgOhZ7z5hVLX79AVmB03LinNl+sLo9hH15sf+j1b8re46h9O7X3eOFK2EagKRo
+nIUsgon0y/C0WeKK5No/i6+MHAyyPVeMxQEt1EfdKzeMZlRsV9pKsETPGiW3aMEM
+YrSMHJeR2zOWG/hkGypf8OJLCEDg+MfQbc2vXiqKaeTk6JP5X//e4IelFpqvkmK0
+8eFTa6/NyjqIiuD17Ld6M+/qRDDF66xqjQlXlC3RRMeLHLIMB6CWlI9OmnOInf0l
+H4dZBHlJg01u9Jh6ntYaLVCYQBUwa+YsQnU0v7NxlOcbVIw8xAD0T+E2xzn1CfvW
+5EXGPwUJSVpPN5ZDiipc
+=Ab7m
 -----END PGP SIGNATURE-----
 
---EJhpZT3muIGcMiNq--
+--EsUqgJ2q7deBNL+f--
 
---===============3945091398948753700==
+--===============0700783368576917036==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3945091398948753700==--
+--===============0700783368576917036==--
