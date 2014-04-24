@@ -1,19 +1,20 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH 1/3] ASoC: simple-card: Drop node->name
-	checking
-Date: Thu, 24 Apr 2014 16:05:40 +0300
-Message-ID: <53590C24.7090506@ti.com>
-References: <cover.1398337861.git.Guangyu.Chen@freescale.com>
- <ef6f96d375c8771c93469168790e0098610bd250.1398337861.git.Guangyu.Chen@freescale.com>
- <535907FF.3040303@ti.com> <20140424130341.GX12304@sirena.org.uk>
+From: David Jander <david.jander@protonic.nl>
+Subject: Re: [PATCH] ASoC: imx-sgtl5000.c: Add support for
+ specifying PDCR_TXRXEN
+Date: Thu, 24 Apr 2014 15:35:48 +0200
+Message-ID: <20140424153548.054d91b7@archvile>
+References: <1398268218-31897-1-git-send-email-david@protonic.nl>
+ <20140424084630.GD7361@pengutronix.de>
+ <20140424110936.78300197@archvile>
+ <20140424093229.GE7361@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id B105A261680
- for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 15:05:45 +0200 (CEST)
-In-Reply-To: <20140424130341.GX12304@sirena.org.uk>
+Received: from protonic.xs4all.nl (protonic.xs4all.nl [83.163.252.89])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5BEF2619E5
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 15:35:45 +0200 (CEST)
+In-Reply-To: <20140424093229.GE7361@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +24,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: moinejf@free.fr, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, tiwai@suse.de, lgirdwood@gmail.com, Nicolin Chen <Guangyu.Chen@freescale.com>
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <kernel@pengutronix.de>, David Jander <david@protonic.nl>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/24/2014 04:03 PM, Mark Brown wrote:
-> On Thu, Apr 24, 2014 at 03:47:59PM +0300, Jyri Sarha wrote:
->> On 04/24/2014 02:13 PM, Nicolin Chen wrote:
->
-> Please delete unneeded context from your mails...
->
->>> -	if (!strcmp("sound", node->name))
->>> -		prefix = "simple-audio-card,";
->>> +	prefix = "simple-audio-card,";
->
->> I think you have missed the point of selecting the prefix based on the node
->> name.
->
-> ...
->
->> Maybe the implementation could have been more explicit, but I think the old
->> behavior is more convenient. If we anyway decide to go with this change then
->> at least the DT binding document should be updated.
->
-> Yes, the implementation needs to be *way* more explicit - I'd expect a
-> parameter/variable saying which level we're at depending on where we're
-> at in the parse rather than guessing based on the node name.
->
+On Thu, 24 Apr 2014 11:32:29 +0200
+Markus Pargmann <mpa@pengutronix.de> wrote:
 
-Ok, I'll come up with a patch soon.
+> On Thu, Apr 24, 2014 at 11:09:36AM +0200, David Jander wrote:
+> > On Thu, 24 Apr 2014 10:46:30 +0200
+> > Markus Pargmann <mpa@pengutronix.de> wrote:
+> > 
+> > > Hi,
+> > > 
+> > > On Wed, Apr 23, 2014 at 05:50:18PM +0200, David Jander wrote:
+> > > > This enables effectively swapping RX/TX pins on the external audio port
+> > > > 
+> > > > Signed-off-by: David Jander <david@protonic.nl>
+> > > > ---
+> > > >  Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt | 4
+> > > > ++++ sound/soc/fsl/imx-sgtl5000.c                                   |
+> > > > 5 ++++- 2 files changed, 8 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git
+> > > > a/Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt
+> > > > b/Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt index
+> > > > e4acdd8..3afea85 100644 ---
+> > > > a/Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt +++
+> > > > b/Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt @@
+> > > > -29,6 +29,10 @@ Required properties:
+> > > >  - mux-int-port : The internal port of the i.MX audio muxer (AUDMUX)
+> > > >  - mux-ext-port : The external port of the i.MX audio muxer
+> > > >  
+> > > > +Optional properties:
+> > > > +- ext-port-txrxen : Flag. Set to swap RX/TX signals on external port
+> > > > (set the
+> > > > +  IMX_AUDMUX_V2_PDCR_TXRXEN bit in the PDC register of the external
+> > > > port) +
+> > > >  Note: The AUDMUX port numbering should start at 1, which is consistent
+> > > > with hardware manual.
+> > > 
+> > > You could also try to use the simple sound card and use DT properties to
+> > > setup audmux.
+> > > 
+> > > This is a configuration example for the audmux:
+> > > &audmux {
+> > >         status = "okay";
+> > > 
+> > >         aud4 {
+> > >                 fsl,audmux-port = <MX31_AUDMUX_PORT4_SSI_PINS_4>;
+> > >                 fsl,port-config = <
+> > >                         (IMX_AUDMUX_V2_PTCR_SYN |
+> > >                                 IMX_AUDMUX_V2_PTCR_TFSDIR |
+> > >                                 IMX_AUDMUX_V2_PTCR_TFSEL(MX31_AUDMUX_PORT1_SSI0)
+> > > | IMX_AUDMUX_V2_PTCR_TCLKDIR |
+> > >                                 IMX_AUDMUX_V2_PTCR_TCSEL(MX31_AUDMUX_PORT1_SSI0))
+> > >                         IMX_AUDMUX_V2_PDCR_RXDSEL(MX31_AUDMUX_PORT1_SSI0)
+> > >                 >;
+> > >         };
+> > > };
+> > 
+> > I tried this, but the glue driver imx-sgtl5000.c changes the port settings
+> > to its own knowledge.... and that includes hard-coded clearing of the
+> > IMX_AUDMUX_V2_PDCR_TXRXEN bit.
+> > 
+> > How can I avoid the imx-sgtl5000.c driver from clearing the settings I
+> > specify in the AUDMUX driver?
+> 
+> You can use the simple sound card (sound/soc/generic/simple-card.c). The
+> sound card properties have to be described in the DT. See
+> Documentation/devicetree/bindings/sound/simple-card.txt
+
+This looks very interesting. I was not aware of this. Thanks!
+I will see if this solves my problem.
 
 Best regards,
-Jyri
+
+-- 
+David Jander
+Protonic Holland.
