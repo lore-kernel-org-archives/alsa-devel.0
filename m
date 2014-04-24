@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_spdif: Add core clock control
-	for DMA access
-Date: Thu, 24 Apr 2014 13:14:09 +0100
-Message-ID: <20140424121409.GQ12304@sirena.org.uk>
-References: <1398336744-4836-1-git-send-email-Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH] ASoC: fsl: Drop formats limitation for
+	imx-pcm-dma.c
+Date: Thu, 24 Apr 2014 13:14:48 +0100
+Message-ID: <20140424121448.GR12304@sirena.org.uk>
+References: <1398339187-12097-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1064665511504787279=="
+Content-Type: multipart/mixed; boundary="===============3918932491135339479=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 059D6265268
- for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 14:14:25 +0200 (CEST)
-In-Reply-To: <1398336744-4836-1-git-send-email-Guangyu.Chen@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 55E7E2652B0
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 14:15:02 +0200 (CEST)
+In-Reply-To: <1398339187-12097-1-git-send-email-Guangyu.Chen@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, lgirdwood@gmail.com, kernel@pengutronix.de, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1064665511504787279==
+--===============3918932491135339479==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LomU6SEoZG8dkhgW"
+	protocol="application/pgp-signature"; boundary="afYSId37w55bXVbu"
 Content-Disposition: inline
 
 
---LomU6SEoZG8dkhgW
+--afYSId37w55bXVbu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 24, 2014 at 06:52:24PM +0800, Nicolin Chen wrote:
-> Regmap is able to enable/disable the core clock automatically each time
-> it's going to access the registers. But for DMA cases during playback or
-> recording, it's totally beyong control of regmap. So we have to open the
-> clock manually.
+On Thu, Apr 24, 2014 at 07:33:07PM +0800, Nicolin Chen wrote:
+> Now ASoC core is getting the intersection of supported formats not only
+> from CPU and CODEC dai's but also from DMA's. However, there should be
+> no specific width limitation from SDMA side.
 
 Applied, thanks.
 
---LomU6SEoZG8dkhgW
+--afYSId37w55bXVbu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTWQANAAoJELSic+t+oim9xaQP/jAc8MiWP/0irX4mSDcxHwuz
-Q717u69OlYdxEFYaC4MKCvrHjaptyYdzToJthLhkaruCDQY1HCZBXJ7SS+vuSiWw
-bmdPi+21ZNMvlkZ8bW9AHfcwhyycjHnLQaJjzhFMG9xLj8/4HX6fM6fDiJPWAtjK
-fLamWaKe7d3eocAnBV4uaZM7UEoCJVa2U/P+tz3Q7unShr9oh14ogQVfUPiQy8gJ
-enOzl0VSXJtQvwOpHUaQac6HEMByRCNglsmNVY6OIM8vS/z2beW2A9kZoDAuOknJ
-s4OVF1BeFRh+udU0ttKpQiu2jclo58gVcVHw5wY/3zK3SNYEkpUe8WVsglRFXJot
-z0ZZ4QIV17Ami8efbbf7XIucSl3r+wSK9mcC827reF0U84IXm2Yy5QfPQdBOkUii
-QKLynF7arobtEgHpmdKfYvkUMC/zMS8XP/DUrlytkiVpX8BCV+bp7FMW8b03najR
-Mb3XyDL3l7107tzsDP3p62W8h7wTcMLPhNessPHEzJazF92DBotQyUxT6gvvhx5R
-bzs4enDCjFghMhDJvTszhXS29yGm3HBJX/sElxj1HO2xxe/Tx6ruBF2EYb/8Ua/x
-sj5Un85jZ9DrbKB6Asn+H5SkYU+qmnLRtdwcRZEyrhnt2dEIQEBauwFgqhrj/k4d
-SO1dOVYJJJomLNQ3T72x
-=SRie
+iQIcBAEBAgAGBQJTWQA1AAoJELSic+t+oim9PNkP/iT8a8f76ZYhkytSwlZgPLOh
+Wdc3hoSP0HDYUppFEfN4QoTBUNQouIyadib9Z+ueAob+SVOjbkR1NBlJ8oUSnum+
+1df4Xje17l9F1P9gaaxhUFYHK6jPH5r5zV0IXt2PG0gjtlYH8OsLbz8EUz/nyGCR
+YxLNNdHi/Mi7cTMcfwjS55l7ITRKCyn4uZyZaMcYaWdO2LCEY9/K4Nub3B27uB9O
+40r4NRb3pg0HS00qVBZYt2PsGVcozzqzw4DP+hIp23yGT1tteQ/qTTBC/pkC/unH
+lQ/RJ7SRIHMPBN0JAY3xQ5yn7UiP134SUVFJ0rCKcOIXjUZ+5K5dGFq+egRsznWK
+QdAGVE+W3C1ccGFOweeAh2o3xCfytrV/Ph2iObgKB57cQ44NMFHwUJ93DHM7fy/J
+8Ju36dAO37BTZ+WqrG9qo5iPxtJMEcSjL5gCqKcuLNRCfehy5hz3LZpMBVFx6h0s
+XAU1srdvqn2cWNMg68IlIoRttIl+NvpeZfDsCZUkOLPTRXmSB819CxPwTqdR7TOb
+2KeceFhkZTjATW0wtNkvtvV8k+oHS0WtvV1RGZXx0a2TuuVKsuAS5ZqSXnexlDps
+OkXOESZLgWBBiSLxOLlmIFsODGBXL1WxFeMT6OJYOkgtlddN3ZCi5d1+C2FFs+XT
+qajxGf7vDFcd6FO3xo0O
+=YNyM
 -----END PGP SIGNATURE-----
 
---LomU6SEoZG8dkhgW--
+--afYSId37w55bXVbu--
 
---===============1064665511504787279==
+--===============3918932491135339479==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1064665511504787279==--
+--===============3918932491135339479==--
