@@ -1,16 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Testing rewindability of a pcm
-Date: Thu, 24 Apr 2014 14:00:48 +0200
-Message-ID: <5358FCF0.2040701@ladisch.de>
-References: <5356A9B6.9060405@gmail.com>
+From: Benoit Cousson <bcousson@baylibre.com>
+Subject: [RFT v3 0/3] ASoC: core: Add support for DAI multicodec
+Date: Thu, 24 Apr 2014 14:01:43 +0200
+Message-ID: <1398340906-5017-1-git-send-email-bcousson@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id A497A26525B
- for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 14:00:51 +0200 (CEST)
-In-Reply-To: <5356A9B6.9060405@gmail.com>
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80DE026525B
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 14:02:01 +0200 (CEST)
+Received: by mail-wi0-f173.google.com with SMTP id z2so921231wiv.12
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 05:02:01 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>, alsa-devel@alsa-project.org
-Cc: david.henningsson@canonical.com
+To: broonie@kernel.org, lgirdwood@gmail.com, lars@metafoo.de
+Cc: misael.lopez@ti.com, alsa-devel@alsa-project.org, Benoit Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-Alexander E. Patrakov wrote:
-> And we don't even have a rewindable resampler implementation!
+Hi Mark, Liam and Lars,
 
-The rate plugin implements rewinding.  (I haven't tested if this
-implementation is correct.  What is the problem?)
+Sorry for the delay. Here is the third version of the multicodec series.
 
-> Should PulseAudio indeed use a complex dance with snd_pcm_rewindable()
-> to get the essentially-static bit of information whether a given PCM
-> supports full rewinds?
+I changed the way to store the multiple codec_dai as suggested by Lars and
+added the missing iterations in all the places pointed by Lars in his comments.
 
-As far as I can tell, ALSA assumes that _every_ device allows random
-access to its ring buffer.
+Please note that I have a very simple setup based on BBB to check if the series
+is working, so it will be good to test it on various platforms to ensure
+this is not generating any regression. Hence this version is still RFT.
 
-In particular, both alsa-lib's internal API and the explug/ioplug APIs,
-when writing samples, have no concept of "current position" and write to
-an explicitly specified position in the buffer.  The implementation
-if snd_pcm_rewindable() assumes that the entire buffer is accessible
-(the only plugin to change this is the file plugin).
+The series is based on asoc/for-next (v3.15-rc2).
 
-snd_pcm_rewindable/forwardable() are just for determining the possible
-amount of movement, not whether it's possible at all.
+Test and comments are welcome.
+
+Thanks,
+Benoit
 
 
-In other words: any plugin that does not allow random access is, as far
-as the ALSA API is concerned, buggy.
+v1: http://comments.gmane.org/gmane.linux.alsa.devel/120532
+
+v2: http://comments.gmane.org/gmane.linux.alsa.devel/121024
+- Split the first version in several patches.
+- Remove the TDM fixup 
+
+v3: 
+- Fixed all the places that were not iterating over all the codecs.
+- Change the structure and split it.
 
 
-> 2) Use snd_pcm_forwardable() with an empty buffer just after setting
->    hw_params: works (once the implementation in ioplug/extplug is
->    fixed to return 0), doesn't require API additions,
+Benoit Cousson (2):
+  ASoC: core: Add one dai_get_widget helper instead of two rtd based ones
+  ASoC: core: Add support for DAI multicodec
 
-If ALSA is changed to track the information whether a device allows
-random access or not, this would be the correct way.
+Misael Lopez Cruz (1):
+  ASoC: core: Add helpers for dai link and aux dev init
 
->    but David doesn't like it. He thinks that the sets of PCMs that
->    support forwarding and rewinding may be different (here I disagree,
->    but can't provide arguments).
+ include/sound/soc-dai.h  |   5 +
+ include/sound/soc.h      |  13 ++
+ sound/soc/soc-compress.c |  83 +++++---
+ sound/soc/soc-core.c     | 401 +++++++++++++++++++++++++----------
+ sound/soc/soc-dapm.c     |  71 ++++---
+ sound/soc/soc-pcm.c      | 529 +++++++++++++++++++++++++++++++----------------
+ 6 files changed, 763 insertions(+), 339 deletions(-)
 
-It's possible to imagine devices that implement forwarding by just
-inserting zero samples, but cannot go back in time.  (I'm not sure if
-implemting that would make any sense.)
-
-> 3) Add a new function to ALSA that gets this bit of static information
->    for a given pcm handle, use it.
-
-I guess this will happen.
-
-
-Regards,
-Clemens
+-- 
+1.8.3.2
