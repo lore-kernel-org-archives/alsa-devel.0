@@ -1,30 +1,34 @@
 From: Joe Perches <joe@perches.com>
-Subject: [PATCH 0/5] treewide: Convert logging message misuses of /n to \n
-Date: Thu, 24 Apr 2014 18:50:58 -0700
-Message-ID: <cover.1398390579.git.joe@perches.com>
+Subject: [PATCH 5/5] sound: tlv320aic31xx: Convert /n to \n
+Date: Thu, 24 Apr 2014 18:51:03 -0700
+Message-ID: <86cf3ef4915174777ea70f56c1c155f1e13fda0b.1398390579.git.joe@perches.com>
+References: <cover.1398390579.git.joe@perches.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1398390579.git.joe@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org, linux-usb@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Joe Perches (5):
-  qlge: Convert /n to \n
-  iwlegacy: Convert /n to \n
-  staging: rtl<foo>: Convert /n to \n
-  appledisplay: Convert /n to \n
-  sound: tlv320aic31xx: Convert /n to \n
+Use a newline character appropriately.
 
- drivers/net/ethernet/qlogic/qlge/qlge_main.c  | 2 +-
- drivers/net/wireless/iwlegacy/3945.c          | 2 +-
- drivers/net/wireless/iwlegacy/4965-mac.c      | 2 +-
- drivers/staging/rtl8188eu/hal/usb_ops_linux.c | 2 +-
- drivers/staging/rtl8188eu/os_dep/usb_intf.c   | 2 +-
- drivers/staging/rtl8723au/hal/usb_ops_linux.c | 4 ++--
- drivers/staging/rtl8723au/os_dep/usb_intf.c   | 2 +-
- drivers/usb/misc/appledisplay.c               | 2 +-
- sound/soc/codecs/tlv320aic31xx.c              | 2 +-
- 9 files changed, 10 insertions(+), 10 deletions(-)
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ sound/soc/codecs/tlv320aic31xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index b93d500..2341910 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -377,7 +377,7 @@ static int aic31xx_dapm_power_event(struct snd_soc_dapm_widget *w,
+ 		reg = AIC31XX_ADCFLAG;
+ 		break;
+ 	default:
+-		dev_err(w->codec->dev, "Unknown widget '%s' calling %s/n",
++		dev_err(w->codec->dev, "Unknown widget '%s' calling %s\n",
+ 			w->name, __func__);
+ 		return -EINVAL;
+ 	}
 -- 
 1.8.1.2.459.gbcd45b4.dirty
