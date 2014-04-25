@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 19/49] fireworks: Add skelton for Fireworks based devices
-Date: Fri, 25 Apr 2014 22:45:00 +0900
-Message-ID: <1398433530-13136-20-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 24/49] fireworks/firewire-lib: Add a quirk for wrong dbs in tx
+	packets
+Date: Fri, 25 Apr 2014 22:45:05 +0900
+Message-ID: <1398433530-13136-25-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,309 +21,97 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a new driver for devices based on Fireworks. This driver
-just creates/removes card instance according to callbacks.
+One of Fireworks firmware, named  as 'AudioFire9', seems to transmit
+packets with wrong value of dbs. It's always 0x11 but actual size of
+data block is different.
 
-Fireworks is a board module which Echo Audio produced. This module
-consists of three chipsets:
- - Communication chipset for IEEE1394 PHY/Link and IEC 61883-1/6
- - DSP or/and FPGA for signal processing
- - Flash Memory to store firmwares
-
-Current supported devices:
- - Mackie Onyx 400F/1200F
- - Echo AudioFire12/8(until 2009 July)
- - Echo AudioFire2/4/Pre8/8(since 2009 July)
- - Echo Fireworks 8/HDMI
- - Gibson Robot Interface pack/GoldTop
+This commit adds a flag for this quirk and some codes to calculate
+correct size.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig               |  14 +++
- sound/firewire/Makefile              |   1 +
- sound/firewire/fireworks/Makefile    |   2 +
- sound/firewire/fireworks/fireworks.c | 182 +++++++++++++++++++++++++++++++++++
- sound/firewire/fireworks/fireworks.h |  41 ++++++++
- 5 files changed, 240 insertions(+)
- create mode 100644 sound/firewire/fireworks/Makefile
- create mode 100644 sound/firewire/fireworks/fireworks.c
- create mode 100644 sound/firewire/fireworks/fireworks.h
+ sound/firewire/amdtp.c                      | 2 ++
+ sound/firewire/amdtp.h                      | 3 +++
+ sound/firewire/fireworks/fireworks.c        | 2 ++
+ sound/firewire/fireworks/fireworks.h        | 3 +++
+ sound/firewire/fireworks/fireworks_stream.c | 3 +++
+ 5 files changed, 13 insertions(+)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index b3e274f..8cd4f1f 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -61,4 +61,18 @@ config SND_SCS1X
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-scs1x.
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 51aad68..3903387 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -653,6 +653,8 @@ static void handle_in_packet(struct amdtp_stream *s,
+ 				cip_header[0]);
+ 			goto err;
+ 		}
++		if (s->flags & CIP_WRONG_DBS)
++			data_block_quadlets = s->data_block_quadlets;
  
-+config SND_FIREWORKS
-+	tristate "Echo Fireworks board module support"
-+	help
-+	  Say Y here to include support for FireWire devices based
-+	  on Echo Digital Audio Fireworks board:
-+	   * Mackie Onyx 400F/1200F
-+	   * Echo AudioFire12/8(until 2009 July)
-+	   * Echo AudioFire2/4/Pre8/8(since 2009 July)
-+	   * Echo Fireworks 8/HDMI
-+	   * Gibson Robot Interface Pack/GoldTop
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called snd-fireworks.
-+
- endif # SND_FIREWIRE
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index 5099550..5cd39dc 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -10,3 +10,4 @@ obj-$(CONFIG_SND_DICE) += snd-dice.o
- obj-$(CONFIG_SND_FIREWIRE_SPEAKERS) += snd-firewire-speakers.o
- obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
- obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
-+obj-$(CONFIG_SND_FIREWORKS) += fireworks/
-diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-new file mode 100644
-index 0000000..99f6fc3
---- /dev/null
-+++ b/sound/firewire/fireworks/Makefile
-@@ -0,0 +1,2 @@
-+snd-fireworks-objs := fireworks.o
-+obj-m += snd-fireworks.o
+ 		data_blocks = (payload_quadlets - 2) / data_block_quadlets;
+ 	}
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index 1ca1a19..f334ae5 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -21,6 +21,8 @@
+  * @CIP_EMPTY_WITH_TAG0: Only for in-stream. Empty in-packets have TAG0.
+  * @CIP_DBC_IS_END_EVENT: Only for in-stream. The value of dbc in an in-packet
+  *	corresponds to the end of event in the packet. Out of IEC 61883.
++ * @CIP_WRONG_DBS: Only for in-stream. The value of dbs is wrong in in-packets.
++ *	The value of data_block_quadlets is used instead of reported value.
+  */
+ enum cip_flags {
+ 	CIP_NONBLOCKING		= 0x00,
+@@ -28,6 +30,7 @@ enum cip_flags {
+ 	CIP_SYNC_TO_DEVICE	= 0x02,
+ 	CIP_EMPTY_WITH_TAG0	= 0x04,
+ 	CIP_DBC_IS_END_EVENT	= 0x08,
++	CIP_WRONG_DBS		= 0x10,
+ };
+ 
+ /**
 diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-new file mode 100644
-index 0000000..ad719a1
---- /dev/null
+index 307fb2f..02b3259 100644
+--- a/sound/firewire/fireworks/fireworks.c
 +++ b/sound/firewire/fireworks/fireworks.c
-@@ -0,0 +1,182 @@
-+/*
-+ * fireworks.c - a part of driver for Fireworks based devices
-+ *
-+ * Copyright (c) 2009-2010 Clemens Ladisch
-+ * Copyright (c) 2013-2014 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+/*
-+ * Fireworks is a board module which Echo Audio produced. This module consists
-+ * of three chipsets:
-+ *  - Communication chipset for IEEE1394 PHY/Link and IEC 61883-1/6
-+ *  - DSP or/and FPGA for signal processing
-+ *  - Flash Memory to store firmwares
-+ */
-+
-+#include "fireworks.h"
-+
-+MODULE_DESCRIPTION("Echo Fireworks driver");
-+MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
-+MODULE_LICENSE("GPL v2");
-+
-+static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
-+static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
-+static bool enable[SNDRV_CARDS]	= SNDRV_DEFAULT_ENABLE_PNP;
-+
-+module_param_array(index, int, NULL, 0444);
-+MODULE_PARM_DESC(index, "card index");
-+module_param_array(id, charp, NULL, 0444);
-+MODULE_PARM_DESC(id, "ID string");
-+module_param_array(enable, bool, NULL, 0444);
-+MODULE_PARM_DESC(enable, "enable Fireworks sound card");
-+
-+static DEFINE_MUTEX(devices_mutex);
-+static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
-+
-+#define VENDOR_LOUD			0x000ff2
-+#define  MODEL_MACKIE_400F		0x00400f
-+#define  MODEL_MACKIE_1200F		0x01200f
-+
-+#define VENDOR_ECHO			0x001486
-+#define  MODEL_ECHO_AUDIOFIRE_12	0x00af12
-+#define  MODEL_ECHO_AUDIOFIRE_12HD	0x0af12d
-+#define  MODEL_ECHO_AUDIOFIRE_12_APPLE	0x0af12a
-+/* This is applied for AudioFire8 (until 2009 July) */
-+#define  MODEL_ECHO_AUDIOFIRE_8		0x000af8
-+#define  MODEL_ECHO_AUDIOFIRE_2		0x000af2
-+#define  MODEL_ECHO_AUDIOFIRE_4		0x000af4
-+/* AudioFire9 is applied for AudioFire8(since 2009 July) and AudioFirePre8 */
-+#define  MODEL_ECHO_AUDIOFIRE_9		0x000af9
-+/* unknown as product */
-+#define  MODEL_ECHO_FIREWORKS_8		0x0000f8
-+#define  MODEL_ECHO_FIREWORKS_HDMI	0x00afd1
-+
-+#define VENDOR_GIBSON			0x00075b
-+/* for Robot Interface Pack of Dark Fire, Dusk Tiger, Les Paul Standard 2010 */
-+#define  MODEL_GIBSON_RIP		0x00afb2
-+/* unknown as product */
-+#define  MODEL_GIBSON_GOLDTOP		0x00afb9
-+
-+static void
-+efw_card_free(struct snd_card *card)
-+{
-+	struct snd_efw *efw = card->private_data;
-+
-+	if (efw->card_index >= 0) {
-+		mutex_lock(&devices_mutex);
-+		clear_bit(efw->card_index, devices_used);
-+		mutex_unlock(&devices_mutex);
-+	}
-+
-+	mutex_destroy(&efw->mutex);
-+}
-+
-+static int
-+efw_probe(struct fw_unit *unit,
-+	  const struct ieee1394_device_id *entry)
-+{
-+	struct snd_card *card;
-+	struct snd_efw *efw;
-+	int card_index, err;
-+
-+	mutex_lock(&devices_mutex);
-+
-+	/* check registered cards */
-+	for (card_index = 0; card_index < SNDRV_CARDS; ++card_index) {
-+		if (!test_bit(card_index, devices_used) && enable[card_index])
-+			break;
-+	}
-+	if (card_index >= SNDRV_CARDS) {
-+		err = -ENOENT;
-+		goto end;
-+	}
-+
-+	err = snd_card_new(&unit->device, index[card_index], id[card_index],
-+			   THIS_MODULE, sizeof(struct snd_efw), &card);
-+	if (err < 0)
-+		goto end;
-+	efw = card->private_data;
-+	efw->card_index = card_index;
-+	set_bit(card_index, devices_used);
-+	card->private_free = efw_card_free;
-+
-+	efw->card = card;
-+	efw->unit = unit;
-+	mutex_init(&efw->mutex);
-+	spin_lock_init(&efw->lock);
-+
-+	strcpy(efw->card->driver, "Fireworks");
-+	strcpy(efw->card->shortname, efw->card->driver);
-+	strcpy(efw->card->longname, efw->card->driver);
-+	strcpy(efw->card->mixername, efw->card->driver);
-+
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto error;
-+	dev_set_drvdata(&unit->device, efw);
-+end:
-+	mutex_unlock(&devices_mutex);
-+	return err;
-+error:
-+	mutex_unlock(&devices_mutex);
-+	snd_card_free(card);
-+	return err;
-+}
-+
-+static void efw_update(struct fw_unit *unit)
-+{
-+	return;
-+}
-+
-+static void efw_remove(struct fw_unit *unit)
-+{
-+	struct snd_efw *efw = dev_get_drvdata(&unit->device);
-+	snd_card_disconnect(efw->card);
-+	snd_card_free_when_closed(efw->card);
-+}
-+
-+static const struct ieee1394_device_id efw_id_table[] = {
-+	SND_EFW_DEV_ENTRY(VENDOR_LOUD, MODEL_MACKIE_400F),
-+	SND_EFW_DEV_ENTRY(VENDOR_LOUD, MODEL_MACKIE_1200F),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_8),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_12),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_12HD),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_12_APPLE),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_2),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_4),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_AUDIOFIRE_9),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_FIREWORKS_8),
-+	SND_EFW_DEV_ENTRY(VENDOR_ECHO, MODEL_ECHO_FIREWORKS_HDMI),
-+	SND_EFW_DEV_ENTRY(VENDOR_GIBSON, MODEL_GIBSON_RIP),
-+	SND_EFW_DEV_ENTRY(VENDOR_GIBSON, MODEL_GIBSON_GOLDTOP),
-+	{}
-+};
-+MODULE_DEVICE_TABLE(ieee1394, efw_id_table);
-+
-+static struct fw_driver efw_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "snd-fireworks",
-+		.bus = &fw_bus_type,
-+	},
-+	.probe    = efw_probe,
-+	.update   = efw_update,
-+	.remove   = efw_remove,
-+	.id_table = efw_id_table,
-+};
-+
-+static int __init snd_efw_init(void)
-+{
-+	return driver_register(&efw_driver.driver);
-+}
-+
-+static void __exit snd_efw_exit(void)
-+{
-+	driver_unregister(&efw_driver.driver);
-+	mutex_destroy(&devices_mutex);
-+}
-+
-+module_init(snd_efw_init);
-+module_exit(snd_efw_exit);
+@@ -205,6 +205,8 @@ efw_probe(struct fw_unit *unit,
+ 	err = get_hardware_info(efw);
+ 	if (err < 0)
+ 		goto error;
++	if (entry->model_id == MODEL_ECHO_AUDIOFIRE_9)
++		efw->is_af9 = true;
+ 
+ 	err = snd_efw_stream_init_duplex(efw);
+ 	if (err < 0)
 diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-new file mode 100644
-index 0000000..9dfeb82
---- /dev/null
+index ce511be..9534e93 100644
+--- a/sound/firewire/fireworks/fireworks.h
 +++ b/sound/firewire/fireworks/fireworks.h
-@@ -0,0 +1,41 @@
-+/*
-+ * fireworks.h - a part of driver for Fireworks based devices
-+ *
-+ * Copyright (c) 2009-2010 Clemens Ladisch
-+ * Copyright (c) 2013-2014 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+#ifndef SOUND_FIREWORKS_H_INCLUDED
-+#define SOUND_FIREWORKS_H_INCLUDED
+@@ -61,6 +61,9 @@ struct snd_efw {
+ 	u32 seqnum;
+ 	bool resp_addr_changable;
+ 
++	/* for quirks */
++	bool is_af9;
 +
-+#include <linux/compat.h>
-+#include <linux/device.h>
-+#include <linux/firewire.h>
-+#include <linux/firewire-constants.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/delay.h>
-+#include <linux/slab.h>
-+
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+
-+struct snd_efw {
-+	struct snd_card *card;
-+	struct fw_unit *unit;
-+	int card_index;
-+
-+	struct mutex mutex;
-+	spinlock_t lock;
-+};
-+
-+#define SND_EFW_DEV_ENTRY(vendor, model) \
-+{ \
-+	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-+			  IEEE1394_MATCH_MODEL_ID, \
-+	.vendor_id	= vendor,\
-+	.model_id	= model \
-+}
-+
-+#endif
+ 	unsigned int midi_in_ports;
+ 	unsigned int midi_out_ports;
+ 
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index d687b04..7447af7 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -198,6 +198,9 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
+ 	efw->tx_stream.flags |= CIP_EMPTY_WITH_TAG0;
+ 	/* Fireworks has its own meaning for dbc. */
+ 	efw->tx_stream.flags |= CIP_DBC_IS_END_EVENT;
++	/* AudioFire9 always reports wrong dbs. */
++	if (efw->is_af9)
++		efw->tx_stream.flags |= CIP_WRONG_DBS;
+ 
+ 	err = init_stream(efw, &efw->rx_stream);
+ 	if (err < 0) {
 -- 
 1.8.3.2
 
