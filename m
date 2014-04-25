@@ -1,7 +1,7 @@
 From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH RFC 17/17] ARM: omap2plus_defconfig: Enable OMAP4+ HDMI audio support
-Date: Sat, 26 Apr 2014 00:16:55 +0300
-Message-ID: <24cfb47c270007f7a479c911a28e3ffb0d036727.1398453425.git.jsarha@ti.com>
+Subject: [PATCH RFC 14/17] ARM: omap5-uevm.dts: Add hdmi audio related nodes
+Date: Sat, 26 Apr 2014 00:16:52 +0300
+Message-ID: <18a1ee24519e560020919bbee64e85aa2d951aa7.1398453425.git.jsarha@ti.com>
 References: <cover.1398453425.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,47 +12,51 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76
 Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, tomi.valkeinen-l0cyMroinI0@public.gmane.org, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch is here only as an example on how to enable HDMI audio for
-OMAP4+ HW. Adds CONFIG_SND_SIMPLE_CARD=m and CONFIG_SND_SOC_HDMI_CODEC=m.
-Also builds SND_OMAP_SOC in kernel to support in kernel built OMAPDSS
-with integrated HDMI DAI driver.
+Adds a simple-card sound node for HDMI audio, the associated
+hdmi-codec node, and sound-dai-cells propeties to the DAI nodes.
 
 Signed-off-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 ---
- arch/arm/configs/omap2plus_defconfig |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/omap5-uevm.dts |   19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
-index 363733e..8b512c7 100644
---- a/arch/arm/configs/omap2plus_defconfig
-+++ b/arch/arm/configs/omap2plus_defconfig
-@@ -204,20 +204,22 @@ CONFIG_LCD_PLATFORM=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_FRAMEBUFFER_CONSOLE_ROTATION=y
- CONFIG_LOGO=y
--CONFIG_SOUND=m
--CONFIG_SND=m
-+CONFIG_SOUND=y
-+CONFIG_SND=y
- CONFIG_SND_MIXER_OSS=m
- CONFIG_SND_PCM_OSS=m
- CONFIG_SND_VERBOSE_PRINTK=y
- CONFIG_SND_DEBUG=y
- CONFIG_SND_USB_AUDIO=m
--CONFIG_SND_SOC=m
--CONFIG_SND_OMAP_SOC=m
-+CONFIG_SND_SOC=y
-+CONFIG_SND_OMAP_SOC=y
- CONFIG_SND_AM33XX_SOC_EVM=m
- CONFIG_SND_DAVINCI_SOC=m
- CONFIG_SND_OMAP_SOC_OMAP_TWL4030=m
- CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040=m
- CONFIG_SND_OMAP_SOC_OMAP3_PANDORA=m
-+CONFIG_SND_SIMPLE_CARD=m
-+CONFIG_SND_SOC_HDMI_CODEC=m
- CONFIG_USB=y
- CONFIG_USB_DEBUG=y
- CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+diff --git a/arch/arm/boot/dts/omap5-uevm.dts b/arch/arm/boot/dts/omap5-uevm.dts
+index f625a87..42d625b 100644
+--- a/arch/arm/boot/dts/omap5-uevm.dts
++++ b/arch/arm/boot/dts/omap5-uevm.dts
+@@ -561,6 +561,24 @@
+ 			};
+ 		};
+ 	};
++
++	sound@0 {
++		compatible = "simple-audio-card";
++
++		simple-audio-card,cpu {
++			sound-dai = <&hdmi>;
++		};
++
++		simple-audio-card,codec {
++			sound-dai = <&hdmi_audio>;
++		};
++	};
++
++	hdmi_audio: hdmi_audio@0 {
++		#sound-dai-cells = <0>;
++		compatible = "linux,hdmi-audio";
++		status = "okay";
++	};
+ };
+ 
+ &dss {
+@@ -568,6 +586,7 @@
+ };
+ 
+ &hdmi {
++	#sound-dai-cells = <0>;
+ 	status = "ok";
+ 	vdda-supply = <&ldo4_reg>;
+ 
 -- 
 1.7.9.5
 
