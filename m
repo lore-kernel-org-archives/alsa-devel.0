@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/49] firewire-lib: Add 'direction' member to
-	'cmp_connection' structure
-Date: Fri, 25 Apr 2014 22:44:55 +0900
-Message-ID: <1398433530-13136-15-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/49] firewire-lib: Give syt value as parameter to
+	handle_out_packet()
+Date: Fri, 25 Apr 2014 22:44:48 +0900
+Message-ID: <1398433530-13136-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,76 +21,82 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds 'direction' member to 'cmp_connection' structure to indicate
-the direction of connection. This patch also adds 'direction' argument to
-cmp_connection_init() function to determine the direction.
-
-The cmp_connection_init() function is exported and used in snd-firewire-speakers
-so this patch also affect it.
-
-This patch just add them. Actual implementation will be done by followed
-patches.
+For duplex streams with synchronization, drivers should pick up
+'presentation timestamp' from in-packets and use the timestamp for
+out-packets. This commit is preparation for this.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/cmp.c      | 1 +
- sound/firewire/cmp.h      | 7 +++++++
- sound/firewire/speakers.c | 2 +-
- 3 files changed, 9 insertions(+), 1 deletion(-)
+ sound/firewire/amdtp.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
-index deb494d..c7f7a31 100644
---- a/sound/firewire/cmp.c
-+++ b/sound/firewire/cmp.c
-@@ -94,6 +94,7 @@ static int pcr_modify(struct cmp_connection *c,
-  */
- int cmp_connection_init(struct cmp_connection *c,
- 			struct fw_unit *unit,
-+			enum cmp_direction direction,
- 			unsigned int pcr_index)
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index a4553ec..24e9a96 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -257,7 +257,9 @@ static unsigned int calculate_data_blocks(struct amdtp_stream *s)
  {
- 	__be32 mpr_be;
-diff --git a/sound/firewire/cmp.h b/sound/firewire/cmp.h
-index 2320cd4..9b58448 100644
---- a/sound/firewire/cmp.h
-+++ b/sound/firewire/cmp.h
-@@ -7,6 +7,11 @@
+ 	unsigned int phase, data_blocks;
  
- struct fw_unit;
+-	if (!cip_sfc_is_base_44100(s->sfc)) {
++	if (s->flags & CIP_BLOCKING)
++		data_blocks = s->syt_interval;
++	else if (!cip_sfc_is_base_44100(s->sfc)) {
+ 		/* Sample_rate / 8000 is an integer, and precomputed. */
+ 		data_blocks = s->data_block_state;
+ 	} else {
+@@ -616,26 +618,22 @@ static inline int queue_in_packet(struct amdtp_stream *s)
+ 			    amdtp_stream_get_max_payload(s), false);
+ }
  
-+enum cmp_direction {
-+	CMP_INPUT = 0,
-+	CMP_OUTPUT,
-+};
-+
- /**
-  * struct cmp_connection - manages an isochronous connection to a device
-  * @speed: the connection's actual speed
-@@ -26,10 +31,12 @@ struct cmp_connection {
- 	__be32 last_pcr_value;
- 	unsigned int pcr_index;
- 	unsigned int max_speed;
-+	enum cmp_direction direction;
- };
+-static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
++static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
+ {
+ 	__be32 *buffer;
+-	unsigned int index, data_blocks, syt, payload_length;
++	unsigned int data_blocks, payload_length;
+ 	struct snd_pcm_substream *pcm;
  
- int cmp_connection_init(struct cmp_connection *connection,
- 			struct fw_unit *unit,
-+			enum cmp_direction direction,
- 			unsigned int pcr_index);
- void cmp_connection_destroy(struct cmp_connection *connection);
+ 	if (s->packet_index < 0)
+ 		return;
+-	index = s->packet_index;
  
-diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
-index 3427527..1b95494 100644
---- a/sound/firewire/speakers.c
-+++ b/sound/firewire/speakers.c
-@@ -673,7 +673,7 @@ static int fwspk_probe(struct fw_unit *unit,
- 	fwspk->unit = fw_unit_get(unit);
- 	fwspk->device_info = (const struct device_info *)id->driver_data;
+ 	/* this module generate empty packet for 'no data' */
+-	syt = calculate_syt(s, cycle);
+-	if (!(s->flags & CIP_BLOCKING))
++	if (!(s->flags & CIP_BLOCKING) || (syt != CIP_SYT_NO_INFO))
+ 		data_blocks = calculate_data_blocks(s);
+-	else if (syt != CIP_SYT_NO_INFO)
+-		data_blocks = s->syt_interval;
+ 	else
+ 		data_blocks = 0;
  
--	err = cmp_connection_init(&fwspk->connection, unit, 0);
-+	err = cmp_connection_init(&fwspk->connection, unit, CMP_INPUT, 0);
- 	if (err < 0)
- 		goto err_unit;
+-	buffer = s->buffer.packets[index].buffer;
++	buffer = s->buffer.packets[s->packet_index].buffer;
+ 	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
+ 				(s->data_block_quadlets << AMDTP_DBS_SHIFT) |
+ 				s->data_block_counter);
+@@ -746,7 +744,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 				void *private_data)
+ {
+ 	struct amdtp_stream *s = private_data;
+-	unsigned int i, packets = header_length / 4;
++	unsigned int i, syt, packets = header_length / 4;
+ 
+ 	/*
+ 	 * Compute the cycle of the last queued packet.
+@@ -755,8 +753,10 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 	 */
+ 	cycle += QUEUE_LENGTH - packets;
+ 
+-	for (i = 0; i < packets; ++i)
+-		handle_out_packet(s, ++cycle);
++	for (i = 0; i < packets; ++i) {
++		syt = calculate_syt(s, ++cycle);
++		handle_out_packet(s, syt);
++	}
+ 	fw_iso_context_queue_flush(s->context);
+ }
  
 -- 
 1.8.3.2
