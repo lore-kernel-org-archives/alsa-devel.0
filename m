@@ -1,21 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH v2] Fix forward/rewind support in iec958
-	plugin
-Date: Fri, 25 Apr 2014 07:02:20 +0800
-Message-ID: <CAN8cciadq+=36DcMufwDD=M5=0EAdnkUxPv8b9Ga5JHWqg1-Hg@mail.gmail.com>
-References: <5358F356.3020701@canonical.com>
- <1398350406-10347-1-git-send-email-patrakov@gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/4] ASoC: tlv320dac3: Use
+	devm_regulator_bulk_get()
+Date: Thu, 24 Apr 2014 22:27:03 -0300
+Message-ID: <1398389226-18569-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f42.google.com (mail-qg0-f42.google.com
- [209.85.192.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 6508426530B
- for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2014 01:02:21 +0200 (CEST)
-Received: by mail-qg0-f42.google.com with SMTP id i50so3347692qgf.1
- for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 16:02:20 -0700 (PDT)
-In-Reply-To: <1398350406-10347-1-git-send-email-patrakov@gmail.com>
+Received: from mail-yh0-f54.google.com (mail-yh0-f54.google.com
+ [209.85.213.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10539265324
+ for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2014 03:27:27 +0200 (CEST)
+Received: by mail-yh0-f54.google.com with SMTP id b6so211023yha.13
+ for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2014 18:27:27 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->
-> When forwarding or rewinding, the frame counter was not updated. This
-> could result in corrupted channel status words or misplaced Z-type
-> preamble.
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Do you mean it is the responsibility for a52 and dca plugin to return the
-SAFE value returned by snd_pcm_rewindable and snd_pcm_forwardable since
-they enocde the audio and padding zeros and write to IEC958 ?
+Using devm_regulator_bulk_get() can make the code cleaner and smaller as we
+do not need to call regulator_bulk_free() in the error and remove paths.
 
->
-> +static snd_pcm_sframes_t snd_pcm_iec958_rewind(snd_pcm_t *pcm,
-snd_pcm_uframes_t frames)
-> +{
-> +       unsigned int counter_decrement;
-> +       snd_pcm_iec958_t *iec = pcm->private_data;
-> +       snd_pcm_sframes_t result = snd_pcm_plugin_rewind(pcm, frames);
-> +       if (result <= 0)
-> +               return result;
-> +
-> +       counter_decrement = result % 192;
-> +       iec->counter += 192 - counter_decrement;
-> +       iec->counter %= 192;
-> +       return result;
-> +}
-> +
-> +static snd_pcm_sframes_t snd_pcm_iec958_forward(snd_pcm_t *pcm,
-snd_pcm_uframes_t frames)
-> +
-> +{
-> +       unsigned int counter_increment;
-> +       snd_pcm_iec958_t *iec = pcm->private_data;
-> +       snd_pcm_sframes_t result = snd_pcm_plugin_rewind(pcm, frames);
-> +       if (result <= 0)
-> +               return result;
-> +
-> +       counter_increment = result % 192;
-> +       iec->counter += counter_increment;
-> +       iec->counter %= 192;
-> +       return result;
-> +}
-> +
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/codecs/tlv320dac33.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 517055a..df3a750 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -1540,7 +1540,7 @@ static int dac33_i2c_probe(struct i2c_client *client,
+ 	for (i = 0; i < ARRAY_SIZE(dac33->supplies); i++)
+ 		dac33->supplies[i].supply = dac33_supply_names[i];
+ 
+-	ret = regulator_bulk_get(&client->dev, ARRAY_SIZE(dac33->supplies),
++	ret = devm_regulator_bulk_get(&client->dev, ARRAY_SIZE(dac33->supplies),
+ 				 dac33->supplies);
+ 
+ 	if (ret != 0) {
+@@ -1551,11 +1551,9 @@ static int dac33_i2c_probe(struct i2c_client *client,
+ 	ret = snd_soc_register_codec(&client->dev,
+ 			&soc_codec_dev_tlv320dac33, &dac33_dai, 1);
+ 	if (ret < 0)
+-		goto err_register;
++		goto err_get;
+ 
+ 	return ret;
+-err_register:
+-	regulator_bulk_free(ARRAY_SIZE(dac33->supplies), dac33->supplies);
+ err_get:
+ 	if (dac33->power_gpio >= 0)
+ 		gpio_free(dac33->power_gpio);
+@@ -1573,8 +1571,6 @@ static int dac33_i2c_remove(struct i2c_client *client)
+ 	if (dac33->power_gpio >= 0)
+ 		gpio_free(dac33->power_gpio);
+ 
+-	regulator_bulk_free(ARRAY_SIZE(dac33->supplies), dac33->supplies);
+-
+ 	snd_soc_unregister_codec(&client->dev);
+ 	return 0;
+ }
+-- 
+1.8.3.2
