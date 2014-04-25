@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 17/49] firewire-lib: Add support for deferred transaction
-Date: Fri, 25 Apr 2014 22:44:58 +0900
-Message-ID: <1398433530-13136-18-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 20/49] fireworks: Add transaction and some commands
+Date: Fri, 25 Apr 2014 22:45:01 +0900
+Message-ID: <1398433530-13136-21-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,120 +20,885 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Some devices based on BeBoB use this type of AV/C transaction.
+Fireworks uses own command and response. This commit adds functionality to
+transact and adds some commands required for sound card instance and kernel
+streaming.
 
-'Deferred Transaction' is defined in 'AV/C Digital Interface Command Set
-General Specification' and is used by targets to make a response deferred
-during processing it.
+There are two ways to deliver substance of this transaction:
+1.AV/C vendor dependent command for command/response
+2.Async transaction to specific addresses for command/response
 
-If a target may not be able to complete a command within 100msec since
-receiving the command, then the target shall return INTERIM response,
-to which final response will follow later. CONTROL/NOTIFY commands are
-allowed for deferred transaction.
+By way 1, I confirm AudioFire12 cannot correctly response to some commands with
+firmware version 5.0 or later. This is also confirmed by FFADO. So this driver
+implement way 2.
 
-In the specification, devices allow to send INTERIM response just one time.
-But this commit allows to handle several INTERIM response with two reasons.
-One reason is to simplify codes, and another reason is to prepare for
-devices which is out of specification.
+The address for response gives an issue. When this driver allocate own callback
+function into the address, then no one can allocate its own callback function.
+This situation is not good for applications in user-land. This issue is solved
+in later commit.
 
-There is an issue. In the specification, the interval between INTERIM
-response and final response is 'Unspecified interval'. The specification
-depends on each subunit specification for this interval.
-
-But we promise to finish this function for caller. In this reason, I use
-FCP_TIMEOUT_MS for this interval. Currently it's 125msec. When we find
-devices which needs more time for this interval, then let us add some codes
-to apply more interval for 'Unspecified interval'.
+I note there is a command to change the address for response if the device
+supports. But this driver uses default value. So users should not execute this
+command as long as hoping this driver works correctly.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fcp.c | 35 ++++++++++++++++++++++++++++-------
- 1 file changed, 28 insertions(+), 7 deletions(-)
+ sound/firewire/Kconfig                           |   1 +
+ sound/firewire/fireworks/Makefile                |   2 +-
+ sound/firewire/fireworks/fireworks.c             |  69 ++++-
+ sound/firewire/fireworks/fireworks.h             | 126 ++++++++
+ sound/firewire/fireworks/fireworks_command.c     | 370 +++++++++++++++++++++++
+ sound/firewire/fireworks/fireworks_transaction.c | 190 ++++++++++++
+ 6 files changed, 751 insertions(+), 7 deletions(-)
+ create mode 100644 sound/firewire/fireworks/fireworks_command.c
+ create mode 100644 sound/firewire/fireworks/fireworks_transaction.c
 
-diff --git a/sound/firewire/fcp.c b/sound/firewire/fcp.c
-index 860c080..6876bfa 100644
---- a/sound/firewire/fcp.c
-+++ b/sound/firewire/fcp.c
-@@ -30,6 +30,7 @@ enum fcp_state {
- 	STATE_PENDING,
- 	STATE_BUS_RESET,
- 	STATE_COMPLETE,
-+	STATE_DEFERRED,
- };
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 8cd4f1f..0b85ebd 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -63,6 +63,7 @@ config SND_SCS1X
  
- struct fcp_transaction {
-@@ -40,6 +41,7 @@ struct fcp_transaction {
- 	unsigned int response_match_bytes;
- 	enum fcp_state state;
- 	wait_queue_head_t wait;
-+	bool deferrable;
- };
+ config SND_FIREWORKS
+ 	tristate "Echo Fireworks board module support"
++	select SND_FIREWIRE_LIB
+ 	help
+ 	  Say Y here to include support for FireWire devices based
+ 	  on Echo Digital Audio Fireworks board:
+diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
+index 99f6fc3..a6ce214 100644
+--- a/sound/firewire/fireworks/Makefile
++++ b/sound/firewire/fireworks/Makefile
+@@ -1,2 +1,2 @@
+-snd-fireworks-objs := fireworks.o
++snd-fireworks-objs := fireworks_transaction.o fireworks_command.o fireworks.o
+ obj-m += snd-fireworks.o
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index ad719a1..6fa3a5d 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -59,6 +59,50 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
+ /* unknown as product */
+ #define  MODEL_GIBSON_GOLDTOP		0x00afb9
  
- /**
-@@ -81,6 +83,9 @@ int fcp_avc_transaction(struct fw_unit *unit,
- 	t.state = STATE_PENDING;
- 	init_waitqueue_head(&t.wait);
- 
-+	if (*(const u8 *)command == 0x00 || *(const u8 *)command == 0x03)
-+		t.deferrable = true;
++/* part of hardware capability flags */
++#define FLAG_RESP_ADDR_CHANGABLE	0
 +
- 	spin_lock_irq(&transactions_lock);
- 	list_add_tail(&t.list, &transactions);
- 	spin_unlock_irq(&transactions_lock);
-@@ -93,11 +98,21 @@ int fcp_avc_transaction(struct fw_unit *unit,
- 					 (void *)command, command_size, 0);
- 		if (ret < 0)
- 			break;
--
-+deferred:
- 		wait_event_timeout(t.wait, t.state != STATE_PENDING,
- 				   msecs_to_jiffies(FCP_TIMEOUT_MS));
++static int
++get_hardware_info(struct snd_efw *efw)
++{
++	struct fw_device *fw_dev = fw_parent_device(efw->unit);
++	struct snd_efw_hwinfo *hwinfo;
++	char version[12] = {0};
++	int err;
++
++	hwinfo = kzalloc(sizeof(struct snd_efw_hwinfo), GFP_KERNEL);
++	if (hwinfo == NULL)
++		return -ENOMEM;
++
++	err = snd_efw_command_get_hwinfo(efw, hwinfo);
++	if (err < 0)
++		goto end;
++
++	/* firmware version for communication chipset */
++	snprintf(version, sizeof(version), "%u.%u",
++		 (hwinfo->arm_version >> 24) & 0xff,
++		 (hwinfo->arm_version >> 16) & 0xff);
++	if (err < 0)
++		goto end;
++
++	strcpy(efw->card->driver, "Fireworks");
++	strcpy(efw->card->shortname, hwinfo->model_name);
++	strcpy(efw->card->mixername, hwinfo->model_name);
++	snprintf(efw->card->longname, sizeof(efw->card->longname),
++		 "%s %s v%s, GUID %08x%08x at %s, S%d",
++		 hwinfo->vendor_name, hwinfo->model_name, version,
++		 hwinfo->guid_hi, hwinfo->guid_lo,
++		 dev_name(&efw->unit->device), 100 << fw_dev->max_speed);
++	if (err < 0)
++		goto end;
++
++	if (hwinfo->flags & BIT(FLAG_RESP_ADDR_CHANGABLE))
++		efw->resp_addr_changable = true;
++end:
++	kfree(hwinfo);
++	return err;
++}
++
+ static void
+ efw_card_free(struct snd_card *card)
+ {
+@@ -107,14 +151,14 @@ efw_probe(struct fw_unit *unit,
+ 	mutex_init(&efw->mutex);
+ 	spin_lock_init(&efw->lock);
  
--		if (t.state == STATE_COMPLETE) {
-+		if (t.state == STATE_DEFERRED) {
-+			/*
-+			 * 'AV/C General Specification' define no time limit
-+			 * on command completion once an INTERIM response has
-+			 * been sent. but we promise to finish this function
-+			 * for a caller. Here we use FCP_TIMEOUT_MS for next
-+			 * interval. This is not in the specification.
-+			 */
-+			t.state = STATE_PENDING;
-+			goto deferred;
-+		} else if (t.state == STATE_COMPLETE) {
- 			ret = t.response_size;
- 			break;
- 		} else if (t.state == STATE_BUS_RESET) {
-@@ -132,7 +147,8 @@ void fcp_bus_reset(struct fw_unit *unit)
- 	spin_lock_irq(&transactions_lock);
- 	list_for_each_entry(t, &transactions, list) {
- 		if (t->unit == unit &&
--		    t->state == STATE_PENDING) {
-+		    (t->state == STATE_PENDING ||
-+		     t->state == STATE_DEFERRED)) {
- 			t->state = STATE_BUS_RESET;
- 			wake_up(&t->wait);
- 		}
-@@ -186,10 +202,15 @@ static void fcp_response(struct fw_card *card, struct fw_request *request,
+-	strcpy(efw->card->driver, "Fireworks");
+-	strcpy(efw->card->shortname, efw->card->driver);
+-	strcpy(efw->card->longname, efw->card->driver);
+-	strcpy(efw->card->mixername, efw->card->driver);
++	err = get_hardware_info(efw);
++	if (err < 0)
++		goto error;
  
- 		if (t->state == STATE_PENDING &&
- 		    is_matching_response(t, data, length)) {
--			t->state = STATE_COMPLETE;
--			t->response_size = min((unsigned int)length,
--					       t->response_size);
--			memcpy(t->response_buffer, data, t->response_size);
-+			if (t->deferrable && *(const u8 *)data == 0x0f) {
-+				t->state = STATE_DEFERRED;
-+			} else {
-+				t->state = STATE_COMPLETE;
-+				t->response_size = min_t(unsigned int, length,
-+							 t->response_size);
-+				memcpy(t->response_buffer, data,
-+				       t->response_size);
-+			}
- 			wake_up(&t->wait);
- 		}
- 	}
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+ 		goto error;
++
+ 	dev_set_drvdata(&unit->device, efw);
+ end:
+ 	mutex_unlock(&devices_mutex);
+@@ -127,7 +171,8 @@ error:
+ 
+ static void efw_update(struct fw_unit *unit)
+ {
+-	return;
++	struct snd_efw *efw = dev_get_drvdata(&unit->device);
++	snd_efw_transaction_bus_reset(efw->unit);
+ }
+ 
+ static void efw_remove(struct fw_unit *unit)
+@@ -169,11 +214,23 @@ static struct fw_driver efw_driver = {
+ 
+ static int __init snd_efw_init(void)
+ {
+-	return driver_register(&efw_driver.driver);
++	int err;
++
++	err = snd_efw_transaction_register();
++	if (err < 0)
++		goto end;
++
++	err = driver_register(&efw_driver.driver);
++	if (err < 0)
++		snd_efw_transaction_unregister();
++
++end:
++	return err;
+ }
+ 
+ static void __exit snd_efw_exit(void)
+ {
++	snd_efw_transaction_unregister();
+ 	driver_unregister(&efw_driver.driver);
+ 	mutex_destroy(&devices_mutex);
+ }
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index 9dfeb82..e999802 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -20,6 +20,28 @@
+ 
+ #include <sound/core.h>
+ #include <sound/initval.h>
++#include <sound/pcm.h>
++
++#include "../cmp.h"
++#include "../lib.h"
++
++#define SND_EFW_MULTIPLIER_MODES	3
++#define HWINFO_NAME_SIZE_BYTES		32
++#define HWINFO_MAX_CAPS_GROUPS		8
++
++/*
++ * This should be greater than maximum bytes for EFW response content.
++ * Currently response against command for isochronous channel mapping is
++ * confirmed to be the maximum one. But for flexibility, use maximum data
++ * payload for asynchronous primary packets at S100 (Cable base rate) in
++ * IEEE Std 1394-1995.
++ */
++#define SND_EFW_RESPONSE_MAXIMUM_BYTES	0x200U
++
++struct snd_efw_phys_grp {
++	u8 type;	/* see enum snd_efw_grp_type */
++	u8 count;
++} __packed;
+ 
+ struct snd_efw {
+ 	struct snd_card *card;
+@@ -28,7 +50,111 @@ struct snd_efw {
+ 
+ 	struct mutex mutex;
+ 	spinlock_t lock;
++
++	/* for transaction */
++	u32 seqnum;
++	bool resp_addr_changable;
++};
++
++struct snd_efw_transaction {
++	__be32 length;
++	__be32 version;
++	__be32 seqnum;
++	__be32 category;
++	__be32 command;
++	__be32 status;
++	__be32 params[0];
++};
++int snd_efw_transaction_run(struct fw_unit *unit,
++			    const void *cmd, unsigned int cmd_size,
++			    void *resp, unsigned int resp_size);
++int snd_efw_transaction_register(void);
++void snd_efw_transaction_unregister(void);
++void snd_efw_transaction_bus_reset(struct fw_unit *unit);
++
++struct snd_efw_hwinfo {
++	u32 flags;
++	u32 guid_hi;
++	u32 guid_lo;
++	u32 type;
++	u32 version;
++	char vendor_name[HWINFO_NAME_SIZE_BYTES];
++	char model_name[HWINFO_NAME_SIZE_BYTES];
++	u32 supported_clocks;
++	u32 amdtp_rx_pcm_channels;
++	u32 amdtp_tx_pcm_channels;
++	u32 phys_out;
++	u32 phys_in;
++	u32 phys_out_grp_count;
++	struct snd_efw_phys_grp phys_out_grps[HWINFO_MAX_CAPS_GROUPS];
++	u32 phys_in_grp_count;
++	struct snd_efw_phys_grp phys_in_grps[HWINFO_MAX_CAPS_GROUPS];
++	u32 midi_out_ports;
++	u32 midi_in_ports;
++	u32 max_sample_rate;
++	u32 min_sample_rate;
++	u32 dsp_version;
++	u32 arm_version;
++	u32 mixer_playback_channels;
++	u32 mixer_capture_channels;
++	u32 fpga_version;
++	u32 amdtp_rx_pcm_channels_2x;
++	u32 amdtp_tx_pcm_channels_2x;
++	u32 amdtp_rx_pcm_channels_4x;
++	u32 amdtp_tx_pcm_channels_4x;
++	u32 reserved[16];
++} __packed;
++enum snd_efw_grp_type {
++	SND_EFW_CH_TYPE_ANALOG			= 0,
++	SND_EFW_CH_TYPE_SPDIF			= 1,
++	SND_EFW_CH_TYPE_ADAT			= 2,
++	SND_EFW_CH_TYPE_SPDIF_OR_ADAT		= 3,
++	SND_EFW_CH_TYPE_ANALOG_MIRRORING	= 4,
++	SND_EFW_CH_TYPE_HEADPHONES		= 5,
++	SND_EFW_CH_TYPE_I2S			= 6,
++	SND_EFW_CH_TYPE_GUITAR			= 7,
++	SND_EFW_CH_TYPE_PIEZO_GUITAR		= 8,
++	SND_EFW_CH_TYPE_GUITAR_STRING		= 9,
++	SND_EFW_CH_TYPE_VIRTUAL			= 0x10000,
++	SND_EFW_CH_TYPE_DUMMY
++};
++struct snd_efw_phys_meters {
++	u32 status;	/* guitar state/midi signal/clock input detect */
++	u32 reserved0;
++	u32 reserved1;
++	u32 reserved2;
++	u32 reserved3;
++	u32 out_meters;
++	u32 in_meters;
++	u32 reserved4;
++	u32 reserved5;
++	u32 values[0];
++} __packed;
++enum snd_efw_clock_source {
++	SND_EFW_CLOCK_SOURCE_INTERNAL	= 0,
++	SND_EFW_CLOCK_SOURCE_SYTMATCH	= 1,
++	SND_EFW_CLOCK_SOURCE_WORDCLOCK	= 2,
++	SND_EFW_CLOCK_SOURCE_SPDIF	= 3,
++	SND_EFW_CLOCK_SOURCE_ADAT_1	= 4,
++	SND_EFW_CLOCK_SOURCE_ADAT_2	= 5,
++	SND_EFW_CLOCK_SOURCE_CONTINUOUS	= 6	/* internal variable clock */
++};
++enum snd_efw_transport_mode {
++	SND_EFW_TRANSPORT_MODE_WINDOWS	= 0,
++	SND_EFW_TRANSPORT_MODE_IEC61883	= 1,
+ };
++int snd_efw_command_set_resp_addr(struct snd_efw *efw,
++				  u16 addr_high, u32 addr_low);
++int snd_efw_command_set_tx_mode(struct snd_efw *efw, unsigned int mode);
++int snd_efw_command_get_hwinfo(struct snd_efw *efw,
++			       struct snd_efw_hwinfo *hwinfo);
++int snd_efw_command_get_phys_meters(struct snd_efw *efw,
++				    struct snd_efw_phys_meters *meters,
++				    unsigned int len);
++int snd_efw_command_get_clock_source(struct snd_efw *efw,
++				     enum snd_efw_clock_source *source);
++int snd_efw_command_get_sampling_rate(struct snd_efw *efw, unsigned int *rate);
++int snd_efw_command_set_sampling_rate(struct snd_efw *efw, unsigned int rate);
+ 
+ #define SND_EFW_DEV_ENTRY(vendor, model) \
+ { \
+diff --git a/sound/firewire/fireworks/fireworks_command.c b/sound/firewire/fireworks/fireworks_command.c
+new file mode 100644
+index 0000000..d5ea705
+--- /dev/null
++++ b/sound/firewire/fireworks/fireworks_command.c
+@@ -0,0 +1,370 @@
++/*
++ * fireworks_command.c - a part of driver for Fireworks based devices
++ *
++ * Copyright (c) 2013-2014 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "./fireworks.h"
++
++/*
++ * This driver uses transaction version 1 or later to use extended hardware
++ * information. Then too old devices are not available.
++ *
++ * Each commands are not required to have continuous sequence numbers. This
++ * number is just used to match command and response.
++ *
++ * This module support a part of commands. Please see FFADO if you want to see
++ * whole commands. But there are some commands which FFADO don't implement.
++ *
++ * Fireworks also supports AV/C general commands and AV/C Stream Format
++ * Information commands. But this module don't use them.
++ */
++
++#define EFW_TRANSACTION_SEQNUM_MAX	((u32)~0)
++
++/* for clock source and sampling rate */
++struct efc_clock {
++	u32 source;
++	u32 sampling_rate;
++	u32 index;
++};
++
++/* command categories */
++enum efc_category {
++	EFC_CAT_HWINFO		= 0,
++	EFC_CAT_TRANSPORT	= 2,
++	EFC_CAT_HWCTL		= 3,
++};
++
++/* hardware info category commands */
++enum efc_cmd_hwinfo {
++	EFC_CMD_HWINFO_GET_CAPS		= 0,
++	EFC_CMD_HWINFO_GET_POLLED	= 1,
++	EFC_CMD_HWINFO_SET_RESP_ADDR	= 2
++};
++
++enum efc_cmd_transport {
++	EFC_CMD_TRANSPORT_SET_TX_MODE	= 0
++};
++
++/* hardware control category commands */
++enum efc_cmd_hwctl {
++	EFC_CMD_HWCTL_SET_CLOCK		= 0,
++	EFC_CMD_HWCTL_GET_CLOCK		= 1,
++	EFC_CMD_HWCTL_IDENTIFY		= 5
++};
++
++/* return values in response */
++enum efr_status {
++	EFR_STATUS_OK			= 0,
++	EFR_STATUS_BAD			= 1,
++	EFR_STATUS_BAD_COMMAND		= 2,
++	EFR_STATUS_COMM_ERR		= 3,
++	EFR_STATUS_BAD_QUAD_COUNT	= 4,
++	EFR_STATUS_UNSUPPORTED		= 5,
++	EFR_STATUS_1394_TIMEOUT		= 6,
++	EFR_STATUS_DSP_TIMEOUT		= 7,
++	EFR_STATUS_BAD_RATE		= 8,
++	EFR_STATUS_BAD_CLOCK		= 9,
++	EFR_STATUS_BAD_CHANNEL		= 10,
++	EFR_STATUS_BAD_PAN		= 11,
++	EFR_STATUS_FLASH_BUSY		= 12,
++	EFR_STATUS_BAD_MIRROR		= 13,
++	EFR_STATUS_BAD_LED		= 14,
++	EFR_STATUS_BAD_PARAMETER	= 15,
++	EFR_STATUS_INCOMPLETE		= 0x80000000
++};
++
++static const char *const efr_status_names[] = {
++	[EFR_STATUS_OK]			= "OK",
++	[EFR_STATUS_BAD]		= "bad",
++	[EFR_STATUS_BAD_COMMAND]	= "bad command",
++	[EFR_STATUS_COMM_ERR]		= "comm err",
++	[EFR_STATUS_BAD_QUAD_COUNT]	= "bad quad count",
++	[EFR_STATUS_UNSUPPORTED]	= "unsupported",
++	[EFR_STATUS_1394_TIMEOUT]	= "1394 timeout",
++	[EFR_STATUS_DSP_TIMEOUT]	= "DSP timeout",
++	[EFR_STATUS_BAD_RATE]		= "bad rate",
++	[EFR_STATUS_BAD_CLOCK]		= "bad clock",
++	[EFR_STATUS_BAD_CHANNEL]	= "bad channel",
++	[EFR_STATUS_BAD_PAN]		= "bad pan",
++	[EFR_STATUS_FLASH_BUSY]		= "flash busy",
++	[EFR_STATUS_BAD_MIRROR]		= "bad mirror",
++	[EFR_STATUS_BAD_LED]		= "bad LED",
++	[EFR_STATUS_BAD_PARAMETER]	= "bad parameter",
++	[EFR_STATUS_BAD_PARAMETER + 1]	= "incomplete"
++};
++
++static int
++efw_transaction(struct snd_efw *efw, unsigned int category,
++		unsigned int command,
++		const __be32 *params, unsigned int param_bytes,
++		const __be32 *resp, unsigned int resp_bytes)
++{
++	struct snd_efw_transaction *header;
++	__be32 *buf;
++	u32 seqnum;
++	unsigned int buf_bytes, cmd_bytes;
++	int err;
++
++	/* calculate buffer size*/
++	buf_bytes = sizeof(struct snd_efw_transaction) +
++		    max(param_bytes, resp_bytes);
++
++	/* keep buffer */
++	buf = kzalloc(buf_bytes, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	/* to keep consistency of sequence number */
++	spin_lock(&efw->lock);
++	if (efw->seqnum + 2 >= EFW_TRANSACTION_SEQNUM_MAX)
++		efw->seqnum = 0;
++	else
++		efw->seqnum += 2;
++	seqnum = efw->seqnum;
++	spin_unlock(&efw->lock);
++
++	/* fill transaction header fields */
++	cmd_bytes = sizeof(struct snd_efw_transaction) + param_bytes;
++	header = (struct snd_efw_transaction *)buf;
++	header->length	 = cpu_to_be32(cmd_bytes / sizeof(__be32));
++	header->version	 = cpu_to_be32(1);
++	header->seqnum	 = cpu_to_be32(seqnum);
++	header->category = cpu_to_be32(category);
++	header->command	 = cpu_to_be32(command);
++	header->status	 = 0;
++
++	/* fill transaction command parameters */
++	memcpy(header->params, params, param_bytes);
++
++	err = snd_efw_transaction_run(efw->unit, buf, cmd_bytes,
++				      buf, buf_bytes);
++	if (err < 0)
++		goto end;
++
++	/* check transaction header fields */
++	if ((be32_to_cpu(header->version) < 1) ||
++	    (be32_to_cpu(header->category) != category) ||
++	    (be32_to_cpu(header->command) != command) ||
++	    (be32_to_cpu(header->status) != EFR_STATUS_OK)) {
++		dev_err(&efw->unit->device, "EFW command failed [%u/%u]: %s\n",
++			be32_to_cpu(header->category),
++			be32_to_cpu(header->command),
++			efr_status_names[be32_to_cpu(header->status)]);
++		err = -EIO;
++		goto end;
++	}
++
++	if (resp == NULL)
++		goto end;
++
++	/* fill transaction response parameters */
++	memset((void *)resp, 0, resp_bytes);
++	resp_bytes = min_t(unsigned int, resp_bytes,
++			   be32_to_cpu(header->length) * sizeof(__be32) -
++				sizeof(struct snd_efw_transaction));
++	memcpy((void *)resp, &buf[6], resp_bytes);
++end:
++	kfree(buf);
++	return err;
++}
++
++/*
++ * The address in host system for transaction response is changable when the
++ * device supports. struct hwinfo.flags includes its flag. The default is
++ * MEMORY_SPACE_EFW_RESPONSE.
++ */
++int snd_efw_command_set_resp_addr(struct snd_efw *efw,
++				  u16 addr_high, u32 addr_low)
++{
++	__be32 addr[2];
++
++	addr[0] = cpu_to_be32(addr_high);
++	addr[1] = cpu_to_be32(addr_low);
++
++	if (!efw->resp_addr_changable)
++		return -ENOSYS;
++
++	return efw_transaction(efw, EFC_CAT_HWCTL,
++			       EFC_CMD_HWINFO_SET_RESP_ADDR,
++			       addr, sizeof(addr), NULL, 0);
++}
++
++/*
++ * This is for timestamp processing. In Windows mode, all 32bit fields of second
++ * CIP header in AMDTP transmit packet is used for 'presentation timestamp'. In
++ * 'no data' packet the value of this field is 0x90ffffff.
++ */
++int snd_efw_command_set_tx_mode(struct snd_efw *efw,
++				enum snd_efw_transport_mode mode)
++{
++	__be32 param = cpu_to_be32(mode);
++	return efw_transaction(efw, EFC_CAT_TRANSPORT,
++			       EFC_CMD_TRANSPORT_SET_TX_MODE,
++			       &param, sizeof(param), NULL, 0);
++}
++
++int snd_efw_command_get_hwinfo(struct snd_efw *efw,
++			       struct snd_efw_hwinfo *hwinfo)
++{
++	int err;
++
++	err  = efw_transaction(efw, EFC_CAT_HWINFO,
++			       EFC_CMD_HWINFO_GET_CAPS,
++			       NULL, 0, (__be32 *)hwinfo, sizeof(*hwinfo));
++	if (err < 0)
++		goto end;
++
++	be32_to_cpus(&hwinfo->flags);
++	be32_to_cpus(&hwinfo->guid_hi);
++	be32_to_cpus(&hwinfo->guid_lo);
++	be32_to_cpus(&hwinfo->type);
++	be32_to_cpus(&hwinfo->version);
++	be32_to_cpus(&hwinfo->supported_clocks);
++	be32_to_cpus(&hwinfo->amdtp_rx_pcm_channels);
++	be32_to_cpus(&hwinfo->amdtp_tx_pcm_channels);
++	be32_to_cpus(&hwinfo->phys_out);
++	be32_to_cpus(&hwinfo->phys_in);
++	be32_to_cpus(&hwinfo->phys_out_grp_count);
++	be32_to_cpus(&hwinfo->phys_in_grp_count);
++	be32_to_cpus(&hwinfo->midi_out_ports);
++	be32_to_cpus(&hwinfo->midi_in_ports);
++	be32_to_cpus(&hwinfo->max_sample_rate);
++	be32_to_cpus(&hwinfo->min_sample_rate);
++	be32_to_cpus(&hwinfo->dsp_version);
++	be32_to_cpus(&hwinfo->arm_version);
++	be32_to_cpus(&hwinfo->mixer_playback_channels);
++	be32_to_cpus(&hwinfo->mixer_capture_channels);
++	be32_to_cpus(&hwinfo->fpga_version);
++	be32_to_cpus(&hwinfo->amdtp_rx_pcm_channels_2x);
++	be32_to_cpus(&hwinfo->amdtp_tx_pcm_channels_2x);
++	be32_to_cpus(&hwinfo->amdtp_rx_pcm_channels_4x);
++	be32_to_cpus(&hwinfo->amdtp_tx_pcm_channels_4x);
++
++	/* ensure terminated */
++	hwinfo->vendor_name[HWINFO_NAME_SIZE_BYTES - 1] = '\0';
++	hwinfo->model_name[HWINFO_NAME_SIZE_BYTES  - 1] = '\0';
++end:
++	return err;
++}
++
++int snd_efw_command_get_phys_meters(struct snd_efw *efw,
++				    struct snd_efw_phys_meters *meters,
++				    unsigned int len)
++{
++	__be32 *buf = (__be32 *)meters;
++	unsigned int i;
++	int err;
++
++	err = efw_transaction(efw, EFC_CAT_HWINFO,
++			      EFC_CMD_HWINFO_GET_POLLED,
++			      NULL, 0, (__be32 *)meters, len);
++	if (err >= 0)
++		for (i = 0; i < len / sizeof(u32); i++)
++			be32_to_cpus(&buf[i]);
++
++	return err;
++}
++
++static int
++command_get_clock(struct snd_efw *efw, struct efc_clock *clock)
++{
++	int err;
++
++	err = efw_transaction(efw, EFC_CAT_HWCTL,
++			      EFC_CMD_HWCTL_GET_CLOCK,
++			      NULL, 0,
++			      (__be32 *)clock, sizeof(struct efc_clock));
++	if (err >= 0) {
++		be32_to_cpus(&clock->source);
++		be32_to_cpus(&clock->sampling_rate);
++		be32_to_cpus(&clock->index);
++	}
++
++	return err;
++}
++
++/* give UINT_MAX if set nothing */
++static int
++command_set_clock(struct snd_efw *efw,
++		  unsigned int source, unsigned int rate)
++{
++	struct efc_clock clock = {0};
++	int err;
++
++	/* check arguments */
++	if ((source == UINT_MAX) && (rate == UINT_MAX)) {
++		err = -EINVAL;
++		goto end;
++	}
++
++	/* get current status */
++	err = command_get_clock(efw, &clock);
++	if (err < 0)
++		goto end;
++
++	/* no need */
++	if ((clock.source == source) && (clock.sampling_rate == rate))
++		goto end;
++
++	/* set params */
++	if ((source != UINT_MAX) && (clock.source != source))
++		clock.source = source;
++	if ((rate != UINT_MAX) && (clock.sampling_rate != rate))
++		clock.sampling_rate = rate;
++	clock.index = 0;
++
++	cpu_to_be32s(&clock.source);
++	cpu_to_be32s(&clock.sampling_rate);
++	cpu_to_be32s(&clock.index);
++
++	err = efw_transaction(efw, EFC_CAT_HWCTL,
++			      EFC_CMD_HWCTL_SET_CLOCK,
++			      (__be32 *)&clock, sizeof(struct efc_clock),
++			      NULL, 0);
++	if (err < 0)
++		goto end;
++
++	/*
++	 * With firmware version 5.8, just after changing clock state, these
++	 * parameters are not immediately retrieved by get command. In my
++	 * trial, there needs to be 100msec to get changed parameters.
++	 */
++	msleep(150);
++end:
++	return err;
++}
++
++int snd_efw_command_get_clock_source(struct snd_efw *efw,
++				     enum snd_efw_clock_source *source)
++{
++	int err;
++	struct efc_clock clock = {0};
++
++	err = command_get_clock(efw, &clock);
++	if (err >= 0)
++		*source = clock.source;
++
++	return err;
++}
++
++int snd_efw_command_get_sampling_rate(struct snd_efw *efw, unsigned int *rate)
++{
++	int err;
++	struct efc_clock clock = {0};
++
++	err = command_get_clock(efw, &clock);
++	if (err >= 0)
++		*rate = clock.sampling_rate;
++
++	return err;
++}
++
++int snd_efw_command_set_sampling_rate(struct snd_efw *efw, unsigned int rate)
++{
++	return command_set_clock(efw, UINT_MAX, rate);
++}
++
+diff --git a/sound/firewire/fireworks/fireworks_transaction.c b/sound/firewire/fireworks/fireworks_transaction.c
+new file mode 100644
+index 0000000..aac91d8
+--- /dev/null
++++ b/sound/firewire/fireworks/fireworks_transaction.c
+@@ -0,0 +1,190 @@
++/*
++ * fireworks_transaction.c - a part of driver for Fireworks based devices
++ *
++ * Copyright (c) 2013-2014 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++/*
++ * Fireworks have its own transaction. The transaction can be delivered by AV/C
++ * Vendor Specific command. But at least Windows driver and firmware version 5.5
++ * or later don't use it.
++ *
++ * Transaction substance:
++ *  At first, 6 data exist. Following to the 6 data, parameters for each
++ *  commands exists. All of parameters are 32 bit alighed to big endian.
++ *   data[0]:	Length of transaction substance
++ *   data[1]:	Transaction version
++ *   data[2]:	Sequence number. This is incremented by the device
++ *   data[3]:	transaction category
++ *   data[4]:	transaction command
++ *   data[5]:	return value in response.
++ *   data[6-]:	parameters
++ *
++ * Transaction address:
++ *  command:	0xecc000000000
++ *  response:	0xecc080000000 (default)
++ *
++ * I note that the address for response can be changed by command. But this
++ * module uses the default address.
++ */
++#include "./fireworks.h"
++
++#define MEMORY_SPACE_EFW_COMMAND	0xecc000000000
++#define MEMORY_SPACE_EFW_RESPONSE	0xecc080000000
++
++#define ERROR_RETRIES 3
++#define ERROR_DELAY_MS 5
++#define EFC_TIMEOUT_MS 125
++
++static DEFINE_SPINLOCK(transaction_queues_lock);
++static LIST_HEAD(transaction_queues);
++
++enum transaction_queue_state {
++	STATE_PENDING,
++	STATE_BUS_RESET,
++	STATE_COMPLETE
++};
++
++struct transaction_queue {
++	struct list_head list;
++	struct fw_unit *unit;
++	void *buf;
++	unsigned int size;
++	u32 seqnum;
++	enum transaction_queue_state state;
++	wait_queue_head_t wait;
++};
++
++int snd_efw_transaction_run(struct fw_unit *unit,
++			    const void *cmd, unsigned int cmd_size,
++			    void *resp, unsigned int resp_size)
++{
++	struct transaction_queue t;
++	unsigned int tries;
++	int ret;
++
++	t.unit = unit;
++	t.buf = resp;
++	t.size = resp_size;
++	t.seqnum = be32_to_cpu(((struct snd_efw_transaction *)cmd)->seqnum) + 1;
++	t.state = STATE_PENDING;
++	init_waitqueue_head(&t.wait);
++
++	spin_lock_irq(&transaction_queues_lock);
++	list_add_tail(&t.list, &transaction_queues);
++	spin_unlock_irq(&transaction_queues_lock);
++
++	tries = 0;
++	do {
++		ret = snd_fw_transaction(unit, TCODE_WRITE_BLOCK_REQUEST,
++					 MEMORY_SPACE_EFW_COMMAND,
++					 (void *)cmd, cmd_size, 0);
++		if (ret < 0)
++			break;
++
++		wait_event_timeout(t.wait, t.state != STATE_PENDING,
++				   msecs_to_jiffies(EFC_TIMEOUT_MS));
++
++		if (t.state == STATE_COMPLETE) {
++			ret = t.size;
++			break;
++		} else if (t.state == STATE_BUS_RESET) {
++			msleep(ERROR_DELAY_MS);
++		} else if (++tries >= ERROR_RETRIES) {
++			dev_err(&t.unit->device, "EFW transaction timed out\n");
++			ret = -EIO;
++			break;
++		}
++	} while (1);
++
++	spin_lock_irq(&transaction_queues_lock);
++	list_del(&t.list);
++	spin_unlock_irq(&transaction_queues_lock);
++
++	return ret;
++}
++
++static void
++efw_response(struct fw_card *card, struct fw_request *request,
++	     int tcode, int destination, int source,
++	     int generation, unsigned long long offset,
++	     void *data, size_t length, void *callback_data)
++{
++	struct fw_device *device;
++	struct transaction_queue *t;
++	unsigned long flags;
++	int rcode;
++	u32 seqnum;
++
++	rcode = RCODE_TYPE_ERROR;
++	if (length < sizeof(struct snd_efw_transaction)) {
++		rcode = RCODE_DATA_ERROR;
++		goto end;
++	} else if (offset != MEMORY_SPACE_EFW_RESPONSE) {
++		rcode = RCODE_ADDRESS_ERROR;
++		goto end;
++	}
++
++	seqnum = be32_to_cpu(((struct snd_efw_transaction *)data)->seqnum);
++
++	spin_lock_irqsave(&transaction_queues_lock, flags);
++	list_for_each_entry(t, &transaction_queues, list) {
++		device = fw_parent_device(t->unit);
++		if ((device->card != card) ||
++		    (device->generation != generation))
++			continue;
++		smp_rmb();	/* node_id vs. generation */
++		if (device->node_id != source)
++			continue;
++
++		if ((t->state == STATE_PENDING) && (t->seqnum == seqnum)) {
++			t->state = STATE_COMPLETE;
++			t->size = min_t(unsigned int, length, t->size);
++			memcpy(t->buf, data, t->size);
++			wake_up(&t->wait);
++			rcode = RCODE_COMPLETE;
++		}
++	}
++	spin_unlock_irqrestore(&transaction_queues_lock, flags);
++end:
++	fw_send_response(card, request, rcode);
++}
++
++void snd_efw_transaction_bus_reset(struct fw_unit *unit)
++{
++	struct transaction_queue *t;
++
++	spin_lock_irq(&transaction_queues_lock);
++	list_for_each_entry(t, &transaction_queues, list) {
++		if ((t->unit == unit) &&
++		    (t->state == STATE_PENDING)) {
++			t->state = STATE_BUS_RESET;
++			wake_up(&t->wait);
++		}
++	}
++	spin_unlock_irq(&transaction_queues_lock);
++}
++
++static struct fw_address_handler resp_register_handler = {
++	.length = SND_EFW_RESPONSE_MAXIMUM_BYTES,
++	.address_callback = efw_response
++};
++
++int snd_efw_transaction_register(void)
++{
++	static const struct fw_address_region resp_register_region = {
++		.start	= MEMORY_SPACE_EFW_RESPONSE,
++		.end	= MEMORY_SPACE_EFW_RESPONSE +
++			  SND_EFW_RESPONSE_MAXIMUM_BYTES
++	};
++	return fw_core_add_address_handler(&resp_register_handler,
++					   &resp_register_region);
++}
++
++void snd_efw_transaction_unregister(void)
++{
++	WARN_ON(!list_empty(&transaction_queues));
++	fw_core_remove_address_handler(&resp_register_handler);
++}
 -- 
 1.8.3.2
 
