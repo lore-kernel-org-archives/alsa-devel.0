@@ -1,20 +1,18 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: On non-rewindability of resamplers
-Date: Fri, 25 Apr 2014 20:09:26 +0600
-Message-ID: <535A6C96.7040109@gmail.com>
-References: <5356A9B6.9060405@gmail.com> <5358FCF0.2040701@ladisch.de>
- <53597BA2.8080201@gmail.com> <5359FE72.8050605@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: fsl_spdif: Fix clock source for
+ rxclk rate measurement
+Date: Fri, 25 Apr 2014 17:10:15 +0100
+Message-ID: <20140425161015.GQ12304@sirena.org.uk>
+References: <cover.1398427055.git.Guangyu.Chen@freescale.com>
+ <cbeb07fbdadd7bf72f74224d5ad12c9706376c95.1398427055.git.Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4095280081964581183=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f182.google.com (mail-lb0-f182.google.com
- [209.85.217.182])
- by alsa0.perex.cz (Postfix) with ESMTP id B43C7265624
- for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2014 16:12:29 +0200 (CEST)
-Received: by mail-lb0-f182.google.com with SMTP id l4so3153228lbv.13
- for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2014 07:12:29 -0700 (PDT)
-In-Reply-To: <5359FE72.8050605@canonical.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24CB9261A6C
+ for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2014 18:10:30 +0200 (CEST)
+In-Reply-To: <cbeb07fbdadd7bf72f74224d5ad12c9706376c95.1398427055.git.Guangyu.Chen@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,80 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-25.04.2014 12:19, David Henningsson wrote:
-> I understand that you have a mathematically perfect approach to this, as
-> well as other algorithms. This would indeed be the best goal, but given
-> an imperfect world, where we're forced to choose between
->   1) no rewinding at all
->   2) imperfect rewinding in the sense that it sometimes can produce
-> hearable artifacts
->
-> ...I'm not sure 1) is always the right choice...
 
-Understood. But IMHO (2) with a warning would be better than the current 
-situation of (2) without any indication of the problem.
+--===============4095280081964581183==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="EroFgB/Y6GhjWuRm"
+Content-Disposition: inline
 
->> int snd_pcm_hw_params_is_seekable(const snd_pcm_hw_params_t *params);
->>
->> Check if the device fully supports rewinds and forwards.
->>
->> Parameters:
->>      params    Configuration space
->>
->> Return values:
->>      0    The whole plugin chain is not guaranteed to support arbitrary
->> rewinds and forwards.
->>      1    The whole plugin chain is guaranteed, under all remaining
->> configurations in the configuration space, to support any rewinds and
->> forwards that don't move the application pointer through the hardware
->> pointer.
->>
->> If this function is called when there is more than one configuration
->> exists in the configuration set (e.g. when the rate is not fixed), it
->> may return pessimistic results.
->
-> I wonder if this is flexible enough. I think it would be not too
-> uncommon for hardware drivers to e g transfer data to the hardware one
-> period at a time. Hence what would make sense to rewind could be
-> everything but the current period. A similar approach could potentially
-> be done with resamplers (save state data every period so you can rewind
-> correctly to exactly those points but nowhere else).
->
-> This would be good to indicate somehow. I e, I'd like to see
-> snd_pcm_rewindable take into account how much actually makes sense to
-> rewind, taking DMA buffer sizes and other things into account where
-> appropriate. Today, we add our own margin of 1.33 ms in PulseAudio
-> because (if my understanding is correct) "some DMAs don't like us
-> writing exactly the block it's busy transferring", but it would be
-> better if this was indicated by ALSA.
 
-This looks like two valid feature requests. Regarding the limited 
-flexibility, this can be solved by returning a bitmask of rewind-related 
-limitations, but the current hw_params API doesn't have any functions 
-that return bitmasks. Instead, for each new problem, a new function is 
-created. So it may make sense to create more than one function. However, 
-I am afraid to create a duplicate of an existing function. Does anyone 
-know whether the "must not rewind to the current period" limitation is 
-the same as already indicated by snd_pcm_hw_params_get_fifo_size() or 
-snd_pcm_hw_params_is_batch() or snd_pcm_hw_params_is_block_transfer()?
+--EroFgB/Y6GhjWuRm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Of course, these limitations should be honoured by snd_pcm_rewindable().
+On Fri, Apr 25, 2014 at 07:58:19PM +0800, Nicolin Chen wrote:
 
-As for the applicability of limiting the rewinds to the period 
-boundaries (where the resampler state is saved), then we have already 
-discussed something similar in person during LinuxCon Europe 2013 in the 
-context of PulseAudio and IIR filters. If access to the original samples 
-since the beginning of that period is not lost, then we can rewind to 
-the period boundary earlier than needed, then restore the state and 
-reapply the samples between that period boundary and the point we 
-actually wanted to reply to. So the net effect would be "can rewind to 
-anything except the currently playing period". OTOH I know another 
-approach that would make only a few samples non-rewindable (i.e. will 
-look similar to the 1.33ms limitation), and I will probably try to 
-implement it on my vacation as a new proof-of-concept library.
+> +	/* Get system clock for rx clock rate calculation */
+> +	sprintf(tmp, "rxtx%d", SPDIF_CLK_SRC_SYSCLK);
+> +	spdif_priv->sysclk = devm_clk_get(&pdev->dev, tmp);
+> +	if (IS_ERR(spdif_priv->sysclk)) {
+> +		dev_err(&pdev->dev, "no sys clock (%s) in devicetree\n", tmp);
+> +		return PTR_ERR(spdif_priv->sysclk);
+> +	}
+> +
 
--- 
-Alexander E. Patrakov
+Why is this not just a fixed string - it seems like the clock name is a
+constant anyway?
+
+--EroFgB/Y6GhjWuRm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTWojkAAoJELSic+t+oim99eQP/j47aNWOTwaMKsI/kPKLRWdg
+QHIi6cJqg906vqQ7SKj7JKLD/Sp1+VeleA3b/Ve5IxPZBrbCBL1xsEV/yxN+DvTd
++nGu8adX04JCBIcizmaGtymUPsB3cYDvH4PiPn3fsXz6uuU8flFnzQ9AH1vNv9th
+uILokXEeK2ce4F7JprZ7fDeYOkrzGP26rbvGFKcMyjGxtXeXDS0qqt0DJm1r4VGd
+fkfCq6qJ9RW2+SPQNizKG97cadkwZBZnNgzsgrQoOb+PfXVVA2D90V+2y0FarhM7
+YkFcspfyPWTimkmY1gDgZPrSlA8AkXmm055kL7EVwCz2xmUgWpK5jC5AmthQep7u
+VnM6hospndEgtos6DHwkVnh540GEcNHgiWK0bCU10iR+ArcTWcPTPu7LzSX4hPfB
+TDCVXtSrutNq4NvRwQJnYUiPcCN+O6eiEp42Fi/KF2JAUyHOyeXhjysymNWThDtT
+dKCCytJyDFt313hNB166z+WbqDr6o4oZN60M4iGthhTyVx+QeWPO0g/N1jtSG9C9
+IlRdIVfoqmr6MKs2tIjW6BqSPRucjhWlQ3kvUApZhBF281HDAFVJJuZkE+ZMIcCF
+fwPhWzgbMtMfpGZbGGRti3kXPXbg1LrZ7czI+1ELcH/SD4WpblnnfwrcKeozxb+h
+RVNnhJpcAL2eCJiJyG/z
+=wTWu
+-----END PGP SIGNATURE-----
+
+--EroFgB/Y6GhjWuRm--
+
+--===============4095280081964581183==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4095280081964581183==--
