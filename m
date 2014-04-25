@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 28/49] fireworks: Add MIDI interface
-Date: Fri, 25 Apr 2014 22:45:09 +0900
-Message-ID: <1398433530-13136-29-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 29/49] fireworks/firewire-lib: Add a quirk of data blocks for
+	MIDI in out-stream
+Date: Fri, 25 Apr 2014 22:45:10 +0900
+Message-ID: <1398433530-13136-30-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,234 +21,70 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a functionality to capture/playback MIDI messages.
-
-When no AMDTP streams are running, this driver starts AMDTP stream for MIDI
-stream at current sampling rate.
+Fireworks has a quirk to ignore MIDI messages in data blocks more than 8.
+This commit adds a flag for this quirk and codes to skip 8 or more data
+blocks to transfer MIDI messages.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig                    |   1 +
- sound/firewire/fireworks/Makefile         |   3 +-
- sound/firewire/fireworks/fireworks.c      |   6 ++
- sound/firewire/fireworks/fireworks.h      |   3 +
- sound/firewire/fireworks/fireworks_midi.c | 147 ++++++++++++++++++++++++++++++
- 5 files changed, 159 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/fireworks/fireworks_midi.c
+ sound/firewire/amdtp.c                      | 5 ++++-
+ sound/firewire/amdtp.h                      | 3 +++
+ sound/firewire/fireworks/fireworks_stream.c | 5 +++++
+ 3 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 0b85ebd..36a1212 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -64,6 +64,7 @@ config SND_SCS1X
- config SND_FIREWORKS
- 	tristate "Echo Fireworks board module support"
- 	select SND_FIREWIRE_LIB
-+	select SND_RAWMIDI
- 	help
- 	  Say Y here to include support for FireWire devices based
- 	  on Echo Digital Audio Fireworks board:
-diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-index 52bd15e..a2cecc6 100644
---- a/sound/firewire/fireworks/Makefile
-+++ b/sound/firewire/fireworks/Makefile
-@@ -1,3 +1,4 @@
- snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
--		      fireworks_stream.o fireworks_proc.o fireworks.o
-+		      fireworks_stream.o fireworks_proc.o fireworks_midi.o \
-+		      fireworks.o
- obj-m += snd-fireworks.o
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index 311e4a6..9204c7c 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -226,6 +226,12 @@ efw_probe(struct fw_unit *unit,
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 5e13b3f..28ee3d8 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -78,6 +78,8 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 	s->callbacked = false;
+ 	s->sync_slave = NULL;
  
- 	snd_efw_proc_init(efw);
++	s->rx_blocks_for_midi = UINT_MAX;
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(amdtp_stream_init);
+@@ -472,7 +474,8 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 		b = (u8 *)&buffer[s->midi_position];
  
-+	if (efw->midi_out_ports || efw->midi_in_ports) {
-+		err = snd_efw_create_midi_devices(efw);
-+		if (err < 0)
-+			goto error;
-+	}
-+
- 	err = snd_efw_stream_init_duplex(efw);
- 	if (err < 0)
- 		goto error;
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index eef7ad8..d181969 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -22,6 +22,7 @@
- #include <sound/initval.h>
- #include <sound/pcm.h>
- #include <sound/info.h>
-+#include <sound/rawmidi.h>
+ 		port = (s->data_block_counter + f) % 8;
+-		if ((s->midi[port] == NULL) ||
++		if ((f >= s->rx_blocks_for_midi) ||
++		    (s->midi[port] == NULL) ||
+ 		    (snd_rawmidi_transmit(s->midi[port], b + 1, 1) <= 0))
+ 			b[0] = 0x80;
+ 		else
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index 42c75c9..fb5934c 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -125,6 +125,9 @@ struct amdtp_stream {
+ 	/* quirk: fixed interval of dbc between previos/current packets. */
+ 	unsigned int tx_dbc_interval;
  
- #include "../packets-buffer.h"
- #include "../iso-resources.h"
-@@ -198,6 +199,8 @@ void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
++	/* quirk: the first count of data blocks in an rx packet for MIDI */
++	unsigned int rx_blocks_for_midi;
++
+ 	bool callbacked;
+ 	wait_queue_head_t callback_wait;
+ 	struct amdtp_stream *sync_slave;
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index 3a3f203..f9d836f 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -212,6 +212,11 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
+ 		destroy_stream(efw, &efw->tx_stream);
+ 		goto end;
+ 	}
++	/*
++	 * Fireworks ignores MIDI messages in more than first 8 data
++	 * blocks of an received AMDTP packet.
++	 */
++	efw->rx_stream.rx_blocks_for_midi = 8;
  
- void snd_efw_proc_init(struct snd_efw *efw);
- 
-+int snd_efw_create_midi_devices(struct snd_efw *efw);
-+
- #define SND_EFW_DEV_ENTRY(vendor, model) \
- { \
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
-new file mode 100644
-index 0000000..cbf34e9
---- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_midi.c
-@@ -0,0 +1,147 @@
-+/*
-+ * fireworks_midi.c - a part of driver for Fireworks based devices
-+ *
-+ * Copyright (c) 2009-2010 Clemens Ladisch
-+ * Copyright (c) 2013-2014 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+#include "fireworks.h"
-+
-+static int midi_capture_open(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_efw *efw = substream->rmidi->private_data;
-+
-+	atomic_inc(&efw->capture_substreams);
-+	return snd_efw_stream_start_duplex(efw, 0);
-+}
-+
-+static int midi_playback_open(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_efw *efw = substream->rmidi->private_data;
-+
-+	atomic_inc(&efw->playback_substreams);
-+	return snd_efw_stream_start_duplex(efw, 0);
-+}
-+
-+static int midi_capture_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_efw *efw = substream->rmidi->private_data;
-+
-+	atomic_dec(&efw->capture_substreams);
-+	snd_efw_stream_stop_duplex(efw);
-+
-+	return 0;
-+}
-+
-+static int midi_playback_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_efw *efw = substream->rmidi->private_data;
-+
-+	atomic_dec(&efw->playback_substreams);
-+	snd_efw_stream_stop_duplex(efw);
-+
-+	return 0;
-+}
-+
-+static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct snd_efw *efw = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&efw->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&efw->tx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&efw->tx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&efw->lock, flags);
-+}
-+
-+static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct snd_efw *efw = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&efw->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&efw->rx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&efw->rx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&efw->lock, flags);
-+}
-+
-+static struct snd_rawmidi_ops midi_capture_ops = {
-+	.open		= midi_capture_open,
-+	.close		= midi_capture_close,
-+	.trigger	= midi_capture_trigger,
-+};
-+
-+static struct snd_rawmidi_ops midi_playback_ops = {
-+	.open		= midi_playback_open,
-+	.close		= midi_playback_close,
-+	.trigger	= midi_playback_trigger,
-+};
-+
-+static void set_midi_substream_names(struct snd_efw *efw,
-+				     struct snd_rawmidi_str *str)
-+{
-+	struct snd_rawmidi_substream *subs;
-+
-+	list_for_each_entry(subs, &str->substreams, list) {
-+		snprintf(subs->name, sizeof(subs->name),
-+			 "%s MIDI %d", efw->card->shortname, subs->number + 1);
-+	}
-+}
-+
-+int snd_efw_create_midi_devices(struct snd_efw *efw)
-+{
-+	struct snd_rawmidi *rmidi;
-+	struct snd_rawmidi_str *str;
-+	int err;
-+
-+	/* create midi ports */
-+	err = snd_rawmidi_new(efw->card, efw->card->driver, 0,
-+			      efw->midi_out_ports, efw->midi_in_ports,
-+			      &rmidi);
-+	if (err < 0)
-+		return err;
-+
-+	snprintf(rmidi->name, sizeof(rmidi->name),
-+		 "%s MIDI", efw->card->shortname);
-+	rmidi->private_data = efw;
-+
-+	if (efw->midi_in_ports > 0) {
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
-+
-+		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-+					&midi_capture_ops);
-+
-+		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
-+
-+		set_midi_substream_names(efw, str);
-+	}
-+
-+	if (efw->midi_out_ports > 0) {
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
-+
-+		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
-+					&midi_playback_ops);
-+
-+		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
-+
-+		set_midi_substream_names(efw, str);
-+	}
-+
-+	if ((efw->midi_out_ports > 0) && (efw->midi_in_ports > 0))
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
-+
-+	return 0;
-+}
+ 	/* set IEC61883 compliant mode (actually not fully compliant...) */
+ 	err = snd_efw_command_set_tx_mode(efw, SND_EFW_TRANSPORT_MODE_IEC61883);
 -- 
 1.8.3.2
 
