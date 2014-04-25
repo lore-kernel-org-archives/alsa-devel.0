@@ -1,93 +1,124 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH v2] ASoC: rt5640: Add minimal support for
- RT5642
-Date: Fri, 25 Apr 2014 16:08:18 -0600
-Message-ID: <535ADCD2.8050804@wwwdotorg.org>
-References: <1397701446-11977-1-git-send-email-bardliao@realtek.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: A Restriction and rest of issues for this patchsets
+Date: Sat, 26 Apr 2014 07:58:43 +0900
+Message-ID: <535AE8A3.8030309@sakamocchi.jp>
+References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 8206626007E
- for <alsa-devel@alsa-project.org>; Sat, 26 Apr 2014 00:15:19 +0200 (CEST)
-In-Reply-To: <1397701446-11977-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com, broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, jarkko.nikula@linux.intel.com, flove@realtek.com
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 04/16/2014 08:24 PM, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
-> 
-> We have been using rt5640.c codec driver with RT5642 codec chip before commit
-> 022d21f004c1 ("ASoC: rt5640: add rt5639 support"). That commits starts using
-> device ID reading in reset register for adding device specific controls and
-> routes runtime.
-> 
-> Now since device ID appears to be different between RT5640 and RT5642 the 
-> driver doesn't add those controls and routes that are valid also on RT5642.
-> 
-> Fix this by adding a device ID found by debugging and minimal code for 
-> supporting RT5642.
-> 
-> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+= A Restriction
+Drivers with this patchset has a restriction comparing to windows drivers.
 
-Is this derived from Jarkko's patch? If so, shouldn't he be listed as
-the author, not you? If it wasn't, then presumably his S-o-b line
-shouldn't be in the patch description.
+As long as reading manual of PreSonus/Focusrite/PrismSound, these BeBoB 
+based devices may synchronize to the other BeBoB based devices on the 
+same bus.
 
-> Signed-off-by: Bard Liao <bardliao@realtek.com>
+I guess this mechanism is driven by SYT in CIP packets:
+  - Driver select a device as 'Sample clock source' then the other 
+devices are 'Sample clock destination'.
+  - Driver handle packets from 'Sample clock source' device.
+  - Driver read SYT and calculate presentation timestamp for each 
+devices, then transfer packets to the other devices.
 
-This patch causes problems for me. I see an enormous amount of spew
-during kernel boot along the lines of:
+If you're interested, please refer to IEC 61883-6:2005 (Edition 2.0). 
+Actual examples are described in:
+Annex D Transport characteristics
+D.1.3 Embedded sample-clock jitter
+D.1.3.2.1 Example one: simple two-node bus
+D.1.3.2.2 Example two: three-node bus
+D.1.3.2.3 Example: thirty-five-node system
 
-> [    2.285515] rt5640 0-001c: ASoC: no source widget found for OUT MIXL
-> [    2.291899] rt5640 0-001c: ASoC: Failed to add route OUT MIXL -> OUT MIXL Switch -> RECMIXL
-> [    2.300306] rt5640 0-001c: ASoC: no source widget found for OUT MIXR
-> [    2.306662] rt5640 0-001c: ASoC: Failed to add route OUT MIXR -> OUT MIXR Switch -> RECMIXR
-> [    2.315662] rt5640 0-001c: ASoC: no sink widget found for Stereo DAC MIXL
+Well, drivers with this patchset don't support this mechanism. The 
+reason is bad balance between the const to implement below requirements 
+and actual advantage to implement these:
+  - Requirement to manage states of several devices simultaneously
+  - Requirement to handle several streams from/to each device simultaneously
+  - Requirement to calculate SYT with the length between host controller 
+and each device
 
-(but repeated for about 28 widget/route pairs)
+The drivers synchronized each devices independently. The drivers handle 
+packets from a device and read SYT, then transfer packets with the SYT 
+to the device.
 
-Perhaps it's related to:
+= Rest of issues
+Currently I focus on enabling ALSA to handle devices. So there are some 
+issues which don't cause big problems.
 
-> diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+1.Sorting packets
+I know some Fireworks based devices sometimes transfer packets with 
+disorder. But current implementation is a lack of sorting packets. The 
+packets with disorder is detected as dicontinuity then streams are 
+forced to stop and XRUN is generated. In this case, usual ALSA PCM 
+applications may recover XRUN, so there may be some XRUNS to start 
+straems successfully.
+I need more time to investigate frequency and pattern of this issue. 
+Near future I want to discuss this issue again with enough data.
 
-> -#define RT5639_RESET_ID				0x0008
-> -#define RT5640_RESET_ID				0x000c
+2.Data rate for MIDI substream
+With current implementation, the maximum data rate for MIDI substream in 
+out-stream is one eighth of sampling rate. For example, at 48.0kHz, it's 
+6,000 bytes. This is excess over standard MIDI data rate, 3,125 bits per 
+second. So a few devices can have buffer over flow when receiving much 
+MIDI messages. For example, M-Audio Firewire 1814 transmits packets with 
+discontinuity in this case. I guess that Fireworks based devices and 
+some BeBoB based devices ignore MIDI messages in more than 8 data blocks 
+of packets and this is vendor's effort for this issue.
+Drivers need a throttle for this issue but this is for future work.
 
-These values cover at least bits 3:2.
+3.Latency
+Currently, the minumum number of frames per period is not less than 
+5msec. Drivers has a flag, SNDRV_PCM_INFO_BATCH and the minimum number 
+of periods in buffer is 2. As a result, its minimum latency is 10msec. 
+For more severe latency, further work is needed. But I feel this is not 
+so higher priority than other issues because actually devices are available.
 
-> +/* SW Reset & Device ID (0x00) */
-> +#define RT5640_ID_MASK				(0x3 << 1)
-> +#define RT5640_ID_5639				(0x0 << 1)
-> +#define RT5640_ID_5640				(0x1 << 1)
-> +#define RT5640_ID_5642				(0x3 << 1)
+4.A few devices are freezed when frequent establishing/breaking connections
+One of testers reported this issue. 'PreSonus FP10' can be freezed when 
+frequent establishing/breaking connections. This brings a disadvantage 
+to PulseAudio. When PulseAudio detects the card, it starts/stops 4 
+streams at least. If PulseAudio can detect devices with some hacks, it 
+may take the device freezed.
 
-whereas these values cover bits 2:1. Should the shift be 2? Even with
-that fixed, the old 5639 value was 2 << 2 but the new value here is 0 <<
-2. Similarly, the old 5640 value was 3 <<2 whereas the new value is 1 <<
-2. There's obviously quite some confusion here.
+5.Various results at bus reset
+I confirm various results with Fireworks/BeBoB and its devices at bus 
+reset during streaming, depending on cases.
+Case 1. Software do bus reset
+When generating bus reset with ffado-test or jujuutils, streaming 
+stopped. When generating bus reset, the drivers update connections 
+according to IEC 61883-1. But after a few hundred msec, the device break 
+connections by itself. I don't know the reason exactly but I guess the 
+synchronizing mechanism I describe have some relations.
+Case 2. Connecting devices or removing devices
+This case depends on which devices are connected or removed. If they're 
+Fireworks/BeBoB based devices, streaming sometimes continues and 
+sometimes stops. If they're not Fireworks/BeBoB based device, streaming 
+continues. I don't know the reason exactly but I guess the synchronizing 
+mechanism I describe have some relations.
 
-The schematic of my board says I have an RT5640, everything worked
-before this commit, and register 0 (where these values are stored) reads
-as 0xc which matches the RT5640 value before this commit but not after.
 
-I can see why this patch causes the driver to support the wrong chip.
-However, I can't imagine why that causes all the log spew at startup.
-Perhaps the driver is just broken on RT5639 at present (although I don't
-recall seeing any issues when booting on a board that actually had
-one...) Is part of the driver keying off this now incorrect ID register
-read, yet some other part of the driver registering widgets/routes based
-on which entry matched in struct i2c_device_id rt5640_i2c_id, hence
-they're falling out of sync due to this change? If so, that seems like
-another bug that needs fixing.
+Regards
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
+
+
+------------------------------------------------------------------------------
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
