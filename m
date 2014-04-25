@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 36/49] bebob: Add proc interface for debugging purpose
-Date: Fri, 25 Apr 2014 22:45:17 +0900
-Message-ID: <1398433530-13136-37-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 41/49] bebob: Add support for Terratec PHASE,
+	EWS series and Aureon
+Date: Fri, 25 Apr 2014 22:45:22 +0900
+Message-ID: <1398433530-13136-42-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,70 +21,106 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds proc interface to get these information for debugging:
- - firmware information
- - stream formation
- - current clock source and sampling rate
+This commit allows this driver to support all of models which Terratec produced
+with DM1000/BeBoB. They are:
+ - PHASE 24 FW
+ - PHASE X24 FW
+ - PHASE 88 Rack FW
+ - EWS MIC2
+ - EWS MIC4
+ - Aureon 7.1 Firewire
 
+For Phase series, this commit adds a Terratec specific operation. To get source
+of clock. AV/C Audio Subunit command is used.
+
+For EWS series and Aureon, this module uses normal operations.
+
+Tested-by: Maximilian Engelhardt <maxi@daemonizer.de> (PHASE 24 FW)
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/Makefile     |   2 +-
- sound/firewire/bebob/bebob.c      |   2 +
- sound/firewire/bebob/bebob.h      |   3 +
- sound/firewire/bebob/bebob_proc.c | 151 ++++++++++++++++++++++++++++++++++++++
- 4 files changed, 157 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/bebob/bebob_proc.c
+ sound/firewire/Kconfig                |  3 ++
+ sound/firewire/bebob/Makefile         |  2 +-
+ sound/firewire/bebob/bebob.c          | 11 ++++++
+ sound/firewire/bebob/bebob.h          |  4 +++
+ sound/firewire/bebob/bebob_terratec.c | 68 +++++++++++++++++++++++++++++++++++
+ 5 files changed, 87 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/bebob/bebob_terratec.c
 
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 2175064..b1a1d7d 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -108,6 +108,9 @@ config SND_BEBOB
+ 	  * Lynx Aurora 8/16 (LT-FW)
+ 	  * ICON FireXon
+ 	  * PrismSound Orpheus/ADA-8XR
++	  * TerraTec PHASE 24 FW/PHASE X24 FW/PHASE 88 Rack FW
++	  * Terratec EWS MIC2/EWS MIC4
++	  * Terratec Aureon 7.1 Firewire
+ 
+           To compile this driver as a module, choose M here: the module
+           will be called snd-bebob.
 diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-index 5cece62..757c40e 100644
+index e4b08e3..cb38dd1 100644
 --- a/sound/firewire/bebob/Makefile
 +++ b/sound/firewire/bebob/Makefile
-@@ -1,2 +1,2 @@
--snd-bebob-objs := bebob_command.o bebob_stream.o bebob.o
-+snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob.o
+@@ -1,3 +1,3 @@
+ snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
+-		  bebob_pcm.o bebob_hwdep.o bebob.o
++		  bebob_pcm.o bebob_hwdep.o bebob_terratec.o bebob.o
  obj-m += snd-bebob.o
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 180284d..0c3f1f6 100644
+index 3d79090..262677e 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -162,6 +162,8 @@ bebob_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
+@@ -52,6 +52,7 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
+ #define VEN_LYNX	0x000019e5
+ #define VEN_ICON	0x00001a9e
+ #define VEN_PRISMSOUND	0x00001198
++#define VEN_TERRATEC	0x00000aac
  
-+	snd_bebob_proc_init(bebob);
-+
- 	err = snd_bebob_stream_init_duplex(bebob);
- 	if (err < 0)
- 		goto error;
+ static int
+ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+@@ -290,6 +291,16 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x00010048, &spec_normal),
+ 	/* PrismSound, ADA-8XR */
+ 	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x0000ada8, &spec_normal),
++	/* TerraTec Electronic GmbH, PHASE 88 Rack FW */
++	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000003, &phase88_rack_spec),
++	/* TerraTec Electronic GmbH, PHASE 24 FW */
++	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000004, &phase24_series_spec),
++	/* TerraTec Electronic GmbH, Phase X24 FW */
++	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000007, &phase24_series_spec),
++	/* TerraTec Electronic GmbH, EWS MIC2/MIC8 */
++	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000005, &spec_normal),
++	/* Terratec Electronic GmbH, Aureon 7.1 Firewire */
++	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000002, &spec_normal),
+ 	/* IDs are unknown but able to be supported */
+ 	/*  Apogee, Mini-ME Firewire */
+ 	/*  Apogee, Mini-DAC Firewire */
 diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 031ca78..1247cca 100644
+index 7365f92..6c11af8 100644
 --- a/sound/firewire/bebob/bebob.h
 +++ b/sound/firewire/bebob/bebob.h
-@@ -20,6 +20,7 @@
+@@ -224,6 +224,10 @@ int snd_bebob_create_pcm_devices(struct snd_bebob *bebob);
  
- #include <sound/core.h>
- #include <sound/initval.h>
-+#include <sound/info.h>
+ int snd_bebob_create_hwdep_device(struct snd_bebob *bebob);
  
- #include "../lib.h"
- #include "../fcp.h"
-@@ -171,6 +172,8 @@ void snd_bebob_stream_stop_duplex(struct snd_bebob *bebob);
- void snd_bebob_stream_update_duplex(struct snd_bebob *bebob);
- void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob);
- 
-+void snd_bebob_proc_init(struct snd_bebob *bebob);
++/* model specific operations */
++extern struct snd_bebob_spec phase88_rack_spec;
++extern struct snd_bebob_spec phase24_series_spec;
 +
- #define SND_BEBOB_DEV_ENTRY(vendor, model) \
+ #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
  { \
  	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/bebob/bebob_proc.c b/sound/firewire/bebob/bebob_proc.c
+diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
 new file mode 100644
-index 0000000..c31ca4f
+index 0000000..2a89c1c
 --- /dev/null
-+++ b/sound/firewire/bebob/bebob_proc.c
-@@ -0,0 +1,151 @@
++++ b/sound/firewire/bebob/bebob_terratec.c
+@@ -0,0 +1,68 @@
 +/*
-+ * bebob_proc.c - a part of driver for BeBoB based devices
++ * bebob_terratec.c - a part of driver for BeBoB based devices
 + *
 + * Copyright (c) 2013-2014 Takashi Sakamoto
 + *
@@ -92,147 +129,64 @@ index 0000000..c31ca4f
 +
 +#include "./bebob.h"
 +
-+/* contents of information register */
-+struct hw_info {
-+	u64 manufacturer;
-+	u32 protocol_ver;
-+	u32 bld_ver;
-+	u32 guid[2];
-+	u32 model_id;
-+	u32 model_rev;
-+	u64 fw_date;
-+	u64 fw_time;
-+	u32 fw_id;
-+	u32 fw_ver;
-+	u32 base_addr;
-+	u32 max_size;
-+	u64 bld_date;
-+	u64 bld_time;
-+/* may not used in product
-+	u64 dbg_date;
-+	u64 dbg_time;
-+	u32 dbg_id;
-+	u32 dbg_version;
-+*/
-+} __packed;
-+
-+static void
-+proc_read_hw_info(struct snd_info_entry *entry,
-+		  struct snd_info_buffer *buffer)
++static char *const phase88_rack_clk_src_labels[] = {
++	SND_BEBOB_CLOCK_INTERNAL, "Digital In", "Word Clock"
++};
++static int
++phase88_rack_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
 +{
-+	struct snd_bebob *bebob = entry->private_data;
-+	struct hw_info *info;
++	unsigned int enable_ext, enable_word;
++	int err;
 +
-+	info = kzalloc(sizeof(struct hw_info), GFP_KERNEL);
-+	if (info == NULL)
-+		return;
-+
-+	if (snd_bebob_read_block(bebob->unit, 0,
-+				   info, sizeof(struct hw_info)) < 0)
++	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_ext);
++	if (err < 0)
++		goto end;
++	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_word);
++	if (err < 0)
 +		goto end;
 +
-+	snd_iprintf(buffer, "Manufacturer:\t%.8s\n",
-+		    (char *)&info->manufacturer);
-+	snd_iprintf(buffer, "Protocol Ver:\t%d\n", info->protocol_ver);
-+	snd_iprintf(buffer, "Build Ver:\t%d\n", info->bld_ver);
-+	snd_iprintf(buffer, "GUID:\t\t0x%.8X%.8X\n",
-+		    info->guid[0], info->guid[1]);
-+	snd_iprintf(buffer, "Model ID:\t0x%02X\n", info->model_id);
-+	snd_iprintf(buffer, "Model Rev:\t%d\n", info->model_rev);
-+	snd_iprintf(buffer, "Firmware Date:\t%.8s\n", (char *)&info->fw_date);
-+	snd_iprintf(buffer, "Firmware Time:\t%.8s\n", (char *)&info->fw_time);
-+	snd_iprintf(buffer, "Firmware ID:\t0x%X\n", info->fw_id);
-+	snd_iprintf(buffer, "Firmware Ver:\t%d\n", info->fw_ver);
-+	snd_iprintf(buffer, "Base Addr:\t0x%X\n", info->base_addr);
-+	snd_iprintf(buffer, "Max Size:\t%d\n", info->max_size);
-+	snd_iprintf(buffer, "Loader Date:\t%.8s\n", (char *)&info->bld_date);
-+	snd_iprintf(buffer, "Loader Time:\t%.8s\n", (char *)&info->bld_time);
-+
++	*id = (enable_ext & 0x01) | ((enable_word & 0x01) << 1);
 +end:
-+	kfree(info);
++	return err;
 +}
 +
-+static void
-+proc_read_formation(struct snd_info_entry *entry,
-+		struct snd_info_buffer *buffer)
++static char *const phase24_series_clk_src_labels[] = {
++	SND_BEBOB_CLOCK_INTERNAL, "Digital In"
++};
++static int
++phase24_series_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
 +{
-+	struct snd_bebob *bebob = entry->private_data;
-+	struct snd_bebob_stream_formation *formation;
-+	unsigned int i;
-+
-+	snd_iprintf(buffer, "Output Stream from device:\n");
-+	snd_iprintf(buffer, "\tRate\tPCM\tMIDI\n");
-+	formation = bebob->tx_stream_formations;
-+	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
-+		snd_iprintf(buffer,
-+			    "\t%d\t%d\t%d\n", snd_bebob_rate_table[i],
-+			    formation[i].pcm, formation[i].midi);
-+	}
-+
-+	snd_iprintf(buffer, "Input Stream to device:\n");
-+	snd_iprintf(buffer, "\tRate\tPCM\tMIDI\n");
-+	formation = bebob->rx_stream_formations;
-+	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
-+		snd_iprintf(buffer,
-+			    "\t%d\t%d\t%d\n", snd_bebob_rate_table[i],
-+			    formation[i].pcm, formation[i].midi);
-+	}
++	return avc_audio_get_selector(bebob->unit, 0, 4, id);
 +}
 +
-+static void
-+proc_read_clock(struct snd_info_entry *entry,
-+		struct snd_info_buffer *buffer)
-+{
-+	struct snd_bebob *bebob = entry->private_data;
-+	unsigned int rate;
-+	bool internal;
++struct snd_bebob_rate_spec phase_series_rate_spec = {
++	.get	= &snd_bebob_stream_get_rate,
++	.set	= &snd_bebob_stream_set_rate,
++};
 +
-+	if (snd_bebob_stream_get_rate(bebob, &rate) >= 0)
-+		snd_iprintf(buffer, "Sampling rate: %d\n", rate);
++/* PHASE 88 Rack FW */
++struct snd_bebob_clock_spec phase88_rack_clk = {
++	.num	= ARRAY_SIZE(phase88_rack_clk_src_labels),
++	.labels	= phase88_rack_clk_src_labels,
++	.get	= &phase88_rack_clk_src_get,
++};
++struct snd_bebob_spec phase88_rack_spec = {
++	.clock	= &phase88_rack_clk,
++	.rate	= &phase_series_rate_spec,
++	.meter	= NULL
++};
 +
-+	if (snd_bebob_stream_check_internal_clock(bebob, &internal) >= 0)
-+		snd_iprintf(buffer, "Clock Source: %s (MSU-dest: %d)",
-+			    (internal) ? "Internal" : "External",
-+			    bebob->sync_input_plug);
-+}
-+
-+static void
-+add_node(struct snd_bebob *bebob, struct snd_info_entry *root, const char *name,
-+	 void (*op)(struct snd_info_entry *e, struct snd_info_buffer *b))
-+{
-+	struct snd_info_entry *entry;
-+
-+	entry = snd_info_create_card_entry(bebob->card, name, root);
-+	if (entry == NULL)
-+		return;
-+
-+	snd_info_set_text_ops(entry, bebob, op);
-+	if (snd_info_register(entry) < 0)
-+		snd_info_free_entry(entry);
-+}
-+
-+void snd_bebob_proc_init(struct snd_bebob *bebob)
-+{
-+	struct snd_info_entry *root;
-+
-+	/*
-+	 * All nodes are automatically removed at snd_card_disconnect(),
-+	 * by following to link list.
-+	 */
-+	root = snd_info_create_card_entry(bebob->card, "firewire",
-+					  bebob->card->proc_root);
-+	if (root == NULL)
-+		return;
-+	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
-+	if (snd_info_register(root) < 0) {
-+		snd_info_free_entry(root);
-+		return;
-+	}
-+
-+	add_node(bebob, root, "clock", proc_read_clock);
-+	add_node(bebob, root, "firmware", proc_read_hw_info);
-+	add_node(bebob, root, "formation", proc_read_formation);
-+}
++/* 'PHASE 24 FW' and 'PHASE X24 FW' */
++struct snd_bebob_clock_spec phase24_series_clk = {
++	.num	= ARRAY_SIZE(phase24_series_clk_src_labels),
++	.labels	= phase24_series_clk_src_labels,
++	.get	= &phase24_series_clk_src_get,
++};
++struct snd_bebob_spec phase24_series_spec = {
++	.clock	= &phase24_series_clk,
++	.rate	= &phase_series_rate_spec,
++	.meter	= NULL
++};
 -- 
 1.8.3.2
 
