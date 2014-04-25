@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 09/49] firewire-lib: Add support for channel mapping
-Date: Fri, 25 Apr 2014 22:44:50 +0900
-Message-ID: <1398433530-13136-10-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 05/49] firewire-lib: Add support for AMDTP in-stream and PCM
+	capture
+Date: Fri, 25 Apr 2014 22:44:46 +0900
+Message-ID: <1398433530-13136-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,321 +21,353 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Some devices arrange the position of PCM/MIDI data channel in AMDTP packet.
-This commit allows drivers to set channel mapping.
+For capturing PCM, this commit adds the functionality to handle in-stream.
+This is also applied for dual-wire mode.
 
-To be simple, the mapping table is an array with fixed length. Then the number
-of channels for PCM is restricted by 64 channels.
+Currently, capturing 32bit samples are supported.
+
+When the sequence of in-packet has discontinuity of dbc, in-stream isn't handled
+and amdtp_streaming_error() returns true.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 118 +++++++++++++++++++++++++++++--------------------
- sound/firewire/amdtp.h |   8 ++++
- 2 files changed, 79 insertions(+), 47 deletions(-)
+ sound/firewire/amdtp.c | 229 +++++++++++++++++++++++++++++++++++++++++++++----
+ sound/firewire/amdtp.h |   2 +
+ 2 files changed, 214 insertions(+), 17 deletions(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 8498155..9cf81b2 100644
+index 790aa86..be1aabc 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -129,11 +129,12 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
- 		[CIP_SFC_176400] = 176400,
- 		[CIP_SFC_192000] = 192000,
- 	};
--	unsigned int sfc, midi_channels;
-+	unsigned int i, sfc, midi_channels;
+@@ -39,6 +39,7 @@
+  * only "Clock-based rate control mode" is supported
+  */
+ #define AMDTP_FDF_AM824		(0 << (CIP_FDF_SFC_SHIFT + 3))
++#define AMDTP_FDF_NO_DATA	0xff
+ #define AMDTP_DBS_MASK		0x00ff0000
+ #define AMDTP_DBS_SHIFT		16
+ #define AMDTP_DBC_MASK		0x000000ff
+@@ -47,6 +48,7 @@
+ #define INTERRUPT_INTERVAL	16
+ #define QUEUE_LENGTH		48
  
- 	midi_channels = DIV_ROUND_UP(midi_ports, 8);
++#define IN_PACKET_HEADER_SIZE	4
+ #define OUT_PACKET_HEADER_SIZE	0
  
--	if (WARN_ON(amdtp_stream_running(s)) ||
-+	if (WARN_ON(amdtp_stream_running(s)) |
-+	    WARN_ON(pcm_channels > AMDTP_MAX_CHANNELS_FOR_PCM) |
- 	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
- 		return;
+ static void pcm_period_tasklet(unsigned long data);
+@@ -179,6 +181,12 @@ static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
+ static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
+ 				     struct snd_pcm_substream *pcm,
+ 				     __be32 *buffer, unsigned int frames);
++static void amdtp_read_s32(struct amdtp_stream *s,
++			   struct snd_pcm_substream *pcm,
++			   __be32 *buffer, unsigned int frames);
++static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
++				    struct snd_pcm_substream *pcm,
++				    __be32 *buffer, unsigned int frames);
  
-@@ -148,11 +149,12 @@ sfc_found:
- 	if (s->dual_wire) {
- 		sfc -= 2;
- 		rate /= 2;
--		pcm_channels *= 2;
-+		s->pcm_channels = pcm_channels * 2;
-+	} else {
-+		s->pcm_channels = pcm_channels;
+ /**
+  * amdtp_stream_set_pcm_format - set the PCM format
+@@ -200,16 +208,27 @@ void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
+ 		WARN_ON(1);
+ 		/* fall through */
+ 	case SNDRV_PCM_FORMAT_S16:
+-		if (s->dual_wire)
+-			s->transfer_samples = amdtp_write_s16_dualwire;
+-		else
+-			s->transfer_samples = amdtp_write_s16;
+-		break;
++		if (s->direction == AMDTP_OUT_STREAM) {
++			if (s->dual_wire)
++				s->transfer_samples = amdtp_write_s16_dualwire;
++			else
++				s->transfer_samples = amdtp_write_s16;
++			break;
++		}
++		WARN_ON(1);
++		/* fall through */
+ 	case SNDRV_PCM_FORMAT_S32:
+-		if (s->dual_wire)
+-			s->transfer_samples = amdtp_write_s32_dualwire;
+-		else
+-			s->transfer_samples = amdtp_write_s32;
++		if (s->direction == AMDTP_OUT_STREAM) {
++			if (s->dual_wire)
++				s->transfer_samples = amdtp_write_s32_dualwire;
++			else
++				s->transfer_samples = amdtp_write_s32;
++		} else {
++			if (s->dual_wire)
++				s->transfer_samples = amdtp_read_s32_dualwire;
++			else
++				s->transfer_samples = amdtp_read_s32;
++		}
+ 		break;
  	}
- 	s->sfc = sfc;
--	s->data_block_quadlets = pcm_channels + midi_channels;
--	s->pcm_channels = pcm_channels;
-+	s->data_block_quadlets = s->pcm_channels + midi_channels;
- 	s->midi_ports = midi_ports;
- 
- 	s->syt_interval = amdtp_syt_intervals[sfc];
-@@ -162,6 +164,11 @@ sfc_found:
- 	if (s->flags & CIP_BLOCKING)
- 		/* additional buffering needed to adjust for no-data packets */
- 		s->transfer_delay += TICKS_PER_SECOND * s->syt_interval / rate;
-+
-+	/* init the position map for PCM and MIDI channels */
-+	for (i = 0; i < pcm_channels; i++)
-+		s->pcm_positions[i] = i;
-+	s->midi_position = s->pcm_channels;
  }
- EXPORT_SYMBOL(amdtp_stream_set_parameters);
- 
-@@ -341,22 +348,21 @@ static void amdtp_write_s32(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
- {
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, frame_step, i, c;
-+	unsigned int channels, remaining_frames, i, c;
- 	const u32 *src;
- 
- 	channels = s->pcm_channels;
- 	src = (void *)runtime->dma_area +
- 			frames_to_bytes(runtime, s->pcm_buffer_pointer);
- 	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--	frame_step = s->data_block_quadlets - channels;
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
-+			buffer[s->pcm_positions[c]] =
-+					cpu_to_be32((*src >> 8) | 0x40000000);
- 			src++;
--			buffer++;
- 		}
--		buffer += frame_step;
-+		buffer += s->data_block_quadlets;
- 		if (--remaining_frames == 0)
- 			src = (void *)runtime->dma_area;
- 	}
-@@ -367,22 +373,21 @@ static void amdtp_write_s16(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
- {
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, frame_step, i, c;
-+	unsigned int channels, remaining_frames, i, c;
- 	const u16 *src;
- 
- 	channels = s->pcm_channels;
- 	src = (void *)runtime->dma_area +
- 			frames_to_bytes(runtime, s->pcm_buffer_pointer);
- 	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--	frame_step = s->data_block_quadlets - channels;
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
-+			buffer[s->pcm_positions[c]] =
-+					cpu_to_be32((*src << 8) | 0x40000000);
- 			src++;
--			buffer++;
- 		}
--		buffer += frame_step;
-+		buffer += s->data_block_quadlets;
- 		if (--remaining_frames == 0)
- 			src = (void *)runtime->dma_area;
- 	}
-@@ -393,29 +398,29 @@ static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
- 				     __be32 *buffer, unsigned int frames)
- {
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, frame_adjust_1, frame_adjust_2, i, c;
-+	unsigned int channels, remaining_frames, i, c;
- 	const u32 *src;
- 
--	channels = s->pcm_channels;
- 	src = (void *)runtime->dma_area +
--			s->pcm_buffer_pointer * (runtime->frame_bits / 8);
--	frame_adjust_1 = channels - 1;
--	frame_adjust_2 = 1 - (s->data_block_quadlets - channels);
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+	channels = s->pcm_channels / 2;
- 
--	channels /= 2;
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
-+			buffer[s->pcm_positions[c] * 2] =
-+					cpu_to_be32((*src >> 8) | 0x40000000);
- 			src++;
--			buffer += 2;
- 		}
--		buffer -= frame_adjust_1;
-+		buffer += 1;
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src >> 8) | 0x40000000);
-+			buffer[s->pcm_positions[c] * 2] =
-+					cpu_to_be32((*src >> 8) | 0x40000000);
- 			src++;
--			buffer += 2;
- 		}
--		buffer -= frame_adjust_2;
-+		buffer += s->data_block_quadlets - 1;
-+		if (--remaining_frames == 0)
-+			src = (void *)runtime->dma_area;
+@@ -420,6 +439,59 @@ static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
  	}
  }
  
-@@ -424,29 +429,29 @@ static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
- 				     __be32 *buffer, unsigned int frames)
- {
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, frame_adjust_1, frame_adjust_2, i, c;
-+	unsigned int channels, remaining_frames, i, c;
- 	const u16 *src;
- 
--	channels = s->pcm_channels;
- 	src = (void *)runtime->dma_area +
--			s->pcm_buffer_pointer * (runtime->frame_bits / 8);
--	frame_adjust_1 = channels - 1;
--	frame_adjust_2 = 1 - (s->data_block_quadlets - channels);
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+	channels = s->pcm_channels / 2;
- 
--	channels /= 2;
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
-+			buffer[s->pcm_positions[c] * 2] =
-+					cpu_to_be32((*src << 8) | 0x40000000);
- 			src++;
--			buffer += 2;
- 		}
--		buffer -= frame_adjust_1;
-+		buffer += 1;
- 		for (c = 0; c < channels; ++c) {
--			*buffer = cpu_to_be32((*src << 8) | 0x40000000);
-+			buffer[s->pcm_positions[c] * 2] =
-+					cpu_to_be32((*src << 8) | 0x40000000);
- 			src++;
--			buffer += 2;
- 		}
--		buffer -= frame_adjust_2;
-+		buffer += s->data_block_quadlets - 1;
-+		if (--remaining_frames == 0)
-+			src = (void *)runtime->dma_area;
- 	}
- }
- 
-@@ -465,7 +470,7 @@ static void amdtp_read_s32(struct amdtp_stream *s,
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
--			*dst = be32_to_cpu(buffer[c]) << 8;
-+			*dst = be32_to_cpu(buffer[s->pcm_positions[c]]) << 8;
- 			dst++;
- 		}
- 		buffer += s->data_block_quadlets;
-@@ -489,12 +494,14 @@ static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
--			*dst = be32_to_cpu(buffer[c * 2]) << 8;
-+			*dst =
-+			     be32_to_cpu(buffer[s->pcm_positions[c] * 2]) << 8;
- 			dst++;
- 		}
- 		buffer += 1;
- 		for (c = 0; c < channels; ++c) {
--			*dst = be32_to_cpu(buffer[c * 2]) << 8;
-+			*dst =
-+			     be32_to_cpu(buffer[s->pcm_positions[c] * 2]) << 8;
- 			dst++;
- 		}
- 		buffer += s->data_block_quadlets - 1;
-@@ -510,11 +517,26 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < s->pcm_channels; ++c)
--			buffer[c] = cpu_to_be32(0x40000000);
-+			buffer[s->pcm_positions[c]] = cpu_to_be32(0x40000000);
- 		buffer += s->data_block_quadlets;
- 	}
- }
- 
-+static void amdtp_fill_pcm_silence_dualwire(struct amdtp_stream *s,
-+					   __be32 *buffer, unsigned int frames)
++static void amdtp_read_s32(struct amdtp_stream *s,
++			   struct snd_pcm_substream *pcm,
++			   __be32 *buffer, unsigned int frames)
 +{
-+	unsigned int i, c, channels;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	u32 *dst;
 +
-+	channels = s->pcm_channels / 2;
++	channels = s->pcm_channels;
++	dst  = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
 +	for (i = 0; i < frames; ++i) {
 +		for (c = 0; c < channels; ++c) {
-+			buffer[s->pcm_positions[c] * 2] =
-+			buffer[s->pcm_positions[c] * 2 + 1] =
-+						cpu_to_be32(0x40000000);
++			*dst = be32_to_cpu(buffer[c]) << 8;
++			dst++;
 +		}
 +		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			dst = (void *)runtime->dma_area;
 +	}
 +}
- static void amdtp_fill_midi(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
++
++static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
++				    struct snd_pcm_substream *pcm,
++				    __be32 *buffer, unsigned int frames)
++{
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	u32 *dst;
++
++	dst = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++	channels = s->pcm_channels / 2;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			*dst = be32_to_cpu(buffer[c * 2]) << 8;
++			dst++;
++		}
++		buffer += 1;
++		for (c = 0; c < channels; ++c) {
++			*dst = be32_to_cpu(buffer[c * 2]) << 8;
++			dst++;
++		}
++		buffer += s->data_block_quadlets - 1;
++		if (--remaining_frames == 0)
++			dst = (void *)runtime->dma_area;
++	}
++}
++
+ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
+ 				   __be32 *buffer, unsigned int frames)
  {
-@@ -522,8 +544,8 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
- 	u8 *b;
+@@ -504,6 +576,12 @@ static inline int queue_out_packet(struct amdtp_stream *s,
+ 			    payload_length, skip);
+ }
  
- 	for (f = 0; f < frames; f++) {
--		buffer[s->pcm_channels + 1] = 0;
--		b = (u8 *)&buffer[s->pcm_channels + 1];
-+		buffer[s->midi_position] = 0;
-+		b = (u8 *)&buffer[s->midi_position];
++static inline int queue_in_packet(struct amdtp_stream *s)
++{
++	return queue_packet(s, IN_PACKET_HEADER_SIZE,
++			    amdtp_stream_get_max_payload(s), false);
++}
++
+ static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
+ {
+ 	__be32 *buffer;
+@@ -552,6 +630,80 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
+ 		update_pcm_pointers(s, pcm, data_blocks);
+ }
  
- 		port = (s->data_block_counter + f) % 8;
- 		if ((s->midi[port] == NULL) ||
-@@ -545,7 +567,7 @@ static void amdtp_pull_midi(struct amdtp_stream *s,
++static void handle_in_packet(struct amdtp_stream *s,
++			     unsigned int payload_quadlets,
++			     __be32 *buffer)
++{
++	u32 cip_header[2];
++	unsigned int data_blocks, data_block_quadlets, data_block_counter;
++	struct snd_pcm_substream *pcm = NULL;
++
++	cip_header[0] = be32_to_cpu(buffer[0]);
++	cip_header[1] = be32_to_cpu(buffer[1]);
++
++	/*
++	 * This module supports 'Two-quadlet CIP header with SYT field'.
++	 * For convinience, also check FMT field is AM824 or not.
++	 */
++	if (((cip_header[0] & CIP_EOH_MASK) == CIP_EOH) ||
++	    ((cip_header[1] & CIP_EOH_MASK) != CIP_EOH) ||
++	    ((cip_header[1] & CIP_FMT_MASK) != CIP_FMT_AM)) {
++		dev_info_ratelimited(&s->unit->device,
++				"Invalid CIP header for AMDTP: %08X:%08X\n",
++				cip_header[0], cip_header[1]);
++		goto end;
++	}
++
++	/* Calculate data blocks */
++	if (payload_quadlets < 3 ||
++	    ((cip_header[1] & CIP_FDF_MASK) ==
++				(AMDTP_FDF_NO_DATA << CIP_FDF_SFC_SHIFT))) {
++		data_blocks = 0;
++	} else {
++		data_block_quadlets =
++			(cip_header[0] & AMDTP_DBS_MASK) >> AMDTP_DBS_SHIFT;
++		/* avoid division by zero */
++		if (data_block_quadlets == 0) {
++			dev_info_ratelimited(&s->unit->device,
++				"Detect invalid value in dbs field: %08X\n",
++				cip_header[0]);
++			goto err;
++		}
++
++		data_blocks = (payload_quadlets - 2) / data_block_quadlets;
++	}
++
++	/* Check data block counter continuity */
++	data_block_counter = cip_header[0] & AMDTP_DBC_MASK;
++	if (data_block_counter != s->data_block_counter) {
++		dev_info(&s->unit->device,
++			 "Detect discontinuity of CIP: %02X %02X\n",
++			 s->data_block_counter, data_block_counter);
++		goto err;
++	}
++
++	if (data_blocks > 0) {
++		buffer += 2;
++
++		pcm = ACCESS_ONCE(s->pcm);
++		if (pcm)
++			s->transfer_samples(s, pcm, buffer, data_blocks);
++	}
++
++	s->data_block_counter = (data_block_counter + data_blocks) & 0xff;
++end:
++	if (queue_in_packet(s) < 0)
++		goto err;
++
++	if (pcm)
++		update_pcm_pointers(s, pcm, data_blocks);
++
++	return;
++err:
++	s->packet_index = -1;
++	amdtp_stream_pcm_abort(s);
++}
++
+ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 				size_t header_length, void *header,
+ 				void *private_data)
+@@ -571,6 +723,31 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 	fw_iso_context_queue_flush(s->context);
+ }
  
- 	for (f = 0; f < frames; f++) {
- 		port = (s->data_block_counter + f) % 8;
--		b = (u8 *)&buffer[s->pcm_channels + 1];
-+		b = (u8 *)&buffer[s->midi_position];
++static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
++			       size_t header_length, void *header,
++			       void *private_data)
++{
++	struct amdtp_stream *s = private_data;
++	unsigned int p, packets, payload_quadlets;
++	__be32 *buffer, *headers = header;
++
++	/* The number of packets in buffer */
++	packets = header_length / IN_PACKET_HEADER_SIZE;
++
++	for (p = 0; p < packets; p++) {
++		if (s->packet_index < 0)
++			return;
++		buffer = s->buffer.packets[s->packet_index].buffer;
++
++		/* The number of quadlets in this packet */
++		payload_quadlets =
++			(be32_to_cpu(headers[p]) >> ISO_DATA_LENGTH_SHIFT) / 4;
++		handle_in_packet(s, payload_quadlets, buffer);
++	}
++
++	fw_iso_context_queue_flush(s->context);
++}
++
+ /**
+  * amdtp_stream_start - start transferring packets
+  * @s: the AMDTP stream to start
+@@ -595,7 +772,10 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 		[CIP_SFC_88200]  = {  0,   67 },
+ 		[CIP_SFC_176400] = {  0,   67 },
+ 	};
+-	int err;
++	unsigned int header_size;
++	enum dma_data_direction dir;
++	fw_iso_callback_t cb;
++	int type, err;
  
- 		len = b[0] - 0x80;
- 		if ((1 <= len) &&  (len <= 3) && (s->midi[port]))
-@@ -652,6 +674,8 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
- 	pcm = ACCESS_ONCE(s->pcm);
- 	if (pcm)
- 		s->transfer_samples(s, pcm, buffer, data_blocks);
-+	else if (s->dual_wire)
-+		amdtp_fill_pcm_silence_dualwire(s, buffer, data_blocks);
- 	else
- 		amdtp_fill_pcm_silence(s, buffer, data_blocks);
- 	if (s->midi_ports)
-@@ -683,7 +707,7 @@ static void handle_in_packet(struct amdtp_stream *s,
+ 	mutex_lock(&s->mutex);
  
- 	/*
- 	 * This module supports 'Two-quadlet CIP header with SYT field'.
--	 * For convinience, also check FMT field is AM824 or not.
-+	 * For convenience, also check FMT field is AM824 or not.
- 	 */
- 	if (((cip_header[0] & CIP_EOH_MASK) == CIP_EOH) ||
- 	    ((cip_header[1] & CIP_EOH_MASK) != CIP_EOH) ||
+@@ -610,16 +790,26 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	s->syt_offset_state = initial_state[s->sfc].syt_offset;
+ 	s->last_syt_offset = TICKS_PER_CYCLE;
+ 
++	/* initialize packet buffer */
++	if (s->direction == AMDTP_IN_STREAM) {
++		dir = DMA_FROM_DEVICE;
++		type = FW_ISO_CONTEXT_RECEIVE;
++		header_size = IN_PACKET_HEADER_SIZE;
++		cb = in_stream_callback;
++	} else {
++		dir = DMA_TO_DEVICE;
++		type = FW_ISO_CONTEXT_TRANSMIT;
++		header_size = OUT_PACKET_HEADER_SIZE;
++		cb = out_stream_callback;
++	}
+ 	err = iso_packets_buffer_init(&s->buffer, s->unit, QUEUE_LENGTH,
+-				      amdtp_stream_get_max_payload(s),
+-				      DMA_TO_DEVICE);
++				      amdtp_stream_get_max_payload(s), dir);
+ 	if (err < 0)
+ 		goto err_unlock;
+ 
+ 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
+-					   FW_ISO_CONTEXT_TRANSMIT,
+-					   channel, speed, 0,
+-					   out_stream_callback, s);
++					   type, channel, speed, header_size,
++					   cb, s);
+ 	if (IS_ERR(s->context)) {
+ 		err = PTR_ERR(s->context);
+ 		if (err == -EBUSY)
+@@ -632,12 +822,17 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 
+ 	s->packet_index = 0;
+ 	do {
+-		err = queue_out_packet(s, 0, true);
++		if (s->direction == AMDTP_IN_STREAM)
++			err = queue_in_packet(s);
++		else
++			err = queue_out_packet(s, 0, true);
+ 		if (err < 0)
+ 			goto err_context;
+ 	} while (s->packet_index > 0);
+ 
+-	err = fw_iso_context_start(s->context, -1, 0, 0);
++	/* NOTE: TAG1 matches CIP. This just affects in stream. */
++	err = fw_iso_context_start(s->context, -1, 0,
++				   FW_ISO_CONTEXT_MATCH_TAG1);
+ 	if (err < 0)
+ 		goto err_context;
+ 
 diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 2bd3b27..e8d62ac 100644
+index 019134e..c831aaa 100644
 --- a/sound/firewire/amdtp.h
 +++ b/sound/firewire/amdtp.h
-@@ -51,6 +51,12 @@ enum cip_sfc {
+@@ -41,6 +41,8 @@ enum cip_sfc {
+ 	CIP_SFC_COUNT
+ };
  
- 
- /*
-+ * This module supports maximum 64 PCM channels for one PCM stream
-+ * This is for our convenience.
-+ */
-+#define AMDTP_MAX_CHANNELS_FOR_PCM	64
++#define AMDTP_IN_PCM_FORMAT_BITS	SNDRV_PCM_FMTBIT_S32
 +
-+/*
-  * AMDTP packet can include channels for MIDI conformant data.
-  * Each MIDI conformant data channel includes 8 MPX-MIDI data stream.
-  * Each MPX-MIDI data stream includes one data stream from/to MIDI ports.
-@@ -85,6 +91,8 @@ struct amdtp_stream {
- 	void (*transfer_samples)(struct amdtp_stream *s,
- 				 struct snd_pcm_substream *pcm,
- 				 __be32 *buffer, unsigned int frames);
-+	u8 pcm_positions[AMDTP_MAX_CHANNELS_FOR_PCM];
-+	u8 midi_position;
+ #define AMDTP_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
+ 					 SNDRV_PCM_FMTBIT_S32)
  
- 	unsigned int syt_interval;
- 	unsigned int transfer_delay;
 -- 
 1.8.3.2
 
