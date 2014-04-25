@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 07/49] firewire-lib: Give syt value as parameter to
-	handle_out_packet()
-Date: Fri, 25 Apr 2014 22:44:48 +0900
-Message-ID: <1398433530-13136-8-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 12/49] firewire-lib: Restrict calling
+	flush_context_completion() when context exists
+Date: Fri, 25 Apr 2014 22:44:53 +0900
+Message-ID: <1398433530-13136-13-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,83 +21,34 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-For duplex streams with synchronization, drivers should pick up
-'presentation timestamp' from in-packets and use the timestamp for
-out-packets. This commit is preparation for this.
+Currently, drivers can bring XRUN state for PCM substreams when error to
+queue packets or detecting discontinuity of packet. The application may try to
+recover this state by calling snd_pcm_prepare().
+
+Depending on each driver, .prepare() includes restart streaming. Then there
+is a state that PCM substreams are running but isochronous contexts are
+stopped. In this case, when .pointer() is called, it refers to error pointer.
+
+This commit is for a prevention of this bug.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ sound/firewire/amdtp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index a4553ec..24e9a96 100644
+index ac8c358..7c814ace 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -257,7 +257,9 @@ static unsigned int calculate_data_blocks(struct amdtp_stream *s)
+@@ -898,7 +898,7 @@ EXPORT_SYMBOL(amdtp_stream_start);
+ unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s)
  {
- 	unsigned int phase, data_blocks;
- 
--	if (!cip_sfc_is_base_44100(s->sfc)) {
-+	if (s->flags & CIP_BLOCKING)
-+		data_blocks = s->syt_interval;
-+	else if (!cip_sfc_is_base_44100(s->sfc)) {
- 		/* Sample_rate / 8000 is an integer, and precomputed. */
- 		data_blocks = s->data_block_state;
- 	} else {
-@@ -616,26 +618,22 @@ static inline int queue_in_packet(struct amdtp_stream *s)
- 			    amdtp_stream_get_max_payload(s), false);
- }
- 
--static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
-+static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
- {
- 	__be32 *buffer;
--	unsigned int index, data_blocks, syt, payload_length;
-+	unsigned int data_blocks, payload_length;
- 	struct snd_pcm_substream *pcm;
- 
- 	if (s->packet_index < 0)
- 		return;
--	index = s->packet_index;
- 
- 	/* this module generate empty packet for 'no data' */
--	syt = calculate_syt(s, cycle);
--	if (!(s->flags & CIP_BLOCKING))
-+	if (!(s->flags & CIP_BLOCKING) || (syt != CIP_SYT_NO_INFO))
- 		data_blocks = calculate_data_blocks(s);
--	else if (syt != CIP_SYT_NO_INFO)
--		data_blocks = s->syt_interval;
+ 	/* this optimization is allowed to be racy */
+-	if (s->pointer_flush)
++	if (s->pointer_flush && amdtp_stream_running(s))
+ 		fw_iso_context_flush_completions(s->context);
  	else
- 		data_blocks = 0;
- 
--	buffer = s->buffer.packets[index].buffer;
-+	buffer = s->buffer.packets[s->packet_index].buffer;
- 	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
- 				(s->data_block_quadlets << AMDTP_DBS_SHIFT) |
- 				s->data_block_counter);
-@@ -746,7 +744,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
- 				void *private_data)
- {
- 	struct amdtp_stream *s = private_data;
--	unsigned int i, packets = header_length / 4;
-+	unsigned int i, syt, packets = header_length / 4;
- 
- 	/*
- 	 * Compute the cycle of the last queued packet.
-@@ -755,8 +753,10 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
- 	 */
- 	cycle += QUEUE_LENGTH - packets;
- 
--	for (i = 0; i < packets; ++i)
--		handle_out_packet(s, ++cycle);
-+	for (i = 0; i < packets; ++i) {
-+		syt = calculate_syt(s, ++cycle);
-+		handle_out_packet(s, syt);
-+	}
- 	fw_iso_context_queue_flush(s->context);
- }
- 
+ 		s->pointer_flush = true;
 -- 
 1.8.3.2
 
