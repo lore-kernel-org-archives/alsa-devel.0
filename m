@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 23/49] fireworks/firewire-lib: Add a quirk for the meaning of
-	dbc
-Date: Fri, 25 Apr 2014 22:45:04 +0900
-Message-ID: <1398433530-13136-24-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 25/49] fireworks/firewire-lib: Add a quirk for fixed interval
+	of reported dbc
+Date: Fri, 25 Apr 2014 22:45:06 +0900
+Message-ID: <1398433530-13136-26-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,109 +21,116 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Fireworks has a quirk for the value of dbc field in transmitted packets.
-For Fireworks, dbc means the end of events in current packet. This is out
-of specification.
+Fireworks firmware version 5.5 reports fix interval for dbc in each packet.
 
 For example, AudioFire4:
-CIP0        CIP1    Payload
-01070092 90FFFFFF 02
-0107009A 9001E17B 3A <-
-010700A2 9001F6E5 3A
-010700A2 90FFFFFF 02
-010700AA 9001104F 3A <-
-010700B2 900125B9 3A
-010700BA 90013B23 3A
-010700BA 90FFFFFF 02
-010700C2 9001548E 3A <-
-010700CA 900169F8 3A
-010700CA 90FFFFFF 02
-010700D2 90018362 3A <-
-010700DA 900198CC 3A
+CIP0     CIP1     Payload
+00070000 900484FF 72
+00070008 9004A8FF 72
+00070008 90FFFFFF 02
+00070010 9004D0FF 72
+00070018 9004C4FF 72
+00070020 9004E8FF 72
+00070020 90FFFFFF 02
+00070028 900410FE 72
 
-According to IEC 61883-1/6, a packet following to empty packet has the same
-value for its dbc. But for Fireworks, it's incremented and empty packet has
-the same value as previous packet in dbc field.
+The interval of each dbc should be 16 except for empty packet but it's still 8.
 
-This commit adds a flag for Fireworks and some codes to checking dbc continuity.
+This commit adds a flag for this quirk and codes to refer to a fixed value.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c                      | 15 +++++++++++++--
+ sound/firewire/amdtp.c                      | 15 +++++++++++----
  sound/firewire/amdtp.h                      |  3 +++
- sound/firewire/fireworks/fireworks_stream.c |  2 ++
- 3 files changed, 18 insertions(+), 2 deletions(-)
+ sound/firewire/fireworks/fireworks.c        |  1 +
+ sound/firewire/fireworks/fireworks.h        |  1 +
+ sound/firewire/fireworks/fireworks_stream.c |  3 +++
+ 5 files changed, 19 insertions(+), 4 deletions(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index dce4c6d..51aad68 100644
+index 3903387..4a7cc1f 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -620,6 +620,7 @@ static void handle_in_packet(struct amdtp_stream *s,
+@@ -618,7 +618,8 @@ static void handle_in_packet(struct amdtp_stream *s,
+ 			     __be32 *buffer)
+ {
  	u32 cip_header[2];
- 	unsigned int data_blocks, data_block_quadlets, data_block_counter;
+-	unsigned int data_blocks, data_block_quadlets, data_block_counter;
++	unsigned int data_blocks, data_block_quadlets, data_block_counter,
++		     dbc_interval;
  	struct snd_pcm_substream *pcm = NULL;
-+	bool lost;
+ 	bool lost;
  
- 	cip_header[0] = be32_to_cpu(buffer[0]);
- 	cip_header[1] = be32_to_cpu(buffer[1]);
-@@ -658,7 +659,13 @@ static void handle_in_packet(struct amdtp_stream *s,
+@@ -661,11 +662,17 @@ static void handle_in_packet(struct amdtp_stream *s,
  
  	/* Check data block counter continuity */
  	data_block_counter = cip_header[0] & AMDTP_DBC_MASK;
--	if (data_block_counter != s->data_block_counter) {
-+	if (!(s->flags & CIP_DBC_IS_END_EVENT))
-+		lost = data_block_counter != s->data_block_counter;
-+	else
-+		lost = data_block_counter !=
-+		       ((s->data_block_counter + data_blocks) & 0xff);
+-	if (!(s->flags & CIP_DBC_IS_END_EVENT))
++	if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
+ 		lost = data_block_counter != s->data_block_counter;
+-	else
++	} else {
++		if ((data_blocks > 0) && (s->tx_dbc_interval > 0))
++			dbc_interval = s->tx_dbc_interval;
++		else
++			dbc_interval = data_blocks;
 +
-+	if (lost) {
- 		dev_info(&s->unit->device,
- 			 "Detect discontinuity of CIP: %02X %02X\n",
- 			 s->data_block_counter, data_block_counter);
-@@ -676,7 +683,11 @@ static void handle_in_packet(struct amdtp_stream *s,
- 			amdtp_pull_midi(s, buffer, data_blocks);
- 	}
+ 		lost = data_block_counter !=
+-		       ((s->data_block_counter + data_blocks) & 0xff);
++		       ((s->data_block_counter + dbc_interval) & 0xff);
++	}
  
--	s->data_block_counter = (data_block_counter + data_blocks) & 0xff;
-+	if (s->flags & CIP_DBC_IS_END_EVENT)
-+		s->data_block_counter = data_block_counter;
-+	else
-+		s->data_block_counter =
-+				(data_block_counter + data_blocks) & 0xff;
- end:
- 	if (queue_in_packet(s) < 0)
- 		goto err;
+ 	if (lost) {
+ 		dev_info(&s->unit->device,
 diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 96b96ec..1ca1a19 100644
+index f334ae5..05f1b8b 100644
 --- a/sound/firewire/amdtp.h
 +++ b/sound/firewire/amdtp.h
-@@ -19,12 +19,15 @@
-  * @CIP_SYNC_TO_DEVICE: In sync to device mode, time stamp in out packets is
-  *	generated by in packets. Defaultly this driver generates timestamp.
-  * @CIP_EMPTY_WITH_TAG0: Only for in-stream. Empty in-packets have TAG0.
-+ * @CIP_DBC_IS_END_EVENT: Only for in-stream. The value of dbc in an in-packet
-+ *	corresponds to the end of event in the packet. Out of IEC 61883.
-  */
- enum cip_flags {
- 	CIP_NONBLOCKING		= 0x00,
- 	CIP_BLOCKING		= 0x01,
- 	CIP_SYNC_TO_DEVICE	= 0x02,
- 	CIP_EMPTY_WITH_TAG0	= 0x04,
-+	CIP_DBC_IS_END_EVENT	= 0x08,
- };
+@@ -119,6 +119,9 @@ struct amdtp_stream {
  
- /**
+ 	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
+ 
++	/* quirk: fixed interval of dbc between previos/current packets. */
++	unsigned int tx_dbc_interval;
++
+ 	bool callbacked;
+ 	wait_queue_head_t callback_wait;
+ 	struct amdtp_stream *sync_slave;
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index 02b3259..25997f1 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -84,6 +84,7 @@ get_hardware_info(struct snd_efw *efw)
+ 		 (hwinfo->arm_version >> 16) & 0xff);
+ 	if (err < 0)
+ 		goto end;
++	efw->firmware_version = hwinfo->arm_version;
+ 
+ 	strcpy(efw->card->driver, "Fireworks");
+ 	strcpy(efw->card->shortname, hwinfo->model_name);
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index 9534e93..3f99851 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -63,6 +63,7 @@ struct snd_efw {
+ 
+ 	/* for quirks */
+ 	bool is_af9;
++	u32 firmware_version;
+ 
+ 	unsigned int midi_in_ports;
+ 	unsigned int midi_out_ports;
 diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index 360e871..d687b04 100644
+index 7447af7..c75c2ef 100644
 --- a/sound/firewire/fireworks/fireworks_stream.c
 +++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -196,6 +196,8 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
- 		goto end;
- 	/* Fireworks transmits NODATA packets with TAG0. */
- 	efw->tx_stream.flags |= CIP_EMPTY_WITH_TAG0;
-+	/* Fireworks has its own meaning for dbc. */
-+	efw->tx_stream.flags |= CIP_DBC_IS_END_EVENT;
+@@ -201,6 +201,9 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
+ 	/* AudioFire9 always reports wrong dbs. */
+ 	if (efw->is_af9)
+ 		efw->tx_stream.flags |= CIP_WRONG_DBS;
++	/* Firmware version 5.5 reports fixed interval for dbc. */
++	if (efw->firmware_version == 0x5050000)
++		efw->tx_stream.tx_dbc_interval = 8;
  
  	err = init_stream(efw, &efw->rx_stream);
  	if (err < 0) {
