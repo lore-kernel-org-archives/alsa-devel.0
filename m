@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 11/49] firewire-lib/dice/speakers: Add common PCM constraints
-	for AMDTP streams
-Date: Fri, 25 Apr 2014 22:44:52 +0900
-Message-ID: <1398433530-13136-12-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 15/49] firewire-lib: Add handling output connection by CMP
+Date: Fri, 25 Apr 2014 22:44:56 +0900
+Message-ID: <1398433530-13136-16-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,174 +20,170 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds common PCM constraints according to current firewire-lib
-implementation.
-
-1.Maximum width for each sample is limited by 24.
-AM824 in IEC 61883-6 can deliver 24bit data.
-
-2. Minimum time for period is 5msec.
-Apply the old value. For shorter latency, further works are needed.
-
-3. In blocking mode, frames per period/buffer is aligned to 32.
-Each packet can include some frames depending on its sampling rate. In
-blocking mode, the number equals to SYT_INTERVAL. Currently firewire-lib
-can schedule snd_pcm_period_elapsed() for each packet. So, for accurate
-PCM interrupt, the number of frames per period/buffer should be aligned
-to SYT_INTERVAL.
-Currently firewire-lib is lack of better rules to achieve this. So LCM of
-each value of SYT_INTERVALs (=32) is applied. This can be improved for
-further work.
+This patch adds some macros, codes with condition of direction and new functions
+to handle output connection. Once cmp_connection_init() is executed with its
+direction, CMP input and output connection can be handled by the same way.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c    | 56 +++++++++++++++++++++++++++++++++++++++++++++++
- sound/firewire/amdtp.h    |  3 +++
- sound/firewire/dice.c     | 17 +-------------
- sound/firewire/speakers.c |  8 +------
- 4 files changed, 61 insertions(+), 23 deletions(-)
+ sound/firewire/cmp.c | 99 +++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 90 insertions(+), 9 deletions(-)
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 3475b76..ac8c358 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -13,6 +13,7 @@
- #include <linux/slab.h>
- #include <linux/sched.h>
- #include <sound/pcm.h>
-+#include <sound/pcm_params.h>
- #include <sound/rawmidi.h>
- #include "amdtp.h"
+diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
+index c7f7a31..9da40d9 100644
+--- a/sound/firewire/cmp.c
++++ b/sound/firewire/cmp.c
+@@ -29,6 +29,14 @@
+ #define PCR_CHANNEL_MASK	0x003f0000
+ #define PCR_CHANNEL_SHIFT	16
  
-@@ -105,6 +106,61 @@ const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
- EXPORT_SYMBOL(amdtp_syt_intervals);
++/* oPCR specific fields */
++#define OPCR_XSPEED_MASK	0x00C00000
++#define OPCR_XSPEED_SHIFT	22
++#define OPCR_SPEED_MASK		0x0000C000
++#define OPCR_SPEED_SHIFT	14
++#define OPCR_OVERHEAD_ID_MASK	0x00003C00
++#define OPCR_OVERHEAD_ID_SHIFT	10
++
+ enum bus_reset_handling {
+ 	ABORT_ON_BUS_RESET,
+ 	SUCCEED_ON_BUS_RESET,
+@@ -41,10 +49,27 @@ void cmp_error(struct cmp_connection *c, const char *fmt, ...)
  
- /**
-+ * amdtp_stream_add_pcm_hw_constraints - add hw constraints for PCM substream
-+ * @s:		the AMDTP stream, which must be initialized.
-+ * @runtime:	the PCM substream runtime
-+ */
-+int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
-+					struct snd_pcm_runtime *runtime)
+ 	va_start(va, fmt);
+ 	dev_err(&c->resources.unit->device, "%cPCR%u: %pV",
+-		'i', c->pcr_index, &(struct va_format){ fmt, &va });
++		(c->direction == CMP_INPUT) ? 'i' : 'o',
++		c->pcr_index, &(struct va_format){ fmt, &va });
+ 	va_end(va);
+ }
+ 
++static u64 mpr_address(struct cmp_connection *c)
 +{
-+	int err;
-+
-+	/* AM824 in IEC 61883-6 can deliver 24bit data */
-+	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
-+	if (err < 0)
-+		goto end;
-+
-+	/*
-+	 * Currently firewire-lib processes 16 packets in one software
-+	 * interrupt callback. This equals to 2msec but actually the
-+	 * interval of the interrupts has a jitter.
-+	 * Additionally, even if adding a constraint to fit period size to
-+	 * 2msec, actual calculated frames per period doesn't equal to 2msec,
-+	 * depending on sampling rate.
-+	 * Anyway, the interval to call snd_pcm_period_elapsed() cannot 2msec.
-+	 * Here let us use 5msec for safe period interrupt.
-+	 */
-+	err = snd_pcm_hw_constraint_minmax(runtime,
-+					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
-+					   5000, UINT_MAX);
-+	if (err < 0)
-+		goto end;
-+
-+	/* Non-Blocking stream has no more constraints */
-+	if (!(s->flags & CIP_BLOCKING))
-+		goto end;
-+
-+	/*
-+	 * One AMDTP packet can include some frames. In blocking mode, the
-+	 * number equals to SYT_INTERVAL. So the number is 8, 16 or 32,
-+	 * depending on its sampling rate. For accurate period interrupt, it's
-+	 * preferrable to aligh period/buffer sizes to current SYT_INTERVAL.
-+	 *
-+	 * TODO: These constraints can be improved with propper rules.
-+	 * Currently apply LCM of SYT_INTEVALs.
-+	 */
-+	err = snd_pcm_hw_constraint_step(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 32);
-+	if (err < 0)
-+		goto end;
-+	err = snd_pcm_hw_constraint_step(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 32);
-+end:
-+	return err;
++	if (c->direction == CMP_INPUT)
++		return CSR_REGISTER_BASE + CSR_IMPR;
++	else
++		return CSR_REGISTER_BASE + CSR_OMPR;
 +}
-+EXPORT_SYMBOL(amdtp_stream_add_pcm_hw_constraints);
 +
-+/**
-  * amdtp_stream_set_parameters - set stream parameters
-  * @s: the AMDTP stream to configure
-  * @rate: the sample rate
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index db60425..d6bb7eb 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -64,6 +64,7 @@ enum cip_sfc {
- struct fw_unit;
- struct fw_iso_context;
- struct snd_pcm_substream;
-+struct snd_pcm_runtime;
- struct snd_rawmidi_substream;
++static u64 pcr_address(struct cmp_connection *c)
++{
++	if (c->direction == CMP_INPUT)
++		return CSR_REGISTER_BASE + CSR_IPCR(c->pcr_index);
++	else
++		return CSR_REGISTER_BASE + CSR_OPCR(c->pcr_index);
++}
++
+ static int pcr_modify(struct cmp_connection *c,
+ 		      __be32 (*modify)(struct cmp_connection *c, __be32 old),
+ 		      int (*check)(struct cmp_connection *c, __be32 pcr),
+@@ -60,8 +85,7 @@ static int pcr_modify(struct cmp_connection *c,
  
- enum amdtp_stream_direction {
-@@ -130,6 +131,8 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed);
- void amdtp_stream_update(struct amdtp_stream *s);
- void amdtp_stream_stop(struct amdtp_stream *s);
+ 		err = snd_fw_transaction(
+ 				c->resources.unit, TCODE_LOCK_COMPARE_SWAP,
+-				CSR_REGISTER_BASE + CSR_IPCR(c->pcr_index),
+-				buffer, 8,
++				pcr_address(c), buffer, 8,
+ 				FW_FIXED_GENERATION | c->resources.generation);
  
-+int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
-+					struct snd_pcm_runtime *runtime);
- void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
- 				 snd_pcm_format_t format);
- void amdtp_stream_pcm_prepare(struct amdtp_stream *s);
-diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index cd4c6b6..a9a30c0 100644
---- a/sound/firewire/dice.c
-+++ b/sound/firewire/dice.c
-@@ -420,22 +420,7 @@ static int dice_open(struct snd_pcm_substream *substream)
- 	if (err < 0)
- 		goto err_lock;
+ 		if (err < 0) {
+@@ -101,9 +125,9 @@ int cmp_connection_init(struct cmp_connection *c,
+ 	u32 mpr;
+ 	int err;
  
--	err = snd_pcm_hw_constraint_step(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 32);
--	if (err < 0)
--		goto err_lock;
--	err = snd_pcm_hw_constraint_step(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 32);
--	if (err < 0)
--		goto err_lock;
--
--	err = snd_pcm_hw_constraint_minmax(runtime,
--					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
--					   5000, UINT_MAX);
--	if (err < 0)
--		goto err_lock;
--
--	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
-+	err = amdtp_stream_add_pcm_hw_constraints(&dice->stream, runtime);
- 	if (err < 0)
- 		goto err_lock;
- 
-diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
-index c07e7cd..3427527 100644
---- a/sound/firewire/speakers.c
-+++ b/sound/firewire/speakers.c
-@@ -167,13 +167,7 @@ static int fwspk_open(struct snd_pcm_substream *substream)
++	c->direction = direction;
+ 	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
+-				 CSR_REGISTER_BASE + CSR_IMPR,
+-				 &mpr_be, 4, 0);
++				 mpr_address(c), &mpr_be, 4, 0);
  	if (err < 0)
  		return err;
+ 	mpr = be32_to_cpu(mpr_be);
+@@ -151,6 +175,53 @@ static __be32 ipcr_set_modify(struct cmp_connection *c, __be32 ipcr)
+ 	return ipcr;
+ }
  
--	err = snd_pcm_hw_constraint_minmax(runtime,
--					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
--					   5000, UINT_MAX);
--	if (err < 0)
--		return err;
--
--	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
-+	err = amdtp_stream_add_pcm_hw_constraints(fwspk->stream, runtime);
++static int get_overhead_id(struct cmp_connection *c)
++{
++	int id;
++
++	/*
++	 * apply "oPCR overhead ID encoding"
++	 * the encoding table can convert up to 512.
++	 * here the value over 512 is converted as the same way as 512.
++	 */
++	for (id = 1; id < 16; id++) {
++		if (c->resources.bandwidth_overhead < (id << 5))
++			break;
++	}
++	if (id == 16)
++		id = 0;
++
++	return id;
++}
++
++static __be32 opcr_set_modify(struct cmp_connection *c, __be32 opcr)
++{
++	unsigned int spd, xspd;
++
++	/* generate speed and extended speed field value */
++	if (c->speed > SCODE_400) {
++		spd  = SCODE_800;
++		xspd = c->speed - SCODE_800;
++	} else {
++		spd = c->speed;
++		xspd = 0;
++	}
++
++	opcr &= ~cpu_to_be32(PCR_BCAST_CONN |
++			     PCR_P2P_CONN_MASK |
++			     OPCR_XSPEED_MASK |
++			     PCR_CHANNEL_MASK |
++			     OPCR_SPEED_MASK |
++			     OPCR_OVERHEAD_ID_MASK);
++	opcr |= cpu_to_be32(1 << PCR_P2P_CONN_SHIFT);
++	opcr |= cpu_to_be32(xspd << OPCR_XSPEED_SHIFT);
++	opcr |= cpu_to_be32(c->resources.channel << PCR_CHANNEL_SHIFT);
++	opcr |= cpu_to_be32(spd << OPCR_SPEED_SHIFT);
++	opcr |= cpu_to_be32(get_overhead_id(c) << OPCR_OVERHEAD_ID_SHIFT);
++
++	return opcr;
++}
++
+ static int pcr_set_check(struct cmp_connection *c, __be32 pcr)
+ {
+ 	if (pcr & cpu_to_be32(PCR_BCAST_CONN |
+@@ -196,8 +267,13 @@ retry_after_bus_reset:
  	if (err < 0)
- 		return err;
+ 		goto err_mutex;
+ 
+-	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+-			 ABORT_ON_BUS_RESET);
++	if (c->direction == CMP_OUTPUT)
++		err = pcr_modify(c, opcr_set_modify, pcr_set_check,
++				 ABORT_ON_BUS_RESET);
++	else
++		err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
++				 ABORT_ON_BUS_RESET);
++
+ 	if (err == -EAGAIN) {
+ 		fw_iso_resources_free(&c->resources);
+ 		goto retry_after_bus_reset;
+@@ -245,8 +321,13 @@ int cmp_connection_update(struct cmp_connection *c)
+ 	if (err < 0)
+ 		goto err_unconnect;
+ 
+-	err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
+-			 SUCCEED_ON_BUS_RESET);
++	if (c->direction == CMP_OUTPUT)
++		err = pcr_modify(c, opcr_set_modify, pcr_set_check,
++				 SUCCEED_ON_BUS_RESET);
++	else
++		err = pcr_modify(c, ipcr_set_modify, pcr_set_check,
++				 SUCCEED_ON_BUS_RESET);
++
+ 	if (err < 0)
+ 		goto err_resources;
  
 -- 
 1.8.3.2
