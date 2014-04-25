@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 41/49] bebob: Add support for Terratec PHASE,
-	EWS series and Aureon
-Date: Fri, 25 Apr 2014 22:45:22 +0900
-Message-ID: <1398433530-13136-42-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 38/49] bebob: Add PCM interface
+Date: Fri, 25 Apr 2014 22:45:19 +0900
+Message-ID: <1398433530-13136-39-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,106 +20,87 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit allows this driver to support all of models which Terratec produced
-with DM1000/BeBoB. They are:
- - PHASE 24 FW
- - PHASE X24 FW
- - PHASE 88 Rack FW
- - EWS MIC2
- - EWS MIC4
- - Aureon 7.1 Firewire
+This commit adds a functionality to capture/playback PCM samples.
 
-For Phase series, this commit adds a Terratec specific operation. To get source
-of clock. AV/C Audio Subunit command is used.
+When AMDTP stream is already running for PCM or the source of clock is not
+internal, available sampling rate is limited at current one.
 
-For EWS series and Aureon, this module uses normal operations.
-
-Tested-by: Maximilian Engelhardt <maxi@daemonizer.de> (PHASE 24 FW)
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig                |  3 ++
- sound/firewire/bebob/Makefile         |  2 +-
- sound/firewire/bebob/bebob.c          | 11 ++++++
- sound/firewire/bebob/bebob.h          |  4 +++
- sound/firewire/bebob/bebob_terratec.c | 68 +++++++++++++++++++++++++++++++++++
- 5 files changed, 87 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/bebob/bebob_terratec.c
+ sound/firewire/Kconfig           |   1 +
+ sound/firewire/bebob/Makefile    |   1 +
+ sound/firewire/bebob/bebob.c     |   4 +
+ sound/firewire/bebob/bebob.h     |   4 +
+ sound/firewire/bebob/bebob_pcm.c | 369 +++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 379 insertions(+)
+ create mode 100644 sound/firewire/bebob/bebob_pcm.c
 
 diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 2175064..b1a1d7d 100644
+index 708d3c8..d55fd5f 100644
 --- a/sound/firewire/Kconfig
 +++ b/sound/firewire/Kconfig
-@@ -108,6 +108,9 @@ config SND_BEBOB
- 	  * Lynx Aurora 8/16 (LT-FW)
- 	  * ICON FireXon
- 	  * PrismSound Orpheus/ADA-8XR
-+	  * TerraTec PHASE 24 FW/PHASE X24 FW/PHASE 88 Rack FW
-+	  * Terratec EWS MIC2/EWS MIC4
-+	  * Terratec Aureon 7.1 Firewire
- 
-           To compile this driver as a module, choose M here: the module
-           will be called snd-bebob.
+@@ -83,6 +83,7 @@ config SND_BEBOB
+ 	tristate "BridgeCo DM1000/DM1100/DM1500 with BeBoB firmware"
+ 	select SND_FIREWIRE_LIB
+ 	select SND_RAWMIDI
++	select SND_PCM
+         help
+ 	 Say Y here to include support for FireWire devices based
+ 	 on BridgeCo DM1000/DM1100/DM1500 with BeBoB firmware:
 diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-index e4b08e3..cb38dd1 100644
+index 1e39e59..533718a 100644
 --- a/sound/firewire/bebob/Makefile
 +++ b/sound/firewire/bebob/Makefile
-@@ -1,3 +1,3 @@
+@@ -1,3 +1,4 @@
  snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
--		  bebob_pcm.o bebob_hwdep.o bebob.o
-+		  bebob_pcm.o bebob_hwdep.o bebob_terratec.o bebob.o
++		  bebob_pcm.o \
+ 		  bebob.o
  obj-m += snd-bebob.o
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 3d79090..262677e 100644
+index 383df9a..dbd12c3 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -52,6 +52,7 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
- #define VEN_LYNX	0x000019e5
- #define VEN_ICON	0x00001a9e
- #define VEN_PRISMSOUND	0x00001198
-+#define VEN_TERRATEC	0x00000aac
+@@ -171,6 +171,10 @@ bebob_probe(struct fw_unit *unit,
+ 			goto error;
+ 	}
  
- static int
- name_device(struct snd_bebob *bebob, unsigned int vendor_id)
-@@ -290,6 +291,16 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x00010048, &spec_normal),
- 	/* PrismSound, ADA-8XR */
- 	SND_BEBOB_DEV_ENTRY(VEN_PRISMSOUND, 0x0000ada8, &spec_normal),
-+	/* TerraTec Electronic GmbH, PHASE 88 Rack FW */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000003, &phase88_rack_spec),
-+	/* TerraTec Electronic GmbH, PHASE 24 FW */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000004, &phase24_series_spec),
-+	/* TerraTec Electronic GmbH, Phase X24 FW */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000007, &phase24_series_spec),
-+	/* TerraTec Electronic GmbH, EWS MIC2/MIC8 */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000005, &spec_normal),
-+	/* Terratec Electronic GmbH, Aureon 7.1 Firewire */
-+	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000002, &spec_normal),
- 	/* IDs are unknown but able to be supported */
- 	/*  Apogee, Mini-ME Firewire */
- 	/*  Apogee, Mini-DAC Firewire */
++	err = snd_bebob_create_pcm_devices(bebob);
++	if (err < 0)
++		goto error;
++
+ 	err = snd_bebob_stream_init_duplex(bebob);
+ 	if (err < 0)
+ 		goto error;
 diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 7365f92..6c11af8 100644
+index 0d53cff..b41bb91 100644
 --- a/sound/firewire/bebob/bebob.h
 +++ b/sound/firewire/bebob/bebob.h
-@@ -224,6 +224,10 @@ int snd_bebob_create_pcm_devices(struct snd_bebob *bebob);
+@@ -22,6 +22,8 @@
+ #include <sound/initval.h>
+ #include <sound/info.h>
+ #include <sound/rawmidi.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
  
- int snd_bebob_create_hwdep_device(struct snd_bebob *bebob);
+ #include "../lib.h"
+ #include "../fcp.h"
+@@ -177,6 +179,8 @@ void snd_bebob_proc_init(struct snd_bebob *bebob);
  
-+/* model specific operations */
-+extern struct snd_bebob_spec phase88_rack_spec;
-+extern struct snd_bebob_spec phase24_series_spec;
+ int snd_bebob_create_midi_devices(struct snd_bebob *bebob);
+ 
++int snd_bebob_create_pcm_devices(struct snd_bebob *bebob);
 +
- #define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
+ #define SND_BEBOB_DEV_ENTRY(vendor, model) \
  { \
  	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
+diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
 new file mode 100644
-index 0000000..2a89c1c
+index 0000000..7474309
 --- /dev/null
-+++ b/sound/firewire/bebob/bebob_terratec.c
-@@ -0,0 +1,68 @@
++++ b/sound/firewire/bebob/bebob_pcm.c
+@@ -0,0 +1,369 @@
 +/*
-+ * bebob_terratec.c - a part of driver for BeBoB based devices
++ * bebob_pcm.c - a part of driver for BeBoB based devices
 + *
 + * Copyright (c) 2013-2014 Takashi Sakamoto
 + *
@@ -129,64 +109,365 @@ index 0000000..2a89c1c
 +
 +#include "./bebob.h"
 +
-+static char *const phase88_rack_clk_src_labels[] = {
-+	SND_BEBOB_CLOCK_INTERNAL, "Digital In", "Word Clock"
-+};
 +static int
-+phase88_rack_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
++hw_rule_rate(struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule)
 +{
-+	unsigned int enable_ext, enable_word;
++	struct snd_bebob_stream_formation *formations = rule->private;
++	struct snd_interval *r =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	const struct snd_interval *c =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval t = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int i;
++
++	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
++		/* entry is invalid */
++		if (formations[i].pcm == 0)
++			continue;
++
++		if (!snd_interval_test(c, formations[i].pcm))
++			continue;
++
++		t.min = min(t.min, snd_bebob_rate_table[i]);
++		t.max = max(t.max, snd_bebob_rate_table[i]);
++
++	}
++	return snd_interval_refine(r, &t);
++}
++
++static int
++hw_rule_channels(struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule)
++{
++	struct snd_bebob_stream_formation *formations = rule->private;
++	struct snd_interval *c =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	const struct snd_interval *r =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval t = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++
++	unsigned int i;
++
++	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
++		/* entry is invalid */
++		if (formations[i].pcm == 0)
++			continue;
++
++		if (!snd_interval_test(r, snd_bebob_rate_table[i]))
++			continue;
++
++		t.min = min(t.min, formations[i].pcm);
++		t.max = max(t.max, formations[i].pcm);
++	}
++
++	return snd_interval_refine(c, &t);
++}
++
++static void
++limit_channels_and_rates(struct snd_pcm_hardware *hw,
++			 struct snd_bebob_stream_formation *formations)
++{
++	unsigned int i;
++
++	hw->channels_min = UINT_MAX;
++	hw->channels_max = 0;
++
++	hw->rate_min = UINT_MAX;
++	hw->rate_max = 0;
++	hw->rates = 0;
++
++	for (i = 0; i < SND_BEBOB_STRM_FMT_ENTRIES; i++) {
++		/* entry has no PCM channels */
++		if (formations[i].pcm == 0)
++			continue;
++
++		hw->channels_min = min(hw->channels_min, formations[i].pcm);
++		hw->channels_max = max(hw->channels_max, formations[i].pcm);
++
++		hw->rate_min = min(hw->rate_min, snd_bebob_rate_table[i]);
++		hw->rate_max = max(hw->rate_max, snd_bebob_rate_table[i]);
++		hw->rates |= snd_pcm_rate_to_rate_bit(snd_bebob_rate_table[i]);
++	}
++}
++
++static void
++limit_period_and_buffer(struct snd_pcm_hardware *hw)
++{
++	hw->periods_min = 2;		/* SNDRV_PCM_INFO_BATCH */
++	hw->periods_max = UINT_MAX;
++
++	hw->period_bytes_min = 4 * hw->channels_max;	/* bytes for a frame */
++
++	/* Just to prevent from allocating much pages. */
++	hw->period_bytes_max = hw->period_bytes_min * 2048;
++	hw->buffer_bytes_max = hw->period_bytes_max * hw->periods_min;
++}
++
++static int
++pcm_init_hw_params(struct snd_bebob *bebob,
++		   struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct amdtp_stream *s;
++	struct snd_bebob_stream_formation *formations;
 +	int err;
 +
-+	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_ext);
-+	if (err < 0)
-+		goto end;
-+	err = avc_audio_get_selector(bebob->unit, 0, 0, &enable_word);
++	runtime->hw.info = SNDRV_PCM_INFO_BATCH |
++			   SNDRV_PCM_INFO_BLOCK_TRANSFER |
++			   SNDRV_PCM_INFO_INTERLEAVED |
++			   SNDRV_PCM_INFO_JOINT_DUPLEX |
++			   SNDRV_PCM_INFO_MMAP |
++			   SNDRV_PCM_INFO_MMAP_VALID;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		runtime->hw.formats = AMDTP_IN_PCM_FORMAT_BITS;
++		s = &bebob->tx_stream;
++		formations = bebob->tx_stream_formations;
++	} else {
++		runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
++		s = &bebob->rx_stream;
++		formations = bebob->rx_stream_formations;
++	}
++
++	limit_channels_and_rates(&runtime->hw, formations);
++	limit_period_and_buffer(&runtime->hw);
++
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				  hw_rule_channels, formations,
++				  SNDRV_PCM_HW_PARAM_RATE, -1);
 +	if (err < 0)
 +		goto end;
 +
-+	*id = (enable_ext & 0x01) | ((enable_word & 0x01) << 1);
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				  hw_rule_rate, formations,
++				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	if (err < 0)
++		goto end;
++
++	err = amdtp_stream_add_pcm_hw_constraints(s, runtime);
 +end:
 +	return err;
 +}
 +
-+static char *const phase24_series_clk_src_labels[] = {
-+	SND_BEBOB_CLOCK_INTERNAL, "Digital In"
-+};
 +static int
-+phase24_series_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
++pcm_open(struct snd_pcm_substream *substream)
 +{
-+	return avc_audio_get_selector(bebob->unit, 0, 4, id);
++	struct snd_bebob *bebob = substream->private_data;
++	unsigned int sampling_rate;
++	bool internal;
++	int err;
++
++	err = pcm_init_hw_params(bebob, substream);
++	if (err < 0)
++		goto end;
++
++	err = snd_bebob_stream_check_internal_clock(bebob, &internal);
++	if (err < 0)
++		goto end;
++
++	/*
++	 * When source of clock is internal or any PCM stream are running,
++	 * the available sampling rate is limited at current sampling rate.
++	 */
++	if (!internal ||
++	    amdtp_stream_pcm_running(&bebob->tx_stream) ||
++	    amdtp_stream_pcm_running(&bebob->rx_stream)) {
++		err = snd_bebob_stream_get_rate(bebob, &sampling_rate);
++		if (err < 0) {
++			dev_err(&bebob->unit->device,
++				"fail to get sampling rate: %d\n", err);
++			goto end;
++		}
++
++		substream->runtime->hw.rate_min = sampling_rate;
++		substream->runtime->hw.rate_max = sampling_rate;
++	}
++
++	snd_pcm_set_sync(substream);
++
++end:
++	return err;
 +}
 +
-+struct snd_bebob_rate_spec phase_series_rate_spec = {
-+	.get	= &snd_bebob_stream_get_rate,
-+	.set	= &snd_bebob_stream_set_rate,
++static int
++pcm_close(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static int
++pcm_capture_hw_params(struct snd_pcm_substream *substream,
++		      struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_bebob *bebob = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
++		atomic_inc(&bebob->capture_substreams);
++	amdtp_stream_set_pcm_format(&bebob->tx_stream,
++				    params_format(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++static int
++pcm_playback_hw_params(struct snd_pcm_substream *substream,
++		       struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_bebob *bebob = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
++		atomic_inc(&bebob->playback_substreams);
++	amdtp_stream_set_pcm_format(&bebob->rx_stream,
++				    params_format(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++
++static int
++pcm_capture_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_bebob *bebob = substream->private_data;
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		atomic_dec(&bebob->capture_substreams);
++
++	snd_bebob_stream_stop_duplex(bebob);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++static int
++pcm_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_bebob *bebob = substream->private_data;
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		atomic_dec(&bebob->playback_substreams);
++
++	snd_bebob_stream_stop_duplex(bebob);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int
++pcm_capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_bebob *bebob = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	err = snd_bebob_stream_start_duplex(bebob, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&bebob->tx_stream);
++
++	return err;
++}
++static int
++pcm_playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_bebob *bebob = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	err = snd_bebob_stream_start_duplex(bebob, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&bebob->rx_stream);
++
++	return err;
++}
++
++static int
++pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_bebob *bebob = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&bebob->tx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&bebob->tx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++static int
++pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_bebob *bebob = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&bebob->rx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&bebob->rx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static snd_pcm_uframes_t
++pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_bebob *bebob = sbstrm->private_data;
++	return amdtp_stream_pcm_pointer(&bebob->tx_stream);
++}
++static snd_pcm_uframes_t
++pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_bebob *bebob = sbstrm->private_data;
++	return amdtp_stream_pcm_pointer(&bebob->rx_stream);
++}
++
++static const struct snd_pcm_ops pcm_capture_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_capture_hw_params,
++	.hw_free	= pcm_capture_hw_free,
++	.prepare	= pcm_capture_prepare,
++	.trigger	= pcm_capture_trigger,
++	.pointer	= pcm_capture_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++};
++static const struct snd_pcm_ops pcm_playback_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_playback_hw_params,
++	.hw_free	= pcm_playback_hw_free,
++	.prepare	= pcm_playback_prepare,
++	.trigger	= pcm_playback_trigger,
++	.pointer	= pcm_playback_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++	.mmap		= snd_pcm_lib_mmap_vmalloc,
 +};
 +
-+/* PHASE 88 Rack FW */
-+struct snd_bebob_clock_spec phase88_rack_clk = {
-+	.num	= ARRAY_SIZE(phase88_rack_clk_src_labels),
-+	.labels	= phase88_rack_clk_src_labels,
-+	.get	= &phase88_rack_clk_src_get,
-+};
-+struct snd_bebob_spec phase88_rack_spec = {
-+	.clock	= &phase88_rack_clk,
-+	.rate	= &phase_series_rate_spec,
-+	.meter	= NULL
-+};
++int snd_bebob_create_pcm_devices(struct snd_bebob *bebob)
++{
++	struct snd_pcm *pcm;
++	int err;
 +
-+/* 'PHASE 24 FW' and 'PHASE X24 FW' */
-+struct snd_bebob_clock_spec phase24_series_clk = {
-+	.num	= ARRAY_SIZE(phase24_series_clk_src_labels),
-+	.labels	= phase24_series_clk_src_labels,
-+	.get	= &phase24_series_clk_src_get,
-+};
-+struct snd_bebob_spec phase24_series_spec = {
-+	.clock	= &phase24_series_clk,
-+	.rate	= &phase_series_rate_spec,
-+	.meter	= NULL
-+};
++	err = snd_pcm_new(bebob->card, bebob->card->driver, 0, 1, 1, &pcm);
++	if (err < 0)
++		goto end;
++
++	pcm->private_data = bebob;
++	snprintf(pcm->name, sizeof(pcm->name),
++		 "%s PCM", bebob->card->shortname);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
++end:
++	return err;
++}
 -- 
 1.8.3.2
 
