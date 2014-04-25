@@ -1,11 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 00/49 v4] Enhancement for support of Firewire devices
-Date: Fri, 25 Apr 2014 22:44:41 +0900
-Message-ID: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 04/49] firewire-lib: Split some codes into functions to reuse
+	for both streams
+Date: Fri, 25 Apr 2014 22:44:45 +0900
+Message-ID: <1398433530-13136-5-git-send-email-o-takashi@sakamocchi.jp>
+References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
 	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
@@ -18,157 +21,239 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This 49 patchset is to update previous series:
-[alsa-devel] [PATCH 00/44 v3] Enhancement of support for Firewire devices
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/074624.html
+Some codes can be reused to handle in-stream. This commit adds new functions.
+This commit also renames some functions to keep naming consistency.
 
-4 patches are newly added:
-[PATCH 09/48] dice/firewire-lib: Keep dualwire mode but obsolete CIP_HI_DUALWIRE
- - Make firewire-lib simpler.
-[PATCH 10/48] firewire-lib/dice/speakers: Add common PCM constraints for AMDTP streams
- - To share codes for drivers. Currently no improvement.
-[PATCH 25/48] fireworks/firewire-lib: Add a quirk to reset data block counter at bus reset
-[PATCH 46/48] bebob: Add a quirk of data blocks for MIDI messages for some M-Audio devices
- - New quirks are identified.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp.c | 154 ++++++++++++++++++++++++++-----------------------
+ 1 file changed, 81 insertions(+), 73 deletions(-)
 
-For reviewers, you can see previous series in 'request_v3' branch of my remote repository.
-I hope this will help your work.
-
-----------------------------------------------------------------
-The following changes since commit 38137a064199a02630f136ce7bb1580d5d3fedeb:
-
-  ALSA: lx_core: Translate comments from french to english (2014-04-18 09:57:03 +0200)
-
-are available in the git repository at:
-
-  https://github.com/takaswie/sound.git request_v4
-
-for you to fetch changes up to e851b7740f218d5d5a8e957851b383bde3e28654:
-
-  firewire/bebob: Add a workaround for M-Audio special Firewire series (2014-04-25 22:29:32 +0900)
-
-----------------------------------------------------------------
-Takashi Sakamoto (49):
-  firewire-lib: Rename functions, structure, member for AMDTP
-  firewire-lib: Add macros instead of fixed value for AMDTP
-  firewire-lib: Add 'direction' member to 'amdtp_stream' structure
-  firewire-lib: Split some codes into functions to reuse for both
-    streams
-  firewire-lib: Add support for AMDTP in-stream and PCM capture
-  firewire-lib: Add support for MIDI capture/playback
-  firewire-lib: Give syt value as parameter to handle_out_packet()
-  firewire-lib: Add support for duplex streams synchronization in
-    blocking mode
-  firewire-lib: Add support for channel mapping
-  dice/firewire-lib: Keep dualwire mode but obsolete CIP_HI_DUALWIRE
-  firewire-lib/dice/speakers: Add common PCM constraints for AMDTP
-    streams
-  firewire-lib: Restrict calling flush_context_completion() when context
-    exists
-  firewire-lib: Rename macros, variables and functions for CMP
-  firewire-lib: Add 'direction' member to 'cmp_connection' structure
-  firewire-lib: Add handling output connection by CMP
-  firewire-lib: Add a new function to check others' connection
-  firewire-lib: Add support for deferred transaction
-  firewire-lib: Add some AV/C general commands
-  fireworks: Add skelton for Fireworks based devices
-  fireworks: Add transaction and some commands
-  fireworks: Add connection and stream management
-  fireworks/firewire-lib: Add a quirk for empty packet with TAG0
-  fireworks/firewire-lib: Add a quirk for the meaning of dbc
-  fireworks/firewire-lib: Add a quirk for wrong dbs in tx packets
-  fireworks/firewire-lib: Add a quirk for fixed interval of reported dbc
-  fireworks/firewire-lib: Add a quirk to reset data block counter at bus
-    reset
-  fireworks: Add proc interface for debugging purpose
-  fireworks: Add MIDI interface
-  fireworks/firewire-lib: Add a quirk of data blocks for MIDI in
-    out-stream
-  fireworks: Add PCM interface
-  fireworks: Add hwdep interface
-  fireworks: Add command/response functionality into hwdep interface
-  bebob: Add skelton for BeBoB based devices
-  bebob: Add commands and connections/streams management
-  bebob/firewire-lib: Add a quirk for discontinuity at bus reset
-  bebob: Add proc interface for debugging purpose
-  bebob: Add MIDI interface
-  bebob: Add PCM interface
-  bebob: Add hwdep interface
-  bebob: Prepare for device specific operations
-  bebob: Add support for Terratec PHASE, EWS series and Aureon
-  bebob: Add support for Yamaha GO series
-  bebob: Add support for Focusrite Saffire/SaffirePro series
-  bebob: Add support for M-Audio usual Firewire series
-  bebob: Add support for M-Audio special Firewire series
-  bebob/firewire-lib: Add a quirk of wrong dbc in empty packet for
-    M-Audio special Firewire series
-  bebob: Add a quirk of data blocks for MIDI messages for some M-Audio
-    devices
-  bebob: Send a cue to load firmware for M-Audio Firewire series
-  firewire/bebob: Add a workaround for M-Audio special Firewire series
-
- drivers/firewire/core.h                          |    1 -
- include/linux/firewire.h                         |    3 +
- include/uapi/sound/asound.h                      |    4 +-
- include/uapi/sound/firewire.h                    |   23 +-
- sound/firewire/Kconfig                           |   59 ++
- sound/firewire/Makefile                          |    2 +
- sound/firewire/amdtp.c                           |  797 +++++++++++------
- sound/firewire/amdtp.h                           |  200 ++++-
- sound/firewire/bebob/Makefile                    |    4 +
- sound/firewire/bebob/bebob.c                     |  472 ++++++++++
- sound/firewire/bebob/bebob.h                     |  257 ++++++
- sound/firewire/bebob/bebob_command.c             |  282 ++++++
- sound/firewire/bebob/bebob_focusrite.c           |  279 ++++++
- sound/firewire/bebob/bebob_hwdep.c               |  199 +++++
- sound/firewire/bebob/bebob_maudio.c              |  792 +++++++++++++++++
- sound/firewire/bebob/bebob_midi.c                |  168 ++++
- sound/firewire/bebob/bebob_pcm.c                 |  378 ++++++++
- sound/firewire/bebob/bebob_proc.c                |  196 +++++
- sound/firewire/bebob/bebob_stream.c              | 1020 ++++++++++++++++++++++
- sound/firewire/bebob/bebob_terratec.c            |   68 ++
- sound/firewire/bebob/bebob_yamaha.c              |   50 ++
- sound/firewire/cmp.c                             |  203 +++--
- sound/firewire/cmp.h                             |   14 +-
- sound/firewire/dice.c                            |   88 +-
- sound/firewire/fcp.c                             |  189 +++-
- sound/firewire/fcp.h                             |   21 +
- sound/firewire/fireworks/Makefile                |    4 +
- sound/firewire/fireworks/fireworks.c             |  357 ++++++++
- sound/firewire/fireworks/fireworks.h             |  232 +++++
- sound/firewire/fireworks/fireworks_command.c     |  372 ++++++++
- sound/firewire/fireworks/fireworks_hwdep.c       |  298 +++++++
- sound/firewire/fireworks/fireworks_midi.c        |  168 ++++
- sound/firewire/fireworks/fireworks_pcm.c         |  403 +++++++++
- sound/firewire/fireworks/fireworks_proc.c        |  232 +++++
- sound/firewire/fireworks/fireworks_stream.c      |  372 ++++++++
- sound/firewire/fireworks/fireworks_transaction.c |  326 +++++++
- sound/firewire/speakers.c                        |  100 +--
- 37 files changed, 8173 insertions(+), 460 deletions(-)
- create mode 100644 sound/firewire/bebob/Makefile
- create mode 100644 sound/firewire/bebob/bebob.c
- create mode 100644 sound/firewire/bebob/bebob.h
- create mode 100644 sound/firewire/bebob/bebob_command.c
- create mode 100644 sound/firewire/bebob/bebob_focusrite.c
- create mode 100644 sound/firewire/bebob/bebob_hwdep.c
- create mode 100644 sound/firewire/bebob/bebob_maudio.c
- create mode 100644 sound/firewire/bebob/bebob_midi.c
- create mode 100644 sound/firewire/bebob/bebob_pcm.c
- create mode 100644 sound/firewire/bebob/bebob_proc.c
- create mode 100644 sound/firewire/bebob/bebob_stream.c
- create mode 100644 sound/firewire/bebob/bebob_terratec.c
- create mode 100644 sound/firewire/bebob/bebob_yamaha.c
- create mode 100644 sound/firewire/fireworks/Makefile
- create mode 100644 sound/firewire/fireworks/fireworks.c
- create mode 100644 sound/firewire/fireworks/fireworks.h
- create mode 100644 sound/firewire/fireworks/fireworks_command.c
- create mode 100644 sound/firewire/fireworks/fireworks_hwdep.c
- create mode 100644 sound/firewire/fireworks/fireworks_midi.c
- create mode 100644 sound/firewire/fireworks/fireworks_pcm.c
- create mode 100644 sound/firewire/fireworks/fireworks_proc.c
- create mode 100644 sound/firewire/fireworks/fireworks_stream.c
- create mode 100644 sound/firewire/fireworks/fireworks_transaction.c
-
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 95c5a15..790aa86 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -47,6 +47,8 @@
+ #define INTERRUPT_INTERVAL	16
+ #define QUEUE_LENGTH		48
+ 
++#define OUT_PACKET_HEADER_SIZE	0
++
+ static void pcm_period_tasklet(unsigned long data);
+ 
+ /**
+@@ -440,13 +442,73 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 						cpu_to_be32(0x80000000);
+ }
+ 
+-static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
++static void update_pcm_pointers(struct amdtp_stream *s,
++				struct snd_pcm_substream *pcm,
++				unsigned int frames)
++{	unsigned int ptr;
++
++	if (s->dual_wire)
++		frames *= 2;
++
++	ptr = s->pcm_buffer_pointer + frames;
++	if (ptr >= pcm->runtime->buffer_size)
++		ptr -= pcm->runtime->buffer_size;
++	ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
++
++	s->pcm_period_pointer += frames;
++	if (s->pcm_period_pointer >= pcm->runtime->period_size) {
++		s->pcm_period_pointer -= pcm->runtime->period_size;
++		s->pointer_flush = false;
++		tasklet_hi_schedule(&s->period_tasklet);
++	}
++}
++
++static void pcm_period_tasklet(unsigned long data)
++{
++	struct amdtp_stream *s = (void *)data;
++	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
++
++	if (pcm)
++		snd_pcm_period_elapsed(pcm);
++}
++
++static int queue_packet(struct amdtp_stream *s,
++			unsigned int header_length,
++			unsigned int payload_length, bool skip)
++{
++	struct fw_iso_packet p = {0};
++	int err;
++
++	p.interrupt = IS_ALIGNED(s->packet_index + 1, INTERRUPT_INTERVAL);
++	p.tag = TAG_CIP;
++	p.header_length = header_length;
++	p.payload_length = (!skip) ? payload_length : 0;
++	p.skip = skip;
++	err = fw_iso_context_queue(s->context, &p, &s->buffer.iso_buffer,
++				   s->buffer.packets[s->packet_index].offset);
++	if (err < 0) {
++		dev_err(&s->unit->device, "queueing error: %d\n", err);
++		goto end;
++	}
++
++	if (++s->packet_index >= QUEUE_LENGTH)
++		s->packet_index = 0;
++end:
++	return err;
++}
++
++static inline int queue_out_packet(struct amdtp_stream *s,
++				   unsigned int payload_length, bool skip)
++{
++	return queue_packet(s, OUT_PACKET_HEADER_SIZE,
++			    payload_length, skip);
++}
++
++static void handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
+ {
+ 	__be32 *buffer;
+-	unsigned int index, data_blocks, syt, ptr;
++	unsigned int index, data_blocks, syt, payload_length;
+ 	struct snd_pcm_substream *pcm;
+-	struct fw_iso_packet packet;
+-	int err;
+ 
+ 	if (s->packet_index < 0)
+ 		return;
+@@ -479,55 +541,20 @@ static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
+ 
+ 	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
+ 
+-	packet.payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
+-	packet.interrupt = IS_ALIGNED(index + 1, INTERRUPT_INTERVAL);
+-	packet.skip = 0;
+-	packet.tag = TAG_CIP;
+-	packet.sy = 0;
+-	packet.header_length = 0;
+-
+-	err = fw_iso_context_queue(s->context, &packet, &s->buffer.iso_buffer,
+-				   s->buffer.packets[index].offset);
+-	if (err < 0) {
+-		dev_err(&s->unit->device, "queueing error: %d\n", err);
++	payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
++	if (queue_out_packet(s, payload_length, false) < 0) {
+ 		s->packet_index = -1;
+ 		amdtp_stream_pcm_abort(s);
+ 		return;
+ 	}
+ 
+-	if (++index >= QUEUE_LENGTH)
+-		index = 0;
+-	s->packet_index = index;
+-
+-	if (pcm) {
+-		if (s->dual_wire)
+-			data_blocks *= 2;
+-
+-		ptr = s->pcm_buffer_pointer + data_blocks;
+-		if (ptr >= pcm->runtime->buffer_size)
+-			ptr -= pcm->runtime->buffer_size;
+-		ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
+-
+-		s->pcm_period_pointer += data_blocks;
+-		if (s->pcm_period_pointer >= pcm->runtime->period_size) {
+-			s->pcm_period_pointer -= pcm->runtime->period_size;
+-			s->pointer_flush = false;
+-			tasklet_hi_schedule(&s->period_tasklet);
+-		}
+-	}
+-}
+-
+-static void pcm_period_tasklet(unsigned long data)
+-{
+-	struct amdtp_stream *s = (void *)data;
+-	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
+-
+ 	if (pcm)
+-		snd_pcm_period_elapsed(pcm);
++		update_pcm_pointers(s, pcm, data_blocks);
+ }
+ 
+-static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
+-			size_t header_length, void *header, void *private_data)
++static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
++				size_t header_length, void *header,
++				void *private_data)
+ {
+ 	struct amdtp_stream *s = private_data;
+ 	unsigned int i, packets = header_length / 4;
+@@ -540,31 +567,10 @@ static void out_packet_callback(struct fw_iso_context *context, u32 cycle,
+ 	cycle += QUEUE_LENGTH - packets;
+ 
+ 	for (i = 0; i < packets; ++i)
+-		queue_out_packet(s, ++cycle);
++		handle_out_packet(s, ++cycle);
+ 	fw_iso_context_queue_flush(s->context);
+ }
+ 
+-static int queue_initial_skip_packets(struct amdtp_stream *s)
+-{
+-	struct fw_iso_packet skip_packet = {
+-		.skip = 1,
+-	};
+-	unsigned int i;
+-	int err;
+-
+-	for (i = 0; i < QUEUE_LENGTH; ++i) {
+-		skip_packet.interrupt = IS_ALIGNED(s->packet_index + 1,
+-						   INTERRUPT_INTERVAL);
+-		err = fw_iso_context_queue(s->context, &skip_packet, NULL, 0);
+-		if (err < 0)
+-			return err;
+-		if (++s->packet_index >= QUEUE_LENGTH)
+-			s->packet_index = 0;
+-	}
+-
+-	return 0;
+-}
+-
+ /**
+  * amdtp_stream_start - start transferring packets
+  * @s: the AMDTP stream to start
+@@ -594,11 +600,12 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	mutex_lock(&s->mutex);
+ 
+ 	if (WARN_ON(amdtp_stream_running(s) ||
+-		    (!s->pcm_channels && !s->midi_ports))) {
++		    (s->data_block_quadlets < 1))) {
+ 		err = -EBADFD;
+ 		goto err_unlock;
+ 	}
+ 
++	s->data_block_counter = 0;
+ 	s->data_block_state = initial_state[s->sfc].data_block;
+ 	s->syt_offset_state = initial_state[s->sfc].syt_offset;
+ 	s->last_syt_offset = TICKS_PER_CYCLE;
+@@ -612,7 +619,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
+ 					   FW_ISO_CONTEXT_TRANSMIT,
+ 					   channel, speed, 0,
+-					   out_packet_callback, s);
++					   out_stream_callback, s);
+ 	if (IS_ERR(s->context)) {
+ 		err = PTR_ERR(s->context);
+ 		if (err == -EBUSY)
+@@ -624,10 +631,11 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	amdtp_stream_update(s);
+ 
+ 	s->packet_index = 0;
+-	s->data_block_counter = 0;
+-	err = queue_initial_skip_packets(s);
+-	if (err < 0)
+-		goto err_context;
++	do {
++		err = queue_out_packet(s, 0, true);
++		if (err < 0)
++			goto err_context;
++	} while (s->packet_index > 0);
+ 
+ 	err = fw_iso_context_start(s->context, -1, 0, 0);
+ 	if (err < 0)
 -- 
 1.8.3.2
 
