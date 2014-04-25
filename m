@@ -1,7 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 18/49] firewire-lib: Add some AV/C general commands
-Date: Fri, 25 Apr 2014 22:44:59 +0900
-Message-ID: <1398433530-13136-19-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 26/49] fireworks/firewire-lib: Add a quirk to reset data block
+	counter at bus reset
+Date: Fri, 25 Apr 2014 22:45:07 +0900
+Message-ID: <1398433530-13136-27-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,365 +21,67 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds three commands, which may be used by some firewire device
-drivers. These commands are defined in 'AV/C Digital Interface Command Set
-General Specification Version 4.2 (2004006, 1394TA)'.
+Fireworks has a quirk to reset data block counter at bus reset.
 
-1. PLUG INFO command (clause 10.1)
-2. INPUT PLUG SIGNAL FORMAT command (clause 10.10)
-3. OUTPUT PLUG SIGNAL FORMAT command (clause 10.11)
-
-By the command 1, the drivers can get the number of plugs for AV/C unit or
-subunit.
-By the command 2 and 3, the drivers can get/set sampling frequency.
-
-The 'firewire-speakers' already uses INPUT PLUG SIGNAL FORMAT command to set
-sampling rate. So this commit also affects the driver.
+This commit adds a flag of CIP_SKIP_DBC_ZERO_CHECK. This flag has an effect
+to skip checking dbc continuity when dbc is zero.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c    |  24 ++++----
- sound/firewire/amdtp.h    |   1 +
- sound/firewire/fcp.c      | 154 ++++++++++++++++++++++++++++++++++++++++++++++
- sound/firewire/fcp.h      |  21 +++++++
- sound/firewire/speakers.c |  43 ++-----------
- 5 files changed, 194 insertions(+), 49 deletions(-)
+ sound/firewire/amdtp.c                      | 4 +++-
+ sound/firewire/amdtp.h                      | 3 +++
+ sound/firewire/fireworks/fireworks_stream.c | 2 ++
+ 3 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 7c814ace..5b88461 100644
+index 4a7cc1f..5e13b3f 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -105,6 +105,17 @@ const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
- };
- EXPORT_SYMBOL(amdtp_syt_intervals);
+@@ -662,7 +662,9 @@ static void handle_in_packet(struct amdtp_stream *s,
  
-+const unsigned int amdtp_rate_table[] = {
-+	[CIP_SFC_32000]  =  32000,
-+	[CIP_SFC_44100]  =  44100,
-+	[CIP_SFC_48000]  =  48000,
-+	[CIP_SFC_88200]  =  88200,
-+	[CIP_SFC_96000]  =  96000,
-+	[CIP_SFC_176400] = 176400,
-+	[CIP_SFC_192000] = 192000,
-+};
-+EXPORT_SYMBOL(amdtp_rate_table);
-+
- /**
-  * amdtp_stream_add_pcm_hw_constraints - add hw constraints for PCM substream
-  * @s:		the AMDTP stream, which must be initialized.
-@@ -176,15 +187,6 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
- 				 unsigned int pcm_channels,
- 				 unsigned int midi_ports)
- {
--	static const unsigned int rates[] = {
--		[CIP_SFC_32000]  =  32000,
--		[CIP_SFC_44100]  =  44100,
--		[CIP_SFC_48000]  =  48000,
--		[CIP_SFC_88200]  =  88200,
--		[CIP_SFC_96000]  =  96000,
--		[CIP_SFC_176400] = 176400,
--		[CIP_SFC_192000] = 192000,
--	};
- 	unsigned int i, sfc, midi_channels;
- 
- 	midi_channels = DIV_ROUND_UP(midi_ports, 8);
-@@ -194,8 +196,8 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
- 	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
- 		return;
- 
--	for (sfc = 0; sfc < CIP_SFC_COUNT; ++sfc)
--		if (rates[sfc] == rate)
-+	for (sfc = 0; sfc < sizeof(amdtp_rate_table); ++sfc)
-+		if (amdtp_rate_table[sfc] == rate)
- 			goto sfc_found;
- 	WARN_ON(1);
- 	return;
+ 	/* Check data block counter continuity */
+ 	data_block_counter = cip_header[0] & AMDTP_DBC_MASK;
+-	if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
++	if ((s->flags & CIP_SKIP_DBC_ZERO_CHECK) && data_block_counter == 0) {
++		lost = false;
++	} else if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
+ 		lost = data_block_counter != s->data_block_counter;
+ 	} else {
+ 		if ((data_blocks > 0) && (s->tx_dbc_interval > 0))
 diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index d6bb7eb..3de3463 100644
+index 05f1b8b..42c75c9 100644
 --- a/sound/firewire/amdtp.h
 +++ b/sound/firewire/amdtp.h
-@@ -140,6 +140,7 @@ unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s);
- void amdtp_stream_pcm_abort(struct amdtp_stream *s);
- 
- extern const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
-+extern const unsigned int amdtp_rate_table[CIP_SFC_COUNT];
+@@ -23,6 +23,8 @@
+  *	corresponds to the end of event in the packet. Out of IEC 61883.
+  * @CIP_WRONG_DBS: Only for in-stream. The value of dbs is wrong in in-packets.
+  *	The value of data_block_quadlets is used instead of reported value.
++ * @SKIP_DBC_ZERO_CHECK: Only for in-stream.  Packets with zero in dbc is
++ *	skipped for detecting discontinuity.
+  */
+ enum cip_flags {
+ 	CIP_NONBLOCKING		= 0x00,
+@@ -31,6 +33,7 @@ enum cip_flags {
+ 	CIP_EMPTY_WITH_TAG0	= 0x04,
+ 	CIP_DBC_IS_END_EVENT	= 0x08,
+ 	CIP_WRONG_DBS		= 0x10,
++	CIP_SKIP_DBC_ZERO_CHECK	= 0x20,
+ };
  
  /**
-  * amdtp_stream_running - check stream is running or not
-diff --git a/sound/firewire/fcp.c b/sound/firewire/fcp.c
-index 6876bfa..d48e326 100644
---- a/sound/firewire/fcp.c
-+++ b/sound/firewire/fcp.c
-@@ -10,12 +10,14 @@
- #include <linux/firewire-constants.h>
- #include <linux/list.h>
- #include <linux/module.h>
-+#include <linux/slab.h>
- #include <linux/sched.h>
- #include <linux/spinlock.h>
- #include <linux/wait.h>
- #include <linux/delay.h>
- #include "fcp.h"
- #include "lib.h"
-+#include "amdtp.h"
- 
- #define CTS_AVC 0x00
- 
-@@ -23,6 +25,158 @@
- #define ERROR_DELAY_MS	5
- #define FCP_TIMEOUT_MS	125
- 
-+int avc_general_set_sig_fmt(struct fw_unit *unit, unsigned int rate,
-+			    enum avc_general_plug_dir dir,
-+			    unsigned short pid)
-+{
-+	unsigned int sfc;
-+	u8 *buf;
-+	bool flag;
-+	int err;
-+
-+	flag = false;
-+	for (sfc = 0; sfc < CIP_SFC_COUNT; sfc++) {
-+		if (amdtp_rate_table[sfc] == rate) {
-+			flag = true;
-+			break;
-+		}
-+	}
-+	if (!flag)
-+		return -EINVAL;
-+
-+	buf = kzalloc(8, GFP_KERNEL);
-+	if (buf == NULL)
-+		return -ENOMEM;
-+
-+	buf[0] = 0x00;		/* AV/C CONTROL */
-+	buf[1] = 0xff;		/* UNIT */
-+	if (dir == AVC_GENERAL_PLUG_DIR_IN)
-+		buf[2] = 0x19;	/* INPUT PLUG SIGNAL FORMAT */
-+	else
-+		buf[2] = 0x18;	/* OUTPUT PLUG SIGNAL FORMAT */
-+	buf[3] = 0xff & pid;	/* plug id */
-+	buf[4] = 0x90;		/* EOH_1, Form_1, FMT. AM824 */
-+	buf[5] = 0x07 & sfc;	/* FDF-hi. AM824, frequency */
-+	buf[6] = 0xff;		/* FDF-mid. AM824, SYT hi (not used)*/
-+	buf[7] = 0xff;		/* FDF-low. AM824, SYT lo (not used) */
-+
-+	/* do transaction and check buf[1-5] are the same against command */
-+	err = fcp_avc_transaction(unit, buf, 8, buf, 8,
-+				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5));
-+	if (err >= 0 && err < 8)
-+		err = -EIO;
-+	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
-+		err = -ENOSYS;
-+	else if (buf[0] == 0x0a) /* REJECTED */
-+		err = -EINVAL;
-+	if (err < 0)
-+		goto end;
-+
-+	err = 0;
-+end:
-+	kfree(buf);
-+	return err;
-+}
-+EXPORT_SYMBOL(avc_general_set_sig_fmt);
-+
-+int avc_general_get_sig_fmt(struct fw_unit *unit, unsigned int *rate,
-+			    enum avc_general_plug_dir dir,
-+			    unsigned short pid)
-+{
-+	unsigned int sfc;
-+	u8 *buf;
-+	int err;
-+
-+	buf = kzalloc(8, GFP_KERNEL);
-+	if (buf == NULL)
-+		return -ENOMEM;
-+
-+	buf[0] = 0x01;		/* AV/C STATUS */
-+	buf[1] = 0xff;		/* Unit */
-+	if (dir == AVC_GENERAL_PLUG_DIR_IN)
-+		buf[2] = 0x19;	/* INPUT PLUG SIGNAL FORMAT */
-+	else
-+		buf[2] = 0x18;	/* OUTPUT PLUG SIGNAL FORMAT */
-+	buf[3] = 0xff & pid;	/* plug id */
-+	buf[4] = 0x90;		/* EOH_1, Form_1, FMT. AM824 */
-+	buf[5] = 0xff;		/* FDF-hi. AM824, frequency */
-+	buf[6] = 0xff;		/* FDF-mid. AM824, SYT hi (not used) */
-+	buf[7] = 0xff;		/* FDF-low. AM824, SYT lo (not used) */
-+
-+	/* do transaction and check buf[1-4] are the same against command */
-+	err = fcp_avc_transaction(unit, buf, 8, buf, 8,
-+				  BIT(1) | BIT(2) | BIT(3) | BIT(4));
-+	if (err >= 0 && err < 8)
-+		err = -EIO;
-+	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
-+		err = -ENOSYS;
-+	else if (buf[0] == 0x0a) /* REJECTED */
-+		err = -EINVAL;
-+	else if (buf[0] == 0x0b) /* IN TRANSITION */
-+		err = -EAGAIN;
-+	if (err < 0)
-+		goto end;
-+
-+	/* check sfc field and pick up rate */
-+	sfc = 0x07 & buf[5];
-+	if (sfc >= CIP_SFC_COUNT) {
-+		err = -EAGAIN;	/* also in transition */
-+		goto end;
-+	}
-+
-+	*rate = amdtp_rate_table[sfc];
-+	err = 0;
-+end:
-+	kfree(buf);
-+	return err;
-+}
-+EXPORT_SYMBOL(avc_general_get_sig_fmt);
-+
-+int avc_general_get_plug_info(struct fw_unit *unit, unsigned int subunit_type,
-+			      unsigned int subunit_id, unsigned int subfunction,
-+			      u8 info[AVC_PLUG_INFO_BUF_BYTES])
-+{
-+	u8 *buf;
-+	int err;
-+
-+	/* extended subunit in spec.4.2 is not supported */
-+	if ((subunit_type == 0x1E) || (subunit_id == 5))
-+		return -EINVAL;
-+
-+	buf = kzalloc(8, GFP_KERNEL);
-+	if (buf == NULL)
-+		return -ENOMEM;
-+
-+	buf[0] = 0x01;	/* AV/C STATUS */
-+	/* UNIT or Subunit, Functionblock */
-+	buf[1] = ((subunit_type & 0x1f) << 3) | (subunit_id & 0x7);
-+	buf[2] = 0x02;	/* PLUG INFO */
-+	buf[3] = 0xff & subfunction;
-+
-+	err = fcp_avc_transaction(unit, buf, 8, buf, 8, BIT(1) | BIT(2));
-+	if (err >= 0 && err < 8)
-+		err = -EIO;
-+	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
-+		err = -ENOSYS;
-+	else if (buf[0] == 0x0a) /* REJECTED */
-+		err = -EINVAL;
-+	else if (buf[0] == 0x0b) /* IN TRANSITION */
-+		err = -EAGAIN;
-+	if (err < 0)
-+		goto end;
-+
-+	info[0] = buf[4];
-+	info[1] = buf[5];
-+	info[2] = buf[6];
-+	info[3] = buf[7];
-+
-+	err = 0;
-+end:
-+	kfree(buf);
-+	return err;
-+}
-+EXPORT_SYMBOL(avc_general_get_plug_info);
-+
- static DEFINE_SPINLOCK(transactions_lock);
- static LIST_HEAD(transactions);
- 
-diff --git a/sound/firewire/fcp.h b/sound/firewire/fcp.h
-index 8659568..63ae4f7 100644
---- a/sound/firewire/fcp.h
-+++ b/sound/firewire/fcp.h
-@@ -1,8 +1,29 @@
- #ifndef SOUND_FIREWIRE_FCP_H_INCLUDED
- #define SOUND_FIREWIRE_FCP_H_INCLUDED
- 
-+#define	AVC_PLUG_INFO_BUF_BYTES	4
-+
- struct fw_unit;
- 
-+/*
-+ * AV/C Digital Interface Command Set General Specification 4.2
-+ * (Sep 2004, 1394TA)
-+ */
-+enum avc_general_plug_dir {
-+	AVC_GENERAL_PLUG_DIR_IN		= 0,
-+	AVC_GENERAL_PLUG_DIR_OUT	= 1,
-+	AVC_GENERAL_PLUG_DIR_COUNT
-+};
-+int avc_general_set_sig_fmt(struct fw_unit *unit, unsigned int rate,
-+			    enum avc_general_plug_dir dir,
-+			    unsigned short plug);
-+int avc_general_get_sig_fmt(struct fw_unit *unit, unsigned int *rate,
-+			    enum avc_general_plug_dir dir,
-+			    unsigned short plug);
-+int avc_general_get_plug_info(struct fw_unit *unit, unsigned int subunit_type,
-+			      unsigned int subunit_id, unsigned int subfunction,
-+			      u8 info[AVC_PLUG_INFO_BUF_BYTES]);
-+
- int fcp_avc_transaction(struct fw_unit *unit,
- 			const void *command, unsigned int command_size,
- 			void *response, unsigned int response_size,
-diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
-index 1b95494..8b362e7 100644
---- a/sound/firewire/speakers.c
-+++ b/sound/firewire/speakers.c
-@@ -187,42 +187,6 @@ static void fwspk_stop_stream(struct fwspk *fwspk)
- 	}
- }
- 
--static int fwspk_set_rate(struct fwspk *fwspk, unsigned int sfc)
--{
--	u8 *buf;
--	int err;
--
--	buf = kmalloc(8, GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
--
--	buf[0] = 0x00;		/* AV/C, CONTROL */
--	buf[1] = 0xff;		/* unit */
--	buf[2] = 0x19;		/* INPUT PLUG SIGNAL FORMAT */
--	buf[3] = 0x00;		/* plug 0 */
--	buf[4] = 0x90;		/* format: audio */
--	buf[5] = 0x00 | sfc;	/* AM824, frequency */
--	buf[6] = 0xff;		/* SYT (not used) */
--	buf[7] = 0xff;
--
--	err = fcp_avc_transaction(fwspk->unit, buf, 8, buf, 8,
--				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5));
--	if (err < 0)
--		goto error;
--	if (err < 6 || buf[0] != 0x09 /* ACCEPTED */) {
--		dev_err(&fwspk->unit->device, "failed to set sample rate\n");
--		err = -EIO;
--		goto error;
--	}
--
--	err = 0;
--
--error:
--	kfree(buf);
--
--	return err;
--}
--
- static int fwspk_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_pcm_hw_params *hw_params)
- {
-@@ -246,9 +210,12 @@ static int fwspk_hw_params(struct snd_pcm_substream *substream,
- 	amdtp_stream_set_pcm_format(&fwspk->stream,
- 				    params_format(hw_params));
- 
--	err = fwspk_set_rate(fwspk, fwspk->stream.sfc);
--	if (err < 0)
-+	err = avc_general_set_sig_fmt(fwspk->unit, params_rate(hw_params),
-+				      AVC_GENERAL_PLUG_DIR_IN, 0);
-+	if (err < 0) {
-+		dev_err(&fwspk->unit->device, "failed to set sample rate\n");
- 		goto err_buffer;
-+	}
- 
- 	return 0;
- 
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index c75c2ef..3a3f203 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -198,6 +198,8 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
+ 	efw->tx_stream.flags |= CIP_EMPTY_WITH_TAG0;
+ 	/* Fireworks has its own meaning for dbc. */
+ 	efw->tx_stream.flags |= CIP_DBC_IS_END_EVENT;
++	/* Fireworks reset dbc at bus reset. */
++	efw->tx_stream.flags |= CIP_SKIP_DBC_ZERO_CHECK;
+ 	/* AudioFire9 always reports wrong dbs. */
+ 	if (efw->is_af9)
+ 		efw->tx_stream.flags |= CIP_WRONG_DBS;
 -- 
 1.8.3.2
 
