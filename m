@@ -1,12 +1,12 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 02/49] firewire-lib: Add macros instead of fixed value for
-	AMDTP
-Date: Fri, 25 Apr 2014 22:44:43 +0900
-Message-ID: <1398433530-13136-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 03/49] firewire-lib: Add 'direction' member to 'amdtp_stream'
+	structure
+Date: Fri, 25 Apr 2014 22:44:44 +0900
+Message-ID: <1398433530-13136-4-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
 In-Reply-To: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
@@ -21,56 +21,106 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCBhZGRzIHNvbWUgbWFjcm9zIGluc3RlYWQgb2YgZml4ZWQgdmFsdWUgZm9yIEFN
-RFRQIGFjY29yZGluZyB0bwpJRUMgNjE4ODMtMS82LiBUaGVzZSBtYWNyb3Mgd2lsbCBhbHNvIGJl
-IHVzZWQgYnkgZm9sbG93ZWQgcGF0Y2hlcy4KClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1v
-dG8gPG8tdGFrYXNoaUBzYWthbW9jY2hpLmpwPgotLS0KIHNvdW5kL2ZpcmV3aXJlL2FtZHRwLmMg
-fCAzMCArKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMyBp
-bnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJl
-L2FtZHRwLmMgYi9zb3VuZC9maXJld2lyZS9hbWR0cC5jCmluZGV4IDE2ZmU4NTguLjM4MDEzZjkg
-MTAwNjQ0Ci0tLSBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKKysrIGIvc291bmQvZmlyZXdpcmUv
-YW1kdHAuYwpAQCAtMjAsMTIgKzIwLDI4IEBACiAKICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElD
-S1MJMHgyZTAwIC8qIDQ3OS4xNyDCtXMgKi8KIAorLyogaXNvY2hyb25vdXMgaGVhZGVyIHBhcmFt
-ZXRlcnMgKi8KKyNkZWZpbmUgSVNPX0RBVEFfTEVOR1RIX1NISUZUCTE2CiAjZGVmaW5lIFRBR19D
-SVAJCQkxCiAKKy8qIGNvbW1vbiBpc29jaHJvbm91cyBwYWNrZXQgaGVhZGVyIHBhcmFtZXRlcnMg
-Ki8KICNkZWZpbmUgQ0lQX0VPSAkJCSgxdSA8PCAzMSkKKyNkZWZpbmUgQ0lQX0VPSF9NQVNLCQkw
-eDgwMDAwMDAwCiAjZGVmaW5lIENJUF9GTVRfQU0JCSgweDEwIDw8IDI0KQotI2RlZmluZSBBTURU
-UF9GREZfQU04MjQJCSgwIDw8IDE5KQotI2RlZmluZSBBTURUUF9GREZfU0ZDX1NISUZUCTE2Cisj
-ZGVmaW5lIENJUF9GTVRfTUFTSwkJMHgzZjAwMDAwMAorI2RlZmluZSBDSVBfU1lUX01BU0sJCTB4
-MDAwMGZmZmYKKyNkZWZpbmUgQ0lQX1NZVF9OT19JTkZPCQkweGZmZmYKKyNkZWZpbmUgQ0lQX0ZE
-Rl9NQVNLCQkweDAwZmYwMDAwCisjZGVmaW5lIENJUF9GREZfU0ZDX1NISUZUCTE2CisKKy8qCisg
-KiBBdWRpbyBhbmQgTXVzaWMgdHJhbnNmZXIgcHJvdG9jb2wgc3BlY2lmaWMgcGFyYW1ldGVycwor
-ICogb25seSAiQ2xvY2stYmFzZWQgcmF0ZSBjb250cm9sIG1vZGUiIGlzIHN1cHBvcnRlZAorICov
-CisjZGVmaW5lIEFNRFRQX0ZERl9BTTgyNAkJKDAgPDwgKENJUF9GREZfU0ZDX1NISUZUICsgMykp
-CisjZGVmaW5lIEFNRFRQX0RCU19NQVNLCQkweDAwZmYwMDAwCisjZGVmaW5lIEFNRFRQX0RCU19T
-SElGVAkJMTYKKyNkZWZpbmUgQU1EVFBfREJDX01BU0sJCTB4MDAwMDAwZmYKIAogLyogVE9ETzog
-bWFrZSB0aGVzZSBjb25maWd1cmFibGUgKi8KICNkZWZpbmUgSU5URVJSVVBUX0lOVEVSVkFMCTE2
-CkBAIC0yODAsOSArMjk2LDkgQEAgc3RhdGljIHVuc2lnbmVkIGludCBjYWxjdWxhdGVfc3l0KHN0
-cnVjdCBhbWR0cF9zdHJlYW0gKnMsCiAJCXN5dCA9IChjeWNsZSArIHN5dF9vZmZzZXQgLyBUSUNL
-U19QRVJfQ1lDTEUpIDw8IDEyOwogCQlzeXQgKz0gc3l0X29mZnNldCAlIFRJQ0tTX1BFUl9DWUNM
-RTsKIAotCQlyZXR1cm4gc3l0ICYgMHhmZmZmOworCQlyZXR1cm4gc3l0ICYgQ0lQX1NZVF9NQVNL
-OwogCX0gZWxzZSB7Ci0JCXJldHVybiAweGZmZmY7IC8qIG5vIGluZm8gKi8KKwkJcmV0dXJuIENJ
-UF9TWVRfTk9fSU5GTzsKIAl9CiB9CiAKQEAgLTQzOCwxNyArNDU0LDE3IEBAIHN0YXRpYyB2b2lk
-IHF1ZXVlX291dF9wYWNrZXQoc3RydWN0IGFtZHRwX3N0cmVhbSAqcywgdW5zaWduZWQgaW50IGN5
-Y2xlKQogCXN5dCA9IGNhbGN1bGF0ZV9zeXQocywgY3ljbGUpOwogCWlmICghKHMtPmZsYWdzICYg
-Q0lQX0JMT0NLSU5HKSkKIAkJZGF0YV9ibG9ja3MgPSBjYWxjdWxhdGVfZGF0YV9ibG9ja3Mocyk7
-Ci0JZWxzZSBpZiAoc3l0ICE9IDB4ZmZmZikKKwllbHNlIGlmIChzeXQgIT0gQ0lQX1NZVF9OT19J
-TkZPKQogCQlkYXRhX2Jsb2NrcyA9IHMtPnN5dF9pbnRlcnZhbDsKIAllbHNlCiAJCWRhdGFfYmxv
-Y2tzID0gMDsKIAogCWJ1ZmZlciA9IHMtPmJ1ZmZlci5wYWNrZXRzW2luZGV4XS5idWZmZXI7CiAJ
-YnVmZmVyWzBdID0gY3B1X3RvX2JlMzIoQUNDRVNTX09OQ0Uocy0+c291cmNlX25vZGVfaWRfZmll
-bGQpIHwKLQkJCQkocy0+ZGF0YV9ibG9ja19xdWFkbGV0cyA8PCAxNikgfAorCQkJCShzLT5kYXRh
-X2Jsb2NrX3F1YWRsZXRzIDw8IEFNRFRQX0RCU19TSElGVCkgfAogCQkJCXMtPmRhdGFfYmxvY2tf
-Y291bnRlcik7CiAJYnVmZmVyWzFdID0gY3B1X3RvX2JlMzIoQ0lQX0VPSCB8IENJUF9GTVRfQU0g
-fCBBTURUUF9GREZfQU04MjQgfAotCQkJCShzLT5zZmMgPDwgQU1EVFBfRkRGX1NGQ19TSElGVCkg
-fCBzeXQpOworCQkJCShzLT5zZmMgPDwgQ0lQX0ZERl9TRkNfU0hJRlQpIHwgc3l0KTsKIAlidWZm
-ZXIgKz0gMjsKIAogCXBjbSA9IEFDQ0VTU19PTkNFKHMtPnBjbSk7Ci0tIAoxLjguMy4yCgoKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tClN0YXJ0IFlvdXIgU29jaWFsIE5ldHdvcmsgVG9kYXkgLSBEb3du
-bG9hZCBlWG8gUGxhdGZvcm0KQnVpbGQgeW91ciBFbnRlcnByaXNlIEludHJhbmV0IHdpdGggZVhv
-IFBsYXRmb3JtIFNvZnR3YXJlCkphdmEgQmFzZWQgT3BlbiBTb3VyY2UgSW50cmFuZXQgLSBTb2Np
-YWwsIEV4dGVuc2libGUsIENsb3VkIFJlYWR5CkdldCBTdGFydGVkIE5vdyBBbmQgVHVybiBZb3Vy
-IEludHJhbmV0IEludG8gQSBDb2xsYWJvcmF0aW9uIFBsYXRmb3JtCmh0dHA6Ly9wLnNmLm5ldC9z
-ZnUvRXhvUGxhdGZvcm0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KbWFpbGluZyBsaXN0IGxpbnV4MTM5NC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
-aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbGludXgxMzk0LWRl
-dmVsCg==
+This patch adds 'direction' member to amdtp_stream structure to indicate its
+direction. This patch also adds 'direction' argument to amdtp_stream_init()
+function to determine its direction.
+
+The amdtp_stream_init() function is exported and used by firewire-speakers and
+dice so this patch also affects them.
+
+This patch just add them. Actual implementation will be done by followed
+patches.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp.c    | 4 +++-
+ sound/firewire/amdtp.h    | 7 +++++++
+ sound/firewire/dice.c     | 2 +-
+ sound/firewire/speakers.c | 3 ++-
+ 4 files changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 38013f9..95c5a15 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -53,12 +53,14 @@ static void pcm_period_tasklet(unsigned long data);
+  * amdtp_stream_init - initialize an AMDTP stream structure
+  * @s: the AMDTP stream to initialize
+  * @unit: the target of the stream
++ * @dir: the direction of stream
+  * @flags: the packet transmission method to use
+  */
+ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+-		      enum cip_flags flags)
++		      enum amdtp_stream_direction dir, enum cip_flags flags)
+ {
+ 	s->unit = fw_unit_get(unit);
++	s->direction = dir;
+ 	s->flags = flags;
+ 	s->context = ERR_PTR(-1);
+ 	mutex_init(&s->mutex);
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index 60028c7..019134e 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -48,9 +48,15 @@ struct fw_unit;
+ struct fw_iso_context;
+ struct snd_pcm_substream;
+ 
++enum amdtp_stream_direction {
++	AMDTP_OUT_STREAM = 0,
++	AMDTP_IN_STREAM
++};
++
+ struct amdtp_stream {
+ 	struct fw_unit *unit;
+ 	enum cip_flags flags;
++	enum amdtp_stream_direction direction;
+ 	struct fw_iso_context *context;
+ 	struct mutex mutex;
+ 
+@@ -85,6 +91,7 @@ struct amdtp_stream {
+ };
+ 
+ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
++		      enum amdtp_stream_direction dir,
+ 		      enum cip_flags flags);
+ void amdtp_stream_destroy(struct amdtp_stream *s);
+ 
+diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
+index ca12fcb..26b2158 100644
+--- a/sound/firewire/dice.c
++++ b/sound/firewire/dice.c
+@@ -1360,7 +1360,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+ 		goto err_owner;
+ 	dice->resources.channels_mask = 0x00000000ffffffffuLL;
+ 
+-	err = amdtp_stream_init(&dice->stream, unit,
++	err = amdtp_stream_init(&dice->stream, unit, AMDTP_OUT_STREAM,
+ 				CIP_BLOCKING | CIP_HI_DUALWIRE);
+ 	if (err < 0)
+ 		goto err_resources;
+diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
+index 2096ad7..c07e7cd 100644
+--- a/sound/firewire/speakers.c
++++ b/sound/firewire/speakers.c
+@@ -683,7 +683,8 @@ static int fwspk_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto err_unit;
+ 
+-	err = amdtp_stream_init(&fwspk->stream, unit, CIP_NONBLOCKING);
++	err = amdtp_stream_init(&fwspk->stream, unit, AMDTP_OUT_STREAM,
++				CIP_NONBLOCKING);
+ 	if (err < 0)
+ 		goto err_connection;
+ 
+-- 
+1.8.3.2
+
+
+------------------------------------------------------------------------------
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
