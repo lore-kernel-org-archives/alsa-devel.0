@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 10/49] dice/firewire-lib: Keep dualwire mode but obsolete
-	CIP_HI_DUALWIRE
-Date: Fri, 25 Apr 2014 22:44:51 +0900
-Message-ID: <1398433530-13136-11-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 11/49] firewire-lib/dice/speakers: Add common PCM constraints
+	for AMDTP streams
+Date: Fri, 25 Apr 2014 22:44:52 +0900
+Message-ID: <1398433530-13136-12-git-send-email-o-takashi@sakamocchi.jp>
 References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,330 +21,174 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In previous commit, AMDTP functionality in firewire-lib supports mapping
-for PCM data channels. With this mapping, firewire-lib can obsolete
-a flag, CIP_HI_DUALWIRE, but Dice driver still keeps dual wire mode.
+This commit adds common PCM constraints according to current firewire-lib
+implementation.
+
+1.Maximum width for each sample is limited by 24.
+AM824 in IEC 61883-6 can deliver 24bit data.
+
+2. Minimum time for period is 5msec.
+Apply the old value. For shorter latency, further works are needed.
+
+3. In blocking mode, frames per period/buffer is aligned to 32.
+Each packet can include some frames depending on its sampling rate. In
+blocking mode, the number equals to SYT_INTERVAL. Currently firewire-lib
+can schedule snd_pcm_period_elapsed() for each packet. So, for accurate
+PCM interrupt, the number of frames per period/buffer should be aligned
+to SYT_INTERVAL.
+Currently firewire-lib is lack of better rules to achieve this. So LCM of
+each value of SYT_INTERVALs (=32) is applied. This can be improved for
+further work.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 151 ++-----------------------------------------------
- sound/firewire/amdtp.h |   8 +--
- sound/firewire/dice.c  |  33 +++++++++--
- 3 files changed, 34 insertions(+), 158 deletions(-)
+ sound/firewire/amdtp.c    | 56 +++++++++++++++++++++++++++++++++++++++++++++++
+ sound/firewire/amdtp.h    |  3 +++
+ sound/firewire/dice.c     | 17 +-------------
+ sound/firewire/speakers.c |  8 +------
+ 4 files changed, 61 insertions(+), 23 deletions(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 9cf81b2..3475b76 100644
+index 3475b76..ac8c358 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -145,14 +145,7 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
- 	return;
+@@ -13,6 +13,7 @@
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+ #include <sound/pcm.h>
++#include <sound/pcm_params.h>
+ #include <sound/rawmidi.h>
+ #include "amdtp.h"
  
- sfc_found:
--	s->dual_wire = (s->flags & CIP_HI_DUALWIRE) && sfc > CIP_SFC_96000;
--	if (s->dual_wire) {
--		sfc -= 2;
--		rate /= 2;
--		s->pcm_channels = pcm_channels * 2;
--	} else {
--		s->pcm_channels = pcm_channels;
--	}
-+	s->pcm_channels = pcm_channels;
- 	s->sfc = sfc;
- 	s->data_block_quadlets = s->pcm_channels + midi_channels;
- 	s->midi_ports = midi_ports;
-@@ -191,18 +184,9 @@ static void amdtp_write_s16(struct amdtp_stream *s,
- static void amdtp_write_s32(struct amdtp_stream *s,
- 			    struct snd_pcm_substream *pcm,
- 			    __be32 *buffer, unsigned int frames);
--static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
--				     struct snd_pcm_substream *pcm,
--				     __be32 *buffer, unsigned int frames);
--static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
--				     struct snd_pcm_substream *pcm,
--				     __be32 *buffer, unsigned int frames);
- static void amdtp_read_s32(struct amdtp_stream *s,
- 			   struct snd_pcm_substream *pcm,
- 			   __be32 *buffer, unsigned int frames);
--static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
--				    struct snd_pcm_substream *pcm,
--				    __be32 *buffer, unsigned int frames);
+@@ -105,6 +106,61 @@ const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
+ EXPORT_SYMBOL(amdtp_syt_intervals);
  
  /**
-  * amdtp_stream_set_pcm_format - set the PCM format
-@@ -225,26 +209,16 @@ void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
- 		/* fall through */
- 	case SNDRV_PCM_FORMAT_S16:
- 		if (s->direction == AMDTP_OUT_STREAM) {
--			if (s->dual_wire)
--				s->transfer_samples = amdtp_write_s16_dualwire;
--			else
--				s->transfer_samples = amdtp_write_s16;
-+			s->transfer_samples = amdtp_write_s16;
- 			break;
- 		}
- 		WARN_ON(1);
- 		/* fall through */
- 	case SNDRV_PCM_FORMAT_S32:
--		if (s->direction == AMDTP_OUT_STREAM) {
--			if (s->dual_wire)
--				s->transfer_samples = amdtp_write_s32_dualwire;
--			else
--				s->transfer_samples = amdtp_write_s32;
--		} else {
--			if (s->dual_wire)
--				s->transfer_samples = amdtp_read_s32_dualwire;
--			else
--				s->transfer_samples = amdtp_read_s32;
--		}
-+		if (s->direction == AMDTP_OUT_STREAM)
-+			s->transfer_samples = amdtp_write_s32;
-+		else
-+			s->transfer_samples = amdtp_read_s32;
- 		break;
- 	}
- }
-@@ -393,68 +367,6 @@ static void amdtp_write_s16(struct amdtp_stream *s,
- 	}
- }
- 
--static void amdtp_write_s32_dualwire(struct amdtp_stream *s,
--				     struct snd_pcm_substream *pcm,
--				     __be32 *buffer, unsigned int frames)
--{
--	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, i, c;
--	const u32 *src;
--
--	src = (void *)runtime->dma_area +
--			frames_to_bytes(runtime, s->pcm_buffer_pointer);
--	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--	channels = s->pcm_channels / 2;
--
--	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			buffer[s->pcm_positions[c] * 2] =
--					cpu_to_be32((*src >> 8) | 0x40000000);
--			src++;
--		}
--		buffer += 1;
--		for (c = 0; c < channels; ++c) {
--			buffer[s->pcm_positions[c] * 2] =
--					cpu_to_be32((*src >> 8) | 0x40000000);
--			src++;
--		}
--		buffer += s->data_block_quadlets - 1;
--		if (--remaining_frames == 0)
--			src = (void *)runtime->dma_area;
--	}
--}
--
--static void amdtp_write_s16_dualwire(struct amdtp_stream *s,
--				     struct snd_pcm_substream *pcm,
--				     __be32 *buffer, unsigned int frames)
--{
--	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, i, c;
--	const u16 *src;
--
--	src = (void *)runtime->dma_area +
--			frames_to_bytes(runtime, s->pcm_buffer_pointer);
--	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--	channels = s->pcm_channels / 2;
--
--	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			buffer[s->pcm_positions[c] * 2] =
--					cpu_to_be32((*src << 8) | 0x40000000);
--			src++;
--		}
--		buffer += 1;
--		for (c = 0; c < channels; ++c) {
--			buffer[s->pcm_positions[c] * 2] =
--					cpu_to_be32((*src << 8) | 0x40000000);
--			src++;
--		}
--		buffer += s->data_block_quadlets - 1;
--		if (--remaining_frames == 0)
--			src = (void *)runtime->dma_area;
--	}
--}
--
- static void amdtp_read_s32(struct amdtp_stream *s,
- 			   struct snd_pcm_substream *pcm,
- 			   __be32 *buffer, unsigned int frames)
-@@ -479,37 +391,6 @@ static void amdtp_read_s32(struct amdtp_stream *s,
- 	}
- }
- 
--static void amdtp_read_s32_dualwire(struct amdtp_stream *s,
--				    struct snd_pcm_substream *pcm,
--				    __be32 *buffer, unsigned int frames)
--{
--	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, i, c;
--	u32 *dst;
--
--	dst = (void *)runtime->dma_area +
--			frames_to_bytes(runtime, s->pcm_buffer_pointer);
--	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--	channels = s->pcm_channels / 2;
--
--	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			*dst =
--			     be32_to_cpu(buffer[s->pcm_positions[c] * 2]) << 8;
--			dst++;
--		}
--		buffer += 1;
--		for (c = 0; c < channels; ++c) {
--			*dst =
--			     be32_to_cpu(buffer[s->pcm_positions[c] * 2]) << 8;
--			dst++;
--		}
--		buffer += s->data_block_quadlets - 1;
--		if (--remaining_frames == 0)
--			dst = (void *)runtime->dma_area;
--	}
--}
--
- static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
- 				   __be32 *buffer, unsigned int frames)
- {
-@@ -522,21 +403,6 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
- 	}
- }
- 
--static void amdtp_fill_pcm_silence_dualwire(struct amdtp_stream *s,
--					   __be32 *buffer, unsigned int frames)
--{
--	unsigned int i, c, channels;
--
--	channels = s->pcm_channels / 2;
--	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			buffer[s->pcm_positions[c] * 2] =
--			buffer[s->pcm_positions[c] * 2 + 1] =
--						cpu_to_be32(0x40000000);
--		}
--		buffer += s->data_block_quadlets;
--	}
--}
- static void amdtp_fill_midi(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
- {
-@@ -582,9 +448,6 @@ static void update_pcm_pointers(struct amdtp_stream *s,
- 				unsigned int frames)
- {	unsigned int ptr;
- 
--	if (s->dual_wire)
--		frames *= 2;
--
- 	ptr = s->pcm_buffer_pointer + frames;
- 	if (ptr >= pcm->runtime->buffer_size)
- 		ptr -= pcm->runtime->buffer_size;
-@@ -674,8 +537,6 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
- 	pcm = ACCESS_ONCE(s->pcm);
- 	if (pcm)
- 		s->transfer_samples(s, pcm, buffer, data_blocks);
--	else if (s->dual_wire)
--		amdtp_fill_pcm_silence_dualwire(s, buffer, data_blocks);
- 	else
- 		amdtp_fill_pcm_silence(s, buffer, data_blocks);
- 	if (s->midi_ports)
++ * amdtp_stream_add_pcm_hw_constraints - add hw constraints for PCM substream
++ * @s:		the AMDTP stream, which must be initialized.
++ * @runtime:	the PCM substream runtime
++ */
++int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
++					struct snd_pcm_runtime *runtime)
++{
++	int err;
++
++	/* AM824 in IEC 61883-6 can deliver 24bit data */
++	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	if (err < 0)
++		goto end;
++
++	/*
++	 * Currently firewire-lib processes 16 packets in one software
++	 * interrupt callback. This equals to 2msec but actually the
++	 * interval of the interrupts has a jitter.
++	 * Additionally, even if adding a constraint to fit period size to
++	 * 2msec, actual calculated frames per period doesn't equal to 2msec,
++	 * depending on sampling rate.
++	 * Anyway, the interval to call snd_pcm_period_elapsed() cannot 2msec.
++	 * Here let us use 5msec for safe period interrupt.
++	 */
++	err = snd_pcm_hw_constraint_minmax(runtime,
++					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
++					   5000, UINT_MAX);
++	if (err < 0)
++		goto end;
++
++	/* Non-Blocking stream has no more constraints */
++	if (!(s->flags & CIP_BLOCKING))
++		goto end;
++
++	/*
++	 * One AMDTP packet can include some frames. In blocking mode, the
++	 * number equals to SYT_INTERVAL. So the number is 8, 16 or 32,
++	 * depending on its sampling rate. For accurate period interrupt, it's
++	 * preferrable to aligh period/buffer sizes to current SYT_INTERVAL.
++	 *
++	 * TODO: These constraints can be improved with propper rules.
++	 * Currently apply LCM of SYT_INTEVALs.
++	 */
++	err = snd_pcm_hw_constraint_step(runtime, 0,
++					 SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 32);
++	if (err < 0)
++		goto end;
++	err = snd_pcm_hw_constraint_step(runtime, 0,
++					 SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 32);
++end:
++	return err;
++}
++EXPORT_SYMBOL(amdtp_stream_add_pcm_hw_constraints);
++
++/**
+  * amdtp_stream_set_parameters - set stream parameters
+  * @s: the AMDTP stream to configure
+  * @rate: the sample rate
 diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index e8d62ac..db60425 100644
+index db60425..d6bb7eb 100644
 --- a/sound/firewire/amdtp.h
 +++ b/sound/firewire/amdtp.h
-@@ -16,18 +16,13 @@
-  * @CIP_BLOCKING: In blocking mode, each packet contains either zero or
-  *	SYT_INTERVAL samples, with these two types alternating so that
-  *	the overall sample rate comes out right.
-- * @CIP_HI_DUALWIRE: At rates above 96 kHz, pretend that the stream runs
-- *	at half the actual sample rate with twice the number of channels;
-- *	two samples of a channel are stored consecutively in the packet.
-- *	Requires blocking mode and SYT_INTERVAL-aligned PCM buffer size.
-  * @CIP_SYNC_TO_DEVICE: In sync to device mode, time stamp in out packets is
-  *	generated by in packets. Defaultly this driver generates timestamp.
-  */
- enum cip_flags {
- 	CIP_NONBLOCKING		= 0x00,
- 	CIP_BLOCKING		= 0x01,
--	CIP_HI_DUALWIRE		= 0x02,
--	CIP_SYNC_TO_DEVICE	= 0x04,
-+	CIP_SYNC_TO_DEVICE	= 0x02,
- };
+@@ -64,6 +64,7 @@ enum cip_sfc {
+ struct fw_unit;
+ struct fw_iso_context;
+ struct snd_pcm_substream;
++struct snd_pcm_runtime;
+ struct snd_rawmidi_substream;
  
- /**
-@@ -84,7 +79,6 @@ struct amdtp_stream {
- 	struct mutex mutex;
+ enum amdtp_stream_direction {
+@@ -130,6 +131,8 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed);
+ void amdtp_stream_update(struct amdtp_stream *s);
+ void amdtp_stream_stop(struct amdtp_stream *s);
  
- 	enum cip_sfc sfc;
--	bool dual_wire;
- 	unsigned int data_block_quadlets;
- 	unsigned int pcm_channels;
- 	unsigned int midi_ports;
++int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
++					struct snd_pcm_runtime *runtime);
+ void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
+ 				 snd_pcm_format_t format);
+ void amdtp_stream_pcm_prepare(struct amdtp_stream *s);
 diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index 26b2158..cd4c6b6 100644
+index cd4c6b6..a9a30c0 100644
 --- a/sound/firewire/dice.c
 +++ b/sound/firewire/dice.c
-@@ -563,7 +563,7 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
- 			  struct snd_pcm_hw_params *hw_params)
- {
- 	struct dice *dice = substream->private_data;
--	unsigned int rate_index, mode;
-+	unsigned int rate_index, mode, rate, channels, i;
- 	int err;
+@@ -420,22 +420,7 @@ static int dice_open(struct snd_pcm_substream *substream)
+ 	if (err < 0)
+ 		goto err_lock;
  
- 	mutex_lock(&dice->mutex);
-@@ -575,15 +575,36 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
+-	err = snd_pcm_hw_constraint_step(runtime, 0,
+-					 SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 32);
+-	if (err < 0)
+-		goto err_lock;
+-	err = snd_pcm_hw_constraint_step(runtime, 0,
+-					 SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 32);
+-	if (err < 0)
+-		goto err_lock;
+-
+-	err = snd_pcm_hw_constraint_minmax(runtime,
+-					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
+-					   5000, UINT_MAX);
+-	if (err < 0)
+-		goto err_lock;
+-
+-	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	err = amdtp_stream_add_pcm_hw_constraints(&dice->stream, runtime);
+ 	if (err < 0)
+ 		goto err_lock;
+ 
+diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
+index c07e7cd..3427527 100644
+--- a/sound/firewire/speakers.c
++++ b/sound/firewire/speakers.c
+@@ -167,13 +167,7 @@ static int fwspk_open(struct snd_pcm_substream *substream)
  	if (err < 0)
  		return err;
  
--	rate_index = rate_to_index(params_rate(hw_params));
-+	rate = params_rate(hw_params);
-+	rate_index = rate_to_index(rate);
- 	err = dice_change_rate(dice, rate_index << CLOCK_RATE_SHIFT);
+-	err = snd_pcm_hw_constraint_minmax(runtime,
+-					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
+-					   5000, UINT_MAX);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	err = amdtp_stream_add_pcm_hw_constraints(fwspk->stream, runtime);
  	if (err < 0)
  		return err;
- 
-+	/*
-+	 * At rates above 96 kHz, pretend that the stream runs at half the
-+	 * actual sample rate with twice the number of channels; two samples
-+	 * of a channel are stored consecutively in the packet. Requires
-+	 * blocking mode and PCM buffer size should be aligned to SYT_INTERVAL.
-+	 */
-+	channels = params_channels(hw_params);
-+	if (rate_index > 4) {
-+		if (channels > AMDTP_MAX_CHANNELS_FOR_PCM / 2) {
-+			err = -ENOSYS;
-+			return err;
-+		}
-+
-+		for (i = 0; i < channels; i++) {
-+			dice->stream.pcm_positions[i * 2] = i;
-+			dice->stream.pcm_positions[i * 2 + 1] = i + channels;
-+		}
-+
-+		rate /= 2;
-+		channels *= 2;
-+	}
-+
- 	mode = rate_index_to_mode(rate_index);
--	amdtp_stream_set_parameters(&dice->stream,
--				    params_rate(hw_params),
--				    params_channels(hw_params),
-+	amdtp_stream_set_parameters(&dice->stream, rate, channels,
- 				    dice->rx_midi_ports[mode]);
- 	amdtp_stream_set_pcm_format(&dice->stream,
- 				    params_format(hw_params));
-@@ -1361,7 +1382,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 	dice->resources.channels_mask = 0x00000000ffffffffuLL;
- 
- 	err = amdtp_stream_init(&dice->stream, unit, AMDTP_OUT_STREAM,
--				CIP_BLOCKING | CIP_HI_DUALWIRE);
-+				CIP_BLOCKING);
- 	if (err < 0)
- 		goto err_resources;
  
 -- 
 1.8.3.2
