@@ -1,34 +1,77 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 5/5] sound: tlv320aic31xx: Convert /n to \n
-Date: Thu, 24 Apr 2014 18:51:03 -0700
-Message-ID: <86cf3ef4915174777ea70f56c1c155f1e13fda0b.1398390579.git.joe@perches.com>
-References: <cover.1398390579.git.joe@perches.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1398390579.git.joe@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
+Date: Fri, 25 Apr 2014 09:46:11 +0530
+Message-ID: <5359E18B.60600@linaro.org>
+References: <1398243705-31151-1-git-send-email-tushar.behera@linaro.org> <20140424133920.GA12304@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20140424133920.GA12304@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, sbkim73@samsung.com, rdunlap@infradead.org, dianders@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-Use a newline character appropriately.
+On 04/24/2014 07:09 PM, Mark Brown wrote:
+> On Wed, Apr 23, 2014 at 02:31:45PM +0530, Tushar Behera wrote:
+> 
+>> +Required properties:
+>> +- compatible : Can be one of the following,
+>> +			"google,snow-audio-max98090" or
+>> +			"google,snow-audio-max98095"
+>> +- samsung,i2s-controller: The phandle of the Samsung I2S0 controller
+> 
+> This should be any I2S controller, not just I2S0?
+> 
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/soc/codecs/tlv320aic31xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, right. It can be any I2S controller. Just that, right now it is
+wired to I2S0.
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index b93d500..2341910 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -377,7 +377,7 @@ static int aic31xx_dapm_power_event(struct snd_soc_dapm_widget *w,
- 		reg = AIC31XX_ADCFLAG;
- 		break;
- 	default:
--		dev_err(w->codec->dev, "Unknown widget '%s' calling %s/n",
-+		dev_err(w->codec->dev, "Unknown widget '%s' calling %s\n",
- 			w->name, __func__);
- 		return -EINVAL;
- 	}
+>> +- samsung,audio-codec: The phandle of the audio codec
+> 
+> This binding only has one I2S controller and CODEC.  However...
+> 
+>> +static struct snd_soc_dai_link snow_dai[] = {
+>> +	{ /* Playback DAI i/f */
+>> +		.name = "Playback",
+>> +		.stream_name = "Playback",
+>> +		.codec_dai_name = "HiFi",
+>> +		.dai_fmt = SND_SOC_DAIFMT_I2S |
+>> +				SND_SOC_DAIFMT_NB_NF |
+>> +				SND_SOC_DAIFMT_CBS_CFS,
+>> +	}, { /* Capture DAI i/f */
+>> +		.name = "Capture",
+>> +		.stream_name = "Capture",
+>> +		.codec_dai_name = "HiFi",
+>> +		.dai_fmt = SND_SOC_DAIFMT_I2S |
+>> +				SND_SOC_DAIFMT_NB_NF |
+>> +				SND_SOC_DAIFMT_CBS_CFS,
+>> +	},
+>> +};
+> 
+> ...for some reason we have separate capture and playback DAI links
+
+That was lack of understanding from my side. I was of the impression
+that the back-end uses different DAI interfaces for aplay and arecord,
+which certainly is not the case. I will remove the 'Capture' dai and
+make 'Playback' dai as the primary DAI.
+
+> defined.  Why is that?  Also, why is the secondary I2S playback stream
+> not supported (this may be a reason to restrict to only the one I2S
+> interface)?
+
+AFAICS, I2S driver doesn't support secondary DAI with DT (dai type is
+always TYPE_PRI in case of DT). Hence I could not find a setup to test
+secondary dai with this board.
+
+> 
+> Please also use subject lines consistent with the subsystem - NO NEED TO
+> SHOUT.
+> 
+
+Noted, will take care.
+
+Thanks.
 -- 
-1.8.1.2.459.gbcd45b4.dirty
+Tushar Behera
