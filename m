@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Remove name_prefix unset during DAI
- link init hack again
-Date: Sat, 26 Apr 2014 17:55:48 +0100
-Message-ID: <20140426165548.GU12304@sirena.org.uk>
-References: <1398510149-24032-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: fsl-ssi: Allow to use driver with
+ generic audio card
+Date: Sat, 26 Apr 2014 18:22:38 +0100
+Message-ID: <20140426172238.GW12304@sirena.org.uk>
+References: <1398523756-9740-1-git-send-email-shc_work@mail.ru>
+ <20140426165519.GT12304@sirena.org.uk>
+ <1398531726.382350493@f372.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7238314516837730513=="
+Content-Type: multipart/mixed; boundary="===============0887607955094862663=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 27B4E26162E
- for <alsa-devel@alsa-project.org>; Sat, 26 Apr 2014 18:56:08 +0200 (CEST)
-In-Reply-To: <1398510149-24032-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F0E6260862
+ for <alsa-devel@alsa-project.org>; Sat, 26 Apr 2014 19:22:54 +0200 (CEST)
+In-Reply-To: <1398531726.382350493@f372.i.mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +23,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Fabien Parent <fparent@baylibre.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Benoit Cousson <bcousson@baylibre.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7238314516837730513==
+--===============0887607955094862663==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Z3jfSNvuACVJDaDR"
+	protocol="application/pgp-signature"; boundary="jodMLjoLfgSNsO+D"
 Content-Disposition: inline
 
 
---Z3jfSNvuACVJDaDR
-Content-Type: text/plain; charset=us-ascii
+--jodMLjoLfgSNsO+D
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 26, 2014 at 01:02:29PM +0200, Lars-Peter Clausen wrote:
-> This was initially removed in commit 6479f15ad ("ASoC: Remove name_prefix unset
-> during DAI link init hack"), but was brought back in commit 503ae5e0 ("ASoC:
-> core: Add helpers for dai link and aux dev init") by accident. This patch
-> removes it again.
+On Sat, Apr 26, 2014 at 09:02:06PM +0400, Alexander Shiyan wrote:
+> Sat, 26 Apr 2014 17:55:19 +0100 =D0=BE=D1=82 Mark Brown <broonie@kernel.o=
+rg>:
+> > On Sat, Apr 26, 2014 at 06:49:16PM +0400, Alexander Shiyan wrote:
 
-Applied, thanks.
+> > These are cases where we can do configuration but an invalid
+> > configuration has been provided and we have spotted an error.  Ignoring
+> > that should cause runtime problems - I guess it isn't for you though so
+> > there may be something else going on?
 
---Z3jfSNvuACVJDaDR
+> > Especially for cases like DAI format we should probably enhance the
+> > framework so that these devices can set a variable in their struct
+> > saying what they do support but for now we don't do that.
+
+> Other solution to this problem is to check ret !=3D EPROBE_DEFER
+> in the generic sound card. All other cases should be treated as
+> good for setup parameters. Is this better?
+
+I wouldn't expect to be getting -EPROBE_DEFER outside of the probe path?
+Can we take a step back here, please - what's the problem you're seeing?
+
+--jodMLjoLfgSNsO+D
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTW+URAAoJELSic+t+oim9ol4P/0gccTBRBxe86TqHfEF29LaY
-4V7D0A4cWHqHfOndb+OlyTNOEePEJon0wZVNcAThDTnh9hxL5aX+s4WEa56p8QU3
-XxN9kd4dfa3JOVHyw7bHZXxQ9Sn35ts6f0Z+h5HmSEBJin27MOaWz7ekyDCb2PAF
-vgZhYjFNM8pQ6tzk536qO88F4vW2F60g6uLWV2pqzOO1SlsUlRX4YyYyBs3GmoUS
-BiLDRFyB/4Be05kvt4J0oWBxskfhecQeS8/Fe43afVUsy7s+JaxUa4Qb6/oQi8Td
-yMR+ukbHQJGAuQmUaef4/fBET3AMjhPtfYLBOKAAUGF9jiuISm0ppQULMsNW+JRY
-7EUAA5TbigWizwy2i56IG1J5ZpqCFuGFhAYKXA7UB13EUM2Vv0Ds+IEWSbYdPJJ7
-zcz9gz+hvSLv7/7VT651wO8Rytjko5jWNPhrcGszuUr+cZxE1eJOKhNVxDcRUYQ7
-ZEkIY2tapL1OS3WSaTK+KgM2DPeG3ZtfyWb7Jy6vQZkN+1dubLysybKcNJEXtg6S
-LA+WSwTDPjmK71kpHEeBafaT0A2dS9dnByP86VnJ/tekX9o/YpuNwyRu2Iz2TuzW
-eDIes9fXWKO+psy6nuO14ohG0QDakOQJesE+RtdlukEACeKN32llgieV08ehnDkG
-sC6r8O5v6D8XQzo3Chz5
-=Ir06
+iQIcBAEBAgAGBQJTW+tbAAoJELSic+t+oim9JUIP/iPkTXTFUAu5lE5inR8UWK5w
+bWvE7dMSPxaRMzTY5cUy6eD8utjEp0IKKLl3SdwZmthJfp/OO2PcKHjynaHL967h
+iFXZfo+N8xNSmyDDiPHxYYuvrMn6T1ayu/xYBLFTjzTc2zlbIjblotHiQ2eXSJa3
+lAY8Jq3uyAsHwl4Nfzu0ur2XkT4ZTtFAf7Gr41ixodX5qOD0Mhvm8omxGd2ENG3U
+KuovnywLirGhzI91GHwh/KyEk3b0hMvl0Q5dCYp874m/n4+pZNjvC/KAtbjeJ1qK
+0YjVIxnbjawMTtINSFbEpNw9Ae3pSCqf7jPQPH356xQw9dY7UR3lXxPKx2klpNYQ
+8g02Z1AZq4ipbJF27o08V2DHm4AZG2+tnqnmpnZ6wKR6KywqPmhDsA/MvFUylu4y
+OjWb2B28JsL0/y5YFGRvUODezX/3rqb7nqWuJxm3wpNINUmOlSwsIdlMTStvtw0s
+ivMuWrPUPyA7K8uMMCbIOdefJXAsYr8A25JKCjpZWmUdGUN7L5cWD6165EtqlZvr
+5SzcSh+ZthyDI8sHN96UYhkLGKWhy0pRUoHM/ThTqQbPh8EN+dn1vVKp0WEYNqm+
+gQ+4V9hNif/0VpyIuN7uI8hobZOJOTK/R7tKZFFeleKW+c7xH+rC1nzksHoxKrb6
+XJfkr4gQ+rUT2l42v4UR
+=Wj20
 -----END PGP SIGNATURE-----
 
---Z3jfSNvuACVJDaDR--
+--jodMLjoLfgSNsO+D--
 
---===============7238314516837730513==
+--===============0887607955094862663==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7238314516837730513==--
+--===============0887607955094862663==--
