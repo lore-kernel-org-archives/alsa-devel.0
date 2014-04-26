@@ -1,124 +1,95 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: A Restriction and rest of issues for this patchsets
-Date: Sat, 26 Apr 2014 07:58:43 +0900
-Message-ID: <535AE8A3.8030309@sakamocchi.jp>
-References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: rt5640: Add minimal support for
+ RT5642
+Date: Sat, 26 Apr 2014 01:22:34 +0100
+Message-ID: <20140426002234.GS12304@sirena.org.uk>
+References: <1397701446-11977-1-git-send-email-bardliao@realtek.com>
+ <535ADCD2.8050804@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+Content-Type: multipart/mixed; boundary="===============2374586216933922113=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DB1926007E
+ for <alsa-devel@alsa-project.org>; Sat, 26 Apr 2014 02:22:49 +0200 (CEST)
+In-Reply-To: <535ADCD2.8050804@wwwdotorg.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, jarkko.nikula@linux.intel.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-= A Restriction
-Drivers with this patchset has a restriction comparing to windows drivers.
 
-As long as reading manual of PreSonus/Focusrite/PrismSound, these BeBoB 
-based devices may synchronize to the other BeBoB based devices on the 
-same bus.
-
-I guess this mechanism is driven by SYT in CIP packets:
-  - Driver select a device as 'Sample clock source' then the other 
-devices are 'Sample clock destination'.
-  - Driver handle packets from 'Sample clock source' device.
-  - Driver read SYT and calculate presentation timestamp for each 
-devices, then transfer packets to the other devices.
-
-If you're interested, please refer to IEC 61883-6:2005 (Edition 2.0). 
-Actual examples are described in:
-Annex D Transport characteristics
-D.1.3 Embedded sample-clock jitter
-D.1.3.2.1 Example one: simple two-node bus
-D.1.3.2.2 Example two: three-node bus
-D.1.3.2.3 Example: thirty-five-node system
-
-Well, drivers with this patchset don't support this mechanism. The 
-reason is bad balance between the const to implement below requirements 
-and actual advantage to implement these:
-  - Requirement to manage states of several devices simultaneously
-  - Requirement to handle several streams from/to each device simultaneously
-  - Requirement to calculate SYT with the length between host controller 
-and each device
-
-The drivers synchronized each devices independently. The drivers handle 
-packets from a device and read SYT, then transfer packets with the SYT 
-to the device.
-
-= Rest of issues
-Currently I focus on enabling ALSA to handle devices. So there are some 
-issues which don't cause big problems.
-
-1.Sorting packets
-I know some Fireworks based devices sometimes transfer packets with 
-disorder. But current implementation is a lack of sorting packets. The 
-packets with disorder is detected as dicontinuity then streams are 
-forced to stop and XRUN is generated. In this case, usual ALSA PCM 
-applications may recover XRUN, so there may be some XRUNS to start 
-straems successfully.
-I need more time to investigate frequency and pattern of this issue. 
-Near future I want to discuss this issue again with enough data.
-
-2.Data rate for MIDI substream
-With current implementation, the maximum data rate for MIDI substream in 
-out-stream is one eighth of sampling rate. For example, at 48.0kHz, it's 
-6,000 bytes. This is excess over standard MIDI data rate, 3,125 bits per 
-second. So a few devices can have buffer over flow when receiving much 
-MIDI messages. For example, M-Audio Firewire 1814 transmits packets with 
-discontinuity in this case. I guess that Fireworks based devices and 
-some BeBoB based devices ignore MIDI messages in more than 8 data blocks 
-of packets and this is vendor's effort for this issue.
-Drivers need a throttle for this issue but this is for future work.
-
-3.Latency
-Currently, the minumum number of frames per period is not less than 
-5msec. Drivers has a flag, SNDRV_PCM_INFO_BATCH and the minimum number 
-of periods in buffer is 2. As a result, its minimum latency is 10msec. 
-For more severe latency, further work is needed. But I feel this is not 
-so higher priority than other issues because actually devices are available.
-
-4.A few devices are freezed when frequent establishing/breaking connections
-One of testers reported this issue. 'PreSonus FP10' can be freezed when 
-frequent establishing/breaking connections. This brings a disadvantage 
-to PulseAudio. When PulseAudio detects the card, it starts/stops 4 
-streams at least. If PulseAudio can detect devices with some hacks, it 
-may take the device freezed.
-
-5.Various results at bus reset
-I confirm various results with Fireworks/BeBoB and its devices at bus 
-reset during streaming, depending on cases.
-Case 1. Software do bus reset
-When generating bus reset with ffado-test or jujuutils, streaming 
-stopped. When generating bus reset, the drivers update connections 
-according to IEC 61883-1. But after a few hundred msec, the device break 
-connections by itself. I don't know the reason exactly but I guess the 
-synchronizing mechanism I describe have some relations.
-Case 2. Connecting devices or removing devices
-This case depends on which devices are connected or removed. If they're 
-Fireworks/BeBoB based devices, streaming sometimes continues and 
-sometimes stops. If they're not Fireworks/BeBoB based device, streaming 
-continues. I don't know the reason exactly but I guess the synchronizing 
-mechanism I describe have some relations.
+--===============2374586216933922113==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gEDzVO9ewb2niHmf"
+Content-Disposition: inline
 
 
-Regards
+--gEDzVO9ewb2niHmf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+On Fri, Apr 25, 2014 at 04:08:18PM -0600, Stephen Warren wrote:
+> On 04/16/2014 08:24 PM, bardliao@realtek.com wrote:
+
+> > Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+
+> Is this derived from Jarkko's patch? If so, shouldn't he be listed as
+> the author, not you? If it wasn't, then presumably his S-o-b line
+> shouldn't be in the patch description.
+
+It was derived but edited; I did check with Jarkko that he was OK before
+applying.
+
+> I can see why this patch causes the driver to support the wrong chip.
+> However, I can't imagine why that causes all the log spew at startup.
+> Perhaps the driver is just broken on RT5639 at present (although I don't
+> recall seeing any issues when booting on a board that actually had
+> one...) Is part of the driver keying off this now incorrect ID register
+> read, yet some other part of the driver registering widgets/routes based
+> on which entry matched in struct i2c_device_id rt5640_i2c_id, hence
+> they're falling out of sync due to this change? If so, that seems like
+> another bug that needs fixing.
+
+I'd be surprised if it weren't the latter.  Either way it needs fixing.
+
+--gEDzVO9ewb2niHmf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTWvxGAAoJELSic+t+oim9hnAP/1GSlrpYjfxsT/1n/YOYqkPO
+QZPxiGy28SbcnleRK4rMsIKAzzaNjNPyNI88KVCFwLxJ254GcHmmZClmDGgTcdqW
++5w+ufNI4oVpynZctJp6cXmTm4Ump9hrfieu258UlbNkW8ggnqNHOqnbOwsrjFQG
+dLltaCJkHLlR1kZJQ63Quh0C0pYbdUkBcnx5UIo4fPe6GCmCnvOfktaSK03Er4Dy
+LWmNzxQ8oR4XYhKlDidTqzsXxZYO7TectmovRhWBOVgr4ORis87Gbmm8bH+lfmm4
+0FpoHZnvvLfD8Eusb1hLoQQ68r/4VJfouzKvR45lt/EvswqQuOrf0y18zoqUutl/
+2zM4rUwLms4oq5KguXhqk/uKFioOrEa/Ft1bNOj5lubj58W3+7TgSSckmS6BX1H4
+4/Un8khvjEyvRJgTckgbpXYgpGoanwJxpUVo2xm3JSTeWibTGUdIEMVZ4SNciuIS
+dzIdjHXNdeg0UQ1yzE/YtJ6wbCtAfdtLBk3P0GwU/P3w9scfEbn8ypgZYCfO1xm7
+W93clijbM64jEvBZAYrEmJIgHVNs8LGouwkQNYBejbNNqqpGe4z1guivq0YNB7Dm
+5133gbjg0m3nDcBuIZjff+4KnPwopWhY88WQvyKaqHRdCN4lGKZ4TU6Yybo3qxYF
+1AMXg+tLVIWWBbYcboiK
+=jrn1
+-----END PGP SIGNATURE-----
+
+--gEDzVO9ewb2niHmf--
+
+--===============2374586216933922113==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-------------------------------------------------------------------------------
-Start Your Social Network Today - Download eXo Platform
-Build your Enterprise Intranet with eXo Platform Software
-Java Based Open Source Intranet - Social, Extensible, Cloud Ready
-Get Started Now And Turn Your Intranet Into A Collaboration Platform
-http://p.sf.net/sfu/ExoPlatform
+--===============2374586216933922113==--
