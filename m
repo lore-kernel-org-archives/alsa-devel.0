@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rt5640: Add minimal support for
- RT5642
-Date: Sat, 26 Apr 2014 01:22:34 +0100
-Message-ID: <20140426002234.GS12304@sirena.org.uk>
-References: <1397701446-11977-1-git-send-email-bardliao@realtek.com>
- <535ADCD2.8050804@wwwdotorg.org>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: On non-rewindability of resamplers
+Date: Sat, 26 Apr 2014 09:32:28 +0800
+Message-ID: <CAN8ccibLsqb6oxai=+XOAhZ1dPwZmVVD2r3teDsz2a2_CthoOA@mail.gmail.com>
+References: <5356A9B6.9060405@gmail.com> <5358FCF0.2040701@ladisch.de>
+ <53597BA2.8080201@gmail.com> <5359FE72.8050605@canonical.com>
+ <535A6C96.7040109@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2374586216933922113=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DB1926007E
- for <alsa-devel@alsa-project.org>; Sat, 26 Apr 2014 02:22:49 +0200 (CEST)
-In-Reply-To: <535ADCD2.8050804@wwwdotorg.org>
+Received: from mail-qg0-f54.google.com (mail-qg0-f54.google.com
+ [209.85.192.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59776260815
+ for <alsa-devel@alsa-project.org>; Sat, 26 Apr 2014 03:32:29 +0200 (CEST)
+Received: by mail-qg0-f54.google.com with SMTP id q107so4166669qgd.13
+ for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2014 18:32:28 -0700 (PDT)
+In-Reply-To: <535A6C96.7040109@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, jarkko.nikula@linux.intel.com, bardliao@realtek.com, flove@realtek.com
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+2014-04-25 22:09 GMT+08:00 Alexander E. Patrakov <patrakov@gmail.com>:
 
---===============2374586216933922113==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gEDzVO9ewb2niHmf"
-Content-Disposition: inline
-
-
---gEDzVO9ewb2niHmf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Apr 25, 2014 at 04:08:18PM -0600, Stephen Warren wrote:
-> On 04/16/2014 08:24 PM, bardliao@realtek.com wrote:
-
-> > Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-
-> Is this derived from Jarkko's patch? If so, shouldn't he be listed as
-> the author, not you? If it wasn't, then presumably his S-o-b line
-> shouldn't be in the patch description.
-
-It was derived but edited; I did check with Jarkko that he was OK before
-applying.
-
-> I can see why this patch causes the driver to support the wrong chip.
-> However, I can't imagine why that causes all the log spew at startup.
-> Perhaps the driver is just broken on RT5639 at present (although I don't
-> recall seeing any issues when booting on a board that actually had
-> one...) Is part of the driver keying off this now incorrect ID register
-> read, yet some other part of the driver registering widgets/routes based
-> on which entry matched in struct i2c_device_id rt5640_i2c_id, hence
-> they're falling out of sync due to this change? If so, that seems like
-> another bug that needs fixing.
-
-I'd be surprised if it weren't the latter.  Either way it needs fixing.
-
---gEDzVO9ewb2niHmf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTWvxGAAoJELSic+t+oim9hnAP/1GSlrpYjfxsT/1n/YOYqkPO
-QZPxiGy28SbcnleRK4rMsIKAzzaNjNPyNI88KVCFwLxJ254GcHmmZClmDGgTcdqW
-+5w+ufNI4oVpynZctJp6cXmTm4Ump9hrfieu258UlbNkW8ggnqNHOqnbOwsrjFQG
-dLltaCJkHLlR1kZJQ63Quh0C0pYbdUkBcnx5UIo4fPe6GCmCnvOfktaSK03Er4Dy
-LWmNzxQ8oR4XYhKlDidTqzsXxZYO7TectmovRhWBOVgr4ORis87Gbmm8bH+lfmm4
-0FpoHZnvvLfD8Eusb1hLoQQ68r/4VJfouzKvR45lt/EvswqQuOrf0y18zoqUutl/
-2zM4rUwLms4oq5KguXhqk/uKFioOrEa/Ft1bNOj5lubj58W3+7TgSSckmS6BX1H4
-4/Un8khvjEyvRJgTckgbpXYgpGoanwJxpUVo2xm3JSTeWibTGUdIEMVZ4SNciuIS
-dzIdjHXNdeg0UQ1yzE/YtJ6wbCtAfdtLBk3P0GwU/P3w9scfEbn8ypgZYCfO1xm7
-W93clijbM64jEvBZAYrEmJIgHVNs8LGouwkQNYBejbNNqqpGe4z1guivq0YNB7Dm
-5133gbjg0m3nDcBuIZjff+4KnPwopWhY88WQvyKaqHRdCN4lGKZ4TU6Yybo3qxYF
-1AMXg+tLVIWWBbYcboiK
-=jrn1
------END PGP SIGNATURE-----
-
---gEDzVO9ewb2niHmf--
-
---===============2374586216933922113==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> 25.04.2014 12:19, David Henningsson wrote:
+>
+>> I understand that you have a mathematically perfect approach to this, as
+>> well as other algorithms. This would indeed be the best goal, but given
+>> an imperfect world, where we're forced to choose between
+>>   1) no rewinding at all
+>>   2) imperfect rewinding in the sense that it sometimes can produce
+>> hearable artifacts
+>>
+>> ...I'm not sure 1) is always the right choice...
+>>
+>
+> Understood. But IMHO (2) with a warning would be better than the current
+> situation of (2) without any indication of the problem.
 
 
---===============2374586216933922113==--
+Does extplug or ioplug plugin support rewind ?
+
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_external_plugins.html
+
+The filter-type plugin is a plugin to convert the PCM signals from the
+input and feeds to the output. Thus, this plugin always needs a slave PCM
+as its output.
+
+The plugin can modify the format and the channels of the input/output PCM.
+It can *not* modify the sample rate (because of simplicity reason).
+
+1) DCA plugin convert 6 channel to compress audio at fixed sample rate
+
+seem only allow sequential write and no random write
+2)  The I/O-type plugin is a PCM plugin to work as the input or output
+terminal point, i.e. as a user-space PCM driver.
+
+mmap_rw specifies whether the plugin behaves in the pseudo mmap mode. When
+this value is set to 1, the plugin creates always a local buffer and
+performs read/write calls using this buffer as if it's mmapped.
+
+does this mean ioplug can have its own local buffer which is different from
+the slave ?
+
+e.g. a52_pointer seem use delay of the slave
+
+3) Do pulseaudio keep a copy of client 's buffer ?
+
+ when do pulseauido mix two or more client's buffer ( before write to the
+sound card or after receive data from client )
+
+seem pulse plugin is not rewindable too
