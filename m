@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl-ssi: Allow to use driver with
- generic audio card
-Date: Sat, 26 Apr 2014 18:22:38 +0100
-Message-ID: <20140426172238.GW12304@sirena.org.uk>
-References: <1398523756-9740-1-git-send-email-shc_work@mail.ru>
- <20140426165519.GT12304@sirena.org.uk>
- <1398531726.382350493@f372.i.mail.ru>
+From: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
+Subject: =?utf-8?q?Bug=3F_poll=28=29_timeout_in_alsa-jack_plu?=
+	=?utf-8?q?gin?=
+Date: Sun, 27 Apr 2014 07:46:57 +0400
+Message-ID: <1398570417.659136189@f247.i.mail.ru>
+Reply-To: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0887607955094862663=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F0E6260862
- for <alsa-devel@alsa-project.org>; Sat, 26 Apr 2014 19:22:54 +0200 (CEST)
-In-Reply-To: <1398531726.382350493@f372.i.mail.ru>
+Received: from f247.i.mail.ru (f247.i.mail.ru [94.100.185.89])
+ by alsa0.perex.cz (Postfix) with ESMTP id 439162615C0
+ for <alsa-devel@alsa-project.org>; Sun, 27 Apr 2014 05:46:58 +0200 (CEST)
+Received: from mail by f247.i.mail.ru with local (envelope-from
+ <sergemp@mail.ru>) id 1WeG3N-0007ug-9V
+ for alsa-devel@alsa-project.org; Sun, 27 Apr 2014 07:46:57 +0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,72 +23,124 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello.
 
---===============0887607955094862663==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jodMLjoLfgSNsO+D"
-Content-Disposition: inline
+I'm trying to debug mozilla code, which uses poll() when playing sound
+and works fine with regular alsa device, but plays no sound over
+alsa-jack plugin. I narrowed it down to a small sample. In that sample
+poll() returns 0 even when pcm can accept data. Please, help me to fix
+either a bug in that sample, or a bug in alsa-plugins.
 
+The problem is hardware-independent. To reproduce it you need:
 
---jodMLjoLfgSNsO+D
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+1. install and start jack2 daemon:
+  jackd -r -dalsa -dhw:0 -r44100 -p1024 -n2
 
-On Sat, Apr 26, 2014 at 09:02:06PM +0400, Alexander Shiyan wrote:
-> Sat, 26 Apr 2014 17:55:19 +0100 =D0=BE=D1=82 Mark Brown <broonie@kernel.o=
-rg>:
-> > On Sat, Apr 26, 2014 at 06:49:16PM +0400, Alexander Shiyan wrote:
+2. add to .asoundrc:
+  pcm.jackplug {
+    type plug
+    slave { pcm "jack" }
+  }
+  pcm.jack {
+    type jack
+    playback_ports {
+      0 system:playback_1
+      1 system:playback_2
+    }
+    capture_ports {
+      0 system:capture_1
+      1 system:capture_2
+    }
+  }
 
-> > These are cases where we can do configuration but an invalid
-> > configuration has been provided and we have spotted an error.  Ignoring
-> > that should cause runtime problems - I guess it isn't for you though so
-> > there may be something else going on?
+3. build and run the poll() code example
+  gcc -o poll-example poll-example.c -lasound
+  ./poll-example
 
-> > Especially for cases like DAI format we should probably enhance the
-> > framework so that these devices can set a variable in their struct
-> > saying what they do support but for now we don't do that.
+According to the common sense as long as PCM is ready to receive data
+it's expected that poll() returns 1 and writei() is called.
+Instead poll() returns 0 and the code plays nothing.
 
-> Other solution to this problem is to check ret !=3D EPROBE_DEFER
-> in the generic sound card. All other cases should be treated as
-> good for setup parameters. Is this better?
+---------- poll() code example ---------
+#include <assert.h>
+#include <poll.h>
+#include <alsa/asoundlib.h>
 
-I wouldn't expect to be getting -EPROBE_DEFER outside of the probe path?
-Can we take a step back here, please - what's the problem you're seeing?
+short buffer[96000];
 
---jodMLjoLfgSNsO+D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+int main()
+{
+  snd_pcm_t *pcm;
+  assert( snd_pcm_open(&pcm, "jackplug", SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK) == 0 );
+  assert( snd_pcm_nonblock(pcm, 1) == 0 );
+  assert( snd_pcm_set_params(pcm, SND_PCM_FORMAT_S16_LE, SND_PCM_ACCESS_RW_INTERLEAVED, 1/*channels*/, 48000/*rate*/, 1, 100000/*latency*/) == 0 );
+  nfds_t nfds = snd_pcm_poll_descriptors_count(pcm);
+  assert( nfds > 0 );
+  struct pollfd *saved_fds = calloc(nfds, sizeof(struct pollfd));
+  assert( snd_pcm_poll_descriptors(pcm, saved_fds, nfds) == nfds );
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+  // poll() and write(20)
+  int timeout = 1000;
+  int r = poll(saved_fds, nfds, timeout);
+  fprintf(stderr, "poll=%d\n", r);
+  if (r > 0)
+  {
+    unsigned short revents;
+    r = snd_pcm_poll_descriptors_revents(pcm, saved_fds, nfds, &revents);
+    fprintf(stderr, "snd_pcm_poll_descriptors_revents=%d\n", r);
+    if (r == 0)
+      fprintf(stderr, "snd_pcm_writei(20)=%d\n", snd_pcm_writei(pcm, buffer, 20));
+  }
 
-iQIcBAEBAgAGBQJTW+tbAAoJELSic+t+oim9JUIP/iPkTXTFUAu5lE5inR8UWK5w
-bWvE7dMSPxaRMzTY5cUy6eD8utjEp0IKKLl3SdwZmthJfp/OO2PcKHjynaHL967h
-iFXZfo+N8xNSmyDDiPHxYYuvrMn6T1ayu/xYBLFTjzTc2zlbIjblotHiQ2eXSJa3
-lAY8Jq3uyAsHwl4Nfzu0ur2XkT4ZTtFAf7Gr41ixodX5qOD0Mhvm8omxGd2ENG3U
-KuovnywLirGhzI91GHwh/KyEk3b0hMvl0Q5dCYp874m/n4+pZNjvC/KAtbjeJ1qK
-0YjVIxnbjawMTtINSFbEpNw9Ae3pSCqf7jPQPH356xQw9dY7UR3lXxPKx2klpNYQ
-8g02Z1AZq4ipbJF27o08V2DHm4AZG2+tnqnmpnZ6wKR6KywqPmhDsA/MvFUylu4y
-OjWb2B28JsL0/y5YFGRvUODezX/3rqb7nqWuJxm3wpNINUmOlSwsIdlMTStvtw0s
-ivMuWrPUPyA7K8uMMCbIOdefJXAsYr8A25JKCjpZWmUdGUN7L5cWD6165EtqlZvr
-5SzcSh+ZthyDI8sHN96UYhkLGKWhy0pRUoHM/ThTqQbPh8EN+dn1vVKp0WEYNqm+
-gQ+4V9hNif/0VpyIuN7uI8hobZOJOTK/R7tKZFFeleKW+c7xH+rC1nzksHoxKrb6
-XJfkr4gQ+rUT2l42v4UR
-=Wj20
------END PGP SIGNATURE-----
+  // poll() and write(50)
+  r = poll(saved_fds, nfds, timeout);
+  fprintf(stderr, "poll=%d\n", r);
+  if (r > 0)
+  {
+    unsigned short revents;
+    r = snd_pcm_poll_descriptors_revents(pcm, saved_fds, nfds, &revents);
+    fprintf(stderr, "snd_pcm_poll_descriptors_revents=%d\n", r);
+    if (r == 0)
+      fprintf(stderr, "snd_pcm_writei(50)=%d\n", snd_pcm_writei(pcm, buffer, 50));
+  }
 
---jodMLjoLfgSNsO+D--
+  // poll() and write(100)
+  r = poll(saved_fds, nfds, timeout);
+  fprintf(stderr, "poll=%d\n", r);
+  if (r > 0)
+  {
+    unsigned short revents;
+    r = snd_pcm_poll_descriptors_revents(pcm, saved_fds, nfds, &revents);
+    fprintf(stderr, "snd_pcm_poll_descriptors_revents=%d\n", r);
+    if (r == 0)
+      fprintf(stderr, "snd_pcm_writei(100)=%d\n", snd_pcm_writei(pcm, buffer, 100));
+  }
 
---===============0887607955094862663==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+  assert( snd_pcm_close(pcm) == 0 );
 
+  return 0;
+}
+---------- end of code example ---------
 
---===============0887607955094862663==--
+I tried to fix that in jack_pcm.c downloaded from
+http://git.alsa-project.org/?p=alsa-plugins.git;a=blob;f=jack/pcm_jack.c
+
+Making the first poll() return 1 was easy, I just added
+  write(jack->fd, &i, 1);
+to the end of snd_pcm_jack_prepare() function. But that haven't solved
+the problem, because next call to snd_pcm_poll_descriptors_revents()
+exhausts the socket and next poll() still returns 0.
+
+Another guess was to define .transfer in snd_pcm_ioplug_callback_t and
+handle read()s and write()s to polling socket there, but it seems that
+.transfer is not called on writei() at all.
+
+What's the correct approach?
+
+Is there any official documentation about using poll() for ALSA? Or maybe
+there're some manuals with meaning of snd_pcm_ioplug_callback_t fields?
+
+-- 
