@@ -1,19 +1,19 @@
-From: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
-Subject: =?utf-8?q?Bug=3F_poll=28=29_timeout_in_alsa-jack_plu?=
-	=?utf-8?q?gin?=
-Date: Sun, 27 Apr 2014 07:46:57 +0400
-Message-ID: <1398570417.659136189@f247.i.mail.ru>
-Reply-To: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH v2] ASoC: rt5640: Add minimal
+	supportforRT5642
+Date: Sun, 27 Apr 2014 14:57:24 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D73CE0EE@RTITMBSV03.realtek.com.tw>
+References: <1397701446-11977-1-git-send-email-bardliao@realtek.com>,
+ <535ADCD2.8050804@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from f247.i.mail.ru (f247.i.mail.ru [94.100.185.89])
- by alsa0.perex.cz (Postfix) with ESMTP id 439162615C0
- for <alsa-devel@alsa-project.org>; Sun, 27 Apr 2014 05:46:58 +0200 (CEST)
-Received: from mail by f247.i.mail.ru with local (envelope-from
- <sergemp@mail.ru>) id 1WeG3N-0007ug-9V
- for alsa-devel@alsa-project.org; Sun, 27 Apr 2014 07:46:57 +0400
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EC6F261718
+ for <alsa-devel@alsa-project.org>; Sun, 27 Apr 2014 16:57:33 +0200 (CEST)
+In-Reply-To: <535ADCD2.8050804@wwwdotorg.org>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,124 +23,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "jarkko.nikula@linux.intel.com" <jarkko.nikula@linux.intel.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+> On 04/16/2014 08:24 PM, bardliao@realtek.com wrote:
+> > From: Bard Liao <bardliao@realtek.com>
+> >
+> > We have been using rt5640.c codec driver with RT5642 codec chip before commit
+> > 022d21f004c1 ("ASoC: rt5640: add rt5639 support"). That commits starts using
+> > device ID reading in reset register for adding device specific controls and
+> > routes runtime.
+> >
+> > Now since device ID appears to be different between RT5640 and RT5642 the
+> > driver doesn't add those controls and routes that are valid also on RT5642.
+> >
+> > Fix this by adding a device ID found by debugging and minimal code for
+> > supporting RT5642.
+> >
+> > Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> 
+> Is this derived from Jarkko's patch? If so, shouldn't he be listed as
+> the author, not you? If it wasn't, then presumably his S-o-b line
+> shouldn't be in the patch description.
 
-I'm trying to debug mozilla code, which uses poll() when playing sound
-and works fine with regular alsa device, but plays no sound over
-alsa-jack plugin. I narrowed it down to a small sample. In that sample
-poll() returns 0 even when pcm can accept data. Please, help me to fix
-either a bug in that sample, or a bug in alsa-plugins.
+I am sorry. I don't know the meaning of S-o-b's order.
 
-The problem is hardware-independent. To reproduce it you need:
+> 
+> > Signed-off-by: Bard Liao <bardliao@realtek.com>
+> 
+> This patch causes problems for me. I see an enormous amount of spew
+> during kernel boot along the lines of:
+> 
+> > [    2.285515] rt5640 0-001c: ASoC: no source widget found for OUT MIXL
+> > [    2.291899] rt5640 0-001c: ASoC: Failed to add route OUT MIXL -> OUT MIXL Switch -> RECMIXL
+> > [    2.300306] rt5640 0-001c: ASoC: no source widget found for OUT MIXR
+> > [    2.306662] rt5640 0-001c: ASoC: Failed to add route OUT MIXR -> OUT MIXR Switch -> RECMIXR
+> > [    2.315662] rt5640 0-001c: ASoC: no sink widget found for Stereo DAC MIXL
+> 
+> (but repeated for about 28 widget/route pairs)
+> 
+> Perhaps it's related to:
+> 
+> > diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+> 
+> > -#define RT5639_RESET_ID                              0x0008
+> > -#define RT5640_RESET_ID                              0x000c
+> 
+> These values cover at least bits 3:2.
 
-1. install and start jack2 daemon:
-  jackd -r -dalsa -dhw:0 -r44100 -p1024 -n2
+Actually, only bits 2:1 is related to device ID. Others are for other informations.
 
-2. add to .asoundrc:
-  pcm.jackplug {
-    type plug
-    slave { pcm "jack" }
-  }
-  pcm.jack {
-    type jack
-    playback_ports {
-      0 system:playback_1
-      1 system:playback_2
-    }
-    capture_ports {
-      0 system:capture_1
-      1 system:capture_2
-    }
-  }
+> 
+> > +/* SW Reset & Device ID (0x00) */
+> > +#define RT5640_ID_MASK                               (0x3 << 1)
+> > +#define RT5640_ID_5639                               (0x0 << 1)
+> > +#define RT5640_ID_5640                               (0x1 << 1)
+> > +#define RT5640_ID_5642                               (0x3 << 1)
 
-3. build and run the poll() code example
-  gcc -o poll-example poll-example.c -lasound
-  ./poll-example
+It's my fault. 5640's ID should be (0x2 << 1) instead (0x1 << 1).
 
-According to the common sense as long as PCM is ready to receive data
-it's expected that poll() returns 1 and writei() is called.
-Instead poll() returns 0 and the code plays nothing.
+> 
+> whereas these values cover bits 2:1. Should the shift be 2? Even with
+> that fixed, the old 5639 value was 2 << 2 but the new value here is 0 <<
+> 2. Similarly, the old 5640 value was 3 <<2 whereas the new value is 1 <<
+> 2. There's obviously quite some confusion here.
+> 
+> The schematic of my board says I have an RT5640, everything worked
+> before this commit, and register 0 (where these values are stored) reads
+> as 0xc which matches the RT5640 value before this commit but not after.
+> 
+> I can see why this patch causes the driver to support the wrong chip.
+> However, I can't imagine why that causes all the log spew at startup.
+> Perhaps the driver is just broken on RT5639 at present (although I don't
+> recall seeing any issues when booting on a board that actually had
+> one...) Is part of the driver keying off this now incorrect ID register
+> read, yet some other part of the driver registering widgets/routes based
+> on which entry matched in struct i2c_device_id rt5640_i2c_id, hence
+> they're falling out of sync due to this change? If so, that seems like
+> another bug that needs fixing.
 
----------- poll() code example ---------
-#include <assert.h>
-#include <poll.h>
-#include <alsa/asoundlib.h>
+We will check and fix it.
 
-short buffer[96000];
+Thanks.
 
-int main()
-{
-  snd_pcm_t *pcm;
-  assert( snd_pcm_open(&pcm, "jackplug", SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK) == 0 );
-  assert( snd_pcm_nonblock(pcm, 1) == 0 );
-  assert( snd_pcm_set_params(pcm, SND_PCM_FORMAT_S16_LE, SND_PCM_ACCESS_RW_INTERLEAVED, 1/*channels*/, 48000/*rate*/, 1, 100000/*latency*/) == 0 );
-  nfds_t nfds = snd_pcm_poll_descriptors_count(pcm);
-  assert( nfds > 0 );
-  struct pollfd *saved_fds = calloc(nfds, sizeof(struct pollfd));
-  assert( snd_pcm_poll_descriptors(pcm, saved_fds, nfds) == nfds );
-
-  // poll() and write(20)
-  int timeout = 1000;
-  int r = poll(saved_fds, nfds, timeout);
-  fprintf(stderr, "poll=%d\n", r);
-  if (r > 0)
-  {
-    unsigned short revents;
-    r = snd_pcm_poll_descriptors_revents(pcm, saved_fds, nfds, &revents);
-    fprintf(stderr, "snd_pcm_poll_descriptors_revents=%d\n", r);
-    if (r == 0)
-      fprintf(stderr, "snd_pcm_writei(20)=%d\n", snd_pcm_writei(pcm, buffer, 20));
-  }
-
-  // poll() and write(50)
-  r = poll(saved_fds, nfds, timeout);
-  fprintf(stderr, "poll=%d\n", r);
-  if (r > 0)
-  {
-    unsigned short revents;
-    r = snd_pcm_poll_descriptors_revents(pcm, saved_fds, nfds, &revents);
-    fprintf(stderr, "snd_pcm_poll_descriptors_revents=%d\n", r);
-    if (r == 0)
-      fprintf(stderr, "snd_pcm_writei(50)=%d\n", snd_pcm_writei(pcm, buffer, 50));
-  }
-
-  // poll() and write(100)
-  r = poll(saved_fds, nfds, timeout);
-  fprintf(stderr, "poll=%d\n", r);
-  if (r > 0)
-  {
-    unsigned short revents;
-    r = snd_pcm_poll_descriptors_revents(pcm, saved_fds, nfds, &revents);
-    fprintf(stderr, "snd_pcm_poll_descriptors_revents=%d\n", r);
-    if (r == 0)
-      fprintf(stderr, "snd_pcm_writei(100)=%d\n", snd_pcm_writei(pcm, buffer, 100));
-  }
-
-  assert( snd_pcm_close(pcm) == 0 );
-
-  return 0;
-}
----------- end of code example ---------
-
-I tried to fix that in jack_pcm.c downloaded from
-http://git.alsa-project.org/?p=alsa-plugins.git;a=blob;f=jack/pcm_jack.c
-
-Making the first poll() return 1 was easy, I just added
-  write(jack->fd, &i, 1);
-to the end of snd_pcm_jack_prepare() function. But that haven't solved
-the problem, because next call to snd_pcm_poll_descriptors_revents()
-exhausts the socket and next poll() still returns 0.
-
-Another guess was to define .transfer in snd_pcm_ioplug_callback_t and
-handle read()s and write()s to polling socket there, but it seems that
-.transfer is not called on writei() at all.
-
-What's the correct approach?
-
-Is there any official documentation about using poll() for ALSA? Or maybe
-there're some manuals with meaning of snd_pcm_ioplug_callback_t fields?
-
--- 
+> 
+> ------Please consider the environment before printing this e-mail.
