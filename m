@@ -1,18 +1,17 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH 2/2] fm801: introduce __is_ready()/__is_valid()
-	helpers
-Date: Mon, 28 Apr 2014 11:00:30 +0300
-Message-ID: <1398672030-29565-2-git-send-email-andy.shevchenko@gmail.com>
-References: <1398672030-29565-1-git-send-email-andy.shevchenko@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] SoC: rt5640: Add the rt5639 support to the
+	OF match table
+Date: Mon, 28 Apr 2014 09:48:00 +0100
+Message-ID: <20140428084800.GA15125@sirena.org.uk>
+References: <1398666486-28118-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0119791792652621529=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gw01.mail.saunalahti.fi (gw01.mail.saunalahti.fi
- [195.197.172.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 9937E2608ED
- for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 10:00:15 +0200 (CEST)
-In-Reply-To: <1398672030-29565-1-git-send-email-andy.shevchenko@gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8AEC260816
+ for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 10:48:24 +0200 (CEST)
+In-Reply-To: <1398666486-28118-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,143 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-The introduced functios check AC97 if it's ready for communication and
-read data is valid.
 
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- sound/pci/fm801.c | 86 +++++++++++++++++++++++++++----------------------------
- 1 file changed, 42 insertions(+), 44 deletions(-)
+--===============0119791792652621529==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Disposition: inline
 
-diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index 8418484..4417409 100644
---- a/sound/pci/fm801.c
-+++ b/sound/pci/fm801.c
-@@ -224,6 +224,30 @@ MODULE_DEVICE_TABLE(pci, snd_fm801_ids);
-  *  common I/O routines
-  */
- 
-+static inline bool __is_ready(struct fm801 *chip, unsigned int iterations)
-+{
-+	unsigned int idx;
-+
-+	for (idx = 0; idx < iterations; idx++) {
-+		if (!(fm801_readw(chip, AC97_CMD) & FM801_AC97_BUSY))
-+			return true;
-+		udelay(10);
-+	}
-+	return false;
-+}
-+
-+static inline bool __is_valid(struct fm801 *chip, unsigned int iterations)
-+{
-+	unsigned int idx;
-+
-+	for (idx = 0; idx < iterations; idx++) {
-+		if (!(fm801_readw(chip, AC97_CMD) & FM801_AC97_VALID))
-+			return true;
-+		udelay(10);
-+	}
-+	return false;
-+}
-+
- static int snd_fm801_update_bits(struct fm801 *chip, unsigned short reg,
- 				 unsigned short mask, unsigned short value)
- {
-@@ -246,32 +270,19 @@ static void snd_fm801_codec_write(struct snd_ac97 *ac97,
- 				  unsigned short val)
- {
- 	struct fm801 *chip = ac97->private_data;
--	int idx;
- 
--	/*
--	 *  Wait until the codec interface is not ready..
--	 */
--	for (idx = 0; idx < 100; idx++) {
--		if (!(fm801_readw(chip, AC97_CMD) & FM801_AC97_BUSY))
--			goto ok1;
--		udelay(10);
-+	if (!__is_ready(chip, 100)) {
-+		dev_err(chip->card->dev, "AC'97 interface is busy (1)\n");
-+		return;
- 	}
--	dev_err(chip->card->dev, "AC'97 interface is busy (1)\n");
--	return;
- 
-- ok1:
- 	/* write data and address */
- 	fm801_writew(val, chip, AC97_DATA);
- 	fm801_writew(reg | (ac97->addr << FM801_AC97_ADDR_SHIFT), chip, AC97_CMD);
--	/*
--	 *  Wait until the write command is not completed..
--         */
--	for (idx = 0; idx < 1000; idx++) {
--		if (!(fm801_readw(chip, AC97_CMD) & FM801_AC97_BUSY))
--			return;
--		udelay(10);
--	}
--	dev_err(chip->card->dev, "AC'97 interface #%d is busy (2)\n", ac97->num);
-+
-+	if (!__is_ready(chip, 1000))
-+		dev_err(chip->card->dev, "AC'97 interface #%d is busy (2)\n",
-+		ac97->num);
- }
- 
- static unsigned short snd_fm801_codec_read(struct snd_ac97 *ac97, unsigned short reg)
-@@ -279,39 +290,26 @@ static unsigned short snd_fm801_codec_read(struct snd_ac97 *ac97, unsigned short
- 	struct fm801 *chip = ac97->private_data;
- 	int idx;
- 
--	/*
--	 *  Wait until the codec interface is not ready..
--	 */
--	for (idx = 0; idx < 100; idx++) {
--		if (!(fm801_readw(chip, AC97_CMD) & FM801_AC97_BUSY))
--			goto ok1;
--		udelay(10);
-+	if (!__is_ready(chip, 100)) {
-+		dev_err(chip->card->dev, "AC'97 interface is busy (1)\n");
-+		return 0;
- 	}
--	dev_err(chip->card->dev, "AC'97 interface is busy (1)\n");
--	return 0;
- 
-- ok1:
- 	/* read command */
- 	fm801_writew(reg | (ac97->addr << FM801_AC97_ADDR_SHIFT) |
- 		     FM801_AC97_READ, chip, AC97_CMD);
--	for (idx = 0; idx < 100; idx++) {
--		if (!(fm801_readw(chip, AC97_CMD) & FM801_AC97_BUSY))
--			goto ok2;
--		udelay(10);
-+	if (!__is_ready(chip, 100)) {
-+		dev_err(chip->card->dev, "AC'97 interface #%d is busy (2)\n",
-+			ac97->num);
-+		return 0;
- 	}
--	dev_err(chip->card->dev, "AC'97 interface #%d is busy (2)\n", ac97->num);
--	return 0;
- 
-- ok2:
--	for (idx = 0; idx < 1000; idx++) {
--		if (fm801_readw(chip, AC97_CMD) & FM801_AC97_VALID)
--			goto ok3;
--		udelay(10);
-+	if (!__is_valid(chip, 1000)) {
-+		dev_err(chip->card->dev,
-+			"AC'97 interface #%d is not valid (2)\n", ac97->num);
-+		return 0;
- 	}
--	dev_err(chip->card->dev, "AC'97 interface #%d is not valid (2)\n", ac97->num);
--	return 0;
- 
-- ok3:
- 	return fm801_readw(chip, AC97_DATA);
- }
- 
--- 
-1.8.3.101.g727a46b
+
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Apr 28, 2014 at 02:28:06PM +0800, Oder Chiou wrote:
+
+>  #if defined(CONFIG_OF)
+>  static const struct of_device_id rt5640_of_match[] = {
+>  	{ .compatible = "realtek,rt5640", },
+> +	{ .compatible = "realtek,rt5639", },
+>  	{},
+
+Please keep the table sorted.
+
+--EeQfGwPcQSOJBaQU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTXhW3AAoJELSic+t+oim9NRUQAJb6qOchqYltuYAaGtCqGxXw
+F0M+hFnBUtgnYi3Y4TvLu4jXHIL1+ua/mpFkgM6p/+cS85obQZPtGIyBA4sSbHTy
+KEokiNMNpBkDEoYyZYUJNCpUnrlhI7DTP2jUzHfGIhdS1UNGRm58+Fz26HddZxrL
+gqMo1Vk62DWHZBAgq7l6QIPE4IuvEI5j/AyjSCznTMrjxGz4YluNK3CCxkrIi3tE
+QhG0jX+fJ2zPaeBEXxbqtpmEvszAgnw7ZfDyBZBJkCur37G43k3q4/m3k2XTbhHl
+yOxCc0pnOYHYSYc6+raRG4YcpUrrMpZ5YSI/GYiTyf8Bz7pdqsmUqWgVlF71MWxS
+gurfW+5kudWc2/3Vci4FG4ppta43QrdrsWO9J5TX+1fEfwrRM9L3qggKXnRIEdIE
+m5oPru4KFq+MeYYqDPZsTR2c2E7E4m9q+8bPq0Yx1nNCYjH7E2aZrBuVlTbDUmV+
+jjO0YLrgqe2DXfvbi+lgsR2nzxA/DC0G0MknCN29JYcIvdU0iiJHor9t3FjuciUz
+tA13QL8R6wdzl4fyhQS3YVf2vLiBjiZ2qiaXeh1pQ6u/nBEm09PkecVzE55mqjkf
+nojgrMGtWvXPbrq6mYTfbMgMSM0S2XALwksOwlnRU8FHeFMyifDOPX5e7qV9u8uE
+caBlfCsY81ixrGtA6QCi
+=tlQM
+-----END PGP SIGNATURE-----
+
+--EeQfGwPcQSOJBaQU--
+
+--===============0119791792652621529==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0119791792652621529==--
