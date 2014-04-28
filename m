@@ -1,21 +1,22 @@
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH 1/2] fm801: introduce macros to access the
-	hardware
-Date: Mon, 28 Apr 2014 14:21:58 +0300
-Message-ID: <CAHp75Ve6mt_ypHFBg6a+gHEv8+by6DBeT4PaH158aouqN18NbQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] fm801: introduce
+	__is_ready()/__is_valid() helpers
+Date: Mon, 28 Apr 2014 14:26:57 +0300
+Message-ID: <CAHp75Vf_MJo=4WEKJE4Aig41Ed9A6L7UHWD1jLzN6fwonxWetg@mail.gmail.com>
 References: <1398672030-29565-1-git-send-email-andy.shevchenko@gmail.com>
- <s5hy4ypbvrg.wl%tiwai@suse.de>
+ <1398672030-29565-2-git-send-email-andy.shevchenko@gmail.com>
+ <s5hwqe9bvj7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f174.google.com (mail-yk0-f174.google.com
- [209.85.160.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F883264F3D
- for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 13:21:59 +0200 (CEST)
-Received: by mail-yk0-f174.google.com with SMTP id 20so5543438yks.33
- for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 04:21:58 -0700 (PDT)
-In-Reply-To: <s5hy4ypbvrg.wl%tiwai@suse.de>
+Received: from mail-yk0-f175.google.com (mail-yk0-f175.google.com
+ [209.85.160.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id C238F261A9C
+ for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 13:27:00 +0200 (CEST)
+Received: by mail-yk0-f175.google.com with SMTP id q200so1233019ykb.6
+ for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 04:26:57 -0700 (PDT)
+In-Reply-To: <s5hwqe9bvj7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,61 +30,186 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 28, 2014 at 1:20 PM, Takashi Iwai <tiwai@suse.de> wrote:
+On Mon, Apr 28, 2014 at 1:25 PM, Takashi Iwai <tiwai@suse.de> wrote:
 
-> At Mon, 28 Apr 2014 11:00:29 +0300,
+> At Mon, 28 Apr 2014 11:00:30 +0300,
 > Andy Shevchenko wrote:
 > >
-> > It will help to maintain HW accessors and, for example, switch from the
-> > direct I/O to MMIO which is more convenient for PCI devices.
+> > The introduced functios check AC97 if it's ready for communication and
+> > read data is valid.
 > >
 > > Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 > > ---
-> >  sound/pci/fm801.c | 131
-> ++++++++++++++++++++++++++++--------------------------
-> >  1 file changed, 68 insertions(+), 63 deletions(-)
+> >  sound/pci/fm801.c | 86
+> +++++++++++++++++++++++++++----------------------------
+> >  1 file changed, 42 insertions(+), 44 deletions(-)
 > >
 > > diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-> > index db18cca..8418484 100644
+> > index 8418484..4417409 100644
 > > --- a/sound/pci/fm801.c
 > > +++ b/sound/pci/fm801.c
-> > @@ -23,6 +23,7 @@
-> >  #include <linux/delay.h>
-> >  #include <linux/init.h>
-> >  #include <linux/interrupt.h>
-> > +#include <linux/io.h>
-> >  #include <linux/pci.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/module.h>
-> > @@ -34,8 +35,6 @@
-> >  #include <sound/opl3.h>
-> >  #include <sound/initval.h>
-> >
-> > -#include <asm/io.h>
-> > -
-> >  #ifdef CONFIG_SND_FM801_TEA575X_BOOL
-> >  #include <media/tea575x.h>
-> >  #endif
-> > @@ -80,7 +79,10 @@ MODULE_PARM_DESC(radio_nr, "Radio device numbers");
-> >   *  Direct registers
+> > @@ -224,6 +224,30 @@ MODULE_DEVICE_TABLE(pci, snd_fm801_ids);
+> >   *  common I/O routines
 > >   */
 > >
-> > -#define FM801_REG(chip, reg) (chip->port + FM801_##reg)
-> > +#define fm801_writew(v,chip,reg)     outw((v), chip->port + FM801_##reg)
-> > +#define fm801_readw(chip,reg)                inw(chip->port +
-> FM801_##reg)
+> > +static inline bool __is_ready(struct fm801 *chip, unsigned int
+> iterations)
+> > +{
+> > +     unsigned int idx;
 > > +
-> > +#define fm801_writel(v,chip,reg)     outl((v), chip->port + FM801_##reg)
+> > +     for (idx = 0; idx < iterations; idx++) {
+> > +             if (!(fm801_readw(chip, AC97_CMD) & FM801_AC97_BUSY))
+> > +                     return true;
+> > +             udelay(10);
+> > +     }
+> > +     return false;
+> > +}
 >
-> IMO, it's better in a form like fm801_writel(chip, reg, value)
+> The function name is a bit too ambiguous, and you don't have to use
+> "__" prefix unnecessarily.  Also, don't add inline unless really
+> needed.  Compilers are often smarter than us.
+>
+
+Understood. Will change this in v2.
 
 
- Will change this in v2.
+>
+> > +
+> > +static inline bool __is_valid(struct fm801 *chip, unsigned int
+> iterations)
+> > +{
+> > +     unsigned int idx;
+> > +
+> > +     for (idx = 0; idx < iterations; idx++) {
+> > +             if (!(fm801_readw(chip, AC97_CMD) & FM801_AC97_VALID))
+> > +                     return true;
+> > +             udelay(10);
+> > +     }
+> > +     return false;
+> > +}
+>
+> Does the patch really work as expected?  It returns true when no VALID
+> bit is set.
+>
+
+Oops, rebase issue. Thanks for caught this up!
 
 
+>
+>
 > thanks,
 >
 > Takashi
+>
+>
+> > +
+> >  static int snd_fm801_update_bits(struct fm801 *chip, unsigned short reg,
+> >                                unsigned short mask, unsigned short value)
+> >  {
+> > @@ -246,32 +270,19 @@ static void snd_fm801_codec_write(struct snd_ac97
+> *ac97,
+> >                                 unsigned short val)
+> >  {
+> >       struct fm801 *chip = ac97->private_data;
+> > -     int idx;
+> >
+> > -     /*
+> > -      *  Wait until the codec interface is not ready..
+> > -      */
+> > -     for (idx = 0; idx < 100; idx++) {
+> > -             if (!(fm801_readw(chip, AC97_CMD) & FM801_AC97_BUSY))
+> > -                     goto ok1;
+> > -             udelay(10);
+> > +     if (!__is_ready(chip, 100)) {
+> > +             dev_err(chip->card->dev, "AC'97 interface is busy (1)\n");
+> > +             return;
+> >       }
+> > -     dev_err(chip->card->dev, "AC'97 interface is busy (1)\n");
+> > -     return;
+> >
+> > - ok1:
+> >       /* write data and address */
+> >       fm801_writew(val, chip, AC97_DATA);
+> >       fm801_writew(reg | (ac97->addr << FM801_AC97_ADDR_SHIFT), chip,
+> AC97_CMD);
+> > -     /*
+> > -      *  Wait until the write command is not completed..
+> > -         */
+> > -     for (idx = 0; idx < 1000; idx++) {
+> > -             if (!(fm801_readw(chip, AC97_CMD) & FM801_AC97_BUSY))
+> > -                     return;
+> > -             udelay(10);
+> > -     }
+> > -     dev_err(chip->card->dev, "AC'97 interface #%d is busy (2)\n",
+> ac97->num);
+> > +
+> > +     if (!__is_ready(chip, 1000))
+> > +             dev_err(chip->card->dev, "AC'97 interface #%d is busy
+> (2)\n",
+> > +             ac97->num);
+> >  }
+> >
+> >  static unsigned short snd_fm801_codec_read(struct snd_ac97 *ac97,
+> unsigned short reg)
+> > @@ -279,39 +290,26 @@ static unsigned short snd_fm801_codec_read(struct
+> snd_ac97 *ac97, unsigned short
+> >       struct fm801 *chip = ac97->private_data;
+> >       int idx;
+> >
+> > -     /*
+> > -      *  Wait until the codec interface is not ready..
+> > -      */
+> > -     for (idx = 0; idx < 100; idx++) {
+> > -             if (!(fm801_readw(chip, AC97_CMD) & FM801_AC97_BUSY))
+> > -                     goto ok1;
+> > -             udelay(10);
+> > +     if (!__is_ready(chip, 100)) {
+> > +             dev_err(chip->card->dev, "AC'97 interface is busy (1)\n");
+> > +             return 0;
+> >       }
+> > -     dev_err(chip->card->dev, "AC'97 interface is busy (1)\n");
+> > -     return 0;
+> >
+> > - ok1:
+> >       /* read command */
+> >       fm801_writew(reg | (ac97->addr << FM801_AC97_ADDR_SHIFT) |
+> >                    FM801_AC97_READ, chip, AC97_CMD);
+> > -     for (idx = 0; idx < 100; idx++) {
+> > -             if (!(fm801_readw(chip, AC97_CMD) & FM801_AC97_BUSY))
+> > -                     goto ok2;
+> > -             udelay(10);
+> > +     if (!__is_ready(chip, 100)) {
+> > +             dev_err(chip->card->dev, "AC'97 interface #%d is busy
+> (2)\n",
+> > +                     ac97->num);
+> > +             return 0;
+> >       }
+> > -     dev_err(chip->card->dev, "AC'97 interface #%d is busy (2)\n",
+> ac97->num);
+> > -     return 0;
+> >
+> > - ok2:
+> > -     for (idx = 0; idx < 1000; idx++) {
+> > -             if (fm801_readw(chip, AC97_CMD) & FM801_AC97_VALID)
+> > -                     goto ok3;
+> > -             udelay(10);
+> > +     if (!__is_valid(chip, 1000)) {
+> > +             dev_err(chip->card->dev,
+> > +                     "AC'97 interface #%d is not valid (2)\n",
+> ac97->num);
+> > +             return 0;
+> >       }
+> > -     dev_err(chip->card->dev, "AC'97 interface #%d is not valid (2)\n",
+> ac97->num);
+> > -     return 0;
+> >
+> > - ok3:
+> >       return fm801_readw(chip, AC97_DATA);
+> >  }
+> >
+> > --
+> > 1.8.3.101.g727a46b
+> >
 >
 
 
