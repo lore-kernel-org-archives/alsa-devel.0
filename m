@@ -1,7 +1,7 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v4 13/17] ASoC: fsl-ssi: remove unnecessary spinlock
-Date: Mon, 28 Apr 2014 12:54:54 +0200
-Message-ID: <1398682498-24357-14-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v4 01/17] ASoC: fsl-ssi: Fix register values when disabling
+Date: Mon, 28 Apr 2014 12:54:42 +0200
+Message-ID: <1398682498-24357-2-git-send-email-mpa@pengutronix.de>
 References: <1398682498-24357-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,104 +18,99 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, Sascha Hauer <s.hauer@pengutronix.de>, Timur Tabi <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, Timur Tabi <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Sascha Hauer <s.hauer@pengutronix.de>
+The bits we have to clear when disabling are different when the other
+stream is still active.
 
-The baudclock_locked variable is only used in functions which
-are serialized anyway from the core. No need to have a lock
-around the variable, so remove it.
+This patch fixes the calculation of new register values after disabling
+one stream. It also adds a more detailed description of the new register
+value calculation.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 21 ++++-----------------
- 1 file changed, 4 insertions(+), 17 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 40 +++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 35 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 8ed724c..5c6dc0a 100644
+index fdb123d..fadb264 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -163,7 +163,6 @@ struct fsl_ssi_private {
- 	bool baudclk_locked;
- 	bool use_dual_fifo;
- 	u8 i2s_mode;
--	spinlock_t baudclk_lock;
- 	struct clk *baudclk;
- 	struct clk *clk;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
-@@ -488,13 +487,9 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct fsl_ssi_private *ssi_private =
- 		snd_soc_dai_get_drvdata(rtd->cpu_dai);
--	unsigned long flags;
- 
--	if (!dai->active && !fsl_ssi_is_ac97(ssi_private)) {
--		spin_lock_irqsave(&ssi_private->baudclk_lock, flags);
-+	if (!dai->active && !fsl_ssi_is_ac97(ssi_private))
- 		ssi_private->baudclk_locked = false;
--		spin_unlock_irqrestore(&ssi_private->baudclk_lock, flags);
--	}
- 
- 	/* When using dual fifo mode, it is safer to ensure an even period
- 	 * size. If appearing to an odd number while DMA always starts its
-@@ -524,7 +519,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
- 	int synchronous = ssi_private->cpu_dai_drv.symmetric_rates, ret;
- 	u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
--	unsigned long flags, clkrate, baudrate, tmprate;
-+	unsigned long clkrate, baudrate, tmprate;
- 	u64 sub, savesub = 100000;
- 
- 	/* Don't apply it to any non-baudclk circumstance */
-@@ -588,18 +583,14 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	else
- 		write_ssi_mask(&ssi->srccr, mask, stccr);
- 
--	spin_lock_irqsave(&ssi_private->baudclk_lock, flags);
- 	if (!ssi_private->baudclk_locked) {
- 		ret = clk_set_rate(ssi_private->baudclk, baudrate);
- 		if (ret) {
--			spin_unlock_irqrestore(&ssi_private->baudclk_lock,
--					flags);
- 			dev_err(cpu_dai->dev, "failed to set baudclk rate\n");
- 			return -EINVAL;
- 		}
- 		ssi_private->baudclk_locked = true;
- 	}
--	spin_unlock_irqrestore(&ssi_private->baudclk_lock, flags);
- 
- 	return 0;
+@@ -490,6 +490,26 @@ static void fsl_ssi_rxtx_config(struct fsl_ssi_private *ssi_private,
  }
-@@ -876,7 +867,6 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(rtd->cpu_dai);
- 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
--	unsigned long flags;
  
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -895,11 +885,9 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 			fsl_ssi_rx_config(ssi_private, false);
- 
- 		if (!fsl_ssi_is_ac97(ssi_private) && (read_ssi(&ssi->scr) &
--					(CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE)) == 0) {
--			spin_lock_irqsave(&ssi_private->baudclk_lock, flags);
-+					(CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE)) == 0)
- 			ssi_private->baudclk_locked = false;
--			spin_unlock_irqrestore(&ssi_private->baudclk_lock, flags);
--		}
+ /*
++ * Calculate the bits that have to be disabled for the current stream that is
++ * getting disabled. This keeps the bits enabled that are necessary for the
++ * second stream to work if 'stream_active' is true.
++ *
++ * Detailed calculation:
++ * These are the values that need to be active after disabling. For non-active
++ * second stream, this is 0:
++ *	vals_stream * !!stream_active
++ *
++ * The following computes the overall differences between the setup for the
++ * to-disable stream and the active stream, a simple XOR:
++ *	vals_disable ^ (vals_stream * !!(stream_active))
++ *
++ * The full expression adds a mask on all values we care about
++ */
++#define fsl_ssi_disable_val(vals_disable, vals_stream, stream_active) \
++	((vals_disable) & \
++	 ((vals_disable) ^ ((vals_stream) * (u32)!!(stream_active))))
 +
- 		break;
++/*
+  * Enable/Disable a ssi configuration. You have to pass either
+  * ssi_private->rxtx_reg_val.rx or tx as vals parameter.
+  */
+@@ -501,6 +521,12 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
+ 	u32 scr_val = read_ssi(&ssi->scr);
+ 	int nr_active_streams = !!(scr_val & CCSR_SSI_SCR_TE) +
+ 				!!(scr_val & CCSR_SSI_SCR_RE);
++	int keep_active;
++
++	if (nr_active_streams - 1 > 0)
++		keep_active = 1;
++	else
++		keep_active = 0;
  
- 	default:
-@@ -1231,7 +1219,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		ssi_private->fifo_depth = 8;
+ 	/* Find the other direction values rx or tx which we do not want to
+ 	 * modify */
+@@ -511,7 +537,8 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
  
- 	ssi_private->baudclk_locked = false;
--	spin_lock_init(&ssi_private->baudclk_lock);
+ 	/* If vals should be disabled, start with disabling the unit */
+ 	if (!enable) {
+-		u32 scr = vals->scr & (vals->scr ^ avals->scr);
++		u32 scr = fsl_ssi_disable_val(vals->scr, avals->scr,
++				keep_active);
+ 		write_ssi_mask(&ssi->scr, scr, 0);
+ 	}
  
- 	dev_set_drvdata(&pdev->dev, ssi_private);
+@@ -522,7 +549,7 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
+ 	 */
+ 	if (ssi_private->offline_config) {
+ 		if ((enable && !nr_active_streams) ||
+-				(!enable && nr_active_streams == 1))
++				(!enable && !keep_active))
+ 			fsl_ssi_rxtx_config(ssi_private, enable);
  
+ 		goto config_done;
+@@ -551,9 +578,12 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
+ 		 */
+ 
+ 		/* These assignments are simply vals without bits set in avals*/
+-		sier = vals->sier & (vals->sier ^ avals->sier);
+-		srcr = vals->srcr & (vals->srcr ^ avals->srcr);
+-		stcr = vals->stcr & (vals->stcr ^ avals->stcr);
++		sier = fsl_ssi_disable_val(vals->sier, avals->sier,
++				keep_active);
++		srcr = fsl_ssi_disable_val(vals->srcr, avals->srcr,
++				keep_active);
++		stcr = fsl_ssi_disable_val(vals->stcr, avals->stcr,
++				keep_active);
+ 
+ 		write_ssi_mask(&ssi->srcr, srcr, 0);
+ 		write_ssi_mask(&ssi->stcr, stcr, 0);
 -- 
 1.9.1
