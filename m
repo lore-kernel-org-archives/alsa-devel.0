@@ -1,55 +1,32 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH 1/2] ASoC: fsl_spdif: Fix clock source for
- rxclk rate measurement
-Date: Mon, 28 Apr 2014 10:54:13 +0800
-Message-ID: <20140428025410.GA27191@MrMyself>
-References: <cover.1398427055.git.Guangyu.Chen@freescale.com>
- <cbeb07fbdadd7bf72f74224d5ad12c9706376c95.1398427055.git.Guangyu.Chen@freescale.com>
- <20140425161015.GQ12304@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (dns-bn1lp0143.outbound.protection.outlook.com [207.46.163.143])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C25526087D
- for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 04:54:44 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140425161015.GQ12304@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+From: Masanari Iida <standby24x7@gmail.com>
+Subject: [PATCH] sound: usb: Fix format string mismatch in mixer.c
+Date: Mon, 28 Apr 2014 13:08:55 +0900
+Message-ID: <1398658135-19971-1-git-send-email-standby24x7@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Masanari Iida <standby24x7@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 25, 2014 at 05:10:15PM +0100, Mark Brown wrote:
-> On Fri, Apr 25, 2014 at 07:58:19PM +0800, Nicolin Chen wrote:
-> 
-> > +	/* Get system clock for rx clock rate calculation */
-> > +	sprintf(tmp, "rxtx%d", SPDIF_CLK_SRC_SYSCLK);
-> > +	spdif_priv->sysclk = devm_clk_get(&pdev->dev, tmp);
-> > +	if (IS_ERR(spdif_priv->sysclk)) {
-> > +		dev_err(&pdev->dev, "no sys clock (%s) in devicetree\n", tmp);
-> > +		return PTR_ERR(spdif_priv->sysclk);
-> > +	}
-> > +
-> 
-> Why is this not just a fixed string - it seems like the clock name is a
-> constant anyway?
+Fix format string mismatch in parse_audio_selector_unit().
 
-For current version, yes, it always ties system clock to rxtx5. I was just
-considering if further version changes the sysclk route to another source,
-the driver will simply diversify this id here for different versions.
+Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+---
+ sound/usb/mixer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'll later send a v2 for it to fix the name. And you can decide which one
-would be better based on what I've just explained.
-
-Thank you,
-Nicolin
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index d40a285..6fe83e4 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1986,7 +1986,7 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid, void
+ 		if (! len && check_input_term(state, desc->baSourceID[i], &iterm) >= 0)
+ 			len = get_term_name(state, &iterm, namelist[i], MAX_ITEM_NAME_LEN, 0);
+ 		if (! len)
+-			sprintf(namelist[i], "Input %d", i);
++			sprintf(namelist[i], "Input %u", i);
+ 	}
+ 
+ 	kctl = snd_ctl_new1(&mixer_selectunit_ctl, cval);
+-- 
+2.0.0.rc1
