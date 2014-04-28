@@ -1,130 +1,270 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v4 09/17] ASoC: fsl-ssi: make fsl,
-	mode property optional
-Date: Mon, 28 Apr 2014 12:54:50 +0200
-Message-ID: <1398682498-24357-10-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v4 08/17] ASoC: fsl-ssi: introduce SoC specific data
+Date: Mon, 28 Apr 2014 12:54:49 +0200
+Message-ID: <1398682498-24357-9-git-send-email-mpa@pengutronix.de>
 References: <1398682498-24357-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4EC6A261600
- for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 12:55:26 +0200 (CEST)
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <1398682498-24357-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, Timur Tabi <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, Sascha Hauer <s.hauer@pengutronix.de>, Timur Tabi <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The simple soundcard binding has its own way for specifying the dai
-format. To be able to use this binding we have to make the fsl,mode
-property optional. As the property is used in existing devicetrees
-keep the option around for compatibility reasons.
+From: Sascha Hauer <s.hauer@pengutronix.de>
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+Introduce a SoC data struct which contains the differences between
+the different SoCs this driver supports. This makes it easy to support
+more differences without having to introduce a new switch/case each
+time.
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 41 ++++++++++++++++++++++++++---------------
- 1 file changed, 26 insertions(+), 15 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 125 ++++++++++++++++++++++--------------------------
+ 1 file changed, 57 insertions(+), 68 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index f2255cb..3821dac 100644
+index 794f25f..f2255cb 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -564,12 +564,9 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
+@@ -132,6 +132,12 @@ struct fsl_ssi_rxtx_reg_val {
+ 	struct fsl_ssi_reg_val tx;
+ };
  
--/**
-- * fsl_ssi_set_dai_fmt - configure Digital Audio Interface Format.
-- */
--static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
-+static int _fsl_ssi_set_dai_fmt(struct fsl_ssi_private *ssi_private,
-+		unsigned int fmt)
- {
--	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
- 	u32 strcr = 0, stcr, srcr, scr, mask;
- 	u8 wm;
-@@ -707,6 +704,17 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- 		fsl_ssi_setup_ac97(ssi_private);
++struct fsl_ssi_soc_data {
++	bool imx;
++	bool offline_config;
++	u32 sisr_write_mask;
++};
++
+ /**
+  * fsl_ssi_private: per-SSI private data
+  *
+@@ -153,7 +159,6 @@ struct fsl_ssi_private {
+ 	struct platform_device *pdev;
+ 	unsigned int dai_fmt;
  
- 	return 0;
+-	enum fsl_ssi_type hw_type;
+ 	bool use_dma;
+ 	bool baudclk_locked;
+ 	bool use_dual_fifo;
+@@ -168,35 +173,9 @@ struct fsl_ssi_private {
+ 	struct fsl_ssi_rxtx_reg_val rxtx_reg_val;
+ 
+ 	struct fsl_ssi_dbg dbg_stats;
+-};
+ 
+-static const struct of_device_id fsl_ssi_ids[] = {
+-	{ .compatible = "fsl,mpc8610-ssi", .data = (void *) FSL_SSI_MCP8610},
+-	{ .compatible = "fsl,imx51-ssi", .data = (void *) FSL_SSI_MX51},
+-	{ .compatible = "fsl,imx35-ssi", .data = (void *) FSL_SSI_MX35},
+-	{ .compatible = "fsl,imx21-ssi", .data = (void *) FSL_SSI_MX21},
+-	{}
++	const struct fsl_ssi_soc_data *soc;
+ };
+-MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
+-
+-static bool fsl_ssi_is_ac97(struct fsl_ssi_private *ssi_private)
+-{
+-	return !!(ssi_private->dai_fmt & SND_SOC_DAIFMT_AC97);
+-}
+-
+-static bool fsl_ssi_on_imx(struct fsl_ssi_private *ssi_private)
+-{
+-	switch (ssi_private->hw_type) {
+-	case FSL_SSI_MX21:
+-	case FSL_SSI_MX35:
+-	case FSL_SSI_MX51:
+-		return true;
+-	case FSL_SSI_MCP8610:
+-		return false;
+-	}
+-
+-	return false;
+-}
+ 
+ /*
+  * imx51 and later SoCs have a slightly different IP that allows the
+@@ -213,18 +192,48 @@ static bool fsl_ssi_on_imx(struct fsl_ssi_private *ssi_private)
+  * while the SSI unit is running (SSIEN). So we support the necessary
+  * online configuration of fsl-ssi starting at imx51.
+  */
+-static bool fsl_ssi_offline_config(struct fsl_ssi_private *ssi_private)
+-{
+-	switch (ssi_private->hw_type) {
+-	case FSL_SSI_MCP8610:
+-	case FSL_SSI_MX21:
+-	case FSL_SSI_MX35:
+-		return true;
+-	case FSL_SSI_MX51:
+-		return false;
+-	}
+ 
+-	return true;
++static struct fsl_ssi_soc_data fsl_ssi_mpc8610 = {
++	.imx = false,
++	.offline_config = true,
++	.sisr_write_mask = CCSR_SSI_SISR_RFRC | CCSR_SSI_SISR_TFRC |
++			CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
++			CCSR_SSI_SISR_TUE0 | CCSR_SSI_SISR_TUE1,
++};
 +
-+}
++static struct fsl_ssi_soc_data fsl_ssi_imx21 = {
++	.imx = true,
++	.offline_config = true,
++	.sisr_write_mask = 0,
++};
 +
-+/**
-+ * fsl_ssi_set_dai_fmt - configure Digital Audio Interface Format.
-+ */
-+static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
++static struct fsl_ssi_soc_data fsl_ssi_imx35 = {
++	.imx = true,
++	.offline_config = true,
++	.sisr_write_mask = CCSR_SSI_SISR_RFRC | CCSR_SSI_SISR_TFRC |
++			CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
++			CCSR_SSI_SISR_TUE0 | CCSR_SSI_SISR_TUE1,
++};
++
++static struct fsl_ssi_soc_data fsl_ssi_imx51 = {
++	.imx = true,
++	.offline_config = false,
++	.sisr_write_mask = CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
++		CCSR_SSI_SISR_TUE0 | CCSR_SSI_SISR_TUE1,
++};
++
++static const struct of_device_id fsl_ssi_ids[] = {
++	{ .compatible = "fsl,mpc8610-ssi", .data = &fsl_ssi_mpc8610 },
++	{ .compatible = "fsl,imx51-ssi", .data = &fsl_ssi_imx51 },
++	{ .compatible = "fsl,imx35-ssi", .data = &fsl_ssi_imx35 },
++	{ .compatible = "fsl,imx21-ssi", .data = &fsl_ssi_imx21 },
++	{}
++};
++MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
++
++static bool fsl_ssi_is_ac97(struct fsl_ssi_private *ssi_private)
 +{
-+	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
-+
-+	return _fsl_ssi_set_dai_fmt(ssi_private, fmt);
++	return !!(ssi_private->dai_fmt & SND_SOC_DAIFMT_AC97);
  }
  
  /**
-@@ -1130,7 +1138,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+@@ -245,25 +254,6 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
+ 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+ 	__be32 sisr;
+ 	__be32 sisr2;
+-	__be32 sisr_write_mask = 0;
+-
+-	switch (ssi_private->hw_type) {
+-	case FSL_SSI_MX21:
+-		sisr_write_mask = 0;
+-		break;
+-
+-	case FSL_SSI_MCP8610:
+-	case FSL_SSI_MX35:
+-		sisr_write_mask = CCSR_SSI_SISR_RFRC | CCSR_SSI_SISR_TFRC |
+-			CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
+-			CCSR_SSI_SISR_TUE0 | CCSR_SSI_SISR_TUE1;
+-		break;
+-
+-	case FSL_SSI_MX51:
+-		sisr_write_mask = CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
+-			CCSR_SSI_SISR_TUE0 | CCSR_SSI_SISR_TUE1;
+-		break;
+-	}
+ 
+ 	/* We got an interrupt, so read the status register to see what we
+ 	   were interrupted for.  We mask it with the Interrupt Enable register
+@@ -271,7 +261,7 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
+ 	 */
+ 	sisr = read_ssi(&ssi->sisr);
+ 
+-	sisr2 = sisr & sisr_write_mask;
++	sisr2 = sisr & ssi_private->soc->sisr_write_mask;
+ 	/* Clear the bits that we set */
+ 	if (sisr2)
+ 		write_ssi(sisr2, &ssi->sisr);
+@@ -359,7 +349,7 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
+ 	 * reconfiguration, so we have to enable all necessary flags at once
+ 	 * even if we do not use them later (capture and playback configuration)
+ 	 */
+-	if (fsl_ssi_offline_config(ssi_private)) {
++	if (ssi_private->soc->offline_config) {
+ 		if ((enable && !nr_active_streams) ||
+ 				(!enable && !keep_active))
+ 			fsl_ssi_rxtx_config(ssi_private, enable);
+@@ -910,7 +900,7 @@ static int fsl_ssi_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(dai);
+ 
+-	if (fsl_ssi_on_imx(ssi_private) && ssi_private->use_dma) {
++	if (ssi_private->soc->imx && ssi_private->use_dma) {
+ 		dai->playback_dma_data = &ssi_private->dma_params_tx;
+ 		dai->capture_dma_data = &ssi_private->dma_params_rx;
+ 	}
+@@ -1136,7 +1126,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	int ret = 0;
+ 	struct device_node *np = pdev->dev.of_node;
+ 	const struct of_device_id *of_id;
+-	enum fsl_ssi_type hw_type;
+ 	const char *p, *sprop;
  	const uint32_t *iprop;
  	struct resource res;
- 	char name[64];
--	bool ac97 = false;
+@@ -1151,9 +1140,8 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		return -ENODEV;
  
- 	/* SSIs that are not connected on the board should have a
- 	 *      status = "disabled"
-@@ -1143,14 +1150,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	if (!of_id || !of_id->data)
+ 	of_id = of_match_device(fsl_ssi_ids, &pdev->dev);
+-	if (!of_id)
++	if (!of_id || !of_id->data)
  		return -EINVAL;
+-	hw_type = (enum fsl_ssi_type) of_id->data;
  
--	sprop = of_get_property(np, "fsl,mode", NULL);
--	if (!sprop) {
--		dev_err(&pdev->dev, "fsl,mode property is necessary\n");
--		return -EINVAL;
--	}
--	if (!strcmp(sprop, "ac97-slave"))
--		ac97 = true;
--
- 	ssi_private = devm_kzalloc(&pdev->dev, sizeof(*ssi_private),
- 			GFP_KERNEL);
- 	if (!ssi_private) {
-@@ -1160,10 +1159,19 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	sprop = of_get_property(np, "fsl,mode", NULL);
+ 	if (!sprop) {
+@@ -1170,9 +1158,10 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	}
  
- 	ssi_private->soc = of_id->data;
- 
-+	sprop = of_get_property(np, "fsl,mode", NULL);
-+	if (sprop) {
-+		if (!strcmp(sprop, "ac97-slave"))
-+			ssi_private->dai_fmt = SND_SOC_DAIFMT_AC97;
-+		else if (!strcmp(sprop, "i2s-slave"))
-+			ssi_private->dai_fmt = SND_SOC_DAIFMT_I2S |
-+				SND_SOC_DAIFMT_CBM_CFM;
-+	}
++	ssi_private->soc = of_id->data;
 +
  	ssi_private->use_dma = !of_property_read_bool(np,
  			"fsl,fiq-stream-filter");
+-	ssi_private->hw_type = hw_type;
  
--	if (ac97) {
-+	if (fsl_ssi_is_ac97(ssi_private)) {
+ 	if (ac97) {
  		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_ac97_dai,
- 				sizeof(fsl_ssi_ac97_dai));
+@@ -1227,7 +1216,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
  
-@@ -1274,6 +1282,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	}
+ 	dev_set_drvdata(&pdev->dev, ssi_private);
  
- done:
-+	if (ssi_private->dai_fmt)
-+		_fsl_ssi_set_dai_fmt(ssi_private, ssi_private->dai_fmt);
-+
- 	return 0;
+-	if (fsl_ssi_on_imx(ssi_private)) {
++	if (ssi_private->soc->imx) {
+ 		ret = fsl_ssi_imx_probe(pdev, ssi_private, ssi_private->ssi);
+ 		if (ret)
+ 			goto error_irqmap;
+@@ -1294,7 +1283,7 @@ error_irq:
+ 	snd_soc_unregister_component(&pdev->dev);
  
- error_sound_card:
+ error_asoc_register:
+-	if (fsl_ssi_on_imx(ssi_private))
++	if (ssi_private->soc->imx)
+ 		fsl_ssi_imx_clean(pdev, ssi_private);
+ 
+ error_irqmap:
+@@ -1314,7 +1303,7 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+ 		platform_device_unregister(ssi_private->pdev);
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+-	if (fsl_ssi_on_imx(ssi_private))
++	if (ssi_private->soc->imx)
+ 		fsl_ssi_imx_clean(pdev, ssi_private);
+ 
+ 	if (ssi_private->use_dma)
 -- 
 1.9.1
