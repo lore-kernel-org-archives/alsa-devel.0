@@ -1,8 +1,7 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v4 12/17] ASoC: fsl-ssi: set bitclock in master mode from
- hw_params
-Date: Mon, 28 Apr 2014 12:54:53 +0200
-Message-ID: <1398682498-24357-13-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v4 03/17] ASoC: fsl-ssi: Use dev_name for DAI driver struct
+Date: Mon, 28 Apr 2014 12:54:44 +0200
+Message-ID: <1398682498-24357-4-git-send-email-mpa@pengutronix.de>
 References: <1398682498-24357-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,84 +18,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, Sascha Hauer <s.hauer@pengutronix.de>, Timur Tabi <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, Timur Tabi <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Sascha Hauer <s.hauer@pengutronix.de>
+Instead of creating a name using string manipulation functions, we can
+simply use the device name for the DAI driver struct.
 
-The fsl_ssi driver uses the .set_sysclk callback to configure the
-bitclock for master mode. This is unnecessary since the bitclock
-is known in hw_params. This patch removes the .set_sysclk callback
-and configures the bitclock from .hw_params.
-
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index d8f9a5f..8ed724c 100644
+index 344f752..65d9da1 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -509,7 +509,7 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
- }
+@@ -1027,17 +1027,13 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	if (!strcmp(sprop, "ac97-slave"))
+ 		ac97 = true;
  
- /**
-- * fsl_ssi_set_dai_sysclk - configure Digital Audio Interface bit clock
-+ * fsl_ssi_set_bclk - configure Digital Audio Interface bit clock
-  *
-  * Note: This function can be only called when using SSI as DAI master
-  *
-@@ -517,8 +517,8 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
-  * freq: Output BCLK frequency = samplerate * 32 (fixed) * channels
-  * dir: SND_SOC_CLOCK_OUT -> TxBCLK, SND_SOC_CLOCK_IN -> RxBCLK.
-  */
--static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
--				  int clk_id, unsigned int freq, int dir)
-+static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *cpu_dai, unsigned int freq)
- {
- 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
-@@ -583,7 +583,7 @@ static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 	mask = CCSR_SSI_SxCCR_PM_MASK | CCSR_SSI_SxCCR_DIV2 |
- 		CCSR_SSI_SxCCR_PSR;
+-	/* The DAI name is the last part of the full name of the node. */
+-	p = strrchr(np->full_name, '/') + 1;
+-	ssi_private = devm_kzalloc(&pdev->dev, sizeof(*ssi_private) + strlen(p),
+-			      GFP_KERNEL);
++	ssi_private = devm_kzalloc(&pdev->dev, sizeof(*ssi_private),
++			GFP_KERNEL);
+ 	if (!ssi_private) {
+ 		dev_err(&pdev->dev, "could not allocate DAI object\n");
+ 		return -ENOMEM;
+ 	}
  
--	if (dir == SND_SOC_CLOCK_OUT || synchronous)
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK || synchronous)
- 		write_ssi_mask(&ssi->stccr, mask, stccr);
- 	else
- 		write_ssi_mask(&ssi->srccr, mask, stccr);
-@@ -627,6 +627,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 		snd_pcm_format_width(params_format(hw_params));
- 	u32 wl = CCSR_SSI_SxCCR_WL(sample_size);
- 	int enabled = read_ssi(&ssi->scr) & CCSR_SSI_SCR_SSIEN;
-+	int ret;
+-	strcpy(ssi_private->name, p);
+-
+ 	ssi_private->use_dma = !of_property_read_bool(np,
+ 			"fsl,fiq-stream-filter");
+ 	ssi_private->hw_type = hw_type;
+@@ -1055,7 +1051,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
+ 		       sizeof(fsl_ssi_dai_template));
+ 	}
+-	ssi_private->cpu_dai_drv.name = ssi_private->name;
++	ssi_private->cpu_dai_drv.name = dev_name(&pdev->dev);
  
- 	/*
- 	 * If we're in synchronous mode, and the SSI is already enabled,
-@@ -635,6 +636,14 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 	if (enabled && ssi_private->cpu_dai_drv.symmetric_rates)
- 		return 0;
- 
-+	if (fsl_ssi_is_i2s_master(ssi_private)) {
-+		ret = fsl_ssi_set_bclk(substream, cpu_dai,
-+				params_channels(hw_params) * 32 *
-+				params_rate(hw_params));
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/*
- 	 * FIXME: The documentation says that SxCCR[WL] should not be
- 	 * modified while the SSI is enabled.  The only time this can
-@@ -923,7 +932,6 @@ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
- 	.startup	= fsl_ssi_startup,
- 	.hw_params	= fsl_ssi_hw_params,
- 	.set_fmt	= fsl_ssi_set_dai_fmt,
--	.set_sysclk	= fsl_ssi_set_dai_sysclk,
- 	.set_tdm_slot	= fsl_ssi_set_dai_tdm_slot,
- 	.trigger	= fsl_ssi_trigger,
- };
+ 	/* Get the addresses and IRQ */
+ 	ret = of_address_to_resource(np, 0, &res);
+@@ -1203,7 +1199,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	 * different writeable interrupt status registers.
+ 	 */
+ 	if (ssi_private->use_dma) {
+-		/* The 'name' should not have any slashes in it. */
+ 		ret = devm_request_irq(&pdev->dev, ssi_private->irq,
+ 					fsl_ssi_isr, 0, ssi_private->name,
+ 					ssi_private);
 -- 
 1.9.1
