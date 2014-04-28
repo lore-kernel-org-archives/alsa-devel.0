@@ -1,36 +1,42 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - add headset mic detect quirk for a Dell laptop
-Date: Mon, 28 Apr 2014 14:45:00 +0800
-Message-ID: <1398667500-4655-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: rt5640: Add minimal support for
+ RT5642
+Date: Mon, 28 Apr 2014 09:47:51 +0300
+Message-ID: <535DF997.6080700@linux.intel.com>
+References: <1397701446-11977-1-git-send-email-bardliao@realtek.com>
+ <535ADCD2.8050804@wwwdotorg.org> <20140426002234.GS12304@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E5B5261647
+ for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 08:47:55 +0200 (CEST)
+In-Reply-To: <20140426002234.GS12304@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Stephen Warren <swarren@wwwdotorg.org>
+Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-When we plug a 3-ring headset on the Dell machine (VID: 0x10ec0255,
-SID: 0x10280674), the headset mic can't be detected, after apply this
-patch, the headset mic can work well.
+On 04/26/2014 03:22 AM, Mark Brown wrote:
+> On Fri, Apr 25, 2014 at 04:08:18PM -0600, Stephen Warren wrote:
+>> On 04/16/2014 08:24 PM, bardliao@realtek.com wrote:
+>>> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+>> Is this derived from Jarkko's patch? If so, shouldn't he be listed as
+>> the author, not you? If it wasn't, then presumably his S-o-b line
+>> shouldn't be in the patch description.
+> It was derived but edited; I did check with Jarkko that he was OK before
+> applying.
+It was ok to me since derivate had more information (device ID bit 
+descriptions) than my patch.
 
-BugLink: https://bugs.launchpad.net/bugs/1297581
-Cc: David Henningsson <david.henningsson@canonical.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index c643dfc..c1952c9 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4621,6 +4621,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0667, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0668, "Dell", ALC255_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0669, "Dell", ALC255_FIXUP_DELL2_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x0674, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x067f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x15cc, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x15cd, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
 -- 
-1.8.1.2
+Jarkko
