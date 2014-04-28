@@ -1,18 +1,25 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] ASoC: fsl: select SND_SOC_IMX_PCM_DMA
-	where needed
-Date: Mon, 28 Apr 2014 23:12:14 +0200
-Message-ID: <6285923.UQqcZVikjI@wuerfel>
-References: <6606961.lAGLvkNsEj@wuerfel> <7785150.X1QaggmPtm@wuerfel>
- <1398717341.630093136@f319.i.mail.ru>
+From: Andoru <andoru.blah@gmail.com>
+Subject: Invalid PCM pointer with CMI8738 and pcm.c buffer
+	underuns
+Date: Mon, 28 Apr 2014 21:28:42 +0000 (UTC)
+Message-ID: <loom.20140428T232433-313@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 850F426072A
- for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 23:12:18 +0200 (CEST)
-In-Reply-To: <1398717341.630093136@f319.i.mail.ru>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC3CA260864
+ for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 23:28:56 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Wet6e-000846-1c
+ for alsa-devel@alsa-project.org; Mon, 28 Apr 2014 23:28:56 +0200
+Received: from cl-86-125-141-31.cablelink.mures.rdsnet.ro ([86.125.141.31])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 23:28:56 +0200
+Received: from andoru.blah by cl-86-125-141-31.cablelink.mures.rdsnet.ro with
+ local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2014 23:28:56 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +29,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org, Alexander Shiyan <shc_work@mail.ru>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlc2RheSAyOSBBcHJpbCAyMDE0IDAwOjM1OjQxIEFsZXhhbmRlciBTaGl5YW4gd3JvdGU6
-Cj4gTW9uLCAyOCBBcHIgMjAxNCAyMTo1MjoxNiArMDIwMCDQvtGCIEFybmQgQmVyZ21hbm4gPGFy
-bmRAYXJuZGIuZGU+Ogo+ID4gT24gTW9uZGF5IDI4IEFwcmlsIDIwMTQgMjI6NDY6MTAgQWxleGFu
-ZGVyIFNoaXlhbiB3cm90ZToKPiA+ID4gTW9uLCAyOCBBcHIgMjAxNCAxNjo0NjozMCArMDIwMCDQ
-vtGCIEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+Ogo+ID4gPiA+IFNpbmNlIGNvbW1pdCAy
-MDRkZWM5M2VhYSAiQVNvQzogZnNsOiBBbGxvdyB0byBzZWxlY3QgaW5kaXZpZHVhbCBjb21tb24K
-PiA+ID4gPiBvcHRpb25zIiwgaXQgaXMgcG9zc2libGUgdG8gZW5hYmxlIFNORF9TT0NfRlNMX1NT
-SSBhbmQgU05EX1NPQ19GU0xfU1BESUYKPiA+ID4gPiBtYW51YWxseS4gSG93ZXZlciwgdGhlc2Ug
-dHdvIG9wdGlvbnMgYXJlIGZvciBkcml2ZXJzIHRoYXQgYm90aAo+ID4gPiA+IHJlcXVpcmUgdGhl
-IGlteC1wY20tZG1hIGZyYW1ld29yayBhbmQgcmVzdWx0IGluIGEgbGluayBlcnJvciBpZiB0aGF0
-Cj4gPiA+ID4gaXMgbm90IHByb3ZpZGVkLgo+ID4gPiA+IAo+ID4gPiA+IFRoaXMgY2hhbmdlcyBL
-Y29uZmlnIHRvIGF1dG9tYXRpY2FsbHkgc2VsZWN0IFNORF9TT0NfSU1YX1BDTV9ETUEKPiA+ID4g
-PiB0byBhdm9pZCB0aGUgcHJvYmxlbSwgYXMgd2UgZG8gZm9yIG90aGVyIGRyaXZlcnMgdGhhdCBu
-ZWVkIHRoZSBzYW1lCj4gPiA+ID4gZnJhbWV3b3JrLgo+ID4gPiA+IAo+ID4gPiA+IFNpZ25lZC1v
-ZmYtYnk6IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+Cj4gPiA+IAo+ID4gPiBDYW4geW91
-IGdpdmUgYW4gZXhhY3QgZXJyb3I/Cj4gPiAKPiA+IAo+ID4gc291bmQvYnVpbHQtaW4ubzogSW4g
-ZnVuY3Rpb24gYGZzbF9zc2lfcHJvYmUnOgo+ID4gOigudGV4dCsweDUxZmI4KTogdW5kZWZpbmVk
-IHJlZmVyZW5jZSB0byBgaW14X3BjbV9kbWFfaW5pdCcKPiA+IHNvdW5kL2J1aWx0LWluLm86IElu
-IGZ1bmN0aW9uIGBmc2xfc3BkaWZfcHJvYmUnOgo+ID4gOigudGV4dCsweDUyZTIwKTogdW5kZWZp
-bmVkIHJlZmVyZW5jZSB0byBgaW14X3BjbV9kbWFfaW5pdCcKPiAKPiBUaGlzIGNhbGwgaXMgZGVm
-aW5lZCBpbiBpbXgtcGNtLmggYXM6Cj4gI2lmIElTX0VOQUJMRUQoQ09ORklHX1NORF9TT0NfSU1Y
-X1BDTV9ETUEpCj4gaW50IGlteF9wY21fZG1hX2luaXQoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
-cGRldik7Cj4gI2Vsc2UKPiBzdGF0aWMgaW5saW5lIGludCBpbXhfcGNtX2RtYV9pbml0KHN0cnVj
-dCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gewo+ICAgcmV0dXJuIC1FTk9ERVY7Cj4gfQo+ICNl
-bmRpZgo+IAo+IFNvLCBJIGRvbid0IHVuZGVyc3RhbmQgd2h5IHRoaXMgZXJyb3IgaGFwcGVuLCBh
-cyB3ZWxsIGFzIEkgY2FuIG5vdAo+IHJlcHJvZHVjZSB0aGlzLi4uCgpJdCdzIHByb2JhYmx5IENP
-TkZJR19TTkRfU09DX0lNWF9QQ01fRE1BPW0gYW5kIENPTkZJR19TTkRfU09DX0ZTTF9TU0k9eSB0
-aGVuLgpXaGF0IGlzIHRoZSBpbnRlbmRlZCBiZWhhdmlvciBpbiB0aGlzIGNhc2U/IFNob3VsZCBD
-T05GSUdfU05EX1NPQ19GU0xfU1NJCmJlIGZvcmNlZCB0byBiZSBhIG1vZHVsZSBhcyB3ZWxsPwoK
-CUFybmQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+[Continued from here:
+http://thread.gmane.org/gmane.linux.alsa.devel/122028/focus=122354 ]
+
+> It's way too old.  Better to build the latest kernel.
+
+The latest kernel available for my distro, or the latest kernel available
+"from Linus"? I've already tried the former.
+
+> You need to figure out the condition reproducing the issue.
+
+For all I know (I'm not that knowledgeable on those things, mind you) this
+happens completely at random. There hasn't been any pattern when the PC
+would become unusable, and the OS unresponsive.
+
+> For example, application may apply some strange buffer size and period
+> size the hardware chip doesn't like. If so, changing the buffer size
+> and/or period size may reduce the problem.
+
+I'm not aware of any feature to change the buffer size in any of the
+programs that cause the lock-ups.
+
+> Meanwhile, you can try the patch below, too, which aligns the period
+
+That patch is for kernel sources or for the above snapshots I mentioned? Or
+perhaps there are more recent ALSA source codes?
