@@ -1,16 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Control the exact moment of output
-Date: Tue, 29 Apr 2014 09:50:53 +0200
-Message-ID: <535F59DD.2080207@ladisch.de>
-References: <5352BEA0.3050807@amsat.org>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCHv2 0/2] fm801: small clean up series
+Date: Tue, 29 Apr 2014 10:56:02 +0300
+Message-ID: <1398758165-15671-1-git-send-email-andy.shevchenko@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 44DCD2625FD
- for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 09:50:54 +0200 (CEST)
-In-Reply-To: <5352BEA0.3050807@amsat.org>
+Received: from gw01.mail.saunalahti.fi (gw01.mail.saunalahti.fi
+ [195.197.172.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 608DF261B18
+ for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 09:55:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,33 +19,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Janssen <pe1chl@amsat.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Rob Janssen wrote:
-> For a distributed system that requires synchronized output I would like to determine
-> the exact moment when output samples are sent, preferably within +/- 1 sample time.
->
-> Is this possible within the ALSA API?
+Two patches in the series are targeting to clean up a bit fm801 driver.
 
-In theory, yes; snd_pcm_delay() should take these latencies into account.
+Changes since v1:
+ - remove inline from helper function definitions
+ - fix rebase issue that led to wrong logic
+ - rename helper function to be more particular
+ - reorder parameters in the hw accessor macros
 
-In practice, there is no hardware where this value is accurate.  Drivers with
-large latencies (e.g., USB) report their internal queues, but nobody bothers
-for the small delays (about 10 samples) in the DMA controllers and DACs.
+Andy Shevchenko (2):
+  fm801: introduce macros to access the hardware
+  fm801: introduce fm801_ac97_is_ready()/fm801_ac97_is_valid() helpers
 
-> Are some types of soundcard more suitable than others for this purpose?
+ sound/pci/fm801.c | 200 ++++++++++++++++++++++++++++--------------------------
+ 1 file changed, 105 insertions(+), 95 deletions(-)
 
-PCI(e) cards have lower latencies, but if you configure two USB devices
-with the same parameters, the driver's queues will have the same length.
-
-> And are there soundcards available where the sample clock can somehow be
-> locked to system time or an external 10MHz/1PPS reference?
-
-Some cards can be locked to an S/PDIF input or to a word clock from another
-sound card.  This does not work for physically separated outputs; you'd have
-to measure the clock differences and do dynamic resampling.
-
-
-Regards,
-Clemens
+-- 
+1.8.3.101.g727a46b
