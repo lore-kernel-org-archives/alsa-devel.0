@@ -1,100 +1,71 @@
-From: Xia Kaixu <kaixu.xia@linaro.org>
-Subject: [PATCH 13/15] ASoC: SND_S3C_DMA_LEGACY needs S3C24XX_DMA
-Date: Tue, 29 Apr 2014 19:18:34 +0800
-Message-ID: <1398770316-19715-14-git-send-email-kaixu.xia@linaro.org>
-References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 00/49 v4] Enhancement for support of
+	Firewire devices
+Date: Tue, 29 Apr 2014 20:21:41 +0900
+Message-ID: <535F8B45.9000403@sakamocchi.jp>
+References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2400F265057
+ for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 13:21:46 +0200 (CEST)
+In-Reply-To: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+(Apr 25 2014 22:44), Takashi Sakamoto wrote:
+> This 49 patchset is to update previous series:
+> [alsa-devel] [PATCH 00/44 v3] Enhancement of support for Firewire devices
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/074624.html
+>
+> 4 patches are newly added:
+> [PATCH 09/48] dice/firewire-lib: Keep dualwire mode but obsolete CIP_HI_DUALWIRE
+>   - Make firewire-lib simpler.
+> [PATCH 10/48] firewire-lib/dice/speakers: Add common PCM constraints for AMDTP streams
+>   - To share codes for drivers. Currently no improvement.
+> [PATCH 25/48] fireworks/firewire-lib: Add a quirk to reset data block counter at bus reset
+> [PATCH 46/48] bebob: Add a quirk of data blocks for MIDI messages for some M-Audio devices
+>   - New quirks are identified.
 
-SND_S3C_DMA_LEGACY can only be set on S3C24xx, which does not
-(yet) support the dmaengine framework, so samsung_dma_get_ops()
-fails to link if S3C24XX_DMA is disabled:
+Oops! The count of patch in these descriptions is wrong. The toal number 
+of patch is 49. This is due to my forgetting to send [PATCH 01/49] in my 
+previous series version 2 and 3. I didn't realize this...
 
-sound/built-in.o: In function `dma_hw_params':
-:(.text+0x7f310): undefined reference to `s3c_dma_get_ops'
-sound/built-in.o: In function `s3c_ac97_trigger':
-:(.text+0x7f7f0): undefined reference to `s3c_dma_get_ops'
-sound/built-in.o: In function `s3c_ac97_mic_trigger':
-:(.text+0x7f884): undefined reference to `s3c_dma_get_ops'
-sound/built-in.o: In function `s3c2412_i2s_trigger':
-:(.text+0x80944): undefined reference to `s3c2410_dma_ctrl'
+5 patches are newly added:
+[PATCH 01/49] firewire-lib: Rename functions, structure, member for AMDTP
+  - I forgot to post this patch in series 2 and 3...
+[PATCH 10/49] dice/firewire-lib: Keep dualwire mode but obsolete 
+CIP_HI_DUALWIRE
+  - Make firewire-lib simpler.
+[PATCH 11/49] firewire-lib/dice/speakers: Add common PCM constraints for 
+AMDTP streams
+  - To share codes for drivers. Currently no improvement.
+[PATCH 26/49] fireworks/firewire-lib: Add a quirk to reset data block 
+counter at bus reset
+[PATCH 47/49] bebob: Add a quirk of data blocks for MIDI messages for 
+some M-Audio devices
+  - New quirks are identified.
 
-This makes sure S3C24XX_DMA is always enabled when we need
-it, just like we do it for the same dependency in SND_S3C24XX_I2S,
-which has the same problem. Selecting "S3C2410_DMA" as we did
-before does not actually have the intended effect, since
-that one is only used on the s3c2410 and s3c2442 SoCs of the
-s3c24xx family, but not the others, so we can remove this
-from Kconfig.
+> For reviewers, you can see previous series in 'request_v3' branch of my remote repository.
+> I hope this will help your work.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Xia Kaixu <kaixu.xia@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Ben Dooks <ben-linux@fluff.org>
-Cc: Kukjin Kim <kgene.kim@samsung.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-samsung-soc@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
----
- sound/soc/samsung/Kconfig |    6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+The missing patch is already included in this branch. I've just failed 
+to generate series of patch when I posted version 2 and 3...
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 99cc196..7b610a8 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -1,7 +1,6 @@
- config SND_SOC_SAMSUNG
- 	tristate "ASoC support for Samsung"
- 	depends on PLAT_SAMSUNG
--	select S3C2410_DMA if ARCH_S3C24XX
- 	select S3C64XX_PL080 if ARCH_S3C64XX
- 	select SND_S3C_DMA if !ARCH_S3C24XX
- 	select SND_S3C_DMA_LEGACY if ARCH_S3C24XX
-@@ -15,11 +14,11 @@ config SND_S3C_DMA
- 	tristate
- 
- config SND_S3C_DMA_LEGACY
-+	select S3C24XX_DMA
- 	tristate
- 
- config SND_S3C24XX_I2S
- 	tristate
--	select S3C24XX_DMA
- 
- config SND_S3C_I2SV2_SOC
- 	tristate
-@@ -27,7 +26,6 @@ config SND_S3C_I2SV2_SOC
- config SND_S3C2412_SOC_I2S
- 	tristate
- 	select SND_S3C_I2SV2_SOC
--	select S3C2410_DMA
- 
- config SND_SAMSUNG_PCM
- 	tristate
-@@ -83,7 +81,6 @@ config SND_SOC_SAMSUNG_SMDK_WM8994
- config SND_SOC_SAMSUNG_SMDK2443_WM9710
- 	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
- 	depends on SND_SOC_SAMSUNG && MACH_SMDK2443
--	select S3C2410_DMA
- 	select AC97_BUS
- 	select SND_SOC_AC97_CODEC
- 	select SND_SAMSUNG_AC97
-@@ -94,7 +91,6 @@ config SND_SOC_SAMSUNG_SMDK2443_WM9710
- config SND_SOC_SAMSUNG_LN2440SBC_ALC650
- 	tristate "SoC AC97 Audio support for LN2440SBC - ALC650"
- 	depends on SND_SOC_SAMSUNG && ARCH_S3C24XX
--	select S3C2410_DMA
- 	select AC97_BUS
- 	select SND_SOC_AC97_CODEC
- 	select SND_SAMSUNG_AC97
--- 
-1.7.9.5
+I'm sorry to trouble you.
+
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
