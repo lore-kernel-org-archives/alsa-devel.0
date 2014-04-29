@@ -1,62 +1,80 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: On non-rewindability of resamplers
-Date: Wed, 30 Apr 2014 00:01:10 +0800
-Message-ID: <CAN8ccib7E7SQFo=Ro5Hksaj74Nn9NtHA1VSQpKX3ARHQDE_QHQ@mail.gmail.com>
-References: <5356A9B6.9060405@gmail.com> <5358FCF0.2040701@ladisch.de>
- <53597BA2.8080201@gmail.com> <5359FE72.8050605@canonical.com>
- <535A6C96.7040109@gmail.com>
- <CAN8ccibLsqb6oxai=+XOAhZ1dPwZmVVD2r3teDsz2a2_CthoOA@mail.gmail.com>
- <535B83E4.5050303@gmail.com>
- <CAN8ccibXtR=jc3NJjFMn88stytAhSxjNqbD5QsREDppbKDNg9Q@mail.gmail.com>
- <535E908C.4030509@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 00/18] ASoC: fsl-ssi: Driver cleanup
+Date: Tue, 29 Apr 2014 09:22:29 -0700
+Message-ID: <20140429162229.GA16981@sirena.org.uk>
+References: <1397482548-28463-1-git-send-email-mpa@pengutronix.de>
+ <20140424114403.GN12304@sirena.org.uk>
+ <20140428085453.GC15179@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f54.google.com (mail-qg0-f54.google.com
- [209.85.192.54])
- by alsa0.perex.cz (Postfix) with ESMTP id A6732260309
- for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 18:01:11 +0200 (CEST)
-Received: by mail-qg0-f54.google.com with SMTP id q107so462027qgd.13
- for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 09:01:10 -0700 (PDT)
-In-Reply-To: <535E908C.4030509@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/mixed; boundary="===============9094430774963608908=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20140428085453.GC15179@pengutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, Timur Tabi <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
->
->
-> On most sound cards, PulseAudio uses timer-based scheduling and thus is
-not subject to any period-size limitations. As far as I can see, snd_ymfpci
-does not include SNDRV_PCM_INFO_BATCH, and thus will be used in this mode.
-In addition, it has an implementation of snd_ymfpci_playback_pointer that
-seems to look at the hardware, which is good. So effective period times
-less than 5 ms should work on this card.
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/log/?qt=grep&q=period+wakeup
+--===============9094430774963608908==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
+Content-Disposition: inline
 
-Is there any reason to use timer scheduling for the sound card which cannot
-disable period wake up ?
 
-The sound cards are still wake up by period and the timer
+--WIyZ46R2i8wDzkSu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-As the DSP of ymfpci can mix up to 32 voices of different sample rate,
-mono/stereo , u8/s16 .
+On Mon, Apr 28, 2014 at 10:54:53AM +0200, Markus Pargmann wrote:
 
-The driver just setup the card's timer to increase the fake hw_ptr  on 5ms
-interval by (48000Hz * 5ms) 240 samples
+> What do you think of some framework function like
+> of_regmap_parse_endianess()? This would offer a common devicetree
+> binding and the driver would still be involved.
 
-Unlike most sound cards which  periods_min equal to 2,  the periods_min of
-snd_ymfpci is 3
+Something like that should be fine, Xiubo has been working on it.
 
-As the fake hw_ptr increase by 240 samples on 5 ms interval,  I  think it
-is a bad idea to allow any application to perform rewind
+--WIyZ46R2i8wDzkSu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTX9G8AAoJELSic+t+oim9eboP/3AIVIn9a+mwZ+4L1htEy2qZ
+MHILMbrjZp2lzRhalFR491z9L9TaLiTrH6dnkmQReTs1e3Zgzd4bDAMRgM+gov50
+fPmuZRDOemcmkPh9+oV5rJUFgX2Amz2I08qOteEZy8rlF/1X20W8TK0H/hLaiOiv
+hDXgLVDbyaYmGWOlqlD8hPGtv9bkqgGEzUgj7plY1pzRO4wJCNQHGMmsnacHt5LH
+iUcIz8lAC6TKNRFk0eOhYOi3Bk2bxzxwDPt3As5UEVimD9j1wQOsxCy1RGFHypMe
+52z0aFvnaR5Qq9C65e40+WX5PszPFgkjNRzon+RFoE6whbD+KqJk36RAw6kPDavi
+zGhTvogPkazXc0oP/2eEWljJcbOBXPdYAWdgfOL9liLDQNliwBsGC0sANUSqausL
+9Ng01BQ10RqgdRtDyeQOHp/S5isvgUC6LqPRRe+1+Wr/Bfik5ZgkzG980AWgdmOK
+U6433+CkbQSJV2vcUJyGhWjWcXMC8ZnanakPcTnp920RZUG4R0z9z9PULG7X4MkY
+gKB9CpkLS7qCrDLSlJCQUX2odeJVzfjz+TMsh+8+NELNAl7vgAJVBnhudeyjAd2z
+0ysnfp3yUXHwnRPoUjwoiil+KmCQHNF5Qzp4rMVV7XxJIUX8hIwcmJgXKuIiZk0A
+FreBjIewTOfUnYeaapyi
+=vW3I
+-----END PGP SIGNATURE-----
+
+--WIyZ46R2i8wDzkSu--
+
+
+--===============9094430774963608908==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============9094430774963608908==--
