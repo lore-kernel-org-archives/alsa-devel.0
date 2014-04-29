@@ -1,18 +1,18 @@
 From: Arnd Bergmann <arnd@arndb.de>
 Subject: Re: [PATCH] ASoC: fsl: select SND_SOC_IMX_PCM_DMA
 	where needed
-Date: Tue, 29 Apr 2014 21:16:35 +0200
-Message-ID: <8655908.M1OtjG8JKI@wuerfel>
-References: <6606961.lAGLvkNsEj@wuerfel> <535FB793.5050200@metafoo.de>
- <20140429165630.GD16981@sirena.org.uk>
+Date: Tue, 29 Apr 2014 21:36:22 +0200
+Message-ID: <5363504.ttXVrGSYNO@wuerfel>
+References: <6606961.lAGLvkNsEj@wuerfel>
+ <20140429165630.GD16981@sirena.org.uk> <8655908.M1OtjG8JKI@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
- by alsa0.perex.cz (Postfix) with ESMTP id E84E7265055
- for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 21:16:37 +0200 (CEST)
-In-Reply-To: <20140429165630.GD16981@sirena.org.uk>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE6EC265062
+ for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 21:36:53 +0200 (CEST)
+In-Reply-To: <8655908.M1OtjG8JKI@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,37 +22,9 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Alexander Shiyan <shc_work@mail.ru>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Alexander Shiyan <shc_work@mail.ru>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
-
-On Tuesday 29 April 2014 09:56:30 Mark Brown wrote:
-> On Tue, Apr 29, 2014 at 04:30:43PM +0200, Lars-Peter Clausen wrote:
-> 
-> > Yes. The patch should also add a select for SND_SOC_IMX_PCM_FIQ as that is
-> > used in the same way in the fsl_ssi driver. If anybody is afraid that
-> > selecting both SND_SOC_IMX_PCM_FIQ and SND_SOC_IMX_PCM_DMA by default adds
-> > too much overhead you could add boolean sub-options that allow to
-> > enable/disable support individually.
-> 
-> Yes, the overhead should be negligable since the FIQ code is tiny.
-> Arnd, please CC maintainers on patches - you've sent this to my
-> Linaro address again and not added Liam.
-
-I've tried yet another approach now, this should also work and
-has simpler dependencies. I'll follow up with the suggested patch
-and let you pick one or the other.
-
-Sorry for using the wrong Cc list, I too the addresses out of the
-patch that introduced the problem and didn't think about it.
-
-	Arnd
-
-8<-----------
->From e07c95b1519c2103a9b42fd12e993440dafba9d6 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 28 Apr 2014 16:28:01 +0200
-Subject: [PATCH] ASoC: fsl: select SND_SOC_IMX_PCM_DMA where needed
 
 Since commit 204dec93eaa "ASoC: fsl: Allow to select individual common
 options", it is possible to enable SND_SOC_FSL_SSI and SND_SOC_FSL_SPDIF
@@ -65,21 +37,38 @@ sound/built-in.o: In function `fsl_ssi_probe':
 sound/built-in.o: In function `fsl_spdif_probe':
 :(.text+0x52e20): undefined reference to `imx_pcm_dma_init'
 
-This changes Kconfig to prevent this case by ensuring the imx-pcm-dma
-code is built-in if the i.MX SoC support is enabled and at least
-one of the two drivers is built-in.
+This changes Kconfig to prevent this case by using 'select' to turn
+on the imx-pcm-dma code from both drivers. For consistency, we also
+turn on the imx-pcm-fiq code, which is an alternative to the dma
+implementation.
+
+Note that imx-pcm-fiq is platform dependent, so we must not enable
+that unless we are building a kernel for i.MX. Note also the
+"if SND_IMX_SOC != n" syntax as opposed to the normal "if SND_IMX_SOC".
+This is needed to avoid turning on the options as 'm' if 'SND_IMX_SOC'
+is a module.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
 diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index fb26345..5e0a58c 100644
+index fb26345..b2a1ade 100644
 --- a/sound/soc/fsl/Kconfig
 +++ b/sound/soc/fsl/Kconfig
-@@ -34,6 +34,7 @@ config SND_SOC_FSL_UTILS
+@@ -9,6 +9,8 @@ config SND_SOC_FSL_SAI
  
- config SND_SOC_IMX_PCM_DMA
- 	tristate
-+	default y if SND_IMX_SOC!=n && (SND_SOC_FSL_SSI=y || SND_SOC_FSL_SPDIF=y)
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 
- config SND_SOC_IMX_AUDMUX
+ config SND_SOC_FSL_SSI
+ 	tristate "Synchronous Serial Interface module support"
++	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
++	select SND_SOC_IMX_PCM_FIQ if SND_IMX_SOC != n && ARCH_MXC
+ 	help
+ 	  Say Y if you want to add Synchronous Serial Interface (SSI)
+ 	  support for the Freescale CPUs.
+@@ -18,6 +20,8 @@ config SND_SOC_FSL_SSI
+ config SND_SOC_FSL_SPDIF
+ 	tristate "Sony/Philips Digital Interface module support"
+ 	select REGMAP_MMIO
++	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
++	select SND_SOC_IMX_PCM_FIQ if SND_IMX_SOC != n && ARCH_MXC
+ 	help
+ 	  Say Y if you want to add Sony/Philips Digital Interface (SPDIF)
+ 	  support for the Freescale CPUs.
