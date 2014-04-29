@@ -1,43 +1,55 @@
 From: Xia Kaixu <kaixu.xia@linaro.org>
-Subject: [PATCH 12/15] ASoC: Atmel WM8904 codec support needs I2C
-Date: Tue, 29 Apr 2014 19:18:33 +0800
-Message-ID: <1398770316-19715-13-git-send-email-kaixu.xia@linaro.org>
+Subject: [PATCH 14/15] ASoC: Amstrad E3 needs TTY support for codec
+Date: Tue, 29 Apr 2014 19:18:35 +0800
+Message-ID: <1398770316-19715-15-git-send-email-kaixu.xia@linaro.org>
 References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-omap-owner@vger.kernel.org>
 In-Reply-To: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-omap-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Cc: linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The WM8904 codec driver needs I2C to be enabled, so the
-SND_ATMEL_SOC_WM8904 option also requires this.
+The cx20442 codec driver used here requires the TTY layer to
+be enabled, or we get a link error:
 
-Found using randconfig build testing.
+sound/built-in.o: In function `cx20442_codec_remove':
+cx20442.c:398: undefined reference to `tty_hangup'
+sound/built-in.o: In function `ams_delta_remove':
+ams-delta.c:613: undefined reference to `tty_unregister_ldisc'
+sound/built-in.o: In function `ams_delta_cx20442_init':
+ams-delta.c:559: undefined reference to `tty_register_ldisc'
+
+This adds the missing dependency in the E3 configuration, there
+was already one for the codec.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Xia Kaixu <kaixu.xia@linaro.org>
 Cc: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: linux-omap@vger.kernel.org
 Cc: alsa-devel@alsa-project.org
 ---
- sound/soc/atmel/Kconfig |    2 +-
+ sound/soc/omap/Kconfig |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 4789619..27e3fc4 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -35,7 +35,7 @@ config SND_AT91_SOC_SAM9G20_WM8731
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 2796af9..d44463a 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -37,7 +37,7 @@ config SND_OMAP_SOC_RX51
  
- config SND_ATMEL_SOC_WM8904
- 	tristate "Atmel ASoC driver for boards using WM8904 codec"
--	depends on ARCH_AT91 && ATMEL_SSC && SND_ATMEL_SOC
-+	depends on ARCH_AT91 && ATMEL_SSC && SND_ATMEL_SOC && I2C
- 	select SND_ATMEL_SOC_SSC
- 	select SND_ATMEL_SOC_DMA
- 	select SND_SOC_WM8904
+ config SND_OMAP_SOC_AMS_DELTA
+ 	tristate "SoC Audio support for Amstrad E3 (Delta) videophone"
+-	depends on SND_OMAP_SOC && MACH_AMS_DELTA
++	depends on SND_OMAP_SOC && MACH_AMS_DELTA && TTY
+ 	select SND_OMAP_SOC_MCBSP
+ 	select SND_SOC_CX20442
+ 	help
 -- 
 1.7.9.5
+
