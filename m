@@ -1,77 +1,58 @@
 From: Xia Kaixu <kaixu.xia@linaro.org>
-Subject: [PATCH 02/15] ASoC: davinci: add dependencies for SND_SOC_TLV320AIC3X
-Date: Tue, 29 Apr 2014 19:18:23 +0800
-Message-ID: <1398770316-19715-3-git-send-email-kaixu.xia@linaro.org>
-References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
+Subject: [PATCH 00/15] ASoC: Arnds randconfig fixes for ASoC
+Date: Tue, 29 Apr 2014 19:55:17 +0800
+Message-ID: <1398772517-19953-1-git-send-email-kaixu.xia@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lrg@slimlogic.co.uk, linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+This patchset series addresses various bugs found and fixed by Arnd Bergmann
+whilst doing randconfig builds.
 
-This codec requires I2C to be enabled, so any other option
-that selects it should also depend on I2C.
+My involvement has been to review, add/check the maintainers are correct
+and submit upstream to try and reduce the backlog.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Xia Kaixu <kaixu.xia@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org
----
- sound/soc/davinci/Kconfig |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Best Regards,
 
-diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
-index a8ec1fc..50a0987 100644
---- a/sound/soc/davinci/Kconfig
-+++ b/sound/soc/davinci/Kconfig
-@@ -18,7 +18,7 @@ config SND_DAVINCI_SOC_GENERIC_EVM
- 
- config SND_AM33XX_SOC_EVM
- 	tristate "SoC Audio for the AM33XX chip based boards"
--	depends on SND_DAVINCI_SOC && SOC_AM33XX
-+	depends on SND_DAVINCI_SOC && SOC_AM33XX && I2C
- 	select SND_DAVINCI_SOC_GENERIC_EVM
- 	help
- 	  Say Y or M if you want to add support for SoC audio on AM33XX
-@@ -28,7 +28,7 @@ config SND_AM33XX_SOC_EVM
- 
- config SND_DAVINCI_SOC_EVM
- 	tristate "SoC Audio support for DaVinci DM6446, DM355 or DM365 EVM"
--	depends on SND_DAVINCI_SOC
-+	depends on SND_DAVINCI_SOC && I2C
- 	depends on MACH_DAVINCI_EVM || MACH_DAVINCI_DM355_EVM || MACH_DAVINCI_DM365_EVM
- 	select SND_DAVINCI_SOC_GENERIC_EVM
- 	help
-@@ -56,7 +56,7 @@ endchoice
- 
- config  SND_DM6467_SOC_EVM
- 	tristate "SoC Audio support for DaVinci DM6467 EVM"
--	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DM6467_EVM
-+	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DM6467_EVM && I2C
- 	select SND_DAVINCI_SOC_GENERIC_EVM
- 	select SND_SOC_SPDIF
- 
-@@ -65,7 +65,7 @@ config  SND_DM6467_SOC_EVM
- 
- config  SND_DA830_SOC_EVM
- 	tristate "SoC Audio support for DA830/OMAP-L137 EVM"
--	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA830_EVM
-+	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA830_EVM && I2C
- 	select SND_DAVINCI_SOC_GENERIC_EVM
- 
- 	help
-@@ -74,7 +74,7 @@ config  SND_DA830_SOC_EVM
- 
- config  SND_DA850_SOC_EVM
- 	tristate "SoC Audio support for DA850/OMAP-L138 EVM"
--	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA850_EVM
-+	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA850_EVM && I2C
- 	select SND_DAVINCI_SOC_GENERIC_EVM
- 	help
- 	  Say Y if you want to add support for SoC audio on TI
+Kaixu Xia
+
+Arnd Bergmann (11):
+  ASoC: CS42L51 and WM8962 codecs depend on INPUT
+  ASoC: davinci: add dependencies for SND_SOC_TLV320AIC3X
+  ASoC: SMDK_WM8580_PCM needs REGMAP_I2C
+  ASoC: samsung-idma: avoid 64-bit division
+  ASoC: nuc900: export nuc900_ac97_data
+  ASoC: RX-51 audio needs I2C
+  ASoC: UDA1380 needs I2C
+  ASoC: Atmel WM8904 codec support needs I2C
+  ASoC: SND_S3C_DMA_LEGACY needs S3C24XX_DMA
+  ASoC: Amstrad E3 needs TTY support for codec
+  ASoC: pxa: remove mach header dependency
+
+Xia Kaixu (4):
+  ASoC: TTC DKB audio needs I2C
+  ASoC: Migo-R sound needs I2C
+  ASoC: TLV320AIC23 and Simtec Hermes audio need I2C
+  ASoC: WM0010 needs SPI
+
+ sound/arm/pxa2xx-pcm.c         |    2 ++
+ sound/arm/pxa2xx-pcm.h         |    3 +--
+ sound/soc/atmel/Kconfig        |    2 +-
+ sound/soc/codecs/Kconfig       |    8 ++++----
+ sound/soc/davinci/Kconfig      |   10 +++++-----
+ sound/soc/fsl/Kconfig          |    2 +-
+ sound/soc/nuc900/Kconfig       |    1 +
+ sound/soc/nuc900/nuc900-ac97.c |    1 +
+ sound/soc/omap/Kconfig         |    4 ++--
+ sound/soc/pxa/Kconfig          |    2 +-
+ sound/soc/pxa/pxa-ssp.c        |    2 --
+ sound/soc/pxa/pxa2xx-pcm.c     |    2 ++
+ sound/soc/samsung/Kconfig      |   22 ++++++++++------------
+ sound/soc/samsung/idma.c       |    2 +-
+ sound/soc/sh/Kconfig           |    2 +-
+ 15 files changed, 33 insertions(+), 32 deletions(-)
+
 -- 
 1.7.9.5
