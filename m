@@ -1,71 +1,77 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 00/49 v4] Enhancement for support of
-	Firewire devices
-Date: Tue, 29 Apr 2014 20:21:41 +0900
-Message-ID: <535F8B45.9000403@sakamocchi.jp>
-References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 2400F265057
- for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 13:21:46 +0200 (CEST)
-In-Reply-To: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+From: Xia Kaixu <kaixu.xia@linaro.org>
+Subject: [PATCH 02/15] ASoC: davinci: add dependencies for SND_SOC_TLV320AIC3X
+Date: Tue, 29 Apr 2014 19:18:23 +0800
+Message-ID: <1398770316-19715-3-git-send-email-kaixu.xia@linaro.org>
+References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-(Apr 25 2014 22:44), Takashi Sakamoto wrote:
-> This 49 patchset is to update previous series:
-> [alsa-devel] [PATCH 00/44 v3] Enhancement of support for Firewire devices
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/074624.html
->
-> 4 patches are newly added:
-> [PATCH 09/48] dice/firewire-lib: Keep dualwire mode but obsolete CIP_HI_DUALWIRE
->   - Make firewire-lib simpler.
-> [PATCH 10/48] firewire-lib/dice/speakers: Add common PCM constraints for AMDTP streams
->   - To share codes for drivers. Currently no improvement.
-> [PATCH 25/48] fireworks/firewire-lib: Add a quirk to reset data block counter at bus reset
-> [PATCH 46/48] bebob: Add a quirk of data blocks for MIDI messages for some M-Audio devices
->   - New quirks are identified.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Oops! The count of patch in these descriptions is wrong. The toal number 
-of patch is 49. This is due to my forgetting to send [PATCH 01/49] in my 
-previous series version 2 and 3. I didn't realize this...
+This codec requires I2C to be enabled, so any other option
+that selects it should also depend on I2C.
 
-5 patches are newly added:
-[PATCH 01/49] firewire-lib: Rename functions, structure, member for AMDTP
-  - I forgot to post this patch in series 2 and 3...
-[PATCH 10/49] dice/firewire-lib: Keep dualwire mode but obsolete 
-CIP_HI_DUALWIRE
-  - Make firewire-lib simpler.
-[PATCH 11/49] firewire-lib/dice/speakers: Add common PCM constraints for 
-AMDTP streams
-  - To share codes for drivers. Currently no improvement.
-[PATCH 26/49] fireworks/firewire-lib: Add a quirk to reset data block 
-counter at bus reset
-[PATCH 47/49] bebob: Add a quirk of data blocks for MIDI messages for 
-some M-Audio devices
-  - New quirks are identified.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Xia Kaixu <kaixu.xia@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/soc/davinci/Kconfig |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-> For reviewers, you can see previous series in 'request_v3' branch of my remote repository.
-> I hope this will help your work.
-
-The missing patch is already included in this branch. I've just failed 
-to generate series of patch when I posted version 2 and 3...
-
-I'm sorry to trouble you.
-
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index a8ec1fc..50a0987 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -18,7 +18,7 @@ config SND_DAVINCI_SOC_GENERIC_EVM
+ 
+ config SND_AM33XX_SOC_EVM
+ 	tristate "SoC Audio for the AM33XX chip based boards"
+-	depends on SND_DAVINCI_SOC && SOC_AM33XX
++	depends on SND_DAVINCI_SOC && SOC_AM33XX && I2C
+ 	select SND_DAVINCI_SOC_GENERIC_EVM
+ 	help
+ 	  Say Y or M if you want to add support for SoC audio on AM33XX
+@@ -28,7 +28,7 @@ config SND_AM33XX_SOC_EVM
+ 
+ config SND_DAVINCI_SOC_EVM
+ 	tristate "SoC Audio support for DaVinci DM6446, DM355 or DM365 EVM"
+-	depends on SND_DAVINCI_SOC
++	depends on SND_DAVINCI_SOC && I2C
+ 	depends on MACH_DAVINCI_EVM || MACH_DAVINCI_DM355_EVM || MACH_DAVINCI_DM365_EVM
+ 	select SND_DAVINCI_SOC_GENERIC_EVM
+ 	help
+@@ -56,7 +56,7 @@ endchoice
+ 
+ config  SND_DM6467_SOC_EVM
+ 	tristate "SoC Audio support for DaVinci DM6467 EVM"
+-	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DM6467_EVM
++	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DM6467_EVM && I2C
+ 	select SND_DAVINCI_SOC_GENERIC_EVM
+ 	select SND_SOC_SPDIF
+ 
+@@ -65,7 +65,7 @@ config  SND_DM6467_SOC_EVM
+ 
+ config  SND_DA830_SOC_EVM
+ 	tristate "SoC Audio support for DA830/OMAP-L137 EVM"
+-	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA830_EVM
++	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA830_EVM && I2C
+ 	select SND_DAVINCI_SOC_GENERIC_EVM
+ 
+ 	help
+@@ -74,7 +74,7 @@ config  SND_DA830_SOC_EVM
+ 
+ config  SND_DA850_SOC_EVM
+ 	tristate "SoC Audio support for DA850/OMAP-L138 EVM"
+-	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA850_EVM
++	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA850_EVM && I2C
+ 	select SND_DAVINCI_SOC_GENERIC_EVM
+ 	help
+ 	  Say Y if you want to add support for SoC audio on TI
+-- 
+1.7.9.5
