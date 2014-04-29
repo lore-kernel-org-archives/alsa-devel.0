@@ -1,103 +1,43 @@
 From: Xia Kaixu <kaixu.xia@linaro.org>
-Subject: [PATCH 15/15] ASoC: pxa: remove mach header dependency
-Date: Tue, 29 Apr 2014 19:18:36 +0800
-Message-ID: <1398770316-19715-16-git-send-email-kaixu.xia@linaro.org>
+Subject: [PATCH 12/15] ASoC: Atmel WM8904 codec support needs I2C
+Date: Tue, 29 Apr 2014 19:18:33 +0800
+Message-ID: <1398770316-19715-13-git-send-email-kaixu.xia@linaro.org>
 References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org, Liam Girdwood <lgirdwood@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-As we are moving the mmp platform towards multiplatform support,
-we have to stop including platform header files.
+The WM8904 codec driver needs I2C to be enabled, so the
+SND_ATMEL_SOC_WM8904 option also requires this.
 
-This changes the pxa-ssp sound driver file to no longer depend
-on mach/hardware.h and mach/dma.h. The code using the definitions
-from those headers is actually gone already, the only thing
-that was still being used was the pxa_dma_desc typedef, which
-we can easily work around by using the normal 'struct pxa_dma_desc'
-name.
-
-The pxa2xx-dma driver still uses this header, so we include it
-explicitly there, which is ok because that is only used on pxa,
-not on mmp.
+Found using randconfig build testing.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Xia Kaixu <kaixu.xia@linaro.org>
-Cc: Mark Brown <broonie@kernel.org> 
+Cc: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Eric Miao <eric.y.miao@gmail.com>
-Cc: Russell King <linux@arm.linux.org.uk>
-Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org
 Cc: alsa-devel@alsa-project.org
 ---
- sound/arm/pxa2xx-pcm.c     |    2 ++
- sound/arm/pxa2xx-pcm.h     |    3 +--
- sound/soc/pxa/pxa-ssp.c    |    2 --
- sound/soc/pxa/pxa2xx-pcm.c |    2 ++
- 4 files changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/atmel/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/arm/pxa2xx-pcm.c b/sound/arm/pxa2xx-pcm.c
-index e6c727b..83be8e3 100644
---- a/sound/arm/pxa2xx-pcm.c
-+++ b/sound/arm/pxa2xx-pcm.c
-@@ -14,6 +14,8 @@
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 4789619..27e3fc4 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -35,7 +35,7 @@ config SND_AT91_SOC_SAM9G20_WM8731
  
-+#include <mach/dma.h>
-+
- #include <sound/core.h>
- #include <sound/pxa2xx-lib.h>
- #include <sound/dmaengine_pcm.h>
-diff --git a/sound/arm/pxa2xx-pcm.h b/sound/arm/pxa2xx-pcm.h
-index 2a8fc08..0033098 100644
---- a/sound/arm/pxa2xx-pcm.h
-+++ b/sound/arm/pxa2xx-pcm.h
-@@ -9,12 +9,11 @@
-  * it under the terms of the GNU General Public License version 2 as
-  * published by the Free Software Foundation.
-  */
--#include <mach/dma.h>
- 
- struct pxa2xx_runtime_data {
- 	int dma_ch;
- 	struct snd_dmaengine_dai_dma_data *params;
--	pxa_dma_desc *dma_desc_array;
-+	struct pxa_dma_desc *dma_desc_array;
- 	dma_addr_t dma_desc_array_phys;
- };
- 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index a3119a0..9b19ee7 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -34,8 +34,6 @@
- #include <sound/pxa2xx-lib.h>
- #include <sound/dmaengine_pcm.h>
- 
--#include <mach/hardware.h>
--
- #include "../../arm/pxa2xx-pcm.h"
- #include "pxa-ssp.h"
- 
-diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
-index d58b09f..42f2f01 100644
---- a/sound/soc/pxa/pxa2xx-pcm.c
-+++ b/sound/soc/pxa/pxa2xx-pcm.c
-@@ -15,6 +15,8 @@
- #include <linux/dmaengine.h>
- #include <linux/of.h>
- 
-+#include <mach/dma.h>
-+
- #include <sound/core.h>
- #include <sound/soc.h>
- #include <sound/pxa2xx-lib.h>
+ config SND_ATMEL_SOC_WM8904
+ 	tristate "Atmel ASoC driver for boards using WM8904 codec"
+-	depends on ARCH_AT91 && ATMEL_SSC && SND_ATMEL_SOC
++	depends on ARCH_AT91 && ATMEL_SSC && SND_ATMEL_SOC && I2C
+ 	select SND_ATMEL_SOC_SSC
+ 	select SND_ATMEL_SOC_DMA
+ 	select SND_SOC_WM8904
 -- 
 1.7.9.5
