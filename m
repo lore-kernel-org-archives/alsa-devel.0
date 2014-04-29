@@ -1,32 +1,18 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: Behringer Uphoria UMC204 usb audio capture only
-	pops and clicks
-Date: Tue, 29 Apr 2014 18:58:56 +0100
-Message-ID: <c54f09c7-4345-434b-beb0-1773204ba3bd@email.android.com>
-References: <CAEYsuVOBOGMwqhzx8ZROJ8+vbmfD6Ty=fnAtzccMqkFUGKPM4A@mail.gmail.com>
- <CAEYsuVNvr3WE+RCgCHKZHrBKybAc8muhx3nMu1NgfRgVbj9z1g@mail.gmail.com>
- <53555A0F.4080406@zonque.org>
- <CAEYsuVOmTuJ7dHu8mvOF0currhfgwC9WO3hitbKEAgKRBj9eoQ@mail.gmail.com>
- <5355655B.3050705@zonque.org>
- <CAEYsuVNw11e1Lzkbiwoeiz=wiXVUpwJnO51UaBy0eohL9eReEg@mail.gmail.com>
- <CAEYsuVN2Z=7oa_VB1660JpiKihoA=DxMn+Vgv-R5upoRpyhxiQ@mail.gmail.com>
- <53556961.5060600@zonque.org>
- <CAEYsuVOb=Ai=qd2F05JuoE5Xrb3gSDDuxCPHW=vLM-dcuQzdkA@mail.gmail.com>
- <CAEYsuVP2w8rQYxVReYm9jaxM40Yyta+P9OJWzEYbwcSJ7BVDRQ@mail.gmail.com>
- <CAEYsuVMhzhY8oHUn6DmXeDHLDL3xrmQo8P+xhBrvwhZaBfiegw@mail.gmail.com>
- <93266364-0c59-429e-9f8a-fe9ec89347c0@email.android.com>
- <CAEYsuVPDw7bSLJCKjAWCzZCNeKNtX3tR-Wnv+YDETy=NDt48SA@mail.gmail.com>
- <CAEYsuVOrngrpBRw8au8H+9BAstvaD=aHcU3pcAzSGXuJaEEqDg@mail.gmail.com>
- <CAEYsuVNa5_GXcXGwMNZ9S9DMy7unWHATbZNpTzMMnrGrEwEk7A@mail.gmail.com>
- <CAEYsuVN7hy3RuotwPkX5AOrvQxpz23k0anfNxhkH0rfWduwgFw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/5] ASoC: omap: Add HA (HEAD acoustics)
+ DSP add-on card audio driver for TAO3530
+Date: Tue, 29 Apr 2014 11:54:59 -0700
+Message-ID: <20140429185459.GJ15125@sirena.org.uk>
+References: <1398687476-10829-1-git-send-email-sr@denx.de>
+ <1398687476-10829-3-git-send-email-sr@denx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8221375467051488417=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C18326500A
- for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 19:59:17 +0200 (CEST)
-In-Reply-To: <CAEYsuVN7hy3RuotwPkX5AOrvQxpz23k0anfNxhkH0rfWduwgFw@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F32D9265055
+ for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 20:58:34 +0200 (CEST)
+In-Reply-To: <1398687476-10829-3-git-send-email-sr@denx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,114 +22,124 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andrew Reyes <dsreyes1014@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Stefan Roese <sr@denx.de>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Thorsten Eisbein <thorsten.eisbein@head-acoustics.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-(please, do not top post!)
 
-On April 29, 2014 6:53:36 PM WAT, Andrew Reyes <dsreyes1014@gmail.com> wrote:
->Daniel it turns out with a brand new UMC204 it still does it on my
->linux
->box.  I'm at a loss.
-
-Try that one on Windows as well. Uf it doesn't work there either, send tge hardqare back and get a different model. If the hardware has such severe bugs, there nothing the Linux driver can do to fix it up.
+--===============8221375467051488417==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="q5r20fdKX+PFtYHw"
+Content-Disposition: inline
 
 
-Daniel
+--q5r20fdKX+PFtYHw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Apr 28, 2014 at 02:17:54PM +0200, Stefan Roese wrote:
+
+> +	switch (params_channels(params)) {
+> +	case 2:
+> +	case 4:
+> +	case 8:
+> +	case 16:
+> +		fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+
+Why is this "conditional" on the number of channels (though the same
+value is always chosen)?
+
+> +		/*
+> +		 * Calculate McBSP SRG divisor in McBSP master mode
+> +		 */
+> +		div = 96000000 / params_rate(params) / params_channels(params);
+> +		switch (params_format(params)) {
+> +		case SNDRV_PCM_FORMAT_S16_LE:
+> +			div /= 16;
+> +			break;
+> +		case SNDRV_PCM_FORMAT_S24_LE:
+> +		case SNDRV_PCM_FORMAT_S32_LE:
+> +			div /= 32;
+> +			break;
+> +		};
+
+params_width().
+
+> +		ret = snd_soc_dai_set_clkdiv(cpu_dai, OMAP_MCBSP_CLKGDV, div);
+> +		if (ret < 0) {
+> +			pr_err("can't set SRG clock divider\n");
+> +			return ret;
+> +		}
+
+Why not put this code into the DAI driver for the SoC - what's board
+specific about the calcuation?  I'd expect this to be handlable by
+set_sysclk().
+
+> +	if (!node) {
+> +		dev_err(&pdev->dev, "No DT node provided\n");
+> +		return -ENODEV;
+> +	}
+
+You've got something with a DT binding here but no binding document,
+documentation is mandatory for new DT bindings.
+
+> +	priv->slave = of_property_read_bool(node, "ha_dsp_codec_slave");
+> +	if (priv->slave)
+> +		dev_info(&pdev->dev, "Using slave mode for testing!\n");
+
+This seems like something that shouldn't be in production code, or
+perhaps a build time option if the testing is valuable?
+
+> +	if (snd_soc_of_parse_card_name(card, "ti,model")) {
+> +		dev_err(&pdev->dev, "Card name is not provided\n");
+> +		ret = -ENODEV;
+> +		goto err;
+> +	}
+
+Why not have a default?
+
+> +	ret = snd_soc_register_card(card);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+> +			ret);
+> +		goto err;
+> +	}
+
+devm_snd_soc_register_card().
+
+--q5r20fdKX+PFtYHw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTX/WAAAoJELSic+t+oim99Y4P/0LQc5m+eDU2uS2f8Hxiu2a0
+MSvNBQVyUyc3AZFVheu+6Dp1bokNeY5l8WyiVxi5wf+LcliCEO7Cou/K9EGqQO0c
+LXsbXhAwt/QMfpQXo0PYqeQw0Xp/YlVtfuQSQDgkdvsFmBsZohe57KDqYt4GBREj
+JEQ4Lb0KhUGCz+1bULEInEgp9afEy4V34dw0e9zIT08u2hDfCOsY2g5ddtlIyhwd
+B+JlMzuPsVgWxiK2Ku+xW6tSvCmhCz4qBIjy4qPN4QZEUsnSOHFUhVivjFfdleyG
+aso3ckH9Aipabw16VQkMO10X1y4sySKM2rJ049+Sul4UtCx88ux8ovsmq9wQeuso
+qEbwyWCicEHpuwofhwVB9pCLN86ypJyiVEsaijDnsxQVuCtzwm/Tom8lMwPuj0Jp
+bb0fobh7e6RMAaxllpeON/8OTru0/bBCwx3foKP6Mdqf6mmU5uqnOW1ZZ0SFXZdH
+fv5vs13ous4gmvEjuEDvyvV7+HujYN6bH/ZGCeTEnCm38HUhUX5cfYxpVcpbQsvu
+OPKTFMbcHS8BAPcSIzCrrq+bYl35uI2KNlAc9OW+9ucMoQw01ScvmtW8qpY71gN2
+biuvke5dma4sLLXO5zhQaTMBsb47ewmZBMa1U/s6anXcvAjqi6OZoOdPB5mtHEj9
+Tr6krdPy4hK8JhsNAPvV
+=rCEU
+-----END PGP SIGNATURE-----
+
+--q5r20fdKX+PFtYHw--
+
+--===============8221375467051488417==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-
->On Thu, Apr 24, 2014 at 9:14 AM, Andrew Reyes <dsreyes1014@gmail.com>
->wrote:
->
->> Daniel I got my hands on Windows 7 PC and installed the drivers from
->the
->> website and it does the samething.  So now I'm leaning toward a
->defective
->> soundcard.  I'm sending it back for a new one.
->>
->>
->> On Wed, Apr 23, 2014 at 11:18 AM, Andrew Reyes
-><dsreyes1014@gmail.com>wrote:
->>
->>> Ok I got the two different logs and I don't what I'm looking for
->lol.
->>> It's just raw data. My last option is to try using it on Windows or
->Mac
->>> just to make sure it's not the interface.
->>>
->>>
->>> On Wed, Apr 23, 2014 at 10:40 AM, Andrew Reyes
-><dsreyes1014@gmail.com>wrote:
->>>
->>>> > I can just give you a few more ideas to debug this, but that
->includes
->>>> more action from your side.
->>>>
->>>> > * First of all, try the same device on a different computer,
->and/or a
->>>> different USB port, especially if you're using an XHCI (USB3) port.
->>>>
->>>> > * Try the device on Mac OS X, without installing a driver and see
->if
->>>> you have the same problem here.
->>>>
->>>> > * Use usbmon and analyze the data stream when a pop occurs.
->Compare
->>>> that with settings that don't produce pops. There's good
->documentation on
->>>> usbmon in Documentation/usb/ in the Linux kernel.
->>>>
->>>> Ok cool. I'll get right on that. I did try the first suggestion on
->four
->>>> different computers and different ports and it's the same issue but
->just to
->>>> be thorough I'll check again.
->>>>
->>>>
->>>> On Wed, Apr 23, 2014 at 9:59 AM, Daniel Mack <daniel@zonque.org>
->wrote:
->>>>
->>>>>
->>>>>
->>>>> On April 23, 2014 4:40:07 PM CEST, Andrew Reyes
-><dsreyes1014@gmail.com>
->>>>> wrote:
->>>>> >Is there something else I could do to get to the problem?
->>>>>
->>>>> I can just give you a few more ideas to debug this, but that
->includes
->>>>> more action from your side.
->>>>>
->>>>> * First of all, try the same device on a different computer,
->and/or a
->>>>> different USB port, especially if you're using an XHCI (USB3)
->port.
->>>>>
->>>>> * Try the device on Mac OS X, without installing a driver and see
->if
->>>>> you have the same problem here.
->>>>>
->>>>> * Use usbmon and analyze the data stream when a pop occurs.
->Compare
->>>>> that with settings that don't produce pops. There's good
->documentation on
->>>>> usbmon in Documentation/usb/ in the Linux kernel.
->>>>>
->>>>>
->>>>> Best regards,
->>>>> Daniel
->>>>>
->>>>> --
->>>>> Sent from my Android phone with K-9 Mail. Please excuse my
->brevity.
->>>>>
->>>>
->>>>
->>>
->>
-
-
--- 
-Sent from my phone. Please excuse my brevity and typos.
+--===============8221375467051488417==--
