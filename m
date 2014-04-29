@@ -1,13 +1,9 @@
-From: Andrew Reyes <dsreyes1014@gmail.com>
+From: Daniel Mack <daniel@zonque.org>
 Subject: Re: Behringer Uphoria UMC204 usb audio capture only
- pops and clicks
-Date: Tue, 29 Apr 2014 12:53:36 -0500
-Message-ID: <CAEYsuVN7hy3RuotwPkX5AOrvQxpz23k0anfNxhkH0rfWduwgFw@mail.gmail.com>
+	pops and clicks
+Date: Tue, 29 Apr 2014 18:58:56 +0100
+Message-ID: <c54f09c7-4345-434b-beb0-1773204ba3bd@email.android.com>
 References: <CAEYsuVOBOGMwqhzx8ZROJ8+vbmfD6Ty=fnAtzccMqkFUGKPM4A@mail.gmail.com>
- <53551C5B.5010002@zonque.org>
- <CAEYsuVP1pr87v0y5SuKL87bCRr5RpfgLiSfjsZb4mis1yE_w1g@mail.gmail.com>
- <CAEYsuVML1ZFGGP35KB=3im_JTgNSCoNfPg1aMnzT6mjR=u1cJA@mail.gmail.com>
- <5355431F.3000501@zonque.org>
  <CAEYsuVNvr3WE+RCgCHKZHrBKybAc8muhx3nMu1NgfRgVbj9z1g@mail.gmail.com>
  <53555A0F.4080406@zonque.org>
  <CAEYsuVOmTuJ7dHu8mvOF0currhfgwC9WO3hitbKEAgKRBj9eoQ@mail.gmail.com>
@@ -22,17 +18,15 @@ References: <CAEYsuVOBOGMwqhzx8ZROJ8+vbmfD6Ty=fnAtzccMqkFUGKPM4A@mail.gmail.com>
  <CAEYsuVPDw7bSLJCKjAWCzZCNeKNtX3tR-Wnv+YDETy=NDt48SA@mail.gmail.com>
  <CAEYsuVOrngrpBRw8au8H+9BAstvaD=aHcU3pcAzSGXuJaEEqDg@mail.gmail.com>
  <CAEYsuVNa5_GXcXGwMNZ9S9DMy7unWHATbZNpTzMMnrGrEwEk7A@mail.gmail.com>
+ <CAEYsuVN7hy3RuotwPkX5AOrvQxpz23k0anfNxhkH0rfWduwgFw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f48.google.com (mail-qa0-f48.google.com
- [209.85.216.48])
- by alsa0.perex.cz (Postfix) with ESMTP id E1B9426510F
- for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 19:53:37 +0200 (CEST)
-Received: by mail-qa0-f48.google.com with SMTP id j15so537145qaq.21
- for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 10:53:36 -0700 (PDT)
-In-Reply-To: <CAEYsuVNa5_GXcXGwMNZ9S9DMy7unWHATbZNpTzMMnrGrEwEk7A@mail.gmail.com>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C18326500A
+ for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 19:59:17 +0200 (CEST)
+In-Reply-To: <CAEYsuVN7hy3RuotwPkX5AOrvQxpz23k0anfNxhkH0rfWduwgFw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -42,77 +36,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
+To: Andrew Reyes <dsreyes1014@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Daniel it turns out with a brand new UMC204 it still does it on my linux
-box.  I'm at a loss.
+(please, do not top post!)
+
+On April 29, 2014 6:53:36 PM WAT, Andrew Reyes <dsreyes1014@gmail.com> wrote:
+>Daniel it turns out with a brand new UMC204 it still does it on my
+>linux
+>box.  I'm at a loss.
+
+Try that one on Windows as well. Uf it doesn't work there either, send tge hardqare back and get a different model. If the hardware has such severe bugs, there nothing the Linux driver can do to fix it up.
 
 
-On Thu, Apr 24, 2014 at 9:14 AM, Andrew Reyes <dsreyes1014@gmail.com> wrote:
+Daniel
 
-> Daniel I got my hands on Windows 7 PC and installed the drivers from the
-> website and it does the samething.  So now I'm leaning toward a defective
-> soundcard.  I'm sending it back for a new one.
+
+
+>On Thu, Apr 24, 2014 at 9:14 AM, Andrew Reyes <dsreyes1014@gmail.com>
+>wrote:
 >
->
-> On Wed, Apr 23, 2014 at 11:18 AM, Andrew Reyes <dsreyes1014@gmail.com>wrote:
->
->> Ok I got the two different logs and I don't what I'm looking for lol.
->> It's just raw data. My last option is to try using it on Windows or Mac
->> just to make sure it's not the interface.
+>> Daniel I got my hands on Windows 7 PC and installed the drivers from
+>the
+>> website and it does the samething.  So now I'm leaning toward a
+>defective
+>> soundcard.  I'm sending it back for a new one.
 >>
 >>
->> On Wed, Apr 23, 2014 at 10:40 AM, Andrew Reyes <dsreyes1014@gmail.com>wrote:
+>> On Wed, Apr 23, 2014 at 11:18 AM, Andrew Reyes
+><dsreyes1014@gmail.com>wrote:
 >>
->>> > I can just give you a few more ideas to debug this, but that includes
->>> more action from your side.
->>>
->>> > * First of all, try the same device on a different computer, and/or a
->>> different USB port, especially if you're using an XHCI (USB3) port.
->>>
->>> > * Try the device on Mac OS X, without installing a driver and see if
->>> you have the same problem here.
->>>
->>> > * Use usbmon and analyze the data stream when a pop occurs. Compare
->>> that with settings that don't produce pops. There's good documentation on
->>> usbmon in Documentation/usb/ in the Linux kernel.
->>>
->>> Ok cool. I'll get right on that. I did try the first suggestion on four
->>> different computers and different ports and it's the same issue but just to
->>> be thorough I'll check again.
+>>> Ok I got the two different logs and I don't what I'm looking for
+>lol.
+>>> It's just raw data. My last option is to try using it on Windows or
+>Mac
+>>> just to make sure it's not the interface.
 >>>
 >>>
->>> On Wed, Apr 23, 2014 at 9:59 AM, Daniel Mack <daniel@zonque.org> wrote:
+>>> On Wed, Apr 23, 2014 at 10:40 AM, Andrew Reyes
+><dsreyes1014@gmail.com>wrote:
 >>>
->>>>
->>>>
->>>> On April 23, 2014 4:40:07 PM CEST, Andrew Reyes <dsreyes1014@gmail.com>
->>>> wrote:
->>>> >Is there something else I could do to get to the problem?
->>>>
->>>> I can just give you a few more ideas to debug this, but that includes
+>>>> > I can just give you a few more ideas to debug this, but that
+>includes
 >>>> more action from your side.
 >>>>
->>>> * First of all, try the same device on a different computer, and/or a
+>>>> > * First of all, try the same device on a different computer,
+>and/or a
 >>>> different USB port, especially if you're using an XHCI (USB3) port.
 >>>>
->>>> * Try the device on Mac OS X, without installing a driver and see if
+>>>> > * Try the device on Mac OS X, without installing a driver and see
+>if
 >>>> you have the same problem here.
 >>>>
->>>> * Use usbmon and analyze the data stream when a pop occurs. Compare
->>>> that with settings that don't produce pops. There's good documentation on
+>>>> > * Use usbmon and analyze the data stream when a pop occurs.
+>Compare
+>>>> that with settings that don't produce pops. There's good
+>documentation on
 >>>> usbmon in Documentation/usb/ in the Linux kernel.
 >>>>
+>>>> Ok cool. I'll get right on that. I did try the first suggestion on
+>four
+>>>> different computers and different ports and it's the same issue but
+>just to
+>>>> be thorough I'll check again.
 >>>>
->>>> Best regards,
->>>> Daniel
 >>>>
->>>> --
->>>> Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+>>>> On Wed, Apr 23, 2014 at 9:59 AM, Daniel Mack <daniel@zonque.org>
+>wrote:
 >>>>
->>>
+>>>>>
+>>>>>
+>>>>> On April 23, 2014 4:40:07 PM CEST, Andrew Reyes
+><dsreyes1014@gmail.com>
+>>>>> wrote:
+>>>>> >Is there something else I could do to get to the problem?
+>>>>>
+>>>>> I can just give you a few more ideas to debug this, but that
+>includes
+>>>>> more action from your side.
+>>>>>
+>>>>> * First of all, try the same device on a different computer,
+>and/or a
+>>>>> different USB port, especially if you're using an XHCI (USB3)
+>port.
+>>>>>
+>>>>> * Try the device on Mac OS X, without installing a driver and see
+>if
+>>>>> you have the same problem here.
+>>>>>
+>>>>> * Use usbmon and analyze the data stream when a pop occurs.
+>Compare
+>>>>> that with settings that don't produce pops. There's good
+>documentation on
+>>>>> usbmon in Documentation/usb/ in the Linux kernel.
+>>>>>
+>>>>>
+>>>>> Best regards,
+>>>>> Daniel
+>>>>>
+>>>>> --
+>>>>> Sent from my Android phone with K-9 Mail. Please excuse my
+>brevity.
+>>>>>
+>>>>
+>>>>
 >>>
 >>
->
+
+
+-- 
+Sent from my phone. Please excuse my brevity and typos.
