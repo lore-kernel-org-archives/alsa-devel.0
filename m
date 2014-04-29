@@ -1,55 +1,44 @@
 From: Xia Kaixu <kaixu.xia@linaro.org>
-Subject: [PATCH 11/15] ASoC: WM0010 needs SPI
-Date: Tue, 29 Apr 2014 19:18:32 +0800
-Message-ID: <1398770316-19715-12-git-send-email-kaixu.xia@linaro.org>
+Subject: [PATCH 06/15] ASoC: RX-51 audio needs I2C
+Date: Tue, 29 Apr 2014 19:18:27 +0800
+Message-ID: <1398770316-19715-7-git-send-email-kaixu.xia@linaro.org>
 References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+Cc: linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The missing dependency can lead to build errors, so
-make it explicit in Kconfig.
+The codec requires I2C to be enabled, so any other option
+that selects it should also depend on I2C.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Xia Kaixu <kaixu.xia@linaro.org>
 Cc: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Ben Dooks <ben-linux@fluff.org>
-Cc: Kukjin Kim <kgene.kim@samsung.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Cc: alsa-devel@alsa-project.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-samsung-soc@vger.kernel.org
+Cc: linux-omap@vger.kernel.org
 ---
- sound/soc/samsung/Kconfig |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/omap/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 9fd6f62..99cc196 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -201,7 +201,7 @@ config SND_SOC_SPEYSIDE
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM8996
- 	select SND_SOC_WM9081
--	select SND_SOC_WM0010
-+	select SND_SOC_WM0010 if SPI
- 	select SND_SOC_WM1250_EV1
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index e006593..2796af9 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -26,7 +26,7 @@ config SND_OMAP_SOC_N810
  
- config SND_SOC_TOBERMORY
-@@ -217,7 +217,7 @@ config SND_SOC_BELLS
- 	select SND_SOC_WM5102
- 	select SND_SOC_WM5110
- 	select SND_SOC_WM9081
--	select SND_SOC_WM0010
-+	select SND_SOC_WM0010 if SPI
- 	select SND_SOC_WM1250_EV1
- 
- config SND_SOC_LOWLAND
+ config SND_OMAP_SOC_RX51
+ 	tristate "SoC Audio support for Nokia RX-51"
+-	depends on SND_OMAP_SOC && ARM && (MACH_NOKIA_RX51 || COMPILE_TEST)
++	depends on SND_OMAP_SOC && ARM && (MACH_NOKIA_RX51 || COMPILE_TEST) && I2C
+ 	select SND_OMAP_SOC_MCBSP
+ 	select SND_SOC_TLV320AIC3X
+ 	select SND_SOC_TPA6130A2
 -- 
 1.7.9.5
