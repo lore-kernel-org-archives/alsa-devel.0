@@ -1,66 +1,112 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: fsl: select SND_SOC_IMX_PCM_DMA
- where needed
-Date: Tue, 29 Apr 2014 12:57:24 +0200
-Message-ID: <535F8594.40609@metafoo.de>
-References: <6606961.lAGLvkNsEj@wuerfel> <6285923.UQqcZVikjI@wuerfel>
- <1398740853.880576398@f238.i.mail.ru> <4270904.84oGcCXL4B@wuerfel>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-008.synserver.de (smtp-out-063.synserver.de
- [212.40.185.63])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AB26264F3F
- for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2014 12:57:31 +0200 (CEST)
-In-Reply-To: <4270904.84oGcCXL4B@wuerfel>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, linux-arm-kernel@lists.infradead.org, Mark Brown <broonie@linaro.org>
+From: Xia Kaixu <kaixu.xia@linaro.org>
+Subject: [PATCH 01/15] ASoC: CS42L51 and WM8962 codecs depend on INPUT
+Date: Tue, 29 Apr 2014 19:18:22 +0800
+Message-ID: <1398770316-19715-2-git-send-email-kaixu.xia@linaro.org>
+References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, Timur Tabi <timur@tabi.org>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDQvMjkvMjAxNCAxMjozNyBQTSwgQXJuZCBCZXJnbWFubiB3cm90ZToKPiBPbiBUdWVzZGF5
-IDI5IEFwcmlsIDIwMTQgMDc6MDc6MzMgQWxleGFuZGVyIFNoaXlhbiB3cm90ZToKPj4gTW9uLCAy
-OCBBcHIgMjAxNCAyMzoxMjoxNCArMDIwMCDQvtGCIEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIu
-ZGU+Ogo+Pj4gT24gVHVlc2RheSAyOSBBcHJpbCAyMDE0IDAwOjM1OjQxIEFsZXhhbmRlciBTaGl5
-YW4gd3JvdGU6Cj4+Pj4KPj4+PiBTbywgSSBkb24ndCB1bmRlcnN0YW5kIHdoeSB0aGlzIGVycm9y
-IGhhcHBlbiwgYXMgd2VsbCBhcyBJIGNhbiBub3QKPj4+PiByZXByb2R1Y2UgdGhpcy4uLgo+Pj4K
-Pj4+IEl0J3MgcHJvYmFibHkgQ09ORklHX1NORF9TT0NfSU1YX1BDTV9ETUE9bSBhbmQgQ09ORklH
-X1NORF9TT0NfRlNMX1NTST15IHRoZW4uCj4+PiBXaGF0IGlzIHRoZSBpbnRlbmRlZCBiZWhhdmlv
-ciBpbiB0aGlzIGNhc2U/IFNob3VsZCBDT05GSUdfU05EX1NPQ19GU0xfU1NJCj4+PiBiZSBmb3Jj
-ZWQgdG8gYmUgYSBtb2R1bGUgYXMgd2VsbD8KPj4KPj4gSG1tLCB5ZXMuLi4KPj4gSSB0aG91Z2h0
-IHRoYXQgSSBoYWQgYWxyZWFkeSBzb2x2ZWQgYSBzaW1pbGFyIHByb2JsZW0gZm9yIHRoZSBlYXJs
-aWVyCj4+IHZlcnNpb24gb2YgdGhlIHBhdGNoIC4uLgo+Cj4gSG93IGFib3V0IHRoaXM/CgpIYXZp
-bmcgRlNMX1NTSS9GU0xfU1BESUYsIGJ1dCBub3QgU05EX1NPQ19JTVhfUENNX0RNQSBkb2VzIG5v
-dCBtYWtlIHNlbnNlIG9uIAppTVguClNvIGhvdyBhYm91dDoKCglzZWxlY3QgU05EX1NPQ19JTVhf
-UENNX0RNQSBpZiBTTkRfSU1YX1NPQwoKYW5kIHJlbW92ZSBhbGwgdGhlIG90aGVyICdzZWxlY3Qg
-U05EX1NPQ19JTVhfUENNX0RNQScgc3RhdGVtZW50cy4gVGhhdCdzIGluIApteSBvcGluaW9uIG11
-Y2ggbmljZXIuCgotIExhcnMKCgo+Cj4gU2lnbmVkLW9mZi1ieTogQXJuZCBCZXJnbWFubiA8YXJu
-ZEBhcm5kYi5kZT4KPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvZnNsL0tjb25maWcgYi9zb3Vu
-ZC9zb2MvZnNsL0tjb25maWcKPiBpbmRleCBmYjI2MzQ1Li5hZjBiYjkyIDEwMDY0NAo+IC0tLSBh
-L3NvdW5kL3NvYy9mc2wvS2NvbmZpZwo+ICsrKyBiL3NvdW5kL3NvYy9mc2wvS2NvbmZpZwo+IEBA
-IC05LDYgKzksNyBAQCBjb25maWcgU05EX1NPQ19GU0xfU0FJCj4KPiAgIGNvbmZpZyBTTkRfU09D
-X0ZTTF9TU0kKPiAgIAl0cmlzdGF0ZSAiU3luY2hyb25vdXMgU2VyaWFsIEludGVyZmFjZSBtb2R1
-bGUgc3VwcG9ydCIKPiArCWRlcGVuZHMgb24gbSB8fCBTTkRfU09DX0lNWF9QQ01fRE1BICE9IG0K
-PiAgIAloZWxwCj4gICAJICBTYXkgWSBpZiB5b3Ugd2FudCB0byBhZGQgU3luY2hyb25vdXMgU2Vy
-aWFsIEludGVyZmFjZSAoU1NJKQo+ICAgCSAgc3VwcG9ydCBmb3IgdGhlIEZyZWVzY2FsZSBDUFVz
-Lgo+IEBAIC0xOCw2ICsxOSw3IEBAIGNvbmZpZyBTTkRfU09DX0ZTTF9TU0kKPiAgIGNvbmZpZyBT
-TkRfU09DX0ZTTF9TUERJRgo+ICAgCXRyaXN0YXRlICJTb255L1BoaWxpcHMgRGlnaXRhbCBJbnRl
-cmZhY2UgbW9kdWxlIHN1cHBvcnQiCj4gICAJc2VsZWN0IFJFR01BUF9NTUlPCj4gKwlkZXBlbmRz
-IG9uIG0gfHwgU05EX1NPQ19JTVhfUENNX0RNQSAhPSBtCj4gICAJaGVscAo+ICAgCSAgU2F5IFkg
-aWYgeW91IHdhbnQgdG8gYWRkIFNvbnkvUGhpbGlwcyBEaWdpdGFsIEludGVyZmFjZSAoU1BESUYp
-Cj4gICAJICBzdXBwb3J0IGZvciB0aGUgRnJlZXNjYWxlIENQVXMuCj4KPiBfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Arnd Bergmann <arnd@arndb.de>
+
+Building ARM randconfig got into a situation where CONFIG_INPUT
+is turned off and SND_SOC_ALL_CODECS is turned on, which failed
+for two codecs trying to use the input subsystem. Some other 
+drivers also select one of these codecs and consequently need an
+explicit dependency added. 
+
+Appending to the dependency list seems the easiest way out,
+since this is not a practical limitation. If anyone really
+needs to build these codecs for a kernel with no input support,
+a more sophisticated solution can be implemented.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Xia Kaixu <kaixu.xia@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Ben Dooks <ben-linux@fluff.org>
+Cc: Kukjin Kim <kgene.kim@samsung.com>
+Cc: Sangbeom Kim <sbkim73@samsung.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Timur Tabi <timur@tabi.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org
+Cc: linux-input@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+---
+ sound/soc/codecs/Kconfig  |    8 ++++----
+ sound/soc/fsl/Kconfig     |    2 +-
+ sound/soc/samsung/Kconfig |    2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index f0e8401..d4260d3 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -40,7 +40,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_ALC5632 if I2C
+ 	select SND_SOC_CQ0093VC if MFD_DAVINCI_VOICECODEC
+ 	select SND_SOC_CS42L51 if I2C
+-	select SND_SOC_CS42L52 if I2C
++	select SND_SOC_CS42L52 if I2C && INPUT
+ 	select SND_SOC_CS42L73 if I2C
+ 	select SND_SOC_CS4270 if I2C
+ 	select SND_SOC_CS4271 if SND_SOC_I2C_AND_SPI
+@@ -127,7 +127,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_WM8955 if I2C
+ 	select SND_SOC_WM8960 if I2C
+ 	select SND_SOC_WM8961 if I2C
+-	select SND_SOC_WM8962 if I2C
++	select SND_SOC_WM8962 if I2C && INPUT
+ 	select SND_SOC_WM8971 if I2C
+ 	select SND_SOC_WM8974 if I2C
+ 	select SND_SOC_WM8978 if I2C
+@@ -282,7 +282,7 @@ config SND_SOC_CS42L51
+ 
+ config SND_SOC_CS42L52
+ 	tristate "Cirrus Logic CS42L52 CODEC"
+-	depends on I2C
++	depends on I2C && INPUT
+ 
+ config SND_SOC_CS42L73
+ 	tristate "Cirrus Logic CS42L73 CODEC"
+@@ -598,7 +598,7 @@ config SND_SOC_WM8961
+ 
+ config SND_SOC_WM8962
+ 	tristate "Wolfson Microelectronics WM8962 CODEC"
+-	depends on I2C
++	depends on I2C && INPUT
+ 
+ config SND_SOC_WM8971
+ 	tristate
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 338a916..f4069d0 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -187,7 +187,7 @@ config SND_SOC_EUKREA_TLV320
+ 
+ config SND_SOC_IMX_WM8962
+ 	tristate "SoC Audio support for i.MX boards with wm8962"
+-	depends on OF && I2C
++	depends on OF && I2C && INPUT
+ 	select SND_SOC_WM8962
+ 	select SND_SOC_IMX_PCM_DMA
+ 	select SND_SOC_IMX_AUDMUX
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index f2e2891..14568be 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -204,7 +204,7 @@ config SND_SOC_SPEYSIDE
+ 
+ config SND_SOC_TOBERMORY
+ 	tristate "Audio support for Wolfson Tobermory"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
++	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && INPUT
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8962
+ 
+-- 
+1.7.9.5
