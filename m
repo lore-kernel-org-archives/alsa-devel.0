@@ -1,47 +1,42 @@
 From: Xia Kaixu <kaixu.xia@linaro.org>
-Subject: [PATCH 04/15] ASoC: samsung-idma: avoid 64-bit division
-Date: Tue, 29 Apr 2014 19:18:25 +0800
-Message-ID: <1398770316-19715-5-git-send-email-kaixu.xia@linaro.org>
+Subject: [PATCH 09/15] ASoC: Migo-R sound needs I2C
+Date: Tue, 29 Apr 2014 19:18:30 +0800
+Message-ID: <1398770316-19715-10-git-send-email-kaixu.xia@linaro.org>
 References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: linaro-kernel@lists.linaro.org, arnd@arndb.de, kaixu.xia@linaro.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-dma_addr_t may be 64 bit wide, which causes a build failure
-when doing a division on it. Here it is safe to cast to an
-u32 type, which avoids the problem.
+The WM8978 driver needs I2C to be enabled, so the
+SND_SIU_MIGOR option also requires this.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Xia Kaixu <kaixu.xia@linaro.org>
 Cc: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Ben Dooks <ben-linux@fluff.org>
-Cc: Kukjin Kim <kgene.kim@samsung.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-samsung-soc@vger.kernel.org
 Cc: alsa-devel@alsa-project.org
+Cc: linux-arm-kernel@lists.infradead.org
 ---
- sound/soc/samsung/idma.c |    2 +-
+ sound/soc/sh/Kconfig |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/samsung/idma.c b/sound/soc/samsung/idma.c
-index 3d5cf15..e9891b4 100644
---- a/sound/soc/samsung/idma.c
-+++ b/sound/soc/samsung/idma.c
-@@ -274,7 +274,7 @@ static irqreturn_t iis_irq(int irqno, void *dev_id)
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index ff60e11..b43fdf0 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -56,7 +56,7 @@ config SND_SH7760_AC97
  
- 		addr = readl(idma.regs + I2SLVL0ADDR) - idma.lp_tx_addr;
- 		addr += prtd->periodsz;
--		addr %= (prtd->end - prtd->start);
-+		addr %= (u32)(prtd->end - prtd->start);
- 		addr += idma.lp_tx_addr;
- 
- 		writel(addr, idma.regs + I2SLVL0ADDR);
+ config SND_SIU_MIGOR
+ 	tristate "SIU sound support on Migo-R"
+-	depends on SH_MIGOR
++	depends on SH_MIGOR && I2C
+ 	select SND_SOC_SH4_SIU
+ 	select SND_SOC_WM8978
+ 	help
 -- 
 1.7.9.5
