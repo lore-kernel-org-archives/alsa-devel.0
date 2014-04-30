@@ -1,61 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
-Date: Tue, 29 Apr 2014 15:29:15 -0700
-Message-ID: <20140429222915.GU15125@sirena.org.uk>
-References: <1398243705-31151-1-git-send-email-tushar.behera@linaro.org>
- <20140424133920.GA12304@sirena.org.uk>
- <5359E18B.60600@linaro.org>
+From: Raffaele Recalcati via LinkedIn <member@linkedin.com>
+Subject: abdul, please add me to your LinkedIn network
+Date: Wed, 30 Apr 2014 00:34:39 +0000 (UTC)
+Message-ID: <1726025994.4863053.1398818079932.JavaMail.app@ela4-app5004.prod>
+Reply-To: Raffaele Recalcati <lamiaposta71@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dXvu6+ixFx2ZffE8"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5359E18B.60600@linaro.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tushar Behera <tushar.behera@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, sbkim73@samsung.com, rdunlap@infradead.org, dianders@chromium.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailb-ed.linkedin.com (mailb-ed.linkedin.com [199.101.162.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7844D265166
+ for <alsa-devel@alsa-project.org>; Wed, 30 Apr 2014 02:34:41 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: abdul moiz <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+LinkedIn
+------------
 
---dXvu6+ixFx2ZffE8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Fri, Apr 25, 2014 at 09:46:11AM +0530, Tushar Behera wrote:
-> On 04/24/2014 07:09 PM, Mark Brown wrote:
 
-> > defined.  Why is that?  Also, why is the secondary I2S playback stream
-> > not supported (this may be a reason to restrict to only the one I2S
-> > interface)?
 
-> AFAICS, I2S driver doesn't support secondary DAI with DT (dai type is
-> always TYPE_PRI in case of DT). Hence I could not find a setup to test
-> secondary dai with this board.
+    
+    
+    
+    
+      Raffaele Recalcati has indicated you are a Friend
+      
+    
+      
+    
+    
+  
 
-OK, that should be fixed at some point.  I will hopefully be able to
-look at this myself on the Arndale Octa though (or Chromebook or Arndale
-once XCLKOUT is implemented).
+------------------------------------------
 
---dXvu6+ixFx2ZffE8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Since you are a person I trust, I wanted to invite you to join my network on LinkedIn.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+Accept invitation from Raffaele Recalcati
+http://www.linkedin.com/e/jpxkk3-hulw627q-40/uii-rtptP1H4ViCg9YiBUOvto1r4_5GcrJPkip6lXT/blk/I530267327_135/3wOtCVFbmdxnSVFbm8JrnpKqlZJrmZzbmNJpjRQnOpBtn9QfmhBt71BoSd1p65Lr6lOfPkPclYTczcTdz8McPl9bRB2iztGsPdbbP8Vcj8Pc34OcjcRczwSc3sSe3kLrCBxbOYWrSlI/eml-comm_invm-b-in_ac-inv28/?hs=false&tok=00fHTlxnDyL6c1
 
-iQIcBAEBAgAGBQJTYCe3AAoJELSic+t+oim9/nwP/1MmemJBQprVgaUGU/1sJ5V0
-xffa7Isk0NJTlgsP2doO1yjfuYUu4mCnkgxw/NR6AKVLgTJsu3PPC8tghdf7rTLQ
-FQiUOAqhPkjot2DGRXf+2H5TpVKFP/cRWFoBEe4Lvz+XKRYTOBg39OkfLadw4i8T
-w33BMwTCqOBsaUgs363z/ZLWcEXPMKGmxecI20Fepb4GUP2bv+/+Vj8uwZxPcrLE
-J/MTlffkc/m+9cWU729kKHIklrcrwcpez5CiUN9/KSN9TwfAHyP07cuvhfs1A1Ep
-33dPJwijghJeK4fXZ4mFxwzXQ+wINazC3njLRCnYGCD3M7RnpQiRX68ImuNCh4z0
-oYE4R4U2BCzC2EQOb45AJgkhEbaZYy5mmoZygADKy29Ext7CIs+HYsRlht74MznX
-OnBDmdBiAXRSyYqpnhBjL48zLjI85E9/tc2SmdKHDF+OBs96u9Fy+i519gyzwRwb
-zVvq9fsrjbnQP3cxovUKwiH02/5D0xQGacON4C5xJdzbDez5gaYcAMhwbAygiYDD
-x9cIpO4qXnlkLS7DBtAbEAuQww/cKQv+FBsSoF1TOyA2JFPw46AI+ANVtXeR5tPb
-GwZ4PuIsQtARAbOnd2mqwCxTFkJ46K6jl7Vh1UuDk/ZvjJgf4Wvh7EKZ/Lp3+1r6
-4AB+gPNuYWxk/8xMAy4m
-=zPmG
------END PGP SIGNATURE-----
+View profile of Raffaele Recalcati
+http://www.linkedin.com/e/jpxkk3-hulw627q-40/rso/33010545/ONxO/name/138036396_I530267327_135/?hs=false&tok=3G-RHhK6XyL6c1
+------------------------------------------
+You are receiving Invitation emails.
 
---dXvu6+ixFx2ZffE8--
+
+This email was intended for abdul moiz.
+Learn why this is included: http://www.linkedin.com/e/jpxkk3-hulw627q-40/plh/http%3A%2F%2Fhelp%2Elinkedin%2Ecom%2Fapp%2Fanswers%2Fdetail%2Fa_id%2F4788/-GXI/?hs=false&tok=3l3D3CtbvyL6c1
+
+(c) 2012, LinkedIn Corporation. 2029 Stierlin Ct, Mountain View, CA 94043, USA.
+
+
+  
