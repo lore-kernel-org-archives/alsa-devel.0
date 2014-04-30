@@ -1,58 +1,100 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH 2/2] ASoC: fsl: Allow to select ESAI device
-	individually
-Date: Wed, 30 Apr 2014 18:10:06 +0800
-Message-ID: <1398852606-14345-2-git-send-email-Li.Xiubo@freescale.com>
-References: <1398852606-14345-1-git-send-email-Li.Xiubo@freescale.com>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
+Date: Wed, 30 Apr 2014 17:30:39 +0530
+Message-ID: <5360E5E7.8090807@linaro.org>
+References: <1398243705-31151-1-git-send-email-tushar.behera@linaro.org> <20140424133920.GA12304@sirena.org.uk> <5359E18B.60600@linaro.org> <20140429222915.GU15125@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2lp0210.outbound.protection.outlook.com [207.46.163.210])
- by alsa0.perex.cz (Postfix) with ESMTP id 28699265072
- for <alsa-devel@alsa-project.org>; Wed, 30 Apr 2014 12:55:01 +0200 (CEST)
-In-Reply-To: <1398852606-14345-1-git-send-email-Li.Xiubo@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
-Cc: Xiubo Li <Li.Xiubo@freescale.com>
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <20140429222915.GU15125@sirena.org.uk>
+Sender: linux-doc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, sbkim73@samsung.com, rdunlap@infradead.org, dianders@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-This will be useful for out-of-tree drivers since in-tree drivers
-could select it automatically.
+On 04/30/2014 03:59 AM, Mark Brown wrote:
+> On Fri, Apr 25, 2014 at 09:46:11AM +0530, Tushar Behera wrote:
+>> On 04/24/2014 07:09 PM, Mark Brown wrote:
+> 
+>>> defined.  Why is that?  Also, why is the secondary I2S playback stream
+>>> not supported (this may be a reason to restrict to only the one I2S
+>>> interface)?
+> 
+>> AFAICS, I2S driver doesn't support secondary DAI with DT (dai type is
+>> always TYPE_PRI in case of DT). Hence I could not find a setup to test
+>> secondary dai with this board.
+> 
+> OK, that should be fixed at some point.  I will hopefully be able to
+> look at this myself on the Arndale Octa though (or Chromebook or Arndale
+> once XCLKOUT is implemented).
+> 
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
----
- sound/soc/fsl/Kconfig | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+XCLKOUT mux register (0x10040a00) is not part of core clock SFR range,
+rather it is part of pmu-system-controller node.
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index fb73e35..0a11826 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -30,9 +30,14 @@ config SND_SOC_FSL_SPDIF
- 	  in-tree drivers select it automatically.
- 
- config SND_SOC_FSL_ESAI
--	tristate
-+	tristate "Enhanced Serial Audio Interface (ESAI) module support"
- 	select REGMAP_MMIO
- 	select SND_SOC_FSL_UTILS
-+	help
-+	  Say Y if you want to add Enhanced Synchronous Audio Interface
-+	  (ESAI) support for the Freescale CPUs.
-+	  This option is only useful for out-of-tree drivers since
-+	  in-tree drivers select it automatically.
- 
- config SND_SOC_FSL_UTILS
- 	tristate
+One option would be to add a clock provider for XCLKOUT. That would
+require me to extend current clock driver to get the
+pmu-system-controller phandle which in turn is dependent on the patch to
+early initialize syscon driver.[1]
+
+Will it be okay to configure XCLKOUT in snow sound-card driver by taking
+the phandle of pmu-system-controller from device tree? The
+implementation is provided below.
+
+[1] article.gmane.org/gmane.linux.kernel/1679446
+
+diff --git a/sound/soc/samsung/snow.c b/sound/soc/samsung/snow.c
+index 0fa89a4..d7fe7a0 100644
+--- a/sound/soc/samsung/snow.c
++++ b/sound/soc/samsung/snow.c
+@@ -15,6 +15,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/mfd/syscon.h>
+
+ #include <sound/soc.h>
+
+@@ -22,6 +23,10 @@
+
+ #define FIN_PLL_RATE           24000000
+
++#define XCLKOUT_OFFSET                 0x0a00
++#define XCLKOUT_PARENT_MASK            0x1f00
++#define XCLKOUT_PARENT_XXTI            0x1000
++
+ static struct snd_soc_dai_link snow_dai[] = {
+        {
+                .name = "Primary",
+@@ -66,6 +71,7 @@ static int snow_probe(struct platform_device *pdev)
+ {
+        struct snd_soc_card *card = &snow_snd;
+        struct device_node *i2s_node, *codec_node;
++       struct regmap *pmureg;
+        int i, ret;
+
+        i2s_node = of_parse_phandle(pdev->dev.of_node,
+@@ -84,6 +90,19 @@ static int snow_probe(struct platform_device *pdev)
+                return -EINVAL;
+        }
+
++       /*
++        * On Snow board, SoC XCLKOUT line is connected to codec MCLK.
++        * One option would be to add another clock provider to configure
++        * XCLKOUT mux register. Else we can get pmu-syscon phandle from
++        * device tree and update the register here.
++        */
++       pmureg = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
++                       "samsung,pmu-syscon");
++       if (!IS_ERR(pmureg)) {
++               regmap_update_bits(pmureg, XCLKOUT_OFFSET,
++                               XCLKOUT_PARENT_MASK, XCLKOUT_PARENT_XXTI);
++       }
++
+        for (i = 0; i < ARRAY_SIZE(snow_dai); i++) {
+                snow_dai[i].codec_of_node = codec_node;
+                snow_dai[i].cpu_of_node = i2s_node;
+
 -- 
-1.8.4
+Tushar Behera
