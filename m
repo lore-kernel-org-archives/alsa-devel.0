@@ -1,62 +1,51 @@
-From: Tushar Behera <tushar.behera@linaro.org>
-Subject: Re: [PATCH 04/15] ASoC: samsung-idma: avoid 64-bit division
-Date: Wed, 30 Apr 2014 09:20:47 +0530
-Message-ID: <53607317.4040206@linaro.org>
-References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org> <1398770316-19715-5-git-send-email-kaixu.xia@linaro.org>
+From: <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5640: correct 5640's device ID
+Date: Wed, 30 Apr 2014 14:08:45 +0800
+Message-ID: <1398838125-13546-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1398770316-19715-5-git-send-email-kaixu.xia@linaro.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Xia Kaixu <kaixu.xia@linaro.org>, linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-samsung-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id E62A42651B5
+ for <alsa-devel@alsa-project.org>; Wed, 30 Apr 2014 08:09:26 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, swarren@wwwdotorg.org, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On 04/29/2014 04:48 PM, Xia Kaixu wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> dma_addr_t may be 64 bit wide, which causes a build failure
-> when doing a division on it. Here it is safe to cast to an
-> u32 type, which avoids the problem.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Xia Kaixu <kaixu.xia@linaro.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Ben Dooks <ben-linux@fluff.org>
-> Cc: Kukjin Kim <kgene.kim@samsung.com>
-> Cc: Sangbeom Kim <sbkim73@samsung.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> ---
+From: Bard Liao <bardliao@realtek.com>
 
-Tested with ARM_LPAE enabled. Without this patch, getting following error.
+This patch correct rt5640's device ID
 
-sound/built-in.o: In function `iis_irq':
-sound/soc/samsung/idma.c:277: undefined reference to `__aeabi_uldivmod'
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+We will send another patch to fix the issue about the "Failed to add route"
+error.
+---
+ sound/soc/codecs/rt5640.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested-by: Tushar Behera <tushar.behera@linaro.org>
-
->  sound/soc/samsung/idma.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/samsung/idma.c b/sound/soc/samsung/idma.c
-> index 3d5cf15..e9891b4 100644
-> --- a/sound/soc/samsung/idma.c
-> +++ b/sound/soc/samsung/idma.c
-> @@ -274,7 +274,7 @@ static irqreturn_t iis_irq(int irqno, void *dev_id)
->  
->  		addr = readl(idma.regs + I2SLVL0ADDR) - idma.lp_tx_addr;
->  		addr += prtd->periodsz;
-> -		addr %= (prtd->end - prtd->start);
-> +		addr %= (u32)(prtd->end - prtd->start);
->  		addr += idma.lp_tx_addr;
->  
->  		writel(addr, idma.regs + I2SLVL0ADDR);
-> 
-
-
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index ded2059..895ca14 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -195,7 +195,7 @@
+ /* SW Reset & Device ID (0x00) */
+ #define RT5640_ID_MASK				(0x3 << 1)
+ #define RT5640_ID_5639				(0x0 << 1)
+-#define RT5640_ID_5640				(0x1 << 1)
++#define RT5640_ID_5640				(0x2 << 1)
+ #define RT5640_ID_5642				(0x3 << 1)
+ 
+ 
 -- 
-Tushar Behera
+1.8.1.1.439.g50a6b54
