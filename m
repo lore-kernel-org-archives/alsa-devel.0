@@ -1,18 +1,16 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: [PATCH 3/5] ASoC: fsl_spdif: Add sysclk df support to
-	derive txclk from sysclk
-Date: Wed, 30 Apr 2014 18:54:07 +0800
-Message-ID: <15a2e0485d63bb885422a96c0603b2a5300bdb7e.1398853588.git.Guangyu.Chen@freescale.com>
-References: <cover.1398853588.git.Guangyu.Chen@freescale.com>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH 1/2] ASoC: fsl: Allow to select SAI device
+	individually
+Date: Wed, 30 Apr 2014 18:10:05 +0800
+Message-ID: <1398852606-14345-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2lp0211.outbound.protection.outlook.com [207.46.163.211])
- by alsa0.perex.cz (Postfix) with ESMTP id A9F052602F3
- for <alsa-devel@alsa-project.org>; Wed, 30 Apr 2014 12:52:42 +0200 (CEST)
-In-Reply-To: <cover.1398853588.git.Guangyu.Chen@freescale.com>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0240.outbound.protection.outlook.com [207.46.163.240])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59B81265065
+ for <alsa-devel@alsa-project.org>; Wed, 30 Apr 2014 12:54:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,164 +20,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+Cc: Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-The sysclk is one the clock sources that could be selected to derive
-tx clock. But the route for sysclk is a bit different that it does
-not only contain txclk df divider but also have an extra sysclk df.
+This will be useful for out-of-tree drivers since in-tree drivers
+could select it automatically.
 
-So this patch mainly adds syclk df configuration support so as to
-let the driver be able to get clock from sysclk.
-
-Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/fsl/fsl_spdif.c | 81 +++++++++++++++++++++++++++++------------------
- 1 file changed, 51 insertions(+), 30 deletions(-)
+ sound/soc/fsl/Kconfig | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index af8bc37..1abfb00 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -76,6 +76,7 @@ struct fsl_spdif_priv {
- 	struct regmap *regmap;
- 	bool dpll_locked;
- 	u8 txclk_df[SPDIF_TXRATE_MAX];
-+	u8 sysclk_df[SPDIF_TXRATE_MAX];
- 	u8 txclk_src[SPDIF_TXRATE_MAX];
- 	u8 rxclk_src;
- 	struct clk *txclk[SPDIF_TXRATE_MAX];
-@@ -351,7 +352,7 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 	struct platform_device *pdev = spdif_priv->pdev;
- 	unsigned long csfs = 0;
- 	u32 stc, mask, rate;
--	u8 clk, txclk_df;
-+	u8 clk, txclk_df, sysclk_df;
- 	int ret;
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 7a7eaf3..fb73e35 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -3,9 +3,14 @@ menu "SoC Audio for Freescale CPUs"
+ comment "Common SoC Audio options for Freescale CPUs:"
  
- 	switch (sample_rate) {
-@@ -384,6 +385,8 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
+ config SND_SOC_FSL_SAI
+-	tristate
++	tristate "Synchronous Audio Interface (SAI) module support"
+ 	select REGMAP_MMIO
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
++	help
++	  Say Y if you want to add Synchronous Audio Interface (SAI)
++	  support for the Freescale CPUs.
++	  This option is only useful for out-of-tree drivers since
++	  in-tree drivers select it automatically.
  
-+	sysclk_df = spdif_priv->sysclk_df[rate];
-+
- 	/* Don't mess up the clocks from other modules */
- 	if (clk != STC_TXCLK_SPDIF_ROOT)
- 		goto clk_set_bypass;
-@@ -400,7 +403,7 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 
- clk_set_bypass:
- 	dev_dbg(&pdev->dev, "expected clock rate = %d\n",
--			(64 * sample_rate * txclk_df));
-+			(64 * sample_rate * txclk_df * sysclk_df));
- 	dev_dbg(&pdev->dev, "actual clock rate = %ld\n",
- 			clk_get_rate(spdif_priv->txclk[rate]));
- 
-@@ -412,6 +415,9 @@ clk_set_bypass:
- 	mask = STC_TXCLK_ALL_EN_MASK | STC_TXCLK_SRC_MASK | STC_TXCLK_DF_MASK;
- 	regmap_update_bits(regmap, REG_SPDIF_STC, mask, stc);
- 
-+	regmap_update_bits(regmap, REG_SPDIF_STC,
-+			   STC_SYSCLK_DF_MASK, STC_SYSCLK_DF(sysclk_df));
-+
- 	dev_dbg(&pdev->dev, "set sample rate to %d\n", sample_rate);
- 
- 	return 0;
-@@ -1018,43 +1024,55 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- 				enum spdif_txrate index, bool round)
- {
- 	const u32 rate[] = { 32000, 44100, 48000 };
-+	bool is_sysclk = clk == spdif_priv->sysclk;
- 	u64 rate_ideal, rate_actual, sub;
--	u32 txclk_df, arate;
--
--	for (txclk_df = 1; txclk_df <= 128; txclk_df++) {
--		rate_ideal = rate[index] * (txclk_df + 1) * 64;
--		if (round)
--			rate_actual = clk_round_rate(clk, rate_ideal);
--		else
--			rate_actual = clk_get_rate(clk);
--
--		arate = rate_actual / 64;
--		arate /= txclk_df;
--
--		if (arate == rate[index]) {
--			/* We are lucky */
--			savesub = 0;
--			spdif_priv->txclk_df[index] = txclk_df;
--			break;
--		} else if (arate / rate[index] == 1) {
--			/* A little bigger than expect */
--			sub = (arate - rate[index]) * 100000;
--			do_div(sub, rate[index]);
--			if (sub < savesub) {
-+	u32 sysclk_dfmin, sysclk_dfmax;
-+	u32 txclk_df, sysclk_df, arate;
-+
-+	/* The sysclk has an extra divisor [2, 512] */
-+	sysclk_dfmin = is_sysclk ? 2 : 1;
-+	sysclk_dfmax = is_sysclk ? 512 : 1;
-+
-+	for (sysclk_df = sysclk_dfmin; sysclk_df <= sysclk_dfmax; sysclk_df++) {
-+		for (txclk_df = 1; txclk_df <= 128; txclk_df++) {
-+			rate_ideal = rate[index] * (txclk_df + 1) * 64;
-+			if (round)
-+				rate_actual = clk_round_rate(clk, rate_ideal);
-+			else
-+				rate_actual = clk_get_rate(clk);
-+
-+			arate = rate_actual / 64;
-+			arate /= txclk_df * sysclk_df;
-+
-+			if (arate == rate[index]) {
-+				/* We are lucky */
-+				savesub = 0;
-+				spdif_priv->txclk_df[index] = txclk_df;
-+				spdif_priv->sysclk_df[index] = sysclk_df;
-+				goto out;
-+			} else if (arate / rate[index] == 1) {
-+				/* A little bigger than expect */
-+				sub = (arate - rate[index]) * 100000;
-+				do_div(sub, rate[index]);
-+				if (sub >= savesub)
-+					continue;
- 				savesub = sub;
- 				spdif_priv->txclk_df[index] = txclk_df;
--			}
--		} else if (rate[index] / arate == 1) {
--			/* A little smaller than expect */
--			sub = (rate[index] - arate) * 100000;
--			do_div(sub, rate[index]);
--			if (sub < savesub) {
-+				spdif_priv->sysclk_df[index] = sysclk_df;
-+			} else if (rate[index] / arate == 1) {
-+				/* A little smaller than expect */
-+				sub = (rate[index] - arate) * 100000;
-+				do_div(sub, rate[index]);
-+				if (sub >= savesub)
-+					continue;
- 				savesub = sub;
- 				spdif_priv->txclk_df[index] = txclk_df;
-+				spdif_priv->sysclk_df[index] = sysclk_df;
- 			}
- 		}
- 	}
- 
-+out:
- 	return savesub;
- }
- 
-@@ -1097,6 +1115,9 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 			spdif_priv->txclk_src[index], rate[index]);
- 	dev_dbg(&pdev->dev, "use txclk df %d for %dHz sample rate\n",
- 			spdif_priv->txclk_df[index], rate[index]);
-+	if (spdif_priv->txclk[index] == spdif_priv->sysclk)
-+		dev_dbg(&pdev->dev, "use sysclk df %d for %dHz sample rate\n",
-+				spdif_priv->sysclk_df[index], rate[index]);
- 
- 	return 0;
- }
+ config SND_SOC_FSL_SSI
+ 	tristate "Synchronous Serial Interface module support"
 -- 
 1.8.4
