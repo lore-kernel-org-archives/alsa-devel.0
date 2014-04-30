@@ -1,100 +1,78 @@
-From: Tushar Behera <tushar.behera@linaro.org>
-Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
-Date: Wed, 30 Apr 2014 17:30:39 +0530
-Message-ID: <5360E5E7.8090807@linaro.org>
-References: <1398243705-31151-1-git-send-email-tushar.behera@linaro.org> <20140424133920.GA12304@sirena.org.uk> <5359E18B.60600@linaro.org> <20140429222915.GU15125@sirena.org.uk>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/2] ASoC: wm8804: Use devm_regulator_bulk_get()
+Date: Wed, 30 Apr 2014 09:50:39 -0300
+Message-ID: <1398862240-4432-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <20140429222915.GU15125@sirena.org.uk>
-Sender: linux-doc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, sbkim73@samsung.com, rdunlap@infradead.org, dianders@chromium.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yk0-f170.google.com (mail-yk0-f170.google.com
+ [209.85.160.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3B83261AA4
+ for <alsa-devel@alsa-project.org>; Wed, 30 Apr 2014 14:50:51 +0200 (CEST)
+Received: by mail-yk0-f170.google.com with SMTP id 79so1432821ykr.1
+ for <alsa-devel@alsa-project.org>; Wed, 30 Apr 2014 05:50:50 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/30/2014 03:59 AM, Mark Brown wrote:
-> On Fri, Apr 25, 2014 at 09:46:11AM +0530, Tushar Behera wrote:
->> On 04/24/2014 07:09 PM, Mark Brown wrote:
-> 
->>> defined.  Why is that?  Also, why is the secondary I2S playback stream
->>> not supported (this may be a reason to restrict to only the one I2S
->>> interface)?
-> 
->> AFAICS, I2S driver doesn't support secondary DAI with DT (dai type is
->> always TYPE_PRI in case of DT). Hence I could not find a setup to test
->> secondary dai with this board.
-> 
-> OK, that should be fixed at some point.  I will hopefully be able to
-> look at this myself on the Arndale Octa though (or Chromebook or Arndale
-> once XCLKOUT is implemented).
-> 
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-XCLKOUT mux register (0x10040a00) is not part of core clock SFR range,
-rather it is part of pmu-system-controller node.
+Using devm_regulator_bulk_get() can make the code cleaner and smaller as we
+do not need to call regulator_bulk_free() in the error and remove paths.
 
-One option would be to add a clock provider for XCLKOUT. That would
-require me to extend current clock driver to get the
-pmu-system-controller phandle which in turn is dependent on the patch to
-early initialize syscon driver.[1]
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/codecs/wm8804.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Will it be okay to configure XCLKOUT in snow sound-card driver by taking
-the phandle of pmu-system-controller from device tree? The
-implementation is provided below.
-
-[1] article.gmane.org/gmane.linux.kernel/1679446
-
-diff --git a/sound/soc/samsung/snow.c b/sound/soc/samsung/snow.c
-index 0fa89a4..d7fe7a0 100644
---- a/sound/soc/samsung/snow.c
-+++ b/sound/soc/samsung/snow.c
-@@ -15,6 +15,7 @@
- #include <linux/platform_device.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <linux/mfd/syscon.h>
-
- #include <sound/soc.h>
-
-@@ -22,6 +23,10 @@
-
- #define FIN_PLL_RATE           24000000
-
-+#define XCLKOUT_OFFSET                 0x0a00
-+#define XCLKOUT_PARENT_MASK            0x1f00
-+#define XCLKOUT_PARENT_XXTI            0x1000
-+
- static struct snd_soc_dai_link snow_dai[] = {
-        {
-                .name = "Primary",
-@@ -66,6 +71,7 @@ static int snow_probe(struct platform_device *pdev)
- {
-        struct snd_soc_card *card = &snow_snd;
-        struct device_node *i2s_node, *codec_node;
-+       struct regmap *pmureg;
-        int i, ret;
-
-        i2s_node = of_parse_phandle(pdev->dev.of_node,
-@@ -84,6 +90,19 @@ static int snow_probe(struct platform_device *pdev)
-                return -EINVAL;
-        }
-
-+       /*
-+        * On Snow board, SoC XCLKOUT line is connected to codec MCLK.
-+        * One option would be to add another clock provider to configure
-+        * XCLKOUT mux register. Else we can get pmu-syscon phandle from
-+        * device tree and update the register here.
-+        */
-+       pmureg = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
-+                       "samsung,pmu-syscon");
-+       if (!IS_ERR(pmureg)) {
-+               regmap_update_bits(pmureg, XCLKOUT_OFFSET,
-+                               XCLKOUT_PARENT_MASK, XCLKOUT_PARENT_XXTI);
-+       }
-+
-        for (i = 0; i < ARRAY_SIZE(snow_dai); i++) {
-                snow_dai[i].codec_of_node = codec_node;
-                snow_dai[i].cpu_of_node = i2s_node;
-
+diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
+index 589455c..bbcad9f 100644
+--- a/sound/soc/codecs/wm8804.c
++++ b/sound/soc/codecs/wm8804.c
+@@ -535,7 +535,6 @@ static int wm8804_remove(struct snd_soc_codec *codec)
+ 	for (i = 0; i < ARRAY_SIZE(wm8804->supplies); ++i)
+ 		regulator_unregister_notifier(wm8804->supplies[i].consumer,
+ 					      &wm8804->disable_nb[i]);
+-	regulator_bulk_free(ARRAY_SIZE(wm8804->supplies), wm8804->supplies);
+ 	return 0;
+ }
+ 
+@@ -549,7 +548,7 @@ static int wm8804_probe(struct snd_soc_codec *codec)
+ 	for (i = 0; i < ARRAY_SIZE(wm8804->supplies); i++)
+ 		wm8804->supplies[i].supply = wm8804_supply_names[i];
+ 
+-	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(wm8804->supplies),
++	ret = devm_regulator_bulk_get(codec->dev, ARRAY_SIZE(wm8804->supplies),
+ 				 wm8804->supplies);
+ 	if (ret) {
+ 		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
+@@ -574,7 +573,7 @@ static int wm8804_probe(struct snd_soc_codec *codec)
+ 				    wm8804->supplies);
+ 	if (ret) {
+ 		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
+-		goto err_reg_get;
++		return ret;
+ 	}
+ 
+ 	id1 = snd_soc_read(codec, WM8804_RST_DEVID1);
+@@ -619,8 +618,6 @@ static int wm8804_probe(struct snd_soc_codec *codec)
+ 
+ err_reg_enable:
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8804->supplies), wm8804->supplies);
+-err_reg_get:
+-	regulator_bulk_free(ARRAY_SIZE(wm8804->supplies), wm8804->supplies);
+ 	return ret;
+ }
+ 
 -- 
-Tushar Behera
+1.8.3.2
