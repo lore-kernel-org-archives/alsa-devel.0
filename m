@@ -1,16 +1,18 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH 1/2] ASoC: fsl: Allow to select SAI device
+Subject: [PATCH 2/2] ASoC: fsl: Allow to select ESAI device
 	individually
-Date: Wed, 30 Apr 2014 18:10:05 +0800
-Message-ID: <1398852606-14345-1-git-send-email-Li.Xiubo@freescale.com>
+Date: Wed, 30 Apr 2014 18:10:06 +0800
+Message-ID: <1398852606-14345-2-git-send-email-Li.Xiubo@freescale.com>
+References: <1398852606-14345-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0240.outbound.protection.outlook.com [207.46.163.240])
- by alsa0.perex.cz (Postfix) with ESMTP id 59B81265065
- for <alsa-devel@alsa-project.org>; Wed, 30 Apr 2014 12:54:50 +0200 (CEST)
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2lp0210.outbound.protection.outlook.com [207.46.163.210])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28699265072
+ for <alsa-devel@alsa-project.org>; Wed, 30 Apr 2014 12:55:01 +0200 (CEST)
+In-Reply-To: <1398852606-14345-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,24 +35,24 @@ Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 7a7eaf3..fb73e35 100644
+index fb73e35..0a11826 100644
 --- a/sound/soc/fsl/Kconfig
 +++ b/sound/soc/fsl/Kconfig
-@@ -3,9 +3,14 @@ menu "SoC Audio for Freescale CPUs"
- comment "Common SoC Audio options for Freescale CPUs:"
+@@ -30,9 +30,14 @@ config SND_SOC_FSL_SPDIF
+ 	  in-tree drivers select it automatically.
  
- config SND_SOC_FSL_SAI
+ config SND_SOC_FSL_ESAI
 -	tristate
-+	tristate "Synchronous Audio Interface (SAI) module support"
++	tristate "Enhanced Serial Audio Interface (ESAI) module support"
  	select REGMAP_MMIO
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	select SND_SOC_FSL_UTILS
 +	help
-+	  Say Y if you want to add Synchronous Audio Interface (SAI)
-+	  support for the Freescale CPUs.
++	  Say Y if you want to add Enhanced Synchronous Audio Interface
++	  (ESAI) support for the Freescale CPUs.
 +	  This option is only useful for out-of-tree drivers since
 +	  in-tree drivers select it automatically.
  
- config SND_SOC_FSL_SSI
- 	tristate "Synchronous Serial Interface module support"
+ config SND_SOC_FSL_UTILS
+ 	tristate
 -- 
 1.8.4
