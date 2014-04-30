@@ -1,67 +1,89 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
-Date: Wed, 30 Apr 2014 11:03:14 -0700
-Message-ID: <20140430180314.GA3245@sirena.org.uk>
-References: <1398243705-31151-1-git-send-email-tushar.behera@linaro.org>
- <20140424133920.GA12304@sirena.org.uk>
- <5359E18B.60600@linaro.org>
- <20140429222915.GU15125@sirena.org.uk>
- <5360E5E7.8090807@linaro.org>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: mc13783: Add devicetree support
+Date: Wed, 30 Apr 2014 11:06:53 -0700
+Message-ID: <20140430180653.GB3245@sirena.org.uk>
+References: <1398495423-2223-1-git-send-email-shc_work@mail.ru>
+ <20140429222522.GS15125@sirena.org.uk>
+ <20140430140849.GR29462@lee--X1>
+ <1398867073.695596467@f224.i.mail.ru>
+ <20140430141708.GS29462@lee--X1>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="IrhDeMKUP4DT/M7F"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <5360E5E7.8090807@linaro.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tushar Behera <tushar.behera@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, sbkim73@samsung.com, rdunlap@infradead.org, dianders@chromium.org
+In-Reply-To: <20140430141708.GS29462@lee--X1>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---SLDf9lqlvOQaIe6s
+--IrhDeMKUP4DT/M7F
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Apr 30, 2014 at 05:30:39PM +0530, Tushar Behera wrote:
+On Wed, Apr 30, 2014 at 03:17:08PM +0100, Lee Jones wrote:
 
-> XCLKOUT mux register (0x10040a00) is not part of core clock SFR range,
-> rather it is part of pmu-system-controller node.
+> Neither Mark, nor I can apply this patch independently, we need to
+> create a shared branch somewhere, or we'll risk conflicts at merge
+> time.
 
-> One option would be to add a clock provider for XCLKOUT. That would
-> require me to extend current clock driver to get the
-> pmu-system-controller phandle which in turn is dependent on the patch to
-> early initialize syscon driver.[1]
+You acked it without saying you didn't want me to apply it...  usually
+that means someone is OK with things getting applied.  In any case, as
+ever it's on a branch by itself so you can pull it in easily.  I just
+tagged it.
 
-> Will it be okay to configure XCLKOUT in snow sound-card driver by taking
-> the phandle of pmu-system-controller from device tree? The
-> implementation is provided below.
+The following changes since commit c9eaa447e77efe77b7fa4c953bd62de8297fd6c5:
 
-I can't think of any reason why we'd not want to have this visible as a
-clock?  Ideally we don't want to have any ASoC specific clock APIs when
-we're done, the reason we do at the minute is that the clock API isn't
-available as standard.
+  Linux 3.15-rc1 (2014-04-13 14:18:35 -0700)
 
---SLDf9lqlvOQaIe6s
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/mc13783-asoc
+
+for you to fetch changes up to 780aaeff96819ca58e0cad830bfbe6eee9aef82c:
+
+  ASoC: mc13783: Add devicetree support (2014-04-29 15:24:54 -0700)
+
+----------------------------------------------------------------
+ASoC: mc13783 DT support
+
+Tagged since it updates the MFD as well.
+
+----------------------------------------------------------------
+Alexander Shiyan (1):
+      ASoC: mc13783: Add devicetree support
+
+ Documentation/devicetree/bindings/mfd/mc13xxx.txt |  3 +++
+ drivers/mfd/mc13xxx-core.c                        | 10 +++++++---
+ sound/soc/codecs/mc13783.c                        | 14 +++++++++++++-
+ 3 files changed, 23 insertions(+), 4 deletions(-)
+
+--IrhDeMKUP4DT/M7F
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTYTrZAAoJELSic+t+oim9oUYP/2pJyGSWadsihsAISnlYXZw8
-XDUmpFDNf8XQCOn6RyiY3vZdeQtnVkmmuMCIoKYJrLdnddHu/yrN6KQ5nx8TQyME
-bpomOqs5cJ6BcIQ8AGIaDTqimGZ4kIP6I+H9t3MLOuET2mArmJNJnMcj/TRKAhYL
-/edSQNcx+vpJYJU3h3MYFYSqQTt6DRBb1IG0CzegJ5IfOdSCFhwr0wut/2m727rn
-GKwQyPmV7YySyodFF7WEhJweYchEdWPbK7vMGRCfwSH2TSvlGEilIvsgiNvMXZiX
-H5CWk1KFfMEUdcHz2VxfBXwq7CjvMWjdS4RQBx73JpOyjHOopr9CJgnVXqKakF1I
-o0Sq62i0HpQk+o/e3BNmUyDsmo99ZDRTVj6LnMDAkZZ5rSfO06qVIQMQ4tHnCplR
-dlhEyqWkbNwX2Hhd1kftfiwQm9alvao7KhoPmZ1eNF78JO8a+NrG/xV4GG+H9xBU
-Ajs537yybrZAnPEKo3uLB46MU3G7SF3Mza1a/IJSvDBYl3XbxHb5rGXViiEVlrb7
-9euCrxfRf5C2LABWHw697YVljXy4jU5I2Ld17NVWBYlR8GXWU7fJ3T/imoprZWKW
-l13YzgUEhQ6QU2JJ6eH4SjXMOWql4oVxD7EZuUdrmXfxE7mUiCyxJLU2BB2z/WgX
-zjdX73g/rxlN1qTn5uXx
-=2ALA
+iQIcBAEBAgAGBQJTYTu6AAoJELSic+t+oim9Vh0P/jYa1eG8S1qWD2CwLbOj5Dqi
+oWjI0D2qQrIOp9xZcoFfi5Qhov6eRPkVLrthcXKaJymz5BbpuA1GzXmMRzbm5+Gr
+96LWV46zSmJ7u4I/sdgd7UCQ6uLiZjeblTn7KOlvi0Hff6BWnvlmT6dkFTJNY7rF
+66e8JU7Y+pALqgpQPwjNyCOqk/NtI0YSQmLXSn/M+uCAt4eHHHRDgkMtf2rK8q8L
+ng1I2UFBGSUXKCvtMn9+KCtcgfiMMOdLTYczTDBJzR5xTVyB4fpAxs0A4AD+0waY
+YhLHTveCkbWPNY9O+RUKBaSs8ZK3xVvkx6aCHswF/Aoi7wiAQhJXGH5QtrZqJrGk
+pMTCyNgvHjmeqLdmOSg82R4um9WAZbhUEbAUXdI6kWxQwxrnQD0j3EkMz+6V/moW
+0PYKNdMt6LmU3411SjjtvkOhhkxnCWm+BmYXwz8LLwiHc+/7YMjFyz2awR5Wl3ZV
+fKO0t28nGyFzX9dAtgyVHPXW+vDsWb+0CmE4rbDsRUq0TATi9nLRRe6m1jb8VyNn
+9bLmB5X290t7MbPmYRQjHaNzErfbGx5KIL1AxnZWH3+4r27G7Y9xV2XvJgARRZOx
+u5X3MvIa+9vH2Ou+MeS9mbAksemn6+JuDTPOvjLJwqjilm4jZsMKEawHiVpKYBBP
+Sd7pIIUQc4kcS/2ymM+9
+=XeyG
 -----END PGP SIGNATURE-----
 
---SLDf9lqlvOQaIe6s--
+--IrhDeMKUP4DT/M7F--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
