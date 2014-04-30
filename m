@@ -1,7 +1,8 @@
 From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: [PATCH 2/5] ASoC: fsl_spdif: Rename all _div to _df
-Date: Wed, 30 Apr 2014 18:54:06 +0800
-Message-ID: <1b18017499e7570126b80cda1a8997aee2609dc5.1398853588.git.Guangyu.Chen@freescale.com>
+Subject: [PATCH 4/5] ASoC: fsl_spdif: Print actual sample rate
+	for debug
+Date: Wed, 30 Apr 2014 18:54:08 +0800
+Message-ID: <862e22353c7cde177639b40f8a967f0bf9d94bb5.1398853588.git.Guangyu.Chen@freescale.com>
 References: <cover.1398853588.git.Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from na01-bl2-obe.outbound.protection.outlook.com
  (mail-bl2lp0212.outbound.protection.outlook.com [207.46.163.212])
- by alsa0.perex.cz (Postfix) with ESMTP id A6F422619E5
- for <alsa-devel@alsa-project.org>; Wed, 30 Apr 2014 12:52:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id C12E4261A0D
+ for <alsa-devel@alsa-project.org>; Wed, 30 Apr 2014 12:52:38 +0200 (CEST)
 In-Reply-To: <cover.1398853588.git.Guangyu.Chen@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,170 +26,68 @@ To: broonie@kernel.org
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-We should have used _df by following the reference manual at the beginning.
-So this patch just renames them.
+People would simply know what the driver gets the best for the current
+sample rate playback.
 
 Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
 ---
- sound/soc/fsl/fsl_spdif.c | 41 ++++++++++++++++++++---------------------
- sound/soc/fsl/fsl_spdif.h | 12 ++++++------
- 2 files changed, 26 insertions(+), 27 deletions(-)
+ sound/soc/fsl/fsl_spdif.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index ed4bf75..af8bc37 100644
+index 1abfb00..074b355 100644
 --- a/sound/soc/fsl/fsl_spdif.c
 +++ b/sound/soc/fsl/fsl_spdif.c
-@@ -75,7 +75,7 @@ struct fsl_spdif_priv {
+@@ -75,6 +75,7 @@ struct fsl_spdif_priv {
  	struct platform_device *pdev;
  	struct regmap *regmap;
  	bool dpll_locked;
--	u8 txclk_div[SPDIF_TXRATE_MAX];
-+	u8 txclk_df[SPDIF_TXRATE_MAX];
++	u16 txrate[SPDIF_TXRATE_MAX];
+ 	u8 txclk_df[SPDIF_TXRATE_MAX];
+ 	u8 sysclk_df[SPDIF_TXRATE_MAX];
  	u8 txclk_src[SPDIF_TXRATE_MAX];
- 	u8 rxclk_src;
- 	struct clk *txclk[SPDIF_TXRATE_MAX];
-@@ -351,7 +351,7 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 	struct platform_device *pdev = spdif_priv->pdev;
- 	unsigned long csfs = 0;
- 	u32 stc, mask, rate;
--	u8 clk, div;
-+	u8 clk, txclk_df;
- 	int ret;
+@@ -418,7 +419,8 @@ clk_set_bypass:
+ 	regmap_update_bits(regmap, REG_SPDIF_STC,
+ 			   STC_SYSCLK_DF_MASK, STC_SYSCLK_DF(sysclk_df));
  
- 	switch (sample_rate) {
-@@ -378,9 +378,9 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	div = spdif_priv->txclk_div[rate];
--	if (div == 0) {
--		dev_err(&pdev->dev, "the divisor can't be zero\n");
-+	txclk_df = spdif_priv->txclk_df[rate];
-+	if (txclk_df == 0) {
-+		dev_err(&pdev->dev, "the txclk_df can't be zero\n");
- 		return -EINVAL;
- 	}
- 
-@@ -389,11 +389,10 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 		goto clk_set_bypass;
- 
- 	/*
--	 * The S/PDIF block needs a clock of 64 * fs * div.  The S/PDIF block
--	 * will divide by (div).  So request 64 * fs * (div+1) which will
--	 * get rounded.
-+	 * The S/PDIF block needs a clock of 64 * fs * txclk_df.
-+	 * So request 64 * fs * (txclk_df + 1) to get rounded.
- 	 */
--	ret = clk_set_rate(spdif_priv->txclk[rate], 64 * sample_rate * (div + 1));
-+	ret = clk_set_rate(spdif_priv->txclk[rate], 64 * sample_rate * (txclk_df + 1));
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to set tx clock rate\n");
- 		return ret;
-@@ -401,7 +400,7 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 
- clk_set_bypass:
- 	dev_dbg(&pdev->dev, "expected clock rate = %d\n",
--			(64 * sample_rate * div));
-+			(64 * sample_rate * txclk_df));
- 	dev_dbg(&pdev->dev, "actual clock rate = %ld\n",
- 			clk_get_rate(spdif_priv->txclk[rate]));
- 
-@@ -409,8 +408,8 @@ clk_set_bypass:
- 	spdif_set_cstatus(ctrl, IEC958_AES3_CON_FS, csfs);
- 
- 	/* select clock source and divisor */
--	stc = STC_TXCLK_ALL_EN | STC_TXCLK_SRC_SET(clk) | STC_TXCLK_DIV(div);
--	mask = STC_TXCLK_ALL_EN_MASK | STC_TXCLK_SRC_MASK | STC_TXCLK_DIV_MASK;
-+	stc = STC_TXCLK_ALL_EN | STC_TXCLK_SRC_SET(clk) | STC_TXCLK_DF(txclk_df);
-+	mask = STC_TXCLK_ALL_EN_MASK | STC_TXCLK_SRC_MASK | STC_TXCLK_DF_MASK;
- 	regmap_update_bits(regmap, REG_SPDIF_STC, mask, stc);
- 
- 	dev_dbg(&pdev->dev, "set sample rate to %d\n", sample_rate);
-@@ -1020,22 +1019,22 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- {
- 	const u32 rate[] = { 32000, 44100, 48000 };
- 	u64 rate_ideal, rate_actual, sub;
--	u32 div, arate;
-+	u32 txclk_df, arate;
- 
--	for (div = 1; div <= 128; div++) {
--		rate_ideal = rate[index] * (div + 1) * 64;
-+	for (txclk_df = 1; txclk_df <= 128; txclk_df++) {
-+		rate_ideal = rate[index] * (txclk_df + 1) * 64;
- 		if (round)
- 			rate_actual = clk_round_rate(clk, rate_ideal);
- 		else
- 			rate_actual = clk_get_rate(clk);
- 
- 		arate = rate_actual / 64;
--		arate /= div;
-+		arate /= txclk_df;
- 
- 		if (arate == rate[index]) {
- 			/* We are lucky */
- 			savesub = 0;
--			spdif_priv->txclk_div[index] = div;
-+			spdif_priv->txclk_df[index] = txclk_df;
- 			break;
- 		} else if (arate / rate[index] == 1) {
- 			/* A little bigger than expect */
-@@ -1043,7 +1042,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- 			do_div(sub, rate[index]);
- 			if (sub < savesub) {
- 				savesub = sub;
--				spdif_priv->txclk_div[index] = div;
-+				spdif_priv->txclk_df[index] = txclk_df;
- 			}
- 		} else if (rate[index] / arate == 1) {
- 			/* A little smaller than expect */
-@@ -1051,7 +1050,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- 			do_div(sub, rate[index]);
- 			if (sub < savesub) {
- 				savesub = sub;
--				spdif_priv->txclk_div[index] = div;
-+				spdif_priv->txclk_df[index] = txclk_df;
- 			}
- 		}
- 	}
-@@ -1096,8 +1095,8 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 
- 	dev_dbg(&pdev->dev, "use rxtx%d as tx clock source for %dHz sample rate\n",
- 			spdif_priv->txclk_src[index], rate[index]);
--	dev_dbg(&pdev->dev, "use divisor %d for %dHz sample rate\n",
--			spdif_priv->txclk_div[index], rate[index]);
-+	dev_dbg(&pdev->dev, "use txclk df %d for %dHz sample rate\n",
-+			spdif_priv->txclk_df[index], rate[index]);
+-	dev_dbg(&pdev->dev, "set sample rate to %d\n", sample_rate);
++	dev_dbg(&pdev->dev, "set sample rate to %dHz for %dHz playback\n",
++			spdif_priv->txrate[rate], sample_rate);
  
  	return 0;
  }
-diff --git a/sound/soc/fsl/fsl_spdif.h b/sound/soc/fsl/fsl_spdif.h
-index 4ec27fc..16fde4b 100644
---- a/sound/soc/fsl/fsl_spdif.h
-+++ b/sound/soc/fsl/fsl_spdif.h
-@@ -143,18 +143,18 @@ enum spdif_gainsel {
- #define INT_RXFIFO_FUL			(1 << 0)
+@@ -1049,6 +1051,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+ 				savesub = 0;
+ 				spdif_priv->txclk_df[index] = txclk_df;
+ 				spdif_priv->sysclk_df[index] = sysclk_df;
++				spdif_priv->txrate[index] = arate;
+ 				goto out;
+ 			} else if (arate / rate[index] == 1) {
+ 				/* A little bigger than expect */
+@@ -1059,6 +1062,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+ 				savesub = sub;
+ 				spdif_priv->txclk_df[index] = txclk_df;
+ 				spdif_priv->sysclk_df[index] = sysclk_df;
++				spdif_priv->txrate[index] = arate;
+ 			} else if (rate[index] / arate == 1) {
+ 				/* A little smaller than expect */
+ 				sub = (rate[index] - arate) * 100000;
+@@ -1068,6 +1072,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+ 				savesub = sub;
+ 				spdif_priv->txclk_df[index] = txclk_df;
+ 				spdif_priv->sysclk_df[index] = sysclk_df;
++				spdif_priv->txrate[index] = arate;
+ 			}
+ 		}
+ 	}
+@@ -1118,6 +1123,8 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
+ 	if (spdif_priv->txclk[index] == spdif_priv->sysclk)
+ 		dev_dbg(&pdev->dev, "use sysclk df %d for %dHz sample rate\n",
+ 				spdif_priv->sysclk_df[index], rate[index]);
++	dev_dbg(&pdev->dev, "the best rate for %dHz sample rate is %dHz\n",
++			rate[index], spdif_priv->txrate[index]);
  
- /* SPDIF Clock register */
--#define STC_SYSCLK_DIV_OFFSET		11
--#define STC_SYSCLK_DIV_MASK		(0x1ff << STC_SYSCLK_DIV_OFFSET)
--#define STC_SYSCLK_DIV(x)		((((x) - 1) << STC_SYSCLK_DIV_OFFSET) & STC_SYSCLK_DIV_MASK)
-+#define STC_SYSCLK_DF_OFFSET		11
-+#define STC_SYSCLK_DF_MASK		(0x1ff << STC_SYSCLK_DF_OFFSET)
-+#define STC_SYSCLK_DF(x)		((((x) - 1) << STC_SYSCLK_DF_OFFSET) & STC_SYSCLK_DF_MASK)
- #define STC_TXCLK_SRC_OFFSET		8
- #define STC_TXCLK_SRC_MASK		(0x7 << STC_TXCLK_SRC_OFFSET)
- #define STC_TXCLK_SRC_SET(x)		((x << STC_TXCLK_SRC_OFFSET) & STC_TXCLK_SRC_MASK)
- #define STC_TXCLK_ALL_EN_OFFSET		7
- #define STC_TXCLK_ALL_EN_MASK		(1 << STC_TXCLK_ALL_EN_OFFSET)
- #define STC_TXCLK_ALL_EN		(1 << STC_TXCLK_ALL_EN_OFFSET)
--#define STC_TXCLK_DIV_OFFSET		0
--#define STC_TXCLK_DIV_MASK		(0x7ff << STC_TXCLK_DIV_OFFSET)
--#define STC_TXCLK_DIV(x)		((((x) - 1) << STC_TXCLK_DIV_OFFSET) & STC_TXCLK_DIV_MASK)
-+#define STC_TXCLK_DF_OFFSET		0
-+#define STC_TXCLK_DF_MASK		(0x7ff << STC_TXCLK_DF_OFFSET)
-+#define STC_TXCLK_DF(x)		((((x) - 1) << STC_TXCLK_DF_OFFSET) & STC_TXCLK_DF_MASK)
- #define STC_TXCLK_SRC_MAX		8
- 
- #define STC_TXCLK_SPDIF_ROOT		1
+ 	return 0;
+ }
 -- 
 1.8.4
