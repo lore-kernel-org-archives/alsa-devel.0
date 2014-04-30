@@ -1,36 +1,62 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - add headset mic detect quirk for a Dell laptop
-Date: Wed, 30 Apr 2014 11:06:00 +0800
-Message-ID: <1398827160-20348-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: Re: [PATCH 04/15] ASoC: samsung-idma: avoid 64-bit division
+Date: Wed, 30 Apr 2014 09:20:47 +0530
+Message-ID: <53607317.4040206@linaro.org>
+References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org> <1398770316-19715-5-git-send-email-kaixu.xia@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1398770316-19715-5-git-send-email-kaixu.xia@linaro.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Xia Kaixu <kaixu.xia@linaro.org>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-samsung-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-When we plug a 3-ring headset on the Dell machine (VID: 0x10ec0255,
-SID: 0x1028067e), the headset mic can't be detected, after apply this
-patch, the headset mic can work well.
+On 04/29/2014 04:48 PM, Xia Kaixu wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> dma_addr_t may be 64 bit wide, which causes a build failure
+> when doing a division on it. Here it is safe to cast to an
+> u32 type, which avoids the problem.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Xia Kaixu <kaixu.xia@linaro.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Ben Dooks <ben-linux@fluff.org>
+> Cc: Kukjin Kim <kgene.kim@samsung.com>
+> Cc: Sangbeom Kim <sbkim73@samsung.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> ---
 
-BugLink: https://bugs.launchpad.net/bugs/1297581
-Cc: David Henningsson <david.henningsson@canonical.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Tested with ARM_LPAE enabled. Without this patch, getting following error.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index e96ab33..b60de0d 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4711,6 +4711,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0668, "Dell", ALC255_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0669, "Dell", ALC255_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0674, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x067e, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x067f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x15cc, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x15cd, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+sound/built-in.o: In function `iis_irq':
+sound/soc/samsung/idma.c:277: undefined reference to `__aeabi_uldivmod'
+
+Tested-by: Tushar Behera <tushar.behera@linaro.org>
+
+>  sound/soc/samsung/idma.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/samsung/idma.c b/sound/soc/samsung/idma.c
+> index 3d5cf15..e9891b4 100644
+> --- a/sound/soc/samsung/idma.c
+> +++ b/sound/soc/samsung/idma.c
+> @@ -274,7 +274,7 @@ static irqreturn_t iis_irq(int irqno, void *dev_id)
+>  
+>  		addr = readl(idma.regs + I2SLVL0ADDR) - idma.lp_tx_addr;
+>  		addr += prtd->periodsz;
+> -		addr %= (prtd->end - prtd->start);
+> +		addr %= (u32)(prtd->end - prtd->start);
+>  		addr += idma.lp_tx_addr;
+>  
+>  		writel(addr, idma.regs + I2SLVL0ADDR);
+> 
+
+
 -- 
-1.8.1.2
+Tushar Behera
