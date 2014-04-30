@@ -1,27 +1,43 @@
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work-JGs/UdohzUI@public.gmane.org>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gQVNvQzogbWMxMzc4MzogQWRkIGRldmljZXRyZWUgc3Vw?=
- =?UTF-8?B?cG9ydA==?=
-Date: Wed, 30 Apr 2014 18:11:13 +0400
-Message-ID: <1398867073.695596467@f224.i.mail.ru>
+From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: mc13783: Add devicetree support
+Date: Wed, 30 Apr 2014 15:17:08 +0100
+Message-ID: <20140430141708.GS29462@lee--X1>
 References: <1398495423-2223-1-git-send-email-shc_work@mail.ru>
  <20140429222522.GS15125@sirena.org.uk>
  <20140430140849.GR29462@lee--X1>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work-JGs/UdohzUI@public.gmane.org>
+ <1398867073.695596467@f224.i.mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140430140849.GR29462@lee--X1>
+Content-Disposition: inline
+In-Reply-To: <1398867073.695596467-rKA3owyty39sdVUOrk1QfQ@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: =?UTF-8?B?TGVlIEpvbmVz?= <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, =?UTF-8?B?U2FtdWVsIE9ydGl6?= <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, =?UTF-8?B?TGlhbSBHaXJkd29vZA==?= <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, =?UTF-8?B?SmFyb3NsYXYgS3lzZWxh?= <perex-/Fr2/VpizcU@public.gmane.org>, =?UTF-8?B?VGFrYXNoaSBJd2Fp?= <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, =?UTF-8?B?TWFyayBCcm93bg==?= <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+To: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-V2VkLCAzMCBBcHIgMjAxNCAxNTowODo0OSArMDEwMCDQvtGCIExlZSBKb25lcyA8bGVlLmpvbmVz
-QGxpbmFyby5vcmc+Ogo+ID4gPiBUaGlzIHBhdGNoIGFkZHMgZGV2aWNldHJlZSBzdXBwb3J0IGZv
-ciBtYzEzNzgzLWNvZGVjLgo+ID4gCj4gPiBBcHBsaWVkLCB0aGFua3MuCj4gCj4gTm8gTWFyaywg
-bm8hCgpXaGF0IGEgcHJvYmxlbSwgTGVlPwoKLS0tCgo=
+> > > > This patch adds devicetree support for mc13783-codec.
+> > >=20
+> > > Applied, thanks.
+> >=20
+> > No Mark, no!
+>=20
+> What a problem, Lee?
+
+There's no problem with the patch, don't worry.
+
+Neither Mark, nor I can apply this patch independently, we need to
+create a shared branch somewhere, or we'll risk conflicts at merge
+time.
+
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
