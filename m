@@ -1,77 +1,63 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: correct 5640's device ID
-Date: Wed, 30 Apr 2014 11:25:35 -0700
-Message-ID: <20140430182535.GE3245@sirena.org.uk>
-References: <1398838125-13546-1-git-send-email-bardliao@realtek.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: mc13783: Add devicetree support
+Date: Wed, 30 Apr 2014 11:23:12 -0700
+Message-ID: <20140430182312.GC3245@sirena.org.uk>
+References: <1398495423-2223-1-git-send-email-shc_work@mail.ru>
+ <20140430141708.GS29462@lee--X1>
+ <20140430180653.GB3245@sirena.org.uk>
+ <1398881556.141711961@f232.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7657941649601528328=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1662E26007E
- for <alsa-devel@alsa-project.org>; Thu,  1 May 2014 03:18:19 +0200 (CEST)
-In-Reply-To: <1398838125-13546-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, swarren@wwwdotorg.org, lgirdwood@gmail.com, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gr/z0/N6AeWAPJVB"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1398881556.141711961-JZ33oUlt0U9sdVUOrk1QfQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7657941649601528328==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="u5E4XgoOPWr4PD9E"
-Content-Disposition: inline
-
-
---u5E4XgoOPWr4PD9E
-Content-Type: text/plain; charset=us-ascii
+--gr/z0/N6AeWAPJVB
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 30, 2014 at 02:08:45PM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
->=20
-> This patch correct rt5640's device ID
+On Wed, Apr 30, 2014 at 10:12:36PM +0400, Alexander Shiyan wrote:
+> Wed, 30 Apr 2014 11:06:53 -0700 =D0=BE=D1=82 Mark Brown <broonie@kernel.o=
+rg>:
 
-Applied, thanks.
+> > ----------------------------------------------------------------
+> > ASoC: mc13783 DT support
 
---u5E4XgoOPWr4PD9E
+> Sorry, this means that I should not create v2?=20
+
+It's probably not going to achieve an enormous amount, no.  Let's see.
+
+--gr/z0/N6AeWAPJVB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTYUAcAAoJELSic+t+oim9A/kQAINyfWYrOhZ8MFizGEw8xwU7
-XndYdfK9eSWPfWjaFFV/G9DQ9/zpRSFABKtTq4eusjePG4CidvF8tni56lwPgA0A
-QuASKv80JKIUmqBch1/2bnxiEQ41tzYrptDYxowZFB33f86edmjSDEwm4ouodApL
-uS+9noERmIA4tHOlfgLCe4dCnXgUgqtfmvlLNJ1vIwDYDI7CvfotLPKDyCCixABu
-/tZICkflHOXfXo/sRp3TlED+QJ0dj/X+iREEEiLRVFVu0hUa7Xe6z6xsje0lwmVm
-hHxRURgLW2V55Qf52M69wEZlRgCYrIoIFpWZVY7mXAPNNZWLGNqbtQx1zBBzm+RB
-zj24mAQzwk+G8VvlARa5utr/a1EeYqa0ufzOBYDmmy/9GJS0JecjUgw0LDCiLywW
-QNqprtnLWJpnQbI+KRBcPYt+Mt6HUCGSwCsBapEFPdqDG3nnG6rj3Mo2Bs4r3n25
-fwvCvUe5C7Pf+bM1JMxBnmNehDO1Ae9p7i3Q/WsTjCLzJc4JZ4gH+WWbOHF/T9S5
-nFgYCUGGljyBaMmjiHlfFk9ePdBRhQ+u6Kwiu7KhYusbzESzgNfS67jjDkojer03
-xUMHPKWZ+HqDhEoyxOSk/tmqBI4Oru9njJ1BCJ6Mv4+hFKA3hP/yn1WDhEifY4k2
-+86z6LL5kn4K2EfcO7Y/
-=iAVa
+iQIcBAEBAgAGBQJTYT+NAAoJELSic+t+oim9urgQAITUcaWj7x8s3Moep+G+DgW5
+IaPvsgJDQKXbK1NbhWln+qLJoDxpkrWyieirWmzOthPDcOI1y085NMMTlpJRCXp1
+h5x5ndLxsayORL1nhNIBshlDO65VsXe39EGJu7E1rFUpOs6puZFIvi1OPXgWZIuE
+jJntR5efFw+K/R365UVsDCIS7gsiscisqhsMVEHn3AuJq+vs0LS5SKf1XtU6bY6Z
+CkCmtrvAyao2GS9xrUC2CMXZEUPpZpgxMsG4koWitC0HPrAZlCfa65xLhDme7TdS
+wOUe+a255kto7NEos/dS02OhoIZkJ9u/h87bkp1lsB8O05zzkEbVx1oSXp6UliRL
+ciObPTYSFbXisj94F4fKRgY/eCWLk1A+uDQB40v7ueEXnoPKFJmmbjq8rwBQCqvF
+vKurAJHpLJd26Xt8muVNgqNvLQ0DvxUsAgef6YpX2KmAFJ+HCzYOw8y5rcqCMelT
+gCKuy7y4aP82oFrympEfsRNb6S8tmQcMNJjTpi+3S7Os+TmWAyrtkqS5jcuyJN1W
+AJrB7M7+6g8IbS0biliolOtVNM0tlCg+GKI+gie9W744pvpalc3TGaDj++I9cugD
+W4EC/VGPtkQhXYu+h+rRt38D81hw/XNrzPOiLkaU6lXQKE6vKiaItIAj+ZD+lWmL
+OXFvK4rZfYs52POc7mg4
+=J5SM
 -----END PGP SIGNATURE-----
 
---u5E4XgoOPWr4PD9E--
-
---===============7657941649601528328==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7657941649601528328==--
+--gr/z0/N6AeWAPJVB--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
