@@ -1,59 +1,36 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH 01/15] ASoC: CS42L51 and WM8962 codecs
- depend on INPUT
-Date: Tue, 29 Apr 2014 21:31:30 -0500
-Message-ID: <alpine.DEB.2.02.1404292124270.31465@heelrod>
-References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
- <1398770316-19715-2-git-send-email-kaixu.xia@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0088.outbound.protection.outlook.com [157.56.111.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 64909265166
- for <alsa-devel@alsa-project.org>; Wed, 30 Apr 2014 04:30:45 +0200 (CEST)
-In-Reply-To: <1398770316-19715-2-git-send-email-kaixu.xia@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Xia Kaixu <kaixu.xia@linaro.org>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, arnd@arndb.de, Sangbeom Kim <sbkim73@samsung.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Timur Tabi <timur@tabi.org>, linux-samsung-soc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Ben Dooks <ben-linux@fluff.org>, linux-input@vger.kernel.org, Kukjin Kim <kgene.kim@samsung.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - add headset mic detect quirk for a Dell laptop
+Date: Wed, 30 Apr 2014 11:06:00 +0800
+Message-ID: <1398827160-20348-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: david.henningsson@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
+When we plug a 3-ring headset on the Dell machine (VID: 0x10ec0255,
+SID: 0x1028067e), the headset mic can't be detected, after apply this
+patch, the headset mic can work well.
 
+BugLink: https://bugs.launchpad.net/bugs/1297581
+Cc: David Henningsson <david.henningsson@canonical.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Tue, 29 Apr 2014, Xia Kaixu wrote:
-
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Building ARM randconfig got into a situation where CONFIG_INPUT
-> is turned off and SND_SOC_ALL_CODECS is turned on, which failed
-> for two codecs trying to use the input subsystem. Some other
-> drivers also select one of these codecs and consequently need an
-> explicit dependency added.
-
-I assume you mean the CS42L52 instead of the L51. INPUT is used for a BEEP 
-Generator but when I disable CONFIG_INPUT I do not get an error. Is there 
-any information available on what the error is?
-
-
->
-> Appending to the dependency list seems the easiest way out,
-> since this is not a practical limitation. If anyone really
-> needs to build these codecs for a kernel with no input support,
-> a more sophisticated solution can be implemented.
->
-It shouldn't build the BEEP code without CONFIG_INPUT enabled as you can 
-use the CODEC without the BEEP enabled.
-
-I believe the WM8962 is done the same way.
-
-Thanks,
-Brian
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index e96ab33..b60de0d 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4711,6 +4711,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0668, "Dell", ALC255_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0669, "Dell", ALC255_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0674, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x067e, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x067f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x15cc, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x15cd, "Dell X5 Precision", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+-- 
+1.8.1.2
