@@ -1,54 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 05/15] ASoC: nuc900: export nuc900_ac97_data
-Date: Wed, 30 Apr 2014 20:32:37 -0700
-Message-ID: <20140501033237.GQ3245@sirena.org.uk>
-References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
- <1398770316-19715-6-git-send-email-kaixu.xia@linaro.org>
+Subject: Re: [PATCH 1/2] ASoC: wm8804: Use
+	devm_regulator_bulk_get()
+Date: Wed, 30 Apr 2014 20:35:38 -0700
+Message-ID: <20140501033538.GS3245@sirena.org.uk>
+References: <1398862240-4432-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="90KBcPA0h13nTGdQ"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1398770316-19715-6-git-send-email-kaixu.xia@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xia Kaixu <kaixu.xia@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linaro-kernel@lists.linaro.org, arnd@arndb.de, Liam Girdwood <lgirdwood@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============3265959510892001876=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CE4E2607B6
+ for <alsa-devel@alsa-project.org>; Thu,  1 May 2014 05:35:52 +0200 (CEST)
+In-Reply-To: <1398862240-4432-1-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---90KBcPA0h13nTGdQ
+--===============3265959510892001876==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="E1BPhOSoTthPQdPL"
+Content-Disposition: inline
+
+
+--E1BPhOSoTthPQdPL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 29, 2014 at 07:18:26PM +0800, Xia Kaixu wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Apr 30, 2014 at 09:50:39AM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
 >=20
-> The symbol "nuc900_ac97_data" is used by the nuc900_pcm driver,=20
-> which may be a loadable module, so we should export it.
+> Using devm_regulator_bulk_get() can make the code cleaner and smaller as =
+we
+> do not need to call regulator_bulk_free() in the error and remove paths.
 
-Applied, thanks.
+I already seem to have applied this patch, why has it been resent?
 
---90KBcPA0h13nTGdQ
+--E1BPhOSoTthPQdPL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTYcBSAAoJELSic+t+oim9yv0P/A5Sgpw7ZwhzhYQD+hSJk8ov
-he+IvnrnQXwmi8fKVGIvQCwo+wOtYI4fG1YO+KA/EgaG1Sz7ImVMeDpmlmQM1wD+
-IP7+vN7P+vtvHZZuQN//TjgESz3JxClSGCFSfRtYUsneyOsJFobbFRHNlSo7pTtf
-ArjM9XWjhCmxbP0NZH/lEUD50500JZK4zJ8+CiYZ8sKC1Yr1KayOVVH+pVsHhsmy
-NR2CZ6DkF1KUOk3TW38Z7UFZRKmPV+ehCcFeKIdIigDT26VctcmrzgHlsrm2zQT4
-X3co8DNEjiv/TVnJUjUUvWa8Jmde1xbghgm53hcxx2P7i+dRtCGZ+ZSWsUDRoTQ0
-Vi30Udwm2siaPVgtBJoD/sC6BEnOoOegWtOSe2kA+cnahKdvpo+l4kgp7Ew/kvT8
-+L9Sydu/202c+7SczyrkSCIV+gQxQYPYZ7vmOeqe+j16QTpdzZ3JCYZrBGPRJUBU
-C5I1sBF8NV7oHYo0XMeZYd9Deji7RbuLHjm1+d8bvvofCfmu1jiE9ErcTmr47PJp
-F6v8MNPwtoBpriIkpmx0oiHBX4JL5X5VVHfwz96t7SCFykMdHPztjEw6fsyoFRI4
-GrYYSrrb0Zm0zQRNLjAiHekP+jRsE/QJL4sKQzFTRW00h4s2Gpv0Qggui+OR7Dj/
-pZF6a0plXW+syUSR4yp8
-=OaPN
+iQIcBAEBAgAGBQJTYcEHAAoJELSic+t+oim9fvoQAJWG3XQWbiBc6WV/xdawE2tY
+x/v9SgZZmhEprecKV6GCBaSQffiuhgKwuf5LAxkVTxt/rgbc/Mn6vTNsdIMbiUye
+zH2Ak8sBt51fcGC7CbRMxaykY8fH5sOi3eGAnNi0Nj5rghiTWLmJEZbD39YQzlHV
+cKRPZhb+pCf5dLjR8umz5s996QSjbyFpa2DHW3X25eTTG6Fulfif6x7l1wOMz+SE
+VS31AOxfBbPPb8V5sMtES6YbPF3lCZIPECarU0AdSzMYtI8sksnx/b+Uz0Qm3xMe
+bVleNHUIW/IPDKpKc6bAr1qmctzFV70X74mpjrBe6vuPh4/SuySsDa/eN3bOMITc
+ayhGwtodXA5t38hvVy/3P8s8i5Ij+NybFUj3a2E/7B7VIbyi99KPhbnaDJAAZVS5
+3d6zZCf+Vj11Yehklb2awqbfgF4gNisHsIZkUhQUvM2lpZUB1O/8hvQ6oFPcxM/M
+WtAeGAZsRoWN/q1YlOqQjUgJrmQLkiLxOZ/sZ/6JxFo5K5MTQ9jZz/yZMtU+fHCB
+43o67JvN9Ml/c1iz5d27wv59PBu5S7IKpT9T1K2x2ohz2pc2IJxoJitzbM6YoXFD
+hKpvwaI5YMC2fld/R1kjy//x1Id8DF4QednSv0ChC1me8DL4gFqcSPSa+xnInV6R
+nJztYa3bazDfCKo3GSNa
+=9kQG
 -----END PGP SIGNATURE-----
 
---90KBcPA0h13nTGdQ--
+--E1BPhOSoTthPQdPL--
+
+--===============3265959510892001876==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3265959510892001876==--
