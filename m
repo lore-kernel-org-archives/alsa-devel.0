@@ -1,78 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cq93vc: fix cq93vc_get_regmap build
-	error
-Date: Wed, 30 Apr 2014 18:23:59 -0700
-Message-ID: <20140501012359.GH3245@sirena.org.uk>
-References: <4308079.So6q7GrfYB@wuerfel>
+Subject: Re: [PATCH 01/15] ASoC: CS42L51 and WM8962 codecs depend on INPUT
+Date: Wed, 30 Apr 2014 18:30:06 -0700
+Message-ID: <20140501013006.GJ3245@sirena.org.uk>
+References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
+ <1398770316-19715-2-git-send-email-kaixu.xia@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8313794663166736074=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E0AC26007E
- for <alsa-devel@alsa-project.org>; Thu,  1 May 2014 03:24:27 +0200 (CEST)
-In-Reply-To: <4308079.So6q7GrfYB@wuerfel>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZG+WKzXzVby2T9Ro"
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1398770316-19715-2-git-send-email-kaixu.xia@linaro.org>
+Sender: linux-input-owner@vger.kernel.org
+To: Xia Kaixu <kaixu.xia@linaro.org>
+Cc: linux-kernel@vger.kernel.org, linaro-kernel@lists.linaro.org, arnd@arndb.de, Liam Girdwood <lrg@slimlogic.co.uk>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, Timur Tabi <timur@tabi.org>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8313794663166736074==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="U3BNvdZEnlJXqmh+"
-Content-Disposition: inline
-
-
---U3BNvdZEnlJXqmh+
+--ZG+WKzXzVby2T9Ro
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 30, 2014 at 11:06:29AM +0200, Arnd Bergmann wrote:
-> 49101a25acd69c "ASoC: cq93vc: Remove the set_cache_io() entirely from
-> ASoC probe" introduced the cq93vc_get_regmap function that has an
-> obvious build error referring to the 'codec' variable that is not
-> declared anywhere"
+On Tue, Apr 29, 2014 at 07:18:22PM +0800, Xia Kaixu wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> Building ARM randconfig got into a situation where CONFIG_INPUT
+> is turned off and SND_SOC_ALL_CODECS is turned on, which failed
+> for two codecs trying to use the input subsystem. Some other=20
 
-Applied, thanks.
+Applied, but...
 
---U3BNvdZEnlJXqmh+
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+> Cc: Ben Dooks <ben-linux@fluff.org>
+> Cc: Kukjin Kim <kgene.kim@samsung.com>
+> Cc: Sangbeom Kim <sbkim73@samsung.com>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Timur Tabi <timur@tabi.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+
+=2E..please don't include noise like this in patch submissions, especially
+with such long lists (which still manage to miss the driver maintainers
+concerned).
+
+--ZG+WKzXzVby2T9Ro
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTYaIsAAoJELSic+t+oim91NsP/0GhNAr3UjBZ/tD/7hDg4dEO
-g1gnqcd8IXBFstT5a9wWZ0ccLdyh854DUxyWJPtDewdlgez0N+FYOonGVxm41Ons
-UogeKYVVPA/XGATJQvMri5steEoXKMrWGgTJJs8lCu1rB2PA3cfVqD46jqHETOOA
-2xAgzkvn39bBqpZxle5zm+6W97aYX0nNf9ucTCYV/ZE5JbvXSHEBIezpF58E/J8i
-RU62h8r5BiYkj5JlWbxPjHc1Tgc6W87D7590YZXz7EHQAEBOiVxkz0/tylAWF5Zt
-o5MACL0vTtlapE5c8kN5qPOkOdaTJ1SUjRgXStTCey99jcc3Eq1dvR6Ug6R9FsZ7
-+GSRvq7rOMrFCLLeRPcJdTnEbjMCp7u2fGnwUnzyXu3cHxLKjcH5x4drVZ8M7YdX
-/rgohdAOxVk3WLrFiYiYjVVIosbLStPKvHLIwvxk2T/+XYeiPyoA+WAdoh4fp2dK
-hMbWdMRZ8JSRdrYds/QCnfiJaL6rtUdijnt5YbPwtLZ0nOIdlFZZtGr9uz+l/BpY
-Bpfe349cGPmc/j3ZcKBgU0Czb7j/P5rRpDtE50ZIe/2nhaEfJHAff8thnxnvqvJ/
-1E6xe2XazCq/D2PAn82+gXakUHHMlfAhPyW3HWNjv3hAJnrhbaXYwKTLdNGMPDbj
-6JyOOEX2N8NL7xgdoFbj
-=/FhU
+iQIcBAEBAgAGBQJTYaObAAoJELSic+t+oim9Ti8P/i/b7F8wQ6kejlOzNt3cByTY
+Pravalwg7r1A0jQ/4Y6x33K1fzV/uZ0zVncUtyhybjXF0ZKklfUP4ZVvTHVrU/o4
+u7QkehQfge3cgSa1hBrq+w+jsY6PHtlQeiJ4rAUdkWpdgkG4/PWcdHovt6QqbQrW
+qrwhBp+7JHKICThHiyUjbahTBQHtHb9OSjBm6eJWqqKqUfbAc0TBhu+aWdLj3vQL
+lCXRr7kdtthq2G8lgbOemEnPDhWlgernUn71k3iKEl2OnRfDNNDe92jxu2HN+6Pk
+a1hgL3pGkhCY4auKxD3eg+jfAVW4OtNDQHgIEk8jj3+/j1Dn98CanxWtMAirlfmt
+fQbuBNU88so8bJ47lWwZ3Ydb2GVdkmMhFc/K4Sum5sbqG3f6jik5Bogh+IbTg5UQ
+RSVqrHyWZcDG9ltrsi0xg8Mj7DNGEA4t0Q2Df3ryzVvUVIBtoaJ9xt0JiVtRCCs/
+5O3zy/6iCq/YI2ed+eYMv3DwNGsdEOcOC46QFEFWlJcj20i82zmjTfMm726NNEEw
+oBiVZ6haNv1Iorq4rLIxfpH5SF5hEXpLyWJ/abF/lFjzBanE8Co9arNIvDh/x2Nx
+OpSgmcZHaiDhkJZwVNk/yH3FfUS5yXt32IL/UDiL2XQNxFErk6k1RkUJMhNAS8jx
+GNuq8VV8/l0enRFOuiPE
+=tZkN
 -----END PGP SIGNATURE-----
 
---U3BNvdZEnlJXqmh+--
-
---===============8313794663166736074==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8313794663166736074==--
+--ZG+WKzXzVby2T9Ro--
