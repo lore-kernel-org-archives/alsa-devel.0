@@ -1,54 +1,57 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 12/15] ASoC: Atmel WM8904 codec support needs I2C
-Date: Thu, 1 May 2014 12:09:53 -0700
-Message-ID: <20140501190953.GA3245@sirena.org.uk>
+Subject: Re: [PATCH 13/15] ASoC: SND_S3C_DMA_LEGACY needs S3C24XX_DMA
+Date: Thu, 1 May 2014 12:11:25 -0700
+Message-ID: <20140501191125.GB3245@sirena.org.uk>
 References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
- <1398770316-19715-13-git-send-email-kaixu.xia@linaro.org>
+ <1398770316-19715-14-git-send-email-kaixu.xia@linaro.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FerRj+SnsihDQL+M"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="DakDFP6XNsQXR34C"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1398770316-19715-13-git-send-email-kaixu.xia@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <1398770316-19715-14-git-send-email-kaixu.xia@linaro.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Xia Kaixu <kaixu.xia@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linaro-kernel@lists.linaro.org, arnd@arndb.de, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, linaro-kernel@lists.linaro.org, arnd@arndb.de, Liam Girdwood <lgirdwood@gmail.com>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---FerRj+SnsihDQL+M
+--DakDFP6XNsQXR34C
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 29, 2014 at 07:18:33PM +0800, Xia Kaixu wrote:
+On Tue, Apr 29, 2014 at 07:18:34PM +0800, Xia Kaixu wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 >=20
-> The WM8904 codec driver needs I2C to be enabled, so the
-> SND_ATMEL_SOC_WM8904 option also requires this.
+> SND_S3C_DMA_LEGACY can only be set on S3C24xx, which does not
+> (yet) support the dmaengine framework, so samsung_dma_get_ops()
+> fails to link if S3C24XX_DMA is disabled:
 
-Applied, thanks.
+Why is the fix for this not to ensure that s3c24xx always enables the
+DMA controller - how likely is it that it would be sane to build a
+kernel without DMA after all?
 
---FerRj+SnsihDQL+M
+--DakDFP6XNsQXR34C
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTYpv5AAoJELSic+t+oim9NUgP/iEggjNo2fHtTV4n2nJBMw/F
-KjwiW9DpLsG3IbAzNRi880Q0ikRavFgVy1/F/JQ/I99BTvJjsN2WDxV6rCDeA08G
-JnWIxewT5cmN/STwdT7M12wOgdOOXhBHM5n8/gmsPxlQnuZjLfyoKUJFGLD4KHyi
-thWCTNZiCHjuqv0Q+nK2LxqrrkzObTYfENwKfH6bUZky2E2AguqBpaJk2VuwOavT
-RKHR/p4jSDoIMudaZPrDTqNBHvK4nju/NmieaRrRv6ufOD5SVuT2JpGjGEodm3/q
-UyMhSVmlmG2J16DQ9trn0KRB87bZkrAdFgf51CoYAscNMrgNwIAWr7oHnc8GAwPv
-aoAgWfjElhJwSWBW3lKSla90C3TR8ePq8pdQfIXrQxkoSam5G/BGaMZLyrofyntt
-G6ksrfTaFLUW8cF4+u454jGobMhbSET2EFWwolSo9vGRcbu6d7qYH+8qKbA3yDaj
-fjAAKxxMdwmlRfLhREOqGslCTz/Og6VcPfGCqo8rrmtYQg5y9wuG7FS/uBmWW0o2
-45YCAKfdIUB6IMQi+YNgc1cvLyseZ8dXwYEehn8YMYOeFfpcqzW9BbtJ6x4wshCd
-xMI4xRTifmov6abeoxbDAkXQYa8stf9xNqeI0N2zfexnqiI1J9KZzTR05GZZlOe5
-o20hdt6DMDr+t7coTN/K
-=FCj3
+iQIcBAEBAgAGBQJTYpxZAAoJELSic+t+oim9upYQAIxwgpNQ9yiiLt/39B0RQESO
+76zs63flcoNeFOJ8b/OLl/CMb02QasSFCNV6NL8LxfmzO9yoDwnaJliZgcKw/JXA
+bu0D4P1kMUomwszaYbwXcxpeqL5pP8p6moAlNKgORi0uZDu3umK9UmQnKi2eWfoK
+lWSg85rir4X95tfCKlieBGUKJSAJ+N66+0QsCKLZb1RLhiV2SUCt4BzabJI2GEcv
+yu3i9hRvmUHez+XE4lBKLQkWpXYHwE0cGp1rHMl9/sVY/QaXjJU1Q9qtBkKiMaki
+VgigaUwtcZtWyYzEKBHhbCnXB+LKASUC8M3CEgRTda9Hbt2b1qh6555ak5l8P4D3
+Ydf0uIskm1CyZJd+up2ExPCw6mke3OEm5ehetuUNd2YUMwuOfBknTuv/b4axKpx1
+DRpa38Lw9w1aTJ2cGUdCAJhjZUSp+6nqk+FAcmLHqR6kzGQLrl+NHZ0cd8RaM3BD
+X4sDtGoAH+U4ER5o3ZhJNsxebecOmjpmcznp505IW21M68qN3m5PkocWW+FT2jRd
+z3N8csWg4k2FPsrdCJZ3yQVIkXOfgaN08skM5S92V+gm/+vjxiu/99mgyRRWbzCA
+nq68zsz3qdD+U7pbPSXJjM/h7dKn5jAoiFZoVWMbo5wfakXcvSj/wpSkq97SdxNh
+UmFx0P6B/E8kg5J5NScr
+=tBkC
 -----END PGP SIGNATURE-----
 
---FerRj+SnsihDQL+M--
+--DakDFP6XNsQXR34C--
