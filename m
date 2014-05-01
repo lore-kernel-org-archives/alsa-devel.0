@@ -1,78 +1,88 @@
-From: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>
-Subject: [PATCH 2/2] ASoC: mc13783: Add devicetree support
-Date: Thu,  1 May 2014 10:49:12 +0400
-Message-ID: <1398926952-21820-1-git-send-email-shc_work@mail.ru>
+From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: mc13783: Add devicetree support
+Date: Thu, 1 May 2014 08:42:53 +0100
+Message-ID: <20140501074253.GA32761@lee--X1>
+References: <1398495423-2223-1-git-send-email-shc_work@mail.ru>
+ <20140429222522.GS15125@sirena.org.uk>
+ <20140430140849.GR29462@lee--X1>
+ <1398867073.695596467@f224.i.mail.ru>
+ <20140430141708.GS29462@lee--X1>
+ <20140430180653.GB3245@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20140430180653.GB3245-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds devicetree support for mc13783-codec.
+On Wed, 30 Apr 2014, Mark Brown wrote:
 
-Signed-off-by: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>
----
- Documentation/devicetree/bindings/mfd/mc13xxx.txt |  3 +++
- sound/soc/codecs/mc13783.c                        | 14 +++++++++++++-
- 2 files changed, 16 insertions(+), 1 deletion(-)
+> On Wed, Apr 30, 2014 at 03:17:08PM +0100, Lee Jones wrote:
+>=20
+> > Neither Mark, nor I can apply this patch independently, we need to
+> > create a shared branch somewhere, or we'll risk conflicts at merge
+> > time.
+>=20
+> You acked it without saying you didn't want me to apply it...  usuall=
+y
+> that means someone is OK with things getting applied.
 
-diff --git a/Documentation/devicetree/bindings/mfd/mc13xxx.txt b/Documentation/devicetree/bindings/mfd/mc13xxx.txt
-index 1413f39..8aba488 100644
---- a/Documentation/devicetree/bindings/mfd/mc13xxx.txt
-+++ b/Documentation/devicetree/bindings/mfd/mc13xxx.txt
-@@ -10,6 +10,9 @@ Optional properties:
- - fsl,mc13xxx-uses-touch : Indicate the touchscreen controller is being used
- 
- Sub-nodes:
-+- codec: Contain the Audio Codec node.
-+  - adc-port: Contain PMIC SSI port number used for ADC.
-+  - dac-port: Contain PMIC SSI port number used for DAC.
- - leds : Contain the led nodes and initial register values in property
-   "led-control". Number of register depends of used IC, for MC13783 is 6,
-   for MC13892 is 4, for MC34708 is 1. See datasheet for bits definitions of
-diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
-index 0b0a4ca..9965277 100644
---- a/sound/soc/codecs/mc13783.c
-+++ b/sound/soc/codecs/mc13783.c
-@@ -22,6 +22,7 @@
-  */
- #include <linux/module.h>
- #include <linux/device.h>
-+#include <linux/of.h>
- #include <linux/mfd/mc13xxx.h>
- #include <linux/slab.h>
- #include <sound/core.h>
-@@ -748,6 +749,7 @@ static int __init mc13783_codec_probe(struct platform_device *pdev)
- {
- 	struct mc13783_priv *priv;
- 	struct mc13xxx_codec_platform_data *pdata = pdev->dev.platform_data;
-+	struct device_node *np;
- 	int ret;
- 
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-@@ -758,7 +760,17 @@ static int __init mc13783_codec_probe(struct platform_device *pdev)
- 		priv->adc_ssi_port = pdata->adc_ssi_port;
- 		priv->dac_ssi_port = pdata->dac_ssi_port;
- 	} else {
--		return -ENOSYS;
-+		np = of_get_child_by_name(pdev->dev.parent->of_node, "codec");
-+		if (!np)
-+			return -ENOSYS;
-+
-+		ret = of_property_read_u32(np, "adc-port", &priv->adc_ssi_port);
-+		if (ret)
-+			return ret;
-+
-+		ret = of_property_read_u32(np, "dac-port", &priv->dac_ssi_port);
-+		if (ret)
-+			return ret;
- 	}
- 
- 	dev_set_drvdata(&pdev->dev, priv);
--- 
-1.8.3.2
+Actually, that's not true:
 
+MFD changes look sensible:
+  Acked-by: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+
+I'm happy to create a shared branch if required.   <-----###
+
+> In any case, as
+> ever it's on a branch by itself so you can pull it in easily.  I just
+> tagged it.
+
+Very well, thanks.
+
+> The following changes since commit c9eaa447e77efe77b7fa4c953bd62de829=
+7fd6c5:
+>=20
+>   Linux 3.15-rc1 (2014-04-13 14:18:35 -0700)
+>=20
+> are available in the git repository at:
+>=20
+>   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tag=
+s/mc13783-asoc
+>=20
+> for you to fetch changes up to 780aaeff96819ca58e0cad830bfbe6eee9aef8=
+2c:
+>=20
+>   ASoC: mc13783: Add devicetree support (2014-04-29 15:24:54 -0700)
+>=20
+> ----------------------------------------------------------------
+> ASoC: mc13783 DT support
+>=20
+> Tagged since it updates the MFD as well.
+>=20
+> ----------------------------------------------------------------
+> Alexander Shiyan (1):
+>       ASoC: mc13783: Add devicetree support
+>=20
+>  Documentation/devicetree/bindings/mfd/mc13xxx.txt |  3 +++
+>  drivers/mfd/mc13xxx-core.c                        | 10 +++++++---
+>  sound/soc/codecs/mc13783.c                        | 14 +++++++++++++=
+-
+>  3 files changed, 23 insertions(+), 4 deletions(-)
+
+
+
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
