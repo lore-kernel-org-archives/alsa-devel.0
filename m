@@ -1,63 +1,78 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: mc13783: Add devicetree support
-Date: Wed, 30 Apr 2014 11:23:12 -0700
-Message-ID: <20140430182312.GC3245@sirena.org.uk>
-References: <1398495423-2223-1-git-send-email-shc_work@mail.ru>
- <20140430141708.GS29462@lee--X1>
- <20140430180653.GB3245@sirena.org.uk>
- <1398881556.141711961@f232.i.mail.ru>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: cq93vc: fix cq93vc_get_regmap build
+	error
+Date: Wed, 30 Apr 2014 18:23:59 -0700
+Message-ID: <20140501012359.GH3245@sirena.org.uk>
+References: <4308079.So6q7GrfYB@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gr/z0/N6AeWAPJVB"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1398881556.141711961-JZ33oUlt0U9sdVUOrk1QfQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============8313794663166736074=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E0AC26007E
+ for <alsa-devel@alsa-project.org>; Thu,  1 May 2014 03:24:27 +0200 (CEST)
+In-Reply-To: <4308079.So6q7GrfYB@wuerfel>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---gr/z0/N6AeWAPJVB
-Content-Type: text/plain; charset=utf-8
+--===============8313794663166736074==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="U3BNvdZEnlJXqmh+"
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 30, 2014 at 10:12:36PM +0400, Alexander Shiyan wrote:
-> Wed, 30 Apr 2014 11:06:53 -0700 =D0=BE=D1=82 Mark Brown <broonie@kernel.o=
-rg>:
 
-> > ----------------------------------------------------------------
-> > ASoC: mc13783 DT support
+--U3BNvdZEnlJXqmh+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Sorry, this means that I should not create v2?=20
+On Wed, Apr 30, 2014 at 11:06:29AM +0200, Arnd Bergmann wrote:
+> 49101a25acd69c "ASoC: cq93vc: Remove the set_cache_io() entirely from
+> ASoC probe" introduced the cq93vc_get_regmap function that has an
+> obvious build error referring to the 'codec' variable that is not
+> declared anywhere"
 
-It's probably not going to achieve an enormous amount, no.  Let's see.
+Applied, thanks.
 
---gr/z0/N6AeWAPJVB
+--U3BNvdZEnlJXqmh+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTYT+NAAoJELSic+t+oim9urgQAITUcaWj7x8s3Moep+G+DgW5
-IaPvsgJDQKXbK1NbhWln+qLJoDxpkrWyieirWmzOthPDcOI1y085NMMTlpJRCXp1
-h5x5ndLxsayORL1nhNIBshlDO65VsXe39EGJu7E1rFUpOs6puZFIvi1OPXgWZIuE
-jJntR5efFw+K/R365UVsDCIS7gsiscisqhsMVEHn3AuJq+vs0LS5SKf1XtU6bY6Z
-CkCmtrvAyao2GS9xrUC2CMXZEUPpZpgxMsG4koWitC0HPrAZlCfa65xLhDme7TdS
-wOUe+a255kto7NEos/dS02OhoIZkJ9u/h87bkp1lsB8O05zzkEbVx1oSXp6UliRL
-ciObPTYSFbXisj94F4fKRgY/eCWLk1A+uDQB40v7ueEXnoPKFJmmbjq8rwBQCqvF
-vKurAJHpLJd26Xt8muVNgqNvLQ0DvxUsAgef6YpX2KmAFJ+HCzYOw8y5rcqCMelT
-gCKuy7y4aP82oFrympEfsRNb6S8tmQcMNJjTpi+3S7Os+TmWAyrtkqS5jcuyJN1W
-AJrB7M7+6g8IbS0biliolOtVNM0tlCg+GKI+gie9W744pvpalc3TGaDj++I9cugD
-W4EC/VGPtkQhXYu+h+rRt38D81hw/XNrzPOiLkaU6lXQKE6vKiaItIAj+ZD+lWmL
-OXFvK4rZfYs52POc7mg4
-=J5SM
+iQIcBAEBAgAGBQJTYaIsAAoJELSic+t+oim91NsP/0GhNAr3UjBZ/tD/7hDg4dEO
+g1gnqcd8IXBFstT5a9wWZ0ccLdyh854DUxyWJPtDewdlgez0N+FYOonGVxm41Ons
+UogeKYVVPA/XGATJQvMri5steEoXKMrWGgTJJs8lCu1rB2PA3cfVqD46jqHETOOA
+2xAgzkvn39bBqpZxle5zm+6W97aYX0nNf9ucTCYV/ZE5JbvXSHEBIezpF58E/J8i
+RU62h8r5BiYkj5JlWbxPjHc1Tgc6W87D7590YZXz7EHQAEBOiVxkz0/tylAWF5Zt
+o5MACL0vTtlapE5c8kN5qPOkOdaTJ1SUjRgXStTCey99jcc3Eq1dvR6Ug6R9FsZ7
++GSRvq7rOMrFCLLeRPcJdTnEbjMCp7u2fGnwUnzyXu3cHxLKjcH5x4drVZ8M7YdX
+/rgohdAOxVk3WLrFiYiYjVVIosbLStPKvHLIwvxk2T/+XYeiPyoA+WAdoh4fp2dK
+hMbWdMRZ8JSRdrYds/QCnfiJaL6rtUdijnt5YbPwtLZ0nOIdlFZZtGr9uz+l/BpY
+Bpfe349cGPmc/j3ZcKBgU0Czb7j/P5rRpDtE50ZIe/2nhaEfJHAff8thnxnvqvJ/
+1E6xe2XazCq/D2PAn82+gXakUHHMlfAhPyW3HWNjv3hAJnrhbaXYwKTLdNGMPDbj
+6JyOOEX2N8NL7xgdoFbj
+=/FhU
 -----END PGP SIGNATURE-----
 
---gr/z0/N6AeWAPJVB--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--U3BNvdZEnlJXqmh+--
+
+--===============8313794663166736074==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8313794663166736074==--
