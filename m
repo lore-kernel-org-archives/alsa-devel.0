@@ -1,88 +1,84 @@
-From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: mc13783: Add devicetree support
-Date: Thu, 1 May 2014 08:42:53 +0100
-Message-ID: <20140501074253.GA32761@lee--X1>
-References: <1398495423-2223-1-git-send-email-shc_work@mail.ru>
- <20140429222522.GS15125@sirena.org.uk>
- <20140430140849.GR29462@lee--X1>
- <1398867073.695596467@f224.i.mail.ru>
- <20140430141708.GS29462@lee--X1>
- <20140430180653.GB3245@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20140430180653.GB3245-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH v2] ALSA: usb-audio: work around corrupted TEAC UD-H01 feedback data
+Date: Thu,  1 May 2014 12:20:22 +0200
+Message-ID: <1398939622-29451-1-git-send-email-zonque@gmail.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: clemens@ladisch.de, mick37@gmx.de, andr.messa@tiscali.it, tiwai@suse.de, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 30 Apr 2014, Mark Brown wrote:
+From: Clemens Ladisch <clemens@ladisch.de>
 
-> On Wed, Apr 30, 2014 at 03:17:08PM +0100, Lee Jones wrote:
->=20
-> > Neither Mark, nor I can apply this patch independently, we need to
-> > create a shared branch somewhere, or we'll risk conflicts at merge
-> > time.
->=20
-> You acked it without saying you didn't want me to apply it...  usuall=
-y
-> that means someone is OK with things getting applied.
+The TEAC UD-H01 firmware sends wrong feedback frequency values, thus
+causing the PC to send the samples at a wrong rate, which results in
+clicks and crackles in the output.
 
-Actually, that's not true:
+Add a workaround to detect and fix the corruption.
 
-MFD changes look sensible:
-  Acked-by: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-
-I'm happy to create a shared branch if required.   <-----###
-
-> In any case, as
-> ever it's on a branch by itself so you can pull it in easily.  I just
-> tagged it.
-
-Very well, thanks.
-
-> The following changes since commit c9eaa447e77efe77b7fa4c953bd62de829=
-7fd6c5:
->=20
->   Linux 3.15-rc1 (2014-04-13 14:18:35 -0700)
->=20
-> are available in the git repository at:
->=20
->   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tag=
-s/mc13783-asoc
->=20
-> for you to fetch changes up to 780aaeff96819ca58e0cad830bfbe6eee9aef8=
-2c:
->=20
->   ASoC: mc13783: Add devicetree support (2014-04-29 15:24:54 -0700)
->=20
-> ----------------------------------------------------------------
-> ASoC: mc13783 DT support
->=20
-> Tagged since it updates the MFD as well.
->=20
-> ----------------------------------------------------------------
-> Alexander Shiyan (1):
->       ASoC: mc13783: Add devicetree support
->=20
->  Documentation/devicetree/bindings/mfd/mc13xxx.txt |  3 +++
->  drivers/mfd/mc13xxx-core.c                        | 10 +++++++---
->  sound/soc/codecs/mc13783.c                        | 14 +++++++++++++=
--
->  3 files changed, 23 insertions(+), 4 deletions(-)
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+[mick37@gmx.de: use sender->udh01_fb_quirk rather than
+ ep->udh01_fb_quirk in snd_usb_handle_sync_urb()]
+Reported-and-tested-by: Mick <mick37@gmx.de>
+Reported-and-tested-by: Andrea Messa <andr.messa@tiscali.it>
+Cc: <stable@vger.kernel.org>
+---
+Clemens, I hope you're ok that I resend this patch. With Mick's minor
+amendment (use sender->udh01_fb_quirk rather than ep->udh01_fb_quirk),
+Andrea Messa also reported success with the same hardware model.
 
 
+Thanks,
+Daniel
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ sound/usb/card.h     |  1 +
+ sound/usb/endpoint.c | 15 ++++++++++++++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 9867ab8..97acb90 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -92,6 +92,7 @@ struct snd_usb_endpoint {
+ 	unsigned int curframesize;      /* current packet size in frames (for capture) */
+ 	unsigned int syncmaxsize;	/* sync endpoint packet size */
+ 	unsigned int fill_max:1;	/* fill max packet size always */
++	unsigned int udh01_fb_quirk:1;	/* corrupted feedback data */
+ 	unsigned int datainterval;      /* log_2 of data packet interval */
+ 	unsigned int syncinterval;	/* P for adaptive mode, 0 otherwise */
+ 	unsigned char silence_value;
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index e70a87e..289f582 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -471,6 +471,10 @@ struct snd_usb_endpoint *snd_usb_add_endpoint(struct snd_usb_audio *chip,
+ 			ep->syncinterval = 3;
+ 
+ 		ep->syncmaxsize = le16_to_cpu(get_endpoint(alts, 1)->wMaxPacketSize);
++
++		if (chip->usb_id == USB_ID(0x0644, 0x8038) /* TEAC UD-H01 */ &&
++		    ep->syncmaxsize == 4)
++			ep->udh01_fb_quirk = 1;
+ 	}
+ 
+ 	list_add_tail(&ep->list, &chip->ep_list);
+@@ -1105,7 +1109,16 @@ void snd_usb_handle_sync_urb(struct snd_usb_endpoint *ep,
+ 	if (f == 0)
+ 		return;
+ 
+-	if (unlikely(ep->freqshift == INT_MIN)) {
++	if (unlikely(sender->udh01_fb_quirk)) {
++		/*
++		 * The TEAC UD-H01 firmware sometimes changes the feedback value
++		 * by +/- 0x1.0000.
++		 */
++		if (f < ep->freqn - 0x8000)
++			f += 0x10000;
++		else if (f > ep->freqn + 0x8000)
++			f -= 0x10000;
++	} else if (unlikely(ep->freqshift == INT_MIN)) {
+ 		/*
+ 		 * The first time we see a feedback value, determine its format
+ 		 * by shifting it left or right until it matches the nominal
+-- 
+1.9.0
