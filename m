@@ -1,73 +1,69 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
-Date: Thu, 1 May 2014 07:15:10 -0700
-Message-ID: <20140501141510.GW3245@sirena.org.uk>
-References: <1398243705-31151-1-git-send-email-tushar.behera@linaro.org>
- <20140424133920.GA12304@sirena.org.uk>
- <5359E18B.60600@linaro.org>
- <20140429222915.GU15125@sirena.org.uk>
- <5360E5E7.8090807@linaro.org>
- <20140430180314.GA3245@sirena.org.uk>
- <53623004.5010805@linaro.org>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: mc13783: Add devicetree support
+Date: Thu, 1 May 2014 08:06:53 -0700
+Message-ID: <20140501150653.GZ3245@sirena.org.uk>
+References: <1398495423-2223-1-git-send-email-shc_work@mail.ru>
+ <20140429222522.GS15125@sirena.org.uk>
+ <20140430140849.GR29462@lee--X1>
+ <1398867073.695596467@f224.i.mail.ru>
+ <20140430141708.GS29462@lee--X1>
+ <20140430180653.GB3245@sirena.org.uk>
+ <20140501074253.GA32761@lee--X1>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pEAjBjStGYT6H+Py"
-Return-path: <linux-doc-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="R9baxdNnpTjJ7oIU"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <53623004.5010805@linaro.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: Tushar Behera <tushar.behera@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, sbkim73@samsung.com, rdunlap@infradead.org, dianders@chromium.org
+In-Reply-To: <20140501074253.GA32761@lee--X1>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---pEAjBjStGYT6H+Py
+--R9baxdNnpTjJ7oIU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 01, 2014 at 04:59:08PM +0530, Tushar Behera wrote:
+On Thu, May 01, 2014 at 08:42:53AM +0100, Lee Jones wrote:
 
-> Okay, I will extend the existing clock driver to support XCLKOUT.
+> > You acked it without saying you didn't want me to apply it...  usually
+> > that means someone is OK with things getting applied.
 
-It may make more sense to add another clock driver for this clock
-depending on how things are done, I don't know.
+> Actually, that's not true:
 
-> Of the many parents of XCLKOUT, we need to set XXTI clock as the parent.
-> Is it okay if we pass two clocks "mclk" (XCLKOUT) and "mclk_parent"
-> (XXTI) to sound-card driver via DT and do the necessary reparenting
-> during the sound-card driver probe call?
+> MFD changes look sensible:
+>   Acked-by: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 
-No, that's not OK at all, it won't allow for configuration of the
-system.  This is what I was talking about when I was talking the clock
-framework extensions to allow the clock tree to be configured using DT,
-that would allow the settings to be put in DT.
+> I'm happy to create a shared branch if required.   <-----###
 
-> Else, we can push that change to bootloader (to set the XCLKOUT mux
-> register) and only enable/disable the clock in sound-card driver.
+Sure, but I didn't see an urgent need for that immediately so I just
+went ahead - the ack usually means that it's OK to apply.
 
-That's not going to work given that the existing bootloaders don't do
-this.
-
---pEAjBjStGYT6H+Py
+--R9baxdNnpTjJ7oIU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTYlbrAAoJELSic+t+oim9Y74P/1KfbQJb0J7mDTfxDZSxbsE0
-nA1dchqcgQBYlwQvr1rXWXMzxfbP0hoDbA2YVvFpYo3EQ5miHRYHjLtG4mFhbPBz
-WQyzpPND940136jZQjPSESfELQdhNvDBORsaqKYRFUPAPK6D6E6dZc98njvXxgJZ
-lxf2FBjlnWTdbZTYyqnYXPf6SqwncL53zzQlawgLVR5j9F8wzrXlVuQ1asEQTfdk
-72rbTwJkBugu7dZNZaraPy+5+HzIR+u7vQ/QtAPL92WwPgHyZWCDyFktVIBWxz2A
-F2b1IVCp+owmHErLJq0RSDROCzq16z2SxmchHqu39sIgfyupDXUW+VFW6WamRHxe
-t0NlPpmkr2WW4oiovn5rrImxRfCoPEvYO/lEDgd60JWLLBBV9l1Rymz45ZH4dgLA
-A72WoCqr8fEOU8eHwaO62Z3W4yYzopA3OgzqcCUs7ITaPaDlNZkXoCBNTK8QxA/p
-2MdA1YrsQkrImbsvRuHhmevZPSc9csyWwI8WVnmampVYsoQJTUBzqN7GyXGjAIli
-tb13iBcfAyrMGhUeQd/FP7LGtMyAzvFuCPvjz4I06tt8cc+Epy4jUA8Ecy4QhLOG
-IazvBHSQ6JD99eYshyut2MHycoov8CuSMWC1W19DDjh3fyJo/lQ9mWzqufaFqMUD
-NhxdithZU8Tw0+Ywc2dw
-=YiEJ
+iQIcBAEBAgAGBQJTYmMJAAoJELSic+t+oim9eFMP/i15G/9uQ55d/595ttV+fzvj
+L1nrKboGdT31PJi2/604kRKjOvP2ZqaMq9ZkbQkgzs7mIyFDYBcQBf1+qWAqjwrJ
+YgvoeJ1FGwnATqD4jtuwaT5cqGnZbeC3Pmtg8nIVRKsYobFVnyIvrJuPguoS1AUG
+XryhV5BpdeH159LpZ3J/eRppoHuznAe0Tw8O8HPkjjrFPXAEYH+loF5BCtdmVT0u
+j0ByEd9S54Hl3oEIOuuCbIUGekhY0zGZsYkCavtsy+DfCqsbFvklo6jaDmkYC6+a
+BaVzf7AqnioNqN42eXOKxp00EgnEryO9Z6Z63jmqB2icQQzEjr2KIe5wt5LD7jMC
+cF9rcWeKj7nK4qeis1ecNzfUgzBbSI2NG7iVM/q9beriKeSJygnBKlvrqBa+03Is
+qOnU9U445quueUH0sFUNrnzjOjnFO2+Lp0+OksC6gBDZ3HSoodFfffxwJklStf6s
+JM3XsX+5wy6f29tEsP7LN+VpCHoBQxnqM+sgaHfWtFX7s3t01uzmP0bYwAR08gMt
+ML8tSpV9UQsZk6Jv1IG9I/vwAy4WdYbQe3UKwjUBddnN/1a4WJaRi+1hMBBRIhkK
+tJ/4KtYlrYNuTqXljUJNHXDpGCSJSqEWDhXxbTA/E9fy5Oa+fx0n8K5WhXx2DDbV
+FgTwSXoohVMRqBxZfWHl
+=0J0+
 -----END PGP SIGNATURE-----
 
---pEAjBjStGYT6H+Py--
+--R9baxdNnpTjJ7oIU--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
