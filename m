@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: fsl: Allow to select ESAI device
+Subject: Re: [PATCH 1/2] ASoC: fsl: Allow to select SAI device
 	individually
-Date: Thu, 1 May 2014 11:09:15 -0700
-Message-ID: <20140501180915.GR3245@sirena.org.uk>
+Date: Thu, 1 May 2014 11:08:45 -0700
+Message-ID: <20140501180845.GQ3245@sirena.org.uk>
 References: <1398852606-14345-1-git-send-email-Li.Xiubo@freescale.com>
- <1398852606-14345-2-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4930353102679409710=="
+Content-Type: multipart/mixed; boundary="===============0625772506108654633=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0389A26535F
- for <alsa-devel@alsa-project.org>; Thu,  1 May 2014 20:40:29 +0200 (CEST)
-In-Reply-To: <1398852606-14345-2-git-send-email-Li.Xiubo@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 482D026536B
+ for <alsa-devel@alsa-project.org>; Thu,  1 May 2014 20:40:34 +0200 (CEST)
+In-Reply-To: <1398852606-14345-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,51 +26,51 @@ Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4930353102679409710==
+--===============0625772506108654633==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jRVuaM4kMZyzPyLG"
+	protocol="application/pgp-signature"; boundary="F4Nz7zOi0wR5AkzI"
 Content-Disposition: inline
 
 
---jRVuaM4kMZyzPyLG
+--F4Nz7zOi0wR5AkzI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Apr 30, 2014 at 06:10:06PM +0800, Xiubo Li wrote:
+On Wed, Apr 30, 2014 at 06:10:05PM +0800, Xiubo Li wrote:
 > This will be useful for out-of-tree drivers since in-tree drivers
 > could select it automatically.
 
 Applied, thanks.
 
---jRVuaM4kMZyzPyLG
+--F4Nz7zOi0wR5AkzI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTYo3IAAoJELSic+t+oim9LGcP/A+zP26JunJxXbAUwU+3CFqh
-409XFRaND94vi2WXjNHJCxiO3dPJi97gl51wbg+2fniljfRJiWEdVa/wP2/S1dLx
-cWRHNudwg4UOAodI4XTnJxGoljr05UtRLWZP8WMhGiEXKVTbo4mAaA4KWt9U3nBw
-ijI50pSkcRxWFSZfg319Mqv2gOA9wZXtFjbn3ocsj7hT+Rg9Ff0q4wHTJQ28XSe+
-xSAlyZYr6wZRxhQ3YsPPT2G6al6VGp1KNXo3mXL8wZn7rV/tFTfZdRX7RFN84fIo
-ge1zXqIa0jWMmWGr7vVmOxvscadZtUxIECDY825+4r3+nN7MzkI/hGAnyaCq7nab
-TizHs6xEUBYuvNG+6Q8rqlgnfePV/OQrAHlESreS7IVutRoq4cOjTXtd9ejh+C7Q
-Lv5CDXYrDz5h+NsDXfEwXy0XbGJctC2w2Bc7B8Ppud1QvW6P6jYch6lltmLwsU7n
-/WTyztj63aPL4pox28dEKHwvf5g3yhSciTbkyTc4jyZghRoq36KELQS/aH34csz+
-4P4yJGYSSFaudgUXSAba/llpgkKuXMrkha2vy098JaJBbYCYcvnED7FWOn4fftAQ
-3EQ3bvpySBrRnaBID/uSxvr4V431jY3XUoedQ6N/oQAA+PBgSpFNrrdTYHrXYq7v
-Yclrh9kHsFzEJDCdZgBO
-=nG3D
+iQIcBAEBAgAGBQJTYo2qAAoJELSic+t+oim9vmEP/jvzVeosy7lwtdiPnSksxJHS
+T7NeYm/ihWwdXY/4Rzakx94C1edXaEx9w62lVATlt69EhW3ppsE/sVMLrJ1BUO15
+1QsVSGsGW+C85lG6LDc2tCeoFgju189RmuuhBj6s1l0aW1r8dfM5X+6xkwmGPov+
+8czoe70uqt8EmmQD2NHc4DbL04GANec2njRHcUjXKZCTlZ58TRaBMek0KsoHetAo
++d1TsyEOFdK6/m0OUNGTMqwB9313Ufrq21M/AtWO+UY3tpqMTy9kK20XFBiYYb+O
+CmqWX8LgmThi7oevL2GymaY/4GxPw+x8znr25C0DkVoEzMWjW3Xtnz+Xw29MSmI+
+dRSbT36YSmWjZaVuApL4b//Rh+COFcNLyv7BqD80zthQ3/xr3t6xxFRsnEvb0/Yb
+R24jk6A16hMxcbxepzXwpN+pNJ0i3F9j1EM/Sz4OybbRSmcH5mUXwKOLsRzXSWkB
+dhjSgHpPNyL+uXZNza/2ipadwd3iRgveUiQ3XPsFukYv2b3V3Op5mrG2LHgMARPb
+1cyRmwnOwDik00s6yDnKR6M1WBG8KVLCYWiA7yVZvH6AcaTzQJ7bpo7jOXiUrFLA
+0r9O0WgQPSp4pIMqdtzCdR4iDwO5eii0cDzEoZ8by7jNT9NL5wmxKUmSlKLE9XOn
+CzycuRvJWrYvrnr2L2M8
+=udAQ
 -----END PGP SIGNATURE-----
 
---jRVuaM4kMZyzPyLG--
+--F4Nz7zOi0wR5AkzI--
 
---===============4930353102679409710==
+--===============0625772506108654633==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4930353102679409710==--
+--===============0625772506108654633==--
