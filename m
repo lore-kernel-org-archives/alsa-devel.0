@@ -1,62 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
-Date: Thu, 1 May 2014 09:40:03 -0700
-Message-ID: <20140501164003.GC3245@sirena.org.uk>
-References: <1398243705-31151-1-git-send-email-tushar.behera@linaro.org>
- <20140424133920.GA12304@sirena.org.uk>
- <5359E18B.60600@linaro.org>
- <20140429222915.GU15125@sirena.org.uk>
- <5360E5E7.8090807@linaro.org>
- <20140430180314.GA3245@sirena.org.uk>
- <53623004.5010805@linaro.org>
- <20140501141510.GW3245@sirena.org.uk>
- <CAD=FV=Wa4CovkxBng0SkUUAryiFqa=m63tro1Yv1jRgp4e95aw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: fsl: Allow to select ESAI device
+	individually
+Date: Thu, 1 May 2014 11:09:15 -0700
+Message-ID: <20140501180915.GR3245@sirena.org.uk>
+References: <1398852606-14345-1-git-send-email-Li.Xiubo@freescale.com>
+ <1398852606-14345-2-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mZSo2Zk6iB5ZAp9g"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=Wa4CovkxBng0SkUUAryiFqa=m63tro1Yv1jRgp4e95aw@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Doug Anderson <dianders@chromium.org>
-Cc: Tushar Behera <tushar.behera@linaro.org>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, sbkim73@samsung.com, Randy Dunlap <rdunlap@infradead.org>, Mike Turquette <mturquette@linaro.org>
+Content-Type: multipart/mixed; boundary="===============4930353102679409710=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0389A26535F
+ for <alsa-devel@alsa-project.org>; Thu,  1 May 2014 20:40:29 +0200 (CEST)
+In-Reply-To: <1398852606-14345-2-git-send-email-Li.Xiubo@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---mZSo2Zk6iB5ZAp9g
+--===============4930353102679409710==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jRVuaM4kMZyzPyLG"
+Content-Disposition: inline
+
+
+--jRVuaM4kMZyzPyLG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 01, 2014 at 08:54:14AM -0700, Doug Anderson wrote:
+On Wed, Apr 30, 2014 at 06:10:06PM +0800, Xiubo Li wrote:
+> This will be useful for out-of-tree drivers since in-tree drivers
+> could select it automatically.
 
-> This is exactly the thing (expected clock parenting) we agreed could
-> be put in the device tree I think.  ...but I don't know that anyone
-> proposed exactly how that would work.
+Applied, thanks.
 
-There's patches been posted by (IIRC) Sylvester Nawrocki for this which
-I think Mike was basically happy with - I don't immediately see them in
--next though, but I may be looking in the wrong place.
-
---mZSo2Zk6iB5ZAp9g
+--jRVuaM4kMZyzPyLG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTYnjgAAoJELSic+t+oim9lBIQAJQUra6tu0BGp+zrd8wIkiY7
-0JgXRUwJq0QOrRupH/K4PxH/RULBBklp4gWH4oLQoawfXVbSExKSWgQLNV0/HY7C
-p0oVpo18BswlaoubtacrBBaVbckxw8mz7QDIpZQWbfp+FjItbjL20yW882+IsrwR
-jll0rO6o8JtJExJqJF6Gi+VjNaXJ9qDOIDxdaS8U4BPcHW5lSCsG4HclY9JcBBLB
-L1pIdZYzZhKEaXUnu2Y0f2fvOOrODXGUBlYxbOG34w3X5oQ2MqfirU5rtymRGAe6
-e/Kyp2IE39myv/z9T8XhR/mJtl+L+MKL36NFb42N8/z2cTGIePYM7ZwVgLjq9s92
-Uz6CsAm3Xb93QsRBRnRDTtuVCxySHpXfL9fTTLllx2YUfgyRTcbL+WrSm8LO7y6D
-JGQ1Rz4nRP3tH5grdGjWvsXTsZMXkPJJcfoAYhz5y4/iA0g8uaUTovd24Zf/u4aW
-NFa5EgrvSnWbPBzdBwGzNVSBjoC/evWwkWZCNiHty9MdixQjzGbw1Di+UGTDzthQ
-AlrSGXONcpAYPl4FhFs6kACvcT3/b2VBgH+tp7joJEOWq4ljPixdeeDfSNWsL095
-Hu/1q0M37an/yWuhBgApiq8GG+24+WH4BKbbxSExLkCKWMYbSe6uB/JCs43rpJyb
-nXdVVK770BWoTnap9xRy
-=w8r/
+iQIcBAEBAgAGBQJTYo3IAAoJELSic+t+oim9LGcP/A+zP26JunJxXbAUwU+3CFqh
+409XFRaND94vi2WXjNHJCxiO3dPJi97gl51wbg+2fniljfRJiWEdVa/wP2/S1dLx
+cWRHNudwg4UOAodI4XTnJxGoljr05UtRLWZP8WMhGiEXKVTbo4mAaA4KWt9U3nBw
+ijI50pSkcRxWFSZfg319Mqv2gOA9wZXtFjbn3ocsj7hT+Rg9Ff0q4wHTJQ28XSe+
+xSAlyZYr6wZRxhQ3YsPPT2G6al6VGp1KNXo3mXL8wZn7rV/tFTfZdRX7RFN84fIo
+ge1zXqIa0jWMmWGr7vVmOxvscadZtUxIECDY825+4r3+nN7MzkI/hGAnyaCq7nab
+TizHs6xEUBYuvNG+6Q8rqlgnfePV/OQrAHlESreS7IVutRoq4cOjTXtd9ejh+C7Q
+Lv5CDXYrDz5h+NsDXfEwXy0XbGJctC2w2Bc7B8Ppud1QvW6P6jYch6lltmLwsU7n
+/WTyztj63aPL4pox28dEKHwvf5g3yhSciTbkyTc4jyZghRoq36KELQS/aH34csz+
+4P4yJGYSSFaudgUXSAba/llpgkKuXMrkha2vy098JaJBbYCYcvnED7FWOn4fftAQ
+3EQ3bvpySBrRnaBID/uSxvr4V431jY3XUoedQ6N/oQAA+PBgSpFNrrdTYHrXYq7v
+Yclrh9kHsFzEJDCdZgBO
+=nG3D
 -----END PGP SIGNATURE-----
 
---mZSo2Zk6iB5ZAp9g--
+--jRVuaM4kMZyzPyLG--
+
+--===============4930353102679409710==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4930353102679409710==--
