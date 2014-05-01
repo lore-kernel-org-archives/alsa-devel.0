@@ -1,56 +1,50 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: TASCAM US-1800
-Date: Thu, 01 May 2014 12:31:19 +0200
-Message-ID: <53622277.1010209@zonque.org>
-References: <56bf95211cd57cd9998d145f090fc025@frozenkiwi.net>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
+Date: Thu, 01 May 2014 16:59:08 +0530
+Message-ID: <53623004.5010805@linaro.org>
+References: <1398243705-31151-1-git-send-email-tushar.behera@linaro.org> <20140424133920.GA12304@sirena.org.uk> <5359E18B.60600@linaro.org> <20140429222915.GU15125@sirena.org.uk> <5360E5E7.8090807@linaro.org> <20140430180314.GA3245@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D82426157F
- for <alsa-devel@alsa-project.org>; Thu,  1 May 2014 12:31:21 +0200 (CEST)
-In-Reply-To: <56bf95211cd57cd9998d145f090fc025@frozenkiwi.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: amand <amand@frozenkiwi.net>, alsa-devel@alsa-project.org
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20140430180314.GA3245@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, sbkim73@samsung.com, rdunlap@infradead.org, dianders@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 04/30/2014 11:33 PM, Mark Brown wrote:
+> On Wed, Apr 30, 2014 at 05:30:39PM +0530, Tushar Behera wrote:
+> 
+>> XCLKOUT mux register (0x10040a00) is not part of core clock SFR range,
+>> rather it is part of pmu-system-controller node.
+> 
+>> One option would be to add a clock provider for XCLKOUT. That would
+>> require me to extend current clock driver to get the
+>> pmu-system-controller phandle which in turn is dependent on the patch to
+>> early initialize syscon driver.[1]
+> 
+>> Will it be okay to configure XCLKOUT in snow sound-card driver by taking
+>> the phandle of pmu-system-controller from device tree? The
+>> implementation is provided below.
+> 
+> I can't think of any reason why we'd not want to have this visible as a
+> clock?  Ideally we don't want to have any ASoC specific clock APIs when
+> we're done, the reason we do at the minute is that the clock API isn't
+> available as standard.
+> 
 
-On 04/16/2014 07:08 PM, amand wrote:
-> I've just bought a TASCAM US-1800 soundcard. Unfortunately, there is no 
-> driver ready for linux. I started to gather some data from the windows 
-> USB driver in order to add support in linux. I am ready to invest time 
-> in this driver, but this is my first ever attempt.
-> Presently, I try to reverse-engineering the data I have collect with 
-> wireshark.
+Okay, I will extend the existing clock driver to support XCLKOUT.
 
-This is the right approach if you have certainty that the protocol
-spoken by the card is in fact unrelated to the USB audio class.
+Of the many parents of XCLKOUT, we need to set XXTI clock as the parent.
+Is it okay if we pass two clocks "mclk" (XCLKOUT) and "mclk_parent"
+(XXTI) to sound-card driver via DT and do the necessary reparenting
+during the sound-card driver probe call?
 
-> Somebody has ever worked on a US-1800 driver  for linux ?
+Else, we can push that change to bootloader (to set the XCLKOUT mux
+register) and only enable/disable the clock in sound-card driver.
 
-Most probably not.
+Let me know your opinion on this.
 
-> Perhaps we can get some stuff from the us122l driver...
-
-The best thing would be if you could make that driver also handle your
-device, and do some long overdue cleanups along the way.
-
-> By the way, any help will be appreciated !
-
-I think you're on the right track. Reverse-engineering is annoying and
-time-consuming though.
-
-
-Good luck, and please share your findings!
-
-Daniel
+-- 
+Tushar Behera
