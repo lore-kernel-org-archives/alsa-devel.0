@@ -1,54 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 08/15] ASoC: TTC DKB audio needs I2C
-Date: Thu, 1 May 2014 11:01:04 -0700
-Message-ID: <20140501180103.GN3245@sirena.org.uk>
-References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
- <1398770316-19715-9-git-send-email-kaixu.xia@linaro.org>
+Subject: Re: [PATCHv2 9/9] DTS: OMAP3-N900: Add sound support
+Date: Thu, 1 May 2014 10:58:45 -0700
+Message-ID: <20140501175845.GK3245@sirena.org.uk>
+References: <1398694047-28596-1-git-send-email-sre@kernel.org>
+ <1398694047-28596-10-git-send-email-sre@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9HASspBA3mgrZm7c"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1398770316-19715-9-git-send-email-kaixu.xia@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xia Kaixu <kaixu.xia@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linaro-kernel@lists.linaro.org, arnd@arndb.de, Liam Girdwood <lgirdwood@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>, Paul Parsons <lost.distance@yahoo.com>, Russell King <linux@arm.linux.org.uk>, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============1613884849551644160=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28A4D265460
+ for <alsa-devel@alsa-project.org>; Thu,  1 May 2014 20:41:14 +0200 (CEST)
+In-Reply-To: <1398694047-28596-10-git-send-email-sre@kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sebastian Reichel <sre@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Sebastian Reichel <sre@ring0.de>, Kumar Gala <galak@codeaurora.org>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---9HASspBA3mgrZm7c
+--===============1613884849551644160==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zQZ31nKYDGgulmZX"
+Content-Disposition: inline
+
+
+--zQZ31nKYDGgulmZX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 29, 2014 at 07:18:29PM +0800, Xia Kaixu wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> The missing dependency can lead to build errors, so
-> make it explicit in Kconfig.
+On Mon, Apr 28, 2014 at 04:07:27PM +0200, Sebastian Reichel wrote:
+> This patch adds support for the Nokia N900's sound
+> system.
 
-Applied, thanks.
+Reviewed-by: Mark Brown <broonie@linaro.org>
 
---9HASspBA3mgrZm7c
+--zQZ31nKYDGgulmZX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTYovcAAoJELSic+t+oim9jZUP/3bR2DTB3CdhIjiLXPG+R+Qf
-sYrNJvexhravQdDuStrvUsjiOAbtI+ZFvAPIcDo//OMp7oZV98hfODXpP5fh4R9U
-K7ElMeqCQRGS6f1QkLGdwfVcfNaWrlkap3B6xP4PqlXhog+ZRso9ELrcw+M5Owj0
-AdWFz4oHaWT2BaPc1A3I867KHdKk1acLAb0KQE1PM9BYKbaZoPPQCuRodj7SbYaP
-ziT3Zn6Y+LCOVkfdHgws38Q9grWypeo7ynpP6w4Z4if9GhebAPwoksg2qzoyHqhW
-W5JG2UxqedQPnKkUAOe382FZoRmlHuLF4ZOLTncSjWeoWasZ5ZXhR1zJ8P9g7Vfj
-jNd/mvmdtbKGXDHv1+7kuGI3PBxtL4yuA2zz5//Jd6anr0ECd04D52uR90UWAO5z
-6tAmclC3VWF23W25ez7TgJvyz3hn3rH23LHAZkAsO47A150uSuPX4GWogMe0ZgJw
-g5xjtTcnlMGhDD8pdeImZNeZzHruD1xS+bKXYqN2ubSm3L6lHWVMdxEkysdjIHAs
-8xvmyeGttRV0JqlksHYX/WhMQyWAmqoAdSLcZ3gUhNbc0zpYa6JJRqCTEwd+rGHR
-ebNnpYBYVbfJepUuuR7u1s4WcBm9sm8heT6gxJBBEWWlE0kWkIhgpqVaB2cI0Lkx
-zpBIGr3Crv+hI9qSmYZ3
-=uFpI
+iQIcBAEBAgAGBQJTYotSAAoJELSic+t+oim99HEP/122Wq5I10RDplUTgqqueWTf
+w31sm04rUgvKqtqIIoH5W/h8k5n3YsLIyFIpouNiyKlaIP9Hjtz4ciijCYHF+gcM
+k0qJrZrtYbiSTJVA80ausKtUwVcaF4YkoCo7KtBTvvDRnMoUADBQuNsMZHGd2GRQ
+hJpeaT1KqoS5PNQ7yuuNUUubJHli2KtDHy+eEtbx7xHxAprz5vgNmjM6V4uKC205
+cnJlC4nI7yPjruHjQ5X6VIII9zvtP8tH0WBpRe+uOZzkCIJSEWCqoUbFinrK7P24
+tCs3Q1GCE3ltdmVh7y5fYD3h/As7UIvcn7l+GrF2IZLtMPxT85DITyUQb921Wksj
+rXmfjpLKBhNfx8SNlR9o6SKyIskGpkPBDDnBD9wRlwIPiIGhNptAjB6WZ72BG3Oo
+yWCrHeJYtB07eFlGwkLRMjbeh/rF2Lgj0DcfstKPYvQY6f6gmmGYoBKCIQmcYMZy
+x0cCNbB2Kwm8osYkWT/BquCM4Npad1U1LBr5w7xhaduCu60vp8L7oq9zPvvte/2E
+zo4H6uqJdEd3I1HbJLJqBY1Ca+8FbdGOZlphVorV8W9BAjC6fGOIORHOxzOTLbd+
+AaWKorJORjcoO11lW9IdFw55ieBXkt+E1OLa5BOZbd4c2p0sfjLZzkFgEEkvqe8m
+B5TNSmPPwoyfojN1ImRK
+=xNkZ
 -----END PGP SIGNATURE-----
 
---9HASspBA3mgrZm7c--
+--zQZ31nKYDGgulmZX--
+
+--===============1613884849551644160==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1613884849551644160==--
