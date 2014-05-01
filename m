@@ -1,55 +1,73 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH 01/15] ASoC: CS42L51 and WM8962 codecs
- depend on INPUT
-Date: Thu, 1 May 2014 12:26:18 +0000
-Message-ID: <C1FD6191-8850-4BB1-ABA1-BE6D02F9CD84@cirrus.com>
-References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
- <1398770316-19715-2-git-send-email-kaixu.xia@linaro.org>
- <alpine.DEB.2.02.1404292124270.31465@heelrod>
- <20140501013103.GK3245@sirena.org.uk>
- <13D36045-EE68-418B-983B-2704C52391E3@cirrus.com>
- <08914164-8CE6-4170-BC21-9E2840FFA05E@cirrus.com>,
- <20140501032756.GM3245@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
+Date: Thu, 1 May 2014 07:15:10 -0700
+Message-ID: <20140501141510.GW3245@sirena.org.uk>
+References: <1398243705-31151-1-git-send-email-tushar.behera@linaro.org>
+ <20140424133920.GA12304@sirena.org.uk>
+ <5359E18B.60600@linaro.org>
+ <20140429222915.GU15125@sirena.org.uk>
+ <5360E5E7.8090807@linaro.org>
+ <20140430180314.GA3245@sirena.org.uk>
+ <53623004.5010805@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1blp0185.outbound.protection.outlook.com [207.46.163.185])
- by alsa0.perex.cz (Postfix) with ESMTP id 90D8E26531B
- for <alsa-devel@alsa-project.org>; Thu,  1 May 2014 14:27:55 +0200 (CEST)
-In-Reply-To: <20140501032756.GM3245@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, Lars-Peter Clausen <lars@metafoo.de>, "arnd@arndb.de" <arnd@arndb.de>, Sangbeom Kim <sbkim73@samsung.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Timur Tabi <timur@tabi.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, Ben Dooks <ben-linux@fluff.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, Kukjin Kim <kgene.kim@samsung.com>, Xia Kaixu <kaixu.xia@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pEAjBjStGYT6H+Py"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <53623004.5010805@linaro.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, sbkim73@samsung.com, rdunlap@infradead.org, dianders@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 
+--pEAjBjStGYT6H+Py
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On Apr 30, 2014, at 22:28, "Mark Brown" <broonie@kernel.org> wrote:
-> =
+On Thu, May 01, 2014 at 04:59:08PM +0530, Tushar Behera wrote:
 
->> On Thu, May 01, 2014 at 02:16:27AM +0000, Austin, Brian wrote:
->> =
+> Okay, I will extend the existing clock driver to support XCLKOUT.
 
->> Apparently not.
->> I would like to come up with a better solution than making INPUT a requi=
-rement. I just need some time.
->> In the meantime I suppose it=92s OK to apply it?
-> =
+It may make more sense to add another clock driver for this clock
+depending on how things are done, I don't know.
 
-> Yeah.  Realistically it's probably not going to ever be a practical
-> problem - the number of systems with audio but no input is likely to be
-> very close to zero.
+> Of the many parents of XCLKOUT, we need to set XXTI clock as the parent.
+> Is it okay if we pass two clocks "mclk" (XCLKOUT) and "mclk_parent"
+> (XXTI) to sound-card driver via DT and do the necessary reparenting
+> during the sound-card driver probe call?
 
-Yeah, I'm just gonna go ahead and remove the #if's from the drivers then si=
-nce it's required =
+No, that's not OK at all, it won't allow for configuration of the
+system.  This is what I was talking about when I was talking the clock
+framework extensions to allow the clock tree to be configured using DT,
+that would allow the settings to be put in DT.
+
+> Else, we can push that change to bootloader (to set the XCLKOUT mux
+> register) and only enable/disable the clock in sound-card driver.
+
+That's not going to work given that the existing bootloaders don't do
+this.
+
+--pEAjBjStGYT6H+Py
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTYlbrAAoJELSic+t+oim9Y74P/1KfbQJb0J7mDTfxDZSxbsE0
+nA1dchqcgQBYlwQvr1rXWXMzxfbP0hoDbA2YVvFpYo3EQ5miHRYHjLtG4mFhbPBz
+WQyzpPND940136jZQjPSESfELQdhNvDBORsaqKYRFUPAPK6D6E6dZc98njvXxgJZ
+lxf2FBjlnWTdbZTYyqnYXPf6SqwncL53zzQlawgLVR5j9F8wzrXlVuQ1asEQTfdk
+72rbTwJkBugu7dZNZaraPy+5+HzIR+u7vQ/QtAPL92WwPgHyZWCDyFktVIBWxz2A
+F2b1IVCp+owmHErLJq0RSDROCzq16z2SxmchHqu39sIgfyupDXUW+VFW6WamRHxe
+t0NlPpmkr2WW4oiovn5rrImxRfCoPEvYO/lEDgd60JWLLBBV9l1Rymz45ZH4dgLA
+A72WoCqr8fEOU8eHwaO62Z3W4yYzopA3OgzqcCUs7ITaPaDlNZkXoCBNTK8QxA/p
+2MdA1YrsQkrImbsvRuHhmevZPSc9csyWwI8WVnmampVYsoQJTUBzqN7GyXGjAIli
+tb13iBcfAyrMGhUeQd/FP7LGtMyAzvFuCPvjz4I06tt8cc+Epy4jUA8Ecy4QhLOG
+IazvBHSQ6JD99eYshyut2MHycoov8CuSMWC1W19DDjh3fyJo/lQ9mWzqufaFqMUD
+NhxdithZU8Tw0+Ywc2dw
+=YiEJ
+-----END PGP SIGNATURE-----
+
+--pEAjBjStGYT6H+Py--
